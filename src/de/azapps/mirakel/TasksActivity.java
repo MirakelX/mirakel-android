@@ -73,7 +73,6 @@ public class TasksActivity extends Activity {
 			Log.e(TAG, "Implement showltasks");
 		}
 		return tasks;
-		
 	}
 
 	@Override
