@@ -6,6 +6,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 public class Mirakel extends Application {
+	public static final int LIST_ALL=0;
+	public static final int LIST_DAILY=-1;
+	public static final int LIST_WEEKLY=-2;
 	private static final String TAG="Mirakel";
 	
 	private static SQLiteOpenHelper openHelper;

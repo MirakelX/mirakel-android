@@ -20,5 +20,10 @@
     <!-- Tasks -->
     <string name="tasks_new">New Task…</string>
     <string name="tasks_new_button">ζ</string>
+    <string name="tasks_all">All Tasks</string>
+    <string name="tasks_daily">Today</string>
+    <string name="tasks_weekly">Weekly</string>
+    
+    <!-- Lists -->
 
 </resources>
