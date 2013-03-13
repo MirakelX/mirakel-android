@@ -11,6 +11,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	
 	
 	
+	
+	
 	public DatabaseHelper(Context ctx){
 		super(ctx,"mirakel.db",null,1);
 	}

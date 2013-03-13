@@ -1,38 +1,57 @@
 package de.azapps.mirakel;
 
+import java.util.List;
+
 import android.os.Bundle;
+import android.os.Message;
 import android.app.Activity;
+import android.app.ListActivity;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.TextView.OnEditorActionListener;
 
 public class TasksActivity extends Activity {
 	private static final String TAG="TasksActivity";
 	private static final String TABLE_NAME="tasks";
 	private static final String[] FROM={"_id","name","done","priority"};
-	private static final String[] FROM_VIEW={"done","name","priority"};
-	private static final int[] TO_VIEW={R.id.tasks_row_done,R.id.tasks_row_name,R.id.tasks_row_priority};
 	private int listId;
-	private SimpleCursorAdapter adapter;
+	private TasksDataSource datasource;
+	private TaskAdapter adapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_tasks);
-		this.listId=this.getIntent().getIntExtra("listId", 0);
-		Cursor tasks=updateListCursor();
-		adapter=new SimpleCursorAdapter(this, R.layout.tasks_row, tasks, FROM_VIEW, TO_VIEW,0);
-		ListView taskList=(ListView) findViewById(R.id.tasks_list);
-		taskList.setAdapter(adapter);
 		
+		this.listId=this.getIntent().getIntExtra("listId", 0);
+		
+		datasource=new TasksDataSource(this);
+		datasource.open();
+		List<Task> values= datasource.getAllTasks();
+		
+		adapter=new TaskAdapter(this, R.layout.tasks_row,values);
+		ListView listView=(ListView) findViewById(R.id.tasks_list);
+		listView.setAdapter(adapter);
+		
+		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View item, int position, long id) {
+				Log.e(TAG,"Implement OnClick");
+			}
+		});
 		
 		//Events
 		EditText newTask=(EditText) findViewById(R.id.tasks_new);
@@ -40,17 +59,27 @@ public class TasksActivity extends Activity {
 		    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 		        if (actionId == EditorInfo.IME_ACTION_SEND) {
 		        	Log.v(TAG,"New Task");
-		        	ContentValues values=new ContentValues();
-		        	values.put("name", v.getText().toString());
-		        	values.put("list_id", getListId());
-		        	Mirakel.getWritableDatabase().insert("tasks",null,values);
+		        	Task task=datasource.createTask(v.getText().toString(), getListId());
 		        	v.setText(null);
-		        	adapter.swapCursor(updateListCursor());
+		        	adapter.add(task);
+		    		adapter.notifyDataSetChanged();
+		        	//adapter.swapCursor(updateListCursor());
 		            return true;
 		        }
 		        return false;
 		    }
 		});
+	}
+	
+	@Override
+	protected void onResume() {
+		datasource.open();
+		super.onResume();
+	}
+	@Override
+	protected void onPause() {
+		datasource.close();
+		super.onPause();
 	}
 	
 	private Cursor updateListCursor(){
