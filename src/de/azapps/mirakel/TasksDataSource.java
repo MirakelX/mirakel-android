@@ -10,11 +10,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class TasksDataSource {
+	private static final String TAG="TasksDataSource";
 	private SQLiteDatabase database;
 	private DatabaseHelper dbHelper;
-	private String[] allColumns = { "_id", "list_id", "name", "content", "done",
+	private String[] allColumns = { "_id", "list_id", "name", "content", "done", "due",
 			"priority", "created_at", "updated_at" };
 
 	public TasksDataSource(Context context) {
@@ -36,7 +38,7 @@ public class TasksDataSource {
 		values.put("list_id",list_id);
 		values.put("content",content);
 		values.put("done",done);
-		//values.put("due",due.toString());
+		values.put("due",due.toString());
 		values.put("priority",priority);
 		long insertId=database.insert("tasks", null, values);
 		Cursor cursor = database.query("tasks", allColumns, "_id = " + insertId,null,null,null,null);
@@ -44,6 +46,12 @@ public class TasksDataSource {
 		Task newTask=cursorToTask(cursor);
 		cursor.close();
 		return newTask;
+	}
+	
+	public void saveTask(Task task) {
+		Log.v(TAG,"saveTask");
+		ContentValues values=task.getContentValues();
+		database.update("tasks", values, "_id = " + task.getId(),null);
 	}
 	
 	public void deleteTask(Task task) {
@@ -65,17 +73,17 @@ public class TasksDataSource {
 	}
 
 	private Task cursorToTask(Cursor cursor) {
-		Task task = new Task();
 		int i=0;
-		task.setId(cursor.getLong(i++));
-		task.setListId(cursor.getLong(i++));
-		task.setName(cursor.getString(i++));
-		task.setContent(cursor.getString(i++));
-		task.setDone(cursor.getInt(i++) == 1);
-		//task.setDue(new Date(cursor.getLong(i++)));
-		task.setPriority(cursor.getInt(i++));
-		task.setCreated_at(cursor.getString(i++));
-		task.setUpdated_at(cursor.getString(i++));
+		Task task = new Task(
+				cursor.getLong(i++),
+				cursor.getLong(i++),
+				cursor.getString(i++),
+				cursor.getString(i++),
+				cursor.getInt(i++) == 1,
+				new Date(cursor.getLong(i++)),
+				cursor.getInt(i++),
+				cursor.getString(i++),
+				cursor.getString(i++));
 		return task;
 	}
 }

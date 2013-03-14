@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
@@ -15,12 +16,14 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 	Context context;
 	int layoutResourceId;
 	List<Task> data = null;
+	OnClickListener clickCheckbox;
 
-	public TaskAdapter(Context context, int layoutResourceId, List<Task> data) {
+	public TaskAdapter(Context context, int layoutResourceId, List<Task> data, OnClickListener clickCheckbox) {
 		super(context, layoutResourceId, data);
 		this.layoutResourceId = layoutResourceId;
 		this.data = data;
 		this.context = context;
+		this.clickCheckbox=clickCheckbox;
 	}
 
 	@Override
@@ -44,6 +47,8 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		
 		Task task = data.get(position);
 		holder.taskRowDone.setChecked(task.isDone());
+		holder.taskRowDone.setOnClickListener(clickCheckbox);
+		holder.taskRowDone.setTag(task);
 		holder.taskRowName.setText(task.getName());
 		
 		return row;

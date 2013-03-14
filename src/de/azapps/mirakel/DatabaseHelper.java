@@ -14,7 +14,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	
 	
 	public DatabaseHelper(Context ctx){
-		super(ctx,"mirakel.db",null,1);
+		super(ctx,"mirakel.db",null,2);
 	}
 
 	@Override
@@ -36,6 +36,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				"content TEXT, " +
 				"done INTEGER NOT NULL DEFAULT 0, " +
 				"priority INTEGER NOT NULL DEFAULT 0, " +
+				"due INTEGER, " +
 				"created_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
 				"updated_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP" +
 				")"
@@ -45,8 +46,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		
-		// TODO Auto-generated method stub
+		//@TODO implement user-friendly
+	    Log.w(DatabaseHelper.class.getName(),
+	        "Upgrading database from version " + oldVersion + " to "
+	            + newVersion + ", which will destroy all old data");
+	    db.execSQL("DROP TABLE IF EXISTS lists");
+	    db.execSQL("DROP TABLE IF EXISTS tasks");
+	    onCreate(db);
 
 	}
 
