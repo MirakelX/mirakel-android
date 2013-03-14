@@ -16,14 +16,19 @@
     <string name="help_button_donate">Donate</string>
     <string name="help_button_ok">OK</string>
     <string name="title_activity_tasks">TasksActivity</string>
-    
+
     <!-- Tasks -->
     <string name="tasks_new">New Task…</string>
     <string name="tasks_new_button">ζ</string>
     <string name="tasks_all">All Tasks</string>
     <string name="tasks_daily">Today</string>
     <string name="tasks_weekly">Weekly</string>
-    
+
     <!-- Lists -->
+
+    <string name="title_activity_task">TaskActivity</string>
+    <string name="menu_settings">Settings</string>
+    <string name="task_content">Content</string>
+    <string name="task_no_content">Add Content</string>
 
 </resources>

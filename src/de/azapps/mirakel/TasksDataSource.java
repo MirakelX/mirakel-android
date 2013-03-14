@@ -30,7 +30,7 @@ public class TasksDataSource {
 		dbHelper.close();
 	}
 	public Task createTask(String name, long list_id) {
-		return createTask(name,list_id,"",false,null,0);
+		return createTask(name,list_id," ",false,null,0);
 	}
 	public Task createTask(String name, long list_id, String content, boolean done, Date due, int priority) {
 		ContentValues values= new ContentValues();
@@ -38,7 +38,7 @@ public class TasksDataSource {
 		values.put("list_id",list_id);
 		values.put("content",content);
 		values.put("done",done);
-		values.put("due",due.toString());
+		values.put("due",(due==null?"":due.toString()));
 		values.put("priority",priority);
 		long insertId=database.insert("tasks", null, values);
 		Cursor cursor = database.query("tasks", allColumns, "_id = " + insertId,null,null,null,null);
@@ -70,6 +70,14 @@ public class TasksDataSource {
 		}
 		cursor.close();
 		return tasks;
+	}
+	public Task getTask(long id){
+		Cursor cursor = database.query("tasks", allColumns, "_id='"+id+"'", null, null, null, null);
+		cursor.moveToFirst();
+		if(cursor.getCount()!=0){
+			return cursorToTask(cursor);
+		}
+		return null;
 	}
 
 	private Task cursorToTask(Cursor cursor) {

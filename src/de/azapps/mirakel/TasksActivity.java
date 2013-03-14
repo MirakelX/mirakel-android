@@ -7,6 +7,7 @@ import android.os.Message;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
@@ -41,7 +42,7 @@ public class TasksActivity extends Activity {
 		
 		datasource=new TasksDataSource(this);
 		datasource.open();
-		List<Task> values= datasource.getAllTasks();
+		final List<Task> values= datasource.getAllTasks();
 		
 		adapter=new TaskAdapter(this, R.layout.tasks_row,values, new OnClickListener() {
 			
@@ -60,7 +61,13 @@ public class TasksActivity extends Activity {
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View item, int position, long id) {
-				Log.e(TAG,"Implement OnClick");
+				//Log.e(TAG,"Implement OnClick");
+				//TODO Remove Bad Hack
+				Task t=values.get((int) id);
+				Log.e(TAG,"Switch to Task "+t.getId());
+				Intent task = new Intent(item.getContext(),TaskActivity.class);				
+				task.putExtra("id", t.getId());
+				startActivity(task);
 			}
 		});
 		

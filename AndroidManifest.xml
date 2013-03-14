@@ -31,6 +31,10 @@
             android:name="de.azapps.mirakel.TasksActivity"
             android:label="@string/title_activity_tasks" >
         </activity>
+        <activity
+            android:name="de.azapps.mirakel.TaskActivity"
+            android:label="@string/title_activity_task" >
+        </activity>
     </application>
 
 </manifest>
