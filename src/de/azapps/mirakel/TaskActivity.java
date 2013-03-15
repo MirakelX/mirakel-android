@@ -1,11 +1,10 @@
 package de.azapps.mirakel;
 
-import android.os.Bundle;
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
@@ -14,10 +13,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TextView;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class TaskActivity extends Activity {
 	private static final String TAG = "TaskActivity";
@@ -56,7 +55,7 @@ public class TaskActivity extends Activity {
 		Task_name.setText(task.getName());
 		Task_content.setText(task.getContent().trim().length() == 0 ? this.getString(R.string.task_no_content) : task.getContent());
 		Task_done.setChecked(task.isDone());
-		set_prio();
+		set_prio(Task_prio,task);
 
 		Task_name.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -154,7 +153,7 @@ public class TaskActivity extends Activity {
 											int whichButton) {
 										task.setPriority((picker.getValue() - 2));
 										datasource.saveTask(task);
-										main.set_prio();
+										TaskActivity.set_prio(Task_prio,task);
 									}
 
 								})
@@ -171,7 +170,7 @@ public class TaskActivity extends Activity {
 
 	} // Log.e(TAG,task.getContent().trim().length()+"");
 
-	protected void set_prio() {
+	protected static void set_prio(TextView Task_prio,Task task) {
 		Task_prio.setText("" + task.getPriority());
 		Task_prio
 				.setBackgroundColor(Mirakel.PRIO_COLOR[task.getPriority() + 2]);

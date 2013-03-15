@@ -3,25 +3,22 @@ package de.azapps.mirakel;
 import java.util.List;
 
 import android.os.Bundle;
-import android.os.Message;
 import android.app.Activity;
-import android.app.ListActivity;
-import android.content.ContentValues;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.NumberPicker;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.TextView.OnEditorActionListener;
 import android.view.View.OnClickListener;
 
@@ -32,12 +29,14 @@ public class TasksActivity extends Activity {
 	private int listId;
 	private TasksDataSource datasource;
 	private TaskAdapter adapter;
+	private NumberPicker picker;
+	private TasksActivity main;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_tasks);
-		
+		main=this;
 		this.listId=this.getIntent().getIntExtra("listId", 0);
 		
 		datasource=new TasksDataSource(this);
@@ -72,6 +71,45 @@ public class TasksActivity extends Activity {
 				Task task=(Task) cb.getTag();
 				task.toggleDone();
 				datasource.saveTask(task);
+			}
+		},
+		new OnClickListener() {
+			
+			@Override
+			public void onClick(final View v) {
+				
+				picker = new NumberPicker(main);
+				picker.setMaxValue(4);
+				picker.setMinValue(0);
+				String[] t = { "-2", "-1", "0", "1", "2" };
+				picker.setDisplayedValues(t);
+				picker.setWrapSelectorWheel(false);
+				picker.setValue(((Task)v.getTag()).getPriority() + 2);
+				new AlertDialog.Builder(main)
+						.setTitle(
+								main.getString(R.string.task_change_prio_title))
+						.setMessage(
+								main.getString(R.string.task_change_prio_cont))
+						.setView(picker)
+						.setPositiveButton(main.getString(R.string.OK),
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int whichButton) {
+										Task task=(Task) v.getTag();
+										task.setPriority((picker.getValue() - 2));
+										datasource.saveTask(task);
+										load_tasks();
+									}
+
+								})
+						.setNegativeButton(main.getString(R.string.Cancel),
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int whichButton) {
+										// Do nothing.
+									}
+								}).show();
+				
 			}
 		});
 		ListView listView=(ListView) findViewById(R.id.tasks_list);
@@ -119,7 +157,7 @@ public class TasksActivity extends Activity {
 			tasks=Mirakel.getReadableDatabase().query(TABLE_NAME, FROM, "due<=date('now','+7 days')", null, null, null, null);
 			break;
 		default:
-			tasks=Mirakel.getReadableDatabase().query(TABLE_NAME, FROM, "due<=date('now','+7 days')", null, null, null, null);
+			tasks=Mirakel.getReadableDatabase().query(TABLE_NAME, FROM, "list_id='"+listId+"'", null, null, null, null);
 			Log.e(TAG, "Implement show tasks");
 		}
 		return tasks;
