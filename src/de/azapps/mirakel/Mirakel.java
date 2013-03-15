@@ -10,8 +10,8 @@ public class Mirakel extends Application {
 	public static final int LIST_ALL=0;
 	public static final int LIST_DAILY=-1;
 	public static final int LIST_WEEKLY=-2;
-	public static final int[] PRIO_COLOR = { Color.parseColor("#006400"),
-		Color.GREEN, Color.YELLOW, Color.parseColor("#FF8C00"), Color.RED };
+	public static final int[] PRIO_COLOR = { Color.parseColor("#008000"),
+		Color.parseColor("#00c400"), Color.parseColor("#3377FF"), Color.parseColor("#FF7700"), Color.parseColor("#FF3333") };
 	private static final String TAG="Mirakel";
 	
 	private static SQLiteOpenHelper openHelper;
