@@ -30,7 +30,7 @@ public class TasksDataSource {
 		dbHelper.close();
 	}
 	public Task createTask(String name, long list_id) {
-		return createTask(name,list_id," ",false,null,0);
+		return createTask(name,list_id,"",false,null,0);
 	}
 	public Task createTask(String name, long list_id, String content, boolean done, Date due, int priority) {
 		ContentValues values= new ContentValues();
