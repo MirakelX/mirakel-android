@@ -10,7 +10,7 @@
     android:orientation="vertical" >
 
     <TextView
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/app_name"
         android:gravity="center_horizontal"
@@ -20,17 +20,17 @@
     <!-- Buttons -->
     <Button 
         android:id="@+id/home_official_server"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/home_button_official"/>
     <Button 
         android:id="@+id/home_own_server"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/home_button_own"/>
     <Button 
         android:id="@+id/home_offline"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/home_button_offline"/>
 

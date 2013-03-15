@@ -11,12 +11,12 @@
      >
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
         <EditText
             android:id="@+id/tasks_new"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/tasks_new"
             android:imeOptions="actionSend"
@@ -25,7 +25,7 @@
 
     <ListView
         android:id="@+id/tasks_list"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clickable="true"
         android:descendantFocusability="beforeDescendants" >
