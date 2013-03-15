@@ -45,7 +45,7 @@ public class TaskActivity extends Activity {
 		} else {
 			id = -1;
 		}
-		Log.e(TAG, "Taskid " + id);
+		Log.v(TAG, "Taskid " + id);
 		Task_name = (TextView) findViewById(R.id.task_name);
 		Task_done = (CheckBox) findViewById(R.id.task_done);
 		Task_prio = (TextView) findViewById(R.id.task_prio);
