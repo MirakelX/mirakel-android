@@ -42,6 +42,27 @@ public class TasksActivity extends Activity {
 		
 		datasource=new TasksDataSource(this);
 		datasource.open();
+		load_tasks();
+		
+		//Events
+		EditText newTask=(EditText) findViewById(R.id.tasks_new);
+		newTask.setOnEditorActionListener(new OnEditorActionListener() {
+		    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+		        if (actionId == EditorInfo.IME_ACTION_SEND) {
+		        	Log.v(TAG,"New Task");
+		        	Task task=datasource.createTask(v.getText().toString(), getListId());
+		        	v.setText(null);
+		        	adapter.add(task);
+		    		adapter.notifyDataSetChanged();
+		        	//adapter.swapCursor(updateListCursor());
+		            return true;
+		        }
+		        return false;
+		    }
+		});
+	}
+
+	private void load_tasks() {
 		final List<Task> values= datasource.getAllTasks();
 		
 		adapter=new TaskAdapter(this, R.layout.tasks_row,values, new OnClickListener() {
@@ -70,29 +91,14 @@ public class TasksActivity extends Activity {
 				startActivity(task);
 			}
 		});
-		
-		//Events
-		EditText newTask=(EditText) findViewById(R.id.tasks_new);
-		newTask.setOnEditorActionListener(new OnEditorActionListener() {
-		    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-		        if (actionId == EditorInfo.IME_ACTION_SEND) {
-		        	Log.v(TAG,"New Task");
-		        	Task task=datasource.createTask(v.getText().toString(), getListId());
-		        	v.setText(null);
-		        	adapter.add(task);
-		    		adapter.notifyDataSetChanged();
-		        	//adapter.swapCursor(updateListCursor());
-		            return true;
-		        }
-		        return false;
-		    }
-		});
 	}
 	
 	@Override
 	protected void onResume() {
-		datasource.open();
 		super.onResume();
+		datasource.open();
+		load_tasks();
+		
 	}
 	@Override
 	protected void onPause() {
@@ -127,6 +133,27 @@ public class TasksActivity extends Activity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.tasks, menu);
 		return true;
+	}
+	@Override
+    public void onStart(){
+		super.onStart();
+		datasource.open();
+		load_tasks();
+	}
+	@Override
+    public void onRestart(){
+		super.onRestart();
+		datasource.open();
+	}
+	@Override
+    public void onStop(){
+		datasource.close();
+		super.onStop();
+	}
+	@Override
+    public void onDestroy(){		
+		datasource.close();
+		super.onDestroy();
 	}
 	private long getListId(){
 		long id=listId;

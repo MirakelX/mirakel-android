@@ -57,6 +57,7 @@ public class TaskActivity extends Activity {
 		task=datasource.getTask(id);
 		Task_name.setText(task.getName());
 		Task_content.setText(task.getContent().trim().length()==0?this.getString(R.string.task_no_content):task.getContent());
+		Task_done.setChecked(task.isDone());
 		set_prio();
 		
 		Task_name.setOnClickListener(new View.OnClickListener() {
@@ -69,7 +70,7 @@ public class TaskActivity extends Activity {
 						.setTitle(main.getString(R.string.task_change_name_title))
 						.setMessage(main.getString(R.string.task_change_name_cont))
 						.setView(input)
-						.setPositiveButton(main.getString(R.string.Cancel),
+						.setPositiveButton(main.getString(R.string.OK),
 								new DialogInterface.OnClickListener() {
 									public void onClick(DialogInterface dialog,
 											int whichButton) {
@@ -170,10 +171,10 @@ public class TaskActivity extends Activity {
 		Task_prio.setBackgroundColor(ColorList[task.getPriority() + 2]);
 
 	}
-	@Overrideprotected
+	@Override
 	public void onPause(){
-		super.onPause();
 		datasource.close();
+		super.onPause();
 	}
 	@Override
     public void onStart(){
@@ -192,13 +193,13 @@ public class TaskActivity extends Activity {
 	}
 	@Override
     public void onStop(){
-		super.onStop();
 		datasource.close();
+		super.onStop();
 	}
 	@Override
     public void onDestroy(){
-		super.onDestroy();
 		datasource.close();
+		super.onDestroy();
 	}
 
 	@Override

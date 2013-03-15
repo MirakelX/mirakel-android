@@ -12,8 +12,10 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/task_done"
         android:layout_marginTop="53dp"
+        android:paddingLeft="120dp"
+        android:text="@string/task_content"
         android:textAlignment="center"
-        android:text="@string/task_content" />
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
         android:id="@+id/task_prio"
