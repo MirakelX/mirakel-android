@@ -2,12 +2,14 @@ package de.azapps.mirakel;
 
 import android.os.Bundle;
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.CheckBox;
@@ -43,6 +45,7 @@ public class TaskActivity extends Activity {
 			id = -1;
 		}
 		Log.v(TAG, "Taskid " + id);
+
 		Task_name = (TextView) findViewById(R.id.task_name);
 		Task_done = (CheckBox) findViewById(R.id.task_done);
 		Task_prio = (TextView) findViewById(R.id.task_prio);
@@ -170,7 +173,8 @@ public class TaskActivity extends Activity {
 
 	protected void set_prio() {
 		Task_prio.setText("" + task.getPriority());
-		Task_prio.setBackgroundColor(Mirakel.PRIO_COLOR[task.getPriority() + 2]);
+		Task_prio
+				.setBackgroundColor(Mirakel.PRIO_COLOR[task.getPriority() + 2]);
 
 	}
 
@@ -208,6 +212,35 @@ public class TaskActivity extends Activity {
 	public void onDestroy() {
 		super.onDestroy();
 		datasource.close();
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.menu_delete:
+			new AlertDialog.Builder(this)
+					.setTitle("Delete entry")
+					.setMessage("Are you sure you want to delete this entry?")
+					.setPositiveButton("Yes",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int which) {
+									datasource.deleteTask(task);
+									finish();
+								}
+							})
+					.setNegativeButton("No",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int which) {
+									// do nothing
+								}
+							}).show();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+
+		}
 	}
 
 	@Override

@@ -36,6 +36,9 @@
 	<string name="task_change_name_cont">New Task-Title</string>
 	
     <!-- Lists -->    
+    
+    <!-- Menu -->
+    <string name="menu_delete">Delete</string>
     <string name="menu_settings">Settings</string>
     
     

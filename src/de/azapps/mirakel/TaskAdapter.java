@@ -55,6 +55,8 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		holder.taskRowName.setText(task.getName());
 		holder.taskRowPriority.setText("" + task.getPriority());
 		holder.taskRowPriority.setBackgroundColor(Mirakel.PRIO_COLOR[task.getPriority() + 2]);
+		// TODO implement onClickListener
+		//holder.taskRowPriority.setOnClickListener();
 
 		return row;
 	}
