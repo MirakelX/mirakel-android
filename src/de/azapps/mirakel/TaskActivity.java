@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
@@ -20,8 +19,6 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class TaskActivity extends Activity {
 	private static final String TAG = "TaskActivity";
-	private static final int[] ColorList = { Color.parseColor("#006400"),
-			Color.GREEN, Color.YELLOW, Color.parseColor("#FF8C00"), Color.RED };
 	protected long id;
 	protected Task task;
 	private TasksDataSource datasource;
@@ -70,7 +67,7 @@ public class TaskActivity extends Activity {
 						.setMessage(
 								main.getString(R.string.task_change_name_cont))
 						.setView(input)
-						.setPositiveButton(main.getString(R.string.Cancel),
+						.setPositiveButton(main.getString(R.string.OK),
 								new DialogInterface.OnClickListener() {
 									public void onClick(DialogInterface dialog,
 											int whichButton) {
@@ -173,7 +170,7 @@ public class TaskActivity extends Activity {
 
 	protected void set_prio() {
 		Task_prio.setText("" + task.getPriority());
-		Task_prio.setBackgroundColor(ColorList[task.getPriority() + 2]);
+		Task_prio.setBackgroundColor(Mirakel.PRIO_COLOR[task.getPriority() + 2]);
 
 	}
 

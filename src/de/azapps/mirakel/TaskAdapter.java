@@ -54,7 +54,7 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		holder.taskRowDone.setTag(task);
 		holder.taskRowName.setText(task.getName());
 		holder.taskRowPriority.setText("" + task.getPriority());
-		//holder.taskRowPriority.setBackgroundColor(ColorList[task.getPriority() + 2]);
+		holder.taskRowPriority.setBackgroundColor(Mirakel.PRIO_COLOR[task.getPriority() + 2]);
 
 		return row;
 	}
