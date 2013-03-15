@@ -66,14 +66,12 @@ public class TasksActivity extends Activity {
 		final List<Task> values= datasource.getAllTasks();
 		
 		adapter=new TaskAdapter(this, R.layout.tasks_row,values, new OnClickListener() {
-			
 			@Override
 			public void onClick(View v) {
 				CheckBox cb=(CheckBox) v;
 				Task task=(Task) cb.getTag();
 				task.toggleDone();
 				datasource.saveTask(task);
-				
 			}
 		});
 		ListView listView=(ListView) findViewById(R.id.tasks_list);
@@ -82,10 +80,9 @@ public class TasksActivity extends Activity {
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View item, int position, long id) {
-				//Log.e(TAG,"Implement OnClick");
 				//TODO Remove Bad Hack
 				Task t=values.get((int) id);
-				Log.e(TAG,"Switch to Task "+t.getId());
+				Log.v(TAG,"Switch to Task "+t.getId());
 				Intent task = new Intent(item.getContext(),TaskActivity.class);				
 				task.putExtra("id", t.getId());
 				startActivity(task);
@@ -123,7 +120,7 @@ public class TasksActivity extends Activity {
 			break;
 		default:
 			tasks=Mirakel.getReadableDatabase().query(TABLE_NAME, FROM, "due<=date('now','+7 days')", null, null, null, null);
-			Log.e(TAG, "Implement showltasks");
+			Log.e(TAG, "Implement show tasks");
 		}
 		return tasks;
 	}

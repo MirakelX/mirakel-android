@@ -18,12 +18,13 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 	List<Task> data = null;
 	OnClickListener clickCheckbox;
 
-	public TaskAdapter(Context context, int layoutResourceId, List<Task> data, OnClickListener clickCheckbox) {
+	public TaskAdapter(Context context, int layoutResourceId, List<Task> data,
+			OnClickListener clickCheckbox) {
 		super(context, layoutResourceId, data);
 		this.layoutResourceId = layoutResourceId;
 		this.data = data;
 		this.context = context;
-		this.clickCheckbox=clickCheckbox;
+		this.clickCheckbox = clickCheckbox;
 	}
 
 	@Override
@@ -39,24 +40,30 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 					.findViewById(R.id.tasks_row_done);
 			holder.taskRowName = (TextView) row
 					.findViewById(R.id.tasks_row_name);
+			holder.taskRowPriority = (TextView) row
+					.findViewById(R.id.tasks_row_priority);
 
 			row.setTag(holder);
 		} else {
 			holder = (TaskHolder) row.getTag();
 		}
-		
+
 		Task task = data.get(position);
 		holder.taskRowDone.setChecked(task.isDone());
 		holder.taskRowDone.setOnClickListener(clickCheckbox);
 		holder.taskRowDone.setTag(task);
 		holder.taskRowName.setText(task.getName());
-		
+		holder.taskRowPriority.setText("" + task.getPriority());
+		holder.taskRowPriority.setBackgroundColor(Mirakel.PRIO_COLOR[task.getPriority() + 2]);
+		// TODO implement onClickListener
+		//holder.taskRowPriority.setOnClickListener();
 		return row;
 	}
 
 	static class TaskHolder {
 		CheckBox taskRowDone;
 		TextView taskRowName;
+		TextView taskRowPriority;
 	}
 
 }
