@@ -75,7 +75,9 @@ public class TasksDataSource {
 		Cursor cursor = database.query("tasks", allColumns, "_id='"+id+"'", null, null, null, null);
 		cursor.moveToFirst();
 		if(cursor.getCount()!=0){
-			return cursorToTask(cursor);
+			Task t=cursorToTask(cursor);
+			cursor.close();
+			return t;
 		}
 		return null;
 	}
