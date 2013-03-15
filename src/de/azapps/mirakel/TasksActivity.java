@@ -39,6 +39,8 @@ public class TasksActivity extends Activity {
 		main=this;
 		this.listId=this.getIntent().getIntExtra("listId", 0);
 		
+		// TODO SetTitle
+		
 		datasource=new TasksDataSource(this);
 		datasource.open();
 		load_tasks();
@@ -195,5 +197,6 @@ public class TasksActivity extends Activity {
 		if(id<1) id=1;
 		return id;
 	}
+	//TODO options-menu
 
 }
