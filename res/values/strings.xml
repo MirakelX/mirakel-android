@@ -21,11 +21,10 @@
 
     <!-- Tasks -->
     <string name="tasks_new">New Task…</string>
-    <string name="tasks_new_button">ζ</string>
     <string name="tasks_all">All Tasks</string>
     <string name="tasks_daily">Today</string>
     <string name="tasks_weekly">Weekly</string>
-    <string name="title_activity_task">TaskActivity</string>
+    <string name="title_activity_task">View Task</string>
     <string name="task_content">Content</string>
     <string name="task_no_content">Add Content</string>
 	<string name="task_change_prio_title">Change Priority</string>
