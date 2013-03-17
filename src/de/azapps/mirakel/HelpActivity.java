@@ -10,15 +10,16 @@ import android.view.Menu;
 import android.view.View;
 
 public class HelpActivity extends Activity {
-	
-	private static final String TAG="HelpActivity";
+
+	private static final String TAG = "HelpActivity";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_help);
-		SharedPreferences settings=PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		SharedPreferences.Editor editor=settings.edit();
+		SharedPreferences settings = PreferenceManager
+				.getDefaultSharedPreferences(getApplicationContext());
+		SharedPreferences.Editor editor = settings.edit();
 		editor.putBoolean("showHelp", false);
 		editor.commit();
 	}
@@ -29,14 +30,17 @@ public class HelpActivity extends Activity {
 		getMenuInflater().inflate(R.menu.help, menu);
 		return true;
 	}
-	public void contact(View v){
-		Log.e(TAG,"Implement Contact");
+
+	public void contact(View v) {
+		Log.e(TAG, "Implement Contact");
 	}
-	public void donate(View v){
-		Log.e(TAG,"Implement Donate");
+
+	public void donate(View v) {
+		Log.e(TAG, "Implement Donate");
 	}
-	public void ok(View v){
-		Intent intent= new Intent(HelpActivity.this, TasksActivity.class);
+
+	public void ok(View v) {
+		Intent intent = new Intent(HelpActivity.this, TasksActivity.class);
 		startActivity(intent);
 	}
 

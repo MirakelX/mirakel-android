@@ -16,9 +16,8 @@ public class Task {
 	private int priority;
 	private String created_at;
 	private String updated_at;
-	private Map<String, Boolean> edited=new HashMap<String, Boolean>();
-	
-	
+	private Map<String, Boolean> edited = new HashMap<String, Boolean>();
+
 	public Task(long id, long list_id, String name, String content,
 			boolean done, Date due, int priority, String created_at,
 			String updated_at) {
@@ -77,9 +76,9 @@ public class Task {
 		this.done = done;
 		edited.put("done", true);
 	}
-	
+
 	public void toggleDone() {
-		this.done=!this.done;
+		this.done = !this.done;
 		edited.put("done", true);
 	}
 
@@ -121,9 +120,9 @@ public class Task {
 	public String toString() {
 		return name;
 	}
-	
-	public ContentValues getContentValues(){
-		ContentValues cv=new ContentValues();
+
+	public ContentValues getContentValues() {
+		ContentValues cv = new ContentValues();
 		cv.put("_id", id);
 		cv.put("list_id", list_id);
 		cv.put("name", name);

@@ -1,6 +1,5 @@
 package de.azapps.mirakel;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -53,9 +52,10 @@ public class TaskActivity extends Activity {
 		datasource.open();
 		task = datasource.getTask(id);
 		Task_name.setText(task.getName());
-		Task_content.setText(task.getContent().trim().length() == 0 ? this.getString(R.string.task_no_content) : task.getContent());
+		Task_content.setText(task.getContent().trim().length() == 0 ? this
+				.getString(R.string.task_no_content) : task.getContent());
 		Task_done.setChecked(task.isDone());
-		set_prio(Task_prio,task);
+		set_prio(Task_prio, task);
 
 		Task_name.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -130,8 +130,6 @@ public class TaskActivity extends Activity {
 
 		});
 		Task_prio.setOnClickListener(new OnClickListener() {
-			@SuppressLint("NewApi")
-			// TODO FIX API-Version
 			@Override
 			public void onClick(View v) {
 				picker = new NumberPicker(main);
@@ -153,7 +151,7 @@ public class TaskActivity extends Activity {
 											int whichButton) {
 										task.setPriority((picker.getValue() - 2));
 										datasource.saveTask(task);
-										TaskActivity.set_prio(Task_prio,task);
+										TaskActivity.set_prio(Task_prio, task);
 									}
 
 								})
@@ -170,12 +168,13 @@ public class TaskActivity extends Activity {
 
 	} // Log.e(TAG,task.getContent().trim().length()+"");
 
-	protected static void set_prio(TextView Task_prio,Task task) {
+	protected static void set_prio(TextView Task_prio, Task task) {
 		Task_prio.setText("" + task.getPriority());
 		Task_prio
 				.setBackgroundColor(Mirakel.PRIO_COLOR[task.getPriority() + 2]);
 
 	}
+
 	@Override
 	public void onPause() {
 		datasource.close();
@@ -201,13 +200,13 @@ public class TaskActivity extends Activity {
 	}
 
 	@Override
-    public void onStop(){
+	public void onStop() {
 		datasource.close();
 		super.onStop();
 	}
 
 	@Override
-    public void onDestroy(){
+	public void onDestroy() {
 		datasource.close();
 		super.onDestroy();
 	}
@@ -217,9 +216,9 @@ public class TaskActivity extends Activity {
 		switch (item.getItemId()) {
 		case R.id.menu_delete:
 			new AlertDialog.Builder(this)
-					.setTitle("Delete entry")
-					.setMessage("Are you sure you want to delete this entry?")
-					.setPositiveButton("Yes",
+					.setTitle(this.getString(R.string.task_delete_title))
+					.setMessage(this.getString(R.string.task_delete_content))
+					.setPositiveButton(this.getString(R.string.Yes),
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
 										int which) {
@@ -227,7 +226,7 @@ public class TaskActivity extends Activity {
 									finish();
 								}
 							})
-					.setNegativeButton("No",
+					.setNegativeButton(this.getString(R.string.no),
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
 										int which) {

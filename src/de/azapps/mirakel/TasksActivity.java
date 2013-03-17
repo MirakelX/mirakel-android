@@ -2,16 +2,18 @@ package de.azapps.mirakel;
 
 import java.util.List;
 
-import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
@@ -20,149 +22,206 @@ import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
-import android.view.View.OnClickListener;
 
 public class TasksActivity extends Activity {
-	private static final String TAG="TasksActivity";
-	private static final String TABLE_NAME="tasks";
-	private static final String[] FROM={"_id","name","done","priority"};
+	private static final String TAG = "TasksActivity";
+	// private static final String TABLE_NAME="tasks";
+	// private static final String[] FROM={"_id","name","done","priority"};
 	private int listId;
 	private TasksDataSource datasource;
+	private ListsDataSource datasource_lists;
 	private TaskAdapter adapter;
 	private NumberPicker picker;
 	private TasksActivity main;
+	private float start_x;
+	private float start_y;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_tasks);
-		main=this;
-		this.listId=this.getIntent().getIntExtra("listId", 0);
-		
+		main = this;
+		this.listId = this.getIntent().getIntExtra("listId", 0);
+
 		// TODO SetTitle
-		
-		datasource=new TasksDataSource(this);
+
+		datasource = new TasksDataSource(this);
 		datasource.open();
+		datasource_lists = new ListsDataSource(this);
+		datasource_lists.open();
+		listId = Mirakel.LIST_ALL;
+		getResources().getString(R.string.action_settings);
 		load_tasks();
-		
-		//Events
-		EditText newTask=(EditText) findViewById(R.id.tasks_new);
+		start_x = 0;
+		start_y = 0;
+		ListView listView = (ListView) findViewById(R.id.tasks_list);
+		listView.setOnTouchListener(new View.OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				int action = event.getAction();
+				if (action == MotionEvent.ACTION_DOWN) {
+					start_x = event.getRawX();
+					start_y = event.getRawY();
+				} else if (action == MotionEvent.ACTION_UP
+						|| action == MotionEvent.ACTION_CANCEL) {
+					float dx = start_x - event.getRawX();
+					float dy = start_y - event.getRawY();
+					if (dy > 3 * dx && dy > v.getHeight() / 3) {
+						Log.v(TAG, "swipe up");
+					} else if (dx > 3 * dy && dx > v.getWidth() / 3) {
+						Log.v(TAG, "swipe rigth");
+					} else if (dy < -3 * dx && -1 * dy > v.getHeight() / 3) {
+						Log.v(TAG, "swipe down");
+					} else if (dx < -3 * dy && -1 * dx > v.getWidth() / 3) {
+						Log.v(TAG, "swipe left");
+						Intent list = new Intent(v.getContext(),
+								ListActivity.class);
+						// task.putExtra("id", t.getId());
+						startActivityForResult(list, 1);
+
+					} else {
+						Log.v(TAG, "Nothing");
+					}
+				}
+				return false;
+			}
+		});
+
+		// Events
+		EditText newTask = (EditText) findViewById(R.id.tasks_new);
 		newTask.setOnEditorActionListener(new OnEditorActionListener() {
-		    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-		        if (actionId == EditorInfo.IME_ACTION_SEND) {
-		        	Log.v(TAG,"New Task");
-		        	Task task=datasource.createTask(v.getText().toString(), getListId());
-		        	v.setText(null);
-		        	adapter.add(task);
-		    		adapter.notifyDataSetChanged();
-		        	//adapter.swapCursor(updateListCursor());
-		            return true;
-		        }
-		        return false;
-		    }
+			public boolean onEditorAction(TextView v, int actionId,
+					KeyEvent event) {
+				if (actionId == EditorInfo.IME_ACTION_SEND) {
+					Log.v(TAG, "New Task");
+					Task task = datasource.createTask(v.getText().toString(),
+							getListId());
+					v.setText(null);
+					adapter.add(task);
+					adapter.notifyDataSetChanged();
+					// adapter.swapCursor(updateListCursor());
+					return true;
+				}
+				return false;
+			}
 		});
 	}
 
-	private void load_tasks() {
-		final List<Task> values= datasource.getAllTasks();
-		
-		adapter=new TaskAdapter(this, R.layout.tasks_row,values, new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				CheckBox cb=(CheckBox) v;
-				Task task=(Task) cb.getTag();
-				task.toggleDone();
-				datasource.saveTask(task);
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == 1) {
+			if (resultCode == RESULT_OK) {
+				Log.v(TAG, "Change List");
+				listId = data.getIntExtra("list_id", Mirakel.LIST_ALL);
+				load_tasks();
 			}
-		},
-		new OnClickListener() {
-			
-			@Override
-			public void onClick(final View v) {
-				
-				picker = new NumberPicker(main);
-				picker.setMaxValue(4);
-				picker.setMinValue(0);
-				String[] t = { "-2", "-1", "0", "1", "2" };
-				picker.setDisplayedValues(t);
-				picker.setWrapSelectorWheel(false);
-				picker.setValue(((Task)v.getTag()).getPriority() + 2);
-				new AlertDialog.Builder(main)
-						.setTitle(
-								main.getString(R.string.task_change_prio_title))
-						.setMessage(
-								main.getString(R.string.task_change_prio_cont))
-						.setView(picker)
-						.setPositiveButton(main.getString(R.string.OK),
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int whichButton) {
-										Task task=(Task) v.getTag();
-										task.setPriority((picker.getValue() - 2));
-										datasource.saveTask(task);
-										load_tasks();
-									}
+			if (resultCode == RESULT_CANCELED) {
+				// Write your code on no result return
+			}
+		}
+	}
 
-								})
-						.setNegativeButton(main.getString(R.string.Cancel),
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int whichButton) {
-										// Do nothing.
-									}
-								}).show();
-				
-			}
-		});
-		ListView listView=(ListView) findViewById(R.id.tasks_list);
+	private void load_tasks() {
+		final List<Task> values = datasource.getTasks(listId);
+
+		adapter = new TaskAdapter(this, R.layout.tasks_row, values,
+				new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						CheckBox cb = (CheckBox) v;
+						Task task = (Task) cb.getTag();
+						task.toggleDone();
+						datasource.saveTask(task);
+					}
+				}, new OnClickListener() {
+
+					@Override
+					public void onClick(final View v) {
+
+						picker = new NumberPicker(main);
+						picker.setMaxValue(4);
+						picker.setMinValue(0);
+						String[] t = { "-2", "-1", "0", "1", "2" };
+						picker.setDisplayedValues(t);
+						picker.setWrapSelectorWheel(false);
+						picker.setValue(((Task) v.getTag()).getPriority() + 2);
+						new AlertDialog.Builder(main)
+								.setTitle(
+										main.getString(R.string.task_change_prio_title))
+								.setMessage(
+										main.getString(R.string.task_change_prio_cont))
+								.setView(picker)
+								.setPositiveButton(main.getString(R.string.OK),
+										new DialogInterface.OnClickListener() {
+											public void onClick(
+													DialogInterface dialog,
+													int whichButton) {
+												Task task = (Task) v.getTag();
+												task.setPriority((picker
+														.getValue() - 2));
+												datasource.saveTask(task);
+												load_tasks();
+											}
+
+										})
+								.setNegativeButton(
+										main.getString(R.string.Cancel),
+										new DialogInterface.OnClickListener() {
+											public void onClick(
+													DialogInterface dialog,
+													int whichButton) {
+												// Do nothing.
+											}
+										}).show();
+
+					}
+				});
+		ListView listView = (ListView) findViewById(R.id.tasks_list);
 		listView.setAdapter(adapter);
-		
+
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> parent, View item, int position, long id) {
-				//TODO Remove Bad Hack
-				Task t=values.get((int) id);
-				Log.v(TAG,"Switch to Task "+t.getId());
-				Intent task = new Intent(item.getContext(),TaskActivity.class);				
+			public void onItemClick(AdapterView<?> parent, View item,
+					int position, long id) {
+				// TODO Remove Bad Hack
+				Task t = values.get((int) id);
+				Log.v(TAG, "Switch to Task " + t.getId());
+				Intent task = new Intent(item.getContext(), TaskActivity.class);
 				task.putExtra("id", t.getId());
 				startActivity(task);
 			}
 		});
+		switch (listId) {
+		case Mirakel.LIST_ALL:
+			this.setTitle(this.getString(R.string.list_all));
+			break;
+		case Mirakel.LIST_DAILY:
+			this.setTitle(this.getString(R.string.list_today));
+			break;
+		case Mirakel.LIST_WEEKLY:
+			this.setTitle(this.getString(R.string.list_week));
+			break;
+		default:
+			datasource_lists.open();
+			List_mirakle list = datasource_lists.getList(listId);
+			this.setTitle(list.getName());
+		}
 	}
-	
+
 	@Override
 	protected void onResume() {
 		super.onResume();
 		datasource.open();
+		datasource_lists.open();
 		load_tasks();
-		
+
 	}
+
 	@Override
 	protected void onPause() {
 		datasource.close();
+		datasource_lists.close();
 		super.onPause();
-	}
-	
-	private Cursor updateListCursor(){
-		Cursor tasks;
-		switch(listId){
-		case Mirakel.LIST_ALL:
-			this.setTitle(R.string.tasks_all);
-			tasks=Mirakel.getReadableDatabase().query(TABLE_NAME, FROM, null, null, null, null, null);
-			break;
-		case Mirakel.LIST_DAILY:
-			this.setTitle(R.string.tasks_daily);
-			tasks=Mirakel.getReadableDatabase().query(TABLE_NAME, FROM, "due<=date('now')", null, null, null, null);
-			break;
-		case Mirakel.LIST_WEEKLY:
-			this.setTitle(R.string.tasks_weekly);
-			tasks=Mirakel.getReadableDatabase().query(TABLE_NAME, FROM, "due<=date('now','+7 days')", null, null, null, null);
-			break;
-		default:
-			tasks=Mirakel.getReadableDatabase().query(TABLE_NAME, FROM, "list_id='"+listId+"'", null, null, null, null);
-			Log.e(TAG, "Implement show tasks");
-		}
-		return tasks;
 	}
 
 	@Override
@@ -171,32 +230,75 @@ public class TasksActivity extends Activity {
 		getMenuInflater().inflate(R.menu.tasks, menu);
 		return true;
 	}
+
 	@Override
-    public void onStart(){
+	public void onStart() {
 		super.onStart();
 		datasource.open();
+		datasource_lists.open();
 		load_tasks();
 	}
+
 	@Override
-    public void onRestart(){
+	public void onRestart() {
 		super.onRestart();
 		datasource.open();
+		datasource_lists.open();
 	}
+
 	@Override
-    public void onStop(){
+	public void onStop() {
 		datasource.close();
+		datasource_lists.close();
 		super.onStop();
 	}
+
 	@Override
-    public void onDestroy(){		
+	public void onDestroy() {
 		datasource.close();
+		datasource_lists.close();
 		super.onDestroy();
 	}
-	private long getListId(){
-		long id=listId;
-		if(id<1) id=1;
+
+	private long getListId() {
+		long id = listId;
+		if (id < 1)
+			id = 1;
 		return id;
 	}
-	//TODO options-menu
 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.list_delete:
+			if (listId == Mirakel.LIST_ALL || listId == Mirakel.LIST_DAILY
+					|| listId == Mirakel.LIST_WEEKLY)
+				return true;
+			new AlertDialog.Builder(this)
+					.setTitle(this.getString(R.string.list_delete_title))
+					.setMessage(this.getString(R.string.list_delete_content))
+					.setPositiveButton(this.getString(R.string.Yes),
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int which) {
+									datasource_lists
+											.deleteList(datasource_lists
+													.getList(listId));
+									listId = Mirakel.LIST_ALL;
+									load_tasks();
+								}
+							})
+					.setNegativeButton(this.getString(R.string.no),
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int which) {
+									// do nothing
+								}
+							}).show();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+
+		}
+	}
 }

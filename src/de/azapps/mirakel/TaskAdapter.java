@@ -26,8 +26,8 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		this.data = data;
 		this.context = context;
 		this.clickCheckbox = clickCheckbox;
-		this.clickPrio=click_prio;
-		
+		this.clickPrio = click_prio;
+
 	}
 
 	@Override
@@ -57,8 +57,8 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		holder.taskRowDone.setTag(task);
 		holder.taskRowName.setText(task.getName());
 		holder.taskRowPriority.setText("" + task.getPriority());
-		holder.taskRowPriority.setBackgroundColor(Mirakel.PRIO_COLOR[task.getPriority() + 2]);
-		// TODO implement onClickListener
+		holder.taskRowPriority.setBackgroundColor(Mirakel.PRIO_COLOR[task
+				.getPriority() + 2]);
 		holder.taskRowPriority.setOnClickListener(clickPrio);
 		holder.taskRowPriority.setTag(task);
 		return row;

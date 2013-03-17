@@ -5,5 +5,6 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/action_settings"/>
+    <item android:id="@+id/list_delete" android:title="@string/menu_delete" android:icon="@android:drawable/ic_menu_delete" android:showAsAction="ifRoom|withText"></item>
 
 </menu>
