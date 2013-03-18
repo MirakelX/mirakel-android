@@ -11,6 +11,7 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -22,6 +23,8 @@ public class ListActivity extends Activity {
 	private ListAdapter adapter;
 	protected ListActivity main;
 	protected EditText input;
+	private float start_x;
+	private float start_y;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +34,39 @@ public class ListActivity extends Activity {
 		datasource = new ListsDataSource(this);
 		datasource.open();
 		load_lists();
+		ListView listView = (ListView) findViewById(R.id.lists_list);
+		listView.setOnTouchListener(new View.OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				int action = event.getAction();
+				if (action == MotionEvent.ACTION_DOWN) {
+					start_x = event.getRawX();
+					start_y = event.getRawY();
+				} else if (action == MotionEvent.ACTION_UP
+						|| action == MotionEvent.ACTION_CANCEL) {
+					float dx = start_x - event.getRawX();
+					float dy = start_y - event.getRawY();
+					if (dy > 3 * dx && dy > v.getHeight() / 3) {
+						Log.v(TAG, "swipe up");
+					} else if (dx > 3 * dy && dx > v.getWidth() / 3) {
+						Log.v(TAG, "swipe rigth");
+						Intent returnIntent = new Intent();
+						//returnIntent.putExtra("list_id", t.getId());
+						setResult(RESULT_CANCELED, returnIntent);
+						finish();
+					} else if (dy < -3 * dx && -1 * dy > v.getHeight() / 3) {
+						Log.v(TAG, "swipe down");
+					} else if (dx < -3 * dy && -1 * dx > v.getWidth() / 3) {
+						Log.v(TAG, "swipe left");
+
+					} else {
+						Log.v(TAG, "Nothing");
+					}
+				}
+				return false;
+			}
+		});
 
 	}
 

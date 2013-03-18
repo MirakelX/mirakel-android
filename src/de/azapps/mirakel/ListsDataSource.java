@@ -67,7 +67,7 @@ public class ListsDataSource {
 
 	public List<List_mirakle> getAllLists() {
 		List<List_mirakle> lists = new ArrayList<List_mirakle>();
-		// TODO Add Strings to strings.xml
+		// TODO Get from strings.xml
 		lists.add(new List_mirakle(Mirakel.LIST_ALL, "All Lists",
 				task_count(Mirakel.LIST_ALL)));
 		lists.add(new List_mirakle(Mirakel.LIST_DAILY, "Today",

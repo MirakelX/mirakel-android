@@ -43,7 +43,6 @@ public class TasksActivity extends Activity {
 		main = this;
 		this.listId = this.getIntent().getIntExtra("listId", 0);
 
-		// TODO SetTitle
 
 		datasource = new TasksDataSource(this);
 		datasource.open();
@@ -77,7 +76,8 @@ public class TasksActivity extends Activity {
 						Log.v(TAG, "swipe left");
 						Intent list = new Intent(v.getContext(),
 								ListActivity.class);
-						// task.putExtra("id", t.getId());
+						datasource.close();
+						datasource_lists.close();
 						startActivityForResult(list, 1);
 
 					} else {
@@ -113,6 +113,8 @@ public class TasksActivity extends Activity {
 			if (resultCode == RESULT_OK) {
 				Log.v(TAG, "Change List");
 				listId = data.getIntExtra("list_id", Mirakel.LIST_ALL);
+				datasource_lists.open();
+				datasource.open();
 				load_tasks();
 			}
 			if (resultCode == RESULT_CANCELED) {
@@ -194,16 +196,19 @@ public class TasksActivity extends Activity {
 		switch (listId) {
 		case Mirakel.LIST_ALL:
 			this.setTitle(this.getString(R.string.list_all));
+			((TextView)this.findViewById(R.id.tasks_new)).setVisibility(View.GONE);
 			break;
 		case Mirakel.LIST_DAILY:
 			this.setTitle(this.getString(R.string.list_today));
+			((TextView)this.findViewById(R.id.tasks_new)).setVisibility(View.GONE);
 			break;
 		case Mirakel.LIST_WEEKLY:
 			this.setTitle(this.getString(R.string.list_week));
+			((TextView)this.findViewById(R.id.tasks_new)).setVisibility(View.GONE);
 			break;
 		default:
-			datasource_lists.open();
 			List_mirakle list = datasource_lists.getList(listId);
+			((TextView)this.findViewById(R.id.tasks_new)).setVisibility(View.VISIBLE);
 			this.setTitle(list.getName());
 		}
 	}

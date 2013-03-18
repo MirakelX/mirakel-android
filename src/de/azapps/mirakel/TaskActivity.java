@@ -8,12 +8,15 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
@@ -30,6 +33,9 @@ public class TaskActivity extends Activity {
 	protected TaskActivity main;
 	protected NumberPicker picker;
 	protected EditText input;
+	
+	private float start_x;
+	private float start_y;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +107,7 @@ public class TaskActivity extends Activity {
 								main.getString(R.string.task_change_content_cont))
 						.setView(input)
 						.setPositiveButton(main.getString(R.string.OK),
-								new DialogInterface.OnClickListener() {
+									new DialogInterface.OnClickListener() {
 									public void onClick(DialogInterface dialog,
 											int whichButton) {
 										task.setContent(input.getText()
@@ -127,7 +133,6 @@ public class TaskActivity extends Activity {
 				task.setDone(isChecked);
 				datasource.saveTask(task);
 			}
-
 		});
 		Task_prio.setOnClickListener(new OnClickListener() {
 			@Override
@@ -163,6 +168,33 @@ public class TaskActivity extends Activity {
 									}
 								}).show();
 
+			}
+		});
+		((LinearLayout)this.findViewById(R.id.task_details)).setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				int action = event.getAction();
+				if (action == MotionEvent.ACTION_DOWN) {
+					start_x = event.getRawX();
+					start_y = event.getRawY();
+				} else if (action == MotionEvent.ACTION_UP
+						|| action == MotionEvent.ACTION_CANCEL) {
+					float dx = start_x - event.getRawX();
+					float dy = start_y - event.getRawY();
+					if (dy > 3 * dx && dy > v.getHeight() / 3) {
+						Log.v(TAG, "swipe up");
+					} else if (dx > 3 * dy && dx > v.getWidth() / 3) {
+						Log.v(TAG, "swipe rigth");
+						finish();
+					} else if (dy < -3 * dx && -1 * dy > v.getHeight() / 3) {
+						Log.v(TAG, "swipe down");
+					} else if (dx < -3 * dy && -1 * dx > v.getWidth() / 3) {
+						Log.v(TAG, "swipe left");
+					} else {
+						Log.v(TAG, "Nothing");
+					}
+				}
+				return true;
 			}
 		});
 
