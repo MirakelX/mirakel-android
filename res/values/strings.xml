@@ -43,7 +43,7 @@
         <item>ID</item>
         <item>Due</item>
         <item>Priority</item>
-    </string-array>-
+    </string-array>
 
     <!-- Lists -->
     <string name="list_menu_new_list">New List</string>
