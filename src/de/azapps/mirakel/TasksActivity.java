@@ -44,12 +44,12 @@ public class TasksActivity extends Activity {
 		setContentView(R.layout.activity_tasks);
 		main = this;
 		this.listId = this.getIntent().getIntExtra("listId", 0);
+		Log.v(TAG,"Start list" + listId);
 
 		datasource = new TasksDataSource(this);
 		datasource.open();
 		datasource_lists = new ListsDataSource(this);
 		datasource_lists.open();
-		listId = Mirakel.LIST_ALL;
 		getResources().getString(R.string.action_settings);
 		load_tasks();
 		start_x = 0;
@@ -113,7 +113,7 @@ public class TasksActivity extends Activity {
 		if (requestCode == 1) {
 			if (resultCode == RESULT_OK) {
 				Log.v(TAG, "Change List");
-				listId = data.getIntExtra("list_id", Mirakel.LIST_ALL);
+				listId = data.getIntExtra("listId", Mirakel.LIST_ALL);
 				datasource_lists.open();
 				datasource.open();
 				load_tasks();
@@ -125,6 +125,7 @@ public class TasksActivity extends Activity {
 	}
 
 	private void load_tasks() {
+		Log.v(TAG,"loading..."+listId);
 		final List<Task> values = datasource.getTasks(listId, taskOrder);
 
 		adapter = new TaskAdapter(this, R.layout.tasks_row, values,
@@ -238,6 +239,8 @@ public class TasksActivity extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.tasks, menu);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+
 		return true;
 	}
 
@@ -331,6 +334,10 @@ public class TasksActivity extends Activity {
 			});
 			AlertDialog alert = builder.create();
 			alert.show();
+		case android.R.id.home:
+			finish();
+			Intent list = new Intent(this.getApplicationContext(), ListActivity.class);
+			startActivity(list);
 		default:
 			return super.onOptionsItemSelected(item);
 

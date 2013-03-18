@@ -3,6 +3,7 @@ package de.azapps.mirakel;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -19,6 +20,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class TaskActivity extends Activity {
 	private static final String TAG = "TaskActivity";
@@ -269,6 +271,8 @@ public class TaskActivity extends Activity {
 								}
 							}).show();
 			return true;
+		case android.R.id.home:
+			finish();
 		default:
 			return super.onOptionsItemSelected(item);
 
@@ -279,7 +283,6 @@ public class TaskActivity extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.activity_task, menu);
-		// TODO add listener
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		return true;
 	}
