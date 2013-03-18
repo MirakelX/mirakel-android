@@ -13,6 +13,9 @@ public class Mirakel extends Application {
 	public static final int[] PRIO_COLOR = { Color.parseColor("#008000"),
 			Color.parseColor("#00c400"), Color.parseColor("#3377FF"),
 			Color.parseColor("#FF7700"), Color.parseColor("#FF3333") };
+	public static final String ORDER_BY_PRIO = "priority desc";
+	public static final String ORDER_BY_DUE = "due asc";
+	public static final String ORDER_BY_ID = "_id asc";
 	private static final String TAG = "Mirakel";
 
 	private static SQLiteOpenHelper openHelper;

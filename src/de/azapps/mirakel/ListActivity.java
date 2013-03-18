@@ -52,7 +52,7 @@ public class ListActivity extends Activity {
 					} else if (dx > 3 * dy && dx > v.getWidth() / 3) {
 						Log.v(TAG, "swipe rigth");
 						Intent returnIntent = new Intent();
-						//returnIntent.putExtra("list_id", t.getId());
+						// returnIntent.putExtra("list_id", t.getId());
 						setResult(RESULT_CANCELED, returnIntent);
 						finish();
 					} else if (dy < -3 * dx && -1 * dy > v.getHeight() / 3) {

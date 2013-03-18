@@ -85,31 +85,31 @@ public class TasksDataSource {
 		return task;
 	}
 
-	private Cursor updateListCursor(int listId) {
+	private Cursor updateListCursor(int listId, String sorting) {
 		Cursor tasks;
 		switch (listId) {
 		case Mirakel.LIST_ALL:
 			tasks = Mirakel.getReadableDatabase().query("tasks", allColumns,
-					null, null, null, null, null);
+					null, null, null, null, sorting);
 			break;
 		case Mirakel.LIST_DAILY:
 			tasks = Mirakel.getReadableDatabase().query("tasks", allColumns,
-					"due<=date('now')", null, null, null, null);
+					"due<=date('now')", null, null, null, sorting);
 			break;
 		case Mirakel.LIST_WEEKLY:
 			tasks = Mirakel.getReadableDatabase().query("tasks", allColumns,
-					"due<=date('now','+7 days')", null, null, null, null);
+					"due<=date('now','+7 days')", null, null, null, sorting);
 			break;
 		default:
 			tasks = Mirakel.getReadableDatabase().query("tasks", allColumns,
-					"list_id='" + listId + "'", null, null, null, null);
+					"list_id='" + listId + "'", null, null, null, sorting);
 		}
 		return tasks;
 	}
 
-	public List<Task> getTasks(int listId) {
+	public List<Task> getTasks(int listId, String sorting) {
 		List<Task> tasks = new ArrayList<Task>();
-		Cursor cursor = updateListCursor(listId);
+		Cursor cursor = updateListCursor(listId, sorting);
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
 			Task task = cursorToTask(cursor);

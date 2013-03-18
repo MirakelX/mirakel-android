@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.TextView.OnEditorActionListener;
 
 public class TasksActivity extends Activity {
@@ -28,6 +29,7 @@ public class TasksActivity extends Activity {
 	// private static final String TABLE_NAME="tasks";
 	// private static final String[] FROM={"_id","name","done","priority"};
 	private int listId;
+	private String taskOrder;
 	private TasksDataSource datasource;
 	private ListsDataSource datasource_lists;
 	private TaskAdapter adapter;
@@ -42,7 +44,6 @@ public class TasksActivity extends Activity {
 		setContentView(R.layout.activity_tasks);
 		main = this;
 		this.listId = this.getIntent().getIntExtra("listId", 0);
-
 
 		datasource = new TasksDataSource(this);
 		datasource.open();
@@ -124,7 +125,7 @@ public class TasksActivity extends Activity {
 	}
 
 	private void load_tasks() {
-		final List<Task> values = datasource.getTasks(listId);
+		final List<Task> values = datasource.getTasks(listId, taskOrder);
 
 		adapter = new TaskAdapter(this, R.layout.tasks_row, values,
 				new OnClickListener() {
@@ -196,19 +197,23 @@ public class TasksActivity extends Activity {
 		switch (listId) {
 		case Mirakel.LIST_ALL:
 			this.setTitle(this.getString(R.string.list_all));
-			((TextView)this.findViewById(R.id.tasks_new)).setVisibility(View.GONE);
+			((TextView) this.findViewById(R.id.tasks_new))
+					.setVisibility(View.GONE);
 			break;
 		case Mirakel.LIST_DAILY:
 			this.setTitle(this.getString(R.string.list_today));
-			((TextView)this.findViewById(R.id.tasks_new)).setVisibility(View.GONE);
+			((TextView) this.findViewById(R.id.tasks_new))
+					.setVisibility(View.GONE);
 			break;
 		case Mirakel.LIST_WEEKLY:
 			this.setTitle(this.getString(R.string.list_week));
-			((TextView)this.findViewById(R.id.tasks_new)).setVisibility(View.GONE);
+			((TextView) this.findViewById(R.id.tasks_new))
+					.setVisibility(View.GONE);
 			break;
 		default:
 			List_mirakle list = datasource_lists.getList(listId);
-			((TextView)this.findViewById(R.id.tasks_new)).setVisibility(View.VISIBLE);
+			((TextView) this.findViewById(R.id.tasks_new))
+					.setVisibility(View.VISIBLE);
 			this.setTitle(list.getName());
 		}
 	}
@@ -301,6 +306,31 @@ public class TasksActivity extends Activity {
 								}
 							}).show();
 			return true;
+		case R.id.task_sorting:
+			final CharSequence[] items = getResources().getStringArray(
+					R.array.task_sorting_items);
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle(this.getString(R.string.task_sorting_title));
+			builder.setItems(items, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int item) {
+					switch (item) {
+					case 1:
+						taskOrder = Mirakel.ORDER_BY_DUE;
+						break;
+					case 2:
+						taskOrder = Mirakel.ORDER_BY_PRIO;
+						break;
+					default:
+						taskOrder = Mirakel.ORDER_BY_ID;
+						break;
+					}
+					load_tasks();
+					Toast.makeText(getApplicationContext(), items[item],
+							Toast.LENGTH_SHORT).show();
+				}
+			});
+			AlertDialog alert = builder.create();
+			alert.show();
 		default:
 			return super.onOptionsItemSelected(item);
 
