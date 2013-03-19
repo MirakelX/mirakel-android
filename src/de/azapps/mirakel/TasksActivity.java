@@ -303,6 +303,7 @@ public class TasksActivity extends Activity {
 						taskOrder = Mirakel.ORDER_BY_ID;
 						break;
 					}
+					Log.e(TAG,"sorting: "+taskOrder);
 					load_tasks();
 					Toast.makeText(getApplicationContext(), items[item],
 							Toast.LENGTH_SHORT).show();
@@ -310,11 +311,13 @@ public class TasksActivity extends Activity {
 			});
 			AlertDialog alert = builder.create();
 			alert.show();
+			return true;
 		case android.R.id.home:
 			finish();
 			Intent list = new Intent(this.getApplicationContext(),
 					ListActivity.class);
 			startActivity(list);
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 
