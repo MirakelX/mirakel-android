@@ -27,7 +27,7 @@
     <string name="tasks_daily">Today</string>
     <string name="tasks_weekly">Weekly</string>
     <string name="title_activity_task">View Task</string>
-    <string name="task_content">Content</string>
+    <string name="task_content">Content:</string>
     <string name="task_no_content">Add Content</string>
     <string name="task_change_prio_title">Change Priority</string>
     <string name="task_change_prio_cont">New Task-Priority</string>
@@ -39,6 +39,8 @@
     <string name="task_delete_title">Delete Task?</string>
     <string name="task_menu_sorting">Tasksorting</string>
     <string name="task_sorting_title">Change Sorting Order</string>
+    <string name="task_due">Due:</string>
+    <string name="task_no_due">None</string>
     <string-array name="task_sorting_items">
         <item>ID</item>
         <item>Due</item>

@@ -1,10 +1,15 @@
 package de.azapps.mirakel;
 
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.InputType;
@@ -17,6 +22,7 @@ import android.view.View.OnClickListener;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
@@ -31,6 +37,7 @@ public class TaskActivity extends Activity {
 	protected CheckBox Task_done;
 	protected TextView Task_prio;
 	protected TextView Task_content;
+	protected TextView Task_due;
 
 	protected TaskActivity main;
 	protected NumberPicker picker;
@@ -53,6 +60,7 @@ public class TaskActivity extends Activity {
 		Task_done = (CheckBox) findViewById(R.id.task_done);
 		Task_prio = (TextView) findViewById(R.id.task_prio);
 		Task_content = (TextView) findViewById(R.id.task_content);
+		Task_due=(TextView)findViewById(R.id.task_due);
 		datasource = new TasksDataSource(this);
 		datasource.open();
 		task = datasource.getTask(id);
@@ -60,7 +68,27 @@ public class TaskActivity extends Activity {
 		Task_content.setText(task.getContent().trim().length() == 0 ? this
 				.getString(R.string.task_no_content) : task.getContent());
 		Task_done.setChecked(task.isDone());
+		//String due=;
+		Task_due.setText(task.getDue().compareTo(new GregorianCalendar(1970, 1, 1))<0?this.getString(R.string.task_no_due):(task.getDue().get(Calendar.DAY_OF_MONTH)+"."+ (task.getDue().get(Calendar.MONTH)+1)+"."+task.getDue().get(Calendar.YEAR)));
 		set_prio(Task_prio, task);
+		Task_due.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				GregorianCalendar due =(task.getDue().compareTo(new GregorianCalendar())<0?new GregorianCalendar():task.getDue());
+				(new DatePickerDialog(main, new OnDateSetListener() {
+					
+					@Override
+					public void onDateSet(DatePicker view, int year, int monthOfYear,
+							int dayOfMonth) {
+						task.setDue(new GregorianCalendar(year, monthOfYear, dayOfMonth));
+						datasource.saveTask(task);	
+						Task_due.setText(dayOfMonth+"."+(monthOfYear+1)+"."+year);
+					}
+				}, due.get(Calendar.YEAR),due.get(Calendar.MONTH),due.get(Calendar.DAY_OF_MONTH))).show();
+				
+			}
+		});
 
 		Task_name.setOnClickListener(new View.OnClickListener() {
 			@Override

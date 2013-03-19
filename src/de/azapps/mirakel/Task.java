@@ -1,6 +1,7 @@
 package de.azapps.mirakel;
 
-import java.sql.Date;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,14 +13,14 @@ public class Task {
 	private String name;
 	private String content;
 	private boolean done;
-	private Date due;
+	private GregorianCalendar due;
 	private int priority;
 	private String created_at;
 	private String updated_at;
 	private Map<String, Boolean> edited = new HashMap<String, Boolean>();
 
 	public Task(long id, long list_id, String name, String content,
-			boolean done, Date due, int priority, String created_at,
+			boolean done, GregorianCalendar due, int priority, String created_at,
 			String updated_at) {
 		this.id = id;
 		this.list_id = list_id;
@@ -82,11 +83,11 @@ public class Task {
 		edited.put("done", true);
 	}
 
-	public Date getDue() {
+	public GregorianCalendar getDue() {
 		return due;
 	}
 
-	public void setDue(Date due) {
+	public void setDue(GregorianCalendar due) {
 		this.due = due;
 		edited.put("due", true);
 	}
@@ -128,7 +129,7 @@ public class Task {
 		cv.put("name", name);
 		cv.put("content", content);
 		cv.put("done", done);
-		cv.put("due", due.toString());
+		cv.put("due", due.get(Calendar.YEAR)+"-"+(due.get(Calendar.MONTH)+1)+"-"+due.get(Calendar.DAY_OF_MONTH));   
 		cv.put("priority", priority);
 		cv.put("created_at", created_at);
 		cv.put("updated_at", updated_at);

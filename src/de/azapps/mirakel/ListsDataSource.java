@@ -103,12 +103,10 @@ public class ListsDataSource {
 		switch (list_id) {
 		case Mirakel.LIST_ALL:
 			break;
-		case Mirakel.LIST_DAILY:
-			count += "where due<=date('now')";
-			break;
+		case Mirakel.LIST_DAILY:		
+			return new TasksDataSource(null).getTasks(Mirakel.LIST_DAILY, Mirakel.ORDER_BY_ID).size();
 		case Mirakel.LIST_WEEKLY:
-			count += "where due<=date('now','+7 days')";
-			break;
+			return new TasksDataSource(null).getTasks(Mirakel.LIST_WEEKLY, Mirakel.ORDER_BY_ID).size();
 		default:
 			count += "where list_id=" + list_id;
 
