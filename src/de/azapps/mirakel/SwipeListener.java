@@ -11,13 +11,8 @@ public class SwipeListener extends Activity implements View.OnTouchListener {
 	private static final String TAG = "SwipeListener";
 	private float start_x = 0, start_y = 0;
 	private boolean myreturn=false;
-	private Map<Direction, Command> commands;
-	private Command dummy=new Command() {
-		@Override
-		public void runCommand() {			
-		}
-	};
-	public SwipeListener(boolean myreturn,Map<Direction,Command> commands) {
+	private Map<Direction, SwipeCommand> commands;
+	public SwipeListener(boolean myreturn,Map<Direction,SwipeCommand> commands) {
 		this.myreturn=myreturn;
 		this.commands=commands;
 	}
@@ -25,7 +20,7 @@ public class SwipeListener extends Activity implements View.OnTouchListener {
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
 		int action = event.getAction();
-		Command c=null;
+		SwipeCommand c=null;
 		if (action == MotionEvent.ACTION_DOWN) {
 			start_x = event.getRawX();
 			start_y = event.getRawY();
@@ -50,7 +45,7 @@ public class SwipeListener extends Activity implements View.OnTouchListener {
 			}
 		}
 		if(c!=null){
-			c.runCommand();
+			c.runCommand(v,event);
 		}
 		
 		return myreturn;

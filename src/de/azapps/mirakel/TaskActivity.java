@@ -175,11 +175,10 @@ public class TaskActivity extends Activity {
 
 			}
 		});
-		Map<SwipeListener.Direction, Command> commands=new HashMap<SwipeListener.Direction, Command>();
-		commands.put(SwipeListener.Direction.LEFT, new Command() {
-			
+		Map<SwipeListener.Direction, SwipeCommand> commands = new HashMap<SwipeListener.Direction, SwipeCommand>();
+		commands.put(SwipeListener.Direction.LEFT, new SwipeCommand() {
 			@Override
-			public void runCommand() {
+			public void runCommand(View v, MotionEvent event) {
 				finish();
 			}
 		});

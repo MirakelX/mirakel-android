@@ -46,7 +46,7 @@ public class TasksActivity extends Activity {
 		setContentView(R.layout.activity_tasks);
 		main = this;
 		this.listId = this.getIntent().getIntExtra("listId", 0);
-		Log.v(TAG,"Start list" + listId);
+		Log.v(TAG, "Start list" + listId);
 
 		datasource = new TasksDataSource(this);
 		datasource.open();
@@ -58,14 +58,17 @@ public class TasksActivity extends Activity {
 		start_y = 0;
 		ListView listView = (ListView) findViewById(R.id.tasks_list);
 
-		Map<SwipeListener.Direction, Command> commands=new HashMap<SwipeListener.Direction, Command>();
-		commands.put(SwipeListener.Direction.LEFT, new Command() {
+		Map<SwipeListener.Direction, SwipeCommand> commands = new HashMap<SwipeListener.Direction, SwipeCommand>();
+		commands.put(SwipeListener.Direction.LEFT, new SwipeCommand() {
 			@Override
-			public void runCommand() {
-				finish();
+			public void runCommand(View v, MotionEvent event) {
+				Intent list = new Intent(v.getContext(), ListActivity.class);
+				datasource.close();
+				datasource_lists.close();
+				startActivityForResult(list, 1);
 			}
 		});
-		listView.setOnTouchListener(new SwipeListener(false,commands));
+		listView.setOnTouchListener(new SwipeListener(false, commands));
 
 		// Events
 		EditText newTask = (EditText) findViewById(R.id.tasks_new);
@@ -103,7 +106,7 @@ public class TasksActivity extends Activity {
 	}
 
 	private void load_tasks() {
-		Log.v(TAG,"loading..."+listId);
+		Log.v(TAG, "loading..." + listId);
 		final List<Task> values = datasource.getTasks(listId, taskOrder);
 
 		adapter = new TaskAdapter(this, R.layout.tasks_row, values,
@@ -314,7 +317,8 @@ public class TasksActivity extends Activity {
 			alert.show();
 		case android.R.id.home:
 			finish();
-			Intent list = new Intent(this.getApplicationContext(), ListActivity.class);
+			Intent list = new Intent(this.getApplicationContext(),
+					ListActivity.class);
 			startActivity(list);
 		default:
 			return super.onOptionsItemSelected(item);
