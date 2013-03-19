@@ -6,7 +6,6 @@ import java.util.Map;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -15,7 +14,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -23,7 +21,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class TaskActivity extends Activity {
 	private static final String TAG = "TaskActivity";
@@ -38,9 +35,6 @@ public class TaskActivity extends Activity {
 	protected TaskActivity main;
 	protected NumberPicker picker;
 	protected EditText input;
-
-	private float start_x;
-	private float start_y;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

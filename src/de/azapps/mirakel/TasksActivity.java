@@ -37,9 +37,6 @@ public class TasksActivity extends Activity {
 	private TaskAdapter adapter;
 	private NumberPicker picker;
 	private TasksActivity main;
-	private float start_x;
-	private float start_y;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -54,8 +51,6 @@ public class TasksActivity extends Activity {
 		datasource_lists.open();
 		getResources().getString(R.string.action_settings);
 		load_tasks();
-		start_x = 0;
-		start_y = 0;
 		ListView listView = (ListView) findViewById(R.id.tasks_list);
 
 		Map<SwipeListener.Direction, SwipeCommand> commands = new HashMap<SwipeListener.Direction, SwipeCommand>();
