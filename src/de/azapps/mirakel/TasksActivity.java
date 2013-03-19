@@ -1,6 +1,8 @@
 package de.azapps.mirakel;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -55,39 +57,15 @@ public class TasksActivity extends Activity {
 		start_x = 0;
 		start_y = 0;
 		ListView listView = (ListView) findViewById(R.id.tasks_list);
-		listView.setOnTouchListener(new View.OnTouchListener() {
 
+		Map<SwipeListener.Direction, Command> commands=new HashMap<SwipeListener.Direction, Command>();
+		commands.put(SwipeListener.Direction.LEFT, new Command() {
 			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				int action = event.getAction();
-				if (action == MotionEvent.ACTION_DOWN) {
-					start_x = event.getRawX();
-					start_y = event.getRawY();
-				} else if (action == MotionEvent.ACTION_UP
-						|| action == MotionEvent.ACTION_CANCEL) {
-					float dx = start_x - event.getRawX();
-					float dy = start_y - event.getRawY();
-					if (dy > 3 * dx && dy > v.getHeight() / 3) {
-						Log.v(TAG, "swipe up");
-					} else if (dx > 3 * dy && dx > v.getWidth() / 3) {
-						Log.v(TAG, "swipe rigth");
-					} else if (dy < -3 * dx && -1 * dy > v.getHeight() / 3) {
-						Log.v(TAG, "swipe down");
-					} else if (dx < -3 * dy && -1 * dx > v.getWidth() / 3) {
-						Log.v(TAG, "swipe left");
-						Intent list = new Intent(v.getContext(),
-								ListActivity.class);
-						datasource.close();
-						datasource_lists.close();
-						startActivityForResult(list, 1);
-
-					} else {
-						Log.v(TAG, "Nothing");
-					}
-				}
-				return false;
+			public void runCommand() {
+				finish();
 			}
 		});
+		listView.setOnTouchListener(new SwipeListener(false,commands));
 
 		// Events
 		EditText newTask = (EditText) findViewById(R.id.tasks_new);
