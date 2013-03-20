@@ -3,6 +3,8 @@
     package="de.azapps.mirakel"
     android:versionCode="1"
     android:versionName="1.0" >
+    <uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -38,6 +40,11 @@
         <activity
             android:name="de.azapps.mirakel.ListActivity"
             android:label="@string/title_activity_list" >
+        </activity>
+        <activity
+            android:name="de.azapps.mirakel.LoginActivity"
+            android:label="@string/title_activity_login"
+            android:windowSoftInputMode="adjustResize|stateVisible" >
         </activity>
     </application>
 
