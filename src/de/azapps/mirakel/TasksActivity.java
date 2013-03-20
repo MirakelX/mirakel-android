@@ -26,7 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.TextView.OnEditorActionListener;
 
-public class TasksActivity extends Activity {
+public class TasksActivity extends Activity{
 	private static final String TAG = "TasksActivity";
 	// private static final String TABLE_NAME="tasks";
 	// private static final String[] FROM={"_id","name","done","priority"};

@@ -1,10 +1,10 @@
 package de.azapps.mirakel;
 
-import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -24,6 +24,9 @@ public class StartActivity extends Activity {
 		}
 		setContentView(R.layout.activity_start);
 		Button offline_button = (Button) findViewById(R.id.home_offline);
+		Button own_server=(Button) findViewById(R.id.home_own_server);
+		Button offical_server=(Button) findViewById(R.id.home_official_server);
+		
 		offline_button.setOnClickListener(new Button.OnClickListener() {
 
 			@Override
@@ -44,6 +47,45 @@ public class StartActivity extends Activity {
 				}
 			}
 		});
+		own_server.setOnClickListener(new Button.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Log.v(TAG, "OWN SERVER");
+				SharedPreferences settings = PreferenceManager
+						.getDefaultSharedPreferences(getApplicationContext());
+				if (settings.getBoolean("showHelp", true)) {
+					Intent intent = new Intent(StartActivity.this,
+							HelpActivity.class);
+					startActivity(intent);
+				} else {
+					Intent intent = new Intent(StartActivity.this,
+							LoginActivity.class);
+					intent.putExtra("own_server", true);
+					startActivity(intent);
+				}
+			}
+		});
+		
+		offical_server.setOnClickListener(new Button.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Log.v(TAG, "OFFICAL SERVER");
+				SharedPreferences settings = PreferenceManager
+						.getDefaultSharedPreferences(getApplicationContext());
+				if (settings.getBoolean("showHelp", true)) {
+					Intent intent = new Intent(StartActivity.this,
+							HelpActivity.class);
+					startActivity(intent);
+				} else {
+					Intent intent = new Intent(StartActivity.this,
+							LoginActivity.class);
+					intent.putExtra("own_server", false);
+					//startActivity(intent);
+					Log.e(TAG,"Implement offical server");
+				}
+			}
+		});
+		
 	}
 
 	@Override

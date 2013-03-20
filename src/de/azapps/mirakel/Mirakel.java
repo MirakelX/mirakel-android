@@ -22,6 +22,13 @@ public class Mirakel extends Application {
 	public final static short SYNC_STATE_NEED_SYNC = 2;
 	public static final int DATABASE_VERSION = 3;
 	
+	public class Http_Mode {
+		final public static int GET = 0;
+		final public static int POST = 1;
+		final public static int PUT = 2;
+		final public static int DELETE = 3;
+	}
+	
 	private static final String TAG = "Mirakel";
 
 	private static SQLiteOpenHelper openHelper;
