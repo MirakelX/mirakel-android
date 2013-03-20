@@ -1,7 +1,7 @@
 mirakel-android
 ===============
 
-The Android App for Mirakel
+The Android App for [Mirakel](https://github.com/azapps/mirakel)
 
 ## License
 
