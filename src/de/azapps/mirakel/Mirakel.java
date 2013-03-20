@@ -16,6 +16,12 @@ public class Mirakel extends Application {
 	public static final String ORDER_BY_PRIO = "priority desc";
 	public static final String ORDER_BY_DUE = "due asc";
 	public static final String ORDER_BY_ID = "_id asc";
+	public final static short SYNC_STATE_NOTHING = 0;
+	public final static short SYNC_STATE_DELETE = -1;
+	public final static short SYNC_STATE_ADD = 1;
+	public final static short SYNC_STATE_NEED_SYNC = 2;
+	public static final int DATABASE_VERSION = 3;
+	
 	private static final String TAG = "Mirakel";
 
 	private static SQLiteOpenHelper openHelper;

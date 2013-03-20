@@ -16,6 +16,12 @@ public class StartActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		int version=Mirakel.getReadableDatabase().getVersion();
+		if(version!=Mirakel.DATABASE_VERSION){
+			Log.v(TAG,"SET DB-VERSION "+Mirakel.DATABASE_VERSION);
+			//Mirakel.getReadableDatabase().
+			Mirakel.getReadableDatabase().setVersion(Mirakel.DATABASE_VERSION);
+		}
 		setContentView(R.layout.activity_start);
 		Button offline_button = (Button) findViewById(R.id.home_offline);
 		offline_button.setOnClickListener(new Button.OnClickListener() {

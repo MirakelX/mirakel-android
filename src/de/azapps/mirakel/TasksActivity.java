@@ -303,7 +303,6 @@ public class TasksActivity extends Activity {
 						taskOrder = Mirakel.ORDER_BY_ID;
 						break;
 					}
-					Log.e(TAG,"sorting: "+taskOrder);
 					load_tasks();
 					Toast.makeText(getApplicationContext(), items[item],
 							Toast.LENGTH_SHORT).show();
