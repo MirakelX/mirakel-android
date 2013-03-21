@@ -46,7 +46,7 @@ public class TasksDataSource {
 		values.put("list_id", list_id);
 		values.put("content", content);
 		values.put("done", done);
-		values.put("due", (due == null ? "" : due.toString()));
+		values.put("due", (due == null ? "0" : due.toString()));
 		values.put("priority", priority);
 		long insertId = database.insert("tasks", null, values);
 		Cursor cursor = database.query("tasks", allColumns,
@@ -100,18 +100,21 @@ public class TasksDataSource {
 
 	private Cursor updateListCursor(int listId, String sorting) {
 		Cursor tasks;
+		String where="";
 		switch (listId) {
 		case Mirakel.LIST_ALL:
+			break;
 		case Mirakel.LIST_DAILY:
+			where="due<=DATE('now') AND due>0";
 		case Mirakel.LIST_WEEKLY:
-			tasks = Mirakel.getReadableDatabase().query("tasks", allColumns,
-					null, null, null, null, sorting);
+			where="due<=DATE('now','+7 days') AND due>0";
 			break;
 		default:
-			tasks = Mirakel.getReadableDatabase().query("tasks", allColumns,
-					"list_id='" + listId + "'", null, null, null, sorting);
+			where="list_id='" + listId + "'";
 		}
-		return tasks;
+		Log.v(TAG,where);
+		return Mirakel.getReadableDatabase().query("tasks", allColumns,
+				where, null, null, null, sorting);
 	}
 
 	public List<Task> getTasks(int listId, String sorting) {
@@ -120,7 +123,7 @@ public class TasksDataSource {
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
 			Task task = cursorToTask(cursor);
-			switch (listId) {
+			/*switch (listId) {
 			case Mirakel.LIST_DAILY:
 				if(task.getDue().compareTo(new GregorianCalendar())>0||task.isDone())
 					break;
@@ -132,7 +135,8 @@ public class TasksDataSource {
 			default:
 				tasks.add(task);
 				break;
-			}	
+			}	*/
+			tasks.add(task);
 			cursor.moveToNext();
 		}
 		cursor.close();

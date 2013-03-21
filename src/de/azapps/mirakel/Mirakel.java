@@ -14,7 +14,7 @@ public class Mirakel extends Application {
 			Color.parseColor("#00c400"), Color.parseColor("#3377FF"),
 			Color.parseColor("#FF7700"), Color.parseColor("#FF3333") };
 	public static final String ORDER_BY_PRIO = "priority desc";
-	public static final String ORDER_BY_DUE = "due asc";
+	public static final String ORDER_BY_DUE = " CASE WHEN due='' OR due=0 THEN 1 ELSE 0 END, due ASC";
 	public static final String ORDER_BY_ID = "_id asc";
 	private static final String TAG = "Mirakel";
 
