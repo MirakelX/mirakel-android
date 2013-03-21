@@ -21,6 +21,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -80,20 +81,26 @@ public class TaskActivity extends Activity {
 		Task_name.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-			    ViewSwitcher switcher = (ViewSwitcher) findViewById(R.id.switch_name);
-			    switcher.showNext(); //or switcher.showPrevious();
-			    EditText txt=(EditText) findViewById(R.id.edit_name);
-			    txt.setText(Task_name.getText());
+				ViewSwitcher switcher = (ViewSwitcher) findViewById(R.id.switch_name);
+				switcher.showNext(); // or switcher.showPrevious();
+				EditText txt = (EditText) findViewById(R.id.edit_name);
+				txt.setText(Task_name.getText());
+				txt.requestFocus();
+
+				InputMethodManager imm = (InputMethodManager) getSystemService(getApplicationContext().INPUT_METHOD_SERVICE);
+				imm.showSoftInput(txt, InputMethodManager.SHOW_IMPLICIT);
 				txt.setOnEditorActionListener(new OnEditorActionListener() {
 					public boolean onEditorAction(TextView v, int actionId,
 							KeyEvent event) {
 						if (actionId == EditorInfo.IME_ACTION_SEND) {
-							EditText txt=(EditText) findViewById(R.id.edit_name);
+							EditText txt = (EditText) findViewById(R.id.edit_name);
+							InputMethodManager imm = (InputMethodManager) getSystemService(getApplicationContext().INPUT_METHOD_SERVICE);
+							ViewSwitcher switcher = (ViewSwitcher) findViewById(R.id.switch_name);
 							task.setName(txt.getText().toString());
 							datasource.saveTask(task);
 							Task_name.setText(task.getName());
-							ViewSwitcher switcher = (ViewSwitcher) findViewById(R.id.switch_name);
 							switcher.showPrevious();
+							imm.hideSoftInputFromWindow(txt.getWindowToken(), 0);
 							return true;
 						}
 						return false;
@@ -223,22 +230,28 @@ public class TaskActivity extends Activity {
 		Task_content.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-			    ViewSwitcher switcher = (ViewSwitcher) findViewById(R.id.switch_content);
-			    switcher.showNext(); //or switcher.showPrevious();
-			    EditText txt=(EditText) findViewById(R.id.edit_content);
-			    txt.setText(task.getContent());
-			    Button submit=(Button) findViewById(R.id.submit_content);
-			    submit.setOnClickListener(new OnClickListener() {
-					
+				ViewSwitcher switcher = (ViewSwitcher) findViewById(R.id.switch_content);
+				switcher.showNext(); // or switcher.showPrevious();
+				EditText txt = (EditText) findViewById(R.id.edit_content);
+				txt.setText(task.getContent());
+				txt.requestFocus();
+
+				InputMethodManager imm = (InputMethodManager) getSystemService(getApplicationContext().INPUT_METHOD_SERVICE);
+				imm.showSoftInput(txt, InputMethodManager.SHOW_IMPLICIT);
+				Button submit = (Button) findViewById(R.id.submit_content);
+				submit.setOnClickListener(new OnClickListener() {
+
 					@Override
 					public void onClick(View arg0) {
-						EditText txt=(EditText) findViewById(R.id.edit_content);
+						EditText txt = (EditText) findViewById(R.id.edit_content);
+						InputMethodManager imm = (InputMethodManager) getSystemService(getApplicationContext().INPUT_METHOD_SERVICE);
 						task.setContent(txt.getText().toString());
 						datasource.saveTask(task);
 						Task_content.setText(task.getContent());
 						ViewSwitcher switcher = (ViewSwitcher) findViewById(R.id.switch_content);
 						switcher.showPrevious();
-						
+						imm.hideSoftInputFromWindow(txt.getWindowToken(), 0);
+
 					}
 				});
 			}
