@@ -1,6 +1,5 @@
 package de.azapps.mirakel;
 
-
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -11,6 +10,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -60,7 +60,7 @@ public class TaskActivity extends Activity {
 		Task_done = (CheckBox) findViewById(R.id.task_done);
 		Task_prio = (TextView) findViewById(R.id.task_prio);
 		Task_content = (TextView) findViewById(R.id.task_content);
-		Task_due=(TextView)findViewById(R.id.task_due);
+		Task_due = (TextView) findViewById(R.id.task_due);
 		datasource = new TasksDataSource(this);
 		datasource.open();
 		task = datasource.getTask(id);
@@ -68,25 +68,40 @@ public class TaskActivity extends Activity {
 		Task_content.setText(task.getContent().trim().length() == 0 ? this
 				.getString(R.string.task_no_content) : task.getContent());
 		Task_done.setChecked(task.isDone());
-		//String due=;
-		Task_due.setText(task.getDue().compareTo(new GregorianCalendar(1970, 1, 1))<0?this.getString(R.string.task_no_due):(task.getDue().get(Calendar.DAY_OF_MONTH)+"."+ (task.getDue().get(Calendar.MONTH)+1)+"."+task.getDue().get(Calendar.YEAR)));
+		// String due=;
+
+		Drawable due_img = getApplicationContext().getResources().getDrawable(
+				android.R.drawable.ic_menu_today);
+		due_img.setBounds(0, 0, 60, 60);
+		Task_due.setCompoundDrawables(due_img, null, null, null);
+		Task_due.setText(task.getDue().compareTo(
+				new GregorianCalendar(1970, 1, 1)) < 0 ? this
+				.getString(R.string.task_no_due) : (task.getDue().get(
+				Calendar.DAY_OF_MONTH)
+				+ "." + (task.getDue().get(Calendar.MONTH) + 1) + "." + task
+				.getDue().get(Calendar.YEAR)));
 		set_prio(Task_prio, task);
 		Task_due.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
-				GregorianCalendar due =(task.getDue().compareTo(new GregorianCalendar())<0?new GregorianCalendar():task.getDue());
+				GregorianCalendar due = (task.getDue().compareTo(
+						new GregorianCalendar()) < 0 ? new GregorianCalendar()
+						: task.getDue());
 				(new DatePickerDialog(main, new OnDateSetListener() {
-					
+
 					@Override
-					public void onDateSet(DatePicker view, int year, int monthOfYear,
-							int dayOfMonth) {
-						task.setDue(new GregorianCalendar(year, monthOfYear, dayOfMonth));
-						datasource.saveTask(task);	
-						Task_due.setText(dayOfMonth+"."+(monthOfYear+1)+"."+year);
+					public void onDateSet(DatePicker view, int year,
+							int monthOfYear, int dayOfMonth) {
+						task.setDue(new GregorianCalendar(year, monthOfYear,
+								dayOfMonth));
+						datasource.saveTask(task);
+						Task_due.setText(dayOfMonth + "." + (monthOfYear + 1)
+								+ "." + year);
 					}
-				}, due.get(Calendar.YEAR),due.get(Calendar.MONTH),due.get(Calendar.DAY_OF_MONTH))).show();
-				
+				}, due.get(Calendar.YEAR), due.get(Calendar.MONTH), due
+						.get(Calendar.DAY_OF_MONTH))).show();
+
 			}
 		});
 
@@ -120,6 +135,12 @@ public class TaskActivity extends Activity {
 								}).show();
 			}
 		});
+		
+
+		Drawable content_img = getApplicationContext().getResources().getDrawable(
+				android.R.drawable.ic_menu_edit);
+		content_img.setBounds(0, 0, 60, 60);
+		Task_content.setCompoundDrawables(content_img, null, null, null);
 		Task_content.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -205,7 +226,7 @@ public class TaskActivity extends Activity {
 			}
 		});
 		((LinearLayout) this.findViewById(R.id.task_details))
-				.setOnTouchListener(new SwipeListener(true,commands));
+				.setOnTouchListener(new SwipeListener(true, commands));
 
 	} // Log.e(TAG,task.getContent().trim().length()+"");
 
