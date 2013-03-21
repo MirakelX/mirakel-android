@@ -8,6 +8,7 @@
     <string name="Cancel">Cancel</string>
     <string name="Yes">Yes</string>
     <string name="no">No</string>
+    <string name="no_date">No Date</string>
 
     <!-- Home -->
     <string name="home_button_official">Official Server</string>

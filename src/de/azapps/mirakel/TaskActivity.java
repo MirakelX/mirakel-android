@@ -43,14 +43,16 @@ public class TaskActivity extends Activity {
 	protected NumberPicker picker;
 	protected EditText input;
 
+	private boolean mIgnoreTimeSet = false;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		main = this;
 		setContentView(R.layout.activity_task);
-		id=getIntent().getLongExtra("id", -1);
+		id = getIntent().getLongExtra("id", -1);
 		Log.v(TAG, "Taskid " + id);
-		
+
 		// Init
 		datasource = new TasksDataSource(this);
 		datasource.open();
@@ -65,7 +67,6 @@ public class TaskActivity extends Activity {
 		});
 		((LinearLayout) this.findViewById(R.id.task_details))
 				.setOnTouchListener(new SwipeListener(true, commands));
-		
 
 		// Task Name
 		Task_name = (TextView) findViewById(R.id.task_name);
@@ -101,7 +102,6 @@ public class TaskActivity extends Activity {
 			}
 		});
 
-		
 		// Task done
 		Task_done = (CheckBox) findViewById(R.id.task_done);
 		Task_done.setChecked(task.isDone());
@@ -113,8 +113,8 @@ public class TaskActivity extends Activity {
 				datasource.saveTask(task);
 			}
 		});
-		
-		// Task priority		
+
+		// Task priority
 		Task_prio = (TextView) findViewById(R.id.task_prio);
 		set_prio(Task_prio, task);
 		Task_prio.setOnClickListener(new OnClickListener() {
@@ -153,7 +153,7 @@ public class TaskActivity extends Activity {
 
 			}
 		});
-		
+
 		// Task due
 		Task_due = (TextView) findViewById(R.id.task_due);
 		Drawable due_img = getApplicationContext().getResources().getDrawable(
@@ -171,33 +171,53 @@ public class TaskActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
+				mIgnoreTimeSet = false;
 				GregorianCalendar due = (task.getDue().compareTo(
 						new GregorianCalendar()) < 0 ? new GregorianCalendar()
 						: task.getDue());
-				(new DatePickerDialog(main, new OnDateSetListener() {
+				DatePickerDialog dialog = new DatePickerDialog(main,
+						new OnDateSetListener() {
 
-					@Override
-					public void onDateSet(DatePicker view, int year,
-							int monthOfYear, int dayOfMonth) {
-						task.setDue(new GregorianCalendar(year, monthOfYear,
-								dayOfMonth));
-						datasource.saveTask(task);
-						Task_due.setText(dayOfMonth + "." + (monthOfYear + 1)
-								+ "." + year);
-					}
-				}, due.get(Calendar.YEAR), due.get(Calendar.MONTH), due
-						.get(Calendar.DAY_OF_MONTH))).show();
+							@Override
+							public void onDateSet(DatePicker view, int year,
+									int monthOfYear, int dayOfMonth) {
+								if (mIgnoreTimeSet)
+									return;
+
+								task.setDue(new GregorianCalendar(year,
+										monthOfYear, dayOfMonth));
+								datasource.saveTask(task);
+								Task_due.setText(dayOfMonth + "."
+										+ (monthOfYear + 1) + "." + year);
+
+							}
+						}, due.get(Calendar.YEAR), due.get(Calendar.MONTH), due
+								.get(Calendar.DAY_OF_MONTH));
+				dialog.setButton(DialogInterface.BUTTON_NEGATIVE,
+						getString(R.string.no_date),
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int which) {
+								if (which == DialogInterface.BUTTON_NEGATIVE) {
+									mIgnoreTimeSet = true;
+									Log.v(TAG, "cancel");
+									task.setDue(new GregorianCalendar(0, 1, 1));
+									datasource.saveTask(task);
+									Task_due.setText(R.string.task_no_due);
+								}
+							}
+						});
+				dialog.show();
 
 			}
 		});
 
-		
 		// Task content
 		Task_content = (TextView) findViewById(R.id.task_content);
 		Task_content.setText(task.getContent().trim().length() == 0 ? this
 				.getString(R.string.task_no_content) : task.getContent());
-		Drawable content_img = getApplicationContext().getResources().getDrawable(
-				android.R.drawable.ic_menu_edit);
+		Drawable content_img = getApplicationContext().getResources()
+				.getDrawable(android.R.drawable.ic_menu_edit);
 		content_img.setBounds(0, 0, 60, 60);
 		Task_content.setCompoundDrawables(content_img, null, null, null);
 		Task_content.setOnClickListener(new View.OnClickListener() {
@@ -232,7 +252,6 @@ public class TaskActivity extends Activity {
 								}).show();
 			}
 		});
-
 
 	} // Log.e(TAG,task.getContent().trim().length()+"");
 
