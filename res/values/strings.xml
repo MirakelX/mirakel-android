@@ -41,6 +41,7 @@
     <string name="task_menu_sorting">Tasksorting</string>
     <string name="task_sorting_title">Change Sorting Order</string>
     <string name="task_no_due">Pick a due date</string>
+    <string name="task_save_content">Save</string>
     <string-array name="task_sorting_items">
         <item>ID</item>
         <item>Due</item>

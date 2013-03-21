@@ -14,19 +14,25 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.TextView.OnEditorActionListener;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ViewSwitcher;
 
 public class TaskActivity extends Activity {
 	private static final String TAG = "TaskActivity";
@@ -74,31 +80,25 @@ public class TaskActivity extends Activity {
 		Task_name.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				input = new EditText(main);
-				input.setText(task.getName());
-				input.setTag(main);
-				new AlertDialog.Builder(main)
-						.setTitle(
-								main.getString(R.string.task_change_name_title))
-						.setMessage(
-								main.getString(R.string.task_change_name_cont))
-						.setView(input)
-						.setPositiveButton(main.getString(R.string.OK),
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int whichButton) {
-										task.setName(input.getText().toString());
-										datasource.saveTask(task);
-										Task_name.setText(task.getName());
-									}
-								})
-						.setNegativeButton(main.getString(R.string.Cancel),
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int whichButton) {
-										// Do nothing.
-									}
-								}).show();
+			    ViewSwitcher switcher = (ViewSwitcher) findViewById(R.id.switch_name);
+			    switcher.showNext(); //or switcher.showPrevious();
+			    EditText txt=(EditText) findViewById(R.id.edit_name);
+			    txt.setText(Task_name.getText());
+				txt.setOnEditorActionListener(new OnEditorActionListener() {
+					public boolean onEditorAction(TextView v, int actionId,
+							KeyEvent event) {
+						if (actionId == EditorInfo.IME_ACTION_SEND) {
+							EditText txt=(EditText) findViewById(R.id.edit_name);
+							task.setName(txt.getText().toString());
+							datasource.saveTask(task);
+							Task_name.setText(task.getName());
+							ViewSwitcher switcher = (ViewSwitcher) findViewById(R.id.switch_name);
+							switcher.showPrevious();
+							return true;
+						}
+						return false;
+					}
+				});
 			}
 		});
 
@@ -223,33 +223,24 @@ public class TaskActivity extends Activity {
 		Task_content.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				input = new EditText(main);
-				input.setText(task.getContent());
-				input.setTag(main);
-				input.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-				new AlertDialog.Builder(main)
-						.setTitle(
-								main.getString(R.string.task_change_content_title))
-						.setMessage(
-								main.getString(R.string.task_change_content_cont))
-						.setView(input)
-						.setPositiveButton(main.getString(R.string.OK),
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int whichButton) {
-										task.setContent(input.getText()
-												.toString());
-										datasource.saveTask(task);
-										Task_content.setText(task.getContent());
-									}
-								})
-						.setNegativeButton(main.getString(R.string.Cancel),
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int whichButton) {
-										// Do nothing.
-									}
-								}).show();
+			    ViewSwitcher switcher = (ViewSwitcher) findViewById(R.id.switch_content);
+			    switcher.showNext(); //or switcher.showPrevious();
+			    EditText txt=(EditText) findViewById(R.id.edit_content);
+			    txt.setText(task.getContent());
+			    Button submit=(Button) findViewById(R.id.submit_content);
+			    submit.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View arg0) {
+						EditText txt=(EditText) findViewById(R.id.edit_content);
+						task.setContent(txt.getText().toString());
+						datasource.saveTask(task);
+						Task_content.setText(task.getContent());
+						ViewSwitcher switcher = (ViewSwitcher) findViewById(R.id.switch_content);
+						switcher.showPrevious();
+						
+					}
+				});
 			}
 		});
 
