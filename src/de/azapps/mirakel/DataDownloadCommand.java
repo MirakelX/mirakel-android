@@ -1,5 +1,6 @@
 package de.azapps.mirakel;
 
-public interface DataCommand {
+
+public interface DataDownloadCommand {
 	void after_exec(String result);
 }

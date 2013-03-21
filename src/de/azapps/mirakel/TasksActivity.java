@@ -37,6 +37,10 @@ public class TasksActivity extends Activity{
 	private TaskAdapter adapter;
 	private NumberPicker picker;
 	private TasksActivity main;
+	private String server_url;
+	private String Email;
+	private String Password;
+	//private boolean server;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -44,11 +48,16 @@ public class TasksActivity extends Activity{
 		main = this;
 		this.listId = this.getIntent().getIntExtra("listId", 0);
 		Log.v(TAG, "Start list" + listId);
-
+		server_url=this.getIntent().getStringExtra("url");
 		datasource = new TasksDataSource(this);
 		datasource.open();
 		datasource_lists = new ListsDataSource(this);
 		datasource_lists.open();
+		if(server_url!=null){
+			Email=this.getIntent().getStringExtra("email");
+			Password=this.getIntent().getStringExtra("password");
+			datasource_lists.sync_lists(Email, Password, server_url);
+		}
 		getResources().getString(R.string.action_settings);
 		load_tasks();
 		ListView listView = (ListView) findViewById(R.id.tasks_list);

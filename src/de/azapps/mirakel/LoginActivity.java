@@ -1,16 +1,6 @@
 package de.azapps.mirakel;
 
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -19,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -40,8 +29,8 @@ public class LoginActivity extends Activity {
 	 * A dummy authentication store containing known user names and passwords.
 	 * TODO: remove after connecting to a real authentication system.
 	 */
-	private static final String[] DUMMY_CREDENTIALS = new String[] {
-			"foo@example.com:hello", "bar@example.com:world" };
+	//private static final String[] DUMMY_CREDENTIALS = new String[] {
+		//	"foo@example.com:hello", "bar@example.com:world" };
 
 	/**
 	 * The default email to populate the email field with.
@@ -174,50 +163,35 @@ public class LoginActivity extends Activity {
 			// perform the user login attempt.
 			ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 			NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+			final String url=(own_server?server.getText().toString():getString(R.string.offical_server_url));
 			if (networkInfo != null && networkInfo.isConnected()) {
-				new Network(new DataCommand() {
+				new Network(new DataDownloadCommand() {
+					
 					@Override
 					public void after_exec(String result) {
-						Log.e(TAG,result);
-						if(result.equals("401")){
+						//int status=result.getStatusLine().getStatusCode();
+						
+						if(result.indexOf("Invalid email or password.")!=-1){
 							Log.e(TAG,"Login faild");
-						}else if(result.equals("200")||result.equals("302")){
+						}else{
 							Log.e(TAG,"Login sucess");
 							Intent intent = new Intent(LoginActivity.this,
 									TasksActivity.class);
 							intent.putExtra("listId", Mirakel.LIST_ALL);
+							intent.putExtra("email", mEmailView.getText().toString());
+							intent.putExtra("password", mPasswordView.getText().toString());
+							intent.putExtra("url", url);
 							startActivity(intent);
-						}else{
-							Log.e(TAG,"Unknown respons");
 						}
-						showProgress(false);						
+						showProgress(false);	
+						
 					}
-					
-				},
-				new DownloadCommand() {
-					@Override
-					public String downloadUrl(String myurl) throws IOException,
-							URISyntaxException {
-						DefaultHttpClient client = new DefaultHttpClient();
-						HttpResponse response = null;
-						client.getCredentialsProvider().setCredentials(
-								new AuthScope(null, -1),
-								new UsernamePasswordCredentials(mEmailView.getText().toString(), mPasswordView.getText().toString()));
-						Log.v(TAG,"GET "+myurl);
-						HttpGet get = new HttpGet();
-						get.setURI(new URI(myurl));
-						response = client.execute(get);
-						return ""+response.getStatusLine().getStatusCode();
-					}
-				}).execute(server.getText().toString()+"/lists.json");
+				},mEmailView.getText().toString(), mPasswordView.getText().toString(),Mirakel.Http_Mode.GET).execute(url+"/lists.json");
+				mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
+				showProgress(true);
 			} else {
 				Log.e(TAG, "No network connection available.");
 			}
-			
-			mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
-			showProgress(true);
-			//mAuthTask = new UserLoginTask();
-			//mAuthTask.execute((Void) null);
 		}
 	}
 

@@ -17,18 +17,20 @@ public class List_mirakle {
 	private String created_at;
 	private String updated_at;
 	private int task_count;
+	private int sync_state;
 
 	public List_mirakle() {
 	}
 
 	public List_mirakle(int id, String name, short sort_by, String created_at,
-			String updated_at, int task_count) {
+			String updated_at, int task_count, int sync_state) {
 		this.setId(id);
 		this.setCreated_at(created_at);
 		this.setName(name);
 		this.setUpdated_at(updated_at);
 		this.setSort_by(sort_by);
 		this.setTask_count(task_count);
+		this.setSync_state(sync_state);
 	}
 
 	public List_mirakle(int id, String name, int task_count) {
@@ -89,6 +91,7 @@ public class List_mirakle {
 		cv.put("created_at", created_at);
 		cv.put("updated_at", updated_at);
 		cv.put("sort_by", sort_by);
+		cv.put("sync_state", sync_state);
 		return cv;
 	}
 
@@ -98,6 +101,14 @@ public class List_mirakle {
 
 	public void setTask_count(int task_count) {
 		this.task_count = task_count;
+	}
+
+	public int getSync_state() {
+		return sync_state;
+	}
+
+	public void setSync_state(int sync_state) {
+		this.sync_state = sync_state;
 	}
 
 }

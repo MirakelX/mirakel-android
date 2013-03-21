@@ -50,5 +50,6 @@ public class Mirakel extends Application {
 	public static SQLiteDatabase getReadableDatabase() {
 		return openHelper.getReadableDatabase();
 	}
+	
 
 }
