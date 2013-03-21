@@ -86,6 +86,19 @@ public class ListsDataSource {
 		return lists;
 	}
 
+	public List_mirakle getFirstList() {
+		Cursor cursor = database.query("lists", allColumns, null, null, null,
+				null, null);
+		List_mirakle list = null;
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			list = cursorToList(cursor);
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return list;
+	}
+
 	public List_mirakle getList(long id) {
 		Cursor cursor = database.query("lists", allColumns, "_id='" + id + "'",
 				null, null, null, null);
@@ -103,10 +116,12 @@ public class ListsDataSource {
 		switch (list_id) {
 		case Mirakel.LIST_ALL:
 			break;
-		case Mirakel.LIST_DAILY:		
-			return new TasksDataSource(null).getTasks(Mirakel.LIST_DAILY, Mirakel.ORDER_BY_ID).size();
+		case Mirakel.LIST_DAILY:
+			return new TasksDataSource(null).getTasks(Mirakel.LIST_DAILY,
+					Mirakel.ORDER_BY_ID).size();
 		case Mirakel.LIST_WEEKLY:
-			return new TasksDataSource(null).getTasks(Mirakel.LIST_WEEKLY, Mirakel.ORDER_BY_ID).size();
+			return new TasksDataSource(null).getTasks(Mirakel.LIST_WEEKLY,
+					Mirakel.ORDER_BY_ID).size();
 		default:
 			count += "where list_id=" + list_id;
 

@@ -9,6 +9,7 @@
     <string name="Yes">Yes</string>
     <string name="no">No</string>
     <string name="no_date">No Date</string>
+    <string name="no_lists">No lists exists. Please create one</string>
 
     <!-- Home -->
     <string name="home_button_official">Official Server</string>
