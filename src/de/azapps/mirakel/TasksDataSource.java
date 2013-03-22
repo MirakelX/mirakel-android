@@ -115,12 +115,15 @@ public class TasksDataSource {
 		String where="";
 		switch (listId) {
 		case Mirakel.LIST_ALL:
-			break;
 		case Mirakel.LIST_DAILY:
+		case Mirakel.LIST_WEEKLY:
+			break;
+			//Query Doesn't work
+		/*case Mirakel.LIST_DAILY:
 			where="due<=DATE('now') AND due>0 and ";
 		case Mirakel.LIST_WEEKLY:
 			where="due<=DATE('now','+7 days') AND due>0 and ";
-			break;
+			break;*/
 		default:
 			where="list_id='" + listId + "' and ";
 		}
@@ -136,7 +139,7 @@ public class TasksDataSource {
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
 			Task task = cursorToTask(cursor);
-			/*switch (listId) {
+			switch (listId) {
 			case Mirakel.LIST_DAILY:
 				if(task.getDue().compareTo(new GregorianCalendar())>0||task.isDone())
 					break;
@@ -148,9 +151,8 @@ public class TasksDataSource {
 			default:
 				tasks.add(task);
 				break;
-			}	*/
-			Log.e(TAG,task.getListId()+"");
-			tasks.add(task);
+			}	
+			//tasks.add(task);
 			cursor.moveToNext();
 		}
 		cursor.close();
