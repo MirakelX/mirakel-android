@@ -1,5 +1,7 @@
 package de.azapps.mirakel;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import android.app.Activity;
@@ -45,6 +47,7 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 					.findViewById(R.id.tasks_row_name);
 			holder.taskRowPriority = (TextView) row
 					.findViewById(R.id.tasks_row_priority);
+			holder.taskRowDue = (TextView) row.findViewById(R.id.tasks_row_due);
 
 			row.setTag(holder);
 		} else {
@@ -61,6 +64,11 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 				.getPriority() + 2]);
 		holder.taskRowPriority.setOnClickListener(clickPrio);
 		holder.taskRowPriority.setTag(task);
+		holder.taskRowDue.setText(task.getDue().compareTo(
+				new GregorianCalendar(1970, 1, 1)) < 0 ? "" : (task.getDue().get(
+				Calendar.DAY_OF_MONTH)
+				+ "." + (task.getDue().get(Calendar.MONTH) + 1) + "." + task
+				.getDue().get(Calendar.YEAR)));
 		return row;
 	}
 
@@ -68,6 +76,7 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		CheckBox taskRowDone;
 		TextView taskRowName;
 		TextView taskRowPriority;
+		TextView taskRowDue;
 	}
 
 }

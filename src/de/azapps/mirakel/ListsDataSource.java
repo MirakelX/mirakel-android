@@ -26,9 +26,11 @@ public class ListsDataSource {
 	private DatabaseHelper dbHelper;
 	private String[] allColumns = { "_id", "name", "sort_by", "created_at",
 			"updated_at" ,"sync_state"};
+	private Context context;
 
 	public ListsDataSource(Context context) {
 		dbHelper = new DatabaseHelper(context);
+		this.context=context;
 	}
 
 	public void open() throws SQLException {
@@ -80,11 +82,11 @@ public class ListsDataSource {
 	public List<List_mirakle> getAllLists() {
 		List<List_mirakle> lists = new ArrayList<List_mirakle>();
 		// TODO Get from strings.xml
-		lists.add(new List_mirakle(Mirakel.LIST_ALL, "All Lists",
+		lists.add(new List_mirakle(Mirakel.LIST_ALL,context.getString(R.string.list_all) ,
 				task_count(Mirakel.LIST_ALL)));
-		lists.add(new List_mirakle(Mirakel.LIST_DAILY, "Today",
+		lists.add(new List_mirakle(Mirakel.LIST_DAILY, context.getString(R.string.list_today),
 				task_count(Mirakel.LIST_DAILY)));
-		lists.add(new List_mirakle(Mirakel.LIST_WEEKLY, "This Week",
+		lists.add(new List_mirakle(Mirakel.LIST_WEEKLY, context.getString(R.string.list_week),
 				task_count(Mirakel.LIST_WEEKLY)));
 		Cursor cursor = database.query("lists", allColumns, "not sync_state="+Mirakel.SYNC_STATE_DELETE, null, null,
 				null, null);
@@ -96,6 +98,19 @@ public class ListsDataSource {
 		}
 		cursor.close();
 		return lists;
+	}
+
+	public List_mirakle getFirstList() {
+		Cursor cursor = database.query("lists", allColumns, null, null, null,
+				null, null);
+		List_mirakle list = null;
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			list = cursorToList(cursor);
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return list;
 	}
 
 	public List_mirakle getList(long id) {
@@ -115,10 +130,12 @@ public class ListsDataSource {
 		switch (list_id) {
 		case Mirakel.LIST_ALL:
 			break;
-		case Mirakel.LIST_DAILY:		
-			return new TasksDataSource(null).getTasks(Mirakel.LIST_DAILY, Mirakel.ORDER_BY_ID).size();
+		case Mirakel.LIST_DAILY:
+			return new TasksDataSource(null).getTasks(Mirakel.LIST_DAILY,
+					Mirakel.ORDER_BY_ID).size();
 		case Mirakel.LIST_WEEKLY:
-			return new TasksDataSource(null).getTasks(Mirakel.LIST_WEEKLY, Mirakel.ORDER_BY_ID).size();
+			return new TasksDataSource(null).getTasks(Mirakel.LIST_WEEKLY,
+					Mirakel.ORDER_BY_ID).size();
 		default:
 			count += " list_id=" + list_id+" and";
 		}

@@ -1,32 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:descendantFocusability="blocksDescendants"
     android:orientation="horizontal"
     android:padding="5dp" >
 
-    <CheckBox
-        android:id="@+id/tasks_row_done"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/tasks_row_name"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:textSize="18sp"
-        android:ellipsize="end" >
-    </TextView>
+        android:layout_alignParentLeft="true"
+        android:orientation="horizontal"
+        android:layout_marginRight="41dp" >
+
+        <CheckBox
+            android:id="@+id/tasks_row_done"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/tasks_row_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:textSize="18sp" >
+            </TextView>
+
+            <TextView
+                android:id="@+id/tasks_row_due"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:textColor="@color/Grey"
+                android:textSize="12sp" >
+            </TextView>
+        </LinearLayout>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tasks_row_priority"
-        android:layout_weight="0"
-        android:textSize="18sp"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:gravity="center" >
+        android:layout_alignParentRight="true"
+        android:layout_weight="0"
+        android:gravity="center"
+        android:textSize="18sp" >
     </TextView>
 
-</LinearLayout>
+</RelativeLayout>

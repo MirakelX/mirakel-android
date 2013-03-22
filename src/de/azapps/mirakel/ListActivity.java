@@ -1,6 +1,8 @@
 package de.azapps.mirakel;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -23,8 +25,6 @@ public class ListActivity extends Activity {
 	private ListAdapter adapter;
 	protected ListActivity main;
 	protected EditText input;
-	private float start_x;
-	private float start_y;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,38 +35,17 @@ public class ListActivity extends Activity {
 		datasource.open();
 		load_lists();
 		ListView listView = (ListView) findViewById(R.id.lists_list);
-		listView.setOnTouchListener(new View.OnTouchListener() {
 
+		Map<SwipeListener.Direction, SwipeCommand> commands = new HashMap<SwipeListener.Direction, SwipeCommand>();
+		commands.put(SwipeListener.Direction.RIGHT, new SwipeCommand() {
 			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				int action = event.getAction();
-				if (action == MotionEvent.ACTION_DOWN) {
-					start_x = event.getRawX();
-					start_y = event.getRawY();
-				} else if (action == MotionEvent.ACTION_UP
-						|| action == MotionEvent.ACTION_CANCEL) {
-					float dx = start_x - event.getRawX();
-					float dy = start_y - event.getRawY();
-					if (dy > 3 * dx && dy > v.getHeight() / 3) {
-						Log.v(TAG, "swipe up");
-					} else if (dx > 3 * dy && dx > v.getWidth() / 3) {
-						Log.v(TAG, "swipe rigth");
-						Intent returnIntent = new Intent();
-						// returnIntent.putExtra("list_id", t.getId());
-						setResult(RESULT_CANCELED, returnIntent);
-						finish();
-					} else if (dy < -3 * dx && -1 * dy > v.getHeight() / 3) {
-						Log.v(TAG, "swipe down");
-					} else if (dx < -3 * dy && -1 * dx > v.getWidth() / 3) {
-						Log.v(TAG, "swipe left");
-
-					} else {
-						Log.v(TAG, "Nothing");
-					}
-				}
-				return false;
+			public void runCommand(View v, MotionEvent event) {
+				Intent list = new Intent(v.getContext(), TasksActivity.class);
+				datasource.close();
+				startActivityForResult(list, 1);
 			}
 		});
+		listView.setOnTouchListener(new SwipeListener(false, commands));
 
 	}
 

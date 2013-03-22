@@ -1,6 +1,5 @@
 package de.azapps.mirakel;
 
-
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -10,15 +9,20 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.InputType;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -27,6 +31,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
+import android.widget.ViewSwitcher;
 
 public class TaskActivity extends Activity {
 	private static final String TAG = "TaskActivity";
@@ -43,116 +49,70 @@ public class TaskActivity extends Activity {
 	protected NumberPicker picker;
 	protected EditText input;
 
+	private boolean mIgnoreTimeSet = false;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		main = this;
 		setContentView(R.layout.activity_task);
-		Bundle extras = getIntent().getExtras();
-		if (extras != null) {
-			id = extras.getLong("id");
-		} else {
-			id = -1;
-		}
+		id = getIntent().getLongExtra("id", -1);
 		Log.v(TAG, "Taskid " + id);
 
-		Task_name = (TextView) findViewById(R.id.task_name);
-		Task_done = (CheckBox) findViewById(R.id.task_done);
-		Task_prio = (TextView) findViewById(R.id.task_prio);
-		Task_content = (TextView) findViewById(R.id.task_content);
-		Task_due=(TextView)findViewById(R.id.task_due);
+		// Init
 		datasource = new TasksDataSource(this);
 		datasource.open();
 		task = datasource.getTask(id);
-		Task_name.setText(task.getName());
-		Task_content.setText(task.getContent().trim().length() == 0 ? this
-				.getString(R.string.task_no_content) : task.getContent());
-		Task_done.setChecked(task.isDone());
-		//String due=;
-		Task_due.setText(task.getDue().compareTo(new GregorianCalendar(1970, 1, 1))<0?this.getString(R.string.task_no_due):(task.getDue().get(Calendar.DAY_OF_MONTH)+"."+ (task.getDue().get(Calendar.MONTH)+1)+"."+task.getDue().get(Calendar.YEAR)));
-		set_prio(Task_prio, task);
-		Task_due.setOnClickListener(new View.OnClickListener() {
-			
+		// Swipe commands
+		Map<SwipeListener.Direction, SwipeCommand> commands = new HashMap<SwipeListener.Direction, SwipeCommand>();
+		commands.put(SwipeListener.Direction.LEFT, new SwipeCommand() {
 			@Override
-			public void onClick(View v) {
-				GregorianCalendar due =(task.getDue().compareTo(new GregorianCalendar())<0?new GregorianCalendar():task.getDue());
-				(new DatePickerDialog(main, new OnDateSetListener() {
-					
-					@Override
-					public void onDateSet(DatePicker view, int year, int monthOfYear,
-							int dayOfMonth) {
-						task.setDue(new GregorianCalendar(year, monthOfYear, dayOfMonth));
-						datasource.saveTask(task);	
-						Task_due.setText(dayOfMonth+"."+(monthOfYear+1)+"."+year);
-					}
-				}, due.get(Calendar.YEAR),due.get(Calendar.MONTH),due.get(Calendar.DAY_OF_MONTH))).show();
-				
+			public void runCommand(View v, MotionEvent event) {
+				finish();
 			}
 		});
+		((LinearLayout) this.findViewById(R.id.task_details))
+				.setOnTouchListener(new SwipeListener(true, commands));
 
+		// Task Name
+		Task_name = (TextView) findViewById(R.id.task_name);
+		Task_name.setText(task.getName());
 		Task_name.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				input = new EditText(main);
-				input.setText(task.getName());
-				input.setTag(main);
-				new AlertDialog.Builder(main)
-						.setTitle(
-								main.getString(R.string.task_change_name_title))
-						.setMessage(
-								main.getString(R.string.task_change_name_cont))
-						.setView(input)
-						.setPositiveButton(main.getString(R.string.OK),
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int whichButton) {
-										task.setName(input.getText().toString());
-										datasource.saveTask(task);
-										Task_name.setText(task.getName());
-									}
-								})
-						.setNegativeButton(main.getString(R.string.Cancel),
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int whichButton) {
-										// Do nothing.
-									}
-								}).show();
-			}
-		});
-		Task_content.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				input = new EditText(main);
-				input.setText(task.getContent());
-				input.setTag(main);
-				input.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-				new AlertDialog.Builder(main)
-						.setTitle(
-								main.getString(R.string.task_change_content_title))
-						.setMessage(
-								main.getString(R.string.task_change_content_cont))
-						.setView(input)
-						.setPositiveButton(main.getString(R.string.OK),
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int whichButton) {
-										task.setContent(input.getText()
-												.toString());
-										datasource.saveTask(task);
-										Task_content.setText(task.getContent());
-									}
-								})
-						.setNegativeButton(main.getString(R.string.Cancel),
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int whichButton) {
-										// Do nothing.
-									}
-								}).show();
+				ViewSwitcher switcher = (ViewSwitcher) findViewById(R.id.switch_name);
+				switcher.showNext(); // or switcher.showPrevious();
+				EditText txt = (EditText) findViewById(R.id.edit_name);
+				txt.setText(Task_name.getText());
+				txt.requestFocus();
+
+				getApplicationContext();
+				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+				imm.showSoftInput(txt, InputMethodManager.SHOW_IMPLICIT);
+				txt.setOnEditorActionListener(new OnEditorActionListener() {
+					public boolean onEditorAction(TextView v, int actionId,
+							KeyEvent event) {
+						if (actionId == EditorInfo.IME_ACTION_DONE) {
+							EditText txt = (EditText) findViewById(R.id.edit_name);
+							getApplicationContext();
+							InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+							ViewSwitcher switcher = (ViewSwitcher) findViewById(R.id.switch_name);
+							task.setName(txt.getText().toString());
+							datasource.saveTask(task);
+							Task_name.setText(task.getName());
+							switcher.showPrevious();
+							imm.hideSoftInputFromWindow(txt.getWindowToken(), 0);
+							return true;
+						}
+						return false;
+					}
+				});
 			}
 		});
 
+		// Task done
+		Task_done = (CheckBox) findViewById(R.id.task_done);
+		Task_done.setChecked(task.isDone());
 		Task_done.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView,
@@ -161,6 +121,10 @@ public class TaskActivity extends Activity {
 				datasource.saveTask(task);
 			}
 		});
+
+		// Task priority
+		Task_prio = (TextView) findViewById(R.id.task_prio);
+		set_prio(Task_prio, task);
 		Task_prio.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -197,15 +161,104 @@ public class TaskActivity extends Activity {
 
 			}
 		});
-		Map<SwipeListener.Direction, SwipeCommand> commands = new HashMap<SwipeListener.Direction, SwipeCommand>();
-		commands.put(SwipeListener.Direction.LEFT, new SwipeCommand() {
+
+		// Task due
+		Task_due = (TextView) findViewById(R.id.task_due);
+		Drawable due_img = getApplicationContext().getResources().getDrawable(
+				android.R.drawable.ic_menu_today);
+		due_img.setBounds(0, 0, 60, 60);
+		Task_due.setCompoundDrawables(due_img, null, null, null);
+		Task_due.setText(task.getDue().compareTo(
+				new GregorianCalendar(1970, 1, 1)) < 0 ? this
+				.getString(R.string.task_no_due) : (task.getDue().get(
+				Calendar.DAY_OF_MONTH)
+				+ "." + (task.getDue().get(Calendar.MONTH) + 1) + "." + task
+				.getDue().get(Calendar.YEAR)));
+
+		Task_due.setOnClickListener(new View.OnClickListener() {
+
 			@Override
-			public void runCommand(View v, MotionEvent event) {
-				finish();
+			public void onClick(View v) {
+				mIgnoreTimeSet = false;
+				GregorianCalendar due = (task.getDue().compareTo(
+						new GregorianCalendar()) < 0 ? new GregorianCalendar()
+						: task.getDue());
+				DatePickerDialog dialog = new DatePickerDialog(main,
+						new OnDateSetListener() {
+
+							@Override
+							public void onDateSet(DatePicker view, int year,
+									int monthOfYear, int dayOfMonth) {
+								if (mIgnoreTimeSet)
+									return;
+
+								task.setDue(new GregorianCalendar(year,
+										monthOfYear, dayOfMonth));
+								datasource.saveTask(task);
+								Task_due.setText(dayOfMonth + "."
+										+ (monthOfYear + 1) + "." + year);
+
+							}
+						}, due.get(Calendar.YEAR), due.get(Calendar.MONTH), due
+								.get(Calendar.DAY_OF_MONTH));
+				dialog.setButton(DialogInterface.BUTTON_NEGATIVE,
+						getString(R.string.no_date),
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int which) {
+								if (which == DialogInterface.BUTTON_NEGATIVE) {
+									mIgnoreTimeSet = true;
+									Log.v(TAG, "cancel");
+									task.setDue(new GregorianCalendar(0, 1, 1));
+									datasource.saveTask(task);
+									Task_due.setText(R.string.task_no_due);
+								}
+							}
+						});
+				dialog.show();
+
 			}
 		});
-		((LinearLayout) this.findViewById(R.id.task_details))
-				.setOnTouchListener(new SwipeListener(true,commands));
+
+		// Task content
+		Task_content = (TextView) findViewById(R.id.task_content);
+		Task_content.setText(task.getContent().trim().length() == 0 ? this
+				.getString(R.string.task_no_content) : task.getContent());
+		Drawable content_img = getApplicationContext().getResources()
+				.getDrawable(android.R.drawable.ic_menu_edit);
+		content_img.setBounds(0, 0, 60, 60);
+		Task_content.setCompoundDrawables(content_img, null, null, null);
+		Task_content.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				ViewSwitcher switcher = (ViewSwitcher) findViewById(R.id.switch_content);
+				switcher.showNext(); // or switcher.showPrevious();
+				EditText txt = (EditText) findViewById(R.id.edit_content);
+				txt.setText(task.getContent());
+				txt.requestFocus();
+
+				getApplicationContext();
+				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+				imm.showSoftInput(txt, InputMethodManager.SHOW_IMPLICIT);
+				Button submit = (Button) findViewById(R.id.submit_content);
+				submit.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View arg0) {
+						EditText txt = (EditText) findViewById(R.id.edit_content);
+						getApplicationContext();
+						InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+						task.setContent(txt.getText().toString());
+						datasource.saveTask(task);
+						Task_content.setText(task.getContent());
+						ViewSwitcher switcher = (ViewSwitcher) findViewById(R.id.switch_content);
+						switcher.showPrevious();
+						imm.hideSoftInputFromWindow(txt.getWindowToken(), 0);
+
+					}
+				});
+			}
+		});
 
 	} // Log.e(TAG,task.getContent().trim().length()+"");
 

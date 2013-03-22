@@ -80,8 +80,18 @@ public class TasksActivity extends Activity{
 					KeyEvent event) {
 				if (actionId == EditorInfo.IME_ACTION_SEND) {
 					Log.v(TAG, "New Task");
+					long id=getListId();
+					Log.v(TAG,"Create in " + id);
+					if(id<=0) {
+						try {
+							id=datasource_lists.getFirstList().getId();
+						} catch (NullPointerException e) {
+							Toast.makeText(getApplicationContext(), R.string.no_lists, Toast.LENGTH_LONG).show();
+							return false;
+						}
+					}
 					Task task = datasource.createTask(v.getText().toString(),
-							getListId());
+							id);
 					v.setText(null);
 					adapter.add(task);
 					adapter.notifyDataSetChanged();
@@ -181,23 +191,15 @@ public class TasksActivity extends Activity{
 		switch (listId) {
 		case Mirakel.LIST_ALL:
 			this.setTitle(this.getString(R.string.list_all));
-			((TextView) this.findViewById(R.id.tasks_new))
-					.setVisibility(View.GONE);
 			break;
 		case Mirakel.LIST_DAILY:
 			this.setTitle(this.getString(R.string.list_today));
-			((TextView) this.findViewById(R.id.tasks_new))
-					.setVisibility(View.GONE);
 			break;
 		case Mirakel.LIST_WEEKLY:
 			this.setTitle(this.getString(R.string.list_week));
-			((TextView) this.findViewById(R.id.tasks_new))
-					.setVisibility(View.GONE);
 			break;
 		default:
 			List_mirakle list = datasource_lists.getList(listId);
-			((TextView) this.findViewById(R.id.tasks_new))
-					.setVisibility(View.VISIBLE);
 			this.setTitle(list.getName());
 		}
 	}
@@ -257,10 +259,7 @@ public class TasksActivity extends Activity{
 	}
 
 	private long getListId() {
-		long id = listId;
-		if (id < 1)
-			id = 1;
-		return id;
+		return listId;
 	}
 
 	@Override
@@ -310,6 +309,7 @@ public class TasksActivity extends Activity{
 						taskOrder = Mirakel.ORDER_BY_ID;
 						break;
 					}
+					Log.e(TAG, "sorting: " + taskOrder);
 					load_tasks();
 					Toast.makeText(getApplicationContext(), items[item],
 							Toast.LENGTH_SHORT).show();
