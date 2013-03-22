@@ -250,7 +250,8 @@ public class TaskActivity extends Activity {
 						InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 						task.setContent(txt.getText().toString());
 						datasource.saveTask(task);
-						Task_content.setText(task.getContent());
+						Task_content.setText(task.getContent().trim().length() == 0 ? 
+								getString(R.string.task_no_content) : task.getContent());
 						ViewSwitcher switcher = (ViewSwitcher) findViewById(R.id.switch_content);
 						switcher.showPrevious();
 						imm.hideSoftInputFromWindow(txt.getWindowToken(), 0);
