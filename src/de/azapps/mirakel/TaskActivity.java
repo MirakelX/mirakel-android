@@ -92,7 +92,7 @@ public class TaskActivity extends Activity {
 				txt.setOnEditorActionListener(new OnEditorActionListener() {
 					public boolean onEditorAction(TextView v, int actionId,
 							KeyEvent event) {
-						if (actionId == EditorInfo.IME_ACTION_SEND) {
+						if (actionId == EditorInfo.IME_ACTION_DONE) {
 							EditText txt = (EditText) findViewById(R.id.edit_name);
 							InputMethodManager imm = (InputMethodManager) getSystemService(getApplicationContext().INPUT_METHOD_SERVICE);
 							ViewSwitcher switcher = (ViewSwitcher) findViewById(R.id.switch_name);

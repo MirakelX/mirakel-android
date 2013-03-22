@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:gravity="center"
-                android:imeOptions="actionSend"
+                android:imeOptions="actionDone"
                 android:singleLine="true"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
         </ViewSwitcher>
