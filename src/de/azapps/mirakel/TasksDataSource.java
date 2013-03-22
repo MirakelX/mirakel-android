@@ -123,9 +123,9 @@ public class TasksDataSource {
 			where="due<=DATE('now','+7 days') AND due>0 and ";
 			break;
 		default:
-			where="list_id='" + listId + "'";
+			where="list_id='" + listId + "' and ";
 		}
-		where+="not sync_state="+Mirakel.SYNC_STATE_DELETE;
+		where+=" not sync_state="+Mirakel.SYNC_STATE_DELETE;
 		Log.v(TAG,where);
 		return Mirakel.getReadableDatabase().query("tasks", allColumns,
 				where, null, null, null, sorting);
