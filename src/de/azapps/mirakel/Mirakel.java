@@ -36,11 +36,9 @@ public class Mirakel extends Application {
 	@Override
 	public void onCreate() {
 		Log.d(TAG, "onCreate");
-
 		super.onCreate();
 		openHelper = new DatabaseHelper(this);
 		Mirakel.getWritableDatabase().execSQL("PRAGMA foreign_keys=ON;");
-
 	}
 
 	public static SQLiteDatabase getWritableDatabase() {

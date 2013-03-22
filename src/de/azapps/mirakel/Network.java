@@ -48,8 +48,6 @@ public class Network extends AsyncTask<String, String, String> {
 
 	@Override
 	protected String doInBackground(String... urls) {
-
-		// params comes from the execute() call: params[0] is the url.
 		try {
 			return downloadUrl(urls[0]);
 		} catch (IOException e) {
@@ -63,7 +61,6 @@ public class Network extends AsyncTask<String, String, String> {
 
 	@Override
 	protected void onPostExecute(String result) {
-		// Log.e(TAG,"Get done "+result);
 		if(result!=null)
 			commands.after_exec(result);
 		else

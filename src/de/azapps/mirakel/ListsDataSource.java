@@ -140,7 +140,8 @@ public class ListsDataSource {
 		return list;
 	}
 	
-	public void sync_lists(final String email, final String password, final String url) {		
+	public void sync_lists(final String email, final String password, final String url) {	
+		Log.v(TAG,"sync lists");
 		new Network(new DataDownloadCommand() {			
 			@Override
 			public void after_exec(String result) {

@@ -65,7 +65,6 @@ public class LoginActivity extends Activity {
 		setContentView(R.layout.activity_login);
 		server=(EditText)findViewById(R.id.server);
 		own_server=this.getIntent().getBooleanExtra("own_server", false);
-		Log.e(TAG,""+own_server);
 		if(own_server){
 			server.setVisibility(View.VISIBLE);
 		}else{

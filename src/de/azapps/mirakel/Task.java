@@ -18,21 +18,22 @@ public class Task {
 	private String created_at;
 	private String updated_at;
 	private Map<String, Boolean> edited = new HashMap<String, Boolean>();
+	private int sync_state;
 
 	public Task(long id, long list_id, String name, String content,
 			boolean done, GregorianCalendar due, int priority, String created_at,
-			String updated_at) {
-		this.id = id;
-		this.list_id = list_id;
-		this.name = name;
-		this.content = content;
-		this.done = done;
-		this.due = due;
-		this.priority = priority;
-		this.created_at = created_at;
-		this.updated_at = updated_at;
+			String updated_at, int sync_state){
+		this.setName(name);
+		this.setContent(content);
+		this.setDone(done);
+		this.setDue(due);
+		this.setPriority(priority);
+		this.setCreated_at(created_at);
+		this.setUpdated_at(updated_at);
+		this.setSync_state(sync_state);
 	}
 
+	public Task(){}
 	public long getId() {
 		return id;
 	}
@@ -116,7 +117,15 @@ public class Task {
 	public void setUpdated_at(String updated_at) {
 		this.updated_at = updated_at;
 	}
+	
+	public int getSync_state() {
+		return sync_state;
+	}
 
+	public void setSync_state(int sync_state) {
+		this.sync_state = sync_state;
+	}
+	
 	@Override
 	public String toString() {
 		return name;
@@ -133,6 +142,7 @@ public class Task {
 		cv.put("priority", priority);
 		cv.put("created_at", created_at);
 		cv.put("updated_at", updated_at);
+		cv.put("sync_state", sync_state);
 		return cv;
 	}
 

@@ -19,7 +19,6 @@ public class StartActivity extends Activity {
 		int version=Mirakel.getReadableDatabase().getVersion();
 		if(version!=Mirakel.DATABASE_VERSION){
 			Log.v(TAG,"SET DB-VERSION "+Mirakel.DATABASE_VERSION);
-			//Mirakel.getReadableDatabase().
 			Mirakel.getReadableDatabase().setVersion(Mirakel.DATABASE_VERSION);
 		}
 		setContentView(R.layout.activity_start);
@@ -80,8 +79,7 @@ public class StartActivity extends Activity {
 					Intent intent = new Intent(StartActivity.this,
 							LoginActivity.class);
 					intent.putExtra("own_server", false);
-					//startActivity(intent);
-					Log.e(TAG,"Implement offical server");
+					startActivity(intent);
 				}
 			}
 		});

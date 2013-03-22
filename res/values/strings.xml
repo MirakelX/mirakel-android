@@ -65,7 +65,7 @@
     
     <!-- Login -->
     <string name="login_server">Server-URL</string>
-    <string name="offical_server_url">http://mirakel.azapps.de/</string>
+    <string name="offical_server_url">http://mirakel.azapps.de</string>
 
 
 </resources>

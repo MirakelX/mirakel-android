@@ -28,8 +28,6 @@ import android.widget.TextView.OnEditorActionListener;
 
 public class TasksActivity extends Activity{
 	private static final String TAG = "TasksActivity";
-	// private static final String TABLE_NAME="tasks";
-	// private static final String[] FROM={"_id","name","done","priority"};
 	private int listId;
 	private String taskOrder;
 	private TasksDataSource datasource;
@@ -40,7 +38,7 @@ public class TasksActivity extends Activity{
 	private String server_url;
 	private String Email;
 	private String Password;
-	//private boolean server;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -57,6 +55,7 @@ public class TasksActivity extends Activity{
 			Email=this.getIntent().getStringExtra("email");
 			Password=this.getIntent().getStringExtra("password");
 			datasource_lists.sync_lists(Email, Password, server_url);
+			datasource.sync_tasks(Email, Password, server_url);
 		}
 		getResources().getString(R.string.action_settings);
 		load_tasks();
@@ -112,7 +111,6 @@ public class TasksActivity extends Activity{
 	private void load_tasks() {
 		Log.v(TAG, "loading..." + listId);
 		final List<Task> values = datasource.getTasks(listId, taskOrder);
-
 		adapter = new TaskAdapter(this, R.layout.tasks_row, values,
 				new OnClickListener() {
 					@Override
