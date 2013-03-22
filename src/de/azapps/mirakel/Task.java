@@ -23,6 +23,7 @@ public class Task {
 	public Task(long id, long list_id, String name, String content,
 			boolean done, GregorianCalendar due, int priority, String created_at,
 			String updated_at, int sync_state){
+		this.id=id;
 		this.setName(name);
 		this.setContent(content);
 		this.setDone(done);

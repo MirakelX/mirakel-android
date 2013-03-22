@@ -131,7 +131,6 @@ public class TasksActivity extends Activity{
 						datasource.saveTask(task);
 					}
 				}, new OnClickListener() {
-
 					@Override
 					public void onClick(final View v) {
 

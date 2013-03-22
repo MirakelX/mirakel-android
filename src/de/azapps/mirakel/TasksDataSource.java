@@ -151,6 +151,7 @@ public class TasksDataSource {
 				break;
 			}	*/
 			tasks.add(task);
+			Log.e(TAG,task.getId()+" "+task.getName());
 			cursor.moveToNext();
 		}
 		cursor.close();
