@@ -69,7 +69,6 @@ public class TasksDataSource {
 
 	public void deleteTask(Task task) {
 		long id = task.getId();
-		Log.e(TAG,task.getSync_state()+"");
 		if(task.getSync_state()==Mirakel.SYNC_STATE_ADD)
 			database.delete("tasks", "_id = " + id, null);
 		else{
@@ -188,7 +187,6 @@ public class TasksDataSource {
 				List<Task>tasks_local=getTasks(Mirakel.LIST_ALL, Mirakel.ORDER_BY_ID);
 				for(int i=0; i<tasks_local.size();i++){
 					Task task=tasks_local.get(i);
-					Log.e(TAG,task.getSync_state()+"");
 					switch(task.getSync_state()){
 						case Mirakel.SYNC_STATE_ADD:
 							add_task(task,email,password,url);
@@ -288,7 +286,6 @@ public class TasksDataSource {
 		new Network(new DataDownloadCommand() {	
 			@Override
 			public void after_exec(String result) {
-				Log.e(TAG,result);
 				Task task=parse_json("["+result+"]").get(0);
 				ContentValues values=new ContentValues();
 				values.put("_id", task.getId());
