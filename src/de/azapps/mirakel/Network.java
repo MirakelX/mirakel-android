@@ -105,6 +105,8 @@ public class Network extends AsyncTask<String, String, String> {
 			return null;
 		}
 		Log.v(TAG,"Http-Status: "+response.getStatusLine().getStatusCode());
+		if(response.getEntity()==null)
+			return "";
 		return EntityUtils.toString(response.getEntity());
 	}
 }

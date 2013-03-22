@@ -156,9 +156,30 @@ public class ListsDataSource {
 				cursor.getString(i++), task_count(id),cursor.getInt(i));
 		return list;
 	}
+	protected List<List_mirakle>getdeletedLists() {
+		List<List_mirakle> lists=new ArrayList<List_mirakle>();
+		Cursor c= database.query("lists",allColumns,"sync_state="+Mirakel.SYNC_STATE_DELETE,null,null,null,null);
+		c.moveToFirst();
+		while (!c.isAfterLast()) {
+			lists.add(cursorToList(c));
+			c.moveToNext();
+		}
+		lists=c.getCount()==0?null:lists;
+		c.close();
+		return lists;
+		
+	}
 	
 	public void sync_lists(final String email, final String password, final String url) {	
 		Log.v(TAG,"sync lists");
+		List<List_mirakle> deleted=getdeletedLists();
+		if(deleted!=null){
+			for(int i=0;i<deleted.size();i++){
+				delete_list(deleted.get(i),email,password,url);
+				deleted.get(i).setSync_state(Mirakel.SYNC_STATE_ADD);
+				deleteList(deleted.get(i));
+			}
+		}
 		new Network(new DataDownloadCommand() {			
 			@Override
 			public void after_exec(String result) {
@@ -170,20 +191,13 @@ public class ListsDataSource {
 						case Mirakel.SYNC_STATE_ADD:
 							add_list(list,email,password,url);
 							break;
-						case Mirakel.SYNC_STATE_DELETE:
-							delete_list(list,email,password,url);
-							//TODO Implement Delete from server
-							list.setSync_state(Mirakel.SYNC_STATE_ADD);
-							deleteList(list);
-							list=null;
-							continue;
 						case Mirakel.SYNC_STATE_NEED_SYNC:
 							sync_list(list,email,password,url);
 							break;
 						default:
 					}
 				}
-				merge_with_server(lists_local, lists_server);
+				merge_with_server(lists_server);
 				ContentValues values=new ContentValues();
 				values.put("sync_state", Mirakel.SYNC_STATE_NOTHING);
 				database.update("lists", values, "not sync_state="+Mirakel.SYNC_STATE_NOTHING, null);
@@ -237,8 +251,7 @@ public class ListsDataSource {
 		
 	}
 
-	protected void merge_with_server(List<List_mirakle> lists,
-			List_mirakle[] lists_server) {
+	protected void merge_with_server(List_mirakle[] lists_server) {
 		for(int i=0;i<lists_server.length;i++){
 			List_mirakle list =getList(lists_server[i].getId());
 			if(list==null){

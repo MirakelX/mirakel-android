@@ -18,8 +18,6 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.google.gson.Gson;
-
 public class TasksDataSource {
 	private static final String TAG = "TasksDataSource";
 	private SQLiteDatabase database;
@@ -71,6 +69,7 @@ public class TasksDataSource {
 
 	public void deleteTask(Task task) {
 		long id = task.getId();
+		Log.e(TAG,task.getSync_state()+"");
 		if(task.getSync_state()==Mirakel.SYNC_STATE_ADD)
 			database.delete("tasks", "_id = " + id, null);
 		else{
@@ -150,15 +149,36 @@ public class TasksDataSource {
 				tasks.add(task);
 				break;
 			}	*/
+			Log.e(TAG,task.getListId()+"");
 			tasks.add(task);
-			Log.e(TAG,task.getId()+" "+task.getName());
 			cursor.moveToNext();
 		}
 		cursor.close();
 		return tasks;
 	}
+	protected List<Task>getDeletedTasks() {
+		List<Task> tasks=new ArrayList<Task>();
+		Cursor c= database.query("tasks",allColumns,"sync_state="+Mirakel.SYNC_STATE_DELETE,null,null,null,null);
+		c.moveToFirst();
+		while (!c.isAfterLast()) {
+			tasks.add(cursorToTask(c));
+			c.moveToNext();
+		}
+		tasks=c.getCount()==0?null:tasks;
+		c.close();
+		return tasks;
+	}
+	
 	public void sync_tasks(final String email, final String password, final String url) {	
 		Log.v(TAG,"sync tasks");
+		List<Task> deleted=getDeletedTasks();
+		if(deleted!=null){
+			for(int i=0;i<deleted.size();i++){
+				delete_task(deleted.get(i),email,password,url);
+				deleted.get(i).setSync_state(Mirakel.SYNC_STATE_ADD);
+				deleteTask(deleted.get(i));
+			}
+		}
 		new Network(new DataDownloadCommand() {			
 			@Override
 			public void after_exec(String result) {
@@ -166,23 +186,18 @@ public class TasksDataSource {
 				List<Task>tasks_local=getTasks(Mirakel.LIST_ALL, Mirakel.ORDER_BY_ID);
 				for(int i=0; i<tasks_local.size();i++){
 					Task task=tasks_local.get(i);
+					Log.e(TAG,task.getSync_state()+"");
 					switch(task.getSync_state()){
 						case Mirakel.SYNC_STATE_ADD:
 							add_task(task,email,password,url);
 							break;
-						case Mirakel.SYNC_STATE_DELETE:
-							delete_task(task,email,password,url);
-							task.setSync_state(Mirakel.SYNC_STATE_ADD);
-							deleteTask(task);
-							task=null;
-							continue;
 						case Mirakel.SYNC_STATE_NEED_SYNC:
 							sync_task(task,email,password,url);
 							break;
 						default:
 					}
 				}
-				merge_with_server(tasks_local, tasks_server);
+				merge_with_server(tasks_server);
 				ContentValues values=new ContentValues();
 				values.put("sync_state", Mirakel.SYNC_STATE_NOTHING);
 				database.update("tasks", values, "not sync_state="+Mirakel.SYNC_STATE_NOTHING, null);
@@ -191,6 +206,8 @@ public class TasksDataSource {
 	}
 
 	protected List<Task> parse_json(String result) {
+		if(result.length()<3)
+			return null;
 		List<Task> tasks=new ArrayList<Task>();
 		result=result.substring(1,result.length()-2);
 		String tasks_str[]=result.split(",");
@@ -269,9 +286,10 @@ public class TasksDataSource {
 		new Network(new DataDownloadCommand() {	
 			@Override
 			public void after_exec(String result) {
-				List_mirakle list_response=new Gson().fromJson(result, List_mirakle.class);
+				Log.e(TAG,result);
+				Task task=parse_json("["+result+"]").get(0);
 				ContentValues values=new ContentValues();
-				values.put("_id", list_response.getId());
+				values.put("_id", task.getId());
 				open();
 				database.update("tasks", values, "_id="+task.getId(), null);
 			}
@@ -279,8 +297,9 @@ public class TasksDataSource {
 		
 	}
 
-	protected void merge_with_server(List<Task> tasks,
-			List<Task> tasks_server) {
+	protected void merge_with_server(List<Task> tasks_server) {
+		if(tasks_server==null)
+			return;
 		for(int i=0;i<tasks_server.size();i++){
 			Task task =getTask(tasks_server.get(i).getId());
 			if(task==null){
@@ -288,12 +307,12 @@ public class TasksDataSource {
 				ContentValues values=new ContentValues();
 				values.put("_id", tasks_server.get(i).getId());
 				open();
-				database.update("lists", values, "_id="+id, null);
+				database.update("tasks", values, "_id="+id, null);
 			}else{
 				if(task.getSync_state()==Mirakel.SYNC_STATE_NOTHING){
 					saveTask(tasks_server.get(i));
 				}else{
-					Log.e(TAG,"Merging lists not implementet");
+					Log.e(TAG,"Merging tasks not implementet");
 				}
 			}
 		}

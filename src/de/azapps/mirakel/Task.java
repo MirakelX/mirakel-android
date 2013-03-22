@@ -24,6 +24,7 @@ public class Task {
 			boolean done, GregorianCalendar due, int priority, String created_at,
 			String updated_at, int sync_state){
 		this.id=id;
+		this.setListId(list_id);
 		this.setName(name);
 		this.setContent(content);
 		this.setDone(done);
