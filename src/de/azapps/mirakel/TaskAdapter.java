@@ -82,7 +82,7 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		LocalDate today=new LocalDate();
 		LocalDate due=new LocalDate(task.getDue());
 		int cmpr=today.compareTo(due);
-		if(cmpr<0)
+		if(cmpr>0)
 			holder.taskRowDue.setTextColor(row.getResources().getColor(R.color.Red));
 		else if(cmpr==0)
 			holder.taskRowDue.setTextColor(row.getResources().getColor(R.color.Orange));
