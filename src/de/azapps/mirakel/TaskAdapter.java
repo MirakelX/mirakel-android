@@ -4,8 +4,15 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.apache.http.impl.cookie.DateUtils;
+import org.joda.time.LocalDate;
+
+import android.R.color;
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.Paint.Join;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -64,11 +71,22 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 				.getPriority() + 2]);
 		holder.taskRowPriority.setOnClickListener(clickPrio);
 		holder.taskRowPriority.setTag(task);
+		
 		holder.taskRowDue.setText(task.getDue().compareTo(
 				new GregorianCalendar(1970, 1, 1)) < 0 ? "" : (task.getDue().get(
 				Calendar.DAY_OF_MONTH)
 				+ "." + (task.getDue().get(Calendar.MONTH) + 1) + "." + task
 				.getDue().get(Calendar.YEAR)));
+		
+
+		LocalDate today=new LocalDate();
+		LocalDate due=new LocalDate(task.getDue());
+		int cmpr=today.compareTo(due);
+		if(cmpr<0)
+			holder.taskRowDue.setTextColor(row.getResources().getColor(R.color.Red));
+		else if(cmpr==0)
+			holder.taskRowDue.setTextColor(row.getResources().getColor(R.color.Orange));
+		
 		return row;
 	}
 
