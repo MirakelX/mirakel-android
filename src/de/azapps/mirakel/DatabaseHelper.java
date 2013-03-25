@@ -23,7 +23,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ "sort_by INTEGER NOT NULL DEFAULT 0, "
 				+ "created_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
 				+ "updated_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
-				+ "sync_state INTEGER DEFAULT"
+				+ "sync_state INTEGER DEFAULT "+Mirakel.SYNC_STATE_ADD
 				+ ")");
 		db.execSQL("CREATE TABLE tasks ("
 				+ "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -33,7 +33,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ "priority INTEGER NOT NULL DEFAULT 0, " + "due INTEGER, "
 				+ "created_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
 				+ "updated_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
-				+ "sync_state INTEGER DEFAULT"
+				+ "sync_state INTEGER DEFAULT "+Mirakel.SYNC_STATE_ADD
 				+ ")");
 		db.execSQL("CREATE TABLE settings ("
 				+ "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
