@@ -4,15 +4,10 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.apache.http.impl.cookie.DateUtils;
 import org.joda.time.LocalDate;
 
-import android.R.color;
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.Paint.Join;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
