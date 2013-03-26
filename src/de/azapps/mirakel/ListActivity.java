@@ -40,9 +40,9 @@ public class ListActivity extends Activity {
 		commands.put(SwipeListener.Direction.RIGHT, new SwipeCommand() {
 			@Override
 			public void runCommand(View v, MotionEvent event) {
-				Intent list = new Intent(v.getContext(), TasksActivity.class);
 				datasource.close();
-				startActivityForResult(list, 1);
+				setResult(RESULT_CANCELED);     
+				finish();
 			}
 		});
 		listView.setOnTouchListener(new SwipeListener(false, commands));
@@ -63,9 +63,11 @@ public class ListActivity extends Activity {
 				// TODO Remove Bad Hack
 				List_mirakle t = values.get((int) id);
 				Log.v(TAG, "Switch to List " + t.getId());
-				Intent returnIntent = new Intent(getApplicationContext(),TasksActivity.class);
-				returnIntent.putExtra("listId", t.getId());
-				startActivity(returnIntent);
+				datasource.close();
+				Intent returnIntent = new Intent();
+				returnIntent.putExtra("listId",t.getId());
+				setResult(RESULT_OK,returnIntent);
+				finish();
 			}
 		});
 		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
