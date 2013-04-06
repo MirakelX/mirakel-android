@@ -139,17 +139,23 @@ public class TasksDataSource {
 		List<Task> tasks = new ArrayList<Task>();
 		Cursor cursor = updateListCursor(listId, sorting);
 		cursor.moveToFirst();
+		GregorianCalendar toOld=new GregorianCalendar(1970, 1, 2);
 		while (!cursor.isAfterLast()) {
 			Task task = cursorToTask(cursor);
 			switch (listId) {
 			case Mirakel.LIST_DAILY:
 				if (task.getDue().compareTo(new GregorianCalendar()) > 0
-						|| task.isDone())
+						|| task.isDone()
+						|| task.getDue().compareTo(toOld)<=0)
 					break;
 			case Mirakel.LIST_WEEKLY:
 				GregorianCalendar t = new GregorianCalendar();
 				t.add(Calendar.DAY_OF_MONTH, 7);
-				if (task.getDue().compareTo(t) > 0 || task.isDone())
+				if (task.getDue().compareTo(t) > 0 || task.isDone()
+						|| task.getDue().compareTo(toOld)<=0)
+					break;
+			case Mirakel.LIST_ALL:
+				if(task.isDone())
 					break;
 			default:
 				tasks.add(task);
