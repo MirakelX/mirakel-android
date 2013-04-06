@@ -61,6 +61,12 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		holder.taskRowDone.setOnClickListener(clickCheckbox);
 		holder.taskRowDone.setTag(task);
 		holder.taskRowName.setText(task.getName());
+		if(task.isDone()) {
+			holder.taskRowName.setTextColor(row.getResources().getColor(R.color.Grey));
+		} else {
+			holder.taskRowName.setTextColor(row.getResources().getColor(R.color.Black));
+			
+		}
 		holder.taskRowPriority.setText("" + task.getPriority());
 		holder.taskRowPriority.setBackgroundColor(Mirakel.PRIO_COLOR[task
 				.getPriority() + 2]);

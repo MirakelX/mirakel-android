@@ -139,7 +139,7 @@ public class ListsDataSource {
 		default:
 			count += " list_id=" + list_id+" and";
 		}
-		count+=" not sync_state="+Mirakel.SYNC_STATE_DELETE;
+		count+=" done=0 and not sync_state="+Mirakel.SYNC_STATE_DELETE;
 		open();
 		Cursor c = database.rawQuery(count, null);
 		c.moveToFirst();
