@@ -61,33 +61,40 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		holder.taskRowDone.setOnClickListener(clickCheckbox);
 		holder.taskRowDone.setTag(task);
 		holder.taskRowName.setText(task.getName());
-		if(task.isDone()) {
-			holder.taskRowName.setTextColor(row.getResources().getColor(R.color.Grey));
+		if (task.isDone()) {
+			holder.taskRowName.setTextColor(row.getResources().getColor(
+					R.color.Grey));
 		} else {
-			holder.taskRowName.setTextColor(row.getResources().getColor(R.color.Black));
-			
+			holder.taskRowName.setTextColor(row.getResources().getColor(
+					R.color.Black));
 		}
 		holder.taskRowPriority.setText("" + task.getPriority());
 		holder.taskRowPriority.setBackgroundColor(Mirakel.PRIO_COLOR[task
 				.getPriority() + 2]);
 		holder.taskRowPriority.setOnClickListener(clickPrio);
 		holder.taskRowPriority.setTag(task);
-		
-		holder.taskRowDue.setText(task.getDue().compareTo(
-				new GregorianCalendar(1970, 1, 1)) < 0 ? "" : (task.getDue().get(
-				Calendar.DAY_OF_MONTH)
-				+ "." + (task.getDue().get(Calendar.MONTH) + 1) + "." + task
-				.getDue().get(Calendar.YEAR)));
-		
 
-		LocalDate today=new LocalDate();
-		LocalDate due=new LocalDate(task.getDue());
-		int cmpr=today.compareTo(due);
-		if(cmpr>0)
-			holder.taskRowDue.setTextColor(row.getResources().getColor(R.color.Red));
-		else if(cmpr==0)
-			holder.taskRowDue.setTextColor(row.getResources().getColor(R.color.Orange));
-		
+		holder.taskRowDue.setText(task.getDue().compareTo(
+				new GregorianCalendar(1970, 1, 1)) < 0 ? "" : (task.getDue()
+				.get(Calendar.DAY_OF_MONTH)
+				+ "."
+				+ (task.getDue().get(Calendar.MONTH) + 1) + "." + task.getDue()
+				.get(Calendar.YEAR)));
+
+		LocalDate today = new LocalDate();
+		LocalDate due = new LocalDate(task.getDue());
+		int cmpr = today.compareTo(due);
+		if (task.isDone()) {
+			holder.taskRowDue.setTextColor(row.getResources().getColor(
+					R.color.Grey));
+		} else if (cmpr > 0) {
+			holder.taskRowDue.setTextColor(row.getResources().getColor(
+					R.color.Red));
+		} else if (cmpr == 0) {
+			holder.taskRowDue.setTextColor(row.getResources().getColor(
+					R.color.Orange));
+		}
+
 		return row;
 	}
 
