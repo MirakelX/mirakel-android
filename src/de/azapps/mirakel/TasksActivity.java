@@ -29,7 +29,6 @@ import android.widget.TextView.OnEditorActionListener;
 public class TasksActivity extends Activity {
 	private static final String TAG = "TasksActivity";
 	private List_mirakle list;
-	private String taskOrder;
 	private TasksDataSource datasource;
 	private ListsDataSource datasource_lists;
 	private TaskAdapter adapter;
@@ -126,7 +125,7 @@ public class TasksActivity extends Activity {
 		Log.v(TAG, "loading...");
 		if(list==null) return;
 		Log.v(TAG, "loading..." + list.getId());
-		final List<Task> values = datasource.getTasks(list, taskOrder);
+		final List<Task> values = datasource.getTasks(list, list.getSortBy());
 		adapter = new TaskAdapter(this, R.layout.tasks_row, values,
 				new OnClickListener() {
 					@Override
@@ -300,16 +299,17 @@ public class TasksActivity extends Activity {
 				public void onClick(DialogInterface dialog, int item) {
 					switch (item) {
 					case 1:
-						taskOrder = Mirakel.ORDER_BY_DUE;
+						list.setSortBy(Mirakel.SORT_BY_DUE);
 						break;
 					case 2:
-						taskOrder = Mirakel.ORDER_BY_PRIO;
+						list.setSortBy(Mirakel.SORT_BY_PRIO);
 						break;
 					default:
-						taskOrder = Mirakel.ORDER_BY_ID;
+						list.setSortBy(Mirakel.SORT_BY_ID);
 						break;
 					}
-					Log.e(TAG, "sorting: " + taskOrder);
+					datasource_lists.saveList(list);
+					Log.e(TAG, "sorting: " + list.getSortBy());
 					load_tasks();
 					Toast.makeText(getApplicationContext(), items[item],
 							Toast.LENGTH_SHORT).show();

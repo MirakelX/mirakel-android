@@ -64,10 +64,27 @@ public class ListsDataSource {
 
 	public void saveList(List_mirakle list) {
 		Log.v(TAG, "saveTask");
-		list.setSync_state(list.getSync_state() == Mirakel.SYNC_STATE_ADD ? Mirakel.SYNC_STATE_ADD
-				: Mirakel.SYNC_STATE_NEED_SYNC);
-		ContentValues values = list.getContentValues();
-		database.update("lists", values, "_id = " + list.getId(), null);
+
+		SharedPreferences settings = PreferenceManager
+				.getDefaultSharedPreferences(context.getApplicationContext());
+		SharedPreferences.Editor editor = settings.edit();
+		switch (list.getId()) {
+		case Mirakel.LIST_ALL:
+			editor.putInt("SortListAll", list.getSortBy());
+			break;
+		case Mirakel.LIST_DAILY:
+			editor.putInt("SortListDaily", list.getSortBy());
+			break;
+		case Mirakel.LIST_WEEKLY:
+			editor.putInt("SortListWeekly", list.getSortBy());
+			break;
+		default:
+			list.setSync_state(list.getSync_state() == Mirakel.SYNC_STATE_ADD ? Mirakel.SYNC_STATE_ADD
+					: Mirakel.SYNC_STATE_NEED_SYNC);
+			ContentValues values = list.getContentValues();
+			database.update("lists", values, "_id = " + list.getId(), null);
+		}
+		editor.commit();
 	}
 
 	public void deleteList(List_mirakle list) {
@@ -131,25 +148,26 @@ public class ListsDataSource {
 		List_mirakle list = new List_mirakle();
 		SharedPreferences settings = PreferenceManager
 				.getDefaultSharedPreferences(context.getApplicationContext());
-		switch(id){
+		switch (id) {
 		case Mirakel.LIST_ALL:
 			list.setName(this.context.getString(R.string.list_all));
-			//list.setSort_by(settings.getString("SortListAll", Mirakel.ORDER_BY_ID));
+			list.setSortBy(settings.getInt("SortListAll", Mirakel.SORT_BY_ID));
 			break;
 		case Mirakel.LIST_DAILY:
 			list.setName(this.context.getString(R.string.list_today));
-			//list.setSort_by(settings.getInt("SortListAll", Mirakel.ORDER_BY_ID));
+			list.setSortBy(settings
+					.getInt("SortListDaily", Mirakel.SORT_BY_ID));
 			break;
 		case Mirakel.LIST_WEEKLY:
 			list.setName(this.context.getString(R.string.list_week));
-			//list.setSort_by(settings.getInt("SortListAll", Mirakel.ORDER_BY_ID));
+			list.setSortBy(settings.getInt("SortListWeekly",
+					Mirakel.SORT_BY_ID));
 			break;
 		default:
 			Toast.makeText(context, "NO SUCH LIST!", Toast.LENGTH_LONG).show();
 			return null;
 		}
 		list.setId(id);
-		
 
 		return list;
 	}
@@ -160,11 +178,11 @@ public class ListsDataSource {
 		case Mirakel.LIST_ALL:
 			break;
 		case Mirakel.LIST_DAILY:
-			return new TasksDataSource(null).getTasks(Mirakel.LIST_DAILY,
-					Mirakel.ORDER_BY_ID).size();
+			return new TasksDataSource(null).getTasks(Mirakel.LIST_DAILY)
+					.size();
 		case Mirakel.LIST_WEEKLY:
-			return new TasksDataSource(null).getTasks(Mirakel.LIST_WEEKLY,
-					Mirakel.ORDER_BY_ID).size();
+			return new TasksDataSource(null).getTasks(Mirakel.LIST_WEEKLY)
+					.size();
 		default:
 			count += " list_id=" + list_id + " and";
 		}

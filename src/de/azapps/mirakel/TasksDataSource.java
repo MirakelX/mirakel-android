@@ -113,7 +113,7 @@ public class TasksDataSource {
 		return task;
 	}
 
-	private Cursor updateListCursor(int listId, String sorting) {
+	private Cursor updateListCursor(int listId, int sorting) {
 		String where = "";
 		switch (listId) {
 		case Mirakel.LIST_ALL:
@@ -131,34 +131,49 @@ public class TasksDataSource {
 		}
 		where += " not sync_state=" + Mirakel.SYNC_STATE_DELETE;
 		Log.v(TAG, where);
+		String order;
+		switch (sorting) {
+		case Mirakel.SORT_BY_PRIO:
+			order = "priority desc";
+			break;
+		case Mirakel.SORT_BY_DUE:
+			order = " CASE WHEN due='' OR due=0 THEN 1 ELSE 0 END, due ASC";
+			break;
+		default:
+			order = "_id ASC";
+		}
 		return Mirakel.getReadableDatabase().query("tasks", allColumns, where,
-				null, null, null, "done, " + sorting);
+				null, null, null, "done, " + order);
 	}
 
-	public List<Task> getTasks(List_mirakle list, String sorting) {
+	public List<Task> getTasks(List_mirakle list, int sorting) {
 		return getTasks(list.getId(), sorting);
 	}
-	public List<Task> getTasks(int listId, String sorting) {
+
+	public List<Task> getTasks(int listId) {
+		return getTasks(listId, Mirakel.SORT_BY_ID);
+	}
+
+	public List<Task> getTasks(int listId, int sorting) {
 		List<Task> tasks = new ArrayList<Task>();
 		Cursor cursor = updateListCursor(listId, sorting);
 		cursor.moveToFirst();
-		GregorianCalendar toOld=new GregorianCalendar(1970, 1, 2);
+		GregorianCalendar toOld = new GregorianCalendar(1970, 1, 2);
 		while (!cursor.isAfterLast()) {
 			Task task = cursorToTask(cursor);
 			switch (listId) {
 			case Mirakel.LIST_DAILY:
 				if (task.getDue().compareTo(new GregorianCalendar()) > 0
-						|| task.isDone()
-						|| task.getDue().compareTo(toOld)<=0)
+						|| task.isDone() || task.getDue().compareTo(toOld) <= 0)
 					break;
 			case Mirakel.LIST_WEEKLY:
 				GregorianCalendar t = new GregorianCalendar();
 				t.add(Calendar.DAY_OF_MONTH, 7);
 				if (task.getDue().compareTo(t) > 0 || task.isDone()
-						|| task.getDue().compareTo(toOld)<=0)
+						|| task.getDue().compareTo(toOld) <= 0)
 					break;
 			case Mirakel.LIST_ALL:
-				if(task.isDone())
+				if (task.isDone())
 					break;
 			default:
 				tasks.add(task);
@@ -200,8 +215,7 @@ public class TasksDataSource {
 			@Override
 			public void after_exec(String result) {
 				List<Task> tasks_server = parse_json(result);
-				List<Task> tasks_local = getTasks(Mirakel.LIST_ALL,
-						Mirakel.ORDER_BY_ID);
+				List<Task> tasks_local = getTasks(Mirakel.LIST_ALL);
 				for (int i = 0; i < tasks_local.size(); i++) {
 					Task task = tasks_local.get(i);
 					switch (task.getSync_state()) {
