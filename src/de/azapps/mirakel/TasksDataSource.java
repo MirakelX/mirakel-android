@@ -135,6 +135,9 @@ public class TasksDataSource {
 				null, null, null, "done, " + sorting);
 	}
 
+	public List<Task> getTasks(List_mirakle list, String sorting) {
+		return getTasks(list.getId(), sorting);
+	}
 	public List<Task> getTasks(int listId, String sorting) {
 		List<Task> tasks = new ArrayList<Task>();
 		Cursor cursor = updateListCursor(listId, sorting);

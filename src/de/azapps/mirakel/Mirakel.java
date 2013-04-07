@@ -16,6 +16,7 @@ public class Mirakel extends Application {
 	public static final String ORDER_BY_PRIO = "priority desc";
 	public static final String ORDER_BY_DUE = " CASE WHEN due='' OR due=0 THEN 1 ELSE 0 END, due ASC";
 	public static final String ORDER_BY_ID = "_id asc";
+	
 	public final static short SYNC_STATE_NOTHING = 0;
 	public final static short SYNC_STATE_DELETE = -1;
 	public final static short SYNC_STATE_ADD = 1;
