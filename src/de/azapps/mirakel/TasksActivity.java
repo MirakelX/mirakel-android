@@ -297,7 +297,11 @@ public class TasksActivity extends Activity {
 			builder.setTitle(this.getString(R.string.task_sorting_title));
 			builder.setItems(items, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int item) {
+					Log.v(TAG,"selected " + item);
 					switch (item) {
+					case 0:
+						list.setSortBy(Mirakel.SORT_BY_OPT);
+						break;
 					case 1:
 						list.setSortBy(Mirakel.SORT_BY_DUE);
 						break;

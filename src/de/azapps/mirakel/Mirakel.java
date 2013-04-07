@@ -13,7 +13,7 @@ public class Mirakel extends Application {
 	public static final int[] PRIO_COLOR = { Color.parseColor("#008000"),
 			Color.parseColor("#00c400"), Color.parseColor("#3377FF"),
 			Color.parseColor("#FF7700"), Color.parseColor("#FF3333") };
-	public static final short SORT_BY_ID=0, SORT_BY_DUE=1, SORT_BY_PRIO=2;
+	public static final short SORT_BY_OPT=0, SORT_BY_DUE=1, SORT_BY_PRIO=2, SORT_BY_ID=3;
 	
 	public final static short SYNC_STATE_NOTHING = 0;
 	public final static short SYNC_STATE_DELETE = -1;

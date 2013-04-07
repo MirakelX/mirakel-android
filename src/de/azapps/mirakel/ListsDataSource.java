@@ -151,17 +151,17 @@ public class ListsDataSource {
 		switch (id) {
 		case Mirakel.LIST_ALL:
 			list.setName(this.context.getString(R.string.list_all));
-			list.setSortBy(settings.getInt("SortListAll", Mirakel.SORT_BY_ID));
+			list.setSortBy(settings.getInt("SortListAll", Mirakel.SORT_BY_OPT));
 			break;
 		case Mirakel.LIST_DAILY:
 			list.setName(this.context.getString(R.string.list_today));
 			list.setSortBy(settings
-					.getInt("SortListDaily", Mirakel.SORT_BY_ID));
+					.getInt("SortListDaily", Mirakel.SORT_BY_OPT));
 			break;
 		case Mirakel.LIST_WEEKLY:
 			list.setName(this.context.getString(R.string.list_week));
 			list.setSortBy(settings.getInt("SortListWeekly",
-					Mirakel.SORT_BY_ID));
+					Mirakel.SORT_BY_OPT));
 			break;
 		default:
 			Toast.makeText(context, "NO SUCH LIST!", Toast.LENGTH_LONG).show();

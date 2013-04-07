@@ -131,17 +131,20 @@ public class TasksDataSource {
 		}
 		where += " not sync_state=" + Mirakel.SYNC_STATE_DELETE;
 		Log.v(TAG, where);
-		String order;
+		String order="";
 		switch (sorting) {
 		case Mirakel.SORT_BY_PRIO:
 			order = "priority desc";
 			break;
+		case Mirakel.SORT_BY_OPT:
+			order = ", priority DESC";
 		case Mirakel.SORT_BY_DUE:
-			order = " CASE WHEN due='' OR due=0 THEN 1 ELSE 0 END, due ASC";
+			order = " CASE WHEN (due='' OR due=0 OR due IS NULL OR due='1970-1-1') THEN 1 ELSE due END DESC" + order;
 			break;
 		default:
 			order = "_id ASC";
 		}
+		Log.v(TAG,order);
 		return Mirakel.getReadableDatabase().query("tasks", allColumns, where,
 				null, null, null, "done, " + order);
 	}

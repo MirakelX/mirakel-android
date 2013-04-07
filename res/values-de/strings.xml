@@ -41,6 +41,7 @@
         <item>Standard</item>
         <item>Termin</item>
         <item>Priorität</item>
+        <item>Erstellungsdatum</item>
     </string-array>
 
     <!-- Lists -->

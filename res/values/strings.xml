@@ -45,6 +45,7 @@
         <item>Default</item>
         <item>Deadline</item>
         <item>Priority</item>
+        <item>Created date</item>
     </string-array>
 
     <!-- Lists -->
