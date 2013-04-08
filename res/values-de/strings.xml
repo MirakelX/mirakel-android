@@ -9,6 +9,7 @@
     <string name="no">Nein</string>
     <string name="no_date">Kein Termin</string>
     <string name="no_lists">Du hast keine Listen. Erstelle bitte eine neue.</string>
+    <string name="dateFormat">dd.MM.yyyy</string>
     
     <!-- Home -->
     <string name="home_button_official">Offizieller Server</string>

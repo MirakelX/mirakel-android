@@ -1,8 +1,10 @@
 package de.azapps.mirakel;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import android.app.Activity;
@@ -170,10 +172,8 @@ public class TaskActivity extends Activity {
 		Task_due.setCompoundDrawables(due_img, null, null, null);
 		Task_due.setText(task.getDue().compareTo(
 				new GregorianCalendar(1970, 1, 1)) < 0 ? this
-				.getString(R.string.task_no_due) : (task.getDue().get(
-				Calendar.DAY_OF_MONTH)
-				+ "." + (task.getDue().get(Calendar.MONTH) + 1) + "." + task
-				.getDue().get(Calendar.YEAR)));
+				.getString(R.string.task_no_due) : new SimpleDateFormat(
+				this.getString(R.string.dateFormat), Locale.getDefault()).format(task.getDue().getTime()));
 
 		Task_due.setOnClickListener(new View.OnClickListener() {
 
@@ -195,8 +195,7 @@ public class TaskActivity extends Activity {
 								task.setDue(new GregorianCalendar(year,
 										monthOfYear, dayOfMonth));
 								datasource.saveTask(task);
-								Task_due.setText(dayOfMonth + "."
-										+ (monthOfYear + 1) + "." + year);
+								Task_due.setText(new SimpleDateFormat(view.getContext().getString(R.string.dateFormat), Locale.getDefault()).format(task.getDue().getTime()));
 
 							}
 						}, due.get(Calendar.YEAR), due.get(Calendar.MONTH), due
@@ -250,8 +249,9 @@ public class TaskActivity extends Activity {
 						InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 						task.setContent(txt.getText().toString());
 						datasource.saveTask(task);
-						Task_content.setText(task.getContent().trim().length() == 0 ? 
-								getString(R.string.task_no_content) : task.getContent());
+						Task_content
+								.setText(task.getContent().trim().length() == 0 ? getString(R.string.task_no_content)
+										: task.getContent());
 						ViewSwitcher switcher = (ViewSwitcher) findViewById(R.id.switch_content);
 						switcher.showPrevious();
 						imm.hideSoftInputFromWindow(txt.getWindowToken(), 0);

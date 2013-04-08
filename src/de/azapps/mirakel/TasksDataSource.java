@@ -24,9 +24,11 @@ public class TasksDataSource {
 	private DatabaseHelper dbHelper;
 	private String[] allColumns = { "_id", "list_id", "name", "content",
 			"done", "due", "priority", "created_at", "updated_at", "sync_state" };
+	private Context context;
 
 	public TasksDataSource(Context context) {
 		dbHelper = new DatabaseHelper(context);
+		this.context = context;
 	}
 
 	public void open() throws SQLException {
@@ -98,11 +100,10 @@ public class TasksDataSource {
 		int i = 0;
 		GregorianCalendar t = new GregorianCalendar();
 		try {
-			t.setTime(new SimpleDateFormat("yyyy-MM-dd", Locale.GERMAN)
+			t.setTime(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 					.parse(cursor.getString(5)));
 		} catch (ParseException e) {
 			t.setTime(new Date(0));
-			Log.e(TAG, "Unable to parse Date");
 		}
 
 		Task task = new Task(cursor.getLong(i++), cursor.getLong(i++),
@@ -131,7 +132,7 @@ public class TasksDataSource {
 		}
 		where += " not sync_state=" + Mirakel.SYNC_STATE_DELETE;
 		Log.v(TAG, where);
-		String order="";
+		String order = "";
 		switch (sorting) {
 		case Mirakel.SORT_BY_PRIO:
 			order = "priority desc";
@@ -139,12 +140,13 @@ public class TasksDataSource {
 		case Mirakel.SORT_BY_OPT:
 			order = ", priority DESC";
 		case Mirakel.SORT_BY_DUE:
-			order = " CASE WHEN (due='' OR due=0 OR due IS NULL OR due='1970-1-1') THEN 1 ELSE due END DESC" + order;
+			order = " CASE WHEN (due='' OR due=0 OR due IS NULL OR date(due) <= date('1970-01-01') OR due='1970-1-1') THEN date('now','+1000 years') ELSE date(due) END ASC"
+					+ order;
 			break;
 		default:
 			order = "_id ASC";
 		}
-		Log.v(TAG,order);
+		Log.v(TAG, order);
 		return Mirakel.getReadableDatabase().query("tasks", allColumns, where,
 				null, null, null, "done, " + order);
 	}
@@ -262,8 +264,9 @@ public class TasksDataSource {
 			} else if (key.equals("\"due\"")) {
 				GregorianCalendar temp = new GregorianCalendar();
 				try {
-					temp.setTime(new SimpleDateFormat("yyyy-MM-dd",
-							Locale.GERMAN).parse(key_value[1].substring(1,
+					temp.setTime(new SimpleDateFormat(context
+							.getString(R.string.dateFormat), Locale
+							.getDefault()).parse(key_value[1].substring(1,
 							key_value[1].length() - 1)));
 				} catch (Exception e) {
 					temp.setTime(new Date(0));
@@ -315,9 +318,7 @@ public class TasksDataSource {
 				+ ""));
 		data.add(new BasicNameValuePair("task[done]", task.isDone() + ""));
 		GregorianCalendar due = task.getDue();
-		data.add(new BasicNameValuePair("task[due]", due.get(Calendar.YEAR)
-				+ "-" + due.get(Calendar.MONTH) + "-"
-				+ due.get(Calendar.DAY_OF_MONTH)));
+		data.add(new BasicNameValuePair("task[due]", new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(due.getTime())));
 		data.add(new BasicNameValuePair("task[content]", task.getContent()));
 		new Network(new DataDownloadCommand() {
 			@Override
@@ -337,9 +338,7 @@ public class TasksDataSource {
 				+ ""));
 		data.add(new BasicNameValuePair("task[done]", task.isDone() + ""));
 		GregorianCalendar due = task.getDue();
-		data.add(new BasicNameValuePair("task[due]", due.get(Calendar.YEAR)
-				+ "-" + due.get(Calendar.MONTH) + "-"
-				+ due.get(Calendar.DAY_OF_MONTH)));
+		data.add(new BasicNameValuePair("task[due]", new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(due.getTime())));
 		data.add(new BasicNameValuePair("task[content]", task.getContent()));
 		new Network(new DataDownloadCommand() {
 			@Override
