@@ -40,7 +40,7 @@ public class StartActivity extends Activity {
 					startActivity(intent);
 				} else {
 					Intent intent = new Intent(StartActivity.this,
-							TasksActivity.class);
+							MainActivity.class);
 					intent.putExtra("listId", Mirakel.LIST_ALL);
 					startActivity(intent);
 				}
