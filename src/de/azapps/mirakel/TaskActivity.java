@@ -1,9 +1,11 @@
 package de.azapps.mirakel;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -34,6 +36,7 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 public class TaskActivity extends Activity {
@@ -172,8 +175,9 @@ public class TaskActivity extends Activity {
 		Task_due.setCompoundDrawables(due_img, null, null, null);
 		Task_due.setText(task.getDue().compareTo(
 				new GregorianCalendar(1970, 1, 1)) < 0 ? this
-				.getString(R.string.task_no_due) : new SimpleDateFormat(
-				this.getString(R.string.dateFormat), Locale.getDefault()).format(task.getDue().getTime()));
+				.getString(R.string.task_no_due) : new SimpleDateFormat(this
+				.getString(R.string.dateFormat), Locale.getDefault())
+				.format(task.getDue().getTime()));
 
 		Task_due.setOnClickListener(new View.OnClickListener() {
 
@@ -195,7 +199,11 @@ public class TaskActivity extends Activity {
 								task.setDue(new GregorianCalendar(year,
 										monthOfYear, dayOfMonth));
 								datasource.saveTask(task);
-								Task_due.setText(new SimpleDateFormat(view.getContext().getString(R.string.dateFormat), Locale.getDefault()).format(task.getDue().getTime()));
+								Task_due.setText(new SimpleDateFormat(view
+										.getContext().getString(
+												R.string.dateFormat), Locale
+										.getDefault()).format(task.getDue()
+										.getTime()));
 
 							}
 						}, due.get(Calendar.YEAR), due.get(Calendar.MONTH), due
@@ -221,7 +229,7 @@ public class TaskActivity extends Activity {
 
 		// Task content
 		Task_content = (TextView) findViewById(R.id.task_content);
-		Task_content.setText(task.getContent().trim().length() == 0 ? this
+		Task_content.setText(task.getContent().length() == 0 ? this
 				.getString(R.string.task_no_content) : task.getContent());
 		Drawable content_img = getApplicationContext().getResources()
 				.getDrawable(android.R.drawable.ic_menu_edit);
@@ -305,7 +313,7 @@ public class TaskActivity extends Activity {
 		datasource.close();
 		super.onDestroy();
 	}
-
+	private List<List_mirakle> lists;
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -331,6 +339,43 @@ public class TaskActivity extends Activity {
 			return true;
 		case android.R.id.home:
 			finish();
+			return true;
+		case R.id.menu_move:
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle(
+					R.string.dialog_move);
+/*
+			builder.setPositiveButton(this.getString(R.string.Yes),
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+
+						}
+					});
+			builder.setNegativeButton(this.getString(R.string.no),
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							// do nothing
+						}
+					});*/
+			ListsDataSource listds=new ListsDataSource(this);
+			lists=listds.getAllLists();
+
+			List<CharSequence> items=new ArrayList<CharSequence>();
+			for(List_mirakle list:lists) {
+				if(list.getId()>0)
+				items.add(list.getName());
+			}
+			builder.setItems(items.toArray(new CharSequence[items.size()]), new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int item) {
+					task.setListId(lists.get(item).getId());
+					datasource.saveTask(task);
+				}
+			});
+
+			AlertDialog dialog = builder.create();
+			dialog.show();
+			return true;
+
 		default:
 			return super.onOptionsItemSelected(item);
 

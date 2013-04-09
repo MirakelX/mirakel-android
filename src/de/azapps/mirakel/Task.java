@@ -68,7 +68,7 @@ public class Task {
 	}
 
 	public String getContent() {
-		return content;
+		return content.trim().replace("\\n","\n");
 	}
 
 	public void setContent(String content) {

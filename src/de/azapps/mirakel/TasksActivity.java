@@ -134,6 +134,7 @@ public class TasksActivity extends Activity {
 						Task task = (Task) cb.getTag();
 						task.toggleDone();
 						datasource.saveTask(task);
+						load_tasks();
 					}
 				}, new OnClickListener() {
 					@Override

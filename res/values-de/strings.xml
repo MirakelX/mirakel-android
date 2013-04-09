@@ -58,6 +58,7 @@
 
     <!-- Menu -->
     <string name="menu_delete">Löschen</string>
+    <string name="menu_move">Verschieben</string>
     <string name="menu_settings">Einstellungen</string>
     <string name="title_activity_list">Listen</string>
 </resources>
