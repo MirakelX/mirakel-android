@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpVersion;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -15,6 +16,10 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.CoreProtocolPNames;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 
 
@@ -69,7 +74,12 @@ public class Network extends AsyncTask<String, String, String> {
 
 	private String downloadUrl(String myurl) throws IOException,
 			URISyntaxException {
-		DefaultHttpClient client = new DefaultHttpClient();
+		HttpParams params = new BasicHttpParams();
+		params.setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+		//HttpConnectionParams.setConnectionTimeout(params, 3000);
+		//HttpConnectionParams.setSoTimeout(params, 3000);
+		HttpConnectionParams.setTcpNoDelay(params, true);
+		DefaultHttpClient client = new DefaultHttpClient(params);
 		client.getCredentialsProvider().setCredentials(new AuthScope(null, -1),
 				new UsernamePasswordCredentials(Email, Password));
 		HttpResponse response;
@@ -78,7 +88,9 @@ public class Network extends AsyncTask<String, String, String> {
 			Log.v(TAG,"GET "+myurl);
 			HttpGet get = new HttpGet();
 			get.setURI(new URI(myurl));
+			//Log.d(TAG,"Request Started");
 			response= client.execute(get);
+			//Log.d(TAG,"Request Endend");
 			break;
 		case Mirakel.Http_Mode.PUT:
 			Log.v(TAG,"PUT "+myurl);

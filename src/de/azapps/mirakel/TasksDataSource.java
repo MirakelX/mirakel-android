@@ -219,7 +219,10 @@ public class TasksDataSource {
 			String key=key_value[0];
 			if(key.equals("{\"content\"")){
 				t=new Task();
-				t.setContent(key_value[1].substring(1,key_value[1].length()-1));
+				if(key_value[1]!="null"){
+					t.setContent(key_value[1].substring(1,key_value[1].length()-1));
+				}else
+					t.setContent(null);
 			}else if(key.equals("\"done\"")){
 				t.setDone(key_value[1].indexOf("true")!=-1);
 			}else if(key.equals("\"due\"")){
