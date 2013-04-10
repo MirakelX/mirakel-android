@@ -26,10 +26,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.TextView.OnEditorActionListener;
 
-public class TasksActivity extends Activity{
+public class TasksActivity extends Activity {
 	private static final String TAG = "TasksActivity";
-	private int listId;
-	private String taskOrder;
+	private List_mirakle list;
 	private TasksDataSource datasource;
 	private ListsDataSource datasource_lists;
 	private TaskAdapter adapter;
@@ -38,22 +37,23 @@ public class TasksActivity extends Activity{
 	private String server_url;
 	private String Email;
 	private String Password;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_tasks);
 		main = this;
-		this.listId = this.getIntent().getIntExtra("listId", 0);
-		Log.v(TAG, "Start list" + listId);
-		server_url=this.getIntent().getStringExtra("url");
 		datasource = new TasksDataSource(this);
 		datasource.open();
 		datasource_lists = new ListsDataSource(this);
 		datasource_lists.open();
-		if(server_url!=null){
-			Email=this.getIntent().getStringExtra("email");
-			Password=this.getIntent().getStringExtra("password");
+		this.list = datasource_lists.getList(this.getIntent().getIntExtra("listId",
+				0));
+		Log.v(TAG, "Start list" + list.getId());
+		server_url = this.getIntent().getStringExtra("url");
+		if (server_url != null) {
+			Email = this.getIntent().getStringExtra("email");
+			Password = this.getIntent().getStringExtra("password");
 			datasource_lists.sync_lists(Email, Password, server_url);
 			datasource.sync_tasks(Email, Password, server_url);
 		}
@@ -79,13 +79,15 @@ public class TasksActivity extends Activity{
 					KeyEvent event) {
 				if (actionId == EditorInfo.IME_ACTION_SEND) {
 					Log.v(TAG, "New Task");
-					long id=getListId();
-					Log.v(TAG,"Create in " + id);
-					if(id<=0) {
+					long id = list.getId();
+					Log.v(TAG, "Create in " + id);
+					if (id <= 0) {
 						try {
-							id=datasource_lists.getFirstList().getId();
+							id = datasource_lists.getFirstList().getId();
 						} catch (NullPointerException e) {
-							Toast.makeText(getApplicationContext(), R.string.no_lists, Toast.LENGTH_LONG).show();
+							Toast.makeText(getApplicationContext(),
+									R.string.no_lists, Toast.LENGTH_LONG)
+									.show();
 							return false;
 						}
 					}
@@ -106,7 +108,8 @@ public class TasksActivity extends Activity{
 		if (requestCode == 1) {
 			if (resultCode == RESULT_OK) {
 				Log.v(TAG, "Change List");
-				listId = data.getIntExtra("listId", Mirakel.LIST_ALL);
+				int listId = data.getIntExtra("listId", Mirakel.LIST_ALL);
+				list = datasource_lists.getList(listId);
 				datasource_lists.open();
 				datasource.open();
 				load_tasks();
@@ -118,8 +121,10 @@ public class TasksActivity extends Activity{
 	}
 
 	private void load_tasks() {
-		Log.v(TAG, "loading..." + listId);
-		final List<Task> values = datasource.getTasks(listId, taskOrder);
+		Log.v(TAG, "loading...");
+		if(list==null) return;
+		Log.v(TAG, "loading..." + list.getId());
+		final List<Task> values = datasource.getTasks(list, list.getSortBy());
 		adapter = new TaskAdapter(this, R.layout.tasks_row, values,
 				new OnClickListener() {
 					@Override
@@ -128,6 +133,7 @@ public class TasksActivity extends Activity{
 						Task task = (Task) cb.getTag();
 						task.toggleDone();
 						datasource.saveTask(task);
+						load_tasks();
 					}
 				}, new OnClickListener() {
 					@Override
@@ -186,7 +192,7 @@ public class TasksActivity extends Activity{
 				startActivity(task);
 			}
 		});
-		switch (listId) {
+		switch (list.getId()) {
 		case Mirakel.LIST_ALL:
 			this.setTitle(this.getString(R.string.list_all));
 			break;
@@ -197,7 +203,6 @@ public class TasksActivity extends Activity{
 			this.setTitle(this.getString(R.string.list_week));
 			break;
 		default:
-			List_mirakle list = datasource_lists.getList(listId);
 			this.setTitle(list.getName());
 		}
 	}
@@ -255,14 +260,11 @@ public class TasksActivity extends Activity{
 		super.onDestroy();
 	}
 
-	private long getListId() {
-		return listId;
-	}
-
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.list_delete:
+			long listId = list.getId();
 			if (listId == Mirakel.LIST_ALL || listId == Mirakel.LIST_DAILY
 					|| listId == Mirakel.LIST_WEEKLY)
 				return true;
@@ -273,10 +275,9 @@ public class TasksActivity extends Activity{
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
 										int which) {
-									datasource_lists
-											.deleteList(datasource_lists
-													.getList(listId));
-									listId = Mirakel.LIST_ALL;
+									datasource_lists.deleteList(list);
+									list = datasource_lists
+											.getList(Mirakel.LIST_ALL);
 									load_tasks();
 								}
 							})
@@ -295,18 +296,23 @@ public class TasksActivity extends Activity{
 			builder.setTitle(this.getString(R.string.task_sorting_title));
 			builder.setItems(items, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int item) {
+					Log.v(TAG,"selected " + item);
 					switch (item) {
+					case 0:
+						list.setSortBy(Mirakel.SORT_BY_OPT);
+						break;
 					case 1:
-						taskOrder = Mirakel.ORDER_BY_DUE;
+						list.setSortBy(Mirakel.SORT_BY_DUE);
 						break;
 					case 2:
-						taskOrder = Mirakel.ORDER_BY_PRIO;
+						list.setSortBy(Mirakel.SORT_BY_PRIO);
 						break;
 					default:
-						taskOrder = Mirakel.ORDER_BY_ID;
+						list.setSortBy(Mirakel.SORT_BY_ID);
 						break;
 					}
-					Log.e(TAG, "sorting: " + taskOrder);
+					datasource_lists.saveList(list);
+					Log.e(TAG, "sorting: " + list.getSortBy());
 					load_tasks();
 					Toast.makeText(getApplicationContext(), items[item],
 							Toast.LENGTH_SHORT).show();

@@ -13,7 +13,7 @@ public class List_mirakle {
 	private int id;
 	private String name;
 	// private int user_id;
-	private short sort_by;
+	private int sort_by;
 	private String created_at;
 	private String updated_at;
 	private int task_count;
@@ -28,7 +28,7 @@ public class List_mirakle {
 		this.setCreated_at(created_at);
 		this.setName(name);
 		this.setUpdated_at(updated_at);
-		this.setSort_by(sort_by);
+		this.setSortBy(sort_by);
 		this.setTask_count(task_count);
 		this.setSync_state(sync_state);
 	}
@@ -71,11 +71,11 @@ public class List_mirakle {
 		this.updated_at = updated_at;
 	}
 
-	public short getSort_by() {
+	public int getSortBy() {
 		return sort_by;
 	}
 
-	public void setSort_by(short sort_by) {
+	public void setSortBy(int sort_by) {
 		this.sort_by = sort_by;
 	}
 

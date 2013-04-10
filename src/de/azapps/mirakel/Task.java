@@ -1,8 +1,10 @@
 package de.azapps.mirakel;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import android.content.ContentValues;
@@ -21,9 +23,9 @@ public class Task {
 	private int sync_state;
 
 	public Task(long id, long list_id, String name, String content,
-			boolean done, GregorianCalendar due, int priority, String created_at,
-			String updated_at, int sync_state){
-		this.id=id;
+			boolean done, GregorianCalendar due, int priority,
+			String created_at, String updated_at, int sync_state) {
+		this.id = id;
 		this.setListId(list_id);
 		this.setName(name);
 		this.setContent(content);
@@ -35,7 +37,9 @@ public class Task {
 		this.setSync_state(sync_state);
 	}
 
-	public Task(){}
+	public Task() {
+	}
+
 	public long getId() {
 		return id;
 	}
@@ -64,7 +68,7 @@ public class Task {
 	}
 
 	public String getContent() {
-		return content;
+		return content.trim().replace("\\n","\n");
 	}
 
 	public void setContent(String content) {
@@ -119,7 +123,7 @@ public class Task {
 	public void setUpdated_at(String updated_at) {
 		this.updated_at = updated_at;
 	}
-	
+
 	public int getSync_state() {
 		return sync_state;
 	}
@@ -127,7 +131,7 @@ public class Task {
 	public void setSync_state(int sync_state) {
 		this.sync_state = sync_state;
 	}
-	
+
 	@Override
 	public String toString() {
 		return name;
@@ -140,7 +144,8 @@ public class Task {
 		cv.put("name", name);
 		cv.put("content", content);
 		cv.put("done", done);
-		cv.put("due", due.get(Calendar.YEAR)+"-"+(due.get(Calendar.MONTH)+1)+"-"+due.get(Calendar.DAY_OF_MONTH));   
+		cv.put("due",
+				new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(due.getTime()));
 		cv.put("priority", priority);
 		cv.put("created_at", created_at);
 		cv.put("updated_at", updated_at);

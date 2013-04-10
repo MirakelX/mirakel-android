@@ -9,6 +9,7 @@
     <string name="no">Nein</string>
     <string name="no_date">Kein Termin</string>
     <string name="no_lists">Du hast keine Listen. Erstelle bitte eine neue.</string>
+    <string name="dateFormat">dd.MM.yyyy</string>
     
     <!-- Home -->
     <string name="home_button_official">Offizieller Server</string>
@@ -41,6 +42,7 @@
         <item>Standard</item>
         <item>Termin</item>
         <item>Priorität</item>
+        <item>Erstellungsdatum</item>
     </string-array>
 
     <!-- Lists -->
@@ -56,6 +58,7 @@
 
     <!-- Menu -->
     <string name="menu_delete">Löschen</string>
+    <string name="menu_move">Verschieben</string>
     <string name="menu_settings">Einstellungen</string>
     <string name="title_activity_list">Listen</string>
 </resources>

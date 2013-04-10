@@ -7,6 +7,12 @@
           android:showAsAction="ifRoom|withText" />
         
     <item
+        android:id="@+id/menu_move"
+        android:icon="@android:drawable/ic_menu_set_as"
+          android:title="@string/menu_move"
+          android:showAsAction="ifRoom|withText" />
+        
+    <item
         android:id="@+id/menu_settings"
         android:orderInCategory="100"
         android:showAsAction="never"
