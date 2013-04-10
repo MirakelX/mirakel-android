@@ -58,7 +58,6 @@ public class TasksActivity extends Activity{
 			datasource.sync_tasks(Email, Password, server_url);
 		}
 		getResources().getString(R.string.action_settings);
-		load_tasks();
 		ListView listView = (ListView) findViewById(R.id.tasks_list);
 
 		Map<SwipeListener.Direction, SwipeCommand> commands = new HashMap<SwipeListener.Direction, SwipeCommand>();
@@ -233,7 +232,6 @@ public class TasksActivity extends Activity{
 		super.onStart();
 		datasource.open();
 		datasource_lists.open();
-		load_tasks();
 	}
 
 	@Override
@@ -318,10 +316,11 @@ public class TasksActivity extends Activity{
 			alert.show();
 			return true;
 		case android.R.id.home:
-			finish();
 			Intent list = new Intent(this.getApplicationContext(),
 					ListActivity.class);
-			startActivity(list);
+			datasource.close();
+			datasource_lists.close();
+			startActivityForResult(list, 1);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

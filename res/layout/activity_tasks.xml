@@ -9,12 +9,12 @@
     android:orientation="vertical"
     tools:context=".TasksActivity"
      >
-
+ 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
-        <EditText
+       <EditText
             android:id="@+id/tasks_new"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -30,5 +30,4 @@
         android:clickable="true"
         android:descendantFocusability="beforeDescendants" >
     </ListView>
-
 </LinearLayout>
