@@ -16,6 +16,7 @@ import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -49,7 +50,7 @@ public class TaskFragment extends Fragment {
 	protected TextView Task_content;
 	protected TextView Task_due;
 
-	protected TaskActivity main;
+	protected FragmentActivity main;
 	protected NumberPicker picker;
 	protected EditText input;
 
@@ -59,6 +60,7 @@ public class TaskFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		view = inflater.inflate(R.layout.task_fragment, container, false);
+		main=getActivity();
 		
 
 		// Init

@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -34,7 +35,7 @@ public class TasksFragment extends Fragment {
 	private ListsDataSource datasource_lists;
 	private TaskAdapter adapter;
 	private NumberPicker picker;
-	private TasksActivity main;
+	private FragmentActivity main;
 	private String server_url;
 	private String Email;
 	private String Password;
@@ -43,11 +44,13 @@ public class TasksFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 		view=inflater.inflate(R.layout.tasks_fragment, container, false);
+		main=getActivity();
 		datasource = new TasksDataSource(getActivity());
 		datasource.open();
 		datasource_lists = new ListsDataSource(getActivity());
 		datasource_lists.open();
 		this.list = datasource_lists.getList(0);
+		
 		Log.v(TAG, "Start list" + list.getId());
 		getResources().getString(R.string.action_settings);
 		update();
