@@ -10,6 +10,8 @@
     <string name="no_date">No Deadline</string>
     <string name="no_lists">No lists exists. Please create one</string>
     <string name="dateFormat">yyyy-MM-dd</string>
+    <string name="speak">Speak</string>
+    <string name="speak_lang_code">en-US</string>
 
     <!-- Home -->
     <string name="home_button_official">Official Server</string>

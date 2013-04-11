@@ -23,23 +23,43 @@
             android:ellipsize="end"
             android:gravity="center" >
 
-            <TextView
+           	<TextView
                 android:id="@+id/task_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
-
-            <EditText
-                android:id="@+id/edit_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:imeOptions="actionDone"
-                android:singleLine="true"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+			<LinearLayout
+        		android:layout_width="match_parent"
+        		android:layout_height="wrap_content"
+        		android:focusableInTouchMode="true"
+        		android:gravity="center"
+        		android:weightSum="5"
+	    		android:orientation="horizontal"
+        		android:focusable="true">
+        		<EditText
+	                android:id="@+id/edit_name"
+	                android:layout_width="0dp"
+	                android:layout_weight="4"
+	                android:layout_height="wrap_content"
+	                android:ellipsize="end"
+	                android:gravity="center"
+	                android:imeOptions="actionDone"
+	                android:singleLine="true"
+	                android:textAppearance="?android:attr/textAppearanceLarge" />
+           		<ImageButton
+		           android:id="@+id/btnSpeak_task_name"
+		           android:layout_width="0dp"
+		           android:layout_weight="1"
+		           android:layout_height="wrap_content"
+		           android:layout_margin="10dp"
+		           android:layout_marginRight="10dp"
+		           android:layout_marginTop="10dp"
+		           android:contentDescription="@string/speak"
+		           android:src="@android:drawable/ic_btn_speak_now" />
+			</LinearLayout>
+           
         </ViewSwitcher>
 
         <TextView
@@ -74,14 +94,33 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
-            <EditText
-                android:id="@+id/edit_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:imeOptions="actionSend"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-
+            <LinearLayout
+        		android:layout_width="match_parent"
+        		android:layout_height="wrap_content"
+        		android:focusableInTouchMode="true"
+        		android:gravity="center"
+        		android:weightSum="5"
+	    		android:orientation="horizontal"
+        		android:focusable="true">
+        		<EditText
+	                android:id="@+id/edit_content"
+	                android:layout_width="0dp"
+	                android:layout_weight="4"
+	                android:layout_height="wrap_content"
+	                android:ellipsize="end"
+	                android:imeOptions="actionSend"
+	                android:textAppearance="?android:attr/textAppearanceLarge" />
+           		<ImageButton
+		           android:id="@+id/btnSpeak_task_content"
+		           android:layout_width="0dp"
+		           android:layout_weight="1"
+		           android:layout_height="wrap_content"
+		           android:layout_margin="10dp"
+		           android:layout_marginRight="10dp"
+		           android:layout_marginTop="10dp"
+		           android:contentDescription="@string/speak"
+		           android:src="@android:drawable/ic_btn_speak_now" />
+			</LinearLayout>
             <Button
                 android:id="@+id/submit_content"
                 android:layout_width="match_parent"

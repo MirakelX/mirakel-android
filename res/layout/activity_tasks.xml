@@ -13,15 +13,31 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:focusableInTouchMode="true"
+        android:gravity="center"
+	    android:orientation="horizontal"
         android:focusable="true">
 
-       <EditText
+        <EditText
             android:id="@+id/tasks_new"
-            android:layout_width="match_parent"
+            android:layout_width="255dp"
             android:layout_height="wrap_content"
+            android:ems="10"
             android:hint="@string/tasks_new"
             android:imeOptions="actionSend"
-            android:singleLine="true" />
+            android:singleLine="true" >
+            <requestFocus />
+        </EditText>
+
+       <ImageButton
+           android:id="@+id/btnSpeak_tasks"
+           android:layout_width="50dp"
+           android:layout_height="wrap_content"
+           android:layout_margin="10dp"
+           android:layout_marginRight="10dp"
+           android:layout_marginTop="10dp"
+           android:contentDescription="@string/speak"
+           android:src="@android:drawable/ic_btn_speak_now" />
+
     </LinearLayout>
 
     <ListView
