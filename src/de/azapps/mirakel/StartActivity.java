@@ -52,7 +52,7 @@ public class StartActivity extends Activity {
 				Log.v(TAG, "OWN SERVER");
 				SharedPreferences settings = PreferenceManager
 						.getDefaultSharedPreferences(getApplicationContext());
-				if (settings.getBoolean("showHelp", true)) {
+				if (settings.getBoolean("showHelp", true)) { 
 					Intent intent = new Intent(StartActivity.this,
 							HelpActivity.class);
 					startActivity(intent);

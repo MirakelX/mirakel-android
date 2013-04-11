@@ -254,21 +254,23 @@ public class TasksDataSource {
 			String key_value[] = tasks_str[i].split(":");
 			if (key_value.length < 2)
 				continue;
-			String key = key_value[0];
-			if (key.equals("{\"content\"")) {
-				t = new Task();
-				t.setContent(key_value[1].substring(1,
-						key_value[1].length() - 1));
-			} else if (key.equals("\"done\"")) {
-				t.setDone(key_value[1].indexOf("true") != -1);
-			} else if (key.equals("\"due\"")) {
-				GregorianCalendar temp = new GregorianCalendar();
-				try {
+			String key=key_value[0];
+			if(key.equals("{\"content\"")){
+				t=new Task();
+				if(key_value[1]!="null"){
+					t.setContent(key_value[1].substring(1,key_value[1].length()-1));
+				}else
+					t.setContent(null);
+			}else if(key.equals("\"done\"")){
+				t.setDone(key_value[1].indexOf("true")!=-1);
+			}else if(key.equals("\"due\"")){
+				GregorianCalendar temp=new GregorianCalendar();
+				try{
 					temp.setTime(new SimpleDateFormat(context
 							.getString(R.string.dateFormat), Locale
 							.getDefault()).parse(key_value[1].substring(1,
 							key_value[1].length() - 1)));
-				} catch (Exception e) {
+				}catch(Exception e){
 					temp.setTime(new Date(0));
 				}
 				t.setDue(temp);

@@ -15,7 +15,7 @@
         android:focusableInTouchMode="true"
         android:focusable="true">
 
-        <EditText
+       <EditText
             android:id="@+id/tasks_new"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -31,5 +31,4 @@
         android:clickable="true"
         android:descendantFocusability="beforeDescendants" >
     </ListView>
-
 </LinearLayout>
