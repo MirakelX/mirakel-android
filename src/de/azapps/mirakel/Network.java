@@ -56,6 +56,7 @@ public class Network extends AsyncTask<String, String, String> {
 		try {
 			return downloadUrl(urls[0]);
 		} catch (IOException e) {
+			e.printStackTrace();
 			Log.e(TAG,"Unable to retrieve web page. URL may be invalid.");
 			return null;
 		} catch (URISyntaxException e) {
@@ -76,10 +77,8 @@ public class Network extends AsyncTask<String, String, String> {
 			URISyntaxException {
 		HttpParams params = new BasicHttpParams();
 		params.setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
-		//HttpConnectionParams.setConnectionTimeout(params, 3000);
-		//HttpConnectionParams.setSoTimeout(params, 3000);
 		HttpConnectionParams.setTcpNoDelay(params, true);
-		DefaultHttpClient client = new DefaultHttpClient(params);
+		DefaultHttpClient client=new DefaultHttpClient(params);
 		client.getCredentialsProvider().setCredentials(new AuthScope(null, -1),
 				new UsernamePasswordCredentials(Email, Password));
 		HttpResponse response;
@@ -88,9 +87,7 @@ public class Network extends AsyncTask<String, String, String> {
 			Log.v(TAG,"GET "+myurl);
 			HttpGet get = new HttpGet();
 			get.setURI(new URI(myurl));
-			//Log.d(TAG,"Request Started");
 			response= client.execute(get);
-			//Log.d(TAG,"Request Endend");
 			break;
 		case Mirakel.Http_Mode.PUT:
 			Log.v(TAG,"PUT "+myurl);
