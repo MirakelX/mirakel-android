@@ -358,16 +358,21 @@ public class TaskActivity extends Activity {
 						}
 					});*/
 			ListsDataSource listds=new ListsDataSource(this);
+			listds.open();
 			lists=listds.getAllLists();
-
+			listds.close();
 			List<CharSequence> items=new ArrayList<CharSequence>();
+			final List<Integer> list_ids=new ArrayList<Integer>();
 			for(List_mirakle list:lists) {
-				if(list.getId()>0)
-				items.add(list.getName());
+				if(list.getId()>0){
+					items.add(list.getName());
+					list_ids.add(list.getId());
+				}
 			}
+			
 			builder.setItems(items.toArray(new CharSequence[items.size()]), new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int item) {
-					task.setListId(lists.get(item).getId());
+					task.setListId(list_ids.get(item));
 					datasource.saveTask(task);
 				}
 			});
