@@ -194,7 +194,7 @@ public class TasksDataSource {
 	protected List<Task> getDeletedTasks() {
 		List<Task> tasks = new ArrayList<Task>();
 		Cursor c = database.query("tasks", allColumns, "sync_state="
-				+ Mirakel.SYNC_STATE_DELETE, null, null, null, null);
+				+ Mirakel.SYNC_STATE_DELETE+" and list_id>0", null, null, null, null);
 		c.moveToFirst();
 		while (!c.isAfterLast()) {
 			tasks.add(cursorToTask(c));
@@ -220,7 +220,15 @@ public class TasksDataSource {
 			@Override
 			public void after_exec(String result) {
 				List<Task> tasks_server = parse_json(result);
-				List<Task> tasks_local = getTasks(Mirakel.LIST_ALL);
+				
+				List<Task> tasks_local = new ArrayList<Task>();
+				Cursor c = database.query("tasks", allColumns, "not sync_state="
+						+ Mirakel.SYNC_STATE_DELETE+" and list_id>0", null, null, null, null);
+				c.moveToFirst();
+				while (!c.isAfterLast()) {
+					tasks_local.add(cursorToTask(c));
+					c.moveToNext();
+				}
 				for (int i = 0; i < tasks_local.size(); i++) {
 					Task task = tasks_local.get(i);
 					switch (task.getSync_state()) {
@@ -231,6 +239,7 @@ public class TasksDataSource {
 						sync_task(task, email, password, url);
 						break;
 					default:
+						break;
 					}
 				}
 				merge_with_server(tasks_server);
