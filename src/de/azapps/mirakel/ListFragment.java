@@ -24,29 +24,27 @@ import android.widget.ListView;
 
 public class ListFragment extends Fragment {
 	private static final String TAG = "ListsActivity";
-	private ListsDataSource datasource;
 	private ListAdapter adapter;
-	protected ListActivity main;
+	protected MainActivity main;
 	protected EditText input;
 	private View view;
-	private MainActivity mainActivity;
+
+	public void setActivity(MainActivity activity) {
+		main = activity;
+	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		view=inflater.inflate(R.layout.list_fragment, container, false);
+		view = inflater.inflate(R.layout.list_fragment, container, false);
 		// Inflate the layout for this fragment
 
-		datasource = new ListsDataSource(this.getActivity());
-		datasource.open();
-		mainActivity=(MainActivity) getActivity();
 		load_lists();
 		return view;
 	}
-	
 
 	private void load_lists() {
-		final List<List_mirakle> values = datasource.getAllLists();
+		final List<List_mirakle> values = main.listDataSource.getAllLists();
 
 		adapter = new ListAdapter(this.getActivity(), R.layout.lists_row,
 				values);
@@ -59,11 +57,9 @@ public class ListFragment extends Fragment {
 					int position, long id) {
 				// TODO Remove Bad Hack
 				List_mirakle list = values.get((int) id);
-				mainActivity.tasksFragment.setList(list);
-				mainActivity.tasksFragment.update();
-				
-				
-				((MainActivity)getActivity()).mViewPager.setCurrentItem(1);
+				main.currentList = list;
+				main.tasksFragment.update();
+				main.mViewPager.setCurrentItem(1);
 			}
 		});
 		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -93,7 +89,7 @@ public class ListFragment extends Fragment {
 										List_mirakle list = values
 												.get((int) id);
 										list.setName(input.getText().toString());
-										datasource.saveList(list);
+										main.listDataSource.saveList(list);
 										load_lists();
 									}
 								})
@@ -108,42 +104,6 @@ public class ListFragment extends Fragment {
 			}
 
 		});
-	}
-
-	@Override
-	public void onStart() {
-		super.onStart();
-		datasource.open();
-		load_lists();
-	}
-
-	@Override
-	public void onStop() {
-		datasource.close();
-		super.onStop();
-	}
-
-	@Override
-	public void onDestroy() {
-		datasource.close();
-		super.onDestroy();
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.menu_settings:
-			Log.e(TAG, "Implement Settings");
-			// TODO implement Settings
-			return true;
-		case R.id.menu_new_list:
-			Log.v(TAG, "New List");
-			datasource.createList(this.getString(R.string.list_menu_new_list));
-			load_lists();
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
-		}
 	}
 
 }

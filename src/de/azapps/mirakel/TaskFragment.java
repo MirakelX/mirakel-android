@@ -42,43 +42,35 @@ import android.widget.TextView.OnEditorActionListener;
 public class TaskFragment extends Fragment {
 	private View view;
 	private static final String TAG = "TaskActivity";
-	protected Task task;
-	private TasksDataSource datasource;
 	protected TextView Task_name;
 	protected CheckBox Task_done;
 	protected TextView Task_prio;
 	protected TextView Task_content;
 	protected TextView Task_due;
 
-	protected FragmentActivity main;
+	protected MainActivity main;
 	protected NumberPicker picker;
 	protected EditText input;
 
 	private boolean mIgnoreTimeSet = false;
+	
+	public void setActivity(MainActivity activity){
+		main=activity;
+	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		view = inflater.inflate(R.layout.task_fragment, container, false);
-		main=getActivity();
-		
-
-		// Init
-		datasource = new TasksDataSource(getActivity());
-		datasource.open();
-		List<Task> tasks=datasource.getTasks(0);
-		task = tasks.get(0);
+		 
 		update();
 		return view;
-	}
-	protected void setTask(Task task) {
-		this.task=task;
 	}
 	protected void update() {
 
 		// Task Name
 		Task_name = (TextView) view.findViewById(R.id.task_name);
-		Task_name.setText(task.getName());
+		Task_name.setText(main.currentTask.getName());
 		Task_name.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -88,20 +80,18 @@ public class TaskFragment extends Fragment {
 				txt.setText(Task_name.getText());
 				txt.requestFocus();
 
-				getActivity();
-				InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+				InputMethodManager imm = (InputMethodManager) main.getSystemService(Context.INPUT_METHOD_SERVICE);
 				imm.showSoftInput(txt, InputMethodManager.SHOW_IMPLICIT);
 				txt.setOnEditorActionListener(new OnEditorActionListener() {
 					public boolean onEditorAction(TextView v, int actionId,
 							KeyEvent event) {
 						if (actionId == EditorInfo.IME_ACTION_DONE) {
 							EditText txt = (EditText) view.findViewById(R.id.edit_name);
-							getActivity();
-							InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+							InputMethodManager imm = (InputMethodManager) main.getSystemService(Context.INPUT_METHOD_SERVICE);
 							ViewSwitcher switcher = (ViewSwitcher) view.findViewById(R.id.switch_name);
-							task.setName(txt.getText().toString());
-							datasource.saveTask(task);
-							Task_name.setText(task.getName());
+							main.currentTask.setName(txt.getText().toString());
+							main.taskDataSource.saveTask(main.currentTask);
+							Task_name.setText(main.currentTask.getName());
 							switcher.showPrevious();
 							imm.hideSoftInputFromWindow(txt.getWindowToken(), 0);
 							return true;
@@ -114,19 +104,19 @@ public class TaskFragment extends Fragment {
 
 		// Task done
 		Task_done = (CheckBox) view.findViewById(R.id.task_done);
-		Task_done.setChecked(task.isDone());
+		Task_done.setChecked(main.currentTask.isDone());
 		Task_done.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
-				task.setDone(isChecked);
-				datasource.saveTask(task);
+				main.currentTask.setDone(isChecked);
+				main.taskDataSource.saveTask(main.currentTask);
 			}
 		});
 
 		// Task priority
 		Task_prio = (TextView) view.findViewById(R.id.task_prio);
-		set_prio(Task_prio, task);
+		set_prio(Task_prio, main.currentTask);
 		Task_prio.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -136,7 +126,7 @@ public class TaskFragment extends Fragment {
 				String[] t = { "-2", "-1", "0", "1", "2" };
 				picker.setDisplayedValues(t);
 				picker.setWrapSelectorWheel(false);
-				picker.setValue(task.getPriority() + 2);
+				picker.setValue(main.currentTask.getPriority() + 2);
 				new AlertDialog.Builder(main)
 						.setTitle(
 								main.getString(R.string.task_change_prio_title))
@@ -147,9 +137,9 @@ public class TaskFragment extends Fragment {
 								new DialogInterface.OnClickListener() {
 									public void onClick(DialogInterface dialog,
 											int whichButton) {
-										task.setPriority((picker.getValue() - 2));
-										datasource.saveTask(task);
-										TaskActivity.set_prio(Task_prio, task);
+										main.currentTask.setPriority((picker.getValue() - 2));
+										main.taskDataSource.saveTask(main.currentTask);
+										TaskActivity.set_prio(Task_prio, main.currentTask);
 									}
 
 								})
@@ -166,24 +156,24 @@ public class TaskFragment extends Fragment {
 
 		// Task due
 		Task_due = (TextView) view.findViewById(R.id.task_due);
-		Drawable due_img = getActivity().getResources().getDrawable(
+		Drawable due_img = main.getResources().getDrawable(
 				android.R.drawable.ic_menu_today);
 		due_img.setBounds(0, 0, 60, 60);
 		Task_due.setCompoundDrawables(due_img, null, null, null);
-		Task_due.setText(task.getDue().compareTo(
+		Task_due.setText(main.currentTask.getDue().compareTo(
 				new GregorianCalendar(1970, 1, 1)) < 0 ? this
 				.getString(R.string.task_no_due) : new SimpleDateFormat(this
 				.getString(R.string.dateFormat), Locale.getDefault())
-				.format(task.getDue().getTime()));
+				.format(main.currentTask.getDue().getTime()));
 
 		Task_due.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				mIgnoreTimeSet = false;
-				GregorianCalendar due = (task.getDue().compareTo(
+				GregorianCalendar due = (main.currentTask.getDue().compareTo(
 						new GregorianCalendar()) < 0 ? new GregorianCalendar()
-						: task.getDue());
+						: main.currentTask.getDue());
 				DatePickerDialog dialog = new DatePickerDialog(main,
 						new OnDateSetListener() {
 
@@ -193,13 +183,13 @@ public class TaskFragment extends Fragment {
 								if (mIgnoreTimeSet)
 									return;
 
-								task.setDue(new GregorianCalendar(year,
+								main.currentTask.setDue(new GregorianCalendar(year,
 										monthOfYear, dayOfMonth));
-								datasource.saveTask(task);
+								main.taskDataSource.saveTask(main.currentTask);
 								Task_due.setText(new SimpleDateFormat(view
 										.getContext().getString(
 												R.string.dateFormat), Locale
-										.getDefault()).format(task.getDue()
+										.getDefault()).format(main.currentTask.getDue()
 										.getTime()));
 
 							}
@@ -213,8 +203,8 @@ public class TaskFragment extends Fragment {
 								if (which == DialogInterface.BUTTON_NEGATIVE) {
 									mIgnoreTimeSet = true;
 									Log.v(TAG, "cancel");
-									task.setDue(new GregorianCalendar(0, 1, 1));
-									datasource.saveTask(task);
+									main.currentTask.setDue(new GregorianCalendar(0, 1, 1));
+									main.taskDataSource.saveTask(main.currentTask);
 									Task_due.setText(R.string.task_no_due);
 								}
 							}
@@ -226,9 +216,9 @@ public class TaskFragment extends Fragment {
 
 		// Task content
 		Task_content = (TextView) view.findViewById(R.id.task_content);
-		Task_content.setText(task.getContent().length() == 0 ? this
-				.getString(R.string.task_no_content) : task.getContent());
-		Drawable content_img = getActivity().getResources()
+		Task_content.setText(main.currentTask.getContent().length() == 0 ? this
+				.getString(R.string.task_no_content) : main.currentTask.getContent());
+		Drawable content_img = main.getResources()
 				.getDrawable(android.R.drawable.ic_menu_edit);
 		content_img.setBounds(0, 0, 60, 60);
 		Task_content.setCompoundDrawables(content_img, null, null, null);
@@ -238,11 +228,10 @@ public class TaskFragment extends Fragment {
 				ViewSwitcher switcher = (ViewSwitcher) view.findViewById(R.id.switch_content);
 				switcher.showNext(); // or switcher.showPrevious();
 				EditText txt = (EditText) view.findViewById(R.id.edit_content);
-				txt.setText(task.getContent());
+				txt.setText(main.currentTask.getContent());
 				txt.requestFocus();
 
-				getActivity();
-				InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+				InputMethodManager imm = (InputMethodManager) main.getSystemService(Context.INPUT_METHOD_SERVICE);
 				imm.showSoftInput(txt, InputMethodManager.SHOW_IMPLICIT);
 				Button submit = (Button) view.findViewById(R.id.submit_content);
 				submit.setOnClickListener(new OnClickListener() {
@@ -250,13 +239,12 @@ public class TaskFragment extends Fragment {
 					@Override
 					public void onClick(View arg0) {
 						EditText txt = (EditText) view.findViewById(R.id.edit_content);
-						getActivity();
-						InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-						task.setContent(txt.getText().toString());
-						datasource.saveTask(task);
+						InputMethodManager imm = (InputMethodManager) main.getSystemService(Context.INPUT_METHOD_SERVICE);
+						main.currentTask.setContent(txt.getText().toString());
+						main.taskDataSource.saveTask(main.currentTask);
 						Task_content
-								.setText(task.getContent().trim().length() == 0 ? getString(R.string.task_no_content)
-										: task.getContent());
+								.setText(main.currentTask.getContent().trim().length() == 0 ? getString(R.string.task_no_content)
+										: main.currentTask.getContent());
 						ViewSwitcher switcher = (ViewSwitcher) view.findViewById(R.id.switch_content);
 						switcher.showPrevious();
 						imm.hideSoftInputFromWindow(txt.getWindowToken(), 0);
@@ -267,10 +255,10 @@ public class TaskFragment extends Fragment {
 		});
 	}
 
-	protected static void set_prio(TextView Task_prio, Task task) {
-		Task_prio.setText("" + task.getPriority());
+	protected void set_prio(TextView Task_prio, Task task) {
+		Task_prio.setText("" + main.currentTask.getPriority());
 		Task_prio
-				.setBackgroundColor(Mirakel.PRIO_COLOR[task.getPriority() + 2]);
+				.setBackgroundColor(Mirakel.PRIO_COLOR[main.currentTask.getPriority() + 2]);
 
 	}
 
