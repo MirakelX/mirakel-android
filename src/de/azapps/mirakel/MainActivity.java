@@ -28,6 +28,9 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	ViewPager mViewPager;
 	private PagerAdapter mPagerAdapter;
+	protected ListFragment listFragment;
+	protected TasksFragment tasksFragment;
+	protected TaskFragment taskFragment;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -86,10 +89,12 @@ public class MainActivity extends FragmentActivity implements
 	private void intialiseViewPager() {
 
 		List<Fragment> fragments = new Vector<Fragment>();
-		fragments.add(Fragment.instantiate(this, ListFragment.class.getName()));
-		fragments
-				.add(Fragment.instantiate(this, TasksFragment.class.getName()));
-		fragments.add(Fragment.instantiate(this, TaskFragment.class.getName()));
+		listFragment = new ListFragment();
+		fragments.add(listFragment);
+		tasksFragment = new TasksFragment();
+		fragments.add(tasksFragment);
+		taskFragment = new TaskFragment();
+		fragments.add(taskFragment);
 		this.mPagerAdapter = new PagerAdapter(
 				super.getSupportFragmentManager(), fragments);
 		//

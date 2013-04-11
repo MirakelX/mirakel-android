@@ -29,6 +29,7 @@ public class ListFragment extends Fragment {
 	protected ListActivity main;
 	protected EditText input;
 	private View view;
+	private MainActivity mainActivity;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -38,6 +39,7 @@ public class ListFragment extends Fragment {
 
 		datasource = new ListsDataSource(this.getActivity());
 		datasource.open();
+		mainActivity=(MainActivity) getActivity();
 		load_lists();
 		return view;
 	}
@@ -56,9 +58,11 @@ public class ListFragment extends Fragment {
 			public void onItemClick(AdapterView<?> parent, View item,
 					int position, long id) {
 				// TODO Remove Bad Hack
-				List_mirakle t = values.get((int) id);
-				Log.v(TAG, "Switch to List " + t.getId());
-				datasource.close();
+				List_mirakle list = values.get((int) id);
+				mainActivity.tasksFragment.setList(list);
+				mainActivity.tasksFragment.update();
+				
+				
 				((MainActivity)getActivity()).mViewPager.setCurrentItem(1);
 			}
 		});
