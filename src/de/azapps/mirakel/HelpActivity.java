@@ -40,7 +40,7 @@ public class HelpActivity extends Activity {
 	}
 
 	public void ok(View v) {
-		Intent intent = new Intent(HelpActivity.this, TasksActivity.class);
+		Intent intent = new Intent(HelpActivity.this, MainActivity.class);
 		startActivity(intent);
 	}
 

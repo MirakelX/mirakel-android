@@ -175,7 +175,7 @@ public class LoginActivity extends Activity {
 						}else{
 							Log.e(TAG,"Login sucess");
 							Intent intent = new Intent(LoginActivity.this,
-									TasksActivity.class);
+									MainActivity.class);
 							intent.putExtra("listId", Mirakel.LIST_ALL);
 							intent.putExtra("email", mEmailView.getText().toString());
 							intent.putExtra("password", mPasswordView.getText().toString());
