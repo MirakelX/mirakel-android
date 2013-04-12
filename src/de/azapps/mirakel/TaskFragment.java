@@ -92,7 +92,7 @@ public class TaskFragment extends Fragment {
 							InputMethodManager imm = (InputMethodManager) main.getSystemService(Context.INPUT_METHOD_SERVICE);
 							ViewSwitcher switcher = (ViewSwitcher) view.findViewById(R.id.switch_name);
 							task.setName(txt.getText().toString());
-							main.getTaskDataSource().saveTask(task);
+							main.saveTask(task);
 							Task_name.setText(task.getName());
 							switcher.showPrevious();
 							imm.hideSoftInputFromWindow(txt.getWindowToken(), 0);
@@ -112,7 +112,7 @@ public class TaskFragment extends Fragment {
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
 				task.setDone(isChecked);
-				main.getTaskDataSource().saveTask(task);
+				main.saveTask(task);
 			}
 		});
 
@@ -140,7 +140,7 @@ public class TaskFragment extends Fragment {
 									public void onClick(DialogInterface dialog,
 											int whichButton) {
 										task.setPriority((picker.getValue() - 2));
-										main.getTaskDataSource().saveTask(task);
+										main.saveTask(task);
 										TaskActivity.set_prio(Task_prio, task);
 									}
 
@@ -187,7 +187,7 @@ public class TaskFragment extends Fragment {
 
 								task.setDue(new GregorianCalendar(year,
 										monthOfYear, dayOfMonth));
-								main.getTaskDataSource().saveTask(task);
+								main.saveTask(task);
 								Task_due.setText(new SimpleDateFormat(view
 										.getContext().getString(
 												R.string.dateFormat), Locale
@@ -206,7 +206,7 @@ public class TaskFragment extends Fragment {
 									mIgnoreTimeSet = true;
 									Log.v(TAG, "cancel");
 									task.setDue(new GregorianCalendar(0, 1, 1));
-									main.getTaskDataSource().saveTask(task);
+									main.saveTask(task);
 									Task_due.setText(R.string.task_no_due);
 								}
 							}
@@ -243,7 +243,7 @@ public class TaskFragment extends Fragment {
 						EditText txt = (EditText) view.findViewById(R.id.edit_content);
 						InputMethodManager imm = (InputMethodManager) main.getSystemService(Context.INPUT_METHOD_SERVICE);
 						task.setContent(txt.getText().toString());
-						main.getTaskDataSource().saveTask(task);
+						main.saveTask(task);
 						Task_content
 								.setText(task.getContent().trim().length() == 0 ? getString(R.string.task_no_content)
 										: task.getContent());

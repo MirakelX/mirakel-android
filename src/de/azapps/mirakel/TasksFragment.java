@@ -29,15 +29,15 @@ public class TasksFragment extends Fragment {
 	private MainActivity main;
 	private View view;
 
-	public void setActivity(MainActivity activity){
-		main=activity;
+	public void setActivity(MainActivity activity) {
+		main = activity;
 	}
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		view = inflater.inflate(R.layout.tasks_fragment, container, false);
-		
+
 		getResources().getString(R.string.action_settings);
 		update();
 
@@ -52,15 +52,16 @@ public class TasksFragment extends Fragment {
 					Log.v(TAG, "Create in " + id);
 					if (id <= 0) {
 						try {
-							id = main.getListDataSource().getFirstList().getId();
+							id = main.getListDataSource().getFirstList()
+									.getId();
 						} catch (NullPointerException e) {
 							Toast.makeText(main, R.string.no_lists,
 									Toast.LENGTH_LONG).show();
 							return false;
 						}
 					}
-					Task task = main.getTaskDataSource().createTask(v.getText().toString(),
-							id);
+					Task task = main.getTaskDataSource().createTask(
+							v.getText().toString(), id);
 					v.setText(null);
 					adapter.add(task);
 					adapter.notifyDataSetChanged();
@@ -80,7 +81,8 @@ public class TasksFragment extends Fragment {
 		if (main.getCurrentList() == null)
 			return;
 		Log.v(TAG, "loading..." + main.getCurrentList().getId());
-		final List<Task> values = main.getTaskDataSource().getTasks(main.getCurrentList(), main.getCurrentList().getSortBy());
+		final List<Task> values = main.getTaskDataSource().getTasks(
+				main.getCurrentList(), main.getCurrentList().getSortBy());
 		adapter = new TaskAdapter(main, R.layout.tasks_row, values,
 				new OnClickListener() {
 					@Override
@@ -88,8 +90,7 @@ public class TasksFragment extends Fragment {
 						CheckBox cb = (CheckBox) v;
 						Task task = (Task) cb.getTag();
 						task.toggleDone();
-						main.getTaskDataSource().saveTask(task);
-						update();
+						main.saveTask(task);
 					}
 				}, new OnClickListener() {
 					@Override
@@ -116,8 +117,7 @@ public class TasksFragment extends Fragment {
 												Task task = (Task) v.getTag();
 												task.setPriority((picker
 														.getValue() - 2));
-												main.getTaskDataSource().saveTask(task);
-												update();
+												main.saveTask(task);
 											}
 
 										})

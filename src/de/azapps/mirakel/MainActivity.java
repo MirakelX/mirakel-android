@@ -42,6 +42,7 @@ public class MainActivity extends FragmentActivity implements
 	private ListsDataSource listDataSource;
 	private Task currentTask;
 	private List_mirakle currentList;
+	private int LIST_FRAGMENT = 0, TASKS_FRAGMENT = 1, TASK_FRAGMENT = 2;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,12 +54,10 @@ public class MainActivity extends FragmentActivity implements
 		listDataSource.open();
 
 		setCurrentList(listDataSource.getList(0));
-		if (savedInstanceState != null) {
-			// mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
-		}
+
 		// Intialise ViewPager
 		this.intialiseViewPager();
-		mViewPager.setCurrentItem(1);
+		mViewPager.setCurrentItem(TASKS_FRAGMENT);
 
 	}
 
@@ -67,7 +66,7 @@ public class MainActivity extends FragmentActivity implements
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		this.menu = menu;
-		onPageSelected(1);
+		onPageSelected(TASKS_FRAGMENT);
 		return true;
 	}
 
@@ -85,7 +84,7 @@ public class MainActivity extends FragmentActivity implements
 								public void onClick(DialogInterface dialog,
 										int which) {
 									taskDataSource.deleteTask(currentTask);
-									mViewPager.setCurrentItem(1);
+									mViewPager.setCurrentItem(TASKS_FRAGMENT);
 								}
 							})
 					.setNegativeButton(this.getString(R.string.no),
@@ -224,7 +223,7 @@ public class MainActivity extends FragmentActivity implements
 		this.currentTask = currentTask;
 		if (taskFragment != null) {
 			taskFragment.update();
-			mViewPager.setCurrentItem(2);
+			mViewPager.setCurrentItem(TASK_FRAGMENT);
 		}
 	}
 
@@ -236,7 +235,7 @@ public class MainActivity extends FragmentActivity implements
 		this.currentList = currentList;
 		if (tasksFragment != null) {
 			tasksFragment.update();
-			mViewPager.setCurrentItem(1);
+			mViewPager.setCurrentItem(TASKS_FRAGMENT);
 		}
 
 		List<Task> currentTasks = taskDataSource.getTasks(currentList,
@@ -252,12 +251,28 @@ public class MainActivity extends FragmentActivity implements
 
 	}
 
-	TasksDataSource getTaskDataSource() {
+	public TasksDataSource getTaskDataSource() {
 		return taskDataSource;
 	}
 
 	public ListsDataSource getListDataSource() {
 		return listDataSource;
+	}
+
+	/**
+	 * Ugly Wrapper TODO make it more beautiful
+	 * 
+	 * @param task
+	 */
+	void saveTask(Task task) {
+		Log.v("Foo", "Saving task… (task:" + task.getId() + " – current:"
+				+ currentTask.getId());
+		taskDataSource.saveTask(task);
+		if (task.getId() == currentTask.getId()) {
+			currentTask = task;
+			taskFragment.update();
+		}
+		tasksFragment.update();
 	}
 
 }

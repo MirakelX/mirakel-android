@@ -31,11 +31,11 @@ public class ListFragment extends Fragment {
 		view = inflater.inflate(R.layout.list_fragment, container, false);
 		// Inflate the layout for this fragment
 
-		load_lists();
+		update();
 		return view;
 	}
 
-	private void load_lists() {
+	void update() {
 		final List<List_mirakle> values = main.getListDataSource().getAllLists();
 
 		adapter = new ListAdapter(this.getActivity(), R.layout.lists_row,
@@ -78,7 +78,7 @@ public class ListFragment extends Fragment {
 												.get((int) id);
 										list.setName(input.getText().toString());
 										main.getListDataSource().saveList(list);
-										load_lists();
+										update();
 									}
 								})
 						.setNegativeButton(main.getString(R.string.Cancel),
