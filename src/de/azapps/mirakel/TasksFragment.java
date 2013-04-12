@@ -1,22 +1,17 @@
 package de.azapps.mirakel;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
@@ -24,8 +19,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.TextView.OnEditorActionListener;
+import android.widget.Toast;
 
 public class TasksFragment extends Fragment {
 	private static final String TAG = "TasksActivity";
@@ -53,18 +48,18 @@ public class TasksFragment extends Fragment {
 					KeyEvent event) {
 				if (actionId == EditorInfo.IME_ACTION_SEND) {
 					Log.v(TAG, "New Task");
-					long id = main.currentList.getId();
+					long id = main.getCurrentList().getId();
 					Log.v(TAG, "Create in " + id);
 					if (id <= 0) {
 						try {
-							id = main.listDataSource.getFirstList().getId();
+							id = main.getListDataSource().getFirstList().getId();
 						} catch (NullPointerException e) {
 							Toast.makeText(main, R.string.no_lists,
 									Toast.LENGTH_LONG).show();
 							return false;
 						}
 					}
-					Task task = main.taskDataSource.createTask(v.getText().toString(),
+					Task task = main.getTaskDataSource().createTask(v.getText().toString(),
 							id);
 					v.setText(null);
 					adapter.add(task);
@@ -82,10 +77,10 @@ public class TasksFragment extends Fragment {
 
 	public void update() {
 		Log.v(TAG, "loading...");
-		if (main.currentList == null)
+		if (main.getCurrentList() == null)
 			return;
-		Log.v(TAG, "loading..." + main.currentList.getId());
-		final List<Task> values = main.taskDataSource.getTasks(main.currentList, main.currentList.getSortBy());
+		Log.v(TAG, "loading..." + main.getCurrentList().getId());
+		final List<Task> values = main.getTaskDataSource().getTasks(main.getCurrentList(), main.getCurrentList().getSortBy());
 		adapter = new TaskAdapter(main, R.layout.tasks_row, values,
 				new OnClickListener() {
 					@Override
@@ -93,7 +88,7 @@ public class TasksFragment extends Fragment {
 						CheckBox cb = (CheckBox) v;
 						Task task = (Task) cb.getTag();
 						task.toggleDone();
-						main.taskDataSource.saveTask(task);
+						main.getTaskDataSource().saveTask(task);
 						update();
 					}
 				}, new OnClickListener() {
@@ -121,7 +116,7 @@ public class TasksFragment extends Fragment {
 												Task task = (Task) v.getTag();
 												task.setPriority((picker
 														.getValue() - 2));
-												main.taskDataSource.saveTask(task);
+												main.getTaskDataSource().saveTask(task);
 												update();
 											}
 
@@ -148,12 +143,10 @@ public class TasksFragment extends Fragment {
 				// TODO Remove Bad Hack
 				Task t = values.get((int) id);
 				Log.v(TAG, "Switch to Task " + t.getId());
-				main.currentTask=t;
-				main.taskFragment.update();
-				main.mViewPager.setCurrentItem(2);
+				main.setCurrentTask(t);
 			}
 		});
-		switch (main.currentList.getId()) {
+		switch (main.getCurrentList().getId()) {
 		case Mirakel.LIST_ALL:
 			main.setTitle(this.getString(R.string.list_all));
 			break;
@@ -164,7 +157,7 @@ public class TasksFragment extends Fragment {
 			main.setTitle(this.getString(R.string.list_week));
 			break;
 		default:
-			main.setTitle(main.currentList.getName());
+			main.setTitle(main.getCurrentList().getName());
 		}
 	}
 

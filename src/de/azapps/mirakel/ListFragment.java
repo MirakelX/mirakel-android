@@ -1,23 +1,15 @@
 package de.azapps.mirakel;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnCreateContextMenuListener;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -44,7 +36,7 @@ public class ListFragment extends Fragment {
 	}
 
 	private void load_lists() {
-		final List<List_mirakle> values = main.listDataSource.getAllLists();
+		final List<List_mirakle> values = main.getListDataSource().getAllLists();
 
 		adapter = new ListAdapter(this.getActivity(), R.layout.lists_row,
 				values);
@@ -57,9 +49,7 @@ public class ListFragment extends Fragment {
 					int position, long id) {
 				// TODO Remove Bad Hack
 				List_mirakle list = values.get((int) id);
-				main.currentList = list;
-				main.tasksFragment.update();
-				main.mViewPager.setCurrentItem(1);
+				main.setCurrentList(list);
 			}
 		});
 		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -68,9 +58,7 @@ public class ListFragment extends Fragment {
 			public boolean onItemLongClick(AdapterView<?> parent, View item,
 					int position, final long id) {
 				List_mirakle list = values.get((int) id);
-				if (list.getId() == Mirakel.LIST_ALL
-						|| list.getId() == Mirakel.LIST_DAILY
-						|| list.getId() == Mirakel.LIST_WEEKLY)
+				if (list.getId()<=0)
 					return false;
 				input = new EditText(main);
 				input.setText(list.getName());
@@ -89,7 +77,7 @@ public class ListFragment extends Fragment {
 										List_mirakle list = values
 												.get((int) id);
 										list.setName(input.getText().toString());
-										main.listDataSource.saveList(list);
+										main.getListDataSource().saveList(list);
 										load_lists();
 									}
 								})

@@ -7,6 +7,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import android.content.ContentValues;
+import android.content.Context;
 
 public class Task {
 	private long id;
@@ -35,8 +36,21 @@ public class Task {
 		this.setUpdated_at(updated_at);
 		this.setSync_state(sync_state);
 	}
-
 	public Task() {
+		
+	}
+
+	public Task(Context ctx) {
+		this.id = 0;
+		this.setListId(0);
+		this.setName(ctx.getString(R.string.task_empty));
+		this.setContent("");
+		this.setDone(false);
+		this.setDue(new GregorianCalendar(1970, 1, 1));
+		this.setPriority(0);
+		this.setCreated_at(null);
+		this.setUpdated_at(null);
+		this.setSync_state(0);
 	}
 
 	public long getId() {

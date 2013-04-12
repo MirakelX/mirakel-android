@@ -42,6 +42,7 @@
     <string name="task_sorting_title">Sort tasks by</string>
     <string name="task_no_due">Pick a deadline</string>
     <string name="task_save_content">Save</string>
+    <string name="task_empty">No task selected…</string>
 
     <string-array name="task_sorting_items">
         <item>Default</item>
