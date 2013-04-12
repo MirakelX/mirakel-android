@@ -28,7 +28,7 @@ public class ListFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		view = inflater.inflate(R.layout.list_fragment, container, false);
+		view = inflater.inflate(R.layout.activity_list, container, false);
 		// Inflate the layout for this fragment
 
 		update();
