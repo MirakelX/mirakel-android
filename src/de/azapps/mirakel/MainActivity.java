@@ -89,9 +89,7 @@ public class MainActivity extends FragmentActivity implements
 								public void onClick(DialogInterface dialog,
 										int which) {
 									taskDataSource.deleteTask(currentTask);
-									mViewPager.setCurrentItem(TASKS_FRAGMENT);
-									tasksFragment.update();
-									listFragment.update();
+									setCurrentList(currentList);
 								}
 							})
 					.setNegativeButton(this.getString(R.string.no),
