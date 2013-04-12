@@ -146,7 +146,7 @@ public class TaskFragment extends Fragment {
 											int whichButton) {
 										task.setPriority((picker.getValue() - 2));
 										main.saveTask(task);
-										TaskActivity.set_prio(Task_prio, task);
+										set_prio(Task_prio, task);
 									}
 
 								})
