@@ -113,6 +113,7 @@ public class TasksFragment extends Fragment {
 		if (main.getCurrentList() == null)
 			return;
 		Log.v(TAG, "loading..." + main.getCurrentList().getId());
+		//TODO Does not work properly
 		final List<Task> values = main.getTaskDataSource().getTasks(
 				main.getCurrentList(), main.getCurrentList().getSortBy());
 		adapter = new TaskAdapter(main, R.layout.tasks_row, values,

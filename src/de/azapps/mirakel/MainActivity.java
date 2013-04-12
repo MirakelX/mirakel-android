@@ -47,7 +47,7 @@ public class MainActivity extends FragmentActivity implements
 	private List_mirakle currentList;
 	private int LIST_FRAGMENT = 0, TASKS_FRAGMENT = 1, TASK_FRAGMENT = 2;
 	protected static final int RESULT_SPEECH_NAME = 1,
-			RESULT_SPEECH_CONTENT = 2, RESULT_SPEECH=3;
+			RESULT_SPEECH_CONTENT = 2, RESULT_SPEECH = 3;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -100,21 +100,9 @@ public class MainActivity extends FragmentActivity implements
 								}
 							}).show();
 			return true;
-		case android.R.id.home:
-			finish();
-			return true;
 		case R.id.menu_move:
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle(R.string.dialog_move);
-			/*
-			 * builder.setPositiveButton(this.getString(R.string.Yes), new
-			 * DialogInterface.OnClickListener() { public void
-			 * onClick(DialogInterface dialog, int which) {
-			 * 
-			 * } }); builder.setNegativeButton(this.getString(R.string.no), new
-			 * DialogInterface.OnClickListener() { public void
-			 * onClick(DialogInterface dialog, int which) { // do nothing } });
-			 */
 			ListsDataSource listds = new ListsDataSource(this);
 			listds.open();
 			lists = listds.getAllLists();
@@ -140,6 +128,66 @@ public class MainActivity extends FragmentActivity implements
 			dialog.show();
 			return true;
 
+		case R.id.list_delete:
+			long listId = currentList.getId();
+			if (listId == Mirakel.LIST_ALL || listId == Mirakel.LIST_DAILY
+					|| listId == Mirakel.LIST_WEEKLY)
+				return true;
+			new AlertDialog.Builder(this)
+					.setTitle(this.getString(R.string.list_delete_title))
+					.setMessage(this.getString(R.string.list_delete_content))
+					.setPositiveButton(this.getString(R.string.Yes),
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int which) {
+									listDataSource.deleteList(currentList);
+									currentList = listDataSource
+											.getList(Mirakel.LIST_ALL);
+									setCurrentList(currentList);
+								}
+							})
+					.setNegativeButton(this.getString(R.string.no),
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int which) {
+									// do nothing
+								}
+							}).show();
+			listFragment.update();
+			return true;
+		case R.id.task_sorting:
+			final CharSequence[] SortingItems = getResources().getStringArray(
+					R.array.task_sorting_items);
+			AlertDialog.Builder SortingDialogBuilder = new AlertDialog.Builder(this);
+			SortingDialogBuilder.setTitle(this.getString(R.string.task_sorting_title));
+			SortingDialogBuilder.setItems(SortingItems, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int item) {
+					switch (item) {
+					case 0:
+						currentList.setSortBy(Mirakel.SORT_BY_OPT);
+						break;
+					case 1:
+						currentList.setSortBy(Mirakel.SORT_BY_DUE);
+						break;
+					case 2:
+						currentList.setSortBy(Mirakel.SORT_BY_PRIO);
+						break;
+					default:
+						currentList.setSortBy(Mirakel.SORT_BY_ID);
+						break;
+					}
+					listDataSource.saveList(currentList);
+					tasksFragment.update();
+					listFragment.update();
+				}
+			});
+			AlertDialog alert = SortingDialogBuilder.create();
+			alert.show();
+			return true;
+		case R.id.menu_new_list:
+			listDataSource.createList(this.getString(R.string.list_menu_new_list));
+			listFragment.update();
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 
@@ -291,12 +339,12 @@ public class MainActivity extends FragmentActivity implements
 						.get(0));
 				break;
 			case RESULT_SPEECH_NAME:
-				((EditText) findViewById(R.id.edit_name)).setText(text
-						.get(0));
+				((EditText) findViewById(R.id.edit_name)).setText(text.get(0));
 				break;
 			case RESULT_SPEECH:
 				if (resultCode == RESULT_OK && null != data) {
-					((EditText) tasksFragment.view.findViewById(R.id.tasks_new)).setText(text.get(0));
+					((EditText) tasksFragment.view.findViewById(R.id.tasks_new))
+							.setText(text.get(0));
 				}
 				break;
 			}
