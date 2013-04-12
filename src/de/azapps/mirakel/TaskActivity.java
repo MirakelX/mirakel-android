@@ -13,10 +13,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -32,14 +35,19 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.ViewSwitcher;
 
 public class TaskActivity extends Activity {
 	private static final String TAG = "TaskActivity";
+	protected static final int RESULT_SPEECH_NAME=1;
+	protected static final int RESULT_SPEECH_CONTENT=2;
+	
 	protected long id;
 	protected Task task;
 	private TasksDataSource datasource;
@@ -267,7 +275,57 @@ public class TaskActivity extends Activity {
 				});
 			}
 		});
+		//VoiceToText
+		ImageButton btnSpeakName = (ImageButton) findViewById(R.id.btnSpeak_task_name);
+		//txtText = newTask;
 
+
+		btnSpeakName.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+
+				Intent intent = new Intent(
+						RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+
+				intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, main.getString(R.string.speak_lang_code));
+
+				try {
+					startActivityForResult(intent, RESULT_SPEECH_NAME);
+					Task_name.setText("");
+				} catch (ActivityNotFoundException a) {
+					Toast t = Toast.makeText(getApplicationContext(),
+							"Opps! Your device doesn't support Speech to Text",
+							Toast.LENGTH_SHORT);
+					t.show();
+				}
+			}
+		});
+		ImageButton btnSpeakContent = (ImageButton) findViewById(R.id.btnSpeak_task_content);
+		//txtText = newTask;
+
+
+		btnSpeakContent.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+
+				Intent intent = new Intent(
+						RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+
+				intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, main.getString(R.string.speak_lang_code));
+
+				try {
+					startActivityForResult(intent, RESULT_SPEECH_CONTENT);
+					Task_content.setText("");
+				} catch (ActivityNotFoundException a) {
+					Toast t = Toast.makeText(getApplicationContext(),
+							"Opps! Your device doesn't support Speech to Text",
+							Toast.LENGTH_SHORT);
+					t.show();
+				}
+			}
+		});
 	} // Log.e(TAG,task.getContent().trim().length()+"");
 
 	protected static void set_prio(TextView Task_prio, Task task) {
@@ -392,6 +450,21 @@ public class TaskActivity extends Activity {
 		getMenuInflater().inflate(R.menu.activity_task, menu);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		return true;
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode == RESULT_OK && null != data) {
+			ArrayList<String> text = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+			switch(requestCode){
+				case RESULT_SPEECH_CONTENT:
+					((EditText)findViewById(R.id.edit_content)).setText(text.get(0));
+					break;
+				case RESULT_SPEECH_NAME:
+					((EditText)findViewById(R.id.edit_name)).setText(text.get(0));
+					break;
+			}
+		}
 	}
 
 }

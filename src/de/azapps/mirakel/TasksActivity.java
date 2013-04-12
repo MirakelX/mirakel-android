@@ -1,14 +1,17 @@
 package de.azapps.mirakel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -20,6 +23,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
@@ -37,6 +41,8 @@ public class TasksActivity extends Activity {
 	private String server_url;
 	private String Email;
 	private String Password;
+	protected static final int RESULT_SPEECH = 2;
+	protected static final int RESULT_LIST=1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +79,7 @@ public class TasksActivity extends Activity {
 		listView.setOnTouchListener(new SwipeListener(false, commands));
 
 		// Events
-		EditText newTask = (EditText) findViewById(R.id.tasks_new);
+		final EditText newTask = (EditText) findViewById(R.id.tasks_new);
 		newTask.setOnEditorActionListener(new OnEditorActionListener() {
 			public boolean onEditorAction(TextView v, int actionId,
 					KeyEvent event) {
@@ -102,22 +108,52 @@ public class TasksActivity extends Activity {
 				return false;
 			}
 		});
+		ImageButton btnSpeak = (ImageButton) findViewById(R.id.btnSpeak_tasks);
+		//txtText = newTask;
+
+
+		btnSpeak.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+
+				Intent intent = new Intent(
+						RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+
+				intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, main.getString(R.string.speak_lang_code));
+
+				try {
+					startActivityForResult(intent, RESULT_SPEECH);
+					newTask.setText("");
+				} catch (ActivityNotFoundException a) {
+					Toast t = Toast.makeText(getApplicationContext(),
+							"Opps! Your device doesn't support Speech to Text",
+							Toast.LENGTH_SHORT);
+					t.show();
+				}
+			}
+		});
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == 1) {
-			if (resultCode == RESULT_OK) {
-				Log.v(TAG, "Change List");
-				int listId = data.getIntExtra("listId", Mirakel.LIST_ALL);
-				list = datasource_lists.getList(listId);
-				datasource_lists.open();
-				datasource.open();
-				load_tasks();
-			}
-			if (resultCode == RESULT_CANCELED) {
-				// Write your code on no result return
-			}
-		}
+		switch(requestCode){
+			case RESULT_LIST: 
+				if (resultCode == RESULT_OK) {
+					Log.v(TAG, "Change List");
+					int listId = data.getIntExtra("listId", Mirakel.LIST_ALL);
+					list = datasource_lists.getList(listId);
+					datasource_lists.open();
+					datasource.open();
+					load_tasks();
+				}
+				break;
+			case RESULT_SPEECH:
+				if (resultCode == RESULT_OK && null != data) {
+					ArrayList<String> text = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+					((EditText)main.findViewById(R.id.tasks_new)).setText(text.get(0));
+				}
+				break;
+		}	
 	}
 
 	private void load_tasks() {
