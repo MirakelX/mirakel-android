@@ -36,7 +36,6 @@ public class ListFragment extends Fragment {
 	}
 
 	void update() {
-		//TODO does not update the List!
 		final List<List_mirakle> values = main.getListDataSource().getAllLists();
 
 		adapter = new ListAdapter(this.getActivity(), R.layout.lists_row,

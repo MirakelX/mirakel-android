@@ -90,6 +90,8 @@ public class MainActivity extends FragmentActivity implements
 										int which) {
 									taskDataSource.deleteTask(currentTask);
 									mViewPager.setCurrentItem(TASKS_FRAGMENT);
+									tasksFragment.update();
+									listFragment.update();
 								}
 							})
 					.setNegativeButton(this.getString(R.string.no),
@@ -121,6 +123,9 @@ public class MainActivity extends FragmentActivity implements
 						public void onClick(DialogInterface dialog, int item) {
 							currentTask.setListId(list_ids.get(item));
 							taskDataSource.saveTask(currentTask);
+							currentList=listDataSource.getList((int) currentTask.getListId());
+							tasksFragment.update();
+							listFragment.update();
 						}
 					});
 
