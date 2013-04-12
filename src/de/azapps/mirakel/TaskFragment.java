@@ -1,6 +1,7 @@
 package de.azapps.mirakel;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -11,10 +12,13 @@ import java.util.Map;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -31,6 +35,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
@@ -52,7 +57,7 @@ public class TaskFragment extends Fragment {
 	protected NumberPicker picker;
 	protected EditText input;
 	private Task task;
-
+	
 	private boolean mIgnoreTimeSet = false;
 	
 	public void setActivity(MainActivity activity){
@@ -255,6 +260,59 @@ public class TaskFragment extends Fragment {
 				});
 			}
 		});
+		
+
+		//VoiceToText
+		ImageButton btnSpeakName = (ImageButton) view.findViewById(R.id.btnSpeak_task_name);
+		//txtText = newTask;
+
+
+		btnSpeakName.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+
+				Intent intent = new Intent(
+						RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+
+				intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, main.getString(R.string.speak_lang_code));
+
+				try {
+					startActivityForResult(intent, main.RESULT_SPEECH_NAME);
+					Task_name.setText("");
+				} catch (ActivityNotFoundException a) {
+					Toast t = Toast.makeText(main,
+							"Opps! Your device doesn't support Speech to Text",
+							Toast.LENGTH_SHORT);
+					t.show();
+				}
+			}
+		});
+		ImageButton btnSpeakContent = (ImageButton) view.findViewById(R.id.btnSpeak_task_content);
+		//txtText = newTask;
+
+
+		btnSpeakContent.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+
+				Intent intent = new Intent(
+						RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+
+				intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, main.getString(R.string.speak_lang_code));
+
+				try {
+					startActivityForResult(intent, main.RESULT_SPEECH_CONTENT);
+					Task_content.setText("");
+				} catch (ActivityNotFoundException a) {
+					Toast t = Toast.makeText(main,
+							"Opps! Your device doesn't support Speech to Text",
+							Toast.LENGTH_SHORT);
+					t.show();
+				}
+			}
+		});
 	}
 
 	protected void set_prio(TextView Task_prio, Task task) {
@@ -263,5 +321,7 @@ public class TaskFragment extends Fragment {
 				.setBackgroundColor(Mirakel.PRIO_COLOR[task.getPriority() + 2]);
 
 	}
+	
+
 
 }

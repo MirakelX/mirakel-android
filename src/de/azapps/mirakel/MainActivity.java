@@ -8,7 +8,9 @@ import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -16,6 +18,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.TabHost;
 import android.widget.Toast;
 
@@ -43,6 +46,8 @@ public class MainActivity extends FragmentActivity implements
 	private Task currentTask;
 	private List_mirakle currentList;
 	private int LIST_FRAGMENT = 0, TASKS_FRAGMENT = 1, TASK_FRAGMENT = 2;
+	protected static final int RESULT_SPEECH_NAME = 1,
+			RESULT_SPEECH_CONTENT = 2, RESULT_SPEECH=3;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -273,6 +278,29 @@ public class MainActivity extends FragmentActivity implements
 			taskFragment.update();
 		}
 		tasksFragment.update();
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode == RESULT_OK && null != data) {
+			ArrayList<String> text = data
+					.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+			switch (requestCode) {
+			case RESULT_SPEECH_CONTENT:
+				((EditText) findViewById(R.id.edit_content)).setText(text
+						.get(0));
+				break;
+			case RESULT_SPEECH_NAME:
+				((EditText) findViewById(R.id.edit_name)).setText(text
+						.get(0));
+				break;
+			case RESULT_SPEECH:
+				if (resultCode == RESULT_OK && null != data) {
+					((EditText) tasksFragment.view.findViewById(R.id.tasks_new)).setText(text.get(0));
+				}
+				break;
+			}
+		}
 	}
 
 }

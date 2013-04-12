@@ -3,8 +3,11 @@ package de.azapps.mirakel;
 import java.util.List;
 
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -16,6 +19,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
@@ -27,7 +31,8 @@ public class TasksFragment extends Fragment {
 	private TaskAdapter adapter;
 	private NumberPicker picker;
 	private MainActivity main;
-	private View view;
+	View view;
+	private EditText newTask;
 
 	public void setActivity(MainActivity activity) {
 		main = activity;
@@ -42,7 +47,7 @@ public class TasksFragment extends Fragment {
 		update();
 
 		// Events
-		EditText newTask = (EditText) view.findViewById(R.id.tasks_new);
+		newTask = (EditText) view.findViewById(R.id.tasks_new);
 		newTask.setOnEditorActionListener(new OnEditorActionListener() {
 			public boolean onEditorAction(TextView v, int actionId,
 					KeyEvent event) {
@@ -69,6 +74,33 @@ public class TasksFragment extends Fragment {
 					return true;
 				}
 				return false;
+			}
+		});
+		
+
+		ImageButton btnSpeak = (ImageButton) view.findViewById(R.id.btnSpeak_tasks);
+		//txtText = newTask;
+
+
+		btnSpeak.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+
+				Intent intent = new Intent(
+						RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+
+				intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, main.getString(R.string.speak_lang_code));
+
+				try {
+					startActivityForResult(intent, main.RESULT_SPEECH);
+					newTask.setText("");
+				} catch (ActivityNotFoundException a) {
+					Toast t = Toast.makeText(main,
+							"Opps! Your device doesn't support Speech to Text",
+							Toast.LENGTH_SHORT);
+					t.show();
+				}
 			}
 		});
 
