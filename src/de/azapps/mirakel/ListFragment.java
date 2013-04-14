@@ -3,16 +3,23 @@ package de.azapps.mirakel;
 import java.util.List;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 public class ListFragment extends Fragment {
 	private static final String TAG = "ListsActivity";
@@ -20,6 +27,7 @@ public class ListFragment extends Fragment {
 	protected MainActivity main;
 	protected EditText input;
 	private View view;
+	protected boolean EditName;
 
 	public void setActivity(MainActivity activity) {
 		main = activity;
@@ -30,7 +38,7 @@ public class ListFragment extends Fragment {
 			Bundle savedInstanceState) {
 		view = inflater.inflate(R.layout.activity_list, container, false);
 		// Inflate the layout for this fragment
-
+		EditName=false;
 		update();
 		return view;
 	}
@@ -41,12 +49,18 @@ public class ListFragment extends Fragment {
 		adapter = new ListAdapter(this.getActivity(), R.layout.lists_row,
 				values);
 		ListView listView = (ListView) view.findViewById(R.id.lists_list);
+		listView.setItemsCanFocus(true);
 		listView.setAdapter(adapter);
+		listView.requestFocus();
 
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View item,
 					int position, long id) {
+				if(EditName){
+					EditName=false;
+					return;
+				}
 				List_mirakle list = values.get((int) id);
 				main.setCurrentList(list);
 			}
@@ -54,39 +68,40 @@ public class ListFragment extends Fragment {
 		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
 			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View item,
+			public boolean onItemLongClick(AdapterView<?> parent, final View item,
 					int position, final long id) {
 				List_mirakle list = values.get((int) id);
 				if (list.getId()<=0)
 					return false;
-				input = new EditText(main);
-				input.setText(list.getName());
-				input.setTag(main);
-				input.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-				new AlertDialog.Builder(main)
-						.setTitle(
-								main.getString(R.string.list_change_name_title))
-						.setMessage(
-								main.getString(R.string.list_change_name_cont))
-						.setView(input)
-						.setPositiveButton(main.getString(R.string.OK),
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int whichButton) {
-										List_mirakle list = values
-												.get((int) id);
-										list.setName(input.getText().toString());
-										main.getListDataSource().saveList(list);
-										update();
-									}
-								})
-						.setNegativeButton(main.getString(R.string.Cancel),
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int whichButton) {
-										// Do nothing.
-									}
-								}).show();
+				EditName=true;
+				((ViewSwitcher)item.findViewById(R.id.switch_listname)).showNext();
+				EditText txt = (EditText) item.findViewById(R.id.edit_listname);
+				txt.setText(values.get((int) id).getName());
+				txt.requestFocus();
+
+				main.getApplicationContext();
+				InputMethodManager imm = (InputMethodManager) main.getSystemService(Context.INPUT_METHOD_SERVICE);
+				imm.showSoftInput(txt, InputMethodManager.SHOW_FORCED);
+				txt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+					@Override
+					public boolean onEditorAction(TextView v, int actionId,
+							KeyEvent event) {
+						if (actionId == EditorInfo.IME_ACTION_DONE) {
+							List_mirakle l= values.get((int) id);
+							EditText txt = (EditText) item.findViewById(R.id.edit_listname);
+							main.getApplicationContext();
+							InputMethodManager imm = (InputMethodManager) main.getSystemService(Context.INPUT_METHOD_SERVICE);
+							ViewSwitcher switcher = (ViewSwitcher) item.findViewById(R.id.switch_listname);
+							l.setName(txt.getText().toString());
+							main.getListDataSource().saveList(l);
+							((TextView)item.findViewById(R.id.list_row_name)).setText(l.getName());
+							switcher.showPrevious();
+							imm.hideSoftInputFromWindow(txt.getWindowToken(), 0);
+							return true;
+						}
+						return false;
+					}
+				});
 				return false;
 			}
 
