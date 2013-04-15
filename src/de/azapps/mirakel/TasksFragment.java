@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -53,35 +55,27 @@ public class TasksFragment extends Fragment {
 			public boolean onEditorAction(TextView v, int actionId,
 					KeyEvent event) {
 				if (actionId == EditorInfo.IME_ACTION_SEND) {
-					Log.v(TAG, "New Task");
-					long id = main.getCurrentList().getId();
-					Log.v(TAG, "Create in " + id);
-					if (id <= 0) {
-						try {
-							id = main.getListDataSource().getFirstList()
-									.getId();
-						} catch (NullPointerException e) {
-							Toast.makeText(main, R.string.no_lists,
-									Toast.LENGTH_LONG).show();
-							return false;
-						}
-					}
-					Task task = main.getTaskDataSource().createTask(
-							v.getText().toString(), id);
+					newTask(v.getText().toString());
 					v.setText(null);
-					adapter.add(task);
-					adapter.notifyDataSetChanged();
-					// adapter.swapCursor(updateListCursor());
-					return true;
 				}
 				return false;
 			}
 		});
-		
 
-		ImageButton btnSpeak = (ImageButton) view.findViewById(R.id.btnSpeak_tasks);
-		//txtText = newTask;
+		ImageButton btnEnter = (ImageButton) view.findViewById(R.id.btnEnter);
+		btnEnter.setOnClickListener(new View.OnClickListener() {
 
+			@Override
+			public void onClick(View v) {
+				newTask(newTask.getText().toString());
+				newTask.setText(null);
+
+			}
+		});
+
+		ImageButton btnSpeak = (ImageButton) view
+				.findViewById(R.id.btnSpeak_tasks);
+		// txtText = newTask;
 
 		btnSpeak.setOnClickListener(new View.OnClickListener() {
 
@@ -91,10 +85,12 @@ public class TasksFragment extends Fragment {
 				Intent intent = new Intent(
 						RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 
-				intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, main.getString(R.string.speak_lang_code));
+				intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+						main.getString(R.string.speak_lang_code));
 
 				try {
-					getActivity().startActivityForResult(intent, MainActivity.RESULT_SPEECH);
+					getActivity().startActivityForResult(intent,
+							MainActivity.RESULT_SPEECH);
 					newTask.setText("");
 				} catch (ActivityNotFoundException a) {
 					Toast t = Toast.makeText(main,
@@ -109,12 +105,35 @@ public class TasksFragment extends Fragment {
 		return view;
 	}
 
+	private boolean newTask(String name) {
+
+		Log.v(TAG, "New Task");
+		long id = main.getCurrentList().getId();
+		Log.v(TAG, "Create in " + id);
+		InputMethodManager imm = (InputMethodManager) main.getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.hideSoftInputFromWindow(newTask.getWindowToken(), 0);
+		if (id <= 0) {
+			try {
+				id = main.getListDataSource().getFirstList().getId();
+			} catch (NullPointerException e) {
+				Toast.makeText(main, R.string.no_lists, Toast.LENGTH_LONG)
+						.show();
+				return false;
+			}
+		}
+		Task task = main.getTaskDataSource().createTask(name, id);
+		adapter.add(task);
+		adapter.notifyDataSetChanged();
+		// adapter.swapCursor(updateListCursor());
+		return true;
+	}
+
 	public void update() {
 		Log.v(TAG, "loading...");
 		if (main.getCurrentList() == null)
 			return;
 		Log.v(TAG, "loading..." + main.getCurrentList().getId());
-		//TODO Does not work properly
+		// TODO Does not work properly
 		final List<Task> values = main.getTaskDataSource().getTasks(
 				main.getCurrentList(), main.getCurrentList().getSortBy());
 		adapter = new TaskAdapter(main, R.layout.tasks_row, values,
@@ -194,7 +213,5 @@ public class TasksFragment extends Fragment {
 			main.setTitle(main.getCurrentList().getName());
 		}
 	}
-	
-	
 
 }
