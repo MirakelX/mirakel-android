@@ -12,32 +12,28 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:focusable="true"
         android:focusableInTouchMode="true"
-        android:gravity="center"
-	    android:orientation="horizontal"
-        android:focusable="true">
+        android:orientation="horizontal" >
 
         <EditText
             android:id="@+id/tasks_new"
-            android:layout_width="255dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:ems="10"
+            android:layout_weight="1"
             android:hint="@string/tasks_new"
             android:imeOptions="actionSend"
             android:singleLine="true" >
+
             <requestFocus />
         </EditText>
 
-       <ImageButton
-           android:id="@+id/btnSpeak_tasks"
-           android:layout_width="50dp"
-           android:layout_height="wrap_content"
-           android:layout_margin="10dp"
-           android:layout_marginRight="10dp"
-           android:layout_marginTop="10dp"
-           android:contentDescription="@string/speak"
-           android:src="@android:drawable/ic_btn_speak_now" />
-
+        <ImageButton
+            android:id="@+id/btnSpeak_tasks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/speak"
+            android:src="@android:drawable/ic_btn_speak_now" />
     </LinearLayout>
 
     <ListView
@@ -47,4 +43,5 @@
         android:clickable="true"
         android:descendantFocusability="beforeDescendants" >
     </ListView>
+
 </LinearLayout>
