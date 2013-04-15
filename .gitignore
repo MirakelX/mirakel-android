@@ -28,6 +28,7 @@ local.properties
 .classpath
 .settings/
 .loadpath
+*.db
 
 # External tool builders
 .externalToolBuilders/

@@ -57,6 +57,7 @@
     <string name="dialog_move_message">Move Task to another List:</string>
 
     <!-- Lists -->
+    <string name="list_title">Lists</string>
     <string name="list_menu_new_list">New List</string>
     <string name="list_change_name_cont">New List-Title</string>
     <string name="list_change_name_title">Change List-Name</string>

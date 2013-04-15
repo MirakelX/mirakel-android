@@ -2,19 +2,32 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:descendantFocusability="blocksDescendants"
     android:orientation="horizontal"
-    android:padding="5dp" >
+    android:padding="5dp" 
+    >
+    	<ViewSwitcher
+            android:id="@+id/switch_listname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end" >
+    	<TextView
+        	android:id="@+id/list_row_name"
+        	android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	android:textSize="18sp"
+        	android:ellipsize="end" />
+   		<EditText
+            android:id="@+id/edit_listname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-
-    <TextView
-        android:id="@+id/list_row_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:textSize="18sp"
-        android:ellipsize="end" >
-    </TextView>
+	</ViewSwitcher>
 
     <TextView
         android:id="@+id/list_row_task_number"

@@ -1,14 +1,9 @@
 package de.azapps.mirakel;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
@@ -20,11 +15,9 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
@@ -36,7 +29,6 @@ import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -278,7 +270,7 @@ public class TaskFragment extends Fragment {
 				intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, main.getString(R.string.speak_lang_code));
 
 				try {
-					startActivityForResult(intent, main.RESULT_SPEECH_NAME);
+					getActivity().startActivityForResult(intent, MainActivity.RESULT_SPEECH_NAME);
 					Task_name.setText("");
 				} catch (ActivityNotFoundException a) {
 					Toast t = Toast.makeText(main,
@@ -303,7 +295,7 @@ public class TaskFragment extends Fragment {
 				intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, main.getString(R.string.speak_lang_code));
 
 				try {
-					startActivityForResult(intent, main.RESULT_SPEECH_CONTENT);
+					getActivity().startActivityForResult(intent, MainActivity.RESULT_SPEECH_CONTENT);
 					Task_content.setText("");
 				} catch (ActivityNotFoundException a) {
 					Toast t = Toast.makeText(main,

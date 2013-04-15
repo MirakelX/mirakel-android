@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import android.app.ActionBar;
 import android.app.AlertDialog;
-import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,7 +17,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.TabHost;
 import android.widget.Toast;
 
 /**
@@ -45,9 +42,10 @@ public class MainActivity extends FragmentActivity implements
 	private ListsDataSource listDataSource;
 	private Task currentTask;
 	private List_mirakle currentList;
-	private int LIST_FRAGMENT = 0, TASKS_FRAGMENT = 1, TASK_FRAGMENT = 2;
+	private static final int LIST_FRAGMENT = 0, TASKS_FRAGMENT = 1, TASK_FRAGMENT = 2;
 	protected static final int RESULT_SPEECH_NAME = 1,
 			RESULT_SPEECH_CONTENT = 2, RESULT_SPEECH = 3;
+	private static final String TAG = "MainActivity";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -213,7 +211,6 @@ public class MainActivity extends FragmentActivity implements
 	 * Initialise ViewPager
 	 */
 	private void intialiseViewPager() {
-
 		List<Fragment> fragments = new Vector<Fragment>();
 		listFragment = new ListFragment();
 		listFragment.setActivity(this);
@@ -233,6 +230,7 @@ public class MainActivity extends FragmentActivity implements
 		mViewPager.setOffscreenPageLimit(2);
 
 	}
+	
 
 	@Override
 	public void onPageScrolled(int position, float positionOffset,
@@ -240,19 +238,22 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	@Override
-	public void onPageSelected(int position) {
+	public void onPageSelected(int position) {		
 		if (menu == null)
 			return;
 		int newmenu;
 		switch (position) {
 		case 0:
 			newmenu = R.menu.activity_list;
+			this.setTitle(getString(R.string.list_title));
 			break;
 		case 1:
 			newmenu = R.menu.tasks;
+			this.setTitle(currentList.getName());
 			break;
 		case 2:
 			newmenu = R.menu.activity_task;
+			this.setTitle(currentTask.getName());
 			break;
 		default:
 			Toast.makeText(getApplicationContext(), "Where are the dragons?",
@@ -321,7 +322,7 @@ public class MainActivity extends FragmentActivity implements
 	 * @param task
 	 */
 	void saveTask(Task task) {
-		Log.v("Foo", "Saving task… (task:" + task.getId() + " – current:"
+		Log.v(TAG, "Saving task… (task:" + task.getId() + " – current:"
 				+ currentTask.getId());
 		taskDataSource.saveTask(task);
 		if (task.getId() == currentTask.getId()) {

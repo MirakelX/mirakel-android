@@ -1,5 +1,6 @@
 package de.azapps.mirakel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -93,7 +94,7 @@ public class TasksFragment extends Fragment {
 				intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, main.getString(R.string.speak_lang_code));
 
 				try {
-					startActivityForResult(intent, main.RESULT_SPEECH);
+					getActivity().startActivityForResult(intent, MainActivity.RESULT_SPEECH);
 					newTask.setText("");
 				} catch (ActivityNotFoundException a) {
 					Toast t = Toast.makeText(main,
@@ -193,5 +194,7 @@ public class TasksFragment extends Fragment {
 			main.setTitle(main.getCurrentList().getName());
 		}
 	}
+	
+	
 
 }

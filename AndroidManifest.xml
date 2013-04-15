@@ -49,6 +49,7 @@
         </activity>
         <activity
             android:name="de.azapps.mirakel.MainActivity"
+            android:windowSoftInputMode="adjustPan"
             android:label="@string/title_activity_main" >
         </activity>
     </application>
