@@ -254,57 +254,6 @@ public class TaskFragment extends Fragment {
 		});
 		
 
-		//VoiceToText
-		ImageButton btnSpeakName = (ImageButton) view.findViewById(R.id.btnSpeak_task_name);
-		//txtText = newTask;
-
-
-		btnSpeakName.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-
-				Intent intent = new Intent(
-						RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-
-				intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, main.getString(R.string.speak_lang_code));
-
-				try {
-					getActivity().startActivityForResult(intent, MainActivity.RESULT_SPEECH_NAME);
-					Task_name.setText("");
-				} catch (ActivityNotFoundException a) {
-					Toast t = Toast.makeText(main,
-							"Opps! Your device doesn't support Speech to Text",
-							Toast.LENGTH_SHORT);
-					t.show();
-				}
-			}
-		});
-		ImageButton btnSpeakContent = (ImageButton) view.findViewById(R.id.btnSpeak_task_content);
-		//txtText = newTask;
-
-
-		btnSpeakContent.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-
-				Intent intent = new Intent(
-						RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-
-				intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, main.getString(R.string.speak_lang_code));
-
-				try {
-					getActivity().startActivityForResult(intent, MainActivity.RESULT_SPEECH_CONTENT);
-					Task_content.setText("");
-				} catch (ActivityNotFoundException a) {
-					Toast t = Toast.makeText(main,
-							"Opps! Your device doesn't support Speech to Text",
-							Toast.LENGTH_SHORT);
-					t.show();
-				}
-			}
-		});
 	}
 
 	protected void set_prio(TextView Task_prio, Task task) {
