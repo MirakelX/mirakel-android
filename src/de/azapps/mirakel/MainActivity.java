@@ -354,5 +354,18 @@ public class MainActivity extends FragmentActivity implements
 			}
 		}
 	}
+	@Override
+	public void onBackPressed() {
+		switch(mViewPager.getCurrentItem()) {
+		case TASKS_FRAGMENT:
+			mViewPager.setCurrentItem(LIST_FRAGMENT);
+			break;
+		case TASK_FRAGMENT:
+			mViewPager.setCurrentItem(TASKS_FRAGMENT);
+			break;
+		default:
+			super.onBackPressed();
+		}
+	}
 
 }
