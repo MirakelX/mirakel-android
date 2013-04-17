@@ -132,7 +132,7 @@ public class TasksFragment extends Fragment {
 
 	public void update() {
 		Log.v(TAG, "loading...");
-		if (main.getCurrentList() == null)
+		if (main.getCurrentList() == null || view==null)
 			return;
 		Log.v(TAG, "loading..." + main.getCurrentList().getId());
 		// TODO Does not work properly
