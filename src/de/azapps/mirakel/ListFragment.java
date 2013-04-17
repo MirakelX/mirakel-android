@@ -29,13 +29,14 @@ public class ListFragment extends Fragment {
 	private View view;
 	protected boolean EditName;
 
+
 	public void setActivity(MainActivity activity) {
 		main = activity;
 	}
-
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		main=(MainActivity) getActivity();
 		view = inflater.inflate(R.layout.activity_list, container, false);
 		// Inflate the layout for this fragment
 		EditName=false;
@@ -44,6 +45,7 @@ public class ListFragment extends Fragment {
 	}
 
 	void update() {
+
 		final List<List_mirakle> values = main.getListDataSource().getAllLists();
 
 		adapter = new ListAdapter(this.getActivity(), R.layout.lists_row,

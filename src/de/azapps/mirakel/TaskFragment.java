@@ -59,6 +59,7 @@ public class TaskFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		main=(MainActivity) getActivity();
 		view = inflater.inflate(R.layout.activity_task, container, false);
 		 
 		update();
