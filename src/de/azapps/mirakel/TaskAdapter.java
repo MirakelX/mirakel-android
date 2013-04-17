@@ -34,6 +34,9 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		this.clickPrio = click_prio;
 
 	}
+	void addToHead(Task task){
+		data.add(0, task);
+	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {

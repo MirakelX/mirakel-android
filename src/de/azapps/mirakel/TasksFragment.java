@@ -122,7 +122,8 @@ public class TasksFragment extends Fragment {
 			}
 		}
 		Task task = main.getTaskDataSource().createTask(name, id);
-		adapter.add(task);
+		adapter.addToHead(task);
+		
 		adapter.notifyDataSetChanged();
 		// adapter.swapCursor(updateListCursor());
 		return true;
