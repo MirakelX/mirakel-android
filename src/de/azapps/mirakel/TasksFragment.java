@@ -1,6 +1,5 @@
 package de.azapps.mirakel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -124,7 +123,7 @@ public class TasksFragment extends Fragment {
 		}
 		Task task = main.getTaskDataSource().createTask(name, id);
 		adapter.addToHead(task);
-		
+		main.getListFragment().update();
 		adapter.notifyDataSetChanged();
 		// adapter.swapCursor(updateListCursor());
 		return true;

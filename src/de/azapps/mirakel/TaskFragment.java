@@ -7,13 +7,10 @@ import java.util.Locale;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -28,10 +25,8 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.NumberPicker;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ViewSwitcher;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView.OnEditorActionListener;
@@ -65,8 +60,15 @@ public class TaskFragment extends Fragment {
 		update();
 		return view;
 	}
-	protected void update() {
-
+	public void update() {
+		ViewSwitcher s = (ViewSwitcher) view.findViewById(R.id.switch_name);
+		if(s.getNextView().getId()!=R.id.edit_name){
+			s.showPrevious();
+		}
+		s = (ViewSwitcher) view.findViewById(R.id.switch_content);
+		if(s.getNextView().getId()!=R.id.task_content_edit){
+			s.showPrevious();
+		}		
 		// Task Name
 		task=main.getCurrentTask();
 		Task_name = (TextView) view.findViewById(R.id.task_name);
@@ -111,6 +113,7 @@ public class TaskFragment extends Fragment {
 					boolean isChecked) {
 				task.setDone(isChecked);
 				main.saveTask(task);
+				main.getListFragment().update();
 			}
 		});
 
