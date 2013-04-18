@@ -255,6 +255,7 @@ public class MainActivity extends FragmentActivity implements
 			break;
 		case 2:
 			newmenu = R.menu.activity_task;
+			taskFragment.update();
 			this.setTitle(currentTask.getName());
 			break;
 		default:
@@ -368,6 +369,10 @@ public class MainActivity extends FragmentActivity implements
 		default:
 			super.onBackPressed();
 		}
+	}
+	
+	public ListFragment getListFragment(){
+		return listFragment;
 	}
 
 }
