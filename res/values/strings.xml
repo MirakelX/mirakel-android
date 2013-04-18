@@ -77,5 +77,9 @@
     <string name="login_server">Server-URL</string>
     <string name="offical_server_url">http://mirakel.azapps.de</string>
     <string name="title_activity_main">MainActivity</string>
+    
+    
+    <!-- Widget -->
+    <string name="main_widget_name">Widget</string>
 
 </resources>

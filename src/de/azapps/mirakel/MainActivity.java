@@ -47,6 +47,8 @@ public class MainActivity extends FragmentActivity implements
 			RESULT_SPEECH_CONTENT = 2, RESULT_SPEECH = 3;
 	private static final String TAG = "MainActivity";
 
+	public static String EXTRA_TASKID = "de.azapps.mirakel.EXTRA_TASKID";
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

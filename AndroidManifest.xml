@@ -49,9 +49,26 @@
         </activity>
         <activity
             android:name="de.azapps.mirakel.MainActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:label="@string/title_activity_main" >
+            android:label="@string/title_activity_main"
+            android:windowSoftInputMode="adjustPan" >
         </activity>
+
+
+        <receiver android:name="MainWidgetProvider" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_provider" />
+        </receiver>
+        
+        
+        <!-- The service serving the RemoteViews to the collection widget -->
+        <service android:name="MainWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"
+            android:exported="false" />
     </application>
 
 </manifest>
