@@ -2,17 +2,13 @@ package de.azapps.mirakel;
 
 import java.util.List;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -43,7 +39,7 @@ public class ListFragment extends Fragment {
 		return view;
 	}
 
-	void update() {
+	public void update() {
 		final List<List_mirakle> values = main.getListDataSource().getAllLists();
 
 		adapter = new ListAdapter(this.getActivity(), R.layout.lists_row,
