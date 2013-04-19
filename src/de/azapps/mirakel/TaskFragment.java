@@ -174,7 +174,8 @@ public class TaskFragment extends Fragment {
 		due_img.setBounds(0, 0, 60, 60);
 		Task_due.setCompoundDrawables(due_img, null, null, null);
 		Task_due.setText(MirakelHelper.formatDate(task.getDue(),
-			main.getString(R.string.dateFormat)));
+			main.getString(R.string.dateFormat))==""?getString(R.string.no_date):MirakelHelper.formatDate(task.getDue(),
+					main.getString(R.string.dateFormat)));
 
 		Task_due.setOnClickListener(new View.OnClickListener() {
 
