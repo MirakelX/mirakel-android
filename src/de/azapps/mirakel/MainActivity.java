@@ -5,12 +5,17 @@ import java.util.List;
 import java.util.Vector;
 
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
@@ -48,8 +53,9 @@ public class MainActivity extends FragmentActivity implements
 			RESULT_SPEECH_CONTENT = 2, RESULT_SPEECH = 3;
 	private static final String TAG = "MainActivity";
 
-	public static String EXTRA_TASKID = "de.azapps.mirakel.EXTRA_TASKID";
+	public static String EXTRA_ID = "de.azapps.mirakel.EXTRA_TASKID";
 	public static String SHOW_TASK = "de.azapps.mirakel.SHOW_TASK";
+	public static String SHOW_LIST = "de.azapps.mirakel.SHOW_LIST";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,17 +70,22 @@ public class MainActivity extends FragmentActivity implements
 
 		// Intialise ViewPager
 		this.intialiseViewPager();
+		createNotification();
 
 		Intent intent = getIntent();
 		if (intent.getAction() == SHOW_TASK) {
-			int taskId = intent.getIntExtra(EXTRA_TASKID, 0);
+			int taskId = intent.getIntExtra(EXTRA_ID, 0);
 			if (taskId != 0) {
-				Task task=taskDataSource.getTask(taskId);
-				currentList=listDataSource.getList((int)task.getListId());
+				Task task = taskDataSource.getTask(taskId);
+				currentList = listDataSource.getList((int) task.getListId());
 				setCurrentTask(task);
 				return;
 			}
-
+		} else if (intent.getAction() == SHOW_LIST) {
+			int listId = intent.getIntExtra(EXTRA_ID, 0);
+			List_mirakle list = listDataSource.getList(listId);
+			setCurrentList(list);
+			return;
 		}
 		mViewPager.setCurrentItem(TASKS_FRAGMENT);
 
@@ -392,6 +403,43 @@ public class MainActivity extends FragmentActivity implements
 
 	public ListFragment getListFragment() {
 		return listFragment;
+	}
+
+	/**
+	 * Create a Notification in the NotificationDrawer
+	 */
+	private void createNotification() {
+		//Set onClick Intent
+		Intent intent = new Intent(this, MainActivity.class);
+		intent.setAction(SHOW_LIST);
+		intent.putExtra(EXTRA_ID, Mirakel.LIST_DAILY);
+		PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+		// Get the data
+		List_mirakle todayList = listDataSource.getList(Mirakel.LIST_DAILY);
+		List<Task> todayTasks = taskDataSource.getTasks(todayList,
+				todayList.getSortBy());
+		String notificationTitle;
+		String notificationText;
+		if(todayTasks.size()==0){
+			notificationTitle=getString(R.string.notification_title_empty);
+			notificationText="";
+		}else {
+			notificationTitle = String.format(
+					getString(R.string.notification_title), todayTasks.size());
+			notificationText = todayTasks.get(0).getName();
+		}
+
+		// Build notification
+		// Actions are just fake
+		Notification noti = new Notification.Builder(this)
+				.setContentTitle(notificationTitle)
+				.setContentText(notificationText)
+				.setSmallIcon(R.drawable.ic_launcher).setContentIntent(pIntent)
+				.build();
+
+		NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		notificationManager.notify(0, noti);
 	}
 
 }

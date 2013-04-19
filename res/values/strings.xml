@@ -81,5 +81,9 @@
     
     <!-- Widget -->
     <string name="main_widget_name">Widget</string>
+    
+    <!-- Notification -->
+    <string name="notification_title">%1$d Tasks today</string>
+    <string name="notification_title_empty">Enjoy your day!</string>
 
 </resources>

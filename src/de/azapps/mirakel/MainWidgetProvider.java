@@ -79,7 +79,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
 			int taskId = intent.getIntExtra(EXTRA_TASKID, 0);
 			Intent startMainIntent = new Intent(context, MainActivity.class);
 			startMainIntent.setAction(MainActivity.SHOW_TASK);
-			startMainIntent.putExtra(MainActivity.EXTRA_TASKID, taskId);
+			startMainIntent.putExtra(MainActivity.EXTRA_ID, taskId);
 			startMainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			context.startActivity(startMainIntent);
 		}
