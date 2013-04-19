@@ -74,6 +74,13 @@ public class MainActivity extends FragmentActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		if(!preferences.contains("startupAllLists")) {
+
+			SharedPreferences.Editor editor = preferences.edit();
+			editor.putBoolean("startupAllLists", false);
+			editor.putString("startupList", ""+Mirakel.LIST_ALL);
+			editor.commit();
+		}
 		setContentView(R.layout.activity_main);
 		setupLayout();
 	}
