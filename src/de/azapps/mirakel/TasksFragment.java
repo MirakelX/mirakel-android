@@ -35,7 +35,7 @@ public class TasksFragment extends Fragment {
 	private MainActivity main;
 	View view;
 	private EditText newTask;
-	private boolean created=false;
+	private boolean created = false;
 
 	public void setActivity(MainActivity activity) {
 		main = activity;
@@ -44,11 +44,11 @@ public class TasksFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		main=(MainActivity) getActivity();
+		main = (MainActivity) getActivity();
 		view = inflater.inflate(R.layout.activity_tasks, container, false);
 
 		getResources().getString(R.string.action_settings);
-		created=true;
+		created = true;
 		update();
 
 		// Events
@@ -112,7 +112,8 @@ public class TasksFragment extends Fragment {
 		Log.v(TAG, "New Task");
 		long id = main.getCurrentList().getId();
 		Log.v(TAG, "Create in " + id);
-		InputMethodManager imm = (InputMethodManager) main.getSystemService(Context.INPUT_METHOD_SERVICE);
+		InputMethodManager imm = (InputMethodManager) main
+				.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(newTask.getWindowToken(), 0);
 		if (id <= 0) {
 			try {
@@ -124,6 +125,7 @@ public class TasksFragment extends Fragment {
 			}
 		}
 		Task task = main.getTaskDataSource().createTask(name, id);
+
 		adapter.addToHead(task);
 		main.getListFragment().update();
 		adapter.notifyDataSetChanged();
@@ -132,7 +134,8 @@ public class TasksFragment extends Fragment {
 	}
 
 	public void update() {
-		if(!created) return;
+		if (!created)
+			return;
 		final List<Task> values = main.getTaskDataSource().getTasks(
 				main.getCurrentList(), main.getCurrentList().getSortBy());
 		adapter = new TaskAdapter(main, R.layout.tasks_row, values,

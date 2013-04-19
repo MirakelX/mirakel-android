@@ -122,11 +122,11 @@ public class ListsDataSource {
 	}
 
 	public List_mirakle getFirstList() {
-		Cursor cursor = database.query("lists", allColumns, null, null, null,
-				null, null);
+		Cursor cursor = database.query("lists", allColumns, "not sync_state="
+				+ Mirakel.SYNC_STATE_DELETE, null, null, null, "_id ASC");
 		List_mirakle list = null;
 		cursor.moveToFirst();
-		while (!cursor.isAfterLast()) {
+		if (!cursor.isAfterLast()) {
 			list = cursorToList(cursor);
 			cursor.moveToNext();
 		}

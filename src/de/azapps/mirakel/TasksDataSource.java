@@ -146,7 +146,6 @@ public class TasksDataSource {
 		default:
 			order = "_id ASC";
 		}
-		Log.v(TAG, order);
 		return Mirakel.getReadableDatabase().query("tasks", allColumns, where,
 				null, null, null, "done, " + order);
 	}
