@@ -7,6 +7,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
@@ -102,7 +103,6 @@ public class TasksFragment extends Fragment {
 				}
 			}
 		});
-
 		// Inflate the layout for this fragment
 		return view;
 	}
@@ -138,7 +138,11 @@ public class TasksFragment extends Fragment {
 			return;
 		final List<Task> values = main.getTaskDataSource().getTasks(
 				main.getCurrentList(), main.getCurrentList().getSortBy());
-		adapter = new TaskAdapter(main, R.layout.tasks_row, values,
+		final ListView listView = (ListView) view.findViewById(R.id.tasks_list);
+		AsyncTask<Void, Void, TaskAdapter> task = new AsyncTask<Void, Void, TaskAdapter>() {
+			@Override
+			protected TaskAdapter doInBackground(Void... params) {
+				adapter = new TaskAdapter(main, R.layout.tasks_row, values,
 				new OnClickListener() {
 					@Override
 					public void onClick(View v) {
@@ -150,7 +154,6 @@ public class TasksFragment extends Fragment {
 				}, new OnClickListener() {
 					@Override
 					public void onClick(final View v) {
-
 						picker = new NumberPicker(main);
 						picker.setMaxValue(4);
 						picker.setMinValue(0);
@@ -188,9 +191,17 @@ public class TasksFragment extends Fragment {
 
 					}
 				});
-		ListView listView = (ListView) view.findViewById(R.id.tasks_list);
-		listView.setAdapter(adapter);
+				return adapter;
+			}
 
+			@Override
+			protected void onPostExecute(TaskAdapter adapter) {
+				listView.setAdapter(adapter);
+			}
+		};
+
+		task.execute();
+		//listView.setAdapter(adapter);
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View item,

@@ -78,7 +78,6 @@ public class MainActivity extends FragmentActivity implements
 		taskDataSource.open();
 		listDataSource = new ListsDataSource(this);
 		listDataSource.open();
-
 		setCurrentList(listDataSource.getList(0));
 
 		// Intialise ViewPager
