@@ -41,6 +41,8 @@ public class ListFragment extends Fragment {
 		update();
 		return view;
 	}
+	
+	
 
 	public void update() {
 		if(!created) return;

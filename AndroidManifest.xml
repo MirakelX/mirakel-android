@@ -31,18 +31,6 @@
             android:label="@string/title_activity_help" >
         </activity>
         <activity
-            android:name="de.azapps.mirakel.TasksActivity"
-            android:label="@string/title_activity_tasks" >
-        </activity>
-        <activity
-            android:name="de.azapps.mirakel.TaskActivity"
-            android:label="@string/title_activity_task" >
-        </activity>
-        <activity
-            android:name="de.azapps.mirakel.ListActivity"
-            android:label="@string/title_activity_list" >
-        </activity>
-        <activity
             android:name="de.azapps.mirakel.LoginActivity"
             android:label="@string/title_activity_login"
             android:windowSoftInputMode="adjustResize|stateVisible" >
@@ -50,6 +38,7 @@
         <activity
             android:name="de.azapps.mirakel.MainActivity"
             android:label="@string/title_activity_main"
+            android:configChanges="orientation|screenSize"
             android:windowSoftInputMode="adjustPan" >
         </activity>
 

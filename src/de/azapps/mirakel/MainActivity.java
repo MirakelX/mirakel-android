@@ -9,18 +9,26 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.ViewPager;
+import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -47,6 +55,7 @@ public class MainActivity extends FragmentActivity implements
 	private ListsDataSource listDataSource;
 	private Task currentTask;
 	private List_mirakle currentList;
+	
 	private static final int LIST_FRAGMENT = 0, TASKS_FRAGMENT = 1,
 			TASK_FRAGMENT = 2;
 	protected static final int RESULT_SPEECH_NAME = 1,
@@ -61,6 +70,10 @@ public class MainActivity extends FragmentActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		setupLayout();
+	}
+
+	private void setupLayout() {
 		taskDataSource = new TasksDataSource(this);
 		taskDataSource.open();
 		listDataSource = new ListsDataSource(this);
@@ -71,7 +84,6 @@ public class MainActivity extends FragmentActivity implements
 		// Intialise ViewPager
 		this.intialiseViewPager();
 		createNotification();
-
 		Intent intent = getIntent();
 		if (intent.getAction() == SHOW_TASK) {
 			int taskId = intent.getIntExtra(EXTRA_ID, 0);
@@ -88,7 +100,6 @@ public class MainActivity extends FragmentActivity implements
 			return;
 		}
 		mViewPager.setCurrentItem(TASKS_FRAGMENT);
-
 	}
 
 	@Override
@@ -441,5 +452,34 @@ public class MainActivity extends FragmentActivity implements
 		NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		notificationManager.notify(0, noti);
 	}
+	
+	@Override
+	protected void onDestroy(){
+		listDataSource.close();
+		taskDataSource.close();
+		super.onDestroy();
+	}
+	
+	@Override
+	protected void onPause(){
+		listDataSource.close();
+		taskDataSource.close();
+		super.onPause();
+	}
+	@Override
+	protected void onResume(){
+		super.onResume();
+		listDataSource.open();
+		taskDataSource.open();
+	}
+	
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+	    super.onConfigurationChanged(newConfig);
+	    taskFragment.setActivity(this);
+	    listFragment.setActivity(this);
+	    tasksFragment.setActivity(this);
+	}
+	
 
 }
