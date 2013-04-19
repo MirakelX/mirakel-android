@@ -52,6 +52,11 @@
             android:label="@string/title_activity_main"
             android:windowSoftInputMode="adjustPan" >
         </activity>
+        <activity
+            android:name="de.azapps.mirakel.SettingsActivity"
+            android:label="@string/title_activity_main"
+            android:windowSoftInputMode="adjustPan" >
+        </activity>
 
 
         <receiver android:name="MainWidgetProvider" >

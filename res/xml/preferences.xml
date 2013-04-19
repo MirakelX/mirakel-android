@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="@string/sync_title" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="syncUse"
+            android:summary="@string/sync_use_summary"
+            android:title="@string/sync_use" />
+
+        <EditTextPreference
+            android:dependency="syncUse"
+            android:key="syncServer"
+            android:summary="@string/sync_server_summary"
+            android:title="@string/sync_server" />
+        <EditTextPreference
+            android:dependency="syncUse"
+            android:key="syncServer"
+            android:summary="@string/sync_email_summary"
+            android:title="@string/sync_email" />
+
+        <ListPreference
+            android:dependency="syncUse"
+            android:entries="@array/sync_frequencies_values"
+            android:entryValues="@array/sync_frequencies"
+            android:key="syncFrequency"
+            android:summary="@string/sync_frequency_summary"
+            android:title="@string/sync_frequency" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
