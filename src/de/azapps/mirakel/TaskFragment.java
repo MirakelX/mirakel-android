@@ -45,55 +45,62 @@ public class TaskFragment extends Fragment {
 	protected NumberPicker picker;
 	protected EditText input;
 	private Task task;
-	private boolean created=false;
-	
+	private boolean created = false;
+
 	private boolean mIgnoreTimeSet = false;
-	
-	public void setActivity(MainActivity activity){
-		main=activity;
+
+	public void setActivity(MainActivity activity) {
+		main = activity;
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		main=(MainActivity) getActivity();
+		main = (MainActivity) getActivity();
 		view = inflater.inflate(R.layout.activity_task, container, false);
-		created=true;
+		created = true;
 		update();
 		return view;
 	}
+
 	public void update() {
-		if(!created) return;
+		if (!created)
+			return;
 		ViewSwitcher s = (ViewSwitcher) view.findViewById(R.id.switch_name);
-		if(s.getNextView().getId()!=R.id.edit_name){
+		if (s.getNextView().getId() != R.id.edit_name) {
 			s.showPrevious();
 		}
 		s = (ViewSwitcher) view.findViewById(R.id.switch_content);
-		if(s.getNextView().getId()!=R.id.task_content_edit){
+		if (s.getNextView().getId() != R.id.task_content_edit) {
 			s.showPrevious();
-		}		
+		}
 		// Task Name
-		task=main.getCurrentTask();
+		task = main.getCurrentTask();
 		Task_name = (TextView) view.findViewById(R.id.task_name);
 		Task_name.setText(task.getName());
 		Task_name.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				ViewSwitcher switcher = (ViewSwitcher) view.findViewById(R.id.switch_name);
+				ViewSwitcher switcher = (ViewSwitcher) view
+						.findViewById(R.id.switch_name);
 				switcher.showNext(); // or switcher.showPrevious();
 				EditText txt = (EditText) view.findViewById(R.id.edit_name);
 				txt.setText(Task_name.getText());
 				txt.requestFocus();
 
-				InputMethodManager imm = (InputMethodManager) main.getSystemService(Context.INPUT_METHOD_SERVICE);
+				InputMethodManager imm = (InputMethodManager) main
+						.getSystemService(Context.INPUT_METHOD_SERVICE);
 				imm.showSoftInput(txt, InputMethodManager.SHOW_IMPLICIT);
 				txt.setOnEditorActionListener(new OnEditorActionListener() {
 					public boolean onEditorAction(TextView v, int actionId,
 							KeyEvent event) {
 						if (actionId == EditorInfo.IME_ACTION_DONE) {
-							EditText txt = (EditText) view.findViewById(R.id.edit_name);
-							InputMethodManager imm = (InputMethodManager) main.getSystemService(Context.INPUT_METHOD_SERVICE);
-							ViewSwitcher switcher = (ViewSwitcher) view.findViewById(R.id.switch_name);
+							EditText txt = (EditText) view
+									.findViewById(R.id.edit_name);
+							InputMethodManager imm = (InputMethodManager) main
+									.getSystemService(Context.INPUT_METHOD_SERVICE);
+							ViewSwitcher switcher = (ViewSwitcher) view
+									.findViewById(R.id.switch_name);
 							task.setName(txt.getText().toString());
 							main.saveTask(task);
 							Task_name.setText(task.getName());
@@ -166,11 +173,8 @@ public class TaskFragment extends Fragment {
 				android.R.drawable.ic_menu_today);
 		due_img.setBounds(0, 0, 60, 60);
 		Task_due.setCompoundDrawables(due_img, null, null, null);
-		Task_due.setText(task.getDue().compareTo(
-				new GregorianCalendar(1970, 1, 1)) < 0 ? this
-				.getString(R.string.task_no_due) : new SimpleDateFormat(this
-				.getString(R.string.dateFormat), Locale.getDefault())
-				.format(task.getDue().getTime()));
+		Task_due.setText(MirakelHelper.formatDate(task.getDue(),
+			main.getString(R.string.dateFormat)));
 
 		Task_due.setOnClickListener(new View.OnClickListener() {
 
@@ -224,34 +228,39 @@ public class TaskFragment extends Fragment {
 		Task_content = (TextView) view.findViewById(R.id.task_content);
 		Task_content.setText(task.getContent().length() == 0 ? this
 				.getString(R.string.task_no_content) : task.getContent());
-		Drawable content_img = main.getResources()
-				.getDrawable(android.R.drawable.ic_menu_edit);
+		Drawable content_img = main.getResources().getDrawable(
+				android.R.drawable.ic_menu_edit);
 		content_img.setBounds(0, 0, 60, 60);
 		Task_content.setCompoundDrawables(content_img, null, null, null);
 		Task_content.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				ViewSwitcher switcher = (ViewSwitcher) view.findViewById(R.id.switch_content);
+				ViewSwitcher switcher = (ViewSwitcher) view
+						.findViewById(R.id.switch_content);
 				switcher.showNext(); // or switcher.showPrevious();
 				EditText txt = (EditText) view.findViewById(R.id.edit_content);
 				txt.setText(task.getContent());
 				txt.requestFocus();
 
-				InputMethodManager imm = (InputMethodManager) main.getSystemService(Context.INPUT_METHOD_SERVICE);
+				InputMethodManager imm = (InputMethodManager) main
+						.getSystemService(Context.INPUT_METHOD_SERVICE);
 				imm.showSoftInput(txt, InputMethodManager.SHOW_IMPLICIT);
 				Button submit = (Button) view.findViewById(R.id.submit_content);
 				submit.setOnClickListener(new OnClickListener() {
 
 					@Override
 					public void onClick(View arg0) {
-						EditText txt = (EditText) view.findViewById(R.id.edit_content);
-						InputMethodManager imm = (InputMethodManager) main.getSystemService(Context.INPUT_METHOD_SERVICE);
+						EditText txt = (EditText) view
+								.findViewById(R.id.edit_content);
+						InputMethodManager imm = (InputMethodManager) main
+								.getSystemService(Context.INPUT_METHOD_SERVICE);
 						task.setContent(txt.getText().toString());
 						main.saveTask(task);
 						Task_content
 								.setText(task.getContent().trim().length() == 0 ? getString(R.string.task_no_content)
 										: task.getContent());
-						ViewSwitcher switcher = (ViewSwitcher) view.findViewById(R.id.switch_content);
+						ViewSwitcher switcher = (ViewSwitcher) view
+								.findViewById(R.id.switch_content);
 						switcher.showPrevious();
 						imm.hideSoftInputFromWindow(txt.getWindowToken(), 0);
 
@@ -259,7 +268,6 @@ public class TaskFragment extends Fragment {
 				});
 			}
 		});
-		
 
 	}
 
@@ -269,7 +277,5 @@ public class TaskFragment extends Fragment {
 				.setBackgroundColor(Mirakel.PRIO_COLOR[task.getPriority() + 2]);
 
 	}
-	
-
 
 }

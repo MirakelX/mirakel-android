@@ -29,6 +29,9 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		listId = intent.getIntExtra(MainWidgetProvider.EXTRA_LISTID, 0);
 	}
 
+	/**
+	 * Define and open the DataSources
+	 */
 	public void onCreate() {
 		tasksDatasource = new TasksDataSource(mContext);
 		tasksDatasource.open();
@@ -44,11 +47,13 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	}
 
 	public RemoteViews getViewAt(int position) {
-		// Get the data for this position from the content provider
+		// Get The Task
 		Task task = tasks.get(position);
-		// Return a proper item with the proper day and temperature
+		// Initialize the Remote View
 		RemoteViews rv = new RemoteViews(mContext.getPackageName(),
 				R.layout.row);
+
+		// Set the Contents of the Row
 		rv.setTextViewText(R.id.tasks_row_name, task.getName());
 		if (task.isDone()) {
 			rv.setTextColor(R.id.tasks_row_name, mContext.getResources()
@@ -62,24 +67,27 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 				.getColor(R.color.Black));
 		rv.setInt(R.id.tasks_row_priority, "setBackgroundColor",
 				Mirakel.PRIO_COLOR[task.getPriority() + 2]);
-		
-
 
 		rv.setTextViewText(
-				R.id.tasks_row_due,MirakelHelper.getTaskDueString(task.getDue(),
-				mContext.getString(R.string.dateFormat)));
-		rv.setTextColor(R.id.tasks_row_due, mContext.getResources().getColor(
-				MirakelHelper.getTaskDueColor(task.getDue(), task.isDone())));
-		//rv.setBoolean(R.id.tasks_row_done, "setChecked", true);
+				R.id.tasks_row_due,
+				MirakelHelper.formatDate(task.getDue(),
+						mContext.getString(R.string.dateFormat)));
+		rv.setTextColor(
+				R.id.tasks_row_due,
+				mContext.getResources().getColor(
+						MirakelHelper.getTaskDueColor(task.getDue(),
+								task.isDone())));
+		// rv.setBoolean(R.id.tasks_row_done, "setChecked", true);
 		/*
 		 * holder.taskRowDone.setChecked(task.isDone());
 		 * holder.taskRowDone.setOnClickListener(clickCheckbox);
 		 */
 
-		// Set the click intent so that we can handle it and show a toast
-		// message
+		// Set the Click–Intent
+		// We need to do so, because we can not start the Activity directly from
+		// the Service
 
-		Bundle extras = new Bundle();		
+		Bundle extras = new Bundle();
 		extras.putInt(MainWidgetProvider.EXTRA_TASKID, (int) task.getId());
 		Intent fillInIntent = new Intent(MainWidgetProvider.CLICK_TASK);
 		fillInIntent.putExtras(extras);

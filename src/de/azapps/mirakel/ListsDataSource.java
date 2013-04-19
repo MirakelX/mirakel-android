@@ -32,29 +32,60 @@ public class ListsDataSource {
 			"updated_at", "sync_state" };
 	private Context context;
 
+	/**
+	 * Creates the DataSource and initialize the Database
+	 * 
+	 * @param context
+	 */
 	public ListsDataSource(Context context) {
 		dbHelper = new DatabaseHelper(context);
 		this.context = context;
 	}
 
+	/**
+	 * Open the Database
+	 * 
+	 * @throws SQLException
+	 */
 	public void open() throws SQLException {
 		database = dbHelper.getWritableDatabase();
 	}
 
+	/**
+	 * Close the Database
+	 */
 	public void close() {
 		dbHelper.close();
 	}
 
+	/**
+	 * Shortcut for creating a List
+	 * 
+	 * @param name
+	 *            Name of the List
+	 * @return new List
+	 */
 	public List_mirakle createList(String name) {
 		return createList(name, 0);
 	}
 
+	/**
+	 * Create a List
+	 * 
+	 * @param name
+	 *            Name of the List
+	 * @param sort_by
+	 *            the default sorting
+	 * @return new List
+	 */
 	public List_mirakle createList(String name, int sort_by) {
 		ContentValues values = new ContentValues();
 		values.put("name", name);
 		values.put("sort_by", sort_by);
 		values.put("sync_state", Mirakel.SYNC_STATE_ADD);
+
 		long insertId = database.insert("lists", null, values);
+
 		Cursor cursor = database.query("lists", allColumns,
 				"_id = " + insertId, null, null, null, null);
 		cursor.moveToFirst();
@@ -63,6 +94,12 @@ public class ListsDataSource {
 		return newList;
 	}
 
+	/**
+	 * Update the List in the Database
+	 * 
+	 * @param list
+	 *            The List
+	 */
 	public void saveList(List_mirakle list) {
 		Log.v(TAG, "saveTask");
 
@@ -88,8 +125,16 @@ public class ListsDataSource {
 		editor.commit();
 	}
 
+	/**
+	 * Delete a List from the Database
+	 * 
+	 * @param list
+	 */
 	public void deleteList(List_mirakle list) {
 		long id = list.getId();
+		if (id <= 0)
+			return;
+
 		if (list.getSync_state() == Mirakel.SYNC_STATE_ADD) {
 			database.delete("tasks", "list_id = " + id, null);
 			database.delete("lists", "_id = " + id, null);
@@ -101,15 +146,22 @@ public class ListsDataSource {
 		}
 	}
 
+	/**
+	 * Get all Lists in the Database
+	 * 
+	 * @return List of Lists
+	 */
 	public List<List_mirakle> getAllLists() {
 		List<List_mirakle> lists = new ArrayList<List_mirakle>();
 		// TODO Get from strings.xml
+		// TODO this should be configurable…
 		lists.add(new List_mirakle(Mirakel.LIST_ALL, context
 				.getString(R.string.list_all), task_count(Mirakel.LIST_ALL)));
 		lists.add(new List_mirakle(Mirakel.LIST_DAILY, context
 				.getString(R.string.list_today), task_count(Mirakel.LIST_DAILY)));
 		lists.add(new List_mirakle(Mirakel.LIST_WEEKLY, context
 				.getString(R.string.list_week), task_count(Mirakel.LIST_WEEKLY)));
+
 		Cursor cursor = database.query("lists", allColumns, "not sync_state="
 				+ Mirakel.SYNC_STATE_DELETE, null, null, null, null);
 		cursor.moveToFirst();
@@ -122,6 +174,11 @@ public class ListsDataSource {
 		return lists;
 	}
 
+	/**
+	 * Get the first List
+	 * 
+	 * @return List
+	 */
 	public List_mirakle getFirstList() {
 		Cursor cursor = database.query("lists", allColumns, "not sync_state="
 				+ Mirakel.SYNC_STATE_DELETE, null, null, null, "_id ASC");
@@ -135,6 +192,13 @@ public class ListsDataSource {
 		return list;
 	}
 
+	/**
+	 * Get a List by id
+	 * 
+	 * @param id
+	 *            List–ID
+	 * @return List
+	 */
 	public List_mirakle getList(int id) {
 		open();
 
@@ -146,6 +210,7 @@ public class ListsDataSource {
 			cursor.close();
 			return t;
 		}
+
 		List_mirakle list = new List_mirakle();
 		SharedPreferences settings = PreferenceManager
 				.getDefaultSharedPreferences(context.getApplicationContext());
@@ -173,6 +238,13 @@ public class ListsDataSource {
 		return list;
 	}
 
+	/**
+	 * Count all Tasks in a List
+	 * 
+	 * @param list_id
+	 *            List ID
+	 * @return Count
+	 */
 	private int task_count(int list_id) {
 		String count = "Select count(_id) from tasks where";
 		switch (list_id) {
@@ -196,6 +268,12 @@ public class ListsDataSource {
 		return task_count;
 	}
 
+	/**
+	 * Create a List from a Cursor
+	 * 
+	 * @param cursor
+	 * @return
+	 */
 	private List_mirakle cursorToList(Cursor cursor) {
 		int i = 0;
 		int id = cursor.getInt(i++);
@@ -205,6 +283,11 @@ public class ListsDataSource {
 		return list;
 	}
 
+	/**
+	 * Returns a List of all Lists, which are marked as deleted
+	 * 
+	 * @return List of Lists
+	 */
 	protected List<List_mirakle> getdeletedLists() {
 		List<List_mirakle> lists = new ArrayList<List_mirakle>();
 		Cursor c = database.query("lists", allColumns, "sync_state="
@@ -220,6 +303,13 @@ public class ListsDataSource {
 
 	}
 
+	/**
+	 * Sync the lists with the Server
+	 * 
+	 * @param email
+	 * @param password
+	 * @param url
+	 */
 	public void sync_lists(final String email, final String password,
 			final String url) {
 		Log.v(TAG, "sync lists");
@@ -259,6 +349,14 @@ public class ListsDataSource {
 		}, email, password, Mirakel.Http_Mode.GET).execute(url + "/lists.json");
 	}
 
+	/**
+	 * Delete a List from the Server
+	 * 
+	 * @param list
+	 * @param email
+	 * @param password
+	 * @param url
+	 */
 	protected void delete_list(final List_mirakle list, final String email,
 			final String password, final String url) {
 		new Network(new DataDownloadCommand() {
@@ -272,6 +370,14 @@ public class ListsDataSource {
 
 	}
 
+	/**
+	 * Sync one List with the Server
+	 * 
+	 * @param list
+	 * @param email
+	 * @param password
+	 * @param url
+	 */
 	protected void sync_list(List_mirakle list, String email, String password,
 			String url) {
 		List<BasicNameValuePair> data = new ArrayList<BasicNameValuePair>();
@@ -286,6 +392,13 @@ public class ListsDataSource {
 				+ "/lists/" + list.getId() + ".json");
 	}
 
+	/**
+	 * Create a List on the Server
+	 * @param list
+	 * @param email
+	 * @param password
+	 * @param url
+	 */
 	protected void add_list(final List_mirakle list, final String email,
 			final String password, final String url) {
 		List<BasicNameValuePair> data = new ArrayList<BasicNameValuePair>();
@@ -311,6 +424,10 @@ public class ListsDataSource {
 
 	}
 
+	/**
+	 * Merge Lists
+	 * @param lists_server
+	 */
 	protected void merge_with_server(List_mirakle[] lists_server) {
 		for (int i = 0; i < lists_server.length; i++) {
 			List_mirakle list = getList(lists_server[i].getId());

@@ -30,6 +30,11 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 
 	}
 
+	/**
+	 * Add a task to the head of the List
+	 * 
+	 * @param task
+	 */
 	void addToHead(Task task) {
 		data.add(0, task);
 	}
@@ -40,6 +45,7 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		TaskHolder holder = null;
 
 		if (row == null) {
+			// Initialize the View
 			LayoutInflater inflater = ((Activity) context).getLayoutInflater();
 			row = inflater.inflate(layoutResourceId, parent, false);
 			holder = new TaskHolder();
@@ -57,24 +63,31 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		}
 
 		Task task = data.get(position);
+
+		// Done
 		holder.taskRowDone.setChecked(task.isDone());
-		//holder.taskRowDone.setOnClickListener(clickCheckbox);
+		holder.taskRowDone.setOnClickListener(clickCheckbox);
 		holder.taskRowDone.setTag(task);
+
+		// Name
 		holder.taskRowName.setText(task.getName());
+		int nameColor;
 		if (task.isDone()) {
-			holder.taskRowName.setTextColor(row.getResources().getColor(
-					R.color.Grey));
+			nameColor = R.color.Grey;
 		} else {
-			holder.taskRowName.setTextColor(row.getResources().getColor(
-					R.color.Black));
+			nameColor = R.color.Black;
 		}
+		holder.taskRowName.setTextColor(row.getResources().getColor(nameColor));
+
+		// Priority
 		holder.taskRowPriority.setText("" + task.getPriority());
 		holder.taskRowPriority.setBackgroundColor(Mirakel.PRIO_COLOR[task
 				.getPriority() + 2]);
 		holder.taskRowPriority.setOnClickListener(clickPrio);
 		holder.taskRowPriority.setTag(task);
 
-		holder.taskRowDue.setText(MirakelHelper.getTaskDueString(task.getDue(),
+		// Due
+		holder.taskRowDue.setText(MirakelHelper.formatDate(task.getDue(),
 				context.getString(R.string.dateFormat)));
 		holder.taskRowDue.setTextColor(row.getResources().getColor(
 				MirakelHelper.getTaskDueColor(task.getDue(), task.isDone())));
@@ -82,6 +95,12 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		return row;
 	}
 
+	/**
+	 * The class, holding the Views of the Row
+	 * 
+	 * @author az
+	 * 
+	 */
 	static class TaskHolder {
 		CheckBox taskRowDone;
 		TextView taskRowName;

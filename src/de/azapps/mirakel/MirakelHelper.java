@@ -6,17 +6,35 @@ import java.util.Locale;
 
 import org.joda.time.LocalDate;
 
-
 public class MirakelHelper {
-	static String getTaskDueString(GregorianCalendar due, String format) {
-		if (due.compareTo(new GregorianCalendar(1970, 1, 1)) < 0)
+
+	/**
+	 * Format a Date for showing it in the app
+	 * 
+	 * @param date
+	 *            Date
+	 * @param format
+	 *            Format–String (like dd.MM.YY)
+	 * @return The formatted Date as String
+	 */
+	static String formatDate(GregorianCalendar date, String format) {
+		if (date.compareTo(new GregorianCalendar(1970, 1, 1)) < 0)
 			return "";
 		else {
 			return new SimpleDateFormat(format, Locale.getDefault())
-					.format(due.getTime());
+					.format(date.getTime());
 		}
 	}
 
+	/**
+	 * Returns the ID of the Color–Resource for a Due–Date
+	 * 
+	 * @param origDue
+	 *            The Due–Date
+	 * @param isDone
+	 *            Is the Task done?
+	 * @return ID of the Color–Resource
+	 */
 	static int getTaskDueColor(GregorianCalendar origDue, boolean isDone) {
 		LocalDate today = new LocalDate();
 		LocalDate nextWeek = new LocalDate().plusDays(7);
