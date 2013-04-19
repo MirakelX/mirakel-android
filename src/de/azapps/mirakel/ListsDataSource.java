@@ -31,6 +31,7 @@ public class ListsDataSource {
 	private String[] allColumns = { "_id", "name", "sort_by", "created_at",
 			"updated_at", "sync_state" };
 	private Context context;
+	private SharedPreferences preferences;
 
 	/**
 	 * Creates the DataSource and initialize the Database
@@ -39,6 +40,7 @@ public class ListsDataSource {
 	 */
 	public ListsDataSource(Context context) {
 		dbHelper = new DatabaseHelper(context);
+		preferences = PreferenceManager.getDefaultSharedPreferences(context);
 		this.context = context;
 	}
 
@@ -102,10 +104,7 @@ public class ListsDataSource {
 	 */
 	public void saveList(List_mirakle list) {
 		Log.v(TAG, "saveTask");
-
-		SharedPreferences settings = PreferenceManager
-				.getDefaultSharedPreferences(context.getApplicationContext());
-		SharedPreferences.Editor editor = settings.edit();
+		SharedPreferences.Editor editor = preferences.edit();
 		switch (list.getId()) {
 		case Mirakel.LIST_ALL:
 			editor.putInt("SortListAll", list.getSortBy());
@@ -154,13 +153,17 @@ public class ListsDataSource {
 	public List<List_mirakle> getAllLists() {
 		List<List_mirakle> lists = new ArrayList<List_mirakle>();
 		// TODO Get from strings.xml
-		// TODO this should be configurable…
-		lists.add(new List_mirakle(Mirakel.LIST_ALL, context
-				.getString(R.string.list_all), task_count(Mirakel.LIST_ALL)));
-		lists.add(new List_mirakle(Mirakel.LIST_DAILY, context
-				.getString(R.string.list_today), task_count(Mirakel.LIST_DAILY)));
-		lists.add(new List_mirakle(Mirakel.LIST_WEEKLY, context
-				.getString(R.string.list_week), task_count(Mirakel.LIST_WEEKLY)));
+		if (preferences.getBoolean("listAll", true))
+			lists.add(new List_mirakle(Mirakel.LIST_ALL, context
+					.getString(R.string.list_all), task_count(Mirakel.LIST_ALL)));
+		if (preferences.getBoolean("listToday", true))
+			lists.add(new List_mirakle(Mirakel.LIST_DAILY, context
+					.getString(R.string.list_today),
+					task_count(Mirakel.LIST_DAILY)));
+		if (preferences.getBoolean("listWeek", true))
+			lists.add(new List_mirakle(Mirakel.LIST_WEEKLY, context
+					.getString(R.string.list_week),
+					task_count(Mirakel.LIST_WEEKLY)));
 
 		Cursor cursor = database.query("lists", allColumns, "not sync_state="
 				+ Mirakel.SYNC_STATE_DELETE, null, null, null, null);
@@ -394,6 +397,7 @@ public class ListsDataSource {
 
 	/**
 	 * Create a List on the Server
+	 * 
 	 * @param list
 	 * @param email
 	 * @param password
@@ -426,6 +430,7 @@ public class ListsDataSource {
 
 	/**
 	 * Merge Lists
+	 * 
 	 * @param lists_server
 	 */
 	protected void merge_with_server(List_mirakle[] lists_server) {
