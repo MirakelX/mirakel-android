@@ -67,6 +67,7 @@ public class MainActivity extends FragmentActivity implements
 	public static String EXTRA_ID = "de.azapps.mirakel.EXTRA_TASKID";
 	public static String SHOW_TASK = "de.azapps.mirakel.SHOW_TASK";
 	public static String SHOW_LIST = "de.azapps.mirakel.SHOW_LIST";
+	public static String SHOW_LISTS = "de.azapps.mirakel.SHOW_LISTS";
 	private SharedPreferences preferences;
 
 	@Override
@@ -103,8 +104,11 @@ public class MainActivity extends FragmentActivity implements
 			List_mirakle list = listDataSource.getList(listId);
 			setCurrentList(list);
 			return;
+		} else if (intent.getAction() == SHOW_LISTS) {
+			mViewPager.setCurrentItem(LIST_FRAGMENT);
+		} else {
+			mViewPager.setCurrentItem(TASKS_FRAGMENT);
 		}
-		mViewPager.setCurrentItem(TASKS_FRAGMENT);
 	}
 
 	@Override
@@ -471,9 +475,9 @@ public class MainActivity extends FragmentActivity implements
 						todayTasks.size());
 				break;
 			default:
-				notificationTitle=String.format(
+				notificationTitle = String.format(
 						getString(R.string.notification_title_general),
-						todayTasks.size(),todayList.getName());
+						todayTasks.size(), todayList.getName());
 
 			}
 			notificationText = todayTasks.get(0).getName();

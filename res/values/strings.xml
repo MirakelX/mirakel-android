@@ -87,5 +87,7 @@
     <string name="notification_title_weekly">%d Tasks this Week</string>
     <string name="notification_title_general" formatted="false">%d Tasks in %s</string>
     <string name="notification_title_empty">Enjoy your day!</string>
+    <string name="title_activity_splash_screen">SplashScreenActivity</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>
