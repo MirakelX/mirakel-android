@@ -22,7 +22,6 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 
-
 import android.os.AsyncTask;
 import android.util.Log;
 

@@ -3,12 +3,10 @@ package de.azapps.mirakel;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 public class MainWidgetProvider extends AppWidgetProvider {
 	public static String EXTRA_LISTID = "de.azapps.mirakel.EXTRA_LISTID";

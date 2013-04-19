@@ -1,11 +1,6 @@
 package de.azapps.mirakel;
 
-import java.text.SimpleDateFormat;
-import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Locale;
-
-import org.joda.time.LocalDate;
 
 import android.app.Activity;
 import android.content.Context;
@@ -34,7 +29,8 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		this.clickPrio = click_prio;
 
 	}
-	void addToHead(Task task){
+
+	void addToHead(Task task) {
 		data.add(0, task);
 	}
 
@@ -62,7 +58,7 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 
 		Task task = data.get(position);
 		holder.taskRowDone.setChecked(task.isDone());
-		holder.taskRowDone.setOnClickListener(clickCheckbox);
+		//holder.taskRowDone.setOnClickListener(clickCheckbox);
 		holder.taskRowDone.setTag(task);
 		holder.taskRowName.setText(task.getName());
 		if (task.isDone()) {
@@ -78,32 +74,10 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		holder.taskRowPriority.setOnClickListener(clickPrio);
 		holder.taskRowPriority.setTag(task);
 
-		holder.taskRowDue.setText(task.getDue().compareTo(
-				new GregorianCalendar(1970, 1, 1)) < 0 ? ""
-				: new SimpleDateFormat(context.getString(R.string.dateFormat), Locale.getDefault()).format(task
-						.getDue().getTime()));
-
-		LocalDate today = new LocalDate();
-		LocalDate nextWeek = new LocalDate().plusDays(7);
-		LocalDate due = new LocalDate(task.getDue());
-		int cmpr = today.compareTo(due);
-		if (task.isDone()) {
-			// holder.taskRowDue.setTextColor(row.getResources().getColor(
-			// R.color.Grey));
-		} else if (cmpr > 0) {
-			holder.taskRowDue.setTextColor(row.getResources().getColor(
-					R.color.Red));
-		} else if (cmpr == 0) {
-			holder.taskRowDue.setTextColor(row.getResources().getColor(
-					R.color.Orange));
-		} else if (nextWeek.compareTo(due) >= 0) {
-			holder.taskRowDue.setTextColor(row.getResources().getColor(
-					R.color.Yellow));
-		} else {
-			holder.taskRowDue.setTextColor(row.getResources().getColor(
-					R.color.Green));
-
-		}
+		holder.taskRowDue.setText(MirakelHelper.getTaskDueString(task.getDue(),
+				context.getString(R.string.dateFormat)));
+		holder.taskRowDue.setTextColor(row.getResources().getColor(
+				MirakelHelper.getTaskDueColor(task.getDue(), task.isDone())));
 
 		return row;
 	}
