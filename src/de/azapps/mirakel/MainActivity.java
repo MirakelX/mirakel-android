@@ -232,10 +232,16 @@ public class MainActivity extends FragmentActivity implements
 					.getString(R.string.list_menu_new_list));
 			listFragment.update();
 			return true;
+		case R.id.menu_settings_list:
+		case R.id.menu_settings_task:
+		case R.id.menu_settings_tasks:
+			Intent intent=new Intent(MainActivity.this,SettingsActivity.class);
+			startActivity(intent);
+			break;
 		default:
 			return super.onOptionsItemSelected(item);
-
 		}
+		return true;
 	}
 
 	/**
