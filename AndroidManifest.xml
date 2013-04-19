@@ -18,13 +18,17 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="de.azapps.mirakel.StartActivity"
+            android:name="de.azapps.mirakel.SplashScreenActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="de.azapps.mirakel.StartActivity"
+            android:label="@string/app_name" >
         </activity>
         <activity
             android:name="de.azapps.mirakel.HelpActivity"
@@ -37,8 +41,8 @@
         </activity>
         <activity
             android:name="de.azapps.mirakel.MainActivity"
-            android:label="@string/title_activity_main"
             android:configChanges="orientation|screenSize"
+            android:label="@string/title_activity_main"
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
@@ -47,8 +51,7 @@
             android:windowSoftInputMode="adjustPan" >
         </activity>
 
-
-        <receiver android:name="MainWidgetProvider" >
+        <receiver android:name="de.azapps.mirakel.MainWidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -57,12 +60,12 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_provider" />
         </receiver>
-        
-        
+
         <!-- The service serving the RemoteViews to the collection widget -->
-        <service android:name="MainWidgetService"
-            android:permission="android.permission.BIND_REMOTEVIEWS"
-            android:exported="false" />
+        <service
+            android:name="de.azapps.mirakel.MainWidgetService"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 
 </manifest>

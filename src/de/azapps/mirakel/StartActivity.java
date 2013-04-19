@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -16,16 +17,16 @@ public class StartActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		int version=Mirakel.getReadableDatabase().getVersion();
-		if(version!=Mirakel.DATABASE_VERSION){
-			Log.v(TAG,"SET DB-VERSION "+Mirakel.DATABASE_VERSION);
+		int version = Mirakel.getReadableDatabase().getVersion();
+		if (version != Mirakel.DATABASE_VERSION) {
+			Log.v(TAG, "SET DB-VERSION " + Mirakel.DATABASE_VERSION);
 			Mirakel.getReadableDatabase().setVersion(Mirakel.DATABASE_VERSION);
 		}
 		setContentView(R.layout.activity_start);
 		Button offline_button = (Button) findViewById(R.id.home_offline);
-		Button own_server=(Button) findViewById(R.id.home_own_server);
-		Button offical_server=(Button) findViewById(R.id.home_official_server);
-		
+		Button own_server = (Button) findViewById(R.id.home_own_server);
+		Button offical_server = (Button) findViewById(R.id.home_official_server);
+
 		offline_button.setOnClickListener(new Button.OnClickListener() {
 
 			@Override
@@ -52,7 +53,7 @@ public class StartActivity extends Activity {
 				Log.v(TAG, "OWN SERVER");
 				SharedPreferences settings = PreferenceManager
 						.getDefaultSharedPreferences(getApplicationContext());
-				if (settings.getBoolean("showHelp", true)) { 
+				if (settings.getBoolean("showHelp", true)) {
 					Intent intent = new Intent(StartActivity.this,
 							HelpActivity.class);
 					startActivity(intent);
@@ -64,7 +65,7 @@ public class StartActivity extends Activity {
 				}
 			}
 		});
-		
+
 		offical_server.setOnClickListener(new Button.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -83,7 +84,7 @@ public class StartActivity extends Activity {
 				}
 			}
 		});
-		
+
 	}
 
 	@Override
@@ -100,6 +101,18 @@ public class StartActivity extends Activity {
 		Mirakel.getWritableDatabase()
 				.execSQL(
 						"INSERT INTO tasks (list_id,name) VALUES (1,'First task'), (1,'Second'), (2,'another')");
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.action_settings:
+			Intent intent = new Intent(StartActivity.this,
+					SettingsActivity.class);
+			startActivity(intent);
+			break;
+		}
+		return true;
 	}
 
 }

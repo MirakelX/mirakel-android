@@ -44,6 +44,8 @@
     <string name="notifications_title">Notifications</string>
     <string name="notifications_use">Use</string>
     <string name="notifications_use_summary">Do you want to see notifications?</string>
+    <string name="notifications_persistent">Persistent</string>
+    <string name="notifications_persistent_summary">Should the notification be persistent?</string>
     <string name="notifications_list">List</string>
     <string name="notifications_list_summary">Which List should I show you?</string>
     

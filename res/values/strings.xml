@@ -77,13 +77,17 @@
     <string name="login_server">Server-URL</string>
     <string name="offical_server_url">http://mirakel.azapps.de</string>
     <string name="title_activity_main">MainActivity</string>
-    
-    
+
     <!-- Widget -->
     <string name="main_widget_name">Widget</string>
-    
+
     <!-- Notification -->
-    <string name="notification_title">%1$d Tasks today</string>
+    <string name="notification_title_all">%1$d Tasks</string>
+    <string name="notification_title_daily">%d Tasks today</string>
+    <string name="notification_title_weekly">%d Tasks this Week</string>
+    <string name="notification_title_general" formatted="false">%d Tasks in %s</string>
     <string name="notification_title_empty">Enjoy your day!</string>
+    <string name="title_activity_splash_screen">SplashScreenActivity</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>

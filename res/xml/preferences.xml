@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
+    <!-- Startup -->
     <PreferenceCategory android:title="@string/startup_title" >
         <CheckBoxPreference
             android:defaultValue="false"
@@ -14,6 +15,8 @@
             android:summary="@string/startup_list_summary"
             android:title="@string/startup_list" />
     </PreferenceCategory>
+    
+    <!-- Sync -->
     <PreferenceCategory android:title="@string/sync_title" >
         <CheckBoxPreference
             android:defaultValue="false"
@@ -40,6 +43,8 @@
             android:summary="@string/sync_frequency_summary"
             android:title="@string/sync_frequency" />
     </PreferenceCategory>
+    
+    <!-- Special Lists -->
     <PreferenceCategory android:title="@string/lists_title" >
         <CheckBoxPreference
             android:defaultValue="true"
@@ -57,18 +62,24 @@
             android:summary="@string/lists_week_summary"
             android:title="@string/lists_week" />
     </PreferenceCategory>
+    
+    <!-- Notifications -->
     <PreferenceCategory android:title="@string/notifications_title" >
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="notificationsUse"
             android:summary="@string/notifications_use_summary"
             android:title="@string/notifications_use" />
-
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:dependency="notificationsUse"
+            android:key="notificationsPersistent"
+            android:summary="@string/notifications_persistent_summary"
+            android:title="@string/notifications_persistent" />
+        
         <ListPreference
             android:defaultValue="-1"
             android:dependency="notificationsUse"
-            android:entries="@array/sync_frequencies"
-            android:entryValues="@array/sync_frequencies_values"
             android:key="notificationsList"
             android:summary="@string/notifications_list_summary"
             android:title="@string/notifications_list" />

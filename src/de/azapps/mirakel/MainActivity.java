@@ -12,8 +12,10 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -55,7 +57,7 @@ public class MainActivity extends FragmentActivity implements
 	private ListsDataSource listDataSource;
 	private Task currentTask;
 	private List_mirakle currentList;
-	
+
 	private static final int LIST_FRAGMENT = 0, TASKS_FRAGMENT = 1,
 			TASK_FRAGMENT = 2;
 	protected static final int RESULT_SPEECH_NAME = 1,
@@ -65,10 +67,13 @@ public class MainActivity extends FragmentActivity implements
 	public static String EXTRA_ID = "de.azapps.mirakel.EXTRA_TASKID";
 	public static String SHOW_TASK = "de.azapps.mirakel.SHOW_TASK";
 	public static String SHOW_LIST = "de.azapps.mirakel.SHOW_LIST";
+	public static String SHOW_LISTS = "de.azapps.mirakel.SHOW_LISTS";
+	private SharedPreferences preferences;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		preferences = PreferenceManager.getDefaultSharedPreferences(this);
 		setContentView(R.layout.activity_main);
 		setupLayout();
 	}
@@ -82,7 +87,8 @@ public class MainActivity extends FragmentActivity implements
 
 		// Intialise ViewPager
 		this.intialiseViewPager();
-		createNotification();
+		if (getPreferences().getBoolean("notificationsUse", true))
+			createNotification();
 		Intent intent = getIntent();
 		if (intent.getAction() == SHOW_TASK) {
 			int taskId = intent.getIntExtra(EXTRA_ID, 0);
@@ -97,8 +103,11 @@ public class MainActivity extends FragmentActivity implements
 			List_mirakle list = listDataSource.getList(listId);
 			setCurrentList(list);
 			return;
+		} else if (intent.getAction() == SHOW_LISTS) {
+			mViewPager.setCurrentItem(LIST_FRAGMENT);
+		} else {
+			mViewPager.setCurrentItem(TASKS_FRAGMENT);
 		}
-		mViewPager.setCurrentItem(TASKS_FRAGMENT);
 	}
 
 	@Override
@@ -234,7 +243,8 @@ public class MainActivity extends FragmentActivity implements
 		case R.id.menu_settings_list:
 		case R.id.menu_settings_task:
 		case R.id.menu_settings_tasks:
-			Intent intent=new Intent(MainActivity.this,SettingsActivity.class);
+			Intent intent = new Intent(MainActivity.this,
+					SettingsActivity.class);
 			startActivity(intent);
 			break;
 		default:
@@ -322,6 +332,10 @@ public class MainActivity extends FragmentActivity implements
 
 	Task getCurrentTask() {
 		return currentTask;
+	}
+
+	SharedPreferences getPreferences() {
+		return preferences;
 	}
 
 	void setCurrentTask(Task currentTask) {
@@ -425,66 +439,89 @@ public class MainActivity extends FragmentActivity implements
 	 * Create a Notification in the NotificationDrawer
 	 */
 	private void createNotification() {
-		//Set onClick Intent
+		int listId = Integer.parseInt(getPreferences().getString(
+				"notificationsList", "" + Mirakel.LIST_DAILY));
+		// Set onClick Intent
 		Intent intent = new Intent(this, MainActivity.class);
 		intent.setAction(SHOW_LIST);
-		intent.putExtra(EXTRA_ID, Mirakel.LIST_DAILY);
+		intent.putExtra(EXTRA_ID, listId);
 		PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
 		// Get the data
-		List_mirakle todayList = listDataSource.getList(Mirakel.LIST_DAILY);
+		List_mirakle todayList = listDataSource.getList(listId);
 		List<Task> todayTasks = taskDataSource.getTasks(todayList,
 				todayList.getSortBy());
 		String notificationTitle;
 		String notificationText;
-		if(todayTasks.size()==0){
-			notificationTitle=getString(R.string.notification_title_empty);
-			notificationText="";
-		}else {
-			notificationTitle = String.format(
-					getString(R.string.notification_title), todayTasks.size());
+		if (todayTasks.size() == 0) {
+			notificationTitle = getString(R.string.notification_title_empty);
+			notificationText = "";
+		} else {
+			switch (listId) {
+			case Mirakel.LIST_ALL:
+				notificationTitle = String.format(
+						getString(R.string.notification_title_all),
+						todayTasks.size());
+				break;
+			case Mirakel.LIST_DAILY:
+				notificationTitle = String.format(
+						getString(R.string.notification_title_daily),
+						todayTasks.size());
+				break;
+			case Mirakel.LIST_WEEKLY:
+				notificationTitle = String.format(
+						getString(R.string.notification_title_weekly),
+						todayTasks.size());
+				break;
+			default:
+				notificationTitle = String.format(
+						getString(R.string.notification_title_general),
+						todayTasks.size(), todayList.getName());
+
+			}
 			notificationText = todayTasks.get(0).getName();
 		}
 
+		boolean persistent = getPreferences().getBoolean(
+				"notificationsPersistent", true);
 		// Build notification
-		// Actions are just fake
 		Notification noti = new Notification.Builder(this)
 				.setContentTitle(notificationTitle)
 				.setContentText(notificationText)
 				.setSmallIcon(R.drawable.ic_launcher).setContentIntent(pIntent)
-				.build();
+				.setOngoing(persistent).build();
 
 		NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		notificationManager.notify(0, noti);
 	}
-	
+
 	@Override
-	protected void onDestroy(){
+	protected void onDestroy() {
 		listDataSource.close();
 		taskDataSource.close();
 		super.onDestroy();
 	}
-	
+
 	@Override
-	protected void onPause(){
+	protected void onPause() {
 		listDataSource.close();
 		taskDataSource.close();
 		super.onPause();
 	}
+
 	@Override
-	protected void onResume(){
+	protected void onResume() {
 		super.onResume();
 		listDataSource.open();
 		taskDataSource.open();
 	}
-	
+
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
-	    super.onConfigurationChanged(newConfig);
-	    taskFragment.setActivity(this);
-	    listFragment.setActivity(this);
-	    tasksFragment.setActivity(this);
+		super.onConfigurationChanged(newConfig);
+		taskFragment.setActivity(this);
+		listFragment.setActivity(this);
+		tasksFragment.setActivity(this);
 	}
-	
 
 }
