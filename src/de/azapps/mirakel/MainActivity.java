@@ -42,12 +42,14 @@ public class MainActivity extends FragmentActivity implements
 	private ListsDataSource listDataSource;
 	private Task currentTask;
 	private List_mirakle currentList;
-	private static final int LIST_FRAGMENT = 0, TASKS_FRAGMENT = 1, TASK_FRAGMENT = 2;
+	private static final int LIST_FRAGMENT = 0, TASKS_FRAGMENT = 1,
+			TASK_FRAGMENT = 2;
 	protected static final int RESULT_SPEECH_NAME = 1,
 			RESULT_SPEECH_CONTENT = 2, RESULT_SPEECH = 3;
 	private static final String TAG = "MainActivity";
 
 	public static String EXTRA_TASKID = "de.azapps.mirakel.EXTRA_TASKID";
+	public static String SHOW_TASK = "de.azapps.mirakel.SHOW_TASK";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,18 @@ public class MainActivity extends FragmentActivity implements
 
 		// Intialise ViewPager
 		this.intialiseViewPager();
+
+		Intent intent = getIntent();
+		if (intent.getAction() == SHOW_TASK) {
+			int taskId = intent.getIntExtra(EXTRA_TASKID, 0);
+			if (taskId != 0) {
+				Task task=taskDataSource.getTask(taskId);
+				currentList=listDataSource.getList((int)task.getListId());
+				setCurrentTask(task);
+				return;
+			}
+
+		}
 		mViewPager.setCurrentItem(TASKS_FRAGMENT);
 
 	}
@@ -121,7 +135,8 @@ public class MainActivity extends FragmentActivity implements
 						public void onClick(DialogInterface dialog, int item) {
 							currentTask.setListId(list_ids.get(item));
 							taskDataSource.saveTask(currentTask);
-							currentList=listDataSource.getList((int) currentTask.getListId());
+							currentList = listDataSource
+									.getList((int) currentTask.getListId());
 							tasksFragment.update();
 							listFragment.update();
 						}
@@ -161,34 +176,38 @@ public class MainActivity extends FragmentActivity implements
 		case R.id.task_sorting:
 			final CharSequence[] SortingItems = getResources().getStringArray(
 					R.array.task_sorting_items);
-			AlertDialog.Builder SortingDialogBuilder = new AlertDialog.Builder(this);
-			SortingDialogBuilder.setTitle(this.getString(R.string.task_sorting_title));
-			SortingDialogBuilder.setItems(SortingItems, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int item) {
-					switch (item) {
-					case 0:
-						currentList.setSortBy(Mirakel.SORT_BY_OPT);
-						break;
-					case 1:
-						currentList.setSortBy(Mirakel.SORT_BY_DUE);
-						break;
-					case 2:
-						currentList.setSortBy(Mirakel.SORT_BY_PRIO);
-						break;
-					default:
-						currentList.setSortBy(Mirakel.SORT_BY_ID);
-						break;
-					}
-					listDataSource.saveList(currentList);
-					tasksFragment.update();
-					listFragment.update();
-				}
-			});
+			AlertDialog.Builder SortingDialogBuilder = new AlertDialog.Builder(
+					this);
+			SortingDialogBuilder.setTitle(this
+					.getString(R.string.task_sorting_title));
+			SortingDialogBuilder.setItems(SortingItems,
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int item) {
+							switch (item) {
+							case 0:
+								currentList.setSortBy(Mirakel.SORT_BY_OPT);
+								break;
+							case 1:
+								currentList.setSortBy(Mirakel.SORT_BY_DUE);
+								break;
+							case 2:
+								currentList.setSortBy(Mirakel.SORT_BY_PRIO);
+								break;
+							default:
+								currentList.setSortBy(Mirakel.SORT_BY_ID);
+								break;
+							}
+							listDataSource.saveList(currentList);
+							tasksFragment.update();
+							listFragment.update();
+						}
+					});
 			AlertDialog alert = SortingDialogBuilder.create();
 			alert.show();
 			return true;
 		case R.id.menu_new_list:
-			listDataSource.createList(this.getString(R.string.list_menu_new_list));
+			listDataSource.createList(this
+					.getString(R.string.list_menu_new_list));
 			listFragment.update();
 			return true;
 		default:
@@ -232,7 +251,6 @@ public class MainActivity extends FragmentActivity implements
 		mViewPager.setOffscreenPageLimit(2);
 
 	}
-	
 
 	@Override
 	public void onPageScrolled(int position, float positionOffset,
@@ -240,7 +258,7 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	@Override
-	public void onPageSelected(int position) {		
+	public void onPageSelected(int position) {
 		if (menu == null)
 			return;
 		int newmenu;
@@ -357,9 +375,10 @@ public class MainActivity extends FragmentActivity implements
 			}
 		}
 	}
+
 	@Override
 	public void onBackPressed() {
-		switch(mViewPager.getCurrentItem()) {
+		switch (mViewPager.getCurrentItem()) {
 		case TASKS_FRAGMENT:
 			mViewPager.setCurrentItem(LIST_FRAGMENT);
 			break;
@@ -370,8 +389,8 @@ public class MainActivity extends FragmentActivity implements
 			super.onBackPressed();
 		}
 	}
-	
-	public ListFragment getListFragment(){
+
+	public ListFragment getListFragment() {
 		return listFragment;
 	}
 

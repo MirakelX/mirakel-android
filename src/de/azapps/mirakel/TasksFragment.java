@@ -35,6 +35,7 @@ public class TasksFragment extends Fragment {
 	private MainActivity main;
 	View view;
 	private EditText newTask;
+	private boolean created=false;
 
 	public void setActivity(MainActivity activity) {
 		main = activity;
@@ -47,6 +48,7 @@ public class TasksFragment extends Fragment {
 		view = inflater.inflate(R.layout.activity_tasks, container, false);
 
 		getResources().getString(R.string.action_settings);
+		created=true;
 		update();
 
 		// Events
@@ -130,11 +132,7 @@ public class TasksFragment extends Fragment {
 	}
 
 	public void update() {
-		Log.v(TAG, "loading...");
-		if (main.getCurrentList() == null || view==null)
-			return;
-		Log.v(TAG, "loading..." + main.getCurrentList().getId());
-		// TODO Does not work properly
+		if(!created) return;
 		final List<Task> values = main.getTaskDataSource().getTasks(
 				main.getCurrentList(), main.getCurrentList().getSortBy());
 		adapter = new TaskAdapter(main, R.layout.tasks_row, values,

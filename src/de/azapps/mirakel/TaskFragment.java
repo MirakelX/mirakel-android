@@ -44,6 +44,7 @@ public class TaskFragment extends Fragment {
 	protected NumberPicker picker;
 	protected EditText input;
 	private Task task;
+	private boolean created=false;
 	
 	private boolean mIgnoreTimeSet = false;
 	
@@ -56,11 +57,12 @@ public class TaskFragment extends Fragment {
 			Bundle savedInstanceState) {
 		main=(MainActivity) getActivity();
 		view = inflater.inflate(R.layout.activity_task, container, false);
-		 
+		created=true;
 		update();
 		return view;
 	}
 	public void update() {
+		if(!created) return;
 		ViewSwitcher s = (ViewSwitcher) view.findViewById(R.id.switch_name);
 		if(s.getNextView().getId()!=R.id.edit_name){
 			s.showPrevious();

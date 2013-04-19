@@ -24,6 +24,7 @@ public class ListFragment extends Fragment {
 	protected EditText input;
 	private View view;
 	protected boolean EditName;
+	private boolean created=false;
 
 
 	public void setActivity(MainActivity activity) {
@@ -36,11 +37,13 @@ public class ListFragment extends Fragment {
 		view = inflater.inflate(R.layout.activity_list, container, false);
 		// Inflate the layout for this fragment
 		EditName=false;
+		created=true;
 		update();
 		return view;
 	}
 
 	public void update() {
+		if(!created) return;
 		final List<List_mirakle> values = main.getListDataSource().getAllLists();
 
 		adapter = new ListAdapter(this.getActivity(), R.layout.lists_row,
