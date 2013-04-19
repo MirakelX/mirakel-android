@@ -14,7 +14,7 @@
     <string name="sync_frequency">Frequency</string>
     <string name="sync_frequency_summary">How often should I sync?</string>
 
-    <string-array name="sync_frequencies_values">
+    <string-array name="sync_frequencies">
         <item>5 min</item>
         <item>10 min</item>
         <item>15 min</item>
@@ -22,7 +22,7 @@
         <item>1 h</item>
         <item>24 h</item>
     </string-array>
-    <string-array name="sync_frequencies">
+    <string-array name="sync_frequencies_values">
         <item>5</item>
         <item>10</item>
         <item>15</item>
@@ -30,5 +30,28 @@
         <item>60</item>
         <item>1440</item>
     </string-array>
+    
+    <!-- Special Lists -->
+    <string name="lists_title">Special Lists</string>
+    <string name="lists_all">All Tasks</string>
+    <string name="lists_all_summary">Show all tasks</string>
+    <string name="lists_today">Today</string>
+    <string name="lists_today_summary">Show tasks, you should do today</string>
+    <string name="lists_week">This Week</string>
+    <string name="lists_week_summary">Show tasks, you should do this week</string>
+    
+    <!-- Notifications -->
+    <string name="notifications_title">Notifications</string>
+    <string name="notifications_use">Use</string>
+    <string name="notifications_use_summary">Do you want to see notifications?</string>
+    <string name="notifications_list">List</string>
+    <string name="notifications_list_summary">Which List should I show you?</string>
+    
+    <!-- startup -->
+    <string name="startup_title">App Start</string>
+    <string name="startup_show_lists">Show all lists</string>
+    <string name="startup_show_lists_summary">Show the List of Lists</string>
+    <string name="startup_list">Select List</string>
+    <string name="startup_list_summary">Tasks of which list should be displayed?</string>
 
 </resources>
