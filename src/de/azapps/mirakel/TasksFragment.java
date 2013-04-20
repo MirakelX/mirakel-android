@@ -190,7 +190,7 @@ public class TasksFragment extends Fragment {
 										}).show();
 
 					}
-				});
+				},main.getCurrentList().getId());
 				return adapter;
 			}
 

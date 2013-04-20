@@ -4,30 +4,36 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.opengl.Visibility;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class TaskAdapter extends ArrayAdapter<Task> {
 	Context context;
-	int layoutResourceId;
+	int layoutResourceId, listId;
 	List<Task> data = null;
 	OnClickListener clickCheckbox;
 	OnClickListener clickPrio;
+	ListsDataSource listsDataSource;
 
 	public TaskAdapter(Context context, int layoutResourceId, List<Task> data,
-			OnClickListener clickCheckbox, OnClickListener click_prio) {
+			OnClickListener clickCheckbox, OnClickListener click_prio,
+			int listId) {
 		super(context, layoutResourceId, data);
 		this.layoutResourceId = layoutResourceId;
 		this.data = data;
 		this.context = context;
 		this.clickCheckbox = clickCheckbox;
 		this.clickPrio = click_prio;
-
+		listsDataSource = new ListsDataSource(context);
+		this.listId = listId;
 	}
 
 	/**
@@ -56,6 +62,10 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 			holder.taskRowPriority = (TextView) row
 					.findViewById(R.id.tasks_row_priority);
 			holder.taskRowDue = (TextView) row.findViewById(R.id.tasks_row_due);
+			holder.taskRowHasContent = (ImageView) row
+					.findViewById(R.id.tasks_row_has_content);
+			holder.taskRowList = (TextView) row
+					.findViewById(R.id.tasks_row_list_name);
 
 			row.setTag(holder);
 		} else {
@@ -68,6 +78,18 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		holder.taskRowDone.setChecked(task.isDone());
 		holder.taskRowDone.setOnClickListener(clickCheckbox);
 		holder.taskRowDone.setTag(task);
+		if (task.getContent().length() != 0 ) {
+			holder.taskRowHasContent.setVisibility(View.VISIBLE);
+		} else {
+			holder.taskRowHasContent.setVisibility(View.GONE);
+		}
+		if (listId <= 0) {
+			holder.taskRowList.setVisibility(View.VISIBLE);
+			holder.taskRowList.setText(listsDataSource.getList(
+					(int) task.getListId()).getName());
+		} else {
+			holder.taskRowList.setVisibility(View.GONE);
+		}
 
 		// Name
 		holder.taskRowName.setText(task.getName());
@@ -87,10 +109,18 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		holder.taskRowPriority.setTag(task);
 
 		// Due
-		holder.taskRowDue.setText(MirakelHelper.formatDate(task.getDue(),
-				context.getString(R.string.dateFormat)));
-		holder.taskRowDue.setTextColor(row.getResources().getColor(
-				MirakelHelper.getTaskDueColor(task.getDue(), task.isDone())));
+		String due = MirakelHelper.formatDate(task.getDue(),
+				context.getString(R.string.dateFormat));
+		if (due != "") {
+			holder.taskRowDue.setVisibility(View.VISIBLE);
+			holder.taskRowDue.setText(due);
+			holder.taskRowDue.setTextColor(row.getResources()
+					.getColor(
+							MirakelHelper.getTaskDueColor(task.getDue(),
+									task.isDone())));
+		} else {
+			holder.taskRowDue.setVisibility(View.GONE);
+		}
 
 		return row;
 	}
@@ -105,7 +135,8 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		CheckBox taskRowDone;
 		TextView taskRowName;
 		TextView taskRowPriority;
-		TextView taskRowDue;
+		TextView taskRowDue, taskRowList;
+		ImageView taskRowHasContent;
 	}
 
 }
