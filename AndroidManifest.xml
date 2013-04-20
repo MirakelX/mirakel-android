@@ -6,6 +6,44 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+    
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"></uses-permission>
+	<uses-permission android:name="android.permission.GET_ACCOUNTS"></uses-permission>
+	<uses-permission android:name="android.permission.MANAGE_ACCOUNTS"></uses-permission>
+	<uses-permission android:name="android.permission.USE_CREDENTIALS"></uses-permission>
+	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
+	<uses-permission
+        android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission
+        android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission
+        android:name="android.permission.MANAGE_ACCOUNTS" />
+    <uses-permission
+        android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission
+        android:name="android.permission.INTERNET" />
+    <uses-permission
+        android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission
+        android:name="android.permission.READ_CONTACTS" />
+    <uses-permission
+        android:name="android.permission.WRITE_CONTACTS" />
+    <uses-permission
+        android:name="android.permission.READ_SYNC_STATS" />
+    <uses-permission
+        android:name="android.permission.READ_SYNC_SETTINGS" />
+    <uses-permission
+        android:name="android.permission.WRITE_SYNC_SETTINGS" />
+    <uses-permission
+        android:name="android.permission.READ_SOCIAL_STREAM" />
+    <uses-permission
+        android:name="android.permission.WRITE_SOCIAL_STREAM" />
+    
 
     <uses-sdk
         android:minSdkVersion="16"
@@ -50,6 +88,25 @@
             android:label="@string/title_activity_main"
             android:windowSoftInputMode="adjustPan" >
         </activity>
+        <activity
+            android:name=".AuthenticatorActivity"
+            android:label="@string/ui_activity_title"
+            android:theme="@android:style/Theme.Holo.Light.Dialog"
+            android:excludeFromRecents="true"
+            android:configChanges="orientation"
+            >
+            <!--
+                No intent-filter here! This activity is only ever launched by
+                someone who explicitly knows the class name
+            -->
+        </activity>
+        <service android:name=".AuthenticationService">
+	        <intent-filter>
+	            <action android:name="android.accounts.AccountAuthenticator" />
+	        </intent-filter>
+	        <meta-data android:name="android.accounts.AccountAuthenticator"
+	                    android:resource="@xml/authenticator" />
+	 	</service>
 
         <receiver android:name="de.azapps.mirakel.MainWidgetProvider" >
             <intent-filter>

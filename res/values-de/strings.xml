@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     
-    <string name="app_name">Mirakel-DE</string>
     <string name="action_settings">Einstellungen</string>
     <string name="OK">OK</string>
     <string name="Cancel">Abbrechen</string>

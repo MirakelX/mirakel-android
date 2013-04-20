@@ -13,6 +13,9 @@
     <string name="speak">Speak</string>
     <string name="enter">Enter</string>
     <string name="speak_lang_code">en-US</string>
+    <string name="Email">Email</string>
+    <string name="Password">Password</string>
+    <string name="Server">Server</string>
 
     <!-- Home -->
     <string name="home_button_official">Official Server</string>
@@ -89,5 +92,41 @@
     <string name="notification_title_empty">Enjoy your day!</string>
     <string name="title_activity_splash_screen">SplashScreenActivity</string>
     <string name="hello_world">Hello world!</string>
+    
+    <!-- Test Sync -->
+        <!-- Label above username EditText -->
+    <string
+        name="login_activity_username_label">Username</string>
+    <string
+        name="login_activity_server_label">Server-URL</string>
+    <!-- Label above password EditText -->
+    <string
+        name="login_activity_password_label">Password</string>
+    <!-- Button to sign in after entering username and password -->
+    <string
+        name="login_activity_ok_button">Sign in</string>
+
+    <!-- Message shown in dialog if the username or password is invalid. -->
+    <string
+        name="login_activity_loginfail_text_both">The username or password isn\'t valid. A Mirakel account is
+        required. Please try again. </string>
+    <!-- Message shown in dialog if the password is invalid -->
+    <string
+        name="login_activity_loginfail_text_pwonly">You entered the wrong password or your account has changed.
+        Please re-enter your password.</string>
+    <!-- Message shown in dialog to prompt the user for their password -->
+    <string
+        name="login_activity_loginfail_text_pwmissing">Type the password for this account.</string>
+    <!--
+        Message shown if the provided account doesn't support the current
+        activity.
+    -->
+    <string
+        name="login_activity_newaccount_text">Sign in to your Mirakel account. </string>
+    <!-- Message shown in progress dialog while app connects to the server -->
+    <string
+        name="ui_activity_authenticating">Authenticating\u2026</string>
+    <string
+        name="ui_activity_title">Sign-in</string>
 
 </resources>
