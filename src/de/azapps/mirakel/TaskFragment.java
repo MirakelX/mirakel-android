@@ -99,12 +99,9 @@ public class TaskFragment extends Fragment {
 									.findViewById(R.id.edit_name);
 							InputMethodManager imm = (InputMethodManager) main
 									.getSystemService(Context.INPUT_METHOD_SERVICE);
-							ViewSwitcher switcher = (ViewSwitcher) view
-									.findViewById(R.id.switch_name);
 							task.setName(txt.getText().toString());
 							main.saveTask(task);
 							Task_name.setText(task.getName());
-							switcher.showPrevious();
 							imm.hideSoftInputFromWindow(txt.getWindowToken(), 0);
 							return true;
 						}
@@ -261,9 +258,13 @@ public class TaskFragment extends Fragment {
 						Task_content
 								.setText(task.getContent().trim().length() == 0 ? getString(R.string.task_no_content)
 										: task.getContent());
-						ViewSwitcher switcher = (ViewSwitcher) view
-								.findViewById(R.id.switch_content);
-						switcher.showPrevious();
+						/*
+						 * 
+						 * ViewSwitcher switcher = (ViewSwitcher) view
+						 * 
+						 * .findViewById(R.id.switch_content);
+						 * switcher.showPrevious();
+						 */
 						imm.hideSoftInputFromWindow(txt.getWindowToken(), 0);
 
 					}
