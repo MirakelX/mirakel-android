@@ -26,23 +26,54 @@ public class TasksDataSource {
 			"done", "due", "priority", "created_at", "updated_at", "sync_state" };
 	private Context context;
 
+	/**
+	 * Initialize DataSource
+	 * 
+	 * @param context
+	 */
 	public TasksDataSource(Context context) {
 		dbHelper = new DatabaseHelper(context);
 		this.context = context;
 	}
 
+	/**
+	 * Open the Database Connection
+	 * 
+	 * @throws SQLException
+	 */
 	public void open() throws SQLException {
 		database = dbHelper.getWritableDatabase();
 	}
 
+	/**
+	 * Close the DB–Connection
+	 */
 	public void close() {
 		dbHelper.close();
 	}
 
+	/**
+	 * Shortcut for creating a new Task
+	 * 
+	 * @param name
+	 * @param list_id
+	 * @return
+	 */
 	public Task createTask(String name, long list_id) {
 		return createTask(name, list_id, "", false, null, 0);
 	}
 
+	/**
+	 * Create a new Task
+	 * 
+	 * @param name
+	 * @param list_id
+	 * @param content
+	 * @param done
+	 * @param due
+	 * @param priority
+	 * @return
+	 */
 	public Task createTask(String name, long list_id, String content,
 			boolean done, GregorianCalendar due, int priority) {
 		ContentValues values = new ContentValues();
@@ -62,6 +93,11 @@ public class TasksDataSource {
 		return newTask;
 	}
 
+	/**
+	 * Save a Task
+	 * 
+	 * @param task
+	 */
 	public void saveTask(Task task) {
 		Log.v(TAG, "saveTask");
 		task.setSync_state(task.getSync_state() == Mirakel.SYNC_STATE_ADD ? Mirakel.SYNC_STATE_ADD
@@ -70,6 +106,11 @@ public class TasksDataSource {
 		database.update("tasks", values, "_id = " + task.getId(), null);
 	}
 
+	/**
+	 * Delete a task
+	 * 
+	 * @param task
+	 */
 	public void deleteTask(Task task) {
 		long id = task.getId();
 		if (task.getSync_state() == Mirakel.SYNC_STATE_ADD)
@@ -82,6 +123,12 @@ public class TasksDataSource {
 
 	}
 
+	/**
+	 * Get a Task by id
+	 * 
+	 * @param id
+	 * @return
+	 */
 	public Task getTask(long id) {
 		open();
 		Cursor cursor = database.query("tasks", allColumns, "_id='" + id
@@ -96,6 +143,12 @@ public class TasksDataSource {
 		return null;
 	}
 
+	/**
+	 * Create a task from a Cursor
+	 * 
+	 * @param cursor
+	 * @return
+	 */
 	private Task cursorToTask(Cursor cursor) {
 		int i = 0;
 		GregorianCalendar t = new GregorianCalendar();
@@ -114,7 +167,14 @@ public class TasksDataSource {
 		return task;
 	}
 
-	private Cursor updateListCursor(int listId, int sorting) {
+	/**
+	 * Get a Cursor with all Tasks of a list
+	 * 
+	 * @param listId
+	 * @param sorting
+	 * @return
+	 */
+	private Cursor getTasksCursor(int listId, int sorting) {
 		String where = "";
 		switch (listId) {
 		case Mirakel.LIST_ALL:
@@ -151,17 +211,38 @@ public class TasksDataSource {
 				null, null, null, "done, " + order);
 	}
 
+	/**
+	 * Shortcut for getting all Tasks of a List
+	 * 
+	 * @param list
+	 * @param sorting
+	 * @return
+	 */
 	public List<Task> getTasks(List_mirakle list, int sorting) {
 		return getTasks(list.getId(), sorting);
 	}
 
+	/**
+	 * Shortcut for getting all Tasks of a List
+	 * 
+	 * @param listId
+	 * @return
+	 */
 	public List<Task> getTasks(int listId) {
 		return getTasks(listId, Mirakel.SORT_BY_ID);
 	}
 
+	/**
+	 * Get Tasks from a List
+	 * 
+	 * @param listId
+	 * @param sorting
+	 *            The Sorting (@see Mirakel.SORT_*)
+	 * @return
+	 */
 	public List<Task> getTasks(int listId, int sorting) {
 		List<Task> tasks = new ArrayList<Task>();
-		Cursor cursor = updateListCursor(listId, sorting);
+		Cursor cursor = getTasksCursor(listId, sorting);
 		cursor.moveToFirst();
 		GregorianCalendar toOld = new GregorianCalendar(1970, 1, 2);
 		while (!cursor.isAfterLast()) {
@@ -191,10 +272,16 @@ public class TasksDataSource {
 		return tasks;
 	}
 
+	/**
+	 * Get a List of all Tasks, which are marked as deleted (Sync issues)
+	 * 
+	 * @return
+	 */
 	protected List<Task> getDeletedTasks() {
 		List<Task> tasks = new ArrayList<Task>();
 		Cursor c = database.query("tasks", allColumns, "sync_state="
-				+ Mirakel.SYNC_STATE_DELETE+" and list_id>0", null, null, null, null);
+				+ Mirakel.SYNC_STATE_DELETE + " and list_id>0", null, null,
+				null, null);
 		c.moveToFirst();
 		while (!c.isAfterLast()) {
 			tasks.add(cursorToTask(c));
@@ -205,6 +292,13 @@ public class TasksDataSource {
 		return tasks;
 	}
 
+	/**
+	 * Sync all tasks with the Server
+	 * 
+	 * @param email
+	 * @param password
+	 * @param url
+	 */
 	public void sync_tasks(final String email, final String password,
 			final String url) {
 		Log.v(TAG, "sync tasks");
@@ -220,10 +314,11 @@ public class TasksDataSource {
 			@Override
 			public void after_exec(String result) {
 				List<Task> tasks_server = parse_json(result);
-				
+
 				List<Task> tasks_local = new ArrayList<Task>();
-				Cursor c = database.query("tasks", allColumns, "not sync_state="
-						+ Mirakel.SYNC_STATE_DELETE+" and list_id>0", null, null, null, null);
+				Cursor c = database.query("tasks", allColumns,
+						"not sync_state=" + Mirakel.SYNC_STATE_DELETE
+								+ " and list_id>0", null, null, null, null);
 				c.moveToFirst();
 				while (!c.isAfterLast()) {
 					tasks_local.add(cursorToTask(c));
@@ -252,6 +347,12 @@ public class TasksDataSource {
 				+ "/lists/all/tasks.json");
 	}
 
+	/**
+	 * Parse a JSON–String to a List of Tasks
+	 * 
+	 * @param result
+	 * @return
+	 */
 	protected List<Task> parse_json(String result) {
 		if (result.length() < 3)
 			return null;
@@ -263,23 +364,24 @@ public class TasksDataSource {
 			String key_value[] = tasks_str[i].split(":");
 			if (key_value.length < 2)
 				continue;
-			String key=key_value[0];
-			if(key.equals("{\"content\"")){
-				t=new Task();
-				if(key_value[1]!="null"){
-					t.setContent(key_value[1].substring(1,key_value[1].length()-1));
-				}else
+			String key = key_value[0];
+			if (key.equals("{\"content\"")) {
+				t = new Task();
+				if (key_value[1] != "null") {
+					t.setContent(key_value[1].substring(1,
+							key_value[1].length() - 1));
+				} else
 					t.setContent(null);
-			}else if(key.equals("\"done\"")){
-				t.setDone(key_value[1].indexOf("true")!=-1);
-			}else if(key.equals("\"due\"")){
-				GregorianCalendar temp=new GregorianCalendar();
-				try{
+			} else if (key.equals("\"done\"")) {
+				t.setDone(key_value[1].indexOf("true") != -1);
+			} else if (key.equals("\"due\"")) {
+				GregorianCalendar temp = new GregorianCalendar();
+				try {
 					temp.setTime(new SimpleDateFormat(context
 							.getString(R.string.dateFormat), Locale
 							.getDefault()).parse(key_value[1].substring(1,
 							key_value[1].length() - 1)));
-				}catch(Exception e){
+				} catch (Exception e) {
 					temp.setTime(new Date(0));
 				}
 				t.setDue(temp);
@@ -309,6 +411,14 @@ public class TasksDataSource {
 		return tasks;
 	}
 
+	/**
+	 * Delete a Task from the Server
+	 * 
+	 * @param task
+	 * @param email
+	 * @param password
+	 * @param url
+	 */
 	protected void delete_task(final Task task, final String email,
 			final String password, final String url) {
 		new Network(new DataDownloadCommand() {
@@ -321,6 +431,14 @@ public class TasksDataSource {
 
 	}
 
+	/**
+	 * Sync a Task with the server
+	 * 
+	 * @param task
+	 * @param email
+	 * @param password
+	 * @param url
+	 */
 	protected void sync_task(Task task, String email, String password,
 			String url) {
 		List<BasicNameValuePair> data = new ArrayList<BasicNameValuePair>();
@@ -329,7 +447,8 @@ public class TasksDataSource {
 				+ ""));
 		data.add(new BasicNameValuePair("task[done]", task.isDone() + ""));
 		GregorianCalendar due = task.getDue();
-		data.add(new BasicNameValuePair("task[due]", new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(due.getTime())));
+		data.add(new BasicNameValuePair("task[due]", new SimpleDateFormat(
+				"yyyy-MM-dd", Locale.getDefault()).format(due.getTime())));
 		data.add(new BasicNameValuePair("task[content]", task.getContent()));
 		new Network(new DataDownloadCommand() {
 			@Override
@@ -341,6 +460,14 @@ public class TasksDataSource {
 				+ ".json");
 	}
 
+	/**
+	 * Create a Task on the Server
+	 * 
+	 * @param task
+	 * @param email
+	 * @param password
+	 * @param url
+	 */
 	protected void add_task(final Task task, final String email,
 			final String password, final String url) {
 		List<BasicNameValuePair> data = new ArrayList<BasicNameValuePair>();
@@ -349,7 +476,8 @@ public class TasksDataSource {
 				+ ""));
 		data.add(new BasicNameValuePair("task[done]", task.isDone() + ""));
 		GregorianCalendar due = task.getDue();
-		data.add(new BasicNameValuePair("task[due]", new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(due.getTime())));
+		data.add(new BasicNameValuePair("task[due]", new SimpleDateFormat(
+				"yyyy-MM-dd", Locale.getDefault()).format(due.getTime())));
 		data.add(new BasicNameValuePair("task[content]", task.getContent()));
 		new Network(new DataDownloadCommand() {
 			@Override
@@ -365,6 +493,11 @@ public class TasksDataSource {
 
 	}
 
+	/**
+	 * Merge a Task with the Server
+	 * 
+	 * @param tasks_server
+	 */
 	protected void merge_with_server(List<Task> tasks_server) {
 		if (tasks_server == null)
 			return;
