@@ -1,6 +1,5 @@
 package de.azapps.mirakel;
 
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -29,8 +28,8 @@ public class LoginActivity extends Activity {
 	 * A dummy authentication store containing known user names and passwords.
 	 * TODO: remove after connecting to a real authentication system.
 	 */
-	//private static final String[] DUMMY_CREDENTIALS = new String[] {
-		//	"foo@example.com:hello", "bar@example.com:world" };
+	// private static final String[] DUMMY_CREDENTIALS = new String[] {
+	// "foo@example.com:hello", "bar@example.com:world" };
 
 	/**
 	 * The default email to populate the email field with.
@@ -40,12 +39,12 @@ public class LoginActivity extends Activity {
 	/**
 	 * Keep track of the login task to ensure we can cancel it if requested.
 	 */
-	//private UserLoginTask mAuthTask = null;
+	// private UserLoginTask mAuthTask = null;
 
 	// Values for email and password at the time of the login attempt.
 	private String mEmail;
 	private String mPassword;
-	
+
 	private static final String TAG = "LoginActivity";
 
 	// UI references.
@@ -55,7 +54,7 @@ public class LoginActivity extends Activity {
 	private View mLoginFormView;
 	private View mLoginStatusView;
 	private TextView mLoginStatusMessageView;
-	
+
 	private boolean own_server;
 
 	@Override
@@ -63,11 +62,11 @@ public class LoginActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_login);
-		server=(EditText)findViewById(R.id.server);
-		own_server=this.getIntent().getBooleanExtra("own_server", false);
-		if(own_server){
+		server = (EditText) findViewById(R.id.server);
+		own_server = this.getIntent().getBooleanExtra("own_server", false);
+		if (own_server) {
 			server.setVisibility(View.VISIBLE);
-		}else{
+		} else {
 			server.setVisibility(View.GONE);
 		}
 
@@ -116,9 +115,9 @@ public class LoginActivity extends Activity {
 	 * errors are presented and no actual login attempt is made.
 	 */
 	public void attemptLogin() {
-		/*if (mAuthTask != null) {
-			return;
-		}*/
+		/*
+		 * if (mAuthTask != null) { return; }
+		 */
 
 		// Reset errors.
 		mEmailView.setError(null);
@@ -162,31 +161,37 @@ public class LoginActivity extends Activity {
 			// perform the user login attempt.
 			ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 			NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-			final String url=(own_server?server.getText().toString():getString(R.string.offical_server_url));
+			final String url = (own_server ? server.getText().toString()
+					: getString(R.string.offical_server_url));
 			if (networkInfo != null && networkInfo.isConnected()) {
 				new Network(new DataDownloadCommand() {
-					
+
 					@Override
 					public void after_exec(String result) {
-						//int status=result.getStatusLine().getStatusCode();
-						
-						if(result.indexOf("Invalid email or password.")!=-1){
-							Log.e(TAG,"Login faild");
-						}else{
-							Log.e(TAG,"Login sucess");
+						// int status=result.getStatusLine().getStatusCode();
+
+						if (result.indexOf("Invalid email or password.") != -1) {
+							Log.e(TAG, "Login faild");
+						} else {
+							Log.e(TAG, "Login sucess");
 							Intent intent = new Intent(LoginActivity.this,
 									MainActivity.class);
 							intent.putExtra("listId", Mirakel.LIST_ALL);
-							intent.putExtra("email", mEmailView.getText().toString());
-							intent.putExtra("password", mPasswordView.getText().toString());
+							intent.putExtra("email", mEmailView.getText()
+									.toString());
+							intent.putExtra("password", mPasswordView.getText()
+									.toString());
 							intent.putExtra("url", url);
 							startActivity(intent);
 						}
-						showProgress(false);	
-						
+						showProgress(false);
+
 					}
-				},mEmailView.getText().toString(), mPasswordView.getText().toString(),Mirakel.Http_Mode.GET).execute(url+"/lists.json");
-				mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
+				}, mEmailView.getText().toString(), mPasswordView.getText()
+						.toString(), Mirakel.Http_Mode.GET).execute(url
+						+ "/lists.json");
+				mLoginStatusMessageView
+						.setText(R.string.login_progress_signing_in);
 				showProgress(true);
 			} else {
 				Log.e(TAG, "No network connection available.");
