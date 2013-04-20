@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import de.azapps.mirakel.services.NotificationService;
+
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -94,7 +96,7 @@ public class MainActivity extends FragmentActivity implements
 		// Intialise ViewPager
 		this.intialiseViewPager();
 		if (getPreferences().getBoolean("notificationsUse", true))
-			notification();
+			NotificationService.updateNotification(this);
 		Intent intent = getIntent();
 		if (intent.getAction() == SHOW_TASK) {
 			int taskId = intent.getIntExtra(EXTRA_ID, 0);
@@ -405,7 +407,7 @@ public class MainActivity extends FragmentActivity implements
 			taskFragment.update();
 		}
 		tasksFragment.update();
-		notification();
+		NotificationService.updateNotification(this);
 	}
 
 	@Override
@@ -449,74 +451,6 @@ public class MainActivity extends FragmentActivity implements
 		return listFragment;
 	}
 
-	/**
-	 * Create a Notification in the NotificationDrawer
-	 */
-	void notification() {
-		int listId = Integer.parseInt(getPreferences().getString(
-				"notificationsList", "" + Mirakel.LIST_DAILY));
-		// Set onClick Intent
-		Intent intent = new Intent(this, MainActivity.class);
-		intent.setAction(SHOW_LIST);
-		intent.putExtra(EXTRA_ID, listId);
-		PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
-
-		// Get the data
-		List_mirakle todayList = listDataSource.getList(listId);
-		List<Task> todayTasks = taskDataSource.getTasks(todayList,
-				todayList.getSortBy());
-		String notificationTitle;
-		String notificationText;
-		if (todayTasks.size() == 0) {
-			notificationTitle = getString(R.string.notification_title_empty);
-			notificationText = "";
-		} else {
-			switch (listId) {
-			case Mirakel.LIST_ALL:
-				notificationTitle = String.format(
-						getString(R.string.notification_title_all),
-						todayTasks.size());
-				break;
-			case Mirakel.LIST_DAILY:
-				notificationTitle = String.format(
-						getString(R.string.notification_title_daily),
-						todayTasks.size());
-				break;
-			case Mirakel.LIST_WEEKLY:
-				notificationTitle = String.format(
-						getString(R.string.notification_title_weekly),
-						todayTasks.size());
-				break;
-			default:
-				notificationTitle = String.format(
-						getString(R.string.notification_title_general),
-						todayTasks.size(), todayList.getName());
-
-			}
-			notificationText = todayTasks.get(0).getName();
-		}
-
-		boolean persistent = getPreferences().getBoolean(
-				"notificationsPersistent", true);
-		// Build notification
-		NotificationCompat.Builder noti = new NotificationCompat.Builder(this)
-				.setContentTitle(notificationTitle)
-				.setContentText(notificationText)
-				.setSmallIcon(R.drawable.ic_launcher).setContentIntent(pIntent)
-				.setOngoing(persistent);
-
-		// Big View
-		if (preferences.getBoolean("notificationsBig", true)) {
-			NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
-			for (Task task : todayTasks) {
-				inboxStyle.addLine(task.getName());
-			}
-			noti.setStyle(inboxStyle);
-		}
-
-		NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-		notificationManager.notify(0, noti.build());
-	}
 
 	@Override
 	protected void onDestroy() {
@@ -535,7 +469,7 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onResume() {
 		super.onResume();
-		notification();
+		NotificationService.updateNotification(this);
 		listDataSource.open();
 		taskDataSource.open();
 	}
