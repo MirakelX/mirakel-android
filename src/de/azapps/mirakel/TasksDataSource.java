@@ -241,6 +241,19 @@ public class TasksDataSource {
 	 * @return
 	 */
 	public List<Task> getTasks(int listId, int sorting) {
+		return getTasks(listId, sorting, false);
+	}
+
+	/**
+	 * Get Tasks from a List
+	 * 
+	 * @param listId
+	 * @param sorting
+	 *            The Sorting (@see Mirakel.SORT_*)
+	 * @param showDone 
+	 * @return
+	 */
+	public List<Task> getTasks(int listId, int sorting, boolean showDone) {
 		List<Task> tasks = new ArrayList<Task>();
 		Cursor cursor = getTasksCursor(listId, sorting);
 		cursor.moveToFirst();
@@ -259,7 +272,7 @@ public class TasksDataSource {
 						|| task.getDue().compareTo(toOld) <= 0)
 					break;
 			case Mirakel.LIST_ALL:
-				if (task.isDone())
+				if (task.isDone() && !showDone)
 					break;
 			default:
 				tasks.add(task);

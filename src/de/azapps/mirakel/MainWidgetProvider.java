@@ -20,17 +20,21 @@ public class MainWidgetProvider extends AppWidgetProvider {
 
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
 			int[] appWidgetIds) {
-		final int N = appWidgetIds.length;
 		SharedPreferences preferences = PreferenceManager
 				.getDefaultSharedPreferences(context);
-		Mirakel.widgets=appWidgetIds;
+		Mirakel.widgets = appWidgetIds;
 
 		// Perform this loop procedure for each App Widget that belongs to this
 		// provider
-		for (int appWidgetId :appWidgetIds) {
-			Log.e("ids",""+appWidgetId);
+		for (int appWidgetId : appWidgetIds) {
 			RemoteViews views = new RemoteViews(context.getPackageName(),
 					R.layout.widget_main);
+			
+
+			int listId = Integer.parseInt(preferences.getString("widgetList",
+					Mirakel.LIST_ALL + ""));
+			int listSort = Integer.parseInt(preferences.getString("widgetSort",
+					Mirakel.SORT_BY_OPT + ""));
 
 			// Create an Intent to launch SettingsActivity
 			Intent settingsIntent = new Intent(context,
@@ -40,24 +44,32 @@ public class MainWidgetProvider extends AppWidgetProvider {
 
 			views.setOnClickPendingIntent(R.id.widget_preferences,
 					settingsPendingIntent);
+			// Create an Intent to launch MainActivity and show the List
+			Intent mainIntent = new Intent(context,
+					MainActivity.class);
+			mainIntent.putExtra(MainActivity.SHOW_LIST, true);
+			mainIntent.putExtra(MainActivity.EXTRA_ID, listId);
+			PendingIntent mainPendingIntent = PendingIntent.getActivity(
+					context, 0, mainIntent, 0);
+
+			views.setOnClickPendingIntent(R.id.widget_list_name,
+					mainPendingIntent);
 
 			// Here we setup the intent which points to the StackViewService
 			// which will
 			// provide the views for this collection.
 			Intent intent = new Intent(context, MainWidgetService.class);
-			intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-					appWidgetId);
+			intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+
 			// When intents are compared, the extras are ignored, so we need to
 			// embed the extras
 			// into the data so that the extras will not be ignored.
-			int listId = Integer.parseInt(preferences.getString("widgetList",
-					Mirakel.LIST_ALL + ""));
-			int listSort = Integer.parseInt(preferences.getString("widgetSort",
-					Mirakel.SORT_BY_OPT + ""));
 			ListsDataSource listsDataSource = new ListsDataSource(context);
 			intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
 			intent.putExtra(EXTRA_LISTID, listId);
 			intent.putExtra(EXTRA_LISTSORT, listSort);
+			intent.putExtra(EXTRA_SHOWDONE,
+					preferences.getBoolean("widgetDone", false));
 			views.setRemoteAdapter(R.id.widget_tasks_list, intent);
 
 			// The empty view is displayed when the collection has no items. It

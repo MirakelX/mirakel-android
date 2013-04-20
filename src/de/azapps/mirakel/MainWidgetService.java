@@ -27,13 +27,15 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	private TasksDataSource tasksDatasource;
 	private int listId = 0;
 	private int sorting;
-	private SharedPreferences preferences;
+	private boolean showDone;
 
 	public MainWidgetViewsFactory(Context context, Intent intent) {
 		mContext = context;
 		listId = intent.getIntExtra(MainWidgetProvider.EXTRA_LISTID, 0);
-		preferences = PreferenceManager.getDefaultSharedPreferences(context);
-		sorting = intent.getIntExtra(MainWidgetProvider.EXTRA_LISTSORT,(int) Mirakel.SORT_BY_OPT);
+		sorting = intent.getIntExtra(MainWidgetProvider.EXTRA_LISTSORT,
+				(int) Mirakel.SORT_BY_OPT);
+		showDone = intent.getBooleanExtra(MainWidgetProvider.EXTRA_SHOWDONE,
+				false);
 	}
 
 	/**
@@ -42,7 +44,7 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	public void onCreate() {
 		tasksDatasource = new TasksDataSource(mContext);
 		tasksDatasource.open();
-		tasks = tasksDatasource.getTasks(listId, sorting);
+		tasks = tasksDatasource.getTasks(listId, sorting, showDone);
 	}
 
 	public void onDestroy() {
@@ -56,7 +58,6 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	public RemoteViews getViewAt(int position) {
 		// Get The Task
 		Task task = tasks.get(position);
-		Log.e("TASK"," : " + task.getId() + " " + task.getName());
 		// Initialize the Remote View
 		RemoteViews rv = new RemoteViews(mContext.getPackageName(),
 				R.layout.row);
@@ -126,8 +127,7 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	}
 
 	public void onDataSetChanged() {
-		Log.e("Blubb", "Blabb");
 		tasksDatasource.open();
-		//tasks = tasksDatasource.getTasks(listId);
+		// tasks = tasksDatasource.getTasks(listId);
 	}
 }
