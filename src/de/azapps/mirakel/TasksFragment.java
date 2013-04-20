@@ -2,13 +2,16 @@ package de.azapps.mirakel;
 
 import java.util.List;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -37,6 +40,7 @@ public class TasksFragment extends Fragment {
 	View view;
 	private EditText newTask;
 	private boolean created = false;
+	private ListView listView;
 
 	public void setActivity(MainActivity activity) {
 		main = activity;
@@ -52,6 +56,7 @@ public class TasksFragment extends Fragment {
 		created = true;
 		update();
 
+		listView = (ListView) view.findViewById(R.id.tasks_list);
 		// Events
 		newTask = (EditText) view.findViewById(R.id.tasks_new);
 		newTask.setOnEditorActionListener(new OnEditorActionListener() {
@@ -143,54 +148,57 @@ public class TasksFragment extends Fragment {
 			@Override
 			protected TaskAdapter doInBackground(Void... params) {
 				adapter = new TaskAdapter(main, R.layout.tasks_row, values,
-				new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						CheckBox cb = (CheckBox) v;
-						Task task = (Task) cb.getTag();
-						task.toggleDone();
-						main.saveTask(task);
-					}
-				}, new OnClickListener() {
-					@Override
-					public void onClick(final View v) {
-						picker = new NumberPicker(main);
-						picker.setMaxValue(4);
-						picker.setMinValue(0);
-						String[] t = { "-2", "-1", "0", "1", "2" };
-						picker.setDisplayedValues(t);
-						picker.setWrapSelectorWheel(false);
-						picker.setValue(((Task) v.getTag()).getPriority() + 2);
-						new AlertDialog.Builder(main)
-								.setTitle(
-										main.getString(R.string.task_change_prio_title))
-								.setMessage(
-										main.getString(R.string.task_change_prio_cont))
-								.setView(picker)
-								.setPositiveButton(main.getString(R.string.OK),
-										new DialogInterface.OnClickListener() {
-											public void onClick(
-													DialogInterface dialog,
-													int whichButton) {
-												Task task = (Task) v.getTag();
-												task.setPriority((picker
-														.getValue() - 2));
-												main.saveTask(task);
-											}
+						new OnClickListener() {
+							@Override
+							public void onClick(View v) {
+								CheckBox cb = (CheckBox) v;
+								Task task = (Task) cb.getTag();
+								task.toggleDone();
+								main.saveTask(task);
+							}
+						}, new OnClickListener() {
+							@Override
+							public void onClick(final View v) {
+								picker = new NumberPicker(main);
+								picker.setMaxValue(4);
+								picker.setMinValue(0);
+								String[] t = { "-2", "-1", "0", "1", "2" };
+								picker.setDisplayedValues(t);
+								picker.setWrapSelectorWheel(false);
+								picker.setValue(((Task) v.getTag())
+										.getPriority() + 2);
+								new AlertDialog.Builder(main)
+										.setTitle(
+												main.getString(R.string.task_change_prio_title))
+										.setMessage(
+												main.getString(R.string.task_change_prio_cont))
+										.setView(picker)
+										.setPositiveButton(
+												main.getString(R.string.OK),
+												new DialogInterface.OnClickListener() {
+													public void onClick(
+															DialogInterface dialog,
+															int whichButton) {
+														Task task = (Task) v
+																.getTag();
+														task.setPriority((picker
+																.getValue() - 2));
+														main.saveTask(task);
+													}
 
-										})
-								.setNegativeButton(
-										main.getString(R.string.Cancel),
-										new DialogInterface.OnClickListener() {
-											public void onClick(
-													DialogInterface dialog,
-													int whichButton) {
-												// Do nothing.
-											}
-										}).show();
+												})
+										.setNegativeButton(
+												main.getString(R.string.Cancel),
+												new DialogInterface.OnClickListener() {
+													public void onClick(
+															DialogInterface dialog,
+															int whichButton) {
+														// Do nothing.
+													}
+												}).show();
 
-					}
-				},main.getCurrentList().getId());
+							}
+						}, main.getCurrentList().getId());
 				return adapter;
 			}
 
@@ -201,7 +209,7 @@ public class TasksFragment extends Fragment {
 		};
 
 		task.execute();
-		//listView.setAdapter(adapter);
+		// listView.setAdapter(adapter);
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View item,
@@ -225,6 +233,24 @@ public class TasksFragment extends Fragment {
 		default:
 			main.setTitle(main.getCurrentList().getName());
 		}
+	}
+
+	/**
+	 * Get the State of the listView
+	 * 
+	 * @return
+	 */
+	public Parcelable getState() {
+		return listView.onSaveInstanceState();
+	}
+
+	/**
+	 * Set the State of the listView
+	 * 
+	 * @param state
+	 */
+	public void setState(Parcelable state) {
+		listView.onRestoreInstanceState(state);
 	}
 
 }

@@ -17,6 +17,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
@@ -302,10 +303,14 @@ public class MainActivity extends FragmentActivity implements
 			int positionOffsetPixels) {
 	}
 
+	private int currentPosition = 1;
+	private int scrollYTasks = 0;
+	private Parcelable tasksState, listState;
+
 	@Override
 	public void onPageSelected(int position) {
 
-		if (taskFragment != null && taskFragment.getView()!=null) {
+		if (taskFragment != null && taskFragment.getView() != null) {
 			final InputMethodManager imm = (InputMethodManager) this
 					.getSystemService(Context.INPUT_METHOD_SERVICE);
 			imm.hideSoftInputFromWindow(
@@ -314,14 +319,24 @@ public class MainActivity extends FragmentActivity implements
 		if (menu == null)
 			return;
 		int newmenu;
+		if (currentPosition == TASKS_FRAGMENT) {
+			tasksState = tasksFragment.getState();
+		} else if (currentPosition == LIST_FRAGMENT) {
+			listState = listFragment.getState();
+		}
+		currentPosition = position;
 		switch (position) {
 		case 0:
 			newmenu = R.menu.activity_list;
 			this.setTitle(getString(R.string.list_title));
+			if (listState != null)
+				listFragment.setState(listState);
 			break;
 		case 1:
 			newmenu = R.menu.tasks;
 			this.setTitle(currentList.getName());
+			if (tasksState != null)
+				tasksFragment.setState(tasksState);
 			break;
 		case 2:
 			newmenu = R.menu.activity_task;
@@ -407,7 +422,8 @@ public class MainActivity extends FragmentActivity implements
 			taskFragment.update();
 		}
 		tasksFragment.update();
-		NotificationService.updateNotification(this);
+		if (getPreferences().getBoolean("notificationsUse", true))
+			NotificationService.updateNotification(this);
 	}
 
 	@Override
@@ -451,7 +467,6 @@ public class MainActivity extends FragmentActivity implements
 		return listFragment;
 	}
 
-
 	@Override
 	protected void onDestroy() {
 		listDataSource.close();
@@ -469,7 +484,8 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onResume() {
 		super.onResume();
-		NotificationService.updateNotification(this);
+		if (getPreferences().getBoolean("notificationsUse", true))
+			NotificationService.updateNotification(this);
 		listDataSource.open();
 		taskDataSource.open();
 	}

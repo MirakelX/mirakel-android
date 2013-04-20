@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -25,33 +26,34 @@ public class ListFragment extends Fragment {
 	protected EditText input;
 	private View view;
 	protected boolean EditName;
-	private boolean created=false;
-
+	private boolean created = false;
+	private ListView listView;
 
 	public void setActivity(MainActivity activity) {
 		main = activity;
 	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		main=(MainActivity) getActivity();
+		main = (MainActivity) getActivity();
 		view = inflater.inflate(R.layout.activity_list, container, false);
 		// Inflate the layout for this fragment
-		EditName=false;
-		created=true;
+		EditName = false;
+		created = true;
 		update();
 		return view;
 	}
-	
-	
 
 	public void update() {
-		if(!created) return;
-		final List<List_mirakle> values = main.getListDataSource().getAllLists();
+		if (!created)
+			return;
+		final List<List_mirakle> values = main.getListDataSource()
+				.getAllLists();
 
 		adapter = new ListAdapter(this.getActivity(), R.layout.lists_row,
 				values);
-		ListView listView = (ListView) view.findViewById(R.id.lists_list);
+		listView = (ListView) view.findViewById(R.id.lists_list);
 		listView.setItemsCanFocus(true);
 		listView.setAdapter(adapter);
 		listView.requestFocus();
@@ -60,8 +62,8 @@ public class ListFragment extends Fragment {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View item,
 					int position, long id) {
-				if(EditName){
-					EditName=false;
+				if (EditName) {
+					EditName = false;
 					return;
 				}
 				List_mirakle list = values.get((int) id);
@@ -71,33 +73,39 @@ public class ListFragment extends Fragment {
 		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
 			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, final View item,
-					int position, final long id) {
+			public boolean onItemLongClick(AdapterView<?> parent,
+					final View item, int position, final long id) {
 				List_mirakle list = values.get((int) id);
-				if (list.getId()<=0)
+				if (list.getId() <= 0)
 					return false;
-				EditName=true;
-				((ViewSwitcher)item.findViewById(R.id.switch_listname)).showNext();
+				EditName = true;
+				((ViewSwitcher) item.findViewById(R.id.switch_listname))
+						.showNext();
 				EditText txt = (EditText) item.findViewById(R.id.edit_listname);
 				txt.setText(values.get((int) id).getName());
 				txt.requestFocus();
 
 				main.getApplicationContext();
-				InputMethodManager imm = (InputMethodManager) main.getSystemService(Context.INPUT_METHOD_SERVICE);
+				InputMethodManager imm = (InputMethodManager) main
+						.getSystemService(Context.INPUT_METHOD_SERVICE);
 				imm.showSoftInput(txt, InputMethodManager.SHOW_FORCED);
 				txt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 					@Override
 					public boolean onEditorAction(TextView v, int actionId,
 							KeyEvent event) {
 						if (actionId == EditorInfo.IME_ACTION_DONE) {
-							List_mirakle l= values.get((int) id);
-							EditText txt = (EditText) item.findViewById(R.id.edit_listname);
+							List_mirakle l = values.get((int) id);
+							EditText txt = (EditText) item
+									.findViewById(R.id.edit_listname);
 							main.getApplicationContext();
-							InputMethodManager imm = (InputMethodManager) main.getSystemService(Context.INPUT_METHOD_SERVICE);
-							ViewSwitcher switcher = (ViewSwitcher) item.findViewById(R.id.switch_listname);
+							InputMethodManager imm = (InputMethodManager) main
+									.getSystemService(Context.INPUT_METHOD_SERVICE);
+							ViewSwitcher switcher = (ViewSwitcher) item
+									.findViewById(R.id.switch_listname);
 							l.setName(txt.getText().toString());
 							main.getListDataSource().saveList(l);
-							((TextView)item.findViewById(R.id.list_row_name)).setText(l.getName());
+							((TextView) item.findViewById(R.id.list_row_name))
+									.setText(l.getName());
 							switcher.showPrevious();
 							imm.hideSoftInputFromWindow(txt.getWindowToken(), 0);
 							return true;
@@ -109,6 +117,24 @@ public class ListFragment extends Fragment {
 			}
 
 		});
+	}
+
+	/**
+	 * Get the State of the listView
+	 * 
+	 * @return
+	 */
+	public Parcelable getState() {
+		return listView.onSaveInstanceState();
+	}
+
+	/**
+	 * Set the State of the listView
+	 * 
+	 * @param state
+	 */
+	public void setState(Parcelable state) {
+		listView.onRestoreInstanceState(state);
 	}
 
 }
