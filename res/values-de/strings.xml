@@ -45,6 +45,12 @@
         <item>Priorität</item>
         <item>Erstellungsdatum</item>
     </string-array>
+    <string-array name="task_sorting_items_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
 
     <!-- Lists -->
     <string name="list_menu_new_list">Neue Liste</string>

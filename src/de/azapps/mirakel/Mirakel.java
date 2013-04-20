@@ -20,6 +20,7 @@ public class Mirakel extends Application {
 	public final static short SYNC_STATE_ADD = 1;
 	public final static short SYNC_STATE_NEED_SYNC = 2;
 	public static final int DATABASE_VERSION = 3;
+	public static int widgets[]={};
 	
 	public class Http_Mode {
 		final public static int GET = 0;

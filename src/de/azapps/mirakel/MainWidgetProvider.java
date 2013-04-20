@@ -5,47 +5,59 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 public class MainWidgetProvider extends AppWidgetProvider {
 	public static String EXTRA_LISTID = "de.azapps.mirakel.EXTRA_LISTID";
+	public static String EXTRA_LISTSORT = "de.azapps.mirakel.EXTRA_LISTSORT";
+	public static String EXTRA_SHOWDONE = "de.azapps.mirakel.EXTRA_SHOWDONE";
 	public static String CLICK_TASK = "de.azapps.mirakel.CLICK_TASK";
 	public static String EXTRA_TASKID = "de.azapps.mirakel.EXTRA_TASKID";
 
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
 			int[] appWidgetIds) {
 		final int N = appWidgetIds.length;
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		Mirakel.widgets=appWidgetIds;
 
 		// Perform this loop procedure for each App Widget that belongs to this
 		// provider
-		for (int i = 0; i < N; i++) {
-			int appWidgetId = appWidgetIds[i];
+		for (int appWidgetId :appWidgetIds) {
+			Log.e("ids",""+appWidgetId);
 			RemoteViews views = new RemoteViews(context.getPackageName(),
 					R.layout.widget_main);
 
-			// Create an Intent to launch ExampleActivity
-			// Intent intent = new Intent(context, MainActivity.class);
-			// PendingIntent pendingIntent = PendingIntent.getActivity(context,
-			// 0, intent, 0);
+			// Create an Intent to launch SettingsActivity
+			Intent settingsIntent = new Intent(context,
+					MainWidgetSettingsActivity.class);
+			PendingIntent settingsPendingIntent = PendingIntent.getActivity(
+					context, 0, settingsIntent, 0);
 
-			// Get the layout for the App Widget and attach an on-click listener
-			// to the button
-			// views.setOnClickPendingIntent(R.id.button, pendingIntent);
+			views.setOnClickPendingIntent(R.id.widget_preferences,
+					settingsPendingIntent);
 
 			// Here we setup the intent which points to the StackViewService
 			// which will
 			// provide the views for this collection.
 			Intent intent = new Intent(context, MainWidgetService.class);
 			intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-					appWidgetIds[i]);
+					appWidgetId);
 			// When intents are compared, the extras are ignored, so we need to
 			// embed the extras
 			// into the data so that the extras will not be ignored.
-			int listId = 0;
+			int listId = Integer.parseInt(preferences.getString("widgetList",
+					Mirakel.LIST_ALL + ""));
+			int listSort = Integer.parseInt(preferences.getString("widgetSort",
+					Mirakel.SORT_BY_OPT + ""));
 			ListsDataSource listsDataSource = new ListsDataSource(context);
 			intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
 			intent.putExtra(EXTRA_LISTID, listId);
+			intent.putExtra(EXTRA_LISTSORT, listSort);
 			views.setRemoteAdapter(R.id.widget_tasks_list, intent);
 
 			// The empty view is displayed when the collection has no items. It
@@ -69,7 +81,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
 			views.setPendingIntentTemplate(R.id.widget_tasks_list,
 					toastPendingIntent);
 
-			appWidgetManager.updateAppWidget(appWidgetIds[i], views);
+			appWidgetManager.updateAppWidget(appWidgetId, views);
 		}
 	}
 

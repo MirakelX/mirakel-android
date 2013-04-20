@@ -80,6 +80,8 @@
 
     <!-- Widget -->
     <string name="main_widget_name">Widget</string>
+    <string name="empty_list">No tasks</string>
+    <string name="preferences">Preferences</string>
 
     <!-- Notification -->
     <string name="notification_title_all">%1$d Tasks</string>
