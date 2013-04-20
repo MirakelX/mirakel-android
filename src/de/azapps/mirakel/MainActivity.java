@@ -31,13 +31,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
 /**
- * @see https 
- *      ://thepseudocoder.wordpress.com/2011/10/13/android-tabs-viewpager-swipe
- *      -able-tabs-ftw/
+ * @see "https://thepseudocoder.wordpress.com/2011/10/13/android-tabs-viewpager-swipe-able-tabs-ftw/"
  * @author az
  * 
  */
@@ -303,6 +302,13 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	public void onPageSelected(int position) {
+
+		if (taskFragment != null && taskFragment.getView()!=null) {
+			final InputMethodManager imm = (InputMethodManager) this
+					.getSystemService(Context.INPUT_METHOD_SERVICE);
+			imm.hideSoftInputFromWindow(
+					taskFragment.getView().getWindowToken(), 0);
+		}
 		if (menu == null)
 			return;
 		int newmenu;
