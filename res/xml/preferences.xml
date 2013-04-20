@@ -83,6 +83,12 @@
             android:key="notificationsList"
             android:summary="@string/notifications_list_summary"
             android:title="@string/notifications_list" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:dependency="notificationsUse"
+            android:key="notificationsBig"
+            android:summary="@string/notifications_big_summary"
+            android:title="@string/notifications_big" />
     </PreferenceCategory>
 
 </PreferenceScreen>

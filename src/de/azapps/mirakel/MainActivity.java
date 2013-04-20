@@ -74,11 +74,11 @@ public class MainActivity extends FragmentActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		preferences = PreferenceManager.getDefaultSharedPreferences(this);
-		if(!preferences.contains("startupAllLists")) {
+		if (!preferences.contains("startupAllLists")) {
 
 			SharedPreferences.Editor editor = preferences.edit();
 			editor.putBoolean("startupAllLists", false);
-			editor.putString("startupList", ""+Mirakel.LIST_ALL);
+			editor.putString("startupList", "" + Mirakel.LIST_ALL);
 			editor.commit();
 		}
 		setContentView(R.layout.activity_main);
@@ -95,7 +95,7 @@ public class MainActivity extends FragmentActivity implements
 		// Intialise ViewPager
 		this.intialiseViewPager();
 		if (getPreferences().getBoolean("notificationsUse", true))
-			createNotification();
+			notification();
 		Intent intent = getIntent();
 		if (intent.getAction() == SHOW_TASK) {
 			int taskId = intent.getIntExtra(EXTRA_ID, 0);
@@ -399,6 +399,7 @@ public class MainActivity extends FragmentActivity implements
 			taskFragment.update();
 		}
 		tasksFragment.update();
+		notification();
 	}
 
 	@Override
@@ -445,7 +446,7 @@ public class MainActivity extends FragmentActivity implements
 	/**
 	 * Create a Notification in the NotificationDrawer
 	 */
-	private void createNotification() {
+	void notification() {
 		int listId = Integer.parseInt(getPreferences().getString(
 				"notificationsList", "" + Mirakel.LIST_DAILY));
 		// Set onClick Intent
@@ -492,14 +493,23 @@ public class MainActivity extends FragmentActivity implements
 		boolean persistent = getPreferences().getBoolean(
 				"notificationsPersistent", true);
 		// Build notification
-		Notification noti = new Notification.Builder(this)
+		NotificationCompat.Builder noti = new NotificationCompat.Builder(this)
 				.setContentTitle(notificationTitle)
 				.setContentText(notificationText)
 				.setSmallIcon(R.drawable.ic_launcher).setContentIntent(pIntent)
-				.setOngoing(persistent).build();
+				.setOngoing(persistent);
+
+		// Big View
+		if (preferences.getBoolean("notificationsBig", true)) {
+			NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+			for (Task task : todayTasks) {
+				inboxStyle.addLine(task.getName());
+			}
+			noti.setStyle(inboxStyle);
+		}
 
 		NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-		notificationManager.notify(0, noti);
+		notificationManager.notify(0, noti.build());
 	}
 
 	@Override
@@ -519,6 +529,7 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onResume() {
 		super.onResume();
+		notification();
 		listDataSource.open();
 		taskDataSource.open();
 	}

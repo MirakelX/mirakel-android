@@ -50,6 +50,8 @@
     <string name="notifications_persistent_summary">Should the notification be persistent?</string>
     <string name="notifications_list">List</string>
     <string name="notifications_list_summary">Which List should I show you?</string>
+    <string name="notifications_big">Big Views</string>
+    <string name="notifications_big_summary">Show big Notifications? (Only Android >= 4.1)</string>
     
     <!-- startup -->
     <string name="startup_title">App Start</string>
