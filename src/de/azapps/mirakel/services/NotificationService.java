@@ -43,6 +43,9 @@ public class NotificationService extends Service {
 		NotificationService.setNotificationService(this);
 	}
 
+	/**
+	 * Updates the Notification
+	 */
 	public void notifier() {
 		int listId = Integer.parseInt(preferences.getString(
 				"notificationsList", "" + Mirakel.LIST_DAILY));
@@ -109,11 +112,19 @@ public class NotificationService extends Service {
 		notificationManager.notify(0, noti.build());
 	}
 
-	public static void setNotificationService(NotificationService service) {
+	/**
+	 * Set the NotificationService
+	 * @param service
+	 */
+	private static void setNotificationService(NotificationService service) {
 		if (NotificationService.notificationService == null)
 			NotificationService.notificationService = service;
 	}
 
+	/**
+	 * Update the Mirakel–Notifications
+	 * @param context
+	 */
 	public static void updateNotification(Context context) {
 		if (NotificationService.notificationService == null) {
 			Intent intent = new Intent(context, NotificationService.class);
