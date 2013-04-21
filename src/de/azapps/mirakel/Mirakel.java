@@ -19,9 +19,13 @@ public class Mirakel extends Application {
 	public final static short SYNC_STATE_DELETE = -1;
 	public final static short SYNC_STATE_ADD = 1;
 	public final static short SYNC_STATE_NEED_SYNC = 2;
+	
 	public static final int DATABASE_VERSION = 3;
+	public static final String TABLE_LISTS="lists";
+	public static final String TABLE_TASKS="tasks";
 	
 	public static final String ACCOUNT_TYP="de.azapps.mirakel";
+	public static final String AUTHORITY_TYP="de.azapps.mirakel.provider";
 	
 	public class Http_Mode {
 		final public static int GET = 0;
@@ -33,6 +37,7 @@ public class Mirakel extends Application {
 	private static final String TAG = "Mirakel";
 
 	private static SQLiteOpenHelper openHelper;
+
 
 	@Override
 	public void onCreate() {

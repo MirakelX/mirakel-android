@@ -53,8 +53,8 @@ public class TasksDataSource {
 		values.put("due", (due == null ? "0" : due.toString()));
 		values.put("priority", priority);
 		values.put("sync_state", Mirakel.SYNC_STATE_ADD);
-		long insertId = database.insert("tasks", null, values);
-		Cursor cursor = database.query("tasks", allColumns,
+		long insertId = database.insert(Mirakel.TABLE_TASKS, null, values);
+		Cursor cursor = database.query(Mirakel.TABLE_TASKS, allColumns,
 				"_id = " + insertId, null, null, null, null);
 		cursor.moveToFirst();
 		Task newTask = cursorToTask(cursor);
@@ -67,24 +67,34 @@ public class TasksDataSource {
 		task.setSync_state(task.getSync_state() == Mirakel.SYNC_STATE_ADD ? Mirakel.SYNC_STATE_ADD
 				: Mirakel.SYNC_STATE_NEED_SYNC);
 		ContentValues values = task.getContentValues();
-		database.update("tasks", values, "_id = " + task.getId(), null);
+		database.update(Mirakel.TABLE_TASKS, values, "_id = " + task.getId(), null);
 	}
 
 	public void deleteTask(Task task) {
 		long id = task.getId();
 		if (task.getSync_state() == Mirakel.SYNC_STATE_ADD)
-			database.delete("tasks", "_id = " + id, null);
+			database.delete(Mirakel.TABLE_TASKS, "_id = " + id, null);
 		else {
 			ContentValues values = new ContentValues();
 			values.put("sync_state", Mirakel.SYNC_STATE_DELETE);
-			database.update("tasks", values, "_id=" + id, null);
+			database.update(Mirakel.TABLE_TASKS, values, "_id=" + id, null);
 		}
 
+	}
+	public List<Task> getAllTasks(){
+		List<Task> tasks=new ArrayList<Task>();
+		Cursor c=database.query(Mirakel.TABLE_TASKS, allColumns, "not sync_state= "+Mirakel.SYNC_STATE_DELETE, null,null, null, null);
+		c.moveToFirst();
+		while (!c.isAfterLast()) {
+			tasks.add(cursorToTask(c));
+			c.moveToNext();
+		}
+		return tasks;
 	}
 
 	public Task getTask(long id) {
 		open();
-		Cursor cursor = database.query("tasks", allColumns, "_id='" + id
+		Cursor cursor = database.query(Mirakel.TABLE_TASKS, allColumns, "_id='" + id
 				+ "' and not sync_state=" + Mirakel.SYNC_STATE_DELETE, null,
 				null, null, null);
 		cursor.moveToFirst();
@@ -146,7 +156,7 @@ public class TasksDataSource {
 		default:
 			order = "_id ASC";
 		}
-		return Mirakel.getReadableDatabase().query("tasks", allColumns, where,
+		return Mirakel.getReadableDatabase().query(Mirakel.TABLE_TASKS, allColumns, where,
 				null, null, null, "done, " + order);
 	}
 
@@ -192,7 +202,7 @@ public class TasksDataSource {
 
 	protected List<Task> getDeletedTasks() {
 		List<Task> tasks = new ArrayList<Task>();
-		Cursor c = database.query("tasks", allColumns, "sync_state="
+		Cursor c = database.query(Mirakel.TABLE_TASKS, allColumns, "sync_state="
 				+ Mirakel.SYNC_STATE_DELETE+" and list_id>0", null, null, null, null);
 		c.moveToFirst();
 		while (!c.isAfterLast()) {
@@ -221,7 +231,7 @@ public class TasksDataSource {
 				List<Task> tasks_server = parse_json(result);
 				
 				List<Task> tasks_local = new ArrayList<Task>();
-				Cursor c = database.query("tasks", allColumns, "not sync_state="
+				Cursor c = database.query(Mirakel.TABLE_TASKS, allColumns, "not sync_state="
 						+ Mirakel.SYNC_STATE_DELETE+" and list_id>0", null, null, null, null);
 				c.moveToFirst();
 				while (!c.isAfterLast()) {
@@ -244,7 +254,7 @@ public class TasksDataSource {
 				merge_with_server(tasks_server);
 				ContentValues values = new ContentValues();
 				values.put("sync_state", Mirakel.SYNC_STATE_NOTHING);
-				database.update("tasks", values, "not sync_state="
+				database.update(Mirakel.TABLE_TASKS, values, "not sync_state="
 						+ Mirakel.SYNC_STATE_NOTHING, null);
 			}
 		}, email, password, Mirakel.Http_Mode.GET).execute(url
@@ -357,7 +367,7 @@ public class TasksDataSource {
 				ContentValues values = new ContentValues();
 				values.put("_id", task.getId());
 				open();
-				database.update("tasks", values, "_id=" + task.getId(), null);
+				database.update(Mirakel.TABLE_TASKS, values, "_id=" + task.getId(), null);
 			}
 		}, email, password, Mirakel.Http_Mode.POST, data).execute(url
 				+ "/lists/" + task.getListId() + "/tasks.json");
@@ -370,12 +380,12 @@ public class TasksDataSource {
 		for (int i = 0; i < tasks_server.size(); i++) {
 			Task task = getTask(tasks_server.get(i).getId());
 			if (task == null) {
-				long id = database.insert("tasks", null, tasks_server.get(i)
+				long id = database.insert(Mirakel.TABLE_TASKS, null, tasks_server.get(i)
 						.getContentValues());
 				ContentValues values = new ContentValues();
 				values.put("_id", tasks_server.get(i).getId());
 				open();
-				database.update("tasks", values, "_id=" + id, null);
+				database.update(Mirakel.TABLE_TASKS, values, "_id=" + id, null);
 			} else {
 				if (task.getSync_state() == Mirakel.SYNC_STATE_NOTHING) {
 					saveTask(tasks_server.get(i));
