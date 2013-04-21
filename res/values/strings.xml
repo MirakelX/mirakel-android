@@ -16,6 +16,7 @@
     <string name="Email">Email</string>
     <string name="Password">Password</string>
     <string name="Server">Server</string>
+    <string name="NoNetwork">No Network Connection available.</string>
 
     <!-- Home -->
     <string name="home_button_official">Official Server</string>

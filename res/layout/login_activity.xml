@@ -51,6 +51,7 @@
             <EditText
                 android:id="@+id/server_edit"
                 android:singleLine="true"
+                android:text="@string/offical_server_url"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:minWidth="250dip"

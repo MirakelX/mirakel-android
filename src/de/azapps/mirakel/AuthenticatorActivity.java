@@ -39,6 +39,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Activity which displays login screen to the user.
@@ -61,7 +62,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
     private AccountManager mAccountManager;
 
     /** Keep track of the login task so can cancel it if requested */
-    private UserLoginTask mAuthTask = null;
+    //private UserLoginTask mAuthTask = null;
 
     /** Keep track of the progress dialog so we can dismiss it */
     private ProgressDialog mProgressDialog = null;
@@ -127,9 +128,9 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             public void onCancel(DialogInterface dialog) {
                 Log.i(TAG, "user cancelling authentication");
-                if (mAuthTask != null) {
+               /* if (mAuthTask != null) {
                     mAuthTask.cancel(true);
-                }
+                }*/
             }
         });
         // We save off the progress dialog in a field so that we can dismiss
@@ -161,7 +162,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 			NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         	if (networkInfo != null && networkInfo.isConnected()) {
         		showProgress();
-        		String url= ((EditText)findViewById(R.id.server_edit)).getText().toString();
+        		final String url= ((EditText)findViewById(R.id.server_edit)).getText().toString();
 				new Network(new DataDownloadCommand() {
 					
 					@Override
@@ -173,7 +174,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 							hideProgress();
 						}else{
 							Log.e(TAG,"Login sucess");
-							onAuthenticationResult("Foo");
+							onAuthenticationResult("Foo",url);
 							/*Intent intent = new Intent(LoginActivity.this,
 									MainActivity.class);
 							intent.putExtra("listId", Mirakel.LIST_ALL);
@@ -190,6 +191,9 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				//showProgress(true);
 			} else {
 				Log.e(TAG, "No network connection available.");
+				Toast t=new Toast(getApplicationContext());
+				t.setText(getString(R.string.NoNetwork));
+				t.show();
 			}
             //mAuthTask = new UserLoginTask();
             //mAuthTask.execute();
@@ -203,15 +207,15 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
      *
      * @param result the confirmCredentials result.
      */
-    private void finishConfirmCredentials(boolean result) {
+    private void finishConfirmCredentials(boolean result,String url) {
         Log.i(TAG, "finishConfirmCredentials()");
         final Account account = new Account(mUsername, Mirakel.ACCOUNT_TYP);
         mAccountManager.setPassword(account, mPassword);
+        Log.e(TAG,url);
+        mAccountManager.setUserData(account, "url", url);
+        Log.e(TAG,mAccountManager.getUserData(account, "url"));
+        //Mark Account Syncable
         ContentResolver.setIsSyncable(account,Mirakel.AUTHORITY_TYP,1);
-        Log.e(TAG,"Start Testsync");
-        //TODO Remove this
-       // ContentResolver.requestSync(account, "com.android.contacts", null);
-        //ContentResolver.setIsSyncable(account, Mirakel.ACCOUNT_TYP, 1);
         final Intent intent = new Intent();
         intent.putExtra(AccountManager.KEY_BOOLEAN_RESULT, result);
         setAccountAuthenticatorResult(intent.getExtras());
@@ -228,14 +232,17 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
      *
      * @param result the confirmCredentials result.
      */
-    private void finishLogin(String authToken) {
+    private void finishLogin(String authToken,String url) {
 
         Log.i(TAG, "finishLogin()");
         final Account account = new Account(mUsername, Mirakel.ACCOUNT_TYP);
         if (mRequestNewAccount) {
-            mAccountManager.addAccountExplicitly(account, mPassword, null);
+        	Bundle b=new Bundle();
+        	b.putString("url", url);
+            mAccountManager.addAccountExplicitly(account, mPassword, b);
             // Set contacts sync for this account.
-            ContentResolver.setSyncAutomatically(account, ContactsContract.AUTHORITY, true);
+            ContentResolver.setIsSyncable(account,Mirakel.AUTHORITY_TYP,1);
+            ContentResolver.setSyncAutomatically(account, Mirakel.AUTHORITY_TYP, true);
         } else {
             mAccountManager.setPassword(account, mPassword);
         }
@@ -253,22 +260,22 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
      * @param authToken the authentication token returned by the server, or NULL if
      *            authentication failed.
      */
-    public void onAuthenticationResult(String authToken) {
+    public void onAuthenticationResult(String authToken, String url) {
 
         boolean success = ((authToken != null) && (authToken.length() > 0));
         Log.i(TAG, "onAuthenticationResult(" + success + ")");
 
         // Our task is complete, so clear it out
-        mAuthTask = null;
+        //mAuthTask = null;
 
         // Hide the progress dialog
         hideProgress();
 
         if (success) {
             if (!mConfirmCredentials) {
-                finishLogin(authToken);
+                finishLogin(authToken,url);
             } else {
-                finishConfirmCredentials(success);
+                finishConfirmCredentials(success,url);
             }
         } else {
             Log.e(TAG, "onAuthenticationResult: failed to authenticate");
@@ -288,7 +295,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         Log.i(TAG, "onAuthenticationCancel()");
 
         // Our task is complete, so clear it out
-        mAuthTask = null;
+        //mAuthTask = null;
 
         // Hide the progress dialog
         hideProgress();
@@ -333,7 +340,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
      * Represents an asynchronous task used to authenticate a user against the
      * SampleSync Service
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, String> {
+    /*public class UserLoginTask extends AsyncTask<Void, Void, String> {
 
         @Override
         protected String doInBackground(Void... params) {
@@ -362,5 +369,5 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
             // activity to let it know.
             onAuthenticationCancel();
         }
-    }
+    }*/
 }
