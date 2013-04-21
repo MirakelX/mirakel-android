@@ -13,6 +13,10 @@
     <string name="speak">Speak</string>
     <string name="enter">Enter</string>
     <string name="speak_lang_code">en-US</string>
+    
+    <!-- Example Data -->
+    <string name="inbox">Inbox</string>
+    <string name="first_task">First task</string>
 
     <!-- Home -->
     <string name="home_button_official">Official Server</string>

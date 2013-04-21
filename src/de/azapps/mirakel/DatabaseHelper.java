@@ -8,9 +8,11 @@ import android.util.Log;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String TAG = "DatabaseHelper";
+	private Context context;
 
 	public DatabaseHelper(Context ctx) {
 		super(ctx, "mirakel.db", null, Mirakel.DATABASE_VERSION);
+		context=ctx;
 	}
 
 	@Override
@@ -28,9 +30,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.execSQL("CREATE TABLE tasks ("
 				+ "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
 				+ "list_id INTEGER REFERENCES lists (_id) ON DELETE CASCADE, "
-				+ "name TEXT NOT NULL, " + "content TEXT, "
+				+ "name TEXT NOT NULL, " 
+				+ "content TEXT NOT NULL DEFAULT '', "
 				+ "done INTEGER NOT NULL DEFAULT 0, "
-				+ "priority INTEGER NOT NULL DEFAULT 0, " + "due INTEGER, "
+				+ "priority INTEGER NOT NULL DEFAULT 0, " 
+				+ "due STRING NOT NULL DEFAULT '', "
 				+ "created_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
 				+ "updated_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
 				+ "sync_state INTEGER DEFAULT "+Mirakel.SYNC_STATE_ADD
@@ -41,6 +45,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ "user TEXT NOT NULL,"
 				+ "passwort TEXT NOT NULL"
 				+ ")");
+		db.execSQL("INSERT INTO lists (name) VALUES ('" + context.getString(R.string.inbox) +"')");
+		db.execSQL("INSERT INTO tasks (list_id,name) VALUES (1,'" + context.getString(R.string.first_task) +"')");
 
 	}
 
