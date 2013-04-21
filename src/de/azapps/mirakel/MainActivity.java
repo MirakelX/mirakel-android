@@ -97,7 +97,7 @@ public class MainActivity extends FragmentActivity implements
 		// Intialise ViewPager
 		this.intialiseViewPager();
 		if (getPreferences().getBoolean("notificationsUse", true))
-			NotificationService.updateNotification(this);
+			NotificationService.updateNotificationAndWidget(this);
 		Intent intent = getIntent();
 		if (intent.getAction() == SHOW_TASK) {
 			int taskId = intent.getIntExtra(EXTRA_ID, 0);
@@ -423,7 +423,7 @@ public class MainActivity extends FragmentActivity implements
 		}
 		tasksFragment.update();
 		if (getPreferences().getBoolean("notificationsUse", true))
-			NotificationService.updateNotification(this);
+			NotificationService.updateNotificationAndWidget(this);
 	}
 
 	@Override
@@ -485,7 +485,7 @@ public class MainActivity extends FragmentActivity implements
 	protected void onResume() {
 		super.onResume();
 		if (getPreferences().getBoolean("notificationsUse", true))
-			NotificationService.updateNotification(this);
+			NotificationService.updateNotificationAndWidget(this);
 		listDataSource.open();
 		taskDataSource.open();
 	}

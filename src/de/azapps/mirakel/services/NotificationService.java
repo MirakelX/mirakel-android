@@ -5,6 +5,7 @@ import java.util.List;
 import de.azapps.mirakel.List_mirakle;
 import de.azapps.mirakel.ListsDataSource;
 import de.azapps.mirakel.MainActivity;
+import de.azapps.mirakel.MainWidgetProvider;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.Task;
@@ -12,6 +13,7 @@ import de.azapps.mirakel.TasksDataSource;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -125,7 +127,15 @@ public class NotificationService extends Service {
 	 * Update the Mirakel–Notifications
 	 * @param context
 	 */
-	public static void updateNotification(Context context) {
+	public static void updateNotificationAndWidget(Context context) {
+
+		Intent widgetIntent = new Intent(context, MainWidgetProvider.class);
+		widgetIntent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
+		// Use an array and EXTRA_APPWIDGET_IDS instead of
+		// AppWidgetManager.EXTRA_APPWIDGET_ID,
+		// since it seems the onUpdate() is only fired on that:
+		widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, Mirakel.widgets);
+		context.sendBroadcast(widgetIntent);
 		if (NotificationService.notificationService == null) {
 			Intent intent = new Intent(context, NotificationService.class);
 			context.startService(intent);

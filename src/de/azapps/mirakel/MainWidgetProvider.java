@@ -1,5 +1,7 @@
 package de.azapps.mirakel;
 
+import java.util.Random;
+
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -70,6 +72,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
 			intent.putExtra(EXTRA_LISTSORT, listSort);
 			intent.putExtra(EXTRA_SHOWDONE,
 					preferences.getBoolean("widgetDone", false));
+			intent.putExtra("Random", new Random().nextInt());
 			views.setRemoteAdapter(R.id.widget_tasks_list, intent);
 
 			// The empty view is displayed when the collection has no items. It
