@@ -24,8 +24,11 @@ import android.accounts.AccountManager;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -153,9 +156,43 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         } else {
             // Show a progress dialog, and kick off a background task to perform
             // the user login attempt.
-            showProgress();
-            mAuthTask = new UserLoginTask();
-            mAuthTask.execute();
+            //showProgress();
+        	ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+			NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        	if (networkInfo != null && networkInfo.isConnected()) {
+        		showProgress();
+        		String url= ((EditText)findViewById(R.id.server_edit)).getText().toString();
+				new Network(new DataDownloadCommand() {
+					
+					@Override
+					public void after_exec(String result) {
+						//int status=result.getStatusLine().getStatusCode();
+						
+						if(result.indexOf("Invalid email or password.")!=-1){
+							Log.e(TAG,"Login faild");
+							hideProgress();
+						}else{
+							Log.e(TAG,"Login sucess");
+							onAuthenticationResult("Foo");
+							/*Intent intent = new Intent(LoginActivity.this,
+									MainActivity.class);
+							intent.putExtra("listId", Mirakel.LIST_ALL);
+							intent.putExtra("email", mEmailView.getText().toString());
+							intent.putExtra("password", mPasswordView.getText().toString());
+							intent.putExtra("url", url);
+							startActivity(intent);*/
+						}
+						//showProgress(false);	
+						
+					}
+				},mUsernameEdit.getText().toString(), mPasswordEdit.getText().toString(),Mirakel.Http_Mode.GET).execute(url+"/lists.json");
+				//mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
+				//showProgress(true);
+			} else {
+				Log.e(TAG, "No network connection available.");
+			}
+            //mAuthTask = new UserLoginTask();
+            //mAuthTask.execute();
         }
     }
 
@@ -170,6 +207,11 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         Log.i(TAG, "finishConfirmCredentials()");
         final Account account = new Account(mUsername, Mirakel.ACCOUNT_TYP);
         mAccountManager.setPassword(account, mPassword);
+        ContentResolver.setIsSyncable(account,"com.android.contacts",1);
+        Log.e(TAG,"Start Testsync");
+        //TODO Remove this
+        ContentResolver.requestSync(account, "com.android.contacts", null);
+        //ContentResolver.setIsSyncable(account, Mirakel.ACCOUNT_TYP, 1);
         final Intent intent = new Intent();
         intent.putExtra(AccountManager.KEY_BOOLEAN_RESULT, result);
         setAccountAuthenticatorResult(intent.getExtras());
