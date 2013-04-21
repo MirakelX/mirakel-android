@@ -22,7 +22,7 @@ public class TasksDataSource {
 	private static final String TAG = "TasksDataSource";
 	private SQLiteDatabase database;
 	private DatabaseHelper dbHelper;
-	private String[] allColumns = { "_id", "list_id", "name", "content",
+	public static final String[] allColumns = { "_id", "list_id", "name", "content",
 			"done", "due", "priority", "created_at", "updated_at", "sync_state" };
 	private Context context;
 

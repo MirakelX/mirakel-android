@@ -28,7 +28,7 @@ public class ListsDataSource {
 	private static final String TAG = "ListsDataSource";
 	private SQLiteDatabase database;
 	private DatabaseHelper dbHelper;
-	private String[] allColumns = { "_id", "name", "sort_by", "created_at",
+	public static final String[] allColumns = { "_id", "name", "sort_by", "created_at",
 			"updated_at", "sync_state" };
 	private Context context;
 	private SharedPreferences preferences;
