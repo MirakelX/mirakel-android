@@ -11,6 +11,7 @@ import java.util.Locale;
 
 import org.apache.http.message.BasicNameValuePair;
 
+import android.R.bool;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -22,7 +23,7 @@ public class TasksDataSource {
 	private static final String TAG = "TasksDataSource";
 	private SQLiteDatabase database;
 	private DatabaseHelper dbHelper;
-	public static final String[] allColumns = { "_id", "list_id", "name", "content",
+	private static final String[] allColumns = { "_id", "list_id", "name", "content",
 			"done", "due", "priority", "created_at", "updated_at", "sync_state" };
 	private Context context;
 
@@ -254,8 +255,8 @@ public class TasksDataSource {
 				merge_with_server(tasks_server);
 				ContentValues values = new ContentValues();
 				values.put("sync_state", Mirakel.SYNC_STATE_NOTHING);
-				database.update(Mirakel.TABLE_TASKS, values, "not sync_state="
-						+ Mirakel.SYNC_STATE_NOTHING, null);
+				//database.update(Mirakel.TABLE_TASKS, values, "not sync_state="
+				//		+ Mirakel.SYNC_STATE_NOTHING, null);
 			}
 		}, email, password, Mirakel.Http_Mode.GET).execute(url
 				+ "/lists/all/tasks.json");
@@ -363,11 +364,15 @@ public class TasksDataSource {
 		new Network(new DataDownloadCommand() {
 			@Override
 			public void after_exec(String result) {
-				Task task = parse_json("[" + result + "]").get(0);
-				ContentValues values = new ContentValues();
-				values.put("_id", task.getId());
-				open();
-				database.update(Mirakel.TABLE_TASKS, values, "_id=" + task.getId(), null);
+				try{
+					Task task = parse_json("[" + result + "]").get(0);
+					ContentValues values = new ContentValues();
+					values.put("_id", task.getId());
+					open();
+					database.update(Mirakel.TABLE_TASKS, values, "_id=" + task.getId(), null);
+				}catch(IndexOutOfBoundsException e){
+					Log.e(TAG, "ungültiger Respons" );
+				}
 			}
 		}, email, password, Mirakel.Http_Mode.POST, data).execute(url
 				+ "/lists/" + task.getListId() + "/tasks.json");

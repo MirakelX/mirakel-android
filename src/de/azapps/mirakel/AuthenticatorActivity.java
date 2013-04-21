@@ -207,10 +207,10 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         Log.i(TAG, "finishConfirmCredentials()");
         final Account account = new Account(mUsername, Mirakel.ACCOUNT_TYP);
         mAccountManager.setPassword(account, mPassword);
-        ContentResolver.setIsSyncable(account,"com.android.contacts",1);
+        ContentResolver.setIsSyncable(account,Mirakel.AUTHORITY_TYP,1);
         Log.e(TAG,"Start Testsync");
         //TODO Remove this
-        ContentResolver.requestSync(account, "com.android.contacts", null);
+       // ContentResolver.requestSync(account, "com.android.contacts", null);
         //ContentResolver.setIsSyncable(account, Mirakel.ACCOUNT_TYP, 1);
         final Intent intent = new Intent();
         intent.putExtra(AccountManager.KEY_BOOLEAN_RESULT, result);

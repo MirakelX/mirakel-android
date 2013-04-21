@@ -28,7 +28,7 @@ public class ListsDataSource {
 	private static final String TAG = "ListsDataSource";
 	private SQLiteDatabase database;
 	private DatabaseHelper dbHelper;
-	public static final String[] allColumns = { "_id", "name", "sort_by", "created_at",
+	private static final String[] allColumns = { "_id", "name", "sort_by", "created_at",
 			"updated_at", "sync_state" };
 	private Context context;
 	private SharedPreferences preferences;
@@ -119,7 +119,7 @@ public class ListsDataSource {
 			list.setSync_state(list.getSync_state() == Mirakel.SYNC_STATE_ADD ? Mirakel.SYNC_STATE_ADD
 					: Mirakel.SYNC_STATE_NEED_SYNC);
 			ContentValues values = list.getContentValues();
-			database.update(Mirakel.TABLE_LISTS, values, "_id = " + list.getId(), null);
+			//database.update(Mirakel.TABLE_LISTS, values, "_id = " + list.getId(), null);
 		}
 		editor.commit();
 	}
@@ -330,8 +330,8 @@ public class ListsDataSource {
 				List_mirakle lists_server[] = new Gson().fromJson(result,
 						List_mirakle[].class);
 				List<List_mirakle> lists_local = getAllLists();
-				for (int i = 0; i < lists_local.size(); i++) {
-					List_mirakle list = lists_local.get(i);
+				for (List_mirakle list:lists_local) {
+					Log.e(TAG,"List: "+list.getName()+"  sync_state: "+list.getSync_state());
 					switch (list.getSync_state()) {
 					case Mirakel.SYNC_STATE_ADD:
 						add_list(list, email, password, url);
@@ -343,10 +343,15 @@ public class ListsDataSource {
 					}
 				}
 				merge_with_server(lists_server);
+				Log.v(TAG,"End Sync Lists");
+				TasksDataSource taskDataSource =new TasksDataSource(context);
+				taskDataSource.open();
+				//taskDataSource.sync_tasks(email, password, url);
+				taskDataSource.close();
 				ContentValues values = new ContentValues();
 				values.put("sync_state", Mirakel.SYNC_STATE_NOTHING);
-				database.update(Mirakel.TABLE_LISTS, values, "not sync_state="
-						+ Mirakel.SYNC_STATE_NOTHING, null);
+				//database.update(Mirakel.TABLE_LISTS, values, "not sync_state="
+				//		+ Mirakel.SYNC_STATE_NOTHING, null);
 
 			}
 		}, email, password, Mirakel.Http_Mode.GET).execute(url + "/lists.json");

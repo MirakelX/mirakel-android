@@ -146,28 +146,28 @@ public class MirakelContentProvider extends ContentProvider {
 			case LISTS:
 				return Mirakel.getReadableDatabase().query(
 						Mirakel.TABLE_LISTS,
-						ListsDataSource.allColumns,
+						projection,
 						"(" + selection + " ) and not sync_state= "
 								+ Mirakel.SYNC_STATE_DELETE, selectionArgs, null,
 						null, sortOrder);
 			case LISTS_ITEM:
 				return Mirakel.getReadableDatabase().query(
 						Mirakel.TABLE_LISTS,
-						ListsDataSource.allColumns,
+						projection,
 						"(" + selection + " ) and _id="+uri.getLastPathSegment()+" and not sync_state= "
 								+ Mirakel.SYNC_STATE_DELETE, selectionArgs, null,
 						null, sortOrder);
 			case TASKS:
 				return Mirakel.getReadableDatabase().query(
 						Mirakel.TABLE_TASKS,
-						TasksDataSource.allColumns,
+						projection,
 						"(" + selection + " ) and not sync_state= "
 								+ Mirakel.SYNC_STATE_DELETE, selectionArgs, null,
 						null, sortOrder);
 			case TASKS_ITEM:
 				return Mirakel.getReadableDatabase().query(
 						Mirakel.TABLE_TASKS,
-						TasksDataSource.allColumns,
+						projection,
 						"(" + selection + " ) and _id="+uri.getLastPathSegment()+" and not sync_state= "
 								+ Mirakel.SYNC_STATE_DELETE, selectionArgs, null,
 						null, sortOrder);
