@@ -100,13 +100,42 @@
                 someone who explicitly knows the class name
             -->
         </activity>
-        <service android:name=".AuthenticationService">
+        <service 
+            android:name=".AuthenticationService"
+            android:exported="true">
 	        <intent-filter>
 	            <action android:name="android.accounts.AccountAuthenticator" />
 	        </intent-filter>
 	        <meta-data android:name="android.accounts.AccountAuthenticator"
 	                    android:resource="@xml/authenticator" />
 	 	</service>
+	 	<service 
+	 	    android:name=".SyncService" 
+	 	    android:exported="true">
+	        <intent-filter>
+		        <action 
+		            android:name="android.content.SyncAdapter">
+		        </action>
+		    </intent-filter>
+		    <meta-data 
+		        android:resource="@xml/syncadapter" 
+		        android:name="android.content.SyncAdapter">
+		    </meta-data>
+	 	</service>
+	 	<!-- <service
+	 	    android:name=".SyncService"
+            android:exported="true">
+            <intent-filter>
+                <action
+                    android:name=".SyncAdapter" />
+            </intent-filter>
+             <meta-data
+                android:name=".SyncAdapter"
+                android:resource="@xml/syncadapter" />
+            <meta-data
+                android:name="android.provider.CONTACTS_STRUCTURE"
+                android:resource="@xml/contacts" />
+        </service>-->
 
         <receiver android:name="de.azapps.mirakel.MainWidgetProvider" >
             <intent-filter>
@@ -123,6 +152,11 @@
             android:name="de.azapps.mirakel.MainWidgetService"
             android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
+        <provider 
+            android:name=".MirakelContentProvider"
+            android:exported="false"
+		    android:authorities="de.azapps.mirakel.provider">
+		</provider>
     </application>
 
 </manifest>
