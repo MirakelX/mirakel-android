@@ -291,7 +291,7 @@ public class ListsDataSource {
 	 * 
 	 * @return List of Lists
 	 */
-	protected List<List_mirakle> getdeletedLists() {
+	protected List<List_mirakle> getDeletedLists() {
 		List<List_mirakle> lists = new ArrayList<List_mirakle>();
 		Cursor c = database.query(Mirakel.TABLE_LISTS, allColumns, "sync_state="
 				+ Mirakel.SYNC_STATE_DELETE, null, null, null, null);
@@ -307,7 +307,7 @@ public class ListsDataSource {
 	}
 
 	/**
-	 * Sync the lists with the Server
+	 * Sync the lists with the Server TODO Parameter anpassen
 	 * 
 	 * @param email
 	 * @param password
@@ -316,7 +316,7 @@ public class ListsDataSource {
 	public void sync_lists(final String email, final String password,
 			final String url) {
 		Log.v(TAG, "sync lists");
-		List<List_mirakle> deleted = getdeletedLists();
+		List<List_mirakle> deleted = getDeletedLists();
 		if (deleted != null) {
 			for (int i = 0; i < deleted.size(); i++) {
 				delete_list(deleted.get(i), email, password, url);
@@ -421,6 +421,10 @@ public class ListsDataSource {
 				ContentValues values = new ContentValues();
 				values.put("_id", list_response.getId());
 				open();
+				/*
+				 * TODO Wenn ID bereits in DB, dann entsprechende Liste
+				 * verschieben
+				 */
 				database.update(Mirakel.TABLE_LISTS, values, "_id=" + list.getId(), null);
 				values = new ContentValues();
 				values.put("list_id", list_response.getId());

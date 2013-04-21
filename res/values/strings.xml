@@ -18,6 +18,12 @@
     <string name="Server">Server</string>
     <string name="NoNetwork">No Network Connection available.</string>
 
+    
+    <!-- Example Data -->
+    <string name="inbox">Inbox</string>
+    <string name="first_task">First task</string>
+
+
     <!-- Home -->
     <string name="home_button_official">Official Server</string>
     <string name="home_button_own">Own Server</string>
@@ -57,6 +63,12 @@
         <item>Priority</item>
         <item>Created date</item>
     </string-array>
+    <string-array name="task_sorting_items_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
 
     <string name="dialog_move">Move Task</string>
     <string name="dialog_move_message">Move Task to another List:</string>
@@ -84,6 +96,8 @@
 
     <!-- Widget -->
     <string name="main_widget_name">Widget</string>
+    <string name="empty_list">No tasks</string>
+    <string name="preferences">Preferences</string>
 
     <!-- Notification -->
     <string name="notification_title_all">%1$d Tasks</string>

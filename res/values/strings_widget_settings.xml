@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="widget_list">List</string>
+    <string name="widget_list_summary">List to show</string>
+    <string name="widget_frequency">Update–Frequency</string>
+    <string name="widget_done">Done–Tasks</string>
+    <string name="widget_done_summary">Should I show the done–Tasks</string>
+    <string name="widget_frequency_summary">How often should i update the Widget</string>
+    <string name="widget_transparency">Transparancy</string>
+    <string name="widget_transparancy_summary"></string>
+    <string name="widget_sort">Sorting</string>
+    <string name="widget_sort_summary">How to sort the Task</string>
+</resources>

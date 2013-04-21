@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import de.azapps.mirakel.services.NotificationService;
+
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -15,6 +17,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
@@ -31,13 +34,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
 /**
- * @see https 
- *      ://thepseudocoder.wordpress.com/2011/10/13/android-tabs-viewpager-swipe
- *      -able-tabs-ftw/
+ * @see "https://thepseudocoder.wordpress.com/2011/10/13/android-tabs-viewpager-swipe-able-tabs-ftw/"
  * @author az
  * 
  */
@@ -74,6 +76,13 @@ public class MainActivity extends FragmentActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		if (!preferences.contains("startupAllLists")) {
+
+			SharedPreferences.Editor editor = preferences.edit();
+			editor.putBoolean("startupAllLists", false);
+			editor.putString("startupList", "" + Mirakel.LIST_ALL);
+			editor.commit();
+		}
 		setContentView(R.layout.activity_main);
 		setupLayout();
 	}
@@ -88,7 +97,7 @@ public class MainActivity extends FragmentActivity implements
 		// Intialise ViewPager
 		this.intialiseViewPager();
 		if (getPreferences().getBoolean("notificationsUse", true))
-			createNotification();
+			NotificationService.updateNotificationAndWidget(this);
 		Intent intent = getIntent();
 		if (intent.getAction() == SHOW_TASK) {
 			int taskId = intent.getIntExtra(EXTRA_ID, 0);
@@ -236,9 +245,10 @@ public class MainActivity extends FragmentActivity implements
 			alert.show();
 			return true;
 		case R.id.menu_new_list:
-			listDataSource.createList(this
+			List_mirakle list=listDataSource.createList(this
 					.getString(R.string.list_menu_new_list));
 			listFragment.update();
+			listFragment.editList(list);
 			return true;
 		case R.id.menu_settings_list:
 		case R.id.menu_settings_task:
@@ -294,19 +304,40 @@ public class MainActivity extends FragmentActivity implements
 			int positionOffsetPixels) {
 	}
 
+	private int currentPosition = 1;
+	private int scrollYTasks = 0;
+	private Parcelable tasksState, listState;
+
 	@Override
 	public void onPageSelected(int position) {
+
+		if (taskFragment != null && taskFragment.getView() != null) {
+			final InputMethodManager imm = (InputMethodManager) this
+					.getSystemService(Context.INPUT_METHOD_SERVICE);
+			imm.hideSoftInputFromWindow(
+					taskFragment.getView().getWindowToken(), 0);
+		}
 		if (menu == null)
 			return;
 		int newmenu;
+		if (currentPosition == TASKS_FRAGMENT) {
+			tasksState = tasksFragment.getState();
+		} else if (currentPosition == LIST_FRAGMENT) {
+			listState = listFragment.getState();
+		}
+		currentPosition = position;
 		switch (position) {
 		case 0:
 			newmenu = R.menu.activity_list;
 			this.setTitle(getString(R.string.list_title));
+			if (listState != null)
+				listFragment.setState(listState);
 			break;
 		case 1:
 			newmenu = R.menu.tasks;
 			this.setTitle(currentList.getName());
+			if (tasksState != null)
+				tasksFragment.setState(tasksState);
 			break;
 		case 2:
 			newmenu = R.menu.activity_task;
@@ -392,6 +423,8 @@ public class MainActivity extends FragmentActivity implements
 			taskFragment.update();
 		}
 		tasksFragment.update();
+		if (getPreferences().getBoolean("notificationsUse", true))
+			NotificationService.updateNotificationAndWidget(this);
 	}
 
 	@Override
@@ -435,66 +468,6 @@ public class MainActivity extends FragmentActivity implements
 		return listFragment;
 	}
 
-	/**
-	 * Create a Notification in the NotificationDrawer
-	 */
-	private void createNotification() {
-		int listId = Integer.parseInt(getPreferences().getString(
-				"notificationsList", "" + Mirakel.LIST_DAILY));
-		// Set onClick Intent
-		Intent intent = new Intent(this, MainActivity.class);
-		intent.setAction(SHOW_LIST);
-		intent.putExtra(EXTRA_ID, listId);
-		PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
-
-		// Get the data
-		List_mirakle todayList = listDataSource.getList(listId);
-		List<Task> todayTasks = taskDataSource.getTasks(todayList,
-				todayList.getSortBy());
-		String notificationTitle;
-		String notificationText;
-		if (todayTasks.size() == 0) {
-			notificationTitle = getString(R.string.notification_title_empty);
-			notificationText = "";
-		} else {
-			switch (listId) {
-			case Mirakel.LIST_ALL:
-				notificationTitle = String.format(
-						getString(R.string.notification_title_all),
-						todayTasks.size());
-				break;
-			case Mirakel.LIST_DAILY:
-				notificationTitle = String.format(
-						getString(R.string.notification_title_daily),
-						todayTasks.size());
-				break;
-			case Mirakel.LIST_WEEKLY:
-				notificationTitle = String.format(
-						getString(R.string.notification_title_weekly),
-						todayTasks.size());
-				break;
-			default:
-				notificationTitle = String.format(
-						getString(R.string.notification_title_general),
-						todayTasks.size(), todayList.getName());
-
-			}
-			notificationText = todayTasks.get(0).getName();
-		}
-
-		boolean persistent = getPreferences().getBoolean(
-				"notificationsPersistent", true);
-		// Build notification
-		Notification noti = new Notification.Builder(this)
-				.setContentTitle(notificationTitle)
-				.setContentText(notificationText)
-				.setSmallIcon(R.drawable.ic_launcher).setContentIntent(pIntent)
-				.setOngoing(persistent).build();
-
-		NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-		notificationManager.notify(0, noti);
-	}
-
 	@Override
 	protected void onDestroy() {
 		listDataSource.close();
@@ -512,6 +485,8 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onResume() {
 		super.onResume();
+		if (getPreferences().getBoolean("notificationsUse", true))
+			NotificationService.updateNotificationAndWidget(this);
 		listDataSource.open();
 		taskDataSource.open();
 	}

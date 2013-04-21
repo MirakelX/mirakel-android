@@ -4,7 +4,10 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -23,10 +26,16 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	private List<Task> tasks;
 	private TasksDataSource tasksDatasource;
 	private int listId = 0;
+	private int sorting;
+	private boolean showDone;
 
 	public MainWidgetViewsFactory(Context context, Intent intent) {
 		mContext = context;
 		listId = intent.getIntExtra(MainWidgetProvider.EXTRA_LISTID, 0);
+		sorting = intent.getIntExtra(MainWidgetProvider.EXTRA_LISTSORT,
+				(int) Mirakel.SORT_BY_OPT);
+		showDone = intent.getBooleanExtra(MainWidgetProvider.EXTRA_SHOWDONE,
+				false);
 	}
 
 	/**
@@ -35,7 +44,7 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	public void onCreate() {
 		tasksDatasource = new TasksDataSource(mContext);
 		tasksDatasource.open();
-		tasks = tasksDatasource.getTasks(listId, Mirakel.SORT_BY_OPT);
+		tasks = tasksDatasource.getTasks(listId, sorting, showDone);
 	}
 
 	public void onDestroy() {
@@ -119,6 +128,6 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
 	public void onDataSetChanged() {
 		tasksDatasource.open();
-		tasks = tasksDatasource.getTasks(listId);
+		// tasks = tasksDatasource.getTasks(listId);
 	}
 }

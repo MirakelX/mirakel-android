@@ -2,18 +2,31 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@drawable/widget_background"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/widget_list_name"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Blubb"
-        android:textColor="@color/Black"
-        android:textSize="20pt" />
+        android:orientation="horizontal" >
 
+        <ImageButton
+            android:id="@+id/widget_preferences"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/preferences"
+            android:src="@android:drawable/ic_menu_preferences" />
+
+        <TextView
+            android:id="@+id/widget_list_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/Black"
+            android:textSize="16pt" />
+    </RelativeLayout>
 
     <ListView
         android:id="@+id/widget_tasks_list"
@@ -28,8 +41,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="Blabb"
-        android:textColor="#ffffff"
+        android:text="@string/empty_list"
+        android:textColor="@color/Black"
         android:textSize="20sp"
         android:visibility="gone" />
 

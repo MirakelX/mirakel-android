@@ -211,9 +211,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         Log.i(TAG, "finishConfirmCredentials()");
         final Account account = new Account(mUsername, Mirakel.ACCOUNT_TYP);
         mAccountManager.setPassword(account, mPassword);
-        Log.e(TAG,url);
         mAccountManager.setUserData(account, "url", url);
-        Log.e(TAG,mAccountManager.getUserData(account, "url"));
         //Mark Account Syncable
         ContentResolver.setIsSyncable(account,Mirakel.AUTHORITY_TYP,1);
         final Intent intent = new Intent();

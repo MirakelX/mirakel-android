@@ -21,6 +21,7 @@
         <item>30 min</item>
         <item>1 h</item>
         <item>24 h</item>
+        <item>Manuell</item>
     </string-array>
     <string-array name="sync_frequencies_values">
         <item>5</item>
@@ -29,6 +30,7 @@
         <item>30</item>
         <item>60</item>
         <item>1440</item>
+        <item>-1</item>
     </string-array>
     
     <!-- Special Lists -->
@@ -48,6 +50,8 @@
     <string name="notifications_persistent_summary">Should the notification be persistent?</string>
     <string name="notifications_list">List</string>
     <string name="notifications_list_summary">Which List should I show you?</string>
+    <string name="notifications_big">Big Views</string>
+    <string name="notifications_big_summary">Show big Notifications? (Only Android >= 4.1)</string>
     
     <!-- startup -->
     <string name="startup_title">App Start</string>
