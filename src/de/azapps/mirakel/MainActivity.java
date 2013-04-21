@@ -245,9 +245,10 @@ public class MainActivity extends FragmentActivity implements
 			alert.show();
 			return true;
 		case R.id.menu_new_list:
-			listDataSource.createList(this
+			List_mirakle list=listDataSource.createList(this
 					.getString(R.string.list_menu_new_list));
 			listFragment.update();
+			listFragment.editList(list);
 			return true;
 		case R.id.menu_settings_list:
 		case R.id.menu_settings_task:
