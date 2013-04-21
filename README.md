@@ -3,13 +3,13 @@ mirakel-android
 
 The Android App for [Mirakel](https://github.com/azapps/mirakel)
 
-Mirakel is a free (as in freedom) Todo–List–App with some Features for Powerusers.
+Mirakel is a free (as in freedom) Todo List App with some Features for Powerusers.
 
 * Sync the lists with your own (or the official) server
 * Manage your Tasks in Lists
-* Simple, but powerfull User–Interface
-* Homescreen–Widget
-* Fully–Configurable
+* Simple, but powerfull User Interface
+* Homescreen Widget
+* Fully Configurable
 * Sort your Tasks in different ways
 * Notifications
 
