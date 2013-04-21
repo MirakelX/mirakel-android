@@ -241,7 +241,7 @@ public class TasksFragment extends Fragment {
 	 * @return
 	 */
 	public Parcelable getState() {
-		return listView.onSaveInstanceState();
+		return listView == null ? null : listView.onSaveInstanceState();
 	}
 
 	/**
@@ -250,6 +250,8 @@ public class TasksFragment extends Fragment {
 	 * @param state
 	 */
 	public void setState(Parcelable state) {
+		if (listView == null || state == null)
+			return;
 		listView.onRestoreInstanceState(state);
 	}
 

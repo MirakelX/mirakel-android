@@ -57,6 +57,12 @@
         <item>Priority</item>
         <item>Created date</item>
     </string-array>
+    <string-array name="task_sorting_items_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
 
     <string name="dialog_move">Move Task</string>
     <string name="dialog_move_message">Move Task to another List:</string>
