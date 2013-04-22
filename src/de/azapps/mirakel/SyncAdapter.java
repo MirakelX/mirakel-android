@@ -62,8 +62,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     		String password=mAccountManager.getPassword(account); 
     		//TODO get Url from Setings
     		String url=mAccountManager.getUserData(account, "url"); //"http://192.168.10.28:3000";
-    		listsDataSource.sync_lists(account.name, password, url);
-    		taskDataSource.sync_tasks(account.name, password, url);
+    		//listsDataSource.sync_lists();
+    		taskDataSource.sync_tasks();
+    		listsDataSource.sync_lists();
     	}catch(ArrayIndexOutOfBoundsException e){
     		Log.e(TAG,"No Account");
     	}catch (SecurityException e) {
