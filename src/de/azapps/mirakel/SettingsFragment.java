@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -139,6 +140,18 @@ public class SettingsFragment extends PreferenceFragment {
 				//TODO CHECK URL??
 				if(account!=null){
 					am.setUserData(account, "url", (String) url);
+				}
+				return true;
+			}
+		});
+		
+		ListPreference syncIntervall=(ListPreference)findPreference("syncFrequency");
+		syncIntervall.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+			
+			@Override
+			public boolean onPreferenceChange(Preference preference, Object newValue) {
+				if(account!=null){
+					ContentResolver.addPeriodicSync(account, Mirakel.AUTHORITY_TYP, null, ((Long)newValue)*60);
 				}
 				return true;
 			}
