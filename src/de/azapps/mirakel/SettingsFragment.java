@@ -5,7 +5,6 @@ import java.util.List;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Intent;
-import android.media.audiofx.AcousticEchoCanceler;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
@@ -18,7 +17,6 @@ import android.util.Log;
 public class SettingsFragment extends PreferenceFragment {
 	private static final String TAG="SettingsFragment";
 	private ListPreference startupListPreference;
-	private Account account;
 	//private MainActivity main;
 
 	@Override
@@ -83,12 +81,8 @@ public class SettingsFragment extends PreferenceFragment {
 								AuthenticatorActivity.class);
 						intent.setAction(MainActivity.SHOW_LISTS);
 						startActivity(intent);
-						//account = new Account("foobar", Mirakel.ACCOUNT_TYP);
-						//Authenticator t=new Authenticator(getActivity());
-						//t.addAccount(response, Mirakel.ACCOUNT_TYP, null, requiredFeatures, null)
-						//am.addAccountExplicitly(account, "abc", null);
 					}else{
-						account=accounts[0];
+					//	account=accounts[0];
 					}
 				}else{
 					try{
@@ -113,19 +107,53 @@ public class SettingsFragment extends PreferenceFragment {
 				am.addAccountExplicitly(account, pwd, null);
 				return true;
 			}
-		});
+		});*/
 		
+		final AccountManager am = AccountManager.get(getActivity());
+		final Account account=getAccount(am);		
+
 		EditTextPreference password= (EditTextPreference)findPreference("syncPassword");
 		password.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 			
 			@Override
-			public boolean onPreferenceChange(Preference preference, Object newValue) {
-				AccountManager am = AccountManager.get(getActivity());
-				am.setPassword(account, (String)newValue);
+			public boolean onPreferenceChange(Preference preference, Object password) {
+				//TODO CHECK NEW PASSWORD???
+				if(account!=null){
+					am.setPassword(account, (String)password);
+				}
 				return true;
 			}
-		});*/
+		});
+		if(account!=null){
+			password.setText(am.getPassword(account));
+		}
 		
+		EditTextPreference url=(EditTextPreference)findPreference("syncServer");
+		if(account!=null){
+			url.setText(am.getUserData(account, "url"));
+		}
+		url.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+			
+			@Override
+			public boolean onPreferenceChange(Preference preference, Object url) {
+				//TODO CHECK URL??
+				if(account!=null){
+					am.setUserData(account, "url", (String) url);
+				}
+				return true;
+			}
+		});
+			
+		
+	}
+	
+	private Account getAccount(AccountManager am) {
+		try {
+			return am.getAccountsByType(Mirakel.ACCOUNT_TYP)[0];
+		} catch (ArrayIndexOutOfBoundsException f) {
+			Log.e(TAG, "No Account found");
+			return null;
+		}
 	}
 
 }
