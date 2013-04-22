@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.apache.http.message.BasicNameValuePair;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -119,7 +121,7 @@ public class ListsDataSource {
 			list.setSync_state(list.getSync_state() == Mirakel.SYNC_STATE_ADD ? Mirakel.SYNC_STATE_ADD
 					: Mirakel.SYNC_STATE_NEED_SYNC);
 			ContentValues values = list.getContentValues();
-			//database.update(Mirakel.TABLE_LISTS, values, "_id = " + list.getId(), null);
+			database.update(Mirakel.TABLE_LISTS, values, "_id = " + list.getId(), null);
 		}
 		editor.commit();
 	}
@@ -198,14 +200,14 @@ public class ListsDataSource {
 	/**
 	 * Get a List by id
 	 * 
-	 * @param id
+	 * @param l
 	 *            List–ID
 	 * @return List
 	 */
-	public List_mirakle getList(int id) {
+	public List_mirakle getList(int l) {
 		open();
 
-		Cursor cursor = database.query(Mirakel.TABLE_LISTS, allColumns, "_id='" + id + "'",
+		Cursor cursor = database.query(Mirakel.TABLE_LISTS, allColumns, "_id='" + l + "'",
 				null, null, null, null);
 		cursor.moveToFirst();
 		if (cursor.getCount() != 0) {
@@ -217,7 +219,7 @@ public class ListsDataSource {
 		List_mirakle list = new List_mirakle();
 		SharedPreferences settings = PreferenceManager
 				.getDefaultSharedPreferences(context.getApplicationContext());
-		switch (id) {
+		switch (l) {
 		case Mirakel.LIST_ALL:
 			list.setName(this.context.getString(R.string.list_all));
 			list.setSortBy(settings.getInt("SortListAll", Mirakel.SORT_BY_OPT));
@@ -236,7 +238,7 @@ public class ListsDataSource {
 			Toast.makeText(context, "NO SUCH LIST!", Toast.LENGTH_LONG).show();
 			return null;
 		}
-		list.setId(id);
+		list.setId(l);
 
 		return list;
 	}
@@ -313,8 +315,18 @@ public class ListsDataSource {
 	 * @param password
 	 * @param url
 	 */
-	public void sync_lists(final String email, final String password,
-			final String url) {
+	public void sync_lists() {
+		AccountManager accountManager=AccountManager.get(context);
+		Account account;
+		try{
+			account=accountManager.getAccountsByType(Mirakel.ACCOUNT_TYP)[0];
+		}catch(ArrayIndexOutOfBoundsException e){
+			Log.e(TAG, "No Account found");
+			return;
+		}
+		final String email=account.name;
+		final String password=accountManager.getPassword(account);
+		final String url=accountManager.getUserData(account, "url");
 		Log.v(TAG, "sync lists");
 		List<List_mirakle> deleted = getDeletedLists();
 		if (deleted != null) {
@@ -386,7 +398,7 @@ public class ListsDataSource {
 	 * @param password
 	 * @param url
 	 */
-	protected void sync_list(List_mirakle list, String email, String password,
+	public void sync_list(List_mirakle list, String email, String password,
 			String url) {
 		List<BasicNameValuePair> data = new ArrayList<BasicNameValuePair>();
 		data.add(new BasicNameValuePair("list[name]", list.getName()));
@@ -408,7 +420,7 @@ public class ListsDataSource {
 	 * @param password
 	 * @param url
 	 */
-	protected void add_list(final List_mirakle list, final String email,
+	public void add_list(final List_mirakle list, final String email,
 			final String password, final String url) {
 		List<BasicNameValuePair> data = new ArrayList<BasicNameValuePair>();
 		data.add(new BasicNameValuePair("list[name]", list.getName()));

@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.http.message.BasicNameValuePair;
-
-import android.R.bool;
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -322,8 +322,18 @@ public class TasksDataSource {
 	 * @param password
 	 * @param url
 	 */
-	public void sync_tasks(final String email, final String password,
-			final String url) {
+	public void sync_tasks() {
+		AccountManager accountManager=AccountManager.get(context);
+		Account account;
+		try{
+			account=accountManager.getAccountsByType(Mirakel.ACCOUNT_TYP)[0];
+		}catch(ArrayIndexOutOfBoundsException e){
+			Log.e(TAG, "No Account found");
+			return;
+		}
+		final String email=account.name;
+		final String password=accountManager.getPassword(account);
+		final String url=accountManager.getUserData(account, "url");
 		Log.v(TAG, "sync tasks");
 		List<Task> deleted = getDeletedTasks();
 		if (deleted != null) {
@@ -362,8 +372,8 @@ public class TasksDataSource {
 				merge_with_server(tasks_server);
 				ContentValues values = new ContentValues();
 				values.put("sync_state", Mirakel.SYNC_STATE_NOTHING);
-				//database.update(Mirakel.TABLE_TASKS, values, "not sync_state="
-				//		+ Mirakel.SYNC_STATE_NOTHING, null);
+				database.update(Mirakel.TABLE_TASKS, values, "not sync_state="
+						+ Mirakel.SYNC_STATE_NOTHING, null);
 			}
 		}, email, password, Mirakel.Http_Mode.GET).execute(url
 				+ "/lists/all/tasks.json");
@@ -498,9 +508,30 @@ public class TasksDataSource {
 				+ ""));
 		data.add(new BasicNameValuePair("task[done]", task.isDone() + ""));
 		GregorianCalendar due = task.getDue();
-		data.add(new BasicNameValuePair("task[due]", new SimpleDateFormat(
-				"yyyy-MM-dd", Locale.getDefault()).format(due.getTime())));
+		data.add(new BasicNameValuePair("task[due]", due.before(new GregorianCalendar(1970,2,2))?"null":(new SimpleDateFormat(
+				"yyyy-MM-dd", Locale.getDefault()).format(due.getTime()))));
 		data.add(new BasicNameValuePair("task[content]", task.getContent()));
+		//List must exists before syncing task!!
+		ListsDataSource listDataSource =new ListsDataSource(context);
+		listDataSource.open();
+		//TODO remove dirty cast
+		List_mirakle list=listDataSource.getList((int)task.getListId());
+		list.setSync_state(Mirakel.SYNC_STATE_NOTHING);
+		listDataSource.saveList(list);
+		listDataSource.close();
+		
+		if(list.getSync_state()!=Mirakel.SYNC_STATE_NOTHING){
+			switch(list.getSync_state()){
+				case Mirakel.SYNC_STATE_ADD:
+					listDataSource.add_list(list, email, password, url);
+					break;
+				case Mirakel.SYNC_STATE_NEED_SYNC:
+					listDataSource.sync_list(list, email, password, url);
+					break;
+				default:
+					Log.v(TAG,"Not implementet");
+			}
+		}
 		new Network(new DataDownloadCommand() {
 			@Override
 			public void after_exec(String result) {
