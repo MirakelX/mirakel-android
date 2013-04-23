@@ -70,6 +70,7 @@ public class MainActivity extends FragmentActivity implements
 	public static String SHOW_TASK = "de.azapps.mirakel.SHOW_TASK";
 	public static String SHOW_LIST = "de.azapps.mirakel.SHOW_LIST";
 	public static String SHOW_LISTS = "de.azapps.mirakel.SHOW_LISTS";
+	public static String SHOW_LIST_FROM_WIDGET = "de.azapps.mirakel.SHOW_LIST_FROM_WIDGET";
 	private SharedPreferences preferences;
 
 	@Override
@@ -107,8 +108,15 @@ public class MainActivity extends FragmentActivity implements
 				setCurrentTask(task);
 				return;
 			}
-		} else if (intent.getAction() == SHOW_LIST) {
+		} else if (intent.getAction() == SHOW_LIST
+				|| intent.getAction() == SHOW_LIST_FROM_WIDGET) {
+			if (intent.hasExtra(EXTRA_ID))
+				Log.e("Blubb", "notempty");
+			else
+				Log.e("Blubb", "empty");
+
 			int listId = intent.getIntExtra(EXTRA_ID, 0);
+			Log.e("Blubb", "Receive: " + listId);
 			List_mirakle list = listDataSource.getList(listId);
 			setCurrentList(list);
 			return;
@@ -245,7 +253,7 @@ public class MainActivity extends FragmentActivity implements
 			alert.show();
 			return true;
 		case R.id.menu_new_list:
-			List_mirakle list=listDataSource.createList(this
+			List_mirakle list = listDataSource.createList(this
 					.getString(R.string.list_menu_new_list));
 			listFragment.update();
 			listFragment.editList(list);
