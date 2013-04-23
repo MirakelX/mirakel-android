@@ -120,7 +120,8 @@ public class NotificationService extends Service {
 				.setOngoing(persistent);
 
 		// Big View
-		if (preferences.getBoolean("notificationsBig", true)) {
+		if (preferences.getBoolean("notificationsBig", true)
+				&& todayTasks.size() > 1) {
 			NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 			for (Task task : todayTasks) {
 				inboxStyle.addLine(task.getName());

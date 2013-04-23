@@ -60,7 +60,7 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		Task task = tasks.get(position);
 		// Initialize the Remote View
 		RemoteViews rv = new RemoteViews(mContext.getPackageName(),
-				R.layout.row);
+				R.layout.widget_row);
 
 		// Set the Contents of the Row
 		rv.setTextViewText(R.id.tasks_row_name, task.getName());
