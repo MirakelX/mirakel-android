@@ -20,11 +20,13 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 public class NotificationService extends Service {
 	private SharedPreferences preferences;
 	private TasksDataSource taskDataSource;
 	private ListsDataSource listDataSource;
+	private boolean existsNotification = false;
 	public static NotificationService notificationService;
 
 	@Override
@@ -49,6 +51,10 @@ public class NotificationService extends Service {
 	 * Updates the Notification
 	 */
 	public void notifier() {
+		if (!preferences.getBoolean("notificationsUse", true)
+				&& !existsNotification) {
+			return;
+		}
 		int listId = Integer.parseInt(preferences.getString(
 				"notificationsList", "" + Mirakel.LIST_DAILY));
 		// Set onClick Intent
@@ -124,6 +130,11 @@ public class NotificationService extends Service {
 
 		NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		notificationManager.notify(0, noti.build());
+		if ((preferences.getBoolean("notificationsZeroHide", true) && todayTasks
+				.size() == 0)
+				|| !preferences.getBoolean("notificationsUse", true)) {
+			notificationManager.cancel(0);
+		}
 	}
 
 	/**
@@ -158,5 +169,4 @@ public class NotificationService extends Service {
 			NotificationService.notificationService.notifier();
 		}
 	}
-
 }

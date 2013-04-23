@@ -52,8 +52,6 @@ public class MainWidgetProvider extends AppWidgetProvider {
 			mainIntent.setAction(MainActivity.SHOW_LIST_FROM_WIDGET);
 			mainIntent.putExtra(MainActivity.EXTRA_ID, listId);
 
-			
-			Log.e("Blubb","Send: "+listId);
 			PendingIntent mainPendingIntent = PendingIntent.getActivity(
 					context, 0, mainIntent, 0);
 
