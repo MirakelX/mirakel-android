@@ -28,7 +28,7 @@ import android.os.IBinder;
  */
 public class AuthenticationService extends Service {
 
-    private static final String TAG = "AuthenticationService";
+    //private static final String TAG = "AuthenticationService";
 
     private Authenticator mAuthenticator;
 

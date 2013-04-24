@@ -16,7 +16,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 public class ListFragment extends Fragment {
-	private static final String TAG = "ListsActivity";
+	//private static final String TAG = "ListsActivity";
 	private ListAdapter adapter;
 	protected MainActivity main;
 	protected EditText input;
