@@ -296,30 +296,11 @@ public class TasksDataSource {
 		cursor.close();
 		return tasks;
 	}
-
-	/**
-	 * Get a List of all Tasks, which are marked as deleted (Sync issues)
-	 * 
-	 * @return
-	 */
-	public List<Task> getDeletedTasks() {
-		List<Task> tasks = new ArrayList<Task>();
-		Cursor c = database.query(Mirakel.TABLE_TASKS, allColumns, "sync_state="
-				+ Mirakel.SYNC_STATE_DELETE+" and list_id>0", null, null, null, null);
-		c.moveToFirst();
-		while (!c.isAfterLast()) {
-			tasks.add(cursorToTask(c));
-			c.moveToNext();
-		}
-		tasks = c.getCount() == 0 ? null : tasks;
-		c.close();
-		return tasks;
-	}
 	
-	public List<Task> getAddedTasks(){
+	public List<Task> getTasksBySyncState(short state){
 		List<Task> tasks_local = new ArrayList<Task>();
 		Cursor c = database.query(Mirakel.TABLE_TASKS, allColumns, "sync_state="
-				+ Mirakel.SYNC_STATE_ADD+" and list_id>0", null, null, null, null);
+				+ state+" and list_id>0", null, null, null, null);
 		c.moveToFirst();
 		while (!c.isAfterLast()) {
 			tasks_local.add(cursorToTask(c));
