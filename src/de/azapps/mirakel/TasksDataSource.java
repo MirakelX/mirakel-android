@@ -9,9 +9,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.http.message.BasicNameValuePair;
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -85,6 +82,8 @@ public class TasksDataSource {
 		values.put("due", (due == null ? "0" : due.toString()));
 		values.put("priority", priority);
 		values.put("sync_state", Mirakel.SYNC_STATE_ADD);
+		values.put("created_at", new SimpleDateFormat(context.getString(R.string.dateTimeFormat), Locale.US).format(new Date()));
+		values.put("updated_at", new SimpleDateFormat(context.getString(R.string.dateTimeFormat), Locale.US).format(new Date()));
 		long insertId = database.insert(Mirakel.TABLE_TASKS, null, values);
 		Cursor cursor = database.query(Mirakel.TABLE_TASKS, allColumns,
 				"_id = " + insertId, null, null, null, null);
@@ -100,12 +99,14 @@ public class TasksDataSource {
 	 * @param task
 	 */
 	public void saveTask(Task task) {
-		Log.v(TAG, "saveTask");
-		task.setSync_state(task.getSync_state() == Mirakel.SYNC_STATE_ADD ? Mirakel.SYNC_STATE_ADD
+		Log.v(TAG, "saveTask "+task.getId());
+		task.setSync_state(task.getSync_state() == Mirakel.SYNC_STATE_ADD||task.getSync_state()==Mirakel.SYNC_STATE_IS_SYNCED ?task.getSync_state() 
 				: Mirakel.SYNC_STATE_NEED_SYNC);
+		task.setUpdated_at(new SimpleDateFormat(context.getString(R.string.dateTimeFormat), Locale.getDefault()).format(new Date()));
 		ContentValues values = task.getContentValues();
 		database.update(Mirakel.TABLE_TASKS, values, "_id = " + task.getId(), null);
 	}
+	
 
 	/**
 	 * Delete a task
@@ -301,7 +302,7 @@ public class TasksDataSource {
 	 * 
 	 * @return
 	 */
-	protected List<Task> getDeletedTasks() {
+	public List<Task> getDeletedTasks() {
 		List<Task> tasks = new ArrayList<Task>();
 		Cursor c = database.query(Mirakel.TABLE_TASKS, allColumns, "sync_state="
 				+ Mirakel.SYNC_STATE_DELETE+" and list_id>0", null, null, null, null);
@@ -314,69 +315,17 @@ public class TasksDataSource {
 		c.close();
 		return tasks;
 	}
-
-	/**
-	 * Sync all tasks with the Server
-	 * 
-	 * @param email
-	 * @param password
-	 * @param url
-	 */
-	public void sync_tasks() {
-		AccountManager accountManager=AccountManager.get(context);
-		Account account;
-		try{
-			account=accountManager.getAccountsByType(Mirakel.ACCOUNT_TYP)[0];
-		}catch(ArrayIndexOutOfBoundsException e){
-			Log.e(TAG, "No Account found");
-			return;
+	
+	public List<Task> getAddedTasks(){
+		List<Task> tasks_local = new ArrayList<Task>();
+		Cursor c = database.query(Mirakel.TABLE_TASKS, allColumns, "sync_state="
+				+ Mirakel.SYNC_STATE_ADD+" and list_id>0", null, null, null, null);
+		c.moveToFirst();
+		while (!c.isAfterLast()) {
+			tasks_local.add(cursorToTask(c));
+			c.moveToNext();
 		}
-		final String email=account.name;
-		final String password=accountManager.getPassword(account);
-		final String url=accountManager.getUserData(account, "url");
-		Log.v(TAG, "sync tasks");
-		List<Task> deleted = getDeletedTasks();
-		if (deleted != null) {
-			for (int i = 0; i < deleted.size(); i++) {
-				delete_task(deleted.get(i), email, password, url);
-				deleted.get(i).setSync_state(Mirakel.SYNC_STATE_ADD);
-				deleteTask(deleted.get(i));
-			}
-		}
-		new Network(new DataDownloadCommand() {
-			@Override
-			public void after_exec(String result) {
-				List<Task> tasks_server = parse_json(result);
-
-				List<Task> tasks_local = new ArrayList<Task>();
-				Cursor c = database.query(Mirakel.TABLE_TASKS, allColumns, "not sync_state="
-						+ Mirakel.SYNC_STATE_DELETE+" and list_id>0", null, null, null, null);
-				c.moveToFirst();
-				while (!c.isAfterLast()) {
-					tasks_local.add(cursorToTask(c));
-					c.moveToNext();
-				}
-				for (int i = 0; i < tasks_local.size(); i++) {
-					Task task = tasks_local.get(i);
-					switch (task.getSync_state()) {
-					case Mirakel.SYNC_STATE_ADD:
-						add_task(task, email, password, url);
-						break;
-					case Mirakel.SYNC_STATE_NEED_SYNC:
-						sync_task(task, email, password, url);
-						break;
-					default:
-						break;
-					}
-				}
-				merge_with_server(tasks_server);
-				ContentValues values = new ContentValues();
-				values.put("sync_state", Mirakel.SYNC_STATE_NOTHING);
-				database.update(Mirakel.TABLE_TASKS, values, "not sync_state="
-						+ Mirakel.SYNC_STATE_NOTHING, null);
-			}
-		}, email, password, Mirakel.Http_Mode.GET).execute(url
-				+ "/lists/all/tasks.json");
+		return tasks_local;
 	}
 
 	/**
@@ -385,7 +334,7 @@ public class TasksDataSource {
 	 * @param result
 	 * @return
 	 */
-	protected List<Task> parse_json(String result) {
+	public List<Task> parse_json(String result) {
 		if (result.length() < 3)
 			return null;
 		List<Task> tasks = new ArrayList<Task>();
@@ -399,6 +348,7 @@ public class TasksDataSource {
 			String key = key_value[0];
 			if (key.equals("{\"content\"")) {
 				t = new Task();
+				t.setSync_state(Mirakel.SYNC_STATE_NOTHING);
 				if (key_value[1] != "null") {
 					t.setContent(key_value[1].substring(1,
 							key_value[1].length() - 1));
@@ -441,140 +391,5 @@ public class TasksDataSource {
 			}
 		}
 		return tasks;
-	}
-
-	/**
-	 * Delete a Task from the Server
-	 * 
-	 * @param task
-	 * @param email
-	 * @param password
-	 * @param url
-	 */
-	protected void delete_task(final Task task, final String email,
-			final String password, final String url) {
-		new Network(new DataDownloadCommand() {
-			@Override
-			public void after_exec(String result) {
-				// Do Nothing
-			}
-		}, email, password, Mirakel.Http_Mode.DELETE).execute(url + "/lists/"
-				+ task.getListId() + "/tasks/" + task.getId() + ".json");
-
-	}
-
-	/**
-	 * Sync a Task with the server
-	 * 
-	 * @param task
-	 * @param email
-	 * @param password
-	 * @param url
-	 */
-	protected void sync_task(Task task, String email, String password,
-			String url) {
-		List<BasicNameValuePair> data = new ArrayList<BasicNameValuePair>();
-		data.add(new BasicNameValuePair("task[name]", task.getName()));
-		data.add(new BasicNameValuePair("task[priority]", task.getPriority()
-				+ ""));
-		data.add(new BasicNameValuePair("task[done]", task.isDone() + ""));
-		GregorianCalendar due = task.getDue();
-		data.add(new BasicNameValuePair("task[due]", new SimpleDateFormat(
-				"yyyy-MM-dd", Locale.getDefault()).format(due.getTime())));
-		data.add(new BasicNameValuePair("task[content]", task.getContent()));
-		new Network(new DataDownloadCommand() {
-			@Override
-			public void after_exec(String result) {
-				// Do Nothing
-			}
-		}, email, password, Mirakel.Http_Mode.PUT, data).execute(url
-				+ "/lists/" + task.getListId() + "/tasks/" + task.getId()
-				+ ".json");
-	}
-
-	/**
-	 * Create a Task on the Server
-	 * 
-	 * @param task
-	 * @param email
-	 * @param password
-	 * @param url
-	 */
-	protected void add_task(final Task task, final String email,
-			final String password, final String url) {
-		List<BasicNameValuePair> data = new ArrayList<BasicNameValuePair>();
-		data.add(new BasicNameValuePair("task[name]", task.getName()));
-		data.add(new BasicNameValuePair("task[priority]", task.getPriority()
-				+ ""));
-		data.add(new BasicNameValuePair("task[done]", task.isDone() + ""));
-		GregorianCalendar due = task.getDue();
-		data.add(new BasicNameValuePair("task[due]", due.before(new GregorianCalendar(1970,2,2))?"null":(new SimpleDateFormat(
-				"yyyy-MM-dd", Locale.getDefault()).format(due.getTime()))));
-		data.add(new BasicNameValuePair("task[content]", task.getContent()));
-		//List must exists before syncing task!!
-		ListsDataSource listDataSource =new ListsDataSource(context);
-		listDataSource.open();
-		//TODO remove dirty cast
-		List_mirakle list=listDataSource.getList((int)task.getListId());
-		list.setSync_state(Mirakel.SYNC_STATE_NOTHING);
-		listDataSource.saveList(list);
-		listDataSource.close();
-		
-		if(list.getSync_state()!=Mirakel.SYNC_STATE_NOTHING){
-			switch(list.getSync_state()){
-				case Mirakel.SYNC_STATE_ADD:
-					listDataSource.add_list(list, email, password, url);
-					break;
-				case Mirakel.SYNC_STATE_NEED_SYNC:
-					listDataSource.sync_list(list, email, password, url);
-					break;
-				default:
-					Log.v(TAG,"Not implementet");
-			}
-		}
-		new Network(new DataDownloadCommand() {
-			@Override
-			public void after_exec(String result) {
-				try{
-					Task task = parse_json("[" + result + "]").get(0);
-					ContentValues values = new ContentValues();
-					values.put("_id", task.getId());
-					open();
-					database.update(Mirakel.TABLE_TASKS, values, "_id=" + task.getId(), null);
-				}catch(IndexOutOfBoundsException e){
-					Log.e(TAG, "ungültiger Respons" );
-				}
-			}
-		}, email, password, Mirakel.Http_Mode.POST, data).execute(url
-				+ "/lists/" + task.getListId() + "/tasks.json");
-
-	}
-
-	/**
-	 * Merge a Task with the Server
-	 * 
-	 * @param tasks_server
-	 */
-	protected void merge_with_server(List<Task> tasks_server) {
-		if (tasks_server == null)
-			return;
-		for (int i = 0; i < tasks_server.size(); i++) {
-			Task task = getTask(tasks_server.get(i).getId());
-			if (task == null) {
-				long id = database.insert(Mirakel.TABLE_TASKS, null, tasks_server.get(i)
-						.getContentValues());
-				ContentValues values = new ContentValues();
-				values.put("_id", tasks_server.get(i).getId());
-				open();
-				database.update(Mirakel.TABLE_TASKS, values, "_id=" + id, null);
-			} else {
-				if (task.getSync_state() == Mirakel.SYNC_STATE_NOTHING) {
-					saveTask(tasks_server.get(i));
-				} else {
-					Log.e(TAG, "Merging tasks not implementet");
-				}
-			}
-		}
-
 	}
 }

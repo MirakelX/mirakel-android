@@ -3,13 +3,12 @@
  */
 package de.azapps.mirakel;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
-import org.apache.http.message.BasicNameValuePair;
-
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -19,8 +18,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
-
-import com.google.gson.Gson;
 
 /**
  * @author weiznich
@@ -87,6 +84,8 @@ public class ListsDataSource {
 		values.put("name", name);
 		values.put("sort_by", sort_by);
 		values.put("sync_state", Mirakel.SYNC_STATE_ADD);
+		values.put("created_at", new SimpleDateFormat(context.getString(R.string.dateTimeFormat), Locale.US).format(new Date()));
+		values.put("updated_at", new SimpleDateFormat(context.getString(R.string.dateTimeFormat), Locale.US).format(new Date()));
 
 		long insertId = database.insert(Mirakel.TABLE_LISTS, null, values);
 
@@ -118,8 +117,9 @@ public class ListsDataSource {
 			editor.putInt("SortListWeekly", list.getSortBy());
 			break;
 		default:
-			list.setSync_state(list.getSync_state() == Mirakel.SYNC_STATE_ADD ? Mirakel.SYNC_STATE_ADD
+			list.setSync_state(list.getSync_state() == Mirakel.SYNC_STATE_ADD|| list.getSync_state()==Mirakel.SYNC_STATE_IS_SYNCED? list.getSync_state()
 					: Mirakel.SYNC_STATE_NEED_SYNC);
+			list.setUpdated_at(new SimpleDateFormat(context.getString(R.string.dateTimeFormat), Locale.getDefault()).format(new Date()));
 			ContentValues values = list.getContentValues();
 			database.update(Mirakel.TABLE_LISTS, values, "_id = " + list.getId(), null);
 		}
@@ -305,173 +305,6 @@ public class ListsDataSource {
 		lists = c.getCount() == 0 ? null : lists;
 		c.close();
 		return lists;
-
-	}
-
-	/**
-	 * Sync the lists with the Server TODO Parameter anpassen
-	 * 
-	 * @param email
-	 * @param password
-	 * @param url
-	 */
-	public void sync_lists() {
-		AccountManager accountManager=AccountManager.get(context);
-		Account account;
-		try{
-			account=accountManager.getAccountsByType(Mirakel.ACCOUNT_TYP)[0];
-		}catch(ArrayIndexOutOfBoundsException e){
-			Log.e(TAG, "No Account found");
-			return;
-		}
-		final String email=account.name;
-		final String password=accountManager.getPassword(account);
-		final String url=accountManager.getUserData(account, "url");
-		Log.v(TAG, "sync lists");
-		List<List_mirakle> deleted = getDeletedLists();
-		if (deleted != null) {
-			for (int i = 0; i < deleted.size(); i++) {
-				delete_list(deleted.get(i), email, password, url);
-				deleted.get(i).setSync_state(Mirakel.SYNC_STATE_ADD);
-				deleteList(deleted.get(i));
-			}
-		}
-		new Network(new DataDownloadCommand() {
-			@Override
-			public void after_exec(String result) {
-				List_mirakle lists_server[] = new Gson().fromJson(result,
-						List_mirakle[].class);
-				List<List_mirakle> lists_local = getAllLists();
-				for (List_mirakle list:lists_local) {
-					Log.e(TAG,"List: "+list.getName()+"  sync_state: "+list.getSync_state());
-					switch (list.getSync_state()) {
-					case Mirakel.SYNC_STATE_ADD:
-						add_list(list, email, password, url);
-						break;
-					case Mirakel.SYNC_STATE_NEED_SYNC:
-						sync_list(list, email, password, url);
-						break;
-					default:
-					}
-				}
-				merge_with_server(lists_server);
-				Log.v(TAG,"End Sync Lists");
-				TasksDataSource taskDataSource =new TasksDataSource(context);
-				taskDataSource.open();
-				//taskDataSource.sync_tasks(email, password, url);
-				taskDataSource.close();
-				ContentValues values = new ContentValues();
-				values.put("sync_state", Mirakel.SYNC_STATE_NOTHING);
-				//database.update(Mirakel.TABLE_LISTS, values, "not sync_state="
-				//		+ Mirakel.SYNC_STATE_NOTHING, null);
-
-			}
-		}, email, password, Mirakel.Http_Mode.GET).execute(url + "/lists.json");
-	}
-
-	/**
-	 * Delete a List from the Server
-	 * 
-	 * @param list
-	 * @param email
-	 * @param password
-	 * @param url
-	 */
-	protected void delete_list(final List_mirakle list, final String email,
-			final String password, final String url) {
-		new Network(new DataDownloadCommand() {
-			@Override
-			public void after_exec(String result) {
-				// Do Nothing
-
-			}
-		}, email, password, Mirakel.Http_Mode.DELETE).execute(url + "/lists/"
-				+ list.getId() + ".json");
-
-	}
-
-	/**
-	 * Sync one List with the Server
-	 * 
-	 * @param list
-	 * @param email
-	 * @param password
-	 * @param url
-	 */
-	public void sync_list(List_mirakle list, String email, String password,
-			String url) {
-		List<BasicNameValuePair> data = new ArrayList<BasicNameValuePair>();
-		data.add(new BasicNameValuePair("list[name]", list.getName()));
-		new Network(new DataDownloadCommand() {
-			@Override
-			public void after_exec(String result) {
-				// Do Nothing
-
-			}
-		}, email, password, Mirakel.Http_Mode.PUT, data).execute(url
-				+ "/lists/" + list.getId() + ".json");
-	}
-
-	/**
-	 * Create a List on the Server
-	 * 
-	 * @param list
-	 * @param email
-	 * @param password
-	 * @param url
-	 */
-	public void add_list(final List_mirakle list, final String email,
-			final String password, final String url) {
-		List<BasicNameValuePair> data = new ArrayList<BasicNameValuePair>();
-		data.add(new BasicNameValuePair("list[name]", list.getName()));
-		new Network(new DataDownloadCommand() {
-
-			@Override
-			public void after_exec(String result) {
-				List_mirakle list_response = new Gson().fromJson(result,
-						List_mirakle.class);
-				ContentValues values = new ContentValues();
-				values.put("_id", list_response.getId());
-				open();
-				/*
-				 * TODO Wenn ID bereits in DB, dann entsprechende Liste
-				 * verschieben
-				 */
-				database.update(Mirakel.TABLE_LISTS, values, "_id=" + list.getId(), null);
-				values = new ContentValues();
-				values.put("list_id", list_response.getId());
-				database.update(Mirakel.TABLE_TASKS, values, "list_id=" + list.getId(),
-						null);
-
-			}
-		}, email, password, Mirakel.Http_Mode.POST, data).execute(url
-				+ "/lists.json");
-
-	}
-
-	/**
-	 * Merge Lists
-	 * 
-	 * @param lists_server
-	 */
-	protected void merge_with_server(List_mirakle[] lists_server) {
-		for (int i = 0; i < lists_server.length; i++) {
-			List_mirakle list = getList(lists_server[i].getId());
-			if (list == null) {
-				long id = database.insert(Mirakel.TABLE_LISTS, null,
-						lists_server[i].getContentValues());
-				ContentValues values = new ContentValues();
-				values.put("_id", lists_server[i].getId());
-				open();
-				database.update(Mirakel.TABLE_LISTS, values, "_id=" + id, null);
-			} else {
-				if (list.getSync_state() == Mirakel.SYNC_STATE_NOTHING) {
-					saveList(lists_server[i]);
-				} else {
-					Log.e(TAG, "Merging lists not implementet");
-				}
-			}
-		}
 
 	}
 }
