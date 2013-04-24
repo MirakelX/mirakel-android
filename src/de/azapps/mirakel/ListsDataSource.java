@@ -288,23 +288,17 @@ public class ListsDataSource {
 		return list;
 	}
 
-	/**
-	 * Returns a List of all Lists, which are marked as deleted
-	 * 
-	 * @return List of Lists
-	 */
-	protected List<List_mirakle> getDeletedLists() {
+
+	public List<List_mirakle> getListsBySyncState(short state) {
 		List<List_mirakle> lists = new ArrayList<List_mirakle>();
 		Cursor c = database.query(Mirakel.TABLE_LISTS, allColumns, "sync_state="
-				+ Mirakel.SYNC_STATE_DELETE, null, null, null, null);
+				+ state, null, null, null, null);
 		c.moveToFirst();
 		while (!c.isAfterLast()) {
 			lists.add(cursorToList(c));
 			c.moveToNext();
 		}
-		lists = c.getCount() == 0 ? null : lists;
 		c.close();
 		return lists;
-
 	}
 }
