@@ -1,6 +1,7 @@
 package de.azapps.mirakel;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Locale;
@@ -157,8 +158,8 @@ public class Task {
 		cv.put("name", name);
 		cv.put("content", content);
 		cv.put("done", done);
-		cv.put("due",
-				new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(due.getTime()));
+		String due=(this.due.compareTo(new GregorianCalendar(1970, 2, 1))<0)?"null":new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date(this.due.getTimeInMillis()));
+		cv.put("due",due);
 		cv.put("priority", priority);
 		cv.put("created_at", created_at);
 		cv.put("updated_at", updated_at);
