@@ -425,6 +425,7 @@ public class MainActivity extends FragmentActivity implements
 			taskFragment.update();
 		}
 		tasksFragment.update();
+		listFragment.update();
 		NotificationService.updateNotificationAndWidget(this);
 	}
 
