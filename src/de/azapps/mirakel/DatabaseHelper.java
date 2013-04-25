@@ -35,7 +35,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ ")");
 		db.execSQL("CREATE TABLE "+Mirakel.TABLE_TASKS+" ("
 				+ "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
-				+ "list_id INTEGER REFERENCES lists (_id) ON DELETE CASCADE, "
+				+ "list_id INTEGER REFERENCES lists (_id) ON DELETE CASCADE ON UPDATE CASCADE, "
 				+ "name TEXT NOT NULL, " 
 				+ "content TEXT NOT NULL DEFAULT '', "
 				+ "done INTEGER NOT NULL DEFAULT 0, "
@@ -56,8 +56,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				"Upgrading database from version " + oldVersion + " to "
 						+ newVersion);
 		switch(oldVersion){
-			case 2://Nothing, Startversion
-			case 3:
+			case 1://Nothing, Startversion
+			case 2:
 				//Add sync-state
 				String update="Alter Table "+Mirakel.TABLE_TASKS+" add column sync_state INTEGER DEFAULT "+Mirakel.SYNC_STATE_ADD+";";
 				db.execSQL(update);
@@ -73,7 +73,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				
 				update="INSERT INTO settings (_id,server,user,password)VALUES ('0','localhost','','')";
 				db.execSQL(update);
-			case 4:
+			case 3:
 				//Add lft,rgt to lists
 				//Set due to null, instate of 1970 in Tasks
 				//Manage fromate of updated_at created_at in Tasks/Lists
@@ -96,9 +96,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				db.execSQL(update);
 				update="Drop TABLE IF EXISTS settings";
 				db.execSQL(update);
+				db.execSQL("PRAGMA writable_schema=ON;");
+				String c="CREATE TABLE tasks (_id INTEGER PRIMARY KEY AUTOINCREMENT, list_id INTEGER REFERENCES lists (_id) ON DELETE CASCADE ON UPDATE CASCADE, name TEXT NOT NULL, content TEXT, done INTEGER NOT NULL DEFAULT 0, priority INTEGER NOT NULL DEFAULT 0, due INTEGER, created_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, sync_state INTEGER DEFAULT 1)";
+				db.execSQL("Update sqlite_master set sql='"+c+"' where name='tasks'");
+				db.execSQL("PRAGMA writable_schema=OFF;");
 			//Next DB-Versions
+			//case 4:
 			//case 5:
-			//case 6:
 				
 		}
 		//db.execSQL("DROP TABLE IF EXISTS lists");
