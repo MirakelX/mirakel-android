@@ -111,13 +111,12 @@ public class TasksFragment extends Fragment {
 	}
 
 	private boolean newTask(String name) {
-
-		Log.v(TAG, "New Task");
-		long id = main.getCurrentList().getId();
-		Log.v(TAG, "Create in " + id);
 		InputMethodManager imm = (InputMethodManager) main
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(newTask.getWindowToken(), 0);
+		if (name.equals(""))
+			return true;
+		long id = main.getCurrentList().getId();
 		if (id <= 0) {
 			try {
 				id = main.getListDataSource().getFirstList().getId();

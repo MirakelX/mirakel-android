@@ -83,6 +83,12 @@
             android:key="notificationsPersistent"
             android:summary="@string/notifications_persistent_summary"
             android:title="@string/notifications_persistent" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:dependency="notificationsUse"
+            android:key="notificationsZeroHide"
+            android:summary="@string/notifications_zero_show_summary"
+            android:title="@string/notifications_zero_show" />
         
         <ListPreference
             android:defaultValue="-1"

@@ -6,5 +6,5 @@
     android:previewImage="@drawable/ic_launcher"
     android:initialLayout="@layout/widget_main" 
     android:resizeMode="horizontal|vertical"
-    android:widgetCategory="home_screen">
+    android:widgetCategory="home_screen|keyguard">
 </appwidget-provider>

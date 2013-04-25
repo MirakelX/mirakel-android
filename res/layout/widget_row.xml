@@ -36,7 +36,8 @@
                 android:layout_weight="1"
                 android:ellipsize="end"
                 android:textColor="@color/Grey"
-                android:textSize="12sp" >
+                android:textSize="12sp"
+                style="@style/WidgetDueText" >
             </TextView>
         </LinearLayout>
     </LinearLayout>

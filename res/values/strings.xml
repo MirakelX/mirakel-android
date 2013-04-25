@@ -102,9 +102,13 @@
 
     <!-- Notification -->
     <string name="notification_title_all">%1$d Tasks</string>
-    <string name="notification_title_daily">%d Tasks today</string>
+    <string name="notification_title_all_single">1 Task</string>
+    <string name="notification_title_daily">%1$d Tasks today</string>
+    <string name="notification_title_daily_single">1 Task today</string>
     <string name="notification_title_weekly">%d Tasks this Week</string>
+    <string name="notification_title_weekly_single">1 Task this Week</string>
     <string name="notification_title_general" formatted="false">%d Tasks in %s</string>
+    <string name="notification_title_general_single" formatted="false">1 Task in %s</string>
     <string name="notification_title_empty">Enjoy your day!</string>
     <string name="title_activity_splash_screen">SplashScreenActivity</string>
     <string name="hello_world">Hello world!</string>
