@@ -1,5 +1,6 @@
 package de.azapps.mirakel;
 
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import android.annotation.TargetApi;
@@ -119,7 +120,14 @@ public class TasksFragment extends Fragment {
 		if (name.equals(""))
 			return true;
 		long id = main.getCurrentList().getId();
+		GregorianCalendar due = null;
 		if (id <= 0) {
+			if (id == Mirakel.LIST_DAILY) {
+				due = new GregorianCalendar();
+			} else if (id == Mirakel.LIST_WEEKLY) {
+				due = new GregorianCalendar();
+				due.add(GregorianCalendar.DAY_OF_MONTH, 7);
+			}
 			try {
 				id = main.getListDataSource().getFirstList().getId();
 			} catch (NullPointerException e) {
@@ -129,6 +137,8 @@ public class TasksFragment extends Fragment {
 			}
 		}
 		Task task = main.getTaskDataSource().createTask(name, id);
+		if (due != null)
+			task.setDue(due);
 
 		adapter.addToHead(task);
 		main.getListFragment().update();
