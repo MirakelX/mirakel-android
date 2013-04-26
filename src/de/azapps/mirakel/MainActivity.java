@@ -356,7 +356,11 @@ public class MainActivity extends FragmentActivity implements
 
 		menu.clear();
 		MenuInflater inflater = getMenuInflater();
+
 		inflater.inflate(newmenu, menu);
+		if (position == 1 && currentList.getId() <= 0) {
+			menu.removeItem(R.id.list_delete);
+		}
 	}
 
 	@Override
