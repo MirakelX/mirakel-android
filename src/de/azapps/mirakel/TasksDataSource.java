@@ -340,12 +340,13 @@ public class TasksDataSource {
 			} else if (key.equals("\"due\"")) {
 				GregorianCalendar temp = new GregorianCalendar();
 				try {
-					temp.setTime(new SimpleDateFormat(context
-							.getString(R.string.dateFormat), Locale
+					temp.setTime(new SimpleDateFormat("yyyy-MM-dd", Locale
 							.getDefault()).parse(key_value[1].substring(1,
 							key_value[1].length() - 1)));
 				} catch (Exception e) {
 					temp.setTime(new Date(0));
+					Log.e(TAG,"Can not parse Date! "+(key_value[1].substring(1,
+							key_value[1].length() - 1)));
 				}
 				t.setDue(temp);
 			} else if (key.equals("\"id\"")) {
