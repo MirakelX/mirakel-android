@@ -229,19 +229,6 @@ public class TasksFragment extends Fragment {
 				main.setCurrentTask(t);
 			}
 		});
-		switch (main.getCurrentList().getId()) {
-		case Mirakel.LIST_ALL:
-			main.setTitle(this.getString(R.string.list_all));
-			break;
-		case Mirakel.LIST_DAILY:
-			main.setTitle(this.getString(R.string.list_today));
-			break;
-		case Mirakel.LIST_WEEKLY:
-			main.setTitle(this.getString(R.string.list_week));
-			break;
-		default:
-			main.setTitle(main.getCurrentList().getName());
-		}
 	}
 
 	/**
