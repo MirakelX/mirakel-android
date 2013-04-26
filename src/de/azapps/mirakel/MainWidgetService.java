@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -77,15 +78,38 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		rv.setInt(R.id.tasks_row_priority, "setBackgroundColor",
 				Mirakel.PRIO_COLOR[task.getPriority() + 2]);
 
-		rv.setTextViewText(
-				R.id.tasks_row_due,
-				MirakelHelper.formatDate(task.getDue(),
-						mContext.getString(R.string.dateFormat)));
-		rv.setTextColor(
-				R.id.tasks_row_due,
-				mContext.getResources().getColor(
-						MirakelHelper.getTaskDueColor(task.getDue(),
-								task.isDone())));
+		if (listId <= 0) {
+			rv.setViewVisibility(R.id.tasks_row_list_name, View.VISIBLE);
+			ListsDataSource listsDataSource = new ListsDataSource(mContext);
+			rv.setTextViewText(R.id.tasks_row_list_name, listsDataSource
+					.getList((int) task.getListId()).getName());
+		} else {
+			rv.setViewVisibility(R.id.tasks_row_list_name, View.GONE);
+		}
+
+		String due = MirakelHelper.formatDate(task.getDue(),
+				mContext.getString(R.string.dateFormat));
+		if (due != "") {
+			rv.setViewVisibility(R.id.tasks_row_due, View.VISIBLE);
+			rv.setTextViewText(
+					R.id.tasks_row_due,
+					MirakelHelper.formatDate(task.getDue(),
+							mContext.getString(R.string.dateFormat)));
+			rv.setTextColor(
+					R.id.tasks_row_due,
+					mContext.getResources().getColor(
+							MirakelHelper.getTaskDueColor(task.getDue(),
+									task.isDone())));
+		} else {
+			rv.setViewVisibility(R.id.tasks_row_due, View.GONE);
+		}
+
+		if (task.getContent().length() != 0 ) {
+			rv.setViewVisibility(R.id.tasks_row_has_content, View.VISIBLE);
+		} else {
+			rv.setViewVisibility(R.id.tasks_row_has_content, View.GONE);
+		}
+
 		// rv.setBoolean(R.id.tasks_row_done, "setChecked", true);
 		/*
 		 * holder.taskRowDone.setChecked(task.isDone());
