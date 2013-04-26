@@ -214,7 +214,7 @@ public class TaskFragment extends Fragment {
 									Log.v(TAG, "cancel");
 									task.setDue(new GregorianCalendar(0, 1, 1));
 									main.saveTask(task);
-									Task_due.setText(R.string.task_no_due);
+									Task_due.setText(R.string.no_date);
 								}
 							}
 						});

@@ -37,7 +37,6 @@
     <string name="task_delete_title">Aufgabe löschen?</string>
     <string name="task_menu_sorting">Sortiere Aufgaben</string>
     <string name="task_sorting_title">Sortiere nach</string>
-    <string name="task_no_due">Wähle einen Termin</string>
     <string name="task_save_content">Speichern</string>
     <string-array name="task_sorting_items">
         <item>Standard</item>
