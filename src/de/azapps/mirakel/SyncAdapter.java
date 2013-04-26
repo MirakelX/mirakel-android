@@ -261,7 +261,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 								c.moveToNext();
 							}*/
 							c.close();
-							c= Mirakel.getWritableDatabase().rawQuery("Select _id from "+Mirakel.TABLE_LISTS+" WHERE sync_state="
+							c= Mirakel.getReadableDatabase().rawQuery("Select _id from "+Mirakel.TABLE_LISTS+" WHERE sync_state="
 											+ Mirakel.SYNC_STATE_ADD
 											+ " and _id>" + list.getId(),null);
 							c.moveToLast();
@@ -335,7 +335,31 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						Log.e(TAG, "Unabel to parse Dates");
 						e.printStackTrace();
 					}
-				} else {
+				}else if(list.getSync_state()==Mirakel.SYNC_STATE_ADD){
+					Cursor c=Mirakel.getReadableDatabase().rawQuery("Select max(_id) from "+Mirakel.TABLE_LISTS+" where not sync_state="+Mirakel.SYNC_STATE_ADD,null);
+					c.moveToFirst();
+					if(c.getCount()!=0)
+					{	
+						int diff=c.getInt(0)-list.getId()<0?1:c.getInt(0)-list.getId();
+						c.close();
+						c= Mirakel.getReadableDatabase().rawQuery("Select _id from "+Mirakel.TABLE_LISTS+" WHERE sync_state="
+									+ Mirakel.SYNC_STATE_ADD
+									+ " and _id>=" + list.getId(),null);
+						c.moveToLast();
+						while (!c.isBeforeFirst()) {
+							Log.e(TAG,""+c.getInt(0)+"      |      diff: "+diff);
+							Mirakel.getWritableDatabase().execSQL(
+									"UPDATE " + Mirakel.TABLE_LISTS
+											+ " SET _id=_id+" + diff
+											+ " WHERE sync_state="
+											+ Mirakel.SYNC_STATE_ADD
+											+ " and _id=" + c.getInt(0));
+							c.moveToPrevious();
+						}
+						c.close();
+						listDataSource.saveList(list_server);
+					}
+				}else {
 					Log.wtf(TAG, "Syncronisation Error, Listmerge");
 				}
 			}
@@ -486,6 +510,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	protected void merge_with_server(List<Task> tasks_server) {
 		if (tasks_server == null)
 			return;
+		//TODO FIX Delete Tasks
 		for (Task task_server : tasks_server) {
 			Task task = taskDataSource.getTask(task_server.getId());
 			if (task == null) {
@@ -530,7 +555,30 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						Log.e(TAG, "Unabel to parse Dates");
 						e.printStackTrace();
 					}
-				} else {
+				} else if(task.getSync_state()==Mirakel.SYNC_STATE_ADD){
+					Cursor c=Mirakel.getReadableDatabase().rawQuery("Select max(_id) from "+Mirakel.TABLE_TASKS+" where not sync_state="+Mirakel.SYNC_STATE_ADD,null);
+					c.moveToFirst();
+					if(c.getCount()!=0)
+					{	
+						long diff=c.getInt(0)-task.getId()<0?1:c.getInt(0)-task.getId();
+						c.close();
+						c= Mirakel.getReadableDatabase().rawQuery("Select _id from "+Mirakel.TABLE_TASKS+" WHERE sync_state="
+									+ Mirakel.SYNC_STATE_ADD
+									+ " and _id>=" + task.getId(),null);
+						c.moveToLast();
+						while (!c.isBeforeFirst()) {
+							Mirakel.getWritableDatabase().execSQL(
+									"UPDATE " + Mirakel.TABLE_TASKS
+											+ " SET _id=_id+" + diff
+											+ " WHERE sync_state="
+											+ Mirakel.SYNC_STATE_ADD
+											+ " and _id=" + c.getInt(0));
+							c.moveToPrevious();
+						}
+						c.close();
+						taskDataSource.saveTask(task_server);
+					}
+				}else {
 					//TODO add ADD, sonst wtf
 					Log.wtf(TAG, "Syncronisation Error, Taskmerge");
 				}
