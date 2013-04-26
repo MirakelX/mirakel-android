@@ -131,9 +131,9 @@ public class TasksFragment extends Fragment {
 			try {
 				id = main.getListDataSource().getFirstList().getId();
 			} catch (NullPointerException e) {
+				id = 0;
 				Toast.makeText(main, R.string.no_lists, Toast.LENGTH_LONG)
 						.show();
-				return false;
 			}
 		}
 		Task task = main.getTaskDataSource().createTask(name, id);
