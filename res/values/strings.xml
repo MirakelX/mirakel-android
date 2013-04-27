@@ -18,6 +18,7 @@
     <string name="Password">Password</string>
     <string name="Server">Server</string>
     <string name="NoNetwork">No Network Connection available.</string>
+    <string name="action_sync_now">Sync Now</string>
 
     
     <!-- Example Data -->

@@ -13,9 +13,14 @@
     </item>
     <item
         android:id="@+id/task_sorting"
-        android:title="@string/task_menu_sorting"
         android:icon="@android:drawable/ic_menu_sort_alphabetically"
-        android:showAsAction="ifRoom|withText">
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/task_menu_sorting">
     </item>
+    <item
+        android:id="@+id/menu_sync_now_tasks"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/action_sync_now"/>
 
 </menu>

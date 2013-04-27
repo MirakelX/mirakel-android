@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -255,6 +258,18 @@ public class MainActivity extends FragmentActivity implements
 					SettingsActivity.class);
 			startActivity(intent);
 			break;
+		case R.id.menu_sync_now_list:
+		case R.id.menu_sync_now_task:
+		case R.id.menu_sync_now_tasks:
+			try{
+				AccountManager am=AccountManager.get(this);
+				Account account=am.getAccountsByType(Mirakel.ACCOUNT_TYP)[0];
+				//Should start Sync
+				ContentResolver.requestSync(account, Mirakel.AUTHORITY_TYP, null);
+			}catch (Exception e) {
+				// TODO: handle exception
+				Log.e(TAG,"No Account founded");
+			}
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -499,5 +514,6 @@ public class MainActivity extends FragmentActivity implements
 		listFragment.setActivity(this);
 		tasksFragment.setActivity(this);
 	}
+	
 
 }
