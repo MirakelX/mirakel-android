@@ -47,7 +47,7 @@ public class Task {
 		this.setName(ctx.getString(R.string.task_empty));
 		this.setContent("");
 		this.setDone(false);
-		this.setDue(new GregorianCalendar(1970, 1, 1));
+		this.setDue(new GregorianCalendar(1970, GregorianCalendar.JANUARY, 1));
 		this.setPriority(0);
 		this.setCreated_at(null);
 		this.setUpdated_at(null);

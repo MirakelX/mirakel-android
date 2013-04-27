@@ -1,5 +1,6 @@
 package de.azapps.mirakel;
 
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -117,16 +118,25 @@ public class TasksFragment extends Fragment {
 		if (name.equals(""))
 			return true;
 		long id = main.getCurrentList().getId();
+		GregorianCalendar due = null;
 		if (id <= 0) {
+			if (id == Mirakel.LIST_DAILY) {
+				due = new GregorianCalendar();
+			} else if (id == Mirakel.LIST_WEEKLY) {
+				due = new GregorianCalendar();
+				due.add(GregorianCalendar.DAY_OF_MONTH, 7);
+			}
 			try {
 				id = main.getListDataSource().getFirstList().getId();
 			} catch (NullPointerException e) {
+				id = 0;
 				Toast.makeText(main, R.string.no_lists, Toast.LENGTH_LONG)
 						.show();
-				return false;
 			}
 		}
 		Task task = main.getTaskDataSource().createTask(name, id);
+		if (due != null)
+			task.setDue(due);
 
 		adapter.addToHead(task);
 		main.getListFragment().update();
@@ -217,19 +227,6 @@ public class TasksFragment extends Fragment {
 				main.setCurrentTask(t);
 			}
 		});
-		switch (main.getCurrentList().getId()) {
-		case Mirakel.LIST_ALL:
-			main.setTitle(this.getString(R.string.list_all));
-			break;
-		case Mirakel.LIST_DAILY:
-			main.setTitle(this.getString(R.string.list_today));
-			break;
-		case Mirakel.LIST_WEEKLY:
-			main.setTitle(this.getString(R.string.list_week));
-			break;
-		default:
-			main.setTitle(main.getCurrentList().getName());
-		}
 	}
 
 	/**
