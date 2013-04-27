@@ -17,7 +17,7 @@ public class MirakelHelper {
 	 *            Format–String (like dd.MM.YY)
 	 * @return The formatted Date as String
 	 */
-	static String formatDate(GregorianCalendar date, String format) {
+	public static String formatDate(GregorianCalendar date, String format) {
 		if (date.compareTo(new GregorianCalendar(1970, 1, 1)) < 0)
 			return "";
 		else {
@@ -35,7 +35,7 @@ public class MirakelHelper {
 	 *            Is the Task done?
 	 * @return ID of the Color–Resource
 	 */
-	static int getTaskDueColor(GregorianCalendar origDue, boolean isDone) {
+	public static int getTaskDueColor(GregorianCalendar origDue, boolean isDone) {
 		LocalDate today = new LocalDate();
 		LocalDate nextWeek = new LocalDate().plusDays(7);
 		LocalDate due = new LocalDate(origDue);

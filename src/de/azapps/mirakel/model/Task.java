@@ -1,4 +1,4 @@
-package de.azapps.mirakel;
+package de.azapps.mirakel.model;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -9,6 +9,7 @@ import java.util.Map;
 
 import android.content.ContentValues;
 import android.content.Context;
+import de.azapps.mirakel.R;
 
 public class Task {
 	private long id;

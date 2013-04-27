@@ -1,4 +1,4 @@
-package de.azapps.mirakel;
+package de.azapps.mirakel.static_activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,6 +8,8 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import de.azapps.mirakel.R;
+import de.azapps.mirakel.main_activity.MainActivity;
 
 public class HelpActivity extends Activity {
 

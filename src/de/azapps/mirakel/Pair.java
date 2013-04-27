@@ -20,7 +20,7 @@ public class Pair<F,S> {
 	  public boolean equals(Object o) {
 	    if (o == null) return false;
 	    if (!(o instanceof Pair)) return false;
-	    Pair pairo = (Pair) o;
+	    Pair<F,S> pairo = (Pair) o;
 	    return this.left.equals(pairo.getLeft()) &&
 	           this.right.equals(pairo.getRight());
 	  }

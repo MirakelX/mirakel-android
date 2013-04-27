@@ -1,16 +1,19 @@
-package de.azapps.mirakel;
+package de.azapps.mirakel.widget;
 
 import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
+import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.MirakelHelper;
+import de.azapps.mirakel.R;
+import de.azapps.mirakel.model.ListsDataSource;
+import de.azapps.mirakel.model.Task;
+import de.azapps.mirakel.model.TasksDataSource;
 
 public class MainWidgetService extends RemoteViewsService {
 

@@ -1,4 +1,4 @@
-package de.azapps.mirakel;
+package de.azapps.mirakel.model;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,6 +15,8 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.R;
 
 public class TasksDataSource {
 	private static final String TAG = "TasksDataSource";

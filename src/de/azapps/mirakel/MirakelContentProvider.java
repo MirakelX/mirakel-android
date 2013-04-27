@@ -9,6 +9,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.util.Log;
+import de.azapps.mirakel.model.DatabaseHelper;
+import de.azapps.mirakel.model.List_mirakle;
+import de.azapps.mirakel.model.ListsDataSource;
+import de.azapps.mirakel.model.Task;
+import de.azapps.mirakel.model.TasksDataSource;
 
 public class MirakelContentProvider extends ContentProvider {
 	// public static final String PROVIDER_NAME = Mirakel.AUTHORITY_TYP;

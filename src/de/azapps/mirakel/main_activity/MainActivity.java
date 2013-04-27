@@ -1,10 +1,8 @@
-package de.azapps.mirakel;
+package de.azapps.mirakel.main_activity;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
-
-import de.azapps.mirakel.services.NotificationService;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -26,6 +24,15 @@ import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
+import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.PagerAdapter;
+import de.azapps.mirakel.R;
+import de.azapps.mirakel.model.List_mirakle;
+import de.azapps.mirakel.model.ListsDataSource;
+import de.azapps.mirakel.model.Task;
+import de.azapps.mirakel.model.TasksDataSource;
+import de.azapps.mirakel.services.NotificationService;
+import de.azapps.mirakel.static_activities.SettingsActivity;
 
 /**
  * @see "https://thepseudocoder.wordpress.com/2011/10/13/android-tabs-viewpager-swipe-able-tabs-ftw/"

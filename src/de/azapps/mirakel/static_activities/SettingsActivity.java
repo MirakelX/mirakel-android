@@ -1,4 +1,4 @@
-package de.azapps.mirakel;
+package de.azapps.mirakel.static_activities;
 
 import android.app.Activity;
 import android.os.Bundle;

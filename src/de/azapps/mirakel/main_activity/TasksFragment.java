@@ -1,4 +1,4 @@
-package de.azapps.mirakel;
+package de.azapps.mirakel.main_activity;
 
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -30,6 +30,9 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
+import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.R;
+import de.azapps.mirakel.model.Task;
 
 public class TasksFragment extends Fragment {
 	private static final String TAG = "TasksActivity";

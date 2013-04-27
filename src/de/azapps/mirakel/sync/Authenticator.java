@@ -14,7 +14,7 @@
  * the License.
  */
 
-package de.azapps.mirakel;//com.example.android.samplesync.authenticator;
+package de.azapps.mirakel.sync;//com.example.android.samplesync.authenticator;
 
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;
@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import de.azapps.mirakel.Mirakel;
 
 /**
  * This class is an implementation of AbstractAccountAuthenticator for

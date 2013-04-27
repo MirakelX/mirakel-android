@@ -1,4 +1,4 @@
-package de.azapps.mirakel;
+package de.azapps.mirakel.sync;
 
 import java.io.IOException;
 import java.net.URI;
@@ -24,6 +24,7 @@ import org.apache.http.util.EntityUtils;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import de.azapps.mirakel.Mirakel;
 
 public class Network extends AsyncTask<String, String, String> {
 	private String TAG="GetData";

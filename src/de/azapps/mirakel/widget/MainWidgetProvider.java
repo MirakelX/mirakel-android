@@ -1,4 +1,4 @@
-package de.azapps.mirakel;
+package de.azapps.mirakel.widget;
 
 import java.util.Random;
 
@@ -11,6 +11,10 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.widget.RemoteViews;
+import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.R;
+import de.azapps.mirakel.main_activity.MainActivity;
+import de.azapps.mirakel.model.ListsDataSource;
 
 public class MainWidgetProvider extends AppWidgetProvider {
 	public static String EXTRA_LISTID = "de.azapps.mirakel.EXTRA_LISTID";

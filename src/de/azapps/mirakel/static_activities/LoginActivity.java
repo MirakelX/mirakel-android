@@ -1,4 +1,4 @@
-package de.azapps.mirakel;
+package de.azapps.mirakel.static_activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -18,6 +18,11 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
+import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.R;
+import de.azapps.mirakel.main_activity.MainActivity;
+import de.azapps.mirakel.sync.DataDownloadCommand;
+import de.azapps.mirakel.sync.Network;
 
 /**
  * Activity which displays a login screen to the user, offering registration as

@@ -16,7 +16,7 @@
  * Modified by weiznich 2013
  */
 
-package de.azapps.mirakel;
+package de.azapps.mirakel.sync;
 
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
@@ -38,6 +38,8 @@ import android.view.Window;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.R;
 
 /**
  * Activity which displays login screen to the user.

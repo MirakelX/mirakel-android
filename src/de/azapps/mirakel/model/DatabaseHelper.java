@@ -1,4 +1,4 @@
-package de.azapps.mirakel;
+package de.azapps.mirakel.model;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -8,6 +8,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.R;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 

@@ -1,10 +1,11 @@
-package de.azapps.mirakel;
+package de.azapps.mirakel.widget;
 
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import de.azapps.mirakel.Mirakel;
 
 public class MainWidgetSettingsActivity extends Activity {
 

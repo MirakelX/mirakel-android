@@ -2,14 +2,6 @@ package de.azapps.mirakel.services;
 
 import java.util.List;
 
-import de.azapps.mirakel.List_mirakle;
-import de.azapps.mirakel.ListsDataSource;
-import de.azapps.mirakel.MainActivity;
-import de.azapps.mirakel.MainWidgetProvider;
-import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.R;
-import de.azapps.mirakel.Task;
-import de.azapps.mirakel.TasksDataSource;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -20,7 +12,14 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
+import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.R;
+import de.azapps.mirakel.main_activity.MainActivity;
+import de.azapps.mirakel.model.List_mirakle;
+import de.azapps.mirakel.model.ListsDataSource;
+import de.azapps.mirakel.model.Task;
+import de.azapps.mirakel.model.TasksDataSource;
+import de.azapps.mirakel.widget.MainWidgetProvider;
 
 public class NotificationService extends Service {
 	private SharedPreferences preferences;

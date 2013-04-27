@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
 import android.util.Log;
+import de.azapps.mirakel.model.DatabaseHelper;
 
 public class Mirakel extends Application {
 	public static final int LIST_ALL = 0;

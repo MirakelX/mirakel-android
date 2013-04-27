@@ -15,7 +15,7 @@
  * 
  * Modified by weiznich 2013
  */
-package de.azapps.mirakel;
+package de.azapps.mirakel.sync;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -27,7 +27,6 @@ import java.util.Locale;
 
 import org.apache.http.message.BasicNameValuePair;
 
-import android.R.bool;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.AbstractThreadedSyncAdapter;
@@ -40,6 +39,14 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.google.gson.Gson;
+
+import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.Pair;
+import de.azapps.mirakel.R;
+import de.azapps.mirakel.model.List_mirakle;
+import de.azapps.mirakel.model.ListsDataSource;
+import de.azapps.mirakel.model.Task;
+import de.azapps.mirakel.model.TasksDataSource;
 
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
 

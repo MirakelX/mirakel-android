@@ -1,4 +1,4 @@
-package de.azapps.mirakel;
+package de.azapps.mirakel.static_activities;
 
 import java.util.List;
 
@@ -14,6 +14,12 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceFragment;
 import android.util.Log;
+import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.R;
+import de.azapps.mirakel.main_activity.MainActivity;
+import de.azapps.mirakel.model.List_mirakle;
+import de.azapps.mirakel.model.ListsDataSource;
+import de.azapps.mirakel.sync.AuthenticatorActivity;
 
 public class SettingsFragment extends PreferenceFragment {
 	private static final String TAG="SettingsFragment";

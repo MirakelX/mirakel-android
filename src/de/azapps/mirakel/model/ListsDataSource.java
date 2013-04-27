@@ -1,7 +1,7 @@
 /**
  * 
  */
-package de.azapps.mirakel;
+package de.azapps.mirakel.model;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,6 +18,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
+import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.R;
 
 /**
  * @author weiznich

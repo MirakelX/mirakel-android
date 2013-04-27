@@ -1,4 +1,4 @@
-package de.azapps.mirakel;
+package de.azapps.mirakel.main_activity;
 
 import java.util.List;
 
@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import de.azapps.mirakel.R;
+import de.azapps.mirakel.model.List_mirakle;
 
 public class ListFragment extends Fragment {
 	//private static final String TAG = "ListsActivity";

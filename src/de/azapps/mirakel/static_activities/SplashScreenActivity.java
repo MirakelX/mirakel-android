@@ -1,12 +1,15 @@
-package de.azapps.mirakel;
+package de.azapps.mirakel.static_activities;
 
-import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.Window;
+import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.R;
+import de.azapps.mirakel.main_activity.MainActivity;
 
 public class SplashScreenActivity extends Activity {
 

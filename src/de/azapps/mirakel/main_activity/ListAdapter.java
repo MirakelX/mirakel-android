@@ -1,4 +1,4 @@
-package de.azapps.mirakel;
+package de.azapps.mirakel.main_activity;
 
 import java.util.List;
 
@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import de.azapps.mirakel.R;
+import de.azapps.mirakel.model.List_mirakle;
 
 public class ListAdapter extends ArrayAdapter<List_mirakle> {
 	Context context;

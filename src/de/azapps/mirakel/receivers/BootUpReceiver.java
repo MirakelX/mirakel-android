@@ -1,9 +1,9 @@
 package de.azapps.mirakel.receivers;
 
-import de.azapps.mirakel.services.NotificationService;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import de.azapps.mirakel.services.NotificationService;
 
 public class BootUpReceiver extends BroadcastReceiver {
 

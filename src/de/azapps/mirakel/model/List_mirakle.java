@@ -1,7 +1,7 @@
 /**
  * 
  */
-package de.azapps.mirakel;
+package de.azapps.mirakel.model;
 
 import android.content.ContentValues;
 

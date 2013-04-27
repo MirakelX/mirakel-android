@@ -1,4 +1,4 @@
-package de.azapps.mirakel;
+package de.azapps.mirakel.main_activity;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -31,6 +31,10 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.ViewSwitcher;
+import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.MirakelHelper;
+import de.azapps.mirakel.R;
+import de.azapps.mirakel.model.Task;
 
 public class TaskFragment extends Fragment {
 	private View view;

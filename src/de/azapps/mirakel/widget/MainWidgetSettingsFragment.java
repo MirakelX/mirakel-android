@@ -1,10 +1,13 @@
-package de.azapps.mirakel;
+package de.azapps.mirakel.widget;
 
 import java.util.List;
 
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
+import de.azapps.mirakel.R;
+import de.azapps.mirakel.model.List_mirakle;
+import de.azapps.mirakel.model.ListsDataSource;
 
 public class MainWidgetSettingsFragment  extends PreferenceFragment {
 

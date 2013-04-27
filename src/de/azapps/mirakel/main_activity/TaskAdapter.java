@@ -1,4 +1,4 @@
-package de.azapps.mirakel;
+package de.azapps.mirakel.main_activity;
 
 import java.util.List;
 
@@ -12,6 +12,11 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.MirakelHelper;
+import de.azapps.mirakel.R;
+import de.azapps.mirakel.model.ListsDataSource;
+import de.azapps.mirakel.model.Task;
 
 public class TaskAdapter extends ArrayAdapter<Task> {
 	Context context;
