@@ -80,10 +80,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				//Set due to null, instate of 1970 in Tasks
 				//Manage fromate of updated_at created_at in Tasks/Lists
 				//drop settingssettings
-				//update="Alter Table "+Mirakel.TABLE_LISTS+" add column lft INTEGER;";
-				//db.execSQL(update);
-				//update="Alter Table "+Mirakel.TABLE_LISTS+" add column rgt INTEGER;";
-				//db.execSQL(update);
 				
 				update="UPDATE "+Mirakel.TABLE_TASKS+" set due='null' where due='1970-01-01'";
 				db.execSQL(update);
@@ -99,11 +95,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				update="Drop TABLE IF EXISTS settings";
 				db.execSQL(update);
 				db.execSQL("PRAGMA writable_schema=ON;");
-				String c="CREATE TABLE tasks (_id INTEGER PRIMARY KEY AUTOINCREMENT, list_id INTEGER REFERENCES lists (_id) ON DELETE CASCADE ON UPDATE CASCADE, name TEXT NOT NULL, content TEXT, done INTEGER NOT NULL DEFAULT 0, priority INTEGER NOT NULL DEFAULT 0, due INTEGER, created_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, sync_state INTEGER DEFAULT 1)";
+				String c="CREATE TABLE tasks (" +
+						"_id INTEGER PRIMARY KEY AUTOINCREMENT" +
+						", list_id INTEGER REFERENCES lists (_id) ON DELETE CASCADE ON UPDATE CASCADE" +
+						", name TEXT NOT NULL, content TEXT" +
+						", done INTEGER NOT NULL DEFAULT 0" +
+						", priority INTEGER NOT NULL DEFAULT 0" +
+						", due INTEGER" +
+						", created_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP" +
+						", updated_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP" +
+						", sync_state INTEGER DEFAULT 1)";
 				db.execSQL("Update sqlite_master set sql='"+c+"' where name='tasks'");
 				db.execSQL("PRAGMA writable_schema=OFF;");
-			//Next DB-Versions
-			//case 4:
+			case 4:
+				db.execSQL("UPDATE "+Mirakel.TABLE_TASKS+" set due=null where due='null'"); //Outch!
+				update="Alter Table "+Mirakel.TABLE_LISTS+" add column lft INTEGER;";
+				db.execSQL(update);
+				update="Alter Table "+Mirakel.TABLE_LISTS+" add column rgt INTEGER;";
+				db.execSQL(update);
+				//Next DB-Versions
 			//case 5:
 				
 		}

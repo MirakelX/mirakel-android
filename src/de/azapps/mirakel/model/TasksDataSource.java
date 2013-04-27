@@ -171,6 +171,8 @@ public class TasksDataSource {
 					.parse(cursor.getString(5)));
 		} catch (ParseException e) {
 			t.setTime(new Date(0));
+		} catch(NullPointerException e){
+			t.setTime(new Date(0));
 		}
 
 		Task task = new Task(cursor.getLong(i++), cursor.getLong(i++),
@@ -214,7 +216,7 @@ public class TasksDataSource {
 		case Mirakel.SORT_BY_OPT:
 			order = ", priority DESC";
 		case Mirakel.SORT_BY_DUE:
-			order = " CASE WHEN (due='' OR due=0 OR due IS NULL OR date(due) <= date('1970-01-01') OR due='1970-1-1') THEN date('now','+1000 years') ELSE date(due) END ASC"
+			order = " CASE WHEN (due IS NULL) THEN date('now','+1000 years') ELSE date(due) END ASC"
 					+ order;
 			break;
 		default:
