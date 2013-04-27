@@ -156,6 +156,20 @@ public class TasksDataSource {
 		}
 		return null;
 	}
+	
+	public Task getTaskToSync(long id) {
+		open();
+		Cursor cursor = database.query(Mirakel.TABLE_TASKS, allColumns, "_id='" + id
+				+ "'", null,
+				null, null, null);
+		cursor.moveToFirst();
+		if (cursor.getCount() != 0) {
+			Task t = cursorToTask(cursor);
+			cursor.close();
+			return t;
+		}
+		return null;
+	}
 
 	/**
 	 * Create a task from a Cursor

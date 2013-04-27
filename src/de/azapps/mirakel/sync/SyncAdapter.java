@@ -524,7 +524,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			return;
 		//TODO FIX Delete Tasks
 		for (Task task_server : tasks_server) {
-			Task task = taskDataSource.getTask(task_server.getId());
+			Task task = taskDataSource.getTaskToSync(task_server.getId());
 			if (task == null) {
 				// New Task from server, add to db
 				task_server.setSync_state(Mirakel.SYNC_STATE_IS_SYNCED);
@@ -590,8 +590,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						c.close();
 						taskDataSource.saveTask(task_server);
 					}
+				}else if(task.getSync_state()==Mirakel.SYNC_STATE_DELETE){
+					//Nothing
 				}else {
-					//TODO add ADD, sonst wtf
 					Log.wtf(TAG, "Syncronisation Error, Taskmerge");
 				}
 			}
