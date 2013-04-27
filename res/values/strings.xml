@@ -10,7 +10,7 @@
     <string name="no_date">No Deadline</string>
     <string name="no_lists">This task cannot be synced, because you have no lists</string>
     <string name="dateFormat">yyyy-MM-dd</string>
-    <string name="dateTimeFormat">yyyy-MM-dd\'T\'hh:mm:ss\'Z\'</string>
+    <string name="dateTimeFormat">yyyy-MM-dd\'T\'hhmmss\'Z\'</string>
     <string name="speak">Speak</string>
     <string name="enter">Enter</string>
     <string name="speak_lang_code">en-US</string>
