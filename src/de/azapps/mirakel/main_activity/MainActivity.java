@@ -265,7 +265,12 @@ public class MainActivity extends FragmentActivity implements
 				AccountManager am=AccountManager.get(this);
 				Account account=am.getAccountsByType(Mirakel.ACCOUNT_TYP)[0];
 				//Should start Sync
-				ContentResolver.requestSync(account, Mirakel.AUTHORITY_TYP, null);
+				//ContentResolver.requestSync(account, Mirakel.AUTHORITY_TYP, new Bundle());
+				Bundle bundle = new Bundle();
+				bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+				bundle.putBoolean(ContentResolver.SYNC_EXTRAS_FORCE, true);
+				bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+				ContentResolver.requestSync(null, Mirakel.AUTHORITY_TYP, bundle);
 			}catch (Exception e) {
 				// TODO: handle exception
 				Log.e(TAG,"No Account founded");
