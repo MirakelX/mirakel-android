@@ -48,7 +48,6 @@ import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.PagerAdapter;
 import de.azapps.mirakel.R;
-import de.azapps.mirakel.model.ListsDataSource;
 import de.azapps.mirakel.model.Task;
 import de.azapps.mirakel.model.TasksDataSource;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -73,7 +72,6 @@ public class MainActivity extends FragmentActivity implements
 	protected TaskFragment taskFragment;
 	private Menu menu;
 	private TasksDataSource taskDataSource;
-	private ListsDataSource listDataSource;
 	private Task currentTask;
 	private ListMirakel currentList;
 
@@ -108,8 +106,6 @@ public class MainActivity extends FragmentActivity implements
 	private void setupLayout() {
 		taskDataSource = new TasksDataSource(this);
 		taskDataSource.open();
-		listDataSource = new ListsDataSource(this);
-		listDataSource.open();
 		setCurrentList(ListMirakel.getList(0));
 
 		// Intialise ViewPager
@@ -175,10 +171,6 @@ public class MainActivity extends FragmentActivity implements
 		case R.id.menu_move:
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle(R.string.dialog_move);
-			ListsDataSource listds = new ListsDataSource(this);
-			listds.open();
-			lists = listds.getAllLists();
-			listds.close();
 			List<CharSequence> items = new ArrayList<CharSequence>();
 			final List<Integer> list_ids = new ArrayList<Integer>();
 			for (ListMirakel list : lists) {
@@ -216,7 +208,7 @@ public class MainActivity extends FragmentActivity implements
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
 										int which) {
-									listDataSource.deleteList(currentList);
+									currentList.destroy();
 									currentList = ListMirakel
 											.getList(Mirakel.LIST_ALL);
 									setCurrentList(currentList);
@@ -255,7 +247,7 @@ public class MainActivity extends FragmentActivity implements
 								currentList.setSortBy(ListMirakel.SORT_BY_ID);
 								break;
 							}
-							listDataSource.saveList(currentList);
+							currentList.save();
 							tasksFragment.update();
 							listFragment.update();
 						}
@@ -264,7 +256,7 @@ public class MainActivity extends FragmentActivity implements
 			alert.show();
 			return true;
 		case R.id.menu_new_list:
-			ListMirakel list = listDataSource.createList(this
+			ListMirakel list = ListMirakel.newList(this
 					.getString(R.string.list_menu_new_list));
 			listFragment.update();
 			listFragment.editList(list);
@@ -441,10 +433,6 @@ public class MainActivity extends FragmentActivity implements
 		return taskDataSource;
 	}
 
-	public ListsDataSource getListDataSource() {
-		return listDataSource;
-	}
-
 	/**
 	 * Ugly Wrapper TODO make it more beautiful
 	 * 
@@ -506,14 +494,12 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	protected void onDestroy() {
-		listDataSource.close();
 		taskDataSource.close();
 		super.onDestroy();
 	}
 
 	@Override
 	protected void onPause() {
-		listDataSource.close();
 		taskDataSource.close();
 		super.onPause();
 	}
@@ -522,7 +508,6 @@ public class MainActivity extends FragmentActivity implements
 	protected void onResume() {
 		super.onResume();
 		NotificationService.updateNotificationAndWidget(this);
-		listDataSource.open();
 		taskDataSource.open();
 	}
 

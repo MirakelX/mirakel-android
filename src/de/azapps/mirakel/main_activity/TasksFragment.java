@@ -51,6 +51,7 @@ import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.Task;
+import de.azapps.mirakel.model.list.ListMirakel;
 
 public class TasksFragment extends Fragment {
 	private static final String TAG = "TasksActivity";
@@ -148,7 +149,7 @@ public class TasksFragment extends Fragment {
 				due.add(GregorianCalendar.DAY_OF_MONTH, 7);
 			}
 			try {
-				id = main.getListDataSource().getFirstList().getId();
+				id = ListMirakel.first().getId();
 			} catch (NullPointerException e) {
 				id = 0;
 				Toast.makeText(main, R.string.no_lists, Toast.LENGTH_LONG)

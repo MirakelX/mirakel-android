@@ -64,8 +64,7 @@ public class ListFragment extends Fragment {
 	public void update() {
 		if (!created)
 			return;
-		final List<ListMirakel> values = main.getListDataSource()
-				.getAllLists();
+		final List<ListMirakel> values = ListMirakel.all();
 
 		adapter = new ListAdapter(this.getActivity(), R.layout.lists_row,
 				values);
@@ -140,7 +139,7 @@ public class ListFragment extends Fragment {
 									int whichButton) {
 						//		List_mirakle list = values.get((int) id);
 								list.setName(input.getText().toString());
-								main.getListDataSource().saveList(list);
+								list.save();
 								update();
 							}
 						})

@@ -24,7 +24,6 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
 import de.azapps.mirakel.R;
-import de.azapps.mirakel.model.ListsDataSource;
 import de.azapps.mirakel.model.list.ListMirakel;
 
 public class MainWidgetSettingsFragment  extends PreferenceFragment {
@@ -33,8 +32,7 @@ public class MainWidgetSettingsFragment  extends PreferenceFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// Initialize needed Arrays
-		ListsDataSource listsDataSource = new ListsDataSource(getActivity());
-		List<ListMirakel> lists = listsDataSource.getAllLists();
+		List<ListMirakel> lists = ListMirakel.all();
 		CharSequence entryValues[] = new String[lists.size()];
 		CharSequence entries[] = new String[lists.size()];
 		int i = 0;

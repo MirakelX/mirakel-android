@@ -28,7 +28,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.util.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
-import de.azapps.mirakel.model.ListsDataSource;
 import de.azapps.mirakel.model.Task;
 import de.azapps.mirakel.model.TasksDataSource;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -45,8 +44,8 @@ public class MirakelContentProvider extends ContentProvider {
 	private static final String TAG = "MirakelContentProvider";
 	static {
 		uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-		uriMatcher.addURI(Mirakel.AUTHORITY_TYP, Mirakel.TABLE_LISTS, LISTS);
-		uriMatcher.addURI(Mirakel.AUTHORITY_TYP, Mirakel.TABLE_LISTS + "/#",
+		uriMatcher.addURI(Mirakel.AUTHORITY_TYP, ListMirakel.TABLE, LISTS);
+		uriMatcher.addURI(Mirakel.AUTHORITY_TYP, ListMirakel.TABLE + "/#",
 				LISTS_ITEM);
 		uriMatcher.addURI(Mirakel.AUTHORITY_TYP, Mirakel.TABLE_TASKS, TASKS);
 		uriMatcher.addURI(Mirakel.AUTHORITY_TYP, Mirakel.TABLE_TASKS + "/#",
@@ -57,32 +56,25 @@ public class MirakelContentProvider extends ContentProvider {
 	public int delete(Uri uri, String selection, String[] selectionArgs) {
 		switch (uriMatcher.match(uri)) {
 		case LISTS:
-			ListsDataSource listDataSource = new ListsDataSource(getContext());
-			listDataSource.open();
 			Log.d(TAG, "DELETE ALL LISTS?!!");
-			List<ListMirakel> lists = listDataSource.getAllLists();
+			List<ListMirakel> lists = ListMirakel.all();
 			for (ListMirakel list : lists) {
 				if (list.getId() != Mirakel.LIST_ALL
 						&& list.getId() != Mirakel.LIST_DAILY
 						&& list.getId() != Mirakel.LIST_WEEKLY) {
-					listDataSource.deleteList(list);
+					list.destroy();
 				}
 			}
-			listDataSource.close();
 			return lists.size();
 		case LISTS_ITEM:
 			int list_id = 0;
 			Log.d(TAG, "DELETE LIST " + list_id);
-			listDataSource = new ListsDataSource(getContext());
-			listDataSource.open();
 			ListMirakel list = ListMirakel.getList(Integer.parseInt(uri
 					.getLastPathSegment()));
 			if (list.getId() > Mirakel.LIST_ALL) {
-				listDataSource.deleteList(list);
-				listDataSource.close();
+				list.destroy();
 				return 1;
 			}
-			listDataSource.close();
 			return 0;
 		case TASKS:
 			Log.d(TAG, "DELETE ALL TASKS?!!");
@@ -137,10 +129,10 @@ public class MirakelContentProvider extends ContentProvider {
 		values.put("sync_state", Mirakel.SYNC_STATE_ADD);
 		switch (uriMatcher.match(uri)) {
 		case LISTS:
-			long id = Mirakel.getWritableDatabase().insert(Mirakel.TABLE_LISTS,
+			long id = Mirakel.getWritableDatabase().insert(ListMirakel.TABLE,
 					null, values);
 			return Uri.parse("content://" + Mirakel.AUTHORITY_TYP + "/"
-					+ Mirakel.TABLE_LISTS + "/" + id);
+					+ ListMirakel.TABLE + "/" + id);
 		case LISTS_ITEM:
 		case TASKS_ITEM:
 			return null;
@@ -168,14 +160,14 @@ public class MirakelContentProvider extends ContentProvider {
 		switch (uriMatcher.match(uri)) {
 			case LISTS:
 				return Mirakel.getReadableDatabase().query(
-						Mirakel.TABLE_LISTS,
+						ListMirakel.TABLE,
 						projection,
 						"(" + selection + " ) and not sync_state= "
 								+ Mirakel.SYNC_STATE_DELETE, selectionArgs, null,
 						null, sortOrder);
 			case LISTS_ITEM:
 				return Mirakel.getReadableDatabase().query(
-						Mirakel.TABLE_LISTS,
+						ListMirakel.TABLE,
 						projection,
 						"(" + selection + " ) and _id="+uri.getLastPathSegment()+" and not sync_state= "
 								+ Mirakel.SYNC_STATE_DELETE, selectionArgs, null,
@@ -207,9 +199,9 @@ public class MirakelContentProvider extends ContentProvider {
 		values.put("sync_state", Mirakel.SYNC_STATE_NEED_SYNC);
 		switch (uriMatcher.match(uri)) {
 		case LISTS:
-			return Mirakel.getWritableDatabase().update(Mirakel.TABLE_LISTS, values, selection, selectionArgs);
+			return Mirakel.getWritableDatabase().update(ListMirakel.TABLE, values, selection, selectionArgs);
 		case LISTS_ITEM:
-			return Mirakel.getWritableDatabase().update(Mirakel.TABLE_LISTS, values, "("+selection+") and _id="+uri.getLastPathSegment(), selectionArgs);
+			return Mirakel.getWritableDatabase().update(ListMirakel.TABLE, values, "("+selection+") and _id="+uri.getLastPathSegment(), selectionArgs);
 		case TASKS:
 			return Mirakel.getWritableDatabase().update(Mirakel.TABLE_TASKS, values, selection, selectionArgs);
 		case TASKS_ITEM:

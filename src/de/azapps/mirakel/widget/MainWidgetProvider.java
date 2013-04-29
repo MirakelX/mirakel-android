@@ -32,7 +32,6 @@ import android.widget.RemoteViews;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.main_activity.MainActivity;
-import de.azapps.mirakel.model.ListsDataSource;
 import de.azapps.mirakel.model.list.ListMirakel;
 
 public class MainWidgetProvider extends AppWidgetProvider {
@@ -89,7 +88,6 @@ public class MainWidgetProvider extends AppWidgetProvider {
 			// When intents are compared, the extras are ignored, so we need to
 			// embed the extras
 			// into the data so that the extras will not be ignored.
-			ListsDataSource listsDataSource = new ListsDataSource(context);
 			intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
 			intent.putExtra(EXTRA_LISTID, listId);
 			intent.putExtra(EXTRA_LISTSORT, listSort);

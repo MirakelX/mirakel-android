@@ -28,7 +28,7 @@ class ListBase {
 	private int sort_by;
 	private String created_at;
 	private String updated_at;
-	private int task_count;
+	private int task_count=0;
 	private int sync_state;
 	private int lft, rgt;
 
@@ -42,14 +42,12 @@ class ListBase {
 		this.setName(name);
 		this.setUpdated_at(updated_at);
 		this.setSortBy(sort_by);
-		this.setTask_count(task_count);
 		this.setSync_state(sync_state);
 	}
 
-	ListBase(int id, String name, int task_count) {
+	ListBase(int id, String name) {
 		this.setId(id);
 		this.setName(name);
-		this.setTask_count(task_count);
 	}
 
 	public int getId() {
@@ -112,9 +110,6 @@ class ListBase {
 		return task_count;
 	}
 
-	public void setTask_count(int task_count) {
-		this.task_count = task_count;
-	}
 
 	public int getSync_state() {
 		return sync_state;

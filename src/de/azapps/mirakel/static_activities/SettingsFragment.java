@@ -35,7 +35,6 @@ import android.util.Log;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.main_activity.MainActivity;
-import de.azapps.mirakel.model.ListsDataSource;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.sync.AuthenticatorActivity;
 
@@ -49,8 +48,7 @@ public class SettingsFragment extends PreferenceFragment {
 		super.onCreate(savedInstanceState);
 		// Initialize needed Arrays
 		//main=(MainActivity) getActivity();
-		ListsDataSource listsDataSource = new ListsDataSource(getActivity());
-		List<ListMirakel> lists = listsDataSource.getAllLists();
+		List<ListMirakel> lists = ListMirakel.all();
 		CharSequence entryValues[] = new String[lists.size()];
 		CharSequence entries[] = new String[lists.size()];
 		int i = 0;

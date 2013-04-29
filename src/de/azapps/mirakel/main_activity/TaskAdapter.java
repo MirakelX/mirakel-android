@@ -33,7 +33,6 @@ import android.widget.TextView;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.MirakelHelper;
 import de.azapps.mirakel.R;
-import de.azapps.mirakel.model.ListsDataSource;
 import de.azapps.mirakel.model.Task;
 import de.azapps.mirakel.model.list.ListMirakel;
 
@@ -43,7 +42,6 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 	List<Task> data = null;
 	OnClickListener clickCheckbox;
 	OnClickListener clickPrio;
-	ListsDataSource listsDataSource;
 
 	public TaskAdapter(Context context, int layoutResourceId, List<Task> data,
 			OnClickListener clickCheckbox, OnClickListener click_prio,
@@ -54,7 +52,6 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		this.context = context;
 		this.clickCheckbox = clickCheckbox;
 		this.clickPrio = click_prio;
-		listsDataSource = new ListsDataSource(context);
 		this.listId = listId;
 	}
 
