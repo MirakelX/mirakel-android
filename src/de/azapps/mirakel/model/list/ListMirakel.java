@@ -111,6 +111,11 @@ public class ListMirakel extends ListBase {
 			database.update(ListMirakel.TABLE, values, "_id=" + id, null);
 		}
 	}
+	
+	public int countTasks() {
+		// TODO implement it
+		return 0;
+	}
 
 	public List<Task> tasks() {
 		return Task.getTasks(this, getSortBy(), false);

@@ -28,7 +28,6 @@ class ListBase {
 	private int sort_by;
 	private String created_at;
 	private String updated_at;
-	private int task_count=0;
 	private int sync_state;
 	private int lft, rgt;
 
@@ -106,9 +105,6 @@ class ListBase {
 		return cv;
 	}
 
-	public int getTask_count() {
-		return task_count;
-	}
 
 
 	public int getSync_state() {
