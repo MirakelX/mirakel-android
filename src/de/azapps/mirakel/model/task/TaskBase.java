@@ -16,7 +16,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package de.azapps.mirakel.model;
+package de.azapps.mirakel.model.task;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -29,9 +29,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import de.azapps.mirakel.R;
 
-public class Task {
+public class TaskBase {
 	private long id;
-	private long list_id;
+	private ListMirakel list;
 	private String name;
 	private String content;
 	private boolean done;
@@ -42,11 +42,11 @@ public class Task {
 	private Map<String, Boolean> edited = new HashMap<String, Boolean>();
 	private int sync_state;
 
-	public Task(long id, long list_id, String name, String content,
+	public TaskBase(long id, ListMirakel list, String name, String content,
 			boolean done, GregorianCalendar due, int priority,
 			String created_at, String updated_at, int sync_state) {
 		this.id = id;
-		this.setListId(list_id);
+		this.setList(list);
 		this.setName(name);
 		this.setContent(content);
 		this.setDone(done);
@@ -57,13 +57,22 @@ public class Task {
 		this.setSync_state(sync_state);
 	}
 
-	public Task() {
+	public ListMirakel getList() {
+		return list;
+	}
+
+	public void setList(ListMirakel list) {
+		this.list = list;
+		edited.put("list", true);
+	}
+
+	public TaskBase() {
 
 	}
 
-	public Task(Context ctx) {
+	public TaskBase(Context ctx) {
 		this.id = 0;
-		this.setListId(0);
+		this.setList(ListMirakel.getList(ListMirakel.ALL));
 		this.setName(ctx.getString(R.string.task_empty));
 		this.setContent("");
 		this.setDone(false);
@@ -81,15 +90,6 @@ public class Task {
 	public void setId(long id) {
 		this.id = id;
 		edited.put("id", true);
-	}
-
-	public long getListId() {
-		return list_id;
-	}
-
-	public void setListId(long list_id) {
-		this.list_id = list_id;
-		edited.put("list_id", true);
 	}
 
 	public String getName() {
@@ -174,7 +174,7 @@ public class Task {
 	public ContentValues getContentValues() {
 		ContentValues cv = new ContentValues();
 		cv.put("_id", id);
-		cv.put("list_id", list_id);
+		cv.put("list_id", list.getId());
 		cv.put("name", name);
 		cv.put("content", content);
 		cv.put("done", done);

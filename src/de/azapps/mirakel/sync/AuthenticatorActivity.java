@@ -146,9 +146,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             public void onCancel(DialogInterface dialog) {
                 Log.i(TAG, "user cancelling authentication");
-               /* if (mAuthTask != null) {
-                    mAuthTask.cancel(true);
-                }*/
             }
         });
         // We save off the progress dialog in a field so that we can dismiss
@@ -175,7 +172,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         } else {
             // Show a progress dialog, and kick off a background task to perform
             // the user login attempt.
-            //showProgress();
         	ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 			NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         	if (networkInfo != null && networkInfo.isConnected()) {
@@ -184,37 +180,23 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				new Network(new DataDownloadCommand() {
 					
 					@Override
-					public void after_exec(String result) {
-						//int status=result.getStatusLine().getStatusCode();
-						
+					public void after_exec(String result) {						
 						if(result.indexOf("Invalid email or password.")!=-1){
 							Log.e(TAG,"Login faild");
 							hideProgress();
 						}else{
 							Log.e(TAG,"Login sucess");
 							onAuthenticationResult("Foo",url);
-							/*Intent intent = new Intent(LoginActivity.this,
-									MainActivity.class);
-							intent.putExtra("listId", Mirakel.LIST_ALL);
-							intent.putExtra("email", mEmailView.getText().toString());
-							intent.putExtra("password", mPasswordView.getText().toString());
-							intent.putExtra("url", url);
-							startActivity(intent);*/
 						}
-						//showProgress(false);	
 						
 					}
-				},mUsernameEdit.getText().toString(), mPasswordEdit.getText().toString(),Mirakel.Http_Mode.GET).execute(url+"/lists.json");
-				//mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
-				//showProgress(true);
+				},mUsernameEdit.getText().toString(), mPasswordEdit.getText().toString(),Mirakel.Http_Mode.GET,this).execute(url+"/lists.json");
 			} else {
 				Log.e(TAG, "No network connection available.");
 				Toast t=new Toast(getApplicationContext());
 				t.setText(getString(R.string.NoNetwork));
 				t.show();
 			}
-            //mAuthTask = new UserLoginTask();
-            //mAuthTask.execute();
         }
     }
 
@@ -351,39 +333,4 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
             mProgressDialog = null;
         }
     }
-
-    /**
-     * Represents an asynchronous task used to authenticate a user against the
-     * SampleSync Service
-     */
-    /*public class UserLoginTask extends AsyncTask<Void, Void, String> {
-
-        @Override
-        protected String doInBackground(Void... params) {
-            // We do the actual work of authenticating the user
-            // in the NetworkUtilities class.
-            try {
-                return "sdfjhdgafjgasdjgfsdj";//NetworkUtilities.authenticate(mUsername, mPassword);
-            } catch (Exception ex) {
-                Log.e(TAG, "UserLoginTask.doInBackground: failed to authenticate");
-                Log.i(TAG, ex.toString());
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(final String authToken) {
-            // On a successful authentication, call back into the Activity to
-            // communicate the authToken (or null for an error).
-            onAuthenticationResult(authToken);
-        }
-
-        @Override
-        protected void onCancelled() {
-            // If the action was canceled (by the user clicking the cancel
-            // button in the progress dialog), then call back into the
-            // activity to let it know.
-            onAuthenticationCancel();
-        }
-    }*/
 }

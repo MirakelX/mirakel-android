@@ -26,9 +26,6 @@ import android.util.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
 
 public class Mirakel extends Application {
-	public static final int LIST_ALL = 0;
-	public static final int LIST_DAILY = -1;
-	public static final int LIST_WEEKLY = -2;
 	public static final int[] PRIO_COLOR = { Color.parseColor("#008000"),
 			Color.parseColor("#00c400"), Color.parseColor("#3377FF"),
 			Color.parseColor("#FF7700"), Color.parseColor("#FF3333") };

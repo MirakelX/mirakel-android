@@ -55,7 +55,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
 			
 
 			int listId = Integer.parseInt(preferences.getString("widgetList",
-					Mirakel.LIST_ALL + ""));
+					ListMirakel.ALL + ""));
 			int listSort = Integer.parseInt(preferences.getString("widgetSort",
 					Mirakel.SORT_BY_OPT + ""));
 

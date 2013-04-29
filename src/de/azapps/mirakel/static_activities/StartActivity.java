@@ -63,7 +63,7 @@ public class StartActivity extends Activity {
 				} else {
 					Intent intent = new Intent(StartActivity.this,
 							MainActivity.class);
-					intent.putExtra("listId", Mirakel.LIST_ALL);
+					intent.putExtra("listId", ListMirakel.ALL);
 					startActivity(intent);
 				}
 			}

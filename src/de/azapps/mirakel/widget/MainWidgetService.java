@@ -29,9 +29,8 @@ import android.widget.RemoteViewsService;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.MirakelHelper;
 import de.azapps.mirakel.R;
-import de.azapps.mirakel.model.ListsDataSource;
-import de.azapps.mirakel.model.Task;
 import de.azapps.mirakel.model.TasksDataSource;
+import de.azapps.mirakel.model.task.TaskBase;
 
 public class MainWidgetService extends RemoteViewsService {
 
@@ -45,7 +44,7 @@ public class MainWidgetService extends RemoteViewsService {
 class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
 	private Context mContext;
-	private List<Task> tasks;
+	private List<TaskBase> tasks;
 	private TasksDataSource tasksDatasource;
 	private int listId = 0;
 	private int sorting;
@@ -55,7 +54,7 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		mContext = context;
 		listId = intent.getIntExtra(MainWidgetProvider.EXTRA_LISTID, 0);
 		sorting = intent.getIntExtra(MainWidgetProvider.EXTRA_LISTSORT,
-				(int) Mirakel.SORT_BY_OPT);
+				(int) ListMirakel.SORT_BY_OPT);
 		showDone = intent.getBooleanExtra(MainWidgetProvider.EXTRA_SHOWDONE,
 				false);
 	}
@@ -79,7 +78,7 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
 	public RemoteViews getViewAt(int position) {
 		// Get The Task
-		Task task = tasks.get(position);
+		TaskBase task = tasks.get(position);
 		// Initialize the Remote View
 		RemoteViews rv = new RemoteViews(mContext.getPackageName(),
 				R.layout.widget_row);
@@ -101,9 +100,8 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
 		if (listId <= 0) {
 			rv.setViewVisibility(R.id.tasks_row_list_name, View.VISIBLE);
-			ListsDataSource listsDataSource = new ListsDataSource(mContext);
-			rv.setTextViewText(R.id.tasks_row_list_name, listsDataSource
-					.getList((int) task.getListId()).getName());
+			rv.setTextViewText(R.id.tasks_row_list_name,
+					ListMirakel.getList((int) task.getListId()).getName());
 		} else {
 			rv.setViewVisibility(R.id.tasks_row_list_name, View.GONE);
 		}

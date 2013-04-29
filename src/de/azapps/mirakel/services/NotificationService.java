@@ -33,16 +33,13 @@ import android.support.v4.app.NotificationCompat;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.main_activity.MainActivity;
-import de.azapps.mirakel.model.List_mirakle;
-import de.azapps.mirakel.model.ListsDataSource;
-import de.azapps.mirakel.model.Task;
 import de.azapps.mirakel.model.TasksDataSource;
+import de.azapps.mirakel.model.task.TaskBase;
 import de.azapps.mirakel.widget.MainWidgetProvider;
 
 public class NotificationService extends Service {
 	private SharedPreferences preferences;
 	private TasksDataSource taskDataSource;
-	private ListsDataSource listDataSource;
 	private boolean existsNotification = false;
 	public static NotificationService notificationService;
 
@@ -56,8 +53,6 @@ public class NotificationService extends Service {
 	public void onCreate() {
 		preferences = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
-		listDataSource = new ListsDataSource(getApplicationContext());
-		listDataSource.open();
 		taskDataSource = new TasksDataSource(getApplicationContext());
 		taskDataSource.open();
 		notifier();
@@ -73,7 +68,7 @@ public class NotificationService extends Service {
 			return;
 		}
 		int listId = Integer.parseInt(preferences.getString(
-				"notificationsList", "" + Mirakel.LIST_DAILY));
+				"notificationsList", "" + ListMirakel.DAILY));
 		// Set onClick Intent
 		Intent intent = new Intent(this, MainActivity.class);
 		intent.setAction(MainActivity.SHOW_LIST);
@@ -81,8 +76,8 @@ public class NotificationService extends Service {
 		PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
 		// Get the data
-		List_mirakle todayList = listDataSource.getList(listId);
-		List<Task> todayTasks = taskDataSource.getTasks(todayList,
+		ListMirakel todayList = ListMirakel.getList(listId);
+		List<TaskBase> todayTasks = taskDataSource.getTasks(todayList,
 				todayList.getSortBy());
 		String notificationTitle;
 		String notificationText;
@@ -91,7 +86,7 @@ public class NotificationService extends Service {
 			notificationText = "";
 		} else {
 			switch (listId) {
-			case Mirakel.LIST_ALL:
+			case ListMirakel.ALL:
 				if (todayTasks.size() == 1)
 					notificationTitle = getString(R.string.notification_title_all_single);
 				else
@@ -99,7 +94,7 @@ public class NotificationService extends Service {
 							getString(R.string.notification_title_all),
 							todayTasks.size());
 				break;
-			case Mirakel.LIST_DAILY:
+			case ListMirakel.DAILY:
 				if (todayTasks.size() == 1)
 					notificationTitle = getString(R.string.notification_title_daily_single);
 				else
@@ -107,7 +102,7 @@ public class NotificationService extends Service {
 							getString(R.string.notification_title_daily),
 							todayTasks.size());
 				break;
-			case Mirakel.LIST_WEEKLY:
+			case ListMirakel.WEEKLY:
 				if (todayTasks.size() == 1)
 					notificationTitle = getString(R.string.notification_title_weekly_single);
 				else
@@ -140,7 +135,7 @@ public class NotificationService extends Service {
 		if (preferences.getBoolean("notificationsBig", true)
 				&& todayTasks.size() > 1) {
 			NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
-			for (Task task : todayTasks) {
+			for (TaskBase task : todayTasks) {
 				inboxStyle.addLine(task.getName());
 			}
 			noti.setStyle(inboxStyle);

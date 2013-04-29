@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -48,10 +46,8 @@ import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.PagerAdapter;
 import de.azapps.mirakel.R;
-import de.azapps.mirakel.model.List_mirakle;
-import de.azapps.mirakel.model.ListsDataSource;
-import de.azapps.mirakel.model.Task;
 import de.azapps.mirakel.model.TasksDataSource;
+import de.azapps.mirakel.model.task.TaskBase;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.static_activities.SettingsActivity;
 
@@ -73,9 +69,8 @@ public class MainActivity extends FragmentActivity implements
 	protected TaskFragment taskFragment;
 	private Menu menu;
 	private TasksDataSource taskDataSource;
-	private ListsDataSource listDataSource;
-	private Task currentTask;
-	private List_mirakle currentList;
+	private TaskBase currentTask;
+	private ListMirakel currentList;
 
 	private static final int LIST_FRAGMENT = 0, TASKS_FRAGMENT = 1,
 			TASK_FRAGMENT = 2;
@@ -108,9 +103,7 @@ public class MainActivity extends FragmentActivity implements
 	private void setupLayout() {
 		taskDataSource = new TasksDataSource(this);
 		taskDataSource.open();
-		listDataSource = new ListsDataSource(this);
-		listDataSource.open();
-		setCurrentList(listDataSource.getList(0));
+		setCurrentList(ListMirakel.getList(0));
 
 		// Intialise ViewPager
 		this.intialiseViewPager();
@@ -119,8 +112,8 @@ public class MainActivity extends FragmentActivity implements
 		if (intent.getAction() == SHOW_TASK) {
 			int taskId = intent.getIntExtra(EXTRA_ID, 0);
 			if (taskId != 0) {
-				Task task = taskDataSource.getTask(taskId);
-				currentList = listDataSource.getList((int) task.getListId());
+				TaskBase task = taskDataSource.getTask(taskId);
+				currentList = task.getList();
 				setCurrentTask(task);
 				return;
 			}
@@ -128,7 +121,7 @@ public class MainActivity extends FragmentActivity implements
 				|| intent.getAction() == SHOW_LIST_FROM_WIDGET) {
 
 			int listId = intent.getIntExtra(EXTRA_ID, 0);
-			List_mirakle list = listDataSource.getList(listId);
+			ListMirakel list = ListMirakel.getList(listId);
 			setCurrentList(list);
 			return;
 		} else if (intent.getAction() == SHOW_LISTS) {
@@ -147,7 +140,7 @@ public class MainActivity extends FragmentActivity implements
 		return true;
 	}
 
-	private List<List_mirakle> lists;
+	private List<ListMirakel> lists;
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -175,13 +168,9 @@ public class MainActivity extends FragmentActivity implements
 		case R.id.menu_move:
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle(R.string.dialog_move);
-			ListsDataSource listds = new ListsDataSource(this);
-			listds.open();
-			lists = listds.getAllLists();
-			listds.close();
 			List<CharSequence> items = new ArrayList<CharSequence>();
 			final List<Integer> list_ids = new ArrayList<Integer>();
-			for (List_mirakle list : lists) {
+			for (ListMirakel list : lists) {
 				if (list.getId() > 0) {
 					items.add(list.getName());
 					list_ids.add(list.getId());
@@ -191,10 +180,9 @@ public class MainActivity extends FragmentActivity implements
 			builder.setItems(items.toArray(new CharSequence[items.size()]),
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int item) {
-							currentTask.setListId(list_ids.get(item));
+							currentTask.setList(ListMirakel.getList(list_ids.get(item)));
 							taskDataSource.saveTask(currentTask);
-							currentList = listDataSource
-									.getList((int) currentTask.getListId());
+							currentList = currentTask.getList();
 							tasksFragment.update();
 							listFragment.update();
 						}
@@ -206,8 +194,8 @@ public class MainActivity extends FragmentActivity implements
 
 		case R.id.list_delete:
 			long listId = currentList.getId();
-			if (listId == Mirakel.LIST_ALL || listId == Mirakel.LIST_DAILY
-					|| listId == Mirakel.LIST_WEEKLY)
+			if (listId == ListMirakel.ALL || listId == ListMirakel.DAILY
+					|| listId == ListMirakel.WEEKLY)
 				return true;
 			new AlertDialog.Builder(this)
 					.setTitle(this.getString(R.string.list_delete_title))
@@ -216,9 +204,9 @@ public class MainActivity extends FragmentActivity implements
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
 										int which) {
-									listDataSource.deleteList(currentList);
-									currentList = listDataSource
-											.getList(Mirakel.LIST_ALL);
+									currentList.destroy();
+									currentList = ListMirakel
+											.getList(ListMirakel.ALL);
 									setCurrentList(currentList);
 								}
 							})
@@ -243,19 +231,19 @@ public class MainActivity extends FragmentActivity implements
 						public void onClick(DialogInterface dialog, int item) {
 							switch (item) {
 							case 0:
-								currentList.setSortBy(Mirakel.SORT_BY_OPT);
+								currentList.setSortBy(ListMirakel.SORT_BY_OPT);
 								break;
 							case 1:
-								currentList.setSortBy(Mirakel.SORT_BY_DUE);
+								currentList.setSortBy(ListMirakel.SORT_BY_DUE);
 								break;
 							case 2:
-								currentList.setSortBy(Mirakel.SORT_BY_PRIO);
+								currentList.setSortBy(ListMirakel.SORT_BY_PRIO);
 								break;
 							default:
-								currentList.setSortBy(Mirakel.SORT_BY_ID);
+								currentList.setSortBy(ListMirakel.SORT_BY_ID);
 								break;
 							}
-							listDataSource.saveList(currentList);
+							currentList.save();
 							tasksFragment.update();
 							listFragment.update();
 						}
@@ -264,7 +252,7 @@ public class MainActivity extends FragmentActivity implements
 			alert.show();
 			return true;
 		case R.id.menu_new_list:
-			List_mirakle list = listDataSource.createList(this
+			ListMirakel list = ListMirakel.newList(this
 					.getString(R.string.list_menu_new_list));
 			listFragment.update();
 			listFragment.editList(list);
@@ -279,15 +267,10 @@ public class MainActivity extends FragmentActivity implements
 		case R.id.menu_sync_now_list:
 		case R.id.menu_sync_now_task:
 		case R.id.menu_sync_now_tasks:
-			try{
-				AccountManager am=AccountManager.get(this);
-				Account account=am.getAccountsByType(Mirakel.ACCOUNT_TYP)[0];
-				//Should start Sync
-				ContentResolver.requestSync(account, Mirakel.AUTHORITY_TYP, null);
-			}catch (Exception e) {
-				// TODO: handle exception
-				Log.e(TAG,"No Account founded");
-			}
+			Bundle bundle = new Bundle();
+			bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+			bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+			ContentResolver.requestSync(null, Mirakel.AUTHORITY_TYP, bundle);
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -396,7 +379,7 @@ public class MainActivity extends FragmentActivity implements
 	public void onPageScrollStateChanged(int state) {
 	}
 
-	Task getCurrentTask() {
+	TaskBase getCurrentTask() {
 		return currentTask;
 	}
 
@@ -404,7 +387,7 @@ public class MainActivity extends FragmentActivity implements
 		return preferences;
 	}
 
-	void setCurrentTask(Task currentTask) {
+	void setCurrentTask(TaskBase currentTask) {
 		this.currentTask = currentTask;
 		if (taskFragment != null) {
 			taskFragment.update();
@@ -412,21 +395,21 @@ public class MainActivity extends FragmentActivity implements
 		}
 	}
 
-	List_mirakle getCurrentList() {
+	ListMirakel getCurrentList() {
 		return currentList;
 	}
 
-	void setCurrentList(List_mirakle currentList) {
+	void setCurrentList(ListMirakel currentList) {
 		this.currentList = currentList;
 		if (tasksFragment != null) {
 			tasksFragment.update();
 			mViewPager.setCurrentItem(TASKS_FRAGMENT);
 		}
 
-		List<Task> currentTasks = taskDataSource.getTasks(currentList,
+		List<TaskBase> currentTasks = taskDataSource.getTasks(currentList,
 				currentList.getSortBy());
 		if (currentTasks.size() == 0) {
-			currentTask = new Task(getApplicationContext());
+			currentTask = new TaskBase(getApplicationContext());
 		} else {
 			currentTask = currentTasks.get(0);
 		}
@@ -440,16 +423,12 @@ public class MainActivity extends FragmentActivity implements
 		return taskDataSource;
 	}
 
-	public ListsDataSource getListDataSource() {
-		return listDataSource;
-	}
-
 	/**
 	 * Ugly Wrapper TODO make it more beautiful
 	 * 
 	 * @param task
 	 */
-	void saveTask(Task task) {
+	void saveTask(TaskBase task) {
 		Log.v(TAG, "Saving task… (task:" + task.getId() + " – current:"
 				+ currentTask.getId());
 		taskDataSource.saveTask(task);
@@ -505,14 +484,12 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	protected void onDestroy() {
-		listDataSource.close();
 		taskDataSource.close();
 		super.onDestroy();
 	}
 
 	@Override
 	protected void onPause() {
-		listDataSource.close();
 		taskDataSource.close();
 		super.onPause();
 	}
@@ -521,7 +498,6 @@ public class MainActivity extends FragmentActivity implements
 	protected void onResume() {
 		super.onResume();
 		NotificationService.updateNotificationAndWidget(this);
-		listDataSource.open();
 		taskDataSource.open();
 	}
 
@@ -532,6 +508,5 @@ public class MainActivity extends FragmentActivity implements
 		listFragment.setActivity(this);
 		tasksFragment.setActivity(this);
 	}
-	
 
 }
