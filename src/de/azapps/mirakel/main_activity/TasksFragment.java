@@ -48,7 +48,6 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
-import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.TaskBase;

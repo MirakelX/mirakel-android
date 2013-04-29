@@ -33,7 +33,6 @@ import android.widget.TextView;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.MirakelHelper;
 import de.azapps.mirakel.R;
-import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.TaskBase;
 
 public class TaskAdapter extends ArrayAdapter<TaskBase> {

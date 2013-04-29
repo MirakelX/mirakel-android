@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -184,7 +182,7 @@ public class MainActivity extends FragmentActivity implements
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int item) {
 							currentTask.setList(ListMirakel.getList(list_ids.get(item)));
-							taskDataSource.saveTask(currentTask);
+							currentTask.save();
 							currentList = currentTask.getList();
 							tasksFragment.update();
 							listFragment.update();
@@ -270,16 +268,10 @@ public class MainActivity extends FragmentActivity implements
 		case R.id.menu_sync_now_list:
 		case R.id.menu_sync_now_task:
 		case R.id.menu_sync_now_tasks:
-			try {
-				AccountManager am = AccountManager.get(this);
-				Account account = am.getAccountsByType(Mirakel.ACCOUNT_TYP)[0];
-				// Should start Sync
-				ContentResolver.requestSync(account, Mirakel.AUTHORITY_TYP,
-						null);
-			} catch (Exception e) {
-				// TODO: handle exception
-				Log.e(TAG, "No Account founded");
-			}
+			Bundle bundle = new Bundle();
+			bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+			bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+			ContentResolver.requestSync(null, Mirakel.AUTHORITY_TYP, bundle);
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -440,7 +432,7 @@ public class MainActivity extends FragmentActivity implements
 	void saveTask(TaskBase task) {
 		Log.v(TAG, "Saving task… (task:" + task.getId() + " – current:"
 				+ currentTask.getId());
-		taskDataSource.saveTask(task);
+		task.save();
 		if (task.getId() == currentTask.getId()) {
 			currentTask = task;
 			taskFragment.update();
