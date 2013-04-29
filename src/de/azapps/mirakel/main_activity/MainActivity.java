@@ -261,7 +261,6 @@ public class MainActivity extends FragmentActivity implements
 		case R.id.menu_sync_now_tasks:
 			Bundle bundle = new Bundle();
 			bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-			bundle.putBoolean(ContentResolver.SYNC_EXTRAS_FORCE, true);
 			bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
 			ContentResolver.requestSync(null, Mirakel.AUTHORITY_TYP, bundle);
 		default:
