@@ -22,33 +22,40 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.R;
 
-public class Network extends AsyncTask<String, String, String> {
+public class Network extends AsyncTask<String, Integer, String> {
 	private String TAG="GetData";
 	protected DataDownloadCommand commands;
 	protected String Email;
 	protected String Password;
 	protected List<BasicNameValuePair> HeaderData;
 	protected int Mode;
+	protected Context context;	
 
 	public Network(DataDownloadCommand commands, String email, String password,
-			int mode) {
+			int mode,Context context) {
 		this.commands = commands;
 		this.Email = email;
 		this.Password = password;
 		this.Mode = mode;
+		this.context=context;
 	}
 
 	public Network(DataDownloadCommand commands, String email, String password,
-			int mode, List<BasicNameValuePair> data) {
+			int mode, List<BasicNameValuePair> data, Context context) {
 		this.commands = commands;
 		this.Email = email;
 		this.Password = password;
 		this.Mode = mode;
 		this.HeaderData = data;
+		this.context=context;
 	}
 
 	@Override
@@ -56,13 +63,23 @@ public class Network extends AsyncTask<String, String, String> {
 		try {
 			return downloadUrl(urls[0]);
 		} catch (IOException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			Log.e(TAG,"Unable to retrieve web page. URL may be invalid.");
-			return null;
 		} catch (URISyntaxException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			Log.e(TAG,"Invalid UrlSyntax");
 		}
+		Integer[] t={1};
+		publishProgress(t);
+
 		return null;
+	}
+	
+	@Override
+	protected void onProgressUpdate(Integer... integers) {
+	  if(integers[0] == 1) {
+		  Toast.makeText(context, context.getString(R.string.NoNetwork), Toast.LENGTH_LONG).show(); 
+	  }
 	}
 
 	@Override

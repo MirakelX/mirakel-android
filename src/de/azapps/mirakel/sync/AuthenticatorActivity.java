@@ -186,7 +186,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 						//showProgress(false);	
 						
 					}
-				},mUsernameEdit.getText().toString(), mPasswordEdit.getText().toString(),Mirakel.Http_Mode.GET).execute(url+"/lists.json");
+				},mUsernameEdit.getText().toString(), mPasswordEdit.getText().toString(),Mirakel.Http_Mode.GET,this).execute(url+"/lists.json");
 				//mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
 				//showProgress(true);
 			} else {

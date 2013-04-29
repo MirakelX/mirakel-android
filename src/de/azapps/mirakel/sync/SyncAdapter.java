@@ -140,7 +140,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				finish_task = true;
 				doSync();
 			}
-		}, Email, Password, Mirakel.Http_Mode.GET).execute(ServerUrl
+		}, Email, Password, Mirakel.Http_Mode.GET,mContext).execute(ServerUrl
 				+ "/lists/all/tasks.json");
 
 		// get Server List-List
@@ -162,7 +162,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				doSync();
 
 			}
-		}, Email, Password, Mirakel.Http_Mode.GET).execute(ServerUrl
+		}, Email, Password, Mirakel.Http_Mode.GET,mContext).execute(ServerUrl
 				+ "/lists.json");
 	}
 
@@ -214,7 +214,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						list.setSync_state(Mirakel.SYNC_STATE_ADD);
 						listDataSource.deleteList(list);
 					}
-				}, Email, Password, Mirakel.Http_Mode.DELETE), ServerUrl
+				}, Email, Password, Mirakel.Http_Mode.DELETE,mContext), ServerUrl
 				+ "/lists/" + list.getId() + ".json"));
 
 	}
@@ -235,7 +235,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					public void after_exec(String result) {
 						// Do Nothing
 					}
-				}, Email, Password, Mirakel.Http_Mode.PUT, data), ServerUrl
+				}, Email, Password, Mirakel.Http_Mode.PUT, data,mContext), ServerUrl
 				+ "/lists/" + list.getId() + ".json"));
 	}
 
@@ -302,7 +302,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						addTasks();
 
 					}
-				}, Email, Password, Mirakel.Http_Mode.POST, data), ServerUrl
+				}, Email, Password, Mirakel.Http_Mode.POST, data,mContext), ServerUrl
 				+ "/lists.json"));
 	}
 
@@ -405,7 +405,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						task.setSync_state(Mirakel.SYNC_STATE_ADD);
 						taskDataSource.deleteTask(task);
 					}
-				}, Email, Password, Mirakel.Http_Mode.DELETE), ServerUrl
+				}, Email, Password, Mirakel.Http_Mode.DELETE,mContext), ServerUrl
 				+ "/lists/" + task.getListId() + "/tasks/" + task.getId()
 				+ ".json"));
 
@@ -437,7 +437,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					public void after_exec(String result) {
 						// Do Nothing
 					}
-				}, Email, Password, Mirakel.Http_Mode.PUT, data), ServerUrl
+				}, Email, Password, Mirakel.Http_Mode.PUT, data,mContext), ServerUrl
 				+ "/lists/" + task.getListId() + "/tasks/" + task.getId()
 				+ ".json"));
 	}
@@ -508,7 +508,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 							Log.e(TAG, "unknown Respons");
 						}
 					}
-				}, Email, Password, Mirakel.Http_Mode.POST, data), ServerUrl
+				}, Email, Password, Mirakel.Http_Mode.POST, data,mContext), ServerUrl
 				+ "/lists/" + task.getListId() + "/tasks.json"));
 
 	}
