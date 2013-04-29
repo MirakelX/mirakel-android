@@ -35,6 +35,7 @@ import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.DatabaseHelper;
+import de.azapps.mirakel.model.task.Task;
 
 /**
  * @author az
@@ -44,7 +45,7 @@ public class ListMirakel extends ListBase {
 	public static final int ALL = 0, DAILY = -1, WEEKLY = -2;
 	public static final short SORT_BY_OPT = 0, SORT_BY_DUE = 1,
 			SORT_BY_PRIO = 2, SORT_BY_ID = 3;
-	public static final String TABLE="lists";
+	public static final String TABLE = "lists";
 
 	public ListMirakel() {
 	}
@@ -57,7 +58,6 @@ public class ListMirakel extends ListBase {
 	public ListMirakel(int id, String name) {
 		super(id, name);
 	}
-	
 
 	/**
 	 * Update the List in the Database
@@ -78,9 +78,12 @@ public class ListMirakel extends ListBase {
 			editor.putInt("SortListWeekly", getSortBy());
 			break;
 		default:
-			setSync_state(getSync_state() == Mirakel.SYNC_STATE_ADD|| getSync_state()==Mirakel.SYNC_STATE_IS_SYNCED? getSync_state()
+			setSync_state(getSync_state() == Mirakel.SYNC_STATE_ADD
+					|| getSync_state() == Mirakel.SYNC_STATE_IS_SYNCED ? getSync_state()
 					: Mirakel.SYNC_STATE_NEED_SYNC);
-			setUpdated_at(new SimpleDateFormat(context.getString(R.string.dateTimeFormat), Locale.getDefault()).format(new Date()));
+			setUpdated_at(new SimpleDateFormat(
+					context.getString(R.string.dateTimeFormat),
+					Locale.getDefault()).format(new Date()));
 			ContentValues values = getContentValues();
 			database.update(ListMirakel.TABLE, values, "_id = " + getId(), null);
 		}
@@ -103,9 +106,18 @@ public class ListMirakel extends ListBase {
 		} else {
 			ContentValues values = new ContentValues();
 			values.put("sync_state", Mirakel.SYNC_STATE_DELETE);
-			database.update(Mirakel.TABLE_TASKS, values, "list_id = " + id, null);
+			database.update(Mirakel.TABLE_TASKS, values, "list_id = " + id,
+					null);
 			database.update(ListMirakel.TABLE, values, "_id=" + id, null);
 		}
+	}
+
+	public List<Task> tasks() {
+		return Task.getTasks(this, getSortBy(), false);
+	}
+
+	public List<Task> tasks(boolean showDone) {
+		return Task.getTasks(this, getSortBy(), showDone);
 	}
 
 	// Static Methods
@@ -163,8 +175,8 @@ public class ListMirakel extends ListBase {
 
 		long insertId = database.insert(ListMirakel.TABLE, null, values);
 
-		Cursor cursor = database.query(ListMirakel.TABLE, allColumns,
-				"_id = " + insertId, null, null, null, null);
+		Cursor cursor = database.query(ListMirakel.TABLE, allColumns, "_id = "
+				+ insertId, null, null, null, null);
 		cursor.moveToFirst();
 		ListMirakel newList = cursorToList(cursor);
 		cursor.close();
@@ -304,13 +316,13 @@ public class ListMirakel extends ListBase {
 	 * Get all Lists by a sync state
 	 * 
 	 * @param state
-	 *            @see Mirakel.SYNC_STATE*
+	 * @see Mirakel.SYNC_STATE*
 	 * @return
 	 */
 	public static List<ListMirakel> bySyncState(short state) {
 		List<ListMirakel> lists = new ArrayList<ListMirakel>();
-		Cursor c = database.query(ListMirakel.TABLE, allColumns,
-				"sync_state=" + state, null, null, null, null);
+		Cursor c = database.query(ListMirakel.TABLE, allColumns, "sync_state="
+				+ state, null, null, null, null);
 		c.moveToFirst();
 		while (!c.isAfterLast()) {
 			lists.add(cursorToList(c));

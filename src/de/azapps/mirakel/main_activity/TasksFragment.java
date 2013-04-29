@@ -155,7 +155,7 @@ public class TasksFragment extends Fragment {
 						.show();
 			}
 		}
-		Task task = main.getTaskDataSource().createTask(name, id);
+		Task task = Task.newTask(name, id);
 		task.setDue(due);
 
 		adapter.addToHead(task);
@@ -168,8 +168,7 @@ public class TasksFragment extends Fragment {
 	public void update() {
 		if (!created)
 			return;
-		final List<Task> values = main.getTaskDataSource().getTasks(
-				main.getCurrentList(), main.getCurrentList().getSortBy());
+		final List<Task> values = main.getCurrentList().tasks();
 		final ListView listView = (ListView) view.findViewById(R.id.tasks_list);
 		AsyncTask<Void, Void, TaskAdapter> task = new AsyncTask<Void, Void, TaskAdapter>() {
 			@Override

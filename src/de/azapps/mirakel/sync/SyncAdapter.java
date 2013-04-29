@@ -61,7 +61,6 @@ import com.google.gson.Gson;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Pair;
 import de.azapps.mirakel.R;
-import de.azapps.mirakel.model.TasksDataSource;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 
@@ -88,7 +87,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	private boolean finish_task;
 	private int listAdd;
 
-	private TasksDataSource taskDataSource;
 
 	private final Context mContext;
 
@@ -101,8 +99,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	@Override
 	public void onPerformSync(Account account, Bundle extras, String authority,
 			ContentProviderClient provider, SyncResult syncResult) {
-		taskDataSource = new TasksDataSource(mContext);
-		taskDataSource.open();
 		DeleteLists = new ArrayList<Pair<Network, String>>();
 		DeleteTasks = new ArrayList<Pair<Network, String>>();
 		AddLists = new ArrayList<Pair<Network, String>>();
@@ -122,7 +118,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				Mirakel.BUNDLE_SERVER_URL);
 
 		// Remove Lists server
-		List<ListMirakel> deletedLists = ListMirakel.bySyncState(Mirakel.SYNC_STATE_DELETE);
+		List<ListMirakel> deletedLists = ListMirakel
+				.bySyncState(Mirakel.SYNC_STATE_DELETE);
 		if (deletedLists != null) {
 			for (ListMirakel deletedList : deletedLists) {
 				delete_list(deletedList);
@@ -130,8 +127,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		}
 
 		// Remove Tasks from server
-		List<Task> deletedTasks = taskDataSource
-				.getTasksBySyncState(Mirakel.SYNC_STATE_DELETE);
+		List<Task> deletedTasks = Task
+				.getBySyncState(Mirakel.SYNC_STATE_DELETE);
 		if (deletedTasks != null) {
 			for (Task deletedTask : deletedTasks) {
 				delete_task(deletedTask);
@@ -142,11 +139,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		new Network(new DataDownloadCommand() {
 			@Override
 			public void after_exec(String result) {
-				ServerTasks = taskDataSource.parse_json(result);
+				ServerTasks = Task.parse_json(result);
 				finish_task = true;
 				doSync();
 			}
-		}, Email, Password, Mirakel.Http_Mode.GET,mContext).execute(ServerUrl
+		}, Email, Password, Mirakel.Http_Mode.GET, mContext).execute(ServerUrl
 				+ "/lists/all/tasks.json");
 
 		// get Server List-List
@@ -163,7 +160,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				doSync();
 
 			}
-		}, Email, Password, Mirakel.Http_Mode.GET,mContext).execute(ServerUrl
+		}, Email, Password, Mirakel.Http_Mode.GET, mContext).execute(ServerUrl
 				+ "/lists.json");
 	}
 
@@ -185,8 +182,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	private void addTasks() {
 		listAdd++;
 		if (listAdd == AddLists.size()) {
-			List<Task> tasks_local = taskDataSource
-					.getTasksBySyncState(Mirakel.SYNC_STATE_ADD);
+			List<Task> tasks_local = Task
+					.getBySyncState(Mirakel.SYNC_STATE_ADD);
 			for (int i = 0; i < tasks_local.size(); i++) {
 				add_task(tasks_local.get(i));
 			}
@@ -214,8 +211,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					public void after_exec(String result) {
 						list.destroy();
 					}
-				}, Email, Password, Mirakel.Http_Mode.DELETE,mContext), ServerUrl
-				+ "/lists/" + list.getId() + ".json"));
+				}, Email, Password, Mirakel.Http_Mode.DELETE, mContext),
+				ServerUrl + "/lists/" + list.getId() + ".json"));
 
 	}
 
@@ -235,8 +232,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					public void after_exec(String result) {
 						// Do Nothing
 					}
-				}, Email, Password, Mirakel.Http_Mode.PUT, data,mContext), ServerUrl
-				+ "/lists/" + list.getId() + ".json"));
+				}, Email, Password, Mirakel.Http_Mode.PUT, data, mContext),
+				ServerUrl + "/lists/" + list.getId() + ".json"));
 	}
 
 	/**
@@ -247,12 +244,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	public void add_list(final ListMirakel list) {
 		List<BasicNameValuePair> data = new ArrayList<BasicNameValuePair>();
 		data.add(new BasicNameValuePair("list[name]", list.getName()));
-		AddLists.add(new Pair<Network, String>(new Network(
-				new DataDownloadCommand() {
+		AddLists.add(new Pair<Network, String>(
+				new Network(new DataDownloadCommand() {
 					@Override
 					public void after_exec(String result) {
-						ListMirakel list_response = new Gson().fromJson(
-								result, ListMirakel.class);
+						ListMirakel list_response = new Gson().fromJson(result,
+								ListMirakel.class);
 						if (list.getId() < list_response.getId()) {
 							long diff = list_response.getId() - list.getId();
 							// Should be all lists with _id> list_id
@@ -287,9 +284,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						ContentValues values = new ContentValues();
 						values.put("_id", list_response.getId());
 						values.put("sync_state", Mirakel.SYNC_STATE_NOTHING);
-						Mirakel.getWritableDatabase().update(
-								ListMirakel.TABLE, values,
-								"_id=" + list.getId(), null);
+						Mirakel.getWritableDatabase().update(ListMirakel.TABLE,
+								values, "_id=" + list.getId(), null);
 						values = new ContentValues();
 						values.put("list_id", list_response.getId());
 						Mirakel.getWritableDatabase().update(
@@ -298,8 +294,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						addTasks();
 
 					}
-				}, Email, Password, Mirakel.Http_Mode.POST, data,mContext), ServerUrl
-				+ "/lists.json"));
+				}, Email, Password, Mirakel.Http_Mode.POST, data, mContext),
+				ServerUrl + "/lists.json"));
 	}
 
 	/**
@@ -312,14 +308,14 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			ListMirakel list = ListMirakel.getList(list_server.getId());
 			if (list == null) {
 				list_server.setSync_state(Mirakel.SYNC_STATE_IS_SYNCED);
-				long id = Mirakel.getWritableDatabase().insert(
-						ListMirakel.TABLE, null,
-						list_server.getContentValues());
+				long id = Mirakel.getWritableDatabase()
+						.insert(ListMirakel.TABLE, null,
+								list_server.getContentValues());
 				ContentValues values = new ContentValues();
 				values.put("_id", list_server.getId());
 				values.put("sync_state", Mirakel.SYNC_STATE_IS_SYNCED);
-				Mirakel.getWritableDatabase().update(ListMirakel.TABLE,
-						values, "_id=" + id, null);
+				Mirakel.getWritableDatabase().update(ListMirakel.TABLE, values,
+						"_id=" + id, null);
 				continue;
 			} else {
 				if (list.getSync_state() == Mirakel.SYNC_STATE_NOTHING) {
@@ -404,11 +400,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					public void after_exec(String result) {
 						// Remove Task
 						task.setSync_state(Mirakel.SYNC_STATE_ADD);
-						taskDataSource.deleteTask(task);
+						task.delete();
 					}
-				}, Email, Password, Mirakel.Http_Mode.DELETE,mContext), ServerUrl
-				+ "/lists/" + task.getList().getId() + "/tasks/" + task.getId()
-				+ ".json"));
+				}, Email, Password, Mirakel.Http_Mode.DELETE, mContext),
+				ServerUrl + "/lists/" + task.getList().getId() + "/tasks/"
+						+ task.getId() + ".json"));
 
 	}
 
@@ -431,16 +427,16 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		data.add(new BasicNameValuePair("task[due]", dueString));
 		data.add(new BasicNameValuePair("task[content]", task.getContent()));
 		task.setSync_state(Mirakel.SYNC_STATE_IS_SYNCED);
-		taskDataSource.saveTask(task);
+		task.save();
 		SyncTasks.add(new Pair<Network, String>(new Network(
 				new DataDownloadCommand() {
 					@Override
 					public void after_exec(String result) {
 						// Do Nothing
 					}
-				}, Email, Password, Mirakel.Http_Mode.PUT, data,mContext), ServerUrl
-				+ "/lists/" + task.getList().getId() + "/tasks/" + task.getId()
-				+ ".json"));
+				}, Email, Password, Mirakel.Http_Mode.PUT, data, mContext),
+				ServerUrl + "/lists/" + task.getList().getId() + "/tasks/"
+						+ task.getId() + ".json"));
 	}
 
 	/**
@@ -461,12 +457,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						.format(due.getTime()))));
 		data.add(new BasicNameValuePair("task[content]", task.getContent()));
 
-		AddTasks.add(new Pair<Network, String>(new Network(
-				new DataDownloadCommand() {
+		AddTasks.add(new Pair<Network, String>(
+				new Network(new DataDownloadCommand() {
 					@Override
 					public void after_exec(String result) {
 						try {
-							Task taskNew = taskDataSource.parse_json(
+							Task taskNew = Task.parse_json(
 									"[" + result + "]").get(0);
 							if (taskNew.getId() > task.getId()) {
 								// Prevent id-Collision
@@ -507,8 +503,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 							Log.e(TAG, "unknown Respons");
 						}
 					}
-				}, Email, Password, Mirakel.Http_Mode.POST, data,mContext), ServerUrl
-				+ "/lists/" + task.getList().getId() + "/tasks.json"));
+				}, Email, Password, Mirakel.Http_Mode.POST, data, mContext),
+				ServerUrl + "/lists/" + task.getList().getId() + "/tasks.json"));
 
 	}
 
@@ -522,7 +518,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		if (tasks_server == null)
 			return;
 		for (Task task_server : tasks_server) {
-			Task task = taskDataSource.getTaskToSync(task_server.getId());
+			Task task = Task.getToSync(task_server.getId());
 			if (task == null) {
 				// New Task from server, add to db
 				task_server.setSync_state(Mirakel.SYNC_STATE_IS_SYNCED);
@@ -545,7 +541,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			} else {
 				if (task.getSync_state() == Mirakel.SYNC_STATE_NOTHING) {
 					task_server.setSync_state(Mirakel.SYNC_STATE_IS_SYNCED);
-					taskDataSource.saveTask(task_server);
+					task_server.save();
 				} else if (task.getSync_state() == Mirakel.SYNC_STATE_NEED_SYNC) {
 					DateFormat df = new SimpleDateFormat(
 							mContext.getString(R.string.dateTimeFormat),
@@ -559,7 +555,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 							// server task newer, use this task instated local
 							task_server
 									.setSync_state(Mirakel.SYNC_STATE_IS_SYNCED);
-							taskDataSource.saveTask(task_server);
+							task_server.save();
 						}
 					} catch (ParseException e) {
 						Log.e(TAG, "Unabel to parse Dates");
@@ -591,7 +587,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 							c.moveToPrevious();
 						}
 						c.close();
-						taskDataSource.saveTask(task_server);
+						task_server.save();
 					}
 				} else if (task.getSync_state() == Mirakel.SYNC_STATE_DELETE) {
 					// Nothing

@@ -46,7 +46,6 @@ import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.PagerAdapter;
 import de.azapps.mirakel.R;
-import de.azapps.mirakel.model.TasksDataSource;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.services.NotificationService;
@@ -69,7 +68,6 @@ public class MainActivity extends FragmentActivity implements
 	protected TasksFragment tasksFragment;
 	protected TaskFragment taskFragment;
 	private Menu menu;
-	private TasksDataSource taskDataSource;
 	private Task currentTask;
 	private ListMirakel currentList;
 
@@ -102,8 +100,6 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	private void setupLayout() {
-		taskDataSource = new TasksDataSource(this);
-		taskDataSource.open();
 		setCurrentList(ListMirakel.getList(0));
 
 		// Intialise ViewPager
@@ -113,7 +109,7 @@ public class MainActivity extends FragmentActivity implements
 		if (intent.getAction() == SHOW_TASK) {
 			int taskId = intent.getIntExtra(EXTRA_ID, 0);
 			if (taskId != 0) {
-				Task task = taskDataSource.getTask(taskId);
+				Task task = Task.get(taskId);
 				currentList = task.getList();
 				setCurrentTask(task);
 				return;
@@ -154,7 +150,7 @@ public class MainActivity extends FragmentActivity implements
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
 										int which) {
-									taskDataSource.deleteTask(currentTask);
+									currentTask.delete();
 									setCurrentList(currentList);
 								}
 							})
@@ -407,8 +403,7 @@ public class MainActivity extends FragmentActivity implements
 			mViewPager.setCurrentItem(TASKS_FRAGMENT);
 		}
 
-		List<Task> currentTasks = taskDataSource.getTasks(currentList,
-				currentList.getSortBy());
+		List<Task> currentTasks = currentList.tasks();
 		if (currentTasks.size() == 0) {
 			currentTask = new Task(getApplicationContext());
 		} else {
@@ -420,9 +415,6 @@ public class MainActivity extends FragmentActivity implements
 
 	}
 
-	public TasksDataSource getTaskDataSource() {
-		return taskDataSource;
-	}
 
 	/**
 	 * Ugly Wrapper TODO make it more beautiful
@@ -485,13 +477,11 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	protected void onDestroy() {
-		taskDataSource.close();
 		super.onDestroy();
 	}
 
 	@Override
 	protected void onPause() {
-		taskDataSource.close();
 		super.onPause();
 	}
 
@@ -499,7 +489,6 @@ public class MainActivity extends FragmentActivity implements
 	protected void onResume() {
 		super.onResume();
 		NotificationService.updateNotificationAndWidget(this);
-		taskDataSource.open();
 	}
 
 	@Override

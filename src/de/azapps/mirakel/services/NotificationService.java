@@ -33,14 +33,12 @@ import android.support.v4.app.NotificationCompat;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.main_activity.MainActivity;
-import de.azapps.mirakel.model.TasksDataSource;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.widget.MainWidgetProvider;
 
 public class NotificationService extends Service {
 	private SharedPreferences preferences;
-	private TasksDataSource taskDataSource;
 	private boolean existsNotification = false;
 	public static NotificationService notificationService;
 
@@ -54,8 +52,6 @@ public class NotificationService extends Service {
 	public void onCreate() {
 		preferences = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
-		taskDataSource = new TasksDataSource(getApplicationContext());
-		taskDataSource.open();
 		notifier();
 		NotificationService.setNotificationService(this);
 	}
@@ -78,8 +74,7 @@ public class NotificationService extends Service {
 
 		// Get the data
 		ListMirakel todayList = ListMirakel.getList(listId);
-		List<Task> todayTasks = taskDataSource.getTasks(todayList,
-				todayList.getSortBy());
+		List<Task> todayTasks = todayList.tasks();
 		String notificationTitle;
 		String notificationText;
 		if (todayTasks.size() == 0) {

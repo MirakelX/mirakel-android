@@ -25,6 +25,7 @@ import android.graphics.Color;
 import android.util.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.task.Task;
 
 public class Mirakel extends Application {
 	public static final int[] PRIO_COLOR = { Color.parseColor("#008000"),
@@ -65,6 +66,7 @@ public class Mirakel extends Application {
 		openHelper = new DatabaseHelper(this);
 		Mirakel.getWritableDatabase().execSQL("PRAGMA foreign_keys=ON;");
 		ListMirakel.init(getApplicationContext());
+		Task.init(getApplicationContext());
 	}
 
 	public static SQLiteDatabase getWritableDatabase() {

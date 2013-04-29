@@ -28,7 +28,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.util.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
-import de.azapps.mirakel.model.TasksDataSource;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 
@@ -78,27 +77,20 @@ public class MirakelContentProvider extends ContentProvider {
 			return 0;
 		case TASKS:
 			Log.d(TAG, "DELETE ALL TASKS?!!");
-			TasksDataSource taskDataSource = new TasksDataSource(getContext());
-			taskDataSource.open();
-			List<Task> tasks = taskDataSource.getAllTasks();
+			List<Task> tasks = Task.all();
 			for (Task t : tasks) {
-				taskDataSource.deleteTask(t);
+				t.delete();
 			}
-			taskDataSource.close();
 			return tasks.size();
 		case TASKS_ITEM:
 			int task_id = 0;
 			Log.d(TAG, "DELETE TASK " + task_id);
-			taskDataSource = new TasksDataSource(getContext());
-			taskDataSource.open();
-			Task task = taskDataSource.getTask(Long.parseLong(uri
+			Task task = Task.get(Long.parseLong(uri
 					.getLastPathSegment()));
 			if (task != null) {
-				taskDataSource.deleteTask(task);
-				taskDataSource.close();
+				task.delete();
 				return 1;
 			}
-			taskDataSource.close();
 			return 0;
 		default:
 			Log.wtf(TAG, "Unsupportet uri");

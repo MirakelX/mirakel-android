@@ -29,7 +29,6 @@ import android.widget.RemoteViewsService;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.MirakelHelper;
 import de.azapps.mirakel.R;
-import de.azapps.mirakel.model.TasksDataSource;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 
@@ -46,7 +45,6 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
 	private Context mContext;
 	private List<Task> tasks;
-	private TasksDataSource tasksDatasource;
 	private int listId = 0;
 	private int sorting;
 	private boolean showDone;
@@ -64,13 +62,10 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	 * Define and open the DataSources
 	 */
 	public void onCreate() {
-		tasksDatasource = new TasksDataSource(mContext);
-		tasksDatasource.open();
-		tasks = tasksDatasource.getTasks(listId, sorting, showDone);
+		tasks = Task.getTasks(listId, sorting, showDone);
 	}
 
 	public void onDestroy() {
-		tasksDatasource.close();
 	}
 
 	public int getCount() {
@@ -169,7 +164,5 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	}
 
 	public void onDataSetChanged() {
-		tasksDatasource.open();
-		// tasks = tasksDatasource.getTasks(listId);
 	}
 }
