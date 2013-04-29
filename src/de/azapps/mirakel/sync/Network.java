@@ -22,7 +22,6 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -63,10 +62,8 @@ public class Network extends AsyncTask<String, Integer, String> {
 		try {
 			return downloadUrl(urls[0]);
 		} catch (IOException e) {
-			//e.printStackTrace();
 			Log.e(TAG,"Unable to retrieve web page. URL may be invalid.");
 		} catch (URISyntaxException e) {
-			//e.printStackTrace();
 			Log.e(TAG,"Invalid UrlSyntax");
 		}
 		Integer[] t={1};

@@ -130,13 +130,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			@Override
 			public void after_exec(String result) {
 				ServerTasks = taskDataSource.parse_json(result);
-				//merge_with_server(tasks_server);
-
-				// ContentValues values = new ContentValues();
-				// values.put("sync_state", Mirakel.SYNC_STATE_NOTHING);
-				// Mirakel.getWritableDatabase().update(Mirakel.TABLE_TASKS,
-				// values, "not sync_state="
-				// + Mirakel.SYNC_STATE_DELETE, null);
 				finish_task = true;
 				doSync();
 			}
@@ -149,15 +142,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			public void after_exec(String result) {
 				ServerLists = new Gson().fromJson(result,
 						List_mirakle[].class);
-				//merge_with_server(lists_server);
 				List<List_mirakle> lists_local = listDataSource.getListsBySyncState(Mirakel.SYNC_STATE_ADD);
 				for (List_mirakle list : lists_local) {
 					add_list(list);
 				}
-				// ContentValues values = new ContentValues();
-				// values.put("sync_state", Mirakel.SYNC_STATE_NOTHING);
-				// Mirakel.getWritableDatabase().update(Mirakel.TABLE_LISTS,
-				// values, "not sync_state="+ Mirakel.SYNC_STATE_DELETE, null);
 				finish_list = true;
 				doSync();
 
@@ -199,7 +187,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	}
 
 	// Own Functions
-	// TODO NEED TO CLEANUP
 
 	/**
 	 * Delete a List from the Server
@@ -256,21 +243,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						if (list.getId() < list_response.getId()) {
 							long diff = list_response.getId() - list.getId();
 							// Should be all lists with _id> list_id
-							// TODO update ids in Tasks!!!
 							Cursor c = Mirakel.getReadableDatabase().rawQuery(
 									"Select _id from " + Mirakel.TABLE_LISTS
 											+ " WHERE sync_state="
 											+ Mirakel.SYNC_STATE_ADD
 											+ " and _id>=" + list.getId(), null);
 							c.moveToFirst();
-							/*while (!c.isAfterLast()) {
-								Mirakel.getWritableDatabase().execSQL(
-										"UPDATE " + Mirakel.TABLE_TASKS
-												+ " SET list_id=list_id+"
-												+ diff + " WHERE list_id="
-												+ c.getInt(0));
-								c.moveToNext();
-							}*/
 							c.close();
 							c= Mirakel.getReadableDatabase().rawQuery("Select _id from "+Mirakel.TABLE_LISTS+" WHERE sync_state="
 											+ Mirakel.SYNC_STATE_ADD
@@ -460,12 +438,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				: (new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 						.format(due.getTime()))));
 		data.add(new BasicNameValuePair("task[content]", task.getContent()));
-		// List must exists before syncing task!!
-		List_mirakle list=listDataSource.getList((int)task.getListId());
-		// Log.e(TAG,"Listid: "+list.getId()+"  Sync-State: "+list.getSync_state());
-		//TODO Make better
-		//
-		
 		AddTasks.add(new Pair<Network, String>(new Network(
 				new DataDownloadCommand() {
 					@Override
@@ -491,12 +463,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 									c.moveToPrevious();
 								}
 								c.close();
-								/*Mirakel.getWritableDatabase().execSQL(
-										"UPDATE " + Mirakel.TABLE_TASKS
-												+ " SET _id=_id+" + diff
-												+ " WHERE sync_state="
-												+ Mirakel.SYNC_STATE_ADD
-												+ "and _id>" + task.getId());*/
 							}
 							ContentValues values = new ContentValues();
 							values.put("_id", taskNew.getId());
@@ -522,7 +488,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	protected void merge_with_server(List<Task> tasks_server) {
 		if (tasks_server == null)
 			return;
-		//TODO FIX Delete Tasks
 		for (Task task_server : tasks_server) {
 			Task task = taskDataSource.getTaskToSync(task_server.getId());
 			if (task == null) {

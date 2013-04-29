@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -261,20 +259,11 @@ public class MainActivity extends FragmentActivity implements
 		case R.id.menu_sync_now_list:
 		case R.id.menu_sync_now_task:
 		case R.id.menu_sync_now_tasks:
-			try{
-				AccountManager am=AccountManager.get(this);
-				Account account=am.getAccountsByType(Mirakel.ACCOUNT_TYP)[0];
-				//Should start Sync
-				//ContentResolver.requestSync(account, Mirakel.AUTHORITY_TYP, new Bundle());
-				Bundle bundle = new Bundle();
-				bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-				bundle.putBoolean(ContentResolver.SYNC_EXTRAS_FORCE, true);
-				bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-				ContentResolver.requestSync(null, Mirakel.AUTHORITY_TYP, bundle);
-			}catch (Exception e) {
-				// TODO: handle exception
-				Log.e(TAG,"No Account founded");
-			}
+			Bundle bundle = new Bundle();
+			bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+			bundle.putBoolean(ContentResolver.SYNC_EXTRAS_FORCE, true);
+			bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+			ContentResolver.requestSync(null, Mirakel.AUTHORITY_TYP, bundle);
 		default:
 			return super.onOptionsItemSelected(item);
 		}
