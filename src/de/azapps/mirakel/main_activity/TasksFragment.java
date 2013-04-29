@@ -50,8 +50,8 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
-import de.azapps.mirakel.model.Task;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.task.TaskBase;
 
 public class TasksFragment extends Fragment {
 	private static final String TAG = "TasksActivity";
@@ -142,9 +142,9 @@ public class TasksFragment extends Fragment {
 		long id = main.getCurrentList().getId();
 		GregorianCalendar due = null;
 		if (id <= 0) {
-			if (id == Mirakel.LIST_DAILY) {
+			if (id == ListMirakel.DAILY) {
 				due = new GregorianCalendar();
-			} else if (id == Mirakel.LIST_WEEKLY) {
+			} else if (id == ListMirakel.WEEKLY) {
 				due = new GregorianCalendar();
 				due.add(GregorianCalendar.DAY_OF_MONTH, 7);
 			}
@@ -156,7 +156,7 @@ public class TasksFragment extends Fragment {
 						.show();
 			}
 		}
-		Task task = main.getTaskDataSource().createTask(name, id);
+		TaskBase task = main.getTaskDataSource().createTask(name, id);
 		task.setDue(due);
 
 		adapter.addToHead(task);
@@ -169,7 +169,7 @@ public class TasksFragment extends Fragment {
 	public void update() {
 		if (!created)
 			return;
-		final List<Task> values = main.getTaskDataSource().getTasks(
+		final List<TaskBase> values = main.getTaskDataSource().getTasks(
 				main.getCurrentList(), main.getCurrentList().getSortBy());
 		final ListView listView = (ListView) view.findViewById(R.id.tasks_list);
 		AsyncTask<Void, Void, TaskAdapter> task = new AsyncTask<Void, Void, TaskAdapter>() {
@@ -180,7 +180,7 @@ public class TasksFragment extends Fragment {
 							@Override
 							public void onClick(View v) {
 								CheckBox cb = (CheckBox) v;
-								Task task = (Task) cb.getTag();
+								TaskBase task = (TaskBase) cb.getTag();
 								task.toggleDone();
 								main.saveTask(task);
 							}
@@ -193,7 +193,7 @@ public class TasksFragment extends Fragment {
 								String[] t = { "-2", "-1", "0", "1", "2" };
 								picker.setDisplayedValues(t);
 								picker.setWrapSelectorWheel(false);
-								picker.setValue(((Task) v.getTag())
+								picker.setValue(((TaskBase) v.getTag())
 										.getPriority() + 2);
 								new AlertDialog.Builder(main)
 										.setTitle(
@@ -207,7 +207,7 @@ public class TasksFragment extends Fragment {
 													public void onClick(
 															DialogInterface dialog,
 															int whichButton) {
-														Task task = (Task) v
+														TaskBase task = (TaskBase) v
 																.getTag();
 														task.setPriority((picker
 																.getValue() - 2));
@@ -243,7 +243,7 @@ public class TasksFragment extends Fragment {
 			public void onItemClick(AdapterView<?> parent, View item,
 					int position, long id) {
 				// TODO Remove Bad Hack
-				Task t = values.get((int) id);
+				TaskBase t = values.get((int) id);
 				Log.v(TAG, "Switch to Task " + t.getId());
 				main.setCurrentTask(t);
 			}

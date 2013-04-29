@@ -28,9 +28,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.util.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
-import de.azapps.mirakel.model.Task;
 import de.azapps.mirakel.model.TasksDataSource;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.task.TaskBase;
 
 public class MirakelContentProvider extends ContentProvider {
 	// public static final String PROVIDER_NAME = Mirakel.AUTHORITY_TYP;
@@ -59,9 +59,9 @@ public class MirakelContentProvider extends ContentProvider {
 			Log.d(TAG, "DELETE ALL LISTS?!!");
 			List<ListMirakel> lists = ListMirakel.all();
 			for (ListMirakel list : lists) {
-				if (list.getId() != Mirakel.LIST_ALL
-						&& list.getId() != Mirakel.LIST_DAILY
-						&& list.getId() != Mirakel.LIST_WEEKLY) {
+				if (list.getId() != ListMirakel.ALL
+						&& list.getId() != ListMirakel.DAILY
+						&& list.getId() != ListMirakel.WEEKLY) {
 					list.destroy();
 				}
 			}
@@ -71,7 +71,7 @@ public class MirakelContentProvider extends ContentProvider {
 			Log.d(TAG, "DELETE LIST " + list_id);
 			ListMirakel list = ListMirakel.getList(Integer.parseInt(uri
 					.getLastPathSegment()));
-			if (list.getId() > Mirakel.LIST_ALL) {
+			if (list.getId() > ListMirakel.ALL) {
 				list.destroy();
 				return 1;
 			}
@@ -80,8 +80,8 @@ public class MirakelContentProvider extends ContentProvider {
 			Log.d(TAG, "DELETE ALL TASKS?!!");
 			TasksDataSource taskDataSource = new TasksDataSource(getContext());
 			taskDataSource.open();
-			List<Task> tasks = taskDataSource.getAllTasks();
-			for (Task t : tasks) {
+			List<TaskBase> tasks = taskDataSource.getAllTasks();
+			for (TaskBase t : tasks) {
 				taskDataSource.deleteTask(t);
 			}
 			taskDataSource.close();
@@ -91,7 +91,7 @@ public class MirakelContentProvider extends ContentProvider {
 			Log.d(TAG, "DELETE TASK " + task_id);
 			taskDataSource = new TasksDataSource(getContext());
 			taskDataSource.open();
-			Task task = taskDataSource.getTask(Long.parseLong(uri
+			TaskBase task = taskDataSource.getTask(Long.parseLong(uri
 					.getLastPathSegment()));
 			if (task != null) {
 				taskDataSource.deleteTask(task);

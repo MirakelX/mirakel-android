@@ -48,9 +48,9 @@ import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.PagerAdapter;
 import de.azapps.mirakel.R;
-import de.azapps.mirakel.model.Task;
 import de.azapps.mirakel.model.TasksDataSource;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.task.TaskBase;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.static_activities.SettingsActivity;
 
@@ -72,7 +72,7 @@ public class MainActivity extends FragmentActivity implements
 	protected TaskFragment taskFragment;
 	private Menu menu;
 	private TasksDataSource taskDataSource;
-	private Task currentTask;
+	private TaskBase currentTask;
 	private ListMirakel currentList;
 
 	private static final int LIST_FRAGMENT = 0, TASKS_FRAGMENT = 1,
@@ -96,7 +96,7 @@ public class MainActivity extends FragmentActivity implements
 
 			SharedPreferences.Editor editor = preferences.edit();
 			editor.putBoolean("startupAllLists", false);
-			editor.putString("startupList", "" + Mirakel.LIST_ALL);
+			editor.putString("startupList", "" + ListMirakel.ALL);
 			editor.commit();
 		}
 		setContentView(R.layout.activity_main);
@@ -115,8 +115,8 @@ public class MainActivity extends FragmentActivity implements
 		if (intent.getAction() == SHOW_TASK) {
 			int taskId = intent.getIntExtra(EXTRA_ID, 0);
 			if (taskId != 0) {
-				Task task = taskDataSource.getTask(taskId);
-				currentList = ListMirakel.getList((int) task.getListId());
+				TaskBase task = taskDataSource.getTask(taskId);
+				currentList = task.getList();
 				setCurrentTask(task);
 				return;
 			}
@@ -183,10 +183,9 @@ public class MainActivity extends FragmentActivity implements
 			builder.setItems(items.toArray(new CharSequence[items.size()]),
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int item) {
-							currentTask.setListId(list_ids.get(item));
+							currentTask.setList(ListMirakel.getList(list_ids.get(item)));
 							taskDataSource.saveTask(currentTask);
-							currentList = ListMirakel.getList((int) currentTask
-									.getListId());
+							currentList = currentTask.getList();
 							tasksFragment.update();
 							listFragment.update();
 						}
@@ -198,8 +197,8 @@ public class MainActivity extends FragmentActivity implements
 
 		case R.id.list_delete:
 			long listId = currentList.getId();
-			if (listId == Mirakel.LIST_ALL || listId == Mirakel.LIST_DAILY
-					|| listId == Mirakel.LIST_WEEKLY)
+			if (listId == ListMirakel.ALL || listId == ListMirakel.DAILY
+					|| listId == ListMirakel.WEEKLY)
 				return true;
 			new AlertDialog.Builder(this)
 					.setTitle(this.getString(R.string.list_delete_title))
@@ -210,7 +209,7 @@ public class MainActivity extends FragmentActivity implements
 										int which) {
 									currentList.destroy();
 									currentList = ListMirakel
-											.getList(Mirakel.LIST_ALL);
+											.getList(ListMirakel.ALL);
 									setCurrentList(currentList);
 								}
 							})
@@ -389,7 +388,7 @@ public class MainActivity extends FragmentActivity implements
 	public void onPageScrollStateChanged(int state) {
 	}
 
-	Task getCurrentTask() {
+	TaskBase getCurrentTask() {
 		return currentTask;
 	}
 
@@ -397,7 +396,7 @@ public class MainActivity extends FragmentActivity implements
 		return preferences;
 	}
 
-	void setCurrentTask(Task currentTask) {
+	void setCurrentTask(TaskBase currentTask) {
 		this.currentTask = currentTask;
 		if (taskFragment != null) {
 			taskFragment.update();
@@ -416,10 +415,10 @@ public class MainActivity extends FragmentActivity implements
 			mViewPager.setCurrentItem(TASKS_FRAGMENT);
 		}
 
-		List<Task> currentTasks = taskDataSource.getTasks(currentList,
+		List<TaskBase> currentTasks = taskDataSource.getTasks(currentList,
 				currentList.getSortBy());
 		if (currentTasks.size() == 0) {
-			currentTask = new Task(getApplicationContext());
+			currentTask = new TaskBase(getApplicationContext());
 		} else {
 			currentTask = currentTasks.get(0);
 		}
@@ -438,7 +437,7 @@ public class MainActivity extends FragmentActivity implements
 	 * 
 	 * @param task
 	 */
-	void saveTask(Task task) {
+	void saveTask(TaskBase task) {
 		Log.v(TAG, "Saving task… (task:" + task.getId() + " – current:"
 				+ currentTask.getId());
 		taskDataSource.saveTask(task);

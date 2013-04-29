@@ -28,38 +28,40 @@ import android.view.Window;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.main_activity.MainActivity;
+import de.azapps.mirakel.model.list.ListMirakel;
 
 public class SplashScreenActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-	    getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-	    getActionBar().hide();
+		getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+		getActionBar().hide();
 		setContentView(R.layout.activity_splash_screen);
 
-	    SharedPreferences preferences=PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-	    if(!preferences.contains("startupAllLists")) {
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(getApplicationContext());
+		if (!preferences.contains("startupAllLists")) {
 			Intent intent = new Intent(SplashScreenActivity.this,
 					StartActivity.class);
 			startActivity(intent);
-	    } else {
-	    	if(preferences.getBoolean("startupAllLists", false)) {
+		} else {
+			if (preferences.getBoolean("startupAllLists", false)) {
 				Intent intent = new Intent(SplashScreenActivity.this,
 						MainActivity.class);
 				intent.setAction(MainActivity.SHOW_LISTS);
 				startActivity(intent);
-	    	} else {
-	    		int listId=Integer.parseInt(preferences.getString("startupList", ""+Mirakel.LIST_ALL));
+			} else {
+				int listId = Integer.parseInt(preferences.getString(
+						"startupList", "" + ListMirakel.ALL));
 				Intent intent = new Intent(SplashScreenActivity.this,
 						MainActivity.class);
 				intent.setAction(MainActivity.SHOW_LIST);
 				intent.putExtra(MainActivity.EXTRA_ID, listId);
 				startActivity(intent);
-	    		
-	    	}
-	    }
-	    
+
+			}
+		}
 
 	}
 

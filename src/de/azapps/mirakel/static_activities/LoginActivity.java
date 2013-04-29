@@ -39,6 +39,7 @@ import android.widget.TextView;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.main_activity.MainActivity;
+import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.sync.DataDownloadCommand;
 import de.azapps.mirakel.sync.Network;
 
@@ -199,7 +200,7 @@ public class LoginActivity extends Activity {
 							Log.e(TAG, "Login sucess");
 							Intent intent = new Intent(LoginActivity.this,
 									MainActivity.class);
-							intent.putExtra("listId", Mirakel.LIST_ALL);
+							intent.putExtra("listId", ListMirakel.ALL);
 							intent.putExtra("email", mEmailView.getText()
 									.toString());
 							intent.putExtra("password", mPasswordView.getText()

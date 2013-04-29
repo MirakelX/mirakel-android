@@ -33,17 +33,17 @@ import android.widget.TextView;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.MirakelHelper;
 import de.azapps.mirakel.R;
-import de.azapps.mirakel.model.Task;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.task.TaskBase;
 
-public class TaskAdapter extends ArrayAdapter<Task> {
+public class TaskAdapter extends ArrayAdapter<TaskBase> {
 	Context context;
 	int layoutResourceId, listId;
-	List<Task> data = null;
+	List<TaskBase> data = null;
 	OnClickListener clickCheckbox;
 	OnClickListener clickPrio;
 
-	public TaskAdapter(Context context, int layoutResourceId, List<Task> data,
+	public TaskAdapter(Context context, int layoutResourceId, List<TaskBase> data,
 			OnClickListener clickCheckbox, OnClickListener click_prio,
 			int listId) {
 		super(context, layoutResourceId, data);
@@ -60,7 +60,7 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 	 * 
 	 * @param task
 	 */
-	void addToHead(Task task) {
+	void addToHead(TaskBase task) {
 		data.add(0, task);
 	}
 
@@ -91,7 +91,7 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 			holder = (TaskHolder) row.getTag();
 		}
 
-		Task task = data.get(position);
+		TaskBase task = data.get(position);
 
 		// Done
 		holder.taskRowDone.setChecked(task.isDone());
@@ -104,8 +104,7 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		}
 		if (listId <= 0) {
 			holder.taskRowList.setVisibility(View.VISIBLE);
-			holder.taskRowList.setText(ListMirakel.getList(
-					(int) task.getListId()).getName());
+			holder.taskRowList.setText(task.getList().getName());
 		} else {
 			holder.taskRowList.setVisibility(View.GONE);
 		}

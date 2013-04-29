@@ -195,7 +195,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 							onAuthenticationResult("Foo",url);
 							/*Intent intent = new Intent(LoginActivity.this,
 									MainActivity.class);
-							intent.putExtra("listId", Mirakel.LIST_ALL);
+							intent.putExtra("listId", ListMirakel.ALL);
 							intent.putExtra("email", mEmailView.getText().toString());
 							intent.putExtra("password", mPasswordView.getText().toString());
 							intent.putExtra("url", url);

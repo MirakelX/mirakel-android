@@ -31,6 +31,7 @@ import android.widget.Button;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.main_activity.MainActivity;
+import de.azapps.mirakel.model.list.ListMirakel;
 
 public class StartActivity extends Activity {
 	private static final String TAG = "StartActivity";
@@ -63,7 +64,7 @@ public class StartActivity extends Activity {
 				} else {
 					Intent intent = new Intent(StartActivity.this,
 							MainActivity.class);
-					intent.putExtra("listId", Mirakel.LIST_ALL);
+					intent.putExtra("listId", ListMirakel.ALL);
 					startActivity(intent);
 				}
 			}

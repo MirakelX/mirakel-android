@@ -42,6 +42,7 @@ import de.azapps.mirakel.model.DatabaseHelper;
  * 
  */
 public class ListMirakel extends ListBase {
+	public static final int ALL = 0, DAILY = -1, WEEKLY = -2;
 	public static final short SORT_BY_OPT = 0, SORT_BY_DUE = 1,
 			SORT_BY_PRIO = 2, SORT_BY_ID = 3;
 	public static final String TABLE="lists";
@@ -68,13 +69,13 @@ public class ListMirakel extends ListBase {
 	public void save() {
 		SharedPreferences.Editor editor = preferences.edit();
 		switch (getId()) {
-		case Mirakel.LIST_ALL:
+		case ListMirakel.ALL:
 			editor.putInt("SortListAll", getSortBy());
 			break;
-		case Mirakel.LIST_DAILY:
+		case ListMirakel.DAILY:
 			editor.putInt("SortListDaily", getSortBy());
 			break;
-		case Mirakel.LIST_WEEKLY:
+		case ListMirakel.WEEKLY:
 			editor.putInt("SortListWeekly", getSortBy());
 			break;
 		default:
@@ -207,17 +208,17 @@ public class ListMirakel extends ListBase {
 		SharedPreferences settings = PreferenceManager
 				.getDefaultSharedPreferences(context.getApplicationContext());
 		switch (listId) {
-		case Mirakel.LIST_ALL:
+		case ListMirakel.ALL:
 			list.setName(context.getString(R.string.list_all));
 			list.setSortBy(settings.getInt("SortListAll",
 					ListMirakel.SORT_BY_OPT));
 			break;
-		case Mirakel.LIST_DAILY:
+		case ListMirakel.DAILY:
 			list.setName(context.getString(R.string.list_today));
 			list.setSortBy(settings.getInt("SortListDaily",
 					ListMirakel.SORT_BY_OPT));
 			break;
-		case Mirakel.LIST_WEEKLY:
+		case ListMirakel.WEEKLY:
 			list.setName(context.getString(R.string.list_week));
 			list.setSortBy(settings.getInt("SortListWeekly",
 					ListMirakel.SORT_BY_OPT));
@@ -278,13 +279,13 @@ public class ListMirakel extends ListBase {
 		List<ListMirakel> lists = new ArrayList<ListMirakel>();
 		// TODO Get from strings.xml
 		if (preferences.getBoolean("listAll", true))
-			lists.add(new ListMirakel(Mirakel.LIST_ALL, context
+			lists.add(new ListMirakel(ListMirakel.ALL, context
 					.getString(R.string.list_all)));
 		if (preferences.getBoolean("listToday", true))
-			lists.add(new ListMirakel(Mirakel.LIST_DAILY, context
+			lists.add(new ListMirakel(ListMirakel.DAILY, context
 					.getString(R.string.list_today)));
 		if (preferences.getBoolean("listWeek", true))
-			lists.add(new ListMirakel(Mirakel.LIST_WEEKLY, context
+			lists.add(new ListMirakel(ListMirakel.WEEKLY, context
 					.getString(R.string.list_week)));
 
 		Cursor cursor = database.query(ListMirakel.TABLE, allColumns,
