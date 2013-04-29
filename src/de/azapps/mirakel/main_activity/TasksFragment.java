@@ -156,8 +156,7 @@ public class TasksFragment extends Fragment {
 			}
 		}
 		Task task = main.getTaskDataSource().createTask(name, id);
-		if (due != null)
-			task.setDue(due);
+		task.setDue(due);
 
 		adapter.addToHead(task);
 		main.getListFragment().update();

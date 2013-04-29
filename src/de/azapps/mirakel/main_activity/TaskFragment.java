@@ -192,18 +192,19 @@ public class TaskFragment extends Fragment {
 				android.R.drawable.ic_menu_today);
 		due_img.setBounds(0, 0, 60, 60);
 		Task_due.setCompoundDrawables(due_img, null, null, null);
-		Task_due.setText(MirakelHelper.formatDate(task.getDue(),
-				main.getString(R.string.dateFormat)) == "" ? getString(R.string.no_date)
-				: MirakelHelper.formatDate(task.getDue(),
-						main.getString(R.string.dateFormat)));
+		if (task.getDue() == null) {
+			Task_due.setText(getString(R.string.no_date));
+		} else {
+			Task_due.setText(MirakelHelper.formatDate(task.getDue(),
+					main.getString(R.string.dateFormat)));
+		}
 
 		Task_due.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				mIgnoreTimeSet = false;
-				GregorianCalendar due = (task.getDue().compareTo(
-						new GregorianCalendar()) < 0 ? new GregorianCalendar()
+				GregorianCalendar due = (task.getDue() == null ? new GregorianCalendar()
 						: task.getDue());
 				DatePickerDialog dialog = new DatePickerDialog(main,
 						new OnDateSetListener() {
@@ -234,7 +235,7 @@ public class TaskFragment extends Fragment {
 								if (which == DialogInterface.BUTTON_NEGATIVE) {
 									mIgnoreTimeSet = true;
 									Log.v(TAG, "cancel");
-									task.setDue(new GregorianCalendar(0, 1, 1));
+									task.setDue(null);
 									main.saveTask(task);
 									Task_due.setText(R.string.no_date);
 								}

@@ -56,8 +56,9 @@ public class Task {
 		this.setUpdated_at(updated_at);
 		this.setSync_state(sync_state);
 	}
+
 	public Task() {
-		
+
 	}
 
 	public Task(Context ctx) {
@@ -66,7 +67,7 @@ public class Task {
 		this.setName(ctx.getString(R.string.task_empty));
 		this.setContent("");
 		this.setDone(false);
-		this.setDue(new GregorianCalendar(1970, GregorianCalendar.JANUARY, 1));
+		this.setDue(null);
 		this.setPriority(0);
 		this.setCreated_at(null);
 		this.setUpdated_at(null);
@@ -101,7 +102,7 @@ public class Task {
 	}
 
 	public String getContent() {
-		return content.trim().replace("\\n","\n");
+		return content.trim().replace("\\n", "\n");
 	}
 
 	public void setContent(String content) {
@@ -177,13 +178,14 @@ public class Task {
 		cv.put("name", name);
 		cv.put("content", content);
 		cv.put("done", done);
-		String due=(this.due.compareTo(new GregorianCalendar(1970, 2, 1))<0)?"null":new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date(this.due.getTimeInMillis()));
-		cv.put("due",due);
+		String due = (this.due == null ? null : new SimpleDateFormat(
+				"yyyy-MM-dd", Locale.getDefault()).format(new Date(this.due
+				.getTimeInMillis())));
+		cv.put("due", due);
 		cv.put("priority", priority);
 		cv.put("created_at", created_at);
 		cv.put("updated_at", updated_at);
 		cv.put("sync_state", sync_state);
 		return cv;
 	}
-
 }

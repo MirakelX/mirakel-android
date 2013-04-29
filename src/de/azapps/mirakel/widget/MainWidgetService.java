@@ -108,24 +108,22 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			rv.setViewVisibility(R.id.tasks_row_list_name, View.GONE);
 		}
 
-		String due = MirakelHelper.formatDate(task.getDue(),
-				mContext.getString(R.string.dateFormat));
-		if (due != "") {
+		if (task.getDue() != null) {
 			rv.setViewVisibility(R.id.tasks_row_due, View.VISIBLE);
-		rv.setTextViewText(
-				R.id.tasks_row_due,
-				MirakelHelper.formatDate(task.getDue(),
-						mContext.getString(R.string.dateFormat)));
-		rv.setTextColor(
-				R.id.tasks_row_due,
-				mContext.getResources().getColor(
-						MirakelHelper.getTaskDueColor(task.getDue(),
-								task.isDone())));
+			rv.setTextViewText(
+					R.id.tasks_row_due,
+					MirakelHelper.formatDate(task.getDue(),
+							mContext.getString(R.string.dateFormat)));
+			rv.setTextColor(
+					R.id.tasks_row_due,
+					mContext.getResources().getColor(
+							MirakelHelper.getTaskDueColor(task.getDue(),
+									task.isDone())));
 		} else {
 			rv.setViewVisibility(R.id.tasks_row_due, View.GONE);
 		}
 
-		if (task.getContent().length() != 0 ) {
+		if (task.getContent().length() != 0) {
 			rv.setViewVisibility(R.id.tasks_row_has_content, View.VISIBLE);
 		} else {
 			rv.setViewVisibility(R.id.tasks_row_has_content, View.GONE);

@@ -99,7 +99,7 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		holder.taskRowDone.setChecked(task.isDone());
 		holder.taskRowDone.setOnClickListener(clickCheckbox);
 		holder.taskRowDone.setTag(task);
-		if (task.getContent().length() != 0 ) {
+		if (task.getContent().length() != 0) {
 			holder.taskRowHasContent.setVisibility(View.VISIBLE);
 		} else {
 			holder.taskRowHasContent.setVisibility(View.GONE);
@@ -130,11 +130,10 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		holder.taskRowPriority.setTag(task);
 
 		// Due
-		String due = MirakelHelper.formatDate(task.getDue(),
-				context.getString(R.string.dateFormat));
-		if (due != "") {
+		if (task.getDue() != null) {
 			holder.taskRowDue.setVisibility(View.VISIBLE);
-			holder.taskRowDue.setText(due);
+			holder.taskRowDue.setText(MirakelHelper.formatDate(task.getDue(),
+					context.getString(R.string.dateFormat)));
 			holder.taskRowDue.setTextColor(row.getResources()
 					.getColor(
 							MirakelHelper.getTaskDueColor(task.getDue(),
