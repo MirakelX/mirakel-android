@@ -48,7 +48,7 @@ import de.azapps.mirakel.PagerAdapter;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.TasksDataSource;
 import de.azapps.mirakel.model.list.ListMirakel;
-import de.azapps.mirakel.model.task.TaskBase;
+import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.static_activities.SettingsActivity;
 
@@ -70,7 +70,7 @@ public class MainActivity extends FragmentActivity implements
 	protected TaskFragment taskFragment;
 	private Menu menu;
 	private TasksDataSource taskDataSource;
-	private TaskBase currentTask;
+	private Task currentTask;
 	private ListMirakel currentList;
 
 	private static final int LIST_FRAGMENT = 0, TASKS_FRAGMENT = 1,
@@ -113,7 +113,7 @@ public class MainActivity extends FragmentActivity implements
 		if (intent.getAction() == SHOW_TASK) {
 			int taskId = intent.getIntExtra(EXTRA_ID, 0);
 			if (taskId != 0) {
-				TaskBase task = taskDataSource.getTask(taskId);
+				Task task = taskDataSource.getTask(taskId);
 				currentList = task.getList();
 				setCurrentTask(task);
 				return;
@@ -380,7 +380,7 @@ public class MainActivity extends FragmentActivity implements
 	public void onPageScrollStateChanged(int state) {
 	}
 
-	TaskBase getCurrentTask() {
+	Task getCurrentTask() {
 		return currentTask;
 	}
 
@@ -388,7 +388,7 @@ public class MainActivity extends FragmentActivity implements
 		return preferences;
 	}
 
-	void setCurrentTask(TaskBase currentTask) {
+	void setCurrentTask(Task currentTask) {
 		this.currentTask = currentTask;
 		if (taskFragment != null) {
 			taskFragment.update();
@@ -407,10 +407,10 @@ public class MainActivity extends FragmentActivity implements
 			mViewPager.setCurrentItem(TASKS_FRAGMENT);
 		}
 
-		List<TaskBase> currentTasks = taskDataSource.getTasks(currentList,
+		List<Task> currentTasks = taskDataSource.getTasks(currentList,
 				currentList.getSortBy());
 		if (currentTasks.size() == 0) {
-			currentTask = new TaskBase(getApplicationContext());
+			currentTask = new Task(getApplicationContext());
 		} else {
 			currentTask = currentTasks.get(0);
 		}
@@ -429,7 +429,7 @@ public class MainActivity extends FragmentActivity implements
 	 * 
 	 * @param task
 	 */
-	void saveTask(TaskBase task) {
+	void saveTask(Task task) {
 		Log.v(TAG, "Saving task… (task:" + task.getId() + " – current:"
 				+ currentTask.getId());
 		task.save();

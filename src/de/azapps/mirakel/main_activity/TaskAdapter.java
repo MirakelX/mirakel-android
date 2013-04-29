@@ -33,16 +33,16 @@ import android.widget.TextView;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.MirakelHelper;
 import de.azapps.mirakel.R;
-import de.azapps.mirakel.model.task.TaskBase;
+import de.azapps.mirakel.model.task.Task;
 
-public class TaskAdapter extends ArrayAdapter<TaskBase> {
+public class TaskAdapter extends ArrayAdapter<Task> {
 	Context context;
 	int layoutResourceId, listId;
-	List<TaskBase> data = null;
+	List<Task> data = null;
 	OnClickListener clickCheckbox;
 	OnClickListener clickPrio;
 
-	public TaskAdapter(Context context, int layoutResourceId, List<TaskBase> data,
+	public TaskAdapter(Context context, int layoutResourceId, List<Task> data,
 			OnClickListener clickCheckbox, OnClickListener click_prio,
 			int listId) {
 		super(context, layoutResourceId, data);
@@ -59,7 +59,7 @@ public class TaskAdapter extends ArrayAdapter<TaskBase> {
 	 * 
 	 * @param task
 	 */
-	void addToHead(TaskBase task) {
+	void addToHead(Task task) {
 		data.add(0, task);
 	}
 
@@ -90,7 +90,7 @@ public class TaskAdapter extends ArrayAdapter<TaskBase> {
 			holder = (TaskHolder) row.getTag();
 		}
 
-		TaskBase task = data.get(position);
+		Task task = data.get(position);
 
 		// Done
 		holder.taskRowDone.setChecked(task.isDone());

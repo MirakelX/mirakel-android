@@ -1,21 +1,3 @@
-/*******************************************************************************
- * Mirakel is an Android App for managing your ToDo-Lists
- * 
- * Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
- * 
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
- * 
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- * 
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
 package de.azapps.mirakel.model.task;
 
 import java.text.SimpleDateFormat;
@@ -30,7 +12,7 @@ import android.content.Context;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.list.ListMirakel;
 
-public class TaskBase {
+class TaskBase {
 	private long id;
 	private ListMirakel list;
 	private String name;
@@ -58,14 +40,6 @@ public class TaskBase {
 		this.setSync_state(sync_state);
 	}
 
-	public ListMirakel getList() {
-		return list;
-	}
-
-	public void setList(ListMirakel list) {
-		this.list = list;
-		edited.put("list", true);
-	}
 
 	public TaskBase() {
 
@@ -91,6 +65,15 @@ public class TaskBase {
 	public void setId(long id) {
 		this.id = id;
 		edited.put("id", true);
+	}
+
+	public ListMirakel getList() {
+		return list;
+	}
+
+	public void setList(ListMirakel list) {
+		this.list = list;
+		edited.put("list", true);
 	}
 
 	public String getName() {
@@ -189,4 +172,5 @@ public class TaskBase {
 		cv.put("sync_state", sync_state);
 		return cv;
 	}
+
 }

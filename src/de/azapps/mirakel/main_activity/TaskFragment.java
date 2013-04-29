@@ -52,7 +52,7 @@ import android.widget.ViewSwitcher;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.MirakelHelper;
 import de.azapps.mirakel.R;
-import de.azapps.mirakel.model.task.TaskBase;
+import de.azapps.mirakel.model.task.Task;
 
 public class TaskFragment extends Fragment {
 	private View view;
@@ -66,7 +66,7 @@ public class TaskFragment extends Fragment {
 	protected MainActivity main;
 	protected NumberPicker picker;
 	protected EditText input;
-	private TaskBase task;
+	private Task task;
 	private boolean created = false;
 
 	private boolean mIgnoreTimeSet = false;
@@ -297,7 +297,7 @@ public class TaskFragment extends Fragment {
 
 	}
 
-	protected void set_prio(TextView Task_prio, TaskBase task) {
+	protected void set_prio(TextView Task_prio, Task task) {
 		Task_prio.setText("" + task.getPriority());
 		Task_prio
 				.setBackgroundColor(Mirakel.PRIO_COLOR[task.getPriority() + 2]);

@@ -31,7 +31,7 @@ import de.azapps.mirakel.MirakelHelper;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.TasksDataSource;
 import de.azapps.mirakel.model.list.ListMirakel;
-import de.azapps.mirakel.model.task.TaskBase;
+import de.azapps.mirakel.model.task.Task;
 
 public class MainWidgetService extends RemoteViewsService {
 
@@ -45,7 +45,7 @@ public class MainWidgetService extends RemoteViewsService {
 class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
 	private Context mContext;
-	private List<TaskBase> tasks;
+	private List<Task> tasks;
 	private TasksDataSource tasksDatasource;
 	private int listId = 0;
 	private int sorting;
@@ -79,7 +79,7 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
 	public RemoteViews getViewAt(int position) {
 		// Get The Task
-		TaskBase task = tasks.get(position);
+		Task task = tasks.get(position);
 		// Initialize the Remote View
 		RemoteViews rv = new RemoteViews(mContext.getPackageName(),
 				R.layout.widget_row);

@@ -36,7 +36,7 @@ import android.util.Log;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.list.ListMirakel;
-import de.azapps.mirakel.model.task.TaskBase;
+import de.azapps.mirakel.model.task.Task;
 
 public class TasksDataSource {
 	private static final String TAG = "TasksDataSource";
@@ -80,7 +80,7 @@ public class TasksDataSource {
 	 * @param list_id
 	 * @return
 	 */
-	public TaskBase createTask(String name, long list_id) {
+	public Task createTask(String name, long list_id) {
 		return createTask(name, list_id, "", false, null, 0);
 	}
 
@@ -95,7 +95,7 @@ public class TasksDataSource {
 	 * @param priority
 	 * @return
 	 */
-	public TaskBase createTask(String name, long list_id, String content,
+	public Task createTask(String name, long list_id, String content,
 			boolean done, GregorianCalendar due, int priority) {
 		ContentValues values = new ContentValues();
 		values.put("name", name);
@@ -117,7 +117,7 @@ public class TasksDataSource {
 		Cursor cursor = database.query(Mirakel.TABLE_TASKS, allColumns,
 				"_id = " + insertId, null, null, null, null);
 		cursor.moveToFirst();
-		TaskBase newTask = cursorToTask(cursor);
+		Task newTask = cursorToTask(cursor);
 		cursor.close();
 		return newTask;
 	}
@@ -127,7 +127,7 @@ public class TasksDataSource {
 	 * 
 	 * @param task
 	 */
-	public void saveTask(TaskBase task) {
+	public void saveTask(Task task) {
 		Log.v(TAG, "saveTask " + task.getId());
 		task.setSync_state(task.getSync_state() == Mirakel.SYNC_STATE_ADD
 				|| task.getSync_state() == Mirakel.SYNC_STATE_IS_SYNCED ? task
@@ -145,7 +145,7 @@ public class TasksDataSource {
 	 * 
 	 * @param task
 	 */
-	public void deleteTask(TaskBase task) {
+	public void deleteTask(Task task) {
 		long id = task.getId();
 		if (task.getSync_state() == Mirakel.SYNC_STATE_ADD)
 			database.delete(Mirakel.TABLE_TASKS, "_id = " + id, null);
@@ -157,8 +157,8 @@ public class TasksDataSource {
 
 	}
 
-	public List<TaskBase> getAllTasks() {
-		List<TaskBase> tasks = new ArrayList<TaskBase>();
+	public List<Task> getAllTasks() {
+		List<Task> tasks = new ArrayList<Task>();
 		Cursor c = database.query(Mirakel.TABLE_TASKS, allColumns,
 				"not sync_state= " + Mirakel.SYNC_STATE_DELETE, null, null,
 				null, null);
@@ -176,27 +176,27 @@ public class TasksDataSource {
 	 * @param id
 	 * @return
 	 */
-	public TaskBase getTask(long id) {
+	public Task getTask(long id) {
 		open();
 		Cursor cursor = database.query(Mirakel.TABLE_TASKS, allColumns, "_id='"
 				+ id + "' and not sync_state=" + Mirakel.SYNC_STATE_DELETE,
 				null, null, null, null);
 		cursor.moveToFirst();
 		if (cursor.getCount() != 0) {
-			TaskBase t = cursorToTask(cursor);
+			Task t = cursorToTask(cursor);
 			cursor.close();
 			return t;
 		}
 		return null;
 	}
 
-	public TaskBase getTaskToSync(long id) {
+	public Task getTaskToSync(long id) {
 		open();
 		Cursor cursor = database.query(Mirakel.TABLE_TASKS, allColumns, "_id='"
 				+ id + "'", null, null, null, null);
 		cursor.moveToFirst();
 		if (cursor.getCount() != 0) {
-			TaskBase t = cursorToTask(cursor);
+			Task t = cursorToTask(cursor);
 			cursor.close();
 			return t;
 		}
@@ -209,7 +209,7 @@ public class TasksDataSource {
 	 * @param cursor
 	 * @return
 	 */
-	private TaskBase cursorToTask(Cursor cursor) {
+	private Task cursorToTask(Cursor cursor) {
 		int i = 0;
 		GregorianCalendar t = new GregorianCalendar();
 		try {
@@ -221,7 +221,7 @@ public class TasksDataSource {
 			t=null;
 		}
 
-		TaskBase task = new TaskBase(cursor.getLong(i++), ListMirakel.getList((int) cursor.getLong(i++)),
+		Task task = new Task(cursor.getLong(i++), ListMirakel.getList((int) cursor.getLong(i++)),
 				cursor.getString(i++), cursor.getString(i++),
 				cursor.getInt((i++)) == 1, t, cursor.getInt(++i),
 				cursor.getString(++i), cursor.getString(++i),
@@ -280,7 +280,7 @@ public class TasksDataSource {
 	 * @param sorting
 	 * @return
 	 */
-	public List<TaskBase> getTasks(ListMirakel list, int sorting) {
+	public List<Task> getTasks(ListMirakel list, int sorting) {
 		return getTasks(list.getId(), sorting);
 	}
 
@@ -290,7 +290,7 @@ public class TasksDataSource {
 	 * @param listId
 	 * @return
 	 */
-	public List<TaskBase> getTasks(int listId) {
+	public List<Task> getTasks(int listId) {
 		return getTasks(listId, ListMirakel.SORT_BY_OPT);
 	}
 
@@ -302,7 +302,7 @@ public class TasksDataSource {
 	 *            The Sorting (@see Mirakel.SORT_*)
 	 * @return
 	 */
-	public List<TaskBase> getTasks(int listId, int sorting) {
+	public List<Task> getTasks(int listId, int sorting) {
 		return getTasks(listId, sorting, false);
 	}
 
@@ -315,12 +315,12 @@ public class TasksDataSource {
 	 * @param showDone
 	 * @return
 	 */
-	public List<TaskBase> getTasks(int listId, int sorting, boolean showDone) {
-		List<TaskBase> tasks = new ArrayList<TaskBase>();
+	public List<Task> getTasks(int listId, int sorting, boolean showDone) {
+		List<Task> tasks = new ArrayList<Task>();
 		Cursor cursor = getTasksCursor(listId, sorting);
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
-			TaskBase task = cursorToTask(cursor);
+			Task task = cursorToTask(cursor);
 			switch (listId) {
 			case ListMirakel.DAILY:
 				if (task.isDone() || task.getDue() == null)
@@ -344,8 +344,8 @@ public class TasksDataSource {
 		return tasks;
 	}
 
-	public List<TaskBase> getTasksBySyncState(short state) {
-		List<TaskBase> tasks_local = new ArrayList<TaskBase>();
+	public List<Task> getTasksBySyncState(short state) {
+		List<Task> tasks_local = new ArrayList<Task>();
 		Cursor c = database.query(Mirakel.TABLE_TASKS, allColumns,
 				"sync_state=" + state + " and list_id>0", null, null, null,
 				null);
@@ -363,20 +363,20 @@ public class TasksDataSource {
 	 * @param result
 	 * @return
 	 */
-	public List<TaskBase> parse_json(String result) {
+	public List<Task> parse_json(String result) {
 		if (result.length() < 3)
 			return null;
-		List<TaskBase> tasks = new ArrayList<TaskBase>();
+		List<Task> tasks = new ArrayList<Task>();
 		result = result.substring(1, result.length() - 2);
 		String tasks_str[] = result.split(",");
-		TaskBase t = null;
+		Task t = null;
 		for (int i = 0; i < tasks_str.length; i++) {
 			String key_value[] = tasks_str[i].split(":");
 			if (key_value.length < 2)
 				continue;
 			String key = key_value[0];
 			if (key.equals("{\"content\"")) {
-				t = new TaskBase();
+				t = new Task();
 				t.setSync_state(Mirakel.SYNC_STATE_NOTHING);
 				if (key_value[1] != "null") {
 					t.setContent(key_value[1].substring(1,

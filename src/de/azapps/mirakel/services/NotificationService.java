@@ -35,7 +35,7 @@ import de.azapps.mirakel.R;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.TasksDataSource;
 import de.azapps.mirakel.model.list.ListMirakel;
-import de.azapps.mirakel.model.task.TaskBase;
+import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.widget.MainWidgetProvider;
 
 public class NotificationService extends Service {
@@ -78,7 +78,7 @@ public class NotificationService extends Service {
 
 		// Get the data
 		ListMirakel todayList = ListMirakel.getList(listId);
-		List<TaskBase> todayTasks = taskDataSource.getTasks(todayList,
+		List<Task> todayTasks = taskDataSource.getTasks(todayList,
 				todayList.getSortBy());
 		String notificationTitle;
 		String notificationText;
@@ -136,7 +136,7 @@ public class NotificationService extends Service {
 		if (preferences.getBoolean("notificationsBig", true)
 				&& todayTasks.size() > 1) {
 			NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
-			for (TaskBase task : todayTasks) {
+			for (Task task : todayTasks) {
 				inboxStyle.addLine(task.getName());
 			}
 			noti.setStyle(inboxStyle);

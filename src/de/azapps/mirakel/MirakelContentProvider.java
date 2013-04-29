@@ -30,7 +30,7 @@ import android.util.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.TasksDataSource;
 import de.azapps.mirakel.model.list.ListMirakel;
-import de.azapps.mirakel.model.task.TaskBase;
+import de.azapps.mirakel.model.task.Task;
 
 public class MirakelContentProvider extends ContentProvider {
 	// public static final String PROVIDER_NAME = Mirakel.AUTHORITY_TYP;
@@ -80,8 +80,8 @@ public class MirakelContentProvider extends ContentProvider {
 			Log.d(TAG, "DELETE ALL TASKS?!!");
 			TasksDataSource taskDataSource = new TasksDataSource(getContext());
 			taskDataSource.open();
-			List<TaskBase> tasks = taskDataSource.getAllTasks();
-			for (TaskBase t : tasks) {
+			List<Task> tasks = taskDataSource.getAllTasks();
+			for (Task t : tasks) {
 				taskDataSource.deleteTask(t);
 			}
 			taskDataSource.close();
@@ -91,7 +91,7 @@ public class MirakelContentProvider extends ContentProvider {
 			Log.d(TAG, "DELETE TASK " + task_id);
 			taskDataSource = new TasksDataSource(getContext());
 			taskDataSource.open();
-			TaskBase task = taskDataSource.getTask(Long.parseLong(uri
+			Task task = taskDataSource.getTask(Long.parseLong(uri
 					.getLastPathSegment()));
 			if (task != null) {
 				taskDataSource.deleteTask(task);
