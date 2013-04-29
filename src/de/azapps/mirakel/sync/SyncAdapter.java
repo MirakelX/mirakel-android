@@ -61,10 +61,10 @@ import com.google.gson.Gson;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Pair;
 import de.azapps.mirakel.R;
-import de.azapps.mirakel.model.List_mirakle;
 import de.azapps.mirakel.model.ListsDataSource;
 import de.azapps.mirakel.model.Task;
 import de.azapps.mirakel.model.TasksDataSource;
+import de.azapps.mirakel.model.list.ListMirakel;
 
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
@@ -82,7 +82,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	private List<Pair<Network, String>> SyncLists;
 	private List<Pair<Network, String>> SyncTasks;
 
-	private List_mirakle[] ServerLists;
+	private ListMirakel[] ServerLists;
 	private List<Task> ServerTasks;
 
 	private boolean finish_list;
@@ -126,10 +126,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				Mirakel.BUNDLE_SERVER_URL);
 
 		// Remove Lists server
-		List<List_mirakle> deletedLists = listDataSource
+		List<ListMirakel> deletedLists = listDataSource
 				.getListsBySyncState(Mirakel.SYNC_STATE_DELETE);
 		if (deletedLists != null) {
-			for (List_mirakle deletedList : deletedLists) {
+			for (ListMirakel deletedList : deletedLists) {
 				delete_list(deletedList);
 			}
 		}
@@ -165,11 +165,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		new Network(new DataDownloadCommand() {
 			@Override
 			public void after_exec(String result) {
-				ServerLists = new Gson().fromJson(result, List_mirakle[].class);
+				ServerLists = new Gson().fromJson(result, ListMirakel[].class);
 				// merge_with_server(lists_server);
-				List<List_mirakle> lists_local = listDataSource
+				List<ListMirakel> lists_local = listDataSource
 						.getListsBySyncState(Mirakel.SYNC_STATE_ADD);
-				for (List_mirakle list : lists_local) {
+				for (ListMirakel list : lists_local) {
 					add_list(list);
 				}
 				// ContentValues values = new ContentValues();
@@ -225,7 +225,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	 * 
 	 * @param list
 	 */
-	protected void delete_list(final List_mirakle list) {
+	protected void delete_list(final ListMirakel list) {
 		DeleteLists.add(new Pair<Network, String>(new Network(
 				new DataDownloadCommand() {
 					@Override
@@ -243,7 +243,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	 * 
 	 * @param list
 	 */
-	public void sync_list(List_mirakle list) {
+	public void sync_list(ListMirakel list) {
 		List<BasicNameValuePair> data = new ArrayList<BasicNameValuePair>();
 		data.add(new BasicNameValuePair("list[name]", list.getName()));
 		list.setSync_state(Mirakel.SYNC_STATE_IS_SYNCED);
@@ -263,15 +263,15 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	 * 
 	 * @param list
 	 */
-	public void add_list(final List_mirakle list) {
+	public void add_list(final ListMirakel list) {
 		List<BasicNameValuePair> data = new ArrayList<BasicNameValuePair>();
 		data.add(new BasicNameValuePair("list[name]", list.getName()));
 		AddLists.add(new Pair<Network, String>(new Network(
 				new DataDownloadCommand() {
 					@Override
 					public void after_exec(String result) {
-						List_mirakle list_response = new Gson().fromJson(
-								result, List_mirakle.class);
+						ListMirakel list_response = new Gson().fromJson(
+								result, ListMirakel.class);
 						if (list.getId() < list_response.getId()) {
 							long diff = list_response.getId() - list.getId();
 							// Should be all lists with _id> list_id
@@ -334,9 +334,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	 * 
 	 * @param lists_server
 	 */
-	protected void merge_with_server(List_mirakle[] lists_server) {
-		for (List_mirakle list_server : lists_server) {
-			List_mirakle list = listDataSource.getList(list_server.getId());
+	protected void merge_with_server(ListMirakel[] lists_server) {
+		for (ListMirakel list_server : lists_server) {
+			ListMirakel list = ListMirakel.getList(list_server.getId());
 			if (list == null) {
 				list_server.setSync_state(Mirakel.SYNC_STATE_IS_SYNCED);
 				long id = Mirakel.getWritableDatabase().insert(
@@ -488,7 +488,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						.format(due.getTime()))));
 		data.add(new BasicNameValuePair("task[content]", task.getContent()));
 		// List must exists before syncing task!!
-		List_mirakle list = listDataSource.getList((int) task.getListId());
+		ListMirakel list = ListMirakel.getList((int) task.getListId());
 		// Log.e(TAG,"Listid: "+list.getId()+"  Sync-State: "+list.getSync_state());
 		// TODO Make better
 		//

@@ -33,7 +33,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import de.azapps.mirakel.R;
-import de.azapps.mirakel.model.List_mirakle;
+import de.azapps.mirakel.model.list.ListMirakel;
 
 public class ListFragment extends Fragment {
 	//private static final String TAG = "ListsActivity";
@@ -64,7 +64,7 @@ public class ListFragment extends Fragment {
 	public void update() {
 		if (!created)
 			return;
-		final List<List_mirakle> values = main.getListDataSource()
+		final List<ListMirakel> values = main.getListDataSource()
 				.getAllLists();
 
 		adapter = new ListAdapter(this.getActivity(), R.layout.lists_row,
@@ -82,7 +82,7 @@ public class ListFragment extends Fragment {
 					EditName = false;
 					return;
 				}
-				List_mirakle list = values.get((int) id);
+				ListMirakel list = values.get((int) id);
 				main.setCurrentList(list);
 			}
 		});
@@ -91,7 +91,7 @@ public class ListFragment extends Fragment {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View item,
 					int position, final long id) {
-				List_mirakle list = values.get((int) id);
+				ListMirakel list = values.get((int) id);
 				if (list.getId() <= 0)
 					return false;
 				editList(list);
@@ -124,7 +124,7 @@ public class ListFragment extends Fragment {
 	 * Edit the name of the List
 	 * @param list
 	 */
-	void editList(final List_mirakle list) {
+	void editList(final ListMirakel list) {
 
 		input = new EditText(main);
 		input.setText(list.getName());

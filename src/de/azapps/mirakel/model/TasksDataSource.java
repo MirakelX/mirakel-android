@@ -35,6 +35,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
+import de.azapps.mirakel.model.list.ListMirakel;
 
 public class TasksDataSource {
 	private static final String TAG = "TasksDataSource";
@@ -254,12 +255,12 @@ public class TasksDataSource {
 		Log.v(TAG, where);
 		String order = "";
 		switch (sorting) {
-		case Mirakel.SORT_BY_PRIO:
+		case ListMirakel.SORT_BY_PRIO:
 			order = "priority desc";
 			break;
-		case Mirakel.SORT_BY_OPT:
+		case ListMirakel.SORT_BY_OPT:
 			order = ", priority DESC";
-		case Mirakel.SORT_BY_DUE:
+		case ListMirakel.SORT_BY_DUE:
 			order = " CASE WHEN (due IS NULL) THEN date('now','+1000 years') ELSE date(due) END ASC"
 					+ order;
 			break;
@@ -278,7 +279,7 @@ public class TasksDataSource {
 	 * @param sorting
 	 * @return
 	 */
-	public List<Task> getTasks(List_mirakle list, int sorting) {
+	public List<Task> getTasks(ListMirakel list, int sorting) {
 		return getTasks(list.getId(), sorting);
 	}
 
@@ -289,7 +290,7 @@ public class TasksDataSource {
 	 * @return
 	 */
 	public List<Task> getTasks(int listId) {
-		return getTasks(listId, Mirakel.SORT_BY_ID);
+		return getTasks(listId, ListMirakel.SORT_BY_OPT);
 	}
 
 	/**

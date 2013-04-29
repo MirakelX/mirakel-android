@@ -28,15 +28,15 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import de.azapps.mirakel.R;
-import de.azapps.mirakel.model.List_mirakle;
+import de.azapps.mirakel.model.list.ListMirakel;
 
-public class ListAdapter extends ArrayAdapter<List_mirakle> {
+public class ListAdapter extends ArrayAdapter<ListMirakel> {
 	Context context;
 	int layoutResourceId;
-	List<List_mirakle> data = null;
+	List<ListMirakel> data = null;
 
 	public ListAdapter(Context context, int layoutResourceId,
-			List<List_mirakle> data) {
+			List<ListMirakel> data) {
 		super(context, layoutResourceId, data);
 		this.layoutResourceId = layoutResourceId;
 		this.data = data;
@@ -61,7 +61,7 @@ public class ListAdapter extends ArrayAdapter<List_mirakle> {
 		} else {
 			holder = (ListHolder) row.getTag();
 		}
-		List_mirakle list = data.get(position);
+		ListMirakel list = data.get(position);
 		holder.listRowName.setText(list.getName());
 		holder.listRowName.setTag(list);
 		holder.listRowTaskNumber.setText(list.getTask_count() + "");

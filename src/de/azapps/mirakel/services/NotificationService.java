@@ -33,10 +33,10 @@ import android.support.v4.app.NotificationCompat;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.main_activity.MainActivity;
-import de.azapps.mirakel.model.List_mirakle;
 import de.azapps.mirakel.model.ListsDataSource;
 import de.azapps.mirakel.model.Task;
 import de.azapps.mirakel.model.TasksDataSource;
+import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.widget.MainWidgetProvider;
 
 public class NotificationService extends Service {
@@ -81,7 +81,7 @@ public class NotificationService extends Service {
 		PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
 		// Get the data
-		List_mirakle todayList = listDataSource.getList(listId);
+		ListMirakel todayList = ListMirakel.getList(listId);
 		List<Task> todayTasks = taskDataSource.getTasks(todayList,
 				todayList.getSortBy());
 		String notificationTitle;

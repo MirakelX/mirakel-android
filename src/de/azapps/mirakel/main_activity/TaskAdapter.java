@@ -35,6 +35,7 @@ import de.azapps.mirakel.MirakelHelper;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.ListsDataSource;
 import de.azapps.mirakel.model.Task;
+import de.azapps.mirakel.model.list.ListMirakel;
 
 public class TaskAdapter extends ArrayAdapter<Task> {
 	Context context;
@@ -106,7 +107,7 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		}
 		if (listId <= 0) {
 			holder.taskRowList.setVisibility(View.VISIBLE);
-			holder.taskRowList.setText(listsDataSource.getList(
+			holder.taskRowList.setText(ListMirakel.getList(
 					(int) task.getListId()).getName());
 		} else {
 			holder.taskRowList.setVisibility(View.GONE);

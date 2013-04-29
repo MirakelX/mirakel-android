@@ -28,10 +28,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.util.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
-import de.azapps.mirakel.model.List_mirakle;
 import de.azapps.mirakel.model.ListsDataSource;
 import de.azapps.mirakel.model.Task;
 import de.azapps.mirakel.model.TasksDataSource;
+import de.azapps.mirakel.model.list.ListMirakel;
 
 public class MirakelContentProvider extends ContentProvider {
 	// public static final String PROVIDER_NAME = Mirakel.AUTHORITY_TYP;
@@ -60,8 +60,8 @@ public class MirakelContentProvider extends ContentProvider {
 			ListsDataSource listDataSource = new ListsDataSource(getContext());
 			listDataSource.open();
 			Log.d(TAG, "DELETE ALL LISTS?!!");
-			List<List_mirakle> lists = listDataSource.getAllLists();
-			for (List_mirakle list : lists) {
+			List<ListMirakel> lists = listDataSource.getAllLists();
+			for (ListMirakel list : lists) {
 				if (list.getId() != Mirakel.LIST_ALL
 						&& list.getId() != Mirakel.LIST_DAILY
 						&& list.getId() != Mirakel.LIST_WEEKLY) {
@@ -75,7 +75,7 @@ public class MirakelContentProvider extends ContentProvider {
 			Log.d(TAG, "DELETE LIST " + list_id);
 			listDataSource = new ListsDataSource(getContext());
 			listDataSource.open();
-			List_mirakle list = listDataSource.getList(Integer.parseInt(uri
+			ListMirakel list = ListMirakel.getList(Integer.parseInt(uri
 					.getLastPathSegment()));
 			if (list.getId() > Mirakel.LIST_ALL) {
 				listDataSource.deleteList(list);

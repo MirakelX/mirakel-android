@@ -48,10 +48,10 @@ import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.PagerAdapter;
 import de.azapps.mirakel.R;
-import de.azapps.mirakel.model.List_mirakle;
 import de.azapps.mirakel.model.ListsDataSource;
 import de.azapps.mirakel.model.Task;
 import de.azapps.mirakel.model.TasksDataSource;
+import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.static_activities.SettingsActivity;
 
@@ -75,7 +75,7 @@ public class MainActivity extends FragmentActivity implements
 	private TasksDataSource taskDataSource;
 	private ListsDataSource listDataSource;
 	private Task currentTask;
-	private List_mirakle currentList;
+	private ListMirakel currentList;
 
 	private static final int LIST_FRAGMENT = 0, TASKS_FRAGMENT = 1,
 			TASK_FRAGMENT = 2;
@@ -110,7 +110,7 @@ public class MainActivity extends FragmentActivity implements
 		taskDataSource.open();
 		listDataSource = new ListsDataSource(this);
 		listDataSource.open();
-		setCurrentList(listDataSource.getList(0));
+		setCurrentList(ListMirakel.getList(0));
 
 		// Intialise ViewPager
 		this.intialiseViewPager();
@@ -120,7 +120,7 @@ public class MainActivity extends FragmentActivity implements
 			int taskId = intent.getIntExtra(EXTRA_ID, 0);
 			if (taskId != 0) {
 				Task task = taskDataSource.getTask(taskId);
-				currentList = listDataSource.getList((int) task.getListId());
+				currentList = ListMirakel.getList((int) task.getListId());
 				setCurrentTask(task);
 				return;
 			}
@@ -128,7 +128,7 @@ public class MainActivity extends FragmentActivity implements
 				|| intent.getAction() == SHOW_LIST_FROM_WIDGET) {
 
 			int listId = intent.getIntExtra(EXTRA_ID, 0);
-			List_mirakle list = listDataSource.getList(listId);
+			ListMirakel list = ListMirakel.getList(listId);
 			setCurrentList(list);
 			return;
 		} else if (intent.getAction() == SHOW_LISTS) {
@@ -147,7 +147,7 @@ public class MainActivity extends FragmentActivity implements
 		return true;
 	}
 
-	private List<List_mirakle> lists;
+	private List<ListMirakel> lists;
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -181,7 +181,7 @@ public class MainActivity extends FragmentActivity implements
 			listds.close();
 			List<CharSequence> items = new ArrayList<CharSequence>();
 			final List<Integer> list_ids = new ArrayList<Integer>();
-			for (List_mirakle list : lists) {
+			for (ListMirakel list : lists) {
 				if (list.getId() > 0) {
 					items.add(list.getName());
 					list_ids.add(list.getId());
@@ -193,8 +193,8 @@ public class MainActivity extends FragmentActivity implements
 						public void onClick(DialogInterface dialog, int item) {
 							currentTask.setListId(list_ids.get(item));
 							taskDataSource.saveTask(currentTask);
-							currentList = listDataSource
-									.getList((int) currentTask.getListId());
+							currentList = ListMirakel.getList((int) currentTask
+									.getListId());
 							tasksFragment.update();
 							listFragment.update();
 						}
@@ -217,7 +217,7 @@ public class MainActivity extends FragmentActivity implements
 								public void onClick(DialogInterface dialog,
 										int which) {
 									listDataSource.deleteList(currentList);
-									currentList = listDataSource
+									currentList = ListMirakel
 											.getList(Mirakel.LIST_ALL);
 									setCurrentList(currentList);
 								}
@@ -243,16 +243,16 @@ public class MainActivity extends FragmentActivity implements
 						public void onClick(DialogInterface dialog, int item) {
 							switch (item) {
 							case 0:
-								currentList.setSortBy(Mirakel.SORT_BY_OPT);
+								currentList.setSortBy(ListMirakel.SORT_BY_OPT);
 								break;
 							case 1:
-								currentList.setSortBy(Mirakel.SORT_BY_DUE);
+								currentList.setSortBy(ListMirakel.SORT_BY_DUE);
 								break;
 							case 2:
-								currentList.setSortBy(Mirakel.SORT_BY_PRIO);
+								currentList.setSortBy(ListMirakel.SORT_BY_PRIO);
 								break;
 							default:
-								currentList.setSortBy(Mirakel.SORT_BY_ID);
+								currentList.setSortBy(ListMirakel.SORT_BY_ID);
 								break;
 							}
 							listDataSource.saveList(currentList);
@@ -264,7 +264,7 @@ public class MainActivity extends FragmentActivity implements
 			alert.show();
 			return true;
 		case R.id.menu_new_list:
-			List_mirakle list = listDataSource.createList(this
+			ListMirakel list = listDataSource.createList(this
 					.getString(R.string.list_menu_new_list));
 			listFragment.update();
 			listFragment.editList(list);
@@ -279,14 +279,15 @@ public class MainActivity extends FragmentActivity implements
 		case R.id.menu_sync_now_list:
 		case R.id.menu_sync_now_task:
 		case R.id.menu_sync_now_tasks:
-			try{
-				AccountManager am=AccountManager.get(this);
-				Account account=am.getAccountsByType(Mirakel.ACCOUNT_TYP)[0];
-				//Should start Sync
-				ContentResolver.requestSync(account, Mirakel.AUTHORITY_TYP, null);
-			}catch (Exception e) {
+			try {
+				AccountManager am = AccountManager.get(this);
+				Account account = am.getAccountsByType(Mirakel.ACCOUNT_TYP)[0];
+				// Should start Sync
+				ContentResolver.requestSync(account, Mirakel.AUTHORITY_TYP,
+						null);
+			} catch (Exception e) {
 				// TODO: handle exception
-				Log.e(TAG,"No Account founded");
+				Log.e(TAG, "No Account founded");
 			}
 		default:
 			return super.onOptionsItemSelected(item);
@@ -412,11 +413,11 @@ public class MainActivity extends FragmentActivity implements
 		}
 	}
 
-	List_mirakle getCurrentList() {
+	ListMirakel getCurrentList() {
 		return currentList;
 	}
 
-	void setCurrentList(List_mirakle currentList) {
+	void setCurrentList(ListMirakel currentList) {
 		this.currentList = currentList;
 		if (tasksFragment != null) {
 			tasksFragment.update();
@@ -532,6 +533,5 @@ public class MainActivity extends FragmentActivity implements
 		listFragment.setActivity(this);
 		tasksFragment.setActivity(this);
 	}
-	
 
 }

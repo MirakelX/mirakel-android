@@ -38,6 +38,7 @@ import android.util.Log;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
+import de.azapps.mirakel.model.list.ListMirakel;
 
 /**
  * @author weiznich
@@ -86,7 +87,7 @@ public class ListsDataSource {
 	 *            Name of the List
 	 * @return new List
 	 */
-	public List_mirakle createList(String name) {
+	public ListMirakel createList(String name) {
 		return createList(name, 0);
 	}
 
@@ -99,7 +100,7 @@ public class ListsDataSource {
 	 *            the default sorting
 	 * @return new List
 	 */
-	public List_mirakle createList(String name, int sort_by) {
+	public ListMirakel createList(String name, int sort_by) {
 		ContentValues values = new ContentValues();
 		values.put("name", name);
 		values.put("sort_by", sort_by);
@@ -112,7 +113,7 @@ public class ListsDataSource {
 		Cursor cursor = database.query(Mirakel.TABLE_LISTS, allColumns,
 				"_id = " + insertId, null, null, null, null);
 		cursor.moveToFirst();
-		List_mirakle newList = cursorToList(cursor);
+		ListMirakel newList = cursorToList(cursor);
 		cursor.close();
 		return newList;
 	}
@@ -123,7 +124,7 @@ public class ListsDataSource {
 	 * @param list
 	 *            The List
 	 */
-	public void saveList(List_mirakle list) {
+	public void saveList(ListMirakel list) {
 		Log.v(TAG, "saveTask");
 		SharedPreferences.Editor editor = preferences.edit();
 		switch (list.getId()) {
@@ -151,7 +152,7 @@ public class ListsDataSource {
 	 * 
 	 * @param list
 	 */
-	public void deleteList(List_mirakle list) {
+	public void deleteList(ListMirakel list) {
 		long id = list.getId();
 		if (id <= 0)
 			return;
@@ -172,18 +173,18 @@ public class ListsDataSource {
 	 * 
 	 * @return List of Lists
 	 */
-	public List<List_mirakle> getAllLists() {
-		List<List_mirakle> lists = new ArrayList<List_mirakle>();
+	public List<ListMirakel> getAllLists() {
+		List<ListMirakel> lists = new ArrayList<ListMirakel>();
 		// TODO Get from strings.xml
 		if (preferences.getBoolean("listAll", true))
-			lists.add(new List_mirakle(Mirakel.LIST_ALL, context
+			lists.add(new ListMirakel(Mirakel.LIST_ALL, context
 					.getString(R.string.list_all), task_count(Mirakel.LIST_ALL)));
 		if (preferences.getBoolean("listToday", true))
-			lists.add(new List_mirakle(Mirakel.LIST_DAILY, context
+			lists.add(new ListMirakel(Mirakel.LIST_DAILY, context
 					.getString(R.string.list_today),
 					task_count(Mirakel.LIST_DAILY)));
 		if (preferences.getBoolean("listWeek", true))
-			lists.add(new List_mirakle(Mirakel.LIST_WEEKLY, context
+			lists.add(new ListMirakel(Mirakel.LIST_WEEKLY, context
 					.getString(R.string.list_week),
 					task_count(Mirakel.LIST_WEEKLY)));
 
@@ -191,7 +192,7 @@ public class ListsDataSource {
 				+ Mirakel.SYNC_STATE_DELETE, null, null, null, null);
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
-			List_mirakle list = cursorToList(cursor);
+			ListMirakel list = cursorToList(cursor);
 			lists.add(list);
 			cursor.moveToNext();
 		}
@@ -204,62 +205,16 @@ public class ListsDataSource {
 	 * 
 	 * @return List
 	 */
-	public List_mirakle getFirstList() {
+	public ListMirakel getFirstList() {
 		Cursor cursor = database.query(Mirakel.TABLE_LISTS, allColumns, "not sync_state="
 				+ Mirakel.SYNC_STATE_DELETE, null, null, null, "_id ASC");
-		List_mirakle list = null;
+		ListMirakel list = null;
 		cursor.moveToFirst();
 		if (!cursor.isAfterLast()) {
 			list = cursorToList(cursor);
 			cursor.moveToNext();
 		}
 		cursor.close();
-		return list;
-	}
-
-	/**
-	 * Get a List by id
-	 * 
-	 * @param l
-	 *            List–ID
-	 * @return List
-	 */
-	public List_mirakle getList(int l) {
-		open();
-
-		Cursor cursor = database.query(Mirakel.TABLE_LISTS, allColumns, "_id='" + l + "'",
-				null, null, null, null);
-		cursor.moveToFirst();
-		if (cursor.getCount() != 0) {
-			List_mirakle t = cursorToList(cursor);
-			cursor.close();
-			return t;
-		}
-
-		List_mirakle list = new List_mirakle();
-		SharedPreferences settings = PreferenceManager
-				.getDefaultSharedPreferences(context.getApplicationContext());
-		switch (l) {
-		case Mirakel.LIST_ALL:
-			list.setName(this.context.getString(R.string.list_all));
-			list.setSortBy(settings.getInt("SortListAll", Mirakel.SORT_BY_OPT));
-			break;
-		case Mirakel.LIST_DAILY:
-			list.setName(this.context.getString(R.string.list_today));
-			list.setSortBy(settings
-					.getInt("SortListDaily", Mirakel.SORT_BY_OPT));
-			break;
-		case Mirakel.LIST_WEEKLY:
-			list.setName(this.context.getString(R.string.list_week));
-			list.setSortBy(settings.getInt("SortListWeekly",
-					Mirakel.SORT_BY_OPT));
-			break;
-		default:
-			Toast.makeText(context, "NO SUCH LIST!", Toast.LENGTH_LONG).show();
-			return null;
-		}
-		list.setId(l);
-
 		return list;
 	}
 
@@ -299,18 +254,18 @@ public class ListsDataSource {
 	 * @param cursor
 	 * @return
 	 */
-	private List_mirakle cursorToList(Cursor cursor) {
+	private ListMirakel cursorToList(Cursor cursor) {
 		int i = 0;
 		int id = cursor.getInt(i++);
-		List_mirakle list = new List_mirakle(id, cursor.getString(i++),
+		ListMirakel list = new ListMirakel(id, cursor.getString(i++),
 				cursor.getShort(i++), cursor.getString(i++),
-				cursor.getString(i++), task_count(id), cursor.getInt(i));
+				cursor.getString(i++), cursor.getInt(i));
 		return list;
 	}
 
 
-	public List<List_mirakle> getListsBySyncState(short state) {
-		List<List_mirakle> lists = new ArrayList<List_mirakle>();
+	public List<ListMirakel> getListsBySyncState(short state) {
+		List<ListMirakel> lists = new ArrayList<ListMirakel>();
 		Cursor c = database.query(Mirakel.TABLE_LISTS, allColumns, "sync_state="
 				+ state, null, null, null, null);
 		c.moveToFirst();

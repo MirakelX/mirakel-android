@@ -32,6 +32,7 @@ import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.ListsDataSource;
 import de.azapps.mirakel.model.Task;
 import de.azapps.mirakel.model.TasksDataSource;
+import de.azapps.mirakel.model.list.ListMirakel;
 
 public class MainWidgetService extends RemoteViewsService {
 
@@ -55,7 +56,7 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		mContext = context;
 		listId = intent.getIntExtra(MainWidgetProvider.EXTRA_LISTID, 0);
 		sorting = intent.getIntExtra(MainWidgetProvider.EXTRA_LISTSORT,
-				(int) Mirakel.SORT_BY_OPT);
+				(int) ListMirakel.SORT_BY_OPT);
 		showDone = intent.getBooleanExtra(MainWidgetProvider.EXTRA_SHOWDONE,
 				false);
 	}
@@ -101,9 +102,8 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
 		if (listId <= 0) {
 			rv.setViewVisibility(R.id.tasks_row_list_name, View.VISIBLE);
-			ListsDataSource listsDataSource = new ListsDataSource(mContext);
-			rv.setTextViewText(R.id.tasks_row_list_name, listsDataSource
-					.getList((int) task.getListId()).getName());
+			rv.setTextViewText(R.id.tasks_row_list_name,
+					ListMirakel.getList((int) task.getListId()).getName());
 		} else {
 			rv.setViewVisibility(R.id.tasks_row_list_name, View.GONE);
 		}

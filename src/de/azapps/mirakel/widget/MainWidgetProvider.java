@@ -33,6 +33,7 @@ import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.ListsDataSource;
+import de.azapps.mirakel.model.list.ListMirakel;
 
 public class MainWidgetProvider extends AppWidgetProvider {
 	public static String EXTRA_LISTID = "de.azapps.mirakel.EXTRA_LISTID";
@@ -57,7 +58,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
 			int listId = Integer.parseInt(preferences.getString("widgetList",
 					Mirakel.LIST_ALL + ""));
 			int listSort = Integer.parseInt(preferences.getString("widgetSort",
-					Mirakel.SORT_BY_OPT + ""));
+					ListMirakel.SORT_BY_OPT + ""));
 
 			// Create an Intent to launch SettingsActivity
 			Intent settingsIntent = new Intent(context,
@@ -101,7 +102,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
 			// should be a sibling
 			// of the collection view.
 			views.setEmptyView(R.id.widget_tasks_list, R.id.empty_view);
-			views.setTextViewText(R.id.widget_list_name, listsDataSource
+			views.setTextViewText(R.id.widget_list_name, ListMirakel
 					.getList(listId).getName());
 
 			// Here we setup the a pending intent template. Individuals items of

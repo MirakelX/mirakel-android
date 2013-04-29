@@ -24,6 +24,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
 import android.util.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
+import de.azapps.mirakel.model.list.ListMirakel;
 
 public class Mirakel extends Application {
 	public static final int LIST_ALL = 0;
@@ -32,8 +33,6 @@ public class Mirakel extends Application {
 	public static final int[] PRIO_COLOR = { Color.parseColor("#008000"),
 			Color.parseColor("#00c400"), Color.parseColor("#3377FF"),
 			Color.parseColor("#FF7700"), Color.parseColor("#FF3333") };
-	public static final short SORT_BY_OPT = 0, SORT_BY_DUE = 1,
-			SORT_BY_PRIO = 2, SORT_BY_ID = 3;
 
 	public final static short SYNC_STATE_NOTHING = 0;
 	public final static short SYNC_STATE_DELETE = -1;
@@ -69,6 +68,7 @@ public class Mirakel extends Application {
 		super.onCreate();
 		openHelper = new DatabaseHelper(this);
 		Mirakel.getWritableDatabase().execSQL("PRAGMA foreign_keys=ON;");
+		ListMirakel.init(getApplicationContext());
 	}
 
 	public static SQLiteDatabase getWritableDatabase() {

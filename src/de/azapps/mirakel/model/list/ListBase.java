@@ -16,32 +16,27 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-/**
- * 
- */
-package de.azapps.mirakel.model;
+
+package de.azapps.mirakel.model.list;
 
 import android.content.ContentValues;
 
-/**
- * @author weiznich
- * 
- */
-public class List_mirakle {
+class ListBase {
+
 	private int id;
 	private String name;
-	// private int user_id;
 	private int sort_by;
 	private String created_at;
 	private String updated_at;
 	private int task_count;
 	private int sync_state;
+	private int lft, rgt;
 
-	public List_mirakle() {
+	ListBase() {
 	}
 
-	public List_mirakle(int id, String name, short sort_by, String created_at,
-			String updated_at, int task_count, int sync_state) {
+	ListBase(int id, String name, short sort_by, String created_at,
+			String updated_at, int sync_state) {
 		this.setId(id);
 		this.setCreated_at(created_at);
 		this.setName(name);
@@ -51,7 +46,7 @@ public class List_mirakle {
 		this.setSync_state(sync_state);
 	}
 
-	public List_mirakle(int id, String name, int task_count) {
+	ListBase(int id, String name, int task_count) {
 		this.setId(id);
 		this.setName(name);
 		this.setTask_count(task_count);
