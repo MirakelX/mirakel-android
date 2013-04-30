@@ -21,7 +21,7 @@
         <item>30 min</item>
         <item>1 h</item>
         <item>24 h</item>
-        <item>Manuell</item>
+        <item>Manually</item>
     </string-array>
     <string-array name="sync_frequencies_values">
         <item>5</item>
