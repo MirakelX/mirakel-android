@@ -39,6 +39,8 @@ import de.azapps.mirakel.model.list.ListMirakel;
 
 public class Task extends TaskBase {
 
+	public static final String TABLE="tasks";
+
 	public Task(long id, ListMirakel list, String name, String content,
 			boolean done, GregorianCalendar due, int priority,
 			String created_at, String updated_at, int sync_state) {
@@ -67,7 +69,7 @@ public class Task extends TaskBase {
 				context.getString(R.string.dateTimeFormat), Locale.getDefault())
 				.format(new Date()));
 		ContentValues values = getContentValues();
-		database.update(Mirakel.TABLE_TASKS, values, "_id = " + getId(), null);
+		database.update(TABLE, values, "_id = " + getId(), null);
 	}
 
 	/**
@@ -78,11 +80,11 @@ public class Task extends TaskBase {
 	public void delete() {
 		long id = getId();
 		if (getSync_state() == Mirakel.SYNC_STATE_ADD)
-			database.delete(Mirakel.TABLE_TASKS, "_id = " + id, null);
+			database.delete(TABLE, "_id = " + id, null);
 		else {
 			ContentValues values = new ContentValues();
 			values.put("sync_state", Mirakel.SYNC_STATE_DELETE);
-			database.update(Mirakel.TABLE_TASKS, values, "_id=" + id, null);
+			database.update(TABLE, values, "_id=" + id, null);
 		}
 
 	}
@@ -156,8 +158,8 @@ public class Task extends TaskBase {
 				new SimpleDateFormat(
 						context.getString(R.string.dateTimeFormat), Locale.US)
 						.format(new Date()));
-		long insertId = database.insert(Mirakel.TABLE_TASKS, null, values);
-		Cursor cursor = database.query(Mirakel.TABLE_TASKS, allColumns,
+		long insertId = database.insert(TABLE, null, values);
+		Cursor cursor = database.query(TABLE, allColumns,
 				"_id = " + insertId, null, null, null, null);
 		cursor.moveToFirst();
 		Task newTask = cursorToTask(cursor);
@@ -172,7 +174,7 @@ public class Task extends TaskBase {
 	 */
 	public static List<Task> all() {
 		List<Task> tasks = new ArrayList<Task>();
-		Cursor c = database.query(Mirakel.TABLE_TASKS, allColumns,
+		Cursor c = database.query(TABLE, allColumns,
 				"not sync_state= " + Mirakel.SYNC_STATE_DELETE, null, null,
 				null, null);
 		c.moveToFirst();
@@ -190,7 +192,7 @@ public class Task extends TaskBase {
 	 * @return
 	 */
 	public static Task get(long id) {
-		Cursor cursor = database.query(Mirakel.TABLE_TASKS, allColumns, "_id='"
+		Cursor cursor = database.query(TABLE, allColumns, "_id='"
 				+ id + "' and not sync_state=" + Mirakel.SYNC_STATE_DELETE,
 				null, null, null, null);
 		cursor.moveToFirst();
@@ -208,7 +210,7 @@ public class Task extends TaskBase {
 	 * @return
 	 */
 	public static Task getToSync(long id) {
-		Cursor cursor = database.query(Mirakel.TABLE_TASKS, allColumns, "_id='"
+		Cursor cursor = database.query(TABLE, allColumns, "_id='"
 				+ id + "'", null, null, null, null);
 		cursor.moveToFirst();
 		if (cursor.getCount() != 0) {
@@ -226,7 +228,7 @@ public class Task extends TaskBase {
 	 */
 	public static List<Task> getBySyncState(short state) {
 		List<Task> tasks_local = new ArrayList<Task>();
-		Cursor c = database.query(Mirakel.TABLE_TASKS, allColumns,
+		Cursor c = database.query(TABLE, allColumns,
 				"sync_state=" + state + " and list_id>0", null, null, null,
 				null);
 		c.moveToFirst();
@@ -429,7 +431,7 @@ public class Task extends TaskBase {
 			order = "_id ASC";
 		}
 		Log.v(TAG, order);
-		return Mirakel.getReadableDatabase().query(Mirakel.TABLE_TASKS,
+		return Mirakel.getReadableDatabase().query(TABLE,
 				allColumns, where, null, null, null, "done, " + order);
 	}
 }

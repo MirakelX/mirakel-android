@@ -104,12 +104,12 @@ public class ListMirakel extends ListBase {
 			return;
 
 		if (getSync_state() == Mirakel.SYNC_STATE_ADD) {
-			database.delete(Mirakel.TABLE_TASKS, "list_id = " + id, null);
+			database.delete(Task.TABLE, "list_id = " + id, null);
 			database.delete(ListMirakel.TABLE, "_id = " + id, null);
 		} else {
 			ContentValues values = new ContentValues();
 			values.put("sync_state", Mirakel.SYNC_STATE_DELETE);
-			database.update(Mirakel.TABLE_TASKS, values, "list_id = " + id,
+			database.update(Task.TABLE, values, "list_id = " + id,
 					null);
 			database.update(ListMirakel.TABLE, values, "_id=" + id, null);
 		}

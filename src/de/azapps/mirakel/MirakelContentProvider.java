@@ -46,8 +46,8 @@ public class MirakelContentProvider extends ContentProvider {
 		uriMatcher.addURI(Mirakel.AUTHORITY_TYP, ListMirakel.TABLE, LISTS);
 		uriMatcher.addURI(Mirakel.AUTHORITY_TYP, ListMirakel.TABLE + "/#",
 				LISTS_ITEM);
-		uriMatcher.addURI(Mirakel.AUTHORITY_TYP, Mirakel.TABLE_TASKS, TASKS);
-		uriMatcher.addURI(Mirakel.AUTHORITY_TYP, Mirakel.TABLE_TASKS + "/#",
+		uriMatcher.addURI(Mirakel.AUTHORITY_TYP, Task.TABLE, TASKS);
+		uriMatcher.addURI(Mirakel.AUTHORITY_TYP, Task.TABLE + "/#",
 				TASKS_ITEM);
 	}
 
@@ -129,10 +129,10 @@ public class MirakelContentProvider extends ContentProvider {
 		case TASKS_ITEM:
 			return null;
 		case TASKS:
-			id = Mirakel.getWritableDatabase().insert(Mirakel.TABLE_TASKS,
+			id = Mirakel.getWritableDatabase().insert(Task.TABLE,
 					null, values);
 			return Uri.parse("content://" + Mirakel.AUTHORITY_TYP + "/"
-					+ Mirakel.TABLE_TASKS + "/" + id);
+					+ Task.TABLE + "/" + id);
 		default:
 			Log.wtf(TAG, "Unsupportet uri");
 		}
@@ -166,14 +166,14 @@ public class MirakelContentProvider extends ContentProvider {
 						null, sortOrder);
 			case TASKS:
 				return Mirakel.getReadableDatabase().query(
-						Mirakel.TABLE_TASKS,
+						Task.TABLE,
 						projection,
 						"(" + selection + " ) and not sync_state= "
 								+ Mirakel.SYNC_STATE_DELETE, selectionArgs, null,
 						null, sortOrder);
 			case TASKS_ITEM:
 				return Mirakel.getReadableDatabase().query(
-						Mirakel.TABLE_TASKS,
+						Task.TABLE,
 						projection,
 						"(" + selection + " ) and _id="+uri.getLastPathSegment()+" and not sync_state= "
 								+ Mirakel.SYNC_STATE_DELETE, selectionArgs, null,
@@ -195,9 +195,9 @@ public class MirakelContentProvider extends ContentProvider {
 		case LISTS_ITEM:
 			return Mirakel.getWritableDatabase().update(ListMirakel.TABLE, values, "("+selection+") and _id="+uri.getLastPathSegment(), selectionArgs);
 		case TASKS:
-			return Mirakel.getWritableDatabase().update(Mirakel.TABLE_TASKS, values, selection, selectionArgs);
+			return Mirakel.getWritableDatabase().update(Task.TABLE, values, selection, selectionArgs);
 		case TASKS_ITEM:
-			return Mirakel.getWritableDatabase().update(Mirakel.TABLE_TASKS, values, "("+selection+") and _id="+uri.getLastPathSegment(), selectionArgs);
+			return Mirakel.getWritableDatabase().update(Task.TABLE, values, "("+selection+") and _id="+uri.getLastPathSegment(), selectionArgs);
 		default:
 			Log.wtf(TAG, "Unsupportet uri");
 			break;
