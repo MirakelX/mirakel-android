@@ -106,13 +106,21 @@
                 android:scrollHorizontally="true"
                 android:inputType="textPassword" 
                 android:hint="@string/Password"/>
+
             <TextView
                 android:id="@+id/message_bottom"
-                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dip"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textIsSelectable="false" />
+
+            <CheckBox
+                android:id="@+id/resync"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/resync" />
+
         </LinearLayout>
     </ScrollView>
     <FrameLayout
