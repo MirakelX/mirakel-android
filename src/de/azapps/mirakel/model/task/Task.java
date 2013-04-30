@@ -31,7 +31,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
@@ -47,12 +46,12 @@ public class Task extends TaskBase {
 				updated_at, sync_state);
 	}
 
-	public Task() {
+	Task() {
 		super();
 	}
-
-	public Task(Context ctx) {
-		super(ctx);
+	
+	public Task(String name) {
+		super(name);
 	}
 
 	/**
@@ -110,6 +109,9 @@ public class Task extends TaskBase {
 		database = dbHelper.getWritableDatabase();
 	}
 
+	/**
+	 * Close the Database-Connection
+	 */
 	public static void close() {
 		dbHelper.close();
 	}
@@ -200,6 +202,11 @@ public class Task extends TaskBase {
 		return null;
 	}
 
+	/**
+	 * Get a Task to sync it
+	 * @param id
+	 * @return
+	 */
 	public static Task getToSync(long id) {
 		Cursor cursor = database.query(Mirakel.TABLE_TASKS, allColumns, "_id='"
 				+ id + "'", null, null, null, null);
@@ -212,6 +219,11 @@ public class Task extends TaskBase {
 		return null;
 	}
 
+	/**
+	 * Get tasks by Sync State
+	 * @param state
+	 * @return
+	 */
 	public static List<Task> getBySyncState(short state) {
 		List<Task> tasks_local = new ArrayList<Task>();
 		Cursor c = database.query(Mirakel.TABLE_TASKS, allColumns,
@@ -226,50 +238,15 @@ public class Task extends TaskBase {
 	}
 
 	/**
-	 * Shortcut for getting all Tasks of a List
-	 * 
-	 * @param listId
-	 * @return
-	 */
-	@Deprecated
-	public static List<Task> getTasks(int listId) {
-		return getTasks(listId, ListMirakel.SORT_BY_OPT);
-	}
-
-	/**
-	 * Shortcut for getting all Tasks of a List
-	 * 
-	 * @param listId
-	 * @return
-	 */
-	public static List<Task> getTasks(ListMirakel list) {
-		return getTasks(list, ListMirakel.SORT_BY_OPT, false);
-	}
-
-	/**
 	 * Get Tasks from a List
+	 * Use it only if really necessary!
 	 * 
 	 * @param listId
 	 * @param sorting
 	 *            The Sorting (@see Mirakel.SORT_*)
+	 * @param showDone
 	 * @return
 	 */
-	@Deprecated
-	public static List<Task> getTasks(int listId, int sorting) {
-		return getTasks(listId, sorting, false);
-	}
-
-	/**
-	 * Shortcut for getting all Tasks of a List
-	 * 
-	 * @param list
-	 * @param sorting
-	 * @return
-	 */
-	public List<Task> getTasks(ListMirakel list, int sorting) {
-		return getTasks(list, sorting, false);
-	}
-
 	public static List<Task> getTasks(ListMirakel list, int sorting,
 			boolean showDone) {
 		return getTasks(list.getId(), sorting, showDone);
@@ -277,6 +254,7 @@ public class Task extends TaskBase {
 
 	/**
 	 * Get Tasks from a List
+	 * Use it only if really necessary!
 	 * 
 	 * @param listId
 	 * @param sorting

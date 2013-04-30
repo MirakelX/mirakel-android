@@ -47,15 +47,18 @@ public class ListMirakel extends ListBase {
 			SORT_BY_PRIO = 2, SORT_BY_ID = 3;
 	public static final String TABLE = "lists";
 
-	public ListMirakel() {
+	/**
+	 * Create an empty list
+	 */
+	private ListMirakel() {
 	}
 
-	public ListMirakel(int id, String name, short sort_by, String created_at,
+	ListMirakel(int id, String name, short sort_by, String created_at,
 			String updated_at, int sync_state) {
 		super(id, name, sort_by, created_at, updated_at, sync_state);
 	}
 
-	public ListMirakel(int id, String name) {
+	ListMirakel(int id, String name) {
 		super(id, name);
 	}
 
@@ -111,16 +114,32 @@ public class ListMirakel extends ListBase {
 			database.update(ListMirakel.TABLE, values, "_id=" + id, null);
 		}
 	}
-	
+
+	/**
+	 * Count the tasks of that list
+	 * 
+	 * @return
+	 */
 	public int countTasks() {
 		// TODO implement it
 		return 0;
 	}
 
+	/**
+	 * Get all Tasks
+	 * 
+	 * @return
+	 */
 	public List<Task> tasks() {
 		return Task.getTasks(this, getSortBy(), false);
 	}
 
+	/**
+	 * Get all Tasks
+	 * 
+	 * @param showDone
+	 * @return
+	 */
 	public List<Task> tasks(boolean showDone) {
 		return Task.getTasks(this, getSortBy(), showDone);
 	}
@@ -147,16 +166,25 @@ public class ListMirakel extends ListBase {
 		database = dbHelper.getWritableDatabase();
 	}
 
+	/**
+	 * Close the Database–Connection
+	 */
 	public static void close() {
 		dbHelper.close();
 	}
 
+	/**
+	 * Create and insert a new List
+	 * 
+	 * @param name
+	 * @return
+	 */
 	public static ListMirakel newList(String name) {
 		return newList(name, SORT_BY_OPT);
 	}
 
 	/**
-	 * Create a List
+	 * Create and insert a new List
 	 * 
 	 * @param name
 	 *            Name of the List
@@ -318,7 +346,7 @@ public class ListMirakel extends ListBase {
 	}
 
 	/**
-	 * Get all Lists by a sync state
+	 * Get Lists by a sync state
 	 * 
 	 * @param state
 	 * @see Mirakel.SYNC_STATE*

@@ -405,7 +405,7 @@ public class MainActivity extends FragmentActivity implements
 
 		List<Task> currentTasks = currentList.tasks();
 		if (currentTasks.size() == 0) {
-			currentTask = new Task(getApplicationContext());
+			currentTask = new Task(getApplicationContext().getString(R.string.task_empty));
 		} else {
 			currentTask = currentTasks.get(0);
 		}

@@ -68,6 +68,13 @@ public class Mirakel extends Application {
 		ListMirakel.init(getApplicationContext());
 		Task.init(getApplicationContext());
 	}
+	
+	@Override
+	public void onTerminate() {
+		super.onTerminate();
+		ListMirakel.close();
+		Task.close();
+	}
 
 	public static SQLiteDatabase getWritableDatabase() {
 		return openHelper.getWritableDatabase();
