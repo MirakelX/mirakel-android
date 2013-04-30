@@ -49,7 +49,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.CheckBoxPreference;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -196,9 +195,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				},mUsernameEdit.getText().toString(), mPasswordEdit.getText().toString(),Mirakel.Http_Mode.GET,this).execute(url+"/lists.json");
 			} else {
 				Log.e(TAG, "No network connection available.");
-				Toast t=new Toast(getApplicationContext());
-				t.setText(getString(R.string.NoNetwork));
-				t.show();
+				Toast.makeText(getApplicationContext(), R.string.NoNetwork, Toast.LENGTH_LONG).show();
 			}
         }
     }
@@ -252,6 +249,12 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
             ContentResolver.setSyncAutomatically(account, Mirakel.AUTHORITY_TYP, true);
         } else {
             mAccountManager.setPassword(account, mPassword);
+        }
+        if(((CheckBox)findViewById(R.id.resync)).isChecked()){
+        	Mirakel.getWritableDatabase().execSQL("Delete from "+Mirakel.TABLE_TASKS+" where sync_state="+Mirakel.SYNC_STATE_DELETE);
+        	Mirakel.getWritableDatabase().execSQL("Delete from "+ListMirakel.TABLE+" where sync_state="+Mirakel.SYNC_STATE_DELETE);
+        	Mirakel.getWritableDatabase().execSQL("Update "+Mirakel.TABLE_TASKS+" set sync_state="+Mirakel.SYNC_STATE_ADD);
+        	Mirakel.getWritableDatabase().execSQL("Update "+ListMirakel.TABLE+" set sync_state="+Mirakel.SYNC_STATE_ADD);
         }
         final Intent intent = new Intent();
         intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, mUsername);
