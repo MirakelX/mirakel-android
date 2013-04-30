@@ -31,7 +31,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
@@ -40,6 +39,8 @@ import de.azapps.mirakel.model.list.ListMirakel;
 
 public class Task extends TaskBase {
 
+	public static final String TABLE="tasks";
+
 	public Task(long id, ListMirakel list, String name, String content,
 			boolean done, GregorianCalendar due, int priority,
 			String created_at, String updated_at, int sync_state) {
@@ -47,12 +48,12 @@ public class Task extends TaskBase {
 				updated_at, sync_state);
 	}
 
-	public Task() {
+	Task() {
 		super();
 	}
-
-	public Task(Context ctx) {
-		super(ctx);
+	
+	public Task(String name) {
+		super(name);
 	}
 
 	/**
@@ -68,7 +69,7 @@ public class Task extends TaskBase {
 				context.getString(R.string.dateTimeFormat), Locale.getDefault())
 				.format(new Date()));
 		ContentValues values = getContentValues();
-		database.update(Mirakel.TABLE_TASKS, values, "_id = " + getId(), null);
+		database.update(TABLE, values, "_id = " + getId(), null);
 	}
 
 	/**
@@ -79,11 +80,11 @@ public class Task extends TaskBase {
 	public void delete() {
 		long id = getId();
 		if (getSync_state() == Mirakel.SYNC_STATE_ADD)
-			database.delete(Mirakel.TABLE_TASKS, "_id = " + id, null);
+			database.delete(TABLE, "_id = " + id, null);
 		else {
 			ContentValues values = new ContentValues();
 			values.put("sync_state", Mirakel.SYNC_STATE_DELETE);
-			database.update(Mirakel.TABLE_TASKS, values, "_id=" + id, null);
+			database.update(TABLE, values, "_id=" + id, null);
 		}
 
 	}
@@ -110,6 +111,9 @@ public class Task extends TaskBase {
 		database = dbHelper.getWritableDatabase();
 	}
 
+	/**
+	 * Close the Database-Connection
+	 */
 	public static void close() {
 		dbHelper.close();
 	}
@@ -154,8 +158,8 @@ public class Task extends TaskBase {
 				new SimpleDateFormat(
 						context.getString(R.string.dateTimeFormat), Locale.US)
 						.format(new Date()));
-		long insertId = database.insert(Mirakel.TABLE_TASKS, null, values);
-		Cursor cursor = database.query(Mirakel.TABLE_TASKS, allColumns,
+		long insertId = database.insert(TABLE, null, values);
+		Cursor cursor = database.query(TABLE, allColumns,
 				"_id = " + insertId, null, null, null, null);
 		cursor.moveToFirst();
 		Task newTask = cursorToTask(cursor);
@@ -170,7 +174,7 @@ public class Task extends TaskBase {
 	 */
 	public static List<Task> all() {
 		List<Task> tasks = new ArrayList<Task>();
-		Cursor c = database.query(Mirakel.TABLE_TASKS, allColumns,
+		Cursor c = database.query(TABLE, allColumns,
 				"not sync_state= " + Mirakel.SYNC_STATE_DELETE, null, null,
 				null, null);
 		c.moveToFirst();
@@ -188,7 +192,7 @@ public class Task extends TaskBase {
 	 * @return
 	 */
 	public static Task get(long id) {
-		Cursor cursor = database.query(Mirakel.TABLE_TASKS, allColumns, "_id='"
+		Cursor cursor = database.query(TABLE, allColumns, "_id='"
 				+ id + "' and not sync_state=" + Mirakel.SYNC_STATE_DELETE,
 				null, null, null, null);
 		cursor.moveToFirst();
@@ -200,8 +204,13 @@ public class Task extends TaskBase {
 		return null;
 	}
 
+	/**
+	 * Get a Task to sync it
+	 * @param id
+	 * @return
+	 */
 	public static Task getToSync(long id) {
-		Cursor cursor = database.query(Mirakel.TABLE_TASKS, allColumns, "_id='"
+		Cursor cursor = database.query(TABLE, allColumns, "_id='"
 				+ id + "'", null, null, null, null);
 		cursor.moveToFirst();
 		if (cursor.getCount() != 0) {
@@ -212,9 +221,14 @@ public class Task extends TaskBase {
 		return null;
 	}
 
+	/**
+	 * Get tasks by Sync State
+	 * @param state
+	 * @return
+	 */
 	public static List<Task> getBySyncState(short state) {
 		List<Task> tasks_local = new ArrayList<Task>();
-		Cursor c = database.query(Mirakel.TABLE_TASKS, allColumns,
+		Cursor c = database.query(TABLE, allColumns,
 				"sync_state=" + state + " and list_id>0", null, null, null,
 				null);
 		c.moveToFirst();
@@ -226,50 +240,15 @@ public class Task extends TaskBase {
 	}
 
 	/**
-	 * Shortcut for getting all Tasks of a List
-	 * 
-	 * @param listId
-	 * @return
-	 */
-	@Deprecated
-	public static List<Task> getTasks(int listId) {
-		return getTasks(listId, ListMirakel.SORT_BY_OPT);
-	}
-
-	/**
-	 * Shortcut for getting all Tasks of a List
-	 * 
-	 * @param listId
-	 * @return
-	 */
-	public static List<Task> getTasks(ListMirakel list) {
-		return getTasks(list, ListMirakel.SORT_BY_OPT, false);
-	}
-
-	/**
 	 * Get Tasks from a List
+	 * Use it only if really necessary!
 	 * 
 	 * @param listId
 	 * @param sorting
 	 *            The Sorting (@see Mirakel.SORT_*)
+	 * @param showDone
 	 * @return
 	 */
-	@Deprecated
-	public static List<Task> getTasks(int listId, int sorting) {
-		return getTasks(listId, sorting, false);
-	}
-
-	/**
-	 * Shortcut for getting all Tasks of a List
-	 * 
-	 * @param list
-	 * @param sorting
-	 * @return
-	 */
-	public List<Task> getTasks(ListMirakel list, int sorting) {
-		return getTasks(list, sorting, false);
-	}
-
 	public static List<Task> getTasks(ListMirakel list, int sorting,
 			boolean showDone) {
 		return getTasks(list.getId(), sorting, showDone);
@@ -277,6 +256,7 @@ public class Task extends TaskBase {
 
 	/**
 	 * Get Tasks from a List
+	 * Use it only if really necessary!
 	 * 
 	 * @param listId
 	 * @param sorting
@@ -451,7 +431,7 @@ public class Task extends TaskBase {
 			order = "_id ASC";
 		}
 		Log.v(TAG, order);
-		return Mirakel.getReadableDatabase().query(Mirakel.TABLE_TASKS,
+		return Mirakel.getReadableDatabase().query(TABLE,
 				allColumns, where, null, null, null, "done, " + order);
 	}
 }

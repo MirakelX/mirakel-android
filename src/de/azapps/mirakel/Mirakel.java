@@ -39,7 +39,6 @@ public class Mirakel extends Application {
 	public final static short SYNC_STATE_IS_SYNCED = 3;
 	
 	public static final int DATABASE_VERSION = 5;
-	public static final String TABLE_TASKS="tasks";
 	
 	public static final String ACCOUNT_TYP="de.azapps.mirakel";
 	public static final String AUTHORITY_TYP="de.azapps.mirakel.provider";
@@ -67,6 +66,13 @@ public class Mirakel extends Application {
 		Mirakel.getWritableDatabase().execSQL("PRAGMA foreign_keys=ON;");
 		ListMirakel.init(getApplicationContext());
 		Task.init(getApplicationContext());
+	}
+	
+	@Override
+	public void onTerminate() {
+		super.onTerminate();
+		ListMirakel.close();
+		Task.close();
 	}
 
 	public static SQLiteDatabase getWritableDatabase() {
