@@ -61,8 +61,10 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	/**
 	 * Define and open the DataSources
 	 */
+	@Override
 	public void onCreate() {
-		tasks = Task.getTasks(listId, sorting, showDone);
+		ListMirakel list=ListMirakel.getList(listId);
+		tasks = list.tasks(showDone);
 	}
 
 	public void onDestroy() {

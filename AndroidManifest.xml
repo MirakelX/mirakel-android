@@ -109,7 +109,7 @@
 
         <!-- The service serving the RemoteViews to the collection widget -->
         <service
-            android:name="de.azapps.mirakel.widget.Widget$MainWidgetService"
+            android:name="de.azapps.mirakel.widget.MainWidgetService"
             android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
