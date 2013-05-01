@@ -33,6 +33,7 @@ import android.support.v4.app.NotificationCompat;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.main_activity.MainActivity;
+import de.azapps.mirakel.model.SpecialList;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.widget.MainWidgetProvider;
@@ -65,7 +66,7 @@ public class NotificationService extends Service {
 			return;
 		}
 		int listId = Integer.parseInt(preferences.getString(
-				"notificationsList", "" + ListMirakel.DAILY));
+				"notificationsList", "" + SpecialList.first()));
 		// Set onClick Intent
 		Intent intent = new Intent(this, MainActivity.class);
 		intent.setAction(MainActivity.SHOW_LIST);
@@ -80,41 +81,31 @@ public class NotificationService extends Service {
 		if (todayTasks.size() == 0) {
 			notificationTitle = getString(R.string.notification_title_empty);
 			notificationText = "";
-		} else {
-			switch (listId) {
-			case ListMirakel.ALL:
-				if (todayTasks.size() == 1)
-					notificationTitle = getString(R.string.notification_title_all_single);
-				else
-					notificationTitle = String.format(
-							getString(R.string.notification_title_all),
-							todayTasks.size());
-				break;
-			case ListMirakel.DAILY:
-				if (todayTasks.size() == 1)
-					notificationTitle = getString(R.string.notification_title_daily_single);
-				else
-					notificationTitle = String.format(
-							getString(R.string.notification_title_daily),
-							todayTasks.size());
-				break;
-			case ListMirakel.WEEKLY:
-				if (todayTasks.size() == 1)
-					notificationTitle = getString(R.string.notification_title_weekly_single);
-				else
-					notificationTitle = String.format(
-							getString(R.string.notification_title_weekly),
-							todayTasks.size());
-				break;
-			default:
-				if (todayTasks.size() == 1)
-					notificationTitle = getString(R.string.notification_title_general_single);
-				else
-					notificationTitle = String.format(
-							getString(R.string.notification_title_general),
-							todayTasks.size(), todayList.getName());
+		} else {/* TODO for SpecialList
+				 * switch (listId) { case ListMirakel.ALL: if (todayTasks.size()
+				 * == 1) notificationTitle =
+				 * getString(R.string.notification_title_all_single); else
+				 * notificationTitle = String.format(
+				 * getString(R.string.notification_title_all),
+				 * todayTasks.size()); break; case ListMirakel.DAILY: if
+				 * (todayTasks.size() == 1) notificationTitle =
+				 * getString(R.string.notification_title_daily_single); else
+				 * notificationTitle = String.format(
+				 * getString(R.string.notification_title_daily),
+				 * todayTasks.size()); break; case ListMirakel.WEEKLY: if
+				 * (todayTasks.size() == 1) notificationTitle =
+				 * getString(R.string.notification_title_weekly_single); else
+				 * notificationTitle = String.format(
+				 * getString(R.string.notification_title_weekly),
+				 * todayTasks.size()); break; default:
+				 */
+			if (todayTasks.size() == 1)
+				notificationTitle = getString(R.string.notification_title_general_single);
+			else
+				notificationTitle = String.format(
+						getString(R.string.notification_title_general),
+						todayTasks.size(), todayList.getName());
 
-			}
 			notificationText = todayTasks.get(0).getName();
 		}
 

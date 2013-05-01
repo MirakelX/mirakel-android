@@ -58,9 +58,7 @@ public class MirakelContentProvider extends ContentProvider {
 			Log.d(TAG, "DELETE ALL LISTS?!!");
 			List<ListMirakel> lists = ListMirakel.all();
 			for (ListMirakel list : lists) {
-				if (list.getId() != ListMirakel.ALL
-						&& list.getId() != ListMirakel.DAILY
-						&& list.getId() != ListMirakel.WEEKLY) {
+				if (list.getId()>0) {
 					list.destroy();
 				}
 			}
@@ -70,7 +68,7 @@ public class MirakelContentProvider extends ContentProvider {
 			Log.d(TAG, "DELETE LIST " + list_id);
 			ListMirakel list = ListMirakel.getList(Integer.parseInt(uri
 					.getLastPathSegment()));
-			if (list.getId() > ListMirakel.ALL) {
+			if (list.getId() > 0) {
 				list.destroy();
 				return 1;
 			}

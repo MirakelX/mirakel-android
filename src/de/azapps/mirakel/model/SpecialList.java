@@ -1,28 +1,22 @@
 package de.azapps.mirakel.model;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
+
+import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.task.Task;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
-public class SpecialList {
-	private String name;
+public class SpecialList extends ListMirakel {
 	private boolean active;
 	private String whereQuery;
-	private int id;
-	private short sort_by;
-	private int sync_state;
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
 
 	public boolean isActive() {
 		return active;
@@ -40,34 +34,31 @@ public class SpecialList {
 		this.whereQuery = whereQuery;
 	}
 
-	public int getId() {
-		return id;
-	}
-
-	public short getSortBy() {
-		return sort_by;
-	}
-
-	public void setSortBy(short sort_by) {
-		this.sort_by = sort_by;
-	}
-
-	public int getSync_state() {
-		return sync_state;
-	}
-
-	public void setSync_state(int sync_state) {
-		this.sync_state = sync_state;
-	}
-
 	SpecialList(int id, String name, String whereQuery, boolean active,
 			short sort_by, int sync_state) {
-		this.id = id;
-		this.name = name;
+		super(id, name, sort_by, "", "", sync_state);
 		this.active = active;
 		this.whereQuery = whereQuery;
-		this.sync_state = sync_state;
-		this.sort_by=sort_by;
+	}
+
+	/**
+	 * Get all Tasks
+	 * 
+	 * @return
+	 */
+	public List<Task> tasks() {
+		Log.e("Blubb", "getTasks");
+		return Task.getTasks(this, getSortBy(), false, getWhereQuery());
+	}
+
+	/**
+	 * Get all Tasks
+	 * 
+	 * @param showDone
+	 * @return
+	 */
+	public List<Task> tasks(boolean showDone) {
+		return Task.getTasks(this, getSortBy(), showDone, getWhereQuery());
 	}
 
 	// Static Methods
@@ -76,7 +67,7 @@ public class SpecialList {
 	private static SQLiteDatabase database;
 	private static DatabaseHelper dbHelper;
 	private static final String[] allColumns = { "_id", "name", "whereQuery",
-			"active","sort_by", "sync_state" };
+			"active", "sort_by", "sync_state" };
 	private static Context context;
 
 	/**
@@ -118,7 +109,7 @@ public class SpecialList {
 	 * 
 	 * @return
 	 */
-	public static List<SpecialList> all() {
+	public static List<SpecialList> allSpecial() {
 		List<SpecialList> slists = new ArrayList<SpecialList>();
 		Cursor c = database.query(TABLE, allColumns, "active=1", null, null,
 				null, null);
@@ -131,6 +122,45 @@ public class SpecialList {
 	}
 
 	/**
+	 * Get a List by id selectionArgs
+	 * 
+	 * @param listId
+	 *            List–ID
+	 * @return List
+	 */
+	public static SpecialList getSpecialList(int listId) {
+		Cursor cursor = database.query(SpecialList.TABLE, allColumns, "_id='"
+				+ listId + "'", null, null, null, null);
+		cursor.moveToFirst();
+		if (cursor.getCount() != 0) {
+			SpecialList t = cursorToSList(cursor);
+			cursor.close();
+			return t;
+		}
+		Log.e("Blubb", "WARNING: No such specialList: " + listId);
+		return firstSpecial();
+	}
+
+	/**
+	 * Get the first List
+	 * 
+	 * @return List
+	 */
+	public static SpecialList firstSpecial() {
+		Cursor cursor = database.query(SpecialList.TABLE, allColumns,
+				"not sync_state=" + Mirakel.SYNC_STATE_DELETE, null, null,
+				null, "_id ASC");
+		SpecialList list = null;
+		cursor.moveToFirst();
+		if (!cursor.isAfterLast()) {
+			list = cursorToSList(cursor);
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return list;
+	}
+
+	/**
 	 * Create a List from a Cursor
 	 * 
 	 * @param cursor
@@ -140,7 +170,8 @@ public class SpecialList {
 		int i = 0;
 		SpecialList slist = new SpecialList(cursor.getInt(i++),
 				cursor.getString(i++), cursor.getString(i++),
-				cursor.getInt(i++) == 1, cursor.getShort(i++), cursor.getInt(i++));
+				cursor.getInt(i++) == 1, cursor.getShort(i++),
+				cursor.getInt(i++));
 		return slist;
 	}
 

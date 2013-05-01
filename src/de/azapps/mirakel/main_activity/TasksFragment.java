@@ -140,7 +140,7 @@ public class TasksFragment extends Fragment {
 			return true;
 		long id = main.getCurrentList().getId();
 		GregorianCalendar due = null;
-		if (id <= 0) {
+		/*if (id <= 0) {
 			if (id == ListMirakel.DAILY) {
 				due = new GregorianCalendar();
 			} else if (id == ListMirakel.WEEKLY) {
@@ -154,7 +154,7 @@ public class TasksFragment extends Fragment {
 				Toast.makeText(main, R.string.no_lists, Toast.LENGTH_LONG)
 						.show();
 			}
-		}
+		}*/ //TODO set date for special list
 		Task task = Task.newTask(name, id);
 		task.setDue(due);
 

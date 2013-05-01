@@ -46,6 +46,7 @@ import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.PagerAdapter;
 import de.azapps.mirakel.R;
+import de.azapps.mirakel.model.SpecialList;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.services.NotificationService;
@@ -92,7 +93,7 @@ public class MainActivity extends FragmentActivity implements
 
 			SharedPreferences.Editor editor = preferences.edit();
 			editor.putBoolean("startupAllLists", false);
-			editor.putString("startupList", "" + ListMirakel.ALL);
+			editor.putString("startupList", "" + SpecialList.first().getId());
 			editor.commit();
 		}
 		setContentView(R.layout.activity_main);
@@ -100,7 +101,7 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	private void setupLayout() {
-		setCurrentList(ListMirakel.getList(0));
+		setCurrentList(SpecialList.first());
 
 		// Intialise ViewPager
 		this.intialiseViewPager();
@@ -177,7 +178,8 @@ public class MainActivity extends FragmentActivity implements
 			builder.setItems(items.toArray(new CharSequence[items.size()]),
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int item) {
-							currentTask.setList(ListMirakel.getList(list_ids.get(item)));
+							currentTask.setList(ListMirakel.getList(list_ids
+									.get(item)));
 							currentTask.save();
 							currentList = currentTask.getList();
 							tasksFragment.update();
@@ -191,8 +193,7 @@ public class MainActivity extends FragmentActivity implements
 
 		case R.id.list_delete:
 			long listId = currentList.getId();
-			if (listId == ListMirakel.ALL || listId == ListMirakel.DAILY
-					|| listId == ListMirakel.WEEKLY)
+			if (listId < 0)
 				return true;
 			new AlertDialog.Builder(this)
 					.setTitle(this.getString(R.string.list_delete_title))
@@ -202,8 +203,7 @@ public class MainActivity extends FragmentActivity implements
 								public void onClick(DialogInterface dialog,
 										int which) {
 									currentList.destroy();
-									currentList = ListMirakel
-											.getList(ListMirakel.ALL);
+									currentList = SpecialList.first();
 									setCurrentList(currentList);
 								}
 							})
@@ -405,7 +405,8 @@ public class MainActivity extends FragmentActivity implements
 
 		List<Task> currentTasks = currentList.tasks();
 		if (currentTasks.size() == 0) {
-			currentTask = new Task(getApplicationContext().getString(R.string.task_empty));
+			currentTask = new Task(getApplicationContext().getString(
+					R.string.task_empty));
 		} else {
 			currentTask = currentTasks.get(0);
 		}
@@ -414,7 +415,6 @@ public class MainActivity extends FragmentActivity implements
 		}
 
 	}
-
 
 	/**
 	 * Ugly Wrapper TODO make it more beautiful

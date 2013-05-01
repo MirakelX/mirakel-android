@@ -32,6 +32,7 @@ import android.widget.RemoteViews;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.main_activity.MainActivity;
+import de.azapps.mirakel.model.SpecialList;
 import de.azapps.mirakel.model.list.ListMirakel;
 
 public class MainWidgetProvider extends AppWidgetProvider {
@@ -55,7 +56,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
 			
 
 			int listId = Integer.parseInt(preferences.getString("widgetList",
-					ListMirakel.ALL + ""));
+					SpecialList.first().getId() + ""));
 			int listSort = Integer.parseInt(preferences.getString("widgetSort",
 					ListMirakel.SORT_BY_OPT + ""));
 

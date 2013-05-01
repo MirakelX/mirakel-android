@@ -32,6 +32,7 @@ import android.widget.CheckBox;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.main_activity.MainActivity;
+import de.azapps.mirakel.model.SpecialList;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.sync.AuthenticatorActivity;
 
@@ -75,7 +76,7 @@ public class StartActivity extends Activity {
 						  editor.commit();
 						Intent intent = new Intent(StartActivity.this,
 							MainActivity.class);
-						intent.putExtra("listId", ListMirakel.ALL);
+						intent.putExtra("listId", SpecialList.first().getId());
 						startActivity(intent);
 					}
 
@@ -124,7 +125,7 @@ public class StartActivity extends Activity {
 					editor.commit();
 					Intent intent = new Intent(StartActivity.this,
 							MainActivity.class);
-					intent.putExtra("listId", ListMirakel.ALL);
+					intent.putExtra("listId", SpecialList.first().getId());
 					startActivity(intent);
 					break;
 				case ShowHelp:
