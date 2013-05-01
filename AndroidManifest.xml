@@ -45,11 +45,6 @@
             android:label="@string/title_activity_help" >
         </activity>
         <activity
-            android:name="de.azapps.mirakel.LoginActivity"
-            android:label="@string/title_activity_login"
-            android:windowSoftInputMode="adjustResize|stateVisible" >
-        </activity>
-        <activity
             android:name="de.azapps.mirakel.main_activity.MainActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_main"
@@ -72,7 +67,6 @@
                 someone who explicitly knows the class name
             -->
         </activity>
-
         <service
             android:name=".sync.AuthenticationService"
             android:exported="true" >
@@ -97,22 +91,6 @@
                 android:resource="@xml/syncadapter" >
             </meta-data>
         </service>
-        <!--
-        <service
-	 	    android:name=".SyncService"
-            android:exported="true">
-            <intent-filter>
-                <action
-                    android:name=".SyncAdapter" />
-            </intent-filter>
-             <meta-data
-                android:name=".SyncAdapter"
-                android:resource="@xml/syncadapter" />
-            <meta-data
-                android:name="android.provider.CONTACTS_STRUCTURE"
-                android:resource="@xml/contacts" />
-        </service>
-        -->
         <activity
             android:name="de.azapps.mirakel.widget.MainWidgetSettingsActivity"
             android:label="@string/title_activity_main"

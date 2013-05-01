@@ -31,6 +31,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.GetChars;
 import android.util.Log;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
@@ -402,15 +403,14 @@ public class Task extends TaskBase {
 		String where = "";
 		switch (listId) {
 		case ListMirakel.ALL:
-		case ListMirakel.DAILY:
-		case ListMirakel.WEEKLY:
 			break;
-		// Query Doesn't work
-		/*
-		 * case ListMirakel.DAILY: where="due<=DATE('now') AND due>0 and "; case
-		 * ListMirakel.WEEKLY:
-		 * where="due<=DATE('now','+7 days') AND due>0 and "; break;
-		 */
+		case ListMirakel.DAILY:
+			where= " due<='"+(new SimpleDateFormat(context.getString(R.string.dateFormatDB),
+					Locale.getDefault()).format(new Date()))+"' and";
+		case ListMirakel.WEEKLY:
+			where=" due<='"+(new SimpleDateFormat(context.getString(R.string.dateFormatDB),
+					Locale.getDefault()).format(new Date(new Date().getTime()+604800000)))+"' and";
+			break;
 		default:
 			where = "list_id='" + listId + "' and ";
 		}

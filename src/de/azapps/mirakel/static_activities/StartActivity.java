@@ -28,13 +28,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.sync.AuthenticatorActivity;
 
 public class StartActivity extends Activity {
 	private static final String TAG = "StartActivity";
+	private static final int PrepareLogin=1;
+	private static final int ShowHelp=2;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +49,8 @@ public class StartActivity extends Activity {
 			Mirakel.getReadableDatabase().setVersion(Mirakel.DATABASE_VERSION);
 		}
 		setContentView(R.layout.activity_start);
-		Button offline_button = (Button) findViewById(R.id.home_offline);
-		Button own_server = (Button) findViewById(R.id.home_own_server);
-		Button offical_server = (Button) findViewById(R.id.home_official_server);
-
-		offline_button.setOnClickListener(new Button.OnClickListener() {
+		Button start=(Button)findViewById(R.id.Start);
+		start.setOnClickListener(new Button.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -60,53 +61,27 @@ public class StartActivity extends Activity {
 				if (settings.getBoolean("showHelp", true)) {
 					Intent intent = new Intent(StartActivity.this,
 							HelpActivity.class);
-					startActivity(intent);
+					startActivityForResult(intent,ShowHelp);
 				} else {
-					Intent intent = new Intent(StartActivity.this,
+					if(((CheckBox)findViewById(R.id.use_server)).isChecked()){
+						Intent intent = new Intent(StartActivity.this,AuthenticatorActivity.class);
+						//intent.setAction(MainActivity.SHOW_LISTS);
+						startActivityForResult(intent, PrepareLogin);
+					}else{
+						settings = PreferenceManager
+								.getDefaultSharedPreferences(getApplicationContext());
+						SharedPreferences.Editor editor = settings.edit();
+						  editor.putBoolean("syncUse", false);
+						  editor.commit();
+						Intent intent = new Intent(StartActivity.this,
 							MainActivity.class);
-					intent.putExtra("listId", ListMirakel.ALL);
-					startActivity(intent);
-				}
-			}
-		});
-		own_server.setOnClickListener(new Button.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Log.v(TAG, "OWN SERVER");
-				SharedPreferences settings = PreferenceManager
-						.getDefaultSharedPreferences(getApplicationContext());
-				if (settings.getBoolean("showHelp", true)) {
-					Intent intent = new Intent(StartActivity.this,
-							HelpActivity.class);
-					startActivity(intent);
-				} else {
-					Intent intent = new Intent(StartActivity.this,
-							LoginActivity.class);
-					intent.putExtra("own_server", true);
-					startActivity(intent);
-				}
-			}
-		});
+						intent.putExtra("listId", ListMirakel.ALL);
+						startActivity(intent);
+					}
 
-		offical_server.setOnClickListener(new Button.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Log.v(TAG, "OFFICAL SERVER");
-				SharedPreferences settings = PreferenceManager
-						.getDefaultSharedPreferences(getApplicationContext());
-				if (settings.getBoolean("showHelp", true)) {
-					Intent intent = new Intent(StartActivity.this,
-							HelpActivity.class);
-					startActivity(intent);
-				} else {
-					Intent intent = new Intent(StartActivity.this,
-							LoginActivity.class);
-					intent.putExtra("own_server", false);
-					startActivity(intent);
 				}
 			}
 		});
-
 	}
 
 	@Override
@@ -136,5 +111,27 @@ public class StartActivity extends Activity {
 		}
 		return true;
 	}
-
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if(resultCode==RESULT_OK){
+			switch(requestCode){
+				case PrepareLogin:
+					SharedPreferences settings = PreferenceManager
+					.getDefaultSharedPreferences(getApplicationContext());
+					SharedPreferences.Editor editor = settings.edit();
+					editor.putBoolean("syncUse", true);
+					editor.commit();
+					Intent intent = new Intent(StartActivity.this,
+							MainActivity.class);
+					intent.putExtra("listId", ListMirakel.ALL);
+					startActivity(intent);
+					break;
+				case ShowHelp:
+					break;
+				default:
+					Log.v(TAG,"Unknown Requestcode");
+			}
+		}
+	}
 }

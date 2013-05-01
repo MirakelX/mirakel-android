@@ -20,6 +20,9 @@
     <string name="NoNetwork">No Network Connection available.</string>
     <string name="action_sync_now">Sync Now</string>
     <string name="resync">Do you want resync all Tasks?</string>
+    <string name="start">Start</string>
+    <string name="use_server">Do you want to use a Server to Sync?</string>
+    <string name="dateFormatDB">yyyy-MM-dd</string>
 
     
     <!-- Example Data -->

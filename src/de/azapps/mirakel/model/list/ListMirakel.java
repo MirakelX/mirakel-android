@@ -47,6 +47,7 @@ public class ListMirakel extends ListBase {
 	public static final short SORT_BY_OPT = 0, SORT_BY_DUE = 1,
 			SORT_BY_PRIO = 2, SORT_BY_ID = 3;
 	public static final String TABLE = "lists";
+	private static final String TAG = "ListMirakel";
 
 	/**
 	 * Create an empty list
@@ -121,8 +122,48 @@ public class ListMirakel extends ListBase {
 	 * 
 	 * @return
 	 */
-	public int countTasks() {
+	public static int countTasks(int id) {
+		
 		// TODO implement it
+		Cursor c;
+		switch(id){
+		case ALL:
+			c = Mirakel.getReadableDatabase().rawQuery(
+					"Select count(_id) from " + Task.TABLE
+							+ " where not sync_state="
+							+ Mirakel.SYNC_STATE_DELETE, null);
+			break;
+		case DAILY:
+			c = Mirakel.getReadableDatabase().rawQuery(
+					"Select count(_id) from "
+							+ Task.TABLE
+							+ " where due<='"
+							+ (new SimpleDateFormat(context.getString(R.string.dateFormatDB),
+									Locale.getDefault()).format(new Date()))+"' and not sync_state="+Mirakel.SYNC_STATE_DELETE,
+					null);
+			break;
+		case WEEKLY:
+			c = Mirakel.getReadableDatabase().rawQuery(
+					"Select count(_id) from "
+							+ Task.TABLE
+							+ " where  due<='"+(new SimpleDateFormat(context.getString(R.string.dateFormatDB),
+									Locale.getDefault()).format(new Date(new Date().getTime()+604800000)))+"' and not sync_state="+Mirakel.SYNC_STATE_DELETE,//604800000=1000*60*60*24*7
+					null);
+			break;
+		default:
+			c = Mirakel.getReadableDatabase().rawQuery(
+					"Select count(_id) from " + Task.TABLE + " where list_id="
+							+ id + " and not sync_state="
+							+ Mirakel.SYNC_STATE_DELETE, null);
+				break;
+		}
+		c.moveToFirst();
+		if(c.getCount()>0){
+			int n=c.getInt(0);
+			c.close();
+			return n;
+		}
+		c.close();
 		return 0;
 	}
 
@@ -234,7 +275,7 @@ public class ListMirakel extends ListBase {
 
 	/**
 	 * Get a List by id
-	 * 
+	 * selectionArgs
 	 * @param listId
 	 *            List–ID
 	 * @return List

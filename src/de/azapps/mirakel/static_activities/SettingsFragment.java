@@ -24,6 +24,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
@@ -31,6 +32,7 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
@@ -47,7 +49,6 @@ public class SettingsFragment extends PreferenceFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// Initialize needed Arrays
-		//main=(MainActivity) getActivity();
 		List<ListMirakel> lists = ListMirakel.all();
 		CharSequence entryValues[] = new String[lists.size()];
 		CharSequence entries[] = new String[lists.size()];
@@ -109,7 +110,7 @@ public class SettingsFragment extends PreferenceFragment {
 					}
 				}else{
 					try{
-					am.removeAccount(accounts[0], null, null);
+						am.removeAccount(accounts[0], null, null);
 					}catch(Exception e){
 						Log.e(TAG,"Cannot remove Account");
 					}
@@ -134,6 +135,17 @@ public class SettingsFragment extends PreferenceFragment {
 		
 		final AccountManager am = AccountManager.get(getActivity());
 		final Account account=getAccount(am);		
+		if (account == null) {
+			SharedPreferences settings = PreferenceManager
+					.getDefaultSharedPreferences(getActivity()
+							.getApplicationContext());
+			SharedPreferences.Editor editor = settings.edit();
+			editor.putBoolean("syncUse", false);
+			editor.commit();
+			sync.setChecked(false);
+		}else{
+			sync.setChecked(true);
+		}
 
 		EditTextPreference password= (EditTextPreference)findPreference("syncPassword");
 		password.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
@@ -150,7 +162,7 @@ public class SettingsFragment extends PreferenceFragment {
 		if(account!=null){
 			password.setText(am.getPassword(account));
 		}
-		
+		//TODO Add Option To Resync all
 		EditTextPreference url=(EditTextPreference)findPreference("syncServer");
 		if(account!=null){
 			url.setText(am.getUserData(account, "url"));
