@@ -29,6 +29,7 @@ import android.util.Log;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.task.Task;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -55,7 +56,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				// + "rgt INTEGER "
 				+ ")");
 		db.execSQL("CREATE TABLE "
-				+ Mirakel.TABLE_TASKS
+				+ Task.TABLE
 				+ " ("
 				+ "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
 				+ "list_id INTEGER REFERENCES lists (_id) ON DELETE CASCADE ON UPDATE CASCADE, "
@@ -82,7 +83,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		case 1:// Nothing, Startversion
 		case 2:
 			// Add sync-state
-			String update = "Alter Table " + Mirakel.TABLE_TASKS
+			String update = "Alter Table " + Task.TABLE
 					+ " add column sync_state INTEGER DEFAULT "
 					+ Mirakel.SYNC_STATE_ADD + ";";
 			db.execSQL(update);
@@ -104,16 +105,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			// Manage fromate of updated_at created_at in Tasks/Lists
 			// drop settingssettings
 
-			update = "UPDATE " + Mirakel.TABLE_TASKS
+			update = "UPDATE " + Task.TABLE
 					+ " set due='null' where due='1970-01-01'";
 			db.execSQL(update);
 			String newDate = new SimpleDateFormat(
 					context.getString(R.string.dateTimeFormat), Locale.US)
 					.format(new Date());
-			update = "UPDATE " + Mirakel.TABLE_TASKS + " set created_at='"
+			update = "UPDATE " + Task.TABLE + " set created_at='"
 					+ newDate + "'";
 			db.execSQL(update);
-			update = "UPDATE " + Mirakel.TABLE_TASKS + " set updated_at='"
+			update = "UPDATE " + Task.TABLE + " set updated_at='"
 					+ newDate + "'";
 			db.execSQL(update);
 			update = "UPDATE " + ListMirakel.TABLE + " set created_at='"
@@ -138,7 +139,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ "' where name='tasks'");
 			db.execSQL("PRAGMA writable_schema=OFF;");
 		case 4:
-			db.execSQL("UPDATE " + Mirakel.TABLE_TASKS
+			db.execSQL("UPDATE " + Task.TABLE
 					+ " set due=null where due='null'"); // Outch!
 			update = "Alter Table " + ListMirakel.TABLE
 					+ " add column lft INTEGER;";

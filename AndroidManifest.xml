@@ -74,7 +74,7 @@
         </activity>
 
         <service
-            android:name=".AuthenticationService"
+            android:name=".sync.AuthenticationService"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />

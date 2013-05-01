@@ -60,6 +60,7 @@ import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.task.Task;
 
 /**
  * Activity which displays login screen to the user.
@@ -217,9 +218,9 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         //Mark Account Syncable
         ContentResolver.setIsSyncable(account,Mirakel.AUTHORITY_TYP,1);
         if(((CheckBox)findViewById(R.id.resync)).isChecked()){
-        	Mirakel.getWritableDatabase().execSQL("Delete from "+Mirakel.TABLE_TASKS+" where sync_state="+Mirakel.SYNC_STATE_DELETE);
+        	Mirakel.getWritableDatabase().execSQL("Delete from "+Task.TABLE+" where sync_state="+Mirakel.SYNC_STATE_DELETE);
         	Mirakel.getWritableDatabase().execSQL("Delete from "+ListMirakel.TABLE+" where sync_state="+Mirakel.SYNC_STATE_DELETE);
-        	Mirakel.getWritableDatabase().execSQL("Update "+Mirakel.TABLE_TASKS+" set sync_state="+Mirakel.SYNC_STATE_ADD);
+        	Mirakel.getWritableDatabase().execSQL("Update "+Task.TABLE+" set sync_state="+Mirakel.SYNC_STATE_ADD);
         	Mirakel.getWritableDatabase().execSQL("Update "+ListMirakel.TABLE+" set sync_state="+Mirakel.SYNC_STATE_ADD);
         }
         final Intent intent = new Intent();

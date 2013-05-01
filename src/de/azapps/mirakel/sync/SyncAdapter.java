@@ -289,7 +289,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						values = new ContentValues();
 						values.put("list_id", list_response.getId());
 						Mirakel.getWritableDatabase().update(
-								Mirakel.TABLE_TASKS, values,
+								Task.TABLE, values,
 								"list_id=" + list.getId(), null);
 						addTasks();
 
@@ -472,7 +472,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 										.getWritableDatabase()
 										.rawQuery(
 												"Select _id from "
-														+ Mirakel.TABLE_TASKS
+														+ Task.TABLE
 														+ " WHERE sync_state="
 														+ Mirakel.SYNC_STATE_ADD
 														+ " and _id>"
@@ -482,7 +482,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 									Mirakel.getWritableDatabase()
 											.execSQL(
 													"UPDATE "
-															+ Mirakel.TABLE_TASKS
+															+ Task.TABLE
 															+ " SET _id=_id+"
 															+ diff
 															+ " WHERE sync_state="
@@ -497,7 +497,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 							values.put("_id", taskNew.getId());
 							values.put("sync_state", Mirakel.SYNC_STATE_NOTHING);
 							Mirakel.getWritableDatabase().update(
-									Mirakel.TABLE_TASKS, values,
+									Task.TABLE, values,
 									"_id=" + taskNew.getId(), null);
 						} catch (IndexOutOfBoundsException e) {
 							Log.e(TAG, "unknown Respons");
@@ -523,19 +523,19 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				// New Task from server, add to db
 				task_server.setSync_state(Mirakel.SYNC_STATE_IS_SYNCED);
 				long id = Mirakel.getWritableDatabase().insert(
-						Mirakel.TABLE_TASKS, null,
+						Task.TABLE, null,
 						task_server.getContentValues());
 				if (id > task_server.getId()) {
 					long diff = id - task_server.getId();
 					Mirakel.getWritableDatabase().execSQL(
-							"UPDATE " + Mirakel.TABLE_TASKS + " SET _id=_id+"
+							"UPDATE " + Task.TABLE + " SET _id=_id+"
 									+ diff + " WHERE sync_state="
 									+ Mirakel.SYNC_STATE_ADD + "and _id>"
 									+ task_server.getId());
 				}
 				ContentValues values = new ContentValues();
 				values.put("_id", task_server.getId());
-				Mirakel.getWritableDatabase().update(Mirakel.TABLE_TASKS,
+				Mirakel.getWritableDatabase().update(Task.TABLE,
 						values, "_id=" + id, null);
 				continue;
 			} else {
@@ -563,7 +563,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					}
 				} else if (task.getSync_state() == Mirakel.SYNC_STATE_ADD) {
 					Cursor c = Mirakel.getReadableDatabase().rawQuery(
-							"Select max(_id) from " + Mirakel.TABLE_TASKS
+							"Select max(_id) from " + Task.TABLE
 									+ " where not sync_state="
 									+ Mirakel.SYNC_STATE_ADD, null);
 					c.moveToFirst();
@@ -572,14 +572,14 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 								.getInt(0) - task.getId();
 						c.close();
 						c = Mirakel.getReadableDatabase().rawQuery(
-								"Select _id from " + Mirakel.TABLE_TASKS
+								"Select _id from " + Task.TABLE
 										+ " WHERE sync_state="
 										+ Mirakel.SYNC_STATE_ADD + " and _id>="
 										+ task.getId(), null);
 						c.moveToLast();
 						while (!c.isBeforeFirst()) {
 							Mirakel.getWritableDatabase().execSQL(
-									"UPDATE " + Mirakel.TABLE_TASKS
+									"UPDATE " + Task.TABLE
 											+ " SET _id=_id+" + diff
 											+ " WHERE sync_state="
 											+ Mirakel.SYNC_STATE_ADD
@@ -598,11 +598,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		}
 		// Remove Tasks, which are deleted from server
 		Mirakel.getWritableDatabase().execSQL(
-				"Delete from " + Mirakel.TABLE_TASKS + " where sync_state="
+				"Delete from " + Task.TABLE + " where sync_state="
 						+ Mirakel.SYNC_STATE_NOTHING + " or sync_state="
 						+ Mirakel.SYNC_STATE_NEED_SYNC);
 		Mirakel.getWritableDatabase().execSQL(
-				"Update " + Mirakel.TABLE_TASKS + " set sync_state="
+				"Update " + Task.TABLE + " set sync_state="
 						+ Mirakel.SYNC_STATE_NOTHING + " where sync_state="
 						+ Mirakel.SYNC_STATE_IS_SYNCED);
 
