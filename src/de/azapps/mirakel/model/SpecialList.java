@@ -5,6 +5,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 
@@ -47,7 +48,6 @@ public class SpecialList extends ListMirakel {
 	 * @return
 	 */
 	public List<Task> tasks() {
-		Log.e("Blubb", "getTasks");
 		return Task.getTasks(this, getSortBy(), false, getWhereQuery());
 	}
 
@@ -155,6 +155,9 @@ public class SpecialList extends ListMirakel {
 		if (!cursor.isAfterLast()) {
 			list = cursorToSList(cursor);
 			cursor.moveToNext();
+		} else {
+			list = new SpecialList(0, context.getString(R.string.list_all), "",
+					true, SORT_BY_OPT, (int) Mirakel.SYNC_STATE_NOTHING);
 		}
 		cursor.close();
 		return list;

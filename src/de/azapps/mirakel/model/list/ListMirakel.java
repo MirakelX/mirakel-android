@@ -113,8 +113,6 @@ public class ListMirakel extends ListBase {
 	 * @return
 	 */
 	public int countTasks() {
-
-		// TODO implement for SpecialLists
 		Cursor c;
 		String where;
 		if(getId()<0){

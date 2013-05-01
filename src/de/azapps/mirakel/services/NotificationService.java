@@ -30,6 +30,7 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.main_activity.MainActivity;
@@ -81,24 +82,7 @@ public class NotificationService extends Service {
 		if (todayTasks.size() == 0) {
 			notificationTitle = getString(R.string.notification_title_empty);
 			notificationText = "";
-		} else {/* TODO for SpecialList
-				 * switch (listId) { case ListMirakel.ALL: if (todayTasks.size()
-				 * == 1) notificationTitle =
-				 * getString(R.string.notification_title_all_single); else
-				 * notificationTitle = String.format(
-				 * getString(R.string.notification_title_all),
-				 * todayTasks.size()); break; case ListMirakel.DAILY: if
-				 * (todayTasks.size() == 1) notificationTitle =
-				 * getString(R.string.notification_title_daily_single); else
-				 * notificationTitle = String.format(
-				 * getString(R.string.notification_title_daily),
-				 * todayTasks.size()); break; case ListMirakel.WEEKLY: if
-				 * (todayTasks.size() == 1) notificationTitle =
-				 * getString(R.string.notification_title_weekly_single); else
-				 * notificationTitle = String.format(
-				 * getString(R.string.notification_title_weekly),
-				 * todayTasks.size()); break; default:
-				 */
+		} else {
 			if (todayTasks.size() == 1)
 				notificationTitle = getString(R.string.notification_title_general_single);
 			else
