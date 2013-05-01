@@ -52,9 +52,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ "created_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
 				+ "updated_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
 				+ "sync_state INTEGER DEFAULT " + Mirakel.SYNC_STATE_ADD// +", "
-				// + "lft INTEGER, "
-				// + "rgt INTEGER "
-				+ ")");
+				+ "lft INTEGER, " + "rgt INTEGER " + ")");
 		db.execSQL("CREATE TABLE "
 				+ Task.TABLE
 				+ " ("
@@ -71,6 +69,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ context.getString(R.string.inbox) + "')");
 		db.execSQL("INSERT INTO tasks (list_id,name) VALUES (1,'"
 				+ context.getString(R.string.first_task) + "')");
+		createSpecialListsTable(db);
 
 	}
 
@@ -111,11 +110,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			String newDate = new SimpleDateFormat(
 					context.getString(R.string.dateTimeFormat), Locale.US)
 					.format(new Date());
-			update = "UPDATE " + Task.TABLE + " set created_at='"
-					+ newDate + "'";
+			update = "UPDATE " + Task.TABLE + " set created_at='" + newDate
+					+ "'";
 			db.execSQL(update);
-			update = "UPDATE " + Task.TABLE + " set updated_at='"
-					+ newDate + "'";
+			update = "UPDATE " + Task.TABLE + " set updated_at='" + newDate
+					+ "'";
 			db.execSQL(update);
 			update = "UPDATE " + ListMirakel.TABLE + " set created_at='"
 					+ newDate + "'";
@@ -147,14 +146,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			update = "Alter Table " + ListMirakel.TABLE
 					+ " add column rgt INTEGER;";
 			db.execSQL(update);
-			// Next DB-Versions
-			// case 5:
-
+		case 5:
+			createSpecialListsTable(db);
 		}
 		// db.execSQL("DROP TABLE IF EXISTS lists");
 		// db.execSQL("DROP TABLE IF EXISTS tasks");
 		// onCreate(db);
 
+	}
+
+	private void createSpecialListsTable(SQLiteDatabase db) {
+		db.execSQL("CREATE TABLE " + SpecialList.TABLE + " ("
+				+ "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
+				+ "name TEXT NOT NULL, "
+				+ "active INTEGER NOT NULL DEFAULT 0, "
+				+ "whereQuery STRING NOT NULL DEFAULT '', "
+				+ "sync_state INTEGER DEFAULT " + Mirakel.SYNC_STATE_ADD + ")");
+		db.execSQL("INSERT INTO " + SpecialList.TABLE
+				+ " (name,active,whereQuery) VALUES (" + "'"
+				+ context.getString(R.string.list_all) + "',1,'')");
+		db.execSQL("INSERT INTO " + SpecialList.TABLE
+				+ " (name,active,whereQuery) VALUES (" + "'"
+				+ context.getString(R.string.list_today) + "',1,'due not null and done=0 and date(due)<=date(\"now\",\"+1 day\")')");
+		db.execSQL("INSERT INTO " + SpecialList.TABLE
+				+ " (name,active,whereQuery) VALUES (" + "'"
+				+ context.getString(R.string.list_today) + "',1,'due not null and done=0 and date(due)<=date(\"now\",\"+7 day\")')");
 	}
 
 }

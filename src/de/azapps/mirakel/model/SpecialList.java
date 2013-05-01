@@ -1,17 +1,8 @@
 package de.azapps.mirakel.model;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Locale;
 
-import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.R;
-import de.azapps.mirakel.model.list.ListMirakel;
-import de.azapps.mirakel.model.task.Task;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -20,7 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 public class SpecialList {
 	private String name;
 	private boolean active;
-	private String where;
+	private String whereQuery;
 
 	public String getName() {
 		return name;
@@ -38,22 +29,22 @@ public class SpecialList {
 		this.active = active;
 	}
 
-	public String getWhere() {
-		return where;
+	public String getWhereQuery() {
+		return whereQuery;
 	}
 
-	public void setWhere(String where) {
-		this.where = where;
+	public void setWhereQuery(String whereQuery) {
+		this.whereQuery = whereQuery;
 	}
 
-	public SpecialList(String name, String where, boolean active) {
+	public SpecialList(String name, String whereQuery, boolean active) {
 		this.name = name;
 		this.active = active;
-		this.where = where;
+		this.whereQuery = whereQuery;
 	}
 
 	// Static Methods
-	private static final String TABLE = "special_lists";
+	public static final String TABLE = "special_lists";
 	private static final String TAG = "TasksDataSource";
 	private static SQLiteDatabase database;
 	private static DatabaseHelper dbHelper;
@@ -81,12 +72,12 @@ public class SpecialList {
 		dbHelper.close();
 	}
 
-	public static SpecialList newSpecialList(String name, String where,
+	public static SpecialList newSpecialList(String name, String whereQuery,
 			boolean active) {
 
 		ContentValues values = new ContentValues();
 		values.put("name", name);
-		values.put("where", where);
+		values.put("whereQuery", whereQuery);
 		values.put("active", active);
 		long insertId = database.insert(TABLE, null, values);
 		Cursor cursor = database.query(TABLE, allColumns, "_id = " + insertId,
