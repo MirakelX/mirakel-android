@@ -132,6 +132,7 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
+		this.lists=ListMirakel.all(false);
 		getMenuInflater().inflate(R.menu.main, menu);
 		this.menu = menu;
 		onPageSelected(TASKS_FRAGMENT);

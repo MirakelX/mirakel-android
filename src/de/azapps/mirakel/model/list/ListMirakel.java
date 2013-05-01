@@ -114,15 +114,15 @@ public class ListMirakel extends ListBase {
 	public int countTasks() {
 		Cursor c;
 		String where;
-		if(getId()<0){
-			where=((SpecialList) this).getWhereQuery();
+		if (getId() < 0) {
+			where = ((SpecialList) this).getWhereQuery();
 		} else {
-			where="list_id = "+getId();
+			where = "list_id = " + getId();
 		}
 		c = Mirakel.getReadableDatabase().rawQuery(
 				"Select count(_id) from " + Task.TABLE + " where " + where
-						+ " and done=0 and not sync_state=" + Mirakel.SYNC_STATE_DELETE,
-				null);
+						+ " and done=0 and not sync_state="
+						+ Mirakel.SYNC_STATE_DELETE, null);
 		c.moveToFirst();
 		if (c.getCount() > 0) {
 			int n = c.getInt(0);
@@ -304,11 +304,17 @@ public class ListMirakel extends ListBase {
 	 * @return List of Lists
 	 */
 	public static List<ListMirakel> all() {
+		return all(true);
+	}
+
+	public static List<ListMirakel> all(boolean withSpecial) {
 		List<ListMirakel> lists = new ArrayList<ListMirakel>();
 
-		List<SpecialList> slists = SpecialList.allSpecial();
-		for (SpecialList slist : slists) {
-			lists.add(slist);
+		if (withSpecial) {
+			List<SpecialList> slists = SpecialList.allSpecial();
+			for (SpecialList slist : slists) {
+				lists.add(slist);
+			}
 		}
 
 		Cursor cursor = database.query(ListMirakel.TABLE, allColumns,
