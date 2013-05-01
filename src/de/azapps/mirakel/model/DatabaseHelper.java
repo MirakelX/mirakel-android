@@ -173,6 +173,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.execSQL("INSERT INTO " + SpecialList.TABLE
 				+ " (name,active,whereQuery) VALUES (" + "'"
 				+ context.getString(R.string.list_week) + "',1,'due not null and done=0 and date(due)<=date(\"now\",\"+7 day\")')");
+		db.execSQL("INSERT INTO " + SpecialList.TABLE
+				+ " (name,active,whereQuery) VALUES (" + "'"
+				+ context.getString(R.string.list_overdue) + "',1,'due not null and done=0 and date(due)<=date(\"now\",\"-1 day\")')");
 	}
 
 }
