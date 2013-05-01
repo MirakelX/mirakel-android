@@ -24,6 +24,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
 import android.util.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
+import de.azapps.mirakel.model.SpecialList;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 
@@ -66,6 +67,7 @@ public class Mirakel extends Application {
 		Mirakel.getWritableDatabase().execSQL("PRAGMA foreign_keys=ON;");
 		ListMirakel.init(getApplicationContext());
 		Task.init(getApplicationContext());
+		SpecialList.init(getApplicationContext());
 	}
 	
 	@Override
@@ -73,6 +75,7 @@ public class Mirakel extends Application {
 		super.onTerminate();
 		ListMirakel.close();
 		Task.close();
+		SpecialList.close();
 	}
 
 	public static SQLiteDatabase getWritableDatabase() {

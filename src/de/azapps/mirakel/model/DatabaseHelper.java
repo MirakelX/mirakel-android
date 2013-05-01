@@ -161,6 +161,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ "name TEXT NOT NULL, "
 				+ "active INTEGER NOT NULL DEFAULT 0, "
 				+ "whereQuery STRING NOT NULL DEFAULT '', "
+				+ "sort_by INTEGER NOT NULL DEFAULT " + ListMirakel.SORT_BY_OPT + ", "
 				+ "sync_state INTEGER DEFAULT " + Mirakel.SYNC_STATE_ADD + ")");
 		db.execSQL("INSERT INTO " + SpecialList.TABLE
 				+ " (name,active,whereQuery) VALUES (" + "'"
@@ -170,7 +171,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ context.getString(R.string.list_today) + "',1,'due not null and done=0 and date(due)<=date(\"now\",\"+1 day\")')");
 		db.execSQL("INSERT INTO " + SpecialList.TABLE
 				+ " (name,active,whereQuery) VALUES (" + "'"
-				+ context.getString(R.string.list_today) + "',1,'due not null and done=0 and date(due)<=date(\"now\",\"+7 day\")')");
+				+ context.getString(R.string.list_week) + "',1,'due not null and done=0 and date(due)<=date(\"now\",\"+7 day\")')");
 	}
 
 }

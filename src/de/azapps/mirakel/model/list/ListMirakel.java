@@ -35,6 +35,7 @@ import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.DatabaseHelper;
+import de.azapps.mirakel.model.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 
 /**
@@ -321,16 +322,11 @@ public class ListMirakel extends ListBase {
 	 */
 	public static List<ListMirakel> all() {
 		List<ListMirakel> lists = new ArrayList<ListMirakel>();
-		// TODO Get from strings.xml
-		if (preferences.getBoolean("listAll", true))
-			lists.add(new ListMirakel(ListMirakel.ALL, context
-					.getString(R.string.list_all)));
-		if (preferences.getBoolean("listToday", true))
-			lists.add(new ListMirakel(ListMirakel.DAILY, context
-					.getString(R.string.list_today)));
-		if (preferences.getBoolean("listWeek", true))
-			lists.add(new ListMirakel(ListMirakel.WEEKLY, context
-					.getString(R.string.list_week)));
+
+		List<SpecialList> slists=SpecialList.all();
+		for(SpecialList slist : slists) {
+			lists.add(new ListMirakel(-slist.getId(), slist.getName(),slist.getSortBy(),"","",slist.getSync_state()));
+		}
 
 		Cursor cursor = database.query(ListMirakel.TABLE, allColumns,
 				"not sync_state=" + Mirakel.SYNC_STATE_DELETE, null, null,

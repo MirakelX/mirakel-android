@@ -12,6 +12,9 @@ public class SpecialList {
 	private String name;
 	private boolean active;
 	private String whereQuery;
+	private int id;
+	private short sort_by;
+	private int sync_state;
 
 	public String getName() {
 		return name;
@@ -37,10 +40,34 @@ public class SpecialList {
 		this.whereQuery = whereQuery;
 	}
 
-	public SpecialList(String name, String whereQuery, boolean active) {
+	public int getId() {
+		return id;
+	}
+
+	public short getSortBy() {
+		return sort_by;
+	}
+
+	public void setSortBy(short sort_by) {
+		this.sort_by = sort_by;
+	}
+
+	public int getSync_state() {
+		return sync_state;
+	}
+
+	public void setSync_state(int sync_state) {
+		this.sync_state = sync_state;
+	}
+
+	SpecialList(int id, String name, String whereQuery, boolean active,
+			short sort_by, int sync_state) {
+		this.id = id;
 		this.name = name;
 		this.active = active;
 		this.whereQuery = whereQuery;
+		this.sync_state = sync_state;
+		this.sort_by=sort_by;
 	}
 
 	// Static Methods
@@ -48,9 +75,8 @@ public class SpecialList {
 	private static final String TAG = "TasksDataSource";
 	private static SQLiteDatabase database;
 	private static DatabaseHelper dbHelper;
-	private static final String[] allColumns = { "_id", "list_id", "name",
-			"content", "done", "due", "priority", "created_at", "updated_at",
-			"sync_state" };
+	private static final String[] allColumns = { "_id", "name", "whereQuery",
+			"active","sort_by", "sync_state" };
 	private static Context context;
 
 	/**
@@ -87,7 +113,6 @@ public class SpecialList {
 		return newSList;
 	}
 
-
 	/**
 	 * Get all Tasks
 	 * 
@@ -95,8 +120,7 @@ public class SpecialList {
 	 */
 	public static List<SpecialList> all() {
 		List<SpecialList> slists = new ArrayList<SpecialList>();
-		Cursor c = database.query(TABLE, allColumns,
-				"active=1", null, null,
+		Cursor c = database.query(TABLE, allColumns, "active=1", null, null,
 				null, null);
 		c.moveToFirst();
 		while (!c.isAfterLast()) {
@@ -114,8 +138,9 @@ public class SpecialList {
 	 */
 	private static SpecialList cursorToSList(Cursor cursor) {
 		int i = 0;
-		SpecialList slist = new SpecialList(cursor.getString(i++),
-				cursor.getString(i++), cursor.getInt(i++) == 1);
+		SpecialList slist = new SpecialList(cursor.getInt(i++),
+				cursor.getString(i++), cursor.getString(i++),
+				cursor.getInt(i++) == 1, cursor.getShort(i++), cursor.getInt(i++));
 		return slist;
 	}
 
