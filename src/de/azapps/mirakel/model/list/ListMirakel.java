@@ -31,6 +31,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
@@ -111,13 +112,19 @@ public class ListMirakel extends ListBase {
 	 * 
 	 * @return
 	 */
-	public static int countTasks(int id) {
+	public int countTasks() {
 
 		// TODO implement for SpecialLists
 		Cursor c;
+		String where;
+		if(getId()<0){
+			where=((SpecialList) this).getWhereQuery();
+		} else {
+			where="list_id = "+getId();
+		}
 		c = Mirakel.getReadableDatabase().rawQuery(
-				"Select count(_id) from " + Task.TABLE + " where list_id=" + id
-						+ " and not sync_state=" + Mirakel.SYNC_STATE_DELETE,
+				"Select count(_id) from " + Task.TABLE + " where " + where
+						+ " and done=0 and not sync_state=" + Mirakel.SYNC_STATE_DELETE,
 				null);
 		c.moveToFirst();
 		if (c.getCount() > 0) {

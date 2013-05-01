@@ -36,7 +36,7 @@ public class SpecialList extends ListMirakel {
 
 	SpecialList(int id, String name, String whereQuery, boolean active,
 			short sort_by, int sync_state) {
-		super(id, name, sort_by, "", "", sync_state);
+		super(-id, name, sort_by, "", "", sync_state);
 		this.active = active;
 		this.whereQuery = whereQuery;
 	}
