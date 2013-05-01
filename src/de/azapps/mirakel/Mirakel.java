@@ -24,8 +24,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
 import android.util.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
-import de.azapps.mirakel.model.SpecialList;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 
 public class Mirakel extends Application {

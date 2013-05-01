@@ -34,8 +34,8 @@ import android.util.Log;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.main_activity.MainActivity;
-import de.azapps.mirakel.model.SpecialList;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.widget.MainWidgetProvider;
 

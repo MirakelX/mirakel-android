@@ -26,8 +26,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import android.content.ContentValues;
-import de.azapps.mirakel.model.SpecialList;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SpecialList;
 
 class TaskBase {
 	private long id;

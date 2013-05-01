@@ -52,23 +52,7 @@
     </PreferenceCategory>
     
     <!-- Special Lists -->
-    <PreferenceCategory android:title="@string/lists_title" >
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="listAll"
-            android:summary="@string/lists_all_summary"
-            android:title="@string/lists_all" />
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="listToday"
-            android:summary="@string/lists_today_summary"
-            android:title="@string/lists_today" />
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="listWeek"
-            android:summary="@string/lists_week_summary"
-            android:title="@string/lists_week" />
-    </PreferenceCategory>
+    <!-- TODO: add ability to manage Special Lists -->
     
     <!-- Notifications -->
     <PreferenceCategory android:title="@string/notifications_title" >

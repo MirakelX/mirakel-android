@@ -27,8 +27,8 @@ import android.view.Menu;
 import android.view.Window;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.main_activity.MainActivity;
-import de.azapps.mirakel.model.SpecialList;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SpecialList;
 
 public class SplashScreenActivity extends Activity {
 

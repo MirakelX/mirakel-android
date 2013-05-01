@@ -91,8 +91,6 @@ public class ListFragment extends Fragment {
 			public boolean onItemLongClick(AdapterView<?> parent, View item,
 					int position, final long id) {
 				ListMirakel list = values.get((int) id);
-				if (list.getId() <= 0)
-					return false;
 				editList(list);
 				return false;
 			}

@@ -36,7 +36,6 @@ import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.DatabaseHelper;
-import de.azapps.mirakel.model.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 
 /**

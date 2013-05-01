@@ -46,8 +46,8 @@ import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.PagerAdapter;
 import de.azapps.mirakel.R;
-import de.azapps.mirakel.model.SpecialList;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.static_activities.SettingsActivity;
@@ -192,9 +192,6 @@ public class MainActivity extends FragmentActivity implements
 			return true;
 
 		case R.id.list_delete:
-			long listId = currentList.getId();
-			if (listId < 0)
-				return true;
 			new AlertDialog.Builder(this)
 					.setTitle(this.getString(R.string.list_delete_title))
 					.setMessage(this.getString(R.string.list_delete_content))
@@ -205,6 +202,7 @@ public class MainActivity extends FragmentActivity implements
 									currentList.destroy();
 									currentList = SpecialList.first();
 									setCurrentList(currentList);
+									listFragment.update();
 								}
 							})
 					.setNegativeButton(this.getString(R.string.no),
@@ -214,7 +212,6 @@ public class MainActivity extends FragmentActivity implements
 									// do nothing
 								}
 							}).show();
-			listFragment.update();
 			return true;
 		case R.id.task_sorting:
 			final CharSequence[] SortingItems = getResources().getStringArray(
@@ -367,9 +364,6 @@ public class MainActivity extends FragmentActivity implements
 		MenuInflater inflater = getMenuInflater();
 
 		inflater.inflate(newmenu, menu);
-		if (position == 1 && currentList.getId() <= 0) {
-			menu.removeItem(R.id.list_delete);
-		}
 	}
 
 	@Override

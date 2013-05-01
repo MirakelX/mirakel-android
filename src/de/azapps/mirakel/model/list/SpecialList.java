@@ -1,16 +1,20 @@
-package de.azapps.mirakel.model;
+package de.azapps.mirakel.model.list;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
-import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.task.Task;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -102,6 +106,46 @@ public class SpecialList extends ListMirakel {
 		cursor.moveToFirst();
 		SpecialList newSList = cursorToSList(cursor);
 		return newSList;
+	}
+
+	/**
+	 * Update the List in the Database
+	 * 
+	 * @param list
+	 *            The List
+	 */
+	public void save() {
+		setSync_state(getSync_state() == Mirakel.SYNC_STATE_ADD
+				|| getSync_state() == Mirakel.SYNC_STATE_IS_SYNCED ? getSync_state()
+				: Mirakel.SYNC_STATE_NEED_SYNC);
+		ContentValues values = getContentValues();
+		database.update(TABLE, values, "_id = " + Math.abs(getId()), null);
+	}
+
+	/**
+	 * Delete a List from the Database
+	 * 
+	 * @param list
+	 */
+	public void destroy() {
+		long id = Math.abs(getId());
+
+		if (getSync_state() != Mirakel.SYNC_STATE_ADD) {
+			setSync_state(Mirakel.SYNC_STATE_DELETE);
+		}
+		setActive(false);
+		ContentValues values = new ContentValues();
+		database.update(TABLE, values, "_id=" + id, null);
+	}
+
+	public ContentValues getContentValues() {
+		ContentValues cv = new ContentValues();
+		cv.put("name", getName());
+		cv.put("sort_by", getSortBy());
+		cv.put("sync_state", getSync_state());
+		cv.put("active", isActive() ? 1 : 0);
+		cv.put("whereQuery", getWhereQuery());
+		return cv;
 	}
 
 	/**
