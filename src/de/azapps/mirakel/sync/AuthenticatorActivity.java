@@ -36,6 +36,11 @@
 
 package de.azapps.mirakel.sync;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.message.BasicNameValuePair;
+
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
@@ -177,23 +182,25 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
             // the user login attempt.
         	ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 			NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+			List<BasicNameValuePair> data = new ArrayList<BasicNameValuePair>();
+			data.add(new BasicNameValuePair("email",mUsername));
+			data.add(new BasicNameValuePair("password", mPassword));
         	if (networkInfo != null && networkInfo.isConnected()) {
         		showProgress();
         		final String url= ((EditText)findViewById(R.id.server_edit)).getText().toString();
 				new Network(new DataDownloadCommand() {
-					
 					@Override
-					public void after_exec(String result) {						
-						if(result.indexOf("Invalid email or password.")!=-1){
+					public void after_exec(String result) {
+						String token=Network.getToken(result);
+						if(token==null){
 							Log.e(TAG,"Login faild");
 							hideProgress();
 						}else{
 							Log.e(TAG,"Login sucess");
-							onAuthenticationResult("Foo",url);
+							finishLogin(url,token);
 						}
-						
 					}
-				},mUsernameEdit.getText().toString(), mPasswordEdit.getText().toString(),Mirakel.Http_Mode.GET,this).execute(url+"/lists.json");
+				},Mirakel.HttpMode.POST,data,this,null).execute(url+"/tokens.json");
 			} else {
 				Log.e(TAG, "No network connection available.");
 				Toast.makeText(getApplicationContext(), R.string.NoNetwork, Toast.LENGTH_LONG).show();
@@ -237,7 +244,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
      *
      * @param result the confirmCredentials result.
      */
-    private void finishLogin(String authToken,String url) {
+    private void finishLogin(String url,String token) {
 
         Log.i(TAG, "finishLogin()");
         final Account account = new Account(mUsername, Mirakel.ACCOUNT_TYP);
@@ -257,6 +264,11 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         	Mirakel.getWritableDatabase().execSQL("Update "+Task.TABLE+" set sync_state="+Mirakel.SYNC_STATE_ADD);
         	Mirakel.getWritableDatabase().execSQL("Update "+ListMirakel.TABLE+" set sync_state="+Mirakel.SYNC_STATE_ADD);
         }
+        new Network(new DataDownloadCommand() {
+			@Override
+			public void after_exec(String result) {				
+			}
+		}, Mirakel.HttpMode.DELETE, this, null).execute(url+"/tokens/"+token);
         final Intent intent = new Intent();
         intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, mUsername);
         intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, Mirakel.ACCOUNT_TYP);
@@ -284,7 +296,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 
         if (success) {
             if (!mConfirmCredentials) {
-                finishLogin(authToken,url);
+                //finishLogin(authToken,url);
             } else {
                 finishConfirmCredentials(success,url);
             }
