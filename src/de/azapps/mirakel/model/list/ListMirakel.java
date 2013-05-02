@@ -73,10 +73,10 @@ public class ListMirakel extends ListBase {
 		SharedPreferences.Editor editor = preferences.edit();
 		// TODO implement for specialLists
 		if (getId() > 0) {
-			setSync_state(getSync_state() == Mirakel.SYNC_STATE_ADD
-					|| getSync_state() == Mirakel.SYNC_STATE_IS_SYNCED ? getSync_state()
+			setSyncState(getSyncState() == Mirakel.SYNC_STATE_ADD
+					|| getSyncState() == Mirakel.SYNC_STATE_IS_SYNCED ? getSyncState()
 					: Mirakel.SYNC_STATE_NEED_SYNC);
-			setUpdated_at(new SimpleDateFormat(
+			setUpdatedAt(new SimpleDateFormat(
 					context.getString(R.string.dateTimeFormat),
 					Locale.getDefault()).format(new Date()));
 			ContentValues values = getContentValues();
@@ -95,7 +95,7 @@ public class ListMirakel extends ListBase {
 		if (id <= 0)
 			return;
 
-		if (getSync_state() == Mirakel.SYNC_STATE_ADD) {
+		if (getSyncState() == Mirakel.SYNC_STATE_ADD) {
 			database.delete(Task.TABLE, "list_id = " + id, null);
 			database.delete(ListMirakel.TABLE, "_id = " + id, null);
 		} else {

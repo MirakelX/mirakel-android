@@ -63,10 +63,10 @@ public class Task extends TaskBase {
 	 * @param task
 	 */
 	public void save() {
-		setSync_state(getSync_state() == Mirakel.SYNC_STATE_ADD
+		setSyncState(getSync_state() == Mirakel.SYNC_STATE_ADD
 				|| getSync_state() == Mirakel.SYNC_STATE_IS_SYNCED ? getSync_state()
 				: Mirakel.SYNC_STATE_NEED_SYNC);
-		setUpdated_at(new SimpleDateFormat(
+		setUpdatedAt(new SimpleDateFormat(
 				context.getString(R.string.dateTimeFormat), Locale.getDefault())
 				.format(new Date()));
 		ContentValues values = getContentValues();
@@ -318,7 +318,7 @@ public class Task extends TaskBase {
 			String key = key_value[0];
 			if (key.equals("{\"content\"")) {
 				t = new Task();
-				t.setSync_state(Mirakel.SYNC_STATE_NOTHING);
+				t.setSyncState(Mirakel.SYNC_STATE_NOTHING);
 				if (key_value[1] != "null") {
 					t.setContent(key_value[1].substring(1,
 							key_value[1].length() - 1));
@@ -351,13 +351,13 @@ public class Task extends TaskBase {
 			} else if (key.equals("\"priority\"")) {
 				t.setPriority(Integer.parseInt(key_value[1]));
 			} else if (key.equals("\"created_at\"")) {
-				t.setCreated_at(key_value.length == 4 ? key_value[1]
+				t.setCreatedAt(key_value.length == 4 ? key_value[1]
 						.substring(1)
 						+ key_value[2]
 						+ key_value[3].substring(0, key_value[3].length() - 1)
 						: "");
 			} else if (key.equals("\"updated_at\"")) {
-				t.setUpdated_at(key_value.length == 4 ? key_value[1]
+				t.setUpdatedAt(key_value.length == 4 ? key_value[1]
 						.substring(1)
 						+ key_value[2]
 						+ key_value[3].substring(0, key_value[3].length() - 2)

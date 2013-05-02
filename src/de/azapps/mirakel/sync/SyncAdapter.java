@@ -224,7 +224,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	public void sync_list(ListMirakel list) {
 		List<BasicNameValuePair> data = new ArrayList<BasicNameValuePair>();
 		data.add(new BasicNameValuePair("list[name]", list.getName()));
-		list.setSync_state(Mirakel.SYNC_STATE_IS_SYNCED);
+		list.setSyncState(Mirakel.SYNC_STATE_IS_SYNCED);
 		list.save();
 		SyncLists.add(new Pair<Network, String>(new Network(
 				new DataDownloadCommand() {
@@ -307,7 +307,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		for (ListMirakel list_server : lists_server) {
 			ListMirakel list = ListMirakel.getList(list_server.getId());
 			if (list == null) {
-				list_server.setSync_state(Mirakel.SYNC_STATE_IS_SYNCED);
+				list_server.setSyncState(Mirakel.SYNC_STATE_IS_SYNCED);
 				long id = Mirakel.getWritableDatabase()
 						.insert(ListMirakel.TABLE, null,
 								list_server.getContentValues());
@@ -318,29 +318,29 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						"_id=" + id, null);
 				continue;
 			} else {
-				if (list.getSync_state() == Mirakel.SYNC_STATE_NOTHING) {
-					list_server.setSync_state(Mirakel.SYNC_STATE_IS_SYNCED);
+				if (list.getSyncState() == Mirakel.SYNC_STATE_NOTHING) {
+					list_server.setSyncState(Mirakel.SYNC_STATE_IS_SYNCED);
 					list_server.save();
-				} else if (list.getSync_state() == Mirakel.SYNC_STATE_NEED_SYNC) {
+				} else if (list.getSyncState() == Mirakel.SYNC_STATE_NEED_SYNC) {
 					DateFormat df = new SimpleDateFormat(
 							mContext.getString(R.string.dateTimeFormat),
 							Locale.US);// use ASCII-Formating
 					try {
-						if (df.parse(list.getUpdated_at()).getTime() > df
-								.parse(list_server.getUpdated_at()).getTime()) {
+						if (df.parse(list.getUpdatedAt()).getTime() > df
+								.parse(list_server.getUpdatedAt()).getTime()) {
 							// local list newer,
 							sync_list(list);
 						} else {
 							// server list newer
 							list_server
-									.setSync_state(Mirakel.SYNC_STATE_IS_SYNCED);
+									.setSyncState(Mirakel.SYNC_STATE_IS_SYNCED);
 							list_server.save();
 						}
 					} catch (ParseException e) {
 						Log.e(TAG, "Unabel to parse Dates");
 						e.printStackTrace();
 					}
-				} else if (list.getSync_state() == Mirakel.SYNC_STATE_ADD) {
+				} else if (list.getSyncState() == Mirakel.SYNC_STATE_ADD) {
 					Cursor c = Mirakel.getReadableDatabase().rawQuery(
 							"Select max(_id) from " + ListMirakel.TABLE
 									+ " where not sync_state="
@@ -399,7 +399,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					@Override
 					public void after_exec(String result) {
 						// Remove Task
-						task.setSync_state(Mirakel.SYNC_STATE_ADD);
+						task.setSyncState(Mirakel.SYNC_STATE_ADD);
 						task.delete();
 					}
 				}, Email, Password, Mirakel.Http_Mode.DELETE, mContext),
@@ -426,7 +426,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					.format(task.getDue().getTime());
 		data.add(new BasicNameValuePair("task[due]", dueString));
 		data.add(new BasicNameValuePair("task[content]", task.getContent()));
-		task.setSync_state(Mirakel.SYNC_STATE_IS_SYNCED);
+		task.setSyncState(Mirakel.SYNC_STATE_IS_SYNCED);
 		task.save();
 		SyncTasks.add(new Pair<Network, String>(new Network(
 				new DataDownloadCommand() {
@@ -521,7 +521,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			Task task = Task.getToSync(task_server.getId());
 			if (task == null) {
 				// New Task from server, add to db
-				task_server.setSync_state(Mirakel.SYNC_STATE_IS_SYNCED);
+				task_server.setSyncState(Mirakel.SYNC_STATE_IS_SYNCED);
 				long id = Mirakel.getWritableDatabase().insert(
 						Task.TABLE, null,
 						task_server.getContentValues());
@@ -540,7 +540,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				continue;
 			} else {
 				if (task.getSync_state() == Mirakel.SYNC_STATE_NOTHING) {
-					task_server.setSync_state(Mirakel.SYNC_STATE_IS_SYNCED);
+					task_server.setSyncState(Mirakel.SYNC_STATE_IS_SYNCED);
 					task_server.save();
 				} else if (task.getSync_state() == Mirakel.SYNC_STATE_NEED_SYNC) {
 					DateFormat df = new SimpleDateFormat(
@@ -554,7 +554,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						} else {
 							// server task newer, use this task instated local
 							task_server
-									.setSync_state(Mirakel.SYNC_STATE_IS_SYNCED);
+									.setSyncState(Mirakel.SYNC_STATE_IS_SYNCED);
 							task_server.save();
 						}
 					} catch (ParseException e) {
