@@ -149,6 +149,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			db.execSQL(update);
 		case 5:
 			createSpecialListsTable(db);
+			db.execSQL("update lists set lft=(select count(*) from (select * from lists) as a where a._id<lists._id)*2 +1;");
+			db.execSQL("update lists set rgt=lft+1;");
 		}
 		// db.execSQL("DROP TABLE IF EXISTS lists");
 		// db.execSQL("DROP TABLE IF EXISTS tasks");
