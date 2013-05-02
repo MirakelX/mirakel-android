@@ -87,6 +87,12 @@
     <string name="list_delete_title">Delete List</string>
     <string name="list_delete_content">Are you sure you want to delete this List?</string>
 
+    <string-array name="list_actions_items">
+        <item>Rename</item>
+        <item>Move (TODO!)</item>
+        <item>Destroy</item>
+    </string-array>
+
     <!-- Menu -->
     <string name="menu_delete">Delete</string>
     <string name="menu_settings">Settings</string>
