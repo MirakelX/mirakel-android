@@ -170,14 +170,19 @@ public class MainActivity extends FragmentActivity implements
 			builder.setTitle(R.string.dialog_move);
 			List<CharSequence> items = new ArrayList<CharSequence>();
 			final List<Integer> list_ids = new ArrayList<Integer>();
+			int currentItem=0, i=0;
 			for (ListMirakel list : lists) {
 				if (list.getId() > 0) {
 					items.add(list.getName());
+					if(currentTask.getList().getId()==list.getId()){
+						currentItem=i;
+					}
 					list_ids.add(list.getId());
+					++i;
 				}
 			}
 
-			builder.setItems(items.toArray(new CharSequence[items.size()]),
+			builder.setSingleChoiceItems(items.toArray(new CharSequence[items.size()]),currentItem,
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int item) {
 							currentTask.setList(ListMirakel.getList(list_ids
