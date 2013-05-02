@@ -50,6 +50,7 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.services.NotificationService;
+import de.azapps.mirakel.static_activities.CreditsActivity;
 import de.azapps.mirakel.static_activities.SettingsActivity;
 
 /**
@@ -132,7 +133,7 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		this.lists=ListMirakel.all(false);
+		this.lists = ListMirakel.all(false);
 		getMenuInflater().inflate(R.menu.main, menu);
 		this.menu = menu;
 		onPageSelected(TASKS_FRAGMENT);
@@ -266,6 +267,14 @@ public class MainActivity extends FragmentActivity implements
 			bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
 			bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
 			ContentResolver.requestSync(null, Mirakel.AUTHORITY_TYP, bundle);
+			break;
+		case R.id.menu_credits_list:
+		case R.id.menu_credits_task:
+		case R.id.menu_credits_tasks:
+			Intent creditsIntent = new Intent(MainActivity.this,
+					CreditsActivity.class);
+			startActivity(creditsIntent);
+			break;
 		default:
 			return super.onOptionsItemSelected(item);
 		}

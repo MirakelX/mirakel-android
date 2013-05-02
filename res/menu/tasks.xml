@@ -22,5 +22,10 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/action_sync_now"/>
+    <item
+        android:id="@+id/menu_credits_tasks"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/action_credits"/>
 
 </menu>
