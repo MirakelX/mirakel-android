@@ -171,13 +171,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ context.getString(R.string.list_all) + "',1,'')");
 		db.execSQL("INSERT INTO " + SpecialList.TABLE
 				+ " (name,active,whereQuery) VALUES (" + "'"
-				+ context.getString(R.string.list_today) + "',1,'due not null and done=0 and date(due)<=date(\"now\")')");
+				+ context.getString(R.string.list_today) + "',1,'due not null and done=0 and date(due)<=date(\"now\",\"localtime\")')");
 		db.execSQL("INSERT INTO " + SpecialList.TABLE
 				+ " (name,active,whereQuery) VALUES (" + "'"
-				+ context.getString(R.string.list_week) + "',1,'due not null and done=0 and date(due)<=date(\"now\",\"+7 day\")')");
+				+ context.getString(R.string.list_week) + "',1,'due not null and done=0 and date(due)<=date(\"now\",\"+7 day\",\"localtime\")')");
 		db.execSQL("INSERT INTO " + SpecialList.TABLE
 				+ " (name,active,whereQuery) VALUES (" + "'"
-				+ context.getString(R.string.list_overdue) + "',1,'due not null and done=0 and date(due)<=date(\"now\",\"-1 day\")')");
+				+ context.getString(R.string.list_overdue) + "',1,'due not null and done=0 and date(due)<=date(\"now\",\"-1 day\",\"localtime\")')");
 	}
 
 }
