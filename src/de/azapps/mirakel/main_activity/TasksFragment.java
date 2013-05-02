@@ -18,6 +18,8 @@
  ******************************************************************************/
 package de.azapps.mirakel.main_activity;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -61,6 +63,7 @@ public class TasksFragment extends Fragment {
 	private EditText newTask;
 	private boolean created = false;
 	private ListView listView;
+	private static final int TASK_RENAME=0, TASK_MOVE=1, TASK_DESTROY=2;
 
 	public void setActivity(MainActivity activity) {
 		main = activity;
@@ -236,6 +239,42 @@ public class TasksFragment extends Fragment {
 
 		task.execute();
 		// listView.setAdapter(adapter);
+		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View item,
+					int position, final long id) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+				builder.setTitle(R.string.dialog_move);
+				List<CharSequence> items = new ArrayList<CharSequence>(
+						Arrays.asList(getActivity().getResources().getStringArray(R.array.task_actions_items)));
+
+				builder.setItems(items.toArray(new CharSequence[items.size()]),
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int item) {
+								Task task=values.get((int) id);
+								switch(item) {
+								case TASK_RENAME:
+									main.setCurrentTask(task);
+									break;
+								case TASK_MOVE:
+									//Log.e("Blubb","Move");
+									break;
+								case TASK_DESTROY:
+									//main.destroyList(list);
+									break;
+								}
+								Log.e("Blubb","item:" + item + " task:" + id);
+							}
+						});
+
+				AlertDialog dialog = builder.create();
+				dialog.show();
+				
+				/*ListMirakel list = values.get((int) id);
+				editList(list);*/
+				return false;
+			}
+		});
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View item,
