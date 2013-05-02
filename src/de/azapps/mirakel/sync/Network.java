@@ -50,22 +50,21 @@ import de.azapps.mirakel.R;
 public class Network extends AsyncTask<String, Integer, String> {
 	private String TAG="GetData";
 	protected DataDownloadCommand commands;
-	protected String Email;
-	protected String Password;
+	//protected String Email;
+	//protected String Password;
 	protected List<BasicNameValuePair> HeaderData;
 	protected int Mode;
-	protected Context context;	
+	protected Context context;
+	protected String Token;
 
-	public Network(DataDownloadCommand commands, String email, String password,
-			int mode,Context context) {
+	public Network(DataDownloadCommand commands,int mode,Context context,String Token) {
 		this.commands = commands;
-		this.Email = email;
-		this.Password = password;
 		this.Mode = mode;
 		this.context=context;
+		this.Token=Token;
 	}
 
-	public Network(DataDownloadCommand commands, String email, String password,
+	/*public Network(DataDownloadCommand commands, String email, String password,
 			int mode, List<BasicNameValuePair> data, Context context) {
 		this.commands = commands;
 		this.Email = email;
@@ -73,7 +72,28 @@ public class Network extends AsyncTask<String, Integer, String> {
 		this.Mode = mode;
 		this.HeaderData = data;
 		this.context=context;
+		this.Token=null;
+	}*/
+	public Network(DataDownloadCommand commands,
+			int mode, List<BasicNameValuePair> data, Context context,String Token) {
+		this.commands = commands;
+		this.Mode = mode;
+		this.HeaderData = data;
+		this.context=context;
+		this.Token=Token;
 	}
+	
+	public static String getToken(String json) {
+		if(json.indexOf("{\"token\":\"")!=-1){
+			try{
+				return json.substring(10,30);
+			}catch(IndexOutOfBoundsException e){
+				return null;
+			}
+		}else
+			return null;
+	}
+	
 
 	@Override
 	protected String doInBackground(String... urls) {
@@ -107,35 +127,38 @@ public class Network extends AsyncTask<String, Integer, String> {
 
 	private String downloadUrl(String myurl) throws IOException,
 			URISyntaxException {
+		if(Token!=null){
+			myurl+="?authentication_key="+Token;
+		}
 		HttpParams params = new BasicHttpParams();
 		params.setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 		HttpConnectionParams.setTcpNoDelay(params, true);
 		DefaultHttpClient client=new DefaultHttpClient(params);
-		client.getCredentialsProvider().setCredentials(new AuthScope(null, -1),
-				new UsernamePasswordCredentials(Email, Password));
+		//client.getCredentialsProvider().setCredentials(new AuthScope(null, -1),
+		//		new UsernamePasswordCredentials(Email, Password));
 		HttpResponse response;
 		switch (Mode) {
-		case Mirakel.Http_Mode.GET:
+		case Mirakel.HttpMode.GET:
 			Log.v(TAG,"GET "+myurl);
 			HttpGet get = new HttpGet();
 			get.setURI(new URI(myurl));
 			response= client.execute(get);
 			break;
-		case Mirakel.Http_Mode.PUT:
+		case Mirakel.HttpMode.PUT:
 			Log.v(TAG,"PUT "+myurl);
 			HttpPut put = new HttpPut();
 			put.setURI(new URI(myurl));
 			put.setEntity(new UrlEncodedFormEntity(HeaderData));
 			response=client.execute(put);
 			break;
-		case Mirakel.Http_Mode.POST:
+		case Mirakel.HttpMode.POST:
 			Log.v(TAG,"POST "+myurl);
 			HttpPost post = new HttpPost();
 			post.setURI(new URI(myurl));
 			post.setEntity(new UrlEncodedFormEntity(HeaderData));
 			response=client.execute(post);
 			break;
-		case Mirakel.Http_Mode.DELETE:
+		case Mirakel.HttpMode.DELETE:
 			Log.v(TAG,"DELETE "+myurl);
 			HttpDelete delete = new HttpDelete();
 			delete.setURI(new URI(myurl));

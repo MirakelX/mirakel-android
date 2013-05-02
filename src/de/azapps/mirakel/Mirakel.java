@@ -47,7 +47,7 @@ public class Mirakel extends Application {
 
 	public static int widgets[] = {};
 
-	public class Http_Mode {
+	public class HttpMode {
 		final public static int GET = 0;
 		final public static int POST = 1;
 		final public static int PUT = 2;
