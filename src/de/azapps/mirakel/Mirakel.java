@@ -25,6 +25,7 @@ import android.graphics.Color;
 import android.util.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 
 public class Mirakel extends Application {
@@ -38,7 +39,7 @@ public class Mirakel extends Application {
 	public final static short SYNC_STATE_NEED_SYNC = 2;
 	public final static short SYNC_STATE_IS_SYNCED = 3;
 	
-	public static final int DATABASE_VERSION = 5;
+	public static final int DATABASE_VERSION = 6;
 	
 	public static final String ACCOUNT_TYP="de.azapps.mirakel";
 	public static final String AUTHORITY_TYP="de.azapps.mirakel.provider";
@@ -66,6 +67,7 @@ public class Mirakel extends Application {
 		Mirakel.getWritableDatabase().execSQL("PRAGMA foreign_keys=ON;");
 		ListMirakel.init(getApplicationContext());
 		Task.init(getApplicationContext());
+		SpecialList.init(getApplicationContext());
 	}
 	
 	@Override
@@ -73,6 +75,7 @@ public class Mirakel extends Application {
 		super.onTerminate();
 		ListMirakel.close();
 		Task.close();
+		SpecialList.close();
 	}
 
 	public static SQLiteDatabase getWritableDatabase() {

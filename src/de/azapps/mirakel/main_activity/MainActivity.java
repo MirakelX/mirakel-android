@@ -47,8 +47,10 @@ import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.PagerAdapter;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.services.NotificationService;
+import de.azapps.mirakel.static_activities.CreditsActivity;
 import de.azapps.mirakel.static_activities.SettingsActivity;
 
 /**
@@ -92,7 +94,7 @@ public class MainActivity extends FragmentActivity implements
 
 			SharedPreferences.Editor editor = preferences.edit();
 			editor.putBoolean("startupAllLists", false);
-			editor.putString("startupList", "" + ListMirakel.ALL);
+			editor.putString("startupList", "" + SpecialList.first().getId());
 			editor.commit();
 		}
 		setContentView(R.layout.activity_main);
@@ -100,7 +102,7 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	private void setupLayout() {
-		setCurrentList(ListMirakel.getList(0));
+		setCurrentList(SpecialList.first());
 
 		// Intialise ViewPager
 		this.intialiseViewPager();
@@ -131,6 +133,7 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
+		this.lists = ListMirakel.all(false);
 		getMenuInflater().inflate(R.menu.main, menu);
 		this.menu = menu;
 		onPageSelected(TASKS_FRAGMENT);
@@ -177,7 +180,8 @@ public class MainActivity extends FragmentActivity implements
 			builder.setItems(items.toArray(new CharSequence[items.size()]),
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int item) {
-							currentTask.setList(ListMirakel.getList(list_ids.get(item)));
+							currentTask.setList(ListMirakel.getList(list_ids
+									.get(item)));
 							currentTask.save();
 							currentList = currentTask.getList();
 							tasksFragment.update();
@@ -190,10 +194,6 @@ public class MainActivity extends FragmentActivity implements
 			return true;
 
 		case R.id.list_delete:
-			long listId = currentList.getId();
-			if (listId == ListMirakel.ALL || listId == ListMirakel.DAILY
-					|| listId == ListMirakel.WEEKLY)
-				return true;
 			new AlertDialog.Builder(this)
 					.setTitle(this.getString(R.string.list_delete_title))
 					.setMessage(this.getString(R.string.list_delete_content))
@@ -202,9 +202,9 @@ public class MainActivity extends FragmentActivity implements
 								public void onClick(DialogInterface dialog,
 										int which) {
 									currentList.destroy();
-									currentList = ListMirakel
-											.getList(ListMirakel.ALL);
+									currentList = SpecialList.first();
 									setCurrentList(currentList);
+									listFragment.update();
 								}
 							})
 					.setNegativeButton(this.getString(R.string.no),
@@ -214,7 +214,6 @@ public class MainActivity extends FragmentActivity implements
 									// do nothing
 								}
 							}).show();
-			listFragment.update();
 			return true;
 		case R.id.task_sorting:
 			final CharSequence[] SortingItems = getResources().getStringArray(
@@ -268,6 +267,14 @@ public class MainActivity extends FragmentActivity implements
 			bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
 			bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
 			ContentResolver.requestSync(null, Mirakel.AUTHORITY_TYP, bundle);
+			break;
+		case R.id.menu_credits_list:
+		case R.id.menu_credits_task:
+		case R.id.menu_credits_tasks:
+			Intent creditsIntent = new Intent(MainActivity.this,
+					CreditsActivity.class);
+			startActivity(creditsIntent);
+			break;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -367,9 +374,6 @@ public class MainActivity extends FragmentActivity implements
 		MenuInflater inflater = getMenuInflater();
 
 		inflater.inflate(newmenu, menu);
-		if (position == 1 && currentList.getId() <= 0) {
-			menu.removeItem(R.id.list_delete);
-		}
 	}
 
 	@Override
@@ -405,7 +409,8 @@ public class MainActivity extends FragmentActivity implements
 
 		List<Task> currentTasks = currentList.tasks();
 		if (currentTasks.size() == 0) {
-			currentTask = new Task(getApplicationContext().getString(R.string.task_empty));
+			currentTask = new Task(getApplicationContext().getString(
+					R.string.task_empty));
 		} else {
 			currentTask = currentTasks.get(0);
 		}
@@ -414,7 +419,6 @@ public class MainActivity extends FragmentActivity implements
 		}
 
 	}
-
 
 	/**
 	 * Ugly Wrapper TODO make it more beautiful

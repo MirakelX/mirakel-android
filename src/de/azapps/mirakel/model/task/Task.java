@@ -40,7 +40,7 @@ import de.azapps.mirakel.model.list.ListMirakel;
 
 public class Task extends TaskBase {
 
-	public static final String TABLE="tasks";
+	public static final String TABLE = "tasks";
 
 	public Task(long id, ListMirakel list, String name, String content,
 			boolean done, GregorianCalendar due, int priority,
@@ -52,7 +52,7 @@ public class Task extends TaskBase {
 	Task() {
 		super();
 	}
-	
+
 	public Task(String name) {
 		super(name);
 	}
@@ -160,8 +160,8 @@ public class Task extends TaskBase {
 						context.getString(R.string.dateTimeFormat), Locale.US)
 						.format(new Date()));
 		long insertId = database.insert(TABLE, null, values);
-		Cursor cursor = database.query(TABLE, allColumns,
-				"_id = " + insertId, null, null, null, null);
+		Cursor cursor = database.query(TABLE, allColumns, "_id = " + insertId,
+				null, null, null, null);
 		cursor.moveToFirst();
 		Task newTask = cursorToTask(cursor);
 		cursor.close();
@@ -175,9 +175,8 @@ public class Task extends TaskBase {
 	 */
 	public static List<Task> all() {
 		List<Task> tasks = new ArrayList<Task>();
-		Cursor c = database.query(TABLE, allColumns,
-				"not sync_state= " + Mirakel.SYNC_STATE_DELETE, null, null,
-				null, null);
+		Cursor c = database.query(TABLE, allColumns, "not sync_state= "
+				+ Mirakel.SYNC_STATE_DELETE, null, null, null, null);
 		c.moveToFirst();
 		while (!c.isAfterLast()) {
 			tasks.add(cursorToTask(c));
@@ -193,9 +192,9 @@ public class Task extends TaskBase {
 	 * @return
 	 */
 	public static Task get(long id) {
-		Cursor cursor = database.query(TABLE, allColumns, "_id='"
-				+ id + "' and not sync_state=" + Mirakel.SYNC_STATE_DELETE,
-				null, null, null, null);
+		Cursor cursor = database.query(TABLE, allColumns, "_id='" + id
+				+ "' and not sync_state=" + Mirakel.SYNC_STATE_DELETE, null,
+				null, null, null);
 		cursor.moveToFirst();
 		if (cursor.getCount() != 0) {
 			Task t = cursorToTask(cursor);
@@ -207,12 +206,13 @@ public class Task extends TaskBase {
 
 	/**
 	 * Get a Task to sync it
+	 * 
 	 * @param id
 	 * @return
 	 */
 	public static Task getToSync(long id) {
-		Cursor cursor = database.query(TABLE, allColumns, "_id='"
-				+ id + "'", null, null, null, null);
+		Cursor cursor = database.query(TABLE, allColumns, "_id='" + id + "'",
+				null, null, null, null);
 		cursor.moveToFirst();
 		if (cursor.getCount() != 0) {
 			Task t = cursorToTask(cursor);
@@ -224,14 +224,14 @@ public class Task extends TaskBase {
 
 	/**
 	 * Get tasks by Sync State
+	 * 
 	 * @param state
 	 * @return
 	 */
 	public static List<Task> getBySyncState(short state) {
 		List<Task> tasks_local = new ArrayList<Task>();
-		Cursor c = database.query(TABLE, allColumns,
-				"sync_state=" + state + " and list_id>0", null, null, null,
-				null);
+		Cursor c = database.query(TABLE, allColumns, "sync_state=" + state
+				+ " and list_id>0", null, null, null, null);
 		c.moveToFirst();
 		while (!c.isAfterLast()) {
 			tasks_local.add(cursorToTask(c));
@@ -241,8 +241,7 @@ public class Task extends TaskBase {
 	}
 
 	/**
-	 * Get Tasks from a List
-	 * Use it only if really necessary!
+	 * Get Tasks from a List Use it only if really necessary!
 	 * 
 	 * @param listId
 	 * @param sorting
@@ -256,8 +255,7 @@ public class Task extends TaskBase {
 	}
 
 	/**
-	 * Get Tasks from a List
-	 * Use it only if really necessary!
+	 * Get Tasks from a List Use it only if really necessary!
 	 * 
 	 * @param listId
 	 * @param sorting
@@ -265,30 +263,35 @@ public class Task extends TaskBase {
 	 * @param showDone
 	 * @return
 	 */
-	public static List<Task> getTasks(int listId, int sorting,
-			boolean showDone) {
+	public static List<Task> getTasks(ListMirakel list, int sorting,
+			boolean showDone, String where) {
+		List<Task> tasks = new ArrayList<Task>();
+		Cursor cursor = getTasksCursor(list.getId(), sorting, where);
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			tasks.add(cursorToTask(cursor));
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return tasks;
+	}
+
+	/**
+	 * Get Tasks from a List Use it only if really necessary!
+	 * 
+	 * @param listId
+	 * @param sorting
+	 *            The Sorting (@see Mirakel.SORT_*)
+	 * @param showDone
+	 * @return
+	 */
+	public static List<Task> getTasks(int listId, int sorting, boolean showDone) {
 		List<Task> tasks = new ArrayList<Task>();
 		Cursor cursor = getTasksCursor(listId, sorting);
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
 			Task task = cursorToTask(cursor);
-			switch (listId) {
-			case ListMirakel.DAILY:
-				if (task.isDone() || task.getDue() == null)
-					break;
-			case ListMirakel.WEEKLY:
-				GregorianCalendar t = new GregorianCalendar();
-				t.add(Calendar.DAY_OF_MONTH, 7);
-				if (task.isDone() || task.getDue() == null)
-					break;
-			case ListMirakel.ALL:
-				if (task.isDone() && !showDone)
-					break;
-			default:
-				tasks.add(task);
-				break;
-			}
-			// tasks.add(task);
+			tasks.add(task);
 			cursor.moveToNext();
 		}
 		cursor.close();
@@ -400,20 +403,20 @@ public class Task extends TaskBase {
 	 * @return
 	 */
 	private static Cursor getTasksCursor(int listId, int sorting) {
-		String where = "";
-		switch (listId) {
-		case ListMirakel.ALL:
-			break;
-		case ListMirakel.DAILY:
-			where= " due<='"+(new SimpleDateFormat(context.getString(R.string.dateFormatDB),
-					Locale.getDefault()).format(new Date()))+"' and";
-		case ListMirakel.WEEKLY:
-			where=" due<='"+(new SimpleDateFormat(context.getString(R.string.dateFormatDB),
-					Locale.getDefault()).format(new Date(new Date().getTime()+604800000)))+"' and";
-			break;
-		default:
-			where = "list_id='" + listId + "' and ";
-		}
+		String where = "list_id='" + listId + "'";
+		return getTasksCursor(listId, sorting, where);
+	}
+
+	/**
+	 * Get a Cursor with all Tasks of a list
+	 * 
+	 * @param listId
+	 * @param sorting
+	 * @return
+	 */
+	private static Cursor getTasksCursor(int listId, int sorting, String where) {
+		if (!where.equals(""))
+			where += " and ";
 		where += " not sync_state=" + Mirakel.SYNC_STATE_DELETE;
 		Log.v(TAG, where);
 		String order = "";
@@ -431,7 +434,7 @@ public class Task extends TaskBase {
 			order = "_id ASC";
 		}
 		Log.v(TAG, order);
-		return Mirakel.getReadableDatabase().query(TABLE,
-				allColumns, where, null, null, null, "done, " + order);
+		return Mirakel.getReadableDatabase().query(TABLE, allColumns, where,
+				null, null, null, "done, " + order);
 	}
 }

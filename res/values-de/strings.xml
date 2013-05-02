@@ -57,6 +57,7 @@
     <string name="list_all">Alle Listen</string>
     <string name="list_today">Heutige Aufgaben</string>
     <string name="list_week">Diese Woche</string>
+    <string name="list_overdue">Überfällig</string>
     <string name="list_delete_title">Lösche Liste</string>
     <string name="list_delete_content">Willst du die Liste wirklich löschen?</string>
 

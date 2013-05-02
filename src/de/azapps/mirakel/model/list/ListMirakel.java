@@ -31,6 +31,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
@@ -42,7 +43,6 @@ import de.azapps.mirakel.model.task.Task;
  * 
  */
 public class ListMirakel extends ListBase {
-	public static final int ALL = 0, DAILY = -1, WEEKLY = -2;
 	public static final short SORT_BY_OPT = 0, SORT_BY_DUE = 1,
 			SORT_BY_PRIO = 2, SORT_BY_ID = 3;
 	public static final String TABLE = "lists";
@@ -54,8 +54,8 @@ public class ListMirakel extends ListBase {
 	private ListMirakel() {
 	}
 
-	ListMirakel(int id, String name, short sort_by, String created_at,
-			String updated_at, int sync_state) {
+	protected ListMirakel(int id, String name, short sort_by,
+			String created_at, String updated_at, int sync_state) {
 		super(id, name, sort_by, created_at, updated_at, sync_state);
 	}
 
@@ -71,17 +71,8 @@ public class ListMirakel extends ListBase {
 	 */
 	public void save() {
 		SharedPreferences.Editor editor = preferences.edit();
-		switch (getId()) {
-		case ListMirakel.ALL:
-			editor.putInt("SortListAll", getSortBy());
-			break;
-		case ListMirakel.DAILY:
-			editor.putInt("SortListDaily", getSortBy());
-			break;
-		case ListMirakel.WEEKLY:
-			editor.putInt("SortListWeekly", getSortBy());
-			break;
-		default:
+		// TODO implement for specialLists
+		if (getId() > 0) {
 			setSync_state(getSync_state() == Mirakel.SYNC_STATE_ADD
 					|| getSync_state() == Mirakel.SYNC_STATE_IS_SYNCED ? getSync_state()
 					: Mirakel.SYNC_STATE_NEED_SYNC);
@@ -110,8 +101,7 @@ public class ListMirakel extends ListBase {
 		} else {
 			ContentValues values = new ContentValues();
 			values.put("sync_state", Mirakel.SYNC_STATE_DELETE);
-			database.update(Task.TABLE, values, "list_id = " + id,
-					null);
+			database.update(Task.TABLE, values, "list_id = " + id, null);
 			database.update(ListMirakel.TABLE, values, "_id=" + id, null);
 		}
 	}
@@ -121,44 +111,21 @@ public class ListMirakel extends ListBase {
 	 * 
 	 * @return
 	 */
-	public static int countTasks(int id) {
-		
-		// TODO implement it
+	public int countTasks() {
 		Cursor c;
-		switch(id){
-		case ALL:
-			c = Mirakel.getReadableDatabase().rawQuery(
-					"Select count(_id) from " + Task.TABLE
-							+ " where not sync_state="
-							+ Mirakel.SYNC_STATE_DELETE, null);
-			break;
-		case DAILY:
-			c = Mirakel.getReadableDatabase().rawQuery(
-					"Select count(_id) from "
-							+ Task.TABLE
-							+ " where due<='"
-							+ (new SimpleDateFormat(context.getString(R.string.dateFormatDB),
-									Locale.getDefault()).format(new Date()))+"' and not sync_state="+Mirakel.SYNC_STATE_DELETE,
-					null);
-			break;
-		case WEEKLY:
-			c = Mirakel.getReadableDatabase().rawQuery(
-					"Select count(_id) from "
-							+ Task.TABLE
-							+ " where  due<='"+(new SimpleDateFormat(context.getString(R.string.dateFormatDB),
-									Locale.getDefault()).format(new Date(new Date().getTime()+604800000)))+"' and not sync_state="+Mirakel.SYNC_STATE_DELETE,//604800000=1000*60*60*24*7
-					null);
-			break;
-		default:
-			c = Mirakel.getReadableDatabase().rawQuery(
-					"Select count(_id) from " + Task.TABLE + " where list_id="
-							+ id + " and not sync_state="
-							+ Mirakel.SYNC_STATE_DELETE, null);
-				break;
+		String where;
+		if (getId() < 0) {
+			where = ((SpecialList) this).getWhereQuery();
+		} else {
+			where = "list_id = " + getId();
 		}
+		c = Mirakel.getReadableDatabase().rawQuery(
+				"Select count(_id) from " + Task.TABLE + " where " + where
+						+ " and done=0 and not sync_state="
+						+ Mirakel.SYNC_STATE_DELETE, null);
 		c.moveToFirst();
-		if(c.getCount()>0){
-			int n=c.getInt(0);
+		if (c.getCount() > 0) {
+			int n = c.getInt(0);
 			c.close();
 			return n;
 		}
@@ -273,48 +240,24 @@ public class ListMirakel extends ListBase {
 	}
 
 	/**
-	 * Get a List by id
-	 * selectionArgs
+	 * Get a List by id selectionArgs
+	 * 
 	 * @param listId
 	 *            List–ID
 	 * @return List
 	 */
 	public static ListMirakel getList(int listId) {
-		Cursor cursor = database.query(ListMirakel.TABLE, allColumns, "_id='"
-				+ listId + "'", null, null, null, null);
-		cursor.moveToFirst();
-		if (cursor.getCount() != 0) {
-			ListMirakel t = cursorToList(cursor);
-			cursor.close();
-			return t;
+		if (listId > 0) {
+			Cursor cursor = database.query(ListMirakel.TABLE, allColumns,
+					"_id='" + listId + "'", null, null, null, null);
+			cursor.moveToFirst();
+			if (cursor.getCount() != 0) {
+				ListMirakel t = cursorToList(cursor);
+				cursor.close();
+				return t;
+			}
 		}
-
-		ListMirakel list = new ListMirakel();
-		SharedPreferences settings = PreferenceManager
-				.getDefaultSharedPreferences(context.getApplicationContext());
-		switch (listId) {
-		case ListMirakel.ALL:
-			list.setName(context.getString(R.string.list_all));
-			list.setSortBy(settings.getInt("SortListAll",
-					ListMirakel.SORT_BY_OPT));
-			break;
-		case ListMirakel.DAILY:
-			list.setName(context.getString(R.string.list_today));
-			list.setSortBy(settings.getInt("SortListDaily",
-					ListMirakel.SORT_BY_OPT));
-			break;
-		case ListMirakel.WEEKLY:
-			list.setName(context.getString(R.string.list_week));
-			list.setSortBy(settings.getInt("SortListWeekly",
-					ListMirakel.SORT_BY_OPT));
-			break;
-		default:
-			Toast.makeText(context, "NO SUCH LIST!", Toast.LENGTH_LONG).show();
-			return null;
-		}
-		list.setId(listId);
-
-		return list;
+		return SpecialList.getSpecialList(-listId);
 	}
 
 	/**
@@ -361,17 +304,18 @@ public class ListMirakel extends ListBase {
 	 * @return List of Lists
 	 */
 	public static List<ListMirakel> all() {
+		return all(true);
+	}
+
+	public static List<ListMirakel> all(boolean withSpecial) {
 		List<ListMirakel> lists = new ArrayList<ListMirakel>();
-		// TODO Get from strings.xml
-		if (preferences.getBoolean("listAll", true))
-			lists.add(new ListMirakel(ListMirakel.ALL, context
-					.getString(R.string.list_all)));
-		if (preferences.getBoolean("listToday", true))
-			lists.add(new ListMirakel(ListMirakel.DAILY, context
-					.getString(R.string.list_today)));
-		if (preferences.getBoolean("listWeek", true))
-			lists.add(new ListMirakel(ListMirakel.WEEKLY, context
-					.getString(R.string.list_week)));
+
+		if (withSpecial) {
+			List<SpecialList> slists = SpecialList.allSpecial();
+			for (SpecialList slist : slists) {
+				lists.add(slist);
+			}
+		}
 
 		Cursor cursor = database.query(ListMirakel.TABLE, allColumns,
 				"not sync_state=" + Mirakel.SYNC_STATE_DELETE, null, null,

@@ -27,6 +27,7 @@ import java.util.Map;
 
 import android.content.ContentValues;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SpecialList;
 
 class TaskBase {
 	private long id;
@@ -63,7 +64,7 @@ class TaskBase {
 
 	TaskBase(String name) {
 		this.id = 0;
-		this.setList(ListMirakel.getList(ListMirakel.ALL));
+		this.setList(SpecialList.first());
 		this.setName(name);
 		this.setContent("");
 		this.setDone(false);

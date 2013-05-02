@@ -64,7 +64,7 @@ public class ListAdapter extends ArrayAdapter<ListMirakel> {
 		ListMirakel list = data.get(position);
 		holder.listRowName.setText(list.getName());
 		holder.listRowName.setTag(list);
-		holder.listRowTaskNumber.setText(list.countTasks(list.getId()) + "");
+		holder.listRowTaskNumber.setText(""+list.countTasks());
 		return row;
 	}
 

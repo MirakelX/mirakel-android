@@ -24,17 +24,14 @@
     <string name="use_server">Do you want to use a Server to Sync?</string>
     <string name="dateFormatDB">yyyy-MM-dd</string>
 
-    
     <!-- Example Data -->
     <string name="inbox">Inbox</string>
     <string name="first_task">First task</string>
-
 
     <!-- Home -->
     <string name="home_button_official">Official Server</string>
     <string name="home_button_own">Own Server</string>
     <string name="home_button_offline">Offline</string>
-
     <!-- Help -->
     <string name="title_activity_help">Help</string>
     <string name="help_button_contact">Contact</string>
@@ -86,6 +83,7 @@
     <string name="list_all">All Lists</string>
     <string name="list_today">Tasks Today</string>
     <string name="list_week">This Week</string>
+    <string name="list_overdue">Overdue</string>
     <string name="list_delete_title">Delete List</string>
     <string name="list_delete_content">Are you sure you want to delete this List?</string>
 
@@ -116,41 +114,31 @@
     <string name="notification_title_empty">Enjoy your day!</string>
     <string name="title_activity_splash_screen">SplashScreenActivity</string>
     <string name="hello_world">Hello world!</string>
-    
+
     <!-- Test Sync -->
-        <!-- Label above username EditText -->
-    <string
-        name="login_activity_username_label">Username</string>
-    <string
-        name="login_activity_server_label">Server-URL</string>
+    <!-- Label above username EditText -->
+    <string name="login_activity_username_label">Username</string>
+    <string name="login_activity_server_label">Server-URL</string>
     <!-- Label above password EditText -->
-    <string
-        name="login_activity_password_label">Password</string>
+    <string name="login_activity_password_label">Password</string>
     <!-- Button to sign in after entering username and password -->
-    <string
-        name="login_activity_ok_button">Sign in</string>
+    <string name="login_activity_ok_button">Sign in</string>
 
     <!-- Message shown in dialog if the username or password is invalid. -->
-    <string
-        name="login_activity_loginfail_text_both">The username or password isn\'t valid. A Mirakel account is
+    <string name="login_activity_loginfail_text_both">The username or password isn\'t valid. A Mirakel account is
         required. Please try again. </string>
     <!-- Message shown in dialog if the password is invalid -->
-    <string
-        name="login_activity_loginfail_text_pwonly">You entered the wrong password or your account has changed.
+    <string name="login_activity_loginfail_text_pwonly">You entered the wrong password or your account has changed.
         Please re-enter your password.</string>
     <!-- Message shown in dialog to prompt the user for their password -->
-    <string
-        name="login_activity_loginfail_text_pwmissing">Type the password for this account.</string>
+    <string name="login_activity_loginfail_text_pwmissing">Type the password for this account.</string>
     <!--
         Message shown if the provided account doesn't support the current
         activity.
     -->
-    <string
-        name="login_activity_newaccount_text">Sign in to your Mirakel account. </string>
+    <string name="login_activity_newaccount_text">Sign in to your Mirakel account. </string>
     <!-- Message shown in progress dialog while app connects to the server -->
-    <string
-        name="ui_activity_authenticating">Authenticating\u2026</string>
-    <string
-        name="ui_activity_title">Sign-in</string>
+    <string name="ui_activity_authenticating">Authenticating\u2026</string>
+    <string name="ui_activity_title">Sign-in</string>
 
 </resources>

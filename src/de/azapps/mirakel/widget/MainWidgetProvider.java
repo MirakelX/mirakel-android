@@ -33,6 +33,7 @@ import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SpecialList;
 
 public class MainWidgetProvider extends AppWidgetProvider {
 	public static String EXTRA_LISTID = "de.azapps.mirakel.EXTRA_LISTID";
@@ -55,7 +56,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
 			
 
 			int listId = Integer.parseInt(preferences.getString("widgetList",
-					ListMirakel.ALL + ""));
+					SpecialList.first().getId() + ""));
 			int listSort = Integer.parseInt(preferences.getString("widgetSort",
 					ListMirakel.SORT_BY_OPT + ""));
 
