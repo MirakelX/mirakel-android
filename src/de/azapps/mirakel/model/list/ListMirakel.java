@@ -104,6 +104,10 @@ public class ListMirakel extends ListBase {
 			database.update(Task.TABLE, values, "list_id = " + id, null);
 			database.update(ListMirakel.TABLE, values, "_id=" + id, null);
 		}
+		database.rawQuery("UPDATE " + ListMirakel.TABLE
+				+ " SET lft=lft-2 WHERE lft>" + getRgt() + "; UPDATE "
+				+ ListMirakel.TABLE + " SET rgt=rgt-2 WHERE rgt>" + getRgt()
+				+ ";", null);
 	}
 
 	/**
@@ -216,11 +220,17 @@ public class ListMirakel extends ListBase {
 
 		long insertId = database.insert(ListMirakel.TABLE, null, values);
 
+		// Dirty workaround
+		database.execSQL("update "
+				+ ListMirakel.TABLE
+				+ " SET lft=(SELECT MAX(rgt) from lists)+1, rgt=(SELECT MAX(rgt) from lists)+2 where _id="
+				+ insertId);
 		Cursor cursor = database.query(ListMirakel.TABLE, allColumns, "_id = "
 				+ insertId, null, null, null, null);
 		cursor.moveToFirst();
 		ListMirakel newList = cursorToList(cursor);
 		cursor.close();
+
 		return newList;
 	}
 
@@ -317,9 +327,15 @@ public class ListMirakel extends ListBase {
 			}
 		}
 
-		Cursor cursor = database.query(ListMirakel.TABLE, allColumns,
-				"not sync_state=" + Mirakel.SYNC_STATE_DELETE, null, null,
-				null, null);
+		Cursor cursor = database.rawQuery("  SELECT n.*, "
+				+ "COUNT(*)-1 AS level " + "FROM " + ListMirakel.TABLE
+				+ " AS n, " + ListMirakel.TABLE + " p "
+				+ "WHERE n.lft BETWEEN p.lft AND p.rgt "
+				+ " and not n.sync_state=" + Mirakel.SYNC_STATE_DELETE
+				+ " GROUP BY n.lft " + "ORDER BY n.lft;", null);
+		// query(ListMirakel.TABLE, allColumns,
+		// "not sync_state=" + Mirakel.SYNC_STATE_DELETE, null, "lft",
+		// null, null);
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
 			ListMirakel list = cursorToList(cursor);
