@@ -109,8 +109,8 @@ public class SpecialList extends ListMirakel {
 	 *            The List
 	 */
 	public void save() {
-		setSync_state(getSync_state() == Mirakel.SYNC_STATE_ADD
-				|| getSync_state() == Mirakel.SYNC_STATE_IS_SYNCED ? getSync_state()
+		setSyncState(getSyncState() == Mirakel.SYNC_STATE_ADD
+				|| getSyncState() == Mirakel.SYNC_STATE_IS_SYNCED ? getSyncState()
 				: Mirakel.SYNC_STATE_NEED_SYNC);
 		ContentValues values = getContentValues();
 		database.update(TABLE, values, "_id = " + Math.abs(getId()), null);
@@ -124,8 +124,8 @@ public class SpecialList extends ListMirakel {
 	public void destroy() {
 		long id = Math.abs(getId());
 
-		if (getSync_state() != Mirakel.SYNC_STATE_ADD) {
-			setSync_state(Mirakel.SYNC_STATE_DELETE);
+		if (getSyncState() != Mirakel.SYNC_STATE_ADD) {
+			setSyncState(Mirakel.SYNC_STATE_DELETE);
 		}
 		setActive(false);
 		ContentValues values = new ContentValues();
@@ -136,7 +136,7 @@ public class SpecialList extends ListMirakel {
 		ContentValues cv = new ContentValues();
 		cv.put("name", getName());
 		cv.put("sort_by", getSortBy());
-		cv.put("sync_state", getSync_state());
+		cv.put("sync_state", getSyncState());
 		cv.put("active", isActive() ? 1 : 0);
 		cv.put("whereQuery", getWhereQuery());
 		return cv;

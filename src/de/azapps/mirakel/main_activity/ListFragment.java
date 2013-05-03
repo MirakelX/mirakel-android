@@ -18,6 +18,8 @@
  ******************************************************************************/
 package de.azapps.mirakel.main_activity;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -26,6 +28,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +47,7 @@ public class ListFragment extends Fragment {
 	protected boolean EditName;
 	private boolean created = false;
 	private ListView listView;
+	private static final int LIST_RENAME=0, LIST_MOVE=1, LIST_DESTROY=2;
 
 	public void setActivity(MainActivity activity) {
 		main = activity;
@@ -90,8 +94,35 @@ public class ListFragment extends Fragment {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View item,
 					int position, final long id) {
-				ListMirakel list = values.get((int) id);
-				editList(list);
+
+				AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+				builder.setTitle(R.string.dialog_move);
+				List<CharSequence> items = new ArrayList<CharSequence>(
+						Arrays.asList(getActivity().getResources().getStringArray(R.array.list_actions_items)));
+
+				builder.setItems(items.toArray(new CharSequence[items.size()]),
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int item) {
+								ListMirakel list = values.get((int) id);
+								switch(item) {
+								case LIST_RENAME:
+									editList(list);
+									break;
+								case LIST_MOVE:
+									Log.e("Blubb","Move");
+									break;
+								case LIST_DESTROY:
+									main.destroyList(list);
+									break;
+								}
+							}
+						});
+
+				AlertDialog dialog = builder.create();
+				dialog.show();
+				
+				/*ListMirakel list = values.get((int) id);
+				editList(list);*/
 				return false;
 			}
 		});

@@ -71,10 +71,10 @@ public class ListMirakel extends ListBase {
 		SharedPreferences.Editor editor = preferences.edit();
 		// TODO implement for specialLists
 		if (getId() > 0) {
-			setSync_state(getSync_state() == Mirakel.SYNC_STATE_ADD
-					|| getSync_state() == Mirakel.SYNC_STATE_IS_SYNCED ? getSync_state()
+			setSyncState(getSyncState() == Mirakel.SYNC_STATE_ADD
+					|| getSyncState() == Mirakel.SYNC_STATE_IS_SYNCED ? getSyncState()
 					: Mirakel.SYNC_STATE_NEED_SYNC);
-			setUpdated_at(new SimpleDateFormat(
+			setUpdatedAt(new SimpleDateFormat(
 					context.getString(R.string.dateTimeFormat),
 					Locale.getDefault()).format(new Date()));
 			ContentValues values = getContentValues();
@@ -93,7 +93,7 @@ public class ListMirakel extends ListBase {
 		if (id <= 0)
 			return;
 
-		if (getSync_state() == Mirakel.SYNC_STATE_ADD) {
+		if (getSyncState() == Mirakel.SYNC_STATE_ADD) {
 			database.delete(Task.TABLE, "list_id = " + id, null);
 			database.delete(ListMirakel.TABLE, "_id = " + id, null);
 		} else {
@@ -102,6 +102,10 @@ public class ListMirakel extends ListBase {
 			database.update(Task.TABLE, values, "list_id = " + id, null);
 			database.update(ListMirakel.TABLE, values, "_id=" + id, null);
 		}
+		database.rawQuery("UPDATE " + ListMirakel.TABLE
+				+ " SET lft=lft-2 WHERE lft>" + getRgt() + "; UPDATE "
+				+ ListMirakel.TABLE + " SET rgt=rgt-2 WHERE rgt>" + getRgt()
+				+ ";", null);
 	}
 
 	/**
@@ -213,11 +217,17 @@ public class ListMirakel extends ListBase {
 
 		long insertId = database.insert(ListMirakel.TABLE, null, values);
 
+		// Dirty workaround
+		database.execSQL("update "
+				+ ListMirakel.TABLE
+				+ " SET lft=(SELECT MAX(rgt) from lists)+1, rgt=(SELECT MAX(rgt) from lists)+2 where _id="
+				+ insertId);
 		Cursor cursor = database.query(ListMirakel.TABLE, allColumns, "_id = "
 				+ insertId, null, null, null, null);
 		cursor.moveToFirst();
 		ListMirakel newList = cursorToList(cursor);
 		cursor.close();
+
 		return newList;
 	}
 
@@ -314,9 +324,15 @@ public class ListMirakel extends ListBase {
 			}
 		}
 
-		Cursor cursor = database.query(ListMirakel.TABLE, allColumns,
-				"not sync_state=" + Mirakel.SYNC_STATE_DELETE, null, null,
-				null, null);
+		Cursor cursor = database.rawQuery("  SELECT n.*, "
+				+ "COUNT(*)-1 AS level " + "FROM " + ListMirakel.TABLE
+				+ " AS n, " + ListMirakel.TABLE + " p "
+				+ "WHERE n.lft BETWEEN p.lft AND p.rgt "
+				+ " and not n.sync_state=" + Mirakel.SYNC_STATE_DELETE
+				+ " GROUP BY n.lft " + "ORDER BY n.lft;", null);
+		// query(ListMirakel.TABLE, allColumns,
+		// "not sync_state=" + Mirakel.SYNC_STATE_DELETE, null, "lft",
+		// null, null);
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
 			ListMirakel list = cursorToList(cursor);

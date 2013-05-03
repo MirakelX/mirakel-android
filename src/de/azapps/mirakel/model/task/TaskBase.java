@@ -37,8 +37,8 @@ class TaskBase {
 	private boolean done;
 	private GregorianCalendar due;
 	private int priority;
-	private String created_at;
-	private String updated_at;
+	private String createdAt;
+	private String updatedAt;
 	private Map<String, Boolean> edited = new HashMap<String, Boolean>();
 	private int sync_state;
 
@@ -52,9 +52,9 @@ class TaskBase {
 		this.setDone(done);
 		this.setDue(due);
 		this.setPriority(priority);
-		this.setCreated_at(created_at);
-		this.setUpdated_at(updated_at);
-		this.setSync_state(sync_state);
+		this.setCreatedAt(created_at);
+		this.setUpdatedAt(updated_at);
+		this.setSyncState(sync_state);
 	}
 
 
@@ -70,9 +70,9 @@ class TaskBase {
 		this.setDone(false);
 		this.setDue(null);
 		this.setPriority(0);
-		this.setCreated_at(null);
-		this.setUpdated_at(null);
-		this.setSync_state(0);
+		this.setCreatedAt(null);
+		this.setUpdatedAt(null);
+		this.setSyncState(0);
 	}
 
 	public long getId() {
@@ -144,26 +144,26 @@ class TaskBase {
 	}
 
 	public String getCreated_at() {
-		return created_at;
+		return createdAt;
 	}
 
-	public void setCreated_at(String created_at) {
-		this.created_at = created_at;
+	public void setCreatedAt(String created_at) {
+		this.createdAt = created_at;
 	}
 
 	public String getUpdated_at() {
-		return updated_at;
+		return updatedAt;
 	}
 
-	public void setUpdated_at(String updated_at) {
-		this.updated_at = updated_at;
+	public void setUpdatedAt(String updated_at) {
+		this.updatedAt = updated_at;
 	}
 
 	public int getSync_state() {
 		return sync_state;
 	}
 
-	public void setSync_state(int sync_state) {
+	public void setSyncState(int sync_state) {
 		this.sync_state = sync_state;
 	}
 
@@ -184,8 +184,8 @@ class TaskBase {
 				.getTimeInMillis())));
 		cv.put("due", due);
 		cv.put("priority", priority);
-		cv.put("created_at", created_at);
-		cv.put("updated_at", updated_at);
+		cv.put("created_at", createdAt);
+		cv.put("updated_at", updatedAt);
 		cv.put("sync_state", sync_state);
 		return cv;
 	}

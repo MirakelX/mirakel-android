@@ -25,10 +25,10 @@ class ListBase {
 
 	private int id;
 	private String name;
-	private int sort_by;
-	private String created_at;
-	private String updated_at;
-	private int sync_state;
+	private int sortBy;
+	private String createdAt;
+	private String updatedAt;
+	private int syncState;
 	private int lft, rgt;
 
 	ListBase() {
@@ -37,11 +37,11 @@ class ListBase {
 	ListBase(int id, String name, short sort_by, String created_at,
 			String updated_at, int sync_state) {
 		this.setId(id);
-		this.setCreated_at(created_at);
+		this.setCreatedAt(created_at);
 		this.setName(name);
-		this.setUpdated_at(updated_at);
+		this.setUpdatedAt(updated_at);
 		this.setSortBy(sort_by);
-		this.setSync_state(sync_state);
+		this.setSyncState(sync_state);
 	}
 
 	ListBase(int id, String name) {
@@ -65,28 +65,44 @@ class ListBase {
 		this.name = name;
 	}
 
-	public String getCreated_at() {
-		return created_at;
+	public String getCreatedAt() {
+		return createdAt;
 	}
 
-	public void setCreated_at(String created_at) {
-		this.created_at = created_at;
+	public void setCreatedAt(String created_at) {
+		this.createdAt = created_at;
 	}
 
-	public String getUpdated_at() {
-		return updated_at;
+	public String getUpdatedAt() {
+		return updatedAt;
 	}
 
-	public void setUpdated_at(String updated_at) {
-		this.updated_at = updated_at;
+	public void setUpdatedAt(String updated_at) {
+		this.updatedAt = updated_at;
 	}
 
 	public int getSortBy() {
-		return sort_by;
+		return sortBy;
 	}
 
 	public void setSortBy(int sort_by) {
-		this.sort_by = sort_by;
+		this.sortBy = sort_by;
+	}
+
+	public int getLft() {
+		return lft;
+	}
+
+	public void setLft(int lft) {
+		this.lft = lft;
+	}
+
+	public int getRgt() {
+		return rgt;
+	}
+
+	public void setRgt(int rgt) {
+		this.rgt = rgt;
 	}
 
 	@Override
@@ -98,21 +114,21 @@ class ListBase {
 		ContentValues cv = new ContentValues();
 		cv.put("_id", id);
 		cv.put("name", name);
-		cv.put("created_at", created_at);
-		cv.put("updated_at", updated_at);
-		cv.put("sort_by", sort_by);
-		cv.put("sync_state", sync_state);
+		cv.put("created_at", createdAt);
+		cv.put("updated_at", updatedAt);
+		cv.put("sort_by", sortBy);
+		cv.put("sync_state", syncState);
 		return cv;
 	}
 
 
 
-	public int getSync_state() {
-		return sync_state;
+	public int getSyncState() {
+		return syncState;
 	}
 
-	public void setSync_state(int sync_state) {
-		this.sync_state = sync_state;
+	public void setSyncState(int sync_state) {
+		this.syncState = sync_state;
 	}
 
 }

@@ -170,14 +170,21 @@ public class MainActivity extends FragmentActivity implements
 			builder.setTitle(R.string.dialog_move);
 			List<CharSequence> items = new ArrayList<CharSequence>();
 			final List<Integer> list_ids = new ArrayList<Integer>();
+			int currentItem = 0,
+			i = 0;
 			for (ListMirakel list : lists) {
 				if (list.getId() > 0) {
 					items.add(list.getName());
+					if (currentTask.getList().getId() == list.getId()) {
+						currentItem = i;
+					}
 					list_ids.add(list.getId());
+					++i;
 				}
 			}
 
-			builder.setItems(items.toArray(new CharSequence[items.size()]),
+			builder.setSingleChoiceItems(
+					items.toArray(new CharSequence[items.size()]), currentItem,
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int item) {
 							currentTask.setList(ListMirakel.getList(list_ids
@@ -194,26 +201,7 @@ public class MainActivity extends FragmentActivity implements
 			return true;
 
 		case R.id.list_delete:
-			new AlertDialog.Builder(this)
-					.setTitle(this.getString(R.string.list_delete_title))
-					.setMessage(this.getString(R.string.list_delete_content))
-					.setPositiveButton(this.getString(R.string.Yes),
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int which) {
-									currentList.destroy();
-									currentList = SpecialList.first();
-									setCurrentList(currentList);
-									listFragment.update();
-								}
-							})
-					.setNegativeButton(this.getString(R.string.no),
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int which) {
-									// do nothing
-								}
-							}).show();
+			destroyList(currentList);
 			return true;
 		case R.id.task_sorting:
 			final CharSequence[] SortingItems = getResources().getStringArray(
@@ -279,6 +267,30 @@ public class MainActivity extends FragmentActivity implements
 			return super.onOptionsItemSelected(item);
 		}
 		return true;
+	}
+
+	public void destroyList(final ListMirakel list) {
+		new AlertDialog.Builder(this)
+				.setTitle(this.getString(R.string.list_delete_title))
+				.setMessage(this.getString(R.string.list_delete_content))
+				.setPositiveButton(this.getString(R.string.Yes),
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int which) {
+								list.destroy();
+								listFragment.update();
+								if (getCurrentList().getId() == list.getId()) {
+									setCurrentList(SpecialList.firstSpecial());
+								}
+							}
+						})
+				.setNegativeButton(this.getString(R.string.no),
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int which) {
+								// do nothing
+							}
+						}).show();
 	}
 
 	/**
@@ -417,6 +429,8 @@ public class MainActivity extends FragmentActivity implements
 		if (taskFragment != null) {
 			taskFragment.update();
 		}
+		if (currentPosition == TASKS_FRAGMENT)
+			this.setTitle(currentList.getName());
 
 	}
 
