@@ -98,6 +98,10 @@
             android:label="@string/title_activity_main"
             android:windowSoftInputMode="adjustPan" >
         </activity>
+        <activity
+            android:name="de.azapps.mirakel.static_activities.CreditsActivity"
+            android:label="@string/title_activity_credits" >
+        </activity>
 
         <receiver android:name="de.azapps.mirakel.widget.MainWidgetProvider" >
             <intent-filter>
@@ -134,10 +138,7 @@
             </intent-filter>
         </receiver>
 
-        <activity
-            android:name="de.azapps.mirakel.static_activities.CreditsActivity"
-            android:label="@string/title_activity_credits" >
-        </activity>
+
     </application>
 
 </manifest>
