@@ -119,10 +119,9 @@ public class ListMirakel extends ListBase {
 		} else {
 			where = "list_id = " + getId();
 		}
-		c = Mirakel.getReadableDatabase().rawQuery(
-				"Select count(_id) from " + Task.TABLE + " where " + where
-						+ " and done=0 and not sync_state="
-						+ Mirakel.SYNC_STATE_DELETE, null);
+		c = Mirakel.getReadableDatabase().rawQuery("Select count(_id) from " + Task.TABLE + " where " + where
+				+(where.length()!=0?" and ":" ")+ " done=0 and not sync_state="
+				+ Mirakel.SYNC_STATE_DELETE, null);
 		c.moveToFirst();
 		if (c.getCount() > 0) {
 			int n = c.getInt(0);
