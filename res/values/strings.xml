@@ -73,8 +73,8 @@
     </string-array>
     <string-array name="task_actions_items">
         <item>Edit</item>
-        <item>Move (TODO!)</item>
-        <item>Destroy TODO!</item>
+        <item>Move</item>
+        <item>Delete</item>
     </string-array>
 
     <string name="dialog_move">Move Task</string>
@@ -95,7 +95,7 @@
     <string-array name="list_actions_items">
         <item>Rename</item>
         <item>Move (TODO!)</item>
-        <item>Destroy</item>
+        <item>Delete</item>
     </string-array>
 
     <!-- Menu -->

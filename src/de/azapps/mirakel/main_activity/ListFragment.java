@@ -37,6 +37,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.task.Task;
 
 public class ListFragment extends Fragment {
 	//private static final String TAG = "ListsActivity";
@@ -96,7 +97,8 @@ public class ListFragment extends Fragment {
 					int position, final long id) {
 
 				AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-				builder.setTitle(R.string.dialog_move);
+				ListMirakel list=values.get((int) id);
+				builder.setTitle(list.getName());
 				List<CharSequence> items = new ArrayList<CharSequence>(
 						Arrays.asList(getActivity().getResources().getStringArray(R.array.list_actions_items)));
 

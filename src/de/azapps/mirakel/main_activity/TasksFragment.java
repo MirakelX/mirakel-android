@@ -244,7 +244,8 @@ public class TasksFragment extends Fragment {
 			public boolean onItemLongClick(AdapterView<?> parent, View item,
 					int position, final long id) {
 				AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-				builder.setTitle(R.string.dialog_move);
+				Task task=values.get((int) id);
+				builder.setTitle(task.getName());
 				List<CharSequence> items = new ArrayList<CharSequence>(
 						Arrays.asList(getActivity().getResources().getStringArray(R.array.task_actions_items)));
 
@@ -257,13 +258,12 @@ public class TasksFragment extends Fragment {
 									main.setCurrentTask(task);
 									break;
 								case TASK_MOVE:
-									//Log.e("Blubb","Move");
+									main.moveTask(task);
 									break;
 								case TASK_DESTROY:
-									//main.destroyList(list);
+									main.destroyTask(task);
 									break;
 								}
-								Log.e("Blubb","item:" + item + " task:" + id);
 							}
 						});
 

@@ -142,62 +142,15 @@ public class MainActivity extends FragmentActivity implements
 
 	private List<ListMirakel> lists;
 
+	private AlertDialog taskMoveDialog;
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.menu_delete:
-			new AlertDialog.Builder(this)
-					.setTitle(this.getString(R.string.task_delete_title))
-					.setMessage(this.getString(R.string.task_delete_content))
-					.setPositiveButton(this.getString(R.string.Yes),
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int which) {
-									currentTask.delete();
-									setCurrentList(currentList);
-								}
-							})
-					.setNegativeButton(this.getString(R.string.no),
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int which) {
-									// do nothing
-								}
-							}).show();
+			destroyTask(currentTask);
 			return true;
 		case R.id.menu_move:
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle(R.string.dialog_move);
-			List<CharSequence> items = new ArrayList<CharSequence>();
-			final List<Integer> list_ids = new ArrayList<Integer>();
-			int currentItem = 0,
-			i = 0;
-			for (ListMirakel list : lists) {
-				if (list.getId() > 0) {
-					items.add(list.getName());
-					if (currentTask.getList().getId() == list.getId()) {
-						currentItem = i;
-					}
-					list_ids.add(list.getId());
-					++i;
-				}
-			}
-
-			builder.setSingleChoiceItems(
-					items.toArray(new CharSequence[items.size()]), currentItem,
-					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int item) {
-							currentTask.setList(ListMirakel.getList(list_ids
-									.get(item)));
-							currentTask.save();
-							currentList = currentTask.getList();
-							tasksFragment.update();
-							listFragment.update();
-						}
-					});
-
-			AlertDialog dialog = builder.create();
-			dialog.show();
+			moveTask(currentTask);
 			return true;
 
 		case R.id.list_delete:
@@ -291,6 +244,62 @@ public class MainActivity extends FragmentActivity implements
 								// do nothing
 							}
 						}).show();
+	}
+
+	public void destroyTask(final Task task) {
+		new AlertDialog.Builder(this)
+				.setTitle(this.getString(R.string.task_delete_title))
+				.setMessage(this.getString(R.string.task_delete_content))
+				.setPositiveButton(this.getString(R.string.Yes),
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int which) {
+								task.delete();
+								setCurrentList(currentList);
+							}
+						})
+				.setNegativeButton(this.getString(R.string.no),
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int which) {
+								// do nothing
+							}
+						}).show();
+	}
+	public void moveTask(final Task task) {
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(R.string.dialog_move);
+		List<CharSequence> items = new ArrayList<CharSequence>();
+		final List<Integer> list_ids = new ArrayList<Integer>();
+		int currentItem = 0,
+		i = 0;
+		for (ListMirakel list : lists) {
+			if (list.getId() > 0) {
+				items.add(list.getName());
+				if (task.getList().getId() == list.getId()) {
+					currentItem = i;
+				}
+				list_ids.add(list.getId());
+				++i;
+			}
+		}
+
+		builder.setSingleChoiceItems(
+				items.toArray(new CharSequence[items.size()]), currentItem,
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int item) {
+						task.setList(ListMirakel.getList(list_ids
+								.get(item)));
+						task.save();
+						tasksFragment.update();
+						listFragment.update();
+						taskMoveDialog.dismiss();
+					}
+				});
+
+		taskMoveDialog = builder.create();
+		taskMoveDialog.show();
 	}
 
 	/**
