@@ -253,7 +253,7 @@ public class ListMirakel extends ListBase {
 	 *            List–ID
 	 * @return List
 	 */
-	public static ListMirakel getList(int listId) {
+	public static ListMirakel getListForSync(int listId) {
 		if (listId > 0) {
 			Cursor cursor = database.query(ListMirakel.TABLE, allColumns,
 					"_id='" + listId + "'", null, null, null, null);
@@ -264,7 +264,12 @@ public class ListMirakel extends ListBase {
 				return t;
 			}
 		}
-		return SpecialList.getSpecialList(-listId);
+		return null;
+	}
+	
+	public static ListMirakel getList(int listId) {
+		ListMirakel t=getListForSync(listId);
+		return t==null?SpecialList.getSpecialList(-listId):t;
 	}
 
 	/**

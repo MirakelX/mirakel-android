@@ -77,11 +77,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	private List<Pair<Network, String>> SyncLists;
 	private List<Pair<Network, String>> SyncTasks;
 
-	private ListMirakel[] ServerLists;
-	private List<Task> ServerTasks;
+	//private ListMirakel[] ServerLists;
+	//private List<Task> ServerTasks;
 
-	private boolean finish_list;
-	private boolean finish_task;
+	//private boolean finish_list;
+	//private boolean finish_task;
 	private int listAdd;
 	private int count;
 	private String Token;
@@ -105,8 +105,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		AddTasks = new ArrayList<Pair<Network, String>>();
 		SyncLists = new ArrayList<Pair<Network, String>>();
 		SyncTasks = new ArrayList<Pair<Network, String>>();
-		finish_list = false;
-		finish_task = false;
+		/*finish_list = false;
+		finish_task = false;*/
 		listAdd = 0;
 		count=0;
 		finishList=false;
@@ -152,50 +152,37 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			}
 		}
 
-		// get Server-Tasklist
 		new Network(new DataDownloadCommand() {
 			@Override
 			public void after_exec(String result) {
-				ServerTasks = Task.parse_json(result);
-				finish_task = true;
-				doSync();
-			}
-		}, Mirakel.HttpMode.GET, mContext,Token).execute(ServerUrl
-				+ "/lists/all/tasks.json");
-
-		// get Server List-List
-		new Network(new DataDownloadCommand() {
-			@Override
-			public void after_exec(String result) {
-				ServerLists = new Gson().fromJson(result, ListMirakel[].class);
-				// merge_with_server(lists_server);
-				List<ListMirakel> lists_local = ListMirakel.bySyncState(Mirakel.SYNC_STATE_ADD);
-				for (ListMirakel list : lists_local) {
-					add_list(list);
-				}
-				finish_list = true;
-				doSync();
-
+				//
+				merge_with_server(new Gson().fromJson(result, ListMirakel[].class));
+				new Network(new DataDownloadCommand() {
+					@Override
+					public void after_exec(String result) {
+						merge_with_server(Task.parse_json(result));
+						doSync();
+					}
+				}, Mirakel.HttpMode.GET, mContext,Token).execute(ServerUrl
+						+ "/lists/all/tasks.json");
 			}
 		},Mirakel.HttpMode.GET, mContext,Token).execute(ServerUrl
 				+ "/lists.json");
 	}
 
 	protected void doSync() {
-		if (finish_list && finish_task) {
-			merge_with_server(ServerLists);
-			merge_with_server(ServerTasks);
-			Log.d(TAG, "Execute Sync");
-			execute(DeleteTasks);
-			execute(DeleteLists);
-			execute(SyncLists);
-			execute(SyncTasks);
-			execute(AddLists);
-			if(AddLists.size()==0)
-				addTasks();
-		} else {
-			Log.e(TAG, "Waiting for other");
+		List<ListMirakel> lists_local = ListMirakel.bySyncState(Mirakel.SYNC_STATE_ADD);
+		for (ListMirakel list : lists_local) {
+			add_list(list);
 		}
+		Log.d(TAG, "Execute Sync");
+		execute(DeleteTasks);
+		execute(DeleteLists);
+		execute(SyncLists);
+		execute(SyncTasks);
+		execute(AddLists);
+		if(AddLists.size()==0)
+			addTasks();
 	}
 
 	private void addTasks() {
@@ -344,15 +331,26 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	 */
 	protected void merge_with_server(ListMirakel[] lists_server) {
 		for (ListMirakel list_server : lists_server) {
-			ListMirakel list = ListMirakel.getList(list_server.getId());
+			ListMirakel list = ListMirakel.getListForSync(list_server.getId());
 			if (list == null) {
 				list_server.setSyncState(Mirakel.SYNC_STATE_IS_SYNCED);
 				long id = Mirakel.getWritableDatabase()
 						.insert(ListMirakel.TABLE, null,
 								list_server.getContentValues());
+				//TODO Get this from server!!
+				Cursor c=Mirakel.getReadableDatabase().rawQuery("Select max(lft),max(rgt) from "+ListMirakel.TABLE+ " where not sync_state="+Mirakel.SYNC_STATE_DELETE, null);
+				c.moveToFirst();
+				int lft=0,rgt=0;
+				if(c.getCount()!=0){
+					lft=c.getInt(0)+2;
+					rgt=c.getInt(1)+2;
+				}
+				c.close();
 				ContentValues values = new ContentValues();
 				values.put("_id", list_server.getId());
 				values.put("sync_state", Mirakel.SYNC_STATE_IS_SYNCED);
+				values.put("lft", lft);
+				values.put("rgt", rgt);
 				Mirakel.getWritableDatabase().update(ListMirakel.TABLE, values,
 						"_id=" + id, null);
 				continue;
@@ -522,6 +520,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 									Mirakel.getWritableDatabase()
 											.execSQL(
 													"UPDATE "
+															// get
+															// Server-Tasklist
 															+ Task.TABLE
 															+ " SET _id=_id+"
 															+ diff
