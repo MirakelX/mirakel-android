@@ -4,13 +4,15 @@
     android:layout_height="match_parent"
     tools:context=".ListActivity" >
 
-    <ListView
+    <!--  <ListView-->
+    <de.azapps.mirakel.main_activity.DragNDropListView
         android:id="@+id/lists_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true" 
         android:descendantFocusability="beforeDescendants">
-    </ListView>
+        </de.azapps.mirakel.main_activity.DragNDropListView>
+    <!-- </ListView>-->
 
 </RelativeLayout>

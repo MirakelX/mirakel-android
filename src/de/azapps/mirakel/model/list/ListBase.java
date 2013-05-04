@@ -35,13 +35,15 @@ class ListBase {
 	}
 
 	ListBase(int id, String name, short sort_by, String created_at,
-			String updated_at, int sync_state) {
+			String updated_at, int sync_state, int lft,int rgt) {
 		this.setId(id);
 		this.setCreatedAt(created_at);
 		this.setName(name);
 		this.setUpdatedAt(updated_at);
 		this.setSortBy(sort_by);
 		this.setSyncState(sync_state);
+		this.setLft(lft);
+		this.setRgt(rgt);
 	}
 
 	ListBase(int id, String name) {
@@ -118,6 +120,8 @@ class ListBase {
 		cv.put("updated_at", updated_at);
 		cv.put("sort_by", sortBy);
 		cv.put("sync_state", syncState);
+		cv.put("lft", lft);
+		cv.put("rgt", rgt);
 		return cv;
 	}
 

@@ -103,7 +103,11 @@ class TaskBase {
 	}
 
 	public String getContent() {
-		return content.trim().replace("\\n", "\n");
+		try{
+			return content.trim().replace("\\n", "\n");
+		}catch(NullPointerException e){
+			return "";
+		}
 	}
 
 	public void setContent(String content) {

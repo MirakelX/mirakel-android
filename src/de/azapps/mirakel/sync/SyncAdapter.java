@@ -355,10 +355,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						"_id=" + id, null);
 				continue;
 			} else {
-				if (list.getSyncState() == Mirakel.SYNC_STATE_NOTHING) {
+				/*if (list.getSyncState() == Mirakel.SYNC_STATE_NOTHING) {
 					list_server.setSyncState(Mirakel.SYNC_STATE_IS_SYNCED);
 					list_server.save();
-				} else if (list.getSyncState() == Mirakel.SYNC_STATE_NEED_SYNC) {
+				} else*/ if (list.getSyncState()==Mirakel.SYNC_STATE_NOTHING||list.getSyncState() == Mirakel.SYNC_STATE_NEED_SYNC) {
 					DateFormat df = new SimpleDateFormat(
 							mContext.getString(R.string.dateTimeFormat),
 							Locale.US);// use ASCII-Formating
@@ -580,10 +580,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						values, "_id=" + id, null);
 				continue;
 			} else {
-				if (task.getSync_state() == Mirakel.SYNC_STATE_NOTHING) {
+				/*if (task.getSync_state() == Mirakel.SYNC_STATE_NOTHING) {
 					task_server.setSyncState(Mirakel.SYNC_STATE_IS_SYNCED);
 					task_server.save();
-				} else if (task.getSync_state() == Mirakel.SYNC_STATE_NEED_SYNC) {
+				} else*/ if (task.getSync_state() == Mirakel.SYNC_STATE_NEED_SYNC||task.getSync_state()==Mirakel.SYNC_STATE_NOTHING) {
 					DateFormat df = new SimpleDateFormat(
 							mContext.getString(R.string.dateTimeFormat),
 							Locale.US);// use ASCII-Formating

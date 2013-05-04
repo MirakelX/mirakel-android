@@ -29,8 +29,12 @@ import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnDragListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -46,8 +50,9 @@ public class ListFragment extends Fragment {
 	private View view;
 	protected boolean EditName;
 	private boolean created = false;
-	private ListView listView;
+	private DragNDropListView listView;
 	private static final int LIST_RENAME=0, LIST_MOVE=1, LIST_DESTROY=2;
+	protected static final String TAG = "ListFragment";
 
 	public void setActivity(MainActivity activity) {
 		main = activity;
@@ -72,10 +77,53 @@ public class ListFragment extends Fragment {
 
 		adapter = new ListAdapter(this.getActivity(), R.layout.lists_row,
 				values);
-		listView = (ListView) view.findViewById(R.id.lists_list);
+		listView = (DragNDropListView) view.findViewById(R.id.lists_list);
 		listView.setItemsCanFocus(true);
 		listView.setAdapter(adapter);
 		listView.requestFocus();
+		listView.setDragListener(new DragListener() {
+			
+			@Override
+			public void onStopDrag(View itemView) {
+				//Log.e(TAG,"Stop Drag "+itemView.getId());;
+				itemView.setVisibility(View.VISIBLE);
+				
+			}
+			
+			@Override
+			public void onStartDrag(View itemView) {
+				//Log.e(TAG,"Start Drag "+itemView.getId());
+				itemView.setVisibility(View.INVISIBLE);
+				
+			}
+			
+			@Override
+			public void onDrag(int x, int y, ListView listView) {
+				//Log.e(TAG,"Drag");
+				
+			}
+		});
+		listView.setDropListener(new DropListener() {
+			
+			@Override
+			public void onDrop(int from, int to) {
+				if(from!=to){
+					adapter.onDrop(from, to);
+					adapter.notifyDataSetChanged();
+					listView.requestLayout();
+				}
+				Log.e(TAG,"Drop from:"+from+" to:"+to);
+				
+				
+			}
+		});
+		listView.setRemoveListener(new RemoveListener() {
+			
+			@Override
+			public void onRemove(int which) {
+				Log.e(TAG,"Remove");
+			}
+		});
 
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
@@ -89,7 +137,7 @@ public class ListFragment extends Fragment {
 				main.setCurrentList(list);
 			}
 		});
-		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+		/*listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View item,
@@ -123,9 +171,9 @@ public class ListFragment extends Fragment {
 				
 				/*ListMirakel list = values.get((int) id);
 				editList(list);*/
-				return false;
+				/*return false;
 			}
-		});
+		});*/
 	}
 
 	/**

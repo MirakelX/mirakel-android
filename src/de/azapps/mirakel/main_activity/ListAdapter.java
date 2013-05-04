@@ -26,18 +26,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.TextView;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.list.ListMirakel;
 
-public class ListAdapter extends ArrayAdapter<ListMirakel> {
+public class ListAdapter extends BaseAdapter{//ArrayAdapter<ListMirakel> {
 	Context context;
 	int layoutResourceId;
 	List<ListMirakel> data = null;
 
 	public ListAdapter(Context context, int layoutResourceId,
 			List<ListMirakel> data) {
-		super(context, layoutResourceId, data);
+		super();
 		this.layoutResourceId = layoutResourceId;
 		this.data = data;
 		this.context = context;
@@ -71,5 +72,40 @@ public class ListAdapter extends ArrayAdapter<ListMirakel> {
 	static class ListHolder {
 		TextView listRowName;
 		TextView listRowTaskNumber;
+	}
+
+	@Override
+	public int getCount() {
+		return data.size();
+	}
+
+	@Override
+	public Object getItem(int position) {
+		return data.get(position);
+	}
+
+	@Override
+	public long getItemId(int position) {
+		//return data.get(position).getId();
+		return position;
+	}
+	
+	public void onRemove(int which) {
+		if (which < 0 || which >data.size()) return;		
+		data.remove(which);
+	}
+
+	public void onDrop(int from, int to) {
+		ListMirakel t = data.get(from);
+		t.setLft(data.get(to).getLft());
+		t.setRgt(data.get(to).getRgt());
+		t.save();
+		for(int i=to;i<from;i++){
+			data.get(i).setLft(data.get(i).getLft()+2);
+			data.get(i).setRgt(data.get(i).getRgt()+2);
+			data.get(i).save();
+		}
+		data.remove(from);
+		data.add(to,t);
 	}
 }

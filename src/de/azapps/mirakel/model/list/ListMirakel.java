@@ -53,8 +53,8 @@ public class ListMirakel extends ListBase {
 	}
 
 	protected ListMirakel(int id, String name, short sort_by,
-			String created_at, String updated_at, int sync_state) {
-		super(id, name, sort_by, created_at, updated_at, sync_state);
+			String created_at, String updated_at, int sync_state,int lft, int rgt) {
+		super(id, name, sort_by, created_at, updated_at, sync_state,lft,rgt);
 	}
 
 	ListMirakel(int id, String name) {
@@ -158,7 +158,7 @@ public class ListMirakel extends ListBase {
 	private static SQLiteDatabase database;
 	private static DatabaseHelper dbHelper;
 	private static final String[] allColumns = { "_id", "name", "sort_by",
-			"created_at", "updated_at", "sync_state" };
+			"created_at", "updated_at", "sync_state","lft","rgt" };
 	private static Context context;
 	private static SharedPreferences preferences;
 
@@ -242,7 +242,7 @@ public class ListMirakel extends ListBase {
 		int id = cursor.getInt(i++);
 		ListMirakel list = new ListMirakel(id, cursor.getString(i++),
 				cursor.getShort(i++), cursor.getString(i++),
-				cursor.getString(i++), cursor.getInt(i));
+				cursor.getString(i++), cursor.getInt(i++),cursor.getInt(i++),cursor.getInt(i++));
 		return list;
 	}
 
