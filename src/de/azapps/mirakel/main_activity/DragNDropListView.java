@@ -108,6 +108,7 @@ public class DragNDropListView extends ListView {
 		View item = getChildAt(itemIndex);
 		if (item == null) return;
 		item.setDrawingCacheEnabled(true);
+		item.destroyDrawingCache();
 		item.buildDrawingCache();
 		if (mDragListener != null)
 			mDragListener.onStartDrag(item);
