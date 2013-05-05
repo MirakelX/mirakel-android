@@ -1,5 +1,6 @@
 package de.azapps.mirakel.main_activity;
 
+import de.azapps.mirakel.model.list.SpecialList;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
@@ -19,6 +20,8 @@ public class DragNDropListView extends ListView {
 
 	boolean mDragMode;
 
+	int SpecialListCount;
+	
 	int mStartPosition;
 	int mEndPosition;
 	int mDragPointOffset;		//Used to adjust drag view location
@@ -63,24 +66,34 @@ public class DragNDropListView extends ListView {
 			case MotionEvent.ACTION_DOWN:
 				mStartPosition = pointToPosition(x,y);
 				if (mStartPosition != INVALID_POSITION) {
+					
 					int mItemPosition = mStartPosition - getFirstVisiblePosition();
+					if(mItemPosition<SpecialList.getSpecialListCount())
+						break;
+					Log.e(TAG,""+mItemPosition);
                     mDragPointOffset = y - getChildAt(mItemPosition).getTop();
                     mDragPointOffset -= ((int)ev.getRawY()) - y;
 					startDrag(mItemPosition,y);
-					drag(0,y);// replace 0 with x if desired
+					drag(0,y);
 				}	
 				break;
 			case MotionEvent.ACTION_MOVE:
-				drag(0,y);// replace 0 with x if desired
+				drag(0,y);
 				break;
 			case MotionEvent.ACTION_CANCEL:
 			case MotionEvent.ACTION_UP:
 			default:
 				mDragMode = false;
 				mEndPosition = pointToPosition(x,y);
+				int ItemStartPosition = mStartPosition - getFirstVisiblePosition();
 				stopDrag(mStartPosition - getFirstVisiblePosition());
-				if (mDropListener != null && mStartPosition != INVALID_POSITION && mEndPosition != INVALID_POSITION) 
-	        		 mDropListener.onDrop(mStartPosition, mEndPosition);
+				if(mEndPosition - getFirstVisiblePosition() < SpecialList.getSpecialListCount()){
+					mEndPosition=SpecialList.getSpecialListCount();
+				}
+			if (mDropListener != null && mStartPosition != INVALID_POSITION
+					&& mEndPosition != INVALID_POSITION
+					&& !(ItemStartPosition < SpecialList.getSpecialListCount()))
+				mDropListener.onDrop(mStartPosition, mEndPosition);
 				break;
 		}
 		return true;
@@ -97,7 +110,7 @@ public class DragNDropListView extends ListView {
 			mWindowManager.updateViewLayout(mDragView, layoutParams);
 
 			if (mDragListener != null)
-				mDragListener.onDrag(x, y, this);// change null to "this" when ready to use
+				mDragListener.onDrag(x, y, this);
 		}
 	}
 
@@ -154,25 +167,4 @@ public class DragNDropListView extends ListView {
         }
 	}
 
-//	private GestureDetector createFlingDetector() {
-//		return new GestureDetector(getContext(), new SimpleOnGestureListener() {
-//            @Override
-//            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-//                    float velocityY) {         	
-//                if (mDragView != null) {              	
-//                	int deltaX = (int)Math.abs(e1.getX()-e2.getX());
-//                	int deltaY = (int)Math.abs(e1.getY() - e2.getY());
-//               
-//                	if (deltaX > mDragView.getWidth()/2 && deltaY < mDragView.getHeight()) {
-//                		mRemoveListener.onRemove(mStartPosition);
-//                	}
-//                	
-//                	stopDrag(mStartPosition - getFirstVisiblePosition());
-//
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
-//	}
 }

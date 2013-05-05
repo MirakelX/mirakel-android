@@ -215,5 +215,16 @@ public class SpecialList extends ListMirakel {
 				cursor.getInt(i++));
 		return slist;
 	}
+	
+	public static int getSpecialListCount(){
+		Cursor c=Mirakel.getReadableDatabase().rawQuery("Select count(_id) from "+TABLE, null);
+		c.moveToFirst();
+		int r=0;
+		if(c.getCount()>0){
+			r=c.getInt(0);
+		}
+		c.close();
+		return r ;
+	}
 
 }
