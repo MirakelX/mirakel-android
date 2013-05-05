@@ -52,7 +52,7 @@ public class DragNDropListView extends ListView {
 		final int x = (int) ev.getX();
 		final int y = (int) ev.getY();	
 		
-		if (action == MotionEvent.ACTION_DOWN ){//&& x < this.getWidth()/4) {
+		if (action == MotionEvent.ACTION_DOWN && x < this.getWidth()/2) {
 			mDragMode = true;
 		}
 
@@ -61,7 +61,6 @@ public class DragNDropListView extends ListView {
 
 		switch (action) {
 			case MotionEvent.ACTION_DOWN:
-				Log.v(TAG,"Touch Start");
 				mStartPosition = pointToPosition(x,y);
 				if (mStartPosition != INVALID_POSITION) {
 					int mItemPosition = mStartPosition - getFirstVisiblePosition();
@@ -72,13 +71,11 @@ public class DragNDropListView extends ListView {
 				}	
 				break;
 			case MotionEvent.ACTION_MOVE:
-				Log.v(TAG,"Touch Move");
 				drag(0,y);// replace 0 with x if desired
 				break;
 			case MotionEvent.ACTION_CANCEL:
 			case MotionEvent.ACTION_UP:
 			default:
-				Log.v(TAG,"Touch End");
 				mDragMode = false;
 				mEndPosition = pointToPosition(x,y);
 				stopDrag(mStartPosition - getFirstVisiblePosition());
@@ -111,6 +108,7 @@ public class DragNDropListView extends ListView {
 		View item = getChildAt(itemIndex);
 		if (item == null) return;
 		item.setDrawingCacheEnabled(true);
+		item.buildDrawingCache();
 		if (mDragListener != null)
 			mDragListener.onStartDrag(item);
 		

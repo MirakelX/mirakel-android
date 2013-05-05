@@ -26,19 +26,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.list.ListMirakel;
 
-public class ListAdapter extends BaseAdapter{//ArrayAdapter<ListMirakel> {
+public class ListAdapter extends ArrayAdapter<ListMirakel> {
 	Context context;
 	int layoutResourceId;
 	List<ListMirakel> data = null;
 
 	public ListAdapter(Context context, int layoutResourceId,
 			List<ListMirakel> data) {
-		super();
+		super(context, layoutResourceId, layoutResourceId, data);
 		this.layoutResourceId = layoutResourceId;
 		this.data = data;
 		this.context = context;
@@ -68,27 +67,6 @@ public class ListAdapter extends BaseAdapter{//ArrayAdapter<ListMirakel> {
 		holder.listRowTaskNumber.setText(""+list.countTasks());
 		return row;
 	}
-
-	static class ListHolder {
-		TextView listRowName;
-		TextView listRowTaskNumber;
-	}
-
-	@Override
-	public int getCount() {
-		return data.size();
-	}
-
-	@Override
-	public Object getItem(int position) {
-		return data.get(position);
-	}
-
-	@Override
-	public long getItemId(int position) {
-		//return data.get(position).getId();
-		return position;
-	}
 	
 	public void onRemove(int which) {
 		if (which < 0 || which >data.size()) return;		
@@ -100,12 +78,18 @@ public class ListAdapter extends BaseAdapter{//ArrayAdapter<ListMirakel> {
 		t.setLft(data.get(to).getLft());
 		t.setRgt(data.get(to).getRgt());
 		t.save();
-		for(int i=to;i<from;i++){
-			data.get(i).setLft(data.get(i).getLft()+2);
-			data.get(i).setRgt(data.get(i).getRgt()+2);
+		int add=to<from?2:-2;
+		for(int i=(to<from?to:from+1);i<(from>to?from:to+1);i++){
+			data.get(i).setLft(data.get(i).getLft()+add);
+			data.get(i).setRgt(data.get(i).getRgt()+add);
 			data.get(i).save();
 		}
 		data.remove(from);
 		data.add(to,t);
+	}
+	
+	static class ListHolder {
+		TextView listRowName;
+		TextView listRowTaskNumber;
 	}
 }

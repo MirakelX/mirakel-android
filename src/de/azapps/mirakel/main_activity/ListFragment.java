@@ -137,7 +137,7 @@ public class ListFragment extends Fragment {
 				main.setCurrentList(list);
 			}
 		});
-		/*listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View item,
@@ -171,9 +171,9 @@ public class ListFragment extends Fragment {
 				
 				/*ListMirakel list = values.get((int) id);
 				editList(list);*/
-				/*return false;
+				return false;
 			}
-		});*/
+		});
 	}
 
 	/**
