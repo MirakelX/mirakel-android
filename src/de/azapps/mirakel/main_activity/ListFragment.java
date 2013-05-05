@@ -29,12 +29,8 @@ import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnDragListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -51,7 +47,7 @@ public class ListFragment extends Fragment {
 	protected boolean EditName;
 	private boolean created = false;
 	private DragNDropListView listView;
-	private static final int LIST_RENAME=0, LIST_MOVE=1, LIST_DESTROY=2;
+	private static final int LIST_RENAME=0,  LIST_DESTROY=1;
 	protected static final String TAG = "ListFragment";
 
 	public void setActivity(MainActivity activity) {
@@ -85,22 +81,19 @@ public class ListFragment extends Fragment {
 			
 			@Override
 			public void onStopDrag(View itemView) {
-				//Log.e(TAG,"Stop Drag "+itemView.getId());;
 				itemView.setVisibility(View.VISIBLE);
 				
 			}
 			
 			@Override
 			public void onStartDrag(View itemView) {
-				//Log.e(TAG,"Start Drag "+itemView.getId());
 				itemView.setVisibility(View.INVISIBLE);
 				
 			}
 			
 			@Override
 			public void onDrag(int x, int y, ListView listView) {
-				//Log.e(TAG,"Drag");
-				
+				//Nothing
 			}
 		});
 		listView.setDropListener(new DropListener() {
@@ -115,13 +108,6 @@ public class ListFragment extends Fragment {
 				Log.e(TAG,"Drop from:"+from+" to:"+to);
 				
 				
-			}
-		});
-		listView.setRemoveListener(new RemoveListener() {
-			
-			@Override
-			public void onRemove(int which) {
-				Log.e(TAG,"Remove");
 			}
 		});
 
@@ -155,9 +141,6 @@ public class ListFragment extends Fragment {
 								switch(item) {
 								case LIST_RENAME:
 									editList(list);
-									break;
-								case LIST_MOVE:
-									Log.e("Blubb","Move");
 									break;
 								case LIST_DESTROY:
 									main.destroyList(list);
