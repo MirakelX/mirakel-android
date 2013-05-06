@@ -21,5 +21,11 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/action_credits"/>
+    <item
+        android:id="@+id/menu_sort_lists"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/menu_sort_lists"
+        android:checkable="true" />
 
 </menu>

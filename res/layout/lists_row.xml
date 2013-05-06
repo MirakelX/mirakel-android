@@ -4,6 +4,11 @@
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:padding="5dp" >
+    <ImageView 
+        android:id="@+id/list_row_drag"
+        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:src="@android:drawable/ic_menu_sort_by_size"/>
 
     <TextView
         android:id="@+id/list_row_name"
@@ -11,6 +16,7 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:layout_weight="1"
+        android:textIsSelectable="false"
         android:textSize="18sp" />
 
     <TextView
@@ -18,6 +24,7 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_weight="0"
+        android:textIsSelectable="false"
         android:gravity="center"
         android:textSize="18sp" >
     </TextView>

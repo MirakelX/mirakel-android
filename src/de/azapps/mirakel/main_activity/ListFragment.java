@@ -49,6 +49,7 @@ public class ListFragment extends Fragment {
 	private DragNDropListView listView;
 	private static final int LIST_RENAME=0,  LIST_DESTROY=1;
 	protected static final String TAG = "ListFragment";
+	private boolean enableDrag;
 
 	public void setActivity(MainActivity activity) {
 		main = activity;
@@ -62,18 +63,24 @@ public class ListFragment extends Fragment {
 		// Inflate the layout for this fragment
 		EditName = false;
 		created = true;
+		enableDrag=false;
 		update();
 		return view;
+	}
+	
+	public void enable_drop(boolean drag){
+		enableDrag=drag;
+		update();
 	}
 
 	public void update() {
 		if (!created)
 			return;
 		final List<ListMirakel> values = ListMirakel.all();
-
 		adapter = new ListAdapter(this.getActivity(), R.layout.lists_row,
-				values);
+				values,enableDrag);
 		listView = (DragNDropListView) view.findViewById(R.id.lists_list);
+		listView.setEnableDrag(enableDrag);
 		listView.setItemsCanFocus(true);
 		listView.setAdapter(adapter);
 		listView.requestFocus();
