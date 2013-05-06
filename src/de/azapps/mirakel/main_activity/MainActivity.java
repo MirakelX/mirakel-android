@@ -224,7 +224,7 @@ public class MainActivity extends FragmentActivity implements
 
 	public void destroyList(final ListMirakel list) {
 		new AlertDialog.Builder(this)
-				.setTitle(this.getString(R.string.list_delete_title))
+				.setTitle(list.getName())
 				.setMessage(this.getString(R.string.list_delete_content))
 				.setPositiveButton(this.getString(R.string.Yes),
 						new DialogInterface.OnClickListener() {
@@ -248,7 +248,7 @@ public class MainActivity extends FragmentActivity implements
 
 	public void destroyTask(final Task task) {
 		new AlertDialog.Builder(this)
-				.setTitle(this.getString(R.string.task_delete_title))
+				.setTitle(task.getName())
 				.setMessage(this.getString(R.string.task_delete_content))
 				.setPositiveButton(this.getString(R.string.Yes),
 						new DialogInterface.OnClickListener() {

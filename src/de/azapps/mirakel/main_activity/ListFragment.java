@@ -35,6 +35,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
@@ -48,7 +49,7 @@ public class ListFragment extends Fragment {
 	protected boolean EditName;
 	private boolean created = false;
 	private DragNDropListView listView;
-	private static final int LIST_RENAME=0,  LIST_DESTROY=1;
+	private static final int LIST_RENAME=0, LIST_MOVE=1,  LIST_DESTROY=2;
 	protected static final String TAG = "ListFragment";
 
 	public void setActivity(MainActivity activity) {
@@ -143,6 +144,9 @@ public class ListFragment extends Fragment {
 								switch(item) {
 								case LIST_RENAME:
 									editList(list);
+									break;
+								case LIST_MOVE:
+									Toast.makeText(getActivity(), "TODO", Toast.LENGTH_SHORT).show();
 									break;
 								case LIST_DESTROY:
 									main.destroyList(list);
