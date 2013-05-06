@@ -63,7 +63,7 @@ public class TasksFragment extends Fragment {
 	private EditText newTask;
 	private boolean created = false;
 	private ListView listView;
-	private static final int TASK_RENAME=0, TASK_MOVE=1, TASK_DESTROY=2;
+	private static final int TASK_RENAME = 0, TASK_MOVE = 1, TASK_DESTROY = 2;
 
 	public void setActivity(MainActivity activity) {
 		main = activity;
@@ -144,12 +144,6 @@ public class TasksFragment extends Fragment {
 		long id = main.getCurrentList().getId();
 		GregorianCalendar due = null;
 		if (id <= 0) {
-			/*if (id == ListMirakel.DAILY) {
-				due = new GregorianCalendar();
-			} else if (id == ListMirakel.WEEKLY) {
-				due = new GregorianCalendar();
-				due.add(GregorianCalendar.DAY_OF_MONTH, 7);
-			}*/
 			try {
 				id = ListMirakel.first().getId();
 			} catch (NullPointerException e) {
@@ -157,7 +151,7 @@ public class TasksFragment extends Fragment {
 				Toast.makeText(main, R.string.no_lists, Toast.LENGTH_LONG)
 						.show();
 			}
-		} //TODO set date for special list
+		} // TODO set date for special list
 		Task task = Task.newTask(name, id);
 		task.setDue(due);
 
@@ -168,7 +162,10 @@ public class TasksFragment extends Fragment {
 		return true;
 	}
 
-	public void update() {
+	public void update(){
+		update(-1);
+	}
+	public void update(final int pos) {
 		if (!created)
 			return;
 		final List<Task> values = main.getCurrentList().tasks();
@@ -234,6 +231,8 @@ public class TasksFragment extends Fragment {
 			@Override
 			protected void onPostExecute(TaskAdapter adapter) {
 				listView.setAdapter(adapter);
+				if(pos>=0)
+				setScrollPosition(pos);
 			}
 		};
 
@@ -243,17 +242,19 @@ public class TasksFragment extends Fragment {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View item,
 					int position, final long id) {
-				AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-				Task task=values.get((int) id);
+				AlertDialog.Builder builder = new AlertDialog.Builder(
+						getActivity());
+				Task task = values.get((int) id);
 				builder.setTitle(task.getName());
-				List<CharSequence> items = new ArrayList<CharSequence>(
-						Arrays.asList(getActivity().getResources().getStringArray(R.array.task_actions_items)));
+				List<CharSequence> items = new ArrayList<CharSequence>(Arrays
+						.asList(getActivity().getResources().getStringArray(
+								R.array.task_actions_items)));
 
 				builder.setItems(items.toArray(new CharSequence[items.size()]),
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int item) {
-								Task task=values.get((int) id);
-								switch(item) {
+								Task task = values.get((int) id);
+								switch (item) {
 								case TASK_RENAME:
 									main.setCurrentTask(task);
 									break;
@@ -269,9 +270,10 @@ public class TasksFragment extends Fragment {
 
 				AlertDialog dialog = builder.create();
 				dialog.show();
-				
-				/*ListMirakel list = values.get((int) id);
-				editList(list);*/
+
+				/*
+				 * ListMirakel list = values.get((int) id); editList(list);
+				 */
 				return false;
 			}
 		});
@@ -305,6 +307,21 @@ public class TasksFragment extends Fragment {
 		if (listView == null || state == null)
 			return;
 		listView.onRestoreInstanceState(state);
+	}
+
+	public int getScrollPosition() {
+		Log.e("Blubb", "get" + listView.getFirstVisiblePosition());
+		return listView == null ? 0 : listView.getFirstVisiblePosition();
+	}
+
+	public void setScrollPosition(int pos) {
+		if (listView == null)
+			return;
+		Log.e("Blubb", pos + "");
+		if (listView.getCount() > pos)
+			listView.setSelection(pos);
+		else
+			listView.setSelection(0);
 	}
 
 }
