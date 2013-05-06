@@ -185,8 +185,7 @@ public class TasksFragment extends Fragment {
 						new OnClickListener() {
 							@Override
 							public void onClick(View v) {
-								CheckBox cb = (CheckBox) v;
-								Task task = (Task) cb.getTag();
+								Task task = (Task) v.getTag();
 								task.toggleDone();
 								main.saveTask(task);
 							}

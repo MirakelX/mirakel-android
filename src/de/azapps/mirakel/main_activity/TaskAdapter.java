@@ -29,6 +29,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.MirakelHelper;
@@ -81,6 +82,8 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 			holder = new TaskHolder();
 			holder.taskRowDone = (CheckBox) row
 					.findViewById(R.id.tasks_row_done);
+			holder.taskRowDoneWrapper = (LinearLayout) row
+					.findViewById(R.id.tasks_row_done_wrapper);
 			holder.taskRowName = (TextView) row
 					.findViewById(R.id.tasks_row_name);
 			holder.taskRowPriority = (TextView) row
@@ -104,6 +107,8 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		holder.taskRowDone.setChecked(task.isDone());
 		holder.taskRowDone.setOnClickListener(clickCheckbox);
 		holder.taskRowDone.setTag(task);
+		holder.taskRowDoneWrapper.setOnClickListener(clickCheckbox);
+		holder.taskRowDoneWrapper.setTag(task);
 		if (task.getContent().length() != 0) {
 			holder.taskRowHasContent.setVisibility(View.VISIBLE);
 		} else {
@@ -157,6 +162,7 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 	 */
 	static class TaskHolder {
 		CheckBox taskRowDone;
+		LinearLayout taskRowDoneWrapper;
 		TextView taskRowName;
 		TextView taskRowPriority;
 		TextView taskRowDue, taskRowList;
