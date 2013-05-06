@@ -22,22 +22,25 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.list.ListMirakel;
 
 public class ListAdapter extends ArrayAdapter<ListMirakel> {
+	private static final String TAG = "ListAdapter";
 	Context context;
 	int layoutResourceId;
 	List<ListMirakel> data = null;
 
 	public ListAdapter(Context context, int layoutResourceId,
 			List<ListMirakel> data) {
-		super(context, layoutResourceId, data);
+		super(context, layoutResourceId, layoutResourceId, data);
 		this.layoutResourceId = layoutResourceId;
 		this.data = data;
 		this.context = context;
@@ -67,7 +70,27 @@ public class ListAdapter extends ArrayAdapter<ListMirakel> {
 		holder.listRowTaskNumber.setText(""+list.countTasks());
 		return row;
 	}
+	
+	public void onRemove(int which) {
+		if (which < 0 || which >data.size()) return;		
+		data.remove(which);
+	}
 
+	public void onDrop(int from, int to) {
+		ListMirakel t = data.get(from);
+		int add=to<from?2:-2;
+		int rgt=data.get(to).getRgt(),lft=data.get(to).getLft();
+		Mirakel.getWritableDatabase().execSQL( "Update " + ListMirakel.TABLE + " set lft=lft+" + add
+				+ " where lft>=" + (data.get(from).getId()<data.get(to).getLft()?data.get(from).getLft():data.get(to).getLft())
+				+ " and lft<" + (data.get(from).getLft()>data.get(to).getLft()?data.get(from).getLft():data.get(to).getLft()+2));
+		Mirakel.getWritableDatabase().execSQL("Update "+ListMirakel.TABLE+" set rgt=lft+1");
+		t.setLft(lft);
+		t.setRgt(rgt);
+		t.save();
+		data.remove(from);
+		data.add(to,t);
+	}
+	
 	static class ListHolder {
 		TextView listRowName;
 		TextView listRowTaskNumber;

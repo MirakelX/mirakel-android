@@ -47,8 +47,9 @@ public class ListFragment extends Fragment {
 	private View view;
 	protected boolean EditName;
 	private boolean created = false;
-	private ListView listView;
-	private static final int LIST_RENAME=0, LIST_MOVE=1, LIST_DESTROY=2;
+	private DragNDropListView listView;
+	private static final int LIST_RENAME=0,  LIST_DESTROY=1;
+	protected static final String TAG = "ListFragment";
 
 	public void setActivity(MainActivity activity) {
 		main = activity;
@@ -73,10 +74,43 @@ public class ListFragment extends Fragment {
 
 		adapter = new ListAdapter(this.getActivity(), R.layout.lists_row,
 				values);
-		listView = (ListView) view.findViewById(R.id.lists_list);
+		listView = (DragNDropListView) view.findViewById(R.id.lists_list);
 		listView.setItemsCanFocus(true);
 		listView.setAdapter(adapter);
 		listView.requestFocus();
+		listView.setDragListener(new DragListener() {
+			
+			@Override
+			public void onStopDrag(View itemView) {
+				itemView.setVisibility(View.VISIBLE);
+				
+			}
+			
+			@Override
+			public void onStartDrag(View itemView) {
+				itemView.setVisibility(View.INVISIBLE);
+				
+			}
+			
+			@Override
+			public void onDrag(int x, int y, ListView listView) {
+				//Nothing
+			}
+		});
+		listView.setDropListener(new DropListener() {
+			
+			@Override
+			public void onDrop(int from, int to) {
+				if(from!=to){
+					adapter.onDrop(from, to);
+					adapter.notifyDataSetChanged();
+					listView.requestLayout();
+				}
+				Log.e(TAG,"Drop from:"+from+" to:"+to);
+				
+				
+			}
+		});
 
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
@@ -109,9 +143,6 @@ public class ListFragment extends Fragment {
 								switch(item) {
 								case LIST_RENAME:
 									editList(list);
-									break;
-								case LIST_MOVE:
-									Log.e("Blubb","Move");
 									break;
 								case LIST_DESTROY:
 									main.destroyList(list);

@@ -52,7 +52,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ "sort_by INTEGER NOT NULL DEFAULT 0, "
 				+ "created_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
 				+ "updated_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
-				+ "sync_state INTEGER DEFAULT " + Mirakel.SYNC_STATE_ADD// +", "
+				+ "sync_state INTEGER DEFAULT " + Mirakel.SYNC_STATE_ADD +", "
 				+ "lft INTEGER, " + "rgt INTEGER " + ")");
 		db.execSQL("CREATE TABLE "
 				+ Task.TABLE

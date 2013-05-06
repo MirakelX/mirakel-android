@@ -31,8 +31,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
-import android.util.Log;
-import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.DatabaseHelper;
@@ -55,8 +53,8 @@ public class ListMirakel extends ListBase {
 	}
 
 	protected ListMirakel(int id, String name, short sort_by,
-			String created_at, String updated_at, int sync_state) {
-		super(id, name, sort_by, created_at, updated_at, sync_state);
+			String created_at, String updated_at, int sync_state,int lft, int rgt) {
+		super(id, name, sort_by, created_at, updated_at, sync_state,lft,rgt);
 	}
 
 	ListMirakel(int id, String name) {
@@ -123,10 +121,9 @@ public class ListMirakel extends ListBase {
 		} else {
 			where = "list_id = " + getId();
 		}
-		c = Mirakel.getReadableDatabase().rawQuery(
-				"Select count(_id) from " + Task.TABLE + " where " + where
-						+ " and done=0 and not sync_state="
-						+ Mirakel.SYNC_STATE_DELETE, null);
+		c = Mirakel.getReadableDatabase().rawQuery("Select count(_id) from " + Task.TABLE + " where " + where
+				+(where.length()!=0?" and ":" ")+ " done=0 and not sync_state="
+				+ Mirakel.SYNC_STATE_DELETE, null);
 		c.moveToFirst();
 		if (c.getCount() > 0) {
 			int n = c.getInt(0);
@@ -161,7 +158,7 @@ public class ListMirakel extends ListBase {
 	private static SQLiteDatabase database;
 	private static DatabaseHelper dbHelper;
 	private static final String[] allColumns = { "_id", "name", "sort_by",
-			"created_at", "updated_at", "sync_state" };
+			"created_at", "updated_at", "sync_state","lft","rgt" };
 	private static Context context;
 	private static SharedPreferences preferences;
 
@@ -245,7 +242,7 @@ public class ListMirakel extends ListBase {
 		int id = cursor.getInt(i++);
 		ListMirakel list = new ListMirakel(id, cursor.getString(i++),
 				cursor.getShort(i++), cursor.getString(i++),
-				cursor.getString(i++), cursor.getInt(i));
+				cursor.getString(i++), cursor.getInt(i++),cursor.getInt(i++),cursor.getInt(i++));
 		return list;
 	}
 
@@ -256,7 +253,7 @@ public class ListMirakel extends ListBase {
 	 *            List–ID
 	 * @return List
 	 */
-	public static ListMirakel getList(int listId) {
+	public static ListMirakel getListForSync(int listId) {
 		if (listId > 0) {
 			Cursor cursor = database.query(ListMirakel.TABLE, allColumns,
 					"_id='" + listId + "'", null, null, null, null);
@@ -267,7 +264,12 @@ public class ListMirakel extends ListBase {
 				return t;
 			}
 		}
-		return SpecialList.getSpecialList(-listId);
+		return null;
+	}
+	
+	public static ListMirakel getList(int listId) {
+		ListMirakel t=getListForSync(listId);
+		return t==null?SpecialList.getSpecialList(-listId):t;
 	}
 
 	/**

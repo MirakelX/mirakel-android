@@ -21,17 +21,26 @@ package de.azapps.mirakel.sync;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.List;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
@@ -50,8 +59,6 @@ import de.azapps.mirakel.R;
 public class Network extends AsyncTask<String, Integer, String> {
 	private String TAG="GetData";
 	protected DataDownloadCommand commands;
-	//protected String Email;
-	//protected String Password;
 	protected List<BasicNameValuePair> HeaderData;
 	protected int Mode;
 	protected Context context;
@@ -63,17 +70,6 @@ public class Network extends AsyncTask<String, Integer, String> {
 		this.context=context;
 		this.Token=Token;
 	}
-
-	/*public Network(DataDownloadCommand commands, String email, String password,
-			int mode, List<BasicNameValuePair> data, Context context) {
-		this.commands = commands;
-		this.Email = email;
-		this.Password = password;
-		this.Mode = mode;
-		this.HeaderData = data;
-		this.context=context;
-		this.Token=null;
-	}*/
 	public Network(DataDownloadCommand commands,
 			int mode, List<BasicNameValuePair> data, Context context,String Token) {
 		this.commands = commands;
@@ -124,49 +120,83 @@ public class Network extends AsyncTask<String, Integer, String> {
 		else
 			Log.e(TAG,"No Response");
 	}
+	
+	 private HttpClient sslClient(HttpClient client) {
+		    try {
+		        X509TrustManager tm = new X509TrustManager() { 
+		            public void checkClientTrusted(X509Certificate[] xcs, String string) throws CertificateException {
+		            }
+
+		            public void checkServerTrusted(X509Certificate[] xcs, String string) throws CertificateException {
+		            }
+
+		            public X509Certificate[] getAcceptedIssuers() {
+		                return null;
+		            }
+		        };
+		        SSLContext ctx = SSLContext.getInstance("TLS");
+		        ctx.init(null, new TrustManager[]{tm}, null);
+		        SSLSocketFactory ssf = new MirakelSSLSocketFactory(ctx);
+		        ssf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+		        ClientConnectionManager ccm = client.getConnectionManager();
+		        SchemeRegistry sr = ccm.getSchemeRegistry();
+		        sr.register(new Scheme("https", ssf, 443));
+		        return new DefaultHttpClient(ccm, client.getParams());
+		    } catch (Exception ex) {
+		        return null;
+		    }
+		}
 
 	private String downloadUrl(String myurl) throws IOException,
 			URISyntaxException {
 		if(Token!=null){
 			myurl+="?authentication_key="+Token;
 		}
+		if(myurl.indexOf("https")==-1){
+			myurl=myurl.replace("http://", "https://");
+		}
 		HttpParams params = new BasicHttpParams();
 		params.setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 		HttpConnectionParams.setTcpNoDelay(params, true);
 		DefaultHttpClient client=new DefaultHttpClient(params);
-		//client.getCredentialsProvider().setCredentials(new AuthScope(null, -1),
-		//		new UsernamePasswordCredentials(Email, Password));
+		HttpClient httpClient=sslClient(client);
+
 		HttpResponse response;
-		switch (Mode) {
-		case Mirakel.HttpMode.GET:
-			Log.v(TAG,"GET "+myurl);
-			HttpGet get = new HttpGet();
-			get.setURI(new URI(myurl));
-			response= client.execute(get);
-			break;
-		case Mirakel.HttpMode.PUT:
-			Log.v(TAG,"PUT "+myurl);
-			HttpPut put = new HttpPut();
-			put.setURI(new URI(myurl));
-			put.setEntity(new UrlEncodedFormEntity(HeaderData));
-			response=client.execute(put);
-			break;
-		case Mirakel.HttpMode.POST:
-			Log.v(TAG,"POST "+myurl);
-			HttpPost post = new HttpPost();
-			post.setURI(new URI(myurl));
-			post.setEntity(new UrlEncodedFormEntity(HeaderData));
-			response=client.execute(post);
-			break;
-		case Mirakel.HttpMode.DELETE:
-			Log.v(TAG,"DELETE "+myurl);
-			HttpDelete delete = new HttpDelete();
-			delete.setURI(new URI(myurl));
-			response= client.execute(delete);
-			break;
-		default:
-			Log.e("HTTP-MODE", "Unknown Http-Mode");
-			return null;
+		try{
+			switch (Mode) {
+			case Mirakel.HttpMode.GET:
+				Log.v(TAG,"GET "+myurl);
+				HttpGet get = new HttpGet();
+				get.setURI(new URI(myurl));
+				response= httpClient.execute(get);
+				break;
+			case Mirakel.HttpMode.PUT:
+				Log.v(TAG,"PUT "+myurl);
+				HttpPut put = new HttpPut();
+				put.setURI(new URI(myurl));
+				put.setEntity(new UrlEncodedFormEntity(HeaderData));
+				response=httpClient.execute(put);
+				break;
+			case Mirakel.HttpMode.POST:
+				Log.v(TAG,"POST "+myurl);
+				HttpPost post = new HttpPost();
+				post.setURI(new URI(myurl));
+				post.setEntity(new UrlEncodedFormEntity(HeaderData));
+				response=httpClient.execute(post);
+				break;
+			case Mirakel.HttpMode.DELETE:
+				Log.v(TAG,"DELETE "+myurl);
+				HttpDelete delete = new HttpDelete();
+				delete.setURI(new URI(myurl));
+				response= httpClient.execute(delete);
+				break;
+			default:
+				Log.e("HTTP-MODE", "Unknown Http-Mode");
+				return null;
+			}
+		}catch(Exception e){
+			Log.w(TAG,Log.getStackTraceString(e));
+			return "";
 		}
 		Log.v(TAG,"Http-Status: "+response.getStatusLine().getStatusCode());
 		if(response.getEntity()==null)

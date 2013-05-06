@@ -18,6 +18,7 @@
  ******************************************************************************/
 package de.azapps.mirakel.services;
 
+import java.text.ParseException;
 import java.util.List;
 
 import android.app.NotificationManager;
@@ -40,6 +41,7 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.widget.MainWidgetProvider;
 
 public class NotificationService extends Service {
+	private static final String TAG = "NotificationService";
 	private SharedPreferences preferences;
 	private boolean existsNotification = false;
 	public static NotificationService notificationService;
@@ -66,8 +68,14 @@ public class NotificationService extends Service {
 				&& !existsNotification) {
 			return;
 		}
-		int listId = Integer.parseInt(preferences.getString(
+		int listId =0;
+		try{
+			listId = Integer.parseInt(preferences.getString(
 				"notificationsList", "" + SpecialList.first()));
+		}catch(NumberFormatException e){
+			Log.e(TAG,"cannot parse list");
+			return;
+		}
 		// Set onClick Intent
 		Intent intent = new Intent(this, MainActivity.class);
 		intent.setAction(MainActivity.SHOW_LIST);

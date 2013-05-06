@@ -5,7 +5,7 @@
     <string name="title_activity_credits">Credits and about</string>
     <string name="credit">
 <![CDATA[<h1>Mirakel - ToDo Lists Client</h1>
-        <p>&copy; 2013 <a href="mailto:az@azapps.de">Anatolij Zelenin</a>, Georg Semmler</p>
+        <p>&copy; 2013 <a href="mailto:az@azapps.de">Anatolij Zelenin</a>, <a href="mailto:georg_semmler_05@web.de">Georg Semmler</a></p>
         <p>This is free Software (licensed under the <a href="https://www.gnu.org/licenses/gpl.html">GPLv3</a>).</p>
         <p>The source code is freely available here:</p>
         <p><a href="https://github.com/azapps/mirakel-android">https://github.com/azapps/mirakel-android</a></p>

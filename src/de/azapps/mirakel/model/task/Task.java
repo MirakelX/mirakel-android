@@ -319,11 +319,12 @@ public class Task extends TaskBase {
 			if (key.equals("{\"content\"")) {
 				t = new Task();
 				t.setSyncState(Mirakel.SYNC_STATE_NOTHING);
-				if (key_value[1] != "null") {
+				if (key_value[1].indexOf("null")<2) {
+					t.setContent(null);
+				} else{
 					t.setContent(key_value[1].substring(1,
 							key_value[1].length() - 1));
-				} else
-					t.setContent(null);
+				}	
 			} else if (key.equals("\"done\"")) {
 				t.setDone(key_value[1].indexOf("true") != -1);
 			} else if (key.equals("\"due\"")) {

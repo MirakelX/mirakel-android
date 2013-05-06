@@ -26,8 +26,8 @@ class ListBase {
 	private int id;
 	private String name;
 	private int sortBy;
-	private String createdAt;
-	private String updatedAt;
+	private String created_at;
+	private String updated_at;
 	private int syncState;
 	private int lft, rgt;
 
@@ -35,13 +35,15 @@ class ListBase {
 	}
 
 	ListBase(int id, String name, short sort_by, String created_at,
-			String updated_at, int sync_state) {
+			String updated_at, int sync_state, int lft,int rgt) {
 		this.setId(id);
 		this.setCreatedAt(created_at);
 		this.setName(name);
 		this.setUpdatedAt(updated_at);
 		this.setSortBy(sort_by);
 		this.setSyncState(sync_state);
+		this.setLft(lft);
+		this.setRgt(rgt);
 	}
 
 	ListBase(int id, String name) {
@@ -66,19 +68,19 @@ class ListBase {
 	}
 
 	public String getCreatedAt() {
-		return createdAt;
+		return created_at;
 	}
 
 	public void setCreatedAt(String created_at) {
-		this.createdAt = created_at;
+		this.created_at = created_at;
 	}
 
 	public String getUpdatedAt() {
-		return updatedAt;
+		return updated_at;
 	}
 
 	public void setUpdatedAt(String updated_at) {
-		this.updatedAt = updated_at;
+		this.updated_at = updated_at;
 	}
 
 	public int getSortBy() {
@@ -114,10 +116,12 @@ class ListBase {
 		ContentValues cv = new ContentValues();
 		cv.put("_id", id);
 		cv.put("name", name);
-		cv.put("created_at", createdAt);
-		cv.put("updated_at", updatedAt);
+		cv.put("created_at", created_at);
+		cv.put("updated_at", updated_at);
 		cv.put("sort_by", sortBy);
 		cv.put("sync_state", syncState);
+		cv.put("lft", lft);
+		cv.put("rgt", rgt);
 		return cv;
 	}
 
