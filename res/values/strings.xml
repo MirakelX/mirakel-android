@@ -42,6 +42,7 @@
     <string name="use_server">Do you want to use a Server to Sync?</string>
     <string name="dateFormatDB">yyyy-MM-dd</string>
     <string name="menu_sort_lists">Reorder Lists</string>
+    <string name="no_https">You should use https!</string>
 
     <!-- Example Data -->
     <string name="inbox">Inbox</string>

@@ -141,6 +141,7 @@ public class Network extends AsyncTask<String, Integer, String> {
 		        ClientConnectionManager ccm = client.getConnectionManager();
 		        SchemeRegistry sr = ccm.getSchemeRegistry();
 		        sr.register(new Scheme("https", ssf, 443));
+		        sr.register(new Scheme("http", ssf, 80));
 		        return new DefaultHttpClient(ccm, client.getParams());
 		    } catch (Exception ex) {
 		        return null;
@@ -153,7 +154,8 @@ public class Network extends AsyncTask<String, Integer, String> {
 			myurl+="?authentication_key="+Token;
 		}
 		if(myurl.indexOf("https")==-1){
-			myurl=myurl.replace("http://", "https://");
+			//myurl=myurl.replace("http://", "https://");
+			Toast.makeText(context, context.getString(R.string.no_https), Toast.LENGTH_LONG);
 		}
 		HttpParams params = new BasicHttpParams();
 		params.setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
