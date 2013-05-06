@@ -16,18 +16,39 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package de.azapps.mirakel.receivers;
+package de.azapps.mirakel.widget;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
+import android.app.Activity;
+import android.appwidget.AppWidgetManager;
 import android.content.Intent;
-import de.azapps.mirakel.services.NotificationService;
+import android.os.Bundle;
+import android.util.Log;
+import de.azapps.mirakel.Mirakel;
 
-public class BootUpReceiver extends BroadcastReceiver {
+public class MainWidgetSettingsActivity extends Activity {
 
 	@Override
-	public void onReceive(Context context, Intent arg1) {
-		NotificationService.updateNotificationAndWidget(context);
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		// Display the fragment as the main content.
+		getFragmentManager()
+				.beginTransaction()
+				.replace(android.R.id.content, new MainWidgetSettingsFragment())
+				.commit();
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		Log.e("WIDGET", "updated");
+		Intent intent = new Intent(this, MainWidgetProvider.class);
+		intent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
+		// Use an array and EXTRA_APPWIDGET_IDS instead of
+		// AppWidgetManager.EXTRA_APPWIDGET_ID,
+		// since it seems the onUpdate() is only fired on that:
+		intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, Mirakel.widgets);
+		sendBroadcast(intent);
 	}
 
 }

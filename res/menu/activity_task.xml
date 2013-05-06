@@ -21,19 +21,27 @@
     <item
         android:id="@+id/menu_delete"
         android:icon="@android:drawable/ic_menu_delete"
-          android:title="@string/menu_delete"
-          android:showAsAction="ifRoom|withText" />
-        
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/menu_delete"/>
     <item
         android:id="@+id/menu_move"
         android:icon="@android:drawable/ic_menu_set_as"
-          android:title="@string/menu_move"
-          android:showAsAction="ifRoom|withText" />
-        
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/menu_move"/>
     <item
         android:id="@+id/menu_settings_task"
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/menu_settings"/>
+    <item
+        android:id="@+id/menu_sync_now_task"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/action_sync_now"/>
+    <item
+        android:id="@+id/menu_credits_task"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/action_credits"/>
 
 </menu>

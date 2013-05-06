@@ -36,7 +36,7 @@
     <!-- @TODO Picture -->
     
     <!-- Buttons -->
-    <Button 
+    <!-- <Button 
         android:id="@+id/home_official_server"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -45,11 +45,19 @@
         android:id="@+id/home_own_server"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/home_button_own"/>
-    <Button 
-        android:id="@+id/home_offline"
+        android:text="@string/home_button_own"/>-->
+
+    <CheckBox
+        android:id="@+id/use_server"
+        android:layout_marginLeft="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/home_button_offline"/>
+        android:text="@string/use_server" />
+
+    <Button
+        android:id="@+id/Start"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/start" />
 
 </LinearLayout>

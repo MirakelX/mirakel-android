@@ -16,18 +16,20 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package de.azapps.mirakel.receivers;
+package de.azapps.mirakel.static_activities;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import de.azapps.mirakel.services.NotificationService;
+import android.app.Activity;
+import android.os.Bundle;
 
-public class BootUpReceiver extends BroadcastReceiver {
+public class SettingsActivity extends Activity {
 
 	@Override
-	public void onReceive(Context context, Intent arg1) {
-		NotificationService.updateNotificationAndWidget(context);
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		// Display the fragment as the main content.
+		getFragmentManager().beginTransaction()
+				.replace(android.R.id.content, new SettingsFragment()).commit();
 	}
 
 }

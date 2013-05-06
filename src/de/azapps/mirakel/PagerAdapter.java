@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Mirakel is an Android App for Managing your ToDo-Lists
+ * Mirakel is an Android App for managing your ToDo-Lists
  * 
  * Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
  * 

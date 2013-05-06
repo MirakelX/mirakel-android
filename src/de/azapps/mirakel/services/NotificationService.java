@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Mirakel is an Android App for Managing your ToDo-Lists
+ * Mirakel is an Android App for managing your ToDo-Lists
  * 
  * Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
  * 
@@ -18,16 +18,9 @@
  ******************************************************************************/
 package de.azapps.mirakel.services;
 
+import java.text.ParseException;
 import java.util.List;
 
-import de.azapps.mirakel.List_mirakle;
-import de.azapps.mirakel.ListsDataSource;
-import de.azapps.mirakel.MainActivity;
-import de.azapps.mirakel.MainWidgetProvider;
-import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.R;
-import de.azapps.mirakel.Task;
-import de.azapps.mirakel.TasksDataSource;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -39,11 +32,17 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.R;
+import de.azapps.mirakel.main_activity.MainActivity;
+import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.widget.MainWidgetProvider;
 
 public class NotificationService extends Service {
+	private static final String TAG = "NotificationService";
 	private SharedPreferences preferences;
-	private TasksDataSource taskDataSource;
-	private ListsDataSource listDataSource;
 	private boolean existsNotification = false;
 	public static NotificationService notificationService;
 
@@ -57,10 +56,6 @@ public class NotificationService extends Service {
 	public void onCreate() {
 		preferences = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
-		listDataSource = new ListsDataSource(getApplicationContext());
-		listDataSource.open();
-		taskDataSource = new TasksDataSource(getApplicationContext());
-		taskDataSource.open();
 		notifier();
 		NotificationService.setNotificationService(this);
 	}
@@ -73,8 +68,14 @@ public class NotificationService extends Service {
 				&& !existsNotification) {
 			return;
 		}
-		int listId = Integer.parseInt(preferences.getString(
-				"notificationsList", "" + Mirakel.LIST_DAILY));
+		int listId =0;
+		try{
+			listId = Integer.parseInt(preferences.getString(
+				"notificationsList", "" + SpecialList.first()));
+		}catch(NumberFormatException e){
+			Log.e(TAG,"cannot parse list");
+			return;
+		}
 		// Set onClick Intent
 		Intent intent = new Intent(this, MainActivity.class);
 		intent.setAction(MainActivity.SHOW_LIST);
@@ -82,49 +83,21 @@ public class NotificationService extends Service {
 		PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
 		// Get the data
-		List_mirakle todayList = listDataSource.getList(listId);
-		List<Task> todayTasks = taskDataSource.getTasks(todayList,
-				todayList.getSortBy());
+		ListMirakel todayList = ListMirakel.getList(listId);
+		List<Task> todayTasks = todayList.tasks();
 		String notificationTitle;
 		String notificationText;
 		if (todayTasks.size() == 0) {
 			notificationTitle = getString(R.string.notification_title_empty);
 			notificationText = "";
 		} else {
-			switch (listId) {
-			case Mirakel.LIST_ALL:
-				if (todayTasks.size() == 1)
-					notificationTitle = getString(R.string.notification_title_all_single);
-				else
-					notificationTitle = String.format(
-							getString(R.string.notification_title_all),
-							todayTasks.size());
-				break;
-			case Mirakel.LIST_DAILY:
-				if (todayTasks.size() == 1)
-					notificationTitle = getString(R.string.notification_title_daily_single);
-				else
-					notificationTitle = String.format(
-							getString(R.string.notification_title_daily),
-							todayTasks.size());
-				break;
-			case Mirakel.LIST_WEEKLY:
-				if (todayTasks.size() == 1)
-					notificationTitle = getString(R.string.notification_title_weekly_single);
-				else
-					notificationTitle = String.format(
-							getString(R.string.notification_title_weekly),
-							todayTasks.size());
-				break;
-			default:
-				if (todayTasks.size() == 1)
-					notificationTitle = getString(R.string.notification_title_general_single);
-				else
-					notificationTitle = String.format(
-							getString(R.string.notification_title_general),
-							todayTasks.size(), todayList.getName());
+			if (todayTasks.size() == 1)
+				notificationTitle = getString(R.string.notification_title_general_single);
+			else
+				notificationTitle = String.format(
+						getString(R.string.notification_title_general),
+						todayTasks.size(), todayList.getName());
 
-			}
 			notificationText = todayTasks.get(0).getName();
 		}
 

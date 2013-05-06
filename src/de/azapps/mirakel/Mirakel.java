@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Mirakel is an Android App for Managing your ToDo-Lists
+ * Mirakel is an Android App for managing your ToDo-Lists
  * 
  * Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
  * 
@@ -23,25 +23,31 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
 import android.util.Log;
+import de.azapps.mirakel.model.DatabaseHelper;
+import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.model.task.Task;
 
 public class Mirakel extends Application {
-	public static final int LIST_ALL = 0;
-	public static final int LIST_DAILY = -1;
-	public static final int LIST_WEEKLY = -2;
 	public static final int[] PRIO_COLOR = { Color.parseColor("#008000"),
 			Color.parseColor("#00c400"), Color.parseColor("#3377FF"),
 			Color.parseColor("#FF7700"), Color.parseColor("#FF3333") };
-	public static final short SORT_BY_OPT = 0, SORT_BY_DUE = 1,
-			SORT_BY_PRIO = 2, SORT_BY_ID = 3;
 
 	public final static short SYNC_STATE_NOTHING = 0;
 	public final static short SYNC_STATE_DELETE = -1;
 	public final static short SYNC_STATE_ADD = 1;
 	public final static short SYNC_STATE_NEED_SYNC = 2;
-	public static final int DATABASE_VERSION = 3;
+	public final static short SYNC_STATE_IS_SYNCED = 3;
+	
+	public static final int DATABASE_VERSION = 6;
+	
+	public static final String ACCOUNT_TYP="de.azapps.mirakel";
+	public static final String AUTHORITY_TYP="de.azapps.mirakel.provider";
+	public static final String BUNDLE_SERVER_URL="url";
+
 	public static int widgets[] = {};
 
-	public class Http_Mode {
+	public class HttpMode {
 		final public static int GET = 0;
 		final public static int POST = 1;
 		final public static int PUT = 2;
@@ -52,12 +58,24 @@ public class Mirakel extends Application {
 
 	private static SQLiteOpenHelper openHelper;
 
+
 	@Override
 	public void onCreate() {
 		Log.d(TAG, "onCreate");
 		super.onCreate();
 		openHelper = new DatabaseHelper(this);
 		Mirakel.getWritableDatabase().execSQL("PRAGMA foreign_keys=ON;");
+		ListMirakel.init(getApplicationContext());
+		Task.init(getApplicationContext());
+		SpecialList.init(getApplicationContext());
+	}
+	
+	@Override
+	public void onTerminate() {
+		super.onTerminate();
+		ListMirakel.close();
+		Task.close();
+		SpecialList.close();
 	}
 
 	public static SQLiteDatabase getWritableDatabase() {

@@ -16,18 +16,31 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package de.azapps.mirakel.receivers;
+package de.azapps.mirakel;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import de.azapps.mirakel.services.NotificationService;
+public class Pair<F,S> {
 
-public class BootUpReceiver extends BroadcastReceiver {
+	  private final F left;
+	  private final S right;
 
-	@Override
-	public void onReceive(Context context, Intent arg1) {
-		NotificationService.updateNotificationAndWidget(context);
+	  public Pair(F left, S right) {
+	    this.left = left;
+	    this.right = right;
+	  }
+
+	  public F getLeft() { return left; }
+	  public S getRight() { return right; }
+
+	  @Override
+	  public int hashCode() { return left.hashCode() ^ right.hashCode(); }
+
+	  @Override
+	  public boolean equals(Object o) {
+	    if (o == null) return false;
+	    if (!(o instanceof Pair)) return false;
+	    Pair<F,S> pairo = (Pair) o;
+	    return this.left.equals(pairo.getLeft()) &&
+	           this.right.equals(pairo.getRight());
+	  }
+
 	}
-
-}
