@@ -163,12 +163,20 @@ public class TasksFragment extends Fragment {
 	}
 
 	public void update(){
-		update(-1);
+		update(true);
 	}
-	public void update(final int pos) {
+	public void update(boolean reset) {
 		if (!created)
 			return;
 		final List<Task> values = main.getCurrentList().tasks();
+		if(adapter!=null) {
+			adapter.changeData(values);
+			adapter.notifyDataSetChanged();
+
+			if(reset)
+				setScrollPosition(0);
+			return;
+		}
 		final ListView listView = (ListView) view.findViewById(R.id.tasks_list);
 		AsyncTask<Void, Void, TaskAdapter> task = new AsyncTask<Void, Void, TaskAdapter>() {
 			@Override
@@ -231,8 +239,6 @@ public class TasksFragment extends Fragment {
 			@Override
 			protected void onPostExecute(TaskAdapter adapter) {
 				listView.setAdapter(adapter);
-				if(pos>=0)
-				setScrollPosition(pos);
 			}
 		};
 
@@ -309,19 +315,13 @@ public class TasksFragment extends Fragment {
 		listView.onRestoreInstanceState(state);
 	}
 
-	public int getScrollPosition() {
-		Log.e("Blubb", "get" + listView.getFirstVisiblePosition());
-		return listView == null ? 0 : listView.getFirstVisiblePosition();
-	}
-
 	public void setScrollPosition(int pos) {
 		if (listView == null)
 			return;
-		Log.e("Blubb", pos + "");
 		if (listView.getCount() > pos)
-			listView.setSelection(pos);
+			listView.setSelectionFromTop(pos,0);
 		else
-			listView.setSelection(0);
+			listView.setSelectionFromTop(0,0);
 	}
 
 }

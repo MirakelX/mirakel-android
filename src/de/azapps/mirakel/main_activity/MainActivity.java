@@ -364,7 +364,6 @@ public class MainActivity extends FragmentActivity implements
 		} else if (currentPosition == LIST_FRAGMENT) {
 			listState = listFragment.getState();
 		}
-		currentPosition = position;
 		switch (position) {
 		case 0:
 			newmenu = R.menu.activity_list;
@@ -375,7 +374,7 @@ public class MainActivity extends FragmentActivity implements
 		case 1:
 			newmenu = R.menu.tasks;
 			this.setTitle(currentList.getName());
-			if (tasksState != null)
+			if (tasksState != null && currentPosition!=LIST_FRAGMENT)
 				tasksFragment.setState(tasksState);
 			break;
 		case 2:
@@ -388,6 +387,7 @@ public class MainActivity extends FragmentActivity implements
 					Toast.LENGTH_LONG).show();
 			return;
 		}
+		currentPosition = position;
 
 		// Configure to use the desired menu
 
@@ -456,7 +456,7 @@ public class MainActivity extends FragmentActivity implements
 			currentTask = task;
 			taskFragment.update();
 		}
-		tasksFragment.update(tasksFragment.getScrollPosition());
+		tasksFragment.update(false);
 		listFragment.update();
 		NotificationService.updateNotificationAndWidget(this);
 	}

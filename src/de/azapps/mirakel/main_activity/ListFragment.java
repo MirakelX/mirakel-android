@@ -73,6 +73,12 @@ public class ListFragment extends Fragment {
 			return;
 		final List<ListMirakel> values = ListMirakel.all();
 
+		if(adapter!=null) {
+			adapter.changeData(values);
+			adapter.notifyDataSetChanged();
+			return;
+		}
+
 		adapter = new ListAdapter(this.getActivity(), R.layout.lists_row,
 				values);
 		listView = (DragNDropListView) view.findViewById(R.id.lists_list);
@@ -158,8 +164,6 @@ public class ListFragment extends Fragment {
 				AlertDialog dialog = builder.create();
 				dialog.show();
 				
-				/*ListMirakel list = values.get((int) id);
-				editList(list);*/
 				return false;
 			}
 		});

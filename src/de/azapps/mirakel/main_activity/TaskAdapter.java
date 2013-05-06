@@ -61,6 +61,12 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 	 */
 	void addToHead(Task task) {
 		data.add(0, task);
+		
+	}
+	
+	void changeData(List<Task> tasks) {
+		data.clear();
+		data.addAll(tasks);
 	}
 
 	@Override
@@ -90,6 +96,8 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 			holder = (TaskHolder) row.getTag();
 		}
 
+		if(position>=data.size())
+			return row;
 		Task task = data.get(position);
 
 		// Done

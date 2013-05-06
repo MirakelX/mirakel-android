@@ -31,6 +31,7 @@ import android.widget.TextView;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.task.Task;
 
 public class ListAdapter extends ArrayAdapter<ListMirakel> {
 	private static final String TAG = "ListAdapter";
@@ -45,6 +46,12 @@ public class ListAdapter extends ArrayAdapter<ListMirakel> {
 		this.data = data;
 		this.context = context;
 	}
+
+	void changeData(List<ListMirakel> lists) {
+		data.clear();
+		data.addAll(lists);
+	}
+
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
