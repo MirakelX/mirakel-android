@@ -148,7 +148,7 @@ public class Task extends TaskBase {
 		values.put("list_id", list_id);
 		values.put("content", content);
 		values.put("done", done);
-		values.put("due", (due == null ? "0" : due.toString()));
+		values.put("due", (due == null ? null : due.toString()));
 		values.put("priority", priority);
 		values.put("sync_state", Mirakel.SYNC_STATE_ADD);
 		values.put("created_at",
