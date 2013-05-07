@@ -18,7 +18,6 @@
  ******************************************************************************/
 package de.azapps.mirakel.services;
 
-import java.text.ParseException;
 import java.util.List;
 
 import android.app.NotificationManager;

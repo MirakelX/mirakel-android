@@ -22,7 +22,6 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,10 +31,9 @@ import android.widget.TextView;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.list.ListMirakel;
-import de.azapps.mirakel.model.task.Task;
 
 public class ListAdapter extends ArrayAdapter<ListMirakel> {
-	private static final String TAG = "ListAdapter";
+	//private static final String TAG = "ListAdapter";
 	private boolean enableDrop;
 	private Context context;
 	private int layoutResourceId;
@@ -107,6 +105,10 @@ public class ListAdapter extends ArrayAdapter<ListMirakel> {
 
 	public void setEnableDrop(boolean enableDrop) {
 		this.enableDrop = enableDrop;
+	}
+	
+	public boolean isDropEnabled(){
+		return enableDrop;
 	}
 
 	static class ListHolder {

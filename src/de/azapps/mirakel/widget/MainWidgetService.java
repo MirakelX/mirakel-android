@@ -46,6 +46,7 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	private Context mContext;
 	private List<Task> tasks;
 	private int listId = 0;
+	@SuppressWarnings("unused")
 	private int sorting;
 	private boolean showDone;
 

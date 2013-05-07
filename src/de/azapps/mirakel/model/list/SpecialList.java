@@ -61,7 +61,7 @@ public class SpecialList extends ListMirakel {
 
 	// Static Methods
 	public static final String TABLE = "special_lists";
-	private static final String TAG = "TasksDataSource";
+	//private static final String TAG = "TasksDataSource";
 	private static SQLiteDatabase database;
 	private static DatabaseHelper dbHelper;
 	private static final String[] allColumns = { "_id", "name", "whereQuery",

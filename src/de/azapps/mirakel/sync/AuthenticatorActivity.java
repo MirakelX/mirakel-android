@@ -53,7 +53,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -101,7 +100,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
     private Boolean mConfirmCredentials = false;
 
     /** for posting authentication attempts back to UI thread */
-    private final Handler mHandler = new Handler();
+    //private final Handler mHandler = new Handler();
 
     private TextView mMessage;
 
@@ -345,7 +344,9 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
     /**
      * Shows the progress UI for a lengthy operation.
      */
-    private void showProgress() {
+    //TODO Fix This!!
+    @SuppressWarnings("deprecation")
+	private void showProgress() {
         showDialog(0);
     }
 

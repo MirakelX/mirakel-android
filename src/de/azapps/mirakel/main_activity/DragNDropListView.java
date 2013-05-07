@@ -1,7 +1,6 @@
 package de.azapps.mirakel.main_activity;
 
 import de.azapps.mirakel.model.list.SpecialList;
-import android.R;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;

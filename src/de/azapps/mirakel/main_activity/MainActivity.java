@@ -349,7 +349,7 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	private int currentPosition = 1;
-	private int scrollYTasks = 0;
+	//private int scrollYTasks = 0;
 	private Parcelable tasksState, listState;
 
 	@Override

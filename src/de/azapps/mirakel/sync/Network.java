@@ -154,8 +154,7 @@ public class Network extends AsyncTask<String, Integer, String> {
 			myurl+="?authentication_key="+Token;
 		}
 		if(myurl.indexOf("https")==-1){
-			//myurl=myurl.replace("http://", "https://");
-			Toast.makeText(context, context.getString(R.string.no_https), Toast.LENGTH_LONG);
+			Toast.makeText(context, context.getString(R.string.no_https), Toast.LENGTH_LONG).show();
 		}
 		HttpParams params = new BasicHttpParams();
 		params.setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
