@@ -38,7 +38,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.list.ListMirakel;
-import de.azapps.mirakel.model.task.Task;
 
 public class ListFragment extends Fragment {
 	//private static final String TAG = "ListsActivity";
@@ -80,12 +79,11 @@ public class ListFragment extends Fragment {
 			return;
 		final List<ListMirakel> values = ListMirakel.all();
 
-		/*if(adapter!=null) {
+		if(adapter!=null&&enableDrag==adapter.isDropEnabled()) {
 			adapter.changeData(values);
-			adapter.setEnableDrop(enableDrag);
 			adapter.notifyDataSetChanged();
 			return;
-		}*/
+		}
 
 		adapter = new ListAdapter(this.getActivity(), R.layout.lists_row,
 				values,enableDrag);
