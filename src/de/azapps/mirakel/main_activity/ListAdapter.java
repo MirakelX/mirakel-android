@@ -27,6 +27,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
@@ -35,16 +36,18 @@ import de.azapps.mirakel.model.task.Task;
 
 public class ListAdapter extends ArrayAdapter<ListMirakel> {
 	private static final String TAG = "ListAdapter";
-	Context context;
-	int layoutResourceId;
-	List<ListMirakel> data = null;
+	private boolean enableDrop;
+	private Context context;
+	private int layoutResourceId;
+	private List<ListMirakel> data = null;
 
 	public ListAdapter(Context context, int layoutResourceId,
-			List<ListMirakel> data) {
+			List<ListMirakel> data,boolean enable) {
 		super(context, layoutResourceId, layoutResourceId, data);
 		this.layoutResourceId = layoutResourceId;
 		this.data = data;
 		this.context = context;
+		this.enableDrop=enable;
 	}
 
 	void changeData(List<ListMirakel> lists) {
@@ -66,11 +69,14 @@ public class ListAdapter extends ArrayAdapter<ListMirakel> {
 					.findViewById(R.id.list_row_name);
 			holder.listRowTaskNumber = (TextView) row
 					.findViewById(R.id.list_row_task_number);
+			holder.listRowDrag=(ImageView)row.findViewById(R.id.list_row_drag);
 
 			row.setTag(holder);
 		} else {
 			holder = (ListHolder) row.getTag();
 		}
+		if(!enableDrop)
+			holder.listRowDrag.setVisibility(View.GONE);
 		ListMirakel list = data.get(position);
 		holder.listRowName.setText(list.getName());
 		holder.listRowName.setTag(list);
@@ -98,8 +104,14 @@ public class ListAdapter extends ArrayAdapter<ListMirakel> {
 		data.add(to,t);
 	}
 	
+
+	public void setEnableDrop(boolean enableDrop) {
+		this.enableDrop = enableDrop;
+	}
+
 	static class ListHolder {
 		TextView listRowName;
 		TextView listRowTaskNumber;
+		ImageView listRowDrag;
 	}
 }

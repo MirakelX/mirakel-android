@@ -194,6 +194,11 @@ public class MainActivity extends FragmentActivity implements
 			listFragment.update();
 			listFragment.editList(list);
 			return true;
+		case R.id.menu_sort_lists:
+			boolean t=!item.isChecked();
+			listFragment.enable_drop(t);
+			item.setChecked(t);
+			return true;
 		case R.id.menu_settings_list:
 		case R.id.menu_settings_task:
 		case R.id.menu_settings_tasks:
@@ -372,6 +377,7 @@ public class MainActivity extends FragmentActivity implements
 				listFragment.setState(listState);
 			break;
 		case 1:
+			listFragment.enable_drop(false);
 			newmenu = R.menu.tasks;
 			this.setTitle(currentList.getName());
 			if (tasksState != null && currentPosition!=LIST_FRAGMENT)

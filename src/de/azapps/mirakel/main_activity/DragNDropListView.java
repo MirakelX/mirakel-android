@@ -1,6 +1,7 @@
 package de.azapps.mirakel.main_activity;
 
 import de.azapps.mirakel.model.list.SpecialList;
+import android.R;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
@@ -19,6 +20,7 @@ public class DragNDropListView extends ListView {
 	private static final String TAG = "DragNDropListView";
 
 	boolean mDragMode;
+	private boolean enableDrag;
 
 	int SpecialListCount;
 	
@@ -33,6 +35,11 @@ public class DragNDropListView extends ListView {
 	RemoveListener mRemoveListener;
 	DragListener mDragListener;
 	
+
+	public void setEnableDrag(boolean enableDrag) {
+		this.enableDrag = enableDrag;
+	}
+
 	public DragNDropListView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
@@ -55,11 +62,11 @@ public class DragNDropListView extends ListView {
 		final int x = (int) ev.getX();
 		final int y = (int) ev.getY();	
 		
-		if (action == MotionEvent.ACTION_DOWN && x < this.getWidth()/2) {
+		if (action == MotionEvent.ACTION_DOWN && x < 100) {//width<~imagewidth
 			mDragMode = true;
 		}
 
-		if (!mDragMode) 
+		if (!mDragMode||!enableDrag) 
 			return super.onTouchEvent(ev);
 
 		switch (action) {
