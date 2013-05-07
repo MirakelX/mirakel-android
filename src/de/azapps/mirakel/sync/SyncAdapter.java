@@ -362,8 +362,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					DateFormat df = new SimpleDateFormat(
 							mContext.getString(R.string.dateTimeFormat),
 							Locale.US);// use ASCII-Formating
+					DateFormat f = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'Z'",
+							Locale.US);
 					try {
-						if (df.parse(list.getUpdatedAt()).getTime() > df
+						if (df.parse(list.getUpdatedAt()).getTime() > f
 								.parse(list_server.getUpdatedAt()).getTime()) {
 							// local list newer,
 							sync_list(list);
@@ -587,8 +589,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					DateFormat df = new SimpleDateFormat(
 							mContext.getString(R.string.dateTimeFormat),
 							Locale.US);// use ASCII-Formating
+					DateFormat f = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'Z'",
+							Locale.US);
 					try {
-						if (df.parse(task.getUpdated_at()).getTime() > df
+						if (df.parse(task.getUpdated_at()).getTime() > f
 								.parse(task_server.getUpdated_at()).getTime()) {
 							// local task newer, push to server
 							sync_task(task);
