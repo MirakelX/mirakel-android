@@ -252,8 +252,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         	b.putString("url", url);
             mAccountManager.addAccountExplicitly(account, mPassword, b);
             // Set contacts sync for this account.
-            ContentResolver.setIsSyncable(account,Mirakel.AUTHORITY_TYP,1);
-            ContentResolver.setSyncAutomatically(account, Mirakel.AUTHORITY_TYP, true);
         } else {
             mAccountManager.setPassword(account, mPassword);
         }
@@ -265,9 +263,12 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         }
         new Network(new DataDownloadCommand() {
 			@Override
-			public void after_exec(String result) {				
+			public void after_exec(String result) {
+	            ContentResolver.setIsSyncable(account,Mirakel.AUTHORITY_TYP,1);
+	            ContentResolver.setSyncAutomatically(account, Mirakel.AUTHORITY_TYP, true);
 			}
 		}, Mirakel.HttpMode.DELETE, this, null).execute(url+"/tokens/"+token);
+        
         final Intent intent = new Intent();
         intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, mUsername);
         intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, Mirakel.ACCOUNT_TYP);

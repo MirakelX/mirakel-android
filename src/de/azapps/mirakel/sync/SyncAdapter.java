@@ -35,6 +35,8 @@
  */
 package de.azapps.mirakel.sync;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -44,6 +46,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -269,7 +272,14 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	 */
 	public void add_list(final ListMirakel list) {
 		List<BasicNameValuePair> data = new ArrayList<BasicNameValuePair>();
-		data.add(new BasicNameValuePair("list[name]", list.getName()));
+		try {
+			data.add(new BasicNameValuePair("list[name]", URLEncoder.encode(list.getName(), HTTP.ISO_8859_1)));
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+			Log.e(TAG,"Parse error");
+			return;
+		}
 		AddLists.add(new Pair<Network, String>(
 				new Network(new DataDownloadCommand() {
 					@Override
@@ -487,15 +497,21 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	 */
 	protected void add_task(final Task task) {
 		List<BasicNameValuePair> data = new ArrayList<BasicNameValuePair>();
-		data.add(new BasicNameValuePair("task[name]", task.getName()));
-		data.add(new BasicNameValuePair("task[priority]", task.getPriority()
-				+ ""));
-		data.add(new BasicNameValuePair("task[done]", task.isDone() + ""));
-		GregorianCalendar due = task.getDue();
-		data.add(new BasicNameValuePair("task[due]", due == null ? "null"
-				: (new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-						.format(due.getTime()))));
-		data.add(new BasicNameValuePair("task[content]", task.getContent()));
+		try {
+			data.add(new BasicNameValuePair("task[name]", URLEncoder.encode(task.getName(),HTTP.ISO_8859_1)));
+			data.add(new BasicNameValuePair("task[priority]", URLEncoder.encode(task.getPriority()
+					+ "",HTTP.ISO_8859_1)));
+			data.add(new BasicNameValuePair("task[done]", URLEncoder.encode(task.isDone() + "",HTTP.ISO_8859_1)));
+			GregorianCalendar due = task.getDue();
+			data.add(new BasicNameValuePair("task[due]", URLEncoder.encode(due == null ? "null"
+					: (new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+							.format(due.getTime())),HTTP.ISO_8859_1)));
+			data.add(new BasicNameValuePair("task[content]", URLEncoder.encode(task.getContent(),HTTP.ISO_8859_1)));
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			Log.e(TAG,"Parse Exeption");
+			return;
+		}
 
 		AddTasks.add(new Pair<Network, String>(
 				new Network(new DataDownloadCommand() {
