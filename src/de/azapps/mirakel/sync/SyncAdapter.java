@@ -272,14 +272,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	 */
 	public void add_list(final ListMirakel list) {
 		List<BasicNameValuePair> data = new ArrayList<BasicNameValuePair>();
-		try {
-			data.add(new BasicNameValuePair("list[name]", URLEncoder.encode(list.getName(), HTTP.ISO_8859_1)));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
-			Log.e(TAG,"Parse error");
-			return;
-		}
+			data.add(new BasicNameValuePair("list[name]", list.getName()));
 		AddLists.add(new Pair<Network, String>(
 				new Network(new DataDownloadCommand() {
 					@Override
@@ -497,21 +490,16 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	 */
 	protected void add_task(final Task task) {
 		List<BasicNameValuePair> data = new ArrayList<BasicNameValuePair>();
-		try {
-			data.add(new BasicNameValuePair("task[name]", URLEncoder.encode(task.getName(),HTTP.ISO_8859_1)));
-			data.add(new BasicNameValuePair("task[priority]", URLEncoder.encode(task.getPriority()
-					+ "",HTTP.ISO_8859_1)));
-			data.add(new BasicNameValuePair("task[done]", URLEncoder.encode(task.isDone() + "",HTTP.ISO_8859_1)));
+			data.add(new BasicNameValuePair("task[name]", task.getName()));
+			data.add(new BasicNameValuePair("task[priority]", task.getPriority()
+					+ ""));
+			data.add(new BasicNameValuePair("task[done]", task.isDone() + ""));
 			GregorianCalendar due = task.getDue();
-			data.add(new BasicNameValuePair("task[due]", URLEncoder.encode(due == null ? "null"
+			data.add(new BasicNameValuePair("task[due]", due == null ? "null"
 					: (new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-							.format(due.getTime())),HTTP.ISO_8859_1)));
-			data.add(new BasicNameValuePair("task[content]", URLEncoder.encode(task.getContent(),HTTP.ISO_8859_1)));
-		} catch (UnsupportedEncodingException e1) {
-			// TODO Auto-generated catch block
-			Log.e(TAG,"Parse Exeption");
-			return;
-		}
+							.format(due.getTime()))));
+			data.add(new BasicNameValuePair("task[content]", task.getContent()));
+
 
 		AddTasks.add(new Pair<Network, String>(
 				new Network(new DataDownloadCommand() {

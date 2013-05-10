@@ -163,7 +163,7 @@ public class Network extends AsyncTask<String, Integer, String> {
 		HttpConnectionParams.setTcpNoDelay(params, true);
 		DefaultHttpClient client=new DefaultHttpClient(params);
 		HttpClient httpClient=sslClient(client);
-		httpClient.getParams().setParameter("http.protocol.content-charset", HTTP.ISO_8859_1);
+		httpClient.getParams().setParameter("http.protocol.content-charset", HTTP.UTF_8);
 
 		HttpResponse response;
 		try{
@@ -178,14 +178,14 @@ public class Network extends AsyncTask<String, Integer, String> {
 				Log.v(TAG,"PUT "+myurl);
 				HttpPut put = new HttpPut();
 				put.setURI(new URI(myurl));
-				put.setEntity(new UrlEncodedFormEntity(HeaderData,HTTP.ISO_8859_1));
+				put.setEntity(new UrlEncodedFormEntity(HeaderData,HTTP.UTF_8));
 				response=httpClient.execute(put);
 				break;
 			case Mirakel.HttpMode.POST:
 				Log.v(TAG,"POST "+myurl);
 				HttpPost post = new HttpPost();
 				post.setURI(new URI(myurl));
-				post.setEntity(new UrlEncodedFormEntity(HeaderData,HTTP.ISO_8859_1));
+				post.setEntity(new UrlEncodedFormEntity(HeaderData,HTTP.UTF_8));
 				response=httpClient.execute(post);
 				break;
 			case Mirakel.HttpMode.DELETE:
