@@ -337,31 +337,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	 */
 	protected void merge_with_server(ListMirakel[] lists_server) {
 		for (ListMirakel list_server : lists_server) {
+			list_server.setUpdatedAt(list_server.getUpdatedAt().substring(0,13)+list_server.getUpdatedAt().substring(14,16)+list_server.getUpdatedAt().substring(17));
+			list_server.setCreatedAt(list_server.getCreatedAt().substring(0,13)+list_server.getCreatedAt().substring(14,16)+list_server.getCreatedAt().substring(17));
 			ListMirakel list = ListMirakel.getListForSync(list_server.getId());
 			if (list == null) {
-				list_server.setSyncState(Mirakel.SYNC_STATE_IS_SYNCED);
-				long id = Mirakel.getWritableDatabase()
-						.insert(ListMirakel.TABLE, null,
-								list_server.getContentValues());
-				// TODO Get this from server!!
-				Cursor c = Mirakel.getReadableDatabase().rawQuery(
-						"Select max(lft),max(rgt) from " + ListMirakel.TABLE
-								+ " where not sync_state="
-								+ Mirakel.SYNC_STATE_DELETE, null);
-				c.moveToFirst();
-				int lft = 0, rgt = 0;
-				if (c.getCount() != 0) {
-					lft = c.getInt(0) + 2;
-					rgt = c.getInt(1) + 2;
-				}
-				c.close();
-				ContentValues values = new ContentValues();
-				values.put("_id", list_server.getId());
-				values.put("sync_state", Mirakel.SYNC_STATE_IS_SYNCED);
-				values.put("lft", lft);
-				values.put("rgt", rgt);
-				Mirakel.getWritableDatabase().update(ListMirakel.TABLE, values,
-						"_id=" + id, null);
+				if(Mirakel.DEBUG)
+					Log.d(TAG,"add list from Server");
+				addListFromServer(list_server);
 				continue;
 			} else {
 				if (list.getSyncState() == Mirakel.SYNC_STATE_NOTHING
@@ -369,15 +351,19 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					DateFormat df = new SimpleDateFormat(
 							mContext.getString(R.string.dateTimeFormat),
 							Locale.US);// use ASCII-Formating
-					DateFormat f = new SimpleDateFormat(
-							"yyyy-MM-dd'T'hh:mm:ss'Z'", Locale.US);
 					try {
-						if (df.parse(list.getUpdatedAt()).getTime() > f.parse(
+						if (df.parse(list.getUpdatedAt()).getTime() > df.parse(
 								list_server.getUpdatedAt()).getTime()) {
+							if(Mirakel.DEBUG)
+								Log.d(TAG,"Sync List to server");
 							// local list newer,
 							sync_list(list);
 						} else {
+							if(Mirakel.DEBUG)
+								Log.d(TAG,"Sync List from server");
 							// server list newer
+							list_server.setLft(list.getLft());
+							list_server.setRgt(list.getRgt());
 							list_server
 									.setSyncState(Mirakel.SYNC_STATE_IS_SYNCED);
 							list_server.save();
@@ -412,7 +398,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 							c.moveToPrevious();
 						}
 						c.close();
-						list_server.save();
+						if(Mirakel.DEBUG)
+							Log.d(TAG,"Move list+Add list from server");
+						addListFromServer(list_server);
+						//list_server.save();
 					}
 				} else {
 					Log.wtf(TAG, "Syncronisation Error, Listmerge");
@@ -429,6 +418,32 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				"Update " + ListMirakel.TABLE + " set sync_state="
 						+ Mirakel.SYNC_STATE_NOTHING + " where sync_state="
 						+ Mirakel.SYNC_STATE_IS_SYNCED);
+	}
+
+	private void addListFromServer(ListMirakel list_server) {
+		list_server.setSyncState(Mirakel.SYNC_STATE_IS_SYNCED);
+		long id = Mirakel.getWritableDatabase()
+				.insert(ListMirakel.TABLE, null,
+						list_server.getContentValues());
+		// TODO Get this from server!!
+		Cursor c = Mirakel.getReadableDatabase().rawQuery(
+				"Select max(lft),max(rgt) from " + ListMirakel.TABLE
+						+ " where not sync_state="
+						+ Mirakel.SYNC_STATE_DELETE, null);
+		c.moveToFirst();
+		int lft = 0, rgt = 0;
+		if (c.getCount() != 0) {
+			lft = c.getInt(0) + 2;
+			rgt = c.getInt(1) + 2;
+		}
+		c.close();
+		ContentValues values = new ContentValues();
+		values.put("_id", list_server.getId());
+		values.put("sync_state", Mirakel.SYNC_STATE_IS_SYNCED);
+		values.put("lft", lft);
+		values.put("rgt", rgt);
+		Mirakel.getWritableDatabase().update(ListMirakel.TABLE, values,
+				"_id=" + id, null);
 	}
 
 	// TASKS
@@ -567,24 +582,14 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		if (tasks_server == null)
 			return;
 		for (Task task_server : tasks_server) {
+			//task_server.setUpdatedAt(task_server.getUpdated_at().substring(0,13)+task_server.getUpdated_at().substring(13,16)+task_server.getUpdated_at().substring(16));
+			//task_server.setCreatedAt(task_server.getCreated_at().substring(0,13)+task_server.getCreated_at().substring(13,16)+task_server.getCreated_at().substring(16));
 			Task task = Task.getToSync(task_server.getId());
 			if (task == null) {
 				// New Task from server, add to db
-				task_server.setSyncState(Mirakel.SYNC_STATE_IS_SYNCED);
-				long id = Mirakel.getWritableDatabase().insert(Task.TABLE,
-						null, task_server.getContentValues());
-				if (id > task_server.getId()) {
-					long diff = id - task_server.getId();
-					Mirakel.getWritableDatabase().execSQL(
-							"UPDATE " + Task.TABLE + " SET _id=_id+" + diff
-									+ " WHERE sync_state="
-									+ Mirakel.SYNC_STATE_ADD + "and _id>"
-									+ task_server.getId());
-				}
-				ContentValues values = new ContentValues();
-				values.put("_id", task_server.getId());
-				Mirakel.getWritableDatabase().update(Task.TABLE, values,
-						"_id=" + id, null);
+				if(Mirakel.DEBUG)
+					Log.d(TAG,"Add task from server to list "+task_server.getList().getId());
+				addTaskFromServer(task_server);
 				continue;
 			} else {
 				if (task.getSync_state() == Mirakel.SYNC_STATE_NEED_SYNC
@@ -592,15 +597,17 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					DateFormat df = new SimpleDateFormat(
 							mContext.getString(R.string.dateTimeFormat),
 							Locale.US);// use ASCII-Formating
-					DateFormat f = new SimpleDateFormat(
-							"yyyy-MM-dd'T'hh:mm:ss'Z'", Locale.US);
 					try {
-						if (df.parse(task.getUpdated_at()).getTime() > f.parse(
+						if (df.parse(task.getUpdated_at()).getTime() > df.parse(
 								task_server.getUpdated_at()).getTime()) {
 							// local task newer, push to server
+							if(Mirakel.DEBUG)
+								Log.d(TAG,"Sync task to server from list "+task.getList().getId());
 							sync_task(task);
 						} else {
 							// server task newer, use this task instated local
+							if(Mirakel.DEBUG)
+								Log.d(TAG,"Sync task from server to list "+task_server.getList().getId());
 							task_server
 									.setSyncState(Mirakel.SYNC_STATE_IS_SYNCED);
 							task_server.save();
@@ -634,7 +641,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 							c.moveToPrevious();
 						}
 						c.close();
-						task_server.save();
+						if(Mirakel.DEBUG)
+							Log.d(TAG,"Move task + add task from server to list "+task_server.getList().getId());
+						addTaskFromServer(task_server);
 					}
 				} else if (task.getSync_state() == Mirakel.SYNC_STATE_DELETE) {
 					// Nothing
@@ -653,6 +662,26 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						+ Mirakel.SYNC_STATE_NOTHING + " where sync_state="
 						+ Mirakel.SYNC_STATE_IS_SYNCED);
 
+	}
+
+	private void addTaskFromServer(Task task_server) {
+
+		//task_server.setUpdatedAt();
+		task_server.setSyncState(Mirakel.SYNC_STATE_IS_SYNCED);
+		long id = Mirakel.getWritableDatabase().insert(Task.TABLE,
+				null, task_server.getContentValues());
+		if (id > task_server.getId()) {
+			long diff = id - task_server.getId();
+			Mirakel.getWritableDatabase().execSQL(
+					"UPDATE " + Task.TABLE + " SET _id=_id+" + diff
+							+ " WHERE sync_state="
+							+ Mirakel.SYNC_STATE_ADD + "and _id>"
+							+ task_server.getId());
+		}
+		ContentValues values = new ContentValues();
+		values.put("_id", task_server.getId());
+		Mirakel.getWritableDatabase().update(Task.TABLE, values,
+				"_id=" + id, null);
 	}
 
 }
