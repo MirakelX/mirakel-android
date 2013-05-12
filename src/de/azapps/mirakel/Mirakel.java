@@ -56,6 +56,8 @@ public class Mirakel extends Application {
 
 	private static final String TAG = "Mirakel";
 
+	public static final boolean DEBUG = false;//Set to false/true to disable/enable debuginglog
+
 	private static SQLiteOpenHelper openHelper;
 
 
