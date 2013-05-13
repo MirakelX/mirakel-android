@@ -317,7 +317,7 @@ public class Task extends TaskBase {
 			if (key.equals("{\"content\"")) {
 				t = new Task();
 				t.setSyncState(Mirakel.SYNC_STATE_NOTHING);
-				if (key_value[1].indexOf("null")<2) {
+				if (key_value[1].indexOf("null")<2&&key_value[1].indexOf("null")>=0) {
 					t.setContent("");
 				} else{
 					t.setContent(key_value[1].substring(1,
@@ -359,7 +359,7 @@ public class Task extends TaskBase {
 				t.setUpdatedAt(key_value.length == 4 ? key_value[1]
 						.substring(1)
 						+ key_value[2]
-						+ key_value[3].substring(0, key_value[3].length() - 2)
+						+ key_value[3].substring(0, key_value[3].length() - 1)
 						: "");
 				tasks.add(t);
 			}
