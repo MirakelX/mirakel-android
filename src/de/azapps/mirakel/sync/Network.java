@@ -64,6 +64,9 @@ public class Network extends AsyncTask<String, Integer, String> {
 	protected int Mode;
 	protected Context context;
 	protected String Token;
+	
+	private static final Integer NoNetwork=1;
+	private static final Integer NoHTTPS=2;
 
 	public Network(DataDownloadCommand commands,int mode,Context context,String Token) {
 		this.commands = commands;
@@ -101,7 +104,7 @@ public class Network extends AsyncTask<String, Integer, String> {
 		} catch (URISyntaxException e) {
 			Log.e(TAG,"Invalid UrlSyntax");
 		}
-		Integer[] t={1};
+		Integer[] t={NoNetwork};
 		publishProgress(t);
 
 		return null;
@@ -109,8 +112,10 @@ public class Network extends AsyncTask<String, Integer, String> {
 	
 	@Override
 	protected void onProgressUpdate(Integer... integers) {
-	  if(integers[0] == 1) {
+	  if(integers[0] == NoNetwork) {
 		  Toast.makeText(context, context.getString(R.string.NoNetwork), Toast.LENGTH_LONG).show(); 
+	  }else if(integers[0]==NoHTTPS){
+		  Toast.makeText(context, context.getString(R.string.no_https), Toast.LENGTH_LONG).show();
 	  }
 	}
 
@@ -155,7 +160,8 @@ public class Network extends AsyncTask<String, Integer, String> {
 			myurl+="?authentication_key="+Token;
 		}
 		if(myurl.indexOf("https")==-1){
-			Toast.makeText(context, context.getString(R.string.no_https), Toast.LENGTH_LONG).show();
+			Integer[] t={NoHTTPS};
+			publishProgress(t);
 		}
 		HttpParams params = new BasicHttpParams();
 		params.setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
