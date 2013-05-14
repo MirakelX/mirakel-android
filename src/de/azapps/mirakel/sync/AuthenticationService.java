@@ -46,22 +46,22 @@ import android.os.IBinder;
  */
 public class AuthenticationService extends Service {
 
-    //private static final String TAG = "AuthenticationService";
+	// private static final String TAG = "AuthenticationService";
 
-    private Authenticator mAuthenticator;
+	private Authenticator mAuthenticator;
 
-    @Override
-    public void onCreate() {
-        mAuthenticator = new Authenticator(this);
-    }
+	@Override
+	public void onCreate() {
+		mAuthenticator = new Authenticator(this);
+	}
 
-    @Override
-    public void onDestroy() {
-    	//Do nothing
-    }
+	@Override
+	public void onDestroy() {
+		// Do nothing
+	}
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        return mAuthenticator.getIBinder();
-    }
+	@Override
+	public IBinder onBind(Intent intent) {
+		return mAuthenticator.getIBinder();
+	}
 }

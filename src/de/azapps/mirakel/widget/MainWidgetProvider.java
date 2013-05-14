@@ -53,7 +53,6 @@ public class MainWidgetProvider extends AppWidgetProvider {
 		for (int appWidgetId : appWidgetIds) {
 			RemoteViews views = new RemoteViews(context.getPackageName(),
 					R.layout.widget_main);
-			
 
 			int listId = Integer.parseInt(preferences.getString("widgetList",
 					SpecialList.first().getId() + ""));
@@ -69,8 +68,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
 			views.setOnClickPendingIntent(R.id.widget_preferences,
 					settingsPendingIntent);
 			// Create an Intent to launch MainActivity and show the List
-			Intent mainIntent = new Intent(context,
-					MainActivity.class);
+			Intent mainIntent = new Intent(context, MainActivity.class);
 			mainIntent.setAction(MainActivity.SHOW_LIST_FROM_WIDGET);
 			mainIntent.putExtra(MainActivity.EXTRA_ID, listId);
 
@@ -101,8 +99,8 @@ public class MainWidgetProvider extends AppWidgetProvider {
 			// should be a sibling
 			// of the collection view.
 			views.setEmptyView(R.id.widget_tasks_list, R.id.empty_view);
-			views.setTextViewText(R.id.widget_list_name, ListMirakel
-					.getList(listId).getName());
+			views.setTextViewText(R.id.widget_list_name,
+					ListMirakel.getList(listId).getName());
 
 			// Here we setup the a pending intent template. Individuals items of
 			// a collection

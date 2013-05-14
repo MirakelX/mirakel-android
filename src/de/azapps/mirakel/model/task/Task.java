@@ -27,19 +27,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.sync.Network;
 
 public class Task extends TaskBase {
 
@@ -66,9 +68,9 @@ public class Task extends TaskBase {
 	 * @param task
 	 */
 	public void save() {
-		setSyncState(getSync_state() == Mirakel.SYNC_STATE_ADD
-				|| getSync_state() == Mirakel.SYNC_STATE_IS_SYNCED ? getSync_state()
-				: Mirakel.SYNC_STATE_NEED_SYNC);
+		setSyncState(getSync_state() == Network.SYNC_STATE.ADD
+				|| getSync_state() == Network.SYNC_STATE.IS_SYNCED ? getSync_state()
+				: Network.SYNC_STATE.NEED_SYNC);
 		setUpdatedAt(new SimpleDateFormat(
 				context.getString(R.string.dateTimeFormat), Locale.getDefault())
 				.format(new Date()));
@@ -83,11 +85,11 @@ public class Task extends TaskBase {
 	 */
 	public void delete() {
 		long id = getId();
-		if (getSync_state() == Mirakel.SYNC_STATE_ADD)
+		if (getSync_state() == Network.SYNC_STATE.ADD)
 			database.delete(TABLE, "_id = " + id, null);
 		else {
 			ContentValues values = new ContentValues();
-			values.put("sync_state", Mirakel.SYNC_STATE_DELETE);
+			values.put("sync_state", Network.SYNC_STATE.DELETE);
 			database.update(TABLE, values, "_id=" + id, null);
 		}
 
@@ -153,7 +155,7 @@ public class Task extends TaskBase {
 		values.put("done", done);
 		values.put("due", (due == null ? null : due.toString()));
 		values.put("priority", priority);
-		values.put("sync_state", Mirakel.SYNC_STATE_ADD);
+		values.put("sync_state", Network.SYNC_STATE.ADD);
 		values.put("created_at",
 				new SimpleDateFormat(
 						context.getString(R.string.dateTimeFormat), Locale.US)
@@ -179,7 +181,7 @@ public class Task extends TaskBase {
 	public static List<Task> all() {
 		List<Task> tasks = new ArrayList<Task>();
 		Cursor c = database.query(TABLE, allColumns, "not sync_state= "
-				+ Mirakel.SYNC_STATE_DELETE, null, null, null, null);
+				+ Network.SYNC_STATE.DELETE, null, null, null, null);
 		c.moveToFirst();
 		while (!c.isAfterLast()) {
 			tasks.add(cursorToTask(c));
@@ -196,7 +198,7 @@ public class Task extends TaskBase {
 	 */
 	public static Task get(long id) {
 		Cursor cursor = database.query(TABLE, allColumns, "_id='" + id
-				+ "' and not sync_state=" + Mirakel.SYNC_STATE_DELETE, null,
+				+ "' and not sync_state=" + Network.SYNC_STATE.DELETE, null,
 				null, null, null);
 		cursor.moveToFirst();
 		if (cursor.getCount() != 0) {
@@ -308,39 +310,44 @@ public class Task extends TaskBase {
 	 * @return
 	 */
 	public static List<Task> parse_json(String result) {
-		try{
+		try {
 			List<Task> tasks = new ArrayList<Task>();
-			Iterator<JsonElement> i =  new JsonParser().parse(result).getAsJsonArray().iterator();
+			Iterator<JsonElement> i = new JsonParser().parse(result)
+					.getAsJsonArray().iterator();
 			while (i.hasNext()) {
-				JsonObject el=(JsonObject)i.next();
-				Task t=new Task();
+				JsonObject el = (JsonObject) i.next();
+				Task t = new Task();
 				t.setId(el.get("id").getAsLong());
 				t.setName(el.get("name").getAsString());
-				t.setContent(el.get("content").getAsString()==null?"":el.get("content").getAsString());
+				t.setContent(el.get("content").getAsString() == null ? "" : el
+						.get("content").getAsString());
 				t.setPriority(el.get("priority").getAsInt());
 				t.setList(ListMirakel.getList(el.get("list_id").getAsInt()));
-				t.setCreatedAt(el.get("created_at").getAsString().replace(":", ""));
-				t.setUpdatedAt(el.get("updated_at").getAsString().replace(":", ""));
+				t.setCreatedAt(el.get("created_at").getAsString()
+						.replace(":", ""));
+				t.setUpdatedAt(el.get("updated_at").getAsString()
+						.replace(":", ""));
 				t.setDone(el.get("done").getAsBoolean());
-				try{
-				GregorianCalendar temp = new GregorianCalendar();
+				try {
+					GregorianCalendar temp = new GregorianCalendar();
 					temp.setTime(new SimpleDateFormat("yyyy-MM-dd", Locale
 							.getDefault()).parse(el.get("due").getAsString()));
 					t.setDue(temp);
 				} catch (Exception e) {
 					t.setDue(null);
-					Log.v(TAG,"Due is null");
-					if(Mirakel.DEBUG)
-						Log.e(TAG,"Can not parse Date! "+ el.get("due").getAsString());
+					Log.v(TAG, "Due is null");
+					if (Mirakel.DEBUG)
+						Log.e(TAG, "Can not parse Date! "
+								+ el.get("due").getAsString());
 				}
 				tasks.add(t);
 			}
 			return tasks;
-		}catch(Exception e){
-			Log.e(TAG,"Cannot parse response");
-			if(Mirakel.DEBUG){
-				Log.e(TAG,result);
-				Log.d(TAG,Log.getStackTraceString(e));
+		} catch (Exception e) {
+			Log.e(TAG, "Cannot parse response");
+			if (Mirakel.DEBUG) {
+				Log.e(TAG, result);
+				Log.d(TAG, Log.getStackTraceString(e));
 			}
 		}
 		return new ArrayList<Task>();
@@ -395,7 +402,7 @@ public class Task extends TaskBase {
 	private static Cursor getTasksCursor(int listId, int sorting, String where) {
 		if (!where.equals(""))
 			where += " and ";
-		where += " not sync_state=" + Mirakel.SYNC_STATE_DELETE;
+		where += " not sync_state=" + Network.SYNC_STATE.DELETE;
 		Log.v(TAG, where);
 		String order = "";
 		switch (sorting) {

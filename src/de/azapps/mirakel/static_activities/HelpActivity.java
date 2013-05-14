@@ -44,16 +44,16 @@ public class HelpActivity extends Activity {
 		SharedPreferences.Editor editor = settings.edit();
 		editor.putBoolean("showHelp", false);
 		editor.commit();
-		Button help=(Button)findViewById(R.id.help_button_ok);
+		Button help = (Button) findViewById(R.id.help_button_ok);
 		help.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				final Intent intent = new Intent();
 				setResult(RESULT_OK, intent);
 				finish();
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
 	}

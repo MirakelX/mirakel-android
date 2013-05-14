@@ -143,6 +143,7 @@ public class MainActivity extends FragmentActivity implements
 	private List<ListMirakel> lists;
 
 	private AlertDialog taskMoveDialog;
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -195,7 +196,7 @@ public class MainActivity extends FragmentActivity implements
 			listFragment.editList(list);
 			return true;
 		case R.id.menu_sort_lists:
-			boolean t=!item.isChecked();
+			boolean t = !item.isChecked();
 			listFragment.enable_drop(t);
 			item.setChecked(t);
 			return true;
@@ -271,14 +272,14 @@ public class MainActivity extends FragmentActivity implements
 							}
 						}).show();
 	}
+
 	public void moveTask(final Task task) {
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(R.string.dialog_move);
 		List<CharSequence> items = new ArrayList<CharSequence>();
 		final List<Integer> list_ids = new ArrayList<Integer>();
-		int currentItem = 0,
-		i = 0;
+		int currentItem = 0, i = 0;
 		for (ListMirakel list : lists) {
 			if (list.getId() > 0) {
 				items.add(list.getName());
@@ -294,8 +295,7 @@ public class MainActivity extends FragmentActivity implements
 				items.toArray(new CharSequence[items.size()]), currentItem,
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int item) {
-						task.setList(ListMirakel.getList(list_ids
-								.get(item)));
+						task.setList(ListMirakel.getList(list_ids.get(item)));
 						task.save();
 						tasksFragment.update();
 						listFragment.update();
@@ -349,7 +349,7 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	private int currentPosition = 1;
-	//private int scrollYTasks = 0;
+	// private int scrollYTasks = 0;
 	private Parcelable tasksState, listState;
 
 	@Override
@@ -380,7 +380,7 @@ public class MainActivity extends FragmentActivity implements
 			listFragment.enable_drop(false);
 			newmenu = R.menu.tasks;
 			this.setTitle(currentList.getName());
-			if (tasksState != null && currentPosition!=LIST_FRAGMENT)
+			if (tasksState != null && currentPosition != LIST_FRAGMENT)
 				tasksFragment.setState(tasksState);
 			break;
 		case 2:

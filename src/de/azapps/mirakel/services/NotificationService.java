@@ -67,12 +67,12 @@ public class NotificationService extends Service {
 				&& !existsNotification) {
 			return;
 		}
-		int listId =0;
-		try{
+		int listId = 0;
+		try {
 			listId = Integer.parseInt(preferences.getString(
-				"notificationsList", "" + SpecialList.first()));
-		}catch(NumberFormatException e){
-			Log.e(TAG,"cannot parse list");
+					"notificationsList", "" + SpecialList.first()));
+		} catch (NumberFormatException e) {
+			Log.e(TAG, "cannot parse list");
 			return;
 		}
 		// Set onClick Intent

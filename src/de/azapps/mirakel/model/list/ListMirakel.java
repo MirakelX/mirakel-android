@@ -35,6 +35,7 @@ import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.sync.Network;
 
 /**
  * @author az
@@ -44,17 +45,20 @@ public class ListMirakel extends ListBase {
 	public static final short SORT_BY_OPT = 0, SORT_BY_DUE = 1,
 			SORT_BY_PRIO = 2, SORT_BY_ID = 3;
 	public static final String TABLE = "lists";
-	//private static final String TAG = "ListMirakel";
+
+	// private static final String TAG = "ListMirakel";
 
 	/**
 	 * Create an empty list
 	 */
-	/*private ListMirakel() {
-	}*/
+	/*
+	 * private ListMirakel() { }
+	 */
 
 	protected ListMirakel(int id, String name, short sort_by,
-			String created_at, String updated_at, int sync_state,int lft, int rgt) {
-		super(id, name, sort_by, created_at, updated_at, sync_state,lft,rgt);
+			String created_at, String updated_at, int sync_state, int lft,
+			int rgt) {
+		super(id, name, sort_by, created_at, updated_at, sync_state, lft, rgt);
 	}
 
 	ListMirakel(int id, String name) {
@@ -71,9 +75,9 @@ public class ListMirakel extends ListBase {
 		SharedPreferences.Editor editor = preferences.edit();
 		// TODO implement for specialLists
 		if (getId() > 0) {
-			setSyncState(getSyncState() == Mirakel.SYNC_STATE_ADD
-					|| getSyncState() == Mirakel.SYNC_STATE_IS_SYNCED ? getSyncState()
-					: Mirakel.SYNC_STATE_NEED_SYNC);
+			setSyncState(getSyncState() == Network.SYNC_STATE.ADD
+					|| getSyncState() == Network.SYNC_STATE.IS_SYNCED ? getSyncState()
+					: Network.SYNC_STATE.NEED_SYNC);
 			setUpdatedAt(new SimpleDateFormat(
 					context.getString(R.string.dateTimeFormat),
 					Locale.getDefault()).format(new Date()));
@@ -93,12 +97,12 @@ public class ListMirakel extends ListBase {
 		if (id <= 0)
 			return;
 
-		if (getSyncState() == Mirakel.SYNC_STATE_ADD) {
+		if (getSyncState() == Network.SYNC_STATE.ADD) {
 			database.delete(Task.TABLE, "list_id = " + id, null);
 			database.delete(ListMirakel.TABLE, "_id = " + id, null);
 		} else {
 			ContentValues values = new ContentValues();
-			values.put("sync_state", Mirakel.SYNC_STATE_DELETE);
+			values.put("sync_state", Network.SYNC_STATE.DELETE);
 			database.update(Task.TABLE, values, "list_id = " + id, null);
 			database.update(ListMirakel.TABLE, values, "_id=" + id, null);
 		}
@@ -121,9 +125,11 @@ public class ListMirakel extends ListBase {
 		} else {
 			where = "list_id = " + getId();
 		}
-		c = Mirakel.getReadableDatabase().rawQuery("Select count(_id) from " + Task.TABLE + " where " + where
-				+(where.length()!=0?" and ":" ")+ " done=0 and not sync_state="
-				+ Mirakel.SYNC_STATE_DELETE, null);
+		c = Mirakel.getReadableDatabase().rawQuery(
+				"Select count(_id) from " + Task.TABLE + " where " + where
+						+ (where.length() != 0 ? " and " : " ")
+						+ " done=0 and not sync_state="
+						+ Network.SYNC_STATE.DELETE, null);
 		c.moveToFirst();
 		if (c.getCount() > 0) {
 			int n = c.getInt(0);
@@ -158,7 +164,7 @@ public class ListMirakel extends ListBase {
 	private static SQLiteDatabase database;
 	private static DatabaseHelper dbHelper;
 	private static final String[] allColumns = { "_id", "name", "sort_by",
-			"created_at", "updated_at", "sync_state","lft","rgt" };
+			"created_at", "updated_at", "sync_state", "lft", "rgt" };
 	private static Context context;
 	private static SharedPreferences preferences;
 
@@ -205,7 +211,7 @@ public class ListMirakel extends ListBase {
 		ContentValues values = new ContentValues();
 		values.put("name", name);
 		values.put("sort_by", sort_by);
-		values.put("sync_state", Mirakel.SYNC_STATE_ADD);
+		values.put("sync_state", Network.SYNC_STATE.ADD);
 		values.put("created_at",
 				new SimpleDateFormat(
 						context.getString(R.string.dateTimeFormat), Locale.US)
@@ -242,7 +248,8 @@ public class ListMirakel extends ListBase {
 		int id = cursor.getInt(i++);
 		ListMirakel list = new ListMirakel(id, cursor.getString(i++),
 				cursor.getShort(i++), cursor.getString(i++),
-				cursor.getString(i++), cursor.getInt(i++),cursor.getInt(i++),cursor.getInt(i++));
+				cursor.getString(i++), cursor.getInt(i++), cursor.getInt(i++),
+				cursor.getInt(i++));
 		return list;
 	}
 
@@ -266,10 +273,10 @@ public class ListMirakel extends ListBase {
 		}
 		return null;
 	}
-	
+
 	public static ListMirakel getList(int listId) {
-		ListMirakel t=getListForSync(listId);
-		return t==null?SpecialList.getSpecialList(-listId):t;
+		ListMirakel t = getListForSync(listId);
+		return t == null ? SpecialList.getSpecialList(-listId) : t;
 	}
 
 	/**
@@ -279,7 +286,7 @@ public class ListMirakel extends ListBase {
 	 */
 	public static ListMirakel first() {
 		Cursor cursor = database.query(ListMirakel.TABLE, allColumns,
-				"not sync_state=" + Mirakel.SYNC_STATE_DELETE, null, null,
+				"not sync_state=" + Network.SYNC_STATE.DELETE, null, null,
 				null, "_id ASC");
 		ListMirakel list = null;
 		cursor.moveToFirst();
@@ -298,7 +305,7 @@ public class ListMirakel extends ListBase {
 	 */
 	public static ListMirakel last() {
 		Cursor cursor = database.query(ListMirakel.TABLE, allColumns,
-				"not sync_state=" + Mirakel.SYNC_STATE_DELETE, null, null,
+				"not sync_state=" + Network.SYNC_STATE.DELETE, null, null,
 				null, "_id DESC");
 		ListMirakel list = null;
 		cursor.moveToFirst();
@@ -333,10 +340,10 @@ public class ListMirakel extends ListBase {
 				+ "COUNT(*)-1 AS level " + "FROM " + ListMirakel.TABLE
 				+ " AS n, " + ListMirakel.TABLE + " p "
 				+ "WHERE n.lft BETWEEN p.lft AND p.rgt "
-				+ " and not n.sync_state=" + Mirakel.SYNC_STATE_DELETE
+				+ " and not n.sync_state=" + Network.SYNC_STATE.DELETE
 				+ " GROUP BY n.lft " + "ORDER BY n.lft;", null);
 		// query(ListMirakel.TABLE, allColumns,
-		// "not sync_state=" + Mirakel.SYNC_STATE_DELETE, null, "lft",
+		// "not sync_state=" + Network.SYNC_STATE.DELETE, null, "lft",
 		// null, null);
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {

@@ -132,7 +132,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 	private void perpareSync() {
 		List<ListMirakel> deletedLists = ListMirakel
-				.bySyncState(Mirakel.SYNC_STATE_DELETE);
+				.bySyncState(Network.SYNC_STATE.DELETE);
 		if (deletedLists != null) {
 			for (ListMirakel deletedList : deletedLists) {
 				delete_list(deletedList);
@@ -141,7 +141,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 		// Remove Tasks from server
 		List<Task> deletedTasks = Task
-				.getBySyncState(Mirakel.SYNC_STATE_DELETE);
+				.getBySyncState(Network.SYNC_STATE.DELETE);
 		if (deletedTasks != null) {
 			for (Task deletedTask : deletedTasks) {
 				delete_task(deletedTask);
@@ -169,7 +169,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 	protected void doSync() {
 		List<ListMirakel> lists_local = ListMirakel
-				.bySyncState(Mirakel.SYNC_STATE_ADD);
+				.bySyncState(Network.SYNC_STATE.ADD);
 		for (ListMirakel list : lists_local) {
 			add_list(list);
 		}
@@ -188,7 +188,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		listAdd++;
 		if (listAdd >= AddLists.size()) {
 			List<Task> tasks_local = Task
-					.getBySyncState(Mirakel.SYNC_STATE_ADD);
+					.getBySyncState(Network.SYNC_STATE.ADD);
 			for (int i = 0; i < tasks_local.size(); i++) {
 				add_task(tasks_local.get(i));
 			}
@@ -248,7 +248,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	public void sync_list(ListMirakel list) {
 		List<BasicNameValuePair> data = new ArrayList<BasicNameValuePair>();
 		data.add(new BasicNameValuePair("list[name]", list.getName()));
-		list.setSyncState(Mirakel.SYNC_STATE_IS_SYNCED);
+		list.setSyncState(Network.SYNC_STATE.IS_SYNCED);
 		list.save();
 		SyncLists.add(new Pair<Network, String>(new Network(
 				new DataDownloadCommand() {
@@ -283,7 +283,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 											"Select _id from "
 													+ ListMirakel.TABLE
 													+ " WHERE sync_state="
-													+ Mirakel.SYNC_STATE_ADD
+													+ Network.SYNC_STATE.ADD
 													+ " and _id>="
 													+ list.getId(), null);
 							c.moveToFirst();
@@ -291,7 +291,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 							c = Mirakel.getReadableDatabase().rawQuery(
 									"Select _id from " + ListMirakel.TABLE
 											+ " WHERE sync_state="
-											+ Mirakel.SYNC_STATE_ADD
+											+ Network.SYNC_STATE.ADD
 											+ " and _id>" + list.getId(), null);
 							c.moveToLast();
 							while (!c.isBeforeFirst()) {
@@ -299,7 +299,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 										"UPDATE " + ListMirakel.TABLE
 												+ " SET _id=_id+" + diff
 												+ " WHERE sync_state="
-												+ Mirakel.SYNC_STATE_ADD
+												+ Network.SYNC_STATE.ADD
 												+ " and _id=" + c.getInt(0));
 								c.moveToPrevious();
 							}
@@ -308,7 +308,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						}
 						ContentValues values = new ContentValues();
 						values.put("_id", list_response.getId());
-						values.put("sync_state", Mirakel.SYNC_STATE_NOTHING);
+						values.put("sync_state", Network.SYNC_STATE.NOTHING);
 						Mirakel.getWritableDatabase().update(ListMirakel.TABLE,
 								values, "_id=" + list.getId(), null);
 						values = new ContentValues();
@@ -346,18 +346,18 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		// Remove Tasks, which are deleted from server
 		Mirakel.getWritableDatabase().execSQL(
 				"Delete from " + ListMirakel.TABLE + " where sync_state="
-						+ Mirakel.SYNC_STATE_NOTHING + " or sync_state="
-						+ Mirakel.SYNC_STATE_NEED_SYNC);
+						+ Network.SYNC_STATE.NOTHING + " or sync_state="
+						+ Network.SYNC_STATE.NEED_SYNC);
 		// Set Sync state to Nothing
 		Mirakel.getWritableDatabase().execSQL(
 				"Update " + ListMirakel.TABLE + " set sync_state="
-						+ Mirakel.SYNC_STATE_NOTHING + " where sync_state="
-						+ Mirakel.SYNC_STATE_IS_SYNCED);
+						+ Network.SYNC_STATE.NOTHING + " where sync_state="
+						+ Network.SYNC_STATE.IS_SYNCED);
 	}
 
 	private void listMerge(ListMirakel list_server, ListMirakel list) {
-		if (list.getSyncState() == Mirakel.SYNC_STATE_NOTHING
-				|| list.getSyncState() == Mirakel.SYNC_STATE_NEED_SYNC) {
+		if (list.getSyncState() == Network.SYNC_STATE.NOTHING
+				|| list.getSyncState() == Network.SYNC_STATE.NEED_SYNC) {
 			DateFormat df = new SimpleDateFormat(
 					mContext.getString(R.string.dateTimeFormat), Locale.US);// use
 																			// ASCII-Formating
@@ -374,7 +374,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					// server list newer
 					list_server.setLft(list.getLft());
 					list_server.setRgt(list.getRgt());
-					list_server.setSyncState(Mirakel.SYNC_STATE_IS_SYNCED);
+					list_server.setSyncState(Network.SYNC_STATE.IS_SYNCED);
 					list_server.save();
 				}
 			} catch (ParseException e) {
@@ -382,12 +382,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				if (Mirakel.DEBUG)
 					Log.w(TAG, Log.getStackTraceString(e));
 			}
-		} else if (list.getSyncState() == Mirakel.SYNC_STATE_ADD) {
+		} else if (list.getSyncState() == Network.SYNC_STATE.ADD) {
 			Cursor c = Mirakel.getReadableDatabase()
 					.rawQuery(
 							"Select max(_id) from " + ListMirakel.TABLE
 									+ " where not sync_state="
-									+ Mirakel.SYNC_STATE_ADD, null);
+									+ Network.SYNC_STATE.ADD, null);
 			c.moveToFirst();
 			if (c.getCount() != 0) {
 				int diff = c.getInt(0) - list.getId() < 0 ? 1 : c.getInt(0)
@@ -395,14 +395,14 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				c.close();
 				c = Mirakel.getReadableDatabase().rawQuery(
 						"Select _id from " + ListMirakel.TABLE
-								+ " WHERE sync_state=" + Mirakel.SYNC_STATE_ADD
+								+ " WHERE sync_state=" + Network.SYNC_STATE.ADD
 								+ " and _id>=" + list.getId(), null);
 				c.moveToLast();
 				while (!c.isBeforeFirst()) {
 					Mirakel.getWritableDatabase().execSQL(
 							"UPDATE " + ListMirakel.TABLE + " SET _id=_id+"
 									+ diff + " WHERE sync_state="
-									+ Mirakel.SYNC_STATE_ADD + " and _id="
+									+ Network.SYNC_STATE.ADD + " and _id="
 									+ c.getInt(0));
 					c.moveToPrevious();
 				}
@@ -411,8 +411,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					Log.d(TAG, "Move list+Add list from server");
 				addListFromServer(list_server);
 			}
-		} else if (list.getSyncState() == Mirakel.SYNC_STATE_IS_SYNCED) {
-			list.setSyncState(Mirakel.SYNC_STATE_NOTHING);
+		} else if (list.getSyncState() == Network.SYNC_STATE.IS_SYNCED) {
+			list.setSyncState(Network.SYNC_STATE.NOTHING);
 			list.save();
 			listMerge(list_server, list);
 		} else {
@@ -421,13 +421,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	}
 
 	private void addListFromServer(ListMirakel list_server) {
-		list_server.setSyncState(Mirakel.SYNC_STATE_IS_SYNCED);
+		list_server.setSyncState(Network.SYNC_STATE.IS_SYNCED);
 		long id = Mirakel.getWritableDatabase().insert(ListMirakel.TABLE, null,
 				list_server.getContentValues());
 		// TODO Get this from server!!
 		Cursor c = Mirakel.getReadableDatabase().rawQuery(
 				"Select max(lft),max(rgt) from " + ListMirakel.TABLE
-						+ " where not sync_state=" + Mirakel.SYNC_STATE_DELETE,
+						+ " where not sync_state=" + Network.SYNC_STATE.DELETE,
 				null);
 		c.moveToFirst();
 		int lft = 0, rgt = 0;
@@ -438,7 +438,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		c.close();
 		ContentValues values = new ContentValues();
 		values.put("_id", list_server.getId());
-		values.put("sync_state", Mirakel.SYNC_STATE_IS_SYNCED);
+		values.put("sync_state", Network.SYNC_STATE.IS_SYNCED);
 		values.put("lft", lft);
 		values.put("rgt", rgt);
 		Mirakel.getWritableDatabase().update(ListMirakel.TABLE, values,
@@ -459,7 +459,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					@Override
 					public void after_exec(String result) {
 						// Remove Task
-						task.setSyncState(Mirakel.SYNC_STATE_ADD);
+						task.setSyncState(Network.SYNC_STATE.ADD);
 						task.delete();
 					}
 				}, Mirakel.HttpMode.DELETE, mContext, Token), ServerUrl
@@ -486,7 +486,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					.format(task.getDue().getTime());
 		data.add(new BasicNameValuePair("task[due]", dueString));
 		data.add(new BasicNameValuePair("task[content]", task.getContent()));
-		task.setSyncState(Mirakel.SYNC_STATE_IS_SYNCED);
+		task.setSyncState(Network.SYNC_STATE.IS_SYNCED);
 		task.save();
 		SyncTasks.add(new Pair<Network, String>(new Network(
 				new DataDownloadCommand() {
@@ -534,7 +534,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 												"Select _id from "
 														+ Task.TABLE
 														+ " WHERE sync_state="
-														+ Mirakel.SYNC_STATE_ADD
+														+ Network.SYNC_STATE.ADD
 														+ " and _id>"
 														+ task.getId(), null);
 								c.moveToLast();
@@ -546,7 +546,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 															+ " SET _id=_id+"
 															+ diff
 															+ " WHERE sync_state="
-															+ Mirakel.SYNC_STATE_ADD
+															+ Network.SYNC_STATE.ADD
 															+ " and _id="
 															+ c.getInt(0));
 									c.moveToPrevious();
@@ -555,7 +555,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 							}
 							ContentValues values = new ContentValues();
 							values.put("_id", taskNew.getId());
-							values.put("sync_state", Mirakel.SYNC_STATE_NOTHING);
+							values.put("sync_state", Network.SYNC_STATE.NOTHING);
 							Mirakel.getWritableDatabase().update(Task.TABLE,
 									values, "_id=" + task.getId(), null);
 						} catch (IndexOutOfBoundsException e) {
@@ -593,18 +593,18 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		// Remove Tasks, which are deleted from server
 		Mirakel.getWritableDatabase().execSQL(
 				"Delete from " + Task.TABLE + " where sync_state="
-						+ Mirakel.SYNC_STATE_NOTHING + " or sync_state="
-						+ Mirakel.SYNC_STATE_NEED_SYNC);
+						+ Network.SYNC_STATE.NOTHING + " or sync_state="
+						+ Network.SYNC_STATE.NEED_SYNC);
 		Mirakel.getWritableDatabase().execSQL(
 				"Update " + Task.TABLE + " set sync_state="
-						+ Mirakel.SYNC_STATE_NOTHING + " where sync_state="
-						+ Mirakel.SYNC_STATE_IS_SYNCED);
+						+ Network.SYNC_STATE.NOTHING + " where sync_state="
+						+ Network.SYNC_STATE.IS_SYNCED);
 
 	}
 
 	private void mergeTask(Task task_server, Task task) {
-		if (task.getSync_state() == Mirakel.SYNC_STATE_NEED_SYNC
-				|| task.getSync_state() == Mirakel.SYNC_STATE_NOTHING) {
+		if (task.getSync_state() == Network.SYNC_STATE.NEED_SYNC
+				|| task.getSync_state() == Network.SYNC_STATE.NOTHING) {
 			DateFormat df = new SimpleDateFormat(
 					mContext.getString(R.string.dateTimeFormat), Locale.US);// use
 																			// ASCII-Formating
@@ -621,7 +621,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					if (Mirakel.DEBUG)
 						Log.d(TAG, "Sync task from server to list "
 								+ task_server.getList().getId());
-					task_server.setSyncState(Mirakel.SYNC_STATE_IS_SYNCED);
+					task_server.setSyncState(Network.SYNC_STATE.IS_SYNCED);
 					task_server.save();
 				}
 			} catch (ParseException e) {
@@ -629,12 +629,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				if (Mirakel.DEBUG)
 					Log.w(TAG, Log.getStackTraceString(e));
 			}
-		} else if (task.getSync_state() == Mirakel.SYNC_STATE_ADD) {
+		} else if (task.getSync_state() == Network.SYNC_STATE.ADD) {
 			Cursor c = Mirakel.getReadableDatabase()
 					.rawQuery(
 							"Select max(_id) from " + Task.TABLE
 									+ " where not sync_state="
-									+ Mirakel.SYNC_STATE_ADD, null);
+									+ Network.SYNC_STATE.ADD, null);
 			c.moveToFirst();
 			if (c.getCount() != 0) {
 				long diff = c.getInt(0) - task.getId() < 0 ? 1 : c.getInt(0)
@@ -642,14 +642,14 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				c.close();
 				c = Mirakel.getReadableDatabase().rawQuery(
 						"Select _id from " + Task.TABLE + " WHERE sync_state="
-								+ Mirakel.SYNC_STATE_ADD + " and _id>="
+								+ Network.SYNC_STATE.ADD + " and _id>="
 								+ task.getId(), null);
 				c.moveToLast();
 				while (!c.isBeforeFirst()) {
 					Mirakel.getWritableDatabase().execSQL(
 							"UPDATE " + Task.TABLE + " SET _id=_id+" + diff
 									+ " WHERE sync_state="
-									+ Mirakel.SYNC_STATE_ADD + " and _id="
+									+ Network.SYNC_STATE.ADD + " and _id="
 									+ c.getInt(0));
 					c.moveToPrevious();
 				}
@@ -659,10 +659,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 							+ task_server.getList().getId());
 				addTaskFromServer(task_server);
 			}
-		} else if (task.getSync_state() == Mirakel.SYNC_STATE_DELETE) {
+		} else if (task.getSync_state() == Network.SYNC_STATE.DELETE) {
 			// Nothing
-		} else if (task.getSync_state() == Mirakel.SYNC_STATE_IS_SYNCED) {
-			task.setSyncState(Mirakel.SYNC_STATE_NOTHING);
+		} else if (task.getSync_state() == Network.SYNC_STATE.IS_SYNCED) {
+			task.setSyncState(Network.SYNC_STATE.NOTHING);
 			task.save();
 			mergeTask(task_server, task);
 		} else {
@@ -673,14 +673,14 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	private void addTaskFromServer(Task task_server) {
 
 		// task_server.setUpdatedAt();
-		task_server.setSyncState(Mirakel.SYNC_STATE_IS_SYNCED);
+		task_server.setSyncState(Network.SYNC_STATE.IS_SYNCED);
 		long id = Mirakel.getWritableDatabase().insert(Task.TABLE, null,
 				task_server.getContentValues());
 		if (id > task_server.getId()) {
 			long diff = id - task_server.getId();
 			Mirakel.getWritableDatabase().execSQL(
 					"UPDATE " + Task.TABLE + " SET _id=_id+" + diff
-							+ " WHERE sync_state=" + Mirakel.SYNC_STATE_ADD
+							+ " WHERE sync_state=" + Network.SYNC_STATE.ADD
 							+ "and _id>" + task_server.getId());
 		}
 		ContentValues values = new ContentValues();

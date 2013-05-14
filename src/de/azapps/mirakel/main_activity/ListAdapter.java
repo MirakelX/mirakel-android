@@ -33,26 +33,25 @@ import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.list.ListMirakel;
 
 public class ListAdapter extends ArrayAdapter<ListMirakel> {
-	//private static final String TAG = "ListAdapter";
+	// private static final String TAG = "ListAdapter";
 	private boolean enableDrop;
 	private Context context;
 	private int layoutResourceId;
 	private List<ListMirakel> data = null;
 
 	public ListAdapter(Context context, int layoutResourceId,
-			List<ListMirakel> data,boolean enable) {
+			List<ListMirakel> data, boolean enable) {
 		super(context, layoutResourceId, layoutResourceId, data);
 		this.layoutResourceId = layoutResourceId;
 		this.data = data;
 		this.context = context;
-		this.enableDrop=enable;
+		this.enableDrop = enable;
 	}
 
 	void changeData(List<ListMirakel> lists) {
 		data.clear();
 		data.addAll(lists);
 	}
-
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
@@ -67,47 +66,60 @@ public class ListAdapter extends ArrayAdapter<ListMirakel> {
 					.findViewById(R.id.list_row_name);
 			holder.listRowTaskNumber = (TextView) row
 					.findViewById(R.id.list_row_task_number);
-			holder.listRowDrag=(ImageView)row.findViewById(R.id.list_row_drag);
+			holder.listRowDrag = (ImageView) row
+					.findViewById(R.id.list_row_drag);
 
 			row.setTag(holder);
 		} else {
 			holder = (ListHolder) row.getTag();
 		}
-		if(!enableDrop)
+		if (!enableDrop)
 			holder.listRowDrag.setVisibility(View.GONE);
 		ListMirakel list = data.get(position);
 		holder.listRowName.setText(list.getName());
 		holder.listRowName.setTag(list);
-		holder.listRowTaskNumber.setText(""+list.countTasks());
+		holder.listRowTaskNumber.setText("" + list.countTasks());
 		return row;
 	}
-	
+
 	public void onRemove(int which) {
-		if (which < 0 || which >data.size()) return;		
+		if (which < 0 || which > data.size())
+			return;
 		data.remove(which);
 	}
 
 	public void onDrop(int from, int to) {
 		ListMirakel t = data.get(from);
-		int add=to<from?2:-2;
-		int rgt=data.get(to).getRgt(),lft=data.get(to).getLft();
-		Mirakel.getWritableDatabase().execSQL( "Update " + ListMirakel.TABLE + " set lft=lft+" + add
-				+ " where lft>=" + (data.get(from).getId()<data.get(to).getLft()?data.get(from).getLft():data.get(to).getLft())
-				+ " and lft<" + (data.get(from).getLft()>data.get(to).getLft()?data.get(from).getLft():data.get(to).getLft()+2));
-		Mirakel.getWritableDatabase().execSQL("Update "+ListMirakel.TABLE+" set rgt=lft+1");
+		int add = to < from ? 2 : -2;
+		int rgt = data.get(to).getRgt(), lft = data.get(to).getLft();
+		Mirakel.getWritableDatabase()
+				.execSQL(
+						"Update "
+								+ ListMirakel.TABLE
+								+ " set lft=lft+"
+								+ add
+								+ " where lft>="
+								+ (data.get(from).getId() < data.get(to)
+										.getLft() ? data.get(from).getLft()
+										: data.get(to).getLft())
+								+ " and lft<"
+								+ (data.get(from).getLft() > data.get(to)
+										.getLft() ? data.get(from).getLft()
+										: data.get(to).getLft() + 2));
+		Mirakel.getWritableDatabase().execSQL(
+				"Update " + ListMirakel.TABLE + " set rgt=lft+1");
 		t.setLft(lft);
 		t.setRgt(rgt);
 		t.save();
 		data.remove(from);
-		data.add(to,t);
+		data.add(to, t);
 	}
-	
 
 	public void setEnableDrop(boolean enableDrop) {
 		this.enableDrop = enableDrop;
 	}
-	
-	public boolean isDropEnabled(){
+
+	public boolean isDropEnabled() {
 		return enableDrop;
 	}
 

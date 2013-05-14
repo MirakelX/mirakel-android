@@ -161,18 +161,19 @@ public class TasksFragment extends Fragment {
 		return true;
 	}
 
-	public void update(){
+	public void update() {
 		update(true);
 	}
+
 	public void update(boolean reset) {
 		if (!created)
 			return;
 		final List<Task> values = main.getCurrentList().tasks();
-		if(adapter!=null) {
+		if (adapter != null) {
 			adapter.changeData(values);
 			adapter.notifyDataSetChanged();
 
-			if(reset)
+			if (reset)
 				setScrollPosition(0);
 			return;
 		}
@@ -317,9 +318,9 @@ public class TasksFragment extends Fragment {
 		if (listView == null)
 			return;
 		if (listView.getCount() > pos)
-			listView.setSelectionFromTop(pos,0);
+			listView.setSelectionFromTop(pos, 0);
 		else
-			listView.setSelectionFromTop(0,0);
+			listView.setSelectionFromTop(0, 0);
 	}
 
 }

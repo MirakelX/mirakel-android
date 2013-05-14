@@ -26,7 +26,7 @@ import android.preference.PreferenceFragment;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.list.ListMirakel;
 
-public class MainWidgetSettingsFragment  extends PreferenceFragment {
+public class MainWidgetSettingsFragment extends PreferenceFragment {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -44,7 +44,6 @@ public class MainWidgetSettingsFragment  extends PreferenceFragment {
 
 		// Load the preferences from an XML resource
 		addPreferencesFromResource(R.xml.main_widget_preferences);
-		
 
 		// Notifications List
 		ListPreference notificationsListPreference = (ListPreference) findPreference("widgetList");

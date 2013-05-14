@@ -37,8 +37,8 @@ import de.azapps.mirakel.sync.AuthenticatorActivity;
 
 public class StartActivity extends Activity {
 	private static final String TAG = "StartActivity";
-	private static final int PrepareLogin=1;
-	private static final int ShowHelp=2;
+	private static final int PrepareLogin = 1;
+	private static final int ShowHelp = 2;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +49,7 @@ public class StartActivity extends Activity {
 			Mirakel.getReadableDatabase().setVersion(Mirakel.DATABASE_VERSION);
 		}
 		setContentView(R.layout.activity_start);
-		Button start=(Button)findViewById(R.id.Start);
+		Button start = (Button) findViewById(R.id.Start);
 		start.setOnClickListener(new Button.OnClickListener() {
 
 			@Override
@@ -61,20 +61,21 @@ public class StartActivity extends Activity {
 				if (settings.getBoolean("showHelp", true)) {
 					Intent intent = new Intent(StartActivity.this,
 							HelpActivity.class);
-					startActivityForResult(intent,ShowHelp);
+					startActivityForResult(intent, ShowHelp);
 				} else {
-					if(((CheckBox)findViewById(R.id.use_server)).isChecked()){
-						Intent intent = new Intent(StartActivity.this,AuthenticatorActivity.class);
-						//intent.setAction(MainActivity.SHOW_LISTS);
+					if (((CheckBox) findViewById(R.id.use_server)).isChecked()) {
+						Intent intent = new Intent(StartActivity.this,
+								AuthenticatorActivity.class);
+						// intent.setAction(MainActivity.SHOW_LISTS);
 						startActivityForResult(intent, PrepareLogin);
-					}else{
+					} else {
 						settings = PreferenceManager
 								.getDefaultSharedPreferences(getApplicationContext());
 						SharedPreferences.Editor editor = settings.edit();
-						  editor.putBoolean("syncUse", false);
-						  editor.commit();
+						editor.putBoolean("syncUse", false);
+						editor.commit();
 						Intent intent = new Intent(StartActivity.this,
-							MainActivity.class);
+								MainActivity.class);
 						intent.putExtra("listId", SpecialList.first().getId());
 						startActivity(intent);
 					}
@@ -111,26 +112,26 @@ public class StartActivity extends Activity {
 		}
 		return true;
 	}
-	
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if(resultCode==RESULT_OK){
-			switch(requestCode){
-				case PrepareLogin:
-					SharedPreferences settings = PreferenceManager
-					.getDefaultSharedPreferences(getApplicationContext());
-					SharedPreferences.Editor editor = settings.edit();
-					editor.putBoolean("syncUse", true);
-					editor.commit();
-					Intent intent = new Intent(StartActivity.this,
-							MainActivity.class);
-					intent.putExtra("listId", SpecialList.first().getId());
-					startActivity(intent);
-					break;
-				case ShowHelp:
-					break;
-				default:
-					Log.v(TAG,"Unknown Requestcode");
+		if (resultCode == RESULT_OK) {
+			switch (requestCode) {
+			case PrepareLogin:
+				SharedPreferences settings = PreferenceManager
+						.getDefaultSharedPreferences(getApplicationContext());
+				SharedPreferences.Editor editor = settings.edit();
+				editor.putBoolean("syncUse", true);
+				editor.commit();
+				Intent intent = new Intent(StartActivity.this,
+						MainActivity.class);
+				intent.putExtra("listId", SpecialList.first().getId());
+				startActivity(intent);
+				break;
+			case ShowHelp:
+				break;
+			default:
+				Log.v(TAG, "Unknown Requestcode");
 			}
 		}
 	}

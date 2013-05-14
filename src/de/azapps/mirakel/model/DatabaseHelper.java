@@ -31,6 +31,7 @@ import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.sync.Network;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -52,7 +53,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ "sort_by INTEGER NOT NULL DEFAULT 0, "
 				+ "created_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
 				+ "updated_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
-				+ "sync_state INTEGER DEFAULT " + Mirakel.SYNC_STATE_ADD +", "
+				+ "sync_state INTEGER DEFAULT " + Network.SYNC_STATE.ADD + ", "
 				+ "lft INTEGER, " + "rgt INTEGER " + ")");
 		db.execSQL("CREATE TABLE "
 				+ Task.TABLE
@@ -65,7 +66,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ "due STRING NOT NULL DEFAULT '', "
 				+ "created_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
 				+ "updated_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
-				+ "sync_state INTEGER DEFAULT " + Mirakel.SYNC_STATE_ADD + ")");
+				+ "sync_state INTEGER DEFAULT " + Network.SYNC_STATE.ADD + ")");
 		db.execSQL("INSERT INTO lists (name) VALUES ('"
 				+ context.getString(R.string.inbox) + "')");
 		db.execSQL("INSERT INTO tasks (list_id,name) VALUES (1,'"
@@ -85,11 +86,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			// Add sync-state
 			String update = "Alter Table " + Task.TABLE
 					+ " add column sync_state INTEGER DEFAULT "
-					+ Mirakel.SYNC_STATE_ADD + ";";
+					+ Network.SYNC_STATE.ADD + ";";
 			db.execSQL(update);
 			update = "Alter Table " + ListMirakel.TABLE
 					+ " add column sync_state INTEGER DEFAULT "
-					+ Mirakel.SYNC_STATE_ADD + ";";
+					+ Network.SYNC_STATE.ADD + ";";
 			db.execSQL(update);
 			update = "CREATE TABLE settings ("
 					+ "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -164,20 +165,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ "name TEXT NOT NULL, "
 				+ "active INTEGER NOT NULL DEFAULT 0, "
 				+ "whereQuery STRING NOT NULL DEFAULT '', "
-				+ "sort_by INTEGER NOT NULL DEFAULT " + ListMirakel.SORT_BY_OPT + ", "
-				+ "sync_state INTEGER DEFAULT " + Mirakel.SYNC_STATE_ADD + ")");
+				+ "sort_by INTEGER NOT NULL DEFAULT " + ListMirakel.SORT_BY_OPT
+				+ ", " + "sync_state INTEGER DEFAULT " + Network.SYNC_STATE.ADD
+				+ ")");
 		db.execSQL("INSERT INTO " + SpecialList.TABLE
 				+ " (name,active,whereQuery) VALUES (" + "'"
 				+ context.getString(R.string.list_all) + "',1,'')");
-		db.execSQL("INSERT INTO " + SpecialList.TABLE
-				+ " (name,active,whereQuery) VALUES (" + "'"
-				+ context.getString(R.string.list_today) + "',1,'due not null and done=0 and date(due)<=date(\"now\",\"localtime\")')");
-		db.execSQL("INSERT INTO " + SpecialList.TABLE
-				+ " (name,active,whereQuery) VALUES (" + "'"
-				+ context.getString(R.string.list_week) + "',1,'due not null and done=0 and date(due)<=date(\"now\",\"+7 day\",\"localtime\")')");
-		db.execSQL("INSERT INTO " + SpecialList.TABLE
-				+ " (name,active,whereQuery) VALUES (" + "'"
-				+ context.getString(R.string.list_overdue) + "',1,'due not null and done=0 and date(due)<=date(\"now\",\"-1 day\",\"localtime\")')");
+		db.execSQL("INSERT INTO "
+				+ SpecialList.TABLE
+				+ " (name,active,whereQuery) VALUES ("
+				+ "'"
+				+ context.getString(R.string.list_today)
+				+ "',1,'due not null and done=0 and date(due)<=date(\"now\",\"localtime\")')");
+		db.execSQL("INSERT INTO "
+				+ SpecialList.TABLE
+				+ " (name,active,whereQuery) VALUES ("
+				+ "'"
+				+ context.getString(R.string.list_week)
+				+ "',1,'due not null and done=0 and date(due)<=date(\"now\",\"+7 day\",\"localtime\")')");
+		db.execSQL("INSERT INTO "
+				+ SpecialList.TABLE
+				+ " (name,active,whereQuery) VALUES ("
+				+ "'"
+				+ context.getString(R.string.list_overdue)
+				+ "',1,'due not null and done=0 and date(due)<=date(\"now\",\"-1 day\",\"localtime\")')");
 	}
 
 }

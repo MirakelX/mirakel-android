@@ -64,7 +64,7 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	 */
 	@Override
 	public void onCreate() {
-		ListMirakel list=ListMirakel.getList(listId);
+		ListMirakel list = ListMirakel.getList(listId);
 		tasks = list.tasks(showDone);
 	}
 

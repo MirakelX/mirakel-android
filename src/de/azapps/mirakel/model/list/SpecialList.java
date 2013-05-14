@@ -2,16 +2,17 @@ package de.azapps.mirakel.model.list;
 
 import java.util.ArrayList;
 import java.util.List;
-import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.R;
-import de.azapps.mirakel.model.DatabaseHelper;
-import de.azapps.mirakel.model.task.Task;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.R;
+import de.azapps.mirakel.model.DatabaseHelper;
+import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.sync.Network;
 
 public class SpecialList extends ListMirakel {
 	private boolean active;
@@ -35,7 +36,7 @@ public class SpecialList extends ListMirakel {
 
 	SpecialList(int id, String name, String whereQuery, boolean active,
 			short sort_by, int sync_state) {
-		super(-id, name, sort_by, "", "", sync_state,0,0);
+		super(-id, name, sort_by, "", "", sync_state, 0, 0);
 		this.active = active;
 		this.whereQuery = whereQuery;
 	}
@@ -61,7 +62,7 @@ public class SpecialList extends ListMirakel {
 
 	// Static Methods
 	public static final String TABLE = "special_lists";
-	//private static final String TAG = "TasksDataSource";
+	// private static final String TAG = "TasksDataSource";
 	private static SQLiteDatabase database;
 	private static DatabaseHelper dbHelper;
 	private static final String[] allColumns = { "_id", "name", "whereQuery",
@@ -109,9 +110,9 @@ public class SpecialList extends ListMirakel {
 	 *            The List
 	 */
 	public void save() {
-		setSyncState(getSyncState() == Mirakel.SYNC_STATE_ADD
-				|| getSyncState() == Mirakel.SYNC_STATE_IS_SYNCED ? getSyncState()
-				: Mirakel.SYNC_STATE_NEED_SYNC);
+		setSyncState(getSyncState() == Network.SYNC_STATE.ADD
+				|| getSyncState() == Network.SYNC_STATE.IS_SYNCED ? getSyncState()
+				: Network.SYNC_STATE.NEED_SYNC);
 		ContentValues values = getContentValues();
 		database.update(TABLE, values, "_id = " + Math.abs(getId()), null);
 	}
@@ -124,8 +125,8 @@ public class SpecialList extends ListMirakel {
 	public void destroy() {
 		long id = Math.abs(getId());
 
-		if (getSyncState() != Mirakel.SYNC_STATE_ADD) {
-			setSyncState(Mirakel.SYNC_STATE_DELETE);
+		if (getSyncState() != Network.SYNC_STATE.ADD) {
+			setSyncState(Network.SYNC_STATE.DELETE);
 		}
 		setActive(false);
 		ContentValues values = new ContentValues();
@@ -186,7 +187,7 @@ public class SpecialList extends ListMirakel {
 	 */
 	public static SpecialList firstSpecial() {
 		Cursor cursor = database.query(SpecialList.TABLE, allColumns,
-				"not sync_state=" + Mirakel.SYNC_STATE_DELETE, null, null,
+				"not sync_state=" + Network.SYNC_STATE.DELETE, null, null,
 				null, "_id ASC");
 		SpecialList list = null;
 		cursor.moveToFirst();
@@ -195,7 +196,7 @@ public class SpecialList extends ListMirakel {
 			cursor.moveToNext();
 		} else {
 			list = new SpecialList(0, context.getString(R.string.list_all), "",
-					true, SORT_BY_OPT, (int) Mirakel.SYNC_STATE_NOTHING);
+					true, SORT_BY_OPT, Network.SYNC_STATE.NOTHING);
 		}
 		cursor.close();
 		return list;
@@ -215,16 +216,17 @@ public class SpecialList extends ListMirakel {
 				cursor.getInt(i++));
 		return slist;
 	}
-	
-	public static int getSpecialListCount(){
-		Cursor c=Mirakel.getReadableDatabase().rawQuery("Select count(_id) from "+TABLE, null);
+
+	public static int getSpecialListCount() {
+		Cursor c = Mirakel.getReadableDatabase().rawQuery(
+				"Select count(_id) from " + TABLE, null);
 		c.moveToFirst();
-		int r=0;
-		if(c.getCount()>0){
-			r=c.getInt(0);
+		int r = 0;
+		if (c.getCount() > 0) {
+			r = c.getInt(0);
 		}
 		c.close();
-		return r ;
+		return r;
 	}
 
 }

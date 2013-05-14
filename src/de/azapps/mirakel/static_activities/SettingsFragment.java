@@ -41,9 +41,10 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.sync.AuthenticatorActivity;
 
 public class SettingsFragment extends PreferenceFragment {
-	private static final String TAG="SettingsFragment";
+	private static final String TAG = "SettingsFragment";
 	private ListPreference startupListPreference;
-	//private MainActivity main;
+
+	// private MainActivity main;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -79,7 +80,7 @@ public class SettingsFragment extends PreferenceFragment {
 					@Override
 					public boolean onPreferenceChange(Preference preference,
 							Object newValue) {
-						if((Boolean) newValue) {
+						if ((Boolean) newValue) {
 							startupListPreference.setEnabled(false);
 						} else {
 							startupListPreference.setEnabled(true);
@@ -90,51 +91,51 @@ public class SettingsFragment extends PreferenceFragment {
 				});
 		startupListPreference.setEntries(entries);
 		startupListPreference.setEntryValues(entryValues);
-		
-		CheckBoxPreference sync=(CheckBoxPreference)findPreference("syncUse");
+
+		CheckBoxPreference sync = (CheckBoxPreference) findPreference("syncUse");
 		sync.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-			
+
 			@Override
-			public boolean onPreferenceChange(Preference preference, Object newValue) {
-				Log.e(TAG,""+((Boolean)newValue).toString());
+			public boolean onPreferenceChange(Preference preference,
+					Object newValue) {
+				Log.e(TAG, "" + ((Boolean) newValue).toString());
 				AccountManager am = AccountManager.get(getActivity());
 				Account[] accounts = am.getAccountsByType(Mirakel.ACCOUNT_TYP);
-				if((Boolean)newValue){
-					if(accounts.length==0){
+				if ((Boolean) newValue) {
+					if (accounts.length == 0) {
 						Intent intent = new Intent(getActivity(),
 								AuthenticatorActivity.class);
 						intent.setAction(MainActivity.SHOW_LISTS);
 						startActivity(intent);
-					}else{
-					//	account=accounts[0];
+					} else {
+						// account=accounts[0];
 					}
-				}else{
-					try{
+				} else {
+					try {
 						am.removeAccount(accounts[0], null, null);
-					}catch(Exception e){
-						Log.e(TAG,"Cannot remove Account");
+					} catch (Exception e) {
+						Log.e(TAG, "Cannot remove Account");
 					}
 				}
 				return true;
 			}
 		});
 		/*
-		EditTextPreference email=(EditTextPreference)findPreference("syncEmail");
-		email.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-			
-			@Override
-			public boolean onPreferenceChange(Preference preference, Object newValue) {
-				AccountManager am = AccountManager.get(getActivity());
-				String pwd=am.getPassword(account);
-				am.removeAccount(account, null, null);
-				account=new Account((String)newValue, Mirakel.ACCOUNT_TYP);
-				am.addAccountExplicitly(account, pwd, null);
-				return true;
-			}
-		});*/
-		
+		 * EditTextPreference
+		 * email=(EditTextPreference)findPreference("syncEmail");
+		 * email.setOnPreferenceChangeListener(new OnPreferenceChangeListener()
+		 * {
+		 * 
+		 * @Override public boolean onPreferenceChange(Preference preference,
+		 * Object newValue) { AccountManager am =
+		 * AccountManager.get(getActivity()); String
+		 * pwd=am.getPassword(account); am.removeAccount(account, null, null);
+		 * account=new Account((String)newValue, Mirakel.ACCOUNT_TYP);
+		 * am.addAccountExplicitly(account, pwd, null); return true; } });
+		 */
+
 		final AccountManager am = AccountManager.get(getActivity());
-		final Account account=getAccount(am);		
+		final Account account = getAccount(am);
 		if (account == null) {
 			SharedPreferences settings = PreferenceManager
 					.getDefaultSharedPreferences(getActivity()
@@ -143,57 +144,61 @@ public class SettingsFragment extends PreferenceFragment {
 			editor.putBoolean("syncUse", false);
 			editor.commit();
 			sync.setChecked(false);
-		}else{
+		} else {
 			sync.setChecked(true);
 		}
 
-		EditTextPreference password= (EditTextPreference)findPreference("syncPassword");
+		EditTextPreference password = (EditTextPreference) findPreference("syncPassword");
 		password.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-			
+
 			@Override
-			public boolean onPreferenceChange(Preference preference, Object password) {
-				//TODO CHECK NEW PASSWORD???
-				if(account!=null){
-					am.setPassword(account, (String)password);
+			public boolean onPreferenceChange(Preference preference,
+					Object password) {
+				// TODO CHECK NEW PASSWORD???
+				if (account != null) {
+					am.setPassword(account, (String) password);
 				}
 				return true;
 			}
 		});
-		if(account!=null){
+		if (account != null) {
 			password.setText(am.getPassword(account));
 		}
-		//TODO Add Option To Resync all
-		EditTextPreference url=(EditTextPreference)findPreference("syncServer");
-		if(account!=null){
+		// TODO Add Option To Resync all
+		EditTextPreference url = (EditTextPreference) findPreference("syncServer");
+		if (account != null) {
 			url.setText(am.getUserData(account, "url"));
 		}
 		url.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-			
+
 			@Override
 			public boolean onPreferenceChange(Preference preference, Object url) {
-				//TODO CHECK URL??
-				if(account!=null){
+				// TODO CHECK URL??
+				if (account != null) {
 					am.setUserData(account, "url", (String) url);
 				}
 				return true;
 			}
 		});
-		
-		ListPreference syncIntervall=(ListPreference)findPreference("syncFrequency");
-		syncIntervall.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-			
-			@Override
-			public boolean onPreferenceChange(Preference preference, Object newValue) {
-				if(account!=null){
-					ContentResolver.addPeriodicSync(account, Mirakel.AUTHORITY_TYP, null, ((Long)newValue)*60);
-				}
-				return true;
-			}
-		});
-			
-		
+
+		ListPreference syncIntervall = (ListPreference) findPreference("syncFrequency");
+		syncIntervall
+				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+					@Override
+					public boolean onPreferenceChange(Preference preference,
+							Object newValue) {
+						if (account != null) {
+							ContentResolver.addPeriodicSync(account,
+									Mirakel.AUTHORITY_TYP, null,
+									((Long) newValue) * 60);
+						}
+						return true;
+					}
+				});
+
 	}
-	
+
 	private Account getAccount(AccountManager am) {
 		try {
 			return am.getAccountsByType(Mirakel.ACCOUNT_TYP)[0];

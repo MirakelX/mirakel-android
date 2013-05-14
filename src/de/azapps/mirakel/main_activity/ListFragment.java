@@ -40,7 +40,7 @@ import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.list.ListMirakel;
 
 public class ListFragment extends Fragment {
-	//private static final String TAG = "ListsActivity";
+	// private static final String TAG = "ListsActivity";
 	private ListAdapter adapter;
 	protected MainActivity main;
 	protected EditText input;
@@ -48,7 +48,7 @@ public class ListFragment extends Fragment {
 	protected boolean EditName;
 	private boolean created = false;
 	private DragNDropListView listView;
-	private static final int LIST_RENAME=0, LIST_MOVE=1,  LIST_DESTROY=2;
+	private static final int LIST_RENAME = 0, LIST_MOVE = 1, LIST_DESTROY = 2;
 	protected static final String TAG = "ListFragment";
 	private boolean enableDrag;
 
@@ -64,13 +64,13 @@ public class ListFragment extends Fragment {
 		// Inflate the layout for this fragment
 		EditName = false;
 		created = true;
-		enableDrag=false;
+		enableDrag = false;
 		update();
 		return view;
 	}
-	
-	public void enable_drop(boolean drag){
-		enableDrag=drag;
+
+	public void enable_drop(boolean drag) {
+		enableDrag = drag;
 		update();
 	}
 
@@ -79,50 +79,49 @@ public class ListFragment extends Fragment {
 			return;
 		final List<ListMirakel> values = ListMirakel.all();
 
-		if(adapter!=null&&enableDrag==adapter.isDropEnabled()) {
+		if (adapter != null && enableDrag == adapter.isDropEnabled()) {
 			adapter.changeData(values);
 			adapter.notifyDataSetChanged();
 			return;
 		}
 
 		adapter = new ListAdapter(this.getActivity(), R.layout.lists_row,
-				values,enableDrag);
+				values, enableDrag);
 		listView = (DragNDropListView) view.findViewById(R.id.lists_list);
 		listView.setEnableDrag(enableDrag);
 		listView.setItemsCanFocus(true);
 		listView.setAdapter(adapter);
 		listView.requestFocus();
 		listView.setDragListener(new DragListener() {
-			
+
 			@Override
 			public void onStopDrag(View itemView) {
 				itemView.setVisibility(View.VISIBLE);
-				
+
 			}
-			
+
 			@Override
 			public void onStartDrag(View itemView) {
 				itemView.setVisibility(View.INVISIBLE);
-				
+
 			}
-			
+
 			@Override
 			public void onDrag(int x, int y, ListView listView) {
-				//Nothing
+				// Nothing
 			}
 		});
 		listView.setDropListener(new DropListener() {
-			
+
 			@Override
 			public void onDrop(int from, int to) {
-				if(from!=to){
+				if (from != to) {
 					adapter.onDrop(from, to);
 					adapter.notifyDataSetChanged();
 					listView.requestLayout();
 				}
-				Log.e(TAG,"Drop from:"+from+" to:"+to);
-				
-				
+				Log.e(TAG, "Drop from:" + from + " to:" + to);
+
 			}
 		});
 
@@ -144,22 +143,25 @@ public class ListFragment extends Fragment {
 			public boolean onItemLongClick(AdapterView<?> parent, View item,
 					int position, final long id) {
 
-				AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-				ListMirakel list=values.get((int) id);
+				AlertDialog.Builder builder = new AlertDialog.Builder(
+						getActivity());
+				ListMirakel list = values.get((int) id);
 				builder.setTitle(list.getName());
-				List<CharSequence> items = new ArrayList<CharSequence>(
-						Arrays.asList(getActivity().getResources().getStringArray(R.array.list_actions_items)));
+				List<CharSequence> items = new ArrayList<CharSequence>(Arrays
+						.asList(getActivity().getResources().getStringArray(
+								R.array.list_actions_items)));
 
 				builder.setItems(items.toArray(new CharSequence[items.size()]),
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int item) {
 								ListMirakel list = values.get((int) id);
-								switch(item) {
+								switch (item) {
 								case LIST_RENAME:
 									editList(list);
 									break;
 								case LIST_MOVE:
-									Toast.makeText(getActivity(), "TODO", Toast.LENGTH_SHORT).show();
+									Toast.makeText(getActivity(), "TODO",
+											Toast.LENGTH_SHORT).show();
 									break;
 								case LIST_DESTROY:
 									main.destroyList(list);
@@ -170,7 +172,7 @@ public class ListFragment extends Fragment {
 
 				AlertDialog dialog = builder.create();
 				dialog.show();
-				
+
 				return false;
 			}
 		});
@@ -198,6 +200,7 @@ public class ListFragment extends Fragment {
 
 	/**
 	 * Edit the name of the List
+	 * 
 	 * @param list
 	 */
 	void editList(final ListMirakel list) {
@@ -214,7 +217,7 @@ public class ListFragment extends Fragment {
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
-						//		List_mirakle list = values.get((int) id);
+								// List_mirakle list = values.get((int) id);
 								list.setName(input.getText().toString());
 								list.save();
 								update();

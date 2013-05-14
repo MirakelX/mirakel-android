@@ -35,7 +35,7 @@ class ListBase {
 	}
 
 	ListBase(int id, String name, short sort_by, String created_at,
-			String updated_at, int sync_state, int lft,int rgt) {
+			String updated_at, int sync_state, int lft, int rgt) {
 		this.setId(id);
 		this.setCreatedAt(created_at);
 		this.setName(name);
@@ -124,8 +124,6 @@ class ListBase {
 		cv.put("rgt", rgt);
 		return cv;
 	}
-
-
 
 	public int getSyncState() {
 		return syncState;

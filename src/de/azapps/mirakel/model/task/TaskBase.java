@@ -57,7 +57,6 @@ class TaskBase {
 		this.setSyncState(sync_state);
 	}
 
-
 	TaskBase() {
 
 	}
@@ -103,9 +102,9 @@ class TaskBase {
 	}
 
 	public String getContent() {
-		try{
+		try {
 			return content.trim().replace("\\n", "\n");
-		}catch(NullPointerException e){
+		} catch (NullPointerException e) {
 			return "";
 		}
 	}

@@ -18,31 +18,40 @@
  ******************************************************************************/
 package de.azapps.mirakel;
 
-public class Pair<F,S> {
+public class Pair<F, S> {
 
-	  private final F left;
-	  private final S right;
+	private final F left;
+	private final S right;
 
-	  public Pair(F left, S right) {
-	    this.left = left;
-	    this.right = right;
-	  }
+	public Pair(F left, S right) {
+		this.left = left;
+		this.right = right;
+	}
 
-	  public F getLeft() { return left; }
-	  public S getRight() { return right; }
+	public F getLeft() {
+		return left;
+	}
 
-	  @Override
-	  public int hashCode() { return left.hashCode() ^ right.hashCode(); }
-	  
-	  @SuppressWarnings("rawtypes")
-	  @Override
-	  public boolean equals(Object o) {
-	    if (o == null) return false;
-	    if (!(o instanceof Pair)) return false;
-	    @SuppressWarnings("unchecked")
-		Pair<F,S> pairo = (Pair) o;
-	    return this.left.equals(pairo.getLeft()) &&
-	           this.right.equals(pairo.getRight());
+	public S getRight() {
+		return right;
+	}
+
+	@Override
+	public int hashCode() {
+		return left.hashCode() ^ right.hashCode();
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	public boolean equals(Object o) {
+		if (o == null)
+			return false;
+		if (!(o instanceof Pair))
+			return false;
+		@SuppressWarnings("unchecked")
+		Pair<F, S> pairo = (Pair) o;
+		return this.left.equals(pairo.getLeft())
+				&& this.right.equals(pairo.getRight());
 
 	}
 }
