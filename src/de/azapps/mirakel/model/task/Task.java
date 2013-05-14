@@ -23,8 +23,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -303,68 +308,42 @@ public class Task extends TaskBase {
 	 * @return
 	 */
 	public static List<Task> parse_json(String result) {
-		if (result.length() < 3)
-			return null;
-		List<Task> tasks = new ArrayList<Task>();
-		result = result.substring(1, result.length() - 2);
-		String tasks_str[] = result.split(",");
-		Task t = null;
-		for (int i = 0; i < tasks_str.length; i++) {
-			String key_value[] = tasks_str[i].split(":");
-			if (key_value.length < 2)
-				continue;
-			String key = key_value[0];
-			if (key.equals("{\"content\"")) {
-				t = new Task();
-				t.setSyncState(Mirakel.SYNC_STATE_NOTHING);
-				if (key_value[1].indexOf("null")<2&&key_value[1].indexOf("null")>=0) {
-					t.setContent("");
-				} else{
-					t.setContent(key_value[1].substring(1,
-							key_value[1].length() - 1));
-				}	
-			} else if (key.equals("\"done\"")) {
-				t.setDone(key_value[1].indexOf("true") != -1);
-			} else if (key.equals("\"due\"")) {
+		try{
+			List<Task> tasks = new ArrayList<Task>();
+			Iterator<JsonElement> i =  new JsonParser().parse(result).getAsJsonArray().iterator();
+			while (i.hasNext()) {
+				JsonObject el=(JsonObject)i.next();
+				Task t=new Task();
+				t.setId(el.get("id").getAsLong());
+				t.setName(el.get("name").getAsString());
+				t.setContent(el.get("content").getAsString()==null?"":el.get("content").getAsString());
+				t.setPriority(el.get("priority").getAsInt());
+				t.setList(ListMirakel.getList(el.get("list_id").getAsInt()));
+				t.setCreatedAt(el.get("created_at").getAsString().replace(":", ""));
+				t.setUpdatedAt(el.get("updated_at").getAsString().replace(":", ""));
+				t.setDone(el.get("done").getAsBoolean());
+				try{
 				GregorianCalendar temp = new GregorianCalendar();
-				try {
 					temp.setTime(new SimpleDateFormat("yyyy-MM-dd", Locale
-							.getDefault()).parse(key_value[1].substring(1,
-							key_value[1].length() - 1)));
+							.getDefault()).parse(el.get("due").getAsString()));
+					t.setDue(temp);
 				} catch (Exception e) {
-					temp = null;
-					// temp.setTime(new Date(0));
-					Log.e(TAG,
-							"Can not parse Date! "
-									+ (key_value[1].substring(1,
-											key_value[1].length() - 1)));
+					t.setDue(null);
+					Log.v(TAG,"Due is null");
+					if(Mirakel.DEBUG)
+						Log.e(TAG,"Can not parse Date! "+ el.get("due").getAsString());
 				}
-				t.setDue(temp);
-			} else if (key.equals("\"id\"")) {
-				t.setId(Long.parseLong(key_value[1]));
-			} else if (key.equals("\"list_id\"")) {
-				t.setList(ListMirakel.getList((int) Long
-						.parseLong(key_value[1])));
-			} else if (key.equals("\"name\"")) {
-				t.setName(key_value[1].substring(1, key_value[1].length() - 1));
-			} else if (key.equals("\"priority\"")) {
-				t.setPriority(Integer.parseInt(key_value[1]));
-			} else if (key.equals("\"created_at\"")) {
-				t.setCreatedAt(key_value.length == 4 ? key_value[1]
-						.substring(1)
-						+ key_value[2]
-						+ key_value[3].substring(0, key_value[3].length() - 1)
-						: "");
-			} else if (key.equals("\"updated_at\"")) {
-				t.setUpdatedAt(key_value.length == 4 ? key_value[1]
-						.substring(1)
-						+ key_value[2]
-						+ key_value[3].substring(0, key_value[3].length() - 1)
-						: "");
 				tasks.add(t);
 			}
+			return tasks;
+		}catch(Exception e){
+			Log.e(TAG,"Cannot parse response");
+			if(Mirakel.DEBUG){
+				Log.e(TAG,result);
+				Log.d(TAG,Log.getStackTraceString(e));
+			}
 		}
-		return tasks;
+		return new ArrayList<Task>();
 	}
 
 	/**
