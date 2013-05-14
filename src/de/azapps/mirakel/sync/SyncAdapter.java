@@ -77,11 +77,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	private List<Pair<Network, String>> SyncLists;
 	private List<Pair<Network, String>> SyncTasks;
 
-	// private ListMirakel[] ServerLists;
-	// private List<Task> ServerTasks;
-
-	// private boolean finish_list;
-	// private boolean finish_task;
 	private int listAdd;
 	private int count;
 	private String Token;
@@ -92,7 +87,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	public SyncAdapter(Context context, boolean autoInitialize) {
 		super(context, autoInitialize);
 		mContext = context;
-		// mAccountManager = AccountManager.get(context);
 	}
 
 	@Override
@@ -104,9 +98,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		AddTasks = new ArrayList<Pair<Network, String>>();
 		SyncLists = new ArrayList<Pair<Network, String>>();
 		SyncTasks = new ArrayList<Pair<Network, String>>();
-		/*
-		 * finish_list = false; finish_task = false;
-		 */
 		listAdd = 0;
 		count = 0;
 		finishList = false;
@@ -182,7 +173,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		for (ListMirakel list : lists_local) {
 			add_list(list);
 		}
-		Log.d(TAG, "Execute Sync");
+		if (Mirakel.DEBUG)
+			Log.d(TAG, "Execute Sync");
 		execute(DeleteTasks);
 		execute(DeleteLists);
 		execute(SyncLists);
@@ -337,75 +329,18 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	 */
 	protected void merge_with_server(ListMirakel[] lists_server) {
 		for (ListMirakel list_server : lists_server) {
-			list_server.setUpdatedAt(list_server.getUpdatedAt().substring(0,13)+list_server.getUpdatedAt().substring(14,16)+list_server.getUpdatedAt().substring(17));
-			list_server.setCreatedAt(list_server.getCreatedAt().substring(0,13)+list_server.getCreatedAt().substring(14,16)+list_server.getCreatedAt().substring(17));
+			list_server.setCreatedAt(list_server.getCreatedAt()
+					.replace(":", ""));
+			list_server.setUpdatedAt(list_server.getUpdatedAt()
+					.replace(":", ""));
 			ListMirakel list = ListMirakel.getListForSync(list_server.getId());
 			if (list == null) {
-				if(Mirakel.DEBUG)
-					Log.d(TAG,"add list from Server");
+				if (Mirakel.DEBUG)
+					Log.d(TAG, "add list from Server");
 				addListFromServer(list_server);
 				continue;
 			} else {
-				if (list.getSyncState() == Mirakel.SYNC_STATE_NOTHING
-						|| list.getSyncState() == Mirakel.SYNC_STATE_NEED_SYNC) {
-					DateFormat df = new SimpleDateFormat(
-							mContext.getString(R.string.dateTimeFormat),
-							Locale.US);// use ASCII-Formating
-					try {
-						if (df.parse(list.getUpdatedAt()).getTime() > df.parse(
-								list_server.getUpdatedAt()).getTime()) {
-							if(Mirakel.DEBUG)
-								Log.d(TAG,"Sync List to server");
-							// local list newer,
-							sync_list(list);
-						} else {
-							if(Mirakel.DEBUG)
-								Log.d(TAG,"Sync List from server");
-							// server list newer
-							list_server.setLft(list.getLft());
-							list_server.setRgt(list.getRgt());
-							list_server
-									.setSyncState(Mirakel.SYNC_STATE_IS_SYNCED);
-							list_server.save();
-						}
-					} catch (ParseException e) {
-						Log.e(TAG, "Unabel to parse Dates");
-						e.printStackTrace();
-					}
-				} else if (list.getSyncState() == Mirakel.SYNC_STATE_ADD) {
-					Cursor c = Mirakel.getReadableDatabase().rawQuery(
-							"Select max(_id) from " + ListMirakel.TABLE
-									+ " where not sync_state="
-									+ Mirakel.SYNC_STATE_ADD, null);
-					c.moveToFirst();
-					if (c.getCount() != 0) {
-						int diff = c.getInt(0) - list.getId() < 0 ? 1 : c
-								.getInt(0) - list.getId();
-						c.close();
-						c = Mirakel.getReadableDatabase().rawQuery(
-								"Select _id from " + ListMirakel.TABLE
-										+ " WHERE sync_state="
-										+ Mirakel.SYNC_STATE_ADD + " and _id>="
-										+ list.getId(), null);
-						c.moveToLast();
-						while (!c.isBeforeFirst()) {
-							Mirakel.getWritableDatabase().execSQL(
-									"UPDATE " + ListMirakel.TABLE
-											+ " SET _id=_id+" + diff
-											+ " WHERE sync_state="
-											+ Mirakel.SYNC_STATE_ADD
-											+ " and _id=" + c.getInt(0));
-							c.moveToPrevious();
-						}
-						c.close();
-						if(Mirakel.DEBUG)
-							Log.d(TAG,"Move list+Add list from server");
-						addListFromServer(list_server);
-						//list_server.save();
-					}
-				} else {
-					Log.wtf(TAG, "Syncronisation Error, Listmerge");
-				}
+				listMerge(list_server, list);
 			}
 		}
 		// Remove Tasks, which are deleted from server
@@ -420,16 +355,80 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						+ Mirakel.SYNC_STATE_IS_SYNCED);
 	}
 
+	private void listMerge(ListMirakel list_server, ListMirakel list) {
+		if (list.getSyncState() == Mirakel.SYNC_STATE_NOTHING
+				|| list.getSyncState() == Mirakel.SYNC_STATE_NEED_SYNC) {
+			DateFormat df = new SimpleDateFormat(
+					mContext.getString(R.string.dateTimeFormat), Locale.US);// use
+																			// ASCII-Formating
+			try {
+				if (df.parse(list.getUpdatedAt()).getTime() > df.parse(
+						list_server.getUpdatedAt()).getTime()) {
+					if (Mirakel.DEBUG)
+						Log.d(TAG, "Sync List to server");
+					// local list newer,
+					sync_list(list);
+				} else {
+					if (Mirakel.DEBUG)
+						Log.d(TAG, "Sync List from server");
+					// server list newer
+					list_server.setLft(list.getLft());
+					list_server.setRgt(list.getRgt());
+					list_server.setSyncState(Mirakel.SYNC_STATE_IS_SYNCED);
+					list_server.save();
+				}
+			} catch (ParseException e) {
+				Log.e(TAG, "Unabel to parse Dates");
+				if (Mirakel.DEBUG)
+					Log.w(TAG, Log.getStackTraceString(e));
+			}
+		} else if (list.getSyncState() == Mirakel.SYNC_STATE_ADD) {
+			Cursor c = Mirakel.getReadableDatabase()
+					.rawQuery(
+							"Select max(_id) from " + ListMirakel.TABLE
+									+ " where not sync_state="
+									+ Mirakel.SYNC_STATE_ADD, null);
+			c.moveToFirst();
+			if (c.getCount() != 0) {
+				int diff = c.getInt(0) - list.getId() < 0 ? 1 : c.getInt(0)
+						- list.getId();
+				c.close();
+				c = Mirakel.getReadableDatabase().rawQuery(
+						"Select _id from " + ListMirakel.TABLE
+								+ " WHERE sync_state=" + Mirakel.SYNC_STATE_ADD
+								+ " and _id>=" + list.getId(), null);
+				c.moveToLast();
+				while (!c.isBeforeFirst()) {
+					Mirakel.getWritableDatabase().execSQL(
+							"UPDATE " + ListMirakel.TABLE + " SET _id=_id+"
+									+ diff + " WHERE sync_state="
+									+ Mirakel.SYNC_STATE_ADD + " and _id="
+									+ c.getInt(0));
+					c.moveToPrevious();
+				}
+				c.close();
+				if (Mirakel.DEBUG)
+					Log.d(TAG, "Move list+Add list from server");
+				addListFromServer(list_server);
+			}
+		} else if (list.getSyncState() == Mirakel.SYNC_STATE_IS_SYNCED) {
+			list.setSyncState(Mirakel.SYNC_STATE_NOTHING);
+			list.save();
+			listMerge(list_server, list);
+		} else {
+			Log.wtf(TAG, "Syncronisation Error, Listmerge");
+		}
+	}
+
 	private void addListFromServer(ListMirakel list_server) {
 		list_server.setSyncState(Mirakel.SYNC_STATE_IS_SYNCED);
-		long id = Mirakel.getWritableDatabase()
-				.insert(ListMirakel.TABLE, null,
-						list_server.getContentValues());
+		long id = Mirakel.getWritableDatabase().insert(ListMirakel.TABLE, null,
+				list_server.getContentValues());
 		// TODO Get this from server!!
 		Cursor c = Mirakel.getReadableDatabase().rawQuery(
 				"Select max(lft),max(rgt) from " + ListMirakel.TABLE
-						+ " where not sync_state="
-						+ Mirakel.SYNC_STATE_DELETE, null);
+						+ " where not sync_state=" + Mirakel.SYNC_STATE_DELETE,
+				null);
 		c.moveToFirst();
 		int lft = 0, rgt = 0;
 		if (c.getCount() != 0) {
@@ -493,7 +492,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				new DataDownloadCommand() {
 					@Override
 					public void after_exec(String result) {
-						// Do Nothing
 						finishSync();
 					}
 				}, Mirakel.HttpMode.PUT, data, mContext, Token), ServerUrl
@@ -544,8 +542,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 									Mirakel.getWritableDatabase()
 											.execSQL(
 													"UPDATE "
-															// get
-															// Server-Tasklist
 															+ Task.TABLE
 															+ " SET _id=_id+"
 															+ diff
@@ -582,74 +578,16 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		if (tasks_server == null)
 			return;
 		for (Task task_server : tasks_server) {
-			//task_server.setUpdatedAt(task_server.getUpdated_at().substring(0,13)+task_server.getUpdated_at().substring(13,16)+task_server.getUpdated_at().substring(16));
-			//task_server.setCreatedAt(task_server.getCreated_at().substring(0,13)+task_server.getCreated_at().substring(13,16)+task_server.getCreated_at().substring(16));
 			Task task = Task.getToSync(task_server.getId());
 			if (task == null) {
 				// New Task from server, add to db
-				if(Mirakel.DEBUG)
-					Log.d(TAG,"Add task from server to list "+task_server.getList().getId());
+				if (Mirakel.DEBUG)
+					Log.d(TAG, "Add task from server to list "
+							+ task_server.getList().getId());
 				addTaskFromServer(task_server);
 				continue;
 			} else {
-				if (task.getSync_state() == Mirakel.SYNC_STATE_NEED_SYNC
-						|| task.getSync_state() == Mirakel.SYNC_STATE_NOTHING) {
-					DateFormat df = new SimpleDateFormat(
-							mContext.getString(R.string.dateTimeFormat),
-							Locale.US);// use ASCII-Formating
-					try {
-						if (df.parse(task.getUpdated_at()).getTime() > df.parse(
-								task_server.getUpdated_at()).getTime()) {
-							// local task newer, push to server
-							if(Mirakel.DEBUG)
-								Log.d(TAG,"Sync task to server from list "+task.getList().getId());
-							sync_task(task);
-						} else {
-							// server task newer, use this task instated local
-							if(Mirakel.DEBUG)
-								Log.d(TAG,"Sync task from server to list "+task_server.getList().getId());
-							task_server
-									.setSyncState(Mirakel.SYNC_STATE_IS_SYNCED);
-							task_server.save();
-						}
-					} catch (ParseException e) {
-						Log.e(TAG, "Unabel to parse Dates");
-						e.printStackTrace();
-					}
-				} else if (task.getSync_state() == Mirakel.SYNC_STATE_ADD) {
-					Cursor c = Mirakel.getReadableDatabase().rawQuery(
-							"Select max(_id) from " + Task.TABLE
-									+ " where not sync_state="
-									+ Mirakel.SYNC_STATE_ADD, null);
-					c.moveToFirst();
-					if (c.getCount() != 0) {
-						long diff = c.getInt(0) - task.getId() < 0 ? 1 : c
-								.getInt(0) - task.getId();
-						c.close();
-						c = Mirakel.getReadableDatabase().rawQuery(
-								"Select _id from " + Task.TABLE
-										+ " WHERE sync_state="
-										+ Mirakel.SYNC_STATE_ADD + " and _id>="
-										+ task.getId(), null);
-						c.moveToLast();
-						while (!c.isBeforeFirst()) {
-							Mirakel.getWritableDatabase().execSQL(
-									"UPDATE " + Task.TABLE + " SET _id=_id+"
-											+ diff + " WHERE sync_state="
-											+ Mirakel.SYNC_STATE_ADD
-											+ " and _id=" + c.getInt(0));
-							c.moveToPrevious();
-						}
-						c.close();
-						if(Mirakel.DEBUG)
-							Log.d(TAG,"Move task + add task from server to list "+task_server.getList().getId());
-						addTaskFromServer(task_server);
-					}
-				} else if (task.getSync_state() == Mirakel.SYNC_STATE_DELETE) {
-					// Nothing
-				} else {
-					Log.wtf(TAG, "Syncronisation Error, Taskmerge");
-				}
+				mergeTask(task_server, task);
 			}
 		}
 		// Remove Tasks, which are deleted from server
@@ -664,24 +602,91 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 	}
 
+	private void mergeTask(Task task_server, Task task) {
+		if (task.getSync_state() == Mirakel.SYNC_STATE_NEED_SYNC
+				|| task.getSync_state() == Mirakel.SYNC_STATE_NOTHING) {
+			DateFormat df = new SimpleDateFormat(
+					mContext.getString(R.string.dateTimeFormat), Locale.US);// use
+																			// ASCII-Formating
+			try {
+				if (df.parse(task.getUpdated_at()).getTime() > df.parse(
+						task_server.getUpdated_at()).getTime()) {
+					// local task newer, push to server
+					if (Mirakel.DEBUG)
+						Log.d(TAG, "Sync task to server from list "
+								+ task.getList().getId());
+					sync_task(task);
+				} else {
+					// server task newer, use this task instated local
+					if (Mirakel.DEBUG)
+						Log.d(TAG, "Sync task from server to list "
+								+ task_server.getList().getId());
+					task_server.setSyncState(Mirakel.SYNC_STATE_IS_SYNCED);
+					task_server.save();
+				}
+			} catch (ParseException e) {
+				Log.e(TAG, "Unabel to parse Dates");
+				if (Mirakel.DEBUG)
+					Log.w(TAG, Log.getStackTraceString(e));
+			}
+		} else if (task.getSync_state() == Mirakel.SYNC_STATE_ADD) {
+			Cursor c = Mirakel.getReadableDatabase()
+					.rawQuery(
+							"Select max(_id) from " + Task.TABLE
+									+ " where not sync_state="
+									+ Mirakel.SYNC_STATE_ADD, null);
+			c.moveToFirst();
+			if (c.getCount() != 0) {
+				long diff = c.getInt(0) - task.getId() < 0 ? 1 : c.getInt(0)
+						- task.getId();
+				c.close();
+				c = Mirakel.getReadableDatabase().rawQuery(
+						"Select _id from " + Task.TABLE + " WHERE sync_state="
+								+ Mirakel.SYNC_STATE_ADD + " and _id>="
+								+ task.getId(), null);
+				c.moveToLast();
+				while (!c.isBeforeFirst()) {
+					Mirakel.getWritableDatabase().execSQL(
+							"UPDATE " + Task.TABLE + " SET _id=_id+" + diff
+									+ " WHERE sync_state="
+									+ Mirakel.SYNC_STATE_ADD + " and _id="
+									+ c.getInt(0));
+					c.moveToPrevious();
+				}
+				c.close();
+				if (Mirakel.DEBUG)
+					Log.d(TAG, "Move task + add task from server to list "
+							+ task_server.getList().getId());
+				addTaskFromServer(task_server);
+			}
+		} else if (task.getSync_state() == Mirakel.SYNC_STATE_DELETE) {
+			// Nothing
+		} else if (task.getSync_state() == Mirakel.SYNC_STATE_IS_SYNCED) {
+			task.setSyncState(Mirakel.SYNC_STATE_NOTHING);
+			task.save();
+			mergeTask(task_server, task);
+		} else {
+			Log.wtf(TAG, "Syncronisation Error, Taskmerge");
+		}
+	}
+
 	private void addTaskFromServer(Task task_server) {
 
-		//task_server.setUpdatedAt();
+		// task_server.setUpdatedAt();
 		task_server.setSyncState(Mirakel.SYNC_STATE_IS_SYNCED);
-		long id = Mirakel.getWritableDatabase().insert(Task.TABLE,
-				null, task_server.getContentValues());
+		long id = Mirakel.getWritableDatabase().insert(Task.TABLE, null,
+				task_server.getContentValues());
 		if (id > task_server.getId()) {
 			long diff = id - task_server.getId();
 			Mirakel.getWritableDatabase().execSQL(
 					"UPDATE " + Task.TABLE + " SET _id=_id+" + diff
-							+ " WHERE sync_state="
-							+ Mirakel.SYNC_STATE_ADD + "and _id>"
-							+ task_server.getId());
+							+ " WHERE sync_state=" + Mirakel.SYNC_STATE_ADD
+							+ "and _id>" + task_server.getId());
 		}
 		ContentValues values = new ContentValues();
 		values.put("_id", task_server.getId());
-		Mirakel.getWritableDatabase().update(Task.TABLE, values,
-				"_id=" + id, null);
+		Mirakel.getWritableDatabase().update(Task.TABLE, values, "_id=" + id,
+				null);
 	}
 
 }
