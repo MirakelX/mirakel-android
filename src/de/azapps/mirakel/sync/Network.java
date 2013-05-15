@@ -189,37 +189,43 @@ public class Network extends AsyncTask<String, Integer, String> {
 		try {
 			switch (Mode) {
 			case Mirakel.HttpMode.GET:
-				Log.v(TAG, "GET " + myurl);
+				if(Mirakel.DEBUG)
+					Log.v(TAG, "GET " + myurl);
 				HttpGet get = new HttpGet();
 				get.setURI(new URI(myurl));
 				response = httpClient.execute(get);
 				break;
 			case Mirakel.HttpMode.PUT:
-				Log.v(TAG, "PUT " + myurl);
+				if(Mirakel.DEBUG)
+					Log.v(TAG, "PUT " + myurl);
 				HttpPut put = new HttpPut();
 				put.setURI(new URI(myurl));
 				put.setEntity(new UrlEncodedFormEntity(HeaderData, HTTP.UTF_8));
 				response = httpClient.execute(put);
 				break;
 			case Mirakel.HttpMode.POST:
-				Log.v(TAG, "POST " + myurl);
+				if(Mirakel.DEBUG)
+					Log.v(TAG, "POST " + myurl);
 				HttpPost post = new HttpPost();
 				post.setURI(new URI(myurl));
 				post.setEntity(new UrlEncodedFormEntity(HeaderData, HTTP.UTF_8));
 				response = httpClient.execute(post);
 				break;
 			case Mirakel.HttpMode.DELETE:
-				Log.v(TAG, "DELETE " + myurl);
+				if(Mirakel.DEBUG)
+					Log.v(TAG, "DELETE " + myurl);
 				HttpDelete delete = new HttpDelete();
 				delete.setURI(new URI(myurl));
 				response = httpClient.execute(delete);
 				break;
 			default:
-				Log.e("HTTP-MODE", "Unknown Http-Mode");
+				Log.wtf("HTTP-MODE", "Unknown Http-Mode");
 				return null;
 			}
 		} catch (Exception e) {
-			Log.w(TAG, Log.getStackTraceString(e));
+			Log.e(TAG, "No Network");
+			if(Mirakel.DEBUG)
+				Log.w(TAG, Log.getStackTraceString(e));
 			return "";
 		}
 		Log.v(TAG, "Http-Status: " + response.getStatusLine().getStatusCode());
