@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -29,6 +31,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
@@ -369,12 +373,14 @@ public class MainActivity extends FragmentActivity implements
 		} else if (currentPosition == LIST_FRAGMENT) {
 			listState = listFragment.getState();
 		}
+		int pos;
 		switch (position) {
 		case 0:
 			newmenu = R.menu.activity_list;
 			this.setTitle(getString(R.string.list_title));
 			if (listState != null)
 				listFragment.setState(listState);
+			pos=2;
 			break;
 		case 1:
 			listFragment.enable_drop(false);
@@ -382,11 +388,13 @@ public class MainActivity extends FragmentActivity implements
 			this.setTitle(currentList.getName());
 			if (tasksState != null && currentPosition != LIST_FRAGMENT)
 				tasksFragment.setState(tasksState);
+			pos=3;
 			break;
 		case 2:
 			newmenu = R.menu.activity_task;
 			taskFragment.update();
 			this.setTitle(currentTask.getName());
+			pos=3;
 			break;
 		default:
 			Toast.makeText(getApplicationContext(), "Where are the dragons?",
@@ -394,13 +402,24 @@ public class MainActivity extends FragmentActivity implements
 			return;
 		}
 		currentPosition = position;
-
+		
 		// Configure to use the desired menu
 
 		menu.clear();
 		MenuInflater inflater = getMenuInflater();
-
+		
 		inflater.inflate(newmenu, menu);
+
+		AccountManager am=AccountManager.get(this);
+		 ConnectivityManager cm =(ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+	    NetworkInfo netInfo = cm.getActiveNetworkInfo();
+	    Account[] a=am.getAccountsByType(Mirakel.ACCOUNT_TYP); 
+	    if (netInfo == null || !netInfo.isConnectedOrConnecting()||a.length<1) {
+	    	menu.getItem(pos).setVisible(false);
+	    }else{
+	    	menu.getItem(pos).setVisible(true);
+	    }
+
 	}
 
 	@Override
