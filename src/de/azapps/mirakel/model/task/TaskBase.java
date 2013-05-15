@@ -182,7 +182,7 @@ class TaskBase {
 		cv.put("name", name);
 		cv.put("content", content);
 		cv.put("done", done);
-		String due = (this.due == null ? "" : new SimpleDateFormat(
+		String due = (this.due == null ? null : new SimpleDateFormat(
 				"yyyy-MM-dd", Locale.getDefault()).format(new Date(this.due
 				.getTimeInMillis())));
 		cv.put("due", due);
