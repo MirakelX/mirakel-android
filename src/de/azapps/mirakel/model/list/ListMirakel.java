@@ -287,7 +287,7 @@ public class ListMirakel extends ListBase {
 	public static ListMirakel first() {
 		Cursor cursor = database.query(ListMirakel.TABLE, allColumns,
 				"not sync_state=" + Network.SYNC_STATE.DELETE, null, null,
-				null, "_id ASC");
+				null, "lft ASC");
 		ListMirakel list = null;
 		cursor.moveToFirst();
 		if (!cursor.isAfterLast()) {
