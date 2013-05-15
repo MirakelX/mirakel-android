@@ -32,6 +32,7 @@ import android.widget.CheckBox;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.main_activity.MainActivity;
+import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.sync.AuthenticatorActivity;
 
@@ -44,9 +45,9 @@ public class StartActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		int version = Mirakel.getReadableDatabase().getVersion();
-		if (version != Mirakel.DATABASE_VERSION) {
-			Log.v(TAG, "SET DB-VERSION " + Mirakel.DATABASE_VERSION);
-			Mirakel.getReadableDatabase().setVersion(Mirakel.DATABASE_VERSION);
+		if (version != DatabaseHelper.DATABASE_VERSION) {
+			Log.v(TAG, "SET DB-VERSION " + DatabaseHelper.DATABASE_VERSION);
+			Mirakel.getReadableDatabase().setVersion(DatabaseHelper.DATABASE_VERSION);
 		}
 		setContentView(R.layout.activity_start);
 		Button start = (Button) findViewById(R.id.Start);

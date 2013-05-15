@@ -37,9 +37,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String TAG = "DatabaseHelper";
 	private Context context;
+	public static final int DATABASE_VERSION = 7;
 
 	public DatabaseHelper(Context ctx) {
-		super(ctx, "mirakel.db", null, Mirakel.DATABASE_VERSION);
+		super(ctx, "mirakel.db", null, DATABASE_VERSION);
 		context = ctx;
 	}
 
@@ -55,18 +56,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ "updated_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
 				+ "sync_state INTEGER DEFAULT " + Network.SYNC_STATE.ADD + ", "
 				+ "lft INTEGER, " + "rgt INTEGER " + ")");
-		db.execSQL("CREATE TABLE "
-				+ Task.TABLE
-				+ " ("
-				+ "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
-				+ "list_id INTEGER REFERENCES lists (_id) ON DELETE CASCADE ON UPDATE CASCADE, "
-				+ "name TEXT NOT NULL, " + "content TEXT NOT NULL DEFAULT '', "
-				+ "done INTEGER NOT NULL DEFAULT 0, "
-				+ "priority INTEGER NOT NULL DEFAULT 0, "
-				+ "due STRING NOT NULL DEFAULT '', "
-				+ "created_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
-				+ "updated_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
-				+ "sync_state INTEGER DEFAULT " + Network.SYNC_STATE.ADD + ")");
+		createTasksTableString(db);
 		db.execSQL("INSERT INTO lists (name) VALUES ('"
 				+ context.getString(R.string.inbox) + "')");
 		db.execSQL("INSERT INTO tasks (list_id,name) VALUES (1,'"
@@ -84,79 +74,77 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		case 1:// Nothing, Startversion
 		case 2:
 			// Add sync-state
-			String update = "Alter Table " + Task.TABLE
+			;
+			db.execSQL("Alter Table " + Task.TABLE
 					+ " add column sync_state INTEGER DEFAULT "
-					+ Network.SYNC_STATE.ADD + ";";
-			db.execSQL(update);
-			update = "Alter Table " + ListMirakel.TABLE
+					+ Network.SYNC_STATE.ADD + ";");
+			db.execSQL("Alter Table " + ListMirakel.TABLE
 					+ " add column sync_state INTEGER DEFAULT "
-					+ Network.SYNC_STATE.ADD + ";";
-			db.execSQL(update);
-			update = "CREATE TABLE settings ("
+					+ Network.SYNC_STATE.ADD + ";");
+			db.execSQL("CREATE TABLE settings ("
 					+ "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
 					+ "server TEXT NOT NULL," + "user TEXT NOT NULL,"
-					+ "password TEXT NOT NULL" + ")";
-			db.execSQL(update);
+					+ "password TEXT NOT NULL" + ")");
 
-			update = "INSERT INTO settings (_id,server,user,password)VALUES ('0','localhost','','')";
-			db.execSQL(update);
+			db.execSQL("INSERT INTO settings (_id,server,user,password)VALUES ('0','localhost','','')");
 		case 3:
 			// Add lft,rgt to lists
 			// Set due to null, instate of 1970 in Tasks
 			// Manage fromate of updated_at created_at in Tasks/Lists
 			// drop settingssettings
 
-			update = "UPDATE " + Task.TABLE
-					+ " set due='null' where due='1970-01-01'";
-			db.execSQL(update);
+			db.execSQL("UPDATE " + Task.TABLE
+					+ " set due='null' where due='1970-01-01'");
 			String newDate = new SimpleDateFormat(
 					context.getString(R.string.dateTimeFormat), Locale.US)
 					.format(new Date());
-			update = "UPDATE " + Task.TABLE + " set created_at='" + newDate
-					+ "'";
-			db.execSQL(update);
-			update = "UPDATE " + Task.TABLE + " set updated_at='" + newDate
-					+ "'";
-			db.execSQL(update);
-			update = "UPDATE " + ListMirakel.TABLE + " set created_at='"
-					+ newDate + "'";
-			db.execSQL(update);
-			update = "UPDATE " + ListMirakel.TABLE + " set updated_at='"
-					+ newDate + "'";
-			db.execSQL(update);
-			update = "Drop TABLE IF EXISTS settings";
-			db.execSQL(update);
-			db.execSQL("PRAGMA writable_schema=ON;");
-			String c = "CREATE TABLE tasks ("
-					+ "_id INTEGER PRIMARY KEY AUTOINCREMENT"
-					+ ", list_id INTEGER REFERENCES lists (_id) ON DELETE CASCADE ON UPDATE CASCADE"
-					+ ", name TEXT NOT NULL, content TEXT"
-					+ ", done INTEGER NOT NULL DEFAULT 0"
-					+ ", priority INTEGER NOT NULL DEFAULT 0" + ", due INTEGER"
-					+ ", created_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP"
-					+ ", updated_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP"
-					+ ", sync_state INTEGER DEFAULT 1)";
-			db.execSQL("Update sqlite_master set sql='" + c
-					+ "' where name='tasks'");
-			db.execSQL("PRAGMA writable_schema=OFF;");
+			db.execSQL("UPDATE " + Task.TABLE + " set created_at='" + newDate
+					+ "'");
+			db.execSQL("UPDATE " + Task.TABLE + " set updated_at='" + newDate
+					+ "'");
+			db.execSQL("UPDATE " + ListMirakel.TABLE + " set created_at='"
+					+ newDate + "'");
+			db.execSQL("UPDATE " + ListMirakel.TABLE + " set updated_at='"
+					+ newDate + "'");
+			db.execSQL("Drop TABLE IF EXISTS settings");
 		case 4:
 			db.execSQL("UPDATE " + Task.TABLE
-					+ " set due=null where due='null'"); // Outch!
-			update = "Alter Table " + ListMirakel.TABLE
-					+ " add column lft INTEGER;";
-			db.execSQL(update);
-			update = "Alter Table " + ListMirakel.TABLE
-					+ " add column rgt INTEGER;";
-			db.execSQL(update);
+					+ " set due=null where due='null'");
+			db.execSQL("Alter Table " + ListMirakel.TABLE
+					+ " add column lft INTEGER;");
+			db.execSQL("Alter Table " + ListMirakel.TABLE
+					+ " add column rgt INTEGER;");
 		case 5:
 			createSpecialListsTable(db);
 			db.execSQL("update lists set lft=(select count(*) from (select * from lists) as a where a._id<lists._id)*2 +1;");
 			db.execSQL("update lists set rgt=lft+1;");
+		case 6:
+			/*
+			 * Remove NOT NULL
+			 */
+			db.execSQL("ALTER TABLE tasks RENAME TO tmp_tasks;");
+			createTasksTableString(db);
+			db.execSQL("INSERT INTO tasks (_id, list_id, name,done,priority,due,created_at,updated_at,sync_state) " +
+					"SELECT _id, list_id, name,done,priority,due,created_at,updated_at,sync_state " +
+					"FROM tmp_tasks;");
+			db.execSQL("DROP TABLE tmp_tasks");
+			db.execSQL("UPDATE tasks set due=null where due=''");
 		}
-		// db.execSQL("DROP TABLE IF EXISTS lists");
-		// db.execSQL("DROP TABLE IF EXISTS tasks");
-		// onCreate(db);
-
+	}
+	
+	private void createTasksTableString(SQLiteDatabase db){
+		db.execSQL("CREATE TABLE "
+				+ Task.TABLE
+				+ " ("
+				+ "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
+				+ "list_id INTEGER REFERENCES lists (_id) ON DELETE CASCADE ON UPDATE CASCADE, "
+				+ "name TEXT NOT NULL, " + "content TEXT, "
+				+ "done INTEGER NOT NULL DEFAULT 0, "
+				+ "priority INTEGER NOT NULL DEFAULT 0, "
+				+ "due STRING, "
+				+ "created_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
+				+ "updated_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
+				+ "sync_state INTEGER DEFAULT " + Network.SYNC_STATE.ADD + ")");
 	}
 
 	private void createSpecialListsTable(SQLiteDatabase db) {

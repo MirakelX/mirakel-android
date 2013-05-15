@@ -148,6 +148,7 @@ public class Task extends TaskBase {
 	 */
 	public static Task newTask(String name, long list_id, String content,
 			boolean done, GregorianCalendar due, int priority) {
+		
 		ContentValues values = new ContentValues();
 		values.put("name", name);
 		values.put("list_id", list_id);
@@ -164,7 +165,7 @@ public class Task extends TaskBase {
 				new SimpleDateFormat(
 						context.getString(R.string.dateTimeFormat), Locale.US)
 						.format(new Date()));
-		long insertId = database.insert(TABLE, null, values);
+		long insertId = database.insertOrThrow(TABLE, null, values);
 		Cursor cursor = database.query(TABLE, allColumns, "_id = " + insertId,
 				null, null, null, null);
 		cursor.moveToFirst();

@@ -33,7 +33,6 @@ public class Mirakel extends Application {
 			Color.parseColor("#00c400"), Color.parseColor("#3377FF"),
 			Color.parseColor("#FF7700"), Color.parseColor("#FF3333") };
 
-	public static final int DATABASE_VERSION = 6;
 
 	public static final String ACCOUNT_TYP = "de.azapps.mirakel";
 	public static final String AUTHORITY_TYP = "de.azapps.mirakel.provider";
