@@ -28,6 +28,8 @@
     <string name="sync_email">Email</string>
     <string name="sync_email_summary">Your email, you use for the Server</string>
     <string name="sync_password">Password</string>
+    <string name="inavlidPassword">Password is invalid!</string>
+    <string name="inavlidUrl">Url is invalid!</string>
     <string name="sync_password_summary">Your Password</string>
     <string name="sync_frequency">Frequency</string>
     <string name="sync_frequency_summary">How often should I sync?</string>
