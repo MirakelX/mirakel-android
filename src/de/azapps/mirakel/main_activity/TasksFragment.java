@@ -264,10 +264,10 @@ public class TasksFragment extends Fragment {
 									main.setCurrentTask(task);
 									break;
 								case TASK_MOVE:
-									main.moveTask(task);
+									main.handleMoveTask(task);
 									break;
 								case TASK_DESTROY:
-									main.destroyTask(task);
+									main.handleDestroyTask(task);
 									break;
 								}
 							}
