@@ -38,6 +38,8 @@ import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.special_lists_settings.SpecialListsSettings;
 import de.azapps.mirakel.sync.AuthenticatorActivity;
 
 public class SettingsFragment extends PreferenceFragment {
@@ -197,6 +199,9 @@ public class SettingsFragment extends PreferenceFragment {
 					}
 				});
 
+		Intent startSpecialListsIntent = new Intent(getActivity(), SpecialListsSettings.class);
+		Preference specialLists=(Preference) findPreference("special_lists");
+		specialLists.setIntent(startSpecialListsIntent);
 	}
 
 	private Account getAccount(AccountManager am) {
