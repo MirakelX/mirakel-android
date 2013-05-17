@@ -156,7 +156,14 @@
             </intent-filter>
         </receiver>
 
-
+        <activity
+            android:name="de.azapps.mirakel.SpecialListsSettings"
+            android:label="@string/title_activity_special_lists_settings"
+            android:parentActivityName="de.azapps.mirakel.static_activities.SettingsActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.azapps.mirakel.static_activities.SettingsActivity" />
+        </activity>
     </application>
 
 </manifest>
