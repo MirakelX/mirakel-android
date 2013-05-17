@@ -110,35 +110,6 @@ public class MainActivity extends FragmentActivity implements
 		setupLayout();
 	}
 
-	private void setupLayout() {
-		setCurrentList(SpecialList.first());
-
-		// Intialise ViewPager
-		this.intialiseViewPager();
-		NotificationService.updateNotificationAndWidget(this);
-		Intent intent = getIntent();
-		if (intent.getAction() == SHOW_TASK) {
-			int taskId = intent.getIntExtra(EXTRA_ID, 0);
-			if (taskId != 0) {
-				Task task = Task.get(taskId);
-				currentList = task.getList();
-				setCurrentTask(task);
-				return;
-			}
-		} else if (intent.getAction() == SHOW_LIST
-				|| intent.getAction() == SHOW_LIST_FROM_WIDGET) {
-
-			int listId = intent.getIntExtra(EXTRA_ID, 0);
-			ListMirakel list = ListMirakel.getList(listId);
-			setCurrentList(list);
-			return;
-		} else if (intent.getAction() == SHOW_LISTS) {
-			mViewPager.setCurrentItem(LIST_FRAGMENT);
-		} else {
-			mViewPager.setCurrentItem(TASKS_FRAGMENT);
-		}
-	}
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
