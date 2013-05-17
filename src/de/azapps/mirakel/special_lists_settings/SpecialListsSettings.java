@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
@@ -55,28 +56,9 @@ public class SpecialListsSettings extends Activity {
 	}
 	
 	private void editSList(final SpecialList slist){
-
-		final LinearLayout llayout=(LinearLayout) findViewById(R.id.edit_special_list);
-		new AlertDialog.Builder(this)
-				.setTitle(slist.getName())
-				.setMessage(getString(R.string.list_change_name_cont))
-				.setView(llayout)
-				.setPositiveButton(getString(R.string.OK),
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog,
-									int whichButton) {
-								// List_mirakle list = values.get((int) id);
-								//slist.setName(input.getText().toString());
-								//slist.save();
-							}
-						})
-				.setNegativeButton(getString(R.string.Cancel),
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog,
-									int whichButton) {
-								// Do nothing.
-							}
-						}).show();
+		Intent intent=new Intent(this, SpecialListSettingsActivity.class);
+		intent.putExtra(SpecialListSettingsActivity.SLIST_ID, -slist.getId());
+		startActivity(intent);
 	}
 
 	/**
