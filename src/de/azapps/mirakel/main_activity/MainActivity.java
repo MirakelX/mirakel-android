@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -29,6 +31,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
@@ -104,6 +108,35 @@ public class MainActivity extends FragmentActivity implements
 		}
 		setContentView(R.layout.activity_main);
 		setupLayout();
+	}
+
+	private void setupLayout() {
+		setCurrentList(SpecialList.first());
+
+		// Intialise ViewPager
+		this.intialiseViewPager();
+		NotificationService.updateNotificationAndWidget(this);
+		Intent intent = getIntent();
+		if (intent.getAction() == SHOW_TASK) {
+			int taskId = intent.getIntExtra(EXTRA_ID, 0);
+			if (taskId != 0) {
+				Task task = Task.get(taskId);
+				currentList = task.getList();
+				setCurrentTask(task);
+				return;
+			}
+		} else if (intent.getAction() == SHOW_LIST
+				|| intent.getAction() == SHOW_LIST_FROM_WIDGET) {
+
+			int listId = intent.getIntExtra(EXTRA_ID, 0);
+			ListMirakel list = ListMirakel.getList(listId);
+			setCurrentList(list);
+			return;
+		} else if (intent.getAction() == SHOW_LISTS) {
+			mViewPager.setCurrentItem(LIST_FRAGMENT);
+		} else {
+			mViewPager.setCurrentItem(TASKS_FRAGMENT);
+		}
 	}
 
 	@Override
@@ -465,7 +498,6 @@ public class MainActivity extends FragmentActivity implements
 		taskMoveDialog.show();
 	}
 
-
 	/**
 	 * Initialize ViewPager
 	 */
@@ -510,7 +542,7 @@ public class MainActivity extends FragmentActivity implements
 			mViewPager.setCurrentItem(TASK_FRAGMENT);
 		}
 	}
-	
+
 	/**
 	 * Return the currently showed List
 	 * @return

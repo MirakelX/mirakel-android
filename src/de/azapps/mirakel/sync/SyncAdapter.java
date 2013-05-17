@@ -231,6 +231,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				new DataDownloadCommand() {
 					@Override
 					public void after_exec(String result) {
+						list.setSyncState(Network.SYNC_STATE.ADD);
 						list.destroy();
 						finishSync();
 					}
