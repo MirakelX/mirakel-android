@@ -1,5 +1,8 @@
-package de.azapps.mirakel;
+package de.azapps.mirakel.special_lists_settings;
 
+import de.azapps.mirakel.R;
+import de.azapps.mirakel.R.layout;
+import de.azapps.mirakel.R.menu;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;

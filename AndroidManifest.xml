@@ -157,7 +157,7 @@
         </receiver>
 
         <activity
-            android:name="de.azapps.mirakel.SpecialListsSettings"
+            android:name="de.azapps.mirakel.special_lists_settings.SpecialListsSettings"
             android:label="@string/title_activity_special_lists_settings"
             android:parentActivityName="de.azapps.mirakel.static_activities.SettingsActivity" >
             <meta-data
