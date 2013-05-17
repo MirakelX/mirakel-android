@@ -37,7 +37,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String TAG = "DatabaseHelper";
 	private Context context;
-	public static final int DATABASE_VERSION = 7;
+	public static final int DATABASE_VERSION = 8;
 
 	public DatabaseHelper(Context ctx) {
 		super(ctx, "mirakel.db", null, DATABASE_VERSION);
@@ -129,6 +129,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					"FROM tmp_tasks;");
 			db.execSQL("DROP TABLE tmp_tasks");
 			db.execSQL("UPDATE tasks set due=null where due=''");
+		case 7:
+			/*
+			 * Add default list and default date for SpecialLists
+			 */
+			db.execSQL("Alter Table " + SpecialList.TABLE
+					+ " add column def_list INTEGER;");
+			db.execSQL("Alter Table " + SpecialList.TABLE
+					+ " add column def_date INTEGER;");
 		}
 	}
 	
