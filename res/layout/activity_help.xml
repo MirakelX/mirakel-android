@@ -36,11 +36,12 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
+                style="?android:attr/buttonBarStyle"
             android:orientation="horizontal" >
 
             <Button
                 android:id="@+id/help_button_contact"
+                style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -50,6 +51,7 @@
 
             <Button
                 android:id="@+id/help_button_donate"
+                style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -60,7 +62,7 @@
             <Button
                 android:id="@+id/help_button_ok"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dip"
                 android:layout_weight="1"
                 android:onClick="ok"
                 android:text="@string/help_button_ok" >
