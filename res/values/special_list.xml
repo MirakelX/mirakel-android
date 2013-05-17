@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="special_list_name">Name</string>
+    <string name="special_list_active">Show</string>
+    <string name="special_list_where">Where-Query</string>
+    <string name="special_list_sort_by">Sort by</string>
+    <string name="special_list_def_list">Default list</string>
+    <string name="special_list_def_date">Default date</string>
+    <string name="special_list_name_hint">Enter a name</string>
+    <string name="special_list_where_hint">Enter the where-query</string>
+</resources>

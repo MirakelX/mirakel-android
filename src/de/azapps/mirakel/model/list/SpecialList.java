@@ -144,11 +144,20 @@ public class SpecialList extends ListMirakel {
 	}
 
 	/**
-	 * Get all Tasks
+	 * Get all SpecialLists
 	 * 
 	 * @return
 	 */
 	public static List<SpecialList> allSpecial() {
+		return allSpecial(false);
+	}
+
+	/**
+	 * Get all SpecialLists
+	 * 
+	 * @return
+	 */
+	public static List<SpecialList> allSpecial(boolean showAll) {
 		List<SpecialList> slists = new ArrayList<SpecialList>();
 		Cursor c = database.query(TABLE, allColumns, "active=1", null, null,
 				null, null);
