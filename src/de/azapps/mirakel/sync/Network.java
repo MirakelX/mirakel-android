@@ -65,6 +65,12 @@ public class Network extends AsyncTask<String, Integer, String> {
 		public final static short NEED_SYNC = 2;
 		public final static short IS_SYNCED = 3;
 	}
+	public static class HttpMode {
+		final public static int GET = 0;
+		final public static int POST = 1;
+		final public static int PUT = 2;
+		final public static int DELETE = 3;
+	}
 
 	private String TAG = "GetData";
 	protected DataDownloadCommand commands;
@@ -188,14 +194,14 @@ public class Network extends AsyncTask<String, Integer, String> {
 		HttpResponse response;
 		try {
 			switch (Mode) {
-			case Mirakel.HttpMode.GET:
+			case HttpMode.GET:
 				if(Mirakel.DEBUG)
 					Log.v(TAG, "GET " + myurl);
 				HttpGet get = new HttpGet();
 				get.setURI(new URI(myurl));
 				response = httpClient.execute(get);
 				break;
-			case Mirakel.HttpMode.PUT:
+			case HttpMode.PUT:
 				if(Mirakel.DEBUG)
 					Log.v(TAG, "PUT " + myurl);
 				HttpPut put = new HttpPut();
@@ -203,7 +209,7 @@ public class Network extends AsyncTask<String, Integer, String> {
 				put.setEntity(new UrlEncodedFormEntity(HeaderData, HTTP.UTF_8));
 				response = httpClient.execute(put);
 				break;
-			case Mirakel.HttpMode.POST:
+			case HttpMode.POST:
 				if(Mirakel.DEBUG)
 					Log.v(TAG, "POST " + myurl);
 				HttpPost post = new HttpPost();
@@ -211,7 +217,7 @@ public class Network extends AsyncTask<String, Integer, String> {
 				post.setEntity(new UrlEncodedFormEntity(HeaderData, HTTP.UTF_8));
 				response = httpClient.execute(post);
 				break;
-			case Mirakel.HttpMode.DELETE:
+			case HttpMode.DELETE:
 				if(Mirakel.DEBUG)
 					Log.v(TAG, "DELETE " + myurl);
 				HttpDelete delete = new HttpDelete();

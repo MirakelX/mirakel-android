@@ -173,7 +173,7 @@ public class SettingsFragment extends PreferenceFragment {
 										@Override
 										public void after_exec(String result) {
 										}
-									}, Mirakel.HttpMode.DELETE, getActivity(),
+									}, Network.HttpMode.DELETE, getActivity(),
 											null).execute(am.getUserData(
 											account, Mirakel.BUNDLE_SERVER_URL)
 											+ "/tokens/" + t);
@@ -192,7 +192,7 @@ public class SettingsFragment extends PreferenceFragment {
 								editor.commit();
 
 							}
-						}, Mirakel.HttpMode.POST, data, getActivity(), null)
+						}, Network.HttpMode.POST, data, getActivity(), null)
 								.execute(am.getUserData(account,
 										Mirakel.BUNDLE_SERVER_URL)
 										+ "/tokens.json");
@@ -249,7 +249,7 @@ public class SettingsFragment extends PreferenceFragment {
 										@Override
 										public void after_exec(String result) {
 										}
-									}, Mirakel.HttpMode.DELETE, getActivity(),
+									}, Network.HttpMode.DELETE, getActivity(),
 											null).execute((String) url
 											+ "/tokens/" + t);
 								} else {
@@ -267,7 +267,7 @@ public class SettingsFragment extends PreferenceFragment {
 									editor.commit();
 								}
 							}
-						}, Mirakel.HttpMode.POST, data, getActivity(), null)
+						}, Network.HttpMode.POST, data, getActivity(), null)
 								.execute((String) url + "/tokens.json");
 					} else {
 						Toast.makeText(getActivity(),

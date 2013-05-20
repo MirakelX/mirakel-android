@@ -203,7 +203,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 							finishLogin(url, token);
 						}
 					}
-				}, Mirakel.HttpMode.POST, data, this, null).execute(url
+				}, Network.HttpMode.POST, data, this, null).execute(url
 						+ "/tokens.json");
 			} else {
 				Log.e(TAG, "No network connection available.");
@@ -292,7 +292,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				ContentResolver.setSyncAutomatically(account,
 						Mirakel.AUTHORITY_TYP, true);
 			}
-		}, Mirakel.HttpMode.DELETE, this, null).execute(url + "/tokens/"
+		}, Network.HttpMode.DELETE, this, null).execute(url + "/tokens/"
 				+ token);
 
 		final Intent intent = new Intent();
