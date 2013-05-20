@@ -96,7 +96,6 @@
 
     <string-array name="list_actions_items">
         <item>Rename</item>
-        <item>Move (TODO!)</item>
         <item>Delete</item>
     </string-array>
 

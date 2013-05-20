@@ -160,10 +160,6 @@ public class ListFragment extends Fragment {
 								case LIST_RENAME:
 									editList(list);
 									break;
-								case LIST_MOVE:
-									Toast.makeText(getActivity(), "TODO",
-											Toast.LENGTH_SHORT).show();
-									break;
 								case LIST_DESTROY:
 									main.handleDestroyList(list);
 									break;
