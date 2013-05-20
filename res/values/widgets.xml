@@ -20,8 +20,8 @@
 <resources>
 
     <style name="WidgetDueText">
-        <item name="android:paddingLeft">4px</item>
-        <item name="android:paddingBottom">4px</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
         <item name="android:textColor">#ffffffff</item>
         <item name="android:textSize">12sp</item>
         <item name="android:shadowColor">#40000000</item>

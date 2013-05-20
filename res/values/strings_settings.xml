@@ -25,8 +25,6 @@
     <string name="sync_use_summary">Do you want to sync with a server?</string>
     <string name="sync_server">Server</string>
     <string name="sync_server_summary">The URL (don\'t forget \"http://\")</string>
-    <string name="sync_email">Email</string>
-    <string name="sync_email_summary">Your email, you use for the Server</string>
     <string name="sync_password">Password</string>
     <string name="inavlidPassword">Password is invalid!</string>
     <string name="inavlidUrl">Url is invalid!</string>
@@ -52,15 +50,6 @@
         <item>1440</item>
         <item>-1</item>
     </string-array>
-    
-    <!-- Special Lists -->
-    <string name="lists_title">Special Lists</string>
-    <string name="lists_all">All Tasks</string>
-    <string name="lists_all_summary">Show all tasks</string>
-    <string name="lists_today">Today</string>
-    <string name="lists_today_summary">Show tasks, you should do today</string>
-    <string name="lists_week">This Week</string>
-    <string name="lists_week_summary">Show tasks, you should do this week</string>
     
     <!-- Notifications -->
     <string name="notifications_title">Notifications</string>

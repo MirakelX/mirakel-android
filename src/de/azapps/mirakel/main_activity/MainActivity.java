@@ -76,6 +76,8 @@ public class MainActivity extends FragmentActivity implements
 	private Menu menu;
 	private Task currentTask;
 	private ListMirakel currentList;
+	private List<ListMirakel> lists;
+	private AlertDialog taskMoveDialog;
 
 	private static final int LIST_FRAGMENT = 0, TASKS_FRAGMENT = 1,
 			TASK_FRAGMENT = 2;
@@ -89,6 +91,9 @@ public class MainActivity extends FragmentActivity implements
 	public static String SHOW_LISTS = "de.azapps.mirakel.SHOW_LISTS";
 	public static String SHOW_LIST_FROM_WIDGET = "de.azapps.mirakel.SHOW_LIST_FROM_WIDGET";
 	private SharedPreferences preferences;
+
+	private int currentPosition = 1;
+	private Parcelable tasksState, listState;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -105,61 +110,28 @@ public class MainActivity extends FragmentActivity implements
 		setupLayout();
 	}
 
-	private void setupLayout() {
-		setCurrentList(SpecialList.first());
-
-		// Intialise ViewPager
-		this.intialiseViewPager();
-		NotificationService.updateNotificationAndWidget(this);
-		Intent intent = getIntent();
-		if (intent.getAction() == SHOW_TASK) {
-			int taskId = intent.getIntExtra(EXTRA_ID, 0);
-			if (taskId != 0) {
-				Task task = Task.get(taskId);
-				currentList = task.getList();
-				setCurrentTask(task);
-				return;
-			}
-		} else if (intent.getAction() == SHOW_LIST
-				|| intent.getAction() == SHOW_LIST_FROM_WIDGET) {
-
-			int listId = intent.getIntExtra(EXTRA_ID, 0);
-			ListMirakel list = ListMirakel.getList(listId);
-			setCurrentList(list);
-			return;
-		} else if (intent.getAction() == SHOW_LISTS) {
-			mViewPager.setCurrentItem(LIST_FRAGMENT);
-		} else {
-			mViewPager.setCurrentItem(TASKS_FRAGMENT);
-		}
-	}
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		this.lists = ListMirakel.all(false);
+		updateLists();
 		getMenuInflater().inflate(R.menu.main, menu);
 		this.menu = menu;
 		onPageSelected(TASKS_FRAGMENT);
 		return true;
 	}
 
-	private List<ListMirakel> lists;
-
-	private AlertDialog taskMoveDialog;
-
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.menu_delete:
-			destroyTask(currentTask);
+			handleDestroyTask(currentTask);
 			return true;
 		case R.id.menu_move:
-			moveTask(currentTask);
+			handleMoveTask(currentTask);
 			return true;
 
 		case R.id.list_delete:
-			destroyList(currentList);
+			handleDestroyList(currentList);
 			return true;
 		case R.id.task_sorting:
 			final CharSequence[] SortingItems = getResources().getStringArray(
@@ -232,7 +204,185 @@ public class MainActivity extends FragmentActivity implements
 		return true;
 	}
 
-	public void destroyList(final ListMirakel list) {
+	/**
+	 * (non-Javadoc)
+	 * 
+	 * @see android.support.v4.app.FragmentActivity#onSaveInstanceState(android.os.Bundle)
+	 */
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		// outState.putString("tab", mTabHost.getCurrentTabTag()); // save the
+		// tab
+		// selected
+		super.onSaveInstanceState(outState);
+	}
+
+	@Override
+	public void onPageScrolled(int position, float positionOffset,
+			int positionOffsetPixels) {
+	}
+
+	@Override
+	public void onPageSelected(int position) {
+
+		if (taskFragment != null && taskFragment.getView() != null) {
+			final InputMethodManager imm = (InputMethodManager) this
+					.getSystemService(Context.INPUT_METHOD_SERVICE);
+			imm.hideSoftInputFromWindow(
+					taskFragment.getView().getWindowToken(), 0);
+		}
+		if (menu == null)
+			return;
+		int newmenu;
+		if (currentPosition == TASKS_FRAGMENT) {
+			tasksState = tasksFragment.getState();
+		} else if (currentPosition == LIST_FRAGMENT) {
+			listState = listFragment.getState();
+		}
+		switch (position) {
+		case 0:
+			newmenu = R.menu.activity_list;
+			this.setTitle(getString(R.string.list_title));
+			if (listState != null)
+				listFragment.setState(listState);
+			break;
+		case 1:
+			listFragment.enable_drop(false);
+			newmenu = R.menu.tasks;
+			this.setTitle(currentList.getName());
+			if (tasksState != null && currentPosition != LIST_FRAGMENT)
+				tasksFragment.setState(tasksState);
+			break;
+		case 2:
+			newmenu = R.menu.activity_task;
+			taskFragment.update();
+			this.setTitle(currentTask.getName());
+			break;
+		default:
+			Toast.makeText(getApplicationContext(), "Where are the dragons?",
+					Toast.LENGTH_LONG).show();
+			return;
+		}
+		currentPosition = position;
+
+		// Configure to use the desired menu
+
+		menu.clear();
+		MenuInflater inflater = getMenuInflater();
+
+		inflater.inflate(newmenu, menu);
+	}
+
+	@Override
+	public void onPageScrollStateChanged(int state) {
+	}
+	
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode == RESULT_OK && null != data) {
+			ArrayList<String> text = data
+					.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+			switch (requestCode) {
+			case RESULT_SPEECH_CONTENT:
+				((EditText) findViewById(R.id.edit_content)).setText(text
+						.get(0));
+				break;
+			case RESULT_SPEECH_NAME:
+				((EditText) findViewById(R.id.edit_name)).setText(text.get(0));
+				break;
+			case RESULT_SPEECH:
+				if (resultCode == RESULT_OK && null != data) {
+					((EditText) tasksFragment.view.findViewById(R.id.tasks_new))
+							.setText(text.get(0));
+				}
+				break;
+			}
+		}
+	}
+
+	@Override
+	public void onBackPressed() {
+		switch (mViewPager.getCurrentItem()) {
+		case TASKS_FRAGMENT:
+			mViewPager.setCurrentItem(LIST_FRAGMENT);
+			break;
+		case TASK_FRAGMENT:
+			mViewPager.setCurrentItem(TASKS_FRAGMENT);
+			break;
+		default:
+			super.onBackPressed();
+		}
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		NotificationService.updateNotificationAndWidget(this);
+	}
+
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		taskFragment.setActivity(this);
+		listFragment.setActivity(this);
+		tasksFragment.setActivity(this);
+	}
+	/**
+	 * Initialize the ViewPager and setup the rest of the layout
+	 */
+	private void setupLayout() {
+		setCurrentList(SpecialList.first());
+
+		// Initialize ViewPager
+		this.intializeViewPager();
+		NotificationService.updateNotificationAndWidget(this);
+		Intent intent = getIntent();
+		if (intent.getAction() == SHOW_TASK) {
+			int taskId = intent.getIntExtra(EXTRA_ID, 0);
+			if (taskId != 0) {
+				Task task = Task.get(taskId);
+				currentList = task.getList();
+				setCurrentTask(task);
+				return;
+			}
+		} else if (intent.getAction() == SHOW_LIST
+				|| intent.getAction() == SHOW_LIST_FROM_WIDGET) {
+
+			int listId = intent.getIntExtra(EXTRA_ID, 0);
+			ListMirakel list = ListMirakel.getList(listId);
+			setCurrentList(list);
+			return;
+		} else if (intent.getAction() == SHOW_LISTS) {
+			mViewPager.setCurrentItem(LIST_FRAGMENT);
+		} else {
+			mViewPager.setCurrentItem(TASKS_FRAGMENT);
+		}
+	}
+
+	/**
+	 * Update the internal List of Lists
+	 * (e.g. for the Move Task dialog)
+	 */
+	public void updateLists() {
+		this.lists = ListMirakel.all(false);
+	}
+
+	/**
+	 * Handle the actions after clicking on a destroy-list button
+	 * @param list
+	 */
+	public void handleDestroyList(final ListMirakel list) {
 		new AlertDialog.Builder(this)
 				.setTitle(list.getName())
 				.setMessage(this.getString(R.string.list_delete_content))
@@ -256,7 +406,11 @@ public class MainActivity extends FragmentActivity implements
 						}).show();
 	}
 
-	public void destroyTask(final Task task) {
+	/**
+	 * Handle the actions after clicking on a destroy-task button
+	 * @param task
+	 */
+	public void handleDestroyTask(final Task task) {
 		new AlertDialog.Builder(this)
 				.setTitle(task.getName())
 				.setMessage(this.getString(R.string.task_delete_content))
@@ -277,7 +431,11 @@ public class MainActivity extends FragmentActivity implements
 						}).show();
 	}
 
-	public void moveTask(final Task task) {
+	/**
+	 * Handle the actions after clicking on a move task button
+	 * @param task
+	 */
+	public void handleMoveTask(final Task task) {
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(R.string.dialog_move);
@@ -312,21 +470,9 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see android.support.v4.app.FragmentActivity#onSaveInstanceState(android.os.Bundle)
+	 * Initialize ViewPager
 	 */
-	protected void onSaveInstanceState(Bundle outState) {
-		// outState.putString("tab", mTabHost.getCurrentTabTag()); // save the
-		// tab
-		// selected
-		super.onSaveInstanceState(outState);
-	}
-
-	/**
-	 * Initialise ViewPager
-	 */
-	private void intialiseViewPager() {
+	private void intializeViewPager() {
 		List<Fragment> fragments = new Vector<Fragment>();
 		listFragment = new ListFragment();
 		listFragment.setActivity(this);
@@ -347,93 +493,19 @@ public class MainActivity extends FragmentActivity implements
 
 	}
 
-	@Override
-	public void onPageScrolled(int position, float positionOffset,
-			int positionOffsetPixels) {
-	}
 
-	private int currentPosition = 1;
-	// private int scrollYTasks = 0;
-	private Parcelable tasksState, listState;
-
-	@Override
-	public void onPageSelected(int position) {
-
-		if (taskFragment != null && taskFragment.getView() != null) {
-			final InputMethodManager imm = (InputMethodManager) this
-					.getSystemService(Context.INPUT_METHOD_SERVICE);
-			imm.hideSoftInputFromWindow(
-					taskFragment.getView().getWindowToken(), 0);
-		}
-		if (menu == null)
-			return;
-		int newmenu;
-		if (currentPosition == TASKS_FRAGMENT) {
-			tasksState = tasksFragment.getState();
-		} else if (currentPosition == LIST_FRAGMENT) {
-			listState = listFragment.getState();
-		}
-		int pos;
-		switch (position) {
-		case 0:
-			newmenu = R.menu.activity_list;
-			this.setTitle(getString(R.string.list_title));
-			if (listState != null)
-				listFragment.setState(listState);
-			pos=2;
-			break;
-		case 1:
-			listFragment.enable_drop(false);
-			newmenu = R.menu.tasks;
-			this.setTitle(currentList.getName());
-			if (tasksState != null && currentPosition != LIST_FRAGMENT)
-				tasksFragment.setState(tasksState);
-			pos=3;
-			break;
-		case 2:
-			newmenu = R.menu.activity_task;
-			taskFragment.update();
-			this.setTitle(currentTask.getName());
-			pos=3;
-			break;
-		default:
-			Toast.makeText(getApplicationContext(), "Where are the dragons?",
-					Toast.LENGTH_LONG).show();
-			return;
-		}
-		currentPosition = position;
-		
-		// Configure to use the desired menu
-
-		menu.clear();
-		MenuInflater inflater = getMenuInflater();
-		
-		inflater.inflate(newmenu, menu);
-
-		AccountManager am=AccountManager.get(this);
-		 ConnectivityManager cm =(ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-	    NetworkInfo netInfo = cm.getActiveNetworkInfo();
-	    Account[] a=am.getAccountsByType(Mirakel.ACCOUNT_TYP); 
-	    if (netInfo == null || !netInfo.isConnectedOrConnecting()||a.length<1) {
-	    	menu.getItem(pos).setVisible(false);
-	    }else{
-	    	menu.getItem(pos).setVisible(true);
-	    }
-
-	}
-
-	@Override
-	public void onPageScrollStateChanged(int state) {
-	}
-
+	/**
+	 * Return the currently showed tasks
+	 * @return
+	 */
 	Task getCurrentTask() {
 		return currentTask;
 	}
 
-	SharedPreferences getPreferences() {
-		return preferences;
-	}
-
+	/**
+	 * Set the current task and update the view
+	 * @param currentTask
+	 */
 	void setCurrentTask(Task currentTask) {
 		this.currentTask = currentTask;
 		if (taskFragment != null) {
@@ -442,10 +514,18 @@ public class MainActivity extends FragmentActivity implements
 		}
 	}
 
+	/**
+	 * Return the currently showed List
+	 * @return
+	 */
 	ListMirakel getCurrentList() {
 		return currentList;
 	}
 
+	/**
+	 * Set the current list and update the views
+	 * @param currentList
+	 */
 	void setCurrentList(ListMirakel currentList) {
 		this.currentList = currentList;
 		if (tasksFragment != null) {
@@ -486,69 +566,13 @@ public class MainActivity extends FragmentActivity implements
 		NotificationService.updateNotificationAndWidget(this);
 	}
 
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (resultCode == RESULT_OK && null != data) {
-			ArrayList<String> text = data
-					.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-			switch (requestCode) {
-			case RESULT_SPEECH_CONTENT:
-				((EditText) findViewById(R.id.edit_content)).setText(text
-						.get(0));
-				break;
-			case RESULT_SPEECH_NAME:
-				((EditText) findViewById(R.id.edit_name)).setText(text.get(0));
-				break;
-			case RESULT_SPEECH:
-				if (resultCode == RESULT_OK && null != data) {
-					((EditText) tasksFragment.view.findViewById(R.id.tasks_new))
-							.setText(text.get(0));
-				}
-				break;
-			}
-		}
-	}
-
-	@Override
-	public void onBackPressed() {
-		switch (mViewPager.getCurrentItem()) {
-		case TASKS_FRAGMENT:
-			mViewPager.setCurrentItem(LIST_FRAGMENT);
-			break;
-		case TASK_FRAGMENT:
-			mViewPager.setCurrentItem(TASKS_FRAGMENT);
-			break;
-		default:
-			super.onBackPressed();
-		}
-	}
-
+	/**
+	 * Returns the ListFragment
+	 * @return
+	 */
 	public ListFragment getListFragment() {
 		return listFragment;
 	}
 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-	}
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-		NotificationService.updateNotificationAndWidget(this);
-	}
-
-	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-		super.onConfigurationChanged(newConfig);
-		taskFragment.setActivity(this);
-		listFragment.setActivity(this);
-		tasksFragment.setActivity(this);
-	}
 
 }

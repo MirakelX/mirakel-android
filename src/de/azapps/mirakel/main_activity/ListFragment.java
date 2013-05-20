@@ -78,6 +78,7 @@ public class ListFragment extends Fragment {
 		if (!created)
 			return;
 		final List<ListMirakel> values = ListMirakel.all();
+		main.updateLists();
 
 		if (adapter != null && enableDrag == adapter.isDropEnabled()) {
 			adapter.changeData(values);
@@ -164,7 +165,7 @@ public class ListFragment extends Fragment {
 											Toast.LENGTH_SHORT).show();
 									break;
 								case LIST_DESTROY:
-									main.destroyList(list);
+									main.handleDestroyList(list);
 									break;
 								}
 							}
