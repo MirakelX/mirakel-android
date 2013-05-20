@@ -71,16 +71,16 @@ public class Network extends AsyncTask<String, Integer, String> {
 		final public static int PUT = 2;
 		final public static int DELETE = 3;
 	}
-
-	private String TAG = "GetData";
+	private static String TAG = "MirakelNetwork";
+	private static final Integer NoNetwork = 1;
+	private static final Integer NoHTTPS = 2;
+	
 	protected DataDownloadCommand commands;
 	protected List<BasicNameValuePair> HeaderData;
 	protected int Mode;
 	protected Context context;
 	protected String Token;
 
-	private static final Integer NoNetwork = 1;
-	private static final Integer NoHTTPS = 2;
 
 	public Network(DataDownloadCommand commands, int mode, Context context,
 			String Token) {
@@ -104,6 +104,8 @@ public class Network extends AsyncTask<String, Integer, String> {
 			try {
 				return json.substring(10, 30);
 			} catch (IndexOutOfBoundsException e) {
+				if(Mirakel.DEBUG)
+					Log.d(TAG,"Unkown responsformat");
 				return null;
 			}
 		} else
@@ -115,14 +117,16 @@ public class Network extends AsyncTask<String, Integer, String> {
 		try {
 			return downloadUrl(urls[0]);
 		} catch (IOException e) {
-			Log.e(TAG, "Unable to retrieve web page. URL may be invalid.");
+			if(Mirakel.DEBUG)
+				Log.e(TAG, "Unable to retrieve web page. URL may be invalid.");
 		} catch (URISyntaxException e) {
-			Log.e(TAG, "Invalid UrlSyntax");
+			if(Mirakel.DEBUG)
+				Log.e(TAG, "Invalid UrlSyntax");
 		}
 		Integer[] t = { NoNetwork };
 		publishProgress(t);
 
-		return null;
+		return "";
 	}
 
 	@Override
@@ -138,10 +142,10 @@ public class Network extends AsyncTask<String, Integer, String> {
 
 	@Override
 	protected void onPostExecute(String result) {
-		if (result != null)
-			commands.after_exec(result);
-		else
-			Log.e(TAG, "No Response");
+		if (result == ""&& Mirakel.DEBUG){
+			Log.d(TAG, "No Response");
+		}
+		commands.after_exec(result);
 	}
 
 	private HttpClient sslClient(HttpClient client) {
@@ -169,6 +173,8 @@ public class Network extends AsyncTask<String, Integer, String> {
 			sr.register(new Scheme("http", ssf, 80));
 			return new DefaultHttpClient(ccm, client.getParams());
 		} catch (Exception ex) {
+			if(Mirakel.DEBUG)
+				Log.d(TAG,"Cannot create new SSL-Client");
 			return null;
 		}
 	}
@@ -229,12 +235,13 @@ public class Network extends AsyncTask<String, Integer, String> {
 				return null;
 			}
 		} catch (Exception e) {
-			Log.e(TAG, "No Network");
+			Log.e(TAG, "No Networkconnection available");
 			if(Mirakel.DEBUG)
 				Log.w(TAG, Log.getStackTraceString(e));
 			return "";
 		}
-		Log.v(TAG, "Http-Status: " + response.getStatusLine().getStatusCode());
+		if(Mirakel.DEBUG)
+			Log.v(TAG, "Http-Status: " + response.getStatusLine().getStatusCode());
 		if (response.getEntity() == null)
 			return "";
 		String r = EntityUtils.toString(response.getEntity());
