@@ -329,6 +329,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	 * @param lists_server
 	 */
 	protected void merge_with_server(ListMirakel[] lists_server) {
+		if(lists_server==null)
+			return;
 		for (ListMirakel list_server : lists_server) {
 			list_server.setCreatedAt(list_server.getCreatedAt()
 					.replace(":", ""));
