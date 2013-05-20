@@ -33,7 +33,7 @@
  * 
  * Modified by weiznich 2013
  */
-
+//TODO Need to cleanup
 package de.azapps.mirakel.sync;
 
 import java.util.ArrayList;
@@ -92,12 +92,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 	/** Keep track of the progress dialog so we can dismiss it */
 	private ProgressDialog mProgressDialog = null;
 
-	/**
-	 * If set we are just checking that the user knows their credentials; this
-	 * doesn't cause the user's password or authToken to be changed on the
-	 * device.
-	 */
-	private Boolean mConfirmCredentials = false;
 
 	/** for posting authentication attempts back to UI thread */
 	// private final Handler mHandler = new Handler();
@@ -121,16 +115,11 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 	@Override
 	public void onCreate(Bundle icicle) {
 
-		Log.i(TAG, "onCreate(" + icicle + ")");
 		super.onCreate(icicle);
 		mAccountManager = AccountManager.get(this);
-		Log.i(TAG, "loading data from Intent");
 		final Intent intent = getIntent();
 		mUsername = intent.getStringExtra(PARAM_USERNAME);
 		mRequestNewAccount = mUsername == null;
-		mConfirmCredentials = intent.getBooleanExtra(PARAM_CONFIRM_CREDENTIALS,
-				false);
-		Log.i(TAG, "    request new: " + mRequestNewAccount);
 		requestWindowFeature(Window.FEATURE_LEFT_ICON);
 		setContentView(R.layout.login_activity);
 		getWindow().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON,
@@ -196,10 +185,12 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 					public void after_exec(String result) {
 						String token = Network.getToken(result);
 						if (token == null) {
-							Log.e(TAG, "Login faild");
+							if(Mirakel.DEBUG)
+								Log.e(TAG, "Login faild");
 							hideProgress();
 						} else {
-							Log.e(TAG, "Login sucess");
+							if(Mirakel.DEBUG)
+								Log.e(TAG, "Login sucess");
 							finishLogin(url, token);
 						}
 					}
@@ -213,41 +204,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 		}
 	}
 
-	/**
-	 * Called when response is received from the server for confirm credentials
-	 * request. See onAuthenticationResult(). Sets the
-	 * AccountAuthenticatorResult which is sent back to the caller.
-	 * 
-	 * @param result
-	 *            the confirmCredentials result.
-	 */
-	private void finishConfirmCredentials(boolean result, String url) {
-		Log.i(TAG, "finishConfirmCredentials()");
-		final Account account = new Account(mUsername, Mirakel.ACCOUNT_TYP);
-		mAccountManager.setPassword(account, mPassword);
-		mAccountManager.setUserData(account, "url", url);
-		// Mark Account Syncable
-		ContentResolver.setIsSyncable(account, Mirakel.AUTHORITY_TYP, 1);
-		if (((CheckBox) findViewById(R.id.resync)).isChecked()) {
-			Mirakel.getWritableDatabase().execSQL(
-					"Delete from " + Task.TABLE + " where sync_state="
-							+ Network.SYNC_STATE.DELETE);
-			Mirakel.getWritableDatabase().execSQL(
-					"Delete from " + ListMirakel.TABLE + " where sync_state="
-							+ Network.SYNC_STATE.DELETE);
-			Mirakel.getWritableDatabase().execSQL(
-					"Update " + Task.TABLE + " set sync_state="
-							+ Network.SYNC_STATE.ADD);
-			Mirakel.getWritableDatabase().execSQL(
-					"Update " + ListMirakel.TABLE + " set sync_state="
-							+ Network.SYNC_STATE.ADD);
-		}
-		final Intent intent = new Intent();
-		intent.putExtra(AccountManager.KEY_BOOLEAN_RESULT, result);
-		setAccountAuthenticatorResult(intent.getExtras());
-		setResult(RESULT_OK, intent);
-		finish();
-	}
 
 	/**
 	 * Called when response is received from the server for authentication
@@ -303,43 +259,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 		finish();
 	}
 
-	/**
-	 * Called when the authentication process completes (see attemptLogin()).
-	 * 
-	 * @param authToken
-	 *            the authentication token returned by the server, or NULL if
-	 *            authentication failed.
-	 */
-	public void onAuthenticationResult(String authToken, String url) {
-
-		boolean success = ((authToken != null) && (authToken.length() > 0));
-		Log.i(TAG, "onAuthenticationResult(" + success + ")");
-
-		// Our task is complete, so clear it out
-		// mAuthTask = null;
-
-		// Hide the progress dialog
-		hideProgress();
-
-		if (success) {
-			if (!mConfirmCredentials) {
-				// finishLogin(authToken,url);
-			} else {
-				finishConfirmCredentials(success, url);
-			}
-		} else {
-			Log.e(TAG, "onAuthenticationResult: failed to authenticate");
-			if (mRequestNewAccount) {
-				// "Please enter a valid username/password.
-				mMessage.setText(getText(R.string.login_activity_loginfail_text_both));
-			} else {
-				// "Please enter a valid password." (Used when the
-				// account is already in the database but the password
-				// doesn't work.)
-				mMessage.setText(getText(R.string.login_activity_loginfail_text_pwonly));
-			}
-		}
-	}
 
 	public void onAuthenticationCancel() {
 		Log.i(TAG, "onAuthenticationCancel()");
