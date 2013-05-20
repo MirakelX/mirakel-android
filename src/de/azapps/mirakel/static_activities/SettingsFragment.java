@@ -101,7 +101,7 @@ public class SettingsFragment extends PreferenceFragment {
 				});
 		startupListPreference.setEntries(entries);
 		startupListPreference.setEntryValues(entryValues);
-
+		//Enable/Disbale Sync
 		CheckBoxPreference sync = (CheckBoxPreference) findPreference("syncUse");
 		sync.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
@@ -130,20 +130,7 @@ public class SettingsFragment extends PreferenceFragment {
 				return true;
 			}
 		});
-		/*
-		 * EditTextPreference
-		 * email=(EditTextPreference)findPreference("syncEmail");
-		 * email.setOnPreferenceChangeListener(new OnPreferenceChangeListener()
-		 * {
-		 * 
-		 * @Override public boolean onPreferenceChange(Preference preference,
-		 * Object newValue) { AccountManager am =
-		 * AccountManager.get(getActivity()); String
-		 * pwd=am.getPassword(account); am.removeAccount(account, null, null);
-		 * account=new Account((String)newValue, Mirakel.ACCOUNT_TYP);
-		 * am.addAccountExplicitly(account, pwd, null); return true; } });
-		 */
-
+		//Get Account if existing
 		final AccountManager am = AccountManager.get(getActivity());
 		final Account account = getAccount(am);
 		if (account == null) {
@@ -157,7 +144,8 @@ public class SettingsFragment extends PreferenceFragment {
 		} else {
 			sync.setChecked(true);
 		}
-
+		
+		//Change Passwort
 		final EditTextPreference Password = (EditTextPreference) findPreference("syncPassword");
 		Password.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
@@ -165,12 +153,14 @@ public class SettingsFragment extends PreferenceFragment {
 			public boolean onPreferenceChange(Preference preference,
 					final Object password) {
 				if (account != null) {
-					ConnectivityManager cm =(ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-				    NetworkInfo netInfo = cm.getActiveNetworkInfo();
-					if(netInfo!=null&&netInfo.isConnected()){
+					ConnectivityManager cm = (ConnectivityManager) getActivity()
+							.getSystemService(Context.CONNECTIVITY_SERVICE);
+					NetworkInfo netInfo = cm.getActiveNetworkInfo();
+					if (netInfo != null && netInfo.isConnected()) {
 						List<BasicNameValuePair> data = new ArrayList<BasicNameValuePair>();
 						data.add(new BasicNameValuePair("email", account.name));
-						data.add(new BasicNameValuePair("password",  (String) password));
+						data.add(new BasicNameValuePair("password",
+								(String) password));
 
 						new Network(new DataDownloadCommand() {
 							@Override
@@ -178,30 +168,48 @@ public class SettingsFragment extends PreferenceFragment {
 								String t = Network.getToken(result);
 								if (t != null) {
 									am.setPassword(account, (String) password);
+									Password.setText(am.getPassword(account));
+									new Network(new DataDownloadCommand() {
+										@Override
+										public void after_exec(String result) {
+										}
+									}, Mirakel.HttpMode.DELETE, getActivity(),
+											null).execute(am.getUserData(
+											account, Mirakel.BUNDLE_SERVER_URL)
+											+ "/tokens/" + t);
 								} else {
-									Toast.makeText(getActivity(),getString(R.string.inavlidPassword),Toast.LENGTH_LONG).show();
+									Toast.makeText(
+											getActivity(),
+											getString(R.string.inavlidPassword),
+											Toast.LENGTH_LONG).show();
 								}
 								SharedPreferences settings = PreferenceManager
 										.getDefaultSharedPreferences(getActivity()
 												.getApplicationContext());
-								SharedPreferences.Editor editor = settings.edit();
+								SharedPreferences.Editor editor = settings
+										.edit();
 								editor.putString("syncPassword", "");
 								editor.commit();
-								Password.setText(am.getPassword(account));
+
 							}
-						}, Mirakel.HttpMode.POST, data, getActivity(), null).execute(am.getUserData(account,Mirakel.BUNDLE_SERVER_URL)+"/tokens.json");
-					}else{
-						Toast.makeText(getActivity(), getString(R.string.NoNetwork), Toast.LENGTH_LONG).show();
+						}, Mirakel.HttpMode.POST, data, getActivity(), null)
+								.execute(am.getUserData(account,
+										Mirakel.BUNDLE_SERVER_URL)
+										+ "/tokens.json");
+					} else {
+						Toast.makeText(getActivity(),
+								getString(R.string.NoNetwork),
+								Toast.LENGTH_LONG).show();
 					}
 				}
 				return true;
 			}
 		});
+		
+		//Set old Password to Textbox
 		Password.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-			
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
-				Log.v(TAG,"Set Password");
 				if (account != null) {
 					Password.setText(am.getPassword(account));
 				}
@@ -210,21 +218,25 @@ public class SettingsFragment extends PreferenceFragment {
 		});
 
 		// TODO Add Option To Resync all
+		//Change Url
 		EditTextPreference url = (EditTextPreference) findPreference("syncServer");
 		if (account != null) {
 			url.setText(am.getUserData(account, "url"));
 		}
 		url.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-
 			@Override
-			public boolean onPreferenceChange(Preference preference, final Object url) {
+			public boolean onPreferenceChange(Preference preference,
+					final Object url) {
 				if (account != null) {
-					ConnectivityManager cm =(ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-				    NetworkInfo netInfo = cm.getActiveNetworkInfo();
-					if(netInfo!=null&&netInfo.isConnected()){
+					ConnectivityManager cm = (ConnectivityManager) getActivity()
+							.getSystemService(Context.CONNECTIVITY_SERVICE);
+					NetworkInfo netInfo = cm.getActiveNetworkInfo();
+					if (netInfo != null && netInfo.isConnected()) {
 						List<BasicNameValuePair> data = new ArrayList<BasicNameValuePair>();
 						data.add(new BasicNameValuePair("email", account.name));
-						data.add(new BasicNameValuePair("password",  (AccountManager.get(getActivity())).getPassword(account)));
+						data.add(new BasicNameValuePair("password",
+								(AccountManager.get(getActivity()))
+										.getPassword(account)));
 
 						new Network(new DataDownloadCommand() {
 							@Override
@@ -232,43 +244,67 @@ public class SettingsFragment extends PreferenceFragment {
 								String t = Network.getToken(result);
 								if (t != null) {
 									am.setUserData(account, "url", (String) url);
+									Password.setText(am.getPassword(account));
+									new Network(new DataDownloadCommand() {
+										@Override
+										public void after_exec(String result) {
+										}
+									}, Mirakel.HttpMode.DELETE, getActivity(),
+											null).execute((String) url
+											+ "/tokens/" + t);
 								} else {
-									Toast.makeText(getActivity(),getString(R.string.inavlidUrl),Toast.LENGTH_LONG).show();
+									Toast.makeText(getActivity(),
+											getString(R.string.inavlidUrl),
+											Toast.LENGTH_LONG).show();
 									SharedPreferences settings = PreferenceManager
 											.getDefaultSharedPreferences(getActivity()
 													.getApplicationContext());
-									SharedPreferences.Editor editor = settings.edit();
-									editor.putString("syncServer", am.getUserData(account,Mirakel.BUNDLE_SERVER_URL));
+									SharedPreferences.Editor editor = settings
+											.edit();
+									editor.putString("syncServer", am
+											.getUserData(account,
+													Mirakel.BUNDLE_SERVER_URL));
 									editor.commit();
 								}
 							}
-						}, Mirakel.HttpMode.POST, data, getActivity(), null).execute((String)url+"/tokens.json");
-					}else{
-						Toast.makeText(getActivity(), getString(R.string.NoNetwork), Toast.LENGTH_LONG).show();
+						}, Mirakel.HttpMode.POST, data, getActivity(), null)
+								.execute((String) url + "/tokens.json");
+					} else {
+						Toast.makeText(getActivity(),
+								getString(R.string.NoNetwork),
+								Toast.LENGTH_LONG).show();
 					}
-					
+
 				}
 				return true;
 			}
 		});
 
+		//Change Sync-Intervall
 		ListPreference syncIntervall = (ListPreference) findPreference("syncFrequency");
 		syncIntervall
 				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-
 					@Override
 					public boolean onPreferenceChange(Preference preference,
 							Object newValue) {
-						if (account != null) {
-							//TODO fix this
+						Log.e(TAG, "" + newValue.toString());
+						Bundle bundle = new Bundle();
+						ContentResolver.removePeriodicSync(account,
+								Mirakel.AUTHORITY_TYP, bundle);
+						if (account != null
+								&& Long.parseLong(newValue.toString()) != -1) {
+							ContentResolver.setSyncAutomatically(account,
+									Mirakel.AUTHORITY_TYP, true);
+							ContentResolver.setIsSyncable(account,
+									Mirakel.AUTHORITY_TYP, 1);
+							ContentResolver.setMasterSyncAutomatically(true);
 							ContentResolver.addPeriodicSync(account,
-									Mirakel.AUTHORITY_TYP, null,
-									((Long) newValue) * 60);
+									Mirakel.AUTHORITY_TYP, new Bundle(),
+									Long.parseLong(newValue.toString()) * 60);
 						}
 						return true;
 					}
 				});
-
 	}
 
 	private Account getAccount(AccountManager am) {
