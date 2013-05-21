@@ -12,4 +12,5 @@
     <string name="special_list_def_list_summary"></string>
     <string name="special_list_def_date">Default date</string>
     <string name="special_list_def_date_summary">in days (+/-)</string>
+    <string name="special_list_first">Default</string>
 </resources>

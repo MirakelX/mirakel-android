@@ -13,7 +13,8 @@
         android:id="@+id/special_list_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10" >
+        android:imeOptions="actionSend"
+        android:singleLine="true" >
 
         <requestFocus />
     </EditText>
@@ -33,7 +34,8 @@
         android:id="@+id/special_list_where"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10" />
+        android:imeOptions="actionSend"
+        android:singleLine="true" />
 
     <Button
         android:id="@+id/special_list_sort_by"
