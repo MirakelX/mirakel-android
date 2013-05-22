@@ -47,7 +47,7 @@ import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.PagerAdapter;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.helper.DialogHelpers;
-import de.azapps.mirakel.helper.DialogHelpers.onSuccess;
+import de.azapps.mirakel.helper.DialogHelpers.ExecInterface;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
@@ -133,7 +133,7 @@ public class MainActivity extends FragmentActivity implements
 			return true;
 		case R.id.task_sorting:
 			currentList = DialogHelpers.handleSortBy(this, currentList,
-					new onSuccess() {
+					new ExecInterface() {
 
 						@Override
 						public void exec() {

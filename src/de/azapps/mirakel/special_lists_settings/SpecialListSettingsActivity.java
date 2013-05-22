@@ -105,57 +105,12 @@ public class SpecialListSettingsActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				handleDefaultList();
+				specialList=DialogHelpers.handleDefaultList(ctx, specialList, lists);
 			}
 		});
 
 	}
 
 
-	/**
-	 * Handle the actions after clicking on a move task button
-	 * 
-	 * @param task
-	 */
-	public void handleDefaultList() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle(R.string.special_list_def_list);
-		List<CharSequence> items = new ArrayList<CharSequence>();
-		final List<Integer> list_ids = new ArrayList<Integer>();
-		int currentItem = 0, i = 1;
-		items.add(getString(R.string.special_list_first));
-		list_ids.add(null);
-		for (ListMirakel list : lists) {
-			if (list.getId() > 0) {
-				items.add(list.getName());
-				if (specialList.getDefaultList() == null) {
-					currentItem = 0;
-				} else {
-					if (specialList.getDefaultList().getId() == list.getId())
-						currentItem = i;
-				}
-				list_ids.add(list.getId());
-				++i;
-			}
-		}
-
-		builder.setSingleChoiceItems(
-				items.toArray(new CharSequence[items.size()]), currentItem,
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int item) {
-						Integer lid = list_ids.get(item);
-						if (lid == null) {
-							specialList.setDefaultList(null);
-						} else {
-							specialList.setDefaultList(ListMirakel.getList(lid));
-						}
-						specialList.save();
-						setDefaultListDialog.dismiss();
-					}
-				});
-
-		setDefaultListDialog = builder.create();
-		setDefaultListDialog.show();
-	}
 
 }
