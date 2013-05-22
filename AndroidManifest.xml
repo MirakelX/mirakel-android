@@ -120,6 +120,10 @@
             android:name="de.azapps.mirakel.static_activities.CreditsActivity"
             android:label="@string/title_activity_credits" >
         </activity>
+        <activity
+            android:name="de.azapps.mirakel.special_lists_settings.SpecialListSettingsActivity"
+            android:label="@string/title_activity_credits" >
+        </activity>
 
         <receiver android:name="de.azapps.mirakel.widget.MainWidgetProvider" >
             <intent-filter>
@@ -156,7 +160,14 @@
             </intent-filter>
         </receiver>
 
-
+        <activity
+            android:name="de.azapps.mirakel.special_lists_settings.SpecialListsSettings"
+            android:label="@string/title_activity_special_lists_settings"
+            android:parentActivityName="de.azapps.mirakel.static_activities.SettingsActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.azapps.mirakel.static_activities.SettingsActivity" />
+        </activity>
     </application>
 
 </manifest>

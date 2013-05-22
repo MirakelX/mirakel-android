@@ -105,5 +105,11 @@
             android:summary="@string/notifications_big_summary"
             android:title="@string/notifications_big" />
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/special_lists_title">
+        <Preference
+            android:key="special_lists"
+            android:summary="@string/special_lists_click_summary"
+            android:title="@string/special_lists_click"/>
+    </PreferenceCategory>
 
 </PreferenceScreen>

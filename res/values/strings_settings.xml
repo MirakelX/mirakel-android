@@ -70,5 +70,10 @@
     <string name="startup_show_lists_summary">Show the List of Lists</string>
     <string name="startup_list">Select List</string>
     <string name="startup_list_summary">Tasks of which list should be displayed?</string>
+    
+    <!-- Special Lists -->
+    <string name="special_lists_title">Special Lists</string>
+    <string name="special_lists_click">Manage Special Lists</string>
+    <string name="special_lists_click_summary">Manage Special Lists</string>
 
 </resources>

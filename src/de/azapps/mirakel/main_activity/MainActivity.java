@@ -50,6 +50,8 @@ import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.PagerAdapter;
 import de.azapps.mirakel.R;
+import de.azapps.mirakel.helper.DialogHelpers;
+import de.azapps.mirakel.helper.DialogHelpers.ExecInterface;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
@@ -134,36 +136,15 @@ public class MainActivity extends FragmentActivity implements
 			handleDestroyList(currentList);
 			return true;
 		case R.id.task_sorting:
-			final CharSequence[] SortingItems = getResources().getStringArray(
-					R.array.task_sorting_items);
-			AlertDialog.Builder SortingDialogBuilder = new AlertDialog.Builder(
-					this);
-			SortingDialogBuilder.setTitle(this
-					.getString(R.string.task_sorting_title));
-			SortingDialogBuilder.setItems(SortingItems,
-					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int item) {
-							switch (item) {
-							case 0:
-								currentList.setSortBy(ListMirakel.SORT_BY_OPT);
-								break;
-							case 1:
-								currentList.setSortBy(ListMirakel.SORT_BY_DUE);
-								break;
-							case 2:
-								currentList.setSortBy(ListMirakel.SORT_BY_PRIO);
-								break;
-							default:
-								currentList.setSortBy(ListMirakel.SORT_BY_ID);
-								break;
-							}
-							currentList.save();
+			currentList = DialogHelpers.handleSortBy(this, currentList,
+					new ExecInterface() {
+
+						@Override
+						public void exec() {
 							tasksFragment.update();
 							listFragment.update();
 						}
 					});
-			AlertDialog alert = SortingDialogBuilder.create();
-			alert.show();
 			return true;
 		case R.id.menu_new_list:
 			ListMirakel list = ListMirakel.newList(this
@@ -276,7 +257,6 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public void onPageScrollStateChanged(int state) {
 	}
-	
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -338,6 +318,7 @@ public class MainActivity extends FragmentActivity implements
 		listFragment.setActivity(this);
 		tasksFragment.setActivity(this);
 	}
+
 	/**
 	 * Initialize the ViewPager and setup the rest of the layout
 	 */
@@ -371,8 +352,7 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	/**
-	 * Update the internal List of Lists
-	 * (e.g. for the Move Task dialog)
+	 * Update the internal List of Lists (e.g. for the Move Task dialog)
 	 */
 	public void updateLists() {
 		this.lists = ListMirakel.all(false);
@@ -380,6 +360,7 @@ public class MainActivity extends FragmentActivity implements
 
 	/**
 	 * Handle the actions after clicking on a destroy-list button
+	 * 
 	 * @param list
 	 */
 	public void handleDestroyList(final ListMirakel list) {
@@ -408,6 +389,7 @@ public class MainActivity extends FragmentActivity implements
 
 	/**
 	 * Handle the actions after clicking on a destroy-task button
+	 * 
 	 * @param task
 	 */
 	public void handleDestroyTask(final Task task) {
@@ -433,6 +415,7 @@ public class MainActivity extends FragmentActivity implements
 
 	/**
 	 * Handle the actions after clicking on a move task button
+	 * 
 	 * @param task
 	 */
 	public void handleMoveTask(final Task task) {
@@ -493,9 +476,9 @@ public class MainActivity extends FragmentActivity implements
 
 	}
 
-
 	/**
 	 * Return the currently showed tasks
+	 * 
 	 * @return
 	 */
 	Task getCurrentTask() {
@@ -504,6 +487,7 @@ public class MainActivity extends FragmentActivity implements
 
 	/**
 	 * Set the current task and update the view
+	 * 
 	 * @param currentTask
 	 */
 	void setCurrentTask(Task currentTask) {
@@ -516,6 +500,7 @@ public class MainActivity extends FragmentActivity implements
 
 	/**
 	 * Return the currently showed List
+	 * 
 	 * @return
 	 */
 	ListMirakel getCurrentList() {
@@ -524,6 +509,7 @@ public class MainActivity extends FragmentActivity implements
 
 	/**
 	 * Set the current list and update the views
+	 * 
 	 * @param currentList
 	 */
 	void setCurrentList(ListMirakel currentList) {
@@ -568,11 +554,11 @@ public class MainActivity extends FragmentActivity implements
 
 	/**
 	 * Returns the ListFragment
+	 * 
 	 * @return
 	 */
 	public ListFragment getListFragment() {
 		return listFragment;
 	}
-
 
 }

@@ -275,6 +275,8 @@ public class ListMirakel extends ListBase {
 	}
 
 	public static ListMirakel getList(int listId) {
+		if(listId==0)
+			return first();
 		ListMirakel t = getListForSync(listId);
 		return t == null ? SpecialList.getSpecialList(-listId) : t;
 	}
