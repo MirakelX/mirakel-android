@@ -1,11 +1,14 @@
 package de.azapps.mirakel.helper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.util.Log;
+import android.widget.NumberPicker;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -15,9 +18,11 @@ public class DialogHelpers {
 	 * Ugly helper variable
 	 */
 	private static AlertDialog alert;
+	private static NumberPicker numberPicker;
 
 	/**
 	 * Handle the SortBy dialog
+	 * 
 	 * @param ctx
 	 * @param list
 	 * @return
@@ -32,6 +37,7 @@ public class DialogHelpers {
 
 	/**
 	 * Handle the SortBy dialog
+	 * 
 	 * @param ctx
 	 * @param list
 	 * @param cls
@@ -77,7 +83,8 @@ public class DialogHelpers {
 	 * 
 	 * @param task
 	 */
-	public static SpecialList handleDefaultList(Context ctx, final SpecialList specialList, List<ListMirakel> lists) {
+	public static SpecialList handleDefaultList(Context ctx,
+			final SpecialList specialList, List<ListMirakel> lists) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
 		builder.setTitle(R.string.special_list_def_list);
 		List<CharSequence> items = new ArrayList<CharSequence>();
@@ -118,10 +125,53 @@ public class DialogHelpers {
 		alert.show();
 		return specialList;
 	}
+
+	/**
+	 * Handle the Default Date Dialog for a SpecialList
+	 * @param ctx
+	 * @param specialList
+	 * @return
+	 */
+	public static SpecialList handleDefaultDate(Context ctx,
+			final SpecialList specialList) {
+
+		String[] items = ctx.getResources().getStringArray(
+				R.array.special_list_def_date_picker);
+		final int[] values = ctx.getResources().getIntArray(
+				R.array.special_list_def_date_picker_val);
+		int currentItem = 0;
+		if (specialList.getDefaultDate() != null) {
+			int ddate = specialList.getDefaultDate();
+			for (int i = 0; i < values.length; i++)
+				if (values[i] == ddate)
+					currentItem = i;
+		}
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+		builder.setTitle(R.string.special_list_def_date);
+		builder.setSingleChoiceItems(items, currentItem,
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int item) {
+						Integer date = values[item];
+						if (date == -1337)
+							date = null;
+						Log.e("Blubb", "defDate: " + date);
+						specialList.setDefaultDate(date);
+						specialList.save();
+						alert.dismiss();
+					}
+				});
+
+		alert = builder.create();
+		alert.show();
+		return specialList;
+	}
+
 	/**
 	 * Wrapper-Class
+	 * 
 	 * @author az
-	 *
+	 * 
 	 */
 	public interface ExecInterface {
 		public void exec();

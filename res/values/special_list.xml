@@ -13,4 +13,23 @@
     <string name="special_list_def_date">Default date</string>
     <string name="special_list_def_date_summary">in days (+/-)</string>
     <string name="special_list_first">Default</string>
+    <string-array name="special_list_def_date_picker">
+        <item>No date</item>
+        <item>Yesterday</item>
+        <item>Today</item>
+        <item>+1 day</item>
+        <item>+7 days</item>
+        <item>+14 days</item>
+        <item>+1 month</item>
+        <item>+1 year</item>
+    </string-array>
+    <integer-array name="special_list_def_date_picker_val">
+        <item>-1337</item>
+        <item>0</item>
+        <item>1</item>
+        <item>7</item>
+        <item>14</item>
+        <item>30</item>
+        <item>365</item>
+    </integer-array>
 </resources>

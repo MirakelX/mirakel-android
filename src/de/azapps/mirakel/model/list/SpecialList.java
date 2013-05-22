@@ -47,11 +47,11 @@ public class SpecialList extends ListMirakel {
 		this.defaultList = defaultList;
 	}
 
-	public int getDefaultDate() {
+	public Integer getDefaultDate() {
 		return defaultDate;
 	}
 
-	public void setDefaultDate(int defaultDate) {
+	public void setDefaultDate(Integer defaultDate) {
 		this.defaultDate = defaultDate;
 	}
 

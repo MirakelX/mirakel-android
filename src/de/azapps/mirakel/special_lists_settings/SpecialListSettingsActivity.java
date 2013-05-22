@@ -1,15 +1,11 @@
 package de.azapps.mirakel.special_lists_settings;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,8 +26,7 @@ public class SpecialListSettingsActivity extends Activity {
 	public static final String SLIST_ID = "de.azapps.mirakel.SpecialListSettings/list_id";
 	private List<ListMirakel> lists;
 	private SpecialList specialList;
-	private AlertDialog setDefaultListDialog;
-	Context ctx=this;
+	Context ctx = this;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +92,8 @@ public class SpecialListSettingsActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				specialList=(SpecialList) DialogHelpers.handleSortBy(ctx,specialList);
+				specialList = (SpecialList) DialogHelpers.handleSortBy(ctx,
+						specialList);
 			}
 		});
 		Button def_list = (Button) findViewById(R.id.special_list_def_list);
@@ -105,12 +101,20 @@ public class SpecialListSettingsActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				specialList=DialogHelpers.handleDefaultList(ctx, specialList, lists);
+				specialList = DialogHelpers.handleDefaultList(ctx, specialList,
+						lists);
+			}
+		});
+		
+		Button def_date=(Button) findViewById(R.id.special_list_def_date);
+		def_date.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				specialList=DialogHelpers.handleDefaultDate(ctx, specialList);
+				
 			}
 		});
 
 	}
-
-
-
 }
