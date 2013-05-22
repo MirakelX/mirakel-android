@@ -150,7 +150,6 @@ public class TasksFragment extends Fragment {
 				SpecialList slist=(SpecialList) main.getCurrentList();
 				id=slist.getDefaultList().getId();
 				if(slist.getDefaultDate()!=null) {
-					Log.e("Blubb",slist.getDefaultDate() + " ");
 					due=new GregorianCalendar();
 					due.add(GregorianCalendar.DAY_OF_MONTH, slist.getDefaultDate());
 				}

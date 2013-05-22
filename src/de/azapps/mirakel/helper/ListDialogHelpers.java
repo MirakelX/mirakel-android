@@ -153,7 +153,6 @@ public class ListDialogHelpers {
 						Integer date = values[item];
 						if (date == -1337)
 							date = null;
-						Log.e("Blubb", "defDate: " + date);
 						specialList.setDefaultDate(date);
 						specialList.save();
 						alert.dismiss();
