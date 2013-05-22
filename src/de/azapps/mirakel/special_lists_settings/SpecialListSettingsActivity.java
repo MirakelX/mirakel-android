@@ -90,6 +90,14 @@ public class SpecialListSettingsActivity extends Activity {
 
 		lists = ListMirakel.all(false);
 
+		Button sort_by = (Button) findViewById(R.id.special_list_sort_by);
+		sort_by.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				handleSortBy();
+			}
+		});
 		Button def_list = (Button) findViewById(R.id.special_list_def_list);
 		def_list.setOnClickListener(new OnClickListener() {
 
@@ -99,6 +107,10 @@ public class SpecialListSettingsActivity extends Activity {
 			}
 		});
 
+	}
+	
+	public void handleSortBy() {
+		
 	}
 
 	/**
@@ -111,7 +123,7 @@ public class SpecialListSettingsActivity extends Activity {
 		builder.setTitle(R.string.special_list_def_list);
 		List<CharSequence> items = new ArrayList<CharSequence>();
 		final List<Integer> list_ids = new ArrayList<Integer>();
-		int currentItem = 0, i = 0;
+		int currentItem = 0, i = 1;
 		items.add(getString(R.string.special_list_first));
 		list_ids.add(null);
 		for (ListMirakel list : lists) {
