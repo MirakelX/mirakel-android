@@ -544,6 +544,14 @@ public class MainActivity extends FragmentActivity implements
 		Log.v(TAG, "Saving task… (task:" + task.getId() + " – current:"
 				+ currentTask.getId());
 		task.save();
+		updatesForTask(task);
+	}
+
+	/**
+	 * Executes some View–Updates if a Task was changed
+	 * @param task
+	 */
+	void updatesForTask(Task task) {
 		if (task.getId() == currentTask.getId()) {
 			currentTask = task;
 			taskFragment.update();
@@ -551,6 +559,7 @@ public class MainActivity extends FragmentActivity implements
 		tasksFragment.update(false);
 		listFragment.update();
 		NotificationService.updateNotificationAndWidget(this);
+
 	}
 
 	/**
