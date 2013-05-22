@@ -60,7 +60,6 @@ public class SpecialList extends ListMirakel {
 			int sync_state) {
 
 		super(-id, name, sort_by, "", "", sync_state, 0, 0);
-		Log.e("Blubb","defDate("+name+"): "+defaultDate);
 		this.active = active;
 		this.whereQuery = whereQuery;
 		this.defaultList = listMirakel;
@@ -214,7 +213,6 @@ public class SpecialList extends ListMirakel {
 			cursor.close();
 			return t;
 		}
-		Log.e("Blubb", "WARNING: No such specialList: " + listId);
 		return firstSpecial();
 	}
 

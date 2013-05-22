@@ -48,7 +48,7 @@ public class ListFragment extends Fragment {
 	protected boolean EditName;
 	private boolean created = false;
 	private DragNDropListView listView;
-	private static final int LIST_RENAME = 0, LIST_MOVE = 1, LIST_DESTROY = 2;
+	private static final int LIST_RENAME = 0, LIST_MOVE = 1, LIST_DESTROY = 1;
 	protected static final String TAG = "ListFragment";
 	private boolean enableDrag;
 
