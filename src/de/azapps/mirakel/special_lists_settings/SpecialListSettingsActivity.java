@@ -22,6 +22,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.TextView;
 import de.azapps.mirakel.R;
+import de.azapps.mirakel.helper.DialogHelpers;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 
@@ -30,6 +31,7 @@ public class SpecialListSettingsActivity extends Activity {
 	private List<ListMirakel> lists;
 	private SpecialList specialList;
 	private AlertDialog setDefaultListDialog;
+	Context ctx=this;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +97,7 @@ public class SpecialListSettingsActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				handleSortBy();
+				specialList=(SpecialList) DialogHelpers.handleSortBy(ctx,specialList);
 			}
 		});
 		Button def_list = (Button) findViewById(R.id.special_list_def_list);
@@ -108,10 +110,7 @@ public class SpecialListSettingsActivity extends Activity {
 		});
 
 	}
-	
-	public void handleSortBy() {
-		
-	}
+
 
 	/**
 	 * Handle the actions after clicking on a move task button
