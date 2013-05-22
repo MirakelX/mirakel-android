@@ -584,9 +584,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			Task task = Task.getToSync(task_server.getId());
 			if (task == null) {
 				// New Task from server, add to db
-				if (Mirakel.DEBUG)
+				/*if (Mirakel.DEBUG)
 					Log.d(TAG, "Add task from server to list "
-							+ task_server.getList().getId());
+							+ task_server.getList().getId()); Throws NullPointerException*/
 				addTaskFromServer(task_server);
 				continue;
 			} else {

@@ -31,6 +31,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.DatabaseHelper;
@@ -275,10 +276,10 @@ public class ListMirakel extends ListBase {
 	}
 
 	public static ListMirakel getList(int listId) {
-		if(listId==0)
-			return first();
+		if(listId<0)
+			return SpecialList.getSpecialList(-listId);
 		ListMirakel t = getListForSync(listId);
-		return t == null ? SpecialList.getSpecialList(-listId) : t;
+		return t;
 	}
 
 	/**
