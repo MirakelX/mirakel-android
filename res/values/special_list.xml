@@ -25,6 +25,7 @@
     </string-array>
     <integer-array name="special_list_def_date_picker_val">
         <item>-1337</item>
+        <item>-1</item>
         <item>0</item>
         <item>1</item>
         <item>7</item>

@@ -53,6 +53,7 @@ import de.azapps.mirakel.R;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 
 public class TasksFragment extends Fragment {
@@ -146,9 +147,16 @@ public class TasksFragment extends Fragment {
 		GregorianCalendar due = null;
 		if (id <= 0) {
 			try {
-				id = ListMirakel.first().getId();
+				SpecialList slist=(SpecialList) main.getCurrentList();
+				id=slist.getDefaultList().getId();
+				if(slist.getDefaultDate()!=null) {
+					Log.e("Blubb",slist.getDefaultDate() + " ");
+					due=new GregorianCalendar();
+					due.add(GregorianCalendar.DAY_OF_MONTH, slist.getDefaultDate());
+				}
 			} catch (NullPointerException e) {
 				id = 0;
+				due=null;
 				Toast.makeText(main, R.string.no_lists, Toast.LENGTH_LONG)
 						.show();
 			}

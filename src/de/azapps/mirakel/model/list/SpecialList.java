@@ -60,6 +60,7 @@ public class SpecialList extends ListMirakel {
 			int sync_state) {
 
 		super(-id, name, sort_by, "", "", sync_state, 0, 0);
+		Log.e("Blubb","defDate("+name+"): "+defaultDate);
 		this.active = active;
 		this.whereQuery = whereQuery;
 		this.defaultList = listMirakel;
@@ -249,11 +250,14 @@ public class SpecialList extends ListMirakel {
 	 */
 	private static SpecialList cursorToSList(Cursor cursor) {
 		int i = 0;
+		Integer defDate=cursor.getInt(5);
+		if(cursor.isNull(5))
+			defDate=null;
 		SpecialList slist = new SpecialList(cursor.getInt(i++),
 				cursor.getString(i++), cursor.getString(i++),
 				cursor.getInt(i++) == 1,
-				ListMirakel.getList(cursor.getInt(i++)), cursor.getInt(i++),
-				(short) cursor.getInt(i++), cursor.getInt(i++));
+				ListMirakel.getList(cursor.getInt(i++)), defDate,
+				(short) cursor.getInt(++i), cursor.getInt(++i));
 		return slist;
 	}
 
