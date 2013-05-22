@@ -320,8 +320,15 @@ public class Task extends TaskBase {
 				Task t = new Task();
 				t.setId(el.get("id").getAsLong());
 				t.setName(el.get("name").getAsString());
-				t.setContent(el.get("content").getAsString() == null ? "" : el
+				try{
+					t.setContent(el.get("content").getAsString() == null ? "" : el
 						.get("content").getAsString());
+				}catch(Exception e){
+					if (Mirakel.DEBUG) {
+						Log.d(TAG,"Content=NULL?");
+					}
+					t.setContent("");
+				}
 				t.setPriority(el.get("priority").getAsInt());
 				t.setList(ListMirakel.getList(el.get("list_id").getAsInt()));
 				t.setCreatedAt(el.get("created_at").getAsString()
@@ -338,8 +345,7 @@ public class Task extends TaskBase {
 					t.setDue(null);
 					Log.v(TAG, "Due is null");
 					if (Mirakel.DEBUG)
-						Log.e(TAG, "Can not parse Date! "
-								+ el.get("due").getAsString());
+						Log.e(TAG, "Can not parse Date! ");
 				}
 				tasks.add(t);
 			}

@@ -40,13 +40,6 @@ public class Mirakel extends Application {
 
 	public static int widgets[] = {};
 
-	public class HttpMode {
-		final public static int GET = 0;
-		final public static int POST = 1;
-		final public static int PUT = 2;
-		final public static int DELETE = 3;
-	}
-
 	private static final String TAG = "Mirakel";
 
 	public static final boolean DEBUG = false;// Set to false/true to

@@ -65,16 +65,22 @@ public class Network extends AsyncTask<String, Integer, String> {
 		public final static short NEED_SYNC = 2;
 		public final static short IS_SYNCED = 3;
 	}
-
-	private String TAG = "GetData";
+	public static class HttpMode {
+		final public static int GET = 0;
+		final public static int POST = 1;
+		final public static int PUT = 2;
+		final public static int DELETE = 3;
+	}
+	private static String TAG = "MirakelNetwork";
+	private static final Integer NoNetwork = 1;
+	private static final Integer NoHTTPS = 2;
+	
 	protected DataDownloadCommand commands;
 	protected List<BasicNameValuePair> HeaderData;
 	protected int Mode;
 	protected Context context;
 	protected String Token;
 
-	private static final Integer NoNetwork = 1;
-	private static final Integer NoHTTPS = 2;
 
 	public Network(DataDownloadCommand commands, int mode, Context context,
 			String Token) {
@@ -98,6 +104,8 @@ public class Network extends AsyncTask<String, Integer, String> {
 			try {
 				return json.substring(10, 30);
 			} catch (IndexOutOfBoundsException e) {
+				if(Mirakel.DEBUG)
+					Log.d(TAG,"Unkown responsformat");
 				return null;
 			}
 		} else
@@ -109,14 +117,16 @@ public class Network extends AsyncTask<String, Integer, String> {
 		try {
 			return downloadUrl(urls[0]);
 		} catch (IOException e) {
-			Log.e(TAG, "Unable to retrieve web page. URL may be invalid.");
+			if(Mirakel.DEBUG)
+				Log.e(TAG, "Unable to retrieve web page. URL may be invalid.");
 		} catch (URISyntaxException e) {
-			Log.e(TAG, "Invalid UrlSyntax");
+			if(Mirakel.DEBUG)
+				Log.e(TAG, "Invalid UrlSyntax");
 		}
 		Integer[] t = { NoNetwork };
 		publishProgress(t);
 
-		return null;
+		return "";
 	}
 
 	@Override
@@ -132,10 +142,10 @@ public class Network extends AsyncTask<String, Integer, String> {
 
 	@Override
 	protected void onPostExecute(String result) {
-		if (result != null)
-			commands.after_exec(result);
-		else
-			Log.e(TAG, "No Response");
+		if (result == ""&& Mirakel.DEBUG){
+			Log.d(TAG, "No Response");
+		}
+		commands.after_exec(result);
 	}
 
 	private HttpClient sslClient(HttpClient client) {
@@ -163,6 +173,8 @@ public class Network extends AsyncTask<String, Integer, String> {
 			sr.register(new Scheme("http", ssf, 80));
 			return new DefaultHttpClient(ccm, client.getParams());
 		} catch (Exception ex) {
+			if(Mirakel.DEBUG)
+				Log.d(TAG,"Cannot create new SSL-Client");
 			return null;
 		}
 	}
@@ -188,41 +200,48 @@ public class Network extends AsyncTask<String, Integer, String> {
 		HttpResponse response;
 		try {
 			switch (Mode) {
-			case Mirakel.HttpMode.GET:
-				Log.v(TAG, "GET " + myurl);
+			case HttpMode.GET:
+				if(Mirakel.DEBUG)
+					Log.v(TAG, "GET " + myurl);
 				HttpGet get = new HttpGet();
 				get.setURI(new URI(myurl));
 				response = httpClient.execute(get);
 				break;
-			case Mirakel.HttpMode.PUT:
-				Log.v(TAG, "PUT " + myurl);
+			case HttpMode.PUT:
+				if(Mirakel.DEBUG)
+					Log.v(TAG, "PUT " + myurl);
 				HttpPut put = new HttpPut();
 				put.setURI(new URI(myurl));
 				put.setEntity(new UrlEncodedFormEntity(HeaderData, HTTP.UTF_8));
 				response = httpClient.execute(put);
 				break;
-			case Mirakel.HttpMode.POST:
-				Log.v(TAG, "POST " + myurl);
+			case HttpMode.POST:
+				if(Mirakel.DEBUG)
+					Log.v(TAG, "POST " + myurl);
 				HttpPost post = new HttpPost();
 				post.setURI(new URI(myurl));
 				post.setEntity(new UrlEncodedFormEntity(HeaderData, HTTP.UTF_8));
 				response = httpClient.execute(post);
 				break;
-			case Mirakel.HttpMode.DELETE:
-				Log.v(TAG, "DELETE " + myurl);
+			case HttpMode.DELETE:
+				if(Mirakel.DEBUG)
+					Log.v(TAG, "DELETE " + myurl);
 				HttpDelete delete = new HttpDelete();
 				delete.setURI(new URI(myurl));
 				response = httpClient.execute(delete);
 				break;
 			default:
-				Log.e("HTTP-MODE", "Unknown Http-Mode");
+				Log.wtf("HTTP-MODE", "Unknown Http-Mode");
 				return null;
 			}
 		} catch (Exception e) {
-			Log.w(TAG, Log.getStackTraceString(e));
+			Log.e(TAG, "No Networkconnection available");
+			if(Mirakel.DEBUG)
+				Log.w(TAG, Log.getStackTraceString(e));
 			return "";
 		}
-		Log.v(TAG, "Http-Status: " + response.getStatusLine().getStatusCode());
+		if(Mirakel.DEBUG)
+			Log.v(TAG, "Http-Status: " + response.getStatusLine().getStatusCode());
 		if (response.getEntity() == null)
 			return "";
 		String r = EntityUtils.toString(response.getEntity());

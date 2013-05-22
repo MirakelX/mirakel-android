@@ -126,7 +126,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 							Toast.LENGTH_LONG).show();
 				}
 			}
-		}, Mirakel.HttpMode.POST, data, mContext, null).execute(ServerUrl
+		}, Network.HttpMode.POST, data, mContext, null).execute(ServerUrl
 				+ "/tokens.json");
 	}
 
@@ -160,10 +160,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						merge_with_server(Task.parse_json(result));
 						doSync();
 					}
-				}, Mirakel.HttpMode.GET, mContext, Token).execute(ServerUrl
+				}, Network.HttpMode.GET, mContext, Token).execute(ServerUrl
 						+ "/lists/all/tasks.json");
 			}
-		}, Mirakel.HttpMode.GET, mContext, Token).execute(ServerUrl
+		}, Network.HttpMode.GET, mContext, Token).execute(ServerUrl
 				+ "/lists.json");
 	}
 
@@ -215,7 +215,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				@Override
 				public void after_exec(String result) {
 				}
-			}, Mirakel.HttpMode.DELETE, mContext, null).execute(ServerUrl
+			}, Network.HttpMode.DELETE, mContext, null).execute(ServerUrl
 					+ "/tokens/" + Token);
 		}
 
@@ -231,11 +231,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				new DataDownloadCommand() {
 					@Override
 					public void after_exec(String result) {
+						list.setSyncState(Network.SYNC_STATE.ADD);
 						list.destroy();
 						finishSync();
 					}
 
-				}, Mirakel.HttpMode.DELETE, mContext, Token), ServerUrl
+				}, Network.HttpMode.DELETE, mContext, Token), ServerUrl
 				+ "/lists/" + list.getId() + ".json"));
 
 	}
@@ -257,7 +258,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						// Do Nothing
 						finishSync();
 					}
-				}, Mirakel.HttpMode.PUT, data, mContext, Token), ServerUrl
+				}, Network.HttpMode.PUT, data, mContext, Token), ServerUrl
 				+ "/lists/" + list.getId() + ".json"));
 	}
 
@@ -318,7 +319,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						addTasks();
 						finishSync();
 					}
-				}, Mirakel.HttpMode.POST, data, mContext, Token), ServerUrl
+				}, Network.HttpMode.POST, data, mContext, Token), ServerUrl
 				+ "/lists.json"));
 	}
 
@@ -328,6 +329,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	 * @param lists_server
 	 */
 	protected void merge_with_server(ListMirakel[] lists_server) {
+		if(lists_server==null)
+			return;
 		for (ListMirakel list_server : lists_server) {
 			list_server.setCreatedAt(list_server.getCreatedAt()
 					.replace(":", ""));
@@ -462,7 +465,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						task.setSyncState(Network.SYNC_STATE.ADD);
 						task.delete();
 					}
-				}, Mirakel.HttpMode.DELETE, mContext, Token), ServerUrl
+				}, Network.HttpMode.DELETE, mContext, Token), ServerUrl
 				+ "/lists/" + task.getList().getId() + "/tasks/" + task.getId()
 				+ ".json"));
 
@@ -494,7 +497,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					public void after_exec(String result) {
 						finishSync();
 					}
-				}, Mirakel.HttpMode.PUT, data, mContext, Token), ServerUrl
+				}, Network.HttpMode.PUT, data, mContext, Token), ServerUrl
 				+ "/lists/" + task.getList().getId() + "/tasks/" + task.getId()
 				+ ".json"));
 	}
@@ -563,7 +566,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						}
 						finishSync();
 					}
-				}, Mirakel.HttpMode.POST, data, mContext, Token), ServerUrl
+				}, Network.HttpMode.POST, data, mContext, Token), ServerUrl
 				+ "/lists/" + task.getList().getId() + "/tasks.json"));
 
 	}
