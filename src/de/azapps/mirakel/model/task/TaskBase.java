@@ -41,16 +41,18 @@ class TaskBase {
 	private String updatedAt;
 	private Map<String, Boolean> edited = new HashMap<String, Boolean>();
 	private int sync_state;
+	private GregorianCalendar reminder;
 
 	TaskBase(long id, ListMirakel list, String name, String content,
-			boolean done, GregorianCalendar due, int priority,
-			String created_at, String updated_at, int sync_state) {
+			boolean done, GregorianCalendar due, GregorianCalendar reminder,
+			int priority, String created_at, String updated_at, int sync_state) {
 		this.id = id;
 		this.setList(list);
 		this.setName(name);
 		this.setContent(content);
 		this.setDone(done);
 		this.setDue(due);
+		this.setReminder(reminder);
 		this.setPriority(priority);
 		this.setCreatedAt(created_at);
 		this.setUpdatedAt(updated_at);
@@ -68,6 +70,7 @@ class TaskBase {
 		this.setContent("");
 		this.setDone(false);
 		this.setDue(null);
+		this.setReminder(null);
 		this.setPriority(0);
 		this.setCreatedAt(null);
 		this.setUpdatedAt(null);
@@ -137,6 +140,14 @@ class TaskBase {
 		edited.put("due", true);
 	}
 
+	public GregorianCalendar getReminder() {
+		return reminder;
+	}
+
+	public void setReminder(GregorianCalendar reminder) {
+		this.reminder = reminder;
+	}
+
 	public int getPriority() {
 		return priority;
 	}
@@ -186,6 +197,10 @@ class TaskBase {
 				"yyyy-MM-dd", Locale.getDefault()).format(new Date(this.due
 				.getTimeInMillis())));
 		cv.put("due", due);
+		String reminder = (this.reminder == null ? null : new SimpleDateFormat(
+				"yyyy-MM-dd'T'hhmmss'Z'", Locale.getDefault()).format(new Date(
+				this.reminder.getTimeInMillis())));
+		cv.put("reminder", reminder);
 		cv.put("priority", priority);
 		cv.put("created_at", createdAt);
 		cv.put("updated_at", updatedAt);

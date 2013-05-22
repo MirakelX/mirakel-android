@@ -63,6 +63,7 @@ public class TaskFragment extends Fragment {
 	protected TextView Task_prio;
 	protected TextView Task_content;
 	protected TextView Task_due;
+	protected TextView Task_reminder;
 
 	protected MainActivity main;
 	protected NumberPicker picker;
@@ -223,6 +224,46 @@ public class TaskFragment extends Fragment {
 						});
 				dialog.show();
 
+			}
+		});
+
+		// Task Reminder
+		Task_reminder = (TextView) view.findViewById(R.id.task_reminder);
+		Drawable reminder_img = main.getResources().getDrawable(
+				android.R.drawable.ic_menu_month);
+		reminder_img.setBounds(0, 0, 60, 60);
+		Task_reminder.setCompoundDrawables(reminder_img, null, null, null);
+		if (task.getReminder() == null) {
+			Task_reminder.setText(getString(R.string.no_reminder));
+		} else {
+			Task_reminder.setText(MirakelHelper.formatDate(task.getReminder(),
+					main.getString(R.string.humanDateTimeFormat)));
+		}
+
+		Task_reminder.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				TaskDialogHelpers.handleReminder(main, task,
+						new ExecInterface() {
+
+							@Override
+							public void exec() {
+								if (task.getReminder() == null) {
+									Task_due.setText(R.string.no_date);
+								} else {
+									Task_reminder
+											.setText(new SimpleDateFormat(
+													view.getContext()
+															.getString(
+																	R.string.humanDateTimeFormat),
+													Locale.getDefault())
+													.format(task.getReminder()
+															.getTime()));
+								}
+
+							}
+						});
 			}
 		});
 

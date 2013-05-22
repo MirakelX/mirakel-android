@@ -48,10 +48,10 @@ public class Task extends TaskBase {
 	public static final String TABLE = "tasks";
 
 	public Task(long id, ListMirakel list, String name, String content,
-			boolean done, GregorianCalendar due, int priority,
-			String created_at, String updated_at, int sync_state) {
-		super(id, list, name, content, done, due, priority, created_at,
-				updated_at, sync_state);
+			boolean done, GregorianCalendar due, GregorianCalendar reminder,
+			int priority, String created_at, String updated_at, int sync_state) {
+		super(id, list, name, content, done, due, reminder, priority,
+				created_at, updated_at, sync_state);
 	}
 
 	Task() {
@@ -101,7 +101,7 @@ public class Task extends TaskBase {
 	private static SQLiteDatabase database;
 	private static DatabaseHelper dbHelper;
 	private static final String[] allColumns = { "_id", "list_id", "name",
-			"content", "done", "due", "priority", "created_at", "updated_at",
+			"content", "done", "due","reminder", "priority", "created_at", "updated_at",
 			"sync_state" };
 	private static Context context;
 
@@ -148,7 +148,7 @@ public class Task extends TaskBase {
 	 */
 	public static Task newTask(String name, long list_id, String content,
 			boolean done, GregorianCalendar due, int priority) {
-		
+
 		ContentValues values = new ContentValues();
 		values.put("name", name);
 		values.put("list_id", list_id);
@@ -320,12 +320,12 @@ public class Task extends TaskBase {
 				Task t = new Task();
 				t.setId(el.get("id").getAsLong());
 				t.setName(el.get("name").getAsString());
-				try{
-					t.setContent(el.get("content").getAsString() == null ? "" : el
-						.get("content").getAsString());
-				}catch(Exception e){
+				try {
+					t.setContent(el.get("content").getAsString() == null ? ""
+							: el.get("content").getAsString());
+				} catch (Exception e) {
 					if (Mirakel.DEBUG) {
-						Log.d(TAG,"Content=NULL?");
+						Log.d(TAG, "Content=NULL?");
 					}
 					t.setContent("");
 				}
@@ -368,22 +368,30 @@ public class Task extends TaskBase {
 	 */
 	private static Task cursorToTask(Cursor cursor) {
 		int i = 0;
-		GregorianCalendar t = new GregorianCalendar();
+		GregorianCalendar due = new GregorianCalendar();
 		try {
-			t.setTime(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+			due.setTime(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 					.parse(cursor.getString(5)));
 		} catch (ParseException e) {
-			t = null;
+			due = null;
 		} catch (NullPointerException e) {
-			t = null;
+			due = null;
+		}
+		GregorianCalendar reminder=new GregorianCalendar();
+		try{
+			reminder.setTime(new SimpleDateFormat("yyyy-MM-dd'T'hhmmss'Z'",Locale.getDefault()).parse(cursor.getString(6)));
+		} catch(ParseException e) {
+			reminder=null;
+		} catch(NullPointerException e){
+			reminder=null;
 		}
 
 		Task task = new Task(cursor.getLong(i++),
 				ListMirakel.getList((int) cursor.getLong(i++)),
 				cursor.getString(i++), cursor.getString(i++),
-				cursor.getInt((i++)) == 1, t, cursor.getInt(++i),
-				cursor.getString(++i), cursor.getString(++i),
-				cursor.getInt(++i));
+				cursor.getInt((i++)) == 1, due, reminder, cursor.getInt(7),
+				cursor.getString(8), cursor.getString(9),
+				cursor.getInt(10));
 		return task;
 	}
 
