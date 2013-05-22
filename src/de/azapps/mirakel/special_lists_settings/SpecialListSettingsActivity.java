@@ -18,7 +18,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.TextView;
 import de.azapps.mirakel.R;
-import de.azapps.mirakel.helper.DialogHelpers;
+import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 
@@ -92,7 +92,7 @@ public class SpecialListSettingsActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				specialList = (SpecialList) DialogHelpers.handleSortBy(ctx,
+				specialList = (SpecialList) ListDialogHelpers.handleSortBy(ctx,
 						specialList);
 			}
 		});
@@ -101,7 +101,7 @@ public class SpecialListSettingsActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				specialList = DialogHelpers.handleDefaultList(ctx, specialList,
+				specialList = ListDialogHelpers.handleDefaultList(ctx, specialList,
 						lists);
 			}
 		});
@@ -111,7 +111,7 @@ public class SpecialListSettingsActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				specialList=DialogHelpers.handleDefaultDate(ctx, specialList);
+				specialList=ListDialogHelpers.handleDefaultDate(ctx, specialList);
 				
 			}
 		});

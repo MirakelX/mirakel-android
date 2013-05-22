@@ -50,8 +50,9 @@ import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.PagerAdapter;
 import de.azapps.mirakel.R;
-import de.azapps.mirakel.helper.DialogHelpers;
-import de.azapps.mirakel.helper.DialogHelpers.ExecInterface;
+import de.azapps.mirakel.helper.Helpers;
+import de.azapps.mirakel.helper.Helpers.ExecInterface;
+import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
@@ -136,8 +137,8 @@ public class MainActivity extends FragmentActivity implements
 			handleDestroyList(currentList);
 			return true;
 		case R.id.task_sorting:
-			currentList = DialogHelpers.handleSortBy(this, currentList,
-					new ExecInterface() {
+			currentList = ListDialogHelpers.handleSortBy(this, currentList,
+					new Helpers.ExecInterface() {
 
 						@Override
 						public void exec() {

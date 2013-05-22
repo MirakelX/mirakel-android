@@ -1,24 +1,21 @@
 package de.azapps.mirakel.helper;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.util.Log;
-import android.widget.NumberPicker;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 
-public class DialogHelpers {
+public class ListDialogHelpers {
 	/**
 	 * Ugly helper variable
 	 */
 	private static AlertDialog alert;
-	private static NumberPicker numberPicker;
 
 	/**
 	 * Handle the SortBy dialog
@@ -28,7 +25,7 @@ public class DialogHelpers {
 	 * @return
 	 */
 	public static ListMirakel handleSortBy(Context ctx, final ListMirakel list) {
-		return handleSortBy(ctx, list, new ExecInterface() {
+		return handleSortBy(ctx, list, new Helpers.ExecInterface() {
 			@Override
 			public void exec() {
 			}
@@ -44,7 +41,7 @@ public class DialogHelpers {
 	 * @return
 	 */
 	public static ListMirakel handleSortBy(Context ctx, final ListMirakel list,
-			final ExecInterface cls) {
+			final Helpers.ExecInterface cls) {
 		final CharSequence[] SortingItems = ctx.getResources().getStringArray(
 				R.array.task_sorting_items);
 
@@ -128,6 +125,7 @@ public class DialogHelpers {
 
 	/**
 	 * Handle the Default Date Dialog for a SpecialList
+	 * 
 	 * @param ctx
 	 * @param specialList
 	 * @return
@@ -165,15 +163,5 @@ public class DialogHelpers {
 		alert = builder.create();
 		alert.show();
 		return specialList;
-	}
-
-	/**
-	 * Wrapper-Class
-	 * 
-	 * @author az
-	 * 
-	 */
-	public interface ExecInterface {
-		public void exec();
 	}
 }
