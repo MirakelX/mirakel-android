@@ -58,6 +58,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Pair;
@@ -151,9 +152,14 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		new Network(new DataDownloadCommand() {
 			@Override
 			public void after_exec(String result) {
-				//
-				merge_with_server(new Gson().fromJson(result,
-						ListMirakel[].class));
+				
+				try {
+					merge_with_server(new Gson().fromJson(result,
+							ListMirakel[].class));
+				} catch (JsonSyntaxException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				new Network(new DataDownloadCommand() {
 					@Override
 					public void after_exec(String result) {

@@ -297,7 +297,7 @@ public class SettingsFragment extends PreferenceFragment {
 									Mirakel.AUTHORITY_TYP, true);
 							ContentResolver.setIsSyncable(account,
 									Mirakel.AUTHORITY_TYP, 1);
-							ContentResolver.setMasterSyncAutomatically(true);
+							//ContentResolver.setMasterSyncAutomatically(true);
 							ContentResolver.addPeriodicSync(account,
 									Mirakel.AUTHORITY_TYP, new Bundle(),
 									Long.parseLong(newValue.toString()) * 60);
