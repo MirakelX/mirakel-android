@@ -104,7 +104,7 @@
     <string name="menu_settings">Settings</string>
     <string name="menu_move">Move</string>
     <!-- Login -->
-    <string name="offical_server_url">http://mirakel.azapps.de</string>
+    <string name="offical_server_url">https://mirakel.azapps.de</string>
     <string name="title_activity_main">MainActivity</string>
 
     <!-- Widget -->
@@ -141,5 +141,7 @@
     <!-- Message shown in progress dialog while app connects to the server -->
     <string name="ui_activity_authenticating">Authenticating\u2026</string>
     <string name="ui_activity_title">Sign-in</string>
+    <string name="title_activity_special_lists_settings">SpecialListsSettings</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>

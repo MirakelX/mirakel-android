@@ -17,6 +17,8 @@ import de.azapps.mirakel.sync.Network;
 public class SpecialList extends ListMirakel {
 	private boolean active;
 	private String whereQuery;
+	private ListMirakel defaultList;
+	private Integer defaultDate;
 
 	public boolean isActive() {
 		return active;
@@ -34,11 +36,34 @@ public class SpecialList extends ListMirakel {
 		this.whereQuery = whereQuery;
 	}
 
+	public ListMirakel getDefaultList() {
+		if (defaultList == null) {
+			return ListMirakel.first();
+		}
+		return defaultList;
+	}
+
+	public void setDefaultList(ListMirakel defaultList) {
+		this.defaultList = defaultList;
+	}
+
+	public Integer getDefaultDate() {
+		return defaultDate;
+	}
+
+	public void setDefaultDate(Integer defaultDate) {
+		this.defaultDate = defaultDate;
+	}
+
 	SpecialList(int id, String name, String whereQuery, boolean active,
-			short sort_by, int sync_state) {
+			ListMirakel listMirakel, Integer defaultDate, short sort_by,
+			int sync_state) {
+
 		super(-id, name, sort_by, "", "", sync_state, 0, 0);
 		this.active = active;
 		this.whereQuery = whereQuery;
+		this.defaultList = listMirakel;
+		this.defaultDate = defaultDate;
 	}
 
 	/**
@@ -66,7 +91,7 @@ public class SpecialList extends ListMirakel {
 	private static SQLiteDatabase database;
 	private static DatabaseHelper dbHelper;
 	private static final String[] allColumns = { "_id", "name", "whereQuery",
-			"active", "sort_by", "sync_state" };
+			"active", "def_list", "def_date", "sort_by", "sync_state" };
 	private static Context context;
 
 	/**
@@ -95,6 +120,7 @@ public class SpecialList extends ListMirakel {
 		values.put("name", name);
 		values.put("whereQuery", whereQuery);
 		values.put("active", active);
+		values.put("def_list", ListMirakel.first().getId());
 		long insertId = database.insert(TABLE, null, values);
 		Cursor cursor = database.query(TABLE, allColumns, "_id = " + insertId,
 				null, null, null, null);
@@ -140,15 +166,26 @@ public class SpecialList extends ListMirakel {
 		cv.put("sync_state", getSyncState());
 		cv.put("active", isActive() ? 1 : 0);
 		cv.put("whereQuery", getWhereQuery());
+		cv.put("def_list", defaultList == null ? null : defaultList.getId());
+		cv.put("def_date", defaultDate);
 		return cv;
 	}
 
 	/**
-	 * Get all Tasks
+	 * Get all SpecialLists
 	 * 
 	 * @return
 	 */
 	public static List<SpecialList> allSpecial() {
+		return allSpecial(false);
+	}
+
+	/**
+	 * Get all SpecialLists
+	 * 
+	 * @return
+	 */
+	public static List<SpecialList> allSpecial(boolean showAll) {
 		List<SpecialList> slists = new ArrayList<SpecialList>();
 		Cursor c = database.query(TABLE, allColumns, "active=1", null, null,
 				null, null);
@@ -176,7 +213,6 @@ public class SpecialList extends ListMirakel {
 			cursor.close();
 			return t;
 		}
-		Log.e("Blubb", "WARNING: No such specialList: " + listId);
 		return firstSpecial();
 	}
 
@@ -196,7 +232,9 @@ public class SpecialList extends ListMirakel {
 			cursor.moveToNext();
 		} else {
 			list = new SpecialList(0, context.getString(R.string.list_all), "",
-					true, SORT_BY_OPT, Network.SYNC_STATE.NOTHING);
+					true, ListMirakel.first(), null, SORT_BY_OPT,
+					Network.SYNC_STATE.NOTHING);
+
 		}
 		cursor.close();
 		return list;
@@ -210,10 +248,14 @@ public class SpecialList extends ListMirakel {
 	 */
 	private static SpecialList cursorToSList(Cursor cursor) {
 		int i = 0;
+		Integer defDate=cursor.getInt(5);
+		if(cursor.isNull(5))
+			defDate=null;
 		SpecialList slist = new SpecialList(cursor.getInt(i++),
 				cursor.getString(i++), cursor.getString(i++),
-				cursor.getInt(i++) == 1, cursor.getShort(i++),
-				cursor.getInt(i++));
+				cursor.getInt(i++) == 1,
+				ListMirakel.getList(cursor.getInt(i++)), defDate,
+				(short) cursor.getInt(++i), cursor.getInt(++i));
 		return slist;
 	}
 

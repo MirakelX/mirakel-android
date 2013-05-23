@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/special_list_name" />
+
+    <EditText
+        android:id="@+id/special_list_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:imeOptions="actionSend"
+        android:singleLine="true" >
+
+        <requestFocus />
+    </EditText>
+
+    <CheckBox
+        android:id="@+id/special_list_active"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/special_list_active" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/special_list_where" />
+
+    <EditText
+        android:id="@+id/special_list_where"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:imeOptions="actionSend"
+        android:singleLine="true" />
+
+    <Button
+        android:id="@+id/special_list_sort_by"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/special_list_sort_by" />
+
+    <Button
+        android:id="@+id/special_list_def_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/special_list_def_list" />
+
+    <Button
+        android:id="@+id/special_list_def_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/special_list_def_date" />
+
+</LinearLayout>

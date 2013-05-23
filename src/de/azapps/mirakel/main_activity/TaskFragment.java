@@ -23,7 +23,6 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Context;
@@ -52,6 +51,8 @@ import android.widget.ViewSwitcher;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.MirakelHelper;
 import de.azapps.mirakel.R;
+import de.azapps.mirakel.helper.Helpers.ExecInterface;
+import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.model.task.Task;
 
 public class TaskFragment extends Fragment {
@@ -152,37 +153,16 @@ public class TaskFragment extends Fragment {
 		Task_prio.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				picker = new NumberPicker(main);
-				picker.setMaxValue(4);
-				picker.setMinValue(0);
-				String[] t = { "-2", "-1", "0", "1", "2" };
-				picker.setDisplayedValues(t);
-				picker.setWrapSelectorWheel(false);
-				picker.setValue(task.getPriority() + 2);
-				new AlertDialog.Builder(main)
-						.setTitle(
-								main.getString(R.string.task_change_prio_title))
-						.setMessage(
-								main.getString(R.string.task_change_prio_cont))
-						.setView(picker)
-						.setPositiveButton(main.getString(R.string.OK),
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int whichButton) {
-										task.setPriority((picker.getValue() - 2));
-										main.saveTask(task);
-										set_prio(Task_prio, task);
-									}
+				TaskDialogHelpers.handlePriority(main, task,
+						new ExecInterface() {
 
-								})
-						.setNegativeButton(main.getString(R.string.Cancel),
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int whichButton) {
-										// Do nothing.
-									}
-								}).show();
+							@Override
+							public void exec() {
+								main.updatesForTask(task);
+								set_prio(Task_prio, task);
 
+							}
+						});
 			}
 		});
 

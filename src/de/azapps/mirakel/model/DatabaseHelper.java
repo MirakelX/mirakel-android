@@ -37,7 +37,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String TAG = "DatabaseHelper";
 	private Context context;
-	public static final int DATABASE_VERSION = 8;
+	public static final int DATABASE_VERSION = 9;
 
 	public DatabaseHelper(Context ctx) {
 		super(ctx, "mirakel.db", null, DATABASE_VERSION);
@@ -62,7 +62,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.execSQL("INSERT INTO tasks (list_id,name) VALUES (1,'"
 				+ context.getString(R.string.first_task) + "')");
 		createSpecialListsTable(db);
-
+		onUpgrade(db, 7, DATABASE_VERSION);
 	}
 
 	@Override
@@ -137,6 +137,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ " add column def_list INTEGER;");
 			db.execSQL("Alter Table " + SpecialList.TABLE
 					+ " add column def_date INTEGER;");
+		case 8:
+			/*
+			 * Add reminders for Tasks
+			 */
+			db.execSQL("Alter Table " + Task.TABLE
+					+ " add column reminder INTEGER;");
 		}
 	}
 	

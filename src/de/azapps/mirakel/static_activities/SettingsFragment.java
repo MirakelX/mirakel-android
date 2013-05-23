@@ -46,6 +46,8 @@ import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.special_lists_settings.SpecialListsSettings;
 import de.azapps.mirakel.sync.AuthenticatorActivity;
 import de.azapps.mirakel.sync.DataDownloadCommand;
 import de.azapps.mirakel.sync.Network;
@@ -144,7 +146,7 @@ public class SettingsFragment extends PreferenceFragment {
 		} else {
 			sync.setChecked(true);
 		}
-		
+
 		//Change Passwort
 		final EditTextPreference Password = (EditTextPreference) findPreference("syncPassword");
 		Password.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
@@ -167,7 +169,7 @@ public class SettingsFragment extends PreferenceFragment {
 							public void after_exec(String result) {
 								String t = Network.getToken(result);
 								if (t != null) {
-									am.setPassword(account, (String) password);
+					am.setPassword(account, (String) password);
 									Password.setText(am.getPassword(account));
 									new Network(new DataDownloadCommand() {
 										@Override
@@ -210,9 +212,9 @@ public class SettingsFragment extends PreferenceFragment {
 		Password.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
-				if (account != null) {
+		if (account != null) {
 					Password.setText(am.getPassword(account));
-				}
+		}
 				return false;
 			}
 		});
@@ -239,11 +241,11 @@ public class SettingsFragment extends PreferenceFragment {
 										.getPassword(account)));
 
 						new Network(new DataDownloadCommand() {
-							@Override
+			@Override
 							public void after_exec(String result) {
 								String t = Network.getToken(result);
 								if (t != null) {
-									am.setUserData(account, "url", (String) url);
+					am.setUserData(account, "url", (String) url);
 									Password.setText(am.getPassword(account));
 									new Network(new DataDownloadCommand() {
 										@Override
@@ -284,6 +286,7 @@ public class SettingsFragment extends PreferenceFragment {
 		ListPreference syncIntervall = (ListPreference) findPreference("syncFrequency");
 		syncIntervall
 				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
 					@Override
 					public boolean onPreferenceChange(Preference preference,
 							Object newValue) {
@@ -299,12 +302,16 @@ public class SettingsFragment extends PreferenceFragment {
 									Mirakel.AUTHORITY_TYP, 1);
 							//ContentResolver.setMasterSyncAutomatically(true);
 							ContentResolver.addPeriodicSync(account,
-									Mirakel.AUTHORITY_TYP, new Bundle(),
-									Long.parseLong(newValue.toString()) * 60);
+									Mirakel.AUTHORITY_TYP, null,
+									((Long) newValue) * 60);
 						}
 						return true;
 					}
 				});
+
+		Intent startSpecialListsIntent = new Intent(getActivity(), SpecialListsSettings.class);
+		Preference specialLists=(Preference) findPreference("special_lists");
+		specialLists.setIntent(startSpecialListsIntent);
 	}
 
 	private Account getAccount(AccountManager am) {

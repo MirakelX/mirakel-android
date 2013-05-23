@@ -51,7 +51,10 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import de.azapps.mirakel.R;
+import de.azapps.mirakel.helper.Helpers.ExecInterface;
+import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 
 public class TasksFragment extends Fragment {
@@ -83,7 +86,11 @@ public class TasksFragment extends Fragment {
 		view = inflater.inflate(R.layout.activity_tasks, container, false);
 
 		getResources().getString(R.string.action_settings);
-		values = main.getCurrentList().tasks();
+		try{
+			values = main.getCurrentList().tasks();
+		}catch(NullPointerException e){
+			values=null;
+		}
 		adapter=null;
 		created = true;
 
@@ -176,9 +183,15 @@ public class TasksFragment extends Fragment {
 		GregorianCalendar due = null;
 		if (id <= 0) {
 			try {
-				id = ListMirakel.first().getId();
+				SpecialList slist=(SpecialList) main.getCurrentList();
+				id=slist.getDefaultList().getId();
+				if(slist.getDefaultDate()!=null) {
+					due=new GregorianCalendar();
+					due.add(GregorianCalendar.DAY_OF_MONTH, slist.getDefaultDate());
+				}
 			} catch (NullPointerException e) {
 				id = 0;
+				due=null;
 				Toast.makeText(main, R.string.no_lists, Toast.LENGTH_LONG)
 						.show();
 			}
@@ -197,12 +210,24 @@ public class TasksFragment extends Fragment {
 		update(true);
 	}
 	public void updateList(){
-		values=main.getCurrentList().tasks();
+		try{
+			values=main.getCurrentList().tasks();
+		}catch(NullPointerException e){
+			values=null;
+		}
 	}
 
 	public void update(boolean reset) {
-		if (!created||values==null)
+		if (!created)
 			return;
+		if(values==null){
+			try{
+				values=main.getCurrentList().tasks();
+			}catch(NullPointerException w){
+				values=null;
+				return;
+			}
+		}
 		final List<Task>t=new ArrayList<Task>(values.subList(0, ItemCount>values.size()?values.size():ItemCount));
 		if (adapter != null&&finishLoad) {
 			adapter.changeData(t);
@@ -226,43 +251,15 @@ public class TasksFragment extends Fragment {
 						}, new OnClickListener() {
 							@Override
 							public void onClick(final View v) {
-								picker = new NumberPicker(main);
-								picker.setMaxValue(4);
-								picker.setMinValue(0);
-								String[] t = { "-2", "-1", "0", "1", "2" };
-								picker.setDisplayedValues(t);
-								picker.setWrapSelectorWheel(false);
-								picker.setValue(((Task) v.getTag())
-										.getPriority() + 2);
-								new AlertDialog.Builder(main)
-										.setTitle(
-												main.getString(R.string.task_change_prio_title))
-										.setMessage(
-												main.getString(R.string.task_change_prio_cont))
-										.setView(picker)
-										.setPositiveButton(
-												main.getString(R.string.OK),
-												new DialogInterface.OnClickListener() {
-													public void onClick(
-															DialogInterface dialog,
-															int whichButton) {
-														Task task = (Task) v
-																.getTag();
-														task.setPriority((picker
-																.getValue() - 2));
-														main.saveTask(task);
-													}
+									final Task task=(Task) v.getTag();
+									TaskDialogHelpers.handlePriority(main, task,
+											new ExecInterface() {
 
-												})
-										.setNegativeButton(
-												main.getString(R.string.Cancel),
-												new DialogInterface.OnClickListener() {
-													public void onClick(
-															DialogInterface dialog,
-															int whichButton) {
-														// Do nothing.
-													}
-												}).show();
+												@Override
+												public void exec() {
+													main.updatesForTask(task);
+												}
+											});
 
 							}
 						}, main.getCurrentList().getId());
