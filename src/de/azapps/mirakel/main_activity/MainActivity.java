@@ -111,6 +111,7 @@ public class MainActivity extends FragmentActivity implements
 		}
 		setContentView(R.layout.activity_main);
 		setupLayout();
+		//currentList=preferences.getInt("s", defValue)
 	}
 
 	@Override
@@ -137,11 +138,13 @@ public class MainActivity extends FragmentActivity implements
 			handleDestroyList(currentList);
 			return true;
 		case R.id.task_sorting:
+
 			currentList = ListDialogHelpers.handleSortBy(this, currentList,
 					new Helpers.ExecInterface() {
 
 						@Override
 						public void exec() {
+							//tasksFragment.updateList();
 							tasksFragment.update();
 							listFragment.update();
 						}
@@ -169,6 +172,8 @@ public class MainActivity extends FragmentActivity implements
 		case R.id.menu_sync_now_task:
 		case R.id.menu_sync_now_tasks:
 			Bundle bundle = new Bundle();
+			bundle.putBoolean(ContentResolver.SYNC_EXTRAS_DO_NOT_RETRY, true);
+			//bundle.putBoolean(ContentResolver.SYNC_EXTRAS_INITIALIZE,true);
 			bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
 			bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
 			ContentResolver.requestSync(null, Mirakel.AUTHORITY_TYP, bundle);
@@ -231,6 +236,8 @@ public class MainActivity extends FragmentActivity implements
 		case 1:
 			listFragment.enable_drop(false);
 			newmenu = R.menu.tasks;
+			if(currentList==null)
+				return;
 			this.setTitle(currentList.getName());
 			if (tasksState != null && currentPosition != LIST_FRAGMENT)
 				tasksFragment.setState(tasksState);
@@ -516,10 +523,12 @@ public class MainActivity extends FragmentActivity implements
 	void setCurrentList(ListMirakel currentList) {
 		this.currentList = currentList;
 		if (tasksFragment != null) {
+			tasksFragment.updateList();
 			tasksFragment.update();
 			mViewPager.setCurrentItem(TASKS_FRAGMENT);
 		}
-
+		if(currentList==null)
+			return;
 		List<Task> currentTasks = currentList.tasks();
 		if (currentTasks.size() == 0) {
 			currentTask = new Task(getApplicationContext().getString(
