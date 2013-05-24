@@ -144,7 +144,7 @@ public class MainActivity extends FragmentActivity implements
 
 						@Override
 						public void exec() {
-							//tasksFragment.updateList();
+							tasksFragment.updateList();
 							tasksFragment.update();
 							listFragment.update();
 						}
