@@ -101,8 +101,8 @@ public class Task extends TaskBase {
 	private static SQLiteDatabase database;
 	private static DatabaseHelper dbHelper;
 	private static final String[] allColumns = { "_id", "list_id", "name",
-			"content", "done", "due","reminder", "priority", "created_at", "updated_at",
-			"sync_state" };
+			"content", "done", "due", "reminder", "priority", "created_at",
+			"updated_at", "sync_state" };
 	private static Context context;
 
 	/**
@@ -282,6 +282,20 @@ public class Task extends TaskBase {
 		return tasks;
 	}
 
+	public static List<Task> getTasksWithReminders() {
+		String where = "reminder NOT NULL";
+		Cursor cursor = Mirakel.getReadableDatabase().query(TABLE, allColumns,
+				where, null, null, null, null);
+		List<Task> tasks = new ArrayList<Task>();
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			tasks.add(cursorToTask(cursor));
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return tasks;
+	}
+
 	/**
 	 * Get Tasks from a List Use it only if really necessary!
 	 * 
@@ -377,21 +391,21 @@ public class Task extends TaskBase {
 		} catch (NullPointerException e) {
 			due = null;
 		}
-		GregorianCalendar reminder=new GregorianCalendar();
-		try{
-			reminder.setTime(new SimpleDateFormat("yyyy-MM-dd'T'hhmmss'Z'",Locale.getDefault()).parse(cursor.getString(6)));
-		} catch(ParseException e) {
-			reminder=null;
-		} catch(NullPointerException e){
-			reminder=null;
+		GregorianCalendar reminder = new GregorianCalendar();
+		try {
+			reminder.setTime(new SimpleDateFormat("yyyy-MM-dd'T'hhmmss'Z'",
+					Locale.getDefault()).parse(cursor.getString(6)));
+		} catch (ParseException e) {
+			reminder = null;
+		} catch (NullPointerException e) {
+			reminder = null;
 		}
 
 		Task task = new Task(cursor.getLong(i++),
 				ListMirakel.getList((int) cursor.getLong(i++)),
 				cursor.getString(i++), cursor.getString(i++),
 				cursor.getInt((i++)) == 1, due, reminder, cursor.getInt(7),
-				cursor.getString(8), cursor.getString(9),
-				cursor.getInt(10));
+				cursor.getString(8), cursor.getString(9), cursor.getInt(10));
 		return task;
 	}
 
@@ -437,4 +451,5 @@ public class Task extends TaskBase {
 		return Mirakel.getReadableDatabase().query(TABLE, allColumns, where,
 				null, null, null, "done, " + order);
 	}
+
 }

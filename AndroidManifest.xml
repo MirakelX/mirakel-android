@@ -171,7 +171,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.azapps.mirakel.static_activities.SettingsActivity" />
         </activity>
-        <activity android:name=".reminders.ReminderHandleActivity"></activity>
     </application>
 
 </manifest>

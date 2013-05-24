@@ -16,12 +16,13 @@ public class Helpers {
 	public interface ExecInterface {
 		public void exec();
 	}
+
 	public static Task getTaskFromIntent(Intent intent) {
 		Task task = null;
-		int taskId = (int) intent.getLongExtra(MainActivity.EXTRA_ID, 0);
-		Log.e("Blubb", "Task:" + taskId);
+		long taskId = intent.getLongExtra(MainActivity.EXTRA_ID, 0);
 		if (taskId != 0) {
 			task = Task.get(taskId);
+			Log.e("Blubb", "Task:" + task.getName() + "(" + taskId + ")");
 		}
 		return task;
 	}

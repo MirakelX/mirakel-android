@@ -93,6 +93,8 @@ public class MainActivity extends FragmentActivity implements
 
 	public static String EXTRA_ID = "de.azapps.mirakel.EXTRA_TASKID",
 			SHOW_TASK = "de.azapps.mirakel.SHOW_TASK",
+					TASK_DONE="de.azapps.mirakel.TASK_",
+							TASK_LATER="de.azapps.mirakel.TASK_LATER",
 			SHOW_LIST = "de.azapps.mirakel.SHOW_LIST",
 			SHOW_LISTS = "de.azapps.mirakel.SHOW_LISTS",
 			SHOW_LIST_FROM_WIDGET = "de.azapps.mirakel.SHOW_LIST_FROM_WIDGET";
@@ -339,6 +341,9 @@ public class MainActivity extends FragmentActivity implements
 				currentList = task.getList();
 				setCurrentTask(task);
 			}
+		} else if (intent.getAction() == TASK_DONE
+				|| intent.getAction() == TASK_LATER) {
+			handleReminder(intent);
 		} else if (intent.getAction() == SHOW_LIST
 				|| intent.getAction() == SHOW_LIST_FROM_WIDGET) {
 
@@ -353,6 +358,35 @@ public class MainActivity extends FragmentActivity implements
 		}
 	}
 
+	private void handleReminder(Intent intent) {
+		Task task = Helpers.getTaskFromIntent(intent);
+		if (task == null)
+			return;
+		if (intent.getAction() == TASK_DONE) {
+			task.setDone(true);
+			task.save();
+			Toast.makeText(this,
+					getString(R.string.reminder_notification_done_confirm),
+					Toast.LENGTH_LONG).show();
+
+		} else if (intent.getAction() == TASK_LATER) {
+			GregorianCalendar reminder = new GregorianCalendar();
+			int addMinutes = preferences.getInt("alarm_later", 15);
+			reminder.add(Calendar.MINUTE, addMinutes);
+			task.setReminder(reminder);
+			task.save();
+			Toast.makeText(
+					this,
+					getString(R.string.reminder_notification_later_confirm,
+							addMinutes), Toast.LENGTH_LONG).show();
+
+		}
+		ReminderAlarm.closeNotificationFor(this, task);
+		ReminderAlarm.updateAlarms(this);
+		listFragment.update();
+		setCurrentList(task.getList());
+		setCurrentTask(task);
+	}
 
 	/**
 	 * Update the internal List of Lists (e.g. for the Move Task dialog)

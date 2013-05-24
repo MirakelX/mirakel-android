@@ -199,7 +199,7 @@ class TaskBase {
 		cv.put("due", due);
 		String reminder = null;
 		if (this.reminder != null)
-			new SimpleDateFormat("yyyy-MM-dd'T'hhmmss'Z'", Locale.getDefault())
+			reminder=new SimpleDateFormat("yyyy-MM-dd'T'hhmmss'Z'", Locale.getDefault())
 					.format(new Date(this.reminder.getTimeInMillis()));
 		cv.put("reminder", reminder);
 		cv.put("priority", priority);
