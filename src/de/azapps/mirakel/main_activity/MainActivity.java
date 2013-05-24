@@ -97,6 +97,7 @@ public class MainActivity extends FragmentActivity implements
 
 	private int currentPosition = 1;
 	private Parcelable tasksState, listState;
+	private boolean created=false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +111,6 @@ public class MainActivity extends FragmentActivity implements
 			editor.commit();
 		}
 		setContentView(R.layout.activity_main);
-		setupLayout();
 	}
 
 	@Override
@@ -309,6 +309,7 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onResume() {
 		super.onResume();
+		setupLayout();
 		NotificationService.updateNotificationAndWidget(this);
 	}
 
@@ -324,7 +325,10 @@ public class MainActivity extends FragmentActivity implements
 	 * Initialize the ViewPager and setup the rest of the layout
 	 */
 	private void setupLayout() {
-		setCurrentList(SpecialList.first());
+		if(created==false){
+			setCurrentList(SpecialList.first());
+			created=true;
+		}
 
 		// Initialize ViewPager
 		this.intializeViewPager();

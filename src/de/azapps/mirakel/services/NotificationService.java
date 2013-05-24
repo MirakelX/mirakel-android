@@ -120,11 +120,11 @@ public class NotificationService extends Service {
 		}
 
 		NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-		notificationManager.notify(0, noti.build());
+		notificationManager.notify(Mirakel.NOTIF_DEFAULT, noti.build());
 		if ((preferences.getBoolean("notificationsZeroHide", true) && todayTasks
 				.size() == 0)
 				|| !preferences.getBoolean("notificationsUse", true)) {
-			notificationManager.cancel(0);
+			notificationManager.cancel(Mirakel.NOTIF_DEFAULT);
 		}
 	}
 
