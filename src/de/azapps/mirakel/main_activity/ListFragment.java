@@ -118,7 +118,6 @@ public class ListFragment extends Fragment {
 			public void onDrop(int from, int to) {
 				if (from != to) {
 					adapter.onDrop(from, to);
-					adapter.notifyDataSetChanged();
 					listView.requestLayout();
 				}
 				Log.e(TAG, "Drop from:" + from + " to:" + to);
