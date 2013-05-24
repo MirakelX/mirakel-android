@@ -19,6 +19,8 @@
 package de.azapps.mirakel.main_activity;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Vector;
 
@@ -56,6 +58,7 @@ import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.static_activities.CreditsActivity;
 import de.azapps.mirakel.static_activities.SettingsActivity;
@@ -88,16 +91,16 @@ public class MainActivity extends FragmentActivity implements
 			RESULT_SPEECH_CONTENT = 2, RESULT_SPEECH = 3;
 	private static final String TAG = "MainActivity";
 
-	public static String EXTRA_ID = "de.azapps.mirakel.EXTRA_TASKID";
-	public static String SHOW_TASK = "de.azapps.mirakel.SHOW_TASK";
-	public static String SHOW_LIST = "de.azapps.mirakel.SHOW_LIST";
-	public static String SHOW_LISTS = "de.azapps.mirakel.SHOW_LISTS";
-	public static String SHOW_LIST_FROM_WIDGET = "de.azapps.mirakel.SHOW_LIST_FROM_WIDGET";
+	public static String EXTRA_ID = "de.azapps.mirakel.EXTRA_TASKID",
+			SHOW_TASK = "de.azapps.mirakel.SHOW_TASK",
+			SHOW_LIST = "de.azapps.mirakel.SHOW_LIST",
+			SHOW_LISTS = "de.azapps.mirakel.SHOW_LISTS",
+			SHOW_LIST_FROM_WIDGET = "de.azapps.mirakel.SHOW_LIST_FROM_WIDGET";
 	private SharedPreferences preferences;
 
 	private int currentPosition = 1;
 	private Parcelable tasksState, listState;
-	private boolean created=false;
+	private boolean created = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +114,7 @@ public class MainActivity extends FragmentActivity implements
 			editor.commit();
 		}
 		setContentView(R.layout.activity_main);
+		setupLayout();
 	}
 
 	@Override
@@ -309,7 +313,6 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onResume() {
 		super.onResume();
-		setupLayout();
 		NotificationService.updateNotificationAndWidget(this);
 	}
 
@@ -325,22 +328,16 @@ public class MainActivity extends FragmentActivity implements
 	 * Initialize the ViewPager and setup the rest of the layout
 	 */
 	private void setupLayout() {
-		if(created==false){
-			setCurrentList(SpecialList.first());
-			created=true;
-		}
-
+		setCurrentList(SpecialList.first());
 		// Initialize ViewPager
 		this.intializeViewPager();
 		NotificationService.updateNotificationAndWidget(this);
 		Intent intent = getIntent();
 		if (intent.getAction() == SHOW_TASK) {
-			int taskId = intent.getIntExtra(EXTRA_ID, 0);
-			if (taskId != 0) {
-				Task task = Task.get(taskId);
+			Task task = Helpers.getTaskFromIntent(intent);
+			if (task != null) {
 				currentList = task.getList();
 				setCurrentTask(task);
-				return;
 			}
 		} else if (intent.getAction() == SHOW_LIST
 				|| intent.getAction() == SHOW_LIST_FROM_WIDGET) {
@@ -355,6 +352,7 @@ public class MainActivity extends FragmentActivity implements
 			mViewPager.setCurrentItem(TASKS_FRAGMENT);
 		}
 	}
+
 
 	/**
 	 * Update the internal List of Lists (e.g. for the Move Task dialog)
@@ -553,6 +551,7 @@ public class MainActivity extends FragmentActivity implements
 
 	/**
 	 * Executes some View–Updates if a Task was changed
+	 * 
 	 * @param task
 	 */
 	void updatesForTask(Task task) {
