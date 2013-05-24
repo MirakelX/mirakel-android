@@ -94,13 +94,9 @@ public class ListAdapter extends ArrayAdapter<ListMirakel> {
 	public void onDrop(final int from, final int to) {
 		ListMirakel t=data.get(from);
 		if(to<from){//move list up
-			String q="UPDATE "+ListMirakel.TABLE+" SET lft=lft+2 where lft>="+data.get(to).getLft()+" and lft<"+data.get(from).getLft();
-			Mirakel.getWritableDatabase().execSQL(q);
-			//Log.e(TAG,q);
+			Mirakel.getWritableDatabase().execSQL("UPDATE "+ListMirakel.TABLE+" SET lft=lft+2 where lft>="+data.get(to).getLft()+" and lft<"+data.get(from).getLft());
 		}else if(to>from) {//move list down
-			String q="UPDATE "+ListMirakel.TABLE+" SET lft=lft-2 where lft>"+data.get(from).getLft()+" and lft<="+data.get(to).getLft();
-			Mirakel.getWritableDatabase().execSQL(q);
-			//Log.e(TAG,q);
+			Mirakel.getWritableDatabase().execSQL("UPDATE "+ListMirakel.TABLE+" SET lft=lft-2 where lft>"+data.get(from).getLft()+" and lft<="+data.get(to).getLft());
 		}else{//Nothing
 			return;
 		}
@@ -111,7 +107,6 @@ public class ListAdapter extends ArrayAdapter<ListMirakel> {
 		data.add(to, t);
 		notifyDataSetChanged();
 		Thread load=new Thread(new Runnable() {
-			
 			@Override
 			public void run() {
 				data=ListMirakel.all();
