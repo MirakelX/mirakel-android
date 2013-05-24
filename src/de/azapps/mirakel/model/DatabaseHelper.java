@@ -108,8 +108,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ newDate + "'");
 			db.execSQL("Drop TABLE IF EXISTS settings");
 		case 4:
-			db.execSQL("UPDATE " + Task.TABLE
-					+ " set due=null where due='null'");
+			/*
+			 * Remove NOT NULL from Task-Table
+			 */
+
+			db.execSQL("ALTER TABLE tasks RENAME TO tmp_tasks;");
+			createTasksTableString(db);
+			db.execSQL("INSERT INTO tasks (_id, list_id, name,done,priority,due,created_at,updated_at,sync_state) " +
+					"SELECT _id, list_id, name,done,priority,due,created_at,updated_at,sync_state " +
+					"FROM tmp_tasks;");
+			db.execSQL("DROP TABLE tmp_tasks");
+			db.execSQL("UPDATE tasks set due=null where due='' OR due='null'");
+			/*
+			 * Update Task-Table
+			 */
 			db.execSQL("Alter Table " + ListMirakel.TABLE
 					+ " add column lft INTEGER;");
 			db.execSQL("Alter Table " + ListMirakel.TABLE
