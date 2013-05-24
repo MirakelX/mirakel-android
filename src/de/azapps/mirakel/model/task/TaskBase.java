@@ -197,9 +197,10 @@ class TaskBase {
 				"yyyy-MM-dd", Locale.getDefault()).format(new Date(this.due
 				.getTimeInMillis())));
 		cv.put("due", due);
-		String reminder = (this.reminder == null ? null : new SimpleDateFormat(
-				"yyyy-MM-dd'T'hhmmss'Z'", Locale.getDefault()).format(new Date(
-				this.reminder.getTimeInMillis())));
+		String reminder = null;
+		if (this.reminder != null)
+			new SimpleDateFormat("yyyy-MM-dd'T'hhmmss'Z'", Locale.getDefault())
+					.format(new Date(this.reminder.getTimeInMillis()));
 		cv.put("reminder", reminder);
 		cv.put("priority", priority);
 		cv.put("created_at", createdAt);
@@ -207,5 +208,4 @@ class TaskBase {
 		cv.put("sync_state", sync_state);
 		return cv;
 	}
-
 }

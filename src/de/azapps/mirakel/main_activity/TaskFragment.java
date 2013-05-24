@@ -230,7 +230,7 @@ public class TaskFragment extends Fragment {
 		// Task Reminder
 		Task_reminder = (TextView) view.findViewById(R.id.task_reminder);
 		Drawable reminder_img = main.getResources().getDrawable(
-				android.R.drawable.ic_menu_month);
+				android.R.drawable.ic_menu_recent_history);
 		reminder_img.setBounds(0, 0, 60, 60);
 		Task_reminder.setCompoundDrawables(reminder_img, null, null, null);
 		if (task.getReminder() == null) {
@@ -250,7 +250,7 @@ public class TaskFragment extends Fragment {
 							@Override
 							public void exec() {
 								if (task.getReminder() == null) {
-									Task_due.setText(R.string.no_date);
+									Task_reminder.setText(R.string.no_reminder);
 								} else {
 									Task_reminder
 											.setText(new SimpleDateFormat(

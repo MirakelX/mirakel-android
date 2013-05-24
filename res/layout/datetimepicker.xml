@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent" android:layout_height="wrap_content" android:fitsSystemWindows="true"
+        android:padding="5dip" android:id="@+id/DateTimePicker">
+        <LinearLayout android:id="@+id/ViewSwitchButtons" android:layout_width="fill_parent"
+                android:layout_height="wrap_content" android:layout_marginBottom="5dip" >
+                <Button android:id="@+id/SwitchToDate" android:layout_width="0dip" android:text="Set date"
+                        android:layout_weight="1" android:layout_height="wrap_content" android:enabled="false" />
+                <Button android:id="@+id/SwitchToTime" android:layout_width="0dip" android:text="Set time"
+                        android:layout_weight="1" android:layout_height="wrap_content" />
+        </LinearLayout>
+        <ViewSwitcher android:layout_width="fill_parent"  android:layout_below="@+id/ViewSwitchButtons"
+                android:layout_height="wrap_content" android:id="@+id/DateTimePickerVS" />
+</RelativeLayout>
