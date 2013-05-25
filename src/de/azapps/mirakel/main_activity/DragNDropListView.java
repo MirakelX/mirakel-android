@@ -115,10 +115,10 @@ public class DragNDropListView extends ListView {
 			WindowManager mWindowManager = (WindowManager) getContext()
 					.getSystemService(Context.WINDOW_SERVICE);
 			mWindowManager.updateViewLayout(mDragView, layoutParams);
-			if(y>(8/9)*getHeight()){
-				smoothScrollToPosition(pointToPosition(x, y)+(pointToPosition(x, y)<getChildCount()?1:0));
-			}else if(y<(1/9)*getHeight()){
-				smoothScrollToPosition(pointToPosition(x, y)-(pointToPosition(x, y)>0?1:0));
+			if(y>(8/9)*getHeight()&&getChildCount()>getLastVisiblePosition()){
+				smoothScrollToPosition(pointToPosition(x, y)+1);
+			}else if(y<(3/9)*getHeight()){
+				smoothScrollToPosition(pointToPosition(x, y)-1);
 			}
 			if (mDragListener != null)
 				mDragListener.onDrag(x, y, this);
