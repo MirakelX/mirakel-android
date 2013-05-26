@@ -1,7 +1,9 @@
 package de.azapps.mirakel.reminders;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -49,23 +51,25 @@ public class ReminderAlarm extends BroadcastReceiver {
 		nm = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 
-		Log.e("Blubb", "Set Task:" + task.getName() + "(" + taskId + ")");
 		Intent openIntent = new Intent(context, MainActivity.class);
 		openIntent.setAction(MainActivity.SHOW_TASK);
 		openIntent.putExtra(MainActivity.EXTRA_ID, task.getId());
-		openIntent.setData(Uri.parse(openIntent.toUri(Intent.URI_INTENT_SCHEME)));
+		openIntent
+				.setData(Uri.parse(openIntent.toUri(Intent.URI_INTENT_SCHEME)));
 		PendingIntent pOpenIntent = PendingIntent.getActivity(context, 0,
 				openIntent, 0);
 		Intent doneIntent = new Intent(context, MainActivity.class);
 		doneIntent.setAction(MainActivity.TASK_DONE);
 		doneIntent.putExtra(MainActivity.EXTRA_ID, task.getId());
-		doneIntent.setData(Uri.parse(doneIntent.toUri(Intent.URI_INTENT_SCHEME)));
+		doneIntent
+				.setData(Uri.parse(doneIntent.toUri(Intent.URI_INTENT_SCHEME)));
 		PendingIntent pDoneIntent = PendingIntent.getActivity(context, 0,
 				doneIntent, 0);
 		Intent laterIntent = new Intent(context, MainActivity.class);
 		laterIntent.setAction(MainActivity.TASK_LATER);
 		laterIntent.putExtra(MainActivity.EXTRA_ID, task.getId());
-		laterIntent.setData(Uri.parse(laterIntent.toUri(Intent.URI_INTENT_SCHEME)));
+		laterIntent.setData(Uri.parse(laterIntent
+				.toUri(Intent.URI_INTENT_SCHEME)));
 		PendingIntent pLaterIntent = PendingIntent.getActivity(context, 0,
 				laterIntent, 0);
 		boolean persistent = true;
@@ -110,7 +114,8 @@ public class ReminderAlarm extends BroadcastReceiver {
 			}
 
 			inboxStyle.addLine(context.getString(
-					R.string.reminder_notification_list, task.getList().getName()));
+					R.string.reminder_notification_list, task.getList()
+							.getName()));
 			inboxStyle.addLine(context.getString(
 					R.string.reminder_notification_priority, priority));
 			inboxStyle.addLine(context.getString(
@@ -124,48 +129,52 @@ public class ReminderAlarm extends BroadcastReceiver {
 	}
 
 	private static AlarmManager alarmManager;
-	private static List<TaskWrapper> tasks=new ArrayList<ReminderAlarm.TaskWrapper>();
+	private static Map<Long, PendingIntent> alarmTasks = new HashMap<Long, PendingIntent>();
 
 	public static void updateAlarms(Context ctx) {
 		alarmManager = (AlarmManager) ctx
 				.getSystemService(Context.ALARM_SERVICE);
-		List<Task> tasks=Task.getTasksWithReminders();
-		for(TaskWrapper taskWrapper : ReminderAlarm.tasks){
-		    // Cancel alarms
-		    try {
-		        alarmManager.cancel(taskWrapper.pintent);
-		        closeNotificationFor(ctx, taskWrapper.task);
-		    } catch (Exception e) {
-		    }
+		List<Task> tasks = Task.getTasksWithReminders();
+		Set<Long> needlessTasks = alarmTasks.keySet();
+
+		for (Task t : tasks) {
+			Log.e("Blubb","TT"+t.getName());
+			updateAlarm(ctx, t);
+			needlessTasks.remove(t.getId());
 		}
-		for(Task task:tasks){
-			updateAlarm(ctx, task);
+		//Log.e("Blubb","count:"+needlessTasks.size());
+		// Cancel alarms
+		for (Long taskId : needlessTasks) {
+			Log.e("Blubb","Task:"+taskId);
+			try {
+				alarmManager.cancel(alarmTasks.get(taskId));
+				closeNotificationFor(ctx, taskId);
+			} catch (Exception e) {
+			}
 		}
 	}
-	private static void updateAlarm(Context ctx, Task task){
-		Log.e("Blubb","Noti:"+task.getName());
+
+	private static void updateAlarm(Context ctx, Task task) {
 		Intent intent = new Intent(ctx, ReminderAlarm.class);
 		intent.setAction(SHOW_TASK);
-		intent.putExtra(EXTRA_ID,task.getId());
+		intent.putExtra(EXTRA_ID, task.getId());
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx, 0,
 				intent, PendingIntent.FLAG_ONE_SHOT);
-		tasks.add(new TaskWrapper(task, pendingIntent));
-		alarmManager.set(AlarmManager.RTC_WAKEUP, task.getReminder().getTimeInMillis(), pendingIntent);		
+		alarmTasks.put(task.getId(), pendingIntent);
+		Log.e("Blubb","count:"+alarmTasks.size() + " id:"+task.getId());
+		alarmManager.set(AlarmManager.RTC_WAKEUP, task.getReminder()
+				.getTimeInMillis(), pendingIntent);
 	}
 
 	public static void closeNotificationFor(Context context, Task task) {
+		closeNotificationFor(context, task.getId());
+	}
+
+	public static void closeNotificationFor(Context context, Long taskId) {
 		NotificationManager nm = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
-		nm.cancel(Mirakel.NOTIF_REMINDER + (int) task.getId());
-	}
-	
-	private static class TaskWrapper{
-		public Task task;
-		public PendingIntent pintent;
-		public TaskWrapper(Task task, PendingIntent pintent){
-			this.task=task;
-			this.pintent=pintent;
-		}
+		nm.cancel(Mirakel.NOTIF_REMINDER + taskId.intValue());
+		alarmTasks.remove(taskId);
 	}
 
 }
