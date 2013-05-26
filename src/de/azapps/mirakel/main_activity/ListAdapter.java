@@ -22,6 +22,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,8 +32,10 @@ import android.widget.TextView;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.task.Task;
 
 public class ListAdapter extends ArrayAdapter<ListMirakel> {
+	private static final String TAG = "ListAdapter";
 	// private static final String TAG = "ListAdapter";
 	private boolean enableDrop;
 	private Context context;
@@ -73,9 +76,9 @@ public class ListAdapter extends ArrayAdapter<ListMirakel> {
 		} else {
 			holder = (ListHolder) row.getTag();
 		}
-		if (!enableDrop)
-			holder.listRowDrag.setVisibility(View.GONE);
 		ListMirakel list = data.get(position);
+		if (!enableDrop||list.getId()<0)
+			holder.listRowDrag.setVisibility(View.GONE);
 		holder.listRowName.setText(list.getName());
 		holder.listRowName.setTag(list);
 		holder.listRowTaskNumber.setText("" + list.countTasks());
@@ -88,31 +91,28 @@ public class ListAdapter extends ArrayAdapter<ListMirakel> {
 		data.remove(which);
 	}
 
-	public void onDrop(int from, int to) {
-		ListMirakel t = data.get(from);
-		int add = to < from ? 2 : -2;
-		int rgt = data.get(to).getRgt(), lft = data.get(to).getLft();
-		Mirakel.getWritableDatabase()
-				.execSQL(
-						"Update "
-								+ ListMirakel.TABLE
-								+ " set lft=lft+"
-								+ add
-								+ " where lft>="
-								+ (data.get(from).getId() < data.get(to)
-										.getLft() ? data.get(from).getLft()
-										: data.get(to).getLft())
-								+ " and lft<"
-								+ (data.get(from).getLft() > data.get(to)
-										.getLft() ? data.get(from).getLft()
-										: data.get(to).getLft() + 2));
-		Mirakel.getWritableDatabase().execSQL(
-				"Update " + ListMirakel.TABLE + " set rgt=lft+1");
-		t.setLft(lft);
-		t.setRgt(rgt);
+	public void onDrop(final int from, final int to) {
+		ListMirakel t=data.get(from);
+		if(to<from){//move list up
+			Mirakel.getWritableDatabase().execSQL("UPDATE "+ListMirakel.TABLE+" SET lft=lft+2 where lft>="+data.get(to).getLft()+" and lft<"+data.get(from).getLft());
+		}else if(to>from) {//move list down
+			Mirakel.getWritableDatabase().execSQL("UPDATE "+ListMirakel.TABLE+" SET lft=lft-2 where lft>"+data.get(from).getLft()+" and lft<="+data.get(to).getLft());
+		}else{//Nothing
+			return;
+		}
+		t.setLft(data.get(to).getLft());
 		t.save();
+		Mirakel.getWritableDatabase().execSQL("UPDATE "+ListMirakel.TABLE+" SET rgt=lft+1;");//Fix rgt
 		data.remove(from);
 		data.add(to, t);
+		notifyDataSetChanged();
+		Thread load=new Thread(new Runnable() {
+			@Override
+			public void run() {
+				data=ListMirakel.all();
+			}
+		});
+		load.start();
 	}
 
 	public void setEnableDrop(boolean enableDrop) {

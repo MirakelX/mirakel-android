@@ -41,6 +41,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -64,7 +65,11 @@ public class TasksFragment extends Fragment {
 	View view;
 	private EditText newTask;
 	private boolean created = false;
+	private boolean finishLoad;
+	private boolean loadMore;
 	private ListView listView;
+	private int ItemCount;
+	private List<Task> values;
 	private static final int TASK_RENAME = 0, TASK_MOVE = 1, TASK_DESTROY = 2;
 
 	public void setActivity(MainActivity activity) {
@@ -74,12 +79,22 @@ public class TasksFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		finishLoad=false;
+		loadMore=false;
+		ItemCount=0;
 		main = (MainActivity) getActivity();
 		view = inflater.inflate(R.layout.activity_tasks, container, false);
 
 		getResources().getString(R.string.action_settings);
+		try{
+			values = main.getCurrentList().tasks();
+		}catch(NullPointerException e){
+			values=null;
+		}
+		adapter=null;
 		created = true;
-		update();
+
+
 
 		listView = (ListView) view.findViewById(R.id.tasks_list);
 		// Events
@@ -92,6 +107,26 @@ public class TasksFragment extends Fragment {
 					v.setText(null);
 				}
 				return false;
+			}
+		});
+		ItemCount=10;//TODO get this from somewhere
+		update();
+		listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+			
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				//Nothing
+				
+			}
+			
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem,
+					int visibleItemCount, final int totalItemCount) {
+				int lastInScreen = firstVisibleItem + visibleItemCount;
+				if((lastInScreen == totalItemCount) && !(loadMore)&&finishLoad&&adapter!=null&&values.size()>totalItemCount){
+					ItemCount=totalItemCount+2;
+					update(false);
+				}
 			}
 		});
 
@@ -136,6 +171,7 @@ public class TasksFragment extends Fragment {
 		// Inflate the layout for this fragment
 		return view;
 	}
+	
 
 	private boolean newTask(String name) {
 		InputMethodManager imm = (InputMethodManager) main
@@ -162,8 +198,10 @@ public class TasksFragment extends Fragment {
 		} // TODO set date for special list
 		Task task = Task.newTask(name, id);
 		task.setDue(due);
+		task.save();
 
 		adapter.addToHead(task);
+		values.add(0, task);
 		main.getListFragment().update();
 		adapter.notifyDataSetChanged();
 		// adapter.swapCursor(updateListCursor());
@@ -173,15 +211,29 @@ public class TasksFragment extends Fragment {
 	public void update() {
 		update(true);
 	}
+	public void updateList(){
+		try{
+			values=main.getCurrentList().tasks();
+		}catch(NullPointerException e){
+			values=null;
+		}
+	}
 
 	public void update(boolean reset) {
 		if (!created)
 			return;
-		final List<Task> values = main.getCurrentList().tasks();
-		if (adapter != null) {
-			adapter.changeData(values);
+		if(values==null){
+			try{
+				values=main.getCurrentList().tasks();
+			}catch(NullPointerException w){
+				values=null;
+				return;
+			}
+		}
+		final List<Task>t=new ArrayList<Task>(values.subList(0, ItemCount>values.size()?values.size():ItemCount));
+		if (adapter != null&&finishLoad) {
+			adapter.changeData(t);
 			adapter.notifyDataSetChanged();
-
 			if (reset)
 				setScrollPosition(0);
 			return;
@@ -190,7 +242,7 @@ public class TasksFragment extends Fragment {
 		AsyncTask<Void, Void, TaskAdapter> task = new AsyncTask<Void, Void, TaskAdapter>() {
 			@Override
 			protected TaskAdapter doInBackground(Void... params) {
-				adapter = new TaskAdapter(main, R.layout.tasks_row, values,
+				adapter = new TaskAdapter(main, R.layout.tasks_row, t,
 						new OnClickListener() {
 							@Override
 							public void onClick(View v) {
@@ -219,6 +271,7 @@ public class TasksFragment extends Fragment {
 			@Override
 			protected void onPostExecute(TaskAdapter adapter) {
 				listView.setAdapter(adapter);
+				finishLoad=true;
 			}
 		};
 
