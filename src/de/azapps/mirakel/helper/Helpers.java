@@ -22,7 +22,6 @@ public class Helpers {
 		long taskId = intent.getLongExtra(MainActivity.EXTRA_ID, 0);
 		if (taskId != 0) {
 			task = Task.get(taskId);
-			Log.e("Blubb", "Task:" + task.getName() + "(" + taskId + ")");
 		}
 		return task;
 	}

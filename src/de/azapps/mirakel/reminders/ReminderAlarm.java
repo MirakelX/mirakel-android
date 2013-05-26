@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.RingtoneManager;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -52,16 +53,19 @@ public class ReminderAlarm extends BroadcastReceiver {
 		Intent openIntent = new Intent(context, MainActivity.class);
 		openIntent.setAction(MainActivity.SHOW_TASK);
 		openIntent.putExtra(MainActivity.EXTRA_ID, task.getId());
+		openIntent.setData(Uri.parse(openIntent.toUri(Intent.URI_INTENT_SCHEME)));
 		PendingIntent pOpenIntent = PendingIntent.getActivity(context, 0,
 				openIntent, 0);
 		Intent doneIntent = new Intent(context, MainActivity.class);
 		doneIntent.setAction(MainActivity.TASK_DONE);
 		doneIntent.putExtra(MainActivity.EXTRA_ID, task.getId());
+		doneIntent.setData(Uri.parse(doneIntent.toUri(Intent.URI_INTENT_SCHEME)));
 		PendingIntent pDoneIntent = PendingIntent.getActivity(context, 0,
 				doneIntent, 0);
 		Intent laterIntent = new Intent(context, MainActivity.class);
 		laterIntent.setAction(MainActivity.TASK_LATER);
 		laterIntent.putExtra(MainActivity.EXTRA_ID, task.getId());
+		laterIntent.setData(Uri.parse(laterIntent.toUri(Intent.URI_INTENT_SCHEME)));
 		PendingIntent pLaterIntent = PendingIntent.getActivity(context, 0,
 				laterIntent, 0);
 		boolean persistent = true;
@@ -120,16 +124,17 @@ public class ReminderAlarm extends BroadcastReceiver {
 	}
 
 	private static AlarmManager alarmManager;
-	private static List<PendingIntent> pintents=new ArrayList<PendingIntent>();
+	private static List<TaskWrapper> tasks=new ArrayList<ReminderAlarm.TaskWrapper>();
 
 	public static void updateAlarms(Context ctx) {
 		alarmManager = (AlarmManager) ctx
 				.getSystemService(Context.ALARM_SERVICE);
 		List<Task> tasks=Task.getTasksWithReminders();
-		for(PendingIntent pintent:pintents){
+		for(TaskWrapper taskWrapper : ReminderAlarm.tasks){
 		    // Cancel alarms
 		    try {
-		        alarmManager.cancel(pintent);
+		        alarmManager.cancel(taskWrapper.pintent);
+		        closeNotificationFor(ctx, taskWrapper.task);
 		    } catch (Exception e) {
 		    }
 		}
@@ -144,7 +149,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 		intent.putExtra(EXTRA_ID,task.getId());
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx, 0,
 				intent, PendingIntent.FLAG_ONE_SHOT);
-		pintents.add(pendingIntent);
+		tasks.add(new TaskWrapper(task, pendingIntent));
 		alarmManager.set(AlarmManager.RTC_WAKEUP, task.getReminder().getTimeInMillis(), pendingIntent);		
 	}
 
@@ -152,6 +157,15 @@ public class ReminderAlarm extends BroadcastReceiver {
 		NotificationManager nm = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 		nm.cancel(Mirakel.NOTIF_REMINDER + (int) task.getId());
+	}
+	
+	private static class TaskWrapper{
+		public Task task;
+		public PendingIntent pintent;
+		public TaskWrapper(Task task, PendingIntent pintent){
+			this.task=task;
+			this.pintent=pintent;
+		}
 	}
 
 }

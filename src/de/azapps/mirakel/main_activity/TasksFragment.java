@@ -54,6 +54,7 @@ import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.reminders.ReminderAlarm;
 
 public class TasksFragment extends Fragment {
 	private static final String TAG = "TasksActivity";
@@ -245,6 +246,7 @@ public class TasksFragment extends Fragment {
 								Task task = (Task) v.getTag();
 								task.toggleDone();
 								main.saveTask(task);
+								ReminderAlarm.updateAlarms(getActivity());
 							}
 						}, new OnClickListener() {
 							@Override

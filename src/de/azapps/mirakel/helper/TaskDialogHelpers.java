@@ -85,7 +85,6 @@ public class TaskDialogHelpers {
 
 					public void onClick(View v) {
 						mDateTimePicker.clearFocus();
-						Log.e("Blubb","H:"+mDateTimePicker.get(Calendar.HOUR_OF_DAY));
 
 						task.setReminder(new GregorianCalendar(mDateTimePicker
 								.get(Calendar.YEAR), mDateTimePicker
@@ -93,7 +92,6 @@ public class TaskDialogHelpers {
 								.get(Calendar.DAY_OF_MONTH), mDateTimePicker
 								.get(Calendar.HOUR_OF_DAY), mDateTimePicker
 								.get(Calendar.MINUTE)));
-						Log.e("Blubb",MirakelHelper.formatDate(task.getReminder(),act.getString(R.string.dateTimeFormat)));
 						task.save();
 						onSuccess.exec();
 						mDateTimeDialog.dismiss();

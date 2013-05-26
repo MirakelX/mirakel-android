@@ -54,6 +54,7 @@ import de.azapps.mirakel.R;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.reminders.ReminderAlarm;
 
 public class TaskFragment extends Fragment {
 	private View view;
@@ -144,6 +145,7 @@ public class TaskFragment extends Fragment {
 					boolean isChecked) {
 				task.setDone(isChecked);
 				main.saveTask(task);
+				ReminderAlarm.updateAlarms(getActivity());
 				main.getListFragment().update();
 			}
 		});
@@ -261,6 +263,7 @@ public class TaskFragment extends Fragment {
 													.format(task.getReminder()
 															.getTime()));
 								}
+								ReminderAlarm.updateAlarms(getActivity());
 
 							}
 						});
