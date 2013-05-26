@@ -29,6 +29,7 @@ import android.net.Uri;
 import android.util.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.Network;
 
@@ -41,7 +42,10 @@ public class MirakelContentProvider extends ContentProvider {
 	private static final int LISTS_ITEM = 1;
 	private static final int TASKS = 2;
 	private static final int TASKS_ITEM = 3;
+	private static final int SPECIAL_LIST=4;
+	private static final int SPECIAL_LIST_ITEM=5;
 	private static final String TAG = "MirakelContentProvider";
+	//
 	static {
 		uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 		uriMatcher.addURI(Mirakel.AUTHORITY_TYP, ListMirakel.TABLE, LISTS);
@@ -49,11 +53,14 @@ public class MirakelContentProvider extends ContentProvider {
 				LISTS_ITEM);
 		uriMatcher.addURI(Mirakel.AUTHORITY_TYP, Task.TABLE, TASKS);
 		uriMatcher.addURI(Mirakel.AUTHORITY_TYP, Task.TABLE + "/#", TASKS_ITEM);
+		uriMatcher.addURI(Mirakel.AUTHORITY_TYP, SpecialList.TABLE, SPECIAL_LIST);
+		uriMatcher.addURI(Mirakel.AUTHORITY_TYP, SpecialList.TABLE + "/#", SPECIAL_LIST_ITEM);
 	}
 
 	@Override
 	public int delete(Uri uri, String selection, String[] selectionArgs) {
 		switch (uriMatcher.match(uri)) {
+		case SPECIAL_LIST:
 		case LISTS:
 			Log.d(TAG, "DELETE ALL LISTS?!!");
 			List<ListMirakel> lists = ListMirakel.all();
@@ -63,6 +70,7 @@ public class MirakelContentProvider extends ContentProvider {
 				}
 			}
 			return lists.size();
+		case SPECIAL_LIST_ITEM:
 		case LISTS_ITEM:
 			int list_id = 0;
 			Log.d(TAG, "DELETE LIST " + list_id);
@@ -100,8 +108,10 @@ public class MirakelContentProvider extends ContentProvider {
 	public String getType(Uri uri) {
 		switch (uriMatcher.match(uri)) {
 		case LISTS:
+		case SPECIAL_LIST:
 			return "LISTS";
 		case LISTS_ITEM:
+		case SPECIAL_LIST_ITEM:
 			return "LIST";
 		case TASKS:
 			return "TASKS";
@@ -123,12 +133,17 @@ public class MirakelContentProvider extends ContentProvider {
 			return Uri.parse("content://" + Mirakel.AUTHORITY_TYP + "/"
 					+ ListMirakel.TABLE + "/" + id);
 		case LISTS_ITEM:
+		case SPECIAL_LIST_ITEM:
 		case TASKS_ITEM:
 			return null;
 		case TASKS:
 			id = Mirakel.getWritableDatabase().insert(Task.TABLE, null, values);
 			return Uri.parse("content://" + Mirakel.AUTHORITY_TYP + "/"
 					+ Task.TABLE + "/" + id);
+		case SPECIAL_LIST:
+			id = Mirakel.getWritableDatabase().insert(SpecialList.TABLE, null, values);
+			return Uri.parse("content://" + Mirakel.AUTHORITY_TYP + "/"
+					+ SpecialList.TABLE + "/" + id);
 		default:
 			Log.wtf(TAG, "Unsupportet uri");
 		}
@@ -176,6 +191,21 @@ public class MirakelContentProvider extends ContentProvider {
 							+ " and not sync_state= "
 							+ Network.SYNC_STATE.DELETE, selectionArgs, null,
 					null, sortOrder);
+		case SPECIAL_LIST:
+			return Mirakel.getReadableDatabase().query(
+					SpecialList.TABLE,
+					projection,
+					"(" + selection + " ) and not sync_state= "
+							+ Network.SYNC_STATE.DELETE, selectionArgs, null,
+					null, sortOrder);
+		case SPECIAL_LIST_ITEM:
+			return Mirakel.getReadableDatabase().query(
+					SpecialList.TABLE,
+					projection,
+					"(" + selection + " ) and _id=" + uri.getLastPathSegment()
+							+ " and not sync_state= "
+							+ Network.SYNC_STATE.DELETE, selectionArgs, null,
+					null, sortOrder);
 		default:
 			Log.wtf(TAG, "Unsupportet uri");
 			break;
@@ -201,6 +231,13 @@ public class MirakelContentProvider extends ContentProvider {
 					selection, selectionArgs);
 		case TASKS_ITEM:
 			return Mirakel.getWritableDatabase().update(Task.TABLE, values,
+					"(" + selection + ") and _id=" + uri.getLastPathSegment(),
+					selectionArgs);
+		case SPECIAL_LIST:
+			return Mirakel.getWritableDatabase().update(SpecialList.TABLE, values,
+					selection, selectionArgs);
+		case SPECIAL_LIST_ITEM:
+			return Mirakel.getWritableDatabase().update(SpecialList.TABLE, values,
 					"(" + selection + ") and _id=" + uri.getLastPathSegment(),
 					selectionArgs);
 		default:
