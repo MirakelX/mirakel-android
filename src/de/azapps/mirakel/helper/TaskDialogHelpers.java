@@ -8,12 +8,14 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
+import de.azapps.mirakel.MirakelHelper;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.model.task.Task;
@@ -57,7 +59,7 @@ public class TaskDialogHelpers {
 						}).show();
 	}
 
-	public static void handleReminder(Activity act, final Task task,
+	public static void handleReminder(final Activity act, final Task task,
 			final ExecInterface onSuccess) {
 		GregorianCalendar reminder = (task.getReminder() == null ? new GregorianCalendar()
 				: task.getReminder());
@@ -70,7 +72,7 @@ public class TaskDialogHelpers {
 		// Grab widget instance
 		final DateTimePicker mDateTimePicker = (DateTimePicker) mDateTimeDialogView
 				.findViewById(R.id.DateTimePicker);
-		final boolean is24h = true;
+		mDateTimePicker.setIs24HourView(true);
 		mDateTimePicker.updateDate(reminder.get(Calendar.YEAR),
 				reminder.get(Calendar.MONTH),
 				reminder.get(Calendar.DAY_OF_MONTH));
@@ -83,6 +85,7 @@ public class TaskDialogHelpers {
 
 					public void onClick(View v) {
 						mDateTimePicker.clearFocus();
+						Log.e("Blubb","H:"+mDateTimePicker.get(Calendar.HOUR_OF_DAY));
 
 						task.setReminder(new GregorianCalendar(mDateTimePicker
 								.get(Calendar.YEAR), mDateTimePicker
@@ -90,6 +93,7 @@ public class TaskDialogHelpers {
 								.get(Calendar.DAY_OF_MONTH), mDateTimePicker
 								.get(Calendar.HOUR_OF_DAY), mDateTimePicker
 								.get(Calendar.MINUTE)));
+						Log.e("Blubb",MirakelHelper.formatDate(task.getReminder(),act.getString(R.string.dateTimeFormat)));
 						task.save();
 						onSuccess.exec();
 						mDateTimeDialog.dismiss();
@@ -110,7 +114,6 @@ public class TaskDialogHelpers {
 				});
 
 		// Setup TimePicker
-		mDateTimePicker.setIs24HourView(is24h);
 		// No title on the dialog window
 		mDateTimeDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		// Set the dialog content view

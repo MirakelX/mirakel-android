@@ -283,7 +283,7 @@ public class Task extends TaskBase {
 	}
 
 	public static List<Task> getTasksWithReminders() {
-		String where = "reminder NOT NULL";
+		String where = "reminder NOT NULL AND done=0";
 		Cursor cursor = Mirakel.getReadableDatabase().query(TABLE, allColumns,
 				where, null, null, null, null);
 		List<Task> tasks = new ArrayList<Task>();
@@ -393,7 +393,7 @@ public class Task extends TaskBase {
 		}
 		GregorianCalendar reminder = new GregorianCalendar();
 		try {
-			reminder.setTime(new SimpleDateFormat("yyyy-MM-dd'T'hhmmss'Z'",
+			reminder.setTime(new SimpleDateFormat("yyyy-MM-dd'T'kkmmss'Z'",
 					Locale.getDefault()).parse(cursor.getString(6)));
 		} catch (ParseException e) {
 			reminder = null;
