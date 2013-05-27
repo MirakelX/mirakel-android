@@ -198,8 +198,10 @@ public class TasksFragment extends Fragment {
 		} // TODO set date for special list
 		Task task = Task.newTask(name, id);
 		task.setDue(due);
+		task.save();
 
 		adapter.addToHead(task);
+		values.add(0, task);
 		main.getListFragment().update();
 		adapter.notifyDataSetChanged();
 		// adapter.swapCursor(updateListCursor());
