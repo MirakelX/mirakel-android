@@ -54,6 +54,7 @@ import de.azapps.mirakel.R;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.reminders.ReminderAlarm;
 
 public class TaskFragment extends Fragment {
 	private View view;
@@ -63,6 +64,7 @@ public class TaskFragment extends Fragment {
 	protected TextView Task_prio;
 	protected TextView Task_content;
 	protected TextView Task_due;
+	protected TextView Task_reminder;
 
 	protected MainActivity main;
 	protected NumberPicker picker;
@@ -143,6 +145,7 @@ public class TaskFragment extends Fragment {
 					boolean isChecked) {
 				task.setDone(isChecked);
 				main.saveTask(task);
+				ReminderAlarm.updateAlarms(getActivity());
 				main.getListFragment().update();
 			}
 		});
@@ -223,6 +226,47 @@ public class TaskFragment extends Fragment {
 						});
 				dialog.show();
 
+			}
+		});
+
+		// Task Reminder
+		Task_reminder = (TextView) view.findViewById(R.id.task_reminder);
+		Drawable reminder_img = main.getResources().getDrawable(
+				android.R.drawable.ic_menu_recent_history);
+		reminder_img.setBounds(0, 0, 60, 60);
+		Task_reminder.setCompoundDrawables(reminder_img, null, null, null);
+		if (task.getReminder() == null) {
+			Task_reminder.setText(getString(R.string.no_reminder));
+		} else {
+			Task_reminder.setText(MirakelHelper.formatDate(task.getReminder(),
+					main.getString(R.string.humanDateTimeFormat)));
+		}
+
+		Task_reminder.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				TaskDialogHelpers.handleReminder(main, task,
+						new ExecInterface() {
+
+							@Override
+							public void exec() {
+								if (task.getReminder() == null) {
+									Task_reminder.setText(R.string.no_reminder);
+								} else {
+									Task_reminder
+											.setText(new SimpleDateFormat(
+													view.getContext()
+															.getString(
+																	R.string.humanDateTimeFormat),
+													Locale.getDefault())
+													.format(task.getReminder()
+															.getTime()));
+								}
+								ReminderAlarm.updateAlarms(getActivity());
+
+							}
+						});
 			}
 		});
 

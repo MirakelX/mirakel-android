@@ -26,9 +26,11 @@
     <string name="Yes">Yes</string>
     <string name="no">No</string>
     <string name="no_date">No Deadline</string>
+    <string name="no_reminder">Set a reminder</string>
     <string name="no_lists">This task cannot be synced, because you have no lists</string>
     <string name="dateFormat">yyyy-MM-dd</string>
-    <string name="dateTimeFormat">yyyy-MM-dd\'T\'hhmmss\'Z\'</string>
+    <string name="dateTimeFormat">yyyy-MM-dd\'T\'kkmmss\'Z\'</string>
+    <string name="humanDateTimeFormat">yyyy-MM-dd – kk:mm</string>
     <string name="speak">Speak</string>
     <string name="enter">Enter</string>
     <string name="speak_lang_code">en-US</string>
@@ -115,6 +117,14 @@
     <string name="notification_title_general" formatted="false">%d Tasks in %s</string>
     <string name="notification_title_general_single" formatted="false">1 Task in %s</string>
     <string name="notification_title_empty">Enjoy your day!</string>
+    <string name="reminder_notification_title" formatted="false">To Do: %s</string>
+    <string name="reminder_notification_priority" formatted="false">Priority: %s</string>
+    <string name="reminder_notification_list" formatted="false">List: %s</string>
+    <string name="reminder_notification_due" formatted="false">Due: %s</string>
+    <string name="reminder_notification_done">Done</string>
+    <string name="reminder_notification_later">Later</string>
+    <string name="reminder_notification_done_confirm">I have set the task as „done“</string>
+    <string name="reminder_notification_later_confirm" formatted="false">I\'ll remind you in %d minutes</string>
 
     <!-- Test Sync -->
     <!-- Label above username EditText -->

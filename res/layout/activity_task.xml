@@ -75,6 +75,12 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
+    <TextView
+        android:id="@+id/task_reminder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
     <ViewSwitcher
         android:id="@+id/switch_content"
         android:layout_width="match_parent"
@@ -88,10 +94,10 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <LinearLayout
+            android:id="@+id/task_content_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" 
-            android:id="@+id/task_content_edit">
+            android:orientation="vertical" >
 
             <EditText
                 android:id="@+id/edit_content"

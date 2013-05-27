@@ -66,8 +66,10 @@
             android:name="de.azapps.mirakel.main_activity.MainActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_main"
+            
             android:windowSoftInputMode="adjustPan" >
         </activity>
+        <!-- android:launchMode="singleTop" -->
         <activity
             android:name="de.azapps.mirakel.static_activities.SettingsActivity"
             android:label="@string/title_activity_main"
@@ -137,6 +139,7 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_provider" />
         </receiver>
+        <receiver android:name=".reminders.ReminderAlarm"></receiver>
 
         <!-- The service serving the RemoteViews to the collection widget -->
         <service

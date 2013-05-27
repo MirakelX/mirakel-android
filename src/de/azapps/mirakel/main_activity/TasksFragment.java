@@ -46,21 +46,19 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
-import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.reminders.ReminderAlarm;
 
 public class TasksFragment extends Fragment {
 	private static final String TAG = "TasksActivity";
 	private TaskAdapter adapter;
-	private NumberPicker picker;
 	private MainActivity main;
 	View view;
 	private EditText newTask;
@@ -195,7 +193,7 @@ public class TasksFragment extends Fragment {
 				Toast.makeText(main, R.string.no_lists, Toast.LENGTH_LONG)
 						.show();
 			}
-		} // TODO set date for special list
+		}
 		Task task = Task.newTask(name, id);
 		task.setDue(due);
 		task.save();
@@ -204,7 +202,6 @@ public class TasksFragment extends Fragment {
 		values.add(0, task);
 		main.getListFragment().update();
 		adapter.notifyDataSetChanged();
-		// adapter.swapCursor(updateListCursor());
 		return true;
 	}
 
@@ -249,6 +246,7 @@ public class TasksFragment extends Fragment {
 								Task task = (Task) v.getTag();
 								task.toggleDone();
 								main.saveTask(task);
+								ReminderAlarm.updateAlarms(getActivity());
 							}
 						}, new OnClickListener() {
 							@Override

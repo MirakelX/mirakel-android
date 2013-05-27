@@ -19,6 +19,8 @@
 package de.azapps.mirakel.main_activity;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Vector;
 
@@ -56,6 +58,7 @@ import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.static_activities.CreditsActivity;
 import de.azapps.mirakel.static_activities.SettingsActivity;
@@ -88,15 +91,18 @@ public class MainActivity extends FragmentActivity implements
 			RESULT_SPEECH_CONTENT = 2, RESULT_SPEECH = 3;
 	private static final String TAG = "MainActivity";
 
-	public static String EXTRA_ID = "de.azapps.mirakel.EXTRA_TASKID";
-	public static String SHOW_TASK = "de.azapps.mirakel.SHOW_TASK";
-	public static String SHOW_LIST = "de.azapps.mirakel.SHOW_LIST";
-	public static String SHOW_LISTS = "de.azapps.mirakel.SHOW_LISTS";
-	public static String SHOW_LIST_FROM_WIDGET = "de.azapps.mirakel.SHOW_LIST_FROM_WIDGET";
+	public static String EXTRA_ID = "de.azapps.mirakel.EXTRA_TASKID",
+			SHOW_TASK = "de.azapps.mirakel.SHOW_TASK",
+					TASK_DONE="de.azapps.mirakel.TASK_",
+							TASK_LATER="de.azapps.mirakel.TASK_LATER",
+			SHOW_LIST = "de.azapps.mirakel.SHOW_LIST",
+			SHOW_LISTS = "de.azapps.mirakel.SHOW_LISTS",
+			SHOW_LIST_FROM_WIDGET = "de.azapps.mirakel.SHOW_LIST_FROM_WIDGET";
 	private SharedPreferences preferences;
 
 	private int currentPosition = 1;
 	private Parcelable tasksState, listState;
+	private boolean created = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -332,19 +338,19 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	private void setupLayout() {
 		setCurrentList(SpecialList.first());
-
 		// Initialize ViewPager
 		this.intializeViewPager();
 		NotificationService.updateNotificationAndWidget(this);
 		Intent intent = getIntent();
 		if (intent.getAction() == SHOW_TASK) {
-			int taskId = intent.getIntExtra(EXTRA_ID, 0);
-			if (taskId != 0) {
-				Task task = Task.get(taskId);
+			Task task = Helpers.getTaskFromIntent(intent);
+			if (task != null) {
 				currentList = task.getList();
 				setCurrentTask(task);
-				return;
 			}
+		} else if (intent.getAction() == TASK_DONE
+				|| intent.getAction() == TASK_LATER) {
+			handleReminder(intent);
 		} else if (intent.getAction() == SHOW_LIST
 				|| intent.getAction() == SHOW_LIST_FROM_WIDGET) {
 
@@ -357,6 +363,36 @@ public class MainActivity extends FragmentActivity implements
 		} else {
 			mViewPager.setCurrentItem(TASKS_FRAGMENT);
 		}
+	}
+
+	private void handleReminder(Intent intent) {
+		Task task = Helpers.getTaskFromIntent(intent);
+		if (task == null)
+			return;
+		if (intent.getAction() == TASK_DONE) {
+			task.setDone(true);
+			task.save();
+			Toast.makeText(this,
+					getString(R.string.reminder_notification_done_confirm),
+					Toast.LENGTH_LONG).show();
+
+		} else if (intent.getAction() == TASK_LATER) {
+			GregorianCalendar reminder = new GregorianCalendar();
+			int addMinutes = preferences.getInt("alarm_later", 15);
+			reminder.add(Calendar.MINUTE, addMinutes);
+			task.setReminder(reminder);
+			task.save();
+			Toast.makeText(
+					this,
+					getString(R.string.reminder_notification_later_confirm,
+							addMinutes), Toast.LENGTH_LONG).show();
+
+		}
+		ReminderAlarm.closeNotificationFor(this, task);
+		ReminderAlarm.updateAlarms(this);
+		listFragment.update();
+		setCurrentList(task.getList());
+		setCurrentTask(task);
 	}
 
 	/**
@@ -558,6 +594,7 @@ public class MainActivity extends FragmentActivity implements
 
 	/**
 	 * Executes some View–Updates if a Task was changed
+	 * 
 	 * @param task
 	 */
 	void updatesForTask(Task task) {

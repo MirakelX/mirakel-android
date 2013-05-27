@@ -27,11 +27,13 @@ import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.reminders.ReminderAlarm;
 
 public class Mirakel extends Application {
 	public static final int[] PRIO_COLOR = { Color.parseColor("#008000"),
 			Color.parseColor("#00c400"), Color.parseColor("#3377FF"),
 			Color.parseColor("#FF7700"), Color.parseColor("#FF3333") };
+	public static final int NOTIF_DEFAULT=123, NOTIF_REMINDER=124; 
 
 
 	public static final String ACCOUNT_TYP = "de.azapps.mirakel";
@@ -56,6 +58,8 @@ public class Mirakel extends Application {
 		ListMirakel.init(getApplicationContext());
 		Task.init(getApplicationContext());
 		SpecialList.init(getApplicationContext());
+		//Set Alarms
+		ReminderAlarm.updateAlarms(getApplicationContext());
 	}
 
 	@Override
@@ -73,5 +77,7 @@ public class Mirakel extends Application {
 	public static SQLiteDatabase getReadableDatabase() {
 		return openHelper.getReadableDatabase();
 	}
+	
+
 
 }
