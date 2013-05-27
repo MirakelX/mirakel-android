@@ -33,4 +33,5 @@
         <item>30</item>
         <item>365</item>
     </integer-array>
+    <string name="list_menu_new_special_list">New Speciallist</string>
 </resources>

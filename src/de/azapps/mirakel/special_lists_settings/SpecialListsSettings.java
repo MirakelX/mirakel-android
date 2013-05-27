@@ -29,6 +29,9 @@ import android.support.v4.app.NavUtils;
 
 public class SpecialListsSettings extends Activity {
 
+	private static final String TAG = "SpecialListsSettings";
+	private static final int requestCode=0;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -36,6 +39,10 @@ public class SpecialListsSettings extends Activity {
 		// Show the Up button in the action bar.
 		setupActionBar();
 		
+		update();
+	}
+
+	private void update() {
 		ListView listView=(ListView) findViewById(R.id.special_lists_list);
 		final List<SpecialList> slists=SpecialList.allSpecial(true);
 		List<String> listContent=new ArrayList<String>();
@@ -58,7 +65,7 @@ public class SpecialListsSettings extends Activity {
 	private void editSList(final SpecialList slist){
 		Intent intent=new Intent(this, SpecialListSettingsActivity.class);
 		intent.putExtra(SpecialListSettingsActivity.SLIST_ID, -slist.getId());
-		startActivity(intent);
+		startActivityForResult(intent, requestCode);
 	}
 
 	/**
@@ -66,7 +73,6 @@ public class SpecialListsSettings extends Activity {
 	 */
 	private void setupActionBar() {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-
 	}
 
 	@Override
@@ -89,8 +95,18 @@ public class SpecialListsSettings extends Activity {
 			//
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
+		case R.id.menu_new_special_list:
+			Log.e(TAG,"new SpecialList");
+			SpecialList newList=SpecialList.newSpecialList("NewList", "1=1", false);
+			editSList(newList);
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+		update();
 	}
 
 }

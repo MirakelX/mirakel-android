@@ -6,7 +6,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
@@ -34,6 +38,7 @@ public class SpecialListSettingsActivity extends Activity {
 		Intent i = getIntent();
 		specialList = SpecialList.getSpecialList(i.getIntExtra(SLIST_ID, 1));
 		setContentView(R.layout.special_list_preferences);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 
 		final EditText name = (EditText) findViewById(R.id.special_list_name);
 		name.setText(specialList.getName());
@@ -116,5 +121,33 @@ public class SpecialListSettingsActivity extends Activity {
 			}
 		});
 
+	}
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.special_list_settingsactivity, menu);
+		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			
+			// This ID represents the Home or Up button. In the case of this
+			// activity, the Up button is shown. Use NavUtils to allow users
+			// to navigate up one level in the application structure. For
+			// more details, see the Navigation pattern on Android Design:
+			//
+			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
+			//
+			NavUtils.navigateUpFromSameTask(this);
+			return true;
+		case R.id.menu_delete:
+			specialList.destroy();
+			finish();
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 }

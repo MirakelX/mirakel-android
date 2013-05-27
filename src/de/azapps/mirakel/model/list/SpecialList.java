@@ -153,6 +153,9 @@ public class SpecialList extends ListMirakel {
 
 		if (getSyncState() != Network.SYNC_STATE.ADD) {
 			setSyncState(Network.SYNC_STATE.DELETE);
+		}else{
+			database.delete(TABLE, "_id="+id, null);
+			return;
 		}
 		setActive(false);
 		ContentValues values = new ContentValues();
@@ -187,7 +190,7 @@ public class SpecialList extends ListMirakel {
 	 */
 	public static List<SpecialList> allSpecial(boolean showAll) {
 		List<SpecialList> slists = new ArrayList<SpecialList>();
-		Cursor c = database.query(TABLE, allColumns, "active=1", null, null,
+		Cursor c = database.query(TABLE, allColumns, showAll?"":"active=1", null, null,
 				null, null);
 		c.moveToFirst();
 		while (!c.isAfterLast()) {
