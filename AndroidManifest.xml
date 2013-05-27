@@ -147,7 +147,7 @@
         <provider
             android:name="de.azapps.mirakel.MirakelContentProvider"
             android:authorities="de.azapps.mirakel.provider"
-            android:exported="false" >
+            android:exported="true" >
         </provider>
 
         <service android:name="de.azapps.mirakel.services.NotificationService" />
