@@ -283,7 +283,7 @@ public class Task extends TaskBase {
 	}
 
 	public static List<Task> getTasksWithReminders() {
-		String where = "reminder NOT NULL AND done=0";
+		String where = "reminder NOT NULL";
 		Cursor cursor = Mirakel.getReadableDatabase().query(TABLE, allColumns,
 				where, null, null, null, null);
 		List<Task> tasks = new ArrayList<Task>();

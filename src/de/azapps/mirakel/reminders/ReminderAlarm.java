@@ -1,6 +1,8 @@
 package de.azapps.mirakel.reminders;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -22,11 +24,13 @@ import android.util.Log;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.MirakelHelper;
+import de.azapps.mirakel.Pair;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.task.Task;
 
 public class ReminderAlarm extends BroadcastReceiver {
+	private static final String TAG = "ReminderAlarm";
 	public static String SHOW_TASK = "de.azapps.mirakel.reminders.ReminderAlarm.SHOW_TASK";
 	public static String EXTRA_ID = "de.azapps.mirakel.reminders.ReminderAlarm.EXTRA_ID";
 	private SharedPreferences preferences;
@@ -129,27 +133,36 @@ public class ReminderAlarm extends BroadcastReceiver {
 	}
 
 	private static AlarmManager alarmManager;
-	private static Map<Long, PendingIntent> alarmTasks = new HashMap<Long, PendingIntent>();
 
 	public static void updateAlarms(Context ctx) {
 		alarmManager = (AlarmManager) ctx
 				.getSystemService(Context.ALARM_SERVICE);
 		List<Task> tasks = Task.getTasksWithReminders();
-		Set<Long> needlessTasks = alarmTasks.keySet();
 
-		for (Task t : tasks) {
+		for (int i=0;i<tasks.size();i++) {
+			Task t=tasks.get(i);
 			Log.e("Blubb","TT"+t.getName());
-			updateAlarm(ctx, t);
-			needlessTasks.remove(t.getId());
+			Intent intent = new Intent(ctx, ReminderAlarm.class);
+			intent.setAction(SHOW_TASK);
+			intent.putExtra(EXTRA_ID, t.getId());
+			if(!t.isDone()){
+				updateAlarm(ctx, t);
+				tasks.remove(i--);
+			}
 		}
-		//Log.e("Blubb","count:"+needlessTasks.size());
-		// Cancel alarms
-		for (Long taskId : needlessTasks) {
-			Log.e("Blubb","Task:"+taskId);
+
+		for(Task t:tasks){
 			try {
-				alarmManager.cancel(alarmTasks.get(taskId));
-				closeNotificationFor(ctx, taskId);
+				closeNotificationFor(ctx, t.getId());
+				Intent intent = new Intent(ctx, ReminderAlarm.class);
+				intent.setAction(SHOW_TASK);
+				intent.putExtra(EXTRA_ID, t.getId());
+				PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx, 0,
+						intent, PendingIntent.FLAG_CANCEL_CURRENT);
+				alarmManager.cancel(pendingIntent);
 			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}
@@ -160,10 +173,8 @@ public class ReminderAlarm extends BroadcastReceiver {
 		intent.putExtra(EXTRA_ID, task.getId());
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx, 0,
 				intent, PendingIntent.FLAG_ONE_SHOT);
-		alarmTasks.put(task.getId(), pendingIntent);
-		Log.e("Blubb","count:"+alarmTasks.size() + " id:"+task.getId());
 		alarmManager.set(AlarmManager.RTC_WAKEUP, task.getReminder()
-				.getTimeInMillis(), pendingIntent);
+					.getTimeInMillis(), pendingIntent);
 	}
 
 	public static void closeNotificationFor(Context context, Task task) {
@@ -174,7 +185,6 @@ public class ReminderAlarm extends BroadcastReceiver {
 		NotificationManager nm = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 		nm.cancel(Mirakel.NOTIF_REMINDER + taskId.intValue());
-		alarmTasks.remove(taskId);
 	}
 
 }
