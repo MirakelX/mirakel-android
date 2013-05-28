@@ -1,6 +1,7 @@
 package de.azapps.mirakel.reminders;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -142,13 +143,19 @@ public class ReminderAlarm extends BroadcastReceiver {
 		for (int i=0;i<tasks.size();i++) {
 			Task t=tasks.get(i);
 			Log.e("Blubb","TT"+t.getName());
-			Intent intent = new Intent(ctx, ReminderAlarm.class);
-			intent.setAction(SHOW_TASK);
-			intent.putExtra(EXTRA_ID, t.getId());
+			if(t.getReminder().getTimeInMillis()>(new Date()).getTime()){
+				try {
+					closeNotificationFor(ctx, t.getId());
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 			if(!t.isDone()){
 				updateAlarm(ctx, t);
 				tasks.remove(i--);
 			}
+			
 		}
 
 		for(Task t:tasks){
