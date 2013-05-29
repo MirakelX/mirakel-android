@@ -24,8 +24,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Vector;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -33,8 +31,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
@@ -52,8 +48,8 @@ import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.PagerAdapter;
 import de.azapps.mirakel.R;
+import de.azapps.mirakel.helper.ChangeLog;
 import de.azapps.mirakel.helper.Helpers;
-import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -117,6 +113,11 @@ public class MainActivity extends FragmentActivity implements
 		}
 		setContentView(R.layout.activity_main);
 		setupLayout();
+
+		// Show ChangeLog
+		ChangeLog cl = new ChangeLog(this);
+		//if (cl.firstRun())
+			cl.getLogDialog().show();
 		// currentList=preferences.getInt("s", defValue)
 	}
 
@@ -492,7 +493,7 @@ public class MainActivity extends FragmentActivity implements
 						 * 
 						 * 1: update the currentList to the List, the task was
 						 * 
-						 * moved to setCurrentList(task.getList()); 
+						 * moved to setCurrentList(task.getList());
 						 * 
 						 * 2: update the tasksView but not update the taskView:
 						 * 
