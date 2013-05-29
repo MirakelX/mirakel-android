@@ -167,7 +167,7 @@
     <string name="share_task_title" formatted="false">%s</string>
     <string name="share_list">Share list</string>
     <string name="share_list_title" formatted="false">%s (%d)</string>
-    <string name="share_footer">Shared with Mirakel</string>
+    <string name="share_footer">Shared with Mirakel\nThe free (like in freedom) ToDo–List tool for Android and the Web\nhttp://mirakel.azapps.de</string>
     
     <!-- Search -->
     <string name="search_hint">Search tasks</string>

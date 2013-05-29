@@ -228,14 +228,14 @@ public class Task extends TaskBase {
 		return null;
 	}
 	/**
-	 * Get a Task to sync it
+	 * Search Tasks
 	 * 
 	 * @param id
 	 * @return
 	 */
 	public static List<Task> search(String query) {
-		String[] args=null;//{query};
-		Cursor cursor = database.query(TABLE, allColumns, "name LIKE '%" + query + "%'",
+		String[] args={"%" + query + "%"};
+		Cursor cursor = database.query(TABLE, allColumns, "name LIKE ?",
 				args, null, null, null);
 		cursor.moveToFirst();
 		List<Task> tasks=new ArrayList<Task>();

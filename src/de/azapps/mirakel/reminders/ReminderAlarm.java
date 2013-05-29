@@ -1,12 +1,7 @@
 package de.azapps.mirakel.reminders;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -21,10 +16,8 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.Pair;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.main_activity.MainActivity;
@@ -142,7 +135,6 @@ public class ReminderAlarm extends BroadcastReceiver {
 
 		for (int i=0;i<tasks.size();i++) {
 			Task t=tasks.get(i);
-			Log.e("Blubb","TT"+t.getName());
 			if(t.getReminder().getTimeInMillis()>(new Date()).getTime()){
 				try {
 					closeNotificationFor(ctx, t.getId());

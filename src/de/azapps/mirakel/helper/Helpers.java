@@ -38,29 +38,40 @@ public class Helpers {
 
 	/**
 	 * Share a Task as text with other apps
+	 * 
 	 * @param ctx
 	 * @param t
 	 */
 	public static void share(Activity ctx, Task t) {
-		String subject=getTaskName(ctx, t);
+		String subject = getTaskName(ctx, t);
 		share(ctx, subject, t.getContent());
 	}
 
 	/**
 	 * Share a list of Tasks from a List with other apps
+	 * 
 	 * @param ctx
 	 * @param l
 	 */
 	public static void share(Activity ctx, ListMirakel l) {
-		String subject=ctx.getString(R.string.share_list_title,l.getName(),l.countTasks());
-		String body="";
-		for(Task t : l.tasks()){
-			body+="* " + getTaskName(ctx, t) + "\n";
+		String subject = ctx.getString(R.string.share_list_title, l.getName(),
+				l.countTasks());
+		String body = "";
+		for (Task t : l.tasks()) {
+			if (t.isDone()) {
+				//body += "* ";
+				continue;
+			} else {
+				body += "* ";
+			}
+			body += getTaskName(ctx, t) + "\n";
 		}
 		share(ctx, subject, body);
 	}
+
 	/**
 	 * Helper for the share-functions
+	 * 
 	 * @param ctx
 	 * @param t
 	 * @return
@@ -78,12 +89,13 @@ public class Helpers {
 
 	/**
 	 * Share something
+	 * 
 	 * @param ctx
 	 * @param subject
 	 * @param shareBody
 	 */
 	private static void share(Activity ctx, String subject, String shareBody) {
-		shareBody+="\n\n" + ctx.getString(R.string.share_footer);
+		shareBody += "\n\n" + ctx.getString(R.string.share_footer);
 		Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
 		sharingIntent.setType("text/plain");
 		sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
