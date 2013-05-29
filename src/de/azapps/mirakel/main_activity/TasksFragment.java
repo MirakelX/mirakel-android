@@ -108,7 +108,7 @@ public class TasksFragment extends Fragment {
 			}
 		});
 		ItemCount=10;//TODO get this from somewhere
-		update();
+		update(true);
 		listView.setOnScrollListener(new AbsListView.OnScrollListener() {
 			
 			@Override
@@ -205,18 +205,26 @@ public class TasksFragment extends Fragment {
 		return true;
 	}
 
-	public void update() {
-		update(true);
+	public void updateList() {
+		updateList(true);
 	}
-	public void updateList(){
-		try{
-			values=main.getCurrentList().tasks();
-		}catch(NullPointerException e){
-			values=null;
-		}
+	
+	public void updateList(final boolean reset){
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				 try{
+						values=main.getCurrentList().tasks();
+						update(reset);
+					}catch(NullPointerException e){
+						values=null;
+					}
+			}
+		}).start();
 	}
 
-	public void update(boolean reset) {
+	protected void update(boolean reset) {
 		if (!created)
 			return;
 		if(values==null){
@@ -274,7 +282,6 @@ public class TasksFragment extends Fragment {
 		};
 
 		task.execute();
-		// listView.setAdapter(adapter);
 		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View item,
@@ -307,10 +314,6 @@ public class TasksFragment extends Fragment {
 
 				AlertDialog dialog = builder.create();
 				dialog.show();
-
-				/*
-				 * ListMirakel list = values.get((int) id); editList(list);
-				 */
 				return false;
 			}
 		});

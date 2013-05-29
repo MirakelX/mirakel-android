@@ -151,7 +151,6 @@ public class MainActivity extends FragmentActivity implements
 						@Override
 						public void exec() {
 							tasksFragment.updateList();
-							tasksFragment.update();
 							listFragment.update();
 						}
 					},null);
@@ -581,7 +580,6 @@ public class MainActivity extends FragmentActivity implements
 		this.currentList = currentList;
 		if (tasksFragment != null) {
 			tasksFragment.updateList();
-			tasksFragment.update();
 			mViewPager.setCurrentItem(TASKS_FRAGMENT);
 		}
 		if (currentList == null)
