@@ -168,5 +168,10 @@
     <string name="share_list">Share list</string>
     <string name="share_list_title" formatted="false">%s (%d)</string>
     <string name="share_footer">Shared with Mirakel</string>
+    
+    <!-- Search -->
+    <string name="search_hint">Search tasks</string>
+    <string name="search">Search</string>
+    <string name="search_result_title" formatted="false">Search for %s</string>
 
 </resources>

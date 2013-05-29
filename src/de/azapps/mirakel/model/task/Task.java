@@ -227,6 +227,25 @@ public class Task extends TaskBase {
 		}
 		return null;
 	}
+	/**
+	 * Get a Task to sync it
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public static List<Task> search(String query) {
+		String[] args=null;//{query};
+		Cursor cursor = database.query(TABLE, allColumns, "name LIKE '%" + query + "%'",
+				args, null, null, null);
+		cursor.moveToFirst();
+		List<Task> tasks=new ArrayList<Task>();
+		if (cursor.getCount() != 0) {
+			Task t = cursorToTask(cursor);
+			tasks.add(t);
+		}
+		cursor.close();
+		return tasks;
+	}
 
 	/**
 	 * Get tasks by Sync State

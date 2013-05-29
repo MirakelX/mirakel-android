@@ -215,10 +215,16 @@ public class TasksFragment extends Fragment {
 			values=null;
 		}
 	}
+	public void setTasks(List<Task> tasks){
+		values=tasks;
+		Log.e("Blubb","c:" + values.size());
+	}
 
 	public void update(boolean reset) {
+		Log.e("Blubb","u");
 		if (!created)
 			return;
+		Log.e("Blubb","c2:" + values.size());
 		if(values==null){
 			try{
 				values=main.getCurrentList().tasks();

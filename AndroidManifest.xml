@@ -67,8 +67,14 @@
             android:configChanges="orientation|screenSize"
             android:exported="true"
             android:label="@string/title_activity_main"
-            
             android:windowSoftInputMode="adjustPan" >
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
         </activity>
         <!-- android:launchMode="singleTop" -->
         <activity
@@ -127,8 +133,8 @@
             android:name="de.azapps.mirakel.special_lists_settings.SpecialListSettingsActivity"
             android:label="@string/title_activity_credits" >
             <meta-data
-            	android:name="android.support.PARENT_ACTIVITY"
-            	android:value="de.azapps.mirakel.special_lists_settings.SpecialListsSettings" />
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.azapps.mirakel.special_lists_settings.SpecialListsSettings" />
         </activity>
 
         <receiver android:name="de.azapps.mirakel.widget.MainWidgetProvider" >
@@ -140,7 +146,8 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_provider" />
         </receiver>
-        <receiver android:name=".reminders.ReminderAlarm"></receiver>
+        <receiver android:name=".reminders.ReminderAlarm" >
+        </receiver>
 
         <!-- The service serving the RemoteViews to the collection widget -->
         <service

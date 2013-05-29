@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Vector;
 
 import android.app.AlertDialog;
+import android.app.SearchManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -44,6 +45,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.PagerAdapter;
@@ -52,6 +54,7 @@ import de.azapps.mirakel.helper.ChangeLog;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SearchList;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
@@ -197,6 +200,9 @@ public class MainActivity extends FragmentActivity implements
 			break;
 		case R.id.share_list:
 			Helpers.share(this, getCurrentList());
+			break;
+		case R.id.search:
+			onSearchRequested();
 			break;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -367,6 +373,9 @@ public class MainActivity extends FragmentActivity implements
 			return;
 		} else if (intent.getAction() == SHOW_LISTS) {
 			mViewPager.setCurrentItem(LIST_FRAGMENT);
+		} else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+			String query = intent.getStringExtra(SearchManager.QUERY);
+			search(query);
 		} else {
 			mViewPager.setCurrentItem(TASKS_FRAGMENT);
 		}
@@ -638,6 +647,11 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	public ListFragment getListFragment() {
 		return listFragment;
+	}
+
+	private void search(String query) {
+		setCurrentList(new SearchList(this,query));
+		mViewPager.setCurrentItem(TASKS_FRAGMENT);
 	}
 
 }
