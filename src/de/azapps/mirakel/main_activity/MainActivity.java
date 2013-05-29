@@ -98,7 +98,6 @@ public class MainActivity extends FragmentActivity implements
 
 	private int currentPosition = 1;
 	private Parcelable tasksState, listState;
-	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -155,7 +154,7 @@ public class MainActivity extends FragmentActivity implements
 							tasksFragment.update();
 							listFragment.update();
 						}
-					});
+					},null);
 			return true;
 		case R.id.menu_new_list:
 			ListMirakel list = ListMirakel.newList(this

@@ -72,7 +72,7 @@ public class SpecialListsSettings extends Activity {
 			return true;
 		case R.id.menu_new_special_list:
 			Log.e(TAG,"new SpecialList");
-			SpecialList newList=SpecialList.newSpecialList("NewList", "1=1", false);
+			SpecialList newList=SpecialList.newSpecialList("NewList", "", false);
 			editSList(newList);
 			return true;
 		}
