@@ -37,7 +37,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String TAG = "DatabaseHelper";
 	private Context context;
-	public static final int DATABASE_VERSION = 9;
+	public static final int DATABASE_VERSION = 10;
 
 	public DatabaseHelper(Context ctx) {
 		super(ctx, "mirakel.db", null, DATABASE_VERSION);
@@ -155,6 +155,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			 */
 			db.execSQL("Alter Table " + Task.TABLE
 					+ " add column reminder INTEGER;");
+		case 9:
+			/*
+			 * Update Special Lists Table
+			 */
+			db.execSQL("UPDATE special_lists SET def_date=0 where _id=2 and def_date=null");
+			db.execSQL("UPDATE special_lists SET def_date=7 where _id=3 and def_date=null");
+			db.execSQL("UPDATE special_lists SET def_date=-1, active=0 where _id=4 and def_date=null");
 		}
 	}
 	
