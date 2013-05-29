@@ -27,8 +27,8 @@ import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.MirakelHelper;
 import de.azapps.mirakel.R;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 
@@ -109,12 +109,12 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			rv.setViewVisibility(R.id.tasks_row_due, View.VISIBLE);
 			rv.setTextViewText(
 					R.id.tasks_row_due,
-					MirakelHelper.formatDate(task.getDue(),
+					Helpers.formatDate(task.getDue(),
 							mContext.getString(R.string.dateFormat)));
 			rv.setTextColor(
 					R.id.tasks_row_due,
 					mContext.getResources().getColor(
-							MirakelHelper.getTaskDueColor(task.getDue(),
+							Helpers.getTaskDueColor(task.getDue(),
 									task.isDone())));
 		} else {
 			rv.setViewVisibility(R.id.tasks_row_due, View.GONE);

@@ -49,8 +49,8 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.ViewSwitcher;
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.MirakelHelper;
 import de.azapps.mirakel.R;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.model.task.Task;
@@ -178,7 +178,7 @@ public class TaskFragment extends Fragment {
 		if (task.getDue() == null) {
 			Task_due.setText(getString(R.string.no_date));
 		} else {
-			Task_due.setText(MirakelHelper.formatDate(task.getDue(),
+			Task_due.setText(Helpers.formatDate(task.getDue(),
 					main.getString(R.string.dateFormat)));
 		}
 
@@ -238,7 +238,7 @@ public class TaskFragment extends Fragment {
 		if (task.getReminder() == null) {
 			Task_reminder.setText(getString(R.string.no_reminder));
 		} else {
-			Task_reminder.setText(MirakelHelper.formatDate(task.getReminder(),
+			Task_reminder.setText(Helpers.formatDate(task.getReminder(),
 					main.getString(R.string.humanDateTimeFormat)));
 		}
 

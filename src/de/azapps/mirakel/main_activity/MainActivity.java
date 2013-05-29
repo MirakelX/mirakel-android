@@ -192,6 +192,12 @@ public class MainActivity extends FragmentActivity implements
 					CreditsActivity.class);
 			startActivity(creditsIntent);
 			break;
+		case R.id.share_task:
+			Helpers.share(this, getCurrentTask());
+			break;
+		case R.id.share_list:
+			Helpers.share(this, getCurrentList());
+			break;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
