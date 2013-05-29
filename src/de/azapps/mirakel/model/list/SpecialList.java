@@ -7,7 +7,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.DatabaseHelper;

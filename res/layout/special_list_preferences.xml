@@ -11,6 +11,7 @@
 
     <EditText
         android:id="@+id/special_list_name"
+        android:inputType="text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:imeOptions="actionSend"
@@ -33,6 +34,7 @@
     <EditText
         android:id="@+id/special_list_where"
         android:layout_width="match_parent"
+        android:inputType="text"
         android:layout_height="wrap_content"
         android:imeOptions="actionSend"
         android:singleLine="true" />

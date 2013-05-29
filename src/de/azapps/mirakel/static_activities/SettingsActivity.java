@@ -18,12 +18,8 @@
  ******************************************************************************/
 package de.azapps.mirakel.static_activities;
 
-import de.azapps.mirakel.R;
-import de.azapps.mirakel.model.list.SpecialList;
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
-import android.util.Log;
 import android.view.MenuItem;
 
 public class SettingsActivity extends Activity {

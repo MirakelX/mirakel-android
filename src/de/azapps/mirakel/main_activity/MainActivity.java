@@ -98,7 +98,7 @@ public class MainActivity extends FragmentActivity implements
 
 	private int currentPosition = 1;
 	private Parcelable tasksState, listState;
-	private boolean created = false;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

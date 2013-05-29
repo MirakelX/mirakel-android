@@ -22,7 +22,6 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -38,6 +37,7 @@ import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.task.Task;
 
 public class TaskAdapter extends ArrayAdapter<Task> {
+	@SuppressWarnings("unused")
 	private static final String TAG = "TaskAdapter";
 	Context context;
 	int layoutResourceId, listId;

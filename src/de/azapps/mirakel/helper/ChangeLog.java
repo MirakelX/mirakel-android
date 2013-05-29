@@ -38,9 +38,7 @@ public class ChangeLog {
 	private final Context context;
 	private String lastVersion, thisVersion;
 
-	// this is API Level 3 code
-	// if you use higher APIs anyway, you can use the field SDK_INT instead
-	private final static int API_LEVEL = Integer.parseInt(Build.VERSION.SDK);
+	private final static int API_LEVEL = Build.VERSION.SDK_INT;
 
 	// this is the key for storing the version name in SharedPreferences
 	private static final String VERSION_KEY = "PREFS_VERSION_KEY";
@@ -187,12 +185,11 @@ public class ChangeLog {
 		SharedPreferences.Editor editor = sp.edit();
 		editor.putString(VERSION_KEY, thisVersion);
 		// // on SDK-Versions > 9 you should use this:
-		// if(Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD) {
-		// editor.commit();
-		// } else {
-		// editor.apply();
-		// }
-		editor.commit();
+		 if(Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD) {
+			 editor.commit();
+		 } else {
+			 editor.apply();
+		 }
 	}
 
 	/**

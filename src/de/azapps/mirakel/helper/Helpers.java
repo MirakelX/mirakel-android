@@ -10,7 +10,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import de.azapps.mirakel.R;
-import de.azapps.mirakel.R.color;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
