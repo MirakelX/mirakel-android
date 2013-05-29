@@ -116,7 +116,7 @@ public class MainActivity extends FragmentActivity implements
 
 		// Show ChangeLog
 		ChangeLog cl = new ChangeLog(this);
-		//if (cl.firstRun())
+		if (cl.firstRun())
 			cl.getLogDialog().show();
 		// currentList=preferences.getInt("s", defValue)
 	}
