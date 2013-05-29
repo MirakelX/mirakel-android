@@ -49,6 +49,19 @@ public class MainWidgetSettingsActivity extends Activity {
 		// since it seems the onUpdate() is only fired on that:
 		intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, Mirakel.widgets);
 		sendBroadcast(intent);
+		// Finish this activity
+		finish();
+	}
+
+	@Override
+	public void onBackPressed() {
+		/*
+		 * Show Homescreen
+		 */
+		Intent startMain = new Intent(Intent.ACTION_MAIN);
+		startMain.addCategory(Intent.CATEGORY_HOME);
+		startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		startActivity(startMain);
 	}
 
 }
