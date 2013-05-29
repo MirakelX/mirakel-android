@@ -33,8 +33,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.MirakelHelper;
 import de.azapps.mirakel.R;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.task.Task;
 
 public class TaskAdapter extends ArrayAdapter<Task> {
@@ -144,11 +144,11 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		// Due
 		if (task.getDue() != null) {
 			holder.taskRowDue.setVisibility(View.VISIBLE);
-			holder.taskRowDue.setText(MirakelHelper.formatDate(task.getDue(),
+			holder.taskRowDue.setText(Helpers.formatDate(task.getDue(),
 					context.getString(R.string.dateFormat)));
 			holder.taskRowDue.setTextColor(row.getResources()
 					.getColor(
-							MirakelHelper.getTaskDueColor(task.getDue(),
+							Helpers.getTaskDueColor(task.getDue(),
 									task.isDone())));
 		} else {
 			holder.taskRowDue.setVisibility(View.GONE);

@@ -24,8 +24,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Vector;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -33,8 +31,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
@@ -52,8 +48,8 @@ import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.PagerAdapter;
 import de.azapps.mirakel.R;
+import de.azapps.mirakel.helper.ChangeLog;
 import de.azapps.mirakel.helper.Helpers;
-import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -93,8 +89,8 @@ public class MainActivity extends FragmentActivity implements
 
 	public static String EXTRA_ID = "de.azapps.mirakel.EXTRA_TASKID",
 			SHOW_TASK = "de.azapps.mirakel.SHOW_TASK",
-					TASK_DONE="de.azapps.mirakel.TASK_",
-							TASK_LATER="de.azapps.mirakel.TASK_LATER",
+			TASK_DONE = "de.azapps.mirakel.TASK_",
+			TASK_LATER = "de.azapps.mirakel.TASK_LATER",
 			SHOW_LIST = "de.azapps.mirakel.SHOW_LIST",
 			SHOW_LISTS = "de.azapps.mirakel.SHOW_LISTS",
 			SHOW_LIST_FROM_WIDGET = "de.azapps.mirakel.SHOW_LIST_FROM_WIDGET";
@@ -117,7 +113,12 @@ public class MainActivity extends FragmentActivity implements
 		}
 		setContentView(R.layout.activity_main);
 		setupLayout();
-		//currentList=preferences.getInt("s", defValue)
+
+		// Show ChangeLog
+		ChangeLog cl = new ChangeLog(this);
+		if (cl.firstRun())
+			cl.getLogDialog().show();
+		// currentList=preferences.getInt("s", defValue)
 	}
 
 	@Override
@@ -179,7 +180,7 @@ public class MainActivity extends FragmentActivity implements
 		case R.id.menu_sync_now_tasks:
 			Bundle bundle = new Bundle();
 			bundle.putBoolean(ContentResolver.SYNC_EXTRAS_DO_NOT_RETRY, true);
-			//bundle.putBoolean(ContentResolver.SYNC_EXTRAS_INITIALIZE,true);
+			// bundle.putBoolean(ContentResolver.SYNC_EXTRAS_INITIALIZE,true);
 			bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
 			bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
 			ContentResolver.requestSync(null, Mirakel.AUTHORITY_TYP, bundle);
@@ -190,6 +191,12 @@ public class MainActivity extends FragmentActivity implements
 			Intent creditsIntent = new Intent(MainActivity.this,
 					CreditsActivity.class);
 			startActivity(creditsIntent);
+			break;
+		case R.id.share_task:
+			Helpers.share(this, getCurrentTask());
+			break;
+		case R.id.share_list:
+			Helpers.share(this, getCurrentList());
 			break;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -242,7 +249,7 @@ public class MainActivity extends FragmentActivity implements
 		case 1:
 			listFragment.enable_drop(false);
 			newmenu = R.menu.tasks;
-			if(currentList==null)
+			if (currentList == null)
 				return;
 			this.setTitle(currentList.getName());
 			if (tasksState != null && currentPosition != LIST_FRAGMENT)
@@ -388,7 +395,7 @@ public class MainActivity extends FragmentActivity implements
 							addMinutes), Toast.LENGTH_LONG).show();
 
 		}
-		ReminderAlarm.closeNotificationFor(this, task);
+		ReminderAlarm.closeNotificationFor(this, task.getId());
 		ReminderAlarm.updateAlarms(this);
 		listFragment.update();
 		setCurrentList(task.getList());
@@ -486,7 +493,22 @@ public class MainActivity extends FragmentActivity implements
 					public void onClick(DialogInterface dialog, int item) {
 						task.setList(ListMirakel.getList(list_ids.get(item)));
 						task.save();
-						tasksFragment.update();
+						/*
+						 * There are 3 possibilities how to handle the post-move
+						 * of a task:
+						 * 
+						 * 1: update the currentList to the List, the task was
+						 * 
+						 * moved to setCurrentList(task.getList());
+						 * 
+						 * 2: update the tasksView but not update the taskView:
+						 * 
+						 * tasksFragment.updateList(); tasksFragment.update();
+						 * 
+						 * 3: Set the currentList to the old List
+						 */
+						setCurrentList(getCurrentList());
+
 						listFragment.update();
 						taskMoveDialog.dismiss();
 					}
@@ -563,7 +585,7 @@ public class MainActivity extends FragmentActivity implements
 			tasksFragment.update();
 			mViewPager.setCurrentItem(TASKS_FRAGMENT);
 		}
-		if(currentList==null)
+		if (currentList == null)
 			return;
 		List<Task> currentTasks = currentList.tasks();
 		if (currentTasks.size() == 0) {

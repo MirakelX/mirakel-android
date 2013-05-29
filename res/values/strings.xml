@@ -154,4 +154,19 @@
     <string name="title_activity_special_lists_settings">SpecialListsSettings</string>
     <string name="hello_world">Hello world!</string>
 
+    <!-- Changelog -->
+    <string name="changelog_full_title">Change Log</string>
+    <string name="changelog_title">What\'s New</string>
+    <string name="changelog_ok_button">OK</string>
+    <string name="changelog_show_full">more…</string>
+    
+    <!-- Sharing -->
+    <string name="share_using">Share with</string>
+    <string name="share_task">Share task</string>
+    <string name="share_task_title_with_date" formatted="false">%s (%s)</string>
+    <string name="share_task_title" formatted="false">%s</string>
+    <string name="share_list">Share list</string>
+    <string name="share_list_title" formatted="false">%s (%d)</string>
+    <string name="share_footer">Shared with Mirakel</string>
+
 </resources>

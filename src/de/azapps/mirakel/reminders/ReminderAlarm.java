@@ -18,8 +18,8 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.MirakelHelper;
 import de.azapps.mirakel.R;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.task.Task;
 
@@ -108,7 +108,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 			if (task.getDue() == null) {
 				due = context.getString(R.string.no_date);
 			} else {
-				due = MirakelHelper.formatDate(task.getDue(),
+				due = Helpers.formatDate(task.getDue(),
 						context.getString(R.string.dateFormat));
 			}
 

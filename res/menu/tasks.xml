@@ -36,6 +36,12 @@
         android:title="@string/task_menu_sorting">
     </item>
     <item
+        android:id="@+id/share_list"
+        android:icon="@android:drawable/ic_menu_share"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/share_list">
+    </item>
+    <item
         android:id="@+id/menu_sync_now_tasks"
         android:orderInCategory="100"
         android:showAsAction="never"

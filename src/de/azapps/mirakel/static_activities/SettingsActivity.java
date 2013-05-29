@@ -18,8 +18,13 @@
  ******************************************************************************/
 package de.azapps.mirakel.static_activities;
 
+import de.azapps.mirakel.R;
+import de.azapps.mirakel.model.list.SpecialList;
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
+import android.util.Log;
+import android.view.MenuItem;
 
 public class SettingsActivity extends Activity {
 
@@ -30,6 +35,16 @@ public class SettingsActivity extends Activity {
 		// Display the fragment as the main content.
 		getFragmentManager().beginTransaction()
 				.replace(android.R.id.content, new SettingsFragment()).commit();
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+	}	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			finish();
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
 	}
-
+	
 }
