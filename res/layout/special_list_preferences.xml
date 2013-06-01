@@ -1,178 +1,410 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical" >
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:text="@string/special_list_name" />
-    <ViewSwitcher
-            android:id="@+id/switch_special_list_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ellipsize="end"
-            android:gravity="center" >
-
-            <TextView
-                android:id="@+id/special_list_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textIsSelectable="false"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-            <EditText
-		        android:id="@+id/special_list_name_edit"
-		        android:inputType="text"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:imeOptions="actionDone"
-		        android:singleLine="true" />
-      </ViewSwitcher>
-
-
-    <CheckBox
-        android:id="@+id/special_list_active"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:text="@string/special_list_active" />
-	<View 
-		android:layout_width="fill_parent"
-		android:layout_height="1dp"
-		android:layout_marginRight="10dp"
-		android:layout_marginLeft="10dp"
-	    android:background="@android:color/darker_gray" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:text="@string/special_list_where" />
-
-    <EditText
-        android:id="@+id/special_list_where"
-        android:layout_width="match_parent"
-        android:inputType="text"
-        android:layout_height="wrap_content"
-        android:imeOptions="actionSend"
-        android:singleLine="true" />
-    
-  	<LinearLayout
-  	    android:id="@+id/special_list_sort_by_view"
-  	    android:layout_marginTop="5dp"
-  	    android:orientation="vertical"
-  	    android:layout_marginRight="10dp"
-		android:layout_marginLeft="10dp"
-  	    android:layout_width="match_parent"
-  	    android:layout_height="wrap_content">
-	    <View 
-			android:layout_width="fill_parent"
-			android:layout_height="1dp"
-		    android:background="@android:color/darker_gray" />
-	   	<TextView 
-	        android:id="@+id/special_list_sort_by"
-	        android:layout_marginTop="5dp"
-	    	android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:text="@string/special_list_sort_by"
-	        android:layout_marginRight="10dp"
-			android:layout_marginLeft="10dp"
-	        android:textAppearance="?android:attr/textAppearanceMedium"/>
-	    <TextView 
-	        android:id="@+id/special_list_sort_by_pref"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+	<LinearLayout 
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="vertical" >
+	
+	    <TextView
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:text="@string/special_list_sort_by"
-	        android:layout_marginRight="10dp"
-			android:layout_marginLeft="10dp"
-			android:layout_marginBottom="5dp"
-	        android:textAppearance="?android:attr/textAppearanceSmall"/>
-    </LinearLayout>
-    
-  	<LinearLayout
-  	    android:id="@+id/special_list_def_list_view"
-  	    android:layout_width="match_parent"
-  	    android:orientation="vertical"
-  	    android:layout_marginRight="10dp"
-		android:layout_marginLeft="10dp"
-  	    android:layout_height="wrap_content">
-	    <View 
+	        android:layout_marginTop="10dp"
+	        android:layout_marginLeft="10dp"
+	        android:textAppearance="@android:attr/textAppearanceLarge"
+	        android:textSize="18sp"
+	        android:text="@string/special_list_name" />
+	    <ViewSwitcher
+	            android:id="@+id/switch_special_list_name"
+	            android:layout_width="match_parent"
+	            android:layout_height="0dip"
+	            android:layout_weight="1"
+	            android:ellipsize="end"
+	            android:gravity="center" >
+	
+	            <TextView
+	                android:id="@+id/special_list_name"
+	                android:layout_width="match_parent"
+	                android:layout_height="wrap_content"
+	                android:textIsSelectable="false"
+	                android:ellipsize="end"
+	                android:gravity="center"
+	                android:textAppearance="?android:attr/textAppearanceMedium" />
+	
+	            <EditText
+			        android:id="@+id/special_list_name_edit"
+			        android:inputType="text"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:imeOptions="actionDone"
+			        android:singleLine="true" />
+	      </ViewSwitcher>
+	
+	
+	    <CheckBox
+	        android:id="@+id/special_list_active"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="5dp"
+	        android:text="@string/special_list_active" />
+		<View 
 			android:layout_width="fill_parent"
-			android:layout_height="1dp"
-			android:background="@android:color/darker_gray" />
-	    <TextView 
+			android:layout_height="2dp"
+			android:layout_marginRight="10dp"
+			android:layout_marginLeft="10dp"
+		    android:background="@android:color/darker_gray" />
+	    <TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="10dp"
+	        android:textAppearance="@android:attr/textAppearanceLarge"
+	        android:textSize="18sp"
+	        android:text="@string/special_list_where" />
+	
+	    <TextView
+	        android:id="@+id/special_list_where"
+	        android:layout_width="match_parent"
+	        android:layout_marginLeft="20dp"
+	        android:layout_height="wrap_content"
+	        android:textIsSelectable="true"
+	        android:maxLines="3"
+	       	android:textAppearance="@android:attr/textAppearanceSmall"/>
+	    
+	    <LinearLayout
+	  	    android:id="@+id/special_list_where_list"
+	  	    android:layout_marginTop="5dp"
+	  	    android:orientation="vertical"
+	  	    android:layout_marginRight="10dp"
+			android:layout_marginLeft="10dp"
+	  	    android:layout_width="match_parent"
+	  	    android:layout_height="wrap_content">
+		    <View 
+				android:layout_width="fill_parent"
+				android:layout_height="1dp"
+			    android:background="@android:color/darker_gray" />
+		   	<TextView 
+		        android:id="@+id/special_list_where_list_title"
+		        android:layout_marginTop="5dp"
+		    	android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="@string/special_list_where_list_title_text"
+		        android:layout_marginRight="10dp"
+				android:layout_marginLeft="10dp"
+		        android:textAppearance="?android:attr/textAppearanceMedium"/>
+		    <TextView 
+		        android:id="@+id/special_list_where_list_content"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="@string/special_list_where_list_content_text"
+		        android:layout_marginRight="10dp"
+				android:layout_marginLeft="10dp"
+				android:layout_marginBottom="5dp"
+		        android:textAppearance="?android:attr/textAppearanceSmall"/>
+	    </LinearLayout>
+	    
+	    <LinearLayout
+	  	    android:id="@+id/special_list_where_name"
+	  	    android:layout_marginTop="5dp"
+	  	    android:orientation="vertical"
+	  	    android:layout_marginRight="10dp"
+			android:layout_marginLeft="10dp"
+	  	    android:layout_width="match_parent"
+	  	    android:layout_height="wrap_content">
+		    <View 
+				android:layout_width="fill_parent"
+				android:layout_height="1dp"
+			    android:background="@android:color/darker_gray" />
+		   	<TextView 
+		        android:id="@+id/special_list_where_name_title"
+		        android:layout_marginTop="5dp"
+		    	android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="@string/special_list_where_name_title_text"
+		        android:layout_marginRight="10dp"
+				android:layout_marginLeft="10dp"
+		        android:textAppearance="?android:attr/textAppearanceMedium"/>
+		    <TextView 
+		        android:id="@+id/special_list_where_name_content"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="@string/special_list_where_name_content_text"
+		        android:layout_marginRight="10dp"
+				android:layout_marginLeft="10dp"
+				android:layout_marginBottom="5dp"
+		        android:textAppearance="?android:attr/textAppearanceSmall"/>
+	    </LinearLayout>
+	    
+	    <LinearLayout
+	  	    android:id="@+id/special_list_where_content"
+	  	    android:layout_marginTop="5dp"
+	  	    android:orientation="vertical"
+	  	    android:layout_marginRight="10dp"
+			android:layout_marginLeft="10dp"
+	  	    android:layout_width="match_parent"
+	  	    android:layout_height="wrap_content">
+		    <View 
+				android:layout_width="fill_parent"
+				android:layout_height="1dp"
+			    android:background="@android:color/darker_gray" />
+		   	<TextView 
+		        android:id="@+id/special_list_where_content_title"
+		        android:layout_marginTop="5dp"
+		    	android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="@string/special_list_where_content_title_text"
+		        android:layout_marginRight="10dp"
+				android:layout_marginLeft="10dp"
+		        android:textAppearance="?android:attr/textAppearanceMedium"/>
+		    <TextView 
+		        android:id="@+id/special_list_where_content_content"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="@string/special_list_where_content_content_text"
+		        android:layout_marginRight="10dp"
+				android:layout_marginLeft="10dp"
+				android:layout_marginBottom="5dp"
+		        android:textAppearance="?android:attr/textAppearanceSmall"/>
+	    </LinearLayout>
+	    
+	    <LinearLayout
+	  	    android:id="@+id/special_list_where_prio"
+	  	    android:layout_marginTop="5dp"
+	  	    android:orientation="vertical"
+	  	    android:layout_marginRight="10dp"
+			android:layout_marginLeft="10dp"
+	  	    android:layout_width="match_parent"
+	  	    android:layout_height="wrap_content">
+		    <View 
+				android:layout_width="fill_parent"
+				android:layout_height="1dp"
+			    android:background="@android:color/darker_gray" />
+		   	<TextView 
+		        android:id="@+id/special_list_where_prio_title"
+		        android:layout_marginTop="5dp"
+		    	android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="@string/special_list_where_prio_title_text"
+		        android:layout_marginRight="10dp"
+				android:layout_marginLeft="10dp"
+		        android:textAppearance="?android:attr/textAppearanceMedium"/>
+		    <TextView 
+		        android:id="@+id/special_list_where_prio_content"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="@string/special_list_where_prio_content_text"
+		        android:layout_marginRight="10dp"
+				android:layout_marginLeft="10dp"
+				android:layout_marginBottom="5dp"
+		        android:textAppearance="?android:attr/textAppearanceSmall"/>
+	    </LinearLayout>
+	    <LinearLayout
+	  	    android:id="@+id/special_list_where_done"
+	  	    android:layout_marginTop="5dp"
+	  	    android:orientation="vertical"
+	  	    android:layout_marginRight="10dp"
+			android:layout_marginLeft="10dp"
+	  	    android:layout_width="match_parent"
+	  	    android:layout_height="wrap_content">
+		    <View 
+				android:layout_width="fill_parent"
+				android:layout_height="1dp"
+			    android:background="@android:color/darker_gray" />
+		   	<TextView 
+		        android:id="@+id/special_list_where_done_title"
+		        android:layout_marginTop="5dp"
+		    	android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="@string/special_list_where_done_title_text"
+		        android:layout_marginRight="10dp"
+				android:layout_marginLeft="10dp"
+		        android:textAppearance="?android:attr/textAppearanceMedium"/>
+		    <TextView 
+		        android:id="@+id/special_list_where_done_content"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="@string/special_list_where_done_content_text"
+		        android:layout_marginRight="10dp"
+				android:layout_marginLeft="10dp"
+				android:layout_marginBottom="5dp"
+		        android:textAppearance="?android:attr/textAppearanceSmall"/>
+	    </LinearLayout>
+	    
+	    <LinearLayout
+	  	    android:id="@+id/special_list_where_due"
+	  	    android:layout_marginTop="5dp"
+	  	    android:orientation="vertical"
+	  	    android:layout_marginRight="10dp"
+			android:layout_marginLeft="10dp"
+	  	    android:layout_width="match_parent"
+	  	    android:layout_height="wrap_content">
+		    <View 
+				android:layout_width="fill_parent"
+				android:layout_height="1dp"
+			    android:background="@android:color/darker_gray" />
+		   	<TextView 
+		        android:id="@+id/special_list_where_due_title"
+		        android:layout_marginTop="5dp"
+		    	android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="@string/special_list_where_due_title_text"
+		        android:layout_marginRight="10dp"
+				android:layout_marginLeft="10dp"
+		        android:textAppearance="?android:attr/textAppearanceMedium"/>
+		    <TextView 
+		        android:id="@+id/special_list_where_due_content"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="@string/special_list_where_due_content_text"
+		        android:layout_marginRight="10dp"
+				android:layout_marginLeft="10dp"
+				android:layout_marginBottom="5dp"
+		        android:textAppearance="?android:attr/textAppearanceSmall"/>
+	    </LinearLayout>
+	    
+	    <LinearLayout
+	  	    android:id="@+id/special_list_where_reminder"
+	  	    android:layout_marginTop="5dp"
+	  	    android:orientation="vertical"
+	  	    android:layout_marginRight="10dp"
+			android:layout_marginLeft="10dp"
+	  	    android:layout_width="match_parent"
+	  	    android:layout_height="wrap_content">
+		    <View 
+				android:layout_width="fill_parent"
+				android:layout_height="1dp"
+			    android:background="@android:color/darker_gray" />
+		   	<TextView 
+		        android:id="@+id/special_list_where_reminder_title"
+		        android:layout_marginTop="5dp"
+		    	android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="@string/special_list_where_reminder_title_text"
+		        android:layout_marginRight="10dp"
+				android:layout_marginLeft="10dp"
+		        android:textAppearance="?android:attr/textAppearanceMedium"/>
+		    <TextView 
+		        android:id="@+id/special_list_where_reminder_content"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="@string/special_list_where_reminder_content_text"
+		        android:layout_marginRight="10dp"
+				android:layout_marginLeft="10dp"
+				android:layout_marginBottom="5dp"
+		        android:textAppearance="?android:attr/textAppearanceSmall"/>
+	    </LinearLayout>
+	    
+	  	<LinearLayout
+	  	    android:id="@+id/special_list_sort_by_view"
+	  	    android:layout_marginTop="5dp"
+	  	    android:orientation="vertical"
+	  	    android:layout_marginRight="10dp"
+			android:layout_marginLeft="10dp"
+	  	    android:layout_width="match_parent"
+	  	    android:layout_height="wrap_content">
+		    <View 
+				android:layout_width="fill_parent"
+				android:layout_height="2dp"
+			    android:background="@android:color/darker_gray" />
+		   	<TextView 
+		        android:id="@+id/special_list_sort_by"
+		        android:layout_marginTop="5dp"
+		    	android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="@string/special_list_sort_by"
+		        android:layout_marginRight="10dp"
+				android:layout_marginLeft="10dp"
+		        android:textAppearance="?android:attr/textAppearanceMedium"/>
+		    <TextView 
+		        android:id="@+id/special_list_sort_by_pref"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="@string/special_list_sort_by"
+		        android:layout_marginRight="10dp"
+				android:layout_marginLeft="10dp"
+				android:layout_marginBottom="5dp"
+		        android:textAppearance="?android:attr/textAppearanceSmall"/>
+	    </LinearLayout>
+	    
+	  	<LinearLayout
+	  	    android:id="@+id/special_list_def_list_view"
+	  	    android:layout_width="match_parent"
+	  	    android:orientation="vertical"
+	  	    android:layout_marginRight="10dp"
+			android:layout_marginLeft="10dp"
+	  	    android:layout_height="wrap_content">
+		    <View 
+				android:layout_width="fill_parent"
+				android:layout_height="1dp"
+				android:background="@android:color/darker_gray" />
+		    <TextView 
+		        android:id="@+id/special_list_def_list"
+		        android:layout_width="wrap_content"
+		        android:layout_marginTop="5dp"
+		        android:layout_height="wrap_content"
+		        android:text="@string/special_list_def_list"
+		        android:layout_marginRight="10dp"
+				android:layout_marginLeft="10dp"
+		        android:textAppearance="?android:attr/textAppearanceMedium"/>
+		    <TextView 
+		        android:id="@+id/special_list_def_list_pref"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="@string/special_list_def_list"
+		        android:layout_marginRight="10dp"
+				android:layout_marginLeft="10dp"
+				android:layout_marginBottom="5dp"
+		        android:textAppearance="?android:attr/textAppearanceSmall"/>
+		</LinearLayout>
+	    
+	  	<LinearLayout 
+	  	    android:id="@+id/special_list_def_date_view"
+	  	    android:layout_width="match_parent"
+	  	    android:orientation="vertical"
+	  	    android:layout_marginRight="10dp"
+			android:layout_marginLeft="10dp"
+	  	    android:layout_height="wrap_content">
+		    <View 
+				android:layout_width="fill_parent"
+				android:layout_height="1dp"
+				android:background="@android:color/darker_gray" />
+		    <TextView 
+		        android:id="@+id/special_list_def_date"
+		        android:layout_width="wrap_content"
+		        android:layout_marginTop="5dp"
+		        android:layout_height="wrap_content"
+		        android:text="@string/special_list_def_date"
+		        android:layout_marginRight="10dp"
+				android:layout_marginLeft="10dp"
+		        android:textAppearance="?android:attr/textAppearanceMedium"/>
+		    <TextView 
+		        android:id="@+id/special_list_def_date_pref"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="@string/special_list_def_date"
+		        android:layout_marginRight="10dp"
+				android:layout_marginLeft="10dp"
+				android:layout_marginBottom="5dp"
+		        android:textAppearance="?android:attr/textAppearanceSmall"/>
+		  </LinearLayout>
+	
+	    <!-- <Button
+	        android:id="@+id/special_list_sort_by"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/special_list_sort_by" />
+	
+	    <Button
 	        android:id="@+id/special_list_def_list"
 	        android:layout_width="wrap_content"
-	        android:layout_marginTop="5dp"
 	        android:layout_height="wrap_content"
-	        android:text="@string/special_list_def_list"
-	        android:layout_marginRight="10dp"
-			android:layout_marginLeft="10dp"
-	        android:textAppearance="?android:attr/textAppearanceMedium"/>
-	    <TextView 
-	        android:id="@+id/special_list_def_list_pref"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:text="@string/special_list_def_list"
-	        android:layout_marginRight="10dp"
-			android:layout_marginLeft="10dp"
-			android:layout_marginBottom="5dp"
-	        android:textAppearance="?android:attr/textAppearanceSmall"/>
-	</LinearLayout>
-    
-  	<LinearLayout 
-  	    android:id="@+id/special_list_def_date_view"
-  	    android:layout_width="match_parent"
-  	    android:orientation="vertical"
-  	    android:layout_marginRight="10dp"
-		android:layout_marginLeft="10dp"
-  	    android:layout_height="wrap_content">
-	    <View 
-			android:layout_width="fill_parent"
-			android:layout_height="1dp"
-			android:background="@android:color/darker_gray" />
-	    <TextView 
+	        android:text="@string/special_list_def_list" />
+	
+	    <Button
 	        android:id="@+id/special_list_def_date"
 	        android:layout_width="wrap_content"
-	        android:layout_marginTop="5dp"
 	        android:layout_height="wrap_content"
-	        android:text="@string/special_list_def_date"
-	        android:layout_marginRight="10dp"
-			android:layout_marginLeft="10dp"
-	        android:textAppearance="?android:attr/textAppearanceMedium"/>
-	    <TextView 
-	        android:id="@+id/special_list_def_date_pref"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:text="@string/special_list_def_date"
-	        android:layout_marginRight="10dp"
-			android:layout_marginLeft="10dp"
-			android:layout_marginBottom="5dp"
-	        android:textAppearance="?android:attr/textAppearanceSmall"/>
-	  </LinearLayout>
-
-    <!-- <Button
-        android:id="@+id/special_list_sort_by"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/special_list_sort_by" />
-
-    <Button
-        android:id="@+id/special_list_def_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/special_list_def_list" />
-
-    <Button
-        android:id="@+id/special_list_def_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/special_list_def_date" />-->
-
-</LinearLayout>
+	        android:text="@string/special_list_def_date" />-->
+	
+	</LinearLayout>
+</ScrollView>
