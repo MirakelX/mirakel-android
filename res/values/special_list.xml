@@ -34,4 +34,47 @@
         <item>365</item>
     </integer-array>
     <string name="list_menu_new_special_list">New Speciallist</string>
+    <string name="special_list_where_prio_title_text">Priority</string>
+    <string name="special_list_where_prio_content_text"></string>
+    <string name="special_list_where_name_title_text">Name</string>
+    <string name="special_list_where_name_content_text"></string>
+    <string name="special_list_where_content_title_text">Content</string>
+    <string name="special_list_where_content_content_text"></string>
+    <string name="special_list_where_list_title_text">List</string>
+    <string name="special_list_where_list_content_text"></string>
+    <string name="special_list_where_done_title_text">Done</string>
+    <string name="special_list_where_done_content_text"></string>
+    <string name="special_list_where_reminder_title_text">Reminder</string>
+    <string name="special_list_where_reminder_content_text"></string>
+    <string name="special_list_where_due_title_text">Due</string>
+    <string name="special_list_where_due_content_text"></string>
+    <string name="empty">Irrelevant</string>
+    <string name="select_by">Select By</string>
+    
+    <string name="done">Tasks done</string>
+    <string name="undone">Tasks not Done</string>
+    <string name="nothing">Nothing</string>
+    
+    <string name="today">Today</string>
+    
+    <string name="reminder_set">Reminder is set</string>
+    <string name="reminder_unset">Reminder is not set</string>
+    
+    <string name="inverte">Inverte Selection</string>
+    <string name="not_in">Not in</string>
+    
+    <string name="where_like_contain_text">Contains</string>
+    <string name="where_like_begin_text">Beginns with</string>
+    <string name="where_like_end_text">Ends with</string>
+    <string name="not">Not</string>
+    <string-array name="due_day_year_values">
+        <item >Day</item>
+        <item >Month</item>
+        <item >Year</item>
+    </string-array>
+    <string-array name="due_day_year_values_plural">
+        <item >Days</item>
+        <item >Months</item>
+        <item >Years</item>
+    </string-array>
 </resources>

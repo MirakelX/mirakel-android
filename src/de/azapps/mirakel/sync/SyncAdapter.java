@@ -55,13 +55,13 @@ import android.content.SyncResult;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.Pair;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
@@ -208,7 +208,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 	private void execute(List<Pair<Network, String>> CommandList) {
 		for (Pair<Network, String> command : CommandList) {
-			command.getLeft().execute(command.getRight());
+			command.first.execute(command.second);
 		}
 	}
 

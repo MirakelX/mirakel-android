@@ -1,5 +1,24 @@
+/*******************************************************************************
+ * Mirakel is an Android App for managing your ToDo-Lists
+ * 
+ * Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
+ * 
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     any later version.
+ * 
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ * 
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
 package de.azapps.mirakel.reminders;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -24,6 +43,7 @@ import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.task.Task;
 
 public class ReminderAlarm extends BroadcastReceiver {
+	@SuppressWarnings("unused")
 	private static final String TAG = "ReminderAlarm";
 	public static String SHOW_TASK = "de.azapps.mirakel.reminders.ReminderAlarm.SHOW_TASK";
 	public static String EXTRA_ID = "de.azapps.mirakel.reminders.ReminderAlarm.EXTRA_ID";
@@ -128,43 +148,61 @@ public class ReminderAlarm extends BroadcastReceiver {
 
 	private static AlarmManager alarmManager;
 
-	public static void updateAlarms(Context ctx) {
-		alarmManager = (AlarmManager) ctx
-				.getSystemService(Context.ALARM_SERVICE);
-		List<Task> tasks = Task.getTasksWithReminders();
+	private static List<Task> activeAlarms=new ArrayList<Task>();
 
-		for (int i=0;i<tasks.size();i++) {
-			Task t=tasks.get(i);
-			if(t.getReminder().getTimeInMillis()>(new Date()).getTime()){
-				try {
-					closeNotificationFor(ctx, t.getId());
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+	public static void updateAlarms(final Context ctx) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				alarmManager = (AlarmManager) ctx
+						.getSystemService(Context.ALARM_SERVICE);
+				List<Task> tasks = Task.getTasksWithReminders();
+				for(int i=0;i<activeAlarms.size();i++){
+					Task t=activeAlarms.get(i);
+					Task newTask= Task.get(t.getId());
+					if(newTask==null){
+						i=cancelAlarm(ctx, t, newTask,i);
+						continue;
+					}
+					if(newTask.isDone()){
+						i=cancelAlarm(ctx, t, newTask,i);
+					}else if(newTask.getReminder()!=null){
+						if(newTask.getReminder().getTimeInMillis()>new Date().getTime()){
+							closeNotificationFor(ctx, t.getId());
+							updateAlarm(ctx, newTask);
+						}
+					}
+				}
+				for(Task t:tasks){
+					if(!isAlarm(t)){
+						updateAlarm(ctx, t);
+						activeAlarms.add(t);
+					}
 				}
 			}
-			if(!t.isDone()){
-				updateAlarm(ctx, t);
-				tasks.remove(i--);
-			}
-			
-		}
-
-		for(Task t:tasks){
-			try {
-				closeNotificationFor(ctx, t.getId());
-				Intent intent = new Intent(ctx, ReminderAlarm.class);
-				intent.setAction(SHOW_TASK);
-				intent.putExtra(EXTRA_ID, t.getId());
-				PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx, 0,
-						intent, PendingIntent.FLAG_CANCEL_CURRENT);
-				alarmManager.cancel(pendingIntent);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		}).start();
 	}
+
+	private static boolean isAlarm(Task t2) {
+		for(Task t:activeAlarms){
+			if(t.getId()==t2.getId())
+				return true;
+		}
+		return false;
+	}
+
+	private static int cancelAlarm(Context ctx, Task t, Task newTask,int i) {
+		closeNotificationFor(ctx, newTask.getId());
+		Intent intent = new Intent(ctx, ReminderAlarm.class);
+		intent.setAction(SHOW_TASK);
+		intent.putExtra(EXTRA_ID, t.getId());
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx, 0,
+				intent, PendingIntent.FLAG_CANCEL_CURRENT);
+		alarmManager.cancel(pendingIntent);
+		activeAlarms.remove(i--);
+		return i;
+	}
+
 
 	private static void updateAlarm(Context ctx, Task task) {
 		Intent intent = new Intent(ctx, ReminderAlarm.class);
@@ -174,10 +212,6 @@ public class ReminderAlarm extends BroadcastReceiver {
 				intent, PendingIntent.FLAG_UPDATE_CURRENT);
 		alarmManager.set(AlarmManager.RTC_WAKEUP, task.getReminder()
 					.getTimeInMillis(), pendingIntent);
-	}
-
-	public static void closeNotificationFor(Context context, Task task) {
-		closeNotificationFor(context, task.getId());
 	}
 
 	public static void closeNotificationFor(Context context, Long taskId) {

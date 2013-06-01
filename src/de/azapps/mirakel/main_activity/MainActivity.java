@@ -101,7 +101,6 @@ public class MainActivity extends FragmentActivity implements
 
 	private int currentPosition = 1;
 	private Parcelable tasksState, listState;
-	private boolean created = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -155,10 +154,9 @@ public class MainActivity extends FragmentActivity implements
 						@Override
 						public void exec() {
 							tasksFragment.updateList();
-							tasksFragment.update();
 							listFragment.update();
 						}
-					});
+					},null);
 			return true;
 		case R.id.menu_new_list:
 			ListMirakel list = ListMirakel.newList(this
@@ -404,7 +402,7 @@ public class MainActivity extends FragmentActivity implements
 							addMinutes), Toast.LENGTH_LONG).show();
 
 		}
-		ReminderAlarm.closeNotificationFor(this, task);
+		ReminderAlarm.closeNotificationFor(this, task.getId());
 		ReminderAlarm.updateAlarms(this);
 		listFragment.update();
 		setCurrentList(task.getList());
@@ -591,7 +589,6 @@ public class MainActivity extends FragmentActivity implements
 		this.currentList = currentList;
 		if (tasksFragment != null) {
 			tasksFragment.updateList();
-			tasksFragment.update();
 			mViewPager.setCurrentItem(TASKS_FRAGMENT);
 		}
 		if (currentList == null)

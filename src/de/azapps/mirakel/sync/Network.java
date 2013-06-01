@@ -140,6 +140,7 @@ public class Network extends AsyncTask<String, Integer, String> {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	protected void onPostExecute(String result) {
 		if (result == ""&& Mirakel.DEBUG){
