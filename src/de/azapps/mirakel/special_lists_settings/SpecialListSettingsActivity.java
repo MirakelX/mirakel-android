@@ -20,6 +20,8 @@ package de.azapps.mirakel.special_lists_settings;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import android.R.bool;
 import android.app.Activity;
@@ -583,7 +585,7 @@ public class SpecialListSettingsActivity extends Activity {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						updateWhere("due", "");
-						
+						((TextView)findViewById(R.id.special_list_where_due_content)).setText(getString(R.string.empty));
 					}
 				});
 				final View dialogView=getLayoutInflater().inflate(R.layout.due_dialog, null);
@@ -606,14 +608,22 @@ public class SpecialListSettingsActivity extends Activity {
 				String[]p=specialList.getWhereQuery().split("and");
 				for(String r:p){
 					if(r.contains("date(due)")){
-						if(r.split("\"")[3].contains("localtime")){
+						Pattern pattern = Pattern.compile( "[\"'].*?[\"']" );
+						Matcher matcher = pattern.matcher(r);
+						int i=0;
+						while ( matcher.find() ){
+							if(++i>1){
+								r=matcher.group().replaceAll("[\"']", "");
+								break;
+							}
+						}
+						if(r.contains("localtime")){
 							((NumberPicker)dialogView.findViewById(R.id.due_day_year)).setDisplayedValues(getResources().getStringArray(R.array.due_day_year_values));
 							((NumberPicker)dialogView.findViewById(R.id.due_day_year)).setMaxValue(getResources().getStringArray(R.array.due_day_year_values).length-1);
 							((NumberPicker)dialogView.findViewById(R.id.due_val)).setDisplayedValues(s);
 							((NumberPicker)dialogView.findViewById(R.id.due_val)).setMaxValue(s.length-1);
 							((NumberPicker)dialogView.findViewById(R.id.due_val)).setValue(10);
 						}else{
-							r=r.split("\"")[3];
 							int day=0;
 							if(r.contains("year")){
 								r=r.replace((r.contains("years")?"years":"year"), "").trim();
@@ -637,9 +647,7 @@ public class SpecialListSettingsActivity extends Activity {
 							}else{
 								((NumberPicker)dialogView.findViewById(R.id.due_day_year)).setDisplayedValues(getResources().getStringArray(R.array.due_day_year_values_plural));
 							}
-							Log.e(TAG,""+val);
 							((NumberPicker)dialogView.findViewById(R.id.due_day_year)).setValue(day);
-
 							((NumberPicker)dialogView.findViewById(R.id.due_val)).setValue(10+val);
 							//TODO fix bug on negativ values
 							/*If you try to show -1 -10 is shown*/
@@ -666,7 +674,6 @@ public class SpecialListSettingsActivity extends Activity {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						int val=((NumberPicker)dialogView.findViewById(R.id.due_val)).getValue();
-						Log.e(TAG,"val: "+val+"| shown "+s[val]);
 						String newWhere="";
 						if(val==10){
 							newWhere="date(due)<=date(\"now\",\"localtime\")";
@@ -675,13 +682,13 @@ public class SpecialListSettingsActivity extends Activity {
 							String mod="";
 							switch (((NumberPicker)dialogView.findViewById(R.id.due_day_year)).getValue()) {
 							case 1:
-								mod=(val!=11?"month":"months");
+								mod=(val==11?"month":"months");
 								break;
 							case 2:
-								mod=(val!=11?"year":"years");
+								mod=(val==11?"year":"years");
 								break;
 							default:
-								mod=(val!=11?"day":"days");
+								mod=(val==11?"day":"days");
 								break;
 							}
 							((TextView)findViewById(R.id.special_list_where_due_content)).setText(s[val]+" "+
@@ -704,9 +711,7 @@ public class SpecialListSettingsActivity extends Activity {
 			String n = "";
 			boolean first=true;
 			for (int i = 0; i < parts.length; i++) {
-				boolean a=parts[i].contains(attr);
-				boolean b=(((!parts[i].contains("not null"))||newWhere.isEmpty())||attr!="due");
-				if (a&&b) {
+				if ((parts[i].contains(attr))&&(!parts[i].contains("not null")||newWhere.isEmpty()||attr!="due")) {
 					parts[i] = newWhere;
 					if (newWhere.isEmpty())
 						continue;
@@ -736,23 +741,31 @@ public class SpecialListSettingsActivity extends Activity {
 							: getString(R.string.undone);
 				}
 				if (queryPart == "due") {
-					if (!s.contains("due is not null")&&!s.contains("due not null")) {
-						if(s.split("\"")[3].contains("localtime")){
-							return getString(R.string.today);
-						}else{
-							s=s.split("\"")[3];
-							int day=0;
-							if(s.contains("year")){
-								s=s.replace((s.contains("years")?"years":"year"), "").trim();
-								day=2;
-							}else if(s.contains("month")){
-								s=s.replace((s.contains("months")?"months":"month"), "").trim();
-								day=1;
-							}else{
-								s=s.replace((s.contains("days")?"days":"day"), "").trim();
+					if (!s.contains("not null")) {
+						Pattern pattern = Pattern.compile( "[\"'].*?[\"']" );
+						Matcher matcher = pattern.matcher(s);
+						int i=0;
+						while ( matcher.find() ){
+							if(++i>1){
+								s=matcher.group().replaceAll("[\"']", "");
+								break;
 							}
-							return s.trim()+" "+getResources().getStringArray((s.contains("1")?R.array.due_day_year_values:R.array.due_day_year_values_plural))[day];
 						}
+						if(s.contains("localtime")){
+							return getString(R.string.today);
+						}
+
+						int day=0;
+						if(s.contains("year")){
+							s=s.replace((s.contains("years")?"years":"year"), "").trim();
+							day=2;
+						}else if(s.contains("month")){
+							s=s.replace((s.contains("months")?"months":"month"), "").trim();
+							day=1;
+						}else{
+							s=s.replace((s.contains("days")?"days":"day"), "").trim();
+						}
+						return s.trim()+" "+getResources().getStringArray((s.contains("1")?R.array.due_day_year_values:R.array.due_day_year_values_plural))[day];
 					}
 				}
 				if (queryPart == "reminder") {
@@ -760,30 +773,26 @@ public class SpecialListSettingsActivity extends Activity {
 							: getString(R.string.reminder_unset);
 				} if(queryPart=="list_id"){
 					returnString=(specialList.getWhereQuery().contains("not list_id")?getString(R.string.not_in)+" ":"");
-					String[] p = s.replace((returnString==""?"":"not ")+"list_id in(", "").replace(")", "").split(",");
+					String[] p = s.replace((returnString.isEmpty()?"":"not ")+"list_id in(", "").replace(")", "").split(",");
 					for (int i=0;i<p.length;i++) {
 						returnString+=(i==0?"":", ")+(ListMirakel.getList(Integer.parseInt(p[i].trim())).getName());
 					}
 					return returnString;
 				} if(queryPart=="priority"){
 					returnString=(specialList.getWhereQuery().contains("not priority")?getString(R.string.not_in)+" ":"");
-					return returnString+ s.replace((returnString==""?"":"not ")+"priority in (", "").replace(")", "").replace(",", ", ");
+					return returnString+ s.replace((returnString.isEmpty()?"":"not ")+"priority in (", "").replace(")", "").replace(",", ", ");
 				}if(queryPart=="content"||queryPart=="name"){
 					if(s.contains("not")){
 						s=s.replace("not", "").trim();
 						returnString+=getString(R.string.not)+" ";
 					}
-					s = s.replace(queryPart+" like", "").replace("'", "").trim();
-					if(s.charAt(0)=='%'){
-						if(s.charAt(s.length()-1)=='%'){
-							returnString+=getString(R.string.where_like_contain_text)+" "+s.replace("%", "");
-						}else{
-							returnString+=getString(R.string.where_like_begin_text)+" "+s.replace("%", "");
-						}
-					}else if(s.charAt(s.length()-1)=='%'){
-						returnString+=getString(R.string.where_like_end_text)+" "+s.replace("%", "");
-					}
-					return returnString;
+					s=s.replace(queryPart+" like", "").trim();
+					if(s.matches("[\"'].%['\"]"))
+						returnString+=getString(R.string.where_like_begin_text)+" "+s.replaceAll("[\"'%]", "");
+					else if(s.matches("[\"']%.['\"]"))
+						returnString+=getString(R.string.where_like_end_text)+" "+s.replaceAll("[\"'%]", "");
+					else
+						returnString+=getString(R.string.where_like_contain_text)+" "+s.replaceAll("[\"'%]", "");
 				}
 				else {
 					returnString += s + " ";
