@@ -24,6 +24,7 @@ $ 0.1.2
     * Reminders
     * Search
     * Share Lists and Tasks
+    * Better Where-Clause Input in Special-Lists-Settings
     * Bugfixes
 $ 0.1.1
   % Version 0.1.1
