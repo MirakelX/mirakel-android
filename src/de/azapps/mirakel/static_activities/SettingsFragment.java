@@ -47,6 +47,7 @@ import android.util.Log;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
+import de.azapps.mirakel.helper.Backup;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.special_lists_settings.SpecialListsSettings;
@@ -106,7 +107,7 @@ public class SettingsFragment extends PreferenceFragment {
 				});
 		startupListPreference.setEntries(entries);
 		startupListPreference.setEntryValues(entryValues);
-		//Enable/Disbale Sync
+		// Enable/Disbale Sync
 		CheckBoxPreference sync = (CheckBoxPreference) findPreference("syncUse");
 		sync.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
@@ -135,7 +136,7 @@ public class SettingsFragment extends PreferenceFragment {
 				return true;
 			}
 		});
-		//Get Account if existing
+		// Get Account if existing
 		final AccountManager am = AccountManager.get(getActivity());
 		final Account account = getAccount(am);
 		if (account == null) {
@@ -150,7 +151,7 @@ public class SettingsFragment extends PreferenceFragment {
 			sync.setChecked(true);
 		}
 
-		//Change Passwort
+		// Change Passwort
 		final EditTextPreference Password = (EditTextPreference) findPreference("syncPassword");
 		Password.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
@@ -172,7 +173,7 @@ public class SettingsFragment extends PreferenceFragment {
 							public void after_exec(String result) {
 								String t = Network.getToken(result);
 								if (t != null) {
-					am.setPassword(account, (String) password);
+									am.setPassword(account, (String) password);
 									Password.setText(am.getPassword(account));
 									new Network(new DataDownloadCommand() {
 										@Override
@@ -210,20 +211,20 @@ public class SettingsFragment extends PreferenceFragment {
 				return true;
 			}
 		});
-		
-		//Set old Password to Textbox
+
+		// Set old Password to Textbox
 		Password.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
-		if (account != null) {
+				if (account != null) {
 					Password.setText(am.getPassword(account));
-		}
+				}
 				return false;
 			}
 		});
 
 		// TODO Add Option To Resync all
-		//Change Url
+		// Change Url
 		EditTextPreference url = (EditTextPreference) findPreference("syncServer");
 		if (account != null) {
 			url.setText(am.getUserData(account, "url"));
@@ -244,11 +245,11 @@ public class SettingsFragment extends PreferenceFragment {
 										.getPassword(account)));
 
 						new Network(new DataDownloadCommand() {
-			@Override
+							@Override
 							public void after_exec(String result) {
 								String t = Network.getToken(result);
 								if (t != null) {
-					am.setUserData(account, "url", (String) url);
+									am.setUserData(account, "url", (String) url);
 									Password.setText(am.getPassword(account));
 									new Network(new DataDownloadCommand() {
 										@Override
@@ -285,7 +286,7 @@ public class SettingsFragment extends PreferenceFragment {
 			}
 		});
 
-		//Change Sync-Intervall
+		// Change Sync-Intervall
 		ListPreference syncIntervall = (ListPreference) findPreference("syncFrequency");
 		syncIntervall
 				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
@@ -303,7 +304,7 @@ public class SettingsFragment extends PreferenceFragment {
 									Mirakel.AUTHORITY_TYP, true);
 							ContentResolver.setIsSyncable(account,
 									Mirakel.AUTHORITY_TYP, 1);
-							//ContentResolver.setMasterSyncAutomatically(true);
+							// ContentResolver.setMasterSyncAutomatically(true);
 							ContentResolver.addPeriodicSync(account,
 									Mirakel.AUTHORITY_TYP, null,
 									((Long) newValue) * 60);
@@ -312,9 +313,19 @@ public class SettingsFragment extends PreferenceFragment {
 					}
 				});
 
-		Intent startSpecialListsIntent = new Intent(getActivity(), SpecialListsSettings.class);
-		Preference specialLists=(Preference) findPreference("special_lists");
+		Intent startSpecialListsIntent = new Intent(getActivity(),
+				SpecialListsSettings.class);
+		Preference specialLists = (Preference) findPreference("special_lists");
 		specialLists.setIntent(startSpecialListsIntent);
+
+		Preference backup = (Preference) findPreference("backup");
+
+		backup.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+			public boolean onPreferenceClick(Preference preference) {
+				new Backup(getActivity()).exportDB();
+				return true;
+			}
+		});
 	}
 
 	private Account getAccount(AccountManager am) {
