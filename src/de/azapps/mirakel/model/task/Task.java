@@ -239,9 +239,9 @@ public class Task extends TaskBase {
 				args, null, null, null);
 		cursor.moveToFirst();
 		List<Task> tasks=new ArrayList<Task>();
-		if (cursor.getCount() != 0) {
-			Task t = cursorToTask(cursor);
-			tasks.add(t);
+		while(!cursor.isAfterLast()){
+			tasks.add(cursorToTask(cursor));
+			cursor.moveToNext();
 		}
 		cursor.close();
 		return tasks;
