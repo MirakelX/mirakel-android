@@ -42,7 +42,7 @@
     <string name="title_activity_tasks">TasksActivity</string>
 
     <!-- Tasks -->
-    <string name="tasks_new">Neue Aufgabe…</string>
+    <string name="tasks_new_str">Neue Aufgabe…</string>
     <string name="tasks_all">Alle Aufgaben</string>
     <string name="tasks_daily">Heute</string>
     <string name="tasks_weekly">Diese Woche</string>

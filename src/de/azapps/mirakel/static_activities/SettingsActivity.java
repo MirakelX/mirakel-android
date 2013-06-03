@@ -22,6 +22,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+
 public class SettingsActivity extends Activity {
 
 	@Override
@@ -31,7 +32,8 @@ public class SettingsActivity extends Activity {
 		// Display the fragment as the main content.
 		getFragmentManager().beginTransaction()
 				.replace(android.R.id.content, new SettingsFragment()).commit();
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+		if(android.os.Build.VERSION.SDK_INT>=android.os.Build.VERSION_CODES.HONEYCOMB)
+			getActionBar().setDisplayHomeAsUpEnabled(true);
 	}	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {

@@ -57,6 +57,7 @@
     <string name="help_button_ok">OK</string>
 
     <!-- Tasks -->
+    <string name="tasks_new_str">New Task</string>
     <string name="task_no_content">Add a Note</string>
     <string name="task_change_prio_title">Change Priority</string>
     <string name="task_change_prio_cont">New Task-Priority</string>

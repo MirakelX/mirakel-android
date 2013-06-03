@@ -18,6 +18,7 @@
  ******************************************************************************/
 package de.azapps.mirakel.static_activities;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -31,11 +32,14 @@ import de.azapps.mirakel.model.list.SpecialList;
 
 public class SplashScreenActivity extends Activity {
 
+	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-		getActionBar().hide();
+		if (android.os.Build.VERSION.SDK_INT>=android.os.Build.VERSION_CODES.HONEYCOMB) {
+			getActionBar().hide();
+		}
 		setContentView(R.layout.activity_splash_screen);
 
 		SharedPreferences preferences = PreferenceManager

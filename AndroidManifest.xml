@@ -87,7 +87,7 @@
             android:configChanges="orientation"
             android:excludeFromRecents="true"
             android:label="@string/ui_activity_title"
-            android:theme="@android:style/Theme.Holo.Light.Dialog" >
+            android:theme="@style/AppBaseTheme">
 
             <!--
                 No intent-filter here! This activity is only ever launched by

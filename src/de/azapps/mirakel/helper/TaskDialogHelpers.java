@@ -3,37 +3,75 @@ package de.azapps.mirakel.helper;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.text.GetChars;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.model.task.Task;
 
 public class TaskDialogHelpers {
+	protected static final String TAG = "TaskDialogHelpers";
 	/**
 	 * Ugly helper variable
 	 */
-	private static NumberPicker numberPicker;
+	private static View numberPicker;
 
+	@SuppressLint("NewApi")
 	public static void handlePriority(Context ctx, final Task task,
 			final Helpers.ExecInterface onSuccess) {
-
-		numberPicker = new NumberPicker(ctx);
-		numberPicker.setMaxValue(4);
-		numberPicker.setMinValue(0);
-		String[] t = { "-2", "-1", "0", "1", "2" };
-		numberPicker.setDisplayedValues(t);
-		numberPicker.setWrapSelectorWheel(false);
-		numberPicker.setValue(task.getPriority() + 2);
+		final String[] t = { "-2", "-1", "0", "1", "2" };
+		if (android.os.Build.VERSION.SDK_INT>=android.os.Build.VERSION_CODES.HONEYCOMB) {
+			numberPicker = new NumberPicker(ctx);
+			((NumberPicker) numberPicker).setMaxValue(4);
+			((NumberPicker) numberPicker).setMinValue(0);
+			((NumberPicker) numberPicker).setDisplayedValues(t);
+			((NumberPicker) numberPicker).setWrapSelectorWheel(false);
+			((NumberPicker) numberPicker).setValue(task.getPriority() + 2);
+		}else{
+			numberPicker =((LayoutInflater)ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.dialog_num_picker_v10 ,null);
+			((Button)numberPicker.findViewById(R.id.dialog_num_pick_plus)).setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					String val=((TextView)numberPicker.findViewById(R.id.dialog_num_pick_val)).getText().toString();
+					int i=0;
+					while(!(t[i].contains(val)&&t[i].length()==val.length())){
+						if(++i>=t.length){
+							Log.wtf(TAG, "unknown Value in NumericPicker");
+							return;
+						}
+					}
+					((TextView)numberPicker.findViewById(R.id.dialog_num_pick_val)).setText(t[i+1==t.length?i:i+1]);				
+				}
+			});
+			((Button)numberPicker.findViewById(R.id.dialog_num_pick_minus)).setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					String val=((TextView)numberPicker.findViewById(R.id.dialog_num_pick_val)).getText().toString();
+					int i=0;
+					while(!(t[i].contains(val)&&t[i].length()==val.length())){
+						if(++i>=t.length){
+							Log.wtf(TAG, "unknown Value in NumericPicker");
+							return;
+						}
+					}
+					((TextView)numberPicker.findViewById(R.id.dialog_num_pick_val)).setText(t[i-1>=0?i-1:i]);				
+				}
+			});
+		}
 		new AlertDialog.Builder(ctx)
 				.setTitle(ctx.getString(R.string.task_change_prio_title))
 				.setMessage(ctx.getString(R.string.task_change_prio_cont))
@@ -42,7 +80,11 @@ public class TaskDialogHelpers {
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
-								task.setPriority((numberPicker.getValue() - 2));
+								if (android.os.Build.VERSION.SDK_INT>=android.os.Build.VERSION_CODES.HONEYCOMB) {
+									task.setPriority((((NumberPicker) numberPicker).getValue() - 2));
+								}else{
+									task.setPriority(Integer.parseInt(((TextView)numberPicker.findViewById(R.id.dialog_num_pick_val)).getText().toString()));
+								}
 								task.save();
 								onSuccess.exec();
 							}

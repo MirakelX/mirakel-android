@@ -44,6 +44,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -100,6 +101,9 @@ public class TasksFragment extends Fragment {
 			values = main.getCurrentList().tasks();
 		} catch (NullPointerException e) {
 			values = null;
+		}
+		if (android.os.Build.VERSION.SDK_INT<=android.os.Build.VERSION_CODES.HONEYCOMB) {
+			view.findViewById(R.id.btnSpeak_tasks).setVisibility(View.GONE);//Android 2.3 dosen't support speech to Text
 		}
 		adapter = null;
 		created = true;
