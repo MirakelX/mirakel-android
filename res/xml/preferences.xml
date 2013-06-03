@@ -111,5 +111,11 @@
             android:summary="@string/special_lists_click_summary"
             android:title="@string/special_lists_click"/>
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/settings_misc">
+        <Preference 
+            android:key="backup"
+            android:summary="@string/backup_click_summary"
+            android:title="@string/backup_click"/>
+    </PreferenceCategory>
 
 </PreferenceScreen>
