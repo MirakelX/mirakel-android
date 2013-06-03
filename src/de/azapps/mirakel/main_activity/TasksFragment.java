@@ -30,6 +30,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
@@ -69,10 +70,21 @@ public class TasksFragment extends Fragment {
 	private int ItemCount;
 	private List<Task> values;
 	private static final int TASK_RENAME = 0, TASK_MOVE = 1, TASK_DESTROY = 2;
+	
+	final Handler mHandler = new Handler();
+
+    final Runnable mUpdateResults = new Runnable() {
+        public void run() {
+    			adapter.changeData(new ArrayList<Task>(values.subList(0,
+        				ItemCount > values.size() ? values.size() : ItemCount)));
+    			adapter.notifyDataSetChanged();
+        }
+    };
 
 	public void setActivity(MainActivity activity) {
 		main = activity;
 	}
+	
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -233,11 +245,8 @@ public class TasksFragment extends Fragment {
 				return;
 			}
 		}
-		final List<Task> t = new ArrayList<Task>(values.subList(0,
-				ItemCount > values.size() ? values.size() : ItemCount));
 		if (adapter != null && finishLoad) {
-			adapter.changeData(t);
-			adapter.notifyDataSetChanged();
+			mHandler.post(mUpdateResults);
 			if (reset)
 				setScrollPosition(0);
 			return;
@@ -246,7 +255,8 @@ public class TasksFragment extends Fragment {
 		AsyncTask<Void, Void, TaskAdapter> task = new AsyncTask<Void, Void, TaskAdapter>() {
 			@Override
 			protected TaskAdapter doInBackground(Void... params) {
-				adapter = new TaskAdapter(main, R.layout.tasks_row, t,
+				adapter = new TaskAdapter(main, R.layout.tasks_row, new ArrayList<Task>(values.subList(0,
+						ItemCount > values.size() ? values.size() : ItemCount)),
 						new OnClickListener() {
 							@Override
 							public void onClick(View v) {
