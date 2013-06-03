@@ -77,22 +77,20 @@ public class TasksFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		finishLoad=false;
-		loadMore=false;
-		ItemCount=0;
+		finishLoad = false;
+		loadMore = false;
+		ItemCount = 0;
 		main = (MainActivity) getActivity();
 		view = inflater.inflate(R.layout.activity_tasks, container, false);
 
 		getResources().getString(R.string.action_settings);
-		try{
+		try {
 			values = main.getCurrentList().tasks();
-		}catch(NullPointerException e){
-			values=null;
+		} catch (NullPointerException e) {
+			values = null;
 		}
-		adapter=null;
+		adapter = null;
 		created = true;
-
-
 
 		listView = (ListView) view.findViewById(R.id.tasks_list);
 		// Events
@@ -107,22 +105,24 @@ public class TasksFragment extends Fragment {
 				return false;
 			}
 		});
-		ItemCount=10;//TODO get this from somewhere
+		ItemCount = 10;// TODO get this from somewhere
 		update(true);
 		listView.setOnScrollListener(new AbsListView.OnScrollListener() {
-			
+
 			@Override
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
-				//Nothing
-				
+				// Nothing
+
 			}
-			
+
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem,
 					int visibleItemCount, final int totalItemCount) {
 				int lastInScreen = firstVisibleItem + visibleItemCount;
-				if((lastInScreen == totalItemCount) && !(loadMore)&&finishLoad&&adapter!=null&&values.size()>totalItemCount){
-					ItemCount=totalItemCount+2;
+				if ((lastInScreen == totalItemCount) && !(loadMore)
+						&& finishLoad && adapter != null
+						&& values.size() > totalItemCount) {
+					ItemCount = totalItemCount + 2;
 					update(false);
 				}
 			}
@@ -169,7 +169,6 @@ public class TasksFragment extends Fragment {
 		// Inflate the layout for this fragment
 		return view;
 	}
-	
 
 	private boolean newTask(String name) {
 		InputMethodManager imm = (InputMethodManager) main
@@ -181,15 +180,16 @@ public class TasksFragment extends Fragment {
 		GregorianCalendar due = null;
 		if (id <= 0) {
 			try {
-				SpecialList slist=(SpecialList) main.getCurrentList();
-				id=slist.getDefaultList().getId();
-				if(slist.getDefaultDate()!=null) {
-					due=new GregorianCalendar();
-					due.add(GregorianCalendar.DAY_OF_MONTH, slist.getDefaultDate());
+				SpecialList slist = (SpecialList) main.getCurrentList();
+				id = slist.getDefaultList().getId();
+				if (slist.getDefaultDate() != null) {
+					due = new GregorianCalendar();
+					due.add(GregorianCalendar.DAY_OF_MONTH,
+							slist.getDefaultDate());
 				}
 			} catch (NullPointerException e) {
 				id = 0;
-				due=null;
+				due = null;
 				Toast.makeText(main, R.string.no_lists, Toast.LENGTH_LONG)
 						.show();
 			}
@@ -208,38 +208,34 @@ public class TasksFragment extends Fragment {
 	public void updateList() {
 		updateList(true);
 	}
-	
-	public void updateList(final boolean reset){
-		new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				 try{
-						values=main.getCurrentList().tasks();
-						update(reset);
-					}catch(NullPointerException e){
-						values=null;
-					}
-			}
-		}).start();
+
+	public void updateList(final boolean reset) {
+		try {
+			values = main.getCurrentList().tasks();
+			update(reset);
+		} catch (NullPointerException e) {
+			values = null;
+		}
 	}
-	public void setTasks(List<Task> tasks){
-		values=tasks;
+
+	public void setTasks(List<Task> tasks) {
+		values = tasks;
 	}
 
 	protected void update(boolean reset) {
 		if (!created)
 			return;
-		if(values==null){
-			try{
-				values=main.getCurrentList().tasks();
-			}catch(NullPointerException w){
-				values=null;
+		if (values == null) {
+			try {
+				values = main.getCurrentList().tasks();
+			} catch (NullPointerException w) {
+				values = null;
 				return;
 			}
 		}
-		final List<Task>t=new ArrayList<Task>(values.subList(0, ItemCount>values.size()?values.size():ItemCount));
-		if (adapter != null&&finishLoad) {
+		final List<Task> t = new ArrayList<Task>(values.subList(0,
+				ItemCount > values.size() ? values.size() : ItemCount));
+		if (adapter != null && finishLoad) {
 			adapter.changeData(t);
 			adapter.notifyDataSetChanged();
 			if (reset)
@@ -262,15 +258,15 @@ public class TasksFragment extends Fragment {
 						}, new OnClickListener() {
 							@Override
 							public void onClick(final View v) {
-									final Task task=(Task) v.getTag();
-									TaskDialogHelpers.handlePriority(main, task,
-											new ExecInterface() {
+								final Task task = (Task) v.getTag();
+								TaskDialogHelpers.handlePriority(main, task,
+										new ExecInterface() {
 
-												@Override
-												public void exec() {
-													main.updatesForTask(task);
-												}
-											});
+											@Override
+											public void exec() {
+												main.updatesForTask(task);
+											}
+										});
 
 							}
 						}, main.getCurrentList().getId());
@@ -280,7 +276,7 @@ public class TasksFragment extends Fragment {
 			@Override
 			protected void onPostExecute(TaskAdapter adapter) {
 				listView.setAdapter(adapter);
-				finishLoad=true;
+				finishLoad = true;
 			}
 		};
 
