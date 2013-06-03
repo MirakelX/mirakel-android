@@ -57,5 +57,10 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/action_credits"/>
+    <item
+        android:id="@+id/menu_contact_tasks"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/action_contact"/>
 
 </menu>

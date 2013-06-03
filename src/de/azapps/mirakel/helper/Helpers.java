@@ -6,15 +6,18 @@ import java.util.Locale;
 
 import org.joda.time.LocalDate;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.util.Log;
+import android.widget.Toast;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 
 public class Helpers {
+	private static String TAG = "Helpers";
 
 	/**
 	 * Wrapper-Class
@@ -41,7 +44,7 @@ public class Helpers {
 	 * @param ctx
 	 * @param t
 	 */
-	public static void share(Activity ctx, Task t) {
+	public static void share(Context ctx, Task t) {
 		String subject = getTaskName(ctx, t);
 		share(ctx, subject, t.getContent());
 	}
@@ -52,13 +55,13 @@ public class Helpers {
 	 * @param ctx
 	 * @param l
 	 */
-	public static void share(Activity ctx, ListMirakel l) {
+	public static void share(Context ctx, ListMirakel l) {
 		String subject = ctx.getString(R.string.share_list_title, l.getName(),
 				l.countTasks());
 		String body = "";
 		for (Task t : l.tasks()) {
 			if (t.isDone()) {
-				//body += "* ";
+				// body += "* ";
 				continue;
 			} else {
 				body += "* ";
@@ -89,18 +92,21 @@ public class Helpers {
 	/**
 	 * Share something
 	 * 
-	 * @param ctx
+	 * @param context
 	 * @param subject
 	 * @param shareBody
 	 */
-	private static void share(Activity ctx, String subject, String shareBody) {
-		shareBody += "\n\n" + ctx.getString(R.string.share_footer);
+	private static void share(Context context, String subject, String shareBody) {
+		shareBody += "\n\n" + context.getString(R.string.share_footer);
 		Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
 		sharingIntent.setType("text/plain");
 		sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
 		sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-		ctx.startActivity(Intent.createChooser(sharingIntent, ctx
-				.getResources().getString(R.string.share_using)));
+
+		Intent ci = Intent.createChooser(sharingIntent, context.getResources()
+				.getString(R.string.share_using));
+		ci.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		context.startActivity(ci);
 	}
 
 	/**
@@ -150,5 +156,36 @@ public class Helpers {
 			color = R.color.Green;
 		}
 		return color;
+	}
+
+	public static void contact(Context context) {
+
+		Intent i = new Intent(Intent.ACTION_SEND);
+		i.setType("message/rfc822");
+		i.putExtra(Intent.EXTRA_EMAIL,
+				new String[] { context.getString(R.string.contact_email) });
+		i.putExtra(Intent.EXTRA_SUBJECT,
+				context.getString(R.string.contact_subject));
+		String mirakelVersion = "unknown";
+		try {
+			mirakelVersion = context.getPackageManager().getPackageInfo(
+					context.getPackageName(), 0).versionName;
+		} catch (NameNotFoundException e) {
+			Log.e(TAG, "could not get version name from manifest!");
+			e.printStackTrace();
+		}
+		i.putExtra(Intent.EXTRA_TEXT, context.getString(R.string.contact_text,
+				mirakelVersion, android.os.Build.VERSION.SDK_INT,
+				android.os.Build.DEVICE));
+		try {
+			Intent ci = Intent.createChooser(i,
+					context.getString(R.string.contact_chooser));
+			ci.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			context.startActivity(ci);
+		} catch (android.content.ActivityNotFoundException ex) {
+			Toast.makeText(context,
+					context.getString(R.string.contact_no_client),
+					Toast.LENGTH_SHORT).show();
+		}
 	}
 }

@@ -21,6 +21,7 @@
 
     <string name="app_name">Mirakel</string>
     <string name="action_settings">Settings</string>
+    <string name="action_contact">Contact / report Bug</string>
     <string name="OK">OK</string>
     <string name="Cancel">Cancel</string>
     <string name="Yes">Yes</string>
@@ -159,7 +160,7 @@
     <string name="changelog_title">What\'s New</string>
     <string name="changelog_ok_button">OK</string>
     <string name="changelog_show_full">more…</string>
-    
+
     <!-- Sharing -->
     <string name="share_using">Share with</string>
     <string name="share_task">Share task</string>
@@ -168,10 +169,23 @@
     <string name="share_list">Share list</string>
     <string name="share_list_title" formatted="false">%s (%d)</string>
     <string name="share_footer">Shared with Mirakel\nThe free (like in freedom) ToDo–List tool for Android and the Web\nhttp://mirakel.azapps.de</string>
-    
+
     <!-- Search -->
     <string name="search_hint">Search tasks</string>
     <string name="search">Search</string>
     <string name="search_result_title" formatted="false">Search for %s</string>
+
+    <!-- Contact -->
+    <string name="contact_email">mirakel@azapps.de</string>
+    <string name="contact_subject">Mirakel Bug-report/Contact request</string>
+    <string name="contact_text" formatted="false">
+<![CDATA[\n\n
+--\n
+Mirakel-version: %s\n
+SDK-version: %d\n
+Device: %s\n]]>
+    </string>
+    <string name="contact_no_client">No Mail-Client installed</string>
+    <string name="contact_chooser">Send mail...</string>
 
 </resources>

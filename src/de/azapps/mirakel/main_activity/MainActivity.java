@@ -31,6 +31,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -45,7 +46,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.PagerAdapter;
@@ -201,6 +201,11 @@ public class MainActivity extends FragmentActivity implements
 			break;
 		case R.id.search:
 			onSearchRequested();
+			break;
+		case R.id.menu_contact_list:
+		case R.id.menu_contact_task:
+		case R.id.menu_contact_tasks:
+			Helpers.contact(getApplicationContext());
 			break;
 		default:
 			return super.onOptionsItemSelected(item);
