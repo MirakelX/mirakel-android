@@ -18,22 +18,30 @@
  ******************************************************************************/
 package de.azapps.mirakel.static_activities;
 
-import android.app.Activity;
+import de.azapps.mirakel.R;
+import de.azapps.mirakel.helper.PreferencesHelper;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.preference.PreferenceActivity;
 import android.view.MenuItem;
 
 
-public class SettingsActivity extends Activity {
+public class SettingsActivity extends PreferenceActivity {
 
+	@SuppressWarnings("deprecation")
+	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		if(android.os.Build.VERSION.SDK_INT>=android.os.Build.VERSION_CODES.HONEYCOMB){
 		// Display the fragment as the main content.
-		getFragmentManager().beginTransaction()
-				.replace(android.R.id.content, new SettingsFragment()).commit();
-		if(android.os.Build.VERSION.SDK_INT>=android.os.Build.VERSION_CODES.HONEYCOMB)
+			getFragmentManager().beginTransaction()
+					.replace(android.R.id.content, new SettingsFragment()).commit();
 			getActionBar().setDisplayHomeAsUpEnabled(true);
+		}else{
+			addPreferencesFromResource(R.xml.preferences);
+			new PreferencesHelper(this).setFunctions();
+		}
 	}	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {

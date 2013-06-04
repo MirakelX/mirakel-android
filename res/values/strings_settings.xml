@@ -60,7 +60,7 @@
     <string name="notifications_list">List</string>
     <string name="notifications_list_summary">Which List should I show you?</string>
     <string name="notifications_big">Big Views</string>
-    <string name="notifications_big_summary">Show big Notifications? (Only Android >= 4.1)</string>
+    <string name="notifications_big_summary">Show big Notifications?</string>
     <string name="notifications_zero_show_summary">Hide, if there are no tasks in the selected List?</string>
     <string name="notifications_zero_show">Hide if empty</string>
     

@@ -73,7 +73,9 @@
     <!-- TODO: add ability to manage Special Lists -->
     
     <!-- Notifications -->
-    <PreferenceCategory android:title="@string/notifications_title" >
+    <PreferenceCategory 
+        android:title="@string/notifications_title" 
+        android:key="category_notifications">
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="notificationsUse"

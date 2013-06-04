@@ -26,5 +26,8 @@
     <style name="AppBaseTheme" parent="android:Theme.Light">
         <!-- API 11 theme customizations can go here. -->
     </style>
+    <style name="Dialog" parent="@android:style/Theme.Dialog">
+        <!-- API 11 theme customizations can go here. -->
+    </style>
 
 </resources>
