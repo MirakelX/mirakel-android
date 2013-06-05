@@ -28,6 +28,7 @@
     </style>
     <style name="Dialog" parent="@android:style/Theme.Dialog">
         <!-- API 11 theme customizations can go here. -->
+        <item name="android:textColor">?android:attr/textColorPrimaryInverseDisableOnly</item>
     </style>
 
 </resources>

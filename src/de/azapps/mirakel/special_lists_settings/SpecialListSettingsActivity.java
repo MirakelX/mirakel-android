@@ -18,29 +18,30 @@
  ******************************************************************************/
 package de.azapps.mirakel.special_lists_settings;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import android.R.bool;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.content.Intent;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
@@ -58,8 +59,10 @@ import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 
+@SuppressLint("NewApi")
 public class SpecialListSettingsActivity extends Activity {
 	public static final String SLIST_ID = "de.azapps.mirakel.SpecialListSettings/list_id";
+	@SuppressWarnings("unused")
 	private static final String TAG = "SpecialListSettingsActivity";
 	private List<ListMirakel> lists;
 	private SpecialList specialList;
@@ -73,8 +76,10 @@ public class SpecialListSettingsActivity extends Activity {
 		Intent i = getIntent();
 		specialList = SpecialList.getSpecialList(i.getIntExtra(SLIST_ID, 1));
 		setContentView(R.layout.special_list_preferences);
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-		getActionBar().setTitle(specialList.getName());
+		if(android.os.Build.VERSION.SDK_INT>=android.os.Build.VERSION_CODES.HONEYCOMB){
+			getActionBar().setDisplayHomeAsUpEnabled(true);
+			getActionBar().setTitle(specialList.getName());
+		}
 
 		ViewSwitcher s = (ViewSwitcher) findViewById(R.id.switch_special_list_name);
 		if (s.getNextView().getId() != R.id.special_list_name_edit) {
@@ -438,7 +443,7 @@ public class SpecialListSettingsActivity extends Activity {
 						
 					}
 				});
-				final View dialogView = getLayoutInflater().inflate(R.layout.content_name_dialog,null);
+				final View dialogView = getView(R.layout.content_name_dialog);
 				builder.setView(dialogView);
 				String[]p=specialList.getWhereQuery().split("and");
 				((RadioButton)dialogView.findViewById(R.id.where_like_contain)).setChecked(true);
@@ -510,7 +515,7 @@ public class SpecialListSettingsActivity extends Activity {
 						
 					}
 				});
-				final View dialogView = getLayoutInflater().inflate(R.layout.content_name_dialog,null);
+				final View dialogView = getView(R.layout.content_name_dialog);
 				builder.setView(dialogView);
 				String[]p=specialList.getWhereQuery().split("and");
 				((RadioButton)dialogView.findViewById(R.id.where_like_contain)).setChecked(true);
@@ -561,14 +566,15 @@ public class SpecialListSettingsActivity extends Activity {
 						((TextView) findViewById(R.id.special_list_where_name_content)).setText(text);
 					}
 				});
-
+				
 				alert = builder.create();
 				alert.show();
 				
 			}
-		});
-		((LinearLayout)findViewById(R.id.special_list_where_due)).setOnClickListener(new OnClickListener() {
 			
+		});
+		
+		((LinearLayout)findViewById(R.id.special_list_where_due)).setOnClickListener(new OnClickListener() {		
 			@Override
 			public void onClick(View v) {
 				AlertDialog.Builder builder = new AlertDialog.Builder(
@@ -588,22 +594,103 @@ public class SpecialListSettingsActivity extends Activity {
 						((TextView)findViewById(R.id.special_list_where_due_content)).setText(getString(R.string.empty));
 					}
 				});
-				final View dialogView=getLayoutInflater().inflate(R.layout.due_dialog, null);
-				builder.setView(dialogView);
-				((NumberPicker)dialogView.findViewById(R.id.due_day_year)).setDisplayedValues(getResources().getStringArray(R.array.due_day_year_values));
-				((NumberPicker)dialogView.findViewById(R.id.due_day_year)).setMaxValue(getResources().getStringArray(R.array.due_day_year_values).length-1);
 				final String[] s =new String[100];
 				for(int i=0;i<s.length;i++){
 					s[i]=(i>10?"+":"")+(i-10)+"";
 				}
-				
-				((NumberPicker)dialogView.findViewById(R.id.due_val)).setMaxValue(s.length-1);
-				((NumberPicker)dialogView.findViewById(R.id.due_val)).setValue(10);
-				((NumberPicker)dialogView.findViewById(R.id.due_val)).setMinValue(0);
-				((NumberPicker)dialogView.findViewById(R.id.due_val)).setDisplayedValues(s);
-				((NumberPicker)dialogView.findViewById(R.id.due_val)).setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-				((NumberPicker)dialogView.findViewById(R.id.due_day_year)).setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-				((NumberPicker)dialogView.findViewById(R.id.due_val)).setWrapSelectorWheel(false);
+				final View dialogView=getNumericPicker();
+				builder.setView(dialogView);
+				if(android.os.Build.VERSION.SDK_INT>=android.os.Build.VERSION_CODES.HONEYCOMB){
+					((NumberPicker)dialogView.findViewById(R.id.due_day_year)).setDisplayedValues(getResources().getStringArray(R.array.due_day_year_values));
+					((NumberPicker)dialogView.findViewById(R.id.due_day_year)).setMaxValue(getResources().getStringArray(R.array.due_day_year_values).length-1);					
+					((NumberPicker)dialogView.findViewById(R.id.due_val)).setMaxValue(s.length-1);
+					((NumberPicker)dialogView.findViewById(R.id.due_val)).setValue(10);
+					((NumberPicker)dialogView.findViewById(R.id.due_val)).setMinValue(0);
+					((NumberPicker)dialogView.findViewById(R.id.due_val)).setDisplayedValues(s);
+					((NumberPicker)dialogView.findViewById(R.id.due_val)).setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+					((NumberPicker)dialogView.findViewById(R.id.due_day_year)).setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+					((NumberPicker)dialogView.findViewById(R.id.due_val)).setWrapSelectorWheel(false);
+				}else{
+					((TextView)dialogView.findViewById(R.id.dialog_due_pick_val)).setText(s[10]);
+					((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).setText(getResources().getStringArray(R.array.due_day_year_values)[0]);
+					((Button)dialogView.findViewById(R.id.dialog_due_pick_plus_val)).setOnClickListener(new OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							int val=Integer.parseInt(((TextView)dialogView.findViewById(R.id.dialog_due_pick_val)).getText().toString().replace("+", ""))+10;
+							if(val+1<s.length){
+								((TextView)dialogView.findViewById(R.id.dialog_due_pick_val)).setText(s[val+1]);
+							}
+							int day=0;
+							if(((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).getText().toString().contains("month")){
+								day=1;
+							}else if(((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).getText().toString().contains("month")){
+								day=2;
+							}
+							if(val+1==11||val+1==9){								
+								((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day))
+								.setText(getResources().getStringArray(R.array.due_day_year_values)[day]);
+							}else{
+								((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day))
+								.setText(getResources().getStringArray(R.array.due_day_year_values_plural)[day]);
+							}
+							
+						}
+					});
+					((Button)dialogView.findViewById(R.id.dialog_due_pick_minus_val)).setOnClickListener(new OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							int val=Integer.parseInt(((TextView)dialogView.findViewById(R.id.dialog_due_pick_val)).getText().toString().replace("+", ""))+10;
+							if(val-1>0){
+								((TextView)dialogView.findViewById(R.id.dialog_due_pick_val)).setText(s[val-1]);
+							}
+							int day=0;
+							if(((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).getText().toString().contains("month")){
+								day=1;
+							}else if(((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).getText().toString().contains("month")){
+								day=2;
+							}
+							if(val-1==11||val-1==9){								
+								((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day))
+								.setText(getResources().getStringArray(R.array.due_day_year_values)[day]);
+							}else{
+								((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day))
+								.setText(getResources().getStringArray(R.array.due_day_year_values_plural)[day]);
+							}
+						}
+					});
+					((Button)dialogView.findViewById(R.id.dialog_due_pick_plus_day)).setOnClickListener(new OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							if(((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).getText().toString().contains(getResources().getStringArray(R.array.due_day_year_values_plural)[0])){
+								((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).setText(getResources().getStringArray(R.array.due_day_year_values_plural)[1]);
+							}else if (((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).getText().toString().contains(getResources().getStringArray(R.array.due_day_year_values)[0])){
+								((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).setText(getResources().getStringArray(R.array.due_day_year_values)[1]);
+							}else if (((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).getText().toString().contains(getResources().getStringArray(R.array.due_day_year_values_plural)[1])){
+								((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).setText(getResources().getStringArray(R.array.due_day_year_values_plural)[2]);
+							}else if (((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).getText().toString().contains(getResources().getStringArray(R.array.due_day_year_values)[1])){
+								((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).setText(getResources().getStringArray(R.array.due_day_year_values)[2]);
+							}
+						}
+					});
+					((Button)dialogView.findViewById(R.id.dialog_due_pick_minus_day)).setOnClickListener(new OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							if(((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).getText().toString().contains(getResources().getStringArray(R.array.due_day_year_values_plural)[2])){
+								((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).setText(getResources().getStringArray(R.array.due_day_year_values_plural)[1]);
+							}else if (((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).getText().toString().contains(getResources().getStringArray(R.array.due_day_year_values)[2])){
+								((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).setText(getResources().getStringArray(R.array.due_day_year_values)[1]);
+							}else if (((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).getText().toString().contains(getResources().getStringArray(R.array.due_day_year_values_plural)[1])){
+								((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).setText(getResources().getStringArray(R.array.due_day_year_values_plural)[0]);
+							}else if (((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).getText().toString().contains(getResources().getStringArray(R.array.due_day_year_values)[1])){
+								((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).setText(getResources().getStringArray(R.array.due_day_year_values)[0]);
+							}
+						}
+					});
+				}
 
 				String[]p=specialList.getWhereQuery().split("and");
 				for(String r:p){
@@ -618,11 +705,16 @@ public class SpecialListSettingsActivity extends Activity {
 							}
 						}
 						if(r.contains("localtime")){
-							((NumberPicker)dialogView.findViewById(R.id.due_day_year)).setDisplayedValues(getResources().getStringArray(R.array.due_day_year_values));
-							((NumberPicker)dialogView.findViewById(R.id.due_day_year)).setMaxValue(getResources().getStringArray(R.array.due_day_year_values).length-1);
-							((NumberPicker)dialogView.findViewById(R.id.due_val)).setDisplayedValues(s);
-							((NumberPicker)dialogView.findViewById(R.id.due_val)).setMaxValue(s.length-1);
-							((NumberPicker)dialogView.findViewById(R.id.due_val)).setValue(10);
+							if(VERSION.SDK_INT>=VERSION_CODES.HONEYCOMB){
+								((NumberPicker)dialogView.findViewById(R.id.due_day_year)).setDisplayedValues(getResources().getStringArray(R.array.due_day_year_values));
+								((NumberPicker)dialogView.findViewById(R.id.due_day_year)).setMaxValue(getResources().getStringArray(R.array.due_day_year_values).length-1);
+								((NumberPicker)dialogView.findViewById(R.id.due_val)).setDisplayedValues(s);
+								((NumberPicker)dialogView.findViewById(R.id.due_val)).setMaxValue(s.length-1);
+								((NumberPicker)dialogView.findViewById(R.id.due_val)).setValue(10);
+							}else{
+								((TextView)dialogView.findViewById(R.id.dialog_due_pick_val)).setText(s[10]);
+								((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).setText(getResources().getStringArray(R.array.due_day_year_values_plural)[0]);
+							}
 						}else{
 							int day=0;
 							if(r.contains("year")){
@@ -634,65 +726,89 @@ public class SpecialListSettingsActivity extends Activity {
 							}else{
 								r=r.replace((r.contains("days")?"days":"day"), "").trim();
 							}
-							if(r.charAt(0)=='+')
-								r=r.replace("+", "");
 							int val=0;
 							try {
-								val=Integer.parseInt(r);
+								val=Integer.parseInt(r.replace("+", ""));
 							} catch (NumberFormatException e) {
 								e.printStackTrace();
 							}
 							if(val==1||val==-1){
-								((NumberPicker)dialogView.findViewById(R.id.due_day_year)).setDisplayedValues(getResources().getStringArray(R.array.due_day_year_values));
+								if(VERSION.SDK_INT>=VERSION_CODES.HONEYCOMB){
+									((NumberPicker)dialogView.findViewById(R.id.due_day_year)).setDisplayedValues(getResources().getStringArray(R.array.due_day_year_values));
+								}else{
+									((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).setText(getResources().getStringArray(R.array.due_day_year_values)[day]);
+								}
 							}else{
-								((NumberPicker)dialogView.findViewById(R.id.due_day_year)).setDisplayedValues(getResources().getStringArray(R.array.due_day_year_values_plural));
+								if(VERSION.SDK_INT>=VERSION_CODES.HONEYCOMB){
+									((NumberPicker)dialogView.findViewById(R.id.due_day_year)).setDisplayedValues(getResources().getStringArray(R.array.due_day_year_values_plural));
+								}else{
+									((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).setText(getResources().getStringArray(R.array.due_day_year_values_plural)[day]);
+								}
 							}
-							((NumberPicker)dialogView.findViewById(R.id.due_day_year)).setValue(day);
-							((NumberPicker)dialogView.findViewById(R.id.due_val)).setValue(10+val);
-							//TODO fix bug on negativ values
-							/*If you try to show -1 -10 is shown*/
-							
+							if(VERSION.SDK_INT>=VERSION_CODES.HONEYCOMB){
+								//TODO fix bug on negativ values
+								/*If you try to show -1 -10 is shown*/
+								((NumberPicker)dialogView.findViewById(R.id.due_day_year)).setValue(day);
+								((NumberPicker)dialogView.findViewById(R.id.due_val)).setValue(10+val);
+							}else{
+								((TextView)dialogView.findViewById(R.id.dialog_due_pick_val)).setText(s[10+val]);
+							}
 							
 						}
 							
 					}
 				}
-				((NumberPicker)dialogView.findViewById(R.id.due_val)).setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-					
-					@Override
-					public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-						if(newVal==11||newVal==9){//=1||=9
-							((NumberPicker)dialogView.findViewById(R.id.due_day_year)).setDisplayedValues(getResources().getStringArray(R.array.due_day_year_values));
-						}else{
-							((NumberPicker)dialogView.findViewById(R.id.due_day_year)).setDisplayedValues(getResources().getStringArray(R.array.due_day_year_values_plural));
+				if(VERSION.SDK_INT>=VERSION_CODES.HONEYCOMB){
+					((NumberPicker)dialogView.findViewById(R.id.due_val)).setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+		
+						@Override
+						public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+							if(newVal==11||newVal==9){//=1||=9
+								((NumberPicker)dialogView.findViewById(R.id.due_day_year)).setDisplayedValues(getResources().getStringArray(R.array.due_day_year_values));
+							}else{
+								((NumberPicker)dialogView.findViewById(R.id.due_day_year)).setDisplayedValues(getResources().getStringArray(R.array.due_day_year_values_plural));
+							}
+							
 						}
-						
-					}
-				});
+					});
+				}
 		        builder.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
 					
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						int val=((NumberPicker)dialogView.findViewById(R.id.due_val)).getValue();
+						int val=0;
+						if(VERSION.SDK_INT>=VERSION_CODES.HONEYCOMB)
+							val=((NumberPicker)dialogView.findViewById(R.id.due_val)).getValue();
+						else
+							val=Integer.parseInt(((TextView)dialogView.findViewById(R.id.dialog_due_pick_val)).getText().toString().replace("+", ""))+10;
 						String newWhere="";
 						if(val==10){
 							newWhere="date(due)<=date(\"now\",\"localtime\")";
 							((TextView)findViewById(R.id.special_list_where_due_content)).setText(getString(R.string.today));
 						}else{
 							String mod="";
-							switch (((NumberPicker)dialogView.findViewById(R.id.due_day_year)).getValue()) {
+							int v=0;
+							if(VERSION.SDK_INT>=VERSION_CODES.HONEYCOMB){
+								v=((NumberPicker)dialogView.findViewById(R.id.due_day_year)).getValue();
+							}else{
+								if(((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).getText().toString().contains(getResources().getStringArray(R.array.due_day_year_values)[1]))
+									v=1;
+								else if(((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).getText().toString().contains(getResources().getStringArray(R.array.due_day_year_values)[2]))
+									v=2;
+							}
+							switch (v) {
 							case 1:
-								mod=(val==11?"month":"months");
+								mod=(val==11||val==9?"month":"months");
 								break;
 							case 2:
-								mod=(val==11?"year":"years");
+								mod=(val==11||val==9?"year":"years");
 								break;
 							default:
-								mod=(val==11?"day":"days");
+								mod=(val==11||val==9?"day":"days");
 								break;
 							}
 							((TextView)findViewById(R.id.special_list_where_due_content)).setText(s[val]+" "+
-							getResources().getStringArray(val==11?R.array.due_day_year_values:R.array.due_day_year_values_plural)[((NumberPicker)dialogView.findViewById(R.id.due_day_year)).getValue()]);
+							getResources().getStringArray(val==11||val==9?R.array.due_day_year_values:R.array.due_day_year_values_plural)[v]);
 							newWhere="date(due)<=date(\"now\",\""+s[val]+" "+mod+"\",\"localtime\")";
 						}
 						updateWhere("due", newWhere);
@@ -701,6 +817,13 @@ public class SpecialListSettingsActivity extends Activity {
 		        alert=builder.create();
 		        alert.show();
 				
+			}
+
+			private View getNumericPicker() {
+				if(VERSION.SDK_INT>=VERSION_CODES.HONEYCOMB)
+					return getLayoutInflater().inflate(R.layout.due_dialog, null);
+				else
+					return getLayoutInflater().inflate(R.layout.due_dialog_v10, null);
 			}
 		});
 	}
@@ -729,6 +852,11 @@ public class SpecialListSettingsActivity extends Activity {
 		specialList.save();
 		((TextView) findViewById(R.id.special_list_where)).setText(specialList
 				.getWhereQuery());
+	}
+	private View getView(int id){
+		if(VERSION.SDK_INT>=VERSION_CODES.HONEYCOMB)
+			return getLayoutInflater().inflate(id,null);
+		return View.inflate(new ContextThemeWrapper(getBaseContext(), R.style.Dialog),id,null);
 	}
 
 	protected String getFieldText(String queryPart) {
