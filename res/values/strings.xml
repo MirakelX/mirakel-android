@@ -66,6 +66,8 @@
     <string name="task_sorting_title">Sort tasks by</string>
     <string name="task_save_content">Save</string>
     <string name="task_empty">No task selected…</string>
+    <string name="set_date">Set Date</string>
+    <string name="set_time">Set Time</string>
 
     <string-array name="task_sorting_items">
         <item>Default</item>

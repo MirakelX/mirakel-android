@@ -79,6 +79,7 @@ public class DateTimePicker extends RelativeLayout implements
 		datePicker.init(mCalendar.get(Calendar.YEAR),
 				mCalendar.get(Calendar.MONTH),
 				mCalendar.get(Calendar.DAY_OF_MONTH), this);
+		
 
 		// Init time picker
 		timePicker = (TimePicker) timePickerView.findViewById(R.id.TimePicker);
