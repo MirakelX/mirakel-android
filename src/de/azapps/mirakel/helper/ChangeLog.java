@@ -29,6 +29,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.webkit.WebView;
 import de.azapps.mirakel.R;
@@ -139,7 +140,12 @@ public class ChangeLog {
 	}
 
 	private AlertDialog getDialog(boolean full) {
-		WebView wv = new WebView(this.context);
+		WebView wv;
+		if(API_LEVEL<Build.VERSION_CODES.HONEYCOMB){
+			wv = new WebView(new ContextThemeWrapper(this.context, R.style.Dialog));
+		}else{
+			wv = new WebView(this.context);
+		}
 
 		if (API_LEVEL >= Build.VERSION_CODES.HONEYCOMB)
 			Compatibility.setViewLayerTypeSoftware(wv);

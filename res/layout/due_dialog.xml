@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:minSdkVersion="11"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="NewApi" >
 	<NumberPicker android:id="@+id/due_val"
 	   style="@android:style/Theme.Holo.Light"
 	   android:layout_width="wrap_content"

@@ -187,6 +187,6 @@ SDK-version: %d\n
 Device: %s\n]]>
     </string>
     <string name="contact_no_client">No Mail-Client installed</string>
-    <string name="contact_chooser">Send mail...</string>
+    <string name="contact_chooser">Send mail&#8230;</string>
 
 </resources>

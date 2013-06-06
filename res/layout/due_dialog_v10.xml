@@ -3,11 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal" >
 	<LinearLayout 
 	    android:orientation="vertical"
 	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content">
+	    android:layout_height="wrap_content"
+    	tools:ignore="HardcodedText">
 	    <Button
 	        android:id="@+id/dialog_due_pick_plus_val"
 	        android:layout_width="fill_parent"
@@ -33,7 +35,8 @@
 	<LinearLayout 
 	    android:orientation="vertical"
 	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content">
+	    android:layout_height="wrap_content"
+	    tools:ignore="HardcodedText">
 	    <Button
 	        android:id="@+id/dialog_due_pick_plus_day"
 	        android:layout_width="fill_parent"

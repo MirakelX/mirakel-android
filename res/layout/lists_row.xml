@@ -26,6 +26,7 @@
         android:id="@+id/list_row_drag"
         android:layout_height="match_parent"
         android:layout_width="wrap_content"
+        android:contentDescription="@null"
         android:src="@android:drawable/ic_menu_sort_by_size"/>
 
     <TextView
