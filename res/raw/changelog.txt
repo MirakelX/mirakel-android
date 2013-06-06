@@ -25,7 +25,7 @@ $ 0.1.2
     * Search
     * Share Lists and Tasks
     * Better Where-Clause Input in Special-Lists-Settings
-    * Support Android >=2.3.3(API 10)
+    * Experimental Support Android >=2.2(API 8)
     * Bugfixes
 $ 0.1.1
   % Version 0.1.1
