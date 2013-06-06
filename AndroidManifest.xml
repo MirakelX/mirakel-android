@@ -20,7 +20,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.azapps.mirakel"
     android:versionCode="1"
-    android:versionName="0.1.1" >
+    android:versionName="0.1.2" >
 
     <!-- TODO Remove Unused Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />

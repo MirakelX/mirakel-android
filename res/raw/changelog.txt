@@ -19,7 +19,7 @@
   <body>
 $ 0.1.2
   % Version 0.1.2
-  _ 2013-0*-** – Coming soon
+  _ 2013-06-06
   ! Feature Stop
     * Reminders
     * Search
