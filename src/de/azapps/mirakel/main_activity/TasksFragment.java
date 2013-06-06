@@ -71,13 +71,14 @@ public class TasksFragment extends Fragment {
 	private int ItemCount;
 	private List<Task> values;
 	private static final int TASK_RENAME = 0, TASK_MOVE = 1, TASK_DESTROY = 2;
+	private int listId;
 	
 	final Handler mHandler = new Handler();
 
     final Runnable mUpdateResults = new Runnable() {
         public void run() {
     			adapter.changeData(new ArrayList<Task>(values.subList(0,
-        				ItemCount > values.size() ? values.size() : ItemCount)));
+        				ItemCount > values.size() ? values.size() : ItemCount)),listId);
     			adapter.notifyDataSetChanged();
         }
     };
@@ -94,6 +95,7 @@ public class TasksFragment extends Fragment {
 		loadMore = false;
 		ItemCount = 0;
 		main = (MainActivity) getActivity();
+		listId=main.getCurrentList().getId();
 		view = inflater.inflate(R.layout.activity_tasks, container, false);
 
 		getResources().getString(R.string.action_settings);
@@ -227,6 +229,7 @@ public class TasksFragment extends Fragment {
 
 	public void updateList(final boolean reset) {
 		try {
+			listId=main.getCurrentList().getId();
 			values = main.getCurrentList().tasks();
 			update(reset);
 		} catch (NullPointerException e) {

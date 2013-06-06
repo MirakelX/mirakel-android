@@ -67,9 +67,10 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 
 	}
 
-	void changeData(List<Task> tasks) {
+	void changeData(List<Task> tasks,int listId) {
 		data.clear();
 		data.addAll(tasks);
+		this.listId=listId;
 	}
 
 
@@ -115,7 +116,7 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		if (task.getContent().length() != 0) {
 			holder.taskRowHasContent.setVisibility(View.VISIBLE);
 		} else {
-			holder.taskRowHasContent.setVisibility(View.GONE);
+			holder.taskRowHasContent.setVisibility(View.INVISIBLE);
 		}
 		if (listId <= 0) {
 			holder.taskRowList.setVisibility(View.VISIBLE);
