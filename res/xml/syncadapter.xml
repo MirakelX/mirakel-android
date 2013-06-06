@@ -29,15 +29,17 @@
   uploading, so the contacts on SDK 11 and greater are editable.
 -->
 
-<!-- <sync-adapter xmlns:android="http://schemas.android.com/apk/res/android"
+<!--
+<sync-adapter xmlns:android="http://schemas.android.com/apk/res/android"
     android:contentAuthority="de.azapps.mirakel" 
     android:accountType="de.azapps.mirakel"
     android:supportsUploading="true"
     android:userVisible="true"
 	android:isAlwaysSyncable="true"
-/>-->
+/>
+-->
 
 <sync-adapter xmlns:android="http://schemas.android.com/apk/res/android"
-        android:accountType="de.azapps.mirakel"
-        android:contentAuthority="de.azapps.mirakel.provider"
-        android:supportsUploading="true" />
+    android:accountType="de.azapps.mirakel"
+    android:contentAuthority="de.azapps.mirakel.provider"
+    android:supportsUploading="true" />

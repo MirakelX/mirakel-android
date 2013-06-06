@@ -73,7 +73,8 @@ public class DragNDropListView extends ListView {
 			if (mStartPosition != INVALID_POSITION) {
 
 				int mItemPosition = mStartPosition - getFirstVisiblePosition();
-				if (mItemPosition < SpecialList.getSpecialListCount()-getFirstVisiblePosition())
+				if (mItemPosition < SpecialList.getSpecialListCount()
+						- getFirstVisiblePosition())
 					break;
 				Log.e(TAG, "" + mItemPosition);
 				mDragPointOffset = y - getChildAt(mItemPosition).getTop();
@@ -92,13 +93,14 @@ public class DragNDropListView extends ListView {
 			mEndPosition = pointToPosition(x, y);
 			int ItemStartPosition = mStartPosition - getFirstVisiblePosition();
 			stopDrag(mStartPosition - getFirstVisiblePosition());
-			if (mEndPosition  < SpecialList
-					.getSpecialListCount()) {
+			if (mEndPosition < SpecialList.getSpecialListCount()) {
 				mEndPosition = SpecialList.getSpecialListCount();
 			}
-			if (mDropListener != null && mStartPosition != INVALID_POSITION
+			if (mDropListener != null
+					&& mStartPosition != INVALID_POSITION
 					&& mEndPosition != INVALID_POSITION
-					&& !(ItemStartPosition < SpecialList.getSpecialListCount()-getFirstVisiblePosition()))
+					&& !(ItemStartPosition < SpecialList.getSpecialListCount()
+							- getFirstVisiblePosition()))
 				mDropListener.onDrop(mStartPosition, mEndPosition);
 			break;
 		}
@@ -115,10 +117,11 @@ public class DragNDropListView extends ListView {
 			WindowManager mWindowManager = (WindowManager) getContext()
 					.getSystemService(Context.WINDOW_SERVICE);
 			mWindowManager.updateViewLayout(mDragView, layoutParams);
-			if(y>(8/9)*getHeight()&&getChildCount()>getLastVisiblePosition()){
-				smoothScrollToPosition(pointToPosition(x, y)+1);
-			}else if(y<(3/9)*getHeight()){
-				smoothScrollToPosition(pointToPosition(x, y)-1);
+			if (y > (8 / 9) * getHeight()
+					&& getChildCount() > getLastVisiblePosition()) {
+				smoothScrollToPosition(pointToPosition(x, y) + 1);
+			} else if (y < (3 / 9) * getHeight()) {
+				smoothScrollToPosition(pointToPosition(x, y) - 1);
 			}
 			if (mDragListener != null)
 				mDragListener.onDrag(x, y, this);

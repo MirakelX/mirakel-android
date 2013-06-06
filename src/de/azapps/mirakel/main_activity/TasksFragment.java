@@ -71,21 +71,21 @@ public class TasksFragment extends Fragment {
 	private List<Task> values;
 	private static final int TASK_RENAME = 0, TASK_MOVE = 1, TASK_DESTROY = 2;
 	private int listId;
-	
+
 	final Handler mHandler = new Handler();
 
-    final Runnable mUpdateResults = new Runnable() {
-        public void run() {
-    			adapter.changeData(new ArrayList<Task>(values.subList(0,
-        				ItemCount > values.size() ? values.size() : ItemCount)),listId);
-    			adapter.notifyDataSetChanged();
-        }
-    };
+	final Runnable mUpdateResults = new Runnable() {
+		public void run() {
+			adapter.changeData(
+					new ArrayList<Task>(values.subList(0, ItemCount > values
+							.size() ? values.size() : ItemCount)), listId);
+			adapter.notifyDataSetChanged();
+		}
+	};
 
 	public void setActivity(MainActivity activity) {
 		main = activity;
 	}
-	
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -94,7 +94,7 @@ public class TasksFragment extends Fragment {
 		loadMore = false;
 		ItemCount = 0;
 		main = (MainActivity) getActivity();
-		listId=main.getCurrentList().getId();
+		listId = main.getCurrentList().getId();
 		view = inflater.inflate(R.layout.activity_tasks, container, false);
 
 		getResources().getString(R.string.action_settings);
@@ -103,8 +103,14 @@ public class TasksFragment extends Fragment {
 		} catch (NullPointerException e) {
 			values = null;
 		}
-		if (android.os.Build.VERSION.SDK_INT<=android.os.Build.VERSION_CODES.HONEYCOMB) {
-			view.findViewById(R.id.btnSpeak_tasks).setVisibility(View.GONE);//Android 2.3 dosen't support speech to Text
+		if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.HONEYCOMB) {
+			view.findViewById(R.id.btnSpeak_tasks).setVisibility(View.GONE);// Android
+																			// 2.3
+																			// dosen't
+																			// support
+																			// speech
+																			// to
+																			// Text
 		}
 		adapter = null;
 		created = true;
@@ -228,7 +234,7 @@ public class TasksFragment extends Fragment {
 
 	public void updateList(final boolean reset) {
 		try {
-			listId=main.getCurrentList().getId();
+			listId = main.getCurrentList().getId();
 			values = main.getCurrentList().tasks();
 			update(reset);
 		} catch (NullPointerException e) {
@@ -261,9 +267,10 @@ public class TasksFragment extends Fragment {
 		AsyncTask<Void, Void, TaskAdapter> task = new AsyncTask<Void, Void, TaskAdapter>() {
 			@Override
 			protected TaskAdapter doInBackground(Void... params) {
-				adapter = new TaskAdapter(main, R.layout.tasks_row, new ArrayList<Task>(values.subList(0,
-						ItemCount > values.size() ? values.size() : ItemCount)),
-						new OnClickListener() {
+				adapter = new TaskAdapter(main, R.layout.tasks_row,
+						new ArrayList<Task>(values.subList(0,
+								ItemCount > values.size() ? values.size()
+										: ItemCount)), new OnClickListener() {
 							@Override
 							public void onClick(View v) {
 								Task task = (Task) v.getTag();

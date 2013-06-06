@@ -142,15 +142,15 @@ public class ChangeLog {
 	}
 
 	private AlertDialog getDialog(boolean full) {
-		WebView wv = new WebView(new ContextThemeWrapper(this.context, R.style.Dialog));
-		if (API_LEVEL >= Build.VERSION_CODES.HONEYCOMB){
+		WebView wv = new WebView(new ContextThemeWrapper(this.context,
+				R.style.Dialog));
+		if (API_LEVEL >= Build.VERSION_CODES.HONEYCOMB) {
 			Compatibility.setViewLayerTypeSoftware(wv);
 			wv.setBackgroundColor(0); // transparent
-		}else{
+		} else {
 			wv.setBackgroundColor(Color.WHITE);
 		}
-			
-		
+
 		wv.loadDataWithBaseURL(null, this.getLog(full), "text/html", "UTF-8",
 				null);
 
@@ -192,11 +192,11 @@ public class ChangeLog {
 		SharedPreferences.Editor editor = sp.edit();
 		editor.putString(VERSION_KEY, thisVersion);
 		// // on SDK-Versions > 9 you should use this:
-		 if(Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD) {
-			 editor.commit();
-		 } else {
-			 editor.apply();
-		 }
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD) {
+			editor.commit();
+		} else {
+			editor.apply();
+		}
 	}
 
 	/**

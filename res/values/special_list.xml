@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
+
     <string name="special_list_name">Name</string>
     <string name="special_list_name_summary">Change the Name of the SpecialList</string>
     <string name="special_list_active">Show</string>
@@ -13,6 +14,7 @@
     <string name="special_list_def_date">Default date</string>
     <string name="special_list_def_date_summary">in days (+/-)</string>
     <string name="special_list_first">Default</string>
+
     <string-array name="special_list_def_date_picker">
         <item>No date</item>
         <item>Yesterday</item>
@@ -23,6 +25,7 @@
         <item>+1 month</item>
         <item>+1 year</item>
     </string-array>
+
     <integer-array name="special_list_def_date_picker_val">
         <item>-1337</item>
         <item>-1</item>
@@ -33,6 +36,7 @@
         <item>30</item>
         <item>365</item>
     </integer-array>
+
     <string name="list_menu_new_special_list">New Speciallist</string>
     <string name="special_list_where_prio_title_text">Priority</string>
     <string name="special_list_where_prio_content_text"></string>
@@ -50,31 +54,28 @@
     <string name="special_list_where_due_content_text"></string>
     <string name="empty">Irrelevant</string>
     <string name="select_by">Select By</string>
-    
     <string name="done">Tasks done</string>
     <string name="undone">Tasks not Done</string>
     <string name="nothing">Nothing</string>
-    
     <string name="today">Today</string>
-    
     <string name="reminder_set">Reminder is set</string>
     <string name="reminder_unset">Reminder is not set</string>
-    
     <string name="inverte">Inverte Selection</string>
     <string name="not_in">Not in</string>
-    
     <string name="where_like_contain_text">Contains</string>
     <string name="where_like_begin_text">Beginns with</string>
     <string name="where_like_end_text">Ends with</string>
     <string name="not">Not</string>
+
     <string-array name="due_day_year_values">
-        <item >Day</item>
-        <item >Month</item>
-        <item >Year</item>
+        <item>Day</item>
+        <item>Month</item>
+        <item>Year</item>
     </string-array>
     <string-array name="due_day_year_values_plural">
-        <item >Days</item>
-        <item >Months</item>
-        <item >Years</item>
+        <item>Days</item>
+        <item>Months</item>
+        <item>Years</item>
     </string-array>
+
 </resources>

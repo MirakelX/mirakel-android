@@ -20,7 +20,7 @@ import de.azapps.mirakel.model.list.SpecialList;
 public class SpecialListsSettings extends Activity {
 
 	private static final String TAG = "SpecialListsSettings";
-	private static final int requestCode=0;
+	private static final int requestCode = 0;
 
 	@SuppressLint("NewApi")
 	@Override
@@ -28,20 +28,21 @@ public class SpecialListsSettings extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_special_lists_settings);
 		// Show the Up button in the action bar.
-		if(android.os.Build.VERSION.SDK_INT>=android.os.Build.VERSION_CODES.HONEYCOMB)
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB)
 			getActionBar().setDisplayHomeAsUpEnabled(true);
-		
+
 		update();
 	}
 
 	private void update() {
-		ListView listView=(ListView) findViewById(R.id.special_lists_list);
-		final List<SpecialList> slists=SpecialList.allSpecial(true);
-		List<String> listContent=new ArrayList<String>();
-		for(SpecialList list : slists) {
+		ListView listView = (ListView) findViewById(R.id.special_lists_list);
+		final List<SpecialList> slists = SpecialList.allSpecial(true);
+		List<String> listContent = new ArrayList<String>();
+		for (SpecialList list : slists) {
 			listContent.add(list.getName());
 		}
-		ArrayAdapter<String> adapter=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,listContent);
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+				android.R.layout.simple_list_item_1, listContent);
 		listView.setAdapter(adapter);
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
@@ -53,9 +54,9 @@ public class SpecialListsSettings extends Activity {
 			}
 		});
 	}
-	
-	private void editSList(final SpecialList slist){
-		Intent intent=new Intent(this, SpecialListSettingsActivity.class);
+
+	private void editSList(final SpecialList slist) {
+		Intent intent = new Intent(this, SpecialListSettingsActivity.class);
 		intent.putExtra(SpecialListSettingsActivity.SLIST_ID, -slist.getId());
 		startActivityForResult(intent, requestCode);
 	}
@@ -74,16 +75,18 @@ public class SpecialListsSettings extends Activity {
 			finish();
 			return true;
 		case R.id.menu_new_special_list:
-			Log.e(TAG,"new SpecialList");
-			SpecialList newList=SpecialList.newSpecialList("NewList", "", false);
+			Log.e(TAG, "new SpecialList");
+			SpecialList newList = SpecialList.newSpecialList("NewList", "",
+					false);
 			editSList(newList);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
+
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+	protected void onActivityResult(int requestCode, int resultCode,
+			Intent intent) {
 		update();
 	}
 

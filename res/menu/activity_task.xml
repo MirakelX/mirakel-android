@@ -30,8 +30,8 @@
         android:title="@string/menu_move"/>
     <item
         android:id="@+id/share_task"
-        android:orderInCategory="100"
         android:icon="@android:drawable/ic_menu_share"
+        android:orderInCategory="100"
         android:showAsAction="ifRoom|withText"
         android:title="@string/share_task"/>
     <item

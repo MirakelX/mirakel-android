@@ -22,19 +22,20 @@
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:padding="5dp" >
-    <ImageView 
+
+    <ImageView
         android:id="@+id/list_row_drag"
-        android:layout_height="match_parent"
         android:layout_width="wrap_content"
+        android:layout_height="match_parent"
         android:contentDescription="@null"
-        android:src="@android:drawable/ic_menu_sort_by_size"/>
+        android:src="@android:drawable/ic_menu_sort_by_size" />
 
     <TextView
         android:id="@+id/list_row_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ellipsize="end"
         android:layout_weight="1"
+        android:ellipsize="end"
         android:textIsSelectable="false"
         android:textSize="18sp" />
 
@@ -43,8 +44,8 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_weight="0"
-        android:textIsSelectable="false"
         android:gravity="center"
+        android:textIsSelectable="false"
         android:textSize="18sp" >
     </TextView>
 

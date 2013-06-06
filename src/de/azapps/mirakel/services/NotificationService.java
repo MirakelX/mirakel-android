@@ -91,7 +91,9 @@ public class NotificationService extends Service {
 			notificationText = "";
 		} else {
 			if (todayTasks.size() == 1)
-				notificationTitle = getString(R.string.notification_title_general_single, todayList.getName());
+				notificationTitle = getString(
+						R.string.notification_title_general_single,
+						todayList.getName());
 			else
 				notificationTitle = String.format(
 						getString(R.string.notification_title_general),

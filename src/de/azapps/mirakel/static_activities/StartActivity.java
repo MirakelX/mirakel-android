@@ -47,7 +47,8 @@ public class StartActivity extends Activity {
 		int version = Mirakel.getReadableDatabase().getVersion();
 		if (version != DatabaseHelper.DATABASE_VERSION) {
 			Log.v(TAG, "SET DB-VERSION " + DatabaseHelper.DATABASE_VERSION);
-			Mirakel.getReadableDatabase().setVersion(DatabaseHelper.DATABASE_VERSION);
+			Mirakel.getReadableDatabase().setVersion(
+					DatabaseHelper.DATABASE_VERSION);
 		}
 		setContentView(R.layout.activity_start);
 		Button start = (Button) findViewById(R.id.Start);

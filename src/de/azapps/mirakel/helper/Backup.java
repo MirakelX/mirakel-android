@@ -15,11 +15,12 @@ import android.widget.Toast;
 
 public class Backup {
 	Context ctx;
-	
-	public Backup(Context ctx){
-		this.ctx=ctx;
+
+	public Backup(Context ctx) {
+		this.ctx = ctx;
 	}
-	public void exportDB(){
+
+	public void exportDB() {
 		new ExportDatabaseFileTask().execute("");
 	}
 

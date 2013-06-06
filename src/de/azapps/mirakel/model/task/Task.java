@@ -227,6 +227,7 @@ public class Task extends TaskBase {
 		}
 		return null;
 	}
+
 	/**
 	 * Search Tasks
 	 * 
@@ -234,12 +235,12 @@ public class Task extends TaskBase {
 	 * @return
 	 */
 	public static List<Task> search(String query) {
-		String[] args={"%" + query + "%"};
-		Cursor cursor = database.query(TABLE, allColumns, "name LIKE ?",
-				args, null, null, null);
+		String[] args = { "%" + query + "%" };
+		Cursor cursor = database.query(TABLE, allColumns, "name LIKE ?", args,
+				null, null, null);
 		cursor.moveToFirst();
-		List<Task> tasks=new ArrayList<Task>();
-		while(!cursor.isAfterLast()){
+		List<Task> tasks = new ArrayList<Task>();
+		while (!cursor.isAfterLast()) {
 			tasks.add(cursorToTask(cursor));
 			cursor.moveToNext();
 		}

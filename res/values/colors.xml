@@ -18,11 +18,12 @@
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <resources>
+
     <color name="Grey">#7F7F7F</color>
     <color name="Black">#000000</color>
     <color name="Red">#FF0000</color>
     <color name="Orange">#EF0381</color>
     <color name="Yellow">#FFA500</color>
     <color name="Green">#00c400</color>
-    
+
 </resources>

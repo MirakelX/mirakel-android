@@ -152,7 +152,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		new Network(new DataDownloadCommand() {
 			@Override
 			public void after_exec(String result) {
-				
+
 				try {
 					merge_with_server(new Gson().fromJson(result,
 							ListMirakel[].class));
@@ -335,7 +335,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	 * @param lists_server
 	 */
 	protected void merge_with_server(ListMirakel[] lists_server) {
-		if(lists_server==null)
+		if (lists_server == null)
 			return;
 		for (ListMirakel list_server : lists_server) {
 			list_server.setCreatedAt(list_server.getCreatedAt()
@@ -590,9 +590,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			Task task = Task.getToSync(task_server.getId());
 			if (task == null) {
 				// New Task from server, add to db
-				/*if (Mirakel.DEBUG)
-					Log.d(TAG, "Add task from server to list "
-							+ task_server.getList().getId()); Throws NullPointerException*/
+				/*
+				 * if (Mirakel.DEBUG) Log.d(TAG, "Add task from server to list "
+				 * + task_server.getList().getId()); Throws NullPointerException
+				 */
 				addTaskFromServer(task_server);
 				continue;
 			} else {

@@ -117,7 +117,7 @@ public class MainActivity extends FragmentActivity implements
 
 		// Show ChangeLog
 		ChangeLog cl = new ChangeLog(this);
-		if (cl.firstRun()){
+		if (cl.firstRun()) {
 			cl.getLogDialog().show();
 		}
 		// currentList=preferences.getInt("s", defValue)
@@ -156,7 +156,7 @@ public class MainActivity extends FragmentActivity implements
 							tasksFragment.updateList();
 							listFragment.update();
 						}
-					},null);
+					}, null);
 			return true;
 		case R.id.menu_new_list:
 			ListMirakel list = ListMirakel.newList(this
@@ -652,7 +652,7 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	private void search(String query) {
-		setCurrentList(new SearchList(this,query));
+		setCurrentList(new SearchList(this, query));
 		mViewPager.setCurrentItem(TASKS_FRAGMENT);
 	}
 

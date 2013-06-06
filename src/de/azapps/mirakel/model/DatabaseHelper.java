@@ -113,9 +113,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 			db.execSQL("ALTER TABLE tasks RENAME TO tmp_tasks;");
 			createTasksTableString(db);
-			db.execSQL("INSERT INTO tasks (_id, list_id, name,done,priority,due,created_at,updated_at,sync_state) " +
-					"SELECT _id, list_id, name,done,priority,due,created_at,updated_at,sync_state " +
-					"FROM tmp_tasks;");
+			db.execSQL("INSERT INTO tasks (_id, list_id, name,done,priority,due,created_at,updated_at,sync_state) "
+					+ "SELECT _id, list_id, name,done,priority,due,created_at,updated_at,sync_state "
+					+ "FROM tmp_tasks;");
 			db.execSQL("DROP TABLE tmp_tasks");
 			db.execSQL("UPDATE tasks set due=null where due='' OR due='null'");
 			/*
@@ -135,9 +135,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			 */
 			db.execSQL("ALTER TABLE tasks RENAME TO tmp_tasks;");
 			createTasksTableString(db);
-			db.execSQL("INSERT INTO tasks (_id, list_id, name,done,priority,due,created_at,updated_at,sync_state) " +
-					"SELECT _id, list_id, name,done,priority,due,created_at,updated_at,sync_state " +
-					"FROM tmp_tasks;");
+			db.execSQL("INSERT INTO tasks (_id, list_id, name,done,priority,due,created_at,updated_at,sync_state) "
+					+ "SELECT _id, list_id, name,done,priority,due,created_at,updated_at,sync_state "
+					+ "FROM tmp_tasks;");
 			db.execSQL("DROP TABLE tmp_tasks");
 			db.execSQL("UPDATE tasks set due=null where due=''");
 		case 7:
@@ -163,8 +163,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			db.execSQL("UPDATE special_lists SET def_date=-1, active=0 where _id=4 and def_date=null");
 		}
 	}
-	
-	private void createTasksTableString(SQLiteDatabase db){
+
+	private void createTasksTableString(SQLiteDatabase db) {
 		db.execSQL("CREATE TABLE "
 				+ Task.TABLE
 				+ " ("
@@ -172,8 +172,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ "list_id INTEGER REFERENCES lists (_id) ON DELETE CASCADE ON UPDATE CASCADE, "
 				+ "name TEXT NOT NULL, " + "content TEXT, "
 				+ "done INTEGER NOT NULL DEFAULT 0, "
-				+ "priority INTEGER NOT NULL DEFAULT 0, "
-				+ "due STRING, "
+				+ "priority INTEGER NOT NULL DEFAULT 0, " + "due STRING, "
 				+ "created_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
 				+ "updated_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
 				+ "sync_state INTEGER DEFAULT " + Network.SYNC_STATE.ADD + ")");

@@ -25,7 +25,6 @@ import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.view.MenuItem;
 
-
 public class SettingsActivity extends PreferenceActivity {
 
 	@SuppressWarnings("deprecation")
@@ -33,16 +32,18 @@ public class SettingsActivity extends PreferenceActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if(android.os.Build.VERSION.SDK_INT>=android.os.Build.VERSION_CODES.HONEYCOMB){
-		// Display the fragment as the main content.
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
+			// Display the fragment as the main content.
 			getFragmentManager().beginTransaction()
-					.replace(android.R.id.content, new SettingsFragment()).commit();
+					.replace(android.R.id.content, new SettingsFragment())
+					.commit();
 			getActionBar().setDisplayHomeAsUpEnabled(true);
-		}else{
+		} else {
 			addPreferencesFromResource(R.xml.preferences);
 			new PreferencesHelper(this).setFunctions();
 		}
-	}	
+	}
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -52,5 +53,5 @@ public class SettingsActivity extends PreferenceActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
+
 }

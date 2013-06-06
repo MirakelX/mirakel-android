@@ -18,7 +18,7 @@
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <resources>
-    
+
     <string name="action_settings">Einstellungen</string>
     <string name="OK">OK</string>
     <string name="Cancel">Abbrechen</string>
@@ -28,7 +28,7 @@
     <string name="no_lists">Du hast keine Listen. Erstelle bitte eine neue.</string>
     <string name="dateFormat">dd.MM.yyyy</string>
     <string name="speak_lang_code">de-DE</string>
-    
+
     <!-- Home -->
     <string name="home_button_official">Offizieller Server</string>
     <string name="home_button_own">Eigener Server</string>
@@ -55,6 +55,7 @@
     <string name="task_menu_sorting">Sortiere Aufgaben</string>
     <string name="task_sorting_title">Sortiere nach</string>
     <string name="task_save_content">Speichern</string>
+
     <string-array name="task_sorting_items">
         <item>Standard</item>
         <item>Termin</item>
@@ -79,10 +80,10 @@
     <string name="list_delete_title">Lösche Liste</string>
     <string name="list_delete_content">Willst du die Liste wirklich löschen?</string>
 
-
     <!-- Menu -->
     <string name="menu_delete">Löschen</string>
     <string name="menu_move">Verschieben</string>
     <string name="menu_settings">Einstellungen</string>
     <string name="title_activity_list">Listen</string>
+
 </resources>

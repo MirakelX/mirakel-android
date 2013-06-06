@@ -34,9 +34,9 @@
         android:orientation="vertical" >
 
         <LinearLayout
+            style="?android:attr/buttonBarStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-                style="?android:attr/buttonBarStyle"
             android:orientation="horizontal" >
 
             <Button
@@ -59,15 +59,15 @@
                 android:text="@string/help_button_donate" >
             </Button>
         </LinearLayout>
-            <Button
-                android:id="@+id/help_button_ok"
-                android:layout_width="match_parent"
-                android:layout_height="0dip"
-                android:layout_weight="1"
-                android:onClick="ok"
-                android:text="@string/help_button_ok" >
-            </Button>
-        
+
+        <Button
+            android:id="@+id/help_button_ok"
+            android:layout_width="match_parent"
+            android:layout_height="0dip"
+            android:layout_weight="1"
+            android:onClick="ok"
+            android:text="@string/help_button_ok" >
+        </Button>
     </LinearLayout>
 
 </RelativeLayout>

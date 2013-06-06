@@ -42,8 +42,8 @@ public class MirakelContentProvider extends ContentProvider {
 	private static final int LISTS_ITEM = 1;
 	private static final int TASKS = 2;
 	private static final int TASKS_ITEM = 3;
-	private static final int SPECIAL_LIST=4;
-	private static final int SPECIAL_LIST_ITEM=5;
+	private static final int SPECIAL_LIST = 4;
+	private static final int SPECIAL_LIST_ITEM = 5;
 	private static final String TAG = "MirakelContentProvider";
 	//
 	static {
@@ -53,8 +53,10 @@ public class MirakelContentProvider extends ContentProvider {
 				LISTS_ITEM);
 		uriMatcher.addURI(Mirakel.AUTHORITY_TYP, Task.TABLE, TASKS);
 		uriMatcher.addURI(Mirakel.AUTHORITY_TYP, Task.TABLE + "/#", TASKS_ITEM);
-		uriMatcher.addURI(Mirakel.AUTHORITY_TYP, SpecialList.TABLE, SPECIAL_LIST);
-		uriMatcher.addURI(Mirakel.AUTHORITY_TYP, SpecialList.TABLE + "/#", SPECIAL_LIST_ITEM);
+		uriMatcher.addURI(Mirakel.AUTHORITY_TYP, SpecialList.TABLE,
+				SPECIAL_LIST);
+		uriMatcher.addURI(Mirakel.AUTHORITY_TYP, SpecialList.TABLE + "/#",
+				SPECIAL_LIST_ITEM);
 	}
 
 	@Override
@@ -141,7 +143,8 @@ public class MirakelContentProvider extends ContentProvider {
 			return Uri.parse("content://" + Mirakel.AUTHORITY_TYP + "/"
 					+ Task.TABLE + "/" + id);
 		case SPECIAL_LIST:
-			id = Mirakel.getWritableDatabase().insert(SpecialList.TABLE, null, values);
+			id = Mirakel.getWritableDatabase().insert(SpecialList.TABLE, null,
+					values);
 			return Uri.parse("content://" + Mirakel.AUTHORITY_TYP + "/"
 					+ SpecialList.TABLE + "/" + id);
 		default:
@@ -234,10 +237,11 @@ public class MirakelContentProvider extends ContentProvider {
 					"(" + selection + ") and _id=" + uri.getLastPathSegment(),
 					selectionArgs);
 		case SPECIAL_LIST:
-			return Mirakel.getWritableDatabase().update(SpecialList.TABLE, values,
-					selection, selectionArgs);
+			return Mirakel.getWritableDatabase().update(SpecialList.TABLE,
+					values, selection, selectionArgs);
 		case SPECIAL_LIST_ITEM:
-			return Mirakel.getWritableDatabase().update(SpecialList.TABLE, values,
+			return Mirakel.getWritableDatabase().update(SpecialList.TABLE,
+					values,
 					"(" + selection + ") and _id=" + uri.getLastPathSegment(),
 					selectionArgs);
 		default:

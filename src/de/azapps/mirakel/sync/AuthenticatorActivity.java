@@ -94,7 +94,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 	/** Keep track of the progress dialog so we can dismiss it */
 	private ProgressDialog mProgressDialog = null;
 
-
 	/** for posting authentication attempts back to UI thread */
 	// private final Handler mHandler = new Handler();
 
@@ -124,7 +123,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 		mRequestNewAccount = mUsername == null;
 		requestWindowFeature(Window.FEATURE_LEFT_ICON);
 		setContentView(R.layout.login_activity);
-		if(VERSION.SDK_INT<VERSION_CODES.HONEYCOMB)
+		if (VERSION.SDK_INT < VERSION_CODES.HONEYCOMB)
 			setTheme(R.style.Dialog);
 		getWindow().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON,
 				android.R.drawable.ic_dialog_alert);
@@ -189,11 +188,11 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 					public void after_exec(String result) {
 						String token = Network.getToken(result);
 						if (token == null) {
-							if(Mirakel.DEBUG)
+							if (Mirakel.DEBUG)
 								Log.e(TAG, "Login faild");
 							hideProgress();
 						} else {
-							if(Mirakel.DEBUG)
+							if (Mirakel.DEBUG)
 								Log.e(TAG, "Login sucess");
 							finishLogin(url, token);
 						}
@@ -207,7 +206,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 			}
 		}
 	}
-
 
 	/**
 	 * Called when response is received from the server for authentication
@@ -262,7 +260,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 		setResult(RESULT_OK, intent);
 		finish();
 	}
-
 
 	public void onAuthenticationCancel() {
 		Log.i(TAG, "onAuthenticationCancel()");

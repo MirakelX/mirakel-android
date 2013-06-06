@@ -76,7 +76,7 @@ public class SpecialListSettingsActivity extends Activity {
 		Intent i = getIntent();
 		specialList = SpecialList.getSpecialList(i.getIntExtra(SLIST_ID, 1));
 		setContentView(R.layout.special_list_preferences);
-		if(android.os.Build.VERSION.SDK_INT>=android.os.Build.VERSION_CODES.HONEYCOMB){
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
 			getActionBar().setDisplayHomeAsUpEnabled(true);
 			getActionBar().setTitle(specialList.getName());
 		}
@@ -132,11 +132,12 @@ public class SpecialListSettingsActivity extends Activity {
 				specialList.save();
 			}
 		});
-		
+
 		((TextView) findViewById(R.id.special_list_where)).setText(specialList
 				.getWhereQuery());
-		if(!Mirakel.DEBUG)
-			((TextView) findViewById(R.id.special_list_where)).setVisibility(View.GONE);
+		if (!Mirakel.DEBUG)
+			((TextView) findViewById(R.id.special_list_where))
+					.setVisibility(View.GONE);
 		lists = ListMirakel.all(false);
 		LinearLayout sortBy = (LinearLayout) findViewById(R.id.special_list_sort_by_view);
 		final TextView sortByShow = (TextView) findViewById(R.id.special_list_sort_by_pref);
@@ -303,49 +304,69 @@ public class SpecialListSettingsActivity extends Activity {
 						final int[] values = new int[lists.size() + 1];
 						mSelectedItems = new boolean[SortingItems.length];
 						values[0] = 0;
-						mSelectedItems[0] = specialList.getWhereQuery().contains("not list_id");
+						mSelectedItems[0] = specialList.getWhereQuery()
+								.contains("not list_id");
 						SortingItems[0] = getString(R.string.inverte);
 						for (int i = 0; i < lists.size(); i++) {
 							values[i + 1] = lists.get(i).getId();
 							SortingItems[i + 1] = lists.get(i).getName();
-							mSelectedItems[i+1]=false;
-							mSelectedItems[i + 1] = (specialList.getWhereQuery().contains(","+lists.get(i).getId())||specialList.getWhereQuery().contains("("+lists.get(i).getId()))
-									&&(specialList.getWhereQuery().contains(lists.get(i).getId()+",")||specialList.getWhereQuery().contains(lists.get(i).getId()+")"));
+							mSelectedItems[i + 1] = false;
+							mSelectedItems[i + 1] = (specialList
+									.getWhereQuery().contains(
+											"," + lists.get(i).getId()) || specialList
+									.getWhereQuery().contains(
+											"(" + lists.get(i).getId()))
+									&& (specialList.getWhereQuery().contains(
+											lists.get(i).getId() + ",") || specialList
+											.getWhereQuery().contains(
+													lists.get(i).getId() + ")"));
 						}
 						AlertDialog.Builder builder = new AlertDialog.Builder(
 								ctx);
 						builder.setTitle(ctx.getString(R.string.select_by));
 						builder.setPositiveButton(R.string.OK,
 								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,	int id) {
-										String newWhere=(mSelectedItems[0]?"not ":"")+"list_id in(";
-										String text=(mSelectedItems[0]?getString(R.string.not_in)+" ":"");
-										boolean first=true;
-										for(int i=1;i<mSelectedItems.length;i++){
-											if(mSelectedItems[i]){
-												text+=(first?"":", ")+SortingItems[i];
-												newWhere+=(first?"":",")+values[i];
-												first=false;
+									public void onClick(DialogInterface dialog,
+											int id) {
+										String newWhere = (mSelectedItems[0] ? "not "
+												: "")
+												+ "list_id in(";
+										String text = (mSelectedItems[0] ? getString(R.string.not_in)
+												+ " "
+												: "");
+										boolean first = true;
+										for (int i = 1; i < mSelectedItems.length; i++) {
+											if (mSelectedItems[i]) {
+												text += (first ? "" : ", ")
+														+ SortingItems[i];
+												newWhere += (first ? "" : ",")
+														+ values[i];
+												first = false;
 											}
 										}
-										updateWhere("list_id", (first?"":newWhere+")"));
-										((TextView) findViewById(R.id.special_list_where_list_content)).setText(first?getString(R.string.empty):text);
+										updateWhere("list_id", (first ? ""
+												: newWhere + ")"));
+										((TextView) findViewById(R.id.special_list_where_list_content))
+												.setText(first ? getString(R.string.empty)
+														: text);
 									}
 								});
 						builder.setNegativeButton(R.string.Cancel,
 								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,	int id) {
+									public void onClick(DialogInterface dialog,
+											int id) {
 										// User cancelled the dialog
 									}
 								});
 
-						builder.setMultiChoiceItems(SortingItems, mSelectedItems,
+						builder.setMultiChoiceItems(SortingItems,
+								mSelectedItems,
 								new OnMultiChoiceClickListener() {
 
 									@Override
 									public void onClick(DialogInterface dialog,
 											int which, boolean isChecked) {
-										 mSelectedItems[which]=isChecked;
+										mSelectedItems[which] = isChecked;
 									}
 
 								});
@@ -353,510 +374,885 @@ public class SpecialListSettingsActivity extends Activity {
 						alert.show();
 					}
 				});
-		
+
 		((LinearLayout) findViewById(R.id.special_list_where_prio))
-		.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				final CharSequence[] SortingItems = new String[6];
-				final int[] values = new int[SortingItems.length];
-				mSelectedItems = new boolean[SortingItems.length];
-				values[0] = -5;
-				mSelectedItems[0] = specialList.getWhereQuery().contains("not priority");
-				SortingItems[0] = getString(R.string.inverte);
-				for (int i = 1; i < SortingItems.length; i++) {
-					SortingItems[i]=(i-3)+"";
-					values[i]=(i-3);
-					mSelectedItems[i]=false;
-				}
-				String[]p=specialList.getWhereQuery().split("and");
-				for(String s:p){
-					if(s.contains("priority")){
-						String[] r = s.replace((!mSelectedItems[0]?"":"not ")+"priority in (", "").replace(")", "").trim().split(",");
-						for(String t:r){
-							try {
-								switch(Integer.parseInt(t)){
-									case -2:mSelectedItems[1]=true;break;
-									case -1:mSelectedItems[2]=true;break;
-									case  0:mSelectedItems[3]=true;break;
-									case  1:mSelectedItems[4]=true;break;
-									case  2:mSelectedItems[5]=true;break;
-									}
-							} catch (NumberFormatException e) {
-							}							
+				.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						final CharSequence[] SortingItems = new String[6];
+						final int[] values = new int[SortingItems.length];
+						mSelectedItems = new boolean[SortingItems.length];
+						values[0] = -5;
+						mSelectedItems[0] = specialList.getWhereQuery()
+								.contains("not priority");
+						SortingItems[0] = getString(R.string.inverte);
+						for (int i = 1; i < SortingItems.length; i++) {
+							SortingItems[i] = (i - 3) + "";
+							values[i] = (i - 3);
+							mSelectedItems[i] = false;
 						}
-						break;
-					}
-				}
-				AlertDialog.Builder builder = new AlertDialog.Builder(
-						ctx);
-				builder.setTitle(ctx.getString(R.string.select_by));
-				builder.setPositiveButton(R.string.OK,
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog,	int id) {
-								String newWhere=(mSelectedItems[0]?"not ":"")+"priority in (";
-								String text=(mSelectedItems[0]?getString(R.string.not_in)+" ":"");
-								boolean first=true;
-								for(int i=1;i<mSelectedItems.length;i++){
-									if(mSelectedItems[i]){
-										text+=(first?"":", ")+values[i];
-										newWhere+=(first?"":",")+values[i];
-										first=false;
+						String[] p = specialList.getWhereQuery().split("and");
+						for (String s : p) {
+							if (s.contains("priority")) {
+								String[] r = s
+										.replace(
+												(!mSelectedItems[0] ? ""
+														: "not ")
+														+ "priority in (", "")
+										.replace(")", "").trim().split(",");
+								for (String t : r) {
+									try {
+										switch (Integer.parseInt(t)) {
+										case -2:
+											mSelectedItems[1] = true;
+											break;
+										case -1:
+											mSelectedItems[2] = true;
+											break;
+										case 0:
+											mSelectedItems[3] = true;
+											break;
+										case 1:
+											mSelectedItems[4] = true;
+											break;
+										case 2:
+											mSelectedItems[5] = true;
+											break;
+										}
+									} catch (NumberFormatException e) {
 									}
 								}
-								updateWhere("priority", (first?"":newWhere+")"));
-								((TextView) findViewById(R.id.special_list_where_prio_content)).setText(first?getString(R.string.empty):text);
-							}
-						});
-				builder.setNegativeButton(R.string.Cancel,
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog,	int id) {
-								// User cancelled the dialog
-							}
-						});
-
-				builder.setMultiChoiceItems(SortingItems, mSelectedItems,
-						new OnMultiChoiceClickListener() {
-
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which, boolean isChecked) {
-								 mSelectedItems[which]=isChecked;
-							}
-
-						});
-				alert = builder.create();
-				alert.show();
-			}
-		});
-		((LinearLayout)findViewById(R.id.special_list_where_content)).setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				AlertDialog.Builder builder = new AlertDialog.Builder(
-						ctx);
-				builder.setTitle(ctx.getString(R.string.select_by));
-				builder.setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						
-					}
-				});
-				final View dialogView = getView(R.layout.content_name_dialog);
-				builder.setView(dialogView);
-				String[]p=specialList.getWhereQuery().split("and");
-				((RadioButton)dialogView.findViewById(R.id.where_like_contain)).setChecked(true);
-				for(String s:p){
-					if(s.contains("content")){
-						if(s.contains("not")){
-							s=s.replace("not", "").trim();
-							((CheckBox)dialogView.findViewById(R.id.where_like_inverte)).setChecked(true);
-						}
-						s = s.replace("content like", "").replace("'", "").trim();
-						if(s.charAt(0)=='%'){
-							if(s.charAt(s.length()-1)=='%'){
-								((EditText)dialogView.findViewById(R.id.where_like)).setText(s.replace("%", ""));
-								((RadioButton)dialogView.findViewById(R.id.where_like_contain)).setChecked(true);
-							}else{
-								((EditText)dialogView.findViewById(R.id.where_like)).setText(s.replace("%", ""));
-								((RadioButton)dialogView.findViewById(R.id.where_like_begin)).setChecked(true);
-							}
-						}else if(s.charAt(s.length()-1)=='%'){
-							((EditText)dialogView.findViewById(R.id.where_like)).setText(s.replace("%", ""));
-							((RadioButton)dialogView.findViewById(R.id.where_like_end)).setChecked(true);
-						}
-						break;						
-					}
-				}
-				builder.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						String newWhere=(((CheckBox)dialogView.findViewById(R.id.where_like_inverte)).isChecked()?"not ":"")+"content like ";
-						String text=(((CheckBox)dialogView.findViewById(R.id.where_like_inverte)).isChecked()?getString(R.string.not)+" ":"");
-						String t=((EditText)dialogView.findViewById(R.id.where_like)).getText().toString();
-						switch (((RadioGroup)dialogView.findViewById(R.id.where_like_radio)).getCheckedRadioButtonId()) {
-						case R.id.where_like_begin:
-							newWhere+="'"+t+"%'";
-							text+=getString(R.string.where_like_begin_text)+" "+t;
-							break;
-						case R.id.where_like_end:
-							newWhere+="'%"+t+"'";
-							text+=getString(R.string.where_like_end_text)+" "+t;
-							break;
-						default:
-							newWhere+="'%"+t+"%'";
-							text+=getString(R.string.where_like_contain_text)+" "+t;
-							break;
-						}
-						updateWhere("content", newWhere);
-						((TextView) findViewById(R.id.special_list_where_content_content)).setText(text);
-					}
-				});
-
-				alert = builder.create();
-				alert.show();
-				
-			}
-		});
-		
-		((LinearLayout)findViewById(R.id.special_list_where_name)).setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				AlertDialog.Builder builder = new AlertDialog.Builder(
-						ctx);
-				builder.setTitle(ctx.getString(R.string.select_by));
-				builder.setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						
-					}
-				});
-				final View dialogView = getView(R.layout.content_name_dialog);
-				builder.setView(dialogView);
-				String[]p=specialList.getWhereQuery().split("and");
-				((RadioButton)dialogView.findViewById(R.id.where_like_contain)).setChecked(true);
-				for(String s:p){
-					if(s.contains("name")){
-						if(s.contains("not")){
-							s=s.replace("not", "").trim();
-							((CheckBox)dialogView.findViewById(R.id.where_like_inverte)).setChecked(true);
-						}
-						s = s.replace("name like", "").replace("'", "").trim();
-						if(s.charAt(0)=='%'){
-							if(s.charAt(s.length()-1)=='%'){
-								((EditText)dialogView.findViewById(R.id.where_like)).setText(s.replace("%", ""));
-								((RadioButton)dialogView.findViewById(R.id.where_like_contain)).setChecked(true);
-							}else{
-								((EditText)dialogView.findViewById(R.id.where_like)).setText(s.replace("%", ""));
-								((RadioButton)dialogView.findViewById(R.id.where_like_begin)).setChecked(true);
-							}
-						}else if(s.charAt(s.length()-1)=='%'){
-							((EditText)dialogView.findViewById(R.id.where_like)).setText(s.replace("%", ""));
-							((RadioButton)dialogView.findViewById(R.id.where_like_end)).setChecked(true);
-						}
-						break;						
-					}
-				}
-				builder.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						String newWhere=(((CheckBox)dialogView.findViewById(R.id.where_like_inverte)).isChecked()?"not ":"")+"name like ";
-						String text=(((CheckBox)dialogView.findViewById(R.id.where_like_inverte)).isChecked()?getString(R.string.not)+" ":"");
-						String t=((EditText)dialogView.findViewById(R.id.where_like)).getText().toString();
-						switch (((RadioGroup)dialogView.findViewById(R.id.where_like_radio)).getCheckedRadioButtonId()) {
-						case R.id.where_like_begin:
-							newWhere+="'"+t+"%'";
-							text+=getString(R.string.where_like_begin_text)+" "+t;
-							break;
-						case R.id.where_like_end:
-							newWhere+="'%"+t+"'";
-							text+=getString(R.string.where_like_end_text)+" "+t;
-							break;
-						default:
-							newWhere+="'%"+t+"%'";
-							text+=getString(R.string.where_like_contain_text)+" "+t;
-							break;
-						}
-						updateWhere("name", newWhere);
-						((TextView) findViewById(R.id.special_list_where_name_content)).setText(text);
-					}
-				});
-				
-				alert = builder.create();
-				alert.show();
-				
-			}
-			
-		});
-		
-		((LinearLayout)findViewById(R.id.special_list_where_due)).setOnClickListener(new OnClickListener() {		
-			@Override
-			public void onClick(View v) {
-				AlertDialog.Builder builder = new AlertDialog.Builder(
-						ctx);
-				builder.setTitle(ctx.getString(R.string.select_by));
-				builder.setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-					}
-				});
-				builder.setNeutralButton(R.string.no_date, new DialogInterface.OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						updateWhere("due", "");
-						((TextView)findViewById(R.id.special_list_where_due_content)).setText(getString(R.string.empty));
-					}
-				});
-				final String[] s =new String[100];
-				for(int i=0;i<s.length;i++){
-					s[i]=(i>10?"+":"")+(i-10)+"";
-				}
-				final View dialogView=getNumericPicker();
-				builder.setView(dialogView);
-				if(android.os.Build.VERSION.SDK_INT>=android.os.Build.VERSION_CODES.HONEYCOMB){
-					((NumberPicker)dialogView.findViewById(R.id.due_day_year)).setDisplayedValues(getResources().getStringArray(R.array.due_day_year_values));
-					((NumberPicker)dialogView.findViewById(R.id.due_day_year)).setMaxValue(getResources().getStringArray(R.array.due_day_year_values).length-1);					
-					((NumberPicker)dialogView.findViewById(R.id.due_val)).setMaxValue(s.length-1);
-					((NumberPicker)dialogView.findViewById(R.id.due_val)).setValue(10);
-					((NumberPicker)dialogView.findViewById(R.id.due_val)).setMinValue(0);
-					((NumberPicker)dialogView.findViewById(R.id.due_val)).setDisplayedValues(s);
-					((NumberPicker)dialogView.findViewById(R.id.due_val)).setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-					((NumberPicker)dialogView.findViewById(R.id.due_day_year)).setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-					((NumberPicker)dialogView.findViewById(R.id.due_val)).setWrapSelectorWheel(false);
-				}else{
-					((TextView)dialogView.findViewById(R.id.dialog_due_pick_val)).setText(s[10]);
-					((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).setText(getResources().getStringArray(R.array.due_day_year_values)[0]);
-					((Button)dialogView.findViewById(R.id.dialog_due_pick_plus_val)).setOnClickListener(new OnClickListener() {
-						
-						@Override
-						public void onClick(View v) {
-							int val=Integer.parseInt(((TextView)dialogView.findViewById(R.id.dialog_due_pick_val)).getText().toString().replace("+", ""))+10;
-							if(val+1<s.length){
-								((TextView)dialogView.findViewById(R.id.dialog_due_pick_val)).setText(s[val+1]);
-							}
-							int day=0;
-							if(((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).getText().toString().contains("month")){
-								day=1;
-							}else if(((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).getText().toString().contains("month")){
-								day=2;
-							}
-							if(val+1==11||val+1==9){								
-								((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day))
-								.setText(getResources().getStringArray(R.array.due_day_year_values)[day]);
-							}else{
-								((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day))
-								.setText(getResources().getStringArray(R.array.due_day_year_values_plural)[day]);
-							}
-							
-						}
-					});
-					((Button)dialogView.findViewById(R.id.dialog_due_pick_minus_val)).setOnClickListener(new OnClickListener() {
-						
-						@Override
-						public void onClick(View v) {
-							int val=Integer.parseInt(((TextView)dialogView.findViewById(R.id.dialog_due_pick_val)).getText().toString().replace("+", ""))+10;
-							if(val-1>0){
-								((TextView)dialogView.findViewById(R.id.dialog_due_pick_val)).setText(s[val-1]);
-							}
-							int day=0;
-							if(((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).getText().toString().contains("month")){
-								day=1;
-							}else if(((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).getText().toString().contains("month")){
-								day=2;
-							}
-							if(val-1==11||val-1==9){								
-								((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day))
-								.setText(getResources().getStringArray(R.array.due_day_year_values)[day]);
-							}else{
-								((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day))
-								.setText(getResources().getStringArray(R.array.due_day_year_values_plural)[day]);
-							}
-						}
-					});
-					((Button)dialogView.findViewById(R.id.dialog_due_pick_plus_day)).setOnClickListener(new OnClickListener() {
-						
-						@Override
-						public void onClick(View v) {
-							if(((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).getText().toString().contains(getResources().getStringArray(R.array.due_day_year_values_plural)[0])){
-								((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).setText(getResources().getStringArray(R.array.due_day_year_values_plural)[1]);
-							}else if (((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).getText().toString().contains(getResources().getStringArray(R.array.due_day_year_values)[0])){
-								((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).setText(getResources().getStringArray(R.array.due_day_year_values)[1]);
-							}else if (((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).getText().toString().contains(getResources().getStringArray(R.array.due_day_year_values_plural)[1])){
-								((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).setText(getResources().getStringArray(R.array.due_day_year_values_plural)[2]);
-							}else if (((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).getText().toString().contains(getResources().getStringArray(R.array.due_day_year_values)[1])){
-								((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).setText(getResources().getStringArray(R.array.due_day_year_values)[2]);
-							}
-						}
-					});
-					((Button)dialogView.findViewById(R.id.dialog_due_pick_minus_day)).setOnClickListener(new OnClickListener() {
-						
-						@Override
-						public void onClick(View v) {
-							if(((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).getText().toString().contains(getResources().getStringArray(R.array.due_day_year_values_plural)[2])){
-								((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).setText(getResources().getStringArray(R.array.due_day_year_values_plural)[1]);
-							}else if (((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).getText().toString().contains(getResources().getStringArray(R.array.due_day_year_values)[2])){
-								((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).setText(getResources().getStringArray(R.array.due_day_year_values)[1]);
-							}else if (((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).getText().toString().contains(getResources().getStringArray(R.array.due_day_year_values_plural)[1])){
-								((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).setText(getResources().getStringArray(R.array.due_day_year_values_plural)[0]);
-							}else if (((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).getText().toString().contains(getResources().getStringArray(R.array.due_day_year_values)[1])){
-								((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).setText(getResources().getStringArray(R.array.due_day_year_values)[0]);
-							}
-						}
-					});
-				}
-
-				String[]p=specialList.getWhereQuery().split("and");
-				for(String r:p){
-					if(r.contains("date(due)")){
-						Pattern pattern = Pattern.compile( "[\"'].*?[\"']" );
-						Matcher matcher = pattern.matcher(r);
-						int i=0;
-						while ( matcher.find() ){
-							if(++i>1){
-								r=matcher.group().replaceAll("[\"']", "");
 								break;
 							}
 						}
-						if(r.contains("localtime")){
-							if(VERSION.SDK_INT>=VERSION_CODES.HONEYCOMB){
-								((NumberPicker)dialogView.findViewById(R.id.due_day_year)).setDisplayedValues(getResources().getStringArray(R.array.due_day_year_values));
-								((NumberPicker)dialogView.findViewById(R.id.due_day_year)).setMaxValue(getResources().getStringArray(R.array.due_day_year_values).length-1);
-								((NumberPicker)dialogView.findViewById(R.id.due_val)).setDisplayedValues(s);
-								((NumberPicker)dialogView.findViewById(R.id.due_val)).setMaxValue(s.length-1);
-								((NumberPicker)dialogView.findViewById(R.id.due_val)).setValue(10);
-							}else{
-								((TextView)dialogView.findViewById(R.id.dialog_due_pick_val)).setText(s[10]);
-								((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).setText(getResources().getStringArray(R.array.due_day_year_values_plural)[0]);
-							}
-						}else{
-							int day=0;
-							if(r.contains("year")){
-								r=r.replace((r.contains("years")?"years":"year"), "").trim();
-								day=2;
-							}else if(r.contains("month")){
-								r=r.replace((r.contains("months")?"months":"month"), "").trim();
-								day=1;
-							}else{
-								r=r.replace((r.contains("days")?"days":"day"), "").trim();
-							}
-							int val=0;
-							try {
-								val=Integer.parseInt(r.replace("+", ""));
-							} catch (NumberFormatException e) {
-								e.printStackTrace();
-							}
-							if(val==1||val==-1){
-								if(VERSION.SDK_INT>=VERSION_CODES.HONEYCOMB){
-									((NumberPicker)dialogView.findViewById(R.id.due_day_year)).setDisplayedValues(getResources().getStringArray(R.array.due_day_year_values));
-								}else{
-									((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).setText(getResources().getStringArray(R.array.due_day_year_values)[day]);
-								}
-							}else{
-								if(VERSION.SDK_INT>=VERSION_CODES.HONEYCOMB){
-									((NumberPicker)dialogView.findViewById(R.id.due_day_year)).setDisplayedValues(getResources().getStringArray(R.array.due_day_year_values_plural));
-								}else{
-									((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).setText(getResources().getStringArray(R.array.due_day_year_values_plural)[day]);
-								}
-							}
-							if(VERSION.SDK_INT>=VERSION_CODES.HONEYCOMB){
-								//TODO fix bug on negativ values
-								/*If you try to show -1 -10 is shown*/
-								((NumberPicker)dialogView.findViewById(R.id.due_day_year)).setValue(day);
-								((NumberPicker)dialogView.findViewById(R.id.due_val)).setValue(10+val);
-							}else{
-								((TextView)dialogView.findViewById(R.id.dialog_due_pick_val)).setText(s[10+val]);
-							}
-							
-						}
-							
+						AlertDialog.Builder builder = new AlertDialog.Builder(
+								ctx);
+						builder.setTitle(ctx.getString(R.string.select_by));
+						builder.setPositiveButton(R.string.OK,
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										String newWhere = (mSelectedItems[0] ? "not "
+												: "")
+												+ "priority in (";
+										String text = (mSelectedItems[0] ? getString(R.string.not_in)
+												+ " "
+												: "");
+										boolean first = true;
+										for (int i = 1; i < mSelectedItems.length; i++) {
+											if (mSelectedItems[i]) {
+												text += (first ? "" : ", ")
+														+ values[i];
+												newWhere += (first ? "" : ",")
+														+ values[i];
+												first = false;
+											}
+										}
+										updateWhere("priority", (first ? ""
+												: newWhere + ")"));
+										((TextView) findViewById(R.id.special_list_where_prio_content))
+												.setText(first ? getString(R.string.empty)
+														: text);
+									}
+								});
+						builder.setNegativeButton(R.string.Cancel,
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										// User cancelled the dialog
+									}
+								});
+
+						builder.setMultiChoiceItems(SortingItems,
+								mSelectedItems,
+								new OnMultiChoiceClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which, boolean isChecked) {
+										mSelectedItems[which] = isChecked;
+									}
+
+								});
+						alert = builder.create();
+						alert.show();
 					}
-				}
-				if(VERSION.SDK_INT>=VERSION_CODES.HONEYCOMB){
-					((NumberPicker)dialogView.findViewById(R.id.due_val)).setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-		
-						@Override
-						public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-							if(newVal==11||newVal==9){//=1||=9
-								((NumberPicker)dialogView.findViewById(R.id.due_day_year)).setDisplayedValues(getResources().getStringArray(R.array.due_day_year_values));
-							}else{
-								((NumberPicker)dialogView.findViewById(R.id.due_day_year)).setDisplayedValues(getResources().getStringArray(R.array.due_day_year_values_plural));
-							}
-							
-						}
-					});
-				}
-		        builder.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
-					
+				});
+		((LinearLayout) findViewById(R.id.special_list_where_content))
+				.setOnClickListener(new OnClickListener() {
+
 					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						int val=0;
-						if(VERSION.SDK_INT>=VERSION_CODES.HONEYCOMB)
-							val=((NumberPicker)dialogView.findViewById(R.id.due_val)).getValue();
+					public void onClick(View v) {
+						AlertDialog.Builder builder = new AlertDialog.Builder(
+								ctx);
+						builder.setTitle(ctx.getString(R.string.select_by));
+						builder.setNegativeButton(R.string.Cancel,
+								new DialogInterface.OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+
+									}
+								});
+						final View dialogView = getView(R.layout.content_name_dialog);
+						builder.setView(dialogView);
+						String[] p = specialList.getWhereQuery().split("and");
+						((RadioButton) dialogView
+								.findViewById(R.id.where_like_contain))
+								.setChecked(true);
+						for (String s : p) {
+							if (s.contains("content")) {
+								if (s.contains("not")) {
+									s = s.replace("not", "").trim();
+									((CheckBox) dialogView
+											.findViewById(R.id.where_like_inverte))
+											.setChecked(true);
+								}
+								s = s.replace("content like", "")
+										.replace("'", "").trim();
+								if (s.charAt(0) == '%') {
+									if (s.charAt(s.length() - 1) == '%') {
+										((EditText) dialogView
+												.findViewById(R.id.where_like))
+												.setText(s.replace("%", ""));
+										((RadioButton) dialogView
+												.findViewById(R.id.where_like_contain))
+												.setChecked(true);
+									} else {
+										((EditText) dialogView
+												.findViewById(R.id.where_like))
+												.setText(s.replace("%", ""));
+										((RadioButton) dialogView
+												.findViewById(R.id.where_like_begin))
+												.setChecked(true);
+									}
+								} else if (s.charAt(s.length() - 1) == '%') {
+									((EditText) dialogView
+											.findViewById(R.id.where_like))
+											.setText(s.replace("%", ""));
+									((RadioButton) dialogView
+											.findViewById(R.id.where_like_end))
+											.setChecked(true);
+								}
+								break;
+							}
+						}
+						builder.setPositiveButton(R.string.OK,
+								new DialogInterface.OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										String newWhere = (((CheckBox) dialogView
+												.findViewById(R.id.where_like_inverte))
+												.isChecked() ? "not " : "")
+												+ "content like ";
+										String text = (((CheckBox) dialogView
+												.findViewById(R.id.where_like_inverte))
+												.isChecked() ? getString(R.string.not)
+												+ " "
+												: "");
+										String t = ((EditText) dialogView
+												.findViewById(R.id.where_like))
+												.getText().toString();
+										switch (((RadioGroup) dialogView
+												.findViewById(R.id.where_like_radio))
+												.getCheckedRadioButtonId()) {
+										case R.id.where_like_begin:
+											newWhere += "'" + t + "%'";
+											text += getString(R.string.where_like_begin_text)
+													+ " " + t;
+											break;
+										case R.id.where_like_end:
+											newWhere += "'%" + t + "'";
+											text += getString(R.string.where_like_end_text)
+													+ " " + t;
+											break;
+										default:
+											newWhere += "'%" + t + "%'";
+											text += getString(R.string.where_like_contain_text)
+													+ " " + t;
+											break;
+										}
+										updateWhere("content", newWhere);
+										((TextView) findViewById(R.id.special_list_where_content_content))
+												.setText(text);
+									}
+								});
+
+						alert = builder.create();
+						alert.show();
+
+					}
+				});
+
+		((LinearLayout) findViewById(R.id.special_list_where_name))
+				.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						AlertDialog.Builder builder = new AlertDialog.Builder(
+								ctx);
+						builder.setTitle(ctx.getString(R.string.select_by));
+						builder.setNegativeButton(R.string.Cancel,
+								new DialogInterface.OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+
+									}
+								});
+						final View dialogView = getView(R.layout.content_name_dialog);
+						builder.setView(dialogView);
+						String[] p = specialList.getWhereQuery().split("and");
+						((RadioButton) dialogView
+								.findViewById(R.id.where_like_contain))
+								.setChecked(true);
+						for (String s : p) {
+							if (s.contains("name")) {
+								if (s.contains("not")) {
+									s = s.replace("not", "").trim();
+									((CheckBox) dialogView
+											.findViewById(R.id.where_like_inverte))
+											.setChecked(true);
+								}
+								s = s.replace("name like", "").replace("'", "")
+										.trim();
+								if (s.charAt(0) == '%') {
+									if (s.charAt(s.length() - 1) == '%') {
+										((EditText) dialogView
+												.findViewById(R.id.where_like))
+												.setText(s.replace("%", ""));
+										((RadioButton) dialogView
+												.findViewById(R.id.where_like_contain))
+												.setChecked(true);
+									} else {
+										((EditText) dialogView
+												.findViewById(R.id.where_like))
+												.setText(s.replace("%", ""));
+										((RadioButton) dialogView
+												.findViewById(R.id.where_like_begin))
+												.setChecked(true);
+									}
+								} else if (s.charAt(s.length() - 1) == '%') {
+									((EditText) dialogView
+											.findViewById(R.id.where_like))
+											.setText(s.replace("%", ""));
+									((RadioButton) dialogView
+											.findViewById(R.id.where_like_end))
+											.setChecked(true);
+								}
+								break;
+							}
+						}
+						builder.setPositiveButton(R.string.OK,
+								new DialogInterface.OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										String newWhere = (((CheckBox) dialogView
+												.findViewById(R.id.where_like_inverte))
+												.isChecked() ? "not " : "")
+												+ "name like ";
+										String text = (((CheckBox) dialogView
+												.findViewById(R.id.where_like_inverte))
+												.isChecked() ? getString(R.string.not)
+												+ " "
+												: "");
+										String t = ((EditText) dialogView
+												.findViewById(R.id.where_like))
+												.getText().toString();
+										switch (((RadioGroup) dialogView
+												.findViewById(R.id.where_like_radio))
+												.getCheckedRadioButtonId()) {
+										case R.id.where_like_begin:
+											newWhere += "'" + t + "%'";
+											text += getString(R.string.where_like_begin_text)
+													+ " " + t;
+											break;
+										case R.id.where_like_end:
+											newWhere += "'%" + t + "'";
+											text += getString(R.string.where_like_end_text)
+													+ " " + t;
+											break;
+										default:
+											newWhere += "'%" + t + "%'";
+											text += getString(R.string.where_like_contain_text)
+													+ " " + t;
+											break;
+										}
+										updateWhere("name", newWhere);
+										((TextView) findViewById(R.id.special_list_where_name_content))
+												.setText(text);
+									}
+								});
+
+						alert = builder.create();
+						alert.show();
+
+					}
+
+				});
+
+		((LinearLayout) findViewById(R.id.special_list_where_due))
+				.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						AlertDialog.Builder builder = new AlertDialog.Builder(
+								ctx);
+						builder.setTitle(ctx.getString(R.string.select_by));
+						builder.setNegativeButton(R.string.Cancel,
+								new DialogInterface.OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+									}
+								});
+						builder.setNeutralButton(R.string.no_date,
+								new DialogInterface.OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										updateWhere("due", "");
+										((TextView) findViewById(R.id.special_list_where_due_content))
+												.setText(getString(R.string.empty));
+									}
+								});
+						final String[] s = new String[100];
+						for (int i = 0; i < s.length; i++) {
+							s[i] = (i > 10 ? "+" : "") + (i - 10) + "";
+						}
+						final View dialogView = getNumericPicker();
+						builder.setView(dialogView);
+						if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
+							((NumberPicker) dialogView
+									.findViewById(R.id.due_day_year))
+									.setDisplayedValues(getResources()
+											.getStringArray(
+													R.array.due_day_year_values));
+							((NumberPicker) dialogView
+									.findViewById(R.id.due_day_year))
+									.setMaxValue(getResources().getStringArray(
+											R.array.due_day_year_values).length - 1);
+							((NumberPicker) dialogView
+									.findViewById(R.id.due_val))
+									.setMaxValue(s.length - 1);
+							((NumberPicker) dialogView
+									.findViewById(R.id.due_val)).setValue(10);
+							((NumberPicker) dialogView
+									.findViewById(R.id.due_val)).setMinValue(0);
+							((NumberPicker) dialogView
+									.findViewById(R.id.due_val))
+									.setDisplayedValues(s);
+							((NumberPicker) dialogView
+									.findViewById(R.id.due_val))
+									.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+							((NumberPicker) dialogView
+									.findViewById(R.id.due_day_year))
+									.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+							((NumberPicker) dialogView
+									.findViewById(R.id.due_val))
+									.setWrapSelectorWheel(false);
+						} else {
+							((TextView) dialogView
+									.findViewById(R.id.dialog_due_pick_val))
+									.setText(s[10]);
+							((TextView) dialogView
+									.findViewById(R.id.dialog_due_pick_val_day))
+									.setText(getResources().getStringArray(
+											R.array.due_day_year_values)[0]);
+							((Button) dialogView
+									.findViewById(R.id.dialog_due_pick_plus_val))
+									.setOnClickListener(new OnClickListener() {
+
+										@Override
+										public void onClick(View v) {
+											int val = Integer
+													.parseInt(((TextView) dialogView
+															.findViewById(R.id.dialog_due_pick_val))
+															.getText()
+															.toString()
+															.replace("+", "")) + 10;
+											if (val + 1 < s.length) {
+												((TextView) dialogView
+														.findViewById(R.id.dialog_due_pick_val))
+														.setText(s[val + 1]);
+											}
+											int day = 0;
+											if (((TextView) dialogView
+													.findViewById(R.id.dialog_due_pick_val_day))
+													.getText().toString()
+													.contains("month")) {
+												day = 1;
+											} else if (((TextView) dialogView
+													.findViewById(R.id.dialog_due_pick_val_day))
+													.getText().toString()
+													.contains("month")) {
+												day = 2;
+											}
+											if (val + 1 == 11 || val + 1 == 9) {
+												((TextView) dialogView
+														.findViewById(R.id.dialog_due_pick_val_day))
+														.setText(getResources()
+																.getStringArray(
+																		R.array.due_day_year_values)[day]);
+											} else {
+												((TextView) dialogView
+														.findViewById(R.id.dialog_due_pick_val_day))
+														.setText(getResources()
+																.getStringArray(
+																		R.array.due_day_year_values_plural)[day]);
+											}
+
+										}
+									});
+							((Button) dialogView
+									.findViewById(R.id.dialog_due_pick_minus_val))
+									.setOnClickListener(new OnClickListener() {
+
+										@Override
+										public void onClick(View v) {
+											int val = Integer
+													.parseInt(((TextView) dialogView
+															.findViewById(R.id.dialog_due_pick_val))
+															.getText()
+															.toString()
+															.replace("+", "")) + 10;
+											if (val - 1 > 0) {
+												((TextView) dialogView
+														.findViewById(R.id.dialog_due_pick_val))
+														.setText(s[val - 1]);
+											}
+											int day = 0;
+											if (((TextView) dialogView
+													.findViewById(R.id.dialog_due_pick_val_day))
+													.getText().toString()
+													.contains("month")) {
+												day = 1;
+											} else if (((TextView) dialogView
+													.findViewById(R.id.dialog_due_pick_val_day))
+													.getText().toString()
+													.contains("month")) {
+												day = 2;
+											}
+											if (val - 1 == 11 || val - 1 == 9) {
+												((TextView) dialogView
+														.findViewById(R.id.dialog_due_pick_val_day))
+														.setText(getResources()
+																.getStringArray(
+																		R.array.due_day_year_values)[day]);
+											} else {
+												((TextView) dialogView
+														.findViewById(R.id.dialog_due_pick_val_day))
+														.setText(getResources()
+																.getStringArray(
+																		R.array.due_day_year_values_plural)[day]);
+											}
+										}
+									});
+							((Button) dialogView
+									.findViewById(R.id.dialog_due_pick_plus_day))
+									.setOnClickListener(new OnClickListener() {
+
+										@Override
+										public void onClick(View v) {
+											if (((TextView) dialogView
+													.findViewById(R.id.dialog_due_pick_val_day))
+													.getText()
+													.toString()
+													.contains(
+															getResources()
+																	.getStringArray(
+																			R.array.due_day_year_values_plural)[0])) {
+												((TextView) dialogView
+														.findViewById(R.id.dialog_due_pick_val_day))
+														.setText(getResources()
+																.getStringArray(
+																		R.array.due_day_year_values_plural)[1]);
+											} else if (((TextView) dialogView
+													.findViewById(R.id.dialog_due_pick_val_day))
+													.getText()
+													.toString()
+													.contains(
+															getResources()
+																	.getStringArray(
+																			R.array.due_day_year_values)[0])) {
+												((TextView) dialogView
+														.findViewById(R.id.dialog_due_pick_val_day))
+														.setText(getResources()
+																.getStringArray(
+																		R.array.due_day_year_values)[1]);
+											} else if (((TextView) dialogView
+													.findViewById(R.id.dialog_due_pick_val_day))
+													.getText()
+													.toString()
+													.contains(
+															getResources()
+																	.getStringArray(
+																			R.array.due_day_year_values_plural)[1])) {
+												((TextView) dialogView
+														.findViewById(R.id.dialog_due_pick_val_day))
+														.setText(getResources()
+																.getStringArray(
+																		R.array.due_day_year_values_plural)[2]);
+											} else if (((TextView) dialogView
+													.findViewById(R.id.dialog_due_pick_val_day))
+													.getText()
+													.toString()
+													.contains(
+															getResources()
+																	.getStringArray(
+																			R.array.due_day_year_values)[1])) {
+												((TextView) dialogView
+														.findViewById(R.id.dialog_due_pick_val_day))
+														.setText(getResources()
+																.getStringArray(
+																		R.array.due_day_year_values)[2]);
+											}
+										}
+									});
+							((Button) dialogView
+									.findViewById(R.id.dialog_due_pick_minus_day))
+									.setOnClickListener(new OnClickListener() {
+
+										@Override
+										public void onClick(View v) {
+											if (((TextView) dialogView
+													.findViewById(R.id.dialog_due_pick_val_day))
+													.getText()
+													.toString()
+													.contains(
+															getResources()
+																	.getStringArray(
+																			R.array.due_day_year_values_plural)[2])) {
+												((TextView) dialogView
+														.findViewById(R.id.dialog_due_pick_val_day))
+														.setText(getResources()
+																.getStringArray(
+																		R.array.due_day_year_values_plural)[1]);
+											} else if (((TextView) dialogView
+													.findViewById(R.id.dialog_due_pick_val_day))
+													.getText()
+													.toString()
+													.contains(
+															getResources()
+																	.getStringArray(
+																			R.array.due_day_year_values)[2])) {
+												((TextView) dialogView
+														.findViewById(R.id.dialog_due_pick_val_day))
+														.setText(getResources()
+																.getStringArray(
+																		R.array.due_day_year_values)[1]);
+											} else if (((TextView) dialogView
+													.findViewById(R.id.dialog_due_pick_val_day))
+													.getText()
+													.toString()
+													.contains(
+															getResources()
+																	.getStringArray(
+																			R.array.due_day_year_values_plural)[1])) {
+												((TextView) dialogView
+														.findViewById(R.id.dialog_due_pick_val_day))
+														.setText(getResources()
+																.getStringArray(
+																		R.array.due_day_year_values_plural)[0]);
+											} else if (((TextView) dialogView
+													.findViewById(R.id.dialog_due_pick_val_day))
+													.getText()
+													.toString()
+													.contains(
+															getResources()
+																	.getStringArray(
+																			R.array.due_day_year_values)[1])) {
+												((TextView) dialogView
+														.findViewById(R.id.dialog_due_pick_val_day))
+														.setText(getResources()
+																.getStringArray(
+																		R.array.due_day_year_values)[0]);
+											}
+										}
+									});
+						}
+
+						String[] p = specialList.getWhereQuery().split("and");
+						for (String r : p) {
+							if (r.contains("date(due)")) {
+								Pattern pattern = Pattern
+										.compile("[\"'].*?[\"']");
+								Matcher matcher = pattern.matcher(r);
+								int i = 0;
+								while (matcher.find()) {
+									if (++i > 1) {
+										r = matcher.group().replaceAll("[\"']",
+												"");
+										break;
+									}
+								}
+								if (r.contains("localtime")) {
+									if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB) {
+										((NumberPicker) dialogView
+												.findViewById(R.id.due_day_year))
+												.setDisplayedValues(getResources()
+														.getStringArray(
+																R.array.due_day_year_values));
+										((NumberPicker) dialogView
+												.findViewById(R.id.due_day_year))
+												.setMaxValue(getResources()
+														.getStringArray(
+																R.array.due_day_year_values).length - 1);
+										((NumberPicker) dialogView
+												.findViewById(R.id.due_val))
+												.setDisplayedValues(s);
+										((NumberPicker) dialogView
+												.findViewById(R.id.due_val))
+												.setMaxValue(s.length - 1);
+										((NumberPicker) dialogView
+												.findViewById(R.id.due_val))
+												.setValue(10);
+									} else {
+										((TextView) dialogView
+												.findViewById(R.id.dialog_due_pick_val))
+												.setText(s[10]);
+										((TextView) dialogView
+												.findViewById(R.id.dialog_due_pick_val_day))
+												.setText(getResources()
+														.getStringArray(
+																R.array.due_day_year_values_plural)[0]);
+									}
+								} else {
+									int day = 0;
+									if (r.contains("year")) {
+										r = r.replace(
+												(r.contains("years") ? "years"
+														: "year"), "").trim();
+										day = 2;
+									} else if (r.contains("month")) {
+										r = r.replace(
+												(r.contains("months") ? "months"
+														: "month"), "").trim();
+										day = 1;
+									} else {
+										r = r.replace(
+												(r.contains("days") ? "days"
+														: "day"), "").trim();
+									}
+									int val = 0;
+									try {
+										val = Integer.parseInt(r.replace("+",
+												""));
+									} catch (NumberFormatException e) {
+										e.printStackTrace();
+									}
+									if (val == 1 || val == -1) {
+										if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB) {
+											((NumberPicker) dialogView
+													.findViewById(R.id.due_day_year))
+													.setDisplayedValues(getResources()
+															.getStringArray(
+																	R.array.due_day_year_values));
+										} else {
+											((TextView) dialogView
+													.findViewById(R.id.dialog_due_pick_val_day))
+													.setText(getResources()
+															.getStringArray(
+																	R.array.due_day_year_values)[day]);
+										}
+									} else {
+										if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB) {
+											((NumberPicker) dialogView
+													.findViewById(R.id.due_day_year))
+													.setDisplayedValues(getResources()
+															.getStringArray(
+																	R.array.due_day_year_values_plural));
+										} else {
+											((TextView) dialogView
+													.findViewById(R.id.dialog_due_pick_val_day))
+													.setText(getResources()
+															.getStringArray(
+																	R.array.due_day_year_values_plural)[day]);
+										}
+									}
+									if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB) {
+										// TODO fix bug on negativ values
+										/* If you try to show -1 -10 is shown */
+										((NumberPicker) dialogView
+												.findViewById(R.id.due_day_year))
+												.setValue(day);
+										((NumberPicker) dialogView
+												.findViewById(R.id.due_val))
+												.setValue(10 + val);
+									} else {
+										((TextView) dialogView
+												.findViewById(R.id.dialog_due_pick_val))
+												.setText(s[10 + val]);
+									}
+
+								}
+
+							}
+						}
+						if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB) {
+							((NumberPicker) dialogView
+									.findViewById(R.id.due_val))
+									.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+
+										@Override
+										public void onValueChange(
+												NumberPicker picker,
+												int oldVal, int newVal) {
+											if (newVal == 11 || newVal == 9) {// =1||=9
+												((NumberPicker) dialogView
+														.findViewById(R.id.due_day_year))
+														.setDisplayedValues(getResources()
+																.getStringArray(
+																		R.array.due_day_year_values));
+											} else {
+												((NumberPicker) dialogView
+														.findViewById(R.id.due_day_year))
+														.setDisplayedValues(getResources()
+																.getStringArray(
+																		R.array.due_day_year_values_plural));
+											}
+
+										}
+									});
+						}
+						builder.setPositiveButton(R.string.OK,
+								new DialogInterface.OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										int val = 0;
+										if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB)
+											val = ((NumberPicker) dialogView
+													.findViewById(R.id.due_val))
+													.getValue();
+										else
+											val = Integer
+													.parseInt(((TextView) dialogView
+															.findViewById(R.id.dialog_due_pick_val))
+															.getText()
+															.toString()
+															.replace("+", "")) + 10;
+										String newWhere = "";
+										if (val == 10) {
+											newWhere = "date(due)<=date(\"now\",\"localtime\")";
+											((TextView) findViewById(R.id.special_list_where_due_content))
+													.setText(getString(R.string.today));
+										} else {
+											String mod = "";
+											int v = 0;
+											if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB) {
+												v = ((NumberPicker) dialogView
+														.findViewById(R.id.due_day_year))
+														.getValue();
+											} else {
+												if (((TextView) dialogView
+														.findViewById(R.id.dialog_due_pick_val_day))
+														.getText()
+														.toString()
+														.contains(
+																getResources()
+																		.getStringArray(
+																				R.array.due_day_year_values)[1]))
+													v = 1;
+												else if (((TextView) dialogView
+														.findViewById(R.id.dialog_due_pick_val_day))
+														.getText()
+														.toString()
+														.contains(
+																getResources()
+																		.getStringArray(
+																				R.array.due_day_year_values)[2]))
+													v = 2;
+											}
+											switch (v) {
+											case 1:
+												mod = (val == 11 || val == 9 ? "month"
+														: "months");
+												break;
+											case 2:
+												mod = (val == 11 || val == 9 ? "year"
+														: "years");
+												break;
+											default:
+												mod = (val == 11 || val == 9 ? "day"
+														: "days");
+												break;
+											}
+											((TextView) findViewById(R.id.special_list_where_due_content))
+													.setText(s[val]
+															+ " "
+															+ getResources()
+																	.getStringArray(
+																			val == 11
+																					|| val == 9 ? R.array.due_day_year_values
+																					: R.array.due_day_year_values_plural)[v]);
+											newWhere = "date(due)<=date(\"now\",\""
+													+ s[val]
+													+ " "
+													+ mod
+													+ "\",\"localtime\")";
+										}
+										updateWhere("due", newWhere);
+									}
+								});
+						alert = builder.create();
+						alert.show();
+
+					}
+
+					private View getNumericPicker() {
+						if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB)
+							return getLayoutInflater().inflate(
+									R.layout.due_dialog, null);
 						else
-							val=Integer.parseInt(((TextView)dialogView.findViewById(R.id.dialog_due_pick_val)).getText().toString().replace("+", ""))+10;
-						String newWhere="";
-						if(val==10){
-							newWhere="date(due)<=date(\"now\",\"localtime\")";
-							((TextView)findViewById(R.id.special_list_where_due_content)).setText(getString(R.string.today));
-						}else{
-							String mod="";
-							int v=0;
-							if(VERSION.SDK_INT>=VERSION_CODES.HONEYCOMB){
-								v=((NumberPicker)dialogView.findViewById(R.id.due_day_year)).getValue();
-							}else{
-								if(((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).getText().toString().contains(getResources().getStringArray(R.array.due_day_year_values)[1]))
-									v=1;
-								else if(((TextView)dialogView.findViewById(R.id.dialog_due_pick_val_day)).getText().toString().contains(getResources().getStringArray(R.array.due_day_year_values)[2]))
-									v=2;
-							}
-							switch (v) {
-							case 1:
-								mod=(val==11||val==9?"month":"months");
-								break;
-							case 2:
-								mod=(val==11||val==9?"year":"years");
-								break;
-							default:
-								mod=(val==11||val==9?"day":"days");
-								break;
-							}
-							((TextView)findViewById(R.id.special_list_where_due_content)).setText(s[val]+" "+
-							getResources().getStringArray(val==11||val==9?R.array.due_day_year_values:R.array.due_day_year_values_plural)[v]);
-							newWhere="date(due)<=date(\"now\",\""+s[val]+" "+mod+"\",\"localtime\")";
-						}
-						updateWhere("due", newWhere);
+							return getLayoutInflater().inflate(
+									R.layout.due_dialog_v10, null);
 					}
 				});
-		        alert=builder.create();
-		        alert.show();
-				
-			}
-
-			private View getNumericPicker() {
-				if(VERSION.SDK_INT>=VERSION_CODES.HONEYCOMB)
-					return getLayoutInflater().inflate(R.layout.due_dialog, null);
-				else
-					return getLayoutInflater().inflate(R.layout.due_dialog_v10, null);
-			}
-		});
 	}
 
 	private void updateWhere(String attr, String newWhere) {
 		if (specialList.getWhereQuery().contains(attr)) {
 			String[] parts = specialList.getWhereQuery().split("and");
 			String n = "";
-			boolean first=true;
+			boolean first = true;
 			for (int i = 0; i < parts.length; i++) {
-				if ((parts[i].contains(attr))&&(!parts[i].contains("not null")||newWhere.isEmpty()||attr!="due")) {
+				if ((parts[i].contains(attr))
+						&& (!parts[i].contains("not null")
+								|| newWhere.isEmpty() || attr != "due")) {
 					parts[i] = newWhere;
 					if (newWhere.isEmpty())
 						continue;
 				}
 				n += (first ? "" : " and ") + parts[i].trim();
-				first=false;
+				first = false;
 			}
 			specialList.setWhereQuery(n);
 		} else if (specialList.getWhereQuery().isEmpty()) {
-			specialList.setWhereQuery((attr=="due"?"due is not null and ":"")+newWhere);
-		} else if(newWhere!=""){
-			specialList.setWhereQuery((attr=="due"?"due is not null and ":"")+specialList.getWhereQuery() + " and "
-					+ newWhere);
+			specialList.setWhereQuery((attr == "due" ? "due is not null and "
+					: "") + newWhere);
+		} else if (newWhere != "") {
+			specialList.setWhereQuery((attr == "due" ? "due is not null and "
+					: "") + specialList.getWhereQuery() + " and " + newWhere);
 		}
 		specialList.save();
 		((TextView) findViewById(R.id.special_list_where)).setText(specialList
 				.getWhereQuery());
 	}
-	private View getView(int id){
-		if(VERSION.SDK_INT>=VERSION_CODES.HONEYCOMB)
-			return getLayoutInflater().inflate(id,null);
-		return View.inflate(new ContextThemeWrapper(getBaseContext(), R.style.Dialog),id,null);
+
+	private View getView(int id) {
+		if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB)
+			return getLayoutInflater().inflate(id, null);
+		return View.inflate(new ContextThemeWrapper(getBaseContext(),
+				R.style.Dialog), id, null);
 	}
 
 	protected String getFieldText(String queryPart) {
@@ -870,59 +1266,89 @@ public class SpecialListSettingsActivity extends Activity {
 				}
 				if (queryPart == "due") {
 					if (!s.contains("not null")) {
-						Pattern pattern = Pattern.compile( "[\"'].*?[\"']" );
+						Pattern pattern = Pattern.compile("[\"'].*?[\"']");
 						Matcher matcher = pattern.matcher(s);
-						int i=0;
-						while ( matcher.find() ){
-							if(++i>1){
-								s=matcher.group().replaceAll("[\"']", "");
+						int i = 0;
+						while (matcher.find()) {
+							if (++i > 1) {
+								s = matcher.group().replaceAll("[\"']", "");
 								break;
 							}
 						}
-						if(s.contains("localtime")){
+						if (s.contains("localtime")) {
 							return getString(R.string.today);
 						}
 
-						int day=0;
-						if(s.contains("year")){
-							s=s.replace((s.contains("years")?"years":"year"), "").trim();
-							day=2;
-						}else if(s.contains("month")){
-							s=s.replace((s.contains("months")?"months":"month"), "").trim();
-							day=1;
-						}else{
-							s=s.replace((s.contains("days")?"days":"day"), "").trim();
+						int day = 0;
+						if (s.contains("year")) {
+							s = s.replace(
+									(s.contains("years") ? "years" : "year"),
+									"").trim();
+							day = 2;
+						} else if (s.contains("month")) {
+							s = s.replace(
+									(s.contains("months") ? "months" : "month"),
+									"").trim();
+							day = 1;
+						} else {
+							s = s.replace(
+									(s.contains("days") ? "days" : "day"), "")
+									.trim();
 						}
-						return s.trim()+" "+getResources().getStringArray((s.contains("1")?R.array.due_day_year_values:R.array.due_day_year_values_plural))[day];
+						return s.trim()
+								+ " "
+								+ getResources()
+										.getStringArray(
+												(s.contains("1") ? R.array.due_day_year_values
+														: R.array.due_day_year_values_plural))[day];
 					}
 				}
 				if (queryPart == "reminder") {
 					return s.contains("not") ? getString(R.string.reminder_set)
 							: getString(R.string.reminder_unset);
-				} if(queryPart=="list_id"){
-					returnString=(specialList.getWhereQuery().contains("not list_id")?getString(R.string.not_in)+" ":"");
-					String[] p = s.replace((returnString.isEmpty()?"":"not ")+"list_id in(", "").replace(")", "").split(",");
-					for (int i=0;i<p.length;i++) {
-						returnString+=(i==0?"":", ")+(ListMirakel.getList(Integer.parseInt(p[i].trim())).getName());
+				}
+				if (queryPart == "list_id") {
+					returnString = (specialList.getWhereQuery().contains(
+							"not list_id") ? getString(R.string.not_in) + " "
+							: "");
+					String[] p = s
+							.replace(
+									(returnString.isEmpty() ? "" : "not ")
+											+ "list_id in(", "")
+							.replace(")", "").split(",");
+					for (int i = 0; i < p.length; i++) {
+						returnString += (i == 0 ? "" : ", ")
+								+ (ListMirakel.getList(Integer.parseInt(p[i]
+										.trim())).getName());
 					}
 					return returnString;
-				} if(queryPart=="priority"){
-					returnString=(specialList.getWhereQuery().contains("not priority")?getString(R.string.not_in)+" ":"");
-					return returnString+ s.replace((returnString.isEmpty()?"":"not ")+"priority in (", "").replace(")", "").replace(",", ", ");
-				}if(queryPart=="content"||queryPart=="name"){
-					if(s.contains("not")){
-						s=s.replace("not", "").trim();
-						returnString+=getString(R.string.not)+" ";
-					}
-					s=s.replace(queryPart+" like", "").trim();
-					if(s.matches("[\"'].%['\"]"))
-						returnString+=getString(R.string.where_like_begin_text)+" "+s.replaceAll("[\"'%]", "");
-					else if(s.matches("[\"']%.['\"]"))
-						returnString+=getString(R.string.where_like_end_text)+" "+s.replaceAll("[\"'%]", "");
-					else
-						returnString+=getString(R.string.where_like_contain_text)+" "+s.replaceAll("[\"'%]", "");
 				}
-				else {
+				if (queryPart == "priority") {
+					returnString = (specialList.getWhereQuery().contains(
+							"not priority") ? getString(R.string.not_in) + " "
+							: "");
+					return returnString
+							+ s.replace(
+									(returnString.isEmpty() ? "" : "not ")
+											+ "priority in (", "")
+									.replace(")", "").replace(",", ", ");
+				}
+				if (queryPart == "content" || queryPart == "name") {
+					if (s.contains("not")) {
+						s = s.replace("not", "").trim();
+						returnString += getString(R.string.not) + " ";
+					}
+					s = s.replace(queryPart + " like", "").trim();
+					if (s.matches("[\"'].%['\"]"))
+						returnString += getString(R.string.where_like_begin_text)
+								+ " " + s.replaceAll("[\"'%]", "");
+					else if (s.matches("[\"']%.['\"]"))
+						returnString += getString(R.string.where_like_end_text)
+								+ " " + s.replaceAll("[\"'%]", "");
+					else
+						returnString += getString(R.string.where_like_contain_text)
+								+ " " + s.replaceAll("[\"'%]", "");
+				} else {
 					returnString += s + " ";
 				}
 			}

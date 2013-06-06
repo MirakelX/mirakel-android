@@ -65,22 +65,23 @@ public class Network extends AsyncTask<String, Integer, String> {
 		public final static short NEED_SYNC = 2;
 		public final static short IS_SYNCED = 3;
 	}
+
 	public static class HttpMode {
 		final public static int GET = 0;
 		final public static int POST = 1;
 		final public static int PUT = 2;
 		final public static int DELETE = 3;
 	}
+
 	private static String TAG = "MirakelNetwork";
 	private static final Integer NoNetwork = 1;
 	private static final Integer NoHTTPS = 2;
-	
+
 	protected DataDownloadCommand commands;
 	protected List<BasicNameValuePair> HeaderData;
 	protected int Mode;
 	protected Context context;
 	protected String Token;
-
 
 	public Network(DataDownloadCommand commands, int mode, Context context,
 			String Token) {
@@ -104,8 +105,8 @@ public class Network extends AsyncTask<String, Integer, String> {
 			try {
 				return json.substring(10, 30);
 			} catch (IndexOutOfBoundsException e) {
-				if(Mirakel.DEBUG)
-					Log.d(TAG,"Unkown responsformat");
+				if (Mirakel.DEBUG)
+					Log.d(TAG, "Unkown responsformat");
 				return null;
 			}
 		} else
@@ -117,10 +118,10 @@ public class Network extends AsyncTask<String, Integer, String> {
 		try {
 			return downloadUrl(urls[0]);
 		} catch (IOException e) {
-			if(Mirakel.DEBUG)
+			if (Mirakel.DEBUG)
 				Log.e(TAG, "Unable to retrieve web page. URL may be invalid.");
 		} catch (URISyntaxException e) {
-			if(Mirakel.DEBUG)
+			if (Mirakel.DEBUG)
 				Log.e(TAG, "Invalid UrlSyntax");
 		}
 		Integer[] t = { NoNetwork };
@@ -143,7 +144,7 @@ public class Network extends AsyncTask<String, Integer, String> {
 	@SuppressWarnings("unused")
 	@Override
 	protected void onPostExecute(String result) {
-		if (result == ""&& Mirakel.DEBUG){
+		if (result.isEmpty() && Mirakel.DEBUG) {
 			Log.d(TAG, "No Response");
 		}
 		commands.after_exec(result);
@@ -174,8 +175,8 @@ public class Network extends AsyncTask<String, Integer, String> {
 			sr.register(new Scheme("http", ssf, 80));
 			return new DefaultHttpClient(ccm, client.getParams());
 		} catch (Exception ex) {
-			if(Mirakel.DEBUG)
-				Log.d(TAG,"Cannot create new SSL-Client");
+			if (Mirakel.DEBUG)
+				Log.d(TAG, "Cannot create new SSL-Client");
 			return null;
 		}
 	}
@@ -202,14 +203,14 @@ public class Network extends AsyncTask<String, Integer, String> {
 		try {
 			switch (Mode) {
 			case HttpMode.GET:
-				if(Mirakel.DEBUG)
+				if (Mirakel.DEBUG)
 					Log.v(TAG, "GET " + myurl);
 				HttpGet get = new HttpGet();
 				get.setURI(new URI(myurl));
 				response = httpClient.execute(get);
 				break;
 			case HttpMode.PUT:
-				if(Mirakel.DEBUG)
+				if (Mirakel.DEBUG)
 					Log.v(TAG, "PUT " + myurl);
 				HttpPut put = new HttpPut();
 				put.setURI(new URI(myurl));
@@ -217,7 +218,7 @@ public class Network extends AsyncTask<String, Integer, String> {
 				response = httpClient.execute(put);
 				break;
 			case HttpMode.POST:
-				if(Mirakel.DEBUG)
+				if (Mirakel.DEBUG)
 					Log.v(TAG, "POST " + myurl);
 				HttpPost post = new HttpPost();
 				post.setURI(new URI(myurl));
@@ -225,7 +226,7 @@ public class Network extends AsyncTask<String, Integer, String> {
 				response = httpClient.execute(post);
 				break;
 			case HttpMode.DELETE:
-				if(Mirakel.DEBUG)
+				if (Mirakel.DEBUG)
 					Log.v(TAG, "DELETE " + myurl);
 				HttpDelete delete = new HttpDelete();
 				delete.setURI(new URI(myurl));
@@ -237,12 +238,13 @@ public class Network extends AsyncTask<String, Integer, String> {
 			}
 		} catch (Exception e) {
 			Log.e(TAG, "No Networkconnection available");
-			if(Mirakel.DEBUG)
+			if (Mirakel.DEBUG)
 				Log.w(TAG, Log.getStackTraceString(e));
 			return "";
 		}
-		if(Mirakel.DEBUG)
-			Log.v(TAG, "Http-Status: " + response.getStatusLine().getStatusCode());
+		if (Mirakel.DEBUG)
+			Log.v(TAG, "Http-Status: "
+					+ response.getStatusLine().getStatusCode());
 		if (response.getEntity() == null)
 			return "";
 		String r = EntityUtils.toString(response.getEntity());

@@ -148,7 +148,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 
 	private static AlarmManager alarmManager;
 
-	private static List<Task> activeAlarms=new ArrayList<Task>();
+	private static List<Task> activeAlarms = new ArrayList<Task>();
 
 	public static void updateAlarms(final Context ctx) {
 		new Thread(new Runnable() {
@@ -157,24 +157,25 @@ public class ReminderAlarm extends BroadcastReceiver {
 				alarmManager = (AlarmManager) ctx
 						.getSystemService(Context.ALARM_SERVICE);
 				List<Task> tasks = Task.getTasksWithReminders();
-				for(int i=0;i<activeAlarms.size();i++){
-					Task t=activeAlarms.get(i);
-					Task newTask= Task.get(t.getId());
-					if(newTask==null){
-						i=cancelAlarm(ctx, t, newTask,i);
+				for (int i = 0; i < activeAlarms.size(); i++) {
+					Task t = activeAlarms.get(i);
+					Task newTask = Task.get(t.getId());
+					if (newTask == null) {
+						i = cancelAlarm(ctx, t, newTask, i);
 						continue;
 					}
-					if(newTask.isDone()){
-						i=cancelAlarm(ctx, t, newTask,i);
-					}else if(newTask.getReminder()!=null){
-						if(newTask.getReminder().getTimeInMillis()>new Date().getTime()){
+					if (newTask.isDone()) {
+						i = cancelAlarm(ctx, t, newTask, i);
+					} else if (newTask.getReminder() != null) {
+						if (newTask.getReminder().getTimeInMillis() > new Date()
+								.getTime()) {
 							closeNotificationFor(ctx, t.getId());
 							updateAlarm(ctx, newTask);
 						}
 					}
 				}
-				for(Task t:tasks){
-					if(!isAlarm(t)){
+				for (Task t : tasks) {
+					if (!isAlarm(t)) {
 						updateAlarm(ctx, t);
 						activeAlarms.add(t);
 					}
@@ -184,14 +185,14 @@ public class ReminderAlarm extends BroadcastReceiver {
 	}
 
 	private static boolean isAlarm(Task t2) {
-		for(Task t:activeAlarms){
-			if(t.getId()==t2.getId())
+		for (Task t : activeAlarms) {
+			if (t.getId() == t2.getId())
 				return true;
 		}
 		return false;
 	}
 
-	private static int cancelAlarm(Context ctx, Task t, Task newTask,int i) {
+	private static int cancelAlarm(Context ctx, Task t, Task newTask, int i) {
 		closeNotificationFor(ctx, newTask.getId());
 		Intent intent = new Intent(ctx, ReminderAlarm.class);
 		intent.setAction(SHOW_TASK);
@@ -203,7 +204,6 @@ public class ReminderAlarm extends BroadcastReceiver {
 		return i;
 	}
 
-
 	private static void updateAlarm(Context ctx, Task task) {
 		Intent intent = new Intent(ctx, ReminderAlarm.class);
 		intent.setAction(SHOW_TASK);
@@ -211,7 +211,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx, 0,
 				intent, PendingIntent.FLAG_UPDATE_CURRENT);
 		alarmManager.set(AlarmManager.RTC_WAKEUP, task.getReminder()
-					.getTimeInMillis(), pendingIntent);
+				.getTimeInMillis(), pendingIntent);
 	}
 
 	public static void closeNotificationFor(Context context, Long taskId) {

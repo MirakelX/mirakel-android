@@ -33,7 +33,7 @@
             android:summary="@string/startup_list_summary"
             android:title="@string/startup_list" />
     </PreferenceCategory>
-    
+
     <!-- Sync -->
     <PreferenceCategory android:title="@string/sync_title" >
         <CheckBoxPreference
@@ -44,22 +44,25 @@
 
         <EditTextPreference
             android:dependency="syncUse"
+            android:inputType="textUri"
             android:key="syncServer"
             android:summary="@string/sync_server_summary"
-            android:inputType="textUri"
             android:title="@string/sync_server" />
-        <!-- <EditTextPreference
+        <!--
+             <EditTextPreference
             android:dependency="syncUse"
             android:key="syncEmail"
             android:inputType="textEmailAddress"
             android:summary="@string/sync_email_summary"
-            android:title="@string/sync_email" />-->
-		<EditTextPreference
+            android:title="@string/sync_email" />
+        -->
+        <EditTextPreference
             android:dependency="syncUse"
-            android:key="syncPassword"
             android:inputType="textPassword"
+            android:key="syncPassword"
             android:summary="@string/sync_password_summary"
             android:title="@string/sync_password" />
+
         <ListPreference
             android:dependency="syncUse"
             android:entries="@array/sync_frequencies"
@@ -68,14 +71,15 @@
             android:summary="@string/sync_frequency_summary"
             android:title="@string/sync_frequency" />
     </PreferenceCategory>
-    
+
     <!-- Special Lists -->
     <!-- TODO: add ability to manage Special Lists -->
-    
+
+
     <!-- Notifications -->
-    <PreferenceCategory 
-        android:title="@string/notifications_title" 
-        android:key="category_notifications">
+    <PreferenceCategory
+        android:key="category_notifications"
+        android:title="@string/notifications_title" >
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="notificationsUse"
@@ -93,13 +97,14 @@
             android:key="notificationsZeroHide"
             android:summary="@string/notifications_zero_show_summary"
             android:title="@string/notifications_zero_show" />
-        
+
         <ListPreference
             android:defaultValue="-1"
             android:dependency="notificationsUse"
             android:key="notificationsList"
             android:summary="@string/notifications_list_summary"
             android:title="@string/notifications_list" />
+
         <CheckBoxPreference
             android:defaultValue="true"
             android:dependency="notificationsUse"
@@ -107,17 +112,17 @@
             android:summary="@string/notifications_big_summary"
             android:title="@string/notifications_big" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/special_lists_title">
+    <PreferenceCategory android:title="@string/special_lists_title" >
         <Preference
             android:key="special_lists"
             android:summary="@string/special_lists_click_summary"
-            android:title="@string/special_lists_click"/>
+            android:title="@string/special_lists_click" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/settings_misc">
-        <Preference 
+    <PreferenceCategory android:title="@string/settings_misc" >
+        <Preference
             android:key="backup"
             android:summary="@string/backup_click_summary"
-            android:title="@string/backup_click"/>
+            android:title="@string/backup_click" />
     </PreferenceCategory>
 
 </PreferenceScreen>

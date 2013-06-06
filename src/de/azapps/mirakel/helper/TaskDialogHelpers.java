@@ -33,43 +33,59 @@ public class TaskDialogHelpers {
 	public static void handlePriority(Context ctx, final Task task,
 			final Helpers.ExecInterface onSuccess) {
 		final String[] t = { "-2", "-1", "0", "1", "2" };
-		if (android.os.Build.VERSION.SDK_INT>=android.os.Build.VERSION_CODES.HONEYCOMB) {
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
 			numberPicker = new NumberPicker(ctx);
 			((NumberPicker) numberPicker).setMaxValue(4);
 			((NumberPicker) numberPicker).setMinValue(0);
 			((NumberPicker) numberPicker).setDisplayedValues(t);
 			((NumberPicker) numberPicker).setWrapSelectorWheel(false);
 			((NumberPicker) numberPicker).setValue(task.getPriority() + 2);
-		}else{
-			numberPicker =((LayoutInflater)ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.dialog_num_picker_v10 ,null);
-			((Button)numberPicker.findViewById(R.id.dialog_num_pick_plus)).setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					String val=((TextView)numberPicker.findViewById(R.id.dialog_num_pick_val)).getText().toString();
-					int i=0;
-					while(!(t[i].contains(val)&&t[i].length()==val.length())){
-						if(++i>=t.length){
-							Log.wtf(TAG, "unknown Value in NumericPicker");
-							return;
+		} else {
+			numberPicker = ((LayoutInflater) ctx
+					.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
+					.inflate(R.layout.dialog_num_picker_v10, null);
+			((Button) numberPicker.findViewById(R.id.dialog_num_pick_plus))
+					.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							String val = ((TextView) numberPicker
+									.findViewById(R.id.dialog_num_pick_val))
+									.getText().toString();
+							int i = 0;
+							while (!(t[i].contains(val) && t[i].length() == val
+									.length())) {
+								if (++i >= t.length) {
+									Log.wtf(TAG,
+											"unknown Value in NumericPicker");
+									return;
+								}
+							}
+							((TextView) numberPicker
+									.findViewById(R.id.dialog_num_pick_val))
+									.setText(t[i + 1 == t.length ? i : i + 1]);
 						}
-					}
-					((TextView)numberPicker.findViewById(R.id.dialog_num_pick_val)).setText(t[i+1==t.length?i:i+1]);				
-				}
-			});
-			((Button)numberPicker.findViewById(R.id.dialog_num_pick_minus)).setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					String val=((TextView)numberPicker.findViewById(R.id.dialog_num_pick_val)).getText().toString();
-					int i=0;
-					while(!(t[i].contains(val)&&t[i].length()==val.length())){
-						if(++i>=t.length){
-							Log.wtf(TAG, "unknown Value in NumericPicker");
-							return;
+					});
+			((Button) numberPicker.findViewById(R.id.dialog_num_pick_minus))
+					.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							String val = ((TextView) numberPicker
+									.findViewById(R.id.dialog_num_pick_val))
+									.getText().toString();
+							int i = 0;
+							while (!(t[i].contains(val) && t[i].length() == val
+									.length())) {
+								if (++i >= t.length) {
+									Log.wtf(TAG,
+											"unknown Value in NumericPicker");
+									return;
+								}
+							}
+							((TextView) numberPicker
+									.findViewById(R.id.dialog_num_pick_val))
+									.setText(t[i - 1 >= 0 ? i - 1 : i]);
 						}
-					}
-					((TextView)numberPicker.findViewById(R.id.dialog_num_pick_val)).setText(t[i-1>=0?i-1:i]);				
-				}
-			});
+					});
 		}
 		new AlertDialog.Builder(ctx)
 				.setTitle(ctx.getString(R.string.task_change_prio_title))
@@ -79,10 +95,13 @@ public class TaskDialogHelpers {
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
-								if (android.os.Build.VERSION.SDK_INT>=android.os.Build.VERSION_CODES.HONEYCOMB) {
-									task.setPriority((((NumberPicker) numberPicker).getValue() - 2));
-								}else{
-									task.setPriority(Integer.parseInt(((TextView)numberPicker.findViewById(R.id.dialog_num_pick_val)).getText().toString()));
+								if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
+									task.setPriority((((NumberPicker) numberPicker)
+											.getValue() - 2));
+								} else {
+									task.setPriority(Integer.parseInt(((TextView) numberPicker
+											.findViewById(R.id.dialog_num_pick_val))
+											.getText().toString()));
 								}
 								task.save();
 								onSuccess.exec();

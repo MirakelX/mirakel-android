@@ -50,7 +50,7 @@
         <item>1440</item>
         <item>-1</item>
     </string-array>
-    
+
     <!-- Notifications -->
     <string name="notifications_title">Notifications</string>
     <string name="notifications_use">Use</string>
@@ -63,19 +63,19 @@
     <string name="notifications_big_summary">Show big Notifications?</string>
     <string name="notifications_zero_show_summary">Hide, if there are no tasks in the selected List?</string>
     <string name="notifications_zero_show">Hide if empty</string>
-    
+
     <!-- startup -->
     <string name="startup_title">App Start</string>
     <string name="startup_show_lists">Show all lists</string>
     <string name="startup_show_lists_summary">Show the List of Lists</string>
     <string name="startup_list">Select List</string>
     <string name="startup_list_summary">Tasks of which list should be displayed?</string>
-    
+
     <!-- Special Lists -->
     <string name="special_lists_title">Special Lists</string>
     <string name="special_lists_click">Manage Special Lists</string>
     <string name="special_lists_click_summary">Manage Special Lists</string>
-    
+
     <!-- Backup -->
     <string name="backup_click_summary">Backup the database to sdcard</string>
     <string name="backup_click">Backup</string>

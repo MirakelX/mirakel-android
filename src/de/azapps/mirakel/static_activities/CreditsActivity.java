@@ -21,9 +21,10 @@ public class CreditsActivity extends Activity {
 		TextView creditText = (TextView) findViewById(R.id.credit_text);
 		creditText.setText(Html.fromHtml(getString(R.string.credit)));
 		creditText.setMovementMethod(LinkMovementMethod.getInstance());
-		if(VERSION.SDK_INT>=VERSION_CODES.HONEYCOMB)
+		if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB)
 			getActionBar().setDisplayHomeAsUpEnabled(true);
-	}	
+	}
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {

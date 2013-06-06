@@ -152,8 +152,8 @@ public class SpecialList extends ListMirakel {
 
 		if (getSyncState() != Network.SYNC_STATE.ADD) {
 			setSyncState(Network.SYNC_STATE.DELETE);
-		}else{
-			database.delete(TABLE, "_id="+id, null);
+		} else {
+			database.delete(TABLE, "_id=" + id, null);
 			return;
 		}
 		setActive(false);
@@ -189,8 +189,8 @@ public class SpecialList extends ListMirakel {
 	 */
 	public static List<SpecialList> allSpecial(boolean showAll) {
 		List<SpecialList> slists = new ArrayList<SpecialList>();
-		Cursor c = database.query(TABLE, allColumns, showAll?"":"active=1", null, null,
-				null, null);
+		Cursor c = database.query(TABLE, allColumns, showAll ? "" : "active=1",
+				null, null, null, null);
 		c.moveToFirst();
 		while (!c.isAfterLast()) {
 			slists.add(cursorToSList(c));
@@ -250,9 +250,9 @@ public class SpecialList extends ListMirakel {
 	 */
 	private static SpecialList cursorToSList(Cursor cursor) {
 		int i = 0;
-		Integer defDate=cursor.getInt(5);
-		if(cursor.isNull(5))
-			defDate=null;
+		Integer defDate = cursor.getInt(5);
+		if (cursor.isNull(5))
+			defDate = null;
 		SpecialList slist = new SpecialList(cursor.getInt(i++),
 				cursor.getString(i++), cursor.getString(i++),
 				cursor.getInt(i++) == 1,

@@ -20,23 +20,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".StartActivity"
-    android:orientation="vertical" >
+    tools:context=".StartActivity" >
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/app_name"
         android:gravity="center_horizontal"
+        android:text="@string/app_name"
         android:textSize="30sp" />
     <!-- @TODO Picture -->
-    
+
+
     <!-- Buttons -->
-    <!-- <Button 
+    <!--
+    <Button 
         android:id="@+id/home_official_server"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -45,13 +47,14 @@
         android:id="@+id/home_own_server"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/home_button_own"/>-->
+        android:text="@string/home_button_own"/>
+    -->
 
     <CheckBox
         android:id="@+id/use_server"
-        android:layout_marginLeft="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
         android:text="@string/use_server" />
 
     <Button

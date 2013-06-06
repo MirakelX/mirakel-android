@@ -67,12 +67,11 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 
 	}
 
-	void changeData(List<Task> tasks,int listId) {
+	void changeData(List<Task> tasks, int listId) {
 		data.clear();
 		data.addAll(tasks);
-		this.listId=listId;
+		this.listId = listId;
 	}
-
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
@@ -147,10 +146,8 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 			holder.taskRowDue.setVisibility(View.VISIBLE);
 			holder.taskRowDue.setText(Helpers.formatDate(task.getDue(),
 					context.getString(R.string.dateFormat)));
-			holder.taskRowDue.setTextColor(row.getResources()
-					.getColor(
-							Helpers.getTaskDueColor(task.getDue(),
-									task.isDone())));
+			holder.taskRowDue.setTextColor(row.getResources().getColor(
+					Helpers.getTaskDueColor(task.getDue(), task.isDone())));
 		} else {
 			holder.taskRowDue.setVisibility(View.GONE);
 		}

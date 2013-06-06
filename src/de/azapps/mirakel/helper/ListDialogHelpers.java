@@ -43,20 +43,21 @@ public class ListDialogHelpers {
 	 * @param list
 	 * @return
 	 */
-	public static ListMirakel handleSortBy(Context ctx, final ListMirakel list,TextView res) {
+	public static ListMirakel handleSortBy(Context ctx, final ListMirakel list,
+			TextView res) {
 		return handleSortBy(ctx, list, new Helpers.ExecInterface() {
 			@Override
 			public void exec() {
 			}
-		},res);
+		}, res);
 	}
-	
+
 	public static ListMirakel handleSortBy(Context ctx, final ListMirakel list) {
 		return handleSortBy(ctx, list, new Helpers.ExecInterface() {
 			@Override
 			public void exec() {
 			}
-		},null);
+		}, null);
 	}
 
 	/**
@@ -68,7 +69,7 @@ public class ListDialogHelpers {
 	 * @return
 	 */
 	public static ListMirakel handleSortBy(Context ctx, final ListMirakel list,
-			final Helpers.ExecInterface cls,final TextView res) {
+			final Helpers.ExecInterface cls, final TextView res) {
 		final CharSequence[] SortingItems = ctx.getResources().getStringArray(
 				R.array.task_sorting_items);
 
@@ -93,7 +94,7 @@ public class ListDialogHelpers {
 							break;
 						}
 						list.save();
-						if(res!=null)
+						if (res != null)
 							res.setText(SortingItems[item]);
 						cls.exec();
 						alert.dismiss(); // Ugly
@@ -110,7 +111,8 @@ public class ListDialogHelpers {
 	 * @param task
 	 */
 	public static SpecialList handleDefaultList(Context ctx,
-			final SpecialList specialList, List<ListMirakel> lists,final TextView res) {
+			final SpecialList specialList, List<ListMirakel> lists,
+			final TextView res) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
 		builder.setTitle(R.string.special_list_def_list);
 		List<CharSequence> items = new ArrayList<CharSequence>();
@@ -144,7 +146,7 @@ public class ListDialogHelpers {
 						}
 						specialList.save();
 						alert.dismiss();
-						if(res!=null)
+						if (res != null)
 							res.setText(specialList.getDefaultList().getName());
 					}
 				});
@@ -162,7 +164,7 @@ public class ListDialogHelpers {
 	 * @return
 	 */
 	public static SpecialList handleDefaultDate(Context ctx,
-			final SpecialList specialList,final TextView res) {
+			final SpecialList specialList, final TextView res) {
 
 		final String[] items = ctx.getResources().getStringArray(
 				R.array.special_list_def_date_picker);
@@ -187,7 +189,7 @@ public class ListDialogHelpers {
 						specialList.setDefaultDate(date);
 						specialList.save();
 						alert.dismiss();
-						if(res!=null){
+						if (res != null) {
 							res.setText(items[item]);
 						}
 					}

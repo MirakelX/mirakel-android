@@ -2,14 +2,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CreditsActivity"
-    android:orientation="vertical" 
-    android:padding="5dp">
+    android:orientation="vertical"
+    android:padding="5dp"
+    tools:context=".CreditsActivity" >
 
     <TextView
         android:id="@+id/credit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/credit"/>
+        android:text="@string/credit" />
 
 </LinearLayout>

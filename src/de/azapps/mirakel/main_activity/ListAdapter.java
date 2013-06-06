@@ -75,7 +75,7 @@ public class ListAdapter extends ArrayAdapter<ListMirakel> {
 			holder = (ListHolder) row.getTag();
 		}
 		ListMirakel list = data.get(position);
-		if (!enableDrop||list.getId()<0)
+		if (!enableDrop || list.getId() < 0)
 			holder.listRowDrag.setVisibility(View.GONE);
 		holder.listRowName.setText(list.getName());
 		holder.listRowName.setTag(list);
@@ -90,24 +90,32 @@ public class ListAdapter extends ArrayAdapter<ListMirakel> {
 	}
 
 	public void onDrop(final int from, final int to) {
-		ListMirakel t=data.get(from);
-		if(to<from){//move list up
-			Mirakel.getWritableDatabase().execSQL("UPDATE "+ListMirakel.TABLE+" SET lft=lft+2 where lft>="+data.get(to).getLft()+" and lft<"+data.get(from).getLft());
-		}else if(to>from) {//move list down
-			Mirakel.getWritableDatabase().execSQL("UPDATE "+ListMirakel.TABLE+" SET lft=lft-2 where lft>"+data.get(from).getLft()+" and lft<="+data.get(to).getLft());
-		}else{//Nothing
+		ListMirakel t = data.get(from);
+		if (to < from) {// move list up
+			Mirakel.getWritableDatabase().execSQL(
+					"UPDATE " + ListMirakel.TABLE
+							+ " SET lft=lft+2 where lft>="
+							+ data.get(to).getLft() + " and lft<"
+							+ data.get(from).getLft());
+		} else if (to > from) {// move list down
+			Mirakel.getWritableDatabase().execSQL(
+					"UPDATE " + ListMirakel.TABLE + " SET lft=lft-2 where lft>"
+							+ data.get(from).getLft() + " and lft<="
+							+ data.get(to).getLft());
+		} else {// Nothing
 			return;
 		}
 		t.setLft(data.get(to).getLft());
 		t.save();
-		Mirakel.getWritableDatabase().execSQL("UPDATE "+ListMirakel.TABLE+" SET rgt=lft+1;");//Fix rgt
+		Mirakel.getWritableDatabase().execSQL(
+				"UPDATE " + ListMirakel.TABLE + " SET rgt=lft+1;");// Fix rgt
 		data.remove(from);
 		data.add(to, t);
 		notifyDataSetChanged();
-		Thread load=new Thread(new Runnable() {
+		Thread load = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				data=ListMirakel.all();
+				data = ListMirakel.all();
 			}
 		});
 		load.start();

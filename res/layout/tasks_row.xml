@@ -50,11 +50,11 @@
 
             <TextView
                 android:id="@+id/tasks_row_name"
-                android:textIsSelectable="false"
                 android:layout_width="wrap_content"
                 android:layout_height="0dip"
                 android:layout_weight="1"
                 android:ellipsize="end"
+                android:textIsSelectable="false"
                 android:textSize="18sp" >
             </TextView>
 
@@ -64,22 +64,22 @@
 
                 <TextView
                     android:id="@+id/tasks_row_due"
-                    android:textIsSelectable="false"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
                     android:textColor="@color/Grey"
+                    android:textIsSelectable="false"
                     android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/tasks_row_list_name"
                     android:layout_width="0dip"
-                    android:textIsSelectable="false"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
                     android:layout_weight="1"
                     android:ellipsize="end"
                     android:textColor="@color/Grey"
+                    android:textIsSelectable="false"
                     android:textSize="12sp" />
 
                 <ImageView
@@ -97,9 +97,9 @@
         android:id="@+id/tasks_row_priority"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:textIsSelectable="false"
         android:layout_alignParentRight="true"
         android:gravity="center"
+        android:textIsSelectable="false"
         android:textSize="18sp" >
     </TextView>
 
