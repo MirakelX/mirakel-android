@@ -1,6 +1,9 @@
 package de.azapps.mirakel.static_activities;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -10,6 +13,7 @@ import de.azapps.mirakel.R;
 
 public class CreditsActivity extends Activity {
 
+	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -17,7 +21,8 @@ public class CreditsActivity extends Activity {
 		TextView creditText = (TextView) findViewById(R.id.credit_text);
 		creditText.setText(Html.fromHtml(getString(R.string.credit)));
 		creditText.setMovementMethod(LinkMovementMethod.getInstance());
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+		if(VERSION.SDK_INT>=VERSION_CODES.HONEYCOMB)
+			getActionBar().setDisplayHomeAsUpEnabled(true);
 	}	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
