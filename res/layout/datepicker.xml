@@ -8,9 +8,9 @@
         android:id="@+id/DatePicker"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:spinnersShown ="true"
-        android:calendarViewShown="false" 
         android:layout_marginLeft="5dip"
-        android:layout_marginRight="5dip" />
+        android:layout_marginRight="5dip"
+        android:calendarViewShown="false"
+        android:spinnersShown="true" />
 
 </LinearLayout>

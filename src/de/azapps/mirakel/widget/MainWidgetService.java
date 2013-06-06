@@ -20,8 +20,10 @@ package de.azapps.mirakel.widget;
 
 import java.util.List;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -32,6 +34,7 @@ import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 
+@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class MainWidgetService extends RemoteViewsService {
 
 	@Override

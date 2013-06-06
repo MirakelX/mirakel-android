@@ -124,6 +124,7 @@
         <activity
             android:name="de.azapps.mirakel.widget.MainWidgetSettingsActivity"
             android:label="@string/title_activity_main"
+            android:enabled="@bool/widget"
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
@@ -138,7 +139,10 @@
                 android:value="de.azapps.mirakel.special_lists_settings.SpecialListsSettings" />
         </activity>
 
-        <receiver android:name="de.azapps.mirakel.widget.MainWidgetProvider" >
+        <receiver 
+            android:name="de.azapps.mirakel.widget.MainWidgetProvider"
+            android:enabled="@bool/widget"
+             >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

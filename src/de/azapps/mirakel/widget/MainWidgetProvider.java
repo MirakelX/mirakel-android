@@ -20,6 +20,7 @@ package de.azapps.mirakel.widget;
 
 import java.util.Random;
 
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -27,6 +28,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.preference.PreferenceManager;
 import android.widget.RemoteViews;
 import de.azapps.mirakel.Mirakel;
@@ -42,6 +45,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
 	public static String CLICK_TASK = "de.azapps.mirakel.CLICK_TASK";
 	public static String EXTRA_TASKID = "de.azapps.mirakel.EXTRA_TASKID";
 
+	@SuppressLint("NewApi")
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
 			int[] appWidgetIds) {
 		SharedPreferences preferences = PreferenceManager
@@ -77,45 +81,44 @@ public class MainWidgetProvider extends AppWidgetProvider {
 
 			views.setOnClickPendingIntent(R.id.widget_list_name,
 					mainPendingIntent);
-
-			// Here we setup the intent which points to the StackViewService
-			// which will
-			// provide the views for this collection.
-			Intent intent = new Intent(context, MainWidgetService.class);
-			intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-
-			// When intents are compared, the extras are ignored, so we need to
-			// embed the extras
-			// into the data so that the extras will not be ignored.
-			intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-			intent.putExtra(EXTRA_LISTID, listId);
-			intent.putExtra(EXTRA_LISTSORT, listSort);
-			intent.putExtra(EXTRA_SHOWDONE,
-					preferences.getBoolean("widgetDone", false));
-			intent.putExtra("Random", new Random().nextInt());
-			views.setRemoteAdapter(R.id.widget_tasks_list, intent);
-
-			// The empty view is displayed when the collection has no items. It
-			// should be a sibling
-			// of the collection view.
-			views.setEmptyView(R.id.widget_tasks_list, R.id.empty_view);
-			views.setTextViewText(R.id.widget_list_name,
-					ListMirakel.getList(listId).getName());
-
-			// Here we setup the a pending intent template. Individuals items of
-			// a collection
-			// cannot setup their own pending intents, instead, the collection
-			// as a whole can
-			// setup a pending intent template, and the individual items can set
-			// a fillInIntent
-			// to create unique before on an item to item basis.
-			Intent toastIntent = new Intent(context, MainWidgetProvider.class);
-			intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-			PendingIntent toastPendingIntent = PendingIntent.getBroadcast(
-					context, 0, toastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-			views.setPendingIntentTemplate(R.id.widget_tasks_list,
-					toastPendingIntent);
-
+			if(VERSION.SDK_INT>=VERSION_CODES.HONEYCOMB){
+				// Here we setup the intent which points to the StackViewService
+				// which will
+				// provide the views for this collection.
+				Intent intent = new Intent(context, MainWidgetService.class);
+				intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+	
+				// When intents are compared, the extras are ignored, so we need to
+				// embed the extras
+				// into the data so that the extras will not be ignored.
+				intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+				intent.putExtra(EXTRA_LISTID, listId);
+				intent.putExtra(EXTRA_LISTSORT, listSort);
+				intent.putExtra(EXTRA_SHOWDONE,
+						preferences.getBoolean("widgetDone", false));
+				intent.putExtra("Random", new Random().nextInt());
+				views.setRemoteAdapter(R.id.widget_tasks_list, intent);
+	
+				// The empty view is displayed when the collection has no items. It
+				// should be a sibling
+				// of the collection view.
+				views.setEmptyView(R.id.widget_tasks_list, R.id.empty_view);
+				views.setTextViewText(R.id.widget_list_name,
+						ListMirakel.getList(listId).getName());
+				// Here we setup the a pending intent template. Individuals items of
+				// a collection
+				// cannot setup their own pending intents, instead, the collection
+				// as a whole can
+				// setup a pending intent template, and the individual items can set
+				// a fillInIntent
+				// to create unique before on an item to item basis.
+				Intent toastIntent = new Intent(context, MainWidgetProvider.class);
+				intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+				PendingIntent toastPendingIntent = PendingIntent.getBroadcast(
+						context, 0, toastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+				views.setPendingIntentTemplate(R.id.widget_tasks_list,
+						toastPendingIntent);
+			}
 			appWidgetManager.updateAppWidget(appWidgetId, views);
 		}
 	}
