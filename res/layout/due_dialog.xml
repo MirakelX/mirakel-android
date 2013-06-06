@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:targetSdkVersion ="11"
+    android:minSdkVersion="11"
     android:orientation="horizontal" >
 	<NumberPicker android:id="@+id/due_val"
 	   style="@android:style/Theme.Holo.Light"

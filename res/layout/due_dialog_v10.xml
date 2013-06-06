@@ -18,6 +18,7 @@
 	        android:id="@+id/dialog_due_pick_val"
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
+	        android:minWidth="45dp"
 	        android:text="0"
 	        android:textColor="@android:color/white"
 	        android:gravity="center"
@@ -44,6 +45,7 @@
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
 	        android:text="0"
+	        android:minWidth="45dp"
 	        android:textColor="@android:color/white"
 	        android:gravity="center"
 	        android:textAppearance="?android:attr/textAppearanceLarge" />
