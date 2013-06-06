@@ -56,8 +56,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ "sync_state INTEGER DEFAULT " + Network.SYNC_STATE.ADD + ", "
 				+ "lft INTEGER, " + "rgt INTEGER " + ")");
 		createTasksTableString(db);
-		db.execSQL("INSERT INTO lists (name) VALUES ('"
-				+ context.getString(R.string.inbox) + "')");
+		db.execSQL("INSERT INTO lists (name,lft,rgt) VALUES ('"
+				+ context.getString(R.string.inbox) + "',0,1)");
 		db.execSQL("INSERT INTO tasks (list_id,name) VALUES (1,'"
 				+ context.getString(R.string.first_task) + "')");
 		createSpecialListsTable(db);
