@@ -52,6 +52,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -122,6 +124,8 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 		mRequestNewAccount = mUsername == null;
 		requestWindowFeature(Window.FEATURE_LEFT_ICON);
 		setContentView(R.layout.login_activity);
+		if(VERSION.SDK_INT<VERSION_CODES.HONEYCOMB)
+			setTheme(R.style.Dialog);
 		getWindow().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON,
 				android.R.drawable.ic_dialog_alert);
 		mMessage = (TextView) findViewById(R.id.message);

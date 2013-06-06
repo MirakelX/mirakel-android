@@ -13,6 +13,7 @@ package de.azapps.mirakel.helper;
  *
  * @author: Karsten Priegnitz
  * @see: http://code.google.com/p/android-change-log/
+ * modifyed by AZ and Weiznich 2013
  */
 
 import java.io.BufferedReader;
@@ -26,6 +27,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Color;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -140,16 +142,15 @@ public class ChangeLog {
 	}
 
 	private AlertDialog getDialog(boolean full) {
-		WebView wv;
-		if(API_LEVEL<Build.VERSION_CODES.HONEYCOMB){
-			wv = new WebView(new ContextThemeWrapper(this.context, R.style.Dialog));
-		}else{
-			wv = new WebView(this.context);
-		}
-
-		if (API_LEVEL >= Build.VERSION_CODES.HONEYCOMB)
+		WebView wv = new WebView(new ContextThemeWrapper(this.context, R.style.Dialog));
+		if (API_LEVEL >= Build.VERSION_CODES.HONEYCOMB){
 			Compatibility.setViewLayerTypeSoftware(wv);
-		wv.setBackgroundColor(0); // transparent
+			wv.setBackgroundColor(0); // transparent
+		}else{
+			wv.setBackgroundColor(Color.WHITE);
+		}
+			
+		
 		wv.loadDataWithBaseURL(null, this.getLog(full), "text/html", "UTF-8",
 				null);
 
