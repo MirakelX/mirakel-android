@@ -112,6 +112,7 @@ public class SpecialListSettingsActivity extends Activity {
 											Context.INPUT_METHOD_SERVICE);
 							imm.hideSoftInputFromWindow(name.getWindowToken(),
 									0);
+							name.setText(v.getText());
 							switcher.showPrevious();
 							return true; // consume.
 						}
@@ -544,6 +545,15 @@ public class SpecialListSettingsActivity extends Activity {
 									@Override
 									public void onClick(DialogInterface dialog,
 											int which) {
+										String t = ((EditText) dialogView
+												.findViewById(R.id.where_like))
+												.getText().toString();
+										if(t.trim().isEmpty()){
+											updateWhere("content", "");
+											((TextView) findViewById(R.id.special_list_where_name_content))
+											.setText(getString(R.string.empty));
+											return;
+										}
 										String newWhere = (((CheckBox) dialogView
 												.findViewById(R.id.where_like_inverte))
 												.isChecked() ? "not " : "")
@@ -553,9 +563,6 @@ public class SpecialListSettingsActivity extends Activity {
 												.isChecked() ? getString(R.string.not)
 												+ " "
 												: "");
-										String t = ((EditText) dialogView
-												.findViewById(R.id.where_like))
-												.getText().toString();
 										switch (((RadioGroup) dialogView
 												.findViewById(R.id.where_like_radio))
 												.getCheckedRadioButtonId()) {
@@ -653,6 +660,15 @@ public class SpecialListSettingsActivity extends Activity {
 									@Override
 									public void onClick(DialogInterface dialog,
 											int which) {
+										String t = ((EditText) dialogView
+												.findViewById(R.id.where_like))
+												.getText().toString();
+										if(t.trim().isEmpty()){
+											updateWhere("name", "");
+											((TextView) findViewById(R.id.special_list_where_name_content))
+											.setText(getString(R.string.empty));
+											return;
+										}
 										String newWhere = (((CheckBox) dialogView
 												.findViewById(R.id.where_like_inverte))
 												.isChecked() ? "not " : "")
@@ -662,9 +678,6 @@ public class SpecialListSettingsActivity extends Activity {
 												.isChecked() ? getString(R.string.not)
 												+ " "
 												: "");
-										String t = ((EditText) dialogView
-												.findViewById(R.id.where_like))
-												.getText().toString();
 										switch (((RadioGroup) dialogView
 												.findViewById(R.id.where_like_radio))
 												.getCheckedRadioButtonId()) {
@@ -1339,6 +1352,8 @@ public class SpecialListSettingsActivity extends Activity {
 						returnString += getString(R.string.not) + " ";
 					}
 					s = s.replace(queryPart + " like", "").trim();
+					if(s.replaceAll("[\"'%]", "").isEmpty())
+						return getString(R.string.empty);
 					if (s.matches("[\"'].%['\"]"))
 						returnString += getString(R.string.where_like_begin_text)
 								+ " " + s.replaceAll("[\"'%]", "");
