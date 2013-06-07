@@ -77,6 +77,8 @@ public class ListAdapter extends ArrayAdapter<ListMirakel> {
 		ListMirakel list = data.get(position);
 		if (!enableDrop || list.getId() < 0)
 			holder.listRowDrag.setVisibility(View.GONE);
+		else
+			holder.listRowDrag.setVisibility(View.VISIBLE);
 		holder.listRowName.setText(list.getName());
 		holder.listRowName.setTag(list);
 		holder.listRowTaskNumber.setText("" + list.countTasks());
