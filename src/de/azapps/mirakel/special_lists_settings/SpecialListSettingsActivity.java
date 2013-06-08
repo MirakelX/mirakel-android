@@ -548,7 +548,7 @@ public class SpecialListSettingsActivity extends Activity {
 										String t = ((EditText) dialogView
 												.findViewById(R.id.where_like))
 												.getText().toString();
-										if(t.trim().isEmpty()){
+										if(t.trim().length()==0){
 											updateWhere("content", "");
 											((TextView) findViewById(R.id.special_list_where_name_content))
 											.setText(getString(R.string.empty));
@@ -663,7 +663,7 @@ public class SpecialListSettingsActivity extends Activity {
 										String t = ((EditText) dialogView
 												.findViewById(R.id.where_like))
 												.getText().toString();
-										if(t.trim().isEmpty()){
+										if(t.trim().length()==0){
 											updateWhere("name", "");
 											((TextView) findViewById(R.id.special_list_where_name_content))
 											.setText(getString(R.string.empty));
@@ -1240,16 +1240,16 @@ public class SpecialListSettingsActivity extends Activity {
 			for (int i = 0; i < parts.length; i++) {
 				if ((parts[i].contains(attr))
 						&& (!parts[i].contains("not null")
-								|| newWhere.isEmpty() || attr != "due")) {
+								|| newWhere.trim().length()==0 || attr != "due")) {
 					parts[i] = newWhere;
-					if (newWhere.isEmpty())
+					if (newWhere.trim().length()==0)
 						continue;
 				}
 				n += (first ? "" : " and ") + parts[i].trim();
 				first = false;
 			}
 			specialList.setWhereQuery(n);
-		} else if (specialList.getWhereQuery().isEmpty()) {
+		} else if (specialList.getWhereQuery().trim().length()==0) {
 			specialList.setWhereQuery((attr == "due" ? "due is not null and "
 					: "") + newWhere);
 		} else if (newWhere != "") {
@@ -1326,7 +1326,7 @@ public class SpecialListSettingsActivity extends Activity {
 							: "");
 					String[] p = s
 							.replace(
-									(returnString.isEmpty() ? "" : "not ")
+									(returnString.trim().length()==0 ? "" : "not ")
 											+ "list_id in(", "")
 							.replace(")", "").split(",");
 					for (int i = 0; i < p.length; i++) {
@@ -1342,7 +1342,7 @@ public class SpecialListSettingsActivity extends Activity {
 							: "");
 					return returnString
 							+ s.replace(
-									(returnString.isEmpty() ? "" : "not ")
+									(returnString.trim().length()==0 ? "" : "not ")
 											+ "priority in (", "")
 									.replace(")", "").replace(",", ", ");
 				}
@@ -1352,7 +1352,7 @@ public class SpecialListSettingsActivity extends Activity {
 						returnString += getString(R.string.not) + " ";
 					}
 					s = s.replace(queryPart + " like", "").trim();
-					if(s.replaceAll("[\"'%]", "").isEmpty())
+					if(s.replaceAll("[\"'%]", "").trim().length()==0)
 						return getString(R.string.empty);
 					if (s.matches("[\"'].%['\"]"))
 						returnString += getString(R.string.where_like_begin_text)
