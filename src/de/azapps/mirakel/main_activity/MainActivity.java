@@ -86,7 +86,7 @@ public class MainActivity extends FragmentActivity implements
 	private static final int LIST_FRAGMENT = 0, TASKS_FRAGMENT = 1,
 			TASK_FRAGMENT = 2;
 	protected static final int RESULT_SPEECH_NAME = 1,
-			RESULT_SPEECH_CONTENT = 2, RESULT_SPEECH = 3;
+			RESULT_SPEECH_CONTENT = 2, RESULT_SPEECH = 3,RESULT_SETTINGS=4;
 	private static final String TAG = "MainActivity";
 
 	public static String EXTRA_ID = "de.azapps.mirakel.EXTRA_TASKID",
@@ -174,7 +174,7 @@ public class MainActivity extends FragmentActivity implements
 		case R.id.menu_settings_tasks:
 			Intent intent = new Intent(MainActivity.this,
 					SettingsActivity.class);
-			startActivity(intent);
+			startActivityForResult(intent,RESULT_SETTINGS);
 			break;
 		case R.id.menu_sync_now_list:
 		case R.id.menu_sync_now_task:
@@ -290,6 +290,10 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if(requestCode==RESULT_SETTINGS){
+			listFragment.update();
+			return;
+		}
 		if (resultCode == RESULT_OK && null != data) {
 			ArrayList<String> text = data
 					.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
