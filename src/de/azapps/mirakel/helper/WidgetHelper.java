@@ -2,13 +2,30 @@ package de.azapps.mirakel.helper;
 
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
+import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.task.Task;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.View;
 import android.widget.RemoteViews;
 
 public class WidgetHelper {
 	public static RemoteViews configureItem(RemoteViews rv, Task task,Context mContext,int listId){
+		Intent openIntent = new Intent(mContext, MainActivity.class);
+		openIntent.setAction(MainActivity.SHOW_TASK);
+		openIntent.putExtra(MainActivity.EXTRA_ID, task.getId());
+		openIntent
+				.setData(Uri.parse(openIntent.toUri(Intent.URI_INTENT_SCHEME)));
+		PendingIntent pOpenIntent = PendingIntent.getActivity(mContext, 0,
+				openIntent, 0);
+		
+		
+		rv.setOnClickPendingIntent(R.id.tasks_row, pOpenIntent);
+		rv.setOnClickPendingIntent(R.id.tasks_row_name, pOpenIntent);
+		
+		
 		rv.setTextViewText(R.id.tasks_row_name, task.getName());
 		if (task.isDone()) {
 			rv.setTextColor(R.id.tasks_row_name, mContext.getResources()

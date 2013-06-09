@@ -31,7 +31,12 @@ public class Helpers {
 
 	public static Task getTaskFromIntent(Intent intent) {
 		Task task = null;
-		long taskId = intent.getLongExtra(MainActivity.EXTRA_ID, 0);
+		long taskId = 	intent.getLongExtra(MainActivity.EXTRA_ID, 0);
+		if(taskId==0){
+			//ugly fix for show Task from Widget
+			taskId=(long)intent.getIntExtra(MainActivity.EXTRA_ID, 0);
+		}
+		Log.e(TAG,"id: "+taskId);
 		if (taskId != 0) {
 			task = Task.get(taskId);
 		}
