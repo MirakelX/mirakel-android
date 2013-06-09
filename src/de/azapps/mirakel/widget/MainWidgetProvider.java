@@ -32,7 +32,6 @@ import android.net.Uri;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 import de.azapps.mirakel.Mirakel;
@@ -44,6 +43,7 @@ import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 
 public class MainWidgetProvider extends AppWidgetProvider {
+	@SuppressWarnings("unused")
 	private static final String TAG = "MainWidgetProvider";
 	public static String EXTRA_LISTID = "de.azapps.mirakel.EXTRA_LISTID";
 	public static String EXTRA_LISTSORT = "de.azapps.mirakel.EXTRA_LISTSORT";
@@ -132,8 +132,8 @@ public class MainWidgetProvider extends AppWidgetProvider {
 					views.setViewVisibility(R.id.empty_view, View.VISIBLE);
 				}else{
 					views.setViewVisibility(R.id.empty_view, View.GONE);
-					for (Task t:tasks) {
-						Log.e(TAG,""+t.getName());
+					int end=7;//TODO get from screensize or so
+					for (Task t:tasks.subList(0, end)) {
 					    views.addView(R.id.widget_main_view,
 					    		WidgetHelper.configureItem(
 					    				new RemoteViews(context.getPackageName(), R.layout.widget_row), t, context, listId));
