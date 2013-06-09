@@ -41,6 +41,7 @@ import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.sync.Network;
 
 public class Task extends TaskBase {
@@ -437,7 +438,7 @@ public class Task extends TaskBase {
 	 * @return
 	 */
 	private static Cursor getTasksCursor(int listId, int sorting) {
-		String where = "list_id='" + listId + "'";
+		String where = listId<0?SpecialList.getSpecialList(-1*listId).getWhereQuery():"list_id='" + listId + "'";
 		return getTasksCursor(listId, sorting, where);
 	}
 
