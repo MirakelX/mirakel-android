@@ -27,6 +27,8 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
@@ -113,7 +115,7 @@ public class NotificationService extends Service {
 
 		// Big View
 		if (preferences.getBoolean("notificationsBig", true)
-				&& todayTasks.size() > 1) {
+				&& todayTasks.size() > 1&&VERSION.SDK_INT>=VERSION_CODES.JELLY_BEAN) {
 			NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 			for (Task task : todayTasks) {
 				inboxStyle.addLine(task.getName());
