@@ -40,7 +40,7 @@ public class SettingsActivity extends PreferenceActivity {
 			getActionBar().setDisplayHomeAsUpEnabled(true);
 		} else {
 			addPreferencesFromResource(R.xml.preferences);
-			new PreferencesHelper(this).setFunctions();
+			new PreferencesHelper(this).setFunctionsApp();
 		}
 	}
 

@@ -25,12 +25,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
-import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
-import de.azapps.mirakel.helper.Helpers;
+import de.azapps.mirakel.helper.WidgetHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 
@@ -79,55 +77,13 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	}
 
 	public RemoteViews getViewAt(int position) {
+		Task task=tasks.get(position);
 		// Get The Task
-		Task task = tasks.get(position);
-		// Initialize the Remote View
 		RemoteViews rv = new RemoteViews(mContext.getPackageName(),
 				R.layout.widget_row);
 
 		// Set the Contents of the Row
-		rv.setTextViewText(R.id.tasks_row_name, task.getName());
-		if (task.isDone()) {
-			rv.setTextColor(R.id.tasks_row_name, mContext.getResources()
-					.getColor(R.color.Grey));
-		} else {
-			rv.setTextColor(R.id.tasks_row_name, mContext.getResources()
-					.getColor(R.color.Black));
-		}
-		rv.setTextViewText(R.id.tasks_row_priority, task.getPriority() + "");
-		rv.setTextColor(R.id.tasks_row_priority, mContext.getResources()
-				.getColor(R.color.Black));
-		rv.setInt(R.id.tasks_row_priority, "setBackgroundColor",
-				Mirakel.PRIO_COLOR[task.getPriority() + 2]);
-
-		if (listId <= 0) {
-			rv.setViewVisibility(R.id.tasks_row_list_name, View.VISIBLE);
-			rv.setTextViewText(R.id.tasks_row_list_name, task.getList()
-					.getName());
-		} else {
-			rv.setViewVisibility(R.id.tasks_row_list_name, View.GONE);
-		}
-
-		if (task.getDue() != null) {
-			rv.setViewVisibility(R.id.tasks_row_due, View.VISIBLE);
-			rv.setTextViewText(
-					R.id.tasks_row_due,
-					Helpers.formatDate(task.getDue(),
-							mContext.getString(R.string.dateFormat)));
-			rv.setTextColor(
-					R.id.tasks_row_due,
-					mContext.getResources().getColor(
-							Helpers.getTaskDueColor(task.getDue(),
-									task.isDone())));
-		} else {
-			rv.setViewVisibility(R.id.tasks_row_due, View.GONE);
-		}
-
-		if (task.getContent().length() != 0) {
-			rv.setViewVisibility(R.id.tasks_row_has_content, View.VISIBLE);
-		} else {
-			rv.setViewVisibility(R.id.tasks_row_has_content, View.GONE);
-		}
+		rv=WidgetHelper.configureItem(rv, task, mContext, listId);
 
 		// rv.setBoolean(R.id.tasks_row_done, "setChecked", true);
 		/*
@@ -147,6 +103,7 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
 		return rv;
 	}
+
 
 	public RemoteViews getLoadingView() {
 		// We aren't going to return a default loading view in this sample

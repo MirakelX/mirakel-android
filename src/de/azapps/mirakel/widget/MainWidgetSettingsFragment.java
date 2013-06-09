@@ -18,37 +18,21 @@
  ******************************************************************************/
 package de.azapps.mirakel.widget;
 
-import java.util.List;
-
+import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
 import de.azapps.mirakel.R;
-import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.helper.PreferencesHelper;
 
+@SuppressLint("NewApi")
 public class MainWidgetSettingsFragment extends PreferenceFragment {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// Initialize needed Arrays
-		List<ListMirakel> lists = ListMirakel.all();
-		CharSequence entryValues[] = new String[lists.size()];
-		CharSequence entries[] = new String[lists.size()];
-		int i = 0;
-		for (ListMirakel list : lists) {
-			entryValues[i] = String.valueOf(list.getId());
-			entries[i] = list.getName();
-			i++;
-		}
-
-		// Load the preferences from an XML resource
 		addPreferencesFromResource(R.xml.main_widget_preferences);
-
-		// Notifications List
-		ListPreference notificationsListPreference = (ListPreference) findPreference("widgetList");
-		notificationsListPreference.setEntries(entries);
-		notificationsListPreference.setEntryValues(entryValues);
+		new PreferencesHelper(this).setFunctionsWidget();
 
 	}
 

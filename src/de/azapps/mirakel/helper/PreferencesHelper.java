@@ -35,6 +35,8 @@ import de.azapps.mirakel.static_activities.SettingsFragment;
 import de.azapps.mirakel.sync.AuthenticatorActivity;
 import de.azapps.mirakel.sync.DataDownloadCommand;
 import de.azapps.mirakel.sync.Network;
+import de.azapps.mirakel.widget.MainWidgetSettingsActivity;
+import de.azapps.mirakel.widget.MainWidgetSettingsFragment;
 
 public class PreferencesHelper {
 
@@ -51,10 +53,40 @@ public class PreferencesHelper {
 		ctx = c;
 		v4_0 = true;
 	}
+	
+	public PreferencesHelper(MainWidgetSettingsActivity c) {
+		ctx = c;
+		v4_0 = false;
+	}
+
+	public PreferencesHelper(MainWidgetSettingsFragment c) {
+		ctx = c;
+		v4_0 = true;
+	}
+	@SuppressWarnings("deprecation")
+	@SuppressLint("NewApi")
+	public void setFunctionsWidget() {
+		List<ListMirakel> lists = ListMirakel.all();
+		CharSequence entryValues[] = new String[lists.size()];
+		CharSequence entries[] = new String[lists.size()];
+		int i = 0;
+		for (ListMirakel list : lists) {
+			entryValues[i] = String.valueOf(list.getId());
+			entries[i] = list.getName();
+			i++;
+		}
+
+		// Notifications List
+		ListPreference notificationsListPreference = (ListPreference) (v4_0?((MainWidgetSettingsFragment)ctx).findPreference("widgetList"):((MainWidgetSettingsActivity)ctx).findPreference("widgetList"));
+		notificationsListPreference.setEntries(entries);
+		notificationsListPreference.setEntryValues(entryValues);
+		
+		
+	}
 
 	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
-	public void setFunctions() {
+	public void setFunctionsApp() {
 		// Initialize needed Arrays
 		List<ListMirakel> lists = ListMirakel.all();
 		CharSequence entryValues[] = new String[lists.size()];

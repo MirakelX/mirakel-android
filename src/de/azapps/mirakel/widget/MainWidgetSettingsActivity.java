@@ -18,24 +18,36 @@
  ******************************************************************************/
 package de.azapps.mirakel.widget;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
+import android.preference.PreferenceActivity;
 import android.util.Log;
 import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.R;
+import de.azapps.mirakel.helper.PreferencesHelper;
 
-public class MainWidgetSettingsActivity extends Activity {
+public class MainWidgetSettingsActivity extends PreferenceActivity {
 
+	@SuppressWarnings("deprecation")
+	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// Display the fragment as the main content.
-		getFragmentManager()
-				.beginTransaction()
-				.replace(android.R.id.content, new MainWidgetSettingsFragment())
-				.commit();
+		if(VERSION.SDK_INT<VERSION_CODES.HONEYCOMB){
+			addPreferencesFromResource(R.xml.main_widget_preferences);
+			new PreferencesHelper(this).setFunctionsWidget();
+		}else{
+			// Display the fragment as the main content.
+			getFragmentManager()
+					.beginTransaction()
+					.replace(android.R.id.content, new MainWidgetSettingsFragment())
+					.commit();
+		}
 	}
 
 	@Override

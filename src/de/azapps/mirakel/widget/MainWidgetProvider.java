@@ -18,6 +18,7 @@
  ******************************************************************************/
 package de.azapps.mirakel.widget;
 
+import java.util.List;
 import java.util.Random;
 
 import android.annotation.SuppressLint;
@@ -31,14 +32,19 @@ import android.net.Uri;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.preference.PreferenceManager;
+import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
+import de.azapps.mirakel.helper.WidgetHelper;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.model.task.Task;
 
 public class MainWidgetProvider extends AppWidgetProvider {
+	private static final String TAG = "MainWidgetProvider";
 	public static String EXTRA_LISTID = "de.azapps.mirakel.EXTRA_LISTID";
 	public static String EXTRA_LISTSORT = "de.azapps.mirakel.EXTRA_LISTSORT";
 	public static String EXTRA_SHOWDONE = "de.azapps.mirakel.EXTRA_SHOWDONE";
@@ -56,7 +62,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
 		// provider
 		for (int appWidgetId : appWidgetIds) {
 			RemoteViews views = new RemoteViews(context.getPackageName(),
-					R.layout.widget_main);
+					VERSION.SDK_INT<VERSION_CODES.HONEYCOMB?R.layout.widget_main_layout_v10:R.layout.widget_main);
 
 			int listId = Integer.parseInt(preferences.getString("widgetList",
 					SpecialList.first().getId() + ""));
@@ -81,6 +87,8 @@ public class MainWidgetProvider extends AppWidgetProvider {
 
 			views.setOnClickPendingIntent(R.id.widget_list_name,
 					mainPendingIntent);
+			views.setTextViewText(R.id.widget_list_name,
+					ListMirakel.getList(listId).getName());
 			if(VERSION.SDK_INT>=VERSION_CODES.HONEYCOMB){
 				// Here we setup the intent which points to the StackViewService
 				// which will
@@ -103,8 +111,6 @@ public class MainWidgetProvider extends AppWidgetProvider {
 				// should be a sibling
 				// of the collection view.
 				views.setEmptyView(R.id.widget_tasks_list, R.id.empty_view);
-				views.setTextViewText(R.id.widget_list_name,
-						ListMirakel.getList(listId).getName());
 				// Here we setup the a pending intent template. Individuals items of
 				// a collection
 				// cannot setup their own pending intents, instead, the collection
@@ -118,8 +124,24 @@ public class MainWidgetProvider extends AppWidgetProvider {
 						context, 0, toastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 				views.setPendingIntentTemplate(R.id.widget_tasks_list,
 						toastPendingIntent);
+				
+			}else{
+				views.removeAllViews(R.id.widget_main_view);
+				List<Task> tasks= Task.getTasks(listId, listSort, false);
+				if(tasks.size()==0){
+					views.setViewVisibility(R.id.empty_view, View.VISIBLE);
+				}else{
+					views.setViewVisibility(R.id.empty_view, View.GONE);
+					for (Task t:tasks) {
+						Log.e(TAG,""+t.getName());
+					    views.addView(R.id.widget_main_view,
+					    		WidgetHelper.configureItem(
+					    				new RemoteViews(context.getPackageName(), R.layout.widget_row), t, context, listId));
+					}  				
+				}
 			}
 			appWidgetManager.updateAppWidget(appWidgetId, views);
+			
 		}
 	}
 
