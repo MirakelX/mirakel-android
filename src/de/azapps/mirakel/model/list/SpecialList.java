@@ -196,6 +196,7 @@ public class SpecialList extends ListMirakel {
 			slists.add(cursorToSList(c));
 			c.moveToNext();
 		}
+		c.close();
 		return slists;
 	}
 
