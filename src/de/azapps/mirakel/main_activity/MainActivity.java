@@ -95,7 +95,8 @@ public class MainActivity extends FragmentActivity implements
 			TASK_LATER = "de.azapps.mirakel.TASK_LATER",
 			SHOW_LIST = "de.azapps.mirakel.SHOW_LIST",
 			SHOW_LISTS = "de.azapps.mirakel.SHOW_LISTS",
-			SHOW_LIST_FROM_WIDGET = "de.azapps.mirakel.SHOW_LIST_FROM_WIDGET";
+			SHOW_LIST_FROM_WIDGET = "de.azapps.mirakel.SHOW_LIST_FROM_WIDGET",
+			SHOW_TASK_FROM_WIDGET = "de.azapps.mirakel.SHOW_TASK_FROM_WIDGET";
 	private SharedPreferences preferences;
 
 	private int currentPosition = 1;
@@ -362,23 +363,27 @@ public class MainActivity extends FragmentActivity implements
 		this.intializeViewPager();
 		NotificationService.updateNotificationAndWidget(this);
 		Intent intent = getIntent();
-		if (intent.getAction() == SHOW_TASK) {
+		if (intent.getAction().equals(SHOW_TASK)) {
 			Task task = Helpers.getTaskFromIntent(intent);
+			
 			if (task != null) {
+				Log.e(TAG,"Taskid"+ task.getId());
 				currentList = task.getList();
 				setCurrentTask(task);
+			}else if(Mirakel.DEBUG){
+				Log.d(TAG,"task null");
 			}
-		} else if (intent.getAction() == TASK_DONE
-				|| intent.getAction() == TASK_LATER) {
+		} else if (intent.getAction().equals(TASK_DONE)
+				|| intent.getAction().equals(TASK_LATER)) {
 			handleReminder(intent);
-		} else if (intent.getAction() == SHOW_LIST
-				|| intent.getAction() == SHOW_LIST_FROM_WIDGET) {
+		} else if (intent.getAction().equals(SHOW_LIST)
+				|| intent.getAction().equals(SHOW_LIST_FROM_WIDGET)) {
 
 			int listId = intent.getIntExtra(EXTRA_ID, 0);
 			ListMirakel list = ListMirakel.getList(listId);
 			setCurrentList(list);
 			return;
-		} else if (intent.getAction() == SHOW_LISTS) {
+		} else if (intent.getAction().equals(SHOW_LISTS)) {
 			mViewPager.setCurrentItem(LIST_FRAGMENT);
 		} else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 			String query = intent.getStringExtra(SearchManager.QUERY);
