@@ -120,6 +120,10 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/settings_misc" >
         <Preference
+            android:key="changelog"
+            android:summary="@string/changelog_click_summary"
+            android:title="@string/changelog_click" />
+        <Preference
             android:key="backup"
             android:summary="@string/backup_click_summary"
             android:title="@string/backup_click" />

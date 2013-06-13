@@ -8,6 +8,7 @@ import org.apache.http.message.BasicNameValuePair;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -42,6 +43,7 @@ public class PreferencesHelper {
 
 	private static final String TAG = "PreferencesHelper";
 	private Object ctx;
+	private Activity context;
 	private boolean v4_0;
 
 	public PreferencesHelper(SettingsActivity c) {
@@ -53,7 +55,7 @@ public class PreferencesHelper {
 		ctx = c;
 		v4_0 = true;
 	}
-	
+
 	public PreferencesHelper(MainWidgetSettingsActivity c) {
 		ctx = c;
 		v4_0 = false;
@@ -63,6 +65,7 @@ public class PreferencesHelper {
 		ctx = c;
 		v4_0 = true;
 	}
+
 	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
 	public void setFunctionsWidget() {
@@ -77,16 +80,21 @@ public class PreferencesHelper {
 		}
 
 		// Notifications List
-		ListPreference notificationsListPreference = (ListPreference) (v4_0?((MainWidgetSettingsFragment)ctx).findPreference("widgetList"):((MainWidgetSettingsActivity)ctx).findPreference("widgetList"));
+		ListPreference notificationsListPreference = (ListPreference) (v4_0 ? ((MainWidgetSettingsFragment) ctx)
+				.findPreference("widgetList")
+				: ((MainWidgetSettingsActivity) ctx)
+						.findPreference("widgetList"));
 		notificationsListPreference.setEntries(entries);
 		notificationsListPreference.setEntryValues(entryValues);
-		
-		
+
 	}
 
 	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
 	public void setFunctionsApp() {
+
+		context = (v4_0 ? ((SettingsFragment) ctx).getActivity()
+				: (SettingsActivity) ctx);
 		// Initialize needed Arrays
 		List<ListMirakel> lists = ListMirakel.all();
 		CharSequence entryValues[] = new String[lists.size()];
@@ -191,9 +199,7 @@ public class PreferencesHelper {
 		final Account account = getAccount(am);
 		if (account == null) {
 			SharedPreferences settings = PreferenceManager
-					.getDefaultSharedPreferences((v4_0 ? ((SettingsFragment) ctx)
-							.getActivity() : (SettingsActivity) ctx)
-							.getApplicationContext());
+					.getDefaultSharedPreferences(context);
 			SharedPreferences.Editor editor = settings.edit();
 			editor.putBoolean("syncUse", false);
 			editor.commit();
@@ -260,10 +266,7 @@ public class PreferencesHelper {
 													Toast.LENGTH_LONG).show();
 										}
 										SharedPreferences settings = PreferenceManager
-												.getDefaultSharedPreferences((v4_0 ? ((SettingsFragment) ctx)
-														.getActivity()
-														: (SettingsActivity) ctx)
-														.getApplicationContext());
+												.getDefaultSharedPreferences(context);
 										SharedPreferences.Editor editor = settings
 												.edit();
 										editor.putString("syncPassword", "");
@@ -363,10 +366,7 @@ public class PreferencesHelper {
 																	.getString(R.string.inavlidUrl)),
 													Toast.LENGTH_LONG).show();
 											SharedPreferences settings = PreferenceManager
-													.getDefaultSharedPreferences((v4_0 ? ((SettingsFragment) ctx)
-															.getActivity()
-															: (SettingsActivity) ctx)
-															.getApplicationContext());
+													.getDefaultSharedPreferences(context);
 											SharedPreferences.Editor editor = settings
 													.edit();
 											editor.putString(
@@ -443,6 +443,19 @@ public class PreferencesHelper {
 			public boolean onPreferenceClick(Preference preference) {
 				new Backup((v4_0 ? ((SettingsFragment) ctx).getActivity()
 						: (SettingsActivity) ctx)).exportDB();
+				return true;
+			}
+		});
+
+		Preference changelog = (Preference) (v4_0 ? ((SettingsFragment) ctx)
+				.findPreference("changelog") : ((SettingsActivity) ctx)
+				.findPreference("changelog"));
+
+		changelog.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+			@SuppressLint("NewApi")
+			public boolean onPreferenceClick(Preference preference) {
+				ChangeLog cl = new ChangeLog(context);
+				cl.getFullLogDialog().show();
 				return true;
 			}
 		});
