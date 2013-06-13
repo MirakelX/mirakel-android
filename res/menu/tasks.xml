@@ -18,22 +18,22 @@
 -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
+    <!--
+    Search
+    Share
+    Sync
+    Sort
+    Delete
+    Config
+    Credits
+    Bugreport
+    -->
+
     <item
-        android:id="@+id/menu_settings_tasks"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/action_settings"/>
-    <item
-        android:id="@+id/list_delete"
-        android:icon="@android:drawable/ic_menu_delete"
+        android:id="@+id/search"
+        android:icon="@android:drawable/ic_menu_search"
         android:showAsAction="ifRoom|withText"
-        android:title="@string/menu_delete">
-    </item>
-    <item
-        android:id="@+id/task_sorting"
-        android:icon="@android:drawable/ic_menu_sort_alphabetically"
-        android:showAsAction="ifRoom|withText"
-        android:title="@string/task_menu_sorting">
+        android:title="@string/search">
     </item>
     <item
         android:id="@+id/share_list"
@@ -42,24 +42,31 @@
         android:title="@string/share_list">
     </item>
     <item
-        android:id="@+id/search"
-        android:icon="@android:drawable/ic_menu_search"
-        android:showAsAction="ifRoom|withText"
-        android:title="@string/search">
-    </item>
-    <item
         android:id="@+id/menu_sync_now_tasks"
-        android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/action_sync_now"/>
     <item
+        android:id="@+id/task_sorting"
+        android:icon="@android:drawable/ic_menu_sort_alphabetically"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/task_menu_sorting">
+    </item>
+    <item
+        android:id="@+id/list_delete"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/menu_delete">
+    </item>
+    <item
+        android:id="@+id/menu_settings_tasks"
+        android:showAsAction="never"
+        android:title="@string/action_settings"/>
+    <item
         android:id="@+id/menu_credits_tasks"
-        android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/action_credits"/>
     <item
         android:id="@+id/menu_contact_tasks"
-        android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/action_contact"/>
 
