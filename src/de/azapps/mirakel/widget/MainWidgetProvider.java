@@ -81,6 +81,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
 			Intent mainIntent = new Intent(context, MainActivity.class);
 			mainIntent.setAction(MainActivity.SHOW_LIST_FROM_WIDGET);
 			mainIntent.putExtra(MainActivity.EXTRA_ID, listId);
+			mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
 			PendingIntent mainPendingIntent = PendingIntent.getActivity(
 					context, 0, mainIntent, 0);
