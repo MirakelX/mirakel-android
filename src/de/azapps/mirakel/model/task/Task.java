@@ -455,6 +455,7 @@ public class Task extends TaskBase {
 		where += " not sync_state=" + Network.SYNC_STATE.DELETE;
 		Log.v(TAG, where);
 		String order = "";
+		
 		switch (sorting) {
 		case ListMirakel.SORT_BY_PRIO:
 			order = "priority desc";
@@ -468,6 +469,8 @@ public class Task extends TaskBase {
 		default:
 			order = "_id ASC";
 		}
+		if(listId<0)
+			order+=", list_id ASC";
 		Log.v(TAG, order);
 		return Mirakel.getReadableDatabase().query(TABLE, allColumns, where,
 				null, null, null, "done, " + order);
