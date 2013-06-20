@@ -23,7 +23,9 @@ Mirakel is a free (as in freedom) Todo List App with some Features for Poweruser
 
 ## Download
 
-[Here is the .apk](https://azapps.de/other/mirakel/Mirakel.apk)
+[Here is the .apk](http://azapps.de/other/mirakel/Mirakel.apk)
+
+[SSL](http://azapps.de/other/mirakel/Mirakel.apk)
 
 This is the not the very latest Version. The apk is builded when we add some features or remove some bugs.
 This is experimental Software! Be careful.
