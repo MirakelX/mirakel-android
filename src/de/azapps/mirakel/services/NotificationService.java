@@ -24,11 +24,13 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
@@ -78,9 +80,12 @@ public class NotificationService extends Service {
 			return;
 		}
 		// Set onClick Intent
-		Intent intent = new Intent(this, MainActivity.class);
+		Intent intent = new Intent(Intent.ACTION_MAIN);
+		intent.setComponent(new ComponentName(getPackageName(),"de.azapps.mirakel.main_activity.MainActivity"));
 		intent.setAction(MainActivity.SHOW_LIST);
 		intent.putExtra(MainActivity.EXTRA_ID, listId);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
 		// Get the data
