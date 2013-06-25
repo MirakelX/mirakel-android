@@ -19,7 +19,9 @@
 package de.azapps.mirakel.reminders;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import android.app.AlarmManager;
@@ -41,10 +43,12 @@ import de.azapps.mirakel.R;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.services.NotificationService;
 
 public class ReminderAlarm extends BroadcastReceiver {
 	@SuppressWarnings("unused")
 	private static final String TAG = "ReminderAlarm";
+	public static String UPDATE_NOTIFICATION = "de.azapps.mirakel.reminders.ReminderAlarm.UPDATE_NOTIFICATION";
 	public static String SHOW_TASK = "de.azapps.mirakel.reminders.ReminderAlarm.SHOW_TASK";
 	public static String EXTRA_ID = "de.azapps.mirakel.reminders.ReminderAlarm.EXTRA_ID";
 	private SharedPreferences preferences;
@@ -53,6 +57,9 @@ public class ReminderAlarm extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
+		if(intent.getAction()==UPDATE_NOTIFICATION){
+			NotificationService.updateNotificationAndWidget(context);
+		}
 		if (intent.getAction() != SHOW_TASK) {
 			return;
 		}
@@ -152,11 +159,30 @@ public class ReminderAlarm extends BroadcastReceiver {
 	private static List<Task> activeAlarms = new ArrayList<Task>();
 
 	public static void updateAlarms(final Context ctx) {
+		
+		
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				alarmManager = (AlarmManager) ctx
 						.getSystemService(Context.ALARM_SERVICE);
+				
+
+				//Update the Notifications ad midnight
+				Intent intent = new Intent(ctx, ReminderAlarm.class);
+				intent.setAction(UPDATE_NOTIFICATION);
+				PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx, 0,
+						intent, PendingIntent.FLAG_UPDATE_CURRENT);
+				Calendar triggerCal=new GregorianCalendar();
+				triggerCal.set(Calendar.HOUR_OF_DAY, 0);
+				triggerCal.set(Calendar.MINUTE, 0);
+				triggerCal.add(Calendar.DAY_OF_MONTH, 1);
+				
+				
+				alarmManager.setRepeating(AlarmManager.RTC, triggerCal.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+				
+				
+				//Alarms
 				List<Task> tasks = Task.getTasksWithReminders();
 				for (int i = 0; i < activeAlarms.size(); i++) {
 					Task t = activeAlarms.get(i);
