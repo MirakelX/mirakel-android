@@ -9,7 +9,7 @@ import org.joda.time.LocalDate;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.util.Log;
+import de.azapps.mirakel.helper.Log;
 import android.widget.Toast;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.main_activity.MainActivity;
@@ -31,12 +31,12 @@ public class Helpers {
 
 	public static Task getTaskFromIntent(Intent intent) {
 		Task task = null;
-		long taskId = 	intent.getLongExtra(MainActivity.EXTRA_ID, 0);
-		if(taskId==0){
-			//ugly fix for show Task from Widget
-			taskId=(long)intent.getIntExtra(MainActivity.EXTRA_ID, 0);
+		long taskId = intent.getLongExtra(MainActivity.EXTRA_ID, 0);
+		if (taskId == 0) {
+			// ugly fix for show Task from Widget
+			taskId = (long) intent.getIntExtra(MainActivity.EXTRA_ID, 0);
 		}
-		Log.e(TAG,"id: "+taskId);
+		Log.e(TAG, "id: " + taskId);
 		if (taskId != 0) {
 			task = Task.get(taskId);
 		}

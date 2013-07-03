@@ -34,7 +34,7 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import de.azapps.mirakel.helper.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;

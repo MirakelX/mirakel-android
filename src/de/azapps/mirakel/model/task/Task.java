@@ -31,7 +31,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
+import de.azapps.mirakel.helper.Log;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -359,9 +359,7 @@ public class Task extends TaskBase {
 					t.setContent(el.get("content").getAsString() == null ? ""
 							: el.get("content").getAsString());
 				} catch (Exception e) {
-					if (Mirakel.DEBUG) {
-						Log.d(TAG, "Content=NULL?");
-					}
+					Log.d(TAG, "Content=NULL?");
 					t.setContent("");
 				}
 				t.setPriority(el.get("priority").getAsInt());
@@ -379,18 +377,15 @@ public class Task extends TaskBase {
 				} catch (Exception e) {
 					t.setDue(null);
 					Log.v(TAG, "Due is null");
-					if (Mirakel.DEBUG)
-						Log.e(TAG, "Can not parse Date! ");
+					Log.e(TAG, "Can not parse Date! ");
 				}
 				tasks.add(t);
 			}
 			return tasks;
 		} catch (Exception e) {
 			Log.e(TAG, "Cannot parse response");
-			if (Mirakel.DEBUG) {
-				Log.e(TAG, result);
-				Log.d(TAG, Log.getStackTraceString(e));
-			}
+			Log.e(TAG, result);
+			Log.d(TAG, Log.getStackTraceString(e));
 		}
 		return new ArrayList<Task>();
 	}
@@ -438,7 +433,8 @@ public class Task extends TaskBase {
 	 * @return
 	 */
 	private static Cursor getTasksCursor(int listId, int sorting) {
-		String where = listId<0?SpecialList.getSpecialList(-1*listId).getWhereQuery():"list_id='" + listId + "'";
+		String where = listId < 0 ? SpecialList.getSpecialList(-1 * listId)
+				.getWhereQuery() : "list_id='" + listId + "'";
 		return getTasksCursor(listId, sorting, where);
 	}
 
@@ -455,7 +451,7 @@ public class Task extends TaskBase {
 		where += " not sync_state=" + Network.SYNC_STATE.DELETE;
 		Log.v(TAG, where);
 		String order = "";
-		
+
 		switch (sorting) {
 		case ListMirakel.SORT_BY_PRIO:
 			order = "priority desc";
@@ -469,8 +465,8 @@ public class Task extends TaskBase {
 		default:
 			order = "_id ASC";
 		}
-		if(listId<0)
-			order+=", list_id ASC";
+		if (listId < 0)
+			order += ", list_id ASC";
 		Log.v(TAG, order);
 		return Mirakel.getReadableDatabase().query(TABLE, allColumns, where,
 				null, null, null, "done, " + order);

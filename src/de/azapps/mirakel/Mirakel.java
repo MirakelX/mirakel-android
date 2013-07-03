@@ -22,7 +22,7 @@ import android.app.Application;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
-import android.util.Log;
+import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -43,8 +43,6 @@ public class Mirakel extends Application {
 
 	private static final String TAG = "Mirakel";
 
-	public static final boolean DEBUG = false;// Set to false/true to
-												// disable/enable debuginglog
 
 	private static SQLiteOpenHelper openHelper;
 

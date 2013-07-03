@@ -54,7 +54,7 @@ import android.content.Context;
 import android.content.SyncResult;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
+import de.azapps.mirakel.helper.Log;
 import android.util.Pair;
 import android.widget.Toast;
 
@@ -179,8 +179,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		for (ListMirakel list : lists_local) {
 			add_list(list);
 		}
-		if (Mirakel.DEBUG)
-			Log.d(TAG, "Execute Sync");
+		Log.d(TAG, "Execute Sync");
 		execute(DeleteTasks);
 		execute(DeleteLists);
 		execute(SyncLists);
@@ -344,8 +343,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					.replace(":", ""));
 			ListMirakel list = ListMirakel.getListForSync(list_server.getId());
 			if (list == null) {
-				if (Mirakel.DEBUG)
-					Log.d(TAG, "add list from Server");
+				Log.d(TAG, "add list from Server");
 				addListFromServer(list_server);
 				continue;
 			} else {
@@ -373,13 +371,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			try {
 				if (df.parse(list.getUpdatedAt()).getTime() > df.parse(
 						list_server.getUpdatedAt()).getTime()) {
-					if (Mirakel.DEBUG)
-						Log.d(TAG, "Sync List to server");
+					Log.d(TAG, "Sync List to server");
 					// local list newer,
 					sync_list(list);
 				} else {
-					if (Mirakel.DEBUG)
-						Log.d(TAG, "Sync List from server");
+					Log.d(TAG, "Sync List from server");
 					// server list newer
 					list_server.setLft(list.getLft());
 					list_server.setRgt(list.getRgt());
@@ -388,8 +384,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				}
 			} catch (ParseException e) {
 				Log.e(TAG, "Unabel to parse Dates");
-				if (Mirakel.DEBUG)
-					Log.w(TAG, Log.getStackTraceString(e));
+				Log.w(TAG, Log.getStackTraceString(e));
 			}
 		} else if (list.getSyncState() == Network.SYNC_STATE.ADD) {
 			Cursor c = Mirakel.getReadableDatabase()
@@ -416,8 +411,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					c.moveToPrevious();
 				}
 				c.close();
-				if (Mirakel.DEBUG)
-					Log.d(TAG, "Move list+Add list from server");
+				Log.d(TAG, "Move list+Add list from server");
 				addListFromServer(list_server);
 			}
 		} else if (list.getSyncState() == Network.SYNC_STATE.IS_SYNCED) {
@@ -622,22 +616,19 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				if (df.parse(task.getUpdated_at()).getTime() > df.parse(
 						task_server.getUpdated_at()).getTime()) {
 					// local task newer, push to server
-					if (Mirakel.DEBUG)
-						Log.d(TAG, "Sync task to server from list "
-								+ task.getList().getId());
+					Log.d(TAG, "Sync task to server from list "
+							+ task.getList().getId());
 					sync_task(task);
 				} else {
 					// server task newer, use this task instated local
-					if (Mirakel.DEBUG)
-						Log.d(TAG, "Sync task from server to list "
-								+ task_server.getList().getId());
+					Log.d(TAG, "Sync task from server to list "
+							+ task_server.getList().getId());
 					task_server.setSyncState(Network.SYNC_STATE.IS_SYNCED);
 					task_server.save();
 				}
 			} catch (ParseException e) {
 				Log.e(TAG, "Unabel to parse Dates");
-				if (Mirakel.DEBUG)
-					Log.w(TAG, Log.getStackTraceString(e));
+				Log.w(TAG, Log.getStackTraceString(e));
 			}
 		} else if (task.getSync_state() == Network.SYNC_STATE.ADD) {
 			Cursor c = Mirakel.getReadableDatabase()
@@ -664,9 +655,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					c.moveToPrevious();
 				}
 				c.close();
-				if (Mirakel.DEBUG)
-					Log.d(TAG, "Move task + add task from server to list "
-							+ task_server.getList().getId());
+				Log.d(TAG, "Move task + add task from server to list "
+						+ task_server.getList().getId());
 				addTaskFromServer(task_server);
 			}
 		} else if (task.getSync_state() == Network.SYNC_STATE.DELETE) {

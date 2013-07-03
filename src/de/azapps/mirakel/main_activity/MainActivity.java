@@ -39,7 +39,6 @@ import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -52,6 +51,7 @@ import de.azapps.mirakel.R;
 import de.azapps.mirakel.helper.ChangeLog;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.ListDialogHelpers;
+import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SearchList;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -70,7 +70,7 @@ public class MainActivity extends FragmentActivity implements
 		ViewPager.OnPageChangeListener {
 
 	/**
-	 * /** The {@link ViewPager} that will host the section contents.
+	 * The {@link ViewPager} that will host the section contents.
 	 */
 	ViewPager mViewPager;
 	private PagerAdapter mPagerAdapter;
@@ -86,12 +86,12 @@ public class MainActivity extends FragmentActivity implements
 	private static final int LIST_FRAGMENT = 0, TASKS_FRAGMENT = 1,
 			TASK_FRAGMENT = 2;
 	protected static final int RESULT_SPEECH_NAME = 1,
-			RESULT_SPEECH_CONTENT = 2, RESULT_SPEECH = 3,RESULT_SETTINGS=4;
+			RESULT_SPEECH_CONTENT = 2, RESULT_SPEECH = 3, RESULT_SETTINGS = 4;
 	private static final String TAG = "MainActivity";
 
 	public static String EXTRA_ID = "de.azapps.mirakel.EXTRA_TASKID",
 			SHOW_TASK = "de.azapps.mirakel.SHOW_TASK",
-			TASK_DONE = "de.azapps.mirakel.TASK_",
+			TASK_DONE = "de.azapps.mirakel.TASK_DONE",
 			TASK_LATER = "de.azapps.mirakel.TASK_LATER",
 			SHOW_LIST = "de.azapps.mirakel.SHOW_LIST",
 			SHOW_LISTS = "de.azapps.mirakel.SHOW_LISTS",
@@ -99,7 +99,7 @@ public class MainActivity extends FragmentActivity implements
 			SHOW_TASK_FROM_WIDGET = "de.azapps.mirakel.SHOW_TASK_FROM_WIDGET";
 	private SharedPreferences preferences;
 
-	private int currentPosition = 1;
+	private int currentPosition = TASKS_FRAGMENT;
 	private Parcelable tasksState, listState;
 
 	@Override
@@ -107,7 +107,6 @@ public class MainActivity extends FragmentActivity implements
 		super.onCreate(savedInstanceState);
 		preferences = PreferenceManager.getDefaultSharedPreferences(this);
 		if (!preferences.contains("startupAllLists")) {
-
 			SharedPreferences.Editor editor = preferences.edit();
 			editor.putBoolean("startupAllLists", false);
 			editor.putString("startupList", "" + SpecialList.first().getId());
@@ -175,7 +174,7 @@ public class MainActivity extends FragmentActivity implements
 		case R.id.menu_settings_tasks:
 			Intent intent = new Intent(MainActivity.this,
 					SettingsActivity.class);
-			startActivityForResult(intent,RESULT_SETTINGS);
+			startActivityForResult(intent, RESULT_SETTINGS);
 			break;
 		case R.id.menu_sync_now_list:
 		case R.id.menu_sync_now_task:
@@ -291,7 +290,7 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if(requestCode==RESULT_SETTINGS){
+		if (requestCode == RESULT_SETTINGS) {
 			listFragment.update();
 			return;
 		}
@@ -360,18 +359,17 @@ public class MainActivity extends FragmentActivity implements
 	private void setupLayout() {
 		setCurrentList(SpecialList.first());
 		// Initialize ViewPager
-		this.intializeViewPager();
+		intializeViewPager();
 		NotificationService.updateNotificationAndWidget(this);
 		Intent intent = getIntent();
 		if (intent.getAction().equals(SHOW_TASK)) {
 			Task task = Helpers.getTaskFromIntent(intent);
-			
 			if (task != null) {
-				Log.e(TAG,"Taskid"+ task.getId());
+				Log.e(TAG, "Taskid" + task.getId());
 				currentList = task.getList();
 				setCurrentTask(task);
-			}else if(Mirakel.DEBUG){
-				Log.d(TAG,"task null");
+			} else {
+				Log.d(TAG, "task null");
 			}
 		} else if (intent.getAction().equals(TASK_DONE)
 				|| intent.getAction().equals(TASK_LATER)) {

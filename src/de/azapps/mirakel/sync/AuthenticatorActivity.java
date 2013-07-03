@@ -56,7 +56,7 @@ import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
+import de.azapps.mirakel.helper.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.CheckBox;
@@ -188,12 +188,10 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 					public void after_exec(String result) {
 						String token = Network.getToken(result);
 						if (token == null) {
-							if (Mirakel.DEBUG)
-								Log.e(TAG, "Login faild");
+							Log.e(TAG, "Login faild");
 							hideProgress();
 						} else {
-							if (Mirakel.DEBUG)
-								Log.e(TAG, "Login sucess");
+							Log.e(TAG, "Login sucess");
 							finishLogin(url, token);
 						}
 					}
