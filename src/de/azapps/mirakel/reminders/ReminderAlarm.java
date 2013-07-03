@@ -81,7 +81,6 @@ public class ReminderAlarm extends BroadcastReceiver {
 		openIntent.putExtra(MainActivity.EXTRA_ID, task.getId());
 		openIntent
 				.setData(Uri.parse(openIntent.toUri(Intent.URI_INTENT_SCHEME)));
-		openIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		PendingIntent pOpenIntent = PendingIntent.getActivity(context, 0,
 				openIntent, 0);
 		Intent doneIntent = new Intent(context, MainActivity.class);

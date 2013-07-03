@@ -18,7 +18,6 @@ public class WidgetHelper {
 		openIntent.putExtra(MainActivity.EXTRA_ID, task.getId());
 		openIntent
 				.setData(Uri.parse(openIntent.toUri(Intent.URI_INTENT_SCHEME)));
-		openIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		PendingIntent pOpenIntent = PendingIntent.getActivity(mContext, 0,
 				openIntent, 0);
 		

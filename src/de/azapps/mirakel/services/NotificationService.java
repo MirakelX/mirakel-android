@@ -85,7 +85,6 @@ public class NotificationService extends Service {
 		intent.setAction(MainActivity.SHOW_LIST);
 		intent.putExtra(MainActivity.EXTRA_ID, listId);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
 		// Get the data
