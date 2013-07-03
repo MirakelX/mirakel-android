@@ -219,6 +219,10 @@ public class ReminderAlarm extends BroadcastReceiver {
 	}
 
 	private static int cancelAlarm(Context ctx, Task t, Task newTask, int i) {
+		if(newTask==null){
+			activeAlarms.remove(i--);
+			return i;
+		}
 		closeNotificationFor(ctx, newTask.getId());
 		Intent intent = new Intent(ctx, ReminderAlarm.class);
 		intent.setAction(SHOW_TASK);

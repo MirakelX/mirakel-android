@@ -54,7 +54,6 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.EditText;
 import android.widget.TextView;
 import de.azapps.mirakel.BuildConfig;
-import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.model.list.ListMirakel;

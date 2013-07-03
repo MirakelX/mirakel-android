@@ -598,13 +598,13 @@ public class MainActivity extends FragmentActivity implements
 	 * @param currentList
 	 */
 	void setCurrentList(ListMirakel currentList) {
+		if (currentList == null)
+			return;
 		this.currentList = currentList;
 		if (tasksFragment != null) {
 			tasksFragment.updateList();
 			mViewPager.setCurrentItem(TASKS_FRAGMENT);
 		}
-		if (currentList == null)
-			return;
 		List<Task> currentTasks = currentList.tasks();
 		if (currentTasks.size() == 0) {
 			currentTask = new Task(getApplicationContext().getString(

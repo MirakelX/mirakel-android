@@ -281,6 +281,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					public void after_exec(String result) {
 						ListMirakel list_response = new Gson().fromJson(result,
 								ListMirakel.class);
+						if(list_response==null){
+							Log.wtf(TAG, "Unable to add list to server");
+							finishSync();
+							return;
+						}
 						if (list.getId() < list_response.getId()) {
 							long diff = list_response.getId() - list.getId();
 							// Should be all lists with _id> list_id
@@ -525,6 +530,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					@Override
 					public void after_exec(String result) {
 						try {
+							
 							Task taskNew = Task.parse_json("[" + result + "]")
 									.get(0);
 							if (taskNew.getId() > task.getId()) {
@@ -562,7 +568,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 							Mirakel.getWritableDatabase().update(Task.TABLE,
 									values, "_id=" + task.getId(), null);
 						} catch (IndexOutOfBoundsException e) {
-							Log.e(TAG, "unknown Respons");
+							Log.wtf(TAG, "Unable to add Task to server");
 						}
 						finishSync();
 					}
