@@ -362,7 +362,10 @@ public class MainActivity extends FragmentActivity implements
 		intializeViewPager();
 		NotificationService.updateNotificationAndWidget(this);
 		Intent intent = getIntent();
-		if (intent.getAction().equals(SHOW_TASK)) {
+		if (intent == null || intent.getAction()==null) {
+			mViewPager.setCurrentItem(TASKS_FRAGMENT);
+			return;
+		} else if (intent.getAction().equals(SHOW_TASK)) {
 			Task task = Helpers.getTaskFromIntent(intent);
 			if (task != null) {
 				Log.e(TAG, "Taskid" + task.getId());
@@ -383,7 +386,7 @@ public class MainActivity extends FragmentActivity implements
 			return;
 		} else if (intent.getAction().equals(SHOW_LISTS)) {
 			mViewPager.setCurrentItem(LIST_FRAGMENT);
-		} else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+		} else if (intent.getAction().equals(Intent.ACTION_SEARCH)) {
 			String query = intent.getStringExtra(SearchManager.QUERY);
 			search(query);
 		} else {
@@ -401,7 +404,6 @@ public class MainActivity extends FragmentActivity implements
 			Toast.makeText(this,
 					getString(R.string.reminder_notification_done_confirm),
 					Toast.LENGTH_LONG).show();
-
 		} else if (intent.getAction() == TASK_LATER) {
 			GregorianCalendar reminder = new GregorianCalendar();
 			int addMinutes = preferences.getInt("alarm_later", 15);
@@ -412,7 +414,6 @@ public class MainActivity extends FragmentActivity implements
 					this,
 					getString(R.string.reminder_notification_later_confirm,
 							addMinutes), Toast.LENGTH_LONG).show();
-
 		}
 		ReminderAlarm.closeNotificationFor(this, task.getId());
 		ReminderAlarm.updateAlarms(this);
