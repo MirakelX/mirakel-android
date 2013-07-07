@@ -49,13 +49,27 @@
         android:layout_height="wrap_content"
         android:text="@string/home_button_own"/>
     -->
-
+    <!--
     <CheckBox
         android:id="@+id/use_server"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:text="@string/use_server" />
+    -->
+
+    <TextView
+        android:id="@+id/start_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/start_text"
+        android:padding="5dp" />
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/howto" />
 
     <Button
         android:id="@+id/Start"

@@ -21,20 +21,21 @@ package de.azapps.mirakel.static_activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import de.azapps.mirakel.helper.Log;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
+import android.widget.TextView;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
+import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.SpecialList;
-import de.azapps.mirakel.sync.AuthenticatorActivity;
 
 public class StartActivity extends Activity {
 	private static final String TAG = "StartActivity";
@@ -51,6 +52,8 @@ public class StartActivity extends Activity {
 					DatabaseHelper.DATABASE_VERSION);
 		}
 		setContentView(R.layout.activity_start);
+		TextView startText = (TextView) findViewById(R.id.start_text);
+		startText.setText(Html.fromHtml(getString(R.string.start_text)));
 		Button start = (Button) findViewById(R.id.Start);
 		start.setOnClickListener(new Button.OnClickListener() {
 
@@ -65,22 +68,24 @@ public class StartActivity extends Activity {
 							HelpActivity.class);
 					startActivityForResult(intent, ShowHelp);
 				} else {
-					if (((CheckBox) findViewById(R.id.use_server)).isChecked()) {
-						Intent intent = new Intent(StartActivity.this,
-								AuthenticatorActivity.class);
-						// intent.setAction(MainActivity.SHOW_LISTS);
-						startActivityForResult(intent, PrepareLogin);
-					} else {
-						settings = PreferenceManager
-								.getDefaultSharedPreferences(getApplicationContext());
-						SharedPreferences.Editor editor = settings.edit();
-						editor.putBoolean("syncUse", false);
-						editor.commit();
-						Intent intent = new Intent(StartActivity.this,
-								MainActivity.class);
-						intent.putExtra("listId", SpecialList.first().getId());
-						startActivity(intent);
-					}
+					/*
+					 * TODO: uncomment it, when sync work perfectly ;) if
+					 * (((CheckBox) findViewById(R.id.use_server)).isChecked())
+					 * { Intent intent = new Intent(StartActivity.this,
+					 * AuthenticatorActivity.class); //
+					 * intent.setAction(MainActivity.SHOW_LISTS);
+					 * startActivityForResult(intent, PrepareLogin); } else {
+					 */
+					settings = PreferenceManager
+							.getDefaultSharedPreferences(getApplicationContext());
+					SharedPreferences.Editor editor = settings.edit();
+					editor.putBoolean("syncUse", false);
+					editor.commit();
+					Intent intent = new Intent(StartActivity.this,
+							MainActivity.class);
+					intent.putExtra("listId", SpecialList.first().getId());
+					startActivity(intent);
+					// }
 
 				}
 			}
@@ -89,8 +94,6 @@ public class StartActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.start, menu);
 		return true;
 	}
 
@@ -137,4 +140,15 @@ public class StartActivity extends Activity {
 			}
 		}
 	}
+
+	private class ImageGetter implements Html.ImageGetter {
+
+		public Drawable getDrawable(String source) {
+			int id;
+			id = R.drawable.howto;
+			Drawable d = getResources().getDrawable(id);
+			d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
+			return d;
+		}
+	};
 }
