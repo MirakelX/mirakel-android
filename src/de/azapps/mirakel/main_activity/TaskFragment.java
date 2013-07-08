@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Context;
@@ -30,7 +31,6 @@ import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import de.azapps.mirakel.helper.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,7 +38,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -52,6 +51,7 @@ import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
+import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
@@ -93,10 +93,6 @@ public class TaskFragment extends Fragment {
 			return;
 		ViewSwitcher s = (ViewSwitcher) view.findViewById(R.id.switch_name);
 		if (s.getNextView().getId() != R.id.edit_name) {
-			s.showPrevious();
-		}
-		s = (ViewSwitcher) view.findViewById(R.id.switch_content);
-		if (s.getNextView().getId() != R.id.task_content_edit) {
 			s.showPrevious();
 		}
 		// Task Name
@@ -274,48 +270,42 @@ public class TaskFragment extends Fragment {
 		Task_content = (TextView) view.findViewById(R.id.task_content);
 		Task_content.setText(task.getContent().length() == 0 ? this
 				.getString(R.string.task_no_content) : task.getContent());
-		Drawable content_img = main.getResources().getDrawable(
-				android.R.drawable.ic_menu_edit);
-		content_img.setBounds(0, 0, 60, 60);
-		Task_content.setCompoundDrawables(content_img, null, null, null);
 		Task_content.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				ViewSwitcher switcher = (ViewSwitcher) view
-						.findViewById(R.id.switch_content);
-				switcher.showNext(); // or switcher.showPrevious();
-				EditText txt = (EditText) view.findViewById(R.id.edit_content);
-				txt.setText(task.getContent());
-				txt.requestFocus();
 
-				InputMethodManager imm = (InputMethodManager) main
-						.getSystemService(Context.INPUT_METHOD_SERVICE);
-				imm.showSoftInput(txt, InputMethodManager.SHOW_IMPLICIT);
-				Button submit = (Button) view.findViewById(R.id.submit_content);
-				submit.setOnClickListener(new OnClickListener() {
+				final EditText editTxt = new EditText(getActivity());
+				editTxt.setText(task.getContent());
+				new AlertDialog.Builder(getActivity())
+						.setTitle(R.string.change_content)
+						.setView(editTxt)
+						.setPositiveButton(android.R.string.ok,
+								new DialogInterface.OnClickListener() {
 
-					@Override
-					public void onClick(View arg0) {
-						EditText txt = (EditText) view
-								.findViewById(R.id.edit_content);
-						InputMethodManager imm = (InputMethodManager) main
-								.getSystemService(Context.INPUT_METHOD_SERVICE);
-						task.setContent(txt.getText().toString());
-						main.saveTask(task);
-						Task_content
-								.setText(task.getContent().trim().length() == 0 ? getString(R.string.task_no_content)
-										: task.getContent());
-						/*
-						 * 
-						 * ViewSwitcher switcher = (ViewSwitcher) view
-						 * 
-						 * .findViewById(R.id.switch_content);
-						 * switcher.showPrevious();
-						 */
-						imm.hideSoftInputFromWindow(txt.getWindowToken(), 0);
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										task.setContent(editTxt.getText()
+												.toString());
+										main.saveTask(task);
+										Task_content
+												.setText(task.getContent()
+														.trim().length() == 0 ? getString(R.string.task_no_content)
+														: task.getContent());
 
-					}
-				});
+									}
+								})
+						.setNegativeButton(android.R.string.cancel,
+								new DialogInterface.OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										// TODO Auto-generated method stub
+
+									}
+								}).create().show();
+
 			}
 		});
 

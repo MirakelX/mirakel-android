@@ -85,8 +85,8 @@ public class MainActivity extends FragmentActivity implements
 
 	private static final int LIST_FRAGMENT = 0, TASKS_FRAGMENT = 1,
 			TASK_FRAGMENT = 2;
-	protected static final int RESULT_SPEECH_NAME = 1,
-			RESULT_SPEECH_CONTENT = 2, RESULT_SPEECH = 3, RESULT_SETTINGS = 4;
+	protected static final int RESULT_SPEECH_NAME = 1, RESULT_SPEECH = 3,
+			RESULT_SETTINGS = 4;
 	private static final String TAG = "MainActivity";
 
 	public static String EXTRA_ID = "de.azapps.mirakel.EXTRA_TASKID",
@@ -298,10 +298,6 @@ public class MainActivity extends FragmentActivity implements
 			ArrayList<String> text = data
 					.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 			switch (requestCode) {
-			case RESULT_SPEECH_CONTENT:
-				((EditText) findViewById(R.id.edit_content)).setText(text
-						.get(0));
-				break;
 			case RESULT_SPEECH_NAME:
 				((EditText) findViewById(R.id.edit_name)).setText(text.get(0));
 				break;
@@ -362,7 +358,7 @@ public class MainActivity extends FragmentActivity implements
 		intializeViewPager();
 		NotificationService.updateNotificationAndWidget(this);
 		Intent intent = getIntent();
-		if (intent == null || intent.getAction()==null) {
+		if (intent == null || intent.getAction() == null) {
 			mViewPager.setCurrentItem(TASKS_FRAGMENT);
 			return;
 		} else if (intent.getAction().equals(SHOW_TASK)) {

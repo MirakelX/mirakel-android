@@ -197,4 +197,5 @@ Device: %s\n]]>
     <string name="backup_export_error">There was an Error while exporting the database</string>
     <string name="backup_export_ok">The Export was fine</string>
 
+    <string name="change_content">Change Content</string>
 </resources>
