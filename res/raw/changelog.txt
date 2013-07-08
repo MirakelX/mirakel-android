@@ -17,6 +17,15 @@
     </style>
   </head>
   <body>
+$ 0.1.3
+  % Version 0.1.3
+  _ 2013-07-*
+  ! Many Bugfixes
+    * Bugfixes
+    * Better help
+    * Improved Backup/Import
+    * Added Icon
+    * UI improvements
 $ 0.1.2
   % Version 0.1.2
   _ 2013-06-06
