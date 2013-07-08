@@ -127,6 +127,10 @@
             android:key="backup"
             android:summary="@string/backup_click_summary"
             android:title="@string/backup_click" />
+        <Preference
+            android:key="import"
+            android:summary="@string/import_click_summary"
+            android:title="@string/import_click" />
     </PreferenceCategory>
 
 </PreferenceScreen>

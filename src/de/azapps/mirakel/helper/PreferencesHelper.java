@@ -9,8 +9,11 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
@@ -26,7 +29,6 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import de.azapps.mirakel.helper.Log;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
@@ -247,8 +249,7 @@ public class PreferencesHelper {
 										Mirakel.BUNDLE_SERVER_URL)
 										+ "/tokens.json");
 					} else {
-						Toast.makeText(
-								activity,
+						Toast.makeText(activity,
 								activity.getString(R.string.NoNetwork),
 								Toast.LENGTH_LONG).show();
 					}
@@ -321,8 +322,7 @@ public class PreferencesHelper {
 						}, Network.HttpMode.POST, data, activity, null)
 								.execute((String) url + "/tokens.json");
 					} else {
-						Toast.makeText(
-								activity,
+						Toast.makeText(activity,
 								activity.getString(R.string.NoNetwork),
 								Toast.LENGTH_LONG).show();
 					}
@@ -370,6 +370,36 @@ public class PreferencesHelper {
 			@SuppressLint("NewApi")
 			public boolean onPreferenceClick(Preference preference) {
 				new Backup(activity).exportDB();
+				return true;
+			}
+		});
+
+		Preference importDB = (Preference) findPreference("import");
+
+		importDB.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+			@SuppressLint("NewApi")
+			public boolean onPreferenceClick(Preference preference) {
+				new AlertDialog.Builder(activity)
+						.setTitle(R.string.import_sure)
+						.setMessage(R.string.import_sure_summary)
+						.setNegativeButton(android.R.string.cancel,
+								new OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+
+									}
+								})
+						.setPositiveButton(android.R.string.yes,
+								new OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										new Backup(activity).importDB();
+									}
+								}).create().show();
 				return true;
 			}
 		});

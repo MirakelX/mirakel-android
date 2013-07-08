@@ -10,79 +10,64 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Environment;
+import de.azapps.mirakel.R;
 import de.azapps.mirakel.helper.Log;
 import android.widget.Toast;
 
 public class Backup {
 	Context ctx;
+	File dbFile = new File(Environment.getDataDirectory()
+			+ "/data/de.azapps.mirakel/databases/mirakel.db");
+	File exportDir = new File(Environment.getExternalStorageDirectory(), "");
 
 	public Backup(Context ctx) {
 		this.ctx = ctx;
 	}
 
 	public void exportDB() {
-		new ExportDatabaseFileTask().execute("");
+		if (!exportDir.exists()) {
+			exportDir.mkdirs();
+		}
+		File file = new File(exportDir, dbFile.getName());
+
+		try {
+			file.createNewFile();
+			copyFile(dbFile, file);
+			Toast.makeText(ctx, ctx.getString(R.string.backup_export_ok),
+					Toast.LENGTH_LONG).show();
+		} catch (IOException e) {
+			Log.e("mypck", e.getMessage(), e);
+			Toast.makeText(ctx, ctx.getString(R.string.backup_export_error),
+					Toast.LENGTH_LONG).show();
+		}
 	}
 
-	private class ExportDatabaseFileTask extends
-			AsyncTask<String, Void, Boolean> {
+	public void importDB() {
+		File file = new File(exportDir, dbFile.getName());
 
-		private final ProgressDialog dialog = new ProgressDialog(ctx);
-
-		// can use UI thread here
-		protected void onPreExecute() {
-			this.dialog.setMessage("Exporting database...");
-			this.dialog.show();
+		try {
+			copyFile(file, dbFile);
+			Toast.makeText(ctx, ctx.getString(R.string.backup_import_ok),
+					Toast.LENGTH_LONG).show();
+			android.os.Process.killProcess(android.os.Process.myPid());
+		} catch (IOException e) {
+			Log.e("mypck", e.getMessage(), e);
+			Toast.makeText(ctx, ctx.getString(R.string.backup_import_error),
+					Toast.LENGTH_LONG).show();
 		}
-
-		// automatically done on worker thread (separate from UI thread)
-		protected Boolean doInBackground(final String... args) {
-
-			File dbFile = new File(Environment.getDataDirectory()
-					+ "/data/de.azapps.mirakel/databases/mirakel.db");
-
-			File exportDir = new File(
-					Environment.getExternalStorageDirectory(), "");
-			if (!exportDir.exists()) {
-				exportDir.mkdirs();
-			}
-			File file = new File(exportDir, dbFile.getName());
-
-			try {
-				file.createNewFile();
-				this.copyFile(dbFile, file);
-				return true;
-			} catch (IOException e) {
-				Log.e("mypck", e.getMessage(), e);
-				return false;
-			}
-		}
-
-		// can use UI thread here
-		protected void onPostExecute(final Boolean success) {
-			if (this.dialog.isShowing()) {
-				this.dialog.dismiss();
-			}
-			if (success) {
-				Toast.makeText(ctx, "Export successful!", Toast.LENGTH_SHORT)
-						.show();
-			} else {
-				Toast.makeText(ctx, "Export failed", Toast.LENGTH_SHORT).show();
-			}
-		}
-
-		void copyFile(File src, File dst) throws IOException {
-			FileChannel inChannel = new FileInputStream(src).getChannel();
-			FileChannel outChannel = new FileOutputStream(dst).getChannel();
-			try {
-				inChannel.transferTo(0, inChannel.size(), outChannel);
-			} finally {
-				if (inChannel != null)
-					inChannel.close();
-				if (outChannel != null)
-					outChannel.close();
-			}
-		}
-
 	}
+
+	void copyFile(File src, File dst) throws IOException {
+		FileChannel inChannel = new FileInputStream(src).getChannel();
+		FileChannel outChannel = new FileOutputStream(dst).getChannel();
+		try {
+			inChannel.transferTo(0, inChannel.size(), outChannel);
+		} finally {
+			if (inChannel != null)
+				inChannel.close();
+			if (outChannel != null)
+				outChannel.close();
+		}
+	}
+
 }

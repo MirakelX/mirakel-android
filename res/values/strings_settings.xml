@@ -78,8 +78,12 @@
 
     <string name="settings_misc">Misc</string>
     <!-- Backup -->
-    <string name="backup_click_summary">Backup the database to sdcard</string>
+    <string name="backup_click_summary">Backup the database to sdcard (/sdcard/mirakel.db)</string>
     <string name="backup_click">Backup</string>
+    <string name="import_click_summary">Import the DB from /sdcard/mirakel.db</string>
+    <string name="import_click">Import</string>
+    <string name="import_sure">Are you sure?</string>
+    <string name="import_sure_summary">All data will be overridden!</string>
     
     <!-- Changelog -->
     <string name="changelog_click_summary">View the changelog</string>
