@@ -105,7 +105,7 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
 		if (!preferences.contains("startupAllLists")) {
 			SharedPreferences.Editor editor = preferences.edit();
 			editor.putBoolean("startupAllLists", false);
@@ -370,7 +370,21 @@ public class MainActivity extends FragmentActivity implements
 			} else {
 				Log.d(TAG, "task null");
 			}
-		} else if (intent.getAction().equals(TASK_DONE)
+		} else if (intent.getAction().equals(Intent.ACTION_SEND) && intent.getType().equals("text/plain")) {
+            String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+            if (sharedText != null) {
+                // Update UI to reflect text being shared
+                ListMirakel slist = getCurrentList();
+                int id = slist.getId();
+
+                Task task = Task.newTask(sharedText.substring(0, sharedText.indexOf("\n")), id);
+                task.setContent(sharedText);
+                task.save();
+                setCurrentTask(task);
+                tasksFragment.updateList(true);
+                listFragment.update();
+            }
+        } else if (intent.getAction().equals(TASK_DONE)
 				|| intent.getAction().equals(TASK_LATER)) {
 			handleReminder(intent);
 		} else if (intent.getAction().equals(SHOW_LIST)
