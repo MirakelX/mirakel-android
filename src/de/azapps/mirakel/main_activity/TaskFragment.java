@@ -36,6 +36,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
@@ -276,35 +277,44 @@ public class TaskFragment extends Fragment {
 
 				final EditText editTxt = new EditText(getActivity());
 				editTxt.setText(task.getContent());
-				new AlertDialog.Builder(getActivity())
+				final AlertDialog dialog=new AlertDialog.Builder(getActivity())
 						.setTitle(R.string.change_content)
 						.setView(editTxt)
 						.setPositiveButton(android.R.string.ok,
-								new DialogInterface.OnClickListener() {
+                                new DialogInterface.OnClickListener() {
 
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-										task.setContent(editTxt.getText()
-												.toString());
-										main.saveTask(task);
-										Task_content
-												.setText(task.getContent()
-														.trim().length() == 0 ? getString(R.string.task_no_content)
-														: task.getContent());
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                                        int which) {
+                                        task.setContent(editTxt.getText()
+                                                .toString());
+                                        main.saveTask(task);
+                                        Task_content
+                                                .setText(task.getContent()
+                                                        .trim().length() == 0 ? getString(R.string.task_no_content)
+                                                        : task.getContent());
 
-									}
-								})
+                                    }
+                                })
 						.setNegativeButton(android.R.string.cancel,
-								new DialogInterface.OnClickListener() {
+                                new DialogInterface.OnClickListener() {
 
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-										// TODO Auto-generated method stub
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                                        int which) {
+                                        // TODO Auto-generated method stub
 
-									}
-								}).create().show();
+                                    }
+                                }).create();
+                dialog.show();
+                editTxt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        if (hasFocus) {
+                            dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                        }
+                    }
+                });
 
 			}
 		});
