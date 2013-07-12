@@ -18,14 +18,23 @@
  ******************************************************************************/
 package de.azapps.mirakel.static_activities;
 
-import de.azapps.mirakel.R;
-import de.azapps.mirakel.helper.PreferencesHelper;
+import java.net.URISyntaxException;
+
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.view.MenuItem;
+import de.azapps.mirakel.R;
+import de.azapps.mirakel.helper.FileUtils;
+import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.PreferencesHelper;
 
 public class SettingsActivity extends PreferenceActivity {
+
+	public static final int FILE_ASTRID = 0;
+	private static final String TAG = "SettingsActivity";
 
 	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
@@ -54,4 +63,28 @@ public class SettingsActivity extends PreferenceActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch (requestCode) {
+		case FILE_ASTRID:
+			if (resultCode == RESULT_OK) {
+				// Get the Uri of the selected file
+				Uri uri = data.getData();
+				Log.d(TAG, "File Uri: " + uri.toString());
+				// Get the path
+				String path = "";
+				try {
+					path = FileUtils.getPath(this, uri);
+				} catch (URISyntaxException e) {
+
+				}
+				Log.d(TAG, "File Path: " + path);
+				// Get the file instance
+				// File file = new File(path);
+				// Initiate the upload
+			}
+			break;
+		}
+		super.onActivityResult(requestCode, resultCode, data);
+	}
 }

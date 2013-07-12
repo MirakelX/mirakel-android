@@ -22,6 +22,8 @@
     <!-- Sync -->
     <string name="sync_title">Sync</string>
     <string name="sync_use">Use</string>
+    <string name="sync_warning">Sync is Experimental</string>
+    <string name="sync_warning_message">The sync is currently very experimental. But you can try it at your own risk (Make a backup!) – Are you sure?</string>
     <string name="sync_use_summary">Do you want to sync with a server?</string>
     <string name="sync_server">Server</string>
     <string name="sync_server_summary">The URL (don\'t forget \"http://\")</string>
@@ -88,9 +90,11 @@
     <!-- Changelog -->
     <string name="changelog_click_summary">View the changelog</string>
     <string name="changelog_click">Changelog</string>
-    <string name="sync_warning">Sync is Experimental</string>
-    <string name="sync_warning_message">The sync is currently very experimental. But you can try it at your own risk (Make a backup!)
-
-    Are you sure?</string>
+    
+    <!-- Astrid -->
+    <string name="import_astrid_click_summary">Import from an Astrid-file</string>
+    <string name="import_astrid_click">Import from Astrid</string>
+    
+    
 
 </resources>

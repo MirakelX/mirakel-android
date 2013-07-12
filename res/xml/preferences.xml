@@ -131,6 +131,10 @@
             android:key="import"
             android:summary="@string/import_click_summary"
             android:title="@string/import_click" />
+        <Preference
+            android:key="import_astrid"
+            android:summary="@string/import_astrid_click_summary"
+            android:title="@string/import_astrid_click" />
     </PreferenceCategory>
 
 </PreferenceScreen>
