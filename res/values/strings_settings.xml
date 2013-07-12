@@ -88,5 +88,9 @@
     <!-- Changelog -->
     <string name="changelog_click_summary">View the changelog</string>
     <string name="changelog_click">Changelog</string>
+    <string name="sync_warning">Sync is Experimental</string>
+    <string name="sync_warning_message">The sync is currently very experimental. But you can try it at your own risk (Make a backup!)
+
+    Are you sure?</string>
 
 </resources>
