@@ -3,22 +3,17 @@ package de.azapps.mirakel.helper;
 import java.io.File;
 import java.io.IOException;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Environment;
 import android.widget.Toast;
 import de.azapps.mirakel.R;
 
 public class ExportImport {
-	Context ctx;
-	File dbFile = new File(Environment.getDataDirectory()
+	private static final File dbFile = new File(Environment.getDataDirectory()
 			+ "/data/de.azapps.mirakel/databases/mirakel.db");
-	File exportDir = new File(Environment.getExternalStorageDirectory(), "");
 
-	public ExportImport(Context ctx) {
-		this.ctx = ctx;
-	}
-
-	public void exportDB() {
+	public static void exportDB(Context ctx, File exportDir) {
 		if (!exportDir.exists()) {
 			exportDir.mkdirs();
 		}
@@ -36,8 +31,7 @@ public class ExportImport {
 		}
 	}
 
-	public void importDB() {
-		File file = new File(exportDir, dbFile.getName());
+	public static void importDB(Context ctx, File file) {
 
 		try {
 			FileUtils.copyFile(file, dbFile);
@@ -49,6 +43,10 @@ public class ExportImport {
 			Toast.makeText(ctx, ctx.getString(R.string.backup_import_error),
 					Toast.LENGTH_LONG).show();
 		}
+	}
+
+	public static void importAstrid(Activity activity, String path) {
+
 	}
 
 }

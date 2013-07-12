@@ -1,5 +1,6 @@
 package de.azapps.mirakel.helper;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
@@ -390,7 +392,9 @@ public class PreferencesHelper {
 		backup.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@SuppressLint("NewApi")
 			public boolean onPreferenceClick(Preference preference) {
-				new ExportImport(activity).exportDB();
+				File exportDir = new File(Environment
+						.getExternalStorageDirectory(), "");
+				ExportImport.exportDB(activity, exportDir);
 				return true;
 			}
 		});
@@ -418,7 +422,12 @@ public class PreferencesHelper {
 									@Override
 									public void onClick(DialogInterface dialog,
 											int which) {
-										new ExportImport(activity).importDB();
+										File exportDir = new File(Environment
+												.getExternalStorageDirectory(),
+												"");
+										File file = new File(exportDir,
+												"mirakel.db");
+										ExportImport.importDB(activity, file);
 									}
 								}).create().show();
 				return true;
@@ -446,23 +455,20 @@ public class PreferencesHelper {
 					}
 				});
 	}
-	private void showFileChooser(int code){
 
-		Intent fileDialogIntent = new Intent(
-				Intent.ACTION_GET_CONTENT);
+	private void showFileChooser(int code) {
+
+		Intent fileDialogIntent = new Intent(Intent.ACTION_GET_CONTENT);
 		fileDialogIntent.setType("*/*");
 		fileDialogIntent.addCategory(Intent.CATEGORY_OPENABLE);
 
 		try {
-			activity.startActivityForResult(Intent
-					.createChooser(fileDialogIntent,
-							"Select a File to Upload"),
-					code);
+			activity.startActivityForResult(Intent.createChooser(
+					fileDialogIntent, "Select a File to Upload"), code);
 		} catch (android.content.ActivityNotFoundException ex) {
 			// Potentially direct the user to the Market with a
 			// Dialog
-			Toast.makeText(activity,
-					"Please install a File Manager.",
+			Toast.makeText(activity, "Please install a File Manager.",
 					Toast.LENGTH_SHORT).show();
 		}
 	}

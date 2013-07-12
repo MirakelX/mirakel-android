@@ -26,7 +26,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.view.MenuItem;
+import android.widget.Toast;
 import de.azapps.mirakel.R;
+import de.azapps.mirakel.helper.ExportImport;
 import de.azapps.mirakel.helper.FileUtils;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.PreferencesHelper;
@@ -71,14 +73,14 @@ public class SettingsActivity extends PreferenceActivity {
 				// Get the Uri of the selected file
 				Uri uri = data.getData();
 				Log.d(TAG, "File Uri: " + uri.toString());
-				// Get the path
-				String path = "";
 				try {
-					path = FileUtils.getPath(this, uri);
+					String path = FileUtils.getPath(this, uri);
+					ExportImport.importAstrid(this, path);
+					Log.d(TAG, "File Path: " + path);
 				} catch (URISyntaxException e) {
-
+					Toast.makeText(this, "Something terrible happened…",
+							Toast.LENGTH_LONG).show();
 				}
-				Log.d(TAG, "File Path: " + path);
 				// Get the file instance
 				// File file = new File(path);
 				// Initiate the upload
