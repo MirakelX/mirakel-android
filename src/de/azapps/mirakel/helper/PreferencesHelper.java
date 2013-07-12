@@ -390,7 +390,7 @@ public class PreferencesHelper {
 		backup.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@SuppressLint("NewApi")
 			public boolean onPreferenceClick(Preference preference) {
-				new Backup(activity).exportDB();
+				new ExportImport(activity).exportDB();
 				return true;
 			}
 		});
@@ -418,7 +418,7 @@ public class PreferencesHelper {
 									@Override
 									public void onClick(DialogInterface dialog,
 											int which) {
-										new Backup(activity).importDB();
+										new ExportImport(activity).importDB();
 									}
 								}).create().show();
 				return true;
