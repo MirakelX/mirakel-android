@@ -371,14 +371,15 @@ public class MainActivity extends FragmentActivity implements
 				Log.d(TAG, "task null");
 			}
 		} else if (intent.getAction().equals(Intent.ACTION_SEND) && intent.getType().equals("text/plain")) {
-            String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
-            if (sharedText != null) {
-                // Update UI to reflect text being shared
-                ListMirakel slist = getCurrentList();
-                int id = slist.getId();
+            String content = intent.getStringExtra(Intent.EXTRA_TEXT);
+            String subject=intent.getStringExtra(Intent.EXTRA_SUBJECT);
+            if (content != null || subject!=null) {
+                if(content==null) content="";
+                if(subject==null) subject="";
+                int id = getCurrentList().getId();
 
-                Task task = Task.newTask(sharedText.substring(0, sharedText.indexOf("\n")), id);
-                task.setContent(sharedText);
+                Task task = Task.newTask(subject, id);
+                task.setContent(content);
                 task.save();
                 setCurrentTask(task);
                 tasksFragment.updateList(true);
