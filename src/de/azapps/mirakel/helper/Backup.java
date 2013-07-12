@@ -6,13 +6,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Environment;
-import de.azapps.mirakel.R;
-import de.azapps.mirakel.helper.Log;
 import android.widget.Toast;
+import de.azapps.mirakel.R;
 
 public class Backup {
 	Context ctx;

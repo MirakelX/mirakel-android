@@ -47,9 +47,9 @@ import de.azapps.mirakel.widget.MainWidgetSettingsFragment;
 public class PreferencesHelper {
 
     private static final String TAG = "PreferencesHelper";
-    private Object ctx;
-    private Activity activity;
-    private boolean v4_0;
+    private final Object ctx;
+    private final Activity activity;
+    private final boolean v4_0;
 
     public PreferencesHelper(SettingsActivity c) {
         ctx = c;
@@ -163,7 +163,8 @@ public class PreferencesHelper {
             @Override
             public boolean onPreferenceChange(Preference preference,
                                               Object newValue) {
-                Log.e(TAG, "" + ((Boolean) newValue).toString());
+
+                Log.e(TAG, "" + newValue.toString());
                 AccountManager am = AccountManager.get(activity);
                 final Account[] accounts = am.getAccountsByType(Mirakel.ACCOUNT_TYP);
                 if ((Boolean) newValue) {
@@ -178,8 +179,6 @@ public class PreferencesHelper {
                                                 AuthenticatorActivity.class);
                                         intent.setAction(MainActivity.SHOW_LISTS);
                                         activity.startActivity(intent);
-                                    } else {
-                                        // account=accounts[0];
                                     }
                                 }
                             })
@@ -213,7 +212,7 @@ public class PreferencesHelper {
             sync.setChecked(true);
         }
 
-        // Change Passwort
+        // Change Password
         final EditTextPreference Password = (EditTextPreference) findPreference("syncPassword");
         Password.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
@@ -317,7 +316,7 @@ public class PreferencesHelper {
                                         public void after_exec(String result) {
                                         }
                                     }, Network.HttpMode.DELETE, activity, null)
-                                            .execute((String) url + "/tokens/"
+                                            .execute(url + "/tokens/"
                                                     + t);
                                 } else {
                                     Toast.makeText(
@@ -347,9 +346,9 @@ public class PreferencesHelper {
             }
         });
 
-        // Change Sync-Intervall
-        ListPreference syncIntervall = (ListPreference) findPreference("syncFrequency");
-        syncIntervall
+        // Change Sync-Interval
+        ListPreference syncInterval = (ListPreference) findPreference("syncFrequency");
+        syncInterval
                 .setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
                     @Override
@@ -376,10 +375,10 @@ public class PreferencesHelper {
 
         Intent startSpecialListsIntent = new Intent(activity,
                 SpecialListsSettings.class);
-        Preference specialLists = (Preference) findPreference("special_lists");
+        Preference specialLists = findPreference("special_lists");
         specialLists.setIntent(startSpecialListsIntent);
 
-        Preference backup = (Preference) findPreference("backup");
+        Preference backup = findPreference("backup");
 
         backup.setOnPreferenceClickListener(new OnPreferenceClickListener() {
             @SuppressLint("NewApi")
@@ -389,7 +388,7 @@ public class PreferencesHelper {
             }
         });
 
-        Preference importDB = (Preference) findPreference("import");
+        Preference importDB = findPreference("import");
 
         importDB.setOnPreferenceClickListener(new OnPreferenceClickListener() {
             @SuppressLint("NewApi")
@@ -419,7 +418,7 @@ public class PreferencesHelper {
             }
         });
 
-        Preference changelog = (Preference) findPreference("changelog");
+        Preference changelog = findPreference("changelog");
 
         changelog.setOnPreferenceClickListener(new OnPreferenceClickListener() {
             @SuppressLint("NewApi")
