@@ -290,7 +290,6 @@ public class MainActivity extends FragmentActivity implements
             if(mitem==null) mitem=menu.findItem(R.id.menu_sync_now_task);
             if(mitem==null) mitem=menu.findItem(R.id.menu_sync_now_tasks);
             mitem.setVisible(false);
-            invalidateOptionsMenu();
         }
 	}
 
