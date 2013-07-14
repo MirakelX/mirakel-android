@@ -2,6 +2,7 @@ package de.azapps.mirakel.helper;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -37,6 +38,14 @@ public class FileUtils {
 		return null;
 	}
 
+	/**
+	 * Copy File
+	 * 
+	 * @param src
+	 * @param dst
+	 * @throws IOException
+	 */
+	@SuppressWarnings("resource")
 	public static void copyFile(File src, File dst) throws IOException {
 		FileChannel inChannel = new FileInputStream(src).getChannel();
 		FileChannel outChannel = new FileOutputStream(dst).getChannel();
@@ -51,59 +60,43 @@ public class FileUtils {
 	}
 
 	/**
-	 * Source:
-	 * "http://www.jondev.net/articles/Unzipping_Files_with_Android_%28Programmatically%29"
+	 * Unzip a File and Copy it to a location
 	 * 
-	 * @author az
-	 * 
+	 * @param zipFile
+	 * @param location
 	 */
-	public class Decompress {
+	public static void unzip(File zipFile, File location) throws FileNotFoundException, IOException  {
 
-		private String zipFile;
-		private String location;
+		FileInputStream fin = new FileInputStream(zipFile);
+		ZipInputStream zin = new ZipInputStream(fin);
+		ZipEntry ze = null;
+		while ((ze = zin.getNextEntry()) != null) {
+			Log.v("Decompress",
+					"Unzipping " + location.getAbsolutePath() + ze.getName());
 
-		public Decompress(String zipFile, String location) {
-			this.zipFile = zipFile;
-			this.location = location;
-
-			dirChecker("");
-		}
-
-		public void unzip() {
-			try {
-				FileInputStream fin = new FileInputStream(zipFile);
-				ZipInputStream zin = new ZipInputStream(fin);
-				ZipEntry ze = null;
-				while ((ze = zin.getNextEntry()) != null) {
-					Log.v("Decompress", "Unzipping " + ze.getName());
-
-					if (ze.isDirectory()) {
-						dirChecker(ze.getName());
-					} else {
-						FileOutputStream fout = new FileOutputStream(location
-								+ ze.getName());
-						for (int c = zin.read(); c != -1; c = zin.read()) {
-							fout.write(c);
-						}
-
-						zin.closeEntry();
-						fout.close();
-					}
-
+			if (ze.isDirectory()) {
+				dirChecker(location, ze.getName());
+			} else {
+				FileOutputStream fout = new FileOutputStream(new File(location,
+						ze.getName()));
+				for (int c = zin.read(); c != -1; c = zin.read()) {
+					fout.write(c);
 				}
-				zin.close();
-			} catch (Exception e) {
-				Log.e("Decompress", "unzip", e);
+
+				zin.closeEntry();
+				fout.close();
 			}
 
 		}
+		zin.close();
 
-		private void dirChecker(String dir) {
-			File f = new File(location + dir);
+	}
 
-			if (!f.isDirectory()) {
-				f.mkdirs();
-			}
+	private static void dirChecker(File location, String dir) {
+		File f = new File(location, dir);
+
+		if (!f.isDirectory()) {
+			f.mkdirs();
 		}
 	}
 

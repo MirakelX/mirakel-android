@@ -94,6 +94,7 @@
     <!-- Astrid -->
     <string name="import_astrid_click_summary">Import from an Astrid-file</string>
     <string name="import_astrid_click">Import from Astrid</string>
+    <string name="astrid_unsuccess">There was an Error while importing from Astrid!</string>
     
     
 

@@ -135,6 +135,9 @@ public class Task extends TaskBase {
 	public static Task newTask(String name, long list_id) {
 		return newTask(name, list_id, "", false, null, 0);
 	}
+	public static Task newTask(String name, ListMirakel list){
+		return newTask(name, list.getId(), "", false, null, 0);
+	}
 
 	/**
 	 * Create a new Task

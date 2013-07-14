@@ -274,6 +274,19 @@ public class ListMirakel extends ListBase {
 		return null;
 	}
 
+	public static ListMirakel findByName(String name) {
+		String[] args = { name };
+		Cursor cursor = database.query(ListMirakel.TABLE, allColumns, "name=?",
+				args, null, null, null);
+		cursor.moveToFirst();
+		if (cursor.getCount() != 0) {
+			ListMirakel t = cursorToList(cursor);
+			cursor.close();
+			return t;
+		}
+		return null;
+	}
+
 	public static ListMirakel getList(int listId) {
 		if (listId < 0)
 			return SpecialList.getSpecialList(-listId);
