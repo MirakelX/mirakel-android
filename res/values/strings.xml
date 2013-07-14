@@ -195,7 +195,7 @@ Device: %s\n]]>
     <string name="backup_import_error">There was an Error while importing the database</string>
     <string name="backup_import_ok">The Import was fine - Please restart Mirakel</string>
     <string name="backup_export_error">There was an Error while exporting the database</string>
-    <string name="backup_export_ok">The Export was fine</string>
+    <string name="backup_export_ok" formatted="false">Exported to %s</string>
 
     <string name="change_content">Change Content</string>
 </resources>

@@ -42,6 +42,7 @@ import de.azapps.mirakel.helper.PreferencesHelper;
 public class SettingsActivity extends PreferenceActivity {
 
 	public static final int FILE_ASTRID = 0, FILE_IMPORT_DB = 1;
+	@SuppressWarnings("unused")
 	private static final String TAG = "SettingsActivity";
 
 	@SuppressWarnings("deprecation")

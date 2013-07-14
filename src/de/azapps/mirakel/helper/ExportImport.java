@@ -21,17 +21,15 @@ public class ExportImport {
 			+ "/data/de.azapps.mirakel/databases/mirakel.db");
 	private static final String TAG = "ExportImport";
 
-	public static void exportDB(Context ctx, File exportDir) {
-		if (!exportDir.exists()) {
-			exportDir.mkdirs();
-		}
-		File file = new File(exportDir, dbFile.getName());
+	public static void exportDB(Context ctx, File file) {
 
 		try {
 			file.createNewFile();
 			FileUtils.copyFile(dbFile, file);
-			Toast.makeText(ctx, ctx.getString(R.string.backup_export_ok),
-					Toast.LENGTH_LONG).show();
+			Toast.makeText(
+					ctx,
+					ctx.getString(R.string.backup_export_ok,
+							file.getAbsolutePath()), Toast.LENGTH_LONG).show();
 		} catch (IOException e) {
 			Log.e("mypck", e.getMessage(), e);
 			Toast.makeText(ctx, ctx.getString(R.string.backup_export_error),

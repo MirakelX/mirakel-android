@@ -79,7 +79,7 @@
     <string name="special_lists_click_summary">Manage Special Lists</string>
     <string name="settings_misc">Misc</string>
     <!-- Backup -->
-    <string name="backup_click_summary">Backup the database to sdcard (/sdcard/mirakel.db)</string>
+    <string name="backup_click_summary" formatted="false">Backup the database to sdcard (%s)</string>
     <string name="backup_click">Backup</string>
     <string name="import_click_summary">Import the database</string>
     <string name="import_click">Import</string>

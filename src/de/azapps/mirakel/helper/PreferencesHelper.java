@@ -1,7 +1,10 @@
 package de.azapps.mirakel.helper;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.http.message.BasicNameValuePair;
@@ -389,12 +392,23 @@ public class PreferencesHelper {
 
 		Preference backup = findPreference("backup");
 
+		Date today = new Date();
+		DateFormat sdf = SimpleDateFormat.getDateInstance();
+		String filename = "mirakel-" + sdf.format(today) + ".db";
+		final File exportDir = new File(
+				Environment.getExternalStorageDirectory(), "");
+		final File exportFile = new File(exportDir, filename);
+
+		backup.setSummary(activity.getString(R.string.backup_click_summary,
+				exportFile.getAbsolutePath()));
+
 		backup.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@SuppressLint("NewApi")
 			public boolean onPreferenceClick(Preference preference) {
-				File exportDir = new File(Environment
-						.getExternalStorageDirectory(), "");
-				ExportImport.exportDB(activity, exportDir);
+				if (!exportDir.exists()) {
+					exportDir.mkdirs();
+				}
+				ExportImport.exportDB(activity, exportFile);
 				return true;
 			}
 		});
