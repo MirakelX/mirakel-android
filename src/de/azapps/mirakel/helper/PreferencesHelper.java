@@ -401,35 +401,10 @@ public class PreferencesHelper {
 
 		Preference importDB = findPreference("import");
 
-		importDB.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-			@SuppressLint("NewApi")
+		importDB.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+			@Override
 			public boolean onPreferenceClick(Preference preference) {
-				new AlertDialog.Builder(activity)
-						.setTitle(R.string.import_sure)
-						.setMessage(R.string.import_sure_summary)
-						.setNegativeButton(android.R.string.cancel,
-								new OnClickListener() {
-
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-
-									}
-								})
-						.setPositiveButton(android.R.string.yes,
-								new OnClickListener() {
-
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-										File exportDir = new File(Environment
-												.getExternalStorageDirectory(),
-												"");
-										File file = new File(exportDir,
-												"mirakel.db");
-										ExportImport.importDB(activity, file);
-									}
-								}).create().show();
+				showFileChooser(SettingsActivity.FILE_IMPORT_DB);
 				return true;
 			}
 		});

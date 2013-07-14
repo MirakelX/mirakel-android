@@ -77,20 +77,19 @@
     <string name="special_lists_title">Special Lists</string>
     <string name="special_lists_click">Manage Special Lists</string>
     <string name="special_lists_click_summary">Manage Special Lists</string>
-
     <string name="settings_misc">Misc</string>
     <!-- Backup -->
     <string name="backup_click_summary">Backup the database to sdcard (/sdcard/mirakel.db)</string>
     <string name="backup_click">Backup</string>
-    <string name="import_click_summary">Import the DB from /sdcard/mirakel.db</string>
+    <string name="import_click_summary">Import the database</string>
     <string name="import_click">Import</string>
     <string name="import_sure">Are you sure?</string>
-    <string name="import_sure_summary">All data will be overridden!</string>
-    
+    <string name="import_sure_summary" formatted="false">All data will be overridden! (Importing from %s)</string>
+
     <!-- Changelog -->
     <string name="changelog_click_summary">View the changelog</string>
     <string name="changelog_click">Changelog</string>
-    
+
     <!-- Astrid -->
     <string name="import_astrid_click_summary">Import from an Astrid-file</string>
     <string name="import_astrid_click">Import from Astrid</string>
@@ -98,7 +97,6 @@
     <string name="astrid_success">Successfully imported all data!</string>
     <string name="astrid_importing">Importing</string>
     <string name="astrid_wait">Please wait…</string>
-    
-    
+    <string name="import_wrong_type">This is not a Mirakel-file!</string>
 
 </resources>

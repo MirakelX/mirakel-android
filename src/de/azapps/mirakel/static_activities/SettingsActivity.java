@@ -18,11 +18,15 @@
  ******************************************************************************/
 package de.azapps.mirakel.static_activities;
 
+import java.io.File;
 import java.net.URISyntaxException;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -33,12 +37,11 @@ import android.widget.Toast;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.helper.ExportImport;
 import de.azapps.mirakel.helper.FileUtils;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.PreferencesHelper;
 
 public class SettingsActivity extends PreferenceActivity {
 
-	public static final int FILE_ASTRID = 0;
+	public static final int FILE_ASTRID = 0, FILE_IMPORT_DB = 1;
 	private static final String TAG = "SettingsActivity";
 
 	@SuppressWarnings("deprecation")
@@ -68,55 +71,89 @@ public class SettingsActivity extends PreferenceActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	private String getPathFromUri(Uri uri) {
+		try {
+			return FileUtils.getPath(this, uri);
+		} catch (URISyntaxException e) {
+			Toast.makeText(this, "Something terrible happened…",
+					Toast.LENGTH_LONG).show();
+			return "";
+		}
+	}
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		final Context that = this;
+
 		switch (requestCode) {
 		case FILE_ASTRID:
-			if (resultCode == RESULT_OK) {
-				// Get the Uri of the selected file
-				Uri uri = data.getData();
-				Log.d(TAG, "File Uri: " + uri.toString());
-				try {
-					final String path = FileUtils.getPath(this, uri);
-					final Context that = this;
+			if (resultCode != RESULT_OK)
+				return;
+			final String path_astrid = getPathFromUri(data.getData());
 
-					// Do the import in a background-task
-					new AsyncTask<String, Void, Void>() {
-						ProgressDialog dialog;
+			// Do the import in a background-task
+			new AsyncTask<String, Void, Void>() {
+				ProgressDialog dialog;
 
-						@Override
-						protected Void doInBackground(String... params) {
-							ExportImport.importAstrid(that, path);
-							return null;
-						}
-
-						@Override
-						protected void onPostExecute(Void v) {
-							dialog.dismiss();
-							Toast.makeText(that, R.string.astrid_success,
-									Toast.LENGTH_SHORT).show();
-							android.os.Process.killProcess(android.os.Process
-									.myPid()); // ugly but simple
-						}
-
-						@Override
-						protected void onPreExecute() {
-							dialog = ProgressDialog.show(that,
-									that.getString(R.string.astrid_importing),
-									that.getString(R.string.astrid_wait), true);
-						}
-					}.execute("");
-
-					Log.d(TAG, "File Path: " + path);
-				} catch (URISyntaxException e) {
-					Toast.makeText(this, "Something terrible happened…",
-							Toast.LENGTH_LONG).show();
+				@Override
+				protected Void doInBackground(String... params) {
+					ExportImport.importAstrid(that, path_astrid);
+					return null;
 				}
-				// Get the file instance
-				// File file = new File(path);
-				// Initiate the upload
-			}
+
+				@Override
+				protected void onPostExecute(Void v) {
+					dialog.dismiss();
+					Toast.makeText(that, R.string.astrid_success,
+							Toast.LENGTH_SHORT).show();
+					android.os.Process.killProcess(android.os.Process.myPid()); // ugly
+																				// but
+																				// simple
+				}
+
+				@Override
+				protected void onPreExecute() {
+					dialog = ProgressDialog.show(that,
+							that.getString(R.string.astrid_importing),
+							that.getString(R.string.astrid_wait), true);
+				}
+			}.execute("");
+
 			break;
+		case FILE_IMPORT_DB:
+			if (resultCode != RESULT_OK)
+				return;
+			final String path_db = getPathFromUri(data.getData());
+			// Check if this is an database file
+			if (!path_db.endsWith(".db")) {
+				Toast.makeText(that, R.string.import_wrong_type,
+						Toast.LENGTH_LONG).show();
+				return;
+			}
+			new AlertDialog.Builder(this)
+					.setTitle(R.string.import_sure)
+					.setMessage(
+							this.getString(R.string.import_sure_summary,
+									path_db))
+					.setNegativeButton(android.R.string.cancel,
+							new OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+
+								}
+							})
+					.setPositiveButton(android.R.string.yes,
+							new OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									ExportImport.importDB(that, new File(
+											path_db));
+								}
+							}).create().show();
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
