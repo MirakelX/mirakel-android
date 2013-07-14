@@ -21,8 +21,11 @@ package de.azapps.mirakel.static_activities;
 import java.net.URISyntaxException;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.view.MenuItem;
@@ -74,8 +77,36 @@ public class SettingsActivity extends PreferenceActivity {
 				Uri uri = data.getData();
 				Log.d(TAG, "File Uri: " + uri.toString());
 				try {
-					String path = FileUtils.getPath(this, uri);
-					ExportImport.importAstrid(this, path);
+					final String path = FileUtils.getPath(this, uri);
+					final Context that = this;
+
+					// Do the import in a background-task
+					new AsyncTask<String, Void, Void>() {
+						ProgressDialog dialog;
+
+						@Override
+						protected Void doInBackground(String... params) {
+							ExportImport.importAstrid(that, path);
+							return null;
+						}
+
+						@Override
+						protected void onPostExecute(Void v) {
+							dialog.dismiss();
+							Toast.makeText(that, R.string.astrid_success,
+									Toast.LENGTH_SHORT).show();
+							android.os.Process.killProcess(android.os.Process
+									.myPid()); // ugly but simple
+						}
+
+						@Override
+						protected void onPreExecute() {
+							dialog = ProgressDialog.show(that,
+									that.getString(R.string.astrid_importing),
+									that.getString(R.string.astrid_wait), true);
+						}
+					}.execute("");
+
 					Log.d(TAG, "File Path: " + path);
 				} catch (URISyntaxException e) {
 					Toast.makeText(this, "Something terrible happened…",

@@ -95,6 +95,9 @@
     <string name="import_astrid_click_summary">Import from an Astrid-file</string>
     <string name="import_astrid_click">Import from Astrid</string>
     <string name="astrid_unsuccess">There was an Error while importing from Astrid!</string>
+    <string name="astrid_success">Successfully imported all data!</string>
+    <string name="astrid_importing">Importing</string>
+    <string name="astrid_wait">Please wait…</string>
     
     
 

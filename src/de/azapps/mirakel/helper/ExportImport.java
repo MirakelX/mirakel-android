@@ -1,13 +1,14 @@
 package de.azapps.mirakel.helper;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Environment;
 import android.widget.Toast;
@@ -18,6 +19,7 @@ import de.azapps.mirakel.model.task.Task;
 public class ExportImport {
 	private static final File dbFile = new File(Environment.getDataDirectory()
 			+ "/data/de.azapps.mirakel/databases/mirakel.db");
+	private static final String TAG = "ExportImport";
 
 	public static void exportDB(Context ctx, File exportDir) {
 		if (!exportDir.exists()) {
@@ -51,8 +53,9 @@ public class ExportImport {
 		}
 	}
 
-	public static void importAstrid(Activity activity, String path) {
-		File outputDir = new File(activity.getCacheDir(), "astrid");
+	@SuppressLint("SimpleDateFormat")
+	public static void importAstrid(Context context, String path) {
+		File outputDir = new File(context.getCacheDir(), "astrid");
 		if (!outputDir.isDirectory()) {
 			outputDir.mkdirs();
 		} else {
@@ -65,7 +68,7 @@ public class ExportImport {
 		try {
 			FileUtils.unzip(zipped, outputDir);
 		} catch (Exception e) {
-			Toast.makeText(activity, R.string.astrid_unsuccess,
+			Toast.makeText(context, R.string.astrid_unsuccess,
 					Toast.LENGTH_LONG).show();
 			return;
 		}
@@ -76,11 +79,14 @@ public class ExportImport {
 			CSVReader listsReader = new CSVReader(lists, ',');
 			String[] row;
 			listsReader.readNext(); // Skip first line
+
+			SimpleDateFormat astridFormat = new SimpleDateFormat(
+					"yyyy-MM-dd HH:mm:ss");
 			while ((row = listsReader.readNext()) != null) {
 				String name = row[0];
 				if (ListMirakel.findByName(name) == null) {
 					ListMirakel.newList(name);
-					Log.e("created", name);
+					Log.v(TAG, "created list:" + name);
 				}
 			}
 			CSVReader tasksReader = new CSVReader(tasks, ',');
@@ -90,6 +96,17 @@ public class ExportImport {
 				String content = row[8];
 				String listName = row[7];
 				int priority = Integer.valueOf(row[5]) - 1;
+
+				// Due
+				GregorianCalendar due = new GregorianCalendar();
+				try {
+					due.setTime(astridFormat.parse(row[4]));
+				} catch (ParseException e) {
+					due = null;
+				}
+				// Done
+				boolean done = !row[9].equals("");
+
 				ListMirakel list = ListMirakel.findByName(listName);
 				if (list == null) {
 					list = ListMirakel.first();
@@ -97,16 +114,19 @@ public class ExportImport {
 				Task t = Task.newTask(name, list);
 				t.setContent(content);
 				t.setPriority(priority);
+				t.setDue(due);
+				t.setDone(done);
 				t.save();
+				Log.v(TAG, "created task:" + name);
 
 			}
 
 		} catch (FileNotFoundException e) {
-			Toast.makeText(activity, R.string.astrid_unsuccess,
+			Toast.makeText(context, R.string.astrid_unsuccess,
 					Toast.LENGTH_LONG).show();
 			return;
 		} catch (IOException e) {
-			Toast.makeText(activity, R.string.astrid_unsuccess,
+			Toast.makeText(context, R.string.astrid_unsuccess,
 					Toast.LENGTH_LONG).show();
 			return;
 
