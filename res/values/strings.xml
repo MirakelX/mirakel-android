@@ -190,12 +190,13 @@ Device: %s\n]]>
     </string>
     <string name="contact_no_client">No Mail-Client installed</string>
     <string name="contact_chooser">Send mail&#8230;</string>
-    
+
     <!-- Backup -->
     <string name="backup_import_error">There was an Error while importing the database</string>
     <string name="backup_import_ok">The Import was fine - Please restart Mirakel</string>
     <string name="backup_export_error">There was an Error while exporting the database</string>
     <string name="backup_export_ok" formatted="false">Exported to %s</string>
-
     <string name="change_content">Change Content</string>
+    <string name="new_task">New Task</string>
+
 </resources>

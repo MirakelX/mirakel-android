@@ -193,6 +193,17 @@ public class TasksFragment extends Fragment {
 		return view;
 	}
 
+	public void focusNew() {
+		if(newTask==null) return;
+		// Hmm… Something is going wrong here…
+		
+		newTask.requestFocus();
+
+		InputMethodManager imm = (InputMethodManager) main
+				.getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.showSoftInput(newTask, InputMethodManager.SHOW_IMPLICIT);
+	}
+
 	private boolean newTask(String name) {
 		InputMethodManager imm = (InputMethodManager) main
 				.getSystemService(Context.INPUT_METHOD_SERVICE);

@@ -36,6 +36,7 @@ import android.view.View;
 import android.widget.RemoteViews;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
+import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.WidgetHelper;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -61,8 +62,10 @@ public class MainWidgetProvider extends AppWidgetProvider {
 		// Perform this loop procedure for each App Widget that belongs to this
 		// provider
 		for (int appWidgetId : appWidgetIds) {
-			RemoteViews views = new RemoteViews(context.getPackageName(),
-					VERSION.SDK_INT<VERSION_CODES.HONEYCOMB?R.layout.widget_main_layout_v10:R.layout.widget_main);
+			RemoteViews views = new RemoteViews(
+					context.getPackageName(),
+					VERSION.SDK_INT < VERSION_CODES.HONEYCOMB ? R.layout.widget_main_layout_v10
+							: R.layout.widget_main);
 
 			int listId = Integer.parseInt(preferences.getString("widgetList",
 					SpecialList.first().getId() + ""));
@@ -81,22 +84,36 @@ public class MainWidgetProvider extends AppWidgetProvider {
 			Intent mainIntent = new Intent(context, MainActivity.class);
 			mainIntent.setAction(MainActivity.SHOW_LIST_FROM_WIDGET);
 			mainIntent.putExtra(MainActivity.EXTRA_ID, listId);
-			
+
 			PendingIntent mainPendingIntent = PendingIntent.getActivity(
 					context, 0, mainIntent, 0);
 
 			views.setOnClickPendingIntent(R.id.widget_list_name,
 					mainPendingIntent);
+
 			views.setTextViewText(R.id.widget_list_name,
 					ListMirakel.getList(listId).getName());
-			if(VERSION.SDK_INT>=VERSION_CODES.HONEYCOMB){
+
+			// Create an Intent to launch MainActivity and create a new Task
+			Intent addIntent = new Intent(context, MainActivity.class);
+			addIntent.setAction(MainActivity.ADD_TASK_FROM_WIDGET);
+			addIntent.putExtra(MainActivity.EXTRA_ID, listId);
+
+			PendingIntent addPendingIntent = PendingIntent.getActivity(context,
+					0, addIntent, 0);
+
+			views.setOnClickPendingIntent(R.id.widget_add_task,
+					addPendingIntent);
+			if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB) {
 				// Here we setup the intent which points to the StackViewService
 				// which will
 				// provide the views for this collection.
 				Intent intent = new Intent(context, MainWidgetService.class);
-				intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-	
-				// When intents are compared, the extras are ignored, so we need to
+				intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+						appWidgetId);
+
+				// When intents are compared, the extras are ignored, so we need
+				// to
 				// embed the extras
 				// into the data so that the extras will not be ignored.
 				intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
@@ -106,42 +123,51 @@ public class MainWidgetProvider extends AppWidgetProvider {
 						preferences.getBoolean("widgetDone", false));
 				intent.putExtra("Random", new Random().nextInt());
 				views.setRemoteAdapter(R.id.widget_tasks_list, intent);
-	
-				// The empty view is displayed when the collection has no items. It
+
+				// The empty view is displayed when the collection has no items.
+				// It
 				// should be a sibling
 				// of the collection view.
 				views.setEmptyView(R.id.widget_tasks_list, R.id.empty_view);
-				// Here we setup the a pending intent template. Individuals items of
+				// Here we setup the a pending intent template. Individuals
+				// items of
 				// a collection
-				// cannot setup their own pending intents, instead, the collection
+				// cannot setup their own pending intents, instead, the
+				// collection
 				// as a whole can
-				// setup a pending intent template, and the individual items can set
+				// setup a pending intent template, and the individual items can
+				// set
 				// a fillInIntent
 				// to create unique before on an item to item basis.
-				Intent toastIntent = new Intent(context, MainWidgetProvider.class);
+				Intent toastIntent = new Intent(context,
+						MainWidgetProvider.class);
 				intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
 				PendingIntent toastPendingIntent = PendingIntent.getBroadcast(
-						context, 0, toastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+						context, 0, toastIntent,
+						PendingIntent.FLAG_UPDATE_CURRENT);
 				views.setPendingIntentTemplate(R.id.widget_tasks_list,
 						toastPendingIntent);
-				
-			}else{
+
+			} else {
 				views.removeAllViews(R.id.widget_main_view);
-				List<Task> tasks= Task.getTasks(listId, listSort, false);
-				if(tasks.size()==0){
+				List<Task> tasks = Task.getTasks(listId, listSort, false);
+				if (tasks.size() == 0) {
 					views.setViewVisibility(R.id.empty_view, View.VISIBLE);
-				}else{
+				} else {
 					views.setViewVisibility(R.id.empty_view, View.GONE);
-					int end=7;//TODO get from screensize or so
-					for (Task t:tasks.subList(0, end)) {
-					    views.addView(R.id.widget_main_view,
-					    		WidgetHelper.configureItem(
-					    				new RemoteViews(context.getPackageName(), R.layout.widget_row), t, context, listId));
-					}  				
+					int end = 7;// TODO get from screensize or so
+					for (Task t : tasks.subList(0, end)) {
+						views.addView(R.id.widget_main_view, WidgetHelper
+								.configureItem(
+										new RemoteViews(context
+												.getPackageName(),
+												R.layout.widget_row), t,
+										context, listId));
+					}
 				}
 			}
 			appWidgetManager.updateAppWidget(appWidgetId, views);
-			
+
 		}
 	}
 

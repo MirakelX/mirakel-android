@@ -97,6 +97,7 @@ public class MainActivity extends FragmentActivity implements
 			SHOW_LIST = "de.azapps.mirakel.SHOW_LIST",
 			SHOW_LISTS = "de.azapps.mirakel.SHOW_LISTS",
 			SHOW_LIST_FROM_WIDGET = "de.azapps.mirakel.SHOW_LIST_FROM_WIDGET",
+			ADD_TASK_FROM_WIDGET = "de.azapps.mirakel.ADD_TASK_FROM_WIDGET",
 			SHOW_TASK_FROM_WIDGET = "de.azapps.mirakel.SHOW_TASK_FROM_WIDGET";
 	private SharedPreferences preferences;
 
@@ -106,7 +107,7 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		preferences = PreferenceManager.getDefaultSharedPreferences(this);
 		if (!preferences.contains("startupAllLists")) {
 			SharedPreferences.Editor editor = preferences.edit();
 			editor.putBoolean("startupAllLists", false);
@@ -284,13 +285,15 @@ public class MainActivity extends FragmentActivity implements
 
 		inflater.inflate(newmenu, menu);
 
-        if(preferences.getBoolean("syncUse",false)==false){
-            MenuItem mitem;
-            mitem=menu.findItem(R.id.menu_sync_now_list);
-            if(mitem==null) mitem=menu.findItem(R.id.menu_sync_now_task);
-            if(mitem==null) mitem=menu.findItem(R.id.menu_sync_now_tasks);
-            mitem.setVisible(false);
-        }
+		if (preferences.getBoolean("syncUse", false) == false) {
+			MenuItem mitem;
+			mitem = menu.findItem(R.id.menu_sync_now_list);
+			if (mitem == null)
+				mitem = menu.findItem(R.id.menu_sync_now_task);
+			if (mitem == null)
+				mitem = menu.findItem(R.id.menu_sync_now_tasks);
+			mitem.setVisible(false);
+		}
 	}
 
 	@Override
@@ -379,22 +382,25 @@ public class MainActivity extends FragmentActivity implements
 			} else {
 				Log.d(TAG, "task null");
 			}
-		} else if (intent.getAction().equals(Intent.ACTION_SEND) && intent.getType().equals("text/plain")) {
-            String content = intent.getStringExtra(Intent.EXTRA_TEXT);
-            String subject=intent.getStringExtra(Intent.EXTRA_SUBJECT);
-            if (content != null || subject!=null) {
-                if(content==null) content="";
-                if(subject==null) subject="";
-                int id = getCurrentList().getId();
+		} else if (intent.getAction().equals(Intent.ACTION_SEND)
+				&& intent.getType().equals("text/plain")) {
+			String content = intent.getStringExtra(Intent.EXTRA_TEXT);
+			String subject = intent.getStringExtra(Intent.EXTRA_SUBJECT);
+			if (content != null || subject != null) {
+				if (content == null)
+					content = "";
+				if (subject == null)
+					subject = "";
+				int id = getCurrentList().getId();
 
-                Task task = Task.newTask(subject, id);
-                task.setContent(content);
-                task.save();
-                setCurrentTask(task);
-                tasksFragment.updateList(true);
-                listFragment.update();
-            }
-        } else if (intent.getAction().equals(TASK_DONE)
+				Task task = Task.newTask(subject, id);
+				task.setContent(content);
+				task.save();
+				setCurrentTask(task);
+				tasksFragment.updateList(true);
+				listFragment.update();
+			}
+		} else if (intent.getAction().equals(TASK_DONE)
 				|| intent.getAction().equals(TASK_LATER)) {
 			handleReminder(intent);
 		} else if (intent.getAction().equals(SHOW_LIST)
@@ -409,6 +415,11 @@ public class MainActivity extends FragmentActivity implements
 		} else if (intent.getAction().equals(Intent.ACTION_SEARCH)) {
 			String query = intent.getStringExtra(SearchManager.QUERY);
 			search(query);
+		} else if (intent.getAction().equals(ADD_TASK_FROM_WIDGET)) {
+			int listId = intent.getIntExtra(EXTRA_ID, 0);
+			setCurrentList(ListMirakel.getList(listId));
+			tasksFragment.focusNew();
+
 		} else {
 			mViewPager.setCurrentItem(TASKS_FRAGMENT);
 		}

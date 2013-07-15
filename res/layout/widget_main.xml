@@ -32,10 +32,19 @@
             android:id="@+id/widget_preferences"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentLeft="true"
             android:background="@android:color/transparent"
             android:contentDescription="@string/preferences"
             android:src="@android:drawable/ic_menu_preferences" />
+
+        <ImageButton
+            android:id="@+id/widget_add_task"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/preferences"
+            android:src="@android:drawable/ic_menu_add" />
 
         <TextView
             android:id="@+id/widget_list_name"
