@@ -2,17 +2,11 @@
 <resources>
 
     <string name="special_list_name">Name</string>
-    <string name="special_list_name_summary">Change the Name of the SpecialList</string>
     <string name="special_list_active">Show</string>
-    <string name="special_list_active_summary">Should I show you this List?</string>
     <string name="special_list_where">Where-Query</string>
-    <string name="special_list_where_summary">Advanced: Where-Query</string>
     <string name="special_list_sort_by">Sort by</string>
-    <string name="special_list_sort_by_summary">Sort by</string>
     <string name="special_list_def_list">Default list</string>
-    <string name="special_list_def_list_summary"></string>
     <string name="special_list_def_date">Default date</string>
-    <string name="special_list_def_date_summary">in days (+/-)</string>
     <string name="special_list_first">Default</string>
 
     <string-array name="special_list_def_date_picker">
@@ -41,17 +35,11 @@
     <string name="special_list_where_prio_title_text">Priority</string>
     <string name="special_list_where_prio_content_text"></string>
     <string name="special_list_where_name_title_text">Name</string>
-    <string name="special_list_where_name_content_text"></string>
     <string name="special_list_where_content_title_text">Content</string>
-    <string name="special_list_where_content_content_text"></string>
     <string name="special_list_where_list_title_text">List</string>
-    <string name="special_list_where_list_content_text"></string>
     <string name="special_list_where_done_title_text">Done</string>
-    <string name="special_list_where_done_content_text"></string>
     <string name="special_list_where_reminder_title_text">Reminder</string>
-    <string name="special_list_where_reminder_content_text"></string>
     <string name="special_list_where_due_title_text">Due</string>
-    <string name="special_list_where_due_content_text"></string>
     <string name="empty">Irrelevant</string>
     <string name="select_by">Select By</string>
     <string name="done">Tasks done</string>

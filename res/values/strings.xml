@@ -49,12 +49,6 @@
     <string name="inbox">Inbox</string>
     <string name="first_task">First task</string>
 
-    <!-- Help -->
-    <string name="title_activity_help">Help</string>
-    <string name="help_button_contact">Contact</string>
-    <string name="help_button_donate">Donate</string>
-    <string name="help_button_ok">OK</string>
-
     <!-- Tasks -->
     <string name="tasks_new_str">New Task</string>
     <string name="task_no_content">Add a Note</string>
@@ -192,5 +186,6 @@ Device: %s\n]]>
     <string name="backup_export_ok" formatted="false">Exported to %s</string>
     <string name="change_content">Change Content</string>
     <string name="task_has_content">Task has content</string>
+    <string name="help_description">There are 3 main parts: on the left side you can see all lists, in the middle you can see all tasks of a list and at the right side you can see a task. You switch between the parts by swiping or clicking.</string>
 
 </resources>

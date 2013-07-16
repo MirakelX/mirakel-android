@@ -24,15 +24,10 @@
   <string name="action_sync_now">Synchronisieren</string>
   <string name="resync">Möchtest du wirklich alle Aufgaben synchronisieren?</string>
   <string name="start">Start</string>
-  <string name="use_server">Möchtest du deine Listen mit einem Server synchronisieren?</string>
   <string name="menu_sort_lists">Umsortieren</string>
   <string name="no_https">Du solltest https benutzen!</string>
   <string name="inbox">Eingang</string>
   <string name="first_task">Erste Aufgabe</string>
-  <string name="title_activity_help">Hilfe</string>
-  <string name="help_button_contact">Kontakt</string>
-  <string name="help_button_donate">Spenden</string>
-  <string name="help_button_ok">OK</string>
   <string name="tasks_new_str">Neue Aufgabe…</string>
   <string name="task_no_content">Notiz hinzufügen</string>
   <string name="task_change_prio_title">Priorität ändern</string>
@@ -40,7 +35,6 @@
   <string name="task_delete_content">Willst du die Aufgabe wirklich löschen?</string>
   <string name="task_menu_sorting">Sortiere Aufgaben</string>
   <string name="task_sorting_title">Sortiere nach</string>
-  <string name="task_save_content">Speichern</string>
   <string name="task_empty">Keine Aufgabe ausgewählt…</string>
   <string name="set_date">Datum einstellen</string>
   <string name="set_time">Zeit einstellen</string>
@@ -77,13 +71,11 @@
   <string name="login_activity_password_label">Passwort</string>
   <string name="login_activity_ok_button">Anmelden</string>
   <string name="login_activity_loginfail_text_both">Der Benutzername oder das Kennwort ist ungültig. Es ist ein Mirakel-Konto erforderlich. Bitte versuche es erneut.</string>
-  <string name="login_activity_loginfail_text_pwonly">Das Passwort ist falsch.</string>
   <string name="login_activity_loginfail_text_pwmissing">Gib das Passwort bitte an.</string>
   <string name="login_activity_newaccount_text">Melde dich mit deinem Mirakel-Account an.</string>
   <string name="ui_activity_authenticating">Melde an…</string>
   <string name="ui_activity_title">Anmelden</string>
   <string name="title_activity_special_lists_settings">SpecialListsSettings</string>
-  <string name="hello_world">Hallo Welt!</string>
   <string name="changelog_full_title">Änderungen</string>
   <string name="changelog_title">Was ist neu?</string>
   <string name="changelog_ok_button">OK</string>
@@ -113,7 +105,8 @@ Device: %s\n]]>
   <string name="backup_export_error">Es gab ein Fehler beim Exportieren der Datenbank</string>
   <string name="backup_export_ok" formatted="false">Nach %s exportiert</string>
   <string name="change_content">Kommentar ändern</string>
-  <string name="new_task">Neue Aufgabe</string>
+  <string name="task_has_content">Aufgabe hat eine Notiz</string>
+  <string name="help_description">Es gibt 3 Hauptteile: Auf der linken Seite siehst du alle Listen, in der Mitte alle Aufgaben einer Liste und auf der rechten Seite die Aufgabe. Du kannst zwischen den Teilen durch Wischen und klicken wechseln.</string>
   <string-array name="task_sorting_items">
     <item>Standard</item>
     <item>Termin</item>
