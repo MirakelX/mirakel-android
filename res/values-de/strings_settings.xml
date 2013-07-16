@@ -41,6 +41,8 @@
   <string name="import_click">Import</string>
   <string name="import_sure">Bist du sicher?</string>
   <string name="import_sure_summary" formatted="false">Alle Daten werden überschrieben! (Import von %s)</string>
+  <string name="import_title">Mirakel Datei auswählen</string>
+  <string name="no_filemanager">Installiere bitte einen Datei-Manager</string>
   <string name="changelog_click_summary">Changelog anzeigen</string>
   <string name="changelog_click">Changelog</string>
   <string name="import_astrid_click_summary">Importiere aus einer Astrid-Datei</string>
@@ -48,6 +50,7 @@
   <string name="astrid_unsuccess">Es ist ein Fehler während des Astrid-Import aufgetreten!</string>
   <string name="astrid_success">Alle Daten erfolgreich importiert!</string>
   <string name="astrid_importing">Importiere</string>
+  <string name="astrid_import_title">Astrid Datei auswählen</string>
   <string name="astrid_wait">Bitte warten…</string>
   <string name="import_wrong_type">Dies ist keine Mirakel-Datei!</string>
   <string-array name="sync_frequencies">
