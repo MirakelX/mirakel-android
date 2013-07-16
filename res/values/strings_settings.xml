@@ -86,6 +86,8 @@
     <string name="import_click">Import</string>
     <string name="import_sure">Are you sure?</string>
     <string name="import_sure_summary" formatted="false">All data will be overridden! (Importing from %s)</string>
+    <string name="import_title">Select Mirakel File</string>
+    <string name="no_filemanager">Please install a File Manager</string>
 
     <!-- Changelog -->
     <string name="changelog_click_summary">View the changelog</string>
@@ -97,6 +99,7 @@
     <string name="astrid_unsuccess">There was an Error while importing from Astrid!</string>
     <string name="astrid_success">Successfully imported all data!</string>
     <string name="astrid_importing">Importing</string>
+    <string name="astrid_import_title">Select Astrid File</string>
     <string name="astrid_wait">Please wait…</string>
     <string name="import_wrong_type">This is not a Mirakel-file!</string>
 

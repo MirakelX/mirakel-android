@@ -418,7 +418,8 @@ public class PreferencesHelper {
 		importDB.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
-				showFileChooser(SettingsActivity.FILE_IMPORT_DB);
+				showFileChooser(SettingsActivity.FILE_IMPORT_DB,
+						activity.getString(R.string.import_title));
 				return true;
 			}
 		});
@@ -439,25 +440,26 @@ public class PreferencesHelper {
 				.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 					@Override
 					public boolean onPreferenceClick(Preference preference) {
-						showFileChooser(SettingsActivity.FILE_ASTRID);
+						showFileChooser(SettingsActivity.FILE_ASTRID, activity
+								.getString(R.string.astrid_import_title));
 						return true;
 					}
 				});
 	}
 
-	private void showFileChooser(int code) {
+	private void showFileChooser(int code, String title) {
 
 		Intent fileDialogIntent = new Intent(Intent.ACTION_GET_CONTENT);
 		fileDialogIntent.setType("*/*");
 		fileDialogIntent.addCategory(Intent.CATEGORY_OPENABLE);
 
 		try {
-			activity.startActivityForResult(Intent.createChooser(
-					fileDialogIntent, "Select a File to Upload"), code);
+			activity.startActivityForResult(
+					Intent.createChooser(fileDialogIntent, title), code);
 		} catch (android.content.ActivityNotFoundException ex) {
 			// Potentially direct the user to the Market with a
 			// Dialog
-			Toast.makeText(activity, "Please install a File Manager.",
+			Toast.makeText(activity, R.string.no_filemanager,
 					Toast.LENGTH_SHORT).show();
 		}
 	}
