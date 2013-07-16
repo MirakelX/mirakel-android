@@ -32,6 +32,10 @@ This is experimental Software! Be careful.
 
 **Please report Bugs!**
 
+## Translations
+
+Please help us to translate the app: http://crowdin.net/project/mirakel
+
 ## License
 
 Copyright (c) 2013 Anatolij Zelenin, Georg Semmler
