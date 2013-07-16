@@ -42,6 +42,7 @@ public class MainWidgetService extends RemoteViewsService {
 
 }
 
+@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
 	private Context mContext;
