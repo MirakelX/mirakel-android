@@ -60,10 +60,6 @@
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="de.azapps.mirakel.static_activities.HelpActivity"
-            android:label="@string/title_activity_help" >
-        </activity>
-        <activity
             android:name="de.azapps.mirakel.main_activity.MainActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"

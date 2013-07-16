@@ -21,7 +21,6 @@ package de.azapps.mirakel.static_activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Html;
@@ -63,31 +62,25 @@ public class StartActivity extends Activity {
 				// generateDummies();
 				SharedPreferences settings = PreferenceManager
 						.getDefaultSharedPreferences(getApplicationContext());
-				if (settings.getBoolean("showHelp", true)) {
-					Intent intent = new Intent(StartActivity.this,
-							HelpActivity.class);
-					startActivityForResult(intent, ShowHelp);
-				} else {
-					/*
-					 * TODO: uncomment it, when sync work perfectly ;) if
-					 * (((CheckBox) findViewById(R.id.use_server)).isChecked())
-					 * { Intent intent = new Intent(StartActivity.this,
-					 * AuthenticatorActivity.class); //
-					 * intent.setAction(MainActivity.SHOW_LISTS);
-					 * startActivityForResult(intent, PrepareLogin); } else {
-					 */
-					settings = PreferenceManager
-							.getDefaultSharedPreferences(getApplicationContext());
-					SharedPreferences.Editor editor = settings.edit();
-					editor.putBoolean("syncUse", false);
-					editor.commit();
-					Intent intent = new Intent(StartActivity.this,
-							MainActivity.class);
-					intent.putExtra("listId", SpecialList.first().getId());
-					startActivity(intent);
-					// }
-
-				}
+				/*
+				 * TODO: uncomment it, when sync work perfectly ;) if
+				 * (((CheckBox) findViewById(R.id.use_server)).isChecked()) {
+				 * Intent intent = new Intent(StartActivity.this,
+				 * AuthenticatorActivity.class); //
+				 * intent.setAction(MainActivity.SHOW_LISTS);
+				 * startActivityForResult(intent, PrepareLogin); } else {
+				 */
+				settings = PreferenceManager
+						.getDefaultSharedPreferences(getApplicationContext());
+				SharedPreferences.Editor editor = settings.edit();
+				editor.putBoolean("syncUse", false);
+				editor.commit();
+				Intent intent = new Intent(StartActivity.this,
+						MainActivity.class);
+				intent.setAction(MainActivity.SHOW_LIST);
+				intent.putExtra(MainActivity.EXTRA_ID, SpecialList.firstSpecial().getId());
+				startActivityForResult(intent,1);
+				// }
 			}
 		});
 	}
@@ -140,15 +133,4 @@ public class StartActivity extends Activity {
 			}
 		}
 	}
-
-	private class ImageGetter implements Html.ImageGetter {
-
-		public Drawable getDrawable(String source) {
-			int id;
-			id = R.drawable.howto;
-			Drawable d = getResources().getDrawable(id);
-			d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
-			return d;
-		}
-	};
 }

@@ -408,6 +408,7 @@ public class MainActivity extends FragmentActivity implements
 
 			int listId = intent.getIntExtra(EXTRA_ID, 0);
 			ListMirakel list = ListMirakel.getList(listId);
+			Log.e("Blubb",list.getName()+" "+listId);
 			setCurrentList(list);
 			return;
 		} else if (intent.getAction().equals(SHOW_LISTS)) {
