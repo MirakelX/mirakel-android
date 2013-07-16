@@ -85,12 +85,6 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		// Set the Contents of the Row
 		rv=WidgetHelper.configureItem(rv, task, mContext, listId);
 
-		// rv.setBoolean(R.id.tasks_row_done, "setChecked", true);
-		/*
-		 * holder.taskRowDone.setChecked(task.isDone());
-		 * holder.taskRowDone.setOnClickListener(clickCheckbox);
-		 */
-
 		// Set the Click–Intent
 		// We need to do so, because we can not start the Activity directly from
 		// the Service
