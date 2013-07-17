@@ -63,7 +63,6 @@
             android:name="de.azapps.mirakel.main_activity.MainActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
-            android:label="@string/title_activity_main"
             android:windowSoftInputMode="adjustPan" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
@@ -81,7 +80,7 @@
         <!-- android:launchMode="singleTop" -->
         <activity
             android:name="de.azapps.mirakel.static_activities.SettingsActivity"
-            android:label="@string/title_activity_main"
+            android:label="@string/title_settings"
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
@@ -124,7 +123,6 @@
 
         <activity
             android:name="de.azapps.mirakel.widget.MainWidgetSettingsActivity"
-            android:label="@string/title_activity_main"
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity

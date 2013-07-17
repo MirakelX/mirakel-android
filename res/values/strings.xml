@@ -103,7 +103,7 @@
     <string name="menu_move">Move</string>
     <!-- Login -->
     <string name="offical_server_url">https://mirakel.azapps.de</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_settings">Settings</string>
 
     <!-- Widget -->
     <string name="empty_list">No tasks</string>
