@@ -36,6 +36,35 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    <permission-group android:description="@string/permission_group_desc"
+                  android:label="@string/permission_group_lbl"
+                  android:name="de.azapps.mirakel.PERMISSION" />
+    <!-- Maybe use "signature" instead of "dangerous"?  -->
+    <permission 
+        android:name="de.azapps.mirakel.provider.READ_DATA" 
+        android:permissionGroup="de.azapps.mirakel.PERMISSION" 
+        android:label="@string/permission_read_lbl"
+        android:description="@string/permission_read_desc" 
+        android:protectionLevel="dangerous"/>
+    <permission 
+        android:name="de.azapps.mirakel.provider.WRITE_DATA" 
+        android:label="@string/permission_write_lbl"
+        android:description="@string/permission_write_desc"
+        android:permissionGroup="de.azapps.mirakel.PERMISSION" 
+        android:protectionLevel="dangerous"/>
+    <permission 
+        android:name="de.azapps.mirakel.provider.READ_WRITE_DATA" 
+        android:label="@string/permission_read_write_lbl" 
+        android:description="@string/permission_read_write_desc"
+        android:permissionGroup="de.azapps.mirakel.PERMISSION"
+        android:protectionLevel="dangerous"/>
+    <!-- Dummy Permission for Sync-Service -->
+    <permission 
+        android:name="de.azapps.mirakel.SYNC"
+        android:label=""
+        android:protectionLevel="signatureOrSystem"
+        android:permissionGroup="de.azapps.mirakel.PERMISSION"/>
+
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="17" />
@@ -99,6 +128,7 @@
 
         <service
             android:name="de.azapps.mirakel.sync.AuthenticationService"
+            android:permission="de.azapps.mirakel.SYNC"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
@@ -110,6 +140,7 @@
         </service>
         <service
             android:name="de.azapps.mirakel.sync.SyncService"
+            android:permission="de.azapps.mirakel.SYNC"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" >
@@ -162,6 +193,9 @@
         <provider
             android:name="de.azapps.mirakel.MirakelContentProvider"
             android:authorities="de.azapps.mirakel.provider"
+            android:readPermission="de.azapps.mirakel.provider.READ_DATA"
+            android:writePermission="de.azapps.mirakel.provider.WRITE_DATA"
+            android:permission="de.azapps.mirakel.provider.READ_WRITE_DATA"
             android:exported="true" >
         </provider>
 

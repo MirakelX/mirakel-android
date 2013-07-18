@@ -187,5 +187,15 @@ Device: %s\n]]>
     <string name="change_content">Change Content</string>
     <string name="task_has_content">Task has content</string>
     <string name="help_description">There are 3 main parts: on the left side you can see all lists, in the middle you can see all tasks of a list and at the right side you can see a task. You switch between the parts by swiping or clicking.</string>
+    
+    <!-- Permissions -->
+    <string name="permission_group_desc">Permissions for Access Mirakel</string>
+    <string name="permission_group_lbl">Mirakel Permissions</string>
+    <string name="permission_read_lbl">Read data from Mirakel</string>
+    <string name="permission_read_desc">Permission to read data from Mirakel</string>
+    <string name="permission_write_lbl">Write data to Mirakel</string>
+    <string name="permission_write_desc">Permission to write data to Mirakel</string>
+    <string name="permission_read_write_lbl">Read/Write Mirakel-data</string>
+    <string name="permission_read_write_desc">Permission to Read data from and write data to Mirakel</string>
 
 </resources>
