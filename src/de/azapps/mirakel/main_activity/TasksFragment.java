@@ -39,6 +39,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -195,13 +196,19 @@ public class TasksFragment extends Fragment {
 
 	public void focusNew() {
 		if(newTask==null) return;
-		// Hmm… Something is going wrong here…
-		
+		newTask.setOnFocusChangeListener(new OnFocusChangeListener() {
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				newTask.post(new Runnable() {
+					@Override
+					public void run() {
+					InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+					imm.showSoftInput(newTask, InputMethodManager.SHOW_IMPLICIT);
+					}
+				});
+			}
+		});
 		newTask.requestFocus();
-
-		InputMethodManager imm = (InputMethodManager) main
-				.getSystemService(Context.INPUT_METHOD_SERVICE);
-		imm.showSoftInput(newTask, InputMethodManager.SHOW_IMPLICIT);
 	}
 
 	private boolean newTask(String name) {

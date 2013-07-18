@@ -250,13 +250,13 @@ public class MainActivity extends FragmentActivity implements
 			listState = listFragment.getState();
 		}
 		switch (position) {
-		case 0:
+		case LIST_FRAGMENT:
 			newmenu = R.menu.activity_list;
 			this.setTitle(getString(R.string.list_title));
 			if (listState != null)
 				listFragment.setState(listState);
 			break;
-		case 1:
+		case TASKS_FRAGMENT:
 			listFragment.enable_drop(false);
 			newmenu = R.menu.tasks;
 			if (currentList == null)
@@ -265,7 +265,7 @@ public class MainActivity extends FragmentActivity implements
 			if (tasksState != null && currentPosition != LIST_FRAGMENT)
 				tasksFragment.setState(tasksState);
 			break;
-		case 2:
+		case TASK_FRAGMENT:
 			newmenu = R.menu.activity_task;
 			taskFragment.update();
 			this.setTitle(currentTask.getName());

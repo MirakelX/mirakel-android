@@ -64,8 +64,7 @@
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTop"
             android:exported="true"
-            android:label="@string/title_activity_main"
-            android:windowSoftInputMode="adjustPan" >
+            android:label="@string/title_activity_main" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
