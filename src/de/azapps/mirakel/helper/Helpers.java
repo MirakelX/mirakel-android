@@ -36,7 +36,6 @@ public class Helpers {
 			// ugly fix for show Task from Widget
 			taskId = (long) intent.getIntExtra(MainActivity.EXTRA_ID, 0);
 		}
-		Log.e(TAG, "id: " + taskId);
 		if (taskId != 0) {
 			task = Task.get(taskId);
 		}

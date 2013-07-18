@@ -115,8 +115,7 @@ public class MainActivity extends FragmentActivity implements
 			editor.commit();
 		}
 		setContentView(R.layout.activity_main);
-		setupLayout();
-
+		mPagerAdapter=null;
 		// Show ChangeLog
 		ChangeLog cl = new ChangeLog(this);
 		if (cl.firstRun()) {
@@ -350,7 +349,7 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onResume() {
 		super.onResume();
-		NotificationService.updateNotificationAndWidget(this);
+		setupLayout();
 	}
 
 	@Override
@@ -360,6 +359,15 @@ public class MainActivity extends FragmentActivity implements
 		listFragment.setActivity(this);
 		tasksFragment.setActivity(this);
 	}
+	//Fix Intent-behavior
+	//default is not return new Intent by calling getIntent
+	@Override
+	protected void onNewIntent(Intent intent) {
+	    super.onNewIntent(intent);
+	    setIntent(intent);
+	    Log.d(TAG,"New Indent");
+	}
+
 
 	/**
 	 * Initialize the ViewPager and setup the rest of the layout
@@ -367,7 +375,8 @@ public class MainActivity extends FragmentActivity implements
 	private void setupLayout() {
 		setCurrentList(SpecialList.first());
 		// Initialize ViewPager
-		intializeViewPager();
+		if(mPagerAdapter==null)
+			intializeViewPager();
 		NotificationService.updateNotificationAndWidget(this);
 		Intent intent = getIntent();
 		if (intent == null || intent.getAction() == null) {
@@ -376,7 +385,7 @@ public class MainActivity extends FragmentActivity implements
 		} else if (intent.getAction().equals(SHOW_TASK)) {
 			Task task = Helpers.getTaskFromIntent(intent);
 			if (task != null) {
-				Log.e(TAG, "Taskid" + task.getId());
+				Log.d(TAG, "TaskID: " + task.getId());
 				currentList = task.getList();
 				setCurrentTask(task);
 			} else {
@@ -408,7 +417,7 @@ public class MainActivity extends FragmentActivity implements
 
 			int listId = intent.getIntExtra(EXTRA_ID, 0);
 			ListMirakel list = ListMirakel.getList(listId);
-			Log.e("Blubb",list.getName()+" "+listId);
+			Log.d(TAG,list.getName()+" "+listId);
 			setCurrentList(list);
 			return;
 		} else if (intent.getAction().equals(SHOW_LISTS)) {
@@ -447,7 +456,6 @@ public class MainActivity extends FragmentActivity implements
 					getString(R.string.reminder_notification_later_confirm,
 							addMinutes), Toast.LENGTH_LONG).show();
 		}
-		ReminderAlarm.closeNotificationFor(this, task.getId());
 		ReminderAlarm.updateAlarms(this);
 		listFragment.update();
 		setCurrentList(task.getList());
@@ -611,8 +619,13 @@ public class MainActivity extends FragmentActivity implements
 	void setCurrentTask(Task currentTask) {
 		this.currentTask = currentTask;
 		if (taskFragment != null) {
+			boolean smooth=mViewPager.getCurrentItem()!=TASK_FRAGMENT;
 			taskFragment.update();
-			mViewPager.setCurrentItem(TASK_FRAGMENT);
+			//Fix buggy behavior
+			mViewPager.setCurrentItem(LIST_FRAGMENT,false);
+			mViewPager.setCurrentItem(TASK_FRAGMENT,false);
+			mViewPager.setCurrentItem(LIST_FRAGMENT,false);
+			mViewPager.setCurrentItem(TASK_FRAGMENT,smooth);
 		}
 	}
 

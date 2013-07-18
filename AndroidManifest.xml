@@ -62,6 +62,7 @@
         <activity
             android:name="de.azapps.mirakel.main_activity.MainActivity"
             android:configChanges="orientation|screenSize"
+            android:launchMode="singleTop"
             android:exported="true"
             android:label="@string/title_activity_main"
             android:windowSoftInputMode="adjustPan" >

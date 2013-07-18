@@ -83,6 +83,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 				.setData(Uri.parse(openIntent.toUri(Intent.URI_INTENT_SCHEME)));
 		PendingIntent pOpenIntent = PendingIntent.getActivity(context, 0,
 				openIntent, 0);
+		
 		Intent doneIntent = new Intent(context, MainActivity.class);
 		doneIntent.setAction(MainActivity.TASK_DONE);
 		doneIntent.putExtra(MainActivity.EXTRA_ID, task.getId());
@@ -90,6 +91,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 				.setData(Uri.parse(doneIntent.toUri(Intent.URI_INTENT_SCHEME)));
 		PendingIntent pDoneIntent = PendingIntent.getActivity(context, 0,
 				doneIntent, 0);
+		
 		Intent laterIntent = new Intent(context, MainActivity.class);
 		laterIntent.setAction(MainActivity.TASK_LATER);
 		laterIntent.putExtra(MainActivity.EXTRA_ID, task.getId());
