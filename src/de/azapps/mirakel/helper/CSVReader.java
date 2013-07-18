@@ -109,6 +109,7 @@ public class CSVReader {
 	 * @throws IOException
 	 *             if bad things happen during the read
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public List readAll() throws IOException {
 		List allElements = new ArrayList();
 		while (hasNext) {
@@ -163,10 +164,12 @@ public class CSVReader {
 	 * @throws IOException
 	 *             if bad things happen during the read
 	 */
+	@SuppressWarnings("unchecked")
 	private String[] parseLine(String nextLine) throws IOException {
 		if (nextLine == null) {
 			return null;
 		}
+		@SuppressWarnings("rawtypes")
 		List tokensOnThisLine = new ArrayList();
 		StringBuffer sb = new StringBuffer();
 		boolean inQuotes = false;
