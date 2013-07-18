@@ -24,10 +24,10 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.IBinder;
@@ -78,13 +78,14 @@ public class NotificationService extends Service {
 			Log.e(TAG, "cannot parse list");
 			return;
 		}
-		// Set onClick Intent
-		Intent intent = new Intent(Intent.ACTION_MAIN);
-		intent.setComponent(new ComponentName(getPackageName(),"de.azapps.mirakel.main_activity.MainActivity"));
-		intent.setAction(MainActivity.SHOW_LIST);
-		intent.putExtra(MainActivity.EXTRA_ID, listId);
-		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
+		// Set onClick Intent		
+		Intent openIntent = new Intent(this, MainActivity.class);
+		openIntent.setAction(MainActivity.SHOW_LIST);
+		openIntent.putExtra(MainActivity.EXTRA_ID, listId);
+		openIntent
+				.setData(Uri.parse(openIntent.toUri(Intent.URI_INTENT_SCHEME)));
+		PendingIntent pOpenIntent = PendingIntent.getActivity(this, 0,
+				openIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		// Get the data
 		ListMirakel todayList = ListMirakel.getList(listId);
@@ -113,7 +114,7 @@ public class NotificationService extends Service {
 		NotificationCompat.Builder noti = new NotificationCompat.Builder(this)
 				.setContentTitle(notificationTitle)
 				.setContentText(notificationText)
-				.setSmallIcon(R.drawable.ic_launcher).setContentIntent(pIntent)
+				.setSmallIcon(R.drawable.ic_launcher).setContentIntent(pOpenIntent)
 				.setOngoing(persistent);
 
 		// Big View
