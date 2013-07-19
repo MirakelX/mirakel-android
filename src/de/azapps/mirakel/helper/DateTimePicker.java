@@ -14,7 +14,7 @@ package de.azapps.mirakel.helper;
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
-
+ Modified by azapps,weiznich 2013
  */
 
 import java.util.Calendar;
@@ -120,16 +120,19 @@ public class DateTimePicker extends RelativeLayout implements
 
 	// Handle button clicks
 	public void onClick(View v) {
+		((Button)v).setTextColor(getResources().getColor(R.color.Grey));
 		switch (v.getId()) {
 		case R.id.SwitchToDate:
 			v.setEnabled(false);
 			findViewById(R.id.SwitchToTime).setEnabled(true);
+			((Button)findViewById(R.id.SwitchToTime)).setTextColor(getResources().getColor(R.color.Black));
 			viewSwitcher.showPrevious();
 			break;
 
 		case R.id.SwitchToTime:
 			v.setEnabled(false);
 			findViewById(R.id.SwitchToDate).setEnabled(true);
+			((Button)findViewById(R.id.SwitchToDate)).setTextColor(getResources().getColor(R.color.Black));
 			viewSwitcher.showNext();
 			break;
 		}
