@@ -18,6 +18,9 @@
  ******************************************************************************/
 package de.azapps.mirakel;
 
+import org.acra.ACRA;
+import org.acra.annotation.ReportsCrashes;
+
 import android.app.Application;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -28,6 +31,15 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
+
+@ReportsCrashes(
+		formKey = "", // This is required for backward compatibility but not used
+		formUri = "https://mirakel.azapps.de/acra-mirakel/_design/acra-storage/_update/report",//TODO check url/install Acralyzer 
+		reportType = org.acra.sender.HttpSender.Type.JSON, 
+		httpMethod = org.acra.sender.HttpSender.Method.PUT, 
+		formUriBasicAuthLogin = "[reporteruser]",		//TODO Handle this																																																// this?
+		formUriBasicAuthPassword = "[reporterpassword]"
+)
 
 public class Mirakel extends Application {
 	public static final int[] PRIO_COLOR = { Color.parseColor("#008000"),
@@ -50,6 +62,7 @@ public class Mirakel extends Application {
 	public void onCreate() {
 		Log.d(TAG, "onCreate");
 		super.onCreate();
+		ACRA.init(this);
 		openHelper = new DatabaseHelper(this);
 		Mirakel.getWritableDatabase().execSQL("PRAGMA foreign_keys=ON;");
 		ListMirakel.init(getApplicationContext());
