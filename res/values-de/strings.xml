@@ -92,6 +92,7 @@
   <string name="search_result_title" formatted="false">Suche nach %s</string>
   <string name="contact_email">mirakel@azapps.de</string>
   <string name="contact_subject">Mirakel Bug-report/Kontaktanfrage</string>
+  <string name="title_settings">Einstellungen</string>
   <string name="contact_text" formatted="false"><![CDATA[\n\n
 --\n
 Mirakel-version: %s\n
