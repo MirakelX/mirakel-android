@@ -7,7 +7,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import de.azapps.mirakel.helper.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import de.azapps.mirakel.R;
+import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.SpecialList;
 
 public class SpecialListsSettings extends Activity {

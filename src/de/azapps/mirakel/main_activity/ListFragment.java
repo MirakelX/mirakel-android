@@ -28,7 +28,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
-import de.azapps.mirakel.helper.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +35,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import de.azapps.mirakel.R;
+import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.ListMirakel;
 
 public class ListFragment extends Fragment {

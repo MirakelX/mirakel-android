@@ -25,9 +25,9 @@ import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
+import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.PreferencesHelper;
 
 public class MainWidgetSettingsActivity extends PreferenceActivity {

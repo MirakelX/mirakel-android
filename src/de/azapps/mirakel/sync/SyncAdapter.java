@@ -54,7 +54,6 @@ import android.content.Context;
 import android.content.SyncResult;
 import android.database.Cursor;
 import android.os.Bundle;
-import de.azapps.mirakel.helper.Log;
 import android.util.Pair;
 import android.widget.Toast;
 
@@ -63,6 +62,7 @@ import com.google.gson.JsonSyntaxException;
 
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
+import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 

@@ -9,7 +9,6 @@ import org.joda.time.LocalDate;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
-import de.azapps.mirakel.helper.Log;
 import android.widget.Toast;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.main_activity.MainActivity;

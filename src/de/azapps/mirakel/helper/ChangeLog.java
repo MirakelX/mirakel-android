@@ -30,7 +30,6 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Color;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import de.azapps.mirakel.helper.Log;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.webkit.WebView;

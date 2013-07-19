@@ -1,15 +1,15 @@
 package de.azapps.mirakel.helper;
 
-import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.R;
-import de.azapps.mirakel.main_activity.MainActivity;
-import de.azapps.mirakel.model.task.Task;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.View;
 import android.widget.RemoteViews;
+import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.R;
+import de.azapps.mirakel.main_activity.MainActivity;
+import de.azapps.mirakel.model.task.Task;
 
 public class WidgetHelper {
 	public static RemoteViews configureItem(RemoteViews rv, Task task,Context mContext,int listId){

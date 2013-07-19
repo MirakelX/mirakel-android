@@ -85,25 +85,14 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/task_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:layout_marginTop="20dp"
+            android:drawableLeft="@android:drawable/ic_menu_edit"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_menu_edit"
-                android:contentDescription="@string/change_content" />
-
-            <TextView
-                android:id="@+id/task_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-        </LinearLayout>
     </ScrollView>
 
 </LinearLayout>

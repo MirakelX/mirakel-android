@@ -56,7 +56,6 @@ import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.text.TextUtils;
-import de.azapps.mirakel.helper.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.CheckBox;
@@ -65,6 +64,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
+import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 

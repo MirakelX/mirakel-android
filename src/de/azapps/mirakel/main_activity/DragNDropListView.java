@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.util.AttributeSet;
-import de.azapps.mirakel.helper.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -12,6 +11,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ListView;
+import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.SpecialList;
 
 public class DragNDropListView extends ListView {
