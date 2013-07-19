@@ -128,4 +128,14 @@ Device: %s\n]]>
     <item>Umbenennen</item>
     <item>Löschen</item>
   </string-array>
+  
+      <!-- Permissions -->
+    <string name="permission_group_desc">Berechtigung zum Zugriff auf Mirakel</string>
+    <string name="permission_group_lbl">Mirakels Berechtigungen</string>
+    <string name="permission_read_lbl">Daten von Mirakel lesen</string>
+    <string name="permission_read_desc">Berechtigung Daten von Mirakel zu lesen</string>
+    <string name="permission_write_lbl">Daten in Mirakel zu schreiben</string>
+    <string name="permission_write_desc">Berechtigung Daten in Mirakel zu schreiben</string>
+    <string name="permission_read_write_lbl">Mirakels Daten Lesen/Schreiben</string>
+    <string name="permission_read_write_desc">Berechtigung Daten in Mirakel zu lesen und zu schreiben</string>
 </resources>
