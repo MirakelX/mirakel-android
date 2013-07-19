@@ -25,7 +25,6 @@ import java.util.Locale;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
@@ -186,31 +185,34 @@ public class TaskFragment extends Fragment {
 				mIgnoreTimeSet = false;
 				GregorianCalendar due = (task.getDue() == null ? new GregorianCalendar()
 						: task.getDue());
-				DatePickerDialog dialog = new DatePickerDialog(main,
-						new OnDateSetListener() {
-
-							@Override
-							public void onDateSet(DatePicker view, int year,
-									int monthOfYear, int dayOfMonth) {
-								if (mIgnoreTimeSet)
-									return;
-
-								task.setDue(new GregorianCalendar(year,
-										monthOfYear, dayOfMonth));
-								main.saveTask(task);
-								Task_due.setText(new SimpleDateFormat(view
-										.getContext().getString(
-												R.string.dateFormat), Locale
-										.getDefault()).format(task.getDue()
-										.getTime()));
-
-							}
-						}, due.get(Calendar.YEAR), due.get(Calendar.MONTH), due
+				final DatePickerDialog dialog = new DatePickerDialog(main,null, due.get(Calendar.YEAR), due.get(Calendar.MONTH), due
 								.get(Calendar.DAY_OF_MONTH));
+				dialog.setButton(DialogInterface.BUTTON_POSITIVE,
+						getString(R.string.OK),
+						new DialogInterface.OnClickListener() {
+
+							public void onClick(DialogInterface dialog1,
+									int which) {
+								if (which == DialogInterface.BUTTON_POSITIVE) {
+									if (mIgnoreTimeSet)
+										return;
+									DatePicker dp=dialog.getDatePicker();
+									task.setDue(new GregorianCalendar(dp.getYear(),
+											dp.getMonth(), dp.getDayOfMonth()));
+									main.saveTask(task);
+									Task_due.setText(new SimpleDateFormat(view
+											.getContext().getString(
+													R.string.dateFormat),
+											Locale.getDefault()).format(task
+											.getDue().getTime()));
+
+								}
+							}
+						});
 				dialog.setButton(DialogInterface.BUTTON_NEGATIVE,
 						getString(R.string.no_date),
 						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog,
+							public void onClick(DialogInterface dialog1,
 									int which) {
 								if (which == DialogInterface.BUTTON_NEGATIVE) {
 									mIgnoreTimeSet = true;
