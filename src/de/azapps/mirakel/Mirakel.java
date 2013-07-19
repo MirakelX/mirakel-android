@@ -38,7 +38,8 @@ import de.azapps.mirakel.reminders.ReminderAlarm;
 		reportType = org.acra.sender.HttpSender.Type.JSON, 
 		httpMethod = org.acra.sender.HttpSender.Method.PUT, 
 		formUriBasicAuthLogin = "[reporteruser]",		//TODO Handle this																																																// this?
-		formUriBasicAuthPassword = "[reporterpassword]"
+		formUriBasicAuthPassword = "[reporterpassword]" ,
+		disableSSLCertValidation = true //Use selfsign SSL
 )
 
 public class Mirakel extends Application {
