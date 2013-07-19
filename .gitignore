@@ -29,7 +29,7 @@ local.properties
 .settings/
 .loadpath
 *.db
-
+lint.xml
 # External tool builders
 .externalToolBuilders/
 
