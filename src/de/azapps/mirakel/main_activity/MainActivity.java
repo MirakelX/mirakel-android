@@ -18,6 +18,12 @@
  ******************************************************************************/
 package de.azapps.mirakel.main_activity;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Vector;
+
 import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.ContentResolver;
@@ -39,13 +45,6 @@ import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Vector;
-
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.PagerAdapter;
 import de.azapps.mirakel.R;
@@ -417,6 +416,8 @@ public class MainActivity extends FragmentActivity implements
 
 			int listId = intent.getIntExtra(EXTRA_ID, 0);
 			ListMirakel list = ListMirakel.getList(listId);
+			if(list==null)
+				list=SpecialList.firstSpecial();
 			Log.d(TAG,list.getName()+" "+listId);
 			setCurrentList(list);
 			return;
