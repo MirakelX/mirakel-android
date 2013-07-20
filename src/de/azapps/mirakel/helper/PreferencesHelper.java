@@ -48,6 +48,7 @@ import de.azapps.mirakel.sync.Network;
 import de.azapps.mirakel.widget.MainWidgetSettingsActivity;
 import de.azapps.mirakel.widget.MainWidgetSettingsFragment;
 
+@SuppressLint("SimpleDateFormat")
 public class PreferencesHelper {
 
 	private static final String TAG = "PreferencesHelper";
@@ -393,7 +394,7 @@ public class PreferencesHelper {
 		Preference backup = findPreference("backup");
 
 		Date today = new Date();
-		DateFormat sdf = SimpleDateFormat.getDateInstance();
+		DateFormat sdf = new SimpleDateFormat("yyyyMMdd-HH:mm:ss");//SimpleDateFormat.getDateInstance();
 		String filename = "mirakel-" + sdf.format(today) + ".db";
 		final File exportDir = new File(
 				Environment.getExternalStorageDirectory(), "");

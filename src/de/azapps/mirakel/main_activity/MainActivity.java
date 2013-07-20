@@ -636,6 +636,8 @@ public class MainActivity extends FragmentActivity implements
 	 * @return
 	 */
 	ListMirakel getCurrentList() {
+		if(currentList==null)
+			currentList=SpecialList.firstSpecial();
 		return currentList;
 	}
 
