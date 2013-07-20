@@ -33,13 +33,13 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 
 @ReportsCrashes(
-		formKey = "", // This is required for backward compatibility but not used
-		formUri = "https://mirakel.azapps.de/acra-mirakel/_design/acra-storage/_update/report",//TODO check url/install Acralyzer 
+		formKey = "", // This is required for backward compatibility but not used 
 		reportType = org.acra.sender.HttpSender.Type.JSON, 
-		httpMethod = org.acra.sender.HttpSender.Method.PUT, 
-		formUriBasicAuthLogin = "[reporteruser]",		//TODO Handle this																																																// this?
-		formUriBasicAuthPassword = "[reporterpassword]" ,
-		disableSSLCertValidation = true //Use selfsign SSL
+		httpMethod = org.acra.sender.HttpSender.Method.PUT,
+	    formUri = "https://mirakel.iriscouch.com/acra-mirakel/_design/acra-storage/_update/report",
+	    formUriBasicAuthLogin = "android",
+	    formUriBasicAuthPassword = "Kd4PBcVi2lwAbi763qaS" ,
+	    disableSSLCertValidation = true 
 )
 
 public class Mirakel extends Application {
