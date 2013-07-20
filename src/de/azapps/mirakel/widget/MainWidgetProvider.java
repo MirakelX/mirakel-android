@@ -154,7 +154,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
 					views.setViewVisibility(R.id.empty_view, View.VISIBLE);
 				} else {
 					views.setViewVisibility(R.id.empty_view, View.GONE);
-					int end = 7;// TODO get from screensize or so
+					int end = tasks.size()>=7 ? 7 : tasks.size();
 					for (Task t : tasks.subList(0, end)) {
 						views.addView(R.id.widget_main_view, WidgetHelper
 								.configureItem(
