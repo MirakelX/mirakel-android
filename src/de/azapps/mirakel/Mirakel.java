@@ -19,6 +19,7 @@
 package de.azapps.mirakel;
 
 import org.acra.ACRA;
+import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 
 import android.app.Application;
@@ -33,13 +34,21 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 
 @ReportsCrashes(
-		formKey = "", // This is required for backward compatibility but not used
-		formUri = "https://mirakel.azapps.de/acra-mirakel/_design/acra-storage/_update/report",//TODO check url/install Acralyzer 
+		formKey = "", // This is required for backward compatibility but not used 
 		reportType = org.acra.sender.HttpSender.Type.JSON, 
-		httpMethod = org.acra.sender.HttpSender.Method.PUT, 
-		formUriBasicAuthLogin = "[reporteruser]",		//TODO Handle this																																																// this?
-		formUriBasicAuthPassword = "[reporterpassword]" ,
-		disableSSLCertValidation = true //Use selfsign SSL
+		httpMethod = org.acra.sender.HttpSender.Method.PUT,
+	    formUri = "https://mirakel.iriscouch.com/acra-mirakel/_design/acra-storage/_update/report",
+	    formUriBasicAuthLogin = "android",
+	    formUriBasicAuthPassword = "Kd4PBcVi2lwAbi763qaS" ,
+	    disableSSLCertValidation = true,
+        mode = ReportingInteractionMode.DIALOG,
+        resToastText = R.string.crash_toast_text, // optional, displayed as soon as the crash occurs, before collecting data which can take a few seconds
+        resDialogText = R.string.crash_dialog_text,
+        resDialogIcon = android.R.drawable.ic_dialog_info, //optional. default is a warning sign
+        resDialogTitle = R.string.crash_dialog_title, // optional. default is your application name
+        resDialogCommentPrompt = R.string.crash_dialog_comment_prompt, // optional. when defined, adds a user text field input with this text resource as a label
+        resDialogOkToast = R.string.crash_dialog_ok_toast // optional. displays a Toast message when the user accepts to send a report.
+
 )
 
 public class Mirakel extends Application {
