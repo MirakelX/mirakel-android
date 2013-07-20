@@ -53,7 +53,7 @@
     <string name="tasks_new_str">New Task</string>
     <string name="task_no_content">Add a Note</string>
     <string name="task_change_prio_title">Change Priority</string>
-    <string name="task_change_prio_cont">New Task-Priority</string>
+    <string name="task_change_prio_cont">Priority</string>
     <string name="task_delete_content">Are you sure you want to delete this Task?</string>
     <string name="task_menu_sorting">Sort tasks</string>
     <string name="task_sorting_title">Sort tasks by</string>
@@ -200,9 +200,9 @@ Device: %s\n]]>
     <string name="permission_read_write_desc">Permission to Read data from and write data to Mirakel</string>
 
     <!-- ACRA -->
-    <string name="crash_toast_text">Ooooops ! I crashed, but a report has been sent to my developer to help fix the issue !</string>
+    <string name="crash_toast_text">Ooooops ! I crashed! Please start the app again, so I can send a message to my developer</string>
     
-<string name="crash_dialog_title">CrashTest has crashed</string>
+<string name="crash_dialog_title">Mirakel has crashed</string>
 <string name="crash_dialog_text">An unexpected error occurred forcing the
     application to stop. Please help us fix this by sending us error data,
     all you have to do is click OK.</string>

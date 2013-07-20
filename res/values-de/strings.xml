@@ -36,9 +36,9 @@
   <string name="task_menu_sorting">Sortiere Aufgaben</string>
   <string name="task_sorting_title">Sortiere nach</string>
   <string name="task_empty">Keine Aufgabe ausgewählt…</string>
-  <string name="task_set_reminder">Erinnerung erstellen</string>
   <string name="set_date">Datum einstellen</string>
   <string name="set_time">Zeit einstellen</string>
+  <string name="task_set_reminder">Erinnerungen einstellen</string>
   <string name="dialog_move">Verschiebe Aufgabe</string>
   <string name="list_title">Listen</string>
   <string name="list_menu_new_list">Neue Liste</string>
@@ -53,7 +53,7 @@
   <string name="menu_settings">Einstellungen</string>
   <string name="menu_move">Verschieben</string>
   <string name="offical_server_url">https://mirakel.azapps.de</string>
-  <string name="title_activity_main">MainActivity</string>
+  <string name="title_settings">Einstellungen</string>
   <string name="empty_list">Keine Aufgaben</string>
   <string name="preferences">Einstellungen</string>
   <string name="notification_title_general" formatted="false">%d Aufgaben in %s</string>
@@ -93,7 +93,6 @@
   <string name="search_result_title" formatted="false">Suche nach %s</string>
   <string name="contact_email">mirakel@azapps.de</string>
   <string name="contact_subject">Mirakel Bug-report/Kontaktanfrage</string>
-  <string name="title_settings">Einstellungen</string>
   <string name="contact_text" formatted="false"><![CDATA[\n\n
 --\n
 Mirakel-version: %s\n
@@ -109,6 +108,19 @@ Device: %s\n]]>
   <string name="change_content">Kommentar ändern</string>
   <string name="task_has_content">Aufgabe hat eine Notiz</string>
   <string name="help_description">Es gibt 3 Hauptteile: Auf der linken Seite siehst du alle Listen, in der Mitte alle Aufgaben einer Liste und auf der rechten Seite die Aufgabe. Du kannst zwischen den Teilen durch Wischen und klicken wechseln.</string>
+  <string name="permission_group_desc">Berechtigung, auf Mirakel zuzugreifen</string>
+  <string name="permission_group_lbl">Mirakel-Berechtigung</string>
+  <string name="permission_read_lbl">Mirakel auslesen</string>
+  <string name="permission_read_desc">Berechtigung zum Lesen von Daten aus Mirakel</string>
+  <string name="permission_write_lbl">Schreibzugriff auf Mirakel</string>
+  <string name="permission_write_desc">Berechtigung zum Schreiben von Daten in Mirakel</string>
+  <string name="permission_read_write_lbl">Mirakel-Daten lesen/schreiben</string>
+  <string name="permission_read_write_desc">Berechtigung um Daten zu lesen und zu schreiben</string>
+  <string name="crash_toast_text">Huch! Ich bin abgestürzt. Starte die App erneut, damit ich einen Bericht senden kann.</string>
+  <string name="crash_dialog_title">Mirakel ist abgestürzt</string>
+  <string name="crash_dialog_text">Ein unerwarteter Fehler ist aufgetreten. Die Anwendung musste beendet werden. Bitte hilf uns den Fehler zu finden, indem du uns die Fehlerdaten schickst. Du musst nur OK antippen.</string>
+  <string name="crash_dialog_comment_prompt">Du kannst noch einen Kommentar anfügen:</string>
+  <string name="crash_dialog_ok_toast">Vielen Dank!</string>
   <string-array name="task_sorting_items">
     <item>Standard</item>
     <item>Termin</item>
@@ -130,14 +142,4 @@ Device: %s\n]]>
     <item>Umbenennen</item>
     <item>Löschen</item>
   </string-array>
-  
-      <!-- Permissions -->
-    <string name="permission_group_desc">Berechtigung zum Zugriff auf Mirakel</string>
-    <string name="permission_group_lbl">Mirakels Berechtigungen</string>
-    <string name="permission_read_lbl">Daten von Mirakel lesen</string>
-    <string name="permission_read_desc">Berechtigung Daten von Mirakel zu lesen</string>
-    <string name="permission_write_lbl">Daten in Mirakel zu schreiben</string>
-    <string name="permission_write_desc">Berechtigung Daten in Mirakel zu schreiben</string>
-    <string name="permission_read_write_lbl">Mirakels Daten Lesen/Schreiben</string>
-    <string name="permission_read_write_desc">Berechtigung Daten in Mirakel zu lesen und zu schreiben</string>
 </resources>
