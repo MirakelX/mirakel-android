@@ -105,7 +105,7 @@ Device: %s\n]]>
   <string name="backup_import_ok">Der Import war erfolgreich – Starte neu…</string>
   <string name="backup_export_error">Es gab ein Fehler beim Exportieren der Datenbank</string>
   <string name="backup_export_ok" formatted="false">Nach %s exportiert</string>
-  <string name="change_content">Kommentar ändern</string>
+  <string name="change_content">Notiz ändern</string>
   <string name="task_has_content">Aufgabe hat eine Notiz</string>
   <string name="help_description">Es gibt 3 Hauptteile: Auf der linken Seite siehst du alle Listen, in der Mitte alle Aufgaben einer Liste und auf der rechten Seite die Aufgabe. Du kannst zwischen den Teilen durch Wischen und klicken wechseln.</string>
   <string name="permission_group_desc">Berechtigung, auf Mirakel zuzugreifen</string>
