@@ -42,6 +42,7 @@ import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -110,7 +111,12 @@ public class MainActivity extends FragmentActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		preferences = PreferenceManager.getDefaultSharedPreferences(this);
-		isTablet=getResources().getBoolean(R.bool.isTablet);
+		isTablet = getResources().getBoolean(R.bool.isTablet);
+		if(!preferences.contains("highlightSelected")){
+			SharedPreferences.Editor editor = preferences.edit();
+			editor.putBoolean("highlightSelected", isTablet);
+			editor.commit();
+		}
 		if (!preferences.contains("startupAllLists")) {
 			SharedPreferences.Editor editor = preferences.edit();
 			editor.putBoolean("startupAllLists", false);
@@ -118,7 +124,7 @@ public class MainActivity extends FragmentActivity implements
 			editor.commit();
 		}
 		setContentView(R.layout.activity_main);
-		mPagerAdapter=null;
+		mPagerAdapter = null;
 		// Show ChangeLog
 		ChangeLog cl = new ChangeLog(this);
 		if (cl.firstRun()) {
@@ -361,15 +367,15 @@ public class MainActivity extends FragmentActivity implements
 		listFragment.setActivity(this);
 		tasksFragment.setActivity(this);
 	}
-	//Fix Intent-behavior
-	//default is not return new Intent by calling getIntent
+
+	// Fix Intent-behavior
+	// default is not return new Intent by calling getIntent
 	@Override
 	protected void onNewIntent(Intent intent) {
-	    super.onNewIntent(intent);
-	    setIntent(intent);
-	    Log.d(TAG,"New Indent");
+		super.onNewIntent(intent);
+		setIntent(intent);
+		Log.d(TAG, "New Indent");
 	}
-
 
 	/**
 	 * Initialize the ViewPager and setup the rest of the layout
@@ -377,7 +383,7 @@ public class MainActivity extends FragmentActivity implements
 	private void setupLayout() {
 		setCurrentList(SpecialList.first());
 		// Initialize ViewPager
-		if(mPagerAdapter==null)
+		if (mPagerAdapter == null)
 			intializeViewPager();
 		NotificationService.updateNotificationAndWidget(this);
 		Intent intent = getIntent();
@@ -419,9 +425,9 @@ public class MainActivity extends FragmentActivity implements
 
 			int listId = intent.getIntExtra(EXTRA_ID, 0);
 			ListMirakel list = ListMirakel.getList(listId);
-			if(list==null)
-				list=SpecialList.firstSpecial();
-			Log.d(TAG,list.getName()+" "+listId);
+			if (list == null)
+				list = SpecialList.firstSpecial();
+			Log.d(TAG, list.getName() + " " + listId);
 			setCurrentList(list);
 			return;
 		} else if (intent.getAction().equals(SHOW_LISTS)) {
@@ -589,19 +595,19 @@ public class MainActivity extends FragmentActivity implements
 		List<Fragment> fragments = new Vector<Fragment>();
 		listFragment = new ListFragment();
 		listFragment.setActivity(this);
-		fragments.add(listFragment);	
+		fragments.add(listFragment);
 		tasksFragment_r = new TasksFragment();
-		tasksFragment=tasksFragment_r;
+		tasksFragment = tasksFragment_r;
 		tasksFragment.setActivity(this);
-		fragments.add(tasksFragment);	
-		if(!isTablet){
+		fragments.add(tasksFragment);
+		if (!isTablet) {
 			taskFragment = new TaskFragment();
 			taskFragment.setActivity(this);
 			fragments.add(taskFragment);
-		}else{
-//			taskFragment = new TaskFragment();
-//			taskFragment.setActivity(this);
-//			getSupportFragmentManager().beginTransaction().add(R.id.task_fragment_in_tasks,(Fragment)taskFragment).commit();
+		} else {
+			// taskFragment = new TaskFragment();
+			// taskFragment.setActivity(this);
+			// getSupportFragmentManager().beginTransaction().add(R.id.task_fragment_in_tasks,(Fragment)taskFragment).commit();
 		}
 		this.mPagerAdapter = new PagerAdapter(
 				super.getSupportFragmentManager(), fragments);
@@ -609,7 +615,7 @@ public class MainActivity extends FragmentActivity implements
 		this.mViewPager = (ViewPager) super.findViewById(R.id.viewpager);
 		this.mViewPager.setAdapter(this.mPagerAdapter);
 		this.mViewPager.setOnPageChangeListener(this);
-		mViewPager.setOffscreenPageLimit(isTablet?1:2);
+		mViewPager.setOffscreenPageLimit(isTablet ? 1 : 2);
 
 	}
 
@@ -628,15 +634,32 @@ public class MainActivity extends FragmentActivity implements
 	 * @param currentTask
 	 */
 	void setCurrentTask(Task currentTask) {
+		setCurrentTask(currentTask, null);
+	}
+
+	private View oldClickedTask = null;
+	void setCurrentTask(Task currentTask, View currentView) {
 		this.currentTask = currentTask;
+		
+
+		if (currentView != null && preferences.getBoolean("highlightSelected", isTablet)) {
+			if (oldClickedTask != null) {
+				oldClickedTask.setSelected(false);
+				oldClickedTask.setBackgroundColor(0x00000000);
+			}
+			currentView.setBackgroundColor(getResources().getColor(
+					R.color.pressed_color));
+			oldClickedTask = currentView;
+		}
+		
 		if (taskFragment != null) {
-			boolean smooth=mViewPager.getCurrentItem()!=TASK_FRAGMENT;
+			boolean smooth = mViewPager.getCurrentItem() != TASK_FRAGMENT;
 			taskFragment.update();
-			//Fix buggy behavior
-			mViewPager.setCurrentItem(LIST_FRAGMENT,false);
-			mViewPager.setCurrentItem(TASK_FRAGMENT,false);
-			mViewPager.setCurrentItem(LIST_FRAGMENT,false);
-			mViewPager.setCurrentItem(TASK_FRAGMENT,smooth);
+			// Fix buggy behavior
+			mViewPager.setCurrentItem(LIST_FRAGMENT, false);
+			mViewPager.setCurrentItem(TASK_FRAGMENT, false);
+			mViewPager.setCurrentItem(LIST_FRAGMENT, false);
+			mViewPager.setCurrentItem(TASK_FRAGMENT, smooth);
 		}
 	}
 
@@ -646,8 +669,8 @@ public class MainActivity extends FragmentActivity implements
 	 * @return
 	 */
 	ListMirakel getCurrentList() {
-		if(currentList==null)
-			currentList=SpecialList.firstSpecial();
+		if (currentList == null)
+			currentList = SpecialList.firstSpecial();
 		return currentList;
 	}
 
@@ -657,20 +680,35 @@ public class MainActivity extends FragmentActivity implements
 	 * @param currentList
 	 */
 	void setCurrentList(ListMirakel currentList) {
+		setCurrentList(currentList, null);
+	}
+
+	private View oldClickedList = null;
+
+	void setCurrentList(ListMirakel currentList, View currentView) {
 		if (currentList == null)
 			return;
 		this.currentList = currentList;
 		if (tasksFragment != null) {
-			
-			if(!isTablet){
+
+			if (!isTablet) {
 				tasksFragment.updateList();
 				mViewPager.setCurrentItem(TASKS_FRAGMENT);
-			}else {
-				if(tasksFragment_l!=null)
+			} else {
+				if (tasksFragment_l != null)
 					tasksFragment_l.updateList();
-				if(tasksFragment_r!=null)
+				if (tasksFragment_r != null)
 					tasksFragment_r.updateList();
 			}
+		}
+		if (currentView != null && preferences.getBoolean("highlightSelected", isTablet)) {
+			if (oldClickedList != null) {
+				oldClickedList.setSelected(false);
+				oldClickedList.setBackgroundColor(0x00000000);
+			}
+			currentView.setBackgroundColor(getResources().getColor(
+					R.color.pressed_color));
+			oldClickedList = currentView;
 		}
 		List<Task> currentTasks = currentList.tasks();
 		if (currentTasks.size() == 0) {
@@ -729,10 +767,9 @@ public class MainActivity extends FragmentActivity implements
 		setCurrentList(new SearchList(this, query));
 		mViewPager.setCurrentItem(TASKS_FRAGMENT);
 	}
-	
-	
-	public void setTaskFragment(TaskFragment taskFragment){
-		this.taskFragment=taskFragment;
+
+	public void setTaskFragment(TaskFragment taskFragment) {
+		this.taskFragment = taskFragment;
 	}
 
 }

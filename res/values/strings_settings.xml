@@ -105,5 +105,6 @@
     <string name="astrid_import_title">Select Astrid File</string>
     <string name="astrid_wait">Please wait…</string>
     <string name="import_wrong_type">This is not a Mirakel-file!</string>
-
+    <string name="highlightSelected_summary">Should I highlight lists/tasks when you click on them?</string>
+    <string name="highlightSelected">Highlight Selected</string>
 </resources>

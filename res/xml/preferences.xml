@@ -142,6 +142,12 @@
             android:key="changelog"
             android:summary="@string/changelog_click_summary"
             android:title="@string/changelog_click" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="highlightSelected"
+            android:summary="@string/highlightSelected_summary"
+            android:title="@string/highlightSelected" />
     </PreferenceCategory>
 
 </PreferenceScreen>

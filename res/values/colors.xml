@@ -25,5 +25,6 @@
     <color name="Orange">#EF0381</color>
     <color name="Yellow">#FFA500</color>
     <color name="Green">#00c400</color>
+    <color name="pressed_color">#7CCFEE</color>
 
 </resources>
