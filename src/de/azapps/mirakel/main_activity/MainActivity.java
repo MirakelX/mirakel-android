@@ -598,10 +598,6 @@ public class MainActivity extends FragmentActivity implements
 			taskFragment = new TaskFragment();
 			taskFragment.setActivity(this);
 			fragments.add(taskFragment);
-		}else{
-//			taskFragment = new TaskFragment();
-//			taskFragment.setActivity(this);
-//			getSupportFragmentManager().beginTransaction().add(R.id.task_fragment_in_tasks,(Fragment)taskFragment).commit();
 		}
 		this.mPagerAdapter = new PagerAdapter(
 				super.getSupportFragmentManager(), fragments);
