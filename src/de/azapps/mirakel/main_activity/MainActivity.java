@@ -372,10 +372,11 @@ public class MainActivity extends FragmentActivity implements
 	// default is not return new Intent by calling getIntent
 	@Override
 	protected void onNewIntent(Intent intent) {
-		super.onNewIntent(intent);
-		setIntent(intent);
+	    super.onNewIntent(intent);
+	    setIntent(intent);
 		Log.d(TAG, "New Indent");
 	}
+
 
 	/**
 	 * Initialize the ViewPager and setup the rest of the layout
@@ -595,19 +596,15 @@ public class MainActivity extends FragmentActivity implements
 		List<Fragment> fragments = new Vector<Fragment>();
 		listFragment = new ListFragment();
 		listFragment.setActivity(this);
-		fragments.add(listFragment);
+		fragments.add(listFragment);	
 		tasksFragment_r = new TasksFragment();
-		tasksFragment = tasksFragment_r;
+		tasksFragment=tasksFragment_r;
 		tasksFragment.setActivity(this);
-		fragments.add(tasksFragment);
-		if (!isTablet) {
+		fragments.add(tasksFragment);	
+		if(!isTablet){
 			taskFragment = new TaskFragment();
 			taskFragment.setActivity(this);
 			fragments.add(taskFragment);
-		} else {
-			// taskFragment = new TaskFragment();
-			// taskFragment.setActivity(this);
-			// getSupportFragmentManager().beginTransaction().add(R.id.task_fragment_in_tasks,(Fragment)taskFragment).commit();
 		}
 		this.mPagerAdapter = new PagerAdapter(
 				super.getSupportFragmentManager(), fragments);
@@ -690,7 +687,7 @@ public class MainActivity extends FragmentActivity implements
 			return;
 		this.currentList = currentList;
 		if (tasksFragment != null) {
-
+			
 			if (!isTablet) {
 				tasksFragment.updateList();
 				mViewPager.setCurrentItem(TASKS_FRAGMENT);
@@ -767,7 +764,7 @@ public class MainActivity extends FragmentActivity implements
 		setCurrentList(new SearchList(this, query));
 		mViewPager.setCurrentItem(TASKS_FRAGMENT);
 	}
-
+	
 	public void setTaskFragment(TaskFragment taskFragment) {
 		this.taskFragment = taskFragment;
 	}
