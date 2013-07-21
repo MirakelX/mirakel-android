@@ -45,6 +45,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.PagerAdapter;
@@ -643,6 +644,27 @@ public class MainActivity extends FragmentActivity implements
 			if (oldClickedTask != null) {
 				oldClickedTask.setSelected(false);
 				oldClickedTask.setBackgroundColor(0x00000000);
+			}
+			if(isTablet){
+				try{
+					int pos_l=((ListView)tasksFragment_l.getView().findViewById(R.id.tasks_list)).getPositionForView(currentView);
+					int pos_r=((ListView)tasksFragment_r.getView().findViewById(R.id.tasks_list)).getPositionForView(currentView);
+					if(pos_l!=-1){
+						((ListView)tasksFragment_l.getView().findViewById(R.id.tasks_list)).getChildAt(pos_l).setBackgroundColor(getResources().getColor(
+								R.color.pressed_color));
+						((ListView)tasksFragment_r.getView().findViewById(R.id.tasks_list)).getChildAt(pos_l).setBackgroundColor(getResources().getColor(
+								R.color.pressed_color));
+					}else if(pos_r!=-1){
+						((ListView)tasksFragment_l.getView().findViewById(R.id.tasks_list)).getChildAt(pos_r).setBackgroundColor(getResources().getColor(
+								R.color.pressed_color));
+						((ListView)tasksFragment_r.getView().findViewById(R.id.tasks_list)).getChildAt(pos_r).setBackgroundColor(getResources().getColor(
+								R.color.pressed_color));
+					}else{
+						Log.wtf(TAG, "View not found");
+					}
+				}catch(Exception e){
+					Log.wtf(TAG, "Listview not found");
+				}
 			}
 			currentView.setBackgroundColor(getResources().getColor(
 					R.color.pressed_color));
