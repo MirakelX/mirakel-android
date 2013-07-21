@@ -25,6 +25,8 @@
   <string name="notifications_big_summary">Soll ich große Benachrichtigungen anzeigen?</string>
   <string name="notifications_zero_show_summary">Ausblenden, wenn Liste leer?</string>
   <string name="notifications_zero_show">Ausblenden wenn leer</string>
+  <string name="reminders_persistent">Dauerhafte Erinnerungen</string>
+  <string name="reminders_persistent_summary">Sollen die Erinnerungen dauerhaft sein?</string>
   <string name="startup_title">App Start</string>
   <string name="startup_show_lists">Alle Listen anzeigen</string>
   <string name="startup_show_lists_summary">Zeigt die Listenübersicht an</string>
@@ -53,6 +55,8 @@
   <string name="astrid_import_title">Astrid Datei auswählen</string>
   <string name="astrid_wait">Bitte warten…</string>
   <string name="import_wrong_type">Dies ist keine Mirakel-Datei!</string>
+  <string name="highlightSelected_summary">Soll ich Listen/Aufgaben hervorheben, wenn du drauf klickst?</string>
+  <string name="highlightSelected">Ausgewählte hervorheben</string>
   <string-array name="sync_frequencies">
     <item>5 min</item>
     <item>10 min</item>
