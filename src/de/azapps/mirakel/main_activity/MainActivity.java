@@ -76,12 +76,15 @@ public class MainActivity extends FragmentActivity implements
 	private PagerAdapter mPagerAdapter;
 	protected ListFragment listFragment;
 	protected TasksFragment tasksFragment;
+	protected TasksFragment tasksFragment_l;
+	protected TasksFragment tasksFragment_r;
 	protected TaskFragment taskFragment;
 	private Menu menu;
 	private Task currentTask;
 	private ListMirakel currentList;
 	private List<ListMirakel> lists;
 	private AlertDialog taskMoveDialog;
+	private boolean isTablet;
 
 	private static final int LIST_FRAGMENT = 0, TASKS_FRAGMENT = 1,
 			TASK_FRAGMENT = 2;
@@ -107,6 +110,7 @@ public class MainActivity extends FragmentActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		isTablet=getResources().getBoolean(R.bool.isTablet);
 		if (!preferences.contains("startupAllLists")) {
 			SharedPreferences.Editor editor = preferences.edit();
 			editor.putBoolean("startupAllLists", false);
@@ -233,7 +237,6 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	public void onPageSelected(int position) {
-
 		if (taskFragment != null && taskFragment.getView() != null) {
 			final InputMethodManager imm = (InputMethodManager) this
 					.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -586,20 +589,27 @@ public class MainActivity extends FragmentActivity implements
 		List<Fragment> fragments = new Vector<Fragment>();
 		listFragment = new ListFragment();
 		listFragment.setActivity(this);
-		fragments.add(listFragment);
-		tasksFragment = new TasksFragment();
+		fragments.add(listFragment);	
+		tasksFragment_r = new TasksFragment();
+		tasksFragment=tasksFragment_r;
 		tasksFragment.setActivity(this);
-		fragments.add(tasksFragment);
-		taskFragment = new TaskFragment();
-		taskFragment.setActivity(this);
-		fragments.add(taskFragment);
+		fragments.add(tasksFragment);	
+		if(!isTablet){
+			taskFragment = new TaskFragment();
+			taskFragment.setActivity(this);
+			fragments.add(taskFragment);
+		}else{
+//			taskFragment = new TaskFragment();
+//			taskFragment.setActivity(this);
+//			getSupportFragmentManager().beginTransaction().add(R.id.task_fragment_in_tasks,(Fragment)taskFragment).commit();
+		}
 		this.mPagerAdapter = new PagerAdapter(
 				super.getSupportFragmentManager(), fragments);
 		//
 		this.mViewPager = (ViewPager) super.findViewById(R.id.viewpager);
 		this.mViewPager.setAdapter(this.mPagerAdapter);
 		this.mViewPager.setOnPageChangeListener(this);
-		mViewPager.setOffscreenPageLimit(2);
+		mViewPager.setOffscreenPageLimit(isTablet?1:2);
 
 	}
 
@@ -651,8 +661,16 @@ public class MainActivity extends FragmentActivity implements
 			return;
 		this.currentList = currentList;
 		if (tasksFragment != null) {
-			tasksFragment.updateList();
-			mViewPager.setCurrentItem(TASKS_FRAGMENT);
+			
+			if(!isTablet){
+				tasksFragment.updateList();
+				mViewPager.setCurrentItem(TASKS_FRAGMENT);
+			}else {
+				if(tasksFragment_l!=null)
+					tasksFragment_l.updateList();
+				if(tasksFragment_r!=null)
+					tasksFragment_r.updateList();
+			}
 		}
 		List<Task> currentTasks = currentList.tasks();
 		if (currentTasks.size() == 0) {
@@ -710,6 +728,11 @@ public class MainActivity extends FragmentActivity implements
 	private void search(String query) {
 		setCurrentList(new SearchList(this, query));
 		mViewPager.setCurrentItem(TASKS_FRAGMENT);
+	}
+	
+	
+	public void setTaskFragment(TaskFragment taskFragment){
+		this.taskFragment=taskFragment;
 	}
 
 }

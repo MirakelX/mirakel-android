@@ -20,19 +20,24 @@ package de.azapps.mirakel;
 
 import java.util.List;
 
+import de.azapps.mirakel.helper.Log;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.text.style.SuperscriptSpan;
+import android.view.View;
+import android.view.ViewGroup;
 
+@SuppressWarnings("unused")
 public class PagerAdapter extends FragmentPagerAdapter {
 
+	private static final String TAG = "PagerAdapter";
 	private List<Fragment> fragments;
 
 	public PagerAdapter(FragmentManager fm, List<Fragment> fragments) {
 		super(fm);
 		this.fragments = fragments;
 	}
-
 	@Override
 	public Fragment getItem(int position) {
 		return this.fragments.get(position);

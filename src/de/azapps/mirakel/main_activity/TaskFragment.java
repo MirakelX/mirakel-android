@@ -84,6 +84,8 @@ public class TaskFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		main = (MainActivity) getActivity();
+//		if(getResources().getBoolean(R.bool.isTablet))
+//			return null;
 		view = inflater.inflate(R.layout.activity_task, container, false);
 		created = true;
 		update();
