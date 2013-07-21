@@ -655,10 +655,7 @@ public class MainActivity extends FragmentActivity implements
 							R.color.pressed_color);
 					int pos_l = leftView.getPositionForView(currentView);
 					int pos_r = rightView.getPositionForView(currentView);
-					int pos_old_l = (leftView)
-							.getPositionForView(oldClickedTask);
-					int pos_old_r = rightView
-							.getPositionForView(oldClickedTask);
+					clearHighlighted();
 
 					if (pos_l != -1) {
 						leftView.getChildAt(pos_l).setBackgroundColor(
@@ -673,19 +670,7 @@ public class MainActivity extends FragmentActivity implements
 					} else {
 						Log.wtf(TAG, "View not found");
 					}
-					if (pos_old_l != -1) {
-						(leftView).getChildAt(pos_old_l)
-								.setBackgroundColor(0x00000000);
-						rightView.getChildAt(pos_old_l).setBackgroundColor(
-								0x00000000);
-					} else if (pos_old_r != -1) {
-						(leftView).getChildAt(pos_old_r)
-								.setBackgroundColor(0x00000000);
-						rightView.getChildAt(pos_old_r).setBackgroundColor(
-								0x00000000);
-					} else {
-						Log.wtf(TAG, "View not found");
-					}
+
 				} catch (Exception e) {
 					Log.wtf(TAG, "Listview not found");
 				}
@@ -703,6 +688,34 @@ public class MainActivity extends FragmentActivity implements
 			mViewPager.setCurrentItem(TASK_FRAGMENT, false);
 			mViewPager.setCurrentItem(LIST_FRAGMENT, false);
 			mViewPager.setCurrentItem(TASK_FRAGMENT, smooth);
+		}
+	}
+
+	private void clearHighlighted() {
+		try{
+			ListView leftView = (ListView) tasksFragment_l
+					.getView().findViewById(R.id.tasks_list);
+			ListView rightView = (ListView) tasksFragment_r
+					.getView().findViewById(R.id.tasks_list);
+			int pos_old_l = (leftView)
+					.getPositionForView(oldClickedTask);
+			int pos_old_r = rightView
+					.getPositionForView(oldClickedTask);
+			if (pos_old_l != -1) {
+				(leftView).getChildAt(pos_old_l)
+						.setBackgroundColor(0x00000000);
+				rightView.getChildAt(pos_old_l).setBackgroundColor(
+						0x00000000);
+			} else if (pos_old_r != -1) {
+				(leftView).getChildAt(pos_old_r)
+						.setBackgroundColor(0x00000000);
+				rightView.getChildAt(pos_old_r).setBackgroundColor(
+						0x00000000);
+			} else {
+				Log.wtf(TAG, "View not found");
+			}
+		}catch(Exception e){
+			Log.wtf(TAG, "Listview not found");
 		}
 	}
 
@@ -746,6 +759,7 @@ public class MainActivity extends FragmentActivity implements
 		}
 		if (currentView != null
 				&& preferences.getBoolean("highlightSelected", isTablet)) {
+			clearHighlighted();
 			if (oldClickedList != null) {
 				oldClickedList.setSelected(false);
 				oldClickedList.setBackgroundColor(0x00000000);
