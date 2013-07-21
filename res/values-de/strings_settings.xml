@@ -57,6 +57,8 @@
   <string name="import_wrong_type">Dies ist keine Mirakel-Datei!</string>
   <string name="highlightSelected_summary">Soll ich Listen/Aufgaben hervorheben, wenn du drauf klickst?</string>
   <string name="highlightSelected">Ausgewählte hervorheben</string>
+  <string name="showDone">Erledigt Aufgaben anzeigen</string>
+  <string name="showDone_summary">Soll ich erledigte Aufgaben anzeigen?</string>
   <string-array name="sync_frequencies">
     <item>5 min</item>
     <item>10 min</item>

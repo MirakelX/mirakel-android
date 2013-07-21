@@ -72,6 +72,7 @@ public class TasksFragment extends Fragment {
 	private List<Task> values;
 	private static final int TASK_RENAME = 0, TASK_MOVE = 1, TASK_DESTROY = 2;
 	private int listId;
+	private boolean showDone = true;
 
 	final Handler mHandler = new Handler();
 
@@ -88,6 +89,12 @@ public class TasksFragment extends Fragment {
 		main = activity;
 	}
 
+	public void onResume() {
+		super.onResume();
+		if (main != null)
+			showDone = main.preferences.getBoolean("showDone", true);
+	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -95,6 +102,7 @@ public class TasksFragment extends Fragment {
 		loadMore = false;
 		ItemCount = 0;
 		main = (MainActivity) getActivity();
+		showDone = main.preferences.getBoolean("showDone", true);
 		listId = main.getCurrentList().getId();
 		view = inflater.inflate(R.layout.activity_tasks, container, false);
 		if (getResources().getBoolean(R.bool.isTablet)) {
@@ -108,7 +116,7 @@ public class TasksFragment extends Fragment {
 
 		getResources().getString(R.string.action_settings);
 		try {
-			values = main.getCurrentList().tasks();
+			values = main.getCurrentList().tasks(showDone);
 		} catch (NullPointerException e) {
 			values = null;
 		}
@@ -264,7 +272,7 @@ public class TasksFragment extends Fragment {
 	public void updateList(final boolean reset) {
 		try {
 			listId = main.getCurrentList().getId();
-			values = main.getCurrentList().tasks();
+			values = main.getCurrentList().tasks(showDone);
 			update(reset);
 		} catch (NullPointerException e) {
 			values = null;
@@ -280,7 +288,7 @@ public class TasksFragment extends Fragment {
 			return;
 		if (values == null) {
 			try {
-				values = main.getCurrentList().tasks();
+				values = main.getCurrentList().tasks(showDone);
 			} catch (NullPointerException w) {
 				values = null;
 				return;
@@ -379,8 +387,8 @@ public class TasksFragment extends Fragment {
 			}
 		});
 	}
-	
-	public TaskAdapter getAdapter(){
+
+	public TaskAdapter getAdapter() {
 		return adapter;
 	}
 

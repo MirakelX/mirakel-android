@@ -148,6 +148,11 @@
             android:key="highlightSelected"
             android:summary="@string/highlightSelected_summary"
             android:title="@string/highlightSelected" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="showDone"
+            android:summary="@string/showDone_summary"
+            android:title="@string/showDone" />
     </PreferenceCategory>
 
 </PreferenceScreen>
