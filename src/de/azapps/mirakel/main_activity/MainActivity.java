@@ -649,6 +649,8 @@ public class MainActivity extends FragmentActivity implements
 				try{
 					int pos_l=((ListView)tasksFragment_l.getView().findViewById(R.id.tasks_list)).getPositionForView(currentView);
 					int pos_r=((ListView)tasksFragment_r.getView().findViewById(R.id.tasks_list)).getPositionForView(currentView);
+					int pos_old_l=((ListView)tasksFragment_l.getView().findViewById(R.id.tasks_list)).getPositionForView(oldClickedTask);
+					int pos_old_r=((ListView)tasksFragment_r.getView().findViewById(R.id.tasks_list)).getPositionForView(oldClickedTask);
 					if(pos_l!=-1){
 						((ListView)tasksFragment_l.getView().findViewById(R.id.tasks_list)).getChildAt(pos_l).setBackgroundColor(getResources().getColor(
 								R.color.pressed_color));
@@ -659,6 +661,15 @@ public class MainActivity extends FragmentActivity implements
 								R.color.pressed_color));
 						((ListView)tasksFragment_r.getView().findViewById(R.id.tasks_list)).getChildAt(pos_r).setBackgroundColor(getResources().getColor(
 								R.color.pressed_color));
+					}else{
+						Log.wtf(TAG, "View not found");
+					}
+					if(pos_old_l!=-1){
+						((ListView)tasksFragment_l.getView().findViewById(R.id.tasks_list)).getChildAt(pos_old_l).setBackgroundColor(0x00000000);
+						((ListView)tasksFragment_r.getView().findViewById(R.id.tasks_list)).getChildAt(pos_old_l).setBackgroundColor(0x00000000);
+					}else if(pos_old_r!=-1){
+						((ListView)tasksFragment_l.getView().findViewById(R.id.tasks_list)).getChildAt(pos_old_r).setBackgroundColor(0x00000000);
+						((ListView)tasksFragment_r.getView().findViewById(R.id.tasks_list)).getChildAt(pos_old_r).setBackgroundColor(0x00000000);
 					}else{
 						Log.wtf(TAG, "View not found");
 					}
