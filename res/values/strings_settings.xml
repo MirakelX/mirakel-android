@@ -65,6 +65,9 @@
     <string name="notifications_big_summary">Show big Notifications?</string>
     <string name="notifications_zero_show_summary">Hide, if there are no tasks in the selected List?</string>
     <string name="notifications_zero_show">Hide if empty</string>
+    
+    <string name="reminders_persistent">Persistent reminders</string>
+    <string name="reminders_persistent_summary">Should the reminders be persistent?</string>
 
     <!-- startup -->
     <string name="startup_title">App Start</string>
@@ -102,5 +105,6 @@
     <string name="astrid_import_title">Select Astrid File</string>
     <string name="astrid_wait">Please wait…</string>
     <string name="import_wrong_type">This is not a Mirakel-file!</string>
-
+    <string name="highlightSelected_summary">Should I highlight lists/tasks when you click on them?</string>
+    <string name="highlightSelected">Highlight Selected</string>
 </resources>

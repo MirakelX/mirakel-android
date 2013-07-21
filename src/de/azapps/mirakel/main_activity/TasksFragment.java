@@ -97,11 +97,12 @@ public class TasksFragment extends Fragment {
 		main = (MainActivity) getActivity();
 		listId = main.getCurrentList().getId();
 		view = inflater.inflate(R.layout.activity_tasks, container, false);
-		if(getResources().getBoolean(R.bool.isTablet)){
-			TaskFragment t= new TaskFragment();
-			t.setActivity(main);			
-			getChildFragmentManager().beginTransaction().add(R.id.task_fragment_in_tasks, t ).commit();
-			if(this.getId()!=R.id.tasks_fragment_in_lists)
+		if (getResources().getBoolean(R.bool.isTablet)) {
+			TaskFragment t = new TaskFragment();
+			t.setActivity(main);
+			getChildFragmentManager().beginTransaction()
+					.add(R.id.task_fragment_in_tasks, t).commit();
+			if (this.getId() != R.id.tasks_fragment_in_lists)
 				main.setTaskFragment(t);
 		}
 
@@ -202,15 +203,18 @@ public class TasksFragment extends Fragment {
 	}
 
 	public void focusNew() {
-		if(newTask==null) return;
+		if (newTask == null)
+			return;
 		newTask.setOnFocusChangeListener(new OnFocusChangeListener() {
 			@Override
 			public void onFocusChange(View v, boolean hasFocus) {
 				newTask.post(new Runnable() {
 					@Override
 					public void run() {
-					InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-					imm.showSoftInput(newTask, InputMethodManager.SHOW_IMPLICIT);
+						InputMethodManager imm = (InputMethodManager) getActivity()
+								.getSystemService(Context.INPUT_METHOD_SERVICE);
+						imm.showSoftInput(newTask,
+								InputMethodManager.SHOW_IMPLICIT);
 					}
 				});
 			}
@@ -371,9 +375,13 @@ public class TasksFragment extends Fragment {
 				// TODO Remove Bad Hack
 				Task t = values.get((int) id);
 				Log.v(TAG, "Switch to Task " + t.getId());
-				main.setCurrentTask(t);
+				main.setCurrentTask(t, item);
 			}
 		});
+	}
+	
+	public TaskAdapter getAdapter(){
+		return adapter;
 	}
 
 	/**

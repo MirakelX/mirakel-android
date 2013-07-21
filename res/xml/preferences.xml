@@ -111,6 +111,11 @@
             android:key="notificationsBig"
             android:summary="@string/notifications_big_summary"
             android:title="@string/notifications_big" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="remindersPersistent"
+            android:summary="@string/reminders_persistent_summary"
+            android:title="@string/reminders_persistent" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/special_lists_title" >
         <Preference
@@ -137,6 +142,12 @@
             android:key="changelog"
             android:summary="@string/changelog_click_summary"
             android:title="@string/changelog_click" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="highlightSelected"
+            android:summary="@string/highlightSelected_summary"
+            android:title="@string/highlightSelected" />
     </PreferenceCategory>
 
 </PreferenceScreen>

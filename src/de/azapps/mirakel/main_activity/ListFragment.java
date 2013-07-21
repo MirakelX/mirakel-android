@@ -62,9 +62,11 @@ public class ListFragment extends Fragment {
 		EditName = false;
 		enableDrag = false;
 		view = inflater.inflate(R.layout.activity_list, container, false);
-		if(getResources().getBoolean(R.bool.isTablet)){
-			view.findViewById(R.id.task_fragment_in_tasks).setVisibility(View.GONE);
-			main.tasksFragment_l=(TasksFragment) getFragmentManager().findFragmentById(R.id.tasks_fragment_in_lists);
+		if (getResources().getBoolean(R.bool.isTablet)) {
+			view.findViewById(R.id.task_fragment_in_tasks).setVisibility(
+					View.GONE);
+			main.tasksFragment_l = (TasksFragment) getFragmentManager()
+					.findFragmentById(R.id.tasks_fragment_in_lists);
 		}
 		// Inflate the layout for this fragment
 		created = true;
@@ -136,8 +138,9 @@ public class ListFragment extends Fragment {
 					EditName = false;
 					return;
 				}
+
 				ListMirakel list = values.get((int) id);
-				main.setCurrentList(list);
+				main.setCurrentList(list, item);
 			}
 		});
 		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -175,6 +178,10 @@ public class ListFragment extends Fragment {
 				return false;
 			}
 		});
+	}
+
+	public ListAdapter getAdapter() {
+		return adapter;
 	}
 
 	/**
