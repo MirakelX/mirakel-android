@@ -312,6 +312,9 @@ public class MainActivity extends FragmentActivity implements
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == RESULT_SETTINGS) {
 			listFragment.update();
+			if(!preferences.getBoolean("highlightSelected", isTablet) && (oldClickedList!=null || oldClickedTask==null)){
+				clearAllHighlights();
+			}
 			return;
 		}
 		if (resultCode == RESULT_OK && null != data) {
@@ -689,6 +692,17 @@ public class MainActivity extends FragmentActivity implements
 			mViewPager.setCurrentItem(LIST_FRAGMENT, false);
 			mViewPager.setCurrentItem(TASK_FRAGMENT, smooth);
 		}
+	}
+	private void clearAllHighlights(){
+		if (oldClickedList != null) {
+			oldClickedList.setSelected(false);
+			oldClickedList.setBackgroundColor(0x00000000);
+		}
+		if (oldClickedTask != null) {
+			oldClickedTask.setSelected(false);
+			oldClickedTask.setBackgroundColor(0x00000000);
+		}
+		clearHighlighted();
 	}
 
 	private void clearHighlighted() {
