@@ -23,6 +23,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
@@ -182,6 +184,7 @@ public class TaskFragment extends Fragment {
 
 		Task_due.setOnClickListener(new View.OnClickListener() {
 
+			@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 			@Override
 			public void onClick(View v) {
 				mIgnoreTimeSet = false;

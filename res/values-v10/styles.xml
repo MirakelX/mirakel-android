@@ -33,4 +33,6 @@
         <item name="android:textColor">@android:color/primary_text_dark</item>
     </style>
 
+    <style name="Button" parent="@android:style/ButtonBar"></style>
+
 </resources>

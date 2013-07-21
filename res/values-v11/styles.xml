@@ -30,4 +30,5 @@
         <!-- API 11 theme customizations can go here. -->
     </style>
 
+    <style name="Button" parent="@android:style/Holo.ButtonBar.AlertDialog"></style>
 </resources>

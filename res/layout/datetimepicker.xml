@@ -12,7 +12,7 @@
         android:layout_marginBottom="5dip" >
         <Button
             android:id="@+id/SwitchToDate"
-            style="@android:style/Holo.ButtonBar.AlertDialog"
+            style="@style/Button"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -21,7 +21,7 @@
             android:text="@string/set_date" />
         <Button
             android:id="@+id/SwitchToTime"
-            style="@android:style/Holo.ButtonBar.AlertDialog"
+            style="@style/Button"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
