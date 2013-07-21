@@ -112,7 +112,7 @@ public class MainActivity extends FragmentActivity implements
 		super.onCreate(savedInstanceState);
 		preferences = PreferenceManager.getDefaultSharedPreferences(this);
 		isTablet = getResources().getBoolean(R.bool.isTablet);
-		if(!preferences.contains("highlightSelected")){
+		if (!preferences.contains("highlightSelected")) {
 			SharedPreferences.Editor editor = preferences.edit();
 			editor.putBoolean("highlightSelected", isTablet);
 			editor.commit();
@@ -372,25 +372,24 @@ public class MainActivity extends FragmentActivity implements
 	// default is not return new Intent by calling getIntent
 	@Override
 	protected void onNewIntent(Intent intent) {
-	    super.onNewIntent(intent);
-	    setIntent(intent);
+		super.onNewIntent(intent);
+		setIntent(intent);
 		Log.d(TAG, "New Indent");
 	}
-
 
 	/**
 	 * Initialize the ViewPager and setup the rest of the layout
 	 */
 	private void setupLayout() {
-		setCurrentList(SpecialList.first());
+		if (currentList == null)
+			setCurrentList(SpecialList.firstSpecial());
 		// Initialize ViewPager
 		if (mPagerAdapter == null)
 			intializeViewPager();
 		NotificationService.updateNotificationAndWidget(this);
 		Intent intent = getIntent();
 		if (intent == null || intent.getAction() == null) {
-			mViewPager.setCurrentItem(TASKS_FRAGMENT);
-			return;
+
 		} else if (intent.getAction().equals(SHOW_TASK)) {
 			Task task = Helpers.getTaskFromIntent(intent);
 			if (task != null) {
@@ -430,7 +429,6 @@ public class MainActivity extends FragmentActivity implements
 				list = SpecialList.firstSpecial();
 			Log.d(TAG, list.getName() + " " + listId);
 			setCurrentList(list);
-			return;
 		} else if (intent.getAction().equals(SHOW_LISTS)) {
 			mViewPager.setCurrentItem(LIST_FRAGMENT);
 		} else if (intent.getAction().equals(Intent.ACTION_SEARCH)) {
@@ -444,6 +442,7 @@ public class MainActivity extends FragmentActivity implements
 		} else {
 			mViewPager.setCurrentItem(TASKS_FRAGMENT);
 		}
+		setIntent(null);
 	}
 
 	private void handleReminder(Intent intent) {
@@ -596,12 +595,12 @@ public class MainActivity extends FragmentActivity implements
 		List<Fragment> fragments = new Vector<Fragment>();
 		listFragment = new ListFragment();
 		listFragment.setActivity(this);
-		fragments.add(listFragment);	
+		fragments.add(listFragment);
 		tasksFragment_r = new TasksFragment();
-		tasksFragment=tasksFragment_r;
+		tasksFragment = tasksFragment_r;
 		tasksFragment.setActivity(this);
-		fragments.add(tasksFragment);	
-		if(!isTablet){
+		fragments.add(tasksFragment);
+		if (!isTablet) {
 			taskFragment = new TaskFragment();
 			taskFragment.setActivity(this);
 			fragments.add(taskFragment);
@@ -635,11 +634,12 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	private View oldClickedTask = null;
+
 	void setCurrentTask(Task currentTask, View currentView) {
 		this.currentTask = currentTask;
-		
 
-		if (currentView != null && preferences.getBoolean("highlightSelected", isTablet)) {
+		if (currentView != null
+				&& preferences.getBoolean("highlightSelected", isTablet)) {
 			if (oldClickedTask != null) {
 				oldClickedTask.setSelected(false);
 				oldClickedTask.setBackgroundColor(0x00000000);
@@ -648,7 +648,7 @@ public class MainActivity extends FragmentActivity implements
 					R.color.pressed_color));
 			oldClickedTask = currentView;
 		}
-		
+
 		if (taskFragment != null) {
 			boolean smooth = mViewPager.getCurrentItem() != TASK_FRAGMENT;
 			taskFragment.update();
@@ -687,7 +687,7 @@ public class MainActivity extends FragmentActivity implements
 			return;
 		this.currentList = currentList;
 		if (tasksFragment != null) {
-			
+
 			if (!isTablet) {
 				tasksFragment.updateList();
 				mViewPager.setCurrentItem(TASKS_FRAGMENT);
@@ -698,7 +698,8 @@ public class MainActivity extends FragmentActivity implements
 					tasksFragment_r.updateList();
 			}
 		}
-		if (currentView != null && preferences.getBoolean("highlightSelected", isTablet)) {
+		if (currentView != null
+				&& preferences.getBoolean("highlightSelected", isTablet)) {
 			if (oldClickedList != null) {
 				oldClickedList.setSelected(false);
 				oldClickedList.setBackgroundColor(0x00000000);
@@ -707,7 +708,8 @@ public class MainActivity extends FragmentActivity implements
 					R.color.pressed_color));
 			oldClickedList = currentView;
 		}
-		List<Task> currentTasks = currentList.tasks(preferences.getBoolean("showDone", true));
+		List<Task> currentTasks = currentList.tasks(preferences.getBoolean(
+				"showDone", true));
 		if (currentTasks.size() == 0) {
 			currentTask = new Task(getApplicationContext().getString(
 					R.string.task_empty));
@@ -764,7 +766,7 @@ public class MainActivity extends FragmentActivity implements
 		setCurrentList(new SearchList(this, query));
 		mViewPager.setCurrentItem(TASKS_FRAGMENT);
 	}
-	
+
 	public void setTaskFragment(TaskFragment taskFragment) {
 		this.taskFragment = taskFragment;
 	}
