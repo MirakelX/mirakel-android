@@ -102,7 +102,7 @@ public class MainActivity extends FragmentActivity implements
 			SHOW_LIST_FROM_WIDGET = "de.azapps.mirakel.SHOW_LIST_FROM_WIDGET",
 			ADD_TASK_FROM_WIDGET = "de.azapps.mirakel.ADD_TASK_FROM_WIDGET",
 			SHOW_TASK_FROM_WIDGET = "de.azapps.mirakel.SHOW_TASK_FROM_WIDGET";
-	private SharedPreferences preferences;
+	public SharedPreferences preferences;
 
 	private int currentPosition = TASKS_FRAGMENT;
 	private Parcelable tasksState, listState;
@@ -707,7 +707,7 @@ public class MainActivity extends FragmentActivity implements
 					R.color.pressed_color));
 			oldClickedList = currentView;
 		}
-		List<Task> currentTasks = currentList.tasks();
+		List<Task> currentTasks = currentList.tasks(preferences.getBoolean("showDone", true));
 		if (currentTasks.size() == 0) {
 			currentTask = new Task(getApplicationContext().getString(
 					R.string.task_empty));

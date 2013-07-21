@@ -135,7 +135,8 @@ public class Task extends TaskBase {
 	public static Task newTask(String name, long list_id) {
 		return newTask(name, list_id, "", false, null, 0);
 	}
-	public static Task newTask(String name, ListMirakel list){
+
+	public static Task newTask(String name, ListMirakel list) {
 		return newTask(name, list.getId(), "", false, null, 0);
 	}
 
@@ -331,7 +332,7 @@ public class Task extends TaskBase {
 	 */
 	public static List<Task> getTasks(int listId, int sorting, boolean showDone) {
 		List<Task> tasks = new ArrayList<Task>();
-		Cursor cursor = getTasksCursor(listId, sorting);
+		Cursor cursor = getTasksCursor(listId, sorting, showDone);
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
 			Task task = cursorToTask(cursor);
@@ -435,9 +436,17 @@ public class Task extends TaskBase {
 	 * @param sorting
 	 * @return
 	 */
-	private static Cursor getTasksCursor(int listId, int sorting) {
-		String where = listId < 0 ? SpecialList.getSpecialList(-1 * listId)
-				.getWhereQuery() : "list_id='" + listId + "'";
+	private static Cursor getTasksCursor(int listId, int sorting,
+			boolean showDone) {
+		String where;
+		if (listId < 0) {
+			where = SpecialList.getSpecialList(-1 * listId).getWhereQuery();
+		} else {
+			where = "list_id='" + listId + "'";
+		}
+		if (!showDone) {
+			where += " AND done=0";
+		}
 		return getTasksCursor(listId, sorting, where);
 	}
 
