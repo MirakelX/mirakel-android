@@ -32,7 +32,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.R;
+import de.azapps.mirakelandroid.R;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.Network;

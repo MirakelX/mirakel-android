@@ -27,7 +27,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
-import de.azapps.mirakel.R;
+import de.azapps.mirakelandroid.R;
 import de.azapps.mirakel.helper.WidgetHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;

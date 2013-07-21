@@ -53,7 +53,7 @@ import org.apache.http.util.EntityUtils;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
-import de.azapps.mirakel.R;
+import de.azapps.mirakelandroid.R;
 import de.azapps.mirakel.helper.Log;
 
 public class Network extends AsyncTask<String, Integer, String> {

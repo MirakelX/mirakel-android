@@ -15,7 +15,7 @@ import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import de.azapps.mirakel.R;
+import de.azapps.mirakelandroid.R;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.model.task.Task;
 

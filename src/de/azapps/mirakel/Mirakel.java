@@ -32,6 +32,7 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
+import de.azapps.mirakelandroid.R;
 
 @ReportsCrashes(
 		formKey = "", // This is required for backward compatibility but not used 

@@ -29,7 +29,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.R;
+import de.azapps.mirakelandroid.R;
 import de.azapps.mirakel.model.list.ListMirakel;
 
 public class ListAdapter extends ArrayAdapter<ListMirakel> {

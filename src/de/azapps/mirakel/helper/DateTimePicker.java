@@ -32,7 +32,7 @@ import android.widget.RelativeLayout;
 import android.widget.TimePicker;
 import android.widget.TimePicker.OnTimeChangedListener;
 import android.widget.ViewSwitcher;
-import de.azapps.mirakel.R;
+import de.azapps.mirakelandroid.R;
 
 public class DateTimePicker extends RelativeLayout implements
 		View.OnClickListener, OnDateChangedListener, OnTimeChangedListener {

@@ -21,7 +21,7 @@ package de.azapps.mirakel.widget;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
-import de.azapps.mirakel.R;
+import de.azapps.mirakelandroid.R;
 import de.azapps.mirakel.helper.PreferencesHelper;
 
 @SuppressLint("NewApi")

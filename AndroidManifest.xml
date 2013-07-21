@@ -18,8 +18,8 @@
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="de.azapps.mirakel"
-    android:versionCode="1"
+    package="de.azapps.mirakelandroid"
+    android:versionCode="2"
     android:versionName="1.0.0" >
 
     <!-- TODO Remove Unused Permissions -->
@@ -187,7 +187,7 @@
                 android:resource="@xml/widget_provider" />
         </receiver>
         <receiver 
-            android:name=".reminders.ReminderAlarm" 
+            android:name="de.azapps.mirakel.reminders.ReminderAlarm" 
             android:enabled="true">
         </receiver>
 

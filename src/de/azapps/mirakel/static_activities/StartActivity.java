@@ -30,7 +30,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.R;
+import de.azapps.mirakelandroid.R;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.DatabaseHelper;

@@ -3,7 +3,7 @@ package de.azapps.mirakel.model.list;
 import java.util.List;
 
 import android.content.Context;
-import de.azapps.mirakel.R;
+import de.azapps.mirakelandroid.R;
 import de.azapps.mirakel.model.task.Task;
 
 public class SearchList extends ListMirakel {

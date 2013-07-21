@@ -12,13 +12,13 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Environment;
 import android.widget.Toast;
-import de.azapps.mirakel.R;
+import de.azapps.mirakelandroid.R;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 
 public class ExportImport {
 	private static final File dbFile = new File(Environment.getDataDirectory()
-			+ "/data/de.azapps.mirakel/databases/mirakel.db");
+			+ "/data/de.azapps.mirakelandroid/databases/mirakel.db");
 	private static final String TAG = "ExportImport";
 
 	public static void exportDB(Context ctx, File file) {

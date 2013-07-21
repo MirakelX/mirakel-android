@@ -33,7 +33,7 @@ import android.preference.PreferenceManager;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.webkit.WebView;
-import de.azapps.mirakel.R;
+import de.azapps.mirakelandroid.R;
 
 public class ChangeLog {
 
