@@ -20,6 +20,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -39,6 +40,7 @@ import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.special_lists_settings.SpecialListsSettings;
 import de.azapps.mirakel.static_activities.SettingsActivity;
 import de.azapps.mirakel.static_activities.SettingsFragment;
@@ -386,6 +388,22 @@ public class PreferencesHelper {
 					}
 				});
 
+		CheckBoxPreference notificationsUse = (CheckBoxPreference) findPreference("notificationsUse");
+		notificationsUse
+				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+					@Override
+					public boolean onPreferenceChange(Preference preference,
+							Object newValue) {
+						Editor e=preference.getEditor();
+						e.putBoolean("notificationsUse", (Boolean) newValue);
+						e.commit();
+						NotificationService
+								.updateNotificationAndWidget(activity);
+						return true;
+					}
+				});
+
 		Intent startSpecialListsIntent = new Intent(activity,
 				SpecialListsSettings.class);
 		Preference specialLists = findPreference("special_lists");
@@ -394,7 +412,7 @@ public class PreferencesHelper {
 		Preference backup = findPreference("backup");
 
 		Date today = new Date();
-		DateFormat sdf = new SimpleDateFormat("yyyyMMdd-HH:mm:ss");//SimpleDateFormat.getDateInstance();
+		DateFormat sdf = new SimpleDateFormat("yyyyMMdd-HH:mm:ss");// SimpleDateFormat.getDateInstance();
 		String filename = "mirakel-" + sdf.format(today) + ".db";
 		final File exportDir = new File(
 				Environment.getExternalStorageDirectory(), "");

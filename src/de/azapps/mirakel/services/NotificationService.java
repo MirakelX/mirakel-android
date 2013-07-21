@@ -133,6 +133,9 @@ public class NotificationService extends Service {
 				.size() == 0)
 				|| !preferences.getBoolean("notificationsUse", true)) {
 			notificationManager.cancel(Mirakel.NOTIF_DEFAULT);
+			existsNotification=false;
+		} else {
+			existsNotification=true;
 		}
 	}
 

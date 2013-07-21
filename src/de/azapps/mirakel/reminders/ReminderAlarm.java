@@ -37,7 +37,6 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
-import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.helper.Helpers;
@@ -71,8 +70,6 @@ public class ReminderAlarm extends BroadcastReceiver {
 		preferences = PreferenceManager.getDefaultSharedPreferences(context);
 		Task task = Task.get(taskId);
 
-		Toast.makeText(context, task.getName(), Toast.LENGTH_LONG).show();
-
 		nm = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -99,7 +96,9 @@ public class ReminderAlarm extends BroadcastReceiver {
 				.toUri(Intent.URI_INTENT_SCHEME)));
 		PendingIntent pLaterIntent = PendingIntent.getActivity(context, 0,
 				laterIntent, 0);
-		boolean persistent = true;
+
+		boolean persistent = preferences.getBoolean("remindersPersistent",
+				true);
 
 		// Build Notification
 
