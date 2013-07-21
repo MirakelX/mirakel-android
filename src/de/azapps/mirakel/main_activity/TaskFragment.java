@@ -205,6 +205,7 @@ public class TaskFragment extends Fragment {
 				final DatePickerDialog dialog = new DatePickerDialog(main,listner, due.get(Calendar.YEAR), due.get(Calendar.MONTH), due
 								.get(Calendar.DAY_OF_MONTH));
 				if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB){
+					dialog.getDatePicker().setCalendarViewShown(false);
 					dialog.setButton(DialogInterface.BUTTON_POSITIVE,
 							getString(R.string.OK),
 							new DialogInterface.OnClickListener() {
