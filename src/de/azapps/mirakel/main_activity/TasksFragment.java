@@ -97,6 +97,13 @@ public class TasksFragment extends Fragment {
 		main = (MainActivity) getActivity();
 		listId = main.getCurrentList().getId();
 		view = inflater.inflate(R.layout.activity_tasks, container, false);
+		if(getResources().getBoolean(R.bool.isTablet)){
+			TaskFragment t= new TaskFragment();
+			t.setActivity(main);			
+			getChildFragmentManager().beginTransaction().add(R.id.task_fragment_in_tasks, t ).commit();
+			if(this.getId()!=R.id.tasks_fragment_in_lists)
+				main.setTaskFragment(t);
+		}
 
 		getResources().getString(R.string.action_settings);
 		try {

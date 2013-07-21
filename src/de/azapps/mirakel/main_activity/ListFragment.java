@@ -59,11 +59,15 @@ public class ListFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		main = (MainActivity) getActivity();
-		view = inflater.inflate(R.layout.activity_list, container, false);
-		// Inflate the layout for this fragment
 		EditName = false;
-		created = true;
 		enableDrag = false;
+		view = inflater.inflate(R.layout.activity_list, container, false);
+		if(getResources().getBoolean(R.bool.isTablet)){
+			view.findViewById(R.id.task_fragment_in_tasks).setVisibility(View.GONE);
+			main.tasksFragment_l=(TasksFragment) getFragmentManager().findFragmentById(R.id.tasks_fragment_in_lists);
+		}
+		// Inflate the layout for this fragment
+		created = true;
 		update();
 		return view;
 	}
