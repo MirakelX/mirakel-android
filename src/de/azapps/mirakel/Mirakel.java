@@ -60,6 +60,7 @@ public class Mirakel extends Application {
 	public static final String ACCOUNT_TYP = "de.azapps.mirakel";
 	public static final String AUTHORITY_TYP = "de.azapps.mirakel.provider";
 	public static final String BUNDLE_SERVER_URL = "url";
+	public static  String APK_NAME;
 
 	public static int widgets[] = {};
 
@@ -73,6 +74,7 @@ public class Mirakel extends Application {
 		Log.d(TAG, "onCreate");
 		super.onCreate();
 		ACRA.init(this);
+		APK_NAME=getPackageName();
 		openHelper = new DatabaseHelper(this);
 		Mirakel.getWritableDatabase().execSQL("PRAGMA foreign_keys=ON;");
 		ListMirakel.init(getApplicationContext());
