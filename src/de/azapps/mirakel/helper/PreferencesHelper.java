@@ -412,8 +412,8 @@ public class PreferencesHelper {
 		Preference backup = findPreference("backup");
 
 		Date today = new Date();
-		DateFormat sdf = new SimpleDateFormat("yyyyMMdd-HH:mm:ss");// SimpleDateFormat.getDateInstance();
-		String filename = "mirakel-" + sdf.format(today) + ".db";
+		DateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");// SimpleDateFormat.getDateInstance();
+		String filename = "mirakel_" + sdf.format(today) + ".db";
 		final File exportDir = new File(
 				Environment.getExternalStorageDirectory(), "");
 		final File exportFile = new File(exportDir, filename);
