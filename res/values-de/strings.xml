@@ -67,6 +67,8 @@
   <string name="reminder_notification_later">Später</string>
   <string name="reminder_notification_done_confirm">Ich habe die Aufgabe als „erledigt“ markiert</string>
   <string name="reminder_notification_later_confirm" formatted="false">Ich erinnere dich in %d Minuten</string>
+  <string name="list_vanished">Huch, ist die Aufgabe verschwunden. Es tut mir leid…</string>
+  <string name="task_vanished">Huch, die Liste der Aufgabe verschwunden. Es tut mir leid…</string>
   <string name="login_activity_username_label">Nutzername</string>
   <string name="login_activity_server_label">Server-URL</string>
   <string name="login_activity_password_label">Passwort</string>
