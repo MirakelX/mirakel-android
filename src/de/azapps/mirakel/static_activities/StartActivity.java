@@ -30,11 +30,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakelandroid.R;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakelandroid.R;
 
 public class StartActivity extends Activity {
 	private static final String TAG = "StartActivity";
@@ -78,8 +78,9 @@ public class StartActivity extends Activity {
 				Intent intent = new Intent(StartActivity.this,
 						MainActivity.class);
 				intent.setAction(MainActivity.SHOW_LIST);
-				intent.putExtra(MainActivity.EXTRA_ID, SpecialList.firstSpecial().getId());
-				startActivityForResult(intent,1);
+				intent.putExtra(MainActivity.EXTRA_ID, SpecialList
+						.firstSpecial().getId());
+				startActivityForResult(intent, 1);
 				// }
 			}
 		});

@@ -27,10 +27,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
-import de.azapps.mirakelandroid.R;
 import de.azapps.mirakel.helper.WidgetHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakelandroid.R;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class MainWidgetService extends RemoteViewsService {
@@ -78,13 +78,13 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	}
 
 	public RemoteViews getViewAt(int position) {
-		Task task=tasks.get(position);
+		Task task = tasks.get(position);
 		// Get The Task
 		RemoteViews rv = new RemoteViews(mContext.getPackageName(),
 				R.layout.widget_row);
 
 		// Set the Contents of the Row
-		rv=WidgetHelper.configureItem(rv, task, mContext, listId);
+		rv = WidgetHelper.configureItem(rv, task, mContext, listId);
 
 		// Set the Click–Intent
 		// We need to do so, because we can not start the Activity directly from
@@ -98,7 +98,6 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
 		return rv;
 	}
-
 
 	public RemoteViews getLoadingView() {
 		// We aren't going to return a default loading view in this sample

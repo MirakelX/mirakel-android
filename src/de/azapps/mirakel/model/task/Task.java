@@ -69,7 +69,7 @@ public class Task extends TaskBase {
 	 * 
 	 * @param task
 	 */
-	public void save() throws NoSuchListException{
+	public void save() throws NoSuchListException {
 		setSyncState(getSync_state() == Network.SYNC_STATE.ADD
 				|| getSync_state() == Network.SYNC_STATE.IS_SYNCED ? getSync_state()
 				: Network.SYNC_STATE.NEED_SYNC);

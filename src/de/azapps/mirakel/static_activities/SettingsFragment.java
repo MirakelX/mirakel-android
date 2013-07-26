@@ -22,8 +22,8 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
-import de.azapps.mirakelandroid.R;
 import de.azapps.mirakel.helper.PreferencesHelper;
+import de.azapps.mirakelandroid.R;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class SettingsFragment extends PreferenceFragment {

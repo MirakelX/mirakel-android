@@ -187,7 +187,6 @@ class TaskBase {
 		return name;
 	}
 
-
 	public ContentValues getContentValues() throws NoSuchListException {
 		ContentValues cv = new ContentValues();
 		cv.put("_id", id);

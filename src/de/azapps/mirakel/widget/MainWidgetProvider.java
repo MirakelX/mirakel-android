@@ -36,12 +36,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakelandroid.R;
 import de.azapps.mirakel.helper.WidgetHelper;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakelandroid.R;
 
 public class MainWidgetProvider extends AppWidgetProvider {
 	@SuppressWarnings("unused")
@@ -155,7 +155,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
 					views.setViewVisibility(R.id.empty_view, View.VISIBLE);
 				} else {
 					views.setViewVisibility(R.id.empty_view, View.GONE);
-					int end = tasks.size()>=7 ? 7 : tasks.size();
+					int end = tasks.size() >= 7 ? 7 : tasks.size();
 					try {
 						for (Task t : tasks.subList(0, end)) {
 							views.addView(R.id.widget_main_view, WidgetHelper
@@ -166,7 +166,8 @@ public class MainWidgetProvider extends AppWidgetProvider {
 											context, listId));
 						}
 					} catch (IndexOutOfBoundsException e) {
-						Log.wtf(TAG, "The list has been shortened while processing it…");
+						Log.wtf(TAG,
+								"The list has been shortened while processing it…");
 					}
 				}
 			}

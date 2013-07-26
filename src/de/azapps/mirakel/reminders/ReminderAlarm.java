@@ -39,11 +39,11 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakelandroid.R;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.services.NotificationService;
+import de.azapps.mirakelandroid.R;
 
 public class ReminderAlarm extends BroadcastReceiver {
 	@SuppressWarnings("unused")
@@ -57,7 +57,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		if(intent.getAction().equals(UPDATE_NOTIFICATION)){
+		if (intent.getAction().equals(UPDATE_NOTIFICATION)) {
 			NotificationService.updateNotificationAndWidget(context);
 		}
 		if (!intent.getAction().equals(SHOW_TASK)) {
@@ -70,8 +70,9 @@ public class ReminderAlarm extends BroadcastReceiver {
 
 		preferences = PreferenceManager.getDefaultSharedPreferences(context);
 		Task task = Task.get(taskId);
-		if(task==null){
-			Toast.makeText(context,R.string.task_vanished,Toast.LENGTH_LONG).show();
+		if (task == null) {
+			Toast.makeText(context, R.string.task_vanished, Toast.LENGTH_LONG)
+					.show();
 			return;
 		}
 
@@ -85,7 +86,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 				.setData(Uri.parse(openIntent.toUri(Intent.URI_INTENT_SCHEME)));
 		PendingIntent pOpenIntent = PendingIntent.getActivity(context, 0,
 				openIntent, 0);
-		
+
 		Intent doneIntent = new Intent(context, MainActivity.class);
 		doneIntent.setAction(MainActivity.TASK_DONE);
 		doneIntent.putExtra(MainActivity.EXTRA_ID, task.getId());
@@ -93,7 +94,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 				.setData(Uri.parse(doneIntent.toUri(Intent.URI_INTENT_SCHEME)));
 		PendingIntent pDoneIntent = PendingIntent.getActivity(context, 0,
 				doneIntent, 0);
-		
+
 		Intent laterIntent = new Intent(context, MainActivity.class);
 		laterIntent.setAction(MainActivity.TASK_LATER);
 		laterIntent.putExtra(MainActivity.EXTRA_ID, task.getId());
@@ -102,8 +103,8 @@ public class ReminderAlarm extends BroadcastReceiver {
 		PendingIntent pLaterIntent = PendingIntent.getActivity(context, 0,
 				laterIntent, 0);
 
-		boolean persistent = preferences.getBoolean("remindersPersistent",
-				true);
+		boolean persistent = preferences
+				.getBoolean("remindersPersistent", true);
 
 		// Build Notification
 
@@ -164,30 +165,28 @@ public class ReminderAlarm extends BroadcastReceiver {
 	private static List<Task> activeAlarms = new ArrayList<Task>();
 
 	public static void updateAlarms(final Context ctx) {
-		
-		
+
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				alarmManager = (AlarmManager) ctx
 						.getSystemService(Context.ALARM_SERVICE);
-				
 
-				//Update the Notifications ad midnight
+				// Update the Notifications ad midnight
 				Intent intent = new Intent(ctx, ReminderAlarm.class);
 				intent.setAction(UPDATE_NOTIFICATION);
-				PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx, 0,
-						intent, PendingIntent.FLAG_UPDATE_CURRENT);
-				Calendar triggerCal=new GregorianCalendar();
+				PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx,
+						0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+				Calendar triggerCal = new GregorianCalendar();
 				triggerCal.set(Calendar.HOUR_OF_DAY, 0);
 				triggerCal.set(Calendar.MINUTE, 0);
 				triggerCal.add(Calendar.DAY_OF_MONTH, 1);
-				
-				
-				alarmManager.setRepeating(AlarmManager.RTC, triggerCal.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
-				
-				
-				//Alarms
+
+				alarmManager.setRepeating(AlarmManager.RTC,
+						triggerCal.getTimeInMillis(),
+						AlarmManager.INTERVAL_DAY, pendingIntent);
+
+				// Alarms
 				List<Task> tasks = Task.getTasksWithReminders();
 				for (int i = 0; i < activeAlarms.size(); i++) {
 					Task t = activeAlarms.get(i);
@@ -225,7 +224,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 	}
 
 	private static int cancelAlarm(Context ctx, Task t, Task newTask, int i) {
-		if(newTask==null){
+		if (newTask == null) {
 			activeAlarms.remove(i--);
 			return i;
 		}
