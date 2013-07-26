@@ -106,6 +106,10 @@ public class Task extends TaskBase {
 			"updated_at", "sync_state" };
 	private static Context context;
 
+	public static Task getDummy(Context ctx) {
+		return new Task(ctx.getString(R.string.task_empty));
+	}
+
 	/**
 	 * Initialize the Database and the preferences
 	 * 

@@ -101,6 +101,8 @@ public class TaskFragment extends Fragment {
 		}
 		// Task Name
 		task = main.getCurrentTask();
+		if(task==null)
+			task = Task.getDummy(main);
 		Task_name = (TextView) view.findViewById(R.id.task_name);
 		String tname=task.getName();
 		Task_name.setText(tname==null ? "" : tname);

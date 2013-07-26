@@ -785,8 +785,7 @@ public class MainActivity extends FragmentActivity implements
 		List<Task> currentTasks = currentList.tasks(preferences.getBoolean(
 				"showDone", true));
 		if (currentTasks.size() == 0) {
-			currentTask = new Task(getApplicationContext().getString(
-					R.string.task_empty));
+			currentTask = Task.getDummy(getApplicationContext());
 		} else {
 			currentTask = currentTasks.get(0);
 		}
