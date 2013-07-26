@@ -32,6 +32,7 @@ import android.net.Uri;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 import de.azapps.mirakel.Mirakel;
@@ -155,13 +156,17 @@ public class MainWidgetProvider extends AppWidgetProvider {
 				} else {
 					views.setViewVisibility(R.id.empty_view, View.GONE);
 					int end = tasks.size()>=7 ? 7 : tasks.size();
-					for (Task t : tasks.subList(0, end)) {
-						views.addView(R.id.widget_main_view, WidgetHelper
-								.configureItem(
-										new RemoteViews(context
-												.getPackageName(),
-												R.layout.widget_row), t,
-										context, listId));
+					try {
+						for (Task t : tasks.subList(0, end)) {
+							views.addView(R.id.widget_main_view, WidgetHelper
+									.configureItem(
+											new RemoteViews(context
+													.getPackageName(),
+													R.layout.widget_row), t,
+											context, listId));
+						}
+					} catch (IndexOutOfBoundsException e) {
+						Log.wtf(TAG, "The list has been shortened while processing it…");
 					}
 				}
 			}
