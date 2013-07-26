@@ -37,6 +37,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
+import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakelandroid.R;
 import de.azapps.mirakel.helper.Helpers;
@@ -69,6 +70,10 @@ public class ReminderAlarm extends BroadcastReceiver {
 
 		preferences = PreferenceManager.getDefaultSharedPreferences(context);
 		Task task = Task.get(taskId);
+		if(task==null){
+			Toast.makeText(context,R.string.reminder_task_vanished,Toast.LENGTH_LONG).show();
+			return;
+		}
 
 		nm = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
