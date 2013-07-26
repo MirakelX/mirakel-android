@@ -51,6 +51,7 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import de.azapps.mirakelandroid.R;
+import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
@@ -256,7 +257,11 @@ public class TasksFragment extends Fragment {
 		}
 		Task task = Task.newTask(name, id);
 		task.setDue(due);
-		task.save();
+		try {
+			task.save();
+		} catch (NoSuchListException e) {
+			Log.wtf(TAG, "List vanished while Creating Task");
+		}
 
 		adapter.addToHead(task);
 		values.add(0, task);

@@ -48,8 +48,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.PagerAdapter;
-import de.azapps.mirakelandroid.R;
 import de.azapps.mirakel.helper.ChangeLog;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.ListDialogHelpers;
@@ -62,6 +62,7 @@ import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.static_activities.CreditsActivity;
 import de.azapps.mirakel.static_activities.SettingsActivity;
+import de.azapps.mirakelandroid.R;
 
 /**
  * @see "https://thepseudocoder.wordpress.com/2011/10/13/android-tabs-viewpager-swipe-able-tabs-ftw/"
@@ -312,7 +313,8 @@ public class MainActivity extends FragmentActivity implements
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == RESULT_SETTINGS) {
 			listFragment.update();
-			if(!preferences.getBoolean("highlightSelected", isTablet) && (oldClickedList!=null || oldClickedTask==null)){
+			if (!preferences.getBoolean("highlightSelected", isTablet)
+					&& (oldClickedList != null || oldClickedTask == null)) {
 				clearAllHighlights();
 			}
 			return;
@@ -416,7 +418,7 @@ public class MainActivity extends FragmentActivity implements
 
 				Task task = Task.newTask(subject, id);
 				task.setContent(content);
-				task.save();
+				safeSafeTask(task);
 				setCurrentTask(task);
 				tasksFragment.updateList(true);
 				listFragment.update();
@@ -449,13 +451,22 @@ public class MainActivity extends FragmentActivity implements
 		setIntent(null);
 	}
 
+	private void safeSafeTask(Task task) {
+		try {
+			task.save();
+		} catch (NoSuchListException e) {
+			Toast.makeText(getApplicationContext(), R.string.list_vanished,
+					Toast.LENGTH_LONG).show();
+		}
+	}
+
 	private void handleReminder(Intent intent) {
 		Task task = Helpers.getTaskFromIntent(intent);
 		if (task == null)
 			return;
 		if (intent.getAction() == TASK_DONE) {
 			task.setDone(true);
-			task.save();
+			safeSafeTask(task);
 			Toast.makeText(this,
 					getString(R.string.reminder_notification_done_confirm),
 					Toast.LENGTH_LONG).show();
@@ -464,7 +475,7 @@ public class MainActivity extends FragmentActivity implements
 			int addMinutes = preferences.getInt("alarm_later", 15);
 			reminder.add(Calendar.MINUTE, addMinutes);
 			task.setReminder(reminder);
-			task.save();
+			safeSafeTask(task);
 			Toast.makeText(
 					this,
 					getString(R.string.reminder_notification_later_confirm,
@@ -566,7 +577,7 @@ public class MainActivity extends FragmentActivity implements
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int item) {
 						task.setList(ListMirakel.getList(list_ids.get(item)));
-						task.save();
+						safeSafeTask(task);
 						/*
 						 * There are 3 possibilities how to handle the post-move
 						 * of a task:
@@ -650,10 +661,10 @@ public class MainActivity extends FragmentActivity implements
 			}
 			if (isTablet) {
 				try {
-					ListView leftView = (ListView) tasksFragment_l
-							.getView().findViewById(R.id.tasks_list);
-					ListView rightView = (ListView) tasksFragment_r
-							.getView().findViewById(R.id.tasks_list);
+					ListView leftView = (ListView) tasksFragment_l.getView()
+							.findViewById(R.id.tasks_list);
+					ListView rightView = (ListView) tasksFragment_r.getView()
+							.findViewById(R.id.tasks_list);
 					int pressed_color = getResources().getColor(
 							R.color.pressed_color);
 					int pos_l = leftView.getPositionForView(currentView);
@@ -693,7 +704,8 @@ public class MainActivity extends FragmentActivity implements
 			mViewPager.setCurrentItem(TASK_FRAGMENT, smooth);
 		}
 	}
-	private void clearAllHighlights(){
+
+	private void clearAllHighlights() {
 		if (oldClickedList != null) {
 			oldClickedList.setSelected(false);
 			oldClickedList.setBackgroundColor(0x00000000);
@@ -706,29 +718,23 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	private void clearHighlighted() {
-		try{
-			ListView leftView = (ListView) tasksFragment_l
-					.getView().findViewById(R.id.tasks_list);
-			ListView rightView = (ListView) tasksFragment_r
-					.getView().findViewById(R.id.tasks_list);
-			int pos_old_l = (leftView)
-					.getPositionForView(oldClickedTask);
-			int pos_old_r = rightView
-					.getPositionForView(oldClickedTask);
+		try {
+			ListView leftView = (ListView) tasksFragment_l.getView()
+					.findViewById(R.id.tasks_list);
+			ListView rightView = (ListView) tasksFragment_r.getView()
+					.findViewById(R.id.tasks_list);
+			int pos_old_l = (leftView).getPositionForView(oldClickedTask);
+			int pos_old_r = rightView.getPositionForView(oldClickedTask);
 			if (pos_old_l != -1) {
-				(leftView).getChildAt(pos_old_l)
-						.setBackgroundColor(0x00000000);
-				rightView.getChildAt(pos_old_l).setBackgroundColor(
-						0x00000000);
+				(leftView).getChildAt(pos_old_l).setBackgroundColor(0x00000000);
+				rightView.getChildAt(pos_old_l).setBackgroundColor(0x00000000);
 			} else if (pos_old_r != -1) {
-				(leftView).getChildAt(pos_old_r)
-						.setBackgroundColor(0x00000000);
-				rightView.getChildAt(pos_old_r).setBackgroundColor(
-						0x00000000);
+				(leftView).getChildAt(pos_old_r).setBackgroundColor(0x00000000);
+				rightView.getChildAt(pos_old_r).setBackgroundColor(0x00000000);
 			} else {
 				Log.wtf(TAG, "View not found");
 			}
-		}catch(Exception e){
+		} catch (Exception e) {
 			Log.wtf(TAG, "Listview not found");
 		}
 	}
@@ -805,7 +811,7 @@ public class MainActivity extends FragmentActivity implements
 	void saveTask(Task task) {
 		Log.v(TAG, "Saving task… (task:" + task.getId() + " – current:"
 				+ currentTask.getId());
-		task.save();
+		safeSafeTask(task);
 		updatesForTask(task);
 	}
 

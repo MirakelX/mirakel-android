@@ -101,4 +101,7 @@ public class Mirakel extends Application {
 		return openHelper.getReadableDatabase();
 	}
 
+	public static class NoSuchListException extends Exception {
+		static final long serialVersionUID = 1374828057;
+	}
 }

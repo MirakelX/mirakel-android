@@ -15,7 +15,9 @@ import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import de.azapps.mirakelandroid.R;
+import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.model.task.Task;
 
@@ -27,7 +29,7 @@ public class TaskDialogHelpers {
 	private static View numberPicker;
 
 	@SuppressLint("NewApi")
-	public static void handlePriority(Context ctx, final Task task,
+	public static void handlePriority(final Context ctx, final Task task,
 			final Helpers.ExecInterface onSuccess) {
 		final String[] t = { "-2", "-1", "0", "1", "2" };
 		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
@@ -100,7 +102,7 @@ public class TaskDialogHelpers {
 											.findViewById(R.id.dialog_num_pick_val))
 											.getText().toString()));
 								}
-								task.save();
+								safeSafeTask(ctx, task);
 								onSuccess.exec();
 							}
 
@@ -114,9 +116,19 @@ public class TaskDialogHelpers {
 						}).show();
 	}
 
+
+	private static void safeSafeTask(Context context,Task task) {
+		try {
+			task.save();
+		} catch (NoSuchListException e) {
+			Toast.makeText(context, R.string.list_vanished,
+					Toast.LENGTH_LONG).show();
+		}
+	}
+
 	public static void handleReminder(final Activity act, final Task task,
 			final ExecInterface onSuccess) {
-		Context ctx=(Context)act;
+		final Context ctx=(Context)act;
 		GregorianCalendar reminder = (task.getReminder() == null ? new GregorianCalendar()
 				: task.getReminder());
 		// Inflate the root layout
@@ -146,7 +158,7 @@ public class TaskDialogHelpers {
 							.get(Calendar.DAY_OF_MONTH), mDateTimePicker
 							.get(Calendar.HOUR_OF_DAY), mDateTimePicker
 							.get(Calendar.MINUTE)));
-					task.save();
+					safeSafeTask(ctx, task);
 					onSuccess.exec();
 					
 				}
@@ -157,7 +169,7 @@ public class TaskDialogHelpers {
 				public void onClick(DialogInterface dialog, int which) {
 					mDateTimePicker.clearFocus();
 					task.setReminder(null);
-					task.save();
+					safeSafeTask(ctx, task);
 					onSuccess.exec();
 					
 				}

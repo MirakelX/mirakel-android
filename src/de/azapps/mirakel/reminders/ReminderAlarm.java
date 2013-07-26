@@ -71,7 +71,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 		preferences = PreferenceManager.getDefaultSharedPreferences(context);
 		Task task = Task.get(taskId);
 		if(task==null){
-			Toast.makeText(context,R.string.reminder_task_vanished,Toast.LENGTH_LONG).show();
+			Toast.makeText(context,R.string.task_vanished,Toast.LENGTH_LONG).show();
 			return;
 		}
 

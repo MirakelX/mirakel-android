@@ -13,13 +13,14 @@ import android.content.Context;
 import android.os.Environment;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 
 public class ExportImport {
 	private static final File dbFile = new File(Environment.getDataDirectory()
-			+ "/data/"+Mirakel.APK_NAME+"/databases/mirakel.db");
+			+ "/data/" + Mirakel.APK_NAME + "/databases/mirakel.db");
 	private static final String TAG = "ExportImport";
 
 	public static void exportDB(Context ctx, File file) {
@@ -115,7 +116,13 @@ public class ExportImport {
 				t.setPriority(priority);
 				t.setDue(due);
 				t.setDone(done);
-				t.save();
+				try {
+					t.save();
+				} catch (NoSuchListException e) {
+					Log.wtf(TAG, "List vanished while Import!?!?");
+					Toast.makeText(context, R.string.list_vanished,
+							Toast.LENGTH_LONG).show();
+				}
 				Log.v(TAG, "created task:" + name);
 
 			}

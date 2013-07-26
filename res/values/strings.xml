@@ -122,7 +122,8 @@
     <string name="reminder_notification_later">Later</string>
     <string name="reminder_notification_done_confirm">I have set the task as „done“</string>
     <string name="reminder_notification_later_confirm" formatted="false">I\'ll remind you in %d minutes</string>
-    <string name="reminder_task_vanished">Huch, the task is vanished. I\'m sorry…</string>
+    <string name="list_vanished">Huch, the task has vanished. I\'m sorry…</string>
+    <string name="task_vanished">Huch, the list of the task has vanished. I\'m sorry…</string>
 
     <!-- Test Sync -->
     <!-- Label above username EditText -->
