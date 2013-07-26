@@ -158,6 +158,7 @@ public class SpecialList extends ListMirakel {
 		}
 		setActive(false);
 		ContentValues values = new ContentValues();
+		values.put("sync_state", getSyncState());
 		database.update(TABLE, values, "_id=" + id, null);
 	}
 
