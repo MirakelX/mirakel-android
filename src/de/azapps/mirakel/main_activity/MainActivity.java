@@ -261,14 +261,20 @@ public class MainActivity extends FragmentActivity implements
 		}
 		switch (position) {
 		case LIST_FRAGMENT:
-			newmenu = R.menu.activity_list;
+			if (!isTablet)
+				newmenu = R.menu.activity_list;
+			else
+				newmenu = R.menu.tablet_left;
 			this.setTitle(getString(R.string.list_title));
 			if (listState != null)
 				listFragment.setState(listState);
 			break;
 		case TASKS_FRAGMENT:
 			listFragment.enable_drop(false);
-			newmenu = R.menu.tasks;
+			if (!isTablet)
+				newmenu = R.menu.tasks;
+			else
+				newmenu = R.menu.tablet_right;
 			if (currentList == null)
 				return;
 			this.setTitle(currentList.getName());
