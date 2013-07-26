@@ -102,7 +102,8 @@ public class TaskFragment extends Fragment {
 		// Task Name
 		task = main.getCurrentTask();
 		Task_name = (TextView) view.findViewById(R.id.task_name);
-		Task_name.setText(task.getName());
+		String tname=task.getName();
+		Task_name.setText(tname==null ? "" : tname);
 		Task_name.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
