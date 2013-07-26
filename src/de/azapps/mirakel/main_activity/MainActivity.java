@@ -170,10 +170,7 @@ public class MainActivity extends FragmentActivity implements
 					}, null);
 			return true;
 		case R.id.menu_new_list:
-			ListMirakel list = ListMirakel.newList(this
-					.getString(R.string.list_menu_new_list));
-			listFragment.update();
-			listFragment.editList(list);
+			listFragment.editList(null);
 			return true;
 		case R.id.menu_sort_lists:
 			boolean t = !item.isChecked();
