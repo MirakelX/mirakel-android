@@ -26,9 +26,9 @@ import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.R;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.PreferencesHelper;
+import de.azapps.mirakelandroid.R;
 
 public class MainWidgetSettingsActivity extends PreferenceActivity {
 
@@ -38,15 +38,15 @@ public class MainWidgetSettingsActivity extends PreferenceActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		if(VERSION.SDK_INT<VERSION_CODES.HONEYCOMB){
+		if (VERSION.SDK_INT < VERSION_CODES.HONEYCOMB) {
 			addPreferencesFromResource(R.xml.main_widget_preferences);
 			new PreferencesHelper(this).setFunctionsWidget();
-		}else{
+		} else {
 			// Display the fragment as the main content.
 			getFragmentManager()
 					.beginTransaction()
-					.replace(android.R.id.content, new MainWidgetSettingsFragment())
-					.commit();
+					.replace(android.R.id.content,
+							new MainWidgetSettingsFragment()).commit();
 		}
 	}
 

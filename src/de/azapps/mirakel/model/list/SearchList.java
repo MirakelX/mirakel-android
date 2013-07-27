@@ -3,8 +3,8 @@ package de.azapps.mirakel.model.list;
 import java.util.List;
 
 import android.content.Context;
-import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakelandroid.R;
 
 public class SearchList extends ListMirakel {
 	private List<Task> tasks;

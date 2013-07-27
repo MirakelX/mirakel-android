@@ -11,7 +11,7 @@ import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.MenuItem;
 import android.widget.TextView;
-import de.azapps.mirakel.R;
+import de.azapps.mirakelandroid.R;
 
 public class CreditsActivity extends Activity {
 

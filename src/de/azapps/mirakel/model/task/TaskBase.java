@@ -26,6 +26,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import android.content.ContentValues;
+import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 
@@ -186,9 +187,11 @@ class TaskBase {
 		return name;
 	}
 
-	public ContentValues getContentValues() {
+	public ContentValues getContentValues() throws NoSuchListException {
 		ContentValues cv = new ContentValues();
 		cv.put("_id", id);
+		if (list == null)
+			throw new NoSuchListException();
 		cv.put("list_id", list.getId());
 		cv.put("name", name);
 		cv.put("content", content);

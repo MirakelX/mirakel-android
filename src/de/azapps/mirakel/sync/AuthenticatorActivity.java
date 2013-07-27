@@ -65,10 +65,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.R;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakelandroid.R;
 
 /**
  * Activity which displays login screen to the user.

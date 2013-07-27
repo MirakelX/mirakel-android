@@ -32,7 +32,7 @@ import android.widget.RelativeLayout;
 import android.widget.TimePicker;
 import android.widget.TimePicker.OnTimeChangedListener;
 import android.widget.ViewSwitcher;
-import de.azapps.mirakel.R;
+import de.azapps.mirakelandroid.R;
 
 
 public class DateTimePicker extends RelativeLayout implements
@@ -102,9 +102,11 @@ public class DateTimePicker extends RelativeLayout implements
 		// Populate ViewSwitcher
 		viewSwitcher.addView(datePickerView, 0);
 		viewSwitcher.addView(timePickerView, 1);
-		if(Build.VERSION.SDK_INT<Build.VERSION_CODES.HONEYCOMB){
-			((Button) findViewById(R.id.SwitchToTime)).setTextColor(getResources().getColor(R.color.Black));
-			((Button) findViewById(R.id.SwitchToDate)).setTextColor(getResources().getColor(R.color.Black));
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+			((Button) findViewById(R.id.SwitchToTime))
+					.setTextColor(getResources().getColor(R.color.Black));
+			((Button) findViewById(R.id.SwitchToDate))
+					.setTextColor(getResources().getColor(R.color.Black));
 		}
 	}
 
@@ -129,8 +131,8 @@ public class DateTimePicker extends RelativeLayout implements
 
 	// Handle button clicks
 	public void onClick(View v) {
-		if(Build.VERSION.SDK_INT>Build.VERSION_CODES.HONEYCOMB)
-			((Button)v).setTextColor(getResources().getColor(R.color.Grey));
+		if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB)
+			((Button) v).setTextColor(getResources().getColor(R.color.Grey));
 		switch (v.getId()) {
 		case R.id.SwitchToDate:
 			v.setEnabled(false);

@@ -55,11 +55,11 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.ViewSwitcher;
-import de.azapps.mirakel.BuildConfig;
-import de.azapps.mirakel.R;
 import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakelandroid.BuildConfig;
+import de.azapps.mirakelandroid.R;
 
 @SuppressLint("NewApi")
 public class SpecialListSettingsActivity extends Activity {

@@ -61,10 +61,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.R;
+import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakelandroid.R;
 
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
@@ -281,7 +282,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					public void after_exec(String result) {
 						ListMirakel list_response = new Gson().fromJson(result,
 								ListMirakel.class);
-						if(list_response==null){
+						if (list_response == null) {
 							Log.wtf(TAG, "Unable to add list to server");
 							finishSync();
 							return;
@@ -495,7 +496,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		data.add(new BasicNameValuePair("task[due]", dueString));
 		data.add(new BasicNameValuePair("task[content]", task.getContent()));
 		task.setSyncState(Network.SYNC_STATE.IS_SYNCED);
-		task.save();
+		safeSafeTask(task);
 		SyncTasks.add(new Pair<Network, String>(new Network(
 				new DataDownloadCommand() {
 					@Override
@@ -505,6 +506,14 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				}, Network.HttpMode.PUT, data, mContext, Token), ServerUrl
 				+ "/lists/" + task.getList().getId() + "/tasks/" + task.getId()
 				+ ".json"));
+	}
+
+	private void safeSafeTask(Task task) {
+		try {
+			task.save();
+		} catch (NoSuchListException e) {
+			Log.wtf(TAG, "List vanished while Sync!?!?");
+		}
 	}
 
 	/**
@@ -530,7 +539,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					@Override
 					public void after_exec(String result) {
 						try {
-							
+
 							Task taskNew = Task.parse_json("[" + result + "]")
 									.get(0);
 							if (taskNew.getId() > task.getId()) {
@@ -630,7 +639,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					Log.d(TAG, "Sync task from server to list "
 							+ task_server.getList().getId());
 					task_server.setSyncState(Network.SYNC_STATE.IS_SYNCED);
-					task_server.save();
+					safeSafeTask(task_server);
 				}
 			} catch (ParseException e) {
 				Log.e(TAG, "Unabel to parse Dates");
@@ -669,7 +678,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			// Nothing
 		} else if (task.getSync_state() == Network.SYNC_STATE.IS_SYNCED) {
 			task.setSyncState(Network.SYNC_STATE.NOTHING);
-			task.save();
+			safeSafeTask(task);
 			mergeTask(task_server, task);
 		} else {
 			Log.wtf(TAG, "Syncronisation Error, Taskmerge");
@@ -680,8 +689,14 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 		// task_server.setUpdatedAt();
 		task_server.setSyncState(Network.SYNC_STATE.IS_SYNCED);
-		long id = Mirakel.getWritableDatabase().insert(Task.TABLE, null,
-				task_server.getContentValues());
+		long id;
+		try {
+			id = Mirakel.getWritableDatabase().insert(Task.TABLE, null,
+					task_server.getContentValues());
+		} catch (NoSuchListException e) {
+			Log.wtf(TAG, "List vanished while Sync!?!?");
+			return;
+		}
 		if (id > task_server.getId()) {
 			long diff = id - task_server.getId();
 			Mirakel.getWritableDatabase().execSQL(

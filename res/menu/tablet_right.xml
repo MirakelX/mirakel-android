@@ -17,10 +17,13 @@
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-
+    
     <!--
     Move
+    Sort
     Share
+    Search
+    -
     Sync
     Delete
     Config
@@ -33,11 +36,25 @@
         android:icon="@android:drawable/ic_menu_set_as"
         android:showAsAction="ifRoom|withText"
         android:title="@string/menu_move"/>
+    
+    <item
+        android:id="@+id/task_sorting"
+        android:icon="@android:drawable/ic_menu_sort_alphabetically"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/task_menu_sorting">
+    </item>
     <item
         android:id="@+id/share_task"
         android:icon="@android:drawable/ic_menu_share"
         android:showAsAction="ifRoom|withText"
         android:title="@string/share_task"/>
+    <item
+        android:id="@+id/search"
+        android:icon="@android:drawable/ic_menu_search"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/search">
+    </item>
+    <!--  -->
     <item
         android:id="@+id/menu_sync_now_task"
         android:showAsAction="never"

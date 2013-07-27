@@ -32,6 +32,7 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
+import de.azapps.mirakelandroid.R;
 
 @SuppressWarnings("unused")
 @ReportsCrashes(
@@ -100,4 +101,7 @@ public class Mirakel extends Application {
 		return openHelper.getReadableDatabase();
 	}
 
+	public static class NoSuchListException extends Exception {
+		static final long serialVersionUID = 1374828057;
+	}
 }

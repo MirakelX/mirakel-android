@@ -51,13 +51,13 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.ViewSwitcher;
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.R;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
+import de.azapps.mirakelandroid.R;
 
 public class TaskFragment extends Fragment {
 	private View view;
@@ -100,8 +100,11 @@ public class TaskFragment extends Fragment {
 		}
 		// Task Name
 		task = main.getCurrentTask();
+		if (task == null)
+			task = Task.getDummy(main);
 		Task_name = (TextView) view.findViewById(R.id.task_name);
-		Task_name.setText(task.getName());
+		String tname = task.getName();
+		Task_name.setText(tname == null ? "" : tname);
 		Task_name.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -189,44 +192,46 @@ public class TaskFragment extends Fragment {
 				mIgnoreTimeSet = false;
 				GregorianCalendar due = (task.getDue() == null ? new GregorianCalendar()
 						: task.getDue());
-				OnDateSetListener listner=(Build.VERSION.SDK_INT<Build.VERSION_CODES.HONEYCOMB?new OnDateSetListener() {
-					
+				OnDateSetListener listner = (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB ? new OnDateSetListener() {
+
 					@Override
-					public void onDateSet(DatePicker view, int year, int monthOfYear,
-							int dayOfMonth) {
-						task.setDue(new GregorianCalendar(year,
-								monthOfYear, dayOfMonth));
+					public void onDateSet(DatePicker view, int year,
+							int monthOfYear, int dayOfMonth) {
+						task.setDue(new GregorianCalendar(year, monthOfYear,
+								dayOfMonth));
 						main.saveTask(task);
-						Task_due.setText(new SimpleDateFormat(view
-								.getContext().getString(
-										R.string.dateFormat),
-								Locale.getDefault()).format(task
-								.getDue().getTime()));
+						Task_due.setText(new SimpleDateFormat(view.getContext()
+								.getString(R.string.dateFormat), Locale
+								.getDefault()).format(task.getDue().getTime()));
 					}
-				} :null);
-				final DatePickerDialog dialog = new DatePickerDialog(main,listner, due.get(Calendar.YEAR), due.get(Calendar.MONTH), due
+				}
+						: null);
+				final DatePickerDialog dialog = new DatePickerDialog(main,
+						listner, due.get(Calendar.YEAR), due
+								.get(Calendar.MONTH), due
 								.get(Calendar.DAY_OF_MONTH));
-				if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB){
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 					dialog.getDatePicker().setCalendarViewShown(false);
 					dialog.setButton(DialogInterface.BUTTON_POSITIVE,
 							getString(R.string.OK),
 							new DialogInterface.OnClickListener() {
-	
+
 								public void onClick(DialogInterface dialog1,
 										int which) {
 									if (which == DialogInterface.BUTTON_POSITIVE) {
 										if (mIgnoreTimeSet)
 											return;
-										DatePicker dp=dialog.getDatePicker();
-										task.setDue(new GregorianCalendar(dp.getYear(),
-												dp.getMonth(), dp.getDayOfMonth()));
+										DatePicker dp = dialog.getDatePicker();
+										task.setDue(new GregorianCalendar(dp
+												.getYear(), dp.getMonth(), dp
+												.getDayOfMonth()));
 										main.saveTask(task);
-										Task_due.setText(new SimpleDateFormat(view
-												.getContext().getString(
+										Task_due.setText(new SimpleDateFormat(
+												view.getContext().getString(
 														R.string.dateFormat),
-												Locale.getDefault()).format(task
-												.getDue().getTime()));
-	
+												Locale.getDefault())
+												.format(task.getDue().getTime()));
+
 									}
 								}
 							});
@@ -301,44 +306,47 @@ public class TaskFragment extends Fragment {
 
 				final EditText editTxt = new EditText(getActivity());
 				editTxt.setText(task.getContent());
-				final AlertDialog dialog=new AlertDialog.Builder(getActivity())
+				final AlertDialog dialog = new AlertDialog.Builder(
+						getActivity())
 						.setTitle(R.string.change_content)
 						.setView(editTxt)
 						.setPositiveButton(android.R.string.ok,
-                                new DialogInterface.OnClickListener() {
+								new DialogInterface.OnClickListener() {
 
-                                    @Override
-                                    public void onClick(DialogInterface dialog,
-                                                        int which) {
-                                        task.setContent(editTxt.getText()
-                                                .toString());
-                                        main.saveTask(task);
-                                        Task_content
-                                                .setText(task.getContent()
-                                                        .trim().length() == 0 ? getString(R.string.task_no_content)
-                                                        : task.getContent());
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										task.setContent(editTxt.getText()
+												.toString());
+										main.saveTask(task);
+										Task_content
+												.setText(task.getContent()
+														.trim().length() == 0 ? getString(R.string.task_no_content)
+														: task.getContent());
 
-                                    }
-                                })
+									}
+								})
 						.setNegativeButton(android.R.string.cancel,
-                                new DialogInterface.OnClickListener() {
+								new DialogInterface.OnClickListener() {
 
-                                    @Override
-                                    public void onClick(DialogInterface dialog,
-                                                        int which) {
-                                        // TODO Auto-generated method stub
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										// TODO Auto-generated method stub
 
-                                    }
-                                }).create();
-                dialog.show();
-                editTxt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                    @Override
-                    public void onFocusChange(View v, boolean hasFocus) {
-                        if (hasFocus) {
-                            dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-                        }
-                    }
-                });
+									}
+								}).create();
+				dialog.show();
+				editTxt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+					@Override
+					public void onFocusChange(View v, boolean hasFocus) {
+						if (hasFocus) {
+							dialog.getWindow()
+									.setSoftInputMode(
+											WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+						}
+					}
+				});
 
 			}
 		});

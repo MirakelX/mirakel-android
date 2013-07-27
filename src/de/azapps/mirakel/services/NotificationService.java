@@ -34,13 +34,13 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.R;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.widget.MainWidgetProvider;
+import de.azapps.mirakelandroid.R;
 
 public class NotificationService extends Service {
 	private static final String TAG = "NotificationService";
@@ -78,7 +78,7 @@ public class NotificationService extends Service {
 			Log.e(TAG, "cannot parse list");
 			return;
 		}
-		// Set onClick Intent		
+		// Set onClick Intent
 		Intent openIntent = new Intent(this, MainActivity.class);
 		openIntent.setAction(MainActivity.SHOW_LIST);
 		openIntent.putExtra(MainActivity.EXTRA_ID, listId);
@@ -114,12 +114,13 @@ public class NotificationService extends Service {
 		NotificationCompat.Builder noti = new NotificationCompat.Builder(this)
 				.setContentTitle(notificationTitle)
 				.setContentText(notificationText)
-				.setSmallIcon(R.drawable.ic_launcher).setContentIntent(pOpenIntent)
-				.setOngoing(persistent);
+				.setSmallIcon(R.drawable.ic_launcher)
+				.setContentIntent(pOpenIntent).setOngoing(persistent);
 
 		// Big View
 		if (preferences.getBoolean("notificationsBig", true)
-				&& todayTasks.size() > 1&&VERSION.SDK_INT>=VERSION_CODES.JELLY_BEAN) {
+				&& todayTasks.size() > 1
+				&& VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN) {
 			NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 			for (Task task : todayTasks) {
 				inboxStyle.addLine(task.getName());
@@ -133,9 +134,9 @@ public class NotificationService extends Service {
 				.size() == 0)
 				|| !preferences.getBoolean("notificationsUse", true)) {
 			notificationManager.cancel(Mirakel.NOTIF_DEFAULT);
-			existsNotification=false;
+			existsNotification = false;
 		} else {
-			existsNotification=true;
+			existsNotification = true;
 		}
 	}
 

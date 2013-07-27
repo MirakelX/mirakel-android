@@ -26,9 +26,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.Window;
-import de.azapps.mirakel.R;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakelandroid.R;
 
 public class SplashScreenActivity extends Activity {
 
@@ -61,12 +61,13 @@ public class SplashScreenActivity extends Activity {
 						MainActivity.class);
 				intent.setAction(MainActivity.SHOW_LIST);
 				intent.putExtra(MainActivity.EXTRA_ID, listId);
-				startActivityForResult(intent,1);
+				startActivityForResult(intent, 1);
 
 			}
 		}
 
 	}
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		finish();

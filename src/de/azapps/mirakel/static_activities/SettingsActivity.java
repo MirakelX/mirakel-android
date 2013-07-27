@@ -36,10 +36,10 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
 import android.widget.Toast;
-import de.azapps.mirakel.R;
 import de.azapps.mirakel.helper.ExportImport;
 import de.azapps.mirakel.helper.FileUtils;
 import de.azapps.mirakel.helper.PreferencesHelper;
+import de.azapps.mirakelandroid.R;
 
 public class SettingsActivity extends PreferenceActivity {
 

@@ -37,7 +37,6 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.R;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.services.NotificationService;
@@ -49,6 +48,7 @@ import de.azapps.mirakel.sync.DataDownloadCommand;
 import de.azapps.mirakel.sync.Network;
 import de.azapps.mirakel.widget.MainWidgetSettingsActivity;
 import de.azapps.mirakel.widget.MainWidgetSettingsFragment;
+import de.azapps.mirakelandroid.R;
 
 @SuppressLint("SimpleDateFormat")
 public class PreferencesHelper {
@@ -398,7 +398,7 @@ public class PreferencesHelper {
 					@Override
 					public boolean onPreferenceChange(Preference preference,
 							Object newValue) {
-						Editor e=preference.getEditor();
+						Editor e = preference.getEditor();
 						e.putBoolean("notificationsUse", (Boolean) newValue);
 						e.commit();
 						NotificationService

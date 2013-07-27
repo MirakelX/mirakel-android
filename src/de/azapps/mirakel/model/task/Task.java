@@ -37,12 +37,13 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.R;
+import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.sync.Network;
+import de.azapps.mirakelandroid.R;
 
 public class Task extends TaskBase {
 
@@ -68,7 +69,7 @@ public class Task extends TaskBase {
 	 * 
 	 * @param task
 	 */
-	public void save() {
+	public void save() throws NoSuchListException {
 		setSyncState(getSync_state() == Network.SYNC_STATE.ADD
 				|| getSync_state() == Network.SYNC_STATE.IS_SYNCED ? getSync_state()
 				: Network.SYNC_STATE.NEED_SYNC);
@@ -105,6 +106,10 @@ public class Task extends TaskBase {
 			"content", "done", "due", "reminder", "priority", "created_at",
 			"updated_at", "sync_state" };
 	private static Context context;
+
+	public static Task getDummy(Context ctx) {
+		return new Task(ctx.getString(R.string.task_empty));
+	}
 
 	/**
 	 * Initialize the Database and the preferences

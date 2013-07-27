@@ -18,7 +18,7 @@
  ******************************************************************************/
 package de.azapps.mirakel.helper;
 
-import de.azapps.mirakel.BuildConfig;
+import de.azapps.mirakelandroid.BuildConfig;
 
 public class Log {
 	public static void d(String tag, String msg) {

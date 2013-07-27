@@ -29,8 +29,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.R;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakelandroid.R;
 
 public class ListAdapter extends ArrayAdapter<ListMirakel> {
 	@SuppressWarnings("unused")
