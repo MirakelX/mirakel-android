@@ -11,6 +11,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/special_list_name_title"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
             android:text="@string/special_list_name"
@@ -58,6 +59,7 @@
             android:background="@android:color/darker_gray" />
 
         <TextView
+            android:id="@+id/special_list_where_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"

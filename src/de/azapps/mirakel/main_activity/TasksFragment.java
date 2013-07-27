@@ -329,7 +329,7 @@ public class TasksFragment extends Fragment {
 										});
 
 							}
-						}, main.getCurrentList().getId());
+						}, main.getCurrentList().getId(),main.preferences.getBoolean("DarkTheme", false));
 				return adapter;
 			}
 

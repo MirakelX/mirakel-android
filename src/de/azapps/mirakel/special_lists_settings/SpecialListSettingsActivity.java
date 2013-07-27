@@ -27,11 +27,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.content.Intent;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
@@ -74,6 +76,9 @@ public class SpecialListSettingsActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Intent i = getIntent();
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		if(preferences.getBoolean("DarkTheme", false))
+			setTheme(R.style.AppBaseThemeDARK);
 		specialList = SpecialList.getSpecialList(i.getIntExtra(SLIST_ID, 1));
 		setContentView(R.layout.special_list_preferences);
 		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
@@ -136,6 +141,11 @@ public class SpecialListSettingsActivity extends Activity {
 
 		((TextView) findViewById(R.id.special_list_where)).setText(specialList
 				.getWhereQuery());
+		if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("DarkTheme",false)){
+			((TextView) findViewById(R.id.special_list_where)).setTextColor(getResources().getColor(android.R.color.primary_text_dark));
+			((TextView) findViewById(R.id.special_list_where_title)).setTextColor(getResources().getColor(android.R.color.primary_text_dark));
+			((TextView) findViewById(R.id.special_list_name_title)).setTextColor(getResources().getColor(android.R.color.primary_text_dark));
+		}
 		if (!BuildConfig.DEBUG)
 			((TextView) findViewById(R.id.special_list_where))
 					.setVisibility(View.GONE);

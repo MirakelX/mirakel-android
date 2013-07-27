@@ -138,6 +138,9 @@ public class PreferencesHelper {
 			CheckBoxPreference mCheckBoxPref = (CheckBoxPreference) findPreference("notificationsBig");
 			PreferenceCategory mCategory = (PreferenceCategory) findPreference("category_notifications");
 			mCategory.removePreference(mCheckBoxPref);
+			mCheckBoxPref = (CheckBoxPreference) findPreference("DarkTheme");
+			mCategory = (PreferenceCategory) findPreference("category_misc");
+			mCategory.removePreference(mCheckBoxPref);
 		}
 
 		// Startup

@@ -109,4 +109,7 @@
     <string name="highlightSelected">Highlight Selected</string>
     <string name="showDone">Show done tasks</string>
     <string name="showDone_summary">Should I show done tasks?</string>
+    
+    <string name="dark_theme">Dark Theme</string>
+    <string name="use_dark_theme">Do you want to use a Dark Theme?</string>
 </resources>

@@ -27,6 +27,7 @@
             android:summary="@string/startup_show_lists_summary"
             android:title="@string/startup_show_lists" />
 
+
         <ListPreference
             android:defaultValue="0"
             android:key="startupList"
@@ -117,12 +118,14 @@
             android:summary="@string/reminders_persistent_summary"
             android:title="@string/reminders_persistent" />
     </PreferenceCategory>
+    <!-- Special Lists -->
     <PreferenceCategory android:title="@string/special_lists_title" >
         <Preference
             android:key="special_lists"
             android:summary="@string/special_lists_click_summary"
             android:title="@string/special_lists_click" />
     </PreferenceCategory>
+    <!-- Backup -->
     <PreferenceCategory android:title="@string/settings_backup" >
         <Preference
             android:key="backup"
@@ -137,7 +140,10 @@
             android:summary="@string/import_astrid_click_summary"
             android:title="@string/import_astrid_click" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/settings_misc" >
+    <!-- Misc -->
+    <PreferenceCategory
+        android:key="category_misc" 
+        android:title="@string/settings_misc" >
         <Preference
             android:key="changelog"
             android:summary="@string/changelog_click_summary"
@@ -153,6 +159,11 @@
             android:key="showDone"
             android:summary="@string/showDone_summary"
             android:title="@string/showDone" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="DarkTheme"
+            android:summary="@string/use_dark_theme"
+            android:title="@string/dark_theme" />
     </PreferenceCategory>
 
 </PreferenceScreen>

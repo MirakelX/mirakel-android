@@ -50,11 +50,13 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
@@ -115,8 +117,10 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 	 */
 	@Override
 	public void onCreate(Bundle icicle) {
-
 		super.onCreate(icicle);
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		if(preferences.getBoolean("DarkTheme", false))
+			setTheme(R.style.DialogDark);
 		mAccountManager = AccountManager.get(this);
 		final Intent intent = getIntent();
 		mUsername = intent.getStringExtra(PARAM_USERNAME);
@@ -133,6 +137,9 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 		if (!TextUtils.isEmpty(mUsername))
 			mUsernameEdit.setText(mUsername);
 		mMessage.setText(getMessage());
+		if(preferences.getBoolean("DarkTheme", false)&&VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB){
+			findViewById(R.id.login_button_frame).setBackgroundColor(getResources().getColor(android.R.color.transparent));
+		}
 	}
 
 	/*

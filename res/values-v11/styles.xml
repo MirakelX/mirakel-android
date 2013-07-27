@@ -25,9 +25,14 @@
     <style name="AppBaseTheme" parent="android:Theme.Holo.Light">
         <!-- API 11 theme customizations can go here. -->
     </style>
-
+	<style name="AppBaseThemeDARK" parent="android:Theme.Holo">
+        <!-- API 11 theme customizations can go here. -->
+    </style>
     <style name="Dialog" parent="android:Theme.Holo.Light">
         <!-- API 11 theme customizations can go here. -->
+    </style>
+    <style name="DialogDark" parent="android:Theme.Holo.Dialog">
+        <!-- API 14 theme customizations can go here. -->
     </style>
 
     <style name="Button" parent="@android:style/Holo.ButtonBar.AlertDialog"></style>

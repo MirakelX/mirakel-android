@@ -6,7 +6,9 @@ import java.util.List;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,11 +27,15 @@ public class SpecialListsSettings extends Activity {
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+		super.onCreate(savedInstanceState);		
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		if(preferences.getBoolean("DarkTheme", false))
+			setTheme(R.style.AppBaseThemeDARK);
 		setContentView(R.layout.activity_special_lists_settings);
 		// Show the Up button in the action bar.
 		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB)
 			getActionBar().setDisplayHomeAsUpEnabled(true);
+
 
 		update();
 	}

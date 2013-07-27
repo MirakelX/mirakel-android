@@ -107,11 +107,16 @@ public class MainActivity extends FragmentActivity implements
 
 	private int currentPosition = TASKS_FRAGMENT;
 	private Parcelable tasksState, listState;
+	private boolean darkTheme;
+	private boolean isResumend;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		darkTheme=preferences.getBoolean("DarkTheme", false);
+		if(darkTheme)
+			setTheme(R.style.AppBaseThemeDARK);
 		isTablet = getResources().getBoolean(R.bool.isTablet);
 		if (!preferences.contains("highlightSelected")) {
 			SharedPreferences.Editor editor = preferences.edit();
@@ -132,6 +137,8 @@ public class MainActivity extends FragmentActivity implements
 			cl.getLogDialog().show();
 		}
 		// currentList=preferences.getInt("s", defValue)
+		setupLayout();
+		isResumend=false;
 	}
 
 	@Override
@@ -293,7 +300,7 @@ public class MainActivity extends FragmentActivity implements
 		if (preferences.getBoolean("syncUse", false) == false) {
 			MenuItem mitem;
 			mitem = menu.findItem(R.id.menu_sync_now_list);
-			if (mitem == null)
+			if (mitem == null)		
 				mitem = menu.findItem(R.id.menu_sync_now_task);
 			if (mitem == null)
 				mitem = menu.findItem(R.id.menu_sync_now_tasks);
@@ -311,6 +318,10 @@ public class MainActivity extends FragmentActivity implements
 			listFragment.update();
 			if(!preferences.getBoolean("highlightSelected", isTablet) && (oldClickedList!=null || oldClickedTask==null)){
 				clearAllHighlights();
+			}
+			if(darkTheme!=preferences.getBoolean("DarkTheme",false)){
+				recreate();
+				
 			}
 			return;
 		}
@@ -358,7 +369,9 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onResume() {
 		super.onResume();
-		setupLayout();
+		if(isResumend)
+			setupLayout();
+		isResumend=true;
 	}
 
 	@Override

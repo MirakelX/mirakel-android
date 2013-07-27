@@ -136,6 +136,7 @@
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/login_button_frame"
         android:background="#c6c3c6"
         android:minHeight="54dip"
         android:paddingLeft="2dip"

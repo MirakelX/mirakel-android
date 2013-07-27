@@ -44,10 +44,11 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 	List<Task> data = null;
 	OnClickListener clickCheckbox;
 	OnClickListener clickPrio;
-
+	boolean darkTheme;
+	
 	public TaskAdapter(Context context, int layoutResourceId, List<Task> data,
 			OnClickListener clickCheckbox, OnClickListener click_prio,
-			int listId) {
+			int listId,boolean darkTheme) {
 		super(context, layoutResourceId, data);
 		this.layoutResourceId = layoutResourceId;
 		this.data = data;
@@ -55,6 +56,7 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		this.clickCheckbox = clickCheckbox;
 		this.clickPrio = click_prio;
 		this.listId = listId;
+		this.darkTheme=darkTheme;
 	}
 
 	/**
@@ -126,13 +128,13 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 
 		// Name
 		holder.taskRowName.setText(task.getName());
-		int nameColor;
+		
 		if (task.isDone()) {
-			nameColor = R.color.Grey;
+			holder.taskRowName.setTextColor(row.getResources().getColor(R.color.Grey));
 		} else {
-			nameColor = R.color.Black;
+			holder.taskRowName.setTextColor(row.getResources().getColor(darkTheme?android.R.color.primary_text_dark:android.R.color.primary_text_light));
 		}
-		holder.taskRowName.setTextColor(row.getResources().getColor(nameColor));
+		
 
 		// Priority
 		holder.taskRowPriority.setText("" + task.getPriority());

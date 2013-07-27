@@ -28,10 +28,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 import android.view.MenuItem;
 import android.widget.Toast;
 import de.azapps.mirakel.R;
@@ -49,6 +51,9 @@ public class SettingsActivity extends PreferenceActivity {
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		if(preferences.getBoolean("DarkTheme", false))
+			setTheme(R.style.AppBaseThemeDARK);
 		super.onCreate(savedInstanceState);
 		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
 			// Display the fragment as the main content.
