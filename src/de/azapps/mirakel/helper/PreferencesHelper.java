@@ -142,6 +142,7 @@ public class PreferencesHelper {
 			mCategory = (PreferenceCategory) findPreference("category_misc");
 			mCategory.removePreference(mCheckBoxPref);
 		}
+		
 
 		// Startup
 		CheckBoxPreference startupAllListPreference = (CheckBoxPreference) findPreference("startupAllLists");
@@ -398,6 +399,13 @@ public class PreferencesHelper {
 					@Override
 					public boolean onPreferenceChange(Preference preference,
 							Object newValue) {
+						if((Boolean)newValue){
+							activity.startService(new Intent(activity, NotificationService.class));
+						}else{
+							if(activity.startService(new Intent(activity, NotificationService.class)) != null) { 
+							    activity.stopService(new Intent(activity,NotificationService.class));
+							}
+						}
 						Editor e = preference.getEditor();
 						e.putBoolean("notificationsUse", (Boolean) newValue);
 						e.commit();

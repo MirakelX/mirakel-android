@@ -23,15 +23,20 @@ import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 
 import android.app.Application;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
+import android.preference.PreferenceManager;
+import android.widget.Toast;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
+import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakelandroid.R;
 
 @SuppressWarnings("unused")
@@ -81,6 +86,10 @@ public class Mirakel extends Application {
 		ListMirakel.init(getApplicationContext());
 		Task.init(getApplicationContext());
 		SpecialList.init(getApplicationContext());
+		//Kill Notification Service if Notification disabled
+		if(!PreferenceManager.getDefaultSharedPreferences(this).getBoolean("notificationsUse", false)&&startService(new Intent(this, NotificationService.class)) != null) { 
+		    stopService(new Intent(Mirakel.this,NotificationService.class));
+		}
 		// Set Alarms
 		ReminderAlarm.updateAlarms(getApplicationContext());
 	}

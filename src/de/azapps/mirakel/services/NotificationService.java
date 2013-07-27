@@ -61,6 +61,11 @@ public class NotificationService extends Service {
 		notifier();
 		NotificationService.setNotificationService(this);
 	}
+	@Override
+	public void onDestroy (){
+		//Do nothing
+	}
+	
 
 	/**
 	 * Updates the Notification
