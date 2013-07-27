@@ -164,6 +164,11 @@
             android:key="DarkTheme"
             android:summary="@string/use_dark_theme"
             android:title="@string/dark_theme" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="KillButton"
+            android:summary="@string/show_kill_button"
+            android:title="@string/kill_button" />
     </PreferenceCategory>
 
 </PreferenceScreen>

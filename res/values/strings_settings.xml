@@ -112,4 +112,7 @@
     
     <string name="dark_theme">Dark Theme</string>
     <string name="use_dark_theme">Do you want to use a Dark Theme?</string>
+    <string name="kill_button">Kill button</string>
+    <string name="kill_app">Close App</string>
+    <string name="show_kill_button">Do you want me to show a Kill-Button</string>
 </resources>

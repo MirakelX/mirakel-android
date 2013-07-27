@@ -54,5 +54,9 @@
         android:id="@+id/menu_contact_list"
         android:showAsAction="never"
         android:title="@string/action_contact"/>
+    <item
+        android:id="@+id/menu_kill_button"
+        android:showAsAction="never"
+        android:title="@string/kill_app"/>
 
 </menu>

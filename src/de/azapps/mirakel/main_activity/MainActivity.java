@@ -229,6 +229,9 @@ public class MainActivity extends FragmentActivity implements
 		case R.id.menu_contact_tasks:
 			Helpers.contact(getApplicationContext());
 			break;
+		case R.id.menu_kill_button:
+			//Only Close
+			finish();
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -255,6 +258,11 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	public void onPageSelected(int position) {
+		loadMenu(position);
+	}
+
+
+	public void loadMenu(int position) {
 		if (taskFragment != null && taskFragment.getView() != null) {
 			final InputMethodManager imm = (InputMethodManager) this
 					.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -318,6 +326,8 @@ public class MainActivity extends FragmentActivity implements
 			if (mitem == null)
 				mitem = menu.findItem(R.id.menu_sync_now_tasks);
 			mitem.setVisible(false);
+			menu.findItem(R.id.menu_kill_button).setVisible(preferences.getBoolean("KillButton", false));
+			
 		}
 	}
 
@@ -337,6 +347,7 @@ public class MainActivity extends FragmentActivity implements
 				finish();
 				startActivity(startIntent);				
 			}
+			loadMenu(mViewPager.getCurrentItem());
 			return;
 		}
 		if (resultCode == RESULT_OK && null != data) {
