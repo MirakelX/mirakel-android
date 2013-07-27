@@ -304,11 +304,19 @@ public class TasksFragment extends Fragment {
 		} catch (NoSuchListException e) {
 			Log.wtf(TAG, "List vanished while Creating Task");
 		}
-
-		adapter.addToHead(task);
-		values.add(0, task);
-		main.getListFragment().update();
-		adapter.notifyDataSetChanged();
+		if(main.isTablet){
+			main.tasksFragment_l.adapter.addToHead(task);
+			main.tasksFragment_l.values.add(0, task);
+			main.tasksFragment_r.adapter.addToHead(task);
+			main.tasksFragment_r.values.add(0, task);			
+			main.tasksFragment_l.adapter.notifyDataSetChanged();
+			main.tasksFragment_r.adapter.notifyDataSetChanged();
+		}else{
+			adapter.addToHead(task);
+			values.add(0, task);
+			adapter.notifyDataSetChanged();
+		}
+			main.getListFragment().update();
 		return true;
 	}
 

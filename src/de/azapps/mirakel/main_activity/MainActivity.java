@@ -87,7 +87,7 @@ public class MainActivity extends FragmentActivity implements
 	private ListMirakel currentList;
 	private List<ListMirakel> lists;
 	private AlertDialog taskMoveDialog;
-	private boolean isTablet;
+	protected boolean isTablet;
 
 	private static final int LIST_FRAGMENT = 0, TASKS_FRAGMENT = 1,
 			TASK_FRAGMENT = 2;
