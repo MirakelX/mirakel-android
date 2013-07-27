@@ -58,7 +58,7 @@ public class DateTimePicker extends RelativeLayout implements
 	}
 
 	public DateTimePicker(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
+		super(context, attrs, defStyle); 
 
 		this.darkTheme= PreferenceManager.getDefaultSharedPreferences(context).getBoolean("DarkTheme",false);
 		// Get LayoutInflater instance

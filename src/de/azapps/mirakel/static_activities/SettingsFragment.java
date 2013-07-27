@@ -21,6 +21,9 @@ package de.azapps.mirakel.static_activities;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
+import android.preference.Preference;
+import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceFragment;
 import de.azapps.mirakel.R;
 import de.azapps.mirakel.helper.PreferencesHelper;
@@ -36,6 +39,16 @@ public class SettingsFragment extends PreferenceFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.preferences);
+		CheckBoxPreference mCheckBoxPref = (CheckBoxPreference) findPreference("DarkTheme");
+		mCheckBoxPref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+			
+			@Override
+			public boolean onPreferenceChange(Preference preference, Object newValue) {
+				getActivity().finish();
+				startActivity(getActivity().getIntent());
+				return true;
+			}
+		});
 		new PreferencesHelper(this).setFunctionsApp();
 	}
 

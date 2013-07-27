@@ -33,6 +33,7 @@ import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 
+@SuppressWarnings("unused")
 @ReportsCrashes(
 		formKey = "", // This is required for backward compatibility but not used 
 		reportType = org.acra.sender.HttpSender.Type.JSON, 
@@ -71,7 +72,6 @@ public class Mirakel extends Application {
 
 	@Override
 	public void onCreate() {
-		Log.d(TAG, "onCreate");
 		super.onCreate();
 		ACRA.init(this);
 		APK_NAME=getPackageName();

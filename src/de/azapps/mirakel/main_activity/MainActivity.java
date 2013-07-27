@@ -109,6 +109,7 @@ public class MainActivity extends FragmentActivity implements
 	private Parcelable tasksState, listState;
 	private boolean darkTheme;
 	private boolean isResumend;
+	private Intent startIntent;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -320,8 +321,8 @@ public class MainActivity extends FragmentActivity implements
 				clearAllHighlights();
 			}
 			if(darkTheme!=preferences.getBoolean("DarkTheme",false)){
-				recreate();
-				
+				finish();
+				startActivity(startIntent);				
 			}
 			return;
 		}
@@ -398,14 +399,14 @@ public class MainActivity extends FragmentActivity implements
 		if (currentList == null)
 			setCurrentList(SpecialList.firstSpecial());
 		// Initialize ViewPager
-		if (mPagerAdapter == null)
+		if (!isResumend)
 			intializeViewPager();
 		NotificationService.updateNotificationAndWidget(this);
-		Intent intent = getIntent();
-		if (intent == null || intent.getAction() == null) {
+		startIntent=getIntent();
+		if (startIntent == null || startIntent.getAction() == null) {
 
-		} else if (intent.getAction().equals(SHOW_TASK)) {
-			Task task = Helpers.getTaskFromIntent(intent);
+		} else if (startIntent.getAction().equals(SHOW_TASK)) {
+			Task task = Helpers.getTaskFromIntent(startIntent);
 			if (task != null) {
 				Log.d(TAG, "TaskID: " + task.getId());
 				currentList = task.getList();
@@ -413,10 +414,10 @@ public class MainActivity extends FragmentActivity implements
 			} else {
 				Log.d(TAG, "task null");
 			}
-		} else if (intent.getAction().equals(Intent.ACTION_SEND)
-				&& intent.getType().equals("text/plain")) {
-			String content = intent.getStringExtra(Intent.EXTRA_TEXT);
-			String subject = intent.getStringExtra(Intent.EXTRA_SUBJECT);
+		} else if (startIntent.getAction().equals(Intent.ACTION_SEND)
+				&& startIntent.getType().equals("text/plain")) {
+			String content = startIntent.getStringExtra(Intent.EXTRA_TEXT);
+			String subject = startIntent.getStringExtra(Intent.EXTRA_SUBJECT);
 			if (content != null || subject != null) {
 				if (content == null)
 					content = "";
@@ -431,25 +432,25 @@ public class MainActivity extends FragmentActivity implements
 				tasksFragment.updateList(true);
 				listFragment.update();
 			}
-		} else if (intent.getAction().equals(TASK_DONE)
-				|| intent.getAction().equals(TASK_LATER)) {
-			handleReminder(intent);
-		} else if (intent.getAction().equals(SHOW_LIST)
-				|| intent.getAction().equals(SHOW_LIST_FROM_WIDGET)) {
+		} else if (startIntent.getAction().equals(TASK_DONE)
+				|| startIntent.getAction().equals(TASK_LATER)) {
+			handleReminder(startIntent);
+		} else if (startIntent.getAction().equals(SHOW_LIST)
+				|| startIntent.getAction().equals(SHOW_LIST_FROM_WIDGET)) {
 
-			int listId = intent.getIntExtra(EXTRA_ID, 0);
+			int listId = startIntent.getIntExtra(EXTRA_ID, 0);
 			ListMirakel list = ListMirakel.getList(listId);
 			if (list == null)
 				list = SpecialList.firstSpecial();
 			Log.d(TAG, list.getName() + " " + listId);
 			setCurrentList(list);
-		} else if (intent.getAction().equals(SHOW_LISTS)) {
+		} else if (startIntent.getAction().equals(SHOW_LISTS)) {
 			mViewPager.setCurrentItem(LIST_FRAGMENT);
-		} else if (intent.getAction().equals(Intent.ACTION_SEARCH)) {
-			String query = intent.getStringExtra(SearchManager.QUERY);
+		} else if (startIntent.getAction().equals(Intent.ACTION_SEARCH)) {
+			String query = startIntent.getStringExtra(SearchManager.QUERY);
 			search(query);
-		} else if (intent.getAction().equals(ADD_TASK_FROM_WIDGET)) {
-			int listId = intent.getIntExtra(EXTRA_ID, 0);
+		} else if (startIntent.getAction().equals(ADD_TASK_FROM_WIDGET)) {
+			int listId = startIntent.getIntExtra(EXTRA_ID, 0);
 			setCurrentList(ListMirakel.getList(listId));
 			tasksFragment.focusNew();
 
