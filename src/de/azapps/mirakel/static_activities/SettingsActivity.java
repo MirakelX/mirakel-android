@@ -35,6 +35,7 @@ import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 import de.azapps.mirakel.helper.ExportImport;
 import de.azapps.mirakel.helper.FileUtils;
@@ -57,6 +58,7 @@ public class SettingsActivity extends PreferenceActivity {
 		super.onCreate(savedInstanceState);
 		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
 			// Display the fragment as the main content.
+			((FrameLayout)findViewById(android.R.id.content)).removeAllViews();
 			getFragmentManager().beginTransaction()
 					.replace(android.R.id.content, new SettingsFragment())
 					.commit();
