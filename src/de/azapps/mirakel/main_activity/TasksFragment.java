@@ -239,6 +239,7 @@ public class TasksFragment extends Fragment {
 			return true;
 		long id = main.getCurrentList().getId();
 		GregorianCalendar due = null;
+		int prio=0;
 		if (id <= 0) {
 			try {
 				SpecialList slist = (SpecialList) main.getCurrentList();
@@ -247,6 +248,46 @@ public class TasksFragment extends Fragment {
 					due = new GregorianCalendar();
 					due.add(GregorianCalendar.DAY_OF_MONTH,
 							slist.getDefaultDate());
+				}
+				if(slist.getWhereQuery().contains("priority")){
+					boolean[] mSelectedItems=new boolean[5];
+					boolean not=false;
+					String[] p = slist.getWhereQuery().split("and");
+					for (String s : p) {
+						if (s.contains("priority")) {
+							not=s.contains("not");
+							String[] r = s.replace((!not ? "": "not ")+ "priority in (", "").replace(")", "").trim().split(",");
+							for (String t : r) {
+								try {
+									switch (Integer.parseInt(t)) {
+									case -2:
+										mSelectedItems[0] = true;
+										break;
+									case -1:
+										mSelectedItems[1] = true;
+										break;
+									case 0:
+										mSelectedItems[2] = true;
+										break;
+									case 1:
+										mSelectedItems[3] = true;
+										break;
+									case 2:
+										mSelectedItems[4] = true;
+										break;
+									}
+								} catch (NumberFormatException e) {
+								}
+								for(int i=0;i<mSelectedItems.length;i++){
+									if(mSelectedItems[i]!=not){
+										prio=i-2;
+										break;
+									}										
+								}
+							}
+							break;
+						}
+					}
 				}
 			} catch (NullPointerException e) {
 				id = 0;
@@ -257,6 +298,7 @@ public class TasksFragment extends Fragment {
 		}
 		Task task = Task.newTask(name, id);
 		task.setDue(due);
+		task.setPriority(prio);
 		try {
 			task.save();
 		} catch (NoSuchListException e) {
