@@ -173,7 +173,11 @@ public class MainActivity extends FragmentActivity implements
 
 						@Override
 						public void exec() {
-							tasksFragment.updateList();
+							if(isTablet){
+								tasksFragment_l.updateList();
+								tasksFragment_r.updateList();
+							}else
+								tasksFragment.updateList();
 							listFragment.update();
 						}
 					}, null);
@@ -842,8 +846,15 @@ public class MainActivity extends FragmentActivity implements
 			currentTask = task;
 			taskFragment.update();
 		}
-		tasksFragment.updateList(false);
-		tasksFragment.update(false);
+		if(isTablet){
+			tasksFragment_l.updateList(false);
+			tasksFragment_l.update(false);
+			tasksFragment_r.updateList(false);
+			tasksFragment_r.update(false);
+		}else{	
+			tasksFragment.updateList(false);
+			tasksFragment.update(false);
+		}
 		listFragment.update();
 		NotificationService.updateNotificationAndWidget(this);
 
