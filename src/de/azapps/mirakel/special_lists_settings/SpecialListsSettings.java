@@ -3,13 +3,12 @@ package de.azapps.mirakel.special_lists_settings;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBarActivity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,14 +20,14 @@ import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakelandroid.R;
 
-public class SpecialListsSettings extends FragmentActivity {
+public class SpecialListsSettings extends ActionBarActivity {
 
 	private static final String TAG = "SpecialListsSettings";
 	private static final int requestCode = 0;
 	private SpecialListSettingsFragment SettingsFragment;
 	private SpecialList specialList;
 
-	@SuppressLint("NewApi")
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);		
@@ -53,10 +52,7 @@ public class SpecialListsSettings extends FragmentActivity {
 				findViewById(R.id.special_lists_fragment_container).setVisibility(View.VISIBLE);
 		}
 		// Show the Up button in the action bar.
-		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB)
-			getActionBar().setDisplayHomeAsUpEnabled(true);
-
-
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		update();
 	}
 	@Override

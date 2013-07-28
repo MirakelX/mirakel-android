@@ -23,11 +23,11 @@
         AppBaseTheme from BOTH res/values/styles.xml and
         res/values-v11/styles.xml on API 14+ devices.
     -->
-    <style name="AppBaseTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+    <style name="AppBaseTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar">
         <!-- API 14 theme customizations can go here. -->
     </style>
-	<style name="AppBaseThemeDARK" parent="android:Theme.Holo">
-        <!-- API 11 theme customizations can go here. -->
+	<style name="AppBaseThemeDARK" parent="@style/Theme.AppCompat">
+        <!-- API 14 theme customizations can go here. -->
     </style>
     <style name="Dialog" parent="android:Theme.Holo.Light.Dialog">
         <!-- API 14 theme customizations can go here. -->

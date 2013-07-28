@@ -4,15 +4,14 @@ import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakelandroid.R;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.annotation.SuppressLint;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBarActivity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 
-@SuppressLint("NewApi")
-public class SpecialListsSettingsActivity extends FragmentActivity {
+//@SuppressLint("NewApi")
+public class SpecialListsSettingsActivity extends ActionBarActivity {
 	protected SpecialListSettingsFragment SettingsFragment;
 	@SuppressWarnings("unused")
 	final static private String TAG="SpecialListsSettingsActivity";
@@ -35,10 +34,8 @@ public class SpecialListsSettingsActivity extends FragmentActivity {
 		transaction.addToBackStack(null);
 		transaction.commit();
 		
-		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-			getActionBar().setDisplayHomeAsUpEnabled(true);
-			getActionBar().setTitle(specialList.getName());
-		}
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setTitle(specialList.getName());
 		SettingsFragment.setSpecialList(specialList);
 	}
 

@@ -138,8 +138,10 @@ public class PreferencesHelper {
 			CheckBoxPreference mCheckBoxPref = (CheckBoxPreference) findPreference("notificationsBig");
 			PreferenceCategory mCategory = (PreferenceCategory) findPreference("category_notifications");
 			mCategory.removePreference(mCheckBoxPref);
-			mCheckBoxPref = (CheckBoxPreference) findPreference("DarkTheme");
-			mCategory = (PreferenceCategory) findPreference("category_misc");
+		}
+		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
+			CheckBoxPreference mCheckBoxPref = (CheckBoxPreference) findPreference("DarkTheme");
+			PreferenceCategory mCategory = (PreferenceCategory) findPreference("category_misc");
 			mCategory.removePreference(mCheckBoxPref);
 		}
 		

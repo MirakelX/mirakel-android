@@ -37,8 +37,8 @@ import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -69,7 +69,7 @@ import de.azapps.mirakelandroid.R;
  * @author az
  * 
  */
-public class MainActivity extends FragmentActivity implements
+public class MainActivity extends ActionBarActivity implements
 		ViewPager.OnPageChangeListener {
 
 	/**
@@ -283,7 +283,7 @@ public class MainActivity extends FragmentActivity implements
 				newmenu = R.menu.activity_list;
 			else
 				newmenu = R.menu.tablet_left;
-			this.setTitle(getString(R.string.list_title));
+			getSupportActionBar().setTitle(getString(R.string.list_title));
 			if (listState != null)
 				listFragment.setState(listState);
 			break;
@@ -295,14 +295,14 @@ public class MainActivity extends FragmentActivity implements
 				newmenu = R.menu.tablet_right;
 			if (currentList == null)
 				return;
-			this.setTitle(currentList.getName());
+			getSupportActionBar().setTitle(currentList.getName());
 			if (tasksState != null && currentPosition != LIST_FRAGMENT)
 				tasksFragment.setState(tasksState);
 			break;
 		case TASK_FRAGMENT:
 			newmenu = R.menu.activity_task;
 			taskFragment.update();
-			this.setTitle(currentTask.getName());
+			getSupportActionBar().setTitle(currentTask.getName());
 			break;
 		default:
 			Toast.makeText(getApplicationContext(), "Where are the dragons?",
@@ -832,7 +832,7 @@ public class MainActivity extends FragmentActivity implements
 			taskFragment.update();
 		}
 		if (currentPosition == TASKS_FRAGMENT)
-			this.setTitle(currentList.getName());
+			getSupportActionBar().setTitle(currentList.getName());
 
 	}
 

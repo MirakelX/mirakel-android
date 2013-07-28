@@ -16,7 +16,8 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android" 
+    xmlns:mirakel="http://schemas.android.com/apk/res-auto">
     
     <!--
     Sort
@@ -35,58 +36,58 @@
     <item
         android:id="@+id/task_sorting"
         android:icon="@android:drawable/ic_menu_sort_alphabetically"
-        android:showAsAction="ifRoom|withText"
+        mirakel:showAsAction="ifRoom|withText"
         android:title="@string/task_menu_sorting">
     </item>
     <item
         android:id="@+id/menu_new_list"
         android:icon="@android:drawable/ic_menu_add"
-        android:showAsAction="ifRoom|withText"
+        mirakel:showAsAction="ifRoom|withText"
         android:title="@string/list_menu_new_list">
     </item>
     <item
         android:id="@+id/share_list"
         android:icon="@android:drawable/ic_menu_share"
-        android:showAsAction="ifRoom|withText"
+        mirakel:showAsAction="ifRoom|withText"
         android:title="@string/share_list">
     </item>
     <item
         android:id="@+id/search"
         android:icon="@android:drawable/ic_menu_search"
-        android:showAsAction="ifRoom|withText"
+        mirakel:showAsAction="ifRoom|withText"
         android:title="@string/search">
     </item>
     <!--  -->
     <item
         android:id="@+id/menu_sort_lists"
         android:checkable="true"
-        android:showAsAction="never"
+        mirakel:showAsAction="never"
         android:title="@string/menu_sort_lists"/>
     <item
         android:id="@+id/list_delete"
         android:icon="@android:drawable/ic_menu_delete"
-        android:showAsAction="ifRoom|withText"
+        mirakel:showAsAction="ifRoom|withText"
         android:title="@string/menu_delete">
     </item>
     <item
         android:id="@+id/menu_sync_now_list"
-        android:showAsAction="never"
+        mirakel:showAsAction="never"
         android:title="@string/action_sync_now"/>
     <item
         android:id="@+id/menu_settings_list"
-        android:showAsAction="never"
+        mirakel:showAsAction="never"
         android:title="@string/menu_settings"/>
     <item
         android:id="@+id/menu_credits_list"
-        android:showAsAction="never"
+        mirakel:showAsAction="never"
         android:title="@string/action_credits"/>
     <item
         android:id="@+id/menu_contact_list"
-        android:showAsAction="never"
+        mirakel:showAsAction="never"
         android:title="@string/action_contact"/>
     <item
         android:id="@+id/menu_kill_button"
-        android:showAsAction="never"
+        mirakel:showAsAction="never"
         android:title="@string/kill_app"/>
 
 </menu>
