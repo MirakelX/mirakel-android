@@ -11,7 +11,6 @@ import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.Network;
-import de.azapps.mirakelandroid.R;
 
 public class SpecialList extends ListMirakel {
 	private boolean active;
@@ -91,7 +90,7 @@ public class SpecialList extends ListMirakel {
 	private static DatabaseHelper dbHelper;
 	private static final String[] allColumns = { "_id", "name", "whereQuery",
 			"active", "def_list", "def_date", "sort_by", "sync_state" };
-	private static Context context;
+
 
 	/**
 	 * Initialize the Database and the preferences
@@ -100,7 +99,6 @@ public class SpecialList extends ListMirakel {
 	 *            The Application-Context
 	 */
 	public static void init(Context context) {
-		SpecialList.context = context;
 		dbHelper = new DatabaseHelper(context);
 		database = dbHelper.getWritableDatabase();
 	}
@@ -234,12 +232,7 @@ public class SpecialList extends ListMirakel {
 		if (!cursor.isAfterLast()) {
 			list = cursorToSList(cursor);
 			cursor.moveToNext();
-		} else {
-			list = new SpecialList(0, context.getString(R.string.list_all), "",
-					true, ListMirakel.first(), null, SORT_BY_OPT,
-					Network.SYNC_STATE.NOTHING);
-
-		}
+		} 
 		cursor.close();
 		return list;
 	}

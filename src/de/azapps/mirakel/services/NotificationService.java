@@ -94,6 +94,8 @@ public class NotificationService extends Service {
 
 		// Get the data
 		ListMirakel todayList = ListMirakel.getList(listId);
+		if(todayList==null)
+			return;
 		List<Task> todayTasks = todayList.tasks();
 		String notificationTitle;
 		String notificationText;
