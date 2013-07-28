@@ -23,23 +23,20 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
+import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
-import android.content.Intent;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.NavUtils;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -62,47 +59,51 @@ import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.R;
 
 @SuppressLint("NewApi")
-public class SpecialListSettingsActivity extends Activity {
-	public static final String SLIST_ID = "de.azapps.mirakel.SpecialListSettings/list_id";
+public class SpecialListSettingsFragment extends Fragment {
 	@SuppressWarnings("unused")
-	private static final String TAG = "SpecialListSettingsActivity";
+	private static final String TAG = "SpecialListSettingsFragment";
 	private List<ListMirakel> lists;
 	private SpecialList specialList;
-	Context ctx = this;
+	Context ctx ;
 	protected AlertDialog alert;
 	private boolean[] mSelectedItems;
+	private View view;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Intent i = getIntent();
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-		if(preferences.getBoolean("DarkTheme", false))
-			setTheme(R.style.AppBaseThemeDARK);
-		specialList = SpecialList.getSpecialList(i.getIntExtra(SLIST_ID, 1));
-		setContentView(R.layout.special_list_preferences);
-		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-			getActionBar().setDisplayHomeAsUpEnabled(true);
-			getActionBar().setTitle(specialList.getName());
-		}
+		ctx=getActivity();
+		view= inflater.inflate(R.layout.special_list_preferences_fragment, container, false);
+		if(specialList!=null)
+			update();
+		return view;
+	}
+	
+	public void setSpecialList(SpecialList s) {
+		specialList=s;
+		if(view!=null)
+			update();
+	}
 
-		ViewSwitcher s = (ViewSwitcher) findViewById(R.id.switch_special_list_name);
+	public void update() {
+		ViewSwitcher s = (ViewSwitcher) view.findViewById(R.id.switch_special_list_name);
 		if (s.getNextView().getId() != R.id.special_list_name_edit) {
 			s.showPrevious();
 		}
 
-		final TextView name = (TextView) findViewById(R.id.special_list_name);
+		final TextView name = (TextView) view.findViewById(R.id.special_list_name);
 		name.setText(specialList.getName());
 		name.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				final ViewSwitcher switcher = (ViewSwitcher) findViewById(R.id.switch_special_list_name);
+				final ViewSwitcher switcher = (ViewSwitcher) view.findViewById(R.id.switch_special_list_name);
 				switcher.showNext();
-				EditText txt = (EditText) findViewById(R.id.special_list_name_edit);
+				EditText txt = (EditText) view.findViewById(R.id.special_list_name_edit);
 				txt.setText(name.getText());
 				txt.requestFocus();
-				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+				InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 				imm.showSoftInput(txt, InputMethodManager.SHOW_IMPLICIT);
 				txt.setOnEditorActionListener(new OnEditorActionListener() {
 
@@ -112,7 +113,7 @@ public class SpecialListSettingsActivity extends Activity {
 						if (actionId == EditorInfo.IME_ACTION_DONE) {
 							specialList.setName(v.getText().toString());
 							specialList.save();
-							InputMethodManager imm = (InputMethodManager) getApplication()
+							InputMethodManager imm = (InputMethodManager) getActivity().getApplication()
 									.getSystemService(
 											Context.INPUT_METHOD_SERVICE);
 							imm.hideSoftInputFromWindow(name.getWindowToken(),
@@ -127,7 +128,7 @@ public class SpecialListSettingsActivity extends Activity {
 			}
 		});
 
-		CheckBox active = (CheckBox) findViewById(R.id.special_list_active);
+		CheckBox active = (CheckBox) view.findViewById(R.id.special_list_active);
 		active.setChecked(specialList.isActive());
 		active.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
@@ -139,19 +140,19 @@ public class SpecialListSettingsActivity extends Activity {
 			}
 		});
 
-		((TextView) findViewById(R.id.special_list_where)).setText(specialList
+		((TextView) view.findViewById(R.id.special_list_where)).setText(specialList
 				.getWhereQuery());
-		if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("DarkTheme",false)){
-			((TextView) findViewById(R.id.special_list_where)).setTextColor(getResources().getColor(android.R.color.primary_text_dark));
-			((TextView) findViewById(R.id.special_list_where_title)).setTextColor(getResources().getColor(android.R.color.primary_text_dark));
-			((TextView) findViewById(R.id.special_list_name_title)).setTextColor(getResources().getColor(android.R.color.primary_text_dark));
+		if(PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean("DarkTheme",false)){
+			((TextView) view.findViewById(R.id.special_list_where)).setTextColor(getResources().getColor(android.R.color.primary_text_dark));
+			((TextView) view.findViewById(R.id.special_list_where_title)).setTextColor(getResources().getColor(android.R.color.primary_text_dark));
+			((TextView) view.findViewById(R.id.special_list_name_title)).setTextColor(getResources().getColor(android.R.color.primary_text_dark));
 		}
 		if (!BuildConfig.DEBUG)
-			((TextView) findViewById(R.id.special_list_where))
+			((TextView) view.findViewById(R.id.special_list_where))
 					.setVisibility(View.GONE);
 		lists = ListMirakel.all(false);
-		LinearLayout sortBy = (LinearLayout) findViewById(R.id.special_list_sort_by_view);
-		final TextView sortByShow = (TextView) findViewById(R.id.special_list_sort_by_pref);
+		LinearLayout sortBy = (LinearLayout) view.findViewById(R.id.special_list_sort_by_view);
+		final TextView sortByShow = (TextView) view.findViewById(R.id.special_list_sort_by_pref);
 		sortByShow.setText(getResources().getStringArray(
 				R.array.task_sorting_items)[specialList.getSortBy()]);
 		sortBy.setOnClickListener(new OnClickListener() {
@@ -162,8 +163,8 @@ public class SpecialListSettingsActivity extends Activity {
 						specialList, sortByShow);
 			}
 		});
-		LinearLayout defList = (LinearLayout) findViewById(R.id.special_list_def_list_view);
-		final TextView defListShow = (TextView) findViewById(R.id.special_list_def_list_pref);
+		LinearLayout defList = (LinearLayout) view.findViewById(R.id.special_list_def_list_view);
+		final TextView defListShow = (TextView) view.findViewById(R.id.special_list_def_list_pref);
 		defListShow.setText(specialList.getDefaultList().getName());
 		defList.setOnClickListener(new OnClickListener() {
 
@@ -174,8 +175,8 @@ public class SpecialListSettingsActivity extends Activity {
 			}
 		});
 
-		LinearLayout defDate = (LinearLayout) findViewById(R.id.special_list_def_date_view);
-		final TextView defDateShow = (TextView) findViewById(R.id.special_list_def_date_pref);
+		LinearLayout defDate = (LinearLayout) view.findViewById(R.id.special_list_def_date_view);
+		final TextView defDateShow = (TextView) view.findViewById(R.id.special_list_def_date_pref);
 		int[] values = getResources().getIntArray(
 				R.array.special_list_def_date_picker_val);
 		for (int j = 0; j < values.length; j++) {
@@ -197,21 +198,21 @@ public class SpecialListSettingsActivity extends Activity {
 		});
 
 		// Where
-		((TextView) findViewById(R.id.special_list_where_name_content))
+		((TextView) view.findViewById(R.id.special_list_where_name_content))
 				.setText(getFieldText("name"));
-		((TextView) findViewById(R.id.special_list_where_list_content))
+		((TextView) view.findViewById(R.id.special_list_where_list_content))
 				.setText(getFieldText("list_id"));
-		((TextView) findViewById(R.id.special_list_where_done_content))
+		((TextView) view.findViewById(R.id.special_list_where_done_content))
 				.setText(getFieldText("done"));
-		((TextView) findViewById(R.id.special_list_where_content_content))
+		((TextView) view.findViewById(R.id.special_list_where_content_content))
 				.setText(getFieldText("content"));
-		((TextView) findViewById(R.id.special_list_where_prio_content))
+		((TextView) view.findViewById(R.id.special_list_where_prio_content))
 				.setText(getFieldText("priority"));
-		((TextView) findViewById(R.id.special_list_where_due_content))
+		((TextView) view.findViewById(R.id.special_list_where_due_content))
 				.setText(getFieldText("due"));
-		((TextView) findViewById(R.id.special_list_where_reminder_content))
+		((TextView) view.findViewById(R.id.special_list_where_reminder_content))
 				.setText(getFieldText("reminder"));
-		((LinearLayout) findViewById(R.id.special_list_where_done))
+		((LinearLayout) view.findViewById(R.id.special_list_where_done))
 				.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
@@ -235,16 +236,16 @@ public class SpecialListSettingsActivity extends Activity {
 										switch (item) {
 										case 1:
 											newWhere = "done=1";
-											((TextView) findViewById(R.id.special_list_where_done_content))
+											((TextView) view.findViewById(R.id.special_list_where_done_content))
 													.setText(R.string.done);
 											break;
 										case 2:
 											newWhere = "done=0";
-											((TextView) findViewById(R.id.special_list_where_done_content))
+											((TextView) view.findViewById(R.id.special_list_where_done_content))
 													.setText(getString(R.string.undone));
 											break;
 										default:
-											((TextView) findViewById(R.id.special_list_where_done_content))
+											((TextView) view.findViewById(R.id.special_list_where_done_content))
 													.setText(getString(R.string.empty));
 											break;
 										}
@@ -257,7 +258,7 @@ public class SpecialListSettingsActivity extends Activity {
 						alert.show();
 					}
 				});
-		((LinearLayout) findViewById(R.id.special_list_where_reminder))
+		((LinearLayout) view.findViewById(R.id.special_list_where_reminder))
 				.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
@@ -282,16 +283,16 @@ public class SpecialListSettingsActivity extends Activity {
 										switch (item) {
 										case 1:
 											newWhere = "reminder is not null";
-											((TextView) findViewById(R.id.special_list_where_reminder_content))
+											((TextView) view.findViewById(R.id.special_list_where_reminder_content))
 													.setText(R.string.reminder_set);
 											break;
 										case 2:
 											newWhere = "reminder is null";
-											((TextView) findViewById(R.id.special_list_where_reminder_content))
+											((TextView) view.findViewById(R.id.special_list_where_reminder_content))
 													.setText(getString(R.string.reminder_unset));
 											break;
 										default:
-											((TextView) findViewById(R.id.special_list_where_reminder_content))
+											((TextView) view.findViewById(R.id.special_list_where_reminder_content))
 													.setText(getString(R.string.empty));
 											break;
 										}
@@ -305,7 +306,7 @@ public class SpecialListSettingsActivity extends Activity {
 					}
 				});
 
-		((LinearLayout) findViewById(R.id.special_list_where_list))
+		((LinearLayout) view.findViewById(R.id.special_list_where_list))
 				.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
@@ -357,7 +358,7 @@ public class SpecialListSettingsActivity extends Activity {
 										}
 										updateWhere("list_id", (first ? ""
 												: newWhere + ")"));
-										((TextView) findViewById(R.id.special_list_where_list_content))
+										((TextView) view.findViewById(R.id.special_list_where_list_content))
 												.setText(first ? getString(R.string.empty)
 														: text);
 									}
@@ -386,7 +387,7 @@ public class SpecialListSettingsActivity extends Activity {
 					}
 				});
 
-		((LinearLayout) findViewById(R.id.special_list_where_prio))
+		((LinearLayout) view.findViewById(R.id.special_list_where_prio))
 				.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
@@ -461,7 +462,7 @@ public class SpecialListSettingsActivity extends Activity {
 										}
 										updateWhere("priority", (first ? ""
 												: newWhere + ")"));
-										((TextView) findViewById(R.id.special_list_where_prio_content))
+										((TextView) view.findViewById(R.id.special_list_where_prio_content))
 												.setText(first ? getString(R.string.empty)
 														: text);
 									}
@@ -489,7 +490,7 @@ public class SpecialListSettingsActivity extends Activity {
 						alert.show();
 					}
 				});
-		((LinearLayout) findViewById(R.id.special_list_where_content))
+		((LinearLayout) view.findViewById(R.id.special_list_where_content))
 				.setOnClickListener(new OnClickListener() {
 
 					@Override
@@ -560,7 +561,7 @@ public class SpecialListSettingsActivity extends Activity {
 												.getText().toString();
 										if (t.trim().length() == 0) {
 											updateWhere("content", "");
-											((TextView) findViewById(R.id.special_list_where_name_content))
+											((TextView) view.findViewById(R.id.special_list_where_name_content))
 													.setText(getString(R.string.empty));
 											return;
 										}
@@ -593,7 +594,7 @@ public class SpecialListSettingsActivity extends Activity {
 											break;
 										}
 										updateWhere("content", newWhere);
-										((TextView) findViewById(R.id.special_list_where_content_content))
+										((TextView) view.findViewById(R.id.special_list_where_content_content))
 												.setText(text);
 									}
 								});
@@ -604,7 +605,7 @@ public class SpecialListSettingsActivity extends Activity {
 					}
 				});
 
-		((LinearLayout) findViewById(R.id.special_list_where_name))
+		((LinearLayout) view.findViewById(R.id.special_list_where_name))
 				.setOnClickListener(new OnClickListener() {
 
 					@Override
@@ -675,7 +676,7 @@ public class SpecialListSettingsActivity extends Activity {
 												.getText().toString();
 										if (t.trim().length() == 0) {
 											updateWhere("name", "");
-											((TextView) findViewById(R.id.special_list_where_name_content))
+											((TextView) view.findViewById(R.id.special_list_where_name_content))
 													.setText(getString(R.string.empty));
 											return;
 										}
@@ -708,7 +709,7 @@ public class SpecialListSettingsActivity extends Activity {
 											break;
 										}
 										updateWhere("name", newWhere);
-										((TextView) findViewById(R.id.special_list_where_name_content))
+										((TextView) view.findViewById(R.id.special_list_where_name_content))
 												.setText(text);
 									}
 								});
@@ -720,7 +721,7 @@ public class SpecialListSettingsActivity extends Activity {
 
 				});
 
-		((LinearLayout) findViewById(R.id.special_list_where_due))
+		((LinearLayout) view.findViewById(R.id.special_list_where_due))
 				.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
@@ -742,7 +743,7 @@ public class SpecialListSettingsActivity extends Activity {
 									public void onClick(DialogInterface dialog,
 											int which) {
 										updateWhere("due", "");
-										((TextView) findViewById(R.id.special_list_where_due_content))
+										((TextView) view.findViewById(R.id.special_list_where_due_content))
 												.setText(getString(R.string.empty));
 									}
 								});
@@ -1166,7 +1167,7 @@ public class SpecialListSettingsActivity extends Activity {
 										String newWhere = "";
 										if (val == 10) {
 											newWhere = "date(due)<=date(\"now\",\"localtime\")";
-											((TextView) findViewById(R.id.special_list_where_due_content))
+											((TextView) view.findViewById(R.id.special_list_where_due_content))
 													.setText(getString(R.string.today));
 										} else {
 											String mod = "";
@@ -1209,7 +1210,7 @@ public class SpecialListSettingsActivity extends Activity {
 														: "days");
 												break;
 											}
-											((TextView) findViewById(R.id.special_list_where_due_content))
+											((TextView) view.findViewById(R.id.special_list_where_due_content))
 													.setText(s[val]
 															+ " "
 															+ getResources()
@@ -1233,10 +1234,10 @@ public class SpecialListSettingsActivity extends Activity {
 
 					private View getNumericPicker() {
 						if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB)
-							return getLayoutInflater().inflate(
+							return getActivity().getLayoutInflater().inflate(
 									R.layout.due_dialog, null);
 						else
-							return getLayoutInflater().inflate(
+							return getActivity().getLayoutInflater().inflate(
 									R.layout.due_dialog_v10, null);
 					}
 				});
@@ -1267,14 +1268,14 @@ public class SpecialListSettingsActivity extends Activity {
 					: "") + specialList.getWhereQuery() + " and " + newWhere);
 		}
 		specialList.save();
-		((TextView) findViewById(R.id.special_list_where)).setText(specialList
+		((TextView) view.findViewById(R.id.special_list_where)).setText(specialList
 				.getWhereQuery());
 	}
 
 	private View getView(int id) {
 		if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB)
-			return getLayoutInflater().inflate(id, null);
-		return View.inflate(new ContextThemeWrapper(getBaseContext(),
+			return getActivity().getLayoutInflater().inflate(id, null);
+		return View.inflate(new ContextThemeWrapper(getActivity().getBaseContext(),
 				R.style.Dialog), id, null);
 	}
 
@@ -1381,32 +1382,5 @@ public class SpecialListSettingsActivity extends Activity {
 		return returnString == "" ? getString(R.string.empty) : returnString;
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.special_list_settingsactivity, menu);
-		return true;
-	}
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
-
-			// This ID represents the Home or Up button. In the case of this
-			// activity, the Up button is shown. Use NavUtils to allow users
-			// to navigate up one level in the application structure. For
-			// more details, see the Navigation pattern on Android Design:
-			//
-			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-			//
-			NavUtils.navigateUpFromSameTask(this);
-			return true;
-		case R.id.menu_delete:
-			specialList.destroy();
-			finish();
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
 }

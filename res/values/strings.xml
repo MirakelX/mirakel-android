@@ -190,7 +190,7 @@ Device: %s\n]]>
     <string name="change_content">Change Content</string>
     <string name="task_has_content">Task has content</string>
     <string name="help_description">There are 3 main parts: on the left side you can see all lists, in the middle you can see all tasks of a list and at the right side you can see a task. You switch between the parts by swiping or clicking.</string>
-    
+
     <!-- Permissions -->
     <string name="permission_group_desc">Permissions for Access Mirakel</string>
     <string name="permission_group_lbl">Mirakel Permissions</string>
@@ -203,11 +203,13 @@ Device: %s\n]]>
 
     <!-- ACRA -->
     <string name="crash_toast_text">Ooooops ! I crashed! Please start the app again, so I can send a message to my developer</string>
-    
-<string name="crash_dialog_title">Mirakel has crashed</string>
-<string name="crash_dialog_text">An unexpected error occurred forcing the
+    <string name="crash_dialog_title">Mirakel has crashed</string>
+    <string name="crash_dialog_text">An unexpected error occurred forcing the
     application to stop. Please help us fix this by sending us error data,
     all you have to do is click OK.</string>
-<string name="crash_dialog_comment_prompt">You might add your comments about the problem below:</string>
-<string name="crash_dialog_ok_toast">Thank you !</string>
+    <string name="crash_dialog_comment_prompt">You might add your comments about the problem below:</string>
+    <string name="crash_dialog_ok_toast">Thank you !</string>
+    <string name="title_activity_special_list_settings">SpecialListSettingsActivity</string>
+    <string name="hello_world">Hello world!</string>
+
 </resources>

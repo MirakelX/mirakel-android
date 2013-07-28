@@ -35,36 +35,37 @@
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
 
-    <permission-group android:description="@string/permission_group_desc"
-                  android:label="@string/permission_group_lbl"
-                  android:name="de.azapps.mirakel.PERMISSION" />
-    <!-- Maybe use "signature" instead of "dangerous"?  -->
-    <permission 
-        android:name="de.azapps.mirakel.provider.READ_DATA" 
-        android:permissionGroup="de.azapps.mirakel.PERMISSION" 
+    <permission-group
+        android:name="de.azapps.mirakel.PERMISSION"
+        android:description="@string/permission_group_desc"
+        android:label="@string/permission_group_lbl" />
+    <!-- Maybe use "signature" instead of "dangerous"? -->
+    <permission
+        android:name="de.azapps.mirakel.provider.READ_DATA"
+        android:description="@string/permission_read_desc"
         android:label="@string/permission_read_lbl"
-        android:description="@string/permission_read_desc" 
-        android:protectionLevel="dangerous"/>
-    <permission 
-        android:name="de.azapps.mirakel.provider.WRITE_DATA" 
-        android:label="@string/permission_write_lbl"
-        android:description="@string/permission_write_desc"
-        android:permissionGroup="de.azapps.mirakel.PERMISSION" 
-        android:protectionLevel="dangerous"/>
-    <permission 
-        android:name="de.azapps.mirakel.provider.READ_WRITE_DATA" 
-        android:label="@string/permission_read_write_lbl" 
-        android:description="@string/permission_read_write_desc"
         android:permissionGroup="de.azapps.mirakel.PERMISSION"
-        android:protectionLevel="dangerous"/>
+        android:protectionLevel="dangerous" />
+    <permission
+        android:name="de.azapps.mirakel.provider.WRITE_DATA"
+        android:description="@string/permission_write_desc"
+        android:label="@string/permission_write_lbl"
+        android:permissionGroup="de.azapps.mirakel.PERMISSION"
+        android:protectionLevel="dangerous" />
+    <permission
+        android:name="de.azapps.mirakel.provider.READ_WRITE_DATA"
+        android:description="@string/permission_read_write_desc"
+        android:label="@string/permission_read_write_lbl"
+        android:permissionGroup="de.azapps.mirakel.PERMISSION"
+        android:protectionLevel="dangerous" />
     <!-- Dummy Permission for Sync-Service -->
-    <permission 
+    <permission
         android:name="de.azapps.mirakel.SYNC"
         android:label=""
-        android:protectionLevel="signatureOrSystem"
-        android:permissionGroup="de.azapps.mirakel.PERMISSION"/>
+        android:permissionGroup="de.azapps.mirakel.PERMISSION"
+        android:protectionLevel="signatureOrSystem" />
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -92,14 +93,16 @@
         <activity
             android:name="de.azapps.mirakel.main_activity.MainActivity"
             android:configChanges="orientation|screenSize"
-            android:launchMode="singleTop"
-            android:exported="true">
+            android:exported="true"
+            android:launchMode="singleTop" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="text/plain" />
             </intent-filter>
 
@@ -118,7 +121,7 @@
             android:configChanges="orientation"
             android:excludeFromRecents="true"
             android:label="@string/ui_activity_title"
-            android:theme="@style/Dialog">
+            android:theme="@style/Dialog" >
 
             <!--
                 No intent-filter here! This activity is only ever launched by
@@ -128,8 +131,8 @@
 
         <service
             android:name="de.azapps.mirakel.sync.AuthenticationService"
-            android:permission="de.azapps.mirakel.SYNC"
-            android:exported="true" >
+            android:exported="true"
+            android:permission="de.azapps.mirakel.SYNC" >
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
@@ -140,8 +143,8 @@
         </service>
         <service
             android:name="de.azapps.mirakel.sync.SyncService"
-            android:permission="de.azapps.mirakel.SYNC"
-            android:exported="true" >
+            android:exported="true"
+            android:permission="de.azapps.mirakel.SYNC" >
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" >
                 </action>
@@ -162,22 +165,20 @@
             android:label="@string/title_activity_credits" >
         </activity>
         <activity
-            android:name="de.azapps.mirakel.special_lists_settings.SpecialListSettingsActivity"
+            android:name="de.azapps.mirakel.special_lists_settings.SpecialListsSettingsActivity"
             android:label="@string/title_activity_credits" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.azapps.mirakel.special_lists_settings.SpecialListsSettings" />
         </activity>
-        
-    <activity android:name="org.acra.CrashReportDialog"
-        android:theme="@style/Dialog"
-        android:launchMode="singleInstance"
-        android:excludeFromRecents="true"
-        android:finishOnTaskLaunch="true" />
+        <activity
+            android:name="org.acra.CrashReportDialog"
+            android:excludeFromRecents="true"
+            android:finishOnTaskLaunch="true"
+            android:launchMode="singleInstance"
+            android:theme="@style/Dialog" />
 
-        <receiver 
-            android:name="de.azapps.mirakel.widget.MainWidgetProvider"
-             >
+        <receiver android:name="de.azapps.mirakel.widget.MainWidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -186,9 +187,9 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_provider" />
         </receiver>
-        <receiver 
-            android:name="de.azapps.mirakel.reminders.ReminderAlarm" 
-            android:enabled="true">
+        <receiver
+            android:name="de.azapps.mirakel.reminders.ReminderAlarm"
+            android:enabled="true" >
         </receiver>
 
         <!-- The service serving the RemoteViews to the collection widget -->
@@ -200,10 +201,10 @@
         <provider
             android:name="de.azapps.mirakel.MirakelContentProvider"
             android:authorities="de.azapps.mirakel.provider"
-            android:readPermission="de.azapps.mirakel.provider.READ_DATA"
-            android:writePermission="de.azapps.mirakel.provider.WRITE_DATA"
+            android:exported="true"
             android:permission="de.azapps.mirakel.provider.READ_WRITE_DATA"
-            android:exported="true" >
+            android:readPermission="de.azapps.mirakel.provider.READ_DATA"
+            android:writePermission="de.azapps.mirakel.provider.WRITE_DATA" >
         </provider>
 
         <service android:name="de.azapps.mirakel.services.NotificationService" />
@@ -226,6 +227,10 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.azapps.mirakel.static_activities.SettingsActivity" />
+        </activity>
+        <activity
+            android:name="de.azapps.mirakel.special_lists_settings.SpecialListSettingsActivity"
+            android:label="@string/title_activity_special_list_settings" >
         </activity>
     </application>
 
