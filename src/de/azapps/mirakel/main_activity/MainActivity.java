@@ -440,21 +440,45 @@ public class MainActivity extends ActionBarActivity implements
 			}
 		} else if (startIntent.getAction().equals(Intent.ACTION_SEND)
 				&& startIntent.getType().equals("text/plain")) {
-			String content = startIntent.getStringExtra(Intent.EXTRA_TEXT);
-			String subject = startIntent.getStringExtra(Intent.EXTRA_SUBJECT);
+			final String content = startIntent.getStringExtra(Intent.EXTRA_TEXT);
+			final String subject = startIntent.getStringExtra(Intent.EXTRA_SUBJECT);
 			if (content != null || subject != null) {
-				if (content == null)
-					content = "";
-				if (subject == null)
-					subject = "";
 				int id = getCurrentList().getId();
-
-				Task task = Task.newTask(subject, id);
-				task.setContent(content);
-				safeSafeTask(task);
-				setCurrentTask(task);
-				tasksFragment.updateList(true);
-				listFragment.update();
+				if(preferences.getBoolean("importDefaultList", false)){
+					id=preferences.getInt("defaultImportList", id);
+					Task task = Task.newTask(subject==null?"":subject, id);
+					task.setContent(content==null?"":content);
+					safeSafeTask(task);
+					setCurrentTask(task);
+					tasksFragment.updateList(true);
+					listFragment.update();
+				}else{
+					AlertDialog.Builder builder = new AlertDialog.Builder(this);
+					builder.setTitle(R.string.import_to);
+					List<CharSequence> items = new ArrayList<CharSequence>();
+					final List<Integer> list_ids = new ArrayList<Integer>();
+					int currentItem = 0;	
+					for (ListMirakel list : ListMirakel.all()) {
+						if (list.getId() > 0) {
+							items.add(list.getName());
+							list_ids.add(list.getId());
+						}
+					}
+					builder.setSingleChoiceItems(
+							items.toArray(new CharSequence[items.size()]), currentItem,
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int item) {
+									Task task = Task.newTask(subject==null?"":subject,list_ids.get(item));
+									task.setContent(content==null?"":content);
+									safeSafeTask(task);
+									setCurrentTask(task);
+									tasksFragment.updateList(true);
+									listFragment.update();
+									dialog.dismiss();
+								}
+							});
+					builder.create().show();
+				}
 			}
 		} else if (startIntent.getAction().equals(TASK_DONE)
 				|| startIntent.getAction().equals(TASK_LATER)) {

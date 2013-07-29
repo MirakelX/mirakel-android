@@ -125,8 +125,13 @@
             android:summary="@string/special_lists_click_summary"
             android:title="@string/special_lists_click" />
     </PreferenceCategory>
-    <!-- Backup -->
+    <!-- Backup/Import -->
     <PreferenceCategory android:title="@string/settings_backup" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="importDefaultList"
+            android:summary="@string/import_default_list_summary"
+            android:title="@string/import_default_list" />
         <Preference
             android:key="backup"
             android:summary="@string/backup_click_summary"

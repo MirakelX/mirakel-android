@@ -91,6 +91,9 @@
     <string name="import_sure_summary" formatted="false">All data will be overridden! (Importing from %s)</string>
     <string name="import_title">Select Mirakel File</string>
     <string name="no_filemanager">Please install a File Manager</string>
+    <string name="import_default_list_summary">Do you want to set a default List for Imports?</string>
+    <string name="import_default_list">Import Default-List</string>
+    <string name="import_to">Import to</string>
 
     <!-- Changelog -->
     <string name="changelog_click_summary">View the changelog</string>

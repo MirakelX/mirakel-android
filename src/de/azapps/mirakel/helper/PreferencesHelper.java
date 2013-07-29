@@ -477,6 +477,40 @@ public class PreferencesHelper {
 						return true;
 					}
 				});
+		CheckBoxPreference importDefaultList = (CheckBoxPreference) findPreference("importDefaultList");
+		importDefaultList.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+			
+			@Override
+			public boolean onPreferenceChange(Preference preference, Object newValue) {
+				if((Boolean)newValue){
+					AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+					builder.setTitle(R.string.import_to);
+					List<CharSequence> items = new ArrayList<CharSequence>();
+					final List<Integer> list_ids = new ArrayList<Integer>();
+					int currentItem = 0;	
+					for (ListMirakel list : ListMirakel.all()) {
+						if (list.getId() > 0) {
+							items.add(list.getName());
+							list_ids.add(list.getId());
+						}
+					}
+					builder.setSingleChoiceItems(
+							items.toArray(new CharSequence[items.size()]), currentItem,
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int item) {
+									SharedPreferences settings = PreferenceManager
+											.getDefaultSharedPreferences(activity);
+									SharedPreferences.Editor editor = settings.edit();
+									editor.putInt("defaultImportList", list_ids.get(item));
+									editor.commit();	
+									dialog.dismiss();
+								}
+							});
+					builder.create().show();
+				}
+				return true;
+			}
+		});
 	}
 
 	private void showFileChooser(int code, String title) {
