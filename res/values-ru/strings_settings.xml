@@ -37,12 +37,12 @@
   <string name="special_lists_click_summary">Управление расширенными списками</string>
   <string name="settings_misc">Прочее</string>
   <string name="settings_backup">Резервное копирование и импорт</string>
-  <string name="backup_click_summary" formatted="false">Резервное копирование базы данных на SD карту (%s)</string>
+  <string name="backup_click_summary">Резервное копирование базы данных на SD карту (%s)</string>
   <string name="backup_click">Резервная копия</string>
   <string name="import_click_summary">Импорт базы данных</string>
   <string name="import_click">Импорт</string>
   <string name="import_sure">Вы уверены?</string>
-  <string name="import_sure_summary" formatted="false">Все данные будут изменены! (Импорт из %s)</string>
+  <string name="import_sure_summary">Все данные будут изменены! (Импорт из %s)</string>
   <string name="import_title">Выберите Mirakel-файл</string>
   <string name="no_filemanager">Пожалуйста, установите менеджер файлов</string>
   <string name="import_default_list_summary">Хотите Вы выбрать список для импорта?</string>

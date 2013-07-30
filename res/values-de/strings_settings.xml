@@ -37,12 +37,12 @@
   <string name="special_lists_click_summary">Verwalte Erweiterte Listen</string>
   <string name="settings_misc">Sonstiges</string>
   <string name="settings_backup">Backup und Import</string>
-  <string name="backup_click_summary" formatted="false">Sichere die Datenbank auf die SD-Karte (%s)</string>
+  <string name="backup_click_summary">Sichere die Datenbank auf die SD-Karte (%s)</string>
   <string name="backup_click">Backup</string>
   <string name="import_click_summary">Importiere die Datenbank</string>
   <string name="import_click">Import</string>
   <string name="import_sure">Bist du sicher?</string>
-  <string name="import_sure_summary" formatted="false">Alle Daten werden überschrieben! (Import von %s)</string>
+  <string name="import_sure_summary">Alle Daten werden überschrieben! (Import von %s)</string>
   <string name="import_title">Mirakel Datei auswählen</string>
   <string name="no_filemanager">Installiere bitte einen Datei-Manager</string>
   <string name="import_default_list_summary">Möchtest du eine Standardliste für den Import aus anderen Apps auswählen?</string>

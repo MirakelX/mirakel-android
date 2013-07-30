@@ -65,7 +65,6 @@
     <string name="notifications_big_summary">Show big Notifications?</string>
     <string name="notifications_zero_show_summary">Hide, if there are no tasks in the selected List?</string>
     <string name="notifications_zero_show">Hide if empty</string>
-    
     <string name="reminders_persistent">Persistent reminders</string>
     <string name="reminders_persistent_summary">Should the reminders be persistent?</string>
 
@@ -83,12 +82,12 @@
     <string name="settings_misc">Misc</string>
     <!-- Backup -->
     <string name="settings_backup">Backup and Import</string>
-    <string name="backup_click_summary" formatted="false">Backup the database to sdcard (%s)</string>
+    <string name="backup_click_summary">Backup the database to sdcard (%s)</string>
     <string name="backup_click">Backup</string>
     <string name="import_click_summary">Import the database</string>
     <string name="import_click">Import</string>
     <string name="import_sure">Are you sure?</string>
-    <string name="import_sure_summary" formatted="false">All data will be overridden! (Importing from %s)</string>
+    <string name="import_sure_summary">All data will be overridden! (Importing from %s)</string>
     <string name="import_title">Select Mirakel File</string>
     <string name="no_filemanager">Please install a File Manager</string>
     <string name="import_default_list_summary">Do you want to set a default List for Imports?</string>
@@ -112,11 +111,11 @@
     <string name="highlightSelected">Highlight Selected</string>
     <string name="showDone">Show done tasks</string>
     <string name="showDone_summary">Should I show done tasks?</string>
-    
     <string name="dark_theme">Dark Theme</string>
     <string name="use_dark_theme">Do you want to use a Dark Theme?</string>
     <string name="kill_button">Kill button</string>
     <string name="kill_app">Close App</string>
     <string name="show_kill_button">Do you want me to show a Kill-Button</string>
     <string name="ui_settings_title">User Interface</string>
+
 </resources>

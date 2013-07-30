@@ -111,17 +111,17 @@
     <string name="preferences">Preferences</string>
 
     <!-- Notification -->
-    <string name="notification_title_general" formatted="false">%d Tasks in %s</string>
-    <string name="notification_title_general_single" formatted="false">1 Task in %s</string>
+    <string name="notification_title_general">%1$d Tasks in %2$s</string>
+    <string name="notification_title_general_single">1 Task in %s</string>
     <string name="notification_title_empty">Enjoy your day!</string>
-    <string name="reminder_notification_title" formatted="false">To Do: %s</string>
-    <string name="reminder_notification_priority" formatted="false">Priority: %s</string>
-    <string name="reminder_notification_list" formatted="false">List: %s</string>
-    <string name="reminder_notification_due" formatted="false">Due: %s</string>
+    <string name="reminder_notification_title">To Do: %s</string>
+    <string name="reminder_notification_priority">Priority: %s</string>
+    <string name="reminder_notification_list">List: %s</string>
+    <string name="reminder_notification_due">Due: %s</string>
     <string name="reminder_notification_done">Done</string>
     <string name="reminder_notification_later">Later</string>
     <string name="reminder_notification_done_confirm">I have set the task as „done“</string>
-    <string name="reminder_notification_later_confirm" formatted="false">I\'ll remind you in %d minutes</string>
+    <string name="reminder_notification_later_confirm">I\'ll remind you in %d minutes</string>
     <string name="list_vanished">Huch, the task has vanished. I\'m sorry…</string>
     <string name="task_vanished">Huch, the list of the task has vanished. I\'m sorry…</string>
 
@@ -158,26 +158,26 @@
     <!-- Sharing -->
     <string name="share_using">Share with</string>
     <string name="share_task">Share task</string>
-    <string name="share_task_title_with_date" formatted="false">%s (%s)</string>
-    <string name="share_task_title" formatted="false">%s</string>
+    <string name="share_task_title_with_date">%1$s (%2$s)</string>
+    <string name="share_task_title">%s</string>
     <string name="share_list">Share list</string>
-    <string name="share_list_title" formatted="false">%s (%d)</string>
+    <string name="share_list_title">%1$s (%2$d)</string>
     <string name="share_footer">Shared with Mirakel\nThe free (like in freedom) ToDo–List tool for Android and the Web\nhttp://mirakel.azapps.de</string>
 
     <!-- Search -->
     <string name="search_hint">Search tasks</string>
     <string name="search">Search</string>
-    <string name="search_result_title" formatted="false">Search for %s</string>
+    <string name="search_result_title">Search for %s</string>
 
     <!-- Contact -->
     <string name="contact_email">mirakel@azapps.de</string>
     <string name="contact_subject">Mirakel Bug-report/Contact request</string>
-    <string name="contact_text" formatted="false">
+    <string name="contact_text">
 <![CDATA[\n\n
 --\n
-Mirakel-version: %s\n
-SDK-version: %d\n
-Device: %s\n]]>
+Mirakel-version: %1$s\n
+SDK-version: %2$d\n
+Device: %3$s\n]]>
     </string>
     <string name="contact_no_client">No Mail-Client installed</string>
     <string name="contact_chooser">Send mail&#8230;</string>
@@ -186,7 +186,7 @@ Device: %s\n]]>
     <string name="backup_import_error">There was an Error while importing the database</string>
     <string name="backup_import_ok">The Import was fine - Please restart Mirakel</string>
     <string name="backup_export_error">There was an Error while exporting the database</string>
-    <string name="backup_export_ok" formatted="false">Exported to %s</string>
+    <string name="backup_export_ok">Exported to %s</string>
     <string name="change_content">Change Content</string>
     <string name="task_has_content">Task has content</string>
     <string name="help_description">There are 3 main parts: on the left side you can see all lists, in the middle you can see all tasks of a list and at the right side you can see a task. You switch between the parts by swiping or clicking.</string>
@@ -210,6 +210,5 @@ Device: %s\n]]>
     <string name="crash_dialog_comment_prompt">You might add your comments about the problem below:</string>
     <string name="crash_dialog_ok_toast">Thank you !</string>
     <string name="title_activity_special_list_settings">SpecialListSettingsActivity</string>
-    <string name="hello_world">Hello world!</string>
 
 </resources>

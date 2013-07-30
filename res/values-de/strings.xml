@@ -56,17 +56,17 @@
   <string name="title_settings">Einstellungen</string>
   <string name="empty_list">Keine Aufgaben</string>
   <string name="preferences">Einstellungen</string>
-  <string name="notification_title_general" formatted="false">%d Aufgaben in %s</string>
-  <string name="notification_title_general_single" formatted="false">1 Aufgabe in %s</string>
+  <string name="notification_title_general">%1$d Aufgaben in %2$s</string>
+  <string name="notification_title_general_single">1 Aufgabe in %s</string>
   <string name="notification_title_empty">Genieße deinen Tag!</string>
-  <string name="reminder_notification_title" formatted="false">To Do: %s</string>
-  <string name="reminder_notification_priority" formatted="false">Priorität: %s</string>
-  <string name="reminder_notification_list" formatted="false">Liste: %s</string>
-  <string name="reminder_notification_due" formatted="false">Termin: %s</string>
+  <string name="reminder_notification_title">To Do: %s</string>
+  <string name="reminder_notification_priority">Priorität: %s</string>
+  <string name="reminder_notification_list">Liste: %s</string>
+  <string name="reminder_notification_due">Termin: %s</string>
   <string name="reminder_notification_done">Erledigt</string>
   <string name="reminder_notification_later">Später</string>
   <string name="reminder_notification_done_confirm">Ich habe die Aufgabe als „erledigt“ markiert</string>
-  <string name="reminder_notification_later_confirm" formatted="false">Ich erinnere dich in %d Minuten</string>
+  <string name="reminder_notification_later_confirm">Ich erinnere dich in %d Minuten</string>
   <string name="list_vanished">Huch, ist die Aufgabe verschwunden. Es tut mir leid…</string>
   <string name="task_vanished">Huch, die Liste der Aufgabe verschwunden. Es tut mir leid…</string>
   <string name="login_activity_username_label">Nutzername</string>
@@ -85,28 +85,28 @@
   <string name="changelog_show_full">mehr…</string>
   <string name="share_using">Teilen</string>
   <string name="share_task">Teile Aufgabe</string>
-  <string name="share_task_title_with_date" formatted="false">%s (%s)</string>
-  <string name="share_task_title" formatted="false">%s</string>
+  <string name="share_task_title_with_date">%1$s (%2$s)</string>
+  <string name="share_task_title">%s</string>
   <string name="share_list">Teile Liste</string>
-  <string name="share_list_title" formatted="false">%s (%d)</string>
+  <string name="share_list_title">%1$s (%2$d)</string>
   <string name="share_footer">Mit Mirakel geteilt\n Die freie (wie in Freiheit) ToDo-Listen App für Android und das Web\n http://mirakel.azapps.de</string>
   <string name="search_hint">Suche Aufgaben</string>
   <string name="search">Suche</string>
-  <string name="search_result_title" formatted="false">Suche nach %s</string>
+  <string name="search_result_title">Suche nach %s</string>
   <string name="contact_email">mirakel@azapps.de</string>
   <string name="contact_subject">Mirakel Bug-report/Kontaktanfrage</string>
-  <string name="contact_text" formatted="false"><![CDATA[\n\n
+  <string name="contact_text"><![CDATA[\n\n
 --\n
-Mirakel-version: %s\n
-SDK-version: %d\n
-Device: %s\n]]>
+Mirakel-version: %1$s\n
+SDK-version: %2$d\n
+Device: %3$s\n]]>
     </string>
   <string name="contact_no_client">Keine Mail-App installiert</string>
   <string name="contact_chooser">Sende E-Mail…</string>
   <string name="backup_import_error">Beim Importieren der Datenbank ist ein Fehler aufgetreten</string>
   <string name="backup_import_ok">Der Import war erfolgreich – Starte neu…</string>
   <string name="backup_export_error">Es gab ein Fehler beim Exportieren der Datenbank</string>
-  <string name="backup_export_ok" formatted="false">Nach %s exportiert</string>
+  <string name="backup_export_ok">Nach %s exportiert</string>
   <string name="change_content">Notiz ändern</string>
   <string name="task_has_content">Aufgabe hat eine Notiz</string>
   <string name="help_description">Es gibt 3 Hauptteile: Auf der linken Seite siehst du alle Listen, in der Mitte alle Aufgaben einer Liste und auf der rechten Seite die Aufgabe. Du kannst zwischen den Teilen durch Wischen und klicken wechseln.</string>
@@ -124,7 +124,6 @@ Device: %s\n]]>
   <string name="crash_dialog_comment_prompt">Du kannst noch einen Kommentar anfügen:</string>
   <string name="crash_dialog_ok_toast">Vielen Dank!</string>
   <string name="title_activity_special_list_settings">Erweiterte Listen</string>
-  <string name="hello_world">Hallo Welt!</string>
   <string-array name="task_sorting_items">
     <item>Standard</item>
     <item>Termin</item>
