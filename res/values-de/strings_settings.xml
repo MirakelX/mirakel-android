@@ -45,6 +45,9 @@
   <string name="import_sure_summary" formatted="false">Alle Daten werden überschrieben! (Import von %s)</string>
   <string name="import_title">Mirakel Datei auswählen</string>
   <string name="no_filemanager">Installiere bitte einen Datei-Manager</string>
+  <string name="import_default_list_summary">Möchtest du eine Standardliste für den Import auswählen?</string>
+  <string name="import_default_list">Standardliste für den Import</string>
+  <string name="import_to">Importiere in</string>
   <string name="changelog_click_summary">Changelog anzeigen</string>
   <string name="changelog_click">Changelog</string>
   <string name="import_astrid_click_summary">Importiere aus einer Astrid-Datei</string>
@@ -59,6 +62,11 @@
   <string name="highlightSelected">Ausgewählte hervorheben</string>
   <string name="showDone">Erledigt Aufgaben anzeigen</string>
   <string name="showDone_summary">Soll ich erledigte Aufgaben anzeigen?</string>
+  <string name="dark_theme">Dunkles Theme</string>
+  <string name="use_dark_theme">Möchtest du das dunkles Theme benutzen?</string>
+  <string name="kill_button">Schließen-Button</string>
+  <string name="kill_app">App schließen</string>
+  <string name="show_kill_button">Soll ich einen Schließen-Button zeigen?</string>
   <string-array name="sync_frequencies">
     <item>5 min</item>
     <item>10 min</item>

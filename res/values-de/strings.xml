@@ -78,7 +78,7 @@
   <string name="login_activity_newaccount_text">Melde dich mit deinem Mirakel-Account an.</string>
   <string name="ui_activity_authenticating">Melde an…</string>
   <string name="ui_activity_title">Anmelden</string>
-  <string name="title_activity_special_lists_settings">SpecialListsSettings</string>
+  <string name="title_activity_special_lists_settings">Erweiterte Listen</string>
   <string name="changelog_full_title">Änderungen</string>
   <string name="changelog_title">Was ist neu?</string>
   <string name="changelog_ok_button">OK</string>
@@ -123,6 +123,8 @@ Device: %s\n]]>
   <string name="crash_dialog_text">Ein unerwarteter Fehler ist aufgetreten. Die Anwendung musste beendet werden. Bitte hilf uns den Fehler zu finden, indem du uns die Fehlerdaten schickst. Du musst nur OK antippen.</string>
   <string name="crash_dialog_comment_prompt">Du kannst noch einen Kommentar anfügen:</string>
   <string name="crash_dialog_ok_toast">Vielen Dank!</string>
+  <string name="title_activity_special_list_settings">Erweiterte Listen</string>
+  <string name="hello_world">Hallo Welt!</string>
   <string-array name="task_sorting_items">
     <item>Standard</item>
     <item>Termin</item>
