@@ -450,7 +450,7 @@ public class Task extends TaskBase {
 			where = "list_id='" + listId + "'";
 		}
 		if (!showDone) {
-			where += " AND done=0";
+			where += (where.trim().equals("")?"":" AND ")+" done=0";
 		}
 		return getTasksCursor(listId, sorting, where);
 	}
