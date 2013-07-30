@@ -77,7 +77,8 @@
     </PreferenceCategory>
 
     <!-- GUI -->
-    <PreferenceCategory android:title="@string/ui_settings_title" >
+    <PreferenceCategory
+        android:key="category_gui" android:title="@string/ui_settings_title" >
 
         <CheckBoxPreference
             android:defaultValue="false"

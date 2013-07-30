@@ -141,7 +141,7 @@ public class PreferencesHelper {
 		}
 		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
 			CheckBoxPreference mCheckBoxPref = (CheckBoxPreference) findPreference("DarkTheme");
-			PreferenceCategory mCategory = (PreferenceCategory) findPreference("category_misc");
+			PreferenceCategory mCategory = (PreferenceCategory) findPreference("category_gui");
 			mCategory.removePreference(mCheckBoxPref);
 		}
 		
