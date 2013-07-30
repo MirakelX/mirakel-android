@@ -67,6 +67,7 @@
   <string name="kill_button">Кнопка \"Закрыть\"</string>
   <string name="kill_app">Закрыть App</string>
   <string name="show_kill_button">Должен я показать кнопку \"Закрыть\"?</string>
+  <string name="ui_settings_title">Интерфейс</string>
   <string-array name="sync_frequencies">
     <item>5 мин.</item>
     <item>10 мин.</item>

@@ -118,4 +118,5 @@
     <string name="kill_button">Kill button</string>
     <string name="kill_app">Close App</string>
     <string name="show_kill_button">Do you want me to show a Kill-Button</string>
+    <string name="ui_settings_title">User Interface</string>
 </resources>

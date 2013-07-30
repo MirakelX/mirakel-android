@@ -27,55 +27,12 @@
             android:summary="@string/startup_show_lists_summary"
             android:title="@string/startup_show_lists" />
 
-
         <ListPreference
             android:defaultValue="0"
             android:key="startupList"
             android:summary="@string/startup_list_summary"
             android:title="@string/startup_list" />
     </PreferenceCategory>
-
-    <!-- Sync -->
-    <PreferenceCategory android:title="@string/sync_title" >
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="syncUse"
-            android:summary="@string/sync_use_summary"
-            android:title="@string/sync_use" />
-
-        <EditTextPreference
-            android:dependency="syncUse"
-            android:inputType="textUri"
-            android:key="syncServer"
-            android:summary="@string/sync_server_summary"
-            android:title="@string/sync_server" />
-        <!--
-             <EditTextPreference
-            android:dependency="syncUse"
-            android:key="syncEmail"
-            android:inputType="textEmailAddress"
-            android:summary="@string/sync_email_summary"
-            android:title="@string/sync_email" />
-        -->
-        <EditTextPreference
-            android:dependency="syncUse"
-            android:inputType="textPassword"
-            android:key="syncPassword"
-            android:summary="@string/sync_password_summary"
-            android:title="@string/sync_password" />
-
-        <ListPreference
-            android:dependency="syncUse"
-            android:entries="@array/sync_frequencies"
-            android:entryValues="@array/sync_frequencies_values"
-            android:key="syncFrequency"
-            android:summary="@string/sync_frequency_summary"
-            android:title="@string/sync_frequency" />
-    </PreferenceCategory>
-
-    <!-- Special Lists -->
-    <!-- TODO: add ability to manage Special Lists -->
-
 
     <!-- Notifications -->
     <PreferenceCategory
@@ -118,41 +75,9 @@
             android:summary="@string/reminders_persistent_summary"
             android:title="@string/reminders_persistent" />
     </PreferenceCategory>
-    <!-- Special Lists -->
-    <PreferenceCategory android:title="@string/special_lists_title" >
-        <Preference
-            android:key="special_lists"
-            android:summary="@string/special_lists_click_summary"
-            android:title="@string/special_lists_click" />
-    </PreferenceCategory>
-    <!-- Backup/Import -->
-    <PreferenceCategory android:title="@string/settings_backup" >
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="importDefaultList"
-            android:summary="@string/import_default_list_summary"
-            android:title="@string/import_default_list" />
-        <Preference
-            android:key="backup"
-            android:summary="@string/backup_click_summary"
-            android:title="@string/backup_click" />
-        <Preference
-            android:key="import"
-            android:summary="@string/import_click_summary"
-            android:title="@string/import_click" />
-        <Preference
-            android:key="import_astrid"
-            android:summary="@string/import_astrid_click_summary"
-            android:title="@string/import_astrid_click" />
-    </PreferenceCategory>
-    <!-- Misc -->
-    <PreferenceCategory
-        android:key="category_misc" 
-        android:title="@string/settings_misc" >
-        <Preference
-            android:key="changelog"
-            android:summary="@string/changelog_click_summary"
-            android:title="@string/changelog_click" />
+
+    <!-- GUI -->
+    <PreferenceCategory android:title="@string/ui_settings_title" >
 
         <CheckBoxPreference
             android:defaultValue="false"
@@ -174,6 +99,84 @@
             android:key="KillButton"
             android:summary="@string/show_kill_button"
             android:title="@string/kill_button" />
+    </PreferenceCategory>
+
+    <!-- Special Lists -->
+    <PreferenceCategory android:title="@string/special_lists_title" >
+        <Preference
+            android:key="special_lists"
+            android:summary="@string/special_lists_click_summary"
+            android:title="@string/special_lists_click" />
+    </PreferenceCategory>
+
+    <!-- Backup/Import -->
+    <PreferenceCategory android:title="@string/settings_backup" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="importDefaultList"
+            android:summary="@string/import_default_list_summary"
+            android:title="@string/import_default_list" />
+
+        <Preference
+            android:key="backup"
+            android:summary="@string/backup_click_summary"
+            android:title="@string/backup_click" />
+        <Preference
+            android:key="import"
+            android:summary="@string/import_click_summary"
+            android:title="@string/import_click" />
+        <Preference
+            android:key="import_astrid"
+            android:summary="@string/import_astrid_click_summary"
+            android:title="@string/import_astrid_click" />
+    </PreferenceCategory>
+
+    <!-- Sync -->
+    <PreferenceCategory android:title="@string/sync_title" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="syncUse"
+            android:summary="@string/sync_use_summary"
+            android:title="@string/sync_use" />
+
+        <EditTextPreference
+            android:dependency="syncUse"
+            android:inputType="textUri"
+            android:key="syncServer"
+            android:summary="@string/sync_server_summary"
+            android:title="@string/sync_server" />
+        <!--
+             <EditTextPreference
+            android:dependency="syncUse"
+            android:key="syncEmail"
+            android:inputType="textEmailAddress"
+            android:summary="@string/sync_email_summary"
+            android:title="@string/sync_email" />
+        -->
+        <EditTextPreference
+            android:dependency="syncUse"
+            android:inputType="textPassword"
+            android:key="syncPassword"
+            android:summary="@string/sync_password_summary"
+            android:title="@string/sync_password" />
+
+        <ListPreference
+            android:dependency="syncUse"
+            android:entries="@array/sync_frequencies"
+            android:entryValues="@array/sync_frequencies_values"
+            android:key="syncFrequency"
+            android:summary="@string/sync_frequency_summary"
+            android:title="@string/sync_frequency" />
+    </PreferenceCategory>
+
+    <!-- Misc -->
+    <PreferenceCategory
+        android:key="category_misc"
+        android:title="@string/settings_misc" >
+        <Preference
+            android:key="changelog"
+            android:summary="@string/changelog_click_summary"
+            android:title="@string/changelog_click" />
     </PreferenceCategory>
 
 </PreferenceScreen>
