@@ -17,6 +17,18 @@
     </style>
   </head>
   <body>
+$ 1.0.1
+  % Version 1.0.1
+  _ 2013-07-30
+  ! Hey you, thank you for using this app! We have already more than 500 downloads. Thank you for your ideas and Bug-reports. Please send more!
+    * Bugfixes
+    * Improved Tablet-UI
+    * Dark theme
+    * Close Button
+    * Russian translation
+    * ActionBar for Android 2.2
+  ! We are working hard, programming a new, easy to install server for Mirakel! 
+  ! If you want to help us, get in touch with us!
 $ 1.0.0
   % Version 1.0.0
   _ 2013-07-21
