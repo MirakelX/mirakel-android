@@ -231,6 +231,10 @@ public class MainActivity extends ActionBarActivity implements
 			break;
 		case R.id.menu_kill_button:
 			//Only Close
+			NotificationService.stop(this);
+			if(startService(new Intent(MainActivity.this, NotificationService.class)) != null) { 
+			    stopService(new Intent(MainActivity.this,NotificationService.class));
+			}
 			finish();
 		default:
 			return super.onOptionsItemSelected(item);

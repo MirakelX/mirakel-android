@@ -477,6 +477,31 @@ public class PreferencesHelper {
 						return true;
 					}
 				});
+		CheckBoxPreference killButton= (CheckBoxPreference) findPreference("KillButton");
+		killButton.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+			
+			@Override
+			public boolean onPreferenceChange(Preference preference, Object newValue) {
+				if((Boolean) newValue){
+					AlertDialog.Builder builder=new AlertDialog.Builder(activity);
+					builder.setTitle(R.string.kill_sure);
+					builder.setMessage(R.string.kill_sure_message)
+					.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+						}
+					}).setNegativeButton(android.R.string.cancel, new OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							((CheckBoxPreference) findPreference("KillButton"))
+									.setChecked(false);
+							
+						}
+					}).show();
+				}
+				return true;
+			}
+		});
 		CheckBoxPreference importDefaultList = (CheckBoxPreference) findPreference("importDefaultList");
 		importDefaultList.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 			

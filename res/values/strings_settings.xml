@@ -115,6 +115,8 @@
     <string name="use_dark_theme">Do you want to use a Dark Theme?</string>
     <string name="kill_button">Kill button</string>
     <string name="kill_app">Close App</string>
+    <string name="kill_sure">Are you really sure???</string>
+    <string name="kill_sure_message">When you close the app, you do not get any reminders! Please consider to disable only the Notification (or make it not persistent, so you can remove it.)</string>
     <string name="show_kill_button">Do you want me to show a Kill-Button</string>
     <string name="ui_settings_title">User Interface</string>
 

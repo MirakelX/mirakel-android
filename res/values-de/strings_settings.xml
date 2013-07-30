@@ -66,6 +66,8 @@
   <string name="use_dark_theme">Möchtest du das dunkles Theme benutzen?</string>
   <string name="kill_button">Schließen-Button</string>
   <string name="kill_app">App schließen</string>
+  <string name="kill_sure">Bist du wirklich sicher???</string>
+  <string name="kill_sure_message">Wenn du die App schließt, bekommst du auch keine Benachrichtigungen! Vielleicht solltest du einfach die Benachrichtigungen deaktivieren (oder sie nicht-persistent machen)</string>
   <string name="show_kill_button">Soll ich einen Schließen-Button zeigen?</string>
   <string name="ui_settings_title">Benutzeroberfläche</string>
   <string-array name="sync_frequencies">

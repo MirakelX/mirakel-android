@@ -61,11 +61,16 @@ public class NotificationService extends Service {
 		notifier();
 		NotificationService.setNotificationService(this);
 	}
+
 	@Override
-	public void onDestroy (){
-		//Do nothing
+	public void onDestroy() {
+		// Do nothing
 	}
-	
+
+	public static void stop(Context ctx) {
+		NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(NOTIFICATION_SERVICE);
+		notificationManager.cancel(Mirakel.NOTIF_DEFAULT);
+	}
 
 	/**
 	 * Updates the Notification
@@ -94,7 +99,7 @@ public class NotificationService extends Service {
 
 		// Get the data
 		ListMirakel todayList = ListMirakel.getList(listId);
-		if(todayList==null)
+		if (todayList == null)
 			return;
 		List<Task> todayTasks = todayList.tasks();
 		String notificationTitle;
