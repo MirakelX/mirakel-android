@@ -69,7 +69,7 @@
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="17" />
+        android:targetSdkVersion="18" />
 
     <application
         android:name="de.azapps.mirakel.Mirakel"
@@ -227,10 +227,6 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.azapps.mirakel.static_activities.SettingsActivity" />
-        </activity>
-        <activity
-            android:name="de.azapps.mirakel.special_lists_settings.SpecialListSettingsActivity"
-            android:label="@string/title_activity_special_list_settings" >
         </activity>
     </application>
 
