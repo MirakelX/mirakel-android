@@ -1,7 +1,5 @@
 package de.azapps.mirakel.special_lists_settings;
 
-import de.azapps.mirakel.model.list.SpecialList;
-import de.azapps.mirakelandroid.R;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
@@ -9,6 +7,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakelandroid.R;
 
 //@SuppressLint("NewApi")
 public class SpecialListsSettingsActivity extends ActionBarActivity {

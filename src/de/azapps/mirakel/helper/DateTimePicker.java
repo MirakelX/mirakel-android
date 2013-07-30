@@ -18,6 +18,7 @@ package de.azapps.mirakel.helper;
  */
 
 import java.util.Calendar;
+
 import android.content.Context;
 import android.os.Build;
 import android.preference.PreferenceManager;
