@@ -33,7 +33,7 @@
 
     <string name="list_menu_new_special_list">New Speciallist</string>
     <string name="special_list_where_prio_title_text">Priority</string>
-    <string name="special_list_where_prio_content_text"></string>
+    <string name="special_list_where_prio_content_text"> </string>
     <string name="special_list_where_name_title_text">Name</string>
     <string name="special_list_where_content_title_text">Content</string>
     <string name="special_list_where_list_title_text">List</string>

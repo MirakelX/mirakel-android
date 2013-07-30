@@ -10,7 +10,6 @@
   <string name="special_list_first">По умолчанию</string>
   <string name="list_menu_new_special_list">Новый расширенный список</string>
   <string name="special_list_where_prio_title_text">Приоритет</string>
-  <string name="special_list_where_prio_content_text"></string>
   <string name="special_list_where_name_title_text">Имя</string>
   <string name="special_list_where_content_title_text">Комментарий</string>
   <string name="special_list_where_list_title_text">Список</string>
@@ -30,6 +29,7 @@
   <string name="where_like_contain_text">Содержит</string>
   <string name="where_like_begin_text">Начинается с</string>
   <string name="where_like_end_text">Оканчивается на</string>
+  <string name="special_list_where_prio_content_text"> </string>
   <string name="not">Не</string>
   <string-array name="special_list_def_date_picker">
     <item>Нет даты</item>
