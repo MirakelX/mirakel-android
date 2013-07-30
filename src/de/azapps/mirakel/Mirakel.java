@@ -113,4 +113,7 @@ public class Mirakel extends Application {
 	public static class NoSuchListException extends Exception {
 		static final long serialVersionUID = 1374828057;
 	}
+	public static class NoSuchTaskException extends Exception {
+		static final long serialVersionUID = 1374828058;
+	}
 }

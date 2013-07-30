@@ -31,7 +31,7 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 
 class TaskBase {
-	private long id;
+	private long id=0;
 	private ListMirakel list;
 	private String name;
 	private String content;
