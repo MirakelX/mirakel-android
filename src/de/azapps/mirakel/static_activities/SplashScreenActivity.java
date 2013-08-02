@@ -27,6 +27,7 @@ import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.Window;
 import de.azapps.mirakel.main_activity.MainActivity;
+import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakelandroid.R;
 
@@ -55,8 +56,12 @@ public class SplashScreenActivity extends Activity {
 				intent.setAction(MainActivity.SHOW_LISTS);
 				startActivity(intent);
 			} else {
+				ListMirakel sl=SpecialList.firstSpecial();
+				if(sl==null){
+					sl=SpecialList.newSpecialList(getString(R.string.list_all), " done=0 ", true);
+				}
 				int listId = Integer.parseInt(preferences.getString(
-						"startupList", "" + SpecialList.first().getId()));
+						"startupList", "" + sl.getId()));
 				Intent intent = new Intent(SplashScreenActivity.this,
 						MainActivity.class);
 				intent.setAction(MainActivity.SHOW_LIST);
