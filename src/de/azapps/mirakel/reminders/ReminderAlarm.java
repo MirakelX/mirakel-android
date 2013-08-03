@@ -245,6 +245,8 @@ public class ReminderAlarm extends BroadcastReceiver {
 		intent.putExtra(EXTRA_ID, task.getId());
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx, 0,
 				intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		if(pendingIntent==null || task.getReminder()==null)
+			return;
 		alarmManager.set(AlarmManager.RTC_WAKEUP, task.getReminder()
 				.getTimeInMillis(), pendingIntent);
 	}

@@ -122,6 +122,11 @@ public class Task extends TaskBase {
 		dbHelper = new DatabaseHelper(context);
 		database = dbHelper.getWritableDatabase();
 	}
+	
+	public static void init(DatabaseHelper dbhelper) {
+		dbHelper=dbhelper;
+		database= dbHelper.getWritableDatabase();
+	}
 
 	/**
 	 * Close the Database-Connection
