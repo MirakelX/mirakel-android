@@ -349,6 +349,13 @@ public class MainActivity extends ActionBarActivity implements
 			}
 			if(darkTheme!=preferences.getBoolean("DarkTheme",false)){
 				finish();
+				if (startIntent == null) {
+					startIntent = new Intent(MainActivity.this,
+							MainActivity.class);
+					startIntent.setAction(MainActivity.SHOW_LISTS);
+					Log.wtf(TAG, "startIntent is null by switching theme");
+
+				}
 				startActivity(startIntent);				
 			}
 			loadMenu(mViewPager.getCurrentItem());
