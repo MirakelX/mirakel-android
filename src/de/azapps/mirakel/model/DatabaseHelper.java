@@ -26,6 +26,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
@@ -36,7 +37,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String TAG = "DatabaseHelper";
 	private Context context;
-	public static final int DATABASE_VERSION = 10;
+	public static final int DATABASE_VERSION = 11;
 
 	public DatabaseHelper(Context ctx) {
 		super(ctx, "mirakel.db", null, DATABASE_VERSION);
@@ -161,6 +162,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			db.execSQL("UPDATE special_lists SET def_date=0 where _id=2 and def_date=null");
 			db.execSQL("UPDATE special_lists SET def_date=7 where _id=3 and def_date=null");
 			db.execSQL("UPDATE special_lists SET def_date=-1, active=0 where _id=4 and def_date=null");
+		case 10:
+			db.execSQL("Alter Table " + Task.TABLE
+					+ " add column uuid TEXT NOT NULL DEFAULT '';");
+			MainActivity.updateTasksUUID = true;
 		}
 	}
 

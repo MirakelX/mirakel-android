@@ -112,12 +112,14 @@ public class MainActivity extends ActionBarActivity implements
 	private boolean isResumend;
 	private Intent startIntent;
 
+	public static boolean updateTasksUUID = false;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		preferences = PreferenceManager.getDefaultSharedPreferences(this);
-		darkTheme=preferences.getBoolean("DarkTheme", false);
-		if(darkTheme)
+		darkTheme = preferences.getBoolean("DarkTheme", false);
+		if (darkTheme)
 			setTheme(R.style.AppBaseThemeDARK);
 		isTablet = getResources().getBoolean(R.bool.isTablet);
 		if (!preferences.contains("highlightSelected")) {
@@ -140,9 +142,19 @@ public class MainActivity extends ActionBarActivity implements
 		}
 		// currentList=preferences.getInt("s", defValue)
 		setupLayout();
-		isResumend=false;
+		isResumend = false;
+		if (MainActivity.updateTasksUUID) {
+			List<Task> tasks = Task.all();
+			for (Task t : tasks) {
+				t.setUUID(java.util.UUID.randomUUID().toString());
+				try {
+					t.save();
+				} catch (NoSuchListException e) {
+					Log.wtf(TAG, "WTF? No such list");
+				}
+			}
+		}
 	}
-
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -174,10 +186,10 @@ public class MainActivity extends ActionBarActivity implements
 
 						@Override
 						public void exec() {
-							if(isTablet){
+							if (isTablet) {
 								tasksFragment_l.updateList();
 								tasksFragment_r.updateList();
-							}else
+							} else
 								tasksFragment.updateList();
 							listFragment.update();
 						}
@@ -230,10 +242,12 @@ public class MainActivity extends ActionBarActivity implements
 			Helpers.contact(getApplicationContext());
 			break;
 		case R.id.menu_kill_button:
-			//Only Close
+			// Only Close
 			NotificationService.stop(this);
-			if(startService(new Intent(MainActivity.this, NotificationService.class)) != null) { 
-			    stopService(new Intent(MainActivity.this,NotificationService.class));
+			if (startService(new Intent(MainActivity.this,
+					NotificationService.class)) != null) {
+				stopService(new Intent(MainActivity.this,
+						NotificationService.class));
 			}
 			finish();
 		default:
@@ -264,7 +278,6 @@ public class MainActivity extends ActionBarActivity implements
 	public void onPageSelected(int position) {
 		loadMenu(position);
 	}
-
 
 	public void loadMenu(int position) {
 		if (taskFragment != null && taskFragment.getView() != null) {
@@ -325,13 +338,14 @@ public class MainActivity extends ActionBarActivity implements
 		if (preferences.getBoolean("syncUse", false) == false) {
 			MenuItem mitem;
 			mitem = menu.findItem(R.id.menu_sync_now_list);
-			if (mitem == null)		
+			if (mitem == null)
 				mitem = menu.findItem(R.id.menu_sync_now_task);
 			if (mitem == null)
 				mitem = menu.findItem(R.id.menu_sync_now_tasks);
 			mitem.setVisible(false);
-			menu.findItem(R.id.menu_kill_button).setVisible(preferences.getBoolean("KillButton", false));
-			
+			menu.findItem(R.id.menu_kill_button).setVisible(
+					preferences.getBoolean("KillButton", false));
+
 		}
 	}
 
@@ -347,7 +361,7 @@ public class MainActivity extends ActionBarActivity implements
 					&& (oldClickedList != null || oldClickedTask == null)) {
 				clearAllHighlights();
 			}
-			if(darkTheme!=preferences.getBoolean("DarkTheme",false)){
+			if (darkTheme != preferences.getBoolean("DarkTheme", false)) {
 				finish();
 				if (startIntent == null) {
 					startIntent = new Intent(MainActivity.this,
@@ -356,7 +370,7 @@ public class MainActivity extends ActionBarActivity implements
 					Log.wtf(TAG, "startIntent is null by switching theme");
 
 				}
-				startActivity(startIntent);				
+				startActivity(startIntent);
 			}
 			loadMenu(mViewPager.getCurrentItem());
 			return;
@@ -405,9 +419,9 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if(isResumend)
+		if (isResumend)
 			setupLayout();
-		isResumend=true;
+		isResumend = true;
 	}
 
 	@Override
@@ -437,7 +451,7 @@ public class MainActivity extends ActionBarActivity implements
 		if (!isResumend)
 			intializeViewPager();
 		NotificationService.updateNotificationAndWidget(this);
-		startIntent=getIntent();
+		startIntent = getIntent();
 		if (startIntent == null || startIntent.getAction() == null) {
 
 		} else if (startIntent.getAction().equals(SHOW_TASK)) {
@@ -451,24 +465,27 @@ public class MainActivity extends ActionBarActivity implements
 			}
 		} else if (startIntent.getAction().equals(Intent.ACTION_SEND)
 				&& startIntent.getType().equals("text/plain")) {
-			final String content = startIntent.getStringExtra(Intent.EXTRA_TEXT);
-			final String subject = startIntent.getStringExtra(Intent.EXTRA_SUBJECT);
+			final String content = startIntent
+					.getStringExtra(Intent.EXTRA_TEXT);
+			final String subject = startIntent
+					.getStringExtra(Intent.EXTRA_SUBJECT);
 			if (content != null || subject != null) {
 				int id = getCurrentList().getId();
-				if(preferences.getBoolean("importDefaultList", false)){
-					id=preferences.getInt("defaultImportList", id);
-					Task task = Task.newTask(subject==null?"":subject, id);
-					task.setContent(content==null?"":content);
+				if (preferences.getBoolean("importDefaultList", false)) {
+					id = preferences.getInt("defaultImportList", id);
+					Task task = Task
+							.newTask(subject == null ? "" : subject, id);
+					task.setContent(content == null ? "" : content);
 					safeSafeTask(task);
 					setCurrentTask(task);
 					tasksFragment.updateList(true);
 					listFragment.update();
-				}else{
+				} else {
 					AlertDialog.Builder builder = new AlertDialog.Builder(this);
 					builder.setTitle(R.string.import_to);
 					List<CharSequence> items = new ArrayList<CharSequence>();
 					final List<Integer> list_ids = new ArrayList<Integer>();
-					int currentItem = 0;	
+					int currentItem = 0;
 					for (ListMirakel list : ListMirakel.all()) {
 						if (list.getId() > 0) {
 							items.add(list.getName());
@@ -476,11 +493,15 @@ public class MainActivity extends ActionBarActivity implements
 						}
 					}
 					builder.setSingleChoiceItems(
-							items.toArray(new CharSequence[items.size()]), currentItem,
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int item) {
-									Task task = Task.newTask(subject==null?"":subject,list_ids.get(item));
-									task.setContent(content==null?"":content);
+							items.toArray(new CharSequence[items.size()]),
+							currentItem, new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int item) {
+									Task task = Task.newTask(
+											subject == null ? "" : subject,
+											list_ids.get(item));
+									task.setContent(content == null ? ""
+											: content);
 									safeSafeTask(task);
 									setCurrentTask(task);
 									tasksFragment.updateList(true);
@@ -893,12 +914,12 @@ public class MainActivity extends ActionBarActivity implements
 			currentTask = task;
 			taskFragment.update();
 		}
-		if(isTablet){
+		if (isTablet) {
 			tasksFragment_l.updateList(false);
 			tasksFragment_l.update(false);
 			tasksFragment_r.updateList(false);
 			tasksFragment_r.update(false);
-		}else{	
+		} else {
 			tasksFragment.updateList(false);
 			tasksFragment.update(false);
 		}
