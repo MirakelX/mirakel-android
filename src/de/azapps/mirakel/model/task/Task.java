@@ -51,10 +51,10 @@ public class Task extends TaskBase {
 
 	public static final String TABLE = "tasks";
 
-	public Task(long id, ListMirakel list, String name, String content,
+	public Task(long id,String uuid, ListMirakel list, String name, String content,
 			boolean done, GregorianCalendar due, GregorianCalendar reminder,
 			int priority, String created_at, String updated_at, int sync_state) {
-		super(id, list, name, content, done, due, reminder, priority,
+		super(id,uuid, list, name, content, done, due, reminder, priority,
 				created_at, updated_at, sync_state);
 	}
 
@@ -75,6 +75,7 @@ public class Task extends TaskBase {
 		setSyncState(getSync_state() == Network.SYNC_STATE.ADD
 				|| getSync_state() == Network.SYNC_STATE.IS_SYNCED ? getSync_state()
 				: Network.SYNC_STATE.NEED_SYNC);
+		if(context!=null)
 		setUpdatedAt(new SimpleDateFormat(
 				context.getString(R.string.dateTimeFormat), Locale.getDefault())
 				.format(new Date()));
@@ -133,7 +134,7 @@ public class Task extends TaskBase {
 	private static final String TAG = "TasksDataSource";
 	private static SQLiteDatabase database;
 	private static DatabaseHelper dbHelper;
-	private static final String[] allColumns = { "_id", "list_id", "name",
+	private static final String[] allColumns = { "_id", "uuid", "list_id", "name",
 			"content", "done", "due", "reminder", "priority", "created_at",
 			"updated_at", "sync_state" };
 	private static Context context;
@@ -294,6 +295,7 @@ public class Task extends TaskBase {
 			boolean done, GregorianCalendar due, int priority) {
 
 		ContentValues values = new ContentValues();
+		values.put("uuid",java.util.UUID.randomUUID().toString());
 		values.put("name", name);
 		values.put("list_id", list_id);
 		values.put("content", content);
@@ -588,7 +590,7 @@ public class Task extends TaskBase {
 		GregorianCalendar due = new GregorianCalendar();
 		try {
 			due.setTime(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-					.parse(cursor.getString(5)));
+					.parse(cursor.getString(6)));
 		} catch (ParseException e) {
 			due = null;
 		} catch (NullPointerException e) {
@@ -597,18 +599,18 @@ public class Task extends TaskBase {
 		GregorianCalendar reminder = new GregorianCalendar();
 		try {
 			reminder.setTime(new SimpleDateFormat("yyyy-MM-dd'T'kkmmss'Z'",
-					Locale.getDefault()).parse(cursor.getString(6)));
+					Locale.getDefault()).parse(cursor.getString(7)));
 		} catch (ParseException e) {
 			reminder = null;
 		} catch (NullPointerException e) {
 			reminder = null;
 		}
 
-		Task task = new Task(cursor.getLong(i++),
+		Task task = new Task(cursor.getLong(i++),cursor.getString(i++),
 				ListMirakel.getList((int) cursor.getLong(i++)),
 				cursor.getString(i++), cursor.getString(i++),
-				cursor.getInt((i++)) == 1, due, reminder, cursor.getInt(7),
-				cursor.getString(8), cursor.getString(9), cursor.getInt(10));
+				cursor.getInt((i++)) == 1, due, reminder, cursor.getInt(8),
+				cursor.getString(9), cursor.getString(10), cursor.getInt(11));
 		return task;
 	}
 

@@ -32,6 +32,7 @@ import de.azapps.mirakel.model.list.SpecialList;
 
 class TaskBase {
 	private long id=0;
+	private String uuid="";
 	private ListMirakel list;
 	private String name;
 	private String content;
@@ -44,10 +45,11 @@ class TaskBase {
 	private int sync_state;
 	private GregorianCalendar reminder;
 
-	TaskBase(long id, ListMirakel list, String name, String content,
+	TaskBase(long id, String uuid, ListMirakel list, String name, String content,
 			boolean done, GregorianCalendar due, GregorianCalendar reminder,
 			int priority, String created_at, String updated_at, int sync_state) {
 		this.id = id;
+		this.uuid = uuid;
 		this.setList(list);
 		this.setName(name);
 		this.setContent(content);
@@ -66,6 +68,7 @@ class TaskBase {
 
 	TaskBase(String name) {
 		this.id = 0;
+		this.uuid = java.util.UUID.randomUUID().toString();
 		this.setList(SpecialList.first());
 		this.setName(name);
 		this.setContent("");
@@ -85,6 +88,13 @@ class TaskBase {
 	public void setId(long id) {
 		this.id = id;
 		edited.put("id", true);
+	}
+	public String setUUID() {
+		return uuid;
+	}
+	public void setUUID(String uuid) {
+		this.uuid=uuid;
+		edited.put("uuid", true);
 	}
 
 	public ListMirakel getList() {
@@ -194,6 +204,7 @@ class TaskBase {
 	public ContentValues getContentValues() throws NoSuchListException {
 		ContentValues cv = new ContentValues();
 		cv.put("_id", id);
+		cv.put("uuid", uuid);
 		if (list == null)
 			throw new NoSuchListException();
 		cv.put("list_id", list.getId());

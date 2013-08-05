@@ -27,6 +27,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.ListHistroy;
+import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
@@ -39,7 +40,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String TAG = "DatabaseHelper";
 	private Context context;
-	public static final int DATABASE_VERSION = BuildConfig.DEBUG?12:10;// TODO increment to 12 in production
+	public static final int DATABASE_VERSION = BuildConfig.DEBUG?13:11;// TODO increment to 13 in production
 
 	public DatabaseHelper(Context ctx) {
 		super(ctx, "mirakel.db", null, DATABASE_VERSION);
@@ -164,16 +165,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			db.execSQL("UPDATE special_lists SET def_date=0 where _id=2 and def_date=null");
 			db.execSQL("UPDATE special_lists SET def_date=7 where _id=3 and def_date=null");
 			db.execSQL("UPDATE special_lists SET def_date=-1, active=0 where _id=4 and def_date=null");
+
+		case 10:
 			/*
 			 * Add Table for Task History
 			 */
-		case 10:
 			createTaskHistory(db);
+		case 11:
 			/*
 			 * Add Table for List History
 			 */
-		case 11:
 			createListHistory(db);
+		case 12:
+			/*
+			 * Add UUID to Task
+			 */
+			db.execSQL("Alter Table " + Task.TABLE
+					+ " add column uuid TEXT NOT NULL DEFAULT '';");
+			MainActivity.updateTasksUUID = true;
+
 		}
 	}
 
