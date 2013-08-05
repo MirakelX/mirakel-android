@@ -38,11 +38,13 @@ import com.google.gson.JsonParser;
 
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
+import de.azapps.mirakel.helper.JsonHelper;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.sync.Network;
+import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.R;
 
 public class Task extends TaskBase {
@@ -77,6 +79,8 @@ public class Task extends TaskBase {
 				context.getString(R.string.dateTimeFormat), Locale.getDefault())
 				.format(new Date()));
 		ContentValues values = getContentValues();
+		newChange(this, Task.get(getId()));
+//		this.edited= new HashMap<String, Boolean>();
 		database.update(TABLE, values, "_id = " + getId(), null);
 	}
 
@@ -87,6 +91,7 @@ public class Task extends TaskBase {
 	 */
 	public void delete() {
 		long id = getId();
+		newChange(null, this);
 		if (getSync_state() == Network.SYNC_STATE.ADD)
 			database.delete(TABLE, "_id = " + id, null);
 		else {
@@ -95,6 +100,32 @@ public class Task extends TaskBase {
 			database.update(TABLE, values, "_id=" + id, null);
 		}
 
+	}
+	public String toJson(){
+		String json="{";
+		json+="\"id\":"+getId()+",";
+		json+="\"name\":\""+getName()+"\",";
+		json+="\"content\":\""+getContent()+"\",";
+		json+="\"done\":"+(isDone()?"true":"false")+",";
+		json+="\"priority\":"+getPriority()+",";
+		json+="\"list_id\":"+getList().getId()+",";
+		String s="";
+		if(getDue()!=null)
+		{
+			s=new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(getDue().getTime());
+		}
+		json+="\"due\":\""+s+"\",";
+		s="";
+		if(getReminder()!=null)
+		{
+			s=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(getReminder().getTime());
+		}
+		json+="\"reminder\":\""+s+"\",";
+		json+="\"sync_state\":"+getSync_state()+",";
+		json+="\"created_at\":\""+getCreated_at()+"\",";
+		json+="\"updated_at\":\""+getUpdated_at()+"\"}";
+		return json;
+//		json+="\"name\":\""+getCreated_at()+"\"";
 	}
 
 	// Static Methods
@@ -106,6 +137,105 @@ public class Task extends TaskBase {
 			"content", "done", "due", "reminder", "priority", "created_at",
 			"updated_at", "sync_state" };
 	private static Context context;
+	
+	public static void newChange(Task newTask, Task oldTask){
+		//TODO enable if needed in Production
+		if(!BuildConfig.DEBUG)
+			return;
+		if(oldTask==null&&newTask==null){
+			Log.wtf(TAG,"Cannot change an nonexisting Task to a none existing Task");
+			return;
+		}
+		ContentValues cv =new ContentValues();
+		String nullCol=null;
+		if(oldTask==null||newTask==null){
+			//write complete task to db
+			if(oldTask==null)
+				nullCol="old";
+			else
+				cv.put("old", oldTask.toJson());
+			if(newTask==null)
+				nullCol="new";
+			else
+				cv.put("new", newTask.toJson());
+		}else{
+			//only changes to db
+			String oldJson="{",newJson="{";
+			boolean changed=false;
+			if(oldTask.getName()==null&&newTask.getName()!=null||(oldTask.getName()!=null&&!oldTask.getName().equals(newTask.getName()))){
+				oldJson=JsonHelper.addToJsonString("name",oldTask.getName(),oldJson);
+				newJson=JsonHelper.addToJsonString("name",newTask.getName(),newJson);
+				changed=true;
+			}
+			
+			if(oldTask.getContent()==null&&newTask.getContent()!=null||(oldTask.getContent()!=null&&!oldTask.getContent().equals(newTask.getContent()))){
+				oldJson=JsonHelper.addToJsonString("content",oldTask.getContent(),oldJson);
+				newJson=JsonHelper.addToJsonString("content",newTask.getContent(),newJson);
+				changed=true;
+			}
+			
+			if(oldTask.getList().getId()!=newTask.getList().getId()){
+				oldJson=JsonHelper.addToJsonString("list_id",oldTask.getList().getId(),oldJson);
+				newJson=JsonHelper.addToJsonString("list_id",newTask.getList().getId(),newJson);
+				changed=true;
+			}
+			
+			if(oldTask.getPriority()!=newTask.getPriority()){
+				oldJson=JsonHelper.addToJsonString("priority",oldTask.getPriority(),oldJson);
+				newJson=JsonHelper.addToJsonString("priority",newTask.getPriority(),newJson);
+				changed=true;
+			}
+			
+			if(oldTask.isDone()!=newTask.isDone()){
+				oldJson=JsonHelper.addToJsonString("done",oldTask.isDone(),oldJson);
+				newJson=JsonHelper.addToJsonString("done",newTask.isDone(),newJson);
+				changed=true;
+			}
+			
+			if(oldTask.getDue()==null&&newTask.getDue()!=null||(oldTask.getDue()!=null&&!oldTask.getDue().equals(newTask.getDue()))){
+				String s="";
+				if(oldTask.getDue()!=null){
+					s=new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(oldTask.getDue().getTime());
+				}
+				oldJson=JsonHelper.addToJsonString("due",s,oldJson);
+				s="";
+				if(newTask.getDue()!=null){
+					s=new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(newTask.getDue().getTime());
+				}
+				newJson=JsonHelper.addToJsonString("due",s,newJson);
+				changed=true;
+			}
+			
+			if(oldTask.getReminder()==null&&newTask.getReminder()!=null||(oldTask.getReminder()!=null&&!oldTask.getReminder().equals(newTask.getReminder()))){
+				String s="";
+				if(oldTask.getReminder()!=null){
+					s=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(oldTask.getDue().getTime());
+				}					
+				s="";
+				if(newTask.getReminder()!=null){
+					s=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(newTask.getDue().getTime());
+				}	
+				newJson=JsonHelper.addToJsonString("reminder",s,newJson);
+				changed=true;
+			}
+			if(!changed)
+				return;
+			oldJson=JsonHelper.addToJsonString("id", oldTask.getId(), oldJson);
+			newJson=JsonHelper.addToJsonString("id", newTask.getId(), newJson);
+			oldJson=JsonHelper.addToJsonString("updated_at", oldTask.getUpdated_at(), oldJson);
+			newJson=JsonHelper.addToJsonString("updated_at", newTask.getUpdated_at(), newJson);
+			oldJson+="}";
+			newJson+="}";
+			
+			cv.put("new", newJson);
+			cv.put("old", oldJson);
+		}
+		cv.put("task_id", newTask==null?oldTask.getId():newTask.getId());
+		database.insert(TaskHistory.TABLE, nullCol, cv);
+	}
+
+
+	
 
 	public static Task getDummy(Context ctx) {
 		return new Task(ctx.getString(R.string.task_empty));
@@ -139,6 +269,10 @@ public class Task extends TaskBase {
 	 */
 	public static Task newTask(String name, long list_id) {
 		return newTask(name, list_id, "", false, null, 0);
+	}
+	
+	public static Task newTask(String name, long list_id,GregorianCalendar due , int prio) {
+		return newTask(name, list_id, "", false, due, prio);
 	}
 
 	public static Task newTask(String name, ListMirakel list) {
@@ -181,6 +315,7 @@ public class Task extends TaskBase {
 		cursor.moveToFirst();
 		Task newTask = cursorToTask(cursor);
 		cursor.close();
+		newChange(newTask, null);
 		return newTask;
 	}
 
@@ -361,33 +496,7 @@ public class Task extends TaskBase {
 					.getAsJsonArray().iterator();
 			while (i.hasNext()) {
 				JsonObject el = (JsonObject) i.next();
-				Task t = new Task();
-				t.setId(el.get("id").getAsLong());
-				t.setName(el.get("name").getAsString());
-				try {
-					t.setContent(el.get("content").getAsString() == null ? ""
-							: el.get("content").getAsString());
-				} catch (Exception e) {
-					Log.d(TAG, "Content=NULL?");
-					t.setContent("");
-				}
-				t.setPriority(el.get("priority").getAsInt());
-				t.setList(ListMirakel.getList(el.get("list_id").getAsInt()));
-				t.setCreatedAt(el.get("created_at").getAsString()
-						.replace(":", ""));
-				t.setUpdatedAt(el.get("updated_at").getAsString()
-						.replace(":", ""));
-				t.setDone(el.get("done").getAsBoolean());
-				try {
-					GregorianCalendar temp = new GregorianCalendar();
-					temp.setTime(new SimpleDateFormat("yyyy-MM-dd", Locale
-							.getDefault()).parse(el.get("due").getAsString()));
-					t.setDue(temp);
-				} catch (Exception e) {
-					t.setDue(null);
-					Log.v(TAG, "Due is null");
-					Log.e(TAG, "Can not parse Date! ");
-				}
+				Task t = parse_json(el);
 				tasks.add(t);
 			}
 			return tasks;
@@ -397,6 +506,75 @@ public class Task extends TaskBase {
 			Log.d(TAG, Log.getStackTraceString(e));
 		}
 		return new ArrayList<Task>();
+	}
+
+	public static Task parse_json(JsonObject el) {
+		Task t=null;
+		JsonElement id=el.get("id");
+		if(id!=null)
+			//use old Task from db if existing
+			t=Task.get(id.getAsLong());
+		if(t==null){
+			t = new Task();
+		}
+//		if(el.get("id")!=null)
+//			t.setId(el.get("id").getAsLong());
+		JsonElement j=el.get("name");
+		if(j!=null)
+			t.setName(j.getAsString());
+		try {
+			j=el.get("content");
+			t.setContent(j.getAsString() == null ? ""
+					: el.get("content").getAsString());
+		} catch (Exception e) {
+			Log.d(TAG, "Content=NULL?");
+			if(j!=null||id==null)
+				t.setContent("");
+		}
+		j=el.get("priority");
+		if(j!=null)
+			t.setPriority(j.getAsInt());
+		j=el.get("list_id");
+		if(j!=null)
+			t.setList(ListMirakel.getList(j.getAsInt()));
+		j=el.get("created_at");
+		if(j!=null){
+			t.setCreatedAt(j.getAsString()
+				.replace(":", ""));
+		}
+		j=el.get("updated_at");
+		if(j!=null){
+			t.setUpdatedAt(j.getAsString()
+				.replace(":", ""));
+		}
+		j=el.get("done");
+		if(j!=null)
+			t.setDone(j.getAsBoolean());
+		try {
+			j=el.get("due");
+			GregorianCalendar temp = new GregorianCalendar();
+			temp.setTime(new SimpleDateFormat("yyyy-MM-dd", Locale
+					.getDefault()).parse(j.getAsString()));
+			t.setDue(temp);
+		} catch (Exception e) {
+			if(j!=null||id==null)
+				t.setDue(null);
+			Log.v(TAG, "Due is null");
+			Log.e(TAG, "Can not parse Date! ");
+		}
+		try{
+			j=el.get("reminder");
+			GregorianCalendar temp = new GregorianCalendar();
+			temp.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale
+					.getDefault()).parse(j.getAsString()));
+			t.setReminder(temp);
+		}catch(Exception e){
+			if(j!=null||id==null)
+				t.setDue(null);
+			Log.v(TAG, "Reminder is null");
+			Log.e(TAG, "Can not parse Date! ");
+		}		
+		return t;
 	}
 
 	/**

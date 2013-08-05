@@ -40,7 +40,7 @@ class TaskBase {
 	private int priority;
 	private String createdAt;
 	private String updatedAt;
-	private Map<String, Boolean> edited = new HashMap<String, Boolean>();
+	protected Map<String, Boolean> edited = new HashMap<String, Boolean>();
 	private int sync_state;
 	private GregorianCalendar reminder;
 
@@ -180,6 +180,10 @@ class TaskBase {
 
 	public void setSyncState(int sync_state) {
 		this.sync_state = sync_state;
+	}
+	
+	public Map<String, Boolean> getEdited(){
+		return edited;
 	}
 
 	@Override
