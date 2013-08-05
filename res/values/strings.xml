@@ -40,7 +40,7 @@
     <string name="Server">Server</string>
     <string name="NoNetwork">No Network Connection available.</string>
     <string name="action_sync_now">Sync Now</string>
-    <string name="resync">Do you want resync all Tasks?</string>
+    <string name="resync">Do you want to resync all Tasks?</string>
     <string name="start">Start</string>
     <string name="menu_sort_lists">Reorder Lists</string>
     <string name="no_https">You should use https!</string>
