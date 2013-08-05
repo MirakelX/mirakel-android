@@ -25,6 +25,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -32,9 +35,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.helper.JsonHelper;
+import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.Network;
+import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.R;
 
 /**
@@ -64,6 +70,9 @@ public class ListMirakel extends ListBase {
 	ListMirakel(int id, String name) {
 		super(id, name);
 	}
+	private  ListMirakel() {
+		super();		
+	}
 
 	/**
 	 * Update the List in the Database
@@ -82,6 +91,7 @@ public class ListMirakel extends ListBase {
 					context.getString(R.string.dateTimeFormat),
 					Locale.getDefault()).format(new Date()));
 			ContentValues values = getContentValues();
+			newChange(this, ListMirakel.getList(getId()));
 			database.update(ListMirakel.TABLE, values, "_id = " + getId(), null);
 		}
 		editor.commit();
@@ -96,6 +106,7 @@ public class ListMirakel extends ListBase {
 		long id = getId();
 		if (id <= 0)
 			return;
+		newChange(null, this);
 
 		if (getSyncState() == Network.SYNC_STATE.ADD) {
 			database.delete(Task.TABLE, "list_id = " + id, null);
@@ -148,7 +159,20 @@ public class ListMirakel extends ListBase {
 	public List<Task> tasks() {
 		return Task.getTasks(this, getSortBy(), false);
 	}
-
+	
+	private String toJson() {
+		String json="{";
+		json+="\"name\":\""+getName()+"\",";
+		json+="\"id\":"+getId()+",";
+		json+="\"created_at\":\""+getCreatedAt()+"\",";
+		json+="\"updated_at\":\""+getName()+"\",";
+		json+="\"lft\":"+getLft()+",";
+		json+="\"rgt\":"+getRgt()+",";
+		json+="\"sort_by\":"+getSortBy()+",";
+		json+="\"sync_state\":"+getSyncState()+"";
+		json+="}";
+		return json;
+	}
 	/**
 	 * Get all Tasks
 	 * 
@@ -165,8 +189,109 @@ public class ListMirakel extends ListBase {
 	private static DatabaseHelper dbHelper;
 	private static final String[] allColumns = { "_id", "name", "sort_by",
 			"created_at", "updated_at", "sync_state", "lft", "rgt" };
+	private static final String TAG = "ListMirakel";
 	private static Context context;
 	private static SharedPreferences preferences;
+
+	private static void  newChange(ListMirakel newList, ListMirakel oldList){
+		//TODO enable if need in productive build
+		if(!BuildConfig.DEBUG)
+			return;
+		if(newList==null&&oldList==null){
+			Log.wtf(TAG,"cannot change a noneexisting list to a noexisting list");
+			return;
+		}
+		String nullCol=null;
+		ContentValues cv=new ContentValues();
+		if(newList==null||oldList==null){
+			if(oldList==null)
+				nullCol="old";
+			else
+				cv.put("old", oldList.toJson());
+			if(newList==null)
+				nullCol="new";
+			else
+				cv.put("new", newList.toJson());
+		}else{
+			String oldJson="{",newJson="{";
+			boolean changed=false;
+			if(oldList.getName()==null&&newList.getName()!=null||(oldList.getName()!=null&&!oldList.getName().equals(newList.getName()))){
+				oldJson=JsonHelper.addToJsonString("name",oldList.getName(),oldJson);
+				newJson=JsonHelper.addToJsonString("name",newList.getName(),newJson);
+				changed=true;
+			}
+			
+			if(oldList.getLft()!=newList.getLft()){
+				oldJson=JsonHelper.addToJsonString("lft",oldList.getLft(),oldJson);
+				newJson=JsonHelper.addToJsonString("lft",newList.getLft(),newJson);
+				changed=true;
+			}
+			
+			if(oldList.getRgt()!=newList.getRgt()){
+				oldJson=JsonHelper.addToJsonString("rgt",oldList.getRgt(),oldJson);
+				newJson=JsonHelper.addToJsonString("rgt",newList.getRgt(),newJson);
+				changed=true;
+			}
+			
+			if(oldList.getSortBy()!=newList.getSortBy()){
+				oldJson=JsonHelper.addToJsonString("sort_by",oldList.getSortBy(),oldJson);
+				newJson=JsonHelper.addToJsonString("sort_by",newList.getSortBy(),newJson);
+				changed=true;
+			}
+			if(!changed)
+				return;
+			oldJson=JsonHelper.addToJsonString("id", oldList.getId(), oldJson);
+			newJson=JsonHelper.addToJsonString("id", newList.getId(), newJson);
+			oldJson=JsonHelper.addToJsonString("updated_at", oldList.getUpdatedAt(), oldJson);
+			newJson=JsonHelper.addToJsonString("updated_at", newList.getUpdatedAt(), newJson);
+			oldJson+="}";
+			newJson+="}";
+			
+			cv.put("new", newJson);
+			cv.put("old", oldJson);
+		}
+		cv.put("list_id", newList==null?oldList.getId():newList.getId());
+		database.insert(ListHistroy.TABLE, nullCol, cv);
+	}
+	
+	public static ListMirakel parseJson(JsonObject el){
+		ListMirakel t=null;
+		JsonElement id=el.get("id");
+		if(id!=null)
+			//use old List from db if existing
+			t=ListMirakel.getList(id.getAsInt());
+		if(t==null){
+			t = new ListMirakel();
+		}
+		JsonElement j=el.get("name");
+		if(j!=null)
+			t.setName(j.getAsString());
+		
+		j=el.get("lft");
+		if(j!=null)
+			t.setLft(j.getAsInt());
+		
+		j=el.get("rgt");
+		if(j!=null)
+			t.setRgt(j.getAsInt());
+		
+		j=el.get("lft");
+		if(j!=null)
+			t.setLft(j.getAsInt());
+		
+		j=el.get("updated_at");
+		if(j!=null){
+			t.setUpdatedAt(j.getAsString()
+				.replace(":", ""));
+		}
+		
+		j=el.get("sort_by");
+		if(j!=null)
+			t.setSortBy(j.getAsInt());
+		
+		return t;
+	}
+
 
 	/**
 	 * Initialize the Database and the preferences
@@ -233,7 +358,7 @@ public class ListMirakel extends ListBase {
 		cursor.moveToFirst();
 		ListMirakel newList = cursorToList(cursor);
 		cursor.close();
-
+		newChange(newList, null);
 		return newList;
 	}
 
