@@ -26,17 +26,20 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.model.list.ListHistroy;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.model.task.TaskHistory;
 import de.azapps.mirakel.sync.Network;
+import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.R;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String TAG = "DatabaseHelper";
 	private Context context;
-	public static final int DATABASE_VERSION = 10;
+	public static final int DATABASE_VERSION = BuildConfig.DEBUG?12:10;// TODO increment to 12 in production
 
 	public DatabaseHelper(Context ctx) {
 		super(ctx, "mirakel.db", null, DATABASE_VERSION);
@@ -161,7 +164,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			db.execSQL("UPDATE special_lists SET def_date=0 where _id=2 and def_date=null");
 			db.execSQL("UPDATE special_lists SET def_date=7 where _id=3 and def_date=null");
 			db.execSQL("UPDATE special_lists SET def_date=-1, active=0 where _id=4 and def_date=null");
+			/*
+			 * Add Table for Task History
+			 */
+		case 10:
+			createTaskHistory(db);
+			/*
+			 * Add Table for List History
+			 */
+		case 11:
+			createListHistory(db);
 		}
+	}
+
+	private void createListHistory(SQLiteDatabase db) {
+		db.execSQL("CREATE TABLE " + ListHistroy.TABLE + " ("
+				+ "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
+				+ "timestamp INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
+				+ "old STRING , "
+				+ "new STRING , "
+				+ "list_id INTEGER NOT NULL"
+				+ ")");
+		
 	}
 
 	private void createTasksTableString(SQLiteDatabase db) {
@@ -208,6 +232,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ "'"
 				+ context.getString(R.string.list_overdue)
 				+ "',1,'due not null and done=0 and date(due)<=date(\"now\",\"-1 day\",\"localtime\")')");
+	}
+	
+	private void createTaskHistory(SQLiteDatabase db){
+		db.execSQL("CREATE TABLE " + TaskHistory.TABLE + " ("
+				+ "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
+				+ "timestamp INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
+				+ "old STRING , "
+				+ "new STRING , "
+				+ "task_id INTEGER NOT NULL"
+				+ ")");
 	}
 
 }
