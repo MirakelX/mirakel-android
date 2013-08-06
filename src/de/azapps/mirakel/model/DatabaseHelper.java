@@ -168,21 +168,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 		case 10:
 			/*
-			 * Add Table for Task History
-			 */
-			createTaskHistory(db);
-		case 11:
-			/*
-			 * Add Table for List History
-			 */
-			createListHistory(db);
-		case 12:
-			/*
 			 * Add UUID to Task
 			 */
 			db.execSQL("Alter Table " + Task.TABLE
 					+ " add column uuid TEXT NOT NULL DEFAULT '';");
 			MainActivity.updateTasksUUID = true;
+		case 11:
+			/*
+			 * Add Table for Task History
+			 */
+			createTaskHistory(db);
+		case 12:
+			/*
+			 * Add Table for List History
+			 */
+			createListHistory(db);
 
 		}
 	}
