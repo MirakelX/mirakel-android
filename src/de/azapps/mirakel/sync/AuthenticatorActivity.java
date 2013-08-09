@@ -60,8 +60,11 @@ import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
@@ -100,6 +103,8 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 	// private final Handler mHandler = new Handler();
 
 	private TextView mMessage;
+	
+	private Spinner mTyp;
 
 	private String mPassword;
 
@@ -136,7 +141,23 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 		mPasswordEdit = (EditText) findViewById(R.id.password_edit);
 		if (!TextUtils.isEmpty(mUsername))
 			mUsernameEdit.setText(mUsername);
-		mMessage.setText(getMessage());
+		mTyp=(Spinner)findViewById(R.id.server_typ);
+		mTyp.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				mMessage.setText(getMessage((String)arg0.getItemAtPosition(arg2)));
+				
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		mMessage.setText(getMessage(getResources().getStringArray(R.array.server_typs)[0]));
 		if(preferences.getBoolean("DarkTheme", false)&&VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB){
 			findViewById(R.id.login_button_frame).setBackgroundColor(getResources().getColor(android.R.color.transparent));
 		}
@@ -177,7 +198,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 		}
 		mPassword = mPasswordEdit.getText().toString();
 		if (TextUtils.isEmpty(mUsername) || TextUtils.isEmpty(mPassword)) {
-			mMessage.setText(getMessage());
+			mMessage.setText(getMessage(mTyp.getSelectedItem().toString()));
 		} else {
 			// Show a progress dialog, and kick off a background task to perform
 			// the user login attempt.
@@ -229,6 +250,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 		if (mRequestNewAccount) {
 			Bundle b = new Bundle();
 			b.putString("url", url);
+			b.putString("typ", mTyp.getSelectedItem().toString());
 			mAccountManager.addAccountExplicitly(account, mPassword, b);
 			// Set contacts sync for this account.
 		} else {
@@ -279,12 +301,11 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 	/**
 	 * Returns the message to be displayed at the top of the login dialog box.
 	 */
-	private CharSequence getMessage() {
-		getString(R.string.app_name);
+	private CharSequence getMessage(String accountTyp) {
 		if (TextUtils.isEmpty(mUsername)) {
 			// If no username, then we ask the user to log in using an
 			// appropriate service.
-			final CharSequence msg = getText(R.string.login_activity_newaccount_text);
+			final CharSequence msg = getString(R.string.login_activity_newaccount_text,accountTyp);
 			return msg;
 		}
 		if (TextUtils.isEmpty(mPassword)) {

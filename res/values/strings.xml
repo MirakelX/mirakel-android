@@ -129,6 +129,11 @@
     <!-- Label above username EditText -->
     <string name="login_activity_username_label">Username</string>
     <string name="login_activity_server_label">Server-URL</string>
+    <string name="login_activity_server_typ">Server Typ</string>
+    <string-array name="server_typs">
+        <item >Mirakel</item>
+        <item >Taskwarrior</item>
+    </string-array>
     <!-- Label above password EditText -->
     <string name="login_activity_password_label">Password</string>
     <!-- Button to sign in after entering username and password -->
@@ -143,7 +148,7 @@
         Message shown if the provided account doesn't support the current
         activity.
     -->
-    <string name="login_activity_newaccount_text">Sign in to your Mirakel account. </string>
+    <string name="login_activity_newaccount_text">Sign in to your % account. </string>
     <!-- Message shown in progress dialog while app connects to the server -->
     <string name="ui_activity_authenticating">Authenticating\u2026</string>
     <string name="ui_activity_title">Sign-in</string>

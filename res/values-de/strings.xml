@@ -75,7 +75,7 @@
   <string name="login_activity_ok_button">Anmelden</string>
   <string name="login_activity_loginfail_text_both">Der Benutzername oder das Kennwort ist ungültig. Es ist ein Mirakel-Konto erforderlich. Bitte versuche es erneut.</string>
   <string name="login_activity_loginfail_text_pwmissing">Gib das Passwort bitte an.</string>
-  <string name="login_activity_newaccount_text">Melde dich mit deinem Mirakel-Account an.</string>
+  <string name="login_activity_newaccount_text">Melde dich mit deinem %s-Account an.</string>
   <string name="ui_activity_authenticating">Melde an…</string>
   <string name="ui_activity_title">Anmelden</string>
   <string name="title_activity_special_lists_settings">Erweiterte Listen</string>
