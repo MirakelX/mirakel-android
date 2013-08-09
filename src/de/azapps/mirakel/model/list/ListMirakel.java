@@ -35,12 +35,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.helper.JsonHelper;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.Network;
-import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.R;
 
 /**
@@ -91,7 +88,6 @@ public class ListMirakel extends ListBase {
 					context.getString(R.string.dateTimeFormat),
 					Locale.getDefault()).format(new Date()));
 			ContentValues values = getContentValues();
-			newChange(this, ListMirakel.getList(getId()));
 			database.update(ListMirakel.TABLE, values, "_id = " + getId(), null);
 		}
 		editor.commit();
@@ -106,7 +102,6 @@ public class ListMirakel extends ListBase {
 		long id = getId();
 		if (id <= 0)
 			return;
-		newChange(null, this);
 
 		if (getSyncState() == Network.SYNC_STATE.ADD) {
 			database.delete(Task.TABLE, "list_id = " + id, null);
@@ -189,70 +184,11 @@ public class ListMirakel extends ListBase {
 	private static DatabaseHelper dbHelper;
 	private static final String[] allColumns = { "_id", "name", "sort_by",
 			"created_at", "updated_at", "sync_state", "lft", "rgt" };
+	@SuppressWarnings("unused")
 	private static final String TAG = "ListMirakel";
 	private static Context context;
 	private static SharedPreferences preferences;
 
-	private static void  newChange(ListMirakel newList, ListMirakel oldList){
-		//TODO enable if need in productive build
-		if(!BuildConfig.DEBUG)
-			return;
-		if(newList==null&&oldList==null){
-			Log.wtf(TAG,"cannot change a noneexisting list to a noexisting list");
-			return;
-		}
-		String nullCol=null;
-		ContentValues cv=new ContentValues();
-		if(newList==null||oldList==null){
-			if(oldList==null)
-				nullCol="old";
-			else
-				cv.put("old", oldList.toJson());
-			if(newList==null)
-				nullCol="new";
-			else
-				cv.put("new", newList.toJson());
-		}else{
-			String oldJson="{",newJson="{";
-			boolean changed=false;
-			if(oldList.getName()==null&&newList.getName()!=null||(oldList.getName()!=null&&!oldList.getName().equals(newList.getName()))){
-				oldJson=JsonHelper.addToJsonString("name",oldList.getName(),oldJson);
-				newJson=JsonHelper.addToJsonString("name",newList.getName(),newJson);
-				changed=true;
-			}
-			
-			if(oldList.getLft()!=newList.getLft()){
-				oldJson=JsonHelper.addToJsonString("lft",oldList.getLft(),oldJson);
-				newJson=JsonHelper.addToJsonString("lft",newList.getLft(),newJson);
-				changed=true;
-			}
-			
-			if(oldList.getRgt()!=newList.getRgt()){
-				oldJson=JsonHelper.addToJsonString("rgt",oldList.getRgt(),oldJson);
-				newJson=JsonHelper.addToJsonString("rgt",newList.getRgt(),newJson);
-				changed=true;
-			}
-			
-			if(oldList.getSortBy()!=newList.getSortBy()){
-				oldJson=JsonHelper.addToJsonString("sort_by",oldList.getSortBy(),oldJson);
-				newJson=JsonHelper.addToJsonString("sort_by",newList.getSortBy(),newJson);
-				changed=true;
-			}
-			if(!changed)
-				return;
-			oldJson=JsonHelper.addToJsonString("id", oldList.getId(), oldJson);
-			newJson=JsonHelper.addToJsonString("id", newList.getId(), newJson);
-			oldJson=JsonHelper.addToJsonString("updated_at", oldList.getUpdatedAt(), oldJson);
-			newJson=JsonHelper.addToJsonString("updated_at", newList.getUpdatedAt(), newJson);
-			oldJson+="}";
-			newJson+="}";
-			
-			cv.put("new", newJson);
-			cv.put("old", oldJson);
-		}
-		cv.put("list_id", newList==null?oldList.getId():newList.getId());
-		database.insert(ListHistroy.TABLE, nullCol, cv);
-	}
 	
 	public static ListMirakel parseJson(JsonObject el){
 		ListMirakel t=null;
@@ -358,7 +294,6 @@ public class ListMirakel extends ListBase {
 		cursor.moveToFirst();
 		ListMirakel newList = cursorToList(cursor);
 		cursor.close();
-		newChange(newList, null);
 		return newList;
 	}
 

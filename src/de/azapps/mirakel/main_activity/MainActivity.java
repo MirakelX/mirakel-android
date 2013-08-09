@@ -143,6 +143,7 @@ public class MainActivity extends ActionBarActivity implements
 		// currentList=preferences.getInt("s", defValue)
 		setupLayout();
 		isResumend = false;
+		
 		if (MainActivity.updateTasksUUID) {
 			List<Task> tasks = Task.all();
 			for (Task t : tasks) {

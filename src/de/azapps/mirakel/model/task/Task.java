@@ -38,13 +38,11 @@ import com.google.gson.JsonParser;
 
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
-import de.azapps.mirakel.helper.JsonHelper;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.sync.Network;
-import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.R;
 
 public class Task extends TaskBase {
@@ -80,7 +78,6 @@ public class Task extends TaskBase {
 				context.getString(R.string.dateTimeFormat), Locale.getDefault())
 				.format(new Date()));
 		ContentValues values = getContentValues();
-		newChange(this, Task.get(getId()));
 //		this.edited= new HashMap<String, Boolean>();
 		database.update(TABLE, values, "_id = " + getId(), null);
 	}
@@ -92,7 +89,6 @@ public class Task extends TaskBase {
 	 */
 	public void delete() {
 		long id = getId();
-		newChange(null, this);
 		if (getSync_state() == Network.SYNC_STATE.ADD)
 			database.delete(TABLE, "_id = " + id, null);
 		else {
@@ -139,101 +135,6 @@ public class Task extends TaskBase {
 			"updated_at", "sync_state" };
 	private static Context context;
 	
-	public static void newChange(Task newTask, Task oldTask){
-		//TODO enable if needed in Production
-		if(!BuildConfig.DEBUG)
-			return;
-		if(oldTask==null&&newTask==null){
-			Log.wtf(TAG,"Cannot change an nonexisting Task to a none existing Task");
-			return;
-		}
-		ContentValues cv =new ContentValues();
-		String nullCol=null;
-		if(oldTask==null||newTask==null){
-			//write complete task to db
-			if(oldTask==null)
-				nullCol="old";
-			else
-				cv.put("old", oldTask.toJson());
-			if(newTask==null)
-				nullCol="new";
-			else
-				cv.put("new", newTask.toJson());
-		}else{
-			//only changes to db
-			String oldJson="{",newJson="{";
-			boolean changed=false;
-			if(oldTask.getName()==null&&newTask.getName()!=null||(oldTask.getName()!=null&&!oldTask.getName().equals(newTask.getName()))){
-				oldJson=JsonHelper.addToJsonString("name",oldTask.getName(),oldJson);
-				newJson=JsonHelper.addToJsonString("name",newTask.getName(),newJson);
-				changed=true;
-			}
-			
-			if(oldTask.getContent()==null&&newTask.getContent()!=null||(oldTask.getContent()!=null&&!oldTask.getContent().equals(newTask.getContent()))){
-				oldJson=JsonHelper.addToJsonString("content",oldTask.getContent(),oldJson);
-				newJson=JsonHelper.addToJsonString("content",newTask.getContent(),newJson);
-				changed=true;
-			}
-			
-			if(oldTask.getList().getId()!=newTask.getList().getId()){
-				oldJson=JsonHelper.addToJsonString("list_id",oldTask.getList().getId(),oldJson);
-				newJson=JsonHelper.addToJsonString("list_id",newTask.getList().getId(),newJson);
-				changed=true;
-			}
-			
-			if(oldTask.getPriority()!=newTask.getPriority()){
-				oldJson=JsonHelper.addToJsonString("priority",oldTask.getPriority(),oldJson);
-				newJson=JsonHelper.addToJsonString("priority",newTask.getPriority(),newJson);
-				changed=true;
-			}
-			
-			if(oldTask.isDone()!=newTask.isDone()){
-				oldJson=JsonHelper.addToJsonString("done",oldTask.isDone(),oldJson);
-				newJson=JsonHelper.addToJsonString("done",newTask.isDone(),newJson);
-				changed=true;
-			}
-			
-			if(oldTask.getDue()==null&&newTask.getDue()!=null||(oldTask.getDue()!=null&&!oldTask.getDue().equals(newTask.getDue()))){
-				String s="";
-				if(oldTask.getDue()!=null){
-					s=new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(oldTask.getDue().getTime());
-				}
-				oldJson=JsonHelper.addToJsonString("due",s,oldJson);
-				s="";
-				if(newTask.getDue()!=null){
-					s=new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(newTask.getDue().getTime());
-				}
-				newJson=JsonHelper.addToJsonString("due",s,newJson);
-				changed=true;
-			}
-			
-			if(oldTask.getReminder()==null&&newTask.getReminder()!=null||(oldTask.getReminder()!=null&&!oldTask.getReminder().equals(newTask.getReminder()))){
-				String s="";
-				if(oldTask.getReminder()!=null){
-					s=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(oldTask.getDue().getTime());
-				}					
-				s="";
-				if(newTask.getReminder()!=null){
-					s=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(newTask.getDue().getTime());
-				}	
-				newJson=JsonHelper.addToJsonString("reminder",s,newJson);
-				changed=true;
-			}
-			if(!changed)
-				return;
-			oldJson=JsonHelper.addToJsonString("id", oldTask.getId(), oldJson);
-			newJson=JsonHelper.addToJsonString("id", newTask.getId(), newJson);
-			oldJson=JsonHelper.addToJsonString("updated_at", oldTask.getUpdated_at(), oldJson);
-			newJson=JsonHelper.addToJsonString("updated_at", newTask.getUpdated_at(), newJson);
-			oldJson+="}";
-			newJson+="}";
-			
-			cv.put("new", newJson);
-			cv.put("old", oldJson);
-		}
-		cv.put("task_id", newTask==null?oldTask.getId():newTask.getId());
-		database.insert(TaskHistory.TABLE, nullCol, cv);
-	}
 
 
 	
@@ -317,7 +218,6 @@ public class Task extends TaskBase {
 		cursor.moveToFirst();
 		Task newTask = cursorToTask(cursor);
 		cursor.close();
-		newChange(newTask, null);
 		return newTask;
 	}
 
