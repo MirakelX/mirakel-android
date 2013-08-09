@@ -25,18 +25,4 @@ public class JsonHelper {
 		oldJson+=value;
 		return oldJson;
 	}
-	
-	public static String getPart(String key, String json){
-		String[] p=json.split(",");
-		for(String e:p){
-			if(e.contains(key)){
-				if(e.charAt(0)=='{')
-					e=e.substring(1);
-				if(e.charAt(e.length()-1)=='}'||e.charAt(e.length()-1)=='}')
-					e=e.substring(1, e.length()-2);
-				return e.trim();
-			}
-		}
-		return null;
-	}
 }
