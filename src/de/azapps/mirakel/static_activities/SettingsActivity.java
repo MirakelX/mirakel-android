@@ -100,23 +100,27 @@ public class SettingsActivity extends PreferenceActivity {
 			final String path_astrid = getPathFromUri(data.getData());
 
 			// Do the import in a background-task
-			new AsyncTask<String, Void, Void>() {
+			new AsyncTask<String, Void, Boolean>() {
 				ProgressDialog dialog;
 
 				@Override
-				protected Void doInBackground(String... params) {
-					ExportImport.importAstrid(that, path_astrid);
-					return null;
+				protected Boolean doInBackground(String... params) {
+					return ExportImport.importAstrid(that, path_astrid);
 				}
 
 				@Override
-				protected void onPostExecute(Void v) {
+				protected void onPostExecute(Boolean success) {
 					dialog.dismiss();
+					if(!success) {
+					Toast.makeText(that, R.string.astrid_unsuccess,
+							Toast.LENGTH_LONG).show();
+					} else {
 					Toast.makeText(that, R.string.astrid_success,
 							Toast.LENGTH_SHORT).show();
 					android.os.Process.killProcess(android.os.Process.myPid()); // ugly
 																				// but
 																				// simple
+					}
 				}
 
 				@Override

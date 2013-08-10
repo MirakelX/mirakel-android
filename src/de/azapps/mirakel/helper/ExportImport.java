@@ -54,7 +54,7 @@ public class ExportImport {
 	}
 
 	@SuppressLint("SimpleDateFormat")
-	public static void importAstrid(Context context, String path) {
+	public static boolean importAstrid(Context context, String path) {
 		File outputDir = new File(context.getCacheDir(), "astrid");
 		if (!outputDir.isDirectory()) {
 			outputDir.mkdirs();
@@ -68,9 +68,7 @@ public class ExportImport {
 		try {
 			FileUtils.unzip(zipped, outputDir);
 		} catch (Exception e) {
-			Toast.makeText(context, R.string.astrid_unsuccess,
-					Toast.LENGTH_LONG).show();
-			return;
+			return false;
 		}
 		FileReader tasks, lists;
 		try {
@@ -128,15 +126,12 @@ public class ExportImport {
 			}
 
 		} catch (FileNotFoundException e) {
-			Toast.makeText(context, R.string.astrid_unsuccess,
-					Toast.LENGTH_LONG).show();
-			return;
+			return false;
 		} catch (IOException e) {
-			Toast.makeText(context, R.string.astrid_unsuccess,
-					Toast.LENGTH_LONG).show();
-			return;
+			return false;
 
 		}
+		return true;
 
 	}
 }

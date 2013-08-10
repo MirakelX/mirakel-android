@@ -379,8 +379,9 @@ public class PreferencesHelper {
 						Bundle bundle = new Bundle();
 						ContentResolver.removePeriodicSync(account,
 								Mirakel.AUTHORITY_TYP, bundle);
+						long longVal=Long.parseLong(newValue.toString());
 						if (account != null
-								&& Long.parseLong(newValue.toString()) != -1) {
+								&& longVal != -1) {
 							ContentResolver.setSyncAutomatically(account,
 									Mirakel.AUTHORITY_TYP, true);
 							ContentResolver.setIsSyncable(account,
@@ -388,7 +389,7 @@ public class PreferencesHelper {
 							// ContentResolver.setMasterSyncAutomatically(true);
 							ContentResolver.addPeriodicSync(account,
 									Mirakel.AUTHORITY_TYP, null,
-									((Long) newValue) * 60);
+									longVal * 60);
 						}
 						return true;
 					}
