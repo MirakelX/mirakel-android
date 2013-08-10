@@ -119,7 +119,7 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		} else {
 			holder.taskRowHasContent.setVisibility(View.INVISIBLE);
 		}
-		if (listId <= 0) {
+		if (listId <= 0 && task!=null && task.getList()!=null) {
 			holder.taskRowList.setVisibility(View.VISIBLE);
 			holder.taskRowList.setText(task.getList().getName());
 		} else {
