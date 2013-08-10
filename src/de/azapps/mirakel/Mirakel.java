@@ -24,10 +24,12 @@ import org.acra.annotation.ReportsCrashes;
 
 import android.app.Application;
 import android.content.Intent;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -65,6 +67,7 @@ public class Mirakel extends Application {
 	public static final String AUTHORITY_TYP = "de.azapps.mirakel.provider";
 	public static final String BUNDLE_SERVER_URL = "url";
 	public static  String APK_NAME;
+	public static String VERSIONS_NAME;
 
 	public static int widgets[] = {};
 
@@ -78,6 +81,14 @@ public class Mirakel extends Application {
 		super.onCreate();
 		ACRA.init(this);
 		APK_NAME=getPackageName();
+		try {
+			VERSIONS_NAME=getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+		} catch (NameNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			Log.wtf(TAG, "App not found");
+			VERSIONS_NAME="";
+		}
 		openHelper = new DatabaseHelper(this);
 		Mirakel.getWritableDatabase().execSQL("PRAGMA foreign_keys=ON;");
 		ListMirakel.init(getApplicationContext());
