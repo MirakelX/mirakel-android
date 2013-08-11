@@ -1,6 +1,7 @@
 package de.azapps.mirakel.helper;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
@@ -121,7 +122,7 @@ public class Helpers {
 	 *            Format–String (like dd.MM.YY)
 	 * @return The formatted Date as String
 	 */
-	public static String formatDate(GregorianCalendar date, String format) {
+	public static String formatDate(Calendar date, String format) {
 		if (date == null)
 			return "";
 		else {
@@ -139,7 +140,7 @@ public class Helpers {
 	 *            Is the Task done?
 	 * @return ID of the Color–Resource
 	 */
-	public static int getTaskDueColor(GregorianCalendar origDue, boolean isDone) {
+	public static int getTaskDueColor(Calendar origDue, boolean isDone) {
 		if (origDue == null)
 			return R.color.Grey;
 		LocalDate today = new LocalDate();

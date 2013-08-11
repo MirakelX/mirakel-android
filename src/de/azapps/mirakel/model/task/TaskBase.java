@@ -18,7 +18,9 @@
  ******************************************************************************/
 package de.azapps.mirakel.model.task;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -31,23 +33,24 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 
 class TaskBase {
-	private long id=0;
-	private String uuid="";
+	private long id = 0;
+	private String uuid = "";
 	private ListMirakel list;
 	private String name;
 	private String content;
 	private boolean done;
-	private GregorianCalendar due;
+	private Calendar due;
 	private int priority;
-	private String createdAt;
-	private String updatedAt;
+	private Calendar createdAt;
+	private Calendar updatedAt;
 	protected Map<String, Boolean> edited = new HashMap<String, Boolean>();
 	private int sync_state;
-	private GregorianCalendar reminder;
+	private Calendar reminder;
 
-	TaskBase(long id, String uuid, ListMirakel list, String name, String content,
-			boolean done, GregorianCalendar due, GregorianCalendar reminder,
-			int priority, String created_at, String updated_at, int sync_state) {
+	TaskBase(long id, String uuid, ListMirakel list, String name,
+			String content, boolean done, Calendar due, Calendar reminder,
+			int priority, Calendar created_at, Calendar updated_at,
+			int sync_state) {
 		this.id = id;
 		this.uuid = uuid;
 		this.setList(list);
@@ -76,8 +79,8 @@ class TaskBase {
 		this.setDue(null);
 		this.setReminder(null);
 		this.setPriority(0);
-		this.setCreatedAt(null);
-		this.setUpdatedAt(null);
+		this.setCreatedAt((Calendar) null);
+		this.setUpdatedAt((Calendar) null);
 		this.setSyncState(0);
 	}
 
@@ -89,11 +92,13 @@ class TaskBase {
 		this.id = id;
 		edited.put("id", true);
 	}
-	public String setUUID() {
+
+	public String getUUID() {
 		return uuid;
 	}
+
 	public void setUUID(String uuid) {
-		this.uuid=uuid;
+		this.uuid = uuid;
 		edited.put("uuid", true);
 	}
 
@@ -142,20 +147,20 @@ class TaskBase {
 		edited.put("done", true);
 	}
 
-	public GregorianCalendar getDue() {
+	public Calendar getDue() {
 		return due;
 	}
 
-	public void setDue(GregorianCalendar due) {
+	public void setDue(Calendar due) {
 		this.due = due;
 		edited.put("due", true);
 	}
 
-	public GregorianCalendar getReminder() {
+	public Calendar getReminder() {
 		return reminder;
 	}
 
-	public void setReminder(GregorianCalendar reminder) {
+	public void setReminder(Calendar reminder) {
 		this.reminder = reminder;
 	}
 
@@ -168,20 +173,42 @@ class TaskBase {
 		edited.put("priority", true);
 	}
 
-	public String getCreated_at() {
+	public Calendar getCreated_at() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(String created_at) {
+	public void setCreatedAt(Calendar created_at) {
 		this.createdAt = created_at;
 	}
 
-	public String getUpdated_at() {
+	public void setCreatedAt(String created_at) {
+		GregorianCalendar temp = new GregorianCalendar();
+		try {
+			temp.setTime(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+					.parse(created_at));
+			setCreatedAt(temp);
+		} catch (ParseException e) {
+			setCreatedAt((Calendar) null);
+		}
+	}
+
+	public Calendar getUpdated_at() {
 		return updatedAt;
 	}
 
-	public void setUpdatedAt(String updated_at) {
+	public void setUpdatedAt(Calendar updated_at) {
 		this.updatedAt = updated_at;
+	}
+
+	public void setUpdatedAt(String updated_at) {
+		GregorianCalendar temp = new GregorianCalendar();
+		try {
+			temp.setTime(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+					.parse(updated_at));
+			setUpdatedAt(temp);
+		} catch (ParseException e) {
+			setUpdatedAt((Calendar) null);
+		}
 	}
 
 	public int getSync_state() {
@@ -191,8 +218,8 @@ class TaskBase {
 	public void setSyncState(int sync_state) {
 		this.sync_state = sync_state;
 	}
-	
-	public Map<String, Boolean> getEdited(){
+
+	public Map<String, Boolean> getEdited() {
 		return edited;
 	}
 
@@ -202,6 +229,8 @@ class TaskBase {
 	}
 
 	public ContentValues getContentValues() throws NoSuchListException {
+		SimpleDateFormat dateFormat = new SimpleDateFormat(
+				"yyyy-MM-dd'T'kkmmss'Z'", Locale.getDefault());
 		ContentValues cv = new ContentValues();
 		cv.put("_id", id);
 		cv.put("uuid", uuid);
@@ -217,12 +246,16 @@ class TaskBase {
 		cv.put("due", due);
 		String reminder = null;
 		if (this.reminder != null)
-			reminder = new SimpleDateFormat("yyyy-MM-dd'T'kkmmss'Z'",
-					Locale.getDefault()).format(new Date(this.reminder
-					.getTimeInMillis()));
+			reminder = dateFormat.format(this.reminder.getTime());
 		cv.put("reminder", reminder);
 		cv.put("priority", priority);
+		String createdAt = null;
+		if (this.createdAt != null)
+			createdAt = dateFormat.format(this.createdAt.getTime());
 		cv.put("created_at", createdAt);
+		String updatedAt = null;
+		if (this.updatedAt != null)
+			updatedAt = dateFormat.format(this.updatedAt.getTime());
 		cv.put("updated_at", updatedAt);
 		cv.put("sync_state", sync_state);
 		return cv;

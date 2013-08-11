@@ -128,7 +128,7 @@ public class TaskDialogHelpers {
 	public static void handleReminder(final Activity act, final Task task,
 			final ExecInterface onSuccess) {
 		final Context ctx = (Context) act;
-		GregorianCalendar reminder = (task.getReminder() == null ? new GregorianCalendar()
+		Calendar reminder = (task.getReminder() == null ? new GregorianCalendar()
 				: task.getReminder());
 		// Inflate the root layout
 		final RelativeLayout mDateTimeDialogView = (RelativeLayout) act

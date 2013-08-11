@@ -21,6 +21,7 @@ package de.azapps.mirakel.model.task;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
@@ -31,6 +32,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.format.DateFormat;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -49,10 +51,11 @@ public class Task extends TaskBase {
 
 	public static final String TABLE = "tasks";
 
-	public Task(long id,String uuid, ListMirakel list, String name, String content,
-			boolean done, GregorianCalendar due, GregorianCalendar reminder,
-			int priority, String created_at, String updated_at, int sync_state) {
-		super(id,uuid, list, name, content, done, due, reminder, priority,
+	public Task(long id, String uuid, ListMirakel list, String name,
+			String content, boolean done, Calendar due, Calendar reminder,
+			int priority, Calendar created_at, Calendar updated_at,
+			int sync_state) {
+		super(id, uuid, list, name, content, done, due, reminder, priority,
 				created_at, updated_at, sync_state);
 	}
 
@@ -73,12 +76,12 @@ public class Task extends TaskBase {
 		setSyncState(getSync_state() == Network.SYNC_STATE.ADD
 				|| getSync_state() == Network.SYNC_STATE.IS_SYNCED ? getSync_state()
 				: Network.SYNC_STATE.NEED_SYNC);
-		if(context!=null)
-		setUpdatedAt(new SimpleDateFormat(
-				context.getString(R.string.dateTimeFormat), Locale.getDefault())
-				.format(new Date()));
+		if (context != null)
+			setUpdatedAt(new SimpleDateFormat(
+					context.getString(R.string.dateTimeFormat),
+					Locale.getDefault()).format(new Date()));
 		ContentValues values = getContentValues();
-//		this.edited= new HashMap<String, Boolean>();
+		// this.edited= new HashMap<String, Boolean>();
 		database.update(TABLE, values, "_id = " + getId(), null);
 	}
 
@@ -98,31 +101,32 @@ public class Task extends TaskBase {
 		}
 
 	}
-	public String toJson(){
-		String json="{";
-		json+="\"id\":"+getId()+",";
-		json+="\"name\":\""+getName()+"\",";
-		json+="\"content\":\""+getContent()+"\",";
-		json+="\"done\":"+(isDone()?"true":"false")+",";
-		json+="\"priority\":"+getPriority()+",";
-		json+="\"list_id\":"+getList().getId()+",";
-		String s="";
-		if(getDue()!=null)
-		{
-			s=new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(getDue().getTime());
+
+	public String toJson() {
+		String json = "{";
+		json += "\"id\":" + getId() + ",";
+		json += "\"name\":\"" + getName() + "\",";
+		json += "\"content\":\"" + getContent() + "\",";
+		json += "\"done\":" + (isDone() ? "true" : "false") + ",";
+		json += "\"priority\":" + getPriority() + ",";
+		json += "\"list_id\":" + getList().getId() + ",";
+		String s = "";
+		if (getDue() != null) {
+			s = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+					.format(getDue().getTime());
 		}
-		json+="\"due\":\""+s+"\",";
-		s="";
-		if(getReminder()!=null)
-		{
-			s=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(getReminder().getTime());
+		json += "\"due\":\"" + s + "\",";
+		s = "";
+		if (getReminder() != null) {
+			s = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+					.format(getReminder().getTime());
 		}
-		json+="\"reminder\":\""+s+"\",";
-		json+="\"sync_state\":"+getSync_state()+",";
-		json+="\"created_at\":\""+getCreated_at()+"\",";
-		json+="\"updated_at\":\""+getUpdated_at()+"\"}";
+		json += "\"reminder\":\"" + s + "\",";
+		json += "\"sync_state\":" + getSync_state() + ",";
+		json += "\"created_at\":\"" + getCreated_at() + "\",";
+		json += "\"updated_at\":\"" + getUpdated_at() + "\"}";
 		return json;
-//		json+="\"name\":\""+getCreated_at()+"\"";
+		// json+="\"name\":\""+getCreated_at()+"\"";
 	}
 
 	// Static Methods
@@ -130,14 +134,10 @@ public class Task extends TaskBase {
 	private static final String TAG = "TasksDataSource";
 	private static SQLiteDatabase database;
 	private static DatabaseHelper dbHelper;
-	private static final String[] allColumns = { "_id", "uuid", "list_id", "name",
-			"content", "done", "due", "reminder", "priority", "created_at",
-			"updated_at", "sync_state" };
+	private static final String[] allColumns = { "_id", "uuid", "list_id",
+			"name", "content", "done", "due", "reminder", "priority",
+			"created_at", "updated_at", "sync_state" };
 	private static Context context;
-	
-
-
-	
 
 	public static Task getDummy(Context ctx) {
 		return new Task(ctx.getString(R.string.task_empty));
@@ -172,8 +172,9 @@ public class Task extends TaskBase {
 	public static Task newTask(String name, long list_id) {
 		return newTask(name, list_id, "", false, null, 0);
 	}
-	
-	public static Task newTask(String name, long list_id,GregorianCalendar due , int prio) {
+
+	public static Task newTask(String name, long list_id,
+			GregorianCalendar due, int prio) {
 		return newTask(name, list_id, "", false, due, prio);
 	}
 
@@ -196,7 +197,7 @@ public class Task extends TaskBase {
 			boolean done, GregorianCalendar due, int priority) {
 
 		ContentValues values = new ContentValues();
-		values.put("uuid",java.util.UUID.randomUUID().toString());
+		values.put("uuid", java.util.UUID.randomUUID().toString());
 		values.put("name", name);
 		values.put("list_id", list_id);
 		values.put("content", content);
@@ -411,71 +412,69 @@ public class Task extends TaskBase {
 	}
 
 	public static Task parse_json(JsonObject el) {
-		Task t=null;
-		JsonElement id=el.get("id");
-		if(id!=null)
-			//use old Task from db if existing
-			t=Task.get(id.getAsLong());
-		if(t==null){
+		Task t = null;
+		JsonElement id = el.get("id");
+		if (id != null)
+			// use old Task from db if existing
+			t = Task.get(id.getAsLong());
+		if (t == null) {
 			t = new Task();
 		}
-//		if(el.get("id")!=null)
-//			t.setId(el.get("id").getAsLong());
-		JsonElement j=el.get("name");
-		if(j!=null)
+		// if(el.get("id")!=null)
+		// t.setId(el.get("id").getAsLong());
+		JsonElement j = el.get("name");
+		if (j != null)
 			t.setName(j.getAsString());
 		try {
-			j=el.get("content");
-			t.setContent(j.getAsString() == null ? ""
-					: el.get("content").getAsString());
+			j = el.get("content");
+			t.setContent(j.getAsString() == null ? "" : el.get("content")
+					.getAsString());
 		} catch (Exception e) {
 			Log.d(TAG, "Content=NULL?");
-			if(j!=null||id==null)
+			if (j != null || id == null)
 				t.setContent("");
 		}
-		j=el.get("priority");
-		if(j!=null)
+		j = el.get("priority");
+		if (j != null)
 			t.setPriority(j.getAsInt());
-		j=el.get("list_id");
-		if(j!=null)
+		j = el.get("list_id");
+		if (j != null)
 			t.setList(ListMirakel.getList(j.getAsInt()));
-		j=el.get("created_at");
-		if(j!=null){
-			t.setCreatedAt(j.getAsString()
-				.replace(":", ""));
+		j = el.get("created_at");
+		if (j != null) {
+			t.setCreatedAt(j.getAsString().replace(":", ""));
 		}
-		j=el.get("updated_at");
-		if(j!=null){
-			t.setUpdatedAt(j.getAsString()
-				.replace(":", ""));
+		j = el.get("updated_at");
+		if (j != null) {
+			t.setUpdatedAt(j.getAsString().replace(":", ""));
 		}
-		j=el.get("done");
-		if(j!=null)
+		j = el.get("done");
+		if (j != null)
 			t.setDone(j.getAsBoolean());
 		try {
-			j=el.get("due");
+			j = el.get("due");
 			GregorianCalendar temp = new GregorianCalendar();
-			temp.setTime(new SimpleDateFormat("yyyy-MM-dd", Locale
-					.getDefault()).parse(j.getAsString()));
+			temp.setTime(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+					.parse(j.getAsString()));
 			t.setDue(temp);
 		} catch (Exception e) {
-			if(j!=null||id==null)
+			if (j != null || id == null)
 				t.setDue(null);
 			Log.v(TAG, "Due is null");
 			Log.e(TAG, "Can not parse Date! ");
 		}
-		try{
-			j=el.get("reminder");
+		try {
+			j = el.get("reminder");
 			GregorianCalendar temp = new GregorianCalendar();
 			temp.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale
 					.getDefault()).parse(j.getAsString()));
 			t.setReminder(temp);
-		}catch(Exception e){
-			if(j!=null||id==null)
+		} catch (Exception e) {
+			if (j != null || id == null)
 				t.setDue(null);
 			Log.v(TAG, "Reminder is null");
 			Log.e(TAG, "Can not parse Date! ");
-		}		
+		}
 		return t;
 	}
 
@@ -488,6 +487,8 @@ public class Task extends TaskBase {
 	private static Task cursorToTask(Cursor cursor) {
 		int i = 0;
 		GregorianCalendar due = new GregorianCalendar();
+		SimpleDateFormat dateFormat = new SimpleDateFormat(
+				"yyyy-MM-dd'T'kkmmss'Z'", Locale.getDefault());
 		try {
 			due.setTime(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 					.parse(cursor.getString(6)));
@@ -498,19 +499,28 @@ public class Task extends TaskBase {
 		}
 		GregorianCalendar reminder = new GregorianCalendar();
 		try {
-			reminder.setTime(new SimpleDateFormat("yyyy-MM-dd'T'kkmmss'Z'",
-					Locale.getDefault()).parse(cursor.getString(7)));
-		} catch (ParseException e) {
-			reminder = null;
-		} catch (NullPointerException e) {
+			reminder.setTime(dateFormat.parse(cursor.getString(7)));
+		} catch (Exception e) {
 			reminder = null;
 		}
+		GregorianCalendar created_at = new GregorianCalendar();
+		try {
+			created_at.setTime(dateFormat.parse(cursor.getString(9)));
+		} catch (Exception e) {
+			created_at = null;
+		}
+		GregorianCalendar updated_at = new GregorianCalendar();
+		try {
+			updated_at.setTime(dateFormat.parse(cursor.getString(10)));
+		} catch (Exception e) {
+			updated_at = null;
+		}
 
-		Task task = new Task(cursor.getLong(i++),cursor.getString(i++),
+		Task task = new Task(cursor.getLong(i++), cursor.getString(i++),
 				ListMirakel.getList((int) cursor.getLong(i++)),
 				cursor.getString(i++), cursor.getString(i++),
 				cursor.getInt((i++)) == 1, due, reminder, cursor.getInt(8),
-				cursor.getString(9), cursor.getString(10), cursor.getInt(11));
+				created_at, updated_at, cursor.getInt(11));
 		return task;
 	}
 
@@ -530,7 +540,7 @@ public class Task extends TaskBase {
 			where = "list_id='" + listId + "'";
 		}
 		if (!showDone) {
-			where += (where.trim().equals("")?"":" AND ")+" done=0";
+			where += (where.trim().equals("") ? "" : " AND ") + " done=0";
 		}
 		return getTasksCursor(listId, sorting, where);
 	}

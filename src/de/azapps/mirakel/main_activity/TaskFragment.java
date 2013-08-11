@@ -190,7 +190,7 @@ public class TaskFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				mIgnoreTimeSet = false;
-				GregorianCalendar due = (task.getDue() == null ? new GregorianCalendar()
+				Calendar due = (task.getDue() == null ? new GregorianCalendar()
 						: task.getDue());
 				OnDateSetListener listner = (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB ? new OnDateSetListener() {
 

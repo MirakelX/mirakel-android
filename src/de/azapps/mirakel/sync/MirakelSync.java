@@ -4,7 +4,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -31,7 +31,7 @@ import de.azapps.mirakelandroid.R;
 public class MirakelSync {
 	private static final String TAG = "MirakelSync";
 	private String ServerUrl;
-	public static String TYPE="Mirakel";
+	public static String TYPE = "Mirakel";
 
 	private List<Pair<Network, String>> DeleteLists;
 	private List<Pair<Network, String>> DeleteTasks;
@@ -46,9 +46,10 @@ public class MirakelSync {
 
 	private final Context mContext;
 	private boolean finishList;
-	public MirakelSync(Context ctx){
-		mContext=ctx;
-		
+
+	public MirakelSync(Context ctx) {
+		mContext = ctx;
+
 		DeleteLists = new ArrayList<Pair<Network, String>>();
 		DeleteTasks = new ArrayList<Pair<Network, String>>();
 		AddLists = new ArrayList<Pair<Network, String>>();
@@ -59,8 +60,8 @@ public class MirakelSync {
 		count = 0;
 		finishList = false;
 	}
-	
-	public void sync(Account account){
+
+	public void sync(Account account) {
 		Log.v(TAG, "Syncing");
 
 		ServerUrl = (AccountManager.get(mContext)).getUserData(account,
@@ -89,7 +90,6 @@ public class MirakelSync {
 		}, Network.HttpMode.POST, data, mContext, null).execute(ServerUrl
 				+ "/tokens.json");
 	}
-
 
 	private void perpareSync() {
 		List<ListMirakel> deletedLists = ListMirakel
@@ -487,7 +487,7 @@ public class MirakelSync {
 		data.add(new BasicNameValuePair("task[priority]", task.getPriority()
 				+ ""));
 		data.add(new BasicNameValuePair("task[done]", task.isDone() + ""));
-		GregorianCalendar due = task.getDue();
+		Calendar due = task.getDue();
 		data.add(new BasicNameValuePair("task[due]", due == null ? "null"
 				: (new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 						.format(due.getTime()))));
@@ -583,26 +583,17 @@ public class MirakelSync {
 	private void mergeTask(Task task_server, Task task) {
 		if (task.getSync_state() == Network.SYNC_STATE.NEED_SYNC
 				|| task.getSync_state() == Network.SYNC_STATE.NOTHING) {
-			DateFormat df = new SimpleDateFormat(
-					mContext.getString(R.string.dateTimeFormat), Locale.US);// use
-																			// ASCII-Formating
-			try {
-				if (df.parse(task.getUpdated_at()).getTime() > df.parse(
-						task_server.getUpdated_at()).getTime()) {
-					// local task newer, push to server
-					Log.d(TAG, "Sync task to server from list "
-							+ task.getList().getId());
-					sync_task(task);
-				} else {
-					// server task newer, use this task instated local
-					Log.d(TAG, "Sync task from server to list "
-							+ task_server.getList().getId());
-					task_server.setSyncState(Network.SYNC_STATE.IS_SYNCED);
-					safeSafeTask(task_server);
-				}
-			} catch (ParseException e) {
-				Log.e(TAG, "Unabel to parse Dates");
-				Log.w(TAG, Log.getStackTraceString(e));
+			if (task.getUpdated_at().compareTo(task_server.getUpdated_at()) > 0) {
+				// local task newer, push to server
+				Log.d(TAG, "Sync task to server from list "
+						+ task.getList().getId());
+				sync_task(task);
+			} else {
+				// server task newer, use this task instated local
+				Log.d(TAG, "Sync task from server to list "
+						+ task_server.getList().getId());
+				task_server.setSyncState(Network.SYNC_STATE.IS_SYNCED);
+				safeSafeTask(task_server);
 			}
 		} else if (task.getSync_state() == Network.SYNC_STATE.ADD) {
 			Cursor c = Mirakel.getReadableDatabase()
