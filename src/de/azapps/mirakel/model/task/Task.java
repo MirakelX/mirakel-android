@@ -55,9 +55,9 @@ public class Task extends TaskBase {
 	public Task(long id, String uuid, ListMirakel list, String name,
 			String content, boolean done, Calendar due, Calendar reminder,
 			int priority, Calendar created_at, Calendar updated_at,
-			int sync_state) {
+			int sync_state,String additionalEntriesString) {
 		super(id, uuid, list, name, content, done, due, reminder, priority,
-				created_at, updated_at, sync_state);
+				created_at, updated_at, sync_state,additionalEntriesString);
 	}
 
 	Task() {
@@ -156,7 +156,7 @@ public class Task extends TaskBase {
 	private static DatabaseHelper dbHelper;
 	private static final String[] allColumns = { "_id", "uuid", "list_id",
 			"name", "content", "done", "due", "reminder", "priority",
-			"created_at", "updated_at", "sync_state" };
+			"created_at", "updated_at", "sync_state", "additional_entries" };
 	private static Context context;
 
 	public static Task getDummy(Context ctx) {
@@ -218,7 +218,7 @@ public class Task extends TaskBase {
 		Calendar now = new GregorianCalendar();
 		Task t = new Task(0, java.util.UUID.randomUUID().toString(),
 				ListMirakel.getList((int) list_id), name, content, done, due,
-				null, priority, now, now, Network.SYNC_STATE.ADD);
+				null, priority, now, now, Network.SYNC_STATE.ADD, "");
 
 		return t.create();
 	}
@@ -466,6 +466,7 @@ public class Task extends TaskBase {
 
 	/**
 	 * Parses a JSON-Object to a task
+	 * 
 	 * @param el
 	 * @return
 	 */
@@ -609,7 +610,7 @@ public class Task extends TaskBase {
 				ListMirakel.getList((int) cursor.getLong(i++)),
 				cursor.getString(i++), cursor.getString(i++),
 				cursor.getInt((i++)) == 1, due, reminder, cursor.getInt(8),
-				created_at, updated_at, cursor.getInt(11));
+				created_at, updated_at, cursor.getInt(11),cursor.getString(12));
 		return task;
 	}
 

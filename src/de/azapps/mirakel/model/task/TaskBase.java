@@ -18,6 +18,7 @@
  ******************************************************************************/
 package de.azapps.mirakel.model.task;
 
+import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -28,6 +29,11 @@ import java.util.Locale;
 import java.util.Map;
 
 import android.content.ContentValues;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -44,14 +50,15 @@ class TaskBase {
 	private Calendar createdAt;
 	private Calendar updatedAt;
 	protected Map<String, Boolean> edited = new HashMap<String, Boolean>();
-	private Map<String,String> additionalEntries=new HashMap<String, String>();
+	private Map<String, String> additionalEntries = null;
+	private String additionalEntriesString;
 	private int sync_state;
 	private Calendar reminder;
 
 	TaskBase(long id, String uuid, ListMirakel list, String name,
 			String content, boolean done, Calendar due, Calendar reminder,
 			int priority, Calendar created_at, Calendar updated_at,
-			int sync_state) {
+			int sync_state, String additionalEntriesString) {
 		this.id = id;
 		this.uuid = uuid;
 		this.setList(list);
@@ -64,6 +71,7 @@ class TaskBase {
 		this.setCreatedAt(created_at);
 		this.setUpdatedAt(updated_at);
 		this.setSyncState(sync_state);
+		this.additionalEntriesString = additionalEntriesString;
 	}
 
 	TaskBase() {
@@ -223,18 +231,42 @@ class TaskBase {
 	public Map<String, Boolean> getEdited() {
 		return edited;
 	}
-	
-	public Map<String,String> getAdditionalEntries() {
+
+	public Map<String, String> getAdditionalEntries() {
+		initAdditionalEntries();
 		return additionalEntries;
 	}
-	public void setAdditionalEntries(Map<String,String> additionalEntries) {
-		this.additionalEntries=additionalEntries;
+
+	public void setAdditionalEntries(Map<String, String> additionalEntries) {
+		this.additionalEntries = additionalEntries;
 	}
+
 	public void addAdditionalEntry(String key, String value) {
+		initAdditionalEntries();
 		additionalEntries.put(key, value);
 	}
+
 	public void removeAdditionalEntry(String key) {
+		initAdditionalEntries();
 		additionalEntries.remove(key);
+	}
+
+	/**
+	 * This function parses the additional fields only if it is necessary
+	 */
+	private void initAdditionalEntries() {
+		if (additionalEntries == null) {
+			if (additionalEntriesString == null
+					|| additionalEntriesString == "") {
+				this.additionalEntries = new HashMap<String, String>();
+			} else {
+				Gson gson = new Gson();
+				Type mapType = new TypeToken<Map<String, String>>() {
+				}.getType();
+				this.additionalEntries = gson.fromJson(additionalEntriesString,
+						mapType);
+			}
+		}
 	}
 
 	@Override
@@ -270,12 +302,17 @@ class TaskBase {
 			updatedAt = formatCal(this.updatedAt);
 		cv.put("updated_at", updatedAt);
 		cv.put("sync_state", sync_state);
+
+		Gson gson = new GsonBuilder().create();
+		String additionalEntries = gson.toJson(this.additionalEntries);
+		cv.put("additional_entries", additionalEntries);
 		return cv;
 	}
+
 	String formatCal(Calendar cal) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat(
 				"yyyy-MM-dd'T'kkmmss'Z'", Locale.getDefault());
 		return dateFormat.format(cal.getTime());
-		
+
 	}
 }

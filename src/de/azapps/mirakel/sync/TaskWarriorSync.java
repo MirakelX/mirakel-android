@@ -5,6 +5,7 @@ import java.nio.charset.MalformedInputException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONObject;
 
@@ -181,6 +182,10 @@ public class TaskWarriorSync {
 		json += "\"modification\":\"" + formatCal(t.getUpdated_at()) + "\",";
 		json += "\"content\":\"" + t.getContent() + "\",";
 		json += "\"reminder\":\"" + formatCal(t.getReminder()) + "\"";
+		Map<String,String> additionalEntries=t.getAdditionalEntries();
+		for(String key : additionalEntries.keySet()) {
+			json+=",\"" + key +"\":\"" + additionalEntries.get(key) + "\"";
+		}
 		json += "}";
 		return json;
 	}
