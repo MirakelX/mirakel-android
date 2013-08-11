@@ -45,10 +45,13 @@ import android.content.SyncResult;
 import android.os.Bundle;
 
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
-	private final static String TAG="SyncAdapter";
-	public static final String BUNDLE_SERVER_URL = "url";
+	private final static String TAG = "SyncAdapter";
+	public static final String BUNDLE_SERVER_URL = "url",
+			BUNDLE_CERT = "de.azapps.mirakel.cert",
+			BUNDLE_ORG = "de.azapps.mirakel.org";
 	public static final String BUNDLE_SERVER_TYPE = "type";
 	private Context mContext;
+
 	public SyncAdapter(Context context, boolean autoInitialize) {
 		super(context, autoInitialize);
 		mContext = context;
@@ -57,22 +60,19 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	@Override
 	public void onPerformSync(Account account, Bundle extras, String authority,
 			ContentProviderClient provider, SyncResult syncResult) {
-		Log.v(TAG,"SyncAdapter");
-		String type=(AccountManager.get(mContext)).getUserData(account,
+		Log.v(TAG, "SyncAdapter");
+		String type = (AccountManager.get(mContext)).getUserData(account,
 				BUNDLE_SERVER_TYPE);
-		if(type==null)
-			type=MirakelSync.TYPE;
-		if(type.equals(MirakelSync.TYPE)){
+		if (type == null)
+			type = MirakelSync.TYPE;
+		if (type.equals(MirakelSync.TYPE)) {
 			new MirakelSync(mContext).sync(account);
-		}else if(type.equals(TaskWarriorSync.TYPE)){
+		} else if (type.equals(TaskWarriorSync.TYPE)) {
 			new TaskWarriorSync(mContext).sync(account);
-		}else{
+		} else {
 			Log.wtf(TAG, "Unknown SyncType");
 		}
-		
-		
-	}
 
-	
+	}
 
 }
