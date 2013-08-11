@@ -1,6 +1,7 @@
 package de.azapps.mirakel.sync;
 
 import java.io.File;
+import java.nio.charset.MalformedInputException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -12,6 +13,7 @@ import android.content.Context;
 import android.widget.Toast;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.taskwarrior.Msg;
 
 public class TaskWarriorSync {
 
@@ -39,8 +41,34 @@ public class TaskWarriorSync {
 	public void sync(Account account) {
 		Log.w(TAG, "Not implemented yet");
 		accountManager = AccountManager.get(mContext);
-		this.account=account;
+		this.account = account;
 		init();
+
+		_local_tasks = Task.getTasksToSync();
+
+		Msg sync = new Msg();
+		String payload = "";
+		for (Task t : _local_tasks) {
+			payload += taskToJson(t) + "\n";
+		}
+		// Build sync-request
+		sync.set("protocol", "v1");
+		sync.set("type", "sync");
+		sync.set("org", _org);
+		sync.set("user", _user);
+		sync.set("key", _key);
+		sync.setPayload(payload);
+
+		// TODO Send sync request
+		// TODO Get server response
+		String response = "";
+
+		Msg remotes = new Msg();
+		try {
+			remotes.parse(response);
+		} catch (MalformedInputException e) {
+			// TODO do something
+		}
 	}
 
 	/**
@@ -72,6 +100,7 @@ public class TaskWarriorSync {
 
 	/**
 	 * Converts a task to the json-format we need
+	 * 
 	 * @param t
 	 * @return
 	 */
@@ -117,6 +146,7 @@ public class TaskWarriorSync {
 
 	/**
 	 * Format a Calendar to the taskwarrior-date-format
+	 * 
 	 * @param c
 	 * @return
 	 */
@@ -128,6 +158,7 @@ public class TaskWarriorSync {
 
 	/**
 	 * Handle an error
+	 * 
 	 * @param what
 	 * @param code
 	 */

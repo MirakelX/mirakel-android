@@ -32,7 +32,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.text.format.DateFormat;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -362,6 +361,21 @@ public class Task extends TaskBase {
 		}
 		cursor.close();
 		return tasks;
+	}
+	
+	public static List<Task> getTasksToSync(){
+		String where = "sync_state!='" + Network.SYNC_STATE.NOTHING + "'";
+		Cursor cursor = Mirakel.getReadableDatabase().query(TABLE, allColumns,
+				where, null, null, null, null);
+		List<Task> tasks = new ArrayList<Task>();
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			tasks.add(cursorToTask(cursor));
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return tasks;
+		
 	}
 
 	/**
