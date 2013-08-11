@@ -27,6 +27,8 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -462,71 +464,107 @@ public class Task extends TaskBase {
 		return new ArrayList<Task>();
 	}
 
+	/**
+	 * Parses a JSON-Object to a task
+	 * @param el
+	 * @return
+	 */
 	public static Task parse_json(JsonObject el) {
 		Task t = null;
 		JsonElement id = el.get("id");
-		if (id != null)
-			// use old Task from db if existing
+		if (id != null) {
 			t = Task.get(id.getAsLong());
+		}
 		if (t == null) {
 			t = new Task();
 		}
-		// if(el.get("id")!=null)
-		// t.setId(el.get("id").getAsLong());
-		JsonElement j = el.get("name");
-		if (j != null)
-			t.setName(j.getAsString());
-		try {
-			j = el.get("content");
-			t.setContent(j.getAsString() == null ? "" : el.get("content")
-					.getAsString());
-		} catch (Exception e) {
-			Log.d(TAG, "Content=NULL?");
-			if (j != null || id == null)
-				t.setContent("");
-		}
-		j = el.get("priority");
-		if (j != null)
-			t.setPriority(j.getAsInt());
-		j = el.get("list_id");
-		if (j != null)
-			t.setList(ListMirakel.getList(j.getAsInt()));
-		j = el.get("created_at");
-		if (j != null) {
-			t.setCreatedAt(j.getAsString().replace(":", ""));
-		}
-		j = el.get("updated_at");
-		if (j != null) {
-			t.setUpdatedAt(j.getAsString().replace(":", ""));
-		}
-		j = el.get("done");
-		if (j != null)
-			t.setDone(j.getAsBoolean());
-		try {
-			j = el.get("due");
-			GregorianCalendar temp = new GregorianCalendar();
-			temp.setTime(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-					.parse(j.getAsString()));
-			t.setDue(temp);
-		} catch (Exception e) {
-			if (j != null || id == null)
-				t.setDue(null);
-			Log.v(TAG, "Due is null");
-			Log.e(TAG, "Can not parse Date! ");
-		}
-		try {
-			j = el.get("reminder");
-			GregorianCalendar temp = new GregorianCalendar();
-			temp.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale
-					.getDefault()).parse(j.getAsString()));
-			t.setReminder(temp);
-		} catch (Exception e) {
-			if (j != null || id == null)
-				t.setDue(null);
-			Log.v(TAG, "Reminder is null");
-			Log.e(TAG, "Can not parse Date! ");
+
+		// Name
+		Set<Entry<String, JsonElement>> entries = el.entrySet();
+		for (Entry<String, JsonElement> entry : entries) {
+			String key = entry.getKey();
+			JsonElement val = entry.getValue();
+
+			if (key == "name" || key == "description") {
+				t.setName(val.getAsString());
+			} else if (key == "content") {
+				String content = val.getAsString();
+				if (content == null)
+					content = "";
+				t.setContent(content);
+			} else if (key == "priority") {
+				String prioString = val.getAsString();
+				if (prioString == "L") {
+					t.setPriority(-2);
+				} else if (prioString == "M") {
+					t.setPriority(1);
+				} else if (prioString == "H") {
+					t.setPriority(2);
+				} else {
+					t.setPriority(val.getAsInt());
+				}
+			} else if (key == "list_id") {
+				ListMirakel list = ListMirakel.getList(val.getAsInt());
+				if (list == null)
+					list = SpecialList.firstSpecial().getDefaultList();
+				t.setList(list);
+			} else if (key == "project") {
+				ListMirakel list = ListMirakel.findByName(val.getAsString());
+				if (list == null) {
+					list = ListMirakel.newList(val.getAsString());
+				}
+				t.setList(list);
+			} else if (key == "created_at") {
+				t.setCreatedAt(val.getAsString().replace(":", ""));
+			} else if (key == "updated_at") {
+				t.setUpdatedAt(val.getAsString().replace(":", ""));
+			} else if (key == "entry") {
+				t.setCreatedAt(parseDate(val.getAsString(),
+						context.getString(R.string.TWDateFormat)));
+			} else if (key == "modification") {
+				t.setUpdatedAt(parseDate(val.getAsString(),
+						context.getString(R.string.TWDateFormat)));
+			} else if (key == "done") {
+				t.setDone(val.getAsBoolean());
+			} else if (key == "status") {
+				String status = val.getAsString();
+				if (status == "pending") {
+					t.setDone(false);
+				} else if (status == "deleted") {
+					t.setSyncState(Network.SYNC_STATE.DELETE);
+				} else {
+					t.setDone(true);
+				}
+				t.addAdditionalEntry(key, val.getAsString());
+				// TODO don't ignore waiting and recurring!!!
+			} else if (key == "due") {
+				Calendar due = parseDate(val.getAsString(), "yyyy-MM-dd");
+				if (due == null) {
+					due = parseDate(val.getAsString(),
+							context.getString(R.string.TWDateFormat));
+				}
+			} else if (key == "reminder") {
+				Calendar reminder = parseDate(val.getAsString(), "yyyy-MM-dd");
+				if (reminder == null) {
+					reminder = parseDate(val.getAsString(),
+							context.getString(R.string.TWDateFormat));
+				}
+			} else {
+				t.addAdditionalEntry(key, val.getAsString());
+			}
 		}
 		return t;
+	}
+
+	private static Calendar parseDate(String date, String format) {
+		GregorianCalendar temp = new GregorianCalendar();
+		try {
+			temp.setTime(new SimpleDateFormat(format, Locale.getDefault())
+					.parse(date));
+			return temp;
+		} catch (ParseException e) {
+			return (Calendar) null;
+		}
 	}
 
 	/**

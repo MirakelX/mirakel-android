@@ -191,7 +191,7 @@ public class TaskWarriorSync {
 	 */
 	@SuppressLint("SimpleDateFormat")
 	private String formatCal(Calendar c) {
-		SimpleDateFormat df = new SimpleDateFormat("yyyyMMddTkkmmssZ");
+		SimpleDateFormat df = new SimpleDateFormat(mContext.getString(R.string.TWDateFormat));
 		return df.format(c.getTime());
 	}
 

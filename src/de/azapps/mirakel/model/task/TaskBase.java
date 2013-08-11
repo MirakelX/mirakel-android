@@ -44,6 +44,7 @@ class TaskBase {
 	private Calendar createdAt;
 	private Calendar updatedAt;
 	protected Map<String, Boolean> edited = new HashMap<String, Boolean>();
+	private Map<String,String> additionalEntries=new HashMap<String, String>();
 	private int sync_state;
 	private Calendar reminder;
 
@@ -221,6 +222,19 @@ class TaskBase {
 
 	public Map<String, Boolean> getEdited() {
 		return edited;
+	}
+	
+	public Map<String,String> getAdditionalEntries() {
+		return additionalEntries;
+	}
+	public void setAdditionalEntries(Map<String,String> additionalEntries) {
+		this.additionalEntries=additionalEntries;
+	}
+	public void addAdditionalEntry(String key, String value) {
+		additionalEntries.put(key, value);
+	}
+	public void removeAdditionalEntry(String key) {
+		additionalEntries.remove(key);
 	}
 
 	@Override
