@@ -104,6 +104,7 @@
     <string name="menu_move">Move</string>
     <!-- Login -->
     <string name="offical_server_url">https://mirakel.azapps.de</string>
+    <string name="offical_server_url_taskwarrior">mirakel.azapps.de:5644</string>
     <string name="title_settings">Settings</string>
 
     <!-- Widget -->
@@ -127,6 +128,10 @@
 
     <!-- Test Sync -->
     <!-- Label above username EditText -->
+    
+    <string name="login_activity_org_label">Organisation</string>
+    <string name="login_org_hint">Organsiation</string>
+    <string name="login_org_default">PUBLIC</string>
     <string name="login_activity_username_label">Username</string>
     <string name="login_activity_server_label">Server-URL</string>
     <string name="login_activity_server_typ">Server Typ</string>

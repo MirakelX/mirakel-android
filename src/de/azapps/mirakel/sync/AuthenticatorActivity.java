@@ -57,6 +57,7 @@ import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
@@ -142,6 +143,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 		if (!TextUtils.isEmpty(mUsername))
 			mUsernameEdit.setText(mUsername);
 		mTyp=(Spinner)findViewById(R.id.server_typ);
+		
 		mTyp.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 			@Override
@@ -149,6 +151,13 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 					int arg2, long arg3) {
 				mMessage.setText(getMessage((String)arg0.getItemAtPosition(arg2)));
 				
+				findViewById(R.id.login_org_container).setVisibility(arg2==1?View.VISIBLE:View.GONE);
+				mUsernameEdit.setInputType(arg2==1?InputType.TYPE_CLASS_TEXT:InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+				mUsernameEdit.setHint(getString(arg2==1?R.string.login_activity_username_label:R.string.Email));
+				
+				EditText url=((EditText)findViewById(R.id.server_edit));
+				url.setText(getString(arg2==1?R.string.offical_server_url_taskwarrior:R.string.offical_server_url));
+				url.setInputType(arg2==1?InputType.TYPE_CLASS_TEXT:InputType.TYPE_TEXT_VARIATION_URI);
 			}
 
 			@Override
@@ -250,7 +259,12 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 		if (mRequestNewAccount) {
 			Bundle b = new Bundle();
 			b.putString(SyncAdapter.BUNDLE_SERVER_URL, url);
-			b.putString(SyncAdapter.BUNDLE_SERVER_TYPE, mTyp.getSelectedItem().toString().equals(getResources().getStringArray(R.array.server_typs)[0])?MirakelSync.TYPE:TaskWarriorSync.TYPE);
+			boolean isMiarkel=mTyp.getSelectedItem().toString().equals(getResources().getStringArray(R.array.server_typs)[0]);
+			b.putString(SyncAdapter.BUNDLE_SERVER_TYPE, isMiarkel?MirakelSync.TYPE:TaskWarriorSync.TYPE);
+			if(!isMiarkel){
+				b.putString(SyncAdapter.BUNDLE_ORG, ((EditText)findViewById(R.id.org_edit)).getText().toString());
+			}
+			
 			mAccountManager.addAccountExplicitly(account, mPassword, b);
 			// Set contacts sync for this account.
 		} else {
