@@ -4,13 +4,13 @@ import de.azapps.mirakel.helper.Log;
 import android.accounts.Account;
 import android.content.Context;
 
-public class TaskWarroirSync {
+public class TaskWarriorSync {
 
 	public static final String TYPE = "TaskWarrior";
 	private static final String TAG = "TaskWarroirSync";
 	private Context mContext;
 	
-	public TaskWarroirSync(Context ctx){
+	public TaskWarriorSync(Context ctx){
 		mContext=ctx;
 	}
 	

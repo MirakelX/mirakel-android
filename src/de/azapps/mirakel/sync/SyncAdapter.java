@@ -64,8 +64,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			type=MirakelSync.TYPE;
 		if(type.equals(MirakelSync.TYPE)){
 			new MirakelSync(mContext).sync(account);
-		}else if(type.equals(TaskWarroirSync.TYPE)){
-			new TaskWarroirSync(mContext).sync(account);
+		}else if(type.equals(TaskWarriorSync.TYPE)){
+			new TaskWarriorSync(mContext).sync(account);
 		}else{
 			Log.wtf(TAG, "Unknown SyncType");
 		}
