@@ -45,7 +45,7 @@
                 android:layout_marginBottom="5dip"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textIsSelectable="false" />
-
+			<!-- Servertype -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -58,7 +58,8 @@
                 android:layout_width="match_parent"
                 android:entries="@array/server_typs"
                 android:layout_height="wrap_content" />
-
+            
+			<!-- Server-URL -->
 
             <TextView
                 android:layout_width="wrap_content"
@@ -77,15 +78,36 @@
                 android:scrollHorizontally="true"
                 android:singleLine="true"
                 android:text="@string/offical_server_url" />
+            
+            <!-- ORG -->
+            <LinearLayout
+                android:id="@+id/login_org_container"
+                android:visibility="gone"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:orientation="vertical">
+	            
+                <TextView
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:text="@string/login_activity_org_label"
+	                android:textAppearance="?android:attr/textAppearanceSmall"
+	                android:textStyle="bold" />
+	
+	            <EditText
+	                android:id="@+id/org_edit"
+	                android:layout_width="fill_parent"
+	                android:layout_height="wrap_content"
+	                android:hint="@string/login_org_hint"
+	                android:inputType="textUri"
+	                android:text="@string/login_org_default"
+	                android:minWidth="250dip"
+	                android:scrollHorizontally="true"
+	                android:singleLine="true" />
+                
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/server_fixed"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dip"
-                android:singleLine="true"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textIsSelectable="false" />
+			<!-- Username -->
 
             <TextView
                 android:layout_width="wrap_content"
@@ -104,14 +126,7 @@
                 android:scrollHorizontally="true"
                 android:singleLine="true" />
 
-            <TextView
-                android:id="@+id/username_fixed"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dip"
-                android:singleLine="true"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textIsSelectable="false" />
+			<!-- Password -->
 
             <TextView
                 android:layout_width="wrap_content"
