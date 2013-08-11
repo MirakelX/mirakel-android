@@ -35,6 +35,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -485,71 +486,77 @@ public class Task extends TaskBase {
 		for (Entry<String, JsonElement> entry : entries) {
 			String key = entry.getKey();
 			JsonElement val = entry.getValue();
+			if(key==null)
+				continue;
 
-			if (key == "name" || key == "description") {
+			if (key.equals("name") || key.equals("description")) {
 				t.setName(val.getAsString());
 			} else if (key == "content") {
 				String content = val.getAsString();
 				if (content == null)
 					content = "";
 				t.setContent(content);
-			} else if (key == "priority") {
+			} else if (key.equals("priority")) {
 				String prioString = val.getAsString();
-				if (prioString == "L") {
+				if (prioString.equals("L")) {
 					t.setPriority(-2);
-				} else if (prioString == "M") {
+				} else if (prioString.equals("M")) {
 					t.setPriority(1);
-				} else if (prioString == "H") {
+				} else if (prioString.equals("H")) {
 					t.setPriority(2);
 				} else {
 					t.setPriority(val.getAsInt());
 				}
-			} else if (key == "list_id") {
+			} else if (key.equals("list_id")) {
 				ListMirakel list = ListMirakel.getList(val.getAsInt());
 				if (list == null)
 					list = SpecialList.firstSpecial().getDefaultList();
 				t.setList(list);
-			} else if (key == "project") {
+			} else if (key.equals("project")) {
 				ListMirakel list = ListMirakel.findByName(val.getAsString());
 				if (list == null) {
 					list = ListMirakel.newList(val.getAsString());
 				}
 				t.setList(list);
-			} else if (key == "created_at") {
+			} else if (key.equals("created_at")) {
 				t.setCreatedAt(val.getAsString().replace(":", ""));
-			} else if (key == "updated_at") {
+			} else if (key.equals("updated_at")) {
 				t.setUpdatedAt(val.getAsString().replace(":", ""));
-			} else if (key == "entry") {
+			} else if (key.equals("entry")) {
 				t.setCreatedAt(parseDate(val.getAsString(),
 						context.getString(R.string.TWDateFormat)));
 			} else if (key == "modification") {
 				t.setUpdatedAt(parseDate(val.getAsString(),
 						context.getString(R.string.TWDateFormat)));
-			} else if (key == "done") {
+			} else if (key.equals("done")) {
 				t.setDone(val.getAsBoolean());
-			} else if (key == "status") {
+			} else if (key.equals("status")) {
 				String status = val.getAsString();
-				if (status == "pending") {
+				if (status.equals("pending")) {
 					t.setDone(false);
-				} else if (status == "deleted") {
+				} else if (status.equals("deleted")) {
 					t.setSyncState(Network.SYNC_STATE.DELETE);
 				} else {
 					t.setDone(true);
 				}
 				t.addAdditionalEntry(key, val.getAsString());
 				// TODO don't ignore waiting and recurring!!!
-			} else if (key == "due") {
+			} else if (key.equals("due")) {
 				Calendar due = parseDate(val.getAsString(), "yyyy-MM-dd");
 				if (due == null) {
 					due = parseDate(val.getAsString(),
 							context.getString(R.string.TWDateFormat));
 				}
-			} else if (key == "reminder") {
+			} else if (key.equals("reminder")) {
 				Calendar reminder = parseDate(val.getAsString(), "yyyy-MM-dd");
 				if (reminder == null) {
 					reminder = parseDate(val.getAsString(),
 							context.getString(R.string.TWDateFormat));
 				}
+			}else if(key.equals("annotations")){
+				JsonArray j= val.getAsJsonArray();
+				JsonObject e= val.getAsJsonArray().get(j.size()-1).getAsJsonObject();
+				t.setContent(e.get("description").getAsString());
 			} else {
 				t.addAdditionalEntry(key, val.getAsString());
 			}

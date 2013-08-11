@@ -180,9 +180,10 @@ public class TaskWarriorSync {
 		if (priority != null)
 			json += "\"priority\":\"" + priority + "\",";
 		json += "\"modification\":\"" + formatCal(t.getUpdated_at()) + "\",";
-		json += "\"content\":\"" + t.getContent() + "\",";
-		
-		// TODO use annotations
+//		json += "\"content\":\"" + t.getContent() + "\",";
+		json +="\"annotations\":\"[{";
+		json +="\"entry\":\""+ formatCal(t.getUpdated_at()) +"\",";
+		json +=	"\"description\":\""+t.getContent()+"\"}]";
 		json += "\"reminder\":\"" + formatCal(t.getReminder()) + "\"";
 		
 		
