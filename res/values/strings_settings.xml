@@ -67,6 +67,8 @@
     <string name="notifications_zero_show">Hide if empty</string>
     <string name="reminders_persistent">Persistent reminders</string>
     <string name="reminders_persistent_summary">Should the reminders be persistent?</string>
+    <string name="notificationsShowDoneSummary">Show Done Tasks in Notification?</string>
+    <string name="notificationsShowDone">Handle Done Tasks</string>
 
     <!-- startup -->
     <string name="startup_title">App Start</string>

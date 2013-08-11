@@ -101,7 +101,7 @@ public class NotificationService extends Service {
 		ListMirakel todayList = ListMirakel.getList(listId);
 		if (todayList == null)
 			return;
-		List<Task> todayTasks = todayList.tasks();
+		List<Task> todayTasks = todayList.tasks(preferences.getBoolean("notificationDone", false));
 		String notificationTitle;
 		String notificationText;
 		if (todayTasks.size() == 0) {

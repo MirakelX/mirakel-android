@@ -71,6 +71,11 @@
             android:title="@string/notifications_big" />
         <CheckBoxPreference
             android:defaultValue="true"
+            android:key="notificationDone"
+            android:summary="@string/notificationsShowDoneSummary"
+            android:title="@string/notificationsShowDone" />
+        <CheckBoxPreference
+            android:defaultValue="true"
             android:key="remindersPersistent"
             android:summary="@string/reminders_persistent_summary"
             android:title="@string/reminders_persistent" />
