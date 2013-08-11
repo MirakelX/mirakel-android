@@ -6,6 +6,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
+import org.json.JSONObject;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
@@ -75,7 +80,8 @@ public class TaskWarriorSync {
 		// parse tasks
 		String tasksString[] = remotes.getPayload().split("\n");
 		for (String taskString : tasksString) {
-			Task server_task = jsonToTask(taskString);
+			JsonObject taskObject=new JsonParser().parse(taskString).getAsJsonObject();
+			Task server_task = Task.parse_json(taskObject);
 			Task local_task = Task.getByUUID(server_task.getUUID());
 			if (server_task.getSync_state() == Network.SYNC_STATE.DELETE) {
 				if (local_task != null)
@@ -177,10 +183,6 @@ public class TaskWarriorSync {
 		json += "\"reminder\":\"" + formatCal(t.getReminder()) + "\"";
 		json += "}";
 		return json;
-	}
-
-	private Task jsonToTask(String json) {
-		return null;
 	}
 
 	/**
