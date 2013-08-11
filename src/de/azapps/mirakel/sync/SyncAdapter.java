@@ -50,8 +50,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			BUNDLE_CERT = "de.azapps.mirakel.cert",
 			BUNDLE_ORG = "de.azapps.mirakel.org";
 	public static final String BUNDLE_SERVER_TYPE = "type";
-	public static final String BUNDLE_CERT = "de.azapps.mirakel.cert";
-	public static final String BUNDLE_ORG = "de.azapps.mirakel.org";
 	private Context mContext;
 
 	public SyncAdapter(Context context, boolean autoInitialize) {

@@ -37,7 +37,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String TAG = "DatabaseHelper";
 	private Context context;
-	public static final int DATABASE_VERSION = 13;
+	public static final int DATABASE_VERSION = 14;
 
 	public DatabaseHelper(Context ctx) {
 		super(ctx, "mirakel.db", null, DATABASE_VERSION);
@@ -171,6 +171,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			MainActivity.updateTasksUUID = true;
 			// Don't remove this version-gap
 		case 13:
+			db.execSQL("Alter Table " + Task.TABLE
+					+ " add column additional_entries TEXT NOT NULL DEFAULT '';");
 
 		}
 	}
