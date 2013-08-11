@@ -102,7 +102,22 @@ public class Task extends TaskBase {
 			values.put("sync_state", Network.SYNC_STATE.DELETE);
 			database.update(TABLE, values, "_id=" + id, null);
 		}
+	}
 
+	/**
+	 * Delete all Tasks, marked as deleted permanently. Use it only in the
+	 * Sync-Services!!!
+	 */
+	public static void deleteTasksPermanently() {
+		String where = "sync_state='" + Network.SYNC_STATE.DELETE + "'";
+		Cursor cursor = Mirakel.getReadableDatabase().query(TABLE, allColumns,
+				where, null, null, null, null);
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			cursorToTask(cursor).delete(true);
+			cursor.moveToNext();
+		}
+		cursor.close();
 	}
 
 	public String toJson() {

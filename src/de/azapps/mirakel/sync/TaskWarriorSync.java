@@ -91,7 +91,8 @@ public class TaskWarriorSync {
 				}
 			}
 		}
-		// remove 
+		// delete tasks, which are marked as deleted locally
+		Task.deleteTasksPermanently();
 
 		String message = remotes.get("message");
 		if (message != null && message != "") {
