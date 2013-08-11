@@ -181,7 +181,11 @@ public class TaskWarriorSync {
 			json += "\"priority\":\"" + priority + "\",";
 		json += "\"modification\":\"" + formatCal(t.getUpdated_at()) + "\",";
 		json += "\"content\":\"" + t.getContent() + "\",";
+		
+		// TODO use annotations
 		json += "\"reminder\":\"" + formatCal(t.getReminder()) + "\"";
+		
+		
 		Map<String,String> additionalEntries=t.getAdditionalEntries();
 		for(String key : additionalEntries.keySet()) {
 			json+=",\"" + key +"\":\"" + additionalEntries.get(key) + "\"";
