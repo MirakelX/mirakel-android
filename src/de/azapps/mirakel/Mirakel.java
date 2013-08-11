@@ -38,7 +38,6 @@ import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakelandroid.R;
 
-@SuppressWarnings("unused")
 @ReportsCrashes(
 		formKey = "", // This is required for backward compatibility but not used 
 		reportType = org.acra.sender.HttpSender.Type.JSON, 
@@ -65,7 +64,6 @@ public class Mirakel extends Application {
 
 	public static final String ACCOUNT_TYP = "de.azapps.mirakel";
 	public static final String AUTHORITY_TYP = "de.azapps.mirakel.provider";
-	public static final String BUNDLE_SERVER_URL = "url";
 	public static  String APK_NAME;
 	public static String VERSIONS_NAME;
 

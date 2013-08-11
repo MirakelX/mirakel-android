@@ -46,6 +46,7 @@ import de.azapps.mirakel.static_activities.SettingsFragment;
 import de.azapps.mirakel.sync.AuthenticatorActivity;
 import de.azapps.mirakel.sync.DataDownloadCommand;
 import de.azapps.mirakel.sync.Network;
+import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.widget.MainWidgetSettingsActivity;
 import de.azapps.mirakel.widget.MainWidgetSettingsFragment;
 import de.azapps.mirakelandroid.R;
@@ -264,7 +265,7 @@ public class PreferencesHelper {
 										}
 									}, Network.HttpMode.DELETE, activity, null)
 											.execute(am.getUserData(account,
-													Mirakel.BUNDLE_SERVER_URL)
+													SyncAdapter.BUNDLE_SERVER_URL)
 													+ "/tokens/" + t);
 								} else {
 									Toast.makeText(
@@ -282,7 +283,7 @@ public class PreferencesHelper {
 							}
 						}, Network.HttpMode.POST, data, activity, null)
 								.execute(am.getUserData(account,
-										Mirakel.BUNDLE_SERVER_URL)
+										SyncAdapter.BUNDLE_SERVER_URL)
 										+ "/tokens.json");
 					} else {
 						Toast.makeText(activity,
@@ -350,7 +351,7 @@ public class PreferencesHelper {
 											.edit();
 									editor.putString("syncServer", am
 											.getUserData(account,
-													Mirakel.BUNDLE_SERVER_URL));
+													SyncAdapter.BUNDLE_SERVER_URL));
 									editor.commit();
 								}
 							}

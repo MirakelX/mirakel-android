@@ -249,8 +249,8 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 		final Account account = new Account(mUsername, Mirakel.ACCOUNT_TYP);
 		if (mRequestNewAccount) {
 			Bundle b = new Bundle();
-			b.putString("url", url);
-			b.putString("typ", mTyp.getSelectedItem().toString());
+			b.putString(SyncAdapter.BUNDLE_SERVER_URL, url);
+			b.putString(SyncAdapter.BUNDLE_SERVER_TYPE, mTyp.getSelectedItem().toString().equals(getResources().getStringArray(R.array.server_typs)[0])?MirakelSync.TYPE:TaskWarroirSync.TYPE);
 			mAccountManager.addAccountExplicitly(account, mPassword, b);
 			// Set contacts sync for this account.
 		} else {
