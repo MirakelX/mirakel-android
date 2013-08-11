@@ -90,8 +90,12 @@ public class Task extends TaskBase {
 	 * @param task
 	 */
 	public void delete() {
+		delete(false);
+	}
+
+	public void delete(boolean force) {
 		long id = getId();
-		if (getSync_state() == Network.SYNC_STATE.ADD)
+		if (getSync_state() == Network.SYNC_STATE.ADD || force)
 			database.delete(TABLE, "_id = " + id, null);
 		else {
 			ContentValues values = new ContentValues();
@@ -194,24 +198,28 @@ public class Task extends TaskBase {
 	 */
 	public static Task newTask(String name, long list_id, String content,
 			boolean done, GregorianCalendar due, int priority) {
+		Calendar now = new GregorianCalendar();
+		Task t = new Task(0, java.util.UUID.randomUUID().toString(),
+				ListMirakel.getList((int) list_id), name, content, done, due,
+				null, priority, now, now, Network.SYNC_STATE.ADD);
 
+		return t.create();
+	}
+
+	public Task create() {
 		ContentValues values = new ContentValues();
-		values.put("uuid", java.util.UUID.randomUUID().toString());
-		values.put("name", name);
-		values.put("list_id", list_id);
-		values.put("content", content);
-		values.put("done", done);
-		values.put("due", (due == null ? null : due.toString()));
-		values.put("priority", priority);
+		values.put("uuid", getUUID());
+		values.put("name", getName());
+		values.put("list_id", getList().getId());
+		values.put("content", getContent());
+		values.put("done", isDone());
+		values.put("due", (getDue() == null ? null : formatCal(getDue())));
+		values.put("priority", getPriority());
 		values.put("sync_state", Network.SYNC_STATE.ADD);
-		values.put("created_at",
-				new SimpleDateFormat(
-						context.getString(R.string.dateTimeFormat), Locale.US)
-						.format(new Date()));
-		values.put("updated_at",
-				new SimpleDateFormat(
-						context.getString(R.string.dateTimeFormat), Locale.US)
-						.format(new Date()));
+		values.put("created_at", (getDue() == null ? null
+				: formatCal(getCreated_at())));
+		values.put("updated_at", (getDue() == null ? null
+				: formatCal(getUpdated_at())));
 		long insertId = database.insertOrThrow(TABLE, null, values);
 		Cursor cursor = database.query(TABLE, allColumns, "_id = " + insertId,
 				null, null, null, null);
@@ -255,6 +263,20 @@ public class Task extends TaskBase {
 			return t;
 		}
 		return null;
+	}
+
+	public static Task getByUUID(String uuid) {
+		Cursor cursor = database.query(TABLE, allColumns, "uuid='" + uuid
+				+ "' and not sync_state=" + Network.SYNC_STATE.DELETE, null,
+				null, null, null);
+		cursor.moveToFirst();
+		if (cursor.getCount() != 0) {
+			Task t = cursorToTask(cursor);
+			cursor.close();
+			return t;
+		}
+		return null;
+
 	}
 
 	/**
@@ -362,8 +384,8 @@ public class Task extends TaskBase {
 		cursor.close();
 		return tasks;
 	}
-	
-	public static List<Task> getTasksToSync(){
+
+	public static List<Task> getTasksToSync() {
 		String where = "sync_state!='" + Network.SYNC_STATE.NOTHING + "'";
 		Cursor cursor = Mirakel.getReadableDatabase().query(TABLE, allColumns,
 				where, null, null, null, null);
@@ -375,7 +397,7 @@ public class Task extends TaskBase {
 		}
 		cursor.close();
 		return tasks;
-		
+
 	}
 
 	/**

@@ -215,5 +215,8 @@ Device: %3$s\n]]>
     <string name="crash_dialog_comment_prompt">You might add your comments about the problem below:</string>
     <string name="crash_dialog_ok_toast">Thank you !</string>
     <string name="title_activity_special_list_settings">SpecialListSettingsActivity</string>
+    
+    <!-- Sync -->
+    <string name="message_from_server">The server want to say you: %s</string>
 
 </resources>

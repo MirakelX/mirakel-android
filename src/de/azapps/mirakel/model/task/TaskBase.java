@@ -229,8 +229,6 @@ class TaskBase {
 	}
 
 	public ContentValues getContentValues() throws NoSuchListException {
-		SimpleDateFormat dateFormat = new SimpleDateFormat(
-				"yyyy-MM-dd'T'kkmmss'Z'", Locale.getDefault());
 		ContentValues cv = new ContentValues();
 		cv.put("_id", id);
 		cv.put("uuid", uuid);
@@ -246,18 +244,24 @@ class TaskBase {
 		cv.put("due", due);
 		String reminder = null;
 		if (this.reminder != null)
-			reminder = dateFormat.format(this.reminder.getTime());
+			reminder = formatCal(this.reminder);
 		cv.put("reminder", reminder);
 		cv.put("priority", priority);
 		String createdAt = null;
 		if (this.createdAt != null)
-			createdAt = dateFormat.format(this.createdAt.getTime());
+			createdAt = formatCal(this.createdAt);
 		cv.put("created_at", createdAt);
 		String updatedAt = null;
 		if (this.updatedAt != null)
-			updatedAt = dateFormat.format(this.updatedAt.getTime());
+			updatedAt = formatCal(this.updatedAt);
 		cv.put("updated_at", updatedAt);
 		cv.put("sync_state", sync_state);
 		return cv;
+	}
+	String formatCal(Calendar cal) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat(
+				"yyyy-MM-dd'T'kkmmss'Z'", Locale.getDefault());
+		return dateFormat.format(cal.getTime());
+		
 	}
 }

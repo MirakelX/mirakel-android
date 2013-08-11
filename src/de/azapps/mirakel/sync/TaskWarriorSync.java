@@ -11,9 +11,11 @@ import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.widget.Toast;
+import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.taskwarrior.Msg;
+import de.azapps.mirakelandroid.R;
 
 public class TaskWarriorSync {
 
@@ -69,6 +71,38 @@ public class TaskWarriorSync {
 		} catch (MalformedInputException e) {
 			// TODO do something
 		}
+
+		// parse tasks
+		String tasksString[] = remotes.getPayload().split("\n");
+		for (String taskString : tasksString) {
+			Task server_task = jsonToTask(taskString);
+			Task local_task = Task.getByUUID(server_task.getUUID());
+			if (server_task.getSync_state() == Network.SYNC_STATE.DELETE) {
+				if (local_task != null)
+					local_task.delete(true);
+			} else if (local_task == null) {
+				server_task.create();
+			} else {
+				server_task.setId(local_task.getId());
+				try {
+				server_task.save();
+				} catch(NoSuchListException e) {
+					// Should not happen, because the list should be created while parsing the task
+				}
+			}
+		}
+		// remove 
+
+		String message = remotes.get("message");
+		if (message != null && message != "") {
+			Toast.makeText(mContext,
+					mContext.getString(R.string.message_from_server, message),
+					Toast.LENGTH_LONG).show();
+			Log.v(TAG, "Message from Server: " + message);
+		}
+		String error_code = remotes.get("code");
+		String error = remotes.get("error");
+		// TODO do something with the errors
 	}
 
 	/**
@@ -142,6 +176,10 @@ public class TaskWarriorSync {
 		json += "\"reminder\":\"" + formatCal(t.getReminder()) + "\"";
 		json += "}";
 		return json;
+	}
+
+	private Task jsonToTask(String json) {
+		return null;
 	}
 
 	/**
