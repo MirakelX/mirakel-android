@@ -56,9 +56,9 @@ public class Task extends TaskBase {
 	public Task(long id, String uuid, ListMirakel list, String name,
 			String content, boolean done, Calendar due, Calendar reminder,
 			int priority, Calendar created_at, Calendar updated_at,
-			int sync_state,String additionalEntriesString) {
+			int sync_state, String additionalEntriesString) {
 		super(id, uuid, list, name, content, done, due, reminder, priority,
-				created_at, updated_at, sync_state,additionalEntriesString);
+				created_at, updated_at, sync_state, additionalEntriesString);
 	}
 
 	Task() {
@@ -486,7 +486,7 @@ public class Task extends TaskBase {
 		for (Entry<String, JsonElement> entry : entries) {
 			String key = entry.getKey();
 			JsonElement val = entry.getValue();
-			if(key==null)
+			if (key == null)
 				continue;
 
 			if (key.equals("name") || key.equals("description")) {
@@ -495,6 +495,23 @@ public class Task extends TaskBase {
 				String content = val.getAsString();
 				if (content == null)
 					content = "";
+				t.setContent(content);
+			} else if (key == "annotations") {
+				String content = "";
+				try {
+					JsonArray annotations = val.getAsJsonArray();
+					boolean first = true;
+					for (JsonElement a : annotations) {
+						if (first)
+							first = false;
+						else
+							content += "\n";
+						content += a.getAsJsonObject().get("description")
+								.getAsString();
+					}
+				} catch (Exception e) {
+
+				}
 				t.setContent(content);
 			} else if (key.equals("priority")) {
 				String prioString = val.getAsString();
@@ -553,9 +570,10 @@ public class Task extends TaskBase {
 					reminder = parseDate(val.getAsString(),
 							context.getString(R.string.TWDateFormat));
 				}
-			}else if(key.equals("annotations")){
-				JsonArray j= val.getAsJsonArray();
-				JsonObject e= val.getAsJsonArray().get(j.size()-1).getAsJsonObject();
+			} else if (key.equals("annotations")) {
+				JsonArray j = val.getAsJsonArray();
+				JsonObject e = val.getAsJsonArray().get(j.size() - 1)
+						.getAsJsonObject();
 				t.setContent(e.get("description").getAsString());
 			} else {
 				t.addAdditionalEntry(key, val.getAsString());
@@ -617,7 +635,7 @@ public class Task extends TaskBase {
 				ListMirakel.getList((int) cursor.getLong(i++)),
 				cursor.getString(i++), cursor.getString(i++),
 				cursor.getInt((i++)) == 1, due, reminder, cursor.getInt(8),
-				created_at, updated_at, cursor.getInt(11),cursor.getString(12));
+				created_at, updated_at, cursor.getInt(11), cursor.getString(12));
 		return task;
 	}
 
