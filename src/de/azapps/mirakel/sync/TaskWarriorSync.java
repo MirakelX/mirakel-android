@@ -80,7 +80,8 @@ public class TaskWarriorSync {
 		// parse tasks
 		String tasksString[] = remotes.getPayload().split("\n");
 		for (String taskString : tasksString) {
-			JsonObject taskObject=new JsonParser().parse(taskString).getAsJsonObject();
+			JsonObject taskObject = new JsonParser().parse(taskString)
+					.getAsJsonObject();
 			Task server_task = Task.parse_json(taskObject);
 			Task local_task = Task.getByUUID(server_task.getUUID());
 			if (server_task.getSync_state() == Network.SYNC_STATE.DELETE) {
@@ -91,9 +92,10 @@ public class TaskWarriorSync {
 			} else {
 				server_task.setId(local_task.getId());
 				try {
-				server_task.save();
-				} catch(NoSuchListException e) {
-					// Should not happen, because the list should be created while parsing the task
+					server_task.save();
+				} catch (NoSuchListException e) {
+					// Should not happen, because the list should be created
+					// while parsing the task
 				}
 			}
 		}
@@ -179,16 +181,28 @@ public class TaskWarriorSync {
 		if (priority != null)
 			json += "\"priority\":\"" + priority + "\",";
 		json += "\"modification\":\"" + formatCal(t.getUpdated_at()) + "\",";
-//		json += "\"content\":\"" + t.getContent() + "\",";
-		json +="\"annotations\":\"[{";
-		json +="\"entry\":\""+ formatCal(t.getUpdated_at()) +"\",";
-		json +=	"\"description\":\""+t.getContent()+"\"}]";
-		json += "\"reminder\":\"" + formatCal(t.getReminder()) + "\"";
-		
-		
-		Map<String,String> additionalEntries=t.getAdditionalEntries();
-		for(String key : additionalEntries.keySet()) {
-			json+=",\"" + key +"\":\"" + additionalEntries.get(key) + "\"";
+		json += "\"reminder\":\"" + formatCal(t.getReminder()) + "\",";
+
+		// Annotations
+		json += "\"annotations\":[";
+		/*
+		 * An annotation in taskd is a line of content in Mirakel!
+		 */
+		String annotations[] = t.getContent().split("\n");
+		boolean first = true;
+		for (String a : annotations) {
+			if (first)
+				first = false;
+			else
+				json += ",";
+			json += "{\"entry\":\"" + formatCal(t.getUpdated_at()) + "\",";
+			json += "\"description\":\"" + a + "\"}";
+		}
+		json += "]";
+
+		Map<String, String> additionalEntries = t.getAdditionalEntries();
+		for (String key : additionalEntries.keySet()) {
+			json += ",\"" + key + "\":\"" + additionalEntries.get(key) + "\"";
 		}
 		json += "}";
 		return json;
@@ -202,7 +216,8 @@ public class TaskWarriorSync {
 	 */
 	@SuppressLint("SimpleDateFormat")
 	private String formatCal(Calendar c) {
-		SimpleDateFormat df = new SimpleDateFormat(mContext.getString(R.string.TWDateFormat));
+		SimpleDateFormat df = new SimpleDateFormat(
+				mContext.getString(R.string.TWDateFormat));
 		return df.format(c.getTime());
 	}
 
