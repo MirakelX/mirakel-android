@@ -7,16 +7,15 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
-import org.json.JSONObject;
-
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.widget.Toast;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.task.Task;
