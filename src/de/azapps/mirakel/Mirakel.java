@@ -62,7 +62,7 @@ public class Mirakel extends Application {
 			Color.parseColor("#FF7700"), Color.parseColor("#FF3333") };
 	public static final int NOTIF_DEFAULT = 123, NOTIF_REMINDER = 124;
 
-	public static final String ACCOUNT_TYP = "de.azapps.mirakel";
+	public static final String ACCOUNT_TYPE = "de.azapps.mirakel";
 	public static final String AUTHORITY_TYP = "de.azapps.mirakel.provider";
 	public static  String APK_NAME;
 	public static String VERSIONS_NAME;

@@ -111,7 +111,7 @@ class Authenticator extends AbstractAccountAuthenticator {
 
 		// If the caller requested an authToken type we don't support, then
 		// return an error
-		if (!authTokenType.equals(Mirakel.ACCOUNT_TYP)) {
+		if (!authTokenType.equals(Mirakel.ACCOUNT_TYPE)) {
 			final Bundle result = new Bundle();
 			result.putString(AccountManager.KEY_ERROR_MESSAGE,
 					"invalid authTokenType");
@@ -129,7 +129,7 @@ class Authenticator extends AbstractAccountAuthenticator {
 				final Bundle result = new Bundle();
 				result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
 				result.putString(AccountManager.KEY_ACCOUNT_TYPE,
-						Mirakel.ACCOUNT_TYP);
+						Mirakel.ACCOUNT_TYPE);
 				result.putString(AccountManager.KEY_AUTHTOKEN, authToken);
 				return result;
 			}

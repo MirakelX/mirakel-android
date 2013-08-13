@@ -1,4 +1,4 @@
-package de.azapps.mirakel.sync;
+package de.azapps.mirakel.sync.taskwarrior;
 
 import java.io.File;
 import java.nio.charset.MalformedInputException;
@@ -19,7 +19,8 @@ import com.google.gson.JsonParser;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakel.taskwarrior.Msg;
+import de.azapps.mirakel.sync.Network;
+import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakelandroid.R;
 
 public class TaskWarriorSync {
@@ -32,7 +33,7 @@ public class TaskWarriorSync {
 	static int _debug_level = 0;
 	static int _limit = (1024 * 1024);
 	static String _host = "localhost";
-	static String _port = "6544";
+	static int _port = 6544;
 	static String _org = "";
 	static String _user = "";
 	static String _key = "";
@@ -65,10 +66,16 @@ public class TaskWarriorSync {
 		sync.set("user", _user);
 		sync.set("key", _key);
 		sync.setPayload(payload);
+		longInfo(payload);
 
-		// TODO Send sync request
-		// TODO Get server response
-		String response = "";
+		TLSClient client=new TLSClient();
+		client.init(_cert);
+		client.connect(_host, _port);
+		client.send(sync.serialize());
+		
+		String response = client.recv();
+		longInfo(response);
+		
 
 		Msg remotes = new Msg();
 		try {
@@ -113,6 +120,14 @@ public class TaskWarriorSync {
 		String error = remotes.get("error");
 		// TODO do something with the errors
 	}
+	
+	public static void longInfo(String str) {
+	    if(str.length() > 4000) {
+	        Log.i(TAG,str.substring(0, 4000));
+	        longInfo(str.substring(4000));
+	    } else
+	        Log.i(TAG,str);
+	}
 
 	/**
 	 * Initialize the variables
@@ -128,13 +143,20 @@ public class TaskWarriorSync {
 		if (key.length() != 0 && key.length() != 36) {
 			error("key", 1376235890);
 		}
-		File cert = new File(accountManager.getUserData(account,
-				SyncAdapter.BUNDLE_CERT));
+		File cert;
+		// TODO FIXIT!!!
+		if (accountManager.getUserData(account, SyncAdapter.BUNDLE_CERT) == null) {
+			cert = new File("/data/data/de.azapps.mirakelandroid/client.cert.pem");
+		} else {
+			cert = new File(accountManager.getUserData(account,
+					SyncAdapter.BUNDLE_CERT));
+		}
 		if (!cert.exists() || !cert.canRead()) {
 			error("cert", 1376235891);
 		}
-		_host = srv[0];
-		_port = srv[1];
+		//_host = srv[0];
+		_host="192.168.0.14";
+		_port = Integer.parseInt(srv[1]);
 		_user = account.name;
 		_org = accountManager.getUserData(account, SyncAdapter.BUNDLE_ORG);
 		_key = key;
@@ -176,12 +198,14 @@ public class TaskWarriorSync {
 		json += "\"status\":\"" + status + "\",";
 		json += "\"entry\":\"" + formatCal(t.getCreated_at()) + "\",";
 		json += "\"description\":\"" + t.getName() + "\",";
-		json += "\"due\":\"" + formatCal(t.getDue()) + "\",";
+		if (t.getDue() != null)
+			json += "\"due\":\"" + formatCal(t.getDue()) + "\",";
 		json += "\"project\":\"" + t.getList().getName() + "\",";
 		if (priority != null)
 			json += "\"priority\":\"" + priority + "\",";
 		json += "\"modification\":\"" + formatCal(t.getUpdated_at()) + "\",";
-		json += "\"reminder\":\"" + formatCal(t.getReminder()) + "\",";
+		if (t.getReminder() != null)
+			json += "\"reminder\":\"" + formatCal(t.getReminder()) + "\",";
 
 		// Annotations
 		json += "\"annotations\":[";
@@ -200,9 +224,12 @@ public class TaskWarriorSync {
 		}
 		json += "]";
 
-		Map<String, String> additionalEntries = t.getAdditionalEntries();
-		for (String key : additionalEntries.keySet()) {
-			json += ",\"" + key + "\":\"" + additionalEntries.get(key) + "\"";
+		if (t.getAdditionalEntries() != null) {
+			Map<String, String> additionalEntries = t.getAdditionalEntries();
+			for (String key : additionalEntries.keySet()) {
+				json += ",\"" + key + "\":\"" + additionalEntries.get(key)
+						+ "\"";
+			}
 		}
 		json += "}";
 		return json;
@@ -229,7 +256,7 @@ public class TaskWarriorSync {
 	 */
 	private void error(String what, int code) {
 		Log.e(TAG, what + " (Code: " + code + ")");
-		Toast.makeText(mContext, what, Toast.LENGTH_SHORT).show();
+		// Toast.makeText(mContext, what, Toast.LENGTH_SHORT).show();
 	}
 
 }

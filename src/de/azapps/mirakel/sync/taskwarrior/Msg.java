@@ -1,12 +1,15 @@
-package de.azapps.mirakel.taskwarrior;
+package de.azapps.mirakel.sync.taskwarrior;
 
 import java.nio.charset.MalformedInputException;
 import java.util.ArrayList;
 import java.util.List;
-import de.azapps.mirakel.Mirakel;
+
 import android.util.Pair;
+import de.azapps.mirakel.Mirakel;
 
 public class Msg {
+	private List<Pair<String, String>> _header = new ArrayList<Pair<String,String>>();
+	private String _payload;
 
 	public Msg() {
 		_payload = "";
@@ -98,6 +101,4 @@ public class Msg {
 		return true;
 	}
 
-	private List<Pair<String, String>> _header;
-	private String _payload;
 }

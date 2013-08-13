@@ -181,7 +181,7 @@ public class PreferencesHelper {
 				Log.e(TAG, "" + newValue.toString());
 				AccountManager am = AccountManager.get(activity);
 				final Account[] accounts = am
-						.getAccountsByType(Mirakel.ACCOUNT_TYP);
+						.getAccountsByType(Mirakel.ACCOUNT_TYPE);
 				if ((Boolean) newValue) {
 					new AlertDialog.Builder(activity)
 							.setTitle(R.string.sync_warning)
@@ -559,7 +559,7 @@ public class PreferencesHelper {
 
 	private Account getAccount(AccountManager am) {
 		try {
-			return am.getAccountsByType(Mirakel.ACCOUNT_TYP)[0];
+			return am.getAccountsByType(Mirakel.ACCOUNT_TYPE)[0];
 		} catch (ArrayIndexOutOfBoundsException f) {
 			Log.e(TAG, "No Account found");
 			return null;

@@ -36,6 +36,8 @@
 package de.azapps.mirakel.sync;
 
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.sync.mirakel.MirakelSync;
+import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.AbstractThreadedSyncAdapter;
@@ -51,6 +53,19 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			BUNDLE_ORG = "de.azapps.mirakel.org";
 	public static final String BUNDLE_SERVER_TYPE = "type";
 	private Context mContext;
+
+	public enum SYNC_TYPES {
+		MIRAKEL, TASKWARRIOR
+	};
+
+	public static SYNC_TYPES getSyncType(String type) {
+		if (type.equals("Mirakel")) {
+			return SYNC_TYPES.MIRAKEL;
+		} else if (type.equals("Taskwarrior")) {
+			return SYNC_TYPES.TASKWARRIOR;
+		} else
+			return null;
+	}
 
 	public SyncAdapter(Context context, boolean autoInitialize) {
 		super(context, autoInitialize);

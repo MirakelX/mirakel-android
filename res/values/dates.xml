@@ -18,5 +18,5 @@
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <resources>
-    <string name="TWDateFormat">yyyyMMddTkkmmssZ</string>
+    <string name="TWDateFormat">yyyyMMdd\'T\'kkmmss\'Z\'</string>
 </resources>

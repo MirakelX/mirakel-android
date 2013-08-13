@@ -234,10 +234,8 @@ public class Task extends TaskBase {
 		values.put("due", (getDue() == null ? null : formatCal(getDue())));
 		values.put("priority", getPriority());
 		values.put("sync_state", Network.SYNC_STATE.ADD);
-		values.put("created_at", (getDue() == null ? null
-				: formatCal(getCreated_at())));
-		values.put("updated_at", (getDue() == null ? null
-				: formatCal(getUpdated_at())));
+		values.put("created_at", formatCal(getCreated_at()));
+		values.put("updated_at", formatCal(getUpdated_at()));
 		long insertId = database.insertOrThrow(TABLE, null, values);
 		Cursor cursor = database.query(TABLE, allColumns, "_id = " + insertId,
 				null, null, null, null);
@@ -597,33 +595,37 @@ public class Task extends TaskBase {
 	private static Task cursorToTask(Cursor cursor) {
 		int i = 0;
 		GregorianCalendar due = new GregorianCalendar();
-		SimpleDateFormat dateFormat = new SimpleDateFormat(
+		SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
 				"yyyy-MM-dd'T'kkmmss'Z'", Locale.getDefault());
 		try {
-			due.setTime(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+			due.setTime(new SimpleDateFormat(context.getString(R.string.dateFormat), Locale.getDefault())
 					.parse(cursor.getString(6)));
 		} catch (ParseException e) {
-			due = null;
+			try {
+				due.setTime(dateTimeFormat.parse(cursor.getString(6)));
+			} catch(Exception e2) {
+				due=null;
+			}
 		} catch (NullPointerException e) {
 			due = null;
 		}
 		GregorianCalendar reminder = new GregorianCalendar();
 		try {
-			reminder.setTime(dateFormat.parse(cursor.getString(7)));
+			reminder.setTime(dateTimeFormat.parse(cursor.getString(7)));
 		} catch (Exception e) {
 			reminder = null;
 		}
 		GregorianCalendar created_at = new GregorianCalendar();
 		try {
-			created_at.setTime(dateFormat.parse(cursor.getString(9)));
+			created_at.setTime(dateTimeFormat.parse(cursor.getString(9)));
 		} catch (Exception e) {
-			created_at = null;
+			created_at = new GregorianCalendar();
 		}
 		GregorianCalendar updated_at = new GregorianCalendar();
 		try {
-			updated_at.setTime(dateFormat.parse(cursor.getString(10)));
+			updated_at.setTime(dateTimeFormat.parse(cursor.getString(10)));
 		} catch (Exception e) {
-			updated_at = null;
+			updated_at = new GregorianCalendar();
 		}
 
 		Task task = new Task(cursor.getLong(i++), cursor.getString(i++),

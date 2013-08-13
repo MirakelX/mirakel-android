@@ -1,4 +1,4 @@
-package de.azapps.mirakel.sync;
+package de.azapps.mirakel.sync.mirakel;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -26,6 +26,9 @@ import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.sync.DataDownloadCommand;
+import de.azapps.mirakel.sync.Network;
+import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakelandroid.R;
 
 public class MirakelSync {
