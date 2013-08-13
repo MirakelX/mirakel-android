@@ -234,10 +234,8 @@ public class Task extends TaskBase {
 		values.put("due", (getDue() == null ? null : formatCal(getDue())));
 		values.put("priority", getPriority());
 		values.put("sync_state", Network.SYNC_STATE.ADD);
-		values.put("created_at", (getDue() == null ? null
-				: formatCal(getCreated_at())));
-		values.put("updated_at", (getDue() == null ? null
-				: formatCal(getUpdated_at())));
+		values.put("created_at", formatCal(getCreated_at()));
+		values.put("updated_at", formatCal(getUpdated_at()));
 		long insertId = database.insertOrThrow(TABLE, null, values);
 		Cursor cursor = database.query(TABLE, allColumns, "_id = " + insertId,
 				null, null, null, null);
