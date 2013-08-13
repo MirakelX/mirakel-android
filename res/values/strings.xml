@@ -39,6 +39,7 @@
     <string name="Password">Password</string>
     <string name="Server">Server</string>
     <string name="NoNetwork">No Network Connection available.</string>
+    <string name="wrong_sync_type">The sync-type is not supported!.</string>
     <string name="action_sync_now">Sync Now</string>
     <string name="resync">Do you want to resync all Tasks?</string>
     <string name="start">Start</string>

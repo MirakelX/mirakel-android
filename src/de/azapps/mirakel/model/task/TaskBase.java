@@ -39,6 +39,10 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 
 class TaskBase {
+	private SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
+			"yyyy-MM-dd'T'kkmmss'Z'", Locale.getDefault());
+	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd",
+			Locale.getDefault());
 	private long id = 0;
 	private String uuid = "";
 	private ListMirakel list;
@@ -193,8 +197,7 @@ class TaskBase {
 	public void setCreatedAt(String created_at) {
 		GregorianCalendar temp = new GregorianCalendar();
 		try {
-			temp.setTime(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-					.parse(created_at));
+			temp.setTime(dateTimeFormat.parse(created_at));
 			setCreatedAt(temp);
 		} catch (ParseException e) {
 			setCreatedAt((Calendar) null);
@@ -212,8 +215,7 @@ class TaskBase {
 	public void setUpdatedAt(String updated_at) {
 		GregorianCalendar temp = new GregorianCalendar();
 		try {
-			temp.setTime(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-					.parse(updated_at));
+			temp.setTime(dateTimeFormat.parse(updated_at));
 			setUpdatedAt(temp);
 		} catch (ParseException e) {
 			setUpdatedAt((Calendar) null);
@@ -284,8 +286,7 @@ class TaskBase {
 		cv.put("name", name);
 		cv.put("content", content);
 		cv.put("done", done);
-		String due = (this.due == null ? null : new SimpleDateFormat(
-				"yyyy-MM-dd", Locale.getDefault()).format(new Date(this.due
+		String due = (this.due == null ? null : dateFormat.format(new Date(this.due
 				.getTimeInMillis())));
 		cv.put("due", due);
 		String reminder = null;
@@ -310,9 +311,7 @@ class TaskBase {
 	}
 
 	String formatCal(Calendar cal) {
-		SimpleDateFormat dateFormat = new SimpleDateFormat(
-				"yyyy-MM-dd'T'kkmmss'Z'", Locale.getDefault());
-		return dateFormat.format(cal.getTime());
+		return dateTimeFormat.format(cal.getTime());
 
 	}
 }

@@ -72,6 +72,8 @@ import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.sync.mirakel.MirakelSync;
+import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
 import de.azapps.mirakelandroid.R;
 
 /**
@@ -104,8 +106,8 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 	// private final Handler mHandler = new Handler();
 
 	private TextView mMessage;
-	
-	private Spinner mTyp;
+
+	private Spinner mType;
 
 	private String mPassword;
 
@@ -116,7 +118,9 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 
 	private String mUsername;
 
-	private EditText mUsernameEdit;
+	private EditText mUsernameEdit, mUrl;
+
+	private SyncAdapter.SYNC_TYPES syncType;
 
 	/**
 	 * {@inheritDoc}
@@ -124,51 +128,76 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 	@Override
 	public void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-		if(preferences.getBoolean("DarkTheme", false))
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		if (preferences.getBoolean("DarkTheme", false))
 			setTheme(R.style.DialogDark);
 		mAccountManager = AccountManager.get(this);
 		final Intent intent = getIntent();
+
 		mUsername = intent.getStringExtra(PARAM_USERNAME);
 		mRequestNewAccount = mUsername == null;
 		requestWindowFeature(Window.FEATURE_LEFT_ICON);
 		setContentView(R.layout.login_activity);
+
 		if (VERSION.SDK_INT < VERSION_CODES.HONEYCOMB)
 			setTheme(R.style.Dialog);
+
 		getWindow().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON,
 				android.R.drawable.ic_dialog_alert);
+
 		mMessage = (TextView) findViewById(R.id.message);
+		mUrl = (EditText) findViewById(R.id.server_edit);
 		mUsernameEdit = (EditText) findViewById(R.id.username_edit);
 		mPasswordEdit = (EditText) findViewById(R.id.password_edit);
+
 		if (!TextUtils.isEmpty(mUsername))
 			mUsernameEdit.setText(mUsername);
-		mTyp=(Spinner)findViewById(R.id.server_typ);
-		
-		mTyp.setOnItemSelectedListener(new OnItemSelectedListener() {
+		mType = (Spinner) findViewById(R.id.server_typ);
 
+		mType.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
-			public void onItemSelected(AdapterView<?> arg0, View arg1,
-					int arg2, long arg3) {
-				mMessage.setText(getMessage((String)arg0.getItemAtPosition(arg2)));
-				
-				findViewById(R.id.login_org_container).setVisibility(arg2==1?View.VISIBLE:View.GONE);
-				mUsernameEdit.setInputType(arg2==1?InputType.TYPE_CLASS_TEXT:InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-				mUsernameEdit.setHint(getString(arg2==1?R.string.login_activity_username_label:R.string.Email));
-				
-				EditText url=((EditText)findViewById(R.id.server_edit));
-				url.setText(getString(arg2==1?R.string.offical_server_url_taskwarrior:R.string.offical_server_url));
-				url.setInputType(arg2==1?InputType.TYPE_CLASS_TEXT:InputType.TYPE_TEXT_VARIATION_URI);
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int position, long id) {
+				/**
+				 * SYNC-Views Edit this if you want to implement a new Sync
+				 */
+				String syncTypeString = mType.getSelectedItem().toString();
+				syncType = SyncAdapter.getSyncType(syncTypeString);
+				mMessage.setText(syncTypeString);
+				findViewById(R.id.login_org_container).setVisibility(View.GONE);
+				switch (syncType) {
+				case TASKWARRIOR:
+					findViewById(R.id.login_org_container).setVisibility(
+							View.VISIBLE);
+					mUsernameEdit.setInputType(InputType.TYPE_CLASS_TEXT);
+					mUsernameEdit
+							.setHint(getString(R.string.login_activity_username_label));
+					mUrl.setText(getString(R.string.offical_server_url_taskwarrior));
+					mUrl.setInputType(InputType.TYPE_CLASS_TEXT);
+					break;
+				case MIRAKEL:
+					mUsernameEdit
+							.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+					mUsernameEdit.setHint(getString(R.string.Email));
+					mUrl.setText(getString(R.string.offical_server_url));
+					mUrl.setInputType(InputType.TYPE_TEXT_VARIATION_URI);
+					break;
+				}
 			}
 
 			@Override
 			public void onNothingSelected(AdapterView<?> arg0) {
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
-		mMessage.setText(getMessage(getResources().getStringArray(R.array.server_typs)[0]));
-		if(preferences.getBoolean("DarkTheme", false)&&VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB){
-			findViewById(R.id.login_button_frame).setBackgroundColor(getResources().getColor(android.R.color.transparent));
+		mMessage.setText(getMessage(getResources().getStringArray(
+				R.array.server_typs)[0]));
+		if (preferences.getBoolean("DarkTheme", false)
+				&& VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB) {
+			findViewById(R.id.login_button_frame).setBackgroundColor(
+					getResources().getColor(android.R.color.transparent));
 		}
 	}
 
@@ -202,43 +231,73 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 	 *            The Submit button for which this method is invoked
 	 */
 	public void handleLogin(View view) {
+		syncType = SyncAdapter.getSyncType(mType.getSelectedItem().toString());
 		if (mRequestNewAccount) {
 			mUsername = mUsernameEdit.getText().toString();
 		}
 		mPassword = mPasswordEdit.getText().toString();
 		if (TextUtils.isEmpty(mUsername) || TextUtils.isEmpty(mPassword)) {
-			mMessage.setText(getMessage(mTyp.getSelectedItem().toString()));
+			mMessage.setText(getMessage(mType.getSelectedItem().toString()));
 		} else {
-			// Show a progress dialog, and kick off a background task to perform
-			// the user login attempt.
-			ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-			NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-			List<BasicNameValuePair> data = new ArrayList<BasicNameValuePair>();
-			data.add(new BasicNameValuePair("email", mUsername));
-			data.add(new BasicNameValuePair("password", mPassword));
-			if (networkInfo != null && networkInfo.isConnected()) {
-				showProgress();
-				final String url = ((EditText) findViewById(R.id.server_edit))
-						.getText().toString();
-				new Network(new DataDownloadCommand() {
-					@Override
-					public void after_exec(String result) {
-						String token = Network.getToken(result);
-						if (token == null) {
-							Log.e(TAG, "Login faild");
-							hideProgress();
-						} else {
-							Log.e(TAG, "Login sucess");
-							finishLogin(url, token);
-						}
-					}
-				}, Network.HttpMode.POST, data, this, null).execute(url
-						+ "/tokens.json");
-			} else {
-				Log.e(TAG, "No network connection available.");
-				Toast.makeText(getApplicationContext(), R.string.NoNetwork,
-						Toast.LENGTH_LONG).show();
+			if (((CheckBox) findViewById(R.id.resync)).isChecked()) {
+				Mirakel.getWritableDatabase().execSQL(
+						"Delete from " + Task.TABLE + " where sync_state="
+								+ Network.SYNC_STATE.DELETE);
+				Mirakel.getWritableDatabase().execSQL(
+						"Delete from " + ListMirakel.TABLE
+								+ " where sync_state="
+								+ Network.SYNC_STATE.DELETE);
+				Mirakel.getWritableDatabase().execSQL(
+						"Update " + Task.TABLE + " set sync_state="
+								+ Network.SYNC_STATE.ADD);
+				Mirakel.getWritableDatabase().execSQL(
+						"Update " + ListMirakel.TABLE + " set sync_state="
+								+ Network.SYNC_STATE.ADD);
 			}
+
+			/**
+			 * SYNC Edit this if you want to implement a new Sync ––– Add your
+			 * own handle*Login()
+			 */
+			switch (syncType) {
+			case TASKWARRIOR:
+				Log.v(TAG, "Use Taskwarrior");
+				finishTWLogin();
+				break;
+			case MIRAKEL:
+				handleMirakelLogin();
+				break;
+			default:
+				Log.wtf(TAG, "Not supported sync-type.");
+				Toast.makeText(getApplicationContext(),
+						R.string.wrong_sync_type, Toast.LENGTH_LONG).show();
+				return;
+			}
+			final Intent intent = new Intent();
+			intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, mUsername);
+			intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE,
+					Mirakel.ACCOUNT_TYPE);
+			setAccountAuthenticatorResult(intent.getExtras());
+			setResult(RESULT_OK, intent);
+			finish();
+		}
+	}
+
+	private void finishTWLogin() {
+		Log.i(TAG, "finishTWLogin()");
+		final Account account = new Account(mUsername, Mirakel.ACCOUNT_TYPE);
+		if (mRequestNewAccount) {
+			Bundle b = new Bundle();
+			b.putString(SyncAdapter.BUNDLE_SERVER_URL, mUrl.getText()
+					.toString());
+			b.putString(SyncAdapter.BUNDLE_SERVER_TYPE, TaskWarriorSync.TYPE);
+			b.putString(SyncAdapter.BUNDLE_ORG,
+					((EditText) findViewById(R.id.org_edit)).getText()
+							.toString());
+			mAccountManager.addAccountExplicitly(account, mPassword, b);
+			// Set contacts sync for this account.
+		} else {
+			mAccountManager.setPassword(account, mPassword);
 		}
 	}
 
@@ -252,37 +311,17 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 	 * @param result
 	 *            the confirmCredentials result.
 	 */
-	private void finishLogin(String url, String token) {
-
+	private void finishMirakelLogin(String url, String token) {
 		Log.i(TAG, "finishLogin()");
-		final Account account = new Account(mUsername, Mirakel.ACCOUNT_TYP);
+		final Account account = new Account(mUsername, Mirakel.ACCOUNT_TYPE);
 		if (mRequestNewAccount) {
 			Bundle b = new Bundle();
 			b.putString(SyncAdapter.BUNDLE_SERVER_URL, url);
-			boolean isMiarkel=mTyp.getSelectedItem().toString().equals(getResources().getStringArray(R.array.server_typs)[0]);
-			b.putString(SyncAdapter.BUNDLE_SERVER_TYPE, isMiarkel?MirakelSync.TYPE:TaskWarriorSync.TYPE);
-			if(!isMiarkel){
-				b.putString(SyncAdapter.BUNDLE_ORG, ((EditText)findViewById(R.id.org_edit)).getText().toString());
-			}
-			
+			b.putString(SyncAdapter.BUNDLE_SERVER_TYPE, MirakelSync.TYPE);
 			mAccountManager.addAccountExplicitly(account, mPassword, b);
 			// Set contacts sync for this account.
 		} else {
 			mAccountManager.setPassword(account, mPassword);
-		}
-		if (((CheckBox) findViewById(R.id.resync)).isChecked()) {
-			Mirakel.getWritableDatabase().execSQL(
-					"Delete from " + Task.TABLE + " where sync_state="
-							+ Network.SYNC_STATE.DELETE);
-			Mirakel.getWritableDatabase().execSQL(
-					"Delete from " + ListMirakel.TABLE + " where sync_state="
-							+ Network.SYNC_STATE.DELETE);
-			Mirakel.getWritableDatabase().execSQL(
-					"Update " + Task.TABLE + " set sync_state="
-							+ Network.SYNC_STATE.ADD);
-			Mirakel.getWritableDatabase().execSQL(
-					"Update " + ListMirakel.TABLE + " set sync_state="
-							+ Network.SYNC_STATE.ADD);
 		}
 		new Network(new DataDownloadCommand() {
 			@Override
@@ -293,13 +332,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 			}
 		}, Network.HttpMode.DELETE, this, null).execute(url + "/tokens/"
 				+ token);
-
-		final Intent intent = new Intent();
-		intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, mUsername);
-		intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, Mirakel.ACCOUNT_TYP);
-		setAccountAuthenticatorResult(intent.getExtras());
-		setResult(RESULT_OK, intent);
-		finish();
 	}
 
 	public void onAuthenticationCancel() {
@@ -319,7 +351,8 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 		if (TextUtils.isEmpty(mUsername)) {
 			// If no username, then we ask the user to log in using an
 			// appropriate service.
-			final CharSequence msg = getString(R.string.login_activity_newaccount_text,accountTyp);
+			final CharSequence msg = getString(
+					R.string.login_activity_newaccount_text, accountTyp);
 			return msg;
 		}
 		if (TextUtils.isEmpty(mPassword)) {
@@ -345,6 +378,41 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 		if (mProgressDialog != null) {
 			mProgressDialog.dismiss();
 			mProgressDialog = null;
+		}
+	}
+
+	private void handleMirakelLogin() {
+		Log.v(TAG, "Use Mirakel");
+		// Show a progress dialog, and kick off a background task to
+		// perform
+		// the user login attempt.
+		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+		List<BasicNameValuePair> data = new ArrayList<BasicNameValuePair>();
+		data.add(new BasicNameValuePair("email", mUsername));
+		data.add(new BasicNameValuePair("password", mPassword));
+		if (networkInfo != null && networkInfo.isConnected()) {
+			showProgress();
+			final String url = ((EditText) findViewById(R.id.server_edit))
+					.getText().toString();
+			new Network(new DataDownloadCommand() {
+				@Override
+				public void after_exec(String result) {
+					String token = Network.getToken(result);
+					if (token == null) {
+						Log.e(TAG, "Login failed");
+						hideProgress();
+					} else {
+						Log.e(TAG, "Login sucess");
+						finishMirakelLogin(url, token);
+					}
+				}
+			}, Network.HttpMode.POST, data, this, null).execute(url
+					+ "/tokens.json");
+		} else {
+			Log.e(TAG, "No network connection available.");
+			Toast.makeText(getApplicationContext(), R.string.NoNetwork,
+					Toast.LENGTH_LONG).show();
 		}
 	}
 }

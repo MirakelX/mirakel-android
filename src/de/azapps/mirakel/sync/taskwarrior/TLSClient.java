@@ -1,4 +1,4 @@
-package de.azapps.mirakel.taskwarrior;
+package de.azapps.mirakel.sync.taskwarrior;
 
 import java.io.BufferedReader;
 import java.io.File;
