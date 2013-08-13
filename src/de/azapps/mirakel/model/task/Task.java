@@ -496,24 +496,7 @@ public class Task extends TaskBase {
 				if (content == null)
 					content = "";
 				t.setContent(content);
-			} else if (key == "annotations") {
-				String content = "";
-				try {
-					JsonArray annotations = val.getAsJsonArray();
-					boolean first = true;
-					for (JsonElement a : annotations) {
-						if (first)
-							first = false;
-						else
-							content += "\n";
-						content += a.getAsJsonObject().get("description")
-								.getAsString();
-					}
-				} catch (Exception e) {
-
-				}
-				t.setContent(content);
-			} else if (key.equals("priority")) {
+			}  else if (key.equals("priority")) {
 				String prioString = val.getAsString();
 				if (prioString.equals("L")) {
 					t.setPriority(-2);
@@ -571,10 +554,22 @@ public class Task extends TaskBase {
 							context.getString(R.string.TWDateFormat));
 				}
 			} else if (key.equals("annotations")) {
-				JsonArray j = val.getAsJsonArray();
-				JsonObject e = val.getAsJsonArray().get(j.size() - 1)
-						.getAsJsonObject();
-				t.setContent(e.get("description").getAsString());
+				String content = "";
+				try {
+					JsonArray annotations = val.getAsJsonArray();
+					boolean first = true;
+					for (JsonElement a : annotations) {
+						if (first)
+							first = false;
+						else
+							content += "\n";
+						content += a.getAsJsonObject().get("description")
+								.getAsString();
+					}
+				} catch (Exception e) {
+					Log.e(TAG,"cannot parse json");
+				}
+				t.setContent(content);
 			} else {
 				t.addAdditionalEntry(key, val.getAsString());
 			}
