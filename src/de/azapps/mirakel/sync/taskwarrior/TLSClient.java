@@ -145,7 +145,7 @@ public class TLSClient {
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////
-	public void init(final File ca, final File Key) {
+	public void init(final File ca, final File Key,final File server) {
 		Security.addProvider(new BouncyCastleProvider());
 		SSLContext context = null;
 		try {
@@ -154,11 +154,13 @@ public class TLSClient {
 			Log.e(TAG, "algorithm not implemented");
 		}
 		X509Certificate cert = generateCertificateFromPEM(fileToBytes(ca));
+		X509Certificate server_cert = generateCertificateFromPEM(fileToBytes(server));
 		RSAPrivateKey key = generatePrivateKeyFromPEM(fileToBytes(Key));
 		try {
 			KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
 			keystore.load(null);
 			keystore.setCertificateEntry("taskwarrior-CERT", cert);
+			keystore.setCertificateEntry("taskwarrior-server", server_cert);
 			Certificate[] c = new Certificate[] { cert };
 			keystore.setKeyEntry("taskwarrior-KEY", key,
 					"geheim".toCharArray(), c);
