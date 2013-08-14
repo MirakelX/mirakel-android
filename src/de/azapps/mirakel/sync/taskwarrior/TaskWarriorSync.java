@@ -38,6 +38,7 @@ public class TaskWarriorSync {
 	static String _user = "";
 	static String _key = "";
 	static File _cert;
+	static File key_cert;
 	static List<Task> _local_tasks;
 	private AccountManager accountManager;
 	private Account account;
@@ -69,7 +70,7 @@ public class TaskWarriorSync {
 		longInfo(payload);
 
 		TLSClient client=new TLSClient();
-		client.init(_cert);
+		client.init(_cert,key_cert);
 		client.connect(_host, _port);
 		client.send(sync.serialize());
 		
@@ -143,13 +144,16 @@ public class TaskWarriorSync {
 		if (key.length() != 0 && key.length() != 36) {
 			error("key", 1376235890);
 		}
-		File cert;
+		
+		File cert,key_cert;
 		// TODO FIXIT!!!
 		if (accountManager.getUserData(account, SyncAdapter.BUNDLE_CERT) == null) {
 			cert = new File("/data/data/de.azapps.mirakelandroid/client.cert.pem");
+			key_cert = new File("/data/data/de.azapps.mirakelandroid/client.key.pem");
 		} else {
 			cert = new File(accountManager.getUserData(account,
 					SyncAdapter.BUNDLE_CERT));
+			key_cert=null;
 		}
 		if (!cert.exists() || !cert.canRead()) {
 			error("cert", 1376235891);
@@ -161,6 +165,7 @@ public class TaskWarriorSync {
 		_org = accountManager.getUserData(account, SyncAdapter.BUNDLE_ORG);
 		_key = key;
 		_cert = cert;
+		this.key_cert=key_cert;
 	}
 
 	/**
