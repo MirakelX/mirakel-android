@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.security.KeyFactory;
@@ -186,9 +187,7 @@ public class TLSClient {
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////
-	public void connect(final String host, final int port) {
-
-		Socket s = new Socket();
+	public void connect(String host, final int port) {
 		if (_socket != null) {
 			try {
 				_socket.close();
@@ -197,7 +196,8 @@ public class TLSClient {
 			}
 		}
 		try {
-			_socket = (SSLSocket) sslFact.createSocket(s, host, port, false);
+			_socket = (SSLSocket)sslFact.createSocket();
+			_socket.connect(new InetSocketAddress(host, port));
 		} catch (UnknownHostException e) {
 			Log.e(TAG, "Unkown Host");
 		} catch (IOException e) {
