@@ -22,7 +22,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
@@ -42,6 +41,7 @@ import com.google.gson.JsonParser;
 
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
+import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -79,9 +79,7 @@ public class Task extends TaskBase {
 				|| getSync_state() == Network.SYNC_STATE.IS_SYNCED ? getSync_state()
 				: Network.SYNC_STATE.NEED_SYNC);
 		if (context != null)
-			setUpdatedAt(new SimpleDateFormat(
-					context.getString(R.string.dateTimeFormat),
-					Locale.getDefault()).format(new Date()));
+			setUpdatedAt(new GregorianCalendar());
 		ContentValues values = getContentValues();
 		// this.edited= new HashMap<String, Boolean>();
 		database.update(TABLE, values, "_id = " + getId(), null);
@@ -133,14 +131,12 @@ public class Task extends TaskBase {
 		json += "\"list_id\":" + getList().getId() + ",";
 		String s = "";
 		if (getDue() != null) {
-			s = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-					.format(getDue().getTime());
+			s = DateTimeHelper.formatDate(getDue());
 		}
 		json += "\"due\":\"" + s + "\",";
 		s = "";
 		if (getReminder() != null) {
-			s = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-					.format(getReminder().getTime());
+			s = DateTimeHelper.formatDateTime(getReminder());
 		}
 		json += "\"reminder\":\"" + s + "\",";
 		json += "\"sync_state\":" + getSync_state() + ",";
@@ -231,11 +227,14 @@ public class Task extends TaskBase {
 		values.put("list_id", getList().getId());
 		values.put("content", getContent());
 		values.put("done", isDone());
-		values.put("due", (getDue() == null ? null : formatCal(getDue())));
+		values.put(
+				"due",
+				(getDue() == null ? null : DateTimeHelper
+						.formatDateTime(getDue())));
 		values.put("priority", getPriority());
 		values.put("sync_state", Network.SYNC_STATE.ADD);
-		values.put("created_at", formatCal(getCreated_at()));
-		values.put("updated_at", formatCal(getUpdated_at()));
+		values.put("created_at", DateTimeHelper.formatDateTime(getCreated_at()));
+		values.put("updated_at", DateTimeHelper.formatDateTime(getUpdated_at()));
 		long insertId = database.insertOrThrow(TABLE, null, values);
 		Cursor cursor = database.query(TABLE, allColumns, "_id = " + insertId,
 				null, null, null, null);
@@ -494,7 +493,7 @@ public class Task extends TaskBase {
 				if (content == null)
 					content = "";
 				t.setContent(content);
-			}  else if (key.equals("priority")) {
+			} else if (key.equals("priority")) {
 				String prioString = val.getAsString();
 				if (prioString.equals("L")) {
 					t.setPriority(-2);
@@ -565,7 +564,7 @@ public class Task extends TaskBase {
 								.getAsString();
 					}
 				} catch (Exception e) {
-					Log.e(TAG,"cannot parse json");
+					Log.e(TAG, "cannot parse json");
 				}
 				t.setContent(content);
 			} else {
@@ -598,14 +597,10 @@ public class Task extends TaskBase {
 		SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
 				"yyyy-MM-dd'T'kkmmss'Z'", Locale.getDefault());
 		try {
-			due.setTime(new SimpleDateFormat(context.getString(R.string.dateFormat), Locale.getDefault())
+			due.setTime(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 					.parse(cursor.getString(6)));
 		} catch (ParseException e) {
-			try {
-				due.setTime(dateTimeFormat.parse(cursor.getString(6)));
-			} catch(Exception e2) {
-				due=null;
-			}
+			due = null;
 		} catch (NullPointerException e) {
 			due = null;
 		}

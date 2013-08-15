@@ -35,14 +35,11 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import de.azapps.mirakel.Mirakel.NoSuchListException;
+import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 
 class TaskBase {
-	private SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
-			"yyyy-MM-dd'T'kkmmss'Z'", Locale.getDefault());
-	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd",
-			Locale.getDefault());
 	private long id = 0;
 	private String uuid = "";
 	private ListMirakel list;
@@ -195,10 +192,8 @@ class TaskBase {
 	}
 
 	public void setCreatedAt(String created_at) {
-		GregorianCalendar temp = new GregorianCalendar();
 		try {
-			temp.setTime(dateTimeFormat.parse(created_at));
-			setCreatedAt(temp);
+			setCreatedAt(DateTimeHelper.parseDateTime(created_at));
 		} catch (ParseException e) {
 			setCreatedAt((Calendar) null);
 		}
@@ -213,10 +208,8 @@ class TaskBase {
 	}
 
 	public void setUpdatedAt(String updated_at) {
-		GregorianCalendar temp = new GregorianCalendar();
 		try {
-			temp.setTime(dateTimeFormat.parse(updated_at));
-			setUpdatedAt(temp);
+			setCreatedAt(DateTimeHelper.parseDateTime(updated_at));
 		} catch (ParseException e) {
 			setUpdatedAt((Calendar) null);
 		}
@@ -286,21 +279,21 @@ class TaskBase {
 		cv.put("name", name);
 		cv.put("content", content);
 		cv.put("done", done);
-		String due = (this.due == null ? null : dateFormat.format(new Date(this.due
-				.getTimeInMillis())));
+		String due = (this.due == null ? null : DateTimeHelper
+				.formatDate(getDue()));
 		cv.put("due", due);
 		String reminder = null;
 		if (this.reminder != null)
-			reminder = formatCal(this.reminder);
+			reminder = DateTimeHelper.formatDateTime(this.reminder);
 		cv.put("reminder", reminder);
 		cv.put("priority", priority);
 		String createdAt = null;
 		if (this.createdAt != null)
-			createdAt = formatCal(this.createdAt);
+			createdAt = DateTimeHelper.formatDateTime(this.createdAt);
 		cv.put("created_at", createdAt);
 		String updatedAt = null;
 		if (this.updatedAt != null)
-			updatedAt = formatCal(this.updatedAt);
+			updatedAt = DateTimeHelper.formatDateTime(this.updatedAt);
 		cv.put("updated_at", updatedAt);
 		cv.put("sync_state", sync_state);
 
@@ -310,8 +303,4 @@ class TaskBase {
 		return cv;
 	}
 
-	String formatCal(Calendar cal) {
-		return dateTimeFormat.format(cal.getTime());
-
-	}
 }
