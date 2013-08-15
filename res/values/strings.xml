@@ -39,7 +39,7 @@
     <string name="Password">Password</string>
     <string name="Server">Server</string>
     <string name="NoNetwork">No Network Connection available.</string>
-    <string name="wrong_sync_type">The sync-type is not supported!.</string>
+    <string name="wrong_sync_type">The sync-type is not supported!</string>
     <string name="action_sync_now">Sync Now</string>
     <string name="resync">Do you want to resync all Tasks?</string>
     <string name="start">Start</string>
@@ -131,11 +131,11 @@
     <!-- Label above username EditText -->
     
     <string name="login_activity_org_label">Organisation</string>
-    <string name="login_org_hint">Organsiation</string>
+    <string name="login_org_hint">Organisation</string>
     <string name="login_org_default">PUBLIC</string>
     <string name="login_activity_username_label">Username</string>
     <string name="login_activity_server_label">Server-URL</string>
-    <string name="login_activity_server_typ">Server Typ</string>
+    <string name="login_activity_server_typ">Server Type</string>
     <string-array name="server_typs">
         <item >Mirakel</item>
         <item >Taskwarrior</item>
@@ -147,14 +147,14 @@
 
     <!-- Message shown in dialog if the username or password is invalid. -->
     <string name="login_activity_loginfail_text_both">The username or password isn\'t valid. A Mirakel account is
-        required. Please try again. </string>
+        required. Please try again.</string>
     <!-- Message shown in dialog to prompt the user for their password -->
     <string name="login_activity_loginfail_text_pwmissing">Type the password for this account.</string>
     <!--
         Message shown if the provided account doesn't support the current
         activity.
     -->
-    <string name="login_activity_newaccount_text">Sign in to your % account. </string>
+    <string name="login_activity_newaccount_text">Sign in to your %s-account.</string>
     <!-- Message shown in progress dialog while app connects to the server -->
     <string name="ui_activity_authenticating">Authenticating\u2026</string>
     <string name="ui_activity_title">Sign-in</string>
