@@ -37,9 +37,7 @@ public class TaskWarriorSync {
 	static String _org = "";
 	static String _user = "";
 	static String _key = "";
-	static File _cert;
-	static File key_cert;
-	static File server_cert;
+	static File root;
 	static List<Task> _local_tasks;
 	private AccountManager accountManager;
 	private Account account;
@@ -71,7 +69,7 @@ public class TaskWarriorSync {
 		longInfo(payload);
 
 		TLSClient client=new TLSClient();
-		client.init(_cert,key_cert,server_cert);
+		client.init(root);
 		client.connect(_host, _port);
 		client.send(sync.serialize());
 		
@@ -146,31 +144,26 @@ public class TaskWarriorSync {
 			error("key", 1376235890);
 		}
 		
-		File cert,key_cert,server_cert;
+		File root;
 		// TODO FIXIT!!!
 		if (accountManager.getUserData(account, SyncAdapter.BUNDLE_CERT) == null) {
-			cert = new File("/data/data/de.azapps.mirakelandroid/client.cert.pem");
-			key_cert = new File("/data/data/de.azapps.mirakelandroid/client.key.pem");
-			server_cert = new File("/data/data/de.azapps.mirakelandroid/server.cert.pem");
+			root = new File("/data/data/de.azapps.mirakelandroid/ca.cert.pem");
 		} else {
-			cert = new File(accountManager.getUserData(account,
-					SyncAdapter.BUNDLE_CERT));
 			//TODO Fix this
-			key_cert=null;
-			server_cert=null;
+			root=null;
 		}
-		if (!cert.exists() || !cert.canRead()) {
+		if (!root.exists() || !root.canRead()) {
 			error("cert", 1376235891);
 		}
 		//_host = srv[0];
-		_host="192.168.0.14";
+		//TODO get this from somewhere else, do not hardcode userdata!!
+		_host="192.168.10.24";
 		_port = Integer.parseInt(srv[1]);
-		_user = account.name;
-		_org = accountManager.getUserData(account, SyncAdapter.BUNDLE_ORG);
-		_key = key;
-		_cert = cert;
-		TaskWarriorSync.key_cert=key_cert;
-		TaskWarriorSync.server_cert=server_cert;
+		_port=6544;
+		_user = "test";//account.name;
+		_org = "TEST";//accountManager.getUserData(account, SyncAdapter.BUNDLE_ORG);
+		_key = "3d331137-dadc-484e-986b-4e3c25e0eab9";//key;
+		TaskWarriorSync.root=root;
 	}
 
 	/**
