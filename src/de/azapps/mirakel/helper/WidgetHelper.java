@@ -3,7 +3,9 @@ package de.azapps.mirakel.helper;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.RemoteViews;
 import de.azapps.mirakel.Mirakel;
@@ -14,6 +16,8 @@ import de.azapps.mirakelandroid.R;
 public class WidgetHelper {
 	public static RemoteViews configureItem(RemoteViews rv, Task task,
 			Context mContext, int listId) {
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(mContext);
 		Intent openIntent = new Intent(mContext, MainActivity.class);
 		openIntent.setAction(MainActivity.SHOW_TASK);
 		openIntent.putExtra(MainActivity.EXTRA_ID, task.getId());
@@ -31,7 +35,7 @@ public class WidgetHelper {
 					.getColor(R.color.Grey));
 		} else {
 			rv.setTextColor(R.id.tasks_row_name, mContext.getResources()
-					.getColor(R.color.Black));
+					.getColor(preferences.getBoolean("darkWidget", false)?R.color.White:R.color.Black));
 		}
 		rv.setTextViewText(R.id.tasks_row_priority, task.getPriority() + "");
 		rv.setTextColor(R.id.tasks_row_priority, mContext.getResources()

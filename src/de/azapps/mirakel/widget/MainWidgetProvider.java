@@ -65,7 +65,10 @@ public class MainWidgetProvider extends AppWidgetProvider {
 					context.getPackageName(),
 					VERSION.SDK_INT < VERSION_CODES.HONEYCOMB ? R.layout.widget_main_layout_v10
 							: R.layout.widget_main);
-
+			boolean darkTheme= preferences.getBoolean("darkWidget", false);
+			views.setInt(R.id.widget_main, "setBackgroundResource",darkTheme?R.drawable.widget_background_dark:R.drawable.widget_background);
+			
+			views.setTextColor(R.id.widget_list_name,  context.getResources().getColor(darkTheme?R.color.White:R.color.Black));
 			int listId = Integer.parseInt(preferences.getString("widgetList",
 					SpecialList.first().getId() + ""));
 			int listSort = Integer.parseInt(preferences.getString("widgetSort",
