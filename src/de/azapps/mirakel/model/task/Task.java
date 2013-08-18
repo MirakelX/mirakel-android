@@ -227,10 +227,8 @@ public class Task extends TaskBase {
 		values.put("list_id", getList().getId());
 		values.put("content", getContent());
 		values.put("done", isDone());
-		values.put(
-				"due",
-				(getDue() == null ? null : DateTimeHelper
-						.formatDateTime(getDue())));
+		values.put("due",
+				(getDue() == null ? null : DateTimeHelper.formatDate(getDue())));
 		values.put("priority", getPriority());
 		values.put("sync_state", Network.SYNC_STATE.ADD);
 		values.put("created_at", DateTimeHelper.formatDateTime(getCreated_at()));
