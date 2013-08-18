@@ -170,7 +170,6 @@ public class TLSClient {
 			_socket.setEnabledProtocols(new String[]{"TLSv1.2"});
 			_socket.setUseClientMode(true);
 			_socket.setTcpNoDelay(true);
-			_socket.bind(new InetSocketAddress(port));
 			_socket.connect(new InetSocketAddress(host, port));
 			_socket.startHandshake();
 			out=_socket.getOutputStream();
