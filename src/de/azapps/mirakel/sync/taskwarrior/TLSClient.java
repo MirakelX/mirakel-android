@@ -1,14 +1,13 @@
 package de.azapps.mirakel.sync.taskwarrior;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
@@ -24,7 +23,6 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 
 import org.apache.http.conn.ssl.SSLSocketFactory;
-
 import javax.net.ssl.SSLSocket;
 
 import android.util.Base64;
@@ -38,6 +36,8 @@ public class TLSClient {
 	// private gnutls_session_t _session;
 	private SSLSocket _socket;
 	private SSLSocketFactory sslFact;
+	private InputStream in;
+	private OutputStream out;
 
 	static void gnutls_log_function(int level, String message) {
 		Log.d(TAG, "c: " + message);
@@ -47,6 +47,8 @@ public class TLSClient {
 	public TLSClient() {
 		_socket = null;
 		sslFact = null;
+		in=null;
+		out=null;
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////
@@ -57,6 +59,9 @@ public class TLSClient {
 			return;
 		}
 		try {
+			out.flush();
+			in.close();
+			out.close();
 			_socket.close();
 		} catch (IOException e) {
 			Log.e(TAG, "Cannot close Socket");
@@ -162,8 +167,14 @@ public class TLSClient {
 		}
 		try {
 			_socket = (SSLSocket)sslFact.createSocket();
+			_socket.setEnabledProtocols(new String[]{"TLSv1.2"});
+			_socket.setUseClientMode(true);
+			_socket.setTcpNoDelay(true);
+			_socket.bind(new InetSocketAddress(port));
 			_socket.connect(new InetSocketAddress(host, port));
 			_socket.startHandshake();
+			out=_socket.getOutputStream();
+			in=_socket.getInputStream();
 			Log.d(TAG, "connected to "+host+":"+port);
 		} catch (UnknownHostException e) {
 			Log.e(TAG, "Unkown Host");
@@ -180,63 +191,56 @@ public class TLSClient {
 
 	// //////////////////////////////////////////////////////////////////////////////
 	public void send(String data) {
+		DataOutputStream dos=new DataOutputStream(out);
 		Log.i(TAG, "send data");
-		OutputStream out = null;
 		if(!_socket.isConnected()){
 			Log.e(TAG,"socket not connected");
 			return;
 		}
 		try {
-			out = _socket.getOutputStream();
-		} catch (IOException e) {
-			Log.e(TAG, "cannot get outputstream");
-			return;
-		}
-		try {
-			long l=data.length();
+//			long l=data.length();
+			//TODO write length to first 4 bytes
 //			data=(l>>>24)+""+(l>>>16)+""+(l>>>8)+""+l+data;
-			data="XXXX"+data;//TODO write length to first 4 bytes
-			out.write(data.getBytes());
+//			data="XXXX"+data;
+//			out.write(data.getBytes());
+			dos.writeInt(data.getBytes().length);
+			dos.write(data.getBytes());
 		} catch (IOException e) {
 			Log.e(TAG, "cannot write data to outputstream");
 		}
 		try {
+			dos.flush();
+			dos.close();
 			out.flush();
 		} catch (IOException e) {
 			Log.e(TAG, "cannot flush data to outputstream");
-		}
-		try {
-			out.close();
-		} catch (IOException e) {
-			Log.e(TAG, "cannot close outputstream");
 		}
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////
 	public String recv() {
-		Log.i(TAG, "reveive data");
-		String ret = "";
-		InputStream in;
+		Log.i(TAG, "reveive data to "+_socket.getLocalAddress()+":"+_socket.getLocalPort());
+		if(!_socket.isConnected()){
+			Log.e(TAG, "not connected");
+			return null;
+		}
 		try {
-			in = _socket.getInputStream();
+			byte[] header = new byte[4];
+
+			in.read(header);
+			long expected = (unsignedToBytes(header[0]) << 24) | (unsignedToBytes(header[1]) << 16)
+					| (unsignedToBytes(header[2]) << 8) | unsignedToBytes(header[3]);
+			//TODO remove cast
+			byte[] data =new byte[(int) expected];
+			in.read(data);
+			Log.i(TAG, new String(data));
+			return new String(data);
 		} catch (IOException e) {
-			Log.e(TAG, "cannot open Inputstream");
-			return ret;
+			Log.e(TAG,"cannot read Inputstream");
 		}
-		BufferedReader buff = new BufferedReader(new InputStreamReader(in));
-		try {
-			while (buff.ready()) {
-				ret += buff.readLine();
-			}
-		} catch (IOException e1) {
-			Log.e(TAG, "cannot read buffer");
-		}
-		try {
-			in.close();
-		} catch (IOException e) {
-			Log.e(TAG, "cannot close Inputstream");
-		}
-		Log.i(TAG, "res: "+ret);
-		return ret;
+		return null;
 	}
+	private static int unsignedToBytes(byte b) {
+	    return b & 0xFF;
+	  }
 }
