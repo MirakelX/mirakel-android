@@ -47,6 +47,7 @@ import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.sync.Network;
+import de.azapps.mirakel.sync.Network.SYNC_STATE;
 import de.azapps.mirakelandroid.R;
 
 public class Task extends TaskBase {
@@ -493,7 +494,7 @@ public class Task extends TaskBase {
 				t.setContent(content);
 			} else if (key.equals("priority")) {
 				String prioString = val.getAsString();
-				if (prioString.equals("L")) {
+				if (prioString.equals("L")&&t.getPriority()!=-1) {
 					t.setPriority(-2);
 				} else if (prioString.equals("M")) {
 					t.setPriority(1);
@@ -682,6 +683,13 @@ public class Task extends TaskBase {
 		Log.v(TAG, order);
 		return Mirakel.getReadableDatabase().query(TABLE, allColumns, where,
 				null, null, null, "done, " + order);
+	}
+
+	public static void resetSyncState() {
+		ContentValues cv =new ContentValues();
+		cv.put("sync_state", SYNC_STATE.NOTHING);
+		database.update(TABLE, cv, null, null);
+		
 	}
 
 }
