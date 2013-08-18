@@ -96,7 +96,7 @@ public class Msg {
 					.trim(), s.substring(delimiter + 1).trim()));
 		}
 
-		_payload = input.substring(separator + 2);
+		_payload = input.substring(separator + 2).trim();
 
 		return true;
 	}
