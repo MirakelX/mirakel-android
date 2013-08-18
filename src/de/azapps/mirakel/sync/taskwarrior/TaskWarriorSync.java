@@ -47,7 +47,7 @@ public class TaskWarriorSync {
 	}
 
 	public void sync(Account account) {
-		Log.w(TAG, "Not implemented yet");
+		Log.w(TAG, "very unstable yet");
 		accountManager = AccountManager.get(mContext);
 		this.account = account;
 		init();
@@ -56,6 +56,10 @@ public class TaskWarriorSync {
 
 		Msg sync = new Msg();
 		String payload = "";
+		String old_key=accountManager.getUserData(account, SyncAdapter.TASKWARRIOR_KEY);
+		if(old_key!=null&&!old_key.equals("")){
+			payload+=old_key+"\n";
+		}
 		for (Task t : _local_tasks) {
 			payload += taskToJson(t) + "\n";
 		}
@@ -116,6 +120,7 @@ public class TaskWarriorSync {
 		}else{
 			String tasksString[] = remotes.getPayload().split("\n");
 			String key=tasksString[0];
+			accountManager.setUserData(account, SyncAdapter.TASKWARRIOR_KEY, key);
 			Log.e(TAG,"Key: "+key);
 			for (int i = 1; i < tasksString.length; i++) {
 				String taskString = tasksString[i];
@@ -140,6 +145,7 @@ public class TaskWarriorSync {
 			}
 			// delete tasks, which are marked as deleted locally
 			Task.deleteTasksPermanently();
+			Task.resetSyncState();
 		}
 		String message = remotes.get("message");
 		if (message != null && message != "") {
@@ -194,7 +200,7 @@ public class TaskWarriorSync {
 		_port=6544;
 		_user = "test";//account.name;
 		_org = "TEST";//accountManager.getUserData(account, SyncAdapter.BUNDLE_ORG);
-		_key = "e0b150f7-5aae-4108-ac02-eb92a4c2068e";//key;
+		_key = "aed45940-1ce9-477e-9734-980f78011cf0";//key;
 		TaskWarriorSync.root=root;
 	}
 

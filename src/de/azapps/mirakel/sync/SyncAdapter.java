@@ -52,6 +52,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			BUNDLE_CERT = "de.azapps.mirakel.cert",
 			BUNDLE_ORG = "de.azapps.mirakel.org";
 	public static final String BUNDLE_SERVER_TYPE = "type";
+	public static final String TASKWARRIOR_KEY = "key";
 	private Context mContext;
 
 	public enum SYNC_TYPES {
