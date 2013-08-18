@@ -81,34 +81,66 @@ public class TaskWarriorSync {
 		try {
 			remotes.parse(response);
 		} catch (MalformedInputException e) {
-			// TODO do something
+			Log.e(TAG, "cannot parse Message");
+		}
+		int code=Integer.parseInt(remotes.get("code"));
+		switch (code) {
+		case 200: Log.d(TAG,"Success");break;
+		case 201: Log.d(TAG,"No change");break;
+		case 300: Log.d(TAG,"Deprecated message type\n"+
+	           "This message will not be supported in future task server releases.");break;
+		case 301: Log.d(TAG,"Redirect\n"+
+	           "Further requests should be made to the specified server/port.");break;
+		case 302: Log.d(TAG,"Retry\n"+
+	           "The client is requested to wait and retry the same request.  The wait\n"+
+	           "time is not specified, and further retry responses are possible.");break;
+		case 400: Log.e(TAG,"Malformed data");break;
+		case 401: Log.e(TAG,"Unsupported encoding");break;
+		case 420: Log.e(TAG,"Server temporarily unavailable");break;
+		case 421: Log.e(TAG,"Server shutting down at operator request");break;
+		case 430: Log.e(TAG,"Access denied");break;
+		case 431: Log.e(TAG,"Account suspended");break;
+		case 432: Log.e(TAG,"Account terminated");break;
+
+		case 500: Log.e(TAG,"Syntax error in request");break;
+		case 501: Log.e(TAG,"Syntax error, illegal parameters");break;
+		case 502: Log.e(TAG,"Not implemented");break;
+		case 503: Log.e(TAG,"Command parameter not implemented");break;
+		case 504: Log.e(TAG,"Request too big");break;
+		
 		}
 
 		// parse tasks
-		String tasksString[] = remotes.getPayload().split("\n");
-		for (String taskString : tasksString) {
-			JsonObject taskObject = new JsonParser().parse(taskString)
-					.getAsJsonObject();
-			Task server_task = Task.parse_json(taskObject);
-			Task local_task = Task.getByUUID(server_task.getUUID());
-			if (server_task.getSync_state() == Network.SYNC_STATE.DELETE) {
-				if (local_task != null)
-					local_task.delete(true);
-			} else if (local_task == null) {
-				server_task.create();
-			} else {
-				server_task.setId(local_task.getId());
-				try {
-					server_task.save();
-				} catch (NoSuchListException e) {
-					// Should not happen, because the list should be created
-					// while parsing the task
+		if(remotes.getPayload()==null||remotes.getPayload().equals("")){
+			Log.i(TAG, "there is no Payload");
+		}else{
+			String tasksString[] = remotes.getPayload().split("\n");
+			String key=tasksString[0];
+			Log.e(TAG,"Key: "+key);
+			for (int i = 1; i < tasksString.length; i++) {
+				String taskString = tasksString[i];
+				JsonObject taskObject = new JsonParser().parse(taskString)
+						.getAsJsonObject();
+				Task server_task = Task.parse_json(taskObject);
+				Task local_task = Task.getByUUID(server_task.getUUID());
+				if (server_task.getSync_state() == Network.SYNC_STATE.DELETE) {
+					if (local_task != null)
+						local_task.delete(true);
+				} else if (local_task == null) {
+					server_task.create();
+				} else {
+					server_task.setId(local_task.getId());
+					try {
+						server_task.save();
+					} catch (NoSuchListException e) {
+						// Should not happen, because the list should be created
+						// while parsing the task
+					}
 				}
 			}
+			// delete tasks, which are marked as deleted locally
+			Task.deleteTasksPermanently();
 		}
-		// delete tasks, which are marked as deleted locally
-		Task.deleteTasksPermanently();
-
 		String message = remotes.get("message");
 		if (message != null && message != "") {
 			Toast.makeText(mContext,
@@ -157,12 +189,12 @@ public class TaskWarriorSync {
 		}
 		//_host = srv[0];
 		//TODO get this from somewhere else, do not hardcode userdata!!
-		_host="192.168.10.24";
+		_host="192.168.10.153";
 		_port = Integer.parseInt(srv[1]);
 		_port=6544;
 		_user = "test";//account.name;
 		_org = "TEST";//accountManager.getUserData(account, SyncAdapter.BUNDLE_ORG);
-		_key = "3d331137-dadc-484e-986b-4e3c25e0eab9";//key;
+		_key = "e0b150f7-5aae-4108-ac02-eb92a4c2068e";//key;
 		TaskWarriorSync.root=root;
 	}
 
