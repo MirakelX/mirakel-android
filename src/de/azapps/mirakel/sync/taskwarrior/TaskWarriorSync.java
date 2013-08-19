@@ -113,6 +113,11 @@ public class TaskWarriorSync {
 		case 504: Log.e(TAG,"Request too big");break;
 		
 		}
+		if(remotes.get("status").equals("Client sync key not found.")){
+			Log.d(TAG, "reset sync-key");
+			accountManager.setUserData(account, SyncAdapter.TASKWARRIOR_KEY, null);
+			sync(account);
+		}
 
 		// parse tasks
 		if(remotes.getPayload()==null||remotes.getPayload().equals("")){
@@ -121,7 +126,7 @@ public class TaskWarriorSync {
 			String tasksString[] = remotes.getPayload().split("\n");
 			String key=tasksString[0];
 			accountManager.setUserData(account, SyncAdapter.TASKWARRIOR_KEY, key);
-			Log.e(TAG,"Key: "+key);
+			Log.d(TAG,"Key: "+key);
 			for (int i = 1; i < tasksString.length; i++) {
 				String taskString = tasksString[i];
 				JsonObject taskObject = new JsonParser().parse(taskString)
@@ -185,7 +190,7 @@ public class TaskWarriorSync {
 		File root;
 		// TODO FIXIT!!!
 		if (accountManager.getUserData(account, SyncAdapter.BUNDLE_CERT) == null) {
-			root = new File("/data/data/de.azapps.mirakelandroid/ca.cert.pem");
+			root = new File(mContext.getFilesDir().getParent()+"/ca.cert.pem");
 		} else {
 			//TODO Fix this
 			root=null;
@@ -196,11 +201,14 @@ public class TaskWarriorSync {
 		//_host = srv[0];
 		//TODO get this from somewhere else, do not hardcode userdata!!
 		_host="192.168.10.153";
+//		_host="azapps.de";
 		_port = Integer.parseInt(srv[1]);
 		_port=6544;
 		_user = "test";//account.name;
 		_org = "TEST";//accountManager.getUserData(account, SyncAdapter.BUNDLE_ORG);
 		_key = "aed45940-1ce9-477e-9734-980f78011cf0";//key;
+//	    _key = "0d252b7b-c1da-4603-9f6b-744a60d530f0";
+		_key="e9ec5190-6e6f-4176-bd17-48d4ccf090de";
 		TaskWarriorSync.root=root;
 	}
 
