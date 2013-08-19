@@ -38,6 +38,7 @@ public class TaskWarriorSync {
 	static String _user = "";
 	static String _key = "";
 	static File root;
+	static File user_ca;
 	static List<Task> _local_tasks;
 	private AccountManager accountManager;
 	private Account account;
@@ -73,7 +74,7 @@ public class TaskWarriorSync {
 		longInfo(payload);
 
 		TLSClient client=new TLSClient();
-		client.init(root);
+		client.init(root,user_ca);
 		client.connect(_host, _port);
 		client.send(sync.serialize());
 		
@@ -187,15 +188,17 @@ public class TaskWarriorSync {
 			error("key", 1376235890);
 		}
 		
-		File root;
+		File root,user;
 		// TODO FIXIT!!!
 		if (accountManager.getUserData(account, SyncAdapter.BUNDLE_CERT) == null) {
 			root = new File(mContext.getFilesDir().getParent()+"/ca.cert.pem");
+			user = new File(mContext.getFilesDir().getParent()+"/client.cert.pem");
 		} else {
 			//TODO Fix this
 			root=null;
+			user=null;
 		}
-		if (!root.exists() || !root.canRead()) {
+		if (!root.exists() || !root.canRead()||!user.exists() || !user.canRead()) {
 			error("cert", 1376235891);
 		}
 		//_host = srv[0];
@@ -210,6 +213,7 @@ public class TaskWarriorSync {
 //	    _key = "0d252b7b-c1da-4603-9f6b-744a60d530f0";
 		_key="e9ec5190-6e6f-4176-bd17-48d4ccf090de";
 		TaskWarriorSync.root=root;
+		TaskWarriorSync.user_ca=user;
 	}
 
 	/**

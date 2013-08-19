@@ -141,13 +141,15 @@ public class TLSClient {
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////
-	public void init(final File root) {	
+	public void init(final File root, final File user) {	
 		Log.i(TAG, "init");
 	    try {
 	    	X509Certificate ROOT = generateCertificateFromPEM(fileToBytes(root));
+	    	X509Certificate USER = generateCertificateFromPEM(fileToBytes(user));
 	    	KeyStore trusted = KeyStore.getInstance(KeyStore.getDefaultType());
 	    	trusted.load(null);
 			trusted.setCertificateEntry("taskwarrior-ROOT", ROOT);
+			trusted.setCertificateEntry("taskwarrior-USER", USER);
 	        sslFact= new SSLSocketFactory(trusted);
 	      } catch (Exception e) {
 	        throw new AssertionError(e);
