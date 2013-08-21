@@ -80,8 +80,8 @@ public class TaskWarriorSync {
 		
 		String response = client.recv();
 		longInfo(response);
-		
 
+		
 		Msg remotes = new Msg();
 		try {
 			remotes.parse(response);
@@ -162,6 +162,7 @@ public class TaskWarriorSync {
 		}
 		String error_code = remotes.get("code");
 		String error = remotes.get("error");
+		client.close();
 		// TODO do something with the errors
 	}
 	
@@ -204,14 +205,14 @@ public class TaskWarriorSync {
 		//_host = srv[0];
 		//TODO get this from somewhere else, do not hardcode userdata!!
 		_host="192.168.10.153";
-//		_host="azapps.de";
+		_host="azapps.de";
 		_port = Integer.parseInt(srv[1]);
 		_port=6544;
 		_user = "test";//account.name;
 		_org = "TEST";//accountManager.getUserData(account, SyncAdapter.BUNDLE_ORG);
 		_key = "aed45940-1ce9-477e-9734-980f78011cf0";//key;
 //	    _key = "0d252b7b-c1da-4603-9f6b-744a60d530f0";
-		_key="e9ec5190-6e6f-4176-bd17-48d4ccf090de";
+		_key="98d7f487-d92f-4294-8100-a5c9a5743873";
 		TaskWarriorSync.root=root;
 		TaskWarriorSync.user_ca=user;
 	}

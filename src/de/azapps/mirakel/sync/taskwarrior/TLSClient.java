@@ -54,6 +54,10 @@ public class TLSClient {
 	// //////////////////////////////////////////////////////////////////////////////
 	@Override
 	protected void finalize() {
+		close();
+	}
+	
+	public void close() {
 		if (_socket == null){
 			Log.e(TAG, "socket null");
 			return;
@@ -63,11 +67,13 @@ public class TLSClient {
 			in.close();
 			out.close();
 			_socket.close();
+			_socket=null;
 		} catch (IOException e) {
 			Log.e(TAG, "Cannot close Socket");
 		}
+		
 	}
-	
+
 	private static byte[] parseDERFromPEM(byte[] pem, String beginDelimiter, String endDelimiter) {
 	    String data = new String(pem);
 	    String[] tokens = data.split(beginDelimiter);
@@ -169,7 +175,7 @@ public class TLSClient {
 		}
 		try {
 			_socket = (SSLSocket)sslFact.createSocket();
-			_socket.setEnabledProtocols(new String[]{"TLSv1.2"});
+//			_socket.setEnabledProtocols(new String[]{"TLSv1.2"});
 			_socket.setUseClientMode(true);
 			_socket.setTcpNoDelay(true);
 			_socket.connect(new InetSocketAddress(host, port));
@@ -234,7 +240,6 @@ public class TLSClient {
 			//TODO remove cast
 			byte[] data =new byte[(int) expected];
 			in.read(data);
-			Log.i(TAG, new String(data));
 			return new String(data);
 		} catch (IOException e) {
 			Log.e(TAG,"cannot read Inputstream");
