@@ -472,6 +472,10 @@ public class Task extends TaskBase {
 		JsonElement id = el.get("id");
 		if (id != null) {
 			t = Task.get(id.getAsLong());
+		}else{
+			id = el.get("uuid");
+			if(id!=null)
+				t=Task.getByUUID(id.getAsString());
 		}
 		if (t == null) {
 			t = new Task();
@@ -494,11 +498,11 @@ public class Task extends TaskBase {
 				t.setContent(content);
 			} else if (key.equals("priority")) {
 				String prioString = val.getAsString();
-				if (prioString.equals("L")&&t.getPriority()!=-1) {
+				if (prioString.contains("L")&&t.getPriority()!=-1) {
 					t.setPriority(-2);
-				} else if (prioString.equals("M")) {
+				} else if (prioString.contains("M")) {
 					t.setPriority(1);
-				} else if (prioString.equals("H")) {
+				} else if (prioString.contains("H")) {
 					t.setPriority(2);
 				} else {
 					t.setPriority(val.getAsInt());
@@ -521,7 +525,7 @@ public class Task extends TaskBase {
 			} else if (key.equals("entry")) {
 				t.setCreatedAt(parseDate(val.getAsString(),
 						context.getString(R.string.TWDateFormat)));
-			} else if (key == "modification") {
+			} else if (key.equals("modification")) {
 				t.setUpdatedAt(parseDate(val.getAsString(),
 						context.getString(R.string.TWDateFormat)));
 			} else if (key.equals("done")) {

@@ -125,15 +125,30 @@ public class TaskWarriorSync {
 			Log.i(TAG, "there is no Payload");
 		}else{
 			String tasksString[] = remotes.getPayload().split("\n");
-			String key=tasksString[0];
-			accountManager.setUserData(account, SyncAdapter.TASKWARRIOR_KEY, key);
-			Log.d(TAG,"Key: "+key);
-			for (int i = 1; i < tasksString.length; i++) {
+			boolean KEY=false;
+			for (int i = 0; i < tasksString.length; i++) {
 				String taskString = tasksString[i];
-				JsonObject taskObject = new JsonParser().parse(taskString)
-						.getAsJsonObject();
-				Task server_task = Task.parse_json(taskObject);
-				Task local_task = Task.getByUUID(server_task.getUUID());
+				JsonObject taskObject;
+				Task local_task;
+				Task server_task;
+				try{
+					 taskObject= new JsonParser().parse(taskString)
+							.getAsJsonObject();
+						 server_task= Task.parse_json(taskObject);
+						local_task = Task.getByUUID(server_task.getUUID());
+				}catch(Exception e){
+					Log.d(TAG ,Log.getStackTraceString(e));
+					if(!KEY){
+						KEY=true;
+						String key=tasksString[i];
+						accountManager.setUserData(account, SyncAdapter.TASKWARRIOR_KEY, key);
+						Log.d(TAG,"Key: "+key);
+					}else{
+						Log.e(TAG, "something went wrong");
+					}
+					continue;
+				}
+
 				if (server_task.getSync_state() == Network.SYNC_STATE.DELETE) {
 					if (local_task != null)
 						local_task.delete(true);
@@ -205,14 +220,14 @@ public class TaskWarriorSync {
 		//_host = srv[0];
 		//TODO get this from somewhere else, do not hardcode userdata!!
 		_host="192.168.10.153";
-		_host="azapps.de";
+//		_host="azapps.de";
 		_port = Integer.parseInt(srv[1]);
 		_port=6544;
 		_user = "test";//account.name;
 		_org = "TEST";//accountManager.getUserData(account, SyncAdapter.BUNDLE_ORG);
 		_key = "aed45940-1ce9-477e-9734-980f78011cf0";//key;
 //	    _key = "0d252b7b-c1da-4603-9f6b-744a60d530f0";
-		_key="98d7f487-d92f-4294-8100-a5c9a5743873";
+		_key="10deb471-13fe-45a4-a9f9-afe5a4bbf3d6";
 		TaskWarriorSync.root=root;
 		TaskWarriorSync.user_ca=user;
 	}

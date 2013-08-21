@@ -252,7 +252,7 @@ class TaskBase {
 	private void initAdditionalEntries() {
 		if (additionalEntries == null) {
 			if (additionalEntriesString == null
-					|| additionalEntriesString == "") {
+					|| additionalEntriesString.equals("")) {
 				this.additionalEntries = new HashMap<String, String>();
 			} else {
 				Gson gson = new Gson();
