@@ -125,9 +125,12 @@ public class TaskWarriorSync {
 			Log.i(TAG, "there is no Payload");
 		}else{
 			String tasksString[] = remotes.getPayload().split("\n");
-			boolean KEY=false;
-			for (int i = 0; i < tasksString.length; i++) {
-				String taskString = tasksString[i];
+			for (String taskString:tasksString) {
+				if(taskString.charAt(0)!='{'){
+					Log.d(TAG,"Key: "+taskString);
+					accountManager.setUserData(account, SyncAdapter.TASKWARRIOR_KEY, taskString);
+					continue;
+				}
 				JsonObject taskObject;
 				Task local_task;
 				Task server_task;
@@ -138,14 +141,7 @@ public class TaskWarriorSync {
 						local_task = Task.getByUUID(server_task.getUUID());
 				}catch(Exception e){
 					Log.d(TAG ,Log.getStackTraceString(e));
-					if(!KEY){
-						KEY=true;
-						String key=tasksString[i];
-						accountManager.setUserData(account, SyncAdapter.TASKWARRIOR_KEY, key);
-						Log.d(TAG,"Key: "+key);
-					}else{
-						Log.e(TAG, "something went wrong");
-					}
+					Log.e(TAG,"malformed JSON");
 					continue;
 				}
 
@@ -227,7 +223,7 @@ public class TaskWarriorSync {
 		_org = "TEST";//accountManager.getUserData(account, SyncAdapter.BUNDLE_ORG);
 		_key = "aed45940-1ce9-477e-9734-980f78011cf0";//key;
 //	    _key = "0d252b7b-c1da-4603-9f6b-744a60d530f0";
-		_key="10deb471-13fe-45a4-a9f9-afe5a4bbf3d6";
+		_key="3cb38d8f-8314-47dd-8415-6038893249c8";
 		TaskWarriorSync.root=root;
 		TaskWarriorSync.user_ca=user;
 	}
