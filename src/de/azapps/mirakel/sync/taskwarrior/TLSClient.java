@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.security.KeyFactory;
@@ -23,6 +24,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 
 import org.apache.http.conn.ssl.SSLSocketFactory;
+
 import javax.net.ssl.SSLSocket;
 
 import android.util.Base64;
@@ -164,7 +166,7 @@ public class TLSClient {
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////
-	public void connect(String host, final int port) {
+	public void connect(String host, final int port) throws IOException {
 		Log.i(TAG, "connect");
 		if (_socket != null) {
 			try {
@@ -183,12 +185,17 @@ public class TLSClient {
 			out=_socket.getOutputStream();
 			in=_socket.getInputStream();
 			Log.d(TAG, "connected to "+host+":"+port);
+			return;
 		} catch (UnknownHostException e) {
 			Log.e(TAG, "Unkown Host");
+		} catch (ConnectException e){
+			Log.e(TAG,"Cannot connect to Host");
+			
 		} catch (IOException e) {
-			Log.e(TAG, "Cannot create Socket");
-			Log.e(TAG,Log.getStackTraceString(e));
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		throw new IOException();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////
