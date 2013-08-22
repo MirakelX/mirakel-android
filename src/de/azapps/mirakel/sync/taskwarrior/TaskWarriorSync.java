@@ -1,6 +1,7 @@
 package de.azapps.mirakel.sync.taskwarrior;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.MalformedInputException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -39,7 +40,7 @@ public class TaskWarriorSync {
 	static String _key = "";
 	static File root;
 	static File user_ca;
-	static List<Task> _local_tasks;
+//	static List<Task> _local_tasks;
 	private AccountManager accountManager;
 	private Account account;
 
@@ -53,29 +54,48 @@ public class TaskWarriorSync {
 		this.account = account;
 		init();
 
-		_local_tasks = Task.getTasksToSync();
-
 		Msg sync = new Msg();
 		String payload = "";
-		String old_key=accountManager.getUserData(account, SyncAdapter.TASKWARRIOR_KEY);
-		if(old_key!=null&&!old_key.equals("")){
-			payload+=old_key+"\n";
-		}
-		for (Task t : _local_tasks) {
-			payload += taskToJson(t) + "\n";
-		}
-		// Build sync-request
+		List<Task> local_tasks=Task.getTasksToSync();
 		sync.set("protocol", "v1");
 		sync.set("type", "sync");
 		sync.set("org", _org);
 		sync.set("user", _user);
 		sync.set("key", _key);
-		sync.setPayload(payload);
-		longInfo(payload);
+		//split big sync into smaller pieces
+		short taskNumber=5;
+		int parts=local_tasks.size()/taskNumber<1?1:local_tasks.size()/taskNumber;
+		for(int i=0;i<parts;i++){
+			String old_key=accountManager.getUserData(account, SyncAdapter.TASKWARRIOR_KEY);
+			if(old_key!=null&&!old_key.equals("")){
+				payload+=old_key+"\n";
+			}
+			for (int j=i*taskNumber;j<local_tasks.size()&&j<(i+1)*taskNumber;j++) {
+				payload += taskToJson(local_tasks.get(j)) + "\n";
+			}
+			// Build sync-request
+	
+			sync.setPayload(payload);
+			doSync(account,sync);
+		}
+		// delete tasks, which are marked as deleted locally
+		Task.deleteTasksPermanently();
+		Task.resetSyncState();
+	}
+
+	private void doSync(Account account,Msg sync) {
+
+
+		longInfo(sync.getPayload());
 
 		TLSClient client=new TLSClient();
 		client.init(root,user_ca);
-		client.connect(_host, _port);
+		try{
+			client.connect(_host, _port);
+		}catch(IOException e){
+			Log.e(TAG,"cannot create Socket");
+			return;
+		}
 		client.send(sync.serialize());
 		
 		String response = client.recv();
@@ -160,9 +180,6 @@ public class TaskWarriorSync {
 					}
 				}
 			}
-			// delete tasks, which are marked as deleted locally
-			Task.deleteTasksPermanently();
-			Task.resetSyncState();
 		}
 		String message = remotes.get("message");
 		if (message != null && message != "") {
@@ -174,7 +191,6 @@ public class TaskWarriorSync {
 		String error_code = remotes.get("code");
 		String error = remotes.get("error");
 		client.close();
-		// TODO do something with the errors
 	}
 	
 	public static void longInfo(String str) {
@@ -223,7 +239,7 @@ public class TaskWarriorSync {
 		_org = "TEST";//accountManager.getUserData(account, SyncAdapter.BUNDLE_ORG);
 		_key = "aed45940-1ce9-477e-9734-980f78011cf0";//key;
 //	    _key = "0d252b7b-c1da-4603-9f6b-744a60d530f0";
-		_key="3cb38d8f-8314-47dd-8415-6038893249c8";
+		_key="99d95af4-e671-4493-99c4-7fd0606b8d19";
 		TaskWarriorSync.root=root;
 		TaskWarriorSync.user_ca=user;
 	}
