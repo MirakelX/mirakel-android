@@ -497,14 +497,14 @@ public class Task extends TaskBase {
 					content = "";
 				t.setContent(content);
 			} else if (key.equals("priority")) {
-				String prioString = val.getAsString();
-				if (prioString.contains("L")&&t.getPriority()!=-1) {
+				String prioString = val.getAsString().trim();
+				if (prioString.equals("L")&&t.getPriority()!=-1) {
 					t.setPriority(-2);
-				} else if (prioString.contains("M")) {
+				} else if (prioString.equals("M")) {
 					t.setPriority(1);
-				} else if (prioString.contains("H")) {
+				} else if (prioString.equals("H")) {
 					t.setPriority(2);
-				} else {
+				} else if(!prioString.equals("L")){
 					t.setPriority(val.getAsInt());
 				}
 			} else if (key.equals("list_id")) {
