@@ -36,6 +36,12 @@
 //TODO Need to cleanup
 package de.azapps.mirakel.sync;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +50,7 @@ import org.apache.http.message.BasicNameValuePair;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -60,18 +67,24 @@ import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewSwitcher;
 import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.helper.FileUtils;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.sync.SyncAdapter.SYNC_TYPES;
 import de.azapps.mirakel.sync.mirakel.MirakelSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
 import de.azapps.mirakelandroid.R;
@@ -94,6 +107,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 
 	/** The tag used to log to adb console. */
 	private static final String TAG = "AuthenticatorActivity";
+	private final int CONFIG_TASKWARRIOR=1; 
 	private AccountManager mAccountManager;
 
 	/** Keep track of the login task so can cancel it if requested */
@@ -121,6 +135,8 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 	private EditText mUsernameEdit, mUrl;
 
 	private SyncAdapter.SYNC_TYPES syncType;
+
+	private String config_file;
 
 	/**
 	 * {@inheritDoc}
@@ -150,6 +166,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 		mUrl = (EditText) findViewById(R.id.server_edit);
 		mUsernameEdit = (EditText) findViewById(R.id.username_edit);
 		mPasswordEdit = (EditText) findViewById(R.id.password_edit);
+		config_file=null;
 
 		if (!TextUtils.isEmpty(mUsername))
 			mUsernameEdit.setText(mUsername);
@@ -165,23 +182,15 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				String syncTypeString = mType.getSelectedItem().toString();
 				syncType = SyncAdapter.getSyncType(syncTypeString);
 				mMessage.setText(syncTypeString);
-				findViewById(R.id.login_org_container).setVisibility(View.GONE);
+				ViewSwitcher switcher=(ViewSwitcher)findViewById(R.id.switcher_login);
 				switch (syncType) {
 				case TASKWARRIOR:
-					findViewById(R.id.login_org_container).setVisibility(
-							View.VISIBLE);
-					mUsernameEdit.setInputType(InputType.TYPE_CLASS_TEXT);
-					mUsernameEdit
-							.setHint(getString(R.string.login_activity_username_label));
-					mUrl.setText(getString(R.string.offical_server_url_taskwarrior));
-					mUrl.setInputType(InputType.TYPE_CLASS_TEXT);
+					if(switcher.getCurrentView().getId()!=R.id.login_taskwarrior)
+						switcher.showPrevious();
 					break;
 				case MIRAKEL:
-					mUsernameEdit
-							.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-					mUsernameEdit.setHint(getString(R.string.Email));
-					mUrl.setText(getString(R.string.offical_server_url));
-					mUrl.setInputType(InputType.TYPE_TEXT_VARIATION_URI);
+					if(switcher.getCurrentView().getId()!=R.id.login_mirakel)
+						switcher.showPrevious();
 					break;
 				}
 			}
@@ -199,6 +208,26 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 			findViewById(R.id.login_button_frame).setBackgroundColor(
 					getResources().getColor(android.R.color.transparent));
 		}
+		final Activity a=this;
+		((Button) findViewById(R.id.load_configfile))
+				.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						Helpers.showFileChooser(CONFIG_TASKWARRIOR,
+								getString(R.string.select_config), a);
+
+					}
+				});
+		((Button) findViewById(R.id.ok_button))
+				.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						handleLogin(v);
+
+					}
+				});
 	}
 
 	/*
@@ -221,6 +250,13 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 		mProgressDialog = dialog;
 		return dialog;
 	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if(resultCode==Activity.RESULT_OK&&requestCode==CONFIG_TASKWARRIOR)
+			config_file=Helpers.getPathFromUri(data.getData(),this);
+		super.onActivityResult(requestCode, resultCode, data);
+	}
 
 	/**
 	 * Handles onClick event on the Submit button. Sends username/password to
@@ -236,7 +272,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 			mUsername = mUsernameEdit.getText().toString();
 		}
 		mPassword = mPasswordEdit.getText().toString();
-		if (TextUtils.isEmpty(mUsername) || TextUtils.isEmpty(mPassword)) {
+		if ((TextUtils.isEmpty(mUsername) || TextUtils.isEmpty(mPassword))&&syncType!=SYNC_TYPES.TASKWARRIOR) {
 			mMessage.setText(getMessage(mType.getSelectedItem().toString()));
 		} else {
 			if (((CheckBox) findViewById(R.id.resync)).isChecked()) {
@@ -284,21 +320,45 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 	}
 
 	private void finishTWLogin() {
-		Log.i(TAG, "finishTWLogin()");
-		final Account account = new Account(mUsername, Mirakel.ACCOUNT_TYPE);
-		if (mRequestNewAccount) {
+//		TODO add errorhandling
+		Log.d(TAG,config_file);
+		File f=new File(config_file);
+		if(f.exists()&&f.canRead()){ 
+			byte [] buffer= new byte[(int)f.length()];//TODO remove cast
+			try {
+				new FileInputStream(f).read(buffer);
+			} catch (FileNotFoundException e) {
+				Log.e(TAG, "File not found");
+				return;
+			} catch (IOException e) {
+				Log.e(TAG, "cannot read file");
+				return;
+			}
 			Bundle b = new Bundle();
-			b.putString(SyncAdapter.BUNDLE_SERVER_URL, mUrl.getText()
-					.toString());
 			b.putString(SyncAdapter.BUNDLE_SERVER_TYPE, TaskWarriorSync.TYPE);
-			b.putString(SyncAdapter.BUNDLE_ORG,
-					((EditText) findViewById(R.id.org_edit)).getText()
-							.toString());
-			mAccountManager.addAccountExplicitly(account, mPassword, b);
-			// Set contacts sync for this account.
-		} else {
-			mAccountManager.setPassword(account, mPassword);
+			String content=new String(buffer);
+			String [] t=content.split("org: ");
+			Log.d(TAG, "user: "+t[0].replace("username: ", ""));
+			final Account account = new Account(t[0].replace("username: ", "").replace("\n", ""), Mirakel.ACCOUNT_TYPE);
+			t=t[1].split("user key: ");
+			Log.d(TAG, "org: "+t[0].replace("\n", ""));
+			b.putString(SyncAdapter.BUNDLE_ORG, t[0].replace("\n", ""));
+			t=t[1].split("server: ");
+			Log.d(TAG, "user key: "+t[0].replace("\n", ""));
+			String pwd=t[0].replace("\n", "");
+			t=t[1].split("Client.cert:\n");
+			Log.d(TAG, "server: "+t[0].replace("\n", ""));
+			b.putString(SyncAdapter.BUNDLE_SERVER_URL, t[0].replace("\n", ""));
+			t=t[1].split("ca.cert:\n");
+			Log.d(TAG, "client: "+t[0].replace("\n", ""));
+			FileUtils.writeToFile(new File(getFilesDir().getParent()+"/client.cert.pem"), t[0]);
+			Log.d(TAG, "ca: "+t[1].replace("\n", ""));
+			FileUtils.writeToFile(new File(getFilesDir().getParent()+"/ca.cert.pem"), t[1]);
+			mAccountManager.addAccountExplicitly(account, pwd, b);
+		}else{
+			Log.e(TAG,"File not found");
 		}
+		Log.i(TAG, "finishTWLogin()");
 	}
 
 	/**

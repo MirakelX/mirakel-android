@@ -39,6 +39,7 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 import de.azapps.mirakel.helper.ExportImport;
 import de.azapps.mirakel.helper.FileUtils;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.PreferencesHelper;
 import de.azapps.mirakelandroid.R;
 
@@ -79,15 +80,7 @@ public class SettingsActivity extends PreferenceActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	private String getPathFromUri(Uri uri) {
-		try {
-			return FileUtils.getPath(this, uri);
-		} catch (URISyntaxException e) {
-			Toast.makeText(this, "Something terrible happened…",
-					Toast.LENGTH_LONG).show();
-			return "";
-		}
-	}
+
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -97,7 +90,7 @@ public class SettingsActivity extends PreferenceActivity {
 		case FILE_ASTRID:
 			if (resultCode != RESULT_OK)
 				return;
-			final String path_astrid = getPathFromUri(data.getData());
+			final String path_astrid = Helpers.getPathFromUri(data.getData(),this);
 
 			// Do the import in a background-task
 			new AsyncTask<String, Void, Boolean>() {
@@ -135,7 +128,7 @@ public class SettingsActivity extends PreferenceActivity {
 		case FILE_IMPORT_DB:
 			if (resultCode != RESULT_OK)
 				return;
-			final String path_db = getPathFromUri(data.getData());
+			final String path_db = Helpers.getPathFromUri(data.getData(),this);
 			// Check if this is an database file
 			if (!path_db.endsWith(".db")) {
 				Toast.makeText(that, R.string.import_wrong_type,

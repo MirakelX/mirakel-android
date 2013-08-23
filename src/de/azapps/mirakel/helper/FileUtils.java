@@ -1,9 +1,11 @@
 package de.azapps.mirakel.helper;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.channels.FileChannel;
@@ -15,6 +17,8 @@ import android.database.Cursor;
 import android.net.Uri;
 
 public class FileUtils {
+	private static final String TAG = "FileUtils";
+
 	public static String getPath(Context context, Uri uri)
 			throws URISyntaxException {
 		if ("content".equalsIgnoreCase(uri.getScheme())) {
@@ -99,6 +103,17 @@ public class FileUtils {
 		if (!f.isDirectory()) {
 			f.mkdirs();
 		}
+	}
+	
+	public static void writeToFile(File f, String s) {
+		try {
+			BufferedWriter out = new BufferedWriter(new FileWriter(f));
+			out.write(s);
+			out.close();
+		} catch (IOException e) {
+			Log.e(TAG, "cannot write to file");
+		}
+
 	}
 
 }

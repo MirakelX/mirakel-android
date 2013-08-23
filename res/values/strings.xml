@@ -129,7 +129,8 @@
 
     <!-- Test Sync -->
     <!-- Label above username EditText -->
-    
+    <string name="load_config">Load Configfile for taskwarrior</string>
+    <string name="select_config">Select Taskwarrior Config-File</string>
     <string name="login_activity_org_label">Organisation</string>
     <string name="login_org_hint">Organisation</string>
     <string name="login_org_default">PUBLIC</string>

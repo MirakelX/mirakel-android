@@ -229,17 +229,11 @@ public class TaskWarriorSync {
 		if (!root.exists() || !root.canRead()||!user.exists() || !user.canRead()) {
 			error("cert", 1376235891);
 		}
-		//_host = srv[0];
-		//TODO get this from somewhere else, do not hardcode userdata!!
-		_host="192.168.10.153";
-//		_host="azapps.de";
+		_host = srv[0];
 		_port = Integer.parseInt(srv[1]);
-		_port=6544;
-		_user = "test";//account.name;
-		_org = "TEST";//accountManager.getUserData(account, SyncAdapter.BUNDLE_ORG);
-		_key = "aed45940-1ce9-477e-9734-980f78011cf0";//key;
-//	    _key = "0d252b7b-c1da-4603-9f6b-744a60d530f0";
-		_key="99d95af4-e671-4493-99c4-7fd0606b8d19";
+		_user = account.name;
+		_org = accountManager.getUserData(account, SyncAdapter.BUNDLE_ORG);
+		_key=accountManager.getPassword(account);
 		TaskWarriorSync.root=root;
 		TaskWarriorSync.user_ca=user;
 	}

@@ -1,14 +1,17 @@
 package de.azapps.mirakel.helper;
 
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
 import org.joda.time.LocalDate;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.Uri;
 import android.widget.Toast;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -189,6 +192,32 @@ public class Helpers {
 			Toast.makeText(context,
 					context.getString(R.string.contact_no_client),
 					Toast.LENGTH_SHORT).show();
+		}
+	}
+	public static void showFileChooser(int code, String title,Activity activity) {
+
+		Intent fileDialogIntent = new Intent(Intent.ACTION_GET_CONTENT);
+		fileDialogIntent.setType("*/*");
+		fileDialogIntent.addCategory(Intent.CATEGORY_OPENABLE);
+
+		try {
+			activity.startActivityForResult(
+					Intent.createChooser(fileDialogIntent, title), code);
+		} catch (android.content.ActivityNotFoundException ex) {
+			// Potentially direct the user to the Market with a
+			// Dialog
+			Toast.makeText(activity, R.string.no_filemanager,
+					Toast.LENGTH_SHORT).show();
+		}
+	}
+	
+	static public String getPathFromUri(Uri uri,Context ctx) {
+		try {
+			return FileUtils.getPath(ctx, uri);
+		} catch (URISyntaxException e) {
+			Toast.makeText(ctx, "Something terrible happened…",
+					Toast.LENGTH_LONG).show();
+			return "";
 		}
 	}
 }

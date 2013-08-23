@@ -36,8 +36,7 @@
             android:paddingLeft="20dip"
             android:paddingRight="20dip"
             android:paddingTop="5dip" >
-            
-            
+
             <TextView
                 android:id="@+id/message"
                 android:layout_width="wrap_content"
@@ -45,7 +44,8 @@
                 android:layout_marginBottom="5dip"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textIsSelectable="false" />
-			<!-- Servertype -->
+            <!-- Servertype -->
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -56,96 +56,106 @@
             <Spinner
                 android:id="@+id/server_typ"
                 android:layout_width="match_parent"
-                android:entries="@array/server_typs"
-                android:layout_height="wrap_content" />
-            
-			<!-- Server-URL -->
-
-            <TextView
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/login_activity_server_label"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textStyle="bold" />
+                android:entries="@array/server_typs" />
 
-            <EditText
-                android:id="@+id/server_edit"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/Server"
-                android:inputType="textUri"
-                android:minWidth="250dip"
-                android:scrollHorizontally="true"
-                android:singleLine="true"
-                android:text="@string/offical_server_url" />
-            
-            <!-- ORG -->
-            <LinearLayout
-                android:id="@+id/login_org_container"
-                android:visibility="gone"
-	            android:layout_width="fill_parent"
-	            android:layout_height="wrap_content"
-	            android:orientation="vertical">
-	            
-                <TextView
-	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content"
-	                android:text="@string/login_activity_org_label"
-	                android:textAppearance="?android:attr/textAppearanceSmall"
-	                android:textStyle="bold" />
-	
-	            <EditText
-	                android:id="@+id/org_edit"
-	                android:layout_width="fill_parent"
-	                android:layout_height="wrap_content"
-	                android:hint="@string/login_org_hint"
-	                android:inputType="textUri"
-	                android:text="@string/login_org_default"
-	                android:minWidth="250dip"
-	                android:scrollHorizontally="true"
-	                android:singleLine="true" />
-                
-            </LinearLayout>
+            <!-- Server-URL -->
 
-			<!-- Username -->
+            <ViewSwitcher
+                android:id="@+id/switcher_login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/login_activity_username_label"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textStyle="bold" />
+                <RelativeLayout
+                    android:id="@+id/login_mirakel"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
 
-            <EditText
-                android:id="@+id/username_edit"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/Email"
-                android:inputType="textEmailAddress"
-                android:minWidth="250dip"
-                android:scrollHorizontally="true"
-                android:singleLine="true" />
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" >
 
-			<!-- Password -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/login_activity_server_label"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dip"
-                android:singleLine="true"
-                android:text="@string/login_activity_password_label"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textStyle="bold" />
+                        <EditText
+                            android:id="@+id/server_edit"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/Server"
+                            android:inputType="textUri"
+                            android:minWidth="250dip"
+                            android:scrollHorizontally="true"
+                            android:singleLine="true"
+                            android:text="@string/offical_server_url" />
 
-            <EditText
-                android:id="@+id/password_edit"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/Password"
-                android:inputType="textPassword"
-                android:minWidth="250dip"
-                android:scrollHorizontally="true"
-                android:singleLine="true" />
+                        <!-- Username -->
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/login_activity_username_label"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:textStyle="bold" />
+
+                        <EditText
+                            android:id="@+id/username_edit"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/Email"
+                            android:inputType="textEmailAddress"
+                            android:minWidth="250dip"
+                            android:scrollHorizontally="true"
+                            android:singleLine="true" />
+
+                        <!-- Password -->
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dip"
+                            android:singleLine="true"
+                            android:text="@string/login_activity_password_label"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:textStyle="bold" />
+
+                        <EditText
+                            android:id="@+id/password_edit"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/Password"
+                            android:inputType="textPassword"
+                            android:minWidth="250dip"
+                            android:scrollHorizontally="true"
+                            android:singleLine="true" />
+                    </LinearLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/login_taskwarrior"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" >
+
+                        <Button
+                            android:id="@+id/load_configfile"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/load_config" />
+                    </LinearLayout>
+                </RelativeLayout>
+            </ViewSwitcher>
 
             <TextView
                 android:id="@+id/message_bottom"
@@ -164,9 +174,9 @@
     </ScrollView>
 
     <FrameLayout
+        android:id="@+id/login_button_frame"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/login_button_frame"
         android:background="#c6c3c6"
         android:minHeight="54dip"
         android:paddingLeft="2dip"
