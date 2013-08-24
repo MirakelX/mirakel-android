@@ -619,6 +619,7 @@ public class MainActivity extends ActionBarActivity implements
 	 * @param task
 	 */
 	public void handleDestroyTask(final Task task) {
+		final MainActivity main=this;
 		new AlertDialog.Builder(this)
 				.setTitle(task.getName())
 				.setMessage(this.getString(R.string.task_delete_content))
@@ -628,6 +629,7 @@ public class MainActivity extends ActionBarActivity implements
 									int which) {
 								task.delete();
 								setCurrentList(currentList);
+								ReminderAlarm.updateAlarms(main);
 							}
 						})
 				.setNegativeButton(this.getString(R.string.no),

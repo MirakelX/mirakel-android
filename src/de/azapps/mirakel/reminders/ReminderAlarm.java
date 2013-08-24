@@ -190,6 +190,10 @@ public class ReminderAlarm extends BroadcastReceiver {
 				List<Task> tasks = Task.getTasksWithReminders();
 				for (int i = 0; i < activeAlarms.size(); i++) {
 					Task t = activeAlarms.get(i);
+					if(t==null){
+						i = cancelAlarm(ctx, t, null, i);
+						continue;
+					}
 					Task newTask = Task.get(t.getId());
 					if (newTask == null) {
 						i = cancelAlarm(ctx, t, newTask, i);
@@ -224,18 +228,17 @@ public class ReminderAlarm extends BroadcastReceiver {
 	}
 
 	private static int cancelAlarm(Context ctx, Task t, Task newTask, int i) {
+		activeAlarms.remove(i--);
+		closeNotificationFor(ctx, t.getId());
 		if (newTask == null) {
-			activeAlarms.remove(i--);
 			return i;
 		}
-		closeNotificationFor(ctx, newTask.getId());
 		Intent intent = new Intent(ctx, ReminderAlarm.class);
 		intent.setAction(SHOW_TASK);
 		intent.putExtra(EXTRA_ID, t.getId());
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx, 0,
 				intent, PendingIntent.FLAG_CANCEL_CURRENT);
 		alarmManager.cancel(pendingIntent);
-		activeAlarms.remove(i--);
 		return i;
 	}
 
