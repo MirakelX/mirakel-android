@@ -42,6 +42,7 @@ import com.google.gson.JsonParser;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.DateTimeHelper;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -110,16 +111,10 @@ public class Task extends TaskBase {
 	 * Delete all Tasks, marked as deleted permanently. Use it only in the
 	 * Sync-Services!!!
 	 */
-	public static void deleteTasksPermanently() {
-		String where = "sync_state='" + Network.SYNC_STATE.DELETE + "'";
-		Cursor cursor = Mirakel.getReadableDatabase().query(TABLE, allColumns,
-				where, null, null, null, null);
-		cursor.moveToFirst();
-		while (!cursor.isAfterLast()) {
-			cursorToTask(cursor).delete(true);
-			cursor.moveToNext();
-		}
-		cursor.close();
+	public static void deleteTasksPermanently(List<Task> tasks) {
+		String where = "sync_state='" + Network.SYNC_STATE.DELETE + "' AND"
+				+ "_id IN(" + Helpers.makePlaceholders(tasks.size()) + ")";
+		database.delete(TABLE, where, getIdsFromTaskList(tasks));
 	}
 
 	public String toJson() {
@@ -472,10 +467,10 @@ public class Task extends TaskBase {
 		JsonElement id = el.get("id");
 		if (id != null) {
 			t = Task.get(id.getAsLong());
-		}else{
+		} else {
 			id = el.get("uuid");
-			if(id!=null)
-				t=Task.getByUUID(id.getAsString());
+			if (id != null)
+				t = Task.getByUUID(id.getAsString());
 		}
 		if (t == null) {
 			t = new Task();
@@ -498,13 +493,13 @@ public class Task extends TaskBase {
 				t.setContent(content);
 			} else if (key.equals("priority")) {
 				String prioString = val.getAsString().trim();
-				if (prioString.equals("L")&&t.getPriority()!=-1) {
+				if (prioString.equals("L") && t.getPriority() != -1) {
 					t.setPriority(-2);
 				} else if (prioString.equals("M")) {
 					t.setPriority(1);
 				} else if (prioString.equals("H")) {
 					t.setPriority(2);
-				} else if(!prioString.equals("L")){
+				} else if (!prioString.equals("L")) {
 					t.setPriority(val.getAsInt());
 				}
 			} else if (key.equals("list_id")) {
@@ -689,11 +684,21 @@ public class Task extends TaskBase {
 				null, null, null, "done, " + order);
 	}
 
-	public static void resetSyncState() {
-		ContentValues cv =new ContentValues();
+	public static void resetSyncState(List<Task> tasks) {
+		ContentValues cv = new ContentValues();
 		cv.put("sync_state", SYNC_STATE.NOTHING);
-		database.update(TABLE, cv, null, null);
-		
+		String where = "_id IN(" + Helpers.makePlaceholders(tasks.size()) + ")";
+		database.update(TABLE, cv, where, getIdsFromTaskList(tasks));
+	}
+
+	private static String[] getIdsFromTaskList(List<Task> tasks) {
+		String ids[] = new String[tasks.size()];
+		int i = 0;
+		for (Task t : tasks) {
+			ids[i] = String.valueOf(t.getId());
+		}
+		return ids;
+
 	}
 
 }

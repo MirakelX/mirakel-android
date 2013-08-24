@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.MalformedInputException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -40,9 +41,14 @@ public class TaskWarriorSync {
 	static String _key = "";
 	static File root;
 	static File user_ca;
-//	static List<Task> _local_tasks;
+	// static List<Task> _local_tasks;
 	private AccountManager accountManager;
 	private Account account;
+	private String server_error, server_error_code = null;
+
+	private enum errors {
+		CANNOT_CREATE_SOCKET, CANNOT_PARSE_MESSAGE, MESSAGE_ERRORS, TRY_LATER, ACCESS_DENIED, ACCOUNT_SUSPENDED
+	}
 
 	public TaskWarriorSync(Context ctx) {
 		mContext = ctx;
@@ -56,112 +62,160 @@ public class TaskWarriorSync {
 
 		Msg sync = new Msg();
 		String payload = "";
-		List<Task> local_tasks=Task.getTasksToSync();
+		List<Task> local_tasks = Task.getTasksToSync();
 		sync.set("protocol", "v1");
 		sync.set("type", "sync");
 		sync.set("org", _org);
 		sync.set("user", _user);
 		sync.set("key", _key);
-		//split big sync into smaller pieces
-		short taskNumber=5;
-		int parts=local_tasks.size()/taskNumber<1?1:local_tasks.size()/taskNumber;
-		for(int i=0;i<parts;i++){
-			String old_key=accountManager.getUserData(account, SyncAdapter.TASKWARRIOR_KEY);
-			if(old_key!=null&&!old_key.equals("")){
-				payload+=old_key+"\n";
+		// split big sync into smaller pieces
+		short taskNumber = 5;
+		int parts = local_tasks.size() / taskNumber < 1 ? 1 : local_tasks
+				.size() / taskNumber;
+		for (int i = 0; i < parts; i++) {
+			String old_key = accountManager.getUserData(account,
+					SyncAdapter.TASKWARRIOR_KEY);
+			if (old_key != null && !old_key.equals("")) {
+				payload += old_key + "\n";
 			}
-			for (int j=i*taskNumber;j<local_tasks.size()&&j<(i+1)*taskNumber;j++) {
-				payload += taskToJson(local_tasks.get(j)) + "\n";
+			List<Task> syncedTasksId = new ArrayList<Task>();
+			for (int j = i * taskNumber; j < local_tasks.size()
+					&& j < (i + 1) * taskNumber; j++) {
+				Task task = local_tasks.get(j);
+				syncedTasksId.add(task);
+				payload += taskToJson(task) + "\n";
 			}
 			// Build sync-request
-	
+
 			sync.setPayload(payload);
-			doSync(account,sync);
+			errors error = doSync(account, sync);
+			if (error == null) {
+				// delete tasks, which are marked as deleted locally
+				Task.deleteTasksPermanently(syncedTasksId);
+				Task.resetSyncState(syncedTasksId);
+			} else {
+				// Warn the user
+			}
 		}
-		// delete tasks, which are marked as deleted locally
-		Task.deleteTasksPermanently();
-		Task.resetSyncState();
 	}
 
-	private void doSync(Account account,Msg sync) {
-
+	private errors doSync(Account account, Msg sync) {
 
 		longInfo(sync.getPayload());
 
-		TLSClient client=new TLSClient();
-		client.init(root,user_ca);
-		try{
+		TLSClient client = new TLSClient();
+		client.init(root, user_ca);
+		try {
 			client.connect(_host, _port);
-		}catch(IOException e){
-			Log.e(TAG,"cannot create Socket");
-			return;
+		} catch (IOException e) {
+			Log.e(TAG, "cannot create Socket");
+			return errors.CANNOT_CREATE_SOCKET;
 		}
 		client.send(sync.serialize());
-		
+
 		String response = client.recv();
 		longInfo(response);
 
-		
 		Msg remotes = new Msg();
 		try {
 			remotes.parse(response);
 		} catch (MalformedInputException e) {
 			Log.e(TAG, "cannot parse Message");
+			return errors.CANNOT_PARSE_MESSAGE;
 		}
-		int code=Integer.parseInt(remotes.get("code"));
+		int code = Integer.parseInt(remotes.get("code"));
 		switch (code) {
-		case 200: Log.d(TAG,"Success");break;
-		case 201: Log.d(TAG,"No change");break;
-		case 300: Log.d(TAG,"Deprecated message type\n"+
-	           "This message will not be supported in future task server releases.");break;
-		case 301: Log.d(TAG,"Redirect\n"+
-	           "Further requests should be made to the specified server/port.");break;
-		case 302: Log.d(TAG,"Retry\n"+
-	           "The client is requested to wait and retry the same request.  The wait\n"+
-	           "time is not specified, and further retry responses are possible.");break;
-		case 400: Log.e(TAG,"Malformed data");break;
-		case 401: Log.e(TAG,"Unsupported encoding");break;
-		case 420: Log.e(TAG,"Server temporarily unavailable");break;
-		case 421: Log.e(TAG,"Server shutting down at operator request");break;
-		case 430: Log.e(TAG,"Access denied");break;
-		case 431: Log.e(TAG,"Account suspended");break;
-		case 432: Log.e(TAG,"Account terminated");break;
+		case 200:
+			Log.d(TAG, "Success");
+			break;
+		case 201:
+			Log.d(TAG, "No change");
+			break;
+		case 300:
+			Log.d(TAG,
+					"Deprecated message type\n"
+							+ "This message will not be supported in future task server releases.");
+			break;
+		case 301:
+			Log.d(TAG,
+					"Redirect\n"
+							+ "Further requests should be made to the specified server/port.");
+			// TODO
+			break;
+		case 302:
+			Log.d(TAG,
+					"Retry\n"
+							+ "The client is requested to wait and retry the same request.  The wait\n"
+							+ "time is not specified, and further retry responses are possible.");
+			return errors.TRY_LATER;
+		case 400:
+			Log.e(TAG, "Malformed data");
+			return errors.MESSAGE_ERRORS;
+		case 401:
+			Log.e(TAG, "Unsupported encoding");
+			return errors.MESSAGE_ERRORS;
+		case 420:
+			Log.e(TAG, "Server temporarily unavailable");
+			return errors.TRY_LATER;
+		case 421:
+			Log.e(TAG, "Server shutting down at operator request");
+			return errors.TRY_LATER;
+		case 430:
+			Log.e(TAG, "Access denied");
+			return errors.ACCESS_DENIED;
+		case 431:
+			Log.e(TAG, "Account suspended");
+			return errors.ACCOUNT_SUSPENDED;
+		case 432:
+			Log.e(TAG, "Account terminated");
+			return errors.ACCOUNT_SUSPENDED;
+		case 500:
+			Log.e(TAG, "Syntax error in request");
+			return errors.MESSAGE_ERRORS;
+		case 501:
+			Log.e(TAG, "Syntax error, illegal parameters");
+			return errors.MESSAGE_ERRORS;
+		case 502:
+			Log.e(TAG, "Not implemented");
+			return errors.MESSAGE_ERRORS;
+		case 503:
+			Log.e(TAG, "Command parameter not implemented");
+			return errors.MESSAGE_ERRORS;
+		case 504:
+			Log.e(TAG, "Request too big");
+			return errors.MESSAGE_ERRORS;
 
-		case 500: Log.e(TAG,"Syntax error in request");break;
-		case 501: Log.e(TAG,"Syntax error, illegal parameters");break;
-		case 502: Log.e(TAG,"Not implemented");break;
-		case 503: Log.e(TAG,"Command parameter not implemented");break;
-		case 504: Log.e(TAG,"Request too big");break;
-		
 		}
-		if(remotes.get("status").equals("Client sync key not found.")){
+		if (remotes.get("status").equals("Client sync key not found.")) {
 			Log.d(TAG, "reset sync-key");
-			accountManager.setUserData(account, SyncAdapter.TASKWARRIOR_KEY, null);
+			accountManager.setUserData(account, SyncAdapter.TASKWARRIOR_KEY,
+					null);
 			sync(account);
 		}
 
 		// parse tasks
-		if(remotes.getPayload()==null||remotes.getPayload().equals("")){
+		if (remotes.getPayload() == null || remotes.getPayload().equals("")) {
 			Log.i(TAG, "there is no Payload");
-		}else{
+		} else {
 			String tasksString[] = remotes.getPayload().split("\n");
-			for (String taskString:tasksString) {
-				if(taskString.charAt(0)!='{'){
-					Log.d(TAG,"Key: "+taskString);
-					accountManager.setUserData(account, SyncAdapter.TASKWARRIOR_KEY, taskString);
+			for (String taskString : tasksString) {
+				if (taskString.charAt(0) != '{') {
+					Log.d(TAG, "Key: " + taskString);
+					accountManager.setUserData(account,
+							SyncAdapter.TASKWARRIOR_KEY, taskString);
 					continue;
 				}
 				JsonObject taskObject;
 				Task local_task;
 				Task server_task;
-				try{
-					 taskObject= new JsonParser().parse(taskString)
+				try {
+					taskObject = new JsonParser().parse(taskString)
 							.getAsJsonObject();
-						 server_task= Task.parse_json(taskObject);
-						local_task = Task.getByUUID(server_task.getUUID());
-				}catch(Exception e){
-					Log.d(TAG ,Log.getStackTraceString(e));
-					Log.e(TAG,"malformed JSON");
+					server_task = Task.parse_json(taskObject);
+					local_task = Task.getByUUID(server_task.getUUID());
+				} catch (Exception e) {
+					Log.d(TAG, Log.getStackTraceString(e));
+					Log.e(TAG, "malformed JSON");
 					continue;
 				}
 
@@ -188,17 +242,18 @@ public class TaskWarriorSync {
 					Toast.LENGTH_LONG).show();
 			Log.v(TAG, "Message from Server: " + message);
 		}
-		String error_code = remotes.get("code");
-		String error = remotes.get("error");
+		server_error_code = remotes.get("code");
+		server_error = remotes.get("error");
 		client.close();
+		return null;
 	}
-	
+
 	public static void longInfo(String str) {
-	    if(str.length() > 4000) {
-	        Log.i(TAG,str.substring(0, 4000));
-	        longInfo(str.substring(4000));
-	    } else
-	        Log.i(TAG,str);
+		if (str.length() > 4000) {
+			Log.i(TAG, str.substring(0, 4000));
+			longInfo(str.substring(4000));
+		} else
+			Log.i(TAG, str);
 	}
 
 	/**
@@ -215,27 +270,29 @@ public class TaskWarriorSync {
 		if (key.length() != 0 && key.length() != 36) {
 			error("key", 1376235890);
 		}
-		
-		File root,user;
+
+		File root, user;
 		// TODO FIXIT!!!
 		if (accountManager.getUserData(account, SyncAdapter.BUNDLE_CERT) == null) {
-			root = new File(mContext.getFilesDir().getParent()+"/ca.cert.pem");
-			user = new File(mContext.getFilesDir().getParent()+"/client.cert.pem");
+			root = new File(mContext.getFilesDir().getParent() + "/ca.cert.pem");
+			user = new File(mContext.getFilesDir().getParent()
+					+ "/client.cert.pem");
 		} else {
-			//TODO Fix this
-			root=null;
-			user=null;
+			// TODO Fix this
+			root = null;
+			user = null;
 		}
-		if (!root.exists() || !root.canRead()||!user.exists() || !user.canRead()) {
+		if (!root.exists() || !root.canRead() || !user.exists()
+				|| !user.canRead()) {
 			error("cert", 1376235891);
 		}
 		_host = srv[0];
 		_port = Integer.parseInt(srv[1]);
 		_user = account.name;
 		_org = accountManager.getUserData(account, SyncAdapter.BUNDLE_ORG);
-		_key=accountManager.getPassword(account);
-		TaskWarriorSync.root=root;
-		TaskWarriorSync.user_ca=user;
+		_key = accountManager.getPassword(account);
+		TaskWarriorSync.root = root;
+		TaskWarriorSync.user_ca = user;
 	}
 
 	/**
