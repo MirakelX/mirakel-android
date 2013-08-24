@@ -34,6 +34,6 @@
         android:id="@+id/tasks_fragment_in_lists"
         android:layout_height="match_parent"
         android:layout_width="0dp"
-        android:layout_weight=".60"
+        android:layout_weight=".70"
         class="de.azapps.mirakel.main_activity.TasksFragment" />
 </LinearLayout>

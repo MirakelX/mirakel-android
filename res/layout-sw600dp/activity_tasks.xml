@@ -28,7 +28,7 @@
 	<FrameLayout
 	    android:layout_marginLeft="10dp"
         android:id="@+id/task_fragment_in_tasks"
-        android:layout_weight=".50"
+        android:layout_weight=".70"
         android:layout_width="0dp"
         android:layout_height="match_parent" />
 

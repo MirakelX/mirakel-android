@@ -33,6 +33,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -105,6 +106,8 @@ public class TaskFragment extends Fragment {
 		Task_name = (TextView) view.findViewById(R.id.task_name);
 		String tname = task.getName();
 		Task_name.setText(tname == null ? "" : tname);
+		if(main.isTablet)
+			Task_name.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
 		Task_name.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
