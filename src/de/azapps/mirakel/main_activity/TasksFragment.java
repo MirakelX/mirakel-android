@@ -34,6 +34,7 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -135,6 +136,8 @@ public class TasksFragment extends Fragment {
 		listView = (ListView) view.findViewById(R.id.tasks_list);
 		// Events
 		newTask = (EditText) view.findViewById(R.id.tasks_new);
+		if(main.isTablet)
+			newTask.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
 		newTask.setOnEditorActionListener(new OnEditorActionListener() {
 			public boolean onEditorAction(TextView v, int actionId,
 					KeyEvent event) {
