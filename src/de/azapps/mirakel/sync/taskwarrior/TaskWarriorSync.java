@@ -47,7 +47,7 @@ public class TaskWarriorSync {
 	private String server_error, server_error_code = null;
 
 	private enum errors {
-		CANNOT_CREATE_SOCKET, CANNOT_PARSE_MESSAGE, MESSAGE_ERRORS, TRY_LATER, ACCESS_DENIED, ACCOUNT_SUSPENDED
+		CANNOT_CREATE_SOCKET, CANNOT_PARSE_MESSAGE, MESSAGE_ERRORS, TRY_LATER, ACCESS_DENIED, ACCOUNT_SUSPENDED, NO_ERROR
 	}
 
 	public TaskWarriorSync(Context ctx) {
@@ -89,12 +89,29 @@ public class TaskWarriorSync {
 
 			sync.setPayload(payload);
 			errors error = doSync(account, sync);
-			if (error == null) {
-				// delete tasks, which are marked as deleted locally
+			switch (error) {
+			case NO_ERROR:
 				Task.deleteTasksPermanently(syncedTasksId);
 				Task.resetSyncState(syncedTasksId);
-			} else {
-				// Warn the user
+				break;
+			case TRY_LATER:
+				Toast.makeText(mContext, mContext.getText(R.string.message_try_later), Toast.LENGTH_SHORT).show();
+				break;
+			case ACCESS_DENIED:
+				Toast.makeText(mContext, mContext.getText(R.string.message_access_denied), Toast.LENGTH_SHORT).show();
+				break;
+			case CANNOT_CREATE_SOCKET:
+				Toast.makeText(mContext, mContext.getText(R.string.message_create_socket), Toast.LENGTH_SHORT).show();
+				break;
+			case ACCOUNT_SUSPENDED:
+				Toast.makeText(mContext, mContext.getText(R.string.message_account_suspended), Toast.LENGTH_SHORT).show();
+				break;
+			case CANNOT_PARSE_MESSAGE:
+				Toast.makeText(mContext, mContext.getText(R.string.message_parse_message), Toast.LENGTH_SHORT).show();
+				break;
+			case MESSAGE_ERRORS:
+				Toast.makeText(mContext, mContext.getText(R.string.message_message_error), Toast.LENGTH_SHORT).show();
+				break;
 			}
 		}
 	}
@@ -245,7 +262,7 @@ public class TaskWarriorSync {
 		server_error_code = remotes.get("code");
 		server_error = remotes.get("error");
 		client.close();
-		return null;
+		return errors.NO_ERROR;
 	}
 
 	public static void longInfo(String str) {

@@ -129,6 +129,13 @@
 
     <!-- Test Sync -->
     <!-- Label above username EditText -->
+    <string name="message_try_later">Try to Sync later</string>
+    <string name="message_access_denied">Access denied!\nDo you use the right Config-File?</string>
+    <string name="message_create_socket">Cannot Create Socket!\nDo you enable your Networkconnection?</string>
+    <string name="message_account_suspended">Your Account ist suspended!</string>
+    <string name="message_parse_message">Cannot parse Tasks to Sync-Fromat</string>
+    <string name="message_message_error">Unknown Respons from Server</string>    
+    
     <string name="load_config">Load Configfile for taskwarrior</string>
     <string name="select_config">Select Taskwarrior Config-File</string>
     <string name="login_activity_org_label">Organisation</string>
