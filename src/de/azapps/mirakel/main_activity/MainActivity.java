@@ -43,6 +43,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -90,7 +91,7 @@ public class MainActivity extends ActionBarActivity implements
 	private AlertDialog taskMoveDialog;
 	protected boolean isTablet;
 
-	private static final int LIST_FRAGMENT = 0, TASKS_FRAGMENT = 1,
+	protected static final int LIST_FRAGMENT = 0, TASKS_FRAGMENT = 1,
 			TASK_FRAGMENT = 2;
 	protected static final int RESULT_SPEECH_NAME = 1, RESULT_SPEECH = 3,
 			RESULT_SETTINGS = 4;
@@ -107,7 +108,7 @@ public class MainActivity extends ActionBarActivity implements
 			SHOW_TASK_FROM_WIDGET = "de.azapps.mirakel.SHOW_TASK_FROM_WIDGET";
 	public SharedPreferences preferences;
 
-	private int currentPosition = TASKS_FRAGMENT;
+	protected int currentPosition = TASKS_FRAGMENT;
 	private Parcelable tasksState, listState;
 	private boolean darkTheme;
 	private boolean isResumend;
@@ -302,6 +303,7 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	public void onPageSelected(int position) {
 		loadMenu(position);
+
 	}
 
 	public void loadMenu(int position) {
