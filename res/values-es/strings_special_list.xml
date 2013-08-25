@@ -10,6 +10,7 @@
   <string name="special_list_first">Predeterminado</string>
   <string name="list_menu_new_special_list">Nueva lista especial</string>
   <string name="special_list_where_prio_title_text">Prioridad</string>
+  <string name="special_list_where_prio_content_text"> </string>
   <string name="special_list_where_name_title_text">Nombre</string>
   <string name="special_list_where_content_title_text">Contenido</string>
   <string name="special_list_where_list_title_text">Lista</string>
@@ -22,6 +23,7 @@
   <string name="undone">Tareas no hechas</string>
   <string name="nothing">Nada</string>
   <string name="today">Hoy</string>
+  <string name="tomorrow">mañana</string>
   <string name="reminder_set">Recordatorio establecido</string>
   <string name="reminder_unset">Recordatorio no establecido</string>
   <string name="inverte">Invertir selección</string>

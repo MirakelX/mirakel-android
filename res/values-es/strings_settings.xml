@@ -21,6 +21,9 @@
   <string name="notifications_persistent_summary">¿La notificación debe ser persistente?</string>
   <string name="notifications_list">Lista</string>
   <string name="notifications_list_summary">¿Qué lista debería mostrarte?</string>
+  <string name="notifications_list_open">Open List</string>
+  <string name="notifications_list_open_summary">Which List should I open, when you click on the notification?</string>
+  <string name="default_list">Lista predeterminada</string>
   <string name="notifications_big">Notificaciones grandes</string>
   <string name="notifications_big_summary">¿Mostrar notificaciones grandes?</string>
   <string name="notifications_zero_show_summary">¿Ocultar, si no hay ninguna tarea en la lista seleccionada?</string>
@@ -52,6 +55,7 @@
   <string name="import_to">Importar a</string>
   <string name="changelog_click_summary">Ver el registro de cambios</string>
   <string name="changelog_click">Registro de cambios</string>
+  <string name="settings_about">Sobre nosotros</string>
   <string name="import_astrid_click_summary">Importación desde un archivo Astrid</string>
   <string name="import_astrid_click">Importar desde Astrid</string>
   <string name="astrid_unsuccess">¡Hubo un error durante la importación desde Astrid!</string>
@@ -72,6 +76,19 @@
   <string name="kill_sure_message">Al cerrar la aplicación, no recibes ningun recordatorio! Por favor considera desactivar sólo la notificación (o no hacerla persistente, así se puede quitar.)</string>
   <string name="show_kill_button">Mostrar botón: Cerrar por completo</string>
   <string name="ui_settings_title">Interfaz de usuario</string>
+  <string name="hide_keyboard">Ocultar teclado</string>
+  <string name="hide_keyboard_summary">Hide Keyboard if New Task is created?</string>
+  <string name="undo_number">Number of Changes saved</string>
+  <string name="undo_number_summary">How Many Changes do you want to save?</string>
+  <string name="semantic_new_task">Semantic New Tasks</string>
+  <string name="semantic_new_task_summary">For example: Set due to today if you type „hoy …“ – only hoy and mañana</string>
+  <string name="semantic_new_task_config_summary">Configure the conditions for creating new Tasks</string>
+  <string name="semantic_new_task_config">Configure Semantic new Tasks</string>
+  <string name="delete_done">Delete done tasks</string>
+  <string name="delete_done_summary">Delete all done tasks</string>
+  <string name="delete_done_warning">Are you sure?</string>
+  <string name="delete_done_warning_message">You can not undo this. Make a backup!</string>
+  <string name="delete_done_success">Successfully deleted your done tasks.</string>
   <string-array name="sync_frequencies">
     <item>5 min</item>
     <item>10 min</item>

@@ -22,8 +22,9 @@
   <string name="Password">Passwort</string>
   <string name="Server">Server</string>
   <string name="NoNetwork">Keine Netzwerkverbindung verfügbar.</string>
+  <string name="wrong_sync_type">Der Sync-Typ wird nicht unterstützt!</string>
   <string name="action_sync_now">Synchronisieren</string>
-  <string name="resync">Möchtest du wirklich alle Aufgaben synchronisieren?</string>
+  <string name="resync">Möchtest du wirklich alle Aufgaben erneut synchronisieren?</string>
   <string name="start">Start</string>
   <string name="menu_sort_lists">Umsortieren</string>
   <string name="no_https">Du solltest https benutzen!</string>
@@ -40,6 +41,7 @@
   <string name="set_date">Datum</string>
   <string name="set_time">Zeit</string>
   <string name="task_set_reminder">Erinnerungen einstellen</string>
+  <string name="action_undo">Zurück</string>
   <string name="dialog_move">Verschiebe Aufgabe</string>
   <string name="list_title">Listen</string>
   <string name="list_menu_new_list">Neue Liste</string>
@@ -54,6 +56,7 @@
   <string name="menu_settings">Einstellungen</string>
   <string name="menu_move">Verschieben</string>
   <string name="offical_server_url">https://mirakel.azapps.de</string>
+  <string name="offical_server_url_taskwarrior">mirakel.azapps.de:5644</string>
   <string name="title_settings">Einstellungen</string>
   <string name="empty_list">Keine Aufgaben</string>
   <string name="preferences">Einstellungen</string>
@@ -68,15 +71,27 @@
   <string name="reminder_notification_later">Später</string>
   <string name="reminder_notification_done_confirm">Ich habe die Aufgabe als „erledigt“ markiert</string>
   <string name="reminder_notification_later_confirm">Ich erinnere dich in %d Minuten</string>
-  <string name="list_vanished">Huch, ist die Aufgabe verschwunden. Es tut mir leid…</string>
-  <string name="task_vanished">Huch, die Liste der Aufgabe verschwunden. Es tut mir leid…</string>
+  <string name="list_vanished">Huch, die Aufgabe ist verschwunden. Es tut mir leid…</string>
+  <string name="task_vanished">Huch, die Liste der Aufgabe ist verschwunden. Es tut mir leid…</string>
+  <string name="message_try_later">Versuche es später noch einmal</string>
+  <string name="message_access_denied">Zugriff verweigert!\nVerwendest du die richtige Config-Datei?</string>
+  <string name="message_create_socket">Kann den Socket nicht erstellen!\nWahrscheinlich keine Netzwerkverbindung.</string>
+  <string name="message_account_suspended">Ihr Konto ist gesperrt!</string>
+  <string name="message_parse_message">Konnte die Aufgabe nicht parsen – schreib uns, wie das passiert ist</string>
+  <string name="message_message_error">Unbekannte Antwort vom Server – bitte schreib uns, wie das passieren konnte</string>
+  <string name="load_config">Wähle die Config-Datei für Taskwarrior aus</string>
+  <string name="select_config">Wähle die Config-Datei für Taskwarrior aus</string>
+  <string name="login_activity_org_label">Organisation</string>
+  <string name="login_org_hint">Organisation</string>
+  <string name="login_org_default">PUBLIC</string>
   <string name="login_activity_username_label">Nutzername</string>
   <string name="login_activity_server_label">Server-URL</string>
+  <string name="login_activity_server_typ">Server-Typ</string>
   <string name="login_activity_password_label">Passwort</string>
   <string name="login_activity_ok_button">Anmelden</string>
-  <string name="login_activity_loginfail_text_both">Der Benutzername oder das Kennwort ist ungültig. Es ist ein Mirakel-Konto erforderlich. Bitte versuche es erneut.</string>
+  <string name="login_activity_loginfail_text_both">Der Benutzername oder das Kennwort ist ungültig. Es ist ein Mirakel-Konto erforderlich. Versuche es noch mal.</string>
   <string name="login_activity_loginfail_text_pwmissing">Gib das Passwort bitte an.</string>
-  <string name="login_activity_newaccount_text">Melde dich mit deinem %s-Account an.</string>
+  <string name="login_activity_newaccount_text">Melde dich bei deinem %s-Konto an.</string>
   <string name="ui_activity_authenticating">Melde an…</string>
   <string name="ui_activity_title">Anmelden</string>
   <string name="title_activity_special_lists_settings">Erweiterte Listen</string>
@@ -125,6 +140,7 @@ Device: %3$s\n]]>
   <string name="crash_dialog_comment_prompt">Du kannst noch einen Kommentar anfügen:</string>
   <string name="crash_dialog_ok_toast">Vielen Dank!</string>
   <string name="title_activity_special_list_settings">Erweiterte Listen</string>
+  <string name="message_from_server">Der Server hat eine Nachricht für dich: %s</string>
   <string-array name="task_sorting_items">
     <item>Standard</item>
     <item>Termin</item>
@@ -145,5 +161,9 @@ Device: %3$s\n]]>
   <string-array name="list_actions_items">
     <item>Umbenennen</item>
     <item>Löschen</item>
+  </string-array>
+  <string-array name="server_typs">
+    <item>Mirakel</item>
+    <item>Taskwarrior</item>
   </string-array>
 </resources>
