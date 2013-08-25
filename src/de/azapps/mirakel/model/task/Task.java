@@ -121,7 +121,7 @@ public class Task extends TaskBase {
 	 */
 	public static void deleteTasksPermanently(List<Task> tasks) {
 		String where = "sync_state='" + Network.SYNC_STATE.DELETE + "' AND"
-				+ "_id IN(" + Helpers.makePlaceholders(tasks.size()) + ")";
+				+ " _id IN(" + Helpers.makePlaceholders(tasks.size()) + ")";
 		database.delete(TABLE, where, getIdsFromTaskList(tasks));
 	}
 
