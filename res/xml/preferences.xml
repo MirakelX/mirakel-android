@@ -83,8 +83,8 @@
 
     <!-- GUI -->
     <PreferenceCategory
-        android:key="category_gui" android:title="@string/ui_settings_title" >
-
+        android:key="category_gui"
+        android:title="@string/ui_settings_title" >
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="highlightSelected"
@@ -110,12 +110,18 @@
             android:key="hideKeyboard"
             android:summary="@string/hide_keyboard_summary"
             android:title="@string/hide_keyboard" />
-        <CheckBoxPreference 
+        <CheckBoxPreference
             android:defaultValue="false"
             android:key="semanticNewTask"
             android:summary="@string/semantic_new_task_summary"
-            android:title="@string/semantic_new_task"
-            />
+            android:title="@string/semantic_new_task" />
+        <!--
+        After vacance
+        <Preference
+            android:dependency="semanticNewTask"
+            android:summary="@string/semantic_new_task_config_summary"
+            android:title="@string/semantic_new_task_config" />
+        -->
     </PreferenceCategory>
 
     <!-- Special Lists -->
@@ -193,8 +199,7 @@
         <Preference
             android:key="deleteDone"
             android:summary="@string/delete_done_summary"
-            android:title="@string/delete_done" 
-            />
+            android:title="@string/delete_done" />
         <Preference
             android:key="changelog"
             android:summary="@string/changelog_click_summary"

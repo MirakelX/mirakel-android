@@ -123,8 +123,10 @@
     <string name="ui_settings_title">User Interface</string>
 	<string name="hide_keyboard">Hide Keyboard</string>
 	<string name="hide_keyboard_summary">Hide Keyboard if New Task is created?</string>
-	<string name="semantic_new_task">Semantic New Tasks</string>
+	<string name="semantic_new_task">Semantic new Tasks</string>
 	<string name="semantic_new_task_summary">For example: Set due to today if you type „today …“</string>
+	<string name="semantic_new_task_config_summary">Configure the conditions for creating new Tasks</string>
+	<string name="semantic_new_task_config">Configure Semantic new Tasks</string>
     
     <!-- Delete done -->
     <string name="delete_done">Delete done tasks</string>

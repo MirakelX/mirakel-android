@@ -32,6 +32,8 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -56,12 +58,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
+import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
+import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
+import de.azapps.mirakel.sync.Network;
 import de.azapps.mirakelandroid.R;
 
 public class TasksFragment extends Fragment {
@@ -79,6 +84,8 @@ public class TasksFragment extends Fragment {
 	private static final int TASK_RENAME = 0, TASK_MOVE = 1, TASK_DESTROY = 2;
 	private int listId;
 	private boolean showDone = true;
+	private Map<String, Integer> dueMap = new HashMap<String, Integer>();
+	private SQLiteDatabase database = null;
 
 	final Handler mHandler = new Handler();
 
@@ -215,8 +222,28 @@ public class TasksFragment extends Fragment {
 				}
 			}
 		});
+
+		// Get the semantics
+		getSemanticConditions();
 		// Inflate the layout for this fragment
 		return view;
+	}
+
+	private void getSemanticConditions() {
+		if (main.preferences.getBoolean("semanticNewTask", false)) {
+			if (database == null) {
+				database = Mirakel.getWritableDatabase();
+			}
+			String cols[] = { "condition", "due" };
+			Cursor c = database.query("semantic_conditions", cols, null, null,
+					null, null, null);
+			c.moveToFirst();
+			while (!c.isAfterLast()) {
+				dueMap.put(c.getString(0).toLowerCase(Locale.getDefault()),
+						c.getInt(1));
+				c.moveToNext();
+			}
+		}
 	}
 
 	public void focusNew() {
@@ -312,20 +339,10 @@ public class TasksFragment extends Fragment {
 			}
 		}
 		if (main.preferences.getBoolean("semanticNewTask", false)) {
-			// Make this configurable
-			Map<String, Integer> dueMap = new HashMap<String, Integer>();
-			dueMap.put(
-					getString(R.string.today).toLowerCase(Locale.getDefault()),
-					0);
-			dueMap.put(
-					getString(R.string.tomorrow).toLowerCase(
-							Locale.getDefault()), 1);
-
 			GregorianCalendar tempdue = new GregorianCalendar();
 			String lowername = name.toLowerCase(Locale.getDefault());
 			Log.e(TAG, lowername);
 			for (String k : dueMap.keySet()) {
-				Log.e(TAG, k);
 				if (lowername.startsWith(k)) {
 					tempdue.add(GregorianCalendar.DAY_OF_MONTH, dueMap.get(k));
 					due = tempdue;
