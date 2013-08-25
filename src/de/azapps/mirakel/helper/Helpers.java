@@ -18,6 +18,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
+import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -305,13 +306,31 @@ public class Helpers {
 				switch (type) {
 				case TASK:
 					try {
-						Task.parse_json(json).save(false);
+						Task t=Task.parse_json(json);
+						if(Task.get(t.getId())!=null)
+							t.save(false);
+						else{
+							try {
+								Mirakel.getWritableDatabase().insert(Task.TABLE, null, t.getContentValues());
+							} catch (Exception e) {
+								Log.e(TAG,"cannot restore Task");
+							}
+						}
 					} catch (NoSuchListException e) {
 						Log.e(TAG,"List not found");
 					}
 					break;
 				case LIST:
-					ListMirakel.parseJson(json).save(false);
+					ListMirakel l=ListMirakel.parseJson(json);
+					if(ListMirakel.getList(l.getId())!=null)
+						l.save(false);
+					else{
+						try {
+							Mirakel.getWritableDatabase().insert(ListMirakel.TABLE, null, l.getContentValues());
+						} catch (Exception e) {
+							Log.e(TAG,"cannot restore List");
+						}
+					}
 					break;
 				default:
 					Log.wtf(TAG, "unkown Type");
