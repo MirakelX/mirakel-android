@@ -35,16 +35,20 @@
  */
 package de.azapps.mirakel.sync;
 
-import de.azapps.mirakel.helper.Log;
-import de.azapps.mirakel.sync.mirakel.MirakelSync;
-import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SyncResult;
 import android.os.Bundle;
+import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.main_activity.MainActivity;
+import de.azapps.mirakel.sync.mirakel.MirakelSync;
+import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
+import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync.TW_ERRORS;
+import de.azapps.mirakelandroid.R;
 
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	private final static String TAG = "SyncAdapter";
@@ -53,6 +57,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			BUNDLE_ORG = "de.azapps.mirakel.org";
 	public static final String BUNDLE_SERVER_TYPE = "type";
 	public static final String TASKWARRIOR_KEY = "key";
+	private static CharSequence last_message=null;
 	private Context mContext;
 
 	public enum SYNC_TYPES {
@@ -84,11 +89,37 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		if (type.equals(MirakelSync.TYPE)) {
 			new MirakelSync(mContext).sync(account);
 		} else if (type.equals(TaskWarriorSync.TYPE)) {
-			new TaskWarriorSync(mContext).sync(account);
+			TW_ERRORS error = new TaskWarriorSync(mContext).sync(account);
+			switch (error) {
+			case NO_ERROR:
+				break;
+			case TRY_LATER:
+				last_message = mContext.getText(R.string.message_try_later);
+				break;
+			case ACCESS_DENIED:
+				last_message = mContext.getText(R.string.message_access_denied);
+				break;
+			case CANNOT_CREATE_SOCKET:
+				last_message = mContext.getText(R.string.message_create_socket);
+				break;
+			case ACCOUNT_SUSPENDED:
+				last_message = mContext.getText(R.string.message_account_suspended);
+				break;
+			case CANNOT_PARSE_MESSAGE:
+				last_message = mContext.getText(R.string.message_parse_message);
+				break;
+			case MESSAGE_ERRORS:
+				last_message = mContext.getText(R.string.message_message_error);
+				break;
+			}			
 		} else {
 			Log.wtf(TAG, "Unknown SyncType");
 		}
-
 	}
-
+	
+	public static CharSequence getLastMessage() {
+		CharSequence tmp=last_message;
+		last_message=null;
+		return tmp;
+	}
 }
