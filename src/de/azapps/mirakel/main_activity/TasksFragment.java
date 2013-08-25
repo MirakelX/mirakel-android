@@ -20,8 +20,12 @@ package de.azapps.mirakel.main_activity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
@@ -228,7 +232,7 @@ public class TasksFragment extends Fragment {
 								.getSystemService(Context.INPUT_METHOD_SERVICE);
 						imm.showSoftInput(newTask,
 								InputMethodManager.SHOW_IMPLICIT);
-						((EditText)v).requestFocus();
+						((EditText) v).requestFocus();
 					}
 				});
 			}
@@ -307,6 +311,29 @@ public class TasksFragment extends Fragment {
 						.show();
 			}
 		}
+		if (main.preferences.getBoolean("semanticNewTask", false)) {
+			// Make this configurable
+			Map<String, Integer> dueMap = new HashMap<String, Integer>();
+			dueMap.put(
+					getString(R.string.today).toLowerCase(Locale.getDefault()),
+					0);
+			dueMap.put(
+					getString(R.string.tomorrow).toLowerCase(
+							Locale.getDefault()), 1);
+
+			GregorianCalendar tempdue = new GregorianCalendar();
+			String lowername = name.toLowerCase(Locale.getDefault());
+			Log.e(TAG, lowername);
+			for (String k : dueMap.keySet()) {
+				Log.e(TAG, k);
+				if (lowername.startsWith(k)) {
+					tempdue.add(GregorianCalendar.DAY_OF_MONTH, dueMap.get(k));
+					due = tempdue;
+					name = name.substring(k.length()).trim();
+					break;
+				}
+			}
+		}
 		Task task = Task.newTask(name, id, due, prio);
 		if (main.isTablet) {
 			main.tasksFragment_l.adapter.addToHead(task);
@@ -320,16 +347,17 @@ public class TasksFragment extends Fragment {
 			values.add(0, task);
 			adapter.notifyDataSetChanged();
 		}
-			main.getListFragment().update();
-			if(!PreferenceManager.getDefaultSharedPreferences(main).getBoolean("hideKeyboard", true)){
-				newTask = (EditText) view.findViewById(R.id.tasks_new);
-				Log.d(TAG,"try to set focus");
-				newTask.setFocusable(true);
-				newTask.setFocusableInTouchMode(true);
-				if(newTask.requestFocus()) {
-focusNew();
-				}
+		main.getListFragment().update();
+		if (!PreferenceManager.getDefaultSharedPreferences(main).getBoolean(
+				"hideKeyboard", true)) {
+			newTask = (EditText) view.findViewById(R.id.tasks_new);
+			Log.d(TAG, "try to set focus");
+			newTask.setFocusable(true);
+			newTask.setFocusableInTouchMode(true);
+			if (newTask.requestFocus()) {
+				focusNew();
 			}
+		}
 		return true;
 	}
 

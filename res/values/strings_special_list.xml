@@ -46,6 +46,7 @@
     <string name="undone">Tasks not Done</string>
     <string name="nothing">Nothing</string>
     <string name="today">Today</string>
+    <string name="tomorrow">Tomorrow</string>
     <string name="reminder_set">Reminder is set</string>
     <string name="reminder_unset">Reminder is not set</string>
     <string name="inverte">Inverte Selection</string>

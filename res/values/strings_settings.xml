@@ -126,7 +126,8 @@
 	<string name="hide_keyboard_summary">Hide Keyboard if New Task is created?</string>
 	<string name="undo_number">Number of Changes saved</string>
 	<string name="undo_number_summary">How Many Changes do you want to save?</string>
-	
+	<string name="semantic_new_task">Semantic New Tasks</string>
+	<string name="semantic_new_task_summary">For example: Set due to today if you type „today …“</string>
     
     <!-- Delete done -->
     <string name="delete_done">Delete done tasks</string>
