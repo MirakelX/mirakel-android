@@ -105,6 +105,11 @@
             android:key="KillButton"
             android:summary="@string/show_kill_button"
             android:title="@string/kill_button" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="hideKeyboard"
+            android:summary="@string/hide_keyboard_summary"
+            android:title="@string/hide_keyboard" />
     </PreferenceCategory>
 
     <!-- Special Lists -->
