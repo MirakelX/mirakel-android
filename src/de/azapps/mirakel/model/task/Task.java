@@ -106,6 +106,14 @@ public class Task extends TaskBase {
 			database.update(TABLE, values, "_id=" + id, null);
 		}
 	}
+	
+	public static void deleteDoneTasks() {
+		ContentValues values = new ContentValues();
+		values.put("sync_state", Network.SYNC_STATE.DELETE);
+		String where="sync_state!=" + Network.SYNC_STATE.ADD +" AND done=1";
+		database.update(TABLE, values, where, null);
+		database.delete(TABLE, where, null);
+	}
 
 	/**
 	 * Delete all Tasks, marked as deleted permanently. Use it only in the

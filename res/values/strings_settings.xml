@@ -121,5 +121,13 @@
     <string name="kill_sure_message">When you close the app, you do not get any reminders! Please consider to disable only the Notification (or make it not persistent, so you can remove it.)</string>
     <string name="show_kill_button">Do you want me to show a Kill-Button</string>
     <string name="ui_settings_title">User Interface</string>
+    
+    <!-- Delete done -->
+    <string name="delete_done">Delete done tasks</string>
+    <string name="delete_done_summary">Delete all done tasks</string>
+    <string name="delete_done_warning">Are you sure?</string>
+    <string name="delete_done_warning_message">You can not undo this. Make a backup!</string>
+    <string name="delete_done_success">Successfully deleted your done tasks.</string>
+    
 
 </resources>
