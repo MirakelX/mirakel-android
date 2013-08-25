@@ -62,6 +62,7 @@
     <string name="set_date">Set Date</string>
     <string name="set_time">Set Time</string>
     <string name="task_set_reminder">Set Reminder</string>
+    <string name="action_undo">Undo the last Change</string>
 
     <string-array name="task_sorting_items">
         <item>Default</item>

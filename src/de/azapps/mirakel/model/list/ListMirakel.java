@@ -79,6 +79,10 @@ public class ListMirakel extends ListBase {
 	 *            The List
 	 */
 	public void save() {
+		save(true);
+	}
+	
+	public void save(boolean log){
 		SharedPreferences.Editor editor = preferences.edit();
 		// TODO implement for specialLists
 		if (getId() > 0) {
@@ -89,7 +93,8 @@ public class ListMirakel extends ListBase {
 					context.getString(R.string.dateTimeFormat),
 					Locale.getDefault()).format(new Date()));
 			ContentValues values = getContentValues();
-			Helpers.updateLog(ListMirakel.getList(getId()),context);
+			if(log)
+				Helpers.updateLog(ListMirakel.getList(getId()),context);
 			database.update(ListMirakel.TABLE, values, "_id = " + getId(), null);
 
 		}
@@ -102,12 +107,17 @@ public class ListMirakel extends ListBase {
 	 * @param list
 	 */
 	public void destroy() {
-		Helpers.updateLog(this, context);
+		destroy(false);
+	}
+
+	public void destroy(boolean force) {
+		if(!force)
+			Helpers.updateLog(this, context);
 		long id = getId();
 		if (id <= 0)
 			return;
 
-		if (getSyncState() == Network.SYNC_STATE.ADD) {
+		if (getSyncState() == Network.SYNC_STATE.ADD||force) {
 			database.delete(Task.TABLE, "list_id = " + id, null);
 			database.delete(ListMirakel.TABLE, "_id = " + id, null);
 		} else {
@@ -298,6 +308,7 @@ public class ListMirakel extends ListBase {
 		cursor.moveToFirst();
 		ListMirakel newList = cursorToList(cursor);
 		cursor.close();
+		Helpers.logCreate(newList,context);
 		return newList;
 	}
 
@@ -453,5 +464,7 @@ public class ListMirakel extends ListBase {
 		c.close();
 		return lists;
 	}
+
+
 
 }

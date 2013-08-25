@@ -109,6 +109,7 @@
     <string name="astrid_import_title">Select Astrid File</string>
     <string name="astrid_wait">Please wait…</string>
     <string name="import_wrong_type">This is not a Mirakel-file!</string>
+    <!-- GUI -->
     <string name="highlightSelected_summary">Should I highlight lists/tasks when you click on them?</string>
     <string name="highlightSelected">Highlight Selected</string>
     <string name="showDone">Show done tasks</string>
@@ -123,6 +124,9 @@
     <string name="ui_settings_title">User Interface</string>
 	<string name="hide_keyboard">Hide Keyboard</string>
 	<string name="hide_keyboard_summary">Hide Keyboard if New Task is created?</string>
+	<string name="undo_number">Number of Changes saved</string>
+	<string name="undo_number_summary">How Many Changes do you want to save?</string>
+	
     
     <!-- Delete done -->
     <string name="delete_done">Delete done tasks</string>

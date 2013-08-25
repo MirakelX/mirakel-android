@@ -37,6 +37,10 @@
         android:icon="@android:drawable/ic_menu_set_as"
         mirakel:showAsAction="ifRoom|withText"
         android:title="@string/menu_move"/>
+    <item
+        android:id="@+id/menu_undo"
+        mirakel:showAsAction="never"
+        android:title="@string/action_undo"/>
     
     <item
         android:id="@+id/task_sorting"

@@ -233,7 +233,7 @@ public class ListFragment extends Fragment {
 											.toString());
 								else
 									l.setName(input.getText().toString());
-								l.save();
+								l.save(list!=null);
 								update();
 							}
 						})

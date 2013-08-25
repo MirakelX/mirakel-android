@@ -110,6 +110,10 @@
             android:key="hideKeyboard"
             android:summary="@string/hide_keyboard_summary"
             android:title="@string/hide_keyboard" />
+        <Preference 
+            android:key="UndoNumber"
+            android:summary="@string/undo_number_summary"
+            android:title="@string/undo_number"/>
     </PreferenceCategory>
 
     <!-- Special Lists -->

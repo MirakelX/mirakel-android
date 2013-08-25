@@ -7,6 +7,9 @@ import java.util.Locale;
 
 import org.joda.time.LocalDate;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +18,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
+import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
@@ -254,11 +258,12 @@ public class Helpers {
 			Log.e(TAG,"context is null");
 			return;
 		}
+		Log.d(TAG,json);
 		SharedPreferences settings = PreferenceManager
 				.getDefaultSharedPreferences(ctx);
 		SharedPreferences.Editor editor = settings
-				.edit();;
-		for(int i=10;i>0;i++){
+				.edit();
+		for(int i=settings.getInt("UndoNumber", 10);i>0;i--){
 			String old=settings.getString(UNDO+(i-1), "");
 			editor.putString(UNDO+i, old);
 		}
@@ -271,5 +276,65 @@ public class Helpers {
 		
 	}
 
+	public static void undoLast(Context ctx) {
+		SharedPreferences settings = PreferenceManager
+				.getDefaultSharedPreferences(ctx);
+		String last=settings.getString(UNDO+0, "");
+		if(last!=null&&!last.equals("")){
+			short type=Short.parseShort(last.charAt(0)+"");
+			if(last.charAt(1)!='{'){
+				try{
+					Long id=Long.parseLong(last.substring(1));
+					switch (type) {
+					case TASK:
+						Task.get(id).delete(true);
+						break;
+					case LIST:
+						ListMirakel.getList(id.intValue()).destroy(true);
+						break;
+					default:
+						Log.wtf(TAG, "unkown Type");
+						break;
+					}
+				}catch(Exception e){
+					Log.e(TAG,"cannot parse String");
+				}
+				
+			}else{
+				JsonObject json=new JsonParser().parse(last.substring(1)).getAsJsonObject();
+				switch (type) {
+				case TASK:
+					try {
+						Task.parse_json(json).save(false);
+					} catch (NoSuchListException e) {
+						Log.e(TAG,"List not found");
+					}
+					break;
+				case LIST:
+					ListMirakel.parseJson(json).save(false);
+					break;
+				default:
+					Log.wtf(TAG, "unkown Type");
+					break;
+				}
+			}
+		}		
+		SharedPreferences.Editor editor = settings
+				.edit();
+		for(int i=0;i<settings.getInt("UndoNumber", 10);i++){
+			String old=settings.getString(UNDO+(i+1), "");
+			editor.putString(UNDO+i, old);
+		}
+		editor.putString(UNDO+10,"");
+		editor.commit();
+	}
+
+	public static void logCreate(Task newTask,Context ctx) {
+		updateLog(TASK, newTask.getId()+"", ctx);
+	}
+
+	public static void logCreate(ListMirakel newList,Context ctx) {
+		updateLog(LIST, newList.getId()+"", ctx);		
+	}
 
 }
