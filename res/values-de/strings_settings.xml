@@ -21,12 +21,17 @@
   <string name="notifications_persistent_summary">Sollen die Benachrichtigungen dauerhaft sein?</string>
   <string name="notifications_list">Liste</string>
   <string name="notifications_list_summary">Welche Liste soll ich anzeigen?</string>
+  <string name="notifications_list_open">Zu öffnende Liste</string>
+  <string name="notifications_list_open_summary">Welche Liste soll ich beim Klick auf die Benachrichtigung öffnen?</string>
+  <string name="default_list">Standardliste</string>
   <string name="notifications_big">Große Ansichten</string>
   <string name="notifications_big_summary">Soll ich große Benachrichtigungen anzeigen?</string>
   <string name="notifications_zero_show_summary">Ausblenden, wenn Liste leer?</string>
   <string name="notifications_zero_show">Ausblenden wenn leer</string>
   <string name="reminders_persistent">Dauerhafte Erinnerungen</string>
   <string name="reminders_persistent_summary">Sollen die Erinnerungen dauerhaft sein?</string>
+  <string name="notificationsShowDoneSummary">Zeige erledigte Aufgaben in der Benachrichtigung?</string>
+  <string name="notificationsShowDone">Zeige erledigte Aufgaben</string>
   <string name="startup_title">Startvorgang</string>
   <string name="startup_show_lists">Alle Listen anzeigen</string>
   <string name="startup_show_lists_summary">Soll ich die Listenübersicht anzeigen?</string>
@@ -50,6 +55,7 @@
   <string name="import_to">Importiere in</string>
   <string name="changelog_click_summary">Changelog anzeigen</string>
   <string name="changelog_click">Changelog</string>
+  <string name="settings_about">Über uns</string>
   <string name="import_astrid_click_summary">Importiere aus einer Astrid-Datei</string>
   <string name="import_astrid_click">Import von Astrid</string>
   <string name="astrid_unsuccess">Es ist ein Fehler während des Astrid-Import aufgetreten!</string>
@@ -70,6 +76,19 @@
   <string name="kill_sure_message">Wenn du die App schließt, bekommst du auch keine Benachrichtigungen! Vielleicht solltest du einfach die Benachrichtigungen deaktivieren (oder sie nicht-persistent machen)</string>
   <string name="show_kill_button">Soll ich einen Schließen-Button zeigen?</string>
   <string name="ui_settings_title">Benutzeroberfläche</string>
+  <string name="hide_keyboard">Tastatur sogleich ausblenden</string>
+  <string name="hide_keyboard_summary">Soll ich die Tastatur ausblenden, nachdem du eine neue Aufgabe erstellt hast?</string>
+  <string name="undo_number">Anzahl der Aufgaben im Log</string>
+  <string name="undo_number_summary">Wie viele Änderungen soll ich speichern? (Für den Zurück-Button)</string>
+  <string name="semantic_new_task">Semantische neue Aufgaben</string>
+  <string name="semantic_new_task_summary">Zum Beispiel: Erstelle neue Aufgabe „heute wäsche waschen“ (aktuell nur heute und morgen)</string>
+  <string name="semantic_new_task_config_summary">Konfiguriere die Bedingungen für das erstellen neuer Aufgaben</string>
+  <string name="semantic_new_task_config">Semantische neue Aufgaben konfigurieren</string>
+  <string name="delete_done">Erledigte Aufgaben löschen</string>
+  <string name="delete_done_summary">Löscht alle erledigten Aufgaben</string>
+  <string name="delete_done_warning">Bist du sicher?</string>
+  <string name="delete_done_warning_message">Du kannst das nicht rückgängig machen. Mach ein Backup!</string>
+  <string name="delete_done_success">Die erledigten Aufgaben wurden erfolgreich gelöscht.</string>
   <string-array name="sync_frequencies">
     <item>5 min</item>
     <item>10 min</item>

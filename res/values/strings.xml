@@ -126,20 +126,20 @@
     <string name="reminder_notification_later">Later</string>
     <string name="reminder_notification_done_confirm">I have set the task as „done“</string>
     <string name="reminder_notification_later_confirm">I\'ll remind you in %d minutes</string>
-    <string name="list_vanished">Huch, the task has vanished. I\'m sorry…</string>
-    <string name="task_vanished">Huch, the list of the task has vanished. I\'m sorry…</string>
+    <string name="list_vanished">Yikes, the task has vanished. I\'m sorry…</string>
+    <string name="task_vanished">Yikes, the list of the task has vanished. I\'m sorry…</string>
 
     <!-- Test Sync -->
     <!-- Label above username EditText -->
     <string name="message_try_later">Try to Sync later</string>
     <string name="message_access_denied">Access denied!\nDo you use the right Config-File?</string>
-    <string name="message_create_socket">Cannot Create Socket!\nDo you enable your Networkconnection?</string>
+    <string name="message_create_socket">Cannot Create Socket!\nDo you enable your network connection?</string>
     <string name="message_account_suspended">Your Account ist suspended!</string>
-    <string name="message_parse_message">Cannot parse Tasks to Sync-Fromat</string>
-    <string name="message_message_error">Unknown Respons from Server</string>    
+    <string name="message_parse_message">Cannot parse Tasks – please write us, how this happened</string>
+    <string name="message_message_error">Unknown response from Server – please write us, how this happened</string>    
     
-    <string name="load_config">Load Configfile for taskwarrior</string>
-    <string name="select_config">Select Taskwarrior Config-File</string>
+    <string name="load_config">Select the config file for Taskwarrior</string>
+    <string name="select_config">Select Taskwarrior config file</string>
     <string name="login_activity_org_label">Organisation</string>
     <string name="login_org_hint">Organisation</string>
     <string name="login_org_default">PUBLIC</string>
@@ -156,7 +156,7 @@
     <string name="login_activity_ok_button">Sign in</string>
 
     <!-- Message shown in dialog if the username or password is invalid. -->
-    <string name="login_activity_loginfail_text_both">The username or password isn\'t valid. A Mirakel account is
+    <string name="login_activity_loginfail_text_both">The username or password is not valid. A Mirakel account is
         required. Please try again.</string>
     <!-- Message shown in dialog to prompt the user for their password -->
     <string name="login_activity_loginfail_text_pwmissing">Type the password for this account.</string>

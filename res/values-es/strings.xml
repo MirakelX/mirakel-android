@@ -4,6 +4,7 @@
   <string name="app_name">Mirakel</string>
   <string name="action_settings">Configuración</string>
   <string name="action_contact">Contacto / Informar de un error</string>
+  <string name="action_contact_summary">Escríbenos un correo electrónico.</string>
   <string name="OK">OK</string>
   <string name="Cancel">Cancelar</string>
   <string name="Yes">Sí</string>
@@ -40,6 +41,7 @@
   <string name="set_date">Fijar fecha</string>
   <string name="set_time">Fijar hora</string>
   <string name="task_set_reminder">Fijar recordatorio</string>
+  <string name="action_undo">Undo the last Change</string>
   <string name="dialog_move">Mover tarea</string>
   <string name="list_title">Listas</string>
   <string name="list_menu_new_list">Nueva lista</string>
@@ -69,8 +71,16 @@
   <string name="reminder_notification_later">Más tarde</string>
   <string name="reminder_notification_done_confirm">He puesto la tarea como „hecho“</string>
   <string name="reminder_notification_later_confirm">Te lo recordaré en %d minutos</string>
-  <string name="list_vanished">Huch, la tarea ha desaparecido. Lo siento…</string>
-  <string name="task_vanished">Huch, ha desaparecido la lista de la tarea. Lo siento…</string>
+  <string name="list_vanished">Yikes, the task has vanished. I\'m sorry…</string>
+  <string name="task_vanished">Yikes, the list of the task has vanished. I\'m sorry…</string>
+  <string name="message_try_later">Try to Sync later</string>
+  <string name="message_access_denied">Access denied!\nDo you use the right Config-File?</string>
+  <string name="message_create_socket">Cannot Create Socket!\nDo you enable your network connection?</string>
+  <string name="message_account_suspended">Your Account ist suspended!</string>
+  <string name="message_parse_message">Cannot parse Tasks – please write us, how this happened</string>
+  <string name="message_message_error">Unknown response from Server – please write us, how this happened</string>
+  <string name="load_config">Select the config file for Taskwarrior</string>
+  <string name="select_config">Select Taskwarrior config file</string>
   <string name="login_activity_org_label">Organización</string>
   <string name="login_org_hint">Organización</string>
   <string name="login_org_default">PUBLIC</string>
@@ -79,7 +89,8 @@
   <string name="login_activity_server_typ">Tipo de servidor</string>
   <string name="login_activity_password_label">Contraseña</string>
   <string name="login_activity_ok_button">Iniciar sesión</string>
-  <string name="login_activity_loginfail_text_both">El nombre de usuario o la contraseña no es válida. Es necesario una cuenta de Mirakel. Por favor inténtelo nuevamente. </string>
+  <string name="login_activity_loginfail_text_both">The username or password is not valid. A Mirakel account is
+        required. Please try again.</string>
   <string name="login_activity_loginfail_text_pwmissing">Escriba la contraseña para esta cuenta.</string>
   <string name="login_activity_newaccount_text">Ingresa a tu cuenta de %s. </string>
   <string name="ui_activity_authenticating">Autenticando\u2026</string>
