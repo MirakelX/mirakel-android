@@ -79,8 +79,8 @@ public class Task extends TaskBase {
 	public void save() throws NoSuchListException {
 		save(true);
 	}
-	
-	public void save(boolean log) throws NoSuchListException{
+
+	public void save(boolean log) throws NoSuchListException {
 		setSyncState(getSync_state() == Network.SYNC_STATE.ADD
 				|| getSync_state() == Network.SYNC_STATE.IS_SYNCED ? getSync_state()
 				: Network.SYNC_STATE.NEED_SYNC);
@@ -88,8 +88,8 @@ public class Task extends TaskBase {
 			setUpdatedAt(new GregorianCalendar());
 		ContentValues values = getContentValues();
 		// this.edited= new HashMap<String, Boolean>();
-		if(log)
-			Helpers.updateLog(Task.get(getId()),context);
+		if (log)
+			Helpers.updateLog(Task.get(getId()), context);
 		database.update(TABLE, values, "_id = " + getId(), null);
 	}
 
@@ -103,7 +103,7 @@ public class Task extends TaskBase {
 	}
 
 	public void delete(boolean force) {
-		if(!force)
+		if (!force)
 			Helpers.updateLog(this, context);
 		long id = getId();
 		if (getSync_state() == Network.SYNC_STATE.ADD || force)
@@ -114,11 +114,11 @@ public class Task extends TaskBase {
 			database.update(TABLE, values, "_id=" + id, null);
 		}
 	}
-	
+
 	public static void deleteDoneTasks() {
 		ContentValues values = new ContentValues();
 		values.put("sync_state", Network.SYNC_STATE.DELETE);
-		String where="sync_state!=" + Network.SYNC_STATE.ADD +" AND done=1";
+		String where = "sync_state!=" + Network.SYNC_STATE.ADD + " AND done=1";
 		database.update(TABLE, values, where, null);
 		database.delete(TABLE, where, null);
 	}
@@ -152,8 +152,10 @@ public class Task extends TaskBase {
 		}
 		json += "\"reminder\":\"" + s + "\",";
 		json += "\"sync_state\":" + getSync_state() + ",";
-		json += "\"created_at\":\"" + DateTimeHelper.formatDateTime(getCreated_at()) + "\",";
-		json += "\"updated_at\":\"" + DateTimeHelper.formatDateTime(getUpdated_at()) + "\"}";
+		json += "\"created_at\":\""
+				+ DateTimeHelper.formatDateTime(getCreated_at()) + "\",";
+		json += "\"updated_at\":\""
+				+ DateTimeHelper.formatDateTime(getUpdated_at()) + "\"}";
 		return json;
 	}
 
@@ -250,7 +252,7 @@ public class Task extends TaskBase {
 		cursor.moveToFirst();
 		Task newTask = cursorToTask(cursor);
 		cursor.close();
-		Helpers.logCreate(newTask,context);
+		Helpers.logCreate(newTask, context);
 		return newTask;
 	}
 
@@ -497,7 +499,7 @@ public class Task extends TaskBase {
 		for (Entry<String, JsonElement> entry : entries) {
 			String key = entry.getKey();
 			JsonElement val = entry.getValue();
-			if (key == null||key.equals("id")||key.equals("uuid"))
+			if (key == null || key.equals("id") || key.equals("uuid"))
 				continue;
 
 			if (key.equals("name") || key.equals("description")) {
@@ -583,11 +585,11 @@ public class Task extends TaskBase {
 					Log.e(TAG, "cannot parse json");
 				}
 				t.setContent(content);
-			} else if(key.equals("content")){
+			} else if (key.equals("content")) {
 				t.setContent(val.getAsString());
-			}else if(key.equals("sync_state")){
+			} else if (key.equals("sync_state")) {
 				t.setSyncState(val.getAsInt());
-			}else{
+			} else {
 				t.addAdditionalEntry(key, val.getAsString());
 			}
 		}

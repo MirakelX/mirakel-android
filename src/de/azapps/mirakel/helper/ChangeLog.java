@@ -149,12 +149,15 @@ public class ChangeLog {
 		} else {
 			wv.setBackgroundColor(Color.WHITE);
 		}
-		String log=this.getLog(full);
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-		if(preferences.getBoolean("DarkTheme", false))
-			log="<font color='"+String.format("#%06X", 0xFFFFFF & context.getResources().getColor(android.R.color.holo_blue_light))+"'>"+log+"</font>";
-		wv.loadDataWithBaseURL(null,log , "text/html", "UTF-8",
-				null);
+		String log = this.getLog(full);
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		if (preferences.getBoolean("DarkTheme", false))
+			log = "<font color='"
+					+ String.format("#%06X", 0xFFFFFF & context.getResources()
+							.getColor(android.R.color.holo_blue_light)) + "'>"
+					+ log + "</font>";
+		wv.loadDataWithBaseURL(null, log, "text/html", "UTF-8", null);
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
 		builder.setTitle(

@@ -180,7 +180,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ "condition TEXT NOT NULL, " + "due INTEGER, "
 					+ "priority INTEGER, " + "list INTEGER);");
 			db.execSQL("INSERT INTO semantic_conditions (condition,due) VALUES "
-					+ "(\"" + context.getString(R.string.today) + "\",0)," 
+					+ "(\""
+					+ context.getString(R.string.today)
+					+ "\",0),"
 					+ "(\"" + context.getString(R.string.tomorrow) + "\",1);");
 		}
 	}

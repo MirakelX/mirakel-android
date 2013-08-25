@@ -37,7 +37,8 @@ public class MainWidgetSettingsActivity extends PreferenceActivity {
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("DarkTheme", false))
+		if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
+				"DarkTheme", false))
 			setTheme(R.style.AppBaseThemeDARK);
 		super.onCreate(savedInstanceState);
 		if (VERSION.SDK_INT < VERSION_CODES.HONEYCOMB) {

@@ -19,8 +19,9 @@ public class CreditsActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-		if(preferences.getBoolean("DarkTheme", false))
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		if (preferences.getBoolean("DarkTheme", false))
 			setTheme(R.style.AppBaseThemeDARK);
 		setContentView(R.layout.activity_credits);
 		TextView creditText = (TextView) findViewById(R.id.credit_text);

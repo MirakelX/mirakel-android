@@ -56,9 +56,10 @@ public class SplashScreenActivity extends Activity {
 				intent.setAction(MainActivity.SHOW_LISTS);
 				startActivity(intent);
 			} else {
-				ListMirakel sl=SpecialList.firstSpecial();
-				if(sl==null){
-					sl=SpecialList.newSpecialList(getString(R.string.list_all), " done=0 ", true);
+				ListMirakel sl = SpecialList.firstSpecial();
+				if (sl == null) {
+					sl = SpecialList.newSpecialList(
+							getString(R.string.list_all), " done=0 ", true);
 				}
 				int listId = Integer.parseInt(preferences.getString(
 						"startupList", "" + sl.getId()));

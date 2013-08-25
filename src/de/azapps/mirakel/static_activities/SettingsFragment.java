@@ -40,15 +40,17 @@ public class SettingsFragment extends PreferenceFragment {
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.preferences);
 		CheckBoxPreference mCheckBoxPref = (CheckBoxPreference) findPreference("DarkTheme");
-		mCheckBoxPref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-			
-			@Override
-			public boolean onPreferenceChange(Preference preference, Object newValue) {
-				getActivity().finish();
-				startActivity(getActivity().getIntent());
-				return true;
-			}
-		});
+		mCheckBoxPref
+				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+					@Override
+					public boolean onPreferenceChange(Preference preference,
+							Object newValue) {
+						getActivity().finish();
+						startActivity(getActivity().getIntent());
+						return true;
+					}
+				});
 		new PreferencesHelper(this).setFunctionsApp();
 	}
 

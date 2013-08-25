@@ -27,48 +27,55 @@ public class SpecialListsSettings extends ActionBarActivity {
 	private SpecialListSettingsFragment SettingsFragment;
 	private SpecialList specialList;
 
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);		
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-		if(preferences.getBoolean("DarkTheme", false))
+		super.onCreate(savedInstanceState);
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		if (preferences.getBoolean("DarkTheme", false))
 			setTheme(R.style.AppBaseThemeDARK);
 		setContentView(R.layout.activity_special_lists_settings_a);
-		if(getResources().getBoolean(R.bool.isTablet)){
-			SettingsFragment=new SpecialListSettingsFragment();
-			specialList=SpecialList.firstSpecial();
-			FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+		if (getResources().getBoolean(R.bool.isTablet)) {
+			SettingsFragment = new SpecialListSettingsFragment();
+			specialList = SpecialList.firstSpecial();
+			FragmentTransaction transaction = getSupportFragmentManager()
+					.beginTransaction();
 
-			// Replace whatever is in the fragment_container view with this fragment,
-			// and add the transaction to the back stack so the user can navigate back
-			transaction.replace(R.id.special_lists_fragment_container, SettingsFragment);
+			// Replace whatever is in the fragment_container view with this
+			// fragment,
+			// and add the transaction to the back stack so the user can
+			// navigate back
+			transaction.replace(R.id.special_lists_fragment_container,
+					SettingsFragment);
 			transaction.addToBackStack(null);
 			transaction.commit();
 			SettingsFragment.setSpecialList(specialList);
-			if(specialList==null)
-				findViewById(R.id.special_lists_fragment_container).setVisibility(View.GONE);
+			if (specialList == null)
+				findViewById(R.id.special_lists_fragment_container)
+						.setVisibility(View.GONE);
 			else
-				findViewById(R.id.special_lists_fragment_container).setVisibility(View.VISIBLE);
+				findViewById(R.id.special_lists_fragment_container)
+						.setVisibility(View.VISIBLE);
 		}
 		// Show the Up button in the action bar.
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		update();
 	}
+
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
-	    if (event.getAction() == KeyEvent.ACTION_DOWN) {
-	        switch (event.getKeyCode()) {
-	            case KeyEvent.KEYCODE_BACK:
-	            	if(getResources().getBoolean(R.bool.isTablet)){
-	            		finish();
-	                 	return true;
-	            	}else{
-	            		return super.dispatchKeyEvent(event);
-	            	}
-	        }
-	    }
-	    return super.dispatchKeyEvent(event);
+		if (event.getAction() == KeyEvent.ACTION_DOWN) {
+			switch (event.getKeyCode()) {
+			case KeyEvent.KEYCODE_BACK:
+				if (getResources().getBoolean(R.bool.isTablet)) {
+					finish();
+					return true;
+				} else {
+					return super.dispatchKeyEvent(event);
+				}
+			}
+		}
+		return super.dispatchKeyEvent(event);
 	}
 
 	private void update() {
@@ -93,18 +100,21 @@ public class SpecialListsSettings extends ActionBarActivity {
 	}
 
 	private void editSList(final SpecialList slist) {
-		if(getResources().getBoolean(R.bool.isTablet)){
-			specialList=slist;
+		if (getResources().getBoolean(R.bool.isTablet)) {
+			specialList = slist;
 			update();
-			if(specialList==null)
-				findViewById(R.id.special_lists_fragment_container).setVisibility(View.GONE);
-			else{
-				findViewById(R.id.special_lists_fragment_container).setVisibility(View.VISIBLE);
+			if (specialList == null)
+				findViewById(R.id.special_lists_fragment_container)
+						.setVisibility(View.GONE);
+			else {
+				findViewById(R.id.special_lists_fragment_container)
+						.setVisibility(View.VISIBLE);
 				SettingsFragment.setSpecialList(slist);
 			}
-		}else{
+		} else {
 			Intent intent = new Intent(this, SpecialListsSettingsActivity.class);
-			intent.putExtra(SpecialListsSettingsActivity.SLIST_ID, -slist.getId());
+			intent.putExtra(SpecialListsSettingsActivity.SLIST_ID,
+					-slist.getId());
 			startActivityForResult(intent, requestCode);
 		}
 	}
@@ -112,7 +122,7 @@ public class SpecialListsSettings extends ActionBarActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		if(getResources().getBoolean(R.bool.isTablet))
+		if (getResources().getBoolean(R.bool.isTablet))
 			getMenuInflater().inflate(R.menu.special_list_tablet, menu);
 		else
 			getMenuInflater().inflate(R.menu.special_lists_settings, menu);

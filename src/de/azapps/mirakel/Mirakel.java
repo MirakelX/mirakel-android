@@ -38,24 +38,45 @@ import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakelandroid.R;
 
-@ReportsCrashes(
-		formKey = "", // This is required for backward compatibility but not used 
-		reportType = org.acra.sender.HttpSender.Type.JSON, 
-		httpMethod = org.acra.sender.HttpSender.Method.PUT,
-	    formUri = "https://mirakel.iriscouch.com/acra-mirakel/_design/acra-storage/_update/report",
-	    formUriBasicAuthLogin = "android",
-	    formUriBasicAuthPassword = "Kd4PBcVi2lwAbi763qaS" ,
-	    disableSSLCertValidation = true,
-        mode = ReportingInteractionMode.DIALOG,
-        resToastText = R.string.crash_toast_text, // optional, displayed as soon as the crash occurs, before collecting data which can take a few seconds
-        resDialogText = R.string.crash_dialog_text,
-        resDialogIcon = android.R.drawable.ic_dialog_info, //optional. default is a warning sign
-        resDialogTitle = R.string.crash_dialog_title, // optional. default is your application name
-        resDialogCommentPrompt = R.string.crash_dialog_comment_prompt, // optional. when defined, adds a user text field input with this text resource as a label
-        resDialogOkToast = R.string.crash_dialog_ok_toast // optional. displays a Toast message when the user accepts to send a report.
+@ReportsCrashes(formKey = "", // This is required for backward compatibility but
+								// not used
+reportType = org.acra.sender.HttpSender.Type.JSON, httpMethod = org.acra.sender.HttpSender.Method.PUT, formUri = "https://mirakel.iriscouch.com/acra-mirakel/_design/acra-storage/_update/report", formUriBasicAuthLogin = "android", formUriBasicAuthPassword = "Kd4PBcVi2lwAbi763qaS", disableSSLCertValidation = true, mode = ReportingInteractionMode.DIALOG, resToastText = R.string.crash_toast_text, // optional,
+																																																																																																			// displayed
+																																																																																																			// as
+																																																																																																			// soon
+																																																																																																			// as
+																																																																																																			// the
+																																																																																																			// crash
+																																																																																																			// occurs,
+																																																																																																			// before
+																																																																																																			// collecting
+																																																																																																			// data
+																																																																																																			// which
+																																																																																																			// can
+																																																																																																			// take
+																																																																																																			// a
+																																																																																																			// few
+																																																																																																			// seconds
+resDialogText = R.string.crash_dialog_text, resDialogIcon = android.R.drawable.ic_dialog_info, // optional.
+																								// default
+																								// is
+																								// a
+																								// warning
+																								// sign
+resDialogTitle = R.string.crash_dialog_title, // optional. default is your
+												// application name
+resDialogCommentPrompt = R.string.crash_dialog_comment_prompt, // optional. when
+																// defined, adds
+																// a user text
+																// field input
+																// with this
+																// text resource
+																// as a label
+resDialogOkToast = R.string.crash_dialog_ok_toast // optional. displays a Toast
+													// message when the user
+													// accepts to send a report.
 
 )
-
 public class Mirakel extends Application {
 	public static final int[] PRIO_COLOR = { Color.parseColor("#008000"),
 			Color.parseColor("#00c400"), Color.parseColor("#3377FF"),
@@ -64,13 +85,12 @@ public class Mirakel extends Application {
 
 	public static final String ACCOUNT_TYPE = "de.azapps.mirakel";
 	public static final String AUTHORITY_TYP = "de.azapps.mirakel.provider";
-	public static  String APK_NAME;
+	public static String APK_NAME;
 	public static String VERSIONS_NAME;
 
 	public static int widgets[] = {};
 
 	private static final String TAG = "Mirakel";
-
 
 	private static SQLiteOpenHelper openHelper;
 
@@ -78,23 +98,26 @@ public class Mirakel extends Application {
 	public void onCreate() {
 		super.onCreate();
 		ACRA.init(this);
-		APK_NAME=getPackageName();
+		APK_NAME = getPackageName();
 		try {
-			VERSIONS_NAME=getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+			VERSIONS_NAME = getPackageManager().getPackageInfo(
+					getPackageName(), 0).versionName;
 		} catch (NameNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			Log.wtf(TAG, "App not found");
-			VERSIONS_NAME="";
+			VERSIONS_NAME = "";
 		}
 		openHelper = new DatabaseHelper(this);
 		Mirakel.getWritableDatabase().execSQL("PRAGMA foreign_keys=ON;");
 		ListMirakel.init(getApplicationContext());
 		Task.init(getApplicationContext());
 		SpecialList.init(getApplicationContext());
-		//Kill Notification Service if Notification disabled
-		if(!PreferenceManager.getDefaultSharedPreferences(this).getBoolean("notificationsUse", false)&&startService(new Intent(this, NotificationService.class)) != null) { 
-		    stopService(new Intent(Mirakel.this,NotificationService.class));
+		// Kill Notification Service if Notification disabled
+		if (!PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
+				"notificationsUse", false)
+				&& startService(new Intent(this, NotificationService.class)) != null) {
+			stopService(new Intent(Mirakel.this, NotificationService.class));
 		}
 		// Set Alarms
 		ReminderAlarm.updateAlarms(getApplicationContext());
@@ -119,6 +142,7 @@ public class Mirakel extends Application {
 	public static class NoSuchListException extends Exception {
 		static final long serialVersionUID = 1374828057;
 	}
+
 	public static class NoSuchTaskException extends Exception {
 		static final long serialVersionUID = 1374828058;
 	}

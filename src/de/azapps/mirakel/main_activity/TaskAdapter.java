@@ -45,10 +45,10 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 	OnClickListener clickCheckbox;
 	OnClickListener clickPrio;
 	boolean darkTheme;
-	
+
 	public TaskAdapter(Context context, int layoutResourceId, List<Task> data,
 			OnClickListener clickCheckbox, OnClickListener click_prio,
-			int listId,boolean darkTheme) {
+			int listId, boolean darkTheme) {
 		super(context, layoutResourceId, data);
 		this.layoutResourceId = layoutResourceId;
 		this.data = data;
@@ -56,7 +56,7 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		this.clickCheckbox = clickCheckbox;
 		this.clickPrio = click_prio;
 		this.listId = listId;
-		this.darkTheme=darkTheme;
+		this.darkTheme = darkTheme;
 	}
 
 	/**
@@ -119,7 +119,7 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		} else {
 			holder.taskRowHasContent.setVisibility(View.INVISIBLE);
 		}
-		if (listId <= 0 && task!=null && task.getList()!=null) {
+		if (listId <= 0 && task != null && task.getList() != null) {
 			holder.taskRowList.setVisibility(View.VISIBLE);
 			holder.taskRowList.setText(task.getList().getName());
 		} else {
@@ -128,13 +128,15 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 
 		// Name
 		holder.taskRowName.setText(task.getName());
-		
+
 		if (task.isDone()) {
-			holder.taskRowName.setTextColor(row.getResources().getColor(R.color.Grey));
+			holder.taskRowName.setTextColor(row.getResources().getColor(
+					R.color.Grey));
 		} else {
-			holder.taskRowName.setTextColor(row.getResources().getColor(darkTheme?android.R.color.primary_text_dark:android.R.color.primary_text_light));
+			holder.taskRowName.setTextColor(row.getResources().getColor(
+					darkTheme ? android.R.color.primary_text_dark
+							: android.R.color.primary_text_light));
 		}
-		
 
 		// Priority
 		holder.taskRowPriority.setText("" + task.getPriority());

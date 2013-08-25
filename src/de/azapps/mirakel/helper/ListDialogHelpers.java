@@ -199,5 +199,5 @@ public class ListDialogHelpers {
 		alert.show();
 		return specialList;
 	}
-	
+
 }

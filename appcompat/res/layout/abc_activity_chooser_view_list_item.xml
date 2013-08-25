@@ -21,12 +21,13 @@
               android:paddingLeft="16dip"
               android:paddingRight="16dip"
               android:minWidth="196dip"
-              android:orientation="vertical">
+              android:orientation="vertical" xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:duplicateParentState="true" >
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:duplicateParentState="true"
+        tools:ignore="UselessParent" >
 
         <ImageView
                 android:id="@+id/icon"
