@@ -77,6 +77,10 @@ public class Task extends TaskBase {
 	 * @param task
 	 */
 	public void save() throws NoSuchListException {
+		save(true);
+	}
+	
+	public void save(boolean log) throws NoSuchListException{
 		setSyncState(getSync_state() == Network.SYNC_STATE.ADD
 				|| getSync_state() == Network.SYNC_STATE.IS_SYNCED ? getSync_state()
 				: Network.SYNC_STATE.NEED_SYNC);
@@ -84,7 +88,8 @@ public class Task extends TaskBase {
 			setUpdatedAt(new GregorianCalendar());
 		ContentValues values = getContentValues();
 		// this.edited= new HashMap<String, Boolean>();
-		Helpers.updateLog(Task.get(getId()),context);
+		if(log)
+			Helpers.updateLog(Task.get(getId()),context);
 		database.update(TABLE, values, "_id = " + getId(), null);
 	}
 
@@ -98,7 +103,8 @@ public class Task extends TaskBase {
 	}
 
 	public void delete(boolean force) {
-		Helpers.updateLog(this, context);
+		if(!force)
+			Helpers.updateLog(this, context);
 		long id = getId();
 		if (getSync_state() == Network.SYNC_STATE.ADD || force)
 			database.delete(TABLE, "_id = " + id, null);
@@ -146,10 +152,9 @@ public class Task extends TaskBase {
 		}
 		json += "\"reminder\":\"" + s + "\",";
 		json += "\"sync_state\":" + getSync_state() + ",";
-		json += "\"created_at\":\"" + getCreated_at() + "\",";
-		json += "\"updated_at\":\"" + getUpdated_at() + "\"}";
+		json += "\"created_at\":\"" + DateTimeHelper.formatDateTime(getCreated_at()) + "\",";
+		json += "\"updated_at\":\"" + DateTimeHelper.formatDateTime(getUpdated_at()) + "\"}";
 		return json;
-		// json+="\"name\":\""+getCreated_at()+"\"";
 	}
 
 	// Static Methods
@@ -245,6 +250,7 @@ public class Task extends TaskBase {
 		cursor.moveToFirst();
 		Task newTask = cursorToTask(cursor);
 		cursor.close();
+		Helpers.logCreate(newTask,context);
 		return newTask;
 	}
 
@@ -491,7 +497,7 @@ public class Task extends TaskBase {
 		for (Entry<String, JsonElement> entry : entries) {
 			String key = entry.getKey();
 			JsonElement val = entry.getValue();
-			if (key == null)
+			if (key == null||key.equals("id")||key.equals("uuid"))
 				continue;
 
 			if (key.equals("name") || key.equals("description")) {
@@ -552,12 +558,14 @@ public class Task extends TaskBase {
 					due = parseDate(val.getAsString(),
 							context.getString(R.string.TWDateFormat));
 				}
+				t.setDue(due);
 			} else if (key.equals("reminder")) {
 				Calendar reminder = parseDate(val.getAsString(), "yyyy-MM-dd");
 				if (reminder == null) {
 					reminder = parseDate(val.getAsString(),
 							context.getString(R.string.TWDateFormat));
 				}
+				t.setReminder(reminder);
 			} else if (key.equals("annotations")) {
 				String content = "";
 				try {
@@ -575,7 +583,11 @@ public class Task extends TaskBase {
 					Log.e(TAG, "cannot parse json");
 				}
 				t.setContent(content);
-			} else {
+			} else if(key.equals("content")){
+				t.setContent(val.getAsString());
+			}else if(key.equals("sync_state")){
+				t.setSyncState(val.getAsInt());
+			}else{
 				t.addAdditionalEntry(key, val.getAsString());
 			}
 		}

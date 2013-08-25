@@ -20,12 +20,8 @@ package de.azapps.mirakel.model.task;
 
 import java.lang.reflect.Type;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import android.content.ContentValues;
@@ -209,7 +205,7 @@ class TaskBase {
 
 	public void setUpdatedAt(String updated_at) {
 		try {
-			setCreatedAt(DateTimeHelper.parseDateTime(updated_at));
+			setUpdatedAt(DateTimeHelper.parseDateTime(updated_at));
 		} catch (ParseException e) {
 			setUpdatedAt((Calendar) null);
 		}
