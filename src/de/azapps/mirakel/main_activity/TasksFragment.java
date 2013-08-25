@@ -32,6 +32,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
 import android.util.TypedValue;
@@ -134,6 +135,7 @@ public class TasksFragment extends Fragment {
 		created = true;
 
 		listView = (ListView) view.findViewById(R.id.tasks_list);
+		listView.setDescendantFocusability(ListView.FOCUS_AFTER_DESCENDANTS);
 		// Events
 		newTask = (EditText) view.findViewById(R.id.tasks_new);
 		if(main.isTablet)
@@ -143,7 +145,6 @@ public class TasksFragment extends Fragment {
 					KeyEvent event) {
 				if (actionId == EditorInfo.IME_ACTION_SEND) {
 					newTask(v.getText().toString());
-					v.setText(null);
 				}
 				return false;
 			}
@@ -177,8 +178,6 @@ public class TasksFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				newTask(newTask.getText().toString());
-				newTask.setText(null);
-
 			}
 		});
 
@@ -200,7 +199,6 @@ public class TasksFragment extends Fragment {
 				try {
 					getActivity().startActivityForResult(intent,
 							MainActivity.RESULT_SPEECH);
-					newTask.setText("");
 				} catch (ActivityNotFoundException a) {
 					Toast t = Toast.makeText(main,
 							"Opps! Your device doesn't support Speech to Text",
@@ -218,7 +216,7 @@ public class TasksFragment extends Fragment {
 			return;
 		newTask.setOnFocusChangeListener(new OnFocusChangeListener() {
 			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
+			public void onFocusChange(final View v, boolean hasFocus) {
 				newTask.post(new Runnable() {
 					@Override
 					public void run() {
@@ -226,6 +224,7 @@ public class TasksFragment extends Fragment {
 								.getSystemService(Context.INPUT_METHOD_SERVICE);
 						imm.showSoftInput(newTask,
 								InputMethodManager.SHOW_IMPLICIT);
+						((EditText)v).requestFocus();
 					}
 				});
 			}
@@ -234,9 +233,11 @@ public class TasksFragment extends Fragment {
 	}
 
 	private boolean newTask(String name) {
+		newTask.setText(null);
 		InputMethodManager imm = (InputMethodManager) main
-				.getSystemService(Context.INPUT_METHOD_SERVICE);
+					.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(newTask.getWindowToken(), 0);
+		newTask.clearFocus();
 		if (name.equals(""))
 			return true;
 		long id = main.getCurrentList().getId();
@@ -312,6 +313,15 @@ public class TasksFragment extends Fragment {
 			adapter.notifyDataSetChanged();
 		}
 			main.getListFragment().update();
+			if(!PreferenceManager.getDefaultSharedPreferences(main).getBoolean("hideKeyboard", true)){
+				newTask = (EditText) view.findViewById(R.id.tasks_new);
+				Log.d(TAG,"try to set focus");
+				newTask.setFocusable(true);
+				newTask.setFocusableInTouchMode(true);
+				if(newTask.requestFocus()) {
+focusNew();
+				}
+			}
 		return true;
 	}
 
