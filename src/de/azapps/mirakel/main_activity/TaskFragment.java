@@ -95,6 +95,10 @@ public class TaskFragment extends Fragment {
 	public void update() {
 		if (!created)
 			return;
+		
+
+		main.showMessageFromSync();
+
 		ViewSwitcher s = (ViewSwitcher) view.findViewById(R.id.switch_name);
 		if (s.getNextView().getId() != R.id.edit_name) {
 			s.showPrevious();

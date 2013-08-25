@@ -85,6 +85,8 @@ public class ListFragment extends Fragment {
 		final List<ListMirakel> values = ListMirakel.all();
 		main.updateLists();
 
+		main.showMessageFromSync();
+
 		if (adapter != null && enableDrag == adapter.isDropEnabled()) {
 			adapter.changeData(values);
 			adapter.notifyDataSetChanged();
@@ -212,7 +214,8 @@ public class ListFragment extends Fragment {
 	void editList(final ListMirakel list) {
 
 		input = new EditText(main);
-		input.setText(list==null?getString(R.string.list_menu_new_list):list.getName());
+		input.setText(list == null ? getString(R.string.list_menu_new_list)
+				: list.getName());
 		input.setTag(main);
 		input.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
 		new AlertDialog.Builder(main)
@@ -224,9 +227,10 @@ public class ListFragment extends Fragment {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
 								// List_mirakle list = values.get((int) id);
-								ListMirakel l=list;
-								if (list==null)
-									l = ListMirakel.newList(input.getText().toString());
+								ListMirakel l = list;
+								if (list == null)
+									l = ListMirakel.newList(input.getText()
+											.toString());
 								else
 									l.setName(input.getText().toString());
 								l.save();
