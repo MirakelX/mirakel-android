@@ -136,7 +136,7 @@ public class TasksFragment extends Fragment {
 		listView = (ListView) view.findViewById(R.id.tasks_list);
 		// Events
 		newTask = (EditText) view.findViewById(R.id.tasks_new);
-		if(main.isTablet)
+		if (main.isTablet)
 			newTask.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
 		newTask.setOnEditorActionListener(new OnEditorActionListener() {
 			public boolean onEditorAction(TextView v, int actionId,
@@ -241,7 +241,7 @@ public class TasksFragment extends Fragment {
 			return true;
 		long id = main.getCurrentList().getId();
 		GregorianCalendar due = null;
-		int prio=0;
+		int prio = 0;
 		if (id <= 0) {
 			try {
 				SpecialList slist = (SpecialList) main.getCurrentList();
@@ -251,14 +251,18 @@ public class TasksFragment extends Fragment {
 					due.add(GregorianCalendar.DAY_OF_MONTH,
 							slist.getDefaultDate());
 				}
-				if(slist.getWhereQuery().contains("priority")){
-					boolean[] mSelectedItems=new boolean[5];
-					boolean not=false;
+				if (slist.getWhereQuery().contains("priority")) {
+					boolean[] mSelectedItems = new boolean[5];
+					boolean not = false;
 					String[] p = slist.getWhereQuery().split("and");
 					for (String s : p) {
 						if (s.contains("priority")) {
-							not=s.contains("not");
-							String[] r = s.replace((!not ? "": "not ")+ "priority in (", "").replace(")", "").trim().split(",");
+							not = s.contains("not");
+							String[] r = s
+									.replace(
+											(!not ? "" : "not ")
+													+ "priority in (", "")
+									.replace(")", "").trim().split(",");
 							for (String t : r) {
 								try {
 									switch (Integer.parseInt(t)) {
@@ -280,11 +284,11 @@ public class TasksFragment extends Fragment {
 									}
 								} catch (NumberFormatException e) {
 								}
-								for(int i=0;i<mSelectedItems.length;i++){
-									if(mSelectedItems[i]!=not){
-										prio=i-2;
+								for (int i = 0; i < mSelectedItems.length; i++) {
+									if (mSelectedItems[i] != not) {
+										prio = i - 2;
 										break;
-									}										
+									}
 								}
 							}
 							break;
@@ -298,20 +302,20 @@ public class TasksFragment extends Fragment {
 						.show();
 			}
 		}
-		Task task = Task.newTask(name, id,due,prio);
-		if(main.isTablet){
+		Task task = Task.newTask(name, id, due, prio);
+		if (main.isTablet) {
 			main.tasksFragment_l.adapter.addToHead(task);
 			main.tasksFragment_l.values.add(0, task);
 			main.tasksFragment_r.adapter.addToHead(task);
-			main.tasksFragment_r.values.add(0, task);			
+			main.tasksFragment_r.values.add(0, task);
 			main.tasksFragment_l.adapter.notifyDataSetChanged();
 			main.tasksFragment_r.adapter.notifyDataSetChanged();
-		}else{
+		} else {
 			adapter.addToHead(task);
 			values.add(0, task);
 			adapter.notifyDataSetChanged();
 		}
-			main.getListFragment().update();
+		main.getListFragment().update();
 		return true;
 	}
 
@@ -350,6 +354,9 @@ public class TasksFragment extends Fragment {
 				setScrollPosition(0);
 			return;
 		}
+
+		main.showMessageFromSync();
+
 		final ListView listView = (ListView) view.findViewById(R.id.tasks_list);
 		AsyncTask<Void, Void, TaskAdapter> task = new AsyncTask<Void, Void, TaskAdapter>() {
 			@Override
@@ -379,7 +386,8 @@ public class TasksFragment extends Fragment {
 										});
 
 							}
-						}, main.getCurrentList().getId(),main.preferences.getBoolean("DarkTheme", false));
+						}, main.getCurrentList().getId(),
+						main.preferences.getBoolean("DarkTheme", false));
 				return adapter;
 			}
 

@@ -32,7 +32,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
@@ -157,7 +156,6 @@ public class MainActivity extends ActionBarActivity implements
 				}
 			}
 		}
-		waitForMessage();
 	}
 
 	@Override
@@ -426,6 +424,7 @@ public class MainActivity extends ActionBarActivity implements
 		if (isResumend)
 			setupLayout();
 		isResumend = true;
+		showMessageFromSync();
 	}
 
 	@Override
@@ -950,37 +949,11 @@ public class MainActivity extends ActionBarActivity implements
 		this.taskFragment = taskFragment;
 	}
 
-	private CharSequence messageFromSync = null;
-
-	private void waitForMessage() {
-		AsyncTask<Void, Void, CharSequence> t=new AsyncTask<Void, Void, CharSequence>() {
-			protected CharSequence doInBackground(Void... urls) {
-				while (true) {
-					try {
-						Thread.sleep(1000);
-						messageFromSync=SyncAdapter.getLastMessage();
-						if(messageFromSync!=null){
-						runOnUiThread(new Runnable() {
-							
-							@Override
-							public void run() {
-
-								Toast.makeText(getApplicationContext(), messageFromSync,
-										Toast.LENGTH_SHORT).show();
-							}
-						});
-						}
-					} catch (InterruptedException e) {
-					}
-				}
-			}
-
-			protected void onPostExecute(CharSequence result) {
-				waitForMessage();
-			}
-
-		};
-		Void foo[]={};
-		t.execute(foo);
+	protected void showMessageFromSync() {
+		CharSequence messageFromSync = SyncAdapter.getLastMessage();
+		if (messageFromSync != null) {
+			Toast.makeText(getApplicationContext(), messageFromSync,
+					Toast.LENGTH_SHORT).show();
+		}
 	}
 }
