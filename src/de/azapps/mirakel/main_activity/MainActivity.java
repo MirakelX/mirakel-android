@@ -368,10 +368,10 @@ public class MainActivity extends ActionBarActivity implements
 			if (mitem == null)
 				mitem = menu.findItem(R.id.menu_sync_now_tasks);
 			mitem.setVisible(false);
-			menu.findItem(R.id.menu_kill_button).setVisible(
-					preferences.getBoolean("KillButton", false));
 
 		}
+		menu.findItem(R.id.menu_kill_button).setVisible(preferences.getBoolean("KillButton", false));
+
 	}
 
 	@Override
