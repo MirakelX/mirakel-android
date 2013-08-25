@@ -10,8 +10,10 @@ import org.joda.time.LocalDate;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.widget.Toast;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -20,7 +22,9 @@ import de.azapps.mirakelandroid.R;
 
 public class Helpers {
 	private static String TAG = "Helpers";
-
+	private static final short TASK=0;
+	private static final short LIST=1;
+	public static String UNDO="OLD";
 	/**
 	 * Wrapper-Class
 	 * 
@@ -239,4 +243,33 @@ public class Helpers {
 			return "";
 		}
 	}
+
+	public static void updateLog(ListMirakel listMirakel,Context ctx) {
+		updateLog(LIST,listMirakel.toJson(),ctx);
+		
+	}
+
+	private static void updateLog(short type, String json,Context ctx) {
+		if(ctx==null){
+			Log.e(TAG,"context is null");
+			return;
+		}
+		SharedPreferences settings = PreferenceManager
+				.getDefaultSharedPreferences(ctx);
+		SharedPreferences.Editor editor = settings
+				.edit();;
+		for(int i=10;i>0;i++){
+			String old=settings.getString(UNDO+(i-1), "");
+			editor.putString(UNDO+i, old);
+		}
+		editor.putString(UNDO+0,type+json);
+		editor.commit();
+	}
+
+	public static void updateLog(Task task,Context ctx) {
+		updateLog(TASK,task.toJson(),ctx);
+		
+	}
+
+
 }

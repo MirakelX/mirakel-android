@@ -84,6 +84,7 @@ public class Task extends TaskBase {
 			setUpdatedAt(new GregorianCalendar());
 		ContentValues values = getContentValues();
 		// this.edited= new HashMap<String, Boolean>();
+		Helpers.updateLog(Task.get(getId()),context);
 		database.update(TABLE, values, "_id = " + getId(), null);
 	}
 
@@ -97,6 +98,7 @@ public class Task extends TaskBase {
 	}
 
 	public void delete(boolean force) {
+		Helpers.updateLog(this, context);
 		long id = getId();
 		if (getSync_state() == Network.SYNC_STATE.ADD || force)
 			database.delete(TABLE, "_id = " + id, null);

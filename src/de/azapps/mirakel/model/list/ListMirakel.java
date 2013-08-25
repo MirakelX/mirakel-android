@@ -35,6 +35,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.Network;
@@ -88,7 +89,9 @@ public class ListMirakel extends ListBase {
 					context.getString(R.string.dateTimeFormat),
 					Locale.getDefault()).format(new Date()));
 			ContentValues values = getContentValues();
+			Helpers.updateLog(ListMirakel.getList(getId()),context);
 			database.update(ListMirakel.TABLE, values, "_id = " + getId(), null);
+
 		}
 		editor.commit();
 	}
@@ -99,6 +102,7 @@ public class ListMirakel extends ListBase {
 	 * @param list
 	 */
 	public void destroy() {
+		Helpers.updateLog(this, context);
 		long id = getId();
 		if (id <= 0)
 			return;
@@ -155,7 +159,7 @@ public class ListMirakel extends ListBase {
 		return Task.getTasks(this, getSortBy(), false);
 	}
 	
-	private String toJson() {
+	public String toJson() {
 		String json="{";
 		json+="\"name\":\""+getName()+"\",";
 		json+="\"id\":"+getId()+",";
