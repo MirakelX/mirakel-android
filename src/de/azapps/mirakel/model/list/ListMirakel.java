@@ -25,15 +25,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.DatabaseHelper;
@@ -68,8 +69,9 @@ public class ListMirakel extends ListBase {
 	ListMirakel(int id, String name) {
 		super(id, name);
 	}
-	private  ListMirakel() {
-		super();		
+
+	private ListMirakel() {
+		super();
 	}
 
 	/**
@@ -81,8 +83,8 @@ public class ListMirakel extends ListBase {
 	public void save() {
 		save(true);
 	}
-	
-	public void save(boolean log){
+
+	public void save(boolean log) {
 		SharedPreferences.Editor editor = preferences.edit();
 		// TODO implement for specialLists
 		if (getId() > 0) {
@@ -93,8 +95,8 @@ public class ListMirakel extends ListBase {
 					context.getString(R.string.dateTimeFormat),
 					Locale.getDefault()).format(new Date()));
 			ContentValues values = getContentValues();
-			if(log)
-				Helpers.updateLog(ListMirakel.getList(getId()),context);
+			if (log)
+				Helpers.updateLog(ListMirakel.getList(getId()), context);
 			database.update(ListMirakel.TABLE, values, "_id = " + getId(), null);
 
 		}
@@ -111,13 +113,13 @@ public class ListMirakel extends ListBase {
 	}
 
 	public void destroy(boolean force) {
-		if(!force)
+		if (!force)
 			Helpers.updateLog(this, context);
 		long id = getId();
 		if (id <= 0)
 			return;
 
-		if (getSyncState() == Network.SYNC_STATE.ADD||force) {
+		if (getSyncState() == Network.SYNC_STATE.ADD || force) {
 			database.delete(Task.TABLE, "list_id = " + id, null);
 			database.delete(ListMirakel.TABLE, "_id = " + id, null);
 		} else {
@@ -168,20 +170,21 @@ public class ListMirakel extends ListBase {
 	public List<Task> tasks() {
 		return Task.getTasks(this, getSortBy(), false);
 	}
-	
+
 	public String toJson() {
-		String json="{";
-		json+="\"name\":\""+getName()+"\",";
-		json+="\"id\":"+getId()+",";
-		json+="\"created_at\":\""+getCreatedAt()+"\",";
-		json+="\"updated_at\":\""+getName()+"\",";
-		json+="\"lft\":"+getLft()+",";
-		json+="\"rgt\":"+getRgt()+",";
-		json+="\"sort_by\":"+getSortBy()+",";
-		json+="\"sync_state\":"+getSyncState()+"";
-		json+="}";
+		String json = "{";
+		json += "\"name\":\"" + getName() + "\",";
+		json += "\"id\":" + getId() + ",";
+		json += "\"created_at\":\"" + getCreatedAt() + "\",";
+		json += "\"updated_at\":\"" + getName() + "\",";
+		json += "\"lft\":" + getLft() + ",";
+		json += "\"rgt\":" + getRgt() + ",";
+		json += "\"sort_by\":" + getSortBy() + ",";
+		json += "\"sync_state\":" + getSyncState() + "";
+		json += "}";
 		return json;
 	}
+
 	/**
 	 * Get all Tasks
 	 * 
@@ -203,45 +206,42 @@ public class ListMirakel extends ListBase {
 	private static Context context;
 	private static SharedPreferences preferences;
 
-	
-	public static ListMirakel parseJson(JsonObject el){
-		ListMirakel t=null;
-		JsonElement id=el.get("id");
-		if(id!=null)
-			//use old List from db if existing
-			t=ListMirakel.getList(id.getAsInt());
-		if(t==null){
+	public static ListMirakel parseJson(JsonObject el) {
+		ListMirakel t = null;
+		JsonElement id = el.get("id");
+		if (id != null)
+			// use old List from db if existing
+			t = ListMirakel.getList(id.getAsInt());
+		if (t == null) {
 			t = new ListMirakel();
 		}
-		JsonElement j=el.get("name");
-		if(j!=null)
+		JsonElement j = el.get("name");
+		if (j != null)
 			t.setName(j.getAsString());
-		
-		j=el.get("lft");
-		if(j!=null)
+
+		j = el.get("lft");
+		if (j != null)
 			t.setLft(j.getAsInt());
-		
-		j=el.get("rgt");
-		if(j!=null)
+
+		j = el.get("rgt");
+		if (j != null)
 			t.setRgt(j.getAsInt());
-		
-		j=el.get("lft");
-		if(j!=null)
+
+		j = el.get("lft");
+		if (j != null)
 			t.setLft(j.getAsInt());
-		
-		j=el.get("updated_at");
-		if(j!=null){
-			t.setUpdatedAt(j.getAsString()
-				.replace(":", ""));
+
+		j = el.get("updated_at");
+		if (j != null) {
+			t.setUpdatedAt(j.getAsString().replace(":", ""));
 		}
-		
-		j=el.get("sort_by");
-		if(j!=null)
+
+		j = el.get("sort_by");
+		if (j != null)
 			t.setSortBy(j.getAsInt());
-		
+
 		return t;
 	}
-
 
 	/**
 	 * Initialize the Database and the preferences
@@ -308,7 +308,7 @@ public class ListMirakel extends ListBase {
 		cursor.moveToFirst();
 		ListMirakel newList = cursorToList(cursor);
 		cursor.close();
-		Helpers.logCreate(newList,context);
+		Helpers.logCreate(newList, context);
 		return newList;
 	}
 
@@ -464,7 +464,5 @@ public class ListMirakel extends ListBase {
 		c.close();
 		return lists;
 	}
-
-
 
 }

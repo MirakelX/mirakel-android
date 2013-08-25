@@ -35,7 +35,6 @@ import android.widget.TimePicker.OnTimeChangedListener;
 import android.widget.ViewSwitcher;
 import de.azapps.mirakelandroid.R;
 
-
 public class DateTimePicker extends RelativeLayout implements
 		View.OnClickListener, OnDateChangedListener, OnTimeChangedListener {
 
@@ -59,9 +58,10 @@ public class DateTimePicker extends RelativeLayout implements
 	}
 
 	public DateTimePicker(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle); 
+		super(context, attrs, defStyle);
 
-		this.darkTheme= PreferenceManager.getDefaultSharedPreferences(context).getBoolean("DarkTheme",false);
+		this.darkTheme = PreferenceManager.getDefaultSharedPreferences(context)
+				.getBoolean("DarkTheme", false);
 		// Get LayoutInflater instance
 		final LayoutInflater inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -98,8 +98,9 @@ public class DateTimePicker extends RelativeLayout implements
 																				// the
 																				// date
 																				// picker
-		if(darkTheme)
-			((Button) findViewById(R.id.SwitchToTime)).setTextColor(getResources().getColor(R.color.White));
+		if (darkTheme)
+			((Button) findViewById(R.id.SwitchToTime))
+					.setTextColor(getResources().getColor(R.color.White));
 		// Populate ViewSwitcher
 		viewSwitcher.addView(datePickerView, 0);
 		viewSwitcher.addView(timePickerView, 1);
@@ -138,16 +139,20 @@ public class DateTimePicker extends RelativeLayout implements
 		case R.id.SwitchToDate:
 			v.setEnabled(false);
 			findViewById(R.id.SwitchToTime).setEnabled(true);
-			if(Build.VERSION.SDK_INT>Build.VERSION_CODES.HONEYCOMB)
-				((Button)findViewById(R.id.SwitchToTime)).setTextColor(getResources().getColor(darkTheme?R.color.White:R.color.Black));
+			if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB)
+				((Button) findViewById(R.id.SwitchToTime))
+						.setTextColor(getResources().getColor(
+								darkTheme ? R.color.White : R.color.Black));
 			viewSwitcher.showPrevious();
 			break;
 
 		case R.id.SwitchToTime:
 			v.setEnabled(false);
 			findViewById(R.id.SwitchToDate).setEnabled(true);
-			if(Build.VERSION.SDK_INT>Build.VERSION_CODES.HONEYCOMB)
-				((Button)findViewById(R.id.SwitchToDate)).setTextColor(getResources().getColor(darkTheme?R.color.White:R.color.Black));
+			if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB)
+				((Button) findViewById(R.id.SwitchToDate))
+						.setTextColor(getResources().getColor(
+								darkTheme ? R.color.White : R.color.Black));
 			viewSwitcher.showNext();
 			break;
 		}

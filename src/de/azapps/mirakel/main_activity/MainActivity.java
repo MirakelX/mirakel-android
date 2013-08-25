@@ -43,7 +43,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -61,7 +60,6 @@ import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
-import de.azapps.mirakel.static_activities.CreditsActivity;
 import de.azapps.mirakel.static_activities.SettingsActivity;
 import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakelandroid.R;
@@ -243,22 +241,25 @@ public class MainActivity extends ActionBarActivity implements
 			finish();
 		case R.id.menu_undo:
 			Helpers.undoLast(this);
-			currentList=ListMirakel.getList(currentList.getId());
-			currentTask=Task.get(currentTask.getId());
-			if(currentPosition==TASK_FRAGMENT)
+			currentList = ListMirakel.getList(currentList.getId());
+			currentTask = Task.get(currentTask.getId());
+			if (currentPosition == TASK_FRAGMENT)
 				setCurrentTask(getCurrentTask());
-			else{
+			else {
 				listFragment.getAdapter().changeData(ListMirakel.all());
 				listFragment.getAdapter().notifyDataSetChanged();
-				if(isTablet){
-					tasksFragment_l.getAdapter().changeData(getCurrentList().tasks(), getCurrentList().getId());
+				if (isTablet) {
+					tasksFragment_l.getAdapter().changeData(
+							getCurrentList().tasks(), getCurrentList().getId());
 					tasksFragment_l.getAdapter().notifyDataSetChanged();
-					tasksFragment_r.getAdapter().changeData(getCurrentList().tasks(), getCurrentList().getId());
+					tasksFragment_r.getAdapter().changeData(
+							getCurrentList().tasks(), getCurrentList().getId());
 					tasksFragment_r.getAdapter().notifyDataSetChanged();
-				}else{
-					tasksFragment.getAdapter().changeData(getCurrentList().tasks(), getCurrentList().getId());
+				} else {
+					tasksFragment.getAdapter().changeData(
+							getCurrentList().tasks(), getCurrentList().getId());
 					tasksFragment.getAdapter().notifyDataSetChanged();
-					if(currentPosition==TASKS_FRAGMENT)
+					if (currentPosition == TASKS_FRAGMENT)
 						setCurrentList(getCurrentList());
 				}
 			}
@@ -360,7 +361,8 @@ public class MainActivity extends ActionBarActivity implements
 			mitem.setVisible(false);
 
 		}
-		menu.findItem(R.id.menu_kill_button).setVisible(preferences.getBoolean("KillButton", false));
+		menu.findItem(R.id.menu_kill_button).setVisible(
+				preferences.getBoolean("KillButton", false));
 
 	}
 
@@ -634,7 +636,7 @@ public class MainActivity extends ActionBarActivity implements
 	 * @param task
 	 */
 	public void handleDestroyTask(final Task task) {
-		final MainActivity main=this;
+		final MainActivity main = this;
 		new AlertDialog.Builder(this)
 				.setTitle(task.getName())
 				.setMessage(this.getString(R.string.task_delete_content))

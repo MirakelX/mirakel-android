@@ -64,7 +64,7 @@ public class SpecialListSettingsFragment extends Fragment {
 	private static final String TAG = "SpecialListSettingsFragment";
 	private List<ListMirakel> lists;
 	private SpecialList specialList;
-	Context ctx ;
+	Context ctx;
 	protected AlertDialog alert;
 	private boolean[] mSelectedItems;
 	private View view;
@@ -73,37 +73,43 @@ public class SpecialListSettingsFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		ctx=getActivity();
-		view= inflater.inflate(R.layout.special_list_preferences_fragment, container, false);
-		if(specialList!=null)
+		ctx = getActivity();
+		view = inflater.inflate(R.layout.special_list_preferences_fragment,
+				container, false);
+		if (specialList != null)
 			update();
 		return view;
 	}
-	
+
 	public void setSpecialList(SpecialList s) {
-		specialList=s;
-		if(view!=null)
+		specialList = s;
+		if (view != null)
 			update();
 	}
 
 	public void update() {
-		ViewSwitcher s = (ViewSwitcher) view.findViewById(R.id.switch_special_list_name);
+		ViewSwitcher s = (ViewSwitcher) view
+				.findViewById(R.id.switch_special_list_name);
 		if (s.getNextView().getId() != R.id.special_list_name_edit) {
 			s.showPrevious();
 		}
 
-		final TextView name = (TextView) view.findViewById(R.id.special_list_name);
+		final TextView name = (TextView) view
+				.findViewById(R.id.special_list_name);
 		name.setText(specialList.getName());
 		name.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				final ViewSwitcher switcher = (ViewSwitcher) view.findViewById(R.id.switch_special_list_name);
+				final ViewSwitcher switcher = (ViewSwitcher) view
+						.findViewById(R.id.switch_special_list_name);
 				switcher.showNext();
-				EditText txt = (EditText) view.findViewById(R.id.special_list_name_edit);
+				EditText txt = (EditText) view
+						.findViewById(R.id.special_list_name_edit);
 				txt.setText(name.getText());
 				txt.requestFocus();
-				InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+				InputMethodManager imm = (InputMethodManager) getActivity()
+						.getSystemService(Context.INPUT_METHOD_SERVICE);
 				imm.showSoftInput(txt, InputMethodManager.SHOW_IMPLICIT);
 				txt.setOnEditorActionListener(new OnEditorActionListener() {
 
@@ -113,8 +119,8 @@ public class SpecialListSettingsFragment extends Fragment {
 						if (actionId == EditorInfo.IME_ACTION_DONE) {
 							specialList.setName(v.getText().toString());
 							specialList.save();
-							InputMethodManager imm = (InputMethodManager) getActivity().getApplication()
-									.getSystemService(
+							InputMethodManager imm = (InputMethodManager) getActivity()
+									.getApplication().getSystemService(
 											Context.INPUT_METHOD_SERVICE);
 							imm.hideSoftInputFromWindow(name.getWindowToken(),
 									0);
@@ -128,7 +134,8 @@ public class SpecialListSettingsFragment extends Fragment {
 			}
 		});
 
-		CheckBox active = (CheckBox) view.findViewById(R.id.special_list_active);
+		CheckBox active = (CheckBox) view
+				.findViewById(R.id.special_list_active);
 		active.setChecked(specialList.isActive());
 		active.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
@@ -140,19 +147,28 @@ public class SpecialListSettingsFragment extends Fragment {
 			}
 		});
 
-		((TextView) view.findViewById(R.id.special_list_where)).setText(specialList
-				.getWhereQuery());
-		if(PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean("DarkTheme",false)){
-			((TextView) view.findViewById(R.id.special_list_where)).setTextColor(getResources().getColor(android.R.color.primary_text_dark));
-			((TextView) view.findViewById(R.id.special_list_where_title)).setTextColor(getResources().getColor(android.R.color.primary_text_dark));
-			((TextView) view.findViewById(R.id.special_list_name_title)).setTextColor(getResources().getColor(android.R.color.primary_text_dark));
+		((TextView) view.findViewById(R.id.special_list_where))
+				.setText(specialList.getWhereQuery());
+		if (PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
+				"DarkTheme", false)) {
+			((TextView) view.findViewById(R.id.special_list_where))
+					.setTextColor(getResources().getColor(
+							android.R.color.primary_text_dark));
+			((TextView) view.findViewById(R.id.special_list_where_title))
+					.setTextColor(getResources().getColor(
+							android.R.color.primary_text_dark));
+			((TextView) view.findViewById(R.id.special_list_name_title))
+					.setTextColor(getResources().getColor(
+							android.R.color.primary_text_dark));
 		}
 		if (!BuildConfig.DEBUG)
 			((TextView) view.findViewById(R.id.special_list_where))
 					.setVisibility(View.GONE);
 		lists = ListMirakel.all(false);
-		LinearLayout sortBy = (LinearLayout) view.findViewById(R.id.special_list_sort_by_view);
-		final TextView sortByShow = (TextView) view.findViewById(R.id.special_list_sort_by_pref);
+		LinearLayout sortBy = (LinearLayout) view
+				.findViewById(R.id.special_list_sort_by_view);
+		final TextView sortByShow = (TextView) view
+				.findViewById(R.id.special_list_sort_by_pref);
 		sortByShow.setText(getResources().getStringArray(
 				R.array.task_sorting_items)[specialList.getSortBy()]);
 		sortBy.setOnClickListener(new OnClickListener() {
@@ -163,8 +179,10 @@ public class SpecialListSettingsFragment extends Fragment {
 						specialList, sortByShow);
 			}
 		});
-		LinearLayout defList = (LinearLayout) view.findViewById(R.id.special_list_def_list_view);
-		final TextView defListShow = (TextView) view.findViewById(R.id.special_list_def_list_pref);
+		LinearLayout defList = (LinearLayout) view
+				.findViewById(R.id.special_list_def_list_view);
+		final TextView defListShow = (TextView) view
+				.findViewById(R.id.special_list_def_list_pref);
 		defListShow.setText(specialList.getDefaultList().getName());
 		defList.setOnClickListener(new OnClickListener() {
 
@@ -175,8 +193,10 @@ public class SpecialListSettingsFragment extends Fragment {
 			}
 		});
 
-		LinearLayout defDate = (LinearLayout) view.findViewById(R.id.special_list_def_date_view);
-		final TextView defDateShow = (TextView) view.findViewById(R.id.special_list_def_date_pref);
+		LinearLayout defDate = (LinearLayout) view
+				.findViewById(R.id.special_list_def_date_view);
+		final TextView defDateShow = (TextView) view
+				.findViewById(R.id.special_list_def_date_pref);
 		int[] values = getResources().getIntArray(
 				R.array.special_list_def_date_picker_val);
 		for (int j = 0; j < values.length; j++) {
@@ -236,16 +256,19 @@ public class SpecialListSettingsFragment extends Fragment {
 										switch (item) {
 										case 1:
 											newWhere = "done=1";
-											((TextView) view.findViewById(R.id.special_list_where_done_content))
+											((TextView) view
+													.findViewById(R.id.special_list_where_done_content))
 													.setText(R.string.done);
 											break;
 										case 2:
 											newWhere = "done=0";
-											((TextView) view.findViewById(R.id.special_list_where_done_content))
+											((TextView) view
+													.findViewById(R.id.special_list_where_done_content))
 													.setText(getString(R.string.undone));
 											break;
 										default:
-											((TextView) view.findViewById(R.id.special_list_where_done_content))
+											((TextView) view
+													.findViewById(R.id.special_list_where_done_content))
 													.setText(getString(R.string.empty));
 											break;
 										}
@@ -283,16 +306,19 @@ public class SpecialListSettingsFragment extends Fragment {
 										switch (item) {
 										case 1:
 											newWhere = "reminder is not null";
-											((TextView) view.findViewById(R.id.special_list_where_reminder_content))
+											((TextView) view
+													.findViewById(R.id.special_list_where_reminder_content))
 													.setText(R.string.reminder_set);
 											break;
 										case 2:
 											newWhere = "reminder is null";
-											((TextView) view.findViewById(R.id.special_list_where_reminder_content))
+											((TextView) view
+													.findViewById(R.id.special_list_where_reminder_content))
 													.setText(getString(R.string.reminder_unset));
 											break;
 										default:
-											((TextView) view.findViewById(R.id.special_list_where_reminder_content))
+											((TextView) view
+													.findViewById(R.id.special_list_where_reminder_content))
 													.setText(getString(R.string.empty));
 											break;
 										}
@@ -358,7 +384,8 @@ public class SpecialListSettingsFragment extends Fragment {
 										}
 										updateWhere("list_id", (first ? ""
 												: newWhere + ")"));
-										((TextView) view.findViewById(R.id.special_list_where_list_content))
+										((TextView) view
+												.findViewById(R.id.special_list_where_list_content))
 												.setText(first ? getString(R.string.empty)
 														: text);
 									}
@@ -462,7 +489,8 @@ public class SpecialListSettingsFragment extends Fragment {
 										}
 										updateWhere("priority", (first ? ""
 												: newWhere + ")"));
-										((TextView) view.findViewById(R.id.special_list_where_prio_content))
+										((TextView) view
+												.findViewById(R.id.special_list_where_prio_content))
 												.setText(first ? getString(R.string.empty)
 														: text);
 									}
@@ -561,7 +589,8 @@ public class SpecialListSettingsFragment extends Fragment {
 												.getText().toString();
 										if (t.trim().length() == 0) {
 											updateWhere("content", "");
-											((TextView) view.findViewById(R.id.special_list_where_name_content))
+											((TextView) view
+													.findViewById(R.id.special_list_where_name_content))
 													.setText(getString(R.string.empty));
 											return;
 										}
@@ -594,7 +623,8 @@ public class SpecialListSettingsFragment extends Fragment {
 											break;
 										}
 										updateWhere("content", newWhere);
-										((TextView) view.findViewById(R.id.special_list_where_content_content))
+										((TextView) view
+												.findViewById(R.id.special_list_where_content_content))
 												.setText(text);
 									}
 								});
@@ -676,7 +706,8 @@ public class SpecialListSettingsFragment extends Fragment {
 												.getText().toString();
 										if (t.trim().length() == 0) {
 											updateWhere("name", "");
-											((TextView) view.findViewById(R.id.special_list_where_name_content))
+											((TextView) view
+													.findViewById(R.id.special_list_where_name_content))
 													.setText(getString(R.string.empty));
 											return;
 										}
@@ -709,7 +740,8 @@ public class SpecialListSettingsFragment extends Fragment {
 											break;
 										}
 										updateWhere("name", newWhere);
-										((TextView) view.findViewById(R.id.special_list_where_name_content))
+										((TextView) view
+												.findViewById(R.id.special_list_where_name_content))
 												.setText(text);
 									}
 								});
@@ -743,7 +775,8 @@ public class SpecialListSettingsFragment extends Fragment {
 									public void onClick(DialogInterface dialog,
 											int which) {
 										updateWhere("due", "");
-										((TextView) view.findViewById(R.id.special_list_where_due_content))
+										((TextView) view
+												.findViewById(R.id.special_list_where_due_content))
 												.setText(getString(R.string.empty));
 									}
 								});
@@ -1167,7 +1200,8 @@ public class SpecialListSettingsFragment extends Fragment {
 										String newWhere = "";
 										if (val == 10) {
 											newWhere = "date(due)<=date(\"now\",\"localtime\")";
-											((TextView) view.findViewById(R.id.special_list_where_due_content))
+											((TextView) view
+													.findViewById(R.id.special_list_where_due_content))
 													.setText(getString(R.string.today));
 										} else {
 											String mod = "";
@@ -1210,7 +1244,8 @@ public class SpecialListSettingsFragment extends Fragment {
 														: "days");
 												break;
 											}
-											((TextView) view.findViewById(R.id.special_list_where_due_content))
+											((TextView) view
+													.findViewById(R.id.special_list_where_due_content))
 													.setText(s[val]
 															+ " "
 															+ getResources()
@@ -1268,15 +1303,15 @@ public class SpecialListSettingsFragment extends Fragment {
 					: "") + specialList.getWhereQuery() + " and " + newWhere);
 		}
 		specialList.save();
-		((TextView) view.findViewById(R.id.special_list_where)).setText(specialList
-				.getWhereQuery());
+		((TextView) view.findViewById(R.id.special_list_where))
+				.setText(specialList.getWhereQuery());
 	}
 
 	private View getView(int id) {
 		if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB)
 			return getActivity().getLayoutInflater().inflate(id, null);
-		return View.inflate(new ContextThemeWrapper(getActivity().getBaseContext(),
-				R.style.Dialog), id, null);
+		return View.inflate(new ContextThemeWrapper(getActivity()
+				.getBaseContext(), R.style.Dialog), id, null);
 	}
 
 	protected String getFieldText(String queryPart) {
@@ -1381,6 +1416,5 @@ public class SpecialListSettingsFragment extends Fragment {
 		}
 		return returnString == "" ? getString(R.string.empty) : returnString;
 	}
-
 
 }

@@ -8,7 +8,7 @@ import android.util.Pair;
 import de.azapps.mirakel.Mirakel;
 
 public class Msg {
-	private List<Pair<String, String>> _header = new ArrayList<Pair<String,String>>();
+	private List<Pair<String, String>> _header = new ArrayList<Pair<String, String>>();
 	private String _payload;
 
 	public Msg() {

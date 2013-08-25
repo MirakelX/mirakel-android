@@ -66,13 +66,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" >
 
-                <RelativeLayout
-                    android:id="@+id/login_mirakel"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical" >
+
 
                     <LinearLayout
+                        android:id="@+id/login_mirakel"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical" >
@@ -135,7 +132,6 @@
                             android:scrollHorizontally="true"
                             android:singleLine="true" />
                     </LinearLayout>
-                </RelativeLayout>
 
                 <RelativeLayout
                     android:id="@+id/login_taskwarrior"
@@ -143,18 +139,13 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical" >
 
-                    <LinearLayout
-                        android:layout_width="fill_parent"
+                    <Button
+                        android:id="@+id/load_configfile"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical" >
-
-                        <Button
-                            android:id="@+id/load_configfile"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/load_config" />
-                    </LinearLayout>
+                        android:text="@string/load_config" />
                 </RelativeLayout>
+
             </ViewSwitcher>
 
             <TextView

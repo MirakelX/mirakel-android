@@ -91,7 +91,6 @@ public class SpecialList extends ListMirakel {
 	private static final String[] allColumns = { "_id", "name", "whereQuery",
 			"active", "def_list", "def_date", "sort_by", "sync_state" };
 
-
 	/**
 	 * Initialize the Database and the preferences
 	 * 
@@ -232,7 +231,7 @@ public class SpecialList extends ListMirakel {
 		if (!cursor.isAfterLast()) {
 			list = cursorToSList(cursor);
 			cursor.moveToNext();
-		} 
+		}
 		cursor.close();
 		return list;
 	}

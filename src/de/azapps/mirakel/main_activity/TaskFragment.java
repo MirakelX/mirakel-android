@@ -95,7 +95,6 @@ public class TaskFragment extends Fragment {
 	public void update() {
 		if (!created)
 			return;
-		
 
 		main.showMessageFromSync();
 
@@ -110,7 +109,7 @@ public class TaskFragment extends Fragment {
 		Task_name = (TextView) view.findViewById(R.id.task_name);
 		String tname = task.getName();
 		Task_name.setText(tname == null ? "" : tname);
-		if(main.isTablet)
+		if (main.isTablet)
 			Task_name.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
 		Task_name.setOnClickListener(new View.OnClickListener() {
 			@Override

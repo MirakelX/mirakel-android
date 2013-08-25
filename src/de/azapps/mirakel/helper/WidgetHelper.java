@@ -34,8 +34,12 @@ public class WidgetHelper {
 			rv.setTextColor(R.id.tasks_row_name, mContext.getResources()
 					.getColor(R.color.Grey));
 		} else {
-			rv.setTextColor(R.id.tasks_row_name, mContext.getResources()
-					.getColor(preferences.getBoolean("darkWidget", false)?R.color.White:R.color.Black));
+			rv.setTextColor(
+					R.id.tasks_row_name,
+					mContext.getResources()
+							.getColor(
+									preferences.getBoolean("darkWidget", false) ? R.color.White
+											: R.color.Black));
 		}
 		rv.setTextViewText(R.id.tasks_row_priority, task.getPriority() + "");
 		rv.setTextColor(R.id.tasks_row_priority, mContext.getResources()

@@ -190,15 +190,16 @@ public class ReminderAlarm extends BroadcastReceiver {
 				List<Task> tasks = Task.getTasksWithReminders();
 				for (int i = 0; i < activeAlarms.size(); i++) {
 					Task t = activeAlarms.get(i);
-					if(t==null){
+					if (t == null) {
 						i = cancelAlarm(ctx, t, null, i);
 						continue;
 					}
 					Task newTask = Task.get(t.getId());
-					if (newTask == null||newTask.getReminder()==null||newTask.isDone()) {
+					if (newTask == null || newTask.getReminder() == null
+							|| newTask.isDone()) {
 						i = cancelAlarm(ctx, t, newTask, i);
 						continue;
-					}else if (newTask.getReminder() != null) {
+					} else if (newTask.getReminder() != null) {
 						if (newTask.getReminder().getTimeInMillis() > new Date()
 								.getTime()) {
 							closeNotificationFor(ctx, t.getId());
@@ -245,7 +246,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 		intent.putExtra(EXTRA_ID, task.getId());
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx, 0,
 				intent, PendingIntent.FLAG_UPDATE_CURRENT);
-		if(pendingIntent==null || task.getReminder()==null)
+		if (pendingIntent == null || task.getReminder() == null)
 			return;
 		alarmManager.set(AlarmManager.RTC_WAKEUP, task.getReminder()
 				.getTimeInMillis(), pendingIntent);

@@ -90,7 +90,7 @@ public class TaskWarriorSync {
 			if (error == TW_ERRORS.NO_ERROR) {
 				Task.deleteTasksPermanently(syncedTasksId);
 				Task.resetSyncState(syncedTasksId);
-			}else
+			} else
 				return error;
 		}
 		return TW_ERRORS.NO_ERROR;

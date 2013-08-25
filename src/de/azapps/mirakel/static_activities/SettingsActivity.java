@@ -19,7 +19,6 @@
 package de.azapps.mirakel.static_activities;
 
 import java.io.File;
-import java.net.URISyntaxException;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -29,7 +28,6 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
@@ -38,7 +36,6 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 import de.azapps.mirakel.helper.ExportImport;
-import de.azapps.mirakel.helper.FileUtils;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.PreferencesHelper;
 import de.azapps.mirakelandroid.R;
@@ -53,13 +50,14 @@ public class SettingsActivity extends PreferenceActivity {
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-		if(preferences.getBoolean("DarkTheme", false))
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		if (preferences.getBoolean("DarkTheme", false))
 			setTheme(R.style.AppBaseThemeDARK);
 		super.onCreate(savedInstanceState);
 		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
 			// Display the fragment as the main content.
-			((FrameLayout)findViewById(android.R.id.content)).removeAllViews();
+			((FrameLayout) findViewById(android.R.id.content)).removeAllViews();
 			getFragmentManager().beginTransaction()
 					.replace(android.R.id.content, new SettingsFragment())
 					.commit();
@@ -80,8 +78,6 @@ public class SettingsActivity extends PreferenceActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-
-
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		final Context that = this;
@@ -90,7 +86,8 @@ public class SettingsActivity extends PreferenceActivity {
 		case FILE_ASTRID:
 			if (resultCode != RESULT_OK)
 				return;
-			final String path_astrid = Helpers.getPathFromUri(data.getData(),this);
+			final String path_astrid = Helpers.getPathFromUri(data.getData(),
+					this);
 
 			// Do the import in a background-task
 			new AsyncTask<String, Void, Boolean>() {
@@ -104,15 +101,16 @@ public class SettingsActivity extends PreferenceActivity {
 				@Override
 				protected void onPostExecute(Boolean success) {
 					dialog.dismiss();
-					if(!success) {
-					Toast.makeText(that, R.string.astrid_unsuccess,
-							Toast.LENGTH_LONG).show();
+					if (!success) {
+						Toast.makeText(that, R.string.astrid_unsuccess,
+								Toast.LENGTH_LONG).show();
 					} else {
-					Toast.makeText(that, R.string.astrid_success,
-							Toast.LENGTH_SHORT).show();
-					android.os.Process.killProcess(android.os.Process.myPid()); // ugly
-																				// but
-																				// simple
+						Toast.makeText(that, R.string.astrid_success,
+								Toast.LENGTH_SHORT).show();
+						android.os.Process.killProcess(android.os.Process
+								.myPid()); // ugly
+											// but
+											// simple
 					}
 				}
 
@@ -128,7 +126,7 @@ public class SettingsActivity extends PreferenceActivity {
 		case FILE_IMPORT_DB:
 			if (resultCode != RESULT_OK)
 				return;
-			final String path_db = Helpers.getPathFromUri(data.getData(),this);
+			final String path_db = Helpers.getPathFromUri(data.getData(), this);
 			// Check if this is an database file
 			if (!path_db.endsWith(".db")) {
 				Toast.makeText(that, R.string.import_wrong_type,

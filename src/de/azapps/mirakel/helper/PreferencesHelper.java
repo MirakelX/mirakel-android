@@ -130,20 +130,20 @@ public class PreferencesHelper {
 		List<ListMirakel> lists = ListMirakel.all();
 		CharSequence entryValues[] = new String[lists.size()];
 		CharSequence entries[] = new String[lists.size()];
-		CharSequence entryValuesWithDefault[] = new String[lists.size()+1];
-		CharSequence entriesWithDefault[] = new String[lists.size()+1];
+		CharSequence entryValuesWithDefault[] = new String[lists.size() + 1];
+		CharSequence entriesWithDefault[] = new String[lists.size() + 1];
 		int i = 0;
 		for (ListMirakel list : lists) {
-			String id=String.valueOf(list.getId());
-			String name=list.getName();
+			String id = String.valueOf(list.getId());
+			String name = list.getName();
 			entryValues[i] = id;
 			entries[i] = name;
-			entryValuesWithDefault[i+1]=id;
-			entriesWithDefault[i+1]=name;
+			entryValuesWithDefault[i + 1] = id;
+			entriesWithDefault[i + 1] = name;
 			i++;
 		}
-		entriesWithDefault[0]=activity.getString(R.string.default_list);
-		entryValuesWithDefault[0]="default";
+		entriesWithDefault[0] = activity.getString(R.string.default_list);
+		entryValuesWithDefault[0] = "default";
 
 		// Load the preferences from an XML resource
 
@@ -151,11 +151,11 @@ public class PreferencesHelper {
 		ListPreference notificationsListPreference = (ListPreference) findPreference("notificationsList");
 		notificationsListPreference.setEntries(entries);
 		notificationsListPreference.setEntryValues(entryValues);
-		
+
 		ListPreference notificationsListOpenPreference = (ListPreference) findPreference("notificationsListOpen");
 		notificationsListOpenPreference.setEntries(entriesWithDefault);
 		notificationsListOpenPreference.setEntryValues(entryValuesWithDefault);
-		
+
 		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
 			CheckBoxPreference mCheckBoxPref = (CheckBoxPreference) findPreference("notificationsBig");
 			PreferenceCategory mCategory = (PreferenceCategory) findPreference("category_notifications");
@@ -493,7 +493,6 @@ public class PreferencesHelper {
 			}
 		});
 
-
 		Preference importAstrid = findPreference("import_astrid");
 		importAstrid
 				.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -607,7 +606,9 @@ public class PreferencesHelper {
 														R.string.delete_done_success,
 														Toast.LENGTH_SHORT)
 														.show();
-												android.os.Process.killProcess(android.os.Process.myPid()); 
+												android.os.Process
+														.killProcess(android.os.Process
+																.myPid());
 											}
 										})
 								.setNegativeButton(android.R.string.cancel,
@@ -621,97 +622,124 @@ public class PreferencesHelper {
 						return true;
 					}
 				});
-		Preference undoNumber=(Preference) findPreference("UndoNumber");
-		undoNumber.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-			
-			@Override
-			public boolean onPreferenceClick(Preference preference) {
-				final int old_val=PreferenceManager.getDefaultSharedPreferences(activity).getInt("UndoNumber", 10);
-				final int max=25;
-				final int min=1;
-				if (v4_0) {
-					numberPicker = new NumberPicker(activity);
-					((NumberPicker) numberPicker).setMaxValue(max);
-					((NumberPicker) numberPicker).setMinValue(min);
-					((NumberPicker) numberPicker).setWrapSelectorWheel(false);
-					((NumberPicker) numberPicker).setValue(old_val);
-					((NumberPicker) numberPicker).setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-				} else {
-					numberPicker = ((LayoutInflater) activity
-							.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
-							.inflate(R.layout.dialog_num_picker_v10, null);
-					
-					((TextView)numberPicker.findViewById(R.id.dialog_num_pick_val)).setText(old_val+"");
-					((Button) numberPicker.findViewById(R.id.dialog_num_pick_plus))
-							.setOnClickListener(new View.OnClickListener() {
-								@Override
-								public void onClick(View v) {
-									int val = Integer.parseInt(((TextView) numberPicker
-											.findViewById(R.id.dialog_num_pick_val))
-											.getText().toString());
-									if(val<max){
-										((TextView)numberPicker.findViewById(R.id.dialog_num_pick_val)).setText(++val+"");
-									}
-								}
-							});
-					((Button) numberPicker.findViewById(R.id.dialog_num_pick_minus))
-							.setOnClickListener(new View.OnClickListener() {
-								@Override
-								public void onClick(View v) {
-									int val = Integer.parseInt(((TextView) numberPicker
-											.findViewById(R.id.dialog_num_pick_val))
-											.getText().toString());
-									if(val>min){
-										((TextView)numberPicker.findViewById(R.id.dialog_num_pick_val)).setText(--val+"");
-									}
-								}
-							});
-				}		
-				new AlertDialog.Builder(activity)
-				.setTitle(R.string.undo_number)
-				.setMessage(R.string.undo_number_summary)
-				.setView(numberPicker)
-				.setPositiveButton(R.string.OK,
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog,
-									int whichButton) {
-								SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(activity).edit();
-								int val;
-								if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-									val=((NumberPicker) numberPicker).getValue();
-								} else {
-									val = Integer.parseInt(((TextView) numberPicker
-											.findViewById(R.id.dialog_num_pick_val))
-											.getText().toString());
-								}
-								editor.putInt("UndoNumber", val);
-								if(old_val>val){
-									for(int i=val;i<max;i++){
-										editor.putString(Helpers.UNDO+i, "");
-									}
-								}
-								editor.commit();
-							}
-						})
-				.setNegativeButton(R.string.Cancel,
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog,
-									int whichButton) {
-								// Do nothing.
-							}
-						}).show();
-				return true;
-			}
-		});
+		Preference undoNumber = (Preference) findPreference("UndoNumber");
+		undoNumber
+				.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+					@Override
+					public boolean onPreferenceClick(Preference preference) {
+						final int old_val = PreferenceManager
+								.getDefaultSharedPreferences(activity).getInt(
+										"UndoNumber", 10);
+						final int max = 25;
+						final int min = 1;
+						if (v4_0) {
+							numberPicker = new NumberPicker(activity);
+							((NumberPicker) numberPicker).setMaxValue(max);
+							((NumberPicker) numberPicker).setMinValue(min);
+							((NumberPicker) numberPicker)
+									.setWrapSelectorWheel(false);
+							((NumberPicker) numberPicker).setValue(old_val);
+							((NumberPicker) numberPicker)
+									.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+						} else {
+							numberPicker = ((LayoutInflater) activity
+									.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
+									.inflate(R.layout.dialog_num_picker_v10,
+											null);
+
+							((TextView) numberPicker
+									.findViewById(R.id.dialog_num_pick_val))
+									.setText(old_val + "");
+							((Button) numberPicker
+									.findViewById(R.id.dialog_num_pick_plus))
+									.setOnClickListener(new View.OnClickListener() {
+										@Override
+										public void onClick(View v) {
+											int val = Integer
+													.parseInt(((TextView) numberPicker
+															.findViewById(R.id.dialog_num_pick_val))
+															.getText()
+															.toString());
+											if (val < max) {
+												((TextView) numberPicker
+														.findViewById(R.id.dialog_num_pick_val))
+														.setText(++val + "");
+											}
+										}
+									});
+							((Button) numberPicker
+									.findViewById(R.id.dialog_num_pick_minus))
+									.setOnClickListener(new View.OnClickListener() {
+										@Override
+										public void onClick(View v) {
+											int val = Integer
+													.parseInt(((TextView) numberPicker
+															.findViewById(R.id.dialog_num_pick_val))
+															.getText()
+															.toString());
+											if (val > min) {
+												((TextView) numberPicker
+														.findViewById(R.id.dialog_num_pick_val))
+														.setText(--val + "");
+											}
+										}
+									});
+						}
+						new AlertDialog.Builder(activity)
+								.setTitle(R.string.undo_number)
+								.setMessage(R.string.undo_number_summary)
+								.setView(numberPicker)
+								.setPositiveButton(R.string.OK,
+										new DialogInterface.OnClickListener() {
+											public void onClick(
+													DialogInterface dialog,
+													int whichButton) {
+												SharedPreferences.Editor editor = PreferenceManager
+														.getDefaultSharedPreferences(
+																activity)
+														.edit();
+												int val;
+												if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
+													val = ((NumberPicker) numberPicker)
+															.getValue();
+												} else {
+													val = Integer
+															.parseInt(((TextView) numberPicker
+																	.findViewById(R.id.dialog_num_pick_val))
+																	.getText()
+																	.toString());
+												}
+												editor.putInt("UndoNumber", val);
+												if (old_val > val) {
+													for (int i = val; i < max; i++) {
+														editor.putString(
+																Helpers.UNDO
+																		+ i, "");
+													}
+												}
+												editor.commit();
+											}
+										})
+								.setNegativeButton(R.string.Cancel,
+										new DialogInterface.OnClickListener() {
+											public void onClick(
+													DialogInterface dialog,
+													int whichButton) {
+												// Do nothing.
+											}
+										}).show();
+						return true;
+					}
+				});
 
 		Preference credits = findPreference("credits");
-		Intent startCreditsIntent = new Intent(activity,
-				CreditsActivity.class);
+		Intent startCreditsIntent = new Intent(activity, CreditsActivity.class);
 		credits.setIntent(startCreditsIntent);
-		
+
 		Preference contact = findPreference("contact");
 		contact.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-			
+
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
 				Helpers.contact(activity);

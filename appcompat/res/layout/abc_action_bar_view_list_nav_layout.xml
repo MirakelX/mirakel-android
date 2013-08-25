@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2012 The Android Open Source Project
+<!--
+     Copyright (C) 2012 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,10 +15,16 @@
      limitations under the License.
 -->
 
-<!-- Styled linear layout, compensating for the lack of a defStyle parameter
-     in pre-Honeycomb LinearLayout's constructor. -->
+
+<!--
+     Styled linear layout, compensating for the lack of a defStyle parameter
+     in pre-Honeycomb LinearLayout's constructor.
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              style="?attr/actionBarTabBarStyle">
+    xmlns:tools="http://schemas.android.com/tools"
+    style="?attr/actionBarTabBarStyle"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    tools:ignore="UnusedResources" >
+
 </LinearLayout>

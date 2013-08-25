@@ -61,11 +61,9 @@ import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
-import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
-import de.azapps.mirakel.sync.Network;
 import de.azapps.mirakelandroid.R;
 
 public class TasksFragment extends Fragment {
@@ -258,8 +256,10 @@ public class TasksFragment extends Fragment {
 								.getSystemService(Context.INPUT_METHOD_SERVICE);
 						imm.showSoftInput(newTask,
 								InputMethodManager.SHOW_IMPLICIT);
-						if(main.currentPosition==MainActivity.TASKS_FRAGMENT&&!PreferenceManager.getDefaultSharedPreferences(main).getBoolean(
-								"hideKeyboard", true))
+						if (main.currentPosition == MainActivity.TASKS_FRAGMENT
+								&& !PreferenceManager
+										.getDefaultSharedPreferences(main)
+										.getBoolean("hideKeyboard", true))
 							((EditText) v).requestFocus();
 					}
 				});
@@ -368,7 +368,7 @@ public class TasksFragment extends Fragment {
 		main.getListFragment().update();
 		if (!PreferenceManager.getDefaultSharedPreferences(main).getBoolean(
 				"hideKeyboard", true)) {
-				focusNew();
+			focusNew();
 		}
 		return true;
 	}
