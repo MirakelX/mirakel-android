@@ -35,6 +35,10 @@
         mirakel:showAsAction="ifRoom|withText"
         android:title="@string/menu_move"/>
     <item
+        android:id="@+id/menu_undo"
+        mirakel:showAsAction="never"
+        android:title="@string/action_undo"/>
+    <item
         android:id="@+id/share_task"
         android:icon="@android:drawable/ic_menu_share"
         mirakel:showAsAction="ifRoom|withText"
@@ -60,6 +64,7 @@
         android:id="@+id/menu_contact_task"
         mirakel:showAsAction="never"
         android:title="@string/action_contact"/>
+
     <item
         android:id="@+id/menu_kill_button"
         mirakel:showAsAction="never"

@@ -37,6 +37,10 @@
         android:title="@string/search">
     </item>
     <item
+        android:id="@+id/menu_undo"
+        mirakel:showAsAction="never"
+        android:title="@string/action_undo"/>
+    <item
         android:id="@+id/share_list"
         android:icon="@android:drawable/ic_menu_share"
         mirakel:showAsAction="ifRoom|withText"

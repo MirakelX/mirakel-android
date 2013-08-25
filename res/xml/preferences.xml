@@ -110,18 +110,16 @@
             android:key="hideKeyboard"
             android:summary="@string/hide_keyboard_summary"
             android:title="@string/hide_keyboard" />
-        <CheckBoxPreference
+        <Preference 
+            android:key="UndoNumber"
+            android:summary="@string/undo_number_summary"
+            android:title="@string/undo_number"/>
+        <CheckBoxPreference 
             android:defaultValue="false"
             android:key="semanticNewTask"
             android:summary="@string/semantic_new_task_summary"
-            android:title="@string/semantic_new_task" />
-        <!--
-        After vacance
-        <Preference
-            android:dependency="semanticNewTask"
-            android:summary="@string/semantic_new_task_config_summary"
-            android:title="@string/semantic_new_task_config" />
-        -->
+            android:title="@string/semantic_new_task"
+            />
     </PreferenceCategory>
 
     <!-- Special Lists -->

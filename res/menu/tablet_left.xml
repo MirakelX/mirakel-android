@@ -40,6 +40,10 @@
         android:title="@string/task_menu_sorting">
     </item>
     <item
+        android:id="@+id/menu_undo"
+        mirakel:showAsAction="never"
+        android:title="@string/action_undo"/>
+    <item
         android:id="@+id/menu_new_list"
         android:icon="@android:drawable/ic_menu_add"
         mirakel:showAsAction="ifRoom|withText"

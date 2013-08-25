@@ -109,6 +109,7 @@
     <string name="astrid_import_title">Select Astrid File</string>
     <string name="astrid_wait">Please wait…</string>
     <string name="import_wrong_type">This is not a Mirakel-file!</string>
+    <!-- GUI -->
     <string name="highlightSelected_summary">Should I highlight lists/tasks when you click on them?</string>
     <string name="highlightSelected">Highlight Selected</string>
     <string name="showDone">Show done tasks</string>
@@ -123,7 +124,9 @@
     <string name="ui_settings_title">User Interface</string>
 	<string name="hide_keyboard">Hide Keyboard</string>
 	<string name="hide_keyboard_summary">Hide Keyboard if New Task is created?</string>
-	<string name="semantic_new_task">Semantic new Tasks</string>
+	<string name="undo_number">Number of Changes saved</string>
+	<string name="undo_number_summary">How Many Changes do you want to save?</string>
+	<string name="semantic_new_task">Semantic New Tasks</string>
 	<string name="semantic_new_task_summary">For example: Set due to today if you type „today …“</string>
 	<string name="semantic_new_task_config_summary">Configure the conditions for creating new Tasks</string>
 	<string name="semantic_new_task_config">Configure Semantic new Tasks</string>

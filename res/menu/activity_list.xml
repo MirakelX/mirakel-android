@@ -35,6 +35,10 @@
         android:title="@string/list_menu_new_list">
     </item>
     <item
+        android:id="@+id/menu_undo"
+        mirakel:showAsAction="never"
+        android:title="@string/action_undo"/>
+    <item
         android:id="@+id/menu_sync_now_list"
         mirakel:showAsAction="never"
         android:title="@string/action_sync_now"/>

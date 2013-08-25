@@ -41,10 +41,8 @@ public class TaskWarriorSync {
 	static String _key = "";
 	static File root;
 	static File user_ca;
-	// static List<Task> _local_tasks;
 	private AccountManager accountManager;
 	private Account account;
-	private String server_error, server_error_code = null;
 
 	public enum TW_ERRORS {
 		CANNOT_CREATE_SOCKET, CANNOT_PARSE_MESSAGE, MESSAGE_ERRORS, TRY_LATER, ACCESS_DENIED, ACCOUNT_SUSPENDED, NO_ERROR
@@ -92,8 +90,8 @@ public class TaskWarriorSync {
 			if (error == TW_ERRORS.NO_ERROR) {
 				Task.deleteTasksPermanently(syncedTasksId);
 				Task.resetSyncState(syncedTasksId);
-			}
-			return error;
+			}else
+				return error;
 		}
 		return TW_ERRORS.NO_ERROR;
 	}
@@ -241,8 +239,6 @@ public class TaskWarriorSync {
 					Toast.LENGTH_LONG).show();
 			Log.v(TAG, "Message from Server: " + message);
 		}
-		server_error_code = remotes.get("code");
-		server_error = remotes.get("error");
 		client.close();
 		return TW_ERRORS.NO_ERROR;
 	}

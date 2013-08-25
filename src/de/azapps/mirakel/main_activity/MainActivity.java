@@ -252,6 +252,29 @@ public class MainActivity extends ActionBarActivity implements
 						NotificationService.class));
 			}
 			finish();
+		case R.id.menu_undo:
+			Helpers.undoLast(this);
+			currentList=ListMirakel.getList(currentList.getId());
+			currentTask=Task.get(currentTask.getId());
+			if(currentPosition==TASK_FRAGMENT)
+				setCurrentTask(getCurrentTask());
+			else{
+				listFragment.getAdapter().changeData(ListMirakel.all());
+				listFragment.getAdapter().notifyDataSetChanged();
+				if(isTablet){
+					tasksFragment_l.getAdapter().changeData(getCurrentList().tasks(), getCurrentList().getId());
+					tasksFragment_l.getAdapter().notifyDataSetChanged();
+					tasksFragment_r.getAdapter().changeData(getCurrentList().tasks(), getCurrentList().getId());
+					tasksFragment_r.getAdapter().notifyDataSetChanged();
+				}else{
+					tasksFragment.getAdapter().changeData(getCurrentList().tasks(), getCurrentList().getId());
+					tasksFragment.getAdapter().notifyDataSetChanged();
+					if(currentPosition==TASKS_FRAGMENT)
+						setCurrentList(getCurrentList());
+				}
+			}
+			ReminderAlarm.updateAlarms(this);
+			break;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -345,10 +368,10 @@ public class MainActivity extends ActionBarActivity implements
 			if (mitem == null)
 				mitem = menu.findItem(R.id.menu_sync_now_tasks);
 			mitem.setVisible(false);
-			menu.findItem(R.id.menu_kill_button).setVisible(
-					preferences.getBoolean("KillButton", false));
 
 		}
+		menu.findItem(R.id.menu_kill_button).setVisible(preferences.getBoolean("KillButton", false));
+
 	}
 
 	@Override

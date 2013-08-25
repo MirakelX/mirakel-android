@@ -35,6 +35,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.Network;
@@ -78,6 +79,10 @@ public class ListMirakel extends ListBase {
 	 *            The List
 	 */
 	public void save() {
+		save(true);
+	}
+	
+	public void save(boolean log){
 		SharedPreferences.Editor editor = preferences.edit();
 		// TODO implement for specialLists
 		if (getId() > 0) {
@@ -88,7 +93,10 @@ public class ListMirakel extends ListBase {
 					context.getString(R.string.dateTimeFormat),
 					Locale.getDefault()).format(new Date()));
 			ContentValues values = getContentValues();
+			if(log)
+				Helpers.updateLog(ListMirakel.getList(getId()),context);
 			database.update(ListMirakel.TABLE, values, "_id = " + getId(), null);
+
 		}
 		editor.commit();
 	}
@@ -99,11 +107,17 @@ public class ListMirakel extends ListBase {
 	 * @param list
 	 */
 	public void destroy() {
+		destroy(false);
+	}
+
+	public void destroy(boolean force) {
+		if(!force)
+			Helpers.updateLog(this, context);
 		long id = getId();
 		if (id <= 0)
 			return;
 
-		if (getSyncState() == Network.SYNC_STATE.ADD) {
+		if (getSyncState() == Network.SYNC_STATE.ADD||force) {
 			database.delete(Task.TABLE, "list_id = " + id, null);
 			database.delete(ListMirakel.TABLE, "_id = " + id, null);
 		} else {
@@ -155,7 +169,7 @@ public class ListMirakel extends ListBase {
 		return Task.getTasks(this, getSortBy(), false);
 	}
 	
-	private String toJson() {
+	public String toJson() {
 		String json="{";
 		json+="\"name\":\""+getName()+"\",";
 		json+="\"id\":"+getId()+",";
@@ -294,6 +308,7 @@ public class ListMirakel extends ListBase {
 		cursor.moveToFirst();
 		ListMirakel newList = cursorToList(cursor);
 		cursor.close();
+		Helpers.logCreate(newList,context);
 		return newList;
 	}
 
@@ -449,5 +464,7 @@ public class ListMirakel extends ListBase {
 		c.close();
 		return lists;
 	}
+
+
 
 }
