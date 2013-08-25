@@ -195,13 +195,10 @@ public class ReminderAlarm extends BroadcastReceiver {
 						continue;
 					}
 					Task newTask = Task.get(t.getId());
-					if (newTask == null) {
+					if (newTask == null||newTask.getReminder()==null||newTask.isDone()) {
 						i = cancelAlarm(ctx, t, newTask, i);
 						continue;
-					}
-					if (newTask.isDone()) {
-						i = cancelAlarm(ctx, t, newTask, i);
-					} else if (newTask.getReminder() != null) {
+					}else if (newTask.getReminder() != null) {
 						if (newTask.getReminder().getTimeInMillis() > new Date()
 								.getTime()) {
 							closeNotificationFor(ctx, t.getId());
