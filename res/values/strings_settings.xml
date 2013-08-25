@@ -61,6 +61,9 @@
     <string name="notifications_persistent_summary">Should the notification be persistent?</string>
     <string name="notifications_list">List</string>
     <string name="notifications_list_summary">Which List should I show you?</string>
+    <string name="notifications_list_open">Open List</string>
+    <string name="notifications_list_open_summary">Which List should I open, when you click on the notification?</string>
+    <string name="default_list">Default List</string>
     <string name="notifications_big">Big Views</string>
     <string name="notifications_big_summary">Show big Notifications?</string>
     <string name="notifications_zero_show_summary">Hide, if there are no tasks in the selected List?</string>
@@ -99,6 +102,7 @@
     <!-- Changelog -->
     <string name="changelog_click_summary">View the changelog</string>
     <string name="changelog_click">Changelog</string>
+    <string name="settings_about">About</string>
 
     <!-- Astrid -->
     <string name="import_astrid_click_summary">Import from an Astrid-file</string>
@@ -128,6 +132,8 @@
 	<string name="undo_number_summary">How Many Changes do you want to save?</string>
 	<string name="semantic_new_task">Semantic New Tasks</string>
 	<string name="semantic_new_task_summary">For example: Set due to today if you type „today …“</string>
+	<string name="semantic_new_task_config_summary">Configure the conditions for creating new Tasks</string>
+	<string name="semantic_new_task_config">Configure Semantic new Tasks</string>
     
     <!-- Delete done -->
     <string name="delete_done">Delete done tasks</string>

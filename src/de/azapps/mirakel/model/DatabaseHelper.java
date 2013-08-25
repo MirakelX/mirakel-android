@@ -37,7 +37,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String TAG = "DatabaseHelper";
 	private Context context;
-	public static final int DATABASE_VERSION = 14;
+	public static final int DATABASE_VERSION = 15;
 
 	public DatabaseHelper(Context ctx) {
 		super(ctx, "mirakel.db", null, DATABASE_VERSION);
@@ -171,9 +171,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			MainActivity.updateTasksUUID = true;
 			// Don't remove this version-gap
 		case 13:
-			db.execSQL("Alter Table " + Task.TABLE
+			db.execSQL("Alter Table "
+					+ Task.TABLE
 					+ " add column additional_entries TEXT NOT NULL DEFAULT '';");
-
+		case 14:
+			db.execSQL("CREATE TABLE semantic_conditions ("
+					+ "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
+					+ "condition TEXT NOT NULL, " + "due INTEGER, "
+					+ "priority INTEGER, " + "list INTEGER);");
+			db.execSQL("INSERT INTO semantic_conditions (condition,due) VALUES "
+					+ "(\"" + context.getString(R.string.today) + "\",0)," 
+					+ "(\"" + context.getString(R.string.tomorrow) + "\",1);");
 		}
 	}
 

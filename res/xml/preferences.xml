@@ -62,6 +62,12 @@
             android:key="notificationsList"
             android:summary="@string/notifications_list_summary"
             android:title="@string/notifications_list" />
+        <ListPreference
+            android:defaultValue="-1"
+            android:dependency="notificationsUse"
+            android:key="notificationsListOpen"
+            android:summary="@string/notifications_list_open_summary"
+            android:title="@string/notifications_list_open" />
 
         <CheckBoxPreference
             android:defaultValue="true"
@@ -83,8 +89,8 @@
 
     <!-- GUI -->
     <PreferenceCategory
-        android:key="category_gui" android:title="@string/ui_settings_title" >
-
+        android:key="category_gui"
+        android:title="@string/ui_settings_title" >
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="highlightSelected"
@@ -115,7 +121,7 @@
             android:key="semanticNewTask"
             android:summary="@string/semantic_new_task_summary"
             android:title="@string/semantic_new_task"
-            />2
+            />
     </PreferenceCategory>
 
     <!-- Special Lists -->
@@ -197,12 +203,24 @@
         <Preference
             android:key="deleteDone"
             android:summary="@string/delete_done_summary"
-            android:title="@string/delete_done" 
-            />
+            android:title="@string/delete_done" />
+    </PreferenceCategory>
+    <!-- About -->
+    <PreferenceCategory 
+        android:title="@string/settings_about">
         <Preference
             android:key="changelog"
             android:summary="@string/changelog_click_summary"
             android:title="@string/changelog_click" />
+        <Preference
+            android:key="credits"
+            android:summary="@string/action_credits_summary"
+            android:title="@string/action_credits" />
+        <Preference
+            android:key="contact"
+            android:summary="@string/action_contact_summary"
+            android:title="@string/action_contact" />
+        
     </PreferenceCategory>
 
 </PreferenceScreen>

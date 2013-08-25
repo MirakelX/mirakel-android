@@ -223,13 +223,6 @@ public class MainActivity extends ActionBarActivity implements
 			bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
 			ContentResolver.requestSync(null, Mirakel.AUTHORITY_TYP, bundle);
 			break;
-		case R.id.menu_credits_list:
-		case R.id.menu_credits_task:
-		case R.id.menu_credits_tasks:
-			Intent creditsIntent = new Intent(MainActivity.this,
-					CreditsActivity.class);
-			startActivity(creditsIntent);
-			break;
 		case R.id.share_task:
 			Helpers.share(this, getCurrentTask());
 			break;
@@ -238,11 +231,6 @@ public class MainActivity extends ActionBarActivity implements
 			break;
 		case R.id.search:
 			onSearchRequested();
-			break;
-		case R.id.menu_contact_list:
-		case R.id.menu_contact_task:
-		case R.id.menu_contact_tasks:
-			Helpers.contact(getApplicationContext());
 			break;
 		case R.id.menu_kill_button:
 			// Only Close

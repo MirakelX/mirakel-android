@@ -68,7 +68,8 @@ public class NotificationService extends Service {
 	}
 
 	public static void stop(Context ctx) {
-		NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(NOTIFICATION_SERVICE);
+		NotificationManager notificationManager = (NotificationManager) ctx
+				.getSystemService(NOTIFICATION_SERVICE);
 		notificationManager.cancel(Mirakel.NOTIF_DEFAULT);
 	}
 
@@ -81,9 +82,17 @@ public class NotificationService extends Service {
 			return;
 		}
 		int listId = 0;
+		int listIdToOpen = 0;
 		try {
 			listId = Integer.parseInt(preferences.getString(
 					"notificationsList", "" + SpecialList.first()));
+			String listOpen = preferences.getString("notificationsListOpen",
+					"default");
+			if (listOpen.equals("default")) {
+				listIdToOpen = listId;
+			} else {
+				listIdToOpen = Integer.parseInt(listOpen);
+			}
 		} catch (NumberFormatException e) {
 			Log.e(TAG, "cannot parse list");
 			return;
@@ -91,7 +100,7 @@ public class NotificationService extends Service {
 		// Set onClick Intent
 		Intent openIntent = new Intent(this, MainActivity.class);
 		openIntent.setAction(MainActivity.SHOW_LIST);
-		openIntent.putExtra(MainActivity.EXTRA_ID, listId);
+		openIntent.putExtra(MainActivity.EXTRA_ID, listIdToOpen);
 		openIntent
 				.setData(Uri.parse(openIntent.toUri(Intent.URI_INTENT_SCHEME)));
 		PendingIntent pOpenIntent = PendingIntent.getActivity(this, 0,
@@ -101,7 +110,8 @@ public class NotificationService extends Service {
 		ListMirakel todayList = ListMirakel.getList(listId);
 		if (todayList == null)
 			return;
-		List<Task> todayTasks = todayList.tasks(preferences.getBoolean("notificationDone", false));
+		List<Task> todayTasks = todayList.tasks(preferences.getBoolean(
+				"notificationDone", false));
 		String notificationTitle;
 		String notificationText;
 		if (todayTasks.size() == 0) {

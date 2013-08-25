@@ -47,6 +47,7 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.special_lists_settings.SpecialListsSettings;
+import de.azapps.mirakel.static_activities.CreditsActivity;
 import de.azapps.mirakel.static_activities.SettingsActivity;
 import de.azapps.mirakel.static_activities.SettingsFragment;
 import de.azapps.mirakel.sync.AuthenticatorActivity;
@@ -129,12 +130,20 @@ public class PreferencesHelper {
 		List<ListMirakel> lists = ListMirakel.all();
 		CharSequence entryValues[] = new String[lists.size()];
 		CharSequence entries[] = new String[lists.size()];
+		CharSequence entryValuesWithDefault[] = new String[lists.size()+1];
+		CharSequence entriesWithDefault[] = new String[lists.size()+1];
 		int i = 0;
 		for (ListMirakel list : lists) {
-			entryValues[i] = String.valueOf(list.getId());
-			entries[i] = list.getName();
+			String id=String.valueOf(list.getId());
+			String name=list.getName();
+			entryValues[i] = id;
+			entries[i] = name;
+			entryValuesWithDefault[i+1]=id;
+			entriesWithDefault[i+1]=name;
 			i++;
 		}
+		entriesWithDefault[0]=activity.getString(R.string.default_list);
+		entryValuesWithDefault[0]="default";
 
 		// Load the preferences from an XML resource
 
@@ -142,6 +151,11 @@ public class PreferencesHelper {
 		ListPreference notificationsListPreference = (ListPreference) findPreference("notificationsList");
 		notificationsListPreference.setEntries(entries);
 		notificationsListPreference.setEntryValues(entryValues);
+		
+		ListPreference notificationsListOpenPreference = (ListPreference) findPreference("notificationsListOpen");
+		notificationsListOpenPreference.setEntries(entriesWithDefault);
+		notificationsListOpenPreference.setEntryValues(entryValuesWithDefault);
+		
 		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
 			CheckBoxPreference mCheckBoxPref = (CheckBoxPreference) findPreference("notificationsBig");
 			PreferenceCategory mCategory = (PreferenceCategory) findPreference("category_notifications");
@@ -479,6 +493,7 @@ public class PreferencesHelper {
 			}
 		});
 
+
 		Preference importAstrid = findPreference("import_astrid");
 		importAstrid
 				.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -686,6 +701,21 @@ public class PreferencesHelper {
 							}
 						}).show();
 				return true;
+			}
+		});
+
+		Preference credits = findPreference("credits");
+		Intent startCreditsIntent = new Intent(activity,
+				CreditsActivity.class);
+		credits.setIntent(startCreditsIntent);
+		
+		Preference contact = findPreference("contact");
+		contact.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+			
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				Helpers.contact(activity);
+				return false;
 			}
 		});
 	}
