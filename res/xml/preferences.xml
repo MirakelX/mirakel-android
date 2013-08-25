@@ -62,6 +62,12 @@
             android:key="notificationsList"
             android:summary="@string/notifications_list_summary"
             android:title="@string/notifications_list" />
+        <ListPreference
+            android:defaultValue="-1"
+            android:dependency="notificationsUse"
+            android:key="notificationsListOpen"
+            android:summary="@string/notifications_list_open_summary"
+            android:title="@string/notifications_list_open" />
 
         <CheckBoxPreference
             android:defaultValue="true"

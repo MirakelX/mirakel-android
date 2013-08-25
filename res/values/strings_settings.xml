@@ -61,6 +61,9 @@
     <string name="notifications_persistent_summary">Should the notification be persistent?</string>
     <string name="notifications_list">List</string>
     <string name="notifications_list_summary">Which List should I show you?</string>
+    <string name="notifications_list_open">Open List</string>
+    <string name="notifications_list_open_summary">Which List should I open, when you click on the notification?</string>
+    <string name="default_list">Default List</string>
     <string name="notifications_big">Big Views</string>
     <string name="notifications_big_summary">Show big Notifications?</string>
     <string name="notifications_zero_show_summary">Hide, if there are no tasks in the selected List?</string>
