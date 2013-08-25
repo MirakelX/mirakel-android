@@ -123,4 +123,14 @@
     <string name="ui_settings_title">User Interface</string>
 	<string name="hide_keyboard">Hide Keyboard</string>
 	<string name="hide_keyboard_summary">Hide Keyboard if New Task is created?</string>
+    
+    <!-- Delete done -->
+    <string name="delete_done">Delete done tasks</string>
+    <string name="delete_done_summary">Delete all done tasks</string>
+    <string name="delete_done_warning">Are you sure?</string>
+    <string name="delete_done_warning_message">You can not undo this. Make a backup!</string>
+    <string name="delete_done_success">Successfully deleted your done tasks.</string>
+    
+
+
 </resources>

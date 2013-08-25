@@ -39,6 +39,7 @@ import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.special_lists_settings.SpecialListsSettings;
 import de.azapps.mirakel.static_activities.SettingsActivity;
@@ -145,7 +146,6 @@ public class PreferencesHelper {
 			PreferenceCategory mCategory = (PreferenceCategory) findPreference("category_gui");
 			mCategory.removePreference(mCheckBoxPref);
 		}
-		
 
 		// Startup
 		CheckBoxPreference startupAllListPreference = (CheckBoxPreference) findPreference("startupAllLists");
@@ -263,10 +263,11 @@ public class PreferencesHelper {
 										@Override
 										public void after_exec(String result) {
 										}
-									}, Network.HttpMode.DELETE, activity, null)
-											.execute(am.getUserData(account,
+									}, Network.HttpMode.DELETE, activity, null).execute(am
+											.getUserData(
+													account,
 													SyncAdapter.BUNDLE_SERVER_URL)
-													+ "/tokens/" + t);
+											+ "/tokens/" + t);
 								} else {
 									Toast.makeText(
 											activity,
@@ -349,8 +350,10 @@ public class PreferencesHelper {
 											.getDefaultSharedPreferences(activity);
 									SharedPreferences.Editor editor = settings
 											.edit();
-									editor.putString("syncServer", am
-											.getUserData(account,
+									editor.putString(
+											"syncServer",
+											am.getUserData(
+													account,
 													SyncAdapter.BUNDLE_SERVER_URL));
 									editor.commit();
 								}
@@ -380,17 +383,15 @@ public class PreferencesHelper {
 						Bundle bundle = new Bundle();
 						ContentResolver.removePeriodicSync(account,
 								Mirakel.AUTHORITY_TYP, bundle);
-						long longVal=Long.parseLong(newValue.toString());
-						if (account != null
-								&& longVal != -1) {
+						long longVal = Long.parseLong(newValue.toString());
+						if (account != null && longVal != -1) {
 							ContentResolver.setSyncAutomatically(account,
 									Mirakel.AUTHORITY_TYP, true);
 							ContentResolver.setIsSyncable(account,
 									Mirakel.AUTHORITY_TYP, 1);
 							// ContentResolver.setMasterSyncAutomatically(true);
 							ContentResolver.addPeriodicSync(account,
-									Mirakel.AUTHORITY_TYP, null,
-									longVal * 60);
+									Mirakel.AUTHORITY_TYP, null, longVal * 60);
 						}
 						return true;
 					}
@@ -403,11 +404,14 @@ public class PreferencesHelper {
 					@Override
 					public boolean onPreferenceChange(Preference preference,
 							Object newValue) {
-						if((Boolean)newValue){
-							activity.startService(new Intent(activity, NotificationService.class));
-						}else{
-							if(activity.startService(new Intent(activity, NotificationService.class)) != null) { 
-							    activity.stopService(new Intent(activity,NotificationService.class));
+						if ((Boolean) newValue) {
+							activity.startService(new Intent(activity,
+									NotificationService.class));
+						} else {
+							if (activity.startService(new Intent(activity,
+									NotificationService.class)) != null) {
+								activity.stopService(new Intent(activity,
+										NotificationService.class));
 							}
 						}
 						Editor e = preference.getEditor();
@@ -453,7 +457,7 @@ public class PreferencesHelper {
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
 				Helpers.showFileChooser(SettingsActivity.FILE_IMPORT_DB,
-						activity.getString(R.string.import_title),activity);
+						activity.getString(R.string.import_title), activity);
 				return true;
 			}
 		});
@@ -474,73 +478,129 @@ public class PreferencesHelper {
 				.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 					@Override
 					public boolean onPreferenceClick(Preference preference) {
-						Helpers.showFileChooser(SettingsActivity.FILE_ASTRID, activity
-								.getString(R.string.astrid_import_title),activity);
+						Helpers.showFileChooser(
+								SettingsActivity.FILE_ASTRID,
+								activity.getString(R.string.astrid_import_title),
+								activity);
 						return true;
 					}
 				});
-		CheckBoxPreference killButton= (CheckBoxPreference) findPreference("KillButton");
-		killButton.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-			
-			@Override
-			public boolean onPreferenceChange(Preference preference, Object newValue) {
-				if((Boolean) newValue){
-					AlertDialog.Builder builder=new AlertDialog.Builder(activity);
-					builder.setTitle(R.string.kill_sure);
-					builder.setMessage(R.string.kill_sure_message)
-					.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
+		CheckBoxPreference killButton = (CheckBoxPreference) findPreference("KillButton");
+		killButton
+				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+					@Override
+					public boolean onPreferenceChange(Preference preference,
+							Object newValue) {
+						if ((Boolean) newValue) {
+							AlertDialog.Builder builder = new AlertDialog.Builder(
+									activity);
+							builder.setTitle(R.string.kill_sure);
+							builder.setMessage(R.string.kill_sure_message)
+									.setPositiveButton(
+											android.R.string.yes,
+											new DialogInterface.OnClickListener() {
+												@Override
+												public void onClick(
+														DialogInterface dialog,
+														int which) {
+												}
+											})
+									.setNegativeButton(android.R.string.cancel,
+											new OnClickListener() {
+												@Override
+												public void onClick(
+														DialogInterface dialog,
+														int which) {
+													((CheckBoxPreference) findPreference("KillButton"))
+															.setChecked(false);
+
+												}
+											}).show();
 						}
-					}).setNegativeButton(android.R.string.cancel, new OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							((CheckBoxPreference) findPreference("KillButton"))
-									.setChecked(false);
-							
-						}
-					}).show();
-				}
-				return true;
-			}
-		});
-		CheckBoxPreference importDefaultList = (CheckBoxPreference) findPreference("importDefaultList");
-		importDefaultList.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-			
-			@Override
-			public boolean onPreferenceChange(Preference preference, Object newValue) {
-				if((Boolean)newValue){
-					AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-					builder.setTitle(R.string.import_to);
-					List<CharSequence> items = new ArrayList<CharSequence>();
-					final List<Integer> list_ids = new ArrayList<Integer>();
-					int currentItem = 0;	
-					for (ListMirakel list : ListMirakel.all()) {
-						if (list.getId() > 0) {
-							items.add(list.getName());
-							list_ids.add(list.getId());
-						}
+						return true;
 					}
-					builder.setSingleChoiceItems(
-							items.toArray(new CharSequence[items.size()]), currentItem,
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int item) {
-									SharedPreferences settings = PreferenceManager
-											.getDefaultSharedPreferences(activity);
-									SharedPreferences.Editor editor = settings.edit();
-									editor.putInt("defaultImportList", list_ids.get(item));
-									editor.commit();	
-									dialog.dismiss();
+				});
+		CheckBoxPreference importDefaultList = (CheckBoxPreference) findPreference("importDefaultList");
+		importDefaultList
+				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+					@Override
+					public boolean onPreferenceChange(Preference preference,
+							Object newValue) {
+						if ((Boolean) newValue) {
+							AlertDialog.Builder builder = new AlertDialog.Builder(
+									activity);
+							builder.setTitle(R.string.import_to);
+							List<CharSequence> items = new ArrayList<CharSequence>();
+							final List<Integer> list_ids = new ArrayList<Integer>();
+							int currentItem = 0;
+							for (ListMirakel list : ListMirakel.all()) {
+								if (list.getId() > 0) {
+									items.add(list.getName());
+									list_ids.add(list.getId());
 								}
-							});
-					builder.create().show();
-				}
-				return true;
-			}
-		});
+							}
+							builder.setSingleChoiceItems(items
+									.toArray(new CharSequence[items.size()]),
+									currentItem,
+									new DialogInterface.OnClickListener() {
+										public void onClick(
+												DialogInterface dialog, int item) {
+											SharedPreferences settings = PreferenceManager
+													.getDefaultSharedPreferences(activity);
+											SharedPreferences.Editor editor = settings
+													.edit();
+											editor.putInt("defaultImportList",
+													list_ids.get(item));
+											editor.commit();
+											dialog.dismiss();
+										}
+									});
+							builder.create().show();
+						}
+						return true;
+					}
+				});
+
+		// Delete done tasks
+		Preference deleteDone = (Preference) findPreference("deleteDone");
+		deleteDone
+				.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+					@Override
+					public boolean onPreferenceClick(Preference preference) {
+						new AlertDialog.Builder(activity)
+								.setTitle(R.string.delete_done_warning)
+								.setMessage(
+										R.string.delete_done_warning_message)
+								.setPositiveButton(android.R.string.ok,
+										new OnClickListener() {
+											@Override
+											public void onClick(
+													DialogInterface dialogInterface,
+													int i) {
+												Task.deleteDoneTasks();
+												Toast.makeText(
+														activity,
+														R.string.delete_done_success,
+														Toast.LENGTH_SHORT)
+														.show();
+												android.os.Process.killProcess(android.os.Process.myPid()); 
+											}
+										})
+								.setNegativeButton(android.R.string.cancel,
+										new OnClickListener() {
+											@Override
+											public void onClick(
+													DialogInterface dialogInterface,
+													int i) {
+											}
+										}).show();
+						return true;
+					}
+				});
 	}
-
-
 
 	private Account getAccount(AccountManager am) {
 		try {

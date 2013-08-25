@@ -46,7 +46,7 @@ public class TaskWarriorSync {
 	private Account account;
 	private String server_error, server_error_code = null;
 
-	private enum errors {
+	public enum TW_ERRORS {
 		CANNOT_CREATE_SOCKET, CANNOT_PARSE_MESSAGE, MESSAGE_ERRORS, TRY_LATER, ACCESS_DENIED, ACCOUNT_SUSPENDED, NO_ERROR
 	}
 
@@ -54,7 +54,7 @@ public class TaskWarriorSync {
 		mContext = ctx;
 	}
 
-	public void sync(Account account) {
+	public TW_ERRORS sync(Account account) {
 		Log.w(TAG, "very unstable yet");
 		accountManager = AccountManager.get(mContext);
 		this.account = account;
@@ -88,35 +88,17 @@ public class TaskWarriorSync {
 			// Build sync-request
 
 			sync.setPayload(payload);
-			errors error = doSync(account, sync);
-			switch (error) {
-			case NO_ERROR:
+			TW_ERRORS error = doSync(account, sync);
+			if (error == TW_ERRORS.NO_ERROR) {
 				Task.deleteTasksPermanently(syncedTasksId);
 				Task.resetSyncState(syncedTasksId);
-				break;
-			case TRY_LATER:
-				Toast.makeText(mContext, mContext.getText(R.string.message_try_later), Toast.LENGTH_SHORT).show();
-				break;
-			case ACCESS_DENIED:
-				Toast.makeText(mContext, mContext.getText(R.string.message_access_denied), Toast.LENGTH_SHORT).show();
-				break;
-			case CANNOT_CREATE_SOCKET:
-				Toast.makeText(mContext, mContext.getText(R.string.message_create_socket), Toast.LENGTH_SHORT).show();
-				break;
-			case ACCOUNT_SUSPENDED:
-				Toast.makeText(mContext, mContext.getText(R.string.message_account_suspended), Toast.LENGTH_SHORT).show();
-				break;
-			case CANNOT_PARSE_MESSAGE:
-				Toast.makeText(mContext, mContext.getText(R.string.message_parse_message), Toast.LENGTH_SHORT).show();
-				break;
-			case MESSAGE_ERRORS:
-				Toast.makeText(mContext, mContext.getText(R.string.message_message_error), Toast.LENGTH_SHORT).show();
-				break;
 			}
+			return error;
 		}
+		return TW_ERRORS.NO_ERROR;
 	}
 
-	private errors doSync(Account account, Msg sync) {
+	private TW_ERRORS doSync(Account account, Msg sync) {
 
 		longInfo(sync.getPayload());
 
@@ -126,7 +108,7 @@ public class TaskWarriorSync {
 			client.connect(_host, _port);
 		} catch (IOException e) {
 			Log.e(TAG, "cannot create Socket");
-			return errors.CANNOT_CREATE_SOCKET;
+			return TW_ERRORS.CANNOT_CREATE_SOCKET;
 		}
 		client.send(sync.serialize());
 
@@ -138,7 +120,7 @@ public class TaskWarriorSync {
 			remotes.parse(response);
 		} catch (MalformedInputException e) {
 			Log.e(TAG, "cannot parse Message");
-			return errors.CANNOT_PARSE_MESSAGE;
+			return TW_ERRORS.CANNOT_PARSE_MESSAGE;
 		}
 		int code = Integer.parseInt(remotes.get("code"));
 		switch (code) {
@@ -164,43 +146,43 @@ public class TaskWarriorSync {
 					"Retry\n"
 							+ "The client is requested to wait and retry the same request.  The wait\n"
 							+ "time is not specified, and further retry responses are possible.");
-			return errors.TRY_LATER;
+			return TW_ERRORS.TRY_LATER;
 		case 400:
 			Log.e(TAG, "Malformed data");
-			return errors.MESSAGE_ERRORS;
+			return TW_ERRORS.MESSAGE_ERRORS;
 		case 401:
 			Log.e(TAG, "Unsupported encoding");
-			return errors.MESSAGE_ERRORS;
+			return TW_ERRORS.MESSAGE_ERRORS;
 		case 420:
 			Log.e(TAG, "Server temporarily unavailable");
-			return errors.TRY_LATER;
+			return TW_ERRORS.TRY_LATER;
 		case 421:
 			Log.e(TAG, "Server shutting down at operator request");
-			return errors.TRY_LATER;
+			return TW_ERRORS.TRY_LATER;
 		case 430:
 			Log.e(TAG, "Access denied");
-			return errors.ACCESS_DENIED;
+			return TW_ERRORS.ACCESS_DENIED;
 		case 431:
 			Log.e(TAG, "Account suspended");
-			return errors.ACCOUNT_SUSPENDED;
+			return TW_ERRORS.ACCOUNT_SUSPENDED;
 		case 432:
 			Log.e(TAG, "Account terminated");
-			return errors.ACCOUNT_SUSPENDED;
+			return TW_ERRORS.ACCOUNT_SUSPENDED;
 		case 500:
 			Log.e(TAG, "Syntax error in request");
-			return errors.MESSAGE_ERRORS;
+			return TW_ERRORS.MESSAGE_ERRORS;
 		case 501:
 			Log.e(TAG, "Syntax error, illegal parameters");
-			return errors.MESSAGE_ERRORS;
+			return TW_ERRORS.MESSAGE_ERRORS;
 		case 502:
 			Log.e(TAG, "Not implemented");
-			return errors.MESSAGE_ERRORS;
+			return TW_ERRORS.MESSAGE_ERRORS;
 		case 503:
 			Log.e(TAG, "Command parameter not implemented");
-			return errors.MESSAGE_ERRORS;
+			return TW_ERRORS.MESSAGE_ERRORS;
 		case 504:
 			Log.e(TAG, "Request too big");
-			return errors.MESSAGE_ERRORS;
+			return TW_ERRORS.MESSAGE_ERRORS;
 
 		}
 		if (remotes.get("status").equals("Client sync key not found.")) {
@@ -262,7 +244,7 @@ public class TaskWarriorSync {
 		server_error_code = remotes.get("code");
 		server_error = remotes.get("error");
 		client.close();
-		return errors.NO_ERROR;
+		return TW_ERRORS.NO_ERROR;
 	}
 
 	public static void longInfo(String str) {

@@ -72,6 +72,8 @@ public class TLSClient {
 			_socket=null;
 		} catch (IOException e) {
 			Log.e(TAG, "Cannot close Socket");
+		} catch (NullPointerException e) {
+			Log.e(TAG, "Nullpointer, means there was no established connection");
 		}
 		
 	}

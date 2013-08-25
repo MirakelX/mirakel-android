@@ -185,6 +185,11 @@
         android:key="category_misc"
         android:title="@string/settings_misc" >
         <Preference
+            android:key="deleteDone"
+            android:summary="@string/delete_done_summary"
+            android:title="@string/delete_done" 
+            />
+        <Preference
             android:key="changelog"
             android:summary="@string/changelog_click_summary"
             android:title="@string/changelog_click" />
