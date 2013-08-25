@@ -116,10 +116,6 @@
             android:key="hideKeyboard"
             android:summary="@string/hide_keyboard_summary"
             android:title="@string/hide_keyboard" />
-        <Preference 
-            android:key="UndoNumber"
-            android:summary="@string/undo_number_summary"
-            android:title="@string/undo_number"/>
         <CheckBoxPreference 
             android:defaultValue="false"
             android:key="semanticNewTask"
@@ -200,6 +196,10 @@
     <PreferenceCategory
         android:key="category_misc"
         android:title="@string/settings_misc" >
+         <Preference 
+            android:key="UndoNumber"
+            android:summary="@string/undo_number_summary"
+            android:title="@string/undo_number"/>
         <Preference
             android:key="deleteDone"
             android:summary="@string/delete_done_summary"

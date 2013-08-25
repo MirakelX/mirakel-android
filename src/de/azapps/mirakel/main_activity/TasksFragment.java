@@ -20,7 +20,6 @@ package de.azapps.mirakel.main_activity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -74,7 +73,7 @@ public class TasksFragment extends Fragment {
 	private TaskAdapter adapter;
 	private MainActivity main;
 	View view;
-	private EditText newTask;
+	protected EditText newTask;
 	private boolean created = false;
 	private boolean finishLoad;
 	private boolean loadMore;
@@ -251,7 +250,7 @@ public class TasksFragment extends Fragment {
 			return;
 		newTask.setOnFocusChangeListener(new OnFocusChangeListener() {
 			@Override
-			public void onFocusChange(final View v, boolean hasFocus) {
+			public void onFocusChange(final View v, final boolean hasFocus) {
 				newTask.post(new Runnable() {
 					@Override
 					public void run() {
@@ -259,7 +258,9 @@ public class TasksFragment extends Fragment {
 								.getSystemService(Context.INPUT_METHOD_SERVICE);
 						imm.showSoftInput(newTask,
 								InputMethodManager.SHOW_IMPLICIT);
-						((EditText) v).requestFocus();
+						if(main.currentPosition==MainActivity.TASKS_FRAGMENT&&!PreferenceManager.getDefaultSharedPreferences(main).getBoolean(
+								"hideKeyboard", true))
+							((EditText) v).requestFocus();
 					}
 				});
 			}
@@ -367,13 +368,7 @@ public class TasksFragment extends Fragment {
 		main.getListFragment().update();
 		if (!PreferenceManager.getDefaultSharedPreferences(main).getBoolean(
 				"hideKeyboard", true)) {
-			newTask = (EditText) view.findViewById(R.id.tasks_new);
-			Log.d(TAG, "try to set focus");
-			newTask.setFocusable(true);
-			newTask.setFocusableInTouchMode(true);
-			if (newTask.requestFocus()) {
 				focusNew();
-			}
 		}
 		return true;
 	}
