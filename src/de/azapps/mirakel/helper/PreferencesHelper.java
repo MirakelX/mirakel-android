@@ -47,6 +47,7 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.special_lists_settings.SpecialListsSettings;
+import de.azapps.mirakel.static_activities.CreditsActivity;
 import de.azapps.mirakel.static_activities.SettingsActivity;
 import de.azapps.mirakel.static_activities.SettingsFragment;
 import de.azapps.mirakel.sync.AuthenticatorActivity;
@@ -479,6 +480,7 @@ public class PreferencesHelper {
 			}
 		});
 
+
 		Preference importAstrid = findPreference("import_astrid");
 		importAstrid
 				.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -686,6 +688,21 @@ public class PreferencesHelper {
 							}
 						}).show();
 				return true;
+			}
+		});
+
+		Preference credits = findPreference("credits");
+		Intent startCreditsIntent = new Intent(activity,
+				CreditsActivity.class);
+		credits.setIntent(startCreditsIntent);
+		
+		Preference contact = findPreference("contact");
+		contact.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+			
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				Helpers.contact(activity);
+				return false;
 			}
 		});
 	}

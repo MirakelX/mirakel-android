@@ -99,6 +99,7 @@
     <!-- Changelog -->
     <string name="changelog_click_summary">View the changelog</string>
     <string name="changelog_click">Changelog</string>
+    <string name="settings_about">About</string>
 
     <!-- Astrid -->
     <string name="import_astrid_click_summary">Import from an Astrid-file</string>

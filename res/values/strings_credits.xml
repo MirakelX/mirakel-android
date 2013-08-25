@@ -2,6 +2,7 @@
 <resources>
 
     <string name="action_credits">Credits</string>
+    <string name="action_credits_summary">About us ;)</string>
     <string name="title_activity_credits">Credits and about</string>
     <string name="credit">
 <![CDATA[<h1>Mirakel - ToDo Lists Client</h1>
