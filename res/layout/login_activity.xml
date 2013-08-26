@@ -133,7 +133,7 @@
                             android:singleLine="true" />
                     </LinearLayout>
 
-                <RelativeLayout
+                <LinearLayout
                     android:id="@+id/login_taskwarrior"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -144,7 +144,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/load_config" />
-                </RelativeLayout>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/login_taskwarrior_path"/>
+                </LinearLayout>
 
             </ViewSwitcher>
 
