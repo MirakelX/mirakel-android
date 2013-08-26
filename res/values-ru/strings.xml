@@ -4,6 +4,7 @@
   <string name="app_name">Mirakel</string>
   <string name="action_settings">Параметры</string>
   <string name="action_contact">Контакт / сообщение об ошибке</string>
+  <string name="action_contact_summary">Напишите нам по e-mail!</string>
   <string name="OK">ОК</string>
   <string name="Cancel">Отменить</string>
   <string name="Yes">Да</string>
@@ -21,6 +22,7 @@
   <string name="Password">Пароль</string>
   <string name="Server">Сервер</string>
   <string name="NoNetwork">Сетевое соединение недоступно.</string>
+  <string name="wrong_sync_type">Тип синхронизации не поддерживается!</string>
   <string name="action_sync_now">Синхронизировать</string>
   <string name="resync">Вы хотите синхронизировать все дела?</string>
   <string name="start">Старт</string>
@@ -39,6 +41,7 @@
   <string name="set_date">Установить дату</string>
   <string name="set_time">Установить время</string>
   <string name="task_set_reminder">Установить напоминание</string>
+  <string name="action_undo">Отменить последнее изменение</string>
   <string name="dialog_move">Переместить дело</string>
   <string name="list_title">Списки</string>
   <string name="list_menu_new_list">Новый список</string>
@@ -53,6 +56,7 @@
   <string name="menu_settings">Установки</string>
   <string name="menu_move">Переместить</string>
   <string name="offical_server_url">https://mirakel.azapps.de</string>
+  <string name="offical_server_url_taskwarrior">mirakel.azapps.de:5644</string>
   <string name="title_settings">Установки</string>
   <string name="empty_list">Нет дел</string>
   <string name="preferences">Установки</string>
@@ -67,15 +71,27 @@
   <string name="reminder_notification_later">Позже</string>
   <string name="reminder_notification_done_confirm">Я отметил дело, как «выполнено»</string>
   <string name="reminder_notification_later_confirm">Я напомню Вам через %d минут</string>
-  <string name="list_vanished">Ох, дело исчезло. Я сожалею…</string>
-  <string name="task_vanished">Ох, исчез в список дел. Я сожалею…</string>
+  <string name="list_vanished">Ооооох! Задача исчезла. Я сожалею...</string>
+  <string name="task_vanished">Ооооох! Исчез в список дел. Я сожалею...</string>
+  <string name="message_try_later">Попробуйте синхронизировать позже</string>
+  <string name="message_access_denied">Доступ запрещен! \nПроверьте, правильный ли конфигурационный файл Вы используете?</string>
+  <string name="message_create_socket">Не удается создать сокет! \nПроверьте сетевое подключение.</string>
+  <string name="message_account_suspended">Ваш аккаунт заблокирован!</string>
+  <string name="message_parse_message">Не удается получить задачи – пожалуйста, напишите нам, как это случилось</string>
+  <string name="message_message_error">Неизвестный ответ от сервера – пожалуйста, напишите нам, как это могло случиться</string>
+  <string name="load_config">Выберите конфигурационный файл для Taskwarrior</string>
+  <string name="select_config">Выберите конфигурационный файл для Taskwarrior</string>
+  <string name="login_activity_org_label">Организация</string>
+  <string name="login_org_hint">Организация</string>
+  <string name="login_org_default">PUBLIC</string>
   <string name="login_activity_username_label">Имя пользователя</string>
   <string name="login_activity_server_label">URL-адрес сервера</string>
+  <string name="login_activity_server_typ">Тип сервера</string>
   <string name="login_activity_password_label">Пароль</string>
   <string name="login_activity_ok_button">Вход</string>
-  <string name="login_activity_loginfail_text_both">Неверное имя пользователя или пароль. Необходим Mirakel-аккаунт. Пожалуйста, попробуйте еще раз. </string>
+  <string name="login_activity_loginfail_text_both">Неверное имя пользователя или пароль. Необходим Mirakel-аккаунт. Пожалуйста, попробуйте еще раз.</string>
   <string name="login_activity_loginfail_text_pwmissing">Введите пароль для этого аккаунта.</string>
-  <string name="login_activity_newaccount_text">Войдите в свой Mirakel-аккаунт . </string>
+  <string name="login_activity_newaccount_text">Войдите в Ваш %s-аккаунт. </string>
   <string name="ui_activity_authenticating">Аутентификация\u2026</string>
   <string name="ui_activity_title">Вход в систему</string>
   <string name="title_activity_special_lists_settings">Расширенные списки</string>
@@ -123,6 +139,7 @@ Device: %3$s\n]]>
   <string name="crash_dialog_comment_prompt">Ниже Вы можете ввести комментарии к ошибке:</string>
   <string name="crash_dialog_ok_toast">Спасибо!</string>
   <string name="title_activity_special_list_settings">SpecialListSettingsActivity</string>
+  <string name="message_from_server">Сервер хочет Вам сказать: %s</string>
   <string-array name="task_sorting_items">
     <item>По умолчанию</item>
     <item>Крайний срок</item>
@@ -143,5 +160,9 @@ Device: %3$s\n]]>
   <string-array name="list_actions_items">
     <item>Переименовать</item>
     <item>Удалить</item>
+  </string-array>
+  <string-array name="server_typs">
+    <item>Mirakel</item>
+    <item>Taskwarrior</item>
   </string-array>
 </resources>

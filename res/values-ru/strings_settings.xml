@@ -21,12 +21,17 @@
   <string name="notifications_persistent_summary">Должны ли уведомления быть постоянными?</string>
   <string name="notifications_list">Список</string>
   <string name="notifications_list_summary">Какой список я должен Вам показать?</string>
+  <string name="notifications_list_open">Открыть список</string>
+  <string name="notifications_list_open_summary">Which List should I open, when you click on the notification?</string>
+  <string name="default_list">Список по умолчанию</string>
   <string name="notifications_big">Крупный просмотр</string>
   <string name="notifications_big_summary">Должен я показывать уведомления крупно?</string>
   <string name="notifications_zero_show_summary">Скрыть, если выбранный список пуст?</string>
   <string name="notifications_zero_show">Скрыть, если пуст</string>
   <string name="reminders_persistent">Постоянные напоминания</string>
   <string name="reminders_persistent_summary">Должны быть напоминания постоянными?</string>
+  <string name="notificationsShowDoneSummary">Show Done Tasks in Notification?</string>
+  <string name="notificationsShowDone">Показать выполненные дела</string>
   <string name="startup_title">Запуск приложения</string>
   <string name="startup_show_lists">Показать все списки</string>
   <string name="startup_show_lists_summary">Показать список списков</string>
@@ -50,6 +55,7 @@
   <string name="import_to">Импортировать в</string>
   <string name="changelog_click_summary">Просмотр изменений</string>
   <string name="changelog_click">Список изменений</string>
+  <string name="settings_about">О нас</string>
   <string name="import_astrid_click_summary">Импорт из Astrid-файла</string>
   <string name="import_astrid_click">Импорт из Astrid</string>
   <string name="astrid_unsuccess">Произошла ошибка при импорте из Астрид!</string>
@@ -70,6 +76,19 @@
   <string name="kill_sure_message">При закрытии App, вы не получаете никаких напоминаний! Пожалуйста, обратите внимание отключить только уведомление (или сделать это не стойкие, так что вы можете удалить его.)</string>
   <string name="show_kill_button">Должен я показать кнопку \"Закрыть\"?</string>
   <string name="ui_settings_title">Интерфейс</string>
+  <string name="hide_keyboard">Скрыть клавиатуру</string>
+  <string name="hide_keyboard_summary">Должен я скрыть клавиатуру после того, как новое дело будет создано?</string>
+  <string name="undo_number">Number of Changes saved</string>
+  <string name="undo_number_summary">How Many Changes do you want to save?</string>
+  <string name="semantic_new_task">Semantic New Tasks</string>
+  <string name="semantic_new_task_summary">Например: создайте новое дело «сегодня стирка» (актуально только сегодня и завтра)</string>
+  <string name="semantic_new_task_config_summary">Configure the conditions for creating new Tasks</string>
+  <string name="semantic_new_task_config">Configure Semantic new Tasks</string>
+  <string name="delete_done">Удалить выполненные дела</string>
+  <string name="delete_done_summary">Удалить все выполненные дела</string>
+  <string name="delete_done_warning">Вы уверены?</string>
+  <string name="delete_done_warning_message">Вы не можете отменить это. Сделайте резервную копию!</string>
+  <string name="delete_done_success">Выполненные дела успешно удаленны.</string>
   <string-array name="sync_frequencies">
     <item>5 мин.</item>
     <item>10 мин.</item>
