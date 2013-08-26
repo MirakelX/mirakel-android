@@ -61,6 +61,7 @@ import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
+import de.azapps.mirakel.model.list.SearchList;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
@@ -276,12 +277,17 @@ public class TasksFragment extends Fragment {
 		newTask.clearFocus();
 		if (name.equals(""))
 			return true;
-		long id = main.getCurrentList().getId();
+		long id;
+		if(main.getCurrentList() instanceof SearchList){
+			id = main.getBaseList();
+		} else {
+			id = main.getCurrentList().getId();
+		}
 		GregorianCalendar due = null;
 		int prio = 0;
 		if (id <= 0) {
 			try {
-				SpecialList slist = (SpecialList) main.getCurrentList();
+				SpecialList slist = SpecialList.getSpecialList((int)id);
 				id = slist.getDefaultList().getId();
 				if (slist.getDefaultDate() != null) {
 					due = new GregorianCalendar();

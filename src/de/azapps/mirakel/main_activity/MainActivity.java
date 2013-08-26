@@ -88,6 +88,7 @@ public class MainActivity extends ActionBarActivity implements
 	private List<ListMirakel> lists;
 	private AlertDialog taskMoveDialog;
 	protected boolean isTablet;
+	private int baseList;
 
 	protected static final int LIST_FRAGMENT = 0, TASKS_FRAGMENT = 1,
 			TASK_FRAGMENT = 2;
@@ -958,6 +959,7 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	private void search(String query) {
+		baseList=getCurrentList().getId();
 		setCurrentList(new SearchList(this, query));
 		mViewPager.setCurrentItem(TASKS_FRAGMENT);
 	}
@@ -972,5 +974,9 @@ public class MainActivity extends ActionBarActivity implements
 			Toast.makeText(getApplicationContext(), messageFromSync,
 					Toast.LENGTH_SHORT).show();
 		}
+	}
+
+	public int getBaseList() {
+		return baseList;
 	}
 }
