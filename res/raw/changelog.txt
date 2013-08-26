@@ -19,7 +19,7 @@
   <body>
 $ 1.1.0
   % Version 1.1.0
-  _ 2013-08-25
+  _ 2013-08-26
   ! You've waited a long time. Here is the new version! Many, many Bugfixes and new awesome features.
     * Bugfixes
     * Sync now with <a href="http://mirakel.azapps.de/taskwarrior.html">Taskwarrior</a> (preferred)
