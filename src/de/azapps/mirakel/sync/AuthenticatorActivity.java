@@ -58,6 +58,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
@@ -224,6 +225,18 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 
 					}
 				});
+
+		Button howToButton = (Button) findViewById(R.id.open_howto);
+		howToButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri
+						.parse("http://mirakel.azapps.de/taskwarrior.html"));
+				startActivity(browserIntent);
+
+			}
+		});
 	}
 
 	/*
@@ -250,9 +263,10 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == Activity.RESULT_OK
-				&& requestCode == CONFIG_TASKWARRIOR){
+				&& requestCode == CONFIG_TASKWARRIOR) {
 			config_file = Helpers.getPathFromUri(data.getData(), this);
-			((TextView)findViewById(R.id.login_taskwarrior_path)).setText(config_file);
+			((TextView) findViewById(R.id.login_taskwarrior_path))
+					.setText(config_file);
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
@@ -478,4 +492,5 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 					Toast.LENGTH_LONG).show();
 		}
 	}
+
 }
