@@ -52,33 +52,44 @@
         <item>1440</item>
         <item>-1</item>
     </string-array>
+    <string name="no">no</string>
+    <string name="not">not</string>
 
     <!-- Notifications -->
     <string name="notifications_title">Notifications</string>
-    <string name="notifications_use">Use</string>
-    <string name="notifications_use_summary">Do you want to see notifications?</string>
-    <string name="notifications_persistent">Persistent</string>
-    <string name="notifications_persistent_summary">Should the notification be persistent?</string>
-    <string name="notifications_list">List</string>
-    <string name="notifications_list_summary">Which List should I show you?</string>
-    <string name="notifications_list_open">Open List</string>
-    <string name="notifications_list_open_summary">Which List should I open, when you click on the notification?</string>
+    <string name="notifications_use">Use Notifications?</string>
+    <string name="notifications_use_summary" >Show Notifications</string>
+    <string name="notifications_use_summary_no" >Do not show Notifications</string>
+    <string name="notifications_persistent">Persistent Notifications?</string>
+    <string name="notifications_persistent_summary">Notifications are persistent</string>
+    <string name="notifications_persistent_summary_not">Notifications are not persistent</string>
+    <string name="notifications_list">Show List?</string>
+    <string name="notifications_list_summary">Show \"%s\"</string>
+    <string name="notifications_list_open">Open List?</string>
+    <string name="notifications_list_open_summary">Open \"%s\"</string>
     <string name="default_list">Default List</string>
-    <string name="notifications_big">Big Views</string>
-    <string name="notifications_big_summary">Show big Notifications?</string>
-    <string name="notifications_zero_show_summary">Hide, if there are no tasks in the selected List?</string>
-    <string name="notifications_zero_show">Hide if empty</string>
-    <string name="reminders_persistent">Persistent reminders</string>
-    <string name="reminders_persistent_summary">Should the reminders be persistent?</string>
-    <string name="notificationsShowDoneSummary">Show Done Tasks in Notification?</string>
+    <string name="notifications_big">Show big Notifications?</string>
+    <string name="notifications_big_summary">Show big Notifications</string>
+    <string name="notifications_big_summary_not">Do not use big Notifications</string>
+    <string name="notifications_zero_show_summary_hide">Hide notification, if list is empty</string>
+    <string name="notifications_zero_show_summary_show">Show notification, if list is empty</string>
+    <string name="notifications_zero_show">Hide notification if empty?</string>
+    <string name="reminders_persistent">Should the reminders be persistent?</string>
+    <string name="reminders_persistent_summary">Reminders are persistent</string>
+    <string name="reminders_persistent_summary_not">Reminders are not persistent</string>
+    <string name="notificationsShowDoneSummary">Show Done Tasks in notifications</string>
+    <string name="notificationsShowDoneSummaryNot">Do not show Done Tasks in notifications</string>
     <string name="notificationsShowDone">Handle Done Tasks</string>
+    <string name="notification_summary">Notifications</string>
+    <string name="reminder">Reminder</string>
 
     <!-- startup -->
     <string name="startup_title">App Start</string>
     <string name="startup_show_lists">Show all lists</string>
     <string name="startup_show_lists_summary">Show the List of Lists</string>
+    <string name="startup_show_lists_summary_no">Show Tasks on other List</string>
     <string name="startup_list">Select List</string>
-    <string name="startup_list_summary">Tasks of which list should be displayed?</string>
+    <string name="startup_list_summary">Show Tasks of \"%s\"</string>
 
     <!-- Special Lists -->
     <string name="special_lists_title">Special Lists</string>
@@ -95,7 +106,8 @@
     <string name="import_sure_summary">All data will be overridden! (Importing from %s)</string>
     <string name="import_title">Select Mirakel File</string>
     <string name="no_filemanager">Please install a File Manager</string>
-    <string name="import_default_list_summary">Do you want to set a default List for Imports?</string>
+    <string name="import_default_list_summary">Import to \"%s\"</string>
+    <string name="import_no_default_list_summary">No default list selected</string>
     <string name="import_default_list">Import Default-List</string>
     <string name="import_to">Import to</string>
 
@@ -114,24 +126,30 @@
     <string name="astrid_wait">Please wait…</string>
     <string name="import_wrong_type">This is not a Mirakel-file!</string>
     <!-- GUI -->
-    <string name="highlightSelected_summary">Should I highlight lists/tasks when you click on them?</string>
+    <string name="highlightSelected_summary">Highlight lists/tasks when you click on them</string>
+    <string name="highlightSelected_summary_not">Do not highlight lists/tasks when you click on them</string>
     <string name="highlightSelected">Highlight Selected</string>
     <string name="showDone">Show done tasks</string>
-    <string name="showDone_summary">Should I show done tasks?</string>
+    <string name="showDone_summary">Show done tasks</string>
+    <string name="showDone_summary_not">Do not show done tasks</string>
     <string name="dark_theme">Dark Theme</string>
-    <string name="use_dark_theme">Do you want to use a Dark Theme?</string>
+    <string name="use_dark_theme">Use a Dark Theme</string>
+    <string name="use_light_theme">Use a Light Theme</string>
     <string name="kill_button">Kill button</string>
     <string name="kill_app">Close App</string>
     <string name="kill_sure">Are you really sure???</string>
     <string name="kill_sure_message">When you close the app, you do not get any reminders! Please consider to disable only the Notification (or make it not persistent, so you can remove it.)</string>
-    <string name="show_kill_button">Do you want me to show a Kill-Button</string>
+    <string name="show_kill_button">Show a Kill-Button</string>
+    <string name="show_not_kill_button">Do not show a Kill-Button</string>
     <string name="ui_settings_title">User Interface</string>
 	<string name="hide_keyboard">Hide Keyboard</string>
-	<string name="hide_keyboard_summary">Hide Keyboard if New Task is created?</string>
+	<string name="hide_keyboard_summary">Hide Keyboard if New Task is created</string>
+	<string name="show_keyboard_summary">Show Keyboard if New Task is created</string>
 	<string name="undo_number">Number of Changes saved</string>
-	<string name="undo_number_summary">How Many Changes do you want to save?</string>
+	<string name="undo_number_summary">Undo %s Changes</string>
 	<string name="semantic_new_task">Semantic New Tasks</string>
-	<string name="semantic_new_task_summary">For example: Set due to today if you type „today …“</string>
+	<string name="semantic_new_task_summary">Use Semantic new Task(only today and tomorow)</string>
+	<string name="semantic_new_task_summary_not">Do not use Semantic new Task</string>
 	<string name="semantic_new_task_config_summary">Configure the conditions for creating new Tasks</string>
 	<string name="semantic_new_task_config">Configure Semantic new Tasks</string>
     

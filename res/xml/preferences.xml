@@ -19,25 +19,12 @@
 -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <!-- Startup -->
-    <PreferenceCategory android:title="@string/startup_title" >
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="startupAllLists"
-            android:summary="@string/startup_show_lists_summary"
-            android:title="@string/startup_show_lists" />
-
-        <ListPreference
-            android:defaultValue="0"
-            android:key="startupList"
-            android:summary="@string/startup_list_summary"
-            android:title="@string/startup_list" />
-    </PreferenceCategory>
-
     <!-- Notifications -->
-    <PreferenceCategory
+    <PreferenceScreen
         android:key="category_notifications"
         android:title="@string/notifications_title" >
+        <PreferenceCategory
+            android:title="@string/notification_summary">
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="notificationsUse"
@@ -55,7 +42,7 @@
             android:key="notificationsZeroHide"
             android:summary="@string/notifications_zero_show_summary"
             android:title="@string/notifications_zero_show" />
-
+ 
         <ListPreference
             android:defaultValue="-1"
             android:dependency="notificationsUse"
@@ -77,18 +64,22 @@
             android:title="@string/notifications_big" />
         <CheckBoxPreference
             android:defaultValue="true"
+            android:dependency="notificationsUse"
             android:key="notificationDone"
             android:summary="@string/notificationsShowDoneSummary"
             android:title="@string/notificationsShowDone" />
+        </PreferenceCategory>
+        <PreferenceCategory android:title="@string/reminder" >
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="remindersPersistent"
             android:summary="@string/reminders_persistent_summary"
             android:title="@string/reminders_persistent" />
-    </PreferenceCategory>
+        </PreferenceCategory>
+    </PreferenceScreen>
 
     <!-- GUI -->
-    <PreferenceCategory
+    <PreferenceScreen
         android:key="category_gui"
         android:title="@string/ui_settings_title" >
         <CheckBoxPreference
@@ -116,30 +107,25 @@
             android:key="hideKeyboard"
             android:summary="@string/hide_keyboard_summary"
             android:title="@string/hide_keyboard" />
-        <CheckBoxPreference 
+        <CheckBoxPreference
             android:defaultValue="false"
             android:key="semanticNewTask"
             android:summary="@string/semantic_new_task_summary"
-            android:title="@string/semantic_new_task"
-            />
-    </PreferenceCategory>
+            android:title="@string/semantic_new_task" />
+    </PreferenceScreen>
 
     <!-- Special Lists -->
-    <PreferenceCategory android:title="@string/special_lists_title" >
         <Preference
             android:key="special_lists"
-            android:summary="@string/special_lists_click_summary"
             android:title="@string/special_lists_click" />
-    </PreferenceCategory>
 
     <!-- Backup/Import -->
-    <PreferenceCategory android:title="@string/settings_backup" >
+    <PreferenceScreen android:title="@string/settings_backup" >
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="importDefaultList"
             android:summary="@string/import_default_list_summary"
             android:title="@string/import_default_list" />
-
         <Preference
             android:key="backup"
             android:summary="@string/backup_click_summary"
@@ -152,10 +138,10 @@
             android:key="import_astrid"
             android:summary="@string/import_astrid_click_summary"
             android:title="@string/import_astrid_click" />
-    </PreferenceCategory>
+    </PreferenceScreen>
 
     <!-- Sync -->
-    <PreferenceCategory android:title="@string/sync_title" >
+    <PreferenceScreen android:title="@string/sync_title" >
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="syncUse"
@@ -190,24 +176,40 @@
             android:key="syncFrequency"
             android:summary="@string/sync_frequency_summary"
             android:title="@string/sync_frequency" />
-    </PreferenceCategory>
+    </PreferenceScreen>
 
     <!-- Misc -->
-    <PreferenceCategory
+    <PreferenceScreen
         android:key="category_misc"
         android:title="@string/settings_misc" >
-         <Preference 
+
+        <!-- Startup -->
+        <PreferenceCategory android:title="@string/startup_title" >
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:key="startupAllLists"
+                android:summary="@string/startup_show_lists_summary"
+                android:title="@string/startup_show_lists" />
+
+            <ListPreference
+                android:defaultValue="0"
+                android:key="startupList"
+                android:summary="@string/startup_list_summary"
+                android:title="@string/startup_list" />
+        </PreferenceCategory>
+		 <PreferenceCategory android:title="@string/settings_misc" >
+        <Preference
             android:key="UndoNumber"
             android:summary="@string/undo_number_summary"
-            android:title="@string/undo_number"/>
+            android:title="@string/undo_number" />
         <Preference
             android:key="deleteDone"
             android:summary="@string/delete_done_summary"
             android:title="@string/delete_done" />
-    </PreferenceCategory>
+        </PreferenceCategory>
+    </PreferenceScreen>
     <!-- About -->
-    <PreferenceCategory 
-        android:title="@string/settings_about">
+    <PreferenceScreen android:title="@string/settings_about" >
         <Preference
             android:key="changelog"
             android:summary="@string/changelog_click_summary"
@@ -220,7 +222,6 @@
             android:key="contact"
             android:summary="@string/action_contact_summary"
             android:title="@string/action_contact" />
-        
-    </PreferenceCategory>
+    </PreferenceScreen>
 
 </PreferenceScreen>

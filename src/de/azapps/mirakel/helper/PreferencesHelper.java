@@ -17,6 +17,7 @@ import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -66,6 +67,7 @@ public class PreferencesHelper {
 	private final Activity activity;
 	private final boolean v4_0;
 	static View numberPicker;
+	private SharedPreferences settings;
 
 	public PreferencesHelper(SettingsActivity c) {
 		ctx = c;
@@ -125,9 +127,10 @@ public class PreferencesHelper {
 
 	@SuppressLint("NewApi")
 	public void setFunctionsApp() {
+		settings = PreferenceManager.getDefaultSharedPreferences(activity);
 
 		// Initialize needed Arrays
-		List<ListMirakel> lists = ListMirakel.all();
+		final List<ListMirakel> lists = ListMirakel.all();
 		CharSequence entryValues[] = new String[lists.size()];
 		CharSequence entries[] = new String[lists.size()];
 		CharSequence entryValuesWithDefault[] = new String[lists.size() + 1];
@@ -148,13 +151,192 @@ public class PreferencesHelper {
 		// Load the preferences from an XML resource
 
 		// Notifications List
-		ListPreference notificationsListPreference = (ListPreference) findPreference("notificationsList");
+		final ListPreference notificationsListPreference = (ListPreference) findPreference("notificationsList");
 		notificationsListPreference.setEntries(entries);
 		notificationsListPreference.setEntryValues(entryValues);
+		notificationsListPreference.setSummary(activity.getString(
+				R.string.notifications_list_summary,
+				ListMirakel.getList(
+						Integer.parseInt(settings.getString(
+								"notificationsList", "-1"))).getName()));
+		notificationsListPreference
+				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+					@Override
+					public boolean onPreferenceChange(Preference preference,
+							Object newValue) {
+						String list = ListMirakel.getList(
+								Integer.parseInt((String) newValue)).getName();
+						notificationsListPreference.setSummary(activity
+								.getString(R.string.notifications_list_summary,
+										list));
+						return true;
+					}
+				});
+		final CheckBoxPreference notificationsPersistent = (CheckBoxPreference) findPreference("notificationsPersistent");
+		notificationsPersistent
+				.setSummary(activity.getString(settings.getBoolean(
+						"notificaionsPersistent", true) ? R.string.notifications_persistent_summary
+						: R.string.notifications_persistent_summary_not));
+		notificationsPersistent
+				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+					@Override
+					public boolean onPreferenceChange(Preference preference,
+							Object newValue) {
+						notificationsPersistent.setSummary(activity
+								.getString((Boolean) newValue ? R.string.notifications_persistent_summary
+										: R.string.notifications_persistent_summary_not));
+						return true;
+					}
+				});
+		final CheckBoxPreference notificationsZeroHide = (CheckBoxPreference) findPreference("notificationsZeroHide");
+		notificationsZeroHide
+				.setSummary(settings.getBoolean("notificationsZeroHide", false) ? R.string.notifications_zero_show_summary_hide
+						: R.string.notifications_zero_show_summary_show);
+		notificationsZeroHide
+				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
-		ListPreference notificationsListOpenPreference = (ListPreference) findPreference("notificationsListOpen");
+					@Override
+					public boolean onPreferenceChange(Preference preference,
+							Object newValue) {
+						notificationsZeroHide
+								.setSummary((Boolean) newValue ? R.string.notifications_zero_show_summary_hide
+										: R.string.notifications_zero_show_summary_show);
+						return true;
+					}
+				});
+		final CheckBoxPreference notificationDone = (CheckBoxPreference) findPreference("notificationDone");
+		notificationDone.setSummary(settings.getBoolean("notificationDone",
+				true) ? R.string.notificationsShowDoneSummary
+				: R.string.notificationsShowDoneSummaryNot);
+		notificationDone
+				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+					@Override
+					public boolean onPreferenceChange(Preference preference,
+							Object newValue) {
+						notificationDone
+								.setSummary((Boolean) newValue ? R.string.notificationsShowDoneSummary
+										: R.string.notificationsShowDoneSummaryNot);
+						return true;
+					}
+				});
+		final CheckBoxPreference remindersPersistent = (CheckBoxPreference) findPreference("remindersPersistent");
+		remindersPersistent
+				.setSummary(settings.getBoolean("remindersPersistent", true) ? R.string.reminders_persistent_summary
+						: R.string.reminders_persistent_summary_not);
+		remindersPersistent
+				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+					@Override
+					public boolean onPreferenceChange(Preference preference,
+							Object newValue) {
+						remindersPersistent
+								.setSummary((Boolean) newValue ? R.string.reminders_persistent_summary
+										: R.string.reminders_persistent_summary_not);
+						return true;
+					}
+				});
+		final CheckBoxPreference notificationsBig = (CheckBoxPreference) findPreference("notificationsBig");
+		notificationsBig.setSummary(settings.getBoolean("notificationsBig",
+				true) ? R.string.notifications_big_summary
+				: R.string.notifications_big_summary_not);
+		notificationsBig
+				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+					@Override
+					public boolean onPreferenceChange(Preference preference,
+							Object newValue) {
+						notificationsBig
+								.setSummary((Boolean) newValue ? R.string.notifications_big_summary
+										: R.string.notifications_big_summary_not);
+						return true;
+					}
+				});
+
+		final CheckBoxPreference highlightSelected = (CheckBoxPreference) findPreference("highlightSelected");
+		highlightSelected.setSummary(settings.getBoolean("highlightSelected",
+				false) ? R.string.highlightSelected_summary
+				: R.string.highlightSelected_summary_not);
+		highlightSelected
+				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+					@Override
+					public boolean onPreferenceChange(Preference preference,
+							Object newValue) {
+						highlightSelected
+								.setSummary((Boolean) newValue ? R.string.highlightSelected_summary
+										: R.string.highlightSelected_summary_not);
+						return true;
+					}
+				});
+		final CheckBoxPreference hideKeyboard = (CheckBoxPreference) findPreference("hideKeyboard");
+		hideKeyboard
+				.setSummary(settings.getBoolean("hideKeyboard", false) ? R.string.show_keyboard_summary
+						: R.string.hide_keyboard_summary);
+		hideKeyboard
+				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+					@Override
+					public boolean onPreferenceChange(Preference preference,
+							Object newValue) {
+						hideKeyboard
+								.setSummary((Boolean) newValue ? R.string.show_keyboard_summary
+										: R.string.hide_keyboard_summary);
+						return true;
+					}
+				});
+
+		final CheckBoxPreference semanticNewTask = (CheckBoxPreference) findPreference("semanticNewTask");
+		semanticNewTask
+				.setSummary(settings.getBoolean("semanticNewTask", false) ? R.string.semantic_new_task_summary
+						: R.string.semantic_new_task_summary_not);
+		semanticNewTask
+				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+					@Override
+					public boolean onPreferenceChange(Preference preference,
+							Object newValue) {
+						semanticNewTask
+								.setSummary((Boolean) newValue ? R.string.semantic_new_task_summary
+										: R.string.semantic_new_task_summary_not);
+						return true;
+					}
+				});
+		final CheckBoxPreference showDone = (CheckBoxPreference) findPreference("showDone");
+		showDone.setSummary(settings.getBoolean("showDone", false) ? R.string.showDone_summary
+				: R.string.showDone_summary_not);
+		showDone.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+			@Override
+			public boolean onPreferenceChange(Preference preference,
+					Object newValue) {
+				showDone.setSummary((Boolean) newValue ? R.string.showDone_summary
+						: R.string.showDone_summary_not);
+				return true;
+			}
+		});
+
+		final ListPreference notificationsListOpenPreference = (ListPreference) findPreference("notificationsListOpen");
 		notificationsListOpenPreference.setEntries(entriesWithDefault);
 		notificationsListOpenPreference.setEntryValues(entryValuesWithDefault);
+		notificationsListOpenPreference.setSummary(activity.getString(
+				R.string.notifications_list_open_summary,
+				ListMirakel.getList(
+						Integer.parseInt(settings.getString(
+								"notificationsListOpen", "-1"))).getName()));
+		notificationsListOpenPreference
+				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+					@Override
+					public boolean onPreferenceChange(Preference preference,
+							Object newValue) {
+						String list = ListMirakel.getList(
+								Integer.parseInt((String) newValue)).getName();
+						notificationsListOpenPreference.setSummary(activity
+								.getString(R.string.notifications_list_summary,
+										list));
+						return true;
+					}
+				});
 
 		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
 			CheckBoxPreference mCheckBoxPref = (CheckBoxPreference) findPreference("notificationsBig");
@@ -168,28 +350,60 @@ public class PreferencesHelper {
 		}
 
 		// Startup
-		CheckBoxPreference startupAllListPreference = (CheckBoxPreference) findPreference("startupAllLists");
+		final CheckBoxPreference startupAllListPreference = (CheckBoxPreference) findPreference("startupAllLists");
 		final ListPreference startupListPreference = (ListPreference) findPreference("startupList");
-		if (startupAllListPreference.isChecked()) {
-			startupListPreference.setEnabled(false);
-		}
+		startupAllListPreference.setSummary(settings.getBoolean(
+				"startupAllLists", false) ? R.string.startup_show_lists_summary
+				: R.string.startup_show_lists_summary_no);
 		startupAllListPreference
-				.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+					@Override
+					public boolean onPreferenceChange(Preference preference,
+							Object newValue) {
+						startupAllListPreference
+								.setSummary((Boolean) newValue ? R.string.startup_show_lists_summary
+										: R.string.startup_show_lists_summary_no);
+						if (!(Boolean) newValue) {
+							startupListPreference.setSummary(activity
+									.getString(
+											R.string.startup_list_summary,
+											ListMirakel.getList(Integer.parseInt(settings
+													.getString("startupList",
+															"-1")))));
+							startupListPreference.setEnabled(true);
+						} else {
+							startupListPreference.setSummary(" ");
+							startupListPreference.setEnabled(false);
+						}
+						return true;
+					}
+				});
+		startupListPreference.setEntries(entries);
+		startupListPreference.setEntryValues(entryValues);
+		if (settings.getBoolean("startupAllLists", false)) {
+			startupListPreference.setSummary(" ");
+			startupListPreference.setEnabled(false);
+		} else {
+			startupListPreference
+					.setSummary(activity.getString(
+							R.string.startup_list_summary, ListMirakel
+									.getList(Integer.parseInt(settings
+											.getString("startupList", "-1")))));
+			startupListPreference.setEnabled(true);
+		}
+		startupListPreference
+				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 					@Override
 					public boolean onPreferenceChange(Preference preference,
 							Object newValue) {
-						if ((Boolean) newValue) {
-							startupListPreference.setEnabled(false);
-						} else {
-							startupListPreference.setEnabled(true);
-						}
+						startupListPreference.setSummary(activity.getString(
+								R.string.startup_list_summary, ListMirakel
+										.getList(Integer
+												.parseInt((String) newValue))));
 						return true;
 					}
-
 				});
-		startupListPreference.setEntries(entries);
-		startupListPreference.setEntryValues(entryValues);
 		// Enable/Disbale Sync
 		CheckBoxPreference sync = (CheckBoxPreference) findPreference("syncUse");
 		sync.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
@@ -417,13 +631,19 @@ public class PreferencesHelper {
 					}
 				});
 
-		CheckBoxPreference notificationsUse = (CheckBoxPreference) findPreference("notificationsUse");
+		final CheckBoxPreference notificationsUse = (CheckBoxPreference) findPreference("notificationsUse");
+		notificationsUse.setSummary(settings.getBoolean("notificationsUse",
+				true) ? R.string.notifications_use_summary
+				: R.string.notifications_use_summary_no);
 		notificationsUse
 				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 					@Override
 					public boolean onPreferenceChange(Preference preference,
 							Object newValue) {
+						notificationsUse
+								.setSummary((Boolean) newValue ? R.string.notifications_use_summary
+										: R.string.notifications_use_summary_no);
 						if ((Boolean) newValue) {
 							activity.startService(new Intent(activity,
 									NotificationService.class));
@@ -505,7 +725,10 @@ public class PreferencesHelper {
 						return true;
 					}
 				});
-		CheckBoxPreference killButton = (CheckBoxPreference) findPreference("KillButton");
+		final CheckBoxPreference killButton = (CheckBoxPreference) findPreference("KillButton");
+		killButton
+				.setSummary(settings.getBoolean("KillButton", false) ? R.string.show_kill_button
+						: R.string.show_not_kill_button);
 		killButton
 				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
@@ -524,6 +747,8 @@ public class PreferencesHelper {
 												public void onClick(
 														DialogInterface dialog,
 														int which) {
+													killButton
+															.setSummary(R.string.show_kill_button);
 												}
 											})
 									.setNegativeButton(android.R.string.cancel,
@@ -534,14 +759,31 @@ public class PreferencesHelper {
 														int which) {
 													((CheckBoxPreference) findPreference("KillButton"))
 															.setChecked(false);
+													killButton
+															.setSummary(R.string.show_not_kill_button);
 
 												}
 											}).show();
+						} else {
+							killButton
+									.setSummary(R.string.show_not_kill_button);
 						}
 						return true;
 					}
 				});
-		CheckBoxPreference importDefaultList = (CheckBoxPreference) findPreference("importDefaultList");
+		final CheckBoxPreference importDefaultList = (CheckBoxPreference) findPreference("importDefaultList");
+		if (settings.getBoolean("importDefaultList", false)) {
+			importDefaultList.setSummary(activity
+					.getString(
+							R.string.import_default_list_summary,
+							ListMirakel.getList(
+									settings.getInt("defaultImportList", -1))
+									.getName()));
+		} else {
+			importDefaultList
+					.setSummary(R.string.import_no_default_list_summary);
+		}
+
 		importDefaultList
 				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
@@ -552,7 +794,7 @@ public class PreferencesHelper {
 							AlertDialog.Builder builder = new AlertDialog.Builder(
 									activity);
 							builder.setTitle(R.string.import_to);
-							List<CharSequence> items = new ArrayList<CharSequence>();
+							final List<CharSequence> items = new ArrayList<CharSequence>();
 							final List<Integer> list_ids = new ArrayList<Integer>();
 							int currentItem = 0;
 							for (ListMirakel list : ListMirakel.all()) {
@@ -560,6 +802,7 @@ public class PreferencesHelper {
 									items.add(list.getName());
 									list_ids.add(list.getId());
 								}
+
 							}
 							builder.setSingleChoiceItems(items
 									.toArray(new CharSequence[items.size()]),
@@ -567,8 +810,10 @@ public class PreferencesHelper {
 									new DialogInterface.OnClickListener() {
 										public void onClick(
 												DialogInterface dialog, int item) {
-											SharedPreferences settings = PreferenceManager
-													.getDefaultSharedPreferences(activity);
+											importDefaultList.setSummary(activity
+													.getString(
+															R.string.import_default_list_summary,
+															items.get(item)));
 											SharedPreferences.Editor editor = settings
 													.edit();
 											editor.putInt("defaultImportList",
@@ -577,7 +822,18 @@ public class PreferencesHelper {
 											dialog.dismiss();
 										}
 									});
+							builder.setOnCancelListener(new OnCancelListener() {
+								@Override
+								public void onCancel(DialogInterface dialog) {
+									importDefaultList.setChecked(false);
+									importDefaultList
+											.setSummary(R.string.import_no_default_list_summary);
+								}
+							});
 							builder.create().show();
+						} else {
+							importDefaultList
+									.setSummary(R.string.import_no_default_list_summary);
 						}
 						return true;
 					}
@@ -622,7 +878,9 @@ public class PreferencesHelper {
 						return true;
 					}
 				});
-		Preference undoNumber = (Preference) findPreference("UndoNumber");
+		final Preference undoNumber = (Preference) findPreference("UndoNumber");
+		undoNumber.setSummary(activity.getString(R.string.undo_number_summary,
+				settings.getInt("UndoNumber", 10)));
 		undoNumber
 				.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
@@ -711,6 +969,10 @@ public class PreferencesHelper {
 																	.toString());
 												}
 												editor.putInt("UndoNumber", val);
+												undoNumber.setSummary(activity
+														.getString(
+																R.string.undo_number_summary,
+																val));
 												if (old_val > val) {
 													for (int i = val; i < max; i++) {
 														editor.putString(
