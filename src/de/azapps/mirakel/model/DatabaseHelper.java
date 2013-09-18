@@ -182,8 +182,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			db.execSQL("INSERT INTO semantic_conditions (condition,due) VALUES "
 					+ "(\""
 					+ context.getString(R.string.today)
-					+ "\",0),"
-					+ "(\"" + context.getString(R.string.tomorrow) + "\",1);");
+					+ "\",0);"
+					+ "INSERT INTO semantic_conditions (condition,due) VALUES (\""
+					+ context.getString(R.string.tomorrow) + "\",1);");
 		}
 	}
 
