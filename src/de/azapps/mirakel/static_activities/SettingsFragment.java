@@ -19,19 +19,17 @@
 package de.azapps.mirakel.static_activities;
 
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
-import android.preference.Preference;
-import android.preference.PreferenceManager;
-import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceFragment;
+import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.PreferencesHelper;
+import de.azapps.mirakel.special_lists_settings.SpecialListsSettings;
 import de.azapps.mirakelandroid.R;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class SettingsFragment extends PreferenceFragment {
-	@SuppressWarnings("unused")
 	private static final String TAG = "SettingsFragment";
 
 	// private MainActivity main;
@@ -39,21 +37,29 @@ public class SettingsFragment extends PreferenceFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		addPreferencesFromResource(R.xml.preferences);
-		final CheckBoxPreference mCheckBoxPref = (CheckBoxPreference) findPreference("DarkTheme");
-		mCheckBoxPref.setSummary(PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("DarkTheme", false)?R.string.use_dark_theme:R.string.use_light_theme);
-		mCheckBoxPref
-				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+		if (getArguments().getString("type").equals("gui")) {
+			addPreferencesFromResource(R.xml.gui_prefernces);
+		} else if (getArguments().getString("type").equals("notification")) {
+			addPreferencesFromResource(R.xml.notification_prefernces);
+		} else if (getArguments().getString("type").equals("backup")) {
+			addPreferencesFromResource(R.xml.backup_prefernces);
+		} else if (getArguments().getString("type").equals("sync")) {
+			addPreferencesFromResource(R.xml.sync_prefernces);
+		} else if (getArguments().getString("type").equals("misc")) {
+			addPreferencesFromResource(R.xml.misc_prefernces);
+		} else if (getArguments().getString("type").equals("about")) {
+			addPreferencesFromResource(R.xml.about_prefernces);
+		} else if (getArguments().getString("type").equals("speciallists")) {
+			startActivity(new Intent(getActivity(), SpecialListsSettings.class));
+			if (!getResources().getBoolean(R.bool.isTablet))
+				getActivity().finish();
+			else {
+				addPreferencesFromResource(R.xml.notification_prefernces);
+			}
+		} else {
+			Log.wtf(TAG, "unkown prefernce");
+		}
 
-					@Override
-					public boolean onPreferenceChange(Preference preference,
-							Object newValue) {
-						getActivity().finish();
-						mCheckBoxPref.setSummary((Boolean)newValue?R.string.use_dark_theme:R.string.use_light_theme);
-						startActivity(getActivity().getIntent());
-						return true;
-					}
-				});
 		new PreferencesHelper(this).setFunctionsApp();
 	}
 

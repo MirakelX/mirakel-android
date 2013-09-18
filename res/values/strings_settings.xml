@@ -21,18 +21,22 @@
 
     <!-- Sync -->
     <string name="sync_title">Sync</string>
-    <string name="sync_use">Use</string>
+    <string name="sync_summary">Setup sync to Taskwarrior- or Mirakel-server</string>
+    <string name="sync_use">Use Sync</string>
     <string name="sync_warning">Sync is Experimental</string>
     <string name="sync_warning_message">The sync is currently very experimental. But you can try it at your own risk (Make a backup!) – Are you sure?</string>
-    <string name="sync_use_summary">Do you want to sync with a server?</string>
+    <string name="sync_use_summary_taskwarrior">Sync to Taskwarrior as %s</string>
+    <string name="sync_use_summary_mirakel">Sync to Mirakel as %s</string>
+    <string name="sync_use_summary_nothing">Do not use the Sync</string>
     <string name="sync_server">Server</string>
-    <string name="sync_server_summary">The URL (don\'t forget \"http://\")</string>
+    <string name="sync_server_summary">Sync to \"%s\"</string>
     <string name="sync_password">Password</string>
     <string name="inavlidPassword">Password is invalid!</string>
     <string name="inavlidUrl">Url is invalid!</string>
     <string name="sync_password_summary">Your Password</string>
     <string name="sync_frequency">Frequency</string>
-    <string name="sync_frequency_summary">How often should I sync?</string>
+    <string name="sync_frequency_summary">Sync every %s min</string>
+    <string name="sync_frequency_summary_man">Sync manually only</string>
 
     <string-array name="sync_frequencies">
         <item>5 min</item>
@@ -56,7 +60,7 @@
     <string name="not">not</string>
 
     <!-- Notifications -->
-    <string name="notifications_title">Notifications</string>
+    <string name="notification_title">Notifications</string>
     <string name="notifications_use">Use Notifications?</string>
     <string name="notifications_use_summary" >Show Notifications</string>
     <string name="notifications_use_summary_no" >Do not show Notifications</string>
@@ -80,7 +84,7 @@
     <string name="notificationsShowDoneSummary">Show Done Tasks in notifications</string>
     <string name="notificationsShowDoneSummaryNot">Do not show Done Tasks in notifications</string>
     <string name="notificationsShowDone">Handle Done Tasks</string>
-    <string name="notification_summary">Notifications</string>
+    <string name="notification_summary">Settings for Notifications and Reminder</string>
     <string name="reminder">Reminder</string>
 
     <!-- startup -->
@@ -98,6 +102,7 @@
     <string name="settings_misc">Misc</string>
     <!-- Backup -->
     <string name="settings_backup">Backup and Import</string>
+    <string name="settings_backup_summary">Backup or Import your Database</string>
     <string name="backup_click_summary">Backup the database to sdcard (%s)</string>
     <string name="backup_click">Backup</string>
     <string name="import_click_summary">Import the database</string>
@@ -115,6 +120,8 @@
     <string name="changelog_click_summary">View the changelog</string>
     <string name="changelog_click">Changelog</string>
     <string name="settings_about">About</string>
+    <string name="settings_misc_summary">Some other Settings</string>
+    <string name="settings_about_summary">Something about us and this app</string>
 
     <!-- Astrid -->
     <string name="import_astrid_click_summary">Import from an Astrid-file</string>
@@ -142,6 +149,7 @@
     <string name="show_kill_button">Show a Kill-Button</string>
     <string name="show_not_kill_button">Do not show a Kill-Button</string>
     <string name="ui_settings_title">User Interface</string>
+    <string name="ui_settings_summary">Settings to configure the Userinterface</string>
 	<string name="hide_keyboard">Hide Keyboard</string>
 	<string name="hide_keyboard_summary">Hide Keyboard if New Task is created</string>
 	<string name="show_keyboard_summary">Show Keyboard if New Task is created</string>

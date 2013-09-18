@@ -19,7 +19,10 @@
 package de.azapps.mirakel.static_activities;
 
 import java.io.File;
+import java.util.List;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -27,49 +30,88 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
+import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
 import android.widget.Toast;
+import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.ExportImport;
 import de.azapps.mirakel.helper.Helpers;
+import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.PreferencesHelper;
+import de.azapps.mirakel.special_lists_settings.SpecialListsSettings;
+import de.azapps.mirakel.sync.SyncAdapter;
+import de.azapps.mirakel.sync.mirakel.MirakelSync;
+import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
 import de.azapps.mirakelandroid.R;
 
 public class SettingsActivity extends PreferenceActivity {
 
-	public static final int FILE_ASTRID = 0, FILE_IMPORT_DB = 1;
-	@SuppressWarnings("unused")
+	public static final int FILE_ASTRID = 0, FILE_IMPORT_DB = 1,
+			NEW_ACCOUNT = 2;
 	private static final String TAG = "SettingsActivity";
+	private SettingsFragment fragment;
+	private boolean darkTheme;
 
 	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		SharedPreferences preferences = PreferenceManager
-				.getDefaultSharedPreferences(this);
-		if (preferences.getBoolean("DarkTheme", false))
+		darkTheme = PreferenceManager.getDefaultSharedPreferences(this)
+				.getBoolean("DarkTheme", false);
+		if (darkTheme)
 			setTheme(R.style.AppBaseThemeDARK);
 		super.onCreate(savedInstanceState);
-		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-			// Display the fragment as the main content.
-			((FrameLayout) findViewById(android.R.id.content)).removeAllViews();
-			getFragmentManager().beginTransaction()
-					.replace(android.R.id.content, new SettingsFragment())
-					.commit();
-			getActionBar().setDisplayHomeAsUpEnabled(true);
-		} else {
-			addPreferencesFromResource(R.xml.preferences);
+		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
+
+			Intent i = getIntent();
+			if (i == null) {
+				Log.e(TAG, "intent==null");
+
+			} else {
+				if (i.getAction() == null) {
+					addPreferencesFromResource(R.xml.preferences_v10);
+				} else if (i.getAction().equals(
+						"de.azapps.mirakel.preferences.NOTIFICATION")) {
+					addPreferencesFromResource(R.xml.notification_prefernces);
+				} else if (i.getAction().equals(
+						"de.azapps.mirakel.preferences.GUI")) {
+					addPreferencesFromResource(R.xml.gui_prefernces);
+				} else if (i.getAction().equals(
+						"de.azapps.mirakel.preferences.ABOUT")) {
+					addPreferencesFromResource(R.xml.about_prefernces);
+				} else if (i.getAction().equals(
+						"de.azapps.mirakel.preferences.MISC")) {
+					addPreferencesFromResource(R.xml.misc_prefernces);
+				} else if (i.getAction().equals(
+						"de.azapps.mirakel.preferences.BACKUP")) {
+					addPreferencesFromResource(R.xml.backup_prefernces);
+				} else if (i.getAction().equals(
+						"de.azapps.mirakel.preferences.SYNC")) {
+					addPreferencesFromResource(R.xml.sync_prefernces);
+				} else if (i.getAction().equals(
+						"de.azapps.mirakel.preferences.SPECIAL_LISTS")) {
+					startActivity(new Intent(this, SpecialListsSettings.class));
+					if (!getResources().getBoolean(R.bool.isTablet))
+						finish();
+				} else {
+					Log.wtf(TAG, "unkown Preference");
+				}
+			}
 			new PreferencesHelper(this).setFunctionsApp();
+		} else {
+			getActionBar().setDisplayHomeAsUpEnabled(true);
 		}
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		Log.d(TAG, "Menu");
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			finish();
@@ -79,9 +121,22 @@ public class SettingsActivity extends PreferenceActivity {
 	}
 
 	@Override
+	protected void onResume() {
+		super.onResume();
+		if (darkTheme != PreferenceManager.getDefaultSharedPreferences(this)
+				.getBoolean("DarkTheme", false)
+				&& !getResources().getBoolean(R.bool.isTablet)) {
+			finish();
+			startActivity(getIntent());
+		}
+	}
+
+	@SuppressWarnings("deprecation")
+	@SuppressLint("NewApi")
+	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		final Context that = this;
-
+		Log.e(TAG, "foo");
 		switch (requestCode) {
 		case FILE_ASTRID:
 			if (resultCode != RESULT_OK)
@@ -157,7 +212,49 @@ public class SettingsActivity extends PreferenceActivity {
 											path_db));
 								}
 							}).create().show();
+		case NEW_ACCOUNT:
+			CheckBoxPreference sync;
+			Preference server;
+			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+				sync = (CheckBoxPreference) findPreference("syncUse");
+				server = findPreference("syncServer");
+			} else {
+				sync = (CheckBoxPreference) fragment.findPreference("syncUse");
+				server = fragment.findPreference("syncServer");
+			}
+
+			AccountManager am = AccountManager.get(this);
+			Account[] accounts = am.getAccountsByType(Mirakel.ACCOUNT_TYPE);
+			if (accounts.length > 0) {
+				if (am.getUserData(accounts[0], SyncAdapter.BUNDLE_SERVER_TYPE)
+						.equals(TaskWarriorSync.TYPE)) {
+					sync.setSummary(getString(
+							R.string.sync_use_summary_taskwarrior,
+							accounts[0].name));
+				} else if (am.getUserData(accounts[0],
+						SyncAdapter.BUNDLE_SERVER_TYPE)
+						.equals(MirakelSync.TYPE)) {
+					sync.setSummary(getString(
+							R.string.sync_use_summary_mirakel, accounts[0].name));
+				} else {
+					sync.setChecked(false);
+					sync.setSummary(R.string.sync_use_summary_nothing);
+					am.removeAccount(accounts[0], null, null);
+				}
+				server.setSummary(getString(R.string.sync_server_summary,
+						am.getUserData(accounts[0],
+								SyncAdapter.BUNDLE_SERVER_URL)));
+			} else {
+				sync.setChecked(false);
+				sync.setSummary(R.string.sync_use_summary_nothing);
+				server.setSummary("");
+			}
 		}
 		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	@Override
+	public void onBuildHeaders(List<Header> target) {
+		loadHeadersFromResource(R.xml.preferences, target);
 	}
 }

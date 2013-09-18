@@ -17,211 +17,63 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <!-- Notifications -->
-    <PreferenceScreen
-        android:key="category_notifications"
-        android:title="@string/notifications_title" >
-        <PreferenceCategory
-            android:title="@string/notification_summary">
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="notificationsUse"
-            android:summary="@string/notifications_use_summary"
-            android:title="@string/notifications_use" />
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:dependency="notificationsUse"
-            android:key="notificationsPersistent"
-            android:summary="@string/notifications_persistent_summary"
-            android:title="@string/notifications_persistent" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:dependency="notificationsUse"
-            android:key="notificationsZeroHide"
-            android:summary="@string/notifications_zero_show_summary"
-            android:title="@string/notifications_zero_show" />
- 
-        <ListPreference
-            android:defaultValue="-1"
-            android:dependency="notificationsUse"
-            android:key="notificationsList"
-            android:summary="@string/notifications_list_summary"
-            android:title="@string/notifications_list" />
-        <ListPreference
-            android:defaultValue="-1"
-            android:dependency="notificationsUse"
-            android:key="notificationsListOpen"
-            android:summary="@string/notifications_list_open_summary"
-            android:title="@string/notifications_list_open" />
-
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:dependency="notificationsUse"
-            android:key="notificationsBig"
-            android:summary="@string/notifications_big_summary"
-            android:title="@string/notifications_big" />
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:dependency="notificationsUse"
-            android:key="notificationDone"
-            android:summary="@string/notificationsShowDoneSummary"
-            android:title="@string/notificationsShowDone" />
-        </PreferenceCategory>
-        <PreferenceCategory android:title="@string/reminder" >
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="remindersPersistent"
-            android:summary="@string/reminders_persistent_summary"
-            android:title="@string/reminders_persistent" />
-        </PreferenceCategory>
-    </PreferenceScreen>
-
-    <!-- GUI -->
-    <PreferenceScreen
-        android:key="category_gui"
+    <header
+        android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
+        android:summary="@string/notification_summary"
+        android:title="@string/notification_title" >
+        <extra
+            android:name="type"
+            android:value="notification" />
+    </header>
+    <header
+        android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
+        android:summary="@string/ui_settings_summary"
         android:title="@string/ui_settings_title" >
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="highlightSelected"
-            android:summary="@string/highlightSelected_summary"
-            android:title="@string/highlightSelected" />
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="showDone"
-            android:summary="@string/showDone_summary"
-            android:title="@string/showDone" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="DarkTheme"
-            android:summary="@string/use_dark_theme"
-            android:title="@string/dark_theme" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="KillButton"
-            android:summary="@string/show_kill_button"
-            android:title="@string/kill_button" />
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="hideKeyboard"
-            android:summary="@string/hide_keyboard_summary"
-            android:title="@string/hide_keyboard" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="semanticNewTask"
-            android:summary="@string/semantic_new_task_summary"
-            android:title="@string/semantic_new_task" />
-    </PreferenceScreen>
-
-    <!-- Special Lists -->
-        <Preference
-            android:key="special_lists"
-            android:title="@string/special_lists_click" />
-
-    <!-- Backup/Import -->
-    <PreferenceScreen android:title="@string/settings_backup" >
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="importDefaultList"
-            android:summary="@string/import_default_list_summary"
-            android:title="@string/import_default_list" />
-        <Preference
-            android:key="backup"
-            android:summary="@string/backup_click_summary"
-            android:title="@string/backup_click" />
-        <Preference
-            android:key="import"
-            android:summary="@string/import_click_summary"
-            android:title="@string/import_click" />
-        <Preference
-            android:key="import_astrid"
-            android:summary="@string/import_astrid_click_summary"
-            android:title="@string/import_astrid_click" />
-    </PreferenceScreen>
-
-    <!-- Sync -->
-    <PreferenceScreen android:title="@string/sync_title" >
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="syncUse"
-            android:summary="@string/sync_use_summary"
-            android:title="@string/sync_use" />
-
-        <EditTextPreference
-            android:dependency="syncUse"
-            android:inputType="textUri"
-            android:key="syncServer"
-            android:summary="@string/sync_server_summary"
-            android:title="@string/sync_server" />
-        <!--
-             <EditTextPreference
-            android:dependency="syncUse"
-            android:key="syncEmail"
-            android:inputType="textEmailAddress"
-            android:summary="@string/sync_email_summary"
-            android:title="@string/sync_email" />
-        -->
-        <EditTextPreference
-            android:dependency="syncUse"
-            android:inputType="textPassword"
-            android:key="syncPassword"
-            android:summary="@string/sync_password_summary"
-            android:title="@string/sync_password" />
-
-        <ListPreference
-            android:dependency="syncUse"
-            android:entries="@array/sync_frequencies"
-            android:entryValues="@array/sync_frequencies_values"
-            android:key="syncFrequency"
-            android:summary="@string/sync_frequency_summary"
-            android:title="@string/sync_frequency" />
-    </PreferenceScreen>
-
-    <!-- Misc -->
-    <PreferenceScreen
-        android:key="category_misc"
+        <extra
+            android:name="type"
+            android:value="gui" />
+    </header>
+    <header
+        android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
+        android:summary="@string/settings_backup_summary"
+        android:title="@string/settings_backup" >
+        <extra
+            android:name="type"
+            android:value="backup" />
+    </header>
+    <header
+        android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
+        android:summary="@string/special_lists_click_summary"
+        android:title="@string/special_lists_click"  >
+        <extra
+            android:name="type"
+            android:value="speciallists" />
+    </header>
+    <header
+        android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
+        android:summary="@string/sync_summary"
+        android:title="@string/sync_title" >
+        <extra
+            android:name="type"
+            android:value="sync" />
+    </header>
+    <header
+        android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
+        android:summary="@string/settings_misc_summary"
         android:title="@string/settings_misc" >
+        <extra
+            android:name="type"
+            android:value="misc" />
+    </header>
+    <header
+        android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
+        android:summary="@string/settings_about_summary"
+        android:title="@string/settings_about" >
+        <extra
+            android:name="type"
+            android:value="about" />
+    </header>
+</preference-headers>
 
-        <!-- Startup -->
-        <PreferenceCategory android:title="@string/startup_title" >
-            <CheckBoxPreference
-                android:defaultValue="false"
-                android:key="startupAllLists"
-                android:summary="@string/startup_show_lists_summary"
-                android:title="@string/startup_show_lists" />
-
-            <ListPreference
-                android:defaultValue="0"
-                android:key="startupList"
-                android:summary="@string/startup_list_summary"
-                android:title="@string/startup_list" />
-        </PreferenceCategory>
-		 <PreferenceCategory android:title="@string/settings_misc" >
-        <Preference
-            android:key="UndoNumber"
-            android:summary="@string/undo_number_summary"
-            android:title="@string/undo_number" />
-        <Preference
-            android:key="deleteDone"
-            android:summary="@string/delete_done_summary"
-            android:title="@string/delete_done" />
-        </PreferenceCategory>
-    </PreferenceScreen>
-    <!-- About -->
-    <PreferenceScreen android:title="@string/settings_about" >
-        <Preference
-            android:key="changelog"
-            android:summary="@string/changelog_click_summary"
-            android:title="@string/changelog_click" />
-        <Preference
-            android:key="credits"
-            android:summary="@string/action_credits_summary"
-            android:title="@string/action_credits" />
-        <Preference
-            android:key="contact"
-            android:summary="@string/action_contact_summary"
-            android:title="@string/action_contact" />
-    </PreferenceScreen>
-
-</PreferenceScreen>
