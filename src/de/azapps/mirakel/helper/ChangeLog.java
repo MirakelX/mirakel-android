@@ -165,7 +165,7 @@ public class ChangeLog {
 						full ? R.string.changelog_full_title
 								: R.string.changelog_title))
 				.setView(wv)
-				.setCancelable(false)
+				.setCancelable(true)
 				// OK button
 				.setPositiveButton(
 						context.getResources().getString(
