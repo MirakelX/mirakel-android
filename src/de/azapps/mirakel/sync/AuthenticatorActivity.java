@@ -348,6 +348,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				Log.e(TAG, "cannot read file");
 				return;
 			}
+			try{
 			Bundle b = new Bundle();
 			b.putString(SyncAdapter.BUNDLE_SERVER_TYPE, TaskWarriorSync.TYPE);
 			String content = new String(buffer);
@@ -372,6 +373,11 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 			FileUtils.writeToFile(new File(getFilesDir().getParent()
 					+ "/ca.cert.pem"), t[1]);
 			mAccountManager.addAccountExplicitly(account, pwd, b);
+			}catch(ArrayIndexOutOfBoundsException e){
+				Log.e(TAG,"wrong Configfile");
+				Toast.makeText(this, R.string.wrong_config, Toast.LENGTH_LONG).show();;
+			}
+			
 		} else {
 			Log.e(TAG, "File not found");
 		}

@@ -254,7 +254,8 @@ public class Helpers {
 	}
 
 	public static void updateLog(ListMirakel listMirakel, Context ctx) {
-		updateLog(LIST, listMirakel.toJson(), ctx);
+		if(listMirakel!=null)
+			updateLog(LIST, listMirakel.toJson(), ctx);
 
 	}
 
@@ -276,7 +277,8 @@ public class Helpers {
 	}
 
 	public static void updateLog(Task task, Context ctx) {
-		updateLog(TASK, task.toJson(), ctx);
+		if(task!=null)
+			updateLog(TASK, task.toJson(), ctx);
 
 	}
 

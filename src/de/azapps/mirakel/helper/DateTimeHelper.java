@@ -16,11 +16,11 @@ public class DateTimeHelper {
 			"yyyyMMdd'T'kkmmss'Z'", Locale.getDefault());
 
 	public static String formatDate(Calendar c) {
-		return dateFormat.format(c.getTime());
+		return c==null?null:dateFormat.format(c.getTime());
 	}
 
 	public static String formatDateTime(Calendar c) {
-		return dateTimeFormat.format(c.getTime());
+		return c==null?null: dateTimeFormat.format(c.getTime());
 	}
 
 	public static String formatTaskWarrior(Calendar c) {

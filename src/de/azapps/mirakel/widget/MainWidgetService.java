@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 import de.azapps.mirakel.helper.WidgetHelper;
@@ -45,6 +46,7 @@ public class MainWidgetService extends RemoteViewsService {
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
+	private static final String TAG = "MainWidgetViewsFactory";
 	private Context mContext;
 	private List<Task> tasks;
 	private int listId = 0;
@@ -78,6 +80,10 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	}
 
 	public RemoteViews getViewAt(int position) {
+		if(position>tasks.size()){
+			Log.wtf(TAG,"Klick on unkown Task");
+			return null;
+		}
 		Task task = tasks.get(position);
 		// Get The Task
 		RemoteViews rv = new RemoteViews(mContext.getPackageName(),
