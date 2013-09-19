@@ -695,7 +695,6 @@ public class Task extends TaskBase {
 		if (!where.equals(""))
 			where += " and ";
 		where += " not sync_state=" + Network.SYNC_STATE.DELETE;
-		Log.v(TAG, where);
 		String order = "";
 
 		switch (sorting) {
@@ -713,7 +712,6 @@ public class Task extends TaskBase {
 		}
 		if (listId < 0)
 			order += ", list_id ASC";
-		Log.v(TAG, order);
 		return Mirakel.getReadableDatabase().query(TABLE, allColumns, where,
 				null, null, null, "done, " + order);
 	}

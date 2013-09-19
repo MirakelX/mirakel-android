@@ -500,7 +500,7 @@ public class TasksFragment extends Fragment {
 				// TODO Remove Bad Hack
 				Task t = values.get((int) id);
 				Log.v(TAG, "Switch to Task " + t.getId());
-				main.setCurrentTask(t, item);
+				main.setCurrentTask(t, true);
 			}
 		});
 	}

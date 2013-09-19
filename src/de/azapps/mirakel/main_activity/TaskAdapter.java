@@ -18,7 +18,9 @@
  ******************************************************************************/
 package de.azapps.mirakel.main_activity;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.app.Activity;
 import android.content.Context;
@@ -33,6 +35,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.Helpers;
+import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 
@@ -45,7 +48,12 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 	OnClickListener clickCheckbox;
 	OnClickListener clickPrio;
 	boolean darkTheme;
+	private Map<Long, View> viewsForTasks = new HashMap<Long, View>();
 
+	public View getViewForTask(Task task){
+		return viewsForTasks.get(task.getId());
+	}
+	
 	public TaskAdapter(Context context, int layoutResourceId, List<Task> data,
 			OnClickListener clickCheckbox, OnClickListener click_prio,
 			int listId, boolean darkTheme) {
@@ -70,6 +78,7 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 	}
 
 	void changeData(List<Task> tasks, int listId) {
+		viewsForTasks.clear();
 		data.clear();
 		data.addAll(tasks);
 		this.listId = listId;
@@ -155,6 +164,7 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		} else {
 			holder.taskRowDue.setVisibility(View.GONE);
 		}
+		viewsForTasks.put(task.getId(), row);
 
 		return row;
 	}
