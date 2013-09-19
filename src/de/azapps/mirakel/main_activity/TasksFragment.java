@@ -36,7 +36,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
@@ -510,25 +509,6 @@ public class TasksFragment extends Fragment {
 		return adapter;
 	}
 
-	/**
-	 * Get the State of the listView
-	 * 
-	 * @return
-	 */
-	public Parcelable getState() {
-		return listView == null ? null : listView.onSaveInstanceState();
-	}
-
-	/**
-	 * Set the State of the listView
-	 * 
-	 * @param state
-	 */
-	public void setState(Parcelable state) {
-		if (listView == null || state == null)
-			return;
-		listView.onRestoreInstanceState(state);
-	}
 
 	public void setScrollPosition(int pos) {
 		if (listView == null)

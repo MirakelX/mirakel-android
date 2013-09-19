@@ -33,7 +33,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
@@ -108,7 +107,6 @@ public class MainActivity extends ActionBarActivity implements
 	public SharedPreferences preferences;
 
 	protected int currentPosition = TASKS_FRAGMENT;
-	private Parcelable tasksState, listState;
 	private boolean darkTheme;
 	private boolean isResumend;
 	private Intent startIntent;
@@ -306,11 +304,6 @@ public class MainActivity extends ActionBarActivity implements
 		if (menu == null)
 			return;
 		int newmenu;
-		if (currentPosition == TASKS_FRAGMENT) {
-			tasksState = tasksFragment.getState();
-		} else if (currentPosition == LIST_FRAGMENT) {
-			listState = listFragment.getState();
-		}
 		switch (position) {
 		case LIST_FRAGMENT:
 			if (!isTablet)
@@ -318,8 +311,6 @@ public class MainActivity extends ActionBarActivity implements
 			else
 				newmenu = R.menu.tablet_left;
 			getSupportActionBar().setTitle(getString(R.string.list_title));
-			if (listState != null)
-				listFragment.setState(listState);
 			break;
 		case TASKS_FRAGMENT:
 			listFragment.enable_drop(false);
@@ -330,8 +321,6 @@ public class MainActivity extends ActionBarActivity implements
 			if (currentList == null)
 				return;
 			getSupportActionBar().setTitle(currentList.getName());
-			if (tasksState != null && currentPosition != LIST_FRAGMENT)
-				tasksFragment.setState(tasksState);
 			break;
 		case TASK_FRAGMENT:
 			newmenu = R.menu.activity_task;

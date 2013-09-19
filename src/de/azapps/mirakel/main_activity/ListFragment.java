@@ -25,7 +25,6 @@ import java.util.List;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -186,25 +185,6 @@ public class ListFragment extends Fragment {
 		return adapter;
 	}
 
-	/**
-	 * Get the State of the listView
-	 * 
-	 * @return
-	 */
-	public Parcelable getState() {
-		return listView == null ? null : listView.onSaveInstanceState();
-	}
-
-	/**
-	 * Set the State of the listView
-	 * 
-	 * @param state
-	 */
-	public void setState(Parcelable state) {
-		if (listView == null || state == null)
-			return;
-		listView.onRestoreInstanceState(state);
-	}
 
 	/**
 	 * Edit the name of the List
