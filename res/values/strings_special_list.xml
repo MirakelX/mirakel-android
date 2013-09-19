@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Mirakel is an Android App for Managing your ToDo-Lists
+  
+  Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
+  
+      This program is free software: you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation, either version 3 of the License, or
+      any later version.
+  
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+  
+      You should have received a copy of the GNU General Public License
+      along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <resources>
 
     <string name="special_list_name">Name</string>
@@ -42,14 +60,14 @@
     <string name="special_list_where_due_title_text">Due</string>
     <string name="empty">Irrelevant</string>
     <string name="select_by">Select By</string>
-    <string name="done">Tasks done</string>
-    <string name="undone">Tasks not Done</string>
+    <string name="done">Done Tasks</string>
+    <string name="undone">Undone Tasks</string>
     <string name="nothing">Nothing</string>
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
     <string name="reminder_set">Reminder is set</string>
     <string name="reminder_unset">Reminder is not set</string>
-    <string name="inverte">Inverte Selection</string>
+    <string name="inverte">Invert Selection</string>
     <string name="not_in">Not in</string>
     <string name="where_like_contain_text">Contains</string>
     <string name="where_like_begin_text">Beginns with</string>

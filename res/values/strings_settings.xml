@@ -21,15 +21,15 @@
 
     <!-- Sync -->
     <string name="sync_title">Sync</string>
-    <string name="sync_summary">Setup sync to Taskwarrior- or Mirakel-server</string>
+    <string name="sync_summary">Setup sync with Taskwarrior- or Mirakel-server</string>
     <string name="sync_use">Use Sync</string>
     <string name="sync_warning">Sync is Experimental</string>
     <string name="sync_warning_message">The sync is currently very experimental. But you can try it at your own risk (Make a backup!) – Are you sure?</string>
-    <string name="sync_use_summary_taskwarrior">Sync to Taskwarrior as %s</string>
-    <string name="sync_use_summary_mirakel">Sync to Mirakel as %s</string>
+    <string name="sync_use_summary_taskwarrior">Sync with Taskwarrior as %s</string>
+    <string name="sync_use_summary_mirakel">Sync with Mirakel as %s</string>
     <string name="sync_use_summary_nothing">Do not use the Sync</string>
     <string name="sync_server">Server</string>
-    <string name="sync_server_summary">Sync to \"%s\"</string>
+    <string name="sync_server_summary">Sync with %s</string>
     <string name="sync_password">Password</string>
     <string name="inavlidPassword">Password is invalid!</string>
     <string name="inavlidUrl">Url is invalid!</string>
@@ -61,24 +61,24 @@
 
     <!-- Notifications -->
     <string name="notification_title">Notifications</string>
-    <string name="notifications_use">Use Notifications?</string>
+    <string name="notifications_use">Use Notifications</string>
     <string name="notifications_use_summary" >Show Notifications</string>
     <string name="notifications_use_summary_no" >Do not show Notifications</string>
-    <string name="notifications_persistent">Persistent Notifications?</string>
+    <string name="notifications_persistent">Persistent Notifications</string>
     <string name="notifications_persistent_summary">Notifications are persistent</string>
     <string name="notifications_persistent_summary_not">Notifications are not persistent</string>
-    <string name="notifications_list">Show List?</string>
+    <string name="notifications_list">Show List</string>
     <string name="notifications_list_summary">Show \"%s\"</string>
-    <string name="notifications_list_open">Open List?</string>
+    <string name="notifications_list_open">Open List</string>
     <string name="notifications_list_open_summary">Open \"%s\"</string>
     <string name="default_list">Default List</string>
-    <string name="notifications_big">Show big Notifications?</string>
+    <string name="notifications_big">Show big Notifications</string>
     <string name="notifications_big_summary">Show big Notifications</string>
     <string name="notifications_big_summary_not">Do not use big Notifications</string>
     <string name="notifications_zero_show_summary_hide">Hide notification, if list is empty</string>
     <string name="notifications_zero_show_summary_show">Show notification, if list is empty</string>
-    <string name="notifications_zero_show">Hide notification if empty?</string>
-    <string name="reminders_persistent">Should the reminders be persistent?</string>
+    <string name="notifications_zero_show">Hide notification if empty</string>
+    <string name="reminders_persistent">Should the reminders be persistent</string>
     <string name="reminders_persistent_summary">Reminders are persistent</string>
     <string name="reminders_persistent_summary_not">Reminders are not persistent</string>
     <string name="notificationsShowDoneSummary">Show Done Tasks in notifications</string>
@@ -167,7 +167,4 @@
     <string name="delete_done_warning">Are you sure?</string>
     <string name="delete_done_warning_message">You can not undo this. Make a backup!</string>
     <string name="delete_done_success">Successfully deleted your done tasks.</string>
-    
-
-
 </resources>

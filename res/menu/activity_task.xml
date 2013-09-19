@@ -33,7 +33,7 @@
         android:id="@+id/menu_move"
         android:icon="@android:drawable/ic_menu_set_as"
         mirakel:showAsAction="ifRoom|withText"
-        android:title="@string/menu_move"/>
+        android:title="@string/menu_move_task"/>
     <item
         android:id="@+id/menu_undo"
         mirakel:showAsAction="never"
@@ -51,7 +51,7 @@
         android:id="@+id/menu_delete"
         android:icon="@android:drawable/ic_menu_delete"
         mirakel:showAsAction="never"
-        android:title="@string/menu_delete"/>
+        android:title="@string/menu_delete_task"/>
     <item
         android:id="@+id/menu_settings_task"
         mirakel:showAsAction="never"
