@@ -143,7 +143,7 @@
                         android:id="@+id/open_howto"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="How To setup Server" />
+                        android:text="@string/howto_setup_server" />
 
                     <Button
                         android:id="@+id/load_configfile"

@@ -104,7 +104,6 @@
     <string name="menu_move_task">Move Task</string>
     <!-- Login -->
     <string name="offical_server_url">https://mirakel.azapps.de</string>
-    <string name="offical_server_url_taskwarrior">mirakel.azapps.de:5644</string>
     <string name="title_settings">Settings</string>
 
     <!-- Widget -->
@@ -137,9 +136,6 @@
     
     <string name="load_config">Select the config file for Taskwarrior</string>
     <string name="select_config">Select Taskwarrior config file</string>
-    <string name="login_activity_org_label">Organisation</string>
-    <string name="login_org_hint">Organisation</string>
-    <string name="login_org_default">PUBLIC</string>
     <string name="login_activity_username_label">Username</string>
     <string name="login_activity_server_label">Server-URL</string>
     <string name="login_activity_server_typ">Server Type</string>
@@ -227,7 +223,6 @@ Device: %3$s\n]]>
     all you have to do is to click OK.</string>
     <string name="crash_dialog_comment_prompt">You might add your comments about the problem below:</string>
     <string name="crash_dialog_ok_toast">Thank you !</string>
-    <string name="title_activity_special_list_settings">Settings for Special Lists</string>
     
     <!-- Sync -->
     <string name="message_from_server">The server want to say you: %s</string>

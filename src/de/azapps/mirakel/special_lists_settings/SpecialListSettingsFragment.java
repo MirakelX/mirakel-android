@@ -362,7 +362,7 @@ public class SpecialListSettingsFragment extends Fragment {
 						AlertDialog.Builder builder = new AlertDialog.Builder(
 								ctx);
 						builder.setTitle(ctx.getString(R.string.select_by));
-						builder.setPositiveButton(R.string.OK,
+						builder.setPositiveButton(android.R.string.ok,
 								new DialogInterface.OnClickListener() {
 									public void onClick(DialogInterface dialog,
 											int id) {
@@ -390,7 +390,7 @@ public class SpecialListSettingsFragment extends Fragment {
 														: text);
 									}
 								});
-						builder.setNegativeButton(R.string.Cancel,
+						builder.setNegativeButton(android.R.string.cancel,
 								new DialogInterface.OnClickListener() {
 									public void onClick(DialogInterface dialog,
 											int id) {
@@ -467,7 +467,7 @@ public class SpecialListSettingsFragment extends Fragment {
 						AlertDialog.Builder builder = new AlertDialog.Builder(
 								ctx);
 						builder.setTitle(ctx.getString(R.string.select_by));
-						builder.setPositiveButton(R.string.OK,
+						builder.setPositiveButton(android.R.string.ok,
 								new DialogInterface.OnClickListener() {
 									public void onClick(DialogInterface dialog,
 											int id) {
@@ -495,7 +495,7 @@ public class SpecialListSettingsFragment extends Fragment {
 														: text);
 									}
 								});
-						builder.setNegativeButton(R.string.Cancel,
+						builder.setNegativeButton(android.R.string.cancel,
 								new DialogInterface.OnClickListener() {
 									public void onClick(DialogInterface dialog,
 											int id) {
@@ -526,7 +526,7 @@ public class SpecialListSettingsFragment extends Fragment {
 						AlertDialog.Builder builder = new AlertDialog.Builder(
 								ctx);
 						builder.setTitle(ctx.getString(R.string.select_by));
-						builder.setNegativeButton(R.string.Cancel,
+						builder.setNegativeButton(android.R.string.cancel,
 								new DialogInterface.OnClickListener() {
 
 									@Override
@@ -578,7 +578,7 @@ public class SpecialListSettingsFragment extends Fragment {
 								break;
 							}
 						}
-						builder.setPositiveButton(R.string.OK,
+						builder.setPositiveButton(android.R.string.ok,
 								new DialogInterface.OnClickListener() {
 
 									@Override
@@ -643,7 +643,7 @@ public class SpecialListSettingsFragment extends Fragment {
 						AlertDialog.Builder builder = new AlertDialog.Builder(
 								ctx);
 						builder.setTitle(ctx.getString(R.string.select_by));
-						builder.setNegativeButton(R.string.Cancel,
+						builder.setNegativeButton(android.R.string.cancel,
 								new DialogInterface.OnClickListener() {
 
 									@Override
@@ -695,7 +695,7 @@ public class SpecialListSettingsFragment extends Fragment {
 								break;
 							}
 						}
-						builder.setPositiveButton(R.string.OK,
+						builder.setPositiveButton(android.R.string.ok,
 								new DialogInterface.OnClickListener() {
 
 									@Override
@@ -760,7 +760,7 @@ public class SpecialListSettingsFragment extends Fragment {
 						AlertDialog.Builder builder = new AlertDialog.Builder(
 								ctx);
 						builder.setTitle(ctx.getString(R.string.select_by));
-						builder.setNegativeButton(R.string.Cancel,
+						builder.setNegativeButton(android.R.string.cancel,
 								new DialogInterface.OnClickListener() {
 
 									@Override
@@ -1179,7 +1179,7 @@ public class SpecialListSettingsFragment extends Fragment {
 										}
 									});
 						}
-						builder.setPositiveButton(R.string.OK,
+						builder.setPositiveButton(android.R.string.ok,
 								new DialogInterface.OnClickListener() {
 
 									@Override

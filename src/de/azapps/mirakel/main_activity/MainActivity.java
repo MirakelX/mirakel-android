@@ -611,7 +611,7 @@ public class MainActivity extends ActionBarActivity implements
 		new AlertDialog.Builder(this)
 				.setTitle(list.getName())
 				.setMessage(this.getString(R.string.list_delete_content))
-				.setPositiveButton(this.getString(R.string.Yes),
+				.setPositiveButton(this.getString(android.R.string.yes),
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int which) {
@@ -622,7 +622,7 @@ public class MainActivity extends ActionBarActivity implements
 								}
 							}
 						})
-				.setNegativeButton(this.getString(R.string.no),
+				.setNegativeButton(this.getString(android.R.string.no),
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int which) {
@@ -641,7 +641,7 @@ public class MainActivity extends ActionBarActivity implements
 		new AlertDialog.Builder(this)
 				.setTitle(task.getName())
 				.setMessage(this.getString(R.string.task_delete_content))
-				.setPositiveButton(this.getString(R.string.Yes),
+				.setPositiveButton(this.getString(android.R.string.yes),
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int which) {
@@ -650,7 +650,7 @@ public class MainActivity extends ActionBarActivity implements
 								ReminderAlarm.updateAlarms(main);
 							}
 						})
-				.setNegativeButton(this.getString(R.string.no),
+				.setNegativeButton(this.getString(android.R.string.no),
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int which) {

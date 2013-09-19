@@ -219,7 +219,7 @@ public class TaskFragment extends Fragment {
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 					dialog.getDatePicker().setCalendarViewShown(false);
 					dialog.setButton(DialogInterface.BUTTON_POSITIVE,
-							getString(R.string.OK),
+							getString(android.R.string.ok),
 							new DialogInterface.OnClickListener() {
 
 								public void onClick(DialogInterface dialog1,

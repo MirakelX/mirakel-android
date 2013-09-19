@@ -92,7 +92,7 @@ public class TaskDialogHelpers {
 				.setTitle(ctx.getString(R.string.task_change_prio_title))
 				.setMessage(ctx.getString(R.string.task_change_prio_cont))
 				.setView(numberPicker)
-				.setPositiveButton(ctx.getString(R.string.OK),
+				.setPositiveButton(ctx.getString(android.R.string.ok),
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
@@ -109,7 +109,7 @@ public class TaskDialogHelpers {
 							}
 
 						})
-				.setNegativeButton(ctx.getString(R.string.Cancel),
+				.setNegativeButton(ctx.getString(android.R.string.cancel),
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
@@ -147,7 +147,7 @@ public class TaskDialogHelpers {
 		new AlertDialog.Builder(ctx)
 				.setTitle(R.string.task_set_reminder)
 				.setView(mDateTimeDialogView)
-				.setPositiveButton(R.string.OK,
+				.setPositiveButton(android.R.string.ok,
 						new DialogInterface.OnClickListener() {
 
 							@Override
