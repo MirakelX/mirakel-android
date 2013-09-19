@@ -754,8 +754,10 @@ public class MainActivity extends ActionBarActivity implements
 			return;
 		Log.v(TAG,currentTask.getName());
 		View currentView=tasksFragment.getAdapter().getViewForTask(currentTask);
-		if(currentView==null)
+		if(currentView==null){
+			currentView=tasksFragment.getListView().getChildAt(0);
 			Log.v(TAG, "current view is null");
+		}
 
 		if (currentView != null && highlightSelected) {
 			if (oldClickedTask != null) {

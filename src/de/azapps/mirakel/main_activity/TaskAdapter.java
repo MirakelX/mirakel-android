@@ -35,7 +35,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.Helpers;
-import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 
@@ -50,10 +49,11 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 	boolean darkTheme;
 	private Map<Long, View> viewsForTasks = new HashMap<Long, View>();
 
-	public View getViewForTask(Task task){
+	public View getViewForTask(Task task) {
 		return viewsForTasks.get(task.getId());
 	}
-	
+
+
 	public TaskAdapter(Context context, int layoutResourceId, List<Task> data,
 			OnClickListener clickCheckbox, OnClickListener click_prio,
 			int listId, boolean darkTheme) {
@@ -165,7 +165,6 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 			holder.taskRowDue.setVisibility(View.GONE);
 		}
 		viewsForTasks.put(task.getId(), row);
-
 		return row;
 	}
 

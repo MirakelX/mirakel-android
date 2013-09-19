@@ -508,6 +508,9 @@ public class TasksFragment extends Fragment {
 	public TaskAdapter getAdapter() {
 		return adapter;
 	}
+	public ListView getListView() {
+		return listView;
+	}
 
 
 	public void setScrollPosition(int pos) {
