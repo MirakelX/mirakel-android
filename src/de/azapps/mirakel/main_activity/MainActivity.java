@@ -466,8 +466,8 @@ public class MainActivity extends ActionBarActivity implements
 			Task task = Helpers.getTaskFromIntent(startIntent);
 			if (task != null) {
 				Log.d(TAG, "TaskID: " + task.getId());
-				currentList = task.getList();
-				setCurrentTask(task);
+				setCurrentList(task.getList());
+				setCurrentTask(task,true);
 			} else {
 				Log.d(TAG, "task null");
 			}
@@ -905,7 +905,6 @@ public class MainActivity extends ActionBarActivity implements
 					tasksFragment_r.updateList();
 			}
 		}
-		// FOO
 		if (currentView != null && highlightSelected) {
 			clearHighlighted();
 			if (oldClickedList != null) {
