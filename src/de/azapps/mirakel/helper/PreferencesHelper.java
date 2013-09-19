@@ -1095,7 +1095,7 @@ public class PreferencesHelper {
 									.setMessage(R.string.undo_number_summary)
 									.setView(numberPicker)
 									.setPositiveButton(
-											R.string.OK,
+											android.R.string.ok,
 											new DialogInterface.OnClickListener() {
 												public void onClick(
 														DialogInterface dialog,
@@ -1134,7 +1134,7 @@ public class PreferencesHelper {
 												}
 											})
 									.setNegativeButton(
-											R.string.Cancel,
+											android.R.string.cancel,
 											new DialogInterface.OnClickListener() {
 												public void onClick(
 														DialogInterface dialog,

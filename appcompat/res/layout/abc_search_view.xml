@@ -51,7 +51,7 @@
 
     <LinearLayout
             android:id="@+id/search_edit_frame"
-            android:layout_width="wrap_content"
+            android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_gravity="center_vertical"
@@ -75,7 +75,7 @@
         <!-- Inner layout contains the app icon, button(s) and EditText -->
         <LinearLayout
                 android:id="@+id/search_plate"
-                android:layout_width="wrap_content"
+                android:layout_width="0dip"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_gravity="center_vertical"

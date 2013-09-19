@@ -23,10 +23,6 @@
     <string name="action_settings">Settings</string>
     <string name="action_contact">Contact / report Bug</string>
     <string name="action_contact_summary">Write us an E-Mail!</string>
-    <string name="OK">OK</string>
-    <string name="Cancel">Cancel</string>
-    <string name="Yes">Yes</string>
-    <string name="no">No</string>
     <string name="no_date">No Deadline</string>
     <string name="no_reminder">Set a reminder</string>
     <string name="no_lists">This task cannot be synced, because you have no lists</string>
@@ -102,12 +98,12 @@
     </string-array>
 
     <!-- Menu -->
-    <string name="menu_delete">Delete</string>
+    <string name="menu_delete_list">Delete List</string>
+    <string name="menu_delete_task">Delete Task</string>
     <string name="menu_settings">Settings</string>
-    <string name="menu_move">Move</string>
+    <string name="menu_move_task">Move Task</string>
     <!-- Login -->
     <string name="offical_server_url">https://mirakel.azapps.de</string>
-    <string name="offical_server_url_taskwarrior">mirakel.azapps.de:5644</string>
     <string name="title_settings">Settings</string>
 
     <!-- Widget -->
@@ -134,16 +130,13 @@
     <string name="message_try_later">Try to Sync later</string>
     <string name="message_access_denied">Access denied!\nDo you use the right Config-File?</string>
     <string name="message_create_socket">Cannot Create Socket!\nDo you enable your network connection?</string>
-    <string name="message_account_suspended">Your Account ist suspended!</string>
+    <string name="message_account_suspended">Your Account is suspended!</string>
     <string name="message_parse_message">Cannot parse Tasks – please write us, how this happened</string>
     <string name="message_message_error">Unknown response from Server – please write us, how this happened</string>    
     <string name="wrong_config">It lokks like you use a wrong config-file</string>
     
     <string name="load_config">Select the config file for Taskwarrior</string>
     <string name="select_config">Select Taskwarrior config file</string>
-    <string name="login_activity_org_label">Organisation</string>
-    <string name="login_org_hint">Organisation</string>
-    <string name="login_org_default">PUBLIC</string>
     <string name="login_activity_username_label">Username</string>
     <string name="login_activity_server_label">Server-URL</string>
     <string name="login_activity_server_typ">Server Type</string>
@@ -167,12 +160,12 @@
     -->
     <string name="login_activity_newaccount_text">Sign in to your %s-account.</string>
     <!-- Message shown in progress dialog while app connects to the server -->
-    <string name="ui_activity_authenticating">Authenticating\u2026</string>
+    <string name="ui_activity_authenticating">Authenticating…</string>
     <string name="ui_activity_title">Sign-in</string>
-    <string name="title_activity_special_lists_settings">SpecialListsSettings</string>
+    <string name="title_activity_special_lists_settings">Settings for Special Lists</string>
 
     <!-- Changelog -->
-    <string name="changelog_full_title">Change Log</string>
+    <string name="changelog_full_title">Changelog</string>
     <string name="changelog_title">What\'s New</string>
     <string name="changelog_ok_button">OK</string>
     <string name="changelog_show_full">more…</string>
@@ -214,8 +207,8 @@ Device: %3$s\n]]>
     <string name="help_description">There are 3 main parts: on the left side you can see all lists, in the middle you can see all tasks of a list and at the right side you can see a task. You switch between the parts by swiping or clicking.</string>
 
     <!-- Permissions -->
-    <string name="permission_group_desc">Permissions for Access Mirakel</string>
-    <string name="permission_group_lbl">Mirakel Permissions</string>
+    <string name="permission_group_desc">Permission for Access Mirakel</string>
+    <string name="permission_group_lbl">Mirakel Permission</string>
     <string name="permission_read_lbl">Read data from Mirakel</string>
     <string name="permission_read_desc">Permission to read data from Mirakel</string>
     <string name="permission_write_lbl">Write data to Mirakel</string>
@@ -224,14 +217,13 @@ Device: %3$s\n]]>
     <string name="permission_read_write_desc">Permission to Read data from and write data to Mirakel</string>
 
     <!-- ACRA -->
-    <string name="crash_toast_text">Ooooops ! I crashed! Please start the app again, so I can send a message to my developer</string>
+    <string name="crash_toast_text">Yikes! I crashed! Please start the app again, so I can send a message to my developer</string>
     <string name="crash_dialog_title">Mirakel has crashed</string>
     <string name="crash_dialog_text">An unexpected error occurred forcing the
     application to stop. Please help us fix this by sending us error data,
-    all you have to do is click OK.</string>
+    all you have to do is to click OK.</string>
     <string name="crash_dialog_comment_prompt">You might add your comments about the problem below:</string>
     <string name="crash_dialog_ok_toast">Thank you !</string>
-    <string name="title_activity_special_list_settings">SpecialListSettingsActivity</string>
     
     <!-- Sync -->
     <string name="message_from_server">The server want to say you: %s</string>

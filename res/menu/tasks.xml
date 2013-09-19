@@ -60,7 +60,7 @@
         android:id="@+id/list_delete"
         android:icon="@android:drawable/ic_menu_delete"
         mirakel:showAsAction="ifRoom|withText"
-        android:title="@string/menu_delete">
+        android:title="@string/menu_delete_list">
     </item>
     <item
         android:id="@+id/menu_settings_tasks"

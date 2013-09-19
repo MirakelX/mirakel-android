@@ -222,7 +222,7 @@ public class ListFragment extends Fragment {
 				.setTitle(main.getString(R.string.list_change_name_title))
 				.setMessage(main.getString(R.string.list_change_name_cont))
 				.setView(input)
-				.setPositiveButton(main.getString(R.string.OK),
+				.setPositiveButton(main.getString(android.R.string.ok),
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
@@ -237,7 +237,7 @@ public class ListFragment extends Fragment {
 								update();
 							}
 						})
-				.setNegativeButton(main.getString(R.string.Cancel),
+				.setNegativeButton(main.getString(android.R.string.cancel),
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {

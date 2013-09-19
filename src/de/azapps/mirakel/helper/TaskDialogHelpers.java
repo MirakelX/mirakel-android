@@ -34,11 +34,13 @@ public class TaskDialogHelpers {
 		final String[] t = { "-2", "-1", "0", "1", "2" };
 		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
 			numberPicker = new NumberPicker(ctx);
-			((NumberPicker) numberPicker).setMaxValue(4);
-			((NumberPicker) numberPicker).setMinValue(0);
-			((NumberPicker) numberPicker).setDisplayedValues(t);
-			((NumberPicker) numberPicker).setWrapSelectorWheel(false);
-			((NumberPicker) numberPicker).setValue(task.getPriority() + 2);
+			NumberPicker np=(NumberPicker) numberPicker;
+			np.setMaxValue(4);
+			np.setMinValue(0);
+			np.setDisplayedValues(t);
+			np.setWrapSelectorWheel(false);
+			np.setValue(task.getPriority() + 2);
+			np.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
 		} else {
 			numberPicker = ((LayoutInflater) ctx
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
@@ -90,7 +92,7 @@ public class TaskDialogHelpers {
 				.setTitle(ctx.getString(R.string.task_change_prio_title))
 				.setMessage(ctx.getString(R.string.task_change_prio_cont))
 				.setView(numberPicker)
-				.setPositiveButton(ctx.getString(R.string.OK),
+				.setPositiveButton(ctx.getString(android.R.string.ok),
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
@@ -107,7 +109,7 @@ public class TaskDialogHelpers {
 							}
 
 						})
-				.setNegativeButton(ctx.getString(R.string.Cancel),
+				.setNegativeButton(ctx.getString(android.R.string.cancel),
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
@@ -145,7 +147,7 @@ public class TaskDialogHelpers {
 		new AlertDialog.Builder(ctx)
 				.setTitle(R.string.task_set_reminder)
 				.setView(mDateTimeDialogView)
-				.setPositiveButton(R.string.OK,
+				.setPositiveButton(android.R.string.ok,
 						new DialogInterface.OnClickListener() {
 
 							@Override
