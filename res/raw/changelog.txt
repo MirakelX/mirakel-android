@@ -17,6 +17,15 @@
     </style>
   </head>
   <body>
+$ 1.1.1
+  % Version 1.1.1
+  _ 2013-09-22
+  ! We are back – and we brought some bugfixes with us ;)
+    * Bugfixes
+    * Improved Configurations
+    * Small UI-Improvements
+    * French translation
+  ! New features coming soon ;)
 $ 1.1.0
   % Version 1.1.0
   _ 2013-08-26

@@ -76,7 +76,6 @@ public class ListFragment extends Fragment {
 			view.findViewById(R.id.lists_list).setBackgroundColor(getResources().getColor(R.color.background_dark_transparent));
 		}else{
 			view.findViewById(R.id.lists_list).setBackgroundColor(getResources().getColor(android.R.color.background_light));
-			view.findViewById(R.id.lists_list).setBackground(getResources().getDrawable(android.R.drawable.screen_background_light));
 		}
 		// Inflate the layout for this fragment
 		created = true;
