@@ -43,16 +43,11 @@
         android:title="@string/action_undo"/>
     
     <item
-        android:id="@+id/task_sorting"
-        android:icon="@android:drawable/ic_menu_sort_alphabetically"
-        mirakel:showAsAction="ifRoom|withText"
-        android:title="@string/task_menu_sorting">
-    </item>
-    <item
         android:id="@+id/share_task"
         android:icon="@android:drawable/ic_menu_share"
         mirakel:showAsAction="ifRoom|withText"
         android:title="@string/share_task"/>
+    
     <item
         android:id="@+id/search"
         android:icon="@android:drawable/ic_menu_search"
@@ -60,6 +55,13 @@
         android:title="@string/search">
     </item>
     <!--  -->
+    
+    <item
+        android:id="@+id/task_sorting"
+        android:icon="@android:drawable/ic_menu_sort_alphabetically"
+        mirakel:showAsAction="never"
+        android:title="@string/task_menu_sorting">
+    </item>
     <item
         android:id="@+id/menu_sync_now_task"
         mirakel:showAsAction="never"

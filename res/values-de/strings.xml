@@ -37,7 +37,7 @@
   <string name="set_date">Datum</string>
   <string name="set_time">Zeit</string>
   <string name="task_set_reminder">Erinnerungen einstellen</string>
-  <string name="action_undo">Zurück</string>
+  <string name="action_undo">Rückgängig</string>
   <string name="dialog_move">Verschiebe Aufgabe</string>
   <string name="list_title">Listen</string>
   <string name="list_menu_new_list">Neue Liste</string>
