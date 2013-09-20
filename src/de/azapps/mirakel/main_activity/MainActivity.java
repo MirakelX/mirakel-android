@@ -36,6 +36,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -90,7 +91,7 @@ public class MainActivity extends ActionBarActivity implements
 	protected boolean isTablet;
 	private int baseList;
 	private boolean highlightSelected;
-	private DrawerLayout navigationDrawer;
+	private DrawerLayout mDrawerLayout;
 
 	protected static final int TASKS_FRAGMENT = 0, TASK_FRAGMENT = 1;
 	protected static final int RESULT_SPEECH_NAME = 1, RESULT_SPEECH = 3,
@@ -178,6 +179,9 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		if (mDrawerToggle.onOptionsItemSelected(item)) {
+			return true;
+		}
 		switch (item.getItemId()) {
 		case R.id.menu_delete:
 			handleDestroyTask(currentTask);
@@ -400,7 +404,7 @@ public class MainActivity extends ActionBarActivity implements
 	public void onBackPressed() {
 		switch (mViewPager.getCurrentItem()) {
 		case TASKS_FRAGMENT:
-			navigationDrawer.openDrawer(Gravity.LEFT);
+			mDrawerLayout.openDrawer(Gravity.LEFT);
 			break;
 		case TASK_FRAGMENT:
 			mViewPager.setCurrentItem(TASKS_FRAGMENT);
@@ -408,6 +412,13 @@ public class MainActivity extends ActionBarActivity implements
 		default:
 			super.onBackPressed();
 		}
+	}
+
+	@Override
+	protected void onPostCreate(Bundle savedInstanceState) {
+		super.onPostCreate(savedInstanceState);
+		// Sync the toggle state after onRestoreInstanceState has occurred.
+		mDrawerToggle.syncState();
 	}
 
 	@Override
@@ -435,6 +446,7 @@ public class MainActivity extends ActionBarActivity implements
 		taskFragment.setActivity(this);
 		listFragment.setActivity(this);
 		tasksFragment.setActivity(this);
+		mDrawerToggle.onConfigurationChanged(newConfig);
 	}
 
 	// Fix Intent-behavior
@@ -454,7 +466,7 @@ public class MainActivity extends ActionBarActivity implements
 			setCurrentList(SpecialList.firstSpecial());
 		// Initialize ViewPager
 		if (!isResumend)
-			intializeViewPager();
+			intializeFragments();
 		NotificationService.updateNotificationAndWidget(this);
 		startIntent = getIntent();
 		if (startIntent == null || startIntent.getAction() == null) {
@@ -530,7 +542,7 @@ public class MainActivity extends ActionBarActivity implements
 			Log.d(TAG, list.getName() + " " + listId);
 			setCurrentList(list);
 		} else if (startIntent.getAction().equals(SHOW_LISTS)) {
-			navigationDrawer.openDrawer(Gravity.LEFT);
+			mDrawerLayout.openDrawer(Gravity.LEFT);
 		} else if (startIntent.getAction().equals(Intent.ACTION_SEARCH)) {
 			String query = startIntent.getStringExtra(SearchManager.QUERY);
 			search(query);
@@ -699,10 +711,15 @@ public class MainActivity extends ActionBarActivity implements
 		taskMoveDialog.show();
 	}
 
+	private ActionBarDrawerToggle mDrawerToggle;
+
 	/**
 	 * Initialize ViewPager
 	 */
-	private void intializeViewPager() {
+	private void intializeFragments() {
+		/*
+		 * Setup NavigationDrawer
+		 */
 		if (ListFragment.getSingleton() != null)
 			listFragment = ListFragment.getSingleton();
 		// listFragment = new ListFragment();
@@ -710,7 +727,35 @@ public class MainActivity extends ActionBarActivity implements
 		// fragments.add(listFragment);
 
 		List<Fragment> fragments = new Vector<Fragment>();
-		navigationDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+		mDrawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
+		mDrawerLayout, /* DrawerLayout object */
+		R.drawable.ic_drawer, /* nav drawer icon to replace 'Up' caret */
+		R.string.list_title, /* "open drawer" description */
+		R.string.list_title /* "close drawer" description */
+		) {
+
+			/** Called when a drawer has settled in a completely closed state. */
+			public void onDrawerClosed(View view) {
+				// getActionBar().setTitle(mTitle);
+			}
+
+			/** Called when a drawer has settled in a completely open state. */
+			public void onDrawerOpened(View drawerView) {
+				// ().setTitle(mDrawerTitle);
+			}
+		};
+
+		// Set the drawer toggle as the DrawerListener
+		mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setHomeButtonEnabled(true);
+
+		/*
+		 * Setup other Fragments
+		 */
 		tasksFragment = new TasksFragment();
 		tasksFragment.setActivity(this);
 		fragments.add(tasksFragment);
@@ -806,8 +851,8 @@ public class MainActivity extends ActionBarActivity implements
 		if (oldClickedTask == null)
 			return;
 		try {
-			ListView view = (ListView) tasksFragment.getView()
-					.findViewById(R.id.tasks_list);
+			ListView view = (ListView) tasksFragment.getView().findViewById(
+					R.id.tasks_list);
 			int pos_old = (view).getPositionForView(oldClickedTask);
 			if (pos_old != -1) {
 				(view).getChildAt(pos_old).setBackgroundColor(0x00000000);
@@ -846,8 +891,8 @@ public class MainActivity extends ActionBarActivity implements
 		if (currentList == null)
 			return;
 		this.currentList = currentList;
-		if (navigationDrawer != null)
-			navigationDrawer.closeDrawers();
+		if (mDrawerLayout != null)
+			mDrawerLayout.closeDrawers();
 
 		List<Task> currentTasks = currentList.tasks(preferences.getBoolean(
 				"showDone", true));
@@ -859,7 +904,7 @@ public class MainActivity extends ActionBarActivity implements
 
 		if (tasksFragment != null) {
 			tasksFragment.updateList();
-			if(!isTablet)
+			if (!isTablet)
 				mViewPager.setCurrentItem(TASKS_FRAGMENT);
 		}
 		if (currentView == null && listFragment != null
