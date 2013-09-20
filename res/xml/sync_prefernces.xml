@@ -27,7 +27,6 @@
         android:title="@string/sync_use" />
 
     <EditTextPreference
-        android:dependency="syncUse"
         android:inputType="textUri"
         android:key="syncServer"
         android:summary="@string/sync_server_summary"
@@ -40,15 +39,13 @@
             android:summary="@string/sync_email_summary"
             android:title="@string/sync_email" />
     -->
-    <EditTextPreference
-        android:dependency="syncUse"
+    <EditTextPreference   
         android:inputType="textPassword"
         android:key="syncPassword"
         android:summary="@string/sync_password_summary"
         android:title="@string/sync_password" />
 
     <ListPreference
-        android:dependency="syncUse"
         android:entries="@array/sync_frequencies"
         android:entryValues="@array/sync_frequencies_values"
         android:key="syncFrequency"

@@ -133,7 +133,7 @@
     <string name="message_account_suspended">Your Account is suspended!</string>
     <string name="message_parse_message">Cannot parse Tasks – please write us, how this happened</string>
     <string name="message_message_error">Unknown response from Server – please write us, how this happened</string>    
-    <string name="wrong_config">It lokks like you use a wrong config-file</string>
+    <string name="wrong_config">It looks like you use a wrong config-file</string>
     
     <string name="load_config">Select the config file for Taskwarrior</string>
     <string name="select_config">Select Taskwarrior config file</string>

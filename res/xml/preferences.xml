@@ -52,6 +52,7 @@
             android:value="speciallists" />
     </header>
     <header
+        android:id="@+id/sync_header"
         android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
         android:summary="@string/sync_summary"
         android:title="@string/sync_title" >
