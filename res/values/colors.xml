@@ -27,5 +27,6 @@
     <color name="Green">#00c400</color>
     <color name="pressed_color">#7CCFEE</color>
     <color name="White">#FFFFFF</color>
+    <color name="background_dark_transparent">#80000000</color>
 
 </resources>
