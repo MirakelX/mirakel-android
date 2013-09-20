@@ -21,7 +21,6 @@
 
     <header
         android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
-        android:summary="@string/notification_summary"
         android:title="@string/notification_title" >
         <extra
             android:name="type"
@@ -29,7 +28,6 @@
     </header>
     <header
         android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
-        android:summary="@string/ui_settings_summary"
         android:title="@string/ui_settings_title" >
         <extra
             android:name="type"
@@ -37,7 +35,6 @@
     </header>
     <header
         android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
-        android:summary="@string/settings_backup_summary"
         android:title="@string/settings_backup" >
         <extra
             android:name="type"
@@ -45,7 +42,6 @@
     </header>
     <header
         android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
-        android:summary="@string/special_lists_click_summary"
         android:title="@string/special_lists_click"  >
         <extra
             android:name="type"
@@ -54,7 +50,6 @@
     <header
         android:id="@+id/sync_header"
         android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
-        android:summary="@string/sync_summary"
         android:title="@string/sync_title" >
         <extra
             android:name="type"
@@ -62,7 +57,6 @@
     </header>
     <header
         android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
-        android:summary="@string/settings_misc_summary"
         android:title="@string/settings_misc" >
         <extra
             android:name="type"
@@ -70,7 +64,6 @@
     </header>
     <header
         android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
-        android:summary="@string/settings_about_summary"
         android:title="@string/settings_about" >
         <extra
             android:name="type"

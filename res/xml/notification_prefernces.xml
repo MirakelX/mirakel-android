@@ -25,19 +25,16 @@
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="notificationsUse"
-            android:summary="@string/notifications_use_summary"
             android:title="@string/notifications_use" />
         <CheckBoxPreference
             android:defaultValue="true"
             android:dependency="notificationsUse"
             android:key="notificationsPersistent"
-            android:summary="@string/notifications_persistent_summary"
             android:title="@string/notifications_persistent" />
         <CheckBoxPreference
             android:defaultValue="false"
             android:dependency="notificationsUse"
             android:key="notificationsZeroHide"
-            android:summary="@string/notifications_zero_show_summary_hide"
             android:title="@string/notifications_zero_show" />
 
         <ListPreference
@@ -57,20 +54,17 @@
             android:defaultValue="true"
             android:dependency="notificationsUse"
             android:key="notificationsBig"
-            android:summary="@string/notifications_big_summary"
             android:title="@string/notifications_big" />
         <CheckBoxPreference
             android:defaultValue="true"
             android:dependency="notificationsUse"
             android:key="notificationDone"
-            android:summary="@string/notificationsShowDoneSummary"
             android:title="@string/notificationsShowDone" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/reminder" >
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="remindersPersistent"
-            android:summary="@string/reminders_persistent_summary"
             android:title="@string/reminders_persistent" />
     </PreferenceCategory>
 

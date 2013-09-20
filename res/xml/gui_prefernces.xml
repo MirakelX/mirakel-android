@@ -22,30 +22,27 @@
     android:title="@string/ui_settings_title" >
 
     <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="highlightSelected"
-        android:summary="@string/highlightSelected_summary"
-        android:title="@string/highlightSelected" />
-    <CheckBoxPreference
         android:defaultValue="true"
         android:key="showDone"
-        android:summary="@string/showDone_summary"
         android:title="@string/showDone" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="DarkTheme"
-        android:summary="@string/use_dark_theme"
         android:title="@string/dark_theme" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="KillButton"
-        android:summary="@string/show_kill_button"
         android:title="@string/kill_button" />
     <CheckBoxPreference
         android:defaultValue="true"
         android:key="hideKeyboard"
         android:summary="@string/hide_keyboard_summary"
         android:title="@string/hide_keyboard" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="highlightSelected"
+        android:summary="@string/highlightSelected_summary"
+        android:title="@string/highlightSelected" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="semanticNewTask"

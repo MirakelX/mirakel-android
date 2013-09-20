@@ -184,168 +184,8 @@ public class PreferencesHelper {
 						}
 					});
 		}
-		final CheckBoxPreference notificationsPersistent = (CheckBoxPreference) findPreference("notificationsPersistent");
-		if (notificationsPersistent != null) {
-			notificationsPersistent
-					.setSummary(activity.getString(settings.getBoolean(
-							"notificaionsPersistent", true) ? R.string.notifications_persistent_summary
-							: R.string.notifications_persistent_summary_not));
-			notificationsPersistent
-					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-						@Override
-						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
-							notificationsPersistent.setSummary(activity
-									.getString((Boolean) newValue ? R.string.notifications_persistent_summary
-											: R.string.notifications_persistent_summary_not));
-							return true;
-						}
-					});
-		}
-		final CheckBoxPreference notificationsZeroHide = (CheckBoxPreference) findPreference("notificationsZeroHide");
-		if (notificationsZeroHide != null) {
-			notificationsZeroHide
-					.setSummary(settings.getBoolean("notificationsZeroHide",
-							false) ? R.string.notifications_zero_show_summary_hide
-							: R.string.notifications_zero_show_summary_show);
-			notificationsZeroHide
-					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
-						@Override
-						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
-							notificationsZeroHide
-									.setSummary((Boolean) newValue ? R.string.notifications_zero_show_summary_hide
-											: R.string.notifications_zero_show_summary_show);
-							return true;
-						}
-					});
-		}
-		final CheckBoxPreference notificationDone = (CheckBoxPreference) findPreference("notificationDone");
-		if (notificationDone != null) {
-			notificationDone.setSummary(settings.getBoolean("notificationDone",
-					true) ? R.string.notificationsShowDoneSummary
-					: R.string.notificationsShowDoneSummaryNot);
-			notificationDone
-					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-
-						@Override
-						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
-							notificationDone
-									.setSummary((Boolean) newValue ? R.string.notificationsShowDoneSummary
-											: R.string.notificationsShowDoneSummaryNot);
-							return true;
-						}
-					});
-		}
-		final CheckBoxPreference remindersPersistent = (CheckBoxPreference) findPreference("remindersPersistent");
-		if (remindersPersistent != null) {
-			remindersPersistent
-					.setSummary(settings
-							.getBoolean("remindersPersistent", true) ? R.string.reminders_persistent_summary
-							: R.string.reminders_persistent_summary_not);
-			remindersPersistent
-					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-
-						@Override
-						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
-							remindersPersistent
-									.setSummary((Boolean) newValue ? R.string.reminders_persistent_summary
-											: R.string.reminders_persistent_summary_not);
-							return true;
-						}
-					});
-		}
-		final CheckBoxPreference notificationsBig = (CheckBoxPreference) findPreference("notificationsBig");
-		if (notificationsBig != null) {
-			notificationsBig.setSummary(settings.getBoolean("notificationsBig",
-					true) ? R.string.notifications_big_summary
-					: R.string.notifications_big_summary_not);
-			notificationsBig
-					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-
-						@Override
-						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
-							notificationsBig
-									.setSummary((Boolean) newValue ? R.string.notifications_big_summary
-											: R.string.notifications_big_summary_not);
-							return true;
-						}
-					});
-		}
-
-		final CheckBoxPreference highlightSelected = (CheckBoxPreference) findPreference("highlightSelected");
-		if (highlightSelected != null) {
-			highlightSelected
-					.setSummary(settings.getBoolean("highlightSelected", false) ? R.string.highlightSelected_summary
-							: R.string.highlightSelected_summary_not);
-			highlightSelected
-					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-
-						@Override
-						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
-							highlightSelected
-									.setSummary((Boolean) newValue ? R.string.highlightSelected_summary
-											: R.string.highlightSelected_summary_not);
-							return true;
-						}
-					});
-		}
-		final CheckBoxPreference hideKeyboard = (CheckBoxPreference) findPreference("hideKeyboard");
-		if (hideKeyboard != null) {
-			hideKeyboard
-					.setSummary(settings.getBoolean("hideKeyboard", false) ? R.string.show_keyboard_summary
-							: R.string.hide_keyboard_summary);
-			hideKeyboard
-					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-
-						@Override
-						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
-							hideKeyboard
-									.setSummary((Boolean) newValue ? R.string.show_keyboard_summary
-											: R.string.hide_keyboard_summary);
-							return true;
-						}
-					});
-		}
-		final CheckBoxPreference semanticNewTask = (CheckBoxPreference) findPreference("semanticNewTask");
-		if (semanticNewTask != null) {
-			semanticNewTask.setSummary(settings.getBoolean("semanticNewTask",
-					false) ? R.string.semantic_new_task_summary
-					: R.string.semantic_new_task_summary_not);
-			semanticNewTask
-					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-
-						@Override
-						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
-							semanticNewTask
-									.setSummary((Boolean) newValue ? R.string.semantic_new_task_summary
-											: R.string.semantic_new_task_summary_not);
-							return true;
-						}
-					});
-		}
-		final CheckBoxPreference showDone = (CheckBoxPreference) findPreference("showDone");
-		if (showDone != null) {
-			showDone.setSummary(settings.getBoolean("showDone", false) ? R.string.showDone_summary
-					: R.string.showDone_summary_not);
-			showDone.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-
-				@Override
-				public boolean onPreferenceChange(Preference preference,
-						Object newValue) {
-					showDone.setSummary((Boolean) newValue ? R.string.showDone_summary
-							: R.string.showDone_summary_not);
-					return true;
-				}
-			});
-		}
+		
 		final ListPreference notificationsListOpenPreference = (ListPreference) findPreference("notificationsListOpen");
 		if (notificationsListOpenPreference != null) {
 			notificationsListOpenPreference.setEntries(entriesWithDefault);
@@ -384,18 +224,11 @@ public class PreferencesHelper {
 		final CheckBoxPreference darkTheme = (CheckBoxPreference) findPreference("DarkTheme");
 		if (darkTheme != null) {
 			darkTheme
-					.setSummary(PreferenceManager.getDefaultSharedPreferences(
-							activity).getBoolean("DarkTheme", false) ? R.string.use_dark_theme
-							: R.string.use_light_theme);
-			darkTheme
 					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 						@Override
 						public boolean onPreferenceChange(
 								Preference preference, Object newValue) {
-							darkTheme
-									.setSummary((Boolean) newValue ? R.string.use_dark_theme
-											: R.string.use_light_theme);
 							activity.finish();
 							activity.startActivity(activity.getIntent());
 
@@ -409,16 +242,10 @@ public class PreferencesHelper {
 		if (startupAllListPreference != null) {
 			final ListPreference startupListPreference = (ListPreference) findPreference("startupList");
 			startupAllListPreference
-					.setSummary(settings.getBoolean("startupAllLists", false) ? R.string.startup_show_lists_summary
-							: R.string.startup_show_lists_summary_no);
-			startupAllListPreference
 					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 						@Override
 						public boolean onPreferenceChange(
 								Preference preference, Object newValue) {
-							startupAllListPreference
-									.setSummary((Boolean) newValue ? R.string.startup_show_lists_summary
-											: R.string.startup_show_lists_summary_no);
 							if (!(Boolean) newValue) {
 								startupListPreference.setSummary(activity
 										.getString(
@@ -773,18 +600,12 @@ public class PreferencesHelper {
 
 		final CheckBoxPreference notificationsUse = (CheckBoxPreference) findPreference("notificationsUse");
 		if (notificationsUse != null) {
-			notificationsUse.setSummary(settings.getBoolean("notificationsUse",
-					true) ? R.string.notifications_use_summary
-					: R.string.notifications_use_summary_no);
 			notificationsUse
 					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 						@Override
 						public boolean onPreferenceChange(
 								Preference preference, Object newValue) {
-							notificationsUse
-									.setSummary((Boolean) newValue ? R.string.notifications_use_summary
-											: R.string.notifications_use_summary_no);
 							if ((Boolean) newValue) {
 								activity.startService(new Intent(activity,
 										NotificationService.class));
@@ -877,9 +698,6 @@ public class PreferencesHelper {
 		final CheckBoxPreference killButton = (CheckBoxPreference) findPreference("KillButton");
 		if (killButton != null) {
 			killButton
-					.setSummary(settings.getBoolean("KillButton", false) ? R.string.show_kill_button
-							: R.string.show_not_kill_button);
-			killButton
 					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 						@Override
@@ -897,8 +715,6 @@ public class PreferencesHelper {
 													public void onClick(
 															DialogInterface dialog,
 															int which) {
-														killButton
-																.setSummary(R.string.show_kill_button);
 													}
 												})
 										.setNegativeButton(
@@ -910,14 +726,9 @@ public class PreferencesHelper {
 															int which) {
 														((CheckBoxPreference) findPreference("KillButton"))
 																.setChecked(false);
-														killButton
-																.setSummary(R.string.show_not_kill_button);
 
 													}
 												}).show();
-							} else {
-								killButton
-										.setSummary(R.string.show_not_kill_button);
 							}
 							return true;
 						}

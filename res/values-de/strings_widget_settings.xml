@@ -4,7 +4,7 @@
   <string name="widget_list">Liste</string>
   <string name="widget_list_summary">Welche Liste soll ich anzeigen?</string>
   <string name="widget_done">Erledigte Aufgaben</string>
-  <string name="widget_done_summary">Soll ich erledigte Aufgaben Anzeigen?</string>
+  <string name="widget_done_summary">Erledigt Aufgaben anzeigen</string>
   <string name="widget_sort">Sortieren</string>
-  <string name="widget_sort_summary">Wie soll ich die Aufgaben Sortieren?</string>
+  <string name="widget_sort_summary">Aufgaben sortieren</string>
 </resources>

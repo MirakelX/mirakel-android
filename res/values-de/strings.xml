@@ -5,10 +5,6 @@
   <string name="action_settings">Einstellungen</string>
   <string name="action_contact">Kontakt / Fehler berichten</string>
   <string name="action_contact_summary">Schreib uns!</string>
-  <string name="OK">OK</string>
-  <string name="Cancel">Abbrechen</string>
-  <string name="Yes">Ja</string>
-  <string name="no">Nein</string>
   <string name="no_date">Kein Termin</string>
   <string name="no_reminder">Erinnerung festlegen</string>
   <string name="no_lists">Du hast keine Listen. Erstelle bitte eine neue.</string>
@@ -52,11 +48,11 @@
   <string name="list_week">Diese Woche</string>
   <string name="list_overdue">Überfällig</string>
   <string name="list_delete_content">Willst du die Liste wirklich löschen?</string>
-  <string name="menu_delete">Löschen</string>
+  <string name="menu_delete_list">Liste löschen</string>
+  <string name="menu_delete_task">Aufgabe löschen</string>
   <string name="menu_settings">Einstellungen</string>
-  <string name="menu_move">Verschieben</string>
+  <string name="menu_move_task">Aufgabe verschieben</string>
   <string name="offical_server_url">https://mirakel.azapps.de</string>
-  <string name="offical_server_url_taskwarrior">mirakel.azapps.de:5644</string>
   <string name="title_settings">Einstellungen</string>
   <string name="empty_list">Keine Aufgaben</string>
   <string name="preferences">Einstellungen</string>
@@ -79,11 +75,9 @@
   <string name="message_account_suspended">Ihr Konto ist gesperrt!</string>
   <string name="message_parse_message">Konnte die Aufgabe nicht parsen – schreib uns, wie das passiert ist</string>
   <string name="message_message_error">Unbekannte Antwort vom Server – bitte schreib uns, wie das passieren konnte</string>
+  <string name="wrong_config">Die Konfigurationsdatei ist fehlerhaft</string>
   <string name="load_config">Wähle die Config-Datei für Taskwarrior aus</string>
   <string name="select_config">Wähle die Config-Datei für Taskwarrior aus</string>
-  <string name="login_activity_org_label">Organisation</string>
-  <string name="login_org_hint">Organisation</string>
-  <string name="login_org_default">PUBLIC</string>
   <string name="login_activity_username_label">Nutzername</string>
   <string name="login_activity_server_label">Server-URL</string>
   <string name="login_activity_server_typ">Server-Typ</string>
@@ -92,10 +86,10 @@
   <string name="login_activity_loginfail_text_both">Der Benutzername oder das Kennwort ist ungültig. Es ist ein Mirakel-Konto erforderlich. Versuche es noch mal.</string>
   <string name="login_activity_loginfail_text_pwmissing">Gib das Passwort bitte an.</string>
   <string name="login_activity_newaccount_text">Melde dich bei deinem %s-Konto an.</string>
-  <string name="ui_activity_authenticating">Melde an…</string>
+  <string name="ui_activity_authenticating">Authentifizierung…</string>
   <string name="ui_activity_title">Anmelden</string>
-  <string name="title_activity_special_lists_settings">Erweiterte Listen</string>
-  <string name="changelog_full_title">Änderungen</string>
+  <string name="title_activity_special_lists_settings">Einstellungen für Erweiterte Listen</string>
+  <string name="changelog_full_title">Changelog</string>
   <string name="changelog_title">Was ist neu?</string>
   <string name="changelog_ok_button">OK</string>
   <string name="changelog_show_full">mehr…</string>
@@ -126,7 +120,7 @@ Device: %3$s\n]]>
   <string name="change_content">Notiz ändern</string>
   <string name="task_has_content">Aufgabe hat eine Notiz</string>
   <string name="help_description">Es gibt 3 Hauptteile: Auf der linken Seite siehst du alle Listen, in der Mitte alle Aufgaben einer Liste und auf der rechten Seite die Aufgabe. Du kannst zwischen den Teilen durch Wischen und klicken wechseln.</string>
-  <string name="permission_group_desc">Berechtigung, auf Mirakel zuzugreifen</string>
+  <string name="permission_group_desc">Zugriffsberechtigung für Mirakel</string>
   <string name="permission_group_lbl">Mirakel-Berechtigung</string>
   <string name="permission_read_lbl">Mirakel auslesen</string>
   <string name="permission_read_desc">Berechtigung zum Lesen von Daten aus Mirakel</string>
@@ -134,12 +128,11 @@ Device: %3$s\n]]>
   <string name="permission_write_desc">Berechtigung zum Schreiben von Daten in Mirakel</string>
   <string name="permission_read_write_lbl">Mirakel-Daten lesen/schreiben</string>
   <string name="permission_read_write_desc">Berechtigung um Daten zu lesen und zu schreiben</string>
-  <string name="crash_toast_text">Huch! Ich bin abgestürzt. Starte die App erneut, damit ich einen Bericht senden kann.</string>
+  <string name="crash_toast_text">Huch! Ich bin abgestürzt! Bitte starte die App neu, damit ich meinen Entwickler eine Nachricht senden kann</string>
   <string name="crash_dialog_title">Mirakel ist abgestürzt</string>
   <string name="crash_dialog_text">Ein unerwarteter Fehler ist aufgetreten. Die Anwendung musste beendet werden. Bitte hilf uns den Fehler zu finden, indem du uns die Fehlerdaten schickst. Du musst nur OK antippen.</string>
   <string name="crash_dialog_comment_prompt">Du kannst noch einen Kommentar anfügen:</string>
   <string name="crash_dialog_ok_toast">Vielen Dank!</string>
-  <string name="title_activity_special_list_settings">Erweiterte Listen</string>
   <string name="message_from_server">Der Server hat eine Nachricht für dich: %s</string>
   <string-array name="task_sorting_items">
     <item>Standard</item>
