@@ -42,6 +42,7 @@
     <string name="start">Start</string>
     <string name="menu_sort_lists">Reorder Lists</string>
     <string name="no_https">You should use https!</string>
+    <string name="finish_sync">Finish Sync</string>
 
     <!-- Example Data -->
     <string name="inbox">Inbox</string>
