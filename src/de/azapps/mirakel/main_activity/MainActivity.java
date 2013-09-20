@@ -866,20 +866,19 @@ public class MainActivity extends ActionBarActivity implements
 		return currentList;
 	}
 
+
+
+	private View oldClickedList = null;
+	
 	/**
 	 * Set the current list and update the views
 	 * 
 	 * @param currentList
 	 */
 	void setCurrentList(ListMirakel currentList) {
-		if(listFragment==null || listFragment.getAdapter()==null)
-			return;
-		setCurrentList(currentList,listFragment.getAdapter().getViewForList(currentList));
+		setCurrentList(currentList,null);
 	}
-
-	private View oldClickedList = null;
-
-	void setCurrentList(ListMirakel currentList, View currentView) {
+	void setCurrentList(ListMirakel currentList,View currentView) {
 		if (currentList == null)
 			return;
 		this.currentList = currentList;
@@ -891,8 +890,7 @@ public class MainActivity extends ActionBarActivity implements
 		} else {
 			currentTask = currentTasks.get(0);
 		}
-		
-		
+
 		if (tasksFragment != null) {
 
 			if (!isTablet) {
@@ -905,6 +903,9 @@ public class MainActivity extends ActionBarActivity implements
 					tasksFragment_r.updateList();
 			}
 		}
+		if(currentView==null && listFragment!=null && listFragment.getAdapter()!=null)
+			currentView=listFragment.getAdapter().getViewForList(currentList);
+		
 		if (currentView != null && highlightSelected) {
 			clearHighlighted();
 			if (oldClickedList != null) {
