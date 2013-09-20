@@ -73,9 +73,9 @@ public class ListFragment extends Fragment {
 		enableDrag = false;
 		view = inflater.inflate(R.layout.activity_list, container, false);
 		if(PreferenceManager.getDefaultSharedPreferences(main).getBoolean("DarkTheme", false)){
-			view.findViewById(R.id.lists_list).setBackground(getResources().getDrawable(android.R.drawable.screen_background_dark_transparent));
+			view.findViewById(R.id.lists_list).setBackgroundColor(getResources().getColor(R.color.background_dark_transparent));
 		}else{
-			view.findViewById(R.id.lists_list).setBackground(getResources().getDrawable(android.R.drawable.screen_background_light_transparent));
+			view.findViewById(R.id.lists_list).setBackgroundColor(getResources().getColor(android.R.color.background_light));
 		}
 		// Inflate the layout for this fragment
 		created = true;
