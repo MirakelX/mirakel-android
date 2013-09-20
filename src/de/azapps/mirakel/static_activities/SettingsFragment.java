@@ -18,12 +18,14 @@
  ******************************************************************************/
 package de.azapps.mirakel.static_activities;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.view.View;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.PreferencesHelper;
 import de.azapps.mirakel.special_lists_settings.SpecialListsSettings;
@@ -32,9 +34,11 @@ import de.azapps.mirakelandroid.R;
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class SettingsFragment extends PreferenceFragment {
 	private static final String TAG = "SettingsFragment";
+	private PreferencesHelper helper;
 
 	// private MainActivity main;
 
+	@SuppressLint("NewApi")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -61,7 +65,16 @@ public class SettingsFragment extends PreferenceFragment {
 			Log.wtf(TAG, "unkown prefernce");
 		}
 
-		new PreferencesHelper(this).setFunctionsApp();
+		helper= new PreferencesHelper(this);
+		helper.setFunctionsApp();
+	}
+	@SuppressLint("NewApi")
+	@Override
+	public void onDestroy() {
+		if(helper.actionBarSwitch!=null){
+			helper.actionBarSwitch.setVisibility(View.GONE);
+		}
+		super.onDestroy();
 	}
 	
 	@Override
