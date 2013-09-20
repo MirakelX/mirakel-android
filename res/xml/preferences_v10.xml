@@ -20,7 +20,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <Preference
-        android:summary="@string/notification_summary"
         android:title="@string/notification_title" >
         
         <intent
@@ -29,7 +28,6 @@
             android:targetPackage="de.azapps.mirakelandroid" />
     </Preference>
     <Preference
-        android:summary="@string/ui_settings_summary"
         android:title="@string/ui_settings_title" >
         <intent
             android:action="de.azapps.mirakel.preferences.GUI"
@@ -37,7 +35,6 @@
             android:targetPackage="de.azapps.mirakelandroid" />
     </Preference>
     <Preference
-        android:summary="@string/settings_backup_summary"
         android:title="@string/settings_backup" >
         <intent
             android:action="de.azapps.mirakel.preferences.BACKUP"
@@ -53,7 +50,6 @@
             android:targetPackage="de.azapps.mirakelandroid" />
     </Preference>
     <Preference
-        android:summary="@string/sync_summary"
         android:title="@string/sync_title" >
         <intent
             android:action="de.azapps.mirakel.preferences.SYNC"
@@ -61,7 +57,6 @@
             android:targetPackage="de.azapps.mirakel" />
     </Preference>
     <Preference
-        android:summary="@string/settings_misc_summary"
         android:title="@string/settings_misc" >
         <intent
             android:action="de.azapps.mirakel.preferences.MISC"
@@ -69,7 +64,6 @@
             android:targetPackage="de.azapps.mirakelandroid" />
     </Preference>
     <Preference
-        android:summary="@string/settings_about_summary"
         android:title="@string/settings_about" >
         <intent
             android:action="de.azapps.mirakel.preferences.ABOUT"

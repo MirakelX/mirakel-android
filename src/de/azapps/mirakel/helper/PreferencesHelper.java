@@ -241,16 +241,10 @@ public class PreferencesHelper {
 		if (startupAllListPreference != null) {
 			final ListPreference startupListPreference = (ListPreference) findPreference("startupList");
 			startupAllListPreference
-					.setSummary(settings.getBoolean("startupAllLists", false) ? R.string.startup_show_lists_summary
-							: R.string.startup_show_lists_summary_no);
-			startupAllListPreference
 					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 						@Override
 						public boolean onPreferenceChange(
 								Preference preference, Object newValue) {
-							startupAllListPreference
-									.setSummary((Boolean) newValue ? R.string.startup_show_lists_summary
-											: R.string.startup_show_lists_summary_no);
 							if (!(Boolean) newValue) {
 								startupListPreference.setSummary(activity
 										.getString(
@@ -721,9 +715,6 @@ public class PreferencesHelper {
 
 													}
 												}).show();
-							} else {
-								killButton
-										.setSummary(R.string.show_not_kill_button);
 							}
 							return true;
 						}
