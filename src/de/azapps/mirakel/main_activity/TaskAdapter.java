@@ -151,7 +151,7 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 
 		// Priority
 		holder.taskRowPriority.setText("" + task.getPriority());
-		Log.e("Blubb",holder.taskRowPriority.getBackground().getClass().toString());
+//		Log.e("Blubb",holder.taskRowPriority.getBackground().getClass().toString());
 		
 		GradientDrawable bg=(GradientDrawable) holder.taskRowPriority.getBackground();
 		bg.setColor(Mirakel.PRIO_COLOR[task.getPriority() + 2]);
