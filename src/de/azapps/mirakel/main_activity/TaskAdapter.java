@@ -36,7 +36,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.Helpers;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 

@@ -71,6 +71,7 @@
     <string name="notifications_zero_show">Hide notification if empty</string>
     <string name="notificationsShowDone">Handle Done Tasks</string>
     <string name="reminder">Reminder</string>
+    <string name="reminders_persistent">Persistent Reminder</string>
 
     <!-- startup -->
     <string name="startup_title">App Start</string>
