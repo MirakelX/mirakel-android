@@ -295,6 +295,10 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	public void loadMenu(int position) {
+		loadMenu(position, true);
+	}
+
+	public void loadMenu(int position, boolean setPosition) {
 		if (taskFragment != null && taskFragment.getView() != null) {
 			final InputMethodManager imm = (InputMethodManager) this
 					.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -305,12 +309,10 @@ public class MainActivity extends ActionBarActivity implements
 			return;
 		int newmenu;
 		switch (position) {
-		/*
-		 * case LIST_FRAGMENT: if (!isTablet) newmenu = R.menu.activity_list;
-		 * else newmenu = R.menu.tablet_left;
-		 * getSupportActionBar().setTitle(getString(R.string.list_title));
-		 * break;
-		 */
+		case -1:
+			newmenu = R.menu.activity_list;
+			getSupportActionBar().setTitle(getString(R.string.list_title));
+			break;
 		case TASKS_FRAGMENT:
 			listFragment.enable_drop(false);
 			if (!isTablet)
@@ -331,7 +333,8 @@ public class MainActivity extends ActionBarActivity implements
 					Toast.LENGTH_LONG).show();
 			return;
 		}
-		currentPosition = position;
+		if (setPosition)
+			currentPosition = position;
 
 		// Configure to use the desired menu
 
@@ -735,15 +738,12 @@ public class MainActivity extends ActionBarActivity implements
 		R.string.list_title, /* "open drawer" description */
 		R.string.list_title /* "close drawer" description */
 		) {
-
-			/** Called when a drawer has settled in a completely closed state. */
 			public void onDrawerClosed(View view) {
-				// getActionBar().setTitle(mTitle);
+				loadMenu(currentPosition);
 			}
 
-			/** Called when a drawer has settled in a completely open state. */
 			public void onDrawerOpened(View drawerView) {
-				// ().setTitle(mDrawerTitle);
+				loadMenu(-1,false);
 			}
 		};
 
