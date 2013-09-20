@@ -28,6 +28,5 @@
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:descendantFocusability="beforeDescendants"
-        android:background="@android:color/background_light" />
+        android:descendantFocusability="beforeDescendants" />
 </RelativeLayout>

@@ -24,7 +24,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Vector;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.ContentResolver;
@@ -732,6 +731,7 @@ public class MainActivity extends ActionBarActivity implements
 		List<Fragment> fragments = new Vector<Fragment>();
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
+
 		mDrawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
 		mDrawerLayout, /* DrawerLayout object */
 		R.drawable.ic_drawer, /* nav drawer icon to replace 'Up' caret */
@@ -752,7 +752,6 @@ public class MainActivity extends ActionBarActivity implements
 
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);
-
 		/*
 		 * Setup other Fragments
 		 */

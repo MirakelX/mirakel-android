@@ -25,6 +25,7 @@ import java.util.List;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -71,6 +72,11 @@ public class ListFragment extends Fragment {
 		EditName = false;
 		enableDrag = false;
 		view = inflater.inflate(R.layout.activity_list, container, false);
+		if(PreferenceManager.getDefaultSharedPreferences(main).getBoolean("DarkTheme", false)){
+			view.findViewById(R.id.lists_list).setBackground(getResources().getDrawable(android.R.drawable.screen_background_dark_transparent));
+		}else{
+			view.findViewById(R.id.lists_list).setBackground(getResources().getDrawable(android.R.drawable.screen_background_light_transparent));
+		}
 		// Inflate the layout for this fragment
 		created = true;
 		update();
