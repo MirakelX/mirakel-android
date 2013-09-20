@@ -22,6 +22,8 @@ import de.azapps.mirakelandroid.BuildConfig;
 
 public class Log {
 	public static void d(String tag, String msg) {
+		if(tag==null || msg==null)
+			return;
 		if (BuildConfig.DEBUG)
 			android.util.Log.d(tag, msg);
 	}
