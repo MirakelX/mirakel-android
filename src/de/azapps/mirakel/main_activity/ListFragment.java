@@ -53,20 +53,24 @@ public class ListFragment extends Fragment {
 	public void setActivity(MainActivity activity) {
 		main = activity;
 	}
+	
+	private static ListFragment me=null;
+	
+	private static void setSingleton(ListFragment me){
+		ListFragment.me=me;
+	}
+	public static ListFragment getSingleton() {
+		return me;
+	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		setSingleton(this);
 		main = (MainActivity) getActivity();
 		EditName = false;
 		enableDrag = false;
 		view = inflater.inflate(R.layout.activity_list, container, false);
-		if (getResources().getBoolean(R.bool.isTablet)) {
-			view.findViewById(R.id.task_fragment_in_tasks).setVisibility(
-					View.GONE);
-			main.tasksFragment_l = (TasksFragment) getFragmentManager()
-					.findFragmentById(R.id.tasks_fragment_in_lists);
-		}
 		// Inflate the layout for this fragment
 		created = true;
 		update();

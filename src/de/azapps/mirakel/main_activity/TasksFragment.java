@@ -120,8 +120,7 @@ public class TasksFragment extends Fragment {
 			t.setActivity(main);
 			getChildFragmentManager().beginTransaction()
 					.add(R.id.task_fragment_in_tasks, t).commit();
-			if (this.getId() != R.id.tasks_fragment_in_lists)
-				main.setTaskFragment(t);
+			main.setTaskFragment(t);
 		}
 
 		getResources().getString(R.string.action_settings);
@@ -277,7 +276,7 @@ public class TasksFragment extends Fragment {
 		if (name.equals(""))
 			return true;
 		long id;
-		if(main.getCurrentList() instanceof SearchList){
+		if (main.getCurrentList() instanceof SearchList) {
 			id = main.getBaseList();
 		} else {
 			id = main.getCurrentList().getId();
@@ -286,7 +285,7 @@ public class TasksFragment extends Fragment {
 		int prio = 0;
 		if (id <= 0) {
 			try {
-				SpecialList slist = SpecialList.getSpecialList((int)id);
+				SpecialList slist = SpecialList.getSpecialList((int) id);
 				id = slist.getDefaultList().getId();
 				if (slist.getDefaultDate() != null) {
 					due = new GregorianCalendar();
@@ -358,18 +357,10 @@ public class TasksFragment extends Fragment {
 			}
 		}
 		Task task = Task.newTask(name, id, due, prio);
-		if (main.isTablet) {
-			main.tasksFragment_l.adapter.addToHead(task);
-			main.tasksFragment_l.values.add(0, task);
-			main.tasksFragment_r.adapter.addToHead(task);
-			main.tasksFragment_r.values.add(0, task);
-			main.tasksFragment_l.adapter.notifyDataSetChanged();
-			main.tasksFragment_r.adapter.notifyDataSetChanged();
-		} else {
-			adapter.addToHead(task);
-			values.add(0, task);
-			adapter.notifyDataSetChanged();
-		}
+		adapter.addToHead(task);
+		values.add(0, task);
+		adapter.notifyDataSetChanged();
+
 		main.getListFragment().update();
 		if (!PreferenceManager.getDefaultSharedPreferences(main).getBoolean(
 				"hideKeyboard", true)) {
@@ -508,10 +499,10 @@ public class TasksFragment extends Fragment {
 	public TaskAdapter getAdapter() {
 		return adapter;
 	}
+
 	public ListView getListView() {
 		return listView;
 	}
-
 
 	public void setScrollPosition(int pos) {
 		if (listView == null)
