@@ -30,6 +30,7 @@ import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -361,8 +362,9 @@ public class TaskFragment extends Fragment {
 
 	protected void set_prio(TextView Task_prio, Task task) {
 		Task_prio.setText("" + task.getPriority());
-		Task_prio
-				.setBackgroundColor(Mirakel.PRIO_COLOR[task.getPriority() + 2]);
+		
+		GradientDrawable bg=(GradientDrawable) Task_prio.getBackground();
+		bg.setColor(Mirakel.PRIO_COLOR[task.getPriority() + 2]);
 
 	}
 

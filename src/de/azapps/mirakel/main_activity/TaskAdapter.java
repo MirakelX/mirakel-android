@@ -24,6 +24,7 @@ import java.util.Map;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -35,6 +36,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.Helpers;
+import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 
@@ -149,8 +151,10 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 
 		// Priority
 		holder.taskRowPriority.setText("" + task.getPriority());
-		holder.taskRowPriority.setBackgroundColor(Mirakel.PRIO_COLOR[task
-				.getPriority() + 2]);
+		Log.e("Blubb",holder.taskRowPriority.getBackground().getClass().toString());
+		
+		GradientDrawable bg=(GradientDrawable) holder.taskRowPriority.getBackground();
+		bg.setColor(Mirakel.PRIO_COLOR[task.getPriority() + 2]);
 		holder.taskRowPriority.setOnClickListener(clickPrio);
 		holder.taskRowPriority.setTag(task);
 

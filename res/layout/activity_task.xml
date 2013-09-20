@@ -67,6 +67,7 @@
             android:layout_height="40dp"
             android:layout_weight="0"
             android:gravity="center"
+            android:background="@drawable/priority_rectangle"
             android:textSize="18sp" />
     </LinearLayout>
 
