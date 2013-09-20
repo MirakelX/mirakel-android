@@ -73,7 +73,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
 			views.setTextColor(R.id.widget_list_name, context.getResources()
 					.getColor(darkTheme ? R.color.White : R.color.Black));
 			int listId = Integer.parseInt(preferences.getString("widgetList",
-					SpecialList.first().getId() + ""));
+					SpecialList.firstSpecialSafe(context).getId() + ""));
 			int listSort = Integer.parseInt(preferences.getString("widgetSort",
 					ListMirakel.SORT_BY_OPT + ""));
 

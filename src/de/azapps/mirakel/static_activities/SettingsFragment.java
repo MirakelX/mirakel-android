@@ -22,6 +22,7 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.PreferencesHelper;
@@ -62,5 +63,18 @@ public class SettingsFragment extends PreferenceFragment {
 
 		new PreferencesHelper(this).setFunctionsApp();
 	}
+	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		Log.d(TAG, "fragment");
+		switch (requestCode) {
+		case SettingsActivity.NEW_ACCOUNT:
+			Preference	server = findPreference("syncServer");
+			PreferencesHelper.updateSyncText(null, server, getActivity());
+			break;
+		}
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+	
 
 }

@@ -12,8 +12,10 @@ import org.apache.http.message.BasicNameValuePair;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -24,6 +26,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.CheckBoxPreference;
@@ -35,10 +38,14 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.NumberPicker;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
@@ -66,7 +73,7 @@ public class PreferencesHelper {
 	private static final String TAG = "PreferencesHelper";
 	private final Object ctx;
 	private final Activity activity;
-	private final boolean v4_0;
+	private static boolean v4_0;
 	static View numberPicker;
 	private SharedPreferences settings;
 
@@ -126,7 +133,6 @@ public class PreferencesHelper {
 
 	}
 
-	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
 	public void setFunctionsApp() {
 		settings = PreferenceManager.getDefaultSharedPreferences(activity);
@@ -209,17 +215,12 @@ public class PreferencesHelper {
 					});
 		}
 		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-			CheckBoxPreference mCheckBoxPref = (CheckBoxPreference) findPreference("notificationsBig");
-			if (mCheckBoxPref != null)
-				((PreferenceActivity) activity).getPreferenceScreen()
-						.removePreference(mCheckBoxPref);
+			removePreference("notificationsBig");
 		}
 		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
-			CheckBoxPreference mCheckBoxPref = (CheckBoxPreference) findPreference("DarkTheme");
-			if (mCheckBoxPref != null)
-				((PreferenceActivity) activity).getPreferenceScreen()
-						.removePreference(mCheckBoxPref);
+			removePreference("DarkTheme");
 		}
+
 		final CheckBoxPreference darkTheme = (CheckBoxPreference) findPreference("DarkTheme");
 		if (darkTheme != null) {
 			darkTheme
@@ -316,62 +317,18 @@ public class PreferencesHelper {
 				sync.setSummary(R.string.sync_use_summary_nothing);
 			}
 			sync.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-
 				@Override
 				public boolean onPreferenceChange(Preference preference,
 						Object newValue) {
-
-					Log.e(TAG, "" + newValue.toString());
-
-					if ((Boolean) newValue) {
-						new AlertDialog.Builder(activity)
-								.setTitle(R.string.sync_warning)
-								.setMessage(R.string.sync_warning_message)
-								.setPositiveButton(android.R.string.ok,
-										new OnClickListener() {
-											@Override
-											public void onClick(
-													DialogInterface dialogInterface,
-													int i) {
-												for (Account a : accounts) {
-													try {
-														am.removeAccount(a,
-																null, null);
-													} catch (Exception e) {
-														Log.e(TAG,
-																"Cannot remove Account");
-													}
-												}
-												Intent intent = new Intent(
-														activity,
-														AuthenticatorActivity.class);
-												intent.setAction(MainActivity.SHOW_LISTS);
-												activity.startActivityForResult(
-														intent,
-														SettingsActivity.NEW_ACCOUNT);
-											}
-										})
-								.setNegativeButton(android.R.string.cancel,
-										new OnClickListener() {
-											@Override
-											public void onClick(
-													DialogInterface dialogInterface,
-													int i) {
-												((CheckBoxPreference) findPreference("syncUse"))
-														.setChecked(false);
-												sync.setSummary(R.string.sync_use_summary_nothing);
-											}
-										}).show();
-					} else {
-						sync.setSummary(R.string.sync_use_summary_nothing);
-						try {
-							am.removeAccount(accounts[0], null, null);
-						} catch (Exception e) {
-							Log.e(TAG, "Cannot remove Account");
-						}
-					}
-					return true;
+					boolean isChecked=(Boolean)newValue;
+					createAuthActivity(isChecked, activity,sync,false);
+					findPreference("syncServer").setEnabled(isChecked);
+					findPreference("syncPassword").setEnabled(isChecked);
+					findPreference("syncFrequency").setEnabled(isChecked);
+					return false;
 				}
+
+				
 			});
 			// Get Account if existing
 			final Account account;
@@ -582,7 +539,64 @@ public class PreferencesHelper {
 							return true;
 						}
 					});
+			
+				if(!settings.getBoolean("syncUse", false)){
+					findPreference("syncServer").setEnabled(false);
+					findPreference("syncPassword").setEnabled(false);
+					findPreference("syncFrequency").setEnabled(false);
+				}
+				if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+					removePreference("syncUse");
+					ActionBar actionbar = activity.getActionBar();
+					final Switch actionBarSwitch = new Switch(activity);
+		
+					actionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
+							ActionBar.DISPLAY_SHOW_CUSTOM);
+					actionbar.setCustomView(actionBarSwitch, new ActionBar.LayoutParams(
+							ActionBar.LayoutParams.WRAP_CONTENT,
+							ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER_VERTICAL
+									| Gravity.RIGHT));
+				actionBarSwitch.setChecked(settings
+						.getBoolean("syncUse", false));
+				actionBarSwitch
+						.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+							@Override
+							public void onCheckedChanged(
+									CompoundButton buttonView, boolean isChecked) {
+								PreferencesHelper.createAuthActivity(isChecked,
+										(Fragment) ctx, actionBarSwitch, true);
+								findPreference("syncServer").setEnabled(
+										isChecked);
+								findPreference("syncPassword").setEnabled(
+										isChecked);
+								findPreference("syncFrequency").setEnabled(
+										isChecked);
+								if (activity.getResources().getBoolean(
+										R.bool.isTablet)) {
+									final Switch s = ((Switch) activity
+											.findViewById(R.id.switchWidget));
+									s.setOnCheckedChangeListener(null);
+									s.setChecked(isChecked);
+									s.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+										@Override
+										public void onCheckedChanged(
+												CompoundButton buttonView,
+												boolean isChecked) {
+											PreferencesHelper
+													.createAuthActivity(
+															isChecked,
+															(Activity) ctx, s,
+															false);
+										}
+									});
+
+								}
+							}
+						});
+				}
 		}
+
 
 		final CheckBoxPreference notificationsUse = (CheckBoxPreference) findPreference("notificationsUse");
 		if (notificationsUse != null) {
@@ -975,6 +989,132 @@ public class PreferencesHelper {
 					return false;
 				}
 			});
+		}
+	}
+
+	@SuppressLint("NewApi")
+	@SuppressWarnings("deprecation")
+	private void removePreference(String which) {
+		Preference pref =  findPreference(which);
+		if (pref != null){
+			if(v4_0){
+				((PreferenceFragment) ctx).getPreferenceScreen().removePreference(pref);
+			}else{
+				((PreferenceActivity) activity).getPreferenceScreen().removePreference(pref);
+			}
+		}
+	}
+	
+	@SuppressLint("NewApi")
+	public static void createAuthActivity(boolean newValue, final Object activity,final Object box,final boolean fragment) {
+		final Context ctx;
+		if(fragment){
+			ctx=((Fragment)activity).getActivity();
+		}else{
+			ctx=(Activity)activity;
+		}
+		final AccountManager am = AccountManager.get(ctx);
+		final Account[] accounts = am
+				.getAccountsByType(Mirakel.ACCOUNT_TYPE);
+		final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(ctx);
+		if (newValue) {			
+			new AlertDialog.Builder(ctx)
+					.setTitle(R.string.sync_warning)
+					.setMessage(R.string.sync_warning_message)
+					.setPositiveButton(android.R.string.ok,
+							new OnClickListener() {
+								@SuppressLint("NewApi")
+								@Override
+								public void onClick(
+										DialogInterface dialogInterface,
+										int i) {
+									for (Account a : accounts) {
+										try {
+											am.removeAccount(a,
+													null, null);
+										} catch (Exception e) {
+											Log.e(TAG,
+													"Cannot remove Account");
+										}
+									}
+									Intent intent = new Intent(
+											ctx,
+											AuthenticatorActivity.class);
+									intent.setAction(MainActivity.SHOW_LISTS);
+									if(fragment){
+										((Fragment)activity).startActivityForResult(
+												intent,
+												SettingsActivity.NEW_ACCOUNT);
+									}else{
+										((Activity)activity).startActivityForResult(
+												intent,
+												SettingsActivity.NEW_ACCOUNT);
+									}
+									SharedPreferences.Editor editor = settings.edit();
+									editor.putBoolean("syncUse", true);
+									editor.commit();
+								}
+							})
+					.setNegativeButton(android.R.string.cancel,
+							new OnClickListener() {
+								@SuppressLint("NewApi")
+								@Override
+								public void onClick(
+										DialogInterface dialogInterface,
+										int i) {
+									SharedPreferences.Editor editor = settings.edit();
+									editor.putBoolean("syncUse", false);
+									editor.commit();
+									if(Build.VERSION.SDK_INT<Build.VERSION_CODES.ICE_CREAM_SANDWICH){
+										((CheckBoxPreference)box).setChecked(false);
+										((CheckBoxPreference)box).setSummary(R.string.sync_use_summary_nothing);
+									}else{
+										((Switch)box).setChecked(false);
+									}
+								}
+							}).show();
+		} else {
+			SharedPreferences.Editor editor = settings.edit();
+			editor.putBoolean("syncUse", false);
+			editor.commit();
+			try {
+				am.removeAccount(accounts[0], null, null);
+			} catch (Exception e) {
+				Log.e(TAG, "Cannot remove Account");
+			}
+		}
+	}
+	
+	public static  void updateSyncText(CheckBoxPreference sync, Preference server, Context ctx) {
+		AccountManager am = AccountManager.get(ctx);
+		Account[] accounts = am.getAccountsByType(Mirakel.ACCOUNT_TYPE);
+		if (accounts.length > 0) {
+			if(sync!=null){
+			if (am.getUserData(accounts[0], SyncAdapter.BUNDLE_SERVER_TYPE)
+					.equals(TaskWarriorSync.TYPE)) {
+				sync.setSummary(ctx.getString(
+						R.string.sync_use_summary_taskwarrior,
+						accounts[0].name));
+			} else if (am.getUserData(accounts[0],
+					SyncAdapter.BUNDLE_SERVER_TYPE)
+					.equals(MirakelSync.TYPE)) {
+				sync.setSummary(ctx.getString(
+						R.string.sync_use_summary_mirakel, accounts[0].name));
+			} else {
+				sync.setChecked(false);
+				sync.setSummary(R.string.sync_use_summary_nothing);
+				am.removeAccount(accounts[0], null, null);
+			}
+			}
+			server.setSummary(ctx.getString(R.string.sync_server_summary,
+					am.getUserData(accounts[0],
+							SyncAdapter.BUNDLE_SERVER_URL)));
+		} else {
+			if(sync!=null){
+				sync.setChecked(false);
+				sync.setSummary(R.string.sync_use_summary_nothing);
+			}
+			server.setSummary("");
 		}
 	}
 

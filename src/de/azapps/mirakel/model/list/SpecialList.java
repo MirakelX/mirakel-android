@@ -11,6 +11,7 @@ import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.Network;
+import de.azapps.mirakelandroid.R;
 
 public class SpecialList extends ListMirakel {
 	private boolean active;
@@ -236,6 +237,14 @@ public class SpecialList extends ListMirakel {
 		return list;
 	}
 
+	public static SpecialList firstSpecialSafe(Context ctx) {
+		SpecialList s=SpecialList.firstSpecial();
+		if(s==null){
+			s= SpecialList.newSpecialList(ctx.getString(R.string.list_all), "", true);
+			s.save(false);
+		}
+		return s;
+	}
 	/**
 	 * Create a List from a Cursor
 	 * 
