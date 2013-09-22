@@ -26,9 +26,9 @@
     <string name="no_date">No Deadline</string>
     <string name="no_reminder">Set a reminder</string>
     <string name="no_lists">This task cannot be synced, because you have no lists</string>
-    <string name="dateFormat">yyyy-MM-dd</string>
-    <string name="dateTimeFormat">yyyy-MM-dd\'T\'kkmmss\'Z\'</string>
-    <string name="humanDateTimeFormat">yyyy-MM-dd – kk:mm</string>
+    <string name="dateFormat" translatable="false">yyyy-MM-dd</string>
+    <string name="dateTimeFormat" translatable="false">yyyy-MM-dd\'T\'kkmmss\'Z\'</string>
+    <string name="humanDateTimeFormat" translatable="false">yyyy-MM-dd – kk:mm</string>
     <string name="speak">Speak</string>
     <string name="enter">Enter</string>
     <string name="speak_lang_code">en-US</string>
