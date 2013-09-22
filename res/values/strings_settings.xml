@@ -17,7 +17,8 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
 
     <!-- Sync -->
     <string name="sync_title">Sync</string>
@@ -71,6 +72,7 @@
     <string name="notifications_zero_show">Hide notification if empty</string>
     <string name="notificationsShowDone">Handle Done Tasks</string>
     <string name="reminder">Reminder</string>
+    <string name="reminders_persistent">Use persistent Reminders</string>
 
     <!-- startup -->
     <string name="startup_title">App Start</string>

@@ -14,7 +14,7 @@
      limitations under the License.
 -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools"    tools:ignore="MissingTranslation">
     <!-- Label for the "Done" button on the far left of action mode toolbars. -->
     <string name="abc_action_mode_done">Done</string>
     <!-- Content description for the action bar "home" affordance. [CHAR LIMIT=NONE] -->
