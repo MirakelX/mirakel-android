@@ -274,8 +274,12 @@ public class TasksFragment extends Fragment {
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(newTask.getWindowToken(), 0);
 		newTask.clearFocus();
-		if (name.equals(""))
+		if (name.equals("")){
+			newTask.setOnFocusChangeListener(null);
+			imm.showSoftInput(newTask,
+					InputMethodManager.HIDE_IMPLICIT_ONLY);
 			return true;
+		}
 		long id;
 		if(main.getCurrentList() instanceof SearchList){
 			id = main.getBaseList();
