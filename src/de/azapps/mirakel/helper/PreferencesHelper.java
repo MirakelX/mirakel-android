@@ -51,6 +51,7 @@ import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.special_lists_settings.SpecialListsSettings;
@@ -115,7 +116,7 @@ public class PreferencesHelper {
 
 	@SuppressLint("NewApi")
 	public void setFunctionsWidget() {
-
+		settings = PreferenceManager.getDefaultSharedPreferences(activity);
 		List<ListMirakel> lists = ListMirakel.all();
 		CharSequence entryValues[] = new String[lists.size()];
 		CharSequence entries[] = new String[lists.size()];
@@ -126,10 +127,46 @@ public class PreferencesHelper {
 			i++;
 		}
 
-		// Notifications List
-		ListPreference notificationsListPreference = (ListPreference) findPreference("widgetList");
-		notificationsListPreference.setEntries(entries);
-		notificationsListPreference.setEntryValues(entryValues);
+		final ListPreference widgetListPreference = (ListPreference) findPreference("widgetList");
+		widgetListPreference.setEntries(entries);
+		widgetListPreference.setEntryValues(entryValues);
+		widgetListPreference.setSummary(activity.getString(
+				R.string.widget_list_summary, ListMirakel.getList(Integer
+						.parseInt(settings.getString("widgetList", SpecialList
+								.firstSpecialSafe(activity).getId() + "")))));
+		widgetListPreference
+				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+					@Override
+					public boolean onPreferenceChange(Preference preference,
+							Object newValue) {
+						String list = ListMirakel.getList(
+								Integer.parseInt((String) newValue)).getName();
+						widgetListPreference.setSummary(activity
+								.getString(R.string.notifications_list_summary,
+										list));
+						return true;
+					}
+				});
+		
+		final Preference widgetListSort = findPreference("widgetSort");
+		widgetListSort.setSummary(activity.getString(
+				R.string.widget_sort_summary, activity.getResources()
+						.getStringArray(R.array.task_sorting_items)[Integer
+						.parseInt(settings.getString("widgetSort", "0"))]));
+		widgetListSort
+				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+					@Override
+					public boolean onPreferenceChange(Preference preference,
+							Object newValue) {
+						widgetListSort.setSummary(activity.getString(
+								R.string.widget_sort_summary,
+								activity.getResources().getStringArray(
+										R.array.task_sorting_items)[Integer
+										.parseInt((String) newValue)]));
+						return true;
+					}
+				});
 
 	}
 
