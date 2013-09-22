@@ -42,6 +42,7 @@ import android.content.ContentProviderClient;
 import android.content.Context;
 import android.content.SyncResult;
 import android.os.Bundle;
+import android.widget.Toast;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.sync.mirakel.MirakelSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
@@ -90,6 +91,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			TW_ERRORS error = new TaskWarriorSync(mContext).sync(account);
 			switch (error) {
 			case NO_ERROR:
+				last_message=mContext.getText(R.string.finish_sync);
 				break;
 			case TRY_LATER:
 				last_message = mContext.getText(R.string.message_try_later);
@@ -111,6 +113,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				last_message = mContext.getText(R.string.message_message_error);
 				break;
 			}
+			Toast.makeText(mContext, last_message, Toast.LENGTH_LONG).show();
 		} else {
 			Log.wtf(TAG, "Unknown SyncType");
 		}

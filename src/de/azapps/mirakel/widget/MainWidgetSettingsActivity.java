@@ -26,6 +26,7 @@ import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.widget.FrameLayout;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.PreferencesHelper;
@@ -46,6 +47,7 @@ public class MainWidgetSettingsActivity extends PreferenceActivity {
 			new PreferencesHelper(this).setFunctionsWidget();
 		} else {
 			// Display the fragment as the main content.
+			((FrameLayout)findViewById(android.R.id.content)).removeAllViews(); 
 			getFragmentManager()
 					.beginTransaction()
 					.replace(android.R.id.content,

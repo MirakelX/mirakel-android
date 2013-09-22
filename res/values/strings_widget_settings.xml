@@ -20,10 +20,9 @@
 <resources>
 
     <string name="widget_list">List</string>
-    <string name="widget_list_summary">List to show</string>
+    <string name="widget_list_summary">Show \"%s\"</string>
     <string name="widget_done">Done Tasks</string>
-    <string name="widget_done_summary">Show done Tasks</string>
     <string name="widget_sort">Sorting</string>
-    <string name="widget_sort_summary">How to sort the Tasks</string>
+    <string name="widget_sort_summary">Sort after \"%s\"</string>
 
 </resources>
