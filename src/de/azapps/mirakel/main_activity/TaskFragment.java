@@ -115,6 +115,9 @@ public class TaskFragment extends Fragment {
 		Task_name.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if(main.isTablet){
+					((EditText)main.findViewById(R.id.tasks_new)).setOnFocusChangeListener(null);
+				}
 				ViewSwitcher switcher = (ViewSwitcher) view
 						.findViewById(R.id.switch_name);
 				switcher.showNext(); // or switcher.showPrevious();
