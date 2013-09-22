@@ -5,10 +5,6 @@
   <string name="action_settings">Configuración</string>
   <string name="action_contact">Contacto / Informar de un error</string>
   <string name="action_contact_summary">Escríbenos un correo electrónico.</string>
-  <string name="OK">OK</string>
-  <string name="Cancel">Cancelar</string>
-  <string name="Yes">Sí</string>
-  <string name="no">No</string>
   <string name="no_date">No hay fecha límite</string>
   <string name="no_reminder">Configurar un recordatorio</string>
   <string name="no_lists">Esta tarea no puede ser sincronizada, porque no tienes listas</string>
@@ -52,11 +48,8 @@
   <string name="list_week">Esta semana</string>
   <string name="list_overdue">Atrasado</string>
   <string name="list_delete_content">¿Está seguro que desea eliminar esta lista?</string>
-  <string name="menu_delete">Eliminar</string>
   <string name="menu_settings">Configuración</string>
-  <string name="menu_move">Mover</string>
   <string name="offical_server_url">https://mirakel.azapps.de</string>
-  <string name="offical_server_url_taskwarrior">mirakel.azapps.de:5644</string>
   <string name="title_settings">Configuración</string>
   <string name="empty_list">No hay tareas</string>
   <string name="preferences">Preferencias</string>
@@ -76,14 +69,10 @@
   <string name="message_try_later">Try to Sync later</string>
   <string name="message_access_denied">Access denied!\nDo you use the right Config-File?</string>
   <string name="message_create_socket">Cannot Create Socket!\nDo you enable your network connection?</string>
-  <string name="message_account_suspended">Your Account ist suspended!</string>
   <string name="message_parse_message">Cannot parse Tasks – please write us, how this happened</string>
   <string name="message_message_error">Unknown response from Server – please write us, how this happened</string>
   <string name="load_config">Select the config file for Taskwarrior</string>
   <string name="select_config">Select Taskwarrior config file</string>
-  <string name="login_activity_org_label">Organización</string>
-  <string name="login_org_hint">Organización</string>
-  <string name="login_org_default">PUBLIC</string>
   <string name="login_activity_username_label">Usuario</string>
   <string name="login_activity_server_label">URL del servidor</string>
   <string name="login_activity_server_typ">Tipo de servidor</string>
@@ -93,10 +82,7 @@
         required. Please try again.</string>
   <string name="login_activity_loginfail_text_pwmissing">Escriba la contraseña para esta cuenta.</string>
   <string name="login_activity_newaccount_text">Ingresa a tu cuenta de %s. </string>
-  <string name="ui_activity_authenticating">Autenticando\u2026</string>
   <string name="ui_activity_title">Iniciar sesión</string>
-  <string name="title_activity_special_lists_settings">Lista de controles especiales</string>
-  <string name="changelog_full_title">Registro de cambios</string>
   <string name="changelog_title">¿Que hay de nuevo?</string>
   <string name="changelog_ok_button">OK</string>
   <string name="changelog_show_full">más…</string>
@@ -128,20 +114,15 @@ Device: %3$s\n]]>
   <string name="change_content">Cambiar contenido</string>
   <string name="task_has_content">La tarea tiene contenido</string>
   <string name="help_description">Hay tres partes principales: en el lado izquierdo puedes ver todas las listas, en el centro se pueden ver todas las tareas de una lista y en el lado derecho se puede ver una tarea. Cambias entre las partes deslizando o haciendo clic.</string>
-  <string name="permission_group_desc">Permisos de acceso de Mirakel</string>
-  <string name="permission_group_lbl">Permisos de Mirakel</string>
   <string name="permission_read_lbl">Leer datos de Mirakel</string>
   <string name="permission_read_desc">Permiso para leer datos de Mirakel</string>
   <string name="permission_write_lbl">Escribir datos en Mirakel</string>
   <string name="permission_write_desc">Permiso para escribir datos en Mirakel</string>
   <string name="permission_read_write_lbl">Leer/Escribir datos de Mirakel</string>
   <string name="permission_read_write_desc">Permiso para leer datos desde y escribir datos a Mirakel</string>
-  <string name="crash_toast_text">Ooooops! Me cerré! Por favor iniciar la aplicación nuevamente, así puedo enviar un mensaje a mi desarrollador</string>
   <string name="crash_dialog_title">Mirakel se ha cerrado</string>
-  <string name="crash_dialog_text">Se ha producido un error inesperado, obligando a la aplicación a detenerse. Por favor ayúdenos a arreglar esto enviándonos datos del error, todo lo que tienes que hacer es hacer clic en OK.</string>
   <string name="crash_dialog_comment_prompt">Puede añadir sus comentarios sobre el problema aquí abajo:</string>
   <string name="crash_dialog_ok_toast">¡Gracias!</string>
-  <string name="title_activity_special_list_settings">Lista de controles especiales</string>
   <string name="message_from_server">El servidor te quiere decir que: %s</string>
   <string-array name="task_sorting_items">
     <item>Predeterminado</item>
