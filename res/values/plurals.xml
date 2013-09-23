@@ -23,5 +23,20 @@
         <item quantity="one">One Task</item>
         <item quantity="other">%d Tasks</item>
     </plurals>
+    
+    <plurals name="selected_lists">
+        <item quantity="one">One List</item>
+        <item quantity="other">%d Lists</item>
+    </plurals>
+    
+    <plurals name="list_delete">
+        <item quantity="one">Delete List?</item>
+        <item quantity="other">Delete Lists?</item>
+    </plurals>
+    
+     <plurals name="task_delete">
+        <item quantity="one">Delete Task?</item>
+        <item quantity="other">Delete Tasks?</item>
+    </plurals>
 
 </resources>

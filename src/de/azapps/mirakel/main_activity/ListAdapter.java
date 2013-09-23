@@ -18,6 +18,7 @@
  ******************************************************************************/
 package de.azapps.mirakel.main_activity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +48,8 @@ public class ListAdapter extends ArrayAdapter<ListMirakel> {
 	private List<ListMirakel> data = null;
 	private Map<Integer, View> viewsForLists = new HashMap<Integer, View>();
 	private boolean darkTheme;
+	private List<Boolean> selected;
+	private int selecdetCount;
 
 	public View getViewForList(ListMirakel list) {
 		return viewsForLists.get(list.getId());
@@ -61,12 +64,37 @@ public class ListAdapter extends ArrayAdapter<ListMirakel> {
 		this.enableDrop = enable;
 		this.darkTheme = PreferenceManager.getDefaultSharedPreferences(context)
 				.getBoolean("DarkTheme", false);
+		selected = new ArrayList<Boolean>();
+		for (int i = 0; i < data.size(); i++) {
+			selected.add(false);
+		}
+		selecdetCount = 0;
 	}
 
 	void changeData(List<ListMirakel> lists) {
 		viewsForLists.clear();
 		data.clear();
 		data.addAll(lists);
+		while (data.size() > selected.size()) {
+			selected.add(false);
+		}
+	}
+	public void setSelected(int position, boolean selected) {
+		this.selected.set(position, selected);
+		notifyDataSetChanged();
+		selecdetCount += (selected ? 1 : -1);
+	}
+
+	public int getSelectedCount() {
+		return selecdetCount;
+	}
+
+	public void resetSelected() {
+		for (int i = 0; i < selected.size(); i++) {
+			selected.set(i, false);
+		}
+		notifyDataSetChanged();
+		selecdetCount = 0;
 	}
 
 	@Override
@@ -94,11 +122,17 @@ public class ListAdapter extends ArrayAdapter<ListMirakel> {
 			holder.listRowDrag.setVisibility(View.GONE);
 		else
 			holder.listRowDrag.setVisibility(View.VISIBLE);
+		
 		holder.listRowName.setText(list.getName());
 		holder.listRowName.setTag(list);
 		holder.listRowTaskNumber.setText("" + list.countTasks());
 		viewsForLists.put(list.getId(), row);
 		Helpers.setListColorBackground(list, row, darkTheme);
+		if (selected.get(position)) {
+			row.setBackgroundColor(context.getResources().getColor(
+					darkTheme ? R.color.highlighted_text_holo_dark
+							: R.color.highlighted_text_holo_light));
+		}
 
 		return row;
 	}
@@ -109,6 +143,7 @@ public class ListAdapter extends ArrayAdapter<ListMirakel> {
 		viewsForLists.remove(data.get(which).getId());
 		data.remove(which);
 	}
+	
 
 	public void onDrop(final int from, final int to) {
 		ListMirakel t = data.get(from);
@@ -154,5 +189,16 @@ public class ListAdapter extends ArrayAdapter<ListMirakel> {
 		TextView listRowName;
 		TextView listRowTaskNumber;
 		ImageView listRowDrag;
+	}
+
+	public List<ListMirakel> getSelected() {
+		List<ListMirakel> selected=new ArrayList<ListMirakel>();
+		for(int i=0;i<data.size();i++){
+			if(this.selected.get(i))
+			{
+				selected.add(data.get(i));
+			}
+		}
+		return selected;
 	}
 }

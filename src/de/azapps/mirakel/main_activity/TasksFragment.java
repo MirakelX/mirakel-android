@@ -512,7 +512,6 @@ public class TasksFragment extends Fragment {
 				public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
 					menu.findItem(R.id.edit_task).setVisible(
 							adapter.getSelectedCount() <= 1);
-					Log.e(TAG, "prepare");
 					return false;
 				}
 

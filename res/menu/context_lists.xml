@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:mirakel="http://schemas.android.com/apk/res-auto"
+    tools:ignore="missingTitle" >
+    <item
+        android:id="@+id/menu_delete"
+        mirakel:showAsAction="always"
+        android:icon="@android:drawable/ic_menu_delete"/>
+    <item
+        android:id="@+id/menu_color"
+        mirakel:showAsAction="always"
+        android:icon="@android:drawable/ic_menu_set_as"/>
+    <!-- TODO need better icon -->
+    <item
+        android:id="@+id/edit_list"
+        mirakel:showAsAction="always"
+        android:icon="@android:drawable/ic_menu_edit"/>
+
+</menu>

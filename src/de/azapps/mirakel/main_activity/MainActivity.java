@@ -608,17 +608,26 @@ public class MainActivity extends ActionBarActivity implements
 	 * @param list
 	 */
 	public void handleDestroyList(final ListMirakel list) {
+		
+	}
+	public void handleDestroyList(final List<ListMirakel> lists) {
+		String names = lists.get(0).getName();
+		for (int i = 1; i < lists.size(); i++) {
+			names += ", " + lists.get(i).getName();
+		}
 		new AlertDialog.Builder(this)
-				.setTitle(list.getName())
-				.setMessage(this.getString(R.string.list_delete_content))
+				.setTitle(getResources().getQuantityString(R.plurals.list_delete, lists.size()))
+				.setMessage(this.getString(R.string.list_delete_content,names))
 				.setPositiveButton(this.getString(android.R.string.yes),
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int which) {
-								list.destroy();
-								listFragment.update();
-								if (getCurrentList().getId() == list.getId()) {
-									setCurrentList(SpecialList.firstSpecial());
+								for(ListMirakel list:lists){
+									list.destroy();
+									listFragment.update();
+									if (getCurrentList().getId() == list.getId()) {
+										setCurrentList(SpecialList.firstSpecial());
+									}
 								}
 							}
 						})
@@ -650,7 +659,7 @@ public class MainActivity extends ActionBarActivity implements
 			names += ", " + tasks.get(i).getName();
 		}
 		new AlertDialog.Builder(this)
-				.setTitle(this.getString(R.string.task_delete))
+				.setTitle(this.getResources().getQuantityString(R.plurals.task_delete,tasks.size()))
 				.setMessage(this.getString(R.string.task_delete_content, names))
 				.setPositiveButton(this.getString(android.R.string.yes),
 						new DialogInterface.OnClickListener() {

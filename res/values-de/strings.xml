@@ -29,7 +29,6 @@
   <string name="task_no_content">Notiz hinzufügen</string>
   <string name="task_change_prio_title">Priorität ändern</string>
   <string name="task_change_prio_cont">Priorität</string>
-  <string name="task_delete_content">Willst du die Aufgabe wirklich löschen?</string>
   <string name="task_menu_sorting">Sortiere Aufgaben</string>
   <string name="task_sorting_title">Sortiere nach</string>
   <string name="task_empty">Keine Aufgabe ausgewählt…</string>
@@ -46,7 +45,6 @@
   <string name="list_today">Heutige Aufgaben</string>
   <string name="list_week">Diese Woche</string>
   <string name="list_overdue">Überfällig</string>
-  <string name="list_delete_content">Willst du die Liste wirklich löschen?</string>
   <string name="menu_delete_list">Liste löschen</string>
   <string name="menu_delete_task">Aufgabe löschen</string>
   <string name="menu_settings">Einstellungen</string>

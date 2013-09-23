@@ -103,6 +103,7 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		while (data.size() > selected.size()) {
 			selected.add(false);
 		}
+		selecdetCount=data.size();
 	}
 
 	public void setSelected(int position, boolean selected) {
