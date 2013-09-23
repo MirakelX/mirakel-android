@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -34,14 +35,19 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
 import android.util.TypedValue;
+import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
@@ -49,6 +55,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
+import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -57,6 +64,7 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
@@ -273,10 +281,9 @@ public class TasksFragment extends Fragment {
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(newTask.getWindowToken(), 0);
 		newTask.clearFocus();
-		if (name.equals("")){
+		if (name.equals("")) {
 			newTask.setOnFocusChangeListener(null);
-			imm.showSoftInput(newTask,
-					InputMethodManager.HIDE_IMPLICIT_ONLY);
+			imm.showSoftInput(newTask, InputMethodManager.HIDE_IMPLICIT_ONLY);
 			return true;
 		}
 		long id;
@@ -391,6 +398,7 @@ public class TasksFragment extends Fragment {
 		values = tasks;
 	}
 
+	@SuppressLint("NewApi")
 	protected void update(boolean reset) {
 		if (!created)
 			return;
@@ -448,46 +456,128 @@ public class TasksFragment extends Fragment {
 			@Override
 			protected void onPostExecute(TaskAdapter adapter) {
 				listView.setAdapter(adapter);
+
 				finishLoad = true;
 			}
 		};
 
 		task.execute();
-		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View item,
-					int position, final long id) {
-				AlertDialog.Builder builder = new AlertDialog.Builder(
-						getActivity());
-				Task task = values.get((int) id);
-				builder.setTitle(task.getName());
-				List<CharSequence> items = new ArrayList<CharSequence>(Arrays
-						.asList(getActivity().getResources().getStringArray(
-								R.array.task_actions_items)));
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+			listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+				@Override
+				public boolean onItemLongClick(AdapterView<?> parent,
+						View item, int position, final long id) {
+					AlertDialog.Builder builder = new AlertDialog.Builder(
+							getActivity());
+					Task task = values.get((int) id);
+					builder.setTitle(task.getName());
+					List<CharSequence> items = new ArrayList<CharSequence>(
+							Arrays.asList(getActivity().getResources()
+									.getStringArray(R.array.task_actions_items)));
 
-				builder.setItems(items.toArray(new CharSequence[items.size()]),
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int item) {
-								Task task = values.get((int) id);
-								switch (item) {
-								case TASK_RENAME:
-									main.setCurrentTask(task);
-									break;
-								case TASK_MOVE:
-									main.handleMoveTask(task);
-									break;
-								case TASK_DESTROY:
-									main.handleDestroyTask(task);
-									break;
+					builder.setItems(
+							items.toArray(new CharSequence[items.size()]),
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int item) {
+									Task task = values.get((int) id);
+									switch (item) {
+									case TASK_RENAME:
+										main.setCurrentTask(task);
+										break;
+									case TASK_MOVE:
+										main.handleMoveTask(task);
+										break;
+									case TASK_DESTROY:
+										main.handleDestroyTask(task);
+										break;
+									}
 								}
-							}
-						});
+							});
 
-				AlertDialog dialog = builder.create();
-				dialog.show();
-				return false;
+					AlertDialog dialog = builder.create();
+					dialog.show();
+					return true;
+				}
+			});
+		} else {
+			listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+			if (adapter != null) {
+				adapter.resetSelected();
 			}
-		});
+			listView.setHapticFeedbackEnabled(true);
+			listView.setMultiChoiceModeListener(new MultiChoiceModeListener() {
+
+				@Override
+				public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+					menu.findItem(R.id.edit_task).setVisible(
+							adapter.getSelectedCount() <= 1);
+					Log.e(TAG, "prepare");
+					return false;
+				}
+
+				@Override
+				public void onDestroyActionMode(ActionMode mode) {
+					adapter.resetSelected();
+				}
+
+				@Override
+				public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+					MenuInflater inflater = mode.getMenuInflater();
+					inflater.inflate(R.menu.context_tasks, menu);
+
+					return true;
+				}
+
+				@Override
+				public boolean onActionItemClicked(ActionMode mode,
+						MenuItem item) {
+					List<Task> tasks = adapter.getSelected();
+					switch (item.getItemId()) {
+					case R.id.menu_delete:
+						main.handleDestroyTask(tasks);
+						break;
+					case R.id.menu_move:
+						main.handleMoveTask(tasks);
+						break;
+					case R.id.edit_task:
+						main.setCurrentTask(tasks.get(0), true);
+						break;
+					case R.id.done_task:
+						for (Task t : tasks) {
+							t.setDone(true);
+							try {
+								t.save();
+							} catch (NoSuchListException e) {
+								Log.d(TAG, "list did vanish");
+							}
+						}
+						adapter.notifyDataSetChanged();
+						break;
+					}
+					mode.finish();
+					return false;
+				}
+
+				@Override
+				public void onItemCheckedStateChanged(ActionMode mode,
+						int position, long id, boolean checked) {
+					Log.d(TAG, "item " + position + " selected");
+					int oldCount = adapter.getSelectedCount();
+					adapter.setSelected(position, checked);
+					int newCount = adapter.getSelectedCount();
+					Log.e(TAG, "old count: " + oldCount + " | newCount: "
+							+ newCount);
+					mode.setTitle(main.getResources().getQuantityString(
+							R.plurals.selected_tasks, newCount, newCount));
+					if ((oldCount < 2 && newCount >= 2)
+							|| (oldCount >= 2 && newCount < 2)) {
+						mode.invalidate();
+					}
+
+				}
+			});
+		}
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View item,

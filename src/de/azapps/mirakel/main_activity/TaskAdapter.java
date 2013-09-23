@@ -18,6 +18,7 @@
  ******************************************************************************/
 package de.azapps.mirakel.main_activity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,11 +37,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.Helpers;
+import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 
 public class TaskAdapter extends ArrayAdapter<Task> {
-	@SuppressWarnings("unused")
 	private static final String TAG = "TaskAdapter";
 	Context context;
 	int layoutResourceId, listId;
@@ -49,16 +50,28 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 	OnClickListener clickPrio;
 	boolean darkTheme;
 	private Map<Long, View> viewsForTasks = new HashMap<Long, View>();
+	private List<Boolean> selected;
+	private int selecdetCount;
 
 	public View getViewForTask(Task task) {
 		return viewsForTasks.get(task.getId());
 	}
 
+	public List<Task> getSelected() {
+		List<Task> ret = new ArrayList<Task>();
+		for (int i = 0; i < data.size(); i++) {
+			if (selected.get(i)) {
+				ret.add(data.get(i));
+			}
+		}
+		return ret;
+	}
 
 	public TaskAdapter(Context context, int layoutResourceId, List<Task> data,
 			OnClickListener clickCheckbox, OnClickListener click_prio,
 			int listId, boolean darkTheme) {
 		super(context, layoutResourceId, data);
+		Log.d(TAG, "created");
 		this.layoutResourceId = layoutResourceId;
 		this.data = data;
 		this.context = context;
@@ -66,6 +79,11 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		this.clickPrio = click_prio;
 		this.listId = listId;
 		this.darkTheme = darkTheme;
+		selected = new ArrayList<Boolean>();
+		for (int i = 0; i < data.size(); i++) {
+			selected.add(false);
+		}
+		selecdetCount = 0;
 	}
 
 	/**
@@ -75,7 +93,7 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 	 */
 	void addToHead(Task task) {
 		data.add(0, task);
-
+		selected.add(false);
 	}
 
 	void changeData(List<Task> tasks, int listId) {
@@ -83,6 +101,27 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		data.clear();
 		data.addAll(tasks);
 		this.listId = listId;
+		while (data.size() > selected.size()) {
+			selected.add(false);
+		}
+	}
+
+	public void setSelected(int position, boolean selected) {
+		this.selected.set(position, selected);
+		notifyDataSetChanged();
+		selecdetCount += (selected ? 1 : -1);
+	}
+
+	public int getSelectedCount() {
+		return selecdetCount;
+	}
+
+	public void resetSelected() {
+		for (int i = 0; i < selected.size(); i++) {
+			selected.set(i, false);
+		}
+		notifyDataSetChanged();
+		selecdetCount = 0;
 	}
 
 	@Override
@@ -113,7 +152,14 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		} else {
 			holder = (TaskHolder) row.getTag();
 		}
-
+		if (selected.get(position)) {
+			row.setBackgroundColor(context.getResources().getColor(
+					darkTheme ? R.color.highlighted_text_holo_dark
+							: R.color.highlighted_text_holo_light));
+		} else {
+			row.setBackgroundColor(context.getResources().getColor(
+					android.R.color.transparent));
+		}
 		if (position >= data.size())
 			return row;
 		Task task = data.get(position);
@@ -150,9 +196,10 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 
 		// Priority
 		holder.taskRowPriority.setText("" + task.getPriority());
-//		Log.e("Blubb",holder.taskRowPriority.getBackground().getClass().toString());
-		
-		GradientDrawable bg=(GradientDrawable) holder.taskRowPriority.getBackground();
+		// Log.e("Blubb",holder.taskRowPriority.getBackground().getClass().toString());
+
+		GradientDrawable bg = (GradientDrawable) holder.taskRowPriority
+				.getBackground();
 		bg.setColor(Mirakel.PRIO_COLOR[task.getPriority() + 2]);
 		holder.taskRowPriority.setOnClickListener(clickPrio);
 		holder.taskRowPriority.setTag(task);
