@@ -254,6 +254,7 @@ public class SettingsActivity extends PreferenceActivity {
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 
+	@SuppressLint("NewApi")
 	@Override
 	public void onBuildHeaders(List<Header> target) {
 		loadHeadersFromResource(R.xml.preferences, target);
