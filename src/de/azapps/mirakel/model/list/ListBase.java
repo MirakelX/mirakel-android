@@ -31,13 +31,12 @@ class ListBase {
 	private int syncState;
 	private int lft, rgt;
 	private int color;
-	
 
 	ListBase() {
 	}
 
 	ListBase(int id, String name, short sort_by, String created_at,
-			String updated_at, int sync_state, int lft, int rgt,int color) {
+			String updated_at, int sync_state, int lft, int rgt, int color) {
 		this.setId(id);
 		this.setCreatedAt(created_at);
 		this.setName(name);
@@ -109,11 +108,13 @@ class ListBase {
 	public void setRgt(int rgt) {
 		this.rgt = rgt;
 	}
+
 	public int getColor() {
 		return color;
 	}
+
 	public void setColor(int color) {
-		this.color=color;
+		this.color = color;
 	}
 
 	@Override

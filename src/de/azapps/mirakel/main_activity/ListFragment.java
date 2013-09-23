@@ -51,19 +51,20 @@ public class ListFragment extends Fragment {
 	protected boolean EditName;
 	private boolean created = false;
 	private DragNDropListView listView;
-	private static final int LIST_COLOR=0, LIST_RENAME = 1, LIST_DESTROY = 2;
+	private static final int LIST_COLOR = 0, LIST_RENAME = 1, LIST_DESTROY = 2;
 	protected static final String TAG = "ListFragment";
 	private boolean enableDrag;
 
 	public void setActivity(MainActivity activity) {
 		main = activity;
 	}
-	
-	private static ListFragment me=null;
-	
-	private static void setSingleton(ListFragment me){
-		ListFragment.me=me;
+
+	private static ListFragment me = null;
+
+	private static void setSingleton(ListFragment me) {
+		ListFragment.me = me;
 	}
+
 	public static ListFragment getSingleton() {
 		return me;
 	}
@@ -76,10 +77,14 @@ public class ListFragment extends Fragment {
 		EditName = false;
 		enableDrag = false;
 		view = inflater.inflate(R.layout.activity_list, container, false);
-		if(PreferenceManager.getDefaultSharedPreferences(main).getBoolean("DarkTheme", false)){
-			view.findViewById(R.id.lists_list).setBackgroundColor(getResources().getColor(R.color.background_dark_transparent));
-		}else{
-			view.findViewById(R.id.lists_list).setBackgroundColor(getResources().getColor(android.R.color.background_light));
+		if (PreferenceManager.getDefaultSharedPreferences(main).getBoolean(
+				"DarkTheme", false)) {
+			view.findViewById(R.id.lists_list).setBackgroundColor(
+					getResources()
+							.getColor(R.color.background_dark_transparent));
+		} else {
+			view.findViewById(R.id.lists_list).setBackgroundColor(
+					getResources().getColor(android.R.color.background_light));
 		}
 		// Inflate the layout for this fragment
 		created = true;
@@ -202,34 +207,33 @@ public class ListFragment extends Fragment {
 		return adapter;
 	}
 
-
 	void editColor(final ListMirakel list) {
-		final ColorPicker cp=new ColorPicker(main);
+		final ColorPicker cp = new ColorPicker(main);
 		cp.setColor(list.getColor());
 		cp.setOldCenterColor(list.getColor());
 		new AlertDialog.Builder(main)
 				.setTitle(main.getString(R.string.list_change_color))
 				.setPositiveButton(R.string.set_color, new OnClickListener() {
-					
+
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						list.setColor(cp.getColor());
 						list.save();
 						main.getListFragment().update();
-						
+
 					}
 				})
 				.setNegativeButton(R.string.unset_color, new OnClickListener() {
-					
+
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						list.setColor(0);
 						list.save();
 						main.getListFragment().update();
 					}
-				})
-				.setView(cp).show();
+				}).setView(cp).show();
 	}
+
 	/**
 	 * Edit the name of the List
 	 * 

@@ -186,11 +186,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ "INSERT INTO semantic_conditions (condition,due) VALUES (\""
 					+ context.getString(R.string.tomorrow) + "\",1);");
 		case 15:
-			db.execSQL("Alter Table "
-					+ ListMirakel.TABLE
+			db.execSQL("Alter Table " + ListMirakel.TABLE
 					+ " add column color INTEGER;");
-			db.execSQL("Alter Table "
-					+ SpecialList.TABLE
+			db.execSQL("Alter Table " + SpecialList.TABLE
 					+ " add column color INTEGER;");
 		}
 	}

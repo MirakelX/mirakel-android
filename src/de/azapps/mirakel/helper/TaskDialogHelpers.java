@@ -34,7 +34,7 @@ public class TaskDialogHelpers {
 		final String[] t = { "-2", "-1", "0", "1", "2" };
 		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
 			numberPicker = new NumberPicker(ctx);
-			NumberPicker np=(NumberPicker) numberPicker;
+			NumberPicker np = (NumberPicker) numberPicker;
 			np.setMaxValue(4);
 			np.setMinValue(0);
 			np.setDisplayedValues(t);

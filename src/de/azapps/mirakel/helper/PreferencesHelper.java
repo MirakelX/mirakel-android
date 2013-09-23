@@ -142,13 +142,12 @@ public class PreferencesHelper {
 							Object newValue) {
 						String list = ListMirakel.getList(
 								Integer.parseInt((String) newValue)).getName();
-						widgetListPreference.setSummary(activity
-								.getString(R.string.notifications_list_summary,
-										list));
+						widgetListPreference.setSummary(activity.getString(
+								R.string.notifications_list_summary, list));
 						return true;
 					}
 				});
-		
+
 		final Preference widgetListSort = findPreference("widgetSort");
 		widgetListSort.setSummary(activity.getString(
 				R.string.widget_sort_summary, activity.getResources()
@@ -582,12 +581,11 @@ public class PreferencesHelper {
 				findPreference("syncFrequency").setEnabled(false);
 			}
 
-				
 			if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 				removePreference("syncUse");
 				ActionBar actionbar = activity.getActionBar();
 
-				actionBarSwitch =  new Switch(activity);
+				actionBarSwitch = new Switch(activity);
 				actionBarSwitch.setId(R.id.preferences_switch_top);
 
 				actionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,

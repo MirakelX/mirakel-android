@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,9 +66,9 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		return ret;
 	}
 
-	public TaskAdapter(MainActivity context, int layoutResourceId, List<Task> data,
-			OnClickListener clickCheckbox, OnClickListener click_prio,
-			int listId, boolean darkTheme) {
+	public TaskAdapter(MainActivity context, int layoutResourceId,
+			List<Task> data, OnClickListener clickCheckbox,
+			OnClickListener click_prio, int listId, boolean darkTheme) {
 		super(context, layoutResourceId, data);
 		Log.d(TAG, "created");
 		this.layoutResourceId = layoutResourceId;
@@ -215,7 +214,7 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 			holder.taskRowDue.setVisibility(View.GONE);
 		}
 		viewsForTasks.put(task.getId(), row);
-		if(main.getCurrentList().isSpecialList())
+		if (main.getCurrentList().isSpecialList())
 			Helpers.setListColorBackground(task.getList(), row);
 		return row;
 	}

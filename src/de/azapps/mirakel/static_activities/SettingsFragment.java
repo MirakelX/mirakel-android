@@ -65,29 +65,29 @@ public class SettingsFragment extends PreferenceFragment {
 			Log.wtf(TAG, "unkown prefernce");
 		}
 
-		helper= new PreferencesHelper(this);
+		helper = new PreferencesHelper(this);
 		helper.setFunctionsApp();
 	}
+
 	@SuppressLint("NewApi")
 	@Override
 	public void onDestroy() {
-		if(helper.actionBarSwitch!=null){
+		if (helper.actionBarSwitch != null) {
 			helper.actionBarSwitch.setVisibility(View.GONE);
 		}
 		super.onDestroy();
 	}
-	
+
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		Log.d(TAG, "fragment");
 		switch (requestCode) {
 		case SettingsActivity.NEW_ACCOUNT:
-			Preference	server = findPreference("syncServer");
+			Preference server = findPreference("syncServer");
 			PreferencesHelper.updateSyncText(null, server, getActivity());
 			break;
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
-	
 
 }

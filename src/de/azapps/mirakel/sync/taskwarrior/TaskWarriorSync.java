@@ -224,7 +224,8 @@ public class TaskWarriorSync {
 						server_task.create();
 					} catch (NoSuchListException e) {
 						Log.wtf(TAG, "List vanish");
-						Toast.makeText(mContext,R.string.no_lists,Toast.LENGTH_LONG ).show();
+						Toast.makeText(mContext, R.string.no_lists,
+								Toast.LENGTH_LONG).show();
 					}
 				} else {
 					server_task.setId(local_task.getId());

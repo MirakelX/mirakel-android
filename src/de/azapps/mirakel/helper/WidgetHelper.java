@@ -48,13 +48,14 @@ public class WidgetHelper {
 		rv.setTextViewText(R.id.tasks_row_priority, task.getPriority() + "");
 		rv.setTextColor(R.id.tasks_row_priority, mContext.getResources()
 				.getColor(R.color.Black));
-		GradientDrawable drawable=(GradientDrawable) mContext.getResources().getDrawable(R.drawable.priority_rectangle);
+		GradientDrawable drawable = (GradientDrawable) mContext.getResources()
+				.getDrawable(R.drawable.priority_rectangle);
 		drawable.setColor(Mirakel.PRIO_COLOR[task.getPriority() + 2]);
 		Bitmap bitmap = Bitmap.createBitmap(40, 40, Config.ARGB_8888);
-	    Canvas canvas = new Canvas(bitmap); 
-	    drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-	    drawable.draw(canvas);  
-	    rv.setImageViewBitmap(R.id.label_bg, bitmap);
+		Canvas canvas = new Canvas(bitmap);
+		drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+		drawable.draw(canvas);
+		rv.setImageViewBitmap(R.id.label_bg, bitmap);
 
 		if (listId <= 0) {
 			rv.setViewVisibility(R.id.tasks_row_list_name, View.VISIBLE);

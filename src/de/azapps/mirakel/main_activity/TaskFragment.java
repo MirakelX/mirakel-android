@@ -115,8 +115,9 @@ public class TaskFragment extends Fragment {
 		Task_name.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if(main.isTablet){
-					((EditText)main.findViewById(R.id.tasks_new)).setOnFocusChangeListener(null);
+				if (main.isTablet) {
+					((EditText) main.findViewById(R.id.tasks_new))
+							.setOnFocusChangeListener(null);
 				}
 				ViewSwitcher switcher = (ViewSwitcher) view
 						.findViewById(R.id.switch_name);
@@ -365,8 +366,8 @@ public class TaskFragment extends Fragment {
 
 	protected void set_prio(TextView Task_prio, Task task) {
 		Task_prio.setText("" + task.getPriority());
-		
-		GradientDrawable bg=(GradientDrawable) Task_prio.getBackground();
+
+		GradientDrawable bg = (GradientDrawable) Task_prio.getBackground();
 		bg.setColor(Mirakel.PRIO_COLOR[task.getPriority() + 2]);
 
 	}

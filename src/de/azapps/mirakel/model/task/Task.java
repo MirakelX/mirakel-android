@@ -230,22 +230,23 @@ public class Task extends TaskBase {
 		Task t = new Task(0, java.util.UUID.randomUUID().toString(),
 				ListMirakel.getList((int) list_id), name, content, done, due,
 				null, priority, now, now, Network.SYNC_STATE.ADD, "");
-		
+
 		try {
 			return t.create();
 		} catch (NoSuchListException e) {
 			Log.wtf(TAG, "List vanish");
-			Toast.makeText(context,R.string.no_lists,Toast.LENGTH_LONG ).show();
+			Toast.makeText(context, R.string.no_lists, Toast.LENGTH_LONG)
+					.show();
 			return null;
 		}
 	}
 
 	public Task create() throws NoSuchListException {
-		
+
 		ContentValues values = new ContentValues();
 		values.put("uuid", getUUID());
 		values.put("name", getName());
-		if(getList()==null)
+		if (getList() == null)
 			throw new NoSuchListException();
 		values.put("list_id", getList().getId());
 		values.put("content", getContent());

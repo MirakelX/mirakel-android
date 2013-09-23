@@ -91,7 +91,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			TW_ERRORS error = new TaskWarriorSync(mContext).sync(account);
 			switch (error) {
 			case NO_ERROR:
-				last_message=mContext.getText(R.string.finish_sync);
+				last_message = mContext.getText(R.string.finish_sync);
 				break;
 			case TRY_LATER:
 				last_message = mContext.getText(R.string.message_try_later);

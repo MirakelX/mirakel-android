@@ -47,7 +47,7 @@ public class MainWidgetSettingsActivity extends PreferenceActivity {
 			new PreferencesHelper(this).setFunctionsWidget();
 		} else {
 			// Display the fragment as the main content.
-			((FrameLayout)findViewById(android.R.id.content)).removeAllViews(); 
+			((FrameLayout) findViewById(android.R.id.content)).removeAllViews();
 			getFragmentManager()
 					.beginTransaction()
 					.replace(android.R.id.content,

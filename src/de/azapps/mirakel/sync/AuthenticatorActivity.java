@@ -309,14 +309,14 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 			 * SYNC Edit this if you want to implement a new Sync ––– Add your
 			 * own handle*Login()
 			 */
-			boolean successfull=true;
+			boolean successfull = true;
 			switch (syncType) {
 			case TASKWARRIOR:
 				Log.v(TAG, "Use Taskwarrior");
 				try {
 					finishTWLogin();
 				} catch (FileNotFoundException e) {
-					successfull=false;
+					successfull = false;
 				}
 				break;
 			case MIRAKEL:
@@ -328,7 +328,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 						R.string.wrong_sync_type, Toast.LENGTH_LONG).show();
 				return;
 			}
-			if(successfull){
+			if (successfull) {
 				final Intent intent = new Intent();
 				intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, mUsername);
 				intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE,
@@ -336,10 +336,11 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				setAccountAuthenticatorResult(intent.getExtras());
 				setResult(RESULT_OK, intent);
 				finish();
-			}else{
+			} else {
 				switch (syncType) {
 				case TASKWARRIOR:
-					((TextView)findViewById(R.id.message_bottom)).setText(R.string.wrong_config);
+					((TextView) findViewById(R.id.message_bottom))
+							.setText(R.string.wrong_config);
 					break;
 				default:
 					Log.wtf(TAG, "unkown error");
@@ -364,14 +365,15 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				Log.e(TAG, "cannot read file");
 				return;
 			}
-			try{
+			try {
 				Bundle b = new Bundle();
-				b.putString(SyncAdapter.BUNDLE_SERVER_TYPE, TaskWarriorSync.TYPE);
+				b.putString(SyncAdapter.BUNDLE_SERVER_TYPE,
+						TaskWarriorSync.TYPE);
 				String content = new String(buffer);
 				String[] t = content.split("org: ");
 				Log.d(TAG, "user: " + t[0].replace("username: ", ""));
-				final Account account = new Account(t[0].replace("username: ", "")
-						.replace("\n", ""), Mirakel.ACCOUNT_TYPE);
+				final Account account = new Account(t[0].replace("username: ",
+						"").replace("\n", ""), Mirakel.ACCOUNT_TYPE);
 				t = t[1].split("user key: ");
 				Log.d(TAG, "org: " + t[0].replace("\n", ""));
 				b.putString(SyncAdapter.BUNDLE_ORG, t[0].replace("\n", ""));
@@ -380,7 +382,8 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				String pwd = t[0].replace("\n", "");
 				t = t[1].split("Client.cert:\n");
 				Log.d(TAG, "server: " + t[0].replace("\n", ""));
-				b.putString(SyncAdapter.BUNDLE_SERVER_URL, t[0].replace("\n", ""));
+				b.putString(SyncAdapter.BUNDLE_SERVER_URL,
+						t[0].replace("\n", ""));
 				t = t[1].split("ca.cert:\n");
 				Log.d(TAG, "client: " + t[0].replace("\n", ""));
 				FileUtils.writeToFile(new File(getFilesDir().getParent()
@@ -389,11 +392,11 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				FileUtils.writeToFile(new File(getFilesDir().getParent()
 						+ "/ca.cert.pem"), t[1]);
 				mAccountManager.addAccountExplicitly(account, pwd, b);
-			}catch(ArrayIndexOutOfBoundsException e){
-				Log.e(TAG,"wrong Configfile");
+			} catch (ArrayIndexOutOfBoundsException e) {
+				Log.e(TAG, "wrong Configfile");
 				throw new FileNotFoundException();
 			}
-			
+
 		} else {
 			Log.e(TAG, "File not found");
 		}

@@ -22,6 +22,7 @@ public class SpecialList extends ListMirakel {
 	public boolean isSpecialList() {
 		return true;
 	}
+
 	public boolean isActive() {
 		return active;
 	}
@@ -59,9 +60,9 @@ public class SpecialList extends ListMirakel {
 
 	SpecialList(int id, String name, String whereQuery, boolean active,
 			ListMirakel listMirakel, Integer defaultDate, short sort_by,
-			int sync_state,int color) {
+			int sync_state, int color) {
 
-		super(-id, name, sort_by, "", "", sync_state, 0, 0,color);
+		super(-id, name, sort_by, "", "", sync_state, 0, 0, color);
 		this.active = active;
 		this.whereQuery = whereQuery;
 		this.defaultList = listMirakel;
@@ -242,13 +243,15 @@ public class SpecialList extends ListMirakel {
 	}
 
 	public static SpecialList firstSpecialSafe(Context ctx) {
-		SpecialList s=SpecialList.firstSpecial();
-		if(s==null){
-			s= SpecialList.newSpecialList(ctx.getString(R.string.list_all), "", true);
+		SpecialList s = SpecialList.firstSpecial();
+		if (s == null) {
+			s = SpecialList.newSpecialList(ctx.getString(R.string.list_all),
+					"", true);
 			s.save(false);
 		}
 		return s;
 	}
+
 	/**
 	 * Create a List from a Cursor
 	 * 
@@ -264,7 +267,8 @@ public class SpecialList extends ListMirakel {
 				cursor.getString(i++), cursor.getString(i++),
 				cursor.getInt(i++) == 1,
 				ListMirakel.getList(cursor.getInt(i++)), defDate,
-				(short) cursor.getInt(++i), cursor.getInt(++i),cursor.getInt(++i));
+				(short) cursor.getInt(++i), cursor.getInt(++i),
+				cursor.getInt(++i));
 		return slist;
 	}
 
