@@ -30,12 +30,14 @@ class ListBase {
 	private String updated_at;
 	private int syncState;
 	private int lft, rgt;
+	private String color;
+	
 
 	ListBase() {
 	}
 
 	ListBase(int id, String name, short sort_by, String created_at,
-			String updated_at, int sync_state, int lft, int rgt) {
+			String updated_at, int sync_state, int lft, int rgt,String color) {
 		this.setId(id);
 		this.setCreatedAt(created_at);
 		this.setName(name);
@@ -44,6 +46,7 @@ class ListBase {
 		this.setSyncState(sync_state);
 		this.setLft(lft);
 		this.setRgt(rgt);
+		this.setColor(color);
 	}
 
 	ListBase(int id, String name) {
@@ -106,6 +109,12 @@ class ListBase {
 	public void setRgt(int rgt) {
 		this.rgt = rgt;
 	}
+	public String getColor() {
+		return color;
+	}
+	public void setColor(String color) {
+		this.color=color;
+	}
 
 	@Override
 	public String toString() {
@@ -122,6 +131,7 @@ class ListBase {
 		cv.put("sync_state", syncState);
 		cv.put("lft", lft);
 		cv.put("rgt", rgt);
+		cv.put("color", color);
 		return cv;
 	}
 

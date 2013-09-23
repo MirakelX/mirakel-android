@@ -56,9 +56,9 @@ public class SpecialList extends ListMirakel {
 
 	SpecialList(int id, String name, String whereQuery, boolean active,
 			ListMirakel listMirakel, Integer defaultDate, short sort_by,
-			int sync_state) {
+			int sync_state,String color) {
 
-		super(-id, name, sort_by, "", "", sync_state, 0, 0);
+		super(-id, name, sort_by, "", "", sync_state, 0, 0,color);
 		this.active = active;
 		this.whereQuery = whereQuery;
 		this.defaultList = listMirakel;
@@ -90,7 +90,7 @@ public class SpecialList extends ListMirakel {
 	private static SQLiteDatabase database;
 	private static DatabaseHelper dbHelper;
 	private static final String[] allColumns = { "_id", "name", "whereQuery",
-			"active", "def_list", "def_date", "sort_by", "sync_state" };
+			"active", "def_list", "def_date", "sort_by", "sync_state", "color" };
 
 	/**
 	 * Initialize the Database and the preferences
@@ -260,7 +260,7 @@ public class SpecialList extends ListMirakel {
 				cursor.getString(i++), cursor.getString(i++),
 				cursor.getInt(i++) == 1,
 				ListMirakel.getList(cursor.getInt(i++)), defDate,
-				(short) cursor.getInt(++i), cursor.getInt(++i));
+				(short) cursor.getInt(++i), cursor.getInt(++i),cursor.getString(++i));
 		return slist;
 	}
 

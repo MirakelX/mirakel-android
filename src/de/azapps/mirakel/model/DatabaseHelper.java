@@ -37,7 +37,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String TAG = "DatabaseHelper";
 	private Context context;
-	public static final int DATABASE_VERSION = 15;
+	public static final int DATABASE_VERSION = 16;
 
 	public DatabaseHelper(Context ctx) {
 		super(ctx, "mirakel.db", null, DATABASE_VERSION);
@@ -185,6 +185,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ "\",0);"
 					+ "INSERT INTO semantic_conditions (condition,due) VALUES (\""
 					+ context.getString(R.string.tomorrow) + "\",1);");
+		case 15:
+			db.execSQL("Alter Table "
+					+ ListMirakel.TABLE
+					+ " add column color TEXT;");
+			db.execSQL("Alter Table "
+					+ SpecialList.TABLE
+					+ " add column color TEXT;");
 		}
 	}
 

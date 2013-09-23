@@ -62,8 +62,8 @@ public class ListMirakel extends ListBase {
 
 	protected ListMirakel(int id, String name, short sort_by,
 			String created_at, String updated_at, int sync_state, int lft,
-			int rgt) {
-		super(id, name, sort_by, created_at, updated_at, sync_state, lft, rgt);
+			int rgt,String color) {
+		super(id, name, sort_by, created_at, updated_at, sync_state, lft, rgt,color);
 	}
 
 	ListMirakel(int id, String name) {
@@ -200,7 +200,7 @@ public class ListMirakel extends ListBase {
 	private static SQLiteDatabase database;
 	private static DatabaseHelper dbHelper;
 	private static final String[] allColumns = { "_id", "name", "sort_by",
-			"created_at", "updated_at", "sync_state", "lft", "rgt" };
+			"created_at", "updated_at", "sync_state", "lft", "rgt", "color" };
 	@SuppressWarnings("unused")
 	private static final String TAG = "ListMirakel";
 	private static Context context;
@@ -324,7 +324,7 @@ public class ListMirakel extends ListBase {
 		ListMirakel list = new ListMirakel(id, cursor.getString(i++),
 				cursor.getShort(i++), cursor.getString(i++),
 				cursor.getString(i++), cursor.getInt(i++), cursor.getInt(i++),
-				cursor.getInt(i++));
+				cursor.getInt(i++),cursor.getString(i++));
 		return list;
 	}
 
