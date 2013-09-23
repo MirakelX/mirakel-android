@@ -19,17 +19,9 @@
 -->
 <resources>
 
-    <color name="Grey">#7F7F7F</color>
-    <color name="Black">#000000</color>
-    <color name="Red">#FF0000</color>
-    <color name="Orange">#EF0381</color>
-    <color name="Yellow">#FFA500</color>
-    <color name="Green">#00c400</color>
-    <color name="selected_color">#7CCFEE</color>
-    <color name="pressed_color">#6633b5e5</color>
-    <color name="White">#FFFFFF</color>
-    <color name="background_dark_transparent">#80000000</color>
-    <color name="highlighted_text_holo_dark">#6633b5e5</color>
-    <color name="highlighted_text_holo_light">#6633b5e5</color>
+    <plurals name="selected_tasks">
+        <item quantity="one">One Task</item>
+        <item quantity="other">%d Tasks</item>
+    </plurals>
 
 </resources>
