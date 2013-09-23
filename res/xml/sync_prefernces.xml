@@ -23,7 +23,6 @@
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="syncUse"
-        android:summary="@string/sync_use_summary"
         android:title="@string/sync_use" />
 
     <EditTextPreference

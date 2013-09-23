@@ -42,7 +42,6 @@
             android:targetPackage="de.azapps.mirakelandroid" />
     </Preference>
     <Preference
-        android:summary="@string/special_lists_click_summary"
         android:title="@string/special_lists_click" >
         <intent
             android:action="de.azapps.mirakel.preferences.SPECIAL_LISTS"
