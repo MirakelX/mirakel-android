@@ -141,4 +141,12 @@
     <string name="menu_delete">Delete</string>
     <string name="howto_setup_server">How To setup Server</string>
     <string name="special_lists_title">Special Lists</string>
+    
+    <!-- Colors -->
+    <string name="preferences_colorize">Colors</string>
+    <string name="preferences_colorize_tasks">Colorize Tasks</string>
+    <string name="preferences_colorize_tasks_everywhere">Colorize Tasks everywhere</string>
+    <string name="preferences_colorize_tasks_everywhere_summary">…or only in the Special lists?</string>
+    
+    
 </resources>

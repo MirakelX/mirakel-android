@@ -49,4 +49,17 @@
         android:summary="@string/semantic_new_task_summary"
         android:title="@string/semantic_new_task" />
 
+    <PreferenceCategory android:title="@string/preferences_colorize" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="colorize_tasks"
+            android:title="@string/preferences_colorize_tasks" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:dependency="colorize_tasks"
+            android:key="colorize_tasks_everywhere"
+            android:summary="@string/preferences_colorize_tasks_everywhere_summary"
+            android:title="@string/preferences_colorize_tasks_everywhere" />
+    </PreferenceCategory>
+
 </PreferenceScreen>

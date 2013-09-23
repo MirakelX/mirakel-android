@@ -382,7 +382,7 @@ public class Helpers {
 		ShapeDrawable mDrawable = new ShapeDrawable(new RectShape());
 		mDrawable.getPaint().setShader(
 				new LinearGradient(0, 0, w / 4, 0, color, Color
-						.parseColor("#FFFFFFFF"), Shader.TileMode.CLAMP));
+						.parseColor("#00FFFFFF"), Shader.TileMode.CLAMP));
 		if (android.os.Build.VERSION.SDK_INT >= 16)
 			row.setBackground(mDrawable);
 		else

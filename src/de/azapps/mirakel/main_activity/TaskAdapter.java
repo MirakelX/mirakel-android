@@ -214,8 +214,13 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 			holder.taskRowDue.setVisibility(View.GONE);
 		}
 		viewsForTasks.put(task.getId(), row);
-		if (main.getCurrentList().isSpecialList())
-			Helpers.setListColorBackground(task.getList(), row);
+		if (main.getPreferences().getBoolean("colorize_tasks", true)) {
+			if (main.getPreferences().getBoolean("colorize_tasks_everywhere",
+					false)
+					|| main.getCurrentList().isSpecialList()) {
+				Helpers.setListColorBackground(task.getList(), row);
+			}
+		}
 		return row;
 	}
 

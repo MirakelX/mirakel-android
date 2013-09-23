@@ -1009,4 +1009,7 @@ public class MainActivity extends ActionBarActivity implements
 	public int getBaseList() {
 		return baseList;
 	}
+	public SharedPreferences getPreferences() {
+		return preferences;
+	}
 }
