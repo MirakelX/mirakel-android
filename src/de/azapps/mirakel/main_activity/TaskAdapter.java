@@ -43,7 +43,7 @@ import de.azapps.mirakelandroid.R;
 
 public class TaskAdapter extends ArrayAdapter<Task> {
 	private static final String TAG = "TaskAdapter";
-	Context context;
+	MainActivity main;
 	int layoutResourceId, listId;
 	List<Task> data = null;
 	OnClickListener clickCheckbox;
@@ -67,14 +67,14 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		return ret;
 	}
 
-	public TaskAdapter(Context context, int layoutResourceId, List<Task> data,
+	public TaskAdapter(MainActivity context, int layoutResourceId, List<Task> data,
 			OnClickListener clickCheckbox, OnClickListener click_prio,
 			int listId, boolean darkTheme) {
 		super(context, layoutResourceId, data);
 		Log.d(TAG, "created");
 		this.layoutResourceId = layoutResourceId;
 		this.data = data;
-		this.context = context;
+		this.main = context;
 		this.clickCheckbox = clickCheckbox;
 		this.clickPrio = click_prio;
 		this.listId = listId;
@@ -131,7 +131,7 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 
 		if (row == null) {
 			// Initialize the View
-			LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+			LayoutInflater inflater = ((Activity) main).getLayoutInflater();
 			row = inflater.inflate(layoutResourceId, parent, false);
 			holder = new TaskHolder();
 			holder.taskRowDone = (CheckBox) row
@@ -153,11 +153,11 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 			holder = (TaskHolder) row.getTag();
 		}
 		if (selected.get(position)) {
-			row.setBackgroundColor(context.getResources().getColor(
+			row.setBackgroundColor(main.getResources().getColor(
 					darkTheme ? R.color.highlighted_text_holo_dark
 							: R.color.highlighted_text_holo_light));
 		} else {
-			row.setBackgroundColor(context.getResources().getColor(
+			row.setBackgroundColor(main.getResources().getColor(
 					android.R.color.transparent));
 		}
 		if (position >= data.size())
@@ -208,13 +208,15 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		if (task.getDue() != null) {
 			holder.taskRowDue.setVisibility(View.VISIBLE);
 			holder.taskRowDue.setText(Helpers.formatDate(task.getDue(),
-					context.getString(R.string.dateFormat)));
+					main.getString(R.string.dateFormat)));
 			holder.taskRowDue.setTextColor(row.getResources().getColor(
 					Helpers.getTaskDueColor(task.getDue(), task.isDone())));
 		} else {
 			holder.taskRowDue.setVisibility(View.GONE);
 		}
 		viewsForTasks.put(task.getId(), row);
+		if(main.getCurrentList().isSpecialList())
+			Helpers.setListColorBackground(task.getList(), row);
 		return row;
 	}
 

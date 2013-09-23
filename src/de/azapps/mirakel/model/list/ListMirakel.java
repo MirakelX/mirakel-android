@@ -37,6 +37,7 @@ import com.google.gson.JsonObject;
 
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.Helpers;
+import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.Network;
@@ -50,6 +51,10 @@ public class ListMirakel extends ListBase {
 	public static final short SORT_BY_OPT = 0, SORT_BY_DUE = 1,
 			SORT_BY_PRIO = 2, SORT_BY_ID = 3;
 	public static final String TABLE = "lists";
+	
+	public boolean isSpecialList() {
+		return false;
+	}
 
 	// private static final String TAG = "ListMirakel";
 
@@ -62,7 +67,7 @@ public class ListMirakel extends ListBase {
 
 	protected ListMirakel(int id, String name, short sort_by,
 			String created_at, String updated_at, int sync_state, int lft,
-			int rgt,String color) {
+			int rgt,int color) {
 		super(id, name, sort_by, created_at, updated_at, sync_state, lft, rgt,color);
 	}
 
@@ -324,7 +329,7 @@ public class ListMirakel extends ListBase {
 		ListMirakel list = new ListMirakel(id, cursor.getString(i++),
 				cursor.getShort(i++), cursor.getString(i++),
 				cursor.getString(i++), cursor.getInt(i++), cursor.getInt(i++),
-				cursor.getInt(i++),cursor.getString(i++));
+				cursor.getInt(i++),cursor.getInt(i++));
 		return list;
 	}
 

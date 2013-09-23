@@ -19,6 +19,9 @@ public class SpecialList extends ListMirakel {
 	private ListMirakel defaultList;
 	private Integer defaultDate;
 
+	public boolean isSpecialList() {
+		return true;
+	}
 	public boolean isActive() {
 		return active;
 	}
@@ -56,7 +59,7 @@ public class SpecialList extends ListMirakel {
 
 	SpecialList(int id, String name, String whereQuery, boolean active,
 			ListMirakel listMirakel, Integer defaultDate, short sort_by,
-			int sync_state,String color) {
+			int sync_state,int color) {
 
 		super(-id, name, sort_by, "", "", sync_state, 0, 0,color);
 		this.active = active;
@@ -169,6 +172,7 @@ public class SpecialList extends ListMirakel {
 		cv.put("whereQuery", getWhereQuery());
 		cv.put("def_list", defaultList == null ? null : defaultList.getId());
 		cv.put("def_date", defaultDate);
+		cv.put("color", getColor());
 		return cv;
 	}
 
@@ -260,7 +264,7 @@ public class SpecialList extends ListMirakel {
 				cursor.getString(i++), cursor.getString(i++),
 				cursor.getInt(i++) == 1,
 				ListMirakel.getList(cursor.getInt(i++)), defDate,
-				(short) cursor.getInt(++i), cursor.getInt(++i),cursor.getString(++i));
+				(short) cursor.getInt(++i), cursor.getInt(++i),cursor.getInt(++i));
 		return slist;
 	}
 

@@ -7,13 +7,20 @@ import java.util.Locale;
 
 import org.joda.time.LocalDate;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RectShape;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
@@ -254,7 +261,7 @@ public class Helpers {
 	}
 
 	public static void updateLog(ListMirakel listMirakel, Context ctx) {
-		if(listMirakel!=null)
+		if (listMirakel != null)
 			updateLog(LIST, listMirakel.toJson(), ctx);
 
 	}
@@ -277,7 +284,7 @@ public class Helpers {
 	}
 
 	public static void updateLog(Task task, Context ctx) {
-		if(task!=null)
+		if (task != null)
 			updateLog(TASK, task.toJson(), ctx);
 
 	}
@@ -362,6 +369,24 @@ public class Helpers {
 
 	public static void logCreate(ListMirakel newList, Context ctx) {
 		updateLog(LIST, newList.getId() + "", ctx);
+	}
+
+	@SuppressWarnings("deprecation")
+	@SuppressLint("NewApi")
+	public static void setListColorBackground(ListMirakel list, View row) {
+
+		int w = row.getWidth();
+		int color = list.getColor();
+		if (color != 0)
+			color ^= 0xCC000000;
+		ShapeDrawable mDrawable = new ShapeDrawable(new RectShape());
+		mDrawable.getPaint().setShader(
+				new LinearGradient(0, 0, w / 4, 0, color, Color
+						.parseColor("#FFFFFFFF"), Shader.TileMode.CLAMP));
+		if (android.os.Build.VERSION.SDK_INT >= 16)
+			row.setBackground(mDrawable);
+		else
+			row.setBackgroundDrawable(mDrawable);
 	}
 
 }

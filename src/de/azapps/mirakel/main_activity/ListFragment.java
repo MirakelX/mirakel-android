@@ -205,16 +205,28 @@ public class ListFragment extends Fragment {
 
 	void editColor(final ListMirakel list) {
 		final ColorPicker cp=new ColorPicker(main);
+		cp.setColor(list.getColor());
+		Log.e("Blubb","Color: "+list.getColor());
 
 		new AlertDialog.Builder(main)
-				.setTitle(main.getString(R.string.list_change_name_title))
-				.setMessage(main.getString(R.string.list_change_name_cont))
-				.setNegativeButton(android.R.string.cancel, new OnClickListener() {
+				.setTitle(main.getString(R.string.list_change_color))
+				.setPositiveButton(R.string.set_color, new OnClickListener() {
 					
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						// TODO Auto-generated method stub
+						list.setColor(cp.getColor());
+						list.save();
+						main.getListFragment().update();
 						
+					}
+				})
+				.setNegativeButton(R.string.unset_color, new OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						list.setColor(0);
+						list.save();
+						main.getListFragment().update();
 					}
 				})
 				.setView(cp).show();

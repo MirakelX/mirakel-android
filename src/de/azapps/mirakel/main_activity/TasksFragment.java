@@ -420,7 +420,7 @@ public class TasksFragment extends Fragment {
 		main.showMessageFromSync();
 
 		final ListView listView = (ListView) view.findViewById(R.id.tasks_list);
-		AsyncTask<Void, Void, TaskAdapter> task = new AsyncTask<Void, Void, TaskAdapter>() {
+		AsyncTask<Void, Void, TaskAdapter> asyncTask = new AsyncTask<Void, Void, TaskAdapter>() {
 			@Override
 			protected TaskAdapter doInBackground(Void... params) {
 				adapter = new TaskAdapter(main, R.layout.tasks_row,
@@ -461,7 +461,7 @@ public class TasksFragment extends Fragment {
 			}
 		};
 
-		task.execute();
+		asyncTask.execute();
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
 			listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 				@Override

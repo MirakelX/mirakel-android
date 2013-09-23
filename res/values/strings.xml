@@ -231,5 +231,10 @@ Device: %3$s\n]]>
     
     <!-- Sync -->
     <string name="message_from_server">The server want to say you: %s</string>
+    
+    <!-- Colors -->
+    <string name="list_change_color">Change Color</string>
+    <string name="set_color">Set Color</string>
+    <string name="unset_color">No Color</string>
 
 </resources>

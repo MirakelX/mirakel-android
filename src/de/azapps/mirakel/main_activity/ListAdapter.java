@@ -25,11 +25,6 @@ import java.util.Map;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.LinearGradient;
-import android.graphics.Shader;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.RectShape;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +32,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakelandroid.R;
 
@@ -69,8 +65,6 @@ public class ListAdapter extends ArrayAdapter<ListMirakel> {
 		data.addAll(lists);
 	}
 
-	@SuppressWarnings("deprecation")
-	@SuppressLint("NewApi")
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View row = convertView;
@@ -100,17 +94,7 @@ public class ListAdapter extends ArrayAdapter<ListMirakel> {
 		holder.listRowName.setTag(list);
 		holder.listRowTaskNumber.setText("" + list.countTasks());
 		viewsForLists.put(list.getId(), row);
-
-		int w = row.getWidth();
-		ShapeDrawable mDrawable = new ShapeDrawable(new RectShape());
-		mDrawable.getPaint().setShader(
-				new LinearGradient(0, 0, w / 4, 0, Color
-						.parseColor("#330000FF"),
-						Color.parseColor("#FFFFFFFF"), Shader.TileMode.CLAMP));
-		if (android.os.Build.VERSION.SDK_INT >= 16)
-			row.setBackground(mDrawable);
-		else
-			row.setBackgroundDrawable(mDrawable);
+		Helpers.setListColorBackground(list, row);
 
 		return row;
 	}

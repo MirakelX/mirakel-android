@@ -188,10 +188,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		case 15:
 			db.execSQL("Alter Table "
 					+ ListMirakel.TABLE
-					+ " add column color TEXT;");
+					+ " add column color INTEGER;");
 			db.execSQL("Alter Table "
 					+ SpecialList.TABLE
-					+ " add column color TEXT;");
+					+ " add column color INTEGER;");
 		}
 	}
 
