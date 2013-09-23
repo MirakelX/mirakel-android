@@ -151,6 +151,7 @@ Device: %3$s\n]]>
     <item>Löschen</item>
   </string-array>
   <string-array name="list_actions_items">
+      <item>Farbe ändern</item>
     <item>Umbenennen</item>
     <item>Löschen</item>
   </string-array>

@@ -24,6 +24,7 @@ import java.util.List;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -34,6 +35,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+
+import com.larswerkman.colorpicker.ColorPicker;
+
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakelandroid.R;
@@ -47,7 +51,7 @@ public class ListFragment extends Fragment {
 	protected boolean EditName;
 	private boolean created = false;
 	private DragNDropListView listView;
-	private static final int LIST_RENAME = 0, LIST_DESTROY = 1;
+	private static final int LIST_COLOR=0, LIST_RENAME = 1, LIST_DESTROY = 2;
 	protected static final String TAG = "ListFragment";
 	private boolean enableDrag;
 
@@ -173,6 +177,9 @@ public class ListFragment extends Fragment {
 							public void onClick(DialogInterface dialog, int item) {
 								ListMirakel list = values.get((int) id);
 								switch (item) {
+								case LIST_COLOR:
+									editColor(list);
+									break;
 								case LIST_RENAME:
 									editList(list);
 									break;
@@ -196,6 +203,22 @@ public class ListFragment extends Fragment {
 	}
 
 
+	void editColor(final ListMirakel list) {
+		final ColorPicker cp=new ColorPicker(main);
+
+		new AlertDialog.Builder(main)
+				.setTitle(main.getString(R.string.list_change_name_title))
+				.setMessage(main.getString(R.string.list_change_name_cont))
+				.setNegativeButton(android.R.string.cancel, new OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						
+					}
+				})
+				.setView(cp).show();
+	}
 	/**
 	 * Edit the name of the List
 	 * 
