@@ -218,7 +218,7 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 			if (main.getPreferences().getBoolean("colorize_tasks_everywhere",
 					false)
 					|| main.getCurrentList().isSpecialList()) {
-				Helpers.setListColorBackground(task.getList(), row);
+				Helpers.setListColorBackground(task.getList(), row, darkTheme);
 			}
 		}
 		return row;

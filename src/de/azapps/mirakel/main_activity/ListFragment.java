@@ -21,8 +21,10 @@ package de.azapps.mirakel.main_activity;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
@@ -35,9 +37,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
-
 import com.larswerkman.colorpicker.ColorPicker;
-
+import com.larswerkman.colorpicker.SVBar;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakelandroid.R;
@@ -207,13 +208,18 @@ public class ListFragment extends Fragment {
 		return adapter;
 	}
 
+	@SuppressLint("NewApi")
 	void editColor(final ListMirakel list) {
-		final ColorPicker cp = new ColorPicker(main);
+		final View v=((LayoutInflater) main.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.color_picker, null);
+		final ColorPicker cp=((ColorPicker)v.findViewById(R.id.color_picker));
 		cp.setColor(list.getColor());
 		cp.setOldCenterColor(list.getColor());
-		new AlertDialog.Builder(main)
-				.setTitle(main.getString(R.string.list_change_color))
-				.setPositiveButton(R.string.set_color, new OnClickListener() {
+		final SVBar op =((SVBar)v.findViewById(R.id.svbar_color_picker));
+		cp.addSVBar(op);
+		new Builder(main,main.darkTheme?R.style.AppBaseThemeDARK:R.style.AppBaseTheme)
+		.setView(v)
+		.setTitle(main.getString(R.string.list_change_color))
+		.setPositiveButton(R.string.set_color, new OnClickListener() {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
@@ -223,15 +229,15 @@ public class ListFragment extends Fragment {
 
 					}
 				})
-				.setNegativeButton(R.string.unset_color, new OnClickListener() {
+		.setNegativeButton(R.string.unset_color, new OnClickListener() {
 
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						list.setColor(0);
-						list.save();
-						main.getListFragment().update();
-					}
-				}).setView(cp).show();
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				list.setColor(0);
+				list.save();
+				main.getListFragment().update();
+			}
+		}).show();
 	}
 
 	/**

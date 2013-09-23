@@ -25,6 +25,7 @@ import java.util.Map;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +46,7 @@ public class ListAdapter extends ArrayAdapter<ListMirakel> {
 	private int layoutResourceId;
 	private List<ListMirakel> data = null;
 	private Map<Integer, View> viewsForLists = new HashMap<Integer, View>();
+	private boolean darkTheme;
 
 	public View getViewForList(ListMirakel list) {
 		return viewsForLists.get(list.getId());
@@ -57,6 +59,8 @@ public class ListAdapter extends ArrayAdapter<ListMirakel> {
 		this.data = data;
 		this.context = context;
 		this.enableDrop = enable;
+		this.darkTheme = PreferenceManager.getDefaultSharedPreferences(context)
+				.getBoolean("DarkTheme", false);
 	}
 
 	void changeData(List<ListMirakel> lists) {
@@ -94,7 +98,7 @@ public class ListAdapter extends ArrayAdapter<ListMirakel> {
 		holder.listRowName.setTag(list);
 		holder.listRowTaskNumber.setText("" + list.countTasks());
 		viewsForLists.put(list.getId(), row);
-		Helpers.setListColorBackground(list, row);
+		Helpers.setListColorBackground(list, row, darkTheme);
 
 		return row;
 	}

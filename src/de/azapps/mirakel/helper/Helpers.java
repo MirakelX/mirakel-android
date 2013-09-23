@@ -373,12 +373,17 @@ public class Helpers {
 
 	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
-	public static void setListColorBackground(ListMirakel list, View row) {
+	public static void setListColorBackground(ListMirakel list, View row,boolean darkTheme) {
 
 		int w = row.getWidth();
 		int color = list.getColor();
-		if (color != 0)
-			color ^= 0xCC000000;
+		if (color != 0){
+			if(darkTheme){
+				color ^= 0x66000000;
+			}else{
+				color ^= 0xCC000000;
+			}
+		}
 		ShapeDrawable mDrawable = new ShapeDrawable(new RectShape());
 		mDrawable.getPaint().setShader(
 				new LinearGradient(0, 0, w / 4, 0, color, Color

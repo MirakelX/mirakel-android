@@ -109,7 +109,7 @@ public class MainActivity extends ActionBarActivity implements
 	public SharedPreferences preferences;
 
 	protected int currentPosition = TASKS_FRAGMENT;
-	private boolean darkTheme;
+	public boolean darkTheme;
 	private boolean isResumend;
 	private Intent startIntent;
 
