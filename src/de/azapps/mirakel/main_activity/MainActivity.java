@@ -637,15 +637,28 @@ public class MainActivity extends ActionBarActivity implements
 	 * @param task
 	 */
 	public void handleDestroyTask(final Task task) {
+		List<Task> t = new ArrayList<Task>();
+		t.add(task);
+		handleDestroyTask(t);
+	}
+
+	public void handleDestroyTask(final List<Task> tasks) {
+
 		final MainActivity main = this;
+		String names = tasks.get(0).getName();
+		for (int i = 1; i < tasks.size(); i++) {
+			names += ", " + tasks.get(i).getName();
+		}
 		new AlertDialog.Builder(this)
-				.setTitle(task.getName())
-				.setMessage(this.getString(R.string.task_delete_content))
+				.setTitle(this.getString(R.string.task_delete))
+				.setMessage(this.getString(R.string.task_delete_content, names))
 				.setPositiveButton(this.getString(android.R.string.yes),
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int which) {
-								task.delete();
+								for (Task t : tasks) {
+									t.delete();
+								}
 								setCurrentList(currentList);
 								ReminderAlarm.updateAlarms(main);
 							}
@@ -662,9 +675,15 @@ public class MainActivity extends ActionBarActivity implements
 	/**
 	 * Handle the actions after clicking on a move task button
 	 * 
-	 * @param task
+	 * @param tasks
 	 */
 	public void handleMoveTask(final Task task) {
+		List<Task> t = new ArrayList<Task>();
+		t.add(task);
+		handleMoveTask(t);
+	}
+
+	public void handleMoveTask(final List<Task> tasks) {
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(R.string.dialog_move);
@@ -674,7 +693,8 @@ public class MainActivity extends ActionBarActivity implements
 		for (ListMirakel list : lists) {
 			if (list.getId() > 0) {
 				items.add(list.getName());
-				if (task.getList().getId() == list.getId()) {
+				if (tasks.get(0).getList().getId() == list.getId()
+						&& tasks.size() == 1) {
 					currentItem = i;
 				}
 				list_ids.add(list.getId());
@@ -686,8 +706,10 @@ public class MainActivity extends ActionBarActivity implements
 				items.toArray(new CharSequence[items.size()]), currentItem,
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int item) {
-						task.setList(ListMirakel.getList(list_ids.get(item)));
-						safeSafeTask(task);
+						for (Task t : tasks) {
+							t.setList(ListMirakel.getList(list_ids.get(item)));
+							safeSafeTask(t);
+						}
 						/*
 						 * There are 3 possibilities how to handle the post-move
 						 * of a task:
@@ -731,7 +753,6 @@ public class MainActivity extends ActionBarActivity implements
 		List<Fragment> fragments = new Vector<Fragment>();
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-
 		mDrawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
 		mDrawerLayout, /* DrawerLayout object */
 		R.drawable.ic_drawer, /* nav drawer icon to replace 'Up' caret */
@@ -743,7 +764,7 @@ public class MainActivity extends ActionBarActivity implements
 			}
 
 			public void onDrawerOpened(View drawerView) {
-				loadMenu(-1,false);
+				loadMenu(-1, false);
 			}
 		};
 
@@ -794,6 +815,9 @@ public class MainActivity extends ActionBarActivity implements
 	private View oldClickedTask = null;
 
 	void highlightCurrentTask(Task currentTask) {
+	}
+
+	void highlightCurrentTask(Task currentTask, boolean multiselect) {
 		if (taskFragment == null || tasksFragment.getAdapter() == null
 				|| currentTask == null)
 			return;
@@ -805,13 +829,14 @@ public class MainActivity extends ActionBarActivity implements
 			Log.v(TAG, "current view is null");
 		}
 
-		if (currentView != null && highlightSelected) {
+		if (currentView != null && highlightSelected && !multiselect) {
 			if (oldClickedTask != null) {
 				oldClickedTask.setSelected(false);
 				oldClickedTask.setBackgroundColor(0x00000000);
 			}
 			currentView.setBackgroundColor(getResources().getColor(
-					R.color.pressed_color));
+					darkTheme ? R.color.highlighted_text_holo_dark
+							: R.color.highlighted_text_holo_light));
 			oldClickedTask = currentView;
 		}
 	}

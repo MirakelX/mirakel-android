@@ -53,7 +53,8 @@
     <string name="task_no_content">Add a Note</string>
     <string name="task_change_prio_title">Change Priority</string>
     <string name="task_change_prio_cont">Priority</string>
-    <string name="task_delete_content">Are you sure you want to delete this Task?</string>
+    <string name="task_delete_content">Are you sure you want to delete %s?</string>
+    <string name="task_delete">Delete Tasks?</string>
     <string name="task_menu_sorting">Sort tasks</string>
     <string name="task_sorting_title">Sort tasks by</string>
     <string name="task_empty">No task selected…</string>
@@ -61,6 +62,7 @@
     <string name="set_time">Set Time</string>
     <string name="task_set_reminder">Set Reminder</string>
     <string name="action_undo">Undo the last Change</string>
+    <string name="selected_tasks">%s Task</string>
 
     <string-array name="task_sorting_items">
         <item>Default</item>
