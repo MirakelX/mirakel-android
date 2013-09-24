@@ -18,8 +18,6 @@
  ******************************************************************************/
 package de.azapps.mirakel.main_activity;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -34,10 +32,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -330,7 +325,7 @@ public class MainActivity extends ActionBarActivity implements
 			break;
 		case TASK_FRAGMENT:
 			newmenu = R.menu.activity_task;
-			taskFragment.update();
+			taskFragment.update(currentTask);
 			getSupportActionBar().setTitle(currentTask.getName());
 			break;
 		default:
@@ -411,6 +406,8 @@ public class MainActivity extends ActionBarActivity implements
 				if (FileMirakel.newFile(currentTask, file_path) == null) {
 					Toast.makeText(this, getString(R.string.file_vanished),
 							Toast.LENGTH_SHORT).show();
+				}else{
+					taskFragment.adapter.setData(TaskFragment.generateData(currentTask),currentTask);
 				}
 
 				break;
@@ -461,7 +458,6 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
-		taskFragment.setActivity(this);
 		listFragment.setActivity(this);
 		tasksFragment.setActivity(this);
 		mDrawerToggle.onConfigurationChanged(newConfig);
@@ -813,7 +809,6 @@ public class MainActivity extends ActionBarActivity implements
 		fragments.add(tasksFragment);
 		if (!isTablet) {
 			taskFragment = new TaskFragment();
-			taskFragment.setActivity(this);
 			fragments.add(taskFragment);
 		}
 		this.mPagerAdapter = new PagerAdapter(
@@ -879,7 +874,7 @@ public class MainActivity extends ActionBarActivity implements
 		highlightCurrentTask(currentTask);
 
 		if (taskFragment != null) {
-			taskFragment.update();
+			taskFragment.update(currentTask);
 			boolean smooth = mViewPager.getCurrentItem() != TASK_FRAGMENT;
 			if (!switchFragment)
 				return;
@@ -1003,7 +998,7 @@ public class MainActivity extends ActionBarActivity implements
 	void updatesForTask(Task task) {
 		if (task.getId() == currentTask.getId()) {
 			currentTask = task;
-			taskFragment.update();
+			taskFragment.update(task);
 		}
 		tasksFragment.updateList(false);
 		listFragment.update();
