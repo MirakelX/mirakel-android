@@ -46,6 +46,7 @@ import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
+import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.sync.Network;
@@ -158,6 +159,10 @@ public class Task extends TaskBase {
 		json += "\"updated_at\":\""
 				+ DateTimeHelper.formatDateTime(getUpdated_at()) + "\"}";
 		return json;
+	}
+
+	public List<FileMirakel> getFiles() {
+		return FileMirakel.getForTask(this);
 	}
 
 	// Static Methods

@@ -27,6 +27,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.main_activity.MainActivity;
+import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
@@ -37,7 +38,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String TAG = "DatabaseHelper";
 	private Context context;
-	public static final int DATABASE_VERSION = 16;
+	public static final int DATABASE_VERSION = 17;
 
 	public DatabaseHelper(Context ctx) {
 		super(ctx, "mirakel.db", null, DATABASE_VERSION);
@@ -190,6 +191,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ " add column color INTEGER;");
 			db.execSQL("Alter Table " + SpecialList.TABLE
 					+ " add column color INTEGER;");
+		case 16:
+			db.execSQL("CREATE TABLE " + FileMirakel.TABLE + " ("
+					+ "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
+					+ "task_id INTEGER NOT NULL DEFAULT 0, "
+					+ "name TEXT, "
+					+ "path TEXT"
+					+ ")");
 		}
 	}
 

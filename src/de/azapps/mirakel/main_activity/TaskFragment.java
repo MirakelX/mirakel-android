@@ -21,6 +21,7 @@ package de.azapps.mirakel.main_activity;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
 
 import android.annotation.TargetApi;
@@ -58,6 +59,7 @@ import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
+import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakelandroid.R;
@@ -359,6 +361,11 @@ public class TaskFragment extends Fragment {
 
 			}
 		});
+
+		List<FileMirakel> files = task.getFiles();
+		for (FileMirakel file : files) {
+			Log.v(TAG, "file:" + file.toString());
+		}
 
 	}
 
