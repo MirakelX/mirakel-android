@@ -34,6 +34,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.util.Linkify;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -309,8 +310,8 @@ public class TaskFragment extends Fragment {
 
 		// Task content
 		Task_content = (TextView) view.findViewById(R.id.task_content);
-		Task_content.setText(task.getContent().length() == 0 ? this
-				.getString(R.string.task_no_content) : task.getContent());
+		setTaskContent();
+
 		Task_content.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -330,10 +331,7 @@ public class TaskFragment extends Fragment {
 										task.setContent(editTxt.getText()
 												.toString());
 										main.saveTask(task);
-										Task_content
-												.setText(task.getContent()
-														.trim().length() == 0 ? getString(R.string.task_no_content)
-														: task.getContent());
+										setTaskContent();
 
 									}
 								})
@@ -362,6 +360,12 @@ public class TaskFragment extends Fragment {
 			}
 		});
 
+	}
+
+	private void setTaskContent() {
+		Task_content.setText(task.getContent().length() == 0 ? this
+				.getString(R.string.task_no_content) : task.getContent());
+		Linkify.addLinks(Task_content, Linkify.WEB_URLS);
 	}
 
 	protected void set_prio(TextView Task_prio, Task task) {
