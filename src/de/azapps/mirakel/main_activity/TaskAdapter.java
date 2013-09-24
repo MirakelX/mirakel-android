@@ -24,65 +24,49 @@ import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.GradientDrawable;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.Helpers;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 
-public class TaskAdapter extends ArrayAdapter<Task> {
+public class TaskAdapter extends MirakelArrayAdapter<Task> {
+	@SuppressWarnings("unused")
 	private static final String TAG = "TaskAdapter";
-	MainActivity main;
-	int layoutResourceId, listId;
-	List<Task> data = null;
+	int  listId;
 	OnClickListener clickCheckbox;
 	OnClickListener clickPrio;
-	boolean darkTheme;
 	private Map<Long, View> viewsForTasks = new HashMap<Long, View>();
-	private List<Boolean> selected;
-	private int selecdetCount;
 
 	public View getViewForTask(Task task) {
 		return viewsForTasks.get(task.getId());
 	}
-
-	public List<Task> getSelected() {
-		List<Task> ret = new ArrayList<Task>();
-		for (int i = 0; i < data.size(); i++) {
-			if (selected.get(i)) {
-				ret.add(data.get(i));
-			}
-		}
-		return ret;
+	public TaskAdapter(Context c){
+		//do not call this, only for error-fixing there
+		super(c,0,(List<Task>)new ArrayList<Task>(),false);	
 	}
+	
 
-	public TaskAdapter(MainActivity context, int layoutResourceId,
+
+	public TaskAdapter(Context context, int layoutResourceId,
 			List<Task> data, OnClickListener clickCheckbox,
 			OnClickListener click_prio, int listId, boolean darkTheme) {
-		super(context, layoutResourceId, data);
-		Log.d(TAG, "created");
-		this.layoutResourceId = layoutResourceId;
-		this.data = data;
-		this.main = context;
+		super(context, layoutResourceId, data,darkTheme);
 		this.clickCheckbox = clickCheckbox;
 		this.clickPrio = click_prio;
 		this.listId = listId;
-		this.darkTheme = darkTheme;
-		selected = new ArrayList<Boolean>();
-		for (int i = 0; i < data.size(); i++) {
-			selected.add(false);
-		}
-		selecdetCount = 0;
+		
 	}
 
 	/**
@@ -97,32 +81,10 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 
 	void changeData(List<Task> tasks, int listId) {
 		viewsForTasks.clear();
-		data.clear();
-		data.addAll(tasks);
 		this.listId = listId;
-		while (data.size() > selected.size()) {
-			selected.add(false);
-		}
-		selecdetCount=data.size();
+		super.changeData(tasks);
 	}
 
-	public void setSelected(int position, boolean selected) {
-		this.selected.set(position, selected);
-		notifyDataSetChanged();
-		selecdetCount += (selected ? 1 : -1);
-	}
-
-	public int getSelectedCount() {
-		return selecdetCount;
-	}
-
-	public void resetSelected() {
-		for (int i = 0; i < selected.size(); i++) {
-			selected.set(i, false);
-		}
-		notifyDataSetChanged();
-		selecdetCount = 0;
-	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
@@ -131,7 +93,7 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 
 		if (row == null) {
 			// Initialize the View
-			LayoutInflater inflater = ((Activity) main).getLayoutInflater();
+			LayoutInflater inflater = ((Activity) context).getLayoutInflater();
 			row = inflater.inflate(layoutResourceId, parent, false);
 			holder = new TaskHolder();
 			holder.taskRowDone = (CheckBox) row
@@ -151,14 +113,6 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 			row.setTag(holder);
 		} else {
 			holder = (TaskHolder) row.getTag();
-		}
-		if (selected.get(position)) {
-			row.setBackgroundColor(main.getResources().getColor(
-					darkTheme ? R.color.highlighted_text_holo_dark
-							: R.color.highlighted_text_holo_light));
-		} else {
-			row.setBackgroundColor(main.getResources().getColor(
-					android.R.color.transparent));
 		}
 		if (position >= data.size())
 			return row;
@@ -208,19 +162,28 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		if (task.getDue() != null) {
 			holder.taskRowDue.setVisibility(View.VISIBLE);
 			holder.taskRowDue.setText(Helpers.formatDate(task.getDue(),
-					main.getString(R.string.dateFormat)));
+					context.getString(R.string.dateFormat)));
 			holder.taskRowDue.setTextColor(row.getResources().getColor(
 					Helpers.getTaskDueColor(task.getDue(), task.isDone())));
 		} else {
 			holder.taskRowDue.setVisibility(View.GONE);
 		}
 		viewsForTasks.put(task.getId(), row);
-		if (main.getPreferences().getBoolean("colorize_tasks", true)) {
-			if (main.getPreferences().getBoolean("colorize_tasks_everywhere",
+		SharedPreferences settings= PreferenceManager.getDefaultSharedPreferences(context);
+		
+		if (selected.get(position)) {
+			row.setBackgroundColor(context.getResources().getColor(
+					darkTheme ? R.color.highlighted_text_holo_dark
+							: R.color.highlighted_text_holo_light));
+		}else if (settings.getBoolean("colorize_tasks", true)) {
+			if (settings.getBoolean("colorize_tasks_everywhere",
 					false)
-					|| main.getCurrentList().isSpecialList()) {
+					|| ((MainActivity)context).getCurrentList().isSpecialList()) {
 				Helpers.setListColorBackground(task.getList(), row, darkTheme);
 			}
+		} else {
+			row.setBackgroundColor(context.getResources().getColor(
+					android.R.color.transparent));
 		}
 		return row;
 	}
