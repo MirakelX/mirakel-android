@@ -1,5 +1,7 @@
 package de.azapps.mirakel.model.file;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,12 +9,18 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Environment;
+import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.task.Task;
 
 public class FileMirakel extends FileBase {
 
+	public static final File cacheDir = new File(Environment.getDataDirectory()
+			+ "/data/" + Mirakel.APK_NAME + "/image_cache");
 	public static final String TABLE = "files";
 	private static final String TAG = "TasksDataSource";
 	private static SQLiteDatabase database;
@@ -28,6 +36,14 @@ public class FileMirakel extends FileBase {
 	public void save(boolean log) throws NoSuchListException {
 		ContentValues values = getContentValues();
 		database.update(TABLE, values, "_id = " + getId(), null);
+	}
+
+	public Bitmap getPreview() {
+		File osFile = new File(cacheDir, getId() + ".png");
+		if (osFile.exists()) {
+			return BitmapFactory.decodeFile(osFile.getAbsolutePath());
+		}
+		return null;
 	}
 
 	// Static Methods
@@ -65,6 +81,40 @@ public class FileMirakel extends FileBase {
 	public static FileMirakel newFile(Task task, String name, String path) {
 		FileMirakel m = new FileMirakel(0, task, name, path);
 		return m.create();
+	}
+
+	public static FileMirakel newFile(Task task, String file_path) {
+		File osFile = new File(file_path);
+		if (osFile.exists()) {
+			String name = osFile.getName();
+			FileMirakel newFile = FileMirakel.newFile(task, name, file_path);
+			// Cache the image
+
+			Bitmap myBitmap = BitmapFactory
+					.decodeFile(osFile.getAbsolutePath());
+			if (myBitmap != null) {
+				myBitmap = Bitmap.createScaledBitmap(myBitmap, 150, 150, true);
+				// create directory if not exists
+
+				boolean success = true;
+				if (!FileMirakel.cacheDir.exists()) {
+					success = FileMirakel.cacheDir.mkdir();
+				}
+				if (success) {
+					try {
+						File destFile = new File(FileMirakel.cacheDir,
+								newFile.getId() + ".png");
+						FileOutputStream out = new FileOutputStream(destFile);
+						myBitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+						out.close();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			return newFile;
+		}
+		return null;
 	}
 
 	public FileMirakel create() {

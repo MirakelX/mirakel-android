@@ -51,21 +51,15 @@ public class FileAdapter extends ArrayAdapter<FileMirakel> {
 			holder = (FileHolder) row.getTag();
 		}
 		FileMirakel file = data.get(position);
-		File osFile = new File(file.getPath());
-		if (osFile.exists()) {
-			Bitmap myBitmap = BitmapFactory
-					.decodeFile(osFile.getAbsolutePath());
-			if (myBitmap != null) {
-				holder.fileImage.setImageBitmap(myBitmap);
-				Log.e("Blubb", file.getPath());
-			} else {
-				LayoutParams params = (LayoutParams) holder.fileImage
-						.getLayoutParams();
-				params.height = 0;
-				// existing height is ok as is, no need to edit it
-				holder.fileImage.setLayoutParams(params);
-			}
-
+		Bitmap preview = file.getPreview();
+		if (preview != null) {
+			holder.fileImage.setImageBitmap(preview);
+			Log.e("Blubb", file.getPath());
+		} else {
+			LayoutParams params = (LayoutParams) holder.fileImage
+					.getLayoutParams();
+			params.height = 0;
+			holder.fileImage.setLayoutParams(params);
 		}
 		holder.fileName.setText(file.getName());
 		holder.filePath.setText(file.getPath());

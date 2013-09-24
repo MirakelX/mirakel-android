@@ -19,7 +19,7 @@
 package de.azapps.mirakel.main_activity;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -34,6 +34,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -56,7 +58,6 @@ import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.PagerAdapter;
 import de.azapps.mirakel.helper.ChangeLog;
-import de.azapps.mirakel.helper.FileUtils;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.helper.Log;
@@ -407,10 +408,11 @@ public class MainActivity extends ActionBarActivity implements
 			case RESULT_ADD_FILE:
 				final String file_path = Helpers.getPathFromUri(data.getData(),
 						this);
-				File tmp=new File(file_path);
-				String name=tmp.getName();
-				FileMirakel.newFile(currentTask, name, file_path);
-				setCurrentTask(currentTask);
+				if (FileMirakel.newFile(currentTask, file_path) == null) {
+					Toast.makeText(this, getString(R.string.file_vanished),
+							Toast.LENGTH_SHORT).show();
+				}
+
 				break;
 			}
 		}
