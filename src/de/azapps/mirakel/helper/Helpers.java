@@ -21,6 +21,7 @@ import android.graphics.drawable.shapes.RectShape;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
@@ -259,6 +260,7 @@ public class Helpers {
 			return "";
 		}
 	}
+	
 
 	public static void updateLog(ListMirakel listMirakel, Context ctx) {
 		if (listMirakel != null)
@@ -392,6 +394,17 @@ public class Helpers {
 			row.setBackground(mDrawable);
 		else
 			row.setBackgroundDrawable(mDrawable);
+	}
+	
+	public static String getMimeType(String url)
+	{
+	    String type = null;
+	    String extension = MimeTypeMap.getFileExtensionFromUrl(url);
+	    if (extension != null) {
+	        MimeTypeMap mime = MimeTypeMap.getSingleton();
+	        type = mime.getMimeTypeFromExtension(extension);
+	    }
+	    return type;
 	}
 
 }

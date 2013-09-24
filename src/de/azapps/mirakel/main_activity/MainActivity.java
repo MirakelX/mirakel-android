@@ -18,6 +18,8 @@
  ******************************************************************************/
 package de.azapps.mirakel.main_activity;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -33,6 +35,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -53,9 +56,11 @@ import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.PagerAdapter;
 import de.azapps.mirakel.helper.ChangeLog;
+import de.azapps.mirakel.helper.FileUtils;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SearchList;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -94,7 +99,7 @@ public class MainActivity extends ActionBarActivity implements
 
 	protected static final int TASKS_FRAGMENT = 0, TASK_FRAGMENT = 1;
 	protected static final int RESULT_SPEECH_NAME = 1, RESULT_SPEECH = 3,
-			RESULT_SETTINGS = 4;
+			RESULT_SETTINGS = 4, RESULT_ADD_FILE = 5;
 	private static final String TAG = "MainActivity";
 
 	public static String EXTRA_ID = "de.azapps.mirakel.EXTRA_TASKID",
@@ -363,6 +368,7 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		Log.v(TAG, "Result:" + requestCode);
 		if (requestCode == RESULT_SETTINGS) {
 			listFragment.update();
 			highlightSelected = preferences.getBoolean("highlightSelected",
@@ -397,6 +403,14 @@ public class MainActivity extends ActionBarActivity implements
 					((EditText) tasksFragment.view.findViewById(R.id.tasks_new))
 							.setText(text.get(0));
 				}
+				break;
+			case RESULT_ADD_FILE:
+				final String file_path = Helpers.getPathFromUri(data.getData(),
+						this);
+				File tmp=new File(file_path);
+				String name=tmp.getName();
+				FileMirakel.newFile(currentTask, name, file_path);
+				setCurrentTask(currentTask);
 				break;
 			}
 		}
@@ -608,25 +622,30 @@ public class MainActivity extends ActionBarActivity implements
 	 * @param list
 	 */
 	public void handleDestroyList(final ListMirakel list) {
-		
+
 	}
+
 	public void handleDestroyList(final List<ListMirakel> lists) {
 		String names = lists.get(0).getName();
 		for (int i = 1; i < lists.size(); i++) {
 			names += ", " + lists.get(i).getName();
 		}
 		new AlertDialog.Builder(this)
-				.setTitle(getResources().getQuantityString(R.plurals.list_delete, lists.size()))
-				.setMessage(this.getString(R.string.list_delete_content,names))
+				.setTitle(
+						getResources().getQuantityString(R.plurals.list_delete,
+								lists.size()))
+				.setMessage(this.getString(R.string.list_delete_content, names))
 				.setPositiveButton(this.getString(android.R.string.yes),
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int which) {
-								for(ListMirakel list:lists){
+								for (ListMirakel list : lists) {
 									list.destroy();
 									listFragment.update();
-									if (getCurrentList().getId() == list.getId()) {
-										setCurrentList(SpecialList.firstSpecial());
+									if (getCurrentList().getId() == list
+											.getId()) {
+										setCurrentList(SpecialList
+												.firstSpecial());
 									}
 								}
 							}
@@ -659,7 +678,9 @@ public class MainActivity extends ActionBarActivity implements
 			names += ", " + tasks.get(i).getName();
 		}
 		new AlertDialog.Builder(this)
-				.setTitle(this.getResources().getQuantityString(R.plurals.task_delete,tasks.size()))
+				.setTitle(
+						this.getResources().getQuantityString(
+								R.plurals.task_delete, tasks.size()))
 				.setMessage(this.getString(R.string.task_delete_content, names))
 				.setPositiveButton(this.getString(android.R.string.yes),
 						new DialogInterface.OnClickListener() {
@@ -1018,6 +1039,7 @@ public class MainActivity extends ActionBarActivity implements
 	public int getBaseList() {
 		return baseList;
 	}
+
 	public SharedPreferences getPreferences() {
 		return preferences;
 	}

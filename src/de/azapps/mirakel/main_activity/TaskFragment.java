@@ -18,6 +18,7 @@
  ******************************************************************************/
 package de.azapps.mirakel.main_activity;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -28,10 +29,13 @@ import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -45,14 +49,19 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.Helpers;
@@ -362,10 +371,45 @@ public class TaskFragment extends Fragment {
 			}
 		});
 
-		List<FileMirakel> files = task.getFiles();
+		final List<FileMirakel> files = task.getFiles();
 		for (FileMirakel file : files) {
 			Log.v(TAG, "file:" + file.toString());
 		}
+
+		FileAdapter fileAdapter = new FileAdapter(main, R.layout.files_row,
+				files);
+		ListView filesView = (ListView) view.findViewById(R.id.task_files);
+		filesView.setAdapter(fileAdapter);
+		filesView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View item,
+					int position, long id) {
+				FileMirakel file = files.get(position);
+				String mimetype = Helpers.getMimeType(file.getPath());
+
+				Intent i2 = new Intent();
+				i2.setAction(android.content.Intent.ACTION_VIEW);
+				i2.setDataAndType(Uri.fromFile(new File(file.getPath())),
+						mimetype);
+				try {
+					startActivity(i2);
+				} catch (ActivityNotFoundException e) {
+					Toast.makeText(main, main.getString(R.string.file_no_activity), Toast.LENGTH_SHORT).show();
+				}
+			}
+		});
+
+		ImageButton fileAddButton = (ImageButton) view
+				.findViewById(R.id.add_file);
+		fileAddButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Helpers.showFileChooser(MainActivity.RESULT_ADD_FILE, main.getString(R.string.file_select),
+						main);
+			}
+		});
 
 	}
 

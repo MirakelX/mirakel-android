@@ -236,5 +236,9 @@ Device: %3$s\n]]>
     <string name="list_change_color">Change Color</string>
     <string name="set_color">Set Color</string>
     <string name="unset_color">No Color</string>
+    
+    <string name="files">Files</string>
+    <string name="file_no_activity">I don\'t know, how to open this file – sorry</string>
+    <string name="file_select">Select a file</string>
 
 </resources>
