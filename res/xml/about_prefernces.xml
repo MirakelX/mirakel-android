@@ -19,6 +19,11 @@
 -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:title="@string/settings_about" >
+    
+    <Preference 
+        android:key="dashclock"
+        android:summary="@string/get_dashclock_summary"
+        android:title="@string/get_dashclock"/>
 
     <Preference
         android:key="changelog"

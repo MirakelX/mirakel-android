@@ -26,6 +26,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -1010,6 +1011,11 @@ public class PreferencesHelper {
 					});
 		}
 
+		Preference dashclock = findPreference("dashclock");
+		if (dashclock != null) {
+			Intent startdashclockIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=de.azapps.mirakel.dashclock"));
+			dashclock.setIntent(startdashclockIntent);
+		}
 		Preference credits = findPreference("credits");
 		if (credits != null) {
 			Intent startCreditsIntent = new Intent(activity,
