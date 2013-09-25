@@ -1,4 +1,23 @@
+/*******************************************************************************
+ * Mirakel is an Android App for managing your ToDo-Lists
+ * 
+ * Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
+ * 
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     any later version.
+ * 
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ * 
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
 package de.azapps.mirakel.main_activity;
+
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -23,6 +42,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.text.util.Linkify;
+import android.util.Pair;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -32,7 +52,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -56,15 +75,21 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakelandroid.R;
 
-public class TaskFragmentAdapter extends ArrayAdapter<TaskFragment.TYPE> {
+public class TaskFragmentAdapter extends
+		MirakelArrayAdapter<Pair<TaskFragment.TYPE, Integer>> {
 	private static final String TAG = "TaskFragmentAdapter";
 	private Task task;
 	private Context ctx;
-	private List<TaskFragment.TYPE> data;
+	private List<Pair<TaskFragment.TYPE, Integer>> data;
 	protected boolean mIgnoreTimeSet;
+	
+	public TaskFragmentAdapter(Context c){
+		//Do not call!!
+		super(c, 0, new ArrayList<Pair<TaskFragment.TYPE, Integer>>());
+	}
 
 	public TaskFragmentAdapter(Context context, int textViewResourceId,
-			List<TaskFragment.TYPE> objects, Task t) {
+			List<Pair<TaskFragment.TYPE, Integer>> objects, Task t) {
 		super(context, textViewResourceId, objects);
 		this.task = t;
 		if (task == null)
@@ -77,18 +102,16 @@ public class TaskFragmentAdapter extends ArrayAdapter<TaskFragment.TYPE> {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View row = new View(ctx);
-		if(position>=data.size())
+		if (position >= data.size())
 			return row;
 		LayoutInflater inflater = ((Activity) ctx).getLayoutInflater();
-		switch (data.get(position)) {
+		switch (data.get(position).first) {
 		case DUE:
 			row = setupDue(inflater, parent);
 			break;
 		case FILE:
-			int fileCount=getFileCount(position);
-			if(fileCount==-1)
-				break;
-			row=setupFile(inflater,parent,task.getFiles().get(fileCount));
+			row = setupFile(inflater, parent,
+					task.getFiles().get(data.get(position).second));
 			break;
 		case HEADER:
 			row = setupHeader(inflater, parent);
@@ -102,9 +125,8 @@ public class TaskFragmentAdapter extends ArrayAdapter<TaskFragment.TYPE> {
 		case SUBTITLE:
 			String title = null;
 			OnClickListener action = null;
-			if(position<1){
-				break;
-			}else if(data.get(position-1)==TYPE.CONTENT){//Subtask
+			switch (data.get(position).second) {
+			case 0:
 				title = ctx.getString(R.string.subtasks);
 				action = new OnClickListener() {
 					@Override
@@ -113,16 +135,21 @@ public class TaskFragmentAdapter extends ArrayAdapter<TaskFragment.TYPE> {
 
 					}
 				};
-			}else if(data.get(position-1)==TYPE.SUBTASK||data.get(position-1)==TYPE.SUBTITLE){//Files
+				break;
+			case 1:
 				title = ctx.getString(R.string.files);
 				action = new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						Helpers.showFileChooser(MainActivity.RESULT_ADD_FILE, ctx.getString(R.string.file_select),
+						Helpers.showFileChooser(MainActivity.RESULT_ADD_FILE,
+								ctx.getString(R.string.file_select),
 								(Activity) ctx);
 					}
 				};
-			}else{
+				break;
+
+			default:
+				Log.d(TAG, "unkown subtitle");
 				break;
 			}
 			row = setupSubtitle(inflater, parent, title, action);
@@ -136,21 +163,12 @@ public class TaskFragmentAdapter extends ArrayAdapter<TaskFragment.TYPE> {
 		return row;
 	}
 
-	private int getFileCount(int position) {
-		if(position>=data.size())
-			return -1;
-		for(int i=position,j=0;i>-1;i--,j++){
-			if(data.get(i)!=TaskFragment.TYPE.FILE)
-				return j-1;
-		}
-		return -1;
-	}
 	private View setupFile(LayoutInflater inflater, ViewGroup parent,
 			final FileMirakel file) {
 
-		View row =inflater.inflate(R.layout.files_row, parent, false);
+		View row = inflater.inflate(R.layout.files_row, parent, false);
 		row.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				String mimetype = Helpers.getMimeType(file.getPath());
@@ -162,9 +180,11 @@ public class TaskFragmentAdapter extends ArrayAdapter<TaskFragment.TYPE> {
 				try {
 					ctx.startActivity(i2);
 				} catch (ActivityNotFoundException e) {
-					Toast.makeText(ctx, ctx.getString(R.string.file_no_activity), Toast.LENGTH_SHORT).show();
+					Toast.makeText(ctx,
+							ctx.getString(R.string.file_no_activity),
+							Toast.LENGTH_SHORT).show();
 				}
-				
+
 			}
 		});
 		ImageView fileImage = (ImageView) row.findViewById(R.id.file_image);
@@ -196,6 +216,8 @@ public class TaskFragmentAdapter extends ArrayAdapter<TaskFragment.TYPE> {
 
 	private View setupSubtitle(LayoutInflater inflater, ViewGroup parent,
 			String title, OnClickListener action) {
+		if(title==null||action==null)
+			return new View(ctx);
 		final View subtitle = inflater.inflate(R.layout.task_subtitle, parent,
 				false);
 		((TextView) subtitle.findViewById(R.id.task_subtitle)).setText(title);
@@ -490,12 +512,12 @@ public class TaskFragmentAdapter extends ArrayAdapter<TaskFragment.TYPE> {
 		bg.setColor(Mirakel.PRIO_COLOR[task.getPriority() + 2]);
 
 	}
-	public void setData(List<TYPE> generateData,Task t) {
-		this.data=new ArrayList<TaskFragment.TYPE>();
-		this.data=generateData;
-		task=t;
+
+	public void setData(List<Pair<TYPE, Integer>> generateData, Task t) {
+		this.data = generateData;
+		task = t;
 		notifyDataSetInvalidated();
-		notifyDataSetChanged();		
+		notifyDataSetChanged();
 	}
 
 }
