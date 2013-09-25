@@ -54,15 +54,15 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 	}
 	public TaskAdapter(Context c){
 		//do not call this, only for error-fixing there
-		super(c,0,(List<Task>)new ArrayList<Task>(),false);	
+		super(c,0,(List<Task>)new ArrayList<Task>());	
 	}
 	
 
 
 	public TaskAdapter(Context context, int layoutResourceId,
 			List<Task> data, OnClickListener clickCheckbox,
-			OnClickListener click_prio, int listId, boolean darkTheme) {
-		super(context, layoutResourceId, data,darkTheme);
+			OnClickListener click_prio, int listId) {
+		super(context, layoutResourceId, data);
 		this.clickCheckbox = clickCheckbox;
 		this.clickPrio = click_prio;
 		this.listId = listId;

@@ -447,8 +447,7 @@ public class TasksFragment extends Fragment {
 										});
 
 							}
-						}, main.getCurrentList().getId(),
-						main.preferences.getBoolean("DarkTheme", false));
+						}, main.getCurrentList().getId());
 				return adapter;
 			}
 

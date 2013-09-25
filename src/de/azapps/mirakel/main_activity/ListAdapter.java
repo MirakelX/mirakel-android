@@ -26,7 +26,6 @@ import java.util.Map;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,13 +50,12 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 	}
 	public ListAdapter(Context c){
 		//do not call this, only for error-fixing there
-		super(c,0,(List<ListMirakel>)new ArrayList<ListMirakel>(),false);	
+		super(c,0,(List<ListMirakel>)new ArrayList<ListMirakel>());	
 	}
 
 	public ListAdapter(Context context, int layoutResourceId,
 			List<ListMirakel> data, boolean enable) {
-		super(context, layoutResourceId, data,PreferenceManager.getDefaultSharedPreferences(context)
-				.getBoolean("DarkTheme", false));
+		super(context, layoutResourceId, data);
 		this.enableDrop = enable;
 	}
 

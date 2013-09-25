@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.preference.PreferenceManager;
 import android.widget.ArrayAdapter;
 
 public class MirakelArrayAdapter<T> extends ArrayAdapter<T> {
@@ -34,12 +35,13 @@ public class MirakelArrayAdapter<T> extends ArrayAdapter<T> {
 	
 
 	public MirakelArrayAdapter(Context context, int textViewResourceId,
-			List<T> data, boolean darkTheme) {
+			List<T> data) {
 		super(context, textViewResourceId,textViewResourceId, data);
 		this.layoutResourceId=textViewResourceId;
 		this.data=data;
 		this.context=context;
-		this.darkTheme=darkTheme;
+		this.darkTheme=PreferenceManager.getDefaultSharedPreferences(context)
+				.getBoolean("DarkTheme", false);
 		this.selected = new ArrayList<Boolean>();
 		for (int i = 0; i < data.size(); i++) {
 			this.selected.add(false);
