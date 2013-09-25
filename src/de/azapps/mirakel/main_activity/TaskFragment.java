@@ -131,18 +131,20 @@ public class TaskFragment extends Fragment {
 				@Override
 				public boolean onActionItemClicked(ActionMode mode,
 						MenuItem item) {
-					
+
 					switch (item.getItemId()) {
 					case R.id.menu_delete:
-						List<FileMirakel> files=adapter.getTask().getFiles();
-						List<Pair<Integer, Integer>> selected = adapter.getSelected();
-						List<FileMirakel> selectedItems=new ArrayList<FileMirakel>();
-						for(Pair<Integer, Integer> p:selected){
-							if(p.first==TYPE.FILE){
+						List<FileMirakel> files = adapter.getTask().getFiles();
+						List<Pair<Integer, Integer>> selected = adapter
+								.getSelected();
+						List<FileMirakel> selectedItems = new ArrayList<FileMirakel>();
+						for (Pair<Integer, Integer> p : selected) {
+							if (p.first == TYPE.FILE) {
 								selectedItems.add(files.get(p.second));
 							}
 						}
-						TaskDialogHelpers.handleDeleteFile(selectedItems,main,adapter.getTask(),adapter);
+						TaskDialogHelpers.handleDeleteFile(selectedItems, main,
+								adapter.getTask(), adapter);
 						break;
 
 					default:
@@ -176,11 +178,13 @@ public class TaskFragment extends Fragment {
 		data.add(new Pair<Integer, Integer>(TYPE.REMINDER, 0));
 		data.add(new Pair<Integer, Integer>(TYPE.CONTENT, 0));
 		data.add(new Pair<Integer, Integer>(TYPE.SUBTITLE, 0));
-		// for(task.)
-		// data.add(TYPE.SUBTASK);
+		int subtaskCount = task.getSubtaskCount();
+		for (int i = 0; i < subtaskCount; i++) {
+			data.add(new Pair<Integer, Integer>(TYPE.SUBTASK, i));
+		}
 		data.add(new Pair<Integer, Integer>(TYPE.SUBTITLE, 1));
 		int fileCount = FileMirakel.getFileCount(task);
-		Log.d(TAG,"filecount"+fileCount);
+		Log.d(TAG, "filecount " + fileCount);
 		for (int i = 0; i < fileCount; i++)
 			data.add(new Pair<Integer, Integer>(TYPE.FILE, i));
 		return data;

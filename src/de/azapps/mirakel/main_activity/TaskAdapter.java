@@ -44,7 +44,7 @@ import de.azapps.mirakelandroid.R;
 public class TaskAdapter extends MirakelArrayAdapter<Task> {
 	@SuppressWarnings("unused")
 	private static final String TAG = "TaskAdapter";
-	int  listId;
+	int listId;
 	OnClickListener clickCheckbox;
 	OnClickListener clickPrio;
 	private Map<Long, View> viewsForTasks = new HashMap<Long, View>();
@@ -52,21 +52,20 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 	public View getViewForTask(Task task) {
 		return viewsForTasks.get(task.getId());
 	}
-	public TaskAdapter(Context c){
-		//do not call this, only for error-fixing there
-		super(c,0,(List<Task>)new ArrayList<Task>());	
+
+	public TaskAdapter(Context c) {
+		// do not call this, only for error-fixing there
+		super(c, 0, (List<Task>) new ArrayList<Task>());
 	}
-	
 
-
-	public TaskAdapter(Context context, int layoutResourceId,
-			List<Task> data, OnClickListener clickCheckbox,
-			OnClickListener click_prio, int listId) {
+	public TaskAdapter(Context context, int layoutResourceId, List<Task> data,
+			OnClickListener clickCheckbox, OnClickListener click_prio,
+			int listId) {
 		super(context, layoutResourceId, data);
 		this.clickCheckbox = clickCheckbox;
 		this.clickPrio = click_prio;
 		this.listId = listId;
-		
+
 	}
 
 	/**
@@ -85,11 +84,41 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 		super.changeData(tasks);
 	}
 
-
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
+		Task task = position >= data.size() ? null : data.get(position);
+		View row = setupRow( convertView, parent, context,
+				layoutResourceId, task, listId <= 0, darkTheme);
+		TaskHolder holder = (TaskHolder) row.getTag();
+		holder.taskRowPriority.setOnClickListener(clickPrio);
+		holder.taskRowDone.setOnClickListener(clickCheckbox);
+		holder.taskRowDoneWrapper.setOnClickListener(clickCheckbox);
+		viewsForTasks.put(task.getId(), row);
+		SharedPreferences settings = PreferenceManager
+				.getDefaultSharedPreferences(context);
+
+		if (selected.get(position)) {
+			row.setBackgroundColor(context.getResources().getColor(
+					darkTheme ? R.color.highlighted_text_holo_dark
+							: R.color.highlighted_text_holo_light));
+		} else if (settings.getBoolean("colorize_tasks", true)) {
+			if (settings.getBoolean("colorize_tasks_everywhere", false)
+					|| ((MainActivity) context).getCurrentList()
+							.isSpecialList()) {
+				Helpers.setListColorBackground(task.getList(), row, darkTheme);
+			}
+		} else {
+			row.setBackgroundColor(context.getResources().getColor(
+					android.R.color.transparent));
+		}
+		return row;
+	}
+
+	public static View setupRow(View convertView,
+			ViewGroup parent, Context context, int layoutResourceId, Task task,
+			boolean showList, boolean darkTheme) {
 		View row = convertView;
-		TaskHolder holder = null;
+		TaskHolder holder;
 
 		if (row == null) {
 			// Initialize the View
@@ -114,22 +143,19 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 		} else {
 			holder = (TaskHolder) row.getTag();
 		}
-		if (position >= data.size())
+		if (task == null)
 			return row;
-		Task task = data.get(position);
 
 		// Done
 		holder.taskRowDone.setChecked(task.isDone());
-		holder.taskRowDone.setOnClickListener(clickCheckbox);
 		holder.taskRowDone.setTag(task);
-		holder.taskRowDoneWrapper.setOnClickListener(clickCheckbox);
 		holder.taskRowDoneWrapper.setTag(task);
 		if (task.getContent().length() != 0) {
 			holder.taskRowHasContent.setVisibility(View.VISIBLE);
 		} else {
 			holder.taskRowHasContent.setVisibility(View.INVISIBLE);
 		}
-		if (listId <= 0 && task != null && task.getList() != null) {
+		if (showList && task != null && task.getList() != null) {
 			holder.taskRowList.setVisibility(View.VISIBLE);
 			holder.taskRowList.setText(task.getList().getName());
 		} else {
@@ -155,7 +181,6 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 		GradientDrawable bg = (GradientDrawable) holder.taskRowPriority
 				.getBackground();
 		bg.setColor(Mirakel.PRIO_COLOR[task.getPriority() + 2]);
-		holder.taskRowPriority.setOnClickListener(clickPrio);
 		holder.taskRowPriority.setTag(task);
 
 		// Due
@@ -167,23 +192,6 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 					Helpers.getTaskDueColor(task.getDue(), task.isDone())));
 		} else {
 			holder.taskRowDue.setVisibility(View.GONE);
-		}
-		viewsForTasks.put(task.getId(), row);
-		SharedPreferences settings= PreferenceManager.getDefaultSharedPreferences(context);
-		
-		if (selected.get(position)) {
-			row.setBackgroundColor(context.getResources().getColor(
-					darkTheme ? R.color.highlighted_text_holo_dark
-							: R.color.highlighted_text_holo_light));
-		}else if (settings.getBoolean("colorize_tasks", true)) {
-			if (settings.getBoolean("colorize_tasks_everywhere",
-					false)
-					|| ((MainActivity)context).getCurrentList().isSpecialList()) {
-				Helpers.setListColorBackground(task.getList(), row, darkTheme);
-			}
-		} else {
-			row.setBackgroundColor(context.getResources().getColor(
-					android.R.color.transparent));
 		}
 		return row;
 	}

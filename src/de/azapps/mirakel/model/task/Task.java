@@ -33,6 +33,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Pair;
 import android.widget.Toast;
 
 import com.google.gson.JsonArray;
@@ -56,6 +57,7 @@ import de.azapps.mirakelandroid.R;
 public class Task extends TaskBase {
 
 	public static final String TABLE = "tasks";
+	public static final String SUBTASK_TABLE = "subtasks";
 
 	public Task(long id, String uuid, ListMirakel list, String name,
 			String content, boolean done, Calendar due, Calendar reminder,
@@ -116,6 +118,46 @@ public class Task extends TaskBase {
 			database.update(TABLE, values, "_id=" + id, null);
 		}
 	}
+	
+	public List<Task> getSubtasks(){
+		Cursor c=database.query(SUBTASK_TABLE, new String[]{"child_id"}, "parent_id="+getId(), null, null, null, null);
+		List<Task> subTasks=new ArrayList<Task>();
+		c.moveToFirst();
+		while(!c.isAfterLast()){
+			subTasks.add(Task.get(c.getLong(0)));
+			c.moveToNext();
+		}
+		c.close();
+		return subTasks;
+		
+	}
+	
+	public int getSubtaskCount(){
+		Cursor c=database.rawQuery("Select count(_id) from "+SUBTASK_TABLE+" where parent_id="+getId(), null);
+		c.moveToFirst();
+		int count=c.getInt(0);
+		c.close();
+		return count;
+	}
+	
+	public static List<Pair<Long,String>> getTaskNames(){
+		Cursor c=database.query(TABLE, new String[]{"_id,name"}, "not sync_state="+Network.SYNC_STATE.DELETE, null, null, null, null);
+		c.moveToFirst();
+		List <Pair<Long,String>> names=new ArrayList<Pair<Long,String>>();
+		while (!c.isAfterLast()){
+			names.add(new Pair<Long, String>(c.getLong(0), c.getString(1)));
+			c.moveToNext();
+		}
+		c.close();
+		return names;
+	}
+	
+	public void addSubtask(Task t) throws NoSuchListException{
+		ContentValues cv=new ContentValues();
+		cv.put("parent_id", getId());
+		cv.put("child_id", t.getId());
+		database.insert(SUBTASK_TABLE, null, cv);
+	}
 
 	public static void deleteDoneTasks() {
 		ContentValues values = new ContentValues();
@@ -172,7 +214,8 @@ public class Task extends TaskBase {
 	private static DatabaseHelper dbHelper;
 	private static final String[] allColumns = { "_id", "uuid", "list_id",
 			"name", "content", "done", "due", "reminder", "priority",
-			"created_at", "updated_at", "sync_state", "additional_entries" };
+			"created_at", "updated_at", "sync_state", "additional_entries"};
+	
 	private static Context context;
 
 	public static Task getDummy(Context ctx) {

@@ -38,7 +38,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String TAG = "DatabaseHelper";
 	private Context context;
-	public static final int DATABASE_VERSION = 17;
+	public static final int DATABASE_VERSION = 18;
 
 	public DatabaseHelper(Context ctx) {
 		super(ctx, "mirakel.db", null, DATABASE_VERSION);
@@ -194,10 +194,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		case 16:
 			db.execSQL("CREATE TABLE " + FileMirakel.TABLE + " ("
 					+ "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
-					+ "task_id INTEGER NOT NULL DEFAULT 0, "
-					+ "name TEXT, "
-					+ "path TEXT"
-					+ ")");
+					+ "task_id INTEGER NOT NULL DEFAULT 0, " + "name TEXT, "
+					+ "path TEXT" + ")");
+		case 17:
+			db.execSQL("CREATE TABLE " + Task.SUBTASK_TABLE + " ("
+					+ "_id INTEGER PRIMARY KEY AUTOINCREMENT,"
+					+ "parent_id INTEGER REFERENCES " + Task.TABLE
+					+ " (_id) ON DELETE CASCADE ON UPDATE CASCADE,"
+					+ "child_id INTEGER REFERENCES " + Task.TABLE
+					+ " (_id) ON DELETE CASCADE ON UPDATE CASCADE);");
 		}
 	}
 

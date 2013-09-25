@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -219,5 +220,33 @@ public class TaskDialogHelpers {
 		}).show();
 		
 	}
+
+	public static void handleSubtask(Context ctx,final Task task,final TaskFragmentAdapter adapter) {
+		final List<Pair<Long, String>> names = Task.getTaskNames();
+		CharSequence[] values=new String[names.size()];
+		for(int i=0;i<names.size();i++){
+			values[i]=names.get(i).second;			
+		}
+		new AlertDialog.Builder(ctx)
+		.setTitle(ctx.getString(R.string.add_subtask))
+		.setSingleChoiceItems(values,-1,new DialogInterface.OnClickListener() {
+	
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				try {
+					task.addSubtask(Task.get(names.get(which).first));
+				} catch (NoSuchListException e) {
+					Log.e(TAG, "list did vanish");
+				}
+				dialog.dismiss();
+				adapter.setData(TaskFragment.generateData(task),task);
+//				adapter.notifyDataSetInvalidated();
+				
+			}
+		}).show();
+		
+	}
+
 
 }

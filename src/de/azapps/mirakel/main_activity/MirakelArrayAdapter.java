@@ -50,6 +50,11 @@ public class MirakelArrayAdapter<T> extends ArrayAdapter<T> {
 		
 	}
 	
+	@Override
+	public int getCount() {
+		return data.size();
+	}
+	
 	public void setSelected(int position, boolean selected) {
 		this.selected.set(position, selected);
 		notifyDataSetChanged();

@@ -54,6 +54,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
@@ -74,6 +75,7 @@ public class TaskFragmentAdapter extends
 	private Task task;
 	protected boolean mIgnoreTimeSet;
 	private LayoutInflater inflater;
+	private TaskFragmentAdapter adapter;
 
 	public class TYPE {
 		final static int HEADER = 0;
@@ -98,6 +100,7 @@ public class TaskFragmentAdapter extends
 		if (task == null)
 			task = Task.getDummy(context);
 		this.inflater = ((Activity) context).getLayoutInflater();
+		this.adapter=this;
 
 	}
 
@@ -105,6 +108,7 @@ public class TaskFragmentAdapter extends
 	public int getViewTypeCount() {
 		return 7;
 	}
+
 
 	@Override
 	public int getItemViewType(int position) {
@@ -118,21 +122,21 @@ public class TaskFragmentAdapter extends
 			return row;
 		switch (getItemViewType(position)) {
 		case TYPE.DUE:
-			row = setupDue(inflater, parent, convertView);
+			row = setupDue( parent, convertView);
 			break;
 		case TYPE.FILE:
-			row = setupFile(inflater, parent,
+			row = setupFile( parent,
 					task.getFiles().get(data.get(position).second),
 					convertView, position);
 			break;
 		case TYPE.HEADER:
-			row = setupHeader(inflater, parent, convertView);
+			row = setupHeader( parent, convertView);
 			break;
 		case TYPE.REMINDER:
-			row = setupReminder(inflater, parent, convertView);
+			row = setupReminder( parent, convertView);
 			break;
 		case TYPE.SUBTASK:
-			Log.e(TAG, "subtask are not implemented now");
+			row = setupSubtask( parent, convertView,task.getSubtasks().get(data.get(position).second));
 			break;
 		case TYPE.SUBTITLE:
 			String title = null;
@@ -143,8 +147,7 @@ public class TaskFragmentAdapter extends
 				action = new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						Log.e(TAG, "do something");
-
+						TaskDialogHelpers.handleSubtask(context, task,adapter);
 					}
 				};
 				break;
@@ -164,17 +167,110 @@ public class TaskFragmentAdapter extends
 				Log.d(TAG, "unknown subtitle");
 				break;
 			}
-			row = setupSubtitle(inflater, parent, title, action, convertView);
+			row = setupSubtitle( parent, title, action, convertView);
 			break;
 		case TYPE.CONTENT:
 			Log.d(TAG, "load content");
-			row = setupContent(inflater, parent, convertView);
+			row = setupContent( parent, convertView);
 			break;
 
 		}
 
 		return row;
 	}
+	
+	
+
+
+	static class TaskHolder {
+		CheckBox taskRowDone;
+		LinearLayout taskRowDoneWrapper;
+		TextView taskRowName;
+		TextView taskRowPriority;
+		TextView taskRowDue, taskRowList;
+		ImageView taskRowHasContent;
+	}
+	private View setupSubtask(ViewGroup parent, View convertView, Task task) {
+//		return TaskAdapter.setupRow( null, parent, context, layoutResourceId, task, true, darkTheme);
+		View row = convertView==null?inflater.inflate(R.layout.tasks_row, parent, false):convertView;
+		TaskHolder holder;
+
+		if (convertView == null) {
+			// Initialize the View
+			holder = new TaskHolder();
+			holder.taskRowDone = (CheckBox) row
+					.findViewById(R.id.tasks_row_done);
+			holder.taskRowDoneWrapper = (LinearLayout) row
+					.findViewById(R.id.tasks_row_done_wrapper);
+			holder.taskRowName = (TextView) row
+					.findViewById(R.id.tasks_row_name);
+			holder.taskRowPriority = (TextView) row
+					.findViewById(R.id.tasks_row_priority);
+			holder.taskRowDue = (TextView) row.findViewById(R.id.tasks_row_due);
+			holder.taskRowHasContent = (ImageView) row
+					.findViewById(R.id.tasks_row_has_content);
+			holder.taskRowList = (TextView) row
+					.findViewById(R.id.tasks_row_list_name);
+
+			row.setTag(holder);
+		} else {
+			holder = (TaskHolder) row.getTag();
+		}
+		if (task == null)
+			return row;
+
+		// Done
+		holder.taskRowDone.setChecked(task.isDone());
+		holder.taskRowDone.setTag(task);
+		holder.taskRowDoneWrapper.setTag(task);
+		if (task.getContent().length() != 0) {
+			holder.taskRowHasContent.setVisibility(View.VISIBLE);
+		} else {
+			holder.taskRowHasContent.setVisibility(View.INVISIBLE);
+		}
+		if ( task != null && task.getList() != null) {
+			holder.taskRowList.setVisibility(View.VISIBLE);
+			holder.taskRowList.setText(task.getList().getName());
+		} else {
+			holder.taskRowList.setVisibility(View.GONE);
+		}
+
+		// Name
+		holder.taskRowName.setText(task.getName());
+
+		if (task.isDone()) {
+			holder.taskRowName.setTextColor(row.getResources().getColor(
+					R.color.Grey));
+		} else {
+			holder.taskRowName.setTextColor(row.getResources().getColor(
+					darkTheme ? android.R.color.primary_text_dark
+							: android.R.color.primary_text_light));
+		}
+
+		// Priority
+		holder.taskRowPriority.setText("" + task.getPriority());
+		// Log.e("Blubb",holder.taskRowPriority.getBackground().getClass().toString());
+
+		GradientDrawable bg = (GradientDrawable) holder.taskRowPriority
+				.getBackground();
+		bg.setColor(Mirakel.PRIO_COLOR[task.getPriority() + 2]);
+		holder.taskRowPriority.setTag(task);
+
+		// Due
+		if (task.getDue() != null) {
+			holder.taskRowDue.setVisibility(View.VISIBLE);
+			holder.taskRowDue.setText(Helpers.formatDate(task.getDue(),
+					context.getString(R.string.dateFormat)));
+			holder.taskRowDue.setTextColor(row.getResources().getColor(
+					Helpers.getTaskDueColor(task.getDue(), task.isDone())));
+		} else {
+			holder.taskRowDue.setVisibility(View.GONE);
+		}
+		return row;
+	}
+
+
+
 
 	static class FileHolder {
 		ImageView fileImage;
@@ -182,11 +278,12 @@ public class TaskFragmentAdapter extends
 		TextView filePath;
 	}
 
-	private View setupFile(LayoutInflater inflater, ViewGroup parent,
+	private View setupFile(ViewGroup parent,
 			final FileMirakel file, View convertView, int position) {
 		final View row = convertView == null ? inflater.inflate(
 				R.layout.files_row, parent, false) : convertView;
 		final FileHolder holder;
+		Log.d(TAG, "setup files");
 		if (convertView == null) {
 			holder = new FileHolder();
 			holder.fileImage = (ImageView) row.findViewById(R.id.file_image);
@@ -242,7 +339,7 @@ public class TaskFragmentAdapter extends
 		ImageButton button;
 	}
 
-	private View setupSubtitle(LayoutInflater inflater, ViewGroup parent,
+	private View setupSubtitle(ViewGroup parent,
 			String title, OnClickListener action, View convertView) {
 		if (title == null || action == null)
 			return new View(context);
@@ -259,7 +356,7 @@ public class TaskFragmentAdapter extends
 		TextView taskContent;
 	}
 
-	private View setupContent(LayoutInflater inflater, ViewGroup parent,
+	private View setupContent(ViewGroup parent,
 			View convertView) {
 		final View content = convertView == null ? inflater.inflate(
 				R.layout.task_content, parent, false) : convertView;
@@ -334,7 +431,7 @@ public class TaskFragmentAdapter extends
 		TextView taskReminder;
 	}
 
-	private View setupReminder(LayoutInflater inflater, ViewGroup parent,
+	private View setupReminder(ViewGroup parent,
 			View convertView) {
 		final View reminder = convertView == null ? inflater.inflate(
 				R.layout.task_reminder, parent, false) : convertView;
@@ -391,7 +488,7 @@ public class TaskFragmentAdapter extends
 		TextView taskDue;
 	}
 
-	private View setupDue(LayoutInflater inflater, ViewGroup parent,
+	private View setupDue(ViewGroup parent,
 			View convertView) {
 		final View due = convertView == null ? inflater.inflate(
 				R.layout.task_due, parent, false) : convertView;
@@ -493,7 +590,7 @@ public class TaskFragmentAdapter extends
 		TextView taskPrio;
 	}
 
-	private View setupHeader(LayoutInflater inflater, ViewGroup parent,
+	private View setupHeader(ViewGroup parent,
 			View convertView) {
 		// Task Name
 		final View header = convertView == null ? inflater.inflate(
@@ -595,22 +692,21 @@ public class TaskFragmentAdapter extends
 	}
 
 	public void setData(List<Pair<Integer, Integer>> generateData, Task t) {
-		this.data = generateData;
+		super.changeData(generateData);
 		task = t;
 		notifyDataSetInvalidated();
-		notifyDataSetChanged();
 	}
 
 	public List<Pair<Integer, Integer>> getData() {
 		return data;
 	}
-	
-	public Task getTask(){
+
+	public Task getTask() {
 		return task;
 	}
 
 	public void setData(List<Pair<Integer, Integer>> generateData) {
-		setData(generateData, task);		
+		setData(generateData, task);
 	}
 
 }

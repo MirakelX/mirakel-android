@@ -71,6 +71,7 @@ class TaskBase {
 		this.additionalEntriesString = additionalEntriesString;
 	}
 
+
 	TaskBase() {
 
 	}
@@ -241,6 +242,8 @@ class TaskBase {
 		initAdditionalEntries();
 		additionalEntries.remove(key);
 	}
+	
+
 
 	/**
 	 * This function parses the additional fields only if it is necessary
