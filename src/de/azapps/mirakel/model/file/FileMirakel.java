@@ -14,6 +14,7 @@ import android.graphics.BitmapFactory;
 import android.os.Environment;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
+import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.task.Task;
 
@@ -27,7 +28,6 @@ public class FileMirakel extends FileBase {
 	private static DatabaseHelper dbHelper;
 	private static final String[] allColumns = { "_id", "task_id", "name",
 			"path" };
-	private static Context context;
 
 	protected FileMirakel(int id, Task task, String name, String path) {
 		super(id, task, name, path);
@@ -39,6 +39,7 @@ public class FileMirakel extends FileBase {
 	}
 
 	public Bitmap getPreview() {
+		Log.d(TAG,"begin");
 		File osFile = new File(cacheDir, getId() + ".png");
 		if (osFile.exists()) {
 			return BitmapFactory.decodeFile(osFile.getAbsolutePath());
@@ -55,7 +56,6 @@ public class FileMirakel extends FileBase {
 	 *            The Application-Context
 	 */
 	public static void init(Context context) {
-		FileMirakel.context = context;
 		dbHelper = new DatabaseHelper(context);
 		database = dbHelper.getWritableDatabase();
 	}
@@ -177,6 +177,14 @@ public class FileMirakel extends FileBase {
 		return new FileMirakel(cursor.getInt(i++),
 				Task.get(cursor.getInt(i++)), cursor.getString(i++),
 				cursor.getString(i++));
+	}
+	
+	public static int getFileCount(Task t){
+		Cursor c=database.rawQuery("Select count(_id) from "+TABLE+" where task_id=?", new String[]{""+t.getId()});
+		c.moveToFirst();
+		int count=c.getInt(0);
+		c.close();
+		return count;
 	}
 
 }
