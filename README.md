@@ -13,7 +13,19 @@ Mirakel is a free (as in freedom) Todo List App with some Features for Poweruser
 * Sort your Tasks in different ways
 * Notifications
 
-## Screenshots
+**More Informations and Downloads you can get [here](http://mirakel.azapps.de/)**
+
+# Translations
+
+Please help us to translate the app: http://crowdin.net/project/mirakel
+
+# Development
+
+Clone the git-repo and use your favorite IDE or editor.
+
+If your Feature works, cleanup your Branch and make a [pull-request](https://help.github.com/articles/using-pull-requests).
+
+# Screenshots
 
 | Lists | Tasks | Task |
 |--------|-----|----|
@@ -21,22 +33,9 @@ Mirakel is a free (as in freedom) Todo List App with some Features for Poweruser
 | Notification | Widget | |
 | ![Notification](http://azapps.de/wp-content/uploads/2013/04/Screenshot_2013-04-21-14-33-26-150x150.png "Be notified") [Big Image](http://azapps.de/wp-content/uploads/2013/04/Screenshot_2013-04-21-14-33-26-614x1024.png) | ![Widget](http://azapps.de/wp-content/uploads/2013/04/Screenshot_2013-04-21-14-33-51-150x150.png "Homescreen Widget") [Big Image](http://azapps.de/wp-content/uploads/2013/04/Screenshot_2013-04-21-14-33-51-614x1024.png) |
 
-## Download
 
-[Here is the .apk](http://azapps.de/other/mirakel/Mirakel.apk)
 
-[SSL](http://azapps.de/other/mirakel/Mirakel.apk)
-
-This is the not the very latest Version. The apk is builded when we add some features or remove some bugs.
-This is experimental Software! Be careful.
-
-**Please report Bugs!**
-
-## Translations
-
-Please help us to translate the app: http://crowdin.net/project/mirakel
-
-## License
+# License
 
 Copyright (c) 2013 Anatolij Zelenin, Georg Semmler
 
