@@ -2,6 +2,7 @@ package de.azapps.mirakel.helper;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -18,6 +19,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
+import de.azapps.mirakel.main_activity.TaskFragment;
+import de.azapps.mirakel.main_activity.TaskFragmentAdapter;
+import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 
@@ -181,6 +185,39 @@ public class TaskDialogHelpers {
 
 							}
 						}).show();
+	}
+
+	public static void handleDeleteFile(final List<FileMirakel> selectedItems,Context ctx,final Task t, final TaskFragmentAdapter adapter) {
+		if(selectedItems.size()<1){
+			return;
+		}
+		String files=selectedItems.get(0).getName();
+		for(int i=1;i<selectedItems.size();i++){
+			files+=", "+selectedItems.get(i).getName();
+		}
+		new AlertDialog.Builder(ctx)
+		.setTitle(ctx.getString(R.string.remove_files))
+		.setMessage(ctx.getString(R.string.remove_files_summary,files,t.getName()))
+		.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				for(FileMirakel f:selectedItems){
+					f.destroy();
+				}
+				adapter.setData(TaskFragment.generateData(t));
+				
+			}
+		})
+		.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				//Nothing
+				
+			}
+		}).show();
+		
 	}
 
 }

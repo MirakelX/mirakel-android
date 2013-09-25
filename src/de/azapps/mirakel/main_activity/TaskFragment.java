@@ -18,17 +18,33 @@
  ******************************************************************************/
 package de.azapps.mirakel.main_activity;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.SuppressLint;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Pair;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.AbsListView.MultiChoiceModeListener;
+import android.widget.Toast;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.main_activity.TaskFragmentAdapter.TYPE;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.task.Task;
@@ -38,27 +54,123 @@ public class TaskFragment extends Fragment {
 	private static final String TAG = "TaskActivity";
 
 	public TaskFragmentAdapter adapter;
-	
 
+	@SuppressLint("NewApi")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		MainActivity main = (MainActivity) getActivity();
+		final MainActivity main = (MainActivity) getActivity();
 		View view = inflater.inflate(R.layout.task_fragment, container, false);
 		ListView listView = (ListView) view.findViewById(R.id.taskFragment);
-		List<Pair<Integer,Integer>> data = generateData(main.getCurrentTask());
+		final Task task = main.getCurrentTask();
+		List<Pair<Integer, Integer>> data = generateData(task);
 		Log.d(TAG, data.size() + " entries");
 		adapter = new TaskFragmentAdapter(main, R.layout.task_head_line, data,
 				main.getCurrentTask());
 		listView.setAdapter(adapter);
-		adapter.notifyDataSetChanged();
+		listView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1,
+					int position, long id) {
+				if (adapter.getData().get(position).first == TYPE.FILE) {
+					FileMirakel file = FileMirakel.getForTask(task).get(
+							adapter.getData().get(position).second);
+					String mimetype = Helpers.getMimeType(file.getPath());
+
+					Intent i2 = new Intent();
+					i2.setAction(android.content.Intent.ACTION_VIEW);
+					i2.setDataAndType(Uri.fromFile(new File(file.getPath())),
+							mimetype);
+					try {
+						main.startActivity(i2);
+					} catch (ActivityNotFoundException e) {
+						Toast.makeText(main,
+								main.getString(R.string.file_no_activity),
+								Toast.LENGTH_SHORT).show();
+					}
+				}
+
+			}
+		});
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+			listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+				@Override
+				public boolean onItemLongClick(AdapterView<?> parent,
+						View item, int position, final long id) {
+					Log.e(TAG, "implement for <3.0");
+					return true;
+				}
+			});
+		} else {
+			listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+			if (adapter != null) {
+				adapter.resetSelected();
+			}
+			listView.setHapticFeedbackEnabled(true);
+			listView.setMultiChoiceModeListener(new MultiChoiceModeListener() {
+
+				@Override
+				public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+
+					return false;
+				}
+
+				@Override
+				public void onDestroyActionMode(ActionMode mode) {
+					adapter.resetSelected();
+				}
+
+				@Override
+				public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+					MenuInflater inflater = mode.getMenuInflater();
+					inflater.inflate(R.menu.context_task, menu);
+					return true;
+				}
+
+				@Override
+				public boolean onActionItemClicked(ActionMode mode,
+						MenuItem item) {
+					
+					switch (item.getItemId()) {
+					case R.id.menu_delete:
+						List<FileMirakel> files=adapter.getTask().getFiles();
+						List<Pair<Integer, Integer>> selected = adapter.getSelected();
+						List<FileMirakel> selectedItems=new ArrayList<FileMirakel>();
+						for(Pair<Integer, Integer> p:selected){
+							if(p.first==TYPE.FILE){
+								selectedItems.add(files.get(p.second));
+							}
+						}
+						TaskDialogHelpers.handleDeleteFile(selectedItems,main,adapter.getTask(),adapter);
+						break;
+
+					default:
+						break;
+					}
+					mode.finish();
+					return false;
+				}
+
+				@Override
+				public void onItemCheckedStateChanged(ActionMode mode,
+						int position, long id, boolean checked) {
+					Log.d(TAG, "item " + position + " selected");
+					if (adapter.getData().get(position).first == TYPE.FILE) {
+						adapter.setSelected(position, checked);
+						adapter.notifyDataSetChanged();
+					}
+
+				}
+			});
+		}
 		Log.d(TAG, "created");
 		return view;
 	}
 
-	public static List<Pair<Integer,Integer>> generateData(Task task) {
-		//TODO implement Subtasks
-		List<Pair<Integer,Integer>> data = new ArrayList<Pair<Integer,Integer>>();
+	public static List<Pair<Integer, Integer>> generateData(Task task) {
+		// TODO implement Subtasks
+		List<Pair<Integer, Integer>> data = new ArrayList<Pair<Integer, Integer>>();
 		data.add(new Pair<Integer, Integer>(TYPE.HEADER, 0));
 		data.add(new Pair<Integer, Integer>(TYPE.DUE, 0));
 		data.add(new Pair<Integer, Integer>(TYPE.REMINDER, 0));
@@ -67,8 +179,9 @@ public class TaskFragment extends Fragment {
 		// for(task.)
 		// data.add(TYPE.SUBTASK);
 		data.add(new Pair<Integer, Integer>(TYPE.SUBTITLE, 1));
-		int fileCount=FileMirakel.getFileCount(task);
-		for (int i=0;i<fileCount;i++)
+		int fileCount = FileMirakel.getFileCount(task);
+		Log.d(TAG,"filecount"+fileCount);
+		for (int i = 0; i < fileCount; i++)
 			data.add(new Pair<Integer, Integer>(TYPE.FILE, i));
 		return data;
 	}

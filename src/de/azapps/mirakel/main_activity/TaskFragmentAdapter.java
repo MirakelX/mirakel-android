@@ -18,7 +18,6 @@
  ******************************************************************************/
 package de.azapps.mirakel.main_activity;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -31,14 +30,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.net.Uri;
 import android.os.Build;
 import android.text.util.Linkify;
 import android.util.Pair;
@@ -61,7 +57,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
-import android.widget.Toast;
 import android.widget.ViewSwitcher;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.Helpers;
@@ -74,7 +69,7 @@ import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakelandroid.R;
 
 public class TaskFragmentAdapter extends
-		MirakelArrayAdapter<Pair<Integer, Integer>> {//TYPE,INDEX
+		MirakelArrayAdapter<Pair<Integer, Integer>> {// TYPE,INDEX
 	private static final String TAG = "TaskFragmentAdapter";
 	private Task task;
 	protected boolean mIgnoreTimeSet;
@@ -88,7 +83,7 @@ public class TaskFragmentAdapter extends
 		final static int CONTENT = 4;
 		final static int SUBTITLE = 5;
 		final static int SUBTASK = 6;
-		final static int NOTHING=-1;
+		final static int NOTHING = -1;
 	}
 
 	public TaskFragmentAdapter(Context c) {
@@ -105,14 +100,15 @@ public class TaskFragmentAdapter extends
 		this.inflater = ((Activity) context).getLayoutInflater();
 
 	}
+
 	@Override
 	public int getViewTypeCount() {
 		return 7;
 	}
-	
+
 	@Override
 	public int getItemViewType(int position) {
-		return data.size()>position?data.get(position).first:TYPE.NOTHING;
+		return data.size() > position ? data.get(position).first : TYPE.NOTHING;
 	}
 
 	@Override
@@ -126,7 +122,8 @@ public class TaskFragmentAdapter extends
 			break;
 		case TYPE.FILE:
 			row = setupFile(inflater, parent,
-					task.getFiles().get(data.get(position).second), convertView);
+					task.getFiles().get(data.get(position).second),
+					convertView, position);
 			break;
 		case TYPE.HEADER:
 			row = setupHeader(inflater, parent, convertView);
@@ -135,7 +132,7 @@ public class TaskFragmentAdapter extends
 			row = setupReminder(inflater, parent, convertView);
 			break;
 		case TYPE.SUBTASK:
-			Log.e(TAG,"subtask are not implemented now");
+			Log.e(TAG, "subtask are not implemented now");
 			break;
 		case TYPE.SUBTITLE:
 			String title = null;
@@ -186,7 +183,7 @@ public class TaskFragmentAdapter extends
 	}
 
 	private View setupFile(LayoutInflater inflater, ViewGroup parent,
-			final FileMirakel file, View convertView) {
+			final FileMirakel file, View convertView, int position) {
 		final View row = convertView == null ? inflater.inflate(
 				R.layout.files_row, parent, false) : convertView;
 		final FileHolder holder;
@@ -199,26 +196,6 @@ public class TaskFragmentAdapter extends
 		} else {
 			holder = (FileHolder) row.getTag();
 		}
-		row.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				String mimetype = Helpers.getMimeType(file.getPath());
-
-				Intent i2 = new Intent();
-				i2.setAction(android.content.Intent.ACTION_VIEW);
-				i2.setDataAndType(Uri.fromFile(new File(file.getPath())),
-						mimetype);
-				try {
-					context.startActivity(i2);
-				} catch (ActivityNotFoundException e) {
-					Toast.makeText(context,
-							context.getString(R.string.file_no_activity),
-							Toast.LENGTH_SHORT).show();
-				}
-
-			}
-		});
 		new Thread(new Runnable() {
 			public void run() {
 				final Bitmap preview = file.getPreview();
@@ -248,14 +225,14 @@ public class TaskFragmentAdapter extends
 		}).start();
 		holder.fileName.setText(file.getName());
 		holder.filePath.setText(file.getPath());
-		// if (selected.get(position)) {
-		// row.setBackgroundColor(context.getResources().getColor(
-		// darkTheme ? R.color.highlighted_text_holo_dark
-		// : R.color.highlighted_text_holo_light));
-		// }else{
-		// row.setBackgroundColor(context.getResources().getColor(
-		// android.R.color.transparent));
-		// }
+		if (selected.get(position)) {
+			row.setBackgroundColor(context.getResources().getColor(
+					darkTheme ? R.color.highlighted_text_holo_dark
+							: R.color.highlighted_text_holo_light));
+		} else {
+			row.setBackgroundColor(context.getResources().getColor(
+					android.R.color.transparent));
+		}
 
 		return row;
 	}
@@ -377,7 +354,8 @@ public class TaskFragmentAdapter extends
 		holder.taskReminder
 				.setCompoundDrawables(reminder_img, null, null, null);
 		if (task.getReminder() == null) {
-			holder.taskReminder.setText(context.getString(R.string.no_reminder));
+			holder.taskReminder
+					.setText(context.getString(R.string.no_reminder));
 		} else {
 			holder.taskReminder.setText(Helpers.formatDate(task.getReminder(),
 					context.getString(R.string.humanDateTimeFormat)));
@@ -621,6 +599,18 @@ public class TaskFragmentAdapter extends
 		task = t;
 		notifyDataSetInvalidated();
 		notifyDataSetChanged();
+	}
+
+	public List<Pair<Integer, Integer>> getData() {
+		return data;
+	}
+	
+	public Task getTask(){
+		return task;
+	}
+
+	public void setData(List<Pair<Integer, Integer>> generateData) {
+		setData(generateData, task);		
 	}
 
 }

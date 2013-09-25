@@ -14,7 +14,6 @@ import android.graphics.BitmapFactory;
 import android.os.Environment;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.task.Task;
 
@@ -23,7 +22,7 @@ public class FileMirakel extends FileBase {
 	public static final File cacheDir = new File(Environment.getDataDirectory()
 			+ "/data/" + Mirakel.APK_NAME + "/image_cache");
 	public static final String TABLE = "files";
-	private static final String TAG = "TasksDataSource";
+	private static final String TAG = "FileMirakel";
 	private static SQLiteDatabase database;
 	private static DatabaseHelper dbHelper;
 	private static final String[] allColumns = { "_id", "task_id", "name",
@@ -39,7 +38,6 @@ public class FileMirakel extends FileBase {
 	}
 
 	public Bitmap getPreview() {
-		Log.d(TAG,"begin");
 		File osFile = new File(cacheDir, getId() + ".png");
 		if (osFile.exists()) {
 			return BitmapFactory.decodeFile(osFile.getAbsolutePath());
@@ -123,6 +121,11 @@ public class FileMirakel extends FileBase {
 		values.remove("_id");
 		int insertId = (int) database.insertOrThrow(TABLE, null, values);
 		return FileMirakel.get(insertId);
+	}
+	
+	public void destroy(){
+		database.delete(TABLE, "_id="+getId(),null);
+		new File(cacheDir,getId() + ".png").delete();
 	}
 
 	/**
