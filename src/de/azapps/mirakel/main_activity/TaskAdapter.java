@@ -106,6 +106,9 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 					|| ((MainActivity) context).getCurrentList()
 							.isSpecialList()) {
 				Helpers.setListColorBackground(task.getList(), row, darkTheme);
+			}else{
+				row.setBackgroundColor(context.getResources().getColor(
+						android.R.color.transparent));
 			}
 		} else {
 			row.setBackgroundColor(context.getResources().getColor(

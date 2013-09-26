@@ -28,7 +28,6 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -84,8 +83,6 @@ public class TasksFragment extends Fragment {
 	private static final int TASK_RENAME = 0, TASK_MOVE = 1, TASK_DESTROY = 2;
 	private int listId;
 	private boolean showDone = true;
-	private SQLiteDatabase database = null;
-
 	final Handler mHandler = new Handler();
 
 	final Runnable mUpdateResults = new Runnable() {
@@ -322,6 +319,9 @@ public class TasksFragment extends Fragment {
 			if (reset)
 				setScrollPosition(0);
 			return;
+		}
+		if(adapter!=null){
+			adapter.resetSelected();
 		}
 
 		main.showMessageFromSync();
