@@ -6,15 +6,17 @@ import de.azapps.mirakel.model.list.ListMirakel;
 public class SemanticBase {
 	private int id;
 	private String condition;
-	private int priority;
+	private Integer priority;
+	private Integer due;
 	private ListMirakel list;
 
-	public SemanticBase(int id, String condition, int priority, ListMirakel list) {
+	public SemanticBase(int id, String condition, Integer priority, Integer due, ListMirakel list) {
 		super();
 		this.id = id;
 		this.condition = condition;
 		this.priority = priority;
 		this.list = list;
+		this.due=due;
 	}
 
 	public int getId() {
@@ -33,12 +35,20 @@ public class SemanticBase {
 		this.condition = condition;
 	}
 
-	public int getPriority() {
+	public Integer getPriority() {
 		return priority;
 	}
 
-	public void setPriority(int priority) {
+	public void setPriority(Integer priority) {
 		this.priority = priority;
+	}
+
+	public Integer getDue() {
+		return due;
+	}
+
+	public void setDue(Integer due) {
+		this.due = due;
 	}
 
 	public ListMirakel getList() {
@@ -60,6 +70,7 @@ public class SemanticBase {
 		cv.put("condition", condition);
 		cv.put("default_list_id", list.getId());
 		cv.put("priority", priority);
+		cv.put("due",due);
 		return cv;
 	}
 

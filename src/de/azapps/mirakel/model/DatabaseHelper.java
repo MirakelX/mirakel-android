@@ -183,10 +183,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ "priority INTEGER, " + "list INTEGER);");
 			db.execSQL("INSERT INTO semantic_conditions (condition,due) VALUES "
 					+ "(\""
-					+ context.getString(R.string.today)
+					+ context.getString(R.string.today).toLowerCase()
 					+ "\",0);"
 					+ "INSERT INTO semantic_conditions (condition,due) VALUES (\""
-					+ context.getString(R.string.tomorrow) + "\",1);");
+					+ context.getString(R.string.tomorrow).toLowerCase() + "\",1);");
 		case 15:
 			db.execSQL("Alter Table " + ListMirakel.TABLE
 					+ " add column color INTEGER;");
@@ -207,6 +207,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		case 18:
 			db.execSQL("ALTER TABLE " + Semantic.TABLE
 					+ " add column default_list_id INTEGER");
+			db.execSQL("update semantic_conditions SET condition=LOWER(condition);");
 		}
 	}
 

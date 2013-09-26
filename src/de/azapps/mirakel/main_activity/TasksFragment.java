@@ -20,11 +20,7 @@ package de.azapps.mirakel.main_activity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -32,7 +28,6 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -63,13 +58,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
-import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
+import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SearchList;
-import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakelandroid.R;
@@ -89,7 +84,6 @@ public class TasksFragment extends Fragment {
 	private static final int TASK_RENAME = 0, TASK_MOVE = 1, TASK_DESTROY = 2;
 	private int listId;
 	private boolean showDone = true;
-	private Map<String, Integer> dueMap = new HashMap<String, Integer>();
 	private SQLiteDatabase database = null;
 
 	final Handler mHandler = new Handler();
@@ -225,28 +219,8 @@ public class TasksFragment extends Fragment {
 				}
 			}
 		});
-
-		// Get the semantics
-		getSemanticConditions();
 		// Inflate the layout for this fragment
 		return view;
-	}
-
-	private void getSemanticConditions() {
-		if (main.preferences.getBoolean("semanticNewTask", false)) {
-			if (database == null) {
-				database = Mirakel.getWritableDatabase();
-			}
-			String cols[] = { "condition", "due" };
-			Cursor c = database.query("semantic_conditions", cols, null, null,
-					null, null, null);
-			c.moveToFirst();
-			while (!c.isAfterLast()) {
-				dueMap.put(c.getString(0).toLowerCase(Locale.getDefault()),
-						c.getInt(1));
-				c.moveToNext();
-			}
-		}
 	}
 
 	public void focusNew() {
@@ -285,98 +259,32 @@ public class TasksFragment extends Fragment {
 			imm.showSoftInput(newTask, InputMethodManager.HIDE_IMPLICIT_ONLY);
 			return true;
 		}
-		long id;
-		if (main.getCurrentList() instanceof SearchList) {
-			id = main.getBaseList();
-		} else {
-			id = main.getCurrentList().getId();
-		}
-		GregorianCalendar due = null;
-		int prio = 0;
-		if (id <= 0) {
-			try {
-				SpecialList slist = SpecialList.getSpecialList((int) id);
-				id = slist.getDefaultList().getId();
-				if (slist.getDefaultDate() != null) {
-					due = new GregorianCalendar();
-					due.add(GregorianCalendar.DAY_OF_MONTH,
-							slist.getDefaultDate());
-				}
-				if (slist.getWhereQuery().contains("priority")) {
-					boolean[] mSelectedItems = new boolean[5];
-					boolean not = false;
-					String[] p = slist.getWhereQuery().split("and");
-					for (String s : p) {
-						if (s.contains("priority")) {
-							not = s.contains("not");
-							String[] r = s
-									.replace(
-											(!not ? "" : "not ")
-													+ "priority in (", "")
-									.replace(")", "").trim().split(",");
-							for (String t : r) {
-								try {
-									switch (Integer.parseInt(t)) {
-									case -2:
-										mSelectedItems[0] = true;
-										break;
-									case -1:
-										mSelectedItems[1] = true;
-										break;
-									case 0:
-										mSelectedItems[2] = true;
-										break;
-									case 1:
-										mSelectedItems[3] = true;
-										break;
-									case 2:
-										mSelectedItems[4] = true;
-										break;
-									}
-								} catch (NumberFormatException e) {
-								}
-								for (int i = 0; i < mSelectedItems.length; i++) {
-									if (mSelectedItems[i] != not) {
-										prio = i - 2;
-										break;
-									}
-								}
-							}
-							break;
-						}
-					}
-				}
-			} catch (NullPointerException e) {
-				id = 0;
-				due = null;
-				Toast.makeText(main, R.string.no_lists, Toast.LENGTH_LONG)
-						.show();
-			}
-		}
-		if (main.preferences.getBoolean("semanticNewTask", false)) {
-			GregorianCalendar tempdue = new GregorianCalendar();
-			String lowername = name.toLowerCase(Locale.getDefault());
-			Log.e(TAG, lowername);
-			for (String k : dueMap.keySet()) {
-				if (lowername.startsWith(k)) {
-					tempdue.add(GregorianCalendar.DAY_OF_MONTH, dueMap.get(k));
-					due = tempdue;
-					name = name.substring(k.length()).trim();
-					break;
-				}
-			}
-		}
-		Task task = Task.newTask(name, id, due, prio);
-		adapter.addToHead(task);
-		values.add(0, task);
-		adapter.notifyDataSetChanged();
 
-		main.getListFragment().update();
-		if (!PreferenceManager.getDefaultSharedPreferences(main).getBoolean(
-				"hideKeyboard", true)) {
-			focusNew();
+		ListMirakel list;
+		if (main.getCurrentList() instanceof SearchList) {
+			list = ListMirakel.getList(main.getBaseList());
+		} else {
+			list = main.getCurrentList();
 		}
-		return true;
+		try {
+			Task task = Semantic.createTask(name, list,
+					main.preferences.getBoolean("semanticNewTask", false));
+
+			adapter.addToHead(task);
+			values.add(0, task);
+			adapter.notifyDataSetChanged();
+
+			main.getListFragment().update();
+			if (!PreferenceManager.getDefaultSharedPreferences(main)
+					.getBoolean("hideKeyboard", true)) {
+				focusNew();
+			}
+			return true;
+		} catch (Semantic.NoListsException e) {
+			Toast.makeText(main, R.string.no_lists, Toast.LENGTH_LONG).show();
+			return false;
+		}
+
 	}
 
 	public void updateList() {

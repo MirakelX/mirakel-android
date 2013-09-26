@@ -34,6 +34,7 @@ import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
@@ -115,6 +116,7 @@ public class Mirakel extends Application {
 		Task.init(getApplicationContext());
 		SpecialList.init(getApplicationContext());
 		FileMirakel.init(getApplicationContext());
+		Semantic.init(getApplicationContext());
 		// Kill Notification Service if Notification disabled
 		if (!PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
 				"notificationsUse", false)
