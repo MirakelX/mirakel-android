@@ -67,12 +67,14 @@ public class TaskFragment extends Fragment {
 		adapter = new TaskFragmentAdapter(main, R.layout.task_head_line,
 				main.getCurrentTask());
 		listView.setAdapter(adapter);
+		listView.setItemsCanFocus(true);
 		listView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1,
 					int position, long id) {
-				if (adapter.getData().get(position).first == TYPE.FILE) {
+				int type = adapter.getData().get(position).first;
+				if (type == TYPE.FILE) {
 					FileMirakel file = FileMirakel.getForTask(task).get(
 							adapter.getData().get(position).second);
 					String mimetype = Helpers.getMimeType(file.getPath());
@@ -88,6 +90,14 @@ public class TaskFragment extends Fragment {
 								main.getString(R.string.file_no_activity),
 								Toast.LENGTH_SHORT).show();
 					}
+				} else if (type == TYPE.SUBTASK) {
+					Task t=adapter.getTask().getSubtasks()
+							.get(adapter.getData().get(position).second);
+					if(t.getList().getId()!=main.getCurrentList().getId()){
+						main.setCurrentList(t.getList(),false);
+					}
+					main.setCurrentTask(t, false);
+					adapter.setData(t);
 				}
 
 			}
@@ -111,10 +121,15 @@ public class TaskFragment extends Fragment {
 
 				@Override
 				public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-					if(adapter.getSelectedCount()>0){
-						menu.findItem(R.id.edit_task).setVisible(
-								adapter.getSelectedCount() ==1&&(adapter.getSelected().get(0).first==TYPE.SUBTASK));
-						menu.findItem(R.id.done_task).setVisible(adapter.getSelected().get(0).first==TYPE.SUBTASK);
+					if (adapter.getSelectedCount() > 0) {
+						menu.findItem(R.id.edit_task)
+								.setVisible(
+										adapter.getSelectedCount() == 1
+												&& (adapter.getSelected()
+														.get(0).first == TYPE.SUBTASK));
+						menu.findItem(R.id.done_task)
+								.setVisible(
+										adapter.getSelected().get(0).first == TYPE.SUBTASK);
 					}
 					return false;
 				}
@@ -138,44 +153,51 @@ public class TaskFragment extends Fragment {
 					switch (item.getItemId()) {
 					case R.id.menu_delete:
 						List<Pair<Integer, Integer>> selected = adapter
-						.getSelected();
-						if(adapter.getSelectedCount()>0&&adapter.getSelected().get(0).first==TYPE.FILE){
-							List<FileMirakel> files = adapter.getTask().getFiles();
+								.getSelected();
+						if (adapter.getSelectedCount() > 0
+								&& adapter.getSelected().get(0).first == TYPE.FILE) {
+							List<FileMirakel> files = adapter.getTask()
+									.getFiles();
 							List<FileMirakel> selectedItems = new ArrayList<FileMirakel>();
 							for (Pair<Integer, Integer> p : selected) {
 								if (p.first == TYPE.FILE) {
 									selectedItems.add(files.get(p.second));
 								}
 							}
-							TaskDialogHelpers.handleDeleteFile(selectedItems, main,
-									adapter.getTask(), adapter);
+							TaskDialogHelpers.handleDeleteFile(selectedItems,
+									main, adapter.getTask(), adapter);
 							break;
-						}else if(adapter.getSelectedCount()>0&&adapter.getSelected().get(0).first==TYPE.SUBTASK){
-							List<Task>subtasks=adapter.getTask().getSubtasks();
+						} else if (adapter.getSelectedCount() > 0
+								&& adapter.getSelected().get(0).first == TYPE.SUBTASK) {
+							List<Task> subtasks = adapter.getTask()
+									.getSubtasks();
 							List<Task> selectedItems = new ArrayList<Task>();
 							for (Pair<Integer, Integer> p : selected) {
 								if (p.first == TYPE.SUBTASK) {
 									selectedItems.add(subtasks.get(p.second));
 								}
 							}
-							TaskDialogHelpers.handleRemoveSubtask(selectedItems,main,adapter,adapter.getTask());
-						}else{
+							TaskDialogHelpers.handleRemoveSubtask(
+									selectedItems, main, adapter,
+									adapter.getTask());
+						} else {
 							Log.e(TAG, "How did you get selected this?");
 						}
 					case R.id.edit_task:
-						if(adapter.getSelectedCount()==1){
-							adapter.setData(adapter.getTask().getSubtasks().get(adapter.getSelected().get(0).second));
+						if (adapter.getSelectedCount() == 1) {
+							adapter.setData(adapter.getTask().getSubtasks()
+									.get(adapter.getSelected().get(0).second));
 						}
 						break;
 					case R.id.done_task:
 						List<Task> subtasks = adapter.getTask().getSubtasks();
-						for(Pair<Integer, Integer> s:adapter.getSelected()){
-							Task t=subtasks.get(s.second);
+						for (Pair<Integer, Integer> s : adapter.getSelected()) {
+							Task t = subtasks.get(s.second);
 							t.setDone(true);
 							try {
 								t.save();
 							} catch (NoSuchListException e) {
-								Log.d(TAG,"list did vanish");
+								Log.d(TAG, "list did vanish");
 							}
 						}
 						break;
@@ -199,7 +221,7 @@ public class TaskFragment extends Fragment {
 						adapter.setSelected(position, checked);
 						adapter.notifyDataSetChanged();
 						mode.invalidate();
-					} else if(adapter.getSelectedCount()==0) {
+					} else if (adapter.getSelectedCount() == 0) {
 						mode.finish();// No CAB
 					}
 
@@ -209,7 +231,6 @@ public class TaskFragment extends Fragment {
 		Log.d(TAG, "created");
 		return view;
 	}
-
 
 	public void update(Task t) {
 		if (adapter != null) {

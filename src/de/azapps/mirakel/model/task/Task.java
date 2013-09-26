@@ -118,50 +118,61 @@ public class Task extends TaskBase {
 			database.update(TABLE, values, "_id=" + id, null);
 		}
 	}
-	
-	public List<Task> getSubtasks(){
-		Cursor c=database.query(SUBTASK_TABLE, new String[]{"child_id"}, "parent_id="+getId(), null, null, null, null);
-		List<Task> subTasks=new ArrayList<Task>();
+
+	public List<Task> getSubtasks() {
+		String columns = "t."+allColumns[0];
+		for (int i = 1; i < allColumns.length; i++) {
+			columns += ", t." + allColumns[i];
+		}
+		Cursor c = database.rawQuery("SELECT " + columns + " FROM " + TABLE
+				+ " t INNER JOIN " + SUBTASK_TABLE
+				+ " s on t._id=s.child_id WHERE s.parent_id=?;",
+				new String[] { "" + getId() });
+		List<Task> subTasks = new ArrayList<Task>();
 		c.moveToFirst();
-		while(!c.isAfterLast()){
-			subTasks.add(Task.get(c.getLong(0)));
+		while (!c.isAfterLast()) {
+			subTasks.add(cursorToTask(c));
 			c.moveToNext();
 		}
 		c.close();
 		return subTasks;
-		
+
 	}
-	
-	public int getSubtaskCount(){
-		Cursor c=database.rawQuery("Select count(_id) from "+SUBTASK_TABLE+" where parent_id="+getId(), null);
+
+	public int getSubtaskCount() {
+		Cursor c = database.rawQuery("Select count(_id) from " + SUBTASK_TABLE
+				+ " where parent_id=" + getId(), null);
 		c.moveToFirst();
-		int count=c.getInt(0);
+		int count = c.getInt(0);
 		c.close();
 		return count;
 	}
-	
-	public static List<Pair<Long,String>> getTaskNames(){
-		Cursor c=database.query(TABLE, new String[]{"_id,name"}, "not sync_state="+Network.SYNC_STATE.DELETE, null, null, null, null);
+
+	public static List<Pair<Long, String>> getTaskNames() {
+		Cursor c = database.query(TABLE, new String[] { "_id,name" },
+				"not sync_state=" + Network.SYNC_STATE.DELETE, null, null,
+				null, null);
 		c.moveToFirst();
-		List <Pair<Long,String>> names=new ArrayList<Pair<Long,String>>();
-		while (!c.isAfterLast()){
+		List<Pair<Long, String>> names = new ArrayList<Pair<Long, String>>();
+		while (!c.isAfterLast()) {
 			names.add(new Pair<Long, String>(c.getLong(0), c.getString(1)));
 			c.moveToNext();
 		}
 		c.close();
 		return names;
 	}
-	
-	public void addSubtask(Task t) throws NoSuchListException{
-		ContentValues cv=new ContentValues();
+
+	public void addSubtask(Task t) throws NoSuchListException {
+		ContentValues cv = new ContentValues();
 		cv.put("parent_id", getId());
 		cv.put("child_id", t.getId());
 		database.insert(SUBTASK_TABLE, null, cv);
 	}
-	
+
 	public void deleteSubtask(Task s) {
-		database.delete(SUBTASK_TABLE, "parent_id="+getId()+" and child_id="+s.getId(), null);
-		
+		database.delete(SUBTASK_TABLE, "parent_id=" + getId()
+				+ " and child_id=" + s.getId(), null);
+
 	}
 
 	public static void deleteDoneTasks() {
@@ -219,8 +230,8 @@ public class Task extends TaskBase {
 	private static DatabaseHelper dbHelper;
 	private static final String[] allColumns = { "_id", "uuid", "list_id",
 			"name", "content", "done", "due", "reminder", "priority",
-			"created_at", "updated_at", "sync_state", "additional_entries"};
-	
+			"created_at", "updated_at", "sync_state", "additional_entries" };
+
 	private static Context context;
 
 	public static Task getDummy(Context ctx) {
@@ -786,7 +797,5 @@ public class Task extends TaskBase {
 		return ids;
 
 	}
-
-
 
 }

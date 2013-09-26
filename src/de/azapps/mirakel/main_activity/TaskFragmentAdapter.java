@@ -43,6 +43,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
@@ -93,14 +94,13 @@ public class TaskFragmentAdapter extends
 		super(c, 0, new ArrayList<Pair<Integer, Integer>>());
 	}
 
-	public TaskFragmentAdapter(Context context, int textViewResourceId,
-			Task t) {
+	public TaskFragmentAdapter(Context context, int textViewResourceId, Task t) {
 		super(context, textViewResourceId, generateData(t));
 		this.task = t;
 		if (task == null)
 			task = Task.getDummy(context);
 		this.inflater = ((Activity) context).getLayoutInflater();
-		this.adapter=this;
+		this.adapter = this;
 
 	}
 
@@ -108,7 +108,6 @@ public class TaskFragmentAdapter extends
 	public int getViewTypeCount() {
 		return 7;
 	}
-
 
 	@Override
 	public int getItemViewType(int position) {
@@ -122,21 +121,22 @@ public class TaskFragmentAdapter extends
 			return row;
 		switch (getItemViewType(position)) {
 		case TYPE.DUE:
-			row = setupDue( parent, convertView);
+			row = setupDue(parent, convertView);
 			break;
 		case TYPE.FILE:
-			row = setupFile( parent,
+			row = setupFile(parent,
 					task.getFiles().get(data.get(position).second),
 					convertView, position);
 			break;
 		case TYPE.HEADER:
-			row = setupHeader( parent, convertView);
+			row = setupHeader(parent, convertView);
 			break;
 		case TYPE.REMINDER:
-			row = setupReminder( parent, convertView);
+			row = setupReminder(parent, convertView);
 			break;
 		case TYPE.SUBTASK:
-			row = setupSubtask( parent, convertView,task.getSubtasks().get(data.get(position).second),position);
+			row = setupSubtask(parent, convertView,
+					task.getSubtasks().get(data.get(position).second), position);
 			break;
 		case TYPE.SUBTITLE:
 			String title = null;
@@ -147,7 +147,7 @@ public class TaskFragmentAdapter extends
 				action = new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						TaskDialogHelpers.handleSubtask(context, task,adapter);
+						TaskDialogHelpers.handleSubtask(context, task, adapter);
 					}
 				};
 				break;
@@ -167,20 +167,17 @@ public class TaskFragmentAdapter extends
 				Log.d(TAG, "unknown subtitle");
 				break;
 			}
-			row = setupSubtitle( parent, title, action, convertView);
+			row = setupSubtitle(parent, title, action, convertView);
 			break;
 		case TYPE.CONTENT:
 			Log.d(TAG, "load content");
-			row = setupContent( parent, convertView);
+			row = setupContent(parent, convertView);
 			break;
 
 		}
 
 		return row;
 	}
-	
-	
-
 
 	static class TaskHolder {
 		CheckBox taskRowDone;
@@ -190,10 +187,14 @@ public class TaskFragmentAdapter extends
 		TextView taskRowDue, taskRowList;
 		ImageView taskRowHasContent;
 	}
-	private View setupSubtask(ViewGroup parent, View convertView, Task task,int position) {
-//		return TaskAdapter.setupRow( null, parent, context, layoutResourceId, task, true, darkTheme);
-		View row = convertView==null?inflater.inflate(R.layout.tasks_row, parent, false):convertView;
-		TaskHolder holder;
+
+	private View setupSubtask(ViewGroup parent, View convertView, Task task,
+			int position) {
+		// return TaskAdapter.setupRow( null, parent, context, layoutResourceId,
+		// task, true, darkTheme);
+		final View row = convertView == null ? inflater.inflate(R.layout.tasks_row,
+				parent, false) : convertView;
+		final TaskHolder holder;
 
 		if (convertView == null) {
 			// Initialize the View
@@ -223,12 +224,25 @@ public class TaskFragmentAdapter extends
 		holder.taskRowDone.setChecked(task.isDone());
 		holder.taskRowDone.setTag(task);
 		holder.taskRowDoneWrapper.setTag(task);
+		OnClickListener checkbox= new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Task task = (Task) v.getTag();
+				task.toggleDone();
+				((MainActivity) context).saveTask(task);
+				ReminderAlarm.updateAlarms(context);
+				holder.taskRowDone.setChecked(task.isDone());
+				updateName(task, row, holder);
+			}
+		};
+		holder.taskRowDone.setOnClickListener(checkbox);
+		holder.taskRowDoneWrapper.setOnClickListener(checkbox);
 		if (task.getContent().length() != 0) {
 			holder.taskRowHasContent.setVisibility(View.VISIBLE);
 		} else {
 			holder.taskRowHasContent.setVisibility(View.INVISIBLE);
 		}
-		if ( task != null && task.getList() != null) {
+		if (task != null && task.getList() != null) {
 			holder.taskRowList.setVisibility(View.VISIBLE);
 			holder.taskRowList.setText(task.getList().getName());
 		} else {
@@ -238,17 +252,25 @@ public class TaskFragmentAdapter extends
 		// Name
 		holder.taskRowName.setText(task.getName());
 
-		if (task.isDone()) {
-			holder.taskRowName.setTextColor(row.getResources().getColor(
-					R.color.Grey));
-		} else {
-			holder.taskRowName.setTextColor(row.getResources().getColor(
-					darkTheme ? android.R.color.primary_text_dark
-							: android.R.color.primary_text_light));
-		}
+		updateName(task, row, holder);
 
 		// Priority
 		holder.taskRowPriority.setText("" + task.getPriority());
+		holder.taskRowPriority.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(final View v) {
+				final Task task = (Task) v.getTag();
+				TaskDialogHelpers.handlePriority(context, task,
+						new ExecInterface() {
+
+							@Override
+							public void exec() {
+								((MainActivity)context).updatesForTask(task);
+							}
+						});
+
+			}
+		});
 		// Log.e("Blubb",holder.taskRowPriority.getBackground().getClass().toString());
 
 		GradientDrawable bg = (GradientDrawable) holder.taskRowPriority
@@ -270,8 +292,16 @@ public class TaskFragmentAdapter extends
 		return row;
 	}
 
-
-
+	private void updateName(Task task, View row, final TaskHolder holder) {
+		if (task.isDone()) {
+			holder.taskRowName.setTextColor(row.getResources().getColor(
+					R.color.Grey));
+		} else {
+			holder.taskRowName.setTextColor(row.getResources().getColor(
+					darkTheme ? android.R.color.primary_text_dark
+							: android.R.color.primary_text_light));
+		}
+	}
 
 	static class FileHolder {
 		ImageView fileImage;
@@ -279,8 +309,8 @@ public class TaskFragmentAdapter extends
 		TextView filePath;
 	}
 
-	private View setupFile(ViewGroup parent,
-			final FileMirakel file, View convertView, int position) {
+	private View setupFile(ViewGroup parent, final FileMirakel file,
+			View convertView, int position) {
 		final View row = convertView == null ? inflater.inflate(
 				R.layout.files_row, parent, false) : convertView;
 		final FileHolder holder;
@@ -344,8 +374,8 @@ public class TaskFragmentAdapter extends
 		ImageButton button;
 	}
 
-	private View setupSubtitle(ViewGroup parent,
-			String title, OnClickListener action, View convertView) {
+	private View setupSubtitle(ViewGroup parent, String title,
+			OnClickListener action, View convertView) {
 		if (title == null || action == null)
 			return new View(context);
 		final View subtitle = convertView == null ? inflater.inflate(
@@ -361,8 +391,7 @@ public class TaskFragmentAdapter extends
 		TextView taskContent;
 	}
 
-	private View setupContent(ViewGroup parent,
-			View convertView) {
+	private View setupContent(ViewGroup parent, View convertView) {
 		final View content = convertView == null ? inflater.inflate(
 				R.layout.task_content, parent, false) : convertView;
 		final ContentHolder holder;
@@ -436,8 +465,7 @@ public class TaskFragmentAdapter extends
 		TextView taskReminder;
 	}
 
-	private View setupReminder(ViewGroup parent,
-			View convertView) {
+	private View setupReminder(ViewGroup parent, View convertView) {
 		final View reminder = convertView == null ? inflater.inflate(
 				R.layout.task_reminder, parent, false) : convertView;
 		final ReminderHolder holder;
@@ -493,8 +521,7 @@ public class TaskFragmentAdapter extends
 		TextView taskDue;
 	}
 
-	private View setupDue(ViewGroup parent,
-			View convertView) {
+	private View setupDue(ViewGroup parent, View convertView) {
 		final View due = convertView == null ? inflater.inflate(
 				R.layout.task_due, parent, false) : convertView;
 		final DueHolder holder;
@@ -593,10 +620,11 @@ public class TaskFragmentAdapter extends
 		TextView taskName;
 		CheckBox taskDone;
 		TextView taskPrio;
+		ViewSwitcher switcher;
+		EditText txt;
 	}
 
-	private View setupHeader(ViewGroup parent,
-			View convertView) {
+	private View setupHeader(ViewGroup parent, View convertView) {
 		// Task Name
 		final View header = convertView == null ? inflater.inflate(
 				R.layout.task_head_line, null, false) : convertView;
@@ -606,6 +634,8 @@ public class TaskFragmentAdapter extends
 			holder.taskName = (TextView) header.findViewById(R.id.task_name);
 			holder.taskDone = (CheckBox) header.findViewById(R.id.task_done);
 			holder.taskPrio = (TextView) header.findViewById(R.id.task_prio);
+			holder.switcher=(ViewSwitcher) header.findViewById(R.id.switch_name);
+			holder.txt=(EditText) header.findViewById(R.id.edit_name);
 			header.setTag(holder);
 		} else {
 			holder = (HeaderHolder) header.getTag();
@@ -615,6 +645,10 @@ public class TaskFragmentAdapter extends
 		holder.taskName.setText(tname == null ? "" : tname);
 		if (((MainActivity) context).isTablet)
 			holder.taskName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
+		
+		if(holder.switcher.getCurrentView().getId()==R.id.edit_name&&!task.getName().equals(holder.txt.getText().toString())){
+			holder.switcher.showPrevious();
+		}
 		holder.taskName.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -623,17 +657,25 @@ public class TaskFragmentAdapter extends
 							.findViewById(R.id.tasks_new))
 							.setOnFocusChangeListener(null);
 				}
-				ViewSwitcher switcher = (ViewSwitcher) header
-						.findViewById(R.id.switch_name);
-				switcher.showNext(); // or switcher.showPrevious();
-				EditText txt = (EditText) header.findViewById(R.id.edit_name);
-				txt.setText(holder.taskName.getText());
-				txt.requestFocus();
-
-				InputMethodManager imm = (InputMethodManager) context
-						.getSystemService(Context.INPUT_METHOD_SERVICE);
-				imm.showSoftInput(txt, InputMethodManager.SHOW_IMPLICIT);
-				txt.setOnEditorActionListener(new OnEditorActionListener() {
+				holder.switcher.showNext(); // or switcher.showPrevious();
+				holder.txt.setText(holder.taskName.getText());
+				holder.txt.setOnFocusChangeListener(new OnFocusChangeListener() {
+					
+					@Override
+					public void onFocusChange(View v, boolean hasFocus) {
+						InputMethodManager imm = (InputMethodManager) context
+								.getSystemService(Context.INPUT_METHOD_SERVICE);
+						if(hasFocus){
+							imm.showSoftInput(holder.txt, InputMethodManager.SHOW_IMPLICIT);
+						}else{
+							imm.showSoftInput(holder.txt, InputMethodManager.HIDE_IMPLICIT_ONLY);
+						}
+//						holder.txt.requestFocus();
+						
+					}
+				});
+				holder.txt.requestFocus();
+				holder.txt.setOnEditorActionListener(new OnEditorActionListener() {
 					public boolean onEditorAction(TextView v, int actionId,
 							KeyEvent event) {
 						if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -644,7 +686,9 @@ public class TaskFragmentAdapter extends
 							task.setName(txt.getText().toString());
 							((MainActivity) context).saveTask(task);
 							holder.taskName.setText(task.getName());
+							txt.setOnFocusChangeListener(null);
 							imm.hideSoftInputFromWindow(txt.getWindowToken(), 0);
+							
 							return true;
 						}
 						return false;
@@ -711,7 +755,6 @@ public class TaskFragmentAdapter extends
 		return task;
 	}
 
-	
 	private static List<Pair<Integer, Integer>> generateData(Task task) {
 		// TODO implement Subtasks
 		List<Pair<Integer, Integer>> data = new ArrayList<Pair<Integer, Integer>>();

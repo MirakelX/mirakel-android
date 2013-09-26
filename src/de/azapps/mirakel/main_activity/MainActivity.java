@@ -933,12 +933,19 @@ public class MainActivity extends ActionBarActivity implements
 	 * Set the current list and update the views
 	 * 
 	 * @param currentList
+	 * @param b 
 	 */
-	void setCurrentList(ListMirakel currentList) {
-		setCurrentList(currentList, null);
+	void setCurrentList(ListMirakel currentList, boolean b) {
+		setCurrentList(currentList, null, b);
+	}
+	void setCurrentList(ListMirakel currentList, View currentView){
+		setCurrentList(currentList, currentView, true);
+	}
+	void setCurrentList(ListMirakel currentList){
+		setCurrentList(currentList, null, true);
 	}
 
-	void setCurrentList(ListMirakel currentList, View currentView) {
+	void setCurrentList(ListMirakel currentList, View currentView, boolean switchFragment) {
 		if (currentList == null)
 			return;
 		this.currentList = currentList;
@@ -955,7 +962,7 @@ public class MainActivity extends ActionBarActivity implements
 
 		if (tasksFragment != null) {
 			tasksFragment.updateList();
-			if (!isTablet)
+			if (!isTablet&&switchFragment)
 				mViewPager.setCurrentItem(TASKS_FRAGMENT);
 		}
 		if (currentView == null && listFragment != null
@@ -972,7 +979,8 @@ public class MainActivity extends ActionBarActivity implements
 					R.color.pressed_color));
 			oldClickedList = currentView;
 		}
-		setCurrentTask(currentTask);
+		if(switchFragment)
+			setCurrentTask(currentTask);
 		if (currentPosition == TASKS_FRAGMENT)
 			getSupportActionBar().setTitle(currentList.getName());
 

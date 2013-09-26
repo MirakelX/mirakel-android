@@ -20,7 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
-import de.azapps.mirakel.main_activity.TaskFragment;
 import de.azapps.mirakel.main_activity.TaskFragmentAdapter;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.task.Task;

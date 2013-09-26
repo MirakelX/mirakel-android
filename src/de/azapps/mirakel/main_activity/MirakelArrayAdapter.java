@@ -21,11 +21,13 @@ package de.azapps.mirakel.main_activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.azapps.mirakel.helper.Log;
 import android.content.Context;
 import android.preference.PreferenceManager;
 import android.widget.ArrayAdapter;
 
 public class MirakelArrayAdapter<T> extends ArrayAdapter<T> {
+	private static final String TAG = "MirakelArrayAdapter";
 	protected List<T> data;
 	protected int layoutResourceId;
 	protected Context context;
@@ -57,8 +59,8 @@ public class MirakelArrayAdapter<T> extends ArrayAdapter<T> {
 	
 	public void setSelected(int position, boolean selected) {
 		this.selected.set(position, selected);
-		notifyDataSetChanged();
 		selecdetCount += (selected ? 1 : -1);
+		notifyDataSetChanged();
 	}
 
 	public int getSelectedCount() {
@@ -66,11 +68,13 @@ public class MirakelArrayAdapter<T> extends ArrayAdapter<T> {
 	}
 
 	public void resetSelected() {
-		for (int i = 0; i < selected.size(); i++) {
-			selected.set(i, false);
+		Log.d(TAG,"reset selected");
+		selected=new ArrayList<Boolean>();
+		for (int i = 0; i < data.size(); i++) {
+			selected.add(false);
 		}
 		notifyDataSetChanged();
-		selecdetCount = 0;
+		selecdetCount = selected.size();
 	}
 	
 	public void changeData(List<T> newData) {
