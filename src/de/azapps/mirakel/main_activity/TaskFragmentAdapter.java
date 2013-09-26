@@ -670,7 +670,6 @@ public class TaskFragmentAdapter extends
 						}else{
 							imm.showSoftInput(holder.txt, InputMethodManager.HIDE_IMPLICIT_ONLY);
 						}
-//						holder.txt.requestFocus();
 						
 					}
 				});

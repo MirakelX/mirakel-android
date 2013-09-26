@@ -66,6 +66,11 @@
     <string name="remove_files_summary">Do you want to remove %1$s from %2$s?</string>
     <string name="add_subtask">Add Subtask</string>
     <string name="remove_subtask">Remove Subtask</string>
+    <string name="subtask_add_options">Options>></string>
+    <string name="subtask_done">Task Done?</string>
+    <string name="subtask_reminder">Task with reminder?</string>
+    <string name="subtask_content">Task with Content?</string>
+    <string name="add">Add</string>
 
     <string-array name="task_sorting_items">
         <item>Default</item>

@@ -161,6 +161,8 @@ public class Task extends TaskBase {
 		c.close();
 		return names;
 	}
+	
+
 
 	public void addSubtask(Task t) throws NoSuchListException {
 		ContentValues cv = new ContentValues();
@@ -405,10 +407,14 @@ public class Task extends TaskBase {
 	 * @param id
 	 * @return
 	 */
-	public static List<Task> search(String query) {
-		String[] args = { "%" + query + "%" };
+	public static List<Task> searchName(String query) {
+		String[] args = { "'%" + query + "%'" };
 		Cursor cursor = database.query(TABLE, allColumns, "name LIKE ?", args,
 				null, null, null);
+		return cursorToTaskList(cursor);
+	}
+
+	private static List<Task> cursorToTaskList(Cursor cursor) {
 		cursor.moveToFirst();
 		List<Task> tasks = new ArrayList<Task>();
 		while (!cursor.isAfterLast()) {
@@ -418,6 +424,13 @@ public class Task extends TaskBase {
 		cursor.close();
 		return tasks;
 	}
+	public static List<Task> search(String query) {
+		Cursor cursor = database.query(TABLE, allColumns, query, null,
+				null, null, null);
+		return cursorToTaskList(cursor);
+		
+	}
+	
 
 	/**
 	 * Get tasks by Sync State
@@ -426,15 +439,9 @@ public class Task extends TaskBase {
 	 * @return
 	 */
 	public static List<Task> getBySyncState(short state) {
-		List<Task> tasks_local = new ArrayList<Task>();
 		Cursor c = database.query(TABLE, allColumns, "sync_state=" + state
 				+ " and list_id>0", null, null, null, null);
-		c.moveToFirst();
-		while (!c.isAfterLast()) {
-			tasks_local.add(cursorToTask(c));
-			c.moveToNext();
-		}
-		return tasks_local;
+		return cursorToTaskList(c);
 	}
 
 	/**
@@ -462,43 +469,22 @@ public class Task extends TaskBase {
 	 */
 	public static List<Task> getTasks(ListMirakel list, int sorting,
 			boolean showDone, String where) {
-		List<Task> tasks = new ArrayList<Task>();
 		Cursor cursor = getTasksCursor(list.getId(), sorting, where);
-		cursor.moveToFirst();
-		while (!cursor.isAfterLast()) {
-			tasks.add(cursorToTask(cursor));
-			cursor.moveToNext();
-		}
-		cursor.close();
-		return tasks;
+		return cursorToTaskList(cursor);
 	}
 
 	public static List<Task> getTasksWithReminders() {
 		String where = "reminder NOT NULL and done=0";
 		Cursor cursor = Mirakel.getReadableDatabase().query(TABLE, allColumns,
 				where, null, null, null, null);
-		List<Task> tasks = new ArrayList<Task>();
-		cursor.moveToFirst();
-		while (!cursor.isAfterLast()) {
-			tasks.add(cursorToTask(cursor));
-			cursor.moveToNext();
-		}
-		cursor.close();
-		return tasks;
+		return cursorToTaskList(cursor);
 	}
 
 	public static List<Task> getTasksToSync() {
 		String where = "sync_state!='" + Network.SYNC_STATE.NOTHING + "'";
 		Cursor cursor = Mirakel.getReadableDatabase().query(TABLE, allColumns,
 				where, null, null, null, null);
-		List<Task> tasks = new ArrayList<Task>();
-		cursor.moveToFirst();
-		while (!cursor.isAfterLast()) {
-			tasks.add(cursorToTask(cursor));
-			cursor.moveToNext();
-		}
-		cursor.close();
-		return tasks;
+		return cursorToTaskList(cursor);
 
 	}
 
@@ -512,16 +498,8 @@ public class Task extends TaskBase {
 	 * @return
 	 */
 	public static List<Task> getTasks(int listId, int sorting, boolean showDone) {
-		List<Task> tasks = new ArrayList<Task>();
 		Cursor cursor = getTasksCursor(listId, sorting, showDone);
-		cursor.moveToFirst();
-		while (!cursor.isAfterLast()) {
-			Task task = cursorToTask(cursor);
-			tasks.add(task);
-			cursor.moveToNext();
-		}
-		cursor.close();
-		return tasks;
+		return cursorToTaskList(cursor);
 	}
 
 	/**
