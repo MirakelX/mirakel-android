@@ -248,5 +248,38 @@ public class TaskDialogHelpers {
 		
 	}
 
+	public static void handleRemoveSubtask(final List<Task> subtasks,
+			Context ctx, final TaskFragmentAdapter adapter,final Task task) {
+		if(subtasks.size()==0)
+			return;
+		String names=subtasks.get(0).getName();
+		for(int i=1;i<subtasks.size();i++){
+			names+=", "+subtasks.get(i).getName();
+		}
+		new AlertDialog.Builder(ctx)
+		.setTitle(ctx.getString(R.string.remove_subtask))
+		.setMessage(ctx.getString(R.string.remove_files_summary,names,task.getName()))
+		.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				for(Task s:subtasks){
+					task.deleteSubtask(s);
+				}
+				adapter.setData(TaskFragment.generateData(task));				
+			}
+		})
+		.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// Nothing
+				
+			}
+			
+		}).show();
+		
+	}
+
 
 }

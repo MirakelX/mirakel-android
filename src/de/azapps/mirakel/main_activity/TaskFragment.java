@@ -134,18 +134,31 @@ public class TaskFragment extends Fragment {
 
 					switch (item.getItemId()) {
 					case R.id.menu_delete:
-						List<FileMirakel> files = adapter.getTask().getFiles();
 						List<Pair<Integer, Integer>> selected = adapter
-								.getSelected();
-						List<FileMirakel> selectedItems = new ArrayList<FileMirakel>();
-						for (Pair<Integer, Integer> p : selected) {
-							if (p.first == TYPE.FILE) {
-								selectedItems.add(files.get(p.second));
+						.getSelected();
+						if(adapter.getSelectedCount()>0&&adapter.getSelected().get(0).first==TYPE.FILE){
+							List<FileMirakel> files = adapter.getTask().getFiles();
+							List<FileMirakel> selectedItems = new ArrayList<FileMirakel>();
+							for (Pair<Integer, Integer> p : selected) {
+								if (p.first == TYPE.FILE) {
+									selectedItems.add(files.get(p.second));
+								}
 							}
+							TaskDialogHelpers.handleDeleteFile(selectedItems, main,
+									adapter.getTask(), adapter);
+							break;
+						}else if(adapter.getSelectedCount()>0&&adapter.getSelected().get(0).first==TYPE.SUBTASK){
+							List<Task>subtasks=adapter.getTask().getSubtasks();
+							List<Task> selectedItems = new ArrayList<Task>();
+							for (Pair<Integer, Integer> p : selected) {
+								if (p.first == TYPE.SUBTASK) {
+									selectedItems.add(subtasks.get(p.second));
+								}
+							}
+							TaskDialogHelpers.handleRemoveSubtask(selectedItems,main,adapter,adapter.getTask());
+						}else{
+							Log.e(TAG, "How did you get selected this?");
 						}
-						TaskDialogHelpers.handleDeleteFile(selectedItems, main,
-								adapter.getTask(), adapter);
-						break;
 
 					default:
 						break;
@@ -158,9 +171,16 @@ public class TaskFragment extends Fragment {
 				public void onItemCheckedStateChanged(ActionMode mode,
 						int position, long id, boolean checked) {
 					Log.d(TAG, "item " + position + " selected");
-					if (adapter.getData().get(position).first == TYPE.FILE) {
+					if ((adapter.getData().get(position).first == TYPE.FILE && (adapter
+							.getSelected().size() == 0 || (adapter
+							.getSelected().get(0).first == TYPE.FILE)))
+							|| (adapter.getData().get(position).first == TYPE.SUBTASK && (adapter
+									.getSelected().size() == 0 || adapter
+									.getSelected().get(0).first == TYPE.SUBTASK))) {
 						adapter.setSelected(position, checked);
 						adapter.notifyDataSetChanged();
+					} else if(adapter.getSelectedCount()==0) {
+						mode.finish();// No CAB
 					}
 
 				}

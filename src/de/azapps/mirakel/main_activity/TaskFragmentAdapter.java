@@ -136,7 +136,7 @@ public class TaskFragmentAdapter extends
 			row = setupReminder( parent, convertView);
 			break;
 		case TYPE.SUBTASK:
-			row = setupSubtask( parent, convertView,task.getSubtasks().get(data.get(position).second));
+			row = setupSubtask( parent, convertView,task.getSubtasks().get(data.get(position).second),position);
 			break;
 		case TYPE.SUBTITLE:
 			String title = null;
@@ -190,7 +190,7 @@ public class TaskFragmentAdapter extends
 		TextView taskRowDue, taskRowList;
 		ImageView taskRowHasContent;
 	}
-	private View setupSubtask(ViewGroup parent, View convertView, Task task) {
+	private View setupSubtask(ViewGroup parent, View convertView, Task task,int position) {
 //		return TaskAdapter.setupRow( null, parent, context, layoutResourceId, task, true, darkTheme);
 		View row = convertView==null?inflater.inflate(R.layout.tasks_row, parent, false):convertView;
 		TaskHolder holder;
@@ -266,6 +266,7 @@ public class TaskFragmentAdapter extends
 		} else {
 			holder.taskRowDue.setVisibility(View.GONE);
 		}
+		markSelected(position, row);
 		return row;
 	}
 
@@ -322,6 +323,12 @@ public class TaskFragmentAdapter extends
 		}).start();
 		holder.fileName.setText(file.getName());
 		holder.filePath.setText(file.getPath());
+		markSelected(position, row);
+
+		return row;
+	}
+
+	private void markSelected(int position, final View row) {
 		if (selected.get(position)) {
 			row.setBackgroundColor(context.getResources().getColor(
 					darkTheme ? R.color.highlighted_text_holo_dark
@@ -330,8 +337,6 @@ public class TaskFragmentAdapter extends
 			row.setBackgroundColor(context.getResources().getColor(
 					android.R.color.transparent));
 		}
-
-		return row;
 	}
 
 	static class SubtitleHolder {

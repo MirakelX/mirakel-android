@@ -158,6 +158,11 @@ public class Task extends TaskBase {
 		cv.put("child_id", t.getId());
 		database.insert(SUBTASK_TABLE, null, cv);
 	}
+	
+	public void deleteSubtask(Task s) {
+		database.delete(SUBTASK_TABLE, "parent_id="+getId()+" and child_id="+s.getId(), null);
+		
+	}
 
 	public static void deleteDoneTasks() {
 		ContentValues values = new ContentValues();
@@ -781,5 +786,7 @@ public class Task extends TaskBase {
 		return ids;
 
 	}
+
+
 
 }
