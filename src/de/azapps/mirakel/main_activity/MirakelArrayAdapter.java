@@ -32,7 +32,7 @@ public class MirakelArrayAdapter<T> extends ArrayAdapter<T> {
 	protected int layoutResourceId;
 	protected Context context;
 	protected List<Boolean> selected;
-	protected int selecdetCount;
+	protected int selectedCount;
 	protected boolean darkTheme;
 	
 
@@ -48,7 +48,7 @@ public class MirakelArrayAdapter<T> extends ArrayAdapter<T> {
 		for (int i = 0; i < data.size(); i++) {
 			this.selected.add(false);
 		}
-		this.selecdetCount = 0;
+		this.selectedCount = 0;
 		
 	}
 	
@@ -59,12 +59,12 @@ public class MirakelArrayAdapter<T> extends ArrayAdapter<T> {
 	
 	public void setSelected(int position, boolean selected) {
 		this.selected.set(position, selected);
-		selecdetCount += (selected ? 1 : -1);
+		selectedCount += (selected ? 1 : -1);
 		notifyDataSetChanged();
 	}
 
 	public int getSelectedCount() {
-		return selecdetCount;
+		return selectedCount;
 	}
 
 	public void resetSelected() {
@@ -74,7 +74,7 @@ public class MirakelArrayAdapter<T> extends ArrayAdapter<T> {
 			selected.add(false);
 		}
 		notifyDataSetChanged();
-		selecdetCount = selected.size();
+		selectedCount =0;
 	}
 	
 	public void changeData(List<T> newData) {
