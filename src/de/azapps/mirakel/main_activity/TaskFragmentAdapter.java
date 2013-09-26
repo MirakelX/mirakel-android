@@ -94,8 +94,8 @@ public class TaskFragmentAdapter extends
 	}
 
 	public TaskFragmentAdapter(Context context, int textViewResourceId,
-			List<Pair<Integer, Integer>> objects, Task t) {
-		super(context, textViewResourceId, objects);
+			Task t) {
+		super(context, textViewResourceId, generateData(t));
 		this.task = t;
 		if (task == null)
 			task = Task.getDummy(context);
@@ -696,7 +696,8 @@ public class TaskFragmentAdapter extends
 
 	}
 
-	public void setData(List<Pair<Integer, Integer>> generateData, Task t) {
+	public void setData(Task t) {
+		List<Pair<Integer, Integer>> generateData = generateData(t);
 		super.changeData(generateData);
 		task = t;
 		notifyDataSetInvalidated();
@@ -710,8 +711,25 @@ public class TaskFragmentAdapter extends
 		return task;
 	}
 
-	public void setData(List<Pair<Integer, Integer>> generateData) {
-		setData(generateData, task);
+	
+	private static List<Pair<Integer, Integer>> generateData(Task task) {
+		// TODO implement Subtasks
+		List<Pair<Integer, Integer>> data = new ArrayList<Pair<Integer, Integer>>();
+		data.add(new Pair<Integer, Integer>(TYPE.HEADER, 0));
+		data.add(new Pair<Integer, Integer>(TYPE.DUE, 0));
+		data.add(new Pair<Integer, Integer>(TYPE.REMINDER, 0));
+		data.add(new Pair<Integer, Integer>(TYPE.CONTENT, 0));
+		data.add(new Pair<Integer, Integer>(TYPE.SUBTITLE, 0));
+		int subtaskCount = task.getSubtaskCount();
+		for (int i = 0; i < subtaskCount; i++) {
+			data.add(new Pair<Integer, Integer>(TYPE.SUBTASK, i));
+		}
+		data.add(new Pair<Integer, Integer>(TYPE.SUBTITLE, 1));
+		int fileCount = FileMirakel.getFileCount(task);
+		Log.d(TAG, "filecount " + fileCount);
+		for (int i = 0; i < fileCount; i++)
+			data.add(new Pair<Integer, Integer>(TYPE.FILE, i));
+		return data;
 	}
 
 }

@@ -407,7 +407,7 @@ public class MainActivity extends ActionBarActivity implements
 					Toast.makeText(this, getString(R.string.file_vanished),
 							Toast.LENGTH_SHORT).show();
 				}else{
-					taskFragment.adapter.setData(TaskFragment.generateData(currentTask));
+					taskFragment.adapter.setData(currentTask);
 				}
 
 				break;

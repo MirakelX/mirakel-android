@@ -7,5 +7,15 @@
         android:icon="@android:drawable/ic_menu_delete"
         android:title="@string/menu_delete_task"
         mirakel:showAsAction="always"/>
+    <item
+        android:id="@+id/edit_task"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:title="@string/menu_edit_task"
+        mirakel:showAsAction="always"/>
+    <item
+        android:id="@+id/done_task"
+        android:icon="@drawable/ic_checkmark_holo_light"
+        android:title="@string/menu_do_task"
+        mirakel:showAsAction="always"/>
 
 </menu>

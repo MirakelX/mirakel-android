@@ -42,6 +42,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.Toast;
+import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
@@ -63,9 +64,7 @@ public class TaskFragment extends Fragment {
 		View view = inflater.inflate(R.layout.task_fragment, container, false);
 		ListView listView = (ListView) view.findViewById(R.id.taskFragment);
 		final Task task = main.getCurrentTask();
-		List<Pair<Integer, Integer>> data = generateData(task);
-		Log.d(TAG, data.size() + " entries");
-		adapter = new TaskFragmentAdapter(main, R.layout.task_head_line, data,
+		adapter = new TaskFragmentAdapter(main, R.layout.task_head_line,
 				main.getCurrentTask());
 		listView.setAdapter(adapter);
 		listView.setOnItemClickListener(new OnItemClickListener() {
@@ -112,7 +111,11 @@ public class TaskFragment extends Fragment {
 
 				@Override
 				public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-
+					if(adapter.getSelectedCount()>0){
+						menu.findItem(R.id.edit_task).setVisible(
+								adapter.getSelectedCount() ==1&&(adapter.getSelected().get(0).first==TYPE.SUBTASK));
+						menu.findItem(R.id.done_task).setVisible(adapter.getSelected().get(0).first==TYPE.SUBTASK);
+					}
 					return false;
 				}
 
@@ -159,7 +162,23 @@ public class TaskFragment extends Fragment {
 						}else{
 							Log.e(TAG, "How did you get selected this?");
 						}
-
+					case R.id.edit_task:
+						if(adapter.getSelectedCount()==1){
+							adapter.setData(adapter.getTask().getSubtasks().get(adapter.getSelected().get(0).second));
+						}
+						break;
+					case R.id.done_task:
+						List<Task> subtasks = adapter.getTask().getSubtasks();
+						for(Pair<Integer, Integer> s:adapter.getSelected()){
+							Task t=subtasks.get(s.second);
+							t.setDone(true);
+							try {
+								t.save();
+							} catch (NoSuchListException e) {
+								Log.d(TAG,"list did vanish");
+							}
+						}
+						break;
 					default:
 						break;
 					}
@@ -179,6 +198,7 @@ public class TaskFragment extends Fragment {
 									.getSelected().get(0).first == TYPE.SUBTASK))) {
 						adapter.setSelected(position, checked);
 						adapter.notifyDataSetChanged();
+						mode.invalidate();
 					} else if(adapter.getSelectedCount()==0) {
 						mode.finish();// No CAB
 					}
@@ -190,30 +210,10 @@ public class TaskFragment extends Fragment {
 		return view;
 	}
 
-	public static List<Pair<Integer, Integer>> generateData(Task task) {
-		// TODO implement Subtasks
-		List<Pair<Integer, Integer>> data = new ArrayList<Pair<Integer, Integer>>();
-		data.add(new Pair<Integer, Integer>(TYPE.HEADER, 0));
-		data.add(new Pair<Integer, Integer>(TYPE.DUE, 0));
-		data.add(new Pair<Integer, Integer>(TYPE.REMINDER, 0));
-		data.add(new Pair<Integer, Integer>(TYPE.CONTENT, 0));
-		data.add(new Pair<Integer, Integer>(TYPE.SUBTITLE, 0));
-		int subtaskCount = task.getSubtaskCount();
-		for (int i = 0; i < subtaskCount; i++) {
-			data.add(new Pair<Integer, Integer>(TYPE.SUBTASK, i));
-		}
-		data.add(new Pair<Integer, Integer>(TYPE.SUBTITLE, 1));
-		int fileCount = FileMirakel.getFileCount(task);
-		Log.d(TAG, "filecount " + fileCount);
-		for (int i = 0; i < fileCount; i++)
-			data.add(new Pair<Integer, Integer>(TYPE.FILE, i));
-		return data;
-	}
 
 	public void update(Task t) {
 		if (adapter != null) {
-			adapter.setData(generateData(t), t);
-			adapter.notifyDataSetChanged();
+			adapter.setData(t);
 		}
 	}
 

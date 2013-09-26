@@ -206,7 +206,7 @@ public class TaskDialogHelpers {
 				for(FileMirakel f:selectedItems){
 					f.destroy();
 				}
-				adapter.setData(TaskFragment.generateData(t));
+				adapter.setData(t);
 				
 			}
 		})
@@ -240,8 +240,7 @@ public class TaskDialogHelpers {
 					Log.e(TAG, "list did vanish");
 				}
 				dialog.dismiss();
-				adapter.setData(TaskFragment.generateData(task),task);
-//				adapter.notifyDataSetInvalidated();
+				adapter.setData(task);
 				
 			}
 		}).show();
@@ -266,7 +265,7 @@ public class TaskDialogHelpers {
 				for(Task s:subtasks){
 					task.deleteSubtask(s);
 				}
-				adapter.setData(TaskFragment.generateData(task));				
+				adapter.setData(task);				
 			}
 		})
 		.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
