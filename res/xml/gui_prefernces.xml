@@ -48,6 +48,11 @@
         android:key="semanticNewTask"
         android:summary="@string/semantic_new_task_summary"
         android:title="@string/semantic_new_task" />
+    <Preference 
+        android:key="semanticNewTaskSettings"
+        android:dependency="semanticNewTask"
+        android:summary="@string/semantic_new_task_config_summary"
+        android:title="@string/semantic_new_task_config" />
 
     <PreferenceCategory android:title="@string/preferences_colorize" >
         <CheckBoxPreference

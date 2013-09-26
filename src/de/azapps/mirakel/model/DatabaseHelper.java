@@ -30,6 +30,7 @@ import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.Network;
 import de.azapps.mirakelandroid.R;
@@ -38,7 +39,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String TAG = "DatabaseHelper";
 	private Context context;
-	public static final int DATABASE_VERSION = 18;
+	public static final int DATABASE_VERSION = 19;
 
 	public DatabaseHelper(Context ctx) {
 		super(ctx, "mirakel.db", null, DATABASE_VERSION);
@@ -176,16 +177,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ Task.TABLE
 					+ " add column additional_entries TEXT NOT NULL DEFAULT '';");
 		case 14:
-			db.execSQL("CREATE TABLE semantic_conditions ("
+			db.execSQL("CREATE TABLE " + Semantic.TABLE + " ("
 					+ "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
 					+ "condition TEXT NOT NULL, " + "due INTEGER, "
 					+ "priority INTEGER, " + "list INTEGER);");
 			db.execSQL("INSERT INTO semantic_conditions (condition,due) VALUES "
 					+ "(\""
-					+ context.getString(R.string.today)
+					+ context.getString(R.string.today).toLowerCase()
 					+ "\",0);"
 					+ "INSERT INTO semantic_conditions (condition,due) VALUES (\""
-					+ context.getString(R.string.tomorrow) + "\",1);");
+					+ context.getString(R.string.tomorrow).toLowerCase() + "\",1);");
 		case 15:
 			db.execSQL("Alter Table " + ListMirakel.TABLE
 					+ " add column color INTEGER;");
@@ -203,6 +204,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ " (_id) ON DELETE CASCADE ON UPDATE CASCADE,"
 					+ "child_id INTEGER REFERENCES " + Task.TABLE
 					+ " (_id) ON DELETE CASCADE ON UPDATE CASCADE);");
+		case 18:
+			db.execSQL("ALTER TABLE " + Semantic.TABLE
+					+ " add column default_list_id INTEGER");
+			db.execSQL("update semantic_conditions SET condition=LOWER(condition);");
 		}
 	}
 
