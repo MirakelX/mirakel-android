@@ -22,6 +22,7 @@ public class FileMirakel extends FileBase {
 	public static final File cacheDir = new File(Environment.getDataDirectory()
 			+ "/data/" + Mirakel.APK_NAME + "/image_cache");
 	public static final String TABLE = "files";
+	@SuppressWarnings("unused")
 	private static final String TAG = "FileMirakel";
 	private static SQLiteDatabase database;
 	private static DatabaseHelper dbHelper;
