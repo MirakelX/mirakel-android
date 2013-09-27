@@ -32,8 +32,6 @@ import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.settings.ListSettings;
-import de.azapps.mirakel.settings.special_list.SpecialListSettingsFragment;
-import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
 import de.azapps.mirakelandroid.R;
 
 public class SemanticsSettings extends ListSettings {

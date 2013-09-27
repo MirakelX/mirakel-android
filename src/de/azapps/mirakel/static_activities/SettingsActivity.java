@@ -48,7 +48,7 @@ import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.PreferencesHelper;
 import de.azapps.mirakel.helper.SettingsAdapter;
-import de.azapps.mirakel.settings.special_list.SpecialListsSettings;
+import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
 import de.azapps.mirakelandroid.R;
 
 public class SettingsActivity extends PreferenceActivity {
@@ -98,7 +98,7 @@ public class SettingsActivity extends PreferenceActivity {
 					addPreferencesFromResource(R.xml.sync_prefernces);
 				} else if (i.getAction().equals(
 						"de.azapps.mirakel.preferences.SPECIAL_LISTS")) {
-					startActivity(new Intent(this, SpecialListsSettings.class));
+					startActivity(new Intent(this, SpecialListsSettingsActivity.class));
 					if (!getResources().getBoolean(R.bool.isTablet))
 						finish();
 				} else {

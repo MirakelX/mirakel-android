@@ -56,7 +56,7 @@ import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.settings.semantics.SemanticsSettings;
-import de.azapps.mirakel.settings.special_list.SpecialListsSettings;
+import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
 import de.azapps.mirakel.static_activities.CreditsActivity;
 import de.azapps.mirakel.static_activities.SettingsActivity;
 import de.azapps.mirakel.static_activities.SettingsFragment;
@@ -667,7 +667,7 @@ public class PreferencesHelper {
 		}
 
 		Intent startSpecialListsIntent = new Intent(activity,
-				SpecialListsSettings.class);
+				SpecialListsSettingsActivity.class);
 		Preference specialLists = findPreference("special_lists");
 		if (specialLists != null) {
 			specialLists.setIntent(startSpecialListsIntent);

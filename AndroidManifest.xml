@@ -223,7 +223,7 @@
         </receiver>
 
         <activity
-            android:name="de.azapps.mirakel.settings.special_list.SpecialListsSettings"
+            android:name="de.azapps.mirakel.settings.special_list.SpecialListsSettings_old"
             android:label="@string/title_activity_special_lists_settings"
             android:parentActivityName="de.azapps.mirakel.static_activities.SettingsActivity" >
             <meta-data

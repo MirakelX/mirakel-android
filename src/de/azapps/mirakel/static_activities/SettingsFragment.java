@@ -28,7 +28,7 @@ import android.preference.PreferenceFragment;
 import android.view.View;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.PreferencesHelper;
-import de.azapps.mirakel.settings.special_list.SpecialListsSettings;
+import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
 import de.azapps.mirakelandroid.R;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -55,7 +55,7 @@ public class SettingsFragment extends PreferenceFragment {
 		} else if (getArguments().getString("type").equals("about")) {
 			addPreferencesFromResource(R.xml.about_prefernces);
 		} else if (getArguments().getString("type").equals("speciallists")) {
-			startActivity(new Intent(getActivity(), SpecialListsSettings.class));
+			startActivity(new Intent(getActivity(), SpecialListsSettingsActivity.class));
 			if (!getResources().getBoolean(R.bool.isTablet))
 				getActivity().finish();
 			else {

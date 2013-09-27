@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Mirakel is an Android App for Managing your ToDo-Lists
+  
+  Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
+  
+      This program is free software: you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation, either version 3 of the License, or
+      any later version.
+  
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+  
+      You should have received a copy of the GNU General Public License
+      along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="category_special_lists"
+    android:title="@string/notification_title" >
+	<PreferenceCategory android:title="@string/special_list_summary" >
+    <EditTextPreference
+        android:key="special_list_name"
+        android:title="@string/special_list_name" />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="special_list_active"
+        android:title="@string/special_list_active" />
+	</PreferenceCategory>
+	<PreferenceCategory android:title="@string/special_list_contains" >
+	    
+    <Preference
+        android:key="special_where_list"
+        android:title="@string/special_list_where_list_title_text" />
+    <Preference
+        android:key="special_where_name"
+        android:title="@string/special_list_where_name_title_text" />
+    <Preference
+        android:key="special_where_content"
+        android:title="@string/special_list_where_content_title_text" />
+    <Preference
+        android:key="special_where_prio"
+        android:title="@string/special_list_where_prio_title_text" />
+    <Preference
+        android:key="special_where_done"
+        android:title="@string/special_list_where_done_title_text"/>
+    <Preference
+        android:key="special_where_due"
+        android:title="@string/special_list_where_due_title_text"/>
+    <Preference
+        android:key="special_where_reminder"
+        android:title="@string/special_list_where_reminder_title_text"/> 
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/special_lists_defaults" >
+	<Preference
+        android:key="special_default_sort"
+        android:title="@string/special_list_sort_by" />
+    <Preference
+        android:key="special_default_list"
+        android:title="@string/special_list_def_list" />
+    <Preference
+        android:key="special_default_due"
+        android:title="@string/special_list_def_date" />
+    </PreferenceCategory>
+</PreferenceScreen>
