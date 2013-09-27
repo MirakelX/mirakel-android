@@ -171,7 +171,7 @@
             android:label="@string/title_activity_credits" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.azapps.mirakel.special_lists_settings.SpecialListsSettings" />
+                android:value="de.azapps.mirakel.settings.special_list.SpecialListsSettings" />
         </activity>
         <activity
             android:name="org.acra.CrashReportDialog"
