@@ -55,7 +55,8 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.services.NotificationService;
-import de.azapps.mirakel.special_lists_settings.SpecialListsSettings;
+import de.azapps.mirakel.settings.semantics.SemanticsSettings;
+import de.azapps.mirakel.settings.special_list.SpecialListsSettings;
 import de.azapps.mirakel.static_activities.CreditsActivity;
 import de.azapps.mirakel.static_activities.SettingsActivity;
 import de.azapps.mirakel.static_activities.SettingsFragment;
@@ -1013,7 +1014,9 @@ public class PreferencesHelper {
 
 		Preference dashclock = findPreference("dashclock");
 		if (dashclock != null) {
-			Intent startdashclockIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=de.azapps.mirakel.dashclock"));
+			Intent startdashclockIntent = new Intent(
+					Intent.ACTION_VIEW,
+					Uri.parse("http://play.google.com/store/apps/details?id=de.azapps.mirakel.dashclock"));
 			dashclock.setIntent(startdashclockIntent);
 		}
 		Preference credits = findPreference("credits");
@@ -1033,6 +1036,13 @@ public class PreferencesHelper {
 					return false;
 				}
 			});
+		}
+
+		Intent startSemanticsIntent = new Intent(activity,
+				SemanticsSettings.class);
+		Preference semantics = findPreference("semanticNewTask");
+		if (semantics != null) {
+			semantics.setIntent(startSemanticsIntent);
 		}
 	}
 

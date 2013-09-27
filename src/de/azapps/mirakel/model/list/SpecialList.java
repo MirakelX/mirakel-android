@@ -212,8 +212,8 @@ public class SpecialList extends ListMirakel {
 	 * @return List
 	 */
 	public static SpecialList getSpecialList(int listId) {
-		Cursor cursor = database.query(SpecialList.TABLE, allColumns, "_id='"
-				+ listId + "'", null, null, null, null);
+		Cursor cursor = database.query(SpecialList.TABLE, allColumns, "_id="
+				+ listId, null, null, null, null);
 		cursor.moveToFirst();
 		if (cursor.getCount() != 0) {
 			SpecialList t = cursorToSList(cursor);

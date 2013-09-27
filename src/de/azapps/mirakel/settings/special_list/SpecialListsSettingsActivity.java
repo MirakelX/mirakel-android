@@ -1,4 +1,4 @@
-package de.azapps.mirakel.special_lists_settings;
+package de.azapps.mirakel.settings.special_list;
 
 import android.os.Bundle;
 import android.preference.PreferenceManager;

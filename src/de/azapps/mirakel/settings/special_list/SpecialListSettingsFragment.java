@@ -16,7 +16,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package de.azapps.mirakel.special_lists_settings;
+package de.azapps.mirakel.settings.special_list;
 
 import java.util.List;
 import java.util.regex.Matcher;

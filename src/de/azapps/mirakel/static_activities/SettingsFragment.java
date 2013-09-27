@@ -28,7 +28,7 @@ import android.preference.PreferenceFragment;
 import android.view.View;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.PreferencesHelper;
-import de.azapps.mirakel.special_lists_settings.SpecialListsSettings;
+import de.azapps.mirakel.settings.special_list.SpecialListsSettings;
 import de.azapps.mirakelandroid.R;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)

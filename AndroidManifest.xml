@@ -167,11 +167,18 @@
             android:label="@string/title_activity_credits" >
         </activity>
         <activity
-            android:name="de.azapps.mirakel.special_lists_settings.SpecialListsSettingsActivity"
+            android:name="de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity"
             android:label="@string/title_activity_credits" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.azapps.mirakel.special_lists_settings.SpecialListsSettings" />
+        </activity>
+        <activity
+            android:name="de.azapps.mirakel.settings.semantics.SemanticsSettingsActivity"
+            android:label="@string/title_activity_credits" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.azapps.mirakel.settings.semantics.SemanticsSettings" />
         </activity>
         <activity
             android:name="org.acra.CrashReportDialog"
@@ -223,7 +230,7 @@
         </receiver>
 
         <activity
-            android:name="de.azapps.mirakel.special_lists_settings.SpecialListsSettings"
+            android:name="de.azapps.mirakel.settings.special_list.SpecialListsSettings"
             android:label="@string/title_activity_special_lists_settings"
             android:parentActivityName="de.azapps.mirakel.static_activities.SettingsActivity" >
             <meta-data

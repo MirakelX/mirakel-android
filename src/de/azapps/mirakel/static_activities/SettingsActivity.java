@@ -48,7 +48,7 @@ import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.PreferencesHelper;
 import de.azapps.mirakel.helper.SettingsAdapter;
-import de.azapps.mirakel.special_lists_settings.SpecialListsSettings;
+import de.azapps.mirakel.settings.special_list.SpecialListsSettings;
 import de.azapps.mirakelandroid.R;
 
 public class SettingsActivity extends PreferenceActivity {
