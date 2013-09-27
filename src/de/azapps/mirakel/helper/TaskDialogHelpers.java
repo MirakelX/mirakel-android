@@ -238,7 +238,6 @@ public class TaskDialogHelpers {
 						}).show();
 
 	}
-	
 
 	private static String searchString;
 	private static boolean done;
@@ -246,8 +245,6 @@ public class TaskDialogHelpers {
 	private static boolean reminder;
 	private static int listId;
 	private static boolean optionEnabled;
-	
-	
 
 	public static void handleSubtask(final Context ctx, final Task task,
 			final TaskFragmentAdapter adapter) {
@@ -259,111 +256,122 @@ public class TaskDialogHelpers {
 		View v = ((MainActivity) ctx).getLayoutInflater().inflate(
 				R.layout.select_subtask, null, false);
 		final ListView lv = (ListView) v.findViewById(R.id.subtask_listview);
-		final SubtaskAdapter a = new SubtaskAdapter(ctx, 0, Task.all());
+		final SubtaskAdapter a = new SubtaskAdapter(ctx, 0, Task.all(), task);
 		lv.setAdapter(a);
-		searchString="";
-		done=false;
-		content=false;
-		reminder=false;
-		optionEnabled=false;
-		listId=SpecialList.firstSpecialSafe(ctx).getId();		
-		EditText search=(EditText) v.findViewById(R.id.subtask_searchbox);
+		searchString = "";
+		done = false;
+		content = false;
+		reminder = false;
+		optionEnabled = false;
+		listId = SpecialList.firstSpecialSafe(ctx).getId();
+		EditText search = (EditText) v.findViewById(R.id.subtask_searchbox);
 		search.addTextChangedListener(new TextWatcher() {
-			
+
 			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count) {
-				searchString=s.toString();
-				a.setData(Task.search(generateQuery()));
-				
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+				searchString = s.toString();
+				updateListView(a);
+
 			}
-			
 
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,
 					int after) {
-				//Nothing
-				
+				// Nothing
+
 			}
-			
+
 			@Override
 			public void afterTextChanged(Editable s) {
-				//Nothing
-				
+				// Nothing
+
 			}
 		});
-		
-		Button options= (Button) v.findViewById(R.id.subtasks_options);
-		final LinearLayout wrapper=(LinearLayout)v.findViewById(R.id.subtask_option_wrapper);
+
+		Button options = (Button) v.findViewById(R.id.subtasks_options);
+		final LinearLayout wrapper = (LinearLayout) v
+				.findViewById(R.id.subtask_option_wrapper);
 		wrapper.setVisibility(View.GONE);
 		options.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
-				if(optionEnabled){
+				if (optionEnabled) {
 					wrapper.setVisibility(View.GONE);
-					Animation slideUp = AnimationUtils.loadAnimation(ctx, R.anim.slide_up);
+					Animation slideUp = AnimationUtils.loadAnimation(ctx,
+							R.anim.slide_up);
 					wrapper.startAnimation(slideUp);
-				}else{
+				} else {
 					wrapper.setVisibility(View.VISIBLE);
-					Animation slideDown = AnimationUtils.loadAnimation(ctx, R.anim.slide_down);
+					Animation slideDown = AnimationUtils.loadAnimation(ctx,
+							R.anim.slide_down);
 					wrapper.startAnimation(slideDown);
 				}
-				optionEnabled=!optionEnabled;
-				
+				optionEnabled = !optionEnabled;
+
 			}
 		});
-		final CheckBox doneBox=(CheckBox)v.findViewById(R.id.subtask_done);
+		final CheckBox doneBox = (CheckBox) v.findViewById(R.id.subtask_done);
 		doneBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-			
+
 			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				done=isChecked;
-				a.setData(Task.search(generateQuery()));
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				done = isChecked;
+				updateListView(a);
 			}
 		});
-		final CheckBox reminderBox=(CheckBox)v.findViewById(R.id.subtask_reminder);
-		reminderBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-			
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				reminder=isChecked;
-				a.setData(Task.search(generateQuery()));
-			}
-		});
-		
-		final TextView list=(TextView)v.findViewById(R.id.subtask_list);
+		final CheckBox reminderBox = (CheckBox) v
+				.findViewById(R.id.subtask_reminder);
+		reminderBox
+				.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+					@Override
+					public void onCheckedChanged(CompoundButton buttonView,
+							boolean isChecked) {
+						reminder = isChecked;
+						updateListView(a);
+					}
+				});
+
+		final Button list = (Button) v.findViewById(R.id.subtask_list);
 		list.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
-				final List<ListMirakel>lists =ListMirakel.all(true);
-				CharSequence[] names=new String[lists.size()];
-				for(int i=0;i<names.length;i++){
-					names[i]=lists.get(i).getName();
+				final List<ListMirakel> lists = ListMirakel.all(true);
+				CharSequence[] names = new String[lists.size()];
+				for (int i = 0; i < names.length; i++) {
+					names[i] = lists.get(i).getName();
 				}
-				new AlertDialog.Builder(ctx)
-				.setSingleChoiceItems(names, -1, new DialogInterface.OnClickListener() {
-					
+				new AlertDialog.Builder(ctx).setSingleChoiceItems(names, -1,
+						new DialogInterface.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								listId = lists.get(which).getId();
+								updateListView(a);
+								list.setText(lists.get(which).getName());
+								dialog.dismiss();
+							}
+						}).show();
+
+			}
+		});
+		final CheckBox contentBox = (CheckBox) v
+				.findViewById(R.id.subtask_content);
+		contentBox
+				.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
 					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						listId=lists.get(which).getId();
-						a.setData(Task.search(generateQuery()));
-						list.setText(lists.get(which).getName());
-						dialog.dismiss();
+					public void onCheckedChanged(CompoundButton buttonView,
+							boolean isChecked) {
+						content = isChecked;
+						updateListView(a);
 					}
-				}).show();
-				
-			}
-		});
-		final CheckBox contentBox=(CheckBox)v.findViewById(R.id.subtask_content);
-		contentBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-			
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				content=isChecked;
-				a.setData(Task.search(generateQuery()));
-			}
-		});
+				});
 		new AlertDialog.Builder(ctx)
 				.setTitle(ctx.getString(R.string.add_subtask))
 				.setView(v)
@@ -376,7 +384,9 @@ public class TaskDialogHelpers {
 								boolean[] checked = a.getChecked();
 								List<Task> tasks = a.getData();
 								for (int i = 0; i < checked.length; i++) {
-									if(checked[i]){
+									if (checked[i]
+											&& !tasks.get(i)
+													.isSubtaskFrom(task)) {
 										try {
 											task.addSubtask(tasks.get(i));
 										} catch (NoSuchListException e) {
@@ -433,16 +443,17 @@ public class TaskDialogHelpers {
 			if (reminder) {
 				query += " and reminder is not null";
 			}
-			if(listId>0){
+			if (listId > 0) {
 				query += " and list_id=" + listId;
-			}else{
-				String where=((SpecialList)ListMirakel.getList(listId)).getWhereQuery();
+			} else {
+				String where = ((SpecialList) ListMirakel.getList(listId))
+						.getWhereQuery();
 				Log.d(TAG, where);
-				if(where!=null&&!where.trim().equals(""))
-					query+=" and "+where;
+				if (where != null && !where.trim().equals(""))
+					query += " and " + where;
 			}
 		}
-		Log.d(TAG,query);
+		Log.d(TAG, query);
 		return query;
 	}
 
@@ -482,6 +493,15 @@ public class TaskDialogHelpers {
 							}
 
 						}).show();
+
+	}
+
+	private static void updateListView(final SubtaskAdapter a) {
+		new Thread(new Runnable() {
+			public void run() {
+				a.setData(Task.search(generateQuery()));
+			}
+		}).start();
 
 	}
 

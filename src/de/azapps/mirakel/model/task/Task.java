@@ -176,6 +176,12 @@ public class Task extends TaskBase {
 				+ " and child_id=" + s.getId(), null);
 
 	}
+	public boolean isSubtaskFrom(Task t){
+		Cursor c=database.query(SUBTASK_TABLE, new String[]{"_id"}, "parent_id="+t.getId()+" and child_id="+getId(), null, null, null, null);
+		boolean isSubtask=c.getCount()>0;
+		c.close();
+		return isSubtask;
+	}
 
 	public static void deleteDoneTasks() {
 		ContentValues values = new ContentValues();
