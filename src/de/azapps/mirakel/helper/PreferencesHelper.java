@@ -1040,7 +1040,7 @@ public class PreferencesHelper {
 
 		Intent startSemanticsIntent = new Intent(activity,
 				SemanticsSettings.class);
-		Preference semantics = findPreference("semanticNewTask");
+		Preference semantics = findPreference("semanticNewTaskSettings");
 		if (semantics != null) {
 			semantics.setIntent(startSemanticsIntent);
 		}

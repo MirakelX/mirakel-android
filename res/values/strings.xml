@@ -177,6 +177,7 @@
     <string name="ui_activity_authenticating">Authenticating…</string>
     <string name="ui_activity_title">Sign-in</string>
     <string name="title_activity_special_lists_settings">Settings for Special Lists</string>
+    <string name="title_activity_semantic_settings">Settings for Semantics</string>
 
     <!-- Changelog -->
     <string name="changelog_full_title">Changelog</string>

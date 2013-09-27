@@ -1,7 +1,9 @@
 package de.azapps.mirakel.model.semantic;
 
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -82,6 +84,18 @@ public class Semantic extends SemanticBase {
 		return null;
 	}
 
+	public static Semantic first() {
+		Cursor cursor = database.query(TABLE, allColumns, null, null, null,
+				null, null);
+		cursor.moveToFirst();
+		if (cursor.getCount() != 0) {
+			Semantic s = cursorToSemantic(cursor);
+			cursor.close();
+			return s;
+		}
+		return null;
+	}
+
 	public void destroy() {
 		database.delete(TABLE, "_id=" + getId(), null);
 	}
@@ -95,6 +109,18 @@ public class Semantic extends SemanticBase {
 			semantics.put(s.getCondition(), s);
 			c.moveToNext();
 		}
+	}
+
+	public static List<Semantic> all() {
+		Cursor c = database.query(TABLE, allColumns, null, null, null, null,
+				null);
+		c.moveToFirst();
+		List<Semantic> all = new ArrayList<Semantic>();
+		while (!c.isAfterLast()) {
+			all.add(cursorToSemantic(c));
+			c.moveToNext();
+		}
+		return all;
 	}
 
 	private static Semantic cursorToSemantic(Cursor c) {

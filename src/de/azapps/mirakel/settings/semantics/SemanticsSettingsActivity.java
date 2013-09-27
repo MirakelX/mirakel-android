@@ -1,4 +1,22 @@
-package de.azapps.mirakel.settings.special_list;
+/*******************************************************************************
+ * Mirakel is an Android App for managing your ToDo-Lists
+ * 
+ * Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
+ * 
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     any later version.
+ * 
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ * 
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+package de.azapps.mirakel.settings.semantics;
 
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -7,16 +25,16 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakelandroid.R;
 
-//@SuppressLint("NewApi")
-public class SpecialListsSettingsActivity extends ActionBarActivity {
-	protected SpecialListSettingsFragment settingsFragment;
+public class SemanticsSettingsActivity extends ActionBarActivity {
+
+	protected SemanticsSettingsFragment settingsFragment;
 	@SuppressWarnings("unused")
-	final static private String TAG = "SpecialListsSettingsActivity";
-	public static final String SLIST_ID = "de.azapps.mirakel.SpecialListSettings/list_id";
-	private SpecialList specialList;
+	final static private String TAG = "SemanticsSettingsActivity";
+	public static final String SEMANTIC_ID = "de.azapps.mirakel.SemanticsSettingsActivity/semantic_id";
+	private Semantic semantic;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -25,9 +43,8 @@ public class SpecialListsSettingsActivity extends ActionBarActivity {
 				"DarkTheme", false))
 			setTheme(R.style.AppBaseThemeDARK);
 		setContentView(R.layout.activity_special_lists_settings_b);
-		settingsFragment = new SpecialListSettingsFragment();
-		specialList = SpecialList.getSpecialList(getIntent().getIntExtra(
-				SLIST_ID, 1));
+		settingsFragment = new SemanticsSettingsFragment();
+		semantic = Semantic.get(getIntent().getIntExtra(SEMANTIC_ID, 1));
 		FragmentTransaction transaction = getSupportFragmentManager()
 				.beginTransaction();
 
@@ -41,8 +58,8 @@ public class SpecialListsSettingsActivity extends ActionBarActivity {
 		transaction.commit();
 
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		getSupportActionBar().setTitle(specialList.getName());
-		settingsFragment.setSpecialList(specialList);
+		getSupportActionBar().setTitle(semantic.getCondition());
+		settingsFragment.setSemantic(semantic);
 	}
 
 	@Override
@@ -81,11 +98,10 @@ public class SpecialListsSettingsActivity extends ActionBarActivity {
 			finish();
 			return true;
 		case R.id.menu_delete:
-			specialList.destroy();
+			semantic.destroy();
 			finish();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
 }

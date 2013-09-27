@@ -16,92 +16,81 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package de.azapps.mirakel.settings.special_list;
+package de.azapps.mirakel.settings.semantics;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Intent;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.settings.ListSettings;
+import de.azapps.mirakel.settings.special_list.SpecialListSettingsFragment;
+import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
 import de.azapps.mirakelandroid.R;
 
-public class SpecialListsSettings extends ListSettings {
-
-	private static final String TAG = "SpecialListsSettings";
+public class SemanticsSettings extends ListSettings {
+	private static final String TAG = "SemanticSettings";
 	private static final int requestCode = 0;
-	private SpecialList specialList = SpecialList.firstSpecial();
-	private List<SpecialList> specialLists;
+	private Semantic semantic = Semantic.first();
+	private List<Semantic> semantics;
 
-	private SpecialListSettingsFragment settingsFragment = new SpecialListSettingsFragment();
+	private SemanticsSettingsFragment settingsFragment = new SemanticsSettingsFragment();
 
 	protected void init() {
-		specialLists = SpecialList.allSpecial(true);
+		updateList();
 	}
 
 	protected void updateList() {
-		specialLists = SpecialList.allSpecial(true);
+		semantics = Semantic.all();
 	}
 
-	protected Fragment getSettingsFragment() {
-		return settingsFragment;
-	}
-
+	@Override
 	protected List<String> getListContent() {
 		List<String> listContent = new ArrayList<String>();
-		for (SpecialList list : specialLists) {
-			listContent.add(list.getName());
+		for (Semantic semantic : semantics) {
+			listContent.add(semantic.getCondition());
 		}
 		return listContent;
 	}
 
+	@Override
+	protected Fragment getSettingsFragment() {
+		return settingsFragment;
+	}
+
+	@Override
 	protected OnItemClickListener getOnItemClickListener() {
 		return new AdapterView.OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View item,
 					int position, long id) {
-				SpecialList sl = specialLists.get(position);
-				editSList(sl);
+				Semantic s = semantics.get(position);
+				editSemantic(s);
 			}
 		};
 	}
 
-	private void editSList(final SpecialList slist) {
-		if (getResources().getBoolean(R.bool.isTablet)) {
-			specialList = slist;
-			// update();
-			if (specialList == null)
-				findViewById(R.id.special_lists_fragment_container)
-						.setVisibility(View.GONE);
-			else {
-				findViewById(R.id.special_lists_fragment_container)
-						.setVisibility(View.VISIBLE);
-				settingsFragment.setSpecialList(slist);
-			}
-		} else {
-			Intent intent = new Intent(this, SpecialListsSettingsActivity.class);
-			intent.putExtra(SpecialListsSettingsActivity.SLIST_ID,
-					-slist.getId());
-			startActivityForResult(intent, requestCode);
-		}
-	}
-
+	@Override
 	protected void setDefaultItemInFragment() {
-		SpecialList specialList = SpecialList.firstSpecial();
-		settingsFragment.setSpecialList(specialList);
-		if (specialList == null)
-			findViewById(R.id.special_lists_fragment_container).setVisibility(
-					View.GONE);
-		else
-			findViewById(R.id.special_lists_fragment_container).setVisibility(
-					View.VISIBLE);
+
+		settingsFragment.setSemantic(Semantic.first());
+		/*
+		 * if (specialList == null)
+		 * findViewById(R.id.special_lists_fragment_container).setVisibility(
+		 * View.GONE); else
+		 * findViewById(R.id.special_lists_fragment_container).setVisibility(
+		 * View.VISIBLE);
+		 */
+
 	}
 
 	@Override
@@ -111,16 +100,36 @@ public class SpecialListsSettings extends ListSettings {
 			finish();
 			return true;
 		case R.id.menu_new_special_list:
-			Log.e(TAG, "new SpecialList");
-			SpecialList newList = SpecialList.newSpecialList("NewList", "",
-					false);
-			editSList(newList);
+			Semantic newSemantic = Semantic.newSemantic("NewSemantic", null,
+					null, null);
+			editSemantic(newSemantic);
 			return true;
 		case R.id.menu_delete:
-			specialList.destroy();
-			editSList(SpecialList.firstSpecial());
+			semantic.destroy();
+			// editSList(SpecialList.firstSpecial());
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
+
+	private void editSemantic(final Semantic semantic) {
+		if (getResources().getBoolean(R.bool.isTablet)) {
+			this.semantic = semantic;
+			// update();
+			if (semantic == null)
+				findViewById(R.id.special_lists_fragment_container)
+						.setVisibility(View.GONE);
+			else {
+				findViewById(R.id.special_lists_fragment_container)
+						.setVisibility(View.VISIBLE);
+				settingsFragment.setSemantic(semantic);
+			}
+		} else {
+			Intent intent = new Intent(this, SemanticsSettingsActivity.class);
+			intent.putExtra(SemanticsSettingsActivity.SEMANTIC_ID,
+					semantic.getId());
+			startActivityForResult(intent, requestCode);
+		}
+	}
+
 }
