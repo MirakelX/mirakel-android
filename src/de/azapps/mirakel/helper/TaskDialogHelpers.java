@@ -27,6 +27,7 @@ import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewSwitcher;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.main_activity.MainActivity;
@@ -245,6 +246,7 @@ public class TaskDialogHelpers {
 	private static boolean reminder;
 	private static int listId;
 	private static boolean optionEnabled;
+	private static boolean newTask; 
 
 	public static void handleSubtask(final Context ctx, final Task task,
 			final TaskFragmentAdapter adapter) {
@@ -263,6 +265,7 @@ public class TaskDialogHelpers {
 		content = false;
 		reminder = false;
 		optionEnabled = false;
+		newTask=false;
 		listId = SpecialList.firstSpecialSafe(ctx).getId();
 		EditText search = (EditText) v.findViewById(R.id.subtask_searchbox);
 		search.addTextChangedListener(new TextWatcher() {
@@ -312,6 +315,27 @@ public class TaskDialogHelpers {
 
 			}
 		});
+		final ViewSwitcher switcher=(ViewSwitcher)v.findViewById(R.id.subtask_switcher);
+		Button subtaskNewtask=(Button)v.findViewById(R.id.subtask_newtask);
+		subtaskNewtask.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				switcher.showPrevious();
+				newTask=true;
+				
+			}
+		});
+		
+		Button subtaskSelectOld=(Button)v.findViewById(R.id.subtask_select_old);
+		subtaskSelectOld.setOnClickListener(new OnClickListener() {		
+			@Override
+			public void onClick(View v) {
+				switcher.showNext();
+				newTask=false;
+			}
+		});
+		
 		final CheckBox doneBox = (CheckBox) v.findViewById(R.id.subtask_done);
 		doneBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
@@ -372,6 +396,8 @@ public class TaskDialogHelpers {
 						updateListView(a);
 					}
 				});
+		
+		final EditText newTaskEdit=(EditText)v.findViewById(R.id.subtask_add_task_edit);
 		new AlertDialog.Builder(ctx)
 				.setTitle(ctx.getString(R.string.add_subtask))
 				.setView(v)
@@ -381,16 +407,25 @@ public class TaskDialogHelpers {
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
-								boolean[] checked = a.getChecked();
-								List<Task> tasks = a.getData();
-								for (int i = 0; i < checked.length; i++) {
-									if (checked[i]
-											&& !tasks.get(i)
-													.isSubtaskFrom(task)) {
-										try {
-											task.addSubtask(tasks.get(i));
-										} catch (NoSuchListException e) {
-											Log.e(TAG, "list did vanish");
+								if(newTask&&newTaskEdit.getText().length()>0){
+									Task t=Task.newTask(newTaskEdit.getText().toString(), task.getList().getId());
+									try {
+										task.addSubtask(t);
+									} catch (NoSuchListException e) {
+										Log.e(TAG, "list did vanish");
+									}
+								}else if(!newTask){
+									boolean[] checked = a.getChecked();
+									List<Task> tasks = a.getData();
+									for (int i = 0; i < checked.length; i++) {
+										if (checked[i]
+												&& !tasks.get(i)
+														.isSubtaskFrom(task)) {
+											try {
+												task.addSubtask(tasks.get(i));
+											} catch (NoSuchListException e) {
+												Log.e(TAG, "list did vanish");
+											}
 										}
 									}
 								}
@@ -411,22 +446,6 @@ public class TaskDialogHelpers {
 							}
 
 						})
-				// .setSingleChoiceItems(values,-1,new
-				// DialogInterface.OnClickListener() {
-				//
-				//
-				// @Override
-				// public void onClick(DialogInterface dialog, int which) {
-				// try {
-				// task.addSubtask(Task.get(names.get(which).first));
-				// } catch (NoSuchListException e) {
-				// Log.e(TAG, "list did vanish");
-				// }
-				// dialog.dismiss();
-				// adapter.setData(task);
-				//
-				// }
-				// })
 				.show();
 
 	}

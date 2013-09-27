@@ -71,6 +71,9 @@
     <string name="subtask_reminder">Task with reminder?</string>
     <string name="subtask_content">Task with Content?</string>
     <string name="add">Add</string>
+    <string name="new_task">New Task</string>
+    <string name="add_existing">Add existing Task</string>
+    <string name="task_name">Task Name:</string>
 
     <string-array name="task_sorting_items">
         <item>Default</item>
