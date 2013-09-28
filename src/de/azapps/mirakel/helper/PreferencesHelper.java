@@ -55,7 +55,7 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.services.NotificationService;
-import de.azapps.mirakel.settings.semantics.SemanticsSettings;
+import de.azapps.mirakel.settings.semantics.SemanticsSettingsActivity;
 import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
 import de.azapps.mirakel.static_activities.CreditsActivity;
 import de.azapps.mirakel.static_activities.SettingsActivity;
@@ -1039,7 +1039,7 @@ public class PreferencesHelper {
 		}
 
 		Intent startSemanticsIntent = new Intent(activity,
-				SemanticsSettings.class);
+				SemanticsSettingsActivity.class);
 		Preference semantics = findPreference("semanticNewTaskSettings");
 		if (semantics != null) {
 			semantics.setIntent(startSemanticsIntent);

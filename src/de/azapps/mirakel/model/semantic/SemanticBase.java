@@ -10,13 +10,14 @@ public class SemanticBase {
 	private Integer due;
 	private ListMirakel list;
 
-	public SemanticBase(int id, String condition, Integer priority, Integer due, ListMirakel list) {
+	public SemanticBase(int id, String condition, Integer priority,
+			Integer due, ListMirakel list) {
 		super();
 		this.id = id;
 		this.condition = condition;
 		this.priority = priority;
 		this.list = list;
-		this.due=due;
+		this.due = due;
 	}
 
 	public int getId() {
@@ -68,9 +69,9 @@ public class SemanticBase {
 		ContentValues cv = new ContentValues();
 		cv.put("_id", id);
 		cv.put("condition", condition);
-		cv.put("default_list_id", list.getId());
+		cv.put("default_list_id", list == null ? null : list.getId());
 		cv.put("priority", priority);
-		cv.put("due",due);
+		cv.put("due", due);
 		return cv;
 	}
 

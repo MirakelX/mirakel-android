@@ -17,8 +17,7 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<resources xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="MissingTranslation">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <!-- Sync -->
     <string name="sync_title">Sync</string>
@@ -56,6 +55,7 @@
         <item>1440</item>
         <item>-1</item>
     </string-array>
+
     <string name="no">no</string>
     <string name="not">not</string>
 
@@ -125,15 +125,15 @@
     <string name="kill_sure">Are you really sure???</string>
     <string name="kill_sure_message">When you close the app, you do not get any reminders! Please consider to disable only the Notification (or make it not persistent, so you can remove it.)</string>
     <string name="ui_settings_title">User Interface</string>
-	<string name="hide_keyboard">Hide Keyboard</string>
-	<string name="hide_keyboard_summary">Hide Keyboard if New Task is created</string>
-	<string name="undo_number">Number of Changes saved</string>
-	<string name="undo_number_summary">Undo %s Changes</string>
-	<string name="semantic_new_task">Semantic New Tasks</string>
-	<string name="semantic_new_task_summary">Use Semantic new Task(only today and tomorow)</string>
-	<string name="semantic_new_task_config_summary">Configure the conditions for creating new Tasks</string>
-	<string name="semantic_new_task_config">Configure Semantic new Tasks</string>
-    
+    <string name="hide_keyboard">Hide Keyboard</string>
+    <string name="hide_keyboard_summary">Hide Keyboard if New Task is created</string>
+    <string name="undo_number">Number of Changes saved</string>
+    <string name="undo_number_summary">Undo %s Changes</string>
+    <string name="semantic_new_task">Semantic New Tasks</string>
+    <string name="semantic_new_task_summary">Use Semantic new Task(only today and tomorow)</string>
+    <string name="semantic_new_task_config_summary">Configure the conditions for creating new Tasks</string>
+    <string name="semantic_new_task_config">Configure Semantic new Tasks</string>
+
     <!-- Delete done -->
     <string name="delete_done">Delete done tasks</string>
     <string name="delete_done_summary">Delete all done tasks</string>
@@ -143,12 +143,36 @@
     <string name="menu_delete">Delete</string>
     <string name="howto_setup_server">How To setup Server</string>
     <string name="special_lists_title">Special Lists</string>
-    
+
     <!-- Colors -->
     <string name="preferences_colorize">Colors</string>
     <string name="preferences_colorize_tasks">Colorize Tasks</string>
     <string name="preferences_colorize_tasks_everywhere">Colorize Tasks everywhere</string>
     <string name="preferences_colorize_tasks_everywhere_summary">…or only in the Special lists?</string>
-    
-    
+
+    <!-- Semantics -->
+    <string name="settings_semantics_condition">Condition</string>
+    <string name="settings_semantics_actions">Actions</string>
+    <string name="settings_semantics_list">Set List</string>
+    <string name="settings_semantics_priority">Set Priority</string>
+    <string name="settings_semantics_due">Set due date</string>
+
+    <string-array name="priority_entries">
+        <item>Do not set priority</item>
+        <item>-2</item>
+        <item>-1</item>
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    <string-array name="priority_entry_values">
+        <item>null</item>
+        <item>-2</item>
+        <item>-1</item>
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    <string name="semantics_no_list">Do not set list</string>
+
 </resources>
