@@ -4,12 +4,16 @@ import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.joda.time.LocalDate;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -19,9 +23,15 @@ import android.graphics.Shader;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.net.Uri;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.preference.PreferenceManager;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.webkit.MimeTypeMap;
+import android.widget.Button;
+import android.widget.NumberPicker;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
@@ -260,7 +270,6 @@ public class Helpers {
 			return "";
 		}
 	}
-	
 
 	public static void updateLog(ListMirakel listMirakel, Context ctx) {
 		if (listMirakel != null)
@@ -375,14 +384,15 @@ public class Helpers {
 
 	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
-	public static void setListColorBackground(ListMirakel list, View row,boolean darkTheme) {
+	public static void setListColorBackground(ListMirakel list, View row,
+			boolean darkTheme) {
 
 		int w = row.getWidth();
 		int color = list.getColor();
-		if (color != 0){
-			if(darkTheme){
+		if (color != 0) {
+			if (darkTheme) {
 				color ^= 0x66000000;
-			}else{
+			} else {
 				color ^= 0xCC000000;
 			}
 		}
@@ -395,16 +405,14 @@ public class Helpers {
 		else
 			row.setBackgroundDrawable(mDrawable);
 	}
-	
-	public static String getMimeType(String url)
-	{
-	    String type = null;
-	    String extension = MimeTypeMap.getFileExtensionFromUrl(url);
-	    if (extension != null) {
-	        MimeTypeMap mime = MimeTypeMap.getSingleton();
-	        type = mime.getMimeTypeFromExtension(extension);
-	    }
-	    return type;
-	}
 
+	public static String getMimeType(String url) {
+		String type = null;
+		String extension = MimeTypeMap.getFileExtensionFromUrl(url);
+		if (extension != null) {
+			MimeTypeMap mime = MimeTypeMap.getSingleton();
+			type = mime.getMimeTypeFromExtension(extension);
+		}
+		return type;
+	}
 }

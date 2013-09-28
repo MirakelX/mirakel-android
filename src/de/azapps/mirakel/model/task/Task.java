@@ -563,7 +563,7 @@ public class Task extends TaskBase {
 
 			if (key.equals("name") || key.equals("description")) {
 				t.setName(val.getAsString());
-			} else if (key == "content") {
+			} else if (key.equals("content")) {
 				String content = val.getAsString();
 				if (content == null)
 					content = "";
