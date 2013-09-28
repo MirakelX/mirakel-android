@@ -38,5 +38,18 @@
         <item quantity="one">Delete Task?</item>
         <item quantity="other">Delete Tasks?</item>
     </plurals>
+    
+     <plurals name="due_year">
+         <item quantity="one">Year</item>
+         <item quantity="other">Years</item>
+     </plurals>
+     <plurals name="due_day">
+         <item quantity="one">Day</item>
+         <item quantity="other">Days</item>
+     </plurals>
+     <plurals name="due_month">
+         <item quantity="one">Month</item>
+         <item quantity="other">Months</item>
+     </plurals>
 
 </resources>

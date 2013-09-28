@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import de.azapps.mirakel.helper.DueDialog;
+import de.azapps.mirakel.helper.DueDialog.VALUE;
 import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -44,14 +46,10 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceFragment;
 import android.view.ContextThemeWrapper;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class SpecialListsSettingsFragment extends PreferenceFragment implements
@@ -660,250 +658,12 @@ public class SpecialListsSettingsFragment extends PreferenceFragment implements
 
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
-				final String[] s = new String[100];
-				for (int i = 0; i < s.length; i++) {
-					s[i] = (i > 10 ? "+" : "") + (i - 10) + "";
-				}
-				final View dialogView = getNumericPicker();
-				if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-					((NumberPicker) dialogView.findViewById(R.id.due_day_year))
-							.setDisplayedValues(getResources().getStringArray(
-									R.array.due_day_year_values));
-					((NumberPicker) dialogView.findViewById(R.id.due_day_year))
-							.setMaxValue(getResources().getStringArray(
-									R.array.due_day_year_values).length - 1);
-					((NumberPicker) dialogView.findViewById(R.id.due_val))
-							.setMaxValue(s.length - 1);
-					((NumberPicker) dialogView.findViewById(R.id.due_val))
-							.setValue(10);
-					((NumberPicker) dialogView.findViewById(R.id.due_val))
-							.setMinValue(0);
-					((NumberPicker) dialogView.findViewById(R.id.due_val))
-							.setDisplayedValues(s);
-					((NumberPicker) dialogView.findViewById(R.id.due_val))
-							.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-					((NumberPicker) dialogView.findViewById(R.id.due_day_year))
-							.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-					((NumberPicker) dialogView.findViewById(R.id.due_val))
-							.setWrapSelectorWheel(false);
-				} else {
-					((TextView) dialogView
-							.findViewById(R.id.dialog_due_pick_val))
-							.setText(s[10]);
-					((TextView) dialogView
-							.findViewById(R.id.dialog_due_pick_val_day))
-							.setText(getResources().getStringArray(
-									R.array.due_day_year_values)[0]);
-					((Button) dialogView
-							.findViewById(R.id.dialog_due_pick_plus_val))
-							.setOnClickListener(new OnClickListener() {
-
-								@Override
-								public void onClick(View v) {
-									int val = Integer.parseInt(((TextView) dialogView
-											.findViewById(R.id.dialog_due_pick_val))
-											.getText().toString()
-											.replace("+", "")) + 10;
-									if (val + 1 < s.length) {
-										((TextView) dialogView
-												.findViewById(R.id.dialog_due_pick_val))
-												.setText(s[val + 1]);
-									}
-									int day = 0;
-									if (((TextView) dialogView
-											.findViewById(R.id.dialog_due_pick_val_day))
-											.getText().toString()
-											.contains("month")) {
-										day = 1;
-									} else if (((TextView) dialogView
-											.findViewById(R.id.dialog_due_pick_val_day))
-											.getText().toString()
-											.contains("month")) {
-										day = 2;
-									}
-									if (val + 1 == 11 || val + 1 == 9) {
-										((TextView) dialogView
-												.findViewById(R.id.dialog_due_pick_val_day))
-												.setText(getResources()
-														.getStringArray(
-																R.array.due_day_year_values)[day]);
-									} else {
-										((TextView) dialogView
-												.findViewById(R.id.dialog_due_pick_val_day))
-												.setText(getResources()
-														.getStringArray(
-																R.array.due_day_year_values_plural)[day]);
-									}
-
-								}
-							});
-					((Button) dialogView
-							.findViewById(R.id.dialog_due_pick_minus_val))
-							.setOnClickListener(new OnClickListener() {
-
-								@Override
-								public void onClick(View v) {
-									int val = Integer.parseInt(((TextView) dialogView
-											.findViewById(R.id.dialog_due_pick_val))
-											.getText().toString()
-											.replace("+", "")) + 10;
-									if (val - 1 > 0) {
-										((TextView) dialogView
-												.findViewById(R.id.dialog_due_pick_val))
-												.setText(s[val - 1]);
-									}
-									int day = 0;
-									if (((TextView) dialogView
-											.findViewById(R.id.dialog_due_pick_val_day))
-											.getText().toString()
-											.contains("month")) {
-										day = 1;
-									} else if (((TextView) dialogView
-											.findViewById(R.id.dialog_due_pick_val_day))
-											.getText().toString()
-											.contains("month")) {
-										day = 2;
-									}
-									if (val - 1 == 11 || val - 1 == 9) {
-										((TextView) dialogView
-												.findViewById(R.id.dialog_due_pick_val_day))
-												.setText(getResources()
-														.getStringArray(
-																R.array.due_day_year_values)[day]);
-									} else {
-										((TextView) dialogView
-												.findViewById(R.id.dialog_due_pick_val_day))
-												.setText(getResources()
-														.getStringArray(
-																R.array.due_day_year_values_plural)[day]);
-									}
-								}
-							});
-					((Button) dialogView
-							.findViewById(R.id.dialog_due_pick_plus_day))
-							.setOnClickListener(new OnClickListener() {
-
-								@Override
-								public void onClick(View v) {
-									if (((TextView) dialogView
-											.findViewById(R.id.dialog_due_pick_val_day))
-											.getText()
-											.toString()
-											.contains(
-													getResources()
-															.getStringArray(
-																	R.array.due_day_year_values_plural)[0])) {
-										((TextView) dialogView
-												.findViewById(R.id.dialog_due_pick_val_day))
-												.setText(getResources()
-														.getStringArray(
-																R.array.due_day_year_values_plural)[1]);
-									} else if (((TextView) dialogView
-											.findViewById(R.id.dialog_due_pick_val_day))
-											.getText()
-											.toString()
-											.contains(
-													getResources()
-															.getStringArray(
-																	R.array.due_day_year_values)[0])) {
-										((TextView) dialogView
-												.findViewById(R.id.dialog_due_pick_val_day))
-												.setText(getResources()
-														.getStringArray(
-																R.array.due_day_year_values)[1]);
-									} else if (((TextView) dialogView
-											.findViewById(R.id.dialog_due_pick_val_day))
-											.getText()
-											.toString()
-											.contains(
-													getResources()
-															.getStringArray(
-																	R.array.due_day_year_values_plural)[1])) {
-										((TextView) dialogView
-												.findViewById(R.id.dialog_due_pick_val_day))
-												.setText(getResources()
-														.getStringArray(
-																R.array.due_day_year_values_plural)[2]);
-									} else if (((TextView) dialogView
-											.findViewById(R.id.dialog_due_pick_val_day))
-											.getText()
-											.toString()
-											.contains(
-													getResources()
-															.getStringArray(
-																	R.array.due_day_year_values)[1])) {
-										((TextView) dialogView
-												.findViewById(R.id.dialog_due_pick_val_day))
-												.setText(getResources()
-														.getStringArray(
-																R.array.due_day_year_values)[2]);
-									}
-								}
-							});
-					((Button) dialogView
-							.findViewById(R.id.dialog_due_pick_minus_day))
-							.setOnClickListener(new OnClickListener() {
-
-								@Override
-								public void onClick(View v) {
-									if (((TextView) dialogView
-											.findViewById(R.id.dialog_due_pick_val_day))
-											.getText()
-											.toString()
-											.contains(
-													getResources()
-															.getStringArray(
-																	R.array.due_day_year_values_plural)[2])) {
-										((TextView) dialogView
-												.findViewById(R.id.dialog_due_pick_val_day))
-												.setText(getResources()
-														.getStringArray(
-																R.array.due_day_year_values_plural)[1]);
-									} else if (((TextView) dialogView
-											.findViewById(R.id.dialog_due_pick_val_day))
-											.getText()
-											.toString()
-											.contains(
-													getResources()
-															.getStringArray(
-																	R.array.due_day_year_values)[2])) {
-										((TextView) dialogView
-												.findViewById(R.id.dialog_due_pick_val_day))
-												.setText(getResources()
-														.getStringArray(
-																R.array.due_day_year_values)[1]);
-									} else if (((TextView) dialogView
-											.findViewById(R.id.dialog_due_pick_val_day))
-											.getText()
-											.toString()
-											.contains(
-													getResources()
-															.getStringArray(
-																	R.array.due_day_year_values_plural)[1])) {
-										((TextView) dialogView
-												.findViewById(R.id.dialog_due_pick_val_day))
-												.setText(getResources()
-														.getStringArray(
-																R.array.due_day_year_values_plural)[0]);
-									} else if (((TextView) dialogView
-											.findViewById(R.id.dialog_due_pick_val_day))
-											.getText()
-											.toString()
-											.contains(
-													getResources()
-															.getStringArray(
-																	R.array.due_day_year_values)[1])) {
-										((TextView) dialogView
-												.findViewById(R.id.dialog_due_pick_val_day))
-												.setText(getResources()
-														.getStringArray(
-																R.array.due_day_year_values)[0]);
-									}
-								}
-							});
-				}
+	
+				
 
 				String[] p = specialList.getWhereQuery().split("and");
+				VALUE day=VALUE.DAY;
+				int val=0;
 				for (String r : p) {
 					if (r.contains("date(due)")) {
 						Pattern pattern = Pattern.compile("[\"'].*?[\"']");
@@ -915,143 +675,44 @@ public class SpecialListsSettingsFragment extends PreferenceFragment implements
 								break;
 							}
 						}
-						if (r.contains("localtime")) {
-							if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB) {
-								((NumberPicker) dialogView
-										.findViewById(R.id.due_day_year))
-										.setDisplayedValues(getResources()
-												.getStringArray(
-														R.array.due_day_year_values));
-								((NumberPicker) dialogView
-										.findViewById(R.id.due_day_year))
-										.setMaxValue(getResources()
-												.getStringArray(
-														R.array.due_day_year_values).length - 1);
-								((NumberPicker) dialogView
-										.findViewById(R.id.due_val))
-										.setDisplayedValues(s);
-								((NumberPicker) dialogView
-										.findViewById(R.id.due_val))
-										.setMaxValue(s.length - 1);
-								((NumberPicker) dialogView
-										.findViewById(R.id.due_val))
-										.setValue(10);
-							} else {
-								((TextView) dialogView
-										.findViewById(R.id.dialog_due_pick_val))
-										.setText(s[10]);
-								((TextView) dialogView
-										.findViewById(R.id.dialog_due_pick_val_day))
-										.setText(getResources()
-												.getStringArray(
-														R.array.due_day_year_values_plural)[0]);
-							}
-						} else {
-							int day = 0;
+						if (!r.contains("localtime")) {
 							if (r.contains("year")) {
 								r = r.replace(
 										(r.contains("years") ? "years" : "year"),
 										"").trim();
-								day = 2;
+								day = VALUE.YEAR;
 							} else if (r.contains("month")) {
 								r = r.replace(
 										(r.contains("months") ? "months"
 												: "month"), "").trim();
-								day = 1;
+								day = VALUE.MONTH;
 							} else {
 								r = r.replace(
 										(r.contains("days") ? "days" : "day"),
 										"").trim();
 							}
-							int val = 0;
 							try {
 								val = Integer.parseInt(r.replace("+", ""));
 							} catch (NumberFormatException e) {
 								e.printStackTrace();
-							}
-							if (val == 1 || val == -1) {
-								if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB) {
-									((NumberPicker) dialogView
-											.findViewById(R.id.due_day_year))
-											.setDisplayedValues(getResources()
-													.getStringArray(
-															R.array.due_day_year_values));
-								} else {
-									((TextView) dialogView
-											.findViewById(R.id.dialog_due_pick_val_day))
-											.setText(getResources()
-													.getStringArray(
-															R.array.due_day_year_values)[day]);
-								}
-							} else {
-								if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB) {
-									((NumberPicker) dialogView
-											.findViewById(R.id.due_day_year))
-											.setDisplayedValues(getResources()
-													.getStringArray(
-															R.array.due_day_year_values_plural));
-								} else {
-									((TextView) dialogView
-											.findViewById(R.id.dialog_due_pick_val_day))
-											.setText(getResources()
-													.getStringArray(
-															R.array.due_day_year_values_plural)[day]);
-								}
-							}
-							if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB) {
-								// TODO fix bug on negativ values
-								/* If you try to show -1 -10 is shown */
-								((NumberPicker) dialogView
-										.findViewById(R.id.due_day_year))
-										.setValue(day);
-								((NumberPicker) dialogView
-										.findViewById(R.id.due_val))
-										.setValue(10 + val);
-							} else {
-								((TextView) dialogView
-										.findViewById(R.id.dialog_due_pick_val))
-										.setText(s[10 + val]);
 							}
 
 						}
 
 					}
 				}
-				if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB) {
-					((NumberPicker) dialogView.findViewById(R.id.due_val))
-							.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-
-								@Override
-								public void onValueChange(NumberPicker picker,
-										int oldVal, int newVal) {
-									if (newVal == 11 || newVal == 9) {// =1||=9
-										((NumberPicker) dialogView
-												.findViewById(R.id.due_day_year))
-												.setDisplayedValues(getResources()
-														.getStringArray(
-																R.array.due_day_year_values));
-									} else {
-										((NumberPicker) dialogView
-												.findViewById(R.id.due_day_year))
-												.setDisplayedValues(getResources()
-														.getStringArray(
-																R.array.due_day_year_values_plural));
-									}
-
-								}
-							});
-				}
-				new AlertDialog.Builder(ctx)
-						.setTitle(ctx.getString(R.string.select_by))
-						.setNegativeButton(android.R.string.cancel,
+				final DueDialog dueDialog=new DueDialog(getActivity());
+				dueDialog.setTitle(ctx.getString(R.string.select_by));
+				dueDialog.setValue(val,day);
+				dueDialog.setNegativeButton(android.R.string.cancel,
 								new DialogInterface.OnClickListener() {
 
 									@Override
 									public void onClick(DialogInterface dialog,
 											int which) {
 									}
-								})
-						.setNeutralButton(R.string.no_date,
+								});
+						dueDialog.setNeutralButton(R.string.no_date,
 								new DialogInterface.OnClickListener() {
 
 									@Override
@@ -1060,97 +721,52 @@ public class SpecialListsSettingsFragment extends PreferenceFragment implements
 										updateWhere("due", "");
 										due.setSummary(getString(R.string.empty));
 									}
-								})
-						.setView(dialogView)
-						.setPositiveButton(android.R.string.ok,
+								});
+						dueDialog.setPositiveButton(android.R.string.ok,
 								new DialogInterface.OnClickListener() {
 
 									@Override
 									public void onClick(DialogInterface dialog,
 											int which) {
-										int val = 0;
-										if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB)
-											val = ((NumberPicker) dialogView
-													.findViewById(R.id.due_val))
-													.getValue();
-										else
-											val = Integer
-													.parseInt(((TextView) dialogView
-															.findViewById(R.id.dialog_due_pick_val))
-															.getText()
-															.toString()
-															.replace("+", "")) + 10;
+										int val = dueDialog.getValue();
 										String newWhere = "";
-										if (val == 10) {
+										if (val == 0) {
 											newWhere = "date(due)<=date(\"now\",\"localtime\")";
 											due.setSummary(getString(R.string.today));
 										} else {
 											String mod = "";
-											int v = 0;
-											if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB) {
-												v = ((NumberPicker) dialogView
-														.findViewById(R.id.due_day_year))
-														.getValue();
-											} else {
-												if (((TextView) dialogView
-														.findViewById(R.id.dialog_due_pick_val_day))
-														.getText()
-														.toString()
-														.contains(
-																getResources()
-																		.getStringArray(
-																				R.array.due_day_year_values)[1]))
-													v = 1;
-												else if (((TextView) dialogView
-														.findViewById(R.id.dialog_due_pick_val_day))
-														.getText()
-														.toString()
-														.contains(
-																getResources()
-																		.getStringArray(
-																				R.array.due_day_year_values)[2]))
-													v = 2;
-											}
-											switch (v) {
-											case 1:
-												mod = (val == 11 || val == 9 ? "month"
+											VALUE day=dueDialog.getDayYear();
+											String summary=val+" ";
+											switch (day) {
+											case MONTH:
+												mod = (val == 1 || val ==-1 ? "month"
 														: "months");
+												summary+= ctx.getResources().getQuantityString(R.plurals.due_month, val);
 												break;
-											case 2:
-												mod = (val == 11 || val == 9 ? "year"
+											case YEAR:
+												mod = (val == 1 || val == -1 ? "year"
 														: "years");
+												summary+= ctx.getResources().getQuantityString(R.plurals.due_year, val);
 												break;
-											default:
-												mod = (val == 11 || val == 9 ? "day"
+											case DAY:
+												mod = (val == 1 || val == -1 ? "day"
 														: "days");
+												summary+= ctx.getResources().getQuantityString(R.plurals.due_day, val);
 												break;
 											}
-											due.setSummary(s[val]
-													+ " "
-													+ getResources()
-															.getStringArray(
-																	val == 11
-																			|| val == 9 ? R.array.due_day_year_values
-																			: R.array.due_day_year_values_plural)[v]);
+											
+											due.setSummary(summary);
 											newWhere = "date(due)<=date(\"now\",\""
-													+ s[val]
+													+ val
 													+ " "
 													+ mod
 													+ "\",\"localtime\")";
 										}
 										updateWhere("due", newWhere);
 									}
-								}).show();
+								});
+								dueDialog.show();
 				return false;
-			}
-
-			private View getNumericPicker() {
-				if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB)
-					return getActivity().getLayoutInflater().inflate(
-							R.layout.due_dialog, null);
-				else
-					return getActivity().getLayoutInflater().inflate(
-							R.layout.due_dialog_v10, null);
 			}
 		});
 
