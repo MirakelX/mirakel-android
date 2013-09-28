@@ -114,6 +114,7 @@ public class MainActivity extends ActionBarActivity implements
 	public boolean darkTheme;
 	private boolean isResumend;
 	private Intent startIntent;
+	private boolean fromShared = false;
 
 	public static boolean updateTasksUUID = false;
 
@@ -418,10 +419,14 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	public void onBackPressed() {
+		if (fromShared) {
+			super.onBackPressed();
+			return;
+		}
 		switch (mViewPager.getCurrentItem()) {
-		case TASKS_FRAGMENT:
-			mDrawerLayout.openDrawer(Gravity.LEFT);
-			break;
+		/*
+		 * case TASKS_FRAGMENT: mDrawerLayout.openDrawer(Gravity.LEFT); break;
+		 */
 		case TASK_FRAGMENT:
 			mViewPager.setCurrentItem(TASKS_FRAGMENT);
 			break;
@@ -493,7 +498,6 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	private void addTaskFromSharing(int list_id) {
-
 		Task task = Task.newTask(newTaskSubject == null ? "" : newTaskSubject,
 				list_id);
 		task.setContent(newTaskContent == null ? "" : newTaskContent);
@@ -508,6 +512,8 @@ public class MainActivity extends ActionBarActivity implements
 	 * Initialize the ViewPager and setup the rest of the layout
 	 */
 	private void setupLayout() {
+
+		fromShared = false;
 		if (currentList == null)
 			setCurrentList(SpecialList.firstSpecial());
 		// Initialize ViewPager
@@ -529,6 +535,7 @@ public class MainActivity extends ActionBarActivity implements
 		} else if (startIntent.getAction().equals(Intent.ACTION_SEND)
 				|| startIntent.getAction().equals(Intent.ACTION_SEND_MULTIPLE)) {
 
+			fromShared = true;
 			newTaskContent = startIntent.getStringExtra(Intent.EXTRA_TEXT);
 			newTaskSubject = startIntent.getStringExtra(Intent.EXTRA_SUBJECT);
 
