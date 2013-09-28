@@ -37,10 +37,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Helpers;
@@ -63,7 +63,6 @@ public class TaskFragment extends Fragment {
 		final MainActivity main = (MainActivity) getActivity();
 		View view = inflater.inflate(R.layout.task_fragment, container, false);
 		ListView listView = (ListView) view.findViewById(R.id.taskFragment);
-		final Task task = main.getCurrentTask();
 		adapter = new TaskFragmentAdapter(main, R.layout.task_head_line,
 				main.getCurrentTask());
 		listView.setAdapter(adapter);
@@ -75,8 +74,8 @@ public class TaskFragment extends Fragment {
 					int position, long id) {
 				int type = adapter.getData().get(position).first;
 				if (type == TYPE.FILE) {
-					FileMirakel file = FileMirakel.getForTask(task).get(
-							adapter.getData().get(position).second);
+					FileMirakel file = main.getCurrentTask().getFiles()
+							.get(adapter.getData().get(position).second);
 					String mimetype = Helpers.getMimeType(file.getPath());
 
 					Intent i2 = new Intent();
@@ -91,10 +90,10 @@ public class TaskFragment extends Fragment {
 								Toast.LENGTH_SHORT).show();
 					}
 				} else if (type == TYPE.SUBTASK) {
-					Task t=adapter.getTask().getSubtasks()
+					Task t = adapter.getTask().getSubtasks()
 							.get(adapter.getData().get(position).second);
-					if(t.getList().getId()!=main.getCurrentList().getId()){
-						main.setCurrentList(t.getList(),false);
+					if (t.getList().getId() != main.getCurrentList().getId()) {
+						main.setCurrentList(t.getList(), false);
 					}
 					main.setCurrentTask(t, false);
 					adapter.setData(t);

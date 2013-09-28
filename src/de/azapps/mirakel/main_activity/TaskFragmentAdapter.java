@@ -192,8 +192,8 @@ public class TaskFragmentAdapter extends
 			int position) {
 		// return TaskAdapter.setupRow( null, parent, context, layoutResourceId,
 		// task, true, darkTheme);
-		final View row = convertView == null ? inflater.inflate(R.layout.tasks_row,
-				parent, false) : convertView;
+		final View row = convertView == null ? inflater.inflate(
+				R.layout.tasks_row, parent, false) : convertView;
 		final TaskHolder holder;
 
 		if (convertView == null) {
@@ -224,7 +224,7 @@ public class TaskFragmentAdapter extends
 		holder.taskRowDone.setChecked(task.isDone());
 		holder.taskRowDone.setTag(task);
 		holder.taskRowDoneWrapper.setTag(task);
-		OnClickListener checkbox= new OnClickListener() {
+		OnClickListener checkbox = new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Task task = (Task) v.getTag();
@@ -265,7 +265,7 @@ public class TaskFragmentAdapter extends
 
 							@Override
 							public void exec() {
-								((MainActivity)context).updatesForTask(task);
+								((MainActivity) context).updatesForTask(task);
 							}
 						});
 
@@ -353,6 +353,11 @@ public class TaskFragmentAdapter extends
 		}).start();
 		holder.fileName.setText(file.getName());
 		holder.filePath.setText(file.getPath());
+		if (!file.getFile().exists()) {
+			holder.filePath.setText(R.string.file_vanished);
+		} else {
+			holder.filePath.setText(file.getPath());
+		}
 		markSelected(position, row);
 
 		return row;
@@ -634,8 +639,9 @@ public class TaskFragmentAdapter extends
 			holder.taskName = (TextView) header.findViewById(R.id.task_name);
 			holder.taskDone = (CheckBox) header.findViewById(R.id.task_done);
 			holder.taskPrio = (TextView) header.findViewById(R.id.task_prio);
-			holder.switcher=(ViewSwitcher) header.findViewById(R.id.switch_name);
-			holder.txt=(EditText) header.findViewById(R.id.edit_name);
+			holder.switcher = (ViewSwitcher) header
+					.findViewById(R.id.switch_name);
+			holder.txt = (EditText) header.findViewById(R.id.edit_name);
 			header.setTag(holder);
 		} else {
 			holder = (HeaderHolder) header.getTag();
@@ -645,8 +651,9 @@ public class TaskFragmentAdapter extends
 		holder.taskName.setText(tname == null ? "" : tname);
 		if (((MainActivity) context).isTablet)
 			holder.taskName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
-		
-		if(holder.switcher.getCurrentView().getId()==R.id.edit_name&&!task.getName().equals(holder.txt.getText().toString())){
+
+		if (holder.switcher.getCurrentView().getId() == R.id.edit_name
+				&& !task.getName().equals(holder.txt.getText().toString())) {
 			holder.switcher.showPrevious();
 		}
 		holder.taskName.setOnClickListener(new View.OnClickListener() {
@@ -659,41 +666,47 @@ public class TaskFragmentAdapter extends
 				}
 				holder.switcher.showNext(); // or switcher.showPrevious();
 				holder.txt.setText(holder.taskName.getText());
-				holder.txt.setOnFocusChangeListener(new OnFocusChangeListener() {
-					
-					@Override
-					public void onFocusChange(View v, boolean hasFocus) {
-						InputMethodManager imm = (InputMethodManager) context
-								.getSystemService(Context.INPUT_METHOD_SERVICE);
-						if(hasFocus){
-							imm.showSoftInput(holder.txt, InputMethodManager.SHOW_IMPLICIT);
-						}else{
-							imm.showSoftInput(holder.txt, InputMethodManager.HIDE_IMPLICIT_ONLY);
-						}
-						
-					}
-				});
-				holder.txt.requestFocus();
-				holder.txt.setOnEditorActionListener(new OnEditorActionListener() {
-					public boolean onEditorAction(TextView v, int actionId,
-							KeyEvent event) {
-						if (actionId == EditorInfo.IME_ACTION_DONE) {
-							EditText txt = (EditText) header
-									.findViewById(R.id.edit_name);
-							InputMethodManager imm = (InputMethodManager) context
-									.getSystemService(Context.INPUT_METHOD_SERVICE);
-							task.setName(txt.getText().toString());
-							((MainActivity) context).saveTask(task);
-							holder.taskName.setText(task.getName());
-							txt.setOnFocusChangeListener(null);
-							imm.hideSoftInputFromWindow(txt.getWindowToken(), 0);
-							
-							return true;
-						}
-						return false;
-					}
+				holder.txt
+						.setOnFocusChangeListener(new OnFocusChangeListener() {
 
-				});
+							@Override
+							public void onFocusChange(View v, boolean hasFocus) {
+								InputMethodManager imm = (InputMethodManager) context
+										.getSystemService(Context.INPUT_METHOD_SERVICE);
+								if (hasFocus) {
+									imm.showSoftInput(holder.txt,
+											InputMethodManager.SHOW_IMPLICIT);
+								} else {
+									imm.showSoftInput(
+											holder.txt,
+											InputMethodManager.HIDE_IMPLICIT_ONLY);
+								}
+
+							}
+						});
+				holder.txt.requestFocus();
+				holder.txt
+						.setOnEditorActionListener(new OnEditorActionListener() {
+							public boolean onEditorAction(TextView v,
+									int actionId, KeyEvent event) {
+								if (actionId == EditorInfo.IME_ACTION_DONE) {
+									EditText txt = (EditText) header
+											.findViewById(R.id.edit_name);
+									InputMethodManager imm = (InputMethodManager) context
+											.getSystemService(Context.INPUT_METHOD_SERVICE);
+									task.setName(txt.getText().toString());
+									((MainActivity) context).saveTask(task);
+									holder.taskName.setText(task.getName());
+									txt.setOnFocusChangeListener(null);
+									imm.hideSoftInputFromWindow(
+											txt.getWindowToken(), 0);
+
+									return true;
+								}
+								return false;
+							}
+
+						});
 			}
 		});
 
