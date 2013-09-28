@@ -4,7 +4,7 @@
     <item
         android:id="@+id/menu_new_special_list"
         android:icon="@android:drawable/ic_menu_add"
-        mirakel:showAsAction="ifRoom|withText"
+        mirakel:showAsAction="always"
         android:title="@string/list_menu_new_special_list">
     </item>
 

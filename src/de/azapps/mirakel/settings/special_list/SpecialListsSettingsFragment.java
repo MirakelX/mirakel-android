@@ -30,6 +30,7 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakelandroid.R;
 import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -41,13 +42,17 @@ import android.os.Build.VERSION_CODES;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
+import android.preference.PreferenceActivity;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceFragment;
 import android.view.ContextThemeWrapper;
+import android.view.Gravity;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
@@ -60,14 +65,40 @@ public class SpecialListsSettingsFragment extends PreferenceFragment implements
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.special_list_settings);
 		Bundle b = getArguments();
 		if (b != null) {
-			specialList = SpecialList.getSpecialList(getArguments()
+			Log.d(TAG,"id= "+getArguments()
 					.getInt("id"));
-			getActivity().getActionBar().setTitle(specialList.getName());
+			specialList = SpecialList.getSpecialList(getArguments()
+					.getInt("id")*-1);
+			ActionBar actionbar = getActivity().getActionBar();
+			actionbar.setTitle(specialList.getName());
+			ImageButton delList=new ImageButton(getActivity());
+			delList.setBackgroundResource(android.R.drawable.ic_menu_delete);
+			actionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
+					ActionBar.DISPLAY_SHOW_CUSTOM);
+			actionbar.setCustomView(delList,new ActionBar.LayoutParams(
+					ActionBar.LayoutParams.WRAP_CONTENT,
+					ActionBar.LayoutParams.WRAP_CONTENT,
+					Gravity.CENTER_VERTICAL | Gravity.RIGHT));
+			delList.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					specialList.destroy();
+					if(!((PreferenceActivity)getActivity()).isMultiPane())
+						getActivity().finish();
+					else{
+						try{
+							((PreferenceActivity)getActivity()).onHeaderClick(((SpecialListsSettingsActivity)getActivity()).getHeader().get(0), 0);
+						}catch (Exception e) {
+							getActivity().finish();
+						}
+					}
+				}
+			});
 			setup();
 		} else {
 			Log.d(TAG, "bundle null");
