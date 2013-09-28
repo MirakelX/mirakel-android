@@ -123,10 +123,22 @@ public class FileMirakel extends FileBase {
 		int insertId = (int) database.insertOrThrow(TABLE, null, values);
 		return FileMirakel.get(insertId);
 	}
-	
-	public void destroy(){
-		database.delete(TABLE, "_id="+getId(),null);
-		new File(cacheDir,getId() + ".png").delete();
+
+	public void destroy() {
+		database.delete(TABLE, "_id=" + getId(), null);
+		new File(cacheDir, getId() + ".png").delete();
+	}
+
+	public static void destroyForTask(Task t) {
+		List<FileMirakel> files = getForTask(t);
+		for (FileMirakel file : files) {
+			File destFile = new File(FileMirakel.cacheDir, file.getId()
+					+ ".png");
+			if (destFile.exists()) {
+				destFile.delete();
+			}
+			file.destroy();
+		}
 	}
 
 	/**
@@ -182,11 +194,12 @@ public class FileMirakel extends FileBase {
 				Task.get(cursor.getInt(i++)), cursor.getString(i++),
 				cursor.getString(i++));
 	}
-	
-	public static int getFileCount(Task t){
-		Cursor c=database.rawQuery("Select count(_id) from "+TABLE+" where task_id=?", new String[]{""+t.getId()});
+
+	public static int getFileCount(Task t) {
+		Cursor c = database.rawQuery("Select count(_id) from " + TABLE
+				+ " where task_id=?", new String[] { "" + t.getId() });
 		c.moveToFirst();
-		int count=c.getInt(0);
+		int count = c.getInt(0);
 		c.close();
 		return count;
 	}
