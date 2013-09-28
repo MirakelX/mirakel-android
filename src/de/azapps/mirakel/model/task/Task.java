@@ -102,17 +102,20 @@ public class Task extends TaskBase {
 	 * 
 	 * @param task
 	 */
-	public void delete() {
-		delete(false);
+	public void destroy() {
+		destroy(false);
 	}
 
-	public void delete(boolean force) {
+	public void destroy(boolean force) {
 		if (!force)
 			Helpers.updateLog(this, context);
 		long id = getId();
-		if (getSync_state() == Network.SYNC_STATE.ADD || force)
+		if (getSync_state() == Network.SYNC_STATE.ADD || force) {
 			database.delete(TABLE, "_id = " + id, null);
-		else {
+			FileMirakel.destroyForTask(this);
+			database.delete(SUBTASK_TABLE, "parent_id=" + id + " or child_id="
+					+ id, null);
+		} else {
 			ContentValues values = new ContentValues();
 			values.put("sync_state", Network.SYNC_STATE.DELETE);
 			database.update(TABLE, values, "_id=" + id, null);
@@ -120,7 +123,7 @@ public class Task extends TaskBase {
 	}
 
 	public List<Task> getSubtasks() {
-		String columns = "t."+allColumns[0];
+		String columns = "t." + allColumns[0];
 		for (int i = 1; i < allColumns.length; i++) {
 			columns += ", t." + allColumns[i];
 		}
@@ -161,8 +164,6 @@ public class Task extends TaskBase {
 		c.close();
 		return names;
 	}
-	
-
 
 	public void addSubtask(Task t) throws NoSuchListException {
 		ContentValues cv = new ContentValues();
@@ -176,9 +177,12 @@ public class Task extends TaskBase {
 				+ " and child_id=" + s.getId(), null);
 
 	}
-	public boolean isSubtaskFrom(Task t){
-		Cursor c=database.query(SUBTASK_TABLE, new String[]{"_id"}, "parent_id="+t.getId()+" and child_id="+getId(), null, null, null, null);
-		boolean isSubtask=c.getCount()>0;
+
+	public boolean isSubtaskFrom(Task t) {
+		Cursor c = database.query(SUBTASK_TABLE, new String[] { "_id" },
+				"parent_id=" + t.getId() + " and child_id=" + getId(), null,
+				null, null, null);
+		boolean isSubtask = c.getCount() > 0;
 		c.close();
 		return isSubtask;
 	}
@@ -229,6 +233,9 @@ public class Task extends TaskBase {
 
 	public List<FileMirakel> getFiles() {
 		return FileMirakel.getForTask(this);
+	}
+	public FileMirakel addFile(String path) {
+		return FileMirakel.newFile(this, path);
 	}
 
 	// Static Methods
@@ -430,13 +437,13 @@ public class Task extends TaskBase {
 		cursor.close();
 		return tasks;
 	}
+
 	public static List<Task> search(String query) {
-		Cursor cursor = database.query(TABLE, allColumns, query, null,
-				null, null, null);
+		Cursor cursor = database.query(TABLE, allColumns, query, null, null,
+				null, null);
 		return cursorToTaskList(cursor);
-		
+
 	}
-	
 
 	/**
 	 * Get tasks by Sync State
@@ -563,7 +570,7 @@ public class Task extends TaskBase {
 
 			if (key.equals("name") || key.equals("description")) {
 				t.setName(val.getAsString());
-			} else if (key == "content") {
+			} else if (key.equals("content")) {
 				String content = val.getAsString();
 				if (content == null)
 					content = "";

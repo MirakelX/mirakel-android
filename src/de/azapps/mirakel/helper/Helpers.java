@@ -13,8 +13,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
+import android.graphics.Matrix;
 import android.graphics.Shader;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
@@ -260,7 +262,6 @@ public class Helpers {
 			return "";
 		}
 	}
-	
 
 	public static void updateLog(ListMirakel listMirakel, Context ctx) {
 		if (listMirakel != null)
@@ -302,7 +303,7 @@ public class Helpers {
 					Long id = Long.parseLong(last.substring(1));
 					switch (type) {
 					case TASK:
-						Task.get(id).delete(true);
+						Task.get(id).destroy(true);
 						break;
 					case LIST:
 						ListMirakel.getList(id.intValue()).destroy(true);
@@ -375,14 +376,15 @@ public class Helpers {
 
 	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
-	public static void setListColorBackground(ListMirakel list, View row,boolean darkTheme) {
+	public static void setListColorBackground(ListMirakel list, View row,
+			boolean darkTheme) {
 
 		int w = row.getWidth();
 		int color = list.getColor();
-		if (color != 0){
-			if(darkTheme){
+		if (color != 0) {
+			if (darkTheme) {
 				color ^= 0x66000000;
-			}else{
+			} else {
 				color ^= 0xCC000000;
 			}
 		}
@@ -395,16 +397,50 @@ public class Helpers {
 		else
 			row.setBackgroundDrawable(mDrawable);
 	}
-	
-	public static String getMimeType(String url)
-	{
-	    String type = null;
-	    String extension = MimeTypeMap.getFileExtensionFromUrl(url);
-	    if (extension != null) {
-	        MimeTypeMap mime = MimeTypeMap.getSingleton();
-	        type = mime.getMimeTypeFromExtension(extension);
-	    }
-	    return type;
+
+	public static String getMimeType(String url) {
+		String type = null;
+		String extension = MimeTypeMap.getFileExtensionFromUrl(url);
+		if (extension != null) {
+			MimeTypeMap mime = MimeTypeMap.getSingleton();
+			type = mime.getMimeTypeFromExtension(extension);
+		}
+		return type;
+	}
+
+	/*
+	 * Scaling down the image
+	 * "Source: http://www.androiddevelopersolution.com/2012/09/bitmap-how-to-scale-down-image-for.html"
+	 */
+	public static Bitmap getScaleImage(Bitmap bitmap, int boundBoxInDp) {
+
+		// Get current dimensions
+		int width = bitmap.getWidth();
+		int height = bitmap.getHeight();
+
+		// Determine how much to scale: the dimension requiring
+		// less scaling is.
+		// closer to the its side. This way the image always
+		// stays inside your.
+		// bounding box AND either x/y axis touches it.
+		float xScale = ((float) boundBoxInDp) / width;
+		float yScale = ((float) boundBoxInDp) / height;
+		float scale = (xScale <= yScale) ? xScale : yScale;
+
+		// Create a matrix for the scaling and add the scaling data
+		Matrix matrix = new Matrix();
+		matrix.postScale(scale, scale);
+
+		// Create a new bitmap and convert it to a format understood
+
+		// by the
+		// ImageView
+		Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height,
+				matrix, true);
+
+		// Apply the scaled bitmap
+		return scaledBitmap;
+
 	}
 
 }

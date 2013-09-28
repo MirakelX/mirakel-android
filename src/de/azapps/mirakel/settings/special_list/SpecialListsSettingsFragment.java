@@ -821,10 +821,10 @@ public class SpecialListsSettingsFragment extends PreferenceFragment implements
 			}
 			specialList.setWhereQuery(n);
 		} else if (specialList.getWhereQuery().trim().length() == 0) {
-			specialList.setWhereQuery((attr == "due" ? "due is not null and "
+			specialList.setWhereQuery((attr.equals("due") ? "due is not null and "
 					: "") + newWhere);
 		} else if (newWhere != "") {
-			specialList.setWhereQuery((attr == "due" ? "due is not null and "
+			specialList.setWhereQuery((attr.equals("due") ? "due is not null and "
 					: "") + specialList.getWhereQuery() + " and " + newWhere);
 		}
 		specialList.save();
@@ -844,11 +844,11 @@ public class SpecialListsSettingsFragment extends PreferenceFragment implements
 		String returnString = "";
 		for (String s : whereParts) {
 			if (s.contains(queryPart)) {
-				if (queryPart == "done") {
+				if (queryPart.equals("done")) {
 					return s.contains("=1") ? getString(R.string.done)
 							: getString(R.string.undone);
 				}
-				if (queryPart == "due") {
+				if (queryPart.equals("due")) {
 					if (!s.contains("not null")) {
 						Pattern pattern = Pattern.compile("[\"'].*?[\"']");
 						Matcher matcher = pattern.matcher(s);
@@ -887,11 +887,11 @@ public class SpecialListsSettingsFragment extends PreferenceFragment implements
 														: R.array.due_day_year_values_plural))[day];
 					}
 				}
-				if (queryPart == "reminder") {
+				if (queryPart.equals("reminder")) {
 					return s.contains("not") ? getString(R.string.reminder_set)
 							: getString(R.string.reminder_unset);
 				}
-				if (queryPart == "list_id") {
+				if (queryPart.equals("list_id")) {
 					returnString = (specialList.getWhereQuery().contains(
 							"not list_id") ? getString(R.string.not_in) + " "
 							: "");
@@ -907,7 +907,7 @@ public class SpecialListsSettingsFragment extends PreferenceFragment implements
 					}
 					return returnString;
 				}
-				if (queryPart == "priority") {
+				if (queryPart.equals("priority")) {
 					returnString = (specialList.getWhereQuery().contains(
 							"not priority") ? getString(R.string.not_in) + " "
 							: "");
@@ -917,7 +917,7 @@ public class SpecialListsSettingsFragment extends PreferenceFragment implements
 											: "not ") + "priority in (", "")
 									.replace(")", "").replace(",", ", ");
 				}
-				if (queryPart == "content" || queryPart == "name") {
+				if (queryPart.equals("content") || queryPart.equals("name")) {
 					if (s.contains("not")) {
 						s = s.replace("not", "").trim();
 						returnString += getString(R.string.not) + " ";
@@ -939,7 +939,7 @@ public class SpecialListsSettingsFragment extends PreferenceFragment implements
 				}
 			}
 		}
-		return returnString == "" ? getString(R.string.empty) : returnString;
+		return returnString.equals("") ? getString(R.string.empty) : returnString;
 	}
 
 	@Override

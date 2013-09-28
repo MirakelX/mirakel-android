@@ -1,5 +1,7 @@
 package de.azapps.mirakel.model.file;
 
+import java.io.File;
+
 import android.content.ContentValues;
 import de.azapps.mirakel.model.task.Task;
 
@@ -8,6 +10,7 @@ public class FileBase {
 	private Task task;
 	private String name;
 	private String path;
+	private File file;
 
 	public FileBase(int id, Task task, String name, String path) {
 		super();
@@ -47,6 +50,12 @@ public class FileBase {
 
 	public void setPath(String path) {
 		this.path = path;
+	}
+
+	public File getFile() {
+		if (file == null)
+			file = new File(path);
+		return file;
 	}
 
 	@Override

@@ -14,13 +14,15 @@ import android.graphics.BitmapFactory;
 import android.os.Environment;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.task.Task;
 
 public class FileMirakel extends FileBase {
 
-	public static final File cacheDir = new File(Environment.getDataDirectory()
-			+ "/data/" + Mirakel.APK_NAME + "/image_cache");
+	public static final String cacheDirPath = Environment.getDataDirectory()
+			+ "/data/" + Mirakel.APK_NAME + "/image_cache";
+	public static final File cacheDir = new File(cacheDirPath);
 	public static final String TABLE = "files";
 	@SuppressWarnings("unused")
 	private static final String TAG = "FileMirakel";
@@ -84,6 +86,7 @@ public class FileMirakel extends FileBase {
 
 	public static FileMirakel newFile(Task task, String file_path) {
 		File osFile = new File(file_path);
+
 		if (osFile.exists()) {
 			String name = osFile.getName();
 			FileMirakel newFile = FileMirakel.newFile(task, name, file_path);
@@ -92,7 +95,7 @@ public class FileMirakel extends FileBase {
 			Bitmap myBitmap = BitmapFactory
 					.decodeFile(osFile.getAbsolutePath());
 			if (myBitmap != null) {
-				myBitmap = Bitmap.createScaledBitmap(myBitmap, 150, 150, true);
+				myBitmap = Helpers.getScaleImage(myBitmap, 150);
 				// create directory if not exists
 
 				boolean success = true;
@@ -123,10 +126,22 @@ public class FileMirakel extends FileBase {
 		int insertId = (int) database.insertOrThrow(TABLE, null, values);
 		return FileMirakel.get(insertId);
 	}
-	
-	public void destroy(){
-		database.delete(TABLE, "_id="+getId(),null);
-		new File(cacheDir,getId() + ".png").delete();
+
+	public void destroy() {
+		database.delete(TABLE, "_id=" + getId(), null);
+		new File(cacheDir, getId() + ".png").delete();
+	}
+
+	public static void destroyForTask(Task t) {
+		List<FileMirakel> files = getForTask(t);
+		for (FileMirakel file : files) {
+			File destFile = new File(FileMirakel.cacheDir, file.getId()
+					+ ".png");
+			if (destFile.exists()) {
+				destFile.delete();
+			}
+			file.destroy();
+		}
 	}
 
 	/**
@@ -182,11 +197,12 @@ public class FileMirakel extends FileBase {
 				Task.get(cursor.getInt(i++)), cursor.getString(i++),
 				cursor.getString(i++));
 	}
-	
-	public static int getFileCount(Task t){
-		Cursor c=database.rawQuery("Select count(_id) from "+TABLE+" where task_id=?", new String[]{""+t.getId()});
+
+	public static int getFileCount(Task t) {
+		Cursor c = database.rawQuery("Select count(_id) from " + TABLE
+				+ " where task_id=?", new String[] { "" + t.getId() });
 		c.moveToFirst();
-		int count=c.getInt(0);
+		int count = c.getInt(0);
 		c.close();
 		return count;
 	}

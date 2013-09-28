@@ -32,6 +32,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
@@ -113,6 +114,7 @@ public class MainActivity extends ActionBarActivity implements
 	public boolean darkTheme;
 	private boolean isResumend;
 	private Intent startIntent;
+	private boolean fromShared = false;
 
 	public static boolean updateTasksUUID = false;
 
@@ -406,7 +408,7 @@ public class MainActivity extends ActionBarActivity implements
 				if (FileMirakel.newFile(currentTask, file_path) == null) {
 					Toast.makeText(this, getString(R.string.file_vanished),
 							Toast.LENGTH_SHORT).show();
-				}else{
+				} else {
 					taskFragment.adapter.setData(currentTask);
 				}
 
@@ -417,10 +419,14 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	public void onBackPressed() {
+		if (fromShared) {
+			super.onBackPressed();
+			return;
+		}
 		switch (mViewPager.getCurrentItem()) {
-		case TASKS_FRAGMENT:
-			mDrawerLayout.openDrawer(Gravity.LEFT);
-			break;
+		/*
+		 * case TASKS_FRAGMENT: mDrawerLayout.openDrawer(Gravity.LEFT); break;
+		 */
 		case TASK_FRAGMENT:
 			mViewPager.setCurrentItem(TASKS_FRAGMENT);
 			break;
@@ -472,10 +478,42 @@ public class MainActivity extends ActionBarActivity implements
 		Log.d(TAG, "New Indent");
 	}
 
+	private String newTaskContent, newTaskSubject, newTaskFilePath;
+
+	private void addFilesForTask(Task t, Intent intent) {
+		String action = intent.getAction();
+		String type = intent.getType();
+
+		if (Intent.ACTION_SEND.equals(action) && type != null) {
+			Uri uri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+			t.addFile(Helpers.getPathFromUri(uri, this));
+		} else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
+			ArrayList<Uri> imageUris = intent
+					.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+			for (Uri uri : imageUris) {
+				t.addFile(Helpers.getPathFromUri(uri, this));
+			}
+		}
+
+	}
+
+	private void addTaskFromSharing(int list_id) {
+		Task task = Task.newTask(newTaskSubject == null ? "" : newTaskSubject,
+				list_id);
+		task.setContent(newTaskContent == null ? "" : newTaskContent);
+		safeSafeTask(task);
+		setCurrentTask(task);
+		addFilesForTask(task, startIntent);
+		setCurrentList(task.getList());
+		setCurrentTask(task, true);
+	}
+
 	/**
 	 * Initialize the ViewPager and setup the rest of the layout
 	 */
 	private void setupLayout() {
+
+		fromShared = false;
 		if (currentList == null)
 			setCurrentList(SpecialList.firstSpecial());
 		// Initialize ViewPager
@@ -495,54 +533,45 @@ public class MainActivity extends ActionBarActivity implements
 				Log.d(TAG, "task null");
 			}
 		} else if (startIntent.getAction().equals(Intent.ACTION_SEND)
-				&& startIntent.getType().equals("text/plain")) {
-			final String content = startIntent
-					.getStringExtra(Intent.EXTRA_TEXT);
-			final String subject = startIntent
-					.getStringExtra(Intent.EXTRA_SUBJECT);
-			if (content != null || subject != null) {
-				int id = getCurrentList().getId();
-				if (preferences.getBoolean("importDefaultList", false)) {
-					id = preferences.getInt("defaultImportList", id);
-					Task task = Task
-							.newTask(subject == null ? "" : subject, id);
-					task.setContent(content == null ? "" : content);
-					safeSafeTask(task);
-					setCurrentTask(task);
-					tasksFragment.updateList(true);
-					listFragment.update();
-				} else {
-					AlertDialog.Builder builder = new AlertDialog.Builder(this);
-					builder.setTitle(R.string.import_to);
-					List<CharSequence> items = new ArrayList<CharSequence>();
-					final List<Integer> list_ids = new ArrayList<Integer>();
-					int currentItem = 0;
-					for (ListMirakel list : ListMirakel.all()) {
-						if (list.getId() > 0) {
-							items.add(list.getName());
-							list_ids.add(list.getId());
-						}
-					}
-					builder.setSingleChoiceItems(
-							items.toArray(new CharSequence[items.size()]),
-							currentItem, new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int item) {
-									Task task = Task.newTask(
-											subject == null ? "" : subject,
-											list_ids.get(item));
-									task.setContent(content == null ? ""
-											: content);
-									safeSafeTask(task);
-									setCurrentTask(task);
-									tasksFragment.updateList(true);
-									listFragment.update();
-									dialog.dismiss();
-								}
-							});
-					builder.create().show();
+				|| startIntent.getAction().equals(Intent.ACTION_SEND_MULTIPLE)) {
+
+			fromShared = true;
+			newTaskContent = startIntent.getStringExtra(Intent.EXTRA_TEXT);
+			newTaskSubject = startIntent.getStringExtra(Intent.EXTRA_SUBJECT);
+
+			if (!startIntent.getType().equals("text/plain")) {
+				if (newTaskSubject == null) {
+					newTaskSubject = preferences.getString("import_file_title",
+							getString(R.string.file_default_title));
 				}
 			}
+			int id = getCurrentList().getId();
+			if (preferences.getBoolean("importDefaultList", false)) {
+				id = preferences.getInt("defaultImportList", id);
+				addTaskFromSharing(id);
+			} else {
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				builder.setTitle(R.string.import_to);
+				List<CharSequence> items = new ArrayList<CharSequence>();
+				final List<Integer> list_ids = new ArrayList<Integer>();
+				int currentItem = 0;
+				for (ListMirakel list : ListMirakel.all()) {
+					if (list.getId() > 0) {
+						items.add(list.getName());
+						list_ids.add(list.getId());
+					}
+				}
+				builder.setSingleChoiceItems(
+						items.toArray(new CharSequence[items.size()]),
+						currentItem, new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int item) {
+								addTaskFromSharing(list_ids.get(item));
+								dialog.dismiss();
+							}
+						});
+				builder.create().show();
+			}
+
 		} else if (startIntent.getAction().equals(TASK_DONE)
 				|| startIntent.getAction().equals(TASK_LATER)) {
 			handleReminder(startIntent);
@@ -685,7 +714,7 @@ public class MainActivity extends ActionBarActivity implements
 							public void onClick(DialogInterface dialog,
 									int which) {
 								for (Task t : tasks) {
-									t.delete();
+									t.destroy();
 								}
 								setCurrentList(currentList);
 								ReminderAlarm.updateAlarms(main);
@@ -933,19 +962,22 @@ public class MainActivity extends ActionBarActivity implements
 	 * Set the current list and update the views
 	 * 
 	 * @param currentList
-	 * @param b 
+	 * @param b
 	 */
 	void setCurrentList(ListMirakel currentList, boolean b) {
 		setCurrentList(currentList, null, b);
 	}
-	void setCurrentList(ListMirakel currentList, View currentView){
+
+	void setCurrentList(ListMirakel currentList, View currentView) {
 		setCurrentList(currentList, currentView, true);
 	}
-	void setCurrentList(ListMirakel currentList){
+
+	void setCurrentList(ListMirakel currentList) {
 		setCurrentList(currentList, null, true);
 	}
 
-	void setCurrentList(ListMirakel currentList, View currentView, boolean switchFragment) {
+	void setCurrentList(ListMirakel currentList, View currentView,
+			boolean switchFragment) {
 		if (currentList == null)
 			return;
 		this.currentList = currentList;
@@ -962,7 +994,7 @@ public class MainActivity extends ActionBarActivity implements
 
 		if (tasksFragment != null) {
 			tasksFragment.updateList();
-			if (!isTablet&&switchFragment)
+			if (!isTablet && switchFragment)
 				mViewPager.setCurrentItem(TASKS_FRAGMENT);
 		}
 		if (currentView == null && listFragment != null
@@ -979,7 +1011,7 @@ public class MainActivity extends ActionBarActivity implements
 					R.color.pressed_color));
 			oldClickedList = currentView;
 		}
-		if(switchFragment)
+		if (switchFragment)
 			setCurrentTask(currentTask);
 		if (currentPosition == TASKS_FRAGMENT)
 			getSupportActionBar().setTitle(currentList.getName());
