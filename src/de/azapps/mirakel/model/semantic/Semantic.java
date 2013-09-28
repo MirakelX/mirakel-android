@@ -11,7 +11,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -35,6 +34,7 @@ public class Semantic extends SemanticBase {
 	public void save() {
 		ContentValues values = getContentValues();
 		database.update(TABLE, values, "_id = " + getId(), null);
+		initAll();
 	}
 
 	// Static
@@ -69,6 +69,7 @@ public class Semantic extends SemanticBase {
 		ContentValues values = getContentValues();
 		values.remove("_id");
 		int insertId = (int) database.insertOrThrow(TABLE, null, values);
+		initAll();
 		return Semantic.get(insertId);
 	}
 
@@ -104,6 +105,7 @@ public class Semantic extends SemanticBase {
 
 	public void destroy() {
 		database.delete(TABLE, "_id=" + getId(), null);
+		initAll();
 	}
 
 	private static void initAll() {
