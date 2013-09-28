@@ -774,6 +774,11 @@ public class PreferencesHelper {
 						}
 					});
 		}
+		final EditTextPreference importFileType = (EditTextPreference) findPreference("import_file_title");
+		if (importFileType != null) {
+			importFileType.setSummary(settings.getString("import_file_title",
+					activity.getString(R.string.file_default_title)));
+		}
 		final CheckBoxPreference importDefaultList = (CheckBoxPreference) findPreference("importDefaultList");
 		if (importDefaultList != null) {
 			if (settings.getBoolean("importDefaultList", false)) {

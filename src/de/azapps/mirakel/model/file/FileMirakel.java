@@ -20,8 +20,9 @@ import de.azapps.mirakel.model.task.Task;
 
 public class FileMirakel extends FileBase {
 
-	public static final File cacheDir = new File(Environment.getDataDirectory()
-			+ "/data/" + Mirakel.APK_NAME + "/image_cache");
+	public static final String cacheDirPath = Environment.getDataDirectory()
+			+ "/data/" + Mirakel.APK_NAME + "/image_cache";
+	public static final File cacheDir = new File(cacheDirPath);
 	public static final String TABLE = "files";
 	@SuppressWarnings("unused")
 	private static final String TAG = "FileMirakel";
@@ -85,6 +86,7 @@ public class FileMirakel extends FileBase {
 
 	public static FileMirakel newFile(Task task, String file_path) {
 		File osFile = new File(file_path);
+
 		if (osFile.exists()) {
 			String name = osFile.getName();
 			FileMirakel newFile = FileMirakel.newFile(task, name, file_path);

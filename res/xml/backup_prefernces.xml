@@ -26,6 +26,10 @@
         android:key="importDefaultList"
         android:summary="@string/import_default_list_summary"
         android:title="@string/import_default_list" />
+    <EditTextPreference 
+        android:defaultValue="@string/file_default_title"
+        android:key="import_file_title"
+        android:title="@string/settings_file_default_title"/>
 
     <Preference
         android:key="backup"

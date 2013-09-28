@@ -234,6 +234,9 @@ public class Task extends TaskBase {
 	public List<FileMirakel> getFiles() {
 		return FileMirakel.getForTask(this);
 	}
+	public FileMirakel addFile(String path) {
+		return FileMirakel.newFile(this, path);
+	}
 
 	// Static Methods
 
