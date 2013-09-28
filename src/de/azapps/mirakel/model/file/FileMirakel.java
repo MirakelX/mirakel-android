@@ -14,6 +14,7 @@ import android.graphics.BitmapFactory;
 import android.os.Environment;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.task.Task;
 
@@ -92,7 +93,7 @@ public class FileMirakel extends FileBase {
 			Bitmap myBitmap = BitmapFactory
 					.decodeFile(osFile.getAbsolutePath());
 			if (myBitmap != null) {
-				myBitmap = Bitmap.createScaledBitmap(myBitmap, 150, 150, true);
+				myBitmap = Helpers.getScaleImage(myBitmap, 150);
 				// create directory if not exists
 
 				boolean success = true;
