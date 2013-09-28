@@ -431,7 +431,7 @@ public class MirakelSync {
 					public void after_exec(String result) {
 						// Remove Task
 						task.setSyncState(Network.SYNC_STATE.ADD);
-						task.delete();
+						task.destroy();
 					}
 				}, Network.HttpMode.DELETE, mContext, Token), ServerUrl
 				+ "/lists/" + task.getList().getId() + "/tasks/" + task.getId()

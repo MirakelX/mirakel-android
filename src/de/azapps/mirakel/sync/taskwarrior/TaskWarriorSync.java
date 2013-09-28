@@ -218,7 +218,7 @@ public class TaskWarriorSync {
 
 				if (server_task.getSync_state() == Network.SYNC_STATE.DELETE) {
 					if (local_task != null)
-						local_task.delete(true);
+						local_task.destroy(true);
 				} else if (local_task == null) {
 					try {
 						server_task.create();

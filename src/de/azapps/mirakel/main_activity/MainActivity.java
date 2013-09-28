@@ -685,7 +685,7 @@ public class MainActivity extends ActionBarActivity implements
 							public void onClick(DialogInterface dialog,
 									int which) {
 								for (Task t : tasks) {
-									t.delete();
+									t.destroy();
 								}
 								setCurrentList(currentList);
 								ReminderAlarm.updateAlarms(main);

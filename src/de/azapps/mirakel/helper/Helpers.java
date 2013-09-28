@@ -311,7 +311,7 @@ public class Helpers {
 					Long id = Long.parseLong(last.substring(1));
 					switch (type) {
 					case TASK:
-						Task.get(id).delete(true);
+						Task.get(id).destroy(true);
 						break;
 					case LIST:
 						ListMirakel.getList(id.intValue()).destroy(true);

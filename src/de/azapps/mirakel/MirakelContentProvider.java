@@ -87,7 +87,7 @@ public class MirakelContentProvider extends ContentProvider {
 			Log.d(TAG, "DELETE ALL TASKS?!!");
 			List<Task> tasks = Task.all();
 			for (Task t : tasks) {
-				t.delete();
+				t.destroy();
 			}
 			return tasks.size();
 		case TASKS_ITEM:
@@ -95,7 +95,7 @@ public class MirakelContentProvider extends ContentProvider {
 			Log.d(TAG, "DELETE TASK " + task_id);
 			Task task = Task.get(Long.parseLong(uri.getLastPathSegment()));
 			if (task != null) {
-				task.delete();
+				task.destroy();
 				return 1;
 			}
 			return 0;
