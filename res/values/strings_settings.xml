@@ -151,6 +151,7 @@
     <string name="preferences_colorize_tasks_everywhere_summary">…or only in the Special lists?</string>
 
     <!-- Semantics -->
+    <string name="settings_semantics_title">Configure Semantics</string>
     <string name="settings_semantics_condition">Condition</string>
     <string name="settings_semantics_actions">Actions</string>
     <string name="settings_semantics_list">Set List</string>

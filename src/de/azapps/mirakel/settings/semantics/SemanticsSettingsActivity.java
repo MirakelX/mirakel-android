@@ -25,7 +25,6 @@ import android.app.ActionBar;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.preference.PreferenceActivity.Header;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,6 +39,7 @@ public class SemanticsSettingsActivity extends PreferenceActivity {
 	private ImageButton addSemantic;
 	private List<Semantic> semantics = Semantic.all();;
 	private List<Header> mTarget;
+	private boolean clickOnLast = false;
 
 	@SuppressLint("NewApi")
 	@Override
@@ -49,7 +49,7 @@ public class SemanticsSettingsActivity extends PreferenceActivity {
 			setTheme(R.style.AppBaseThemeDARK);
 		super.onCreate(savedInstanceState);
 		ActionBar actionBar = getActionBar();
-		actionBar.setTitle(R.string.special_lists_title);
+		actionBar.setTitle(R.string.settings_semantics_title);
 		actionBar.setDisplayHomeAsUpEnabled(true);
 
 		addSemantic = new ImageButton(this);
@@ -66,13 +66,20 @@ public class SemanticsSettingsActivity extends PreferenceActivity {
 			public void onClick(View v) {
 				semantics.add(Semantic.newSemantic(
 						getString(R.string.semantic_new), null, null, null));
+				clickOnLast = true;
 				invalidateHeaders();
-				onHeaderClick(mTarget.get(mTarget.size() - 1),
-						mTarget.size() - 1);
 
 			}
 		});
 
+	}
+
+	@Override
+	@SuppressLint("NewApi")
+	public void onResume() {
+		super.onResume();
+		semantics = Semantic.all();
+		invalidateHeaders();
 	}
 
 	@Override
@@ -98,6 +105,10 @@ public class SemanticsSettingsActivity extends PreferenceActivity {
 			header.fragmentArguments = b;
 			header.extras = b;
 			target.add(header);
+		}
+		if (clickOnLast) {
+			onHeaderClick(mTarget.get(mTarget.size() - 1), mTarget.size() - 1);
+			clickOnLast = false;
 		}
 		mTarget = target;
 	}

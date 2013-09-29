@@ -60,7 +60,7 @@ public class Semantic extends SemanticBase {
 
 	public static Semantic newSemantic(String condition, Integer priority,
 			Integer due, ListMirakel list) {
-		Semantic m = new Semantic(0, condition.toLowerCase(), priority, due,
+		Semantic m = new Semantic(0, condition, priority, due,
 				list);
 		return m.create();
 	}

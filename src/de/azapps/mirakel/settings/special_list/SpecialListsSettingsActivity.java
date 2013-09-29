@@ -33,16 +33,15 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 
-
 public class SpecialListsSettingsActivity extends PreferenceActivity {
 	@SuppressWarnings("unused")
 	private static final String TAG = "SpecialListsActivity";
-	
+
 	private ImageButton addList;
 
 	private List<Header> mTarget;
-	private List<SpecialList> specialLists;
-	
+	private List<SpecialList> specialLists = SpecialList.allSpecial(true);
+	private boolean clickOnLast = false;
 
 	@SuppressLint("NewApi")
 	@Override
@@ -54,24 +53,24 @@ public class SpecialListsSettingsActivity extends PreferenceActivity {
 		ActionBar actionbar = getActionBar();
 		actionbar.setTitle(R.string.special_lists_title);
 		actionbar.setDisplayHomeAsUpEnabled(true);
-		addList=new ImageButton(this);
+		addList = new ImageButton(this);
 		addList.setBackgroundResource(android.R.drawable.ic_menu_add);
 		actionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
 				ActionBar.DISPLAY_SHOW_CUSTOM);
-		actionbar.setCustomView(addList,new ActionBar.LayoutParams(
+		actionbar.setCustomView(addList, new ActionBar.LayoutParams(
 				ActionBar.LayoutParams.WRAP_CONTENT,
-				ActionBar.LayoutParams.WRAP_CONTENT,
-				Gravity.CENTER_VERTICAL | Gravity.RIGHT));
-		specialLists= SpecialList.allSpecial(true);
+				ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER_VERTICAL
+						| Gravity.RIGHT));
+		specialLists = SpecialList.allSpecial(true);
 		addList.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
-				specialLists.add(SpecialList.newSpecialList("NewList", "",
-						false));	
+				SpecialList.newSpecialList("NewList", "", false);
+				specialLists = SpecialList.allSpecial(true);
+				clickOnLast = true;
 				invalidateHeaders();
-				onHeaderClick(mTarget.get(mTarget.size()-1), mTarget.size()-1);
-			
+
 			}
 		});
 	}
@@ -79,42 +78,35 @@ public class SpecialListsSettingsActivity extends PreferenceActivity {
 	@SuppressLint("NewApi")
 	@Override
 	public void onHeaderClick(Header header, int position) {
-	    super.onHeaderClick(header, position);	 
+		super.onHeaderClick(header, position);
 	}
-	@Override
-	@SuppressLint("NewApi")
-	protected void onRestart() {
-		super.onRestart();
-		specialLists=null;
-		invalidateHeaders();
-	}
-	
+
 	@SuppressLint("NewApi")
 	@Override
 	public void onBuildHeaders(List<Header> target) {
-		if(specialLists==null){
-			specialLists= SpecialList.allSpecial(true);
-		}
 		for (SpecialList s : specialLists) {
-			Bundle b=new Bundle();
+			Bundle b = new Bundle();
 			b.putInt("id", s.getId());
 			Header header = new Header();
 			header.fragment = SpecialListsSettingsFragment.class
 					.getCanonicalName();
 			header.title = s.getName();
-			header.fragmentArguments=b;
-			header.extras=b;
+			header.fragmentArguments = b;
+			header.extras = b;
 			target.add(header);
 		}
-		mTarget=target;
+		if (clickOnLast) {
+			onHeaderClick(mTarget.get(mTarget.size() - 1), mTarget.size() - 1);
+			clickOnLast = false;
+		}
+		mTarget = target;
 	}
-	
+
 	@Override
 	public boolean isMultiPane() {
 		return getResources().getBoolean(R.bool.isTablet);
 	};
-		
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -124,8 +116,15 @@ public class SpecialListsSettingsActivity extends PreferenceActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
-	public List<Header> getHeader(){
+	@Override
+	@SuppressLint("NewApi")
+	public void onResume() {
+		super.onResume();
+		specialLists=SpecialList.allSpecial(true);
+		invalidateHeaders();
+	}
+
+	public List<Header> getHeader() {
 		return mTarget;
 	}
 

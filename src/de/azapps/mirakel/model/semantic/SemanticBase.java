@@ -14,7 +14,7 @@ public class SemanticBase {
 			Integer due, ListMirakel list) {
 		super();
 		this.id = id;
-		this.condition = condition;
+		this.condition = condition.toLowerCase();
 		this.priority = priority;
 		this.list = list;
 		this.due = due;
@@ -33,7 +33,7 @@ public class SemanticBase {
 	}
 
 	public void setCondition(String condition) {
-		this.condition = condition;
+		this.condition = condition.toLowerCase();
 	}
 
 	public Integer getPriority() {
