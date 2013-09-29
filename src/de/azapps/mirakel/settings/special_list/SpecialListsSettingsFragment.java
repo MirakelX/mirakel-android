@@ -69,31 +69,33 @@ public class SpecialListsSettingsFragment extends PreferenceFragment implements
 		addPreferencesFromResource(R.xml.special_list_settings);
 		Bundle b = getArguments();
 		if (b != null) {
-			Log.d(TAG,"id= "+getArguments()
-					.getInt("id"));
+			Log.d(TAG, "id= " + getArguments().getInt("id"));
 			specialList = SpecialList.getSpecialList(getArguments()
-					.getInt("id")*-1);
+					.getInt("id") * -1);
 			ActionBar actionbar = getActivity().getActionBar();
 			actionbar.setTitle(specialList.getName());
-			ImageButton delList=new ImageButton(getActivity());
+			ImageButton delList = new ImageButton(getActivity());
 			delList.setBackgroundResource(android.R.drawable.ic_menu_delete);
 			actionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
 					ActionBar.DISPLAY_SHOW_CUSTOM);
-			actionbar.setCustomView(delList,new ActionBar.LayoutParams(
+			actionbar.setCustomView(delList, new ActionBar.LayoutParams(
 					ActionBar.LayoutParams.WRAP_CONTENT,
 					ActionBar.LayoutParams.WRAP_CONTENT,
 					Gravity.CENTER_VERTICAL | Gravity.RIGHT));
 			delList.setOnClickListener(new OnClickListener() {
-				
+
 				@Override
 				public void onClick(View v) {
 					specialList.destroy();
-					if(!((PreferenceActivity)getActivity()).isMultiPane())
+					if (!((PreferenceActivity) getActivity()).isMultiPane())
 						getActivity().finish();
-					else{
-						try{
-							((PreferenceActivity)getActivity()).onHeaderClick(((SpecialListsSettingsActivity)getActivity()).getHeader().get(0), 0);
-						}catch (Exception e) {
+					else {
+						try {
+							((PreferenceActivity) getActivity())
+									.onHeaderClick(
+											((SpecialListsSettingsActivity) getActivity())
+													.getHeader().get(0), 0);
+						} catch (Exception e) {
 							getActivity().finish();
 						}
 					}
@@ -689,12 +691,10 @@ public class SpecialListsSettingsFragment extends PreferenceFragment implements
 
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
-	
-				
 
 				String[] p = specialList.getWhereQuery().split("and");
-				VALUE day=VALUE.DAY;
-				int val=0;
+				VALUE day = VALUE.DAY;
+				int val = 0;
 				for (String r : p) {
 					if (r.contains("date(due)")) {
 						Pattern pattern = Pattern.compile("[\"'].*?[\"']");
@@ -732,71 +732,77 @@ public class SpecialListsSettingsFragment extends PreferenceFragment implements
 
 					}
 				}
-				final DueDialog dueDialog=new DueDialog(getActivity());
+				final DueDialog dueDialog = new DueDialog(getActivity());
 				dueDialog.setTitle(ctx.getString(R.string.select_by));
-				dueDialog.setValue(val,day);
+				dueDialog.setValue(val, day);
 				dueDialog.setNegativeButton(android.R.string.cancel,
-								new DialogInterface.OnClickListener() {
+						new DialogInterface.OnClickListener() {
 
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-									}
-								});
-						dueDialog.setNeutralButton(R.string.no_date,
-								new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+							}
+						});
+				dueDialog.setNeutralButton(R.string.no_date,
+						new DialogInterface.OnClickListener() {
 
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-										updateWhere("due", "");
-										due.setSummary(getString(R.string.empty));
-									}
-								});
-						dueDialog.setPositiveButton(android.R.string.ok,
-								new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								updateWhere("due", "");
+								due.setSummary(getString(R.string.empty));
+							}
+						});
+				dueDialog.setPositiveButton(android.R.string.ok,
+						new DialogInterface.OnClickListener() {
 
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-										int val = dueDialog.getValue();
-										String newWhere = "";
-										if (val == 0) {
-											newWhere = "date(due)<=date(\"now\",\"localtime\")";
-											due.setSummary(getString(R.string.today));
-										} else {
-											String mod = "";
-											VALUE day=dueDialog.getDayYear();
-											String summary=val+" ";
-											switch (day) {
-											case MONTH:
-												mod = (val == 1 || val ==-1 ? "month"
-														: "months");
-												summary+= ctx.getResources().getQuantityString(R.plurals.due_month, val);
-												break;
-											case YEAR:
-												mod = (val == 1 || val == -1 ? "year"
-														: "years");
-												summary+= ctx.getResources().getQuantityString(R.plurals.due_year, val);
-												break;
-											case DAY:
-												mod = (val == 1 || val == -1 ? "day"
-														: "days");
-												summary+= ctx.getResources().getQuantityString(R.plurals.due_day, val);
-												break;
-											}
-											
-											due.setSummary(summary);
-											newWhere = "date(due)<=date(\"now\",\""
-													+ val
-													+ " "
-													+ mod
-													+ "\",\"localtime\")";
-										}
-										updateWhere("due", newWhere);
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								int val = dueDialog.getValue();
+								String newWhere = "";
+								if (val == 0) {
+									newWhere = "date(due)<=date(\"now\",\"localtime\")";
+									due.setSummary(getString(R.string.today));
+								} else {
+									String mod = "";
+									VALUE day = dueDialog.getDayYear();
+									String summary = val + " ";
+									switch (day) {
+									case MONTH:
+										mod = (val == 1 || val == -1 ? "month"
+												: "months");
+										summary += ctx.getResources()
+												.getQuantityString(
+														R.plurals.due_month,
+														val);
+										break;
+									case YEAR:
+										mod = (val == 1 || val == -1 ? "year"
+												: "years");
+										summary += ctx
+												.getResources()
+												.getQuantityString(
+														R.plurals.due_year, val);
+										break;
+									case DAY:
+										mod = (val == 1 || val == -1 ? "day"
+												: "days");
+										summary += ctx.getResources()
+												.getQuantityString(
+														R.plurals.due_day, val);
+										break;
 									}
-								});
-								dueDialog.show();
+
+									due.setSummary(summary);
+									newWhere = "date(due)<=date(\"now\",\""
+											+ val + " " + mod
+											+ "\",\"localtime\")";
+								}
+								updateWhere("due", newWhere);
+							}
+						});
+				dueDialog.show();
 				return false;
 			}
 		});
@@ -821,11 +827,16 @@ public class SpecialListsSettingsFragment extends PreferenceFragment implements
 			}
 			specialList.setWhereQuery(n);
 		} else if (specialList.getWhereQuery().trim().length() == 0) {
-			specialList.setWhereQuery((attr.equals("due") ? "due is not null and "
-					: "") + newWhere);
+			specialList
+					.setWhereQuery((attr.equals("due") ? "due is not null and "
+							: "") + newWhere);
 		} else if (newWhere != "") {
-			specialList.setWhereQuery((attr.equals("due") ? "due is not null and "
-					: "") + specialList.getWhereQuery() + " and " + newWhere);
+			specialList
+					.setWhereQuery((attr.equals("due") ? "due is not null and "
+							: "")
+							+ specialList.getWhereQuery()
+							+ " and "
+							+ newWhere);
 		}
 		specialList.save();
 		// ((TextView) view.findViewById(R.id.special_list_where))
@@ -939,7 +950,8 @@ public class SpecialListsSettingsFragment extends PreferenceFragment implements
 				}
 			}
 		}
-		return returnString.equals("") ? getString(R.string.empty) : returnString;
+		return returnString.equals("") ? getString(R.string.empty)
+				: returnString;
 	}
 
 	@Override

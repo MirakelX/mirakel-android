@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 public class DueDialog extends AlertDialog {
 	private Context ctx;
-	private VALUE dayYear=VALUE.DAY;
+	private VALUE dayYear = VALUE.DAY;
 	private int count;
 	private View dialogView;
 	private String[] s;
@@ -21,17 +21,20 @@ public class DueDialog extends AlertDialog {
 	public enum VALUE {
 		DAY, MONTH, YEAR;
 	}
-	public void setNegativeButton(int textId,OnClickListener onCancel){
+
+	public void setNegativeButton(int textId, OnClickListener onCancel) {
 		setButton(BUTTON_NEGATIVE, ctx.getString(textId), onCancel);
-		
+
 	}
-	public void setPositiveButton(int textId,OnClickListener onCancel){
+
+	public void setPositiveButton(int textId, OnClickListener onCancel) {
 		setButton(BUTTON_POSITIVE, ctx.getString(textId), onCancel);
-		
+
 	}
-	public void setNeutralButton(int textId,OnClickListener onCancel){
+
+	public void setNeutralButton(int textId, OnClickListener onCancel) {
 		setButton(BUTTON_NEUTRAL, ctx.getString(textId), onCancel);
-		
+
 	}
 
 	@SuppressLint("NewApi")
@@ -42,7 +45,7 @@ public class DueDialog extends AlertDialog {
 		for (int i = 0; i < s.length; i++) {
 			s[i] = (i > 10 ? "+" : "") + (i - 10) + "";
 		}
-		
+
 		dialogView = getNumericPicker();
 		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
 			final NumberPicker pickerDay = ((NumberPicker) dialogView
@@ -61,33 +64,37 @@ public class DueDialog extends AlertDialog {
 			pickerDay
 					.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
 			pickerValue.setWrapSelectorWheel(false);
-			pickerValue.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+			pickerValue
+					.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
 
 						@Override
 						public void onValueChange(NumberPicker picker,
 								int oldVal, int newVal) {
-							pickerDay.setDisplayedValues(getDayYearValues(newVal-10));
-							count=newVal-10;
+							pickerDay
+									.setDisplayedValues(getDayYearValues(newVal - 10));
+							count = newVal - 10;
 						}
 					});
-			pickerDay.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-				
-				@Override
-				public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-					switch (newVal){
-					case 0:
-						dayYear=VALUE.DAY;
-						break;
-					case 1:
-						dayYear=VALUE.MONTH;
-						break;
-					case 2:
-						dayYear=VALUE.YEAR;
-						break;
-					}
-					
-				}
-			});
+			pickerDay
+					.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+
+						@Override
+						public void onValueChange(NumberPicker picker,
+								int oldVal, int newVal) {
+							switch (newVal) {
+							case 0:
+								dayYear = VALUE.DAY;
+								break;
+							case 1:
+								dayYear = VALUE.MONTH;
+								break;
+							case 2:
+								dayYear = VALUE.YEAR;
+								break;
+							}
+
+						}
+					});
 
 		} else {
 			final TextView pickerValue = ((TextView) dialogView
@@ -195,40 +202,42 @@ public class DueDialog extends AlertDialog {
 	}
 
 	@SuppressLint("NewApi")
-	public void setValue(int val, VALUE day) {	
-		if(VERSION.SDK_INT>VERSION_CODES.HONEYCOMB){
-			int _day=0;
-			switch(day){
+	public void setValue(int val, VALUE day) {
+		if (VERSION.SDK_INT > VERSION_CODES.HONEYCOMB) {
+			int _day = 0;
+			switch (day) {
 			case DAY:
-				_day=0;
+				_day = 0;
 				break;
 			case MONTH:
-				_day=1;
+				_day = 1;
 				break;
 			case YEAR:
-				_day=2;
-				break;		
+				_day = 2;
+				break;
 			}
-			((NumberPicker) dialogView
-					.findViewById(R.id.due_day_year)).setValue(_day);;
-			((NumberPicker) dialogView
-					.findViewById(R.id.due_val)).setValue(val+10);;
-		}else{
-			count=val;
-			dayYear=day;
-			((TextView) dialogView
-					.findViewById(R.id.dialog_due_pick_val)).setText(""+(val+10));
-			((TextView) dialogView
-					.findViewById(R.id.dialog_due_pick_val_day)).setText(updateDayYear());
+			((NumberPicker) dialogView.findViewById(R.id.due_day_year))
+					.setValue(_day);
+			;
+			((NumberPicker) dialogView.findViewById(R.id.due_val))
+					.setValue(val + 10);
+			;
+		} else {
+			count = val;
+			dayYear = day;
+			((TextView) dialogView.findViewById(R.id.dialog_due_pick_val))
+					.setText("" + (val + 10));
+			((TextView) dialogView.findViewById(R.id.dialog_due_pick_val_day))
+					.setText(updateDayYear());
 		}
-		
+
 	}
-	
-	public int getValue(){
+
+	public int getValue() {
 		return count;
 	}
-	
-	public VALUE getDayYear(){
+
+	public VALUE getDayYear() {
 		return dayYear;
 	}
 

@@ -29,10 +29,11 @@
         <ListPreference
             android:key="semantics_priority"
             android:title="@string/settings_semantics_priority" />
-        <!-- TODO 
-        <ListPreference
+
+        <Preference
             android:key="semantics_due"
-            android:title="@string/settings_semantics_due" /> -->
+            android:title="@string/settings_semantics_due" />
+
         <ListPreference
             android:key="semantics_list"
             android:title="@string/settings_semantics_list" />
