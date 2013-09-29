@@ -101,16 +101,39 @@ public class Task extends TaskBase {
 			Helpers.updateLog(old, context);
 		database.update(TABLE, values, "_id = " + getId(), null);
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Task) {
 			Task t = (Task) o;
-			try {
-				return getContentValues() == t.getContentValues();
-			} catch (NoSuchListException e) {
-				Log.d(TAG, "List did vanish");
+			boolean equals = t.getPriority() == getPriority();
+			if (t.getName() != null) {
+				equals = equals && t.getName().equals(getName());
+			} else if (getName() != null) {
+				Log.d(TAG,"name not equal");
+				return false;
 			}
+			if (t.getContent() != null) {
+				equals = equals && t.getContent().equals(getContent());
+			} else if (getContent() != null) {
+				Log.d(TAG,"content not equal");
+				return false;
+			}
+			if (t.getDue() != null) {
+				equals = equals && t.getDue().compareTo(getDue()) == 0;
+			} else if (getDue() != null) {
+				Log.d(TAG,"due not equal");
+				return false;
+			}
+			equals = equals && t.isDone() == isDone();
+			if (t.getReminder() != null) {
+				equals = equals && t.getReminder().compareTo(getReminder()) == 0;
+			} else if (getReminder() != null) {
+				Log.d(TAG,"reminder not equal");
+				return false;
+			}
+			
+			return equals;
 		}
 		return false;
 	}
@@ -123,7 +146,6 @@ public class Task extends TaskBase {
 	public void destroy() {
 		destroy(false);
 	}
-
 
 	public void destroy(boolean force) {
 		if (!force)
@@ -213,7 +235,6 @@ public class Task extends TaskBase {
 		database.update(TABLE, values, where, null);
 		database.delete(TABLE, where, null);
 	}
-
 
 	public String toJson() {
 		String json = "{";
@@ -788,7 +809,7 @@ public class Task extends TaskBase {
 			return;
 		}
 		for (Task t : tasks) {
-			if(t.getSync_state()!=SYNC_STATE.DELETE){
+			if (t.getSync_state() != SYNC_STATE.DELETE) {
 				t.setSyncState(SYNC_STATE.NOTHING);
 				try {
 					database.update(TABLE, t.getContentValues(),
@@ -796,7 +817,7 @@ public class Task extends TaskBase {
 				} catch (NoSuchListException e) {
 					Log.d(TAG, "List did vanish");
 				}
-			}else{
+			} else {
 				t.destroy(true);
 			}
 		}
