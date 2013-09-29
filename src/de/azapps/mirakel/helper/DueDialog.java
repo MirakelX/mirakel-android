@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 public class DueDialog extends AlertDialog {
 	private Context ctx;
-	private VALUE dayYear;
+	private VALUE dayYear=VALUE.DAY;
 	private int count;
 	private View dialogView;
 	private String[] s;
@@ -67,7 +67,7 @@ public class DueDialog extends AlertDialog {
 						public void onValueChange(NumberPicker picker,
 								int oldVal, int newVal) {
 							pickerDay.setDisplayedValues(getDayYearValues(newVal-10));
-							count=newVal;
+							count=newVal-10;
 						}
 					});
 			pickerDay.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {

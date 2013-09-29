@@ -135,7 +135,7 @@ public class SpecialListsSettingsFragment extends PreferenceFragment implements
 					Object newValue) {
 				specialList.setActive((Boolean) newValue);
 				specialList.save();
-				return false;
+				return true;
 			}
 		});
 
