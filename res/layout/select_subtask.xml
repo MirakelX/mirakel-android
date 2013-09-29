@@ -18,9 +18,11 @@
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    tools:ignore="NewAPI" >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,9 +32,6 @@
             android:id="@+id/subtask_newtask"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
             android:layout_weight="1"
             android:background="?android:attr/selectableItemBackground"
             android:text="@string/new_task" />
@@ -46,12 +45,10 @@
             android:id="@+id/subtask_select_old"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
             android:layout_weight="1"
             android:background="?android:attr/selectableItemBackground"
-            android:text="@string/add_existing" />
+            android:text="@string/add_existing"
+            android:textColor="@color/Grey" />
     </LinearLayout>
 
     <ViewSwitcher
@@ -79,9 +76,6 @@
                 android:id="@+id/subtasks_options"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
                 android:background="?android:attr/selectableItemBackground"
                 android:text="@string/subtask_add_options" />
 
@@ -113,9 +107,6 @@
                     android:id="@+id/subtask_list"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentTop="true"
                     android:background="?android:attr/selectableItemBackground"
                     android:text="@string/list_all" />
             </LinearLayout>
@@ -140,7 +131,8 @@
             <EditText
                 android:id="@+id/subtask_add_task_edit"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:inputType="text" />
         </LinearLayout>
     </ViewSwitcher>
 

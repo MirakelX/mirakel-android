@@ -246,7 +246,7 @@ public class TaskDialogHelpers {
 	private static boolean reminder;
 	private static int listId;
 	private static boolean optionEnabled;
-	private static boolean newTask; 
+	private static boolean newTask;
 
 	public static void handleSubtask(final Context ctx, final Task task,
 			final TaskFragmentAdapter adapter) {
@@ -316,22 +316,26 @@ public class TaskDialogHelpers {
 			}
 		});
 		final ViewSwitcher switcher=(ViewSwitcher)v.findViewById(R.id.subtask_switcher);
-		Button subtaskNewtask=(Button)v.findViewById(R.id.subtask_newtask);
+		final Button subtaskNewtask=(Button)v.findViewById(R.id.subtask_newtask);
+		final Button subtaskSelectOld=(Button)v.findViewById(R.id.subtask_select_old);
 		subtaskNewtask.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				switcher.showPrevious();
+				subtaskNewtask.setTextColor(ctx.getResources().getColor(R.color.Black));
+				subtaskSelectOld.setTextColor(ctx.getResources().getColor(R.color.Grey));
 				newTask=true;
 				
 			}
 		});
 		
-		Button subtaskSelectOld=(Button)v.findViewById(R.id.subtask_select_old);
 		subtaskSelectOld.setOnClickListener(new OnClickListener() {		
 			@Override
 			public void onClick(View v) {
 				switcher.showNext();
+				subtaskNewtask.setTextColor(ctx.getResources().getColor(R.color.Grey));
+				subtaskSelectOld.setTextColor(ctx.getResources().getColor(R.color.Black));;
 				newTask=false;
 			}
 		});
