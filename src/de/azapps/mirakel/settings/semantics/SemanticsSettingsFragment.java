@@ -32,13 +32,18 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
+import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
+import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
 import de.azapps.mirakel.helper.DueDialog;
 import de.azapps.mirakel.helper.DueDialog.VALUE;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.semantic.Semantic;
+import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
 import de.azapps.mirakelandroid.R;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -64,6 +69,35 @@ public class SemanticsSettingsFragment extends PreferenceFragment implements
 		if (b != null) {
 			semantic = Semantic.get(getArguments().getInt("id"));
 			actionBar.setTitle(semantic.getCondition());
+
+			ImageButton delSemantic = new ImageButton(getActivity());
+			delSemantic.setBackgroundResource(android.R.drawable.ic_menu_delete);
+			actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
+					ActionBar.DISPLAY_SHOW_CUSTOM);
+			actionBar.setCustomView(delSemantic, new ActionBar.LayoutParams(
+					ActionBar.LayoutParams.WRAP_CONTENT,
+					ActionBar.LayoutParams.WRAP_CONTENT,
+					Gravity.CENTER_VERTICAL | Gravity.RIGHT));
+			delSemantic.setOnClickListener(new View.OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					semantic.destroy();
+					if (!((PreferenceActivity) getActivity()).isMultiPane())
+						getActivity().finish();
+					else {
+						try {
+							((PreferenceActivity) getActivity())
+									.onHeaderClick(
+											((SpecialListsSettingsActivity) getActivity())
+													.getHeader().get(0), 0);
+						} catch (Exception e) {
+							getActivity().finish();
+						}
+					}
+				}
+			});
+
 			setup();
 		} else {
 			Log.d(TAG, "bundle null");

@@ -176,5 +176,6 @@
     <string name="semantics_no_list">Do not set list</string>
     <string name="semantics_no_due">Do not set due date</string>
     <string name="settings_file_default_title">Task name for imported files</string>
+    <string name="semantic_new">New Semantic</string>
 
 </resources>

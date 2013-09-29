@@ -82,6 +82,7 @@ public class SpecialListsSettingsActivity extends PreferenceActivity {
 	    super.onHeaderClick(header, position);	 
 	}
 	@Override
+	@SuppressLint("NewApi")
 	protected void onRestart() {
 		super.onRestart();
 		specialLists=null;

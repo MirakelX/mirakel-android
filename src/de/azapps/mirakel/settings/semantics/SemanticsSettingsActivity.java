@@ -21,15 +21,25 @@ package de.azapps.mirakel.settings.semantics;
 import java.util.List;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.preference.PreferenceActivity.Header;
+import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ImageButton;
+import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakelandroid.R;
 
 public class SemanticsSettingsActivity extends PreferenceActivity {
 	private static final String TAG = "SpecialListsActivity";
+	private ImageButton addSemantic;
+	private List<Semantic> semantics = Semantic.all();;
+	private List<Header> mTarget;
 
 	@SuppressLint("NewApi")
 	@Override
@@ -38,8 +48,31 @@ public class SemanticsSettingsActivity extends PreferenceActivity {
 				"DarkTheme", false))
 			setTheme(R.style.AppBaseThemeDARK);
 		super.onCreate(savedInstanceState);
-		getActionBar().setTitle(R.string.special_lists_title);
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+		ActionBar actionBar = getActionBar();
+		actionBar.setTitle(R.string.special_lists_title);
+		actionBar.setDisplayHomeAsUpEnabled(true);
+
+		addSemantic = new ImageButton(this);
+		addSemantic.setBackgroundResource(android.R.drawable.ic_menu_add);
+		actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
+				ActionBar.DISPLAY_SHOW_CUSTOM);
+		actionBar.setCustomView(addSemantic, new ActionBar.LayoutParams(
+				ActionBar.LayoutParams.WRAP_CONTENT,
+				ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER_VERTICAL
+						| Gravity.RIGHT));
+		addSemantic.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				semantics.add(Semantic.newSemantic(
+						getString(R.string.semantic_new), null, null, null));
+				invalidateHeaders();
+				onHeaderClick(mTarget.get(mTarget.size() - 1),
+						mTarget.size() - 1);
+
+			}
+		});
+
 	}
 
 	@Override
@@ -55,7 +88,6 @@ public class SemanticsSettingsActivity extends PreferenceActivity {
 	@SuppressLint("NewApi")
 	@Override
 	public void onBuildHeaders(List<Header> target) {
-		List<Semantic> semantics = Semantic.all();
 		for (Semantic s : semantics) {
 			Bundle b = new Bundle();
 			b.putInt("id", s.getId());
@@ -67,6 +99,7 @@ public class SemanticsSettingsActivity extends PreferenceActivity {
 			header.extras = b;
 			target.add(header);
 		}
+		mTarget = target;
 	}
 
 }
