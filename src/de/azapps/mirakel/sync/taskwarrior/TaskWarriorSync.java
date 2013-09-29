@@ -88,7 +88,6 @@ public class TaskWarriorSync {
 			sync.setPayload(payload);
 			TW_ERRORS error = doSync(account, sync);
 			if (error == TW_ERRORS.NO_ERROR) {
-				Task.deleteTasksPermanently(syncedTasksId);
 				Task.resetSyncState(syncedTasksId);
 			} else
 				return error;

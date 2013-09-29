@@ -42,6 +42,7 @@ import android.content.ContentProviderClient;
 import android.content.Context;
 import android.content.SyncResult;
 import android.os.Bundle;
+import android.os.Looper;
 import android.widget.Toast;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.sync.mirakel.MirakelSync;
@@ -113,7 +114,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				last_message = mContext.getText(R.string.message_message_error);
 				break;
 			}
-			Toast.makeText(mContext, last_message, Toast.LENGTH_LONG).show();
+			Looper.prepare();
+			Toast.makeText(mContext, last_message, Toast.LENGTH_LONG).show();	
+			Log.d(TAG, "finish Sync");
 		} else {
 			Log.wtf(TAG, "Unknown SyncType");
 		}
