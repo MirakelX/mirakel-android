@@ -24,6 +24,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.view.MenuItem;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakelandroid.R;
 
@@ -38,6 +39,17 @@ public class SemanticsSettingsActivity extends PreferenceActivity {
 			setTheme(R.style.AppBaseThemeDARK);
 		super.onCreate(savedInstanceState);
 		getActionBar().setTitle(R.string.special_lists_title);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			finish();
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	@SuppressLint("NewApi")

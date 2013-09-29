@@ -21,6 +21,7 @@ package de.azapps.mirakel.settings.semantics;
 import java.util.List;
 
 import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -32,6 +33,7 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceFragment;
+import android.view.MenuItem;
 import de.azapps.mirakel.helper.DueDialog;
 import de.azapps.mirakel.helper.DueDialog.VALUE;
 import de.azapps.mirakel.helper.Log;
@@ -56,15 +58,27 @@ public class SemanticsSettingsFragment extends PreferenceFragment implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.settings_semantics);
+		ActionBar actionBar = getActivity().getActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
 		Bundle b = getArguments();
 		if (b != null) {
 			semantic = Semantic.get(getArguments().getInt("id"));
-			getActivity().getActionBar().setTitle(semantic.getCondition());
+			actionBar.setTitle(semantic.getCondition());
 			setup();
 		} else {
 			Log.d(TAG, "bundle null");
 		}
 
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			getActivity().finish();
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	public void setup() {
