@@ -172,6 +172,17 @@ public class PreferencesHelper {
 
 	}
 
+	private ListMirakel getListFromIdString(String preference) {
+		try {
+			return ListMirakel.getList(Integer.parseInt(preference));
+		} catch (NumberFormatException e) {
+			ListMirakel list = SpecialList.firstSpecial();
+			if (list == null)
+				list = ListMirakel.first();
+			return list;
+		}
+	}
+
 	@SuppressLint("NewApi")
 	public void setFunctionsApp() {
 		settings = PreferenceManager.getDefaultSharedPreferences(activity);
@@ -202,11 +213,12 @@ public class PreferencesHelper {
 		if (notificationsListPreference != null) {
 			notificationsListPreference.setEntries(entries);
 			notificationsListPreference.setEntryValues(entryValues);
+			ListMirakel notificationsList = getListFromIdString(settings
+					.getString("notificationsList", "-1"));
+
 			notificationsListPreference.setSummary(activity.getString(
 					R.string.notifications_list_summary,
-					ListMirakel.getList(
-							Integer.parseInt(settings.getString(
-									"notificationsList", "-1"))).getName()));
+					notificationsList.getName()));
 			notificationsListPreference
 					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 						@Override
@@ -229,13 +241,11 @@ public class PreferencesHelper {
 			notificationsListOpenPreference.setEntries(entriesWithDefault);
 			notificationsListOpenPreference
 					.setEntryValues(entryValuesWithDefault);
-			notificationsListOpenPreference
-					.setSummary(activity.getString(
-							R.string.notifications_list_open_summary,
-							ListMirakel.getList(
-									Integer.parseInt(settings.getString(
-											"notificationsListOpen", "-1")))
-									.getName()));
+			ListMirakel notificationsListOpen = getListFromIdString(settings
+					.getString("notificationsListOpen", "-1"));
+			notificationsListOpenPreference.setSummary(activity.getString(
+					R.string.notifications_list_open_summary,
+					notificationsListOpen.getName()));
 			notificationsListOpenPreference
 					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 						@Override
@@ -306,10 +316,10 @@ public class PreferencesHelper {
 				startupListPreference.setSummary(" ");
 				startupListPreference.setEnabled(false);
 			} else {
+				ListMirakel startupList = getListFromIdString(settings
+						.getString("startupList", "-1"));
 				startupListPreference.setSummary(activity.getString(
-						R.string.startup_list_summary, ListMirakel
-								.getList(Integer.parseInt(settings.getString(
-										"startupList", "-1")))));
+						R.string.startup_list_summary, startupList.getName()));
 				startupListPreference.setEnabled(true);
 			}
 			startupListPreference
