@@ -265,7 +265,7 @@ public class TaskDialogHelpers {
 		content = false;
 		reminder = false;
 		optionEnabled = false;
-		newTask=false;
+		newTask = false;
 		listId = SpecialList.firstSpecialSafe(ctx).getId();
 		EditText search = (EditText) v.findViewById(R.id.subtask_searchbox);
 		search.addTextChangedListener(new TextWatcher() {
@@ -315,31 +315,39 @@ public class TaskDialogHelpers {
 
 			}
 		});
-		final ViewSwitcher switcher=(ViewSwitcher)v.findViewById(R.id.subtask_switcher);
-		final Button subtaskNewtask=(Button)v.findViewById(R.id.subtask_newtask);
-		final Button subtaskSelectOld=(Button)v.findViewById(R.id.subtask_select_old);
+		final ViewSwitcher switcher = (ViewSwitcher) v
+				.findViewById(R.id.subtask_switcher);
+		final Button subtaskNewtask = (Button) v
+				.findViewById(R.id.subtask_newtask);
+		final Button subtaskSelectOld = (Button) v
+				.findViewById(R.id.subtask_select_old);
 		subtaskNewtask.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				switcher.showPrevious();
-				subtaskNewtask.setTextColor(ctx.getResources().getColor(R.color.Black));
-				subtaskSelectOld.setTextColor(ctx.getResources().getColor(R.color.Grey));
-				newTask=true;
-				
+				subtaskNewtask.setTextColor(ctx.getResources().getColor(
+						R.color.Black));
+				subtaskSelectOld.setTextColor(ctx.getResources().getColor(
+						R.color.Grey));
+				newTask = true;
+
 			}
 		});
-		
-		subtaskSelectOld.setOnClickListener(new OnClickListener() {		
+
+		subtaskSelectOld.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				switcher.showNext();
-				subtaskNewtask.setTextColor(ctx.getResources().getColor(R.color.Grey));
-				subtaskSelectOld.setTextColor(ctx.getResources().getColor(R.color.Black));;
-				newTask=false;
+				subtaskNewtask.setTextColor(ctx.getResources().getColor(
+						R.color.Grey));
+				subtaskSelectOld.setTextColor(ctx.getResources().getColor(
+						R.color.Black));
+				;
+				newTask = false;
 			}
 		});
-		
+
 		final CheckBox doneBox = (CheckBox) v.findViewById(R.id.subtask_done);
 		doneBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
@@ -400,8 +408,9 @@ public class TaskDialogHelpers {
 						updateListView(a);
 					}
 				});
-		
-		final EditText newTaskEdit=(EditText)v.findViewById(R.id.subtask_add_task_edit);
+
+		final EditText newTaskEdit = (EditText) v
+				.findViewById(R.id.subtask_add_task_edit);
 		new AlertDialog.Builder(ctx)
 				.setTitle(ctx.getString(R.string.add_subtask))
 				.setView(v)
@@ -411,20 +420,24 @@ public class TaskDialogHelpers {
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
-								if(newTask&&newTaskEdit.getText().length()>0){
-									Task t=Task.newTask(newTaskEdit.getText().toString(), task.getList().getId());
+								if (newTask
+										&& newTaskEdit.getText().length() > 0) {
+									Task t = Task
+											.newTask(newTaskEdit.getText()
+													.toString(), task.getList()
+													.getId());
 									try {
 										task.addSubtask(t);
 									} catch (NoSuchListException e) {
 										Log.e(TAG, "list did vanish");
 									}
-								}else if(!newTask){
+								} else if (!newTask) {
 									boolean[] checked = a.getChecked();
 									List<Task> tasks = a.getData();
 									for (int i = 0; i < checked.length; i++) {
 										if (checked[i]
-												&& !tasks.get(i)
-														.isSubtaskFrom(task)) {
+												&& !tasks.get(i).isSubtaskFrom(
+														task)) {
 											try {
 												task.addSubtask(tasks.get(i));
 											} catch (NoSuchListException e) {
@@ -449,8 +462,7 @@ public class TaskDialogHelpers {
 
 							}
 
-						})
-				.show();
+						}).show();
 
 	}
 
