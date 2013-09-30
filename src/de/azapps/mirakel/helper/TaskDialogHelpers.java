@@ -275,7 +275,7 @@ public class TaskDialogHelpers {
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {
 				searchString = s.toString();
-				updateListView(a);
+				updateListView(a,task);
 
 			}
 
@@ -349,7 +349,7 @@ public class TaskDialogHelpers {
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
 				done = isChecked;
-				updateListView(a);
+				updateListView(a,task);
 			}
 		});
 		final CheckBox reminderBox = (CheckBox) v
@@ -361,7 +361,7 @@ public class TaskDialogHelpers {
 					public void onCheckedChanged(CompoundButton buttonView,
 							boolean isChecked) {
 						reminder = isChecked;
-						updateListView(a);
+						updateListView(a,task);
 					}
 				});
 
@@ -382,7 +382,7 @@ public class TaskDialogHelpers {
 							public void onClick(DialogInterface dialog,
 									int which) {
 								listId = lists.get(which).getId();
-								updateListView(a);
+								updateListView(a,task);
 								list.setText(lists.get(which).getName());
 								dialog.dismiss();
 							}
@@ -399,7 +399,7 @@ public class TaskDialogHelpers {
 					public void onCheckedChanged(CompoundButton buttonView,
 							boolean isChecked) {
 						content = isChecked;
-						updateListView(a);
+						updateListView(a,task);
 					}
 				});
 		
@@ -456,8 +456,14 @@ public class TaskDialogHelpers {
 
 	}
 
-	protected static String generateQuery() {
-		String query = "name LIKE '%" + searchString + "%'";
+	protected static String generateQuery(Task t) {
+		String col=Task.allColumns[0];
+		for(int i=1;i<Task.allColumns.length;i++){
+			col+=","+Task.allColumns[i];
+		}
+		String query = "SELECT "+col+" FROM "+Task.TABLE+" WHERE name LIKE '%" + searchString + "%' AND";
+		query+=" NOT _id IN (SELECT parent_id from "+Task.SUBTASK_TABLE+" where child_id="+t.getId()+") AND ";
+		query+= "NOT _id="+t.getId();
 		if (optionEnabled) {
 			if (done) {
 				query += " and done=0";
@@ -478,6 +484,7 @@ public class TaskDialogHelpers {
 					query += " and " + where;
 			}
 		}
+		query+=";";
 		Log.d(TAG, query);
 		return query;
 	}
@@ -521,10 +528,10 @@ public class TaskDialogHelpers {
 
 	}
 
-	private static void updateListView(final SubtaskAdapter a) {
+	private static void updateListView(final SubtaskAdapter a,final Task t) {
 		new Thread(new Runnable() {
 			public void run() {
-				a.setData(Task.search(generateQuery()));
+				a.setData(Task.rawQuery(generateQuery(t)));
 			}
 		}).start();
 

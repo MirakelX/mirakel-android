@@ -275,7 +275,7 @@ public class Task extends TaskBase {
 	private static final String TAG = "TasksDataSource";
 	private static SQLiteDatabase database;
 	private static DatabaseHelper dbHelper;
-	private static final String[] allColumns = { "_id", "uuid", "list_id",
+	public static final String[] allColumns = { "_id", "uuid", "list_id",
 			"name", "content", "done", "due", "reminder", "priority",
 			"created_at", "updated_at", "sync_state", "additional_entries" };
 
@@ -821,5 +821,12 @@ public class Task extends TaskBase {
 				t.destroy(true);
 			}
 		}
+	}
+
+	public static List<Task> rawQuery(String generateQuery) {
+		Cursor c=database.rawQuery(generateQuery, null);
+		List<Task> ret=cursorToTaskList(c);
+		c.close();
+		return ret;
 	}
 }
