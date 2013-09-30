@@ -20,6 +20,18 @@ public class DueDialog extends AlertDialog {
 
 	public enum VALUE {
 		DAY, MONTH, YEAR;
+
+		public int getInt() {
+			switch (this) {
+			case DAY:
+				return 0;
+			case MONTH:
+				return 1;
+			case YEAR:
+				return 2;
+			}
+			return 0;
+		}
 	}
 
 	public void setNegativeButton(int textId, OnClickListener onCancel) {
@@ -204,18 +216,7 @@ public class DueDialog extends AlertDialog {
 	@SuppressLint("NewApi")
 	public void setValue(int val, VALUE day) {
 		if (VERSION.SDK_INT > VERSION_CODES.HONEYCOMB) {
-			int _day = 0;
-			switch (day) {
-			case DAY:
-				_day = 0;
-				break;
-			case MONTH:
-				_day = 1;
-				break;
-			case YEAR:
-				_day = 2;
-				break;
-			}
+			int _day =dayYear.getInt();
 			((NumberPicker) dialogView.findViewById(R.id.due_day_year))
 					.setValue(_day);
 			;
