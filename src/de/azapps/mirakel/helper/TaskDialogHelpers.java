@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Pair;
@@ -318,12 +319,13 @@ public class TaskDialogHelpers {
 		final ViewSwitcher switcher=(ViewSwitcher)v.findViewById(R.id.subtask_switcher);
 		final Button subtaskNewtask=(Button)v.findViewById(R.id.subtask_newtask);
 		final Button subtaskSelectOld=(Button)v.findViewById(R.id.subtask_select_old);
+		final boolean darkTheme=PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean("DarkTheme", false);
 		subtaskNewtask.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				switcher.showPrevious();
-				subtaskNewtask.setTextColor(ctx.getResources().getColor(R.color.Black));
+				subtaskNewtask.setTextColor(ctx.getResources().getColor(darkTheme?R.color.White:R.color.Black));
 				subtaskSelectOld.setTextColor(ctx.getResources().getColor(R.color.Grey));
 				newTask=true;
 				
@@ -335,7 +337,7 @@ public class TaskDialogHelpers {
 			public void onClick(View v) {
 				switcher.showNext();
 				subtaskNewtask.setTextColor(ctx.getResources().getColor(R.color.Grey));
-				subtaskSelectOld.setTextColor(ctx.getResources().getColor(R.color.Black));;
+				subtaskSelectOld.setTextColor(ctx.getResources().getColor(darkTheme?R.color.White:R.color.Black));;
 				newTask=false;
 			}
 		});
