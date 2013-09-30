@@ -227,6 +227,20 @@ public class Task extends TaskBase {
 		c.close();
 		return isSubtask;
 	}
+	
+	public boolean checkIfParent(Task t){
+		return isChildRec(t);
+	}
+	
+	private boolean isChildRec(Task t){
+		List<Task> subtasks=getSubtasks();
+		for(Task s:subtasks){
+			if(s.getId()==t.getId()||s.isChildRec(t)){
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public static void deleteDoneTasks() {
 		ContentValues values = new ContentValues();

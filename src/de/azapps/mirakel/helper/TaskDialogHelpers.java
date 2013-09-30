@@ -266,7 +266,7 @@ public class TaskDialogHelpers {
 		content = false;
 		reminder = false;
 		optionEnabled = false;
-		newTask=false;
+		newTask = false;
 		listId = SpecialList.firstSpecialSafe(ctx).getId();
 		EditText search = (EditText) v.findViewById(R.id.subtask_searchbox);
 		search.addTextChangedListener(new TextWatcher() {
@@ -275,7 +275,7 @@ public class TaskDialogHelpers {
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {
 				searchString = s.toString();
-				updateListView(a,task);
+				updateListView(a, task);
 
 			}
 
@@ -316,32 +316,42 @@ public class TaskDialogHelpers {
 
 			}
 		});
-		final ViewSwitcher switcher=(ViewSwitcher)v.findViewById(R.id.subtask_switcher);
-		final Button subtaskNewtask=(Button)v.findViewById(R.id.subtask_newtask);
-		final Button subtaskSelectOld=(Button)v.findViewById(R.id.subtask_select_old);
-		final boolean darkTheme=PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean("DarkTheme", false);
+		final ViewSwitcher switcher = (ViewSwitcher) v
+				.findViewById(R.id.subtask_switcher);
+		final Button subtaskNewtask = (Button) v
+				.findViewById(R.id.subtask_newtask);
+		final Button subtaskSelectOld = (Button) v
+				.findViewById(R.id.subtask_select_old);
+		final boolean darkTheme = PreferenceManager
+				.getDefaultSharedPreferences(ctx)
+				.getBoolean("DarkTheme", false);
 		subtaskNewtask.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				switcher.showPrevious();
-				subtaskNewtask.setTextColor(ctx.getResources().getColor(darkTheme?R.color.White:R.color.Black));
-				subtaskSelectOld.setTextColor(ctx.getResources().getColor(R.color.Grey));
-				newTask=true;
-				
+				subtaskNewtask.setTextColor(ctx.getResources().getColor(
+						darkTheme ? R.color.White : R.color.Black));
+				subtaskSelectOld.setTextColor(ctx.getResources().getColor(
+						R.color.Grey));
+				newTask = true;
+
 			}
 		});
-		
-		subtaskSelectOld.setOnClickListener(new OnClickListener() {		
+
+		subtaskSelectOld.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				switcher.showNext();
-				subtaskNewtask.setTextColor(ctx.getResources().getColor(R.color.Grey));
-				subtaskSelectOld.setTextColor(ctx.getResources().getColor(darkTheme?R.color.White:R.color.Black));;
-				newTask=false;
+				subtaskNewtask.setTextColor(ctx.getResources().getColor(
+						R.color.Grey));
+				subtaskSelectOld.setTextColor(ctx.getResources().getColor(
+						darkTheme ? R.color.White : R.color.Black));
+				;
+				newTask = false;
 			}
 		});
-		
+
 		final CheckBox doneBox = (CheckBox) v.findViewById(R.id.subtask_done);
 		doneBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
@@ -349,7 +359,7 @@ public class TaskDialogHelpers {
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
 				done = isChecked;
-				updateListView(a,task);
+				updateListView(a, task);
 			}
 		});
 		final CheckBox reminderBox = (CheckBox) v
@@ -361,7 +371,7 @@ public class TaskDialogHelpers {
 					public void onCheckedChanged(CompoundButton buttonView,
 							boolean isChecked) {
 						reminder = isChecked;
-						updateListView(a,task);
+						updateListView(a, task);
 					}
 				});
 
@@ -382,7 +392,7 @@ public class TaskDialogHelpers {
 							public void onClick(DialogInterface dialog,
 									int which) {
 								listId = lists.get(which).getId();
-								updateListView(a,task);
+								updateListView(a, task);
 								list.setText(lists.get(which).getName());
 								dialog.dismiss();
 							}
@@ -399,11 +409,12 @@ public class TaskDialogHelpers {
 					public void onCheckedChanged(CompoundButton buttonView,
 							boolean isChecked) {
 						content = isChecked;
-						updateListView(a,task);
+						updateListView(a, task);
 					}
 				});
-		
-		final EditText newTaskEdit=(EditText)v.findViewById(R.id.subtask_add_task_edit);
+
+		final EditText newTaskEdit = (EditText) v
+				.findViewById(R.id.subtask_add_task_edit);
 		new AlertDialog.Builder(ctx)
 				.setTitle(ctx.getString(R.string.add_subtask))
 				.setView(v)
@@ -413,24 +424,34 @@ public class TaskDialogHelpers {
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
-								if(newTask&&newTaskEdit.getText().length()>0){
-									Task t=Task.newTask(newTaskEdit.getText().toString(), task.getList().getId());
+								if (newTask
+										&& newTaskEdit.getText().length() > 0) {
+									Task t = Task
+											.newTask(newTaskEdit.getText()
+													.toString(), task.getList()
+													.getId());
 									try {
 										task.addSubtask(t);
 									} catch (NoSuchListException e) {
 										Log.e(TAG, "list did vanish");
 									}
-								}else if(!newTask){
+								} else if (!newTask) {
 									boolean[] checked = a.getChecked();
 									List<Task> tasks = a.getData();
 									for (int i = 0; i < checked.length; i++) {
-										if (checked[i]
-												&& !tasks.get(i)
-														.isSubtaskFrom(task)) {
-											try {
-												task.addSubtask(tasks.get(i));
-											} catch (NoSuchListException e) {
-												Log.e(TAG, "list did vanish");
+										if (checked[i]) {
+											if (!tasks.get(i).checkIfParent(
+													task)) {
+												try {
+													task.addSubtask(tasks
+															.get(i));
+												} catch (NoSuchListException e) {
+													Log.e(TAG,
+															"list did vanish");
+												}
+											} else {
+												Toast.makeText(ctx, ctx.getString(R.string.no_loop), Toast.LENGTH_LONG).show();
+												Log.d(TAG, "cannot create loop");
 											}
 										}
 									}
@@ -451,19 +472,20 @@ public class TaskDialogHelpers {
 
 							}
 
-						})
-				.show();
+						}).show();
 
 	}
 
 	protected static String generateQuery(Task t) {
-		String col=Task.allColumns[0];
-		for(int i=1;i<Task.allColumns.length;i++){
-			col+=","+Task.allColumns[i];
+		String col = Task.allColumns[0];
+		for (int i = 1; i < Task.allColumns.length; i++) {
+			col += "," + Task.allColumns[i];
 		}
-		String query = "SELECT "+col+" FROM "+Task.TABLE+" WHERE name LIKE '%" + searchString + "%' AND";
-		query+=" NOT _id IN (SELECT parent_id from "+Task.SUBTASK_TABLE+" where child_id="+t.getId()+") AND ";
-		query+= "NOT _id="+t.getId();
+		String query = "SELECT " + col + " FROM " + Task.TABLE
+				+ " WHERE name LIKE '%" + searchString + "%' AND";
+		query += " NOT _id IN (SELECT parent_id from " + Task.SUBTASK_TABLE
+				+ " where child_id=" + t.getId() + ") AND ";
+		query += "NOT _id=" + t.getId();
 		if (optionEnabled) {
 			if (done) {
 				query += " and done=0";
@@ -484,7 +506,7 @@ public class TaskDialogHelpers {
 					query += " and " + where;
 			}
 		}
-		query+=";";
+		query += ";";
 		Log.d(TAG, query);
 		return query;
 	}
@@ -528,7 +550,7 @@ public class TaskDialogHelpers {
 
 	}
 
-	private static void updateListView(final SubtaskAdapter a,final Task t) {
+	private static void updateListView(final SubtaskAdapter a, final Task t) {
 		new Thread(new Runnable() {
 			public void run() {
 				a.setData(Task.rawQuery(generateQuery(t)));
