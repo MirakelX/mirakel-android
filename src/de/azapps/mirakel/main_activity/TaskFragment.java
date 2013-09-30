@@ -95,8 +95,7 @@ public class TaskFragment extends Fragment {
 					if (t.getList().getId() != main.getCurrentList().getId()) {
 						main.setCurrentList(t.getList(), false);
 					}
-					main.setCurrentTask(t, false);
-					adapter.setData(t);
+					main.setCurrentTask(t, true);
 				}
 
 			}

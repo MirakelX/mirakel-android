@@ -77,6 +77,8 @@ public class TaskFragmentAdapter extends
 	protected boolean mIgnoreTimeSet;
 	private LayoutInflater inflater;
 	private TaskFragmentAdapter adapter;
+	private List<Task> subtasks;
+	private List<FileMirakel> files;
 
 	public class TYPE {
 		final static int HEADER = 0;
@@ -86,7 +88,6 @@ public class TaskFragmentAdapter extends
 		final static int CONTENT = 4;
 		final static int SUBTITLE = 5;
 		final static int SUBTASK = 6;
-		final static int NOTHING = -1;
 	}
 
 	public TaskFragmentAdapter(Context c) {
@@ -99,6 +100,8 @@ public class TaskFragmentAdapter extends
 		this.task = t;
 		if (task == null)
 			task = Task.getDummy(context);
+		subtasks=task.getSubtasks();
+		files=task.getFiles();
 		this.inflater = ((Activity) context).getLayoutInflater();
 		this.adapter = this;
 
@@ -111,21 +114,23 @@ public class TaskFragmentAdapter extends
 
 	@Override
 	public int getItemViewType(int position) {
-		return data.size() > position ? data.get(position).first : TYPE.NOTHING;
+		return  data.get(position).first ;
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View row = new View(context);
-		if (position >= data.size())
+		if (position >= data.size()) {
+			Log.w(TAG, "position > data");
 			return row;
+		}
 		switch (getItemViewType(position)) {
 		case TYPE.DUE:
 			row = setupDue(parent, convertView);
 			break;
 		case TYPE.FILE:
 			row = setupFile(parent,
-					task.getFiles().get(data.get(position).second),
+					files.get(data.get(position).second),
 					convertView, position);
 			break;
 		case TYPE.HEADER:
@@ -136,7 +141,7 @@ public class TaskFragmentAdapter extends
 			break;
 		case TYPE.SUBTASK:
 			row = setupSubtask(parent, convertView,
-					task.getSubtasks().get(data.get(position).second), position);
+					subtasks.get(data.get(position).second), position);
 			break;
 		case TYPE.SUBTITLE:
 			String title = null;
@@ -164,13 +169,12 @@ public class TaskFragmentAdapter extends
 				break;
 
 			default:
-				Log.d(TAG, "unknown subtitle");
+				Log.w(TAG, "unknown subtitle");
 				break;
 			}
 			row = setupSubtitle(parent, title, action, convertView);
 			break;
 		case TYPE.CONTENT:
-			Log.d(TAG, "load content");
 			row = setupContent(parent, convertView);
 			break;
 
@@ -190,8 +194,6 @@ public class TaskFragmentAdapter extends
 
 	private View setupSubtask(ViewGroup parent, View convertView, Task task,
 			int position) {
-		// return TaskAdapter.setupRow( null, parent, context, layoutResourceId,
-		// task, true, darkTheme);
 		final View row = convertView == null ? inflater.inflate(
 				R.layout.tasks_row, parent, false) : convertView;
 		final TaskHolder holder;
@@ -314,7 +316,6 @@ public class TaskFragmentAdapter extends
 		final View row = convertView == null ? inflater.inflate(
 				R.layout.files_row, parent, false) : convertView;
 		final FileHolder holder;
-		Log.d(TAG, "setup files");
 		if (convertView == null) {
 			holder = new FileHolder();
 			holder.fileImage = (ImageView) row.findViewById(R.id.file_image);
@@ -439,7 +440,7 @@ public class TaskFragmentAdapter extends
 									@Override
 									public void onClick(DialogInterface dialog,
 											int which) {
-										// TODO Auto-generated method stub
+										// Nothing
 
 									}
 								}).create();
@@ -645,6 +646,7 @@ public class TaskFragmentAdapter extends
 			header.setTag(holder);
 		} else {
 			holder = (HeaderHolder) header.getTag();
+			holder.taskDone.setOnCheckedChangeListener(null);
 		}
 
 		String tname = task.getName();
@@ -700,6 +702,7 @@ public class TaskFragmentAdapter extends
 									txt.setOnFocusChangeListener(null);
 									imm.hideSoftInputFromWindow(
 											txt.getWindowToken(), 0);
+									holder.switcher.showPrevious();
 
 									return true;
 								}
@@ -752,10 +755,13 @@ public class TaskFragmentAdapter extends
 
 	}
 
+	
 	public void setData(Task t) {
 		List<Pair<Integer, Integer>> generateData = generateData(t);
 		super.changeData(generateData);
 		task = t;
+		subtasks=task.getSubtasks();
+		files=task.getFiles();
 		notifyDataSetInvalidated();
 	}
 
@@ -781,7 +787,6 @@ public class TaskFragmentAdapter extends
 		}
 		data.add(new Pair<Integer, Integer>(TYPE.SUBTITLE, 1));
 		int fileCount = FileMirakel.getFileCount(task);
-		Log.d(TAG, "filecount " + fileCount);
 		for (int i = 0; i < fileCount; i++)
 			data.add(new Pair<Integer, Integer>(TYPE.FILE, i));
 		return data;

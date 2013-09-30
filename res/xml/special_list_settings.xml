@@ -20,49 +20,54 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="category_special_lists"
     android:title="@string/notification_title" >
-	<PreferenceCategory android:title="@string/special_list_summary" >
-    <EditTextPreference
-        android:key="special_list_name"
-        android:title="@string/special_list_name" />
 
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="special_list_active"
-        android:title="@string/special_list_active" />
-	</PreferenceCategory>
-	<PreferenceCategory android:title="@string/special_list_contains" >
-	    
-    <Preference
-        android:key="special_where_list"
-        android:title="@string/special_list_where_list_title_text" />
-    <Preference
-        android:key="special_where_name"
-        android:title="@string/special_list_where_name_title_text" />
-    <Preference
-        android:key="special_where_content"
-        android:title="@string/special_list_where_content_title_text" />
-    <Preference
-        android:key="special_where_prio"
-        android:title="@string/special_list_where_prio_title_text" />
-    <Preference
-        android:key="special_where_done"
-        android:title="@string/special_list_where_done_title_text"/>
-    <Preference
-        android:key="special_where_due"
-        android:title="@string/special_list_where_due_title_text"/>
-    <Preference
-        android:key="special_where_reminder"
-        android:title="@string/special_list_where_reminder_title_text"/> 
+    <PreferenceCategory android:title="@string/special_list_summary" >
+        <EditTextPreference
+            android:key="special_list_name"
+            android:title="@string/special_list_name" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="special_list_active"
+            android:title="@string/special_list_active" />
+
+        <Preference
+            android:key="special_lists_where"
+            android:title="@string/special_list_where" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/special_list_contains" >
+        <Preference
+            android:key="special_where_list"
+            android:title="@string/special_list_where_list_title_text" />
+        <Preference
+            android:key="special_where_name"
+            android:title="@string/special_list_where_name_title_text" />
+        <Preference
+            android:key="special_where_content"
+            android:title="@string/special_list_where_content_title_text" />
+        <Preference
+            android:key="special_where_prio"
+            android:title="@string/special_list_where_prio_title_text" />
+        <Preference
+            android:key="special_where_done"
+            android:title="@string/special_list_where_done_title_text" />
+        <Preference
+            android:key="special_where_due"
+            android:title="@string/special_list_where_due_title_text" />
+        <Preference
+            android:key="special_where_reminder"
+            android:title="@string/special_list_where_reminder_title_text" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/special_lists_defaults" >
-	<Preference
-        android:key="special_default_sort"
-        android:title="@string/special_list_sort_by" />
-    <Preference
-        android:key="special_default_list"
-        android:title="@string/special_list_def_list" />
-    <Preference
-        android:key="special_default_due"
-        android:title="@string/special_list_def_date" />
+        <Preference
+            android:key="special_default_sort"
+            android:title="@string/special_list_sort_by" />
+        <Preference
+            android:key="special_default_list"
+            android:title="@string/special_list_def_list" />
+        <Preference
+            android:key="special_default_due"
+            android:title="@string/special_list_def_date" />
     </PreferenceCategory>
+
 </PreferenceScreen>

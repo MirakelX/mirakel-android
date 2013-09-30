@@ -85,6 +85,11 @@ public class Task extends TaskBase {
 	}
 
 	public void save(boolean log) throws NoSuchListException {
+		Task old = Task.get(getId());
+		if (old.equals(this)) {
+			Log.d(TAG, "new Task equals old, didnt need to save it");
+			return;
+		}
 		setSyncState(getSync_state() == Network.SYNC_STATE.ADD
 				|| getSync_state() == Network.SYNC_STATE.IS_SYNCED ? getSync_state()
 				: Network.SYNC_STATE.NEED_SYNC);
@@ -93,8 +98,44 @@ public class Task extends TaskBase {
 		ContentValues values = getContentValues();
 		// this.edited= new HashMap<String, Boolean>();
 		if (log)
-			Helpers.updateLog(Task.get(getId()), context);
+			Helpers.updateLog(old, context);
 		database.update(TABLE, values, "_id = " + getId(), null);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Task) {
+			Task t = (Task) o;
+			boolean equals = t.getPriority() == getPriority();
+			if (t.getName() != null) {
+				equals = equals && t.getName().equals(getName());
+			} else if (getName() != null) {
+				Log.d(TAG,"name not equal");
+				return false;
+			}
+			if (t.getContent() != null) {
+				equals = equals && t.getContent().equals(getContent());
+			} else if (getContent() != null) {
+				Log.d(TAG,"content not equal");
+				return false;
+			}
+			if (t.getDue() != null) {
+				equals = equals && t.getDue().compareTo(getDue()) == 0;
+			} else if (getDue() != null) {
+				Log.d(TAG,"due not equal");
+				return false;
+			}
+			equals = equals && t.isDone() == isDone();
+			if (t.getReminder() != null) {
+				equals = equals && t.getReminder().compareTo(getReminder()) == 0;
+			} else if (getReminder() != null) {
+				Log.d(TAG,"reminder not equal");
+				return false;
+			}
+			
+			return equals;
+		}
+		return false;
 	}
 
 	/**
@@ -195,16 +236,6 @@ public class Task extends TaskBase {
 		database.delete(TABLE, where, null);
 	}
 
-	/**
-	 * Delete all Tasks, marked as deleted permanently. Use it only in the
-	 * Sync-Services!!!
-	 */
-	public static void deleteTasksPermanently(List<Task> tasks) {
-		String where = "sync_state='" + Network.SYNC_STATE.DELETE + "' AND"
-				+ " _id IN(" + Helpers.makePlaceholders(tasks.size()) + ")";
-		database.delete(TABLE, where, getIdsFromTaskList(tasks));
-	}
-
 	public String toJson() {
 		String json = "{";
 		json += "\"id\":" + getId() + ",";
@@ -234,6 +265,7 @@ public class Task extends TaskBase {
 	public List<FileMirakel> getFiles() {
 		return FileMirakel.getForTask(this);
 	}
+
 	public FileMirakel addFile(String path) {
 		return FileMirakel.newFile(this, path);
 	}
@@ -494,7 +526,7 @@ public class Task extends TaskBase {
 	}
 
 	public static List<Task> getTasksToSync() {
-		String where = "sync_state!='" + Network.SYNC_STATE.NOTHING + "'";
+		String where = "NOT sync_state='" + Network.SYNC_STATE.NOTHING + "'";
 		Cursor cursor = Mirakel.getReadableDatabase().query(TABLE, allColumns,
 				where, null, null, null, null);
 		return cursorToTaskList(cursor);
@@ -773,20 +805,21 @@ public class Task extends TaskBase {
 	}
 
 	public static void resetSyncState(List<Task> tasks) {
-		ContentValues cv = new ContentValues();
-		cv.put("sync_state", SYNC_STATE.NOTHING);
-		String where = "_id IN(" + Helpers.makePlaceholders(tasks.size()) + ")";
-		database.update(TABLE, cv, where, getIdsFromTaskList(tasks));
-	}
-
-	private static String[] getIdsFromTaskList(List<Task> tasks) {
-		String ids[] = new String[tasks.size()];
-		int i = 0;
-		for (Task t : tasks) {
-			ids[i] = String.valueOf(t.getId());
+		if (tasks.size() == 0) {
+			return;
 		}
-		return ids;
-
+		for (Task t : tasks) {
+			if (t.getSync_state() != SYNC_STATE.DELETE) {
+				t.setSyncState(SYNC_STATE.NOTHING);
+				try {
+					database.update(TABLE, t.getContentValues(),
+							"_id = " + t.getId(), null);
+				} catch (NoSuchListException e) {
+					Log.d(TAG, "List did vanish");
+				}
+			} else {
+				t.destroy(true);
+			}
+		}
 	}
-
 }

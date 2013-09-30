@@ -28,6 +28,7 @@ import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.R;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
@@ -140,6 +141,12 @@ public class SpecialListsSettingsFragment extends PreferenceFragment implements
 				return true;
 			}
 		});
+		
+		if(!BuildConfig.DEBUG){
+			getPreferenceScreen().removePreference(findPreference("special_lists_where"));
+		}else{
+			findPreference("special_lists_where").setSummary(specialList.getWhereQuery());
+		}
 
 		final List<ListMirakel> lists = ListMirakel.all(false);
 
@@ -826,7 +833,7 @@ public class SpecialListsSettingsFragment extends PreferenceFragment implements
 				first = false;
 			}
 			specialList.setWhereQuery(n);
-		} else if (specialList.getWhereQuery().trim().length() == 0) {
+		} else if (specialList.getWhereQuery().trim().length() == 0&&!newWhere.trim().equals("")) {
 			specialList
 					.setWhereQuery((attr.equals("due") ? "due is not null and "
 							: "") + newWhere);
@@ -839,8 +846,9 @@ public class SpecialListsSettingsFragment extends PreferenceFragment implements
 							+ newWhere);
 		}
 		specialList.save();
-		// ((TextView) view.findViewById(R.id.special_list_where))
-		// .setText(specialList.getWhereQuery());
+		if(BuildConfig.DEBUG){
+			findPreference("special_lists_where").setSummary(specialList.getWhereQuery());
+		}
 	}
 
 	private View getView(int id) {
