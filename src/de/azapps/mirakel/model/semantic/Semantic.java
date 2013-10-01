@@ -1,6 +1,7 @@
 package de.azapps.mirakel.model.semantic;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +12,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -211,25 +213,29 @@ public class Semantic extends SemanticBase {
 		if (useSemantic) {
 			GregorianCalendar tempdue = new GregorianCalendar();
 			String lowername = taskName.toLowerCase(Locale.getDefault());
-			for (String k : semantics.keySet()) {
-				if (lowername.startsWith(k)) {
-					Semantic s = semantics.get(k);
-					// Set due
-					if (s.getDue() != null) {
-						tempdue.add(GregorianCalendar.DAY_OF_MONTH, s.getDue());
-						due = tempdue;
-					}
-					// Set priority
-					if (s.getPriority() != null) {
-						prio = s.getPriority();
-					}
-					// Set list
-					if (s.getList() != null) {
-						currentList = s.getList();
-					}
-					taskName = taskName.substring(k.length()).trim();
+			List<String> words = new ArrayList<String>(Arrays.asList(lowername
+					.split("\\s+")));
+			while (words.size() > 1) {
+				String word = words.get(0);
+
+				Semantic s = semantics.get(word);
+				if (s == null)
 					break;
+				// Set due
+				if (s.getDue() != null) {
+					tempdue.add(GregorianCalendar.DAY_OF_MONTH, s.getDue());
+					due = tempdue;
 				}
+				// Set priority
+				if (s.getPriority() != null) {
+					prio = s.getPriority();
+				}
+				// Set list
+				if (s.getList() != null) {
+					currentList = s.getList();
+				}
+				taskName = taskName.substring(word.length()).trim();
+				words.remove(0);
 			}
 		}
 		return Task.newTask(taskName, currentList.getId(), due, prio);
