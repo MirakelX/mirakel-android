@@ -429,10 +429,20 @@ public class TaskDialogHelpers {
 								if (newTask
 										&& newTaskEdit.getText().length() > 0) {
 									try {
+										ListMirakel list;
+										if (settings.getBoolean(
+												"subtaskAddToSameList", true)) {
+											list = task.getList();
+										} else {
+											list = ListMirakel.getList(settings
+													.getInt("subtaskAddToList",
+															-1));
+											if (list == null)
+												list = task.getList();
+										}
 										Task t = Semantic.createTask(
 												newTaskEdit.getText()
-														.toString(), task
-														.getList(),
+														.toString(), list,
 												settings.getBoolean(
 														"semanticNewTask",
 														false));
@@ -488,7 +498,7 @@ public class TaskDialogHelpers {
 							}
 
 						}).show();
-		if (!settings.getBoolean("subtask_default_new", true)) {
+		if (!settings.getBoolean("subtaskDefaultNew", true)) {
 			subtaskSelectOld.performClick();
 		}
 

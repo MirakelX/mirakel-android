@@ -70,9 +70,14 @@
     <PreferenceCategory android:title="@string/settings_subtask" >
         <CheckBoxPreference
             android:defaultValue="true"
-            android:key="subtask_default_new"
+            android:key="subtaskDefaultNew"
             android:summary="@string/settings_subtask_default_new"
             android:title="@string/settings_subtask_default_new" />
+        <CheckBoxPreference 
+            android:defaultValue="true"
+            android:key="subtaskAddToSameList"
+            android:title="@string/settings_subtask_add_to_same_list"
+            android:summary="@string/settings_subtask_add_to_same_list_summary"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

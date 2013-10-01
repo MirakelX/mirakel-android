@@ -1059,6 +1059,80 @@ public class PreferencesHelper {
 		if (semantics != null) {
 			semantics.setIntent(startSemanticsIntent);
 		}
+
+		final CheckBoxPreference subTaskAddToSameList = (CheckBoxPreference) findPreference("subtaskAddToSameList");
+		if (subTaskAddToSameList != null) {
+			if (!settings.getBoolean("subtaskAddToSameList", true)) {
+				subTaskAddToSameList.setSummary(activity.getString(
+						R.string.settings_subtask_add_to_list_summary,
+						ListMirakel.getList(
+								settings.getInt("subtaskAddToList", -1))
+								.getName()));
+			} else {
+				subTaskAddToSameList
+						.setSummary(R.string.settings_subtask_add_to_same_list_summary);
+			}
+
+			subTaskAddToSameList
+					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+						@Override
+						public boolean onPreferenceChange(
+								Preference preference, Object newValue) {
+							if (!(Boolean) newValue) {
+								AlertDialog.Builder builder = new AlertDialog.Builder(
+										activity);
+								builder.setTitle(R.string.import_to);
+								final List<CharSequence> items = new ArrayList<CharSequence>();
+								final List<Integer> list_ids = new ArrayList<Integer>();
+								int currentItem = 0;
+								for (ListMirakel list : ListMirakel.all()) {
+									if (list.getId() > 0) {
+										items.add(list.getName());
+										list_ids.add(list.getId());
+									}
+
+								}
+								builder.setSingleChoiceItems(
+										items.toArray(new CharSequence[items
+												.size()]), currentItem,
+										new DialogInterface.OnClickListener() {
+											public void onClick(
+													DialogInterface dialog,
+													int item) {
+												subTaskAddToSameList
+														.setSummary(items
+																.get(item));
+												subTaskAddToSameList.setSummary(activity
+														.getString(
+																R.string.settings_subtask_add_to_list_summary,
+																items.get(item)));
+												SharedPreferences.Editor editor = settings
+														.edit();
+												editor.putInt(
+														"subtaskAddToList",
+														list_ids.get(item));
+												editor.commit();
+												dialog.dismiss();
+											}
+										});
+								builder.setOnCancelListener(new OnCancelListener() {
+									@Override
+									public void onCancel(DialogInterface dialog) {
+										subTaskAddToSameList.setChecked(false);
+										subTaskAddToSameList
+												.setSummary(R.string.settings_subtask_add_to_same_list_summary);
+									}
+								});
+								builder.create().show();
+							} else {
+								subTaskAddToSameList
+										.setSummary(R.string.settings_subtask_add_to_same_list_summary);
+							}
+							return true;
+						}
+					});
+		}
 	}
 
 	@SuppressLint("NewApi")
