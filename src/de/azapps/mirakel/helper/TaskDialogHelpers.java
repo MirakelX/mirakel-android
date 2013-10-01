@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -36,6 +37,7 @@ import de.azapps.mirakel.main_activity.TaskFragmentAdapter;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 
@@ -251,6 +253,8 @@ public class TaskDialogHelpers {
 
 	public static void handleSubtask(final Context ctx, final Task task,
 			final TaskFragmentAdapter adapter) {
+		final SharedPreferences settings = PreferenceManager
+				.getDefaultSharedPreferences(ctx);
 		final List<Pair<Long, String>> names = Task.getTaskNames();
 		CharSequence[] values = new String[names.size()];
 		for (int i = 0; i < names.size(); i++) {
@@ -266,7 +270,7 @@ public class TaskDialogHelpers {
 		content = false;
 		reminder = false;
 		optionEnabled = false;
-		newTask = false;
+		newTask = true;
 		listId = SpecialList.firstSpecialSafe(ctx).getId();
 		EditText search = (EditText) v.findViewById(R.id.subtask_searchbox);
 		search.addTextChangedListener(new TextWatcher() {
@@ -322,11 +326,9 @@ public class TaskDialogHelpers {
 				.findViewById(R.id.subtask_newtask);
 		final Button subtaskSelectOld = (Button) v
 				.findViewById(R.id.subtask_select_old);
-		final boolean darkTheme = PreferenceManager
-				.getDefaultSharedPreferences(ctx)
-				.getBoolean("DarkTheme", false);
+		final boolean darkTheme = settings.getBoolean("DarkTheme", false);
 		subtaskNewtask.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				switcher.showPrevious();
@@ -335,10 +337,10 @@ public class TaskDialogHelpers {
 				subtaskSelectOld.setTextColor(ctx.getResources().getColor(
 						R.color.Grey));
 				newTask = true;
-				
+
 			}
 		});
-		
+
 		subtaskSelectOld.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -351,7 +353,7 @@ public class TaskDialogHelpers {
 				newTask = false;
 			}
 		});
-		
+
 		final CheckBox doneBox = (CheckBox) v.findViewById(R.id.subtask_done);
 		doneBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
@@ -412,7 +414,7 @@ public class TaskDialogHelpers {
 						updateListView(a, task);
 					}
 				});
-		
+
 		final EditText newTaskEdit = (EditText) v
 				.findViewById(R.id.subtask_add_task_edit);
 		new AlertDialog.Builder(ctx)
@@ -426,14 +428,23 @@ public class TaskDialogHelpers {
 									int which) {
 								if (newTask
 										&& newTaskEdit.getText().length() > 0) {
-									Task t = Task
-											.newTask(newTaskEdit.getText()
-													.toString(), task.getList()
-													.getId());
 									try {
-										task.addSubtask(t);
-									} catch (NoSuchListException e) {
-										Log.e(TAG, "list did vanish");
+										Task t = Semantic.createTask(
+												newTaskEdit.getText()
+														.toString(), task
+														.getList(),
+												settings.getBoolean(
+														"semanticNewTask",
+														false));
+										try {
+											task.addSubtask(t);
+										} catch (NoSuchListException e) {
+											Log.e(TAG, "list did vanish");
+										}
+
+									} catch (Semantic.NoListsException e) {
+										Toast.makeText(ctx, R.string.no_lists,
+												Toast.LENGTH_LONG).show();
 									}
 								} else if (!newTask) {
 									boolean[] checked = a.getChecked();
@@ -442,15 +453,19 @@ public class TaskDialogHelpers {
 										if (checked[i]) {
 											if (!tasks.get(i).checkIfParent(
 													task)) {
-											try {
+												try {
 													task.addSubtask(tasks
 															.get(i));
-											} catch (NoSuchListException e) {
+												} catch (NoSuchListException e) {
 													Log.e(TAG,
 															"list did vanish");
 												}
 											} else {
-												Toast.makeText(ctx, ctx.getString(R.string.no_loop), Toast.LENGTH_LONG).show();
+												Toast.makeText(
+														ctx,
+														ctx.getString(R.string.no_loop),
+														Toast.LENGTH_LONG)
+														.show();
 												Log.d(TAG, "cannot create loop");
 											}
 										}
@@ -473,6 +488,9 @@ public class TaskDialogHelpers {
 							}
 
 						}).show();
+		if (!settings.getBoolean("subtask_default_new", true)) {
+			subtaskSelectOld.performClick();
+		}
 
 	}
 

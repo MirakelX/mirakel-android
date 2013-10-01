@@ -61,6 +61,23 @@
             android:layout_height="match_parent"
             android:orientation="vertical" >
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/task_name" />
+
+            <EditText
+                android:id="@+id/subtask_add_task_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
             <EditText
                 android:id="@+id/subtask_searchbox"
                 android:layout_width="match_parent"
@@ -116,23 +133,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" >
             </ListView>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/task_name" />
-
-            <EditText
-                android:id="@+id/subtask_add_task_edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text" />
         </LinearLayout>
     </ViewSwitcher>
 

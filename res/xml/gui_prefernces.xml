@@ -48,9 +48,10 @@
         android:key="semanticNewTask"
         android:summary="@string/semantic_new_task_summary"
         android:title="@string/semantic_new_task" />
-    <Preference 
-        android:key="semanticNewTaskSettings"
+
+    <Preference
         android:dependency="semanticNewTask"
+        android:key="semanticNewTaskSettings"
         android:summary="@string/semantic_new_task_config_summary"
         android:title="@string/semantic_new_task_config" />
 
@@ -65,6 +66,13 @@
             android:key="colorize_tasks_everywhere"
             android:summary="@string/preferences_colorize_tasks_everywhere_summary"
             android:title="@string/preferences_colorize_tasks_everywhere" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/settings_subtask" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="subtask_default_new"
+            android:summary="@string/settings_subtask_default_new"
+            android:title="@string/settings_subtask_default_new" />
     </PreferenceCategory>
 
 </PreferenceScreen>

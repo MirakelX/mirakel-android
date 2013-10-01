@@ -178,5 +178,9 @@
     <string name="semantics_no_due">Do not set due date</string>
     <string name="settings_file_default_title">Task name for imported files</string>
     <string name="semantic_new">New Semantic</string>
+    <!-- Subtasks -->
+    <string name="settings_subtask">Subtasks</string>
+    <string name="settings_subtask_default_new">Show New Task per default</string>
+    <string name="settings_subtask_default_new_summary">Otherwise add existing task</string>
 
 </resources>
