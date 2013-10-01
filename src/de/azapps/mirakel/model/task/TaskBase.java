@@ -34,6 +34,7 @@ import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 
 class TaskBase {
 	private long id = 0;
@@ -49,13 +50,13 @@ class TaskBase {
 	protected Map<String, Boolean> edited = new HashMap<String, Boolean>();
 	private Map<String, String> additionalEntries = null;
 	private String additionalEntriesString;
-	private int sync_state;
+	private SYNC_STATE sync_state;
 	private Calendar reminder;
 
 	TaskBase(long id, String uuid, ListMirakel list, String name,
 			String content, boolean done, Calendar due, Calendar reminder,
 			int priority, Calendar created_at, Calendar updated_at,
-			int sync_state, String additionalEntriesString) {
+			SYNC_STATE sync_state, String additionalEntriesString) {
 		this.id = id;
 		this.uuid = uuid;
 		this.setList(list);
@@ -88,7 +89,7 @@ class TaskBase {
 		this.setPriority(0);
 		this.setCreatedAt((Calendar) null);
 		this.setUpdatedAt((Calendar) null);
-		this.setSyncState(0);
+		this.setSyncState(SYNC_STATE.NOTHING);
 	}
 
 	public long getId() {
@@ -212,11 +213,11 @@ class TaskBase {
 		}
 	}
 
-	public int getSync_state() {
+	public SYNC_STATE getSync_state() {
 		return sync_state;
 	}
 
-	public void setSyncState(int sync_state) {
+	public void setSyncState(SYNC_STATE sync_state) {
 		this.sync_state = sync_state;
 	}
 
@@ -295,7 +296,7 @@ class TaskBase {
 		if (this.updatedAt != null)
 			updatedAt = DateTimeHelper.formatDateTime(this.updatedAt);
 		cv.put("updated_at", updatedAt);
-		cv.put("sync_state", sync_state);
+		cv.put("sync_state", sync_state.toInt());
 
 		Gson gson = new GsonBuilder().create();
 		String additionalEntries = gson.toJson(this.additionalEntries);

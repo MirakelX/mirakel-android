@@ -32,7 +32,7 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakel.sync.Network;
+import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 import de.azapps.mirakelandroid.R;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -56,7 +56,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ "sort_by INTEGER NOT NULL DEFAULT 0, "
 				+ "created_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
 				+ "updated_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
-				+ "sync_state INTEGER DEFAULT " + Network.SYNC_STATE.ADD + ", "
+				+ "sync_state INTEGER DEFAULT " + SYNC_STATE.ADD + ", "
 				+ "lft INTEGER, " + "rgt INTEGER " + ")");
 		createTasksTableString(db);
 		db.execSQL("INSERT INTO lists (name,lft,rgt) VALUES ('"
@@ -79,10 +79,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			;
 			db.execSQL("Alter Table " + Task.TABLE
 					+ " add column sync_state INTEGER DEFAULT "
-					+ Network.SYNC_STATE.ADD + ";");
+					+ SYNC_STATE.ADD + ";");
 			db.execSQL("Alter Table " + ListMirakel.TABLE
 					+ " add column sync_state INTEGER DEFAULT "
-					+ Network.SYNC_STATE.ADD + ";");
+					+ SYNC_STATE.ADD + ";");
 			db.execSQL("CREATE TABLE settings ("
 					+ "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
 					+ "server TEXT NOT NULL," + "user TEXT NOT NULL,"
@@ -222,7 +222,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ "priority INTEGER NOT NULL DEFAULT 0, " + "due STRING, "
 				+ "created_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
 				+ "updated_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
-				+ "sync_state INTEGER DEFAULT " + Network.SYNC_STATE.ADD + ")");
+				+ "sync_state INTEGER DEFAULT " + SYNC_STATE.ADD + ")");
 	}
 
 	private void createSpecialListsTable(SQLiteDatabase db) {
@@ -232,7 +232,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ "active INTEGER NOT NULL DEFAULT 0, "
 				+ "whereQuery STRING NOT NULL DEFAULT '', "
 				+ "sort_by INTEGER NOT NULL DEFAULT " + ListMirakel.SORT_BY_OPT
-				+ ", " + "sync_state INTEGER DEFAULT " + Network.SYNC_STATE.ADD
+				+ ", " + "sync_state INTEGER DEFAULT " + SYNC_STATE.ADD
 				+ ")");
 		db.execSQL("INSERT INTO " + SpecialList.TABLE
 				+ " (name,active,whereQuery) VALUES (" + "'"

@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakel.sync.Network;
+import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 import de.azapps.mirakelandroid.R;
 
 public class SpecialList extends ListMirakel {
@@ -60,7 +60,7 @@ public class SpecialList extends ListMirakel {
 
 	SpecialList(int id, String name, String whereQuery, boolean active,
 			ListMirakel listMirakel, Integer defaultDate, short sort_by,
-			int sync_state, int color) {
+			SYNC_STATE sync_state, int color) {
 
 		super(-id, name, sort_by, "", "", sync_state, 0, 0, color);
 		this.active = active;
@@ -137,9 +137,9 @@ public class SpecialList extends ListMirakel {
 	 *            The List
 	 */
 	public void save() {
-		setSyncState(getSyncState() == Network.SYNC_STATE.ADD
-				|| getSyncState() == Network.SYNC_STATE.IS_SYNCED ? getSyncState()
-				: Network.SYNC_STATE.NEED_SYNC);
+		setSyncState(getSyncState() == SYNC_STATE.ADD
+				|| getSyncState() == SYNC_STATE.IS_SYNCED ? getSyncState()
+				: SYNC_STATE.NEED_SYNC);
 		ContentValues values = getContentValues();
 		database.update(TABLE, values, "_id = " + Math.abs(getId()), null);
 	}
@@ -152,15 +152,15 @@ public class SpecialList extends ListMirakel {
 	public void destroy() {
 		long id = Math.abs(getId());
 
-		if (getSyncState() != Network.SYNC_STATE.ADD) {
-			setSyncState(Network.SYNC_STATE.DELETE);
+		if (getSyncState() != SYNC_STATE.ADD) {
+			setSyncState(SYNC_STATE.DELETE);
 		} else {
 			database.delete(TABLE, "_id=" + id, null);
 			return;
 		}
 		setActive(false);
 		ContentValues values = new ContentValues();
-		values.put("sync_state", getSyncState());
+		values.put("sync_state", getSyncState().toInt());
 		database.update(TABLE, values, "_id=" + id, null);
 	}
 
@@ -168,7 +168,7 @@ public class SpecialList extends ListMirakel {
 		ContentValues cv = new ContentValues();
 		cv.put("name", getName());
 		cv.put("sort_by", getSortBy());
-		cv.put("sync_state", getSyncState());
+		cv.put("sync_state", getSyncState().toInt());
 		cv.put("active", isActive() ? 1 : 0);
 		cv.put("whereQuery", getWhereQuery());
 		cv.put("def_list", defaultList == null ? null : defaultList.getId());
@@ -230,7 +230,7 @@ public class SpecialList extends ListMirakel {
 	 */
 	public static SpecialList firstSpecial() {
 		Cursor cursor = database.query(SpecialList.TABLE, allColumns,
-				"not sync_state=" + Network.SYNC_STATE.DELETE, null, null,
+				"not sync_state=" + SYNC_STATE.DELETE, null, null,
 				null, "_id ASC");
 		SpecialList list = null;
 		cursor.moveToFirst();
@@ -267,7 +267,7 @@ public class SpecialList extends ListMirakel {
 				cursor.getString(i++), cursor.getString(i++),
 				cursor.getInt(i++) == 1,
 				ListMirakel.getList(cursor.getInt(i++)), defDate,
-				(short) cursor.getInt(++i), cursor.getInt(++i),
+			    (short) cursor.getInt(++i), SYNC_STATE.parseInt(cursor.getInt(++i)),
 				cursor.getInt(++i));
 		return slist;
 	}

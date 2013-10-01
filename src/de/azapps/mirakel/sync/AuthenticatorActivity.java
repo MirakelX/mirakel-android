@@ -82,6 +82,7 @@ import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_TYPES;
 import de.azapps.mirakel.sync.mirakel.MirakelSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
@@ -189,6 +190,11 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 					if (switcher.getCurrentView().getId() != R.id.login_mirakel)
 						switcher.showPrevious();
 					break;
+				case CALDAV:
+					Log.d(TAG, "Need to implement");
+					break;
+				default:
+					break;
 				}
 			}
 
@@ -292,17 +298,17 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 			if (((CheckBox) findViewById(R.id.resync)).isChecked()) {
 				Mirakel.getWritableDatabase().execSQL(
 						"Delete from " + Task.TABLE + " where sync_state="
-								+ Network.SYNC_STATE.DELETE);
+								+ SYNC_STATE.DELETE);
 				Mirakel.getWritableDatabase().execSQL(
 						"Delete from " + ListMirakel.TABLE
 								+ " where sync_state="
-								+ Network.SYNC_STATE.DELETE);
+								+ SYNC_STATE.DELETE);
 				Mirakel.getWritableDatabase().execSQL(
 						"Update " + Task.TABLE + " set sync_state="
-								+ Network.SYNC_STATE.ADD);
+								+ SYNC_STATE.ADD);
 				Mirakel.getWritableDatabase().execSQL(
 						"Update " + ListMirakel.TABLE + " set sync_state="
-								+ Network.SYNC_STATE.ADD);
+								+ SYNC_STATE.ADD);
 			}
 
 			/**

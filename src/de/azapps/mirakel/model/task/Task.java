@@ -50,8 +50,7 @@ import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
-import de.azapps.mirakel.sync.Network;
-import de.azapps.mirakel.sync.Network.SYNC_STATE;
+import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 import de.azapps.mirakelandroid.R;
 
 public class Task extends TaskBase {
@@ -62,7 +61,7 @@ public class Task extends TaskBase {
 	public Task(long id, String uuid, ListMirakel list, String name,
 			String content, boolean done, Calendar due, Calendar reminder,
 			int priority, Calendar created_at, Calendar updated_at,
-			int sync_state, String additionalEntriesString) {
+			SYNC_STATE sync_state, String additionalEntriesString) {
 		super(id, uuid, list, name, content, done, due, reminder, priority,
 				created_at, updated_at, sync_state, additionalEntriesString);
 	}
@@ -90,9 +89,9 @@ public class Task extends TaskBase {
 			Log.d(TAG, "new Task equals old, didnt need to save it");
 			return;
 		}
-		setSyncState(getSync_state() == Network.SYNC_STATE.ADD
-				|| getSync_state() == Network.SYNC_STATE.IS_SYNCED ? getSync_state()
-				: Network.SYNC_STATE.NEED_SYNC);
+		setSyncState(getSync_state() == SYNC_STATE.ADD
+				|| getSync_state() == SYNC_STATE.IS_SYNCED ? getSync_state()
+				: SYNC_STATE.NEED_SYNC);
 		if (context != null)
 			setUpdatedAt(new GregorianCalendar());
 		ContentValues values = getContentValues();
@@ -150,14 +149,14 @@ public class Task extends TaskBase {
 		if (!force)
 			Helpers.updateLog(this, context);
 		long id = getId();
-		if (getSync_state() == Network.SYNC_STATE.ADD || force) {
+		if (getSync_state() == SYNC_STATE.ADD || force) {
 			database.delete(TABLE, "_id = " + id, null);
 			FileMirakel.destroyForTask(this);
 			database.delete(SUBTASK_TABLE, "parent_id=" + id + " or child_id="
 					+ id, null);
 		} else {
 			ContentValues values = new ContentValues();
-			values.put("sync_state", Network.SYNC_STATE.DELETE);
+			values.put("sync_state", SYNC_STATE.DELETE.toInt());
 			database.update(TABLE, values, "_id=" + id, null);
 		}
 	}
@@ -193,7 +192,7 @@ public class Task extends TaskBase {
 
 	public static List<Pair<Long, String>> getTaskNames() {
 		Cursor c = database.query(TABLE, new String[] { "_id,name" },
-				"not sync_state=" + Network.SYNC_STATE.DELETE, null, null,
+				"not sync_state=" + SYNC_STATE.DELETE, null, null,
 				null, null);
 		c.moveToFirst();
 		List<Pair<Long, String>> names = new ArrayList<Pair<Long, String>>();
@@ -243,8 +242,8 @@ public class Task extends TaskBase {
 
 	public static void deleteDoneTasks() {
 		ContentValues values = new ContentValues();
-		values.put("sync_state", Network.SYNC_STATE.DELETE);
-		String where = "sync_state!=" + Network.SYNC_STATE.ADD + " AND done=1";
+		values.put("sync_state", SYNC_STATE.DELETE.toInt());
+		String where = "sync_state!=" + SYNC_STATE.ADD + " AND done=1";
 		database.update(TABLE, values, where, null);
 		database.delete(TABLE, where, null);
 	}
@@ -353,7 +352,7 @@ public class Task extends TaskBase {
 		Calendar now = new GregorianCalendar();
 		Task t = new Task(0, java.util.UUID.randomUUID().toString(),
 				ListMirakel.getList((int) list_id), name, content, done, due,
-				null, priority, now, now, Network.SYNC_STATE.ADD, "");
+				null, priority, now, now, SYNC_STATE.ADD, "");
 
 		try {
 			return t.create();
@@ -378,7 +377,7 @@ public class Task extends TaskBase {
 		values.put("due",
 				(getDue() == null ? null : DateTimeHelper.formatDate(getDue())));
 		values.put("priority", getPriority());
-		values.put("sync_state", Network.SYNC_STATE.ADD);
+		values.put("sync_state", SYNC_STATE.ADD.toInt());
 		values.put("created_at", DateTimeHelper.formatDateTime(getCreated_at()));
 		values.put("updated_at", DateTimeHelper.formatDateTime(getUpdated_at()));
 		long insertId = database.insertOrThrow(TABLE, null, values);
@@ -399,7 +398,7 @@ public class Task extends TaskBase {
 	public static List<Task> all() {
 		List<Task> tasks = new ArrayList<Task>();
 		Cursor c = database.query(TABLE, allColumns, "not sync_state= "
-				+ Network.SYNC_STATE.DELETE, null, null, null, null);
+				+ SYNC_STATE.DELETE, null, null, null, null);
 		c.moveToFirst();
 		while (!c.isAfterLast()) {
 			tasks.add(cursorToTask(c));
@@ -416,7 +415,7 @@ public class Task extends TaskBase {
 	 */
 	public static Task get(long id) {
 		Cursor cursor = database.query(TABLE, allColumns, "_id='" + id
-				+ "' and not sync_state=" + Network.SYNC_STATE.DELETE, null,
+				+ "' and not sync_state=" + SYNC_STATE.DELETE, null,
 				null, null, null);
 		cursor.moveToFirst();
 		if (cursor.getCount() != 0) {
@@ -429,7 +428,7 @@ public class Task extends TaskBase {
 
 	public static Task getByUUID(String uuid) {
 		Cursor cursor = database.query(TABLE, allColumns, "uuid='" + uuid
-				+ "' and not sync_state=" + Network.SYNC_STATE.DELETE, null,
+				+ "' and not sync_state=" + SYNC_STATE.DELETE, null,
 				null, null, null);
 		cursor.moveToFirst();
 		if (cursor.getCount() != 0) {
@@ -496,8 +495,8 @@ public class Task extends TaskBase {
 	 * @param state
 	 * @return
 	 */
-	public static List<Task> getBySyncState(short state) {
-		Cursor c = database.query(TABLE, allColumns, "sync_state=" + state
+	public static List<Task> getBySyncState(SYNC_STATE state) {
+		Cursor c = database.query(TABLE, allColumns, "sync_state=" + state.toInt()
 				+ " and list_id>0", null, null, null, null);
 		return cursorToTaskList(c);
 	}
@@ -539,7 +538,7 @@ public class Task extends TaskBase {
 	}
 
 	public static List<Task> getTasksToSync() {
-		String where = "NOT sync_state='" + Network.SYNC_STATE.NOTHING + "'";
+		String where = "NOT sync_state='" + SYNC_STATE.NOTHING + "'";
 		Cursor cursor = Mirakel.getReadableDatabase().query(TABLE, allColumns,
 				where, null, null, null, null);
 		return cursorToTaskList(cursor);
@@ -659,7 +658,7 @@ public class Task extends TaskBase {
 				if (status.equals("pending")) {
 					t.setDone(false);
 				} else if (status.equals("deleted")) {
-					t.setSyncState(Network.SYNC_STATE.DELETE);
+					t.setSyncState(SYNC_STATE.DELETE);
 				} else {
 					t.setDone(true);
 				}
@@ -699,7 +698,7 @@ public class Task extends TaskBase {
 			} else if (key.equals("content")) {
 				t.setContent(val.getAsString());
 			} else if (key.equals("sync_state")) {
-				t.setSyncState(val.getAsInt());
+				t.setSyncState(SYNC_STATE.parseInt(val.getAsInt()));
 			} else {
 				t.addAdditionalEntry(key, val.getAsString());
 			}
@@ -760,7 +759,7 @@ public class Task extends TaskBase {
 				ListMirakel.getList((int) cursor.getLong(i++)),
 				cursor.getString(i++), cursor.getString(i++),
 				cursor.getInt((i++)) == 1, due, reminder, cursor.getInt(8),
-				created_at, updated_at, cursor.getInt(11), cursor.getString(12));
+				created_at, updated_at, SYNC_STATE.parseInt(cursor.getInt(11)), cursor.getString(12));
 		return task;
 	}
 
@@ -795,7 +794,7 @@ public class Task extends TaskBase {
 	private static Cursor getTasksCursor(int listId, int sorting, String where) {
 		if (!where.equals(""))
 			where += " and ";
-		where += " not sync_state=" + Network.SYNC_STATE.DELETE;
+		where += " not sync_state=" + SYNC_STATE.DELETE;
 		String order = "";
 
 		switch (sorting) {
