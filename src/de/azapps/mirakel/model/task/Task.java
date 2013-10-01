@@ -227,6 +227,20 @@ public class Task extends TaskBase {
 		c.close();
 		return isSubtask;
 	}
+	
+	public boolean checkIfParent(Task t){
+		return isChildRec(t);
+	}
+	
+	private boolean isChildRec(Task t){
+		List<Task> subtasks=getSubtasks();
+		for(Task s:subtasks){
+			if(s.getId()==t.getId()||s.isChildRec(t)){
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public static void deleteDoneTasks() {
 		ContentValues values = new ContentValues();
@@ -275,7 +289,7 @@ public class Task extends TaskBase {
 	private static final String TAG = "TasksDataSource";
 	private static SQLiteDatabase database;
 	private static DatabaseHelper dbHelper;
-	private static final String[] allColumns = { "_id", "uuid", "list_id",
+	public static final String[] allColumns = { "_id", "uuid", "list_id",
 			"name", "content", "done", "due", "reminder", "priority",
 			"created_at", "updated_at", "sync_state", "additional_entries" };
 
@@ -821,5 +835,12 @@ public class Task extends TaskBase {
 				t.destroy(true);
 			}
 		}
+	}
+
+	public static List<Task> rawQuery(String generateQuery) {
+		Cursor c=database.rawQuery(generateQuery, null);
+		List<Task> ret=cursorToTaskList(c);
+		c.close();
+		return ret;
 	}
 }

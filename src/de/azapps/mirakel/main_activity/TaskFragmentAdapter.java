@@ -214,6 +214,34 @@ public class TaskFragmentAdapter extends
 					.findViewById(R.id.tasks_row_has_content);
 			holder.taskRowList = (TextView) row
 					.findViewById(R.id.tasks_row_list_name);
+			
+			holder.taskRowDoneWrapper.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Task task = (Task) v.getTag();
+					task.toggleDone();
+					((MainActivity) context).saveTask(task);
+					ReminderAlarm.updateAlarms(context);
+					holder.taskRowDone.setChecked(task.isDone());
+					updateName(task, row, holder);
+				}
+			});
+			
+			holder.taskRowPriority.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(final View v) {
+					final Task task = (Task) v.getTag();
+					TaskDialogHelpers.handlePriority(context, task,
+							new ExecInterface() {
+
+								@Override
+								public void exec() {
+									((MainActivity) context).updatesForTask(task);
+								}
+							});
+
+				}
+			});
 
 			row.setTag(holder);
 		} else {
@@ -226,7 +254,7 @@ public class TaskFragmentAdapter extends
 		holder.taskRowDone.setChecked(task.isDone());
 		holder.taskRowDone.setTag(task);
 		holder.taskRowDoneWrapper.setTag(task);
-		OnClickListener checkbox = new OnClickListener() {
+		holder.taskRowDone.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Task task = (Task) v.getTag();
@@ -236,9 +264,7 @@ public class TaskFragmentAdapter extends
 				holder.taskRowDone.setChecked(task.isDone());
 				updateName(task, row, holder);
 			}
-		};
-		holder.taskRowDone.setOnClickListener(checkbox);
-		holder.taskRowDoneWrapper.setOnClickListener(checkbox);
+		});
 		if (task.getContent().length() != 0) {
 			holder.taskRowHasContent.setVisibility(View.VISIBLE);
 		} else {
@@ -258,21 +284,6 @@ public class TaskFragmentAdapter extends
 
 		// Priority
 		holder.taskRowPriority.setText("" + task.getPriority());
-		holder.taskRowPriority.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(final View v) {
-				final Task task = (Task) v.getTag();
-				TaskDialogHelpers.handlePriority(context, task,
-						new ExecInterface() {
-
-							@Override
-							public void exec() {
-								((MainActivity) context).updatesForTask(task);
-							}
-						});
-
-			}
-		});
 		// Log.e("Blubb",holder.taskRowPriority.getBackground().getClass().toString());
 
 		GradientDrawable bg = (GradientDrawable) holder.taskRowPriority
@@ -386,10 +397,18 @@ public class TaskFragmentAdapter extends
 			return new View(context);
 		final View subtitle = convertView == null ? inflater.inflate(
 				R.layout.task_subtitle, parent, false) : convertView;
-
-		((TextView) subtitle.findViewById(R.id.task_subtitle)).setText(title);
-		((ImageButton) subtitle.findViewById(R.id.task_subtitle_button))
-				.setOnClickListener(action);
+				
+				final SubtitleHolder holder;
+				if(convertView==null){
+					holder=new SubtitleHolder();
+					holder.title=((TextView) subtitle.findViewById(R.id.task_subtitle));
+					holder.button=((ImageButton) subtitle.findViewById(R.id.task_subtitle_button));
+					subtitle.setTag(holder);
+				}else{
+					holder=(SubtitleHolder) subtitle.getTag();
+				}
+		holder.title.setText(title);
+		holder.button.setOnClickListener(action);
 		return subtitle;
 	}
 
@@ -405,59 +424,58 @@ public class TaskFragmentAdapter extends
 			holder = new ContentHolder();
 			holder.taskContent = (TextView) content
 					.findViewById(R.id.task_content);
+			holder.taskContent.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+
+					final EditText editTxt = new EditText(context);
+					editTxt.setText(task.getContent());
+					final AlertDialog dialog = new AlertDialog.Builder(context)
+							.setTitle(R.string.change_content)
+							.setView(editTxt)
+							.setPositiveButton(android.R.string.ok,
+									new DialogInterface.OnClickListener() {
+
+										@Override
+										public void onClick(DialogInterface dialog,
+												int which) {
+											task.setContent(editTxt.getText()
+													.toString());
+											((MainActivity) context).saveTask(task);
+											setTaskContent(holder.taskContent);
+
+										}
+									})
+							.setNegativeButton(android.R.string.cancel,
+									new DialogInterface.OnClickListener() {
+
+										@Override
+										public void onClick(DialogInterface dialog,
+												int which) {
+											// Nothing
+
+										}
+									}).create();
+					dialog.show();
+					editTxt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+						@Override
+						public void onFocusChange(View v, boolean hasFocus) {
+							if (hasFocus) {
+								dialog.getWindow()
+										.setSoftInputMode(
+												WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+							}
+						}
+					});
+
+				}
+			});
 			content.setTag(holder);
 		} else {
 			holder = (ContentHolder) content.getTag();
 		}
 		// Task content
 		setTaskContent(holder.taskContent);
-
-		holder.taskContent.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-
-				final EditText editTxt = new EditText(context);
-				editTxt.setText(task.getContent());
-				final AlertDialog dialog = new AlertDialog.Builder(context)
-						.setTitle(R.string.change_content)
-						.setView(editTxt)
-						.setPositiveButton(android.R.string.ok,
-								new DialogInterface.OnClickListener() {
-
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-										task.setContent(editTxt.getText()
-												.toString());
-										((MainActivity) context).saveTask(task);
-										setTaskContent(holder.taskContent);
-
-									}
-								})
-						.setNegativeButton(android.R.string.cancel,
-								new DialogInterface.OnClickListener() {
-
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-										// Nothing
-
-									}
-								}).create();
-				dialog.show();
-				editTxt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-					@Override
-					public void onFocusChange(View v, boolean hasFocus) {
-						if (hasFocus) {
-							dialog.getWindow()
-									.setSoftInputMode(
-											WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-						}
-					}
-				});
-
-			}
-		});
 		return content;
 	}
 
@@ -479,6 +497,30 @@ public class TaskFragmentAdapter extends
 			holder = new ReminderHolder();
 			holder.taskReminder = (TextView) reminder
 					.findViewById(R.id.task_reminder);
+			holder.taskReminder.setOnClickListener(new View.OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					TaskDialogHelpers.handleReminder((Activity) context, task,
+							new ExecInterface() {
+
+								@Override
+								public void exec() {
+									if (task.getReminder() == null) {
+										holder.taskReminder
+												.setText(R.string.no_reminder);
+									} else {
+										holder.taskReminder.setText(new SimpleDateFormat(
+												context.getString(R.string.humanDateTimeFormat),
+												Locale.getDefault()).format(task
+												.getReminder().getTime()));
+									}
+									ReminderAlarm.updateAlarms(context);
+
+								}
+							});
+				}
+			});
 			reminder.setTag(holder);
 		} else {
 			holder = (ReminderHolder) reminder.getTag();
@@ -496,30 +538,6 @@ public class TaskFragmentAdapter extends
 			holder.taskReminder.setText(Helpers.formatDate(task.getReminder(),
 					context.getString(R.string.humanDateTimeFormat)));
 		}
-		holder.taskReminder.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				TaskDialogHelpers.handleReminder((Activity) context, task,
-						new ExecInterface() {
-
-							@Override
-							public void exec() {
-								if (task.getReminder() == null) {
-									holder.taskReminder
-											.setText(R.string.no_reminder);
-								} else {
-									holder.taskReminder.setText(new SimpleDateFormat(
-											context.getString(R.string.humanDateTimeFormat),
-											Locale.getDefault()).format(task
-											.getReminder().getTime()));
-								}
-								ReminderAlarm.updateAlarms(context);
-
-							}
-						});
-			}
-		});
 		return reminder;
 	}
 
@@ -534,91 +552,90 @@ public class TaskFragmentAdapter extends
 		if (convertView == null) {
 			holder = new DueHolder();
 			holder.taskDue = (TextView) due.findViewById(R.id.task_due);
+			holder.taskDue.setOnClickListener(new View.OnClickListener() {
+
+				@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+				@Override
+				public void onClick(View v) {
+					mIgnoreTimeSet = false;
+					Calendar due = (task.getDue() == null ? new GregorianCalendar()
+							: task.getDue());
+					OnDateSetListener listner = (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB ? new OnDateSetListener() {
+
+						@Override
+						public void onDateSet(DatePicker view, int year,
+								int monthOfYear, int dayOfMonth) {
+							task.setDue(new GregorianCalendar(year, monthOfYear,
+									dayOfMonth));
+							((MainActivity) context).saveTask(task);
+							holder.taskDue.setText(new SimpleDateFormat(view
+									.getContext().getString(R.string.dateFormat),
+									Locale.getDefault()).format(task.getDue()
+									.getTime()));
+						}
+					} : null);
+					final DatePickerDialog dialog = new DatePickerDialog(context,
+							listner, due.get(Calendar.YEAR), due
+									.get(Calendar.MONTH), due
+									.get(Calendar.DAY_OF_MONTH));
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+						dialog.getDatePicker().setCalendarViewShown(false);
+						dialog.setButton(DialogInterface.BUTTON_POSITIVE,
+								context.getString(android.R.string.ok),
+								new DialogInterface.OnClickListener() {
+
+									public void onClick(DialogInterface dialog1,
+											int which) {
+										if (which == DialogInterface.BUTTON_POSITIVE) {
+											if (mIgnoreTimeSet)
+												return;
+											DatePicker dp = dialog.getDatePicker();
+											task.setDue(new GregorianCalendar(dp
+													.getYear(), dp.getMonth(), dp
+													.getDayOfMonth()));
+											((MainActivity) context).saveTask(task);
+											holder.taskDue.setText(new SimpleDateFormat(
+													context.getString(R.string.dateFormat),
+													Locale.getDefault())
+													.format(task.getDue().getTime()));
+
+										}
+									}
+								});
+					}
+					dialog.setButton(DialogInterface.BUTTON_NEGATIVE,
+							context.getString(R.string.no_date),
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog1,
+										int which) {
+									if (which == DialogInterface.BUTTON_NEGATIVE) {
+										mIgnoreTimeSet = true;
+										Log.v(TAG, "cancel");
+										task.setDue(null);
+										((MainActivity) context).saveTask(task);
+										holder.taskDue.setText(R.string.no_date);
+									}
+								}
+							});
+					dialog.show();
+
+				}
+			});
 			due.setTag(holder);
 		} else {
 			holder = (DueHolder) due.getTag();
 		}
 		// Task due
-		Drawable due_img = context.getResources().getDrawable(
+		Drawable dueImg = context.getResources().getDrawable(
 				android.R.drawable.ic_menu_today);
-		due_img.setBounds(0, 0, 60, 60);
-		holder.taskDue.setCompoundDrawables(due_img, null, null, null);
+		dueImg.setBounds(0, 0, 60, 60);
+		holder.taskDue.setCompoundDrawables(dueImg, null, null, null);
 		if (task.getDue() == null) {
 			holder.taskDue.setText(context.getString(R.string.no_date));
 		} else {
 			holder.taskDue.setText(Helpers.formatDate(task.getDue(),
 					context.getString(R.string.dateFormat)));
 		}
-
-		holder.taskDue.setOnClickListener(new View.OnClickListener() {
-
-			@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-			@Override
-			public void onClick(View v) {
-				mIgnoreTimeSet = false;
-				Calendar due = (task.getDue() == null ? new GregorianCalendar()
-						: task.getDue());
-				OnDateSetListener listner = (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB ? new OnDateSetListener() {
-
-					@Override
-					public void onDateSet(DatePicker view, int year,
-							int monthOfYear, int dayOfMonth) {
-						task.setDue(new GregorianCalendar(year, monthOfYear,
-								dayOfMonth));
-						((MainActivity) context).saveTask(task);
-						holder.taskDue.setText(new SimpleDateFormat(view
-								.getContext().getString(R.string.dateFormat),
-								Locale.getDefault()).format(task.getDue()
-								.getTime()));
-					}
-				} : null);
-				final DatePickerDialog dialog = new DatePickerDialog(context,
-						listner, due.get(Calendar.YEAR), due
-								.get(Calendar.MONTH), due
-								.get(Calendar.DAY_OF_MONTH));
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-					dialog.getDatePicker().setCalendarViewShown(false);
-					dialog.setButton(DialogInterface.BUTTON_POSITIVE,
-							context.getString(android.R.string.ok),
-							new DialogInterface.OnClickListener() {
-
-								public void onClick(DialogInterface dialog1,
-										int which) {
-									if (which == DialogInterface.BUTTON_POSITIVE) {
-										if (mIgnoreTimeSet)
-											return;
-										DatePicker dp = dialog.getDatePicker();
-										task.setDue(new GregorianCalendar(dp
-												.getYear(), dp.getMonth(), dp
-												.getDayOfMonth()));
-										((MainActivity) context).saveTask(task);
-										holder.taskDue.setText(new SimpleDateFormat(
-												context.getString(R.string.dateFormat),
-												Locale.getDefault())
-												.format(task.getDue().getTime()));
-
-									}
-								}
-							});
-				}
-				dialog.setButton(DialogInterface.BUTTON_NEGATIVE,
-						context.getString(R.string.no_date),
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog1,
-									int which) {
-								if (which == DialogInterface.BUTTON_NEGATIVE) {
-									mIgnoreTimeSet = true;
-									Log.v(TAG, "cancel");
-									task.setDue(null);
-									((MainActivity) context).saveTask(task);
-									holder.taskDue.setText(R.string.no_date);
-								}
-							}
-						});
-				dialog.show();
-
-			}
-		});
 		return due;
 	}
 
@@ -643,6 +660,74 @@ public class TaskFragmentAdapter extends
 			holder.switcher = (ViewSwitcher) header
 					.findViewById(R.id.switch_name);
 			holder.txt = (EditText) header.findViewById(R.id.edit_name);
+			holder.taskName.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					if (((MainActivity) context).isTablet) {
+						((EditText) ((MainActivity) context)
+								.findViewById(R.id.tasks_new))
+								.setOnFocusChangeListener(null);
+					}
+					holder.switcher.showNext(); // or switcher.showPrevious();
+					holder.txt.setText(holder.taskName.getText());
+					holder.txt
+							.setOnFocusChangeListener(new OnFocusChangeListener() {
+
+								@Override
+								public void onFocusChange(View v, boolean hasFocus) {
+									InputMethodManager imm = (InputMethodManager) context
+											.getSystemService(Context.INPUT_METHOD_SERVICE);
+									if (hasFocus) {
+										imm.showSoftInput(holder.txt,
+												InputMethodManager.SHOW_IMPLICIT);
+									} else {
+										imm.showSoftInput(
+												holder.txt,
+												InputMethodManager.HIDE_IMPLICIT_ONLY);
+									}
+
+								}
+							});
+					holder.txt.requestFocus();
+					holder.txt
+							.setOnEditorActionListener(new OnEditorActionListener() {
+								public boolean onEditorAction(TextView v,
+										int actionId, KeyEvent event) {
+									if (actionId == EditorInfo.IME_ACTION_DONE) {
+										EditText txt = (EditText) header
+												.findViewById(R.id.edit_name);
+										InputMethodManager imm = (InputMethodManager) context
+												.getSystemService(Context.INPUT_METHOD_SERVICE);
+										task.setName(txt.getText().toString());
+										((MainActivity) context).saveTask(task);
+										holder.taskName.setText(task.getName());
+										txt.setOnFocusChangeListener(null);
+										imm.hideSoftInputFromWindow(
+												txt.getWindowToken(), 0);
+										holder.switcher.showPrevious();
+
+										return true;
+									}
+									return false;
+								}
+
+							});
+				}
+			});
+			holder.taskPrio.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					TaskDialogHelpers.handlePriority(context, task,
+							new ExecInterface() {
+								@Override
+								public void exec() {
+									((MainActivity) context).updatesForTask(task);
+									setPrio(holder.taskPrio, task);
+
+								}
+							});
+				}
+			});
 			header.setTag(holder);
 		} else {
 			holder = (HeaderHolder) header.getTag();
@@ -658,60 +743,6 @@ public class TaskFragmentAdapter extends
 				&& !task.getName().equals(holder.txt.getText().toString())) {
 			holder.switcher.showPrevious();
 		}
-		holder.taskName.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if (((MainActivity) context).isTablet) {
-					((EditText) ((MainActivity) context)
-							.findViewById(R.id.tasks_new))
-							.setOnFocusChangeListener(null);
-				}
-				holder.switcher.showNext(); // or switcher.showPrevious();
-				holder.txt.setText(holder.taskName.getText());
-				holder.txt
-						.setOnFocusChangeListener(new OnFocusChangeListener() {
-
-							@Override
-							public void onFocusChange(View v, boolean hasFocus) {
-								InputMethodManager imm = (InputMethodManager) context
-										.getSystemService(Context.INPUT_METHOD_SERVICE);
-								if (hasFocus) {
-									imm.showSoftInput(holder.txt,
-											InputMethodManager.SHOW_IMPLICIT);
-								} else {
-									imm.showSoftInput(
-											holder.txt,
-											InputMethodManager.HIDE_IMPLICIT_ONLY);
-								}
-
-							}
-						});
-				holder.txt.requestFocus();
-				holder.txt
-						.setOnEditorActionListener(new OnEditorActionListener() {
-							public boolean onEditorAction(TextView v,
-									int actionId, KeyEvent event) {
-								if (actionId == EditorInfo.IME_ACTION_DONE) {
-									EditText txt = (EditText) header
-											.findViewById(R.id.edit_name);
-									InputMethodManager imm = (InputMethodManager) context
-											.getSystemService(Context.INPUT_METHOD_SERVICE);
-									task.setName(txt.getText().toString());
-									((MainActivity) context).saveTask(task);
-									holder.taskName.setText(task.getName());
-									txt.setOnFocusChangeListener(null);
-									imm.hideSoftInputFromWindow(
-											txt.getWindowToken(), 0);
-									holder.switcher.showPrevious();
-
-									return true;
-								}
-								return false;
-							}
-
-						});
-			}
-		});
 
 		// Task done
 		holder.taskDone.setChecked(task.isDone());
@@ -728,26 +759,11 @@ public class TaskFragmentAdapter extends
 				});
 
 		// Task priority
-		set_prio(holder.taskPrio, task);
-		holder.taskPrio.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				TaskDialogHelpers.handlePriority(context, task,
-						new ExecInterface() {
-							@Override
-							public void exec() {
-								((MainActivity) context).updatesForTask(task);
-								set_prio(holder.taskPrio, task);
-
-							}
-						});
-			}
-		});
-
+		setPrio(holder.taskPrio, task);
 		return header;
 	}
 
-	protected void set_prio(TextView Task_prio, Task task) {
+	protected void setPrio(TextView Task_prio, Task task) {
 		Task_prio.setText("" + task.getPriority());
 
 		GradientDrawable bg = (GradientDrawable) Task_prio.getBackground();
