@@ -92,10 +92,11 @@ public class TaskFragment extends Fragment {
 				} else if (type == TYPE.SUBTASK) {
 					Task t = adapter.getTask().getSubtasks()
 							.get(adapter.getData().get(position).second);
+					main.setGoBackTo(adapter.getTask());
 					if (t.getList().getId() != main.getCurrentList().getId()) {
-						main.setCurrentList(t.getList(), false);
+						main.setCurrentList(t.getList(), null, false, false);
 					}
-					main.setCurrentTask(t, true);
+					main.setCurrentTask(t, true, false);
 				}
 
 			}

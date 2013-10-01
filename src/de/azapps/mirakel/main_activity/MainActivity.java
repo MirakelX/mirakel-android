@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Stack;
 import java.util.Vector;
 
 import android.app.AlertDialog;
@@ -115,6 +116,7 @@ public class MainActivity extends ActionBarActivity implements
 	private boolean isResumend;
 	private Intent startIntent;
 	private boolean fromShared = false;
+	private Stack<Task> goBackTo = new Stack<Task>();
 
 	public static boolean updateTasksUUID = false;
 
@@ -419,6 +421,12 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	public void onBackPressed() {
+		if (goBackTo != null) {
+			Task goBack = goBackTo.pop();
+			setCurrentList(goBack.getList(), null, false, false);
+			setCurrentTask(goBack, true, false);
+			return;
+		}
 		if (fromShared) {
 			super.onBackPressed();
 			return;
@@ -478,7 +486,7 @@ public class MainActivity extends ActionBarActivity implements
 		Log.d(TAG, "New Indent");
 	}
 
-	private String newTaskContent, newTaskSubject, newTaskFilePath;
+	private String newTaskContent, newTaskSubject;
 
 	private void addFilesForTask(Task t, Intent intent) {
 		String action = intent.getAction();
@@ -898,7 +906,15 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	void setCurrentTask(Task currentTask, boolean switchFragment) {
+		setCurrentTask(currentTask, switchFragment, true);
+	}
+
+	void setCurrentTask(Task currentTask, boolean switchFragment,
+			boolean resetGoBackTo) {
+
 		this.currentTask = currentTask;
+		if (resetGoBackTo)
+			goBackTo = new Stack<Task>();
 
 		highlightCurrentTask(currentTask);
 
@@ -962,24 +978,26 @@ public class MainActivity extends ActionBarActivity implements
 	 * Set the current list and update the views
 	 * 
 	 * @param currentList
-	 * @param b
+	 * @param switchFragment
 	 */
-	void setCurrentList(ListMirakel currentList, boolean b) {
-		setCurrentList(currentList, null, b);
+	void setCurrentList(ListMirakel currentList, boolean switchFragment) {
+		setCurrentList(currentList, null, switchFragment, true);
 	}
 
 	void setCurrentList(ListMirakel currentList, View currentView) {
-		setCurrentList(currentList, currentView, true);
+		setCurrentList(currentList, currentView, true, true);
 	}
 
 	void setCurrentList(ListMirakel currentList) {
-		setCurrentList(currentList, null, true);
+		setCurrentList(currentList, null, true, true);
 	}
 
 	void setCurrentList(ListMirakel currentList, View currentView,
-			boolean switchFragment) {
+			boolean switchFragment, boolean resetGoBackTo) {
 		if (currentList == null)
 			return;
+		if (resetGoBackTo)
+			goBackTo = new Stack<Task>();
 		this.currentList = currentList;
 		if (mDrawerLayout != null)
 			mDrawerLayout.closeDrawers();
@@ -1079,5 +1097,15 @@ public class MainActivity extends ActionBarActivity implements
 
 	public SharedPreferences getPreferences() {
 		return preferences;
+	}
+
+	/**
+	 * Set the Task, to which we switch, if the user press the back-button. It
+	 * is reseted, if one of the setCurrent*-functions on called
+	 * 
+	 * @param t
+	 */
+	public void setGoBackTo(Task t) {
+		goBackTo.push(t);
 	}
 }
