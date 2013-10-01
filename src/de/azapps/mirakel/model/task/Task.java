@@ -110,29 +110,28 @@ public class Task extends TaskBase {
 			if (t.getName() != null) {
 				equals = equals && t.getName().equals(getName());
 			} else if (getName() != null) {
-				Log.d(TAG,"name not equal");
+				Log.d(TAG, "name not equal");
 				return false;
 			}
 			if (t.getContent() != null) {
 				equals = equals && t.getContent().equals(getContent());
 			} else if (getContent() != null) {
-				Log.d(TAG,"content not equal");
+				Log.d(TAG, "content not equal");
 				return false;
 			}
-			if (t.getDue() != null) {
+			if (t.getDue() != null && getDue() != null) {
 				equals = equals && t.getDue().compareTo(getDue()) == 0;
-			} else if (getDue() != null) {
-				Log.d(TAG,"due not equal");
+			} else if (t.getDue() != null || getDue() != null) {
 				return false;
 			}
 			equals = equals && t.isDone() == isDone();
-			if (t.getReminder() != null) {
-				equals = equals && t.getReminder().compareTo(getReminder()) == 0;
-			} else if (getReminder() != null) {
-				Log.d(TAG,"reminder not equal");
+			if (t.getReminder() != null && getReminder() != null) {
+				equals = equals
+						&& t.getReminder().compareTo(getReminder()) == 0;
+			} else if (getReminder() != null || t.getReminder() != null) {
 				return false;
 			}
-			
+
 			return equals;
 		}
 		return false;
@@ -227,15 +226,15 @@ public class Task extends TaskBase {
 		c.close();
 		return isSubtask;
 	}
-	
-	public boolean checkIfParent(Task t){
+
+	public boolean checkIfParent(Task t) {
 		return isChildRec(t);
 	}
-	
-	private boolean isChildRec(Task t){
-		List<Task> subtasks=getSubtasks();
-		for(Task s:subtasks){
-			if(s.getId()==t.getId()||s.isChildRec(t)){
+
+	private boolean isChildRec(Task t) {
+		List<Task> subtasks = getSubtasks();
+		for (Task s : subtasks) {
+			if (s.getId() == t.getId() || s.isChildRec(t)) {
 				return true;
 			}
 		}
@@ -838,8 +837,8 @@ public class Task extends TaskBase {
 	}
 
 	public static List<Task> rawQuery(String generateQuery) {
-		Cursor c=database.rawQuery(generateQuery, null);
-		List<Task> ret=cursorToTaskList(c);
+		Cursor c = database.rawQuery(generateQuery, null);
+		List<Task> ret = cursorToTaskList(c);
 		c.close();
 		return ret;
 	}

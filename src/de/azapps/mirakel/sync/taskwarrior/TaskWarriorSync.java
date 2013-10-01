@@ -278,8 +278,6 @@ public class TaskWarriorSync {
 		File root, user;
 		// TODO FIXIT!!!
 		if (accountManager.getUserData(account, SyncAdapter.BUNDLE_CERT) == null) {
-			Log.v("Blubb", CA_FILE);
-			Log.v("Blubb", CLIENT_CERT_FILE);
 			root = new File(CA_FILE);
 			user = new File(CLIENT_CERT_FILE);
 		} else {
