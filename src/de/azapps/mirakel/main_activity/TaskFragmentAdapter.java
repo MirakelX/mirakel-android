@@ -100,8 +100,8 @@ public class TaskFragmentAdapter extends
 		this.task = t;
 		if (task == null)
 			task = Task.getDummy(context);
-		subtasks=task.getSubtasks();
-		files=task.getFiles();
+		subtasks = task.getSubtasks();
+		files = task.getFiles();
 		this.inflater = ((Activity) context).getLayoutInflater();
 		this.adapter = this;
 
@@ -114,7 +114,7 @@ public class TaskFragmentAdapter extends
 
 	@Override
 	public int getItemViewType(int position) {
-		return  data.get(position).first ;
+		return data.get(position).first;
 	}
 
 	@Override
@@ -129,8 +129,7 @@ public class TaskFragmentAdapter extends
 			row = setupDue(parent, convertView);
 			break;
 		case TYPE.FILE:
-			row = setupFile(parent,
-					files.get(data.get(position).second),
+			row = setupFile(parent, files.get(data.get(position).second),
 					convertView, position);
 			break;
 		case TYPE.HEADER:
@@ -214,7 +213,7 @@ public class TaskFragmentAdapter extends
 					.findViewById(R.id.tasks_row_has_content);
 			holder.taskRowList = (TextView) row
 					.findViewById(R.id.tasks_row_list_name);
-			
+
 			holder.taskRowDoneWrapper.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -226,7 +225,7 @@ public class TaskFragmentAdapter extends
 					updateName(task, row, holder);
 				}
 			});
-			
+
 			holder.taskRowPriority.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(final View v) {
@@ -236,7 +235,8 @@ public class TaskFragmentAdapter extends
 
 								@Override
 								public void exec() {
-									((MainActivity) context).updatesForTask(task);
+									((MainActivity) context)
+											.updatesForTask(task);
 								}
 							});
 
@@ -294,8 +294,8 @@ public class TaskFragmentAdapter extends
 		// Due
 		if (task.getDue() != null) {
 			holder.taskRowDue.setVisibility(View.VISIBLE);
-			holder.taskRowDue.setText(Helpers.formatDate(task.getDue(),
-					context.getString(R.string.dateFormat)));
+			holder.taskRowDue
+					.setText(Helpers.formatDate(context, task.getDue()));
 			holder.taskRowDue.setTextColor(row.getResources().getColor(
 					Helpers.getTaskDueColor(task.getDue(), task.isDone())));
 		} else {
@@ -397,16 +397,18 @@ public class TaskFragmentAdapter extends
 			return new View(context);
 		final View subtitle = convertView == null ? inflater.inflate(
 				R.layout.task_subtitle, parent, false) : convertView;
-				
-				final SubtitleHolder holder;
-				if(convertView==null){
-					holder=new SubtitleHolder();
-					holder.title=((TextView) subtitle.findViewById(R.id.task_subtitle));
-					holder.button=((ImageButton) subtitle.findViewById(R.id.task_subtitle_button));
-					subtitle.setTag(holder);
-				}else{
-					holder=(SubtitleHolder) subtitle.getTag();
-				}
+
+		final SubtitleHolder holder;
+		if (convertView == null) {
+			holder = new SubtitleHolder();
+			holder.title = ((TextView) subtitle
+					.findViewById(R.id.task_subtitle));
+			holder.button = ((ImageButton) subtitle
+					.findViewById(R.id.task_subtitle_button));
+			subtitle.setTag(holder);
+		} else {
+			holder = (SubtitleHolder) subtitle.getTag();
+		}
 		holder.title.setText(title);
 		holder.button.setOnClickListener(action);
 		return subtitle;
@@ -437,11 +439,13 @@ public class TaskFragmentAdapter extends
 									new DialogInterface.OnClickListener() {
 
 										@Override
-										public void onClick(DialogInterface dialog,
+										public void onClick(
+												DialogInterface dialog,
 												int which) {
 											task.setContent(editTxt.getText()
 													.toString());
-											((MainActivity) context).saveTask(task);
+											((MainActivity) context)
+													.saveTask(task);
 											setTaskContent(holder.taskContent);
 
 										}
@@ -450,7 +454,8 @@ public class TaskFragmentAdapter extends
 									new DialogInterface.OnClickListener() {
 
 										@Override
-										public void onClick(DialogInterface dialog,
+										public void onClick(
+												DialogInterface dialog,
 												int which) {
 											// Nothing
 
@@ -512,8 +517,9 @@ public class TaskFragmentAdapter extends
 									} else {
 										holder.taskReminder.setText(new SimpleDateFormat(
 												context.getString(R.string.humanDateTimeFormat),
-												Locale.getDefault()).format(task
-												.getReminder().getTime()));
+												Locale.getDefault())
+												.format(task.getReminder()
+														.getTime()));
 									}
 									ReminderAlarm.updateAlarms(context);
 
@@ -565,17 +571,18 @@ public class TaskFragmentAdapter extends
 						@Override
 						public void onDateSet(DatePicker view, int year,
 								int monthOfYear, int dayOfMonth) {
-							task.setDue(new GregorianCalendar(year, monthOfYear,
-									dayOfMonth));
+							task.setDue(new GregorianCalendar(year,
+									monthOfYear, dayOfMonth));
 							((MainActivity) context).saveTask(task);
 							holder.taskDue.setText(new SimpleDateFormat(view
-									.getContext().getString(R.string.dateFormat),
-									Locale.getDefault()).format(task.getDue()
+									.getContext()
+									.getString(R.string.dateFormat), Locale
+									.getDefault()).format(task.getDue()
 									.getTime()));
 						}
 					} : null);
-					final DatePickerDialog dialog = new DatePickerDialog(context,
-							listner, due.get(Calendar.YEAR), due
+					final DatePickerDialog dialog = new DatePickerDialog(
+							context, listner, due.get(Calendar.YEAR), due
 									.get(Calendar.MONTH), due
 									.get(Calendar.DAY_OF_MONTH));
 					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -584,20 +591,26 @@ public class TaskFragmentAdapter extends
 								context.getString(android.R.string.ok),
 								new DialogInterface.OnClickListener() {
 
-									public void onClick(DialogInterface dialog1,
-											int which) {
+									public void onClick(
+											DialogInterface dialog1, int which) {
 										if (which == DialogInterface.BUTTON_POSITIVE) {
 											if (mIgnoreTimeSet)
 												return;
-											DatePicker dp = dialog.getDatePicker();
-											task.setDue(new GregorianCalendar(dp
-													.getYear(), dp.getMonth(), dp
-													.getDayOfMonth()));
-											((MainActivity) context).saveTask(task);
-											holder.taskDue.setText(new SimpleDateFormat(
-													context.getString(R.string.dateFormat),
-													Locale.getDefault())
-													.format(task.getDue().getTime()));
+											DatePicker dp = dialog
+													.getDatePicker();
+											task.setDue(new GregorianCalendar(
+													dp.getYear(),
+													dp.getMonth(), dp
+															.getDayOfMonth()));
+											((MainActivity) context)
+													.saveTask(task);
+											holder.taskDue
+													.setText(new SimpleDateFormat(
+															context.getString(R.string.dateFormat),
+															Locale.getDefault())
+															.format(task
+																	.getDue()
+																	.getTime()));
 
 										}
 									}
@@ -613,7 +626,8 @@ public class TaskFragmentAdapter extends
 										Log.v(TAG, "cancel");
 										task.setDue(null);
 										((MainActivity) context).saveTask(task);
-										holder.taskDue.setText(R.string.no_date);
+										holder.taskDue
+												.setText(R.string.no_date);
 									}
 								}
 							});
@@ -633,8 +647,7 @@ public class TaskFragmentAdapter extends
 		if (task.getDue() == null) {
 			holder.taskDue.setText(context.getString(R.string.no_date));
 		} else {
-			holder.taskDue.setText(Helpers.formatDate(task.getDue(),
-					context.getString(R.string.dateFormat)));
+			holder.taskDue.setText(Helpers.formatDate(context, task.getDue()));
 		}
 		return due;
 	}
@@ -674,11 +687,13 @@ public class TaskFragmentAdapter extends
 							.setOnFocusChangeListener(new OnFocusChangeListener() {
 
 								@Override
-								public void onFocusChange(View v, boolean hasFocus) {
+								public void onFocusChange(View v,
+										boolean hasFocus) {
 									InputMethodManager imm = (InputMethodManager) context
 											.getSystemService(Context.INPUT_METHOD_SERVICE);
 									if (hasFocus) {
-										imm.showSoftInput(holder.txt,
+										imm.showSoftInput(
+												holder.txt,
 												InputMethodManager.SHOW_IMPLICIT);
 									} else {
 										imm.showSoftInput(
@@ -721,7 +736,8 @@ public class TaskFragmentAdapter extends
 							new ExecInterface() {
 								@Override
 								public void exec() {
-									((MainActivity) context).updatesForTask(task);
+									((MainActivity) context)
+											.updatesForTask(task);
 									setPrio(holder.taskPrio, task);
 
 								}
@@ -771,13 +787,12 @@ public class TaskFragmentAdapter extends
 
 	}
 
-	
 	public void setData(Task t) {
 		List<Pair<Integer, Integer>> generateData = generateData(t);
 		super.changeData(generateData);
 		task = t;
-		subtasks=task.getSubtasks();
-		files=task.getFiles();
+		subtasks = task.getSubtasks();
+		files = task.getFiles();
 		notifyDataSetInvalidated();
 	}
 

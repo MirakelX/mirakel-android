@@ -118,6 +118,8 @@
     <!-- GUI -->
     <string name="highlightSelected_summary">Highlight lists/tasks when you click on them</string>
     <string name="highlightSelected">Highlight Selected</string>
+    <string name="settings_date_format_relative">Show relative dates</string>
+    <string name="settings_date_format_relative_summary">For example „tomorrow“ instead of the real date</string>
     <string name="showDone">Show done tasks</string>
     <string name="dark_theme">Dark Theme</string>
     <string name="kill_button">Kill button</string>
@@ -129,6 +131,7 @@
     <string name="hide_keyboard_summary">Hide Keyboard if New Task is created</string>
     <string name="undo_number">Number of Changes saved</string>
     <string name="undo_number_summary">Undo %s Changes</string>
+    <string name="settings_semantic">Semantic new Tasks</string>
     <string name="semantic_new_task">Semantic New Tasks</string>
     <string name="semantic_new_task_summary">Use Semantic new Task(only today and tomorow)</string>
     <string name="semantic_new_task_config_summary">Configure the conditions for creating new Tasks</string>

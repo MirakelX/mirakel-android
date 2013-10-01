@@ -3,6 +3,7 @@ package de.azapps.mirakel.helper;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import org.joda.time.LocalDate;
@@ -22,6 +23,7 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.text.format.DateUtils;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
@@ -145,12 +147,41 @@ public class Helpers {
 	 *            Format–String (like dd.MM.YY)
 	 * @return The formatted Date as String
 	 */
-	public static String formatDate(Calendar date, String format) {
+	public static CharSequence formatDate(Calendar date, String format) {
 		if (date == null)
 			return "";
 		else {
 			return new SimpleDateFormat(format, Locale.getDefault())
 					.format(date.getTime());
+		}
+	}
+
+	private static SharedPreferences settings = null;
+
+	/**
+	 * Formats the Date in the format, the user want to see. The default
+	 * configuration is the relative date format. So the due date is for example
+	 * „tomorrow“ instead of yyyy-mm-dd
+	 * 
+	 * @param ctx
+	 * @param date
+	 * @return
+	 */
+	public static CharSequence formatDate(Context ctx, Calendar date) {
+		if (date == null)
+			return "";
+		else {
+			if (settings == null) {
+				settings = PreferenceManager.getDefaultSharedPreferences(ctx);
+			}
+			if (settings.getBoolean("dateFormatRelative", true)) {
+				return DateUtils.getRelativeTimeSpanString(
+						date.getTimeInMillis(), (new Date()).getTime(),
+						DateUtils.DAY_IN_MILLIS);
+			} else {
+				return new SimpleDateFormat(ctx.getString(R.string.dateFormat),
+						Locale.getDefault()).format(date.getTime());
+			}
 		}
 	}
 

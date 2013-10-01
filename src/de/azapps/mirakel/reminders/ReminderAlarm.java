@@ -137,12 +137,11 @@ public class ReminderAlarm extends BroadcastReceiver {
 			String priority = ""
 					+ (task.getPriority() > 0 ? "+" + task.getPriority() : task
 							.getPriority());
-			String due;
+			CharSequence due;
 			if (task.getDue() == null) {
 				due = context.getString(R.string.no_date);
 			} else {
-				due = Helpers.formatDate(task.getDue(),
-						context.getString(R.string.dateFormat));
+				due = Helpers.formatDate(context,task.getDue());
 			}
 
 			inboxStyle.addLine(context.getString(

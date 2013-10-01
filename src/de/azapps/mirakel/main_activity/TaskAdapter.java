@@ -87,8 +87,8 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		Task task = position >= data.size() ? null : data.get(position);
-		View row = setupRow( convertView, parent, context,
-				layoutResourceId, task, listId <= 0, darkTheme);
+		View row = setupRow(convertView, parent, context, layoutResourceId,
+				task, listId <= 0, darkTheme);
 		TaskHolder holder = (TaskHolder) row.getTag();
 		holder.taskRowPriority.setOnClickListener(clickPrio);
 		holder.taskRowDone.setOnClickListener(clickCheckbox);
@@ -106,7 +106,7 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 					|| ((MainActivity) context).getCurrentList()
 							.isSpecialList()) {
 				Helpers.setListColorBackground(task.getList(), row, darkTheme);
-			}else{
+			} else {
 				row.setBackgroundColor(context.getResources().getColor(
 						android.R.color.transparent));
 			}
@@ -189,8 +189,7 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 		// Due
 		if (task.getDue() != null) {
 			holder.taskRowDue.setVisibility(View.VISIBLE);
-			holder.taskRowDue.setText(Helpers.formatDate(task.getDue(),
-					context.getString(R.string.dateFormat)));
+			holder.taskRowDue.setText(Helpers.formatDate(context,task.getDue()));
 			holder.taskRowDue.setTextColor(row.getResources().getColor(
 					Helpers.getTaskDueColor(task.getDue(), task.isDone())));
 		} else {

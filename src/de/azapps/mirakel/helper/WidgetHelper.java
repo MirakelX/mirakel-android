@@ -69,8 +69,7 @@ public class WidgetHelper {
 			rv.setViewVisibility(R.id.tasks_row_due, View.VISIBLE);
 			rv.setTextViewText(
 					R.id.tasks_row_due,
-					Helpers.formatDate(task.getDue(),
-							mContext.getString(R.string.dateFormat)));
+					Helpers.formatDate(mContext,task.getDue()));
 			rv.setTextColor(
 					R.id.tasks_row_due,
 					mContext.getResources().getColor(
