@@ -41,6 +41,7 @@ import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
@@ -54,22 +55,13 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.sync.SyncAdapter.SYNC_TYPES;
 import de.azapps.mirakelandroid.R;
 
 public class Network extends AsyncTask<String, Integer, String> {
-	public static final class SYNC_STATE {
-		public final static short NOTHING = 0;
-		public final static short DELETE = -1;
-		public final static short ADD = 1;
-		public final static short NEED_SYNC = 2;
-		public final static short IS_SYNCED = 3;
-	}
-
-	public static class HttpMode {
-		final public static int GET = 0;
-		final public static int POST = 1;
-		final public static int PUT = 2;
-		final public static int DELETE = 3;
+	
+	public enum HttpMode{
+		GET,POST,PUT,DELETE;
 	}
 
 	private static String TAG = "MirakelNetwork";
@@ -77,27 +69,41 @@ public class Network extends AsyncTask<String, Integer, String> {
 	private static final Integer NoHTTPS = 2;
 
 	protected DataDownloadCommand commands;
-	protected List<BasicNameValuePair> HeaderData;
-	protected int Mode;
+	protected List<BasicNameValuePair> headerData;
+	protected HttpMode mode;
 	protected Context context;
-	protected String Token;
+	protected String token;
+	protected SYNC_TYPES syncTyp;
+	private String content;
 
-	public Network(DataDownloadCommand commands, int mode, Context context,
+	public Network(DataDownloadCommand commands, HttpMode mode, Context context,
 			String Token) {
 		this.commands = commands;
-		this.Mode = mode;
+		this.mode = mode;
 		this.context = context;
-		this.Token = Token;
+		this.token = Token;
+		this.syncTyp=SYNC_TYPES.MIRAKEL;
 	}
 
-	public Network(DataDownloadCommand commands, int mode,
+	public Network(DataDownloadCommand commands, HttpMode mode,
 			List<BasicNameValuePair> data, Context context, String Token) {
 		this.commands = commands;
-		this.Mode = mode;
-		this.HeaderData = data;
+		this.mode = mode;
+		this.headerData = data;
 		this.context = context;
-		this.Token = Token;
+		this.token = Token;
+		this.syncTyp=SYNC_TYPES.MIRAKEL;
 	}
+	
+	public Network(DataDownloadCommand comands, HttpMode mode,String content,Context ctx) {
+		this.commands=comands;
+		this.mode=mode;
+		this.content=content;
+		this.context=ctx;
+		
+	}
+	
+	
 
 	public static String getToken(String json) {
 		if (json.indexOf("{\"token\":\"") != -1) {
@@ -175,46 +181,55 @@ public class Network extends AsyncTask<String, Integer, String> {
 
 	private String downloadUrl(String myurl) throws IOException,
 			URISyntaxException {
-		if (Token != null) {
-			myurl += "?authentication_key=" + Token;
+		if (token != null) {
+			myurl += "?authentication_key=" + token;
 		}
 		if (myurl.indexOf("https") == -1) {
 			Integer[] t = { NoHTTPS };
 			publishProgress(t);
 		}
+		
 		HttpParams params = new BasicHttpParams();
 		params.setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
 				HttpVersion.HTTP_1_1);
 		HttpConnectionParams.setTcpNoDelay(params, true);
 		DefaultHttpClient client = new DefaultHttpClient(params);
-		HttpClient httpClient = sslClient(client);
+		HttpClient httpClient = syncTyp==SYNC_TYPES.MIRAKEL?sslClient(client):new DefaultHttpClient(params);
 		httpClient.getParams().setParameter("http.protocol.content-charset",
 				HTTP.UTF_8);
 
 		HttpResponse response;
 		try {
-			switch (Mode) {
-			case HttpMode.GET:
+			switch (mode) {
+			case GET:
 				Log.v(TAG, "GET " + myurl);
 				HttpGet get = new HttpGet();
 				get.setURI(new URI(myurl));
 				response = httpClient.execute(get);
 				break;
-			case HttpMode.PUT:
+			case PUT:
 				Log.v(TAG, "PUT " + myurl);
 				HttpPut put = new HttpPut();
+				if(syncTyp==SYNC_TYPES.CALDAV){
+					put.addHeader("Content-Typ", "text/calendar; charset=utf-8");
+				}
 				put.setURI(new URI(myurl));
-				put.setEntity(new UrlEncodedFormEntity(HeaderData, HTTP.UTF_8));
+				if(syncTyp==SYNC_TYPES.MIRAKEL){
+					UrlEncodedFormEntity data = new UrlEncodedFormEntity(headerData, HTTP.UTF_8);
+					put.setEntity(data);
+				}else{
+					put.setEntity(new StringEntity(content,HTTP.UTF_8));
+				}
 				response = httpClient.execute(put);
 				break;
-			case HttpMode.POST:
+			case POST:
 				Log.v(TAG, "POST " + myurl);
 				HttpPost post = new HttpPost();
 				post.setURI(new URI(myurl));
-				post.setEntity(new UrlEncodedFormEntity(HeaderData, HTTP.UTF_8));
+				post.setEntity(new UrlEncodedFormEntity(headerData, HTTP.UTF_8));
 				response = httpClient.execute(post);
 				break;
-			case HttpMode.DELETE:
+			case DELETE:
 				Log.v(TAG, "DELETE " + myurl);
 				HttpDelete delete = new HttpDelete();
 				delete.setURI(new URI(myurl));

@@ -61,8 +61,49 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	private Context mContext;
 
 	public enum SYNC_TYPES {
-		MIRAKEL, TASKWARRIOR
+		MIRAKEL, TASKWARRIOR, CALDAV
 	};
+
+	public enum SYNC_STATE {
+		NOTHING, DELETE, ADD, NEED_SYNC, IS_SYNCED;
+		@Override
+		public String toString() {
+			return "" + toInt();
+		}
+
+		public short toInt() {
+			switch (this) {
+			case ADD:
+				return 1;
+			case DELETE:
+				return -1;
+			case IS_SYNCED:
+				return 3;
+			case NEED_SYNC:
+				return 2;
+			case NOTHING:
+				return 0;
+			default:
+				return 0;
+			}
+		}
+
+		public static SYNC_STATE parseInt(int i) {
+			switch (i) {
+			case -1:
+				return DELETE;
+			case 1:
+				return ADD;
+			case 2:
+				return NEED_SYNC;
+			case 3:
+				return IS_SYNCED;
+			case 0:
+			default:
+				return NOTHING;
+			}
+		}
+	}
 
 	public static SYNC_TYPES getSyncType(String type) {
 		if (type.equals("Mirakel")) {
@@ -84,6 +125,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		Log.v(TAG, "SyncAdapter");
 		String type = (AccountManager.get(mContext)).getUserData(account,
 				BUNDLE_SERVER_TYPE);
+		//new CalDavSync(mContext).sync(account);//TODO add interface for caldav
 		if (type == null)
 			type = MirakelSync.TYPE;
 		if (type.equals(MirakelSync.TYPE)) {
@@ -115,7 +157,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				break;
 			}
 			Looper.prepare();
-			Toast.makeText(mContext, last_message, Toast.LENGTH_LONG).show();	
+			Toast.makeText(mContext, last_message, Toast.LENGTH_LONG).show();
 			Log.d(TAG, "finish Sync");
 		} else {
 			Log.wtf(TAG, "Unknown SyncType");

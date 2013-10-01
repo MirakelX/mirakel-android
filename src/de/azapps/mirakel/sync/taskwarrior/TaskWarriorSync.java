@@ -22,8 +22,8 @@ import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakel.sync.Network;
 import de.azapps.mirakel.sync.SyncAdapter;
+import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 import de.azapps.mirakelandroid.R;
 
 public class TaskWarriorSync {
@@ -219,7 +219,7 @@ public class TaskWarriorSync {
 					continue;
 				}
 
-				if (server_task.getSync_state() == Network.SYNC_STATE.DELETE) {
+				if (server_task.getSync_state() == SYNC_STATE.DELETE) {
 					if (local_task != null)
 						local_task.destroy(true);
 				} else if (local_task == null) {
@@ -307,7 +307,7 @@ public class TaskWarriorSync {
 	private String taskToJson(Task t) {
 
 		String status = "pending";
-		if (t.getSync_state() == Network.SYNC_STATE.DELETE)
+		if (t.getSync_state() == SYNC_STATE.DELETE)
 			status = "deleted";
 		else if (t.isDone())
 			status = "completed";
