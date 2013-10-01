@@ -112,6 +112,7 @@ public class FileUtils {
 			out.close();
 		} catch (IOException e) {
 			Log.e(TAG, "cannot write to file");
+			Log.e(TAG,Log.getStackTraceString(e));
 		}
 
 	}

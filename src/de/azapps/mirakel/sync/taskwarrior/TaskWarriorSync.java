@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.task.Task;
@@ -28,6 +29,9 @@ import de.azapps.mirakelandroid.R;
 public class TaskWarriorSync {
 
 	public static final String TYPE = "TaskWarrior";
+	public static final String CA_FILE = Mirakel.MIRAKEL_DIR + "ca.cert.pem";
+	public static final String CLIENT_CERT_FILE = Mirakel.MIRAKEL_DIR
+			+ "client.cert.pem";
 	private static final String TAG = "TaskWarroirSync";
 	private Context mContext;
 
@@ -274,9 +278,10 @@ public class TaskWarriorSync {
 		File root, user;
 		// TODO FIXIT!!!
 		if (accountManager.getUserData(account, SyncAdapter.BUNDLE_CERT) == null) {
-			root = new File(mContext.getFilesDir().getParent() + "/ca.cert.pem");
-			user = new File(mContext.getFilesDir().getParent()
-					+ "/client.cert.pem");
+			Log.v("Blubb", CA_FILE);
+			Log.v("Blubb", CLIENT_CERT_FILE);
+			root = new File(CA_FILE);
+			user = new File(CLIENT_CERT_FILE);
 		} else {
 			// TODO Fix this
 			root = null;

@@ -377,20 +377,23 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				t = t[1].split("user key: ");
 				Log.d(TAG, "org: " + t[0].replace("\n", ""));
 				b.putString(SyncAdapter.BUNDLE_ORG, t[0].replace("\n", ""));
+
 				t = t[1].split("server: ");
 				Log.d(TAG, "user key: " + t[0].replace("\n", ""));
 				String pwd = t[0].replace("\n", "");
+
 				t = t[1].split("Client.cert:\n");
 				Log.d(TAG, "server: " + t[0].replace("\n", ""));
 				b.putString(SyncAdapter.BUNDLE_SERVER_URL,
 						t[0].replace("\n", ""));
+
 				t = t[1].split("ca.cert:\n");
 				Log.d(TAG, "client: " + t[0].replace("\n", ""));
-				FileUtils.writeToFile(new File(getFilesDir().getParent()
-						+ "/client.cert.pem"), t[0]);
+
+				FileUtils.writeToFile(
+						new File(TaskWarriorSync.CLIENT_CERT_FILE), t[0]);
 				Log.d(TAG, "ca: " + t[1].replace("\n", ""));
-				FileUtils.writeToFile(new File(getFilesDir().getParent()
-						+ "/ca.cert.pem"), t[1]);
+				FileUtils.writeToFile(new File(TaskWarriorSync.CA_FILE), t[1]);
 				mAccountManager.addAccountExplicitly(account, pwd, b);
 			} catch (ArrayIndexOutOfBoundsException e) {
 				Log.e(TAG, "wrong Configfile");

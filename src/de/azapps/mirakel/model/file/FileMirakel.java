@@ -20,8 +20,7 @@ import de.azapps.mirakel.model.task.Task;
 
 public class FileMirakel extends FileBase {
 
-	public static final String cacheDirPath = Environment.getDataDirectory()
-			+ "/data/" + Mirakel.APK_NAME + "/image_cache";
+	public static final String cacheDirPath =  Mirakel.MIRAKEL_DIR + "image_cache";
 	public static final File cacheDir = new File(cacheDirPath);
 	public static final String TABLE = "files";
 	@SuppressWarnings("unused")

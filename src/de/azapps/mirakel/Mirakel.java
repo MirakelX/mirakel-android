@@ -28,6 +28,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
@@ -95,12 +96,15 @@ public class Mirakel extends Application {
 	private static final String TAG = "Mirakel";
 
 	private static SQLiteOpenHelper openHelper;
+	public static String MIRAKEL_DIR;
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		ACRA.init(this);
 		APK_NAME = getPackageName();
+		MIRAKEL_DIR=Environment.getDataDirectory()
+				+ "/data/" + Mirakel.APK_NAME + "/";
 		try {
 			VERSIONS_NAME = getPackageManager().getPackageInfo(
 					getPackageName(), 0).versionName;
