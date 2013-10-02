@@ -421,7 +421,7 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	public void onBackPressed() {
-		if (goBackTo != null) {
+		if (goBackTo.size()>0) {
 			Task goBack = goBackTo.pop();
 			setCurrentList(goBack.getList(), null, false, false);
 			setCurrentTask(goBack, true, false);
@@ -914,7 +914,7 @@ public class MainActivity extends ActionBarActivity implements
 
 		this.currentTask = currentTask;
 		if (resetGoBackTo)
-			goBackTo = new Stack<Task>();
+			goBackTo.clear();
 
 		highlightCurrentTask(currentTask);
 
@@ -997,7 +997,7 @@ public class MainActivity extends ActionBarActivity implements
 		if (currentList == null)
 			return;
 		if (resetGoBackTo)
-			goBackTo = new Stack<Task>();
+			goBackTo.clear();
 		this.currentList = currentList;
 		if (mDrawerLayout != null)
 			mDrawerLayout.closeDrawers();
