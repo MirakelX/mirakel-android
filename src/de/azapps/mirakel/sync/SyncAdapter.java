@@ -45,6 +45,7 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.widget.Toast;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.sync.caldav.CalDavSync;
 import de.azapps.mirakel.sync.mirakel.MirakelSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync.TW_ERRORS;
@@ -125,7 +126,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		Log.v(TAG, "SyncAdapter");
 		String type = (AccountManager.get(mContext)).getUserData(account,
 				BUNDLE_SERVER_TYPE);
-		//new CalDavSync(mContext).sync(account);//TODO add interface for caldav
+//		new CalDavSync(mContext).sync(account);//TODO add interface for caldav
+//		if(true)
+//			return;
 		if (type == null)
 			type = MirakelSync.TYPE;
 		if (type.equals(MirakelSync.TYPE)) {
