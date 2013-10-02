@@ -34,6 +34,7 @@ import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakelandroid.R;
 
 public class SemanticsSettingsActivity extends PreferenceActivity {
+	@SuppressWarnings("unused")
 	private static final String TAG = "SpecialListsActivity";
 	private ImageButton addSemantic;
 	private List<Semantic> semantics = Semantic.all();;

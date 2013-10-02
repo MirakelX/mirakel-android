@@ -28,7 +28,8 @@
     <ImageView
         android:id="@+id/file_image"
         android:layout_width="150dp"
-        android:layout_height="150dp" />
+        android:layout_height="150dp"
+        android:adjustViewBounds="true" />
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -28,11 +28,13 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
 import android.util.TypedValue;
@@ -58,11 +60,11 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.model.list.ListMirakel;
-import de.azapps.mirakel.model.list.SearchList;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
@@ -216,6 +218,28 @@ public class TasksFragment extends Fragment {
 				}
 			}
 		});
+
+		ImageButton btnCamera = (ImageButton) view.findViewById(R.id.btnCamera);
+		btnCamera.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				try {
+					Intent cameraIntent = new Intent(
+							MediaStore.ACTION_IMAGE_CAPTURE);
+					Uri fileUri = Helpers
+							.getOutputMediaFileUri(Helpers.MEDIA_TYPE_IMAGE);
+					main.setFileUri(fileUri);
+					cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+					getActivity().startActivityForResult(cameraIntent,
+							MainActivity.RESULT_CAMERA);
+
+				} catch (ActivityNotFoundException a) {
+					Toast.makeText(main,
+							"Opps! Your device doesn't support taking photos",
+							Toast.LENGTH_SHORT).show();
+				}
+			}
+		});
 		// Inflate the layout for this fragment
 		return view;
 	}
@@ -257,12 +281,7 @@ public class TasksFragment extends Fragment {
 			return true;
 		}
 
-		ListMirakel list;
-		if (main.getCurrentList() instanceof SearchList) {
-			list = ListMirakel.getList(main.getBaseList());
-		} else {
-			list = main.getCurrentList();
-		}
+		ListMirakel list = main.getCurrentList();
 		try {
 			Task task = Semantic.createTask(name, list,
 					main.preferences.getBoolean("semanticNewTask", true));
@@ -320,7 +339,7 @@ public class TasksFragment extends Fragment {
 				setScrollPosition(0);
 			return;
 		}
-		if(adapter!=null){
+		if (adapter != null) {
 			adapter.resetSelected();
 		}
 

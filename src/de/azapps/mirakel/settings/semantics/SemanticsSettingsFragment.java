@@ -49,7 +49,6 @@ import de.azapps.mirakelandroid.R;
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class SemanticsSettingsFragment extends PreferenceFragment implements
 		OnPreferenceChangeListener {
-	@SuppressWarnings("unused")
 	private static final String TAG = "SemanticsSettingsFragment";
 	private Semantic semantic;
 	protected AlertDialog alert;

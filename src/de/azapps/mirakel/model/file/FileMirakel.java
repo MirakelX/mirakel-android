@@ -2,6 +2,7 @@ package de.azapps.mirakel.model.file;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Environment;
+import android.media.ExifInterface;
+import android.util.Log;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Helpers;
@@ -20,10 +22,10 @@ import de.azapps.mirakel.model.task.Task;
 
 public class FileMirakel extends FileBase {
 
-	public static final String cacheDirPath =  Mirakel.MIRAKEL_DIR + "image_cache";
+	public static final String cacheDirPath = Mirakel.MIRAKEL_DIR
+			+ "image_cache";
 	public static final File cacheDir = new File(cacheDirPath);
 	public static final String TABLE = "files";
-	@SuppressWarnings("unused")
 	private static final String TAG = "FileMirakel";
 	private static SQLiteDatabase database;
 	private static DatabaseHelper dbHelper;
@@ -84,36 +86,58 @@ public class FileMirakel extends FileBase {
 	}
 
 	public static FileMirakel newFile(Task task, String file_path) {
-		File osFile = new File(file_path);
+		try {
+			File osFile = new File(file_path);
 
-		if (osFile.exists()) {
-			String name = osFile.getName();
-			FileMirakel newFile = FileMirakel.newFile(task, name, file_path);
-			// Cache the image
+			if (osFile.exists()) {
+				String name = osFile.getName();
+				FileMirakel newFile = FileMirakel
+						.newFile(task, name, file_path);
 
-			Bitmap myBitmap = BitmapFactory
-					.decodeFile(osFile.getAbsolutePath());
-			if (myBitmap != null) {
-				myBitmap = Helpers.getScaleImage(myBitmap, 150);
-				// create directory if not exists
-
-				boolean success = true;
-				if (!FileMirakel.cacheDir.exists()) {
-					success = FileMirakel.cacheDir.mkdir();
+				ExifInterface exif = new ExifInterface(osFile.getAbsolutePath());
+				int orientation = exif.getAttributeInt(
+						ExifInterface.TAG_ORIENTATION,
+						ExifInterface.ORIENTATION_NORMAL);
+				int rotate = 0;
+				switch (orientation) {
+				case ExifInterface.ORIENTATION_ROTATE_270:
+					rotate -= 90;
+				case ExifInterface.ORIENTATION_ROTATE_180:
+					rotate -= 90;
+				case ExifInterface.ORIENTATION_ROTATE_90:
+					rotate -= 90;
 				}
-				if (success) {
-					try {
-						File destFile = new File(FileMirakel.cacheDir,
-								newFile.getId() + ".png");
-						FileOutputStream out = new FileOutputStream(destFile);
-						myBitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
-						out.close();
-					} catch (Exception e) {
-						e.printStackTrace();
+				// Cache the image
+
+				Bitmap myBitmap = BitmapFactory.decodeFile(osFile
+						.getAbsolutePath());
+				if (myBitmap != null) {
+
+					myBitmap = Helpers.getScaleImage(myBitmap, 150, rotate);
+					// create directory if not exists
+
+					boolean success = true;
+					if (!FileMirakel.cacheDir.exists()) {
+						success = FileMirakel.cacheDir.mkdirs();
+					}
+					if (success) {
+						try {
+							File destFile = new File(FileMirakel.cacheDir,
+									newFile.getId() + ".png");
+							FileOutputStream out = new FileOutputStream(
+									destFile);
+							myBitmap.compress(Bitmap.CompressFormat.PNG, 90,
+									out);
+							out.close();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 					}
 				}
+				return newFile;
 			}
-			return newFile;
+		} catch (IOException e) {
+			Log.wtf(TAG, "This should never ever happen…");
 		}
 		return null;
 	}

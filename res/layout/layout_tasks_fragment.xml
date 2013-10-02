@@ -62,6 +62,13 @@
             android:background="@android:color/transparent"
             android:contentDescription="@string/speak"
             android:src="@android:drawable/ic_btn_speak_now" />
+        <ImageButton
+            android:id="@+id/btnCamera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/takePhoto"
+            android:src="@android:drawable/ic_menu_camera" />
     </LinearLayout>
 
     <ListView

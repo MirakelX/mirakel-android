@@ -62,6 +62,7 @@ import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SearchList;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
@@ -91,13 +92,13 @@ public class MainActivity extends ActionBarActivity implements
 	private List<ListMirakel> lists;
 	private AlertDialog taskMoveDialog;
 	protected boolean isTablet;
-	private int baseList;
 	private boolean highlightSelected;
 	private DrawerLayout mDrawerLayout;
+	private Uri fileUri;
 
 	protected static final int TASKS_FRAGMENT = 0, TASK_FRAGMENT = 1;
 	protected static final int RESULT_SPEECH_NAME = 1, RESULT_SPEECH = 3,
-			RESULT_SETTINGS = 4, RESULT_ADD_FILE = 5;
+			RESULT_SETTINGS = 4, RESULT_ADD_FILE = 5, RESULT_CAMERA = 6;
 	private static final String TAG = "MainActivity";
 
 	public static String EXTRA_ID = "de.azapps.mirakel.EXTRA_TASKID",
@@ -367,9 +368,39 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	protected void onActivityResult(int requestCode, int resultCode,
+			Intent intent) {
+		boolean isOk = resultCode == RESULT_OK;
 		Log.v(TAG, "Result:" + requestCode);
-		if (requestCode == RESULT_SETTINGS) {
+		switch (requestCode) {
+		case RESULT_SPEECH_NAME:
+			if (intent != null) {
+				ArrayList<String> text = intent
+						.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+				((EditText) findViewById(R.id.edit_name)).setText(text.get(0));
+			}
+			break;
+		case RESULT_SPEECH:
+			if (intent != null) {
+				ArrayList<String> text = intent
+						.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+				((EditText) tasksFragment.view.findViewById(R.id.tasks_new))
+						.setText(text.get(0));
+			}
+			break;
+		case RESULT_ADD_FILE:
+			if (intent != null) {
+				final String file_path = Helpers.getPathFromUri(
+						intent.getData(), this);
+				if (FileMirakel.newFile(currentTask, file_path) == null) {
+					Toast.makeText(this, getString(R.string.file_vanished),
+							Toast.LENGTH_SHORT).show();
+				} else {
+					taskFragment.adapter.setData(currentTask);
+				}
+			}
+			break;
+		case RESULT_SETTINGS:
 			listFragment.update();
 			highlightSelected = preferences.getBoolean("highlightSelected",
 					isTablet);
@@ -390,38 +421,30 @@ public class MainActivity extends ActionBarActivity implements
 			}
 			loadMenu(mViewPager.getCurrentItem());
 			return;
-		}
-		if (resultCode == RESULT_OK && null != data) {
-			ArrayList<String> text = data
-					.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-			switch (requestCode) {
-			case RESULT_SPEECH_NAME:
-				((EditText) findViewById(R.id.edit_name)).setText(text.get(0));
-				break;
-			case RESULT_SPEECH:
-				if (resultCode == RESULT_OK && null != data) {
-					((EditText) tasksFragment.view.findViewById(R.id.tasks_new))
-							.setText(text.get(0));
-				}
-				break;
-			case RESULT_ADD_FILE:
-				final String file_path = Helpers.getPathFromUri(data.getData(),
-						this);
-				if (FileMirakel.newFile(currentTask, file_path) == null) {
-					Toast.makeText(this, getString(R.string.file_vanished),
-							Toast.LENGTH_SHORT).show();
-				} else {
-					taskFragment.adapter.setData(currentTask);
-				}
+		case RESULT_CAMERA:
+			if (isOk) {
+				try {
+					Task task = Semantic.createTask(preferences.getString(
+							"photoDefaultTitle",
+							getString(R.string.photo_default_title)),
+							currentList, false);
+					safeSaveTask(task);
+					task.addFile(Helpers.getPathFromUri(fileUri, this));
+					setCurrentList(task.getList());
+					setCurrentTask(task, true);
 
-				break;
+				} catch (Semantic.NoListsException e) {
+					Toast.makeText(this, R.string.no_lists, Toast.LENGTH_LONG)
+							.show();
+				}
 			}
+			break;
 		}
 	}
 
 	@Override
 	public void onBackPressed() {
-		if (goBackTo.size()>0) {
+		if (goBackTo.size() > 0) {
 			Task goBack = goBackTo.pop();
 			setCurrentList(goBack.getList(), null, false, false);
 			setCurrentTask(goBack, true, false);
@@ -1074,7 +1097,6 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	private void search(String query) {
-		baseList = getCurrentList().getId();
 		setCurrentList(new SearchList(this, query));
 		mViewPager.setCurrentItem(TASKS_FRAGMENT);
 	}
@@ -1091,10 +1113,6 @@ public class MainActivity extends ActionBarActivity implements
 		}
 	}
 
-	public int getBaseList() {
-		return baseList;
-	}
-
 	public SharedPreferences getPreferences() {
 		return preferences;
 	}
@@ -1107,5 +1125,9 @@ public class MainActivity extends ActionBarActivity implements
 	 */
 	public void setGoBackTo(Task t) {
 		goBackTo.push(t);
+	}
+
+	public void setFileUri(Uri file) {
+		fileUri = file;
 	}
 }

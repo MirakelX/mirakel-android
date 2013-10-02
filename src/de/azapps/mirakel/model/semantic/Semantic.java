@@ -12,9 +12,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SearchList;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 
@@ -153,6 +153,11 @@ public class Semantic extends SemanticBase {
 			boolean useSemantic) throws NoListsException {
 		GregorianCalendar due = null;
 		int prio = 0;
+		if (currentList instanceof SearchList) {
+			currentList = SpecialList.firstSpecial();
+			if (currentList == null)
+				currentList = ListMirakel.first();
+		}
 		if (currentList.isSpecialList()) {
 			try {
 				SpecialList slist = (SpecialList) currentList;

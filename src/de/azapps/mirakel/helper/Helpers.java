@@ -1,5 +1,6 @@
 package de.azapps.mirakel.helper;
 
+import java.io.File;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -22,6 +23,7 @@ import android.graphics.Shader;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.net.Uri;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.text.format.DateUtils;
 import android.view.View;
@@ -423,7 +425,8 @@ public class Helpers {
 	 * Scaling down the image
 	 * "Source: http://www.androiddevelopersolution.com/2012/09/bitmap-how-to-scale-down-image-for.html"
 	 */
-	public static Bitmap getScaleImage(Bitmap bitmap, int boundBoxInDp) {
+	public static Bitmap getScaleImage(Bitmap bitmap, int boundBoxInDp,
+			int rotate) {
 
 		// Get current dimensions
 		int width = bitmap.getWidth();
@@ -441,6 +444,7 @@ public class Helpers {
 		// Create a matrix for the scaling and add the scaling data
 		Matrix matrix = new Matrix();
 		matrix.postScale(scale, scale);
+		matrix.postRotate(rotate);
 
 		// Create a new bitmap and convert it to a format understood
 
@@ -452,6 +456,51 @@ public class Helpers {
 		// Apply the scaled bitmap
 		return scaledBitmap;
 
+	}
+
+	public static final int MEDIA_TYPE_IMAGE = 1;
+	public static final int MEDIA_TYPE_VIDEO = 2;
+
+	/** Create a file Uri for saving an image or video */
+	public static Uri getOutputMediaFileUri(int type) {
+		return Uri.fromFile(getOutputMediaFile(type));
+	}
+
+	/** Create a File for saving an image or video */
+	private static File getOutputMediaFile(int type) {
+		// To be safe, you should check that the SDCard is mounted
+		// using Environment.getExternalStorageState() before doing this.
+
+		File mediaStorageDir = new File(
+				Environment
+						.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+				"Mirakel");
+		// This location works best if you want the created images to be shared
+		// between applications and persist after your app has been uninstalled.
+
+		// Create the storage directory if it does not exist
+		if (!mediaStorageDir.exists()) {
+			if (!mediaStorageDir.mkdirs()) {
+				Log.d("MyCameraApp", "failed to create directory");
+				return null;
+			}
+		}
+
+		// Create a media file name
+		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",Locale.getDefault())
+				.format(new Date());
+		File mediaFile;
+		if (type == MEDIA_TYPE_IMAGE) {
+			mediaFile = new File(mediaStorageDir.getPath() + File.separator
+					+ "IMG_" + timeStamp + ".jpg");
+		} else if (type == MEDIA_TYPE_VIDEO) {
+			mediaFile = new File(mediaStorageDir.getPath() + File.separator
+					+ "VID_" + timeStamp + ".mp4");
+		} else {
+			return null;
+		}
+
+		return mediaFile;
 	}
 
 }
