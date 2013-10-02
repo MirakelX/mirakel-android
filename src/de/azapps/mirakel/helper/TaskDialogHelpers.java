@@ -367,7 +367,7 @@ public class TaskDialogHelpers {
 														.toString(), list,
 												settings.getBoolean(
 														"semanticNewTask",
-														false));
+														true));
 										try {
 											task.addSubtask(t);
 										} catch (NoSuchListException e) {

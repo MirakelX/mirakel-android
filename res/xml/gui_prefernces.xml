@@ -51,7 +51,7 @@
 
     <PreferenceCategory android:title="@string/settings_semantic" >
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="semanticNewTask"
             android:summary="@string/semantic_new_task_summary"
             android:title="@string/semantic_new_task" />

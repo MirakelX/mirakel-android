@@ -265,7 +265,7 @@ public class TasksFragment extends Fragment {
 		}
 		try {
 			Task task = Semantic.createTask(name, list,
-					main.preferences.getBoolean("semanticNewTask", false));
+					main.preferences.getBoolean("semanticNewTask", true));
 
 			adapter.addToHead(task);
 			values.add(0, task);
