@@ -495,7 +495,7 @@ public class Task extends TaskBase {
 	 * @return
 	 */
 	public static List<Task> searchName(String query) {
-		String[] args = { "'%" + query + "%'" };
+		String[] args = { "%" + query + "%" };
 		Cursor cursor = database.query(TABLE, allColumns, "name LIKE ?", args,
 				null, null, null);
 		return cursorToTaskList(cursor);
