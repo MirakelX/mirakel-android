@@ -219,7 +219,7 @@ public class TaskWarriorSync {
 					continue;
 				}
 
-				if (server_task.getSync_state() == SYNC_STATE.DELETE) {
+				if (server_task.getSyncState() == SYNC_STATE.DELETE) {
 					if (local_task != null)
 						local_task.destroy(true);
 				} else if (local_task == null) {
@@ -307,7 +307,7 @@ public class TaskWarriorSync {
 	private String taskToJson(Task t) {
 
 		String status = "pending";
-		if (t.getSync_state() == SYNC_STATE.DELETE)
+		if (t.getSyncState() == SYNC_STATE.DELETE)
 			status = "deleted";
 		else if (t.isDone())
 			status = "completed";
@@ -331,7 +331,7 @@ public class TaskWarriorSync {
 		String json = "{";
 		json += "\"uuid\":\"" + t.getUUID() + "\",";
 		json += "\"status\":\"" + status + "\",";
-		json += "\"entry\":\"" + formatCal(t.getCreated_at()) + "\",";
+		json += "\"entry\":\"" + formatCal(t.getCreatedAt()) + "\",";
 		json += "\"description\":\"" + t.getName() + "\",";
 		if (t.getDue() != null)
 			json += "\"due\":\"" + formatCal(t.getDue()) + "\",";

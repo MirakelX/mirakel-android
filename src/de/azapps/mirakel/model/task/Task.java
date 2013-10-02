@@ -88,8 +88,8 @@ public class Task extends TaskBase {
 			Log.d(TAG, "new Task equals old, didnt need to save it");
 			return;
 		}
-		setSyncState(getSync_state() == SYNC_STATE.ADD
-				|| getSync_state() == SYNC_STATE.IS_SYNCED ? getSync_state()
+		setSyncState(getSyncState() == SYNC_STATE.ADD
+				|| getSyncState() == SYNC_STATE.IS_SYNCED ? getSyncState()
 				: SYNC_STATE.NEED_SYNC);
 		if (context != null)
 			setUpdatedAt(new GregorianCalendar());
@@ -180,7 +180,7 @@ public class Task extends TaskBase {
 		if (!force)
 			Helpers.updateLog(this, context);
 		long id = getId();
-		if (getSync_state() == SYNC_STATE.ADD || force) {
+		if (getSyncState() == SYNC_STATE.ADD || force) {
 			database.delete(TABLE, "_id = " + id, null);
 			FileMirakel.destroyForTask(this);
 			database.delete(SUBTASK_TABLE, "parent_id=" + id + " or child_id="
@@ -296,9 +296,9 @@ public class Task extends TaskBase {
 			s = DateTimeHelper.formatDateTime(getReminder());
 		}
 		json += "\"reminder\":\"" + s + "\",";
-		json += "\"sync_state\":" + getSync_state() + ",";
+		json += "\"sync_state\":" + getSyncState() + ",";
 		json += "\"created_at\":\""
-				+ DateTimeHelper.formatDateTime(getCreated_at()) + "\",";
+				+ DateTimeHelper.formatDateTime(getCreatedAt()) + "\",";
 		json += "\"updated_at\":\""
 				+ DateTimeHelper.formatDateTime(getUpdated_at()) + "\"}";
 		return json;
@@ -408,7 +408,7 @@ public class Task extends TaskBase {
 				(getDue() == null ? null : DateTimeHelper.formatDate(getDue())));
 		values.put("priority", getPriority());
 		values.put("sync_state", SYNC_STATE.ADD.toInt());
-		values.put("created_at", DateTimeHelper.formatDateTime(getCreated_at()));
+		values.put("created_at", DateTimeHelper.formatDateTime(getCreatedAt()));
 		values.put("updated_at", DateTimeHelper.formatDateTime(getUpdated_at()));
 		long insertId = database.insertOrThrow(TABLE, null, values);
 		Cursor cursor = database.query(TABLE, allColumns, "_id = " + insertId,
@@ -853,7 +853,7 @@ public class Task extends TaskBase {
 			return;
 		}
 		for (Task t : tasks) {
-			if (t.getSync_state() != SYNC_STATE.DELETE) {
+			if (t.getSyncState() != SYNC_STATE.DELETE) {
 				t.setSyncState(SYNC_STATE.NOTHING);
 				try {
 					database.update(TABLE, t.getContentValues(),
