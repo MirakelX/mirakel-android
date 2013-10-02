@@ -4,7 +4,6 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -14,7 +13,6 @@ import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Pair;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
@@ -25,9 +23,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
@@ -43,99 +39,25 @@ import de.azapps.mirakelandroid.R;
 
 public class TaskDialogHelpers {
 	protected static final String TAG = "TaskDialogHelpers";
-	/**
-	 * Ugly helper variable
-	 */
-	private static View numberPicker;
 
-	@SuppressLint("NewApi")
 	public static void handlePriority(final Context ctx, final Task task,
 			final Helpers.ExecInterface onSuccess) {
-		final String[] t = { "-2", "-1", "0", "1", "2" };
-		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-			numberPicker = new NumberPicker(ctx);
-			NumberPicker np = (NumberPicker) numberPicker;
-			np.setMaxValue(4);
-			np.setMinValue(0);
-			np.setDisplayedValues(t);
-			np.setWrapSelectorWheel(false);
-			np.setValue(task.getPriority() + 2);
-			np.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-		} else {
-			numberPicker = ((LayoutInflater) ctx
-					.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
-					.inflate(R.layout.dialog_num_picker_v10, null);
-			((Button) numberPicker.findViewById(R.id.dialog_num_pick_plus))
-					.setOnClickListener(new OnClickListener() {
-						@Override
-						public void onClick(View v) {
-							String val = ((TextView) numberPicker
-									.findViewById(R.id.dialog_num_pick_val))
-									.getText().toString();
-							int i = 0;
-							while (!(t[i].contains(val) && t[i].length() == val
-									.length())) {
-								if (++i >= t.length) {
-									Log.wtf(TAG,
-											"unknown Value in NumericPicker");
-									return;
-								}
-							}
-							((TextView) numberPicker
-									.findViewById(R.id.dialog_num_pick_val))
-									.setText(t[i + 1 == t.length ? i : i + 1]);
-						}
-					});
-			((Button) numberPicker.findViewById(R.id.dialog_num_pick_minus))
-					.setOnClickListener(new OnClickListener() {
-						@Override
-						public void onClick(View v) {
-							String val = ((TextView) numberPicker
-									.findViewById(R.id.dialog_num_pick_val))
-									.getText().toString();
-							int i = 0;
-							while (!(t[i].contains(val) && t[i].length() == val
-									.length())) {
-								if (++i >= t.length) {
-									Log.wtf(TAG,
-											"unknown Value in NumericPicker");
-									return;
-								}
-							}
-							((TextView) numberPicker
-									.findViewById(R.id.dialog_num_pick_val))
-									.setText(t[i - 1 >= 0 ? i - 1 : i]);
-						}
-					});
-		}
-		new AlertDialog.Builder(ctx)
-				.setTitle(ctx.getString(R.string.task_change_prio_title))
-				.setMessage(ctx.getString(R.string.task_change_prio_cont))
-				.setView(numberPicker)
-				.setPositiveButton(ctx.getString(android.R.string.ok),
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog,
-									int whichButton) {
-								if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-									task.setPriority((((NumberPicker) numberPicker)
-											.getValue() - 2));
-								} else {
-									task.setPriority(Integer.parseInt(((TextView) numberPicker
-											.findViewById(R.id.dialog_num_pick_val))
-											.getText().toString()));
-								}
-								safeSafeTask(ctx, task);
-								onSuccess.exec();
-							}
 
-						})
-				.setNegativeButton(ctx.getString(android.R.string.cancel),
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog,
-									int whichButton) {
-								// Do nothing.
-							}
-						}).show();
+		final String[] t = { "-2", "-1", "0", "1", "2" };
+		AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+		builder.setTitle(R.string.task_change_prio_title);
+		builder.setSingleChoiceItems(t, task.getPriority() + 2,
+				new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+						task.setPriority(which - 2);
+						safeSafeTask(ctx, task);
+						onSuccess.exec();
+					}
+				});
+		builder.show();
 	}
 
 	private static void safeSafeTask(Context context, Task task) {
