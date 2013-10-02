@@ -229,23 +229,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
-
-        <activity
-            android:name="de.azapps.mirakel.settings.special_list.SpecialListsSettings_old"
-            android:label="@string/title_activity_special_lists_settings"
-            android:parentActivityName="de.azapps.mirakel.static_activities.SettingsActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.azapps.mirakel.static_activities.SettingsActivity" />
-        </activity>
-        <activity
-            android:name="de.azapps.mirakel.settings.semantics.SemanticsSettings"
-            android:label="@string/title_activity_semantic_settings"
-            android:parentActivityName="de.azapps.mirakel.static_activities.SettingsActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.azapps.mirakel.static_activities.SettingsActivity" />
-        </activity>
         <activity
             android:name="de.azapps.mirakel.settings.semantics.SemanticsSettingsActivity"
             android:label="@string/title_activity_credits" >
