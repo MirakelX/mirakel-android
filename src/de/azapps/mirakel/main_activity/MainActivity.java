@@ -509,7 +509,7 @@ public class MainActivity extends ActionBarActivity implements
 		Task task = Task.newTask(newTaskSubject == null ? "" : newTaskSubject,
 				list_id);
 		task.setContent(newTaskContent == null ? "" : newTaskContent);
-		safeSafeTask(task);
+		safeSaveTask(task);
 		setCurrentTask(task);
 		addFilesForTask(task, startIntent);
 		setCurrentList(task.getList());
@@ -608,7 +608,7 @@ public class MainActivity extends ActionBarActivity implements
 		setIntent(null);
 	}
 
-	private void safeSafeTask(Task task) {
+	private void safeSaveTask(Task task) {
 		try {
 			task.save();
 		} catch (NoSuchListException e) {
@@ -623,7 +623,7 @@ public class MainActivity extends ActionBarActivity implements
 			return;
 		if (intent.getAction() == TASK_DONE) {
 			task.setDone(true);
-			safeSafeTask(task);
+			safeSaveTask(task);
 			Toast.makeText(this,
 					getString(R.string.reminder_notification_done_confirm),
 					Toast.LENGTH_LONG).show();
@@ -632,7 +632,7 @@ public class MainActivity extends ActionBarActivity implements
 			int addMinutes = preferences.getInt("alarm_later", 15);
 			reminder.add(Calendar.MINUTE, addMinutes);
 			task.setReminder(reminder);
-			safeSafeTask(task);
+			safeSaveTask(task);
 			Toast.makeText(
 					this,
 					getString(R.string.reminder_notification_later_confirm,
@@ -773,7 +773,7 @@ public class MainActivity extends ActionBarActivity implements
 					public void onClick(DialogInterface dialog, int item) {
 						for (Task t : tasks) {
 							t.setList(ListMirakel.getList(list_ids.get(item)));
-							safeSafeTask(t);
+							safeSaveTask(t);
 						}
 						/*
 						 * There are 3 possibilities how to handle the post-move
@@ -1044,7 +1044,7 @@ public class MainActivity extends ActionBarActivity implements
 	void saveTask(Task task) {
 		Log.v(TAG, "Saving task… (task:" + task.getId() + " – current:"
 				+ currentTask.getId());
-		safeSafeTask(task);
+		safeSaveTask(task);
 		updatesForTask(task);
 	}
 

@@ -72,7 +72,6 @@ class TaskBase {
 		this.additionalEntriesString = additionalEntriesString;
 	}
 
-
 	TaskBase() {
 
 	}
@@ -170,6 +169,7 @@ class TaskBase {
 
 	public void setReminder(Calendar reminder) {
 		this.reminder = reminder;
+		edited.put("reminder", true);
 	}
 
 	public int getPriority() {
@@ -232,6 +232,7 @@ class TaskBase {
 
 	public void setAdditionalEntries(Map<String, String> additionalEntries) {
 		this.additionalEntries = additionalEntries;
+		edited.put("additionalEntries", true);
 	}
 
 	public void addAdditionalEntry(String key, String value) {
@@ -243,8 +244,13 @@ class TaskBase {
 		initAdditionalEntries();
 		additionalEntries.remove(key);
 	}
-	
 
+	boolean isEdited() {
+		return edited.size() > 0;
+	}
+	void clearEdited() {
+		edited.clear();
+	}
 
 	/**
 	 * This function parses the additional fields only if it is necessary

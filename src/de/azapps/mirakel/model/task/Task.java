@@ -84,8 +84,7 @@ public class Task extends TaskBase {
 	}
 
 	public void save(boolean log) throws NoSuchListException {
-		Task old = Task.get(getId());
-		if (old.equals(this)) {
+		if (!isEdited()) {
 			Log.d(TAG, "new Task equals old, didnt need to save it");
 			return;
 		}
@@ -95,45 +94,77 @@ public class Task extends TaskBase {
 		if (context != null)
 			setUpdatedAt(new GregorianCalendar());
 		ContentValues values = getContentValues();
-		// this.edited= new HashMap<String, Boolean>();
-		if (log)
+		if (log) {
+			Task old = Task.get(getId());
 			Helpers.updateLog(old, context);
+		}
 		database.update(TABLE, values, "_id = " + getId(), null);
+		clearEdited();
 	}
 
 	@Override
 	public boolean equals(Object o) {
-		if (o instanceof Task) {
-			Task t = (Task) o;
-			boolean equals = t.getPriority() == getPriority();
-			if (t.getName() != null) {
-				equals = equals && t.getName().equals(getName());
-			} else if (getName() != null) {
-				Log.d(TAG, "name not equal");
-				return false;
-			}
-			if (t.getContent() != null) {
-				equals = equals && t.getContent().equals(getContent());
-			} else if (getContent() != null) {
-				Log.d(TAG, "content not equal");
-				return false;
-			}
-			if (t.getDue() != null && getDue() != null) {
-				equals = equals && t.getDue().compareTo(getDue()) == 0;
-			} else if (t.getDue() != null || getDue() != null) {
-				return false;
-			}
-			equals = equals && t.isDone() == isDone();
-			if (t.getReminder() != null && getReminder() != null) {
-				equals = equals
-						&& t.getReminder().compareTo(getReminder()) == 0;
-			} else if (getReminder() != null || t.getReminder() != null) {
-				return false;
-			}
 
-			return equals;
+		if (!(o instanceof Task))
+			return false;
+		Task t = (Task) o;
+		// Id
+		if (getId() != t.getId())
+			return false;
+
+		// List
+		if (t.getList() != null && getList() != null) {
+			if (t.getList().getId() != getList().getId())
+				return false;
+		} else if (t.getList() != null || getList() != null)
+			return false;
+
+		// Name
+		if (t.getName() != null && getName() != null) {
+			if (!t.getName().equals(getName()))
+				return false;
+		} else if (getName() != null || t.getName() != null)
+			return false;
+
+		// Content
+		if (t.getContent() != null && getContent() != null) {
+			if (!t.getContent().equals(getContent()))
+				return false;
+		} else if (getContent() != null || t.getContent() != null)
+			return false;
+
+		// Done
+		if (t.isDone() != isDone())
+			return false;
+
+		// Due
+		if (t.getDue() != null && getDue() != null) {
+			if (t.getDue().compareTo(getDue()) != 0)
+				return false;
+		} else if (t.getDue() != null || getDue() != null) {
+			return false;
 		}
-		return false;
+
+		// Priority
+		if (t.getPriority() != getPriority())
+			return false;
+		// Additional Entries
+		if (t.getAdditionalEntries() != null && getAdditionalEntries() != null) {
+			if (!t.getAdditionalEntries().equals(getAdditionalEntries()))
+				return false;
+		} else if (t.getAdditionalEntries() != null
+				|| getAdditionalEntries() != null) {
+			return false;
+		}
+		// Reminder
+		if (t.getReminder() != null && getReminder() != null) {
+			if (t.getReminder().compareTo(getReminder()) != 0)
+				return false;
+		} else if (getReminder() != null || t.getReminder() != null) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -192,8 +223,7 @@ public class Task extends TaskBase {
 
 	public static List<Pair<Long, String>> getTaskNames() {
 		Cursor c = database.query(TABLE, new String[] { "_id,name" },
-				"not sync_state=" + SYNC_STATE.DELETE, null, null,
-				null, null);
+				"not sync_state=" + SYNC_STATE.DELETE, null, null, null, null);
 		c.moveToFirst();
 		List<Pair<Long, String>> names = new ArrayList<Pair<Long, String>>();
 		while (!c.isAfterLast()) {
@@ -415,8 +445,8 @@ public class Task extends TaskBase {
 	 */
 	public static Task get(long id) {
 		Cursor cursor = database.query(TABLE, allColumns, "_id='" + id
-				+ "' and not sync_state=" + SYNC_STATE.DELETE, null,
-				null, null, null);
+				+ "' and not sync_state=" + SYNC_STATE.DELETE, null, null,
+				null, null);
 		cursor.moveToFirst();
 		if (cursor.getCount() != 0) {
 			Task t = cursorToTask(cursor);
@@ -428,8 +458,8 @@ public class Task extends TaskBase {
 
 	public static Task getByUUID(String uuid) {
 		Cursor cursor = database.query(TABLE, allColumns, "uuid='" + uuid
-				+ "' and not sync_state=" + SYNC_STATE.DELETE, null,
-				null, null, null);
+				+ "' and not sync_state=" + SYNC_STATE.DELETE, null, null,
+				null, null);
 		cursor.moveToFirst();
 		if (cursor.getCount() != 0) {
 			Task t = cursorToTask(cursor);
@@ -496,8 +526,9 @@ public class Task extends TaskBase {
 	 * @return
 	 */
 	public static List<Task> getBySyncState(SYNC_STATE state) {
-		Cursor c = database.query(TABLE, allColumns, "sync_state=" + state.toInt()
-				+ " and list_id>0", null, null, null, null);
+		Cursor c = database.query(TABLE, allColumns,
+				"sync_state=" + state.toInt() + " and list_id>0", null, null,
+				null, null);
 		return cursorToTaskList(c);
 	}
 
@@ -759,7 +790,8 @@ public class Task extends TaskBase {
 				ListMirakel.getList((int) cursor.getLong(i++)),
 				cursor.getString(i++), cursor.getString(i++),
 				cursor.getInt((i++)) == 1, due, reminder, cursor.getInt(8),
-				created_at, updated_at, SYNC_STATE.parseInt(cursor.getInt(11)), cursor.getString(12));
+				created_at, updated_at, SYNC_STATE.parseInt(cursor.getInt(11)),
+				cursor.getString(12));
 		return task;
 	}
 
