@@ -43,16 +43,16 @@ public class TaskDialogHelpers {
 	public static void handlePriority(final Context ctx, final Task task,
 			final Helpers.ExecInterface onSuccess) {
 
-		final String[] t = { "-2", "-1", "0", "1", "2" };
+		final String[] t = { "2", "1", "0", "-1", "-2" };
 		AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
 		builder.setTitle(R.string.task_change_prio_title);
-		builder.setSingleChoiceItems(t, task.getPriority() + 2,
+		builder.setSingleChoiceItems(t, 2-task.getPriority(),
 				new DialogInterface.OnClickListener() {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						dialog.dismiss();
-						task.setPriority(which - 2);
+						task.setPriority(2-which);
 						safeSafeTask(ctx, task);
 						onSuccess.exec();
 					}
