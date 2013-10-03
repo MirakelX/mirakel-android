@@ -173,16 +173,6 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		updateLists();
-		getMenuInflater().inflate(R.menu.main, menu);
-		this.menu = menu;
-		onPageSelected(TASKS_FRAGMENT);
-		return true;
-	}
-
-	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (mDrawerToggle.onOptionsItemSelected(item)) {
 			return true;
@@ -297,6 +287,17 @@ public class MainActivity extends ActionBarActivity implements
 	public void onPageSelected(int position) {
 		loadMenu(position);
 
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		updateLists();
+		getMenuInflater().inflate(R.menu.main, menu);
+		this.menu = menu;
+		if (currentPosition != TASKS_FRAGMENT)
+			loadMenu(currentPosition, true);
+		return true;
 	}
 
 	public void loadMenu(int position) {
@@ -514,6 +515,7 @@ public class MainActivity extends ActionBarActivity implements
 	private void addFilesForTask(Task t, Intent intent) {
 		String action = intent.getAction();
 		String type = intent.getType();
+		currentPosition = TASK_FRAGMENT;
 
 		if (Intent.ACTION_SEND.equals(action) && type != null) {
 			Uri uri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
