@@ -21,8 +21,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:ignore="NewAPI" >
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -33,20 +32,20 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="?android:attr/selectableItemBackground"
+            android:background="@attr/selectableItemBackground"
             android:text="@string/new_task" />
 
         <View
             android:layout_width="2dp"
             android:layout_height="match_parent"
-            android:background="@android:color/holo_blue_dark" />
+            android:background="@color/holo_blue_dark" />
 
         <Button
             android:id="@+id/subtask_select_old"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="?android:attr/selectableItemBackground"
+            android:background="@attr/selectableItemBackground"
             android:text="@string/add_existing"
             android:textColor="@color/Grey" />
     </LinearLayout>
@@ -93,7 +92,7 @@
                 android:id="@+id/subtasks_options"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="?android:attr/selectableItemBackground"
+                android:background="@attr/selectableItemBackground"
                 android:text="@string/subtask_add_options" />
 
             <LinearLayout
@@ -124,7 +123,7 @@
                     android:id="@+id/subtask_list"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="?android:attr/selectableItemBackground"
+                    android:background="@attr/selectableItemBackground"
                     android:text="@string/list_all" />
             </LinearLayout>
 

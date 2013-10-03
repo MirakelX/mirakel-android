@@ -144,6 +144,7 @@
     <string name="delete_done_warning_message">You can not undo this. Make a backup!</string>
     <string name="delete_done_success">Successfully deleted your done tasks.</string>
     <string name="menu_delete">Delete</string>
+    <string name="menu_color">Change Color</string>
     <string name="howto_setup_server">How To setup Server</string>
     <string name="special_lists_title">Special Lists</string>
 
