@@ -193,14 +193,8 @@ public class Task extends TaskBase {
 	}
 
 	public List<Task> getSubtasks() {
-		String columns = "t." + allColumns[0];
-		for (int i = 1; i < allColumns.length; i++) {
-			columns += ", t." + allColumns[i];
-		}
-		Cursor c = database.rawQuery("SELECT " + columns + " FROM " + TABLE
-				+ " t INNER JOIN " + SUBTASK_TABLE
-				+ " s on t._id=s.child_id WHERE s.parent_id=?;",
-				new String[] { "" + getId() });
+		Cursor c = Task.getTasksCursor(getList().getId(),
+				ListMirakel.SORT_BY_OPT, "", this);
 		List<Task> subTasks = new ArrayList<Task>();
 		c.moveToFirst();
 		while (!c.isAfterLast()) {
@@ -557,7 +551,7 @@ public class Task extends TaskBase {
 	 */
 	public static List<Task> getTasks(ListMirakel list, int sorting,
 			boolean showDone, String where) {
-		Cursor cursor = getTasksCursor(list.getId(), sorting, where);
+		Cursor cursor = getTasksCursor(list.getId(), sorting, where, null);
 		return cursorToTaskList(cursor);
 	}
 
@@ -813,7 +807,7 @@ public class Task extends TaskBase {
 		if (!showDone) {
 			where += (where.trim().equals("") ? "" : " AND ") + " done=0";
 		}
-		return getTasksCursor(listId, sorting, where);
+		return getTasksCursor(listId, sorting, where, null);
 	}
 
 	/**
@@ -823,9 +817,13 @@ public class Task extends TaskBase {
 	 * @param sorting
 	 * @return
 	 */
-	private static Cursor getTasksCursor(int listId, int sorting, String where) {
-		if (!where.equals(""))
+	private static Cursor getTasksCursor(int listId, int sorting, String where,
+			Task subtask) {
+		if (where == null) {
+			where = "";
+		} else if (!where.equals("")) {
 			where += " and ";
+		}
 		where += " not sync_state=" + SYNC_STATE.DELETE;
 		String order = "";
 
@@ -844,8 +842,20 @@ public class Task extends TaskBase {
 		}
 		if (listId < 0)
 			order += ", list_id ASC";
-		return Mirakel.getReadableDatabase().query(TABLE, allColumns, where,
-				null, null, null, "done, " + order);
+		if (subtask != null) {
+
+			String columns = "t." + allColumns[0];
+			for (int i = 1; i < allColumns.length; i++) {
+				columns += ", t." + allColumns[i];
+			}
+			return database.rawQuery("SELECT " + columns + " FROM " + TABLE
+					+ " t INNER JOIN " + SUBTASK_TABLE
+					+ " s on t._id=s.child_id WHERE s.parent_id=? ORDER BY "
+					+ order, new String[] { "" + subtask.getId() });
+		} else {
+			return database.query(TABLE, allColumns, where, null, null, null,
+					"done, " + order);
+		}
 	}
 
 	public static void resetSyncState(List<Task> tasks) {
