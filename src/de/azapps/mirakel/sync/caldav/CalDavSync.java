@@ -8,15 +8,21 @@ import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.DataDownloadCommand;
 import de.azapps.mirakel.sync.Network;
 import de.azapps.mirakel.sync.Network.HttpMode;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
+import de.azapps.mirakelandroid.R;
 import android.accounts.Account;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.preference.PreferenceManager;
+import android.widget.Toast;
 
 public class CalDavSync {
 	private static final String TAG = "CalDavSync";
@@ -28,7 +34,7 @@ public class CalDavSync {
 
 	public void sync(Account account) {		
 		// TODO get url from somewhere else
-		final String url = "http://192.168.10.168:5232/foo/foo5.ics";
+		final String url = "http://192.168.10.168:5232/foo/foo7.ics";
 		String content = "<c:calendar-query xmlns:d=\"DAV:\" xmlns:c=\"urn:ietf:params:xml:ns:caldav\">\n"
 				+ "<d:prop>\n"
 				+ "<d:getetag />\n"
@@ -40,13 +46,11 @@ public class CalDavSync {
 				+ "</c:comp-filter>\n"
 				+ "</c:filter>\n"
 				+ "</c:calendar-query>";
-		
-		
 		Network n= new Network(new DataDownloadCommand() {
 			
 			@Override
 			public void after_exec(String result) {
-				List<Task> fromServer = parseResponse(result);
+				List<Task> fromServer = parseResponse(result.replace("\\n", "\n"));
 				if(fromServer!=null){
 					Log.i(TAG,"got "+fromServer.size()+" tasks");
 					mergeToLokale(fromServer);
@@ -113,7 +117,7 @@ public class CalDavSync {
 					Log.wtf(TAG, "is_synced shouldn be there");
 					break;
 				case NEED_SYNC:
-					if(server.getDue().compareTo(local.getDue())>0){
+					if(server.getUpdatedAt().compareTo(local.getUpdatedAt())>0){
 						//server newer
 						saveTask(server);
 					}else{
@@ -143,17 +147,16 @@ public class CalDavSync {
 
 	// Generate VTODO string
 	private String parseTask(Task t) {
-		//TODO Fix encoding
 		String ret = "BEGIN:VTODO\n";
-		ret += "UID:" + t.getUUID() + "\n";
+		ret += "X-MIRAKEL-UUID:" + t.getUUID() + "\n";
 		ret += "SUMMARY:" + t.getName() + "\n";
 		ret += "PRIORITY:" + t.getPriority() + "\n";
 		ret += "CREATED:" + DateTimeHelper.formateCalDav(t.getCreatedAt())
 				+ "\n";
 		ret += "LAST-MODIFIED:"
-				+ DateTimeHelper.formateCalDav(t.getUpdated_at()) + "\n";
+				+ DateTimeHelper.formateCalDav(t.getUpdatedAt()) + "\n";
 		if (t.getContent() != null && !t.getContent().equals("")) {
-			ret += "DESCRIPTION:" + t.getContent() + "\n";
+			ret += "DESCRIPTION:" + t.getContent().replace("\n", "\\n") + "\n";
 		}
 		if (t.getDue() != null)
 			ret += "DUE;VALUE=DATE:"
@@ -179,7 +182,12 @@ public class CalDavSync {
 		String[] vtodos=p.split(END+"\n"+BEGIN);
 		List<Task> tasks=new ArrayList<Task>();
 		for(String s:vtodos){
-			tasks.add(parseVTODO(s));
+			Task t=parseVTODO(s);
+			if(t==null){
+				Log.w(TAG, "Task from server is null");
+				continue;
+			}
+			tasks.add(t);
 		}		
 		return tasks;
 	}
@@ -189,9 +197,27 @@ public class CalDavSync {
 		String uuid=getUUID(lines);
 		Task t=Task.getByUUID(uuid);
 		if(t==null){
-			//TODO create new Task
-			Log.w(TAG, "sync down not implemented now");
-			return null;
+			ListMirakel list;
+			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(ctx);
+			int id;
+			SpecialList sl=SpecialList.firstSpecial();
+			if(sl!=null){
+				id=sl.getId();
+			}else{
+				ListMirakel m=ListMirakel.first();
+				if(m!=null){
+					id=m.getId();
+				}else{
+					Toast.makeText(ctx, R.string.no_lists, Toast.LENGTH_LONG).show();
+					return null;
+				}
+			}
+			if(preferences.getBoolean("importDefaultList", false)){
+				list=ListMirakel.getList(preferences.getInt("defaultImportList", id));
+			}else{
+				list=ListMirakel.getList(id);
+			}
+			t=Task.newTask(ctx.getString(R.string.new_task), list);
 		}
 		for(String l:lines){
 			if(l.contains("SUMMARY")){
@@ -228,8 +254,8 @@ public class CalDavSync {
 
 	private String getUUID(String[] lines) {
 		for(String l:lines){
-			if(l!=null&&l.contains("UID")){
-				return l.replace("UID:", "");
+			if(l!=null&&l.contains("X-MIRAKEL-UUID")){
+				return l.replace("X-MIRAKEL-UUID:", "");
 			}
 		}
 		return null;
