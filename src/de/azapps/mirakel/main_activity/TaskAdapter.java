@@ -153,7 +153,7 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 		holder.taskRowDone.setChecked(task.isDone());
 		holder.taskRowDone.setTag(task);
 		holder.taskRowDoneWrapper.setTag(task);
-		if (task.getContent().length() != 0) {
+		if (task.getContent().length() != 0 || task.getSubtaskCount()>0 || task.getFiles().size()>0) {
 			holder.taskRowHasContent.setVisibility(View.VISIBLE);
 		} else {
 			holder.taskRowHasContent.setVisibility(View.INVISIBLE);

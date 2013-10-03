@@ -79,7 +79,7 @@ public class WidgetHelper {
 			rv.setViewVisibility(R.id.tasks_row_due, View.GONE);
 		}
 
-		if (task.getContent().length() != 0) {
+		if (task.getContent().length() != 0 || task.getSubtaskCount()>0 || task.getFiles().size()>0) {
 			rv.setViewVisibility(R.id.tasks_row_has_content, View.VISIBLE);
 		} else {
 			rv.setViewVisibility(R.id.tasks_row_has_content, View.GONE);
