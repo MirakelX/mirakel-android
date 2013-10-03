@@ -212,7 +212,7 @@ public class Network extends AsyncTask<String, Integer, String> {
 				Log.v(TAG, "PUT " + myurl);
 				HttpPut put = new HttpPut();
 				if(syncTyp==SYNC_TYPES.CALDAV){
-					put.addHeader("Content-Typ", "text/calendar; charset=utf-8");
+					put.addHeader(HTTP.CONTENT_TYPE, "text/calendar; charset=utf-8");
 				}
 				put.setURI(new URI(myurl));
 				if(syncTyp==SYNC_TYPES.MIRAKEL){
@@ -240,7 +240,7 @@ public class Network extends AsyncTask<String, Integer, String> {
 				Log.v(TAG, "REPORT "+myurl);
 				HttpReport report =new HttpReport();
 				report.setURI(new URI(myurl));
-				report.setEntity(new StringEntity(content));
+				report.setEntity(new StringEntity(content,HTTP.UTF_8));
 				response=httpClient.execute(report);
 				break;
 			default:
@@ -255,7 +255,7 @@ public class Network extends AsyncTask<String, Integer, String> {
 		Log.v(TAG, "Http-Status: " + response.getStatusLine().getStatusCode());
 		if (response.getEntity() == null)
 			return "";
-		String r = EntityUtils.toString(response.getEntity());
+		String r = EntityUtils.toString(response.getEntity(),HTTP.UTF_8);
 		Log.d(TAG, r);
 		return r;
 	}
