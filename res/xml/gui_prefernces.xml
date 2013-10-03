@@ -86,5 +86,13 @@
             android:summary="@string/settings_subtask_add_to_same_list_summary"
             android:title="@string/settings_subtask_add_to_same_list" />
     </PreferenceCategory>
+    <CheckBoxPreference 
+        android:defaultValue="true"
+        android:key="useBtnSpeak"
+        android:title="@string/settings_use_btn_speak"/>
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="useBtnCamera"
+        android:title="@string/settings_use_btn_camera" />
 
 </PreferenceScreen>

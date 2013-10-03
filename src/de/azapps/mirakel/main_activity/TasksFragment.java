@@ -129,15 +129,6 @@ public class TasksFragment extends Fragment {
 		} catch (NullPointerException e) {
 			values = null;
 		}
-		if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.HONEYCOMB) {
-			view.findViewById(R.id.btnSpeak_tasks).setVisibility(View.GONE);// Android
-																			// 2.3
-																			// dosen't
-																			// support
-																			// speech
-																			// to
-																			// Text
-		}
 		adapter = null;
 		created = true;
 
@@ -191,55 +182,69 @@ public class TasksFragment extends Fragment {
 			}
 		});
 
-		ImageButton btnSpeak = (ImageButton) view
-				.findViewById(R.id.btnSpeak_tasks);
-		// txtText = newTask;
+		// a) Android 2.3 dosen't support speech toText
+		// b) The user can switch off the button
+		if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.HONEYCOMB
+				|| !main.getPreferences().getBoolean("useBtnSpeak", true)) {
+			view.findViewById(R.id.btnSpeak_tasks).setVisibility(View.GONE);
+		} else {
+			ImageButton btnSpeak = (ImageButton) view
+					.findViewById(R.id.btnSpeak_tasks);
+			// txtText = newTask;
 
-		btnSpeak.setOnClickListener(new View.OnClickListener() {
+			btnSpeak.setOnClickListener(new View.OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
+				@Override
+				public void onClick(View v) {
 
-				Intent intent = new Intent(
-						RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+					Intent intent = new Intent(
+							RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 
-				intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-						main.getString(R.string.speak_lang_code));
+					intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+							main.getString(R.string.speak_lang_code));
 
-				try {
-					getActivity().startActivityForResult(intent,
-							MainActivity.RESULT_SPEECH);
-					newTask.setText("");
-				} catch (ActivityNotFoundException a) {
-					Toast t = Toast.makeText(main,
-							"Opps! Your device doesn't support Speech to Text",
-							Toast.LENGTH_SHORT);
-					t.show();
+					try {
+						getActivity().startActivityForResult(intent,
+								MainActivity.RESULT_SPEECH);
+						newTask.setText("");
+					} catch (ActivityNotFoundException a) {
+						Toast t = Toast
+								.makeText(
+										main,
+										"Opps! Your device doesn't support Speech to Text",
+										Toast.LENGTH_SHORT);
+						t.show();
+					}
 				}
-			}
-		});
+			});
+		}
+		if (!main.getPreferences().getBoolean("useBtnCamera", true)) {
+			view.findViewById(R.id.btnCamera).setVisibility(View.GONE);
+		} else {
+			ImageButton btnCamera = (ImageButton) view
+					.findViewById(R.id.btnCamera);
+			btnCamera.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					try {
+						Intent cameraIntent = new Intent(
+								MediaStore.ACTION_IMAGE_CAPTURE);
+						Uri fileUri = Helpers
+								.getOutputMediaFileUri(Helpers.MEDIA_TYPE_IMAGE);
+						main.setFileUri(fileUri);
+						cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+						getActivity().startActivityForResult(cameraIntent,
+								MainActivity.RESULT_CAMERA);
 
-		ImageButton btnCamera = (ImageButton) view.findViewById(R.id.btnCamera);
-		btnCamera.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				try {
-					Intent cameraIntent = new Intent(
-							MediaStore.ACTION_IMAGE_CAPTURE);
-					Uri fileUri = Helpers
-							.getOutputMediaFileUri(Helpers.MEDIA_TYPE_IMAGE);
-					main.setFileUri(fileUri);
-					cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-					getActivity().startActivityForResult(cameraIntent,
-							MainActivity.RESULT_CAMERA);
-
-				} catch (ActivityNotFoundException a) {
-					Toast.makeText(main,
-							"Opps! Your device doesn't support taking photos",
-							Toast.LENGTH_SHORT).show();
+					} catch (ActivityNotFoundException a) {
+						Toast.makeText(
+								main,
+								"Opps! Your device doesn't support taking photos",
+								Toast.LENGTH_SHORT).show();
+					}
 				}
-			}
-		});
+			});
+		}
 		// Inflate the layout for this fragment
 		return view;
 	}
