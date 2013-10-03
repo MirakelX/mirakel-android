@@ -295,8 +295,7 @@ public class MainActivity extends ActionBarActivity implements
 		updateLists();
 		getMenuInflater().inflate(R.menu.main, menu);
 		this.menu = menu;
-		if (currentPosition != TASKS_FRAGMENT)
-			loadMenu(currentPosition, true);
+		loadMenu(currentPosition, false);
 		return true;
 	}
 
