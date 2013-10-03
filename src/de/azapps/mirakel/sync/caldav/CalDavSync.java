@@ -28,7 +28,7 @@ public class CalDavSync {
 
 	public void sync(Account account) {		
 		// TODO get url from somewhere else
-		final String url = "http://192.168.10.168:5232/foo/bar1.ics";
+		final String url = "http://192.168.10.168:5232/foo/foo5.ics";
 		String content = "<c:calendar-query xmlns:d=\"DAV:\" xmlns:c=\"urn:ietf:params:xml:ns:caldav\">\n"
 				+ "<d:prop>\n"
 				+ "<d:getetag />\n"
@@ -48,6 +48,7 @@ public class CalDavSync {
 			public void after_exec(String result) {
 				List<Task> fromServer = parseResponse(result);
 				if(fromServer!=null){
+					Log.i(TAG,"got "+fromServer.size()+" tasks");
 					mergeToLokale(fromServer);
 				}
 				syncToServer(Task.all(),url);
@@ -59,6 +60,7 @@ public class CalDavSync {
 	}
 
 	private void syncToServer(List<Task> tasks,String url) {
+		Log.i(TAG,"sync "+tasks.size()+" to server "+url);
 //		// Some Headers
 		String content = "BEGIN:VCALENDAR\n";
 		//Do we need this?
@@ -85,6 +87,7 @@ public class CalDavSync {
 						+ "," + SYNC_STATE.NEED_SYNC + "," + SYNC_STATE.NOTHING
 						+ ")", null);
 				ContentValues cv= new ContentValues();
+				cv.put("sync_state", SYNC_STATE.NOTHING.toInt());
 				db.update(Task.TABLE, cv, null, null);
 			}
 		}, HttpMode.PUT, content, ctx);
@@ -93,6 +96,9 @@ public class CalDavSync {
 
 
 	protected void mergeToLokale(List<Task> fromServer) {
+		SQLiteDatabase db = Mirakel.getWritableDatabase();
+		ContentValues cv=new ContentValues();
+		cv.put("sync_state", SYNC_STATE.IS_SYNCED.toInt());
 		for(Task server:fromServer){
 			Task local=Task.getByUUID(server.getUUID());
 			if(!local.equals(server)){
@@ -119,6 +125,8 @@ public class CalDavSync {
 					saveTask(server);
 					break;
 				}
+			}else{
+				db.update(Task.TABLE, cv, "_id="+local.getId(), null);
 			}
 		}
 		
@@ -146,9 +154,6 @@ public class CalDavSync {
 				+ DateTimeHelper.formateCalDav(t.getUpdated_at()) + "\n";
 		if (t.getContent() != null && !t.getContent().equals("")) {
 			ret += "DESCRIPTION:" + t.getContent() + "\n";
-			Log.d(TAG, t.getContent());
-		}else{
-			Log.d(TAG,"No content");
 		}
 		if (t.getDue() != null)
 			ret += "DUE;VALUE=DATE:"
