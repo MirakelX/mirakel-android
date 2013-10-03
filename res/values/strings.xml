@@ -223,6 +223,7 @@ Device: %3$s\n]]>
     <string name="backup_export_error">There was an Error while exporting the database</string>
     <string name="backup_export_ok">Exported to %s</string>
     <string name="change_content">Change Content</string>
+    <string name="content">Content</string>
     <string name="task_has_content">Task has content</string>
     <string name="help_description">There are 3 main parts: on the left side you can see all lists, in the middle you can see all tasks of a list and at the right side you can see a task. You switch between the parts by swiping or clicking.</string>
 
@@ -259,5 +260,6 @@ Device: %3$s\n]]>
     <string name="file_vanished">No such file</string>
     <string name="file_default_title">Check out this file</string>
     <string name="photo_default_title">Check out this photo</string>
+    <string name="edit">Edit</string>
 
 </resources>

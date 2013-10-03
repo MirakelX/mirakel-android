@@ -79,6 +79,8 @@ public class TaskFragmentAdapter extends
 	private TaskFragmentAdapter adapter;
 	private List<Task> subtasks;
 	private List<FileMirakel> files;
+	private static final int SUBTITLE_CONTENT = 0, SUBTITLE_SUBTASKS = 1,
+			SUBTITLE_FILES = 2;
 
 	public class TYPE {
 		final static int HEADER = 0;
@@ -145,8 +147,20 @@ public class TaskFragmentAdapter extends
 		case TYPE.SUBTITLE:
 			String title = null;
 			OnClickListener action = null;
+			boolean pencilButton = false;
 			switch (data.get(position).second) {
-			case 0:
+			case SUBTITLE_CONTENT:
+				pencilButton = true;
+				title = context.getString(R.string.content);
+				action = new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						TaskDialogHelpers.handleContent((MainActivity) context,
+								task);
+					}
+				};
+				break;
+			case SUBTITLE_SUBTASKS:
 				title = context.getString(R.string.subtasks);
 				action = new OnClickListener() {
 					@Override
@@ -155,7 +169,7 @@ public class TaskFragmentAdapter extends
 					}
 				};
 				break;
-			case 1:
+			case SUBTITLE_FILES:
 				title = context.getString(R.string.files);
 				action = new OnClickListener() {
 					@Override
@@ -171,7 +185,8 @@ public class TaskFragmentAdapter extends
 				Log.w(TAG, "unknown subtitle");
 				break;
 			}
-			row = setupSubtitle(parent, title, action, convertView);
+			row = setupSubtitle(parent, title, pencilButton, action,
+					convertView);
 			break;
 		case TYPE.CONTENT:
 			row = setupContent(parent, convertView);
@@ -391,7 +406,7 @@ public class TaskFragmentAdapter extends
 	}
 
 	private View setupSubtitle(ViewGroup parent, String title,
-			OnClickListener action, View convertView) {
+			boolean pencilButton, OnClickListener action, View convertView) {
 		if (title == null || action == null)
 			return new View(context);
 		final View subtitle = convertView == null ? inflater.inflate(
@@ -410,6 +425,10 @@ public class TaskFragmentAdapter extends
 		}
 		holder.title.setText(title);
 		holder.button.setOnClickListener(action);
+		if (pencilButton) {
+			holder.button.setImageDrawable(context.getResources().getDrawable(
+					android.R.drawable.ic_menu_edit));
+		}
 		return subtitle;
 	}
 
@@ -425,55 +444,6 @@ public class TaskFragmentAdapter extends
 			holder = new ContentHolder();
 			holder.taskContent = (TextView) content
 					.findViewById(R.id.task_content);
-			holder.taskContent.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-
-					final EditText editTxt = new EditText(context);
-					editTxt.setText(task.getContent());
-					final AlertDialog dialog = new AlertDialog.Builder(context)
-							.setTitle(R.string.change_content)
-							.setView(editTxt)
-							.setPositiveButton(android.R.string.ok,
-									new DialogInterface.OnClickListener() {
-
-										@Override
-										public void onClick(
-												DialogInterface dialog,
-												int which) {
-											task.setContent(editTxt.getText()
-													.toString());
-											((MainActivity) context)
-													.saveTask(task);
-											setTaskContent(holder.taskContent);
-
-										}
-									})
-							.setNegativeButton(android.R.string.cancel,
-									new DialogInterface.OnClickListener() {
-
-										@Override
-										public void onClick(
-												DialogInterface dialog,
-												int which) {
-											// Nothing
-
-										}
-									}).create();
-					dialog.show();
-					editTxt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-						@Override
-						public void onFocusChange(View v, boolean hasFocus) {
-							if (hasFocus) {
-								dialog.getWindow()
-										.setSoftInputMode(
-												WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-							}
-						}
-					});
-
-				}
-			});
 			content.setTag(holder);
 		} else {
 			holder = (ContentHolder) content.getTag();
@@ -804,18 +774,18 @@ public class TaskFragmentAdapter extends
 	}
 
 	private static List<Pair<Integer, Integer>> generateData(Task task) {
-		// TODO implement Subtasks
 		List<Pair<Integer, Integer>> data = new ArrayList<Pair<Integer, Integer>>();
 		data.add(new Pair<Integer, Integer>(TYPE.HEADER, 0));
 		data.add(new Pair<Integer, Integer>(TYPE.DUE, 0));
 		data.add(new Pair<Integer, Integer>(TYPE.REMINDER, 0));
+		data.add(new Pair<Integer, Integer>(TYPE.SUBTITLE, SUBTITLE_CONTENT));
 		data.add(new Pair<Integer, Integer>(TYPE.CONTENT, 0));
-		data.add(new Pair<Integer, Integer>(TYPE.SUBTITLE, 0));
+		data.add(new Pair<Integer, Integer>(TYPE.SUBTITLE, SUBTITLE_SUBTASKS));
 		int subtaskCount = task.getSubtaskCount();
 		for (int i = 0; i < subtaskCount; i++) {
 			data.add(new Pair<Integer, Integer>(TYPE.SUBTASK, i));
 		}
-		data.add(new Pair<Integer, Integer>(TYPE.SUBTITLE, 1));
+		data.add(new Pair<Integer, Integer>(TYPE.SUBTITLE, SUBTITLE_FILES));
 		int fileCount = FileMirakel.getFileCount(task);
 		for (int i = 0; i < fileCount; i++)
 			data.add(new Pair<Integer, Integer>(TYPE.FILE, i));
