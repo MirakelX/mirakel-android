@@ -14,9 +14,11 @@ public class DateTimeHelper {
 			"yyyy-MM-dd", Locale.getDefault());
 	private static final SimpleDateFormat TWFormat = new SimpleDateFormat(
 			"yyyyMMdd'T'kkmmss'Z'", Locale.getDefault());
-	private static final SimpleDateFormat CalDavDue=new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
-	
-	private static final SimpleDateFormat CalDav=new SimpleDateFormat("yyyyMMdd'T'kkmmss", Locale.getDefault());
+	private static final SimpleDateFormat CalDavDue = new SimpleDateFormat(
+			"yyyyMMdd", Locale.getDefault());
+
+	private static final SimpleDateFormat CalDav = new SimpleDateFormat(
+			"yyyyMMdd'T'kkmmss", Locale.getDefault());
 
 	public static String formatDate(Calendar c) {
 		return c == null ? null : dateFormat.format(c.getTime());
@@ -29,15 +31,26 @@ public class DateTimeHelper {
 	public static String formatTaskWarrior(Calendar c) {
 		return c == null ? null : TWFormat.format(c.getTime());
 	}
-	
+
 	public static String formateCalDavDue(Calendar c) {
 		return c == null ? null : CalDavDue.format(c.getTime());
 	}
-	
+
 	public static String formateCalDav(Calendar c) {
 		return c == null ? null : CalDav.format(c.getTime());
 	}
-	
+
+	public static Calendar parseCalDav(String date) throws ParseException {
+		GregorianCalendar temp = new GregorianCalendar();
+		temp.setTime(CalDav.parse(date));
+		return temp;
+	}
+
+	public static Calendar parseCalDavDue(String date) throws ParseException {
+		GregorianCalendar temp = new GregorianCalendar();
+		temp.setTime(CalDavDue.parse(date));
+		return temp;
+	}
 
 	public static Calendar parseDate(String date) throws ParseException {
 		GregorianCalendar temp = new GregorianCalendar();

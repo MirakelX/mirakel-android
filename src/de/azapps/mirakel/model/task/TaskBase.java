@@ -181,7 +181,7 @@ class TaskBase {
 		edited.put("priority", true);
 	}
 
-	public Calendar getCreated_at() {
+	public Calendar getCreatedAt() {
 		return createdAt;
 	}
 
@@ -213,7 +213,7 @@ class TaskBase {
 		}
 	}
 
-	public SYNC_STATE getSync_state() {
+	public SYNC_STATE getSyncState() {
 		return sync_state;
 	}
 

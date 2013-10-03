@@ -37,6 +37,7 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpReport;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
@@ -61,7 +62,7 @@ import de.azapps.mirakelandroid.R;
 public class Network extends AsyncTask<String, Integer, String> {
 	
 	public enum HttpMode{
-		GET,POST,PUT,DELETE;
+		GET,POST,PUT,DELETE,REPORT;
 	}
 
 	private static String TAG = "MirakelNetwork";
@@ -95,8 +96,8 @@ public class Network extends AsyncTask<String, Integer, String> {
 		this.syncTyp=SYNC_TYPES.MIRAKEL;
 	}
 	
-	public Network(DataDownloadCommand comands, HttpMode mode,String content,Context ctx) {
-		this.commands=comands;
+	public Network(DataDownloadCommand commands, HttpMode mode,String content,Context ctx) {
+		this.commands=commands;
 		this.mode=mode;
 		this.content=content;
 		this.context=ctx;
@@ -234,6 +235,13 @@ public class Network extends AsyncTask<String, Integer, String> {
 				HttpDelete delete = new HttpDelete();
 				delete.setURI(new URI(myurl));
 				response = httpClient.execute(delete);
+				break;
+			case REPORT:
+				Log.v(TAG, "REPORT "+myurl);
+				HttpReport report =new HttpReport();
+				report.setURI(new URI(myurl));
+				report.setEntity(new StringEntity(content));
+				response=httpClient.execute(report);
 				break;
 			default:
 				Log.wtf("HTTP-MODE", "Unknown Http-Mode");

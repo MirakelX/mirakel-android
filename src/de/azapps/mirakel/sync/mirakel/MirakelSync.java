@@ -585,8 +585,8 @@ public class MirakelSync {
 	}
 
 	private void mergeTask(Task task_server, Task task) {
-		if (task.getSync_state() == SYNC_STATE.NEED_SYNC
-				|| task.getSync_state() == SYNC_STATE.NOTHING) {
+		if (task.getSyncState() == SYNC_STATE.NEED_SYNC
+				|| task.getSyncState() == SYNC_STATE.NOTHING) {
 			if (task.getUpdated_at().compareTo(task_server.getUpdated_at()) > 0) {
 				// local task newer, push to server
 				Log.d(TAG, "Sync task to server from list "
@@ -599,7 +599,7 @@ public class MirakelSync {
 				task_server.setSyncState(SYNC_STATE.IS_SYNCED);
 				safeSafeTask(task_server);
 			}
-		} else if (task.getSync_state() == SYNC_STATE.ADD) {
+		} else if (task.getSyncState() == SYNC_STATE.ADD) {
 			Cursor c = Mirakel.getReadableDatabase()
 					.rawQuery(
 							"Select max(_id) from " + Task.TABLE
@@ -628,9 +628,9 @@ public class MirakelSync {
 						+ task_server.getList().getId());
 				addTaskFromServer(task_server);
 			}
-		} else if (task.getSync_state() == SYNC_STATE.DELETE) {
+		} else if (task.getSyncState() == SYNC_STATE.DELETE) {
 			// Nothing
-		} else if (task.getSync_state() == SYNC_STATE.IS_SYNCED) {
+		} else if (task.getSyncState() == SYNC_STATE.IS_SYNCED) {
 			task.setSyncState(SYNC_STATE.NOTHING);
 			safeSafeTask(task);
 			mergeTask(task_server, task);
