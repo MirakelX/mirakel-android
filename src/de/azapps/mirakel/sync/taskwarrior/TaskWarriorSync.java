@@ -338,7 +338,7 @@ public class TaskWarriorSync {
 		json += "\"project\":\"" + t.getList().getName() + "\",";
 		if (priority != null)
 			json += "\"priority\":\"" + priority + "\",";
-		json += "\"modification\":\"" + formatCal(t.getUpdated_at()) + "\",";
+		json += "\"modification\":\"" + formatCal(t.getUpdatedAt()) + "\",";
 		if (t.getReminder() != null)
 			json += "\"reminder\":\"" + formatCal(t.getReminder()) + "\",";
 
@@ -354,7 +354,7 @@ public class TaskWarriorSync {
 				first = false;
 			else
 				json += ",";
-			json += "{\"entry\":\"" + formatCal(t.getUpdated_at()) + "\",";
+			json += "{\"entry\":\"" + formatCal(t.getUpdatedAt()) + "\",";
 			json += "\"description\":\"" + a + "\"}";
 		}
 		json += "]";

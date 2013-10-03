@@ -587,7 +587,7 @@ public class MirakelSync {
 	private void mergeTask(Task task_server, Task task) {
 		if (task.getSyncState() == SYNC_STATE.NEED_SYNC
 				|| task.getSyncState() == SYNC_STATE.NOTHING) {
-			if (task.getUpdated_at().compareTo(task_server.getUpdated_at()) > 0) {
+			if (task.getUpdatedAt().compareTo(task_server.getUpdatedAt()) > 0) {
 				// local task newer, push to server
 				Log.d(TAG, "Sync task to server from list "
 						+ task.getList().getId());

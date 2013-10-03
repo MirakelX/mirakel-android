@@ -294,7 +294,7 @@ public class Task extends TaskBase {
 		json += "\"created_at\":\""
 				+ DateTimeHelper.formatDateTime(getCreatedAt()) + "\",";
 		json += "\"updated_at\":\""
-				+ DateTimeHelper.formatDateTime(getUpdated_at()) + "\"}";
+				+ DateTimeHelper.formatDateTime(getUpdatedAt()) + "\"}";
 		return json;
 	}
 
@@ -403,7 +403,7 @@ public class Task extends TaskBase {
 		values.put("priority", getPriority());
 		values.put("sync_state", SYNC_STATE.ADD.toInt());
 		values.put("created_at", DateTimeHelper.formatDateTime(getCreatedAt()));
-		values.put("updated_at", DateTimeHelper.formatDateTime(getUpdated_at()));
+		values.put("updated_at", DateTimeHelper.formatDateTime(getUpdatedAt()));
 		long insertId = database.insertOrThrow(TABLE, null, values);
 		Cursor cursor = database.query(TABLE, allColumns, "_id = " + insertId,
 				null, null, null, null);
