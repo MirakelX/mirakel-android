@@ -77,25 +77,25 @@ public class SettingsActivity extends PreferenceActivity {
 
 			} else {
 				if (i.getAction() == null) {
-					addPreferencesFromResource(R.xml.preferences_v10);
+					addPreferencesFromResource(R.xml.settings_v10);
 				} else if (i.getAction().equals(
 						"de.azapps.mirakel.preferences.NOTIFICATION")) {
-					addPreferencesFromResource(R.xml.notification_prefernces);
+					addPreferencesFromResource(R.xml.settings_notifications);
 				} else if (i.getAction().equals(
 						"de.azapps.mirakel.preferences.GUI")) {
-					addPreferencesFromResource(R.xml.gui_prefernces);
+					addPreferencesFromResource(R.xml.settings_gui);
 				} else if (i.getAction().equals(
 						"de.azapps.mirakel.preferences.ABOUT")) {
-					addPreferencesFromResource(R.xml.about_prefernces);
+					addPreferencesFromResource(R.xml.settings_about);
 				} else if (i.getAction().equals(
 						"de.azapps.mirakel.preferences.MISC")) {
-					addPreferencesFromResource(R.xml.misc_prefernces);
+					addPreferencesFromResource(R.xml.settings_misc);
 				} else if (i.getAction().equals(
 						"de.azapps.mirakel.preferences.BACKUP")) {
-					addPreferencesFromResource(R.xml.backup_prefernces);
+					addPreferencesFromResource(R.xml.settings_backup);
 				} else if (i.getAction().equals(
 						"de.azapps.mirakel.preferences.SYNC")) {
-					addPreferencesFromResource(R.xml.sync_prefernces);
+					addPreferencesFromResource(R.xml.settings_sync);
 				} else if (i.getAction().equals(
 						"de.azapps.mirakel.preferences.SPECIAL_LISTS")) {
 					startActivity(new Intent(this, SpecialListsSettingsActivity.class));
@@ -257,7 +257,7 @@ public class SettingsActivity extends PreferenceActivity {
 	@SuppressLint("NewApi")
 	@Override
 	public void onBuildHeaders(List<Header> target) {
-		loadHeadersFromResource(R.xml.preferences, target);
+		loadHeadersFromResource(R.xml.settings, target);
 		mHeaders = target;
 	}
 

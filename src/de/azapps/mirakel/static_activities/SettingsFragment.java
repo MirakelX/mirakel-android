@@ -43,23 +43,23 @@ public class SettingsFragment extends PreferenceFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		if (getArguments().getString("type").equals("gui")) {
-			addPreferencesFromResource(R.xml.gui_prefernces);
+			addPreferencesFromResource(R.xml.settings_gui);
 		} else if (getArguments().getString("type").equals("notification")) {
-			addPreferencesFromResource(R.xml.notification_prefernces);
+			addPreferencesFromResource(R.xml.settings_notifications);
 		} else if (getArguments().getString("type").equals("backup")) {
-			addPreferencesFromResource(R.xml.backup_prefernces);
+			addPreferencesFromResource(R.xml.settings_backup);
 		} else if (getArguments().getString("type").equals("sync")) {
-			addPreferencesFromResource(R.xml.sync_prefernces);
+			addPreferencesFromResource(R.xml.settings_sync);
 		} else if (getArguments().getString("type").equals("misc")) {
-			addPreferencesFromResource(R.xml.misc_prefernces);
+			addPreferencesFromResource(R.xml.settings_misc);
 		} else if (getArguments().getString("type").equals("about")) {
-			addPreferencesFromResource(R.xml.about_prefernces);
+			addPreferencesFromResource(R.xml.settings_about);
 		} else if (getArguments().getString("type").equals("speciallists")) {
 			startActivity(new Intent(getActivity(), SpecialListsSettingsActivity.class));
 			if (!getResources().getBoolean(R.bool.isTablet))
 				getActivity().finish();
 			else {
-				addPreferencesFromResource(R.xml.notification_prefernces);
+				addPreferencesFromResource(R.xml.settings_notifications);
 			}
 		} else {
 			Log.wtf(TAG, "unkown prefernce");

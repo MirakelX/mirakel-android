@@ -67,7 +67,7 @@ public class SpecialListsSettingsFragment extends PreferenceFragment implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		addPreferencesFromResource(R.xml.special_list_settings);
+		addPreferencesFromResource(R.xml.settings_special_list);
 		Bundle b = getArguments();
 		if (b != null) {
 			Log.d(TAG, "id= " + getArguments().getInt("id"));

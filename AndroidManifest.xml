@@ -162,7 +162,7 @@
 
             <meta-data
                 android:name="android.content.SyncAdapter"
-                android:resource="@xml/syncadapter" >
+                android:resource="@xml/adapter_sync" >
             </meta-data>
         </service>
 
@@ -195,7 +195,7 @@
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/widget_provider" />
+                android:resource="@xml/provider_widget" />
         </receiver>
         <receiver
             android:name="de.azapps.mirakel.reminders.ReminderAlarm"

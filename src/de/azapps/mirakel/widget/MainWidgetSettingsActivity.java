@@ -43,7 +43,7 @@ public class MainWidgetSettingsActivity extends PreferenceActivity {
 			setTheme(R.style.AppBaseThemeDARK);
 		super.onCreate(savedInstanceState);
 		if (VERSION.SDK_INT < VERSION_CODES.HONEYCOMB) {
-			addPreferencesFromResource(R.xml.main_widget_preferences);
+			addPreferencesFromResource(R.xml.settings_widget);
 			new PreferencesHelper(this).setFunctionsWidget();
 		} else {
 			// Display the fragment as the main content.
