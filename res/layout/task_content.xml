@@ -22,5 +22,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="20dp"
-    android:drawableLeft="@android:drawable/ic_menu_edit"
+    android:paddingLeft="@dimen/task_padding"
+    android:paddingRight="@dimen/task_padding"
     android:textAppearance="?android:attr/textAppearanceMedium" />

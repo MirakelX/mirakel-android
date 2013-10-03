@@ -21,4 +21,6 @@
     android:id="@+id/task_reminder"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/task_padding"
+    android:paddingRight="@dimen/task_padding"
     android:textAppearance="?android:attr/textAppearanceLarge" />

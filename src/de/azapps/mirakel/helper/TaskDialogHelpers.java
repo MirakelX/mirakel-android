@@ -14,6 +14,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Pair;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -39,6 +40,14 @@ import de.azapps.mirakelandroid.R;
 
 public class TaskDialogHelpers {
 	protected static final String TAG = "TaskDialogHelpers";
+	private static final DialogInterface.OnClickListener dialogDoNothing = new DialogInterface.OnClickListener() {
+
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+			// Nothing
+
+		}
+	};
 
 	public static void handlePriority(final Context ctx, final Task task,
 			final Helpers.ExecInterface onSuccess) {
@@ -46,13 +55,13 @@ public class TaskDialogHelpers {
 		final String[] t = { "2", "1", "0", "-1", "-2" };
 		AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
 		builder.setTitle(R.string.task_change_prio_title);
-		builder.setSingleChoiceItems(t, 2-task.getPriority(),
+		builder.setSingleChoiceItems(t, 2 - task.getPriority(),
 				new DialogInterface.OnClickListener() {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						dialog.dismiss();
-						task.setPriority(2-which);
+						task.setPriority(2 - which);
 						safeSafeTask(ctx, task);
 						onSuccess.exec();
 					}
@@ -152,17 +161,41 @@ public class TaskDialogHelpers {
 
 							}
 						})
-				.setNegativeButton(android.R.string.cancel,
+				.setNegativeButton(android.R.string.cancel, dialogDoNothing)
+				.show();
+
+	}
+
+	public static void handleContent(final MainActivity context, final Task task) {
+
+		final EditText editTxt = new EditText(context);
+		editTxt.setText(task.getContent());
+		final AlertDialog dialog = new AlertDialog.Builder(context)
+				.setTitle(R.string.change_content)
+				.setView(editTxt)
+				.setPositiveButton(android.R.string.ok,
 						new DialogInterface.OnClickListener() {
 
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
-								// Nothing
+								task.setContent(editTxt.getText().toString());
+								context.saveTask(task);
 
 							}
-						}).show();
-
+						})
+				.setNegativeButton(android.R.string.cancel,dialogDoNothing).create();
+		dialog.show();
+		editTxt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				if (hasFocus) {
+					dialog.getWindow()
+							.setSoftInputMode(
+									WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+				}
+			}
+		});
 	}
 
 	private static String searchString;
@@ -364,10 +397,10 @@ public class TaskDialogHelpers {
 										}
 										Task t = Semantic.createTask(
 												newTaskEdit.getText()
-														.toString(), list,
+														.toString(),
+												list,
 												settings.getBoolean(
-														"semanticNewTask",
-														true));
+														"semanticNewTask", true));
 										try {
 											task.addSubtask(t);
 										} catch (NoSuchListException e) {
@@ -408,18 +441,7 @@ public class TaskDialogHelpers {
 							}
 
 						})
-				.setNegativeButton(android.R.string.cancel,
-						new DialogInterface.OnClickListener() {
-
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								// Nothing
-								dialog.dismiss();
-
-							}
-
-						}).show();
+				.setNegativeButton(android.R.string.cancel,dialogDoNothing).show();
 		if (!settings.getBoolean("subtaskDefaultNew", true)) {
 			subtaskSelectOld.performClick();
 		}
@@ -486,17 +508,7 @@ public class TaskDialogHelpers {
 								adapter.setData(task);
 							}
 						})
-				.setNegativeButton(android.R.string.cancel,
-						new DialogInterface.OnClickListener() {
-
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								// Nothing
-
-							}
-
-						}).show();
+				.setNegativeButton(android.R.string.cancel,dialogDoNothing).show();
 
 	}
 

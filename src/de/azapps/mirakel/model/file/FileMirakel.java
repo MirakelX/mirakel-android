@@ -86,6 +86,8 @@ public class FileMirakel extends FileBase {
 	}
 
 	public static FileMirakel newFile(Task task, String file_path) {
+		if(file_path==null)
+			return null;
 		try {
 			File osFile = new File(file_path);
 

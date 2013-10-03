@@ -20,48 +20,49 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:padding="@dimen/task_padding" >
 
-        <CheckBox
-            android:id="@+id/task_done"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+    <CheckBox
+        android:id="@+id/task_done"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
-        <ViewSwitcher
-            android:id="@+id/switch_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ellipsize="end"
-            android:gravity="center" >
-
-            <TextView
-                android:id="@+id/task_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-
-            <EditText
-                android:id="@+id/edit_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:imeOptions="actionDone"
-                android:inputType="text"
-                android:singleLine="true"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-        </ViewSwitcher>
+    <ViewSwitcher
+        android:id="@+id/switch_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:gravity="center" >
 
         <TextView
-            android:id="@+id/task_prio"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_weight="0"
-            android:background="@drawable/priority_rectangle"
+            android:id="@+id/task_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
             android:gravity="center"
-            android:textSize="18sp" />
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <EditText
+            android:id="@+id/edit_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:singleLine="true"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+    </ViewSwitcher>
+
+    <TextView
+        android:id="@+id/task_prio"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_weight="0"
+        android:background="@drawable/priority_rectangle"
+        android:gravity="center"
+        android:textSize="18sp" />
 
 </LinearLayout>

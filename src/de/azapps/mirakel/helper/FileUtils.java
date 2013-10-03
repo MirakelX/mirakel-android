@@ -21,6 +21,8 @@ public class FileUtils {
 
 	public static String getPath(Context context, Uri uri)
 			throws URISyntaxException {
+		if(uri==null)
+			return null;
 		if ("content".equalsIgnoreCase(uri.getScheme())) {
 			String[] projection = { "_data" };
 			Cursor cursor = null;

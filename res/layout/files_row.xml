@@ -23,7 +23,8 @@
     android:layout_height="wrap_content"
     android:descendantFocusability="blocksDescendants"
     android:orientation="horizontal"
-    android:padding="5dp" >
+    android:paddingLeft="@dimen/task_padding"
+    android:paddingRight="@dimen/task_padding" >
 
     <ImageView
         android:id="@+id/file_image"
@@ -41,15 +42,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
+        android:paddingLeft="@dimen/text_padding"
             android:textIsSelectable="false"
-            android:textSize="18sp" 
-            android:text="bar"/>
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/file_path"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
+            android:paddingLeft="@dimen/text_padding"
             android:textColor="@color/Grey"
             android:textIsSelectable="false"
             android:textSize="12sp" />

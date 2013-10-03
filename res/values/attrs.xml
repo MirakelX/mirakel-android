@@ -16,5 +16,7 @@
         <attr name="bar_pointer_halo_radius" format="dimension" />
     </declare-styleable>
     
+        <!-- Background drawable for standalone items that need focus/pressed states. -->
+        <attr name="selectableItemBackgroundM" format="reference" />
 
 </resources>

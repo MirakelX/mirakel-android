@@ -5,14 +5,17 @@
     tools:ignore="missingTitle" >
     <item
         android:id="@+id/menu_delete"
+        android:title="@string/menu_delete_list"
         mirakel:showAsAction="always"
         android:icon="@android:drawable/ic_menu_delete"/>
     <item
+        android:title="@string/menu_color"
         android:id="@+id/menu_color"
         mirakel:showAsAction="always"
         android:icon="@android:drawable/ic_menu_set_as"/>
     <!-- TODO need better icon -->
     <item
+        android:title="@string/menu_edit_list"
         android:id="@+id/edit_list"
         mirakel:showAsAction="always"
         android:icon="@android:drawable/ic_menu_edit"/>

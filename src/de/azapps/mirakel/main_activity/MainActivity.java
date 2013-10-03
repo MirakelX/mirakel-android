@@ -295,8 +295,7 @@ public class MainActivity extends ActionBarActivity implements
 		updateLists();
 		getMenuInflater().inflate(R.menu.main, menu);
 		this.menu = menu;
-		if (currentPosition != TASKS_FRAGMENT)
-			loadMenu(currentPosition, true);
+		loadMenu(currentPosition, false);
 		return true;
 	}
 
@@ -1066,7 +1065,7 @@ public class MainActivity extends ActionBarActivity implements
 	 * 
 	 * @param task
 	 */
-	void saveTask(Task task) {
+	public void saveTask(Task task) {
 		Log.v(TAG, "Saving task… (task:" + task.getId() + " – current:"
 				+ currentTask.getId());
 		safeSaveTask(task);
