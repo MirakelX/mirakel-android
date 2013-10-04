@@ -101,6 +101,7 @@ public class Semantic extends SemanticBase {
 			cursor.close();
 			return s;
 		}
+		cursor.close();
 		return null;
 	}
 
@@ -130,6 +131,7 @@ public class Semantic extends SemanticBase {
 			all.add(cursorToSemantic(c));
 			c.moveToNext();
 		}
+		c.close();
 		return all;
 	}
 
