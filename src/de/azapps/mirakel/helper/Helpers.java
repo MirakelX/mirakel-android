@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import org.joda.time.LocalDate;
@@ -14,7 +15,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
@@ -444,7 +447,7 @@ public class Helpers {
 		// Create a matrix for the scaling and add the scaling data
 		Matrix matrix = new Matrix();
 		matrix.postScale(scale, scale);
-		//matrix.postRotate(rotate);
+		// matrix.postRotate(rotate);
 
 		// Create a new bitmap and convert it to a format understood
 
@@ -463,8 +466,8 @@ public class Helpers {
 
 	/** Create a file Uri for saving an image or video */
 	public static Uri getOutputMediaFileUri(int type) {
-		File file=getOutputMediaFile(type);
-		if(file==null)
+		File file = getOutputMediaFile(type);
+		if (file == null)
 			return null;
 		return Uri.fromFile(file);
 	}
@@ -490,8 +493,8 @@ public class Helpers {
 		}
 
 		// Create a media file name
-		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",Locale.getDefault())
-				.format(new Date());
+		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",
+				Locale.getDefault()).format(new Date());
 		File mediaFile;
 		if (type == MEDIA_TYPE_IMAGE) {
 			mediaFile = new File(mediaStorageDir.getPath() + File.separator
@@ -504,6 +507,14 @@ public class Helpers {
 		}
 
 		return mediaFile;
+	}
+
+	public static boolean isIntentAvailable(Context context, String action) {
+		final PackageManager packageManager = context.getPackageManager();
+		final Intent intent = new Intent(action);
+		List<ResolveInfo> list = packageManager.queryIntentActivities(intent,
+				PackageManager.MATCH_DEFAULT_ONLY);
+		return list.size() > 0;
 	}
 
 }

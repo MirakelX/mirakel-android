@@ -218,7 +218,8 @@ public class TasksFragment extends Fragment {
 				}
 			});
 		}
-		if (!main.getPreferences().getBoolean("useBtnCamera", true)) {
+		if (!main.getPreferences().getBoolean("useBtnCamera", true)
+				|| !Helpers.isIntentAvailable(main, MediaStore.ACTION_IMAGE_CAPTURE)) {
 			view.findViewById(R.id.btnCamera).setVisibility(View.GONE);
 		} else {
 			ImageButton btnCamera = (ImageButton) view
