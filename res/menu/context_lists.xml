@@ -8,12 +8,19 @@
         android:title="@string/menu_delete_list"
         mirakel:showAsAction="always"
         android:icon="@android:drawable/ic_menu_delete"/>
-    <item
-        android:title="@string/menu_color"
-        android:id="@+id/menu_color"
-        mirakel:showAsAction="always"
-        android:icon="@android:drawable/ic_menu_set_as"/>
+    
     <!-- TODO need better icon -->
+    <item
+        android:id="@+id/menu_color"
+        android:icon="@android:drawable/ic_menu_set_as"
+        android:title="@string/menu_color"
+        mirakel:showAsAction="always"/>
+    
+    <item
+        android:title="@string/share_list"
+        android:id="@+id/share_list_from_lists"
+        mirakel:showAsAction="always"
+        android:icon="@android:drawable/ic_menu_share"/>
     <item
         android:title="@string/menu_edit_list"
         android:id="@+id/edit_list"

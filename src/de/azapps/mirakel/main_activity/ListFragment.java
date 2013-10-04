@@ -39,14 +39,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.AbsListView.MultiChoiceModeListener;
 
 import com.larswerkman.colorpicker.ColorPicker;
 import com.larswerkman.colorpicker.SVBar;
 
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakelandroid.R;
@@ -173,24 +174,26 @@ public class ListFragment extends Fragment {
 				main.setCurrentList(list, item);
 			}
 		});
-		if(Build.VERSION.SDK_INT<Build.VERSION_CODES.HONEYCOMB){
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
 			listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-	
+
 				@Override
-				public boolean onItemLongClick(AdapterView<?> parent, View item,
-						int position, final long id) {
-	
+				public boolean onItemLongClick(AdapterView<?> parent,
+						View item, int position, final long id) {
+
 					AlertDialog.Builder builder = new AlertDialog.Builder(
 							getActivity());
 					ListMirakel list = values.get((int) id);
 					builder.setTitle(list.getName());
-					List<CharSequence> items = new ArrayList<CharSequence>(Arrays
-							.asList(getActivity().getResources().getStringArray(
-									R.array.list_actions_items)));
-	
-					builder.setItems(items.toArray(new CharSequence[items.size()]),
+					List<CharSequence> items = new ArrayList<CharSequence>(
+							Arrays.asList(getActivity().getResources()
+									.getStringArray(R.array.list_actions_items)));
+
+					builder.setItems(
+							items.toArray(new CharSequence[items.size()]),
 							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int item) {
+								public void onClick(DialogInterface dialog,
+										int item) {
 									ListMirakel list = values.get((int) id);
 									switch (item) {
 									case LIST_COLOR:
@@ -205,14 +208,14 @@ public class ListFragment extends Fragment {
 									}
 								}
 							});
-	
+
 					AlertDialog dialog = builder.create();
 					dialog.show();
-	
+
 					return false;
 				}
 			});
-		}else{
+		} else {
 			listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 			if (adapter != null) {
 				adapter.resetSelected();
@@ -223,6 +226,8 @@ public class ListFragment extends Fragment {
 				@Override
 				public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
 					menu.findItem(R.id.edit_list).setVisible(
+							adapter.getSelectedCount() <= 1);
+					menu.findItem(R.id.share_list_from_lists).setVisible(
 							adapter.getSelectedCount() <= 1);
 					return false;
 				}
@@ -244,7 +249,7 @@ public class ListFragment extends Fragment {
 				@Override
 				public boolean onActionItemClicked(ActionMode mode,
 						MenuItem item) {
-					List<ListMirakel>lists=adapter.getSelected();
+					List<ListMirakel> lists = adapter.getSelected();
 					switch (item.getItemId()) {
 					case R.id.menu_delete:
 						main.handleDestroyList(lists);
@@ -254,6 +259,9 @@ public class ListFragment extends Fragment {
 						break;
 					case R.id.edit_list:
 						editList(lists.get(0));
+						break;
+					case R.id.share_list_from_lists:
+						Helpers.share(getActivity(), lists.get(0));
 						break;
 					}
 					mode.finish();
@@ -286,28 +294,29 @@ public class ListFragment extends Fragment {
 	}
 
 	void editColor(final ListMirakel list) {
-		List<ListMirakel>l=new ArrayList<ListMirakel>();
+		List<ListMirakel> l = new ArrayList<ListMirakel>();
 		l.add(list);
 		editColor(l);
 	}
 
 	void editColor(final List<ListMirakel> lists) {
-		final View v=((LayoutInflater) main.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.color_picker, null);
-		final ColorPicker cp=((ColorPicker)v.findViewById(R.id.color_picker));
-		if(lists.size()==1){
+		final View v = ((LayoutInflater) main
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
+				R.layout.color_picker, null);
+		final ColorPicker cp = ((ColorPicker) v.findViewById(R.id.color_picker));
+		if (lists.size() == 1) {
 			cp.setColor(lists.get(0).getColor());
 			cp.setOldCenterColor(lists.get(0).getColor());
 		}
-		final SVBar op =((SVBar)v.findViewById(R.id.svbar_color_picker));
+		final SVBar op = ((SVBar) v.findViewById(R.id.svbar_color_picker));
 		cp.addSVBar(op);
-		new AlertDialog.Builder(main)
-		.setView(v)
-		.setTitle(main.getString(R.string.list_change_color))
-		.setPositiveButton(R.string.set_color, new OnClickListener() {
+		new AlertDialog.Builder(main).setView(v)
+				.setTitle(main.getString(R.string.list_change_color))
+				.setPositiveButton(R.string.set_color, new OnClickListener() {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						for(ListMirakel list:lists){
+						for (ListMirakel list : lists) {
 							list.setColor(cp.getColor());
 							list.save();
 						}
@@ -315,17 +324,17 @@ public class ListFragment extends Fragment {
 
 					}
 				})
-		.setNegativeButton(R.string.unset_color, new OnClickListener() {
+				.setNegativeButton(R.string.unset_color, new OnClickListener() {
 
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				for(ListMirakel list:lists){
-					list.setColor(0);
-					list.save();
-				}
-				main.getListFragment().update();
-			}
-		}).show();
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						for (ListMirakel list : lists) {
+							list.setColor(0);
+							list.save();
+						}
+						main.getListFragment().update();
+					}
+				}).show();
 	}
 
 	/**
