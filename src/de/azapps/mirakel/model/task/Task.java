@@ -302,8 +302,8 @@ public class Task extends TaskBase {
 		return FileMirakel.getForTask(this);
 	}
 
-	public FileMirakel addFile(String path) {
-		return FileMirakel.newFile(this, path);
+	public FileMirakel addFile(Context ctx, String path) {
+		return FileMirakel.newFile(ctx, this, path);
 	}
 
 	// Static Methods

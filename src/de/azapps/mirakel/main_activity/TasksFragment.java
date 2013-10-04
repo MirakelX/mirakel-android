@@ -231,6 +231,8 @@ public class TasksFragment extends Fragment {
 								MediaStore.ACTION_IMAGE_CAPTURE);
 						Uri fileUri = Helpers
 								.getOutputMediaFileUri(Helpers.MEDIA_TYPE_IMAGE);
+						if(fileUri==null)
+							return;
 						main.setFileUri(fileUri);
 						cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
 						getActivity().startActivityForResult(cameraIntent,

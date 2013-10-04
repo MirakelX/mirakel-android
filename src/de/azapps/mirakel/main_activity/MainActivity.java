@@ -392,7 +392,7 @@ public class MainActivity extends ActionBarActivity implements
 			if (intent != null) {
 				final String file_path = Helpers.getPathFromUri(
 						intent.getData(), this);
-				if (FileMirakel.newFile(currentTask, file_path) == null) {
+				if (FileMirakel.newFile(this,currentTask, file_path) == null) {
 					Toast.makeText(this, getString(R.string.file_vanished),
 							Toast.LENGTH_SHORT).show();
 				} else {
@@ -429,7 +429,7 @@ public class MainActivity extends ActionBarActivity implements
 							getString(R.string.photo_default_title)),
 							currentList, false);
 					safeSaveTask(task);
-					task.addFile(Helpers.getPathFromUri(fileUri, this));
+					task.addFile(this,Helpers.getPathFromUri(fileUri, this));
 					setCurrentList(task.getList());
 					setCurrentTask(task, true);
 
@@ -518,12 +518,12 @@ public class MainActivity extends ActionBarActivity implements
 
 		if (Intent.ACTION_SEND.equals(action) && type != null) {
 			Uri uri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
-			t.addFile(Helpers.getPathFromUri(uri, this));
+			t.addFile(this,Helpers.getPathFromUri(uri, this));
 		} else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
 			ArrayList<Uri> imageUris = intent
 					.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
 			for (Uri uri : imageUris) {
-				t.addFile(Helpers.getPathFromUri(uri, this));
+				t.addFile(this,Helpers.getPathFromUri(uri, this));
 			}
 		}
 

@@ -14,6 +14,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
 import android.util.Log;
+import android.util.TypedValue;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Helpers;
@@ -85,8 +86,8 @@ public class FileMirakel extends FileBase {
 		return m.create();
 	}
 
-	public static FileMirakel newFile(Task task, String file_path) {
-		if(file_path==null)
+	public static FileMirakel newFile(Context ctx, Task task, String file_path) {
+		if (file_path == null)
 			return null;
 		try {
 			File osFile = new File(file_path);
@@ -115,7 +116,10 @@ public class FileMirakel extends FileBase {
 						.getAbsolutePath());
 				if (myBitmap != null) {
 
-					myBitmap = Helpers.getScaleImage(myBitmap, 150, rotate);
+					float size = TypedValue.applyDimension(
+							TypedValue.COMPLEX_UNIT_DIP, 150, ctx
+									.getResources().getDisplayMetrics());
+					myBitmap = Helpers.getScaleImage(myBitmap, size, rotate);
 					// create directory if not exists
 
 					boolean success = true;

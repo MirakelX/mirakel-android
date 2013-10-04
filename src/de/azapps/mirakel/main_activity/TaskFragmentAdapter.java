@@ -27,7 +27,6 @@ import java.util.Locale;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Context;
@@ -45,7 +44,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
@@ -161,6 +159,7 @@ public class TaskFragmentAdapter extends
 				};
 				break;
 			case SUBTITLE_SUBTASKS:
+				pencilButton = false;
 				title = context.getString(R.string.subtasks);
 				action = new OnClickListener() {
 					@Override
@@ -170,6 +169,7 @@ public class TaskFragmentAdapter extends
 				};
 				break;
 			case SUBTITLE_FILES:
+				pencilButton = false;
 				title = context.getString(R.string.files);
 				action = new OnClickListener() {
 					@Override

@@ -137,6 +137,8 @@ public class Mirakel extends Application {
 		ListMirakel.close();
 		Task.close();
 		SpecialList.close();
+		FileMirakel.close();
+		Semantic.close();
 	}
 
 	public static SQLiteDatabase getWritableDatabase() {

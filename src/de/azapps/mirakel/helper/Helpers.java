@@ -425,7 +425,7 @@ public class Helpers {
 	 * Scaling down the image
 	 * "Source: http://www.androiddevelopersolution.com/2012/09/bitmap-how-to-scale-down-image-for.html"
 	 */
-	public static Bitmap getScaleImage(Bitmap bitmap, int boundBoxInDp,
+	public static Bitmap getScaleImage(Bitmap bitmap, float boundBoxInDp,
 			int rotate) {
 
 		// Get current dimensions
@@ -444,14 +444,14 @@ public class Helpers {
 		// Create a matrix for the scaling and add the scaling data
 		Matrix matrix = new Matrix();
 		matrix.postScale(scale, scale);
-		matrix.postRotate(rotate);
+		//matrix.postRotate(rotate);
 
 		// Create a new bitmap and convert it to a format understood
 
 		// by the
 		// ImageView
 		Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height,
-				matrix, true);
+				matrix, false);
 
 		// Apply the scaled bitmap
 		return scaledBitmap;
@@ -463,7 +463,10 @@ public class Helpers {
 
 	/** Create a file Uri for saving an image or video */
 	public static Uri getOutputMediaFileUri(int type) {
-		return Uri.fromFile(getOutputMediaFile(type));
+		File file=getOutputMediaFile(type);
+		if(file==null)
+			return null;
+		return Uri.fromFile(file);
 	}
 
 	/** Create a File for saving an image or video */
