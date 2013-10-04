@@ -118,6 +118,7 @@ public class Semantic extends SemanticBase {
 			semantics.put(s.getCondition(), s);
 			c.moveToNext();
 		}
+		c.close();
 	}
 
 	public static List<Semantic> all() {
