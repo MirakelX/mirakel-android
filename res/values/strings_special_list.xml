@@ -75,6 +75,7 @@
     <string name="where_like_contain_text">Contains</string>
     <string name="where_like_begin_text">Beginns with</string>
     <string name="where_like_end_text">Ends with</string>
+    <string name="delete">Delete</string>
 
     <string-array name="due_day_year_values">
         <item>Day</item>
