@@ -137,8 +137,12 @@ class TaskBase {
 	}
 
 	public void setContent(String content) {
+		if(content!=null){ 
 		this.content = StringUtils.replaceEach(content.trim(), new String[] {
 				"\\n", "\\\"", "\b" }, new String[] { "\n", "\"", "" });
+		} else {
+			this.content=null;
+		}
 		edited.put("content", true);
 	}
 
