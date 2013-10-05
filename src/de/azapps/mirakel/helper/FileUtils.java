@@ -109,6 +109,8 @@ public class FileUtils {
 
 	public static void writeToFile(File f, String s) {
 		try {
+			if(f.exists())
+				f.delete();
 			BufferedWriter out = new BufferedWriter(new FileWriter(f));
 			out.write(s);
 			out.close();

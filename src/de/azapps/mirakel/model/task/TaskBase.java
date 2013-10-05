@@ -24,6 +24,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import android.content.ContentValues;
 
 import com.google.gson.Gson;
@@ -128,15 +130,19 @@ class TaskBase {
 	}
 
 	public String getContent() {
-		try {
-			return content.trim().replace("\\n", "\n");
-		} catch (NullPointerException e) {
+		if (content == null)
 			return "";
-		}
+		else
+			return content;
 	}
 
 	public void setContent(String content) {
-		this.content = content;
+		if(content!=null){ 
+		this.content = StringUtils.replaceEach(content.trim(), new String[] {
+				"\\n", "\\\"", "\b" }, new String[] { "\n", "\"", "" });
+		} else {
+			this.content=null;
+		}
 		edited.put("content", true);
 	}
 
@@ -248,6 +254,7 @@ class TaskBase {
 	boolean isEdited() {
 		return edited.size() > 0;
 	}
+
 	void clearEdited() {
 		edited.clear();
 	}

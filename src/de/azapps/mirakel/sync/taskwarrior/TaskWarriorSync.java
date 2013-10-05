@@ -71,7 +71,7 @@ public class TaskWarriorSync {
 		sync.set("user", _user);
 		sync.set("key", _key);
 		// split big sync into smaller pieces
-		short taskNumber = 5;
+		short taskNumber = 10;
 		int parts = local_tasks.size() / taskNumber < 1 ? 1 : local_tasks
 				.size() / taskNumber;
 		for (int i = 0; i < parts; i++) {
@@ -347,7 +347,7 @@ public class TaskWarriorSync {
 		/*
 		 * An annotation in taskd is a line of content in Mirakel!
 		 */
-		String annotations[] = t.getContent().split("\n");
+		String annotations[] = t.getContent().replace("\"", "\\\"").split("\n");
 		boolean first = true;
 		for (String a : annotations) {
 			if (first)
