@@ -50,6 +50,10 @@ public class CalDavSync {
 			
 			@Override
 			public void after_exec(String result) {
+				if(result==null||result.equals("")){
+					Log.d(TAG,"empty resonse");
+					return;
+				}
 				List<Task> fromServer = parseResponse(result.replace("\\n", "\n"));
 				if(fromServer!=null){
 					Log.i(TAG,"got "+fromServer.size()+" tasks");
