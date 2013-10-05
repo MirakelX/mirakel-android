@@ -204,7 +204,7 @@ public class MainActivity extends ActionBarActivity implements
 			return true;
 		case R.id.menu_sort_lists:
 			boolean t = !item.isChecked();
-			listFragment.enable_drop(t);
+			listFragment.enableDrop(t);
 			item.setChecked(t);
 			return true;
 		case R.id.menu_settings_list:
@@ -319,7 +319,7 @@ public class MainActivity extends ActionBarActivity implements
 			getSupportActionBar().setTitle(getString(R.string.list_title));
 			break;
 		case TASKS_FRAGMENT:
-			listFragment.enable_drop(false);
+			listFragment.enableDrop(false);
 			if (!isTablet)
 				newmenu = R.menu.tasks;
 			else

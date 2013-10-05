@@ -20,7 +20,6 @@ package de.azapps.mirakel.main_activity;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import android.annotation.SuppressLint;
@@ -51,7 +50,6 @@ import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.main_activity.TaskFragmentAdapter.TYPE;
 import de.azapps.mirakel.model.file.FileMirakel;
-import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 

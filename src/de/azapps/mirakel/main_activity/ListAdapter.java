@@ -95,7 +95,8 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 		holder.listRowName.setTag(list);
 		holder.listRowTaskNumber.setText("" + list.countTasks());
 		viewsForLists.put(list.getId(), row);
-		Helpers.setListColorBackground(list, row, darkTheme);
+		int w=row.getWidth()==0?parent.getWidth():row.getWidth();
+		Helpers.setListColorBackground(list, row, darkTheme,w);
 		if (selected.get(position)) {
 			row.setBackgroundColor(context.getResources().getColor(
 					darkTheme ? R.color.highlighted_text_holo_dark

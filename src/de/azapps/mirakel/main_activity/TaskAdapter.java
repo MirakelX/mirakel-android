@@ -96,7 +96,6 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 		viewsForTasks.put(task.getId(), row);
 		SharedPreferences settings = PreferenceManager
 				.getDefaultSharedPreferences(context);
-
 		if (selected.get(position)) {
 			row.setBackgroundColor(context.getResources().getColor(
 					darkTheme ? R.color.highlighted_text_holo_dark
@@ -105,7 +104,8 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 			if (settings.getBoolean("colorize_tasks_everywhere", false)
 					|| ((MainActivity) context).getCurrentList()
 							.isSpecialList()) {
-				Helpers.setListColorBackground(task.getList(), row, darkTheme);
+				int w=row.getWidth()==0?parent.getWidth():row.getWidth();
+				Helpers.setListColorBackground(task.getList(), row, darkTheme,w);
 			} else {
 				row.setBackgroundColor(context.getResources().getColor(
 						android.R.color.transparent));

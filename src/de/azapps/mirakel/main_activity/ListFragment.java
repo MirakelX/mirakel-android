@@ -102,9 +102,10 @@ public class ListFragment extends Fragment {
 		return view;
 	}
 
-	public void enable_drop(boolean drag) {
+	public void enableDrop(boolean drag) {
 		enableDrag = drag;
-		update();
+		adapter.setEnableDrop(drag);
+		adapter.notifyDataSetInvalidated();
 	}
 
 	@SuppressLint("NewApi")
