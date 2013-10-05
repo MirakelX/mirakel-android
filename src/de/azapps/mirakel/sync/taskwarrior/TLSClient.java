@@ -182,6 +182,7 @@ public class TLSClient {
 			}
 		}
 		try {
+			Log.d(TAG, "connected to " + host + ":" + port);
 			_socket = (SSLSocket) sslFact.createSocket();
 			// _socket.setEnabledProtocols(new String[]{"TLSv1.2"});
 			_socket.setUseClientMode(true);
