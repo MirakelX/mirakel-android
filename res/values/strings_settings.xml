@@ -83,6 +83,7 @@
 
     <!-- Special Lists -->
     <string name="special_lists_click">Manage Special Lists</string>
+    <string name="special_lists_new">New Special List</string>
     <string name="settings_misc">Misc</string>
     <!-- Backup -->
     <string name="settings_backup">Backup and Import</string>

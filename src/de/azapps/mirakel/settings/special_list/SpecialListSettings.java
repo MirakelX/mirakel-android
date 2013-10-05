@@ -1,3 +1,21 @@
+/*******************************************************************************
+ * Mirakel is an Android App for managing your ToDo-Lists
+ * 
+ * Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
+ * 
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     any later version.
+ * 
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ * 
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
 package de.azapps.mirakel.settings.special_list;
 
 import java.util.List;
@@ -32,21 +50,21 @@ import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.R;
 
-public class SpecialListPreferences implements OnPreferenceChangeListener {
+public class SpecialListSettings implements OnPreferenceChangeListener {
 	private SpecialList specialList;
 	private boolean v4_0;
 	private Object settings;
 	private Context ctx;
 
 	@SuppressLint("NewApi")
-	public SpecialListPreferences(SpecialListsSettingsFragment p, SpecialList s) {
+	public SpecialListSettings(SpecialListsSettingsFragment p, SpecialList s) {
 		specialList = s;
 		v4_0 = true;
 		settings = p;
 		ctx = p.getActivity();
 	}
 
-	public SpecialListPreferences(SpecialListsSettingsActivity p,
+	public SpecialListSettings(SpecialListsSettingsActivity p,
 			SpecialList specialList) {
 		ctx = p;
 		settings = p;

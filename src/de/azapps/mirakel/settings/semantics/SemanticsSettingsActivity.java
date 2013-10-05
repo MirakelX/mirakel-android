@@ -18,68 +18,91 @@
  ******************************************************************************/
 package de.azapps.mirakel.settings.semantics;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
-import android.os.Bundle;
-import android.preference.PreferenceActivity;
-import android.preference.PreferenceManager;
-import android.view.Gravity;
+import android.content.Intent;
+import android.os.Build;
+import android.util.Pair;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ImageButton;
 import de.azapps.mirakel.model.semantic.Semantic;
+import de.azapps.mirakel.settings.ListSettings;
 import de.azapps.mirakelandroid.R;
 
-public class SemanticsSettingsActivity extends PreferenceActivity {
+public class SemanticsSettingsActivity extends ListSettings {
 	@SuppressWarnings("unused")
 	private static final String TAG = "SpecialListsActivity";
-	private ImageButton addSemantic;
-	private List<Semantic> semantics = Semantic.all();;
-	private List<Header> mTarget;
-	private boolean clickOnLast = false;
+	private Semantic semantic;
+
+	private Semantic newSemantic() {
+		return Semantic.newSemantic(getString(R.string.semantic_new), null,
+				null, null);
+	}
 
 	@SuppressLint("NewApi")
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
-				"DarkTheme", false))
-			setTheme(R.style.AppBaseThemeDARK);
-		super.onCreate(savedInstanceState);
-		ActionBar actionBar = getActionBar();
-		actionBar.setTitle(R.string.settings_semantics_title);
-		actionBar.setDisplayHomeAsUpEnabled(true);
-
-		addSemantic = new ImageButton(this);
-		addSemantic.setBackgroundResource(android.R.drawable.ic_menu_add);
-		actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
-				ActionBar.DISPLAY_SHOW_CUSTOM);
-		actionBar.setCustomView(addSemantic, new ActionBar.LayoutParams(
-				ActionBar.LayoutParams.WRAP_CONTENT,
-				ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER_VERTICAL
-						| Gravity.RIGHT));
-		addSemantic.setOnClickListener(new OnClickListener() {
+	protected OnClickListener getAddOnClickListener() {
+		return new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				semantics.add(Semantic.newSemantic(
-						getString(R.string.semantic_new), null, null, null));
-				clickOnLast = true;
+				newSemantic();
+				clickOnLast();
 				invalidateHeaders();
-
 			}
-		});
-
+		};
 	}
 
 	@Override
-	@SuppressLint("NewApi")
-	public void onResume() {
-		super.onResume();
-		semantics = Semantic.all();
-		invalidateHeaders();
+	protected int getSettingsRessource() {
+		return R.xml.settings_semantics;
+	}
+
+	@Override
+	protected void setupSettings() {
+		semantic = Semantic.get(getIntent().getIntExtra("id", 0));
+		new SemanticsSettings(this, semantic).setup();
+	}
+
+	@Override
+	protected List<Pair<Integer, String>> getItems() {
+		List<Semantic> semantics = Semantic.all();
+		List<Pair<Integer, String>> items = new ArrayList<Pair<Integer, String>>();
+		for (Semantic s : semantics) {
+			items.add(new Pair<Integer, String>(s.getId(), s.getCondition()));
+		}
+		return items;
+	}
+
+	@Override
+	protected Class<?> getDestClass() {
+		return SemanticsSettingsActivity.class;
+	}
+
+	@Override
+	protected Class<?> getDestFragmentClass() {
+		return SemanticsSettingsFragment.class;
+	}
+
+	@Override
+	protected int getTitleRessource() {
+		return R.string.settings_semantics_title;
+	}
+
+	public boolean onCreateOptionsMenu(Menu menu) {
+		if (Build.VERSION_CODES.ICE_CREAM_SANDWICH > Build.VERSION.SDK_INT) {
+			if (getIntent().hasExtra("id")) {
+				menu.add(R.string.delete);
+			} else {
+				menu.add(R.string.add);
+			}
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -88,29 +111,23 @@ public class SemanticsSettingsActivity extends PreferenceActivity {
 		case android.R.id.home:
 			finish();
 			return true;
+		default:
+			if (item.getTitle().equals(getString(R.string.delete))) {
+				if (semantic != null) {
+					semantic.destroy();
+				}
+				finish();
+				return true;
+			} else if (item.getTitle().equals(getString(R.string.add))) {
+				Semantic s = newSemantic();
+				Intent intent = new Intent(this,
+						SemanticsSettingsActivity.class);
+				intent.putExtra("id", s.getId());
+				startActivity(intent);
+				return true;
+			}
+			break;
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
-	@SuppressLint("NewApi")
-	@Override
-	public void onBuildHeaders(List<Header> target) {
-		for (Semantic s : semantics) {
-			Bundle b = new Bundle();
-			b.putInt("id", s.getId());
-			Header header = new Header();
-			header.fragment = SemanticsSettingsFragment.class
-					.getCanonicalName();
-			header.title = s.getCondition();
-			header.fragmentArguments = b;
-			header.extras = b;
-			target.add(header);
-		}
-		if (clickOnLast) {
-			onHeaderClick(mTarget.get(mTarget.size() - 1), mTarget.size() - 1);
-			clickOnLast = false;
-		}
-		mTarget = target;
-	}
-
 }

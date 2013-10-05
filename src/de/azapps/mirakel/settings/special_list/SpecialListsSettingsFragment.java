@@ -74,7 +74,7 @@ public class SpecialListsSettingsFragment extends PreferenceFragment {
 					}
 				}
 			});
-			new SpecialListPreferences(this, specialList).setup();
+			new SpecialListSettings(this, specialList).setup();
 		} else {
 			Log.d(TAG, "bundle null");
 		}

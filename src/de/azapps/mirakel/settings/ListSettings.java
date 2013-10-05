@@ -20,18 +20,21 @@ package de.azapps.mirakel.settings;
 
 import java.util.List;
 
+import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
+import android.preference.Preference;
+import android.preference.Preference.OnPreferenceClickListener;
+import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBarActivity;
-import android.view.KeyEvent;
+import android.util.Pair;
+import android.view.Gravity;
 import android.view.Menu;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.view.MenuItem;
+import android.view.View.OnClickListener;
+import android.widget.ImageButton;
 import de.azapps.mirakelandroid.R;
 
 /**
@@ -44,151 +47,162 @@ import de.azapps.mirakelandroid.R;
  * @author az
  * 
  */
-public abstract class ListSettings extends ActionBarActivity {
-	/**
-	 * Returns an array of Strings, which the ListView should display
-	 * 
-	 * @return
-	 */
-	protected abstract List<String> getListContent();
+public abstract class ListSettings extends PreferenceActivity {
 
-	/**
-	 * Returns the Fragment with the Settings for one item
-	 * 
-	 * @return
-	 */
-	protected abstract Fragment getSettingsFragment();
+	protected abstract OnClickListener getAddOnClickListener();
 
-	/**
-	 * Returns an OnItemClickListener with the action which should be done, when
-	 * the user clicks on the Item
-	 * 
-	 * @return
-	 */
-	protected abstract OnItemClickListener getOnItemClickListener();
+	protected abstract int getSettingsRessource();
 
-	/**
-	 * Sets the default Item in the SettingsFragment. This function is only
-	 * called if the device is a Tablet.
-	 */
-	protected abstract void setDefaultItemInFragment();
+	protected abstract void setupSettings();
 
-	/**
-	 * This function is in the onCreate called
-	 */
-	protected void init() {
+	private boolean loaded = false;
+	private boolean clickOnLast = false;
+	private List<Header> mTarget;
 
-	}
+	protected abstract List<Pair<Integer, String>> getItems();
 
-	/**
-	 * Thus function is called when android redraws the ListView
-	 */
-	protected void updateList() {
+	protected abstract Class<?> getDestClass();
 
-	}
+	protected abstract Class<?> getDestFragmentClass();
 
-	/**
-	 * Returns the Layout of the list-activity
-	 * 
-	 * @return
-	 */
-	protected int getListLayout() {
-		return R.layout.activity_special_lists_settings_a;
-	}
+	protected abstract int getTitleRessource();
 
-	/**
-	 * Returns the View of the fragment-container
-	 * 
-	 * @return
-	 */
-	protected int getFragmentContainer() {
-		return R.id.special_lists_fragment_container;
-	}
-
-	/**
-	 * Returns the Menu for tablets
-	 * 
-	 * @return
-	 */
-	protected int getTabletMenu() {
-		return R.menu.special_list_tablet;
-	}
-
-	/**
-	 * Returns the Menu for Smartphones (of the ListView)
-	 * 
-	 * @return
-	 */
-	protected int getDefaultMenu() {
-		return R.menu.special_lists_settings;
-	}
-
+	@SuppressWarnings("deprecation")
+	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		init();
-		SharedPreferences preferences = PreferenceManager
-				.getDefaultSharedPreferences(this);
-		if (preferences.getBoolean("DarkTheme", false))
+		if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
+				"DarkTheme", false))
 			setTheme(R.style.AppBaseThemeDARK);
-		setContentView(getListLayout());
-		if (getResources().getBoolean(R.bool.isTablet)) {
-			FragmentTransaction transaction = getSupportFragmentManager()
-					.beginTransaction();
-
-			// Replace whatever is in the fragment_container view with this
-			// fragment,
-			// and add the transaction to the back stack so the user can
-			// navigate back
-			transaction.replace(getFragmentContainer(), getSettingsFragment());
-			transaction.addToBackStack(null);
-			transaction.commit();
-		}
-		// Show the Up button in the action bar.
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		update();
-	}
-
-	@Override
-	public boolean dispatchKeyEvent(KeyEvent event) {
-		if (event.getAction() == KeyEvent.ACTION_DOWN) {
-			switch (event.getKeyCode()) {
-			case KeyEvent.KEYCODE_BACK:
-				if (getResources().getBoolean(R.bool.isTablet)) {
-					finish();
-					return true;
-				} else {
-					return super.dispatchKeyEvent(event);
-				}
+		super.onCreate(savedInstanceState);
+		loaded = true;
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+			if (getIntent().hasExtra("id")) {
+				addPreferencesFromResource(getSettingsRessource());
+				setupSettings();
+			} else {
+				addPreferencesFromResource(R.xml.settings_headers_v10);
+				setup();
 			}
+
+		} else {
+			ActionBar actionbar = getActionBar();
+			actionbar.setTitle(getTitleRessource());
+			actionbar.setDisplayHomeAsUpEnabled(true);
+			ImageButton addList = new ImageButton(this);
+			addList.setBackgroundResource(android.R.drawable.ic_menu_add);
+			actionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
+					ActionBar.DISPLAY_SHOW_CUSTOM);
+			actionbar.setCustomView(addList, new ActionBar.LayoutParams(
+					ActionBar.LayoutParams.WRAP_CONTENT,
+					ActionBar.LayoutParams.WRAP_CONTENT,
+					Gravity.CENTER_VERTICAL | Gravity.RIGHT));
+			addList.setOnClickListener(getAddOnClickListener());
 		}
-		return super.dispatchKeyEvent(event);
-	}
-
-	private void update() {
-		updateList();
-		ListView listView = (ListView) findViewById(R.id.special_lists_list);
-
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_list_item_1, getListContent());
-		listView.setAdapter(adapter);
-		listView.setOnItemClickListener(getOnItemClickListener());
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		if (getResources().getBoolean(R.bool.isTablet))
-			getMenuInflater().inflate(getTabletMenu(), menu);
-		else
-			getMenuInflater().inflate(getDefaultMenu(), menu);
+		super.onCreateOptionsMenu(menu);
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+			menu.add(R.string.add);
+		}
 		return true;
 	}
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode,
-			Intent intent) {
-		update();
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			finish();
+			return true;
+		}
+		if (item.getTitle() == getString(R.string.add)) {
+			getAddOnClickListener().onClick(null);
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	@SuppressWarnings("deprecation")
+	private void setup() {
+		List<Pair<Integer, String>> items = getItems();
+		for (Pair<Integer, String> item : items) {
+			Preference p = new Preference(this);
+			p.setTitle(item.second);
+			p.setKey(String.valueOf(item.first));
+			final ListSettings that = this;
+			p.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+				@Override
+				public boolean onPreferenceClick(Preference preference) {
+					Intent intent = new Intent(that, getDestClass());
+					intent.putExtra("id", Integer.parseInt(preference.getKey()));
+					that.startActivity(intent);
+					return false;
+				}
+			});
+			getPreferenceScreen().addPreference(p);
+		}
+	}
+
+	@SuppressLint("NewApi")
+	@Override
+	public void onHeaderClick(Header header, int position) {
+		super.onHeaderClick(header, position);
+	}
+
+	@Override
+	public boolean isMultiPane() {
+		return getResources().getBoolean(R.bool.isTablet);
+	};
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		invalidateHeaders();
+		loaded = false;
+	}
+
+	public List<Header> getHeader() {
+		return mTarget;
+	}
+
+	@SuppressLint("NewApi")
+	@Override
+	public void onBuildHeaders(List<Header> target) {
+		for (Pair<Integer, String> item : getItems()) {
+			Bundle b = new Bundle();
+			b.putInt("id", item.first);
+			Header header = new Header();
+			header.fragment = getDestFragmentClass().getCanonicalName();
+			header.title = item.second;
+			header.fragmentArguments = b;
+			header.extras = b;
+			target.add(header);
+		}
+		if (clickOnLast) {
+			onHeaderClick(mTarget.get(mTarget.size() - 1), mTarget.size() - 1);
+			clickOnLast = false;
+		}
+		mTarget = target;
+	}
+
+	public void clickOnLast() {
+		clickOnLast = true;
+	}
+
+	@SuppressLint("NewApi")
+	@SuppressWarnings("deprecation")
+	@Override
+	public void invalidateHeaders() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+			super.invalidateHeaders();
+		} else if (!loaded) {
+			getPreferenceScreen().removeAll();
+			setup();
+		}
+		loaded = false;
 	}
 
 }
