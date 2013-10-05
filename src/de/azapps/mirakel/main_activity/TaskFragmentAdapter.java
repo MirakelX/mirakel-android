@@ -506,7 +506,7 @@ public class TaskFragmentAdapter extends
 		// Task Reminder
 		Drawable reminder_img = context.getResources().getDrawable(
 				android.R.drawable.ic_menu_recent_history);
-		reminder_img.setBounds(0, 0, 60, 60);
+		reminder_img.setBounds(0, 0, 42, 42);
 		holder.taskReminder
 				.setCompoundDrawables(reminder_img, null, null, null);
 		if (task.getReminder() == null) {
@@ -614,7 +614,7 @@ public class TaskFragmentAdapter extends
 		// Task due
 		Drawable dueImg = context.getResources().getDrawable(
 				android.R.drawable.ic_menu_today);
-		dueImg.setBounds(0, 0, 60, 60);
+		dueImg.setBounds(0, 0, 42, 42);
 		holder.taskDue.setCompoundDrawables(dueImg, null, null, null);
 		if (task.getDue() == null) {
 			holder.taskDue.setText(context.getString(R.string.no_date));
