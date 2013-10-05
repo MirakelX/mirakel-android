@@ -428,6 +428,9 @@ public class TaskFragmentAdapter extends
 		if (pencilButton) {
 			holder.button.setImageDrawable(context.getResources().getDrawable(
 					android.R.drawable.ic_menu_edit));
+		}else{
+			holder.button.setImageDrawable(context.getResources().getDrawable(
+					android.R.drawable.ic_menu_add));
 		}
 		return subtitle;
 	}
