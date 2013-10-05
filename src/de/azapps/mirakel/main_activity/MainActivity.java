@@ -123,13 +123,13 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
 		preferences = PreferenceManager.getDefaultSharedPreferences(this);
 		darkTheme = preferences.getBoolean("DarkTheme", false);
-		highlightSelected = preferences.getBoolean("highlightSelected",
-				isTablet);
 		if (darkTheme)
 			setTheme(R.style.AppBaseThemeDARK);
+		super.onCreate(savedInstanceState);
+		highlightSelected = preferences.getBoolean("highlightSelected",
+				isTablet);
 		isTablet = getResources().getBoolean(R.bool.isTablet);
 		if (!preferences.contains("highlightSelected")) {
 			SharedPreferences.Editor editor = preferences.edit();

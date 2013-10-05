@@ -265,9 +265,6 @@ public class PreferencesHelper {
 		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
 			removePreference("notificationsBig");
 		}
-		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
-			removePreference("DarkTheme");
-		}
 
 		final CheckBoxPreference darkTheme = (CheckBoxPreference) findPreference("DarkTheme");
 		if (darkTheme != null) {
