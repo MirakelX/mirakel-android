@@ -134,7 +134,7 @@ public class ListMirakel extends ListBase {
 			database.update(ListMirakel.TABLE, values, "_id=" + id, null);
 		}
 		database.rawQuery("UPDATE " + ListMirakel.TABLE
-				+ " SET lft=lft-2 WHERE lft>" + getRgt() + "; UPDATE "
+				+ " SET lft=lft-2 WHERE lft>" + getLft() + "; UPDATE "
 				+ ListMirakel.TABLE + " SET rgt=rgt-2 WHERE rgt>" + getRgt()
 				+ ";", null);
 	}

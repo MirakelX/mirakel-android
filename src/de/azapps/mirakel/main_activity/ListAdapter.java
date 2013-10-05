@@ -34,6 +34,7 @@ import android.widget.TextView;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakelandroid.R;
 
 
@@ -86,7 +87,7 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 			holder = (ListHolder) row.getTag();
 		}
 		ListMirakel list = data.get(position);
-		if (!enableDrop || list.getId() < 0)
+		if (!enableDrop)
 			holder.listRowDrag.setVisibility(View.GONE);
 		else
 			holder.listRowDrag.setVisibility(View.VISIBLE);
@@ -116,15 +117,21 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 
 	public void onDrop(final int from, final int to) {
 		ListMirakel t = data.get(from);
+		String TABLE;
+		if(t.getId()<0){
+			TABLE=SpecialList.TABLE;
+		}else{
+			TABLE=ListMirakel.TABLE;
+		}
 		if (to < from) {// move list up
 			Mirakel.getWritableDatabase().execSQL(
-					"UPDATE " + ListMirakel.TABLE
+					"UPDATE " + TABLE
 							+ " SET lft=lft+2 where lft>="
 							+ data.get(to).getLft() + " and lft<"
 							+ data.get(from).getLft());
 		} else if (to > from) {// move list down
 			Mirakel.getWritableDatabase().execSQL(
-					"UPDATE " + ListMirakel.TABLE + " SET lft=lft-2 where lft>"
+					"UPDATE " + TABLE + " SET lft=lft-2 where lft>"
 							+ data.get(from).getLft() + " and lft<="
 							+ data.get(to).getLft());
 		} else {// Nothing
@@ -133,7 +140,7 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 		t.setLft(data.get(to).getLft());
 		t.save();
 		Mirakel.getWritableDatabase().execSQL(
-				"UPDATE " + ListMirakel.TABLE + " SET rgt=lft+1;");// Fix rgt
+				"UPDATE " + TABLE + " SET rgt=lft+1;");// Fix rgt
 		data.remove(from);
 		data.add(to, t);
 		notifyDataSetChanged();

@@ -39,7 +39,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String TAG = "DatabaseHelper";
 	private Context context;
-	public static final int DATABASE_VERSION = 19;
+	public static final int DATABASE_VERSION = 20;
 
 	public DatabaseHelper(Context ctx) {
 		super(ctx, "mirakel.db", null, DATABASE_VERSION);
@@ -186,7 +186,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ context.getString(R.string.today).toLowerCase()
 					+ "\",0);"
 					+ "INSERT INTO semantic_conditions (condition,due) VALUES (\""
-					+ context.getString(R.string.tomorrow).toLowerCase() + "\",1);");
+					+ context.getString(R.string.tomorrow).toLowerCase()
+					+ "\",1);");
 		case 15:
 			db.execSQL("Alter Table " + ListMirakel.TABLE
 					+ " add column color INTEGER;");
@@ -208,6 +209,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			db.execSQL("ALTER TABLE " + Semantic.TABLE
 					+ " add column default_list_id INTEGER");
 			db.execSQL("update semantic_conditions SET condition=LOWER(condition);");
+		case 19:
+			db.execSQL("ALTER TABLE " + SpecialList.TABLE
+					+ " add column  lft INTEGER;");
+			db.execSQL("ALTER TABLE " + SpecialList.TABLE
+					+ " add column  rgt INTEGER ;");
+			db.execSQL("update " + SpecialList.TABLE
+					+ " set lft=(select count(*) from (select * from "
+					+ SpecialList.TABLE + ") as a where a._id<"
+					+ SpecialList.TABLE + "._id)*2 +1;");
+			db.execSQL("update " + SpecialList.TABLE + " set rgt=lft+1;");
 		}
 	}
 
@@ -232,8 +243,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ "active INTEGER NOT NULL DEFAULT 0, "
 				+ "whereQuery STRING NOT NULL DEFAULT '', "
 				+ "sort_by INTEGER NOT NULL DEFAULT " + ListMirakel.SORT_BY_OPT
-				+ ", " + "sync_state INTEGER DEFAULT " + SYNC_STATE.ADD
-				+ ")");
+				+ ", " + "sync_state INTEGER DEFAULT " + SYNC_STATE.ADD + ")");
 		db.execSQL("INSERT INTO " + SpecialList.TABLE
 				+ " (name,active,whereQuery) VALUES (" + "'"
 				+ context.getString(R.string.list_all) + "',1,'')");
