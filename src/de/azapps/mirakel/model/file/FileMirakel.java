@@ -187,6 +187,7 @@ public class FileMirakel extends FileBase {
 			files.add(cursorToFile(c));
 			c.moveToNext();
 		}
+		c.close();
 		return files;
 	}
 
@@ -205,18 +206,20 @@ public class FileMirakel extends FileBase {
 			cursor.close();
 			return t;
 		}
+		cursor.close();
 		return null;
 	}
 
 	public static List<FileMirakel> getForTask(Task task) {
 		List<FileMirakel> files = new ArrayList<FileMirakel>();
-		Cursor c = database.query(TABLE, allColumns, "task_id=" + task.getId(),
+		Cursor cursor = database.query(TABLE, allColumns, "task_id=" + task.getId(),
 				null, null, null, null);
-		c.moveToFirst();
-		while (!c.isAfterLast()) {
-			files.add(cursorToFile(c));
-			c.moveToNext();
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			files.add(cursorToFile(cursor));
+			cursor.moveToNext();
 		}
+		cursor.close();
 		return files;
 	}
 
