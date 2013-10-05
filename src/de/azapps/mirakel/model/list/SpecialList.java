@@ -220,6 +220,7 @@ public class SpecialList extends ListMirakel {
 			cursor.close();
 			return t;
 		}
+		cursor.close();
 		return firstSpecial();
 	}
 
