@@ -37,6 +37,7 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.view.Gravity;
@@ -262,8 +263,18 @@ public class PreferencesHelper {
 						}
 					});
 		}
-		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-			removePreference("notificationsBig");
+		
+		if(Build.VERSION.SDK_INT<Build.VERSION_CODES.JELLY_BEAN_MR1){
+			removePreference("dashclock");
+		}
+		
+		
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+			PreferenceCategory cat=(PreferenceCategory) findPreference("notifications");
+			Preference notificationsBig=findPreference("notificationsBig");
+			if(cat!=null&&notificationsBig!=null){
+				cat.removePreference(notificationsBig);
+			}
 		}
 
 		final CheckBoxPreference darkTheme = (CheckBoxPreference) findPreference("DarkTheme");

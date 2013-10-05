@@ -21,7 +21,9 @@
     android:key="category_notifications"
     android:title="@string/notification_title" >
 
-    <PreferenceCategory android:title="@string/notification_title" >
+    <PreferenceCategory 
+        android:key="notifications"
+        android:title="@string/notification_title" >
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="notificationsUse"
