@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--
   Mirakel is an Android App for Managing your ToDo-Lists
   
@@ -21,7 +22,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical" >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,23 +30,22 @@
 
         <Button
             android:id="@+id/subtask_newtask"
+            style="@style/Button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@attr/selectableItemBackground"
             android:text="@string/new_task" />
 
         <View
-            android:layout_width="2dp"
-            android:layout_height="match_parent"
-            android:background="@color/holo_blue_dark" />
+            style="@style/buttonDivider"
+            android:layout_height="match_parent" />
 
         <Button
             android:id="@+id/subtask_select_old"
+            style="@style/Button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@attr/selectableItemBackground"
             android:text="@string/add_existing"
             android:textColor="@color/Grey" />
     </LinearLayout>
@@ -90,9 +90,9 @@
 
             <Button
                 android:id="@+id/subtasks_options"
+                style="@style/selectableButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@attr/selectableItemBackground"
                 android:text="@string/subtask_add_options" />
 
             <LinearLayout
@@ -121,9 +121,9 @@
 
                 <Button
                     android:id="@+id/subtask_list"
+                    style="@style/selectableButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@attr/selectableItemBackground"
                     android:text="@string/list_all" />
             </LinearLayout>
 

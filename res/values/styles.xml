@@ -23,12 +23,9 @@
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
-    <style name="AppBaseTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar">
-        
-    </style>
-	<style name="AppBaseThemeDARK" parent="@style/Theme.AppCompat">
-        
-    </style>
+    <style name="AppBaseTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar"></style>
+
+    <style name="AppBaseThemeDARK" parent="@style/Theme.AppCompat"></style>
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
@@ -54,17 +51,23 @@
         <item name="android:windowIsFloating">true</item>
         <item name="android:backgroundDimEnabled">false</item>
     </style>
-    
+
     <style name="taskViewCaption">
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">20sp</item>
         <item name="android:paddingLeft">8dp</item>
         <item name="android:textColor">@color/holo_blue_dark</item>
     </style>
+
     <style name="imgButton">
         <item name="android:padding">4dp</item>
         <item name="android:background">@android:color/transparent</item>
-        
+    </style>
+
+    <style name="selectableButton"></style>
+
+    <style name="buttonDivider">
+        <item name="android:layout_width">0dp</item>
     </style>
 
 </resources>
