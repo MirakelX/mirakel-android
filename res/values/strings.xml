@@ -112,6 +112,7 @@
         <item>Select Color</item>
         <item>Rename</item>
         <item>Delete</item>
+        <item>Share</item>
     </string-array>
 
     <!-- Menu -->

@@ -20,10 +20,13 @@ package de.azapps.mirakel.main_activity;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -48,6 +51,7 @@ import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.main_activity.TaskFragmentAdapter.TYPE;
 import de.azapps.mirakel.model.file.FileMirakel;
+import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 
@@ -105,8 +109,53 @@ public class TaskFragment extends Fragment {
 			listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 				@Override
 				public boolean onItemLongClick(AdapterView<?> parent,
-						View item, int position, final long id) {
-					Log.e(TAG, "implement for <3.0");
+						View item, final int position, final long id) {
+					Integer typ = adapter.getData().get(position).first;
+					if(typ==TYPE.SUBTASK){
+						AlertDialog.Builder builder = new AlertDialog.Builder(
+								getActivity());
+						builder.setTitle(adapter.getTask().getSubtasks().get(adapter.getData().get(position).second).getName()); 
+
+						builder.setItems(new String[]{getString(R.string.remove_subtask)}, new DialogInterface.OnClickListener(){
+
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								if(which==0){
+									List<Task>l=new ArrayList<Task>();
+									l.add(adapter.getTask().getSubtasks().get(adapter.getData().get(position).second));
+									TaskDialogHelpers.handleRemoveSubtask(
+											l, main, adapter,
+											adapter.getTask());
+								}
+								
+							}
+							
+						});
+						builder.create().show();
+					}else if(typ==TYPE.FILE){
+						AlertDialog.Builder builder = new AlertDialog.Builder(
+								getActivity());
+						builder.setTitle(adapter.getTask().getFiles().get(adapter.getData().get(position).second).getName()); 
+
+						builder.setItems(new String[]{getString(R.string.remove_files)}, new DialogInterface.OnClickListener(){
+
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								if(which==0){
+									List<FileMirakel>l=new ArrayList<FileMirakel>();
+									l.add(adapter.getTask().getFiles().get(adapter.getData().get(position).second));
+									TaskDialogHelpers.handleDeleteFile(l,
+											main, adapter.getTask(), adapter);
+								}
+								
+							}
+							
+						});
+						builder.create().show();
+						return false;
+					}
 					return true;
 				}
 			});

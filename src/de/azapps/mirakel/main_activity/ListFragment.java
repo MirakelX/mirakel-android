@@ -61,7 +61,7 @@ public class ListFragment extends Fragment {
 	protected boolean EditName;
 	private boolean created = false;
 	private DragNDropListView listView;
-	private static final int LIST_COLOR = 0, LIST_RENAME = 1, LIST_DESTROY = 2;
+	private static final int LIST_COLOR = 0, LIST_RENAME = 1, LIST_DESTROY = 2,LIST_SHARE=3;
 	protected static final String TAG = "ListFragment";
 	private boolean enableDrag;
 
@@ -192,6 +192,7 @@ public class ListFragment extends Fragment {
 					builder.setItems(
 							items.toArray(new CharSequence[items.size()]),
 							new DialogInterface.OnClickListener() {
+
 								public void onClick(DialogInterface dialog,
 										int item) {
 									ListMirakel list = values.get((int) id);
@@ -204,6 +205,9 @@ public class ListFragment extends Fragment {
 										break;
 									case LIST_DESTROY:
 										main.handleDestroyList(list);
+										break;
+									case LIST_SHARE:
+										Helpers.share(getActivity(), list);
 										break;
 									}
 								}
