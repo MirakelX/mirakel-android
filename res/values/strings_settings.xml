@@ -193,6 +193,7 @@
     <string name="settings_new_task">New task</string>
     <string name="settings_use_btn_speak">Show the microfone-button</string>
     <string name="settings_use_btn_camera">Show the camera-button</string>
+    <string name="preferences_colorize_subtasks">Colorize Subtasks?</string>
     
     <string name="settings_tasks_title">Tasks</string>
 

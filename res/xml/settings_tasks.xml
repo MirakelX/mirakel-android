@@ -55,6 +55,11 @@
             android:key="colorize_tasks_everywhere"
             android:summary="@string/preferences_colorize_tasks_everywhere_summary"
             android:title="@string/preferences_colorize_tasks_everywhere" />
+        <CheckBoxPreference 
+            android:defaultValue="true"
+            android:dependency="colorize_subtasks"
+            android:key="colorize_subtasks"
+            android:title="@string/preferences_colorize_subtasks"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/settings_subtask" >
         <CheckBoxPreference

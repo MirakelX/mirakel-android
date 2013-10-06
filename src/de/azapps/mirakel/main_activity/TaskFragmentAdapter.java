@@ -31,11 +31,13 @@ import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.text.util.Linkify;
 import android.util.Pair;
 import android.util.TypedValue;
@@ -349,7 +351,23 @@ public class TaskFragmentAdapter extends
 		} else {
 			holder.taskRowDue.setVisibility(View.GONE);
 		}
-		markSelected(position, row);
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+		if (selected.get(position)) {
+			row.setBackgroundColor(context.getResources().getColor(
+					darkTheme ? R.color.highlighted_text_holo_dark
+							: R.color.highlighted_text_holo_light));
+		} else if (settings.getBoolean("colorize_tasks", true)) {
+			if (settings.getBoolean("colorize_subtasks", true)) {
+				int w=row.getWidth()==0?parent.getWidth():row.getWidth();
+				Helpers.setListColorBackground(task.getList(), row, darkTheme,w);
+			} else {
+				row.setBackgroundColor(context.getResources().getColor(
+						android.R.color.transparent));
+			}
+		} else {
+			row.setBackgroundColor(context.getResources().getColor(
+					android.R.color.transparent));
+		}	
 		return row;
 	}
 
