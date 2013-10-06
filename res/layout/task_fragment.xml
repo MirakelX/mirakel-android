@@ -25,12 +25,14 @@
 
     <ListView
         android:id="@+id/taskFragment"
-        android:descendantFocusability="beforeDescendants"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:descendantFocusability="afterDescendants"
         android:divider="@null"
-        android:dividerHeight="0dp" />
+        android:dividerHeight="0dp"
+        android:stackFromBottom="true"
+        android:transcriptMode="alwaysScroll" />
 
 </RelativeLayout>
