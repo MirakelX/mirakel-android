@@ -69,6 +69,8 @@
                 android:id="@+id/subtask_add_task_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:focusableInTouchMode="true"
+                android:imeOptions="actionSend"
                 android:inputType="text" />
         </LinearLayout>
 

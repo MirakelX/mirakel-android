@@ -9,14 +9,17 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Pair;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -24,6 +27,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
@@ -172,6 +177,7 @@ public class TaskDialogHelpers {
 	private static int listId;
 	private static boolean optionEnabled;
 	private static boolean newTask;
+	private static SubtaskAdapter subtaskAdapter;
 
 	public static void handleSubtask(final Context ctx, final Task task,
 			final TaskFragmentAdapter adapter) {
@@ -185,8 +191,19 @@ public class TaskDialogHelpers {
 		View v = ((MainActivity) ctx).getLayoutInflater().inflate(
 				R.layout.select_subtask, null, false);
 		final ListView lv = (ListView) v.findViewById(R.id.subtask_listview);
-		final SubtaskAdapter a = new SubtaskAdapter(ctx, 0, Task.all(), task);
-		lv.setAdapter(a);
+		new Thread(new Runnable() {
+			public void run() {
+				Looper.prepare();
+				subtaskAdapter = new SubtaskAdapter(ctx, 0, Task.all(), task);
+				lv.post(new Runnable() {
+
+					@Override
+					public void run() {
+						lv.setAdapter(subtaskAdapter);
+					}
+				});
+			}
+		}).start();
 		searchString = "";
 		done = false;
 		content = false;
@@ -201,7 +218,7 @@ public class TaskDialogHelpers {
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {
 				searchString = s.toString();
-				updateListView(a, task);
+				updateListView(subtaskAdapter, task);
 
 			}
 
@@ -253,6 +270,8 @@ public class TaskDialogHelpers {
 
 			@Override
 			public void onClick(View v) {
+				if (newTask)
+					return;
 				switcher.showPrevious();
 				subtaskNewtask.setTextColor(ctx.getResources().getColor(
 						darkTheme ? R.color.White : R.color.Black));
@@ -266,6 +285,8 @@ public class TaskDialogHelpers {
 		subtaskSelectOld.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if (!newTask)
+					return;
 				switcher.showNext();
 				subtaskNewtask.setTextColor(ctx.getResources().getColor(
 						R.color.Grey));
@@ -283,7 +304,7 @@ public class TaskDialogHelpers {
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
 				done = isChecked;
-				updateListView(a, task);
+				updateListView(subtaskAdapter, task);
 			}
 		});
 		final CheckBox reminderBox = (CheckBox) v
@@ -295,7 +316,7 @@ public class TaskDialogHelpers {
 					public void onCheckedChanged(CompoundButton buttonView,
 							boolean isChecked) {
 						reminder = isChecked;
-						updateListView(a, task);
+						updateListView(subtaskAdapter, task);
 					}
 				});
 
@@ -316,7 +337,7 @@ public class TaskDialogHelpers {
 							public void onClick(DialogInterface dialog,
 									int which) {
 								listId = lists.get(which).getId();
-								updateListView(a, task);
+								updateListView(subtaskAdapter, task);
 								list.setText(lists.get(which).getName());
 								dialog.dismiss();
 							}
@@ -333,13 +354,14 @@ public class TaskDialogHelpers {
 					public void onCheckedChanged(CompoundButton buttonView,
 							boolean isChecked) {
 						content = isChecked;
-						updateListView(a, task);
+						updateListView(subtaskAdapter, task);
 					}
 				});
 
 		final EditText newTaskEdit = (EditText) v
 				.findViewById(R.id.subtask_add_task_edit);
-		new AlertDialog.Builder(ctx)
+
+		final AlertDialog dialog = new AlertDialog.Builder(ctx)
 				.setTitle(ctx.getString(R.string.add_subtask))
 				.setView(v)
 				.setPositiveButton(R.string.add,
@@ -350,37 +372,13 @@ public class TaskDialogHelpers {
 									int which) {
 								if (newTask
 										&& newTaskEdit.getText().length() > 0) {
-									try {
-										ListMirakel list;
-										if (settings.getBoolean(
-												"subtaskAddToSameList", true)) {
-											list = task.getList();
-										} else {
-											list = ListMirakel.getList(settings
-													.getInt("subtaskAddToList",
-															-1));
-											if (list == null)
-												list = task.getList();
-										}
-										Task t = Semantic.createTask(
-												newTaskEdit.getText()
-														.toString(),
-												list,
-												settings.getBoolean(
-														"semanticNewTask", true));
-										try {
-											task.addSubtask(t);
-										} catch (NoSuchListException e) {
-											Log.e(TAG, "list did vanish");
-										}
-
-									} catch (Semantic.NoListsException e) {
-										Toast.makeText(ctx, R.string.no_lists,
-												Toast.LENGTH_LONG).show();
-									}
+									newSubtask(
+											newTaskEdit.getText().toString(),
+											task, ctx);
 								} else if (!newTask) {
-									boolean[] checked = a.getChecked();
-									List<Task> tasks = a.getData();
+									boolean[] checked = subtaskAdapter
+											.getChecked();
+									List<Task> tasks = subtaskAdapter.getData();
 									for (int i = 0; i < checked.length; i++) {
 										if (checked[i]) {
 											if (!tasks.get(i).checkIfParent(
@@ -408,11 +406,53 @@ public class TaskDialogHelpers {
 							}
 
 						})
-				.setNegativeButton(android.R.string.cancel,dialogDoNothing).show();
+				.setNegativeButton(android.R.string.cancel, dialogDoNothing)
+				.show();
+
+		newTaskEdit.setOnEditorActionListener(new OnEditorActionListener() {
+			public boolean onEditorAction(TextView v, int actionId,
+					KeyEvent event) {
+				if (actionId == EditorInfo.IME_ACTION_SEND) {
+					newSubtask(v.getText().toString(), task, ctx);
+					v.setText(null);
+					adapter.setData(task);
+					dialog.dismiss();
+				}
+				return false;
+			}
+		});
 		if (!settings.getBoolean("subtaskDefaultNew", true)) {
 			subtaskSelectOld.performClick();
 		}
 
+	}
+
+	private static Task newSubtask(String name, Task parent, Context ctx) {
+		final SharedPreferences settings = PreferenceManager
+				.getDefaultSharedPreferences(ctx);
+		try {
+			ListMirakel list;
+			if (settings.getBoolean("subtaskAddToSameList", true)) {
+				list = parent.getList();
+			} else {
+				list = ListMirakel.getList(settings.getInt("subtaskAddToList",
+						-1));
+				if (list == null)
+					list = parent.getList();
+			}
+			Task t = Semantic.createTask(name, list,
+					settings.getBoolean("semanticNewTask", true));
+			try {
+				parent.addSubtask(t);
+			} catch (NoSuchListException e) {
+				Log.e(TAG, "list did vanish");
+			}
+
+			return t;
+		} catch (Semantic.NoListsException e) {
+			Toast.makeText(ctx, R.string.no_lists, Toast.LENGTH_LONG).show();
+		}
+		return null;
 	}
 
 	protected static String generateQuery(Task t) {
@@ -475,7 +515,8 @@ public class TaskDialogHelpers {
 								adapter.setData(task);
 							}
 						})
-				.setNegativeButton(android.R.string.cancel,dialogDoNothing).show();
+				.setNegativeButton(android.R.string.cancel, dialogDoNothing)
+				.show();
 
 	}
 
