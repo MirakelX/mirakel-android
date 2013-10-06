@@ -320,6 +320,7 @@ public class MainActivity extends ActionBarActivity implements
 			break;
 		case TASKS_FRAGMENT:
 			listFragment.enableDrop(false);
+			taskFragment.adapter.setEditContent(false);
 			if (!isTablet)
 				newmenu = R.menu.tasks;
 			else

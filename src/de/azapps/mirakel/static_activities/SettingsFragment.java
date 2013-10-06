@@ -57,7 +57,8 @@ public class SettingsFragment extends PreferenceFragment {
 		} else if (getArguments().getString("type").equals("about")) {
 			addPreferencesFromResource(R.xml.settings_about);
 		} else if (getArguments().getString("type").equals("speciallists")) {
-			startActivity(new Intent(getActivity(), SpecialListsSettingsActivity.class));
+			startActivity(new Intent(getActivity(),
+					SpecialListsSettingsActivity.class));
 			if (!getResources().getBoolean(R.bool.isTablet))
 				getActivity().finish();
 			else {
@@ -86,7 +87,8 @@ public class SettingsFragment extends PreferenceFragment {
 		switch (requestCode) {
 		case SettingsActivity.NEW_ACCOUNT:
 			Preference server = findPreference("syncServer");
-			PreferencesHelper.updateSyncText(null, server, getActivity());
+			PreferencesHelper.updateSyncText(null, server,
+					findPreference("syncFrequency"), getActivity());
 			break;
 		}
 		super.onActivityResult(requestCode, resultCode, data);

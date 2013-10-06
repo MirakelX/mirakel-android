@@ -35,6 +35,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
+import android.os.Handler;
 import android.text.util.Linkify;
 import android.util.Pair;
 import android.util.TypedValue;
@@ -59,6 +60,7 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.ViewSwitcher;
 import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.Log;
@@ -77,6 +79,8 @@ public class TaskFragmentAdapter extends
 	private TaskFragmentAdapter adapter;
 	private List<Task> subtasks;
 	private List<FileMirakel> files;
+	private boolean editContent;
+	protected Handler mHandler;
 	private static final int SUBTITLE_CONTENT = 0, SUBTITLE_SUBTASKS = 1,
 			SUBTITLE_FILES = 2;
 
@@ -104,6 +108,7 @@ public class TaskFragmentAdapter extends
 		files = task.getFiles();
 		this.inflater = ((Activity) context).getLayoutInflater();
 		this.adapter = this;
+		editContent = false;
 
 	}
 
@@ -115,6 +120,11 @@ public class TaskFragmentAdapter extends
 	@Override
 	public int getItemViewType(int position) {
 		return data.get(position).first;
+	}
+
+	public void setEditContent(boolean edit) {
+		editContent = edit;
+		notifyDataSetChanged();
 	}
 
 	@Override
@@ -153,8 +163,32 @@ public class TaskFragmentAdapter extends
 				action = new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						TaskDialogHelpers.handleContent((MainActivity) context,
-								task);
+						editContent = !editContent;
+						if (!editContent) {// End Edit, save content
+							EditText txt = (EditText) ((MainActivity) context)
+									.findViewById(R.id.task_content_edit);
+							if (txt != null) {
+								((InputMethodManager) context
+										.getSystemService(Context.INPUT_METHOD_SERVICE))
+										.showSoftInput(txt,
+												InputMethodManager.HIDE_IMPLICIT_ONLY);
+								if (!txt.getText().toString().trim()
+										.equals(task.getContent())) {
+									task.setContent(txt.getText().toString()
+											.trim());
+									try {
+										task.save();
+									} catch (NoSuchListException e) {
+										Log.w(TAG, "List did vanish");
+									}
+								} else {
+									Log.d(TAG, "content equal");
+								}
+							} else {
+								Log.d(TAG, "edit_content not found");
+							}
+						}
+						notifyDataSetChanged();
 					}
 				};
 				break;
@@ -426,9 +460,15 @@ public class TaskFragmentAdapter extends
 		holder.title.setText(title);
 		holder.button.setOnClickListener(action);
 		if (pencilButton) {
-			holder.button.setImageDrawable(context.getResources().getDrawable(
-					android.R.drawable.ic_menu_edit));
-		}else{
+			if (editContent) {
+				holder.button.setImageDrawable(context.getResources()
+						.getDrawable(
+								android.R.drawable.ic_menu_close_clear_cancel));
+			} else {
+				holder.button.setImageDrawable(context.getResources()
+						.getDrawable(android.R.drawable.ic_menu_edit));
+			}
+		} else {
 			holder.button.setImageDrawable(context.getResources().getDrawable(
 					android.R.drawable.ic_menu_add));
 		}
@@ -437,6 +477,8 @@ public class TaskFragmentAdapter extends
 
 	static class ContentHolder {
 		TextView taskContent;
+		EditText taskContentEdit;
+		ViewSwitcher taskContentSwitcher;
 	}
 
 	private View setupContent(ViewGroup parent, View convertView) {
@@ -447,19 +489,41 @@ public class TaskFragmentAdapter extends
 			holder = new ContentHolder();
 			holder.taskContent = (TextView) content
 					.findViewById(R.id.task_content);
+			holder.taskContentSwitcher = (ViewSwitcher) content
+					.findViewById(R.id.switcher_content);
+			holder.taskContentEdit = (EditText) content
+					.findViewById(R.id.task_content_edit);
 			content.setTag(holder);
 		} else {
 			holder = (ContentHolder) content.getTag();
 		}
-		// Task content
-		setTaskContent(holder.taskContent);
-		return content;
-	}
+		while (holder.taskContentSwitcher.getCurrentView().getId() != (editContent ? R.id.task_content_edit
+				: R.id.task_content)) {
+			holder.taskContentSwitcher.showNext();
+		}
+		if (editContent) {
+			holder.taskContentEdit.setText(task.getContent());
+			Linkify.addLinks(holder.taskContentEdit, Linkify.WEB_URLS);
+			holder.taskContentEdit.requestFocus();
+			((InputMethodManager) context
+					.getSystemService(Context.INPUT_METHOD_SERVICE))
+					.showSoftInput(holder.taskContentEdit,
+							InputMethodManager.SHOW_IMPLICIT);
+			holder.taskContentEdit.setSelected(true);
 
-	private void setTaskContent(TextView taskContent) {
-		taskContent.setText(task.getContent().length() == 0 ? context
-				.getString(R.string.task_no_content) : task.getContent());
-		Linkify.addLinks(taskContent, Linkify.WEB_URLS);
+		} else {
+			// Task content
+			holder.taskContent
+					.setText(task.getContent().length() == 0 ? context
+							.getString(R.string.task_no_content) : task
+							.getContent());
+			Linkify.addLinks(holder.taskContent, Linkify.WEB_URLS);
+			InputMethodManager imm = (InputMethodManager) context
+					.getSystemService(Context.INPUT_METHOD_SERVICE);
+			imm.hideSoftInputFromWindow(
+					holder.taskContentEdit.getWindowToken(), 0);
+		}
+		return content;
 	}
 
 	static class ReminderHolder {
