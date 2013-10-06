@@ -54,7 +54,7 @@ public class SplashScreenActivity extends Activity {
 				Intent intent = new Intent(SplashScreenActivity.this,
 						MainActivity.class);
 				intent.setAction(MainActivity.SHOW_LISTS);
-				startActivity(intent);
+				startActivityForResult(intent, 42);
 			} else {
 				ListMirakel sl = SpecialList.firstSpecial();
 				if (sl == null) {
@@ -85,5 +85,4 @@ public class SplashScreenActivity extends Activity {
 		getMenuInflater().inflate(R.menu.splash_screen, menu);
 		return true;
 	}
-
 }
