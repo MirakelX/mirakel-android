@@ -263,16 +263,15 @@ public class PreferencesHelper {
 						}
 					});
 		}
-		
-		if(Build.VERSION.SDK_INT<Build.VERSION_CODES.JELLY_BEAN_MR1){
+
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
 			removePreference("dashclock");
 		}
-		
-		
+
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-			PreferenceCategory cat=(PreferenceCategory) findPreference("notifications");
-			Preference notificationsBig=findPreference("notificationsBig");
-			if(cat!=null&&notificationsBig!=null){
+			PreferenceCategory cat = (PreferenceCategory) findPreference("notifications");
+			Preference notificationsBig = findPreference("notificationsBig");
+			if (cat != null && notificationsBig != null) {
 				cat.removePreference(notificationsBig);
 			}
 		}
@@ -1241,7 +1240,7 @@ public class PreferencesHelper {
 	}
 
 	public static void updateSyncText(CheckBoxPreference sync,
-			Preference server, Context ctx) {
+			Preference server, Preference syncFrequency, Context ctx) {
 		AccountManager am = AccountManager.get(ctx);
 		Account[] accounts = am.getAccountsByType(Mirakel.ACCOUNT_TYPE);
 		if (accounts.length > 0) {
@@ -1271,6 +1270,14 @@ public class PreferencesHelper {
 				sync.setSummary(R.string.sync_use_summary_nothing);
 			}
 			server.setSummary("");
+		}
+		Editor editor = PreferenceManager.getDefaultSharedPreferences(ctx)
+				.edit();
+		editor.putString("syncFrequency", "-1");
+		editor.commit();
+		if (syncFrequency != null) {
+			syncFrequency.setSummary(ctx
+					.getString(R.string.sync_frequency_summary_man));
 		}
 	}
 

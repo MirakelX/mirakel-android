@@ -30,6 +30,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -98,7 +100,8 @@ public class SettingsActivity extends PreferenceActivity {
 					addPreferencesFromResource(R.xml.settings_sync);
 				} else if (i.getAction().equals(
 						"de.azapps.mirakel.preferences.SPECIAL_LISTS")) {
-					startActivity(new Intent(this, SpecialListsSettingsActivity.class));
+					startActivity(new Intent(this,
+							SpecialListsSettingsActivity.class));
 					if (!getResources().getBoolean(R.bool.isTablet))
 						finish();
 				} else {
@@ -241,15 +244,13 @@ public class SettingsActivity extends PreferenceActivity {
 								}
 							}).create().show();
 		case NEW_ACCOUNT:
-			CheckBoxPreference sync;
-			Preference server;
 			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-				sync = (CheckBoxPreference) findPreference("syncUse");
-				server = findPreference("syncServer");
-			} else {
-				break;
+				PreferencesHelper.updateSyncText(
+						(CheckBoxPreference) findPreference("syncUse"),
+						findPreference("syncServer"),
+						findPreference("syncFrequency"), this);
 			}
-			PreferencesHelper.updateSyncText(sync, server, this);
+			break;
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
