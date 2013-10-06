@@ -123,7 +123,6 @@
 
                 <Button
                     android:id="@+id/subtask_list"
-                    style="@style/selectableButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/list_all" />

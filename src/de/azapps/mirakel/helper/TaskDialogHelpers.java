@@ -246,14 +246,8 @@ public class TaskDialogHelpers {
 			public void onClick(View v) {
 				if (optionEnabled) {
 					wrapper.setVisibility(View.GONE);
-					Animation slideUp = AnimationUtils.loadAnimation(ctx,
-							R.anim.slide_up);
-					wrapper.startAnimation(slideUp);
 				} else {
 					wrapper.setVisibility(View.VISIBLE);
-					Animation slideDown = AnimationUtils.loadAnimation(ctx,
-							R.anim.slide_down);
-					wrapper.startAnimation(slideDown);
 				}
 				optionEnabled = !optionEnabled;
 
