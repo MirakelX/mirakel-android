@@ -14,7 +14,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Pair;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -164,38 +163,6 @@ public class TaskDialogHelpers {
 				.setNegativeButton(android.R.string.cancel, dialogDoNothing)
 				.show();
 
-	}
-
-	public static void handleContent(final MainActivity context, final Task task) {
-
-		final EditText editTxt = new EditText(context);
-		editTxt.setText(task.getContent());
-		final AlertDialog dialog = new AlertDialog.Builder(context)
-				.setTitle(R.string.change_content)
-				.setView(editTxt)
-				.setPositiveButton(android.R.string.ok,
-						new DialogInterface.OnClickListener() {
-
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								task.setContent(editTxt.getText().toString());
-								context.saveTask(task);
-
-							}
-						})
-				.setNegativeButton(android.R.string.cancel,dialogDoNothing).create();
-		dialog.show();
-		editTxt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
-				if (hasFocus) {
-					dialog.getWindow()
-							.setSoftInputMode(
-									WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-				}
-			}
-		});
 	}
 
 	private static String searchString;

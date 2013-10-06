@@ -17,11 +17,29 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/task_content"
+
+<ViewSwitcher xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/switcher_content"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="20dp"
-    android:paddingLeft="@dimen/task_padding"
-    android:paddingRight="@dimen/task_padding"
-    android:textAppearance="?android:attr/textAppearanceMedium" />
+    android:layout_height="wrap_content" >
+
+    <TextView
+        android:id="@+id/task_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:paddingLeft="@dimen/task_padding"
+        android:paddingRight="@dimen/task_padding"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <EditText
+        android:id="@+id/task_content_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:inputType="textMultiLine"
+        android:paddingLeft="@dimen/task_padding"
+        android:paddingRight="@dimen/task_padding"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+</ViewSwitcher>

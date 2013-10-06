@@ -283,5 +283,6 @@ public class TaskFragment extends Fragment {
 			adapter.setData(t);
 		}
 	}
+	
 
 }
