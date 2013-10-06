@@ -85,6 +85,9 @@ public class SettingsActivity extends PreferenceActivity {
 						"de.azapps.mirakel.preferences.GUI")) {
 					addPreferencesFromResource(R.xml.settings_gui);
 				} else if (i.getAction().equals(
+						"de.azapps.mirakel.preferences.TASKS")) {
+					addPreferencesFromResource(R.xml.settings_tasks);
+				} else if (i.getAction().equals(
 						"de.azapps.mirakel.preferences.ABOUT")) {
 					addPreferencesFromResource(R.xml.settings_about);
 				} else if (i.getAction().equals(

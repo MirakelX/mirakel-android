@@ -44,6 +44,8 @@ public class SettingsFragment extends PreferenceFragment {
 		super.onCreate(savedInstanceState);
 		if (getArguments().getString("type").equals("gui")) {
 			addPreferencesFromResource(R.xml.settings_gui);
+		} else if (getArguments().getString("type").equals("tasks")) {
+				addPreferencesFromResource(R.xml.settings_tasks);
 		} else if (getArguments().getString("type").equals("notification")) {
 			addPreferencesFromResource(R.xml.settings_notifications);
 		} else if (getArguments().getString("type").equals("backup")) {

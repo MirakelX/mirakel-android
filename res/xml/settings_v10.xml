@@ -35,6 +35,13 @@
             android:targetPackage="de.azapps.mirakelandroid" />
     </Preference>
     <Preference
+        android:title="@string/settings_tasks_title" >
+        <intent
+            android:action="de.azapps.mirakel.preferences.TASKS"
+            android:targetClass="de.azapps.mirakel.static_activities.SettingsActivity"
+            android:targetPackage="de.azapps.mirakelandroid" />
+    </Preference>
+    <Preference
         android:title="@string/settings_backup" >
         <intent
             android:action="de.azapps.mirakel.preferences.BACKUP"

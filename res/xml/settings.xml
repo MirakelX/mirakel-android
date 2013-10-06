@@ -35,6 +35,13 @@
     </header>
     <header
         android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
+        android:title="@string/settings_tasks_title" >
+        <extra
+            android:name="type"
+            android:value="tasks" />
+    </header>
+    <header
+        android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
         android:title="@string/settings_backup" >
         <extra
             android:name="type"

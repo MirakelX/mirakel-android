@@ -190,7 +190,10 @@
     <string name="settings_subtask_add_to_same_list">Add Subtask to the list of the Task</string>
     <string name="settings_subtask_add_to_same_list_summary">Or select a default list, where the subtask will be added</string>
     <string name="settings_subtask_add_to_list_summary">Add Subtask to %s</string>
+    <string name="settings_new_task">New task</string>
     <string name="settings_use_btn_speak">Show the microfone-button</string>
     <string name="settings_use_btn_camera">Show the camera-button</string>
+    
+    <string name="settings_tasks_title">Tasks</string>
 
 </resources>
