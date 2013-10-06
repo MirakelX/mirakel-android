@@ -276,6 +276,14 @@ public class SpecialListSettings implements OnPreferenceChangeListener {
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
 				List<ListMirakel> lists = ListMirakel.all(true);
+				int loc = 0;
+				for (ListMirakel list : lists) {
+					if (list.getId() == specialList.getId()) {
+						lists.remove(loc);
+						break;
+					}
+					loc++;
+				}
 				final CharSequence[] SortingItems = new String[lists.size() + 1];
 				final int[] values = new int[lists.size() + 1];
 				mSelectedItems = new boolean[SortingItems.length];
