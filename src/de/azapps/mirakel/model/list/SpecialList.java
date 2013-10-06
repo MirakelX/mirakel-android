@@ -2,6 +2,8 @@ package de.azapps.mirakel.model.list;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -31,8 +33,42 @@ public class SpecialList extends ListMirakel {
 		this.active = active;
 	}
 
-	public String getWhereQuery() {
-		return whereQuery;
+	public String getWhereQuery(boolean forQuery) {
+		if (forQuery) {
+			String tmpWhere = whereQuery;
+			Pattern p = Pattern.compile("list_id in[(](.*)[)]");
+			Matcher m = p.matcher(whereQuery);
+
+			if (m.find()) {
+				String origQuery = m.group(1);
+				String newQuery = "";
+				String lists[] = origQuery.split(",");
+				String listConditions = "";
+				boolean first = true;
+				for (String list : lists) {
+					int listId = Integer.valueOf(list);
+					if (listId > 0) {
+						if (first)
+							first = false;
+						else
+							newQuery += ",";
+
+						newQuery += list;
+						continue;
+					}
+					listConditions += " OR ("
+							+ SpecialList.getSpecialList(-listId)
+									.getWhereQuery(true) + ")";
+				}
+				if (!listConditions.equals("")) {
+					tmpWhere = m.replaceFirst("(list_id in (" + newQuery + ")");
+					tmpWhere += listConditions + ")";
+				}
+			}
+			return tmpWhere;
+		} else {
+			return whereQuery;
+		}
 	}
 
 	public void setWhereQuery(String whereQuery) {
@@ -77,7 +113,7 @@ public class SpecialList extends ListMirakel {
 	 * @return
 	 */
 	public List<Task> tasks() {
-		return Task.getTasks(this, getSortBy(), false, getWhereQuery());
+		return Task.getTasks(this, getSortBy(), false, getWhereQuery(true));
 	}
 
 	/**
@@ -87,7 +123,7 @@ public class SpecialList extends ListMirakel {
 	 * @return
 	 */
 	public List<Task> tasks(boolean showDone) {
-		return Task.getTasks(this, getSortBy(), showDone, getWhereQuery());
+		return Task.getTasks(this, getSortBy(), showDone, getWhereQuery(true));
 	}
 
 	// Static Methods
@@ -96,7 +132,8 @@ public class SpecialList extends ListMirakel {
 	private static SQLiteDatabase database;
 	private static DatabaseHelper dbHelper;
 	private static final String[] allColumns = { "_id", "name", "whereQuery",
-			"active", "def_list", "def_date", "sort_by", "sync_state", "color","lft","rgt" };
+			"active", "def_list", "def_date", "sort_by", "sync_state", "color",
+			"lft", "rgt" };
 
 	/**
 	 * Initialize the Database and the preferences
@@ -129,10 +166,9 @@ public class SpecialList extends ListMirakel {
 				null, null, null, null);
 		cursor.moveToFirst();
 		SpecialList newSList = cursorToSList(cursor);
-		database.execSQL("update "
-				+ TABLE
-				+ " SET lft=(SELECT MAX(rgt) from "+TABLE+")+1, rgt=(SELECT MAX(rgt) from "+TABLE+")+2 where _id="
-				+ insertId);
+		database.execSQL("update " + TABLE + " SET lft=(SELECT MAX(rgt) from "
+				+ TABLE + ")+1, rgt=(SELECT MAX(rgt) from " + TABLE
+				+ ")+2 where _id=" + insertId);
 		return newSList;
 	}
 
@@ -166,12 +202,11 @@ public class SpecialList extends ListMirakel {
 			database.update(TABLE, values, "_id=" + id, null);
 		} else {
 			database.delete(TABLE, "_id=" + id, null);
-		}	
-		database.rawQuery("UPDATE " + TABLE
-				+ " SET lft=lft-2 WHERE lft>" + getLft() + "; UPDATE "
-				+ TABLE + " SET rgt=rgt-2 WHERE rgt>" + getRgt()
-				+ ";", null);
-		
+		}
+		database.rawQuery("UPDATE " + TABLE + " SET lft=lft-2 WHERE lft>"
+				+ getLft() + "; UPDATE " + TABLE + " SET rgt=rgt-2 WHERE rgt>"
+				+ getRgt() + ";", null);
+
 	}
 
 	public ContentValues getContentValues() {
@@ -180,7 +215,7 @@ public class SpecialList extends ListMirakel {
 		cv.put("sort_by", getSortBy());
 		cv.put("sync_state", getSyncState().toInt());
 		cv.put("active", isActive() ? 1 : 0);
-		cv.put("whereQuery", getWhereQuery());
+		cv.put("whereQuery", getWhereQuery(false));
 		cv.put("def_list", defaultList == null ? null : defaultList.getId());
 		cv.put("def_date", defaultDate);
 		cv.put("color", getColor());
@@ -243,8 +278,8 @@ public class SpecialList extends ListMirakel {
 	 */
 	public static SpecialList firstSpecial() {
 		Cursor cursor = database.query(SpecialList.TABLE, allColumns,
-				"not sync_state=" + SYNC_STATE.DELETE, null, null,
-				null, "lft ASC");
+				"not sync_state=" + SYNC_STATE.DELETE, null, null, null,
+				"lft ASC");
 		SpecialList list = null;
 		cursor.moveToFirst();
 		if (!cursor.isAfterLast()) {
@@ -280,8 +315,9 @@ public class SpecialList extends ListMirakel {
 				cursor.getString(i++), cursor.getString(i++),
 				cursor.getInt(i++) == 1,
 				ListMirakel.getList(cursor.getInt(i++)), defDate,
-			    (short) cursor.getInt(++i), SYNC_STATE.parseInt(cursor.getInt(++i)),
-				cursor.getInt(++i),cursor.getInt(++i),cursor.getInt(++i));
+				(short) cursor.getInt(++i), SYNC_STATE.parseInt(cursor
+						.getInt(++i)), cursor.getInt(++i), cursor.getInt(++i),
+				cursor.getInt(++i));
 		return slist;
 	}
 

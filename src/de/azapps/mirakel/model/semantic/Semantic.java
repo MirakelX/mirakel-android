@@ -170,10 +170,10 @@ public class Semantic extends SemanticBase {
 					due.add(GregorianCalendar.DAY_OF_MONTH,
 							slist.getDefaultDate());
 				}
-				if (slist.getWhereQuery().contains("priority")) {
+				if (slist.getWhereQuery(false).contains("priority")) {
 					boolean[] mSelectedItems = new boolean[5];
 					boolean not = false;
-					String[] p = slist.getWhereQuery().split("and");
+					String[] p = slist.getWhereQuery(false).split("and");
 					for (String s : p) {
 						if (s.contains("priority")) {
 							not = s.contains("not");

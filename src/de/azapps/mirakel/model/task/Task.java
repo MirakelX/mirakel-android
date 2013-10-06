@@ -800,7 +800,7 @@ public class Task extends TaskBase {
 			boolean showDone) {
 		String where;
 		if (listId < 0) {
-			where = SpecialList.getSpecialList(-1 * listId).getWhereQuery();
+			where = SpecialList.getSpecialList(-1 * listId).getWhereQuery(true);
 		} else {
 			where = "list_id='" + listId + "'";
 		}

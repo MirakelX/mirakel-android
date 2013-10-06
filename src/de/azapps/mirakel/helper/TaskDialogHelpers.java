@@ -472,7 +472,7 @@ public class TaskDialogHelpers {
 				query += " and list_id=" + listId;
 			} else {
 				String where = ((SpecialList) ListMirakel.getList(listId))
-						.getWhereQuery();
+						.getWhereQuery(false);
 				Log.d(TAG, where);
 				if (where != null && !where.trim().equals(""))
 					query += " and " + where;

@@ -108,7 +108,7 @@ public class SpecialListSettings implements OnPreferenceChangeListener {
 					findPreference("special_lists_where"));
 		} else {
 			findPreference("special_lists_where").setSummary(
-					specialList.getWhereQuery());
+					specialList.getWhereQuery(false));
 		}
 
 		final List<ListMirakel> lists = ListMirakel.all(false);
@@ -187,9 +187,9 @@ public class SpecialListSettings implements OnPreferenceChangeListener {
 						ctx.getString(R.string.done),
 						ctx.getString(R.string.undone) };
 				int defVal = 0;
-				if (specialList.getWhereQuery().contains("done=0"))
+				if (specialList.getWhereQuery(false).contains("done=0"))
 					defVal = 2;
-				else if (specialList.getWhereQuery().contains("done=1"))
+				else if (specialList.getWhereQuery(false).contains("done=1"))
 					defVal = 1;
 				new AlertDialog.Builder(ctx)
 						.setTitle(ctx.getString(R.string.select_by))
@@ -233,9 +233,9 @@ public class SpecialListSettings implements OnPreferenceChangeListener {
 						ctx.getString(R.string.reminder_unset) };
 
 				int defVal = 0;
-				if (specialList.getWhereQuery().contains("not"))
+				if (specialList.getWhereQuery(false).contains("not"))
 					defVal = 1;
-				else if (specialList.getWhereQuery().contains("reminder"))
+				else if (specialList.getWhereQuery(false).contains("reminder"))
 					defVal = 2;
 				new AlertDialog.Builder(ctx)
 						.setTitle(ctx.getString(R.string.select_by))
@@ -275,25 +275,25 @@ public class SpecialListSettings implements OnPreferenceChangeListener {
 
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
-				List<ListMirakel> lists = ListMirakel.all(false);
+				List<ListMirakel> lists = ListMirakel.all(true);
 				final CharSequence[] SortingItems = new String[lists.size() + 1];
 				final int[] values = new int[lists.size() + 1];
 				mSelectedItems = new boolean[SortingItems.length];
 				values[0] = 0;
-				mSelectedItems[0] = specialList.getWhereQuery().contains(
+				mSelectedItems[0] = specialList.getWhereQuery(false).contains(
 						"not list_id");
 				SortingItems[0] = ctx.getString(R.string.inverte);
 				for (int i = 0; i < lists.size(); i++) {
 					values[i + 1] = lists.get(i).getId();
 					SortingItems[i + 1] = lists.get(i).getName();
 					mSelectedItems[i + 1] = false;
-					mSelectedItems[i + 1] = (specialList.getWhereQuery()
+					mSelectedItems[i + 1] = (specialList.getWhereQuery(false)
 							.contains("," + lists.get(i).getId()) || specialList
-							.getWhereQuery().contains(
+							.getWhereQuery(false).contains(
 									"(" + lists.get(i).getId()))
-							&& (specialList.getWhereQuery().contains(
+							&& (specialList.getWhereQuery(false).contains(
 									lists.get(i).getId() + ",") || specialList
-									.getWhereQuery().contains(
+									.getWhereQuery(false).contains(
 											lists.get(i).getId() + ")"));
 				}
 				new AlertDialog.Builder(ctx)
@@ -359,7 +359,7 @@ public class SpecialListSettings implements OnPreferenceChangeListener {
 				final int[] values = new int[SortingItems.length];
 				mSelectedItems = new boolean[SortingItems.length];
 				values[0] = -5;
-				mSelectedItems[0] = specialList.getWhereQuery().contains(
+				mSelectedItems[0] = specialList.getWhereQuery(false).contains(
 						"not priority");
 				SortingItems[0] = ctx.getString(R.string.inverte);
 				for (int i = 1; i < SortingItems.length; i++) {
@@ -367,7 +367,7 @@ public class SpecialListSettings implements OnPreferenceChangeListener {
 					values[i] = (i - 3);
 					mSelectedItems[i] = false;
 				}
-				String[] p = specialList.getWhereQuery().split("and");
+				String[] p = specialList.getWhereQuery(false).split("and");
 				for (String s : p) {
 					if (s.contains("priority")) {
 						String[] r = s
@@ -458,7 +458,7 @@ public class SpecialListSettings implements OnPreferenceChangeListener {
 			public boolean onPreferenceClick(Preference preference) {
 
 				final View dialogView = getView(R.layout.content_name_dialog);
-				String[] p = specialList.getWhereQuery().split("and");
+				String[] p = specialList.getWhereQuery(false).split("and");
 				((RadioButton) dialogView.findViewById(R.id.where_like_contain))
 						.setChecked(true);
 				for (String s : p) {
@@ -570,7 +570,7 @@ public class SpecialListSettings implements OnPreferenceChangeListener {
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
 				final View dialogView = getView(R.layout.content_name_dialog);
-				String[] p = specialList.getWhereQuery().split("and");
+				String[] p = specialList.getWhereQuery(false).split("and");
 				((RadioButton) dialogView.findViewById(R.id.where_like_contain))
 						.setChecked(true);
 				for (String s : p) {
@@ -681,7 +681,7 @@ public class SpecialListSettings implements OnPreferenceChangeListener {
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
 
-				String[] p = specialList.getWhereQuery().split("and");
+				String[] p = specialList.getWhereQuery(false).split("and");
 				VALUE day = VALUE.DAY;
 				int val = 0;
 				for (String r : p) {
@@ -824,8 +824,8 @@ public class SpecialListSettings implements OnPreferenceChangeListener {
 	}
 
 	private void updateWhere(String attr, String newWhere) {
-		if (specialList.getWhereQuery().contains(attr)) {
-			String[] parts = specialList.getWhereQuery().split("and");
+		if (specialList.getWhereQuery(false).contains(attr)) {
+			String[] parts = specialList.getWhereQuery(false).split("and");
 			String n = "";
 			boolean first = true;
 			for (int i = 0; i < parts.length; i++) {
@@ -840,7 +840,7 @@ public class SpecialListSettings implements OnPreferenceChangeListener {
 				first = false;
 			}
 			specialList.setWhereQuery(n);
-		} else if (specialList.getWhereQuery().trim().length() == 0
+		} else if (specialList.getWhereQuery(false).trim().length() == 0
 				&& !newWhere.trim().equals("")) {
 			specialList
 					.setWhereQuery((attr.equals("due") ? "due is not null and "
@@ -849,14 +849,14 @@ public class SpecialListSettings implements OnPreferenceChangeListener {
 			specialList
 					.setWhereQuery((attr.equals("due") ? "due is not null and "
 							: "")
-							+ specialList.getWhereQuery()
+							+ specialList.getWhereQuery(false)
 							+ " and "
 							+ newWhere);
 		}
 		specialList.save();
 		if (BuildConfig.DEBUG) {
 			findPreference("special_lists_where").setSummary(
-					specialList.getWhereQuery());
+					specialList.getWhereQuery(false));
 		}
 	}
 
@@ -879,7 +879,7 @@ public class SpecialListSettings implements OnPreferenceChangeListener {
 	}
 
 	protected String getFieldText(String queryPart) {
-		String[] whereParts = specialList.getWhereQuery().split("and");
+		String[] whereParts = specialList.getWhereQuery(false).split("and");
 		String returnString = "";
 		for (String s : whereParts) {
 			if (s.contains(queryPart)) {
@@ -932,7 +932,7 @@ public class SpecialListSettings implements OnPreferenceChangeListener {
 							.getString(R.string.reminder_unset);
 				}
 				if (queryPart.equals("list_id")) {
-					returnString = (specialList.getWhereQuery().contains(
+					returnString = (specialList.getWhereQuery(false).contains(
 							"not list_id") ? ctx.getString(R.string.not_in)
 							+ " " : "");
 					String[] p = s
@@ -948,7 +948,7 @@ public class SpecialListSettings implements OnPreferenceChangeListener {
 					return returnString;
 				}
 				if (queryPart.equals("priority")) {
-					returnString = (specialList.getWhereQuery().contains(
+					returnString = (specialList.getWhereQuery(false).contains(
 							"not priority") ? ctx.getString(R.string.not_in)
 							+ " " : "");
 					return returnString

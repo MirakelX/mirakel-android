@@ -148,7 +148,7 @@ public class ListMirakel extends ListBase {
 		Cursor c;
 		String where;
 		if (getId() < 0) {
-			where = ((SpecialList) this).getWhereQuery();
+			where = ((SpecialList) this).getWhereQuery(true);
 		} else {
 			where = "list_id = " + getId();
 		}
