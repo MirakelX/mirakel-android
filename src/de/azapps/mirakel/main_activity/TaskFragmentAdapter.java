@@ -176,30 +176,7 @@ public class TaskFragmentAdapter extends
 					@Override
 					public void onClick(View v) {
 						editContent = !editContent;
-						if (!editContent) {// End Edit, save content
-							EditText txt = (EditText) ((MainActivity) context)
-									.findViewById(R.id.task_content_edit);
-							if (txt != null) {
-								((InputMethodManager) context
-										.getSystemService(Context.INPUT_METHOD_SERVICE))
-										.showSoftInput(txt,
-												InputMethodManager.HIDE_IMPLICIT_ONLY);
-								if (!txt.getText().toString().trim()
-										.equals(task.getContent())) {
-									task.setContent(txt.getText().toString()
-											.trim());
-									try {
-										task.save();
-									} catch (NoSuchListException e) {
-										Log.w(TAG, "List did vanish");
-									}
-								} else {
-									Log.d(TAG, "content equal");
-								}
-							} else {
-								Log.d(TAG, "edit_content not found");
-							}
-						}
+						saveContent();
 						notifyDataSetChanged();
 					}
 				};
@@ -241,6 +218,36 @@ public class TaskFragmentAdapter extends
 		}
 
 		return row;
+	}
+	
+	private void saveContent() {
+		if(mActionMode!=null){
+			mActionMode.finish();
+		}
+		if (!editContent) {// End Edit, save content
+			EditText txt = (EditText) ((MainActivity) context)
+					.findViewById(R.id.task_content_edit);
+			if (txt != null) {
+				((InputMethodManager) context
+						.getSystemService(Context.INPUT_METHOD_SERVICE))
+						.showSoftInput(txt,
+								InputMethodManager.HIDE_IMPLICIT_ONLY);
+				if (!txt.getText().toString().trim()
+						.equals(task.getContent())) {
+					task.setContent(txt.getText().toString()
+							.trim());
+					try {
+						task.save();
+					} catch (NoSuchListException e) {
+						Log.w(TAG, "List did vanish");
+					}
+				} else {
+					Log.d(TAG, "content equal");
+				}
+			} else {
+				Log.d(TAG, "edit_content not found");
+			}
+		}
 	}
 
 	static class TaskHolder {
@@ -530,8 +537,17 @@ public class TaskFragmentAdapter extends
 	    // Called when the user selects a contextual menu item
 	    @Override
 	    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-	            	setEditContent(false);
-	        mode.finish();
+	    	switch (item.getItemId()) {
+			case R.id.save:
+				editContent=!editContent;
+				saveContent();
+				notifyDataSetChanged();
+				break;
+			case R.id.cancel:
+				editContent=!editContent;
+				notifyDataSetChanged();
+				mode.finish();
+			}
 	        return true;
 	    }
 
@@ -594,8 +610,9 @@ public class TaskFragmentAdapter extends
 
 				    @Override
 				    public void onClick(View v) {
-				        setEditContent(false);
-				        mActionMode.finish();
+				        saveContent();
+				        editContent=!editContent;
+				        notifyDataSetChanged();
 				    }
 				});
 			}

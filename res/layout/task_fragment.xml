@@ -31,8 +31,6 @@
         android:layout_alignParentTop="true"
         android:descendantFocusability="afterDescendants"
         android:divider="@null"
-        android:dividerHeight="0dp"
-        android:stackFromBottom="true"
-        android:transcriptMode="alwaysScroll" />
+        android:dividerHeight="0dp" />
 
 </RelativeLayout>
