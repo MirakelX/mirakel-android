@@ -165,6 +165,12 @@ public class CalDavSync {
 		if (t.getDue() != null)
 			ret += "DUE;VALUE=DATE:"
 					+ DateTimeHelper.formateCalDavDue(t.getDue()) + "\n";
+		if(t.getReminder()!=null){
+			ret+="BEGIN:VALARM\n";
+			ret+="TRIGGER;VALUE=DATE-TIME:"+DateTimeHelper.formatTaskWarrior(t.getReminder())+"\n";
+			ret+="END:VALARM\n";
+		}
+		
 		ret += "CLASS:" + t.getList().getName() + "\n";
 		ret += "STATUS:" + (t.isDone() ? "COMPLETED" : "NEEDS-ACTION") + "\n";
 		return ret + "END:VTODO\n";
@@ -251,6 +257,12 @@ public class CalDavSync {
 				}
 			}else if(l.contains("STATUS")){
 				t.setDone(l.contains("COMPLETED"));	
+			}else if(l.contains("TRIGGER;VALUE=DATE-TIME")){
+				try {
+					t.setReminder(DateTimeHelper.parseTaskWarrior(l.replace("TRIGGER;VALUE=DATE-TIME:", "")));
+				} catch (ParseException e) {
+					Log.d(TAG,"cannot parse Reminder");
+				}
 			}
 		}
 		return t;
