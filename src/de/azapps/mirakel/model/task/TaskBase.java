@@ -254,6 +254,10 @@ class TaskBase {
 	boolean isEdited() {
 		return edited.size() > 0;
 	}
+	
+	boolean isEdited(String key){
+		return edited.containsKey(key);
+	}
 
 	void clearEdited() {
 		edited.clear();

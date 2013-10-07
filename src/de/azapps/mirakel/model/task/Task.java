@@ -88,6 +88,9 @@ public class Task extends TaskBase {
 			Log.d(TAG, "new Task equals old, didnt need to save it");
 			return;
 		}
+		if(isEdited("done")&&isDone()){
+			setSubTasksDone();
+		}
 		setSyncState(getSyncState() == SYNC_STATE.ADD
 				|| getSyncState() == SYNC_STATE.IS_SYNCED ? getSyncState()
 				: SYNC_STATE.NEED_SYNC);
@@ -100,6 +103,18 @@ public class Task extends TaskBase {
 		}
 		database.update(TABLE, values, "_id = " + getId(), null);
 		clearEdited();
+	}
+
+	private void setSubTasksDone() {
+		List<Task> subTasks=getSubtasks();
+		for(Task t:subTasks){
+			t.setDone(true);
+			try {
+				t.save();
+			} catch (NoSuchListException e) {
+				Log.d(TAG,"List did vanish");
+			}
+		}
 	}
 
 	@Override
