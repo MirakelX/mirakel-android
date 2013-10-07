@@ -31,7 +31,6 @@
     <string name="humanDateTimeFormat">yyyy-MM-dd – kk:mm</string>
     <string name="speak">Speak</string>
     <string name="takePhoto">Take a photo</string>
-    <string name="enter">Enter</string>
     <string name="speak_lang_code">en-US</string>
     <string name="Email">Email</string>
     <string name="Password">Password</string>
