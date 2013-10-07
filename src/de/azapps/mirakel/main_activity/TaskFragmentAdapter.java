@@ -24,7 +24,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
-
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -39,7 +39,10 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.view.ActionMode;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.util.Linkify;
 import android.util.Pair;
 import android.util.TypedValue;
@@ -48,11 +51,9 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
@@ -65,7 +66,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
@@ -137,6 +137,9 @@ public class TaskFragmentAdapter extends
 	public void setEditContent(boolean edit) {
 		editContent = edit;
 		notifyDataSetChanged();
+		if(mActionMode!=null&&edit==false){
+			mActionMode.finish();
+		}
 	}
 
 	@Override
@@ -219,12 +222,12 @@ public class TaskFragmentAdapter extends
 
 		return row;
 	}
-	
+
 	private void saveContent() {
-		if(mActionMode!=null){
-			mActionMode.finish();
-		}
 		if (!editContent) {// End Edit, save content
+			if (mActionMode != null) {
+				mActionMode.finish();
+			}
 			EditText txt = (EditText) ((MainActivity) context)
 					.findViewById(R.id.task_content_edit);
 			if (txt != null) {
@@ -232,10 +235,8 @@ public class TaskFragmentAdapter extends
 						.getSystemService(Context.INPUT_METHOD_SERVICE))
 						.showSoftInput(txt,
 								InputMethodManager.HIDE_IMPLICIT_ONLY);
-				if (!txt.getText().toString().trim()
-						.equals(task.getContent())) {
-					task.setContent(txt.getText().toString()
-							.trim());
+				if (!txt.getText().toString().trim().equals(task.getContent())) {
+					task.setContent(txt.getText().toString().trim());
 					try {
 						task.save();
 					} catch (NoSuchListException e) {
@@ -368,15 +369,18 @@ public class TaskFragmentAdapter extends
 		} else {
 			holder.taskRowDue.setVisibility(View.GONE);
 		}
-		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+		SharedPreferences settings = PreferenceManager
+				.getDefaultSharedPreferences(context);
 		if (selected.get(position)) {
 			row.setBackgroundColor(context.getResources().getColor(
 					darkTheme ? R.color.highlighted_text_holo_dark
 							: R.color.highlighted_text_holo_light));
 		} else if (settings.getBoolean("colorize_tasks", true)) {
 			if (settings.getBoolean("colorize_subtasks", true)) {
-				int w=row.getWidth()==0?parent.getWidth():row.getWidth();
-				Helpers.setListColorBackground(task.getList(), row, darkTheme,w);
+				int w = row.getWidth() == 0 ? parent.getWidth() : row
+						.getWidth();
+				Helpers.setListColorBackground(task.getList(), row, darkTheme,
+						w);
 			} else {
 				row.setBackgroundColor(context.getResources().getColor(
 						android.R.color.transparent));
@@ -384,7 +388,7 @@ public class TaskFragmentAdapter extends
 		} else {
 			row.setBackgroundColor(context.getResources().getColor(
 					android.R.color.transparent));
-		}	
+		}
 		return row;
 	}
 
@@ -497,8 +501,7 @@ public class TaskFragmentAdapter extends
 		if (pencilButton) {
 			if (editContent) {
 				holder.button.setImageDrawable(context.getResources()
-						.getDrawable(
-								android.R.drawable.ic_menu_save));
+						.getDrawable(android.R.drawable.ic_menu_save));
 			} else {
 				holder.button.setImageDrawable(context.getResources()
 						.getDrawable(android.R.drawable.ic_menu_edit));
@@ -515,51 +518,59 @@ public class TaskFragmentAdapter extends
 		EditText taskContentEdit;
 		ViewSwitcher taskContentSwitcher;
 	}
-	
+
 	private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
 
-	    // Called when the action mode is created; startActionMode() was called
-	    @Override
-	    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-	        // Inflate a menu resource providing context menu items
-	        MenuInflater inflater = mode.getMenuInflater();
-	        inflater.inflate(R.menu.save, menu);
-	        return true;
-	    }
+		// Called when the action mode is created; startActionMode() was called
+		@Override
+		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+			// Inflate a menu resource providing context menu items
+			MenuInflater inflater = mode.getMenuInflater();
+			inflater.inflate(R.menu.save, menu);
+			return true;
+		}
 
-	    // Called each time the action mode is shown. Always called after onCreateActionMode, but
-	    // may be called multiple times if the mode is invalidated.
-	    @Override
-	    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-	        return false; // Return false if nothing is done
-	    }
+		// Called each time the action mode is shown. Always called after
+		// onCreateActionMode, but
+		// may be called multiple times if the mode is invalidated.
+		@Override
+		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+			return false; // Return false if nothing is done
+		}
 
-	    // Called when the user selects a contextual menu item
-	    @Override
-	    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-	    	switch (item.getItemId()) {
+		// Called when the user selects a contextual menu item
+		@Override
+		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+			switch (item.getItemId()) {
 			case R.id.save:
-				editContent=!editContent;
+				editContent = !editContent;
 				saveContent();
 				notifyDataSetChanged();
 				break;
 			case R.id.cancel:
-				editContent=!editContent;
+				editContent = !editContent;
 				notifyDataSetChanged();
 				mode.finish();
 			}
-	        return true;
-	    }
+			return true;
+		}
 
-	    // Called when the user exits the action mode
-	    @Override
-	    public void onDestroyActionMode(ActionMode mode) {
-	    	mActionMode=null;
-	    }
+		// Called when the user exits the action mode
+		@Override
+		public void onDestroyActionMode(ActionMode mode) {
+			if (editContent&&Build.VERSION.SDK_INT<Build.VERSION_CODES.HONEYCOMB) {// on 2.x you cannot get done button
+				editContent = !editContent;
+				saveContent();
+				notifyDataSetChanged();
+			}
+			mActionMode = null;
+		}
 
-	
 	};
+	private String taskEditText;
+	protected int cursorPos;
 
+	@SuppressLint("NewApi")
 	private View setupContent(ViewGroup parent, View convertView) {
 		final View content = convertView == null ? inflater.inflate(
 				R.layout.task_content, parent, false) : convertView;
@@ -572,18 +583,25 @@ public class TaskFragmentAdapter extends
 					.findViewById(R.id.switcher_content);
 			holder.taskContentEdit = (EditText) content
 					.findViewById(R.id.task_content_edit);
-			holder.taskContentEdit.setOnFocusChangeListener(new OnFocusChangeListener() {
-				
-				@Override
-				public void onFocusChange(View v, boolean hasFocus) {
-					if(hasFocus){
-						((MainActivity)context).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-					}else{
-						((MainActivity)context).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-					}
-					
-				}
-			});
+			holder.taskContentEdit
+					.setOnFocusChangeListener(new OnFocusChangeListener() {
+
+						@Override
+						public void onFocusChange(View v, boolean hasFocus) {
+							if (hasFocus) {
+								((MainActivity) context)
+										.getWindow()
+										.setSoftInputMode(
+												WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+							} else {
+								((MainActivity) context)
+										.getWindow()
+										.setSoftInputMode(
+												WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+							}
+
+						}
+					});
 			content.setTag(holder);
 		} else {
 			holder = (ContentHolder) content.getTag();
@@ -593,28 +611,62 @@ public class TaskFragmentAdapter extends
 			holder.taskContentSwitcher.showNext();
 		}
 		if (editContent) {
-			holder.taskContentEdit.setText(task.getContent());
+			holder.taskContentEdit.setText(taskEditText);
+			holder.taskContentEdit.setSelection(cursorPos);
 			Linkify.addLinks(holder.taskContentEdit, Linkify.WEB_URLS);
 			holder.taskContentEdit.requestFocus();
 			InputMethodManager imm = ((InputMethodManager) context
 					.getSystemService(Context.INPUT_METHOD_SERVICE));
-					imm.showSoftInput(holder.taskContentEdit,
-							InputMethodManager.SHOW_IMPLICIT);
-					
+			imm.showSoftInput(holder.taskContentEdit,
+					InputMethodManager.SHOW_IMPLICIT);
+			holder.taskContentEdit.addTextChangedListener(new TextWatcher() {
+
+				@Override
+				public void onTextChanged(CharSequence s, int start,
+						int before, int count) {
+
+				}
+
+				@Override
+				public void beforeTextChanged(CharSequence s, int start,
+						int count, int after) {
+					cursorPos = holder.taskContentEdit.getSelectionEnd();
+
+				}
+
+				@Override
+				public void afterTextChanged(Editable s) {
+					taskEditText = holder.taskContentEdit.getText().toString();
+
+				}
+			});
+
 			holder.taskContentEdit.setSelected(true);
 			if (mActionMode == null) {
-				mActionMode = ((MainActivity)context).startSupportActionMode(mActionModeCallback);
-				int doneButtonId = Resources.getSystem().getIdentifier("action_mode_close_button", "id", "android");
-				View doneButton = ((MainActivity)context).findViewById(doneButtonId);
-				doneButton.setOnClickListener(new View.OnClickListener() {
+				mActionMode = ((ActionBarActivity) context)
+						.startSupportActionMode(mActionModeCallback);
+				View doneButton;
+				if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB) {
+					int doneButtonId = Resources.getSystem().getIdentifier(
+							"action_mode_close_button", "id", "android");
+					doneButton = ((ActionBarActivity) context)
+							.findViewById(doneButtonId);
+					if (doneButton != null) {
+						doneButton
+								.setOnClickListener(new View.OnClickListener() {
 
-				    @Override
-				    public void onClick(View v) {
-				        saveContent();
-				        editContent=!editContent;
-				        notifyDataSetChanged();
-				    }
-				});
+									@Override
+									public void onClick(View v) {
+										saveContent();
+										editContent = false;
+										notifyDataSetChanged();
+										if(mActionMode!=null){
+											mActionMode.finish();
+										}
+									}
+								});
+					}
+				}
 			}
 		} else {
 			// Task content
@@ -622,6 +674,8 @@ public class TaskFragmentAdapter extends
 					.setText(task.getContent().length() == 0 ? context
 							.getString(R.string.task_no_content) : task
 							.getContent());
+			taskEditText = task.getContent();
+			cursorPos = taskEditText.length();
 			Linkify.addLinks(holder.taskContent, Linkify.WEB_URLS);
 			InputMethodManager imm = (InputMethodManager) context
 					.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -630,6 +684,7 @@ public class TaskFragmentAdapter extends
 		}
 		return content;
 	}
+
 
 	static class ReminderHolder {
 		TextView taskReminder;
