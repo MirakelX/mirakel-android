@@ -8,17 +8,31 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
+import android.preference.PreferenceManager;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 
 public class ExportImport {
-	private static final File dbFile = new File(Mirakel.MIRAKEL_DIR + "databases/mirakel.db");
+	private static final File dbFile = new File(Mirakel.MIRAKEL_DIR
+			+ "databases/mirakel.db");
 	private static final String TAG = "ExportImport";
 
 	public static void exportDB(Context ctx, File file) {
@@ -53,6 +67,147 @@ public class ExportImport {
 
 	@SuppressLint("SimpleDateFormat")
 	public static boolean importAstrid(Context context, String path) {
+		File file = new File(path);
+		if (file.exists()) {
+			String mimetype = Helpers.getMimeType(path);
+			if (mimetype.equals("application/zip")) {
+				return importAstridZip(context, file);
+			} else if (mimetype.equals("text/xml")) {
+				return importAstridXml(context, file);
+			} else {
+				Log.d(TAG, "unknown filetype");
+			}
+		} else {
+			Log.d(TAG, "file not found");
+		}
+		return false;
+	}
+
+	private static boolean importAstridXml(Context context, File file) {
+		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder dBuilder;
+		try {
+			dBuilder = dbFactory.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+			Log.d(TAG, "cannot configure parser");
+			return false;
+		}
+		Document doc;
+		try {
+			doc = dBuilder.parse(file);
+		} catch (SAXException e) {
+			Log.d(TAG, "cannot parse file");
+			return false;
+		} catch (IOException e) {
+			Log.d(TAG, "cannot read file");
+			return false;
+		}
+
+		// optional, but recommended
+		// read this -
+		// http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
+		doc.getDocumentElement().normalize();
+
+		NodeList nList = doc.getDocumentElement().getChildNodes();
+		SQLiteDatabase db = Mirakel.getReadableDatabase();
+		SharedPreferences settings = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		for (int i = 0; i < nList.getLength(); i++) {
+			Node n = nList.item(i);
+			if (n.getNodeType() == Node.ELEMENT_NODE) {
+				NamedNodeMap m = n.getAttributes();
+				if (m != null) {
+					//Name
+					String name = m.getNamedItem("title").getTextContent();
+					//List
+					int listId;
+					Node child=null;
+					if(n.getChildNodes().getLength()>1){
+						child=n.getChildNodes().item(1);
+					}
+					if (child != null
+							&& child.getAttributes() != null) {
+						String listname = child.getAttributes()
+								.getNamedItem("value").getTextContent();
+						ListMirakel l = ListMirakel.findByName(listname);
+						if (l == null) {
+							l = ListMirakel.newList(listname);
+						}
+						listId = l.getId();
+					} else {
+						if (settings.getBoolean("importDefaultList", false)) {
+							listId = settings.getInt("defaultImportList",
+									SpecialList.firstSpecialSafe(context)
+											.getId());
+							if (ListMirakel.getList(listId) == null) {
+								listId = SpecialList.firstSpecialSafe(context)
+										.getId();
+							}
+						} else {
+							listId = SpecialList.firstSpecialSafe(context)
+									.getId();
+						}
+					}
+					Task t = Task.newTask(name, listId);
+					//Priority
+					int prio = Integer.parseInt(m.getNamedItem("importance")
+							.getTextContent());
+					switch (prio) {
+					case 0:
+						t.setPriority(2);
+						break;
+					case 1:
+						t.setPriority(1);
+						break;
+					case 2:
+						t.setPriority(0);
+						break;
+					case 3:
+						t.setPriority(-2);
+						break;
+					default:
+						t.setPriority(0);
+					}
+					//Due
+					long due = Long.parseLong(m.getNamedItem("dueDate")
+							.getTextContent());
+					GregorianCalendar d = new GregorianCalendar();
+					d.setTimeInMillis(due);
+					t.setDue(d);
+					//Created At
+					long created = Long.parseLong(m.getNamedItem("created")
+							.getTextContent());
+					GregorianCalendar c = new GregorianCalendar();
+					c.setTimeInMillis(created);
+					t.setCreatedAt(c);
+					//Update At
+					long update = Long.parseLong(m.getNamedItem("modified")
+							.getTextContent());
+					GregorianCalendar u = new GregorianCalendar();
+					u.setTimeInMillis(update);
+					t.setDue(u);
+					//Done
+					String done = m.getNamedItem("completed").getTextContent();
+					t.setDone(!done.equals("0"));
+					String content = m.getNamedItem("notes").getTextContent();
+					t.setContent(content.trim());
+					//TODO Reminder
+					try {
+						t.save(false);
+					} catch (NoSuchListException e) {
+						Log.wtf(TAG, "List did vanish");
+					}
+
+				} else {
+					Log.w(TAG, "empty node");
+				}
+			}
+		}
+
+		return true;
+	}
+
+	private static boolean importAstridZip(Context context, File zipped) {
 		File outputDir = new File(context.getCacheDir(), "astrid");
 		if (!outputDir.isDirectory()) {
 			outputDir.mkdirs();
@@ -62,7 +217,6 @@ public class ExportImport {
 				new File(outputDir, children[i]).delete();
 			}
 		}
-		File zipped = new File(path);
 		try {
 			FileUtils.unzip(zipped, outputDir);
 		} catch (Exception e) {
@@ -130,6 +284,5 @@ public class ExportImport {
 
 		}
 		return true;
-
 	}
 }
