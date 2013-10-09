@@ -30,6 +30,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.util.Pair;
 import android.view.ActionMode;
@@ -109,48 +110,66 @@ public class TaskFragment extends Fragment {
 				public boolean onItemLongClick(AdapterView<?> parent,
 						View item, final int position, final long id) {
 					Integer typ = adapter.getData().get(position).first;
-					if(typ==TYPE.SUBTASK){
+					if (typ == TYPE.SUBTASK) {
 						AlertDialog.Builder builder = new AlertDialog.Builder(
 								getActivity());
-						builder.setTitle(adapter.getTask().getSubtasks().get(adapter.getData().get(position).second).getName()); 
+						builder.setTitle(adapter.getTask().getSubtasks()
+								.get(adapter.getData().get(position).second)
+								.getName());
 
-						builder.setItems(new String[]{getString(R.string.remove_subtask)}, new DialogInterface.OnClickListener(){
+						builder.setItems(
+								new String[] { getString(R.string.remove_subtask) },
+								new DialogInterface.OnClickListener() {
 
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								if(which==0){
-									List<Task>l=new ArrayList<Task>();
-									l.add(adapter.getTask().getSubtasks().get(adapter.getData().get(position).second));
-									TaskDialogHelpers.handleRemoveSubtask(
-											l, main, adapter,
-											adapter.getTask());
-								}
-								
-							}
-							
-						});
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										if (which == 0) {
+											List<Task> l = new ArrayList<Task>();
+											l.add(adapter
+													.getTask()
+													.getSubtasks()
+													.get(adapter.getData().get(
+															position).second));
+											TaskDialogHelpers
+													.handleRemoveSubtask(l,
+															main, adapter,
+															adapter.getTask());
+										}
+
+									}
+
+								});
 						builder.create().show();
-					}else if(typ==TYPE.FILE){
+					} else if (typ == TYPE.FILE) {
 						AlertDialog.Builder builder = new AlertDialog.Builder(
 								getActivity());
-						builder.setTitle(adapter.getTask().getFiles().get(adapter.getData().get(position).second).getName()); 
+						builder.setTitle(adapter.getTask().getFiles()
+								.get(adapter.getData().get(position).second)
+								.getName());
 
-						builder.setItems(new String[]{getString(R.string.remove_files)}, new DialogInterface.OnClickListener(){
+						builder.setItems(
+								new String[] { getString(R.string.remove_files) },
+								new DialogInterface.OnClickListener() {
 
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								if(which==0){
-									List<FileMirakel>l=new ArrayList<FileMirakel>();
-									l.add(adapter.getTask().getFiles().get(adapter.getData().get(position).second));
-									TaskDialogHelpers.handleDeleteFile(l,
-											main, adapter.getTask(), adapter);
-								}
-								
-							}
-							
-						});
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										if (which == 0) {
+											List<FileMirakel> l = new ArrayList<FileMirakel>();
+											l.add(adapter
+													.getTask()
+													.getFiles()
+													.get(adapter.getData().get(
+															position).second));
+											TaskDialogHelpers.handleDeleteFile(
+													l, main, adapter.getTask(),
+													adapter);
+										}
+
+									}
+
+								});
 						builder.create().show();
 						return false;
 					}
@@ -274,6 +293,38 @@ public class TaskFragment extends Fragment {
 				}
 			});
 		}
+
+		if (main.getPreferences().getBoolean("useBtnCamera", true)
+				&& Helpers.isIntentAvailable(main,
+						MediaStore.ACTION_IMAGE_CAPTURE)) {
+			adapter.setcameraButtonClick(new View.OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					try {
+						Intent cameraIntent = new Intent(
+								MediaStore.ACTION_IMAGE_CAPTURE);
+						Uri fileUri = Helpers
+								.getOutputMediaFileUri(Helpers.MEDIA_TYPE_IMAGE);
+						if (fileUri == null)
+							return;
+						main.setFileUri(fileUri);
+						cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+						cameraIntent.putExtra(MainActivity.TASK_ID, main
+								.getCurrentTask().getId());
+						getActivity().startActivityForResult(cameraIntent,
+								MainActivity.RESULT_CAMERA);
+
+					} catch (ActivityNotFoundException a) {
+						Toast.makeText(
+								main,
+								"Opps! Your device doesn't support taking photos",
+								Toast.LENGTH_SHORT).show();
+					}
+
+				}
+			});
+		}
 		Log.d(TAG, "created");
 		return view;
 	}
@@ -283,6 +334,5 @@ public class TaskFragment extends Fragment {
 			adapter.setData(t);
 		}
 	}
-	
 
 }

@@ -24,6 +24,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -95,6 +96,7 @@ public class TaskFragmentAdapter extends
 	protected ActionMode mActionMode;
 	private static final int SUBTITLE_CONTENT = 0, SUBTITLE_SUBTASKS = 1,
 			SUBTITLE_FILES = 2;
+	private View.OnClickListener cameraButtonClick = null;
 
 	public class TYPE {
 		final static int HEADER = 0;
@@ -171,6 +173,7 @@ public class TaskFragmentAdapter extends
 			String title = null;
 			OnClickListener action = null;
 			boolean pencilButton = false;
+			boolean cameraButton = false;
 			switch (data.get(position).second) {
 			case SUBTITLE_CONTENT:
 				pencilButton = true;
@@ -185,7 +188,7 @@ public class TaskFragmentAdapter extends
 				};
 				break;
 			case SUBTITLE_SUBTASKS:
-				pencilButton = false;
+				cameraButton = true;
 				title = context.getString(R.string.subtasks);
 				action = new OnClickListener() {
 					@Override
@@ -195,7 +198,6 @@ public class TaskFragmentAdapter extends
 				};
 				break;
 			case SUBTITLE_FILES:
-				pencilButton = false;
 				title = context.getString(R.string.files);
 				action = new OnClickListener() {
 					@Override
@@ -211,8 +213,8 @@ public class TaskFragmentAdapter extends
 				Log.w(TAG, "unknown subtitle");
 				break;
 			}
-			row = setupSubtitle(parent, title, pencilButton, action,
-					convertView);
+			row = setupSubtitle(parent, title, pencilButton, cameraButton,
+					action, convertView);
 			break;
 		case TYPE.CONTENT:
 			row = setupContent(parent, convertView);
@@ -476,10 +478,12 @@ public class TaskFragmentAdapter extends
 	static class SubtitleHolder {
 		TextView title;
 		ImageButton button;
+		ImageButton cameraButton;
 	}
 
 	private View setupSubtitle(ViewGroup parent, String title,
-			boolean pencilButton, OnClickListener action, View convertView) {
+			boolean pencilButton, boolean cameraButton, OnClickListener action,
+			View convertView) {
 		if (title == null || action == null)
 			return new View(context);
 		final View subtitle = convertView == null ? inflater.inflate(
@@ -492,12 +496,23 @@ public class TaskFragmentAdapter extends
 					.findViewById(R.id.task_subtitle));
 			holder.button = ((ImageButton) subtitle
 					.findViewById(R.id.task_subtitle_button));
+			holder.cameraButton = ((ImageButton) subtitle
+					.findViewById(R.id.task_subtitle_camera_button));
 			subtitle.setTag(holder);
 		} else {
 			holder = (SubtitleHolder) subtitle.getTag();
 		}
 		holder.title.setText(title);
 		holder.button.setOnClickListener(action);
+
+		if (cameraButton) {
+
+			holder.cameraButton.setVisibility(View.VISIBLE);
+			if (cameraButtonClick != null)
+				holder.cameraButton.setOnClickListener(cameraButtonClick);
+		} else {
+			holder.cameraButton.setVisibility(View.INVISIBLE);
+		}
 		if (pencilButton) {
 			if (editContent) {
 				holder.button.setImageDrawable(context.getResources()
@@ -641,7 +656,7 @@ public class TaskFragmentAdapter extends
 			holder.taskContentSwitcher.showNext();
 		}
 		if (editContent) {
-			editContent=false;//do not record Textchanges
+			editContent = false;// do not record Textchanges
 			holder.taskContentEdit.setText(taskEditText);
 			holder.taskContentEdit.setSelection(cursorPos);
 			Linkify.addLinks(holder.taskContentEdit, Linkify.WEB_URLS);
@@ -677,7 +692,7 @@ public class TaskFragmentAdapter extends
 					}
 				}
 			}
-			editContent=true;
+			editContent = true;
 		} else {
 			// Task content
 			holder.taskContent
@@ -1026,6 +1041,10 @@ public class TaskFragmentAdapter extends
 		for (int i = 0; i < fileCount; i++)
 			data.add(new Pair<Integer, Integer>(TYPE.FILE, i));
 		return data;
+	}
+
+	public void setcameraButtonClick(OnClickListener cameraButtonClick) {
+		this.cameraButtonClick = cameraButtonClick;
 	}
 
 }

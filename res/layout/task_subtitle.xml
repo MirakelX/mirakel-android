@@ -47,6 +47,15 @@
             android:textIsSelectable="false" />
 
         <ImageButton
+            android:id="@+id/task_subtitle_camera_button"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="48dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/edit"
+            android:src="@android:drawable/ic_menu_camera" />
+        <ImageButton
             android:id="@+id/task_subtitle_button"
             android:layout_width="42dp"
             android:layout_height="42dp"
