@@ -63,6 +63,9 @@
         android:layout_weight="0"
         android:background="@drawable/priority_rectangle"
         android:gravity="center"
-        android:textSize="18sp" />
+        android:textIsSelectable="false"
+        android:textSize="18sp" >
+
+    </TextView>
 
 </LinearLayout>

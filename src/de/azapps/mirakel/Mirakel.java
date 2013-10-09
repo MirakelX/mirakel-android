@@ -81,9 +81,9 @@ resDialogOkToast = R.string.crash_dialog_ok_toast // optional. displays a Toast
 
 )
 public class Mirakel extends Application {
-	public static final int[] PRIO_COLOR = { Color.parseColor("#008000"),
-			Color.parseColor("#00c400"), Color.parseColor("#3377FF"),
-			Color.parseColor("#FF7700"), Color.parseColor("#FF3333") };
+	public static final int[] PRIO_COLOR = { Color.parseColor("#669900"),
+			Color.parseColor("#99CC00"), Color.parseColor("#33B5E5"),
+			Color.parseColor("#FFBB33"), Color.parseColor("#FF4444") };
 	public static final int NOTIF_DEFAULT = 123, NOTIF_REMINDER = 124;
 
 	public static final String ACCOUNT_TYPE = "de.azapps.mirakel";
