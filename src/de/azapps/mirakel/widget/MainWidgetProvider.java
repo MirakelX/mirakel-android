@@ -80,12 +80,13 @@ public class MainWidgetProvider extends AppWidgetProvider {
 				list = SpecialList.firstSpecial();
 				if (list == null) {
 					list = ListMirakel.first();
-					if (list == null){
-						Toast.makeText(context, "You have no Lists!", Toast.LENGTH_SHORT).show();
+					if (list == null) {
+						Toast.makeText(context, "You have no Lists!",
+								Toast.LENGTH_SHORT).show();
 						return;
 					}
 				}
-				listId=list.getId();
+				listId = list.getId();
 			}
 			int listSort = Integer.parseInt(preferences.getString("widgetSort",
 					ListMirakel.SORT_BY_OPT + ""));

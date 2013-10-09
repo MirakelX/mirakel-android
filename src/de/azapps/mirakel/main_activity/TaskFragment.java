@@ -310,10 +310,8 @@ public class TaskFragment extends Fragment {
 							return;
 						main.setFileUri(fileUri);
 						cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-						cameraIntent.putExtra(MainActivity.TASK_ID, main
-								.getCurrentTask().getId());
 						getActivity().startActivityForResult(cameraIntent,
-								MainActivity.RESULT_CAMERA);
+								MainActivity.RESULT_ADD_PICTURE);
 
 					} catch (ActivityNotFoundException a) {
 						Toast.makeText(
