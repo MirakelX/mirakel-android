@@ -262,5 +262,20 @@ Device: %3$s\n]]>
     <string name="file_default_title">Check out this file</string>
     <string name="photo_default_title">Check out this photo</string>
     <string name="edit">Edit</string>
-
+    
+    <!-- Reccuring -->
+    <string name="daily">Daily</string>
+    <string name="second_day">Bidaily</string>
+    <string name="weekly">Weekly</string>
+    <string name="two_weekly">Biweekly</string>
+	<string name="yearly">Yearly</string>
+	<string name="monthly">Monthly</string>
+	
+	<string name="hourly">Hourly</string>
+	<string name="minutly">Every Minute</string>
+	<string name="recurring">Recurring</string>
+	<string name="label">Label</string>
+	<string name="forDue">Is for Due?</string>
+	
+	
 </resources>

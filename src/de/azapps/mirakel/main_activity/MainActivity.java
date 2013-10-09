@@ -98,7 +98,8 @@ public class MainActivity extends ActionBarActivity implements
 
 	protected static final int TASKS_FRAGMENT = 0, TASK_FRAGMENT = 1;
 	protected static final int RESULT_SPEECH_NAME = 1, RESULT_SPEECH = 3,
-			RESULT_SETTINGS = 4, RESULT_ADD_FILE = 5, RESULT_CAMERA = 6;
+			RESULT_SETTINGS = 4, RESULT_ADD_FILE = 5, RESULT_CAMERA = 6,
+			RESULT_ADD_PICTURE = 7;
 	private static final String TAG = "MainActivity";
 
 	public static String EXTRA_ID = "de.azapps.mirakel.EXTRA_TASKID",
@@ -424,11 +425,12 @@ public class MainActivity extends ActionBarActivity implements
 			loadMenu(mViewPager.getCurrentItem());
 			return;
 		case RESULT_CAMERA:
+		case RESULT_ADD_PICTURE:
 			if (isOk) {
 				try {
 					Task task;
-					if (intent.hasExtra(TASK_ID)) {
-						task = Task.get(intent.getIntExtra(TASK_ID, 0));
+					if (requestCode == RESULT_ADD_PICTURE) {
+						task = getCurrentTask();
 					} else {
 						task = Semantic.createTask(preferences.getString(
 								"photoDefaultTitle",
