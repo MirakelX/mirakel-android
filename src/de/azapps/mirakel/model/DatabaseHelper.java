@@ -30,6 +30,7 @@ import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
@@ -39,7 +40,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String TAG = "DatabaseHelper";
 	private Context context;
-	public static final int DATABASE_VERSION = 20;
+	public static final int DATABASE_VERSION = 21;
 
 	public DatabaseHelper(Context ctx) {
 		super(ctx, "mirakel.db", null, DATABASE_VERSION);
@@ -176,7 +177,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			db.execSQL("Alter Table "
 					+ Task.TABLE
 					+ " add column additional_entries TEXT NOT NULL DEFAULT '';");
-		case 14:
+		case 14://Add Sematic
 			db.execSQL("CREATE TABLE " + Semantic.TABLE + " ("
 					+ "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
 					+ "condition TEXT NOT NULL, " + "due INTEGER, "
@@ -188,28 +189,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ "INSERT INTO semantic_conditions (condition,due) VALUES (\""
 					+ context.getString(R.string.tomorrow).toLowerCase()
 					+ "\",1);");
-		case 15:
+		case 15://Add Color
 			db.execSQL("Alter Table " + ListMirakel.TABLE
 					+ " add column color INTEGER;");
 			db.execSQL("Alter Table " + SpecialList.TABLE
 					+ " add column color INTEGER;");
-		case 16:
+		case 16://Add File
 			db.execSQL("CREATE TABLE " + FileMirakel.TABLE + " ("
 					+ "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
 					+ "task_id INTEGER NOT NULL DEFAULT 0, " + "name TEXT, "
 					+ "path TEXT" + ")");
-		case 17:
+		case 17://Add Subtask
 			db.execSQL("CREATE TABLE " + Task.SUBTASK_TABLE + " ("
 					+ "_id INTEGER PRIMARY KEY AUTOINCREMENT,"
 					+ "parent_id INTEGER REFERENCES " + Task.TABLE
 					+ " (_id) ON DELETE CASCADE ON UPDATE CASCADE,"
 					+ "child_id INTEGER REFERENCES " + Task.TABLE
 					+ " (_id) ON DELETE CASCADE ON UPDATE CASCADE);");
-		case 18:
+		case 18://Modify Semantic
 			db.execSQL("ALTER TABLE " + Semantic.TABLE
 					+ " add column default_list_id INTEGER");
 			db.execSQL("update semantic_conditions SET condition=LOWER(condition);");
-		case 19:
+		case 19://Make Specialist sortable
 			db.execSQL("ALTER TABLE " + SpecialList.TABLE
 					+ " add column  lft INTEGER;");
 			db.execSQL("ALTER TABLE " + SpecialList.TABLE
@@ -219,6 +220,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ SpecialList.TABLE + ") as a where a._id<"
 					+ SpecialList.TABLE + "._id)*2 +1;");
 			db.execSQL("update " + SpecialList.TABLE + " set rgt=lft+1;");
+		case 20://Add Recurring
+			db.execSQL("CREATE TABLE " + Recurring.TABLE
+					+ " (_id INTEGER PRIMARY KEY AUTOINCREMENT,"
+					+ "years INTEGER DEFAULT 0," + "months INTEGER DEFAULT 0,"
+					+ "days INTEGER DEFAULT 0," + "hours INTEGER DEFAULT 0,"
+					+ "minutes INTEGER DEFAULT 0,"
+					+ "for_due INTEGER DEFAULT 0," + "label STRING);");
+			db.execSQL("ALTER TABLE " + Task.TABLE
+					+ " add column recurring INTEGER DEFAULT '-1';");
+			db.execSQL("INSERT INTO " + Recurring.TABLE
+					+ "(days,label,for_due) VALUES (1,'"
+					+ context.getString(R.string.daily) + "',1);");
+			db.execSQL("INSERT INTO " + Recurring.TABLE
+					+ "(days,label,for_due) VALUES (2,'"
+					+ context.getString(R.string.second_day) + "',1);");
+			db.execSQL("INSERT INTO " + Recurring.TABLE
+					+ "(days,label,for_due) VALUES (7,'"
+					+ context.getString(R.string.weekly) + "',1);");
+			db.execSQL("INSERT INTO " + Recurring.TABLE
+					+ "(days,label,for_due) VALUES (14,'"
+					+ context.getString(R.string.two_weekly) + "',1);");
+			db.execSQL("INSERT INTO " + Recurring.TABLE
+					+ "(months,label,for_due) VALUES (1,'"
+					+ context.getString(R.string.monthly) + "',1);");
+			db.execSQL("INSERT INTO " + Recurring.TABLE
+					+ "(years,label,for_due) VALUES (1,'"
+					+ context.getString(R.string.yearly) + "',1);");
+			db.execSQL("INSERT INTO " + Recurring.TABLE
+					+ "(hours,label,for_due) VALUES (1,'"
+					+ context.getString(R.string.hourly) + "',0);");
+			db.execSQL("INSERT INTO " + Recurring.TABLE
+					+ "(minutes,label,for_due) VALUES (1,'"
+					+ context.getString(R.string.minutly) + "',0);");
 		}
 	}
 

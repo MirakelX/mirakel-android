@@ -35,6 +35,7 @@ import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
@@ -121,6 +122,7 @@ public class Mirakel extends Application {
 		SpecialList.init(getApplicationContext());
 		FileMirakel.init(getApplicationContext());
 		Semantic.init(getApplicationContext());
+		Recurring.init(getApplicationContext());
 		// Kill Notification Service if Notification disabled
 		if (!PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
 				"notificationsUse", false)
@@ -139,6 +141,7 @@ public class Mirakel extends Application {
 		SpecialList.close();
 		FileMirakel.close();
 		Semantic.close();
+		Recurring.close();
 	}
 
 	public static SQLiteDatabase getWritableDatabase() {
