@@ -188,7 +188,6 @@ public class TaskFragmentAdapter extends
 				};
 				break;
 			case SUBTITLE_SUBTASKS:
-				cameraButton = true;
 				title = context.getString(R.string.subtasks);
 				action = new OnClickListener() {
 					@Override
@@ -198,6 +197,7 @@ public class TaskFragmentAdapter extends
 				};
 				break;
 			case SUBTITLE_FILES:
+				cameraButton = true;
 				title = context.getString(R.string.files);
 				action = new OnClickListener() {
 					@Override
