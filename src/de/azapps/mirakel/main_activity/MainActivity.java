@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.ContentResolver;
@@ -34,6 +35,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
@@ -123,6 +125,7 @@ public class MainActivity extends ActionBarActivity implements
 
 	public static boolean updateTasksUUID = false;
 
+	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -130,6 +133,12 @@ public class MainActivity extends ActionBarActivity implements
 		if (darkTheme)
 			setTheme(R.style.AppBaseThemeDARK);
 		super.onCreate(savedInstanceState);
+
+		if (preferences.getBoolean("oldLogo", false)
+				&& Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+			getActionBar().setIcon(R.drawable.ic_launcher);
+			getActionBar().setLogo(R.drawable.ic_launcher);
+		}
 		highlightSelected = preferences.getBoolean("highlightSelected",
 				isTablet);
 		isTablet = getResources().getBoolean(R.bool.isTablet);

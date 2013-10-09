@@ -36,7 +36,7 @@ public class SubtaskAdapter extends ArrayAdapter<Task> {
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		CheckBox c = new CheckBox(context);
-		checked[position] = data.get(position).isSubtaskFrom(task);
+		checked[position] = data.get(position).isSubtaskOf(task);
 		c.setChecked(checked[position]);
 		c.setText(data.get(position).getName());
 		c.setOnCheckedChangeListener(new OnCheckedChangeListener() {

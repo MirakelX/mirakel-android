@@ -30,6 +30,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -63,11 +64,18 @@ public class SettingsActivity extends PreferenceActivity {
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		darkTheme = PreferenceManager.getDefaultSharedPreferences(this)
-				.getBoolean("DarkTheme", false);
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		darkTheme = preferences.getBoolean("DarkTheme", false);
 		if (darkTheme)
 			setTheme(R.style.AppBaseThemeDARK);
 		super.onCreate(savedInstanceState);
+
+		if (preferences.getBoolean("oldLogo", false)
+				&& Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+			getActionBar().setIcon(R.drawable.ic_launcher);
+			getActionBar().setLogo(R.drawable.ic_launcher);
+		}
 		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
 
 			Intent i = getIntent();

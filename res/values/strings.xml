@@ -20,6 +20,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools"    tools:ignore="MissingTranslation">
 
     <string name="app_name">Mirakel</string>
+    <string name="app_name_old">Mirakel old Logo</string>
     <string name="action_settings">Settings</string>
     <string name="action_contact">Contact / report Bug</string>
     <string name="action_contact_summary">Write us an E-Mail!</string>

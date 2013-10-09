@@ -327,9 +327,9 @@ public class TaskFragment extends Fragment {
 		return view;
 	}
 
-	public void update(Task t) {
+	public void update(Task task) {
 		if (adapter != null) {
-			adapter.setData(t);
+			adapter.setData(task);
 		}
 	}
 
