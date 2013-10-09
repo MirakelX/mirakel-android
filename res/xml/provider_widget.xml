@@ -21,7 +21,7 @@
     android:initialLayout="@layout/widget_main"
     android:minHeight="110dp"
     android:minWidth="250dp"
-    android:previewImage="@drawable/ic_launcher"
+    android:previewImage="@drawable/mirakel"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="60000"
     android:widgetCategory="home_screen|keyguard" >

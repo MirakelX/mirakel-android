@@ -18,9 +18,11 @@
  ******************************************************************************/
 package de.azapps.mirakel.static_activities;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Html;
@@ -41,6 +43,7 @@ public class StartActivity extends Activity {
 	private static final int PrepareLogin = 1;
 	private static final int ShowHelp = 2;
 
+	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -49,6 +52,14 @@ public class StartActivity extends Activity {
 			Log.v(TAG, "SET DB-VERSION " + DatabaseHelper.DATABASE_VERSION);
 			Mirakel.getReadableDatabase().setVersion(
 					DatabaseHelper.DATABASE_VERSION);
+		}
+
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		if (preferences.getBoolean("oldLogo", false)
+				&& Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+			getActionBar().setIcon(R.drawable.ic_launcher);
+			getActionBar().setLogo(R.drawable.ic_launcher);
 		}
 		setContentView(R.layout.activity_start);
 		TextView startText = (TextView) findViewById(R.id.start_text);

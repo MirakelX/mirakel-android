@@ -45,6 +45,7 @@ public class SplashScreenActivity extends Activity {
 
 		SharedPreferences preferences = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
+		
 		if (!preferences.contains("startupAllLists")) {
 			Intent intent = new Intent(SplashScreenActivity.this,
 					StartActivity.class);

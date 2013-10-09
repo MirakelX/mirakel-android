@@ -39,5 +39,10 @@
         android:key="dateFormatRelative"
         android:summary="@string/settings_date_format_relative_summary"
         android:title="@string/settings_date_format_relative" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="oldLogo"
+        android:summary="@string/settings_old_logo_summary"
+        android:title="@string/settings_old_logo" />
 
 </PreferenceScreen>
