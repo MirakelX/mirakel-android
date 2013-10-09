@@ -137,7 +137,7 @@ public class TaskFragmentAdapter extends
 	public void setEditContent(boolean edit) {
 		editContent = edit;
 		notifyDataSetChanged();
-		if(mActionMode!=null&&edit==false){
+		if (mActionMode != null && edit == false) {
 			mActionMode.finish();
 		}
 	}
@@ -558,7 +558,14 @@ public class TaskFragmentAdapter extends
 		// Called when the user exits the action mode
 		@Override
 		public void onDestroyActionMode(ActionMode mode) {
-			if (editContent&&Build.VERSION.SDK_INT<Build.VERSION_CODES.HONEYCOMB) {// on 2.x you cannot get done button
+			if (editContent
+					&& Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {// on
+																				// 2.x
+																				// you
+																				// cannot
+																				// get
+																				// done
+																				// button
 				editContent = !editContent;
 				saveContent();
 				notifyDataSetChanged();
@@ -602,23 +609,6 @@ public class TaskFragmentAdapter extends
 
 						}
 					});
-			content.setTag(holder);
-		} else {
-			holder = (ContentHolder) content.getTag();
-		}
-		while (holder.taskContentSwitcher.getCurrentView().getId() != (editContent ? R.id.task_content_edit
-				: R.id.task_content)) {
-			holder.taskContentSwitcher.showNext();
-		}
-		if (editContent) {
-			holder.taskContentEdit.setText(taskEditText);
-			holder.taskContentEdit.setSelection(cursorPos);
-			Linkify.addLinks(holder.taskContentEdit, Linkify.WEB_URLS);
-			holder.taskContentEdit.requestFocus();
-			InputMethodManager imm = ((InputMethodManager) context
-					.getSystemService(Context.INPUT_METHOD_SERVICE));
-			imm.showSoftInput(holder.taskContentEdit,
-					InputMethodManager.SHOW_IMPLICIT);
 			holder.taskContentEdit.addTextChangedListener(new TextWatcher() {
 
 				@Override
@@ -630,7 +620,9 @@ public class TaskFragmentAdapter extends
 				@Override
 				public void beforeTextChanged(CharSequence s, int start,
 						int count, int after) {
-					cursorPos = holder.taskContentEdit.getSelectionEnd();
+					if (editContent) {
+						cursorPos = holder.taskContentEdit.getSelectionEnd();
+					}
 
 				}
 
@@ -640,7 +632,24 @@ public class TaskFragmentAdapter extends
 
 				}
 			});
-
+			content.setTag(holder);
+		} else {
+			holder = (ContentHolder) content.getTag();
+		}
+		while (holder.taskContentSwitcher.getCurrentView().getId() != (editContent ? R.id.task_content_edit
+				: R.id.task_content)) {
+			holder.taskContentSwitcher.showNext();
+		}
+		if (editContent) {
+			editContent=false;//do not record Textchanges
+			holder.taskContentEdit.setText(taskEditText);
+			holder.taskContentEdit.setSelection(cursorPos);
+			Linkify.addLinks(holder.taskContentEdit, Linkify.WEB_URLS);
+			holder.taskContentEdit.requestFocus();
+			InputMethodManager imm = ((InputMethodManager) context
+					.getSystemService(Context.INPUT_METHOD_SERVICE));
+			imm.showSoftInput(holder.taskContentEdit,
+					InputMethodManager.SHOW_IMPLICIT);
 			holder.taskContentEdit.setSelected(true);
 			if (mActionMode == null) {
 				mActionMode = ((ActionBarActivity) context)
@@ -660,7 +669,7 @@ public class TaskFragmentAdapter extends
 										saveContent();
 										editContent = false;
 										notifyDataSetChanged();
-										if(mActionMode!=null){
+										if (mActionMode != null) {
 											mActionMode.finish();
 										}
 									}
@@ -668,6 +677,7 @@ public class TaskFragmentAdapter extends
 					}
 				}
 			}
+			editContent=true;
 		} else {
 			// Task content
 			holder.taskContent
@@ -684,7 +694,6 @@ public class TaskFragmentAdapter extends
 		}
 		return content;
 	}
-
 
 	static class ReminderHolder {
 		TextView taskReminder;
