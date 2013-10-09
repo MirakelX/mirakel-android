@@ -57,6 +57,7 @@ public class Task extends TaskBase {
 
 	public static final String TABLE = "tasks";
 	public static final String SUBTASK_TABLE = "subtasks";
+	private String dependencies[];
 
 	public Task(long id, String uuid, ListMirakel list, String name,
 			String content, boolean done, Calendar due, Calendar reminder,
@@ -88,7 +89,7 @@ public class Task extends TaskBase {
 			Log.d(TAG, "new Task equals old, didnt need to save it");
 			return;
 		}
-		if(isEdited("done")&&isDone()){
+		if (isEdited("done") && isDone()) {
 			setSubTasksDone();
 		}
 		setSyncState(getSyncState() == SYNC_STATE.ADD
@@ -106,13 +107,13 @@ public class Task extends TaskBase {
 	}
 
 	private void setSubTasksDone() {
-		List<Task> subTasks=getSubtasks();
-		for(Task t:subTasks){
+		List<Task> subTasks = getSubtasks();
+		for (Task t : subTasks) {
 			t.setDone(true);
 			try {
 				t.save();
 			} catch (NoSuchListException e) {
-				Log.d(TAG,"List did vanish");
+				Log.d(TAG, "List did vanish");
 			}
 		}
 	}
@@ -256,13 +257,14 @@ public class Task extends TaskBase {
 
 	}
 
-	public boolean isSubtaskFrom(Task t) {
-		Cursor c = database.query(SUBTASK_TABLE, new String[] { "_id" },
-				"parent_id=" + t.getId() + " and child_id=" + getId(), null,
-				null, null, null);
-		boolean isSubtask = c.getCount() > 0;
+	public boolean isSubtaskOf(Task otherTask) {
+		Cursor c = database.rawQuery("Select count(_id) from " + SUBTASK_TABLE
+				+ " where parent_id=" + otherTask.getId() + " AND child_id="
+				+ getId(), null);
+		c.moveToFirst();
+		int count = c.getInt(0);
 		c.close();
-		return isSubtask;
+		return count > 0;
 	}
 
 	public boolean checkIfParent(Task t) {
@@ -739,11 +741,21 @@ public class Task extends TaskBase {
 				t.setContent(val.getAsString());
 			} else if (key.equals("sync_state")) {
 				t.setSyncState(SYNC_STATE.parseInt(val.getAsInt()));
+			} else if (key.equals("depends")) {
+				t.setDependencies(val.getAsString().split(","));
 			} else {
 				t.addAdditionalEntry(key, val.getAsString());
 			}
 		}
 		return t;
+	}
+
+	private void setDependencies(String[] dep) {
+		dependencies = dep;
+	}
+
+	public String[] getDependencies() {
+		return dependencies;
 	}
 
 	private static Calendar parseDate(String date, String format) {

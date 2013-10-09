@@ -6,6 +6,7 @@ import java.nio.charset.MalformedInputException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -198,6 +199,8 @@ public class TaskWarriorSync {
 			Log.i(TAG, "there is no Payload");
 		} else {
 			String tasksString[] = remotes.getPayload().split("\n");
+			// Format: {UUID:[UUID]}
+			Map<String, String[]> dependencies = new HashMap<String, String[]>();
 			for (String taskString : tasksString) {
 				if (taskString.charAt(0) != '{') {
 					Log.d(TAG, "Key: " + taskString);
@@ -212,6 +215,8 @@ public class TaskWarriorSync {
 					taskObject = new JsonParser().parse(taskString)
 							.getAsJsonObject();
 					server_task = Task.parse_json(taskObject);
+					dependencies.put(server_task.getUUID(),
+							server_task.getDependencies());
 					local_task = Task.getByUUID(server_task.getUUID());
 				} catch (Exception e) {
 					Log.d(TAG, Log.getStackTraceString(e));
@@ -237,6 +242,24 @@ public class TaskWarriorSync {
 					} catch (NoSuchListException e) {
 						// Should not happen, because the list should be created
 						// while parsing the task
+					}
+				}
+			}
+
+			for (String uuid : dependencies.keySet()) {
+				Task parent = Task.getByUUID(uuid);
+				for (String childUuid : dependencies.get(uuid)) {
+					Task child = Task.getByUUID(childUuid);
+					if (child == null)
+						continue;
+					if (child.isSubtaskOf(parent)) {
+						continue;
+					} else {
+						try {
+							parent.addSubtask(child);
+						} catch (Exception e) {
+
+						}
 					}
 				}
 			}
@@ -301,21 +324,21 @@ public class TaskWarriorSync {
 	/**
 	 * Converts a task to the json-format we need
 	 * 
-	 * @param t
+	 * @param task
 	 * @return
 	 */
-	private String taskToJson(Task t) {
+	public String taskToJson(Task task) {
 
 		String status = "pending";
-		if (t.getSyncState() == SYNC_STATE.DELETE)
+		if (task.getSyncState() == SYNC_STATE.DELETE)
 			status = "deleted";
-		else if (t.isDone())
+		else if (task.isDone())
 			status = "completed";
 		Log.e(TAG, "Status waiting / recurring is not implemented now");
 		// TODO
 
 		String priority = null;
-		switch (t.getPriority()) {
+		switch (task.getPriority()) {
 		case -2:
 		case -1:
 			priority = "L";
@@ -329,43 +352,66 @@ public class TaskWarriorSync {
 		}
 
 		String json = "{";
-		json += "\"uuid\":\"" + t.getUUID() + "\",";
+		json += "\"uuid\":\"" + task.getUUID() + "\",";
 		json += "\"status\":\"" + status + "\",";
-		json += "\"entry\":\"" + formatCal(t.getCreatedAt()) + "\",";
-		json += "\"description\":\"" + t.getName() + "\",";
-		if (t.getDue() != null)
-			json += "\"due\":\"" + formatCal(t.getDue()) + "\",";
-		json += "\"project\":\"" + t.getList().getName() + "\",";
+		json += "\"entry\":\"" + formatCal(task.getCreatedAt()) + "\",";
+		json += "\"description\":\"" + task.getName() + "\",";
+		if (task.getDue() != null)
+			json += "\"due\":\"" + formatCal(task.getDue()) + "\",";
+		json += "\"project\":\"" + task.getList().getName() + "\",";
 		if (priority != null)
 			json += "\"priority\":\"" + priority + "\",";
-		json += "\"modification\":\"" + formatCal(t.getUpdatedAt()) + "\",";
-		if (t.getReminder() != null)
-			json += "\"reminder\":\"" + formatCal(t.getReminder()) + "\",";
+		json += "\"modification\":\"" + formatCal(task.getUpdatedAt()) + "\",";
+		if (task.getReminder() != null)
+			json += "\"reminder\":\"" + formatCal(task.getReminder()) + "\",";
 
 		// Annotations
-		json += "\"annotations\":[";
-		/*
-		 * An annotation in taskd is a line of content in Mirakel!
-		 */
-		String annotations[] = t.getContent().replace("\"", "\\\"").split("\n");
-		boolean first = true;
-		for (String a : annotations) {
-			if (first)
-				first = false;
-			else
-				json += ",";
-			json += "{\"entry\":\"" + formatCal(t.getUpdatedAt()) + "\",";
-			json += "\"description\":\"" + a + "\"}";
+		if (task.getContent() != null && !task.getContent().equals("")) {
+			json += "\"annotations\":[";
+			/*
+			 * An annotation in taskd is a line of content in Mirakel!
+			 */
+			String annotations[] = task.getContent().replace("\"", "\\\"")
+					.split("\n");
+			boolean first = true;
+			for (String a : annotations) {
+				if (first)
+					first = false;
+				else
+					json += ",";
+				json += "{\"entry\":\"" + formatCal(task.getUpdatedAt())
+						+ "\",";
+				json += "\"description\":\"" + a + "\"}";
+			}
+			json += "]";
 		}
-		json += "]";
+		// Anotations end
 
-		if (t.getAdditionalEntries() != null) {
-			Map<String, String> additionalEntries = t.getAdditionalEntries();
+		// TW.depends==Mirakel.subtasks!
+		// Dependencies
+		if (task.getSubtaskCount() > 0) {
+			json += ",\"depends\":\"";
+			boolean first1 = true;
+			for (Task subtask : task.getSubtasks()) {
+				if (first1)
+					first1 = false;
+				else
+					json += ",";
+				json += subtask.getUUID();
+			}
+			json += "\"";
+		}
+		// end Dependencies
+
+		// Additional Strings
+		if (task.getAdditionalEntries() != null) {
+			Map<String, String> additionalEntries = task.getAdditionalEntries();
 			for (String key : additionalEntries.keySet()) {
 				json += ",\"" + key + "\":\"" + additionalEntries.get(key)
 						+ "\"";
 			}
 		}
+		// end Additional Strings
 		json += "}";
 		return json;
 	}
