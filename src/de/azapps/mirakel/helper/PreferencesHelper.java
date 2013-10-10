@@ -56,6 +56,7 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.services.NotificationService;
+import de.azapps.mirakel.settings.recurring.RecurringActivity;
 import de.azapps.mirakel.settings.semantics.SemanticsSettingsActivity;
 import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
 import de.azapps.mirakel.static_activities.CreditsActivity;
@@ -1065,6 +1066,13 @@ public class PreferencesHelper {
 		Preference semantics = findPreference("semanticNewTaskSettings");
 		if (semantics != null) {
 			semantics.setIntent(startSemanticsIntent);
+		}
+		
+		Intent startRecurringIntent = new Intent(activity,
+				RecurringActivity.class);
+		Preference recurring = findPreference("recurring");
+		if (recurring != null) {
+			recurring.setIntent(startRecurringIntent);
 		}
 
 		final CheckBoxPreference subTaskAddToSameList = (CheckBoxPreference) findPreference("subtaskAddToSameList");
