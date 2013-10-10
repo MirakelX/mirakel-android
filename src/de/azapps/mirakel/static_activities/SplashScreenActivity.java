@@ -45,32 +45,25 @@ public class SplashScreenActivity extends Activity {
 
 		SharedPreferences preferences = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
-		
-		if (!preferences.contains("startupAllLists")) {
-			Intent intent = new Intent(SplashScreenActivity.this,
-					StartActivity.class);
-			startActivity(intent);
-		} else {
-			if (preferences.getBoolean("startupAllLists", false)) {
-				Intent intent = new Intent(SplashScreenActivity.this,
-						MainActivity.class);
-				intent.setAction(MainActivity.SHOW_LISTS);
-				startActivityForResult(intent, 42);
-			} else {
-				ListMirakel sl = SpecialList.firstSpecial();
-				if (sl == null) {
-					sl = SpecialList.newSpecialList(
-							getString(R.string.list_all), " done=0 ", true);
-				}
-				int listId = Integer.parseInt(preferences.getString(
-						"startupList", "" + sl.getId()));
-				Intent intent = new Intent(SplashScreenActivity.this,
-						MainActivity.class);
-				intent.setAction(MainActivity.SHOW_LIST);
-				intent.putExtra(MainActivity.EXTRA_ID, listId);
-				startActivityForResult(intent, 1);
 
+		if (preferences.getBoolean("startupAllLists", false)) {
+			Intent intent = new Intent(SplashScreenActivity.this,
+					MainActivity.class);
+			intent.setAction(MainActivity.SHOW_LISTS);
+			startActivityForResult(intent, 42);
+		} else {
+			ListMirakel sl = SpecialList.firstSpecial();
+			if (sl == null) {
+				sl = SpecialList.newSpecialList(getString(R.string.list_all),
+						" done=0 ", true);
 			}
+			int listId = Integer.parseInt(preferences.getString("startupList",
+					"" + sl.getId()));
+			Intent intent = new Intent(SplashScreenActivity.this,
+					MainActivity.class);
+			intent.setAction(MainActivity.SHOW_LIST);
+			intent.putExtra(MainActivity.EXTRA_ID, listId);
+			startActivityForResult(intent, 1);
 		}
 
 	}

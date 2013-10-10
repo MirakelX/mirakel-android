@@ -45,7 +45,6 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.widget.Toast;
 import de.azapps.mirakel.helper.Log;
-import de.azapps.mirakel.sync.caldav.CalDavSync;
 import de.azapps.mirakel.sync.mirakel.MirakelSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync.TW_ERRORS;

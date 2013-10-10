@@ -17,10 +17,10 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
@@ -109,7 +109,6 @@ public class ExportImport {
 		doc.getDocumentElement().normalize();
 
 		NodeList nList = doc.getDocumentElement().getChildNodes();
-		SQLiteDatabase db = Mirakel.getReadableDatabase();
 		SharedPreferences settings = PreferenceManager
 				.getDefaultSharedPreferences(context);
 		for (int i = 0; i < nList.getLength(); i++) {
@@ -207,6 +206,7 @@ public class ExportImport {
 		return true;
 	}
 
+	@SuppressLint("SimpleDateFormat")
 	private static boolean importAstridZip(Context context, File zipped) {
 		File outputDir = new File(context.getCacheDir(), "astrid");
 		if (!outputDir.isDirectory()) {
