@@ -516,4 +516,18 @@ public class Helpers {
 		return list.size() > 0;
 	}
 
+	public static void openHelp(Context ctx) {
+		openHelp(ctx, null);
+	}
+
+	public static void openHelp(Context ctx, String title) {
+		String url = "http://mirakel.azapps.de/help_en.html";
+		if (title != null)
+			url += "#" + title;
+		Intent i2 = new Intent(Intent.ACTION_VIEW);
+		i2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		i2.setData(Uri.parse(url));
+		ctx.startActivity(i2);
+	}
+
 }

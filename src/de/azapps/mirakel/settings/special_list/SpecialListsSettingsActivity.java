@@ -29,6 +29,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.settings.ListSettings;
 import de.azapps.mirakelandroid.R;
@@ -132,6 +133,17 @@ public class SpecialListsSettingsActivity extends ListSettings {
 			break;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	protected OnClickListener getHelpOnClickListener() {
+		return new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Helpers.openHelp(getApplicationContext(),"special-lists");
+			}
+		};
 	}
 
 }

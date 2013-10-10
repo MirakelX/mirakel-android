@@ -227,6 +227,7 @@ Device: %3$s\n]]>
     <string name="change_content">Change Content</string>
     <string name="content">Content</string>
     <string name="task_has_content">Task has content</string>
+    <string name="help">Help</string>
     <string name="help_description">There are 3 main parts: on the left side you can see all lists, in the middle you can see all tasks of a list and at the right side you can see a task. You switch between the parts by swiping or clicking.</string>
 
     <!-- Permissions -->

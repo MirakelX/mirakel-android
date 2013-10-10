@@ -26,6 +26,7 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.view.View;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.PreferencesHelper;
 import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
@@ -45,7 +46,7 @@ public class SettingsFragment extends PreferenceFragment {
 		if (getArguments().getString("type").equals("gui")) {
 			addPreferencesFromResource(R.xml.settings_gui);
 		} else if (getArguments().getString("type").equals("tasks")) {
-				addPreferencesFromResource(R.xml.settings_tasks);
+			addPreferencesFromResource(R.xml.settings_tasks);
 		} else if (getArguments().getString("type").equals("notification")) {
 			addPreferencesFromResource(R.xml.settings_notifications);
 		} else if (getArguments().getString("type").equals("backup")) {
@@ -56,6 +57,8 @@ public class SettingsFragment extends PreferenceFragment {
 			addPreferencesFromResource(R.xml.settings_misc);
 		} else if (getArguments().getString("type").equals("about")) {
 			addPreferencesFromResource(R.xml.settings_about);
+		} else if (getArguments().getString("type").equals("help")) {
+			Helpers.openHelp(getActivity());
 		} else if (getArguments().getString("type").equals("speciallists")) {
 			startActivity(new Intent(getActivity(),
 					SpecialListsSettingsActivity.class));

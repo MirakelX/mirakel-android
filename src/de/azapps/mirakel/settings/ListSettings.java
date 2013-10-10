@@ -51,6 +51,7 @@ import de.azapps.mirakelandroid.R;
 public abstract class ListSettings extends PreferenceActivity {
 
 	protected abstract OnClickListener getAddOnClickListener();
+	protected abstract OnClickListener getHelpOnClickListener();
 
 	protected abstract int getSettingsRessource();
 
