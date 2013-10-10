@@ -71,7 +71,6 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.ViewSwitcher;
-import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
@@ -358,7 +357,7 @@ public class TaskFragmentAdapter extends
 
 		GradientDrawable bg = (GradientDrawable) holder.taskRowPriority
 				.getBackground();
-		bg.setColor(Mirakel.PRIO_COLOR[task.getPriority() + 2]);
+		bg.setColor(Helpers.getPrioColor(task.getPriority(), context));
 		holder.taskRowPriority.setTag(task);
 
 		// Due
@@ -1003,7 +1002,7 @@ public class TaskFragmentAdapter extends
 		Task_prio.setText("" + task.getPriority());
 
 		GradientDrawable bg = (GradientDrawable) Task_prio.getBackground();
-		bg.setColor(Mirakel.PRIO_COLOR[task.getPriority() + 2]);
+		bg.setColor(Helpers.getPrioColor(task.getPriority(), context));
 
 	}
 

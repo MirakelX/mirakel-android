@@ -12,22 +12,21 @@ import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.RemoteViews;
-import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 
 public class WidgetHelper {
 	public static RemoteViews configureItem(RemoteViews rv, Task task,
-			Context mContext, int listId) {
+			Context context, int listId) {
 		SharedPreferences preferences = PreferenceManager
-				.getDefaultSharedPreferences(mContext);
-		Intent openIntent = new Intent(mContext, MainActivity.class);
+				.getDefaultSharedPreferences(context);
+		Intent openIntent = new Intent(context, MainActivity.class);
 		openIntent.setAction(MainActivity.SHOW_TASK);
 		openIntent.putExtra(MainActivity.EXTRA_ID, task.getId());
 		openIntent
 				.setData(Uri.parse(openIntent.toUri(Intent.URI_INTENT_SCHEME)));
-		PendingIntent pOpenIntent = PendingIntent.getActivity(mContext, 0,
+		PendingIntent pOpenIntent = PendingIntent.getActivity(context, 0,
 				openIntent, 0);
 
 		rv.setOnClickPendingIntent(R.id.tasks_row, pOpenIntent);
@@ -35,22 +34,22 @@ public class WidgetHelper {
 
 		rv.setTextViewText(R.id.tasks_row_name, task.getName());
 		if (task.isDone()) {
-			rv.setTextColor(R.id.tasks_row_name, mContext.getResources()
+			rv.setTextColor(R.id.tasks_row_name, context.getResources()
 					.getColor(R.color.Grey));
 		} else {
 			rv.setTextColor(
 					R.id.tasks_row_name,
-					mContext.getResources()
+					context.getResources()
 							.getColor(
 									preferences.getBoolean("darkWidget", false) ? R.color.White
 											: R.color.Black));
 		}
 		rv.setTextViewText(R.id.tasks_row_priority, task.getPriority() + "");
-		rv.setTextColor(R.id.tasks_row_priority, mContext.getResources()
+		rv.setTextColor(R.id.tasks_row_priority, context.getResources()
 				.getColor(R.color.Black));
-		GradientDrawable drawable = (GradientDrawable) mContext.getResources()
+		GradientDrawable drawable = (GradientDrawable) context.getResources()
 				.getDrawable(R.drawable.priority_rectangle);
-		drawable.setColor(Mirakel.PRIO_COLOR[task.getPriority() + 2]);
+		drawable.setColor(Helpers.getPrioColor(task.getPriority(), context));
 		Bitmap bitmap = Bitmap.createBitmap(40, 40, Config.ARGB_8888);
 		Canvas canvas = new Canvas(bitmap);
 		drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -67,19 +66,19 @@ public class WidgetHelper {
 
 		if (task.getDue() != null) {
 			rv.setViewVisibility(R.id.tasks_row_due, View.VISIBLE);
-			rv.setTextViewText(
-					R.id.tasks_row_due,
-					Helpers.formatDate(mContext,task.getDue()));
+			rv.setTextViewText(R.id.tasks_row_due,
+					Helpers.formatDate(context, task.getDue()));
 			rv.setTextColor(
 					R.id.tasks_row_due,
-					mContext.getResources().getColor(
+					context.getResources().getColor(
 							Helpers.getTaskDueColor(task.getDue(),
 									task.isDone())));
 		} else {
 			rv.setViewVisibility(R.id.tasks_row_due, View.GONE);
 		}
 
-		if (task.getContent().length() != 0 || task.getSubtaskCount()>0 || task.getFiles().size()>0) {
+		if (task.getContent().length() != 0 || task.getSubtaskCount() > 0
+				|| task.getFiles().size() > 0) {
 			rv.setViewVisibility(R.id.tasks_row_has_content, View.VISIBLE);
 		} else {
 			rv.setViewVisibility(R.id.tasks_row_has_content, View.GONE);

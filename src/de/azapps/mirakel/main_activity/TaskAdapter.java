@@ -36,7 +36,6 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
@@ -182,7 +181,7 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 
 		GradientDrawable bg = (GradientDrawable) holder.taskRowPriority
 				.getBackground();
-		bg.setColor(Mirakel.PRIO_COLOR[task.getPriority() + 2]);
+		bg.setColor(Helpers.getPrioColor(task.getPriority(), context));
 		holder.taskRowPriority.setTag(task);
 
 		// Due
