@@ -163,6 +163,10 @@ public class Helpers {
 
 	private static SharedPreferences settings = null;
 
+	public static void init(Context context) {
+		settings = PreferenceManager.getDefaultSharedPreferences(context);
+	}
+
 	/**
 	 * Formats the Date in the format, the user want to see. The default
 	 * configuration is the relative date format. So the due date is for example
@@ -176,9 +180,6 @@ public class Helpers {
 		if (date == null)
 			return "";
 		else {
-			if (settings == null) {
-				settings = PreferenceManager.getDefaultSharedPreferences(ctx);
-			}
 			if (settings.getBoolean("dateFormatRelative", true)) {
 				return DateUtils.getRelativeTimeSpanString(
 						date.getTimeInMillis(), (new Date()).getTime(),
@@ -291,8 +292,6 @@ public class Helpers {
 			return;
 		}
 		Log.d(TAG, json);
-		SharedPreferences settings = PreferenceManager
-				.getDefaultSharedPreferences(ctx);
 		SharedPreferences.Editor editor = settings.edit();
 		for (int i = settings.getInt("UndoNumber", 10); i > 0; i--) {
 			String old = settings.getString(UNDO + (i - 1), "");
@@ -309,8 +308,6 @@ public class Helpers {
 	}
 
 	public static void undoLast(Context ctx) {
-		SharedPreferences settings = PreferenceManager
-				.getDefaultSharedPreferences(ctx);
 		String last = settings.getString(UNDO + 0, "");
 		if (last != null && !last.equals("")) {
 			short type = Short.parseShort(last.charAt(0) + "");
@@ -528,6 +525,21 @@ public class Helpers {
 		i2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		i2.setData(Uri.parse(url));
 		ctx.startActivity(i2);
+	}
+
+	public static int getPrioColor(int priority, Context context) {
+		final int[] PRIO_COLOR = { Color.parseColor("#669900"),
+				Color.parseColor("#99CC00"), Color.parseColor("#33B5E5"),
+				Color.parseColor("#FFBB33"), Color.parseColor("#FF4444") };
+		final int[] DARK_PRIO_COLOR = { Color.parseColor("#008000"),
+				Color.parseColor("#00c400"), Color.parseColor("#3377FF"),
+				Color.parseColor("#FF7700"), Color.parseColor("#FF3333") };
+		if (settings.getBoolean("DarkTheme", false)) {
+			return DARK_PRIO_COLOR[priority + 2];
+		} else {
+			return PRIO_COLOR[priority + 2];
+		}
+
 	}
 
 }

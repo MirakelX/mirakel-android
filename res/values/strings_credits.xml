@@ -44,7 +44,9 @@
         
         <h3>Translations</h3>
         <p><b>Spanish:</b> by macebal</p>
-        <p><b>French:</b> by Ghostofkendo</p>
+        <p><b>French:</b> by Ghost of Kendo</p>
+        <p><b>Norwegian:</b> by Jim-Stefhan Johansen</p>
+        <p><b>Slovenian:</b> by mateju</p>
         <h3>Libraries</h3>
         <p><a href="https://code.google.com/p/google-gson/">Gson</a><br />
         License: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a></p>
@@ -54,8 +56,6 @@
         License: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a></p>
         <p><a href="https://code.google.com/p/android-change-log/">Android Change Log</a><br />
         License: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a></p>
-        <p>The flick gesture icon for the start screen: <a href="https://en.wikipedia.org/wiki/File:Gestures_Flick.png">Wikipedia</a><br />
-        License: <a href="https://creativecommons.org/licenses/by-sa/3.0/deed.en">CC-BY-SA</a></p>
         <p><a href="http://acra.ch/">ACRA</a> (Crash reports)<br />
         License: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a></p>
         <p><a href="https://github.com/LarsWerkman/HoloColorPicker">HoloColorPicker</a><br />
