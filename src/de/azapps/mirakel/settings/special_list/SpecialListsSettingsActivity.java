@@ -39,7 +39,7 @@ public class SpecialListsSettingsActivity extends ListSettings {
 
 	private SpecialList newSpecialList() {
 		return SpecialList.newSpecialList(
-				getString(R.string.special_lists_new), "", false);
+				getString(R.string.special_lists_new), "", true);
 	}
 
 	@SuppressLint("NewApi")
