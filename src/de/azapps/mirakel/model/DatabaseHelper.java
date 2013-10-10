@@ -40,7 +40,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String TAG = "DatabaseHelper";
 	private Context context;
-	public static final int DATABASE_VERSION = 21;
+	public static final int DATABASE_VERSION = 22;
 
 	public DatabaseHelper(Context ctx) {
 		super(ctx, "mirakel.db", null, DATABASE_VERSION);
@@ -253,6 +253,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			db.execSQL("INSERT INTO " + Recurring.TABLE
 					+ "(minutes,label,for_due) VALUES (1,'"
 					+ context.getString(R.string.minutly) + "',0);");
+		case 21:
+			db.execSQL("ALTER TABLE " + Task.TABLE
+					+ " add column recurring_reminder INTEGER DEFAULT '-1';");
 		}
 	}
 
