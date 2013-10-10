@@ -36,6 +36,7 @@ import de.azapps.mirakel.main_activity.TaskFragmentAdapter;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
@@ -134,6 +135,53 @@ public class TaskDialogHelpers {
 
 							}
 						}).show();
+		Button add=(Button) mDateTimeDialogView.findViewById(R.id.add_reccuring);
+		final TextView current=(TextView) mDateTimeDialogView.findViewById(R.id.recurring_current);
+		Recurring r=task.getRecurringReminder();
+		current.setText(r==null?ctx.getString(R.string.nothing):r.getLabel());
+		add.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				handleRecurring(task,current,false,ctx);
+				
+			}
+		});
+	}
+
+	protected static void handleRecurring(final Task task, final TextView current, final boolean due, final Context ctx) {
+		final List<Pair<Integer, String>> recurring=Recurring.getForDialog(due);
+		CharSequence[] items=new String[recurring.size()+1];
+		Recurring r=due?task.getRecurring():task.getRecurringReminder();
+		int checked=0;
+		items[0]=ctx.getString(R.string.nothing);
+		for(int i=1;i<recurring.size()+1;i++){
+			items[i]=recurring.get(i-1).second;
+			if(r!=null&&recurring.get(i-1).first==r.getId()){
+				checked=i;
+			}
+		}
+		new AlertDialog.Builder(ctx)
+		.setTitle(R.string.add_recurring)
+		.setSingleChoiceItems(items,checked, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				int r=which==0?-1:recurring.get(which-1).first;
+				if(due){
+					task.setRecurring(r);
+				}else{
+					task.setRecurringReminder(r);
+				}
+				try {
+					task.save();
+				} catch (NoSuchListException e) {
+					Log.w(TAG, "List did vanish");
+				}
+				current.setText(r==-1?ctx.getText(R.string.nothing):Recurring.get(r).getLabel());
+				dialog.dismiss();
+			}
+		}).show();
+		
 	}
 
 	public static void handleDeleteFile(final List<FileMirakel> selectedItems,

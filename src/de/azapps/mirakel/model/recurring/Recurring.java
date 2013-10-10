@@ -8,6 +8,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Pair;
 import de.azapps.mirakel.model.DatabaseHelper;
 
 public class Recurring extends RecurringBase {
@@ -125,6 +126,17 @@ public class Recurring extends RecurringBase {
 		}
 		
 		return c;
+	}
+	public static List<Pair<Integer, String>> getForDialog(boolean due) {
+		Cursor c=database.query(TABLE, new String[]{"_id","label"} , due?"done=1":"", null, null, null,null);
+		List<Pair<Integer, String>> ret= new ArrayList<Pair<Integer,String>>();
+		c.moveToFirst();
+		while(!c.isAfterLast()){
+			ret.add(new Pair<Integer, String>(c.getInt(0), c.getString(1)));
+			c.moveToNext();
+		}
+		c.close();
+		return ret;
 	}
 
 }

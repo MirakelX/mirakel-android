@@ -9,4 +9,18 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
 
+    <Button
+        android:id="@+id/add_reccuring"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/DateTimePicker"
+        android:text="@string/add_recurring" />
+
+    <TextView
+        android:id="@+id/recurring_current"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/DateTimePicker"
+        android:layout_toRightOf="@+id/add_reccuring" />
+
 </RelativeLayout>
