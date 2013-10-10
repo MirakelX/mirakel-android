@@ -51,5 +51,27 @@
          <item quantity="one">Month</item>
          <item quantity="other">Months</item>
      </plurals>
+     
+     <plurals name="months">
+         <item quantity="one">Month</item>
+         <item quantity="other">Months</item>
+     </plurals>
+     <plurals name="days">
+         <item quantity="one">Day</item>
+         <item quantity="other">Days</item>
+     </plurals>
+     <plurals name="years">
+         <item quantity="one">Year</item>
+         <item quantity="other">Years</item>
+     </plurals>
+     <plurals name="minutes">
+         <item quantity="one">Minute</item>
+         <item quantity="other">Minutes</item>
+     </plurals>
+     <plurals name="hours">
+         <item quantity="one">Hour</item>
+         <item quantity="other">Hours</item>
+     </plurals>
+     
 
 </resources>

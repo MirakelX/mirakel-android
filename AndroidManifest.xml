@@ -251,6 +251,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.azapps.mirakel.settings.semantics.SemanticsSettings" />
         </activity>
+        <activity
+            android:name="de.azapps.mirakel.settings.recurring.RecurringActivity"
+            android:label="@string/title_activity_credits" >
+        </activity>
     </application>
 
 </manifest>

@@ -279,5 +279,15 @@ Device: %3$s\n]]>
 	<string name="label">Label</string>
 	<string name="forDue">Is for Due?</string>
 	
+	<string name="minute">Minute</string>
+	<string name="hour">Hour</string>
+	<string name="day">Day</string>
+	<string name="month">Month</string>
+	<string name="year">Year</string>
+	<string name="recurring_summary">Every %1$s%2$s</string>
+	<string name="new_recurring">New Recurring</string>
+	<string name="add_recurring">Set recurring</string>
+	
+	
 	
 </resources>

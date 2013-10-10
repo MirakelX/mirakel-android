@@ -55,11 +55,11 @@
             android:key="colorize_tasks_everywhere"
             android:summary="@string/preferences_colorize_tasks_everywhere_summary"
             android:title="@string/preferences_colorize_tasks_everywhere" />
-        <CheckBoxPreference 
+        <CheckBoxPreference
             android:defaultValue="true"
             android:dependency="colorize_subtasks"
             android:key="colorize_subtasks"
-            android:title="@string/preferences_colorize_subtasks"/>
+            android:title="@string/preferences_colorize_subtasks" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/settings_subtask" >
         <CheckBoxPreference
@@ -73,15 +73,9 @@
             android:summary="@string/settings_subtask_add_to_same_list_summary"
             android:title="@string/settings_subtask_add_to_same_list" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/settings_new_task" >
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="useBtnSpeak"
-            android:title="@string/settings_use_btn_speak" />
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="useBtnCamera"
-            android:title="@string/settings_use_btn_camera" />
-    </PreferenceCategory>
+
+    <Preference
+        android:key="recurring"
+        android:title="@string/recurring" />
 
 </PreferenceScreen>
