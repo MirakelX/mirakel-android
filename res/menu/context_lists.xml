@@ -12,7 +12,7 @@
     <!-- TODO need better icon -->
     <item
         android:id="@+id/menu_color"
-        android:icon="@android:drawable/ic_menu_set_as"
+        android:icon="@drawable/pencil"
         android:title="@string/menu_color"
         mirakel:showAsAction="always"/>
     
