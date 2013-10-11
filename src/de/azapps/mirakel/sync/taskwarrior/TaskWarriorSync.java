@@ -72,7 +72,7 @@ public class TaskWarriorSync {
 		sync.set("user", _user);
 		sync.set("key", _key);
 		// split big sync into smaller pieces
-		short taskNumber = 10;
+		int taskNumber = 1;
 		int parts = local_tasks.size() / taskNumber < 1 ? 1 : local_tasks
 				.size() / taskNumber;
 		for (int i = 0; i < parts; i++) {
@@ -215,12 +215,14 @@ public class TaskWarriorSync {
 					taskObject = new JsonParser().parse(taskString)
 							.getAsJsonObject();
 					server_task = Task.parse_json(taskObject);
+					Log.e("Blubb",server_task.getUUID());
 					dependencies.put(server_task.getUUID(),
 							server_task.getDependencies());
 					local_task = Task.getByUUID(server_task.getUUID());
 				} catch (Exception e) {
 					Log.d(TAG, Log.getStackTraceString(e));
 					Log.e(TAG, "malformed JSON");
+					Log.e(TAG,taskString);
 					continue;
 				}
 
@@ -248,7 +250,12 @@ public class TaskWarriorSync {
 
 			for (String uuid : dependencies.keySet()) {
 				Task parent = Task.getByUUID(uuid);
-				for (String childUuid : dependencies.get(uuid)) {
+				if (uuid == null || dependencies == null)
+					continue;
+				String[] childs = dependencies.get(uuid);
+				if(childs==null)
+					continue;
+				for (String childUuid : childs) {
 					Task child = Task.getByUUID(childUuid);
 					if (child == null)
 						continue;
@@ -262,6 +269,7 @@ public class TaskWarriorSync {
 						}
 					}
 				}
+
 			}
 		}
 		String message = remotes.get("message");
@@ -352,22 +360,22 @@ public class TaskWarriorSync {
 		}
 
 		String json = "{";
-		json += "\"uuid\":\"" + task.getUUID() + "\",";
-		json += "\"status\":\"" + status + "\",";
-		json += "\"entry\":\"" + formatCal(task.getCreatedAt()) + "\",";
-		json += "\"description\":\"" + task.getName() + "\",";
+		json += "\"uuid\":\"" + task.getUUID() + "\"";
+		json += ",\"status\":\"" + status + "\"";
+		json += ",\"entry\":\"" + formatCal(task.getCreatedAt()) + "\"";
+		json += ",\"description\":\"" + task.getName() + "\"";
 		if (task.getDue() != null)
-			json += "\"due\":\"" + formatCal(task.getDue()) + "\",";
-		json += "\"project\":\"" + task.getList().getName() + "\",";
+			json += ",\"due\":\"" + formatCal(task.getDue()) + "\"";
+		json += ",\"project\":\"" + task.getList().getName() + "\"";
 		if (priority != null)
-			json += "\"priority\":\"" + priority + "\",";
-		json += "\"modification\":\"" + formatCal(task.getUpdatedAt()) + "\",";
+			json += ",\"priority\":\"" + priority + "\"";
+		json += ",\"modification\":\"" + formatCal(task.getUpdatedAt()) + "\"";
 		if (task.getReminder() != null)
-			json += "\"reminder\":\"" + formatCal(task.getReminder()) + "\",";
+			json += ",\"reminder\":\"" + formatCal(task.getReminder()) + "\"";
 
 		// Annotations
 		if (task.getContent() != null && !task.getContent().equals("")) {
-			json += "\"annotations\":[";
+			json += ",\"annotations\":[";
 			/*
 			 * An annotation in taskd is a line of content in Mirakel!
 			 */

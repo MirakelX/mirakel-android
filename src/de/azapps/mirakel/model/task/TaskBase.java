@@ -58,13 +58,14 @@ class TaskBase {
 	private String additionalEntriesString;
 	private SYNC_STATE sync_state;
 	private Calendar reminder;
-	private int recurring; 
+	private int recurring;
 	private int recurring_reminder;
 
 	TaskBase(long id, String uuid, ListMirakel list, String name,
 			String content, boolean done, Calendar due, Calendar reminder,
 			int priority, Calendar created_at, Calendar updated_at,
-			SYNC_STATE sync_state, String additionalEntriesString,int recurring, int recurring_reminder) {
+			SYNC_STATE sync_state, String additionalEntriesString,
+			int recurring, int recurring_reminder) {
 		this.id = id;
 		this.uuid = uuid;
 		this.setList(list);
@@ -78,8 +79,8 @@ class TaskBase {
 		this.setUpdatedAt(updated_at);
 		this.setSyncState(sync_state);
 		this.additionalEntriesString = additionalEntriesString;
-		this.recurring=recurring;
-		this.recurring_reminder=recurring_reminder;
+		this.recurring = recurring;
+		this.recurring_reminder = recurring_reminder;
 	}
 
 	TaskBase() {
@@ -99,25 +100,25 @@ class TaskBase {
 		this.setCreatedAt((Calendar) null);
 		this.setUpdatedAt((Calendar) null);
 		this.setSyncState(SYNC_STATE.NOTHING);
-		this.recurring=-1;
-		this.recurring_reminder=-1;
+		this.recurring = -1;
+		this.recurring_reminder = -1;
 	}
-	
-	public Recurring getRecurring(){
+
+	public Recurring getRecurring() {
 		return Recurring.get(recurring);
 	}
-	
-	public void setRecurring(int recurring){
-		this.recurring=recurring;
+
+	public void setRecurring(int recurring) {
+		this.recurring = recurring;
 		edited.put("recurring", true);
 	}
-	
-	public Recurring getRecurringReminder(){
+
+	public Recurring getRecurringReminder() {
 		return Recurring.get(recurring_reminder);
 	}
-	
-	public void setRecurringReminder(int recurring){
-		this.recurring_reminder=recurring;
+
+	public void setRecurringReminder(int recurring) {
+		this.recurring_reminder = recurring;
 		edited.put("recurring_reminder", true);
 	}
 
@@ -165,11 +166,12 @@ class TaskBase {
 	}
 
 	public void setContent(String content) {
-		if(content!=null){ 
-		this.content = StringUtils.replaceEach(content.trim(), new String[] {
-				"\\n", "\\\"", "\b" }, new String[] { "\n", "\"", "" });
+		if (content != null) {
+			this.content = StringUtils.replaceEach(content.trim(),
+					new String[] { "\\n", "\\\"", "\b" }, new String[] { "\n",
+							"\"", "" });
 		} else {
-			this.content=null;
+			this.content = null;
 		}
 		edited.put("content", true);
 	}
@@ -189,13 +191,15 @@ class TaskBase {
 	}
 
 	public Calendar getDue() {
-		if(recurring!=-1&&due.before(new GregorianCalendar())){
-			due=getRecurring().addRecurring(due);
+		if (due == null)
+			return due;
+		if (recurring != -1 && due.before(new GregorianCalendar())) {
+			due = getRecurring().addRecurring(due);
 			try {
 				edited.put("due", true);
-				((Task)this).save(false);
+				((Task) this).save(false);
 			} catch (NoSuchListException e) {
-				Log.w(TAG,"List did vanish");
+				Log.w(TAG, "List did vanish");
 			}
 		}
 		return due;
@@ -207,17 +211,18 @@ class TaskBase {
 	}
 
 	public Calendar getReminder() {
-		boolean change=false;
-		while(recurring_reminder!=-1&&reminder.before(new GregorianCalendar())){
-			change=true;
-			reminder=getRecurringReminder().addRecurring(due);
+		boolean change = false;
+		while (recurring_reminder != -1
+				&& reminder.before(new GregorianCalendar())) {
+			change = true;
+			reminder = getRecurringReminder().addRecurring(due);
 		}
-		if(change){
+		if (change) {
 			try {
 				edited.put("reminder", true);
-				((Task)this).save(false);
+				((Task) this).save(false);
 			} catch (NoSuchListException e) {
-				Log.w(TAG,"List did vanish");
+				Log.w(TAG, "List did vanish");
 			}
 		}
 		return reminder;
@@ -304,8 +309,8 @@ class TaskBase {
 	boolean isEdited() {
 		return edited.size() > 0;
 	}
-	
-	boolean isEdited(String key){
+
+	boolean isEdited(String key) {
 		return edited.containsKey(key);
 	}
 
