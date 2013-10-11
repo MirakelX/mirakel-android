@@ -77,6 +77,7 @@ import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.model.file.FileMirakel;
+import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakelandroid.R;
@@ -762,7 +763,7 @@ public class TaskFragmentAdapter extends
 				android.R.drawable.ic_menu_recent_history);
 		reminder_img.setBounds(0, 1, 42, 42);
 		holder.taskReminder
-				.setCompoundDrawables(reminder_img, null, null, null);
+				.setCompoundDrawables(reminder_img, null, getRecurringDrawable(task.getRecurringReminder()), null);
 		if (task.getReminder() == null) {
 			holder.taskReminder
 					.setText(context.getString(R.string.no_reminder));
@@ -771,6 +772,15 @@ public class TaskFragmentAdapter extends
 					context.getString(R.string.humanDateTimeFormat)));
 		}
 		return reminder;
+	}
+
+	private Drawable getRecurringDrawable(Recurring recurring) {
+		if(recurring!=null){
+			Drawable r=context.getResources().getDrawable(android.R.drawable.ic_menu_rotate);
+			r.setBounds(0, 1, 42, 42);
+			return r;
+		}
+		return null;
 	}
 
 	static class DueHolder {
@@ -811,6 +821,23 @@ public class TaskFragmentAdapter extends
 							context, listner, due.get(Calendar.YEAR), due
 									.get(Calendar.MONTH), due
 									.get(Calendar.DAY_OF_MONTH));
+					DatePicker p=dialog.getDatePicker();
+					LinearLayout l= new LinearLayout(context);
+					l.setOrientation(LinearLayout.VERTICAL);
+					l.addView(p);
+					View recurring=((Activity)context).getLayoutInflater().inflate(R.layout.recurring,null);
+					l.addView(recurring);
+					dialog.setView(l);
+					final TextView current= (TextView) recurring.findViewById(R.id.recurring_current);
+					Recurring r=task.getRecurring();
+					current.setText(r==null?context.getString(R.string.nothing):r.getLabel());
+					recurring.findViewById(R.id.add_reccuring).setOnClickListener(new OnClickListener() {	
+						@Override
+						public void onClick(View v) {
+							TaskDialogHelpers.handleRecurring(task, current, true, context);
+						}
+					});
+					
 					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 						dialog.getDatePicker().setCalendarViewShown(false);
 						dialog.setButton(DialogInterface.BUTTON_POSITIVE,
@@ -869,7 +896,7 @@ public class TaskFragmentAdapter extends
 		Drawable dueImg = context.getResources().getDrawable(
 				android.R.drawable.ic_menu_today);
 		dueImg.setBounds(0, 1, 42, 42);
-		holder.taskDue.setCompoundDrawables(dueImg, null, null, null);
+		holder.taskDue.setCompoundDrawables(dueImg, null, getRecurringDrawable(task.getRecurring()), null);
 		if (task.getDue() == null) {
 			holder.taskDue.setText(context.getString(R.string.no_date));
 		} else {

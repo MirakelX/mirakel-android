@@ -148,7 +148,7 @@ public class TaskDialogHelpers {
 		});
 	}
 
-	protected static void handleRecurring(final Task task, final TextView current, final boolean due, final Context ctx) {
+	public static void handleRecurring(final Task task, final TextView current, final boolean due, final Context ctx) {
 		final List<Pair<Integer, String>> recurring=Recurring.getForDialog(due);
 		CharSequence[] items=new String[recurring.size()+1];
 		Recurring r=due?task.getRecurring():task.getRecurringReminder();

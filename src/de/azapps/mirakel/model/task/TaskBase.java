@@ -208,16 +208,17 @@ class TaskBase {
 	public void setDue(Calendar due) {
 		this.due = due;
 		edited.put("due", true);
+		if(due==null){
+			setRecurring(-1);
+		}
 	}
 
 	public Calendar getReminder() {
-		boolean change = false;
-		while (recurring_reminder != -1
+		if(reminder==null)
+			return reminder;
+		if (recurring_reminder != -1
 				&& reminder.before(new GregorianCalendar())) {
-			change = true;
 			reminder = getRecurringReminder().addRecurring(due);
-		}
-		if (change) {
 			try {
 				edited.put("reminder", true);
 				((Task) this).save(false);
@@ -231,6 +232,9 @@ class TaskBase {
 	public void setReminder(Calendar reminder) {
 		this.reminder = reminder;
 		edited.put("reminder", true);
+		if(reminder==null){
+			setRecurringReminder(-1);
+		}
 	}
 
 	public int getPriority() {

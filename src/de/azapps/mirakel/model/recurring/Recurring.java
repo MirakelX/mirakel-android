@@ -2,6 +2,7 @@ package de.azapps.mirakel.model.recurring;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import android.content.ContentValues;
@@ -117,18 +118,20 @@ public class Recurring extends RecurringBase {
 	}
 	
 	public Calendar addRecurring(Calendar c){
-		c.add(Calendar.DAY_OF_MONTH, getDays());
-		c.add(Calendar.MONTH, getMonths());
-		c.add(Calendar.YEAR, getYears());
-		if(!isForDue()){
-			c.add(Calendar.MINUTE, getMinutes());
-			c.add(Calendar.HOUR, getHours());
+		Calendar now=new GregorianCalendar();
+		while(c.before(now)){
+			c.add(Calendar.DAY_OF_MONTH, getDays());
+			c.add(Calendar.MONTH, getMonths());
+			c.add(Calendar.YEAR, getYears());
+			if(!isForDue()){
+				c.add(Calendar.MINUTE, getMinutes());
+				c.add(Calendar.HOUR, getHours());
+			}
 		}
-		
 		return c;
 	}
 	public static List<Pair<Integer, String>> getForDialog(boolean due) {
-		Cursor c=database.query(TABLE, new String[]{"_id","label"} , due?"done=1":"", null, null, null,null);
+		Cursor c=database.query(TABLE, new String[]{"_id","label"} , due?"for_due=1":"", null, null, null,null);
 		List<Pair<Integer, String>> ret= new ArrayList<Pair<Integer,String>>();
 		c.moveToFirst();
 		while(!c.isAfterLast()){
