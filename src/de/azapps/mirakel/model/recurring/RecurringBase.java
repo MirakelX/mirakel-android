@@ -1,5 +1,8 @@
 package de.azapps.mirakel.model.recurring;
 
+import java.util.Calendar;
+
+import de.azapps.mirakel.helper.DateTimeHelper;
 import android.content.ContentValues;
 
 public class RecurringBase {
@@ -11,8 +14,10 @@ public class RecurringBase {
 	private int months;
 	private int years;
 	private boolean forDue;
+	private Calendar startDate;
+	private Calendar endDate;
 	
-	public RecurringBase(int _id,String label, int minutes, int hours, int days, int months, int years, boolean forDue) {
+	public RecurringBase(int _id,String label, int minutes, int hours, int days, int months, int years, boolean forDue, Calendar startDate, Calendar endDate) {
 		super();
 		this.days=days;
 		this.forDue=forDue;
@@ -22,6 +27,8 @@ public class RecurringBase {
 		this.months=months;
 		this.years=years;
 		this.setId(_id);
+		this.setStartDate(startDate);
+		this.setEndDate(endDate);
 	}
 	
 	public String getLabel() {
@@ -79,6 +86,21 @@ public class RecurringBase {
 		this._id = _id;
 	}
 	
+	public Calendar getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Calendar startDate) {
+		this.startDate = startDate;
+	}
+	public Calendar getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Calendar endDate) {
+		this.endDate = endDate;
+	}
+
 	public ContentValues getContentValues(){
 		ContentValues cv = new ContentValues();
 		cv.put("_id", _id);
@@ -89,6 +111,8 @@ public class RecurringBase {
 		cv.put("years", years);
 		cv.put("for_due", forDue);
 		cv.put("label", label);
+		cv.put("start_date", DateTimeHelper.formatDateTime(startDate));
+		cv.put("end_date", DateTimeHelper.formatDateTime(endDate));
 		return cv;
 	}
 

@@ -287,7 +287,11 @@ Device: %3$s\n]]>
 	<string name="recurring_summary">Every %1$s%2$s</string>
 	<string name="new_recurring">New Recurring</string>
 	<string name="add_recurring">Set recurring</string>
-	
+	<string name="intervall">Intervall</string>
+	<string name="beginning">Beginning</string>
+	<string name="end">End</string>
+	<string name="no_begin_end">No %s</string>
+	<string name="beginning_end">Beginning and End</string>
 	
 	
 </resources>
