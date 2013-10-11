@@ -143,6 +143,13 @@ public class TaskFragmentAdapter extends
 		}
 	}
 
+	public void closeActionMode() {
+		if (mActionMode != null) {
+			mActionMode.finish();
+		}
+
+	}
+
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View row = new View(context);

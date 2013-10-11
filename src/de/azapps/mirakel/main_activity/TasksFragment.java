@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -85,6 +86,7 @@ public class TasksFragment extends Fragment {
 	private static final int TASK_RENAME = 0, TASK_MOVE = 1, TASK_DESTROY = 2;
 	private int listId;
 	private boolean showDone = true;
+	private ActionMode mActionMode = null;
 	final Handler mHandler = new Handler();
 
 	final Runnable mUpdateResults = new Runnable() {
@@ -219,7 +221,8 @@ public class TasksFragment extends Fragment {
 			});
 		}
 		if (!main.getPreferences().getBoolean("useBtnCamera", true)
-				|| !Helpers.isIntentAvailable(main, MediaStore.ACTION_IMAGE_CAPTURE)) {
+				|| !Helpers.isIntentAvailable(main,
+						MediaStore.ACTION_IMAGE_CAPTURE)) {
 			view.findViewById(R.id.btnCamera).setVisibility(View.GONE);
 		} else {
 			ImageButton btnCamera = (ImageButton) view
@@ -232,7 +235,7 @@ public class TasksFragment extends Fragment {
 								MediaStore.ACTION_IMAGE_CAPTURE);
 						Uri fileUri = Helpers
 								.getOutputMediaFileUri(Helpers.MEDIA_TYPE_IMAGE);
-						if(fileUri==null)
+						if (fileUri == null)
 							return;
 						main.setFileUri(fileUri);
 						cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
@@ -457,6 +460,7 @@ public class TasksFragment extends Fragment {
 				public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 					MenuInflater inflater = mode.getMenuInflater();
 					inflater.inflate(R.menu.context_tasks, menu);
+					mActionMode = mode;
 
 					return true;
 				}
@@ -520,6 +524,13 @@ public class TasksFragment extends Fragment {
 				main.setCurrentTask(t, true);
 			}
 		});
+	}
+
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	public void closeActionMode() {
+		if (mActionMode != null
+				&& Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+			mActionMode.finish();
 	}
 
 	public TaskAdapter getAdapter() {

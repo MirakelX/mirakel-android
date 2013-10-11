@@ -293,6 +293,8 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	public void onPageSelected(int position) {
+		tasksFragment.closeActionMode();
+		taskFragment.closeActionMode();
 		loadMenu(position);
 
 	}
@@ -865,6 +867,7 @@ public class MainActivity extends ActionBarActivity implements
 		) {
 			public void onDrawerClosed(View view) {
 				loadMenu(currentPosition);
+				listFragment.closeActionMode();
 			}
 
 			public void onDrawerOpened(View drawerView) {

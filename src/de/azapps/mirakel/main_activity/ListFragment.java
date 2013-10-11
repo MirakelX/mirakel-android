@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -61,9 +62,11 @@ public class ListFragment extends Fragment {
 	protected boolean EditName;
 	private boolean created = false;
 	private DragNDropListView listView;
-	private static final int LIST_COLOR = 0, LIST_RENAME = 1, LIST_DESTROY = 2,LIST_SHARE=3;
+	private static final int LIST_COLOR = 0, LIST_RENAME = 1, LIST_DESTROY = 2,
+			LIST_SHARE = 3;
 	protected static final String TAG = "ListFragment";
 	private boolean enableDrag;
+	private ActionMode mActionMode = null;
 
 	public void setActivity(MainActivity activity) {
 		main = activity;
@@ -246,7 +249,7 @@ public class ListFragment extends Fragment {
 				public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 					MenuInflater inflater = mode.getMenuInflater();
 					inflater.inflate(R.menu.context_lists, menu);
-
+					mActionMode = mode;
 					return true;
 				}
 
@@ -291,6 +294,12 @@ public class ListFragment extends Fragment {
 				}
 			});
 		}
+	}
+	
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	public void closeActionMode() {
+		if(mActionMode!=null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+			mActionMode.finish();
 	}
 
 	public ListAdapter getAdapter() {

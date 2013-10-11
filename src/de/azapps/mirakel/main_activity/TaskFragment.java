@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
@@ -58,6 +59,14 @@ public class TaskFragment extends Fragment {
 	private static final String TAG = "TaskActivity";
 
 	public TaskFragmentAdapter adapter;
+	private ActionMode mActionMode = null;
+
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	public void closeActionMode() {
+		if (mActionMode != null)
+			mActionMode.finish();
+		adapter.closeActionMode();
+	}
 
 	@SuppressLint("NewApi")
 	@Override
@@ -208,6 +217,7 @@ public class TaskFragment extends Fragment {
 				public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 					MenuInflater inflater = mode.getMenuInflater();
 					inflater.inflate(R.menu.context_task, menu);
+					mActionMode=mode;
 					return true;
 				}
 
