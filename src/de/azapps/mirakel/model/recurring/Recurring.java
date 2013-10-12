@@ -87,6 +87,7 @@ public class Recurring extends RecurringBase {
 			cursor.close();
 			return r;
 		}
+		cursor.close();
 		return null;
 	}
 

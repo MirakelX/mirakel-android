@@ -89,6 +89,7 @@ public class Semantic extends SemanticBase {
 			cursor.close();
 			return s;
 		}
+		cursor.close();
 		return null;
 	}
 
