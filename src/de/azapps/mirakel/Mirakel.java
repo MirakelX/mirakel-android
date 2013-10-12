@@ -106,9 +106,6 @@ public class Mirakel extends Application {
 				&& startService(new Intent(this, NotificationService.class)) != null) {
 			stopService(new Intent(Mirakel.this, NotificationService.class));
 		}
-		if (settings.getBoolean("", false)) {
-
-		}
 		// Set Alarms
 		ReminderAlarm.updateAlarms(getApplicationContext());
 	}

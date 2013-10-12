@@ -183,25 +183,16 @@ class TaskBase {
 	public void setDone(boolean done) {
 		this.done = done;
 		edited.put("done", true);
+		if(done&&recurring!=-1&&due!=null){
+			due=getRecurring().addRecurring(due);
+		}
 	}
 
 	public void toggleDone() {
-		this.done = !this.done;
-		edited.put("done", true);
+		setDone(!done);
 	}
 
 	public Calendar getDue() {
-		if (due == null)
-			return due;
-		if (recurring != -1 && due.before(new GregorianCalendar())) {
-			due = getRecurring().addRecurring(due);
-			try {
-				edited.put("due", true);
-				((Task) this).save(false);
-			} catch (NoSuchListException e) {
-				Log.w(TAG, "List did vanish");
-			}
-		}
 		return due;
 	}
 
