@@ -28,8 +28,7 @@ import java.util.Locale;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.DatePickerDialog;
-import android.app.DatePickerDialog.OnDateSetListener;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -803,101 +802,71 @@ public class TaskFragmentAdapter extends
 					mIgnoreTimeSet = false;
 					Calendar due = (task.getDue() == null ? new GregorianCalendar()
 							: task.getDue());
-					OnDateSetListener listner = (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB ? new OnDateSetListener() {
-
-						@Override
-						public void onDateSet(DatePicker view, int year,
-								int monthOfYear, int dayOfMonth) {
-							task.setDue(new GregorianCalendar(year,
-									monthOfYear, dayOfMonth));
-							((MainActivity) context).saveTask(task);
-							holder.taskDue.setText(new SimpleDateFormat(view
-									.getContext()
-									.getString(R.string.dateFormat), Locale
-									.getDefault()).format(task.getDue()
-									.getTime()));
-						}
-					} : null);
-					final DatePickerDialog dialog = new DatePickerDialog(
-							context, listner, due.get(Calendar.YEAR), due
-									.get(Calendar.MONTH), due
-									.get(Calendar.DAY_OF_MONTH));
-					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-						DatePicker p = dialog.getDatePicker();
-						LinearLayout l = new LinearLayout(context);
-						l.setOrientation(LinearLayout.VERTICAL);
-						l.addView(p);
-						View recurring = ((Activity) context)
-								.getLayoutInflater().inflate(
-										R.layout.recurring, null);
-						l.addView(recurring);
-						dialog.setView(l);
-						final TextView current = (TextView) recurring
-								.findViewById(R.id.recurring_current);
-						Recurring r = task.getRecurring();
-						current.setText(r == null ? context
-								.getString(R.string.nothing) : r.getLabel());
-						recurring.findViewById(R.id.add_reccuring)
-								.setOnClickListener(new OnClickListener() {
-									@Override
-									public void onClick(View v) {
-										TaskDialogHelpers.handleRecurring(task,
-												current, true, context);
-									}
-								});
-					} else {
-						// TODO implement
-						Log.wtf(TAG, "implement this");
-					}
-
-					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-						dialog.getDatePicker().setCalendarViewShown(false);
-						dialog.setButton(DialogInterface.BUTTON_POSITIVE,
-								context.getString(android.R.string.ok),
-								new DialogInterface.OnClickListener() {
-
-									public void onClick(
-											DialogInterface dialog1, int which) {
-										if (which == DialogInterface.BUTTON_POSITIVE) {
-											if (mIgnoreTimeSet)
-												return;
-											DatePicker dp = dialog
-													.getDatePicker();
-											task.setDue(new GregorianCalendar(
-													dp.getYear(),
-													dp.getMonth(), dp
-															.getDayOfMonth()));
-											((MainActivity) context)
-													.saveTask(task);
-											holder.taskDue
-													.setText(new SimpleDateFormat(
-															context.getString(R.string.dateFormat),
-															Locale.getDefault())
-															.format(task
-																	.getDue()
-																	.getTime()));
-
-										}
-									}
-								});
-					}
-					dialog.setButton(DialogInterface.BUTTON_NEGATIVE,
-							context.getString(R.string.no_date),
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog1,
-										int which) {
-									if (which == DialogInterface.BUTTON_NEGATIVE) {
-										mIgnoreTimeSet = true;
-										Log.v(TAG, "cancel");
-										task.setDue(null);
-										((MainActivity) context).saveTask(task);
-										holder.taskDue
-												.setText(R.string.no_date);
-									}
+					final View content = ((Activity) context)
+							.getLayoutInflater().inflate(
+									R.layout.datepicker_dialog, null);
+					final TextView current = (TextView) content
+							.findViewById(R.id.recurring_current);
+					final DatePicker dp = (DatePicker) content
+							.findViewById(R.id.dialog_datePicker);
+					Recurring r = task.getRecurring();
+					current.setText(r == null ? context
+							.getString(R.string.nothing) : r.getLabel());
+					content.findViewById(R.id.add_reccuring)
+							.setOnClickListener(new OnClickListener() {
+								@Override
+								public void onClick(View v) {
+									TaskDialogHelpers.handleRecurring(task,
+											current, true, context);
 								}
 							});
-					dialog.show();
+					dp.updateDate(due.get(Calendar.YEAR),
+							due.get(Calendar.MONTH),
+							due.get(Calendar.DAY_OF_MONTH));
+					new AlertDialog.Builder(context)
+							.setPositiveButton(android.R.string.ok,
+									new DialogInterface.OnClickListener() {
 
+										@Override
+										public void onClick(
+												DialogInterface dialog,
+												int which) {
+											if (which == DialogInterface.BUTTON_POSITIVE) {
+												if (mIgnoreTimeSet)
+													return;
+												task.setDue(new GregorianCalendar(
+														dp.getYear(), dp
+																.getMonth(),
+														dp.getDayOfMonth()));
+												((MainActivity) context)
+														.saveTask(task);
+												holder.taskDue
+														.setText(new SimpleDateFormat(
+																context.getString(R.string.dateFormat),
+																Locale.getDefault())
+																.format(task
+																		.getDue()
+																		.getTime()));
+
+											}
+										}
+									})
+							.setNegativeButton(R.string.no_date,
+									new DialogInterface.OnClickListener() {
+										public void onClick(
+												DialogInterface dialog1,
+												int which) {
+											if (which == DialogInterface.BUTTON_NEGATIVE) {
+												mIgnoreTimeSet = true;
+												Log.v(TAG, "cancel");
+												task.setDue(null);
+												((MainActivity) context)
+														.saveTask(task);
+												holder.taskDue
+														.setText(R.string.no_date);
+											}
+										}
+									}).setView(content).show();
 				}
 			});
 			due.setTag(holder);
