@@ -48,9 +48,75 @@ public class TaskWarriorSync {
 	static File user_ca;
 	private AccountManager accountManager;
 	private Account account;
+	private HashMap<String, String[]> dependencies;
 
 	public enum TW_ERRORS {
-		CANNOT_CREATE_SOCKET, CANNOT_PARSE_MESSAGE, MESSAGE_ERRORS, TRY_LATER, ACCESS_DENIED, ACCOUNT_SUSPENDED, NO_ERROR
+		CANNOT_CREATE_SOCKET, CANNOT_PARSE_MESSAGE, MESSAGE_ERRORS, TRY_LATER, ACCESS_DENIED, ACCOUNT_SUSPENDED, NO_ERROR;
+		public static TW_ERRORS getError(int code){
+			switch(code){
+			case 200:
+				Log.d(TAG, "Success");
+				break;
+			case 201:
+				Log.d(TAG, "No change");
+				break;
+			case 300:
+				Log.d(TAG,
+						"Deprecated message type\n"
+								+ "This message will not be supported in future task server releases.");
+				break;
+			case 301:
+				Log.d(TAG,
+						"Redirect\n"
+								+ "Further requests should be made to the specified server/port.");
+				// TODO
+				break;
+			case 302:
+				Log.d(TAG,
+						"Retry\n"
+								+ "The client is requested to wait and retry the same request.  The wait\n"
+								+ "time is not specified, and further retry responses are possible.");
+				return TW_ERRORS.TRY_LATER;
+			case 400:
+				Log.e(TAG, "Malformed data");
+				return TW_ERRORS.MESSAGE_ERRORS;
+			case 401:
+				Log.e(TAG, "Unsupported encoding");
+				return TW_ERRORS.MESSAGE_ERRORS;
+			case 420:
+				Log.e(TAG, "Server temporarily unavailable");
+				return TW_ERRORS.TRY_LATER;
+			case 421:
+				Log.e(TAG, "Server shutting down at operator request");
+				return TW_ERRORS.TRY_LATER;
+			case 430:
+				Log.e(TAG, "Access denied");
+				return TW_ERRORS.ACCESS_DENIED;
+			case 431:
+				Log.e(TAG, "Account suspended");
+				return TW_ERRORS.ACCOUNT_SUSPENDED;
+			case 432:
+				Log.e(TAG, "Account terminated");
+				return TW_ERRORS.ACCOUNT_SUSPENDED;
+			case 500:
+				Log.e(TAG, "Syntax error in request");
+				return TW_ERRORS.MESSAGE_ERRORS;
+			case 501:
+				Log.e(TAG, "Syntax error, illegal parameters");
+				return TW_ERRORS.MESSAGE_ERRORS;
+			case 502:
+				Log.e(TAG, "Not implemented");
+				return TW_ERRORS.MESSAGE_ERRORS;
+			case 503:
+				Log.e(TAG, "Command parameter not implemented");
+				return TW_ERRORS.MESSAGE_ERRORS;
+			case 504:
+				Log.e(TAG, "Request too big");
+				return TW_ERRORS.MESSAGE_ERRORS;
+
+			}
+			return NO_ERROR;
+		}
 	}
 
 	public TaskWarriorSync(Context ctx) {
@@ -75,6 +141,8 @@ public class TaskWarriorSync {
 		int taskNumber = 1;
 		int parts = local_tasks.size() / taskNumber < 1 ? 1 : local_tasks
 				.size() / taskNumber;
+		// Format: {UUID:[UUID]}
+		dependencies = new HashMap<String, String[]>();
 		for (int i = 0; i < parts; i++) {
 			String old_key = accountManager.getUserData(account,
 					SyncAdapter.TASKWARRIOR_KEY);
@@ -94,9 +162,12 @@ public class TaskWarriorSync {
 			TW_ERRORS error = doSync(account, sync);
 			if (error == TW_ERRORS.NO_ERROR) {
 				Task.resetSyncState(syncedTasksId);
-			} else
+			} else{
+				setDependencies();
 				return error;
+			}
 		}
+		setDependencies();
 		return TW_ERRORS.NO_ERROR;
 	}
 
@@ -125,68 +196,11 @@ public class TaskWarriorSync {
 			return TW_ERRORS.CANNOT_PARSE_MESSAGE;
 		}
 		int code = Integer.parseInt(remotes.get("code"));
-		switch (code) {
-		case 200:
-			Log.d(TAG, "Success");
-			break;
-		case 201:
-			Log.d(TAG, "No change");
-			break;
-		case 300:
-			Log.d(TAG,
-					"Deprecated message type\n"
-							+ "This message will not be supported in future task server releases.");
-			break;
-		case 301:
-			Log.d(TAG,
-					"Redirect\n"
-							+ "Further requests should be made to the specified server/port.");
-			// TODO
-			break;
-		case 302:
-			Log.d(TAG,
-					"Retry\n"
-							+ "The client is requested to wait and retry the same request.  The wait\n"
-							+ "time is not specified, and further retry responses are possible.");
-			return TW_ERRORS.TRY_LATER;
-		case 400:
-			Log.e(TAG, "Malformed data");
-			return TW_ERRORS.MESSAGE_ERRORS;
-		case 401:
-			Log.e(TAG, "Unsupported encoding");
-			return TW_ERRORS.MESSAGE_ERRORS;
-		case 420:
-			Log.e(TAG, "Server temporarily unavailable");
-			return TW_ERRORS.TRY_LATER;
-		case 421:
-			Log.e(TAG, "Server shutting down at operator request");
-			return TW_ERRORS.TRY_LATER;
-		case 430:
-			Log.e(TAG, "Access denied");
-			return TW_ERRORS.ACCESS_DENIED;
-		case 431:
-			Log.e(TAG, "Account suspended");
-			return TW_ERRORS.ACCOUNT_SUSPENDED;
-		case 432:
-			Log.e(TAG, "Account terminated");
-			return TW_ERRORS.ACCOUNT_SUSPENDED;
-		case 500:
-			Log.e(TAG, "Syntax error in request");
-			return TW_ERRORS.MESSAGE_ERRORS;
-		case 501:
-			Log.e(TAG, "Syntax error, illegal parameters");
-			return TW_ERRORS.MESSAGE_ERRORS;
-		case 502:
-			Log.e(TAG, "Not implemented");
-			return TW_ERRORS.MESSAGE_ERRORS;
-		case 503:
-			Log.e(TAG, "Command parameter not implemented");
-			return TW_ERRORS.MESSAGE_ERRORS;
-		case 504:
-			Log.e(TAG, "Request too big");
-			return TW_ERRORS.MESSAGE_ERRORS;
-
+		TW_ERRORS error=TW_ERRORS.getError(code);
+		if(error!=TW_ERRORS.NO_ERROR){
+			return error;
 		}
+		
 		if (remotes.get("status").equals("Client sync key not found.")) {
 			Log.d(TAG, "reset sync-key");
 			accountManager.setUserData(account, SyncAdapter.TASKWARRIOR_KEY,
@@ -199,8 +213,6 @@ public class TaskWarriorSync {
 			Log.i(TAG, "there is no Payload");
 		} else {
 			String tasksString[] = remotes.getPayload().split("\n");
-			// Format: {UUID:[UUID]}
-			Map<String, String[]> dependencies = new HashMap<String, String[]>();
 			for (String taskString : tasksString) {
 				if (taskString.charAt(0) != '{') {
 					Log.d(TAG, "Key: " + taskString);
@@ -247,30 +259,6 @@ public class TaskWarriorSync {
 					}
 				}
 			}
-
-			for (String uuid : dependencies.keySet()) {
-				Task parent = Task.getByUUID(uuid);
-				if (uuid == null || dependencies == null)
-					continue;
-				String[] childs = dependencies.get(uuid);
-				if(childs==null)
-					continue;
-				for (String childUuid : childs) {
-					Task child = Task.getByUUID(childUuid);
-					if (child == null)
-						continue;
-					if (child.isSubtaskOf(parent)) {
-						continue;
-					} else {
-						try {
-							parent.addSubtask(child);
-						} catch (Exception e) {
-
-						}
-					}
-				}
-
-			}
 		}
 		String message = remotes.get("message");
 		if (message != null && message != "") {
@@ -281,6 +269,32 @@ public class TaskWarriorSync {
 		}
 		client.close();
 		return TW_ERRORS.NO_ERROR;
+	}
+
+	private void setDependencies() {
+		for (String uuid : dependencies.keySet()) {
+			Task parent = Task.getByUUID(uuid);
+			if (uuid == null || dependencies == null)
+				continue;
+			String[] childs = dependencies.get(uuid);
+			if(childs==null)
+				continue;
+			for (String childUuid : childs) {
+				Task child = Task.getByUUID(childUuid);
+				if (child == null)
+					continue;
+				if (child.isSubtaskOf(parent)) {
+					continue;
+				} else {
+					try {
+						parent.addSubtask(child);
+					} catch (Exception e) {
+
+					}
+				}
+			}
+
+		}
 	}
 
 	public static void longInfo(String str) {
