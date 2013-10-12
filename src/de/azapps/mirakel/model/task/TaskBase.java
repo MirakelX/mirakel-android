@@ -185,6 +185,7 @@ class TaskBase {
 		edited.put("done", true);
 		if(done&&recurring!=-1&&due!=null){
 			due=getRecurring().addRecurring(due);
+			this.done=false;
 		}
 	}
 

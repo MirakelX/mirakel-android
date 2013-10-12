@@ -65,7 +65,8 @@ public class TaskFragment extends Fragment {
 	public void closeActionMode() {
 		if (mActionMode != null)
 			mActionMode.finish();
-		adapter.closeActionMode();
+		if(adapter!=null)
+			adapter.closeActionMode();
 	}
 
 	@SuppressLint("NewApi")
