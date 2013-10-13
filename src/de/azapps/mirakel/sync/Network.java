@@ -54,6 +54,7 @@ import org.apache.http.util.EntityUtils;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Base64;
 import android.widget.Toast;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_TYPES;
@@ -76,6 +77,8 @@ public class Network extends AsyncTask<String, Integer, String> {
 	protected String token;
 	protected SYNC_TYPES syncTyp;
 	private String content;
+	private String username;
+	private String password;
 
 	public Network(DataDownloadCommand commands, HttpMode mode, Context context,
 			String Token) {
@@ -96,12 +99,13 @@ public class Network extends AsyncTask<String, Integer, String> {
 		this.syncTyp=SYNC_TYPES.MIRAKEL;
 	}
 	
-	public Network(DataDownloadCommand commands, HttpMode mode,String content,Context ctx) {
+	public Network(DataDownloadCommand commands, HttpMode mode,String content,Context ctx,String username, String password) {
 		this.commands=commands;
 		this.mode=mode;
 		this.content=content;
 		this.context=ctx;
-		
+		this.username=username;
+		this.password=password;
 	}
 	
 	
@@ -189,6 +193,12 @@ public class Network extends AsyncTask<String, Integer, String> {
 			Integer[] t = { NoHTTPS };
 			publishProgress(t);
 		}
+		String authorizationString = null;
+		if(syncTyp==SYNC_TYPES.CALDAV){
+			authorizationString = "Basic " + Base64.encodeToString(
+			        ( username+ ":" + password).getBytes(),
+			        Base64.NO_WRAP);
+		}
 		
 		HttpParams params = new BasicHttpParams();
 		params.setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
@@ -219,7 +229,9 @@ public class Network extends AsyncTask<String, Integer, String> {
 					UrlEncodedFormEntity data = new UrlEncodedFormEntity(headerData, HTTP.UTF_8);
 					put.setEntity(data);
 				}else{
+					put.setHeader("Authorization", authorizationString);
 					put.setEntity(new StringEntity(content,HTTP.UTF_8));
+					Log.v(TAG,content);
 				}
 				response = httpClient.execute(put);
 				break;
@@ -239,7 +251,11 @@ public class Network extends AsyncTask<String, Integer, String> {
 			case REPORT:
 				Log.v(TAG, "REPORT "+myurl);
 				HttpReport report =new HttpReport();
+				if(syncTyp==SYNC_TYPES.CALDAV){
+					report.setHeader("Authorization", authorizationString);
+				}
 				report.setURI(new URI(myurl));
+				Log.d(TAG,content);
 				report.setEntity(new StringEntity(content,HTTP.UTF_8));
 				response=httpClient.execute(report);
 				break;

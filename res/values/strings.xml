@@ -164,6 +164,7 @@
     <string-array name="server_typs">
         <item >Mirakel</item>
         <item >Taskwarrior</item>
+        <item >CalDav</item>
     </string-array>
     <!-- Label above password EditText -->
     <string name="login_activity_password_label">Password</string>

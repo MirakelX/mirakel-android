@@ -64,9 +64,8 @@
             <ViewSwitcher
                 android:id="@+id/switcher_login"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-
-
+                android:layout_height="wrap_content"
+  				android:measureAllChildren="false" >
 
                     <LinearLayout
                         android:id="@+id/login_mirakel"

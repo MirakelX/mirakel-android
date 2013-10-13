@@ -14,9 +14,11 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.DataDownloadCommand;
 import de.azapps.mirakel.sync.Network;
 import de.azapps.mirakel.sync.Network.HttpMode;
+import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 import de.azapps.mirakelandroid.R;
 import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -26,15 +28,18 @@ import android.widget.Toast;
 
 public class CalDavSync {
 	private static final String TAG = "CalDavSync";
+	public static final String TYPE = "CalDav";
 	private Context ctx;
+	private Account account;
 
 	public CalDavSync(Context mContext) {
 		this.ctx = mContext;
 	}
 
 	public void sync(Account account) {		
-		// TODO get url from somewhere else
-		final String url = "http://192.168.10.168:5232/foo/foo7.ics";
+		this.account=account;
+		final String url = (AccountManager.get(ctx)).getUserData(account,
+				SyncAdapter.BUNDLE_SERVER_URL);
 		String content = "<c:calendar-query xmlns:d=\"DAV:\" xmlns:c=\"urn:ietf:params:xml:ns:caldav\">\n"
 				+ "<d:prop>\n"
 				+ "<d:getetag />\n"
@@ -62,7 +67,7 @@ public class CalDavSync {
 				syncToServer(Task.all(),url);
 				
 			}
-		},HttpMode.REPORT,content,ctx);
+		},HttpMode.REPORT,content,ctx,account.name,AccountManager.get(ctx).getPassword(account));
 		n.execute(url);
 
 	}
@@ -98,7 +103,7 @@ public class CalDavSync {
 				cv.put("sync_state", SYNC_STATE.NOTHING.toInt());
 				db.update(Task.TABLE, cv, null, null);
 			}
-		}, HttpMode.PUT, content, ctx);
+		}, HttpMode.PUT, content, ctx,account.name,AccountManager.get(ctx).getPassword(account));
 		n.execute(url);
 	}
 

@@ -63,6 +63,7 @@ import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -84,6 +85,7 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_TYPES;
+import de.azapps.mirakel.sync.caldav.CalDavSync;
 import de.azapps.mirakel.sync.mirakel.MirakelSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
 import de.azapps.mirakelandroid.R;
@@ -178,6 +180,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				 * SYNC-Views Edit this if you want to implement a new Sync
 				 */
 				String syncTypeString = mType.getSelectedItem().toString();
+				Log.d(TAG,syncTypeString);
 				syncType = SyncAdapter.getSyncType(syncTypeString);
 				mMessage.setText(syncTypeString);
 				ViewSwitcher switcher = (ViewSwitcher) findViewById(R.id.switcher_login);
@@ -189,9 +192,20 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				case MIRAKEL:
 					if (switcher.getCurrentView().getId() != R.id.login_mirakel)
 						switcher.showPrevious();
+					mUsernameEdit.setHint(R.string.Email);
+					mUsernameEdit
+							.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+					((EditText) findViewById(R.id.server_edit))
+							.setText(R.string.offical_server_url);
 					break;
 				case CALDAV:
-					Log.d(TAG, "Need to implement");
+					if (switcher.getCurrentView().getId() != R.id.login_mirakel) {
+						switcher.showPrevious();
+					}
+					mUsernameEdit
+							.setHint(R.string.login_activity_username_label);
+					mUsernameEdit.setInputType(InputType.TYPE_CLASS_TEXT);
+					((EditText) findViewById(R.id.server_edit)).setText("");
 					break;
 				default:
 					break;
@@ -301,8 +315,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 								+ SYNC_STATE.DELETE);
 				Mirakel.getWritableDatabase().execSQL(
 						"Delete from " + ListMirakel.TABLE
-								+ " where sync_state="
-								+ SYNC_STATE.DELETE);
+								+ " where sync_state=" + SYNC_STATE.DELETE);
 				Mirakel.getWritableDatabase().execSQL(
 						"Update " + Task.TABLE + " set sync_state="
 								+ SYNC_STATE.ADD);
@@ -327,6 +340,9 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				break;
 			case MIRAKEL:
 				handleMirakelLogin();
+				break;
+			case CALDAV:
+				handleCalDavLogin();
 				break;
 			default:
 				Log.wtf(TAG, "Not supported sync-type.");
@@ -354,6 +370,19 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				}
 			}
 		}
+	}
+
+	private void handleCalDavLogin() {
+		Account account = new Account(mUsernameEdit.getText().toString(),
+				Mirakel.ACCOUNT_TYPE);
+		Bundle b = new Bundle();
+		b.putString(SyncAdapter.BUNDLE_SERVER_TYPE, CalDavSync.TYPE);
+		b.putString(SyncAdapter.BUNDLE_SERVER_URL,
+				((EditText) findViewById(R.id.server_edit)).getText()
+						.toString());
+		String pwd = mPasswordEdit.getText().toString();
+		mAccountManager.addAccountExplicitly(account, pwd, b);
+
 	}
 
 	private void finishTWLogin() throws FileNotFoundException {

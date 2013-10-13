@@ -2,9 +2,12 @@ package de.azapps.mirakel.helper;
 
 import java.util.List;
 
+import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceActivity.Header;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
@@ -16,10 +19,12 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
+import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakelandroid.R;
 
 public class SettingsAdapter extends ArrayAdapter<Header> {
 
+	private static final String TAG = "SettingsAdapter";
 	private LayoutInflater mInflater;
 	private Context ctx;
 
@@ -45,8 +50,13 @@ public class SettingsAdapter extends ArrayAdapter<Header> {
 			((TextView) view.findViewById(android.R.id.summary)).setText(header
 					.getSummary(getContext().getResources()));
 			final Switch s = ((Switch) view.findViewById(R.id.switchWidget));
-			s.setChecked(PreferenceManager.getDefaultSharedPreferences(ctx)
-					.getBoolean("syncUse", false));
+			SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(ctx);
+			Log.d(TAG, "account: "+AccountManager.get(ctx).getAccountsByType(Mirakel.ACCOUNT_TYPE).length);
+			Editor e= settings.edit();
+			e.putBoolean("syncUse", AccountManager.get(ctx).getAccountsByType(Mirakel.ACCOUNT_TYPE).length>0);
+			e.commit();
+			s.setChecked(
+					settings.getBoolean("syncUse", false));
 			s.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 				@Override

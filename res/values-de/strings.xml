@@ -156,8 +156,9 @@ Device: %3$s\n]]>
     <item>Umbenennen</item>
     <item>Löschen</item>
   </string-array>
-  <string-array name="server_typs">
-    <item>Mirakel</item>
-    <item>Taskwarrior</item>
-  </string-array>
+   <string-array name="server_typs">
+        <item >Mirakel</item>
+        <item >Taskwarrior</item>
+        <item >CalDav</item>
+    </string-array>
 </resources>

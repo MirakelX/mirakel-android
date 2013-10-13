@@ -45,6 +45,7 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.widget.Toast;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.sync.caldav.CalDavSync;
 import de.azapps.mirakel.sync.mirakel.MirakelSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync.TW_ERRORS;
@@ -110,7 +111,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			return SYNC_TYPES.MIRAKEL;
 		} else if (type.equals("Taskwarrior")) {
 			return SYNC_TYPES.TASKWARRIOR;
-		} else
+		}else if(type.equals("CalDav")){
+			return SYNC_TYPES.CALDAV;
+		}else
 			return null;
 	}
 
@@ -125,9 +128,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		Log.v(TAG, "SyncAdapter");
 		String type = (AccountManager.get(mContext)).getUserData(account,
 				BUNDLE_SERVER_TYPE);
-//		new CalDavSync(mContext).sync(account);//TODO add interface for caldav
-//		if(true)
-//			return;
 		if (type == null)
 			type = MirakelSync.TYPE;
 		if (type.equals(MirakelSync.TYPE)) {
@@ -161,7 +161,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			Looper.prepare();
 			Toast.makeText(mContext, last_message, Toast.LENGTH_LONG).show();
 			Log.d(TAG, "finish Sync");
-		} else {
+		}else if(type.equals(CalDavSync.TYPE)){
+			new CalDavSync(mContext).sync(account);
+		}else {
 			Log.wtf(TAG, "Unknown SyncType");
 		}
 	}
