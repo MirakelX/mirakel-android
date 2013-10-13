@@ -40,6 +40,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -358,7 +359,7 @@ public class ListFragment extends Fragment {
 	void editList(final ListMirakel list) {
 
 		input = new EditText(main);
-		input.setText(list == null ? getString(R.string.list_menu_new_list)
+		input.setText(list == null ? ""
 				: list.getName());
 		input.setTag(main);
 		input.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
@@ -388,6 +389,14 @@ public class ListFragment extends Fragment {
 								// Do nothing.
 							}
 						}).show();
+		input.postDelayed(new Runnable() {
+			  @Override
+			  public void run() {
+			    InputMethodManager keyboard = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+			    keyboard.showSoftInput(input, InputMethodManager.SHOW_IMPLICIT);
+			  }
+			},50);
+
 	}
 
 }
