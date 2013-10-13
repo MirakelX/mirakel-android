@@ -124,6 +124,7 @@ public class MainActivity extends ActionBarActivity implements
 	private Intent startIntent;
 	private boolean fromShared = false;
 	private Stack<Task> goBackTo = new Stack<Task>();
+	private boolean showNavDrawer=false;
 
 	public static boolean updateTasksUUID = false;
 
@@ -156,6 +157,7 @@ public class MainActivity extends ActionBarActivity implements
 		ChangeLog cl = new ChangeLog(this);
 		if (cl.firstRun()) {
 			cl.getLogDialog().show();
+			showNavDrawer=true;
 		}
 		// currentList=preferences.getInt("s", defValue)
 		setupLayout();
@@ -877,6 +879,10 @@ public class MainActivity extends ActionBarActivity implements
 
 		// Set the drawer toggle as the DrawerListener
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
+		if(showNavDrawer){
+			showNavDrawer=false;
+			mDrawerLayout.openDrawer(Gravity.LEFT);
+		}
 
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);
