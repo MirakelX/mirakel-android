@@ -76,6 +76,7 @@
     <string name="add_existing">Add existing Task</string>
     <string name="task_name">Task Name:</string>
     <string name="no_loop">Cannot create Loops</string>
+    <string name="set_due">Set Due</string>
 
     <string-array name="task_sorting_items">
         <item>Default</item>

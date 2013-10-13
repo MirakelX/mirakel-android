@@ -824,6 +824,7 @@ public class TaskFragmentAdapter extends
 							due.get(Calendar.MONTH),
 							due.get(Calendar.DAY_OF_MONTH));
 					new AlertDialog.Builder(context)
+					.setTitle(R.string.set_due)
 							.setPositiveButton(android.R.string.ok,
 									new DialogInterface.OnClickListener() {
 
