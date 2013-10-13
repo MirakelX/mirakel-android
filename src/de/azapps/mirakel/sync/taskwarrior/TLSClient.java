@@ -22,6 +22,7 @@ import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.Scanner;
 
 import javax.net.ssl.SSLSocket;
 
@@ -255,9 +256,11 @@ public class TLSClient {
 					| (unsignedToBytes(header[2]) << 8)
 					| unsignedToBytes(header[3]);
 			// TODO remove cast
-			byte[] data = new byte[(int) expected];
-			in.read(data);
-			return new String(data);
+			//byte[] data = new byte[(int) expected];
+			//in.read(data);
+			Scanner s=new Scanner(in).useDelimiter("\\A");
+			return s.hasNext() ? s.next() : "";
+			//return new String(data);
 		} catch (IOException e) {
 			Log.e(TAG, "cannot read Inputstream");
 		}

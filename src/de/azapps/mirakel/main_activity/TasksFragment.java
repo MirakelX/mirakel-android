@@ -72,7 +72,7 @@ import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakelandroid.R;
 
 public class TasksFragment extends Fragment {
-	private static final String TAG = "TasksActivity";
+	private static final String TAG = "TasksFragment";
 	private TaskAdapter adapter;
 	private MainActivity main;
 	View view;
@@ -519,9 +519,9 @@ public class TasksFragment extends Fragment {
 			public void onItemClick(AdapterView<?> parent, View item,
 					int position, long id) {
 				// TODO Remove Bad Hack
-				Task t = values.get((int) id);
-				Log.v(TAG, "Switch to Task " + t.getId());
-				main.setCurrentTask(t, true);
+				Task task = values.get((int) id);
+				Log.v(TAG, "Switch to Task " + task.getId() +" (" + task.getUUID() + ")");
+				main.setCurrentTask(task, true);
 			}
 		});
 	}

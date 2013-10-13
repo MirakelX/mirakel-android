@@ -291,7 +291,7 @@ public class Helpers {
 			Log.e(TAG, "context is null");
 			return;
 		}
-		Log.d(TAG, json);
+		//Log.d(TAG, json);
 		SharedPreferences.Editor editor = settings.edit();
 		for (int i = settings.getInt("UndoNumber", 10); i > 0; i--) {
 			String old = settings.getString(UNDO + (i - 1), "");
