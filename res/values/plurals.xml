@@ -73,5 +73,15 @@
          <item quantity="other">Hours</item>
      </plurals>
      
+     <plurals name="subtasks">
+         <item quantity="one">One Subtask</item>
+         <item quantity="other">%d Subtasks</item>
+     </plurals>
+     
+     <plurals name="file">
+         <item quantity="one">One File</item>
+         <item quantity="other">%d Files</item>
+     </plurals>
+     
 
 </resources>

@@ -288,17 +288,25 @@ public class TaskFragment extends Fragment {
 				public void onItemCheckedStateChanged(ActionMode mode,
 						int position, long id, boolean checked) {
 					Log.d(TAG, "item " + position + " selected");
-					if ((adapter.getData().get(position).first == TYPE.FILE && (adapter
-							.getSelected().size() == 0 || (adapter
+					Integer type = adapter.getData().get(position).first;
+					int count=adapter.getSelectedCount();
+					if ((type == TYPE.FILE && (count == 0 || (adapter
 							.getSelected().get(0).first == TYPE.FILE)))
-							|| (adapter.getData().get(position).first == TYPE.SUBTASK && (adapter
-									.getSelected().size() == 0 || adapter
+							|| (type == TYPE.SUBTASK && (count == 0 || adapter
 									.getSelected().get(0).first == TYPE.SUBTASK))) {
 						adapter.setSelected(position, checked);
 						adapter.notifyDataSetChanged();
 						mode.invalidate();
-					} else if (adapter.getSelectedCount() == 0) {
+					} 
+					count=adapter.getSelectedCount();
+					if (count == 0) {
 						mode.finish();// No CAB
+						return;
+					}
+					if(type==TYPE.FILE){
+						mode.setTitle(getResources().getQuantityString(R.plurals.file,count,count ));
+					}else if(type==TYPE.SUBTASK){
+						mode.setTitle(getResources().getQuantityString(R.plurals.subtasks,count,count ));
 					}
 
 				}
