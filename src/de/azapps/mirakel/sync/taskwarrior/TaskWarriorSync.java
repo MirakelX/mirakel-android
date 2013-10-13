@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.MalformedInputException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +20,7 @@ import com.google.gson.JsonParser;
 
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
+import de.azapps.mirakel.helper.FileUtils;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.SyncAdapter;
@@ -52,8 +52,8 @@ public class TaskWarriorSync {
 
 	public enum TW_ERRORS {
 		CANNOT_CREATE_SOCKET, CANNOT_PARSE_MESSAGE, MESSAGE_ERRORS, TRY_LATER, ACCESS_DENIED, ACCOUNT_SUSPENDED, NO_ERROR;
-		public static TW_ERRORS getError(int code){
-			switch(code){
+		public static TW_ERRORS getError(int code) {
+			switch (code) {
 			case 200:
 				Log.d(TAG, "Success");
 				break;
@@ -131,42 +131,35 @@ public class TaskWarriorSync {
 
 		Msg sync = new Msg();
 		String payload = "";
-		List<Task> local_tasks = Task.getTasksToSync();
 		sync.set("protocol", "v1");
 		sync.set("type", "sync");
 		sync.set("org", _org);
 		sync.set("user", _user);
 		sync.set("key", _key);
-		// split big sync into smaller pieces
-		int taskNumber = 1;
-		int parts = local_tasks.size() / taskNumber < 1 ? 1 : local_tasks
-				.size() / taskNumber;
+		List<Task> local_tasks = Task.getTasksToSync();
+		for (Task task : local_tasks) {
+			payload += taskToJson(task) + "\n";
+		}
 		// Format: {UUID:[UUID]}
 		dependencies = new HashMap<String, String[]>();
-		for (int i = 0; i < parts; i++) {
-			String old_key = accountManager.getUserData(account,
-					SyncAdapter.TASKWARRIOR_KEY);
-			if (old_key != null && !old_key.equals("")) {
-				payload += old_key + "\n";
-			}
-			List<Task> syncedTasksId = new ArrayList<Task>();
-			for (int j = i * taskNumber; j < local_tasks.size()
-					&& j < (i + 1) * taskNumber; j++) {
-				Task task = local_tasks.get(j);
-				syncedTasksId.add(task);
-				payload += taskToJson(task) + "\n";
-			}
-			// Build sync-request
-
-			sync.setPayload(payload);
-			TW_ERRORS error = doSync(account, sync);
-			if (error == TW_ERRORS.NO_ERROR) {
-				Task.resetSyncState(syncedTasksId);
-			} else{
-				setDependencies();
-				return error;
-			}
+		// for (int i = 0; i < parts; i++) {
+		String old_key = accountManager.getUserData(account,
+				SyncAdapter.TASKWARRIOR_KEY);
+		if (old_key != null && !old_key.equals("")) {
+			payload += old_key + "\n";
 		}
+
+		// Build sync-request
+
+		sync.setPayload(payload);
+		TW_ERRORS error = doSync(account, sync);
+		if (error == TW_ERRORS.NO_ERROR) {
+			Task.resetSyncState(local_tasks);
+		} else {
+			setDependencies();
+			return error;
+		}
+		// }
 		setDependencies();
 		return TW_ERRORS.NO_ERROR;
 	}
@@ -186,7 +179,9 @@ public class TaskWarriorSync {
 		client.send(sync.serialize());
 
 		String response = client.recv();
-		longInfo(response);
+		// FileUtils.writeToFile(new File("/sdcard/mirakel.log"), response);
+
+		// longInfo(response);
 
 		Msg remotes = new Msg();
 		try {
@@ -196,11 +191,11 @@ public class TaskWarriorSync {
 			return TW_ERRORS.CANNOT_PARSE_MESSAGE;
 		}
 		int code = Integer.parseInt(remotes.get("code"));
-		TW_ERRORS error=TW_ERRORS.getError(code);
-		if(error!=TW_ERRORS.NO_ERROR){
+		TW_ERRORS error = TW_ERRORS.getError(code);
+		if (error != TW_ERRORS.NO_ERROR) {
 			return error;
 		}
-		
+
 		if (remotes.get("status").equals("Client sync key not found.")) {
 			Log.d(TAG, "reset sync-key");
 			accountManager.setUserData(account, SyncAdapter.TASKWARRIOR_KEY,
@@ -227,14 +222,13 @@ public class TaskWarriorSync {
 					taskObject = new JsonParser().parse(taskString)
 							.getAsJsonObject();
 					server_task = Task.parse_json(taskObject);
-					Log.e("Blubb",server_task.getUUID());
 					dependencies.put(server_task.getUUID(),
 							server_task.getDependencies());
 					local_task = Task.getByUUID(server_task.getUUID());
 				} catch (Exception e) {
 					Log.d(TAG, Log.getStackTraceString(e));
 					Log.e(TAG, "malformed JSON");
-					Log.e(TAG,taskString);
+					Log.e(TAG, taskString);
 					continue;
 				}
 
@@ -277,7 +271,7 @@ public class TaskWarriorSync {
 			if (uuid == null || dependencies == null)
 				continue;
 			String[] childs = dependencies.get(uuid);
-			if(childs==null)
+			if (childs == null)
 				continue;
 			for (String childUuid : childs) {
 				Task child = Task.getByUUID(childUuid);

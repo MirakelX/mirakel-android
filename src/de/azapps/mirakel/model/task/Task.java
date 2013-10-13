@@ -62,9 +62,11 @@ public class Task extends TaskBase {
 	public Task(long id, String uuid, ListMirakel list, String name,
 			String content, boolean done, Calendar due, Calendar reminder,
 			int priority, Calendar created_at, Calendar updated_at,
-			SYNC_STATE sync_state, String additionalEntriesString,int recurring,int recurring_reminder) {
+			SYNC_STATE sync_state, String additionalEntriesString,
+			int recurring, int recurring_reminder) {
 		super(id, uuid, list, name, content, done, due, reminder, priority,
-				created_at, updated_at, sync_state, additionalEntriesString,recurring,recurring_reminder);
+				created_at, updated_at, sync_state, additionalEntriesString,
+				recurring, recurring_reminder);
 	}
 
 	Task() {
@@ -330,7 +332,8 @@ public class Task extends TaskBase {
 	private static DatabaseHelper dbHelper;
 	public static final String[] allColumns = { "_id", "uuid", "list_id",
 			"name", "content", "done", "due", "reminder", "priority",
-			"created_at", "updated_at", "sync_state", "additional_entries", "recurring", "recurring_reminder"};
+			"created_at", "updated_at", "sync_state", "additional_entries",
+			"recurring", "recurring_reminder" };
 
 	private static Context context;
 
@@ -393,7 +396,7 @@ public class Task extends TaskBase {
 		Calendar now = new GregorianCalendar();
 		Task t = new Task(0, java.util.UUID.randomUUID().toString(),
 				ListMirakel.getList((int) list_id), name, content, done, due,
-				null, priority, now, now, SYNC_STATE.ADD, "",-1,-1);
+				null, priority, now, now, SYNC_STATE.ADD, "", -1, -1);
 
 		try {
 			return t.create();
@@ -651,10 +654,11 @@ public class Task extends TaskBase {
 		for (Entry<String, JsonElement> entry : entries) {
 			String key = entry.getKey();
 			JsonElement val = entry.getValue();
-			if (key == null || key.equals("id") || key.equals("uuid"))
+			if (key == null || key.equals("id"))
 				continue;
-
-			if (key.equals("name") || key.equals("description")) {
+			if (key.equals("uuid")) {
+				t.setUUID(val.getAsString());
+			} else if (key.equals("name") || key.equals("description")) {
 				t.setName(val.getAsString());
 			} else if (key.equals("content")) {
 				String content = val.getAsString();
@@ -812,7 +816,7 @@ public class Task extends TaskBase {
 				cursor.getString(i++), cursor.getString(i++),
 				cursor.getInt((i++)) == 1, due, reminder, cursor.getInt(8),
 				created_at, updated_at, SYNC_STATE.parseInt(cursor.getInt(11)),
-				cursor.getString(12),cursor.getInt(13),cursor.getInt(14));
+				cursor.getString(12), cursor.getInt(13), cursor.getInt(14));
 		return task;
 	}
 
