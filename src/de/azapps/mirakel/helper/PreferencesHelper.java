@@ -61,6 +61,7 @@ import de.azapps.mirakel.sync.AuthenticatorActivity;
 import de.azapps.mirakel.sync.DataDownloadCommand;
 import de.azapps.mirakel.sync.Network;
 import de.azapps.mirakel.sync.SyncAdapter;
+import de.azapps.mirakel.sync.caldav.CalDavSync;
 import de.azapps.mirakel.sync.mirakel.MirakelSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
 import de.azapps.mirakel.widget.MainWidgetSettingsActivity;
@@ -342,31 +343,39 @@ public class PreferencesHelper {
 		}
 		// Enable/Disbale Sync
 		final CheckBoxPreference sync = (CheckBoxPreference) findPreference("syncUse");
-		if (sync != null) {
-			final AccountManager am = AccountManager.get(activity);
-			final Account[] accounts = am
-					.getAccountsByType(Mirakel.ACCOUNT_TYPE);
+		final Preference syncType = findPreference("syncType");
+		final AccountManager am = AccountManager.get(activity);
+		final Account[] accounts = am.getAccountsByType(Mirakel.ACCOUNT_TYPE);
+		if (syncType != null) {
 			if (settings.getBoolean("syncUse", false) && accounts.length > 0) {
 				if (am.getUserData(accounts[0], SyncAdapter.BUNDLE_SERVER_TYPE)
 						.equals(TaskWarriorSync.TYPE)) {
-					sync.setSummary(activity.getString(
+					syncType.setSummary(activity.getString(
 							R.string.sync_use_summary_taskwarrior,
 							accounts[0].name));
 				} else if (am.getUserData(accounts[0],
 						SyncAdapter.BUNDLE_SERVER_TYPE)
 						.equals(MirakelSync.TYPE)) {
-					sync.setSummary(activity
+					syncType.setSummary(activity
 							.getString(R.string.sync_use_summary_mirakel,
 									accounts[0].name));
+				} else if (am.getUserData(accounts[0],
+						SyncAdapter.BUNDLE_SERVER_TYPE).equals(CalDavSync.TYPE)) {
+
+					syncType.setSummary(activity.getString(
+							R.string.sync_use_summary_caldav, accounts[0].name));
+
 				} else {
-					sync.setChecked(false);
+					// sync.setChecked(false);
 					sync.setSummary(R.string.sync_use_summary_nothing);
 					am.removeAccount(accounts[0], null, null);
 				}
 			} else {
-				sync.setChecked(false);
+				// sync.setChecked(false);
 				sync.setSummary(R.string.sync_use_summary_nothing);
 			}
+		}
+		if (sync != null) {
 			sync.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 				@Override
 				public boolean onPreferenceChange(Preference preference,

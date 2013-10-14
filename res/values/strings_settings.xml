@@ -26,6 +26,7 @@
     <string name="sync_warning_message">The sync is currently very experimental. But you can try it at your own risk (Make a backup!) – Are you sure?</string>
     <string name="sync_use_summary_taskwarrior">Sync with Taskwarrior as %s</string>
     <string name="sync_use_summary_mirakel">Sync with Mirakel as %s</string>
+    <string name="sync_use_summary_caldav">Sync with CalDav as %s</string>
     <string name="sync_use_summary_nothing">Do not use the Sync</string>
     <string name="sync_server">Server</string>
     <string name="sync_server_summary">Sync with %s</string>
@@ -36,6 +37,7 @@
     <string name="sync_frequency">Frequency</string>
     <string name="sync_frequency_summary">Sync every %s min</string>
     <string name="sync_frequency_summary_man">Sync manually only</string>
+    <string name="sync_type">Sync Type</string>
 
     <string-array name="sync_frequencies">
         <item>5 min</item>

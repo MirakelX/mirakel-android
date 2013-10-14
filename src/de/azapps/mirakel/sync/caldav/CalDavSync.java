@@ -59,7 +59,7 @@ public class CalDavSync {
 					Log.d(TAG,"empty resonse");
 					return;
 				}
-				List<Task> fromServer = parseResponse(result.replace("\\n", "\n"));
+				List<Task> fromServer = parseResponse(result);
 				if(fromServer!=null){
 					Log.i(TAG,"got "+fromServer.size()+" tasks");
 					mergeToLokale(fromServer);
@@ -253,7 +253,9 @@ public class CalDavSync {
 					Log.d(TAG,"cannot parse updated_at");
 				}
 			}else if(l.contains("DESCRIPTION")){
-				t.setContent(l.replace("DESCRIPTION:", ""));
+				Log.d(TAG, "from server: "+l);
+				t.setContent(l.replace("DESCRIPTION:", "").replace("\\n", "\n"));
+				Log.d(TAG, "new content: "+t.getContent());
 			}else if(l.contains("DUE;VALUE=DATE")){
 				try {
 					t.setDue(DateTimeHelper.parseCalDavDue(l.replace("DUE;VALUE=DATE:", "")));
