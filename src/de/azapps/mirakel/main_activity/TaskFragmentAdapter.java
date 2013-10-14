@@ -62,6 +62,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.DatePicker;
+import android.widget.DatePicker.OnDateChangedListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -800,7 +801,7 @@ public class TaskFragmentAdapter extends
 				@Override
 				public void onClick(View v) {
 					mIgnoreTimeSet = false;
-					Calendar due = (task.getDue() == null ? new GregorianCalendar()
+					final Calendar due = (task.getDue() == null ? new GregorianCalendar()
 							: task.getDue());
 					final View content = ((Activity) context)
 							.getLayoutInflater().inflate(
@@ -820,11 +821,9 @@ public class TaskFragmentAdapter extends
 											current, true, context);
 								}
 							});
-					dp.updateDate(due.get(Calendar.YEAR),
-							due.get(Calendar.MONTH),
-							due.get(Calendar.DAY_OF_MONTH));
-					new AlertDialog.Builder(context)
-					.setTitle(R.string.set_due)
+					final SimpleDateFormat dueFormater=new SimpleDateFormat("E, dd. MMMM yyyy",Locale.getDefault());
+					final AlertDialog dialog=new AlertDialog.Builder(context)
+					.setTitle(dueFormater.format(due.getTime()))
 							.setPositiveButton(android.R.string.ok,
 									new DialogInterface.OnClickListener() {
 
@@ -868,6 +867,17 @@ public class TaskFragmentAdapter extends
 											}
 										}
 									}).setView(content).show();
+					dp.init(due.get(Calendar.YEAR),
+							due.get(Calendar.MONTH),
+							due.get(Calendar.DAY_OF_MONTH),new OnDateChangedListener() {
+								
+								@Override
+								public void onDateChanged(DatePicker view, int year, int monthOfYear,
+										int dayOfMonth) {
+									due.set(year, monthOfYear, dayOfMonth);
+									dialog.setTitle(dueFormater.format(due.getTime()));
+								}
+							});
 				}
 			});
 			due.setTag(holder);
