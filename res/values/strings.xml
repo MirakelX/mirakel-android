@@ -163,9 +163,9 @@
     <string name="login_activity_server_label">Server-URL</string>
     <string name="login_activity_server_typ">Server Type</string>
     <string-array name="server_typs">
-        <item >Mirakel</item>
         <item >Taskwarrior</item>
         <item >CalDav</item>
+        <item >Mirakel</item>
     </string-array>
     <!-- Label above password EditText -->
     <string name="login_activity_password_label">Password</string>
