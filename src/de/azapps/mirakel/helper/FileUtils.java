@@ -21,7 +21,7 @@ public class FileUtils {
 
 	public static String getPath(Context context, Uri uri)
 			throws URISyntaxException {
-		if(uri==null)
+		if (uri == null)
 			return null;
 		if ("content".equalsIgnoreCase(uri.getScheme())) {
 			String[] projection = { "_data" };
@@ -109,14 +109,14 @@ public class FileUtils {
 
 	public static void writeToFile(File f, String s) {
 		try {
-			if(f.exists())
+			if (f.exists())
 				f.delete();
 			BufferedWriter out = new BufferedWriter(new FileWriter(f));
 			out.write(s);
 			out.close();
 		} catch (IOException e) {
 			Log.e(TAG, "cannot write to file");
-			Log.e(TAG,Log.getStackTraceString(e));
+			Log.e(TAG, Log.getStackTraceString(e));
 		}
 
 	}
