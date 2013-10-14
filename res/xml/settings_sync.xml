@@ -25,6 +25,11 @@
         android:key="syncUse"
         android:title="@string/sync_use" />
 
+    <Preference
+        android:enabled="false"
+        android:key="syncType"
+        android:title="@string/sync_type" />
+
     <EditTextPreference
         android:inputType="textUri"
         android:key="syncServer"
@@ -38,7 +43,7 @@
             android:summary="@string/sync_email_summary"
             android:title="@string/sync_email" />
     -->
-    <EditTextPreference   
+    <EditTextPreference
         android:inputType="textPassword"
         android:key="syncPassword"
         android:summary="@string/sync_password_summary"
