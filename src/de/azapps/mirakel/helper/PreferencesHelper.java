@@ -1,10 +1,6 @@
 package de.azapps.mirakel.helper;
 
-import java.io.File;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.http.message.BasicNameValuePair;
@@ -29,7 +25,6 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
@@ -702,23 +697,14 @@ public class PreferencesHelper {
 
 		Preference backup = findPreference("backup");
 		if (backup != null) {
-			Date today = new Date();
-			DateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");// SimpleDateFormat.getDateInstance();
-			String filename = "mirakel_" + sdf.format(today) + ".db";
-			final File exportDir = new File(
-					Environment.getExternalStorageDirectory(), "");
-			final File exportFile = new File(exportDir, filename);
 
 			backup.setSummary(activity.getString(R.string.backup_click_summary,
-					exportFile.getAbsolutePath()));
+					ExportImport.getBackupDir().getAbsolutePath()));
 
 			backup.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 				@SuppressLint("NewApi")
 				public boolean onPreferenceClick(Preference preference) {
-					if (!exportDir.exists()) {
-						exportDir.mkdirs();
-					}
-					ExportImport.exportDB(activity, exportFile);
+					ExportImport.exportDB(activity);
 					return true;
 				}
 			});

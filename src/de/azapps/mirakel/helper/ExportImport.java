@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -21,6 +23,7 @@ import org.xml.sax.SAXException;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
@@ -34,9 +37,24 @@ public class ExportImport {
 	private static final File dbFile = new File(Mirakel.MIRAKEL_DIR
 			+ "databases/mirakel.db");
 	private static final String TAG = "ExportImport";
+	private static final File exportDir = new File(
+			Environment.getExternalStorageDirectory(), "mirakel");
 
-	public static void exportDB(Context ctx, File file) {
+	public static File getBackupDir() {
+		return exportDir;
+	}
 
+	@SuppressLint("SimpleDateFormat")
+	public static void exportDB(Context ctx) {
+
+		Date today = new Date();
+		DateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");// SimpleDateFormat.getDateInstance();
+		String filename = "mirakel_" + sdf.format(today) + ".db";
+		final File file = new File(exportDir, filename);
+
+		if (!exportDir.exists()) {
+			exportDir.mkdirs();
+		}
 		try {
 			file.createNewFile();
 			FileUtils.copyFile(dbFile, file);
@@ -116,16 +134,15 @@ public class ExportImport {
 			if (n.getNodeType() == Node.ELEMENT_NODE) {
 				NamedNodeMap m = n.getAttributes();
 				if (m != null) {
-					//Name
+					// Name
 					String name = m.getNamedItem("title").getTextContent();
-					//List
+					// List
 					int listId;
-					Node child=null;
-					if(n.getChildNodes().getLength()>1){
-						child=n.getChildNodes().item(1);
+					Node child = null;
+					if (n.getChildNodes().getLength() > 1) {
+						child = n.getChildNodes().item(1);
 					}
-					if (child != null
-							&& child.getAttributes() != null) {
+					if (child != null && child.getAttributes() != null) {
 						String listname = child.getAttributes()
 								.getNamedItem("value").getTextContent();
 						ListMirakel l = ListMirakel.findByName(listname);
@@ -148,7 +165,7 @@ public class ExportImport {
 						}
 					}
 					Task t = Task.newTask(name, listId);
-					//Priority
+					// Priority
 					int prio = Integer.parseInt(m.getNamedItem("importance")
 							.getTextContent());
 					switch (prio) {
@@ -167,30 +184,30 @@ public class ExportImport {
 					default:
 						t.setPriority(0);
 					}
-					//Due
+					// Due
 					long due = Long.parseLong(m.getNamedItem("dueDate")
 							.getTextContent());
 					GregorianCalendar d = new GregorianCalendar();
 					d.setTimeInMillis(due);
 					t.setDue(d);
-					//Created At
+					// Created At
 					long created = Long.parseLong(m.getNamedItem("created")
 							.getTextContent());
 					GregorianCalendar c = new GregorianCalendar();
 					c.setTimeInMillis(created);
 					t.setCreatedAt(c);
-					//Update At
+					// Update At
 					long update = Long.parseLong(m.getNamedItem("modified")
 							.getTextContent());
 					GregorianCalendar u = new GregorianCalendar();
 					u.setTimeInMillis(update);
 					t.setDue(u);
-					//Done
+					// Done
 					String done = m.getNamedItem("completed").getTextContent();
 					t.setDone(!done.equals("0"));
 					String content = m.getNamedItem("notes").getTextContent();
 					t.setContent(content.trim());
-					//TODO Reminder
+					// TODO Reminder
 					try {
 						t.save(false);
 					} catch (NoSuchListException e) {

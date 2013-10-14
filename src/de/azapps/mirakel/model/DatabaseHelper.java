@@ -25,6 +25,7 @@ import java.util.Locale;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import de.azapps.mirakel.helper.ExportImport;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.file.FileMirakel;
@@ -73,6 +74,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		Log.e(DatabaseHelper.class.getName(),
 				"Upgrading database from version " + oldVersion + " to "
 						+ newVersion);
+		ExportImport.exportDB(context);
 		switch (oldVersion) {
 		case 1:// Nothing, Startversion
 		case 2:
@@ -177,7 +179,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			db.execSQL("Alter Table "
 					+ Task.TABLE
 					+ " add column additional_entries TEXT NOT NULL DEFAULT '';");
-		case 14://Add Sematic
+		case 14:// Add Sematic
 			db.execSQL("CREATE TABLE " + Semantic.TABLE + " ("
 					+ "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
 					+ "condition TEXT NOT NULL, " + "due INTEGER, "
@@ -189,28 +191,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ "INSERT INTO semantic_conditions (condition,due) VALUES (\""
 					+ context.getString(R.string.tomorrow).toLowerCase()
 					+ "\",1);");
-		case 15://Add Color
+		case 15:// Add Color
 			db.execSQL("Alter Table " + ListMirakel.TABLE
 					+ " add column color INTEGER;");
 			db.execSQL("Alter Table " + SpecialList.TABLE
 					+ " add column color INTEGER;");
-		case 16://Add File
+		case 16:// Add File
 			db.execSQL("CREATE TABLE " + FileMirakel.TABLE + " ("
 					+ "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
 					+ "task_id INTEGER NOT NULL DEFAULT 0, " + "name TEXT, "
 					+ "path TEXT" + ")");
-		case 17://Add Subtask
+		case 17:// Add Subtask
 			db.execSQL("CREATE TABLE " + Task.SUBTASK_TABLE + " ("
 					+ "_id INTEGER PRIMARY KEY AUTOINCREMENT,"
 					+ "parent_id INTEGER REFERENCES " + Task.TABLE
 					+ " (_id) ON DELETE CASCADE ON UPDATE CASCADE,"
 					+ "child_id INTEGER REFERENCES " + Task.TABLE
 					+ " (_id) ON DELETE CASCADE ON UPDATE CASCADE);");
-		case 18://Modify Semantic
+		case 18:// Modify Semantic
 			db.execSQL("ALTER TABLE " + Semantic.TABLE
 					+ " add column default_list_id INTEGER");
 			db.execSQL("update semantic_conditions SET condition=LOWER(condition);");
-		case 19://Make Specialist sortable
+		case 19:// Make Specialist sortable
 			db.execSQL("ALTER TABLE " + SpecialList.TABLE
 					+ " add column  lft INTEGER;");
 			db.execSQL("ALTER TABLE " + SpecialList.TABLE
@@ -220,7 +222,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ SpecialList.TABLE + ") as a where a._id<"
 					+ SpecialList.TABLE + "._id)*2 +1;");
 			db.execSQL("update " + SpecialList.TABLE + " set rgt=lft+1;");
-		case 20://Add Recurring
+		case 20:// Add Recurring
 			db.execSQL("CREATE TABLE " + Recurring.TABLE
 					+ " (_id INTEGER PRIMARY KEY AUTOINCREMENT,"
 					+ "years INTEGER DEFAULT 0," + "months INTEGER DEFAULT 0,"
@@ -258,9 +260,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ " add column recurring_reminder INTEGER DEFAULT '-1';");
 		case 22:
 			db.execSQL("ALTER TABLE " + Recurring.TABLE
-					+" add column start_date String;");
+					+ " add column start_date String;");
 			db.execSQL("ALTER TABLE " + Recurring.TABLE
-					+" add column end_date String;");
+					+ " add column end_date String;");
 		}
 	}
 
