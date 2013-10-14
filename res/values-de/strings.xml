@@ -157,8 +157,8 @@ Device: %3$s\n]]>
     <item>Löschen</item>
   </string-array>
    <string-array name="server_typs">
-        <item >Mirakel</item>
         <item >Taskwarrior</item>
         <item >CalDav</item>
+                <item >Mirakel</item>
     </string-array>
 </resources>
