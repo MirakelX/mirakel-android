@@ -59,7 +59,7 @@ class TaskBase {
 	private SYNC_STATE sync_state;
 	private Calendar reminder;
 	private int recurring;
-	private int recurring_reminder;
+	private int recurrence_reminder;
 
 	TaskBase(long id, String uuid, ListMirakel list, String name,
 			String content, boolean done, Calendar due, Calendar reminder,
@@ -80,7 +80,7 @@ class TaskBase {
 		this.setSyncState(sync_state);
 		this.additionalEntriesString = additionalEntriesString;
 		this.recurring = recurring;
-		this.recurring_reminder = recurring_reminder;
+		this.recurrence_reminder = recurring_reminder;
 	}
 
 	TaskBase() {
@@ -101,24 +101,25 @@ class TaskBase {
 		this.setUpdatedAt((Calendar) null);
 		this.setSyncState(SYNC_STATE.NOTHING);
 		this.recurring = -1;
-		this.recurring_reminder = -1;
+		this.recurrence_reminder = -1;
 	}
 
 	public Recurring getRecurring() {
-		return Recurring.get(recurring);
+		Recurring r =Recurring.get(recurring);
+		return r;
 	}
 
-	public void setRecurring(int recurring) {
+	public void setRecurrence(int recurring) {
 		this.recurring = recurring;
 		edited.put("recurring", true);
 	}
 
 	public Recurring getRecurringReminder() {
-		return Recurring.get(recurring_reminder);
+		return Recurring.get(recurrence_reminder);
 	}
 
-	public void setRecurringReminder(int recurring) {
-		this.recurring_reminder = recurring;
+	public void setRecurrenceReminder(int recurring) {
+		this.recurrence_reminder = recurring;
 		edited.put("recurring_reminder", true);
 	}
 
@@ -201,14 +202,14 @@ class TaskBase {
 		this.due = due;
 		edited.put("due", true);
 		if(due==null){
-			setRecurring(-1);
+			setRecurrence(-1);
 		}
 	}
 
 	public Calendar getReminder() {
 		if(reminder==null)
 			return reminder;
-		if (recurring_reminder != -1
+		if (recurrence_reminder != -1
 				&& reminder.before(new GregorianCalendar())) {
 			reminder = getRecurringReminder().addRecurring(due);
 			try {
@@ -225,7 +226,7 @@ class TaskBase {
 		this.reminder = reminder;
 		edited.put("reminder", true);
 		if(reminder==null){
-			setRecurringReminder(-1);
+			setRecurrenceReminder(-1);
 		}
 	}
 
@@ -365,6 +366,8 @@ class TaskBase {
 			updatedAt = DateTimeHelper.formatDateTime(this.updatedAt);
 		cv.put("updated_at", updatedAt);
 		cv.put("sync_state", sync_state.toInt());
+		cv.put("recurring",recurring);
+		cv.put("recurring_reminder",recurrence_reminder);
 
 		Gson gson = new GsonBuilder().create();
 		String additionalEntries = gson.toJson(this.additionalEntries);

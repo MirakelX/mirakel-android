@@ -68,7 +68,7 @@
             style="@style/imgButton"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:contentDescription="@string/enter"
+            android:contentDescription="@android:string/ok"
             android:src="@android:drawable/ic_menu_send" />
     </LinearLayout>
 

@@ -22,21 +22,28 @@
       <p>Si vous trouvez un bogue ou voulez faire une demande de fonctionnalité, veuillez laisser un rapport d\'erreur utile ici :
       <a href="https://github.com/azapps/mirakel-android/issues">https://github.com/azapps/mirakel-android/issues</a></p>
         <h2>Remerciements</h2>
+        
+        <h3>Nouveau logo/App-Icon</h3>
+        <b>by <a href="http://www.alexkaessner.de/">Alexander Käßner</a></b>
+        
         <h3>Traductions</h3>
-        <p><b>Espagnol :</b> par macebal</p>
+        <p><b>Espagnol:</b> par macebal</p>
+        <p><b>Français:</b> par Ghost of Kendo</p>
+        <p><b>Norwegian:</b> par Jim-Stefhan Johansen</p>
+        <p><b>Slovène:</b> par mateju</p>
         <h3>Bibliothèques</h3>
         <p><a href="https://code.google.com/p/google-gson/">Gson</a><br />
         Licence : <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a></p>
-        <p><a href="http://http://joda-time.sourceforge.net/">Joda-Time</a><br />
+        <p><a href="http://joda-time.sourceforge.net/">Joda-Time</a><br />
         Licence : <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a></p>
         <p><a href="https://code.google.com/p/datetimepicker/">DateTimePicker</a><br />
         Licence : <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a></p>
         <p><a href="https://code.google.com/p/android-change-log/">Android Change Log</a><br />
         Licence : <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a></p>
-        <p>L\'icône de mouvement de balayage pour l\'écran de démarrage : <a href="https://en.wikipedia.org/wiki/File:Gestures_Flick.png">Wikipédia</a><br />
-        Licence : <a href="https://creativecommons.org/licenses/by-sa/3.0/deed.en">CC-BY-SA</a></p>
         <p><a href="http://acra.ch/">ACRA</a> (Crash reports)<br />
-        Licence : <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a></p>
+        License: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a></p>
+        <p><a href="https://github.com/LarsWerkman/HoloColorPicker">HoloColorPicker</a><br />
+        License: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a></p>
         
         ]]>
     </string>

@@ -21,6 +21,7 @@ package de.azapps.mirakel.settings.recurring;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.util.Pair;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,6 +32,7 @@ import de.azapps.mirakelandroid.R;
 public class RecurringActivity extends ListSettings {
 
 	private Recurring recurring;
+	@SuppressLint("NewApi")
 	@Override
 	protected OnClickListener getAddOnClickListener() {
 		return new OnClickListener() {
