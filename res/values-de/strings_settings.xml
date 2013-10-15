@@ -159,4 +159,7 @@
     <item>1</item>
     <item>2</item>
   </string-array>
+  
+    <string name="register_server">Wenn du einen Account auf unserem Server brauchst, dann schick uns bitte eine E-Mail. Mit der nächsten Version wirst du auch selbst einen Account anlegen können.</string>
+    <string name="send_mail">Sende Mail</string>
 </resources>

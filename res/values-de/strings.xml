@@ -181,7 +181,7 @@ Device: %3$s\n]]>
   <string name="day">Tag</string>
   <string name="month">Monat</string>
   <string name="year">Jahr</string>
-  <string name="recurring_summary">Alle %1$s%2$s</string>
+  <string name="recurring_summary">Jede %1$s%2$s</string>
   <string name="new_recurring">Neue Regel</string>
   <string name="add_recurring">Wiederholen</string>
   <string name="intervall">Intervall</string>
