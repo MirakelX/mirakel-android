@@ -18,6 +18,9 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -25,6 +28,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
@@ -135,53 +139,54 @@ public class TaskDialogHelpers {
 
 							}
 						}).show();
-		Button add=(Button) mDateTimeDialogView.findViewById(R.id.add_reccuring);
-		final TextView current=(TextView) mDateTimeDialogView.findViewById(R.id.recurring_current);
-		Recurring r=task.getRecurringReminder();
-		current.setText(r==null?ctx.getString(R.string.nothing):r.getLabel());
-		add.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				handleRecurring(task,current,false,ctx);
-				
-			}
-		});
+		Spinner recurrence = (Spinner) mDateTimeDialogView
+				.findViewById(R.id.add_reccuring);
+		TaskDialogHelpers.handleRecurrence(ctx, task, recurrence, false);
 	}
 
-	public static void handleRecurring(final Task task, final TextView current, final boolean due, final Context ctx) {
-		final List<Pair<Integer, String>> recurring=Recurring.getForDialog(due);
-		CharSequence[] items=new String[recurring.size()+1];
-		Recurring r=due?task.getRecurring():task.getRecurringReminder();
-		int checked=0;
-		items[0]=ctx.getString(R.string.nothing);
-		for(int i=1;i<recurring.size()+1;i++){
-			items[i]=recurring.get(i-1).second;
-			if(r!=null&&recurring.get(i-1).first==r.getId()){
-				checked=i;
+	public static void handleRecurrence(final Context context, final Task task,
+			Spinner spinner, final boolean isDue) {
+		final List<Pair<Integer, String>> recurring = Recurring
+				.getForDialog(isDue);
+		CharSequence[] items = new String[recurring.size() + 1];
+		Recurring r = isDue ? task.getRecurring() : task.getRecurringReminder();
+
+		items[0] = context.getString(R.string.nothing);
+		int pos = 0;
+		for (int i = 1; i < recurring.size() + 1; i++) {
+			items[i] = recurring.get(i - 1).second;
+			if (r != null && items[i].equals(r.getLabel())) {
+				pos = i;
 			}
 		}
-		new AlertDialog.Builder(ctx)
-		.setTitle(R.string.add_recurring)
-		.setSingleChoiceItems(items,checked, new DialogInterface.OnClickListener() {
-			
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				int r=which==0?-1:recurring.get(which-1).first;
-				if(due){
-					task.setRecurring(r);
-				}else{
-					task.setRecurringReminder(r);
+		ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(
+				context, android.R.layout.simple_spinner_item, items);
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinner.setAdapter(adapter);
+		spinner.setSelection(pos);
+		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int pos, long id) {
+				int r = pos == 0 ? -1 : recurring.get(pos - 1).first;
+				if (isDue) {
+					task.setRecurrence(r);
+				} else {
+					task.setRecurrenceReminder(r);
 				}
 				try {
 					task.save();
 				} catch (NoSuchListException e) {
 					Log.w(TAG, "List did vanish");
 				}
-				current.setText(r==-1?ctx.getText(R.string.nothing):Recurring.get(r).getLabel());
-				dialog.dismiss();
 			}
-		}).show();
-		
+
+			public void onNothingSelected(AdapterView<?> parent) {
+				// Another interface callback
+			}
+
+		});
+
 	}
 
 	public static void handleDeleteFile(final List<FileMirakel> selectedItems,

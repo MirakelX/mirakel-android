@@ -18,7 +18,7 @@
   <string name="special_list_where_due_title_text">vencimiento</string>
   <string name="empty">Irrelevante</string>
   <string name="select_by">Seleccionar por</string>
-  <string name="nothing">Nada</string>
+  <string name="nothing">No repita</string>
   <string name="today">Hoy</string>
   <string name="tomorrow">mañana</string>
   <string name="reminder_set">Recordatorio establecido</string>

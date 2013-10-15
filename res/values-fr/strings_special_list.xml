@@ -19,7 +19,7 @@
   <string name="select_by">Sélectionner par</string>
   <string name="done">Tâches finies</string>
   <string name="undone">Tâches à refaire</string>
-  <string name="nothing">Rien</string>
+  <string name="nothing">Pas de répétition</string>
   <string name="today">Aujourd’hui</string>
   <string name="tomorrow">Demain</string>
   <string name="reminder_set">Le rappel est défini</string>

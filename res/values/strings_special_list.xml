@@ -65,7 +65,7 @@
     <string name="select_by">Select By</string>
     <string name="done">Done Tasks</string>
     <string name="undone">Undone Tasks</string>
-    <string name="nothing">Nothing</string>
+    <string name="nothing">No recurrence</string>
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
     <string name="reminder_set">Reminder is set</string>

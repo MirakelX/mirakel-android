@@ -23,7 +23,7 @@
   <string name="select_by">Izberi z</string>
   <string name="done">Končane naloge</string>
   <string name="undone">Razveljavljene naloge</string>
-  <string name="nothing">Brez</string>
+  <string name="nothing">Ne ponovite</string>
   <string name="today">Danes</string>
   <string name="tomorrow">Jutri</string>
   <string name="reminder_set">Opomnik je nastavljen</string>

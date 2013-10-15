@@ -68,6 +68,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.ViewSwitcher;
@@ -806,21 +807,11 @@ public class TaskFragmentAdapter extends
 					final View content = ((Activity) context)
 							.getLayoutInflater().inflate(
 									R.layout.datepicker_dialog, null);
-					final TextView current = (TextView) content
-							.findViewById(R.id.recurring_current);
 					final DatePicker dp = (DatePicker) content
 							.findViewById(R.id.dialog_datePicker);
-					Recurring r = task.getRecurring();
-					current.setText(r == null ? context
-							.getString(R.string.nothing) : r.getLabel());
-					content.findViewById(R.id.add_reccuring)
-							.setOnClickListener(new OnClickListener() {
-								@Override
-								public void onClick(View v) {
-									TaskDialogHelpers.handleRecurring(task,
-											current, true, context);
-								}
-							});
+					Spinner recurrence=(Spinner) content.findViewById(R.id.add_reccuring);
+					TaskDialogHelpers.handleRecurrence(context,task,recurrence,true);
+					
 					final SimpleDateFormat dueFormater=new SimpleDateFormat("E, dd. MMMM yyyy",Locale.getDefault());
 					final AlertDialog dialog=new AlertDialog.Builder(context)
 					.setTitle(dueFormater.format(due.getTime()))

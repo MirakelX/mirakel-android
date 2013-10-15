@@ -23,7 +23,7 @@
   <string name="select_by">Velg ved</string>
   <string name="done">Ferdige oppgaver</string>
   <string name="undone">Angrende oppgaver</string>
-  <string name="nothing">Ingenting</string>
+  <string name="nothing">Ikke gjenta</string>
   <string name="today">I dag</string>
   <string name="tomorrow">I morgen</string>
   <string name="reminder_set">Påminnelse er angitt</string>
