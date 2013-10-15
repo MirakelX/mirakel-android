@@ -20,6 +20,7 @@
         <NumberPicker
             android:id="@+id/numberPicker"
             android:layout_width="wrap_content"
+            android:descendantFocusability="blocksDescendants"
             android:layout_height="wrap_content" />
 
         <TextView
