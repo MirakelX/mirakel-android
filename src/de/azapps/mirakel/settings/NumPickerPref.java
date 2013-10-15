@@ -25,6 +25,9 @@ public class NumPickerPref extends DialogPreference {
 	private int MIN_VAL;
 	private int SUMMARY_ID;
 	private int VALUE;
+	private NumberPicker picker;
+	private TextView tx;
+	private View dialog;
 
 	public NumPickerPref(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -45,7 +48,6 @@ public class NumPickerPref extends DialogPreference {
 	@Override
 	protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
 		// super.onPrepareDialogBuilder(builder);
-		final View dialog;
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
 			dialog = ((Activity) ctx).getLayoutInflater().inflate(
 					R.layout.num_picker_pref_v10, null);
@@ -53,16 +55,17 @@ public class NumPickerPref extends DialogPreference {
 					.findViewById(R.id.dialog_num_pick_plus);
 			final Button minus = (Button) dialog
 					.findViewById(R.id.dialog_num_pick_minus);
-			final TextView tx = (TextView) dialog
+			tx = (TextView) dialog
 					.findViewById(R.id.dialog_num_pick_val);
+			updateV10Value();
 			plus.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
 					if (VALUE < MAX_VAL) {
 						++VALUE;
-						updateV10Value(tx);
-						updateSummary(dialog);
+						updateV10Value();
+						updateSummary();
 					}
 				}
 			});
@@ -72,29 +75,30 @@ public class NumPickerPref extends DialogPreference {
 				public void onClick(View v) {
 					if (VALUE > MIN_VAL) {
 						--VALUE;
-						updateV10Value(tx);
-						updateSummary(dialog);
+						updateV10Value();
+						updateSummary();
 					}
 				}
 			});
 		} else {
 			dialog = ((Activity) ctx).getLayoutInflater().inflate(
 					R.layout.num_picker_pref, null);
-			NumberPicker picker = (NumberPicker) dialog
+			picker = (NumberPicker) dialog
 					.findViewById(R.id.numberPicker);
 			picker.setMaxValue(MAX_VAL);
 			picker.setMinValue(MIN_VAL);
+			picker.setValue(VALUE);
 			picker.setWrapSelectorWheel(false);
 			picker.setOnValueChangedListener(new OnValueChangeListener() {
 				@Override
 				public void onValueChange(NumberPicker picker, int oldVal,
 						int newVal) {
 					VALUE = newVal;
-					updateSummary(dialog);
+					updateSummary();
 				}
 			});
 		}
-		updateSummary(dialog);
+		updateSummary();
 		builder.setPositiveButton(android.R.string.ok,
 				new DialogInterface.OnClickListener() {
 
@@ -115,13 +119,15 @@ public class NumPickerPref extends DialogPreference {
 		builder.setView(dialog);
 	}
 
-	protected void updateV10Value(TextView tx) {
-		tx.setText("" + VALUE);
+	
+	protected void updateV10Value() {
+		if(tx!=null)
+			tx.setText("" + VALUE);
 
 	}
 
-	protected void updateSummary(View dialog) {
-		if (SUMMARY_ID != 0) {
+	protected void updateSummary() {
+		if (SUMMARY_ID != 0&&dialog!=null) {
 			((TextView) dialog.findViewById(R.id.num_picker_pref_summary))
 					.setText(ctx.getResources().getQuantityString(SUMMARY_ID,
 							VALUE));
@@ -134,7 +140,9 @@ public class NumPickerPref extends DialogPreference {
 	}
 
 	public void setValue(int newValue) {
-		VALUE = newValue;
+		if(newValue<=MAX_VAL&&newValue>=MIN_VAL){
+			VALUE = newValue;
+		}
 	}
 
 	@Override
