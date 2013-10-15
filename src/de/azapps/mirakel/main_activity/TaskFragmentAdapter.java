@@ -665,7 +665,7 @@ public class TaskFragmentAdapter extends
 		if (editContent) {
 			editContent = false;// do not record Textchanges
 			holder.taskContentEdit.setText(taskEditText);
-			holder.taskContentEdit.setSelection(cursorPos);
+			holder.taskContentEdit.setSelection(cursorPos==0?taskEditText.length():cursorPos);
 			Linkify.addLinks(holder.taskContentEdit, Linkify.WEB_URLS);
 			holder.taskContentEdit.requestFocus();
 			InputMethodManager imm = ((InputMethodManager) context
