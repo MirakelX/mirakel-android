@@ -32,7 +32,7 @@
   <string name="task_delete_content">Ali ste prepričani, da želite izbrisati %s?</string>
   <string name="task_menu_sorting">Razvrsti naloge</string>
   <string name="task_sorting_title">Razvrsti naloge po</string>
-  <string name="task_empty">Ni izbrane naloge ...</string>
+  <string name="task_empty">Ni izbrane naloge …</string>
   <string name="set_date">Nastavi datum</string>
   <string name="set_time">Nastavi čas</string>
   <string name="task_set_reminder">Nastavi opomnik</string>
@@ -84,8 +84,8 @@
   <string name="reminder_notification_later">Kasneje</string>
   <string name="reminder_notification_done_confirm">Naloga je označena kot „končana“</string>
   <string name="reminder_notification_later_confirm">Opomnik bo prikazan čez %d minut</string>
-  <string name="list_vanished">Ops! Nalog je izginila! To je lahko napaka programa ...</string>
-  <string name="task_vanished">Ops! Seznam nalog je izginil! To je lahko napaka programa ...</string>
+  <string name="list_vanished">Ops! Nalog je izginila! To je lahko napaka programa …</string>
+  <string name="task_vanished">Ops! Seznam nalog je izginil! To je lahko napaka programa …</string>
   <string name="message_try_later">Poskusi uskladiti kasneje</string>
   <string name="message_access_denied">Dostop je zavrnjen! \nAli je uporabljena prava datoteka nastavitev?</string>
   <string name="message_create_socket">Ni mogoče ustvariti vodila!\nAli je omrežna povezava omogočena?</string>
@@ -103,14 +103,14 @@
   <string name="login_activity_loginfail_text_both">Uporabniško ime ali geslo ni veljavno. Zahtevana je prijava v račun Mirakel. Poskusite znova.</string>
   <string name="login_activity_loginfail_text_pwmissing">Vnesite geslo za ta račun.</string>
   <string name="login_activity_newaccount_text">Prijava v račun %s. </string>
-  <string name="ui_activity_authenticating">Overjanje ...</string>
+  <string name="ui_activity_authenticating">Overjanje …</string>
   <string name="ui_activity_title">Prijava</string>
   <string name="title_activity_special_lists_settings">Nastavitve za posebne sezname</string>
   <string name="title_activity_semantic_settings">Nastavitve za pomenski vpis</string>
   <string name="changelog_full_title">Zadnje spremembe</string>
   <string name="changelog_title">Kaj je novega</string>
   <string name="changelog_ok_button">V redu</string>
-  <string name="changelog_show_full">več ...</string>
+  <string name="changelog_show_full">več …</string>
   <string name="share_using">Souporaba z</string>
   <string name="share_task">Souporaba naloge</string>
   <string name="share_task_title_with_date">%1$s (%2$s)</string>
@@ -131,7 +131,7 @@ Različica SDK: %2$d\n
 Naprava: %3$s\n]]>
     </string>
   <string name="contact_no_client">Ni nameščenega odjemalca elektronske pošte</string>
-  <string name="contact_chooser">Pošlji sporočilo ...</string>
+  <string name="contact_chooser">Pošlji sporočilo …</string>
   <string name="backup_import_error">Prišlo je do napake med uvažanjem podatkovne zbirke</string>
   <string name="backup_import_ok">Uvoz je uspešno končan. Program Mirakel je treba znova zagnati.</string>
   <string name="backup_export_error">Prišlo je do napake med izvažanjem podatkovne zbirke</string>

@@ -103,7 +103,7 @@
   <string name="preferences_colorize">Цвета</string>
   <string name="preferences_colorize_tasks">Раскрасить дела</string>
   <string name="preferences_colorize_tasks_everywhere">Раскрасить дела везде</string>
-  <string name="preferences_colorize_tasks_everywhere_summary">...или только в определённых списках?</string>
+  <string name="preferences_colorize_tasks_everywhere_summary">…или только в определённых списках?</string>
   <string name="settings_semantics_title">Настройка семантики</string>
   <string name="settings_semantics_condition">Состояние</string>
   <string name="settings_semantics_actions">Действия</string>

@@ -67,7 +67,7 @@
   <string name="astrid_success">Vsi podatki so uspešno uvoženi!</string>
   <string name="astrid_importing">Poteka uvažanje</string>
   <string name="astrid_import_title">Izberite datoteko programa Astrid</string>
-  <string name="astrid_wait">Počakajte ...</string>
+  <string name="astrid_wait">Počakajte …</string>
   <string name="import_wrong_type">Datoteka ni ustrezna datoteka programa Mirakel!</string>
   <string name="highlightSelected_summary">Poudari seznam ali nalogo, ko je ta izbrana</string>
   <string name="highlightSelected">Izbrano poudarjanje</string>
@@ -103,7 +103,7 @@
   <string name="preferences_colorize">Barve</string>
   <string name="preferences_colorize_tasks">Pobarvaj naloge</string>
   <string name="preferences_colorize_tasks_everywhere">Ali naj bo mogoče pobarvati naloge vseh seznamov</string>
-  <string name="preferences_colorize_tasks_everywhere_summary">... ali pa le naloge posebnih seznamov?</string>
+  <string name="preferences_colorize_tasks_everywhere_summary">… ali pa le naloge posebnih seznamov?</string>
   <string name="settings_semantics_title">Nastavitev pomenskega vpisa</string>
   <string name="settings_semantics_condition">Pogoj</string>
   <string name="settings_semantics_actions">Dejanja</string>

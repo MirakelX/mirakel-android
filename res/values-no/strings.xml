@@ -31,7 +31,7 @@
   <string name="task_delete_content">Er du sikker på at du vil slette %s?</string>
   <string name="task_menu_sorting">Sorter oppgaver</string>
   <string name="task_sorting_title">Sorter oppgaver etter</string>
-  <string name="task_empty">Ingen oppgave valgt ...</string>
+  <string name="task_empty">Ingen oppgave valgt …</string>
   <string name="set_date">Angi dato</string>
   <string name="set_time">Angi klokkeslett</string>
   <string name="task_set_reminder">Angi påminnelse</string>
@@ -81,8 +81,8 @@
   <string name="reminder_notification_later">Senere</string>
   <string name="reminder_notification_done_confirm">Jeg har satt oppgaven som \"ferdig\"</string>
   <string name="reminder_notification_later_confirm">Jeg vil minne deg på det om %d minutter</string>
-  <string name="list_vanished">Jøss, oppgaven har forsvunnet. Jeg beklager ...</string>
-  <string name="task_vanished">Jøss, listen for oppgaven har forsvunnet. Jeg beklager ...</string>
+  <string name="list_vanished">Jøss, oppgaven har forsvunnet. Jeg beklager …</string>
+  <string name="task_vanished">Jøss, listen for oppgaven har forsvunnet. Jeg beklager …</string>
   <string name="message_try_later">Prøv å synkronisere senere</string>
   <string name="message_access_denied">Ingen tilgang!\nBruker du den riktige konfigurasjons filen?</string>
   <string name="message_create_socket">Kan ikke opprette kontakt!\nVil du aktivere nettverkstilkoblingen?</string>
@@ -100,14 +100,14 @@
   <string name="login_activity_loginfail_text_both">Brukernavnet eller passordet er ikke gyldig. Det kreves en Mirakel-konto. vennligst prøv igjen.</string>
   <string name="login_activity_loginfail_text_pwmissing">Skriv passordet for denne kontoen.</string>
   <string name="login_activity_newaccount_text">Logg inn på din %s-konto.</string>
-  <string name="ui_activity_authenticating">Godkjenning ...</string>
+  <string name="ui_activity_authenticating">Godkjenning …</string>
   <string name="ui_activity_title">Logg inn</string>
   <string name="title_activity_special_lists_settings">Innstillinger for Spesiallister</string>
   <string name="title_activity_semantic_settings">Innstillinger for semantikk</string>
   <string name="changelog_full_title">Endringslogg</string>
   <string name="changelog_title">Hva som er nytt</string>
   <string name="changelog_ok_button">OK</string>
-  <string name="changelog_show_full">mer ...</string>
+  <string name="changelog_show_full">mer …</string>
   <string name="share_using">Dele med</string>
   <string name="share_task">Dele oppgave</string>
   <string name="share_task_title_with_date">%1$s (%2$s)</string>
@@ -128,7 +128,7 @@ SDK-version: %2$d\n
 Device: %3$s\n]]>
     </string>
   <string name="contact_no_client">Ingen e-post klient installert</string>
-  <string name="contact_chooser">Send e-post ...</string>
+  <string name="contact_chooser">Send e-post …</string>
   <string name="backup_import_error">Det oppstod en feil ved importering av databasen</string>
   <string name="backup_import_ok">Importeringen er ferdig - Vennlist start Mirakel på nytt</string>
   <string name="backup_export_error">Det oppstod en feil ved eksportering av databasen</string>

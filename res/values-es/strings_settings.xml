@@ -46,7 +46,7 @@
   <string name="kill_button">Cerrar por completo</string>
   <string name="kill_app">Cerrar la aplicación</string>
   <string name="kill_sure">¿¿¿Estás realmente seguro???</string>
-  <string name="kill_sure_message">Al cerrar la aplicación, no recibes ningun recordatorio! Por favor considera desactivar sólo la notificación (o no hacerla persistente, así se puede quitar.)</string>
+  <string name="kill_sure_message">Al cerrar la aplicación, no recibes ningún recordatorio! Por favor considera desactivar sólo la notificación (o no hacerla persistente, así se puede quitar.)</string>
   <string name="ui_settings_title">Interfaz de usuario</string>
   <string name="hide_keyboard">Ocultar teclado</string>
   <string name="undo_number">Number of Changes saved</string>

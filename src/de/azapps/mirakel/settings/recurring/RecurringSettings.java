@@ -221,6 +221,7 @@ public class RecurringSettings {
 		});
 	}
 
+	@SuppressLint("NewApi")
 	protected void DateDialog(final boolean start, final Preference date,
 			final String s) {
 		Calendar c = new GregorianCalendar();
