@@ -28,7 +28,7 @@
     <string name="no_reminder">Set a reminder</string>
     <string name="no_lists">This task cannot be synced, because you have no lists</string>
     <string name="dateFormat" translatable="false">yyyy-MM-dd</string>
-    <string name="dateTimeFormat" translatable="false">yyyy-MM-dd\'T\'kkmmss\'Z\'</string>
+    <string name="dateTimeFormat" translatable="false">yyyy-MM-dd\'T\'HHmmss\'Z\'</string>
     <string name="humanDateTimeFormat">yyyy-MM-dd – kk:mm</string>
     <string name="speak">Speak</string>
     <string name="takePhoto">Take a photo</string>
@@ -67,7 +67,7 @@
     <string name="remove_files_summary">Do you want to remove %1$s from %2$s?</string>
     <string name="add_subtask">Add Subtask</string>
     <string name="remove_subtask">Remove Subtask</string>
-    <string name="subtask_add_options">Options>></string>
+    <string name="subtask_add_options">Options >></string>
     <string name="subtask_done">Task Done?</string>
     <string name="subtask_reminder">Task with reminder?</string>
     <string name="subtask_content">Task with Content?</string>
@@ -277,9 +277,9 @@ Device: %3$s\n]]>
 	
 	<string name="hourly">Hourly</string>
 	<string name="minutly">Every Minute</string>
-	<string name="recurring">Recurring</string>
+	<string name="recurring">Recurrence</string>
 	<string name="label">Label</string>
-	<string name="forDue">Is for Due?</string>
+	<string name="forDue">Use it</string>
 	
 	<string name="minute">Minute</string>
 	<string name="hour">Hour</string>
@@ -287,8 +287,8 @@ Device: %3$s\n]]>
 	<string name="month">Month</string>
 	<string name="year">Year</string>
 	<string name="recurring_summary">Every %1$s%2$s</string>
-	<string name="new_recurring">New Recurring</string>
-	<string name="add_recurring">Set recurring</string>
+	<string name="new_recurring">New recurrence</string>
+	<string name="add_recurring">Set recurrence</string>
 	<string name="intervall">Intervall</string>
 	<string name="beginning">Beginning</string>
 	<string name="end">End</string>
