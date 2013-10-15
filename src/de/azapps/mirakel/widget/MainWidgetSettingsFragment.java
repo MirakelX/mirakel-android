@@ -31,7 +31,7 @@ public class MainWidgetSettingsFragment extends PreferenceFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// Initialize needed Arrays
-		addPreferencesFromResource(R.xml.main_widget_preferences);
+		addPreferencesFromResource(R.xml.settings_widget);
 		new PreferencesHelper(this).setFunctionsWidget();
 
 	}

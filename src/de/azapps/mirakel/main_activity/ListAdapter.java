@@ -18,6 +18,7 @@
  ******************************************************************************/
 package de.azapps.mirakel.main_activity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,40 +29,41 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakelandroid.R;
 
+
 @SuppressLint("UseSparseArrays")
-public class ListAdapter extends ArrayAdapter<ListMirakel> {
+public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 	@SuppressWarnings("unused")
 	private static final String TAG = "ListAdapter";
 	private boolean enableDrop;
-	private Context context;
-	private int layoutResourceId;
-	private List<ListMirakel> data = null;
 	private Map<Integer, View> viewsForLists = new HashMap<Integer, View>();
 	
-	public View getViewForList(ListMirakel list){
+
+	public View getViewForList(ListMirakel list) {
 		return viewsForLists.get(list.getId());
+	}
+	public ListAdapter(Context c){
+		//do not call this, only for error-fixing there
+		super(c,0,(List<ListMirakel>)new ArrayList<ListMirakel>());	
 	}
 
 	public ListAdapter(Context context, int layoutResourceId,
 			List<ListMirakel> data, boolean enable) {
-		super(context, layoutResourceId, layoutResourceId, data);
-		this.layoutResourceId = layoutResourceId;
-		this.data = data;
-		this.context = context;
+		super(context, layoutResourceId, data);
 		this.enableDrop = enable;
 	}
 
-	void changeData(List<ListMirakel> lists) {
+	@Override
+	public void changeData(List<ListMirakel> lists) {
 		viewsForLists.clear();
-		data.clear();
-		data.addAll(lists);
+		super.changeData(lists);
 	}
 
 	@Override
@@ -85,14 +87,23 @@ public class ListAdapter extends ArrayAdapter<ListMirakel> {
 			holder = (ListHolder) row.getTag();
 		}
 		ListMirakel list = data.get(position);
-		if (!enableDrop || list.getId() < 0)
+		if (!enableDrop)
 			holder.listRowDrag.setVisibility(View.GONE);
 		else
 			holder.listRowDrag.setVisibility(View.VISIBLE);
+		
 		holder.listRowName.setText(list.getName());
 		holder.listRowName.setTag(list);
 		holder.listRowTaskNumber.setText("" + list.countTasks());
 		viewsForLists.put(list.getId(), row);
+		int w=row.getWidth()==0?parent.getWidth():row.getWidth();
+		Helpers.setListColorBackground(list, row, darkTheme,w);
+		if (selected.get(position)) {
+			row.setBackgroundColor(context.getResources().getColor(
+					darkTheme ? R.color.highlighted_text_holo_dark
+							: R.color.highlighted_text_holo_light));
+		}
+
 		return row;
 	}
 
@@ -102,18 +113,25 @@ public class ListAdapter extends ArrayAdapter<ListMirakel> {
 		viewsForLists.remove(data.get(which).getId());
 		data.remove(which);
 	}
+	
 
 	public void onDrop(final int from, final int to) {
 		ListMirakel t = data.get(from);
+		String TABLE;
+		if(t.getId()<0){
+			TABLE=SpecialList.TABLE;
+		}else{
+			TABLE=ListMirakel.TABLE;
+		}
 		if (to < from) {// move list up
 			Mirakel.getWritableDatabase().execSQL(
-					"UPDATE " + ListMirakel.TABLE
+					"UPDATE " + TABLE
 							+ " SET lft=lft+2 where lft>="
 							+ data.get(to).getLft() + " and lft<"
 							+ data.get(from).getLft());
 		} else if (to > from) {// move list down
 			Mirakel.getWritableDatabase().execSQL(
-					"UPDATE " + ListMirakel.TABLE + " SET lft=lft-2 where lft>"
+					"UPDATE " + TABLE + " SET lft=lft-2 where lft>"
 							+ data.get(from).getLft() + " and lft<="
 							+ data.get(to).getLft());
 		} else {// Nothing
@@ -122,7 +140,7 @@ public class ListAdapter extends ArrayAdapter<ListMirakel> {
 		t.setLft(data.get(to).getLft());
 		t.save();
 		Mirakel.getWritableDatabase().execSQL(
-				"UPDATE " + ListMirakel.TABLE + " SET rgt=lft+1;");// Fix rgt
+				"UPDATE " + TABLE + " SET rgt=lft+1;");// Fix rgt
 		data.remove(from);
 		data.add(to, t);
 		notifyDataSetChanged();
@@ -148,4 +166,5 @@ public class ListAdapter extends ArrayAdapter<ListMirakel> {
 		TextView listRowTaskNumber;
 		ImageView listRowDrag;
 	}
+
 }

@@ -20,6 +20,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools"    tools:ignore="MissingTranslation">
 
     <string name="app_name">Mirakel</string>
+    <string name="app_name_old">Mirakel old Logo</string>
     <string name="action_settings">Settings</string>
     <string name="action_contact">Contact / report Bug</string>
     <string name="action_contact_summary">Write us an E-Mail!</string>
@@ -27,10 +28,10 @@
     <string name="no_reminder">Set a reminder</string>
     <string name="no_lists">This task cannot be synced, because you have no lists</string>
     <string name="dateFormat" translatable="false">yyyy-MM-dd</string>
-    <string name="dateTimeFormat" translatable="false">yyyy-MM-dd\'T\'kkmmss\'Z\'</string>
+    <string name="dateTimeFormat" translatable="false">yyyy-MM-dd\'T\'HHmmss\'Z\'</string>
     <string name="humanDateTimeFormat">yyyy-MM-dd – kk:mm</string>
     <string name="speak">Speak</string>
-    <string name="enter">Enter</string>
+    <string name="takePhoto">Take a photo</string>
     <string name="speak_lang_code">en-US</string>
     <string name="Email">Email</string>
     <string name="Password">Password</string>
@@ -53,7 +54,7 @@
     <string name="task_no_content">Add a Note</string>
     <string name="task_change_prio_title">Change Priority</string>
     <string name="task_change_prio_cont">Priority</string>
-    <string name="task_delete_content">Are you sure you want to delete this Task?</string>
+    <string name="task_delete_content">Are you sure you want to delete %s?</string>
     <string name="task_menu_sorting">Sort tasks</string>
     <string name="task_sorting_title">Sort tasks by</string>
     <string name="task_empty">No task selected…</string>
@@ -61,6 +62,21 @@
     <string name="set_time">Set Time</string>
     <string name="task_set_reminder">Set Reminder</string>
     <string name="action_undo">Undo the last Change</string>
+    <string name="subtasks">Subtasks</string>
+    <string name="remove_files">Remove Files from Task</string>
+    <string name="remove_files_summary">Do you want to remove %1$s from %2$s?</string>
+    <string name="add_subtask">Add Subtask</string>
+    <string name="remove_subtask">Remove Subtask</string>
+    <string name="subtask_add_options">Options >></string>
+    <string name="subtask_done">Task Done?</string>
+    <string name="subtask_reminder">Task with reminder?</string>
+    <string name="subtask_content">Task with Content?</string>
+    <string name="add">Add</string>
+    <string name="new_task">New Task</string>
+    <string name="add_existing">Add existing Task</string>
+    <string name="task_name">Task Name:</string>
+    <string name="no_loop">Cannot create Loops</string>
+    <string name="set_due">Set Due</string>
 
     <string-array name="task_sorting_items">
         <item>Default</item>
@@ -91,11 +107,13 @@
     <string name="list_today">Tasks Today</string>
     <string name="list_week">This Week</string>
     <string name="list_overdue">Overdue</string>
-    <string name="list_delete_content">Are you sure you want to delete this List?</string>
+    <string name="list_delete_content">Are you sure you want to delete %s?</string>
 
     <string-array name="list_actions_items">
+        <item>Select Color</item>
         <item>Rename</item>
         <item>Delete</item>
+        <item>Share</item>
     </string-array>
 
     <!-- Menu -->
@@ -103,6 +121,9 @@
     <string name="menu_delete_task">Delete Task</string>
     <string name="menu_settings">Settings</string>
     <string name="menu_move_task">Move Task</string>
+    <string name="menu_edit_task">Edit Task</string>
+    <string name="menu_edit_list">Rename List</string>
+    <string name="menu_do_task">Set task as done</string>
     <!-- Login -->
     <string name="offical_server_url">https://mirakel.azapps.de</string>
     <string name="title_settings">Settings</string>
@@ -142,8 +163,9 @@
     <string name="login_activity_server_label">Server-URL</string>
     <string name="login_activity_server_typ">Server Type</string>
     <string-array name="server_typs">
-        <item >Mirakel</item>
         <item >Taskwarrior</item>
+        <item >CalDav</item>
+        <item >Mirakel</item>
     </string-array>
     <!-- Label above password EditText -->
     <string name="login_activity_password_label">Password</string>
@@ -164,6 +186,7 @@
     <string name="ui_activity_authenticating">Authenticating…</string>
     <string name="ui_activity_title">Sign-in</string>
     <string name="title_activity_special_lists_settings">Settings for Special Lists</string>
+    <string name="title_activity_semantic_settings">Settings for Semantics</string>
 
     <!-- Changelog -->
     <string name="changelog_full_title">Changelog</string>
@@ -204,7 +227,9 @@ Device: %3$s\n]]>
     <string name="backup_export_error">There was an Error while exporting the database</string>
     <string name="backup_export_ok">Exported to %s</string>
     <string name="change_content">Change Content</string>
+    <string name="content">Content</string>
     <string name="task_has_content">Task has content</string>
+    <string name="help">Help</string>
     <string name="help_description">There are 3 main parts: on the left side you can see all lists, in the middle you can see all tasks of a list and at the right side you can see a task. You switch between the parts by swiping or clicking.</string>
 
     <!-- Permissions -->
@@ -222,11 +247,53 @@ Device: %3$s\n]]>
     <string name="crash_dialog_title">Mirakel has crashed</string>
     <string name="crash_dialog_text">An unexpected error occurred forcing the
     application to stop. Please help us fix this by sending us error data,
-    all you have to do is to click OK.</string>
+    all you have to do is to press OK.</string>
     <string name="crash_dialog_comment_prompt">You might add your comments about the problem below:</string>
     <string name="crash_dialog_ok_toast">Thank you !</string>
     
     <!-- Sync -->
     <string name="message_from_server">The server want to say you: %s</string>
-
+    
+    <!-- Colors -->
+    <string name="list_change_color">Change Color</string>
+    <string name="set_color">Set Color</string>
+    <string name="unset_color">No Color</string>
+    
+    <string name="files">Files</string>
+    <string name="file_no_activity">I don\'t know, how to open this file – sorry</string>
+    <string name="file_select">Select a file</string>
+    <string name="file_vanished">No such file</string>
+    <string name="file_default_title">Check out this file</string>
+    <string name="photo_default_title">Check out this photo</string>
+    <string name="edit">Edit</string>
+    
+    <!-- Reccuring -->
+    <string name="daily">Daily</string>
+    <string name="second_day">Bidaily</string>
+    <string name="weekly">Weekly</string>
+    <string name="two_weekly">Biweekly</string>
+	<string name="yearly">Yearly</string>
+	<string name="monthly">Monthly</string>
+	
+	<string name="hourly">Hourly</string>
+	<string name="minutly">Every Minute</string>
+	<string name="recurring">Recurrence</string>
+	<string name="label">Label</string>
+	<string name="forDue">Use it</string>
+	
+	<string name="minute">Minute</string>
+	<string name="hour">Hour</string>
+	<string name="day">Day</string>
+	<string name="month">Month</string>
+	<string name="year">Year</string>
+	<string name="recurring_summary">Every %1$s%2$s</string>
+	<string name="new_recurring">New recurrence</string>
+	<string name="add_recurring">Set recurrence</string>
+	<string name="intervall">Intervall</string>
+	<string name="beginning">Beginning</string>
+	<string name="end">End</string>
+	<string name="no_begin_end">No %s</string>
+	<string name="beginning_end">Beginning and End</string>
+	
+	
 </resources>

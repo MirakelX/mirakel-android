@@ -18,6 +18,7 @@
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/tasks_row"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -72,6 +73,16 @@
                 android:visibility="gone" />
         </LinearLayout>
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/label_bg"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="center"
+        android:background="@drawable/priority_rectangle"
+        android:scaleType="fitXY"
+        tools:ignore="contentDescription" />
 
     <TextView
         android:id="@+id/tasks_row_priority"

@@ -1,10 +1,6 @@
 package de.azapps.mirakel.helper;
 
-import java.io.File;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.http.message.BasicNameValuePair;
@@ -26,9 +22,9 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
@@ -36,6 +32,7 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.view.Gravity;
@@ -54,7 +51,9 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.services.NotificationService;
-import de.azapps.mirakel.special_lists_settings.SpecialListsSettings;
+import de.azapps.mirakel.settings.recurring.RecurringActivity;
+import de.azapps.mirakel.settings.semantics.SemanticsSettingsActivity;
+import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
 import de.azapps.mirakel.static_activities.CreditsActivity;
 import de.azapps.mirakel.static_activities.SettingsActivity;
 import de.azapps.mirakel.static_activities.SettingsFragment;
@@ -62,6 +61,7 @@ import de.azapps.mirakel.sync.AuthenticatorActivity;
 import de.azapps.mirakel.sync.DataDownloadCommand;
 import de.azapps.mirakel.sync.Network;
 import de.azapps.mirakel.sync.SyncAdapter;
+import de.azapps.mirakel.sync.caldav.CalDavSync;
 import de.azapps.mirakel.sync.mirakel.MirakelSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
 import de.azapps.mirakel.widget.MainWidgetSettingsActivity;
@@ -77,6 +77,7 @@ public class PreferencesHelper {
 	private static boolean v4_0;
 	static View numberPicker;
 	private SharedPreferences settings;
+	public Switch actionBarSwitch;
 
 	public PreferencesHelper(SettingsActivity c) {
 		ctx = c;
@@ -141,13 +142,12 @@ public class PreferencesHelper {
 							Object newValue) {
 						String list = ListMirakel.getList(
 								Integer.parseInt((String) newValue)).getName();
-						widgetListPreference.setSummary(activity
-								.getString(R.string.notifications_list_summary,
-										list));
+						widgetListPreference.setSummary(activity.getString(
+								R.string.notifications_list_summary, list));
 						return true;
 					}
 				});
-		
+
 		final Preference widgetListSort = findPreference("widgetSort");
 		widgetListSort.setSummary(activity.getString(
 				R.string.widget_sort_summary, activity.getResources()
@@ -168,6 +168,17 @@ public class PreferencesHelper {
 					}
 				});
 
+	}
+
+	private ListMirakel getListFromIdString(String preference) {
+		try {
+			return ListMirakel.getList(Integer.parseInt(preference));
+		} catch (NumberFormatException e) {
+			ListMirakel list = SpecialList.firstSpecial();
+			if (list == null)
+				list = ListMirakel.first();
+			return list;
+		}
 	}
 
 	@SuppressLint("NewApi")
@@ -200,11 +211,12 @@ public class PreferencesHelper {
 		if (notificationsListPreference != null) {
 			notificationsListPreference.setEntries(entries);
 			notificationsListPreference.setEntryValues(entryValues);
+			ListMirakel notificationsList = getListFromIdString(settings
+					.getString("notificationsList", "-1"));
+
 			notificationsListPreference.setSummary(activity.getString(
 					R.string.notifications_list_summary,
-					ListMirakel.getList(
-							Integer.parseInt(settings.getString(
-									"notificationsList", "-1"))).getName()));
+					notificationsList.getName()));
 			notificationsListPreference
 					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 						@Override
@@ -222,19 +234,16 @@ public class PreferencesHelper {
 					});
 		}
 
-		
 		final ListPreference notificationsListOpenPreference = (ListPreference) findPreference("notificationsListOpen");
 		if (notificationsListOpenPreference != null) {
 			notificationsListOpenPreference.setEntries(entriesWithDefault);
 			notificationsListOpenPreference
 					.setEntryValues(entryValuesWithDefault);
-			notificationsListOpenPreference
-					.setSummary(activity.getString(
-							R.string.notifications_list_open_summary,
-							ListMirakel.getList(
-									Integer.parseInt(settings.getString(
-											"notificationsListOpen", "-1")))
-									.getName()));
+			ListMirakel notificationsListOpen = getListFromIdString(settings
+					.getString("notificationsListOpen", "-1"));
+			notificationsListOpenPreference.setSummary(activity.getString(
+					R.string.notifications_list_open_summary,
+					notificationsListOpen.getName()));
 			notificationsListOpenPreference
 					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 						@Override
@@ -251,11 +260,17 @@ public class PreferencesHelper {
 						}
 					});
 		}
-		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-			removePreference("notificationsBig");
+
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
+			removePreference("dashclock");
 		}
-		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
-			removePreference("DarkTheme");
+
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+			PreferenceCategory cat = (PreferenceCategory) findPreference("notifications");
+			Preference notificationsBig = findPreference("notificationsBig");
+			if (cat != null && notificationsBig != null) {
+				cat.removePreference(notificationsBig);
+			}
 		}
 
 		final CheckBoxPreference darkTheme = (CheckBoxPreference) findPreference("DarkTheme");
@@ -305,10 +320,10 @@ public class PreferencesHelper {
 				startupListPreference.setSummary(" ");
 				startupListPreference.setEnabled(false);
 			} else {
+				ListMirakel startupList = getListFromIdString(settings
+						.getString("startupList", "-1"));
 				startupListPreference.setSummary(activity.getString(
-						R.string.startup_list_summary, ListMirakel
-								.getList(Integer.parseInt(settings.getString(
-										"startupList", "-1")))));
+						R.string.startup_list_summary, startupList.getName()));
 				startupListPreference.setEnabled(true);
 			}
 			startupListPreference
@@ -328,44 +343,51 @@ public class PreferencesHelper {
 		}
 		// Enable/Disbale Sync
 		final CheckBoxPreference sync = (CheckBoxPreference) findPreference("syncUse");
-		if (sync != null) {
-			final AccountManager am = AccountManager.get(activity);
-			final Account[] accounts = am
-					.getAccountsByType(Mirakel.ACCOUNT_TYPE);
+		final Preference syncType = findPreference("syncType");
+		final AccountManager am = AccountManager.get(activity);
+		final Account[] accounts = am.getAccountsByType(Mirakel.ACCOUNT_TYPE);
+		if (syncType != null) {
 			if (settings.getBoolean("syncUse", false) && accounts.length > 0) {
 				if (am.getUserData(accounts[0], SyncAdapter.BUNDLE_SERVER_TYPE)
 						.equals(TaskWarriorSync.TYPE)) {
-					sync.setSummary(activity.getString(
+					syncType.setSummary(activity.getString(
 							R.string.sync_use_summary_taskwarrior,
 							accounts[0].name));
 				} else if (am.getUserData(accounts[0],
 						SyncAdapter.BUNDLE_SERVER_TYPE)
 						.equals(MirakelSync.TYPE)) {
-					sync.setSummary(activity
+					syncType.setSummary(activity
 							.getString(R.string.sync_use_summary_mirakel,
 									accounts[0].name));
+				} else if (am.getUserData(accounts[0],
+						SyncAdapter.BUNDLE_SERVER_TYPE).equals(CalDavSync.TYPE)) {
+
+					syncType.setSummary(activity.getString(
+							R.string.sync_use_summary_caldav, accounts[0].name));
+
 				} else {
-					sync.setChecked(false);
+					// sync.setChecked(false);
 					sync.setSummary(R.string.sync_use_summary_nothing);
 					am.removeAccount(accounts[0], null, null);
 				}
 			} else {
-				sync.setChecked(false);
+				// sync.setChecked(false);
 				sync.setSummary(R.string.sync_use_summary_nothing);
 			}
+		}
+		if (sync != null) {
 			sync.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 				@Override
 				public boolean onPreferenceChange(Preference preference,
 						Object newValue) {
-					boolean isChecked=(Boolean)newValue;
-					createAuthActivity(isChecked, activity,sync,false);
+					boolean isChecked = (Boolean) newValue;
+					createAuthActivity(isChecked, activity, sync, false);
 					findPreference("syncServer").setEnabled(isChecked);
 					findPreference("syncPassword").setEnabled(isChecked);
 					findPreference("syncFrequency").setEnabled(isChecked);
 					return false;
 				}
 
-				
 			});
 			// Get Account if existing
 			final Account account;
@@ -576,23 +598,27 @@ public class PreferencesHelper {
 							return true;
 						}
 					});
-			
-				if(!settings.getBoolean("syncUse", false)){
-					findPreference("syncServer").setEnabled(false);
-					findPreference("syncPassword").setEnabled(false);
-					findPreference("syncFrequency").setEnabled(false);
-				}
-				if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-					removePreference("syncUse");
-					ActionBar actionbar = activity.getActionBar();
-					final Switch actionBarSwitch = new Switch(activity);
-		
-					actionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
-							ActionBar.DISPLAY_SHOW_CUSTOM);
-					actionbar.setCustomView(actionBarSwitch, new ActionBar.LayoutParams(
-							ActionBar.LayoutParams.WRAP_CONTENT,
-							ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER_VERTICAL
-									| Gravity.RIGHT));
+
+			if (!settings.getBoolean("syncUse", false)) {
+				findPreference("syncServer").setEnabled(false);
+				findPreference("syncPassword").setEnabled(false);
+				findPreference("syncFrequency").setEnabled(false);
+			}
+
+			if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+				removePreference("syncUse");
+				ActionBar actionbar = activity.getActionBar();
+
+				actionBarSwitch = new Switch(activity);
+				actionBarSwitch.setId(R.id.preferences_switch_top);
+
+				actionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
+						ActionBar.DISPLAY_SHOW_CUSTOM);
+				actionbar.setCustomView(actionBarSwitch,
+						new ActionBar.LayoutParams(
+								ActionBar.LayoutParams.WRAP_CONTENT,
+								ActionBar.LayoutParams.WRAP_CONTENT,
+								Gravity.CENTER_VERTICAL | Gravity.RIGHT));
 				actionBarSwitch.setChecked(settings
 						.getBoolean("syncUse", false));
 				actionBarSwitch
@@ -631,9 +657,8 @@ public class PreferencesHelper {
 								}
 							}
 						});
-				}
+			}
 		}
-
 
 		final CheckBoxPreference notificationsUse = (CheckBoxPreference) findPreference("notificationsUse");
 		if (notificationsUse != null) {
@@ -664,7 +689,7 @@ public class PreferencesHelper {
 		}
 
 		Intent startSpecialListsIntent = new Intent(activity,
-				SpecialListsSettings.class);
+				SpecialListsSettingsActivity.class);
 		Preference specialLists = findPreference("special_lists");
 		if (specialLists != null) {
 			specialLists.setIntent(startSpecialListsIntent);
@@ -672,23 +697,14 @@ public class PreferencesHelper {
 
 		Preference backup = findPreference("backup");
 		if (backup != null) {
-			Date today = new Date();
-			DateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");// SimpleDateFormat.getDateInstance();
-			String filename = "mirakel_" + sdf.format(today) + ".db";
-			final File exportDir = new File(
-					Environment.getExternalStorageDirectory(), "");
-			final File exportFile = new File(exportDir, filename);
 
 			backup.setSummary(activity.getString(R.string.backup_click_summary,
-					exportFile.getAbsolutePath()));
+					ExportImport.getBackupDir().getAbsolutePath()));
 
 			backup.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 				@SuppressLint("NewApi")
 				public boolean onPreferenceClick(Preference preference) {
-					if (!exportDir.exists()) {
-						exportDir.mkdirs();
-					}
-					ExportImport.exportDB(activity, exportFile);
+					ExportImport.exportDB(activity);
 					return true;
 				}
 			});
@@ -771,14 +787,20 @@ public class PreferencesHelper {
 						}
 					});
 		}
+		final EditTextPreference importFileType = (EditTextPreference) findPreference("import_file_title");
+		if (importFileType != null) {
+			importFileType.setSummary(settings.getString("import_file_title",
+					activity.getString(R.string.file_default_title)));
+		}
 		final CheckBoxPreference importDefaultList = (CheckBoxPreference) findPreference("importDefaultList");
 		if (importDefaultList != null) {
 			if (settings.getBoolean("importDefaultList", false)) {
+				ListMirakel list = ListMirakel.getList(settings.getInt(
+						"defaultImportList", -1));
+				if (list == null)
+					list = ListMirakel.first();
 				importDefaultList.setSummary(activity.getString(
-						R.string.import_default_list_summary,
-						ListMirakel.getList(
-								settings.getInt("defaultImportList", -1))
-								.getName()));
+						R.string.import_default_list_summary, list.getName()));
 			} else {
 				importDefaultList
 						.setSummary(R.string.import_no_default_list_summary);
@@ -1009,6 +1031,13 @@ public class PreferencesHelper {
 					});
 		}
 
+		Preference dashclock = findPreference("dashclock");
+		if (dashclock != null) {
+			Intent startdashclockIntent = new Intent(
+					Intent.ACTION_VIEW,
+					Uri.parse("http://play.google.com/store/apps/details?id=de.azapps.mirakel.dashclock"));
+			dashclock.setIntent(startdashclockIntent);
+		}
 		Preference credits = findPreference("credits");
 		if (credits != null) {
 			Intent startCreditsIntent = new Intent(activity,
@@ -1027,34 +1056,125 @@ public class PreferencesHelper {
 				}
 			});
 		}
+
+		Intent startSemanticsIntent = new Intent(activity,
+				SemanticsSettingsActivity.class);
+		Preference semantics = findPreference("semanticNewTaskSettings");
+		if (semantics != null) {
+			semantics.setIntent(startSemanticsIntent);
+		}
+
+		Intent startRecurringIntent = new Intent(activity,
+				RecurringActivity.class);
+		Preference recurring = findPreference("recurring");
+		if (recurring != null) {
+			recurring.setIntent(startRecurringIntent);
+		}
+
+		final CheckBoxPreference subTaskAddToSameList = (CheckBoxPreference) findPreference("subtaskAddToSameList");
+		if (subTaskAddToSameList != null) {
+			if (!settings.getBoolean("subtaskAddToSameList", true)) {
+				subTaskAddToSameList.setSummary(activity.getString(
+						R.string.settings_subtask_add_to_list_summary,
+						ListMirakel.getList(
+								settings.getInt("subtaskAddToList", -1))
+								.getName()));
+			} else {
+				subTaskAddToSameList
+						.setSummary(R.string.settings_subtask_add_to_same_list_summary);
+			}
+
+			subTaskAddToSameList
+					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+						@Override
+						public boolean onPreferenceChange(
+								Preference preference, Object newValue) {
+							if (!(Boolean) newValue) {
+								AlertDialog.Builder builder = new AlertDialog.Builder(
+										activity);
+								builder.setTitle(R.string.import_to);
+								final List<CharSequence> items = new ArrayList<CharSequence>();
+								final List<Integer> list_ids = new ArrayList<Integer>();
+								int currentItem = 0;
+								for (ListMirakel list : ListMirakel.all()) {
+									if (list.getId() > 0) {
+										items.add(list.getName());
+										list_ids.add(list.getId());
+									}
+
+								}
+								builder.setSingleChoiceItems(
+										items.toArray(new CharSequence[items
+												.size()]), currentItem,
+										new DialogInterface.OnClickListener() {
+											public void onClick(
+													DialogInterface dialog,
+													int item) {
+												subTaskAddToSameList
+														.setSummary(items
+																.get(item));
+												subTaskAddToSameList.setSummary(activity
+														.getString(
+																R.string.settings_subtask_add_to_list_summary,
+																items.get(item)));
+												SharedPreferences.Editor editor = settings
+														.edit();
+												editor.putInt(
+														"subtaskAddToList",
+														list_ids.get(item));
+												editor.commit();
+												dialog.dismiss();
+											}
+										});
+								builder.setOnCancelListener(new OnCancelListener() {
+									@Override
+									public void onCancel(DialogInterface dialog) {
+										subTaskAddToSameList.setChecked(false);
+										subTaskAddToSameList
+												.setSummary(R.string.settings_subtask_add_to_same_list_summary);
+									}
+								});
+								builder.create().show();
+							} else {
+								subTaskAddToSameList
+										.setSummary(R.string.settings_subtask_add_to_same_list_summary);
+							}
+							return true;
+						}
+					});
+		}
 	}
 
 	@SuppressLint("NewApi")
 	@SuppressWarnings("deprecation")
 	private void removePreference(String which) {
-		Preference pref =  findPreference(which);
-		if (pref != null){
-			if(v4_0){
-				((PreferenceFragment) ctx).getPreferenceScreen().removePreference(pref);
-			}else{
-				((PreferenceActivity) activity).getPreferenceScreen().removePreference(pref);
+		Preference pref = findPreference(which);
+		if (pref != null) {
+			if (v4_0) {
+				((PreferenceFragment) ctx).getPreferenceScreen()
+						.removePreference(pref);
+			} else {
+				((PreferenceActivity) activity).getPreferenceScreen()
+						.removePreference(pref);
 			}
 		}
 	}
-	
+
 	@SuppressLint("NewApi")
-	public static void createAuthActivity(boolean newValue, final Object activity,final Object box,final boolean fragment) {
+	public static void createAuthActivity(boolean newValue,
+			final Object activity, final Object box, final boolean fragment) {
 		final Context ctx;
-		if(fragment){
-			ctx=((Fragment)activity).getActivity();
-		}else{
-			ctx=(Activity)activity;
+		if (fragment) {
+			ctx = ((Fragment) activity).getActivity();
+		} else {
+			ctx = (Activity) activity;
 		}
 		final AccountManager am = AccountManager.get(ctx);
-		final Account[] accounts = am
-				.getAccountsByType(Mirakel.ACCOUNT_TYPE);
-		final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(ctx);
-		if (newValue) {			
+		final Account[] accounts = am.getAccountsByType(Mirakel.ACCOUNT_TYPE);
+		final SharedPreferences settings = PreferenceManager
+				.getDefaultSharedPreferences(ctx);
+		if (newValue) {
 			new AlertDialog.Builder(ctx)
 					.setTitle(R.string.sync_warning)
 					.setMessage(R.string.sync_warning_message)
@@ -1063,31 +1183,30 @@ public class PreferencesHelper {
 								@SuppressLint("NewApi")
 								@Override
 								public void onClick(
-										DialogInterface dialogInterface,
-										int i) {
+										DialogInterface dialogInterface, int i) {
 									for (Account a : accounts) {
 										try {
-											am.removeAccount(a,
-													null, null);
+											am.removeAccount(a, null, null);
 										} catch (Exception e) {
-											Log.e(TAG,
-													"Cannot remove Account");
+											Log.e(TAG, "Cannot remove Account");
 										}
 									}
-									Intent intent = new Intent(
-											ctx,
+									Intent intent = new Intent(ctx,
 											AuthenticatorActivity.class);
 									intent.setAction(MainActivity.SHOW_LISTS);
-									if(fragment){
-										((Fragment)activity).startActivityForResult(
-												intent,
-												SettingsActivity.NEW_ACCOUNT);
-									}else{
-										((Activity)activity).startActivityForResult(
-												intent,
-												SettingsActivity.NEW_ACCOUNT);
+									if (fragment) {
+										((Fragment) activity)
+												.startActivityForResult(
+														intent,
+														SettingsActivity.NEW_ACCOUNT);
+									} else {
+										((Activity) activity)
+												.startActivityForResult(
+														intent,
+														SettingsActivity.NEW_ACCOUNT);
 									}
-									SharedPreferences.Editor editor = settings.edit();
+									SharedPreferences.Editor editor = settings
+											.edit();
 									editor.putBoolean("syncUse", true);
 									editor.commit();
 								}
@@ -1097,16 +1216,18 @@ public class PreferencesHelper {
 								@SuppressLint("NewApi")
 								@Override
 								public void onClick(
-										DialogInterface dialogInterface,
-										int i) {
-									SharedPreferences.Editor editor = settings.edit();
+										DialogInterface dialogInterface, int i) {
+									SharedPreferences.Editor editor = settings
+											.edit();
 									editor.putBoolean("syncUse", false);
 									editor.commit();
-									if(Build.VERSION.SDK_INT<Build.VERSION_CODES.ICE_CREAM_SANDWICH){
-										((CheckBoxPreference)box).setChecked(false);
-										((CheckBoxPreference)box).setSummary(R.string.sync_use_summary_nothing);
-									}else{
-										((Switch)box).setChecked(false);
+									if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+										((CheckBoxPreference) box)
+												.setChecked(false);
+										((CheckBoxPreference) box)
+												.setSummary(R.string.sync_use_summary_nothing);
+									} else {
+										((Switch) box).setChecked(false);
 									}
 								}
 							}).show();
@@ -1121,37 +1242,46 @@ public class PreferencesHelper {
 			}
 		}
 	}
-	
-	public static  void updateSyncText(CheckBoxPreference sync, Preference server, Context ctx) {
+
+	public static void updateSyncText(CheckBoxPreference sync,
+			Preference server, Preference syncFrequency, Context ctx) {
 		AccountManager am = AccountManager.get(ctx);
 		Account[] accounts = am.getAccountsByType(Mirakel.ACCOUNT_TYPE);
 		if (accounts.length > 0) {
-			if(sync!=null){
-			if (am.getUserData(accounts[0], SyncAdapter.BUNDLE_SERVER_TYPE)
-					.equals(TaskWarriorSync.TYPE)) {
-				sync.setSummary(ctx.getString(
-						R.string.sync_use_summary_taskwarrior,
-						accounts[0].name));
-			} else if (am.getUserData(accounts[0],
-					SyncAdapter.BUNDLE_SERVER_TYPE)
-					.equals(MirakelSync.TYPE)) {
-				sync.setSummary(ctx.getString(
-						R.string.sync_use_summary_mirakel, accounts[0].name));
-			} else {
-				sync.setChecked(false);
-				sync.setSummary(R.string.sync_use_summary_nothing);
-				am.removeAccount(accounts[0], null, null);
-			}
+			if (sync != null) {
+				if (am.getUserData(accounts[0], SyncAdapter.BUNDLE_SERVER_TYPE)
+						.equals(TaskWarriorSync.TYPE)) {
+					sync.setSummary(ctx.getString(
+							R.string.sync_use_summary_taskwarrior,
+							accounts[0].name));
+				} else if (am.getUserData(accounts[0],
+						SyncAdapter.BUNDLE_SERVER_TYPE)
+						.equals(MirakelSync.TYPE)) {
+					sync.setSummary(ctx
+							.getString(R.string.sync_use_summary_mirakel,
+									accounts[0].name));
+				} else {
+					sync.setChecked(false);
+					sync.setSummary(R.string.sync_use_summary_nothing);
+					am.removeAccount(accounts[0], null, null);
+				}
 			}
 			server.setSummary(ctx.getString(R.string.sync_server_summary,
-					am.getUserData(accounts[0],
-							SyncAdapter.BUNDLE_SERVER_URL)));
+					am.getUserData(accounts[0], SyncAdapter.BUNDLE_SERVER_URL)));
 		} else {
-			if(sync!=null){
+			if (sync != null) {
 				sync.setChecked(false);
 				sync.setSummary(R.string.sync_use_summary_nothing);
 			}
 			server.setSummary("");
+		}
+		Editor editor = PreferenceManager.getDefaultSharedPreferences(ctx)
+				.edit();
+		editor.putString("syncFrequency", "-1");
+		editor.commit();
+		if (syncFrequency != null) {
+			syncFrequency.setSummary(ctx
+					.getString(R.string.sync_frequency_summary_man));
 		}
 	}
 

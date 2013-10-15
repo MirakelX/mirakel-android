@@ -16,7 +16,7 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--
         Base application theme for API 14+. This theme completely replaces
@@ -26,14 +26,26 @@
     <style name="AppBaseTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar">
         <!-- API 14 theme customizations can go here. -->
     </style>
-	<style name="AppBaseThemeDARK" parent="@style/Theme.AppCompat">
+
+    <style name="AppBaseThemeDARK" parent="@style/Theme.AppCompat">
         <!-- API 14 theme customizations can go here. -->
     </style>
+
     <style name="Dialog" parent="android:Theme.Holo.Light.Dialog">
         <!-- API 14 theme customizations can go here. -->
     </style>
+
     <style name="DialogDark" parent="android:Theme.Holo.Dialog">
         <!-- API 14 theme customizations can go here. -->
+    </style>
+
+    <style name="selectableButton">
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+    </style>
+
+    <style name="buttonDivider">
+        <item name="android:background">@color/holo_blue_dark</item>
+        <item name="android:layout_width">2dp</item>
     </style>
 
 </resources>

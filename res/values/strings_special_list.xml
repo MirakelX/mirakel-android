@@ -21,11 +21,14 @@
 
     <string name="special_list_name">Name</string>
     <string name="special_list_active">Show</string>
-    <string name="special_list_where">Where-Query</string>
+    <string name="special_list_where">SQL-Where Query</string>
     <string name="special_list_sort_by">Sort by</string>
     <string name="special_list_def_list">Default list</string>
     <string name="special_list_def_date">Default date</string>
     <string name="special_list_first">Default</string>
+    <string name="special_list_contains">Selection Arguments</string>
+    <string name="special_list_summary">Summary</string>
+    <string name="special_lists_defaults">Default Values</string>
 
     <string-array name="special_list_def_date_picker">
         <item>No date</item>
@@ -62,7 +65,7 @@
     <string name="select_by">Select By</string>
     <string name="done">Done Tasks</string>
     <string name="undone">Undone Tasks</string>
-    <string name="nothing">Nothing</string>
+    <string name="nothing">No recurrence</string>
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
     <string name="reminder_set">Reminder is set</string>
@@ -72,6 +75,7 @@
     <string name="where_like_contain_text">Contains</string>
     <string name="where_like_begin_text">Beginns with</string>
     <string name="where_like_end_text">Ends with</string>
+    <string name="delete">Delete</string>
 
     <string-array name="due_day_year_values">
         <item>Day</item>

@@ -35,6 +35,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.WidgetHelper;
 import de.azapps.mirakel.main_activity.MainActivity;
@@ -74,6 +75,19 @@ public class MainWidgetProvider extends AppWidgetProvider {
 					.getColor(darkTheme ? R.color.White : R.color.Black));
 			int listId = Integer.parseInt(preferences.getString("widgetList",
 					SpecialList.firstSpecialSafe(context).getId() + ""));
+			ListMirakel list = ListMirakel.getList(listId);
+			if (list == null) {
+				list = SpecialList.firstSpecial();
+				if (list == null) {
+					list = ListMirakel.first();
+					if (list == null) {
+						Toast.makeText(context, "You have no Lists!",
+								Toast.LENGTH_SHORT).show();
+						return;
+					}
+				}
+				listId = list.getId();
+			}
 			int listSort = Integer.parseInt(preferences.getString("widgetSort",
 					ListMirakel.SORT_BY_OPT + ""));
 

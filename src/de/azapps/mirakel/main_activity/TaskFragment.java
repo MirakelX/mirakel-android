@@ -18,355 +18,338 @@
  ******************************************************************************/
 package de.azapps.mirakel.main_activity;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Locale;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
-import android.app.DatePickerDialog.OnDateSetListener;
-import android.content.Context;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
-import android.graphics.drawable.Drawable;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.util.TypedValue;
-import android.view.KeyEvent;
+import android.util.Pair;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.NumberPicker;
-import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
-import android.widget.ViewSwitcher;
-import de.azapps.mirakel.Mirakel;
+import android.widget.AbsListView.MultiChoiceModeListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
+import android.widget.Toast;
+import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Helpers;
-import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
+import de.azapps.mirakel.main_activity.TaskFragmentAdapter.TYPE;
+import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakelandroid.R;
 
 public class TaskFragment extends Fragment {
-	private View view;
 	private static final String TAG = "TaskActivity";
-	protected TextView Task_name;
-	protected CheckBox Task_done;
-	protected TextView Task_prio;
-	protected TextView Task_content;
-	protected TextView Task_due;
-	protected TextView Task_reminder;
 
-	protected MainActivity main;
-	protected NumberPicker picker;
-	protected EditText input;
-	private Task task;
-	private boolean created = false;
+	public TaskFragmentAdapter adapter;
+	private ActionMode mActionMode = null;
 
-	private boolean mIgnoreTimeSet = false;
-
-	public void setActivity(MainActivity activity) {
-		main = activity;
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	public void closeActionMode() {
+		if (mActionMode != null)
+			mActionMode.finish();
+		if(adapter!=null)
+			adapter.closeActionMode();
 	}
 
+	@SuppressLint("NewApi")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		main = (MainActivity) getActivity();
-		view = inflater.inflate(R.layout.activity_task, container, false);
-		created = true;
-		update();
+		final MainActivity main = (MainActivity) getActivity();
+		View view = inflater.inflate(R.layout.task_fragment, container, false);
+		ListView listView = (ListView) view.findViewById(R.id.taskFragment);
+		adapter = new TaskFragmentAdapter(main, R.layout.task_head_line,
+				main.getCurrentTask());
+		listView.setAdapter(adapter);
+		listView.setItemsCanFocus(true);
+		listView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1,
+					int position, long id) {
+				int type = adapter.getData().get(position).first;
+				if (type == TYPE.FILE) {
+					FileMirakel file = main.getCurrentTask().getFiles()
+							.get(adapter.getData().get(position).second);
+					String mimetype = Helpers.getMimeType(file.getPath());
+
+					Intent i2 = new Intent();
+					i2.setAction(android.content.Intent.ACTION_VIEW);
+					i2.setDataAndType(Uri.fromFile(new File(file.getPath())),
+							mimetype);
+					try {
+						main.startActivity(i2);
+					} catch (ActivityNotFoundException e) {
+						Toast.makeText(main,
+								main.getString(R.string.file_no_activity),
+								Toast.LENGTH_SHORT).show();
+					}
+				} else if (type == TYPE.SUBTASK) {
+					Task t = adapter.getTask().getSubtasks()
+							.get(adapter.getData().get(position).second);
+					main.setGoBackTo(adapter.getTask());
+					if (t.getList().getId() != main.getCurrentList().getId()) {
+						main.setCurrentList(t.getList(), null, false, false);
+					}
+					main.setCurrentTask(t, true, false);
+				}
+
+			}
+		});
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+			listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+				@Override
+				public boolean onItemLongClick(AdapterView<?> parent,
+						View item, final int position, final long id) {
+					Integer typ = adapter.getData().get(position).first;
+					if (typ == TYPE.SUBTASK) {
+						AlertDialog.Builder builder = new AlertDialog.Builder(
+								getActivity());
+						builder.setTitle(adapter.getTask().getSubtasks()
+								.get(adapter.getData().get(position).second)
+								.getName());
+
+						builder.setItems(
+								new String[] { getString(R.string.remove_subtask) },
+								new DialogInterface.OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										if (which == 0) {
+											List<Task> l = new ArrayList<Task>();
+											l.add(adapter
+													.getTask()
+													.getSubtasks()
+													.get(adapter.getData().get(
+															position).second));
+											TaskDialogHelpers
+													.handleRemoveSubtask(l,
+															main, adapter,
+															adapter.getTask());
+										}
+
+									}
+
+								});
+						builder.create().show();
+					} else if (typ == TYPE.FILE) {
+						AlertDialog.Builder builder = new AlertDialog.Builder(
+								getActivity());
+						builder.setTitle(adapter.getTask().getFiles()
+								.get(adapter.getData().get(position).second)
+								.getName());
+
+						builder.setItems(
+								new String[] { getString(R.string.remove_files) },
+								new DialogInterface.OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										if (which == 0) {
+											List<FileMirakel> l = new ArrayList<FileMirakel>();
+											l.add(adapter
+													.getTask()
+													.getFiles()
+													.get(adapter.getData().get(
+															position).second));
+											TaskDialogHelpers.handleDeleteFile(
+													l, main, adapter.getTask(),
+													adapter);
+										}
+
+									}
+
+								});
+						builder.create().show();
+						return false;
+					}
+					return true;
+				}
+			});
+		} else {
+			listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+			if (adapter != null) {
+				adapter.resetSelected();
+			}
+			listView.setHapticFeedbackEnabled(true);
+			listView.setMultiChoiceModeListener(new MultiChoiceModeListener() {
+
+				@Override
+				public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+					if (adapter.getSelectedCount() > 0) {
+						menu.findItem(R.id.edit_task)
+								.setVisible(
+										adapter.getSelectedCount() == 1
+												&& (adapter.getSelected()
+														.get(0).first == TYPE.SUBTASK));
+						menu.findItem(R.id.done_task)
+								.setVisible(
+										adapter.getSelected().get(0).first == TYPE.SUBTASK);
+					}
+					return false;
+				}
+
+				@Override
+				public void onDestroyActionMode(ActionMode mode) {
+					adapter.resetSelected();
+				}
+
+				@Override
+				public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+					MenuInflater inflater = mode.getMenuInflater();
+					inflater.inflate(R.menu.context_task, menu);
+					mActionMode=mode;
+					return true;
+				}
+
+				@Override
+				public boolean onActionItemClicked(ActionMode mode,
+						MenuItem item) {
+
+					switch (item.getItemId()) {
+					case R.id.menu_delete:
+						List<Pair<Integer, Integer>> selected = adapter
+								.getSelected();
+						if (adapter.getSelectedCount() > 0
+								&& adapter.getSelected().get(0).first == TYPE.FILE) {
+							List<FileMirakel> files = adapter.getTask()
+									.getFiles();
+							List<FileMirakel> selectedItems = new ArrayList<FileMirakel>();
+							for (Pair<Integer, Integer> p : selected) {
+								if (p.first == TYPE.FILE) {
+									selectedItems.add(files.get(p.second));
+								}
+							}
+							TaskDialogHelpers.handleDeleteFile(selectedItems,
+									main, adapter.getTask(), adapter);
+							break;
+						} else if (adapter.getSelectedCount() > 0
+								&& adapter.getSelected().get(0).first == TYPE.SUBTASK) {
+							List<Task> subtasks = adapter.getTask()
+									.getSubtasks();
+							List<Task> selectedItems = new ArrayList<Task>();
+							for (Pair<Integer, Integer> p : selected) {
+								if (p.first == TYPE.SUBTASK) {
+									selectedItems.add(subtasks.get(p.second));
+								}
+							}
+							TaskDialogHelpers.handleRemoveSubtask(
+									selectedItems, main, adapter,
+									adapter.getTask());
+						} else {
+							Log.e(TAG, "How did you get selected this?");
+						}
+					case R.id.edit_task:
+						if (adapter.getSelectedCount() == 1) {
+							adapter.setData(adapter.getTask().getSubtasks()
+									.get(adapter.getSelected().get(0).second));
+						}
+						break;
+					case R.id.done_task:
+						List<Task> subtasks = adapter.getTask().getSubtasks();
+						for (Pair<Integer, Integer> s : adapter.getSelected()) {
+							Task t = subtasks.get(s.second);
+							t.setDone(true);
+							try {
+								t.save();
+							} catch (NoSuchListException e) {
+								Log.d(TAG, "list did vanish");
+							}
+						}
+						break;
+					default:
+						break;
+					}
+					mode.finish();
+					return false;
+				}
+
+				@Override
+				public void onItemCheckedStateChanged(ActionMode mode,
+						int position, long id, boolean checked) {
+					Log.d(TAG, "item " + position + " selected");
+					Integer type = adapter.getData().get(position).first;
+					int count=adapter.getSelectedCount();
+					if ((type == TYPE.FILE && (count == 0 || (adapter
+							.getSelected().get(0).first == TYPE.FILE)))
+							|| (type == TYPE.SUBTASK && (count == 0 || adapter
+									.getSelected().get(0).first == TYPE.SUBTASK))) {
+						adapter.setSelected(position, checked);
+						adapter.notifyDataSetChanged();
+						mode.invalidate();
+					} 
+					count=adapter.getSelectedCount();
+					if (count == 0) {
+						mode.finish();// No CAB
+						return;
+					}
+					if(type==TYPE.FILE){
+						mode.setTitle(getResources().getQuantityString(R.plurals.file,count,count ));
+					}else if(type==TYPE.SUBTASK){
+						mode.setTitle(getResources().getQuantityString(R.plurals.subtasks,count,count ));
+					}
+
+				}
+			});
+		}
+
+		if (main.getPreferences().getBoolean("useBtnCamera", true)
+				&& Helpers.isIntentAvailable(main,
+						MediaStore.ACTION_IMAGE_CAPTURE)) {
+			adapter.setcameraButtonClick(new View.OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					try {
+						Intent cameraIntent = new Intent(
+								MediaStore.ACTION_IMAGE_CAPTURE);
+						Uri fileUri = Helpers
+								.getOutputMediaFileUri(Helpers.MEDIA_TYPE_IMAGE);
+						if (fileUri == null)
+							return;
+						main.setFileUri(fileUri);
+						cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+						getActivity().startActivityForResult(cameraIntent,
+								MainActivity.RESULT_ADD_PICTURE);
+
+					} catch (ActivityNotFoundException a) {
+						Toast.makeText(
+								main,
+								"Opps! Your device doesn't support taking photos",
+								Toast.LENGTH_SHORT).show();
+					}
+
+				}
+			});
+		}
+		Log.d(TAG, "created");
 		return view;
 	}
 
-	public void update() {
-		if (!created)
-			return;
-
-		main.showMessageFromSync();
-
-		ViewSwitcher s = (ViewSwitcher) view.findViewById(R.id.switch_name);
-		if (s.getNextView().getId() != R.id.edit_name) {
-			s.showPrevious();
+	public void update(Task task) {
+		if (adapter != null) {
+			adapter.setData(task);
 		}
-		// Task Name
-		task = main.getCurrentTask();
-		if (task == null)
-			task = Task.getDummy(main);
-		Task_name = (TextView) view.findViewById(R.id.task_name);
-		String tname = task.getName();
-		Task_name.setText(tname == null ? "" : tname);
-		if (main.isTablet)
-			Task_name.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
-		Task_name.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if(main.isTablet){
-					((EditText)main.findViewById(R.id.tasks_new)).setOnFocusChangeListener(null);
-				}
-				ViewSwitcher switcher = (ViewSwitcher) view
-						.findViewById(R.id.switch_name);
-				switcher.showNext(); // or switcher.showPrevious();
-				EditText txt = (EditText) view.findViewById(R.id.edit_name);
-				txt.setText(Task_name.getText());
-				txt.requestFocus();
-
-				InputMethodManager imm = (InputMethodManager) main
-						.getSystemService(Context.INPUT_METHOD_SERVICE);
-				imm.showSoftInput(txt, InputMethodManager.SHOW_IMPLICIT);
-				txt.setOnEditorActionListener(new OnEditorActionListener() {
-					public boolean onEditorAction(TextView v, int actionId,
-							KeyEvent event) {
-						if (actionId == EditorInfo.IME_ACTION_DONE) {
-							EditText txt = (EditText) view
-									.findViewById(R.id.edit_name);
-							InputMethodManager imm = (InputMethodManager) main
-									.getSystemService(Context.INPUT_METHOD_SERVICE);
-							task.setName(txt.getText().toString());
-							main.saveTask(task);
-							Task_name.setText(task.getName());
-							imm.hideSoftInputFromWindow(txt.getWindowToken(), 0);
-							return true;
-						}
-						return false;
-					}
-				});
-			}
-		});
-
-		// Task done
-		Task_done = (CheckBox) view.findViewById(R.id.task_done);
-		Task_done.setChecked(task.isDone());
-		Task_done.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView,
-					boolean isChecked) {
-				task.setDone(isChecked);
-				main.saveTask(task);
-				ReminderAlarm.updateAlarms(getActivity());
-				main.getListFragment().update();
-			}
-		});
-
-		// Task priority
-		Task_prio = (TextView) view.findViewById(R.id.task_prio);
-		set_prio(Task_prio, task);
-		Task_prio.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				TaskDialogHelpers.handlePriority(main, task,
-						new ExecInterface() {
-
-							@Override
-							public void exec() {
-								main.updatesForTask(task);
-								set_prio(Task_prio, task);
-
-							}
-						});
-			}
-		});
-
-		// Task due
-		Task_due = (TextView) view.findViewById(R.id.task_due);
-		Drawable due_img = main.getResources().getDrawable(
-				android.R.drawable.ic_menu_today);
-		due_img.setBounds(0, 0, 60, 60);
-		Task_due.setCompoundDrawables(due_img, null, null, null);
-		if (task.getDue() == null) {
-			Task_due.setText(getString(R.string.no_date));
-		} else {
-			Task_due.setText(Helpers.formatDate(task.getDue(),
-					main.getString(R.string.dateFormat)));
-		}
-
-		Task_due.setOnClickListener(new View.OnClickListener() {
-
-			@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-			@Override
-			public void onClick(View v) {
-				mIgnoreTimeSet = false;
-				Calendar due = (task.getDue() == null ? new GregorianCalendar()
-						: task.getDue());
-				OnDateSetListener listner = (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB ? new OnDateSetListener() {
-
-					@Override
-					public void onDateSet(DatePicker view, int year,
-							int monthOfYear, int dayOfMonth) {
-						task.setDue(new GregorianCalendar(year, monthOfYear,
-								dayOfMonth));
-						main.saveTask(task);
-						Task_due.setText(new SimpleDateFormat(view.getContext()
-								.getString(R.string.dateFormat), Locale
-								.getDefault()).format(task.getDue().getTime()));
-					}
-				}
-						: null);
-				final DatePickerDialog dialog = new DatePickerDialog(main,
-						listner, due.get(Calendar.YEAR), due
-								.get(Calendar.MONTH), due
-								.get(Calendar.DAY_OF_MONTH));
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-					dialog.getDatePicker().setCalendarViewShown(false);
-					dialog.setButton(DialogInterface.BUTTON_POSITIVE,
-							getString(android.R.string.ok),
-							new DialogInterface.OnClickListener() {
-
-								public void onClick(DialogInterface dialog1,
-										int which) {
-									if (which == DialogInterface.BUTTON_POSITIVE) {
-										if (mIgnoreTimeSet)
-											return;
-										DatePicker dp = dialog.getDatePicker();
-										task.setDue(new GregorianCalendar(dp
-												.getYear(), dp.getMonth(), dp
-												.getDayOfMonth()));
-										main.saveTask(task);
-										Task_due.setText(new SimpleDateFormat(
-												view.getContext().getString(
-														R.string.dateFormat),
-												Locale.getDefault())
-												.format(task.getDue().getTime()));
-
-									}
-								}
-							});
-				}
-				dialog.setButton(DialogInterface.BUTTON_NEGATIVE,
-						getString(R.string.no_date),
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog1,
-									int which) {
-								if (which == DialogInterface.BUTTON_NEGATIVE) {
-									mIgnoreTimeSet = true;
-									Log.v(TAG, "cancel");
-									task.setDue(null);
-									main.saveTask(task);
-									Task_due.setText(R.string.no_date);
-								}
-							}
-						});
-				dialog.show();
-
-			}
-		});
-
-		// Task Reminder
-		Task_reminder = (TextView) view.findViewById(R.id.task_reminder);
-		Drawable reminder_img = main.getResources().getDrawable(
-				android.R.drawable.ic_menu_recent_history);
-		reminder_img.setBounds(0, 0, 60, 60);
-		Task_reminder.setCompoundDrawables(reminder_img, null, null, null);
-		if (task.getReminder() == null) {
-			Task_reminder.setText(getString(R.string.no_reminder));
-		} else {
-			Task_reminder.setText(Helpers.formatDate(task.getReminder(),
-					main.getString(R.string.humanDateTimeFormat)));
-		}
-
-		Task_reminder.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				TaskDialogHelpers.handleReminder(main, task,
-						new ExecInterface() {
-
-							@Override
-							public void exec() {
-								if (task.getReminder() == null) {
-									Task_reminder.setText(R.string.no_reminder);
-								} else {
-									Task_reminder
-											.setText(new SimpleDateFormat(
-													view.getContext()
-															.getString(
-																	R.string.humanDateTimeFormat),
-													Locale.getDefault())
-													.format(task.getReminder()
-															.getTime()));
-								}
-								ReminderAlarm.updateAlarms(getActivity());
-
-							}
-						});
-			}
-		});
-
-		// Task content
-		Task_content = (TextView) view.findViewById(R.id.task_content);
-		Task_content.setText(task.getContent().length() == 0 ? this
-				.getString(R.string.task_no_content) : task.getContent());
-		Task_content.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-
-				final EditText editTxt = new EditText(getActivity());
-				editTxt.setText(task.getContent());
-				final AlertDialog dialog = new AlertDialog.Builder(
-						getActivity())
-						.setTitle(R.string.change_content)
-						.setView(editTxt)
-						.setPositiveButton(android.R.string.ok,
-								new DialogInterface.OnClickListener() {
-
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-										task.setContent(editTxt.getText()
-												.toString());
-										main.saveTask(task);
-										Task_content
-												.setText(task.getContent()
-														.trim().length() == 0 ? getString(R.string.task_no_content)
-														: task.getContent());
-
-									}
-								})
-						.setNegativeButton(android.R.string.cancel,
-								new DialogInterface.OnClickListener() {
-
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-										// TODO Auto-generated method stub
-
-									}
-								}).create();
-				dialog.show();
-				editTxt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-					@Override
-					public void onFocusChange(View v, boolean hasFocus) {
-						if (hasFocus) {
-							dialog.getWindow()
-									.setSoftInputMode(
-											WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-						}
-					}
-				});
-
-			}
-		});
-
-	}
-
-	protected void set_prio(TextView Task_prio, Task task) {
-		Task_prio.setText("" + task.getPriority());
-		Task_prio
-				.setBackgroundColor(Mirakel.PRIO_COLOR[task.getPriority() + 2]);
-
 	}
 
 }

@@ -37,35 +37,46 @@
         android:focusableInTouchMode="true"
         android:orientation="horizontal" >
 
+        <ImageButton
+            android:id="@+id/btnSpeak_tasks"
+            style="@style/imgButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:contentDescription="@string/speak"
+            android:src="@android:drawable/ic_btn_speak_now" />
+
+        <ImageButton
+            android:id="@+id/btnCamera"
+            style="@style/imgButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:contentDescription="@string/takePhoto"
+            android:src="@android:drawable/ic_menu_camera" />
+
         <EditText
             android:id="@+id/tasks_new"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_weight="1"
-            android:textSize="20sp"
             android:hint="@string/tasks_new_str"
             android:imeOptions="actionSend"
-            android:singleLine="true" >
-
-            <requestFocus />
-        </EditText>
+            android:singleLine="true"
+            android:textSize="20sp" />
 
         <ImageButton
             android:id="@+id/btnEnter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/enter"
+            style="@style/imgButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:contentDescription="@android:string/ok"
             android:src="@android:drawable/ic_menu_send" />
-
-        <ImageButton
-            android:id="@+id/btnSpeak_tasks"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/speak"
-            android:src="@android:drawable/ic_btn_speak_now" />
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/marginTopDivider"
+        android:background="?android:attr/listDivider" />
 
     <ListView
         android:id="@+id/tasks_list"

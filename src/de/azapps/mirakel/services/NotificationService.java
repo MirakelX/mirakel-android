@@ -132,11 +132,15 @@ public class NotificationService extends Service {
 
 		boolean persistent = preferences.getBoolean("notificationsPersistent",
 				true);
+
+		int icon = R.drawable.mirakel;
+		if (preferences.getBoolean("oldLogo", false)) {
+			icon = R.drawable.ic_launcher;
+		}
 		// Build notification
 		NotificationCompat.Builder noti = new NotificationCompat.Builder(this)
 				.setContentTitle(notificationTitle)
-				.setContentText(notificationText)
-				.setSmallIcon(R.drawable.ic_launcher)
+				.setContentText(notificationText).setSmallIcon(icon)
 				.setContentIntent(pOpenIntent).setOngoing(persistent);
 
 		// Big View

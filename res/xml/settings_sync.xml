@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Mirakel is an Android App for Managing your ToDo-Lists
+  
+  Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
+  
+      This program is free software: you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation, either version 3 of the License, or
+      any later version.
+  
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+  
+      You should have received a copy of the GNU General Public License
+      along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/sync_title" >
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="syncUse"
+        android:title="@string/sync_use" />
+
+    <Preference
+        android:enabled="false"
+        android:key="syncType"
+        android:title="@string/sync_type" />
+
+    <EditTextPreference
+        android:inputType="textUri"
+        android:key="syncServer"
+        android:summary="@string/sync_server_summary"
+        android:title="@string/sync_server" />
+    <!--
+             <EditTextPreference
+            android:dependency="syncUse"
+            android:key="syncEmail"
+            android:inputType="textEmailAddress"
+            android:summary="@string/sync_email_summary"
+            android:title="@string/sync_email" />
+    -->
+    <EditTextPreference
+        android:inputType="textPassword"
+        android:key="syncPassword"
+        android:summary="@string/sync_password_summary"
+        android:title="@string/sync_password" />
+
+    <ListPreference
+        android:entries="@array/sync_frequencies"
+        android:entryValues="@array/sync_frequencies_values"
+        android:key="syncFrequency"
+        android:summary="@string/sync_frequency_summary"
+        android:title="@string/sync_frequency" />
+
+</PreferenceScreen>

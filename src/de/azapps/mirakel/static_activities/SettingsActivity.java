@@ -30,11 +30,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
-import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
@@ -48,7 +48,7 @@ import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.PreferencesHelper;
 import de.azapps.mirakel.helper.SettingsAdapter;
-import de.azapps.mirakel.special_lists_settings.SpecialListsSettings;
+import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
 import de.azapps.mirakelandroid.R;
 
 public class SettingsActivity extends PreferenceActivity {
@@ -64,11 +64,18 @@ public class SettingsActivity extends PreferenceActivity {
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		darkTheme = PreferenceManager.getDefaultSharedPreferences(this)
-				.getBoolean("DarkTheme", false);
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		darkTheme = preferences.getBoolean("DarkTheme", false);
 		if (darkTheme)
 			setTheme(R.style.AppBaseThemeDARK);
 		super.onCreate(savedInstanceState);
+
+		if (preferences.getBoolean("oldLogo", false)
+				&& Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+			getActionBar().setIcon(R.drawable.ic_launcher);
+			getActionBar().setLogo(R.drawable.ic_launcher);
+		}
 		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
 
 			Intent i = getIntent();
@@ -77,28 +84,35 @@ public class SettingsActivity extends PreferenceActivity {
 
 			} else {
 				if (i.getAction() == null) {
-					addPreferencesFromResource(R.xml.preferences_v10);
+					addPreferencesFromResource(R.xml.settings_v10);
 				} else if (i.getAction().equals(
 						"de.azapps.mirakel.preferences.NOTIFICATION")) {
-					addPreferencesFromResource(R.xml.notification_prefernces);
+					addPreferencesFromResource(R.xml.settings_notifications);
 				} else if (i.getAction().equals(
 						"de.azapps.mirakel.preferences.GUI")) {
-					addPreferencesFromResource(R.xml.gui_prefernces);
+					addPreferencesFromResource(R.xml.settings_gui);
+				} else if (i.getAction().equals(
+						"de.azapps.mirakel.preferences.TASKS")) {
+					addPreferencesFromResource(R.xml.settings_tasks);
 				} else if (i.getAction().equals(
 						"de.azapps.mirakel.preferences.ABOUT")) {
-					addPreferencesFromResource(R.xml.about_prefernces);
+					addPreferencesFromResource(R.xml.settings_about);
+				} else if (i.getAction().equals(
+						"de.azapps.mirakel.preferences.HELP")) {
+					Helpers.openHelp(this);
 				} else if (i.getAction().equals(
 						"de.azapps.mirakel.preferences.MISC")) {
-					addPreferencesFromResource(R.xml.misc_prefernces);
+					addPreferencesFromResource(R.xml.settings_misc);
 				} else if (i.getAction().equals(
 						"de.azapps.mirakel.preferences.BACKUP")) {
-					addPreferencesFromResource(R.xml.backup_prefernces);
+					addPreferencesFromResource(R.xml.settings_backup);
 				} else if (i.getAction().equals(
 						"de.azapps.mirakel.preferences.SYNC")) {
-					addPreferencesFromResource(R.xml.sync_prefernces);
+					addPreferencesFromResource(R.xml.settings_sync);
 				} else if (i.getAction().equals(
 						"de.azapps.mirakel.preferences.SPECIAL_LISTS")) {
-					startActivity(new Intent(this, SpecialListsSettings.class));
+					startActivity(new Intent(this,
+							SpecialListsSettingsActivity.class));
 					if (!getResources().getBoolean(R.bool.isTablet))
 						finish();
 				} else {
@@ -241,15 +255,13 @@ public class SettingsActivity extends PreferenceActivity {
 								}
 							}).create().show();
 		case NEW_ACCOUNT:
-			CheckBoxPreference sync;
-			Preference server;
 			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-				sync = (CheckBoxPreference) findPreference("syncUse");
-				server = findPreference("syncServer");
-			} else {
-				break;
+				PreferencesHelper.updateSyncText(
+						(CheckBoxPreference) findPreference("syncUse"),
+						findPreference("syncServer"),
+						findPreference("syncFrequency"), this);
 			}
-			PreferencesHelper.updateSyncText(sync, server, this);
+			break;
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
@@ -257,7 +269,7 @@ public class SettingsActivity extends PreferenceActivity {
 	@SuppressLint("NewApi")
 	@Override
 	public void onBuildHeaders(List<Header> target) {
-		loadHeadersFromResource(R.xml.preferences, target);
+		loadHeadersFromResource(R.xml.settings, target);
 		mHeaders = target;
 	}
 

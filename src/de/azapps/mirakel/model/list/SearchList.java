@@ -11,7 +11,7 @@ public class SearchList extends ListMirakel {
 
 	public SearchList(Context ctx, String query) {
 		super(0, ctx.getString(R.string.search_result_title, query));
-		this.tasks = Task.search(query);
+		this.tasks = Task.searchName(query);
 	}
 
 	@Override

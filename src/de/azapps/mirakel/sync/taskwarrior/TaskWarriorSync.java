@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.MalformedInputException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,16 +18,21 @@ import android.widget.Toast;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
+import de.azapps.mirakel.helper.FileUtils;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakel.sync.Network;
 import de.azapps.mirakel.sync.SyncAdapter;
+import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 import de.azapps.mirakelandroid.R;
 
 public class TaskWarriorSync {
 
 	public static final String TYPE = "TaskWarrior";
+	public static final String CA_FILE = Mirakel.MIRAKEL_DIR + "ca.cert.pem";
+	public static final String CLIENT_CERT_FILE = Mirakel.MIRAKEL_DIR
+			+ "client.cert.pem";
 	private static final String TAG = "TaskWarroirSync";
 	private Context mContext;
 
@@ -43,9 +48,75 @@ public class TaskWarriorSync {
 	static File user_ca;
 	private AccountManager accountManager;
 	private Account account;
+	private HashMap<String, String[]> dependencies;
 
 	public enum TW_ERRORS {
-		CANNOT_CREATE_SOCKET, CANNOT_PARSE_MESSAGE, MESSAGE_ERRORS, TRY_LATER, ACCESS_DENIED, ACCOUNT_SUSPENDED, NO_ERROR
+		CANNOT_CREATE_SOCKET, CANNOT_PARSE_MESSAGE, MESSAGE_ERRORS, TRY_LATER, ACCESS_DENIED, ACCOUNT_SUSPENDED, NO_ERROR;
+		public static TW_ERRORS getError(int code) {
+			switch (code) {
+			case 200:
+				Log.d(TAG, "Success");
+				break;
+			case 201:
+				Log.d(TAG, "No change");
+				break;
+			case 300:
+				Log.d(TAG,
+						"Deprecated message type\n"
+								+ "This message will not be supported in future task server releases.");
+				break;
+			case 301:
+				Log.d(TAG,
+						"Redirect\n"
+								+ "Further requests should be made to the specified server/port.");
+				// TODO
+				break;
+			case 302:
+				Log.d(TAG,
+						"Retry\n"
+								+ "The client is requested to wait and retry the same request.  The wait\n"
+								+ "time is not specified, and further retry responses are possible.");
+				return TW_ERRORS.TRY_LATER;
+			case 400:
+				Log.e(TAG, "Malformed data");
+				return TW_ERRORS.MESSAGE_ERRORS;
+			case 401:
+				Log.e(TAG, "Unsupported encoding");
+				return TW_ERRORS.MESSAGE_ERRORS;
+			case 420:
+				Log.e(TAG, "Server temporarily unavailable");
+				return TW_ERRORS.TRY_LATER;
+			case 421:
+				Log.e(TAG, "Server shutting down at operator request");
+				return TW_ERRORS.TRY_LATER;
+			case 430:
+				Log.e(TAG, "Access denied");
+				return TW_ERRORS.ACCESS_DENIED;
+			case 431:
+				Log.e(TAG, "Account suspended");
+				return TW_ERRORS.ACCOUNT_SUSPENDED;
+			case 432:
+				Log.e(TAG, "Account terminated");
+				return TW_ERRORS.ACCOUNT_SUSPENDED;
+			case 500:
+				Log.e(TAG, "Syntax error in request");
+				return TW_ERRORS.MESSAGE_ERRORS;
+			case 501:
+				Log.e(TAG, "Syntax error, illegal parameters");
+				return TW_ERRORS.MESSAGE_ERRORS;
+			case 502:
+				Log.e(TAG, "Not implemented");
+				return TW_ERRORS.MESSAGE_ERRORS;
+			case 503:
+				Log.e(TAG, "Command parameter not implemented");
+				return TW_ERRORS.MESSAGE_ERRORS;
+			case 504:
+				Log.e(TAG, "Request too big");
+				return TW_ERRORS.MESSAGE_ERRORS;
+
+			}
+			return NO_ERROR;
+		}
 	}
 
 	public TaskWarriorSync(Context ctx) {
@@ -60,39 +131,36 @@ public class TaskWarriorSync {
 
 		Msg sync = new Msg();
 		String payload = "";
-		List<Task> local_tasks = Task.getTasksToSync();
 		sync.set("protocol", "v1");
 		sync.set("type", "sync");
 		sync.set("org", _org);
 		sync.set("user", _user);
 		sync.set("key", _key);
-		// split big sync into smaller pieces
-		short taskNumber = 5;
-		int parts = local_tasks.size() / taskNumber < 1 ? 1 : local_tasks
-				.size() / taskNumber;
-		for (int i = 0; i < parts; i++) {
-			String old_key = accountManager.getUserData(account,
-					SyncAdapter.TASKWARRIOR_KEY);
-			if (old_key != null && !old_key.equals("")) {
-				payload += old_key + "\n";
-			}
-			List<Task> syncedTasksId = new ArrayList<Task>();
-			for (int j = i * taskNumber; j < local_tasks.size()
-					&& j < (i + 1) * taskNumber; j++) {
-				Task task = local_tasks.get(j);
-				syncedTasksId.add(task);
-				payload += taskToJson(task) + "\n";
-			}
-			// Build sync-request
-
-			sync.setPayload(payload);
-			TW_ERRORS error = doSync(account, sync);
-			if (error == TW_ERRORS.NO_ERROR) {
-				Task.deleteTasksPermanently(syncedTasksId);
-				Task.resetSyncState(syncedTasksId);
-			} else
-				return error;
+		List<Task> local_tasks = Task.getTasksToSync();
+		for (Task task : local_tasks) {
+			payload += taskToJson(task) + "\n";
 		}
+		// Format: {UUID:[UUID]}
+		dependencies = new HashMap<String, String[]>();
+		// for (int i = 0; i < parts; i++) {
+		String old_key = accountManager.getUserData(account,
+				SyncAdapter.TASKWARRIOR_KEY);
+		if (old_key != null && !old_key.equals("")) {
+			payload += old_key + "\n";
+		}
+
+		// Build sync-request
+
+		sync.setPayload(payload);
+		TW_ERRORS error = doSync(account, sync);
+		if (error == TW_ERRORS.NO_ERROR) {
+			Task.resetSyncState(local_tasks);
+		} else {
+			setDependencies();
+			return error;
+		}
+		// }
+		setDependencies();
 		return TW_ERRORS.NO_ERROR;
 	}
 
@@ -111,7 +179,9 @@ public class TaskWarriorSync {
 		client.send(sync.serialize());
 
 		String response = client.recv();
-		longInfo(response);
+		// FileUtils.writeToFile(new File("/sdcard/mirakel.log"), response);
+
+		// longInfo(response);
 
 		Msg remotes = new Msg();
 		try {
@@ -121,68 +191,11 @@ public class TaskWarriorSync {
 			return TW_ERRORS.CANNOT_PARSE_MESSAGE;
 		}
 		int code = Integer.parseInt(remotes.get("code"));
-		switch (code) {
-		case 200:
-			Log.d(TAG, "Success");
-			break;
-		case 201:
-			Log.d(TAG, "No change");
-			break;
-		case 300:
-			Log.d(TAG,
-					"Deprecated message type\n"
-							+ "This message will not be supported in future task server releases.");
-			break;
-		case 301:
-			Log.d(TAG,
-					"Redirect\n"
-							+ "Further requests should be made to the specified server/port.");
-			// TODO
-			break;
-		case 302:
-			Log.d(TAG,
-					"Retry\n"
-							+ "The client is requested to wait and retry the same request.  The wait\n"
-							+ "time is not specified, and further retry responses are possible.");
-			return TW_ERRORS.TRY_LATER;
-		case 400:
-			Log.e(TAG, "Malformed data");
-			return TW_ERRORS.MESSAGE_ERRORS;
-		case 401:
-			Log.e(TAG, "Unsupported encoding");
-			return TW_ERRORS.MESSAGE_ERRORS;
-		case 420:
-			Log.e(TAG, "Server temporarily unavailable");
-			return TW_ERRORS.TRY_LATER;
-		case 421:
-			Log.e(TAG, "Server shutting down at operator request");
-			return TW_ERRORS.TRY_LATER;
-		case 430:
-			Log.e(TAG, "Access denied");
-			return TW_ERRORS.ACCESS_DENIED;
-		case 431:
-			Log.e(TAG, "Account suspended");
-			return TW_ERRORS.ACCOUNT_SUSPENDED;
-		case 432:
-			Log.e(TAG, "Account terminated");
-			return TW_ERRORS.ACCOUNT_SUSPENDED;
-		case 500:
-			Log.e(TAG, "Syntax error in request");
-			return TW_ERRORS.MESSAGE_ERRORS;
-		case 501:
-			Log.e(TAG, "Syntax error, illegal parameters");
-			return TW_ERRORS.MESSAGE_ERRORS;
-		case 502:
-			Log.e(TAG, "Not implemented");
-			return TW_ERRORS.MESSAGE_ERRORS;
-		case 503:
-			Log.e(TAG, "Command parameter not implemented");
-			return TW_ERRORS.MESSAGE_ERRORS;
-		case 504:
-			Log.e(TAG, "Request too big");
-			return TW_ERRORS.MESSAGE_ERRORS;
-
+		TW_ERRORS error = TW_ERRORS.getError(code);
+		if (error != TW_ERRORS.NO_ERROR) {
+			return error;
 		}
+
 		if (remotes.get("status").equals("Client sync key not found.")) {
 			Log.d(TAG, "reset sync-key");
 			accountManager.setUserData(account, SyncAdapter.TASKWARRIOR_KEY,
@@ -209,22 +222,26 @@ public class TaskWarriorSync {
 					taskObject = new JsonParser().parse(taskString)
 							.getAsJsonObject();
 					server_task = Task.parse_json(taskObject);
+					dependencies.put(server_task.getUUID(),
+							server_task.getDependencies());
 					local_task = Task.getByUUID(server_task.getUUID());
 				} catch (Exception e) {
 					Log.d(TAG, Log.getStackTraceString(e));
 					Log.e(TAG, "malformed JSON");
+					Log.e(TAG, taskString);
 					continue;
 				}
 
-				if (server_task.getSync_state() == Network.SYNC_STATE.DELETE) {
+				if (server_task.getSyncState() == SYNC_STATE.DELETE) {
 					if (local_task != null)
-						local_task.delete(true);
+						local_task.destroy(true);
 				} else if (local_task == null) {
 					try {
 						server_task.create();
 					} catch (NoSuchListException e) {
 						Log.wtf(TAG, "List vanish");
-						Toast.makeText(mContext,R.string.no_lists,Toast.LENGTH_LONG ).show();
+						Toast.makeText(mContext, R.string.no_lists,
+								Toast.LENGTH_LONG).show();
 					}
 				} else {
 					server_task.setId(local_task.getId());
@@ -246,6 +263,32 @@ public class TaskWarriorSync {
 		}
 		client.close();
 		return TW_ERRORS.NO_ERROR;
+	}
+
+	private void setDependencies() {
+		for (String uuid : dependencies.keySet()) {
+			Task parent = Task.getByUUID(uuid);
+			if (uuid == null || dependencies == null)
+				continue;
+			String[] childs = dependencies.get(uuid);
+			if (childs == null)
+				continue;
+			for (String childUuid : childs) {
+				Task child = Task.getByUUID(childUuid);
+				if (child == null)
+					continue;
+				if (child.isSubtaskOf(parent)) {
+					continue;
+				} else {
+					try {
+						parent.addSubtask(child);
+					} catch (Exception e) {
+
+					}
+				}
+			}
+
+		}
 	}
 
 	public static void longInfo(String str) {
@@ -274,9 +317,8 @@ public class TaskWarriorSync {
 		File root, user;
 		// TODO FIXIT!!!
 		if (accountManager.getUserData(account, SyncAdapter.BUNDLE_CERT) == null) {
-			root = new File(mContext.getFilesDir().getParent() + "/ca.cert.pem");
-			user = new File(mContext.getFilesDir().getParent()
-					+ "/client.cert.pem");
+			root = new File(CA_FILE);
+			user = new File(CLIENT_CERT_FILE);
 		} else {
 			// TODO Fix this
 			root = null;
@@ -298,21 +340,21 @@ public class TaskWarriorSync {
 	/**
 	 * Converts a task to the json-format we need
 	 * 
-	 * @param t
+	 * @param task
 	 * @return
 	 */
-	private String taskToJson(Task t) {
+	public String taskToJson(Task task) {
 
 		String status = "pending";
-		if (t.getSync_state() == Network.SYNC_STATE.DELETE)
+		if (task.getSyncState() == SYNC_STATE.DELETE)
 			status = "deleted";
-		else if (t.isDone())
+		else if (task.isDone())
 			status = "completed";
 		Log.e(TAG, "Status waiting / recurring is not implemented now");
 		// TODO
 
 		String priority = null;
-		switch (t.getPriority()) {
+		switch (task.getPriority()) {
 		case -2:
 		case -1:
 			priority = "L";
@@ -326,43 +368,66 @@ public class TaskWarriorSync {
 		}
 
 		String json = "{";
-		json += "\"uuid\":\"" + t.getUUID() + "\",";
-		json += "\"status\":\"" + status + "\",";
-		json += "\"entry\":\"" + formatCal(t.getCreated_at()) + "\",";
-		json += "\"description\":\"" + t.getName() + "\",";
-		if (t.getDue() != null)
-			json += "\"due\":\"" + formatCal(t.getDue()) + "\",";
-		json += "\"project\":\"" + t.getList().getName() + "\",";
+		json += "\"uuid\":\"" + task.getUUID() + "\"";
+		json += ",\"status\":\"" + status + "\"";
+		json += ",\"entry\":\"" + formatCal(task.getCreatedAt()) + "\"";
+		json += ",\"description\":\"" + task.getName() + "\"";
+		if (task.getDue() != null)
+			json += ",\"due\":\"" + formatCal(task.getDue()) + "\"";
+		json += ",\"project\":\"" + task.getList().getName() + "\"";
 		if (priority != null)
-			json += "\"priority\":\"" + priority + "\",";
-		json += "\"modification\":\"" + formatCal(t.getUpdated_at()) + "\",";
-		if (t.getReminder() != null)
-			json += "\"reminder\":\"" + formatCal(t.getReminder()) + "\",";
+			json += ",\"priority\":\"" + priority + "\"";
+		json += ",\"modification\":\"" + formatCal(task.getUpdatedAt()) + "\"";
+		if (task.getReminder() != null)
+			json += ",\"reminder\":\"" + formatCal(task.getReminder()) + "\"";
 
 		// Annotations
-		json += "\"annotations\":[";
-		/*
-		 * An annotation in taskd is a line of content in Mirakel!
-		 */
-		String annotations[] = t.getContent().split("\n");
-		boolean first = true;
-		for (String a : annotations) {
-			if (first)
-				first = false;
-			else
-				json += ",";
-			json += "{\"entry\":\"" + formatCal(t.getUpdated_at()) + "\",";
-			json += "\"description\":\"" + a + "\"}";
+		if (task.getContent() != null && !task.getContent().equals("")) {
+			json += ",\"annotations\":[";
+			/*
+			 * An annotation in taskd is a line of content in Mirakel!
+			 */
+			String annotations[] = task.getContent().replace("\"", "\\\"")
+					.split("\n");
+			boolean first = true;
+			for (String a : annotations) {
+				if (first)
+					first = false;
+				else
+					json += ",";
+				json += "{\"entry\":\"" + formatCal(task.getUpdatedAt())
+						+ "\",";
+				json += "\"description\":\"" + a + "\"}";
+			}
+			json += "]";
 		}
-		json += "]";
+		// Anotations end
 
-		if (t.getAdditionalEntries() != null) {
-			Map<String, String> additionalEntries = t.getAdditionalEntries();
+		// TW.depends==Mirakel.subtasks!
+		// Dependencies
+		if (task.getSubtaskCount() > 0) {
+			json += ",\"depends\":\"";
+			boolean first1 = true;
+			for (Task subtask : task.getSubtasks()) {
+				if (first1)
+					first1 = false;
+				else
+					json += ",";
+				json += subtask.getUUID();
+			}
+			json += "\"";
+		}
+		// end Dependencies
+
+		// Additional Strings
+		if (task.getAdditionalEntries() != null) {
+			Map<String, String> additionalEntries = task.getAdditionalEntries();
 			for (String key : additionalEntries.keySet()) {
 				json += ",\"" + key + "\":\"" + additionalEntries.get(key)
 						+ "\"";
 			}
 		}
+		// end Additional Strings
 		json += "}";
 		return json;
 	}

@@ -21,8 +21,6 @@ public class DragNDropListView extends ListView {
 	boolean mDragMode;
 	private boolean enableDrag;
 
-	int SpecialListCount;
-
 	int mStartPosition;
 	int mEndPosition;
 	int mDragPointOffset; // Used to adjust drag view location
@@ -33,6 +31,8 @@ public class DragNDropListView extends ListView {
 	DropListener mDropListener;
 	RemoveListener mRemoveListener;
 	DragListener mDragListener;
+
+	private boolean isSpecial;
 
 	public void setEnableDrag(boolean enableDrag) {
 		this.enableDrag = enableDrag;
@@ -59,8 +59,7 @@ public class DragNDropListView extends ListView {
 		final int action = ev.getAction();
 		final int x = (int) ev.getX();
 		final int y = (int) ev.getY();
-
-		if (action == MotionEvent.ACTION_DOWN && x < 100) {// width<~imagewidth
+		if (action == MotionEvent.ACTION_DOWN && x < this.getWidth()/3) {// width<~imagewidth
 			mDragMode = true;
 		}
 
@@ -75,9 +74,13 @@ public class DragNDropListView extends ListView {
 
 				int mItemPosition = mStartPosition - getFirstVisiblePosition();
 				if (mItemPosition < SpecialList.getSpecialListCount()
-						- getFirstVisiblePosition())
-					break;
-				Log.e(TAG, "" + mItemPosition);
+						- getFirstVisiblePosition()){
+					isSpecial=true;
+//					break;
+				}else{
+					isSpecial=false;
+				}
+				Log.d(TAG, "" + mItemPosition);
 				mDragPointOffset = y - getChildAt(mItemPosition).getTop();
 				mDragPointOffset -= ((int) ev.getRawY()) - y;
 				startDrag(mItemPosition, y);
@@ -92,16 +95,17 @@ public class DragNDropListView extends ListView {
 		default:
 			mDragMode = false;
 			mEndPosition = pointToPosition(x, y);
-			int ItemStartPosition = mStartPosition - getFirstVisiblePosition();
 			stopDrag(mStartPosition - getFirstVisiblePosition());
-			if (mEndPosition < SpecialList.getSpecialListCount()) {
+			if (mEndPosition < SpecialList.getSpecialListCount()&&!isSpecial) {
 				mEndPosition = SpecialList.getSpecialListCount();
+				Log.d(TAG,"not special");
+			}else if(mEndPosition > SpecialList.getSpecialListCount()&&isSpecial){
+				mEndPosition = SpecialList.getSpecialListCount()-1;
+				Log.d(TAG,"special");
 			}
 			if (mDropListener != null
 					&& mStartPosition != INVALID_POSITION
-					&& mEndPosition != INVALID_POSITION
-					&& !(ItemStartPosition < SpecialList.getSpecialListCount()
-							- getFirstVisiblePosition()))
+					&& mEndPosition != INVALID_POSITION)
 				mDropListener.onDrop(mStartPosition, mEndPosition);
 			break;
 		}

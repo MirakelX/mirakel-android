@@ -20,28 +20,31 @@ package de.azapps.mirakel.main_activity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
 import android.util.TypedValue;
+import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
@@ -49,6 +52,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
+import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -56,18 +60,19 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
-import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.Mirakel.NoSuchListException;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
-import de.azapps.mirakel.model.list.SearchList;
-import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakelandroid.R;
 
 public class TasksFragment extends Fragment {
-	private static final String TAG = "TasksActivity";
+	private static final String TAG = "TasksFragment";
 	private TaskAdapter adapter;
 	private MainActivity main;
 	View view;
@@ -81,9 +86,7 @@ public class TasksFragment extends Fragment {
 	private static final int TASK_RENAME = 0, TASK_MOVE = 1, TASK_DESTROY = 2;
 	private int listId;
 	private boolean showDone = true;
-	private Map<String, Integer> dueMap = new HashMap<String, Integer>();
-	private SQLiteDatabase database = null;
-
+	private ActionMode mActionMode = null;
 	final Handler mHandler = new Handler();
 
 	final Runnable mUpdateResults = new Runnable() {
@@ -117,11 +120,9 @@ public class TasksFragment extends Fragment {
 		view = inflater.inflate(R.layout.activity_tasks, container, false);
 		if (getResources().getBoolean(R.bool.isTablet)) {
 			TaskFragment t = new TaskFragment();
-			t.setActivity(main);
 			getChildFragmentManager().beginTransaction()
 					.add(R.id.task_fragment_in_tasks, t).commit();
-			if (this.getId() != R.id.tasks_fragment_in_lists)
-				main.setTaskFragment(t);
+			main.setTaskFragment(t);
 		}
 
 		getResources().getString(R.string.action_settings);
@@ -129,15 +130,6 @@ public class TasksFragment extends Fragment {
 			values = main.getCurrentList().tasks(showDone);
 		} catch (NullPointerException e) {
 			values = null;
-		}
-		if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.HONEYCOMB) {
-			view.findViewById(R.id.btnSpeak_tasks).setVisibility(View.GONE);// Android
-																			// 2.3
-																			// dosen't
-																			// support
-																			// speech
-																			// to
-																			// Text
 		}
 		adapter = null;
 		created = true;
@@ -192,55 +184,75 @@ public class TasksFragment extends Fragment {
 			}
 		});
 
-		ImageButton btnSpeak = (ImageButton) view
-				.findViewById(R.id.btnSpeak_tasks);
-		// txtText = newTask;
+		// a) Android 2.3 dosen't support speech toText
+		// b) The user can switch off the button
+		if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.HONEYCOMB
+				|| !main.getPreferences().getBoolean("useBtnSpeak", true)) {
+			view.findViewById(R.id.btnSpeak_tasks).setVisibility(View.GONE);
+		} else {
+			ImageButton btnSpeak = (ImageButton) view
+					.findViewById(R.id.btnSpeak_tasks);
+			// txtText = newTask;
 
-		btnSpeak.setOnClickListener(new View.OnClickListener() {
+			btnSpeak.setOnClickListener(new View.OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
+				@Override
+				public void onClick(View v) {
 
-				Intent intent = new Intent(
-						RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+					Intent intent = new Intent(
+							RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 
-				intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-						main.getString(R.string.speak_lang_code));
+					intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+							main.getString(R.string.speak_lang_code));
 
-				try {
-					getActivity().startActivityForResult(intent,
-							MainActivity.RESULT_SPEECH);
-					newTask.setText("");
-				} catch (ActivityNotFoundException a) {
-					Toast t = Toast.makeText(main,
-							"Opps! Your device doesn't support Speech to Text",
-							Toast.LENGTH_SHORT);
-					t.show();
+					try {
+						getActivity().startActivityForResult(intent,
+								MainActivity.RESULT_SPEECH);
+						newTask.setText("");
+					} catch (ActivityNotFoundException a) {
+						Toast t = Toast
+								.makeText(
+										main,
+										"Opps! Your device doesn't support Speech to Text",
+										Toast.LENGTH_SHORT);
+						t.show();
+					}
 				}
-			}
-		});
+			});
+		}
+		if (!main.getPreferences().getBoolean("useBtnCamera", true)
+				|| !Helpers.isIntentAvailable(main,
+						MediaStore.ACTION_IMAGE_CAPTURE)) {
+			view.findViewById(R.id.btnCamera).setVisibility(View.GONE);
+		} else {
+			ImageButton btnCamera = (ImageButton) view
+					.findViewById(R.id.btnCamera);
+			btnCamera.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					try {
+						Intent cameraIntent = new Intent(
+								MediaStore.ACTION_IMAGE_CAPTURE);
+						Uri fileUri = Helpers
+								.getOutputMediaFileUri(Helpers.MEDIA_TYPE_IMAGE);
+						if (fileUri == null)
+							return;
+						main.setFileUri(fileUri);
+						cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+						getActivity().startActivityForResult(cameraIntent,
+								MainActivity.RESULT_CAMERA);
 
-		// Get the semantics
-		getSemanticConditions();
+					} catch (ActivityNotFoundException a) {
+						Toast.makeText(
+								main,
+								"Opps! Your device doesn't support taking photos",
+								Toast.LENGTH_SHORT).show();
+					}
+				}
+			});
+		}
 		// Inflate the layout for this fragment
 		return view;
-	}
-
-	private void getSemanticConditions() {
-		if (main.preferences.getBoolean("semanticNewTask", false)) {
-			if (database == null) {
-				database = Mirakel.getWritableDatabase();
-			}
-			String cols[] = { "condition", "due" };
-			Cursor c = database.query("semantic_conditions", cols, null, null,
-					null, null, null);
-			c.moveToFirst();
-			while (!c.isAfterLast()) {
-				dueMap.put(c.getString(0).toLowerCase(Locale.getDefault()),
-						c.getInt(1));
-				c.moveToNext();
-			}
-		}
 	}
 
 	public void focusNew() {
@@ -274,112 +286,32 @@ public class TasksFragment extends Fragment {
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(newTask.getWindowToken(), 0);
 		newTask.clearFocus();
-		if (name.equals("")){
+		if (name.equals("")) {
 			newTask.setOnFocusChangeListener(null);
-			imm.showSoftInput(newTask,
-					InputMethodManager.HIDE_IMPLICIT_ONLY);
+			imm.showSoftInput(newTask, InputMethodManager.HIDE_IMPLICIT_ONLY);
 			return true;
 		}
-		long id;
-		if(main.getCurrentList() instanceof SearchList){
-			id = main.getBaseList();
-		} else {
-			id = main.getCurrentList().getId();
-		}
-		GregorianCalendar due = null;
-		int prio = 0;
-		if (id <= 0) {
-			try {
-				SpecialList slist = SpecialList.getSpecialList((int)id);
-				id = slist.getDefaultList().getId();
-				if (slist.getDefaultDate() != null) {
-					due = new GregorianCalendar();
-					due.add(GregorianCalendar.DAY_OF_MONTH,
-							slist.getDefaultDate());
-				}
-				if (slist.getWhereQuery().contains("priority")) {
-					boolean[] mSelectedItems = new boolean[5];
-					boolean not = false;
-					String[] p = slist.getWhereQuery().split("and");
-					for (String s : p) {
-						if (s.contains("priority")) {
-							not = s.contains("not");
-							String[] r = s
-									.replace(
-											(!not ? "" : "not ")
-													+ "priority in (", "")
-									.replace(")", "").trim().split(",");
-							for (String t : r) {
-								try {
-									switch (Integer.parseInt(t)) {
-									case -2:
-										mSelectedItems[0] = true;
-										break;
-									case -1:
-										mSelectedItems[1] = true;
-										break;
-									case 0:
-										mSelectedItems[2] = true;
-										break;
-									case 1:
-										mSelectedItems[3] = true;
-										break;
-									case 2:
-										mSelectedItems[4] = true;
-										break;
-									}
-								} catch (NumberFormatException e) {
-								}
-								for (int i = 0; i < mSelectedItems.length; i++) {
-									if (mSelectedItems[i] != not) {
-										prio = i - 2;
-										break;
-									}
-								}
-							}
-							break;
-						}
-					}
-				}
-			} catch (NullPointerException e) {
-				id = 0;
-				due = null;
-				Toast.makeText(main, R.string.no_lists, Toast.LENGTH_LONG)
-						.show();
-			}
-		}
-		if (main.preferences.getBoolean("semanticNewTask", false)) {
-			GregorianCalendar tempdue = new GregorianCalendar();
-			String lowername = name.toLowerCase(Locale.getDefault());
-			Log.e(TAG, lowername);
-			for (String k : dueMap.keySet()) {
-				if (lowername.startsWith(k)) {
-					tempdue.add(GregorianCalendar.DAY_OF_MONTH, dueMap.get(k));
-					due = tempdue;
-					name = name.substring(k.length()).trim();
-					break;
-				}
-			}
-		}
-		Task task = Task.newTask(name, id, due, prio);
-		if (main.isTablet) {
-			main.tasksFragment_l.adapter.addToHead(task);
-			main.tasksFragment_l.values.add(0, task);
-			main.tasksFragment_r.adapter.addToHead(task);
-			main.tasksFragment_r.values.add(0, task);
-			main.tasksFragment_l.adapter.notifyDataSetChanged();
-			main.tasksFragment_r.adapter.notifyDataSetChanged();
-		} else {
+
+		ListMirakel list = main.getCurrentList();
+		try {
+			Task task = Semantic.createTask(name, list,
+					main.preferences.getBoolean("semanticNewTask", true));
+
 			adapter.addToHead(task);
 			values.add(0, task);
 			adapter.notifyDataSetChanged();
+
+			main.getListFragment().update();
+			if (!PreferenceManager.getDefaultSharedPreferences(main)
+					.getBoolean("hideKeyboard", true)) {
+				focusNew();
+			}
+			return true;
+		} catch (Semantic.NoListsException e) {
+			Toast.makeText(main, R.string.no_lists, Toast.LENGTH_LONG).show();
+			return false;
 		}
-		main.getListFragment().update();
-		if (!PreferenceManager.getDefaultSharedPreferences(main).getBoolean(
-				"hideKeyboard", true)) {
-			focusNew();
-		}
-		return true;
+
 	}
 
 	public void updateList() {
@@ -400,6 +332,7 @@ public class TasksFragment extends Fragment {
 		values = tasks;
 	}
 
+	@SuppressLint("NewApi")
 	protected void update(boolean reset) {
 		if (!created)
 			return;
@@ -417,11 +350,14 @@ public class TasksFragment extends Fragment {
 				setScrollPosition(0);
 			return;
 		}
+		if (adapter != null) {
+			adapter.resetSelected();
+		}
 
 		main.showMessageFromSync();
 
 		final ListView listView = (ListView) view.findViewById(R.id.tasks_list);
-		AsyncTask<Void, Void, TaskAdapter> task = new AsyncTask<Void, Void, TaskAdapter>() {
+		AsyncTask<Void, Void, TaskAdapter> asyncTask = new AsyncTask<Void, Void, TaskAdapter>() {
 			@Override
 			protected TaskAdapter doInBackground(Void... params) {
 				adapter = new TaskAdapter(main, R.layout.tasks_row,
@@ -449,73 +385,161 @@ public class TasksFragment extends Fragment {
 										});
 
 							}
-						}, main.getCurrentList().getId(),
-						main.preferences.getBoolean("DarkTheme", false));
+						}, main.getCurrentList().getId());
 				return adapter;
 			}
 
 			@Override
 			protected void onPostExecute(TaskAdapter adapter) {
 				listView.setAdapter(adapter);
+
 				finishLoad = true;
 			}
 		};
 
-		task.execute();
-		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View item,
-					int position, final long id) {
-				AlertDialog.Builder builder = new AlertDialog.Builder(
-						getActivity());
-				Task task = values.get((int) id);
-				builder.setTitle(task.getName());
-				List<CharSequence> items = new ArrayList<CharSequence>(Arrays
-						.asList(getActivity().getResources().getStringArray(
-								R.array.task_actions_items)));
+		asyncTask.execute();
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+			listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+				@Override
+				public boolean onItemLongClick(AdapterView<?> parent,
+						View item, int position, final long id) {
+					AlertDialog.Builder builder = new AlertDialog.Builder(
+							getActivity());
+					Task task = values.get((int) id);
+					builder.setTitle(task.getName());
+					List<CharSequence> items = new ArrayList<CharSequence>(
+							Arrays.asList(getActivity().getResources()
+									.getStringArray(R.array.task_actions_items)));
 
-				builder.setItems(items.toArray(new CharSequence[items.size()]),
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int item) {
-								Task task = values.get((int) id);
-								switch (item) {
-								case TASK_RENAME:
-									main.setCurrentTask(task);
-									break;
-								case TASK_MOVE:
-									main.handleMoveTask(task);
-									break;
-								case TASK_DESTROY:
-									main.handleDestroyTask(task);
-									break;
+					builder.setItems(
+							items.toArray(new CharSequence[items.size()]),
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int item) {
+									Task task = values.get((int) id);
+									switch (item) {
+									case TASK_RENAME:
+										main.setCurrentTask(task);
+										break;
+									case TASK_MOVE:
+										main.handleMoveTask(task);
+										break;
+									case TASK_DESTROY:
+										main.handleDestroyTask(task);
+										break;
+									}
 								}
-							}
-						});
+							});
 
-				AlertDialog dialog = builder.create();
-				dialog.show();
-				return false;
+					AlertDialog dialog = builder.create();
+					dialog.show();
+					return true;
+				}
+			});
+		} else {
+			listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+			if (adapter != null) {
+				adapter.resetSelected();
 			}
-		});
+			listView.setHapticFeedbackEnabled(true);
+			listView.setMultiChoiceModeListener(new MultiChoiceModeListener() {
+
+				@Override
+				public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+					menu.findItem(R.id.edit_task).setVisible(
+							adapter.getSelectedCount() <= 1);
+					return false;
+				}
+
+				@Override
+				public void onDestroyActionMode(ActionMode mode) {
+					adapter.resetSelected();
+				}
+
+				@Override
+				public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+					MenuInflater inflater = mode.getMenuInflater();
+					inflater.inflate(R.menu.context_tasks, menu);
+					mActionMode = mode;
+
+					return true;
+				}
+
+				@Override
+				public boolean onActionItemClicked(ActionMode mode,
+						MenuItem item) {
+					List<Task> tasks = adapter.getSelected();
+					switch (item.getItemId()) {
+					case R.id.menu_delete:
+						main.handleDestroyTask(tasks);
+						break;
+					case R.id.menu_move:
+						main.handleMoveTask(tasks);
+						break;
+					case R.id.edit_task:
+						main.setCurrentTask(tasks.get(0), true);
+						break;
+					case R.id.done_task:
+						for (Task t : tasks) {
+							t.setDone(true);
+							try {
+								t.save();
+							} catch (NoSuchListException e) {
+								Log.d(TAG, "list did vanish");
+							}
+						}
+						adapter.notifyDataSetChanged();
+						break;
+					}
+					mode.finish();
+					return false;
+				}
+
+				@Override
+				public void onItemCheckedStateChanged(ActionMode mode,
+						int position, long id, boolean checked) {
+					Log.d(TAG, "item " + position + " selected");
+					int oldCount = adapter.getSelectedCount();
+					adapter.setSelected(position, checked);
+					int newCount = adapter.getSelectedCount();
+					Log.e(TAG, "old count: " + oldCount + " | newCount: "
+							+ newCount);
+					mode.setTitle(main.getResources().getQuantityString(
+							R.plurals.selected_tasks, newCount, newCount));
+					if ((oldCount < 2 && newCount >= 2)
+							|| (oldCount >= 2 && newCount < 2)) {
+						mode.invalidate();
+					}
+
+				}
+			});
+		}
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View item,
 					int position, long id) {
 				// TODO Remove Bad Hack
-				Task t = values.get((int) id);
-				Log.v(TAG, "Switch to Task " + t.getId());
-				main.setCurrentTask(t, true);
+				Task task = values.get((int) id);
+				Log.v(TAG, "Switch to Task " + task.getId() +" (" + task.getUUID() + ")");
+				main.setCurrentTask(task, true);
 			}
 		});
+	}
+
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	public void closeActionMode() {
+		if (mActionMode != null
+				&& Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+			mActionMode.finish();
 	}
 
 	public TaskAdapter getAdapter() {
 		return adapter;
 	}
+
 	public ListView getListView() {
 		return listView;
 	}
-
 
 	public void setScrollPosition(int pos) {
 		if (listView == null)

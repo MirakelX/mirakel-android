@@ -19,6 +19,7 @@
 
 package de.azapps.mirakel.model.list;
 
+import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 import android.content.ContentValues;
 
 class ListBase {
@@ -28,14 +29,15 @@ class ListBase {
 	private int sortBy;
 	private String created_at;
 	private String updated_at;
-	private int syncState;
+	private SYNC_STATE syncState;
 	private int lft, rgt;
+	private int color;
 
 	ListBase() {
 	}
 
 	ListBase(int id, String name, short sort_by, String created_at,
-			String updated_at, int sync_state, int lft, int rgt) {
+			String updated_at, SYNC_STATE sync_state, int lft, int rgt, int color) {
 		this.setId(id);
 		this.setCreatedAt(created_at);
 		this.setName(name);
@@ -44,6 +46,7 @@ class ListBase {
 		this.setSyncState(sync_state);
 		this.setLft(lft);
 		this.setRgt(rgt);
+		this.setColor(color);
 	}
 
 	ListBase(int id, String name) {
@@ -107,6 +110,14 @@ class ListBase {
 		this.rgt = rgt;
 	}
 
+	public int getColor() {
+		return color;
+	}
+
+	public void setColor(int color) {
+		this.color = color;
+	}
+
 	@Override
 	public String toString() {
 		return this.name;
@@ -119,17 +130,18 @@ class ListBase {
 		cv.put("created_at", created_at);
 		cv.put("updated_at", updated_at);
 		cv.put("sort_by", sortBy);
-		cv.put("sync_state", syncState);
+		cv.put("sync_state", syncState.toInt());
 		cv.put("lft", lft);
 		cv.put("rgt", rgt);
+		cv.put("color", color);
 		return cv;
 	}
 
-	public int getSyncState() {
+	public SYNC_STATE getSyncState() {
 		return syncState;
 	}
 
-	public void setSyncState(int sync_state) {
+	public void setSyncState(SYNC_STATE sync_state) {
 		this.syncState = sync_state;
 	}
 

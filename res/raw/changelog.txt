@@ -17,6 +17,24 @@
     </style>
   </head>
   <body>
+$ 2.0
+  % Version 2.0
+  _ 2013-10-13
+  ! Awesome new UI and many new and cool features!
+    * New logo
+    * New UI
+    * <a href="http://mirakel.azapps.de/help_en.html#subtasks">Subtasks</a>
+    * Add files to Tasks
+    * Recurring Tasks
+    * Configure your <a href="http://mirakel.azapps.de/help_en.html#semantic-new-tasks">Semantic new Tasks</a>
+    * Redesign settings
+    * New translations: Norwegian, Slovenian
+    * Sync with <a href="http://mirakel.azapps.de/help_en.html#caldav-sync">CalDAV</a>
+    * Improved <a href="http://mirakel.azapps.de/help_en.html#taskwarrior-sync">Taswkarrior</a>-sync
+    * <a href="http://mirakel.azapps.de/help_en.html">Help</a>
+    * Bugfixes
+  ! Now Mirakel is the best todo list app on the market ;) If you don't think so, tell us, what we can improve!
+  
 $ 1.1.1
   % Version 1.1.1
   _ 2013-09-22

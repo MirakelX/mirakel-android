@@ -63,6 +63,7 @@ import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -82,7 +83,9 @@ import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_TYPES;
+import de.azapps.mirakel.sync.caldav.CalDavSync;
 import de.azapps.mirakel.sync.mirakel.MirakelSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
 import de.azapps.mirakelandroid.R;
@@ -177,6 +180,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				 * SYNC-Views Edit this if you want to implement a new Sync
 				 */
 				String syncTypeString = mType.getSelectedItem().toString();
+				Log.d(TAG,syncTypeString);
 				syncType = SyncAdapter.getSyncType(syncTypeString);
 				mMessage.setText(syncTypeString);
 				ViewSwitcher switcher = (ViewSwitcher) findViewById(R.id.switcher_login);
@@ -188,6 +192,22 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				case MIRAKEL:
 					if (switcher.getCurrentView().getId() != R.id.login_mirakel)
 						switcher.showPrevious();
+					mUsernameEdit.setHint(R.string.Email);
+					mUsernameEdit
+							.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+					((EditText) findViewById(R.id.server_edit))
+							.setText(R.string.offical_server_url);
+					break;
+				case CALDAV:
+					if (switcher.getCurrentView().getId() != R.id.login_mirakel) {
+						switcher.showPrevious();
+					}
+					mUsernameEdit
+							.setHint(R.string.login_activity_username_label);
+					mUsernameEdit.setInputType(InputType.TYPE_CLASS_TEXT);
+					((EditText) findViewById(R.id.server_edit)).setText("");
+					break;
+				default:
 					break;
 				}
 			}
@@ -213,6 +233,21 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 					public void onClick(View v) {
 						Helpers.showFileChooser(CONFIG_TASKWARRIOR,
 								getString(R.string.select_config), a);
+
+					}
+				});
+
+		((Button) findViewById(R.id.send_mail))
+				.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						Helpers.contact(a,"[Mirakel] Registration TW-Server","Hey Mirakel team,\n" +
+								"Please setup an account for me.\n" +
+								"My username: random (optional)\n" +
+								"My company: random (optional)\n\n" +
+								"Other things I want to say:\n\n" +
+								"Thanks,\n[A Mirakel user]");
 
 					}
 				});
@@ -292,35 +327,37 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 			if (((CheckBox) findViewById(R.id.resync)).isChecked()) {
 				Mirakel.getWritableDatabase().execSQL(
 						"Delete from " + Task.TABLE + " where sync_state="
-								+ Network.SYNC_STATE.DELETE);
+								+ SYNC_STATE.DELETE);
 				Mirakel.getWritableDatabase().execSQL(
 						"Delete from " + ListMirakel.TABLE
-								+ " where sync_state="
-								+ Network.SYNC_STATE.DELETE);
+								+ " where sync_state=" + SYNC_STATE.DELETE);
 				Mirakel.getWritableDatabase().execSQL(
 						"Update " + Task.TABLE + " set sync_state="
-								+ Network.SYNC_STATE.ADD);
+								+ SYNC_STATE.ADD);
 				Mirakel.getWritableDatabase().execSQL(
 						"Update " + ListMirakel.TABLE + " set sync_state="
-								+ Network.SYNC_STATE.ADD);
+								+ SYNC_STATE.ADD);
 			}
 
 			/**
 			 * SYNC Edit this if you want to implement a new Sync ––– Add your
 			 * own handle*Login()
 			 */
-			boolean successfull=true;
+			boolean successfull = true;
 			switch (syncType) {
 			case TASKWARRIOR:
 				Log.v(TAG, "Use Taskwarrior");
 				try {
 					finishTWLogin();
 				} catch (FileNotFoundException e) {
-					successfull=false;
+					successfull = false;
 				}
 				break;
 			case MIRAKEL:
 				handleMirakelLogin();
+				break;
+			case CALDAV:
+				handleCalDavLogin();
 				break;
 			default:
 				Log.wtf(TAG, "Not supported sync-type.");
@@ -328,7 +365,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 						R.string.wrong_sync_type, Toast.LENGTH_LONG).show();
 				return;
 			}
-			if(successfull){
+			if (successfull) {
 				final Intent intent = new Intent();
 				intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, mUsername);
 				intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE,
@@ -336,10 +373,11 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				setAccountAuthenticatorResult(intent.getExtras());
 				setResult(RESULT_OK, intent);
 				finish();
-			}else{
+			} else {
 				switch (syncType) {
 				case TASKWARRIOR:
-					((TextView)findViewById(R.id.message_bottom)).setText(R.string.wrong_config);
+					((TextView) findViewById(R.id.message_bottom))
+							.setText(R.string.wrong_config);
 					break;
 				default:
 					Log.wtf(TAG, "unkown error");
@@ -347,6 +385,19 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				}
 			}
 		}
+	}
+
+	private void handleCalDavLogin() {
+		Account account = new Account(mUsernameEdit.getText().toString(),
+				Mirakel.ACCOUNT_TYPE);
+		Bundle b = new Bundle();
+		b.putString(SyncAdapter.BUNDLE_SERVER_TYPE, CalDavSync.TYPE);
+		b.putString(SyncAdapter.BUNDLE_SERVER_URL,
+				((EditText) findViewById(R.id.server_edit)).getText()
+						.toString());
+		String pwd = mPasswordEdit.getText().toString();
+		mAccountManager.addAccountExplicitly(account, pwd, b);
+
 	}
 
 	private void finishTWLogin() throws FileNotFoundException {
@@ -364,36 +415,41 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				Log.e(TAG, "cannot read file");
 				return;
 			}
-			try{
+			try {
 				Bundle b = new Bundle();
-				b.putString(SyncAdapter.BUNDLE_SERVER_TYPE, TaskWarriorSync.TYPE);
+				b.putString(SyncAdapter.BUNDLE_SERVER_TYPE,
+						TaskWarriorSync.TYPE);
 				String content = new String(buffer);
 				String[] t = content.split("org: ");
 				Log.d(TAG, "user: " + t[0].replace("username: ", ""));
-				final Account account = new Account(t[0].replace("username: ", "")
-						.replace("\n", ""), Mirakel.ACCOUNT_TYPE);
+				final Account account = new Account(t[0].replace("username: ",
+						"").replace("\n", ""), Mirakel.ACCOUNT_TYPE);
 				t = t[1].split("user key: ");
 				Log.d(TAG, "org: " + t[0].replace("\n", ""));
 				b.putString(SyncAdapter.BUNDLE_ORG, t[0].replace("\n", ""));
+
 				t = t[1].split("server: ");
 				Log.d(TAG, "user key: " + t[0].replace("\n", ""));
 				String pwd = t[0].replace("\n", "");
+
 				t = t[1].split("Client.cert:\n");
 				Log.d(TAG, "server: " + t[0].replace("\n", ""));
-				b.putString(SyncAdapter.BUNDLE_SERVER_URL, t[0].replace("\n", ""));
+				b.putString(SyncAdapter.BUNDLE_SERVER_URL,
+						t[0].replace("\n", ""));
+
 				t = t[1].split("ca.cert:\n");
 				Log.d(TAG, "client: " + t[0].replace("\n", ""));
-				FileUtils.writeToFile(new File(getFilesDir().getParent()
-						+ "/client.cert.pem"), t[0]);
+
+				FileUtils.writeToFile(
+						new File(TaskWarriorSync.CLIENT_CERT_FILE), t[0]);
 				Log.d(TAG, "ca: " + t[1].replace("\n", ""));
-				FileUtils.writeToFile(new File(getFilesDir().getParent()
-						+ "/ca.cert.pem"), t[1]);
+				FileUtils.writeToFile(new File(TaskWarriorSync.CA_FILE), t[1]);
 				mAccountManager.addAccountExplicitly(account, pwd, b);
-			}catch(ArrayIndexOutOfBoundsException e){
-				Log.e(TAG,"wrong Configfile");
+			} catch (ArrayIndexOutOfBoundsException e) {
+				Log.e(TAG, "wrong Configfile");
 				throw new FileNotFoundException();
 			}
-			
+
 		} else {
 			Log.e(TAG, "File not found");
 		}

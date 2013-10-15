@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Mirakel is an Android App for Managing your ToDo-Lists
+  
+  Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
+  
+      This program is free software: you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation, either version 3 of the License, or
+      any later version.
+  
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+  
+      You should have received a copy of the GNU General Public License
+      along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="category_gui"
+    android:title="@string/ui_settings_title" >
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="DarkTheme"
+        android:title="@string/dark_theme" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="KillButton"
+        android:title="@string/kill_button" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="highlightSelected"
+        android:summary="@string/highlightSelected_summary"
+        android:title="@string/highlightSelected" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="dateFormatRelative"
+        android:summary="@string/settings_date_format_relative_summary"
+        android:title="@string/settings_date_format_relative" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="useBtnSpeak"
+        android:title="@string/settings_use_btn_speak" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="useBtnCamera"
+        android:title="@string/settings_use_btn_camera" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="oldLogo"
+        android:summary="@string/settings_old_logo_summary"
+        android:title="@string/settings_old_logo" />
+
+</PreferenceScreen>

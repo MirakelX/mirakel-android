@@ -22,17 +22,34 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+
+import com.larswerkman.colorpicker.ColorPicker;
+import com.larswerkman.colorpicker.SVBar;
+
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakelandroid.R;
@@ -46,26 +63,42 @@ public class ListFragment extends Fragment {
 	protected boolean EditName;
 	private boolean created = false;
 	private DragNDropListView listView;
-	private static final int LIST_RENAME = 0, LIST_DESTROY = 1;
+	private static final int LIST_COLOR = 0, LIST_RENAME = 1, LIST_DESTROY = 2,
+			LIST_SHARE = 3;
 	protected static final String TAG = "ListFragment";
 	private boolean enableDrag;
+	private ActionMode mActionMode = null;
 
 	public void setActivity(MainActivity activity) {
 		main = activity;
 	}
 
+	private static ListFragment me = null;
+
+	private static void setSingleton(ListFragment me) {
+		ListFragment.me = me;
+	}
+
+	public static ListFragment getSingleton() {
+		return me;
+	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		setSingleton(this);
 		main = (MainActivity) getActivity();
 		EditName = false;
 		enableDrag = false;
 		view = inflater.inflate(R.layout.activity_list, container, false);
-		if (getResources().getBoolean(R.bool.isTablet)) {
-			view.findViewById(R.id.task_fragment_in_tasks).setVisibility(
-					View.GONE);
-			main.tasksFragment_l = (TasksFragment) getFragmentManager()
-					.findFragmentById(R.id.tasks_fragment_in_lists);
+		if (PreferenceManager.getDefaultSharedPreferences(main).getBoolean(
+				"DarkTheme", false)) {
+			view.findViewById(R.id.lists_list).setBackgroundColor(
+					getResources()
+							.getColor(R.color.background_dark_transparent));
+		} else {
+			view.findViewById(R.id.lists_list).setBackgroundColor(
+					getResources().getColor(android.R.color.background_light));
 		}
 		// Inflate the layout for this fragment
 		created = true;
@@ -73,11 +106,12 @@ public class ListFragment extends Fragment {
 		return view;
 	}
 
-	public void enable_drop(boolean drag) {
+	public void enableDrop(boolean drag) {
 		enableDrag = drag;
 		update();
 	}
 
+	@SuppressLint("NewApi")
 	public void update() {
 		if (!created)
 			return;
@@ -144,47 +178,178 @@ public class ListFragment extends Fragment {
 				main.setCurrentList(list, item);
 			}
 		});
-		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+			listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
-			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View item,
-					int position, final long id) {
+				@Override
+				public boolean onItemLongClick(AdapterView<?> parent,
+						View item, int position, final long id) {
 
-				AlertDialog.Builder builder = new AlertDialog.Builder(
-						getActivity());
-				ListMirakel list = values.get((int) id);
-				builder.setTitle(list.getName());
-				List<CharSequence> items = new ArrayList<CharSequence>(Arrays
-						.asList(getActivity().getResources().getStringArray(
-								R.array.list_actions_items)));
+					AlertDialog.Builder builder = new AlertDialog.Builder(
+							getActivity());
+					ListMirakel list = values.get((int) id);
+					builder.setTitle(list.getName());
+					List<CharSequence> items = new ArrayList<CharSequence>(
+							Arrays.asList(getActivity().getResources()
+									.getStringArray(R.array.list_actions_items)));
 
-				builder.setItems(items.toArray(new CharSequence[items.size()]),
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int item) {
-								ListMirakel list = values.get((int) id);
-								switch (item) {
-								case LIST_RENAME:
-									editList(list);
-									break;
-								case LIST_DESTROY:
-									main.handleDestroyList(list);
-									break;
+					builder.setItems(
+							items.toArray(new CharSequence[items.size()]),
+							new DialogInterface.OnClickListener() {
+
+								public void onClick(DialogInterface dialog,
+										int item) {
+									ListMirakel list = values.get((int) id);
+									switch (item) {
+									case LIST_COLOR:
+										editColor(list);
+										break;
+									case LIST_RENAME:
+										editList(list);
+										break;
+									case LIST_DESTROY:
+										main.handleDestroyList(list);
+										break;
+									case LIST_SHARE:
+										Helpers.share(getActivity(), list);
+										break;
+									}
 								}
-							}
-						});
+							});
 
-				AlertDialog dialog = builder.create();
-				dialog.show();
+					AlertDialog dialog = builder.create();
+					dialog.show();
 
-				return false;
+					return false;
+				}
+			});
+		} else {
+			listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+			if (adapter != null) {
+				adapter.resetSelected();
 			}
-		});
+			listView.setHapticFeedbackEnabled(true);
+			listView.setMultiChoiceModeListener(new MultiChoiceModeListener() {
+
+				@Override
+				public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+					menu.findItem(R.id.edit_list).setVisible(
+							adapter.getSelectedCount() <= 1);
+					menu.findItem(R.id.share_list_from_lists).setVisible(
+							adapter.getSelectedCount() <= 1);
+					return false;
+				}
+
+				@Override
+				public void onDestroyActionMode(ActionMode mode) {
+					adapter.resetSelected();
+				}
+
+				@SuppressLint("NewApi")
+				@Override
+				public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+					MenuInflater inflater = mode.getMenuInflater();
+					inflater.inflate(R.menu.context_lists, menu);
+					mActionMode = mode;
+					return true;
+				}
+
+				@Override
+				public boolean onActionItemClicked(ActionMode mode,
+						MenuItem item) {
+					List<ListMirakel> lists = adapter.getSelected();
+					switch (item.getItemId()) {
+					case R.id.menu_delete:
+						main.handleDestroyList(lists);
+						break;
+					case R.id.menu_color:
+						editColor(lists);
+						break;
+					case R.id.edit_list:
+						editList(lists.get(0));
+						break;
+					case R.id.share_list_from_lists:
+						Helpers.share(getActivity(), lists.get(0));
+						break;
+					}
+					mode.finish();
+					return false;
+				}
+
+				@Override
+				public void onItemCheckedStateChanged(ActionMode mode,
+						int position, long id, boolean checked) {
+					Log.d(TAG, "item " + position + " selected");
+					int oldCount = adapter.getSelectedCount();
+					adapter.setSelected(position, checked);
+					int newCount = adapter.getSelectedCount();
+					Log.e(TAG, "old count: " + oldCount + " | newCount: "
+							+ newCount);
+					mode.setTitle(main.getResources().getQuantityString(
+							R.plurals.selected_lists, newCount, newCount));
+					if ((oldCount < 2 && newCount >= 2)
+							|| (oldCount >= 2 && newCount < 2)) {
+						mode.invalidate();
+					}
+
+				}
+			});
+		}
+	}
+	
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	public void closeActionMode() {
+		if(mActionMode!=null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+			mActionMode.finish();
 	}
 
 	public ListAdapter getAdapter() {
 		return adapter;
 	}
 
+	void editColor(final ListMirakel list) {
+		List<ListMirakel> l = new ArrayList<ListMirakel>();
+		l.add(list);
+		editColor(l);
+	}
+
+	void editColor(final List<ListMirakel> lists) {
+		final View v = ((LayoutInflater) main
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
+				R.layout.color_picker, null);
+		final ColorPicker cp = ((ColorPicker) v.findViewById(R.id.color_picker));
+		if (lists.size() == 1) {
+			cp.setColor(lists.get(0).getColor());
+			cp.setOldCenterColor(lists.get(0).getColor());
+		}
+		final SVBar op = ((SVBar) v.findViewById(R.id.svbar_color_picker));
+		cp.addSVBar(op);
+		new AlertDialog.Builder(main).setView(v)
+				.setTitle(main.getString(R.string.list_change_color))
+				.setPositiveButton(R.string.set_color, new OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						for (ListMirakel list : lists) {
+							list.setColor(cp.getColor());
+							list.save();
+						}
+						main.getListFragment().update();
+
+					}
+				})
+				.setNegativeButton(R.string.unset_color, new OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						for (ListMirakel list : lists) {
+							list.setColor(0);
+							list.save();
+						}
+						main.getListFragment().update();
+					}
+				}).show();
+	}
 
 	/**
 	 * Edit the name of the List
@@ -194,7 +359,7 @@ public class ListFragment extends Fragment {
 	void editList(final ListMirakel list) {
 
 		input = new EditText(main);
-		input.setText(list == null ? getString(R.string.list_menu_new_list)
+		input.setText(list == null ? ""
 				: list.getName());
 		input.setTag(main);
 		input.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
@@ -224,6 +389,14 @@ public class ListFragment extends Fragment {
 								// Do nothing.
 							}
 						}).show();
+		input.postDelayed(new Runnable() {
+			  @Override
+			  public void run() {
+			    InputMethodManager keyboard = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+			    keyboard.showSoftInput(input, InputMethodManager.SHOW_IMPLICIT);
+			  }
+			},50);
+
 	}
 
 }

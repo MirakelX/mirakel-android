@@ -21,6 +21,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
+    android:background="@drawable/list_background"
     android:padding="5dp" >
 
     <ImageView
@@ -42,8 +43,10 @@
 
     <TextView
         android:id="@+id/list_row_task_number"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="40dp"
+        android:background="@drawable/rectangle"
+        android:textColor="#FFFFFF"
         android:layout_weight="0"
         android:gravity="center"
         android:textIsSelectable="false"

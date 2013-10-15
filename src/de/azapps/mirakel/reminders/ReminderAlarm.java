@@ -111,11 +111,15 @@ public class ReminderAlarm extends BroadcastReceiver {
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(
 				context);
 
+		int icon = R.drawable.mirakel;
+		if (preferences.getBoolean("oldLogo", false)) {
+			icon = R.drawable.ic_launcher;
+		}
 		builder.setContentTitle(
 				context.getString(R.string.reminder_notification_title,
 						task.getName()))
 				.setContentText(task.getContent())
-				.setSmallIcon(R.drawable.ic_launcher)
+				.setSmallIcon(icon)
 				.setContentIntent(pOpenIntent)
 				.setLights(Color.BLUE, 1500, 300)
 				.setOngoing(persistent)
@@ -123,11 +127,11 @@ public class ReminderAlarm extends BroadcastReceiver {
 				.setSound(
 						RingtoneManager
 								.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-				.addAction(R.drawable.ic_launcher,
+				.addAction(icon,
 						context.getString(R.string.reminder_notification_done),
 						pDoneIntent)
 				.addAction(
-						R.drawable.ic_launcher,
+						icon,
 						context.getString(R.string.reminder_notification_later),
 						pLaterIntent);
 
@@ -137,12 +141,11 @@ public class ReminderAlarm extends BroadcastReceiver {
 			String priority = ""
 					+ (task.getPriority() > 0 ? "+" + task.getPriority() : task
 							.getPriority());
-			String due;
+			CharSequence due;
 			if (task.getDue() == null) {
 				due = context.getString(R.string.no_date);
 			} else {
-				due = Helpers.formatDate(task.getDue(),
-						context.getString(R.string.dateFormat));
+				due = Helpers.formatDate(context, task.getDue());
 			}
 
 			inboxStyle.addLine(context.getString(

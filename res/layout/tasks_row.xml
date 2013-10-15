@@ -19,10 +19,11 @@
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:id="@+id/tasks_row"
     android:layout_height="match_parent"
     android:descendantFocusability="blocksDescendants"
     android:orientation="horizontal"
-    android:padding="5dp" >
+    android:padding="@dimen/task_padding" >
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -94,13 +95,15 @@
     </LinearLayout>
 
     <TextView
+        android:background="@drawable/priority_rectangle"
         android:id="@+id/tasks_row_priority"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_alignParentRight="true"
         android:gravity="center"
         android:textIsSelectable="false"
-        android:textSize="18sp" >
+        android:textSize="18sp" 
+        android:layout_marginLeft="2.5dp">
     </TextView>
 
 </RelativeLayout>

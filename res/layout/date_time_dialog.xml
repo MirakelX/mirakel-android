@@ -7,6 +7,17 @@
     <de.azapps.mirakel.helper.DateTimePicker
         android:id="@+id/DateTimePicker"
         android:layout_width="fill_parent"
+        android:layout_centerHorizontal="true"
         android:layout_height="wrap_content" />
+<!-- 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/DateTimePicker"
+        android:orientation="horizontal" >
 
+        <include layout="@layout/recurring" />
+    </LinearLayout>
+ -->
 </RelativeLayout>

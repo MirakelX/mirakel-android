@@ -80,8 +80,8 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	}
 
 	public RemoteViews getViewAt(int position) {
-		if(position>tasks.size()){
-			Log.wtf(TAG,"Klick on unkown Task");
+		if (position > tasks.size()) {
+			Log.wtf(TAG, "Klick on unkown Task");
 			return null;
 		}
 		Task task = tasks.get(position);

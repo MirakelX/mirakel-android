@@ -42,8 +42,10 @@ import android.content.ContentProviderClient;
 import android.content.Context;
 import android.content.SyncResult;
 import android.os.Bundle;
+import android.os.Looper;
 import android.widget.Toast;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.sync.caldav.CalDavSync;
 import de.azapps.mirakel.sync.mirakel.MirakelSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync.TW_ERRORS;
@@ -60,15 +62,58 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	private Context mContext;
 
 	public enum SYNC_TYPES {
-		MIRAKEL, TASKWARRIOR
+		MIRAKEL, TASKWARRIOR, CALDAV
 	};
+
+	public enum SYNC_STATE {
+		NOTHING, DELETE, ADD, NEED_SYNC, IS_SYNCED;
+		@Override
+		public String toString() {
+			return "" + toInt();
+		}
+
+		public short toInt() {
+			switch (this) {
+			case ADD:
+				return 1;
+			case DELETE:
+				return -1;
+			case IS_SYNCED:
+				return 3;
+			case NEED_SYNC:
+				return 2;
+			case NOTHING:
+				return 0;
+			default:
+				return 0;
+			}
+		}
+
+		public static SYNC_STATE parseInt(int i) {
+			switch (i) {
+			case -1:
+				return DELETE;
+			case 1:
+				return ADD;
+			case 2:
+				return NEED_SYNC;
+			case 3:
+				return IS_SYNCED;
+			case 0:
+			default:
+				return NOTHING;
+			}
+		}
+	}
 
 	public static SYNC_TYPES getSyncType(String type) {
 		if (type.equals("Mirakel")) {
 			return SYNC_TYPES.MIRAKEL;
 		} else if (type.equals("Taskwarrior")) {
 			return SYNC_TYPES.TASKWARRIOR;
-		} else
+		}else if(type.equals("CalDav")){
+			return SYNC_TYPES.CALDAV;
+		}else
 			return null;
 	}
 
@@ -91,7 +136,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			TW_ERRORS error = new TaskWarriorSync(mContext).sync(account);
 			switch (error) {
 			case NO_ERROR:
-				last_message=mContext.getText(R.string.finish_sync);
+				last_message = mContext.getText(R.string.finish_sync);
 				break;
 			case TRY_LATER:
 				last_message = mContext.getText(R.string.message_try_later);
@@ -113,8 +158,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				last_message = mContext.getText(R.string.message_message_error);
 				break;
 			}
+			Looper.prepare();
 			Toast.makeText(mContext, last_message, Toast.LENGTH_LONG).show();
-		} else {
+			Log.d(TAG, "finish Sync");
+		}else if(type.equals(CalDavSync.TYPE)){
+			new CalDavSync(mContext).sync(account);
+		}else {
 			Log.wtf(TAG, "Unknown SyncType");
 		}
 	}
