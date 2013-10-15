@@ -79,6 +79,17 @@
                         android:layout_height="wrap_content"
                         android:text="@string/howto_setup_server" />
 
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/register_server" 
+                        android:layout_margin="10dp"/>
+
+                    <Button
+                        android:id="@+id/send_mail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/send_mail" />
                     <Button
                         android:id="@+id/load_configfile"
                         android:layout_width="match_parent"

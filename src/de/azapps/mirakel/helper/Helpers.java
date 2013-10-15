@@ -223,13 +223,6 @@ public class Helpers {
 	}
 
 	public static void contact(Context context) {
-
-		Intent i = new Intent(Intent.ACTION_SEND);
-		i.setType("message/rfc822");
-		i.putExtra(Intent.EXTRA_EMAIL,
-				new String[] { context.getString(R.string.contact_email) });
-		i.putExtra(Intent.EXTRA_SUBJECT,
-				context.getString(R.string.contact_subject));
 		String mirakelVersion = "unknown";
 		try {
 			mirakelVersion = context.getPackageManager().getPackageInfo(
@@ -238,9 +231,20 @@ public class Helpers {
 			Log.e(TAG, "could not get version name from manifest!");
 			e.printStackTrace();
 		}
-		i.putExtra(Intent.EXTRA_TEXT, context.getString(R.string.contact_text,
-				mirakelVersion, android.os.Build.VERSION.SDK_INT,
-				android.os.Build.DEVICE));
+		contact(context, context.getString(R.string.contact_subject),
+				context.getString(R.string.contact_text, mirakelVersion,
+						android.os.Build.VERSION.SDK_INT,
+						android.os.Build.DEVICE));
+	}
+
+	public static void contact(Context context, String subject, String content) {
+
+		Intent i = new Intent(Intent.ACTION_SEND);
+		i.setType("message/rfc822");
+		i.putExtra(Intent.EXTRA_EMAIL,
+				new String[] { context.getString(R.string.contact_email) });
+		i.putExtra(Intent.EXTRA_SUBJECT, subject);
+		i.putExtra(Intent.EXTRA_TEXT, content);
 		try {
 			Intent ci = Intent.createChooser(i,
 					context.getString(R.string.contact_chooser));
@@ -291,7 +295,7 @@ public class Helpers {
 			Log.e(TAG, "context is null");
 			return;
 		}
-		//Log.d(TAG, json);
+		// Log.d(TAG, json);
 		SharedPreferences.Editor editor = settings.edit();
 		for (int i = settings.getInt("UndoNumber", 10); i > 0; i--) {
 			String old = settings.getString(UNDO + (i - 1), "");

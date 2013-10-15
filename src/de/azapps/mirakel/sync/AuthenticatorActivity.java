@@ -236,6 +236,21 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 
 					}
 				});
+
+		((Button) findViewById(R.id.send_mail))
+				.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						Helpers.contact(a,"[Mirakel] Registration TW-Server","Hey Mirakel team,\n" +
+								"Please setup an account for me.\n" +
+								"My username: random (optional)\n" +
+								"My company: random (optional)\n\n" +
+								"Other things I want to say:\n\n" +
+								"Thanks,\n[A Mirakel user]");
+
+					}
+				});
 		((Button) findViewById(R.id.ok_button))
 				.setOnClickListener(new OnClickListener() {
 
