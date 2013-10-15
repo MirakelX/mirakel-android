@@ -106,13 +106,13 @@ public class Recurring extends RecurringBase {
 
 	public void destroy() {
 		database.delete(TABLE, "_id=" + getId(), null);
-		//Fix recurring onDelete in TaskTable
+		// Fix recurring onDelete in TaskTable
 		ContentValues cv = new ContentValues();
 		cv.put("recurring", -1);
-		database.update(Task.TABLE, cv, "recurring="+getId(), null);
+		database.update(Task.TABLE, cv, "recurring=" + getId(), null);
 		cv = new ContentValues();
 		cv.put("recurring_reminder", -1);
-		database.update(Task.TABLE, cv, "recurring_reminder="+getId(), null);
+		database.update(Task.TABLE, cv, "recurring_reminder=" + getId(), null);
 	}
 
 	public static List<Recurring> all() {
@@ -155,7 +155,7 @@ public class Recurring extends RecurringBase {
 				.after(getStartDate())))
 				&& (getEndDate() == null || (getEndDate() != null && now
 						.before((getEndDate()))))) {
-			while (c.before(now)) {
+			do {
 				c.add(Calendar.DAY_OF_MONTH, getDays());
 				c.add(Calendar.MONTH, getMonths());
 				c.add(Calendar.YEAR, getYears());
@@ -163,7 +163,7 @@ public class Recurring extends RecurringBase {
 					c.add(Calendar.MINUTE, getMinutes());
 					c.add(Calendar.HOUR, getHours());
 				}
-			}
+			} while (c.before(now));
 		}
 		return c;
 	}

@@ -795,11 +795,12 @@ public class PreferencesHelper {
 		final CheckBoxPreference importDefaultList = (CheckBoxPreference) findPreference("importDefaultList");
 		if (importDefaultList != null) {
 			if (settings.getBoolean("importDefaultList", false)) {
+				ListMirakel list = ListMirakel.getList(settings.getInt(
+						"defaultImportList", -1));
+				if (list == null)
+					list = ListMirakel.first();
 				importDefaultList.setSummary(activity.getString(
-						R.string.import_default_list_summary,
-						ListMirakel.getList(
-								settings.getInt("defaultImportList", -1))
-								.getName()));
+						R.string.import_default_list_summary, list.getName()));
 			} else {
 				importDefaultList
 						.setSummary(R.string.import_no_default_list_summary);
