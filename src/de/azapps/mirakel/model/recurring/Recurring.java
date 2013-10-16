@@ -151,6 +151,7 @@ public class Recurring extends RecurringBase {
 
 	public Calendar addRecurring(Calendar c) {
 		Calendar now = new GregorianCalendar();
+		now.set(Calendar.SECOND, 0);
 		if ((getStartDate() == null || (getStartDate() != null && now
 				.after(getStartDate())))
 				&& (getEndDate() == null || (getEndDate() != null && now

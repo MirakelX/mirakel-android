@@ -139,9 +139,9 @@ public class TaskDialogHelpers {
 
 							}
 						}).show();
-		/*Spinner recurrence = (Spinner) mDateTimeDialogView
+		Spinner recurrence = (Spinner) mDateTimeDialogView
 				.findViewById(R.id.add_reccuring);
-		TaskDialogHelpers.handleRecurrence(ctx, task, recurrence, false);*/
+		TaskDialogHelpers.handleRecurrence(ctx, task, recurrence, false);
 	}
 
 	public static void handleRecurrence(final Context context, final Task task,

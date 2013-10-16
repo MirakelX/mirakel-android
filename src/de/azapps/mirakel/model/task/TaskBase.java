@@ -42,6 +42,7 @@ import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 
 class TaskBase {
+	@SuppressWarnings("unused")
 	private static final String TAG = "TaskBase";
 	private long id = 0;
 	private String uuid = "";
@@ -207,18 +208,6 @@ class TaskBase {
 	}
 
 	public Calendar getReminder() {
-		if(reminder==null)
-			return reminder;
-		if (recurrence_reminder != -1
-				&& reminder.before(new GregorianCalendar())) {
-			reminder = getRecurringReminder().addRecurring(due);
-			try {
-				edited.put("reminder", true);
-				((Task) this).save(false);
-			} catch (NoSuchListException e) {
-				Log.w(TAG, "List did vanish");
-			}
-		}
 		return reminder;
 	}
 

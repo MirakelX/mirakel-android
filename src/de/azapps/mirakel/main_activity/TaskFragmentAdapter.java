@@ -739,16 +739,7 @@ public class TaskFragmentAdapter extends
 
 								@Override
 								public void exec() {
-									if (task.getReminder() == null) {
-										holder.taskReminder
-												.setText(R.string.no_reminder);
-									} else {
-										holder.taskReminder.setText(new SimpleDateFormat(
-												context.getString(R.string.humanDateTimeFormat),
-												Locale.getDefault())
-												.format(task.getReminder()
-														.getTime()));
-									}
+									notifyDataSetChanged();
 									ReminderAlarm.updateAlarms(context);
 
 								}
