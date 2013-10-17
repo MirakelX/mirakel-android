@@ -21,7 +21,6 @@ package de.azapps.mirakel.model.task;
 import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,7 +34,6 @@ import com.google.gson.reflect.TypeToken;
 
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.DateTimeHelper;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.recurring.Recurring;
@@ -106,7 +104,7 @@ class TaskBase {
 	}
 
 	public Recurring getRecurring() {
-		Recurring r =Recurring.get(recurring);
+		Recurring r = Recurring.get(recurring);
 		return r;
 	}
 
@@ -185,9 +183,9 @@ class TaskBase {
 	public void setDone(boolean done) {
 		this.done = done;
 		edited.put("done", true);
-		if(done&&recurring!=-1&&due!=null){
-			due=getRecurring().addRecurring(due);
-			this.done=false;
+		if (done && recurring != -1 && due != null) {
+			due = getRecurring().addRecurring(due);
+			this.done = false;
 		}
 	}
 
@@ -202,7 +200,7 @@ class TaskBase {
 	public void setDue(Calendar due) {
 		this.due = due;
 		edited.put("due", true);
-		if(due==null){
+		if (due == null) {
 			setRecurrence(-1);
 		}
 	}
@@ -214,7 +212,7 @@ class TaskBase {
 	public void setReminder(Calendar reminder) {
 		this.reminder = reminder;
 		edited.put("reminder", true);
-		if(reminder==null){
+		if (reminder == null) {
 			setRecurrenceReminder(-1);
 		}
 	}
@@ -355,8 +353,8 @@ class TaskBase {
 			updatedAt = DateTimeHelper.formatDateTime(this.updatedAt);
 		cv.put("updated_at", updatedAt);
 		cv.put("sync_state", sync_state.toInt());
-		cv.put("recurring",recurring);
-		cv.put("recurring_reminder",recurrence_reminder);
+		cv.put("recurring", recurring);
+		cv.put("recurring_reminder", recurrence_reminder);
 
 		Gson gson = new GsonBuilder().create();
 		String additionalEntries = gson.toJson(this.additionalEntries);

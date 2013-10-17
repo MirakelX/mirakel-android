@@ -18,10 +18,9 @@
  ******************************************************************************/
 package de.azapps.mirakel.reminders;
 
+
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.Calendar;import java.util.GregorianCalendar;
 import java.util.List;
 
 import android.app.AlarmManager;
@@ -39,21 +38,19 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Helpers;
+import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakelandroid.R;
 
 public class ReminderAlarm extends BroadcastReceiver {
-	@SuppressWarnings("unused")
 	private static final String TAG = "ReminderAlarm";
 	public static String UPDATE_NOTIFICATION = "de.azapps.mirakel.reminders.ReminderAlarm.UPDATE_NOTIFICATION";
 	public static String SHOW_TASK = "de.azapps.mirakel.reminders.ReminderAlarm.SHOW_TASK";
 	public static String EXTRA_ID = "de.azapps.mirakel.reminders.ReminderAlarm.EXTRA_ID";
-	private SharedPreferences preferences;
-
-	NotificationManager nm;
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -68,16 +65,37 @@ public class ReminderAlarm extends BroadcastReceiver {
 		if (taskId == 0)
 			return;
 
-		preferences = PreferenceManager.getDefaultSharedPreferences(context);
 		Task task = Task.get(taskId);
 		if (task == null) {
 			Toast.makeText(context, R.string.task_vanished, Toast.LENGTH_LONG)
 					.show();
 			return;
 		}
+		if (task.getRecurringReminder() != null&&task.getReminder().compareTo(
+				task.getRecurringReminder()
+				.addRecurring(
+						(Calendar) task.getReminder().clone()))<1) {
+			task.setReminder(task.getRecurringReminder().addRecurring(
+					task.getReminder()));
+			alarmManager.set(AlarmManager.RTC_WAKEUP, task.getReminder()
+					.getTimeInMillis(), PendingIntent.getBroadcast(context, 0,
+							intent, PendingIntent.FLAG_UPDATE_CURRENT));
+			try {
+				task.save(false);
+			} catch (NoSuchListException e) {
+				Log.d(TAG, "cannot save Task");
+			}
+		}
+		createNotification(context, task);
+//		updateAlarms(context);
+	}
 
-		nm = (NotificationManager) context
+	private static void createNotification(Context context, Task task) {
+		Log.w(TAG, task.getName());
+		NotificationManager nm = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(context);
 
 		Intent openIntent = new Intent(context, MainActivity.class);
 		openIntent.setAction(MainActivity.SHOW_TASK);
@@ -172,6 +190,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
+				Log.e(TAG, "update");
 				alarmManager = (AlarmManager) ctx
 						.getSystemService(Context.ALARM_SERVICE);
 
@@ -203,9 +222,17 @@ public class ReminderAlarm extends BroadcastReceiver {
 						i = cancelAlarm(ctx, t, newTask, i);
 						continue;
 					} else if (newTask.getReminder() != null) {
-						if (newTask.getReminder().getTimeInMillis() > new Date()
-								.getTime()) {
+						Calendar now = new GregorianCalendar();
+						if (newTask.getReminder().after(now)&&newTask.getRecurringReminder()==null) {
 							closeNotificationFor(ctx, t.getId());
+							updateAlarm(ctx, newTask);
+						} else if (newTask.getReminder().after(now)
+								&& newTask.getRecurringReminder() != null
+								&& newTask.getReminder().compareTo(
+										newTask.getRecurringReminder()
+												.addRecurring(
+														newTask.getReminder()))>0
+								&& !now.after(newTask.getReminder())) {
 							updateAlarm(ctx, newTask);
 						}
 					}
@@ -218,6 +245,11 @@ public class ReminderAlarm extends BroadcastReceiver {
 				}
 			}
 		}).start();
+	}
+
+	protected static void reloadNotification(Context ctx, Task t) {
+		closeNotificationFor(ctx, t.getId());
+		createNotification(ctx, t);
 	}
 
 	private static boolean isAlarm(Task t2) {

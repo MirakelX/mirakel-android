@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -152,6 +153,7 @@ public class Recurring extends RecurringBase {
 	public Calendar addRecurring(Calendar c) {
 		Calendar now = new GregorianCalendar();
 		now.set(Calendar.SECOND, 0);
+		now.add(Calendar.MINUTE, -1);
 		if ((getStartDate() == null || (getStartDate() != null && now
 				.after(getStartDate())))
 				&& (getEndDate() == null || (getEndDate() != null && now
@@ -165,7 +167,7 @@ public class Recurring extends RecurringBase {
 					c.add(Calendar.HOUR, getHours());
 				}
 			} while (c.before(now));
-		}
+		}		
 		return c;
 	}
 

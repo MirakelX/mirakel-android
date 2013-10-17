@@ -20,7 +20,6 @@ import com.google.gson.JsonParser;
 
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
-import de.azapps.mirakel.helper.FileUtils;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.SyncAdapter;
