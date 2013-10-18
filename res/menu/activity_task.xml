@@ -16,8 +16,8 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android" 
-    xmlns:mirakel="http://schemas.android.com/apk/res-auto">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:mirakel="http://schemas.android.com/apk/res-auto" >
 
     <!--
     Move
@@ -28,37 +28,36 @@
     Credits
     Bugreport
     -->
-    
-    <item
-        android:id="@+id/menu_move"
-        android:icon="@android:drawable/ic_menu_set_as"
-        mirakel:showAsAction="ifRoom|withText"
-        android:title="@string/menu_move_task"/>
-    <item
-        android:id="@+id/menu_undo"
-        mirakel:showAsAction="never"
-        android:title="@string/action_undo"/>
-    <item
-        android:id="@+id/share_task"
-        android:icon="@android:drawable/ic_menu_share"
-        mirakel:showAsAction="ifRoom|withText"
-        android:title="@string/share_task"/>
-    <item
-        android:id="@+id/menu_sync_now_task"
-        mirakel:showAsAction="never"
-        android:title="@string/action_sync_now"/>
     <item
         android:id="@+id/menu_delete"
         android:icon="@android:drawable/ic_menu_delete"
-        mirakel:showAsAction="ifRoom|withText"
-        android:title="@string/menu_delete_task"/>
+        android:title="@string/menu_delete_task"
+        mirakel:showAsAction="ifRoom|withText"/>
+    <item
+        android:id="@+id/menu_move"
+        android:icon="@android:drawable/ic_menu_set_as"
+        android:title="@string/menu_move_task"
+        mirakel:showAsAction="ifRoom|withText"/>
+    <item
+        android:id="@+id/menu_undo"
+        android:title="@string/action_undo"
+        mirakel:showAsAction="never"/>
+    <item
+        android:id="@+id/share_task"
+        android:icon="@android:drawable/ic_menu_share"
+        android:title="@string/share_task"
+        mirakel:showAsAction="ifRoom|withText"/>
+    <item
+        android:id="@+id/menu_sync_now_task"
+        android:title="@string/action_sync_now"
+        mirakel:showAsAction="never"/>
     <item
         android:id="@+id/menu_settings_task"
-        mirakel:showAsAction="never"
-        android:title="@string/menu_settings"/>
+        android:title="@string/menu_settings"
+        mirakel:showAsAction="never"/>
     <item
         android:id="@+id/menu_kill_button"
-        mirakel:showAsAction="never"
-        android:title="@string/kill_app"/>
+        android:title="@string/kill_app"
+        mirakel:showAsAction="never"/>
 
 </menu>

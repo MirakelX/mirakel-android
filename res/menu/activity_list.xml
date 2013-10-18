@@ -16,8 +16,8 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android" 
-    xmlns:mirakel="http://schemas.android.com/apk/res-auto">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:mirakel="http://schemas.android.com/apk/res-auto" >
 
     <!--
     Add
@@ -27,33 +27,33 @@
     Credits
     Bugreport
     -->
-    
+
     <item
         android:id="@+id/menu_new_list"
         android:icon="@android:drawable/ic_menu_add"
-        mirakel:showAsAction="ifRoom|withText"
-        android:title="@string/list_menu_new_list">
+        android:title="@string/list_menu_new_list"
+        mirakel:showAsAction="ifRoom|withText">
     </item>
     <item
         android:id="@+id/menu_undo"
-        mirakel:showAsAction="never"
-        android:title="@string/action_undo"/>
+        android:title="@string/action_undo"
+        mirakel:showAsAction="never"/>
     <item
         android:id="@+id/menu_sync_now_list"
-        mirakel:showAsAction="never"
-        android:title="@string/action_sync_now"/>
+        android:title="@string/action_sync_now"
+        mirakel:showAsAction="never"/>
     <item
         android:id="@+id/menu_sort_lists"
         android:checkable="true"
-        mirakel:showAsAction="never"
-        android:title="@string/menu_sort_lists"/>
+        android:title="@string/menu_sort_lists"
+        mirakel:showAsAction="never"/>
     <item
         android:id="@+id/menu_settings_list"
-        mirakel:showAsAction="never"
-        android:title="@string/menu_settings"/>
+        android:title="@string/menu_settings"
+        mirakel:showAsAction="never"/>
     <item
         android:id="@+id/menu_kill_button"
-        mirakel:showAsAction="never"
-        android:title="@string/kill_app"/>
+        android:title="@string/kill_app"
+        mirakel:showAsAction="never"/>
 
 </menu>

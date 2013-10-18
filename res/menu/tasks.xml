@@ -16,8 +16,8 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android" 
-    xmlns:mirakel="http://schemas.android.com/apk/res-auto">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:mirakel="http://schemas.android.com/apk/res-auto" >
 
     <!--
     Search
@@ -29,46 +29,45 @@
     Credits
     Bugreport
     -->
-
-    <item
-        android:id="@+id/search"
-        android:icon="@android:drawable/ic_menu_search"
-        mirakel:showAsAction="ifRoom|withText"
-        android:title="@string/search">
-    </item>
-    <item
-        android:id="@+id/menu_undo"
-        mirakel:showAsAction="never"
-        android:title="@string/action_undo"/>
-    <item
-        android:id="@+id/share_list"
-        android:icon="@android:drawable/ic_menu_share"
-        mirakel:showAsAction="ifRoom|withText"
-        android:title="@string/share_list">
-    </item>
-    <item
-        android:id="@+id/menu_sync_now_tasks"
-        mirakel:showAsAction="never"
-        android:title="@string/action_sync_now"/>
-    <item
-        android:id="@+id/task_sorting"
-        android:icon="@android:drawable/ic_menu_sort_alphabetically"
-        mirakel:showAsAction="ifRoom|withText"
-        android:title="@string/task_menu_sorting">
-    </item>
     <item
         android:id="@+id/list_delete"
         android:icon="@android:drawable/ic_menu_delete"
-        mirakel:showAsAction="ifRoom|withText"
-        android:title="@string/menu_delete_list">
+        android:title="@string/menu_delete_list"
+        mirakel:showAsAction="ifRoom|withText">
+    </item>
+    <item
+        android:id="@+id/search"
+        android:icon="@android:drawable/ic_menu_search"
+        android:title="@string/search"
+        mirakel:showAsAction="ifRoom|withText">
+    </item>
+    <item
+        android:id="@+id/menu_undo"
+        android:title="@string/action_undo"
+        mirakel:showAsAction="never"/>
+    <item
+        android:id="@+id/share_list"
+        android:icon="@android:drawable/ic_menu_share"
+        android:title="@string/share_list"
+        mirakel:showAsAction="ifRoom|withText">
+    </item>
+    <item
+        android:id="@+id/menu_sync_now_tasks"
+        android:title="@string/action_sync_now"
+        mirakel:showAsAction="never"/>
+    <item
+        android:id="@+id/task_sorting"
+        android:icon="@android:drawable/ic_menu_sort_alphabetically"
+        android:title="@string/task_menu_sorting"
+        mirakel:showAsAction="ifRoom|withText">
     </item>
     <item
         android:id="@+id/menu_settings_tasks"
-        mirakel:showAsAction="never"
-        android:title="@string/action_settings"/>
+        android:title="@string/action_settings"
+        mirakel:showAsAction="never"/>
     <item
         android:id="@+id/menu_kill_button"
-        mirakel:showAsAction="never"
-        android:title="@string/kill_app"/>
+        android:title="@string/kill_app"
+        mirakel:showAsAction="never"/>
 
 </menu>
