@@ -24,5 +24,5 @@
     android:paddingBottom="10dp"
     android:drawablePadding="5dp"
     android:paddingLeft="@dimen/task_padding_for_icons"
-    android:paddingRight="@dimen/task_padding"
+    android:paddingRight="@dimen/task_padding_for_icons"
     android:textAppearance="?android:attr/textAppearanceLarge" />

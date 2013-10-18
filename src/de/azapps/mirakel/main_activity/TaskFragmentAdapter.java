@@ -34,6 +34,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
@@ -46,6 +47,7 @@ import android.text.TextWatcher;
 import android.text.util.Linkify;
 import android.util.Pair;
 import android.util.TypedValue;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -97,6 +99,8 @@ public class TaskFragmentAdapter extends
 	protected ActionMode mActionMode;
 	private static final int SUBTITLE_CONTENT = 0, SUBTITLE_SUBTASKS = 1,
 			SUBTITLE_FILES = 2;
+	private static final Integer active_color = android.R.color.holo_blue_light;
+	private static final Integer inactive_color = android.R.color.darker_gray;
 	private View.OnClickListener cameraButtonClick = null;
 
 	public class TYPE {
@@ -152,6 +156,7 @@ public class TaskFragmentAdapter extends
 
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View row = new View(context);
@@ -159,9 +164,21 @@ public class TaskFragmentAdapter extends
 			Log.w(TAG, "position > data");
 			return row;
 		}
+		int width;
+		Display display = ((Activity) context).getWindowManager()
+				.getDefaultDisplay();
+		;
+		try {
+			Point size = new Point();
+			display.getRealSize(size);
+			width = size.x;
+		} catch (NoSuchMethodError e) {
+			// API<17
+			width = display.getWidth();
+		}
 		switch (getItemViewType(position)) {
 		case TYPE.DUE:
-			row = setupDue(parent, convertView);
+			row = setupDue(parent, convertView, width);
 			break;
 		case TYPE.FILE:
 			row = setupFile(parent, files.get(data.get(position).second),
@@ -171,7 +188,8 @@ public class TaskFragmentAdapter extends
 			row = setupHeader(parent, convertView);
 			break;
 		case TYPE.REMINDER:
-			row = setupReminder(parent, convertView);
+			if (width < 600)
+				row = setupReminder(parent, convertView);
 			break;
 		case TYPE.SUBTASK:
 			row = setupSubtask(parent, convertView,
@@ -182,6 +200,7 @@ public class TaskFragmentAdapter extends
 			OnClickListener action = null;
 			boolean pencilButton = false;
 			boolean cameraButton = false;
+			boolean active=false;
 			switch (data.get(position).second) {
 			case SUBTITLE_CONTENT:
 				pencilButton = true;
@@ -194,6 +213,7 @@ public class TaskFragmentAdapter extends
 						notifyDataSetChanged();
 					}
 				};
+				active=task.getContent().length()>0;
 				break;
 			case SUBTITLE_SUBTASKS:
 				title = context.getString(R.string.subtasks);
@@ -203,6 +223,7 @@ public class TaskFragmentAdapter extends
 						TaskDialogHelpers.handleSubtask(context, task, adapter);
 					}
 				};
+				active=task.getSubtaskCount()>0;
 				break;
 			case SUBTITLE_FILES:
 				cameraButton = true;
@@ -215,6 +236,7 @@ public class TaskFragmentAdapter extends
 								(Activity) context);
 					}
 				};
+				active=task.getFiles().size()>0;
 				break;
 
 			default:
@@ -222,7 +244,7 @@ public class TaskFragmentAdapter extends
 				break;
 			}
 			row = setupSubtitle(parent, title, pencilButton, cameraButton,
-					action, convertView);
+					action, convertView,active);
 			break;
 		case TYPE.CONTENT:
 			row = setupContent(parent, convertView);
@@ -272,8 +294,8 @@ public class TaskFragmentAdapter extends
 
 	private View setupSubtask(ViewGroup parent, View convertView, Task task,
 			int position) {
-		final View row = convertView == null ? inflater.inflate(
-				R.layout.tasks_row, parent, false) : convertView;
+		final View row = (convertView == null || convertView.getId() != R.id.tasks_row) ? inflater
+				.inflate(R.layout.tasks_row, parent, false) : convertView;
 		final TaskHolder holder;
 
 		if (convertView == null) {
@@ -487,11 +509,12 @@ public class TaskFragmentAdapter extends
 		TextView title;
 		ImageButton button;
 		ImageButton cameraButton;
+		View divider;
 	}
 
 	private View setupSubtitle(ViewGroup parent, String title,
 			boolean pencilButton, boolean cameraButton, OnClickListener action,
-			View convertView) {
+			View convertView, boolean active) {
 		if (title == null || action == null)
 			return new View(context);
 		final View subtitle = convertView == null ? inflater.inflate(
@@ -506,6 +529,7 @@ public class TaskFragmentAdapter extends
 					.findViewById(R.id.task_subtitle_button));
 			holder.cameraButton = ((ImageButton) subtitle
 					.findViewById(R.id.task_subtitle_camera_button));
+			holder.divider=subtitle.findViewById(R.id.item_separator);
 			subtitle.setTag(holder);
 		} else {
 			holder = (SubtitleHolder) subtitle.getTag();
@@ -533,6 +557,8 @@ public class TaskFragmentAdapter extends
 			holder.button.setImageDrawable(context.getResources().getDrawable(
 					android.R.drawable.ic_menu_add));
 		}
+		holder.divider.setBackgroundColor(context.getResources().getColor(active?active_color:inactive_color));
+		holder.title.setTextColor(context.getResources().getColor(active?active_color:inactive_color));
 		return subtitle;
 	}
 
@@ -666,7 +692,8 @@ public class TaskFragmentAdapter extends
 		if (editContent) {
 			editContent = false;// do not record Textchanges
 			holder.taskContentEdit.setText(taskEditText);
-			holder.taskContentEdit.setSelection(cursorPos==0?taskEditText.length():cursorPos);
+			holder.taskContentEdit.setSelection(cursorPos == 0 ? taskEditText
+					.length() : cursorPos);
 			Linkify.addLinks(holder.taskContentEdit, Linkify.WEB_URLS);
 			holder.taskContentEdit.requestFocus();
 			InputMethodManager imm = ((InputMethodManager) context
@@ -703,13 +730,15 @@ public class TaskFragmentAdapter extends
 			editContent = true;
 		} else {
 			// Task content
-			holder.taskContent
-					.setText(task.getContent().length() == 0 ? context
-							.getString(R.string.task_no_content) : task
-							.getContent());
-			taskEditText = task.getContent();
-			cursorPos = taskEditText.length();
-			Linkify.addLinks(holder.taskContent, Linkify.WEB_URLS);
+			if (task.getContent().length() > 0) {
+				holder.taskContent.setVisibility(View.VISIBLE);
+				holder.taskContent.setText(task.getContent());
+				taskEditText = task.getContent();
+				cursorPos = taskEditText.length();
+				Linkify.addLinks(holder.taskContent, Linkify.WEB_URLS);
+			}else{
+				holder.taskContent.setVisibility(View.GONE);
+			}
 			InputMethodManager imm = (InputMethodManager) context
 					.getSystemService(Context.INPUT_METHOD_SERVICE);
 			imm.hideSoftInputFromWindow(
@@ -723,10 +752,20 @@ public class TaskFragmentAdapter extends
 	}
 
 	private View setupReminder(ViewGroup parent, View convertView) {
-		final View reminder = convertView == null ? inflater.inflate(
-				R.layout.task_reminder, parent, false) : convertView;
+		final View reminder = convertView == null
+				|| convertView.getId() != R.id.task_reminder ? inflater
+				.inflate(R.layout.task_reminder, parent, false) : convertView;
+		setupReminderView(convertView, reminder);
+		return reminder;
+	}
+
+	private void setupReminderView(View convertView, final View reminder) {
+		if (reminder == null) {
+			Log.wtf(TAG, "reminder=null");
+			return;
+		}
 		final ReminderHolder holder;
-		if (convertView == null) {
+		if (convertView == null || convertView.getTag() == null) {
 			holder = new ReminderHolder();
 			holder.taskReminder = (TextView) reminder
 					.findViewById(R.id.task_reminder);
@@ -759,11 +798,14 @@ public class TaskFragmentAdapter extends
 		if (task.getReminder() == null) {
 			holder.taskReminder
 					.setText(context.getString(R.string.no_reminder));
+			holder.taskReminder.setTextColor(context.getResources().getColor(
+					inactive_color));
 		} else {
 			holder.taskReminder.setText(Helpers.formatDate(task.getReminder(),
 					context.getString(R.string.humanDateTimeFormat)));
+			holder.taskReminder.setTextColor(context.getResources().getColor(
+					active_color));
 		}
-		return reminder;
 	}
 
 	private Drawable getRecurringDrawable(Recurring recurring) {
@@ -780,11 +822,31 @@ public class TaskFragmentAdapter extends
 		TextView taskDue;
 	}
 
-	private View setupDue(ViewGroup parent, View convertView) {
-		final View due = convertView == null ? inflater.inflate(
-				R.layout.task_due, parent, false) : convertView;
+	private View setupDue(ViewGroup parent, View convertView, int width) {
+		if (width < 600) {
+			final View due = (convertView == null || convertView.getId() != R.id.task_due) ? inflater
+					.inflate(R.layout.task_due, parent, false) : convertView;
+			setupDueView(convertView, due);
+			return due;
+		} else {
+			View due_reminder = (convertView == null || convertView.getId() != R.id.wrapper_reminder_due) ? inflater
+					.inflate(R.layout.due_reminder_row, parent, false)
+					: convertView;
+			View due = due_reminder.findViewById(R.id.wrapper_due);
+			View reminder = due_reminder.findViewById(R.id.wrapper_reminder);
+			setupDueView(due, due);
+			setupReminderView(reminder, reminder);
+			return due_reminder;
+		}
+	}
+
+	private void setupDueView(View convertView, final View due) {
+		if (due == null) {
+			Log.wtf(TAG, "due=null");
+			return;
+		}
 		final DueHolder holder;
-		if (convertView == null) {
+		if (convertView == null || convertView.getTag() == null) {
 			holder = new DueHolder();
 			holder.taskDue = (TextView) due.findViewById(R.id.task_due);
 			holder.taskDue.setOnClickListener(new View.OnClickListener() {
@@ -800,12 +862,15 @@ public class TaskFragmentAdapter extends
 									R.layout.datepicker_dialog, null);
 					final DatePicker dp = (DatePicker) content
 							.findViewById(R.id.dialog_datePicker);
-					Spinner recurrence=(Spinner) content.findViewById(R.id.add_reccuring);
-					TaskDialogHelpers.handleRecurrence(context,task,recurrence,true);
-					
-					final SimpleDateFormat dueFormater=new SimpleDateFormat("E, dd. MMMM yyyy",Locale.getDefault());
-					final AlertDialog dialog=new AlertDialog.Builder(context)
-					.setTitle(dueFormater.format(due.getTime()))
+					Spinner recurrence = (Spinner) content
+							.findViewById(R.id.add_reccuring);
+					TaskDialogHelpers.handleRecurrence(context, task,
+							recurrence, true);
+
+					final SimpleDateFormat dueFormater = new SimpleDateFormat(
+							"E, dd. MMMM yyyy", Locale.getDefault());
+					final AlertDialog dialog = new AlertDialog.Builder(context)
+							.setTitle(dueFormater.format(due.getTime()))
 							.setPositiveButton(android.R.string.ok,
 									new DialogInterface.OnClickListener() {
 
@@ -849,15 +914,17 @@ public class TaskFragmentAdapter extends
 											}
 										}
 									}).setView(content).show();
-					dp.init(due.get(Calendar.YEAR),
-							due.get(Calendar.MONTH),
-							due.get(Calendar.DAY_OF_MONTH),new OnDateChangedListener() {
-								
+					dp.init(due.get(Calendar.YEAR), due.get(Calendar.MONTH),
+							due.get(Calendar.DAY_OF_MONTH),
+							new OnDateChangedListener() {
+
 								@Override
-								public void onDateChanged(DatePicker view, int year, int monthOfYear,
+								public void onDateChanged(DatePicker view,
+										int year, int monthOfYear,
 										int dayOfMonth) {
 									due.set(year, monthOfYear, dayOfMonth);
-									dialog.setTitle(dueFormater.format(due.getTime()));
+									dialog.setTitle(dueFormater.format(due
+											.getTime()));
 								}
 							});
 				}
@@ -874,10 +941,11 @@ public class TaskFragmentAdapter extends
 				getRecurringDrawable(task.getRecurring()), null);
 		if (task.getDue() == null) {
 			holder.taskDue.setText(context.getString(R.string.no_date));
+			holder.taskDue.setTextColor(context.getResources().getColor(inactive_color));
 		} else {
 			holder.taskDue.setText(Helpers.formatDate(context, task.getDue()));
+			holder.taskDue.setTextColor(context.getResources().getColor(active_color));
 		}
-		return due;
 	}
 
 	static class HeaderHolder {

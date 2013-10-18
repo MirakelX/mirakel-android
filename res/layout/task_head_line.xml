@@ -41,6 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
+            android:textStyle="bold"
             android:gravity="center"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -50,6 +51,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:gravity="center"
+            android:textStyle="bold"
             android:imeOptions="actionDone"
             android:inputType="text"
             android:singleLine="true"

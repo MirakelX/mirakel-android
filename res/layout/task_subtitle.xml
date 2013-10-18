@@ -28,8 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginBottom="@dimen/marginTopDivider"
-        android:layout_marginTop="@dimen/marginTopDivider"
-        android:background="@color/holo_blue_dark" />
+        android:layout_marginTop="@dimen/marginTopDivider" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -45,7 +44,6 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:paddingLeft="@dimen/task_padding"
-            android:paddingTop="6dp"
             android:textIsSelectable="false" />
 
         <ImageButton
