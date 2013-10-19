@@ -17,30 +17,56 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
-<ViewSwitcher xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/switcher_content"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:measureAllChildren="false" >
+    android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/task_content"
+    <View
+        android:id="@+id/item_separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="@dimen/marginTopDivider"
+        android:layout_marginTop="@dimen/marginTopDivider" />
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:paddingLeft="@dimen/task_padding"
-        android:paddingRight="@dimen/task_padding"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:orientation="horizontal" >
 
-    <EditText
-        android:id="@+id/task_content_edit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:inputType="textMultiLine"
-        android:paddingLeft="@dimen/task_padding"
-        android:paddingRight="@dimen/task_padding"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        <ImageButton
+            android:id="@+id/edit_content"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/edit"
+            android:src="@android:drawable/ic_menu_edit" />
 
-</ViewSwitcher>
+        <ViewSwitcher
+            android:id="@+id/switcher_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:measureAllChildren="false" >
+
+            <TextView
+                android:id="@+id/task_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:paddingLeft="@dimen/task_padding"
+                android:paddingRight="@dimen/task_padding"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <EditText
+                android:id="@+id/task_content_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:inputType="textMultiLine"
+                android:paddingLeft="@dimen/task_padding"
+                android:paddingRight="@dimen/task_padding"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </ViewSwitcher>
+    </LinearLayout>
+
+</LinearLayout>

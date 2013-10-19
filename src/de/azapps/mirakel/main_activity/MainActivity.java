@@ -702,7 +702,9 @@ public class MainActivity extends ActionBarActivity implements
 	 * @param list
 	 */
 	public void handleDestroyList(final ListMirakel list) {
-
+		List<ListMirakel> l=new ArrayList<ListMirakel>();
+		l.add(list);
+		handleDestroyList(l);
 	}
 
 	public void handleDestroyList(final List<ListMirakel> lists) {
