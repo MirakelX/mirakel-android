@@ -346,7 +346,7 @@ public class PreferencesHelper {
 		final Preference syncType = findPreference("syncType");
 		final AccountManager am = AccountManager.get(activity);
 		final Account[] accounts = am.getAccountsByType(Mirakel.ACCOUNT_TYPE);
-		if (syncType != null) {
+		if (syncType != null && am != null) {
 			if (settings.getBoolean("syncUse", false) && accounts.length > 0) {
 				if (am.getUserData(accounts[0], SyncAdapter.BUNDLE_SERVER_TYPE)
 						.equals(TaskWarriorSync.TYPE)) {
