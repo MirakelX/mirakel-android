@@ -884,7 +884,7 @@ public class Task extends TaskBase {
 			where += " and ";
 		}
 		where += " not sync_state=" + SYNC_STATE.DELETE;
-		String order = "";
+		String order = getSorting(sorting);
 
 		if (listId < 0)
 			order += ", list_id ASC";

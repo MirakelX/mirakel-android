@@ -97,9 +97,8 @@ public class TaskFragmentAdapter extends
 	private boolean editContent;
 	protected Handler mHandler;
 	protected ActionMode mActionMode;
-	private static final int SUBTITLE_SUBTASKS = 0,
-			SUBTITLE_FILES = 1;
-	private static final Integer active_color = android.R.color.holo_blue_light;
+	private static final int SUBTITLE_SUBTASKS = 0, SUBTITLE_FILES = 1;
+	private static final Integer active_color = R.color.holo_blue_light;
 	private static final Integer inactive_color = android.R.color.darker_gray;
 	private View.OnClickListener cameraButtonClick = null;
 
@@ -693,7 +692,8 @@ public class TaskFragmentAdapter extends
 			holder.taskContentSwitcher.showNext();
 		}
 		if (editContent) {
-			holder.divider.setBackgroundColor(context.getResources().getColor(active_color));
+			holder.divider.setBackgroundColor(context.getResources().getColor(
+					active_color));
 			editContent = false;// do not record Textchanges
 			holder.taskContentEdit.setText(taskEditText);
 			holder.taskContentEdit.setSelection(cursorPos == 0 ? taskEditText
@@ -739,12 +739,18 @@ public class TaskFragmentAdapter extends
 				taskEditText = task.getContent();
 				cursorPos = taskEditText.length();
 				Linkify.addLinks(holder.taskContent, Linkify.WEB_URLS);
-				holder.divider.setBackgroundColor(context.getResources().getColor(active_color));
-				holder.taskContent.setTextColor(context.getResources().getColor(darkTheme?android.R.color.white:android.R.color.white));
+				holder.divider.setBackgroundColor(context.getResources()
+						.getColor(active_color));
+				holder.taskContent.setTextColor(context.getResources()
+						.getColor(
+								darkTheme ? android.R.color.white
+										: android.R.color.black));
 			} else {
 				holder.taskContent.setText(R.string.content);
-				holder.divider.setBackgroundColor(context.getResources().getColor(inactive_color));
-				holder.taskContent.setTextColor(context.getResources().getColor(inactive_color));
+				holder.divider.setBackgroundColor(context.getResources()
+						.getColor(inactive_color));
+				holder.taskContent.setTextColor(context.getResources()
+						.getColor(inactive_color));
 			}
 			InputMethodManager imm = (InputMethodManager) context
 					.getSystemService(Context.INPUT_METHOD_SERVICE);
