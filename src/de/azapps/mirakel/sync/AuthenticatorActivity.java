@@ -403,6 +403,8 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 	private void finishTWLogin() throws FileNotFoundException {
 		// TODO add errorhandling
 		Log.d(TAG, config_file);
+		if(config_file==null)
+			return ;
 		File f = new File(config_file);
 		if (f.exists() && f.canRead()) {
 			byte[] buffer = new byte[(int) f.length()];// TODO remove cast
