@@ -156,6 +156,7 @@ public class TaskFragmentAdapter extends
 
 	}
 
+	@SuppressLint("NewApi")
 	@SuppressWarnings("deprecation")
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {

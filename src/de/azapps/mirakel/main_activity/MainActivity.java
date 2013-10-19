@@ -1020,7 +1020,7 @@ public class MainActivity extends ActionBarActivity implements
 	 */
 	ListMirakel getCurrentList() {
 		if (currentList == null)
-			currentList = SpecialList.firstSpecial();
+			currentList = SpecialList.firstSpecialSafe(this);
 		return currentList;
 	}
 
