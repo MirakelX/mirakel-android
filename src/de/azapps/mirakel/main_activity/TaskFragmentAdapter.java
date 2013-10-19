@@ -97,8 +97,8 @@ public class TaskFragmentAdapter extends
 	private boolean editContent;
 	protected Handler mHandler;
 	protected ActionMode mActionMode;
-	private static final int SUBTITLE_CONTENT = 0, SUBTITLE_SUBTASKS = 1,
-			SUBTITLE_FILES = 2;
+	private static final int SUBTITLE_SUBTASKS = 0,
+			SUBTITLE_FILES = 1;
 	private static final Integer active_color = android.R.color.holo_blue_light;
 	private static final Integer inactive_color = android.R.color.darker_gray;
 	private View.OnClickListener cameraButtonClick = null;
@@ -200,21 +200,8 @@ public class TaskFragmentAdapter extends
 			OnClickListener action = null;
 			boolean pencilButton = false;
 			boolean cameraButton = false;
-			boolean active=false;
+			boolean active = false;
 			switch (data.get(position).second) {
-			case SUBTITLE_CONTENT:
-				pencilButton = true;
-				title = context.getString(R.string.content);
-				action = new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						editContent = !editContent;
-						saveContent();
-						notifyDataSetChanged();
-					}
-				};
-				active=task.getContent().length()>0;
-				break;
 			case SUBTITLE_SUBTASKS:
 				title = context.getString(R.string.subtasks);
 				action = new OnClickListener() {
@@ -223,7 +210,7 @@ public class TaskFragmentAdapter extends
 						TaskDialogHelpers.handleSubtask(context, task, adapter);
 					}
 				};
-				active=task.getSubtaskCount()>0;
+				active = task.getSubtaskCount() > 0;
 				break;
 			case SUBTITLE_FILES:
 				cameraButton = true;
@@ -236,7 +223,7 @@ public class TaskFragmentAdapter extends
 								(Activity) context);
 					}
 				};
-				active=task.getFiles().size()>0;
+				active = task.getFiles().size() > 0;
 				break;
 
 			default:
@@ -244,7 +231,7 @@ public class TaskFragmentAdapter extends
 				break;
 			}
 			row = setupSubtitle(parent, title, pencilButton, cameraButton,
-					action, convertView,active);
+					action, convertView, active);
 			break;
 		case TYPE.CONTENT:
 			row = setupContent(parent, convertView);
@@ -529,7 +516,7 @@ public class TaskFragmentAdapter extends
 					.findViewById(R.id.task_subtitle_button));
 			holder.cameraButton = ((ImageButton) subtitle
 					.findViewById(R.id.task_subtitle_camera_button));
-			holder.divider=subtitle.findViewById(R.id.item_separator);
+			holder.divider = subtitle.findViewById(R.id.item_separator);
 			subtitle.setTag(holder);
 		} else {
 			holder = (SubtitleHolder) subtitle.getTag();
@@ -557,8 +544,10 @@ public class TaskFragmentAdapter extends
 			holder.button.setImageDrawable(context.getResources().getDrawable(
 					android.R.drawable.ic_menu_add));
 		}
-		holder.divider.setBackgroundColor(context.getResources().getColor(active?active_color:inactive_color));
-		holder.title.setTextColor(context.getResources().getColor(active?active_color:inactive_color));
+		holder.divider.setBackgroundColor(context.getResources().getColor(
+				active ? active_color : inactive_color));
+		holder.title.setTextColor(context.getResources().getColor(
+				active ? active_color : inactive_color));
 		return subtitle;
 	}
 
@@ -566,6 +555,8 @@ public class TaskFragmentAdapter extends
 		TextView taskContent;
 		EditText taskContentEdit;
 		ViewSwitcher taskContentSwitcher;
+		ImageButton editContent;
+		View divider;
 	}
 
 	private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
@@ -681,6 +672,17 @@ public class TaskFragmentAdapter extends
 
 				}
 			});
+			holder.editContent = (ImageButton) content
+					.findViewById(R.id.edit_content);
+			holder.editContent.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					editContent = !editContent;
+					saveContent();
+					notifyDataSetChanged();
+				}
+			});
+			holder.divider = content.findViewById(R.id.item_separator);
 			content.setTag(holder);
 		} else {
 			holder = (ContentHolder) content.getTag();
@@ -690,6 +692,7 @@ public class TaskFragmentAdapter extends
 			holder.taskContentSwitcher.showNext();
 		}
 		if (editContent) {
+			holder.divider.setBackgroundColor(context.getResources().getColor(active_color));
 			editContent = false;// do not record Textchanges
 			holder.taskContentEdit.setText(taskEditText);
 			holder.taskContentEdit.setSelection(cursorPos == 0 ? taskEditText
@@ -731,13 +734,16 @@ public class TaskFragmentAdapter extends
 		} else {
 			// Task content
 			if (task.getContent().length() > 0) {
-				holder.taskContent.setVisibility(View.VISIBLE);
 				holder.taskContent.setText(task.getContent());
 				taskEditText = task.getContent();
 				cursorPos = taskEditText.length();
 				Linkify.addLinks(holder.taskContent, Linkify.WEB_URLS);
-			}else{
-				holder.taskContent.setVisibility(View.GONE);
+				holder.divider.setBackgroundColor(context.getResources().getColor(active_color));
+				holder.taskContent.setTextColor(context.getResources().getColor(darkTheme?android.R.color.white:android.R.color.white));
+			} else {
+				holder.taskContent.setText(R.string.content);
+				holder.divider.setBackgroundColor(context.getResources().getColor(inactive_color));
+				holder.taskContent.setTextColor(context.getResources().getColor(inactive_color));
 			}
 			InputMethodManager imm = (InputMethodManager) context
 					.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -941,10 +947,12 @@ public class TaskFragmentAdapter extends
 				getRecurringDrawable(task.getRecurring()), null);
 		if (task.getDue() == null) {
 			holder.taskDue.setText(context.getString(R.string.no_date));
-			holder.taskDue.setTextColor(context.getResources().getColor(inactive_color));
+			holder.taskDue.setTextColor(context.getResources().getColor(
+					inactive_color));
 		} else {
 			holder.taskDue.setText(Helpers.formatDate(context, task.getDue()));
-			holder.taskDue.setTextColor(context.getResources().getColor(active_color));
+			holder.taskDue.setTextColor(context.getResources().getColor(
+					active_color));
 		}
 	}
 
@@ -1105,7 +1113,6 @@ public class TaskFragmentAdapter extends
 		data.add(new Pair<Integer, Integer>(TYPE.HEADER, 0));
 		data.add(new Pair<Integer, Integer>(TYPE.DUE, 0));
 		data.add(new Pair<Integer, Integer>(TYPE.REMINDER, 0));
-		data.add(new Pair<Integer, Integer>(TYPE.SUBTITLE, SUBTITLE_CONTENT));
 		data.add(new Pair<Integer, Integer>(TYPE.CONTENT, 0));
 		data.add(new Pair<Integer, Integer>(TYPE.SUBTITLE, SUBTITLE_SUBTASKS));
 		int subtaskCount = task.getSubtaskCount();
