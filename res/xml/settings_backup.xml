@@ -21,15 +21,15 @@
     android:title="@string/settings_backup" >
 
     <CheckBoxPreference
-        
         android:defaultValue="false"
         android:key="importDefaultList"
         android:summary="@string/import_default_list_summary"
         android:title="@string/import_default_list" />
-    <EditTextPreference 
+
+    <EditTextPreference
         android:defaultValue="@string/file_default_title"
         android:key="import_file_title"
-        android:title="@string/settings_file_default_title"/>
+        android:title="@string/settings_file_default_title" />
 
     <Preference
         android:key="backup"
@@ -43,5 +43,9 @@
         android:key="import_astrid"
         android:summary="@string/import_astrid_click_summary"
         android:title="@string/import_astrid_click" />
+    <Preference
+        android:key="import_any_do"
+        android:summary="@string/import_any_do_click_summary"
+        android:title="@string/import_any_do_click" />
 
 </PreferenceScreen>

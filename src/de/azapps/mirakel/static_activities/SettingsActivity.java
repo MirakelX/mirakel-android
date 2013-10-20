@@ -54,7 +54,7 @@ import de.azapps.mirakelandroid.R;
 public class SettingsActivity extends PreferenceActivity {
 
 	public static final int FILE_ASTRID = 0, FILE_IMPORT_DB = 1,
-			NEW_ACCOUNT = 2;
+			NEW_ACCOUNT = 2, FILE_ANY_DO = 3;
 	private static final String TAG = "SettingsActivity";
 	private List<Header> mHeaders;
 	private boolean darkTheme;
@@ -214,8 +214,8 @@ public class SettingsActivity extends PreferenceActivity {
 				@Override
 				protected void onPreExecute() {
 					dialog = ProgressDialog.show(that,
-							that.getString(R.string.astrid_importing),
-							that.getString(R.string.astrid_wait), true);
+							that.getString(R.string.importing),
+							that.getString(R.string.wait), true);
 				}
 			}.execute("");
 
@@ -262,6 +262,46 @@ public class SettingsActivity extends PreferenceActivity {
 						findPreference("syncFrequency"), this);
 			}
 			break;
+			case FILE_ANY_DO:
+				if (resultCode != RESULT_OK)
+					return;
+				final String path_any_do = Helpers.getPathFromUri(data.getData(),
+						this);
+
+				// Do the import in a background-task
+				new AsyncTask<String, Void, Boolean>() {
+					ProgressDialog dialog;
+
+					@Override
+					protected Boolean doInBackground(String... params) {
+						return ExportImport.importAnyDo(that, path_any_do);
+					}
+
+					@Override
+					protected void onPostExecute(Boolean success) {
+						dialog.dismiss();
+						if (!success) {
+							Toast.makeText(that, R.string.any_do_unsuccess,
+									Toast.LENGTH_LONG).show();
+						} else {
+							Toast.makeText(that, R.string.any_do_success,
+									Toast.LENGTH_SHORT).show();
+							android.os.Process.killProcess(android.os.Process
+									.myPid()); // ugly
+												// but
+												// simple
+						}
+					}
+
+					@Override
+					protected void onPreExecute() {
+						dialog = ProgressDialog.show(that,
+								that.getString(R.string.importing),
+								that.getString(R.string.wait), true);
+					}
+				}.execute("");
+
+				break;
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}

@@ -742,6 +742,20 @@ public class PreferencesHelper {
 						}
 					});
 		}
+		Preference anyDo = findPreference("import_any_do");
+		if (anyDo != null) {
+			anyDo
+					.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+						@Override
+						public boolean onPreferenceClick(Preference preference) {
+							Helpers.showFileChooser(
+									SettingsActivity.FILE_ANY_DO,
+									activity.getString(R.string.any_do_import_title),
+									activity);
+							return true;
+						}
+					});
+		}
 		Preference importAstrid = findPreference("import_astrid");
 		if (importAstrid != null) {
 			importAstrid

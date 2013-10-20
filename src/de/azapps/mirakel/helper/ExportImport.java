@@ -1,5 +1,6 @@
 package de.azapps.mirakel.helper;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -7,8 +8,13 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -19,6 +25,10 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -301,5 +311,93 @@ public class ExportImport {
 
 		}
 		return true;
+	}
+
+	public static Boolean importAnyDo(Context ctx, String path_any_do) {
+		String json;
+		try {
+			json = getStringFromFile(path_any_do, ctx);
+		} catch (IOException e) {
+			Log.e(TAG, "cannot read File");
+			return false;
+		}
+		Log.i(TAG, json);
+		JsonObject i = new JsonParser().parse(json).getAsJsonObject();
+		Set<Entry<String, JsonElement>> f = i.entrySet();
+		HashMap<Integer, Integer> listMapping = new HashMap<Integer, Integer>();
+		for (Entry<String, JsonElement> e : f) {
+			if (e.getKey().equals("categorys")) {
+				Iterator<JsonElement> iter = e.getValue().getAsJsonArray()
+						.iterator();
+				while (iter.hasNext()) {
+					listMapping = parseAnyDoList(iter.next().getAsJsonObject(),
+							listMapping);
+				}
+			} else if (e.getKey().equals("tasks")) {
+				Iterator<JsonElement> iter = e.getValue().getAsJsonArray()
+						.iterator();
+				while (iter.hasNext()) {
+					parseAnyDoTask(iter.next().getAsJsonObject(), listMapping);
+				}
+			} else {
+				Log.d(TAG, e.getKey());
+			}
+		}
+		return true;
+	}
+
+	private static void parseAnyDoTask(JsonObject jsonTask,
+			HashMap<Integer, Integer> listMapping) {
+		String name = jsonTask.get("title").getAsString();
+		int list_id = jsonTask.get("categoryId").getAsInt();
+		Task t = Task.newTask(name, listMapping.get(list_id));
+		if (jsonTask.has("dueDate")) {
+			Calendar due = new GregorianCalendar();
+			long dueMs=jsonTask.get("dueDate").getAsLong();
+			if(dueMs>0){
+				due.setTimeInMillis(dueMs);
+				t.setDue(due);
+			}
+		}
+		if (jsonTask.has("priority")) {
+			int prio = 0;
+			if (jsonTask.get("priority").getAsString().equals("High")) {
+				prio = 2;
+			}
+			t.setPriority(prio);
+		}
+		if(jsonTask.has("status")){
+			t.setDone(!jsonTask.get("status").getAsString().equals("UNCHECKED"));
+		}
+		try {
+			t.save();
+		} catch (NoSuchListException e) {
+			Log.wtf(TAG, "list did vanish");
+		}
+	}
+
+	private static HashMap<Integer, Integer> parseAnyDoList(
+			JsonObject jsonList, HashMap<Integer, Integer> mapping) {
+		String name = jsonList.get("name").getAsString();
+		int id = jsonList.get("id").getAsInt();
+		ListMirakel l = ListMirakel.newList(name);
+		mapping.put(id, l.getId());
+		return mapping;
+
+	}
+
+	private static String getStringFromFile(String path, Context ctx)
+			throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader(path));
+		StringBuilder sb = new StringBuilder();
+		String line = br.readLine();
+
+		while (line != null) {
+			sb.append(line);
+			sb.append('\n');
+			line = br.readLine();
+		}
+		br.close();
+		return sb.toString();
 	}
 }
