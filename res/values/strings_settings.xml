@@ -27,7 +27,7 @@
     <string name="sync_use_summary_taskwarrior">Sync with Taskwarrior as %s</string>
     <string name="sync_use_summary_mirakel">Sync with Mirakel as %s</string>
     <string name="sync_use_summary_caldav">Sync with CalDav as %s</string>
-    <string name="sync_use_summary_nothing">Do not use the Sync</string>
+    <string name="sync_use_summary_nothing">Do not use the sync</string>
     <string name="sync_server">Server</string>
     <string name="sync_server_summary">Sync with %s</string>
     <string name="sync_password">Password</string>
@@ -63,25 +63,25 @@
 
     <!-- Notifications -->
     <string name="notification_title">Notifications</string>
-    <string name="notifications_use">Use Notifications</string>
-    <string name="notifications_persistent">Persistent Notifications</string>
+    <string name="notifications_use">Use notifications</string>
+    <string name="notifications_persistent">Persistent notifications</string>
     <string name="notifications_list">Show List</string>
     <string name="notifications_list_summary">Show \"%s\"</string>
     <string name="notifications_list_open">Open List</string>
     <string name="notifications_list_open_summary">Open \"%s\"</string>
     <string name="default_list">Default List</string>
-    <string name="notifications_big">Show big Notifications</string>
+    <string name="notifications_big">Show big notifications</string>
     <string name="notifications_zero_show">Hide notification if empty</string>
-    <string name="notificationsShowDone">Handle Done Tasks</string>
+    <string name="notificationsShowDone">Handle done tasks</string>
     <string name="reminder">Reminder</string>
-    <string name="reminders_persistent">Persistent Reminder</string>
+    <string name="reminders_persistent">Persistent reminder</string>
 
     <!-- startup -->
     <string name="startup_title">App Start</string>
     <string name="startup_show_lists">Show all lists</string>
-    <string name="startup_show_lists_summary">Show all Lists on Startup</string>
+    <string name="startup_show_lists_summary">Show all lists on startup</string>
     <string name="startup_list">Select List</string>
-    <string name="startup_list_summary">Show Tasks of \"%s\"</string>
+    <string name="startup_list_summary">Show tasks of \"%s\"</string>
 
     <!-- Special Lists -->
     <string name="special_lists_click">Manage Special Lists</string>
@@ -89,14 +89,14 @@
     <string name="settings_misc">Misc</string>
     <!-- Backup -->
     <string name="settings_backup">Backup and Import</string>
-    <string name="backup_click_summary">Backup the database to sdcard (%s)</string>
+    <string name="backup_click_summary">Backup the database to SD card (%s)</string>
     <string name="backup_click">Backup</string>
     <string name="import_click_summary">Import the database</string>
     <string name="import_click">Import</string>
     <string name="import_sure">Are you sure?</string>
     <string name="import_sure_summary">All data will be overridden! (Importing from %s)</string>
     <string name="import_title">Select Mirakel File</string>
-    <string name="no_filemanager">Please install a File Manager</string>
+    <string name="no_filemanager">Please install a file manager</string>
     <string name="import_default_list_summary">Import to \"%s\"</string>
     <string name="import_no_default_list_summary">No default list selected</string>
     <string name="import_default_list">Import Default-List</string>
@@ -113,7 +113,7 @@
     <!-- Astrid -->
     <string name="import_astrid_click_summary">Import from an Astrid-file</string>
     <string name="import_astrid_click">Import from Astrid</string>
-    <string name="astrid_unsuccess">There was an Error while importing from Astrid!</string>
+    <string name="astrid_unsuccess">There was an error while importing from Astrid!</string>
     <string name="astrid_success">Successfully imported all data!</string>
     <string name="astrid_importing">Importing</string>
     <string name="astrid_import_title">Select Astrid File</string>
@@ -121,27 +121,28 @@
     <string name="import_wrong_type">This is not a Mirakel-file!</string>
     <!-- GUI -->
     <string name="highlightSelected_summary">Highlight lists/tasks when you click on them</string>
-    <string name="highlightSelected">Highlight Selected</string>
+    <string name="highlightSelected">Highlight selected</string>
     <string name="settings_date_format_relative">Show relative dates</string>
-    <string name="settings_date_format_relative_summary">For example „tomorrow“ instead of the real date</string>
+    <string name="settings_date_format_relative_summary">For example "tomorrow" instead of the real date</string>
     <string name="showDone">Show done tasks</string>
-    <string name="dark_theme">Dark Theme</string>
+    <string name="dark_theme">Dark theme</string>
     <string name="kill_button">Kill button</string>
-    <string name="kill_app">Close App</string>
+    <string name="kill_app">Close app</string>
     <string name="kill_sure">Are you really sure???</string>
-    <string name="kill_sure_message">When you close the app, you do not get any reminders! Please consider to disable only the Notification (or make it not persistent, so you can remove it.)</string>
+    <string name="kill_sure_message">When you close the app, you do not get any reminders! Please consider only disabling the notification (or make it non-persistent, so you can remove it.)</string>
     <string name="ui_settings_title">User Interface</string>
-    <string name="hide_keyboard">Hide Keyboard</string>
-    <string name="hide_keyboard_summary">Hide Keyboard if New Task is created</string>
-    <string name="undo_number">Number of Changes saved</string>
-    <string name="undo_number_summary">Undo %s Changes</string>
-    <string name="settings_semantic">Semantic new Tasks</string>
-    <string name="semantic_new_task">Semantic New Tasks</string>
-    <string name="semantic_new_task_summary">Use Semantic new Task(only today and tomorow)</string>
-    <string name="semantic_new_task_config_summary">Configure the conditions for creating new Tasks</string>
-    <string name="semantic_new_task_config">Configure Semantic new Tasks</string>
-    <string name="settings_old_logo_summary">I feel sad, that you don\'t like the new Logo (restart the app and you need Android >= 4.0)</string>
-    <string name="settings_old_logo">Use the old, ugly Logo</string>
+
+    <string name="hide_keyboard">Hide keyboard</string>
+    <string name="hide_keyboard_summary">Hide keyboard if new task is created</string>
+    <string name="undo_number">Number of changes saved</string>
+    <string name="undo_number_summary">Undo %s changes</string>
+    <string name="settings_semantic">Semantic new tasks</string>
+    <string name="semantic_new_task">Semantic new tasks</string>
+    <string name="semantic_new_task_summary">Use semantic new task(only today and tomorow)</string>
+    <string name="semantic_new_task_config_summary">Configure the conditions for creating new tasks</string>
+    <string name="semantic_new_task_config">Configure semantic new tasks</string>
+    <string name="settings_old_logo_summary">I feel sad, that you don\'t like the new logo (restart the app and you need Android >= 4.0)</string>
+    <string name="settings_old_logo">Use the old, ugly logo</string>
     <!-- Language -->
     <string name="language">Language</string>
 
@@ -166,6 +167,7 @@
         <item>no</item>
     </string-array>
 
+
     <!-- Delete done -->
     <string name="delete_done">Delete done tasks</string>
     <string name="delete_done_summary">Delete all done tasks</string>
@@ -173,24 +175,24 @@
     <string name="delete_done_warning_message">You can not undo this. Make a backup!</string>
     <string name="delete_done_success">Successfully deleted your done tasks.</string>
     <string name="menu_delete">Delete</string>
-    <string name="menu_color">Change Color</string>
-    <string name="howto_setup_server">How To setup Server</string>
-    <string name="register_server">If you need an account for the sync on our server, please send us an e-mail. With the next version you\'ll get a possibility to register an account!</string>
-    <string name="send_mail">Send Mail</string>
+    <string name="menu_color">Change color</string>
+    <string name="howto_setup_server">How to setup server</string>
+    <string name="register_server">If you need an account for the sync on our server, please send us an e-mail. With the next version you\'ll get the possibility to register an account!</string>
+    <string name="send_mail">Send e-mail</string>
     <string name="special_lists_title">Special Lists</string>
 
     <!-- Colors -->
     <string name="preferences_colorize">Colors</string>
-    <string name="preferences_colorize_tasks">Colorize Tasks</string>
-    <string name="preferences_colorize_tasks_everywhere">Colorize Tasks everywhere</string>
-    <string name="preferences_colorize_tasks_everywhere_summary">…or only in the Special lists?</string>
+    <string name="preferences_colorize_tasks">Colorize tasks</string>
+    <string name="preferences_colorize_tasks_everywhere">Colorize tasks everywhere</string>
+    <string name="preferences_colorize_tasks_everywhere_summary">…or only in the special lists?</string>
 
     <!-- Semantics -->
     <string name="settings_semantics_title">Configure Semantics</string>
     <string name="settings_semantics_condition">Condition</string>
     <string name="settings_semantics_actions">Actions</string>
-    <string name="settings_semantics_list">Set List</string>
-    <string name="settings_semantics_priority">Set Priority</string>
+    <string name="settings_semantics_list">Set list</string>
+    <string name="settings_semantics_priority">Set priority</string>
     <string name="settings_semantics_due">Set due date</string>
 
     <string-array name="priority_entries">
@@ -216,15 +218,15 @@
     <string name="semantic_new">New Semantic</string>
     <!-- Subtasks -->
     <string name="settings_subtask">Subtasks</string>
-    <string name="settings_subtask_default_new">Show New Task per default</string>
+    <string name="settings_subtask_default_new">Show new task per default</string>
     <string name="settings_subtask_default_new_summary">Otherwise add existing task</string>
-    <string name="settings_subtask_add_to_same_list">Add Subtask to the list of the Task</string>
+    <string name="settings_subtask_add_to_same_list">Add Subtask to the list of the task</string>
     <string name="settings_subtask_add_to_same_list_summary">Or select a default list, where the subtask will be added</string>
-    <string name="settings_subtask_add_to_list_summary">Add Subtask to %s</string>
+    <string name="settings_subtask_add_to_list_summary">Add subtask to %s</string>
     <string name="settings_new_task">New task</string>
-    <string name="settings_use_btn_speak">Show the microfone-button</string>
-    <string name="settings_use_btn_camera">Show the camera-button</string>
-    <string name="preferences_colorize_subtasks">Colorize Subtasks?</string>
+    <string name="settings_use_btn_speak">Show the microphone button</string>
+    <string name="settings_use_btn_camera">Show the camera button</string>
+    <string name="preferences_colorize_subtasks">Colorize subtasks?</string>
     <string name="settings_tasks_title">Tasks</string>
 
 </resources>
