@@ -208,6 +208,7 @@ public class PreferencesHelper {
 		// Notifications List
 		final ListPreference notificationsListPreference = (ListPreference) findPreference("notificationsList");
 		if (notificationsListPreference != null) {
+			final ListPreference notificationsListOpenPreference = (ListPreference) findPreference("notificationsListOpen");
 			notificationsListPreference.setEntries(entries);
 			notificationsListPreference.setEntryValues(entryValues);
 			ListMirakel notificationsList = getListFromIdString(settings
@@ -228,13 +229,16 @@ public class PreferencesHelper {
 									.getString(
 											R.string.notifications_list_summary,
 											list));
+							if(settings.getString("notificationsListOpen","default").equals("default")){
+								notificationsListOpenPreference.setSummary(activity
+										.getString(
+												R.string.notifications_list_summary,
+												list));
+							}
 							return true;
 						}
 					});
-		}
 
-		final ListPreference notificationsListOpenPreference = (ListPreference) findPreference("notificationsListOpen");
-		if (notificationsListOpenPreference != null) {
 			notificationsListOpenPreference.setEntries(entriesWithDefault);
 			notificationsListOpenPreference
 					.setEntryValues(entryValuesWithDefault);
@@ -248,9 +252,14 @@ public class PreferencesHelper {
 						@Override
 						public boolean onPreferenceChange(
 								Preference preference, Object newValue) {
-							String list = ListMirakel.getList(
-									Integer.parseInt((String) newValue))
-									.getName();
+							String list;
+							if (!"default".equals(newValue.toString())) {
+								list=ListMirakel.getList(
+										Integer.parseInt((String) newValue))
+										.getName();
+							}else{
+								list=ListMirakel.getList(Integer.parseInt(settings.getString("notificationsList", "-1"))).getName();
+							}
 							notificationsListOpenPreference.setSummary(activity
 									.getString(
 											R.string.notifications_list_summary,
