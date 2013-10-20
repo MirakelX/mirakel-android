@@ -20,11 +20,11 @@
 <resources xmlns:tools="http://schemas.android.com/tools"    tools:ignore="MissingTranslation">
 
     <string name="app_name">Mirakel</string>
-    <string name="app_name_old">Mirakel old Logo</string>
+    <string name="app_name_old">Mirakel old logo</string>
     <string name="action_settings">Settings</string>
-    <string name="action_contact">Contact / report Bug</string>
-    <string name="action_contact_summary">Write us an E-Mail!</string>
-    <string name="no_date">No Deadline</string>
+    <string name="action_contact">Contact / report bug</string>
+    <string name="action_contact_summary">Write us an e-mail!</string>
+    <string name="no_date">No deadline</string>
     <string name="no_reminder">Set a reminder</string>
     <string name="no_lists">This task cannot be synced, because you have no lists</string>
     <string name="dateFormat" translatable="false">yyyy-MM-dd</string>
@@ -36,14 +36,14 @@
     <string name="Email">Email</string>
     <string name="Password">Password</string>
     <string name="Server">Server</string>
-    <string name="NoNetwork">No Network Connection available.</string>
+    <string name="NoNetwork">No network connection available.</string>
     <string name="wrong_sync_type">The sync-type is not supported!</string>
     <string name="action_sync_now">Sync Now</string>
-    <string name="resync">Do you want to resync all Tasks?</string>
+    <string name="resync">Do you want to resync all tasks?</string>
     <string name="start">Start</string>
-    <string name="menu_sort_lists">Reorder Lists</string>
+    <string name="menu_sort_lists">Reorder lists</string>
     <string name="no_https">You should use https!</string>
-    <string name="finish_sync">Finish Sync</string>
+    <string name="finish_sync">Finish sync</string>
 
     <!-- Example Data -->
     <string name="inbox">Inbox</string>
@@ -101,28 +101,28 @@
     <!-- Lists -->
     <string name="list_title">Lists</string>
     <string name="list_menu_new_list">New List</string>
-    <string name="list_change_name_cont">New List-Title</string>
-    <string name="list_change_name_title">Change List-Name</string>
+    <string name="list_change_name_cont">New list title</string>
+    <string name="list_change_name_title">Change list name</string>
     <string name="list_all">All Lists</string>
-    <string name="list_today">Tasks Today</string>
-    <string name="list_week">This Week</string>
+    <string name="list_today">Tasks today</string>
+    <string name="list_week">This week</string>
     <string name="list_overdue">Overdue</string>
     <string name="list_delete_content">Are you sure you want to delete %s?</string>
 
     <string-array name="list_actions_items">
-        <item>Select Color</item>
+        <item>Select color</item>
         <item>Rename</item>
         <item>Delete</item>
         <item>Share</item>
     </string-array>
 
     <!-- Menu -->
-    <string name="menu_delete_list">Delete List</string>
-    <string name="menu_delete_task">Delete Task</string>
+    <string name="menu_delete_list">Delete list</string>
+    <string name="menu_delete_task">Delete task</string>
     <string name="menu_settings">Settings</string>
-    <string name="menu_move_task">Move Task</string>
-    <string name="menu_edit_task">Edit Task</string>
-    <string name="menu_edit_list">Rename List</string>
+    <string name="menu_move_task">Move task</string>
+    <string name="menu_edit_task">Edit task</string>
+    <string name="menu_edit_list">Rename list</string>
     <string name="menu_do_task">Set task as done</string>
     <!-- Login -->
     <string name="offical_server_url">https://mirakel.azapps.de</string>
@@ -133,35 +133,35 @@
     <string name="preferences">Preferences</string>
 
     <!-- Notification -->
-    <string name="notification_title_general">%1$d Tasks in %2$s</string>
-    <string name="notification_title_general_single">1 Task in %s</string>
+    <string name="notification_title_general">%1$d tasks in %2$s</string>
+    <string name="notification_title_general_single">1 task in %s</string>
     <string name="notification_title_empty">Enjoy your day!</string>
-    <string name="reminder_notification_title">To Do: %s</string>
+    <string name="reminder_notification_title">To do: %s</string>
     <string name="reminder_notification_priority">Priority: %s</string>
     <string name="reminder_notification_list">List: %s</string>
     <string name="reminder_notification_due">Due: %s</string>
     <string name="reminder_notification_done">Done</string>
     <string name="reminder_notification_later">Later</string>
-    <string name="reminder_notification_done_confirm">I have set the task as „done“</string>
+    <string name="reminder_notification_done_confirm">I have set the task as "done"</string>
     <string name="reminder_notification_later_confirm">I\'ll remind you in %d minutes</string>
     <string name="list_vanished">Yikes, the task has vanished. I\'m sorry…</string>
     <string name="task_vanished">Yikes, the list of the task has vanished. I\'m sorry…</string>
 
     <!-- Test Sync -->
     <!-- Label above username EditText -->
-    <string name="message_try_later">Try to Sync later</string>
-    <string name="message_access_denied">Access denied!\nDo you use the right Config-File?</string>
-    <string name="message_create_socket">Cannot Create Socket!\nDo you enable your network connection?</string>
-    <string name="message_account_suspended">Your Account is suspended!</string>
-    <string name="message_parse_message">Cannot parse Tasks – please write us, how this happened</string>
-    <string name="message_message_error">Unknown response from Server – please write us, how this happened</string>    
-    <string name="wrong_config">It looks like you use a wrong config-file</string>
+    <string name="message_try_later">Try to sync later</string>
+    <string name="message_access_denied">Access denied!\nDid you use the right config file?</string>
+    <string name="message_create_socket">Cannot create socket!\nDid you enable your network connection?</string>
+    <string name="message_account_suspended">Your account is suspended!</string>
+    <string name="message_parse_message">Cannot parse tasks – please write how this happened</string>
+    <string name="message_message_error">Unknown response from the server – please write how this happened</string>    
+    <string name="wrong_config">It looks like you used a wrong config file</string>
     
     <string name="load_config">Select the config file for Taskwarrior</string>
     <string name="select_config">Select Taskwarrior config file</string>
     <string name="login_activity_username_label">Username</string>
-    <string name="login_activity_server_label">Server-URL</string>
-    <string name="login_activity_server_typ">Server Type</string>
+    <string name="login_activity_server_label">Server URL</string>
+    <string name="login_activity_server_typ">Server type</string>
     <string-array name="server_typs">
         <item >Taskwarrior</item>
         <item >CalDav</item>
@@ -185,12 +185,12 @@
     <!-- Message shown in progress dialog while app connects to the server -->
     <string name="ui_activity_authenticating">Authenticating…</string>
     <string name="ui_activity_title">Sign-in</string>
-    <string name="title_activity_special_lists_settings">Settings for Special Lists</string>
-    <string name="title_activity_semantic_settings">Settings for Semantics</string>
+    <string name="title_activity_special_lists_settings">Settings for special lists</string>
+    <string name="title_activity_semantic_settings">Settings for semantics</string>
 
     <!-- Changelog -->
     <string name="changelog_full_title">Changelog</string>
-    <string name="changelog_title">What\'s New</string>
+    <string name="changelog_title">What\'s new</string>
     <string name="changelog_ok_button">OK</string>
     <string name="changelog_show_full">more…</string>
 
@@ -218,29 +218,29 @@ Mirakel-version: %1$s\n
 SDK-version: %2$d\n
 Device: %3$s\n]]>
     </string>
-    <string name="contact_no_client">No Mail-Client installed</string>
-    <string name="contact_chooser">Send mail&#8230;</string>
+    <string name="contact_no_client">No e-mail client installed</string>
+    <string name="contact_chooser">Send e-mail&#8230;</string>
 
     <!-- Backup -->
-    <string name="backup_import_error">There was an Error while importing the database</string>
-    <string name="backup_import_ok">The Import was fine - Please restart Mirakel</string>
-    <string name="backup_export_error">There was an Error while exporting the database</string>
+    <string name="backup_import_error">There was an error while importing the database</string>
+    <string name="backup_import_ok">The import was fine - please restart Mirakel</string>
+    <string name="backup_export_error">There was an error while exporting the database</string>
     <string name="backup_export_ok">Exported to %s</string>
-    <string name="change_content">Change Content</string>
+    <string name="change_content">Change content</string>
     <string name="content">Content</string>
     <string name="task_has_content">Task has content</string>
     <string name="help">Help</string>
     <string name="help_description">There are 3 main parts: on the left side you can see all lists, in the middle you can see all tasks of a list and at the right side you can see a task. You switch between the parts by swiping or clicking.</string>
 
     <!-- Permissions -->
-    <string name="permission_group_desc">Permission for Access Mirakel</string>
-    <string name="permission_group_lbl">Mirakel Permission</string>
+    <string name="permission_group_desc">Permission for access Mirakel</string>
+    <string name="permission_group_lbl">Mirakel permission</string>
     <string name="permission_read_lbl">Read data from Mirakel</string>
     <string name="permission_read_desc">Permission to read data from Mirakel</string>
     <string name="permission_write_lbl">Write data to Mirakel</string>
     <string name="permission_write_desc">Permission to write data to Mirakel</string>
     <string name="permission_read_write_lbl">Read/Write Mirakel-data</string>
-    <string name="permission_read_write_desc">Permission to Read data from and write data to Mirakel</string>
+    <string name="permission_read_write_desc">Permission to read data from and write data to Mirakel</string>
 
     <!-- ACRA -->
     <string name="crash_toast_text">Yikes! I crashed! Please start the app again, so I can send a message to my developer</string>
@@ -248,7 +248,7 @@ Device: %3$s\n]]>
     <string name="crash_dialog_text">An unexpected error occurred forcing the
     application to stop. Please help us fix this by sending us error data,
     all you have to do is to press OK.</string>
-    <string name="crash_dialog_comment_prompt">You might add your comments about the problem below:</string>
+    <string name="crash_dialog_comment_prompt">You can add a comment about the problem below:</string>
     <string name="crash_dialog_ok_toast">Thank you !</string>
     
     <!-- Sync -->
