@@ -2,7 +2,6 @@ package de.azapps.mirakel.helper;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.http.message.BasicNameValuePair;
 
 import android.accounts.Account;
@@ -1143,6 +1142,36 @@ public class PreferencesHelper {
 							return true;
 						}
 					});
+		}
+		final ListPreference language = (ListPreference) findPreference("language");
+		if (language != null) {
+			setLanguageSummary(language, settings.getString("language", "-1"));
+			language.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+				@Override
+				public boolean onPreferenceChange(Preference preference,
+						Object newValue) {
+					setLanguageSummary(language, newValue.toString());
+					settings.edit().putString("language", newValue.toString())
+							.commit();
+					android.os.Process.killProcess(android.os.Process.myPid());
+					return false;
+				}
+			});
+
+		}
+	}
+
+	private void setLanguageSummary(ListPreference language, String current) {
+		String[] keys = activity.getResources().getStringArray(
+				R.array.language_keys);
+		language.setSummary(keys[0]);
+		for (int j = 0; j < keys.length; j++) {
+			if (current.equals(keys[j])) {
+				language.setSummary(activity.getResources().getStringArray(
+						R.array.language_values)[j]);
+				break;
+			}
 		}
 	}
 

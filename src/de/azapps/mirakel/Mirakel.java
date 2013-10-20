@@ -18,6 +18,8 @@
  ******************************************************************************/
 package de.azapps.mirakel;
 
+import java.util.Locale;
+
 import org.acra.ACRA;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
@@ -26,6 +28,7 @@ import android.app.Application;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
@@ -77,6 +80,12 @@ public class Mirakel extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		Locale locale=Helpers.getLocal(this);
+		Locale.setDefault(locale);
+		Configuration config = new Configuration();
+		config.locale = locale;
+		getBaseContext().getResources().updateConfiguration(config,
+		      getBaseContext().getResources().getDisplayMetrics());
 		ACRA.init(this);
 		APK_NAME = getPackageName();
 		MIRAKEL_DIR = Environment.getDataDirectory() + "/data/"
@@ -120,6 +129,7 @@ public class Mirakel extends Application {
 		Semantic.close();
 		Recurring.close();
 	}
+	
 
 	public static SQLiteDatabase getWritableDatabase() {
 		return openHelper.getWritableDatabase();

@@ -546,4 +546,11 @@ public class Helpers {
 
 	}
 
+	public static Locale getLocal(Context ctx) {
+		String current = PreferenceManager.getDefaultSharedPreferences(ctx)
+				.getString("language", "-1");
+		return current.equals("-1") ? Locale.getDefault() : new Locale(current);
+
+	}
+
 }
