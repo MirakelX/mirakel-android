@@ -29,23 +29,17 @@
         android:layout_marginBottom="@dimen/marginTopDivider"
         android:layout_marginTop="@dimen/marginTopDivider" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
-
-        <ImageButton
-            android:id="@+id/edit_content"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/edit"
-            android:src="@android:drawable/ic_menu_edit" />
+        android:layout_height="wrap_content" >
 
         <ViewSwitcher
             android:id="@+id/switcher_content"
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="left"
             android:measureAllChildren="false" >
 
             <TextView
@@ -67,6 +61,15 @@
                 android:paddingRight="@dimen/task_padding"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
         </ViewSwitcher>
-    </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/edit_content"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_alignParentRight="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/edit"
+            android:src="@android:drawable/ic_menu_edit" />
+    </RelativeLayout>
 
 </LinearLayout>

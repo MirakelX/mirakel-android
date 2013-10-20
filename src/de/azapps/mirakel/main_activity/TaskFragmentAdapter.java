@@ -692,6 +692,7 @@ public class TaskFragmentAdapter extends
 			holder.taskContentSwitcher.showNext();
 		}
 		if (editContent) {
+			holder.editContent.setImageDrawable(context.getResources().getDrawable(android.R.drawable.ic_menu_save));
 			holder.divider.setBackgroundColor(context.getResources().getColor(
 					active_color));
 			editContent = false;// do not record Textchanges
@@ -734,6 +735,7 @@ public class TaskFragmentAdapter extends
 			editContent = true;
 		} else {
 			// Task content
+			holder.editContent.setImageDrawable(context.getResources().getDrawable(android.R.drawable.ic_menu_edit));
 			if (task.getContent().length() > 0) {
 				holder.taskContent.setText(task.getContent());
 				taskEditText = task.getContent();
@@ -751,6 +753,8 @@ public class TaskFragmentAdapter extends
 						.getColor(inactive_color));
 				holder.taskContent.setTextColor(context.getResources()
 						.getColor(inactive_color));
+				taskEditText = "";
+				cursorPos = 0;
 			}
 			InputMethodManager imm = (InputMethodManager) context
 					.getSystemService(Context.INPUT_METHOD_SERVICE);
