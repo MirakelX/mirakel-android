@@ -8,11 +8,13 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -35,11 +37,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.util.Pair;
+import android.util.SparseIntArray;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 
@@ -324,7 +329,9 @@ public class ExportImport {
 		Log.i(TAG, json);
 		JsonObject i = new JsonParser().parse(json).getAsJsonObject();
 		Set<Entry<String, JsonElement>> f = i.entrySet();
-		HashMap<Integer, Integer> listMapping = new HashMap<Integer, Integer>();
+		SparseIntArray listMapping = new SparseIntArray();
+		List<Pair<Integer, String>> contents = new ArrayList<Pair<Integer, String>>();
+		taskMapping = new SparseIntArray();
 		for (Entry<String, JsonElement> e : f) {
 			if (e.getKey().equals("categorys")) {
 				Iterator<JsonElement> iter = e.getValue().getAsJsonArray()
@@ -337,24 +344,49 @@ public class ExportImport {
 				Iterator<JsonElement> iter = e.getValue().getAsJsonArray()
 						.iterator();
 				while (iter.hasNext()) {
-					parseAnyDoTask(iter.next().getAsJsonObject(), listMapping);
+					contents = parseAnyDoTask(iter.next().getAsJsonObject(),
+							listMapping, contents, ctx);
 				}
 			} else {
 				Log.d(TAG, e.getKey());
 			}
 		}
+		for (Pair<Integer, String> pair : contents) {
+			Task t = Task.get(taskMapping.get(pair.first));
+			if (t == null) {
+				Log.d(TAG, "Task not found");
+				continue;
+			}
+			String oldContent = t.getContent();
+			t.setContent(oldContent == null || oldContent.equals("") ? pair.second
+					: oldContent + "\n" + pair.second);
+			try {
+				t.save();
+			} catch (NoSuchListException e1) {
+				Log.wtf(TAG, "List did vanish");
+			}
+		}
 		return true;
 	}
 
-	private static void parseAnyDoTask(JsonObject jsonTask,
-			HashMap<Integer, Integer> listMapping) {
+	private static SparseIntArray taskMapping;
+
+	private static List<Pair<Integer, String>> parseAnyDoTask(
+			JsonObject jsonTask, SparseIntArray listMapping,
+			List<Pair<Integer, String>> contents, Context ctx) {
 		String name = jsonTask.get("title").getAsString();
+		if (jsonTask.has("parentId")) {
+			contents.add(new Pair<Integer, String>(jsonTask.get("parentId")
+					.getAsInt(), name));
+			return contents;
+		}
 		int list_id = jsonTask.get("categoryId").getAsInt();
 		Task t = Task.newTask(name, listMapping.get(list_id));
+		taskMapping.put(jsonTask.get("id").getAsInt(), (int) t.getId());
 		if (jsonTask.has("dueDate")) {
 			Calendar due = new GregorianCalendar();
-			long dueMs=jsonTask.get("dueDate").getAsLong();
-			if(dueMs>0){
+			long dueMs = jsonTask.get("dueDate").getAsLong();
+			if (dueMs > 0) {
 				due.setTimeInMillis(dueMs);
 				t.setDue(due);
 			}
@@ -366,23 +398,66 @@ public class ExportImport {
 			}
 			t.setPriority(prio);
 		}
-		if(jsonTask.has("status")){
-			t.setDone(!jsonTask.get("status").getAsString().equals("UNCHECKED"));
+		if (jsonTask.has("status")) {
+			t.setDone(jsonTask.get("status").getAsString().equals("DONE"));
+		}
+		if (jsonTask.has("repeatMethod")) {
+			String repeat = jsonTask.get("repeatMethod").getAsString();
+
+			if (!repeat.equals("TASK_REPEAT_OFF")) {
+				Recurring r=null;
+				if (repeat.equals("TASK_REPEAT_DAY")) {
+					r = Recurring.get(1, 0, 0);
+					if (r == null) {
+						r = Recurring.newRecurring(
+								ctx.getString(R.string.daily), 0, 0, 1, 0, 0,
+								true, null, null);
+					}
+				} else if (repeat.equals("TASK_REPEAT_WEEK")) {
+					r = Recurring.get(7, 0, 0);
+					if (r == null) {
+						r = Recurring.newRecurring(
+								ctx.getString(R.string.weekly), 0, 0, 7, 0, 0,
+								true, null, null);
+					}
+				} else if (repeat.equals("TASK_REPEAT_MONTH")) {
+					r = Recurring.get(0, 1, 0);
+					if (r == null) {
+						r = Recurring.newRecurring(
+								ctx.getString(R.string.monthly), 0, 0, 0, 1, 0,
+								true, null, null);
+					}
+				} else if (repeat.equals("TASK_REPEAT_YEAR")) {
+					r = Recurring.get(0, 0, 1);
+					if (r == null) {
+						r = Recurring.newRecurring(
+								ctx.getString(R.string.yearly), 0, 0, 0, 0, 1,
+								true, null, null);
+					}
+				}
+				if(r!=null){
+					t.setRecurrence(r.getId());
+				}else{
+					Log.d(TAG,repeat);
+				}
+
+			}
 		}
 		try {
 			t.save();
 		} catch (NoSuchListException e) {
 			Log.wtf(TAG, "list did vanish");
 		}
+		return contents;
 	}
 
-	private static HashMap<Integer, Integer> parseAnyDoList(
-			JsonObject jsonList, HashMap<Integer, Integer> mapping) {
+	private static SparseIntArray parseAnyDoList(JsonObject jsonList,
+			SparseIntArray listMapping) {
 		String name = jsonList.get("name").getAsString();
 		int id = jsonList.get("id").getAsInt();
 		ListMirakel l = ListMirakel.newList(name);
-		mapping.put(id, l.getId());
-		return mapping;
+		listMapping.put(id, l.getId());
+		return listMapping;
 
 	}
 

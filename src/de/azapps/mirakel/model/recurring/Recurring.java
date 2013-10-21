@@ -6,7 +6,6 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -67,6 +66,7 @@ public class Recurring extends RecurringBase {
 	}
 
 	public Recurring create() {
+
 		ContentValues values = getContentValues();
 		values.remove("_id");
 		int insertId = (int) database.insertOrThrow(TABLE, null, values);
@@ -90,6 +90,33 @@ public class Recurring extends RecurringBase {
 		}
 		cursor.close();
 		return null;
+	}
+
+	public static Recurring get(int minutes, int hours, int days, int month,
+			int years, Calendar start, Calendar end) {
+		String cal = "";
+		if (start != null) {
+			cal += " start_date=" + DateTimeHelper.formatDateTime(start);
+		}
+		if (end != null) {
+			cal = cal + (cal.equals("") ? "" : " and") + " end_date="
+					+ DateTimeHelper.formatDateTime(end);
+		}
+		Cursor cursor = database.query(TABLE, allColumns, "minutes=" + minutes
+				+ " and hours=" + hours + " and days=" + days + " and months="
+				+ month + " and years=" + years+cal, null, null, null, null);
+		cursor.moveToFirst();
+		if (cursor.getCount() != 0) {
+			Recurring r = cursorToRecurring(cursor);
+			cursor.close();
+			return r;
+		}
+		cursor.close();
+		return null;
+	}
+
+	public static Recurring get(int days, int month, int years) {
+		return get(0, 0, days, month, years, null, null);
 	}
 
 	public static Recurring first() {
@@ -167,7 +194,7 @@ public class Recurring extends RecurringBase {
 					c.add(Calendar.HOUR, getHours());
 				}
 			} while (c.before(now));
-		}		
+		}
 		return c;
 	}
 
