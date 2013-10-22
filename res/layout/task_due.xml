@@ -23,6 +23,7 @@
     android:layout_height="wrap_content"
     android:paddingBottom="10dp"
     android:drawablePadding="5dp"
+    android:textSize="@dimen/due_reminder_text_size"
     android:paddingLeft="@dimen/task_padding_for_icons"
     android:paddingRight="@dimen/task_padding_for_icons"
     android:textAppearance="?android:attr/textAppearanceLarge" />

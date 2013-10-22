@@ -31,7 +31,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:paddingRight="@dimen/task_padding" >
 
         <ViewSwitcher
             android:id="@+id/switcher_content"
@@ -46,7 +47,8 @@
                 android:id="@+id/task_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:minHeight="42dp"
+                android:gravity="center_vertical"
                 android:paddingLeft="@dimen/task_padding"
                 android:paddingRight="@dimen/task_padding"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -55,7 +57,8 @@
                 android:id="@+id/task_content_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:minHeight="42dp"
+                android:gravity="center_vertical"
                 android:inputType="textMultiLine"
                 android:paddingLeft="@dimen/task_padding"
                 android:paddingRight="@dimen/task_padding"
@@ -69,7 +72,8 @@
             android:layout_alignParentRight="true"
             android:background="@android:color/transparent"
             android:contentDescription="@string/edit"
-            android:src="@android:drawable/ic_menu_edit" />
+            android:paddingRight="-2dp"
+            android:src="@android:drawable/ic_menu_add" />
     </RelativeLayout>
 
 </LinearLayout>

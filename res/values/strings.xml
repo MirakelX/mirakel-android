@@ -63,14 +63,15 @@
     <string name="task_set_reminder">Set Reminder</string>
     <string name="action_undo">Undo the last Change</string>
     <string name="subtasks">Subtasks</string>
+    <string name="add_subtasks">Add subtask…</string>
     <string name="remove_files">Remove Files from Task</string>
     <string name="remove_files_summary">Do you want to remove %1$s from %2$s?</string>
     <string name="add_subtask">Add Subtask</string>
     <string name="remove_subtask">Remove Subtask</string>
     <string name="subtask_add_options">Options >></string>
-    <string name="subtask_done">Task Done?</string>
+    <string name="subtask_done">Task done?</string>
     <string name="subtask_reminder">Task with reminder?</string>
-    <string name="subtask_content">Task with Content?</string>
+    <string name="subtask_content">Task with content?</string>
     <string name="add">Add</string>
     <string name="new_task">New Task</string>
     <string name="add_existing">Add existing Task</string>
@@ -228,6 +229,7 @@ Device: %3$s\n]]>
     <string name="backup_export_ok">Exported to %s</string>
     <string name="change_content">Change content</string>
     <string name="content">Content</string>
+    <string name="add_content">Add content…</string>
     <string name="task_has_content">Task has content</string>
     <string name="help">Help</string>
     <string name="help_description">There are 3 main parts: on the left side you can see all lists, in the middle you can see all tasks of a list and at the right side you can see a task. You switch between the parts by swiping or clicking.</string>
@@ -260,6 +262,7 @@ Device: %3$s\n]]>
     <string name="unset_color">No Color</string>
     
     <string name="files">Files</string>
+    <string name="add_files">Add file…</string>
     <string name="file_no_activity">I don\'t know, how to open this file – sorry</string>
     <string name="file_select">Select a file</string>
     <string name="file_vanished">No such file</string>

@@ -203,7 +203,7 @@ public class TaskFragmentAdapter extends
 			boolean active = false;
 			switch (data.get(position).second) {
 			case SUBTITLE_SUBTASKS:
-				title = context.getString(R.string.subtasks);
+				title = context.getString(R.string.add_subtasks);
 				action = new OnClickListener() {
 					@Override
 					public void onClick(View v) {
@@ -214,7 +214,7 @@ public class TaskFragmentAdapter extends
 				break;
 			case SUBTITLE_FILES:
 				cameraButton = true;
-				title = context.getString(R.string.files);
+				title = context.getString(R.string.add_files);
 				action = new OnClickListener() {
 					@Override
 					public void onClick(View v) {
@@ -748,7 +748,7 @@ public class TaskFragmentAdapter extends
 								darkTheme ? android.R.color.white
 										: android.R.color.black));
 			} else {
-				holder.taskContent.setText(R.string.content);
+				holder.taskContent.setText(R.string.add_content);
 				holder.divider.setBackgroundColor(context.getResources()
 						.getColor(inactive_color));
 				holder.taskContent.setTextColor(context.getResources()
