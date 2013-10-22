@@ -231,6 +231,9 @@ public class FileMirakel extends FileBase {
 	}
 
 	public static int getFileCount(Task t) {
+		if(t==null){
+			return 0;
+		}
 		Cursor c = database.rawQuery("Select count(_id) from " + TABLE
 				+ " where task_id=?", new String[] { "" + t.getId() });
 		c.moveToFirst();
