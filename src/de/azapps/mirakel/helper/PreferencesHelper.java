@@ -2,6 +2,7 @@ package de.azapps.mirakel.helper;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.http.message.BasicNameValuePair;
 
 import android.accounts.Account;
@@ -1182,6 +1183,32 @@ public class PreferencesHelper {
 				}
 			});
 
+		}
+		final Preference useBtnSpeak =findPreference("useBtnCamera");
+		if(useBtnSpeak!=null){
+			useBtnSpeak.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+				
+				@Override
+				public boolean onPreferenceChange(Preference preference, Object newValue) {
+					settings.edit().putBoolean("useBtnSpeak", (Boolean)newValue)
+					.commit();
+					android.os.Process.killProcess(android.os.Process.myPid());
+					return false;
+				}
+			});
+		}
+		final Preference useBtnCamera =findPreference("useBtnCamera");
+		if(useBtnCamera!=null){
+			useBtnCamera.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+				
+				@Override
+				public boolean onPreferenceChange(Preference preference, Object newValue) {
+					settings.edit().putBoolean("useBtnCamera", (Boolean)newValue)
+					.commit();
+					android.os.Process.killProcess(android.os.Process.myPid());
+					return false;
+				}
+			});
 		}
 	}
 
