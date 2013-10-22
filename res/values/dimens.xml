@@ -41,5 +41,6 @@
     <dimen name="task_padding">7.5dp</dimen>
     <dimen name="task_padding_for_icons">12.5dp</dimen>
     <dimen name="text_padding">5dp</dimen>
+    <dimen name="due_reminder_text_size">18sp</dimen>
 
 </resources>
