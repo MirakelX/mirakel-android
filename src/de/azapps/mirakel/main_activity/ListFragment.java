@@ -76,7 +76,8 @@ public class ListFragment extends Fragment {
 	private static ListFragment me = null;
 
 	private static void setSingleton(ListFragment me) {
-		ListFragment.me = me;
+		if (ListFragment.me == null)
+			ListFragment.me = me;
 	}
 
 	public static ListFragment getSingleton() {
@@ -296,10 +297,11 @@ public class ListFragment extends Fragment {
 			});
 		}
 	}
-	
+
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public void closeActionMode() {
-		if(mActionMode!=null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+		if (mActionMode != null
+				&& Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
 			mActionMode.finish();
 	}
 
@@ -359,8 +361,7 @@ public class ListFragment extends Fragment {
 	void editList(final ListMirakel list) {
 
 		input = new EditText(main);
-		input.setText(list == null ? ""
-				: list.getName());
+		input.setText(list == null ? "" : list.getName());
 		input.setTag(main);
 		input.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
 		new AlertDialog.Builder(main)
@@ -390,12 +391,13 @@ public class ListFragment extends Fragment {
 							}
 						}).show();
 		input.postDelayed(new Runnable() {
-			  @Override
-			  public void run() {
-			    InputMethodManager keyboard = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-			    keyboard.showSoftInput(input, InputMethodManager.SHOW_IMPLICIT);
-			  }
-			},50);
+			@Override
+			public void run() {
+				InputMethodManager keyboard = (InputMethodManager) getActivity()
+						.getSystemService(Context.INPUT_METHOD_SERVICE);
+				keyboard.showSoftInput(input, InputMethodManager.SHOW_IMPLICIT);
+			}
+		}, 50);
 
 	}
 
