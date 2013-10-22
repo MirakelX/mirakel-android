@@ -320,11 +320,10 @@ public class TaskFragmentAdapter extends
 					final Task task = (Task) v.getTag();
 					TaskDialogHelpers.handlePriority(context, task,
 							new ExecInterface() {
-
 								@Override
 								public void exec() {
-									((MainActivity) context)
-											.updatesForTask(task);
+									TaskFragmentAdapter.this.task=Task.get(TaskFragmentAdapter.this.task.getId());
+									adapter.notifyDataSetChanged();
 								}
 							});
 
@@ -1126,7 +1125,7 @@ public class TaskFragmentAdapter extends
 		data.add(new Pair<Integer, Integer>(TYPE.REMINDER, 0));
 		data.add(new Pair<Integer, Integer>(TYPE.CONTENT, 0));
 		data.add(new Pair<Integer, Integer>(TYPE.SUBTITLE, SUBTITLE_SUBTASKS));
-		int subtaskCount = task.getSubtaskCount();
+		int subtaskCount = task==null?0: task.getSubtaskCount();
 		for (int i = 0; i < subtaskCount; i++) {
 			data.add(new Pair<Integer, Integer>(TYPE.SUBTASK, i));
 		}
