@@ -46,11 +46,14 @@ import de.azapps.mirakelandroid.R;
 
 public class MainWidgetProvider extends AppWidgetProvider {
 	private static final String TAG = "MainWidgetProvider";
-	public static String EXTRA_LISTID = "de.azapps.mirakel.EXTRA_LISTID";
-	public static String EXTRA_LISTSORT = "de.azapps.mirakel.EXTRA_LISTSORT";
-	public static String EXTRA_SHOWDONE = "de.azapps.mirakel.EXTRA_SHOWDONE";
-	public static String CLICK_TASK = "de.azapps.mirakel.CLICK_TASK";
-	public static String EXTRA_TASKID = "de.azapps.mirakel.EXTRA_TASKID";
+	public static final String EXTRA_LISTID = "de.azapps.mirakel.EXTRA_LISTID";
+	public static final String EXTRA_LISTSORT = "de.azapps.mirakel.EXTRA_LISTSORT";
+	public static final String EXTRA_SHOWDONE = "de.azapps.mirakel.EXTRA_SHOWDONE";
+	public static final String CLICK_TASK = "de.azapps.mirakel.CLICK_TASK";
+	public static final String EXTRA_TASKID = "de.azapps.mirakel.EXTRA_TASKID";
+	public static final String EXTRA_WIDGET_LAYOUT="de.azapps.mirakel.EXTRA_WIDGET_LAYOUT";
+	public static final int MINIMAL_WIDGET=1;
+	public static final int NORMAL_WIDGET=0;
 
 	@SuppressLint("NewApi")
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
@@ -73,21 +76,9 @@ public class MainWidgetProvider extends AppWidgetProvider {
 
 			views.setTextColor(R.id.widget_list_name, context.getResources()
 					.getColor(darkTheme ? R.color.White : R.color.Black));
-			int listId = Integer.parseInt(preferences.getString("widgetList",
-					SpecialList.firstSpecialSafe(context).getId() + ""));
-			ListMirakel list = ListMirakel.getList(listId);
-			if (list == null) {
-				list = SpecialList.firstSpecial();
-				if (list == null) {
-					list = ListMirakel.first();
-					if (list == null) {
-						Toast.makeText(context, "You have no Lists!",
-								Toast.LENGTH_SHORT).show();
-						return;
-					}
-				}
-				listId = list.getId();
-			}
+			Integer listId = getListId(context, preferences);
+			if(listId==null)
+				return;
 			int listSort = Integer.parseInt(preferences.getString("widgetSort",
 					ListMirakel.SORT_BY_OPT + ""));
 
@@ -161,6 +152,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
 				Intent toastIntent = new Intent(context,
 						MainWidgetProvider.class);
 				intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+				intent.putExtra(EXTRA_WIDGET_LAYOUT, NORMAL_WIDGET);
 				PendingIntent toastPendingIntent = PendingIntent.getBroadcast(
 						context, 0, toastIntent,
 						PendingIntent.FLAG_UPDATE_CURRENT);
@@ -181,8 +173,8 @@ public class MainWidgetProvider extends AppWidgetProvider {
 									.configureItem(
 											new RemoteViews(context
 													.getPackageName(),
-													R.layout.widget_row), t,
-											context, listId));
+													R.layout.widget_row_minimal), t,
+											context, listId,false));
 						}
 					} catch (IndexOutOfBoundsException e) {
 						Log.wtf(TAG,
@@ -193,6 +185,25 @@ public class MainWidgetProvider extends AppWidgetProvider {
 			appWidgetManager.updateAppWidget(appWidgetId, views);
 
 		}
+	}
+
+	public static Integer getListId(Context context, SharedPreferences preferences) {
+		int listId = Integer.parseInt(preferences.getString("widgetList",
+				SpecialList.firstSpecialSafe(context).getId() + ""));
+		ListMirakel list = ListMirakel.getList(listId);
+		if (list == null) {
+			list = SpecialList.firstSpecial();
+			if (list == null) {
+				list = ListMirakel.first();
+				if (list == null) {
+					Toast.makeText(context, "You have no Lists!",
+							Toast.LENGTH_SHORT).show();
+					return null;
+				}
+			}
+			listId = list.getId();
+		}
+		return listId;
 	}
 
 	@Override

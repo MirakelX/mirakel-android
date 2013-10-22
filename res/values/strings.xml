@@ -131,6 +131,7 @@
     <!-- Widget -->
     <string name="empty_list">No tasks</string>
     <string name="preferences">Preferences</string>
+    <string name="due_to"> (Due to %s)</string>
 
     <!-- Notification -->
     <string name="notification_title_general">%1$d tasks in %2$s</string>

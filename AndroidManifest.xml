@@ -100,6 +100,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity-alias>
+
         <activity
             android:name="de.azapps.mirakel.main_activity.MainActivity"
             android:configChanges="orientation|screenSize"
@@ -250,6 +251,16 @@
             android:name="de.azapps.mirakel.settings.recurring.RecurringActivity"
             android:label="@string/title_activity_credits" >
         </activity>
+
+        <receiver android:name="de.azapps.mirakel.widget.minimal.MinimalWidgetProvider" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/provider_widget_minimal" />
+        </receiver>
     </application>
 
 </manifest>

@@ -36,8 +36,11 @@ import de.azapps.mirakelandroid.R;
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class MainWidgetService extends RemoteViewsService {
 
+	private static final String TAG = "MainWidgetService";
+
 	@Override
 	public RemoteViewsFactory onGetViewFactory(Intent intent) {
+		Log.wtf(TAG,"create");
 		return new MainWidgetViewsFactory(getApplicationContext(), intent);
 	}
 
@@ -53,14 +56,20 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	@SuppressWarnings("unused")
 	private int sorting;
 	private boolean showDone;
+	private boolean isMinimal;
 
 	public MainWidgetViewsFactory(Context context, Intent intent) {
+		if(intent.getIntExtra(MainWidgetProvider.EXTRA_WIDGET_LAYOUT, MainWidgetProvider.NORMAL_WIDGET)!=MainWidgetProvider.NORMAL_WIDGET){
+			Log.wtf(TAG,"falscher provider");
+		}
 		mContext = context;
 		listId = intent.getIntExtra(MainWidgetProvider.EXTRA_LISTID, 0);
 		sorting = intent.getIntExtra(MainWidgetProvider.EXTRA_LISTSORT,
 				(int) ListMirakel.SORT_BY_OPT);
 		showDone = intent.getBooleanExtra(MainWidgetProvider.EXTRA_SHOWDONE,
 				false);
+		isMinimal=intent.getIntExtra(MainWidgetProvider.EXTRA_WIDGET_LAYOUT, MainWidgetProvider.NORMAL_WIDGET)==MainWidgetProvider.MINIMAL_WIDGET;
+		
 	}
 
 	/**
@@ -86,11 +95,11 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		}
 		Task task = tasks.get(position);
 		// Get The Task
-		RemoteViews rv = new RemoteViews(mContext.getPackageName(),
+		RemoteViews rv = new RemoteViews(mContext.getPackageName(),isMinimal?R.layout.widget_row_minimal:
 				R.layout.widget_row);
 
 		// Set the Contents of the Row
-		rv = WidgetHelper.configureItem(rv, task, mContext, listId);
+		rv = WidgetHelper.configureItem(rv, task, mContext, listId,isMinimal);
 
 		// Set the Click–Intent
 		// We need to do so, because we can not start the Activity directly from
