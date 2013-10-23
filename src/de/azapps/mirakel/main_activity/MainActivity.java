@@ -436,6 +436,7 @@ public class MainActivity extends ActionBarActivity implements
 				startActivity(startIntent);
 			}
 			loadMenu(mViewPager.getCurrentItem());
+			getTasksFragment().updateButtons();
 			return;
 		case RESULT_CAMERA:
 		case RESULT_ADD_PICTURE:
