@@ -36,6 +36,12 @@
         android:defaultValue="false"
         android:key="showDone"
         android:title="@string/widget_done" />
+    <de.azapps.mirakel.settings.ColorPickerPref
+        android:key="widgetFontColor"
+        android:title="@string/fontcolor"/>
+    <Preference android:defaultValue="0.5"
+        android:key="widgetTransparency"
+        android:title="@string/widget_transparency"/>
     <!--
      TODO
     <net.jayschwa.android.preference.SliderPreference

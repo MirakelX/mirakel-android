@@ -24,5 +24,7 @@
     <string name="widget_done">Done Tasks</string>
     <string name="widget_sort">Sorting</string>
     <string name="widget_sort_summary">Sort after \"%s\"</string>
+    <string name="fontcolor">Fontcolor</string>
+    <string name="widget_transparency">Transparency</string>
 
 </resources>

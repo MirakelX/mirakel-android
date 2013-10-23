@@ -2,6 +2,7 @@ package de.azapps.mirakel.helper;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.http.message.BasicNameValuePair;
 
 import android.accounts.Account;
@@ -50,6 +51,7 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.services.NotificationService;
+import de.azapps.mirakel.settings.ColorPickerPref;
 import de.azapps.mirakel.settings.recurring.RecurringActivity;
 import de.azapps.mirakel.settings.semantics.SemanticsSettingsActivity;
 import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
@@ -130,7 +132,9 @@ public class PreferencesHelper {
 		if (list == null) {
 			return;
 		}
-
+		final Preference widgetTransparency = findPreference("widgetTransparency");
+		final ColorPickerPref widgetFontColor = (ColorPickerPref) findPreference("widgetFontColor");
+		final CheckBoxPreference isDark = (CheckBoxPreference) findPreference("isDark");
 		final ListPreference widgetListPreference = (ListPreference) findPreference("widgetList");
 		widgetListPreference.setEntries(entries);
 		widgetListPreference.setEntryValues(entryValues);
@@ -152,7 +156,6 @@ public class PreferencesHelper {
 					}
 				});
 
-		CheckBoxPreference isDark = (CheckBoxPreference) findPreference("isDark");
 		isDark.setChecked(WidgetHelper.isDark(context, widgetId));
 		isDark.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
@@ -187,6 +190,19 @@ public class PreferencesHelper {
 					Object newValue) {
 				WidgetHelper.setDone(context, widgetId, (Boolean) newValue);
 				return true;
+			}
+		});
+
+		// ((SettingsFragment)ctx).getActivity().findViewById(R.id.color_box).setBackgroundColor(WidgetHelper.getFontColor(context,
+		// widgetId));
+		widgetFontColor.setColor(WidgetHelper.getFontColor(context, widgetId));
+		widgetFontColor.setOldColor(WidgetHelper.getFontColor(context, widgetId));
+		widgetFontColor.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+			
+			@Override
+			public boolean onPreferenceChange(Preference preference, Object newValue) {
+				WidgetHelper.setFontColor(context, widgetId, widgetFontColor.getColor());
+				return false;
 			}
 		});
 	}

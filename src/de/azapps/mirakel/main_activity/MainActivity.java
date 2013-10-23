@@ -162,6 +162,7 @@ public class MainActivity extends ActionBarActivity implements
 			showNavDrawer = true;
 		}
 		// currentList=preferences.getInt("s", defValue)
+		skipSwipe=false;
 		setupLayout();
 		isResumend = false;
 
@@ -176,7 +177,6 @@ public class MainActivity extends ActionBarActivity implements
 				}
 			}
 		}
-		skipSwipe=false;
 		/*
 		 * final List<ListMirakel> values = ListMirakel.all(); ListAdapter
 		 * adapter = new ListAdapter(this, R.layout.lists_row, values, false);
@@ -290,10 +290,9 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	public void onPageScrolled(int position, float positionOffset,
 			int positionOffsetPixels) {
-		Log.d(TAG,"scroll "+positionOffset+" pos: "+position+ " skipp "+skipSwipe);
+		Log.d(TAG,"scroll");
 		if (getTasksFragment() != null
 				&& preferences.getBoolean("swipeBehavior", true)&&!skipSwipe&&position==TASKS_FRAGMENT) {
-			Log.w(TAG,"scroll swipe");
 			setCurrentTask(getTasksFragment().getAdapter().lastTouched(), false);
 			skipSwipe=true;
 		}
@@ -530,7 +529,6 @@ public class MainActivity extends ActionBarActivity implements
 	protected void onNewIntent(Intent intent) {
 		super.onNewIntent(intent);
 		setIntent(intent);
-		Log.d(TAG, "New Indent");
 	}
 
 	private String newTaskContent, newTaskSubject;
@@ -568,7 +566,7 @@ public class MainActivity extends ActionBarActivity implements
 	 * Initialize the ViewPager and setup the rest of the layout
 	 */
 	private void setupLayout() {
-
+		Log.d(TAG,"setup layout");
 		fromShared = false;
 		if (currentList == null)
 			setCurrentList(SpecialList.firstSpecial());
@@ -577,14 +575,11 @@ public class MainActivity extends ActionBarActivity implements
 			intializeFragments();
 		NotificationService.updateNotificationAndWidget(this);
 		startIntent = getIntent();
-		Log.d(TAG,"setup layout");
 		if (startIntent == null || startIntent.getAction() == null) {
 			Log.d(TAG,"action null");
 		} else if (startIntent.getAction().equals(SHOW_TASK)) {
 			Task task = Helpers.getTaskFromIntent(startIntent);
 			if (task != null) {
-				Log.d("Blubb", "open task " + task.getName());
-				Log.d(TAG, "TaskID: " + task.getId());
 				skipSwipe=true;
 				setCurrentList(task.getList());
 				setCurrentTask(task, true);
@@ -636,13 +631,11 @@ public class MainActivity extends ActionBarActivity implements
 			handleReminder(startIntent);
 		} else if (startIntent.getAction().equals(SHOW_LIST)
 				|| startIntent.getAction().equals(SHOW_LIST_FROM_WIDGET)) {
-			Log.d(TAG,"show list from widget");
 
 			int listId = startIntent.getIntExtra(EXTRA_ID, 0);
 			ListMirakel list = ListMirakel.getList(listId);
 			if (list == null)
 				list = SpecialList.firstSpecial();
-			Log.d(TAG, list.getName() + " " + listId);
 			setCurrentList(list);
 		} else if (startIntent.getAction().equals(SHOW_LISTS)) {
 			mDrawerLayout.openDrawer(Gravity.LEFT);

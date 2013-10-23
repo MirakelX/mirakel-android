@@ -21,7 +21,7 @@ import de.azapps.mirakelandroid.R;
 
 public class WidgetHelper {
 	public static RemoteViews configureItem(RemoteViews rv, Task task,
-			Context context, int listId, boolean isMinimal) {
+			Context context, int listId, boolean isMinimal,int widgetId) {
 		Intent openIntent = new Intent(context, MainActivity.class);
 		openIntent.setAction(MainActivity.SHOW_TASK);
 		openIntent.putExtra(MainActivity.EXTRA_ID, task.getId());
@@ -41,6 +41,8 @@ public class WidgetHelper {
 			}
 			rv.setInt(R.id.tasks_row_priority, "setBackgroundColor",
 					Helpers.getPrioColor(task.getPriority(), context));
+			rv.setTextColor(R.id.tasks_row_name, WidgetHelper.getFontColor(context, widgetId));
+			rv.setTextColor(R.id.tasks_row_due, WidgetHelper.getFontColor(context, widgetId));
 		}
 		rv.setTextViewText(R.id.tasks_row_name, task.getName());
 		if (task.isDone()) {
@@ -122,6 +124,11 @@ public class WidgetHelper {
 
 	}
 
+	private static int getInt(Context context, int widgetId, String key,
+			int white) {
+		return getSettings(context).getInt(getKey(widgetId, key), white);
+	}
+
 	public static boolean isDark(Context context, int widgetId) {
 		return getBoolean(context, widgetId, "isDark", false);
 	}
@@ -133,6 +140,11 @@ public class WidgetHelper {
 	public static boolean showDone(Context context, int widgetId) {
 		return getBoolean(context, widgetId, "showDone", false);
 	}
+	
+	public static int getFontColor(Context context, int widgetId) {
+		return getInt(context, widgetId, "widgetFontColor", context.getResources().getColor(android.R.color.white));
+	}
+
 
 	public static ListMirakel getList(Context context, int widgetId) {
 
@@ -166,6 +178,14 @@ public class WidgetHelper {
 		editor.commit();
 
 	}
+	
+	public static void putInt(Context context, int widgetId, String key,
+			int value) {
+		Editor editor = getSettings(context).edit();
+		editor.putInt(getKey(widgetId, key), value);
+		editor.commit();
+
+	}
 
 	public static void setDone(Context context, int widgetId, boolean done) {
 		putBool(context, widgetId, "showDone", done);
@@ -178,5 +198,9 @@ public class WidgetHelper {
 
 	public static void setDark(Context context, int widgetId, boolean dark) {
 		putBool(context, widgetId, "isDark", dark);
+	}
+	
+	public static void setFontColor(Context context, int widgetId, int color) {
+		putInt(context, widgetId, "widgetFontColor", color);
 	}
 }

@@ -155,7 +155,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
 									.configureItem(
 											new RemoteViews(context
 													.getPackageName(), row_id),
-											t, context, list.getId(), false));
+											t, context, list.getId(), false,widgetId));
 						}
 					} catch (IndexOutOfBoundsException e) {
 						Log.wtf(TAG,
