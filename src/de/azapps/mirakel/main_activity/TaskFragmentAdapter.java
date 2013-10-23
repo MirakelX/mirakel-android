@@ -1102,6 +1102,10 @@ public class TaskFragmentAdapter extends
 	}
 
 	public void setData(Task t) {
+		if(t==null){
+			Log.wtf(TAG, "task null");
+			return;
+		}
 		List<Pair<Integer, Integer>> generateData = generateData(t);
 		super.changeData(generateData);
 		task = t;

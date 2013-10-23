@@ -126,6 +126,7 @@ public class MainActivity extends ActionBarActivity implements
 	private boolean fromShared = false;
 	private Stack<Task> goBackTo = new Stack<Task>();
 	private boolean showNavDrawer = false;
+	private boolean skipSwipe;
 
 	public static boolean updateTasksUUID = false;
 
@@ -175,6 +176,7 @@ public class MainActivity extends ActionBarActivity implements
 				}
 			}
 		}
+		skipSwipe=false;
 		/*
 		 * final List<ListMirakel> values = ListMirakel.all(); ListAdapter
 		 * adapter = new ListAdapter(this, R.layout.lists_row, values, false);
@@ -288,9 +290,15 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	public void onPageScrolled(int position, float positionOffset,
 			int positionOffsetPixels) {
-		if (positionOffset == 0.0f && getTasksFragment() != null
-				&& preferences.getBoolean("swipeBehavior", true)) {
+		Log.d(TAG,"scroll "+positionOffset+" pos: "+position+ " skipp "+skipSwipe);
+		if (getTasksFragment() != null
+				&& preferences.getBoolean("swipeBehavior", true)&&!skipSwipe&&position==TASKS_FRAGMENT) {
+			Log.w(TAG,"scroll swipe");
 			setCurrentTask(getTasksFragment().getAdapter().lastTouched(), false);
+			skipSwipe=true;
+		}
+		if(positionOffset==0.0f&&position==TASKS_FRAGMENT){
+			skipSwipe=false;
 		}
 	}
 
@@ -569,13 +577,15 @@ public class MainActivity extends ActionBarActivity implements
 			intializeFragments();
 		NotificationService.updateNotificationAndWidget(this);
 		startIntent = getIntent();
+		Log.d(TAG,"setup layout");
 		if (startIntent == null || startIntent.getAction() == null) {
-
+			Log.d(TAG,"action null");
 		} else if (startIntent.getAction().equals(SHOW_TASK)) {
 			Task task = Helpers.getTaskFromIntent(startIntent);
 			if (task != null) {
 				Log.d("Blubb", "open task " + task.getName());
 				Log.d(TAG, "TaskID: " + task.getId());
+				skipSwipe=true;
 				setCurrentList(task.getList());
 				setCurrentTask(task, true);
 			} else {
@@ -626,6 +636,7 @@ public class MainActivity extends ActionBarActivity implements
 			handleReminder(startIntent);
 		} else if (startIntent.getAction().equals(SHOW_LIST)
 				|| startIntent.getAction().equals(SHOW_LIST_FROM_WIDGET)) {
+			Log.d(TAG,"show list from widget");
 
 			int listId = startIntent.getIntExtra(EXTRA_ID, 0);
 			ListMirakel list = ListMirakel.getList(listId);
