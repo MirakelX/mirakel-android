@@ -31,25 +31,25 @@ public class WidgetHelper {
 
 		rv.setOnClickPendingIntent(R.id.tasks_row, pOpenIntent);
 		rv.setOnClickPendingIntent(R.id.tasks_row_name, pOpenIntent);
-		String text=task.getName();
-		if(isMinimal){
-			if(task.getDue()!=null){
-				text+=context.getString(R.string.due_to,Helpers.formatDate(context, task.getDue()));
+		if (isMinimal) {
+			if (task.getDue() != null) {
+				rv.setTextViewText(R.id.tasks_row_due,
+						Helpers.formatDate(context, task.getDue()));
 			}
-			rv.setInt(R.id.tasks_row_priority, "setBackgroundColor", 
+			rv.setInt(R.id.tasks_row_priority, "setBackgroundColor",
 					Helpers.getPrioColor(task.getPriority(), context));
 		}
-		rv.setTextViewText(R.id.tasks_row_name,text);
+		rv.setTextViewText(R.id.tasks_row_name, task.getName());
 		if (task.isDone()) {
 			rv.setTextColor(R.id.tasks_row_name, context.getResources()
 					.getColor(R.color.Grey));
 		} else {
-			rv.setTextColor(
-					R.id.tasks_row_name,
-					context.getResources()
-							.getColor(
-									preferences.getBoolean("darkWidget", false) ? R.color.White
-											: R.color.Black));
+			/*
+			 * Is this meaningful? I mean the widget is transparent…
+			 * rv.setTextColor( R.id.tasks_row_name, context.getResources()
+			 * .getColor( preferences.getBoolean("darkWidget", false) ?
+			 * R.color.White : R.color.Black));
+			 */
 		}
 		if (!isMinimal) {
 			rv.setTextViewText(R.id.tasks_row_priority, task.getPriority() + "");

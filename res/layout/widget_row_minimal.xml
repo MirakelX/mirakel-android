@@ -17,7 +17,7 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/tasks_row"
     android:layout_width="match_parent"
@@ -28,15 +28,19 @@
 
     <ImageButton
         android:id="@+id/tasks_row_priority"
-        android:layout_width="21dp"
-        android:layout_height="21dp" />
+        android:layout_width="16dp"
+        android:layout_height="16dp" />
+
+    <TextView
+        android:id="@+id/tasks_row_due"
+        style="@style/minimalisticWidgetText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/tasks_row_name"
+        style="@style/minimalisticWidgetText"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_toRightOf="@+id/tasks_row_priority"
-        android:ellipsize="end" />
+        android:layout_height="wrap_content" />
 
-</RelativeLayout>
+</LinearLayout>
