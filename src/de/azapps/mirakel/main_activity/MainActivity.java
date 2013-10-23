@@ -646,7 +646,9 @@ public class MainActivity extends ActionBarActivity implements
 		} else if (startIntent.getAction().equals(ADD_TASK_FROM_WIDGET)) {
 			int listId = startIntent.getIntExtra(EXTRA_ID, 0);
 			setCurrentList(ListMirakel.getList(listId));
-			getTasksFragment().focusNew();
+			if(getTasksFragment()!=null){
+				getTasksFragment().focusNew();
+			}
 
 		} else {
 			mViewPager.setCurrentItem(TASKS_FRAGMENT);
