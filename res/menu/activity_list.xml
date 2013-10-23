@@ -39,7 +39,7 @@
         android:title="@string/action_undo"
         mirakel:showAsAction="never"/>
     <item
-        android:id="@+id/menu_sync_now_list"
+        android:id="@+id/menu_sync_now"
         android:title="@string/action_sync_now"
         mirakel:showAsAction="never"/>
     <item

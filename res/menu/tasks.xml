@@ -52,7 +52,7 @@
         mirakel:showAsAction="ifRoom|withText">
     </item>
     <item
-        android:id="@+id/menu_sync_now_tasks"
+        android:id="@+id/menu_sync_now"
         android:title="@string/action_sync_now"
         mirakel:showAsAction="never"/>
     <item
@@ -62,7 +62,7 @@
         mirakel:showAsAction="ifRoom|withText">
     </item>
     <item
-        android:id="@+id/menu_settings_tasks"
+        android:id="@+id/menu_settings"
         android:title="@string/action_settings"
         mirakel:showAsAction="never"/>
     <item

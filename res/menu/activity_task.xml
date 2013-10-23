@@ -48,11 +48,11 @@
         android:title="@string/share_task"
         mirakel:showAsAction="ifRoom|withText"/>
     <item
-        android:id="@+id/menu_sync_now_task"
+        android:id="@+id/menu_sync_now"
         android:title="@string/action_sync_now"
         mirakel:showAsAction="never"/>
     <item
-        android:id="@+id/menu_settings_task"
+        android:id="@+id/menu_settings"
         android:title="@string/menu_settings"
         mirakel:showAsAction="never"/>
     <item

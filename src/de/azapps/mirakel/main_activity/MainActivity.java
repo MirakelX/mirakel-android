@@ -218,16 +218,12 @@ public class MainActivity extends ActionBarActivity implements
 			getListFragment().enableDrop(t);
 			item.setChecked(t);
 			return true;
-		case R.id.menu_settings_list:
-		case R.id.menu_settings_task:
-		case R.id.menu_settings_tasks:
+		case R.id.menu_settings:
 			Intent intent = new Intent(MainActivity.this,
 					SettingsActivity.class);
 			startActivityForResult(intent, RESULT_SETTINGS);
 			break;
-		case R.id.menu_sync_now_list:
-		case R.id.menu_sync_now_task:
-		case R.id.menu_sync_now_tasks:
+		case R.id.menu_sync_now:
 			Bundle bundle = new Bundle();
 			bundle.putBoolean(ContentResolver.SYNC_EXTRAS_DO_NOT_RETRY, true);
 			// bundle.putBoolean(ContentResolver.SYNC_EXTRAS_INITIALIZE,true);
@@ -361,19 +357,8 @@ public class MainActivity extends ActionBarActivity implements
 
 		menu.clear();
 		MenuInflater inflater = getMenuInflater();
-
 		inflater.inflate(newmenu, menu);
-
-		if (preferences.getBoolean("syncUse", false) == false) {
-			MenuItem mitem;
-			mitem = menu.findItem(R.id.menu_sync_now_list);
-			if (mitem == null)
-				mitem = menu.findItem(R.id.menu_sync_now_task);
-			if (mitem == null)
-				mitem = menu.findItem(R.id.menu_sync_now_tasks);
-			mitem.setVisible(false);
-
-		}
+		menu.findItem(R.id.menu_sync_now).setVisible(preferences.getBoolean("syncUse", false));
 		menu.findItem(R.id.menu_kill_button).setVisible(
 				preferences.getBoolean("KillButton", false));
 
