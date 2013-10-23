@@ -326,7 +326,6 @@ public class TasksFragment extends Fragment {
 			@Override
 			protected void onPostExecute(TaskAdapter adapter) {
 				listView.setAdapter(adapter);
-
 				finishLoad = true;
 			}
 		};

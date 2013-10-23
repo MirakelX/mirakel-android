@@ -149,6 +149,8 @@
     <string name="semantic_new_task_config">Configure semantic new tasks</string>
     <string name="settings_old_logo_summary">I feel sad, that you don\'t like the new logo (restart the app and you need Android >= 4.0)</string>
     <string name="settings_old_logo">Use the old, ugly logo</string>
+    <string name="swipeBehavior_title">Switch on swipe to touched Task</string>
+    <string name="swipeBehavior_summary">Switch to Task which is touched or switch to last selected task</string>
     <!-- Language -->
     <string name="language">Language</string>
 

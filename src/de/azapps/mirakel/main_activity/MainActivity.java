@@ -288,6 +288,9 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	public void onPageScrolled(int position, float positionOffset,
 			int positionOffsetPixels) {
+		if(positionOffset==0.0f&&getTasksFragment()!=null&&preferences.getBoolean("swipeBehavior", true)){
+			setCurrentTask(getTasksFragment().getAdapter().lastTouched(), false);
+		}
 	}
 
 	@Override

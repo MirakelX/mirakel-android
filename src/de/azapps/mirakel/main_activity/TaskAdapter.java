@@ -29,8 +29,10 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.GradientDrawable;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -47,6 +49,7 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 	OnClickListener clickCheckbox;
 	OnClickListener clickPrio;
 	private Map<Long, View> viewsForTasks = new HashMap<Long, View>();
+	protected int touchPosition;
 
 	public View getViewForTask(Task task) {
 		return viewsForTasks.get(task.getId());
@@ -84,7 +87,7 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(final int position, View convertView, ViewGroup parent) {
 		Task task = position >= data.size() ? null : data.get(position);
 		View row = setupRow(convertView, parent, context, layoutResourceId,
 				task, listId <= 0, darkTheme);
@@ -113,6 +116,14 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 			row.setBackgroundColor(context.getResources().getColor(
 					android.R.color.transparent));
 		}
+		row.setOnTouchListener(new OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				touchPosition=position;
+				return false;
+			}
+		});
 		return row;
 	}
 
@@ -140,14 +151,12 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 					.findViewById(R.id.tasks_row_has_content);
 			holder.taskRowList = (TextView) row
 					.findViewById(R.id.tasks_row_list_name);
-
 			row.setTag(holder);
 		} else {
 			holder = (TaskHolder) row.getTag();
 		}
 		if (task == null)
 			return row;
-
 		// Done
 		holder.taskRowDone.setChecked(task.isDone());
 		holder.taskRowDone.setTag(task);
@@ -194,6 +203,13 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 			holder.taskRowDue.setVisibility(View.GONE);
 		}
 		return row;
+	}
+	
+	public Task lastTouched(){
+		if(touchPosition<data.size())
+			return data.get(touchPosition);
+		else 
+			return null;
 	}
 
 	/**
