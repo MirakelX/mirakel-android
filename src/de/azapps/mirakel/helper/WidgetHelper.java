@@ -36,6 +36,8 @@ public class WidgetHelper {
 			if (task.getDue() != null) {
 				rv.setTextViewText(R.id.tasks_row_due,
 						Helpers.formatDate(context, task.getDue()));
+			} else {
+				rv.setViewVisibility(R.id.tasks_row_due, View.GONE);
 			}
 			rv.setInt(R.id.tasks_row_priority, "setBackgroundColor",
 					Helpers.getPrioColor(task.getPriority(), context));
@@ -81,6 +83,7 @@ public class WidgetHelper {
 
 			if (task.getDue() != null) {
 				rv.setViewVisibility(R.id.tasks_row_due, View.VISIBLE);
+
 				rv.setTextViewText(R.id.tasks_row_due,
 						Helpers.formatDate(context, task.getDue()));
 				if (!isMinimal) {
@@ -90,7 +93,6 @@ public class WidgetHelper {
 									Helpers.getTaskDueColor(task.getDue(),
 											task.isDone())));
 				}
-
 			} else {
 				rv.setViewVisibility(R.id.tasks_row_due, View.GONE);
 			}
