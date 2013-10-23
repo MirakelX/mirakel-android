@@ -288,7 +288,8 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	public void onPageScrolled(int position, float positionOffset,
 			int positionOffsetPixels) {
-		if(positionOffset==0.0f&&getTasksFragment()!=null&&preferences.getBoolean("swipeBehavior", true)){
+		if (positionOffset == 0.0f && getTasksFragment() != null
+				&& preferences.getBoolean("swipeBehavior", true)) {
 			setCurrentTask(getTasksFragment().getAdapter().lastTouched(), false);
 		}
 	}
@@ -361,10 +362,11 @@ public class MainActivity extends ActionBarActivity implements
 		menu.clear();
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(newmenu, menu);
-		menu.findItem(R.id.menu_sync_now).setVisible(preferences.getBoolean("syncUse", false));
+		menu.findItem(R.id.menu_sync_now).setVisible(
+				preferences.getBoolean("syncUse", false));
 		menu.findItem(R.id.menu_kill_button).setVisible(
 				preferences.getBoolean("KillButton", false));
-		if(position==TASKS_FRAGMENT&&getCurrentList().isSpecialList()){
+		if (position == TASKS_FRAGMENT && getCurrentList().isSpecialList()) {
 			menu.findItem(R.id.list_delete).setVisible(false);
 		}
 
@@ -572,6 +574,7 @@ public class MainActivity extends ActionBarActivity implements
 		} else if (startIntent.getAction().equals(SHOW_TASK)) {
 			Task task = Helpers.getTaskFromIntent(startIntent);
 			if (task != null) {
+				Log.d("Blubb", "open task " + task.getName());
 				Log.d(TAG, "TaskID: " + task.getId());
 				setCurrentList(task.getList());
 				setCurrentTask(task, true);
@@ -638,7 +641,7 @@ public class MainActivity extends ActionBarActivity implements
 		} else if (startIntent.getAction().equals(ADD_TASK_FROM_WIDGET)) {
 			int listId = startIntent.getIntExtra(EXTRA_ID, 0);
 			setCurrentList(ListMirakel.getList(listId));
-			if(getTasksFragment()!=null){
+			if (getTasksFragment() != null) {
 				getTasksFragment().focusNew();
 			}
 

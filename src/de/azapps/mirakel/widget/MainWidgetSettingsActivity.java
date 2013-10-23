@@ -27,7 +27,6 @@ import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.widget.FrameLayout;
-import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.PreferencesHelper;
 import de.azapps.mirakelandroid.R;
@@ -49,7 +48,7 @@ public class MainWidgetSettingsActivity extends PreferenceActivity {
 				MainWidgetProvider.EXTRA_WIDGET_ID, 0);
 		if (VERSION.SDK_INT < VERSION_CODES.HONEYCOMB) {
 			addPreferencesFromResource(R.xml.settings_widget);
-			new PreferencesHelper(this).setFunctionsWidget(this,mAppWidgetId);
+			new PreferencesHelper(this).setFunctionsWidget(this, mAppWidgetId);
 		} else {
 			// Display the fragment as the main content.
 			((FrameLayout) findViewById(android.R.id.content)).removeAllViews();
@@ -69,7 +68,8 @@ public class MainWidgetSettingsActivity extends PreferenceActivity {
 		// Use an array and EXTRA_APPWIDGET_IDS instead of
 		// AppWidgetManager.EXTRA_APPWIDGET_ID,
 		// since it seems the onUpdate() is only fired on that:
-		intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, Mirakel.widgets);
+		int widgets[] = { mAppWidgetId };
+		intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, widgets);
 		sendBroadcast(intent);
 		// Finish this activity
 		finish();

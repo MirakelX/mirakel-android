@@ -34,7 +34,7 @@
         android:title="@string/dark_theme" />
     <CheckBoxPreference
         android:defaultValue="false"
-        android:key="widgetDone"
+        android:key="showDone"
         android:title="@string/widget_done" />
     <!--
      TODO

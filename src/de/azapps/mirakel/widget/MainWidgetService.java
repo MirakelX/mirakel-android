@@ -40,7 +40,7 @@ public class MainWidgetService extends RemoteViewsService {
 
 	@Override
 	public RemoteViewsFactory onGetViewFactory(Intent intent) {
-		Log.wtf(TAG,"create");
+		Log.wtf(TAG, "create");
 		return new MainWidgetViewsFactory(getApplicationContext(), intent);
 	}
 
@@ -52,24 +52,16 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	private static final String TAG = "MainWidgetViewsFactory";
 	private Context mContext;
 	private List<Task> tasks;
-	private int listId = 0;
-	@SuppressWarnings("unused")
-	private int sorting;
-	private boolean showDone;
-	private boolean isMinimal;
+	private int widgetId;
+	private ListMirakel list;
 
 	public MainWidgetViewsFactory(Context context, Intent intent) {
-		if(intent.getIntExtra(MainWidgetProvider.EXTRA_WIDGET_LAYOUT, MainWidgetProvider.NORMAL_WIDGET)!=MainWidgetProvider.NORMAL_WIDGET){
-			Log.wtf(TAG,"falscher provider");
+		if (intent.getIntExtra(MainWidgetProvider.EXTRA_WIDGET_LAYOUT,
+				MainWidgetProvider.NORMAL_WIDGET) != MainWidgetProvider.NORMAL_WIDGET) {
+			Log.wtf(TAG, "falscher provider");
 		}
 		mContext = context;
-		listId = intent.getIntExtra(MainWidgetProvider.EXTRA_LISTID, 0);
-		sorting = intent.getIntExtra(MainWidgetProvider.EXTRA_LISTSORT,
-				(int) ListMirakel.SORT_BY_OPT);
-		showDone = intent.getBooleanExtra(MainWidgetProvider.EXTRA_SHOWDONE,
-				false);
-		isMinimal=intent.getIntExtra(MainWidgetProvider.EXTRA_WIDGET_LAYOUT, MainWidgetProvider.NORMAL_WIDGET)==MainWidgetProvider.MINIMAL_WIDGET;
-		
+		widgetId = intent.getIntExtra(MainWidgetProvider.EXTRA_WIDGET_ID, 0);
 	}
 
 	/**
@@ -77,8 +69,8 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	 */
 	@Override
 	public void onCreate() {
-		ListMirakel list = ListMirakel.getList(listId);
-		tasks = list.tasks(showDone);
+		list = WidgetHelper.getList(mContext, widgetId);
+		tasks = list.tasks(WidgetHelper.showDone(mContext, widgetId));
 	}
 
 	public void onDestroy() {
@@ -95,11 +87,15 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		}
 		Task task = tasks.get(position);
 		// Get The Task
-		RemoteViews rv = new RemoteViews(mContext.getPackageName(),isMinimal?R.layout.widget_row_minimal:
-				R.layout.widget_row);
+		boolean isMinimalistic = WidgetHelper
+				.isMinimalistic(mContext, widgetId);
+		RemoteViews rv = new RemoteViews(mContext.getPackageName(),
+				isMinimalistic ? R.layout.widget_row_minimal
+						: R.layout.widget_row);
 
 		// Set the Contents of the Row
-		rv = WidgetHelper.configureItem(rv, task, mContext, listId,isMinimal);
+		rv = WidgetHelper.configureItem(rv, task, mContext, list.getId(),
+				isMinimalistic);
 
 		// Set the Click–Intent
 		// We need to do so, because we can not start the Activity directly from

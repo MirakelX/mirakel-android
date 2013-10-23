@@ -27,17 +27,20 @@ import de.azapps.mirakelandroid.R;
 
 @SuppressLint("NewApi")
 public class MainWidgetSettingsFragment extends PreferenceFragment {
+	private static final String TAG = "MainWidgetSettingsFragment";
+	private boolean created = false;
+	private int widgetId;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// Initialize needed Arrays
 		addPreferencesFromResource(R.xml.settings_widget);
+		Log.e(TAG, "open settings for:" + widgetId);
+		new PreferencesHelper(this).setFunctionsWidget(getActivity(), widgetId);
 	}
 
 	public void setup(int widgetId) {
-		Log.e("Blubb","test");
-		new PreferencesHelper(this).setFunctionsWidget(getActivity(),widgetId);
+		this.widgetId = widgetId;
 	}
 
 }
