@@ -43,12 +43,20 @@
         android:defaultValue="true"
         android:key="useBtnCamera"
         android:title="@string/settings_use_btn_camera" />
-    <ListPreference android:key="language"
-        android:title="@string/language"
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="swipeBehavior"
+        android:title="@string/swipeBehavior_title"
+        android:summary="@string/swipeBehavior_summary" />
+
+    <ListPreference
         android:defaultValue="-1"
         android:entries="@array/language_values"
-        android:entryValues="@array/language_keys"/>
-        <CheckBoxPreference
+        android:entryValues="@array/language_keys"
+        android:key="language"
+        android:title="@string/language" />
+
+    <CheckBoxPreference
         android:defaultValue="false"
         android:key="KillButton"
         android:title="@string/kill_button" />
