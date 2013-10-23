@@ -361,6 +361,9 @@ public class MainActivity extends ActionBarActivity implements
 		menu.findItem(R.id.menu_sync_now).setVisible(preferences.getBoolean("syncUse", false));
 		menu.findItem(R.id.menu_kill_button).setVisible(
 				preferences.getBoolean("KillButton", false));
+		if(position==TASKS_FRAGMENT&&getCurrentList().isSpecialList()){
+			menu.findItem(R.id.list_delete).setVisible(false);
+		}
 
 	}
 
