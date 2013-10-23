@@ -21,16 +21,42 @@
     android:id="@+id/widget_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent"
     android:orientation="vertical" >
-    <ImageButton
-            android:id="@+id/widget_preferences"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_alignParentLeft="true"
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+
+        <ImageButton
+            android:id="@+id/widget_add_task"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:visibility="gone"
+            android:layout_alignParentRight="true"
             android:background="@android:color/transparent"
             android:contentDescription="@string/preferences"
-            android:src="@android:drawable/ic_menu_preferences" />
+            android:src="@android:drawable/ic_menu_add" />
+
+        <ImageButton
+            android:layout_alignParentRight="true"
+            android:id="@+id/widget_preferences"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/preferences"
+            android:src="@drawable/ic_action_overflow" />
+        <TextView
+            android:id="@+id/widget_list_name"
+            style="@style/minimalisticWidgetText"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:gravity="center_vertical"
+            android:layout_centerHorizontal="true"
+            
+            android:textSize="18sp" />
+    </RelativeLayout>
 
     <ListView
         android:id="@+id/widget_tasks_list"

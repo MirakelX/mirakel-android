@@ -57,12 +57,19 @@ public class MainWidgetProvider extends AppWidgetProvider {
 			int[] appWidgetIds) {
 		for (int widgetId : appWidgetIds) {
 			Log.v(TAG, "update Widget: " + widgetId);
-			RemoteViews views = new RemoteViews(context.getPackageName(),
-					oldAPI ? R.layout.widget_main_layout_v10
-							: R.layout.widget_main);
 			boolean isDark = WidgetHelper.isDark(context, widgetId);
 			boolean isMinimalistic = WidgetHelper.isMinimalistic(context,
 					widgetId);
+
+			int layout_id;
+			if(isMinimalistic && !oldAPI) {
+				layout_id=R.layout.widget_minimal;
+			} else {
+				layout_id = oldAPI ? R.layout.widget_main_layout_v10
+						: R.layout.widget_main;
+			}
+			RemoteViews views = new RemoteViews(context.getPackageName(),
+					layout_id);
 			if (!isMinimalistic) {
 				views.setInt(R.id.widget_main, "setBackgroundResource",
 						isDark ? R.drawable.widget_background_dark
