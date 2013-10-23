@@ -46,164 +46,126 @@ import de.azapps.mirakelandroid.R;
 
 public class MainWidgetProvider extends AppWidgetProvider {
 	private static final String TAG = "MainWidgetProvider";
-	public static final String EXTRA_LISTID = "de.azapps.mirakel.EXTRA_LISTID";
-	public static final String EXTRA_LISTSORT = "de.azapps.mirakel.EXTRA_LISTSORT";
-	public static final String EXTRA_SHOWDONE = "de.azapps.mirakel.EXTRA_SHOWDONE";
-	public static final String CLICK_TASK = "de.azapps.mirakel.CLICK_TASK";
-	public static final String EXTRA_TASKID = "de.azapps.mirakel.EXTRA_TASKID";
-	public static final String EXTRA_WIDGET_LAYOUT="de.azapps.mirakel.EXTRA_WIDGET_LAYOUT";
-	public static final int MINIMAL_WIDGET=1;
-	public static final int NORMAL_WIDGET=0;
+	public static final String EXTRA_LISTID = "de.azapps.mirakel.EXTRA_LISTID",
+			EXTRA_LISTSORT = "de.azapps.mirakel.EXTRA_LISTSORT",
+			EXTRA_SHOWDONE = "de.azapps.mirakel.EXTRA_SHOWDONE",
+			CLICK_TASK = "de.azapps.mirakel.CLICK_TASK",
+			EXTRA_TASKID = "de.azapps.mirakel.EXTRA_TASKID",
+			EXTRA_WIDGET_LAYOUT = "de.azapps.mirakel.EXTRA_WIDGET_LAYOUT",
+			EXTRA_WIDGET_ID = "de.azapps.mirakel.EXTRA_WIDGET_ID";
+
+	public static final int MINIMAL_WIDGET = 1;
+	public static final int NORMAL_WIDGET = 0;
+	private static final boolean oldAPI = VERSION.SDK_INT < VERSION_CODES.HONEYCOMB;
 
 	@SuppressLint("NewApi")
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
 			int[] appWidgetIds) {
-		SharedPreferences preferences = PreferenceManager
-				.getDefaultSharedPreferences(context);
-		Mirakel.widgets = appWidgetIds;
-
-		// Perform this loop procedure for each App Widget that belongs to this
-		// provider
-		for (int appWidgetId : appWidgetIds) {
-			RemoteViews views = new RemoteViews(
-					context.getPackageName(),
-					VERSION.SDK_INT < VERSION_CODES.HONEYCOMB ? R.layout.widget_main_layout_v10
+		for (int widgetId : appWidgetIds) {
+			RemoteViews views = new RemoteViews(context.getPackageName(),
+					oldAPI ? R.layout.widget_main_layout_v10
 							: R.layout.widget_main);
-			boolean darkTheme = preferences.getBoolean("darkWidget", false);
-			views.setInt(R.id.widget_main, "setBackgroundResource",
-					darkTheme ? R.drawable.widget_background_dark
-							: R.drawable.widget_background);
+			boolean isDark = WidgetHelper.isDark(context, widgetId);
+			boolean isMinimalistic = WidgetHelper.isMinimalistic(context,
+					widgetId);
+			if (!isMinimalistic) {
+				views.setInt(R.id.widget_main, "setBackgroundResource",
+						isDark ? R.drawable.widget_background_dark
+								: R.drawable.widget_background);
+				views.setTextColor(
+						R.id.widget_list_name,
+						context.getResources().getColor(
+								isDark ? R.color.White : R.color.Black));
+				ListMirakel list = WidgetHelper.getList(context, widgetId);
+				if (list == null)
+					continue;
 
-			views.setTextColor(R.id.widget_list_name, context.getResources()
-					.getColor(darkTheme ? R.color.White : R.color.Black));
-			Integer listId = getListId(context, preferences);
-			if(listId==null)
-				return;
-			int listSort = Integer.parseInt(preferences.getString("widgetSort",
-					ListMirakel.SORT_BY_OPT + ""));
+				// Create an Intent to launch SettingsActivity
+				Intent settingsIntent = new Intent(context,
+						MainWidgetSettingsActivity.class);
+				settingsIntent.putExtra(EXTRA_WIDGET_ID, widgetId);
+				PendingIntent settingsPendingIntent = PendingIntent
+						.getActivity(context, 0, settingsIntent, 0);
+				views.setOnClickPendingIntent(R.id.widget_preferences,
+						settingsPendingIntent);
 
-			// Create an Intent to launch SettingsActivity
-			Intent settingsIntent = new Intent(context,
-					MainWidgetSettingsActivity.class);
-			PendingIntent settingsPendingIntent = PendingIntent.getActivity(
-					context, 0, settingsIntent, 0);
+				// Create an Intent to launch MainActivity and show the List
+				Intent mainIntent = new Intent(context, MainActivity.class);
+				mainIntent.setAction(MainActivity.SHOW_LIST_FROM_WIDGET);
+				mainIntent.putExtra(MainActivity.EXTRA_ID, list.getId());
+				PendingIntent mainPendingIntent = PendingIntent.getActivity(
+						context, 0, mainIntent, 0);
+				views.setOnClickPendingIntent(R.id.widget_list_name,
+						mainPendingIntent);
 
-			views.setOnClickPendingIntent(R.id.widget_preferences,
-					settingsPendingIntent);
-			// Create an Intent to launch MainActivity and show the List
-			Intent mainIntent = new Intent(context, MainActivity.class);
-			mainIntent.setAction(MainActivity.SHOW_LIST_FROM_WIDGET);
-			mainIntent.putExtra(MainActivity.EXTRA_ID, listId);
+				// ListName
+				views.setTextViewText(R.id.widget_list_name, list.getName());
 
-			PendingIntent mainPendingIntent = PendingIntent.getActivity(
-					context, 0, mainIntent, 0);
+				// Create an Intent to launch MainActivity and create a new Task
+				Intent addIntent = new Intent(context, MainActivity.class);
+				addIntent.setAction(MainActivity.ADD_TASK_FROM_WIDGET);
+				addIntent.putExtra(MainActivity.EXTRA_ID, list.getId());
+				PendingIntent addPendingIntent = PendingIntent.getActivity(
+						context, 0, addIntent, 0);
+				views.setOnClickPendingIntent(R.id.widget_add_task,
+						addPendingIntent);
+				boolean showDone = WidgetHelper.showDone(context, widgetId);
+				if (!oldAPI) {
+					Intent intent = new Intent(context, MainWidgetService.class);
+					intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+							widgetId);
+					intent.setData(Uri.parse(intent
+							.toUri(Intent.URI_INTENT_SCHEME)));
+					intent.putExtra(EXTRA_LISTID, list.getId());
+					intent.putExtra(EXTRA_SHOWDONE, showDone);
+					intent.putExtra("Random", new Random().nextInt());
+					views.setRemoteAdapter(R.id.widget_tasks_list, intent);
 
-			views.setOnClickPendingIntent(R.id.widget_list_name,
-					mainPendingIntent);
+					// Empty view
+					views.setEmptyView(R.id.widget_tasks_list, R.id.empty_view);
 
-			views.setTextViewText(R.id.widget_list_name,
-					ListMirakel.getList(listId).getName());
+					// Main Intent
+					Intent toastIntent = new Intent(context,
+							MainWidgetProvider.class);
+					intent.setData(Uri.parse(intent
+							.toUri(Intent.URI_INTENT_SCHEME)));
+					intent.putExtra(EXTRA_WIDGET_LAYOUT, NORMAL_WIDGET);
+					PendingIntent toastPendingIntent = PendingIntent
+							.getBroadcast(context, 0, toastIntent,
+									PendingIntent.FLAG_UPDATE_CURRENT);
+					views.setPendingIntentTemplate(R.id.widget_tasks_list,
+							toastPendingIntent);
 
-			// Create an Intent to launch MainActivity and create a new Task
-			Intent addIntent = new Intent(context, MainActivity.class);
-			addIntent.setAction(MainActivity.ADD_TASK_FROM_WIDGET);
-			addIntent.putExtra(MainActivity.EXTRA_ID, listId);
-
-			PendingIntent addPendingIntent = PendingIntent.getActivity(context,
-					0, addIntent, 0);
-
-			views.setOnClickPendingIntent(R.id.widget_add_task,
-					addPendingIntent);
-			if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB) {
-				// Here we setup the intent which points to the StackViewService
-				// which will
-				// provide the views for this collection.
-				Intent intent = new Intent(context, MainWidgetService.class);
-				intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-						appWidgetId);
-
-				// When intents are compared, the extras are ignored, so we need
-				// to
-				// embed the extras
-				// into the data so that the extras will not be ignored.
-				intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-				intent.putExtra(EXTRA_LISTID, listId);
-				intent.putExtra(EXTRA_LISTSORT, listSort);
-				intent.putExtra(EXTRA_SHOWDONE,
-						preferences.getBoolean("widgetDone", false));
-				intent.putExtra("Random", new Random().nextInt());
-				views.setRemoteAdapter(R.id.widget_tasks_list, intent);
-
-				// The empty view is displayed when the collection has no items.
-				// It
-				// should be a sibling
-				// of the collection view.
-				views.setEmptyView(R.id.widget_tasks_list, R.id.empty_view);
-				// Here we setup the a pending intent template. Individuals
-				// items of
-				// a collection
-				// cannot setup their own pending intents, instead, the
-				// collection
-				// as a whole can
-				// setup a pending intent template, and the individual items can
-				// set
-				// a fillInIntent
-				// to create unique before on an item to item basis.
-				Intent toastIntent = new Intent(context,
-						MainWidgetProvider.class);
-				intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-				intent.putExtra(EXTRA_WIDGET_LAYOUT, NORMAL_WIDGET);
-				PendingIntent toastPendingIntent = PendingIntent.getBroadcast(
-						context, 0, toastIntent,
-						PendingIntent.FLAG_UPDATE_CURRENT);
-				views.setPendingIntentTemplate(R.id.widget_tasks_list,
-						toastPendingIntent);
-
-			} else {
-				views.removeAllViews(R.id.widget_main_view);
-				List<Task> tasks = Task.getTasks(listId, listSort, false);
-				if (tasks.size() == 0) {
-					views.setViewVisibility(R.id.empty_view, View.VISIBLE);
 				} else {
-					views.setViewVisibility(R.id.empty_view, View.GONE);
-					int end = tasks.size() >= 7 ? 7 : tasks.size();
-					try {
-						for (Task t : tasks.subList(0, end)) {
-							views.addView(R.id.widget_main_view, WidgetHelper
-									.configureItem(
-											new RemoteViews(context
-													.getPackageName(),
-													R.layout.widget_row_minimal), t,
-											context, listId,false));
+					views.removeAllViews(R.id.widget_main_view);
+					List<Task> tasks = Task.getTasks(list.getId(),
+							list.getSortBy(), showDone);
+					if (tasks.size() == 0) {
+						views.setViewVisibility(R.id.empty_view, View.VISIBLE);
+					} else {
+						views.setViewVisibility(R.id.empty_view, View.GONE);
+						int end = tasks.size() >= 7 ? 7 : tasks.size();
+						try {
+							for (Task t : tasks.subList(0, end)) {
+								views.addView(
+										R.id.widget_main_view,
+										WidgetHelper.configureItem(
+												new RemoteViews(context
+														.getPackageName(),
+														R.layout.widget_row),
+												t, context, list.getId(), false));
+							}
+						} catch (IndexOutOfBoundsException e) {
+							Log.wtf(TAG,
+									"The list has been shortened while processing it…");
 						}
-					} catch (IndexOutOfBoundsException e) {
-						Log.wtf(TAG,
-								"The list has been shortened while processing it…");
 					}
 				}
+				appWidgetManager.updateAppWidget(widgetId, views);
+
 			}
-			appWidgetManager.updateAppWidget(appWidgetId, views);
 
 		}
-	}
-
-	public static Integer getListId(Context context, SharedPreferences preferences) {
-		int listId = Integer.parseInt(preferences.getString("widgetList",
-				SpecialList.firstSpecialSafe(context).getId() + ""));
-		ListMirakel list = ListMirakel.getList(listId);
-		if (list == null) {
-			list = SpecialList.firstSpecial();
-			if (list == null) {
-				list = ListMirakel.first();
-				if (list == null) {
-					Toast.makeText(context, "You have no Lists!",
-							Toast.LENGTH_SHORT).show();
-					return null;
-				}
-			}
-			listId = list.getId();
-		}
-		return listId;
 	}
 
 	@Override

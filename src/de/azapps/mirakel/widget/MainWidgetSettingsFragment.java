@@ -21,6 +21,7 @@ package de.azapps.mirakel.widget;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
+import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.PreferencesHelper;
 import de.azapps.mirakelandroid.R;
 
@@ -32,8 +33,11 @@ public class MainWidgetSettingsFragment extends PreferenceFragment {
 		super.onCreate(savedInstanceState);
 		// Initialize needed Arrays
 		addPreferencesFromResource(R.xml.settings_widget);
-		new PreferencesHelper(this).setFunctionsWidget();
+	}
 
+	public void setup(int widgetId) {
+		Log.e("Blubb","test");
+		new PreferencesHelper(this).setFunctionsWidget(getActivity(),widgetId);
 	}
 
 }

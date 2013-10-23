@@ -115,8 +115,7 @@ public class PreferencesHelper {
 	}
 
 	@SuppressLint("NewApi")
-	public void setFunctionsWidget() {
-		settings = PreferenceManager.getDefaultSharedPreferences(activity);
+	public void setFunctionsWidget(final Context context, final int widgetId) {
 		List<ListMirakel> lists = ListMirakel.all();
 		CharSequence entryValues[] = new String[lists.size()];
 		CharSequence entries[] = new String[lists.size()];
@@ -127,18 +126,24 @@ public class PreferencesHelper {
 			i++;
 		}
 
+		ListMirakel list = WidgetHelper.getList(context, widgetId);
+		if (list == null) {
+			return;
+		}
+
 		final ListPreference widgetListPreference = (ListPreference) findPreference("widgetList");
 		widgetListPreference.setEntries(entries);
 		widgetListPreference.setEntryValues(entryValues);
 		widgetListPreference.setSummary(activity.getString(
-				R.string.widget_list_summary, ListMirakel.getList(Integer
-						.parseInt(settings.getString("widgetList", SpecialList
-								.firstSpecialSafe(activity).getId() + "")))));
+				R.string.widget_list_summary, list));
+		widgetListPreference.setValue(String.valueOf(list.getId()));
 		widgetListPreference
 				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 					@Override
 					public boolean onPreferenceChange(Preference preference,
 							Object newValue) {
+						WidgetHelper.setList(context, widgetId,
+								Integer.parseInt((String) newValue));
 						String list = ListMirakel.getList(
 								Integer.parseInt((String) newValue)).getName();
 						widgetListPreference.setSummary(activity.getString(
@@ -147,26 +152,43 @@ public class PreferencesHelper {
 					}
 				});
 
-		final Preference widgetListSort = findPreference("widgetSort");
-		widgetListSort.setSummary(activity.getString(
-				R.string.widget_sort_summary, activity.getResources()
-						.getStringArray(R.array.task_sorting_items)[Integer
-						.parseInt(settings.getString("widgetSort", "0"))]));
-		widgetListSort
+		CheckBoxPreference isDark = (CheckBoxPreference) findPreference("isDark");
+		isDark.setChecked(WidgetHelper.isDark(context, widgetId));
+		isDark.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+			@Override
+			public boolean onPreferenceChange(Preference preference,
+					Object newValue) {
+				WidgetHelper.setDark(context, widgetId, (Boolean) newValue);
+				return true;
+			}
+		});
+		CheckBoxPreference isMinimalistic = (CheckBoxPreference) findPreference("isMinimalistic");
+		isMinimalistic.setChecked(WidgetHelper
+				.isMinimalistic(context, widgetId));
+		isMinimalistic
 				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 					@Override
 					public boolean onPreferenceChange(Preference preference,
 							Object newValue) {
-						widgetListSort.setSummary(activity.getString(
-								R.string.widget_sort_summary,
-								activity.getResources().getStringArray(
-										R.array.task_sorting_items)[Integer
-										.parseInt((String) newValue)]));
+						WidgetHelper.setMinimalistic(context, widgetId,
+								(Boolean) newValue);
 						return true;
 					}
 				});
 
+		CheckBoxPreference showDone = (CheckBoxPreference) findPreference("showDone");
+		showDone.setChecked(WidgetHelper.showDone(context, widgetId));
+		showDone.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+			@Override
+			public boolean onPreferenceChange(Preference preference,
+					Object newValue) {
+				WidgetHelper.setDone(context, widgetId, (Boolean) newValue);
+				return true;
+			}
+		});
 	}
 
 	private ListMirakel getListFromIdString(String preference) {
@@ -229,7 +251,8 @@ public class PreferencesHelper {
 									.getString(
 											R.string.notifications_list_summary,
 											list));
-							if(settings.getString("notificationsListOpen","default").equals("default")){
+							if (settings.getString("notificationsListOpen",
+									"default").equals("default")) {
 								notificationsListOpenPreference.setSummary(activity
 										.getString(
 												R.string.notifications_list_summary,
@@ -254,11 +277,14 @@ public class PreferencesHelper {
 								Preference preference, Object newValue) {
 							String list;
 							if (!"default".equals(newValue.toString())) {
-								list=ListMirakel.getList(
+								list = ListMirakel.getList(
 										Integer.parseInt((String) newValue))
 										.getName();
-							}else{
-								list=ListMirakel.getList(Integer.parseInt(settings.getString("notificationsList", "-1"))).getName();
+							} else {
+								list = ListMirakel.getList(
+										Integer.parseInt(settings.getString(
+												"notificationsList", "-1")))
+										.getName();
 							}
 							notificationsListOpenPreference.setSummary(activity
 									.getString(
@@ -744,17 +770,15 @@ public class PreferencesHelper {
 		}
 		Preference anyDo = findPreference("import_any_do");
 		if (anyDo != null) {
-			anyDo
-					.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-						@Override
-						public boolean onPreferenceClick(Preference preference) {
-							Helpers.showFileChooser(
-									SettingsActivity.FILE_ANY_DO,
-									activity.getString(R.string.any_do_import_title),
-									activity);
-							return true;
-						}
-					});
+			anyDo.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+				@Override
+				public boolean onPreferenceClick(Preference preference) {
+					Helpers.showFileChooser(SettingsActivity.FILE_ANY_DO,
+							activity.getString(R.string.any_do_import_title),
+							activity);
+					return true;
+				}
+			});
 		}
 		Preference importAstrid = findPreference("import_astrid");
 		if (importAstrid != null) {

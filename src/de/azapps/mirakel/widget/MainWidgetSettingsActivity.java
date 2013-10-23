@@ -33,6 +33,9 @@ import de.azapps.mirakel.helper.PreferencesHelper;
 import de.azapps.mirakelandroid.R;
 
 public class MainWidgetSettingsActivity extends PreferenceActivity {
+	private static final String TAG = "MainWidgetSettingsActivity";
+
+	private static int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
 
 	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
@@ -42,16 +45,18 @@ public class MainWidgetSettingsActivity extends PreferenceActivity {
 				"DarkTheme", false))
 			setTheme(R.style.AppBaseThemeDARK);
 		super.onCreate(savedInstanceState);
+		mAppWidgetId = getIntent().getIntExtra(
+				MainWidgetProvider.EXTRA_WIDGET_ID, 0);
 		if (VERSION.SDK_INT < VERSION_CODES.HONEYCOMB) {
 			addPreferencesFromResource(R.xml.settings_widget);
-			new PreferencesHelper(this).setFunctionsWidget();
+			new PreferencesHelper(this).setFunctionsWidget(this,mAppWidgetId);
 		} else {
 			// Display the fragment as the main content.
 			((FrameLayout) findViewById(android.R.id.content)).removeAllViews();
-			getFragmentManager()
-					.beginTransaction()
-					.replace(android.R.id.content,
-							new MainWidgetSettingsFragment()).commit();
+			MainWidgetSettingsFragment fragment = new MainWidgetSettingsFragment();
+			getFragmentManager().beginTransaction()
+					.replace(android.R.id.content, fragment).commit();
+			fragment.setup(mAppWidgetId);
 		}
 	}
 

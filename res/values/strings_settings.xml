@@ -132,6 +132,7 @@
     <string name="settings_date_format_relative_summary">For example "tomorrow" instead of the real date</string>
     <string name="showDone">Show done tasks</string>
     <string name="dark_theme">Dark theme</string>
+    <string name="minimalistic_widget">Transparent widget</string>
     <string name="kill_button">Kill button</string>
     <string name="kill_app">Close app</string>
     <string name="kill_sure">Are you really sure???</string>

@@ -4,23 +4,24 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 import de.azapps.mirakel.main_activity.MainActivity;
+import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 
 public class WidgetHelper {
 	public static RemoteViews configureItem(RemoteViews rv, Task task,
 			Context context, int listId, boolean isMinimal) {
-		SharedPreferences preferences = PreferenceManager
-				.getDefaultSharedPreferences(context);
 		Intent openIntent = new Intent(context, MainActivity.class);
 		openIntent.setAction(MainActivity.SHOW_TASK);
 		openIntent.putExtra(MainActivity.EXTRA_ID, task.getId());
@@ -95,5 +96,85 @@ public class WidgetHelper {
 			}
 		}
 		return rv;
+	}
+
+	// For settings
+	private static final String PREFS_NAME = "de.azapps.mirakelandroid.appwidget.MainWidgetProvider";
+	private static final String PREF_PREFIX = "widget_";
+	private static SharedPreferences settings = null;
+
+	private static SharedPreferences getSettings(Context ctx) {
+		if (settings == null) {
+			settings = ctx.getSharedPreferences(PREFS_NAME, 0);
+		}
+		return settings;
+	}
+
+	private static String getKey(int widgetId, String key) {
+		return PREF_PREFIX + widgetId + "_" + key;
+	}
+
+	private static boolean getBoolean(Context context, int widgetId,
+			String key, boolean def) {
+		return getSettings(context).getBoolean(getKey(widgetId, key), def);
+
+	}
+
+	public static boolean isDark(Context context, int widgetId) {
+		return getBoolean(context, widgetId, "isDark", false);
+	}
+
+	public static boolean isMinimalistic(Context context, int widgetId) {
+		return getBoolean(context, widgetId, "isMinimalistic", true);
+	}
+
+	public static boolean showDone(Context context, int widgetId) {
+		return getBoolean(context, widgetId, "showDone", false);
+	}
+
+	public static ListMirakel getList(Context context, int widgetId) {
+
+		int listId = getSettings(context)
+				.getInt(getKey(widgetId, "list_id"), 0);
+		ListMirakel list = ListMirakel.getList(listId);
+		if (list == null) {
+			list = SpecialList.firstSpecial();
+			if (list == null) {
+				list = ListMirakel.first();
+				if (list == null) {
+					Toast.makeText(context, "You have no Lists!",
+							Toast.LENGTH_SHORT).show();
+					return null;
+				}
+			}
+		}
+		return list;
+	}
+
+	public static void setList(Context context, int widgetId, int listId) {
+		Editor editor = getSettings(context).edit();
+		editor.putInt(getKey(widgetId, "list_id"), listId);
+		editor.commit();
+	}
+
+	public static void putBool(Context context, int widgetId, String key,
+			boolean value) {
+		Editor editor = getSettings(context).edit();
+		editor.putBoolean(getKey(widgetId, key), value);
+		editor.commit();
+
+	}
+
+	public static void setDone(Context context, int widgetId, boolean done) {
+		putBool(context, widgetId, "showDone", done);
+	}
+
+	public static void setMinimalistic(Context context, int widgetId,
+			boolean minimalistic) {
+		putBool(context, widgetId, "isMinimalistic", minimalistic);
+	}
+
+	public static void setDark(Context context, int widgetId, boolean dark) {
+		putBool(context, widgetId, "isDark", dark);
 	}
 }
