@@ -17,63 +17,73 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/widget_main"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:layout_height="match_parent" >
 
-    <RelativeLayout
+    <ImageView
+        android:id="@+id/widget_background"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:layout_height="match_parent"
+        android:scaleType="fitXY" />
 
+    <LinearLayout
+        android:id="@+id/widget_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
 
-        <ImageButton
-            android:id="@+id/widget_add_task"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:visibility="gone"
-            android:layout_alignParentRight="true"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/preferences"
-            android:src="@android:drawable/ic_menu_add" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
 
-        <ImageButton
-            android:layout_alignParentRight="true"
-            android:id="@+id/widget_preferences"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/preferences"
-            android:src="@drawable/ic_action_overflow" />
+            <ImageButton
+                android:id="@+id/widget_add_task"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/preferences"
+                android:src="@android:drawable/ic_menu_add"
+                android:visibility="gone" />
+
+            <ImageButton
+                android:id="@+id/widget_preferences"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/preferences"
+                android:src="@drawable/ic_action_overflow" />
+
+            <TextView
+                android:id="@+id/widget_list_name"
+                style="@style/minimalisticWidgetText"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_centerHorizontal="true"
+                android:gravity="center_vertical"
+                android:textSize="18sp" />
+        </RelativeLayout>
+
+        <ListView
+            android:id="@+id/widget_tasks_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:descendantFocusability="beforeDescendants" >
+        </ListView>
+
         <TextView
-            android:id="@+id/widget_list_name"
-            style="@style/minimalisticWidgetText"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:gravity="center_vertical"
-            android:layout_centerHorizontal="true"
-            
-            android:textSize="18sp" />
-    </RelativeLayout>
+            android:id="@+id/empty_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/empty_list"
+            android:textColor="@color/Black"
+            android:textSize="20sp"
+            android:visibility="gone" />
+    </LinearLayout>
 
-    <ListView
-        android:id="@+id/widget_tasks_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clickable="true"
-        android:descendantFocusability="beforeDescendants" >
-    </ListView>
-
-    <TextView
-        android:id="@+id/empty_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="@string/empty_list"
-        android:textColor="@color/Black"
-        android:textSize="20sp"
-        android:visibility="gone" />
-
-</LinearLayout>
+</RelativeLayout>

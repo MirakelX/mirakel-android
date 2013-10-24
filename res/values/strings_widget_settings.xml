@@ -26,5 +26,6 @@
     <string name="widget_sort_summary">Sort after \"%s\"</string>
     <string name="fontcolor">Fontcolor</string>
     <string name="widget_transparency">Transparency</string>
+    <string name="widget_transparency_summary">%s%% transparent</string>
 
 </resources>

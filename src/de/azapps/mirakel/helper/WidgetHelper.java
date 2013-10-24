@@ -41,9 +41,9 @@ public class WidgetHelper {
 			}
 			rv.setInt(R.id.tasks_row_priority, "setBackgroundColor",
 					Helpers.getPrioColor(task.getPriority(), context));
-			rv.setTextColor(R.id.tasks_row_name, WidgetHelper.getFontColor(context, widgetId));
-			rv.setTextColor(R.id.tasks_row_due, WidgetHelper.getFontColor(context, widgetId));
 		}
+		rv.setTextColor(R.id.tasks_row_name, WidgetHelper.getFontColor(context, widgetId));
+		rv.setTextColor(R.id.tasks_row_due, WidgetHelper.getFontColor(context, widgetId));
 		rv.setTextViewText(R.id.tasks_row_name, task.getName());
 		if (task.isDone()) {
 			rv.setTextColor(R.id.tasks_row_name, context.getResources()
@@ -105,6 +105,8 @@ public class WidgetHelper {
 	// For settings
 	private static final String PREFS_NAME = "de.azapps.mirakelandroid.appwidget.MainWidgetProvider";
 	private static final String PREF_PREFIX = "widget_";
+	@SuppressWarnings("unused")
+	private static final String TAG = "WidgetHelper";
 	private static SharedPreferences settings = null;
 
 	private static SharedPreferences getSettings(Context ctx) {
@@ -143,6 +145,9 @@ public class WidgetHelper {
 	
 	public static int getFontColor(Context context, int widgetId) {
 		return getInt(context, widgetId, "widgetFontColor", context.getResources().getColor(android.R.color.white));
+	}
+	public static int getTransparency(Context context, int widgetId) {
+		return getInt(context, widgetId, "widgetTransparency", 0);
 	}
 
 
@@ -202,5 +207,8 @@ public class WidgetHelper {
 	
 	public static void setFontColor(Context context, int widgetId, int color) {
 		putInt(context, widgetId, "widgetFontColor", color);
+	}
+	public static void setTransparency(Context context, int widgetId, int transparency) {
+		putInt(context, widgetId, "widgetTransparency", transparency);
 	}
 }

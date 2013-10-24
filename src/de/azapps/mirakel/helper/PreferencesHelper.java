@@ -38,10 +38,12 @@ import android.preference.PreferenceManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.NumberPicker;
+import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -202,6 +204,35 @@ public class PreferencesHelper {
 			@Override
 			public boolean onPreferenceChange(Preference preference, Object newValue) {
 				WidgetHelper.setFontColor(context, widgetId, widgetFontColor.getColor());
+				return false;
+			}
+		});
+		widgetTransparency.setSummary(activity.getString(R.string.widget_transparency_summary,100-Math.round((WidgetHelper.getTransparency(context, widgetId)/255f)*1000)/10));
+		widgetTransparency.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+			
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				final SeekBar sb=new SeekBar(context);
+				sb.setMax(255);
+				sb.setInterpolator(new DecelerateInterpolator());
+				sb.setProgress(255-WidgetHelper.getTransparency(context, widgetId));
+				sb.setPadding(20, 30, 20, 30);
+				new AlertDialog.Builder(context)
+				.setTitle(R.string.widget_transparency)
+				.setView(sb)
+				.setPositiveButton(android.R.string.ok, new OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						//Fix Direction
+						WidgetHelper.setTransparency(context, widgetId,255-sb.getProgress());
+						float t=100-Math.round((WidgetHelper.getTransparency(context, widgetId)/255f)*1000)/10;
+						widgetTransparency.setSummary(activity.getString(R.string.widget_transparency_summary,t));
+						
+					}
+				})
+				.setNegativeButton(android.R.string.cancel, null)
+				.show();
 				return false;
 			}
 		});

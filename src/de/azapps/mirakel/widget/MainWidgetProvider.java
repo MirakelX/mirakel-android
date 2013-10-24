@@ -26,6 +26,13 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Bitmap.Config;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
@@ -62,23 +69,27 @@ public class MainWidgetProvider extends AppWidgetProvider {
 					widgetId);
 
 			int layout_id;
-			if(isMinimalistic && !oldAPI) {
-				layout_id=R.layout.widget_minimal;
+			if (isMinimalistic && !oldAPI) {
+				layout_id = R.layout.widget_minimal;
 			} else {
 				layout_id = oldAPI ? R.layout.widget_main_layout_v10
 						: R.layout.widget_main;
 			}
 			RemoteViews views = new RemoteViews(context.getPackageName(),
 					layout_id);
-			if (!isMinimalistic) {
-				views.setInt(R.id.widget_main, "setBackgroundResource",
-						isDark ? R.drawable.widget_background_dark
-								: R.drawable.widget_background);
-				views.setTextColor(
-						R.id.widget_list_name,
-						context.getResources().getColor(
-								isDark ? R.color.White : R.color.Black));
-			}
+
+			GradientDrawable drawable = (GradientDrawable) context
+					.getResources().getDrawable(
+							isDark ? R.drawable.widget_background_dark
+									: R.drawable.widget_background);
+			drawable.setAlpha(WidgetHelper.getTransparency(context, widgetId));
+			Bitmap bitmap = Bitmap.createBitmap(500, 500, Config.ARGB_8888);
+			Canvas canvas = new Canvas(bitmap);
+			drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+			drawable.draw(canvas);
+			views.setImageViewBitmap(R.id.widget_background, bitmap);
+			views.setTextColor(R.id.widget_list_name,
+					WidgetHelper.getFontColor(context, widgetId));
 			ListMirakel list = WidgetHelper.getList(context, widgetId);
 			if (list == null)
 				continue;
@@ -93,6 +104,23 @@ public class MainWidgetProvider extends AppWidgetProvider {
 					context, 0, settingsIntent, 0);
 			views.setOnClickPendingIntent(R.id.widget_preferences,
 					settingsPendingIntent);
+			views.setImageViewBitmap(
+					R.id.widget_preferences,
+					colorizeBitmap(
+							WidgetHelper.getFontColor(context, widgetId),
+							context.getResources().getDrawable(
+									R.drawable.ic_action_overflow), new int[] {
+									52, 52, 52 }, 3));
+
+			if (!isMinimalistic) {
+				views.setImageViewBitmap(
+						R.id.widget_add_task,
+						colorizeBitmap(
+								WidgetHelper.getFontColor(context, widgetId),
+								context.getResources().getDrawable(
+										android.R.drawable.ic_menu_add),
+								new int[] { 250, 250, 250 }, 200));
+			}
 
 			// Create an Intent to launch MainActivity and show the List
 			Intent mainIntent = new Intent(context, MainActivity.class);
@@ -155,7 +183,8 @@ public class MainWidgetProvider extends AppWidgetProvider {
 									.configureItem(
 											new RemoteViews(context
 													.getPackageName(), row_id),
-											t, context, list.getId(), false,widgetId));
+											t, context, list.getId(), false,
+											widgetId));
 						}
 					} catch (IndexOutOfBoundsException e) {
 						Log.wtf(TAG,
@@ -163,11 +192,36 @@ public class MainWidgetProvider extends AppWidgetProvider {
 					}
 				}
 			}
-			Log.e("Blubb", list.getName() + widgetId);
 			appWidgetManager.updateAppWidget(widgetId, views);
 
 		}
 
+	}
+
+	private Bitmap colorizeBitmap(int to, Drawable c, int[] oldColor,
+			int THRESHOLD) {
+		Bitmap bitmap;
+		Bitmap src = ((BitmapDrawable) c).getBitmap();
+		bitmap = src.copy(Bitmap.Config.ARGB_8888, true);
+		for (int x = 0; x < bitmap.getWidth(); x++) {
+			for (int y = 0; y < bitmap.getHeight(); y++) {
+				if (match(bitmap.getPixel(x, y), oldColor, THRESHOLD))
+					bitmap.setPixel(x, y, to);
+			}
+		}
+		return bitmap;
+	}
+
+	private boolean match(int pixel, int[] FROM_COLOR, int THRESHOLD) {
+		// There may be a better way to match, but I wanted to do a comparison
+		// ignoring
+		// transparency, so I couldn't just do a direct integer compare.
+		Log.d(TAG,
+				Color.red(pixel) + " " + Color.green(pixel) + " "
+						+ Color.blue(pixel));
+		return Math.abs(Color.red(pixel) - FROM_COLOR[0]) < THRESHOLD
+				&& Math.abs(Color.green(pixel) - FROM_COLOR[1]) < THRESHOLD
+				&& Math.abs(Color.blue(pixel) - FROM_COLOR[2]) < THRESHOLD;
 	}
 
 	@Override

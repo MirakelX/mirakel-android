@@ -51,12 +51,11 @@ public class ColorPickerPref extends DialogPreference {
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
 				R.layout.color_picker, null);
 		final ColorPicker cp = ((ColorPicker) v.findViewById(R.id.color_picker));
-		cp.setColor(COLOR);
-		cp.setOldCenterColor(OLD_COLOR);
 		final SVBar op = ((SVBar) v.findViewById(R.id.svbar_color_picker));
 		cp.addSVBar(op);
+		cp.setColor(COLOR);
+		cp.setOldCenterColor(OLD_COLOR);
 		builder.setView(v)
-				// .setTitle(actionBarSwitch.getString(R.string.list_change_color))
 				.setPositiveButton(android.R.string.ok,
 						new DialogInterface.OnClickListener() {
 

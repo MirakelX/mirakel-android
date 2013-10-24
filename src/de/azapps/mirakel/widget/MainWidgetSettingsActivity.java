@@ -23,6 +23,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
@@ -32,6 +33,7 @@ import de.azapps.mirakel.helper.PreferencesHelper;
 import de.azapps.mirakelandroid.R;
 
 public class MainWidgetSettingsActivity extends PreferenceActivity {
+	@SuppressWarnings("unused")
 	private static final String TAG = "MainWidgetSettingsActivity";
 
 	private static int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
@@ -70,6 +72,8 @@ public class MainWidgetSettingsActivity extends PreferenceActivity {
 		// since it seems the onUpdate() is only fired on that:
 		int widgets[] = { mAppWidgetId };
 		intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, widgets);
+		if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB)
+			AppWidgetManager.getInstance(this).notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.widget_tasks_list);
 		sendBroadcast(intent);
 		// Finish this activity
 		finish();
