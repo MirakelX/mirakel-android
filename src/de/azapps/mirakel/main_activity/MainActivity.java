@@ -26,6 +26,7 @@ import java.util.Stack;
 import java.util.Vector;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.ComponentName;
@@ -51,9 +52,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
@@ -566,7 +569,6 @@ public class MainActivity extends ActionBarActivity implements
 	 * Initialize the ViewPager and setup the rest of the layout
 	 */
 	private void setupLayout() {
-		Log.d(TAG,"setup layout");
 		fromShared = false;
 		if (currentList == null)
 			setCurrentList(SpecialList.firstSpecial());
@@ -630,9 +632,15 @@ public class MainActivity extends ActionBarActivity implements
 				|| startIntent.getAction().equals(TASK_LATER)) {
 			handleReminder(startIntent);
 		} else if (startIntent.getAction().equals(SHOW_LIST)
-				|| startIntent.getAction().equals(SHOW_LIST_FROM_WIDGET)) {
+				|| startIntent.getAction().contains(SHOW_LIST_FROM_WIDGET)) {
 
-			int listId = startIntent.getIntExtra(EXTRA_ID, 0);
+			int listId;
+			if(startIntent.getAction().equals(SHOW_LIST)){
+				listId= startIntent.getIntExtra(EXTRA_ID, 0);
+			}else{
+				listId=Integer.parseInt(startIntent.getAction().replace(SHOW_LIST_FROM_WIDGET, ""));
+			}
+			Log.wtf(TAG,"ListId: "+listId);
 			ListMirakel list = ListMirakel.getList(listId);
 			if (list == null)
 				list = SpecialList.firstSpecial();
@@ -642,11 +650,13 @@ public class MainActivity extends ActionBarActivity implements
 		} else if (startIntent.getAction().equals(Intent.ACTION_SEARCH)) {
 			String query = startIntent.getStringExtra(SearchManager.QUERY);
 			search(query);
-		} else if (startIntent.getAction().equals(ADD_TASK_FROM_WIDGET)) {
-			int listId = startIntent.getIntExtra(EXTRA_ID, 0);
+		} else if (startIntent.getAction().contains(ADD_TASK_FROM_WIDGET)) {
+			int listId = Integer.parseInt(startIntent.getAction().replace(ADD_TASK_FROM_WIDGET, ""));
 			setCurrentList(ListMirakel.getList(listId));
 			if (getTasksFragment() != null) {
 				getTasksFragment().focusNew();
+			}else{
+				Log.w(TAG,"tasksfragment==null");
 			}
 
 		} else {
@@ -1131,8 +1141,9 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	public TasksFragment getTasksFragment() {
-		if (mPagerAdapter == null)
+		if (mPagerAdapter == null){
 			return null;
+		}
 		Fragment f = this.getSupportFragmentManager().findFragmentByTag(
 				getFragmentTag(0));
 		return (TasksFragment) f;

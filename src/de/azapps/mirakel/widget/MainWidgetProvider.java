@@ -124,8 +124,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
 
 			// Create an Intent to launch MainActivity and show the List
 			Intent mainIntent = new Intent(context, MainActivity.class);
-			mainIntent.setAction(MainActivity.SHOW_LIST_FROM_WIDGET);
-			mainIntent.putExtra(MainActivity.EXTRA_ID, list.getId());
+			mainIntent.setAction(MainActivity.SHOW_LIST_FROM_WIDGET+list.getId());
 			PendingIntent mainPendingIntent = PendingIntent.getActivity(
 					context, 0, mainIntent, 0);
 			views.setOnClickPendingIntent(R.id.widget_list_name,
@@ -136,8 +135,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
 
 			// Create an Intent to launch MainActivity and create a new Task
 			Intent addIntent = new Intent(context, MainActivity.class);
-			addIntent.setAction(MainActivity.ADD_TASK_FROM_WIDGET);
-			addIntent.putExtra(MainActivity.EXTRA_ID, list.getId());
+			addIntent.setAction(MainActivity.ADD_TASK_FROM_WIDGET+list.getId());
 			PendingIntent addPendingIntent = PendingIntent.getActivity(context,
 					0, addIntent, 0);
 			views.setOnClickPendingIntent(R.id.widget_add_task,
@@ -216,9 +214,6 @@ public class MainWidgetProvider extends AppWidgetProvider {
 		// There may be a better way to match, but I wanted to do a comparison
 		// ignoring
 		// transparency, so I couldn't just do a direct integer compare.
-		Log.d(TAG,
-				Color.red(pixel) + " " + Color.green(pixel) + " "
-						+ Color.blue(pixel));
 		return Math.abs(Color.red(pixel) - FROM_COLOR[0]) < THRESHOLD
 				&& Math.abs(Color.green(pixel) - FROM_COLOR[1]) < THRESHOLD
 				&& Math.abs(Color.blue(pixel) - FROM_COLOR[2]) < THRESHOLD;
@@ -228,7 +223,6 @@ public class MainWidgetProvider extends AppWidgetProvider {
 	public void onReceive(Context context, Intent intent) {
 		if (intent.getAction().equals(CLICK_TASK)) {
 			int taskId = intent.getIntExtra(EXTRA_TASKID, 0);
-			Log.e("Blubb", "click on: " + Task.get(taskId).getName());
 			Intent startMainIntent = new Intent(context, MainActivity.class);
 			startMainIntent.setAction(MainActivity.SHOW_TASK);
 			startMainIntent.putExtra(MainActivity.EXTRA_ID, taskId);
@@ -236,6 +230,9 @@ public class MainWidgetProvider extends AppWidgetProvider {
 			startMainIntent.setData(Uri.parse(startMainIntent
 					.toUri(Intent.URI_INTENT_SCHEME)));
 			context.startActivity(startMainIntent);
+		}else{
+			Log.d(TAG,intent.getAction());
+			Log.d(TAG,"click: "+intent.getIntExtra(MainActivity.SHOW_LIST, 1));
 		}
 		super.onReceive(context, intent);
 	}
