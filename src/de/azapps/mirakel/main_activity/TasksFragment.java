@@ -49,6 +49,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
@@ -192,6 +193,8 @@ public class TasksFragment extends Fragment {
 	public void focusNew() {
 		if (newTask == null)
 			return;
+		newTask.setOnFocusChangeListener(null);
+		newTask.clearFocus();
 		newTask.setOnFocusChangeListener(new OnFocusChangeListener() {
 			@Override
 			public void onFocusChange(final View v, final boolean hasFocus) {
@@ -200,13 +203,24 @@ public class TasksFragment extends Fragment {
 					public void run() {
 						InputMethodManager imm = (InputMethodManager) getActivity()
 								.getSystemService(Context.INPUT_METHOD_SERVICE);
-						imm.showSoftInput(newTask,
-								InputMethodManager.SHOW_IMPLICIT);
+						if (hasFocus) {
+							imm.showSoftInput(
+									newTask,
+									InputMethodManager.SHOW_IMPLICIT);
+							getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+						} else {
+							imm.showSoftInput(
+									newTask,
+									InputMethodManager.HIDE_IMPLICIT_ONLY);
+						}
+						if (!imm.isAcceptingText()) {
+							Log.w(TAG, "Software Keyboard was not shown");
+						}
 						if (main.currentPosition == MainActivity.TASKS_FRAGMENT
 								&& !PreferenceManager
 										.getDefaultSharedPreferences(main)
 										.getBoolean("hideKeyboard", true))
-							((EditText) v).requestFocus();
+							while (!((EditText) v).requestFocus());
 					}
 				});
 			}
@@ -453,7 +467,9 @@ public class TasksFragment extends Fragment {
 					int position, long id) {
 				// TODO Remove Bad Hack
 				Task task = values.get((int) id);
-				Log.v(TAG, "Switch to Task " + task.getId() +" (" + task.getUUID() + ")");
+				Log.v(TAG,
+						"Switch to Task " + task.getId() + " ("
+								+ task.getUUID() + ")");
 				main.setCurrentTask(task, true);
 			}
 		});
@@ -485,73 +501,73 @@ public class TasksFragment extends Fragment {
 
 	public void updateButtons() {
 		// a) Android 2.3 dosen't support speech toText
-				// b) The user can switch off the button
-				if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.HONEYCOMB
-						|| !main.getPreferences().getBoolean("useBtnSpeak", true)) {
-					view.findViewById(R.id.btnSpeak_tasks).setVisibility(View.GONE);
-				} else {
-					ImageButton btnSpeak = (ImageButton) view
-							.findViewById(R.id.btnSpeak_tasks);
-					// txtText = newTask;
-					btnSpeak.setVisibility(View.VISIBLE);
-					btnSpeak.setOnClickListener(new View.OnClickListener() {
+		// b) The user can switch off the button
+		if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.HONEYCOMB
+				|| !main.getPreferences().getBoolean("useBtnSpeak", true)) {
+			view.findViewById(R.id.btnSpeak_tasks).setVisibility(View.GONE);
+		} else {
+			ImageButton btnSpeak = (ImageButton) view
+					.findViewById(R.id.btnSpeak_tasks);
+			// txtText = newTask;
+			btnSpeak.setVisibility(View.VISIBLE);
+			btnSpeak.setOnClickListener(new View.OnClickListener() {
 
-						@Override
-						public void onClick(View v) {
+				@Override
+				public void onClick(View v) {
 
-							Intent intent = new Intent(
-									RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+					Intent intent = new Intent(
+							RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 
-							intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-									main.getString(R.string.speak_lang_code));
+					intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+							main.getString(R.string.speak_lang_code));
 
-							try {
-								getActivity().startActivityForResult(intent,
-										MainActivity.RESULT_SPEECH);
-								newTask.setText("");
-							} catch (ActivityNotFoundException a) {
-								Toast t = Toast
-										.makeText(
-												main,
-												"Opps! Your device doesn't support Speech to Text",
-												Toast.LENGTH_SHORT);
-								t.show();
-							}
-						}
-					});
-				}
-				if (!main.getPreferences().getBoolean("useBtnCamera", true)
-						|| !Helpers.isIntentAvailable(main,
-								MediaStore.ACTION_IMAGE_CAPTURE)) {
-					view.findViewById(R.id.btnCamera).setVisibility(View.GONE);
-				} else {
-					ImageButton btnCamera = (ImageButton) view
-							.findViewById(R.id.btnCamera);
-					btnCamera.setVisibility(View.VISIBLE);
-					btnCamera.setOnClickListener(new OnClickListener() {
-						@Override
-						public void onClick(View v) {
-							try {
-								Intent cameraIntent = new Intent(
-										MediaStore.ACTION_IMAGE_CAPTURE);
-								Uri fileUri = Helpers
-										.getOutputMediaFileUri(Helpers.MEDIA_TYPE_IMAGE);
-								if (fileUri == null)
-									return;
-								main.setFileUri(fileUri);
-								cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-								getActivity().startActivityForResult(cameraIntent,
-										MainActivity.RESULT_CAMERA);
-
-							} catch (ActivityNotFoundException a) {
-								Toast.makeText(
+					try {
+						getActivity().startActivityForResult(intent,
+								MainActivity.RESULT_SPEECH);
+						newTask.setText("");
+					} catch (ActivityNotFoundException a) {
+						Toast t = Toast
+								.makeText(
 										main,
-										"Opps! Your device doesn't support taking photos",
-										Toast.LENGTH_SHORT).show();
-							}
-						}
-					});
-				}		
+										"Opps! Your device doesn't support Speech to Text",
+										Toast.LENGTH_SHORT);
+						t.show();
+					}
+				}
+			});
+		}
+		if (!main.getPreferences().getBoolean("useBtnCamera", true)
+				|| !Helpers.isIntentAvailable(main,
+						MediaStore.ACTION_IMAGE_CAPTURE)) {
+			view.findViewById(R.id.btnCamera).setVisibility(View.GONE);
+		} else {
+			ImageButton btnCamera = (ImageButton) view
+					.findViewById(R.id.btnCamera);
+			btnCamera.setVisibility(View.VISIBLE);
+			btnCamera.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					try {
+						Intent cameraIntent = new Intent(
+								MediaStore.ACTION_IMAGE_CAPTURE);
+						Uri fileUri = Helpers
+								.getOutputMediaFileUri(Helpers.MEDIA_TYPE_IMAGE);
+						if (fileUri == null)
+							return;
+						main.setFileUri(fileUri);
+						cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+						getActivity().startActivityForResult(cameraIntent,
+								MainActivity.RESULT_CAMERA);
+
+					} catch (ActivityNotFoundException a) {
+						Toast.makeText(
+								main,
+								"Opps! Your device doesn't support taking photos",
+								Toast.LENGTH_SHORT).show();
+					}
+				}
+			});
+		}
 	}
 
 }
