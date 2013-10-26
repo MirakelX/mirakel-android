@@ -190,42 +190,62 @@ public class TasksFragment extends Fragment {
 		return view;
 	}
 
-	public void focusNew() {
+	public void focusNew(final boolean request_focus) {
 		if (newTask == null)
 			return;
-		newTask.setOnFocusChangeListener(null);
-		newTask.clearFocus();
+		// newTask.setOnFocusChangeListener(null);
+		// newTask.clearFocus();
 		newTask.setOnFocusChangeListener(new OnFocusChangeListener() {
 			@Override
 			public void onFocusChange(final View v, final boolean hasFocus) {
 				newTask.post(new Runnable() {
 					@Override
 					public void run() {
+						Log.d(TAG,"focus new "+hasFocus);
 						InputMethodManager imm = (InputMethodManager) getActivity()
 								.getSystemService(Context.INPUT_METHOD_SERVICE);
-						if (hasFocus) {
-							imm.showSoftInput(
-									newTask,
+						if (request_focus&&hasFocus) {
+							Log.d(TAG,"show keyboard");
+							getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_UNSPECIFIED);
+							imm.showSoftInput(newTask,
 									InputMethodManager.SHOW_IMPLICIT);
-							getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-						} else {
-							imm.showSoftInput(
-									newTask,
-									InputMethodManager.HIDE_IMPLICIT_ONLY);
+							getActivity()
+									.getWindow()
+									.setSoftInputMode(
+											WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+						} else if(!hasFocus){
+							newTask.requestFocus();
+						}else if(!request_focus){
+							clearFocus();
 						}
 						if (!imm.isAcceptingText()) {
 							Log.w(TAG, "Software Keyboard was not shown");
 						}
-						if (main.currentPosition == MainActivity.TASKS_FRAGMENT
-								&& !PreferenceManager
-										.getDefaultSharedPreferences(main)
-										.getBoolean("hideKeyboard", true))
-							while (!((EditText) v).requestFocus());
 					}
 				});
 			}
 		});
 		newTask.requestFocus();
+	}
+
+	public void clearFocus() {
+		if (newTask != null) {
+			newTask.postDelayed(new Runnable() {
+				
+				@Override
+				public void run() {
+					Log.d(TAG,"clear focus");
+					newTask.setOnFocusChangeListener(null);
+					newTask.clearFocus();
+
+					InputMethodManager imm = (InputMethodManager) getActivity()
+							.getSystemService(Context.INPUT_METHOD_SERVICE);
+					imm.hideSoftInputFromWindow(newTask.getWindowToken(), 0);
+					getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+					
+				}
+			},10);
+		}
 	}
 
 	private boolean newTask(String name) {
@@ -252,7 +272,7 @@ public class TasksFragment extends Fragment {
 			main.getListFragment().update();
 			if (!PreferenceManager.getDefaultSharedPreferences(main)
 					.getBoolean("hideKeyboard", true)) {
-				focusNew();
+				focusNew(true);
 			}
 			return true;
 		} catch (Semantic.NoListsException e) {

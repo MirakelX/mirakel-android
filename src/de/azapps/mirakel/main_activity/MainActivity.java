@@ -294,7 +294,7 @@ public class MainActivity extends ActionBarActivity implements
 	public void onPageScrolled(int position, float positionOffset,
 			int positionOffsetPixels) {
 		Log.d(TAG,"scroll");
-		if (getTasksFragment() != null
+		if (getTasksFragment() != null&&getTasksFragment().getAdapter()!=null
 				&& preferences.getBoolean("swipeBehavior", true)&&!skipSwipe&&position==TASKS_FRAGMENT) {
 			setCurrentTask(getTasksFragment().getAdapter().lastTouched(), false);
 			skipSwipe=true;
@@ -506,6 +506,8 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	protected void onPause() {
+		if(getTasksFragment()!=null)
+			getTasksFragment().clearFocus();
 		super.onPause();
 	}
 
@@ -651,16 +653,20 @@ public class MainActivity extends ActionBarActivity implements
 			String query = startIntent.getStringExtra(SearchManager.QUERY);
 			search(query);
 		} else if (startIntent.getAction().contains(ADD_TASK_FROM_WIDGET)) {
+			Log.d(TAG,"add");
 			int listId = Integer.parseInt(startIntent.getAction().replace(ADD_TASK_FROM_WIDGET, ""));
 			setCurrentList(ListMirakel.getList(listId));
 			if (getTasksFragment() != null) {
-				getTasksFragment().focusNew();
+				getTasksFragment().focusNew(true);
 			}else{
 				Log.w(TAG,"tasksfragment==null");
 			}
 
 		} else {
 			mViewPager.setCurrentItem(TASKS_FRAGMENT);
+		}
+		if((startIntent==null||startIntent.getAction()==null||(!startIntent.getAction().contains(ADD_TASK_FROM_WIDGET)))&&getTasksFragment()!=null){
+			getTasksFragment().clearFocus();
 		}
 		setIntent(null);
 	}
