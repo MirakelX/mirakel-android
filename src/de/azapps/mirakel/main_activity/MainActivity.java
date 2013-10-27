@@ -130,6 +130,7 @@ public class MainActivity extends ActionBarActivity implements
 	private Stack<Task> goBackTo = new Stack<Task>();
 	private boolean showNavDrawer = false;
 	private boolean skipSwipe;
+	private boolean closeOnBack;
 
 	public static boolean updateTasksUUID = false;
 
@@ -287,7 +288,6 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	public void onPageScrolled(int position, float positionOffset,
 			int positionOffsetPixels) {
-		Log.d(TAG,"scroll");
 		if (getTasksFragment() != null&&getTasksFragment().getAdapter()!=null
 				&& preferences.getBoolean("swipeBehavior", true)&&!skipSwipe&&position==TASKS_FRAGMENT) {
 			setCurrentTask(getTasksFragment().getAdapter().lastTouched(), false);
@@ -300,6 +300,7 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	public void onPageSelected(int position) {
+		closeOnBack=false;
 		getTasksFragment().closeActionMode();
 		getTaskFragment().closeActionMode();
 		if(preferences.getBoolean("lockDrawerInTaskFragment", false) && position==TASK_FRAGMENT) {
@@ -356,7 +357,8 @@ public class MainActivity extends ActionBarActivity implements
 		case TASK_FRAGMENT:
 			newmenu = R.menu.activity_task;
 			getTaskFragment().update(currentTask);
-			getSupportActionBar().setTitle(currentTask.getName());
+			if(getSupportActionBar()!=null&&currentTask!=null)
+				getSupportActionBar().setTitle(currentTask.getName());
 			break;
 		default:
 			Toast.makeText(getApplicationContext(), "Where are the dragons?",
@@ -469,6 +471,9 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	public void onBackPressed() {
+		if(closeOnBack){
+			super.onBackPressed();
+		}
 		if (goBackTo.size() > 0) {
 			Task goBack = goBackTo.pop();
 			setCurrentList(goBack.getList(), null, false, false);
@@ -570,6 +575,7 @@ public class MainActivity extends ActionBarActivity implements
 	 * Initialize the ViewPager and setup the rest of the layout
 	 */
 	private void setupLayout() {
+		closeOnBack=false;
 		fromShared = false;
 		if (currentList == null)
 			setCurrentList(SpecialList.firstSpecial());
@@ -580,7 +586,7 @@ public class MainActivity extends ActionBarActivity implements
 		startIntent = getIntent();
 		if (startIntent == null || startIntent.getAction() == null) {
 			Log.d(TAG,"action null");
-		} else if (startIntent.getAction().equals(SHOW_TASK)) {
+		} else if (startIntent.getAction().equals(SHOW_TASK)||startIntent.getAction().equals(SHOW_TASK_FROM_WIDGET)) {
 			Task task = Helpers.getTaskFromIntent(startIntent);
 			if (task != null) {
 				skipSwipe=true;
@@ -589,6 +595,7 @@ public class MainActivity extends ActionBarActivity implements
 			} else {
 				Log.d(TAG, "task null");
 			}
+			closeOnBack=startIntent.getAction().equals(SHOW_TASK_FROM_WIDGET);
 		} else if (startIntent.getAction().equals(Intent.ACTION_SEND)
 				|| startIntent.getAction().equals(Intent.ACTION_SEND_MULTIPLE)) {
 
@@ -646,6 +653,7 @@ public class MainActivity extends ActionBarActivity implements
 			if (list == null)
 				list = SpecialList.firstSpecial();
 			setCurrentList(list);
+			closeOnBack= startIntent.getAction().contains(SHOW_LIST_FROM_WIDGET);
 		} else if (startIntent.getAction().equals(SHOW_LISTS)) {
 			mDrawerLayout.openDrawer(Gravity.LEFT);
 		} else if (startIntent.getAction().equals(Intent.ACTION_SEARCH)) {
