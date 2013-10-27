@@ -28,7 +28,6 @@
     <color name="selected_color">#7CCFEE</color>
     <color name="pressed_color">#6633b5e5</color>
     <color name="White">#FFFFFF</color>
-    <color name="background_dark_transparent">#80000000</color>
     <color name="highlighted_text_holo_dark">#6633b5e5</color>
     <color name="highlighted_text_holo_light">#6633b5e5</color>
     <color name="holo_blue_dark">#ff0099cc</color>

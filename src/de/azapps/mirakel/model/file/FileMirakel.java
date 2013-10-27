@@ -212,8 +212,8 @@ public class FileMirakel extends FileBase {
 
 	public static List<FileMirakel> getForTask(Task task) {
 		List<FileMirakel> files = new ArrayList<FileMirakel>();
-		Cursor cursor = database.query(TABLE, allColumns, "task_id=" + task.getId(),
-				null, null, null, null);
+		Cursor cursor = database.query(TABLE, allColumns,
+				"task_id=" + task.getId(), null, null, null, null);
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
 			files.add(cursorToFile(cursor));
@@ -231,7 +231,7 @@ public class FileMirakel extends FileBase {
 	}
 
 	public static int getFileCount(Task t) {
-		if(t==null){
+		if (t == null) {
 			return 0;
 		}
 		Cursor c = database.rawQuery("Select count(_id) from " + TABLE

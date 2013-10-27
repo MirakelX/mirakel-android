@@ -94,9 +94,7 @@ public class ListFragment extends Fragment {
 		view = inflater.inflate(R.layout.activity_list, container, false);
 		if (PreferenceManager.getDefaultSharedPreferences(main).getBoolean(
 				"DarkTheme", false)) {
-			view.findViewById(R.id.lists_list).setBackgroundColor(
-					getResources()
-							.getColor(R.color.background_dark_transparent));
+			view.findViewById(R.id.lists_list).setBackgroundResource(android.R.drawable.screen_background_dark);
 		} else {
 			view.findViewById(R.id.lists_list).setBackgroundColor(
 					getResources().getColor(android.R.color.background_light));

@@ -180,12 +180,6 @@ public class MainActivity extends ActionBarActivity implements
 				}
 			}
 		}
-		/*
-		 * final List<ListMirakel> values = ListMirakel.all(); ListAdapter
-		 * adapter = new ListAdapter(this, R.layout.lists_row, values, false);
-		 * ListView list_drawer=(ListView) findViewById(R.id.list_drawer);
-		 * list_drawer.setAdapter(adapter);
-		 */
 	}
 
 	@Override

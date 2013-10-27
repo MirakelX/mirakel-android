@@ -71,7 +71,7 @@
     <string name="subtask_add_options">Options >></string>
     <string name="subtask_done">Task done?</string>
     <string name="subtask_reminder">Task with reminder?</string>
-    <string name="subtask_content">Task with content?</string>
+    <string name="subtask_content">Task with note?</string>
     <string name="add">Add</string>
     <string name="new_task">New Task</string>
     <string name="add_existing">Add existing Task</string>
@@ -228,10 +228,10 @@ Device: %3$s\n]]>
     <string name="backup_import_ok">The import was fine - please restart Mirakel</string>
     <string name="backup_export_error">There was an error while exporting the database</string>
     <string name="backup_export_ok">Exported to %s</string>
-    <string name="change_content">Change content</string>
-    <string name="content">Content</string>
-    <string name="add_content">Add content…</string>
-    <string name="task_has_content">Task has content</string>
+    <string name="change_content">Change note</string>
+    <string name="content">Note</string>
+    <string name="add_content">Add note…</string>
+    <string name="task_has_content">Task with note</string>
     <string name="help">Help</string>
     <string name="help_description">There are 3 main parts: on the left side you can see all lists, in the middle you can see all tasks of a list and at the right side you can see a task. You switch between the parts by swiping or clicking.</string>
 
