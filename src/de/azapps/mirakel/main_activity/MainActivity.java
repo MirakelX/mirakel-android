@@ -302,6 +302,11 @@ public class MainActivity extends ActionBarActivity implements
 	public void onPageSelected(int position) {
 		getTasksFragment().closeActionMode();
 		getTaskFragment().closeActionMode();
+		if(preferences.getBoolean("lockDrawerInTaskFragment", false) && position==TASK_FRAGMENT) {
+			mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+		} else {
+			mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+		}
 		loadMenu(position);
 
 	}

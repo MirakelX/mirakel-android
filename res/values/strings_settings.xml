@@ -138,7 +138,6 @@
     <string name="kill_sure">Are you really sure???</string>
     <string name="kill_sure_message">When you close the app, you do not get any reminders! Please consider only disabling the notification (or make it non-persistent, so you can remove it.)</string>
     <string name="ui_settings_title">User Interface</string>
-
     <string name="hide_keyboard">Hide keyboard</string>
     <string name="hide_keyboard_summary">Hide keyboard if new task is created</string>
     <string name="undo_number">Number of changes saved</string>
@@ -152,6 +151,8 @@
     <string name="settings_old_logo">Use the old, ugly logo</string>
     <string name="swipeBehavior_title">Switch on swipe to touched Task</string>
     <string name="swipeBehavior_summary">Switch to Task which is touched or switch to last selected task</string>
+    <string name="lock_drawer_in_task_fragment_summary">So you don\'t open it accidentally</string>
+    <string name="lock_drawer_in_task_fragment">Lock List-View in the Task details</string>
     <!-- Language -->
     <string name="language">Language</string>
 
@@ -175,7 +176,6 @@
         <item>sl</item>
         <item>no</item>
     </string-array>
-
 
     <!-- Delete done -->
     <string name="delete_done">Delete done tasks</string>
