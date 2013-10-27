@@ -193,8 +193,6 @@ public class TasksFragment extends Fragment {
 	public void focusNew(final boolean request_focus) {
 		if (newTask == null)
 			return;
-		// newTask.setOnFocusChangeListener(null);
-		// newTask.clearFocus();
 		newTask.setOnFocusChangeListener(new OnFocusChangeListener() {
 			@Override
 			public void onFocusChange(final View v, final boolean hasFocus) {
@@ -204,22 +202,24 @@ public class TasksFragment extends Fragment {
 						Log.d(TAG,"focus new "+hasFocus);
 						InputMethodManager imm = (InputMethodManager) getActivity()
 								.getSystemService(Context.INPUT_METHOD_SERVICE);
+						if(imm==null){
+							Log.w(TAG, "Inputmanager==null");
+							return;
+						}
+						imm.restartInput(newTask);
 						if (request_focus&&hasFocus) {
-							Log.d(TAG,"show keyboard");
-							getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_UNSPECIFIED);
+
+							getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 							imm.showSoftInput(newTask,
 									InputMethodManager.SHOW_IMPLICIT);
 							getActivity()
 									.getWindow()
 									.setSoftInputMode(
-											WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+											WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 						} else if(!hasFocus){
 							newTask.requestFocus();
 						}else if(!request_focus){
 							clearFocus();
-						}
-						if (!imm.isAcceptingText()) {
-							Log.w(TAG, "Software Keyboard was not shown");
 						}
 					}
 				});
