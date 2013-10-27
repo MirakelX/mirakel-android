@@ -78,10 +78,16 @@ public class MainWidgetProvider extends AppWidgetProvider {
 			RemoteViews views = new RemoteViews(context.getPackageName(),
 					layout_id);
 
+			int widgetBackground;
+			if (isMinimalistic) {
+				widgetBackground = isDark ? R.drawable.widget_background_minimalistic_dark
+						: R.drawable.widget_background_minimalistic;
+			} else {
+				widgetBackground = isDark ? R.drawable.widget_background_dark
+						: R.drawable.widget_background;
+			}
 			GradientDrawable drawable = (GradientDrawable) context
-					.getResources().getDrawable(
-							isDark ? R.drawable.widget_background_dark
-									: R.drawable.widget_background);
+					.getResources().getDrawable(widgetBackground);
 			drawable.setAlpha(WidgetHelper.getTransparency(context, widgetId));
 			Bitmap bitmap = Bitmap.createBitmap(500, 500, Config.ARGB_8888);
 			Canvas canvas = new Canvas(bitmap);
@@ -124,7 +130,8 @@ public class MainWidgetProvider extends AppWidgetProvider {
 
 			// Create an Intent to launch MainActivity and show the List
 			Intent mainIntent = new Intent(context, MainActivity.class);
-			mainIntent.setAction(MainActivity.SHOW_LIST_FROM_WIDGET+list.getId());
+			mainIntent.setAction(MainActivity.SHOW_LIST_FROM_WIDGET
+					+ list.getId());
 			PendingIntent mainPendingIntent = PendingIntent.getActivity(
 					context, 0, mainIntent, 0);
 			views.setOnClickPendingIntent(R.id.widget_list_name,
@@ -135,7 +142,8 @@ public class MainWidgetProvider extends AppWidgetProvider {
 
 			// Create an Intent to launch MainActivity and create a new Task
 			Intent addIntent = new Intent(context, MainActivity.class);
-			addIntent.setAction(MainActivity.ADD_TASK_FROM_WIDGET+list.getId());
+			addIntent.setAction(MainActivity.ADD_TASK_FROM_WIDGET
+					+ list.getId());
 			PendingIntent addPendingIntent = PendingIntent.getActivity(context,
 					0, addIntent, 0);
 			views.setOnClickPendingIntent(R.id.widget_add_task,
@@ -230,9 +238,10 @@ public class MainWidgetProvider extends AppWidgetProvider {
 			startMainIntent.setData(Uri.parse(startMainIntent
 					.toUri(Intent.URI_INTENT_SCHEME)));
 			context.startActivity(startMainIntent);
-		}else{
-			Log.d(TAG,intent.getAction());
-			Log.d(TAG,"click: "+intent.getIntExtra(MainActivity.SHOW_LIST, 1));
+		} else {
+			Log.d(TAG, intent.getAction());
+			Log.d(TAG,
+					"click: " + intent.getIntExtra(MainActivity.SHOW_LIST, 1));
 		}
 		super.onReceive(context, intent);
 	}
