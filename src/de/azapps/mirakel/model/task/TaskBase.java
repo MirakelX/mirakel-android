@@ -185,6 +185,11 @@ class TaskBase {
 		edited.put("done", true);
 		if (done && recurring != -1 && due != null) {
 			due = getRecurring().addRecurring(due);
+			if (reminder != null) {
+				// Fix for #84
+				// Update Reminder if set Task done
+				reminder = getRecurring().addRecurring(reminder);
+			}
 			this.done = false;
 		}
 	}
