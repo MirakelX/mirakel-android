@@ -86,6 +86,19 @@ public class Task extends TaskBase {
 		save(true);
 	}
 
+	/**
+	 * Save a Task
+	 * 
+	 * @param task
+	 */
+	public void safeSave() {
+		try {
+			save();
+		} catch (NoSuchListException e) {
+			Log.w(TAG, "List did vanish");
+		}
+	}
+
 	public void save(boolean log) throws NoSuchListException {
 		if (!isEdited()) {
 			Log.d(TAG, "new Task equals old, didnt need to save it");

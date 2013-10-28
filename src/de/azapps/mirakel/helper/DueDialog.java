@@ -19,7 +19,7 @@ public class DueDialog extends AlertDialog {
 	private String[] s;
 
 	public enum VALUE {
-		DAY, MONTH, YEAR;
+		MINUTE, HOUR, DAY, MONTH, YEAR;
 
 		public int getInt() {
 			switch (this) {
@@ -29,6 +29,10 @@ public class DueDialog extends AlertDialog {
 				return 1;
 			case YEAR:
 				return 2;
+			case MINUTE:
+				return 3;
+			case HOUR:
+				return 4;
 			}
 			return 0;
 		}
@@ -50,7 +54,7 @@ public class DueDialog extends AlertDialog {
 	}
 
 	@SuppressLint("NewApi")
-	public DueDialog(Context context) {
+	public DueDialog(Context context,final boolean minuteHour) {
 		super(context);
 		ctx = context;
 		s = new String[100];
@@ -64,9 +68,10 @@ public class DueDialog extends AlertDialog {
 					.findViewById(R.id.due_day_year));
 			NumberPicker pickerValue = ((NumberPicker) dialogView
 					.findViewById(R.id.due_val));
+			String dayYearValues[] = getDayYearValues(0, minuteHour);
 
-			pickerDay.setDisplayedValues(getDayYearValues(0));
-			pickerDay.setMaxValue(getDayYearValues(0).length - 1);
+			pickerDay.setDisplayedValues(dayYearValues);
+			pickerDay.setMaxValue(dayYearValues.length - 1);
 			pickerValue.setMaxValue(s.length - 1);
 			pickerValue.setValue(10);
 			pickerValue.setMinValue(0);
@@ -82,8 +87,8 @@ public class DueDialog extends AlertDialog {
 						@Override
 						public void onValueChange(NumberPicker picker,
 								int oldVal, int newVal) {
-							pickerDay
-									.setDisplayedValues(getDayYearValues(newVal - 10));
+							pickerDay.setDisplayedValues(getDayYearValues(
+									newVal - 10, minuteHour));
 							count = newVal - 10;
 						}
 					});
@@ -181,6 +186,12 @@ public class DueDialog extends AlertDialog {
 
 	protected String updateDayYear() {
 		switch (dayYear) {
+		case MINUTE:
+			return ctx.getResources().getQuantityString(R.plurals.due_minute,
+					count);
+		case HOUR:
+			return ctx.getResources().getQuantityString(R.plurals.due_hour,
+					count);
 		case DAY:
 			return ctx.getResources().getQuantityString(R.plurals.due_day,
 					count);
@@ -195,14 +206,23 @@ public class DueDialog extends AlertDialog {
 
 	}
 
-	protected String[] getDayYearValues(int newVal) {
-		String[] ret = new String[3];
-		ret[0] = ctx.getResources()
-				.getQuantityString(R.plurals.due_day, newVal);
-		ret[1] = ctx.getResources().getQuantityString(R.plurals.due_month,
+	protected String[] getDayYearValues(int newVal, boolean minutesHour) {
+		int size = minutesHour ? 5 : 3;
+		int i = 0;
+		String[] ret = new String[size];
+		if (minutesHour) {
+			ret[i++] = ctx.getResources().getQuantityString(
+					R.plurals.due_minute, newVal);
+			ret[i++] = ctx.getResources().getQuantityString(R.plurals.due_hour,
+					newVal);
+		}
+		ret[i++] = ctx.getResources().getQuantityString(R.plurals.due_day,
 				newVal);
-		ret[2] = ctx.getResources().getQuantityString(R.plurals.due_year,
+		ret[i++] = ctx.getResources().getQuantityString(R.plurals.due_month,
 				newVal);
+		ret[i] = ctx.getResources().getQuantityString(R.plurals.due_year,
+				newVal);
+
 		return ret;
 	}
 
@@ -216,7 +236,7 @@ public class DueDialog extends AlertDialog {
 	@SuppressLint("NewApi")
 	public void setValue(int val, VALUE day) {
 		if (VERSION.SDK_INT > VERSION_CODES.HONEYCOMB) {
-			int _day =dayYear.getInt();
+			int _day = dayYear.getInt();
 			((NumberPicker) dialogView.findViewById(R.id.due_day_year))
 					.setValue(_day);
 			;

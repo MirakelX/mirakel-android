@@ -71,11 +71,11 @@ public class ReminderAlarm extends BroadcastReceiver {
 					.show();
 			return;
 		}
-		if (task.getRecurringReminder() != null&&task.getReminder().compareTo(
-				task.getRecurringReminder()
+		if (task.getRecurrenceReminder() != null&&task.getReminder().compareTo(
+				task.getRecurrenceReminder()
 				.addRecurring(
 						(Calendar) task.getReminder().clone()))<1) {
-			task.setReminder(task.getRecurringReminder().addRecurring(
+			task.setReminder(task.getRecurrenceReminder().addRecurring(
 					task.getReminder()));
 			alarmManager.set(AlarmManager.RTC_WAKEUP, task.getReminder()
 					.getTimeInMillis(), PendingIntent.getBroadcast(context, 0,
@@ -223,13 +223,13 @@ public class ReminderAlarm extends BroadcastReceiver {
 						continue;
 					} else if (newTask.getReminder() != null) {
 						Calendar now = new GregorianCalendar();
-						if (newTask.getReminder().after(now)&&newTask.getRecurringReminder()==null) {
+						if (newTask.getReminder().after(now)&&newTask.getRecurrenceReminder()==null) {
 							closeNotificationFor(ctx, t.getId());
 							updateAlarm(ctx, newTask);
 						} else if (newTask.getReminder().after(now)
-								&& newTask.getRecurringReminder() != null
+								&& newTask.getRecurrenceReminder() != null
 								&& newTask.getReminder().compareTo(
-										newTask.getRecurringReminder()
+										newTask.getRecurrenceReminder()
 												.addRecurring(
 														newTask.getReminder()))>0
 								&& !now.after(newTask.getReminder())) {

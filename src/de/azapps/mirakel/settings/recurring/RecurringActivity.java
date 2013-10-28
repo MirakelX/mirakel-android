@@ -32,6 +32,7 @@ import de.azapps.mirakelandroid.R;
 public class RecurringActivity extends ListSettings {
 
 	private Recurring recurring;
+
 	@SuppressLint("NewApi")
 	@Override
 	protected OnClickListener getAddOnClickListener() {
@@ -46,9 +47,15 @@ public class RecurringActivity extends ListSettings {
 		};
 	}
 
+	protected Recurring newRecurring(boolean temporary) {
+		return Recurring.newRecurring(getString(R.string.new_recurring), 0, 0,
+				0, 0, 1, true, null, null, temporary);
+
+	}
+
 	protected Recurring newRecurring() {
-		return Recurring.newRecurring(getString(R.string.new_recurring), 0, 0, 0, 0, 1, true,null,null);
-		
+		return newRecurring(false);
+
 	}
 
 	@Override

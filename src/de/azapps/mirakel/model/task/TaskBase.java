@@ -57,7 +57,7 @@ class TaskBase {
 	private String additionalEntriesString;
 	private SYNC_STATE sync_state;
 	private Calendar reminder;
-	private int recurring;
+	private int recurrence;
 	private int recurrence_reminder;
 
 	TaskBase(long id, String uuid, ListMirakel list, String name,
@@ -78,7 +78,7 @@ class TaskBase {
 		this.setUpdatedAt(updated_at);
 		this.setSyncState(sync_state);
 		this.additionalEntriesString = additionalEntriesString;
-		this.recurring = recurring;
+		this.recurrence = recurring;
 		this.recurrence_reminder = recurring_reminder;
 	}
 
@@ -99,22 +99,28 @@ class TaskBase {
 		this.setCreatedAt((Calendar) null);
 		this.setUpdatedAt((Calendar) null);
 		this.setSyncState(SYNC_STATE.NOTHING);
-		this.recurring = -1;
+		this.recurrence = -1;
 		this.recurrence_reminder = -1;
 	}
 
 	public Recurring getRecurring() {
-		Recurring r = Recurring.get(recurring);
+		Recurring r = Recurring.get(recurrence);
 		return r;
+	}
+	public int getRecurrenceId() {
+		return recurrence;
 	}
 
 	public void setRecurrence(int recurring) {
-		this.recurring = recurring;
+		this.recurrence = recurring;
 		edited.put("recurring", true);
 	}
 
-	public Recurring getRecurringReminder() {
+	public Recurring getRecurrenceReminder() {
 		return Recurring.get(recurrence_reminder);
+	}
+	public int getRecurrenceReminderId() {
+		return recurrence_reminder;
 	}
 
 	public void setRecurrenceReminder(int recurring) {
@@ -183,7 +189,7 @@ class TaskBase {
 	public void setDone(boolean done) {
 		this.done = done;
 		edited.put("done", true);
-		if (done && recurring != -1 && due != null) {
+		if (done && recurrence != -1 && due != null) {
 			due = getRecurring().addRecurring(due);
 			if (reminder != null) {
 				// Fix for #84
@@ -358,7 +364,7 @@ class TaskBase {
 			updatedAt = DateTimeHelper.formatDateTime(this.updatedAt);
 		cv.put("updated_at", updatedAt);
 		cv.put("sync_state", sync_state.toInt());
-		cv.put("recurring", recurring);
+		cv.put("recurring", recurrence);
 		cv.put("recurring_reminder", recurrence_reminder);
 
 		Gson gson = new GsonBuilder().create();
