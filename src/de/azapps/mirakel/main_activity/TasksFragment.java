@@ -274,6 +274,7 @@ public class TasksFragment extends Fragment {
 					.getBoolean("hideKeyboard", true)) {
 				focusNew(true);
 			}
+			main.updateShare();
 			return true;
 		} catch (Semantic.NoListsException e) {
 			Toast.makeText(main, R.string.no_lists, Toast.LENGTH_LONG).show();
@@ -428,7 +429,7 @@ public class TasksFragment extends Fragment {
 					MenuInflater inflater = mode.getMenuInflater();
 					inflater.inflate(R.menu.context_tasks, menu);
 					mActionMode = mode;
-
+					clearFocus();
 					return true;
 				}
 
