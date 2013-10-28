@@ -26,7 +26,6 @@ import java.util.Stack;
 import java.util.Vector;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.ComponentName;
@@ -52,11 +51,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnFocusChangeListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
@@ -126,11 +123,10 @@ public class MainActivity extends ActionBarActivity implements
 	public boolean darkTheme;
 	private boolean isResumend;
 	private Intent startIntent;
-	private boolean fromShared = false;
+	private boolean closeOnBack = false;
 	private Stack<Task> goBackTo = new Stack<Task>();
 	private boolean showNavDrawer = false;
 	private boolean skipSwipe;
-	private boolean closeOnBack;
 
 	public static boolean updateTasksUUID = false;
 
@@ -166,7 +162,7 @@ public class MainActivity extends ActionBarActivity implements
 			showNavDrawer = true;
 		}
 		// currentList=preferences.getInt("s", defValue)
-		skipSwipe=false;
+		skipSwipe = false;
 		setupLayout();
 		isResumend = false;
 
@@ -288,23 +284,26 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	public void onPageScrolled(int position, float positionOffset,
 			int positionOffsetPixels) {
-		if (getTasksFragment() != null&&getTasksFragment().getAdapter()!=null
-				&& preferences.getBoolean("swipeBehavior", true)&&!skipSwipe&&position==TASKS_FRAGMENT) {
+		if (getTasksFragment() != null
+				&& getTasksFragment().getAdapter() != null
+				&& preferences.getBoolean("swipeBehavior", true) && !skipSwipe
+				&& position == TASKS_FRAGMENT) {
 			setCurrentTask(getTasksFragment().getAdapter().lastTouched(), false);
-			skipSwipe=true;
+			skipSwipe = true;
 		}
-		if(positionOffset==0.0f&&position==TASKS_FRAGMENT){
-			skipSwipe=false;
+		if (positionOffset == 0.0f && position == TASKS_FRAGMENT) {
+			skipSwipe = false;
 		}
 	}
 
 	@Override
 	public void onPageSelected(int position) {
-		closeOnBack=false;
 		getTasksFragment().closeActionMode();
 		getTaskFragment().closeActionMode();
-		if(preferences.getBoolean("lockDrawerInTaskFragment", false) && position==TASK_FRAGMENT) {
-			mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+		if (preferences.getBoolean("lockDrawerInTaskFragment", false)
+				&& position == TASK_FRAGMENT) {
+			mDrawerLayout
+					.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 		} else {
 			mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 		}
@@ -357,7 +356,7 @@ public class MainActivity extends ActionBarActivity implements
 		case TASK_FRAGMENT:
 			newmenu = R.menu.activity_task;
 			getTaskFragment().update(currentTask);
-			if(getSupportActionBar()!=null&&currentTask!=null)
+			if (getSupportActionBar() != null && currentTask != null)
 				getSupportActionBar().setTitle(currentTask.getName());
 			break;
 		default:
@@ -471,16 +470,13 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	public void onBackPressed() {
-		if(closeOnBack){
-			super.onBackPressed();
-		}
 		if (goBackTo.size() > 0) {
 			Task goBack = goBackTo.pop();
 			setCurrentList(goBack.getList(), null, false, false);
 			setCurrentTask(goBack, true, false);
 			return;
 		}
-		if (fromShared) {
+		if (closeOnBack) {
 			super.onBackPressed();
 			return;
 		}
@@ -510,7 +506,7 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	protected void onPause() {
-		if(getTasksFragment()!=null)
+		if (getTasksFragment() != null)
 			getTasksFragment().clearFocus();
 		super.onPause();
 	}
@@ -575,8 +571,7 @@ public class MainActivity extends ActionBarActivity implements
 	 * Initialize the ViewPager and setup the rest of the layout
 	 */
 	private void setupLayout() {
-		closeOnBack=false;
-		fromShared = false;
+		closeOnBack = false;
 		if (currentList == null)
 			setCurrentList(SpecialList.firstSpecial());
 		// Initialize ViewPager
@@ -585,21 +580,23 @@ public class MainActivity extends ActionBarActivity implements
 		NotificationService.updateNotificationAndWidget(this);
 		startIntent = getIntent();
 		if (startIntent == null || startIntent.getAction() == null) {
-			Log.d(TAG,"action null");
-		} else if (startIntent.getAction().equals(SHOW_TASK)||startIntent.getAction().equals(SHOW_TASK_FROM_WIDGET)) {
+			Log.d(TAG, "action null");
+		} else if (startIntent.getAction().equals(SHOW_TASK)
+				|| startIntent.getAction().equals(SHOW_TASK_FROM_WIDGET)) {
 			Task task = Helpers.getTaskFromIntent(startIntent);
 			if (task != null) {
-				skipSwipe=true;
+				skipSwipe = true;
 				setCurrentList(task.getList());
 				setCurrentTask(task, true);
 			} else {
 				Log.d(TAG, "task null");
 			}
-			closeOnBack=startIntent.getAction().equals(SHOW_TASK_FROM_WIDGET);
+			if (startIntent.getAction().equals(SHOW_TASK_FROM_WIDGET))
+				closeOnBack = true;
 		} else if (startIntent.getAction().equals(Intent.ACTION_SEND)
 				|| startIntent.getAction().equals(Intent.ACTION_SEND_MULTIPLE)) {
 
-			fromShared = true;
+			closeOnBack = true;
 			newTaskContent = startIntent.getStringExtra(Intent.EXTRA_TEXT);
 			newTaskSubject = startIntent.getStringExtra(Intent.EXTRA_SUBJECT);
 
@@ -643,36 +640,41 @@ public class MainActivity extends ActionBarActivity implements
 				|| startIntent.getAction().contains(SHOW_LIST_FROM_WIDGET)) {
 
 			int listId;
-			if(startIntent.getAction().equals(SHOW_LIST)){
-				listId= startIntent.getIntExtra(EXTRA_ID, 0);
-			}else{
-				listId=Integer.parseInt(startIntent.getAction().replace(SHOW_LIST_FROM_WIDGET, ""));
+			if (startIntent.getAction().equals(SHOW_LIST)) {
+				listId = startIntent.getIntExtra(EXTRA_ID, 0);
+			} else {
+				listId = Integer.parseInt(startIntent.getAction().replace(
+						SHOW_LIST_FROM_WIDGET, ""));
 			}
-			Log.wtf(TAG,"ListId: "+listId);
+			Log.wtf(TAG, "ListId: " + listId);
 			ListMirakel list = ListMirakel.getList(listId);
 			if (list == null)
 				list = SpecialList.firstSpecial();
 			setCurrentList(list);
-			closeOnBack= startIntent.getAction().contains(SHOW_LIST_FROM_WIDGET);
+			if (startIntent.getAction().contains(SHOW_LIST_FROM_WIDGET))
+				closeOnBack = true;
 		} else if (startIntent.getAction().equals(SHOW_LISTS)) {
 			mDrawerLayout.openDrawer(Gravity.LEFT);
 		} else if (startIntent.getAction().equals(Intent.ACTION_SEARCH)) {
 			String query = startIntent.getStringExtra(SearchManager.QUERY);
 			search(query);
 		} else if (startIntent.getAction().contains(ADD_TASK_FROM_WIDGET)) {
-			Log.d(TAG,"add");
-			int listId = Integer.parseInt(startIntent.getAction().replace(ADD_TASK_FROM_WIDGET, ""));
+			Log.d(TAG, "add");
+			int listId = Integer.parseInt(startIntent.getAction().replace(
+					ADD_TASK_FROM_WIDGET, ""));
 			setCurrentList(ListMirakel.getList(listId));
 			if (getTasksFragment() != null) {
 				getTasksFragment().focusNew(true);
-			}else{
-				Log.w(TAG,"tasksfragment==null");
+			} else {
+				Log.w(TAG, "tasksfragment==null");
 			}
 
 		} else {
 			mViewPager.setCurrentItem(TASKS_FRAGMENT);
 		}
-		if((startIntent==null||startIntent.getAction()==null||(!startIntent.getAction().contains(ADD_TASK_FROM_WIDGET)))&&getTasksFragment()!=null){
+		if ((startIntent == null || startIntent.getAction() == null || (!startIntent
+				.getAction().contains(ADD_TASK_FROM_WIDGET)))
+				&& getTasksFragment() != null) {
 			getTasksFragment().clearFocus();
 		}
 		setIntent(null);
@@ -1154,7 +1156,7 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	public TasksFragment getTasksFragment() {
-		if (mPagerAdapter == null){
+		if (mPagerAdapter == null) {
 			return null;
 		}
 		Fragment f = this.getSupportFragmentManager().findFragmentByTag(
