@@ -187,16 +187,15 @@ public class MainActivity extends ActionBarActivity implements
 		switch (item.getItemId()) {
 		case R.id.menu_delete:
 			handleDestroyTask(currentTask);
+			updateShare();
 			return true;
 		case R.id.menu_move:
 			handleMoveTask(currentTask);
 			return true;
-
 		case R.id.list_delete:
 			handleDestroyList(currentList);
 			return true;
 		case R.id.task_sorting:
-
 			currentList = ListDialogHelpers.handleSortBy(this, currentList,
 					new Helpers.ExecInterface() {
 
@@ -376,10 +375,18 @@ public class MainActivity extends ActionBarActivity implements
 				preferences.getBoolean("syncUse", false));
 		menu.findItem(R.id.menu_kill_button).setVisible(
 				preferences.getBoolean("KillButton", false));
-		if (position == TASKS_FRAGMENT && getCurrentList().isSpecialList()) {
-			menu.findItem(R.id.list_delete).setVisible(false);
-		}
+		updateShare();
 
+	}
+	
+	public void updateShare(){
+		if(menu!=null&&menu.findItem(R.id.share_list)!=null&&currentList.countTasks()==0){
+			menu.findItem(R.id.share_list).setVisible(false);
+		}else if(currentPosition==TASKS_FRAGMENT&&menu!=null&&menu.findItem(R.id.share_list)==null&&currentList.countTasks()>0){
+			loadMenu(TASKS_FRAGMENT);
+		}else if(menu!=null&&menu.findItem(R.id.share_list)!=null&&currentList.countTasks()>0){
+			menu.findItem(R.id.share_list).setVisible(true);
+		}
 	}
 
 	@Override
@@ -800,6 +807,7 @@ public class MainActivity extends ActionBarActivity implements
 								}
 								setCurrentList(currentList);
 								ReminderAlarm.updateAlarms(main);
+								updateShare();
 							}
 						})
 				.setNegativeButton(this.getString(android.R.string.no),
