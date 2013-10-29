@@ -810,7 +810,7 @@ public class TaskFragmentAdapter extends
 				android.R.drawable.ic_menu_recent_history);
 		reminder_img.setBounds(0, 1, 42, 42);
 		holder.taskReminder.setCompoundDrawables(reminder_img, null,
-				getRecurringDrawable(task.getRecurringReminder()), null);
+				getRecurringDrawable(task.getRecurrenceReminder()), null);
 		if (task.getReminder() == null) {
 			holder.taskReminder
 					.setText(context.getString(R.string.no_reminder));

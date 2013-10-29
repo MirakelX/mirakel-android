@@ -34,6 +34,7 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
+import de.azapps.mirakel.helper.DueDialog.VALUE;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.main_activity.TaskFragmentAdapter;
@@ -85,13 +86,12 @@ public class TaskDialogHelpers {
 		}
 	}
 
-	public static void handleReminder(final Activity act, final Task task,
+	public static void handleReminder(final Activity ctx, final Task task,
 			final ExecInterface onSuccess) {
-		final Context ctx = (Context) act;
 		Calendar reminder = (task.getReminder() == null ? new GregorianCalendar()
 				: task.getReminder());
 		// Inflate the root layout
-		final RelativeLayout mDateTimeDialogView = (RelativeLayout) act
+		final RelativeLayout mDateTimeDialogView = (RelativeLayout) ctx
 				.getLayoutInflater().inflate(R.layout.date_time_dialog, null);
 		// Grab widget instance
 		final DateTimePicker mDateTimePicker = (DateTimePicker) mDateTimeDialogView
@@ -146,15 +146,18 @@ public class TaskDialogHelpers {
 
 	public static void handleRecurrence(final Context context, final Task task,
 			Spinner spinner, final boolean isDue) {
-		final List<Pair<Integer, String>> recurring = Recurring
-				.getForDialog(isDue);
-		CharSequence[] items = new String[recurring.size() + 1];
-		Recurring r = isDue ? task.getRecurring() : task.getRecurringReminder();
+		final List<Pair<Integer, String>> recurring = Recurring.getForDialog(
+				isDue, task);
+		final int extraItems = 2;
+		CharSequence[] items = new String[recurring.size() + extraItems];
+		Recurring r = isDue ? task.getRecurring() : task
+				.getRecurrenceReminder();
 
-		items[0] = context.getString(R.string.nothing);
+		items[0] = context.getString(R.string.recurrence_no);
+		items[1] = context.getString(R.string.recurrence_custom);
 		int pos = 0;
-		for (int i = 1; i < recurring.size() + 1; i++) {
-			items[i] = recurring.get(i - 1).second;
+		for (int i = 2; i < recurring.size() + extraItems; i++) {
+			items[i] = recurring.get(i - extraItems).second;
 			if (r != null && items[i].equals(r.getLabel())) {
 				pos = i;
 			}
@@ -168,17 +171,99 @@ public class TaskDialogHelpers {
 
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int pos, long id) {
-				int r = pos == 0 ? -1 : recurring.get(pos - 1).first;
+				int r;
+				switch (pos) {
+				case 0: // no
+					r = -1;
+					break;
+				case 1: // custom
+					task.safeSave();
+					final DueDialog dueDialog = new DueDialog(context, !isDue);
+					dueDialog.setTitle(R.string.recurrence_custom_title);
+					dueDialog.setPositiveButton(android.R.string.ok,
+							new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									int minute = 0, hour = 0, day = 0, month = 0, year = 0;
+									int val = dueDialog.getValue();
+									VALUE dayYear = dueDialog.getDayYear();
+									String label = "";
+									switch (dayYear) {
+									case MINUTE:
+										minute = val;
+										label = context
+												.getResources()
+												.getQuantityString(
+														R.plurals.every_minutes,
+														val, val);
+										break;
+									case HOUR:
+										minute = val;
+										label = context
+												.getResources()
+												.getQuantityString(
+														R.plurals.every_minutes,
+														val, val);
+										break;
+									case DAY:
+										day = val;
+										label = context.getResources()
+												.getQuantityString(
+														R.plurals.every_days,
+														val, val);
+										break;
+									case MONTH:
+										month = val;
+										label = context.getResources()
+												.getQuantityString(
+														R.plurals.every_months,
+														val, val);
+										break;
+									case YEAR:
+										year = val;
+										label = context.getResources()
+												.getQuantityString(
+														R.plurals.every_years,
+														val, val);
+										break;
+									}
+									Calendar startDate = isDue ? task.getDue()
+											: task.getReminder();
+									Recurring r = Recurring.newRecurring(label,
+											minute, hour, day, month, year,
+											isDue, startDate, null, true);
+									if (isDue) {
+										Recurring.destroyTemporary(task.getRecurrenceId());
+										task.setRecurrence(r.getId());
+									} else {
+										Recurring.destroyTemporary(task.getRecurrenceReminderId());
+										task.setRecurrenceReminder(r.getId());
+									}
+									task.safeSave();
+
+								}
+							});
+					dueDialog.setNegativeButton(android.R.string.cancel,
+							new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+								}
+							});
+					dueDialog.show();
+					return;
+				default:
+					r = recurring.get(pos - extraItems).first;
+				}
 				if (isDue) {
 					task.setRecurrence(r);
 				} else {
 					task.setRecurrenceReminder(r);
 				}
-				try {
-					task.save();
-				} catch (NoSuchListException e) {
-					Log.w(TAG, "List did vanish");
-				}
+				task.safeSave();
 			}
 
 			public void onNothingSelected(AdapterView<?> parent) {

@@ -96,7 +96,7 @@ public class SemanticsSettings implements OnPreferenceChangeListener {
 
 					@Override
 					public boolean onPreferenceClick(Preference preference) {
-						final DueDialog dueDialog = new DueDialog(ctx);
+						final DueDialog dueDialog = new DueDialog(ctx,false);
 						dueDialog.setTitle(semanticsDue.getTitle());
 						dueDialog.setValue(dueDialogValue, dueDialogDayYear);
 

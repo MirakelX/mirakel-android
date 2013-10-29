@@ -21,15 +21,15 @@ public class Recurring extends RecurringBase {
 	private final static String TAG = "Recurring";
 	private final static String[] allColumns = { "_id", "label", "minutes",
 			"hours", "days", "months", "years", "for_due", "start_date",
-			"end_date" };
+			"end_date", "temporary" };
 	private static SQLiteDatabase database;
 	private static DatabaseHelper dbHelper;
 
 	public Recurring(int _id, String label, int minutes, int hours, int days,
 			int months, int years, boolean forDue, Calendar startDate,
-			Calendar endDate) {
+			Calendar endDate, boolean temporary) {
 		super(_id, label, minutes, hours, days, months, years, forDue,
-				startDate, endDate);
+				startDate, endDate, temporary);
 	}
 
 	public void save() {
@@ -59,9 +59,9 @@ public class Recurring extends RecurringBase {
 
 	public static Recurring newRecurring(String label, int minutes, int hours,
 			int days, int months, int years, boolean forDue,
-			Calendar startDate, Calendar endDate) {
+			Calendar startDate, Calendar endDate, boolean temporary) {
 		Recurring r = new Recurring(0, label, minutes, hours, days, months,
-				years, forDue, startDate, endDate);
+				years, forDue, startDate, endDate, temporary);
 		return r.create();
 	}
 
@@ -104,7 +104,7 @@ public class Recurring extends RecurringBase {
 		}
 		Cursor cursor = database.query(TABLE, allColumns, "minutes=" + minutes
 				+ " and hours=" + hours + " and days=" + days + " and months="
-				+ month + " and years=" + years+cal, null, null, null, null);
+				+ month + " and years=" + years + cal, null, null, null, null);
 		cursor.moveToFirst();
 		if (cursor.getCount() != 0) {
 			Recurring r = cursorToRecurring(cursor);
@@ -130,6 +130,11 @@ public class Recurring extends RecurringBase {
 		}
 		cursor.close();
 		return null;
+	}
+
+	public static void destroyTemporary(int recurrenceId) {
+		Log.e("Blubb","destroy: " + recurrenceId);
+		database.delete(TABLE, "temporary=1 AND _id=" + recurrenceId, null);
 	}
 
 	public void destroy() {
@@ -174,7 +179,7 @@ public class Recurring extends RecurringBase {
 		}
 		return new Recurring(c.getInt(i++), c.getString(i++), c.getInt(i++),
 				c.getInt(i++), c.getInt(i++), c.getInt(i++), c.getInt(i++),
-				c.getInt(i++) == 1, start, end);
+				c.getInt(i++) == 1, start, end, c.getInt(++i) == 1);
 	}
 
 	public Calendar addRecurring(Calendar c) {
@@ -198,9 +203,23 @@ public class Recurring extends RecurringBase {
 		return c;
 	}
 
-	public static List<Pair<Integer, String>> getForDialog(boolean due) {
+	public static List<Pair<Integer, String>> getForDialog(boolean isDue,
+			Task task) {
+		String where = "temporary=0";
+		if (isDue) {
+			where += " AND for_due=1";
+		}
+		if (task != null) {
+			int id = -1;
+			if (isDue)
+				id = task.getRecurrenceId();
+			else
+				id = task.getRecurrenceReminderId();
+			if (id > -1)
+				where += " OR _id=" + id;
+		}
 		Cursor c = database.query(TABLE, new String[] { "_id", "label" },
-				due ? "for_due=1" : "", null, null, null, null);
+				where, null, null, null, null);
 		List<Pair<Integer, String>> ret = new ArrayList<Pair<Integer, String>>();
 		c.moveToFirst();
 		while (!c.isAfterLast()) {

@@ -729,7 +729,7 @@ public class SpecialListSettings implements OnPreferenceChangeListener {
 
 					}
 				}
-				final DueDialog dueDialog = new DueDialog(ctx);
+				final DueDialog dueDialog = new DueDialog(ctx,false);
 				dueDialog.setTitle(ctx.getString(R.string.select_by));
 				dueDialog.setValue(val, day);
 				dueDialog.setNegativeButton(android.R.string.cancel,

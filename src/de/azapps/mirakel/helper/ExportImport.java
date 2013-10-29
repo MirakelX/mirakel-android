@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
@@ -28,10 +27,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -40,6 +35,11 @@ import android.preference.PreferenceManager;
 import android.util.Pair;
 import android.util.SparseIntArray;
 import android.widget.Toast;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -411,28 +411,28 @@ public class ExportImport {
 					if (r == null) {
 						r = Recurring.newRecurring(
 								ctx.getString(R.string.daily), 0, 0, 1, 0, 0,
-								true, null, null);
+								true, null, null,false);
 					}
 				} else if (repeat.equals("TASK_REPEAT_WEEK")) {
 					r = Recurring.get(7, 0, 0);
 					if (r == null) {
 						r = Recurring.newRecurring(
 								ctx.getString(R.string.weekly), 0, 0, 7, 0, 0,
-								true, null, null);
+								true, null, null,false);
 					}
 				} else if (repeat.equals("TASK_REPEAT_MONTH")) {
 					r = Recurring.get(0, 1, 0);
 					if (r == null) {
 						r = Recurring.newRecurring(
 								ctx.getString(R.string.monthly), 0, 0, 0, 1, 0,
-								true, null, null);
+								true, null, null,false);
 					}
 				} else if (repeat.equals("TASK_REPEAT_YEAR")) {
 					r = Recurring.get(0, 0, 1);
 					if (r == null) {
 						r = Recurring.newRecurring(
 								ctx.getString(R.string.yearly), 0, 0, 0, 0, 1,
-								true, null, null);
+								true, null, null,false);
 					}
 				}
 				if(r!=null){
