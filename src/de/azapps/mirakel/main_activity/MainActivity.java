@@ -378,13 +378,17 @@ public class MainActivity extends ActionBarActivity implements
 		updateShare();
 
 	}
-	
-	public void updateShare(){
-		if(menu!=null&&menu.findItem(R.id.share_list)!=null&&currentList.countTasks()==0){
+
+	public void updateShare() {
+		if (menu != null && menu.findItem(R.id.share_list) != null
+				&& currentList.countTasks() == 0) {
 			menu.findItem(R.id.share_list).setVisible(false);
-		}else if(currentPosition==TASKS_FRAGMENT&&menu!=null&&menu.findItem(R.id.share_list)==null&&currentList.countTasks()>0){
+		} else if (currentPosition == TASKS_FRAGMENT && menu != null
+				&& menu.findItem(R.id.share_list) == null
+				&& currentList.countTasks() > 0) {
 			loadMenu(TASKS_FRAGMENT);
-		}else if(menu!=null&&menu.findItem(R.id.share_list)!=null&&currentList.countTasks()>0){
+		} else if (menu != null && menu.findItem(R.id.share_list) != null
+				&& currentList.countTasks() > 0) {
 			menu.findItem(R.id.share_list).setVisible(true);
 		}
 	}
@@ -872,9 +876,19 @@ public class MainActivity extends ActionBarActivity implements
 						 * 
 						 * 3: Set the currentList to the old List
 						 */
-						setCurrentList(getCurrentList());
-
-						getListFragment().update();
+						if (currentPosition == TASK_FRAGMENT) {
+							Task task = tasks.get(0);
+							if (task == null) {
+								// What the hell?
+								Log.wtf(TAG, "Task vanished");
+							} else {
+								setCurrentList(task.getList());
+								setCurrentTask(task,true);
+							}
+						} else {
+							setCurrentList(getCurrentList());
+							getListFragment().update();
+						}
 						taskMoveDialog.dismiss();
 					}
 				});
