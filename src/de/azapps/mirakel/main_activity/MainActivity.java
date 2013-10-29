@@ -65,6 +65,7 @@ import de.azapps.mirakel.helper.ChangeLog;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SearchList;
@@ -265,6 +266,9 @@ public class MainActivity extends ActionBarActivity implements
 			}
 			ReminderAlarm.updateAlarms(this);
 			break;
+		case R.id.mark_as_subtask:
+			TaskDialogHelpers.handleSubtask(this, currentTask, null, true);
+			break;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -282,6 +286,9 @@ public class MainActivity extends ActionBarActivity implements
 		// tab
 		// selected
 		super.onSaveInstanceState(outState);
+	}
+	public void setSkipSwipe(){
+		skipSwipe=true;
 	}
 
 	@Override
@@ -481,10 +488,10 @@ public class MainActivity extends ActionBarActivity implements
 		if(closeOnBack){
 			super.onBackPressed();
 		}
-		if (goBackTo.size() > 0) {
+		if (goBackTo.size() > 0&&currentPosition==TASK_FRAGMENT) {
 			Task goBack = goBackTo.pop();
 			setCurrentList(goBack.getList(), null, false, false);
-			setCurrentTask(goBack, true, false);
+			setCurrentTask(goBack, false, false);
 			return;
 		}
 		if (fromShared) {

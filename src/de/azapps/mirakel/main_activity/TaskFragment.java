@@ -107,9 +107,10 @@ public class TaskFragment extends Fragment {
 							.get(adapter.getData().get(position).second);
 					main.setGoBackTo(adapter.getTask());
 					if (t.getList().getId() != main.getCurrentList().getId()) {
+						main.setSkipSwipe();
 						main.setCurrentList(t.getList(), null, false, false);
 					}
-					main.setCurrentTask(t, true, false);
+					main.setCurrentTask(t, false, false);
 				}
 
 			}
