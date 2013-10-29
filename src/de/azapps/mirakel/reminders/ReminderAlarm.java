@@ -145,11 +145,11 @@ public class ReminderAlarm extends BroadcastReceiver {
 				.setSound(
 						RingtoneManager
 								.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-				.addAction(icon,
+				.addAction(R.drawable.ic_checkmark_holo_light,
 						context.getString(R.string.reminder_notification_done),
 						pDoneIntent)
 				.addAction(
-						icon,
+						android.R.drawable.ic_menu_close_clear_cancel,
 						context.getString(R.string.reminder_notification_later),
 						pLaterIntent);
 
