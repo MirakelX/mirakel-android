@@ -304,6 +304,8 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	public void onPageSelected(int position) {
+		if(getTasksFragment()==null)
+			return;
 		getTasksFragment().closeActionMode();
 		getTaskFragment().closeActionMode();
 		if (preferences.getBoolean("lockDrawerInTaskFragment", false)
@@ -606,6 +608,7 @@ public class MainActivity extends ActionBarActivity implements
 				skipSwipe = true;
 				setCurrentList(task.getList());
 				setCurrentTask(task, true);
+				mViewPager.setCurrentItem(TASK_FRAGMENT, false);
 			} else {
 				Log.d(TAG, "task null");
 			}
