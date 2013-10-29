@@ -99,7 +99,7 @@ public class DateTimePicker extends RelativeLayout implements
 																				// date
 																				// picker
 		if (darkTheme)
-			((Button) findViewById(R.id.SwitchToTime))
+			((Button) findViewById(R.id.SwitchToDate))
 					.setTextColor(getResources().getColor(R.color.White));
 		// Populate ViewSwitcher
 		viewSwitcher.addView(datePickerView, 0);
@@ -134,15 +134,15 @@ public class DateTimePicker extends RelativeLayout implements
 	// Handle button clicks
 	public void onClick(View v) {
 		if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB)
-			((Button) v).setTextColor(getResources().getColor(R.color.Grey));
+			((Button) v).setTextColor(getResources().getColor(
+					darkTheme ? R.color.White : R.color.Black));
 		switch (v.getId()) {
 		case R.id.SwitchToDate:
 			v.setEnabled(false);
 			findViewById(R.id.SwitchToTime).setEnabled(true);
 			if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB)
 				((Button) findViewById(R.id.SwitchToTime))
-						.setTextColor(getResources().getColor(
-								darkTheme ? R.color.White : R.color.Black));
+						.setTextColor(getResources().getColor(R.color.Grey));
 			viewSwitcher.showPrevious();
 			break;
 
@@ -151,8 +151,7 @@ public class DateTimePicker extends RelativeLayout implements
 			findViewById(R.id.SwitchToDate).setEnabled(true);
 			if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB)
 				((Button) findViewById(R.id.SwitchToDate))
-						.setTextColor(getResources().getColor(
-								darkTheme ? R.color.White : R.color.Black));
+						.setTextColor(getResources().getColor(R.color.Grey));
 			viewSwitcher.showNext();
 			break;
 		}
