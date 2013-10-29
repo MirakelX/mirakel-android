@@ -25,6 +25,7 @@
     android:orientation="vertical" >
 
     <LinearLayout
+        android:id="@+id/subtask_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 

@@ -78,6 +78,7 @@
     <string name="task_name">Task Name:</string>
     <string name="no_loop">Cannot create Loops</string>
     <string name="set_due">Set Due</string>
+    <string name="as_subtask">as subtask</string>
 
     <string-array name="task_sorting_items">
         <item>Default</item>

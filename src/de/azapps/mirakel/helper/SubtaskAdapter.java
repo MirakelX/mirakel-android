@@ -18,14 +18,16 @@ public class SubtaskAdapter extends ArrayAdapter<Task> {
 	private Context context;
 	private boolean[] checked;
 	private Task task;
+	private boolean asSubtask;
 
 	public SubtaskAdapter(Context context, int textViewResourceId,
-			List<Task> objects, Task task) {
+			List<Task> objects, Task task, boolean asSubtask) {
 		super(context, textViewResourceId, objects);
 		this.data = objects;
 		this.context = context;
 		this.task = task;
 		checked = new boolean[data.size()];
+		this.asSubtask=asSubtask;
 	}
 
 	@Override
@@ -35,8 +37,15 @@ public class SubtaskAdapter extends ArrayAdapter<Task> {
 
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
+		if (position >= data.size()) {
+			return new View(context);
+		}
 		CheckBox c = new CheckBox(context);
-		checked[position] = data.get(position).isSubtaskOf(task);
+		if(!asSubtask){
+			checked[position] = data.get(position).isSubtaskOf(task);
+		}else{
+			checked[position] = task.isSubtaskOf(data.get(position));
+		}
 		c.setChecked(checked[position]);
 		c.setText(data.get(position).getName());
 		c.setOnCheckedChangeListener(new OnCheckedChangeListener() {

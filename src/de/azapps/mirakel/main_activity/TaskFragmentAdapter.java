@@ -205,7 +205,7 @@ public class TaskFragmentAdapter extends
 				action = new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						TaskDialogHelpers.handleSubtask(context, task, adapter);
+						TaskDialogHelpers.handleSubtask(context, task, adapter,false);
 					}
 				};
 				break;
