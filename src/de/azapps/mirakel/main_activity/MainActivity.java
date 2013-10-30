@@ -687,7 +687,16 @@ public class MainActivity extends ActionBarActivity implements
 			if (getTasksFragment() != null) {
 				getTasksFragment().focusNew(true);
 			} else {
-				Log.w(TAG, "tasksfragment==null");
+				mViewPager.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						if(getTasksFragment()!=null){
+							getTasksFragment().focusNew(true);
+						}else{
+							Log.wtf(TAG, "Tasksfragment null");
+						}						
+					}
+				}, 10);
 			}
 
 		} else {
@@ -1189,6 +1198,7 @@ public class MainActivity extends ActionBarActivity implements
 
 	public TasksFragment getTasksFragment() {
 		if (mPagerAdapter == null) {
+			Log.i(TAG,"pageadapter null");
 			return null;
 		}
 		Fragment f = this.getSupportFragmentManager().findFragmentByTag(
