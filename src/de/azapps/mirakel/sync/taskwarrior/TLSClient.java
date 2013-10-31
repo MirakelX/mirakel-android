@@ -16,6 +16,8 @@ import java.security.KeyFactory;
 import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.SecureRandom;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -24,10 +26,13 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Scanner;
 
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 
-import org.apache.http.conn.ssl.SSLSocketFactory;
-
+import android.os.Build;
 import android.util.Base64;
 import de.azapps.mirakel.helper.Log;
 
@@ -38,7 +43,7 @@ public class TLSClient {
 	// private gnutls_certificate_credentials_t _credentials;
 	// private gnutls_session_t _session;
 	private SSLSocket _socket;
-	private SSLSocketFactory sslFact;
+	private javax.net.ssl.SSLSocketFactory sslFact;
 	private InputStream in;
 	private OutputStream out;
 
@@ -87,7 +92,6 @@ public class TLSClient {
 		return Base64.decode(tokens[0], Base64.NO_PADDING);
 	}
 
-	@SuppressWarnings("unused")
 	private static RSAPrivateKey generatePrivateKeyFromPEM(byte[] keyBytes) {
 		keyBytes = parseDERFromPEM(keyBytes, "-----BEGIN RSA PRIVATE KEY-----",
 				"-----END RSA PRIVATE KEY-----");
@@ -156,16 +160,34 @@ public class TLSClient {
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////
-	public void init(final File root, final File user) {
+	public void init(final File root, final File user, final File user_key) {
 		Log.i(TAG, "init");
 		try {
 			X509Certificate ROOT = generateCertificateFromPEM(fileToBytes(root));
-			X509Certificate USER = generateCertificateFromPEM(fileToBytes(user));
+			X509Certificate USER_CERT = generateCertificateFromPEM(fileToBytes(user));
+			RSAPrivateKey USER_KEY = generatePrivateKeyFromPEM(fileToBytes(user_key));
 			KeyStore trusted = KeyStore.getInstance(KeyStore.getDefaultType());
 			trusted.load(null);
 			trusted.setCertificateEntry("taskwarrior-ROOT", ROOT);
-			trusted.setCertificateEntry("taskwarrior-USER", USER);
-			sslFact = new SSLSocketFactory(trusted);
+			trusted.setCertificateEntry("taskwarrior-USER", USER_CERT);
+			Certificate[] chain = { USER_CERT, ROOT };
+			KeyManagerFactory keyManagerFactory = KeyManagerFactory
+					.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+			//Hack to get it working on android 2.2
+			String pwd="secret";
+			trusted.setEntry("user", new KeyStore.PrivateKeyEntry(USER_KEY,
+					chain), new KeyStore.PasswordProtection(pwd.toCharArray()));
+
+			keyManagerFactory.init(trusted, pwd.toCharArray());
+
+			SSLContext context = SSLContext.getInstance("TLS");
+			TrustManagerFactory tmf = TrustManagerFactory
+					.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+			tmf.init(trusted);
+			TrustManager[] trustManagers = tmf.getTrustManagers();
+			context.init(keyManagerFactory.getKeyManagers(), trustManagers,
+					new SecureRandom());
+			sslFact = context.getSocketFactory();
 		} catch (Exception e) {
 			throw new AssertionError(e);
 		}
@@ -173,7 +195,7 @@ public class TLSClient {
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////
-	public void connect(String host, final int port) throws IOException {
+	public void connect(String host, int port) throws IOException {
 		Log.i(TAG, "connect");
 		if (_socket != null) {
 			try {
@@ -185,8 +207,11 @@ public class TLSClient {
 		try {
 			Log.d(TAG, "connected to " + host + ":" + port);
 			_socket = (SSLSocket) sslFact.createSocket();
-			// _socket.setEnabledProtocols(new String[]{"TLSv1.2"});
+			 if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.JELLY_BEAN)
+				 _socket.setEnabledProtocols(new String[]{"TLSv1.2"});
 			_socket.setUseClientMode(true);
+			_socket.setEnableSessionCreation(true);
+			_socket.setNeedClientAuth(true);
 			_socket.setTcpNoDelay(true);
 			_socket.connect(new InetSocketAddress(host, port));
 			_socket.startHandshake();
@@ -200,16 +225,10 @@ public class TLSClient {
 			Log.e(TAG, "Cannot connect to Host");
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.e(TAG, "IO Error");
 		}
 		throw new IOException();
 	}
-
-	// //////////////////////////////////////////////////////////////////////////////
-	// public void bye() {
-	// _socket.gnutls_bye(_session, GNUTLS_SHUT_RDWR);
-	// }
 
 	// //////////////////////////////////////////////////////////////////////////////
 	public void send(String data) {
@@ -220,11 +239,6 @@ public class TLSClient {
 			return;
 		}
 		try {
-			// long l=data.length();
-			// TODO write length to first 4 bytes
-			// data=(l>>>24)+""+(l>>>16)+""+(l>>>8)+""+l+data;
-			// data="XXXX"+data;
-			// out.write(data.getBytes());
 			dos.writeInt(data.getBytes().length);
 			dos.write(data.getBytes());
 		} catch (IOException e) {
@@ -241,7 +255,7 @@ public class TLSClient {
 
 	// //////////////////////////////////////////////////////////////////////////////
 	public String recv() {
-		Log.i(TAG, "reveive data to " + _socket.getLocalAddress() + ":"
+		Log.i(TAG, "reveive data from " + _socket.getLocalAddress() + ":"
 				+ _socket.getLocalPort());
 		if (!_socket.isConnected()) {
 			Log.e(TAG, "not connected");
@@ -249,24 +263,16 @@ public class TLSClient {
 		}
 		try {
 			byte[] header = new byte[4];
-
 			in.read(header);
-			long expected = (unsignedToBytes(header[0]) << 24)
-					| (unsignedToBytes(header[1]) << 16)
-					| (unsignedToBytes(header[2]) << 8)
-					| unsignedToBytes(header[3]);
-			// TODO remove cast
-			//byte[] data = new byte[(int) expected];
-			//in.read(data);
-			Scanner s=new Scanner(in).useDelimiter("\\A");
+			Scanner s = new Scanner(in).useDelimiter("\\A");
 			return s.hasNext() ? s.next() : "";
-			//return new String(data);
 		} catch (IOException e) {
 			Log.e(TAG, "cannot read Inputstream");
 		}
 		return null;
 	}
 
+	@SuppressWarnings("unused")
 	private static int unsignedToBytes(byte b) {
 		return b & 0xFF;
 	}

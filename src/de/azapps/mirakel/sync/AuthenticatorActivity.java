@@ -438,12 +438,17 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				Log.d(TAG, "server: " + t[0].replace("\n", ""));
 				b.putString(SyncAdapter.BUNDLE_SERVER_URL,
 						t[0].replace("\n", ""));
-
-				t = t[1].split("ca.cert:\n");
-				Log.d(TAG, "client: " + t[0].replace("\n", ""));
+				t = t[1].split("Client.key:\n");
+				Log.d(TAG, "client cert: " + t[0].replace("\n", ""));
 
 				FileUtils.writeToFile(
 						new File(TaskWarriorSync.CLIENT_CERT_FILE), t[0]);
+
+				t = t[1].split("ca.cert:\n");
+				Log.d(TAG, "client key: " + t[0].replace("\n", ""));
+
+				FileUtils.writeToFile(
+						new File(TaskWarriorSync.CLIENT_KEY_FILE), t[0]);
 				Log.d(TAG, "ca: " + t[1].replace("\n", ""));
 				FileUtils.writeToFile(new File(TaskWarriorSync.CA_FILE), t[1]);
 				mAccountManager.addAccountExplicitly(account, pwd, b);

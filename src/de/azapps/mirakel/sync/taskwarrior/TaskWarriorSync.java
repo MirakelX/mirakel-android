@@ -32,19 +32,22 @@ public class TaskWarriorSync {
 	public static final String CA_FILE = Mirakel.MIRAKEL_DIR + "ca.cert.pem";
 	public static final String CLIENT_CERT_FILE = Mirakel.MIRAKEL_DIR
 			+ "client.cert.pem";
+	public static final String CLIENT_KEY_FILE = Mirakel.MIRAKEL_DIR
+			+ "client.key.pem";
 	private static final String TAG = "TaskWarroirSync";
 	private Context mContext;
 
 	// Outgoing.
-	static int _debug_level = 0;
-	static int _limit = (1024 * 1024);
-	static String _host = "localhost";
-	static int _port = 6544;
-	static String _org = "";
-	static String _user = "";
-	static String _key = "";
-	static File root;
-	static File user_ca;
+	// private static int _debug_level = 0;
+	// private static int _limit = (1024 * 1024);
+	private static String _host = "localhost";
+	private static int _port = 6544;
+	private static String _org = "";
+	private static String _user = "";
+	private static String _key = "";
+	private static File root;
+	private static File user_ca;
+	private static File user_key;
 	private AccountManager accountManager;
 	private Account account;
 	private HashMap<String, String[]> dependencies;
@@ -168,7 +171,7 @@ public class TaskWarriorSync {
 		longInfo(sync.getPayload());
 
 		TLSClient client = new TLSClient();
-		client.init(root, user_ca);
+		client.init(root, user_ca, user_key);
 		try {
 			client.connect(_host, _port);
 		} catch (IOException e) {
@@ -313,18 +316,12 @@ public class TaskWarriorSync {
 			error("key", 1376235890);
 		}
 
-		File root, user;
-		// TODO FIXIT!!!
-		if (accountManager.getUserData(account, SyncAdapter.BUNDLE_CERT) == null) {
-			root = new File(CA_FILE);
-			user = new File(CLIENT_CERT_FILE);
-		} else {
-			// TODO Fix this
-			root = null;
-			user = null;
-		}
-		if (!root.exists() || !root.canRead() || !user.exists()
-				|| !user.canRead()) {
+		File root = new File(CA_FILE);
+		File user_cert = new File(CLIENT_CERT_FILE);
+		File user_key = new File(CLIENT_KEY_FILE);
+		if (!root.exists() || !root.canRead() || !user_cert.exists()
+				|| !user_cert.canRead() || !user_key.exists()
+				|| !user_key.canRead()) {
 			error("cert", 1376235891);
 		}
 		_host = srv[0];
@@ -333,7 +330,8 @@ public class TaskWarriorSync {
 		_org = accountManager.getUserData(account, SyncAdapter.BUNDLE_ORG);
 		_key = accountManager.getPassword(account);
 		TaskWarriorSync.root = root;
-		TaskWarriorSync.user_ca = user;
+		TaskWarriorSync.user_ca = user_cert;
+		TaskWarriorSync.user_key = user_key;
 	}
 
 	/**
