@@ -492,6 +492,7 @@ public class Task extends TaskBase {
 			cursor.close();
 			return t;
 		}
+		cursor.close();
 		return null;
 
 	}
