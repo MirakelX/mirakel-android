@@ -90,15 +90,15 @@ public class RecurringSettings {
 		recurring_month.setValue(recurring.getMonths());
 		recurring_year.setValue(recurring.getYears());
 
-		setSummary(recurring_day, ctx.getString(R.string.day),
+		setSummary(recurring_day, R.plurals.every_days,
 				recurring.getDays());
-		setSummary(recurring_month, ctx.getString(R.string.month),
+		setSummary(recurring_month, R.plurals.every_months,
 				recurring.getMonths());
-		setSummary(recurring_year, ctx.getString(R.string.year),
+		setSummary(recurring_year, R.plurals.every_years,
 				recurring.getYears());
-		setSummary(recurring_hour, ctx.getString(R.string.hour),
+		setSummary(recurring_hour, R.plurals.every_hours,
 				recurring.getHours());
-		setSummary(recurring_minute, ctx.getString(R.string.minute),
+		setSummary(recurring_minute, R.plurals.every_minutes,
 				recurring.getMinutes());
 		hideForReminder(recurring.isForDue(), recurring_minute, recurring_hour);
 
@@ -113,7 +113,7 @@ public class RecurringSettings {
 					public boolean onPreferenceChange(Preference preference,
 							Object newValue) {
 						recurring.setDays(recurring_day.getValue());
-						setSummary(recurring_day, ctx.getString(R.string.day),
+						setSummary(recurring_day, R.plurals.every_days,
 								recurring.getDays());
 						recurring.save();
 						return false;
@@ -128,7 +128,7 @@ public class RecurringSettings {
 						Log.d(TAG, "change");
 						recurring.setMonths(recurring_month.getValue());
 						setSummary(recurring_month,
-								ctx.getString(R.string.month),
+								R.plurals.every_months,
 								recurring.getMonths());
 						recurring.save();
 						return false;
@@ -142,7 +142,7 @@ public class RecurringSettings {
 							Object newValue) {
 						recurring.setYears(recurring_year.getValue());
 						setSummary(recurring_year,
-								ctx.getString(R.string.year),
+								R.plurals.every_years,
 								recurring.getYears());
 						recurring.save();
 						return false;
@@ -156,7 +156,7 @@ public class RecurringSettings {
 							Object newValue) {
 						recurring.setHours(recurring_hour.getValue());
 						setSummary(recurring_hour,
-								ctx.getString(R.string.hour),
+								R.plurals.every_hours,
 								recurring.getHours());
 						recurring.save();
 						return false;
@@ -170,7 +170,7 @@ public class RecurringSettings {
 							Object newValue) {
 						recurring.setMinutes(recurring_minute.getValue());
 						setSummary(recurring_minute,
-								ctx.getString(R.string.minute),
+								R.plurals.every_minutes,
 								recurring.getMinutes());
 						recurring.save();
 						return false;
@@ -315,10 +315,9 @@ public class RecurringSettings {
 
 	}
 
-	private void setSummary(NumPickerPref pref, String string, int val) {
-		String summary = ctx.getString(R.string.recurring_summary,
-				val == 1 ? "" : val + ". ", string);
-		if (val == 0) {
+	private void setSummary(NumPickerPref pref, int id, int val) {
+		String summary = ctx.getResources().getQuantityString(id, val, val)
+;		if (val == 0) {
 			summary = ctx.getString(R.string.nothing);
 		}
 		pref.setSummary(summary);
