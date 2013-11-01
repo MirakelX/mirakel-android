@@ -11,6 +11,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
+import android.os.Build;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -34,6 +35,9 @@ public class ColorPickerPref extends DialogPreference {
 
 	@Override
 	public View getView(View convertView, ViewGroup parent) {
+		if(Build.VERSION.SDK_INT<Build.VERSION_CODES.HONEYCOMB){
+			return new View(ctx);
+		}
 		View v = ((Activity) ctx).getLayoutInflater().inflate(
 				R.layout.color_pref, null);
 		colorBox = v.findViewById(R.id.color_box);

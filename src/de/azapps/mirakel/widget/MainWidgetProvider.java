@@ -68,11 +68,11 @@ public class MainWidgetProvider extends AppWidgetProvider {
 			boolean isDark = WidgetHelper.isDark(context, widgetId);
 			boolean isMinimalistic = WidgetHelper.isMinimalistic(context,
 					widgetId);
-//			android.os.Debug.waitForDebugger();
 			int layout_id;
 			if (isMinimalistic && !oldAPI) {
 				layout_id = R.layout.widget_minimal;
 			} else {
+				isMinimalistic = false;
 				layout_id = oldAPI ? R.layout.widget_main_layout_v10
 						: R.layout.widget_main;
 			}
@@ -87,16 +87,19 @@ public class MainWidgetProvider extends AppWidgetProvider {
 				widgetBackground = isDark ? R.drawable.widget_background_dark
 						: R.drawable.widget_background;
 			}
-			GradientDrawable drawable = (GradientDrawable) context
-					.getResources().getDrawable(widgetBackground);
-			drawable.setAlpha(WidgetHelper.getTransparency(context, widgetId));
-			Bitmap bitmap = Bitmap.createBitmap(500, 500, Config.ARGB_8888);
-			Canvas canvas = new Canvas(bitmap);
-			drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-			drawable.draw(canvas);
-			views.setImageViewBitmap(R.id.widget_background, bitmap);
-			views.setTextColor(R.id.widget_list_name,
-					WidgetHelper.getFontColor(context, widgetId));
+			if (!oldAPI) {
+				GradientDrawable drawable = (GradientDrawable) context
+						.getResources().getDrawable(widgetBackground);
+				drawable.setAlpha(WidgetHelper.getTransparency(context,
+						widgetId));
+				Bitmap bitmap = Bitmap.createBitmap(500, 500, Config.ARGB_8888);
+				Canvas canvas = new Canvas(bitmap);
+				drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+				drawable.draw(canvas);
+				views.setImageViewBitmap(R.id.widget_background, bitmap);
+				views.setTextColor(R.id.widget_list_name,
+						WidgetHelper.getFontColor(context, widgetId));
+			}
 			ListMirakel list = WidgetHelper.getList(context, widgetId);
 			if (list == null)
 				continue;
@@ -111,15 +114,17 @@ public class MainWidgetProvider extends AppWidgetProvider {
 					context, 0, settingsIntent, 0);
 			views.setOnClickPendingIntent(R.id.widget_preferences,
 					settingsPendingIntent);
-			views.setImageViewBitmap(
-					R.id.widget_preferences,
-					colorizeBitmap(
-							WidgetHelper.getFontColor(context, widgetId),
-							context.getResources().getDrawable(
-									R.drawable.ic_action_overflow), new int[] {
-									52, 52, 52 }, 3));
+			if (!oldAPI) {
+				views.setImageViewBitmap(
+						R.id.widget_preferences,
+						colorizeBitmap(
+								WidgetHelper.getFontColor(context, widgetId),
+								context.getResources().getDrawable(
+										R.drawable.ic_action_overflow),
+								new int[] { 52, 52, 52 }, 3));
+			}
 
-			if (!isMinimalistic) {
+			if (!isMinimalistic&&!oldAPI) {
 				views.setImageViewBitmap(
 						R.id.widget_add_task,
 						colorizeBitmap(
@@ -158,7 +163,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
 				intent.putExtra(EXTRA_WIDGET_ID, widgetId);
 				intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
 				views.setRemoteAdapter(R.id.widget_tasks_list, intent);
-				appWidgetManager.updateAppWidget(new int[]{widgetId}, views );
+				appWidgetManager.updateAppWidget(new int[] { widgetId }, views);
 				// Empty view
 				views.setEmptyView(R.id.widget_tasks_list, R.id.empty_view);
 
@@ -180,6 +185,12 @@ public class MainWidgetProvider extends AppWidgetProvider {
 				if (tasks.size() == 0) {
 					views.setViewVisibility(R.id.empty_view, View.VISIBLE);
 				} else {
+					boolean darkTheme =  WidgetHelper.isDark(context, widgetId);
+                    views.setInt(R.id.widget_main, "setBackgroundResource",
+                                    darkTheme ? R.drawable.widget_background_dark
+                                                    : R.drawable.widget_background);
+                    views.setTextColor(R.id.widget_list_name, context.getResources()
+                            .getColor(darkTheme ? R.color.White : R.color.Black));
 					views.setViewVisibility(R.id.empty_view, View.GONE);
 					int end = tasks.size() >= 7 ? 7 : tasks.size();
 					try {
@@ -246,19 +257,14 @@ public class MainWidgetProvider extends AppWidgetProvider {
 		Log.d(TAG, "" + intent.getAction());
 		if (intent.getAction().equals(
 				"android.appwidget.action.APPWIDGET_UPDATE")) {
-			Log.d(TAG, "update");
 			AppWidgetManager a = AppWidgetManager.getInstance(context);
 			for (int w : a.getAppWidgetIds(new ComponentName(context,
 					MainWidgetProvider.class))) {
-				Log.d(TAG, "update " + w);
-				a.notifyAppWidgetViewDataChanged(w, R.id.tasks_list);
+				if (!oldAPI)
+					a.notifyAppWidgetViewDataChanged(w, R.id.tasks_list);
 			}
-//			android.os.Debug.waitForDebugger();
 			onUpdate(context, a, a.getAppWidgetIds(new ComponentName(context,
 					MainWidgetProvider.class)));
-//			a.notifyAppWidgetViewDataChanged(
-//			a.getAppWidgetIds(new ComponentName(context,
-//					MainWidgetProvider.class)), R.id.tasks_list);
 		}
 		super.onReceive(context, intent);
 	}
