@@ -18,6 +18,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -348,7 +349,7 @@ public class TaskDialogHelpers {
 		optionEnabled = false;
 		newTask = true;
 		listId = SpecialList.firstSpecialSafe(ctx).getId();
-		EditText search = (EditText) v.findViewById(R.id.subtask_searchbox);
+		final EditText search = (EditText) v.findViewById(R.id.subtask_searchbox);
 		search.addTextChangedListener(new TextWatcher() {
 
 			@Override
@@ -385,6 +386,9 @@ public class TaskDialogHelpers {
 					wrapper.setVisibility(View.GONE);
 				} else {
 					wrapper.setVisibility(View.VISIBLE);
+					InputMethodManager imm = (InputMethodManager) ctx.getSystemService(
+						      Context.INPUT_METHOD_SERVICE);
+						imm.hideSoftInputFromWindow(search.getWindowToken(), 0);
 				}
 				optionEnabled = !optionEnabled;
 
