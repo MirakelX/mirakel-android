@@ -10,6 +10,7 @@ import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.Toast;
@@ -21,7 +22,7 @@ import de.azapps.mirakelandroid.R;
 
 public class WidgetHelper {
 	public static RemoteViews configureItem(RemoteViews rv, Task task,
-			Context context, int listId, boolean isMinimal,int widgetId) {
+			Context context, int listId, boolean isMinimal, int widgetId) {
 		Intent openIntent = new Intent(context, MainActivity.class);
 		openIntent.setAction(MainActivity.SHOW_TASK);
 		openIntent.putExtra(MainActivity.EXTRA_ID, task.getId());
@@ -42,8 +43,10 @@ public class WidgetHelper {
 			rv.setInt(R.id.tasks_row_priority, "setBackgroundColor",
 					Helpers.getPrioColor(task.getPriority(), context));
 		}
-		rv.setTextColor(R.id.tasks_row_name, WidgetHelper.getFontColor(context, widgetId));
-		rv.setTextColor(R.id.tasks_row_due, WidgetHelper.getFontColor(context, widgetId));
+		rv.setTextColor(R.id.tasks_row_name,
+				WidgetHelper.getFontColor(context, widgetId));
+		rv.setTextColor(R.id.tasks_row_due,
+				WidgetHelper.getFontColor(context, widgetId));
 		rv.setTextViewText(R.id.tasks_row_name, task.getName());
 		if (task.isDone()) {
 			rv.setTextColor(R.id.tasks_row_name, context.getResources()
@@ -57,6 +60,7 @@ public class WidgetHelper {
 			 */
 		}
 		if (!isMinimal) {
+
 			rv.setTextViewText(R.id.tasks_row_priority, task.getPriority() + "");
 			rv.setTextColor(R.id.tasks_row_priority, context.getResources()
 					.getColor(R.color.Black));
@@ -98,6 +102,10 @@ public class WidgetHelper {
 			} else {
 				rv.setViewVisibility(R.id.tasks_row_due, View.GONE);
 			}
+		}
+		if(Build.VERSION.SDK_INT<Build.VERSION_CODES.HONEYCOMB){
+			rv.setTextColor(R.id.tasks_row_name, context.getResources()
+                    .getColor(WidgetHelper.isDark(context, widgetId) ? R.color.White : R.color.Black));
 		}
 		return rv;
 	}
@@ -142,14 +150,15 @@ public class WidgetHelper {
 	public static boolean showDone(Context context, int widgetId) {
 		return getBoolean(context, widgetId, "showDone", false);
 	}
-	
+
 	public static int getFontColor(Context context, int widgetId) {
-		return getInt(context, widgetId, "widgetFontColor", context.getResources().getColor(android.R.color.white));
+		return getInt(context, widgetId, "widgetFontColor", context
+				.getResources().getColor(android.R.color.white));
 	}
+
 	public static int getTransparency(Context context, int widgetId) {
 		return getInt(context, widgetId, "widgetTransparency", 0);
 	}
-
 
 	public static ListMirakel getList(Context context, int widgetId) {
 
@@ -183,7 +192,7 @@ public class WidgetHelper {
 		editor.commit();
 
 	}
-	
+
 	public static void putInt(Context context, int widgetId, String key,
 			int value) {
 		Editor editor = getSettings(context).edit();
@@ -204,11 +213,13 @@ public class WidgetHelper {
 	public static void setDark(Context context, int widgetId, boolean dark) {
 		putBool(context, widgetId, "isDark", dark);
 	}
-	
+
 	public static void setFontColor(Context context, int widgetId, int color) {
 		putInt(context, widgetId, "widgetFontColor", color);
 	}
-	public static void setTransparency(Context context, int widgetId, int transparency) {
+
+	public static void setTransparency(Context context, int widgetId,
+			int transparency) {
 		putInt(context, widgetId, "widgetTransparency", transparency);
 	}
 }

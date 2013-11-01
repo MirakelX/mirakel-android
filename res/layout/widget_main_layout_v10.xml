@@ -17,63 +17,51 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:layout_margin="8dp"
+    android:orientation="vertical" >
 
-    <ImageView
-        android:id="@+id/widget_background"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="8dp"
-        android:scaleType="fitXY" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
 
-    <LinearLayout
-        android:id="@+id/widget_main"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="8dp"
-        android:orientation="vertical" >
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" >
-
-            <ImageButton
-                android:id="@+id/widget_preferences"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_alignParentRight="true"
-                android:background="@android:color/transparent"
-                android:contentDescription="@string/preferences"
-                android:src="@android:drawable/ic_menu_preferences" />
-
-            <TextView
-                android:id="@+id/widget_list_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:textColor="@color/Black"
-                android:textSize="32sp" />
-        </RelativeLayout>
-
-        <LinearLayout
-            android:id="@+id/widget_main_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
-        </LinearLayout>
+        <ImageButton
+            android:id="@+id/widget_preferences"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/preferences"
+            android:src="@android:drawable/ic_menu_preferences" />
 
         <TextView
-            android:id="@+id/empty_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="@string/empty_list"
+            android:id="@+id/widget_list_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
             android:textColor="@color/Black"
-            android:textSize="20sp"
-            android:visibility="gone" />
+            android:textSize="32sp" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/widget_main_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
     </LinearLayout>
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/empty_list"
+        android:textColor="@color/Black"
+        android:textSize="20sp"
+        android:visibility="gone" />
+
+</LinearLayout>
