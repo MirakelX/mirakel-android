@@ -35,6 +35,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.util.Log;
@@ -68,7 +69,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
 			boolean isDark = WidgetHelper.isDark(context, widgetId);
 			boolean isMinimalistic = WidgetHelper.isMinimalistic(context,
 					widgetId);
-//			android.os.Debug.waitForDebugger();
+			// android.os.Debug.waitForDebugger();
 			int layout_id;
 			if (isMinimalistic && !oldAPI) {
 				layout_id = R.layout.widget_minimal;
@@ -158,7 +159,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
 				intent.putExtra(EXTRA_WIDGET_ID, widgetId);
 				intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
 				views.setRemoteAdapter(R.id.widget_tasks_list, intent);
-				appWidgetManager.updateAppWidget(new int[]{widgetId}, views );
+				appWidgetManager.updateAppWidget(new int[] { widgetId }, views);
 				// Empty view
 				views.setEmptyView(R.id.widget_tasks_list, R.id.empty_view);
 
@@ -229,7 +230,8 @@ public class MainWidgetProvider extends AppWidgetProvider {
 		return Math.abs(Color.red(pixel) - FROM_COLOR[0]) < THRESHOLD
 				&& Math.abs(Color.green(pixel) - FROM_COLOR[1]) < THRESHOLD
 				&& Math.abs(Color.blue(pixel) - FROM_COLOR[2]) < THRESHOLD;
-	}
+	}@SuppressLint("NewApi")
+	
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -251,14 +253,19 @@ public class MainWidgetProvider extends AppWidgetProvider {
 			for (int w : a.getAppWidgetIds(new ComponentName(context,
 					MainWidgetProvider.class))) {
 				Log.d(TAG, "update " + w);
-				a.notifyAppWidgetViewDataChanged(w, R.id.tasks_list);
+				if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB) {
+					a.notifyAppWidgetViewDataChanged(w, R.id.tasks_list);
+				} else {
+					//FIXIT
+					//a.notifyAll();
+				}
 			}
-//			android.os.Debug.waitForDebugger();
+			// android.os.Debug.waitForDebugger();
 			onUpdate(context, a, a.getAppWidgetIds(new ComponentName(context,
 					MainWidgetProvider.class)));
-//			a.notifyAppWidgetViewDataChanged(
-//			a.getAppWidgetIds(new ComponentName(context,
-//					MainWidgetProvider.class)), R.id.tasks_list);
+			// a.notifyAppWidgetViewDataChanged(
+			// a.getAppWidgetIds(new ComponentName(context,
+			// MainWidgetProvider.class)), R.id.tasks_list);
 		}
 		super.onReceive(context, intent);
 	}

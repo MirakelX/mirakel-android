@@ -119,6 +119,8 @@
     <string name="importing">Importing</string>
     <string name="astrid_import_title">Select Astrid File</string>
     <string name="import_wrong_type">This is not a Mirakel-file!</string>
+    <string name="astrid_wait">Please wait…</string>
+    <string name="astrid_importing">Importing</string>
     <!-- Any.Do -->
     <string name="import_any_do_click_summary">Import from an Any.Do-file</string>
     <string name="import_any_do_click">Import from Any.Do</string>

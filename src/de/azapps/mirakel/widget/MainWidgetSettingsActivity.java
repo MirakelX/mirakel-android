@@ -61,6 +61,7 @@ public class MainWidgetSettingsActivity extends PreferenceActivity {
 		}
 	}
 
+	@SuppressLint("NewApi")
 	@Override
 	protected void onPause() {
 		super.onPause();
