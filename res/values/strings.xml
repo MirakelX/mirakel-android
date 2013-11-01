@@ -284,7 +284,7 @@ Device: %3$s\n]]>
 	<string name="minutly">Every Minute</string>
 	<string name="recurring">Recurrence</string>
 	<string name="label">Label</string>
-	<string name="forDue">Use it</string>
+	<string name="forDue">Use it for due</string>
 	
 	<string name="minute">Minute</string>
 	<string name="hour">Hour</string>

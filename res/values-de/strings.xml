@@ -180,7 +180,7 @@ Device: %3$s\n]]>
   <string name="minutly">Minütlich</string>
   <string name="recurring">Wiederkehrende Aufgaben</string>
   <string name="label">Bezeichnung</string>
-  <string name="forDue">Aktiviere Regel</string>
+  <string name="forDue">Bei Fälligkeitsdatum anzeigen</string>
   <string name="minute">Minute</string>
   <string name="hour">Stunde</string>
   <string name="day">Tag</string>
