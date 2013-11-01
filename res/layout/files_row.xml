@@ -24,6 +24,7 @@
     android:descendantFocusability="blocksDescendants"
     android:orientation="horizontal"
     android:paddingLeft="@dimen/task_padding"
+    android:paddingTop="7.5dp"
     android:paddingRight="@dimen/task_padding" >
 
     <ImageView
