@@ -107,6 +107,7 @@
     <string name="changelog_click">Changelog</string>
     <string name="settings_about">About</string>
     <string name="settings_help">Help</string>
+    <string name="settings_help_us">You can help us!</string>
     <string name="get_dashclock">Get Mirakel-Dashclock</string>
     <string name="get_dashclock_summary">The Mirakel-Extension for Dashclock</string>
 
