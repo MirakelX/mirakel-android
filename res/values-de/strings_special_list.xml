@@ -24,7 +24,9 @@
   <string name="select_by">Auswählen</string>
   <string name="done">Erledigte Aufgaben</string>
   <string name="undone">Unerledigte Aufgaben</string>
-  <string name="nothing">Keine Wiederholung</string>
+  <string name="recurrence_no">Keine Wiederholung</string>
+  <string name="recurrence_custom_title">Benutzerdefiniert</string>
+  <string name="recurrence_custom">Benutzerdefiniert</string>
   <string name="today">Heute</string>
   <string name="tomorrow">Morgen</string>
   <string name="reminder_set">Aufgaben mit Erinnerung</string>
@@ -34,6 +36,8 @@
   <string name="where_like_contain_text">Enthält</string>
   <string name="where_like_begin_text">Beginnt mit</string>
   <string name="where_like_end_text">Endet mit</string>
+  <string name="delete">Löschen</string>
+  <string name="nothing">Keine Wiederholung</string>
   <string-array name="special_list_def_date_picker">
     <item>Kein Datum</item>
     <item>Gestern</item>

@@ -159,17 +159,17 @@
     <!-- Language -->
     <string name="language">Language</string>
 
-    <string-array name="language_values">
+    <string-array name="language_values" translatable="false">
         <item>Default</item>
         <item>English</item>
-        <item>German</item>
-        <item>French</item>
-        <item>Russian</item>
-        <item>Spanish</item>
-        <item>Slovenian</item>
-        <item>Norwegian</item>
+        <item>Deutsch</item>
+        <item>Français</item>
+        <item>Русский</item>
+        <item>Español</item>
+        <item>Slovenščina</item>
+        <item>Norsk</item>
     </string-array>
-    <string-array name="language_keys">
+    <string-array name="language_keys" translatable="false">
         <item>-1</item>
         <item>en</item>
         <item>de</item>

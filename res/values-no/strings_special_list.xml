@@ -23,7 +23,6 @@
   <string name="select_by">Velg ved</string>
   <string name="done">Ferdige oppgaver</string>
   <string name="undone">Angrende oppgaver</string>
-  <string name="nothing">Ikke gjenta</string>
   <string name="today">I dag</string>
   <string name="tomorrow">I morgen</string>
   <string name="reminder_set">Påminnelse er angitt</string>
@@ -33,6 +32,7 @@
   <string name="where_like_contain_text">Inneholder</string>
   <string name="where_like_begin_text">Begynner med</string>
   <string name="where_like_end_text">Slutter med</string>
+  <string name="delete">Slett</string>
   <string-array name="special_list_def_date_picker">
     <item>Ingen dato</item>
     <item>I går</item>

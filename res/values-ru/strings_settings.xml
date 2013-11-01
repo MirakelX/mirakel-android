@@ -65,10 +65,9 @@
   <string name="import_astrid_click">Импорт из Astrid</string>
   <string name="astrid_unsuccess">Произошла ошибка при импорте из Астрид!</string>
   <string name="astrid_success">Все данные успешно импортированы!</string>
-  <string name="astrid_importing">Импортировать</string>
   <string name="astrid_import_title">Выберите Astrid-файл</string>
-  <string name="astrid_wait">Пожалуйста, подождите…</string>
   <string name="import_wrong_type">Это не Mirakel-файл!</string>
+  <string name="any_do_success">Все данные успешно импортированы!</string>
   <string name="highlightSelected_summary">Выделите списки/дела нажатием на них</string>
   <string name="highlightSelected">Выбранное выделить?</string>
   <string name="settings_date_format_relative">Показывать относительные даты</string>
@@ -103,7 +102,7 @@
   <string name="preferences_colorize">Цвета</string>
   <string name="preferences_colorize_tasks">Раскрасить дела</string>
   <string name="preferences_colorize_tasks_everywhere">Раскрасить дела везде</string>
-  <string name="preferences_colorize_tasks_everywhere_summary">…или только в определённых списках?</string>
+  <string name="preferences_colorize_tasks_everywhere_summary">...или только в определённых списках?</string>
   <string name="settings_semantics_title">Настройка семантики</string>
   <string name="settings_semantics_condition">Состояние</string>
   <string name="settings_semantics_actions">Действия</string>

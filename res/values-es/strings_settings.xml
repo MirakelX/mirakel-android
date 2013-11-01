@@ -13,6 +13,7 @@
   <string name="notifications_list_open">Open List</string>
   <string name="default_list">Lista predeterminada</string>
   <string name="notificationsShowDone">Configurar tareas realizadas</string>
+  <string name="reminder">Recordatorio</string>
   <string name="startup_title">Inicio de la aplicación</string>
   <string name="startup_show_lists">Mostrar todas las listas</string>
   <string name="startup_list">Seleccione lista</string>
@@ -36,17 +37,16 @@
   <string name="import_astrid_click">Importar desde Astrid</string>
   <string name="astrid_unsuccess">¡Hubo un error durante la importación desde Astrid!</string>
   <string name="astrid_success">¡Todos los datos importados con éxito!</string>
-  <string name="astrid_importing">Importando</string>
   <string name="astrid_import_title">Seleccione archivo Astrid</string>
-  <string name="astrid_wait">Por favor, espera…</string>
   <string name="import_wrong_type">¡Este no es un archivo de Mirakel!</string>
+  <string name="any_do_success">¡Todos los datos importados con éxito!</string>
   <string name="highlightSelected">Resaltar seleccionado</string>
   <string name="showDone">Mostrar tareas realizadas</string>
   <string name="dark_theme">Tema oscuro</string>
   <string name="kill_button">Cerrar por completo</string>
   <string name="kill_app">Cerrar la aplicación</string>
   <string name="kill_sure">¿¿¿Estás realmente seguro???</string>
-  <string name="kill_sure_message">Al cerrar la aplicación, no recibes ningún recordatorio! Por favor considera desactivar sólo la notificación (o no hacerla persistente, así se puede quitar.)</string>
+  <string name="kill_sure_message">Al cerrar la aplicación, no recibes ningun recordatorio! Por favor considera desactivar sólo la notificación (o no hacerla persistente, así se puede quitar.)</string>
   <string name="ui_settings_title">Interfaz de usuario</string>
   <string name="hide_keyboard">Ocultar teclado</string>
   <string name="undo_number">Number of Changes saved</string>
@@ -58,6 +58,7 @@
   <string name="delete_done_warning">Are you sure?</string>
   <string name="delete_done_warning_message">You can not undo this. Make a backup!</string>
   <string name="delete_done_success">Successfully deleted your done tasks.</string>
+  <string name="menu_delete">Eliminar</string>
   <string name="special_lists_title">Listas especiales</string>
   <string-array name="sync_frequencies">
     <item>5 min</item>

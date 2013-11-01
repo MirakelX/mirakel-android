@@ -61,10 +61,9 @@
   <string name="import_astrid_click">Importer fra Astrid</string>
   <string name="astrid_unsuccess">Det oppstod en feil ved importering fra Astrid!</string>
   <string name="astrid_success">Samtlige data importet suksessfullt!</string>
-  <string name="astrid_importing">Importerer</string>
   <string name="astrid_import_title">Velg Astrid fil</string>
-  <string name="astrid_wait">Vennligst vent …</string>
   <string name="import_wrong_type">Dette er ikke en Mirakel fil!</string>
+  <string name="any_do_success">Samtlige data importet suksessfullt!</string>
   <string name="highlightSelected_summary">Marker lister/oppgaver når du klikker dem</string>
   <string name="highlightSelected">Marker valgt</string>
   <string name="settings_date_format_relative">Vis relative datoer</string>
@@ -91,12 +90,13 @@
   <string name="delete_done_warning_message">Du kan ikke angre dette. Lag en sikkerhetskopi!</string>
   <string name="delete_done_success">Dine ferdige oppgaver er slettet.</string>
   <string name="menu_delete">Slett</string>
+  <string name="menu_color">Endre farge</string>
   <string name="howto_setup_server">Hvordan sette opp en server</string>
   <string name="special_lists_title">Spesiallister</string>
   <string name="preferences_colorize">Farger</string>
   <string name="preferences_colorize_tasks">Fargelegge oppgaver</string>
   <string name="preferences_colorize_tasks_everywhere">Fargelegge oppgaver overalt</string>
-  <string name="preferences_colorize_tasks_everywhere_summary">… eller bare i Spesiallister?</string>
+  <string name="preferences_colorize_tasks_everywhere_summary">... eller bare i Spesiallister?</string>
   <string name="settings_semantics_title">Konfigurere semantikk</string>
   <string name="settings_semantics_condition">Tilstand</string>
   <string name="settings_semantics_actions">Handlinger</string>

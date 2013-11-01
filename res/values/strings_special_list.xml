@@ -88,6 +88,6 @@
         <item>Months</item>
         <item>Years</item>
     </string-array>
-  <string name="nothing">Keine recurrence</string>
+  <string name="nothing">No recurrence</string>
 
 </resources>

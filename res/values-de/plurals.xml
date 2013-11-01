@@ -25,6 +25,14 @@
     <item quantity="one">Tag</item>
     <item quantity="other">Tage</item>
   </plurals>
+  <plurals name="due_minute">
+    <item quantity="one">Minute</item>
+    <item quantity="other">Minuten</item>
+  </plurals>
+  <plurals name="due_hour">
+    <item quantity="one">Stunde</item>
+    <item quantity="other">Stunden</item>
+  </plurals>
   <plurals name="due_month">
     <item quantity="one">Monat</item>
     <item quantity="other">Monate</item>
@@ -33,21 +41,41 @@
     <item quantity="one">Monat</item>
     <item quantity="other">Monate</item>
   </plurals>
+  <plurals name="every_months">
+    <item quantity="one">Jeden Monat</item>
+    <item quantity="other">Jeden %d. Monat</item>
+  </plurals>
   <plurals name="days">
     <item quantity="one">Tag</item>
     <item quantity="other">Tage</item>
+  </plurals>
+  <plurals name="every_days">
+    <item quantity="one">Jeden Tag</item>
+    <item quantity="other">Jeden %d. Tag</item>
   </plurals>
   <plurals name="years">
     <item quantity="one">Jahr</item>
     <item quantity="other">Jahre</item>
   </plurals>
+  <plurals name="every_years">
+    <item quantity="one">Jedes Jahr</item>
+    <item quantity="other">Jedes %d. Jahr</item>
+  </plurals>
   <plurals name="minutes">
     <item quantity="one">Minute</item>
     <item quantity="other">Minuten</item>
   </plurals>
+  <plurals name="every_minutes">
+    <item quantity="one">Jede Minute</item>
+    <item quantity="other">Alle %d Minuten</item>
+  </plurals>
   <plurals name="hours">
     <item quantity="one">Stunde</item>
     <item quantity="other">Stunden</item>
+  </plurals>
+  <plurals name="every_hours">
+    <item quantity="one">Jede Stunde</item>
+    <item quantity="other">Alle %d Stunden</item>
   </plurals>
   <plurals name="subtasks">
     <item quantity="one">Eine Unteraufgabe</item>

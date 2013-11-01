@@ -18,7 +18,6 @@
   <string name="special_list_where_due_title_text">vencimiento</string>
   <string name="empty">Irrelevante</string>
   <string name="select_by">Seleccionar por</string>
-  <string name="nothing">No repita</string>
   <string name="today">Hoy</string>
   <string name="tomorrow">mañana</string>
   <string name="reminder_set">Recordatorio establecido</string>
@@ -27,6 +26,7 @@
   <string name="where_like_contain_text">Contiene</string>
   <string name="where_like_begin_text">Comienza con</string>
   <string name="where_like_end_text">Termina en</string>
+  <string name="delete">Eliminar</string>
   <string-array name="special_list_def_date_picker">
     <item>Sin fecha</item>
     <item>Ayer</item>
