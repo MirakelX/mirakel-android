@@ -34,6 +34,7 @@
   <string name="set_time">Fijar hora</string>
   <string name="task_set_reminder">Fijar recordatorio</string>
   <string name="action_undo">Undo the last Change</string>
+  <string name="new_task">Nueva tarea</string>
   <string name="dialog_move">Mover tarea</string>
   <string name="list_title">Listas</string>
   <string name="list_menu_new_list">Nueva lista</string>
@@ -44,6 +45,7 @@
   <string name="list_week">Esta semana</string>
   <string name="list_overdue">Atrasado</string>
   <string name="menu_settings">Configuración</string>
+  <string name="menu_move_task">Mover tarea</string>
   <string name="offical_server_url">https://mirakel.azapps.de</string>
   <string name="title_settings">Configuración</string>
   <string name="empty_list">No hay tareas</string>
@@ -78,6 +80,7 @@
   <string name="login_activity_loginfail_text_pwmissing">Escriba la contraseña para esta cuenta.</string>
   <string name="login_activity_newaccount_text">Ingresa a tu cuenta de %s. </string>
   <string name="ui_activity_title">Iniciar sesión</string>
+  <string name="changelog_full_title">Registro de cambios</string>
   <string name="changelog_title">¿Que hay de nuevo?</string>
   <string name="changelog_ok_button">OK</string>
   <string name="changelog_show_full">más…</string>
@@ -107,6 +110,7 @@ Device: %3$s\n]]>
   <string name="backup_export_error">Hubo un error al importar la base de datos</string>
   <string name="backup_export_ok">Exportado a %s</string>
   <string name="change_content">Cambiar contenido</string>
+  <string name="content">Contenido</string>
   <string name="task_has_content">La tarea tiene contenido</string>
   <string name="help_description">Hay tres partes principales: en el lado izquierdo puedes ver todas las listas, en el centro se pueden ver todas las tareas de una lista y en el lado derecho se puede ver una tarea. Cambias entre las partes deslizando o haciendo clic.</string>
   <string name="permission_read_lbl">Leer datos de Mirakel</string>
@@ -119,6 +123,10 @@ Device: %3$s\n]]>
   <string name="crash_dialog_comment_prompt">Puede añadir sus comentarios sobre el problema aquí abajo:</string>
   <string name="crash_dialog_ok_toast">¡Gracias!</string>
   <string name="message_from_server">El servidor te quiere decir que: %s</string>
+  <string name="edit">Editar</string>
+  <string name="day">Día</string>
+  <string name="month">Mes</string>
+  <string name="year">Año</string>
   <string-array name="task_sorting_items">
     <item>Predeterminado</item>
     <item>Fecha límite</item>
@@ -137,9 +145,9 @@ Device: %3$s\n]]>
     <item>Eliminar</item>
   </string-array>
   <string-array name="list_actions_items">
-    <item>Select Color</item>
+    <item>Select color</item>
     <item>Rename</item>
-    <item>Delete</item>
+    <item>Eliminar</item>
     <item>Share</item>
   </string-array>
   <string-array name="server_typs">

@@ -100,6 +100,11 @@ public class SettingsActivity extends PreferenceActivity {
 				} else if (i.getAction().equals(
 						"de.azapps.mirakel.preferences.HELP")) {
 					Helpers.openHelp(this);
+					finish();
+				} else if (i.getAction().equals(
+						"de.azapps.mirakel.preferences.HELP_US")) {
+					Helpers.openHelpUs(this);
+					finish();
 				} else if (i.getAction().equals(
 						"de.azapps.mirakel.preferences.MISC")) {
 					addPreferencesFromResource(R.xml.settings_misc);

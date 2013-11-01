@@ -30,7 +30,7 @@
   <string name="task_no_content">Notiz hinzufügen</string>
   <string name="task_change_prio_title">Priorität ändern</string>
   <string name="task_change_prio_cont">Priorität</string>
-  <string name="task_delete_content">Bist du sicher, dass Sie %s löschen möchten?</string>
+  <string name="task_delete_content">Bist du sicher, dass du %s löschen möchten?</string>
   <string name="task_menu_sorting">Sortiere Aufgaben</string>
   <string name="task_sorting_title">Sortiere nach</string>
   <string name="task_empty">Keine Aufgabe ausgewählt…</string>
@@ -39,6 +39,7 @@
   <string name="task_set_reminder">Erinnerungen einstellen</string>
   <string name="action_undo">Rückgängig</string>
   <string name="subtasks">Unteraufgaben</string>
+  <string name="add_subtasks">Unteraufgabe hinzufügen…</string>
   <string name="remove_files">Lösche Dateien</string>
   <string name="remove_files_summary">Möchtest du %1$s aus %2$s entfernen?</string>
   <string name="add_subtask">Unteraufgabe hinzufügen</string>
@@ -48,11 +49,12 @@
   <string name="subtask_reminder">Aufgabe mit Erinnerung?</string>
   <string name="subtask_content">Aufgabe mit Notiz?</string>
   <string name="add">Hinzufügen</string>
-  <string name="new_task">Neue Aufgabe</string>
-  <string name="add_existing">Vorhandene Aufgabe hinzufügen</string>
+  <string name="new_task">Neu</string>
+  <string name="add_existing">Vorhanden</string>
   <string name="task_name">Aufgabenname:</string>
   <string name="no_loop">Kann keine Schleifen erzeugen</string>
   <string name="set_due">Fälligkeitsdatum</string>
+  <string name="as_subtask">Als Unteraufgabe hinzufügen</string>
   <string name="dialog_move">Verschiebe Aufgabe</string>
   <string name="list_title">Listen</string>
   <string name="list_menu_new_list">Neue Liste</string>
@@ -74,6 +76,7 @@
   <string name="title_settings">Einstellungen</string>
   <string name="empty_list">Keine Aufgaben</string>
   <string name="preferences">Einstellungen</string>
+  <string name="due_to"> (Fällig am %s)</string>
   <string name="notification_title_general">%1$d Aufgaben in %2$s</string>
   <string name="notification_title_general_single">1 Aufgabe in %s</string>
   <string name="notification_title_empty">Genieße deinen Tag!</string>
@@ -138,6 +141,7 @@ Device: %3$s\n]]>
   <string name="backup_export_ok">Nach %s exportiert</string>
   <string name="change_content">Notiz ändern</string>
   <string name="content">Notiz</string>
+  <string name="add_content">Notizen…</string>
   <string name="task_has_content">Aufgabe hat eine Notiz</string>
   <string name="help">Hilfe</string>
   <string name="help_description">Es gibt 3 Hauptteile: Auf der linken Seite siehst du alle Listen, in der Mitte alle Aufgaben einer Liste und auf der rechten Seite die Aufgabe. Du kannst zwischen den Teilen durch Wischen und klicken wechseln.</string>
@@ -159,6 +163,7 @@ Device: %3$s\n]]>
   <string name="set_color">Farbe auswählen</string>
   <string name="unset_color">Keine Farbe</string>
   <string name="files">Dateien</string>
+  <string name="add_files">Datei hinzufügen…</string>
   <string name="file_no_activity">Ich weiß nicht, wie ich diese Datei öffnen soll – tut mir leid</string>
   <string name="file_select">Wähle eine Datei</string>
   <string name="file_vanished">Keine solche Datei vorhanden</string>
@@ -181,7 +186,7 @@ Device: %3$s\n]]>
   <string name="day">Tag</string>
   <string name="month">Monat</string>
   <string name="year">Jahr</string>
-  <string name="recurring_summary">Jede %1$s%2$s</string>
+  <string name="recurring_summary">Alle %1$s%2$s</string>
   <string name="new_recurring">Neue Regel</string>
   <string name="add_recurring">Wiederholen</string>
   <string name="intervall">Intervall</string>
@@ -189,6 +194,7 @@ Device: %3$s\n]]>
   <string name="end">Ende</string>
   <string name="no_begin_end">Keine %s</string>
   <string name="beginning_end">Anfang und Ende</string>
+  <string name="save">Speichern</string>
   <string-array name="task_sorting_items">
     <item>Standard</item>
     <item>Termin</item>

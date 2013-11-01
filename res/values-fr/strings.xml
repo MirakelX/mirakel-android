@@ -35,6 +35,7 @@
   <string name="set_time">Fixer l\'heure</string>
   <string name="task_set_reminder">Fixer le rappel</string>
   <string name="action_undo">Annuler la dernière modification</string>
+  <string name="new_task">Nouvelle tâche</string>
   <string name="dialog_move">Déplacer la tâche</string>
   <string name="list_title">Listes</string>
   <string name="list_menu_new_list">Nouvelle liste</string>
@@ -115,6 +116,7 @@ Device: %3$s\n]]>
   <string name="backup_export_error">Il y a eût une erreur lors de l\'exportation de la base de données</string>
   <string name="backup_export_ok">Exporté vers %s</string>
   <string name="change_content">Modifier le contenu</string>
+  <string name="content">Contenu</string>
   <string name="task_has_content">La tâche contient quelque chose</string>
   <string name="help_description">Il y a 3 parties principales : sur la gauche vous pouvez voir toutes les listes, au milieu vous pouvez voir toutes les tâches d\'une liste et sur le droite vous pouvez voir une tâche. Vous passez d\'une partie à l\'autre en faisant glisser ou en cliquant.</string>
   <string name="permission_read_lbl">Lire des données depuis Mirakel</string>
@@ -127,6 +129,10 @@ Device: %3$s\n]]>
   <string name="crash_dialog_comment_prompt">Vous pouvez ajouter vos commentaires sur le problème ci-dessous :</string>
   <string name="crash_dialog_ok_toast">Merci !</string>
   <string name="message_from_server">Le serveur veut vous dire : %s</string>
+  <string name="edit">Modifier</string>
+  <string name="day">Jour</string>
+  <string name="month">Mois</string>
+  <string name="year">Année</string>
   <string-array name="task_sorting_items">
     <item>Par défaut</item>
     <item>Échéance</item>
@@ -145,9 +151,9 @@ Device: %3$s\n]]>
     <item>Supprimer</item>
   </string-array>
   <string-array name="list_actions_items">
-    <item>Select Color</item>
+    <item>Select color</item>
     <item>Rename</item>
-    <item>Delete</item>
+    <item>Supprimer</item>
     <item>Share</item>
   </string-array>
   <string-array name="server_typs">

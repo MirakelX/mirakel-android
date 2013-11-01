@@ -51,7 +51,7 @@
         android:id="@+id/mark_as_subtask"
         android:icon="@android:drawable/ic_menu_directions"
         android:title="@string/as_subtask"
-        mirakel:showAsAction="ifRoom|withText"/>
+        mirakel:showAsAction="never"/>
     <item
         android:id="@+id/menu_sync_now"
         android:title="@string/action_sync_now"

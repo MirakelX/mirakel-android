@@ -59,10 +59,9 @@
   <string name="import_astrid_click">Importer depuis Astrid</string>
   <string name="astrid_unsuccess">Il y a eût une erreur pendant l\'importation depuis Astrid !</string>
   <string name="astrid_success">Toutes les données ont été importées avec succès !</string>
-  <string name="astrid_importing">Importation en cours</string>
   <string name="astrid_import_title">Sélectionner un fichier Astrid</string>
-  <string name="astrid_wait">Veuillez patienter…</string>
   <string name="import_wrong_type">Ce n\'est pas un fichier Mirakel !</string>
+  <string name="any_do_success">Toutes les données ont été importées avec succès !</string>
   <string name="highlightSelected_summary">Mettre en surbrillance les listes/tâches quand vous cliquez dessus</string>
   <string name="highlightSelected">Mise en surbrillance sélectionnée</string>
   <string name="showDone">Afficher les tâches finies</string>

@@ -19,7 +19,6 @@
   <string name="select_by">Sélectionner par</string>
   <string name="done">Tâches finies</string>
   <string name="undone">Tâches à refaire</string>
-  <string name="nothing">Pas de répétition</string>
   <string name="today">Aujourd’hui</string>
   <string name="tomorrow">Demain</string>
   <string name="reminder_set">Le rappel est défini</string>
@@ -29,6 +28,7 @@
   <string name="where_like_contain_text">Contient</string>
   <string name="where_like_begin_text">Commence par</string>
   <string name="where_like_end_text">Fini par</string>
+  <string name="delete">Supprimer</string>
   <string-array name="special_list_def_date_picker">
     <item>Pas de date</item>
     <item>Hier</item>

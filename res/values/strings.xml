@@ -78,7 +78,7 @@
     <string name="task_name">Task Name:</string>
     <string name="no_loop">Cannot create Loops</string>
     <string name="set_due">Set Due</string>
-    <string name="as_subtask">as subtask</string>
+    <string name="as_subtask">Add to a task</string>
 
     <string-array name="task_sorting_items">
         <item>Default</item>
@@ -299,6 +299,7 @@ Device: %3$s\n]]>
 	<string name="end">End</string>
 	<string name="no_begin_end">No %s</string>
 	<string name="beginning_end">Beginning and End</string>
+	<string name="save">Save</string>
 	
 	
 </resources>

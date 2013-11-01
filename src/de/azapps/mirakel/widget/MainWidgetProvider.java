@@ -240,7 +240,8 @@ public class MainWidgetProvider extends AppWidgetProvider {
 		return Math.abs(Color.red(pixel) - FROM_COLOR[0]) < THRESHOLD
 				&& Math.abs(Color.green(pixel) - FROM_COLOR[1]) < THRESHOLD
 				&& Math.abs(Color.blue(pixel) - FROM_COLOR[2]) < THRESHOLD;
-	}
+	}@SuppressLint("NewApi")
+	
 
 	@Override
 	public void onReceive(Context context, Intent intent) {

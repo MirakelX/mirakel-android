@@ -33,7 +33,7 @@
   <string name="notifications_zero_show">Leere Benachrichtigungen ausblenden</string>
   <string name="notificationsShowDone">Zeige erledigte Aufgaben</string>
   <string name="reminder">Erinnerungen</string>
-  <string name="reminders_persistent">Dauerhaffte Erinnerungen</string>
+  <string name="reminders_persistent">Dauerhafte Erinnerungen</string>
   <string name="startup_title">Startvorgang</string>
   <string name="startup_show_lists">Alle Listen anzeigen</string>
   <string name="startup_show_lists_summary">Beim Start alle Listen anzeigen</string>
@@ -59,22 +59,31 @@
   <string name="changelog_click">Changelog</string>
   <string name="settings_about">Über uns</string>
   <string name="settings_help">Hilfe</string>
+  <string name="settings_help_us">Du kannst uns helfen!</string>
   <string name="get_dashclock">Hol dir Mirakel-Dashclock</string>
   <string name="get_dashclock_summary">Die Mirakel-Erweiterung für Dashclock</string>
   <string name="import_astrid_click_summary">Importiere aus einer Astrid-Datei</string>
   <string name="import_astrid_click">Import von Astrid</string>
   <string name="astrid_unsuccess">Es ist ein Fehler während des Astrid-Import aufgetreten!</string>
   <string name="astrid_success">Alle Daten erfolgreich importiert!</string>
-  <string name="astrid_importing">Importiere</string>
+  <string name="importing">Importiere</string>
   <string name="astrid_import_title">Astrid Datei auswählen</string>
-  <string name="astrid_wait">Bitte warten…</string>
   <string name="import_wrong_type">Dies ist keine Mirakel-Datei!</string>
+  <string name="astrid_wait">Bitte warten…</string>
+  <string name="astrid_importing">Importiere</string>
+  <string name="import_any_do_click_summary">Any.Do import</string>
+  <string name="import_any_do_click">Any.Do import</string>
+  <string name="any_do_import_title">Any.Do Backup-Datei auswählen</string>
+  <string name="any_do_unsuccess">Es ist ein Fehler während des Any.Do-Import aufgetreten!</string>
+  <string name="any_do_success">Alle Daten erfolgreich importiert!</string>
+  <string name="wait">Bitte warten…</string>
   <string name="highlightSelected_summary">Listen/Aufgaben beim Klick markieren</string>
   <string name="highlightSelected">Ausgewählte hervorheben</string>
   <string name="settings_date_format_relative">Relative Datumsanzeige</string>
   <string name="settings_date_format_relative_summary">Zum Beispiel „Morgen“ anstatt des wirklichen Datums</string>
   <string name="showDone">Erledigt Aufgaben anzeigen</string>
   <string name="dark_theme">Dunkles Theme</string>
+  <string name="minimalistic_widget">Minimalistisches Widget</string>
   <string name="kill_button">Schließen-Button</string>
   <string name="kill_app">App schließen</string>
   <string name="kill_sure">Bist du wirklich sicher???</string>
@@ -91,6 +100,11 @@
   <string name="semantic_new_task_config">Semantische neue Aufgaben konfigurieren</string>
   <string name="settings_old_logo_summary">Ich finde es traurig, dass du das neue Logo nicht magst (Starte die App neu; du benötigst Android >= 4.0)</string>
   <string name="settings_old_logo">Das alte, hässliche Logo verwenden</string>
+  <string name="swipeBehavior_title">Mit wischen zur Aufgabe wechseln</string>
+  <string name="swipeBehavior_summary">Wechsle beim wischen zur Aufgabe, die du gerade berührst</string>
+  <string name="lock_drawer_in_task_fragment_summary">Damit du sie nicht ausversehen öffnest</string>
+  <string name="lock_drawer_in_task_fragment">Sperre die Listenübersicht in der Aufgabenansicht</string>
+  <string name="language">Sprache</string>
   <string name="delete_done">Erledigte Aufgaben löschen</string>
   <string name="delete_done_summary">Löscht alle erledigten Aufgaben</string>
   <string name="delete_done_warning">Bist du sicher?</string>
@@ -99,6 +113,8 @@
   <string name="menu_delete">Löschen</string>
   <string name="menu_color">Farbe ändern</string>
   <string name="howto_setup_server">So setzt du selbst einen Server auf</string>
+  <string name="register_server">Wenn du einen Account auf unserem Server brauchst, dann schick uns bitte eine E-Mail. Mit der nächsten Version wirst du auch selbst einen Account anlegen können.</string>
+  <string name="send_mail">E-Mail senden</string>
   <string name="special_lists_title">Erweiterte Listen</string>
   <string name="preferences_colorize">Farben</string>
   <string name="preferences_colorize_tasks">Aufgaben einfärben</string>
@@ -159,7 +175,4 @@
     <item>1</item>
     <item>2</item>
   </string-array>
-  
-    <string name="register_server">Wenn du einen Account auf unserem Server brauchst, dann schick uns bitte eine E-Mail. Mit der nächsten Version wirst du auch selbst einen Account anlegen können.</string>
-    <string name="send_mail">Sende Mail</string>
 </resources>
