@@ -17,6 +17,19 @@
     </style>
   </head>
   <body>
+$ 2.1
+  % Version 2.1
+  _ 2013-11-01
+  ! Some new features, improved UI, Bugfixes
+    * New transparent widget! 
+    * Improved Task-detail view
+    * Improved reccurence
+    * Any.Do import
+    * Many bugfixes
+    * Updated Taskwarrior sync
+  ! Thank you for your support and your great feedback! Now we need <a href="http://mirakel.azapps.de/help_us.html">YOUR help</a>!
+  ! Spread Mirakel and rate it!
+  ! <b>@Taskwarrior-users:</b> Please update your taskwarrior-server! Contact us if you need help.
 $ 2.0
   % Version 2.0
   _ 2013-10-13
