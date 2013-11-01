@@ -24,6 +24,7 @@ import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -67,7 +68,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
 			boolean isDark = WidgetHelper.isDark(context, widgetId);
 			boolean isMinimalistic = WidgetHelper.isMinimalistic(context,
 					widgetId);
-
+//			android.os.Debug.waitForDebugger();
 			int layout_id;
 			if (isMinimalistic && !oldAPI) {
 				layout_id = R.layout.widget_minimal;
@@ -157,7 +158,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
 				intent.putExtra(EXTRA_WIDGET_ID, widgetId);
 				intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
 				views.setRemoteAdapter(R.id.widget_tasks_list, intent);
-
+				appWidgetManager.updateAppWidget(new int[]{widgetId}, views );
 				// Empty view
 				views.setEmptyView(R.id.widget_tasks_list, R.id.empty_view);
 
@@ -201,6 +202,9 @@ public class MainWidgetProvider extends AppWidgetProvider {
 			appWidgetManager.updateAppWidget(widgetId, views);
 
 		}
+		if (!oldAPI)
+			appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds,
+					R.id.tasks_list);
 
 	}
 
@@ -238,12 +242,24 @@ public class MainWidgetProvider extends AppWidgetProvider {
 			startMainIntent.setData(Uri.parse(startMainIntent
 					.toUri(Intent.URI_INTENT_SCHEME)));
 			context.startActivity(startMainIntent);
-		} else {
-			Log.d(TAG, intent.getAction());
-			Log.d(TAG,
-					"click: " + intent.getIntExtra(MainActivity.SHOW_LIST, 1));
+		}
+		Log.d(TAG, "" + intent.getAction());
+		if (intent.getAction().equals(
+				"android.appwidget.action.APPWIDGET_UPDATE")) {
+			Log.d(TAG, "update");
+			AppWidgetManager a = AppWidgetManager.getInstance(context);
+			for (int w : a.getAppWidgetIds(new ComponentName(context,
+					MainWidgetProvider.class))) {
+				Log.d(TAG, "update " + w);
+				a.notifyAppWidgetViewDataChanged(w, R.id.tasks_list);
+			}
+//			android.os.Debug.waitForDebugger();
+			onUpdate(context, a, a.getAppWidgetIds(new ComponentName(context,
+					MainWidgetProvider.class)));
+//			a.notifyAppWidgetViewDataChanged(
+//			a.getAppWidgetIds(new ComponentName(context,
+//					MainWidgetProvider.class)), R.id.tasks_list);
 		}
 		super.onReceive(context, intent);
 	}
-
 }

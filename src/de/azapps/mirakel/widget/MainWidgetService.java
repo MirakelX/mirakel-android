@@ -77,12 +77,12 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	}
 
 	public int getCount() {
+		tasks = list.tasks(WidgetHelper.showDone(mContext, widgetId));
 		return tasks.size();
 	}
 
 	public RemoteViews getViewAt(int position) {
-		if (position > tasks.size()) {
-			Log.wtf(TAG, "Klick on unkown Task");
+		if (position >= tasks.size()) {
 			return null;
 		}
 		Task task = tasks.get(position);
@@ -106,7 +106,6 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		Intent fillInIntent = new Intent(MainWidgetProvider.CLICK_TASK);
 		fillInIntent.putExtras(extras);
 		rv.setOnClickFillInIntent(R.id.tasks_row, fillInIntent);
-
 		return rv;
 	}
 
@@ -128,9 +127,10 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	}
 
 	public boolean hasStableIds() {
-		return true;
+		return false;
 	}
-
+	
 	public void onDataSetChanged() {
+		tasks = list.tasks(WidgetHelper.showDone(mContext, widgetId));
 	}
 }
