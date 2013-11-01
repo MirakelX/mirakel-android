@@ -1125,7 +1125,7 @@ public class MainActivity extends ActionBarActivity implements
 			mDrawerLayout.closeDrawers();
 
 		List<Task> currentTasks = currentList.tasks(preferences.getBoolean(
-				"showDone", true));
+				"showDoneMain", true));
 		if (currentTasks.size() == 0) {
 			currentTask = Task.getDummy(getApplicationContext());
 		} else {

@@ -183,7 +183,7 @@ public class PreferencesHelper {
 					}
 				});
 
-		CheckBoxPreference showDone = (CheckBoxPreference) findPreference("showDone");
+		CheckBoxPreference showDone = (CheckBoxPreference) findPreference("showDoneMain");
 		showDone.setChecked(WidgetHelper.showDone(context, widgetId));
 		showDone.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 

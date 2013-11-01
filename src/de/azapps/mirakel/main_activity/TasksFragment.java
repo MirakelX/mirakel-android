@@ -106,7 +106,7 @@ public class TasksFragment extends Fragment {
 	public void onResume() {
 		super.onResume();
 		if (main != null)
-			showDone = main.preferences.getBoolean("showDone", true);
+			showDone = main.preferences.getBoolean("showDoneMain", true);
 	}
 
 	@Override
@@ -116,7 +116,7 @@ public class TasksFragment extends Fragment {
 		loadMore = false;
 		ItemCount = 0;
 		main = (MainActivity) getActivity();
-		showDone = main.preferences.getBoolean("showDone", true);
+		showDone = main.preferences.getBoolean("showDoneMain", true);
 		listId = main.getCurrentList().getId();
 		view = inflater.inflate(R.layout.activity_tasks, container, false);
 		if (getResources().getBoolean(R.bool.isTablet)) {

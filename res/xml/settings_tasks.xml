@@ -23,7 +23,7 @@
 
     <CheckBoxPreference
         android:defaultValue="true"
-        android:key="showDone"
+        android:key="showDoneMain"
         android:title="@string/showDone" />
     <CheckBoxPreference
         android:defaultValue="true"
