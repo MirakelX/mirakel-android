@@ -1201,7 +1201,7 @@ public class MainActivity extends ActionBarActivity implements
 	 * @param task
 	 */
 	void updatesForTask(Task task) {
-		if (task.getId() == currentTask.getId()) {
+		if (currentTask != null && task.getId() == currentTask.getId()) {
 			currentTask = task;
 			getTaskFragment().update(task);
 		}
