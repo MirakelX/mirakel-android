@@ -420,7 +420,7 @@ public class MainActivity extends ActionBarActivity implements
 			menu.findItem(R.id.share_list).setVisible(false);
 		} else if (currentPosition == TASKS_FRAGMENT && menu != null
 				&& menu.findItem(R.id.share_list) == null
-				&& currentList.countTasks() > 0) {
+				&& currentList.countTasks() > 0&&!mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
 			loadMenu(TASKS_FRAGMENT);
 		} else if (menu != null && menu.findItem(R.id.share_list) != null
 				&& currentList.countTasks() > 0) {
