@@ -300,6 +300,7 @@ Device: %3$s\n]]>
 	<string name="no_begin_end">No %s</string>
 	<string name="beginning_end">Beginning and End</string>
 	<string name="save">Save</string>
+	<string name="file_to_large">Failed to create thumbnail</string>
 	
 	
 </resources>

@@ -15,11 +15,13 @@ import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
 import android.util.Log;
 import android.util.TypedValue;
+import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakelandroid.R;
 
 public class FileMirakel extends FileBase {
 
@@ -111,9 +113,14 @@ public class FileMirakel extends FileBase {
 					rotate -= 90;
 				}
 				// Cache the image
-
-				Bitmap myBitmap = BitmapFactory.decodeFile(osFile
-						.getAbsolutePath());
+				Bitmap myBitmap = null;
+				try {
+					myBitmap = BitmapFactory.decodeFile(osFile
+							.getAbsolutePath());
+				} catch (OutOfMemoryError e) {
+					Toast.makeText(ctx, ctx.getString(R.string.file_to_large),
+							Toast.LENGTH_SHORT).show();
+				}
 				if (myBitmap != null) {
 
 					float size = TypedValue.applyDimension(
