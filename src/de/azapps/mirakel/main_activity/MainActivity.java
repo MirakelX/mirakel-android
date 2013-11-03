@@ -404,10 +404,12 @@ public class MainActivity extends ActionBarActivity implements
 		menu.clear();
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(newmenu, menu);
-		menu.findItem(R.id.menu_sync_now).setVisible(
-				preferences.getBoolean("syncUse", false));
-		menu.findItem(R.id.menu_kill_button).setVisible(
-				preferences.getBoolean("KillButton", false));
+		if (menu.findItem(R.id.menu_sync_now) != null)
+			menu.findItem(R.id.menu_sync_now).setVisible(
+					preferences.getBoolean("syncUse", false));
+		if (menu.findItem(R.id.menu_kill_button) != null)
+			menu.findItem(R.id.menu_kill_button).setVisible(
+					preferences.getBoolean("KillButton", false));
 		updateShare();
 
 	}
