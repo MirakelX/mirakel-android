@@ -78,7 +78,7 @@
         mirakel:showAsAction="never"
         android:title="@string/action_sync_now"/>
     <item
-        android:id="@+id/menu_settings_list"
+        android:id="@+id/menu_settings"
         mirakel:showAsAction="never"
         android:title="@string/menu_settings"/>
     <item
