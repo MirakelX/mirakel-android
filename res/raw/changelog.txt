@@ -20,7 +20,9 @@
 $ 2.1.1
   % Version 2.1.1
   _ 2013-11-03
-  ! Only urgent bug fixes.
+  ! Bugfixes + Czech translation
+    * Some urgent bug fixes.
+    * Czech translation (thank you, sarimak)
   ! You want to test our beta releases? Join our <a href="https://plus.google.com/communities/110640831388790835840">Google+-community</a> 
 $ 2.1
   % Version 2.1
