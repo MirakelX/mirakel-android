@@ -1000,6 +1000,7 @@ public class MainActivity extends ActionBarActivity implements
 		if (showNavDrawer) {
 			showNavDrawer = false;
 			mDrawerLayout.openDrawer(Gravity.LEFT);
+			loadMenu(-1, false, false);
 		}
 
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
