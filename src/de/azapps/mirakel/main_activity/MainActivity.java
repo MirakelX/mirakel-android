@@ -349,15 +349,15 @@ public class MainActivity extends ActionBarActivity implements
 		updateLists();
 		getMenuInflater().inflate(R.menu.main, menu);
 		this.menu = menu;
-		loadMenu(currentPosition, false);
+		loadMenu(currentPosition, false, false);
 		return true;
 	}
 
 	public void loadMenu(int position) {
-		loadMenu(position, true);
+		loadMenu(position, true, false);
 	}
 
-	public void loadMenu(int position, boolean setPosition) {
+	public void loadMenu(int position, boolean setPosition, boolean fromShare) {
 		if (getTaskFragment() != null && getTaskFragment().getView() != null) {
 			final InputMethodManager imm = (InputMethodManager) this
 					.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -410,7 +410,8 @@ public class MainActivity extends ActionBarActivity implements
 		if (menu.findItem(R.id.menu_kill_button) != null)
 			menu.findItem(R.id.menu_kill_button).setVisible(
 					preferences.getBoolean("KillButton", false));
-		updateShare();
+		if (!fromShare)
+			updateShare();
 
 	}
 
@@ -420,8 +421,9 @@ public class MainActivity extends ActionBarActivity implements
 			menu.findItem(R.id.share_list).setVisible(false);
 		} else if (currentPosition == TASKS_FRAGMENT && menu != null
 				&& menu.findItem(R.id.share_list) == null
-				&& currentList.countTasks() > 0&&!mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
-			loadMenu(TASKS_FRAGMENT);
+				&& currentList.countTasks() > 0
+				&& !mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
+			loadMenu(TASKS_FRAGMENT, true, true);
 		} else if (menu != null && menu.findItem(R.id.share_list) != null
 				&& currentList.countTasks() > 0) {
 			menu.findItem(R.id.share_list).setVisible(true);
@@ -972,7 +974,7 @@ public class MainActivity extends ActionBarActivity implements
 			}
 
 			public void onDrawerOpened(View drawerView) {
-				loadMenu(-1, false);
+				loadMenu(-1, false, false);
 			}
 		};
 
