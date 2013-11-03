@@ -28,6 +28,7 @@ import java.util.Vector;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.SearchManager;
+import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -73,6 +74,7 @@ import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.static_activities.SettingsActivity;
 import de.azapps.mirakel.sync.SyncAdapter;
+import de.azapps.mirakel.widget.MainWidgetProvider;
 import de.azapps.mirakelandroid.R;
 
 /**
@@ -556,6 +558,21 @@ public class MainActivity extends ActionBarActivity implements
 	protected void onPause() {
 		if (getTasksFragment() != null)
 			getTasksFragment().clearFocus();
+		Intent intent = new Intent(this, MainWidgetProvider.class);
+		intent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
+		// Use an array and EXTRA_APPWIDGET_IDS instead of
+		// AppWidgetManager.EXTRA_APPWIDGET_ID,
+		// since it seems the onUpdate() is only fired on that:
+		Context context = getApplicationContext();
+		ComponentName name = new ComponentName(context, MainWidgetProvider.class);
+		int widgets[] = AppWidgetManager.getInstance(context).getAppWidgetIds(name);
+		intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, widgets);
+		if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB){
+			for(int id:widgets){
+				AppWidgetManager.getInstance(this).notifyAppWidgetViewDataChanged(id, R.id.widget_tasks_list);
+			}
+		}
+		sendBroadcast(intent);
 		super.onPause();
 	}
 
