@@ -72,7 +72,7 @@
         mirakel:showAsAction="never"
         android:title="@string/menu_delete_task"/>
     <item
-        android:id="@+id/menu_settings_task"
+        android:id="@+id/menu_settings"
         mirakel:showAsAction="never"
         android:title="@string/menu_settings"/>
     <item
