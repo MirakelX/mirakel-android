@@ -32,7 +32,7 @@
     <string name="sync_server_summary">Sync with %s</string>
     <string name="sync_password">Password</string>
     <string name="inavlidPassword">Password is invalid!</string>
-    <string name="inavlidUrl">Url is invalid!</string>
+    <string name="inavlidUrl">URL is invalid!</string>
     <string name="sync_password_summary">Your Password</string>
     <string name="sync_frequency">Frequency</string>
     <string name="sync_frequency_summary">Sync every %s min</string>
@@ -142,7 +142,7 @@
     <string name="kill_sure_message">When you close the app, you do not get any reminders! Please consider only disabling the notification (or make it non-persistent, so you can remove it.)</string>
     <string name="ui_settings_title">User Interface</string>
     <string name="hide_keyboard">Hide keyboard</string>
-    <string name="hide_keyboard_summary">Hide keyboard if new task is created</string>
+    <string name="hide_keyboard_summary">Hide keyboard when new task is being created</string>
     <string name="undo_number">Number of changes saved</string>
     <string name="undo_number_summary">Undo %s changes</string>
     <string name="settings_semantic">Semantic new tasks</string>
