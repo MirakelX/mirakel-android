@@ -247,8 +247,7 @@ public class MainActivity extends ActionBarActivity implements
 			finish();
 		case R.id.menu_undo:
 			Helpers.undoLast(this);
-			currentList = ListMirakel.getList(currentList.getId());
-			currentTask = Task.get(currentTask.getId());
+			updateCurrentListAndTask();
 			if (currentPosition == TASK_FRAGMENT)
 				setCurrentTask(getCurrentTask());
 			else {
@@ -271,6 +270,30 @@ public class MainActivity extends ActionBarActivity implements
 		return true;
 	}
 
+	private void updateCurrentListAndTask() {
+		if (currentTask == null && currentList == null)
+			return;
+		if (currentTask != null)
+			currentTask = Task.get(currentTask.getId());
+		else {
+			if (currentList != null) {
+				List<Task> currentTasks = currentList.tasks(preferences
+						.getBoolean("showDoneMain", true));
+				if (currentTasks.size() == 0) {
+					currentTask = Task.getDummy(getApplicationContext());
+				} else {
+					currentTask = currentTasks.get(0);
+				}
+			}
+		}
+		if (currentList != null) {
+			currentList = ListMirakel.getList(currentList.getId());
+		} else {
+			currentList = currentTask.getList();
+		}
+
+	}
+
 	/**
 	 * (non-Javadoc)
 	 * 
@@ -283,8 +306,9 @@ public class MainActivity extends ActionBarActivity implements
 		// selected
 		super.onSaveInstanceState(outState);
 	}
-	public void setSkipSwipe(){
-		skipSwipe=true;
+
+	public void setSkipSwipe() {
+		skipSwipe = true;
 	}
 
 	@Override
@@ -304,7 +328,7 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	public void onPageSelected(int position) {
-		if(getTasksFragment()==null)
+		if (getTasksFragment() == null)
 			return;
 		getTasksFragment().closeActionMode();
 		getTaskFragment().closeActionMode();
@@ -490,7 +514,7 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	public void onBackPressed() {
-		if (goBackTo.size() > 0&&currentPosition==TASK_FRAGMENT) {
+		if (goBackTo.size() > 0 && currentPosition == TASK_FRAGMENT) {
 			Task goBack = goBackTo.pop();
 			setCurrentList(goBack.getList(), null, false, false);
 			setCurrentTask(goBack, false, false);
@@ -690,11 +714,11 @@ public class MainActivity extends ActionBarActivity implements
 				mViewPager.postDelayed(new Runnable() {
 					@Override
 					public void run() {
-						if(getTasksFragment()!=null){
+						if (getTasksFragment() != null) {
 							getTasksFragment().focusNew(true);
-						}else{
+						} else {
 							Log.wtf(TAG, "Tasksfragment null");
-						}						
+						}
 					}
 				}, 10);
 			}
@@ -902,7 +926,7 @@ public class MainActivity extends ActionBarActivity implements
 								Log.wtf(TAG, "Task vanished");
 							} else {
 								setCurrentList(task.getList());
-								setCurrentTask(task,true);
+								setCurrentTask(task, true);
 							}
 						} else {
 							setCurrentList(getCurrentList());
@@ -1198,7 +1222,7 @@ public class MainActivity extends ActionBarActivity implements
 
 	public TasksFragment getTasksFragment() {
 		if (mPagerAdapter == null) {
-			Log.i(TAG,"pageadapter null");
+			Log.i(TAG, "pageadapter null");
 			return null;
 		}
 		Fragment f = this.getSupportFragmentManager().findFragmentByTag(
