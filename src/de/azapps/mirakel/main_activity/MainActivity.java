@@ -351,7 +351,12 @@ public class MainActivity extends ActionBarActivity implements
 		updateLists();
 		getMenuInflater().inflate(R.menu.main, menu);
 		this.menu = menu;
-		loadMenu(currentPosition, false, false);
+		if(!showNavDrawer){
+			loadMenu(currentPosition, false, false);
+		}else{
+			showNavDrawer=false;
+			loadMenu(-1, false, false);
+		}
 		return true;
 	}
 
@@ -998,9 +1003,7 @@ public class MainActivity extends ActionBarActivity implements
 		// Set the drawer toggle as the DrawerListener
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
 		if (showNavDrawer) {
-			showNavDrawer = false;
 			mDrawerLayout.openDrawer(Gravity.LEFT);
-			loadMenu(-1, false, false);
 		}
 
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
