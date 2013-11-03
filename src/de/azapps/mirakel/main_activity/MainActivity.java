@@ -24,7 +24,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
-
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.SearchManager;
@@ -559,6 +559,7 @@ public class MainActivity extends ActionBarActivity implements
 		super.onDestroy();
 	}
 
+	@SuppressLint("NewApi")
 	@Override
 	protected void onPause() {
 		if (getTasksFragment() != null)
