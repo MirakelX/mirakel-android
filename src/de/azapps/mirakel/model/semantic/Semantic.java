@@ -247,6 +247,9 @@ public class Semantic extends SemanticBase {
 				words.remove(0);
 			}
 		}
+		if(currentList==null) {
+			currentList=ListMirakel.first();
+		}
 		return Task.newTask(taskName, currentList.getId(), due, prio);
 	}
 
