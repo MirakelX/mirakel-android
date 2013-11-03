@@ -24,6 +24,10 @@
         <h2>Credits</h2>
         <h3>Translations</h3>
         <p><b>Spanish:</b> by macebal</p>
+        <p><b>French:</b> by Ghost of Kendo</p>
+        <p><b>Norwegian:</b> by Jim-Stefhan Johansen</p>
+        <p><b>Slovenian:</b> by mateju</p>
+        <p><b>Czech:</b> by sarimak</p>
         <h3>Libraries</h3>
         <p><a href="https://code.google.com/p/google-gson/">Gson</a><br />
         License: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a></p>
