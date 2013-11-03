@@ -140,7 +140,7 @@ public class WidgetHelper {
 	}
 
 	public static boolean isDark(Context context, int widgetId) {
-		return getBoolean(context, widgetId, "isDark", false);
+		return getBoolean(context, widgetId, "isDark", true);
 	}
 
 	public static boolean isMinimalistic(Context context, int widgetId) {
@@ -157,7 +157,7 @@ public class WidgetHelper {
 	}
 
 	public static int getTransparency(Context context, int widgetId) {
-		return getInt(context, widgetId, "widgetTransparency", 0);
+		return getInt(context, widgetId, "widgetTransparency", 100);
 	}
 
 	public static ListMirakel getList(Context context, int widgetId) {
