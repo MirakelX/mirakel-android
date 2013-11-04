@@ -250,6 +250,9 @@ public class Semantic extends SemanticBase {
 		if(currentList==null) {
 			currentList=ListMirakel.first();
 		}
+		if(currentList==null){
+			throw new NoListsException();
+		}
 		return Task.newTask(taskName, currentList.getId(), due, prio);
 	}
 

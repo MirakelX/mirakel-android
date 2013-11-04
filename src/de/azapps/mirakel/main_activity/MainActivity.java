@@ -860,7 +860,8 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	public void handleDestroyTask(final List<Task> tasks) {
-
+		if(tasks==null)
+			return;
 		final MainActivity main = this;
 		String names = tasks.get(0).getName();
 		for (int i = 1; i < tasks.size(); i++) {

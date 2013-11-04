@@ -752,20 +752,22 @@ public class PreferencesHelper {
 										R.bool.isTablet)) {
 									final Switch s = ((Switch) activity
 											.findViewById(R.id.switchWidget));
-									s.setOnCheckedChangeListener(null);
-									s.setChecked(isChecked);
-									s.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-										@Override
-										public void onCheckedChanged(
-												CompoundButton buttonView,
-												boolean isChecked) {
-											PreferencesHelper
-													.createAuthActivity(
-															isChecked,
-															(Activity) ctx, s,
-															false);
-										}
-									});
+									if(s!=null){
+										s.setOnCheckedChangeListener(null);
+										s.setChecked(isChecked);
+										s.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+											@Override
+											public void onCheckedChanged(
+													CompoundButton buttonView,
+													boolean isChecked) {
+												PreferencesHelper
+														.createAuthActivity(
+																isChecked,
+																(Activity) ctx, s,
+																false);
+											}
+										});
+									}
 
 								}
 							}

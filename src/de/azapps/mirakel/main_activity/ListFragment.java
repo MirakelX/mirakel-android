@@ -391,6 +391,8 @@ public class ListFragment extends Fragment {
 		input.postDelayed(new Runnable() {
 			@Override
 			public void run() {
+				if(getActivity()==null)
+					return;
 				InputMethodManager keyboard = (InputMethodManager) getActivity()
 						.getSystemService(Context.INPUT_METHOD_SERVICE);
 				keyboard.showSoftInput(input, InputMethodManager.SHOW_IMPLICIT);
