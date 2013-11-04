@@ -59,6 +59,12 @@ public class Helpers {
 		public void exec();
 	}
 
+	public static boolean isTablet(Context ctx) {
+		return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
+				"useTabletLayout",
+				ctx.getResources().getBoolean(R.bool.isTablet));
+	}
+
 	public static Task getTaskFromIntent(Intent intent) {
 		Task task = null;
 		long taskId = intent.getLongExtra(MainActivity.EXTRA_ID, 0);
@@ -530,6 +536,7 @@ public class Helpers {
 		i2.setData(Uri.parse(url));
 		ctx.startActivity(i2);
 	}
+
 	public static void openHelpUs(Context ctx) {
 		String url = "http://mirakel.azapps.de/help_us.html";
 		Intent i2 = new Intent(Intent.ACTION_VIEW);

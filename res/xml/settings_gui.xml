@@ -35,6 +35,9 @@
         android:key="dateFormatRelative"
         android:summary="@string/settings_date_format_relative_summary"
         android:title="@string/settings_date_format_relative" />
+    <CheckBoxPreference android:defaultValue="@bool/isTablet"
+        android:key="useTabletLayout"
+        android:title="@string/useTabletLayout"/>
     <CheckBoxPreference
         android:defaultValue="true"
         android:key="useBtnSpeak"

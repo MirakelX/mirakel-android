@@ -36,6 +36,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakelandroid.R;
 
 /**
@@ -163,8 +164,8 @@ public abstract class ListSettings extends PreferenceActivity {
 	}
 
 	@Override
-	public boolean isMultiPane() {
-		return getResources().getBoolean(R.bool.isTablet);
+	public boolean onIsMultiPane() {
+		return Helpers.isTablet(this);
 	};
 
 	@Override

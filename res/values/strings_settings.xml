@@ -156,6 +156,7 @@
     <string name="swipeBehavior_summary">Switch to Task which is touched or switch to last selected task</string>
     <string name="lock_drawer_in_task_fragment_summary">So you don\'t open it accidentally</string>
     <string name="lock_drawer_in_task_fragment">Lock List-View in the Task details</string>
+    <string name="useTabletLayout">Use TabletLayout</string>
     <!-- Language -->
     <string name="language">Language</string>
 

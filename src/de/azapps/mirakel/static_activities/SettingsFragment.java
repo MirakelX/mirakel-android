@@ -66,7 +66,7 @@ public class SettingsFragment extends PreferenceFragment {
 		} else if (getArguments().getString("type").equals("speciallists")) {
 			startActivity(new Intent(getActivity(),
 					SpecialListsSettingsActivity.class));
-			if (!getResources().getBoolean(R.bool.isTablet))
+			if (!Helpers.isTablet(getActivity()))
 				getActivity().finish();
 			else {
 				addPreferencesFromResource(R.xml.settings_notifications);

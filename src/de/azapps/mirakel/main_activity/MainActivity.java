@@ -142,9 +142,9 @@ public class MainActivity extends ActionBarActivity implements
 		super.onCreate(savedInstanceState);
 
 		oldLogo();
+		isTablet = Helpers.isTablet(this);
 		highlightSelected = preferences.getBoolean("highlightSelected",
 				isTablet);
-		isTablet = getResources().getBoolean(R.bool.isTablet);
 		if (!preferences.contains("highlightSelected")) {
 			SharedPreferences.Editor editor = preferences.edit();
 			editor.putBoolean("highlightSelected", isTablet);
@@ -156,7 +156,11 @@ public class MainActivity extends ActionBarActivity implements
 			editor.putString("startupList", "" + SpecialList.first().getId());
 			editor.commit();
 		}
-		setContentView(R.layout.activity_main);
+		if(isTablet){
+			setContentView(R.layout.activity_main);
+		}else{
+			setContentView(R.layout.activity_main);
+		}
 		mPagerAdapter = null;
 		// Show ChangeLog
 		ChangeLog cl = new ChangeLog(this);

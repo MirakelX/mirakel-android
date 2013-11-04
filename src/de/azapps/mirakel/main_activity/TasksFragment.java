@@ -118,15 +118,18 @@ public class TasksFragment extends Fragment {
 		main = (MainActivity) getActivity();
 		showDone = main.preferences.getBoolean("showDoneMain", true);
 		listId = main.getCurrentList().getId();
-		view = inflater.inflate(R.layout.activity_tasks, container, false);
-		if (getResources().getBoolean(R.bool.isTablet)) {
+		
+		if (Helpers.isTablet(main)) {
+			view = inflater.inflate(R.layout.tasks_fragment_tablet, container, false);
 			TaskFragment t = new TaskFragment();
 			getChildFragmentManager().beginTransaction()
 					.add(R.id.task_fragment_in_tasks, t).commit();
 			main.setTaskFragment(t);
+		}else{
+			view = inflater.inflate(R.layout.tasks_fragment_phone, container, false);
 		}
 
-		getResources().getString(R.string.action_settings);
+//		getResources().getString(R.string.action_settings);
 		try {
 			values = main.getCurrentList().tasks(showDone);
 		} catch (NullPointerException e) {

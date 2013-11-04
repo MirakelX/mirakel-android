@@ -193,7 +193,7 @@ public class PreferencesHelper {
 				return true;
 			}
 		});
-		
+
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			final Preference widgetTransparency = findPreference("widgetTransparency");
 			final ColorPickerPref widgetFontColor = (ColorPickerPref) findPreference("widgetFontColor");
@@ -263,7 +263,7 @@ public class PreferencesHelper {
 							return false;
 						}
 					});
-		}else{
+		} else {
 			removePreference("widgetTransparency");
 			removePreference("widgetFontColor");
 			removePreference("isMinimalistic");
@@ -748,11 +748,10 @@ public class PreferencesHelper {
 										isChecked);
 								findPreference("syncFrequency").setEnabled(
 										isChecked);
-								if (activity.getResources().getBoolean(
-										R.bool.isTablet)) {
+								if (Helpers.isTablet(activity)) {
 									final Switch s = ((Switch) activity
 											.findViewById(R.id.switchWidget));
-									if(s!=null){
+									if (s != null) {
 										s.setOnCheckedChangeListener(null);
 										s.setChecked(isChecked);
 										s.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -763,8 +762,8 @@ public class PreferencesHelper {
 												PreferencesHelper
 														.createAuthActivity(
 																isChecked,
-																(Activity) ctx, s,
-																false);
+																(Activity) ctx,
+																s, false);
 											}
 										});
 									}
@@ -1287,6 +1286,24 @@ public class PreferencesHelper {
 				}
 			});
 
+		}
+
+		final CheckBoxPreference useTabletLayout = (CheckBoxPreference) findPreference("useTabletLayout");
+		if (useTabletLayout != null) {
+			useTabletLayout
+					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+						@Override
+						public boolean onPreferenceChange(
+								Preference preference, Object newValue) {
+							settings.edit()
+									.putBoolean("useTabletLayout", (Boolean)newValue)
+									.commit();
+							android.os.Process.killProcess(android.os.Process
+									.myPid());
+							return false;
+						}
+					});
 		}
 	}
 

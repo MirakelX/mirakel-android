@@ -118,7 +118,7 @@ public class SettingsActivity extends PreferenceActivity {
 						"de.azapps.mirakel.preferences.SPECIAL_LISTS")) {
 					startActivity(new Intent(this,
 							SpecialListsSettingsActivity.class));
-					if (!getResources().getBoolean(R.bool.isTablet))
+					if (!Helpers.isTablet(this))
 						finish();
 				} else {
 					Log.wtf(TAG, "unkown Preference");
@@ -172,7 +172,7 @@ public class SettingsActivity extends PreferenceActivity {
 		super.onResume();
 		if (darkTheme != PreferenceManager.getDefaultSharedPreferences(this)
 				.getBoolean("DarkTheme", false)
-				&& !getResources().getBoolean(R.bool.isTablet)) {
+				&& !Helpers.isTablet(this)) {
 			finish();
 			startActivity(getIntent());
 		}
@@ -320,7 +320,7 @@ public class SettingsActivity extends PreferenceActivity {
 
 	@Override
 	public boolean onIsMultiPane() {
-		return getResources().getBoolean(R.bool.isTablet);
+		return Helpers.isTablet(this);
 	}
 
 	@Override
