@@ -65,10 +65,10 @@
         android:defaultValue="false"
         android:key="KillButton"
         android:title="@string/kill_button" />
-    <CheckBoxPreference
+    <!-- <CheckBoxPreference
         android:defaultValue="false"
         android:key="oldLogo"
         android:summary="@string/settings_old_logo_summary"
-        android:title="@string/settings_old_logo" />
+        android:title="@string/settings_old_logo" />-->
 
 </PreferenceScreen>
