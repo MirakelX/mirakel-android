@@ -6,8 +6,8 @@
         android:title="@string/save"
         android:icon="@android:drawable/ic_menu_save"/>
     <item
-        android:text="@android:string/cancel"
-        android:title="@+id/cancel"
+        android:title="@android:string/cancel"
+        android:id="@+id/cancel"
         android:icon="@android:drawable/ic_menu_close_clear_cancel"/>
 
 </menu>
