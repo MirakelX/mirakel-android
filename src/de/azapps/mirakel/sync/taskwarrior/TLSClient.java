@@ -208,7 +208,7 @@ public class TLSClient {
 			Log.d(TAG, "connected to " + host + ":" + port);
 			_socket = (SSLSocket) sslFact.createSocket();
 			 if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.JELLY_BEAN)
-				 _socket.setEnabledProtocols(new String[]{"TLSv1.2"});
+				 _socket.setEnabledProtocols(new String[]{"TLSv1.2","TLSv1.1"});
 			_socket.setUseClientMode(true);
 			_socket.setEnableSessionCreation(true);
 			_socket.setNeedClientAuth(true);
