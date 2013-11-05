@@ -72,7 +72,7 @@
     <string name="default_list">Default List</string>
     <string name="notifications_big">Show big notifications</string>
     <string name="notifications_zero_show">Hide notification if empty</string>
-    <string name="notificationsShowDone">Handle done tasks</string>
+    <string name="notificationsShowDone">Display done tasks in notification bar</string>
     <string name="reminder">Reminder</string>
     <string name="reminders_persistent">Persistent reminder</string>
 

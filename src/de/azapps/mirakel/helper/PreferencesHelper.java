@@ -435,6 +435,9 @@ public class PreferencesHelper {
 			} else {
 				ListMirakel startupList = getListFromIdString(settings
 						.getString("startupList", "-1"));
+				if(startupList==null) {
+					startupList=SpecialList.firstSpecialSafe(activity);
+				}
 				startupListPreference.setSummary(activity.getString(
 						R.string.startup_list_summary, startupList.getName()));
 				startupListPreference.setEnabled(true);

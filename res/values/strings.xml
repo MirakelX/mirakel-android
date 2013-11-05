@@ -256,7 +256,7 @@ Device: %3$s\n]]>
     <string name="crash_dialog_ok_toast">Thank you !</string>
     
     <!-- Sync -->
-    <string name="message_from_server">The server wants to say you: %s</string>
+    <string name="message_from_server">Taskwarrior server has sent a message: %s</string>
     
     <!-- Colors -->
     <string name="list_change_color">Change Color</string>
