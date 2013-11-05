@@ -63,7 +63,7 @@
         android:title="@string/task_menu_sorting">
     </item>
     <item
-        android:id="@+id/menu_sync_now_task"
+        android:id="@+id/menu_sync_now"
         mirakel:showAsAction="never"
         android:title="@string/action_sync_now"/>
     <item

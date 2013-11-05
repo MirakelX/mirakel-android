@@ -195,6 +195,7 @@
     <string name="register_server">If you need an account for the sync on our server, please send us an e-mail. With the next version you\'ll get the possibility to register an account!</string>
     <string name="send_mail">Send e-mail</string>
     <string name="special_lists_title">Special Lists</string>
+    <string name="register">Register</string>
 
     <!-- Colors -->
     <string name="preferences_colorize">Colors</string>

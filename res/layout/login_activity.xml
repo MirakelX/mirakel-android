@@ -89,7 +89,7 @@
                         android:id="@+id/send_mail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/send_mail" />
+                        android:text="@string/register" />
                     <Button
                         android:id="@+id/load_configfile"
                         android:layout_width="match_parent"
