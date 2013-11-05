@@ -39,6 +39,7 @@ import android.widget.Toast;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
@@ -324,7 +325,13 @@ public class ExportImport {
 			return false;
 		}
 		Log.i(TAG, json);
-		JsonObject i = new JsonParser().parse(json).getAsJsonObject();
+		JsonObject i;
+		try {
+			i = new JsonParser().parse(json).getAsJsonObject();
+		} catch (JsonSyntaxException e2) {
+			Log.e(TAG, "malformed backup");
+			return false;
+		}
 		Set<Entry<String, JsonElement>> f = i.entrySet();
 		SparseIntArray listMapping = new SparseIntArray();
 		List<Pair<Integer, String>> contents = new ArrayList<Pair<Integer, String>>();
