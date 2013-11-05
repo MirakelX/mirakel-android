@@ -21,10 +21,10 @@ package de.azapps.mirakel.main_activity;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.azapps.mirakel.helper.Log;
 import android.content.Context;
 import android.preference.PreferenceManager;
 import android.widget.ArrayAdapter;
+import de.azapps.mirakel.helper.Log;
 
 public class MirakelArrayAdapter<T> extends ArrayAdapter<T> {
 	private static final String TAG = "MirakelArrayAdapter";

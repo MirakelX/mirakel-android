@@ -1,10 +1,5 @@
 package de.azapps.mirakel.settings;
 
-import com.larswerkman.colorpicker.ColorPicker;
-import com.larswerkman.colorpicker.SVBar;
-
-import de.azapps.mirakel.helper.Log;
-import de.azapps.mirakelandroid.R;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -18,6 +13,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.larswerkman.colorpicker.ColorPicker;
+import com.larswerkman.colorpicker.SVBar;
+
+import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakelandroid.R;
 
 public class ColorPickerPref extends DialogPreference {
 	private static final String TAG = "NumPickerPref";

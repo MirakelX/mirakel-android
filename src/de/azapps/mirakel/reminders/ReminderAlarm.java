@@ -20,7 +20,8 @@ package de.azapps.mirakel.reminders;
 
 
 import java.util.ArrayList;
-import java.util.Calendar;import java.util.GregorianCalendar;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import android.app.AlarmManager;

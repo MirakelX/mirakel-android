@@ -2,8 +2,8 @@ package de.azapps.mirakel.model.recurring;
 
 import java.util.Calendar;
 
-import de.azapps.mirakel.helper.DateTimeHelper;
 import android.content.ContentValues;
+import de.azapps.mirakel.helper.DateTimeHelper;
 
 public class RecurringBase {
 	private String label;

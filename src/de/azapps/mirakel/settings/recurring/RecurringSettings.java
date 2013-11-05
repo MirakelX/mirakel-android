@@ -20,10 +20,11 @@ package de.azapps.mirakel.settings.recurring;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.app.DatePickerDialog.OnDateSetListener;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.preference.CheckBoxPreference;

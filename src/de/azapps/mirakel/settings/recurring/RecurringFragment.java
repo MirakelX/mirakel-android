@@ -18,10 +18,6 @@
  ******************************************************************************/
 package de.azapps.mirakel.settings.recurring;
 
-import de.azapps.mirakel.helper.Log;
-import de.azapps.mirakel.model.recurring.Recurring;
-import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
-import de.azapps.mirakelandroid.R;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.os.Build;
@@ -31,6 +27,10 @@ import android.preference.PreferenceFragment;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageButton;
+import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.model.recurring.Recurring;
+import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
+import de.azapps.mirakelandroid.R;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class RecurringFragment extends PreferenceFragment{

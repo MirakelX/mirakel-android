@@ -1,6 +1,5 @@
 package de.azapps.mirakel.helper;
 
-import de.azapps.mirakelandroid.R;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -10,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import de.azapps.mirakelandroid.R;
 
 public class DueDialog extends AlertDialog {
 	private Context ctx;

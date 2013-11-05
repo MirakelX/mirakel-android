@@ -1,7 +1,5 @@
 package de.azapps.mirakel.settings;
 
-import de.azapps.mirakel.helper.Log;
-import de.azapps.mirakelandroid.R;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -17,6 +15,8 @@ import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.NumberPicker.OnValueChangeListener;
 import android.widget.TextView;
+import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakelandroid.R;
 
 public class NumPickerPref extends DialogPreference {
 	private static final String TAG = "NumPickerPref";

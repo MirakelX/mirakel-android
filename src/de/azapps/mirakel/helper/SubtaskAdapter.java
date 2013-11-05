@@ -2,7 +2,6 @@ package de.azapps.mirakel.helper;
 
 import java.util.List;
 
-import de.azapps.mirakel.model.task.Task;
 import android.content.Context;
 import android.os.Handler;
 import android.view.View;
@@ -11,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import de.azapps.mirakel.model.task.Task;
 
 public class SubtaskAdapter extends ArrayAdapter<Task> {
 

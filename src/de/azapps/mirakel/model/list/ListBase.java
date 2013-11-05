@@ -19,8 +19,8 @@
 
 package de.azapps.mirakel.model.list;
 
-import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 import android.content.ContentValues;
+import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 
 class ListBase {
 
