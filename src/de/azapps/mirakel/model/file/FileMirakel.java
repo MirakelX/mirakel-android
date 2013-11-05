@@ -40,8 +40,10 @@ public class FileMirakel extends FileBase {
 	}
 
 	public void save(boolean log) throws NoSuchListException {
+		database.beginTransaction();
 		ContentValues values = getContentValues();
 		database.update(TABLE, values, "_id = " + getId(), null);
+		database.endTransaction();
 	}
 
 	public Bitmap getPreview() {
@@ -156,28 +158,39 @@ public class FileMirakel extends FileBase {
 	}
 
 	public FileMirakel create() {
-
 		ContentValues values = getContentValues();
 		values.remove("_id");
+		database.beginTransaction();
 		int insertId = (int) database.insertOrThrow(TABLE, null, values);
+		database.endTransaction();
 		return FileMirakel.get(insertId);
 	}
 
 	public void destroy() {
+		destroy(true);
+	}
+
+	public void destroy(boolean oneTransaction) {
+		if (oneTransaction)
+			database.beginTransaction();
 		database.delete(TABLE, "_id=" + getId(), null);
+		if (oneTransaction)
+			database.endTransaction();
 		new File(cacheDir, getId() + ".png").delete();
 	}
 
 	public static void destroyForTask(Task t) {
 		List<FileMirakel> files = getForTask(t);
+		database.beginTransaction();
 		for (FileMirakel file : files) {
 			File destFile = new File(FileMirakel.cacheDir, file.getId()
 					+ ".png");
 			if (destFile.exists()) {
 				destFile.delete();
 			}
-			file.destroy();
+			file.destroy(false);
 		}
+		database.endTransaction();
 	}
 
 	/**

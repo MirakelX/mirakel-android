@@ -33,8 +33,10 @@ public class Recurring extends RecurringBase {
 	}
 
 	public void save() {
+		database.beginTransaction();
 		ContentValues values = getContentValues();
 		database.update(TABLE, values, "_id = " + getId(), null);
+		database.endTransaction();
 	}
 
 	// Static
@@ -66,10 +68,11 @@ public class Recurring extends RecurringBase {
 	}
 
 	public Recurring create() {
-
+		database.beginTransaction();
 		ContentValues values = getContentValues();
 		values.remove("_id");
 		int insertId = (int) database.insertOrThrow(TABLE, null, values);
+		database.endTransaction();
 		return Recurring.get(insertId);
 	}
 
@@ -133,11 +136,13 @@ public class Recurring extends RecurringBase {
 	}
 
 	public static void destroyTemporary(int recurrenceId) {
-		Log.e("Blubb","destroy: " + recurrenceId);
+		database.beginTransaction();
 		database.delete(TABLE, "temporary=1 AND _id=" + recurrenceId, null);
+		database.endTransaction();
 	}
 
 	public void destroy() {
+		database.beginTransaction();
 		database.delete(TABLE, "_id=" + getId(), null);
 		// Fix recurring onDelete in TaskTable
 		ContentValues cv = new ContentValues();
@@ -146,6 +151,7 @@ public class Recurring extends RecurringBase {
 		cv = new ContentValues();
 		cv.put("recurring_reminder", -1);
 		database.update(Task.TABLE, cv, "recurring_reminder=" + getId(), null);
+		database.endTransaction();
 	}
 
 	public static List<Recurring> all() {

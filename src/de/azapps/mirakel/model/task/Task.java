@@ -117,7 +117,9 @@ public class Task extends TaskBase {
 			Task old = Task.get(getId());
 			Helpers.updateLog(old, context);
 		}
+		database.beginTransaction();
 		database.update(TABLE, values, "_id = " + getId(), null);
+		database.endTransaction();
 		clearEdited();
 	}
 
@@ -211,6 +213,7 @@ public class Task extends TaskBase {
 		if (!force)
 			Helpers.updateLog(this, context);
 		long id = getId();
+		database.beginTransaction();
 		if (getSyncState() == SYNC_STATE.ADD || force) {
 			database.delete(TABLE, "_id = " + id, null);
 			FileMirakel.destroyForTask(this);
@@ -221,6 +224,7 @@ public class Task extends TaskBase {
 			values.put("sync_state", SYNC_STATE.DELETE.toInt());
 			database.update(TABLE, values, "_id=" + id, null);
 		}
+		database.endTransaction();
 	}
 
 	public List<Task> getSubtasks() {
@@ -259,15 +263,19 @@ public class Task extends TaskBase {
 	}
 
 	public void addSubtask(Task t) throws NoSuchListException {
+		database.beginTransaction();
 		ContentValues cv = new ContentValues();
 		cv.put("parent_id", getId());
 		cv.put("child_id", t.getId());
 		database.insert(SUBTASK_TABLE, null, cv);
+		database.endTransaction();
 	}
 
 	public void deleteSubtask(Task s) {
+		database.beginTransaction();
 		database.delete(SUBTASK_TABLE, "parent_id=" + getId()
 				+ " and child_id=" + s.getId(), null);
+		database.endTransaction();
 
 	}
 
@@ -296,11 +304,13 @@ public class Task extends TaskBase {
 	}
 
 	public static void deleteDoneTasks() {
+		database.beginTransaction();
 		ContentValues values = new ContentValues();
 		values.put("sync_state", SYNC_STATE.DELETE.toInt());
 		String where = "sync_state!=" + SYNC_STATE.ADD + " AND done=1";
 		database.update(TABLE, values, where, null);
 		database.delete(TABLE, where, null);
+		database.endTransaction();
 	}
 
 	public String toJson() {
@@ -418,7 +428,6 @@ public class Task extends TaskBase {
 	}
 
 	public Task create() throws NoSuchListException {
-
 		ContentValues values = new ContentValues();
 		values.put("uuid", getUUID());
 		values.put("name", getName());
@@ -433,6 +442,7 @@ public class Task extends TaskBase {
 		values.put("sync_state", SYNC_STATE.ADD.toInt());
 		values.put("created_at", DateTimeHelper.formatDateTime(getCreatedAt()));
 		values.put("updated_at", DateTimeHelper.formatDateTime(getUpdatedAt()));
+		database.beginTransaction();
 		long insertId = database.insertOrThrow(TABLE, null, values);
 		Cursor cursor = database.query(TABLE, allColumns, "_id = " + insertId,
 				null, null, null, null);
@@ -440,6 +450,7 @@ public class Task extends TaskBase {
 		Task newTask = cursorToTask(cursor);
 		cursor.close();
 		Helpers.logCreate(newTask, context);
+		database.endTransaction();
 		return newTask;
 	}
 

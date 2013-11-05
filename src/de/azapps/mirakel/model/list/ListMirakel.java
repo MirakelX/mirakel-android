@@ -93,6 +93,7 @@ public class ListMirakel extends ListBase {
 		SharedPreferences.Editor editor = preferences.edit();
 		// TODO implement for specialLists
 		if (getId() > 0) {
+			database.beginTransaction();
 			setSyncState(getSyncState() == SYNC_STATE.ADD
 					|| getSyncState() == SYNC_STATE.IS_SYNCED ? getSyncState()
 					: SYNC_STATE.NEED_SYNC);
@@ -103,6 +104,7 @@ public class ListMirakel extends ListBase {
 			if (log)
 				Helpers.updateLog(ListMirakel.getList(getId()), context);
 			database.update(ListMirakel.TABLE, values, "_id = " + getId(), null);
+			database.endTransaction();
 
 		}
 		editor.commit();
@@ -118,12 +120,12 @@ public class ListMirakel extends ListBase {
 	}
 
 	public void destroy(boolean force) {
-		database.beginTransaction();
 		if (!force)
 			Helpers.updateLog(this, context);
 		long id = getId();
 		if (id <= 0)
 			return;
+		database.beginTransaction();
 
 		if (getSyncState() == SYNC_STATE.ADD || force) {
 			database.delete(Task.TABLE, "list_id = " + id, null);
@@ -290,6 +292,7 @@ public class ListMirakel extends ListBase {
 	 * @return new List
 	 */
 	public static ListMirakel newList(String name, int sort_by) {
+		database.beginTransaction();
 		ContentValues values = new ContentValues();
 		values.put("name", name);
 		values.put("sort_by", sort_by);
@@ -318,6 +321,7 @@ public class ListMirakel extends ListBase {
 		ListMirakel newList = cursorToList(cursor);
 		cursor.close();
 		Helpers.logCreate(newList, context);
+		database.endTransaction();
 		return newList;
 	}
 

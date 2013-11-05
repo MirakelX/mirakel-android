@@ -34,8 +34,10 @@ public class Semantic extends SemanticBase {
 	}
 
 	public void save() {
+		database.beginTransaction();
 		ContentValues values = getContentValues();
 		database.update(TABLE, values, "_id = " + getId(), null);
+		database.endTransaction();
 		initAll();
 	}
 
@@ -67,9 +69,11 @@ public class Semantic extends SemanticBase {
 	}
 
 	public Semantic create() {
+		database.beginTransaction();
 		ContentValues values = getContentValues();
 		values.remove("_id");
 		int insertId = (int) database.insertOrThrow(TABLE, null, values);
+		database.endTransaction();
 		initAll();
 		return Semantic.get(insertId);
 	}
@@ -107,7 +111,9 @@ public class Semantic extends SemanticBase {
 	}
 
 	public void destroy() {
+		database.beginTransaction();
 		database.delete(TABLE, "_id=" + getId(), null);
+		database.endTransaction();
 		initAll();
 	}
 

@@ -155,6 +155,7 @@ public class SpecialList extends ListMirakel {
 
 	public static SpecialList newSpecialList(String name, String whereQuery,
 			boolean active, Context context) {
+		database.beginTransaction();
 
 		ContentValues values = new ContentValues();
 		values.put("name", name);
@@ -169,6 +170,7 @@ public class SpecialList extends ListMirakel {
 		database.execSQL("update " + TABLE + " SET lft=(SELECT MAX(rgt) from "
 				+ TABLE + ")+1, rgt=(SELECT MAX(rgt) from " + TABLE
 				+ ")+2 where _id=" + insertId);
+		database.endTransaction();
 		return newSList;
 	}
 
@@ -179,11 +181,13 @@ public class SpecialList extends ListMirakel {
 	 *            The List
 	 */
 	public void save() {
+		database.beginTransaction();
 		setSyncState(getSyncState() == SYNC_STATE.ADD
 				|| getSyncState() == SYNC_STATE.IS_SYNCED ? getSyncState()
 				: SYNC_STATE.NEED_SYNC);
 		ContentValues values = getContentValues();
 		database.update(TABLE, values, "_id = " + Math.abs(getId()), null);
+		database.endTransaction();
 	}
 
 	/**
@@ -192,6 +196,7 @@ public class SpecialList extends ListMirakel {
 	 * @param list
 	 */
 	public void destroy() {
+		database.beginTransaction();
 		long id = Math.abs(getId());
 
 		if (getSyncState() != SYNC_STATE.ADD) {
@@ -206,6 +211,7 @@ public class SpecialList extends ListMirakel {
 		database.rawQuery("UPDATE " + TABLE + " SET lft=lft-2 WHERE lft>"
 				+ getLft() + "; UPDATE " + TABLE + " SET rgt=rgt-2 WHERE rgt>"
 				+ getRgt() + ";", null);
+		database.endTransaction();
 
 	}
 
