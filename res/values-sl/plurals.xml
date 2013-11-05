@@ -49,11 +49,23 @@
     <item quantity="few">meseci</item>
     <item quantity="other">mesecev</item>
   </plurals>
+  <plurals name="every_months">
+    <item quantity="one">Vsak %d mesec</item>
+    <item quantity="two">Vsake %d meseca</item>
+    <item quantity="few">Vsake %d mesece</item>
+    <item quantity="other">Vsakih %d mesecev</item>
+  </plurals>
   <plurals name="days">
     <item quantity="one">dan</item>
     <item quantity="two">dneva</item>
     <item quantity="few">dnevi</item>
     <item quantity="other">dni</item>
+  </plurals>
+  <plurals name="every_days">
+    <item quantity="one">Vsak %d dan</item>
+    <item quantity="two">Vsaka %d dneva</item>
+    <item quantity="few">Vsake %d dni</item>
+    <item quantity="other">Vsakih %d dni</item>
   </plurals>
   <plurals name="years">
     <item quantity="one">leto</item>
@@ -61,17 +73,35 @@
     <item quantity="few">leta</item>
     <item quantity="other">let</item>
   </plurals>
+  <plurals name="every_years">
+    <item quantity="one">Vsako %d leto</item>
+    <item quantity="two">Vsake %d leti</item>
+    <item quantity="few">Vsake %d leta</item>
+    <item quantity="other">Vsakih %d let</item>
+  </plurals>
   <plurals name="minutes">
     <item quantity="one">minuta</item>
     <item quantity="two">minuti</item>
     <item quantity="few">minute</item>
     <item quantity="other">minut</item>
   </plurals>
+  <plurals name="every_minutes">
+    <item quantity="one">Vsako %d minuto</item>
+    <item quantity="two">Vsake %d minuti</item>
+    <item quantity="few">Vsake %d minute</item>
+    <item quantity="other">Vsakih %d minut</item>
+  </plurals>
   <plurals name="hours">
     <item quantity="one">ura</item>
     <item quantity="two">uri</item>
     <item quantity="few">ure</item>
     <item quantity="other">ur</item>
+  </plurals>
+  <plurals name="every_hours">
+    <item quantity="one">Vsako %d uro</item>
+    <item quantity="two">Vsaki %d uri</item>
+    <item quantity="few">Vsake %d ure</item>
+    <item quantity="other">Vsakih %d ur</item>
   </plurals>
   <plurals name="subtasks">
     <item quantity="one">%d podrejena naloga</item>
