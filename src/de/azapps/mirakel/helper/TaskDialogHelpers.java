@@ -189,6 +189,10 @@ public class TaskDialogHelpers {
 										int which) {
 									int minute = 0, hour = 0, day = 0, month = 0, year = 0;
 									int val = dueDialog.getValue();
+									if(val==0) {
+										Toast.makeText(context, context.getString(R.string.recurring_not_zero), Toast.LENGTH_LONG).show();
+										return;
+									}
 									VALUE dayYear = dueDialog.getDayYear();
 									String label = "";
 									switch (dayYear) {

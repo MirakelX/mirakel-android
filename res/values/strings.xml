@@ -301,6 +301,7 @@ Device: %3$s\n]]>
 	<string name="beginning_end">Beginning and End</string>
 	<string name="save">Save</string>
 	<string name="file_to_large">Failed to create thumbnail</string>
+	<string name="recurring_not_zero">Recurring can\'t be zero!</string>
 	
 	
 </resources>
