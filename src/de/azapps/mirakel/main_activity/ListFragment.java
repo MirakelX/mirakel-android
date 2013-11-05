@@ -379,6 +379,9 @@ public class ListFragment extends Fragment {
 									l.setName(input.getText().toString());
 								l.save(list != null);
 								update();
+								if(list==null){
+									listView.setSelection(listView.getAdapter().getCount() - 1);
+								}
 							}
 						})
 				.setNegativeButton(main.getString(android.R.string.cancel),
