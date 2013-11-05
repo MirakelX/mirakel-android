@@ -171,8 +171,7 @@ public class SettingsActivity extends PreferenceActivity {
 	protected void onResume() {
 		super.onResume();
 		if (darkTheme != PreferenceManager.getDefaultSharedPreferences(this)
-				.getBoolean("DarkTheme", false)
-				&& !Helpers.isTablet(this)) {
+				.getBoolean("DarkTheme", false) && !Helpers.isTablet(this)) {
 			finish();
 			startActivity(getIntent());
 		}
@@ -267,46 +266,46 @@ public class SettingsActivity extends PreferenceActivity {
 						findPreference("syncFrequency"), this);
 			}
 			break;
-			case FILE_ANY_DO:
-				if (resultCode != RESULT_OK)
-					return;
-				final String path_any_do = Helpers.getPathFromUri(data.getData(),
-						this);
+		case FILE_ANY_DO:
+			if (resultCode != RESULT_OK)
+				return;
+			final String path_any_do = Helpers.getPathFromUri(data.getData(),
+					this);
 
-				// Do the import in a background-task
-				new AsyncTask<String, Void, Boolean>() {
-					ProgressDialog dialog;
+			// Do the import in a background-task
+			new AsyncTask<String, Void, Boolean>() {
+				ProgressDialog dialog;
 
-					@Override
-					protected Boolean doInBackground(String... params) {
-						return ExportImport.importAnyDo(that, path_any_do);
+				@Override
+				protected Boolean doInBackground(String... params) {
+					return ExportImport.importAnyDo(that, path_any_do);
+				}
+
+				@Override
+				protected void onPostExecute(Boolean success) {
+					dialog.dismiss();
+					if (!success) {
+						Toast.makeText(that, R.string.any_do_unsuccess,
+								Toast.LENGTH_LONG).show();
+					} else {
+						Toast.makeText(that, R.string.any_do_success,
+								Toast.LENGTH_SHORT).show();
+						android.os.Process.killProcess(android.os.Process
+								.myPid()); // ugly
+											// but
+											// simple
 					}
+				}
 
-					@Override
-					protected void onPostExecute(Boolean success) {
-						dialog.dismiss();
-						if (!success) {
-							Toast.makeText(that, R.string.any_do_unsuccess,
-									Toast.LENGTH_LONG).show();
-						} else {
-							Toast.makeText(that, R.string.any_do_success,
-									Toast.LENGTH_SHORT).show();
-							android.os.Process.killProcess(android.os.Process
-									.myPid()); // ugly
-												// but
-												// simple
-						}
-					}
+				@Override
+				protected void onPreExecute() {
+					dialog = ProgressDialog.show(that,
+							that.getString(R.string.importing),
+							that.getString(R.string.wait), true);
+				}
+			}.execute("");
 
-					@Override
-					protected void onPreExecute() {
-						dialog = ProgressDialog.show(that,
-								that.getString(R.string.importing),
-								that.getString(R.string.wait), true);
-					}
-				}.execute("");
-
-				break;
+			break;
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
@@ -335,5 +334,11 @@ public class SettingsActivity extends PreferenceActivity {
 		}
 		mAdapter = new SettingsAdapter(this, mHeaders);
 		super.setListAdapter(mAdapter);
+	}
+
+	@Override
+	protected boolean isValidFragment(String fragmentName) {
+		//TODO test this if have kitkat
+		return true;
 	}
 }

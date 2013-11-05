@@ -40,6 +40,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.static_activities.SettingsFragment;
 import de.azapps.mirakelandroid.R;
 
 /**
@@ -245,4 +246,9 @@ public abstract class ListSettings extends PreferenceActivity {
 		loaded = false;
 	}
 
+	@Override
+	protected boolean isValidFragment(String fragmentName) {
+		//TODO test this if have kitkat
+		return true;
+	}
 }
