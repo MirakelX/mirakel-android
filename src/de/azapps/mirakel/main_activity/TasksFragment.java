@@ -268,7 +268,7 @@ public class TasksFragment extends Fragment {
 		ListMirakel list = main.getCurrentList();
 		try {
 			Task task = Semantic.createTask(name, list,
-					main.preferences.getBoolean("semanticNewTask", true));
+					main.preferences.getBoolean("semanticNewTask", true),getActivity());
 
 			adapter.addToHead(task);
 			values.add(0, task);

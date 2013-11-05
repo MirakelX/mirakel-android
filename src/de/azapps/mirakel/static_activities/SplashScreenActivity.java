@@ -55,7 +55,7 @@ public class SplashScreenActivity extends Activity {
 			ListMirakel sl = SpecialList.firstSpecial();
 			if (sl == null) {
 				sl = SpecialList.newSpecialList(getString(R.string.list_all),
-						" done=0 ", true);
+						" done=0 ", true,this);
 			}
 			int listId = Integer.parseInt(preferences.getString("startupList",
 					"" + sl.getId()));

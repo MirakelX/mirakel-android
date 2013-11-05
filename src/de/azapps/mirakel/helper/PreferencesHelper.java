@@ -271,14 +271,15 @@ public class PreferencesHelper {
 	}
 
 	private ListMirakel getListFromIdString(String preference) {
+		ListMirakel list;
 		try {
-			return ListMirakel.getList(Integer.parseInt(preference));
+			list = ListMirakel.getList(Integer.parseInt(preference));
 		} catch (NumberFormatException e) {
-			ListMirakel list = SpecialList.firstSpecial();
-			if (list == null)
-				list = ListMirakel.first();
-			return list;
+			list = SpecialList.firstSpecial();
 		}
+		if (list == null)
+			list = ListMirakel.safeFirst(activity);
+		return list;
 	}
 
 	@SuppressLint("NewApi")
@@ -435,8 +436,8 @@ public class PreferencesHelper {
 			} else {
 				ListMirakel startupList = getListFromIdString(settings
 						.getString("startupList", "-1"));
-				if(startupList==null) {
-					startupList=SpecialList.firstSpecialSafe(activity);
+				if (startupList == null) {
+					startupList = SpecialList.firstSpecialSafe(activity);
 				}
 				startupListPreference.setSummary(activity.getString(
 						R.string.startup_list_summary, startupList.getName()));
@@ -1300,8 +1301,8 @@ public class PreferencesHelper {
 						public boolean onPreferenceChange(
 								Preference preference, Object newValue) {
 							settings.edit()
-									.putBoolean("useTabletLayout", (Boolean)newValue)
-									.commit();
+									.putBoolean("useTabletLayout",
+											(Boolean) newValue).commit();
 							android.os.Process.killProcess(android.os.Process
 									.myPid());
 							return false;

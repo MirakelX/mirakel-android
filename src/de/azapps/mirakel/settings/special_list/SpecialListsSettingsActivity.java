@@ -41,7 +41,7 @@ public class SpecialListsSettingsActivity extends ListSettings {
 
 	private SpecialList newSpecialList() {
 		return SpecialList.newSpecialList(
-				getString(R.string.special_lists_new), "", true);
+				getString(R.string.special_lists_new), "", true,this);
 	}
 
 	@SuppressLint("NewApi")

@@ -612,7 +612,7 @@ public class TaskDialogHelpers {
 					list = parent.getList();
 			}
 			Task t = Semantic.createTask(name, list,
-					settings.getBoolean("semanticNewTask", true));
+					settings.getBoolean("semanticNewTask", true),ctx);
 			try {
 				parent.addSubtask(t);
 			} catch (NoSuchListException e) {

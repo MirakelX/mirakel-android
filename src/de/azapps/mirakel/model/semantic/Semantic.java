@@ -154,18 +154,17 @@ public class Semantic extends SemanticBase {
 	}
 
 	public static Task createTask(String taskName, ListMirakel currentList,
-			boolean useSemantic) throws NoListsException {
+			boolean useSemantic,Context context) throws NoListsException {
 		GregorianCalendar due = null;
 		int prio = 0;
 		if (currentList instanceof SearchList) {
 			currentList = SpecialList.firstSpecial();
-			if (currentList == null)
-				currentList = ListMirakel.first();
 		}
-		if (currentList.isSpecialList()) {
+		if (currentList!=null && currentList.isSpecialList()) {
 			try {
 				SpecialList slist = (SpecialList) currentList;
 				currentList = slist.getDefaultList();
+				
 				if (slist.getDefaultDate() != null) {
 					due = new GregorianCalendar();
 					due.add(GregorianCalendar.DAY_OF_MONTH,
@@ -219,6 +218,7 @@ public class Semantic extends SemanticBase {
 				throw new NoListsException();
 			}
 		}
+
 		if (useSemantic) {
 			GregorianCalendar tempdue = new GregorianCalendar();
 			String lowername = taskName.toLowerCase(Locale.getDefault());
@@ -248,12 +248,12 @@ public class Semantic extends SemanticBase {
 			}
 		}
 		if(currentList==null) {
-			currentList=ListMirakel.first();
+			currentList=ListMirakel.safeFirst(context);
 		}
 		if(currentList==null){
 			throw new NoListsException();
 		}
-		return Task.newTask(taskName, currentList.getId(), due, prio);
+		return Task.newTask(taskName, currentList, due, prio);
 	}
 
 	public static class NoListsException extends Exception {

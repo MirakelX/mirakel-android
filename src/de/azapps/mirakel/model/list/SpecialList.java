@@ -154,13 +154,13 @@ public class SpecialList extends ListMirakel {
 	}
 
 	public static SpecialList newSpecialList(String name, String whereQuery,
-			boolean active) {
+			boolean active, Context context) {
 
 		ContentValues values = new ContentValues();
 		values.put("name", name);
 		values.put("whereQuery", whereQuery);
 		values.put("active", active);
-		values.put("def_list", ListMirakel.first().getId());
+		values.put("def_list", ListMirakel.safeFirst(context).getId());
 		long insertId = database.insert(TABLE, null, values);
 		Cursor cursor = database.query(TABLE, allColumns, "_id = " + insertId,
 				null, null, null, null);
@@ -294,7 +294,9 @@ public class SpecialList extends ListMirakel {
 		SpecialList s = SpecialList.firstSpecial();
 		if (s == null) {
 			s = SpecialList.newSpecialList(ctx.getString(R.string.list_all),
-					"", true);
+					"", true,ctx);
+			if(ListMirakel.count()==0)
+				ListMirakel.safeFirst(ctx);
 			s.save(false);
 		}
 		return s;

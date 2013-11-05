@@ -402,7 +402,11 @@ public class Helpers {
 	public static void setListColorBackground(ListMirakel list, View row,
 			boolean darkTheme, int w) {
 
-		int color = list.getColor();
+		int color;
+		if (list == null)
+			color = 0;
+		else
+			color = list.getColor();
 		if (color != 0) {
 			if (darkTheme) {
 				color ^= 0x66000000;

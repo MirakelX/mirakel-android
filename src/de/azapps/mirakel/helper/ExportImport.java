@@ -152,7 +152,7 @@ public class ExportImport {
 					// Name
 					String name = m.getNamedItem("title").getTextContent();
 					// List
-					int listId;
+					ListMirakel list;
 					Node child = null;
 					if (n.getChildNodes().getLength() > 1) {
 						child = n.getChildNodes().item(1);
@@ -160,26 +160,23 @@ public class ExportImport {
 					if (child != null && child.getAttributes() != null) {
 						String listname = child.getAttributes()
 								.getNamedItem("value").getTextContent();
-						ListMirakel l = ListMirakel.findByName(listname);
-						if (l == null) {
-							l = ListMirakel.newList(listname);
+						list=ListMirakel.findByName(listname);
+						if (list == null) {
+							list = ListMirakel.newList(listname);
 						}
-						listId = l.getId();
 					} else {
 						if (settings.getBoolean("importDefaultList", false)) {
-							listId = settings.getInt("defaultImportList",
+							list = ListMirakel.getList(settings.getInt("defaultImportList",
 									SpecialList.firstSpecialSafe(context)
-											.getId());
-							if (ListMirakel.getList(listId) == null) {
-								listId = SpecialList.firstSpecialSafe(context)
-										.getId();
+											.getId()));
+							if (list == null) {
+								list = SpecialList.firstSpecialSafe(context);
 							}
 						} else {
-							listId = SpecialList.firstSpecialSafe(context)
-									.getId();
+							list = SpecialList.firstSpecialSafe(context);
 						}
 					}
-					Task t = Task.newTask(name, listId);
+					Task t = Task.newTask(name, list);
 					// Priority
 					int prio = Integer.parseInt(m.getNamedItem("importance")
 							.getTextContent());
@@ -381,7 +378,7 @@ public class ExportImport {
 			return contents;
 		}
 		int list_id = jsonTask.get("categoryId").getAsInt();
-		Task t = Task.newTask(name, listMapping.get(list_id));
+		Task t = Task.newTask(name, ListMirakel.getList(listMapping.get(list_id)));
 		taskMapping.put(jsonTask.get("id").getAsInt(), (int) t.getId());
 		if (jsonTask.has("dueDate")) {
 			Calendar due = new GregorianCalendar();

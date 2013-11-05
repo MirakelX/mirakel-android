@@ -39,6 +39,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import de.azapps.mirakel.helper.Helpers;
+import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 
@@ -89,6 +90,9 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		Task task = position >= data.size() ? null : data.get(position);
+		if(task==null) {
+			task=Task.getDummy(context,ListMirakel.safeFirst(context));
+		}
 		View row = setupRow(convertView, parent, context, layoutResourceId,
 				task, listId <= 0, darkTheme);
 		TaskHolder holder = (TaskHolder) row.getTag();

@@ -511,7 +511,7 @@ public class MainActivity extends ActionBarActivity implements
 						task = Semantic.createTask(preferences.getString(
 								"photoDefaultTitle",
 								getString(R.string.photo_default_title)),
-								currentList, false);
+								currentList, false,this);
 						safeSaveTask(task);
 					}
 					task.addFile(this, Helpers.getPathFromUri(fileUri, this));
@@ -633,7 +633,7 @@ public class MainActivity extends ActionBarActivity implements
 
 	private void addTaskFromSharing(int list_id) {
 		Task task = Task.newTask(newTaskSubject == null ? "" : newTaskSubject,
-				list_id);
+				ListMirakel.getList(list_id));
 		task.setContent(newTaskContent == null ? "" : newTaskContent);
 		safeSaveTask(task);
 		setCurrentTask(task);

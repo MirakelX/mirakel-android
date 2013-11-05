@@ -353,6 +353,12 @@ public class Task extends TaskBase {
 		return new Task(ctx.getString(R.string.task_empty));
 	}
 
+	public static Task getDummy(Context ctx, ListMirakel list) {
+		Task task = new Task(ctx.getString(R.string.task_empty));
+		task.setList(list);
+		return task;
+	}
+
 	/**
 	 * Initialize the Database and the preferences
 	 * 
@@ -372,24 +378,13 @@ public class Task extends TaskBase {
 		dbHelper.close();
 	}
 
-	/**
-	 * Shortcut for creating a new Task
-	 * 
-	 * @param name
-	 * @param list_id
-	 * @return
-	 */
-	public static Task newTask(String name, long list_id) {
-		return newTask(name, list_id, "", false, null, 0);
-	}
-
-	public static Task newTask(String name, long list_id,
+	public static Task newTask(String name, ListMirakel list,
 			GregorianCalendar due, int prio) {
-		return newTask(name, list_id, "", false, due, prio);
+		return newTask(name, list, "", false, due, prio);
 	}
 
 	public static Task newTask(String name, ListMirakel list) {
-		return newTask(name, list.getId(), "", false, null, 0);
+		return newTask(name, list, "", false, null, 0);
 	}
 
 	/**
@@ -403,17 +398,19 @@ public class Task extends TaskBase {
 	 * @param priority
 	 * @return
 	 */
-	public static Task newTask(String name, long list_id, String content,
+
+	public static Task newTask(String name, ListMirakel list, String content,
 			boolean done, GregorianCalendar due, int priority) {
 		Calendar now = new GregorianCalendar();
-		Task t = new Task(0, java.util.UUID.randomUUID().toString(),
-				ListMirakel.getList((int) list_id), name, content, done, due,
-				null, priority, now, now, SYNC_STATE.ADD, "", -1, -1);
+		Task t = new Task(0, java.util.UUID.randomUUID().toString(), list,
+				name, content, done, due, null, priority, now, now,
+				SYNC_STATE.ADD, "", -1, -1);
 
 		try {
 			return t.create();
 		} catch (NoSuchListException e) {
 			Log.wtf(TAG, "List vanish");
+			Log.e("Blubb", Log.getStackTraceString(e));
 			Toast.makeText(context, R.string.no_lists, Toast.LENGTH_LONG)
 					.show();
 			return null;
