@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -26,6 +27,7 @@ import android.graphics.Shader;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.text.format.DateUtils;
@@ -187,9 +189,19 @@ public class Helpers {
 			return "";
 		else {
 			if (settings.getBoolean("dateFormatRelative", true)) {
-				return DateUtils.getRelativeTimeSpanString(
-						date.getTimeInMillis(), (new Date()).getTime(),
-						DateUtils.DAY_IN_MILLIS);
+				GregorianCalendar now = new GregorianCalendar();
+				now.setTime(new Date());
+				if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR1
+						|| !(now.get(Calendar.YEAR) == date.get(Calendar.YEAR)
+								&& now.get(Calendar.DAY_OF_MONTH) == date
+										.get(Calendar.DAY_OF_MONTH) && now
+								.get(Calendar.MONTH) == date.get(Calendar.MONTH))) {
+					return DateUtils.getRelativeTimeSpanString(
+							date.getTimeInMillis(), (new Date()).getTime(),
+							DateUtils.DAY_IN_MILLIS);
+				} else {
+					return ctx.getString(R.string.today);
+				}
 			} else {
 				return new SimpleDateFormat(ctx.getString(R.string.dateFormat),
 						Locale.getDefault()).format(date.getTime());
