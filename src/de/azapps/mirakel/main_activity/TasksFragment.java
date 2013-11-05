@@ -240,6 +240,8 @@ public class TasksFragment extends Fragment {
 					Log.d(TAG,"clear focus");
 					newTask.setOnFocusChangeListener(null);
 					newTask.clearFocus();
+					if(getActivity()==null)
+						return;
 
 					InputMethodManager imm = (InputMethodManager) getActivity()
 							.getSystemService(Context.INPUT_METHOD_SERVICE);
