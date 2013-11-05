@@ -17,6 +17,11 @@
     </style>
   </head>
   <body>
+$ 2.1.2
+  % Version 2.1.2
+  ! Sorry for the inconvenience but we wanted to fix the last bugs which let the app crash ;)
+    * Bugfixes
+   ! Some of you asked, we delivered: <a href="https://flattr.com/thing/2188714/Mirakel-easy-task-management-for-professionals">Flattr</a> us!
 $ 2.1.1
   % Version 2.1.1
   _ 2013-11-03
