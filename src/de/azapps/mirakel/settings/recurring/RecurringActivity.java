@@ -96,8 +96,33 @@ public class RecurringActivity extends ListSettings {
 
 	@Override
 	protected OnClickListener getHelpOnClickListener() {
-		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public OnClickListener getDelOnClickListener() {
+		return new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				recurring.destroy();
+				if (!onIsMultiPane())
+					finish();
+				else {
+					try {
+						if(getHeader().size()>0)
+							onHeaderClick(getHeader().get(0), 0);
+						invalidateHeaders();
+					} catch (Exception e) {
+						finish();
+					}
+				}
+			}
+		};
+	}
+	
+	public void setReccuring(Recurring r){
+		this.recurring=r;
 	}
 
 }
