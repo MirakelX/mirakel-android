@@ -18,6 +18,7 @@
  ******************************************************************************/
 package de.azapps.mirakel.settings.special_list;
 
+import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakelandroid.R;
@@ -46,7 +47,10 @@ public class SpecialListsSettingsFragment extends PreferenceFragment {
 			final SpecialList specialList = SpecialList
 					.getSpecialList(getArguments().getInt("id") * -1);
 			ActionBar actionbar = getActivity().getActionBar();
-			actionbar.setTitle(specialList.getName());
+			if (specialList == null)
+				actionbar.setTitle("No list");
+			else
+				actionbar.setTitle(specialList.getName());
 			ImageButton delList = new ImageButton(getActivity());
 			delList.setBackgroundResource(android.R.drawable.ic_menu_delete);
 			actionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
@@ -74,7 +78,11 @@ public class SpecialListsSettingsFragment extends PreferenceFragment {
 					}
 				}
 			});
+			try {
 			new SpecialListSettings(this, specialList).setup();
+			} catch (NoSuchListException e) {
+				getActivity().finish();
+			}
 		} else {
 			Log.d(TAG, "bundle null");
 		}

@@ -29,6 +29,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.settings.ListSettings;
@@ -66,7 +67,11 @@ public class SpecialListsSettingsActivity extends ListSettings {
 		specialList = SpecialList.getSpecialList(getIntent().getIntExtra("id",
 				SpecialList.firstSpecial().getId())
 				* -1);
-		new SpecialListSettings(this, specialList).setup();
+		try {
+			new SpecialListSettings(this, specialList).setup();
+		} catch (NoSuchListException e) {
+			finish();
+		}
 
 	}
 
@@ -138,10 +143,10 @@ public class SpecialListsSettingsActivity extends ListSettings {
 	@Override
 	protected OnClickListener getHelpOnClickListener() {
 		return new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
-				Helpers.openHelp(getApplicationContext(),"special-lists");
+				Helpers.openHelp(getApplicationContext(), "special-lists");
 			}
 		};
 	}

@@ -42,6 +42,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.DueDialog;
 import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.helper.DueDialog.VALUE;
@@ -72,7 +73,9 @@ public class SpecialListSettings implements OnPreferenceChangeListener {
 		this.specialList = specialList;
 	}
 
-	public void setup() {
+	public void setup() throws NoSuchListException{
+		if(specialList==null)
+			throw new NoSuchListException();
 		final EditTextPreference name = (EditTextPreference) findPreference("special_list_name");
 		name.setText(specialList.getName());
 		name.setSummary(specialList.getName());
