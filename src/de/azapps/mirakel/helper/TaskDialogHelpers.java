@@ -45,6 +45,8 @@ import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.sync.SyncAdapter;
+import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 import de.azapps.mirakelandroid.R;
 
 public class TaskDialogHelpers {
@@ -635,19 +637,20 @@ public class TaskDialogHelpers {
 				+ " WHERE name LIKE '%" + searchString + "%' AND";
 		query += " NOT _id IN (SELECT parent_id from " + Task.SUBTASK_TABLE
 				+ " where child_id=" + t.getId() + ") AND ";
-		query += "NOT _id=" + t.getId();
+		query += "NOT "+Task.ID+"=" + t.getId();
+		query += " AND NOT "+SyncAdapter.SYNC_STATE+"="+SYNC_STATE.DELETE;
 		if (optionEnabled) {
 			if (!done) {
-				query += " and done=0";
+				query += " and "+Task.DONE+"=0";
 			}
 			if (content) {
-				query += " and content is not null and not content =''";
+				query += " and "+Task.CONTENT+" is not null and not "+Task.CONTENT+" =''";
 			}
 			if (reminder) {
-				query += " and reminder is not null";
+				query += " and "+Task.REMINDER+" is not null";
 			}
 			if (listId > 0) {
-				query += " and list_id=" + listId;
+				query += " and "+Task.LIST_ID+"=" + listId;
 			} else {
 				String where = ((SpecialList) ListMirakel.getList(listId))
 						.getWhereQuery(false);

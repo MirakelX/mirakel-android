@@ -50,6 +50,7 @@ import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 import de.azapps.mirakelandroid.R;
 
@@ -104,7 +105,7 @@ public class Task extends TaskBase {
 			Log.d(TAG, "new Task equals old, didnt need to save it");
 			return;
 		}
-		if (isEdited("done") && isDone()) {
+		if (isEdited(DONE) && isDone()) {
 			setSubTasksDone();
 		}
 		setSyncState(getSyncState() == SYNC_STATE.ADD
@@ -118,7 +119,7 @@ public class Task extends TaskBase {
 			Helpers.updateLog(old, context);
 		}
 		database.beginTransaction();
-		database.update(TABLE, values, "_id = " + getId(), null);
+		database.update(TABLE, values, ID+" = " + getId(), null);
 		database.endTransaction();
 		clearEdited();
 	}
@@ -215,14 +216,14 @@ public class Task extends TaskBase {
 		long id = getId();
 		database.beginTransaction();
 		if (getSyncState() == SYNC_STATE.ADD || force) {
-			database.delete(TABLE, "_id = " + id, null);
+			database.delete(TABLE, ID+" = " + id, null);
 			FileMirakel.destroyForTask(this);
 			database.delete(SUBTASK_TABLE, "parent_id=" + id + " or child_id="
 					+ id, null);
 		} else {
 			ContentValues values = new ContentValues();
-			values.put("sync_state", SYNC_STATE.DELETE.toInt());
-			database.update(TABLE, values, "_id=" + id, null);
+			values.put(SyncAdapter.SYNC_STATE, SYNC_STATE.DELETE.toInt());
+			database.update(TABLE, values, ID+"=" + id, null);
 		}
 		database.endTransaction();
 	}
@@ -250,8 +251,8 @@ public class Task extends TaskBase {
 	}
 
 	public static List<Pair<Long, String>> getTaskNames() {
-		Cursor c = database.query(TABLE, new String[] { "_id,name" },
-				"not sync_state=" + SYNC_STATE.DELETE, null, null, null, null);
+		Cursor c = database.query(TABLE, new String[] { ID,NAME },
+				"not "+SyncAdapter.SYNC_STATE+"=" + SYNC_STATE.DELETE, null, null, null, null);
 		c.moveToFirst();
 		List<Pair<Long, String>> names = new ArrayList<Pair<Long, String>>();
 		while (!c.isAfterLast()) {
@@ -352,11 +353,14 @@ public class Task extends TaskBase {
 	private static final String TAG = "TasksDataSource";
 	private static SQLiteDatabase database;
 	private static DatabaseHelper dbHelper;
-	public static final String[] allColumns = { "_id", "uuid", "list_id",
-			"name", "content", "done", "due", "reminder", "priority",
-			"created_at", "updated_at", "sync_state", "additional_entries",
-			"recurring", "recurring_reminder" };
+	public static final String[] allColumns = {ID, UUID, LIST_ID,
+			NAME, CONTENT, DONE, DUE, REMINDER, PRIORITY,
+			Mirakel.CREATED_AT, Mirakel.UPDATED_AT, SyncAdapter.SYNC_STATE, ADDITIONAL_ENTRIES,
+			RECURRING, RECURRING_REMINDER };
+	
 
+	
+	
 	private static Context context;
 
 	public static Task getDummy(Context ctx) {
@@ -429,22 +433,22 @@ public class Task extends TaskBase {
 
 	public Task create() throws NoSuchListException {
 		ContentValues values = new ContentValues();
-		values.put("uuid", getUUID());
-		values.put("name", getName());
+		values.put(UUID, getUUID());
+		values.put(NAME, getName());
 		if (getList() == null)
 			throw new NoSuchListException();
-		values.put("list_id", getList().getId());
-		values.put("content", getContent());
-		values.put("done", isDone());
-		values.put("due",
+		values.put(LIST_ID, getList().getId());
+		values.put(CONTENT, getContent());
+		values.put(DONE, isDone());
+		values.put(DUE,
 				(getDue() == null ? null : DateTimeHelper.formatDate(getDue())));
-		values.put("priority", getPriority());
-		values.put("sync_state", SYNC_STATE.ADD.toInt());
-		values.put("created_at", DateTimeHelper.formatDateTime(getCreatedAt()));
-		values.put("updated_at", DateTimeHelper.formatDateTime(getUpdatedAt()));
+		values.put(PRIORITY, getPriority());
+		values.put(SyncAdapter.SYNC_STATE, SYNC_STATE.ADD.toInt());
+		values.put(Mirakel.CREATED_AT, DateTimeHelper.formatDateTime(getCreatedAt()));
+		values.put(Mirakel.UPDATED_AT, DateTimeHelper.formatDateTime(getUpdatedAt()));
 		database.beginTransaction();
 		long insertId = database.insertOrThrow(TABLE, null, values);
-		Cursor cursor = database.query(TABLE, allColumns, "_id = " + insertId,
+		Cursor cursor = database.query(TABLE, allColumns, ID+" = " + insertId,
 				null, null, null, null);
 		cursor.moveToFirst();
 		Task newTask = cursorToTask(cursor);
@@ -461,7 +465,7 @@ public class Task extends TaskBase {
 	 */
 	public static List<Task> all() {
 		List<Task> tasks = new ArrayList<Task>();
-		Cursor c = database.query(TABLE, allColumns, "not sync_state= "
+		Cursor c = database.query(TABLE, allColumns, "not "+SyncAdapter.SYNC_STATE+"= "
 				+ SYNC_STATE.DELETE, null, null, null, null);
 		c.moveToFirst();
 		while (!c.isAfterLast()) {
@@ -478,8 +482,8 @@ public class Task extends TaskBase {
 	 * @return
 	 */
 	public static Task get(long id) {
-		Cursor cursor = database.query(TABLE, allColumns, "_id='" + id
-				+ "' and not sync_state=" + SYNC_STATE.DELETE, null, null,
+		Cursor cursor = database.query(TABLE, allColumns, ID+"='" + id
+				+ "' and not "+SyncAdapter.SYNC_STATE+"=" + SYNC_STATE.DELETE, null, null,
 				null, null);
 		cursor.moveToFirst();
 		if (cursor.getCount() != 0) {
@@ -491,8 +495,8 @@ public class Task extends TaskBase {
 	}
 
 	public static Task getByUUID(String uuid) {
-		Cursor cursor = database.query(TABLE, allColumns, "uuid='" + uuid
-				+ "' and not sync_state=" + SYNC_STATE.DELETE, null, null,
+		Cursor cursor = database.query(TABLE, allColumns, UUID+"='" + uuid
+				+ "' and not "+SyncAdapter.SYNC_STATE+"=" + SYNC_STATE.DELETE, null, null,
 				null, null);
 		cursor.moveToFirst();
 		if (cursor.getCount() != 0) {
@@ -512,7 +516,7 @@ public class Task extends TaskBase {
 	 * @return
 	 */
 	public static Task getToSync(long id) {
-		Cursor cursor = database.query(TABLE, allColumns, "_id='" + id + "'",
+		Cursor cursor = database.query(TABLE, allColumns, ID+"='" + id + "'",
 				null, null, null, null);
 		cursor.moveToFirst();
 		if (cursor.getCount() != 0) {
@@ -531,7 +535,7 @@ public class Task extends TaskBase {
 	 */
 	public static List<Task> searchName(String query) {
 		String[] args = { "%" + query + "%" };
-		Cursor cursor = database.query(TABLE, allColumns, "name LIKE ?", args,
+		Cursor cursor = database.query(TABLE, allColumns, NAME+" LIKE ?", args,
 				null, null, null);
 		return cursorToTaskList(cursor);
 	}
@@ -562,7 +566,7 @@ public class Task extends TaskBase {
 	 */
 	public static List<Task> getBySyncState(SYNC_STATE state) {
 		Cursor c = database.query(TABLE, allColumns,
-				"sync_state=" + state.toInt() + " and list_id>0", null, null,
+				SyncAdapter.SYNC_STATE+"=" + state.toInt() + " and "+LIST_ID+">0", null, null,
 				null, null);
 		return cursorToTaskList(c);
 	}
@@ -597,14 +601,14 @@ public class Task extends TaskBase {
 	}
 
 	public static List<Task> getTasksWithReminders() {
-		String where = "reminder NOT NULL and done=0";
+		String where = REMINDER+" NOT NULL and "+DONE+"=0";
 		Cursor cursor = Mirakel.getReadableDatabase().query(TABLE, allColumns,
 				where, null, null, null, null);
 		return cursorToTaskList(cursor);
 	}
 
 	public static List<Task> getTasksToSync() {
-		String where = "NOT sync_state='" + SYNC_STATE.NOTHING + "'";
+		String where = "NOT "+SyncAdapter.SYNC_STATE+"='" + SYNC_STATE.NOTHING + "'";
 		Cursor cursor = Mirakel.getReadableDatabase().query(TABLE, allColumns,
 				where, null, null, null, null);
 		return cursorToTaskList(cursor);
@@ -857,7 +861,7 @@ public class Task extends TaskBase {
 			where = "list_id='" + listId + "'";
 		}
 		if (!showDone) {
-			where += (where.trim().equals("") ? "" : " AND ") + " done=0";
+			where += (where.trim().equals("") ? "" : " AND ") + " "+DONE+"=0";
 		}
 		return getTasksCursor(listId, sorting, where);
 	}
@@ -866,16 +870,16 @@ public class Task extends TaskBase {
 		String order = "";
 		switch (sorting) {
 		case ListMirakel.SORT_BY_PRIO:
-			order = "priority desc";
+			order = PRIORITY+" desc";
 			break;
 		case ListMirakel.SORT_BY_OPT:
-			order = ", priority DESC";
+			order = ", "+PRIORITY+" DESC";
 		case ListMirakel.SORT_BY_DUE:
-			order = " CASE WHEN (due IS NULL) THEN date('now','+1000 years') ELSE date(due) END ASC"
+			order = " CASE WHEN ("+DUE+" IS NULL) THEN date('now','+1000 years') ELSE date("+DUE+") END ASC"
 					+ order;
 			break;
 		default:
-			order = "_id ASC";
+			order = ID+" ASC";
 		}
 		return order;
 	}
@@ -905,13 +909,13 @@ public class Task extends TaskBase {
 		} else if (!where.equals("")) {
 			where += " and ";
 		}
-		where += " not sync_state=" + SYNC_STATE.DELETE;
+		where += " not "+SyncAdapter.SYNC_STATE+"=" + SYNC_STATE.DELETE;
 		String order = getSorting(sorting);
 
 		if (listId < 0)
-			order += ", list_id ASC";
+			order += ", "+LIST_ID+" ASC";
 		return database.query(TABLE, allColumns, where, null, null, null,
-				"done, " + order);
+				DONE+", " + order);
 	}
 
 	public static void resetSyncState(List<Task> tasks) {
@@ -923,7 +927,7 @@ public class Task extends TaskBase {
 				t.setSyncState(SYNC_STATE.NOTHING);
 				try {
 					database.update(TABLE, t.getContentValues(),
-							"_id = " + t.getId(), null);
+							ID+" = " + t.getId(), null);
 				} catch (NoSuchListException e) {
 					Log.d(TAG, "List did vanish");
 				}

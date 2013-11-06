@@ -76,6 +76,9 @@ public class Mirakel extends Application {
 
 	private static SQLiteOpenHelper openHelper;
 	public static String MIRAKEL_DIR;
+	
+	public static final String CREATED_AT="created_at";
+	public static final String UPDATED_AT="updated_at";
 
 	@Override
 	public void onCreate() {

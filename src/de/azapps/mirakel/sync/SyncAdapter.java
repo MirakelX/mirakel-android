@@ -58,6 +58,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			BUNDLE_ORG = "de.azapps.mirakel.org";
 	public static final String BUNDLE_SERVER_TYPE = "type";
 	public static final String TASKWARRIOR_KEY = "key";
+	public static final String SYNC_STATE="sync_state";
 	private static CharSequence last_message = null;
 	private Context mContext;
 

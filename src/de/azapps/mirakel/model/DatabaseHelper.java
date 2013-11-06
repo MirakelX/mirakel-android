@@ -25,6 +25,7 @@ import java.util.Locale;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.ExportImport;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.main_activity.MainActivity;
@@ -34,6 +35,7 @@ import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 import de.azapps.mirakelandroid.R;
 
@@ -81,10 +83,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			// Add sync-state
 			;
 			db.execSQL("Alter Table " + Task.TABLE
-					+ " add column sync_state INTEGER DEFAULT "
+					+ " add column "+SyncAdapter.SYNC_STATE+" INTEGER DEFAULT "
 					+ SYNC_STATE.ADD + ";");
 			db.execSQL("Alter Table " + ListMirakel.TABLE
-					+ " add column sync_state INTEGER DEFAULT "
+					+ " add column "+SyncAdapter.SYNC_STATE+" INTEGER DEFAULT "
 					+ SYNC_STATE.ADD + ";");
 			db.execSQL("CREATE TABLE settings ("
 					+ "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -99,17 +101,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			// drop settingssettings
 
 			db.execSQL("UPDATE " + Task.TABLE
-					+ " set due='null' where due='1970-01-01'");
+					+ " set "+Task.DUE+"='null' where "+Task.DUE+"='1970-01-01'");
 			String newDate = new SimpleDateFormat(
 					context.getString(R.string.dateTimeFormat), Locale.US)
 					.format(new Date());
-			db.execSQL("UPDATE " + Task.TABLE + " set created_at='" + newDate
+			db.execSQL("UPDATE " + Task.TABLE + " set "+Mirakel.CREATED_AT+"='" + newDate
 					+ "'");
-			db.execSQL("UPDATE " + Task.TABLE + " set updated_at='" + newDate
+			db.execSQL("UPDATE " + Task.TABLE + " set "+Mirakel.UPDATED_AT+"='" + newDate
 					+ "'");
-			db.execSQL("UPDATE " + ListMirakel.TABLE + " set created_at='"
+			db.execSQL("UPDATE " + ListMirakel.TABLE + " set "+Mirakel.CREATED_AT+"='"
 					+ newDate + "'");
-			db.execSQL("UPDATE " + ListMirakel.TABLE + " set updated_at='"
+			db.execSQL("UPDATE " + ListMirakel.TABLE + " set "+Mirakel.UPDATED_AT+"='"
 					+ newDate + "'");
 			db.execSQL("Drop TABLE IF EXISTS settings");
 		case 4:
@@ -119,11 +121,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 			db.execSQL("ALTER TABLE tasks RENAME TO tmp_tasks;");
 			createTasksTableString(db);
-			db.execSQL("INSERT INTO tasks (_id, list_id, name,done,priority,due,created_at,updated_at,sync_state) "
-					+ "SELECT _id, list_id, name,done,priority,due,created_at,updated_at,sync_state "
+			String cols = Task.ID + ", " + Task.LIST_ID + ", " + Task.NAME
+					+ ", " + Task.DONE + "," + Task.PRIORITY + "," + Task.DUE
+					+ "," + Mirakel.CREATED_AT + "," + Mirakel.UPDATED_AT + ","
+					+ SyncAdapter.SYNC_STATE;
+			db.execSQL("INSERT INTO "+Task.TABLE+" (" + cols + ") " + cols
 					+ "FROM tmp_tasks;");
 			db.execSQL("DROP TABLE tmp_tasks");
-			db.execSQL("UPDATE tasks set due=null where due='' OR due='null'");
+			db.execSQL("UPDATE tasks set "+Task.DUE+"=null where "+Task.DUE+"='' OR "+Task.DUE+"='null'");
 			/*
 			 * Update Task-Table
 			 */
@@ -139,13 +144,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			/*
 			 * Remove NOT NULL
 			 */
-			db.execSQL("ALTER TABLE tasks RENAME TO tmp_tasks;");
+			db.execSQL("ALTER TABLE "+Task.TABLE+" RENAME TO tmp_tasks;");
 			createTasksTableString(db);
-			db.execSQL("INSERT INTO tasks (_id, list_id, name,done,priority,due,created_at,updated_at,sync_state) "
-					+ "SELECT _id, list_id, name,done,priority,due,created_at,updated_at,sync_state "
+			cols = Task.ID + ", " + Task.LIST_ID + ", " + Task.NAME
+					+ ", " + Task.DONE + "," + Task.PRIORITY + "," + Task.DUE
+					+ "," + Mirakel.CREATED_AT + "," + Mirakel.UPDATED_AT + ","
+					+ SyncAdapter.SYNC_STATE;
+			db.execSQL("INSERT INTO "+Task.TABLE+" ("+cols+") "
+					+ "SELECT "+cols
 					+ "FROM tmp_tasks;");
 			db.execSQL("DROP TABLE tmp_tasks");
-			db.execSQL("UPDATE tasks set due=null where due=''");
+			db.execSQL("UPDATE "+Task.TABLE+" set "+Task.DUE+"=null where "+Task.DUE+"=''");
 		case 7:
 			/*
 			 * Add default list and default date for SpecialLists
@@ -159,7 +168,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			 * Add reminders for Tasks
 			 */
 			db.execSQL("Alter Table " + Task.TABLE
-					+ " add column reminder INTEGER;");
+					+ " add column "+Task.REMINDER+" INTEGER;");
 		case 9:
 			/*
 			 * Update Special Lists Table
@@ -172,13 +181,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			 * Add UUID to Task
 			 */
 			db.execSQL("Alter Table " + Task.TABLE
-					+ " add column uuid TEXT NOT NULL DEFAULT '';");
+					+ " add column "+Task.UUID+" TEXT NOT NULL DEFAULT '';");
 			MainActivity.updateTasksUUID = true;
 			// Don't remove this version-gap
 		case 13:
 			db.execSQL("Alter Table "
 					+ Task.TABLE
-					+ " add column additional_entries TEXT NOT NULL DEFAULT '';");
+					+ " add column "+Task.ADDITIONAL_ENTRIES+" TEXT NOT NULL DEFAULT '';");
 		case 14:// Add Sematic
 			db.execSQL("CREATE TABLE " + Semantic.TABLE + " ("
 					+ "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -230,7 +239,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ "minutes INTEGER DEFAULT 0,"
 					+ "for_due INTEGER DEFAULT 0," + "label STRING);");
 			db.execSQL("ALTER TABLE " + Task.TABLE
-					+ " add column recurring INTEGER DEFAULT '-1';");
+					+ " add column "+Task.RECURRING+" INTEGER DEFAULT '-1';");
 			db.execSQL("INSERT INTO " + Recurring.TABLE
 					+ "(days,label,for_due) VALUES (1,'"
 					+ context.getString(R.string.daily) + "',1);");
@@ -257,7 +266,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ context.getString(R.string.minutly) + "',0);");
 		case 21:
 			db.execSQL("ALTER TABLE " + Task.TABLE
-					+ " add column recurring_reminder INTEGER DEFAULT '-1';");
+					+ " add column "+Task.RECURRING_REMINDER+" INTEGER DEFAULT '-1';");
 		case 22:
 			db.execSQL("ALTER TABLE " + Recurring.TABLE
 					+ " add column start_date String;");
@@ -273,14 +282,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.execSQL("CREATE TABLE "
 				+ Task.TABLE
 				+ " ("
-				+ "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
-				+ "list_id INTEGER REFERENCES lists (_id) ON DELETE CASCADE ON UPDATE CASCADE, "
-				+ "name TEXT NOT NULL, " + "content TEXT, "
-				+ "done INTEGER NOT NULL DEFAULT 0, "
-				+ "priority INTEGER NOT NULL DEFAULT 0, " + "due STRING, "
-				+ "created_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
-				+ "updated_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
-				+ "sync_state INTEGER DEFAULT " + SYNC_STATE.ADD + ")");
+				+ Task.ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
+				+ Task.LIST_ID+" INTEGER REFERENCES lists (_id) ON DELETE CASCADE ON UPDATE CASCADE, "
+				+ Task.NAME+" TEXT NOT NULL, " + "content TEXT, "
+				+ Task.DONE+" INTEGER NOT NULL DEFAULT 0, "
+				+ Task.PRIORITY+" INTEGER NOT NULL DEFAULT 0, " + "due STRING, "
+				+ Mirakel.CREATED_AT+" INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
+				+ Mirakel.UPDATED_AT+" INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
+				+ SyncAdapter.SYNC_STATE+" INTEGER DEFAULT " + SYNC_STATE.ADD + ")");
 	}
 
 	private void createSpecialListsTable(SQLiteDatabase db) {
