@@ -238,6 +238,8 @@ public class TasksFragment extends Fragment {
 				@Override
 				public void run() {
 					Log.d(TAG,"clear focus");
+					if(newTask==null)
+						return;
 					newTask.setOnFocusChangeListener(null);
 					newTask.clearFocus();
 					if(getActivity()==null)

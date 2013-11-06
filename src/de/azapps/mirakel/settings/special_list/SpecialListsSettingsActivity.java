@@ -41,7 +41,7 @@ public class SpecialListsSettingsActivity extends ListSettings {
 
 	private SpecialList newSpecialList() {
 		return SpecialList.newSpecialList(
-				getString(R.string.special_lists_new), "", true,this);
+				getString(R.string.special_lists_new), "", true, this);
 	}
 
 	@SuppressLint("NewApi")
@@ -149,6 +149,32 @@ public class SpecialListsSettingsActivity extends ListSettings {
 				Helpers.openHelp(getApplicationContext(), "special-lists");
 			}
 		};
+	}
+
+	@Override
+	public OnClickListener getDelOnClickListener() {
+		return new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				specialList.destroy();
+				if (!onIsMultiPane())
+					finish();
+				else {
+					try {
+						if(getHeader().size()>0)
+							onHeaderClick(getHeader().get(0), 0);
+						invalidateHeaders();
+					} catch (Exception e) {
+						finish();
+					}
+				}
+			}
+		};
+	}
+
+	public void setSpecialList(SpecialList specialList) {
+		this.specialList=specialList;		
 	}
 
 }

@@ -31,9 +31,11 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import de.azapps.mirakel.helper.DueDialog;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.DueDialog.VALUE;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.semantic.Semantic;
+import de.azapps.mirakel.settings.ListSettings;
 import de.azapps.mirakelandroid.R;
 
 public class SemanticsSettings implements OnPreferenceChangeListener {
@@ -260,6 +262,9 @@ public class SemanticsSettings implements OnPreferenceChangeListener {
 			semantic.save();
 			semanticsCondition.setSummary(newValue);
 			semanticsCondition.setText(newValue);
+			if(Helpers.isTablet(ctx)&&v4_0){
+				((ListSettings)ctx).invalidateHeaders();
+			}
 		}
 		return false;
 	}

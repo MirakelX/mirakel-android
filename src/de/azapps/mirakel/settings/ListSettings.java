@@ -34,9 +34,13 @@ import android.util.Pair;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import de.azapps.mirakel.helper.Helpers;
+import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.static_activities.SettingsFragment;
 import de.azapps.mirakelandroid.R;
 
 /**
@@ -51,7 +55,10 @@ import de.azapps.mirakelandroid.R;
  */
 public abstract class ListSettings extends PreferenceActivity {
 
+	private static final String TAG = "ListSettings";
+
 	protected abstract OnClickListener getAddOnClickListener();
+	public abstract OnClickListener getDelOnClickListener();
 	protected abstract OnClickListener getHelpOnClickListener();
 
 	protected abstract int getSettingsRessource();
@@ -100,15 +107,32 @@ public abstract class ListSettings extends PreferenceActivity {
 			ActionBar actionbar = getActionBar();
 			actionbar.setTitle(getTitleRessource());
 			actionbar.setDisplayHomeAsUpEnabled(true);
+			View v;
 			ImageButton addList = new ImageButton(this);
 			addList.setBackgroundResource(android.R.drawable.ic_menu_add);
+			addList.setOnClickListener(getAddOnClickListener());
+			if(Helpers.isTablet(this)){
+				LinearLayout l= new LinearLayout(this);
+				l.setLayoutDirection(LinearLayout.VERTICAL);
+				l.addView(addList);
+				ImageButton delList = new ImageButton(this);
+				delList.setBackgroundResource(android.R.drawable.ic_menu_delete);
+				delList.setOnClickListener(getDelOnClickListener());
+				l.addView(delList);
+				Log.d(TAG,"isTablet");
+				
+				v=l;
+			}else{
+					v=addList;
+			}
+
 			actionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
 					ActionBar.DISPLAY_SHOW_CUSTOM);
-			actionbar.setCustomView(addList, new ActionBar.LayoutParams(
+			actionbar.setCustomView(v, new ActionBar.LayoutParams(
 					ActionBar.LayoutParams.WRAP_CONTENT,
 					ActionBar.LayoutParams.WRAP_CONTENT,
 					Gravity.CENTER_VERTICAL | Gravity.RIGHT));
-			addList.setOnClickListener(getAddOnClickListener());
+			
 		}
 	}
 
@@ -192,6 +216,12 @@ public abstract class ListSettings extends PreferenceActivity {
 			header.extras = b;
 			target.add(header);
 		}
+		if(getItems().size()==0){
+			Header header = new Header();
+			header.title=" ";
+			header.fragment = getDestFragmentClass().getCanonicalName();
+			target.add(header);
+		}
 		if (clickOnLast) {
 			onHeaderClick(mTarget.get(mTarget.size() - 1), mTarget.size() - 1);
 			clickOnLast = false;
@@ -216,4 +246,9 @@ public abstract class ListSettings extends PreferenceActivity {
 		loaded = false;
 	}
 
+	@Override
+	protected boolean isValidFragment(String fragmentName) {
+		//TODO test this if have kitkat
+		return true;
+	}
 }

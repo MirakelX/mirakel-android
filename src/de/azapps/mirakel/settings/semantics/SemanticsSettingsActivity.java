@@ -135,11 +135,39 @@ public class SemanticsSettingsActivity extends ListSettings {
 	@Override
 	protected OnClickListener getHelpOnClickListener() {
 		return new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
-				Helpers.openHelp(getApplicationContext(),"semantic-new-tasks");
+				Helpers.openHelp(getApplicationContext(), "semantic-new-tasks");
 			}
 		};
+	}
+
+	@Override
+	public OnClickListener getDelOnClickListener() {
+		// TODO Auto-generated method stub
+		return new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				semantic.destroy();
+				if (!onIsMultiPane())
+					finish();
+				else {
+					try {
+						if(getHeader().size()>0)
+							onHeaderClick(getHeader().get(0), 0);
+						invalidateHeaders();
+					} catch (Exception e) {
+						finish();
+					}
+				}
+
+			}
+		};
+	}
+	
+	public void setSemantic(Semantic s){
+		semantic=s;
 	}
 }
