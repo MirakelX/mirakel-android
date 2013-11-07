@@ -1226,8 +1226,7 @@ public class MainActivity extends ActionBarActivity implements
 	 * @param task
 	 */
 	public void saveTask(Task task) {
-		Log.v(TAG, "Saving task… (task:" + task.getId() + " – current:"
-				+ currentTask.getId());
+		Log.v(TAG, "Saving task… (task:" + task.getId());
 		safeSaveTask(task);
 		updatesForTask(task);
 	}
