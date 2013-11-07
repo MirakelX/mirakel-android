@@ -22,15 +22,14 @@ import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.view.Gravity;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.settings.ListSettings;
 import de.azapps.mirakelandroid.R;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -46,40 +45,26 @@ public class SpecialListsSettingsFragment extends PreferenceFragment {
 			Log.d(TAG, "id= " + getArguments().getInt("id"));
 			final SpecialList specialList = SpecialList
 					.getSpecialList(getArguments().getInt("id") * -1);
+			((SpecialListsSettingsActivity)getActivity()).setSpecialList(specialList);
+			
 			ActionBar actionbar = getActivity().getActionBar();
 			if (specialList == null)
 				actionbar.setTitle("No list");
 			else
 				actionbar.setTitle(specialList.getName());
-			ImageButton delList = new ImageButton(getActivity());
-			delList.setBackgroundResource(android.R.drawable.ic_menu_delete);
-			actionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
-					ActionBar.DISPLAY_SHOW_CUSTOM);
-			actionbar.setCustomView(delList, new ActionBar.LayoutParams(
-					ActionBar.LayoutParams.WRAP_CONTENT,
-					ActionBar.LayoutParams.WRAP_CONTENT,
-					Gravity.CENTER_VERTICAL | Gravity.RIGHT));
-			delList.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					specialList.destroy();
-					if (!((PreferenceActivity) getActivity()).isMultiPane())
-						getActivity().finish();
-					else {
-						try {
-							((PreferenceActivity) getActivity())
-									.onHeaderClick(
-											((SpecialListsSettingsActivity) getActivity())
-													.getHeader().get(0), 0);
-						} catch (Exception e) {
-							getActivity().finish();
-						}
-					}
-				}
-			});
+			if (!Helpers.isTablet(getActivity())) {
+				ImageButton delList = new ImageButton(getActivity());
+				delList.setBackgroundResource(android.R.drawable.ic_menu_delete);
+				actionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
+						ActionBar.DISPLAY_SHOW_CUSTOM);
+				actionbar.setCustomView(delList, new ActionBar.LayoutParams(
+						ActionBar.LayoutParams.WRAP_CONTENT,
+						ActionBar.LayoutParams.WRAP_CONTENT,
+						Gravity.CENTER_VERTICAL | Gravity.RIGHT));
+				delList.setOnClickListener(((ListSettings)getActivity()).getDelOnClickListener());
+			}
 			try {
-			new SpecialListSettings(this, specialList).setup();
+				new SpecialListSettings(this, specialList).setup();
 			} catch (NoSuchListException e) {
 				getActivity().finish();
 			}

@@ -195,6 +195,7 @@ Device: %3$s\n]]>
   <string name="no_begin_end">Keine %s</string>
   <string name="beginning_end">Anfang und Ende</string>
   <string name="save">Speichern</string>
+  <string name="file_to_large">Vorschaubild konnte nicht erstellt werden</string>
   <string-array name="task_sorting_items">
     <item>Standard</item>
     <item>Termin</item>

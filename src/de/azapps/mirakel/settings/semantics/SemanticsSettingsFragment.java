@@ -22,15 +22,14 @@ import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.view.Gravity;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageButton;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.semantic.Semantic;
-import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
+import de.azapps.mirakel.settings.ListSettings;
 import de.azapps.mirakelandroid.R;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -47,36 +46,21 @@ public class SemanticsSettingsFragment extends PreferenceFragment {
 		Bundle b = getArguments();
 		if (b != null) {
 			semantic = Semantic.get(getArguments().getInt("id"));
+			((SemanticsSettingsActivity)getActivity()).setSemantic(semantic);
 			actionBar.setTitle(semantic.getCondition());
-
-			ImageButton delSemantic = new ImageButton(getActivity());
-			delSemantic
-					.setBackgroundResource(android.R.drawable.ic_menu_delete);
-			actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
-					ActionBar.DISPLAY_SHOW_CUSTOM);
-			actionBar.setCustomView(delSemantic, new ActionBar.LayoutParams(
-					ActionBar.LayoutParams.WRAP_CONTENT,
-					ActionBar.LayoutParams.WRAP_CONTENT,
-					Gravity.CENTER_VERTICAL | Gravity.RIGHT));
-			delSemantic.setOnClickListener(new View.OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					semantic.destroy();
-					if (!((PreferenceActivity) getActivity()).isMultiPane())
-						getActivity().finish();
-					else {
-						try {
-							((PreferenceActivity) getActivity())
-									.onHeaderClick(
-											((SpecialListsSettingsActivity) getActivity())
-													.getHeader().get(0), 0);
-						} catch (Exception e) {
-							getActivity().finish();
-						}
-					}
-				}
-			});
+			if (!Helpers.isTablet(getActivity())) {
+				ImageButton delSemantic = new ImageButton(getActivity());
+				delSemantic
+						.setBackgroundResource(android.R.drawable.ic_menu_delete);
+				actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
+						ActionBar.DISPLAY_SHOW_CUSTOM);
+				actionBar.setCustomView(delSemantic,
+						new ActionBar.LayoutParams(
+								ActionBar.LayoutParams.WRAP_CONTENT,
+								ActionBar.LayoutParams.WRAP_CONTENT,
+								Gravity.CENTER_VERTICAL | Gravity.RIGHT));
+				delSemantic.setOnClickListener(((ListSettings)getActivity()).getDelOnClickListener());
+			}
 			new SemanticsSettings(this, semantic).setup();
 		} else {
 			Log.d(TAG, "bundle null");

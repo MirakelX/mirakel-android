@@ -996,7 +996,8 @@ public class TaskFragmentAdapter extends
 								.setOnFocusChangeListener(null);
 					}
 					holder.switcher.showNext(); // or switcher.showPrevious();
-					holder.txt.setText(holder.taskName.getText());
+					CharSequence name=holder.taskName.getText();
+					holder.txt.setText(name);
 					holder.txt
 							.setOnFocusChangeListener(new OnFocusChangeListener() {
 
@@ -1041,6 +1042,7 @@ public class TaskFragmentAdapter extends
 								}
 
 							});
+					holder.txt.setSelection(name.length());
 				}
 			});
 			holder.taskPrio.setOnClickListener(new OnClickListener() {

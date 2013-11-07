@@ -242,12 +242,16 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 
 					@Override
 					public void onClick(View v) {
+						Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri
+								.parse("http://mirakel.azapps.de/users/sign_up"));
+						startActivity(browserIntent);
+						/*http://mirakel.azapps.de/users/sign_up
 						Helpers.contact(a,"[Mirakel] Registration TW-Server","Hey Mirakel team,\n" +
 								"Please setup an account for me.\n" +
 								"My username: random (optional)\n" +
 								"My company: random (optional)\n\n" +
 								"Other things I want to say:\n\n" +
-								"Thanks,\n[A Mirakel user]");
+								"Thanks,\n[A Mirakel user]");*/
 
 					}
 				});
