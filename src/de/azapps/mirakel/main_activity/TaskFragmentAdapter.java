@@ -696,7 +696,8 @@ public class TaskFragmentAdapter extends
 					inactive_color));
 			editContent = false;// do not record Textchanges
 			holder.taskContentEdit.setText(taskEditText);
-			holder.taskContentEdit.setSelection(cursorPos == 0 ? taskEditText
+			holder.taskContentEdit.setSelection(cursorPos == 0
+					|| cursorPos > taskEditText.length() ? taskEditText
 					.length() : cursorPos);
 			Linkify.addLinks(holder.taskContentEdit, Linkify.WEB_URLS);
 			holder.taskContentEdit.requestFocus();
