@@ -59,7 +59,7 @@ public class DragNDropListView extends ListView {
 		final int action = ev.getAction();
 		final int x = (int) ev.getX();
 		final int y = (int) ev.getY();
-		if (action == MotionEvent.ACTION_DOWN && x < this.getWidth()/3) {// width<~imagewidth
+		if (action == MotionEvent.ACTION_DOWN && x < this.getWidth() / 3) {// width<~imagewidth
 			mDragMode = true;
 		}
 
@@ -74,11 +74,11 @@ public class DragNDropListView extends ListView {
 
 				int mItemPosition = mStartPosition - getFirstVisiblePosition();
 				if (mItemPosition < SpecialList.getSpecialListCount()
-						- getFirstVisiblePosition()){
-					isSpecial=true;
-//					break;
-				}else{
-					isSpecial=false;
+						- getFirstVisiblePosition()) {
+					isSpecial = true;
+					// break;
+				} else {
+					isSpecial = false;
 				}
 				Log.d(TAG, "" + mItemPosition);
 				mDragPointOffset = y - getChildAt(mItemPosition).getTop();
@@ -96,15 +96,15 @@ public class DragNDropListView extends ListView {
 			mDragMode = false;
 			mEndPosition = pointToPosition(x, y);
 			stopDrag(mStartPosition - getFirstVisiblePosition());
-			if (mEndPosition < SpecialList.getSpecialListCount()&&!isSpecial) {
+			if (mEndPosition < SpecialList.getSpecialListCount() && !isSpecial) {
 				mEndPosition = SpecialList.getSpecialListCount();
-				Log.d(TAG,"not special");
-			}else if(mEndPosition > SpecialList.getSpecialListCount()&&isSpecial){
-				mEndPosition = SpecialList.getSpecialListCount()-1;
-				Log.d(TAG,"special");
+				Log.d(TAG, "not special");
+			} else if (mEndPosition > SpecialList.getSpecialListCount()
+					&& isSpecial) {
+				mEndPosition = SpecialList.getSpecialListCount() - 1;
+				Log.d(TAG, "special");
 			}
-			if (mDropListener != null
-					&& mStartPosition != INVALID_POSITION
+			if (mDropListener != null && mStartPosition != INVALID_POSITION
 					&& mEndPosition != INVALID_POSITION)
 				mDropListener.onDrop(mStartPosition, mEndPosition);
 			break;

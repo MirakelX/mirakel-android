@@ -173,8 +173,8 @@ public class TLSClient {
 			Certificate[] chain = { USER_CERT, ROOT };
 			KeyManagerFactory keyManagerFactory = KeyManagerFactory
 					.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-			//Hack to get it working on android 2.2
-			String pwd="secret";
+			// Hack to get it working on android 2.2
+			String pwd = "secret";
 			trusted.setEntry("user", new KeyStore.PrivateKeyEntry(USER_KEY,
 					chain), new KeyStore.PasswordProtection(pwd.toCharArray()));
 
@@ -207,8 +207,8 @@ public class TLSClient {
 		try {
 			Log.d(TAG, "connected to " + host + ":" + port);
 			_socket = (SSLSocket) sslFact.createSocket();
-			 if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.JELLY_BEAN)
-				 _socket.setEnabledProtocols(new String[]{"TLSv1.2","TLSv1.1"});
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+				_socket.setEnabledProtocols(new String[] { "TLSv1.2", "TLSv1.1" });
 			_socket.setUseClientMode(true);
 			_socket.setEnableSessionCreation(true);
 			_socket.setNeedClientAuth(true);

@@ -41,7 +41,7 @@ public class DateTimeHelper {
 	}
 
 	public static Calendar parseCalDav(String date) throws ParseException {
-		if(date==null||date.equals(""))
+		if (date == null || date.equals(""))
 			return null;
 		GregorianCalendar temp = new GregorianCalendar();
 		temp.setTime(CalDav.parse(date));
@@ -49,7 +49,7 @@ public class DateTimeHelper {
 	}
 
 	public static Calendar parseCalDavDue(String date) throws ParseException {
-		if(date==null||date.equals(""))
+		if (date == null || date.equals(""))
 			return null;
 		GregorianCalendar temp = new GregorianCalendar();
 		temp.setTime(CalDavDue.parse(date));
@@ -57,7 +57,7 @@ public class DateTimeHelper {
 	}
 
 	public static Calendar parseDate(String date) throws ParseException {
-		if(date==null||date.equals(""))
+		if (date == null || date.equals(""))
 			return null;
 		GregorianCalendar temp = new GregorianCalendar();
 		temp.setTime(dateFormat.parse(date));
@@ -65,7 +65,7 @@ public class DateTimeHelper {
 	}
 
 	public static Calendar parseDateTime(String date) throws ParseException {
-		if(date==null||date.equals(""))
+		if (date == null || date.equals(""))
 			return null;
 		GregorianCalendar temp = new GregorianCalendar();
 		temp.setTime(dateTimeFormat.parse(date));
@@ -73,7 +73,7 @@ public class DateTimeHelper {
 	}
 
 	public static Calendar parseTaskWarrior(String date) throws ParseException {
-		if(date==null||date.equals(""))
+		if (date == null || date.equals(""))
 			return null;
 		GregorianCalendar temp = new GregorianCalendar();
 		temp.setTime(TWFormat.parse(date));

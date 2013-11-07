@@ -80,12 +80,12 @@ public class Mirakel extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		Locale locale=Helpers.getLocal(this);
+		Locale locale = Helpers.getLocal(this);
 		Locale.setDefault(locale);
 		Configuration config = new Configuration();
 		config.locale = locale;
 		getBaseContext().getResources().updateConfiguration(config,
-		      getBaseContext().getResources().getDisplayMetrics());
+				getBaseContext().getResources().getDisplayMetrics());
 		ACRA.init(this);
 		APK_NAME = getPackageName();
 		MIRAKEL_DIR = Environment.getDataDirectory() + "/data/"
@@ -129,7 +129,6 @@ public class Mirakel extends Application {
 		Semantic.close();
 		Recurring.close();
 	}
-	
 
 	public static SQLiteDatabase getWritableDatabase() {
 		return openHelper.getWritableDatabase();

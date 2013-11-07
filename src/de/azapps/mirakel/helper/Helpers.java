@@ -195,7 +195,8 @@ public class Helpers {
 						|| !(now.get(Calendar.YEAR) == date.get(Calendar.YEAR)
 								&& now.get(Calendar.DAY_OF_MONTH) == date
 										.get(Calendar.DAY_OF_MONTH) && now
-								.get(Calendar.MONTH) == date.get(Calendar.MONTH))) {
+								.get(Calendar.MONTH) == date
+								.get(Calendar.MONTH))) {
 					return DateUtils.getRelativeTimeSpanString(
 							date.getTimeInMillis(), (new Date()).getTime(),
 							DateUtils.DAY_IN_MILLIS);

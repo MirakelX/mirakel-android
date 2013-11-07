@@ -50,13 +50,19 @@ public class SettingsAdapter extends ArrayAdapter<Header> {
 			((TextView) view.findViewById(android.R.id.summary)).setText(header
 					.getSummary(getContext().getResources()));
 			final Switch s = ((Switch) view.findViewById(R.id.switchWidget));
-			SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(ctx);
-			Log.d(TAG, "account: "+AccountManager.get(ctx).getAccountsByType(Mirakel.ACCOUNT_TYPE).length);
-			Editor e= settings.edit();
-			e.putBoolean("syncUse", AccountManager.get(ctx).getAccountsByType(Mirakel.ACCOUNT_TYPE).length>0);
+			SharedPreferences settings = PreferenceManager
+					.getDefaultSharedPreferences(ctx);
+			Log.d(TAG,
+					"account: "
+							+ AccountManager.get(ctx).getAccountsByType(
+									Mirakel.ACCOUNT_TYPE).length);
+			Editor e = settings.edit();
+			e.putBoolean(
+					"syncUse",
+					AccountManager.get(ctx).getAccountsByType(
+							Mirakel.ACCOUNT_TYPE).length > 0);
 			e.commit();
-			s.setChecked(
-					settings.getBoolean("syncUse", false));
+			s.setChecked(settings.getBoolean("syncUse", false));
 			s.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 				@Override

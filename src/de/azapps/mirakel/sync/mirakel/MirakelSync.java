@@ -105,8 +105,7 @@ public class MirakelSync {
 		}
 
 		// Remove Tasks from server
-		List<Task> deletedTasks = Task
-				.getBySyncState(SYNC_STATE.DELETE);
+		List<Task> deletedTasks = Task.getBySyncState(SYNC_STATE.DELETE);
 		if (deletedTasks != null) {
 			for (Task deletedTask : deletedTasks) {
 				delete_task(deletedTask);
@@ -138,8 +137,7 @@ public class MirakelSync {
 	}
 
 	private void doSync() {
-		List<ListMirakel> lists_local = ListMirakel
-				.bySyncState(SYNC_STATE.ADD);
+		List<ListMirakel> lists_local = ListMirakel.bySyncState(SYNC_STATE.ADD);
 		for (ListMirakel list : lists_local) {
 			add_list(list);
 		}
@@ -156,8 +154,7 @@ public class MirakelSync {
 	private void addTasks() {
 		listAdd++;
 		if (listAdd >= AddLists.size()) {
-			List<Task> tasks_local = Task
-					.getBySyncState(SYNC_STATE.ADD);
+			List<Task> tasks_local = Task.getBySyncState(SYNC_STATE.ADD);
 			for (int i = 0; i < tasks_local.size(); i++) {
 				add_task(tasks_local.get(i));
 			}
@@ -253,29 +250,26 @@ public class MirakelSync {
 						if (list.getId() < list_response.getId()) {
 							long diff = list_response.getId() - list.getId();
 							// Should be all lists with _id> list_id
-							Cursor c = Mirakel.getReadableDatabase()
-									.rawQuery(
-											"Select _id from "
-													+ ListMirakel.TABLE
-													+ " WHERE sync_state="
-													+ SYNC_STATE.ADD
-													+ " and _id>="
-													+ list.getId(), null);
+							Cursor c = Mirakel.getReadableDatabase().rawQuery(
+									"Select _id from " + ListMirakel.TABLE
+											+ " WHERE sync_state="
+											+ SYNC_STATE.ADD + " and _id>="
+											+ list.getId(), null);
 							c.moveToFirst();
 							c.close();
 							c = Mirakel.getReadableDatabase().rawQuery(
 									"Select _id from " + ListMirakel.TABLE
 											+ " WHERE sync_state="
-											+ SYNC_STATE.ADD
-											+ " and _id>" + list.getId(), null);
+											+ SYNC_STATE.ADD + " and _id>"
+											+ list.getId(), null);
 							c.moveToLast();
 							while (!c.isBeforeFirst()) {
 								Mirakel.getWritableDatabase().execSQL(
 										"UPDATE " + ListMirakel.TABLE
 												+ " SET _id=_id+" + diff
 												+ " WHERE sync_state="
-												+ SYNC_STATE.ADD
-												+ " and _id=" + c.getInt(0));
+												+ SYNC_STATE.ADD + " and _id="
+												+ c.getInt(0));
 								c.moveToPrevious();
 							}
 							c.close();
@@ -356,11 +350,9 @@ public class MirakelSync {
 				Log.w(TAG, Log.getStackTraceString(e));
 			}
 		} else if (list.getSyncState() == SYNC_STATE.ADD) {
-			Cursor c = Mirakel.getReadableDatabase()
-					.rawQuery(
-							"Select max(_id) from " + ListMirakel.TABLE
-									+ " where not sync_state="
-									+ SYNC_STATE.ADD, null);
+			Cursor c = Mirakel.getReadableDatabase().rawQuery(
+					"Select max(_id) from " + ListMirakel.TABLE
+							+ " where not sync_state=" + SYNC_STATE.ADD, null);
 			c.moveToFirst();
 			if (c.getCount() != 0) {
 				int diff = c.getInt(0) - list.getId() < 0 ? 1 : c.getInt(0)
@@ -399,8 +391,7 @@ public class MirakelSync {
 		// TODO Get this from server!!
 		Cursor c = Mirakel.getReadableDatabase().rawQuery(
 				"Select max(lft),max(rgt) from " + ListMirakel.TABLE
-						+ " where not sync_state=" + SYNC_STATE.DELETE,
-				null);
+						+ " where not sync_state=" + SYNC_STATE.DELETE, null);
 		c.moveToFirst();
 		int lft = 0, rgt = 0;
 		if (c.getCount() != 0) {
@@ -509,11 +500,9 @@ public class MirakelSync {
 								// Prevent id-Collision
 								long diff = taskNew.getId() - task.getId();
 
-								Cursor c = Mirakel
-										.getWritableDatabase()
+								Cursor c = Mirakel.getWritableDatabase()
 										.rawQuery(
-												"Select _id from "
-														+ Task.TABLE
+												"Select _id from " + Task.TABLE
 														+ " WHERE sync_state="
 														+ SYNC_STATE.ADD
 														+ " and _id>"
@@ -600,11 +589,9 @@ public class MirakelSync {
 				safeSafeTask(task_server);
 			}
 		} else if (task.getSyncState() == SYNC_STATE.ADD) {
-			Cursor c = Mirakel.getReadableDatabase()
-					.rawQuery(
-							"Select max(_id) from " + Task.TABLE
-									+ " where not sync_state="
-									+ SYNC_STATE.ADD, null);
+			Cursor c = Mirakel.getReadableDatabase().rawQuery(
+					"Select max(_id) from " + Task.TABLE
+							+ " where not sync_state=" + SYNC_STATE.ADD, null);
 			c.moveToFirst();
 			if (c.getCount() != 0) {
 				long diff = c.getInt(0) - task.getId() < 0 ? 1 : c.getInt(0)
@@ -612,15 +599,14 @@ public class MirakelSync {
 				c.close();
 				c = Mirakel.getReadableDatabase().rawQuery(
 						"Select _id from " + Task.TABLE + " WHERE sync_state="
-								+ SYNC_STATE.ADD + " and _id>="
-								+ task.getId(), null);
+								+ SYNC_STATE.ADD + " and _id>=" + task.getId(),
+						null);
 				c.moveToLast();
 				while (!c.isBeforeFirst()) {
 					Mirakel.getWritableDatabase().execSQL(
 							"UPDATE " + Task.TABLE + " SET _id=_id+" + diff
-									+ " WHERE sync_state="
-									+ SYNC_STATE.ADD + " and _id="
-									+ c.getInt(0));
+									+ " WHERE sync_state=" + SYNC_STATE.ADD
+									+ " and _id=" + c.getInt(0));
 					c.moveToPrevious();
 				}
 				c.close();

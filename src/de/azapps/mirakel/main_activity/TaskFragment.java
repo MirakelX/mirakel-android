@@ -65,7 +65,7 @@ public class TaskFragment extends Fragment {
 	public void closeActionMode() {
 		if (mActionMode != null)
 			mActionMode.finish();
-		if(adapter!=null)
+		if (adapter != null)
 			adapter.closeActionMode();
 	}
 
@@ -219,7 +219,7 @@ public class TaskFragment extends Fragment {
 				public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 					MenuInflater inflater = mode.getMenuInflater();
 					inflater.inflate(R.menu.context_task, menu);
-					mActionMode=mode;
+					mActionMode = mode;
 					return true;
 				}
 
@@ -290,7 +290,7 @@ public class TaskFragment extends Fragment {
 						int position, long id, boolean checked) {
 					Log.d(TAG, "item " + position + " selected");
 					Integer type = adapter.getData().get(position).first;
-					int count=adapter.getSelectedCount();
+					int count = adapter.getSelectedCount();
 					if ((type == TYPE.FILE && (count == 0 || (adapter
 							.getSelected().get(0).first == TYPE.FILE)))
 							|| (type == TYPE.SUBTASK && (count == 0 || adapter
@@ -298,16 +298,18 @@ public class TaskFragment extends Fragment {
 						adapter.setSelected(position, checked);
 						adapter.notifyDataSetChanged();
 						mode.invalidate();
-					} 
-					count=adapter.getSelectedCount();
+					}
+					count = adapter.getSelectedCount();
 					if (count == 0) {
 						mode.finish();// No CAB
 						return;
 					}
-					if(type==TYPE.FILE){
-						mode.setTitle(getResources().getQuantityString(R.plurals.file,count,count ));
-					}else if(type==TYPE.SUBTASK){
-						mode.setTitle(getResources().getQuantityString(R.plurals.subtasks,count,count ));
+					if (type == TYPE.FILE) {
+						mode.setTitle(getResources().getQuantityString(
+								R.plurals.file, count, count));
+					} else if (type == TYPE.SUBTASK) {
+						mode.setTitle(getResources().getQuantityString(
+								R.plurals.subtasks, count, count));
 					}
 
 				}

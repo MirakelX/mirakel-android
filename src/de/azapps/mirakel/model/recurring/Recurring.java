@@ -133,7 +133,7 @@ public class Recurring extends RecurringBase {
 	}
 
 	public static void destroyTemporary(int recurrenceId) {
-		Log.e("Blubb","destroy: " + recurrenceId);
+		Log.e("Blubb", "destroy: " + recurrenceId);
 		database.delete(TABLE, "temporary=1 AND _id=" + recurrenceId, null);
 	}
 

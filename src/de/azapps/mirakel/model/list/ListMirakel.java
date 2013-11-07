@@ -457,7 +457,7 @@ public class ListMirakel extends ListBase {
 				+ "WHERE n.lft BETWEEN p.lft AND p.rgt "
 				+ " and not n.sync_state=" + SYNC_STATE.DELETE
 				+ " GROUP BY n.lft " + "ORDER BY n.lft;", null);
-		
+
 		// query(ListMirakel.TABLE, allColumns,
 		// "not sync_state=" + SYNC_STATE.DELETE, null, "lft",
 		// null, null);

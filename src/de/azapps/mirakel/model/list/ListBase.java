@@ -37,7 +37,8 @@ class ListBase {
 	}
 
 	ListBase(int id, String name, short sort_by, String created_at,
-			String updated_at, SYNC_STATE sync_state, int lft, int rgt, int color) {
+			String updated_at, SYNC_STATE sync_state, int lft, int rgt,
+			int color) {
 		this.setId(id);
 		this.setCreatedAt(created_at);
 		this.setName(name);

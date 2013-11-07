@@ -95,7 +95,7 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
 		// Set the Contents of the Row
 		rv = WidgetHelper.configureItem(rv, task, mContext, list.getId(),
-				isMinimalistic,widgetId);
+				isMinimalistic, widgetId);
 
 		// Set the Click–Intent
 		// We need to do so, because we can not start the Activity directly from
@@ -129,7 +129,7 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	public boolean hasStableIds() {
 		return false;
 	}
-	
+
 	public void onDataSetChanged() {
 		tasks = list.tasks(WidgetHelper.showDone(mContext, widgetId));
 	}

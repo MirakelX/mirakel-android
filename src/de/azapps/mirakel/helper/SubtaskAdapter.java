@@ -27,7 +27,7 @@ public class SubtaskAdapter extends ArrayAdapter<Task> {
 		this.context = context;
 		this.task = task;
 		checked = new boolean[data.size()];
-		this.asSubtask=asSubtask;
+		this.asSubtask = asSubtask;
 	}
 
 	@Override
@@ -41,9 +41,9 @@ public class SubtaskAdapter extends ArrayAdapter<Task> {
 			return new View(context);
 		}
 		CheckBox c = new CheckBox(context);
-		if(!asSubtask){
+		if (!asSubtask) {
 			checked[position] = data.get(position).isSubtaskOf(task);
-		}else{
+		} else {
 			checked[position] = task.isSubtaskOf(data.get(position));
 		}
 		c.setChecked(checked[position]);

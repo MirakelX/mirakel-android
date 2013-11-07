@@ -31,8 +31,8 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import de.azapps.mirakel.helper.DueDialog;
-import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.DueDialog.VALUE;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.settings.ListSettings;
@@ -98,7 +98,7 @@ public class SemanticsSettings implements OnPreferenceChangeListener {
 
 					@Override
 					public boolean onPreferenceClick(Preference preference) {
-						final DueDialog dueDialog = new DueDialog(ctx,false);
+						final DueDialog dueDialog = new DueDialog(ctx, false);
 						dueDialog.setTitle(semanticsDue.getTitle());
 						dueDialog.setValue(dueDialogValue, dueDialogDayYear);
 
@@ -262,11 +262,11 @@ public class SemanticsSettings implements OnPreferenceChangeListener {
 			semantic.save();
 			semanticsCondition.setSummary(newValue);
 			semanticsCondition.setText(newValue);
-			if(Helpers.isTablet(ctx)&&v4_0){
-				((ListSettings)ctx).invalidateHeaders();
+			if (Helpers.isTablet(ctx) && v4_0) {
+				((ListSettings) ctx).invalidateHeaders();
 			}
 		}
 		return false;
 	}
-	
+
 }

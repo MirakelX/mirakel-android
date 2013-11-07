@@ -61,9 +61,9 @@ import de.azapps.mirakel.sync.SyncAdapter.SYNC_TYPES;
 import de.azapps.mirakelandroid.R;
 
 public class Network extends AsyncTask<String, Integer, String> {
-	
-	public enum HttpMode{
-		GET,POST,PUT,DELETE,REPORT;
+
+	public enum HttpMode {
+		GET, POST, PUT, DELETE, REPORT;
 	}
 
 	private static String TAG = "MirakelNetwork";
@@ -80,13 +80,13 @@ public class Network extends AsyncTask<String, Integer, String> {
 	private String username;
 	private String password;
 
-	public Network(DataDownloadCommand commands, HttpMode mode, Context context,
-			String Token) {
+	public Network(DataDownloadCommand commands, HttpMode mode,
+			Context context, String Token) {
 		this.commands = commands;
 		this.mode = mode;
 		this.context = context;
 		this.token = Token;
-		this.syncTyp=SYNC_TYPES.MIRAKEL;
+		this.syncTyp = SYNC_TYPES.MIRAKEL;
 	}
 
 	public Network(DataDownloadCommand commands, HttpMode mode,
@@ -96,19 +96,18 @@ public class Network extends AsyncTask<String, Integer, String> {
 		this.headerData = data;
 		this.context = context;
 		this.token = Token;
-		this.syncTyp=SYNC_TYPES.MIRAKEL;
+		this.syncTyp = SYNC_TYPES.MIRAKEL;
 	}
-	
-	public Network(DataDownloadCommand commands, HttpMode mode,String content,Context ctx,String username, String password) {
-		this.commands=commands;
-		this.mode=mode;
-		this.content=content;
-		this.context=ctx;
-		this.username=username;
-		this.password=password;
+
+	public Network(DataDownloadCommand commands, HttpMode mode, String content,
+			Context ctx, String username, String password) {
+		this.commands = commands;
+		this.mode = mode;
+		this.content = content;
+		this.context = ctx;
+		this.username = username;
+		this.password = password;
 	}
-	
-	
 
 	public static String getToken(String json) {
 		if (json.indexOf("{\"token\":\"") != -1) {
@@ -194,18 +193,20 @@ public class Network extends AsyncTask<String, Integer, String> {
 			publishProgress(t);
 		}
 		String authorizationString = null;
-		if(syncTyp==SYNC_TYPES.CALDAV){
-			authorizationString = "Basic " + Base64.encodeToString(
-			        ( username+ ":" + password).getBytes(),
-			        Base64.NO_WRAP);
+		if (syncTyp == SYNC_TYPES.CALDAV) {
+			authorizationString = "Basic "
+					+ Base64.encodeToString(
+							(username + ":" + password).getBytes(),
+							Base64.NO_WRAP);
 		}
-		
+
 		HttpParams params = new BasicHttpParams();
 		params.setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
 				HttpVersion.HTTP_1_1);
 		HttpConnectionParams.setTcpNoDelay(params, true);
 		DefaultHttpClient client = new DefaultHttpClient(params);
-		HttpClient httpClient = syncTyp==SYNC_TYPES.MIRAKEL?sslClient(client):new DefaultHttpClient(params);
+		HttpClient httpClient = syncTyp == SYNC_TYPES.MIRAKEL ? sslClient(client)
+				: new DefaultHttpClient(params);
 		httpClient.getParams().setParameter("http.protocol.content-charset",
 				HTTP.UTF_8);
 
@@ -221,17 +222,19 @@ public class Network extends AsyncTask<String, Integer, String> {
 			case PUT:
 				Log.v(TAG, "PUT " + myurl);
 				HttpPut put = new HttpPut();
-				if(syncTyp==SYNC_TYPES.CALDAV){
-					put.addHeader(HTTP.CONTENT_TYPE, "text/calendar; charset=utf-8");
+				if (syncTyp == SYNC_TYPES.CALDAV) {
+					put.addHeader(HTTP.CONTENT_TYPE,
+							"text/calendar; charset=utf-8");
 				}
 				put.setURI(new URI(myurl));
-				if(syncTyp==SYNC_TYPES.MIRAKEL){
-					UrlEncodedFormEntity data = new UrlEncodedFormEntity(headerData, HTTP.UTF_8);
+				if (syncTyp == SYNC_TYPES.MIRAKEL) {
+					UrlEncodedFormEntity data = new UrlEncodedFormEntity(
+							headerData, HTTP.UTF_8);
 					put.setEntity(data);
-				}else{
+				} else {
 					put.setHeader("Authorization", authorizationString);
-					put.setEntity(new StringEntity(content,HTTP.UTF_8));
-					Log.v(TAG,content);
+					put.setEntity(new StringEntity(content, HTTP.UTF_8));
+					Log.v(TAG, content);
 				}
 				response = httpClient.execute(put);
 				break;
@@ -249,15 +252,15 @@ public class Network extends AsyncTask<String, Integer, String> {
 				response = httpClient.execute(delete);
 				break;
 			case REPORT:
-				Log.v(TAG, "REPORT "+myurl);
-				HttpReport report =new HttpReport();
-				if(syncTyp==SYNC_TYPES.CALDAV){
+				Log.v(TAG, "REPORT " + myurl);
+				HttpReport report = new HttpReport();
+				if (syncTyp == SYNC_TYPES.CALDAV) {
 					report.setHeader("Authorization", authorizationString);
 				}
 				report.setURI(new URI(myurl));
-				Log.d(TAG,content);
-				report.setEntity(new StringEntity(content,HTTP.UTF_8));
-				response=httpClient.execute(report);
+				Log.d(TAG, content);
+				report.setEntity(new StringEntity(content, HTTP.UTF_8));
+				response = httpClient.execute(report);
 				break;
 			default:
 				Log.wtf("HTTP-MODE", "Unknown Http-Mode");
@@ -271,7 +274,7 @@ public class Network extends AsyncTask<String, Integer, String> {
 		Log.v(TAG, "Http-Status: " + response.getStatusLine().getStatusCode());
 		if (response.getEntity() == null)
 			return "";
-		String r = EntityUtils.toString(response.getEntity(),HTTP.UTF_8);
+		String r = EntityUtils.toString(response.getEntity(), HTTP.UTF_8);
 		Log.d(TAG, r);
 		return r;
 	}

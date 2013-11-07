@@ -294,8 +294,8 @@ public class SpecialList extends ListMirakel {
 		SpecialList s = SpecialList.firstSpecial();
 		if (s == null) {
 			s = SpecialList.newSpecialList(ctx.getString(R.string.list_all),
-					"", true,ctx);
-			if(ListMirakel.count()==0)
+					"", true, ctx);
+			if (ListMirakel.count() == 0)
 				ListMirakel.safeFirst(ctx);
 			s.save(false);
 		}

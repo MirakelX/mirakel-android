@@ -154,17 +154,17 @@ public class Semantic extends SemanticBase {
 	}
 
 	public static Task createTask(String taskName, ListMirakel currentList,
-			boolean useSemantic,Context context) throws NoListsException {
+			boolean useSemantic, Context context) throws NoListsException {
 		GregorianCalendar due = null;
 		int prio = 0;
 		if (currentList instanceof SearchList) {
 			currentList = SpecialList.firstSpecial();
 		}
-		if (currentList!=null && currentList.isSpecialList()) {
+		if (currentList != null && currentList.isSpecialList()) {
 			try {
 				SpecialList slist = (SpecialList) currentList;
 				currentList = slist.getDefaultList();
-				
+
 				if (slist.getDefaultDate() != null) {
 					due = new GregorianCalendar();
 					due.add(GregorianCalendar.DAY_OF_MONTH,
@@ -247,10 +247,10 @@ public class Semantic extends SemanticBase {
 				words.remove(0);
 			}
 		}
-		if(currentList==null) {
-			currentList=ListMirakel.safeFirst(context);
+		if (currentList == null) {
+			currentList = ListMirakel.safeFirst(context);
 		}
-		if(currentList==null){
+		if (currentList == null) {
 			throw new NoListsException();
 		}
 		return Task.newTask(taskName, currentList, due, prio);

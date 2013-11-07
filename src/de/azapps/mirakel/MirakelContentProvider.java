@@ -169,46 +169,43 @@ public class MirakelContentProvider extends ContentProvider {
 					ListMirakel.TABLE,
 					projection,
 					"(" + selection + " ) and not sync_state= "
-							+ SYNC_STATE.DELETE, selectionArgs, null,
-					null, sortOrder);
+							+ SYNC_STATE.DELETE, selectionArgs, null, null,
+					sortOrder);
 		case LISTS_ITEM:
 			return Mirakel.getReadableDatabase().query(
 					ListMirakel.TABLE,
 					projection,
 					"(" + selection + " ) and _id=" + uri.getLastPathSegment()
-							+ " and not sync_state= "
-							+ SYNC_STATE.DELETE, selectionArgs, null,
-					null, sortOrder);
+							+ " and not sync_state= " + SYNC_STATE.DELETE,
+					selectionArgs, null, null, sortOrder);
 		case TASKS:
 			return Mirakel.getReadableDatabase().query(
 					Task.TABLE,
 					projection,
 					"(" + selection + " ) and not sync_state= "
-							+ SYNC_STATE.DELETE, selectionArgs, null,
-					null, sortOrder);
+							+ SYNC_STATE.DELETE, selectionArgs, null, null,
+					sortOrder);
 		case TASKS_ITEM:
 			return Mirakel.getReadableDatabase().query(
 					Task.TABLE,
 					projection,
 					"(" + selection + " ) and _id=" + uri.getLastPathSegment()
-							+ " and not sync_state= "
-							+ SYNC_STATE.DELETE, selectionArgs, null,
-					null, sortOrder);
+							+ " and not sync_state= " + SYNC_STATE.DELETE,
+					selectionArgs, null, null, sortOrder);
 		case SPECIAL_LIST:
 			return Mirakel.getReadableDatabase().query(
 					SpecialList.TABLE,
 					projection,
 					"(" + selection + " ) and not sync_state= "
-							+ SYNC_STATE.DELETE, selectionArgs, null,
-					null, sortOrder);
+							+ SYNC_STATE.DELETE, selectionArgs, null, null,
+					sortOrder);
 		case SPECIAL_LIST_ITEM:
 			return Mirakel.getReadableDatabase().query(
 					SpecialList.TABLE,
 					projection,
 					"(" + selection + " ) and _id=" + uri.getLastPathSegment()
-							+ " and not sync_state= "
-							+ SYNC_STATE.DELETE, selectionArgs, null,
-					null, sortOrder);
+							+ " and not sync_state= " + SYNC_STATE.DELETE,
+					selectionArgs, null, null, sortOrder);
 		default:
 			Log.wtf(TAG, "Unsupportet uri");
 			break;

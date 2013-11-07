@@ -205,7 +205,8 @@ public class TaskFragmentAdapter extends
 				action = new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						TaskDialogHelpers.handleSubtask(context, task, adapter,false);
+						TaskDialogHelpers.handleSubtask(context, task, adapter,
+								false);
 					}
 				};
 				break;
@@ -996,7 +997,7 @@ public class TaskFragmentAdapter extends
 								.setOnFocusChangeListener(null);
 					}
 					holder.switcher.showNext(); // or switcher.showPrevious();
-					CharSequence name=holder.taskName.getText();
+					CharSequence name = holder.taskName.getText();
 					holder.txt.setText(name);
 					holder.txt
 							.setOnFocusChangeListener(new OnFocusChangeListener() {

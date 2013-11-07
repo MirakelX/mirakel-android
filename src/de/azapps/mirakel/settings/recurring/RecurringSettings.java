@@ -92,14 +92,11 @@ public class RecurringSettings {
 		recurring_month.setValue(recurring.getMonths());
 		recurring_year.setValue(recurring.getYears());
 
-		setSummary(recurring_day, R.plurals.every_days,
-				recurring.getDays());
+		setSummary(recurring_day, R.plurals.every_days, recurring.getDays());
 		setSummary(recurring_month, R.plurals.every_months,
 				recurring.getMonths());
-		setSummary(recurring_year, R.plurals.every_years,
-				recurring.getYears());
-		setSummary(recurring_hour, R.plurals.every_hours,
-				recurring.getHours());
+		setSummary(recurring_year, R.plurals.every_years, recurring.getYears());
+		setSummary(recurring_hour, R.plurals.every_hours, recurring.getHours());
 		setSummary(recurring_minute, R.plurals.every_minutes,
 				recurring.getMinutes());
 		hideForReminder(recurring.isForDue(), recurring_minute, recurring_hour);
@@ -129,8 +126,7 @@ public class RecurringSettings {
 							Object newValue) {
 						Log.d(TAG, "change");
 						recurring.setMonths(recurring_month.getValue());
-						setSummary(recurring_month,
-								R.plurals.every_months,
+						setSummary(recurring_month, R.plurals.every_months,
 								recurring.getMonths());
 						recurring.save();
 						return false;
@@ -143,8 +139,7 @@ public class RecurringSettings {
 					public boolean onPreferenceChange(Preference preference,
 							Object newValue) {
 						recurring.setYears(recurring_year.getValue());
-						setSummary(recurring_year,
-								R.plurals.every_years,
+						setSummary(recurring_year, R.plurals.every_years,
 								recurring.getYears());
 						recurring.save();
 						return false;
@@ -157,8 +152,7 @@ public class RecurringSettings {
 					public boolean onPreferenceChange(Preference preference,
 							Object newValue) {
 						recurring.setHours(recurring_hour.getValue());
-						setSummary(recurring_hour,
-								R.plurals.every_hours,
+						setSummary(recurring_hour, R.plurals.every_hours,
 								recurring.getHours());
 						recurring.save();
 						return false;
@@ -171,8 +165,7 @@ public class RecurringSettings {
 					public boolean onPreferenceChange(Preference preference,
 							Object newValue) {
 						recurring.setMinutes(recurring_minute.getValue());
-						setSummary(recurring_minute,
-								R.plurals.every_minutes,
+						setSummary(recurring_minute, R.plurals.every_minutes,
 								recurring.getMinutes());
 						recurring.save();
 						return false;
@@ -188,10 +181,11 @@ public class RecurringSettings {
 						recurring.setLabel(newValue.toString());
 						preference.setSummary(recurring.getLabel());
 						preference.setPersistent(false);
-						((EditTextPreference)preference).setText(recurring.getLabel());
+						((EditTextPreference) preference).setText(recurring
+								.getLabel());
 						recurring.save();
-						if(Helpers.isTablet(ctx)&&v4_0){
-							((ListSettings)ctx).invalidateHeaders();
+						if (Helpers.isTablet(ctx) && v4_0) {
+							((ListSettings) ctx).invalidateHeaders();
 						}
 						return false;
 					}
@@ -205,7 +199,8 @@ public class RecurringSettings {
 				hideForReminder(recurring.isForDue(), recurring_minute,
 						recurring_hour);
 				preference.setPersistent(false);
-				((CheckBoxPreference) preference).setChecked(recurring.isForDue());
+				((CheckBoxPreference) preference).setChecked(recurring
+						.isForDue());
 				recurring.save();
 				return false;
 			}
@@ -245,9 +240,10 @@ public class RecurringSettings {
 						dayOfMonth);
 				if (start) {
 					recurring.setStartDate(c);
-				} else if(recurring.getStartDate()==null|(recurring.getStartDate().before(c))){
+				} else if (recurring.getStartDate() == null
+						| (recurring.getStartDate().before(c))) {
 					recurring.setEndDate(c);
-				}else{
+				} else {
 					recurring.save();
 					return;
 				}
@@ -274,9 +270,10 @@ public class RecurringSettings {
 												.getDayOfMonth());
 								if (start) {
 									recurring.setStartDate(c);
-								} else if(recurring.getStartDate()==null|(recurring.getStartDate().before(c))){
+								} else if (recurring.getStartDate() == null
+										| (recurring.getStartDate().before(c))) {
 									recurring.setEndDate(c);
-								}else{
+								} else {
 									recurring.save();
 									return;
 								}
@@ -307,13 +304,13 @@ public class RecurringSettings {
 
 	}
 
-	private void hideForReminder(boolean forDue,
-			Preference recurring_minute, Preference recurring_hour) {
+	private void hideForReminder(boolean forDue, Preference recurring_minute,
+			Preference recurring_hour) {
 		PreferenceCategory cat = (PreferenceCategory) findPreference("recurring_intervall");
 		if (forDue) {
 			cat.removePreference(recurring_hour);
 			cat.removePreference(recurring_minute);
-		}else{
+		} else {
 			cat.addPreference(recurring_minute);
 			cat.addPreference(recurring_hour);
 		}
@@ -321,8 +318,8 @@ public class RecurringSettings {
 	}
 
 	private void setSummary(NumPickerPref pref, int id, int val) {
-		String summary = ctx.getResources().getQuantityString(id, val, val)
-;		if (val == 0) {
+		String summary = ctx.getResources().getQuantityString(id, val, val);
+		if (val == 0) {
 			summary = ctx.getString(R.string.nothing);
 		}
 		pref.setSummary(summary);

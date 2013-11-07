@@ -158,9 +158,9 @@ public class MainActivity extends ActionBarActivity implements
 			editor.putString("startupList", "" + SpecialList.first().getId());
 			editor.commit();
 		}
-		if(isTablet){
+		if (isTablet) {
 			setContentView(R.layout.activity_main);
-		}else{
+		} else {
 			setContentView(R.layout.activity_main);
 		}
 		mPagerAdapter = null;
@@ -252,7 +252,8 @@ public class MainActivity extends ActionBarActivity implements
 				stopService(new Intent(MainActivity.this,
 						NotificationService.class));
 			}
-			Intent killIntent = new Intent(getApplicationContext(), SplashScreenActivity.class);
+			Intent killIntent = new Intent(getApplicationContext(),
+					SplashScreenActivity.class);
 			killIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			killIntent.setAction(SplashScreenActivity.EXIT);
 			startActivity(killIntent);
@@ -361,10 +362,10 @@ public class MainActivity extends ActionBarActivity implements
 		updateLists();
 		getMenuInflater().inflate(R.menu.main, menu);
 		this.menu = menu;
-		if(!showNavDrawer){
+		if (!showNavDrawer) {
 			loadMenu(currentPosition, false, false);
-		}else{
-			showNavDrawer=false;
+		} else {
+			showNavDrawer = false;
 			loadMenu(-1, false, false);
 		}
 		return true;
@@ -517,7 +518,7 @@ public class MainActivity extends ActionBarActivity implements
 						task = Semantic.createTask(preferences.getString(
 								"photoDefaultTitle",
 								getString(R.string.photo_default_title)),
-								currentList, false,this);
+								currentList, false, this);
 						safeSaveTask(task);
 					}
 					task.addFile(this, Helpers.getPathFromUri(fileUri, this));
@@ -580,12 +581,16 @@ public class MainActivity extends ActionBarActivity implements
 		// AppWidgetManager.EXTRA_APPWIDGET_ID,
 		// since it seems the onUpdate() is only fired on that:
 		Context context = getApplicationContext();
-		ComponentName name = new ComponentName(context, MainWidgetProvider.class);
-		int widgets[] = AppWidgetManager.getInstance(context).getAppWidgetIds(name);
+		ComponentName name = new ComponentName(context,
+				MainWidgetProvider.class);
+		int widgets[] = AppWidgetManager.getInstance(context).getAppWidgetIds(
+				name);
 		intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, widgets);
-		if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB){
-			for(int id:widgets){
-				AppWidgetManager.getInstance(this).notifyAppWidgetViewDataChanged(id, R.id.widget_tasks_list);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			for (int id : widgets) {
+				AppWidgetManager.getInstance(this)
+						.notifyAppWidgetViewDataChanged(id,
+								R.id.widget_tasks_list);
 			}
 		}
 		sendBroadcast(intent);
@@ -871,7 +876,7 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	public void handleDestroyTask(final List<Task> tasks) {
-		if(tasks==null)
+		if (tasks == null)
 			return;
 		final MainActivity main = this;
 		String names = tasks.get(0).getName();
