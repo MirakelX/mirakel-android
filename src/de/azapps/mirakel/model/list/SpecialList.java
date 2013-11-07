@@ -251,8 +251,8 @@ public class SpecialList extends ListMirakel {
 	 */
 	public static List<SpecialList> allSpecial(boolean showAll) {
 		List<SpecialList> slists = new ArrayList<SpecialList>();
-		Cursor c = database.query(TABLE, allColumns, showAll ? "" : "active=1",
-				null, null, null, "lft ASC");
+		Cursor c = database.query(TABLE, allColumns, showAll ? "" : ACTIVE+"=1",
+				null, null, null, LFT+" ASC");
 		c.moveToFirst();
 		while (!c.isAfterLast()) {
 			slists.add(cursorToSList(c));
@@ -270,7 +270,7 @@ public class SpecialList extends ListMirakel {
 	 * @return List
 	 */
 	public static SpecialList getSpecialList(int listId) {
-		Cursor cursor = database.query(SpecialList.TABLE, allColumns, "_id="
+		Cursor cursor = database.query(SpecialList.TABLE, allColumns, DatabaseHelper.ID+"="
 				+ listId, null, null, null, null);
 		cursor.moveToFirst();
 		if (cursor.getCount() != 0) {
@@ -289,8 +289,8 @@ public class SpecialList extends ListMirakel {
 	 */
 	public static SpecialList firstSpecial() {
 		Cursor cursor = database.query(SpecialList.TABLE, allColumns,
-				"not sync_state=" + SYNC_STATE.DELETE, null, null, null,
-				"lft ASC");
+				"not "+SyncAdapter.SYNC_STATE+"=" + SYNC_STATE.DELETE, null, null, null,
+				LFT+" ASC");
 		SpecialList list = null;
 		cursor.moveToFirst();
 		if (!cursor.isAfterLast()) {
@@ -336,7 +336,7 @@ public class SpecialList extends ListMirakel {
 
 	public static int getSpecialListCount() {
 		Cursor c = Mirakel.getReadableDatabase().rawQuery(
-				"Select count(_id) from " + TABLE, null);
+				"Select count("+DatabaseHelper.ID+") from " + TABLE, null);
 		c.moveToFirst();
 		int r = 0;
 		if (c.getCount() > 0) {

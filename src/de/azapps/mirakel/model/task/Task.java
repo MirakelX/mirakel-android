@@ -32,6 +32,7 @@ import java.util.Set;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Pair;
 import android.widget.Toast;
@@ -119,7 +120,8 @@ public class Task extends TaskBase {
 			Helpers.updateLog(old, context);
 		}
 		database.beginTransaction();
-		database.update(TABLE, values, DatabaseHelper.ID+" = " + getId(), null);
+		database.update(TABLE, values, DatabaseHelper.ID + " = " + getId(),
+				null);
 		database.endTransaction();
 		clearEdited();
 	}
@@ -214,18 +216,17 @@ public class Task extends TaskBase {
 		if (!force)
 			Helpers.updateLog(this, context);
 		long id = getId();
-		database.beginTransaction();
 		if (getSyncState() == SYNC_STATE.ADD || force) {
-			database.delete(TABLE, DatabaseHelper.ID+" = " + id, null);
+			database.delete(TABLE, DatabaseHelper.ID + " = " + id, null);
 			FileMirakel.destroyForTask(this);
 			database.delete(SUBTASK_TABLE, "parent_id=" + id + " or child_id="
 					+ id, null);
 		} else {
 			ContentValues values = new ContentValues();
 			values.put(SyncAdapter.SYNC_STATE, SYNC_STATE.DELETE.toInt());
-			database.update(TABLE, values, DatabaseHelper.ID+"=" + id, null);
+			database.update(TABLE, values, DatabaseHelper.ID + "=" + id, null);
 		}
-		database.endTransaction();
+
 	}
 
 	public List<Task> getSubtasks() {
@@ -251,8 +252,9 @@ public class Task extends TaskBase {
 	}
 
 	public static List<Pair<Long, String>> getTaskNames() {
-		Cursor c = database.query(TABLE, new String[] { DatabaseHelper.ID,DatabaseHelper.NAME },
-				"not "+SyncAdapter.SYNC_STATE+"=" + SYNC_STATE.DELETE, null, null, null, null);
+		Cursor c = database.query(TABLE, new String[] { DatabaseHelper.ID,
+				DatabaseHelper.NAME }, "not " + SyncAdapter.SYNC_STATE + "="
+				+ SYNC_STATE.DELETE, null, null, null, null);
 		c.moveToFirst();
 		List<Pair<Long, String>> names = new ArrayList<Pair<Long, String>>();
 		while (!c.isAfterLast()) {
@@ -353,14 +355,12 @@ public class Task extends TaskBase {
 	private static final String TAG = "TasksDataSource";
 	private static SQLiteDatabase database;
 	private static DatabaseHelper dbHelper;
-	public static final String[] allColumns = {DatabaseHelper.ID, UUID, LIST_ID,
-		DatabaseHelper.NAME, CONTENT, DONE, DUE, REMINDER, PRIORITY,
-		DatabaseHelper.CREATED_AT, DatabaseHelper.UPDATED_AT, SyncAdapter.SYNC_STATE, ADDITIONAL_ENTRIES,
-			RECURRING, RECURRING_REMINDER };
-	
+	public static final String[] allColumns = { DatabaseHelper.ID, UUID,
+			LIST_ID, DatabaseHelper.NAME, CONTENT, DONE, DUE, REMINDER,
+			PRIORITY, DatabaseHelper.CREATED_AT, DatabaseHelper.UPDATED_AT,
+			SyncAdapter.SYNC_STATE, ADDITIONAL_ENTRIES, RECURRING,
+			RECURRING_REMINDER };
 
-	
-	
 	private static Context context;
 
 	public static Task getDummy(Context ctx) {
@@ -444,17 +444,27 @@ public class Task extends TaskBase {
 				(getDue() == null ? null : DateTimeHelper.formatDate(getDue())));
 		values.put(PRIORITY, getPriority());
 		values.put(SyncAdapter.SYNC_STATE, SYNC_STATE.ADD.toInt());
-		values.put(DatabaseHelper.CREATED_AT, DateTimeHelper.formatDateTime(getCreatedAt()));
-		values.put(DatabaseHelper.UPDATED_AT, DateTimeHelper.formatDateTime(getUpdatedAt()));
+		values.put(DatabaseHelper.CREATED_AT,
+				DateTimeHelper.formatDateTime(getCreatedAt()));
+		values.put(DatabaseHelper.UPDATED_AT,
+				DateTimeHelper.formatDateTime(getUpdatedAt()));
 		database.beginTransaction();
-		long insertId = database.insertOrThrow(TABLE, null, values);
-		Cursor cursor = database.query(TABLE, allColumns, DatabaseHelper.ID+" = " + insertId,
-				null, null, null, null);
+		long insertId;
+		try {
+			insertId = database.insertOrThrow(TABLE, null, values);
+			database.setTransactionSuccessful();
+		} catch (SQLException e) {
+			Log.wtf(TAG, "cannot create Task");
+			return null;
+		} finally {
+			database.endTransaction();
+		}
+		Cursor cursor = database.query(TABLE, allColumns, DatabaseHelper.ID
+				+ " = " + insertId, null, null, null, null);
 		cursor.moveToFirst();
 		Task newTask = cursorToTask(cursor);
 		cursor.close();
 		Helpers.logCreate(newTask, context);
-		database.endTransaction();
 		return newTask;
 	}
 
@@ -465,8 +475,9 @@ public class Task extends TaskBase {
 	 */
 	public static List<Task> all() {
 		List<Task> tasks = new ArrayList<Task>();
-		Cursor c = database.query(TABLE, allColumns, "not "+SyncAdapter.SYNC_STATE+"= "
-				+ SYNC_STATE.DELETE, null, null, null, null);
+		Cursor c = database.query(TABLE, allColumns, "not "
+				+ SyncAdapter.SYNC_STATE + "= " + SYNC_STATE.DELETE, null,
+				null, null, null);
 		c.moveToFirst();
 		while (!c.isAfterLast()) {
 			tasks.add(cursorToTask(c));
@@ -482,9 +493,9 @@ public class Task extends TaskBase {
 	 * @return
 	 */
 	public static Task get(long id) {
-		Cursor cursor = database.query(TABLE, allColumns, DatabaseHelper.ID+"='" + id
-				+ "' and not "+SyncAdapter.SYNC_STATE+"=" + SYNC_STATE.DELETE, null, null,
-				null, null);
+		Cursor cursor = database.query(TABLE, allColumns, DatabaseHelper.ID
+				+ "='" + id + "' and not " + SyncAdapter.SYNC_STATE + "="
+				+ SYNC_STATE.DELETE, null, null, null, null);
 		cursor.moveToFirst();
 		if (cursor.getCount() != 0) {
 			Task t = cursorToTask(cursor);
@@ -495,9 +506,9 @@ public class Task extends TaskBase {
 	}
 
 	public static Task getByUUID(String uuid) {
-		Cursor cursor = database.query(TABLE, allColumns, UUID+"='" + uuid
-				+ "' and not "+SyncAdapter.SYNC_STATE+"=" + SYNC_STATE.DELETE, null, null,
-				null, null);
+		Cursor cursor = database.query(TABLE, allColumns, UUID + "='" + uuid
+				+ "' and not " + SyncAdapter.SYNC_STATE + "="
+				+ SYNC_STATE.DELETE, null, null, null, null);
 		cursor.moveToFirst();
 		if (cursor.getCount() != 0) {
 			Task t = cursorToTask(cursor);
@@ -516,8 +527,8 @@ public class Task extends TaskBase {
 	 * @return
 	 */
 	public static Task getToSync(long id) {
-		Cursor cursor = database.query(TABLE, allColumns, DatabaseHelper.ID+"='" + id + "'",
-				null, null, null, null);
+		Cursor cursor = database.query(TABLE, allColumns, DatabaseHelper.ID
+				+ "='" + id + "'", null, null, null, null);
 		cursor.moveToFirst();
 		if (cursor.getCount() != 0) {
 			Task t = cursorToTask(cursor);
@@ -535,8 +546,8 @@ public class Task extends TaskBase {
 	 */
 	public static List<Task> searchName(String query) {
 		String[] args = { "%" + query + "%" };
-		Cursor cursor = database.query(TABLE, allColumns, DatabaseHelper.NAME+" LIKE ?", args,
-				null, null, null);
+		Cursor cursor = database.query(TABLE, allColumns, DatabaseHelper.NAME
+				+ " LIKE ?", args, null, null, null);
 		return cursorToTaskList(cursor);
 	}
 
@@ -565,8 +576,8 @@ public class Task extends TaskBase {
 	 * @return
 	 */
 	public static List<Task> getBySyncState(SYNC_STATE state) {
-		Cursor c = database.query(TABLE, allColumns,
-				SyncAdapter.SYNC_STATE+"=" + state.toInt() + " and "+LIST_ID+">0", null, null,
+		Cursor c = database.query(TABLE, allColumns, SyncAdapter.SYNC_STATE
+				+ "=" + state.toInt() + " and " + LIST_ID + ">0", null, null,
 				null, null);
 		return cursorToTaskList(c);
 	}
@@ -601,14 +612,15 @@ public class Task extends TaskBase {
 	}
 
 	public static List<Task> getTasksWithReminders() {
-		String where = REMINDER+" NOT NULL and "+DONE+"=0";
+		String where = REMINDER + " NOT NULL and " + DONE + "=0";
 		Cursor cursor = Mirakel.getReadableDatabase().query(TABLE, allColumns,
 				where, null, null, null, null);
 		return cursorToTaskList(cursor);
 	}
 
 	public static List<Task> getTasksToSync() {
-		String where = "NOT "+SyncAdapter.SYNC_STATE+"='" + SYNC_STATE.NOTHING + "'";
+		String where = "NOT " + SyncAdapter.SYNC_STATE + "='"
+				+ SYNC_STATE.NOTHING + "'";
 		Cursor cursor = Mirakel.getReadableDatabase().query(TABLE, allColumns,
 				where, null, null, null, null);
 		return cursorToTaskList(cursor);
@@ -861,7 +873,8 @@ public class Task extends TaskBase {
 			where = "list_id='" + listId + "'";
 		}
 		if (!showDone) {
-			where += (where.trim().equals("") ? "" : " AND ") + " "+DONE+"=0";
+			where += (where.trim().equals("") ? "" : " AND ") + " " + DONE
+					+ "=0";
 		}
 		return getTasksCursor(listId, sorting, where);
 	}
@@ -870,16 +883,17 @@ public class Task extends TaskBase {
 		String order = "";
 		switch (sorting) {
 		case ListMirakel.SORT_BY_PRIO:
-			order = PRIORITY+" desc";
+			order = PRIORITY + " desc";
 			break;
 		case ListMirakel.SORT_BY_OPT:
-			order = ", "+PRIORITY+" DESC";
+			order = ", " + PRIORITY + " DESC";
 		case ListMirakel.SORT_BY_DUE:
-			order = " CASE WHEN ("+DUE+" IS NULL) THEN date('now','+1000 years') ELSE date("+DUE+") END ASC"
-					+ order;
+			order = " CASE WHEN (" + DUE
+					+ " IS NULL) THEN date('now','+1000 years') ELSE date("
+					+ DUE + ") END ASC" + order;
 			break;
 		default:
-			order = DatabaseHelper.ID+" ASC";
+			order = DatabaseHelper.ID + " ASC";
 		}
 		return order;
 	}
@@ -909,13 +923,13 @@ public class Task extends TaskBase {
 		} else if (!where.equals("")) {
 			where += " and ";
 		}
-		where += " not "+SyncAdapter.SYNC_STATE+"=" + SYNC_STATE.DELETE;
+		where += " not " + SyncAdapter.SYNC_STATE + "=" + SYNC_STATE.DELETE;
 		String order = getSorting(sorting);
 
 		if (listId < 0)
-			order += ", "+LIST_ID+" ASC";
-		return database.query(TABLE, allColumns, where, null, null, null,
-				DONE+", " + order);
+			order += ", " + LIST_ID + " ASC";
+		return database.query(TABLE, allColumns, where, null, null, null, DONE
+				+ ", " + order);
 	}
 
 	public static void resetSyncState(List<Task> tasks) {
@@ -927,7 +941,7 @@ public class Task extends TaskBase {
 				t.setSyncState(SYNC_STATE.NOTHING);
 				try {
 					database.update(TABLE, t.getContentValues(),
-							DatabaseHelper.ID+" = " + t.getId(), null);
+							DatabaseHelper.ID + " = " + t.getId(), null);
 				} catch (NoSuchListException e) {
 					Log.d(TAG, "List did vanish");
 				}

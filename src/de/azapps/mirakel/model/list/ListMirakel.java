@@ -29,6 +29,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 
@@ -37,6 +38,7 @@ import com.google.gson.JsonObject;
 
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.Helpers;
+import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.SyncAdapter;
@@ -127,21 +129,26 @@ public class ListMirakel extends ListBase {
 		if (id <= 0)
 			return;
 		database.beginTransaction();
-
-		if (getSyncState() == SYNC_STATE.ADD || force) {
-			database.delete(Task.TABLE, Task.LIST_ID+" = " + id, null);
-			database.delete(ListMirakel.TABLE, DatabaseHelper.ID+" = " + id, null);
-		} else {
-			ContentValues values = new ContentValues();
-			values.put(SyncAdapter.SYNC_STATE, SYNC_STATE.DELETE.toInt());
-			database.update(Task.TABLE, values, Task.LIST_ID+" = " + id, null);
-			database.update(ListMirakel.TABLE, values, DatabaseHelper.ID+"=" + id, null);
+		try {
+			if (getSyncState() == SYNC_STATE.ADD || force) {
+				database.delete(Task.TABLE, Task.LIST_ID+" = " + id, null);
+				database.delete(ListMirakel.TABLE, DatabaseHelper.ID+" = " + id, null);
+			} else {
+				ContentValues values = new ContentValues();
+				values.put(SyncAdapter.SYNC_STATE, SYNC_STATE.DELETE.toInt());
+				database.update(Task.TABLE, values, Task.LIST_ID+" = " + id, null);
+				database.update(ListMirakel.TABLE, values, DatabaseHelper.ID+"=" + id, null);
+			}
+			database.rawQuery("UPDATE " + ListMirakel.TABLE
+					+ " SET "+LFT+"="+LFT+"-2 WHERE "+LFT+">" + getLft() + "; UPDATE "
+					+ ListMirakel.TABLE + " SET "+RGT+"="+RGT+"-2 WHERE "+LFT+">" + getRgt()
+					+ ";", null);
+			database.setTransactionSuccessful();
+		} catch (Exception e) {
+			Log.wtf(TAG, "cannot remove List");
+		}finally{
+			database.endTransaction();
 		}
-		database.rawQuery("UPDATE " + ListMirakel.TABLE
-				+ " SET "+LFT+"="+LFT+"-2 WHERE "+LFT+">" + getLft() + "; UPDATE "
-				+ ListMirakel.TABLE + " SET "+RGT+"="+RGT+"-2 WHERE "+LFT+">" + getRgt()
-				+ ";", null);
-		database.endTransaction();
 	}
 
 	/**
@@ -293,7 +300,6 @@ public class ListMirakel extends ListBase {
 	 * @return new List
 	 */
 	public static ListMirakel newList(String name, int sort_by) {
-		database.beginTransaction();
 		ContentValues values = new ContentValues();
 		values.put(DatabaseHelper.NAME, name);
 		values.put(SORT_BY, sort_by);
@@ -308,21 +314,29 @@ public class ListMirakel extends ListBase {
 						.format(new Date()));
 		values.put(RGT, 0);
 		values.put(LFT, 0);
-
-		long insertId = database.insert(ListMirakel.TABLE, null, values);
-
-		// Dirty workaround
-		database.execSQL("update "
-				+ ListMirakel.TABLE
-				+ " SET lft=(SELECT MAX("+RGT+") from "+TABLE+")+1, "+RGT+"=(SELECT MAX("+RGT+") from lists)+2 where "+DatabaseHelper.ID+"="
-				+ insertId);
+		database.beginTransaction();
+		long insertId;
+		try {
+			insertId = database.insert(ListMirakel.TABLE, null, values);
+			// Dirty workaround
+			database.execSQL("update "
+					+ ListMirakel.TABLE
+					+ " SET lft=(SELECT MAX("+RGT+") from "+TABLE+")+1, "+RGT+"=(SELECT MAX("+RGT+") from lists)+2 where "+DatabaseHelper.ID+"="
+					+ insertId);
+			database.setTransactionSuccessful();
+		} catch (SQLException e) {
+			Log.wtf(TAG,"cannot create list");
+			return null;
+		}finally{
+			database.endTransaction();
+		}
+		
 		Cursor cursor = database.query(ListMirakel.TABLE, allColumns, DatabaseHelper.ID+" = "
 				+ insertId, null, null, null, null);
 		cursor.moveToFirst();
 		ListMirakel newList = cursorToList(cursor);
 		cursor.close();
 		Helpers.logCreate(newList, context);
-		database.endTransaction();
 		return newList;
 	}
 
