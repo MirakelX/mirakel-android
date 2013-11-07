@@ -39,6 +39,7 @@ import de.azapps.mirakel.helper.DueDialog.VALUE;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.main_activity.TaskFragmentAdapter;
+import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -637,7 +638,7 @@ public class TaskDialogHelpers {
 				+ " WHERE name LIKE '%" + searchString + "%' AND";
 		query += " NOT _id IN (SELECT parent_id from " + Task.SUBTASK_TABLE
 				+ " where child_id=" + t.getId() + ") AND ";
-		query += "NOT "+Task.ID+"=" + t.getId();
+		query += "NOT "+DatabaseHelper.ID+"=" + t.getId();
 		query += " AND NOT "+SyncAdapter.SYNC_STATE+"="+SYNC_STATE.DELETE;
 		if (optionEnabled) {
 			if (!done) {
