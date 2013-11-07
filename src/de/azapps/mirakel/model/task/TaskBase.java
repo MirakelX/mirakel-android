@@ -32,9 +32,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.DateTimeHelper;
+import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.recurring.Recurring;
@@ -46,8 +46,6 @@ class TaskBase {
 	public static final String CONTENT="content";
 	public static final String DUE="due";
 	public static final String DONE="done";
-	public static final String NAME="name";
-	public static final String ID="_id";
 	public static final String UUID="uuid";
 	public static final String LIST_ID="list_id";
 	public static final String REMINDER="reminder";
@@ -149,7 +147,7 @@ class TaskBase {
 
 	public void setId(long id) {
 		this.id = id;
-		edited.put(ID, true);
+		edited.put(DatabaseHelper.ID, true);
 	}
 
 	public String getUUID() {
@@ -176,7 +174,7 @@ class TaskBase {
 
 	public void setName(String name) {
 		this.name = name;
-		edited.put(NAME, true);
+		edited.put(DatabaseHelper.NAME, true);
 	}
 
 	public String getContent() {
@@ -354,12 +352,12 @@ class TaskBase {
 
 	public ContentValues getContentValues() throws NoSuchListException {
 		ContentValues cv = new ContentValues();
-		cv.put(ID, id);
+		cv.put(DatabaseHelper.ID, id);
 		cv.put(UUID, uuid);
 		if (list == null)
 			throw new NoSuchListException();
 		cv.put(LIST_ID, list.getId());
-		cv.put(NAME, name);
+		cv.put(DatabaseHelper.NAME, name);
 		cv.put(CONTENT, content);
 		cv.put(DONE, done);
 		String due = (this.due == null ? null : DateTimeHelper
@@ -373,11 +371,11 @@ class TaskBase {
 		String createdAt = null;
 		if (this.createdAt != null)
 			createdAt = DateTimeHelper.formatDateTime(this.createdAt);
-		cv.put(Mirakel.CREATED_AT, createdAt);
+		cv.put(DatabaseHelper.CREATED_AT, createdAt);
 		String updatedAt = null;
 		if (this.updatedAt != null)
 			updatedAt = DateTimeHelper.formatDateTime(this.updatedAt);
-		cv.put(Mirakel.UPDATED_AT, updatedAt);
+		cv.put(DatabaseHelper.UPDATED_AT, updatedAt);
 		cv.put(SyncAdapter.SYNC_STATE, sync_state.toInt());
 		cv.put(RECURRING, recurrence);
 		cv.put(RECURRING_REMINDER, recurrence_reminder);

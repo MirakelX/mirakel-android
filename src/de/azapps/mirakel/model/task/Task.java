@@ -119,7 +119,7 @@ public class Task extends TaskBase {
 			Helpers.updateLog(old, context);
 		}
 		database.beginTransaction();
-		database.update(TABLE, values, ID+" = " + getId(), null);
+		database.update(TABLE, values, DatabaseHelper.ID+" = " + getId(), null);
 		database.endTransaction();
 		clearEdited();
 	}
@@ -216,14 +216,14 @@ public class Task extends TaskBase {
 		long id = getId();
 		database.beginTransaction();
 		if (getSyncState() == SYNC_STATE.ADD || force) {
-			database.delete(TABLE, ID+" = " + id, null);
+			database.delete(TABLE, DatabaseHelper.ID+" = " + id, null);
 			FileMirakel.destroyForTask(this);
 			database.delete(SUBTASK_TABLE, "parent_id=" + id + " or child_id="
 					+ id, null);
 		} else {
 			ContentValues values = new ContentValues();
 			values.put(SyncAdapter.SYNC_STATE, SYNC_STATE.DELETE.toInt());
-			database.update(TABLE, values, ID+"=" + id, null);
+			database.update(TABLE, values, DatabaseHelper.ID+"=" + id, null);
 		}
 		database.endTransaction();
 	}
@@ -251,7 +251,7 @@ public class Task extends TaskBase {
 	}
 
 	public static List<Pair<Long, String>> getTaskNames() {
-		Cursor c = database.query(TABLE, new String[] { ID,NAME },
+		Cursor c = database.query(TABLE, new String[] { DatabaseHelper.ID,DatabaseHelper.NAME },
 				"not "+SyncAdapter.SYNC_STATE+"=" + SYNC_STATE.DELETE, null, null, null, null);
 		c.moveToFirst();
 		List<Pair<Long, String>> names = new ArrayList<Pair<Long, String>>();
@@ -353,9 +353,9 @@ public class Task extends TaskBase {
 	private static final String TAG = "TasksDataSource";
 	private static SQLiteDatabase database;
 	private static DatabaseHelper dbHelper;
-	public static final String[] allColumns = {ID, UUID, LIST_ID,
-			NAME, CONTENT, DONE, DUE, REMINDER, PRIORITY,
-			Mirakel.CREATED_AT, Mirakel.UPDATED_AT, SyncAdapter.SYNC_STATE, ADDITIONAL_ENTRIES,
+	public static final String[] allColumns = {DatabaseHelper.ID, UUID, LIST_ID,
+		DatabaseHelper.NAME, CONTENT, DONE, DUE, REMINDER, PRIORITY,
+		DatabaseHelper.CREATED_AT, DatabaseHelper.UPDATED_AT, SyncAdapter.SYNC_STATE, ADDITIONAL_ENTRIES,
 			RECURRING, RECURRING_REMINDER };
 	
 
@@ -434,7 +434,7 @@ public class Task extends TaskBase {
 	public Task create() throws NoSuchListException {
 		ContentValues values = new ContentValues();
 		values.put(UUID, getUUID());
-		values.put(NAME, getName());
+		values.put(DatabaseHelper.NAME, getName());
 		if (getList() == null)
 			throw new NoSuchListException();
 		values.put(LIST_ID, getList().getId());
@@ -444,11 +444,11 @@ public class Task extends TaskBase {
 				(getDue() == null ? null : DateTimeHelper.formatDate(getDue())));
 		values.put(PRIORITY, getPriority());
 		values.put(SyncAdapter.SYNC_STATE, SYNC_STATE.ADD.toInt());
-		values.put(Mirakel.CREATED_AT, DateTimeHelper.formatDateTime(getCreatedAt()));
-		values.put(Mirakel.UPDATED_AT, DateTimeHelper.formatDateTime(getUpdatedAt()));
+		values.put(DatabaseHelper.CREATED_AT, DateTimeHelper.formatDateTime(getCreatedAt()));
+		values.put(DatabaseHelper.UPDATED_AT, DateTimeHelper.formatDateTime(getUpdatedAt()));
 		database.beginTransaction();
 		long insertId = database.insertOrThrow(TABLE, null, values);
-		Cursor cursor = database.query(TABLE, allColumns, ID+" = " + insertId,
+		Cursor cursor = database.query(TABLE, allColumns, DatabaseHelper.ID+" = " + insertId,
 				null, null, null, null);
 		cursor.moveToFirst();
 		Task newTask = cursorToTask(cursor);
@@ -482,7 +482,7 @@ public class Task extends TaskBase {
 	 * @return
 	 */
 	public static Task get(long id) {
-		Cursor cursor = database.query(TABLE, allColumns, ID+"='" + id
+		Cursor cursor = database.query(TABLE, allColumns, DatabaseHelper.ID+"='" + id
 				+ "' and not "+SyncAdapter.SYNC_STATE+"=" + SYNC_STATE.DELETE, null, null,
 				null, null);
 		cursor.moveToFirst();
@@ -516,7 +516,7 @@ public class Task extends TaskBase {
 	 * @return
 	 */
 	public static Task getToSync(long id) {
-		Cursor cursor = database.query(TABLE, allColumns, ID+"='" + id + "'",
+		Cursor cursor = database.query(TABLE, allColumns, DatabaseHelper.ID+"='" + id + "'",
 				null, null, null, null);
 		cursor.moveToFirst();
 		if (cursor.getCount() != 0) {
@@ -535,7 +535,7 @@ public class Task extends TaskBase {
 	 */
 	public static List<Task> searchName(String query) {
 		String[] args = { "%" + query + "%" };
-		Cursor cursor = database.query(TABLE, allColumns, NAME+" LIKE ?", args,
+		Cursor cursor = database.query(TABLE, allColumns, DatabaseHelper.NAME+" LIKE ?", args,
 				null, null, null);
 		return cursorToTaskList(cursor);
 	}
@@ -879,7 +879,7 @@ public class Task extends TaskBase {
 					+ order;
 			break;
 		default:
-			order = ID+" ASC";
+			order = DatabaseHelper.ID+" ASC";
 		}
 		return order;
 	}
@@ -927,7 +927,7 @@ public class Task extends TaskBase {
 				t.setSyncState(SYNC_STATE.NOTHING);
 				try {
 					database.update(TABLE, t.getContentValues(),
-							ID+" = " + t.getId(), null);
+							DatabaseHelper.ID+" = " + t.getId(), null);
 				} catch (NoSuchListException e) {
 					Log.d(TAG, "List did vanish");
 				}
