@@ -18,13 +18,11 @@
  ******************************************************************************/
 package de.azapps.mirakel;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Locale;
+import java.sql.SQLSyntaxErrorException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.dmfs.provider.tasks.TaskContract;
 
 import android.content.ContentProvider;
@@ -32,18 +30,14 @@ import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.MatrixCursor;
-import android.database.MatrixCursor.RowBuilder;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.net.rtp.RtpStream;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 
 public class MirakelContentProvider extends ContentProvider {
 	// public static final String PROVIDER_NAME = Mirakel.AUTHORITY_TYP;
@@ -137,170 +131,103 @@ public class MirakelContentProvider extends ContentProvider {
 	public Cursor query(Uri uri, String[] projection, String selection,
 			String[] selectionArgs, String sortOrder) {
 		SQLiteQueryBuilder sqlBuilder = new SQLiteQueryBuilder();
-		boolean isTask=false;
+		boolean isTask = false;
 		switch (uriMatcher.match(uri)) {
 		case LIST_ID:
-			sqlBuilder.appendWhere(DatabaseHelper.ID+"=" + getId(uri));
+			sqlBuilder.appendWhere(DatabaseHelper.ID + "=" + getId(uri));
 		case LISTS:
 			sqlBuilder.setTables(ListMirakel.TABLE);
 			break;
 		case TASK_ID:
-			sqlBuilder.appendWhere(DatabaseHelper.ID+"=" + getId(uri));
+			sqlBuilder.appendWhere(DatabaseHelper.ID + "=" + getId(uri));
 		case TASKS:
-			sqlBuilder.setTables(Task.TABLE);
-			isTask=true;
-			break;
+			String taskQuery = getTaskQuery();
+			if (selection.contains(TaskContract.Tasks.LIST_ID)) {
+				String[] t = selection.split(TaskContract.Tasks.LIST_ID);
+//				android.os.Debug.waitForDebugger();
+				if (t[1].trim().charAt(0) == '=') {
+					t[1] = t[1].trim().substring(1);
+					int list_id = 0;
+					if (t[1].trim().charAt(0) == '?') {
+						int count = StringUtils.countMatches(t[0], "?");
+						list_id = Integer.parseInt(selectionArgs[count]);
+					} else {
+						try {
+							boolean negative = t[1].trim().charAt(0) == '-';
+							Matcher matcher = Pattern.compile("\\d+").matcher(
+									t[1]);
+							matcher.find();
+							list_id = (negative ? -1 : 1)
+									* Integer.valueOf(matcher.group());
+						} catch (Exception e) {
+							Log.e(TAG, "cannot parse list_id");
+							return new MatrixCursor(projection);
+						}
+					}
+					if (list_id < 0) {// is special list...
+						SpecialList s = SpecialList
+								.getSpecialList(-1 * list_id);
+						if (s != null) {
+							taskQuery = getTaskQuery(true, list_id) + " WHERE "
+									+ s.getWhereQuery(true);
+						} else {
+							Log.e(TAG, "no matching list found");
+							return new MatrixCursor(projection);
+						}
+					}
+
+				}
+			}
+			selection=insertSelectionArgs(selection,selectionArgs);
+			sqlBuilder.setTables("(" + taskQuery + ")");
+			String query= sqlBuilder.buildQuery(projection, selection, null, null,
+					sortOrder, null);
+			Log.d(TAG,query);
+			return database.rawQuery(query, null);
+
+			// sqlBuilder.setTables(Task.TABLE);
+			// isTask=true;
+			// break;
 		default:
 			throw new IllegalArgumentException("Unsupported URI: " + uri);
 		}
-		boolean isSyncAdapter = getIsCallerSyncAdapter(uri);
-		String[] newProjection = transformProjection(projection, sqlBuilder,
-				isSyncAdapter);
-		String where = transformWhere(selection, selectionArgs, isTask);
-		String newSortOrder=transformSortOrder(sortOrder, isTask);
-		Cursor c;
-		try {
-			String s = sqlBuilder.buildQuery( newProjection, where, null, null,
-					newSortOrder, null);
-			Log.i(TAG,s);
-			c=database.rawQuery(s,null);
-		} catch (Exception e) {
-			Log.d(TAG, "cannot execute query");
-			Log.v(TAG, where);
-			Log.v(TAG, newSortOrder);
-			e.printStackTrace();
-			return new MatrixCursor(projection);
-		}
-		return transfromCursor(c, newProjection, projection, isTask);
+		return null;
 	}
 
-	private Cursor transfromCursor(Cursor fromDB, String[] newProjection,
-			String[] projection, boolean isTask) {
-		fromDB.moveToFirst();
-		MatrixCursor c = new MatrixCursor(projection);
-		while (!fromDB.isAfterLast()) {
-			RowBuilder builder = c.newRow();
-			builder = buildRow(builder, fromDB, projection, newProjection, isTask);
-			fromDB.moveToNext();
-		}
-		fromDB.close();
-		return c;
-	}
-
-	private RowBuilder buildRow(RowBuilder builder, Cursor c,
-			String[] projection, String[] newProjection, boolean isTask) {
-		for (int i = 0; i < newProjection.length; i++) {
-			builder=builder.add(getColoumnIndex(newProjection[i], isTask),
-					getValue(c, newProjection[i], i,isTask));
-		}
-		return builder;
-	}
-
-	private Object getValue(Cursor c, String newProjection, int i,boolean isTask) {
-		if (isTask) {
-			if (newProjection.equals(Task.PRIORITY)||newProjection.equals(Task.LIST_ID)) {
-				return c.getInt(i);
-			} else if (newProjection.equals(DatabaseHelper.NAME)||newProjection.equals(Task.CONTENT)) {
-				return c.getString(i);
-			} else if (newProjection.equals(Task.DONE)) {
-				return c.getInt(i)==0?TaskContract.Tasks.STATUS_NEEDS_ACTION:TaskContract.Tasks.STATUS_COMPLETED;
-			} else if (newProjection.equals(Task.DUE)) {
-				GregorianCalendar due = new GregorianCalendar();
-				SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
-						"yyyy-MM-dd'T'kkmmss'Z'", Locale.getDefault());
-				try {
-					due.setTime(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-							.parse(c.getString(i)));
-				} catch (ParseException e) {
-					due = null;
-				} catch (NullPointerException e) {
-					due = null;
-				}
-				return due.getTimeInMillis();
-			}
-		}
-		throw new RuntimeException();
-	}
-
-	private String getColoumnIndex(String newProjection, boolean isTask) {
-		if (isTask) {
-			if (newProjection.equals(Task.PRIORITY)) {
-				return TaskContract.Tasks.PRIORITY;
-			} else if (newProjection.equals(DatabaseHelper.NAME)) {
-				return TaskContract.Tasks.TITLE;
-			} else if (newProjection.equals(Task.CONTENT)) {
-				return TaskContract.Tasks.DESCRIPTION;
-			} else if (newProjection.equals(Task.DONE)) {
-				return TaskContract.Tasks.STATUS;
-			} else if (newProjection.equals(Task.LIST_ID)) {
-				return TaskContract.Tasks.LIST_ID;
-			} else if(newProjection.equals(Task.DUE)){
-				return TaskContract.Tasks.DUE;
-			}
-		}
-		throw new RuntimeException();
-	}
-
-	private String transformWhere(String selection, String[] selectionArgs,
-			boolean isTask) {
-		if(isTask){
-			Log.i(TAG, selection);
-			selection=selection.replaceAll(TaskContract.Tasks.PRIORITY, Task.PRIORITY);
-			selection=selection.replaceAll(TaskContract.Tasks.TITLE, DatabaseHelper.NAME);
-			selection=selection.replaceAll(TaskContract.Tasks.DESCRIPTION, Task.CONTENT);
-			selection=selection.replaceAll(TaskContract.Tasks.STATUS, Task.DONE);
-			selection=selection.replaceAll(TaskContract.Tasks.LIST_ID, Task.LIST_ID);
-			//TODO due,status
-		}
-		return selection;
-	}
-	
-	private String transformSortOrder(String selection,
-			boolean isTask) {
-		if(isTask){
-			Log.i(TAG, selection);
-			selection=selection.replaceAll(TaskContract.Tasks.PRIORITY, Task.PRIORITY);
-			selection=selection.replaceAll(TaskContract.Tasks.TITLE, DatabaseHelper.NAME);
-			selection=selection.replaceAll(TaskContract.Tasks.DESCRIPTION, Task.CONTENT);
-			selection=selection.replaceAll(TaskContract.Tasks.LIST_ID, Task.LIST_ID);
-			selection=selection.replaceAll(TaskContract.Tasks.DUE, Task.DUE);
+	private String insertSelectionArgs(String selection, String[] selectionArgs) {
+		for(int i=0;i<selectionArgs.length;i++){
+			selection=selection.replace("?", selectionArgs[i]);
 		}
 		return selection;
 	}
 
-	private String[] transformProjection(String[] projection,
-			SQLiteQueryBuilder sqlBuilder, boolean isSyncAdapter) {
-		List<String> newProjection = new ArrayList<String>();
-		for (String p : projection) {
-			if (sqlBuilder.getTables().equals(Task.TABLE)) {
-				if (p.equals(TaskContract.Tasks.PRIORITY)) {
-					newProjection.add(Task.PRIORITY);
-				} else if (p.equals(TaskContract.Tasks.TITLE)) {
-					newProjection.add(DatabaseHelper.NAME);
-				} else if (p.equals(TaskContract.Tasks.DESCRIPTION)) {
-					newProjection.add(Task.CONTENT);
-				} else if (p.equals(TaskContract.Tasks.STATUS)) {
-					newProjection.add(Task.DONE);
-				} else if (p.equals(TaskContract.Tasks.DUE)) {
-					newProjection.add(Task.DUE);
-				} else if (p.equals(TaskContract.Tasks.LIST_NAME)
-						|| p.equals(TaskContract.Tasks.LIST_ID)) {
-					newProjection.add(Task.LIST_ID);
-				} else if (isSyncAdapter) {
+	private String getTaskQuery() {
+		return getTaskQuery(false, 0);
+	}
 
-				}
-			}
+	private String getTaskQuery(boolean isSpecial, int list_id) {
+		String query = "Select ";
+		query += addSegment(DatabaseHelper.NAME, TaskContract.Tasks.TITLE,
+				false);
+		query += addSegment(Task.CONTENT, TaskContract.Tasks.DESCRIPTION, true);
+		query += addSegment(Task.PRIORITY, TaskContract.Tasks.PRIORITY, true);
+		query += addSegment("strftime('%s'," + Task.DUE + ")",
+				TaskContract.Tasks.DUE, true);
+		query += addSegment(Task.DONE, TaskContract.Tasks.STATUS, true);
+		if (isSpecial) {
+			query += addSegment("CASE " + Task.LIST_ID + " WHEN 1 THEN "
+					+ list_id + " ELSE " + list_id + " END",
+					TaskContract.Tasks.LIST_ID, true);
+		} else {
+			query += addSegment(Task.LIST_ID, TaskContract.Tasks.LIST_ID, true);
 		}
-		String [] t={};
-		return newProjection.toArray(t);
+		query += " FROM " + Task.TABLE;
+		Log.d(TAG, query);
+		return query;
 	}
 
-	private boolean isEqual(String p, String s, boolean task) {
-		return p.equals(s) && task;
-	}
-
-	private CharSequence getAnd(boolean andNeeded) {
-		return andNeeded ? " and " : "";
+	private String addSegment(String ownName, String remoteName, boolean comma) {
+		return (comma ? " , " : " ") + ownName + " as " + remoteName;
 	}
 
 	@Override
