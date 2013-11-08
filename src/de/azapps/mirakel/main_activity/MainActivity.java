@@ -74,6 +74,7 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.static_activities.SettingsActivity;
+import de.azapps.mirakel.static_activities.SplashScreenActivity;
 import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.widget.MainWidgetProvider;
 import de.azapps.mirakelandroid.R;
@@ -251,7 +252,11 @@ public class MainActivity extends ActionBarActivity implements
 				stopService(new Intent(MainActivity.this,
 						NotificationService.class));
 			}
-			finish();
+			Intent killIntent = new Intent(getApplicationContext(), SplashScreenActivity.class);
+			killIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			killIntent.setAction(SplashScreenActivity.EXIT);
+			startActivity(killIntent);
+			return false;
 		case R.id.menu_undo:
 			Helpers.undoLast(this);
 			updateCurrentListAndTask();
