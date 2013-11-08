@@ -120,9 +120,15 @@ public class Task extends TaskBase {
 			Helpers.updateLog(old, context);
 		}
 		database.beginTransaction();
-		database.update(TABLE, values, DatabaseHelper.ID + " = " + getId(),
-				null);
-		database.endTransaction();
+		try {
+			database.update(TABLE, values, DatabaseHelper.ID + " = " + getId(),
+					null);
+			database.setTransactionSuccessful();
+		} catch (SQLException e) {
+			Log.wtf(TAG, "cannot save Task");
+		} finally {
+			database.endTransaction();
+		}
 		clearEdited();
 	}
 
@@ -266,19 +272,31 @@ public class Task extends TaskBase {
 	}
 
 	public void addSubtask(Task t) throws NoSuchListException {
-		database.beginTransaction();
 		ContentValues cv = new ContentValues();
 		cv.put("parent_id", getId());
 		cv.put("child_id", t.getId());
-		database.insert(SUBTASK_TABLE, null, cv);
-		database.endTransaction();
+		database.beginTransaction();
+		try {
+			database.insert(SUBTASK_TABLE, null, cv);
+			database.setTransactionSuccessful();
+		} catch (SQLException e) {
+			Log.wtf(TAG, "cannot add SubTask");
+		} finally {
+			database.endTransaction();
+		}
 	}
 
 	public void deleteSubtask(Task s) {
 		database.beginTransaction();
-		database.delete(SUBTASK_TABLE, "parent_id=" + getId()
-				+ " and child_id=" + s.getId(), null);
-		database.endTransaction();
+		try {
+			database.delete(SUBTASK_TABLE, "parent_id=" + getId()
+					+ " and child_id=" + s.getId(), null);
+			database.setTransactionSuccessful();
+		} catch (SQLException e) {
+			Log.wtf(TAG, "cannot add SubTask");
+		} finally {
+			database.endTransaction();
+		}
 
 	}
 
@@ -311,9 +329,16 @@ public class Task extends TaskBase {
 		ContentValues values = new ContentValues();
 		values.put("sync_state", SYNC_STATE.DELETE.toInt());
 		String where = "sync_state!=" + SYNC_STATE.ADD + " AND done=1";
-		database.update(TABLE, values, where, null);
-		database.delete(TABLE, where, null);
-		database.endTransaction();
+		try {
+			database.update(TABLE, values, where, null);
+			database.delete(TABLE, "sync_state=" + SYNC_STATE.ADD
+					+ " AND done=1", null);
+			database.setTransactionSuccessful();
+		} catch (SQLException e) {
+			Log.wtf(TAG, "cannot add SubTask");
+		} finally {
+			database.endTransaction();
+		}
 	}
 
 	public String toJson() {
