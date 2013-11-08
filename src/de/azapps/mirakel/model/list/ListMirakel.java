@@ -218,7 +218,6 @@ public class ListMirakel extends ListBase {
 	private static DatabaseHelper dbHelper;
 	private static final String[] allColumns = { DatabaseHelper.ID, DatabaseHelper.NAME, SORT_BY,
 		DatabaseHelper.CREATED_AT, DatabaseHelper.UPDATED_AT, SyncAdapter.SYNC_STATE, LFT, RGT, COLOR };
-	@SuppressWarnings("unused")
 	private static final String TAG = "ListMirakel";
 	private static Context context;
 	private static SharedPreferences preferences;
