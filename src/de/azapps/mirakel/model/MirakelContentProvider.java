@@ -24,6 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.dmfs.provider.tasks.TaskContract;
+import org.dmfs.provider.tasks.TaskContract.Tasks;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
@@ -37,6 +38,8 @@ import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.sync.SyncAdapter;
+import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 
 public class MirakelContentProvider extends ContentProvider {
 	// public static final String PROVIDER_NAME = Mirakel.AUTHORITY_TYP;
@@ -86,7 +89,7 @@ public class MirakelContentProvider extends ContentProvider {
 		return 0;
 	}
 
-	protected boolean getIsCallerSyncAdapter(Uri uri) {
+	protected boolean isCallerSyncAdapter(Uri uri) {
 		String param = uri
 				.getQueryParameter(TaskContract.CALLER_IS_SYNCADAPTER);
 		return param != null && !"false".equals(param);
@@ -130,6 +133,7 @@ public class MirakelContentProvider extends ContentProvider {
 	public Cursor query(Uri uri, String[] projection, String selection,
 			String[] selectionArgs, String sortOrder) {
 		SQLiteQueryBuilder sqlBuilder = new SQLiteQueryBuilder();
+		boolean isSyncAdapter = isCallerSyncAdapter(uri);
 		// insert arguments...
 		selection = insertSelectionArgs(selection, selectionArgs);
 		switch (uriMatcher.match(uri)) {
@@ -141,10 +145,11 @@ public class MirakelContentProvider extends ContentProvider {
 		case TASK_ID:
 			sqlBuilder.appendWhere(DatabaseHelper.ID + "=" + getId(uri));
 		case TASKS:
-			String taskQuery = getTaskQuery();
+			String taskQuery = getTaskQuery(isSyncAdapter);
 			if (selection.contains(TaskContract.Tasks.LIST_ID)) {
 				String[] t = selection.split(TaskContract.Tasks.LIST_ID);
-				boolean not=t[0].trim().substring(t[0].trim().length()-3).equalsIgnoreCase("not");
+				boolean not = t[0].trim().substring(t[0].trim().length() - 3)
+						.equalsIgnoreCase("not");
 				if (t[1].trim().charAt(0) == '=') {
 					t[1] = t[1].trim().substring(1);
 					int list_id = 0;
@@ -162,8 +167,11 @@ public class MirakelContentProvider extends ContentProvider {
 						SpecialList s = SpecialList
 								.getSpecialList(-1 * list_id);
 						if (s != null) {
-							taskQuery = getTaskQuery(true, not?0:list_id) + " WHERE "+(not?"NOT ( ":"")
-									+ s.getWhereQuery(true)+(not?" )":"");
+							taskQuery = getTaskQuery(true, not ? 0 : list_id,
+									isSyncAdapter)
+									+ " WHERE "
+									+ (not ? "NOT ( " : "")
+									+ s.getWhereQuery(true) + (not ? " )" : "");
 						} else {
 							Log.e(TAG, "no matching list found");
 							return new MatrixCursor(projection);
@@ -189,7 +197,7 @@ public class MirakelContentProvider extends ContentProvider {
 									Log.e(TAG, "cannot parse list id");
 									return new MatrixCursor(projection);
 								}
-							}else if ((t[1].charAt(counter) >= '0' && t[1]
+							} else if ((t[1].charAt(counter) >= '0' && t[1]
 									.charAt(counter) <= '9')
 									|| t[1].charAt(counter) == '-') {
 								buffer += t[1].charAt(counter);
@@ -223,8 +231,10 @@ public class MirakelContentProvider extends ContentProvider {
 								ordonaryIds.add(id);
 							}
 						}
-						taskQuery = getTaskQuery(true, not?0:idList.get(0))
-								+ " WHERE "+(not?" NOT (":"");
+						taskQuery = getTaskQuery(true, not ? 0 : idList.get(0),
+								isSyncAdapter)
+								+ " WHERE "
+								+ (not ? " NOT (" : "");
 						for (int i = 0; i < wheres.size(); i++) {
 							taskQuery += (i != 0 ? " AND " : " ")
 									+ wheres.get(i);
@@ -232,7 +242,7 @@ public class MirakelContentProvider extends ContentProvider {
 						if (ordonaryIds.size() > 0) {
 							if (wheres.size() > 0) {
 								taskQuery += " OR ";
-							} 
+							}
 							taskQuery += Task.LIST_ID + " IN (";
 							for (int i = 0; i < ordonaryIds.size(); i++) {
 								taskQuery += (i != 0 ? "," : "")
@@ -240,7 +250,7 @@ public class MirakelContentProvider extends ContentProvider {
 							}
 							taskQuery += ")";
 						}
-						taskQuery+=(not?")":"");
+						taskQuery += (not ? ")" : "");
 
 					}
 				}
@@ -270,11 +280,12 @@ public class MirakelContentProvider extends ContentProvider {
 		return selection;
 	}
 
-	private String getTaskQuery() {
-		return getTaskQuery(false, 0);
+	private String getTaskQuery(boolean isSyncAdapter) {
+		return getTaskQuery(false, 0, isSyncAdapter);
 	}
 
-	private String getTaskQuery(boolean isSpecial, int list_id) {
+	private String getTaskQuery(boolean isSpecial, int list_id,
+			boolean isSyncadapter) {
 		String query = "Select ";
 		query += addSegment(DatabaseHelper.NAME, TaskContract.Tasks.TITLE,
 				false);
@@ -290,6 +301,21 @@ public class MirakelContentProvider extends ContentProvider {
 		} else {
 			query += addSegment(Task.LIST_ID, TaskContract.Tasks.LIST_ID, true);
 		}
+		if (isSyncadapter) {
+			query += addSegment("CASE " + SyncAdapter.SYNC_STATE + " WHEN "
+					+ SYNC_STATE.NEED_SYNC + " THEN TRUE ELSE FALSE",
+					TaskContract.Tasks._DIRTY, true);
+			query+= addSegment(DatabaseHelper.ID, Tasks._ID, true);
+			query += addSegment("CASE " + SyncAdapter.SYNC_STATE + " WHEN "
+					+ SYNC_STATE.DELETE + " THEN TRUE ELSE FALSE",
+					TaskContract.Tasks._DELETED, true);
+			query += addSegment("CASE " + SyncAdapter.SYNC_STATE + " WHEN "
+					+ SYNC_STATE.ADD + " THEN TRUE ELSE FALSE",
+					TaskContract.Tasks.IS_NEW, true);
+			query += addSegment(Task.UUID, Tasks._SYNC_ID, true);
+		}
+		query +=addSegment("strftime('%s'," +DatabaseHelper.UPDATED_AT+")", Tasks.LAST_MODIFIED, true);
+		query +=addSegment("strftime('%s'," +DatabaseHelper.CREATED_AT+")", Tasks.CREATED, true);
 		query += " FROM " + Task.TABLE;
 		Log.d(TAG, query);
 		return query;
