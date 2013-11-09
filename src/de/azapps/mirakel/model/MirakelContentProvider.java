@@ -16,13 +16,13 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package de.azapps.mirakel;
+package de.azapps.mirakel.model;
 
-import java.sql.SQLSyntaxErrorException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.StringUtils;
 import org.dmfs.provider.tasks.TaskContract;
 
 import android.content.ContentProvider;
@@ -34,7 +34,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import de.azapps.mirakel.helper.Log;
-import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
@@ -131,7 +130,8 @@ public class MirakelContentProvider extends ContentProvider {
 	public Cursor query(Uri uri, String[] projection, String selection,
 			String[] selectionArgs, String sortOrder) {
 		SQLiteQueryBuilder sqlBuilder = new SQLiteQueryBuilder();
-		boolean isTask = false;
+		// insert arguments...
+		selection = insertSelectionArgs(selection, selectionArgs);
 		switch (uriMatcher.match(uri)) {
 		case LIST_ID:
 			sqlBuilder.appendWhere(DatabaseHelper.ID + "=" + getId(uri));
@@ -144,45 +144,112 @@ public class MirakelContentProvider extends ContentProvider {
 			String taskQuery = getTaskQuery();
 			if (selection.contains(TaskContract.Tasks.LIST_ID)) {
 				String[] t = selection.split(TaskContract.Tasks.LIST_ID);
-//				android.os.Debug.waitForDebugger();
+				boolean not=t[0].trim().substring(t[0].trim().length()-3).equalsIgnoreCase("not");
 				if (t[1].trim().charAt(0) == '=') {
 					t[1] = t[1].trim().substring(1);
 					int list_id = 0;
-					if (t[1].trim().charAt(0) == '?') {
-						int count = StringUtils.countMatches(t[0], "?");
-						list_id = Integer.parseInt(selectionArgs[count]);
-					} else {
-						try {
-							boolean negative = t[1].trim().charAt(0) == '-';
-							Matcher matcher = Pattern.compile("\\d+").matcher(
-									t[1]);
-							matcher.find();
-							list_id = (negative ? -1 : 1)
-									* Integer.valueOf(matcher.group());
-						} catch (Exception e) {
-							Log.e(TAG, "cannot parse list_id");
-							return new MatrixCursor(projection);
-						}
+					try {
+						boolean negative = t[1].trim().charAt(0) == '-';
+						Matcher matcher = Pattern.compile("\\d+").matcher(t[1]);
+						matcher.find();
+						list_id = (negative ? -1 : 1)
+								* Integer.valueOf(matcher.group());
+					} catch (Exception e) {
+						Log.e(TAG, "cannot parse list_id");
+						return new MatrixCursor(projection);
 					}
 					if (list_id < 0) {// is special list...
 						SpecialList s = SpecialList
 								.getSpecialList(-1 * list_id);
 						if (s != null) {
-							taskQuery = getTaskQuery(true, list_id) + " WHERE "
-									+ s.getWhereQuery(true);
+							taskQuery = getTaskQuery(true, not?0:list_id) + " WHERE "+(not?"NOT ( ":"")
+									+ s.getWhereQuery(true)+(not?" )":"");
 						} else {
 							Log.e(TAG, "no matching list found");
 							return new MatrixCursor(projection);
 						}
 					}
 
+				} else {
+					if (t[1].trim().substring(0, 2).equalsIgnoreCase("in")) {
+						t[1] = t[1].trim().substring(3).trim();
+						int counter = 1;
+						String buffer = "";
+						List<Integer> idList = new ArrayList<Integer>();
+						while ((t[1].charAt(counter) >= '0' && t[1]
+								.charAt(counter) <= '9')
+								|| t[1].charAt(counter) == ','
+								|| t[1].charAt(counter) == ' '
+								|| t[1].charAt(counter) == '-') {
+							if (t[1].charAt(counter) == ',') {
+								try {
+									idList.add(Integer.parseInt(buffer));
+									buffer = "";
+								} catch (NumberFormatException e) {
+									Log.e(TAG, "cannot parse list id");
+									return new MatrixCursor(projection);
+								}
+							}else if ((t[1].charAt(counter) >= '0' && t[1]
+									.charAt(counter) <= '9')
+									|| t[1].charAt(counter) == '-') {
+								buffer += t[1].charAt(counter);
+							}
+							++counter;
+						}
+						try {
+							idList.add(Integer.parseInt(buffer));
+						} catch (NumberFormatException e) {
+							Log.e(TAG, "cannot parse list id");
+							return new MatrixCursor(projection);
+						}
+						if (idList.size() == 0) {
+							Log.e(TAG, "inavlid SQL");
+							return new MatrixCursor(projection);
+						}
+						List<String> wheres = new ArrayList<String>();
+						List<Integer> ordonaryIds = new ArrayList<Integer>();
+						for (int id : idList) {
+							if (id < 0) {
+								SpecialList s = SpecialList.getSpecialList(-1
+										* id);
+								if (s != null) {
+									wheres.add(s.getWhereQuery(true));
+								} else {
+									Log.e(TAG, "no matching list found");
+									return new MatrixCursor(projection);
+
+								}
+							} else {
+								ordonaryIds.add(id);
+							}
+						}
+						taskQuery = getTaskQuery(true, not?0:idList.get(0))
+								+ " WHERE "+(not?" NOT (":"");
+						for (int i = 0; i < wheres.size(); i++) {
+							taskQuery += (i != 0 ? " AND " : " ")
+									+ wheres.get(i);
+						}
+						if (ordonaryIds.size() > 0) {
+							if (wheres.size() > 0) {
+								taskQuery += " OR ";
+							} 
+							taskQuery += Task.LIST_ID + " IN (";
+							for (int i = 0; i < ordonaryIds.size(); i++) {
+								taskQuery += (i != 0 ? "," : "")
+										+ ordonaryIds.get(i);
+							}
+							taskQuery += ")";
+						}
+						taskQuery+=(not?")":"");
+
+					}
 				}
 			}
-			selection=insertSelectionArgs(selection,selectionArgs);
+
 			sqlBuilder.setTables("(" + taskQuery + ")");
-			String query= sqlBuilder.buildQuery(projection, selection, null, null,
-					sortOrder, null);
-			Log.d(TAG,query);
+			String query = sqlBuilder.buildQuery(projection, selection, null,
+					null, sortOrder, null);
+			Log.d(TAG, query);
 			return database.rawQuery(query, null);
 
 			// sqlBuilder.setTables(Task.TABLE);
@@ -195,8 +262,10 @@ public class MirakelContentProvider extends ContentProvider {
 	}
 
 	private String insertSelectionArgs(String selection, String[] selectionArgs) {
-		for(int i=0;i<selectionArgs.length;i++){
-			selection=selection.replace("?", selectionArgs[i]);
+		if (selectionArgs != null) {
+			for (int i = 0; i < selectionArgs.length; i++) {
+				selection = selection.replace("?", selectionArgs[i]);
+			}
 		}
 		return selection;
 	}

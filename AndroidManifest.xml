@@ -219,7 +219,7 @@
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <provider
-            android:name="de.azapps.mirakel.MirakelContentProvider"
+            android:name="de.azapps.mirakel.model.MirakelContentProvider"
             android:authorities="de.azapps.mirakel.provider"
             android:exported="true"
             android:permission="de.azapps.mirakel.provider.READ_WRITE_DATA"
