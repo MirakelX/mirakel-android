@@ -322,7 +322,7 @@ public class MirakelContentProvider extends ContentProvider {
 				false);
 		query += addSegment(Task.CONTENT, TaskContract.Tasks.DESCRIPTION, true);
 		query += addSegment(Task.PRIORITY, TaskContract.Tasks.PRIORITY, true);
-		query += addSegment("strftime('%s'," + Task.DUE + ")",
+		query += addSegment("strftime('%s'," + Task.DUE + ")*1000",
 				TaskContract.Tasks.DUE, true);
 		query += addSegment(Task.DONE, TaskContract.Tasks.STATUS, true);
 		if (isSpecial) {
@@ -345,8 +345,8 @@ public class MirakelContentProvider extends ContentProvider {
 					TaskContract.Tasks.IS_NEW, true);
 			query += addSegment(Task.UUID, Tasks._SYNC_ID, true);
 		}
-		query +=addSegment("strftime('%s'," +DatabaseHelper.UPDATED_AT+")", Tasks.LAST_MODIFIED, true);
-		query +=addSegment("strftime('%s'," +DatabaseHelper.CREATED_AT+")", Tasks.CREATED, true);
+		query +=addSegment("strftime('%s'," +DatabaseHelper.UPDATED_AT+")*1000", Tasks.LAST_MODIFIED, true);
+		query +=addSegment("strftime('%s'," +DatabaseHelper.CREATED_AT+")*1000", Tasks.CREATED, true);
 		query += " FROM " + Task.TABLE;
 		Log.d(TAG, query);
 		return query;
