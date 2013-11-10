@@ -18,6 +18,8 @@
  ******************************************************************************/
 package de.azapps.mirakel.model;
 
+import java.sql.SQLSyntaxErrorException;
+import java.sql.SQLWarning;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -145,122 +147,8 @@ public class MirakelContentProvider extends ContentProvider {
 		case TASK_ID:
 			sqlBuilder.appendWhere(DatabaseHelper.ID + "=" + getId(uri));
 		case TASKS:
-			String taskQuery = getTaskQuery(isSyncAdapter);
-			if (selection.contains(TaskContract.Tasks.LIST_ID)) {
-				String[] t = selection.split(TaskContract.Tasks.LIST_ID);
-				boolean not = t[0].trim().substring(t[0].trim().length() - 3)
-						.equalsIgnoreCase("not");
-				if (t[1].trim().charAt(0) == '=') {
-					t[1] = t[1].trim().substring(1);
-					int list_id = 0;
-					try {
-						boolean negative = t[1].trim().charAt(0) == '-';
-						Matcher matcher = Pattern.compile("\\d+").matcher(t[1]);
-						matcher.find();
-						list_id = (negative ? -1 : 1)
-								* Integer.valueOf(matcher.group());
-					} catch (Exception e) {
-						Log.e(TAG, "cannot parse list_id");
-						return new MatrixCursor(projection);
-					}
-					if (list_id < 0) {// is special list...
-						SpecialList s = SpecialList
-								.getSpecialList(-1 * list_id);
-						if (s != null) {
-							taskQuery = getTaskQuery(true, not ? 0 : list_id,
-									isSyncAdapter)
-									+ " WHERE "
-									+ (not ? "NOT ( " : "")
-									+ s.getWhereQuery(true) + (not ? " )" : "");
-						} else {
-							Log.e(TAG, "no matching list found");
-							return new MatrixCursor(projection);
-						}
-					}
-
-				} else {
-					if (t[1].trim().substring(0, 2).equalsIgnoreCase("in")) {
-						t[1] = t[1].trim().substring(3).trim();
-						int counter = 1;
-						String buffer = "";
-						List<Integer> idList = new ArrayList<Integer>();
-						while ((t[1].charAt(counter) >= '0' && t[1]
-								.charAt(counter) <= '9')
-								|| t[1].charAt(counter) == ','
-								|| t[1].charAt(counter) == ' '
-								|| t[1].charAt(counter) == '-') {
-							if (t[1].charAt(counter) == ',') {
-								try {
-									idList.add(Integer.parseInt(buffer));
-									buffer = "";
-								} catch (NumberFormatException e) {
-									Log.e(TAG, "cannot parse list id");
-									return new MatrixCursor(projection);
-								}
-							} else if ((t[1].charAt(counter) >= '0' && t[1]
-									.charAt(counter) <= '9')
-									|| t[1].charAt(counter) == '-') {
-								buffer += t[1].charAt(counter);
-							}
-							++counter;
-						}
-						try {
-							idList.add(Integer.parseInt(buffer));
-						} catch (NumberFormatException e) {
-							Log.e(TAG, "cannot parse list id");
-							return new MatrixCursor(projection);
-						}
-						if (idList.size() == 0) {
-							Log.e(TAG, "inavlid SQL");
-							return new MatrixCursor(projection);
-						}
-						List<String> wheres = new ArrayList<String>();
-						List<Integer> ordonaryIds = new ArrayList<Integer>();
-						for (int id : idList) {
-							if (id < 0) {
-								SpecialList s = SpecialList.getSpecialList(-1
-										* id);
-								if (s != null) {
-									wheres.add(s.getWhereQuery(true));
-								} else {
-									Log.e(TAG, "no matching list found");
-									return new MatrixCursor(projection);
-
-								}
-							} else {
-								ordonaryIds.add(id);
-							}
-						}
-						taskQuery = getTaskQuery(true, not ? 0 : idList.get(0),
-								isSyncAdapter)
-								+ " WHERE "
-								+ (not ? " NOT (" : "");
-						for (int i = 0; i < wheres.size(); i++) {
-							taskQuery += (i != 0 ? " AND " : " ")
-									+ wheres.get(i);
-						}
-						if (ordonaryIds.size() > 0) {
-							if (wheres.size() > 0) {
-								taskQuery += " OR ";
-							}
-							taskQuery += Task.LIST_ID + " IN (";
-							for (int i = 0; i < ordonaryIds.size(); i++) {
-								taskQuery += (i != 0 ? "," : "")
-										+ ordonaryIds.get(i);
-							}
-							taskQuery += ")";
-						}
-						taskQuery += (not ? ")" : "");
-
-					}
-				}
-			}
-
-			sqlBuilder.setTables("(" + taskQuery + ")");
-			String query = sqlBuilder.buildQuery(projection, selection, null,
-					null, sortOrder, null);
-			Log.d(TAG, query);
-			return database.rawQuery(query, null);
+			return taskQuery(projection, selection, sortOrder, sqlBuilder,
+					isSyncAdapter);
 
 			// sqlBuilder.setTables(Task.TABLE);
 			// isTask=true;
@@ -269,6 +157,149 @@ public class MirakelContentProvider extends ContentProvider {
 			throw new IllegalArgumentException("Unsupported URI: " + uri);
 		}
 		return null;
+	}
+
+	private Cursor taskQuery(String[] projection, String selection,
+			String sortOrder, SQLiteQueryBuilder sqlBuilder,
+			boolean isSyncAdapter) {
+		String taskQuery = getTaskQuery(isSyncAdapter);
+		if (selection.contains(TaskContract.Tasks.LIST_ID)) {
+			try{
+			taskQuery = handleListID(projection, selection, isSyncAdapter,
+					taskQuery);
+			}catch(SQLWarning s){
+				return new MatrixCursor(projection);
+			}
+		}
+
+		sqlBuilder.setTables("(" + taskQuery + ")");
+		String query = sqlBuilder.buildQuery(projection, selection, null,
+				null, sortOrder, null);
+		Log.d(TAG, query);
+		return database.rawQuery(query, null);
+	}
+
+	private String handleListID(String[] projection, String selection,
+			boolean isSyncAdapter, String taskQuery) throws  SQLWarning{
+		String[] t = selection.split(TaskContract.Tasks.LIST_ID);
+		boolean not = t[0].trim().substring(t[0].trim().length() - 3)
+				.equalsIgnoreCase("not");
+		if (t[1].trim().charAt(0) == '=') {
+			taskQuery = handleListIDEqual(isSyncAdapter, taskQuery, t, not);
+		} else {
+			taskQuery = handleListIDIn(isSyncAdapter, taskQuery, t, not);
+		}
+		return taskQuery;
+	}
+
+	private String handleListIDIn(boolean isSyncAdapter, String taskQuery,
+			String[] t, boolean not) throws SQLWarning {
+		if (t[1].trim().substring(0, 2).equalsIgnoreCase("in")) {
+			t[1] = t[1].trim().substring(3).trim();
+			int counter = 1;
+			String buffer = "";
+			List<Integer> idList = new ArrayList<Integer>();
+			while ((t[1].charAt(counter) >= '0' && t[1]
+					.charAt(counter) <= '9')
+					|| t[1].charAt(counter) == ','
+					|| t[1].charAt(counter) == ' '
+					|| t[1].charAt(counter) == '-') {
+				if (t[1].charAt(counter) == ',') {
+					try {
+						idList.add(Integer.parseInt(buffer));
+						buffer = "";
+					} catch (NumberFormatException e) {
+						Log.e(TAG, "cannot parse list id");
+						throw new SQLWarning();
+					}
+				} else if ((t[1].charAt(counter) >= '0' && t[1]
+						.charAt(counter) <= '9')
+						|| t[1].charAt(counter) == '-') {
+					buffer += t[1].charAt(counter);
+				}
+				++counter;
+			}
+			try {
+				idList.add(Integer.parseInt(buffer));
+			} catch (NumberFormatException e) {
+				Log.e(TAG, "cannot parse list id");
+				throw new SQLWarning();
+			}
+			if (idList.size() == 0) {
+				Log.e(TAG, "inavlid SQL");
+				throw new SQLWarning();
+			}
+			List<String> wheres = new ArrayList<String>();
+			List<Integer> ordonaryIds = new ArrayList<Integer>();
+			for (int id : idList) {
+				if (id < 0) {
+					SpecialList s = SpecialList.getSpecialList(-1
+							* id);
+					if (s != null) {
+						wheres.add(s.getWhereQuery(true));
+					} else {
+						Log.e(TAG, "no matching list found");
+						throw new SQLWarning();
+
+					}
+				} else {
+					ordonaryIds.add(id);
+				}
+			}
+			taskQuery = getTaskQuery(true, not ? 0 : idList.get(0),
+					isSyncAdapter)
+					+ " WHERE "
+					+ (not ? " NOT (" : "");
+			for (int i = 0; i < wheres.size(); i++) {
+				taskQuery += (i != 0 ? " AND " : " ")
+						+ wheres.get(i);
+			}
+			if (ordonaryIds.size() > 0) {
+				if (wheres.size() > 0) {
+					taskQuery += " OR ";
+				}
+				taskQuery += Task.LIST_ID + " IN (";
+				for (int i = 0; i < ordonaryIds.size(); i++) {
+					taskQuery += (i != 0 ? "," : "")
+							+ ordonaryIds.get(i);
+				}
+				taskQuery += ")";
+			}
+			taskQuery += (not ? ")" : "");
+
+		}
+		return taskQuery;
+	}
+
+	private String handleListIDEqual(boolean isSyncAdapter, String taskQuery,
+			String[] t, boolean not) throws SQLWarning {
+		t[1] = t[1].trim().substring(1);
+		int list_id = 0;
+		try {
+			boolean negative = t[1].trim().charAt(0) == '-';
+			Matcher matcher = Pattern.compile("\\d+").matcher(t[1]);
+			matcher.find();
+			list_id = (negative ? -1 : 1)
+					* Integer.valueOf(matcher.group());
+		} catch (Exception e) {
+			Log.e(TAG, "cannot parse list_id");
+			throw new SQLWarning();
+		}
+		if (list_id < 0) {// is special list...
+			SpecialList s = SpecialList
+					.getSpecialList(-1 * list_id);
+			if (s != null) {
+				taskQuery = getTaskQuery(true, not ? 0 : list_id,
+						isSyncAdapter)
+						+ " WHERE "
+						+ (not ? "NOT ( " : "")
+						+ s.getWhereQuery(true) + (not ? " )" : "");
+			} else {
+				Log.e(TAG, "no matching list found");
+				throw new SQLWarning();
+			}
+		}
+		return taskQuery;
 	}
 
 	private String insertSelectionArgs(String selection, String[] selectionArgs) {
