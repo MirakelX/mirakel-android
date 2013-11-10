@@ -26,6 +26,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.dmfs.provider.tasks.TaskContract;
+import org.dmfs.provider.tasks.TaskContract.TaskListColumns;
+import org.dmfs.provider.tasks.TaskContract.TaskLists;
 import org.dmfs.provider.tasks.TaskContract.Tasks;
 
 import android.content.ContentProvider;
@@ -49,15 +51,15 @@ public class MirakelContentProvider extends ContentProvider {
 	// PROVIDER_NAME);
 	private SQLiteDatabase database;
 	private static final UriMatcher uriMatcher;
-	private static final int LISTS = 0;
-	private static final int LIST_ID = 1;
+	private static final int LISTS = 5;
+	private static final int LIST_ID = 6;
 	private static final int TASKS = 2;
 	private static final int TASK_ID = 3;
 
 	private static final String TAG = "MirakelContentProvider";
 	// TODO for what we will need this?
-	private static final int INSTANCE_ID = 4;
-	private static final int INSTANCES = 5;
+	private static final int INSTANCE_ID = 0;
+	private static final int INSTANCES = 1;
 	private static final int CATEGORIES = 6;
 	private static final int CATEGORY_ID = 7;
 
@@ -136,16 +138,19 @@ public class MirakelContentProvider extends ContentProvider {
 			String[] selectionArgs, String sortOrder) {
 		SQLiteQueryBuilder sqlBuilder = new SQLiteQueryBuilder();
 		boolean isSyncAdapter = isCallerSyncAdapter(uri);
+//		android.os.Debug.waitForDebugger();
 		// insert arguments...
-		selection = insertSelectionArgs(selection, selectionArgs);
-		switch (uriMatcher.match(uri)) {
+ 		selection = insertSelectionArgs(selection, selectionArgs);
+		int matcher=uriMatcher.match(uri);
+		switch (matcher) {
 		case LIST_ID:
-			sqlBuilder.appendWhere(DatabaseHelper.ID + "=" + getId(uri));
+//			sqlBuilder.appendWhere(DatabaseHelper.ID + "=" + getId(uri));
+//		default://TODO remove this wtf-BUG
 		case LISTS:
-			sqlBuilder.setTables(ListMirakel.TABLE);
-			break;
+			return listQuery(projection, selection, sortOrder, sqlBuilder,
+					isSyncAdapter);
 		case TASK_ID:
-			sqlBuilder.appendWhere(DatabaseHelper.ID + "=" + getId(uri));
+//			sqlBuilder.appendWhere(DatabaseHelper.ID + "=" + getId(uri));
 		case TASKS:
 			return taskQuery(projection, selection, sortOrder, sqlBuilder,
 					isSyncAdapter);
@@ -156,7 +161,25 @@ public class MirakelContentProvider extends ContentProvider {
 		default:
 			throw new IllegalArgumentException("Unsupported URI: " + uri);
 		}
-		return null;
+//		return new MatrixCursor(projection);
+	}
+
+	private Cursor listQuery(String[] projection, String selection,
+			String sortOrder, SQLiteQueryBuilder sqlBuilder,
+			boolean isSyncAdapter) {
+		String listQuery;
+		if(selection.equals("1=1")){
+			listQuery=getListQuerySpecial();
+		}else{
+			listQuery=getListQuery(isSyncAdapter);
+		}		
+		sqlBuilder.setTables("(" + listQuery + ")");
+		
+		String query = sqlBuilder.buildQuery(projection, selection, null,
+				null, sortOrder, null);
+		Log.d(TAG, query);
+		Cursor c=database.rawQuery(query, null);
+		return c;
 	}
 
 	private Cursor taskQuery(String[] projection, String selection,
@@ -182,8 +205,13 @@ public class MirakelContentProvider extends ContentProvider {
 	private String handleListID(String[] projection, String selection,
 			boolean isSyncAdapter, String taskQuery) throws  SQLWarning{
 		String[] t = selection.split(TaskContract.Tasks.LIST_ID);
-		boolean not = t[0].trim().substring(t[0].trim().length() - 3)
-				.equalsIgnoreCase("not");
+		boolean not;
+		try {
+			not = t[0].trim().substring(t[0].trim().length() - 3)
+					.equalsIgnoreCase("not");
+		} catch (Exception e) {
+			not=false;
+		}
 		if (t[1].trim().charAt(0) == '=') {
 			taskQuery = handleListIDEqual(isSyncAdapter, taskQuery, t, not);
 		} else {
@@ -317,7 +345,7 @@ public class MirakelContentProvider extends ContentProvider {
 
 	private String getTaskQuery(boolean isSpecial, int list_id,
 			boolean isSyncadapter) {
-		String query = "Select ";
+		String query = "SELECT ";
 		query += addSegment(DatabaseHelper.NAME, TaskContract.Tasks.TITLE,
 				false);
 		query += addSegment(Task.CONTENT, TaskContract.Tasks.DESCRIPTION, true);
@@ -349,6 +377,42 @@ public class MirakelContentProvider extends ContentProvider {
 		query +=addSegment("strftime('%s'," +DatabaseHelper.CREATED_AT+")*1000", Tasks.CREATED, true);
 		query += " FROM " + Task.TABLE;
 		Log.d(TAG, query);
+		return query;
+	}
+	private String getListQuerySpecial(){
+		String query=getListQuery(false);
+		query+=" UNION ";
+		query+=getListQueryBase(false);
+		query+=addSegment(DatabaseHelper.ID+"*-1", TaskLists._ID, true);
+		query += " FROM " + SpecialList.TABLE;
+		return query;
+	}
+	
+	private String getListQuery(boolean isSyncAdapter){
+		String query = getListQueryBase(isSyncAdapter);
+		query+=addSegment(DatabaseHelper.ID, TaskLists._ID, true);
+		query += " FROM " + ListMirakel.TABLE;
+		Log.d(TAG, query);
+		return query;
+	}
+
+	private String getListQueryBase(boolean isSyncAdapter) {
+		String query="SELECT ";
+		query+=addSegment(DatabaseHelper.NAME, TaskLists.LIST_NAME, false);
+		query+=addSegment(ListMirakel.COLOR, TaskLists.LIST_COLOR, true);
+		if(isSyncAdapter){
+			query += addSegment("CASE " + SyncAdapter.SYNC_STATE + " WHEN "
+					+ SYNC_STATE.NEED_SYNC + " THEN TRUE ELSE FALSE",
+					TaskLists._DIRTY, true);
+			query+= addSegment(DatabaseHelper.ID, Tasks._ID, true);
+//			query += addSegment("CASE " + SyncAdapter.SYNC_STATE + " WHEN "
+//					+ SYNC_STATE.DELETE + " THEN TRUE ELSE FALSE",
+//					TaskLists._DELETED, true);
+//			query += addSegment("CASE " + SyncAdapter.SYNC_STATE + " WHEN "
+//					+ SYNC_STATE.ADD + " THEN TRUE ELSE FALSE",
+//					TaskLists.IS_NEW, true);
+			query += addSegment(DatabaseHelper.ID ,TaskLists._SYNC_ID, true);
+		}
 		return query;
 	}
 
