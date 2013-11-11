@@ -44,8 +44,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.DueDialog;
-import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.DueDialog.VALUE;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -75,8 +75,8 @@ public class SpecialListSettings implements OnPreferenceChangeListener {
 		this.specialList = specialList;
 	}
 
-	public void setup() throws NoSuchListException{
-		if(specialList==null)
+	public void setup() throws NoSuchListException {
+		if (specialList == null)
 			throw new NoSuchListException();
 		final EditTextPreference name = (EditTextPreference) findPreference("special_list_name");
 		name.setText(specialList.getName());
@@ -91,8 +91,8 @@ public class SpecialListSettings implements OnPreferenceChangeListener {
 					specialList.save();
 
 					name.setSummary(specialList.getName());
-					if(Helpers.isTablet(ctx)&&v4_0){
-						((ListSettings)ctx).invalidateHeaders();
+					if (Helpers.isTablet(ctx) && v4_0) {
+						((ListSettings) ctx).invalidateHeaders();
 					}
 				}
 				return false;
@@ -737,7 +737,7 @@ public class SpecialListSettings implements OnPreferenceChangeListener {
 
 					}
 				}
-				final DueDialog dueDialog = new DueDialog(ctx,false);
+				final DueDialog dueDialog = new DueDialog(ctx, false);
 				dueDialog.setTitle(ctx.getString(R.string.select_by));
 				dueDialog.setValue(val, day);
 				dueDialog.setNegativeButton(android.R.string.cancel,

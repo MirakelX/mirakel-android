@@ -55,8 +55,7 @@ public class NumPickerPref extends DialogPreference {
 					.findViewById(R.id.dialog_num_pick_plus);
 			final Button minus = (Button) dialog
 					.findViewById(R.id.dialog_num_pick_minus);
-			tx = (TextView) dialog
-					.findViewById(R.id.dialog_num_pick_val);
+			tx = (TextView) dialog.findViewById(R.id.dialog_num_pick_val);
 			updateV10Value();
 			plus.setOnClickListener(new OnClickListener() {
 
@@ -83,8 +82,7 @@ public class NumPickerPref extends DialogPreference {
 		} else {
 			dialog = ((Activity) ctx).getLayoutInflater().inflate(
 					R.layout.num_picker_pref, null);
-			picker = (NumberPicker) dialog
-					.findViewById(R.id.numberPicker);
+			picker = (NumberPicker) dialog.findViewById(R.id.numberPicker);
 			picker.setMaxValue(MAX_VAL);
 			picker.setMinValue(MIN_VAL);
 			picker.setValue(VALUE);
@@ -119,15 +117,14 @@ public class NumPickerPref extends DialogPreference {
 		builder.setView(dialog);
 	}
 
-	
 	protected void updateV10Value() {
-		if(tx!=null)
+		if (tx != null)
 			tx.setText("" + VALUE);
 
 	}
 
 	protected void updateSummary() {
-		if (SUMMARY_ID != 0&&dialog!=null) {
+		if (SUMMARY_ID != 0 && dialog != null) {
 			((TextView) dialog.findViewById(R.id.num_picker_pref_summary))
 					.setText(ctx.getResources().getQuantityString(SUMMARY_ID,
 							VALUE));
@@ -140,7 +137,7 @@ public class NumPickerPref extends DialogPreference {
 	}
 
 	public void setValue(int newValue) {
-		if(newValue<=MAX_VAL&&newValue>=MIN_VAL){
+		if (newValue <= MAX_VAL && newValue >= MIN_VAL) {
 			VALUE = newValue;
 		}
 	}

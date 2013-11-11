@@ -124,7 +124,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
 								new int[] { 52, 52, 52 }, 3));
 			}
 
-			if (!isMinimalistic&&!oldAPI) {
+			if (!isMinimalistic && !oldAPI) {
 				views.setImageViewBitmap(
 						R.id.widget_add_task,
 						colorizeBitmap(
@@ -185,12 +185,14 @@ public class MainWidgetProvider extends AppWidgetProvider {
 				if (tasks.size() == 0) {
 					views.setViewVisibility(R.id.empty_view, View.VISIBLE);
 				} else {
-					boolean darkTheme =  WidgetHelper.isDark(context, widgetId);
-                    views.setInt(R.id.widget_main, "setBackgroundResource",
-                                    darkTheme ? R.drawable.widget_background_dark
-                                                    : R.drawable.widget_background);
-                    views.setTextColor(R.id.widget_list_name, context.getResources()
-                            .getColor(darkTheme ? R.color.White : R.color.Black));
+					boolean darkTheme = WidgetHelper.isDark(context, widgetId);
+					views.setInt(R.id.widget_main, "setBackgroundResource",
+							darkTheme ? R.drawable.widget_background_dark
+									: R.drawable.widget_background);
+					views.setTextColor(
+							R.id.widget_list_name,
+							context.getResources().getColor(
+									darkTheme ? R.color.White : R.color.Black));
 					views.setViewVisibility(R.id.empty_view, View.GONE);
 					int end = tasks.size() >= 7 ? 7 : tasks.size();
 					try {
@@ -240,9 +242,9 @@ public class MainWidgetProvider extends AppWidgetProvider {
 		return Math.abs(Color.red(pixel) - FROM_COLOR[0]) < THRESHOLD
 				&& Math.abs(Color.green(pixel) - FROM_COLOR[1]) < THRESHOLD
 				&& Math.abs(Color.blue(pixel) - FROM_COLOR[2]) < THRESHOLD;
-	}@SuppressLint("NewApi")
-	
+	}
 
+	@SuppressLint("NewApi")
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		if (intent.getAction().equals(CLICK_TASK)) {

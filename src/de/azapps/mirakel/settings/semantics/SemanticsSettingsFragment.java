@@ -46,7 +46,7 @@ public class SemanticsSettingsFragment extends PreferenceFragment {
 		Bundle b = getArguments();
 		if (b != null) {
 			semantic = Semantic.get(getArguments().getInt("id"));
-			((SemanticsSettingsActivity)getActivity()).setSemantic(semantic);
+			((SemanticsSettingsActivity) getActivity()).setSemantic(semantic);
 			actionBar.setTitle(semantic.getCondition());
 			if (!Helpers.isTablet(getActivity())) {
 				ImageButton delSemantic = new ImageButton(getActivity());
@@ -59,7 +59,8 @@ public class SemanticsSettingsFragment extends PreferenceFragment {
 								ActionBar.LayoutParams.WRAP_CONTENT,
 								ActionBar.LayoutParams.WRAP_CONTENT,
 								Gravity.CENTER_VERTICAL | Gravity.RIGHT));
-				delSemantic.setOnClickListener(((ListSettings)getActivity()).getDelOnClickListener());
+				delSemantic.setOnClickListener(((ListSettings) getActivity())
+						.getDelOnClickListener());
 			}
 			new SemanticsSettings(this, semantic).setup();
 		} else {

@@ -112,9 +112,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			return SYNC_TYPES.MIRAKEL;
 		} else if (type.equals("Taskwarrior")) {
 			return SYNC_TYPES.TASKWARRIOR;
-		}else if(type.equals("CalDav")){
+		} else if (type.equals("CalDav")) {
 			return SYNC_TYPES.CALDAV;
-		}else
+		} else
 			return null;
 	}
 
@@ -162,9 +162,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			Looper.prepare();
 			Toast.makeText(mContext, last_message, Toast.LENGTH_LONG).show();
 			Log.d(TAG, "finish Sync");
-		}else if(type.equals(CalDavSync.TYPE)){
+		} else if (type.equals(CalDavSync.TYPE)) {
 			new CalDavSync(mContext).sync(account);
-		}else {
+		} else {
 			Log.wtf(TAG, "Unknown SyncType");
 		}
 	}

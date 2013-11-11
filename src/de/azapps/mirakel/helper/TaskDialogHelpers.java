@@ -192,8 +192,11 @@ public class TaskDialogHelpers {
 										int which) {
 									int minute = 0, hour = 0, day = 0, month = 0, year = 0;
 									int val = dueDialog.getValue();
-									if(val==0) {
-										Toast.makeText(context, context.getString(R.string.recurring_not_zero), Toast.LENGTH_LONG).show();
+									if (val == 0) {
+										Toast.makeText(
+												context,
+												context.getString(R.string.recurring_not_zero),
+												Toast.LENGTH_LONG).show();
 										return;
 									}
 									VALUE dayYear = dueDialog.getDayYear();
@@ -243,10 +246,12 @@ public class TaskDialogHelpers {
 											minute, hour, day, month, year,
 											isDue, startDate, null, true);
 									if (isDue) {
-										Recurring.destroyTemporary(task.getRecurrenceId());
+										Recurring.destroyTemporary(task
+												.getRecurrenceId());
 										task.setRecurrence(r.getId());
 									} else {
-										Recurring.destroyTemporary(task.getRecurrenceReminderId());
+										Recurring.destroyTemporary(task
+												.getRecurrenceReminderId());
 										task.setRecurrenceReminder(r.getId());
 									}
 									task.safeSave();
@@ -356,7 +361,8 @@ public class TaskDialogHelpers {
 		optionEnabled = false;
 		newTask = true;
 		listId = SpecialList.firstSpecialSafe(ctx).getId();
-		final EditText search = (EditText) v.findViewById(R.id.subtask_searchbox);
+		final EditText search = (EditText) v
+				.findViewById(R.id.subtask_searchbox);
 		search.addTextChangedListener(new TextWatcher() {
 
 			@Override
@@ -393,9 +399,9 @@ public class TaskDialogHelpers {
 					wrapper.setVisibility(View.GONE);
 				} else {
 					wrapper.setVisibility(View.VISIBLE);
-					InputMethodManager imm = (InputMethodManager) ctx.getSystemService(
-						      Context.INPUT_METHOD_SERVICE);
-						imm.hideSoftInputFromWindow(search.getWindowToken(), 0);
+					InputMethodManager imm = (InputMethodManager) ctx
+							.getSystemService(Context.INPUT_METHOD_SERVICE);
+					imm.hideSoftInputFromWindow(search.getWindowToken(), 0);
 				}
 				optionEnabled = !optionEnabled;
 
@@ -615,7 +621,7 @@ public class TaskDialogHelpers {
 					list = parent.getList();
 			}
 			Task t = Semantic.createTask(name, list,
-					settings.getBoolean("semanticNewTask", true),ctx);
+					settings.getBoolean("semanticNewTask", true), ctx);
 			try {
 				parent.addSubtask(t);
 			} catch (NoSuchListException e) {

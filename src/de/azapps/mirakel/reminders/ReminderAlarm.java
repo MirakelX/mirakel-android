@@ -18,7 +18,6 @@
  ******************************************************************************/
 package de.azapps.mirakel.reminders;
 
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -72,15 +71,15 @@ public class ReminderAlarm extends BroadcastReceiver {
 					.show();
 			return;
 		}
-		if (task.getRecurrenceReminder() != null&&task.getReminder().compareTo(
-				task.getRecurrenceReminder()
-				.addRecurring(
-						(Calendar) task.getReminder().clone()))<1) {
+		if (task.getRecurrenceReminder() != null
+				&& task.getReminder().compareTo(
+						task.getRecurrenceReminder().addRecurring(
+								(Calendar) task.getReminder().clone())) < 1) {
 			task.setReminder(task.getRecurrenceReminder().addRecurring(
 					task.getReminder()));
 			alarmManager.set(AlarmManager.RTC_WAKEUP, task.getReminder()
 					.getTimeInMillis(), PendingIntent.getBroadcast(context, 0,
-							intent, PendingIntent.FLAG_UPDATE_CURRENT));
+					intent, PendingIntent.FLAG_UPDATE_CURRENT));
 			try {
 				task.save(false);
 			} catch (NoSuchListException e) {
@@ -88,7 +87,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 			}
 		}
 		createNotification(context, task);
-//		updateAlarms(context);
+		// updateAlarms(context);
 	}
 
 	private static void createNotification(Context context, Task task) {
@@ -224,7 +223,8 @@ public class ReminderAlarm extends BroadcastReceiver {
 						continue;
 					} else if (newTask.getReminder() != null) {
 						Calendar now = new GregorianCalendar();
-						if (newTask.getReminder().after(now)&&newTask.getRecurrenceReminder()==null) {
+						if (newTask.getReminder().after(now)
+								&& newTask.getRecurrenceReminder() == null) {
 							closeNotificationFor(ctx, t.getId());
 							updateAlarm(ctx, newTask);
 						} else if (newTask.getReminder().after(now)
@@ -232,7 +232,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 								&& newTask.getReminder().compareTo(
 										newTask.getRecurrenceReminder()
 												.addRecurring(
-														newTask.getReminder()))>0
+														newTask.getReminder())) > 0
 								&& !now.after(newTask.getReminder())) {
 							updateAlarm(ctx, newTask);
 						}

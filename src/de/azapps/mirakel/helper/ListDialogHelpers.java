@@ -52,7 +52,7 @@ public class ListDialogHelpers {
 			}
 		}, null);
 	}
-	
+
 	public static ListMirakel handleSortBy(Context ctx, final ListMirakel list,
 			Preference res) {
 		return handleSortBy(ctx, list, new Helpers.ExecInterface() {
@@ -157,7 +157,8 @@ public class ListDialogHelpers {
 						specialList.save();
 						alert.dismiss();
 						if (res != null)
-							res.setSummary(specialList.getDefaultList().getName());
+							res.setSummary(specialList.getDefaultList()
+									.getName());
 					}
 				});
 

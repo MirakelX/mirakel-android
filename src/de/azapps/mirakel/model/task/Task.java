@@ -312,7 +312,8 @@ public class Task extends TaskBase {
 		values.put("sync_state", SYNC_STATE.DELETE.toInt());
 		String where = "sync_state!=" + SYNC_STATE.ADD + " AND done=1";
 		database.update(TABLE, values, where, null);
-		database.delete(TABLE, "sync_state=" + SYNC_STATE.ADD + " AND done=1", null);
+		database.delete(TABLE, "sync_state=" + SYNC_STATE.ADD + " AND done=1",
+				null);
 	}
 
 	public String toJson() {

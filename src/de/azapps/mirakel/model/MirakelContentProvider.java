@@ -171,13 +171,16 @@ public class MirakelContentProvider extends ContentProvider {
 			boolean done=status==Tasks.STATUS_COMPLETED;
 			newValues.put(Task.DONE, done);
 		}
-		if(values.containsKey(TaskLists.LIST_COLOR)) {
-			newValues.put(ListMirakel.COLOR, values.getAsInteger(TaskLists.LIST_COLOR));
+		if(values.containsKey(Tasks.LIST_ID)){
+			newValues.put(Task.LIST_ID, values.getAsInteger(Tasks.LIST_ID));
 		}
 		
 		if(isSyncadapter){
 			if(values.containsKey(Tasks._ID)){
 				newValues.put(DatabaseHelper.ID, values.getAsInteger(Tasks._ID));
+			}
+			if(values.containsKey(TaskLists.LIST_COLOR)) {
+				newValues.put(ListMirakel.COLOR, values.getAsInteger(TaskLists.LIST_COLOR));
 			}
 			if(values.containsKey(Tasks.CREATED)){
 				Date d=new Date(values.getAsLong(Tasks.CREATED));
