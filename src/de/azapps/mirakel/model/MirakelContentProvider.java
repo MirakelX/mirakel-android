@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -133,9 +135,35 @@ public class MirakelContentProvider extends ContentProvider {
 				throw new IllegalArgumentException("Unsupported URI: " + uri); 
 		
 		}
-		database.insert(table, null, newValues);
-		// TODO implement
-		return null;
+		String where=getSelection(newValues);
+		Cursor c;
+		database.beginTransaction();
+		try {
+			database.insert(table, null, newValues);
+			c=database.query(table, new String[]{DatabaseHelper.ID}, where, null, null, null, DatabaseHelper.ID + " ASC");
+			database.setTransactionSuccessful();
+		} catch (Exception e) {
+			Log.d(TAG, "cannot insert new object");
+			throw new RuntimeException();
+		}finally{
+			database.endTransaction();
+		}
+		if(c.getCount()>0){
+			c.moveToLast();
+			return Uri.parse(uri.toString()+"/"+c.getInt(0));
+		}else{
+			throw new IllegalArgumentException();
+		}
+
+	}
+
+	private String getSelection(ContentValues newValues) {
+		Set<Entry<String, Object>> set = newValues.valueSet();
+		String where="";
+		for(Entry<String, Object> p:set){
+			where+=(where.equals("")?"":" and ")+p.getKey()+" = " +p.getValue();
+		}
+		return where;
 	}
 
 	private ContentValues convertValues(ContentValues values,boolean isSyncadapter) {
@@ -179,6 +207,9 @@ public class MirakelContentProvider extends ContentProvider {
 			if(values.containsKey(Tasks._ID)){
 				newValues.put(DatabaseHelper.ID, values.getAsInteger(Tasks._ID));
 			}
+			if(values.containsKey(TaskLists._ID)){
+				newValues.put(DatabaseHelper.ID, values.getAsInteger(TaskLists._ID));
+			}
 			if(values.containsKey(TaskLists.LIST_COLOR)) {
 				newValues.put(ListMirakel.COLOR, values.getAsInteger(TaskLists.LIST_COLOR));
 			}
@@ -197,6 +228,9 @@ public class MirakelContentProvider extends ContentProvider {
 				String db = (due == null ? null : DateTimeHelper
 						.formatDate(due));
 				newValues.put(DatabaseHelper.UPDATED_AT, db);
+			}
+			if(values.containsKey(Tasks._SYNC_ID)){
+				newValues.put(Task.UUID, values.getAsString(Tasks._SYNC_ID));
 			}
 		}
 		newValues.put(SyncAdapter.SYNC_STATE, SYNC_STATE.ADD.toInt());
