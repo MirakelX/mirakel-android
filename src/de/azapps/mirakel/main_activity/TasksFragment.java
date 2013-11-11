@@ -38,6 +38,8 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.TypedValue;
 import android.view.ActionMode;
 import android.view.KeyEvent;
@@ -144,8 +146,9 @@ public class TasksFragment extends Fragment {
 		listView.setDescendantFocusability(ListView.FOCUS_AFTER_DESCENDANTS);
 		// Events
 		newTask = (EditText) view.findViewById(R.id.tasks_new);
-		if (main.isTablet)
+		if (main.isTablet) {
 			newTask.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
+		}
 		newTask.setOnEditorActionListener(new OnEditorActionListener() {
 			public boolean onEditorAction(TextView v, int actionId,
 					KeyEvent event) {
@@ -154,6 +157,29 @@ public class TasksFragment extends Fragment {
 					v.setText(null);
 				}
 				return false;
+			}
+		});
+		newTask.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				ImageButton send = (ImageButton) view
+						.findViewById(R.id.btnEnter);
+				if (s.length() > 0)
+					send.setVisibility(View.VISIBLE);
+				else
+					send.setVisibility(View.GONE);
+
 			}
 		});
 		ItemCount = 10;// TODO get this from somewhere
