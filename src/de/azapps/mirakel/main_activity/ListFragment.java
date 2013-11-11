@@ -61,7 +61,6 @@ public class ListFragment extends Fragment {
 	protected EditText input;
 	private View view;
 	protected boolean EditName;
-	private boolean created = false;
 	private DragNDropListView listView;
 	private static final int LIST_COLOR = 0, LIST_RENAME = 1, LIST_DESTROY = 2,
 			LIST_SHARE = 3;
@@ -101,7 +100,6 @@ public class ListFragment extends Fragment {
 					getResources().getColor(android.R.color.background_light));
 		}
 		// Inflate the layout for this fragment
-		created = true;
 		update();
 		return view;
 	}
@@ -113,7 +111,7 @@ public class ListFragment extends Fragment {
 
 	@SuppressLint("NewApi")
 	public void update() {
-		if (!created)
+		if (view==null)
 			return;
 		final List<ListMirakel> values = ListMirakel.all();
 		main.updateLists();
