@@ -85,6 +85,7 @@
         <item>Deadline</item>
         <item>Priority</item>
         <item>Created date</item>
+        <item>First by priority, then by date</item>
     </string-array>
     <string-array name="task_sorting_items_values">
         <item>0</item>

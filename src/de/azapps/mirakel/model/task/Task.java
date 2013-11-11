@@ -917,6 +917,10 @@ public class Task extends TaskBase {
 					+ " IS NULL) THEN date('now','+1000 years') ELSE date("
 					+ DUE + ") END ASC" + order;
 			break;
+		case ListMirakel.SORT_BY_REVERT_DEFAULT:
+			order = PRIORITY + " DESC,  CASE WHEN (" + DUE
+					+ " IS NULL) THEN date('now','+1000 years') ELSE date("
+					+ DUE + ") END ASC" + order;
 		default:
 			order = DatabaseHelper.ID + " ASC";
 		}
