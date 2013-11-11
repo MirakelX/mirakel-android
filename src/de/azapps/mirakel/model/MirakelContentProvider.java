@@ -92,7 +92,6 @@ public class MirakelContentProvider extends ContentProvider {
 
 	@Override
 	public int delete(Uri uri, String selection, String[] selectionArgs) {
-		// TODO implement
 		return 0;
 	}
 
@@ -122,114 +121,103 @@ public class MirakelContentProvider extends ContentProvider {
 
 	@Override
 	public Uri insert(Uri uri, ContentValues values) {
-		ContentValues newValues=convertValues(values,isCallerSyncAdapter(uri));
+		ContentValues newValues = convertValues(values,
+				isCallerSyncAdapter(uri));
 		String table;
-		switch(uriMatcher.match(uri)){
+		switch (uriMatcher.match(uri)) {
 		case LISTS:
-			table=ListMirakel.TABLE;
+			table = ListMirakel.TABLE;
 			break;
 		case TASKS:
-			table=Task.TABLE;
+			table = Task.TABLE;
 			break;
-			default:
-				throw new IllegalArgumentException("Unsupported URI: " + uri); 
-		
+		default:
+			throw new IllegalArgumentException("Unsupported URI: " + uri);
+
 		}
-		String where=getSelection(newValues);
-		Cursor c;
+		long id;
 		database.beginTransaction();
 		try {
-			database.insert(table, null, newValues);
-			c=database.query(table, new String[]{DatabaseHelper.ID}, where, null, null, null, DatabaseHelper.ID + " ASC");
+			id = database.insert(table, null, newValues);
 			database.setTransactionSuccessful();
 		} catch (Exception e) {
 			Log.d(TAG, "cannot insert new object");
 			throw new RuntimeException();
-		}finally{
+		} finally {
 			database.endTransaction();
 		}
-		if(c.getCount()>0){
-			c.moveToLast();
-			return Uri.parse(uri.toString()+"/"+c.getInt(0));
-		}else{
-			throw new IllegalArgumentException();
-		}
+
+		return Uri.parse(uri.toString() + "/" + id);
 
 	}
 
-	private String getSelection(ContentValues newValues) {
-		Set<Entry<String, Object>> set = newValues.valueSet();
-		String where="";
-		for(Entry<String, Object> p:set){
-			where+=(where.equals("")?"":" and ")+p.getKey()+" = " +p.getValue();
-		}
-		return where;
-	}
-
-	private ContentValues convertValues(ContentValues values,boolean isSyncadapter) {
-		ContentValues newValues=new ContentValues();
-		if(values.containsKey(Tasks.TITLE)){
+	private ContentValues convertValues(ContentValues values,
+			boolean isSyncadapter) {
+		ContentValues newValues = new ContentValues();
+		if (values.containsKey(Tasks.TITLE)) {
 			newValues.put(DatabaseHelper.NAME, values.getAsString(Tasks.TITLE));
 		}
-		if(values.containsKey(TaskLists.LIST_NAME)){
+		if (values.containsKey(TaskLists.LIST_NAME)) {
 			newValues.put(DatabaseHelper.NAME, values.getAsString(Tasks.TITLE));
 		}
-		if(values.containsKey(Tasks.DESCRIPTION)){
+		if (values.containsKey(Tasks.DESCRIPTION)) {
 			newValues.put(Task.CONTENT, values.getAsString(Tasks.DESCRIPTION));
 		}
-		if(values.containsKey(Tasks.DUE)){
-			Date d=new Date(values.getAsLong(Tasks.DUE));
-			GregorianCalendar due= new GregorianCalendar();
+		if (values.containsKey(Tasks.DUE)) {
+			Date d = new Date(values.getAsLong(Tasks.DUE));
+			GregorianCalendar due = new GregorianCalendar();
 			d.setTime(values.getAsLong(Tasks.DUE));
-			String db = (due == null ? null : DateTimeHelper
-					.formatDate(due));
+			String db = (due == null ? null : DateTimeHelper.formatDate(due));
 			newValues.put(Task.DUE, db);
 		}
-		if(values.containsKey(Tasks.PRIORITY)){
-			int prio=values.getAsInteger(Tasks.PRIORITY);
-			if(prio>2){
-				prio=2;
-			}else if(prio<-2){
-				prio=-2;
+		if (values.containsKey(Tasks.PRIORITY)) {
+			int prio = values.getAsInteger(Tasks.PRIORITY);
+			if (prio > 2) {
+				prio = 2;
+			} else if (prio < -2) {
+				prio = -2;
 			}
 			newValues.put(Task.PRIORITY, prio);
 		}
-		if(values.containsKey(Tasks.STATUS)){
-			int status=values.getAsInteger(Tasks.STATUS);
-			boolean done=status==Tasks.STATUS_COMPLETED;
+		if (values.containsKey(Tasks.STATUS)) {
+			int status = values.getAsInteger(Tasks.STATUS);
+			boolean done = status == Tasks.STATUS_COMPLETED;
 			newValues.put(Task.DONE, done);
 		}
-		if(values.containsKey(Tasks.LIST_ID)){
+		if (values.containsKey(Tasks.LIST_ID)) {
 			newValues.put(Task.LIST_ID, values.getAsInteger(Tasks.LIST_ID));
 		}
-		
-		if(isSyncadapter){
-			if(values.containsKey(Tasks._ID)){
-				newValues.put(DatabaseHelper.ID, values.getAsInteger(Tasks._ID));
+
+		if (isSyncadapter) {
+			if (values.containsKey(Tasks._ID)) {
+				newValues
+						.put(DatabaseHelper.ID, values.getAsInteger(Tasks._ID));
 			}
-			if(values.containsKey(TaskLists._ID)){
-				newValues.put(DatabaseHelper.ID, values.getAsInteger(TaskLists._ID));
+			if (values.containsKey(TaskLists._ID)) {
+				newValues.put(DatabaseHelper.ID,
+						values.getAsInteger(TaskLists._ID));
 			}
-			if(values.containsKey(TaskLists.LIST_COLOR)) {
-				newValues.put(ListMirakel.COLOR, values.getAsInteger(TaskLists.LIST_COLOR));
+			if (values.containsKey(TaskLists.LIST_COLOR)) {
+				newValues.put(ListMirakel.COLOR,
+						values.getAsInteger(TaskLists.LIST_COLOR));
 			}
-			if(values.containsKey(Tasks.CREATED)){
-				Date d=new Date(values.getAsLong(Tasks.CREATED));
-				GregorianCalendar due= new GregorianCalendar();
+			if (values.containsKey(Tasks.CREATED)) {
+				Date d = new Date(values.getAsLong(Tasks.CREATED));
+				GregorianCalendar due = new GregorianCalendar();
 				d.setTime(values.getAsLong(Tasks.CREATED));
 				String db = (due == null ? null : DateTimeHelper
 						.formatDate(due));
 				newValues.put(DatabaseHelper.CREATED_AT, db);
 			}
-			if(values.containsKey(Tasks.LAST_MODIFIED)){
-				Date d=new Date(values.getAsLong(Tasks.LAST_MODIFIED));
-				GregorianCalendar due= new GregorianCalendar();
+			if (values.containsKey(Tasks.LAST_MODIFIED)) {
+				Date d = new Date(values.getAsLong(Tasks.LAST_MODIFIED));
+				GregorianCalendar due = new GregorianCalendar();
 				d.setTime(values.getAsLong(Tasks.LAST_MODIFIED));
 				String db = (due == null ? null : DateTimeHelper
 						.formatDate(due));
 				newValues.put(DatabaseHelper.UPDATED_AT, db);
 			}
-			if(values.containsKey(Tasks._SYNC_ID)){
+			if (values.containsKey(Tasks._SYNC_ID)) {
 				newValues.put(Task.UUID, values.getAsString(Tasks._SYNC_ID));
 			}
 		}
@@ -252,8 +240,8 @@ public class MirakelContentProvider extends ContentProvider {
 			String[] selectionArgs, String sortOrder) {
 		SQLiteQueryBuilder sqlBuilder = new SQLiteQueryBuilder();
 		boolean isSyncAdapter = isCallerSyncAdapter(uri);
- 		selection = insertSelectionArgs(selection, selectionArgs);
-		int matcher=uriMatcher.match(uri);
+		selection = insertSelectionArgs(selection, selectionArgs);
+		int matcher = uriMatcher.match(uri);
 		switch (matcher) {
 		case LIST_ID:
 		case LISTS:
@@ -273,17 +261,17 @@ public class MirakelContentProvider extends ContentProvider {
 			String sortOrder, SQLiteQueryBuilder sqlBuilder,
 			boolean isSyncAdapter) {
 		String listQuery;
-		if(selection.equals("1=1")){
-			listQuery=getListQuerySpecial();
-		}else{
-			listQuery=getListQuery(isSyncAdapter);
-		}		
+		if (selection.equals("1=1")) {
+			listQuery = getListQuerySpecial();
+		} else {
+			listQuery = getListQuery(isSyncAdapter);
+		}
 		sqlBuilder.setTables("(" + listQuery + ")");
-		
-		String query = sqlBuilder.buildQuery(projection, selection, null,
-				null, sortOrder, null);
+
+		String query = sqlBuilder.buildQuery(projection, selection, null, null,
+				sortOrder, null);
 		Log.d(TAG, query);
-		Cursor c=database.rawQuery(query, null);
+		Cursor c = database.rawQuery(query, null);
 		return c;
 	}
 
@@ -292,30 +280,30 @@ public class MirakelContentProvider extends ContentProvider {
 			boolean isSyncAdapter) {
 		String taskQuery = getTaskQuery(isSyncAdapter);
 		if (selection.contains(TaskContract.Tasks.LIST_ID)) {
-			try{
-			taskQuery = handleListID(projection, selection, isSyncAdapter,
-					taskQuery);
-			}catch(SQLWarning s){
+			try {
+				taskQuery = handleListID(projection, selection, isSyncAdapter,
+						taskQuery);
+			} catch (SQLWarning s) {
 				return new MatrixCursor(projection);
 			}
 		}
 
 		sqlBuilder.setTables("(" + taskQuery + ")");
-		String query = sqlBuilder.buildQuery(projection, selection, null,
-				null, sortOrder, null);
+		String query = sqlBuilder.buildQuery(projection, selection, null, null,
+				sortOrder, null);
 		Log.d(TAG, query);
 		return database.rawQuery(query, null);
 	}
 
 	private String handleListID(String[] projection, String selection,
-			boolean isSyncAdapter, String taskQuery) throws  SQLWarning{
+			boolean isSyncAdapter, String taskQuery) throws SQLWarning {
 		String[] t = selection.split(TaskContract.Tasks.LIST_ID);
 		boolean not;
 		try {
 			not = t[0].trim().substring(t[0].trim().length() - 3)
 					.equalsIgnoreCase("not");
 		} catch (Exception e) {
-			not=false;
+			not = false;
 		}
 		if (t[1].trim().charAt(0) == '=') {
 			taskQuery = handleListIDEqual(isSyncAdapter, taskQuery, t, not);
@@ -332,8 +320,7 @@ public class MirakelContentProvider extends ContentProvider {
 			int counter = 1;
 			String buffer = "";
 			List<Integer> idList = new ArrayList<Integer>();
-			while ((t[1].charAt(counter) >= '0' && t[1]
-					.charAt(counter) <= '9')
+			while ((t[1].charAt(counter) >= '0' && t[1].charAt(counter) <= '9')
 					|| t[1].charAt(counter) == ','
 					|| t[1].charAt(counter) == ' '
 					|| t[1].charAt(counter) == '-') {
@@ -345,8 +332,7 @@ public class MirakelContentProvider extends ContentProvider {
 						Log.e(TAG, "cannot parse list id");
 						throw new SQLWarning();
 					}
-				} else if ((t[1].charAt(counter) >= '0' && t[1]
-						.charAt(counter) <= '9')
+				} else if ((t[1].charAt(counter) >= '0' && t[1].charAt(counter) <= '9')
 						|| t[1].charAt(counter) == '-') {
 					buffer += t[1].charAt(counter);
 				}
@@ -366,8 +352,7 @@ public class MirakelContentProvider extends ContentProvider {
 			List<Integer> ordonaryIds = new ArrayList<Integer>();
 			for (int id : idList) {
 				if (id < 0) {
-					SpecialList s = SpecialList.getSpecialList(-1
-							* id);
+					SpecialList s = SpecialList.getSpecialList(-1 * id);
 					if (s != null) {
 						wheres.add(s.getWhereQuery(true));
 					} else {
@@ -380,12 +365,9 @@ public class MirakelContentProvider extends ContentProvider {
 				}
 			}
 			taskQuery = getTaskQuery(true, not ? 0 : idList.get(0),
-					isSyncAdapter)
-					+ " WHERE "
-					+ (not ? " NOT (" : "");
+					isSyncAdapter) + " WHERE " + (not ? " NOT (" : "");
 			for (int i = 0; i < wheres.size(); i++) {
-				taskQuery += (i != 0 ? " AND " : " ")
-						+ wheres.get(i);
+				taskQuery += (i != 0 ? " AND " : " ") + wheres.get(i);
 			}
 			if (ordonaryIds.size() > 0) {
 				if (wheres.size() > 0) {
@@ -393,8 +375,7 @@ public class MirakelContentProvider extends ContentProvider {
 				}
 				taskQuery += Task.LIST_ID + " IN (";
 				for (int i = 0; i < ordonaryIds.size(); i++) {
-					taskQuery += (i != 0 ? "," : "")
-							+ ordonaryIds.get(i);
+					taskQuery += (i != 0 ? "," : "") + ordonaryIds.get(i);
 				}
 				taskQuery += ")";
 			}
@@ -412,18 +393,15 @@ public class MirakelContentProvider extends ContentProvider {
 			boolean negative = t[1].trim().charAt(0) == '-';
 			Matcher matcher = Pattern.compile("\\d+").matcher(t[1]);
 			matcher.find();
-			list_id = (negative ? -1 : 1)
-					* Integer.valueOf(matcher.group());
+			list_id = (negative ? -1 : 1) * Integer.valueOf(matcher.group());
 		} catch (Exception e) {
 			Log.e(TAG, "cannot parse list_id");
 			throw new SQLWarning();
 		}
 		if (list_id < 0) {// is special list...
-			SpecialList s = SpecialList
-					.getSpecialList(-1 * list_id);
+			SpecialList s = SpecialList.getSpecialList(-1 * list_id);
 			if (s != null) {
-				taskQuery = getTaskQuery(true, not ? 0 : list_id,
-						isSyncAdapter)
+				taskQuery = getTaskQuery(true, not ? 0 : list_id, isSyncAdapter)
 						+ " WHERE "
 						+ (not ? "NOT ( " : "")
 						+ s.getWhereQuery(true) + (not ? " )" : "");
@@ -469,7 +447,7 @@ public class MirakelContentProvider extends ContentProvider {
 			query += addSegment("CASE " + SyncAdapter.SYNC_STATE + " WHEN "
 					+ SYNC_STATE.NEED_SYNC + " THEN TRUE ELSE FALSE",
 					TaskContract.Tasks._DIRTY, true);
-			query+= addSegment(DatabaseHelper.ID, Tasks._ID, true);
+			query += addSegment(DatabaseHelper.ID, Tasks._ID, true);
 			query += addSegment("CASE " + SyncAdapter.SYNC_STATE + " WHEN "
 					+ SYNC_STATE.DELETE + " THEN TRUE ELSE FALSE",
 					TaskContract.Tasks._DELETED, true);
@@ -478,45 +456,48 @@ public class MirakelContentProvider extends ContentProvider {
 					TaskContract.Tasks.IS_NEW, true);
 			query += addSegment(Task.UUID, Tasks._SYNC_ID, true);
 		}
-		query +=addSegment("strftime('%s'," +DatabaseHelper.UPDATED_AT+")*1000", Tasks.LAST_MODIFIED, true);
-		query +=addSegment("strftime('%s'," +DatabaseHelper.CREATED_AT+")*1000", Tasks.CREATED, true);
+		query += addSegment("strftime('%s'," + DatabaseHelper.UPDATED_AT
+				+ ")*1000", Tasks.LAST_MODIFIED, true);
+		query += addSegment("strftime('%s'," + DatabaseHelper.CREATED_AT
+				+ ")*1000", Tasks.CREATED, true);
 		query += " FROM " + Task.TABLE;
 		Log.d(TAG, query);
 		return query;
 	}
-	private String getListQuerySpecial(){
-		String query=getListQuery(false);
-		query+=" UNION ";
-		query+=getListQueryBase(false);
-		query+=addSegment(DatabaseHelper.ID+"*-1", TaskLists._ID, true);
+
+	private String getListQuerySpecial() {
+		String query = getListQuery(false);
+		query += " UNION ";
+		query += getListQueryBase(false);
+		query += addSegment(DatabaseHelper.ID + "*-1", TaskLists._ID, true);
 		query += " FROM " + SpecialList.TABLE;
 		return query;
 	}
-	
-	private String getListQuery(boolean isSyncAdapter){
+
+	private String getListQuery(boolean isSyncAdapter) {
 		String query = getListQueryBase(isSyncAdapter);
-		query+=addSegment(DatabaseHelper.ID, TaskLists._ID, true);
+		query += addSegment(DatabaseHelper.ID, TaskLists._ID, true);
 		query += " FROM " + ListMirakel.TABLE;
 		Log.d(TAG, query);
 		return query;
 	}
 
 	private String getListQueryBase(boolean isSyncAdapter) {
-		String query="SELECT ";
-		query+=addSegment(DatabaseHelper.NAME, TaskLists.LIST_NAME, false);
-		query+=addSegment(ListMirakel.COLOR, TaskLists.LIST_COLOR, true);
-		if(isSyncAdapter){
+		String query = "SELECT ";
+		query += addSegment(DatabaseHelper.NAME, TaskLists.LIST_NAME, false);
+		query += addSegment(ListMirakel.COLOR, TaskLists.LIST_COLOR, true);
+		if (isSyncAdapter) {
 			query += addSegment("CASE " + SyncAdapter.SYNC_STATE + " WHEN "
 					+ SYNC_STATE.NEED_SYNC + " THEN TRUE ELSE FALSE",
 					TaskLists._DIRTY, true);
-			query+= addSegment(DatabaseHelper.ID, Tasks._ID, true);
-//			query += addSegment("CASE " + SyncAdapter.SYNC_STATE + " WHEN "
-//					+ SYNC_STATE.DELETE + " THEN TRUE ELSE FALSE",
-//					TaskLists._DELETED, true);
-//			query += addSegment("CASE " + SyncAdapter.SYNC_STATE + " WHEN "
-//					+ SYNC_STATE.ADD + " THEN TRUE ELSE FALSE",
-//					TaskLists.IS_NEW, true);
-			query += addSegment(DatabaseHelper.ID ,TaskLists._SYNC_ID, true);
+			query += addSegment(DatabaseHelper.ID, Tasks._ID, true);
+			// query += addSegment("CASE " + SyncAdapter.SYNC_STATE + " WHEN "
+			// + SYNC_STATE.DELETE + " THEN TRUE ELSE FALSE",
+			// TaskLists._DELETED, true);
+			// query += addSegment("CASE " + SyncAdapter.SYNC_STATE + " WHEN "
+			// + SYNC_STATE.ADD + " THEN TRUE ELSE FALSE",
+			// TaskLists.IS_NEW, true);
+			query += addSegment(DatabaseHelper.ID, TaskLists._SYNC_ID, true);
 		}
 		return query;
 	}
