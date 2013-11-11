@@ -18,15 +18,15 @@
  ******************************************************************************/
 package de.azapps.mirakel.model;
 
-import java.sql.SQLSyntaxErrorException;
 import java.sql.SQLWarning;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.dmfs.provider.tasks.TaskContract;
-import org.dmfs.provider.tasks.TaskContract.TaskListColumns;
 import org.dmfs.provider.tasks.TaskContract.TaskLists;
 import org.dmfs.provider.tasks.TaskContract.Tasks;
 
@@ -38,6 +38,7 @@ import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -119,7 +120,83 @@ public class MirakelContentProvider extends ContentProvider {
 
 	@Override
 	public Uri insert(Uri uri, ContentValues values) {
+		ContentValues newValues=convertValues(values,isCallerSyncAdapter(uri));
+		String table;
+		switch(uriMatcher.match(uri)){
+		case LISTS:
+			table=ListMirakel.TABLE;
+			break;
+		case TASKS:
+			table=Task.TABLE;
+			break;
+			default:
+				throw new IllegalArgumentException("Unsupported URI: " + uri); 
+		
+		}
+		database.insert(table, null, newValues);
 		// TODO implement
+		return null;
+	}
+
+	private ContentValues convertValues(ContentValues values,boolean isSyncadapter) {
+		ContentValues newValues=new ContentValues();
+		if(values.containsKey(Tasks.TITLE)){
+			newValues.put(DatabaseHelper.NAME, values.getAsString(Tasks.TITLE));
+		}
+		if(values.containsKey(TaskLists.LIST_NAME)){
+			newValues.put(DatabaseHelper.NAME, values.getAsString(Tasks.TITLE));
+		}
+		if(values.containsKey(Tasks.DESCRIPTION)){
+			newValues.put(Task.CONTENT, values.getAsString(Tasks.DESCRIPTION));
+		}
+		if(values.containsKey(Tasks.DUE)){
+			Date d=new Date(values.getAsLong(Tasks.DUE));
+			GregorianCalendar due= new GregorianCalendar();
+			d.setTime(values.getAsLong(Tasks.DUE));
+			String db = (due == null ? null : DateTimeHelper
+					.formatDate(due));
+			newValues.put(Task.DUE, db);
+		}
+		if(values.containsKey(Tasks.PRIORITY)){
+			int prio=values.getAsInteger(Tasks.PRIORITY);
+			if(prio>2){
+				prio=2;
+			}else if(prio<-2){
+				prio=-2;
+			}
+			newValues.put(Task.PRIORITY, prio);
+		}
+		if(values.containsKey(Tasks.STATUS)){
+			int status=values.getAsInteger(Tasks.STATUS);
+			boolean done=status==Tasks.STATUS_COMPLETED;
+			newValues.put(Task.DONE, done);
+		}
+		if(values.containsKey(TaskLists.LIST_COLOR)) {
+			newValues.put(ListMirakel.COLOR, values.getAsInteger(TaskLists.LIST_COLOR));
+		}
+		
+		if(isSyncadapter){
+			if(values.containsKey(Tasks._ID)){
+				newValues.put(DatabaseHelper.ID, values.getAsInteger(Tasks._ID));
+			}
+			if(values.containsKey(Tasks.CREATED)){
+				Date d=new Date(values.getAsLong(Tasks.CREATED));
+				GregorianCalendar due= new GregorianCalendar();
+				d.setTime(values.getAsLong(Tasks.CREATED));
+				String db = (due == null ? null : DateTimeHelper
+						.formatDate(due));
+				newValues.put(DatabaseHelper.CREATED_AT, db);
+			}
+			if(values.containsKey(Tasks.LAST_MODIFIED)){
+				Date d=new Date(values.getAsLong(Tasks.LAST_MODIFIED));
+				GregorianCalendar due= new GregorianCalendar();
+				d.setTime(values.getAsLong(Tasks.LAST_MODIFIED));
+				String db = (due == null ? null : DateTimeHelper
+						.formatDate(due));
+				newValues.put(DatabaseHelper.UPDATED_AT, db);
+			}
+		}
+		newValues.put(SyncAdapter.SYNC_STATE, SYNC_STATE.ADD.toInt());
 		return null;
 	}
 
@@ -138,30 +215,21 @@ public class MirakelContentProvider extends ContentProvider {
 			String[] selectionArgs, String sortOrder) {
 		SQLiteQueryBuilder sqlBuilder = new SQLiteQueryBuilder();
 		boolean isSyncAdapter = isCallerSyncAdapter(uri);
-//		android.os.Debug.waitForDebugger();
-		// insert arguments...
  		selection = insertSelectionArgs(selection, selectionArgs);
 		int matcher=uriMatcher.match(uri);
 		switch (matcher) {
 		case LIST_ID:
-//			sqlBuilder.appendWhere(DatabaseHelper.ID + "=" + getId(uri));
-//		default://TODO remove this wtf-BUG
 		case LISTS:
 			return listQuery(projection, selection, sortOrder, sqlBuilder,
 					isSyncAdapter);
 		case TASK_ID:
-//			sqlBuilder.appendWhere(DatabaseHelper.ID + "=" + getId(uri));
 		case TASKS:
 			return taskQuery(projection, selection, sortOrder, sqlBuilder,
 					isSyncAdapter);
 
-			// sqlBuilder.setTables(Task.TABLE);
-			// isTask=true;
-			// break;
 		default:
 			throw new IllegalArgumentException("Unsupported URI: " + uri);
 		}
-//		return new MatrixCursor(projection);
 	}
 
 	private Cursor listQuery(String[] projection, String selection,
