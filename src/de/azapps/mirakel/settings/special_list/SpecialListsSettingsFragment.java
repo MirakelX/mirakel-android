@@ -45,8 +45,9 @@ public class SpecialListsSettingsFragment extends PreferenceFragment {
 			Log.d(TAG, "id= " + getArguments().getInt("id"));
 			final SpecialList specialList = SpecialList
 					.getSpecialList(getArguments().getInt("id") * -1);
-			((SpecialListsSettingsActivity)getActivity()).setSpecialList(specialList);
-			
+			((SpecialListsSettingsActivity) getActivity())
+					.setSpecialList(specialList);
+
 			ActionBar actionbar = getActivity().getActionBar();
 			if (specialList == null)
 				actionbar.setTitle("No list");
@@ -61,7 +62,8 @@ public class SpecialListsSettingsFragment extends PreferenceFragment {
 						ActionBar.LayoutParams.WRAP_CONTENT,
 						ActionBar.LayoutParams.WRAP_CONTENT,
 						Gravity.CENTER_VERTICAL | Gravity.RIGHT));
-				delList.setOnClickListener(((ListSettings)getActivity()).getDelOnClickListener());
+				delList.setOnClickListener(((ListSettings) getActivity())
+						.getDelOnClickListener());
 			}
 			try {
 				new SpecialListSettings(this, specialList).setup();

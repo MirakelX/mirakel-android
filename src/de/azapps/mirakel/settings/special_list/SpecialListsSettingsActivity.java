@@ -162,7 +162,7 @@ public class SpecialListsSettingsActivity extends ListSettings {
 					finish();
 				else {
 					try {
-						if(getHeader().size()>0)
+						if (getHeader().size() > 0)
 							onHeaderClick(getHeader().get(0), 0);
 						invalidateHeaders();
 					} catch (Exception e) {
@@ -174,7 +174,7 @@ public class SpecialListsSettingsActivity extends ListSettings {
 	}
 
 	public void setSpecialList(SpecialList specialList) {
-		this.specialList=specialList;		
+		this.specialList = specialList;
 	}
 
 }

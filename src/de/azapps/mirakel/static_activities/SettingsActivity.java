@@ -338,7 +338,7 @@ public class SettingsActivity extends PreferenceActivity {
 
 	@Override
 	protected boolean isValidFragment(String fragmentName) {
-		//TODO test this if have kitkat
+		// TODO test this if have kitkat
 		return true;
 	}
 }

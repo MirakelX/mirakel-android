@@ -381,7 +381,8 @@ public class ColorPicker extends View {
 		mTranslationOffset = min * 0.5f;
 
 		// fill the rectangle instances.
-		mColorWheelRadius = min / 2 - mColorWheelThickness - mColorPointerHaloRadius;
+		mColorWheelRadius = min / 2 - mColorWheelThickness
+				- mColorPointerHaloRadius;
 		mColorWheelRectangle.set(-mColorWheelRadius, -mColorWheelRadius,
 				mColorWheelRadius, mColorWheelRadius);
 
@@ -512,10 +513,10 @@ public class ColorPicker extends View {
 	private float colorToAngle(int color) {
 		float[] colors = new float[3];
 		Color.colorToHSV(color, colors);
-		
+
 		return (float) Math.toRadians(-colors[0]);
 	}
-	
+
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		getParent().requestDisallowInterceptTouchEvent(true);
@@ -544,7 +545,7 @@ public class ColorPicker extends View {
 				invalidate();
 			}
 			// If user did not press pointer or center, report event not handled
-			else{
+			else {
 				getParent().requestDisallowInterceptTouchEvent(false);
 				return false;
 			}
@@ -575,7 +576,7 @@ public class ColorPicker extends View {
 				invalidate();
 			}
 			// If user did not press pointer or center, report event not handled
-			else{
+			else {
 				getParent().requestDisallowInterceptTouchEvent(false);
 				return false;
 			}

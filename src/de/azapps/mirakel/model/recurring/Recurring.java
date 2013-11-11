@@ -137,8 +137,15 @@ public class Recurring extends RecurringBase {
 
 	public static void destroyTemporary(int recurrenceId) {
 		database.beginTransaction();
-		database.delete(TABLE, "temporary=1 AND _id=" + recurrenceId, null);
-		database.endTransaction();
+		try {
+			database.delete(TABLE, "temporary=1 AND _id=" + recurrenceId, null);
+			database.setTransactionSuccessful();
+		} catch (Exception e) {
+			Log.d(TAG,"destroy temporary faild");
+		}finally{
+			database.endTransaction();
+		}
+		
 	}
 
 	public void destroy() {

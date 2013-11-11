@@ -90,8 +90,8 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		Task task = position >= data.size() ? null : data.get(position);
-		if(task==null) {
-			task=Task.getDummy(context,ListMirakel.safeFirst(context));
+		if (task == null) {
+			task = Task.getDummy(context, ListMirakel.safeFirst(context));
 		}
 		View row = setupRow(convertView, parent, context, layoutResourceId,
 				task, listId <= 0, darkTheme);
@@ -110,8 +110,10 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 			if (settings.getBoolean("colorize_tasks_everywhere", false)
 					|| ((MainActivity) context).getCurrentList()
 							.isSpecialList()) {
-				int w=row.getWidth()==0?parent.getWidth():row.getWidth();
-				Helpers.setListColorBackground(task.getList(), row, darkTheme,w);
+				int w = row.getWidth() == 0 ? parent.getWidth() : row
+						.getWidth();
+				Helpers.setListColorBackground(task.getList(), row, darkTheme,
+						w);
 			} else {
 				row.setBackgroundColor(context.getResources().getColor(
 						android.R.color.transparent));
@@ -121,19 +123,19 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 					android.R.color.transparent));
 		}
 		row.setOnTouchListener(new OnTouchListener() {
-			
+
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				touchPosition=position;
+				touchPosition = position;
 				return false;
 			}
 		});
 		return row;
 	}
 
-	public static View setupRow(View convertView,
-			ViewGroup parent, Context context, int layoutResourceId, Task task,
-			boolean showList, boolean darkTheme) {
+	public static View setupRow(View convertView, ViewGroup parent,
+			Context context, int layoutResourceId, Task task, boolean showList,
+			boolean darkTheme) {
 		View row = convertView;
 		TaskHolder holder;
 
@@ -165,7 +167,8 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 		holder.taskRowDone.setChecked(task.isDone());
 		holder.taskRowDone.setTag(task);
 		holder.taskRowDoneWrapper.setTag(task);
-		if (task.getContent().length() != 0 || task.getSubtaskCount()>0 || task.getFiles().size()>0) {
+		if (task.getContent().length() != 0 || task.getSubtaskCount() > 0
+				|| task.getFiles().size() > 0) {
 			holder.taskRowHasContent.setVisibility(View.VISIBLE);
 		} else {
 			holder.taskRowHasContent.setVisibility(View.INVISIBLE);
@@ -200,7 +203,8 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 		// Due
 		if (task.getDue() != null) {
 			holder.taskRowDue.setVisibility(View.VISIBLE);
-			holder.taskRowDue.setText(Helpers.formatDate(context,task.getDue()));
+			holder.taskRowDue
+					.setText(Helpers.formatDate(context, task.getDue()));
 			holder.taskRowDue.setTextColor(row.getResources().getColor(
 					Helpers.getTaskDueColor(task.getDue(), task.isDone())));
 		} else {
@@ -208,11 +212,11 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 		}
 		return row;
 	}
-	
-	public Task lastTouched(){
-		if(touchPosition<data.size())
+
+	public Task lastTouched() {
+		if (touchPosition < data.size())
 			return data.get(touchPosition);
-		else 
+		else
 			return null;
 	}
 

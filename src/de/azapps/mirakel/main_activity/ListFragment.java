@@ -94,7 +94,8 @@ public class ListFragment extends Fragment {
 		view = inflater.inflate(R.layout.list_fragment, container, false);
 		if (PreferenceManager.getDefaultSharedPreferences(main).getBoolean(
 				"DarkTheme", false)) {
-			view.findViewById(R.id.lists_list).setBackgroundResource(android.R.drawable.screen_background_dark);
+			view.findViewById(R.id.lists_list).setBackgroundResource(
+					android.R.drawable.screen_background_dark);
 		} else {
 			view.findViewById(R.id.lists_list).setBackgroundColor(
 					getResources().getColor(android.R.color.background_light));
@@ -379,8 +380,9 @@ public class ListFragment extends Fragment {
 									l.setName(input.getText().toString());
 								l.save(list != null);
 								update();
-								if(list==null){
-									listView.setSelection(listView.getAdapter().getCount() - 1);
+								if (list == null) {
+									listView.setSelection(listView.getAdapter()
+											.getCount() - 1);
 								}
 							}
 						})
@@ -394,7 +396,7 @@ public class ListFragment extends Fragment {
 		input.postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				if(getActivity()==null)
+				if (getActivity() == null)
 					return;
 				InputMethodManager keyboard = (InputMethodManager) getActivity()
 						.getSystemService(Context.INPUT_METHOD_SERVICE);

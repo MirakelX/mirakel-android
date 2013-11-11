@@ -32,13 +32,13 @@ import de.azapps.mirakel.settings.ListSettings;
 import de.azapps.mirakelandroid.R;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public class RecurringFragment extends PreferenceFragment{
+public class RecurringFragment extends PreferenceFragment {
 	private static final String TAG = "RecurringFragment";
 	private Recurring recurring;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG,"foo");
+		Log.d(TAG, "foo");
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.settings_recurring);
 		ActionBar actionBar = getActivity().getActionBar();
@@ -46,19 +46,21 @@ public class RecurringFragment extends PreferenceFragment{
 		Bundle b = getArguments();
 		if (b != null) {
 			recurring = Recurring.get(getArguments().getInt("id"));
-			((RecurringActivity)getActivity()).setReccuring(recurring);
+			((RecurringActivity) getActivity()).setReccuring(recurring);
 			actionBar.setTitle(recurring.getLabel());
-			if(!Helpers.isTablet(getActivity())){
+			if (!Helpers.isTablet(getActivity())) {
 				ImageButton delSemantic = new ImageButton(getActivity());
 				delSemantic
 						.setBackgroundResource(android.R.drawable.ic_menu_delete);
 				actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
 						ActionBar.DISPLAY_SHOW_CUSTOM);
-				actionBar.setCustomView(delSemantic, new ActionBar.LayoutParams(
-						ActionBar.LayoutParams.WRAP_CONTENT,
-						ActionBar.LayoutParams.WRAP_CONTENT,
-						Gravity.CENTER_VERTICAL | Gravity.RIGHT));
-				delSemantic.setOnClickListener(((ListSettings)getActivity()).getDelOnClickListener());
+				actionBar.setCustomView(delSemantic,
+						new ActionBar.LayoutParams(
+								ActionBar.LayoutParams.WRAP_CONTENT,
+								ActionBar.LayoutParams.WRAP_CONTENT,
+								Gravity.CENTER_VERTICAL | Gravity.RIGHT));
+				delSemantic.setOnClickListener(((ListSettings) getActivity())
+						.getDelOnClickListener());
 			}
 			new RecurringSettings(this, recurring).setup();
 		} else {

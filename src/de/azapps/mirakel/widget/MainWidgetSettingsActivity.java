@@ -73,8 +73,9 @@ public class MainWidgetSettingsActivity extends PreferenceActivity {
 		// since it seems the onUpdate() is only fired on that:
 		int widgets[] = { mAppWidgetId };
 		intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, widgets);
-		if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB)
-			AppWidgetManager.getInstance(this).notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.widget_tasks_list);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+			AppWidgetManager.getInstance(this).notifyAppWidgetViewDataChanged(
+					mAppWidgetId, R.id.widget_tasks_list);
 		sendBroadcast(intent);
 		// Finish this activity
 		finish();

@@ -37,21 +37,20 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakelandroid.R;
 
-
 @SuppressLint("UseSparseArrays")
 public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 	@SuppressWarnings("unused")
 	private static final String TAG = "ListAdapter";
 	private boolean enableDrop;
 	private Map<Integer, View> viewsForLists = new HashMap<Integer, View>();
-	
 
 	public View getViewForList(ListMirakel list) {
 		return viewsForLists.get(list.getId());
 	}
-	public ListAdapter(Context c){
-		//do not call this, only for error-fixing there
-		super(c,0,(List<ListMirakel>)new ArrayList<ListMirakel>());	
+
+	public ListAdapter(Context c) {
+		// do not call this, only for error-fixing there
+		super(c, 0, (List<ListMirakel>) new ArrayList<ListMirakel>());
 	}
 
 	public ListAdapter(Context context, int layoutResourceId,
@@ -91,13 +90,13 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 			holder.listRowDrag.setVisibility(View.GONE);
 		else
 			holder.listRowDrag.setVisibility(View.VISIBLE);
-		
+
 		holder.listRowName.setText(list.getName());
 		holder.listRowName.setTag(list);
 		holder.listRowTaskNumber.setText("" + list.countTasks());
 		viewsForLists.put(list.getId(), row);
-		int w=row.getWidth()==0?parent.getWidth():row.getWidth();
-		Helpers.setListColorBackground(list, row, darkTheme,w);
+		int w = row.getWidth() == 0 ? parent.getWidth() : row.getWidth();
+		Helpers.setListColorBackground(list, row, darkTheme, w);
 		if (selected.get(position)) {
 			row.setBackgroundColor(context.getResources().getColor(
 					darkTheme ? R.color.highlighted_text_holo_dark
@@ -113,20 +112,18 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 		viewsForLists.remove(data.get(which).getId());
 		data.remove(which);
 	}
-	
 
 	public void onDrop(final int from, final int to) {
 		ListMirakel t = data.get(from);
 		String TABLE;
-		if(t.getId()<0){
-			TABLE=SpecialList.TABLE;
-		}else{
-			TABLE=ListMirakel.TABLE;
+		if (t.getId() < 0) {
+			TABLE = SpecialList.TABLE;
+		} else {
+			TABLE = ListMirakel.TABLE;
 		}
 		if (to < from) {// move list up
 			Mirakel.getWritableDatabase().execSQL(
-					"UPDATE " + TABLE
-							+ " SET lft=lft+2 where lft>="
+					"UPDATE " + TABLE + " SET lft=lft+2 where lft>="
 							+ data.get(to).getLft() + " and lft<"
 							+ data.get(from).getLft());
 		} else if (to > from) {// move list down

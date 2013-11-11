@@ -161,15 +161,17 @@ public class ExportImport {
 					if (child != null && child.getAttributes() != null) {
 						String listname = child.getAttributes()
 								.getNamedItem("value").getTextContent();
-						list=ListMirakel.findByName(listname);
+						list = ListMirakel.findByName(listname);
 						if (list == null) {
 							list = ListMirakel.newList(listname);
 						}
 					} else {
 						if (settings.getBoolean("importDefaultList", false)) {
-							list = ListMirakel.getList(settings.getInt("defaultImportList",
-									SpecialList.firstSpecialSafe(context)
-											.getId()));
+							list = ListMirakel
+									.getList(settings.getInt(
+											"defaultImportList", SpecialList
+													.firstSpecialSafe(context)
+													.getId()));
 							if (list == null) {
 								list = SpecialList.firstSpecialSafe(context);
 							}
@@ -385,7 +387,8 @@ public class ExportImport {
 			return contents;
 		}
 		int list_id = jsonTask.get("categoryId").getAsInt();
-		Task t = Task.newTask(name, ListMirakel.getList(listMapping.get(list_id)));
+		Task t = Task.newTask(name,
+				ListMirakel.getList(listMapping.get(list_id)));
 		taskMapping.put(jsonTask.get("id").getAsInt(), (int) t.getId());
 		if (jsonTask.has("dueDate")) {
 			Calendar due = new GregorianCalendar();
@@ -409,40 +412,40 @@ public class ExportImport {
 			String repeat = jsonTask.get("repeatMethod").getAsString();
 
 			if (!repeat.equals("TASK_REPEAT_OFF")) {
-				Recurring r=null;
+				Recurring r = null;
 				if (repeat.equals("TASK_REPEAT_DAY")) {
 					r = Recurring.get(1, 0, 0);
 					if (r == null) {
 						r = Recurring.newRecurring(
 								ctx.getString(R.string.daily), 0, 0, 1, 0, 0,
-								true, null, null,false);
+								true, null, null, false);
 					}
 				} else if (repeat.equals("TASK_REPEAT_WEEK")) {
 					r = Recurring.get(7, 0, 0);
 					if (r == null) {
 						r = Recurring.newRecurring(
 								ctx.getString(R.string.weekly), 0, 0, 7, 0, 0,
-								true, null, null,false);
+								true, null, null, false);
 					}
 				} else if (repeat.equals("TASK_REPEAT_MONTH")) {
 					r = Recurring.get(0, 1, 0);
 					if (r == null) {
 						r = Recurring.newRecurring(
 								ctx.getString(R.string.monthly), 0, 0, 0, 1, 0,
-								true, null, null,false);
+								true, null, null, false);
 					}
 				} else if (repeat.equals("TASK_REPEAT_YEAR")) {
 					r = Recurring.get(0, 0, 1);
 					if (r == null) {
 						r = Recurring.newRecurring(
 								ctx.getString(R.string.yearly), 0, 0, 0, 0, 1,
-								true, null, null,false);
+								true, null, null, false);
 					}
 				}
-				if(r!=null){
+				if (r != null) {
 					t.setRecurrence(r.getId());
-				}else{
-					Log.d(TAG,repeat);
+				} else {
+					Log.d(TAG, repeat);
 				}
 
 			}

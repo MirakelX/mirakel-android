@@ -120,6 +120,7 @@ class TaskBase {
 		Recurring r = Recurring.get(recurrence);
 		return r;
 	}
+
 	public int getRecurrenceId() {
 		return recurrence;
 	}
@@ -132,6 +133,7 @@ class TaskBase {
 	public Recurring getRecurrenceReminder() {
 		return Recurring.get(recurrence_reminder);
 	}
+
 	public int getRecurrenceReminderId() {
 		return recurrence_reminder;
 	}

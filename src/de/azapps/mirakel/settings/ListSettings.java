@@ -40,7 +40,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
-import de.azapps.mirakel.static_activities.SettingsFragment;
 import de.azapps.mirakelandroid.R;
 
 /**
@@ -58,7 +57,9 @@ public abstract class ListSettings extends PreferenceActivity {
 	private static final String TAG = "ListSettings";
 
 	protected abstract OnClickListener getAddOnClickListener();
+
 	public abstract OnClickListener getDelOnClickListener();
+
 	protected abstract OnClickListener getHelpOnClickListener();
 
 	protected abstract int getSettingsRessource();
@@ -83,8 +84,7 @@ public abstract class ListSettings extends PreferenceActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		SharedPreferences preferences = PreferenceManager
 				.getDefaultSharedPreferences(this);
-		if (preferences.getBoolean(
-				"DarkTheme", false))
+		if (preferences.getBoolean("DarkTheme", false))
 			setTheme(R.style.AppBaseThemeDARK);
 		super.onCreate(savedInstanceState);
 
@@ -111,19 +111,19 @@ public abstract class ListSettings extends PreferenceActivity {
 			ImageButton addList = new ImageButton(this);
 			addList.setBackgroundResource(android.R.drawable.ic_menu_add);
 			addList.setOnClickListener(getAddOnClickListener());
-			if(Helpers.isTablet(this)){
-				LinearLayout l= new LinearLayout(this);
+			if (Helpers.isTablet(this)) {
+				LinearLayout l = new LinearLayout(this);
 				l.setLayoutDirection(LinearLayout.VERTICAL);
 				l.addView(addList);
 				ImageButton delList = new ImageButton(this);
 				delList.setBackgroundResource(android.R.drawable.ic_menu_delete);
 				delList.setOnClickListener(getDelOnClickListener());
 				l.addView(delList);
-				Log.d(TAG,"isTablet");
-				
-				v=l;
-			}else{
-					v=addList;
+				Log.d(TAG, "isTablet");
+
+				v = l;
+			} else {
+				v = addList;
 			}
 
 			actionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
@@ -132,7 +132,7 @@ public abstract class ListSettings extends PreferenceActivity {
 					ActionBar.LayoutParams.WRAP_CONTENT,
 					ActionBar.LayoutParams.WRAP_CONTENT,
 					Gravity.CENTER_VERTICAL | Gravity.RIGHT));
-			
+
 		}
 	}
 
@@ -216,9 +216,9 @@ public abstract class ListSettings extends PreferenceActivity {
 			header.extras = b;
 			target.add(header);
 		}
-		if(getItems().size()==0){
+		if (getItems().size() == 0) {
 			Header header = new Header();
-			header.title=" ";
+			header.title = " ";
 			header.fragment = getDestFragmentClass().getCanonicalName();
 			target.add(header);
 		}
@@ -248,7 +248,7 @@ public abstract class ListSettings extends PreferenceActivity {
 
 	@Override
 	protected boolean isValidFragment(String fragmentName) {
-		//TODO test this if have kitkat
+		// TODO test this if have kitkat
 		return true;
 	}
 }

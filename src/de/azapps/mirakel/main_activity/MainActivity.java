@@ -74,6 +74,7 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.static_activities.SettingsActivity;
+import de.azapps.mirakel.static_activities.SplashScreenActivity;
 import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.widget.MainWidgetProvider;
 import de.azapps.mirakelandroid.R;
@@ -157,9 +158,9 @@ public class MainActivity extends ActionBarActivity implements
 			editor.putString("startupList", "" + SpecialList.first().getId());
 			editor.commit();
 		}
-		if(isTablet){
+		if (isTablet) {
 			setContentView(R.layout.activity_main);
-		}else{
+		} else {
 			setContentView(R.layout.activity_main);
 		}
 		mPagerAdapter = null;
@@ -251,7 +252,12 @@ public class MainActivity extends ActionBarActivity implements
 				stopService(new Intent(MainActivity.this,
 						NotificationService.class));
 			}
-			finish();
+			Intent killIntent = new Intent(getApplicationContext(),
+					SplashScreenActivity.class);
+			killIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			killIntent.setAction(SplashScreenActivity.EXIT);
+			startActivity(killIntent);
+			return false;
 		case R.id.menu_undo:
 			Helpers.undoLast(this);
 			updateCurrentListAndTask();
@@ -356,10 +362,10 @@ public class MainActivity extends ActionBarActivity implements
 		updateLists();
 		getMenuInflater().inflate(R.menu.main, menu);
 		this.menu = menu;
-		if(!showNavDrawer){
+		if (!showNavDrawer) {
 			loadMenu(currentPosition, false, false);
-		}else{
-			showNavDrawer=false;
+		} else {
+			showNavDrawer = false;
 			loadMenu(-1, false, false);
 		}
 		return true;
@@ -512,7 +518,7 @@ public class MainActivity extends ActionBarActivity implements
 						task = Semantic.createTask(preferences.getString(
 								"photoDefaultTitle",
 								getString(R.string.photo_default_title)),
-								currentList, false,this);
+								currentList, false, this);
 						safeSaveTask(task);
 					}
 					task.addFile(this, Helpers.getPathFromUri(fileUri, this));
@@ -575,12 +581,16 @@ public class MainActivity extends ActionBarActivity implements
 		// AppWidgetManager.EXTRA_APPWIDGET_ID,
 		// since it seems the onUpdate() is only fired on that:
 		Context context = getApplicationContext();
-		ComponentName name = new ComponentName(context, MainWidgetProvider.class);
-		int widgets[] = AppWidgetManager.getInstance(context).getAppWidgetIds(name);
+		ComponentName name = new ComponentName(context,
+				MainWidgetProvider.class);
+		int widgets[] = AppWidgetManager.getInstance(context).getAppWidgetIds(
+				name);
 		intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, widgets);
-		if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB){
-			for(int id:widgets){
-				AppWidgetManager.getInstance(this).notifyAppWidgetViewDataChanged(id, R.id.widget_tasks_list);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			for (int id : widgets) {
+				AppWidgetManager.getInstance(this)
+						.notifyAppWidgetViewDataChanged(id,
+								R.id.widget_tasks_list);
 			}
 		}
 		sendBroadcast(intent);
@@ -866,9 +876,11 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	public void handleDestroyTask(final List<Task> tasks) {
-		if(tasks==null)
+		if (tasks == null)
 			return;
 		final MainActivity main = this;
+		if (tasks.size() == 0) // This must then be a bug in a ROM
+			return;
 		String names = tasks.get(0).getName();
 		for (int i = 1; i < tasks.size(); i++) {
 			names += ", " + tasks.get(i).getName();
@@ -1221,8 +1233,7 @@ public class MainActivity extends ActionBarActivity implements
 	 * @param task
 	 */
 	public void saveTask(Task task) {
-		Log.v(TAG, "Saving task… (task:" + task.getId() + " – current:"
-				+ currentTask.getId());
+		Log.v(TAG, "Saving task… (task:" + task.getId());
 		safeSaveTask(task);
 		updatesForTask(task);
 	}

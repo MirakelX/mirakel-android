@@ -103,9 +103,13 @@ public class WidgetHelper {
 				rv.setViewVisibility(R.id.tasks_row_due, View.GONE);
 			}
 		}
-		if(Build.VERSION.SDK_INT<Build.VERSION_CODES.HONEYCOMB){
-			rv.setTextColor(R.id.tasks_row_name, context.getResources()
-                    .getColor(WidgetHelper.isDark(context, widgetId) ? R.color.White : R.color.Black));
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+			rv.setTextColor(
+					R.id.tasks_row_name,
+					context.getResources()
+							.getColor(
+									WidgetHelper.isDark(context, widgetId) ? R.color.White
+											: R.color.Black));
 		}
 		return rv;
 	}

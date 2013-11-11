@@ -32,12 +32,17 @@ import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakelandroid.R;
 
 public class SplashScreenActivity extends Activity {
+	public static final String EXIT = "de.azapps.mirakel.EXIT";
 
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+		if (getIntent().getAction() == EXIT) {
+			finish();
+			return;
+		}
 		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
 			getActionBar().hide();
 		}
@@ -55,7 +60,7 @@ public class SplashScreenActivity extends Activity {
 			ListMirakel sl = SpecialList.firstSpecial();
 			if (sl == null) {
 				sl = SpecialList.newSpecialList(getString(R.string.list_all),
-						" done=0 ", true,this);
+						" done=0 ", true, this);
 			}
 			int listId = Integer.parseInt(preferences.getString("startupList",
 					"" + sl.getId()));
