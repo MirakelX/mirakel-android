@@ -125,6 +125,9 @@
     <string name="import_any_do_click_summary">Import from an Any.Do-file</string>
     <string name="import_any_do_click">Import from Any.Do</string>
     <string name="any_do_import_title">Select Any.Do backupfile</string>
+    <string name="any_do_this_file">Import from %s?\nIf not please select a file yourself</string>
+    <string name="any_do_how_to">Please backup first your Any.Do data. To do so, go to Any.Do → Settings → Backup → Create Backup. Then come back and press OK.\nOr select the file yourself.</string>
+    <string name="select_file">Select file</string>
     <string name="any_do_unsuccess">There was an error while importing from Any.Do!</string>
     <string name="any_do_success">Successfully imported all data!</string>
     <string name="wait">Please wait…</string>
