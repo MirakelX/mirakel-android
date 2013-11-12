@@ -32,7 +32,6 @@ import java.util.Set;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Pair;
 import android.widget.Toast;
@@ -120,15 +119,10 @@ public class Task extends TaskBase {
 			Helpers.updateLog(old, context);
 		}
 		database.beginTransaction();
-		try {
-			database.update(TABLE, values, DatabaseHelper.ID + " = " + getId(),
-					null);
-			database.setTransactionSuccessful();
-		} catch (SQLException e) {
-			Log.wtf(TAG, "cannot save Task");
-		} finally {
-			database.endTransaction();
-		}
+		database.update(TABLE, values, DatabaseHelper.ID + " = " + getId(),
+				null);
+		database.setTransactionSuccessful();
+		database.endTransaction();
 		clearEdited();
 	}
 
@@ -276,27 +270,17 @@ public class Task extends TaskBase {
 		cv.put("parent_id", getId());
 		cv.put("child_id", t.getId());
 		database.beginTransaction();
-		try {
-			database.insert(SUBTASK_TABLE, null, cv);
-			database.setTransactionSuccessful();
-		} catch (SQLException e) {
-			Log.wtf(TAG, "cannot add SubTask");
-		} finally {
-			database.endTransaction();
-		}
+		database.insert(SUBTASK_TABLE, null, cv);
+		database.setTransactionSuccessful();
+		database.endTransaction();
 	}
 
 	public void deleteSubtask(Task s) {
 		database.beginTransaction();
-		try {
-			database.delete(SUBTASK_TABLE, "parent_id=" + getId()
-					+ " and child_id=" + s.getId(), null);
-			database.setTransactionSuccessful();
-		} catch (SQLException e) {
-			Log.wtf(TAG, "cannot add SubTask");
-		} finally {
-			database.endTransaction();
-		}
+		database.delete(SUBTASK_TABLE, "parent_id=" + getId()
+				+ " and child_id=" + s.getId(), null);
+		database.setTransactionSuccessful();
+		database.endTransaction();
 
 	}
 
@@ -329,16 +313,11 @@ public class Task extends TaskBase {
 		ContentValues values = new ContentValues();
 		values.put("sync_state", SYNC_STATE.DELETE.toInt());
 		String where = "sync_state!=" + SYNC_STATE.ADD + " AND done=1";
-		try {
-			database.update(TABLE, values, where, null);
-			database.delete(TABLE, "sync_state=" + SYNC_STATE.ADD
-					+ " AND done=1", null);
-			database.setTransactionSuccessful();
-		} catch (SQLException e) {
-			Log.wtf(TAG, "cannot add SubTask");
-		} finally {
-			database.endTransaction();
-		}
+		database.update(TABLE, values, where, null);
+		database.delete(TABLE, "sync_state=" + SYNC_STATE.ADD + " AND done=1",
+				null);
+		database.setTransactionSuccessful();
+		database.endTransaction();
 	}
 
 	public String toJson() {
@@ -475,15 +454,9 @@ public class Task extends TaskBase {
 				DateTimeHelper.formatDateTime(getUpdatedAt()));
 		database.beginTransaction();
 		long insertId;
-		try {
-			insertId = database.insertOrThrow(TABLE, null, values);
-			database.setTransactionSuccessful();
-		} catch (SQLException e) {
-			Log.wtf(TAG, "cannot create Task");
-			return null;
-		} finally {
-			database.endTransaction();
-		}
+		insertId = database.insertOrThrow(TABLE, null, values);
+		database.setTransactionSuccessful();
+		database.endTransaction();
 		Cursor cursor = database.query(TABLE, allColumns, DatabaseHelper.ID
 				+ " = " + insertId, null, null, null, null);
 		cursor.moveToFirst();

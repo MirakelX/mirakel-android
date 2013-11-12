@@ -29,7 +29,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 
@@ -106,15 +105,10 @@ public class ListMirakel extends ListBase {
 			ContentValues values = getContentValues();
 			if (log)
 				Helpers.updateLog(ListMirakel.getList(getId()), context);
-			try {
-				database.update(ListMirakel.TABLE, values, DatabaseHelper.ID
-						+ " = " + getId(), null);
-				database.setTransactionSuccessful();
-			} catch (SQLException e) {
-				Log.wtf(TAG, "cannot save list");
-			} finally {
-				database.endTransaction();
-			}
+			database.update(ListMirakel.TABLE, values, DatabaseHelper.ID
+					+ " = " + getId(), null);
+			database.setTransactionSuccessful();
+			database.endTransaction();
 
 		}
 		editor.commit();
@@ -326,21 +320,14 @@ public class ListMirakel extends ListBase {
 		values.put(LFT, 0);
 		database.beginTransaction();
 		long insertId;
-		try {
-			insertId = database.insert(ListMirakel.TABLE, null, values);
-			// Dirty workaround
-			database.execSQL("update " + ListMirakel.TABLE
-					+ " SET lft=(SELECT MAX(" + RGT + ") from " + TABLE
-					+ ")+1, " + RGT + "=(SELECT MAX(" + RGT
-					+ ") from lists)+2 where " + DatabaseHelper.ID + "="
-					+ insertId);
-			database.setTransactionSuccessful();
-		} catch (SQLException e) {
-			Log.wtf(TAG, "cannot create list");
-			return null;
-		} finally {
-			database.endTransaction();
-		}
+		insertId = database.insert(ListMirakel.TABLE, null, values);
+		// Dirty workaround
+		database.execSQL("update " + ListMirakel.TABLE
+				+ " SET lft=(SELECT MAX(" + RGT + ") from " + TABLE + ")+1, "
+				+ RGT + "=(SELECT MAX(" + RGT + ") from lists)+2 where "
+				+ DatabaseHelper.ID + "=" + insertId);
+		database.setTransactionSuccessful();
+		database.endTransaction();
 
 		Cursor cursor = database.query(ListMirakel.TABLE, allColumns,
 				DatabaseHelper.ID + " = " + insertId, null, null, null, null);

@@ -175,6 +175,7 @@ public class SpecialList extends ListMirakel {
 		database.execSQL("update " + TABLE + " SET "+LFT+"=(SELECT MAX("+RGT+") from "
 				+ TABLE + ")+1, "+RGT+"=(SELECT MAX("+RGT+") from " + TABLE
 				+ ")+2 where "+DatabaseHelper.ID+"=" + insertId);
+		database.setTransactionSuccessful();
 		database.endTransaction();
 		return newSList;
 	}
@@ -192,6 +193,7 @@ public class SpecialList extends ListMirakel {
 				: SYNC_STATE.NEED_SYNC);
 		ContentValues values = getContentValues();
 		database.update(TABLE, values, DatabaseHelper.ID+" = " + Math.abs(getId()), null);
+		database.setTransactionSuccessful();
 		database.endTransaction();
 	}
 
@@ -216,6 +218,7 @@ public class SpecialList extends ListMirakel {
 		database.rawQuery("UPDATE " + TABLE + " SET "+LFT+"="+LFT+"-2 WHERE "+LFT+">"
 				+ getLft() + "; UPDATE " + TABLE + " SET "+RGT+"="+RGT+"-2 WHERE "+RGT+">"
 				+ getRgt() + ";", null);
+		database.setTransactionSuccessful();
 		database.endTransaction();
 
 	}
