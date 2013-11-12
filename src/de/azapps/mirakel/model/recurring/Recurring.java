@@ -36,6 +36,7 @@ public class Recurring extends RecurringBase {
 		database.beginTransaction();
 		ContentValues values = getContentValues();
 		database.update(TABLE, values, "_id = " + getId(), null);
+		database.setTransactionSuccessful();
 		database.endTransaction();
 	}
 
@@ -72,6 +73,7 @@ public class Recurring extends RecurringBase {
 		ContentValues values = getContentValues();
 		values.remove("_id");
 		int insertId = (int) database.insertOrThrow(TABLE, null, values);
+		database.setTransactionSuccessful();
 		database.endTransaction();
 		return Recurring.get(insertId);
 	}
@@ -137,14 +139,9 @@ public class Recurring extends RecurringBase {
 
 	public static void destroyTemporary(int recurrenceId) {
 		database.beginTransaction();
-		try {
-			database.delete(TABLE, "temporary=1 AND _id=" + recurrenceId, null);
-			database.setTransactionSuccessful();
-		} catch (Exception e) {
-			Log.d(TAG,"cannot destroy Temporary");
-		}finally{
-			database.endTransaction();
-		}
+		database.delete(TABLE, "temporary=1 AND _id=" + recurrenceId, null);
+		database.setTransactionSuccessful();
+		database.endTransaction();
 	}
 
 	public void destroy() {
@@ -157,6 +154,7 @@ public class Recurring extends RecurringBase {
 		cv = new ContentValues();
 		cv.put("recurring_reminder", -1);
 		database.update(Task.TABLE, cv, "recurring_reminder=" + getId(), null);
+		database.setTransactionSuccessful();
 		database.endTransaction();
 	}
 

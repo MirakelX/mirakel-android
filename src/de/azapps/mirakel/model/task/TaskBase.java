@@ -42,17 +42,17 @@ import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 
 class TaskBase {
-	public static final String PRIORITY="priority";
-	public static final String CONTENT="content";
-	public static final String DUE="due";
-	public static final String DONE="done";
-	public static final String UUID="uuid";
-	public static final String LIST_ID="list_id";
-	public static final String REMINDER="reminder";
-	public static final String RECURRING="recurring";
-	public static final String RECURRING_REMINDER="recurring_reminder";
-	public static final String ADDITIONAL_ENTRIES="additional_entries";
-	
+	public static final String PRIORITY = "priority";
+	public static final String CONTENT = "content";
+	public static final String DUE = "due";
+	public static final String DONE = "done";
+	public static final String UUID = "uuid";
+	public static final String LIST_ID = "list_id";
+	public static final String REMINDER = "reminder";
+	public static final String RECURRING = "recurring";
+	public static final String RECURRING_REMINDER = "recurring_reminder";
+	public static final String ADDITIONAL_ENTRIES = "additional_entries";
+
 	@SuppressWarnings("unused")
 	private static final String TAG = "TaskBase";
 	private long id = 0;
@@ -356,8 +356,14 @@ class TaskBase {
 		ContentValues cv = new ContentValues();
 		cv.put(DatabaseHelper.ID, id);
 		cv.put(UUID, uuid);
-		if (list == null)
-			throw new NoSuchListException();
+		if (list == null) {
+			// If the list of the task vanished, we should move the task in some
+			// list so we can do something with it.
+			list = ListMirakel.first();
+			// Bad things happened… Now we can throw our beloved exception
+			if (list == null)
+				throw new NoSuchListException();
+		}
 		cv.put(LIST_ID, list.getId());
 		cv.put(DatabaseHelper.NAME, name);
 		cv.put(CONTENT, content);

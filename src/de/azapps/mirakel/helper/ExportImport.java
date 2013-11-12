@@ -28,7 +28,11 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.SharedPreferences;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -47,6 +51,7 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.static_activities.SettingsActivity;
 import de.azapps.mirakelandroid.R;
 
 public class ExportImport {
@@ -373,6 +378,76 @@ public class ExportImport {
 			}
 		}
 		return true;
+	}
+
+	public static void handleImportAnyDo(final Activity activity) {
+		File dir = new File(Environment.getExternalStorageDirectory()
+				+ "/data/anydo/backups");
+		if (dir.isDirectory()) {
+			File lastBackup = null;
+			for (File f : dir.listFiles()) {
+				if (lastBackup == null) {
+					lastBackup = f;
+				} else if (f.getAbsolutePath().compareTo(
+						lastBackup.getAbsolutePath()) > 0) {
+					lastBackup = f;
+				}
+			}
+			final File backupFile = lastBackup;
+			new AlertDialog.Builder(activity)
+					.setTitle(activity.getString(R.string.import_any_do_click))
+					.setMessage(
+							activity.getString(R.string.any_do_this_file,
+									backupFile.getAbsolutePath()))
+					.setPositiveButton(activity.getString(android.R.string.ok),
+							new OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									importAnyDo(activity,
+											backupFile.getAbsolutePath());
+								}
+							})
+					.setNegativeButton(activity.getString(R.string.select_file),
+							new OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									Helpers.showFileChooser(
+											SettingsActivity.FILE_ANY_DO,
+											activity.getString(R.string.any_do_import_title),
+											activity);
+								}
+							}).show();
+		} else {
+			new AlertDialog.Builder(activity)
+					.setTitle(activity.getString(R.string.import_any_do_click))
+					.setMessage(activity.getString(R.string.any_do_how_to))
+					.setPositiveButton(activity.getString(android.R.string.ok),
+							new OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									handleImportAnyDo(activity);
+								}
+							})
+					.setNegativeButton(activity.getString(R.string.select_file),
+							new OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									Helpers.showFileChooser(
+											SettingsActivity.FILE_ANY_DO,
+											activity.getString(R.string.any_do_import_title),
+											activity);
+								}
+							}).show();
+			// TODO show dialog with tutorial
+		}
 	}
 
 	private static SparseIntArray taskMapping;

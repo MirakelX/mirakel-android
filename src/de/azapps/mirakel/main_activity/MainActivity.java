@@ -1356,4 +1356,7 @@ public class MainActivity extends ActionBarActivity implements
 			}
 		}.run();
 	}
+	public int getCurrentPosition() {
+		return currentPosition;
+	}
 }

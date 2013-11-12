@@ -857,9 +857,7 @@ public class PreferencesHelper {
 			anyDo.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 				@Override
 				public boolean onPreferenceClick(Preference preference) {
-					Helpers.showFileChooser(SettingsActivity.FILE_ANY_DO,
-							activity.getString(R.string.any_do_import_title),
-							activity);
+					ExportImport.handleImportAnyDo(activity);
 					return true;
 				}
 			});
