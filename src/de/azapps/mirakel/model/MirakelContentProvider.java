@@ -111,21 +111,27 @@ public class MirakelContentProvider extends ContentProvider {
 		} else {
 			boolean isList = true;
 			switch (uriMatcher.match(uri)) {
-			case LISTS:
 			case LIST_ID:
+				return database.delete(ListMirakel.TABLE, DatabaseHelper.ID
+						+ "=" + getId(uri), null);
+			case LISTS:
 				isList = true;
 				break;
 			case TASKS:
-			case TASK_ID:
 				isList = false;
+				break;
+			case TASK_ID:
+				return database.delete(Task.TABLE, DatabaseHelper.ID + "="
+						+ getId(uri), null);
 			default:
 				throw new IllegalArgumentException("Unsupported URI: " + uri);
 			}
 			String s = getIdsFromSelection(uri, selection, selectionArgs,
 					isList);
-			if(!s.equals("")){
-				return database.delete(isList?ListMirakel.TABLE:Task.TABLE, DatabaseHelper.ID+" IN ("+s+")", null);
-			}else{
+			if (!s.equals("")) {
+				return database.delete(isList ? ListMirakel.TABLE : Task.TABLE,
+						DatabaseHelper.ID + " IN (" + s + ")", null);
+			} else {
 				throw new RuntimeException("id not found");
 			}
 		}
@@ -133,8 +139,9 @@ public class MirakelContentProvider extends ContentProvider {
 
 	private String getIdsFromSelection(Uri uri, String selection,
 			String[] selectionArgs, boolean isList) {
-		Cursor c = query(uri, new String[] { isList ? TaskLists._ID
-				: Tasks._ID }, selection, selectionArgs, null);
+		Cursor c = query(uri,
+				new String[] { isList ? TaskLists._ID : Tasks._ID }, selection,
+				selectionArgs, null);
 		String s = "";
 		if (c.getCount() > 0) {
 			while (!c.isAfterLast()) {
@@ -561,7 +568,31 @@ public class MirakelContentProvider extends ContentProvider {
 	@Override
 	public int update(Uri uri, ContentValues values, String selection,
 			String[] selectionArgs) {
-		return 0;
+		ContentValues newValues = convertValues(values,
+				isCallerSyncAdapter(uri));
+		boolean isList;
+		switch (uriMatcher.match(uri)) {
+		case TASKS:
+			isList = false;
+			break;
+		case TASK_ID:
+			return database.update(Task.TABLE, newValues, DatabaseHelper.ID
+					+ "=" + getId(uri), null);
+		case LIST_ID:
+			return database.update(ListMirakel.TABLE, newValues,
+					DatabaseHelper.ID + "=" + getId(uri), null);
+		case LISTS:
+			isList = true;
+		default:
+			throw new IllegalArgumentException("Unsupported URI: " + uri);
+		}
+		String s = getIdsFromSelection(uri, selection, selectionArgs, isList);
+		if (!s.equals("")) {
+			return database.update(isList ? ListMirakel.TABLE : Task.TABLE,
+					newValues, DatabaseHelper.ID + " IN(" + s + ")", null);
+		} else {
+			throw new RuntimeException("id not found");
+		}
 	}
 
 }
