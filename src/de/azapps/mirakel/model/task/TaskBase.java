@@ -34,12 +34,25 @@ import com.google.gson.reflect.TypeToken;
 
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.DateTimeHelper;
+import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.recurring.Recurring;
+import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 
 class TaskBase {
+	public static final String PRIORITY = "priority";
+	public static final String CONTENT = "content";
+	public static final String DUE = "due";
+	public static final String DONE = "done";
+	public static final String UUID = "uuid";
+	public static final String LIST_ID = "list_id";
+	public static final String REMINDER = "reminder";
+	public static final String RECURRING = "recurring";
+	public static final String RECURRING_REMINDER = "recurring_reminder";
+	public static final String ADDITIONAL_ENTRIES = "additional_entries";
+
 	@SuppressWarnings("unused")
 	private static final String TAG = "TaskBase";
 	private long id = 0;
@@ -107,25 +120,27 @@ class TaskBase {
 		Recurring r = Recurring.get(recurrence);
 		return r;
 	}
+
 	public int getRecurrenceId() {
 		return recurrence;
 	}
 
 	public void setRecurrence(int recurring) {
 		this.recurrence = recurring;
-		edited.put("recurring", true);
+		edited.put(RECURRING, true);
 	}
 
 	public Recurring getRecurrenceReminder() {
 		return Recurring.get(recurrence_reminder);
 	}
+
 	public int getRecurrenceReminderId() {
 		return recurrence_reminder;
 	}
 
 	public void setRecurrenceReminder(int recurring) {
 		this.recurrence_reminder = recurring;
-		edited.put("recurring_reminder", true);
+		edited.put(RECURRING_REMINDER, true);
 	}
 
 	public long getId() {
@@ -134,7 +149,7 @@ class TaskBase {
 
 	public void setId(long id) {
 		this.id = id;
-		edited.put("id", true);
+		edited.put(DatabaseHelper.ID, true);
 	}
 
 	public String getUUID() {
@@ -143,7 +158,7 @@ class TaskBase {
 
 	public void setUUID(String uuid) {
 		this.uuid = uuid;
-		edited.put("uuid", true);
+		edited.put(UUID, true);
 	}
 
 	public ListMirakel getList() {
@@ -152,7 +167,7 @@ class TaskBase {
 
 	public void setList(ListMirakel list) {
 		this.list = list;
-		edited.put("list", true);
+		edited.put(LIST_ID, true);
 	}
 
 	public String getName() {
@@ -161,7 +176,7 @@ class TaskBase {
 
 	public void setName(String name) {
 		this.name = name;
-		edited.put("name", true);
+		edited.put(DatabaseHelper.NAME, true);
 	}
 
 	public String getContent() {
@@ -179,7 +194,7 @@ class TaskBase {
 		} else {
 			this.content = null;
 		}
-		edited.put("content", true);
+		edited.put(CONTENT, true);
 	}
 
 	public boolean isDone() {
@@ -188,7 +203,7 @@ class TaskBase {
 
 	public void setDone(boolean done) {
 		this.done = done;
-		edited.put("done", true);
+		edited.put(DONE, true);
 		if (done && recurrence != -1 && due != null) {
 			due = getRecurring().addRecurring(due);
 			if (reminder != null) {
@@ -210,7 +225,7 @@ class TaskBase {
 
 	public void setDue(Calendar due) {
 		this.due = due;
-		edited.put("due", true);
+		edited.put(DUE, true);
 		if (due == null) {
 			setRecurrence(-1);
 		}
@@ -222,7 +237,7 @@ class TaskBase {
 
 	public void setReminder(Calendar reminder) {
 		this.reminder = reminder;
-		edited.put("reminder", true);
+		edited.put(REMINDER, true);
 		if (reminder == null) {
 			setRecurrenceReminder(-1);
 		}
@@ -234,7 +249,7 @@ class TaskBase {
 
 	public void setPriority(int priority) {
 		this.priority = priority;
-		edited.put("priority", true);
+		edited.put(PRIORITY, true);
 	}
 
 	public Calendar getCreatedAt() {
@@ -339,33 +354,40 @@ class TaskBase {
 
 	public ContentValues getContentValues() throws NoSuchListException {
 		ContentValues cv = new ContentValues();
-		cv.put("_id", id);
-		cv.put("uuid", uuid);
-		if (list == null)
-			throw new NoSuchListException();
-		cv.put("list_id", list.getId());
-		cv.put("name", name);
-		cv.put("content", content);
-		cv.put("done", done);
+		cv.put(DatabaseHelper.ID, id);
+		cv.put(UUID, uuid);
+		if (list == null) {
+			// If the list of the task vanished, we should move the task in some
+			// list so we can do something with it.
+			list = ListMirakel.first();
+			// Bad things happened… Now we can throw our beloved exception
+			if (list == null)
+				throw new NoSuchListException();
+		}
+		cv.put(LIST_ID, list.getId());
+
+		cv.put(DatabaseHelper.NAME, name);
+		cv.put(CONTENT, content);
+		cv.put(DONE, done);
 		String due = (this.due == null ? null : DateTimeHelper
 				.formatDate(getDue()));
-		cv.put("due", due);
+		cv.put(DUE, due);
 		String reminder = null;
 		if (this.reminder != null)
 			reminder = DateTimeHelper.formatDateTime(this.reminder);
-		cv.put("reminder", reminder);
-		cv.put("priority", priority);
+		cv.put(REMINDER, reminder);
+		cv.put(PRIORITY, priority);
 		String createdAt = null;
 		if (this.createdAt != null)
 			createdAt = DateTimeHelper.formatDateTime(this.createdAt);
-		cv.put("created_at", createdAt);
+		cv.put(DatabaseHelper.CREATED_AT, createdAt);
 		String updatedAt = null;
 		if (this.updatedAt != null)
 			updatedAt = DateTimeHelper.formatDateTime(this.updatedAt);
-		cv.put("updated_at", updatedAt);
-		cv.put("sync_state", sync_state.toInt());
-		cv.put("recurring", recurrence);
-		cv.put("recurring_reminder", recurrence_reminder);
+		cv.put(DatabaseHelper.UPDATED_AT, updatedAt);
+		cv.put(SyncAdapter.SYNC_STATE, sync_state.toInt());
+		cv.put(RECURRING, recurrence);
+		cv.put(RECURRING_REMINDER, recurrence_reminder);
 
 		Gson gson = new GsonBuilder().create();
 		String additionalEntries = gson.toJson(this.additionalEntries);

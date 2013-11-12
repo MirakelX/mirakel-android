@@ -28,7 +28,11 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.SharedPreferences;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -47,6 +51,7 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.static_activities.SettingsActivity;
 import de.azapps.mirakelandroid.R;
 
 public class ExportImport {
@@ -161,15 +166,17 @@ public class ExportImport {
 					if (child != null && child.getAttributes() != null) {
 						String listname = child.getAttributes()
 								.getNamedItem("value").getTextContent();
-						list=ListMirakel.findByName(listname);
+						list = ListMirakel.findByName(listname);
 						if (list == null) {
 							list = ListMirakel.newList(listname);
 						}
 					} else {
 						if (settings.getBoolean("importDefaultList", false)) {
-							list = ListMirakel.getList(settings.getInt("defaultImportList",
-									SpecialList.firstSpecialSafe(context)
-											.getId()));
+							list = ListMirakel
+									.getList(settings.getInt(
+											"defaultImportList", SpecialList
+													.firstSpecialSafe(context)
+													.getId()));
 							if (list == null) {
 								list = SpecialList.firstSpecialSafe(context);
 							}
@@ -373,6 +380,76 @@ public class ExportImport {
 		return true;
 	}
 
+	public static void handleImportAnyDo(final Activity activity) {
+		File dir = new File(Environment.getExternalStorageDirectory()
+				+ "/data/anydo/backups");
+		if (dir.isDirectory()) {
+			File lastBackup = null;
+			for (File f : dir.listFiles()) {
+				if (lastBackup == null) {
+					lastBackup = f;
+				} else if (f.getAbsolutePath().compareTo(
+						lastBackup.getAbsolutePath()) > 0) {
+					lastBackup = f;
+				}
+			}
+			final File backupFile = lastBackup;
+			new AlertDialog.Builder(activity)
+					.setTitle(activity.getString(R.string.import_any_do_click))
+					.setMessage(
+							activity.getString(R.string.any_do_this_file,
+									backupFile.getAbsolutePath()))
+					.setPositiveButton(activity.getString(android.R.string.ok),
+							new OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									importAnyDo(activity,
+											backupFile.getAbsolutePath());
+								}
+							})
+					.setNegativeButton(activity.getString(R.string.select_file),
+							new OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									Helpers.showFileChooser(
+											SettingsActivity.FILE_ANY_DO,
+											activity.getString(R.string.any_do_import_title),
+											activity);
+								}
+							}).show();
+		} else {
+			new AlertDialog.Builder(activity)
+					.setTitle(activity.getString(R.string.import_any_do_click))
+					.setMessage(activity.getString(R.string.any_do_how_to))
+					.setPositiveButton(activity.getString(android.R.string.ok),
+							new OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									handleImportAnyDo(activity);
+								}
+							})
+					.setNegativeButton(activity.getString(R.string.select_file),
+							new OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									Helpers.showFileChooser(
+											SettingsActivity.FILE_ANY_DO,
+											activity.getString(R.string.any_do_import_title),
+											activity);
+								}
+							}).show();
+			// TODO show dialog with tutorial
+		}
+	}
+
 	private static SparseIntArray taskMapping;
 
 	private static List<Pair<Integer, String>> parseAnyDoTask(
@@ -385,7 +462,8 @@ public class ExportImport {
 			return contents;
 		}
 		int list_id = jsonTask.get("categoryId").getAsInt();
-		Task t = Task.newTask(name, ListMirakel.getList(listMapping.get(list_id)));
+		Task t = Task.newTask(name,
+				ListMirakel.getList(listMapping.get(list_id)));
 		taskMapping.put(jsonTask.get("id").getAsInt(), (int) t.getId());
 		if (jsonTask.has("dueDate")) {
 			Calendar due = new GregorianCalendar();
@@ -409,40 +487,40 @@ public class ExportImport {
 			String repeat = jsonTask.get("repeatMethod").getAsString();
 
 			if (!repeat.equals("TASK_REPEAT_OFF")) {
-				Recurring r=null;
+				Recurring r = null;
 				if (repeat.equals("TASK_REPEAT_DAY")) {
 					r = Recurring.get(1, 0, 0);
 					if (r == null) {
 						r = Recurring.newRecurring(
 								ctx.getString(R.string.daily), 0, 0, 1, 0, 0,
-								true, null, null,false);
+								true, null, null, false);
 					}
 				} else if (repeat.equals("TASK_REPEAT_WEEK")) {
 					r = Recurring.get(7, 0, 0);
 					if (r == null) {
 						r = Recurring.newRecurring(
 								ctx.getString(R.string.weekly), 0, 0, 7, 0, 0,
-								true, null, null,false);
+								true, null, null, false);
 					}
 				} else if (repeat.equals("TASK_REPEAT_MONTH")) {
 					r = Recurring.get(0, 1, 0);
 					if (r == null) {
 						r = Recurring.newRecurring(
 								ctx.getString(R.string.monthly), 0, 0, 0, 1, 0,
-								true, null, null,false);
+								true, null, null, false);
 					}
 				} else if (repeat.equals("TASK_REPEAT_YEAR")) {
 					r = Recurring.get(0, 0, 1);
 					if (r == null) {
 						r = Recurring.newRecurring(
 								ctx.getString(R.string.yearly), 0, 0, 0, 0, 1,
-								true, null, null,false);
+								true, null, null, false);
 					}
 				}
-				if(r!=null){
+				if (r != null) {
 					t.setRecurrence(r.getId());
-				}else{
-					Log.d(TAG,repeat);
+				} else {
+					Log.d(TAG, repeat);
 				}
 
 			}

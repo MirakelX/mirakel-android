@@ -180,7 +180,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				 * SYNC-Views Edit this if you want to implement a new Sync
 				 */
 				String syncTypeString = mType.getSelectedItem().toString();
-				Log.d(TAG,syncTypeString);
+				Log.d(TAG, syncTypeString);
 				syncType = SyncAdapter.getSyncType(syncTypeString);
 				mMessage.setText(syncTypeString);
 				ViewSwitcher switcher = (ViewSwitcher) findViewById(R.id.switcher_login);
@@ -242,16 +242,20 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 
 					@Override
 					public void onClick(View v) {
-						Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri
-								.parse("http://mirakel.azapps.de/users/sign_up"));
+						Intent browserIntent = new Intent(
+								Intent.ACTION_VIEW,
+								Uri.parse("http://mirakel.azapps.de/users/sign_up"));
 						startActivity(browserIntent);
-						/*http://mirakel.azapps.de/users/sign_up
-						Helpers.contact(a,"[Mirakel] Registration TW-Server","Hey Mirakel team,\n" +
-								"Please setup an account for me.\n" +
-								"My username: random (optional)\n" +
-								"My company: random (optional)\n\n" +
-								"Other things I want to say:\n\n" +
-								"Thanks,\n[A Mirakel user]");*/
+						/*
+						 * http://mirakel.azapps.de/users/sign_up
+						 * Helpers.contact(a,"[Mirakel] Registration TW-Server",
+						 * "Hey Mirakel team,\n" +
+						 * "Please setup an account for me.\n" +
+						 * "My username: random (optional)\n" +
+						 * "My company: random (optional)\n\n" +
+						 * "Other things I want to say:\n\n" +
+						 * "Thanks,\n[A Mirakel user]");
+						 */
 
 					}
 				});
@@ -407,8 +411,8 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 	private void finishTWLogin() throws FileNotFoundException {
 		// TODO add errorhandling
 		Log.d(TAG, config_file);
-		if(config_file==null)
-			return ;
+		if (config_file == null)
+			return;
 		File f = new File(config_file);
 		if (f.exists() && f.canRead()) {
 			byte[] buffer = new byte[(int) f.length()];// TODO remove cast

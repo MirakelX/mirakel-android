@@ -13,6 +13,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Looper;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
@@ -242,6 +243,7 @@ public class TaskWarriorSync {
 						server_task.create();
 					} catch (NoSuchListException e) {
 						Log.wtf(TAG, "List vanish");
+						Looper.prepare();
 						Toast.makeText(mContext, R.string.no_lists,
 								Toast.LENGTH_LONG).show();
 					}

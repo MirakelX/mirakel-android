@@ -54,7 +54,7 @@ public class DueDialog extends AlertDialog {
 	}
 
 	@SuppressLint("NewApi")
-	public DueDialog(Context context,final boolean minuteHour) {
+	public DueDialog(Context context, final boolean minuteHour) {
 		super(context);
 		ctx = context;
 		s = new String[100];

@@ -61,7 +61,6 @@ public class ListFragment extends Fragment {
 	protected EditText input;
 	private View view;
 	protected boolean EditName;
-	private boolean created = false;
 	private DragNDropListView listView;
 	private static final int LIST_COLOR = 0, LIST_RENAME = 1, LIST_DESTROY = 2,
 			LIST_SHARE = 3;
@@ -94,13 +93,13 @@ public class ListFragment extends Fragment {
 		view = inflater.inflate(R.layout.list_fragment, container, false);
 		if (PreferenceManager.getDefaultSharedPreferences(main).getBoolean(
 				"DarkTheme", false)) {
-			view.findViewById(R.id.lists_list).setBackgroundResource(android.R.drawable.screen_background_dark);
+			view.findViewById(R.id.lists_list).setBackgroundResource(
+					android.R.drawable.screen_background_dark);
 		} else {
 			view.findViewById(R.id.lists_list).setBackgroundColor(
 					getResources().getColor(android.R.color.background_light));
 		}
 		// Inflate the layout for this fragment
-		created = true;
 		update();
 		return view;
 	}
@@ -112,7 +111,7 @@ public class ListFragment extends Fragment {
 
 	@SuppressLint("NewApi")
 	public void update() {
-		if (!created)
+		if (view==null)
 			return;
 		final List<ListMirakel> values = ListMirakel.all();
 		main.updateLists();
@@ -379,8 +378,9 @@ public class ListFragment extends Fragment {
 									l.setName(input.getText().toString());
 								l.save(list != null);
 								update();
-								if(list==null){
-									listView.setSelection(listView.getAdapter().getCount() - 1);
+								if (list == null) {
+									listView.setSelection(listView.getAdapter()
+											.getCount() - 1);
 								}
 							}
 						})
@@ -394,7 +394,7 @@ public class ListFragment extends Fragment {
 		input.postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				if(getActivity()==null)
+				if (getActivity() == null)
 					return;
 				InputMethodManager keyboard = (InputMethodManager) getActivity()
 						.getSystemService(Context.INPUT_METHOD_SERVICE);

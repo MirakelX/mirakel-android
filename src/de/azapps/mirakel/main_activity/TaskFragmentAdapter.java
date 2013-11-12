@@ -205,7 +205,8 @@ public class TaskFragmentAdapter extends
 				action = new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						TaskDialogHelpers.handleSubtask(context, task, adapter,false);
+						TaskDialogHelpers.handleSubtask(context, task, adapter,
+								false);
 					}
 				};
 				break;
@@ -695,7 +696,8 @@ public class TaskFragmentAdapter extends
 					inactive_color));
 			editContent = false;// do not record Textchanges
 			holder.taskContentEdit.setText(taskEditText);
-			holder.taskContentEdit.setSelection(cursorPos == 0 ? taskEditText
+			holder.taskContentEdit.setSelection(cursorPos == 0
+					|| cursorPos > taskEditText.length() ? taskEditText
 					.length() : cursorPos);
 			Linkify.addLinks(holder.taskContentEdit, Linkify.WEB_URLS);
 			holder.taskContentEdit.requestFocus();
@@ -996,7 +998,7 @@ public class TaskFragmentAdapter extends
 								.setOnFocusChangeListener(null);
 					}
 					holder.switcher.showNext(); // or switcher.showPrevious();
-					CharSequence name=holder.taskName.getText();
+					CharSequence name = holder.taskName.getText();
 					holder.txt.setText(name);
 					holder.txt
 							.setOnFocusChangeListener(new OnFocusChangeListener() {

@@ -39,12 +39,15 @@ import de.azapps.mirakel.helper.DueDialog.VALUE;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.main_activity.TaskFragmentAdapter;
+import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.sync.SyncAdapter;
+import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 import de.azapps.mirakelandroid.R;
 
 public class TaskDialogHelpers {
@@ -189,8 +192,11 @@ public class TaskDialogHelpers {
 										int which) {
 									int minute = 0, hour = 0, day = 0, month = 0, year = 0;
 									int val = dueDialog.getValue();
-									if(val==0) {
-										Toast.makeText(context, context.getString(R.string.recurring_not_zero), Toast.LENGTH_LONG).show();
+									if (val == 0) {
+										Toast.makeText(
+												context,
+												context.getString(R.string.recurring_not_zero),
+												Toast.LENGTH_LONG).show();
 										return;
 									}
 									VALUE dayYear = dueDialog.getDayYear();
@@ -240,10 +246,12 @@ public class TaskDialogHelpers {
 											minute, hour, day, month, year,
 											isDue, startDate, null, true);
 									if (isDue) {
-										Recurring.destroyTemporary(task.getRecurrenceId());
+										Recurring.destroyTemporary(task
+												.getRecurrenceId());
 										task.setRecurrence(r.getId());
 									} else {
-										Recurring.destroyTemporary(task.getRecurrenceReminderId());
+										Recurring.destroyTemporary(task
+												.getRecurrenceReminderId());
 										task.setRecurrenceReminder(r.getId());
 									}
 									task.safeSave();
@@ -353,7 +361,8 @@ public class TaskDialogHelpers {
 		optionEnabled = false;
 		newTask = true;
 		listId = SpecialList.firstSpecialSafe(ctx).getId();
-		final EditText search = (EditText) v.findViewById(R.id.subtask_searchbox);
+		final EditText search = (EditText) v
+				.findViewById(R.id.subtask_searchbox);
 		search.addTextChangedListener(new TextWatcher() {
 
 			@Override
@@ -390,9 +399,9 @@ public class TaskDialogHelpers {
 					wrapper.setVisibility(View.GONE);
 				} else {
 					wrapper.setVisibility(View.VISIBLE);
-					InputMethodManager imm = (InputMethodManager) ctx.getSystemService(
-						      Context.INPUT_METHOD_SERVICE);
-						imm.hideSoftInputFromWindow(search.getWindowToken(), 0);
+					InputMethodManager imm = (InputMethodManager) ctx
+							.getSystemService(Context.INPUT_METHOD_SERVICE);
+					imm.hideSoftInputFromWindow(search.getWindowToken(), 0);
 				}
 				optionEnabled = !optionEnabled;
 
@@ -612,7 +621,7 @@ public class TaskDialogHelpers {
 					list = parent.getList();
 			}
 			Task t = Semantic.createTask(name, list,
-					settings.getBoolean("semanticNewTask", true),ctx);
+					settings.getBoolean("semanticNewTask", true), ctx);
 			try {
 				parent.addSubtask(t);
 			} catch (NoSuchListException e) {
@@ -635,19 +644,20 @@ public class TaskDialogHelpers {
 				+ " WHERE name LIKE '%" + searchString + "%' AND";
 		query += " NOT _id IN (SELECT parent_id from " + Task.SUBTASK_TABLE
 				+ " where child_id=" + t.getId() + ") AND ";
-		query += "NOT _id=" + t.getId();
+		query += "NOT "+DatabaseHelper.ID+"=" + t.getId();
+		query += " AND NOT "+SyncAdapter.SYNC_STATE+"="+SYNC_STATE.DELETE;
 		if (optionEnabled) {
 			if (!done) {
-				query += " and done=0";
+				query += " and "+Task.DONE+"=0";
 			}
 			if (content) {
-				query += " and content is not null and not content =''";
+				query += " and "+Task.CONTENT+" is not null and not "+Task.CONTENT+" =''";
 			}
 			if (reminder) {
-				query += " and reminder is not null";
+				query += " and "+Task.REMINDER+" is not null";
 			}
 			if (listId > 0) {
-				query += " and list_id=" + listId;
+				query += " and "+Task.LIST_ID+"=" + listId;
 			} else {
 				String where = ((SpecialList) ListMirakel.getList(listId))
 						.getWhereQuery(false);

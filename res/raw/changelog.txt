@@ -17,6 +17,10 @@
     </style>
   </head>
   <body>
+$ 2.1.2+x
+  % Beta version for the next release (2.1.2+x)
+  ! You are one of the happy people, who tests our betas. Have fun!
+    * Bugfixes
 $ 2.1.2
   % Version 2.1.2
   _ 2013-11-06

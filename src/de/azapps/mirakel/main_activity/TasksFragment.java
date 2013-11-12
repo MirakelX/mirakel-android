@@ -38,6 +38,8 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.TypedValue;
 import android.view.ActionMode;
 import android.view.KeyEvent;
@@ -118,18 +120,20 @@ public class TasksFragment extends Fragment {
 		main = (MainActivity) getActivity();
 		showDone = main.preferences.getBoolean("showDoneMain", true);
 		listId = main.getCurrentList().getId();
-		
+
 		if (Helpers.isTablet(main)) {
-			view = inflater.inflate(R.layout.tasks_fragment_tablet, container, false);
+			view = inflater.inflate(R.layout.tasks_fragment_tablet, container,
+					false);
 			TaskFragment t = new TaskFragment();
 			getChildFragmentManager().beginTransaction()
 					.add(R.id.task_fragment_in_tasks, t).commit();
 			main.setTaskFragment(t);
-		}else{
-			view = inflater.inflate(R.layout.tasks_fragment_phone, container, false);
+		} else {
+			view = inflater.inflate(R.layout.tasks_fragment_phone, container,
+					false);
 		}
 
-//		getResources().getString(R.string.action_settings);
+		// getResources().getString(R.string.action_settings);
 		try {
 			values = main.getCurrentList().tasks(showDone);
 		} catch (NullPointerException e) {
@@ -142,8 +146,9 @@ public class TasksFragment extends Fragment {
 		listView.setDescendantFocusability(ListView.FOCUS_AFTER_DESCENDANTS);
 		// Events
 		newTask = (EditText) view.findViewById(R.id.tasks_new);
-		if (main.isTablet)
+		if (main.isTablet) {
 			newTask.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
+		}
 		newTask.setOnEditorActionListener(new OnEditorActionListener() {
 			public boolean onEditorAction(TextView v, int actionId,
 					KeyEvent event) {
@@ -152,6 +157,29 @@ public class TasksFragment extends Fragment {
 					v.setText(null);
 				}
 				return false;
+			}
+		});
+		newTask.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				ImageButton send = (ImageButton) view
+						.findViewById(R.id.btnEnter);
+				if (s.length() > 0)
+					send.setVisibility(View.VISIBLE);
+				else
+					send.setVisibility(View.GONE);
+
 			}
 		});
 		ItemCount = 10;// TODO get this from somewhere
@@ -199,29 +227,34 @@ public class TasksFragment extends Fragment {
 		newTask.setOnFocusChangeListener(new OnFocusChangeListener() {
 			@Override
 			public void onFocusChange(final View v, final boolean hasFocus) {
+				if (main.getCurrentPosition() != MainActivity.TASKS_FRAGMENT)
+					return;
 				newTask.post(new Runnable() {
 					@Override
 					public void run() {
-						Log.d(TAG,"focus new "+hasFocus);
+						Log.d(TAG, "focus new " + hasFocus);
 						InputMethodManager imm = (InputMethodManager) getActivity()
 								.getSystemService(Context.INPUT_METHOD_SERVICE);
-						if(imm==null){
+						if (imm == null) {
 							Log.w(TAG, "Inputmanager==null");
 							return;
 						}
 						imm.restartInput(newTask);
-						if (request_focus&&hasFocus) {
+						if (request_focus && hasFocus) {
 
-							getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+							getActivity()
+									.getWindow()
+									.setSoftInputMode(
+											WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 							imm.showSoftInput(newTask,
 									InputMethodManager.SHOW_IMPLICIT);
 							getActivity()
 									.getWindow()
 									.setSoftInputMode(
 											WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-						} else if(!hasFocus){
+						} else if (!hasFocus) {
 							newTask.requestFocus();
-						}else if(!request_focus){
+						} else if (!request_focus) {
 							clearFocus();
 						}
 					}
@@ -234,24 +267,25 @@ public class TasksFragment extends Fragment {
 	public void clearFocus() {
 		if (newTask != null) {
 			newTask.postDelayed(new Runnable() {
-				
+
 				@Override
 				public void run() {
-					Log.d(TAG,"clear focus");
-					if(newTask==null)
+					Log.d(TAG, "clear focus");
+					if (newTask == null)
 						return;
 					newTask.setOnFocusChangeListener(null);
 					newTask.clearFocus();
-					if(getActivity()==null)
+					if (getActivity() == null)
 						return;
 
 					InputMethodManager imm = (InputMethodManager) getActivity()
 							.getSystemService(Context.INPUT_METHOD_SERVICE);
 					imm.hideSoftInputFromWindow(newTask.getWindowToken(), 0);
-					getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-					
+					getActivity().getWindow().setSoftInputMode(
+							WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
 				}
-			},10);
+			}, 10);
 		}
 	}
 
@@ -270,7 +304,8 @@ public class TasksFragment extends Fragment {
 		ListMirakel list = main.getCurrentList();
 		try {
 			Task task = Semantic.createTask(name, list,
-					main.preferences.getBoolean("semanticNewTask", true),getActivity());
+					main.preferences.getBoolean("semanticNewTask", true),
+					getActivity());
 
 			adapter.addToHead(task);
 			values.add(0, task);

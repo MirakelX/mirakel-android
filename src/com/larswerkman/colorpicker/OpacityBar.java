@@ -211,23 +211,24 @@ public class OpacityBar extends View {
 				(mBarPointerHaloRadius + (mBarThickness / 2)));
 
 		// Update variables that depend of mBarLength.
-		if(!isInEditMode()){
+		if (!isInEditMode()) {
 			shader = new LinearGradient(mBarPointerHaloRadius, 0,
-					(mBarLength + mBarPointerHaloRadius), mBarThickness, new int[] {
-							Color.HSVToColor(0x00, mHSVColor),
+					(mBarLength + mBarPointerHaloRadius), mBarThickness,
+					new int[] { Color.HSVToColor(0x00, mHSVColor),
 							Color.HSVToColor(0xFF, mHSVColor) }, null,
 					Shader.TileMode.CLAMP);
 		} else {
 			shader = new LinearGradient(mBarPointerHaloRadius, 0,
-					(mBarLength + mBarPointerHaloRadius), mBarThickness, new int[] {
-							0x0081ff00, 0xff81ff00 }, null, Shader.TileMode.CLAMP);
+					(mBarLength + mBarPointerHaloRadius), mBarThickness,
+					new int[] { 0x0081ff00, 0xff81ff00 }, null,
+					Shader.TileMode.CLAMP);
 			Color.colorToHSV(0xff81ff00, mHSVColor);
 		}
-		
+
 		mBarPaint.setShader(shader);
 		mPosToOpacFactor = 0xFF / ((float) mBarLength);
 		mOpacToPosFactor = ((float) mBarLength) / 0xFF;
-		if(!isInEditMode()){
+		if (!isInEditMode()) {
 			mBarPointerPosition = Math.round((mOpacToPosFactor * Color
 					.alpha(mColor))) + mBarPointerHaloRadius;
 		} else {
@@ -256,7 +257,7 @@ public class OpacityBar extends View {
 
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
-		    	mIsMovingPointer = true;
+			mIsMovingPointer = true;
 			// Check whether the user pressed on (or near) the pointer
 			if (x >= (mBarPointerHaloRadius)
 					&& x <= (mBarPointerHaloRadius + mBarLength)) {
@@ -366,23 +367,21 @@ public class OpacityBar extends View {
 	 * @param x
 	 *            X-Coordinate of the pointer.
 	 */
-        private void calculateColor(int x) {
-    		x = x - mBarPointerHaloRadius;
-    		if (x < 0) {
-    		    x = 0;
-    		} else if (x > mBarLength) {
-    		    x = mBarLength;
-    		}
+	private void calculateColor(int x) {
+		x = x - mBarPointerHaloRadius;
+		if (x < 0) {
+			x = 0;
+		} else if (x > mBarLength) {
+			x = mBarLength;
+		}
 
-    		mColor = Color.HSVToColor(
-    			Math.round(mPosToOpacFactor * x),
-    			mHSVColor);
-    		if (Color.alpha(mColor) > 250) {
-    		    mColor = Color.HSVToColor(mHSVColor);
-    		} else if (Color.alpha(mColor) < 5) {
-    		    mColor = Color.TRANSPARENT;
-    		}
-        }
+		mColor = Color.HSVToColor(Math.round(mPosToOpacFactor * x), mHSVColor);
+		if (Color.alpha(mColor) > 250) {
+			mColor = Color.HSVToColor(mHSVColor);
+		} else if (Color.alpha(mColor) < 5) {
+			mColor = Color.TRANSPARENT;
+		}
+	}
 
 	/**
 	 * Get the currently selected color.

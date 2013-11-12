@@ -34,29 +34,28 @@ public class MirakelArrayAdapter<T> extends ArrayAdapter<T> {
 	protected List<Boolean> selected;
 	protected int selectedCount;
 	protected boolean darkTheme;
-	
 
 	public MirakelArrayAdapter(Context context, int textViewResourceId,
 			List<T> data) {
-		super(context, textViewResourceId,textViewResourceId, data);
-		this.layoutResourceId=textViewResourceId;
-		this.data=data;
-		this.context=context;
-		this.darkTheme=PreferenceManager.getDefaultSharedPreferences(context)
+		super(context, textViewResourceId, textViewResourceId, data);
+		this.layoutResourceId = textViewResourceId;
+		this.data = data;
+		this.context = context;
+		this.darkTheme = PreferenceManager.getDefaultSharedPreferences(context)
 				.getBoolean("DarkTheme", false);
 		this.selected = new ArrayList<Boolean>();
 		for (int i = 0; i < data.size(); i++) {
 			this.selected.add(false);
 		}
 		this.selectedCount = 0;
-		
+
 	}
-	
+
 	@Override
 	public int getCount() {
 		return data.size();
 	}
-	
+
 	public void setSelected(int position, boolean selected) {
 		this.selected.set(position, selected);
 		selectedCount += (selected ? 1 : -1);
@@ -68,15 +67,15 @@ public class MirakelArrayAdapter<T> extends ArrayAdapter<T> {
 	}
 
 	public void resetSelected() {
-		Log.d(TAG,"reset selected");
-		selected=new ArrayList<Boolean>();
+		Log.d(TAG, "reset selected");
+		selected = new ArrayList<Boolean>();
 		for (int i = 0; i < data.size(); i++) {
 			selected.add(false);
 		}
 		notifyDataSetChanged();
-		selectedCount =0;
+		selectedCount = 0;
 	}
-	
+
 	public void changeData(List<T> newData) {
 		data.clear();
 		data.addAll(newData);
@@ -84,17 +83,15 @@ public class MirakelArrayAdapter<T> extends ArrayAdapter<T> {
 			selected.add(false);
 		}
 	}
-	
+
 	public List<T> getSelected() {
-		List<T> selected=new ArrayList<T>();
-		for(int i=0;i<data.size();i++){
-			if(this.selected.get(i))
-			{
+		List<T> selected = new ArrayList<T>();
+		for (int i = 0; i < data.size(); i++) {
+			if (this.selected.get(i)) {
 				selected.add(data.get(i));
 			}
 		}
 		return selected;
 	}
-	
 
 }

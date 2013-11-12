@@ -37,15 +37,16 @@ public class ColorPickerPref extends DialogPreference {
 	@SuppressLint("NewApi")
 	@Override
 	public View getView(View convertView, ViewGroup parent) {
-		if(Build.VERSION.SDK_INT<Build.VERSION_CODES.HONEYCOMB){
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
 			return new View(ctx);
 		}
 		View v = ((Activity) ctx).getLayoutInflater().inflate(
 				R.layout.color_pref, null);
-		/*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-			v.setBackground(ctx.getResources().getDrawable(
-					android.R.attr.selectableItemBackground));
-		}*/
+		/*
+		 * if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+		 * v.setBackground(ctx.getResources().getDrawable(
+		 * android.R.attr.selectableItemBackground)); }
+		 */
 		colorBox = v.findViewById(R.id.color_box);
 		colorBox.setBackgroundColor(COLOR);
 		((TextView) v.findViewById(android.R.id.title)).setText(getTitle());

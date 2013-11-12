@@ -34,6 +34,7 @@ import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 import de.azapps.mirakelandroid.R;
 
@@ -42,6 +43,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private static final String TAG = "DatabaseHelper";
 	private Context context;
 	public static final int DATABASE_VERSION = 24;
+	
+	public static final String ID="_id";
+	public static final String CREATED_AT="created_at";
+	public static final String UPDATED_AT="updated_at";
+	public static final String NAME="name";
 
 	public DatabaseHelper(Context ctx) {
 		super(ctx, "mirakel.db", null, DATABASE_VERSION);
@@ -53,17 +59,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		Log.d(TAG, "onCreate");
 
 		db.execSQL("CREATE TABLE " + ListMirakel.TABLE + " ("
-				+ "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
-				+ "name TEXT NOT NULL, "
-				+ "sort_by INTEGER NOT NULL DEFAULT 0, "
-				+ "created_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
-				+ "updated_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
-				+ "sync_state INTEGER DEFAULT " + SYNC_STATE.ADD + ", "
-				+ "lft INTEGER, " + "rgt INTEGER " + ")");
+				+ ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
+				+ NAME+" TEXT NOT NULL, "
+				+ ListMirakel.SORT_BY+" INTEGER NOT NULL DEFAULT 0, "
+				+ CREATED_AT+" INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
+				+ UPDATED_AT+" INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
+				+ SyncAdapter.SYNC_STATE+" INTEGER DEFAULT " + SYNC_STATE.ADD + ", "
+				+ ListMirakel.LFT+" INTEGER, " + ListMirakel.RGT+" INTEGER " + ")");
 		createTasksTableString(db);
-		db.execSQL("INSERT INTO lists (name,lft,rgt) VALUES ('"
+		db.execSQL("INSERT INTO " + ListMirakel.TABLE + " ("+NAME+","+ListMirakel.LFT+","+ListMirakel.RGT+") VALUES ('"
 				+ context.getString(R.string.inbox) + "',0,1)");
-		db.execSQL("INSERT INTO tasks (list_id,name) VALUES (1,'"
+		db.execSQL("INSERT INTO "+Task.TABLE+" ("+Task.LIST_ID+","+DatabaseHelper.NAME+") VALUES (1,'"
 				+ context.getString(R.string.first_task) + "')");
 		createSpecialListsTable(db);
 		onUpgrade(db, 7, DATABASE_VERSION);
@@ -81,17 +87,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			// Add sync-state
 			;
 			db.execSQL("Alter Table " + Task.TABLE
-					+ " add column sync_state INTEGER DEFAULT "
+					+ " add column "+SyncAdapter.SYNC_STATE+" INTEGER DEFAULT "
 					+ SYNC_STATE.ADD + ";");
 			db.execSQL("Alter Table " + ListMirakel.TABLE
-					+ " add column sync_state INTEGER DEFAULT "
+					+ " add column "+SyncAdapter.SYNC_STATE+" INTEGER DEFAULT "
 					+ SYNC_STATE.ADD + ";");
 			db.execSQL("CREATE TABLE settings ("
-					+ "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
+					+ ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
 					+ "server TEXT NOT NULL," + "user TEXT NOT NULL,"
 					+ "password TEXT NOT NULL" + ")");
 
-			db.execSQL("INSERT INTO settings (_id,server,user,password)VALUES ('0','localhost','','')");
+			db.execSQL("INSERT INTO settings ("+ID+",server,user,password)VALUES ('0','localhost','','')");
 		case 3:
 			// Add lft,rgt to lists
 			// Set due to null, instate of 1970 in Tasks
@@ -99,17 +105,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			// drop settingssettings
 
 			db.execSQL("UPDATE " + Task.TABLE
-					+ " set due='null' where due='1970-01-01'");
+					+ " set "+Task.DUE+"='null' where "+Task.DUE+"='1970-01-01'");
 			String newDate = new SimpleDateFormat(
 					context.getString(R.string.dateTimeFormat), Locale.US)
 					.format(new Date());
-			db.execSQL("UPDATE " + Task.TABLE + " set created_at='" + newDate
+			db.execSQL("UPDATE " + Task.TABLE + " set "+CREATED_AT+"='" + newDate
 					+ "'");
-			db.execSQL("UPDATE " + Task.TABLE + " set updated_at='" + newDate
+			db.execSQL("UPDATE " + Task.TABLE + " set "+UPDATED_AT+"='" + newDate
 					+ "'");
-			db.execSQL("UPDATE " + ListMirakel.TABLE + " set created_at='"
+			db.execSQL("UPDATE " + ListMirakel.TABLE + " set "+CREATED_AT+"='"
 					+ newDate + "'");
-			db.execSQL("UPDATE " + ListMirakel.TABLE + " set updated_at='"
+			db.execSQL("UPDATE " + ListMirakel.TABLE + " set "+UPDATED_AT+"='"
 					+ newDate + "'");
 			db.execSQL("Drop TABLE IF EXISTS settings");
 		case 4:
@@ -117,71 +123,84 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			 * Remove NOT NULL from Task-Table
 			 */
 
-			db.execSQL("ALTER TABLE tasks RENAME TO tmp_tasks;");
+			db.execSQL("ALTER TABLE "+Task.TABLE+" RENAME TO tmp_tasks;");
 			createTasksTableString(db);
-			db.execSQL("INSERT INTO tasks (_id, list_id, name,done,priority,due,created_at,updated_at,sync_state) "
-					+ "SELECT _id, list_id, name,done,priority,due,created_at,updated_at,sync_state "
+			String cols = ID + ", " + Task.LIST_ID + ", " + NAME
+					+ ", " + Task.DONE + "," + Task.PRIORITY + "," + Task.DUE
+					+ "," + CREATED_AT + "," + UPDATED_AT + ","
+					+ SyncAdapter.SYNC_STATE;
+			db.execSQL("INSERT INTO "+Task.TABLE+" (" + cols + ") " + cols
 					+ "FROM tmp_tasks;");
 			db.execSQL("DROP TABLE tmp_tasks");
-			db.execSQL("UPDATE tasks set due=null where due='' OR due='null'");
+			db.execSQL("UPDATE "
+					+ Task.TABLE+" set "+Task.DUE+"=null where "+Task.DUE+"='' OR "+Task.DUE+"='null'");
 			/*
 			 * Update Task-Table
 			 */
 			db.execSQL("Alter Table " + ListMirakel.TABLE
-					+ " add column lft INTEGER;");
+					+ " add column "+ListMirakel.LFT+" INTEGER;");
 			db.execSQL("Alter Table " + ListMirakel.TABLE
-					+ " add column rgt INTEGER;");
+					+ " add column "+ListMirakel.RGT+" INTEGER;");
 		case 5:
 			createSpecialListsTable(db);
-			db.execSQL("update lists set lft=(select count(*) from (select * from lists) as a where a._id<lists._id)*2 +1;");
-			db.execSQL("update lists set rgt=lft+1;");
+			db.execSQL("update " + ListMirakel.TABLE + " set "
+					+ ListMirakel.LFT
+					+ "=(select count(*) from (select * from "
+					+ ListMirakel.TABLE + ") as a where a." + ID + "<"
+					+ ListMirakel.TABLE + "." + ID + ")*2 +1;");
+			db.execSQL("update " + ListMirakel.TABLE + " set "
+					+ ListMirakel.RGT + "=" + ListMirakel.LFT + "+1;");
 		case 6:
 			/*
 			 * Remove NOT NULL
 			 */
-			db.execSQL("ALTER TABLE tasks RENAME TO tmp_tasks;");
+			db.execSQL("ALTER TABLE "+Task.TABLE+" RENAME TO tmp_tasks;");
 			createTasksTableString(db);
-			db.execSQL("INSERT INTO tasks (_id, list_id, name,done,priority,due,created_at,updated_at,sync_state) "
-					+ "SELECT _id, list_id, name,done,priority,due,created_at,updated_at,sync_state "
+			cols = ID + ", " + Task.LIST_ID + ", " + NAME
+					+ ", " + Task.DONE + "," + Task.PRIORITY + "," + Task.DUE
+					+ "," + CREATED_AT + "," + UPDATED_AT + ","
+					+ SyncAdapter.SYNC_STATE;
+			db.execSQL("INSERT INTO "+Task.TABLE+" ("+cols+") "
+					+ "SELECT "+cols
 					+ "FROM tmp_tasks;");
 			db.execSQL("DROP TABLE tmp_tasks");
-			db.execSQL("UPDATE tasks set due=null where due=''");
+			db.execSQL("UPDATE "+Task.TABLE+" set "+Task.DUE+"=null where "+Task.DUE+"=''");
 		case 7:
 			/*
 			 * Add default list and default date for SpecialLists
 			 */
 			db.execSQL("Alter Table " + SpecialList.TABLE
-					+ " add column def_list INTEGER;");
+					+ " add column "+SpecialList.DEFAULT_LIST+" INTEGER;");
 			db.execSQL("Alter Table " + SpecialList.TABLE
-					+ " add column def_date INTEGER;");
+					+ " add column "+SpecialList.DEFAULT_DUE+" INTEGER;");
 		case 8:
 			/*
 			 * Add reminders for Tasks
 			 */
 			db.execSQL("Alter Table " + Task.TABLE
-					+ " add column reminder INTEGER;");
+					+ " add column "+Task.REMINDER+" INTEGER;");
 		case 9:
 			/*
 			 * Update Special Lists Table
 			 */
-			db.execSQL("UPDATE special_lists SET def_date=0 where _id=2 and def_date=null");
-			db.execSQL("UPDATE special_lists SET def_date=7 where _id=3 and def_date=null");
-			db.execSQL("UPDATE special_lists SET def_date=-1, active=0 where _id=4 and def_date=null");
+			db.execSQL("UPDATE special_lists SET "+SpecialList.DEFAULT_DUE+"=0 where "+ID+"=2 and "+SpecialList.DEFAULT_DUE+"=null");
+			db.execSQL("UPDATE special_lists SET "+SpecialList.DEFAULT_DUE+"=7 where "+ID+"=3 and "+SpecialList.DEFAULT_DUE+"=null");
+			db.execSQL("UPDATE special_lists SET "+SpecialList.DEFAULT_DUE+"=-1, "+SpecialList.ACTIVE+"=0 where "+ID+"=4 and "+SpecialList.DEFAULT_DUE+"=null");
 		case 10:
 			/*
 			 * Add UUID to Task
 			 */
 			db.execSQL("Alter Table " + Task.TABLE
-					+ " add column uuid TEXT NOT NULL DEFAULT '';");
+					+ " add column "+Task.UUID+" TEXT NOT NULL DEFAULT '';");
 			MainActivity.updateTasksUUID = true;
 			// Don't remove this version-gap
 		case 13:
 			db.execSQL("Alter Table "
 					+ Task.TABLE
-					+ " add column additional_entries TEXT NOT NULL DEFAULT '';");
+					+ " add column "+Task.ADDITIONAL_ENTRIES+" TEXT NOT NULL DEFAULT '';");
 		case 14:// Add Sematic
 			db.execSQL("CREATE TABLE " + Semantic.TABLE + " ("
-					+ "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
+					+ ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
 					+ "condition TEXT NOT NULL, " + "due INTEGER, "
 					+ "priority INTEGER, " + "list INTEGER);");
 			db.execSQL("INSERT INTO semantic_conditions (condition,due) VALUES "
@@ -193,44 +212,44 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ "\",1);");
 		case 15:// Add Color
 			db.execSQL("Alter Table " + ListMirakel.TABLE
-					+ " add column color INTEGER;");
+					+ " add column "+ListMirakel.COLOR+" INTEGER;");
 			db.execSQL("Alter Table " + SpecialList.TABLE
-					+ " add column color INTEGER;");
+					+ " add column "+ListMirakel.COLOR+" INTEGER;");
 		case 16:// Add File
 			db.execSQL("CREATE TABLE " + FileMirakel.TABLE + " ("
-					+ "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
-					+ "task_id INTEGER NOT NULL DEFAULT 0, " + "name TEXT, "
+					+ ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
+					+ "task"+ID+" INTEGER NOT NULL DEFAULT 0, " + "name TEXT, "
 					+ "path TEXT" + ")");
 		case 17:// Add Subtask
 			db.execSQL("CREATE TABLE " + Task.SUBTASK_TABLE + " ("
-					+ "_id INTEGER PRIMARY KEY AUTOINCREMENT,"
-					+ "parent_id INTEGER REFERENCES " + Task.TABLE
-					+ " (_id) ON DELETE CASCADE ON UPDATE CASCADE,"
-					+ "child_id INTEGER REFERENCES " + Task.TABLE
-					+ " (_id) ON DELETE CASCADE ON UPDATE CASCADE);");
+					+ ID+" INTEGER PRIMARY KEY AUTOINCREMENT,"
+					+ "parent"+ID+" INTEGER REFERENCES " + Task.TABLE
+					+ " ("+ID+") ON DELETE CASCADE ON UPDATE CASCADE,"
+					+ "child"+ID+" INTEGER REFERENCES " + Task.TABLE
+					+ " ("+ID+") ON DELETE CASCADE ON UPDATE CASCADE);");
 		case 18:// Modify Semantic
 			db.execSQL("ALTER TABLE " + Semantic.TABLE
-					+ " add column default_list_id INTEGER");
+					+ " add column default_list"+ID+" INTEGER");
 			db.execSQL("update semantic_conditions SET condition=LOWER(condition);");
 		case 19:// Make Specialist sortable
 			db.execSQL("ALTER TABLE " + SpecialList.TABLE
-					+ " add column  lft INTEGER;");
+					+ " add column  "+ListMirakel.LFT+" INTEGER;");
 			db.execSQL("ALTER TABLE " + SpecialList.TABLE
-					+ " add column  rgt INTEGER ;");
+					+ " add column  "+ListMirakel.RGT+" INTEGER ;");
 			db.execSQL("update " + SpecialList.TABLE
-					+ " set lft=(select count(*) from (select * from "
-					+ SpecialList.TABLE + ") as a where a._id<"
-					+ SpecialList.TABLE + "._id)*2 +1;");
-			db.execSQL("update " + SpecialList.TABLE + " set rgt=lft+1;");
+					+ " set "+ListMirakel.LFT+"=(select count(*) from (select * from "
+					+ SpecialList.TABLE + ") as a where a."+ID+"<"
+					+ SpecialList.TABLE + "."+ID+")*2 +1;");
+			db.execSQL("update " + SpecialList.TABLE + " set "+ListMirakel.RGT+"="+ListMirakel.LFT+"+1;");
 		case 20:// Add Recurring
 			db.execSQL("CREATE TABLE " + Recurring.TABLE
-					+ " (_id INTEGER PRIMARY KEY AUTOINCREMENT,"
+					+ " ("+ID+" INTEGER PRIMARY KEY AUTOINCREMENT,"
 					+ "years INTEGER DEFAULT 0," + "months INTEGER DEFAULT 0,"
 					+ "days INTEGER DEFAULT 0," + "hours INTEGER DEFAULT 0,"
 					+ "minutes INTEGER DEFAULT 0,"
 					+ "for_due INTEGER DEFAULT 0," + "label STRING);");
 			db.execSQL("ALTER TABLE " + Task.TABLE
-					+ " add column recurring INTEGER DEFAULT '-1';");
+					+ " add column "+Task.RECURRING+" INTEGER DEFAULT '-1';");
 			db.execSQL("INSERT INTO " + Recurring.TABLE
 					+ "(days,label,for_due) VALUES (1,'"
 					+ context.getString(R.string.daily) + "',1);");
@@ -257,7 +276,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ context.getString(R.string.minutly) + "',0);");
 		case 21:
 			db.execSQL("ALTER TABLE " + Task.TABLE
-					+ " add column recurring_reminder INTEGER DEFAULT '-1';");
+					+ " add column "+Task.RECURRING_REMINDER+" INTEGER DEFAULT '-1';");
 		case 22:
 			db.execSQL("ALTER TABLE " + Recurring.TABLE
 					+ " add column start_date String;");
@@ -273,45 +292,45 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.execSQL("CREATE TABLE "
 				+ Task.TABLE
 				+ " ("
-				+ "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
-				+ "list_id INTEGER REFERENCES lists (_id) ON DELETE CASCADE ON UPDATE CASCADE, "
-				+ "name TEXT NOT NULL, " + "content TEXT, "
-				+ "done INTEGER NOT NULL DEFAULT 0, "
-				+ "priority INTEGER NOT NULL DEFAULT 0, " + "due STRING, "
-				+ "created_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
-				+ "updated_at INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
-				+ "sync_state INTEGER DEFAULT " + SYNC_STATE.ADD + ")");
+				+ ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
+				+ Task.LIST_ID+" INTEGER REFERENCES lists ("+ID+") ON DELETE CASCADE ON UPDATE CASCADE, "
+				+ NAME+" TEXT NOT NULL, " + "content TEXT, "
+				+ Task.DONE+" INTEGER NOT NULL DEFAULT 0, "
+				+ Task.PRIORITY+" INTEGER NOT NULL DEFAULT 0, " + "due STRING, "
+				+ CREATED_AT+" INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
+				+ UPDATED_AT+" INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
+				+ SyncAdapter.SYNC_STATE+" INTEGER DEFAULT " + SYNC_STATE.ADD + ")");
 	}
 
 	private void createSpecialListsTable(SQLiteDatabase db) {
 		db.execSQL("CREATE TABLE " + SpecialList.TABLE + " ("
-				+ "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
-				+ "name TEXT NOT NULL, "
-				+ "active INTEGER NOT NULL DEFAULT 0, "
-				+ "whereQuery STRING NOT NULL DEFAULT '', "
-				+ "sort_by INTEGER NOT NULL DEFAULT " + ListMirakel.SORT_BY_OPT
-				+ ", " + "sync_state INTEGER DEFAULT " + SYNC_STATE.ADD + ")");
+				+ ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
+				+ NAME+" TEXT NOT NULL, "
+				+ SpecialList.ACTIVE+" INTEGER NOT NULL DEFAULT 0, "
+				+ SpecialList.WHERE_QUERY+" STRING NOT NULL DEFAULT '', "
+				+ ListMirakel.SORT_BY+" INTEGER NOT NULL DEFAULT " + ListMirakel.SORT_BY_OPT
+				+ ", " + SyncAdapter.SYNC_STATE+" INTEGER DEFAULT " + SYNC_STATE.ADD + ")");
 		db.execSQL("INSERT INTO " + SpecialList.TABLE
-				+ " (name,active,whereQuery) VALUES (" + "'"
+				+ " ("+NAME+","+SpecialList.ACTIVE+","+SpecialList.WHERE_QUERY+") VALUES (" + "'"
 				+ context.getString(R.string.list_all) + "',1,'')");
 		db.execSQL("INSERT INTO "
 				+ SpecialList.TABLE
-				+ " (name,active,whereQuery) VALUES ("
+				+ " ("+NAME+","+SpecialList.ACTIVE+","+SpecialList.WHERE_QUERY+") VALUES ("
 				+ "'"
 				+ context.getString(R.string.list_today)
-				+ "',1,'due not null and done=0 and date(due)<=date(\"now\",\"localtime\")')");
+				+ "',1,'"+Task.DUE+" not null and "+Task.DONE+"=0 and date("+Task.DUE+")<=date(\"now\",\"localtime\")')");
 		db.execSQL("INSERT INTO "
 				+ SpecialList.TABLE
-				+ " (name,active,whereQuery) VALUES ("
+				+ " ("+NAME+","+SpecialList.ACTIVE+","+SpecialList.WHERE_QUERY+") VALUES ("
 				+ "'"
 				+ context.getString(R.string.list_week)
-				+ "',1,'due not null and done=0 and date(due)<=date(\"now\",\"+7 day\",\"localtime\")')");
+				+ "',1,'"+Task.DUE+" not null and "+Task.DONE+"=0 and date("+Task.DUE+")<=date(\"now\",\"+7 day\",\"localtime\")')");
 		db.execSQL("INSERT INTO "
 				+ SpecialList.TABLE
-				+ " (name,active,whereQuery) VALUES ("
+				+ " ("+NAME+","+SpecialList.ACTIVE+","+SpecialList.WHERE_QUERY+") VALUES ("
 				+ "'"
 				+ context.getString(R.string.list_overdue)
-				+ "',1,'due not null and done=0 and date(due)<=date(\"now\",\"-1 day\",\"localtime\")')");
+				+ "',1,'"+Task.DUE+" not null and "+Task.DONE+"=0 and date("+Task.DUE+")<=date(\"now\",\"-1 day\",\"localtime\")')");
 	}
 
 }

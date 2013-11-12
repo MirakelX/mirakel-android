@@ -155,7 +155,7 @@ public class SemanticsSettingsActivity extends ListSettings {
 					finish();
 				else {
 					try {
-						if(getHeader().size()>0)
+						if (getHeader().size() > 0)
 							onHeaderClick(getHeader().get(0), 0);
 						invalidateHeaders();
 					} catch (Exception e) {
@@ -166,8 +166,8 @@ public class SemanticsSettingsActivity extends ListSettings {
 			}
 		};
 	}
-	
-	public void setSemantic(Semantic s){
-		semantic=s;
+
+	public void setSemantic(Semantic s) {
+		semantic = s;
 	}
 }

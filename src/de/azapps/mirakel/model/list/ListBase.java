@@ -20,9 +20,16 @@
 package de.azapps.mirakel.model.list;
 
 import android.content.ContentValues;
+import de.azapps.mirakel.model.DatabaseHelper;
+import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 
 class ListBase {
+	//db-columns
+	public final static String LFT="lft";
+	public final static String RGT="rgt";
+	public final static String COLOR="color";
+	public final static String SORT_BY="sort_by";
 
 	private int id;
 	private String name;
@@ -37,7 +44,8 @@ class ListBase {
 	}
 
 	ListBase(int id, String name, short sort_by, String created_at,
-			String updated_at, SYNC_STATE sync_state, int lft, int rgt, int color) {
+			String updated_at, SYNC_STATE sync_state, int lft, int rgt,
+			int color) {
 		this.setId(id);
 		this.setCreatedAt(created_at);
 		this.setName(name);
@@ -125,15 +133,15 @@ class ListBase {
 
 	public ContentValues getContentValues() {
 		ContentValues cv = new ContentValues();
-		cv.put("_id", id);
-		cv.put("name", name);
-		cv.put("created_at", created_at);
-		cv.put("updated_at", updated_at);
-		cv.put("sort_by", sortBy);
-		cv.put("sync_state", syncState.toInt());
-		cv.put("lft", lft);
-		cv.put("rgt", rgt);
-		cv.put("color", color);
+		cv.put(DatabaseHelper.ID, id);
+		cv.put(DatabaseHelper.NAME, name);
+		cv.put(DatabaseHelper.CREATED_AT, created_at);
+		cv.put(DatabaseHelper.UPDATED_AT, updated_at);
+		cv.put(SORT_BY, sortBy);
+		cv.put(SyncAdapter.SYNC_STATE, syncState.toInt());
+		cv.put(LFT, lft);
+		cv.put(RGT, rgt);
+		cv.put(COLOR, color);
 		return cv;
 	}
 
