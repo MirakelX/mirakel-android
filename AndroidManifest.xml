@@ -19,7 +19,7 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.azapps.mirakelandroid"
-    android:versionCode="11"
+    android:versionCode="12"
     android:versionName="2.1.2+x" >
 
     <!-- TODO Remove Unused Permissions -->
