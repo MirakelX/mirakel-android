@@ -43,18 +43,20 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListAdapter;
 import android.widget.Switch;
 import android.widget.Toast;
-import de.azapps.mirakel.helper.ExportImport;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.PreferencesHelper;
 import de.azapps.mirakel.helper.SettingsAdapter;
+import de.azapps.mirakel.helper.export_import.AnyDoImport;
+import de.azapps.mirakel.helper.export_import.ExportImport;
+import de.azapps.mirakel.helper.export_import.WunderlistImport;
 import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
 import de.azapps.mirakelandroid.R;
 
 public class SettingsActivity extends PreferenceActivity {
 
 	public static final int FILE_ASTRID = 0, FILE_IMPORT_DB = 1,
-			NEW_ACCOUNT = 2, FILE_ANY_DO = 3;
+			NEW_ACCOUNT = 2, FILE_ANY_DO = 3, FILE_WUNDERLIST = 4;
 	private static final String TAG = "SettingsActivity";
 	private List<Header> mHeaders;
 	private boolean darkTheme;
@@ -180,50 +182,11 @@ public class SettingsActivity extends PreferenceActivity {
 	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	protected void onActivityResult(final int requestCode, int resultCode,
+			Intent data) {
 		Log.d(TAG, "activity");
 		final Context that = this;
 		switch (requestCode) {
-		case FILE_ASTRID:
-			if (resultCode != RESULT_OK)
-				return;
-			final String path_astrid = Helpers.getPathFromUri(data.getData(),
-					this);
-
-			// Do the import in a background-task
-			new AsyncTask<String, Void, Boolean>() {
-				ProgressDialog dialog;
-
-				@Override
-				protected Boolean doInBackground(String... params) {
-					return ExportImport.importAstrid(that, path_astrid);
-				}
-
-				@Override
-				protected void onPostExecute(Boolean success) {
-					dialog.dismiss();
-					if (!success) {
-						Toast.makeText(that, R.string.astrid_unsuccess,
-								Toast.LENGTH_LONG).show();
-					} else {
-						Toast.makeText(that, R.string.astrid_success,
-								Toast.LENGTH_SHORT).show();
-						android.os.Process.killProcess(android.os.Process
-								.myPid()); // ugly
-											// but
-											// simple
-					}
-				}
-
-				@Override
-				protected void onPreExecute() {
-					dialog = ProgressDialog.show(that,
-							that.getString(R.string.importing),
-							that.getString(R.string.wait), true);
-				}
-			}.execute("");
-
-			break;
 		case FILE_IMPORT_DB:
 			if (resultCode != RESULT_OK)
 				return;
@@ -266,10 +229,10 @@ public class SettingsActivity extends PreferenceActivity {
 						findPreference("syncFrequency"), this);
 			}
 			break;
-		case FILE_ANY_DO:
+		case FILE_ASTRID:
 			if (resultCode != RESULT_OK)
 				return;
-			final String path_any_do = Helpers.getPathFromUri(data.getData(),
+			final String file_path = Helpers.getPathFromUri(data.getData(),
 					this);
 
 			// Do the import in a background-task
@@ -278,17 +241,24 @@ public class SettingsActivity extends PreferenceActivity {
 
 				@Override
 				protected Boolean doInBackground(String... params) {
-					return ExportImport.importAnyDo(that, path_any_do);
+					if (requestCode == FILE_ASTRID)
+						return ExportImport.importAstrid(that, file_path);
+					else if (requestCode == FILE_ANY_DO)
+						return AnyDoImport.exec(that, file_path);
+					else if (requestCode == FILE_WUNDERLIST)
+						return WunderlistImport.exec(that, file_path);
+					else
+						return false;
 				}
 
 				@Override
 				protected void onPostExecute(Boolean success) {
 					dialog.dismiss();
 					if (!success) {
-						Toast.makeText(that, R.string.any_do_unsuccess,
+						Toast.makeText(that, R.string.astrid_unsuccess,
 								Toast.LENGTH_LONG).show();
 					} else {
-						Toast.makeText(that, R.string.any_do_success,
+						Toast.makeText(that, R.string.astrid_success,
 								Toast.LENGTH_SHORT).show();
 						android.os.Process.killProcess(android.os.Process
 								.myPid()); // ugly
@@ -304,7 +274,6 @@ public class SettingsActivity extends PreferenceActivity {
 							that.getString(R.string.wait), true);
 				}
 			}.execute("");
-
 			break;
 		}
 		super.onActivityResult(requestCode, resultCode, data);

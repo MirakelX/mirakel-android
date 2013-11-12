@@ -41,11 +41,12 @@
         android:title="@string/import_click" />
     <Preference
         android:key="import_astrid"
-        android:summary="@string/import_astrid_click_summary"
         android:title="@string/import_astrid_click" />
     <Preference
         android:key="import_any_do"
-        android:summary="@string/import_any_do_click_summary"
         android:title="@string/import_any_do_click" />
+    <Preference
+        android:key="import_wunderlist"
+        android:title="@string/import_wunderlist_click" />
 
 </PreferenceScreen>
