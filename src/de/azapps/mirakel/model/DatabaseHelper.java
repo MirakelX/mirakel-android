@@ -42,7 +42,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String TAG = "DatabaseHelper";
 	private Context context;
-	public static final int DATABASE_VERSION = 24;
+	public static final int DATABASE_VERSION = 25;
 	
 	public static final String ID="_id";
 	public static final String CREATED_AT="created_at";
