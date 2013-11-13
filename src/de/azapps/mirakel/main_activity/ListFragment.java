@@ -111,7 +111,7 @@ public class ListFragment extends Fragment {
 
 	@SuppressLint("NewApi")
 	public void update() {
-		if (view==null)
+		if (view == null || this.getActivity()==null)
 			return;
 		final List<ListMirakel> values = ListMirakel.all();
 		main.updateLists();
