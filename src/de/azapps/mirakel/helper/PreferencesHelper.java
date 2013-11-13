@@ -1327,7 +1327,8 @@ public class PreferencesHelper {
 		}
 		
 		final Preference version=findPreference("version");
-		version.setSummary(Mirakel.VERSIONS_NAME);
+		if(version!=null)
+			version.setSummary(Mirakel.VERSIONS_NAME);
 	}
 
 	private void setLanguageSummary(ListPreference language, String current) {
