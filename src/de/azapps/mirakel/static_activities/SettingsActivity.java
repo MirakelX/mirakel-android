@@ -230,6 +230,8 @@ public class SettingsActivity extends PreferenceActivity {
 			}
 			break;
 		case FILE_ASTRID:
+		case FILE_ANY_DO:
+		case FILE_WUNDERLIST:
 			if (resultCode != RESULT_OK)
 				return;
 			final String file_path = Helpers.getPathFromUri(data.getData(),

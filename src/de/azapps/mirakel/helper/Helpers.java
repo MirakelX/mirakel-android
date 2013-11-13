@@ -281,13 +281,10 @@ public class Helpers {
 		Intent fileDialogIntent = new Intent(Intent.ACTION_GET_CONTENT);
 		fileDialogIntent.setType("*/*");
 		fileDialogIntent.addCategory(Intent.CATEGORY_OPENABLE);
-
 		try {
 			activity.startActivityForResult(
 					Intent.createChooser(fileDialogIntent, title), code);
 		} catch (android.content.ActivityNotFoundException ex) {
-			// Potentially direct the user to the Market with a
-			// Dialog
 			Toast.makeText(activity, R.string.no_filemanager,
 					Toast.LENGTH_SHORT).show();
 		}

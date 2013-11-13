@@ -428,7 +428,7 @@ public class Task extends TaskBase {
 			return t.create();
 		} catch (NoSuchListException e) {
 			Log.wtf(TAG, "List vanish");
-			Log.e("Blubb", Log.getStackTraceString(e));
+			Log.e(TAG, Log.getStackTraceString(e));
 			Toast.makeText(context, R.string.no_lists, Toast.LENGTH_LONG)
 					.show();
 			return null;

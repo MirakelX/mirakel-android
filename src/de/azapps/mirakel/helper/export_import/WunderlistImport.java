@@ -1,17 +1,18 @@
 package de.azapps.mirakel.helper.export_import;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import android.content.Context;
 import android.util.Pair;
-import android.util.SparseIntArray;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -19,15 +20,14 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
 import de.azapps.mirakel.Mirakel.NoSuchListException;
+import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.ListMirakel;
-import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakelandroid.R;
 
 public class WunderlistImport {
 	private static final String TAG = "WunderlistImport";
-	private static SparseIntArray taskMapping;
+	private static Map<String, Integer> taskMapping;
 
 	public static Boolean exec(Context ctx, String file_path) {
 		String json;
@@ -46,11 +46,11 @@ public class WunderlistImport {
 			return false;
 		}
 		Set<Entry<String, JsonElement>> f = i.entrySet();
-		SparseIntArray listMapping = new SparseIntArray();
+		Map<String, Integer> listMapping = new HashMap<String, Integer>();
 		List<Pair<Integer, String>> contents = new ArrayList<Pair<Integer, String>>();
-		taskMapping = new SparseIntArray();
+		taskMapping = new HashMap<String, Integer>();
 		for (Entry<String, JsonElement> e : f) {
-			if (e.getKey().equals("categorys")) {
+			if (e.getKey().equals("lists")) {
 				Iterator<JsonElement> iter = e.getValue().getAsJsonArray()
 						.iterator();
 				while (iter.hasNext()) {
@@ -68,106 +68,79 @@ public class WunderlistImport {
 				Log.d(TAG, e.getKey());
 			}
 		}
-		for (Pair<Integer, String> pair : contents) {
-			Task t = Task.get(taskMapping.get(pair.first));
-			if (t == null) {
-				Log.d(TAG, "Task not found");
-				continue;
-			}
-			String oldContent = t.getContent();
-			t.setContent(oldContent == null || oldContent.equals("") ? pair.second
-					: oldContent + "\n" + pair.second);
+		for (Pair<Task, String> pair : subtasks) {
 			try {
-				t.save();
-			} catch (NoSuchListException e1) {
-				Log.wtf(TAG, "List did vanish");
+				Task parent = Task.get(Long.valueOf(taskMapping
+						.get(pair.second)));
+				parent.addSubtask(pair.first);
+			} catch (Exception e) {
+				// Blame yourself…
 			}
 		}
 		return true;
 	}
 
-	private static SparseIntArray parseList(JsonObject jsonList,
-			SparseIntArray listMapping) {
-		String name = jsonList.get("name").getAsString();
-		int id = jsonList.get("id").getAsInt();
+	private static Map<String, Integer> parseList(JsonObject jsonList,
+			Map<String, Integer> listMapping) {
+		String name = jsonList.get("title").getAsString();
+		String id = jsonList.get("id").getAsString();
 		ListMirakel l = ListMirakel.newList(name);
+		l.setCreatedAt(jsonList.get("created_at").getAsString());
+		l.setUpdatedAt(jsonList.get("updated_at").getAsString());
+		l.save(false);
 		listMapping.put(id, l.getId());
 		return listMapping;
 
 	}
 
+	/**
+	 * <Subtask, id of parent>
+	 */
+	private static List<Pair<Task, String>> subtasks = new ArrayList<Pair<Task, String>>();
+
 	private static List<Pair<Integer, String>> parseTask(JsonObject jsonTask,
-			SparseIntArray listMapping, List<Pair<Integer, String>> contents,
-			Context ctx) {
+			Map<String, Integer> listMapping,
+			List<Pair<Integer, String>> contents, Context ctx) {
 		String name = jsonTask.get("title").getAsString();
-		if (jsonTask.has("parentId")) {
-			contents.add(new Pair<Integer, String>(jsonTask.get("parentId")
-					.getAsInt(), name));
-			return contents;
+		String list_id_string = jsonTask.get("list_id").getAsString();
+		Integer listId = listMapping.get(list_id_string);
+		ListMirakel list = null;
+		if (listId != null) {
+			list = ListMirakel.getList(listId);
 		}
-		int list_id = jsonTask.get("categoryId").getAsInt();
-		Task t = Task.newTask(name,
-				ListMirakel.getList(listMapping.get(list_id)));
-		taskMapping.put(jsonTask.get("id").getAsInt(), (int) t.getId());
-		if (jsonTask.has("dueDate")) {
-			Calendar due = new GregorianCalendar();
-			long dueMs = jsonTask.get("dueDate").getAsLong();
-			if (dueMs > 0) {
-				due.setTimeInMillis(dueMs);
+		if (list == null) {
+			list = ListMirakel.safeFirst(ctx);
+		}
+		Task t = Task.newTask(name, list);
+		taskMapping.put(jsonTask.get("id").getAsString(), (int) t.getId());
+		if (jsonTask.has("due_date")) {
+			try {
+				Calendar due = DateTimeHelper.parseDate(jsonTask
+						.get("due_date").getAsString());
 				t.setDue(due);
-			}
-		}
-		if (jsonTask.has("priority")) {
-			int prio = 0;
-			if (jsonTask.get("priority").getAsString().equals("High")) {
-				prio = 2;
-			}
-			t.setPriority(prio);
-		}
-		if (jsonTask.has("status")) {
-			t.setDone(jsonTask.get("status").getAsString().equals("DONE"));
-		}
-		if (jsonTask.has("repeatMethod")) {
-			String repeat = jsonTask.get("repeatMethod").getAsString();
-
-			if (!repeat.equals("TASK_REPEAT_OFF")) {
-				Recurring r = null;
-				if (repeat.equals("TASK_REPEAT_DAY")) {
-					r = Recurring.get(1, 0, 0);
-					if (r == null) {
-						r = Recurring.newRecurring(
-								ctx.getString(R.string.daily), 0, 0, 1, 0, 0,
-								true, null, null, false);
-					}
-				} else if (repeat.equals("TASK_REPEAT_WEEK")) {
-					r = Recurring.get(7, 0, 0);
-					if (r == null) {
-						r = Recurring.newRecurring(
-								ctx.getString(R.string.weekly), 0, 0, 7, 0, 0,
-								true, null, null, false);
-					}
-				} else if (repeat.equals("TASK_REPEAT_MONTH")) {
-					r = Recurring.get(0, 1, 0);
-					if (r == null) {
-						r = Recurring.newRecurring(
-								ctx.getString(R.string.monthly), 0, 0, 0, 1, 0,
-								true, null, null, false);
-					}
-				} else if (repeat.equals("TASK_REPEAT_YEAR")) {
-					r = Recurring.get(0, 0, 1);
-					if (r == null) {
-						r = Recurring.newRecurring(
-								ctx.getString(R.string.yearly), 0, 0, 0, 0, 1,
-								true, null, null, false);
-					}
-				}
-				if (r != null) {
-					t.setRecurrence(r.getId());
-				} else {
-					Log.d(TAG, repeat);
-				}
+			} catch (ParseException e) {
 
 			}
+		}
+		if (jsonTask.has("note")) {
+			t.setContent(jsonTask.get("note").getAsString());
+		}
+		if (jsonTask.has("completed_at")) {
+			t.setDone(true);
+			try {
+				Calendar completed = DateTimeHelper.parseDate(jsonTask.get(
+						"completed_at").getAsString());
+				t.setUpdatedAt(completed);
+			} catch (ParseException e) {
+
+			}
+		}
+		if (jsonTask.has("starred") && jsonTask.get("starred").getAsBoolean()) {
+			t.setPriority(2);
+		}
+		if (jsonTask.has("parent_id")) {
+			subtasks.add(new Pair<Task, String>(t, jsonTask.get("parent_id")
+					.getAsString()));
 		}
 		try {
 			t.save();
@@ -176,5 +149,4 @@ public class WunderlistImport {
 		}
 		return contents;
 	}
-
 }
