@@ -66,6 +66,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.helper.export_import.AnyDoImport;
+import de.azapps.mirakel.helper.export_import.ExportImport;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -875,7 +877,7 @@ public class PreferencesHelper {
 			anyDo.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 				@Override
 				public boolean onPreferenceClick(Preference preference) {
-					ExportImport.handleImportAnyDo(activity);
+					AnyDoImport.handleImportAnyDo(activity);
 					return true;
 				}
 			});
@@ -889,6 +891,20 @@ public class PreferencesHelper {
 							Helpers.showFileChooser(
 									SettingsActivity.FILE_ASTRID,
 									activity.getString(R.string.astrid_import_title),
+									activity);
+							return true;
+						}
+					});
+		}
+		Preference importWunderlist = findPreference("import_wunderlist");
+		if (importWunderlist != null) {
+			importWunderlist
+					.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+						@Override
+						public boolean onPreferenceClick(Preference preference) {
+							Helpers.showFileChooser(
+									SettingsActivity.FILE_WUNDERLIST,
+									activity.getString(R.string.import_wunderlist_title),
 									activity);
 							return true;
 						}

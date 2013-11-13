@@ -113,7 +113,6 @@
     <string name="get_dashclock_summary">The Mirakel-Extension for Dashclock</string>
 
     <!-- Astrid -->
-    <string name="import_astrid_click_summary">Import from an Astrid-file</string>
     <string name="import_astrid_click">Import from Astrid</string>
     <string name="astrid_unsuccess">There was an error while importing from Astrid!</string>
     <string name="astrid_success">Successfully imported all data!</string>
@@ -123,7 +122,6 @@
     <string name="astrid_wait">Please wait…</string>
     <string name="astrid_importing">Importing</string>
     <!-- Any.Do -->
-    <string name="import_any_do_click_summary">Import from an Any.Do-file</string>
     <string name="import_any_do_click">Import from Any.Do</string>
     <string name="any_do_import_title">Select Any.Do backupfile</string>
     <string name="any_do_this_file">Import from %s?\nIf not please select a file yourself</string>
@@ -132,6 +130,11 @@
     <string name="any_do_unsuccess">There was an error while importing from Any.Do!</string>
     <string name="any_do_success">Successfully imported all data!</string>
     <string name="wait">Please wait…</string>
+    <!-- Wunderlist -->
+    <string name="import_wunderlist_click">Import from Wunderlist</string>
+    <string name="import_wunderlist_title">Select Wunderlist file</string>
+    <string name="import_unsuccess">There was an error while importing data!</string>
+    <string name="import_success">Successfully imported all data!</string>
     <!-- GUI -->
     <string name="highlightSelected_summary">Highlight lists/tasks when you click on them</string>
     <string name="highlightSelected">Highlight selected</string>
