@@ -52,7 +52,7 @@ public class SettingsFragment extends PreferenceFragment {
 		} else if (getArguments().getString("type").equals("backup")) {
 			addPreferencesFromResource(R.xml.settings_backup);
 		} else if (getArguments().getString("type").equals("sync")) {
-			addPreferencesFromResource(R.xml.settings_sync);
+			addPreferencesFromResource(R.xml.settings_account);
 		} else if (getArguments().getString("type").equals("misc")) {
 			addPreferencesFromResource(R.xml.settings_misc);
 		} else if (getArguments().getString("type").equals("about")) {

@@ -55,12 +55,12 @@
             android:value="speciallists" />
     </header>
     <header
-        android:id="@+id/sync_header"
         android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
-        android:title="@string/sync_title" >
+        android:title="@string/sync_title" >        <!-- android:id="@+id/sync_header" -->
+        
         <extra
             android:name="type"
-            android:value="sync" />
+            android:value="accounts" />
     </header>
     <header
         android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"

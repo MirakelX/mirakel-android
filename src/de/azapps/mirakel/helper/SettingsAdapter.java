@@ -39,7 +39,7 @@ public class SettingsAdapter extends ArrayAdapter<Header> {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		Header header = getItem(position);
 		View view = null;
-		if (header.id == R.id.sync_header) {
+		/*if (header.id == R.id.sync_header) {
 			view = mInflater
 					.inflate(R.layout.preferences_switch, parent, false);
 
@@ -72,7 +72,7 @@ public class SettingsAdapter extends ArrayAdapter<Header> {
 							(Activity) ctx, s, false);
 				}
 			});
-		} else {
+		} else */ {
 			view = mInflater.inflate(R.layout.preferences_header_item, parent,
 					false);
 			((ImageView) view.findViewById(android.R.id.icon))
