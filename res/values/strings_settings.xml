@@ -135,6 +135,8 @@
     <string name="import_wunderlist_title">Select Wunderlist file</string>
     <string name="import_unsuccess">There was an error while importing data!</string>
     <string name="import_success">Successfully imported all data!</string>
+    <string name="import_wunderlist_howto">Howto import from Wunderlist</string>
+    <string name="import_wunderlist_howto_text">The Android-app of Wunderlist does not support a backup functionality.\n\n So you have to login in the web-app. Go to Preferences → Account → Create Backup → (wait) → Click to download. Copy this file to your device and then come back.</string>
     <!-- GUI -->
     <string name="highlightSelected_summary">Highlight lists/tasks when you click on them</string>
     <string name="highlightSelected">Highlight selected</string>
