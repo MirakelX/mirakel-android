@@ -21,6 +21,7 @@ package de.azapps.mirakel.model.list;
 
 import android.content.ContentValues;
 import de.azapps.mirakel.model.DatabaseHelper;
+import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 
@@ -30,6 +31,7 @@ class ListBase {
 	public final static String RGT="rgt";
 	public final static String COLOR="color";
 	public final static String SORT_BY="sort_by";
+	public final static String ACCOUNT_ID="account_id";
 
 	private int id;
 	private String name;
@@ -39,13 +41,14 @@ class ListBase {
 	private SYNC_STATE syncState;
 	private int lft, rgt;
 	private int color;
+	private int account;
 
 	ListBase() {
 	}
 
 	ListBase(int id, String name, short sort_by, String created_at,
 			String updated_at, SYNC_STATE sync_state, int lft, int rgt,
-			int color) {
+			int color, AccountMirakel a) {
 		this.setId(id);
 		this.setCreatedAt(created_at);
 		this.setName(name);
@@ -55,11 +58,27 @@ class ListBase {
 		this.setLft(lft);
 		this.setRgt(rgt);
 		this.setColor(color);
+		this.setAccount(a);
 	}
 
 	ListBase(int id, String name) {
 		this.setId(id);
 		this.setName(name);
+	}
+
+	protected ListBase(int id, String name, short sort_by, String created_at,
+			String updated_at, SYNC_STATE sync_state, int lft, int rgt,
+			int color, int account) {
+		this.setId(id);
+		this.setCreatedAt(created_at);
+		this.setName(name);
+		this.setUpdatedAt(updated_at);
+		this.setSortBy(sort_by);
+		this.setSyncState(sync_state);
+		this.setLft(lft);
+		this.setRgt(rgt);
+		this.setColor(color);
+		this.setAccount(account);
 	}
 
 	public int getId() {
@@ -126,6 +145,18 @@ class ListBase {
 		this.color = color;
 	}
 
+	public AccountMirakel getAccount() {
+		return AccountMirakel.get(account);
+	}
+
+	public void setAccount(AccountMirakel a) {
+		setAccount(a.getId());
+	}
+
+	protected void setAccount(int account) {
+		this.account=account;		
+	}
+
 	@Override
 	public String toString() {
 		return this.name;
@@ -142,6 +173,7 @@ class ListBase {
 		cv.put(LFT, lft);
 		cv.put(RGT, rgt);
 		cv.put(COLOR, color);
+		cv.put(ACCOUNT_ID, account);
 		return cv;
 	}
 

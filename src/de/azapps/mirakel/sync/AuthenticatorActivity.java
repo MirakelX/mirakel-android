@@ -181,7 +181,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				 */
 				String syncTypeString = mType.getSelectedItem().toString();
 				Log.d(TAG, syncTypeString);
-				syncType = SyncAdapter.getSyncType(syncTypeString);
+				syncType = SYNC_TYPES.getSyncType(syncTypeString);
 				mMessage.setText(syncTypeString);
 				ViewSwitcher switcher = (ViewSwitcher) findViewById(R.id.switcher_login);
 				switch (syncType) {
@@ -323,7 +323,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 	 *            The Submit button for which this method is invoked
 	 */
 	public void handleLogin(View view) {
-		syncType = SyncAdapter.getSyncType(mType.getSelectedItem().toString());
+		syncType = SYNC_TYPES.getSyncType(mType.getSelectedItem().toString());
 		if (mRequestNewAccount) {
 			mUsername = mUsernameEdit.getText().toString();
 		}
