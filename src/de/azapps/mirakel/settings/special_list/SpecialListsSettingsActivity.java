@@ -35,6 +35,7 @@ import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.settings.ListSettings;
 import de.azapps.mirakelandroid.R;
 
+@SuppressLint("NewApi")
 public class SpecialListsSettingsActivity extends ListSettings {
 	@SuppressWarnings("unused")
 	private static final String TAG = "SpecialListsActivity";

@@ -175,6 +175,7 @@ public class RecurringSettings {
 		labelRecurring
 				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
+					@SuppressLint("NewApi")
 					@Override
 					public boolean onPreferenceChange(Preference preference,
 							Object newValue) {
