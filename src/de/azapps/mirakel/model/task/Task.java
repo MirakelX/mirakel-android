@@ -32,7 +32,6 @@ import java.util.Set;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Pair;
 import android.widget.Toast;
@@ -122,6 +121,7 @@ public class Task extends TaskBase {
 		database.beginTransaction();
 		database.update(TABLE, values, DatabaseHelper.ID + " = " + getId(),
 				null);
+		database.setTransactionSuccessful();
 		database.endTransaction();
 		clearEdited();
 	}
@@ -266,11 +266,12 @@ public class Task extends TaskBase {
 	}
 
 	public void addSubtask(Task t) throws NoSuchListException {
-		database.beginTransaction();
 		ContentValues cv = new ContentValues();
 		cv.put("parent_id", getId());
 		cv.put("child_id", t.getId());
+		database.beginTransaction();
 		database.insert(SUBTASK_TABLE, null, cv);
+		database.setTransactionSuccessful();
 		database.endTransaction();
 	}
 
@@ -278,6 +279,7 @@ public class Task extends TaskBase {
 		database.beginTransaction();
 		database.delete(SUBTASK_TABLE, "parent_id=" + getId()
 				+ " and child_id=" + s.getId(), null);
+		database.setTransactionSuccessful();
 		database.endTransaction();
 
 	}
@@ -314,6 +316,8 @@ public class Task extends TaskBase {
 		database.update(TABLE, values, where, null);
 		database.delete(TABLE, "sync_state=" + SYNC_STATE.ADD + " AND done=1",
 				null);
+		database.setTransactionSuccessful();
+		database.endTransaction();
 	}
 
 	public String toJson() {
@@ -449,16 +453,9 @@ public class Task extends TaskBase {
 		values.put(DatabaseHelper.UPDATED_AT,
 				DateTimeHelper.formatDateTime(getUpdatedAt()));
 		database.beginTransaction();
-		long insertId;
-		try {
-			insertId = database.insertOrThrow(TABLE, null, values);
-			database.setTransactionSuccessful();
-		} catch (SQLException e) {
-			Log.wtf(TAG, "cannot create Task");
-			return null;
-		} finally {
-			database.endTransaction();
-		}
+		long insertId = database.insertOrThrow(TABLE, null, values);
+		database.setTransactionSuccessful();
+		database.endTransaction();
 		Cursor cursor = database.query(TABLE, allColumns, DatabaseHelper.ID
 				+ " = " + insertId, null, null, null, null);
 		cursor.moveToFirst();
@@ -892,6 +889,10 @@ public class Task extends TaskBase {
 					+ " IS NULL) THEN date('now','+1000 years') ELSE date("
 					+ DUE + ") END ASC" + order;
 			break;
+		case ListMirakel.SORT_BY_REVERT_DEFAULT:
+			order = PRIORITY + " DESC,  CASE WHEN (" + DUE
+					+ " IS NULL) THEN date('now','+1000 years') ELSE date("
+					+ DUE + ") END ASC" + order;
 		default:
 			order = DatabaseHelper.ID + " ASC";
 		}

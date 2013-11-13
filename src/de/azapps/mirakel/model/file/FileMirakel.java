@@ -43,6 +43,7 @@ public class FileMirakel extends FileBase {
 		database.beginTransaction();
 		ContentValues values = getContentValues();
 		database.update(TABLE, values, "_id = " + getId(), null);
+		database.setTransactionSuccessful();
 		database.endTransaction();
 	}
 
@@ -162,6 +163,7 @@ public class FileMirakel extends FileBase {
 		values.remove("_id");
 		database.beginTransaction();
 		int insertId = (int) database.insertOrThrow(TABLE, null, values);
+		database.setTransactionSuccessful();
 		database.endTransaction();
 		return FileMirakel.get(insertId);
 	}
@@ -174,8 +176,10 @@ public class FileMirakel extends FileBase {
 		if (oneTransaction)
 			database.beginTransaction();
 		database.delete(TABLE, "_id=" + getId(), null);
-		if (oneTransaction)
+		if (oneTransaction){
+			database.setTransactionSuccessful();
 			database.endTransaction();
+		}
 		new File(cacheDir, getId() + ".png").delete();
 	}
 
@@ -190,6 +194,7 @@ public class FileMirakel extends FileBase {
 			}
 			file.destroy(false);
 		}
+		database.setTransactionSuccessful();
 		database.endTransaction();
 	}
 

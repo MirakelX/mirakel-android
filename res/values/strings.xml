@@ -44,6 +44,7 @@
     <string name="menu_sort_lists">Reorder lists</string>
     <string name="no_https">You should use https!</string>
     <string name="finish_sync">Finish sync</string>
+    <string name="local_account">Local Account</string>
 
     <!-- Example Data -->
     <string name="inbox">Inbox</string>
@@ -85,6 +86,7 @@
         <item>Deadline</item>
         <item>Priority</item>
         <item>Created date</item>
+        <item>First by priority, then by date</item>
     </string-array>
     <string-array name="task_sorting_items_values">
         <item>0</item>

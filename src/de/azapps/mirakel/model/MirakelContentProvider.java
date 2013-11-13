@@ -23,8 +23,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -92,7 +90,68 @@ public class MirakelContentProvider extends ContentProvider {
 
 	@Override
 	public int delete(Uri uri, String selection, String[] selectionArgs) {
-		return 0;
+		if (!isCallerSyncAdapter(uri)) {
+			ContentValues cv = new ContentValues();
+			cv.put(SyncAdapter.SYNC_STATE, SYNC_STATE.DELETE.toInt());
+			switch (uriMatcher.match(uri)) {
+			case LISTS:
+			case TASKS:
+				return update(uri, cv, selection, selectionArgs);
+			case LIST_ID:
+				database.update(ListMirakel.TABLE, cv, DatabaseHelper.ID + "="
+						+ getId(uri), null);
+				return 1;
+			case TASK_ID:
+				database.update(Task.TABLE, cv, DatabaseHelper.ID + "="
+						+ getId(uri), null);
+				return 1;
+			default:
+				throw new IllegalArgumentException("Unsupported URI: " + uri);
+			}
+		} else {
+			boolean isList = true;
+			switch (uriMatcher.match(uri)) {
+			case LIST_ID:
+				return database.delete(ListMirakel.TABLE, DatabaseHelper.ID
+						+ "=" + getId(uri), null);
+			case LISTS:
+				isList = true;
+				break;
+			case TASKS:
+				isList = false;
+				break;
+			case TASK_ID:
+				return database.delete(Task.TABLE, DatabaseHelper.ID + "="
+						+ getId(uri), null);
+			default:
+				throw new IllegalArgumentException("Unsupported URI: " + uri);
+			}
+			String s = getIdsFromSelection(uri, selection, selectionArgs,
+					isList);
+			if (!s.equals("")) {
+				return database.delete(isList ? ListMirakel.TABLE : Task.TABLE,
+						DatabaseHelper.ID + " IN (" + s + ")", null);
+			} else {
+				throw new RuntimeException("id not found");
+			}
+		}
+	}
+
+	private String getIdsFromSelection(Uri uri, String selection,
+			String[] selectionArgs, boolean isList) {
+		Cursor c = query(uri,
+				new String[] { isList ? TaskLists._ID : Tasks._ID }, selection,
+				selectionArgs, null);
+		String s = "";
+		if (c.getCount() > 0) {
+			while (!c.isAfterLast()) {
+				s += (s.equals("") ? "" : ",") + c.getInt(0);
+				c.moveToNext();
+			}
+		} else {
+			throw new RuntimeException("id not found");
+		}
+		return s;
 	}
 
 	protected boolean isCallerSyncAdapter(Uri uri) {
@@ -509,8 +568,31 @@ public class MirakelContentProvider extends ContentProvider {
 	@Override
 	public int update(Uri uri, ContentValues values, String selection,
 			String[] selectionArgs) {
-		// TODO implement this
-		return 0;
+		ContentValues newValues = convertValues(values,
+				isCallerSyncAdapter(uri));
+		boolean isList;
+		switch (uriMatcher.match(uri)) {
+		case TASKS:
+			isList = false;
+			break;
+		case TASK_ID:
+			return database.update(Task.TABLE, newValues, DatabaseHelper.ID
+					+ "=" + getId(uri), null);
+		case LIST_ID:
+			return database.update(ListMirakel.TABLE, newValues,
+					DatabaseHelper.ID + "=" + getId(uri), null);
+		case LISTS:
+			isList = true;
+		default:
+			throw new IllegalArgumentException("Unsupported URI: " + uri);
+		}
+		String s = getIdsFromSelection(uri, selection, selectionArgs, isList);
+		if (!s.equals("")) {
+			return database.update(isList ? ListMirakel.TABLE : Task.TABLE,
+					newValues, DatabaseHelper.ID + " IN(" + s + ")", null);
+		} else {
+			throw new RuntimeException("id not found");
+		}
 	}
 
 }

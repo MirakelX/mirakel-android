@@ -85,24 +85,10 @@ public class ListDialogHelpers {
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
 		builder.setTitle(ctx.getString(R.string.task_sorting_title));
-
 		builder.setSingleChoiceItems(SortingItems, list.getSortBy(),
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int item) {
-						switch (item) {
-						case 0:
-							list.setSortBy(ListMirakel.SORT_BY_OPT);
-							break;
-						case 1:
-							list.setSortBy(ListMirakel.SORT_BY_DUE);
-							break;
-						case 2:
-							list.setSortBy(ListMirakel.SORT_BY_PRIO);
-							break;
-						default:
-							list.setSortBy(ListMirakel.SORT_BY_ID);
-							break;
-						}
+						list.setSortBy(item);
 						list.save();
 						if (res != null)
 							res.setSummary(SortingItems[item]);
