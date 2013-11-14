@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
 
+import sheetrock.panda.changelog.ChangeLog;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -60,11 +61,11 @@ import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.PagerAdapter;
-import de.azapps.mirakel.helper.ChangeLog;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
+import de.azapps.mirakel.helper.UndoHistory;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SearchList;
@@ -259,7 +260,7 @@ public class MainActivity extends ActionBarActivity implements
 			startActivity(killIntent);
 			return false;
 		case R.id.menu_undo:
-			Helpers.undoLast(this);
+			UndoHistory.undoLast(this);
 			updateCurrentListAndTask();
 			if (currentPosition == TASK_FRAGMENT)
 				setCurrentTask(getCurrentTask());
@@ -795,7 +796,8 @@ public class MainActivity extends ActionBarActivity implements
 			Toast.makeText(this,
 					getString(R.string.reminder_notification_done_confirm),
 					Toast.LENGTH_LONG).show();
-		} else if (intent.getAction() == TASK_LATER) {
+		} else if (intent.getAction() == TASK_LATER
+				&& !task.hasRecurringReminder()) {
 			GregorianCalendar reminder = new GregorianCalendar();
 			int addMinutes = preferences.getInt("alarm_later", 15);
 			reminder.add(Calendar.MINUTE, addMinutes);
@@ -806,6 +808,7 @@ public class MainActivity extends ActionBarActivity implements
 					getString(R.string.reminder_notification_later_confirm,
 							addMinutes), Toast.LENGTH_LONG).show();
 		}
+		ReminderAlarm.closeNotificationFor(this, task.getId());
 		ReminderAlarm.updateAlarms(this);
 		getListFragment().update();
 		setCurrentList(task.getList());
@@ -1356,6 +1359,7 @@ public class MainActivity extends ActionBarActivity implements
 			}
 		}.run();
 	}
+
 	public int getCurrentPosition() {
 		return currentPosition;
 	}

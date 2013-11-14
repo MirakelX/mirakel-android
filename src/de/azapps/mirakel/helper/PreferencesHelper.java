@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.http.message.BasicNameValuePair;
 
+import sheetrock.panda.changelog.ChangeLog;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
@@ -902,10 +903,25 @@ public class PreferencesHelper {
 					.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 						@Override
 						public boolean onPreferenceClick(Preference preference) {
-							Helpers.showFileChooser(
-									SettingsActivity.FILE_WUNDERLIST,
-									activity.getString(R.string.import_wunderlist_title),
-									activity);
+							new AlertDialog.Builder(activity)
+									.setTitle(R.string.import_wunderlist_howto)
+									.setMessage(
+											R.string.import_wunderlist_howto_text)
+									.setPositiveButton(android.R.string.ok,
+											new OnClickListener() {
+
+												@Override
+												public void onClick(
+														DialogInterface dialog,
+														int which) {
+
+													Helpers.showFileChooser(
+															SettingsActivity.FILE_WUNDERLIST,
+															activity.getString(R.string.import_wunderlist_title),
+															activity);
+
+												}
+											}).show();
 							return true;
 						}
 					});
@@ -1171,7 +1187,7 @@ public class PreferencesHelper {
 													if (old_val > val) {
 														for (int i = val; i < max; i++) {
 															editor.putString(
-																	Helpers.UNDO
+																	UndoHistory.UNDO
 																			+ i,
 																	"");
 														}
@@ -1341,9 +1357,9 @@ public class PreferencesHelper {
 						}
 					});
 		}
-		
-		final Preference version=findPreference("version");
-		if(version!=null)
+
+		final Preference version = findPreference("version");
+		if (version != null)
 			version.setSummary(Mirakel.VERSIONS_NAME);
 	}
 

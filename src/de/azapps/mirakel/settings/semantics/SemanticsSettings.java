@@ -227,6 +227,7 @@ public class SemanticsSettings implements OnPreferenceChangeListener {
 		}
 	}
 
+	@SuppressLint("NewApi")
 	@Override
 	public boolean onPreferenceChange(Preference preference, Object nv) {
 		String newValue = String.valueOf(nv);

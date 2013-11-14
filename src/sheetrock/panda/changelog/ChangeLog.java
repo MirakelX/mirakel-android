@@ -1,4 +1,4 @@
-package de.azapps.mirakel.helper;
+package sheetrock.panda.changelog;
 
 /**
  * Copyright (C) 2011, Karsten Priegnitz
@@ -33,6 +33,7 @@ import android.preference.PreferenceManager;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.webkit.WebView;
+import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakelandroid.R;
 
 public class ChangeLog {

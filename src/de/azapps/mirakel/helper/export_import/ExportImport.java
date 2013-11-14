@@ -27,9 +27,9 @@ import android.content.SharedPreferences;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
+import au.com.bytecode.opencsv.CSVReader;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
-import de.azapps.mirakel.helper.CSVReader;
 import de.azapps.mirakel.helper.FileUtils;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
@@ -39,7 +39,7 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 
 public class ExportImport {
-	private static final File dbFile = new File(Mirakel.MIRAKEL_DIR
+	private static final File dbFile = new File(Mirakel.getMirakelDir()
 			+ "databases/mirakel.db");
 	private static final String TAG = "ExportImport";
 	private static final File exportDir = new File(

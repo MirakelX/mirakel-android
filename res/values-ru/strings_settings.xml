@@ -61,7 +61,6 @@
   <string name="settings_help">Помощь</string>
   <string name="get_dashclock">Получить Mirakel-Dashclock</string>
   <string name="get_dashclock_summary">Mirakel-расширение для Dashclock</string>
-  <string name="import_astrid_click_summary">Импорт из Astrid-файла</string>
   <string name="import_astrid_click">Импорт из Astrid</string>
   <string name="astrid_unsuccess">Произошла ошибка при импорте из Астрид!</string>
   <string name="astrid_success">Все данные успешно импортированы!</string>

@@ -75,6 +75,7 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.ViewSwitcher;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
+import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.Log;
@@ -380,7 +381,7 @@ public class TaskFragmentAdapter extends
 		if (task.getDue() != null) {
 			holder.taskRowDue.setVisibility(View.VISIBLE);
 			holder.taskRowDue
-					.setText(Helpers.formatDate(context, task.getDue()));
+					.setText(DateTimeHelper.formatDate(context, task.getDue()));
 			holder.taskRowDue.setTextColor(row.getResources().getColor(
 					Helpers.getTaskDueColor(task.getDue(), task.isDone())));
 		} else {
@@ -812,14 +813,14 @@ public class TaskFragmentAdapter extends
 				android.R.drawable.ic_menu_recent_history);
 		reminder_img.setBounds(0, 1, 42, 42);
 		holder.taskReminder.setCompoundDrawables(reminder_img, null,
-				getRecurringDrawable(task.getRecurrenceReminder()), null);
+				getRecurringDrawable(task.getRecurringReminder()), null);
 		if (task.getReminder() == null) {
 			holder.taskReminder
 					.setText(context.getString(R.string.no_reminder));
 			holder.taskReminder.setTextColor(context.getResources().getColor(
 					inactive_color));
 		} else {
-			holder.taskReminder.setText(Helpers.formatDate(task.getReminder(),
+			holder.taskReminder.setText(DateTimeHelper.formatDate(task.getReminder(),
 					context.getString(R.string.humanDateTimeFormat)));
 			holder.taskReminder.setTextColor(context.getResources().getColor(
 					inactive_color));
@@ -962,7 +963,7 @@ public class TaskFragmentAdapter extends
 			holder.taskDue.setTextColor(context.getResources().getColor(
 					inactive_color));
 		} else {
-			holder.taskDue.setText(Helpers.formatDate(context, task.getDue()));
+			holder.taskDue.setText(DateTimeHelper.formatDate(context, task.getDue()));
 			holder.taskDue.setTextColor(context.getResources().getColor(
 					Helpers.getTaskDueColor(task.getDue(), task.isDone())));
 		}

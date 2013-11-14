@@ -34,6 +34,7 @@ import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceCategory;
 import android.widget.DatePicker;
+import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.recurring.Recurring;
@@ -78,11 +79,11 @@ public class RecurringSettings {
 		final String begin = ctx.getString(R.string.beginning);
 		final String end = ctx.getString(R.string.end);
 		startDate.setSummary(recurring.getStartDate() == null ? ctx.getString(
-				R.string.no_begin_end, begin) : Helpers.formatDate(
+				R.string.no_begin_end, begin) : DateTimeHelper.formatDate(
 				recurring.getStartDate(),
 				ctx.getString(R.string.humanDateTimeFormat)));
 		endDate.setSummary(recurring.getEndDate() == null ? ctx.getString(
-				R.string.no_begin_end, end) : Helpers.formatDate(
+				R.string.no_begin_end, end) : DateTimeHelper.formatDate(
 				recurring.getEndDate(),
 				ctx.getString(R.string.humanDateTimeFormat)));
 
@@ -175,6 +176,7 @@ public class RecurringSettings {
 		labelRecurring
 				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
+					@SuppressLint("NewApi")
 					@Override
 					public boolean onPreferenceChange(Preference preference,
 							Object newValue) {
@@ -247,7 +249,7 @@ public class RecurringSettings {
 					recurring.save();
 					return;
 				}
-				date.setSummary(Helpers.formatDate(c,
+				date.setSummary(DateTimeHelper.formatDate(c,
 						ctx.getString(R.string.humanDateTimeFormat)));
 				recurring.save();
 			}
@@ -277,7 +279,7 @@ public class RecurringSettings {
 									recurring.save();
 									return;
 								}
-								date.setSummary(Helpers.formatDate(
+								date.setSummary(DateTimeHelper.formatDate(
 										c,
 										ctx.getString(R.string.humanDateTimeFormat)));
 								recurring.save();
