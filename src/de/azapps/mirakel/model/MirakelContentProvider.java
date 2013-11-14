@@ -504,14 +504,14 @@ public class MirakelContentProvider extends ContentProvider {
 		}
 		if (isSyncadapter) {
 			query += addSegment("CASE " + SyncAdapter.SYNC_STATE + " WHEN "
-					+ SYNC_STATE.NEED_SYNC + " THEN TRUE ELSE FALSE",
+					+ SYNC_STATE.NEED_SYNC + " THEN 1 ELSE 0 END",
 					TaskContract.Tasks._DIRTY, true);
 			query += addSegment(DatabaseHelper.ID, Tasks._ID, true);
 			query += addSegment("CASE " + SyncAdapter.SYNC_STATE + " WHEN "
-					+ SYNC_STATE.DELETE + " THEN TRUE ELSE FALSE",
+					+ SYNC_STATE.DELETE + " THEN 1 ELSE 0 END",
 					TaskContract.Tasks._DELETED, true);
 			query += addSegment("CASE " + SyncAdapter.SYNC_STATE + " WHEN "
-					+ SYNC_STATE.ADD + " THEN TRUE ELSE FALSE",
+					+ SYNC_STATE.ADD + " THEN 1 ELSE 0 END",
 					TaskContract.Tasks.IS_NEW, true);
 			query += addSegment(Task.UUID, Tasks._SYNC_ID, true);
 		}
@@ -547,14 +547,14 @@ public class MirakelContentProvider extends ContentProvider {
 		query += addSegment(ListMirakel.COLOR, TaskLists.LIST_COLOR, true);
 		if (isSyncAdapter) {
 			query += addSegment("CASE " + SyncAdapter.SYNC_STATE + " WHEN "
-					+ SYNC_STATE.NEED_SYNC + " THEN TRUE ELSE FALSE",
+					+ SYNC_STATE.NEED_SYNC + " THEN 1 ELSE 0 END",
 					TaskLists._DIRTY, true);
 			query += addSegment(DatabaseHelper.ID, Tasks._ID, true);
 			// query += addSegment("CASE " + SyncAdapter.SYNC_STATE + " WHEN "
-			// + SYNC_STATE.DELETE + " THEN TRUE ELSE FALSE",
+			// + SYNC_STATE.DELETE + " THEN 1 ELSE 0 END",
 			// TaskLists._DELETED, true);
 			// query += addSegment("CASE " + SyncAdapter.SYNC_STATE + " WHEN "
-			// + SYNC_STATE.ADD + " THEN TRUE ELSE FALSE",
+			// + SYNC_STATE.ADD + " THEN 1 ELSE 0 END",
 			// TaskLists.IS_NEW, true);
 			query += addSegment(DatabaseHelper.ID, TaskLists._SYNC_ID, true);
 		}
