@@ -450,8 +450,9 @@ public class Task extends TaskBase {
 		values.put(SyncAdapter.SYNC_STATE, SYNC_STATE.ADD.toInt());
 		values.put(DatabaseHelper.CREATED_AT,
 				DateTimeHelper.formatDateTime(getCreatedAt()));
-		values.put(DatabaseHelper.UPDATED_AT,
-				DateTimeHelper.formatDateTime(getUpdatedAt()));
+        if ( getUpdatedAt() != null )
+		    values.put(DatabaseHelper.UPDATED_AT,
+			    	DateTimeHelper.formatDateTime(getUpdatedAt()));
 		database.beginTransaction();
 		long insertId;
 		insertId = database.insertOrThrow(TABLE, null, values);
