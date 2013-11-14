@@ -155,7 +155,7 @@ public class TaskDialogHelpers {
 		final int extraItems = 2;
 		CharSequence[] items = new String[recurring.size() + extraItems];
 		Recurring r = isDue ? task.getRecurring() : task
-				.getRecurrenceReminder();
+				.getRecurringReminder();
 
 		items[0] = context.getString(R.string.recurrence_no);
 		items[1] = context.getString(R.string.recurrence_custom);
@@ -251,8 +251,8 @@ public class TaskDialogHelpers {
 										task.setRecurrence(r.getId());
 									} else {
 										Recurring.destroyTemporary(task
-												.getRecurrenceReminderId());
-										task.setRecurrenceReminder(r.getId());
+												.getRecurringReminderId());
+										task.setRecurringReminder(r.getId());
 									}
 									task.safeSave();
 
@@ -274,7 +274,7 @@ public class TaskDialogHelpers {
 				if (isDue) {
 					task.setRecurrence(r);
 				} else {
-					task.setRecurrenceReminder(r);
+					task.setRecurringReminder(r);
 				}
 				task.safeSave();
 			}

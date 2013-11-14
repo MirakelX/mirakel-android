@@ -38,10 +38,10 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.main_activity.MainActivity;
+import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakelandroid.R;
@@ -70,21 +70,6 @@ public class ReminderAlarm extends BroadcastReceiver {
 			Toast.makeText(context, R.string.task_vanished, Toast.LENGTH_LONG)
 					.show();
 			return;
-		}
-		if (task.getRecurrenceReminder() != null
-				&& task.getReminder().compareTo(
-						task.getRecurrenceReminder().addRecurring(
-								(Calendar) task.getReminder().clone())) < 1) {
-			task.setReminder(task.getRecurrenceReminder().addRecurring(
-					task.getReminder()));
-			alarmManager.set(AlarmManager.RTC_WAKEUP, task.getReminder()
-					.getTimeInMillis(), PendingIntent.getBroadcast(context, 0,
-					intent, PendingIntent.FLAG_UPDATE_CURRENT));
-			try {
-				task.save(false);
-			} catch (NoSuchListException e) {
-				Log.d(TAG, "cannot save Task");
-			}
 		}
 		createNotification(context, task);
 		// updateAlarms(context);
@@ -194,7 +179,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 				alarmManager = (AlarmManager) ctx
 						.getSystemService(Context.ALARM_SERVICE);
 
-				// Update the Notifications ad midnight
+				// Update the Notifications at midnight
 				Intent intent = new Intent(ctx, ReminderAlarm.class);
 				intent.setAction(UPDATE_NOTIFICATION);
 				PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx,
@@ -217,20 +202,23 @@ public class ReminderAlarm extends BroadcastReceiver {
 						continue;
 					}
 					Task newTask = Task.get(t.getId());
-					if (newTask == null || newTask.getReminder() == null
-							|| newTask.isDone()) {
+					if (newTask == null
+							|| newTask.getReminder() == null
+							|| newTask.isDone()
+							|| newTask.getReminder().after(
+									new GregorianCalendar())) {
 						i = cancelAlarm(ctx, t, newTask, i);
 						continue;
 					} else if (newTask.getReminder() != null) {
 						Calendar now = new GregorianCalendar();
 						if (newTask.getReminder().after(now)
-								&& newTask.getRecurrenceReminder() == null) {
+								&& newTask.getRecurringReminder() == null) {
 							closeNotificationFor(ctx, t.getId());
 							updateAlarm(ctx, newTask);
 						} else if (newTask.getReminder().after(now)
-								&& newTask.getRecurrenceReminder() != null
+								&& newTask.getRecurringReminder() != null
 								&& newTask.getReminder().compareTo(
-										newTask.getRecurrenceReminder()
+										newTask.getRecurringReminder()
 												.addRecurring(
 														newTask.getReminder())) > 0
 								&& !now.after(newTask.getReminder())) {
@@ -276,6 +264,11 @@ public class ReminderAlarm extends BroadcastReceiver {
 		return i;
 	}
 
+	public static void cancelAlarm(Context ctx, Task task) {
+		int i = activeAlarms.indexOf(task);
+		cancelAlarm(ctx, task, Task.get(task.getId()), i);
+	}
+
 	private static void updateAlarm(Context ctx, Task task) {
 		Intent intent = new Intent(ctx, ReminderAlarm.class);
 		intent.setAction(SHOW_TASK);
@@ -287,8 +280,17 @@ public class ReminderAlarm extends BroadcastReceiver {
 			return;
 		Log.v(TAG, "Set alarm for " + task.getName() + " on "
 				+ task.getReminder().getTimeInMillis());
-		alarmManager.set(AlarmManager.RTC_WAKEUP, task.getReminder()
-				.getTimeInMillis(), pendingIntent);
+		Recurring recurrence = task.getRecurringReminder();
+		if (recurrence == null) {
+			alarmManager.set(AlarmManager.RTC_WAKEUP, task.getReminder()
+					.getTimeInMillis(), pendingIntent);
+		} else {
+			Log.e("Blubb", recurrence.getIntervall() + "←intervall");
+			alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, task
+					.getReminder().getTimeInMillis(),
+					recurrence.getIntervall(), pendingIntent);
+
+		}
 	}
 
 	public static void closeNotificationFor(Context context, Long taskId) {
