@@ -97,7 +97,6 @@ public class Mirakel extends Application {
 				getBaseContext().getResources().getDisplayMetrics());
 		ACRA.init(this);
 		APK_NAME = getPackageName();
-		Log.e("Blubb", MIRAKEL_DIR);
 		try {
 			VERSIONS_NAME = getPackageManager().getPackageInfo(
 					getPackageName(), 0).versionName;
