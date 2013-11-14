@@ -33,7 +33,6 @@
   <string name="changelog_click_summary">Ver el registro de cambios</string>
   <string name="changelog_click">Registro de cambios</string>
   <string name="settings_about">Sobre nosotros</string>
-  <string name="import_astrid_click_summary">Importación desde un archivo Astrid</string>
   <string name="import_astrid_click">Importar desde Astrid</string>
   <string name="astrid_unsuccess">¡Hubo un error durante la importación desde Astrid!</string>
   <string name="astrid_success">¡Todos los datos importados con éxito!</string>

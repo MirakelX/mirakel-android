@@ -56,7 +56,6 @@
   <string name="changelog_click">Journal des modifications</string>
   <string name="settings_about">À propos</string>
   <string name="settings_help">Aide</string>
-  <string name="import_astrid_click_summary">Importer un fichier Astrid</string>
   <string name="import_astrid_click">Importer depuis Astrid</string>
   <string name="astrid_unsuccess">Il y a eût une erreur pendant l\'importation depuis Astrid !</string>
   <string name="astrid_success">Toutes les données ont été importées avec succès !</string>

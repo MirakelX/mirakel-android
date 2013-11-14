@@ -795,7 +795,8 @@ public class MainActivity extends ActionBarActivity implements
 			Toast.makeText(this,
 					getString(R.string.reminder_notification_done_confirm),
 					Toast.LENGTH_LONG).show();
-		} else if (intent.getAction() == TASK_LATER) {
+		} else if (intent.getAction() == TASK_LATER
+				&& !task.hasRecurringReminder()) {
 			GregorianCalendar reminder = new GregorianCalendar();
 			int addMinutes = preferences.getInt("alarm_later", 15);
 			reminder.add(Calendar.MINUTE, addMinutes);
@@ -806,6 +807,7 @@ public class MainActivity extends ActionBarActivity implements
 					getString(R.string.reminder_notification_later_confirm,
 							addMinutes), Toast.LENGTH_LONG).show();
 		}
+		ReminderAlarm.closeNotificationFor(this, task.getId());
 		ReminderAlarm.updateAlarms(this);
 		getListFragment().update();
 		setCurrentList(task.getList());
@@ -1356,6 +1358,7 @@ public class MainActivity extends ActionBarActivity implements
 			}
 		}.run();
 	}
+
 	public int getCurrentPosition() {
 		return currentPosition;
 	}

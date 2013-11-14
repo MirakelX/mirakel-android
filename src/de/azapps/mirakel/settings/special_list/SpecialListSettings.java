@@ -53,6 +53,7 @@ import de.azapps.mirakel.settings.ListSettings;
 import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.R;
 
+@SuppressLint("NewApi")
 public class SpecialListSettings implements OnPreferenceChangeListener {
 	private SpecialList specialList;
 	private boolean v4_0;
@@ -83,6 +84,7 @@ public class SpecialListSettings implements OnPreferenceChangeListener {
 		name.setSummary(specialList.getName());
 		name.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
+			@SuppressLint("NewApi")
 			@Override
 			public boolean onPreferenceChange(Preference preference,
 					Object newValue) {

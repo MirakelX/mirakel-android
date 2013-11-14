@@ -62,7 +62,6 @@
   <string name="settings_help_us">Můžete nám pomoci!</string>
   <string name="get_dashclock">Stáhnout Mirakel-Dashclock</string>
   <string name="get_dashclock_summary">Rozšíření Mirakel pro Dashclock</string>
-  <string name="import_astrid_click_summary">Importovat ze souboru Astrid</string>
   <string name="import_astrid_click">Importovat z Astrid</string>
   <string name="astrid_unsuccess">Při importu z Astrid došlo k chybě!</string>
   <string name="astrid_success">Všechna data byla úspěšně importována!</string>
@@ -71,7 +70,6 @@
   <string name="import_wrong_type">To není soubor ve formátu Mirakel!</string>
   <string name="astrid_wait">Počkejte prosím…</string>
   <string name="astrid_importing">Probíhá import</string>
-  <string name="import_any_do_click_summary">Importovat ze souboru Any.Do</string>
   <string name="import_any_do_click">Importovat z Any.Do</string>
   <string name="any_do_import_title">Vyberte soubor se zálohou ve formátu Any.Do</string>
   <string name="any_do_unsuccess">Při importu z Any.Do došlo k chybě!</string>
