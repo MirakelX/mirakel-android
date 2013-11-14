@@ -77,9 +77,14 @@ public class Mirakel extends Application {
 	private static final String TAG = "Mirakel";
 
 	private static SQLiteOpenHelper openHelper;
-	public static String MIRAKEL_DIR;
-	
+	private static String MIRAKEL_DIR;
 
+	public static String getMirakelDir() {
+		if (MIRAKEL_DIR == null)
+			MIRAKEL_DIR = Environment.getDataDirectory() + "/data/"
+					+ Mirakel.APK_NAME + "/";
+		return MIRAKEL_DIR;
+	}
 
 	@Override
 	public void onCreate() {
@@ -92,8 +97,7 @@ public class Mirakel extends Application {
 				getBaseContext().getResources().getDisplayMetrics());
 		ACRA.init(this);
 		APK_NAME = getPackageName();
-		MIRAKEL_DIR = Environment.getDataDirectory() + "/data/"
-				+ Mirakel.APK_NAME + "/";
+		Log.e("Blubb", MIRAKEL_DIR);
 		try {
 			VERSIONS_NAME = getPackageManager().getPackageInfo(
 					getPackageName(), 0).versionName;
@@ -105,7 +109,7 @@ public class Mirakel extends Application {
 		}
 		openHelper = new DatabaseHelper(this);
 		Mirakel.getWritableDatabase().execSQL("PRAGMA foreign_keys=ON;");
-		Context ctx=getApplicationContext();
+		Context ctx = getApplicationContext();
 		ListMirakel.init(ctx);
 		Task.init(ctx);
 		SpecialList.init(ctx);
