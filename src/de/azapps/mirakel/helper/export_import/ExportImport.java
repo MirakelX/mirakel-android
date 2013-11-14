@@ -39,7 +39,7 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 
 public class ExportImport {
-	private static final File dbFile = new File(Mirakel.MIRAKEL_DIR
+	private static final File dbFile = new File(Mirakel.getMirakelDir()
 			+ "databases/mirakel.db");
 	private static final String TAG = "ExportImport";
 	private static final File exportDir = new File(

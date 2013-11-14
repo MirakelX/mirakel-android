@@ -30,10 +30,11 @@ import de.azapps.mirakelandroid.R;
 public class TaskWarriorSync {
 
 	public static final String TYPE = "TaskWarrior";
-	public static final String CA_FILE = Mirakel.MIRAKEL_DIR + "ca.cert.pem";
-	public static final String CLIENT_CERT_FILE = Mirakel.MIRAKEL_DIR
+	public static final String CA_FILE = Mirakel.getMirakelDir()
+			+ "ca.cert.pem";
+	public static final String CLIENT_CERT_FILE = Mirakel.getMirakelDir()
 			+ "client.cert.pem";
-	public static final String CLIENT_KEY_FILE = Mirakel.MIRAKEL_DIR
+	public static final String CLIENT_KEY_FILE = Mirakel.getMirakelDir()
 			+ "client.key.pem";
 	private static final String TAG = "TaskWarroirSync";
 	private Context mContext;

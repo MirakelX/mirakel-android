@@ -25,7 +25,7 @@ import de.azapps.mirakelandroid.R;
 
 public class FileMirakel extends FileBase {
 
-	public static final String cacheDirPath = Mirakel.MIRAKEL_DIR
+	public static final String cacheDirPath = Mirakel.getMirakelDir()
 			+ "image_cache";
 	public static final File cacheDir = new File(cacheDirPath);
 	public static final String TABLE = "files";
@@ -176,7 +176,7 @@ public class FileMirakel extends FileBase {
 		if (oneTransaction)
 			database.beginTransaction();
 		database.delete(TABLE, "_id=" + getId(), null);
-		if (oneTransaction){
+		if (oneTransaction) {
 			database.setTransactionSuccessful();
 			database.endTransaction();
 		}
