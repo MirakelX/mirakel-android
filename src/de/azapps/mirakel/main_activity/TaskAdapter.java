@@ -38,6 +38,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
@@ -204,7 +205,7 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 		if (task.getDue() != null) {
 			holder.taskRowDue.setVisibility(View.VISIBLE);
 			holder.taskRowDue
-					.setText(Helpers.formatDate(context, task.getDue()));
+					.setText(DateTimeHelper.formatDate(context, task.getDue()));
 			holder.taskRowDue.setTextColor(row.getResources().getColor(
 					Helpers.getTaskDueColor(task.getDue(), task.isDone())));
 		} else {

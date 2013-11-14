@@ -65,6 +65,7 @@ import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
+import de.azapps.mirakel.helper.UndoHistory;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SearchList;
@@ -259,7 +260,7 @@ public class MainActivity extends ActionBarActivity implements
 			startActivity(killIntent);
 			return false;
 		case R.id.menu_undo:
-			Helpers.undoLast(this);
+			UndoHistory.undoLast(this);
 			updateCurrentListAndTask();
 			if (currentPosition == TASK_FRAGMENT)
 				setCurrentTask(getCurrentTask());

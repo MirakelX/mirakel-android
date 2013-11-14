@@ -36,7 +36,7 @@ public class WidgetHelper {
 		if (isMinimal) {
 			if (task.getDue() != null) {
 				rv.setTextViewText(R.id.tasks_row_due,
-						Helpers.formatDate(context, task.getDue()));
+						DateTimeHelper.formatDate(context, task.getDue()));
 			} else {
 				rv.setViewVisibility(R.id.tasks_row_due, View.GONE);
 			}
@@ -91,7 +91,7 @@ public class WidgetHelper {
 				rv.setViewVisibility(R.id.tasks_row_due, View.VISIBLE);
 
 				rv.setTextViewText(R.id.tasks_row_due,
-						Helpers.formatDate(context, task.getDue()));
+						DateTimeHelper.formatDate(context, task.getDue()));
 				if (!isMinimal) {
 					rv.setTextColor(
 							R.id.tasks_row_due,

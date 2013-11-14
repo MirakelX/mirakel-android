@@ -3,8 +3,14 @@ package de.azapps.mirakel.helper;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+
+import android.content.Context;
+import android.os.Build;
+import android.text.format.DateUtils;
+import de.azapps.mirakelandroid.R;
 
 public class DateTimeHelper {
 
@@ -22,6 +28,24 @@ public class DateTimeHelper {
 
 	public static String formatDate(Calendar c) {
 		return c == null ? null : dateFormat.format(c.getTime());
+	}
+
+	/**
+	 * Format a Date for showing it in the app
+	 * 
+	 * @param date
+	 *            Date
+	 * @param format
+	 *            Format–String (like dd.MM.YY)
+	 * @return The formatted Date as String
+	 */
+	public static CharSequence formatDate(Calendar date, String format) {
+		if (date == null)
+			return "";
+		else {
+			return new SimpleDateFormat(format, Locale.getDefault())
+					.format(date.getTime());
+		}
 	}
 
 	public static String formatDateTime(Calendar c) {
@@ -78,5 +102,40 @@ public class DateTimeHelper {
 		GregorianCalendar temp = new GregorianCalendar();
 		temp.setTime(TWFormat.parse(date));
 		return temp;
+	}
+
+	/**
+	 * Formats the Date in the format, the user want to see. The default
+	 * configuration is the relative date format. So the due date is for example
+	 * „tomorrow“ instead of yyyy-mm-dd
+	 * 
+	 * @param ctx
+	 * @param date
+	 * @return
+	 */
+	public static CharSequence formatDate(Context ctx, Calendar date) {
+		if (date == null)
+			return "";
+		else {
+			if (Helpers.settings.getBoolean("dateFormatRelative", true)) {
+				GregorianCalendar now = new GregorianCalendar();
+				now.setTime(new Date());
+				if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR1
+						|| !(now.get(Calendar.YEAR) == date.get(Calendar.YEAR)
+								&& now.get(Calendar.DAY_OF_MONTH) == date
+										.get(Calendar.DAY_OF_MONTH) && now
+								.get(Calendar.MONTH) == date
+								.get(Calendar.MONTH))) {
+					return DateUtils.getRelativeTimeSpanString(
+							date.getTimeInMillis(), (new Date()).getTime(),
+							DateUtils.DAY_IN_MILLIS);
+				} else {
+					return ctx.getString(R.string.today);
+				}
+			} else {
+				return new SimpleDateFormat(ctx.getString(R.string.dateFormat),
+						Locale.getDefault()).format(date.getTime());
+			}
+		}
 	}
 }
