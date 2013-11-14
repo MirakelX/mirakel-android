@@ -454,8 +454,7 @@ public class Task extends TaskBase {
 			values.put(DatabaseHelper.UPDATED_AT,
 					DateTimeHelper.formatDateTime(getUpdatedAt()));
 		database.beginTransaction();
-		long insertId;
-		insertId = database.insertOrThrow(TABLE, null, values);
+		long insertId = database.insertOrThrow(TABLE, null, values);
 		database.setTransactionSuccessful();
 		database.endTransaction();
 		Cursor cursor = database.query(TABLE, allColumns, DatabaseHelper.ID

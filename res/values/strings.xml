@@ -44,6 +44,7 @@
     <string name="menu_sort_lists">Reorder lists</string>
     <string name="no_https">You should use https!</string>
     <string name="finish_sync">Finish sync</string>
+    <string name="local_account">Local Account</string>
 
     <!-- Example Data -->
     <string name="inbox">Inbox</string>

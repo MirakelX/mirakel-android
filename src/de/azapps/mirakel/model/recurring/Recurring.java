@@ -142,7 +142,6 @@ public class Recurring extends RecurringBase {
 		database.delete(TABLE, "temporary=1 AND _id=" + recurrenceId, null);
 		database.setTransactionSuccessful();
 		database.endTransaction();
-
 	}
 
 	public void destroy() {

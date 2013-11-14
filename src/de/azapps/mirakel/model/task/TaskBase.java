@@ -369,7 +369,6 @@ class TaskBase {
 				throw new NoSuchListException();
 		}
 		cv.put(LIST_ID, list.getId());
-
 		cv.put(DatabaseHelper.NAME, name);
 		cv.put(CONTENT, content);
 		cv.put(DONE, done);

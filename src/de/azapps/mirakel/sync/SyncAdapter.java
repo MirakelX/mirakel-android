@@ -58,12 +58,56 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			BUNDLE_ORG = "de.azapps.mirakel.org";
 	public static final String BUNDLE_SERVER_TYPE = "type";
 	public static final String TASKWARRIOR_KEY = "key";
-	public static final String SYNC_STATE="sync_state";
+	public static final String SYNC_STATE = "sync_state";
 	private static CharSequence last_message = null;
 	private Context mContext;
+	public static final String ACCOUNT_PREFIX = "ACCOUNT_";
 
 	public enum SYNC_TYPES {
-		MIRAKEL, TASKWARRIOR, CALDAV
+		MIRAKEL, TASKWARRIOR, CALDAV, LOCAL;
+		public int toInt() {
+			switch (this) {
+			case CALDAV:
+				return 1;
+			case LOCAL:
+				return -1;
+			case MIRAKEL:
+				Log.w(TAG, "do not use Mirakel-Accounts");
+				return 3;
+			case TASKWARRIOR:
+				return 2;
+			default:
+				throw new RuntimeException();
+			}
+		}
+
+		public static SYNC_TYPES parseInt(int i) {
+			switch (i) {
+			case -1:
+				return LOCAL;
+			case 1:
+				return CALDAV;
+			case 2:
+				return TASKWARRIOR;
+			case 3:
+				return MIRAKEL;
+
+			default:
+				throw new IllegalArgumentException();
+			}
+
+		}
+
+		public static SYNC_TYPES getSyncType(String type) {
+			if (type.equals("Mirakel")) {
+				return MIRAKEL;
+			} else if (type.equals("Taskwarrior")) {
+				return TASKWARRIOR;
+			} else if (type.equals("CalDav")) {
+				return CALDAV;
+			} else
+				return LOCAL;
+		}
 	};
 
 	public enum SYNC_STATE {
@@ -105,17 +149,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				return NOTHING;
 			}
 		}
-	}
-
-	public static SYNC_TYPES getSyncType(String type) {
-		if (type.equals("Mirakel")) {
-			return SYNC_TYPES.MIRAKEL;
-		} else if (type.equals("Taskwarrior")) {
-			return SYNC_TYPES.TASKWARRIOR;
-		} else if (type.equals("CalDav")) {
-			return SYNC_TYPES.CALDAV;
-		} else
-			return null;
 	}
 
 	public SyncAdapter(Context context, boolean autoInitialize) {
