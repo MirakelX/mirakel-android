@@ -1187,7 +1187,7 @@ public class PreferencesHelper {
 													if (old_val > val) {
 														for (int i = val; i < max; i++) {
 															editor.putString(
-																	Helpers.UNDO
+																	UndoHistory.UNDO
 																			+ i,
 																	"");
 														}
