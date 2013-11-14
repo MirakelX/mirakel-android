@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.http.message.BasicNameValuePair;
 
+import sheetrock.panda.changelog.ChangeLog;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
