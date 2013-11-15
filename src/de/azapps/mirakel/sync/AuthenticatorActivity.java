@@ -78,7 +78,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.helper.FileUtils;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -89,6 +88,7 @@ import de.azapps.mirakel.sync.caldav.CalDavSync;
 import de.azapps.mirakel.sync.mirakel.MirakelSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.FileUtils;
 
 /**
  * Activity which displays login screen to the user.

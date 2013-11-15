@@ -35,6 +35,7 @@ import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.FileUtils;
 
 public class Helpers {
 	private static String TAG = "Helpers";
