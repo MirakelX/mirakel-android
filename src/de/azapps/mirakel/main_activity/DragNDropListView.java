@@ -1,3 +1,21 @@
+/*******************************************************************************
+ * Mirakel is an Android App for managing your ToDo-Lists
+ * 
+ * Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
+ * 
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     any later version.
+ * 
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ * 
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
 package de.azapps.mirakel.main_activity;
 
 import android.content.Context;
@@ -187,6 +205,61 @@ public class DragNDropListView extends ListView {
 			mDragView.setImageDrawable(null);
 			mDragView = null;
 		}
+	}
+
+	public interface DropListener {
+
+		/**
+		 * Called when an item is to be dropped.
+		 * 
+		 * @param from
+		 *            - index item started at.
+		 * @param to
+		 *            - index to place item at.
+		 */
+		void onDrop(int from, int to);
+	}
+
+	public interface DragListener {
+		/**
+		 * Called when a drag starts.
+		 * 
+		 * @param itemView
+		 *            - the view of the item to be dragged i.e. the drag view
+		 */
+		void onStartDrag(View itemView);
+
+		/**
+		 * Called when a drag is to be performed.
+		 * 
+		 * @param x
+		 *            - horizontal coordinate of MotionEvent.
+		 * @param y
+		 *            - verital coordinate of MotionEvent.
+		 * @param listView
+		 *            - the listView
+		 */
+		void onDrag(int x, int y, ListView listView);
+
+		/**
+		 * Called when a drag stops. Any changes in onStartDrag need to be
+		 * undone here so that the view can be used in the list again.
+		 * 
+		 * @param itemView
+		 *            - the view of the item to be dragged i.e. the drag view
+		 */
+		void onStopDrag(View itemView);
+	}
+
+	public interface RemoveListener {
+
+		/**
+		 * Called when an item is to be removed
+		 * 
+		 * @param which
+		 *            - indicates which item to remove.
+		 */
+		void onRemove(int which);
 	}
 
 }
