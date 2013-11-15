@@ -65,6 +65,7 @@ import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
+import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.helper.UndoHistory;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -672,7 +673,7 @@ public class MainActivity extends ActionBarActivity implements
 			Log.d(TAG, "action null");
 		} else if (startIntent.getAction().equals(SHOW_TASK)
 				|| startIntent.getAction().equals(SHOW_TASK_FROM_WIDGET)) {
-			Task task = Helpers.getTaskFromIntent(startIntent);
+			Task task = TaskHelper.getTaskFromIntent(startIntent);
 			if (task != null) {
 				skipSwipe = true;
 				setCurrentList(task.getList());
@@ -789,7 +790,7 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	private void handleReminder(Intent intent) {
-		Task task = Helpers.getTaskFromIntent(intent);
+		Task task = TaskHelper.getTaskFromIntent(intent);
 		if (task == null)
 			return;
 		if (intent.getAction() == TASK_DONE) {

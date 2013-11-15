@@ -59,7 +59,7 @@ public class WidgetHelper {
 				rv.setViewVisibility(R.id.tasks_row_due, View.GONE);
 			}
 			rv.setInt(R.id.tasks_row_priority, "setBackgroundColor",
-					Helpers.getPrioColor(task.getPriority(), context));
+					TaskHelper.getPrioColor(task.getPriority(), context));
 		}
 		rv.setTextColor(R.id.tasks_row_name,
 				WidgetHelper.getFontColor(context, widgetId));
@@ -84,7 +84,7 @@ public class WidgetHelper {
 					.getColor(R.color.Black));
 			GradientDrawable drawable = (GradientDrawable) context
 					.getResources().getDrawable(R.drawable.priority_rectangle);
-			drawable.setColor(Helpers.getPrioColor(task.getPriority(), context));
+			drawable.setColor(TaskHelper.getPrioColor(task.getPriority(), context));
 			Bitmap bitmap = Bitmap.createBitmap(40, 40, Config.ARGB_8888);
 			Canvas canvas = new Canvas(bitmap);
 			drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -114,7 +114,7 @@ public class WidgetHelper {
 					rv.setTextColor(
 							R.id.tasks_row_due,
 							context.getResources().getColor(
-									Helpers.getTaskDueColor(task.getDue(),
+									TaskHelper.getTaskDueColor(task.getDue(),
 											task.isDone())));
 				}
 			} else {
