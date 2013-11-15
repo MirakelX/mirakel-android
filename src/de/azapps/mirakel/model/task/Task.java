@@ -266,6 +266,9 @@ public class Task extends TaskBase {
 	}
 
 	public void addSubtask(Task t) throws NoSuchListException {
+		if (checkIfParent(t)) {
+			return;
+		}
 		ContentValues cv = new ContentValues();
 		cv.put("parent_id", getId());
 		cv.put("child_id", t.getId());
