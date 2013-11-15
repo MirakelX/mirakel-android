@@ -205,7 +205,7 @@ public class MirakelContentProvider extends ContentProvider {
 		} finally {
 			database.endTransaction();
 		}
-
+		Log.d(TAG,"insert...");
 		return Uri.parse(uri.toString() + "/" + id);
 
 	}
@@ -281,7 +281,7 @@ public class MirakelContentProvider extends ContentProvider {
 			}
 		}
 		newValues.put(SyncAdapter.SYNC_STATE, SYNC_STATE.ADD.toInt());
-		return null;
+		return newValues;
 	}
 
 	@Override
@@ -514,6 +514,7 @@ public class MirakelContentProvider extends ContentProvider {
 					+ SYNC_STATE.ADD + " THEN 1 ELSE 0 END",
 					TaskContract.Tasks.IS_NEW, true);
 			query += addSegment(Task.UUID, Tasks._SYNC_ID, true);
+			query += addSegment(Task.ADDITIONAL_ENTRIES, Tasks.SYNC1, true);
 		}
 		query += addSegment("strftime('%s'," + DatabaseHelper.UPDATED_AT
 				+ ")*1000", Tasks.LAST_MODIFIED, true);
