@@ -4,7 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content" >
 
-    <de.azapps.mirakel.helper.DateTimePicker
+    <com.ptashek.widgets.datetimepicker.DateTimePicker
         android:id="@+id/DateTimePicker"
         android:layout_width="fill_parent"
         android:layout_centerHorizontal="true"

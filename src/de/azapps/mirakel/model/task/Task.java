@@ -31,8 +31,10 @@ import java.util.Set;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.preference.PreferenceManager;
 import android.util.Pair;
 import android.widget.Toast;
 
@@ -266,6 +268,9 @@ public class Task extends TaskBase {
 	}
 
 	public void addSubtask(Task t) throws NoSuchListException {
+		if (checkIfParent(t)) {
+			return;
+		}
 		ContentValues cv = new ContentValues();
 		cv.put("parent_id", getId());
 		cv.put("child_id", t.getId());
@@ -787,6 +792,17 @@ public class Task extends TaskBase {
 				t.addAdditionalEntry(key, val.getAsString());
 			}
 		}
+        if (t.getList() == null){
+        	ListMirakel l=null;
+        	SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(context);
+        	if (p.getBoolean("importDefaultList", false)) {
+        		l=ListMirakel.getList(p.getInt("defaultImportList", SpecialList.firstSpecialSafe(context).getId()));
+        	}
+        	if(l==null){
+        		l=SpecialList.firstSpecialSafe(context);
+        	}
+            t.setList(l);
+        }
 		return t;
 	}
 

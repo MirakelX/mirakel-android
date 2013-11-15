@@ -75,11 +75,13 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.ViewSwitcher;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
+import de.azapps.mirakel.adapter.MirakelArrayAdapter;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
+import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.task.Task;
@@ -374,7 +376,7 @@ public class TaskFragmentAdapter extends
 
 		GradientDrawable bg = (GradientDrawable) holder.taskRowPriority
 				.getBackground();
-		bg.setColor(Helpers.getPrioColor(task.getPriority(), context));
+		bg.setColor(TaskHelper.getPrioColor(task.getPriority(), context));
 		holder.taskRowPriority.setTag(task);
 
 		// Due
@@ -383,7 +385,7 @@ public class TaskFragmentAdapter extends
 			holder.taskRowDue
 					.setText(DateTimeHelper.formatDate(context, task.getDue()));
 			holder.taskRowDue.setTextColor(row.getResources().getColor(
-					Helpers.getTaskDueColor(task.getDue(), task.isDone())));
+					TaskHelper.getTaskDueColor(task.getDue(), task.isDone())));
 		} else {
 			holder.taskRowDue.setVisibility(View.GONE);
 		}
@@ -965,7 +967,7 @@ public class TaskFragmentAdapter extends
 		} else {
 			holder.taskDue.setText(DateTimeHelper.formatDate(context, task.getDue()));
 			holder.taskDue.setTextColor(context.getResources().getColor(
-					Helpers.getTaskDueColor(task.getDue(), task.isDone())));
+					TaskHelper.getTaskDueColor(task.getDue(), task.isDone())));
 		}
 	}
 
@@ -1102,7 +1104,7 @@ public class TaskFragmentAdapter extends
 		Task_prio.setText("" + task.getPriority());
 
 		GradientDrawable bg = (GradientDrawable) Task_prio.getBackground();
-		bg.setColor(Helpers.getPrioColor(task.getPriority(), context));
+		bg.setColor(TaskHelper.getPrioColor(task.getPriority(), context));
 
 	}
 

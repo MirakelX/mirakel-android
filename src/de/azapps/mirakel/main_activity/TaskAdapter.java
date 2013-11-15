@@ -38,8 +38,10 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import de.azapps.mirakel.adapter.MirakelArrayAdapter;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Helpers;
+import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
@@ -198,7 +200,7 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 
 		GradientDrawable bg = (GradientDrawable) holder.taskRowPriority
 				.getBackground();
-		bg.setColor(Helpers.getPrioColor(task.getPriority(), context));
+		bg.setColor(TaskHelper.getPrioColor(task.getPriority(), context));
 		holder.taskRowPriority.setTag(task);
 
 		// Due
@@ -207,7 +209,7 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 			holder.taskRowDue
 					.setText(DateTimeHelper.formatDate(context, task.getDue()));
 			holder.taskRowDue.setTextColor(row.getResources().getColor(
-					Helpers.getTaskDueColor(task.getDue(), task.isDone())));
+					TaskHelper.getTaskDueColor(task.getDue(), task.isDone())));
 		} else {
 			holder.taskRowDue.setVisibility(View.GONE);
 		}
