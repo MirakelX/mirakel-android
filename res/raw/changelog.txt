@@ -23,6 +23,7 @@ $ 2.1.2+x
     * Bugfixes
     * Improved Any.Do import
     * Import from Wunderlist
+    * We prepare Mirakel for the CalDAV sync…
 $ 2.1.2
   % Version 2.1.2
   _ 2013-11-06
