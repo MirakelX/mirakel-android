@@ -1,4 +1,4 @@
-package de.azapps.mirakel.helper;
+package de.azapps.mirakel.adapter;
 
 import java.util.List;
 

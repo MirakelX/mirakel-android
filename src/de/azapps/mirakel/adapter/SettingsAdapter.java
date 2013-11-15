@@ -1,4 +1,4 @@
-package de.azapps.mirakel.helper;
+package de.azapps.mirakel.adapter;
 
 import java.util.List;
 
@@ -20,6 +20,8 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.PreferencesHelper;
 import de.azapps.mirakelandroid.R;
 
 public class SettingsAdapter extends ArrayAdapter<Header> {
