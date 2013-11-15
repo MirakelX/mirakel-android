@@ -37,7 +37,6 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
-import de.azapps.mirakel.helper.DueDialog.VALUE;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.main_activity.TaskFragmentAdapter;
@@ -51,6 +50,8 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 import de.azapps.mirakelandroid.R;
+import de.azapps.widgets.DueDialog;
+import de.azapps.widgets.DueDialog.VALUE;
 
 public class TaskDialogHelpers {
 	protected static final String TAG = "TaskDialogHelpers";
