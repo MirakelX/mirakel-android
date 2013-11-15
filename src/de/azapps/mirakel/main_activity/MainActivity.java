@@ -81,38 +81,42 @@ import de.azapps.mirakel.widget.MainWidgetProvider;
 import de.azapps.mirakelandroid.R;
 
 /**
- * @see "https://thepseudocoder.wordpress.com/2011/10/13/android-tabs-viewpager-swipe-able-tabs-ftw/"
+ * This is our main activity. Here happens nearly everything.
+ * 
  * @author az
  * 
  */
 public class MainActivity extends ActionBarActivity implements
 		ViewPager.OnPageChangeListener {
 
-	/**
-	 * The {@link ViewPager} that will host the section contents.
-	 */
+	// Layout variables
 	ViewPager mViewPager;
 	private PagerAdapter mPagerAdapter;
-
 	protected ListFragment listFragment;
 	protected TaskFragment taskFragment;
-	// protected TaskFragment taskFragment;*/
 	private Menu menu;
+	public boolean darkTheme;
+
+	// State variables
 	private Task currentTask;
 	private ListMirakel currentList;
 	private List<ListMirakel> lists;
+	protected int currentPosition = TASKS_FRAGMENT;
+
+	// Foo variables (move them out of the MainActivity)
 	private AlertDialog taskMoveDialog;
 	protected boolean isTablet;
 	private boolean highlightSelected;
 	private DrawerLayout mDrawerLayout;
 	private Uri fileUri;
+	public SharedPreferences preferences;
+	public static boolean updateTasksUUID = false;
 
+	// Intent variables
 	protected static final int TASKS_FRAGMENT = 0, TASK_FRAGMENT = 1;
 	protected static final int RESULT_SPEECH_NAME = 1, RESULT_SPEECH = 3,
 			RESULT_SETTINGS = 4, RESULT_ADD_FILE = 5, RESULT_CAMERA = 6,
 			RESULT_ADD_PICTURE = 7;
-	private static final String TAG = "MainActivity";
-
 	public static String EXTRA_ID = "de.azapps.mirakel.EXTRA_TASKID",
 			SHOW_TASK = "de.azapps.mirakel.SHOW_TASK",
 			TASK_DONE = "de.azapps.mirakel.TASK_DONE",
@@ -123,18 +127,16 @@ public class MainActivity extends ActionBarActivity implements
 			ADD_TASK_FROM_WIDGET = "de.azapps.mirakel.ADD_TASK_FROM_WIDGET",
 			SHOW_TASK_FROM_WIDGET = "de.azapps.mirakel.SHOW_TASK_FROM_WIDGET",
 			TASK_ID = "de.azapp.mirakel.TASK_ID";
-	public SharedPreferences preferences;
-
-	protected int currentPosition = TASKS_FRAGMENT;
-	public boolean darkTheme;
-	private boolean isResumend;
 	private Intent startIntent;
+
+	private static final String TAG = "MainActivity";
+
+	// User interaction variables
+	private boolean isResumend;
 	private boolean closeOnBack = false;
 	private Stack<Task> goBackTo = new Stack<Task>();
 	private boolean showNavDrawer = false;
 	private boolean skipSwipe;
-
-	public static boolean updateTasksUUID = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
