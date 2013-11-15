@@ -789,6 +789,8 @@ public class Task extends TaskBase {
 				t.addAdditionalEntry(key, val.getAsString());
 			}
 		}
+        if (t.getList() == null)
+                t.setList(SpecialList.firstSpecial().getDefaultList());
 		return t;
 	}
 
