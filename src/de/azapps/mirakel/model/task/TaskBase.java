@@ -71,7 +71,7 @@ class TaskBase {
 	private SYNC_STATE sync_state;
 	private Calendar reminder;
 	private int recurrence;
-	private int recurrence_reminder;
+	private int recurring_reminder;
 
 	TaskBase(long id, String uuid, ListMirakel list, String name,
 			String content, boolean done, Calendar due, Calendar reminder,
@@ -92,7 +92,7 @@ class TaskBase {
 		this.setSyncState(sync_state);
 		this.additionalEntriesString = additionalEntriesString;
 		this.recurrence = recurring;
-		this.recurrence_reminder = recurring_reminder;
+		this.recurring_reminder = recurring_reminder;
 	}
 
 	TaskBase() {
@@ -113,7 +113,7 @@ class TaskBase {
 		this.setUpdatedAt((Calendar) null);
 		this.setSyncState(SYNC_STATE.NOTHING);
 		this.recurrence = -1;
-		this.recurrence_reminder = -1;
+		this.recurring_reminder = -1;
 	}
 
 	public Recurring getRecurring() {
@@ -130,16 +130,20 @@ class TaskBase {
 		edited.put(RECURRING, true);
 	}
 
-	public Recurring getRecurrenceReminder() {
-		return Recurring.get(recurrence_reminder);
+	public Recurring getRecurringReminder() {
+		return Recurring.get(recurring_reminder);
 	}
 
-	public int getRecurrenceReminderId() {
-		return recurrence_reminder;
+	public boolean hasRecurringReminder() {
+		return recurring_reminder > 0;
 	}
 
-	public void setRecurrenceReminder(int recurring) {
-		this.recurrence_reminder = recurring;
+	public int getRecurringReminderId() {
+		return recurring_reminder;
+	}
+
+	public void setRecurringReminder(int recurring) {
+		this.recurring_reminder = recurring;
 		edited.put(RECURRING_REMINDER, true);
 	}
 
@@ -239,7 +243,7 @@ class TaskBase {
 		this.reminder = reminder;
 		edited.put(REMINDER, true);
 		if (reminder == null) {
-			setRecurrenceReminder(-1);
+			setRecurringReminder(-1);
 		}
 	}
 
@@ -365,7 +369,6 @@ class TaskBase {
 				throw new NoSuchListException();
 		}
 		cv.put(LIST_ID, list.getId());
-
 		cv.put(DatabaseHelper.NAME, name);
 		cv.put(CONTENT, content);
 		cv.put(DONE, done);
@@ -387,7 +390,7 @@ class TaskBase {
 		cv.put(DatabaseHelper.UPDATED_AT, updatedAt);
 		cv.put(SyncAdapter.SYNC_STATE, sync_state.toInt());
 		cv.put(RECURRING, recurrence);
-		cv.put(RECURRING_REMINDER, recurrence_reminder);
+		cv.put(RECURRING_REMINDER, recurring_reminder);
 
 		Gson gson = new GsonBuilder().create();
 		String additionalEntries = gson.toJson(this.additionalEntries);

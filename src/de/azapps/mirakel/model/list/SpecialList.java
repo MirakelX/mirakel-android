@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.model.DatabaseHelper;
+import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
@@ -99,7 +100,7 @@ public class SpecialList extends ListMirakel {
 			ListMirakel listMirakel, Integer defaultDate, short sort_by,
 			SYNC_STATE sync_state, int color, int lft, int rgt) {
 
-		super(-id, name, sort_by, "", "", sync_state, 0, 0, color);
+		super(-id, name, sort_by, "", "", sync_state, 0, 0, color,AccountMirakel.getLocal());
 		this.active = active;
 		this.whereQuery = whereQuery;
 		this.defaultList = listMirakel;

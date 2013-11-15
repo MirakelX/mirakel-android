@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.annotation.SuppressLint;
+import android.os.Build;
 import android.util.Pair;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -99,6 +100,7 @@ public class RecurringActivity extends ListSettings {
 		return null;
 	}
 
+	@SuppressLint("NewApi")
 	@Override
 	public OnClickListener getDelOnClickListener() {
 		return new OnClickListener() {
@@ -106,7 +108,7 @@ public class RecurringActivity extends ListSettings {
 			@Override
 			public void onClick(View v) {
 				recurring.destroy();
-				if (!onIsMultiPane())
+				if (Build.VERSION.SDK_INT < 11 || !onIsMultiPane())
 					finish();
 				else {
 					try {

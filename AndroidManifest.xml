@@ -19,7 +19,7 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.azapps.mirakelandroid"
-    android:versionCode="12"
+    android:versionCode="15"
     android:versionName="2.1.2+x" >
 
     <!-- TODO Remove Unused Permissions -->
@@ -219,7 +219,7 @@
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <provider
-            android:name="de.azapps.mirakel.MirakelContentProvider"
+            android:name="de.azapps.mirakel.model.MirakelContentProvider"
             android:authorities="de.azapps.mirakel.provider"
             android:exported="true"
             android:permission="de.azapps.mirakel.provider.READ_WRITE_DATA"

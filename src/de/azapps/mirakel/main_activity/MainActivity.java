@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
 
+import sheetrock.panda.changelog.ChangeLog;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -60,11 +61,12 @@ import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.PagerAdapter;
-import de.azapps.mirakel.helper.ChangeLog;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
+import de.azapps.mirakel.helper.TaskHelper;
+import de.azapps.mirakel.helper.UndoHistory;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SearchList;
@@ -80,38 +82,42 @@ import de.azapps.mirakel.widget.MainWidgetProvider;
 import de.azapps.mirakelandroid.R;
 
 /**
- * @see "https://thepseudocoder.wordpress.com/2011/10/13/android-tabs-viewpager-swipe-able-tabs-ftw/"
+ * This is our main activity. Here happens nearly everything.
+ * 
  * @author az
  * 
  */
 public class MainActivity extends ActionBarActivity implements
 		ViewPager.OnPageChangeListener {
 
-	/**
-	 * The {@link ViewPager} that will host the section contents.
-	 */
+	// Layout variables
 	ViewPager mViewPager;
 	private PagerAdapter mPagerAdapter;
-
 	protected ListFragment listFragment;
 	protected TaskFragment taskFragment;
-	// protected TaskFragment taskFragment;*/
 	private Menu menu;
+	public boolean darkTheme;
+
+	// State variables
 	private Task currentTask;
 	private ListMirakel currentList;
 	private List<ListMirakel> lists;
+	protected int currentPosition = TASKS_FRAGMENT;
+
+	// Foo variables (move them out of the MainActivity)
 	private AlertDialog taskMoveDialog;
 	protected boolean isTablet;
 	private boolean highlightSelected;
 	private DrawerLayout mDrawerLayout;
 	private Uri fileUri;
+	public SharedPreferences preferences;
+	public static boolean updateTasksUUID = false;
 
+	// Intent variables
 	protected static final int TASKS_FRAGMENT = 0, TASK_FRAGMENT = 1;
 	protected static final int RESULT_SPEECH_NAME = 1, RESULT_SPEECH = 3,
 			RESULT_SETTINGS = 4, RESULT_ADD_FILE = 5, RESULT_CAMERA = 6,
 			RESULT_ADD_PICTURE = 7;
-	private static final String TAG = "MainActivity";
-
 	public static String EXTRA_ID = "de.azapps.mirakel.EXTRA_TASKID",
 			SHOW_TASK = "de.azapps.mirakel.SHOW_TASK",
 			TASK_DONE = "de.azapps.mirakel.TASK_DONE",
@@ -122,18 +128,16 @@ public class MainActivity extends ActionBarActivity implements
 			ADD_TASK_FROM_WIDGET = "de.azapps.mirakel.ADD_TASK_FROM_WIDGET",
 			SHOW_TASK_FROM_WIDGET = "de.azapps.mirakel.SHOW_TASK_FROM_WIDGET",
 			TASK_ID = "de.azapp.mirakel.TASK_ID";
-	public SharedPreferences preferences;
-
-	protected int currentPosition = TASKS_FRAGMENT;
-	public boolean darkTheme;
-	private boolean isResumend;
 	private Intent startIntent;
+
+	private static final String TAG = "MainActivity";
+
+	// User interaction variables
+	private boolean isResumend;
 	private boolean closeOnBack = false;
 	private Stack<Task> goBackTo = new Stack<Task>();
 	private boolean showNavDrawer = false;
 	private boolean skipSwipe;
-
-	public static boolean updateTasksUUID = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -259,7 +263,7 @@ public class MainActivity extends ActionBarActivity implements
 			startActivity(killIntent);
 			return false;
 		case R.id.menu_undo:
-			Helpers.undoLast(this);
+			UndoHistory.undoLast(this);
 			updateCurrentListAndTask();
 			if (currentPosition == TASK_FRAGMENT)
 				setCurrentTask(getCurrentTask());
@@ -669,7 +673,7 @@ public class MainActivity extends ActionBarActivity implements
 			Log.d(TAG, "action null");
 		} else if (startIntent.getAction().equals(SHOW_TASK)
 				|| startIntent.getAction().equals(SHOW_TASK_FROM_WIDGET)) {
-			Task task = Helpers.getTaskFromIntent(startIntent);
+			Task task = TaskHelper.getTaskFromIntent(startIntent);
 			if (task != null) {
 				skipSwipe = true;
 				setCurrentList(task.getList());
@@ -786,7 +790,7 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	private void handleReminder(Intent intent) {
-		Task task = Helpers.getTaskFromIntent(intent);
+		Task task = TaskHelper.getTaskFromIntent(intent);
 		if (task == null)
 			return;
 		if (intent.getAction() == TASK_DONE) {
@@ -795,7 +799,8 @@ public class MainActivity extends ActionBarActivity implements
 			Toast.makeText(this,
 					getString(R.string.reminder_notification_done_confirm),
 					Toast.LENGTH_LONG).show();
-		} else if (intent.getAction() == TASK_LATER) {
+		} else if (intent.getAction() == TASK_LATER
+				&& !task.hasRecurringReminder()) {
 			GregorianCalendar reminder = new GregorianCalendar();
 			int addMinutes = preferences.getInt("alarm_later", 15);
 			reminder.add(Calendar.MINUTE, addMinutes);
@@ -806,6 +811,7 @@ public class MainActivity extends ActionBarActivity implements
 					getString(R.string.reminder_notification_later_confirm,
 							addMinutes), Toast.LENGTH_LONG).show();
 		}
+		ReminderAlarm.closeNotificationFor(this, task.getId());
 		ReminderAlarm.updateAlarms(this);
 		getListFragment().update();
 		setCurrentList(task.getList());
@@ -1356,6 +1362,7 @@ public class MainActivity extends ActionBarActivity implements
 			}
 		}.run();
 	}
+
 	public int getCurrentPosition() {
 		return currentPosition;
 	}

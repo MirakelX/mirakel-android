@@ -1,4 +1,4 @@
-package de.azapps.mirakel.helper;
+package de.azapps.widgets;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;

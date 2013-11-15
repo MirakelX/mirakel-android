@@ -1,15 +1,29 @@
+/*******************************************************************************
+ * Mirakel is an Android App for managing your ToDo-Lists
+ * 
+ * Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
+ * 
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     any later version.
+ * 
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ * 
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
 package de.azapps.mirakel.helper;
 
 import java.io.File;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
-
-import org.joda.time.LocalDate;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -27,29 +41,18 @@ import android.graphics.Shader;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.text.format.DateUtils;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
-
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
-import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.Mirakel.NoSuchListException;
-import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.FileUtils;
 
 public class Helpers {
 	private static String TAG = "Helpers";
-	private static final short TASK = 0;
-	private static final short LIST = 1;
-	public static String UNDO = "OLD";
 
 	/**
 	 * Wrapper-Class
@@ -67,19 +70,6 @@ public class Helpers {
 				ctx.getResources().getBoolean(R.bool.isTablet));
 	}
 
-	public static Task getTaskFromIntent(Intent intent) {
-		Task task = null;
-		long taskId = intent.getLongExtra(MainActivity.EXTRA_ID, 0);
-		if (taskId == 0) {
-			// ugly fix for show Task from Widget
-			taskId = (long) intent.getIntExtra(MainActivity.EXTRA_ID, 0);
-		}
-		if (taskId != 0) {
-			task = Task.get(taskId);
-		}
-		return task;
-	}
-
 	/**
 	 * Share a Task as text with other apps
 	 * 
@@ -87,7 +77,7 @@ public class Helpers {
 	 * @param t
 	 */
 	public static void share(Context ctx, Task t) {
-		String subject = getTaskName(ctx, t);
+		String subject = TaskHelper.getTaskName(ctx, t);
 		share(ctx, subject, t.getContent());
 	}
 
@@ -108,27 +98,9 @@ public class Helpers {
 			} else {
 				body += "* ";
 			}
-			body += getTaskName(ctx, t) + "\n";
+			body += TaskHelper.getTaskName(ctx, t) + "\n";
 		}
 		share(ctx, subject, body);
-	}
-
-	/**
-	 * Helper for the share-functions
-	 * 
-	 * @param ctx
-	 * @param t
-	 * @return
-	 */
-	private static String getTaskName(Context ctx, Task t) {
-		String subject;
-		if (t.getDue() == null)
-			subject = ctx.getString(R.string.share_task_title, t.getName());
-		else
-			subject = ctx.getString(R.string.share_task_title_with_date,
-					t.getName(),
-					formatDate(t.getDue(), ctx.getString(R.string.dateFormat)));
-		return subject;
 	}
 
 	/**
@@ -151,94 +123,11 @@ public class Helpers {
 		context.startActivity(ci);
 	}
 
-	/**
-	 * Format a Date for showing it in the app
-	 * 
-	 * @param date
-	 *            Date
-	 * @param format
-	 *            Format–String (like dd.MM.YY)
-	 * @return The formatted Date as String
-	 */
-	public static CharSequence formatDate(Calendar date, String format) {
-		if (date == null)
-			return "";
-		else {
-			return new SimpleDateFormat(format, Locale.getDefault())
-					.format(date.getTime());
-		}
-	}
 
-	private static SharedPreferences settings = null;
+	static SharedPreferences settings = null;
 
 	public static void init(Context context) {
 		settings = PreferenceManager.getDefaultSharedPreferences(context);
-	}
-
-	/**
-	 * Formats the Date in the format, the user want to see. The default
-	 * configuration is the relative date format. So the due date is for example
-	 * „tomorrow“ instead of yyyy-mm-dd
-	 * 
-	 * @param ctx
-	 * @param date
-	 * @return
-	 */
-	public static CharSequence formatDate(Context ctx, Calendar date) {
-		if (date == null)
-			return "";
-		else {
-			if (settings.getBoolean("dateFormatRelative", true)) {
-				GregorianCalendar now = new GregorianCalendar();
-				now.setTime(new Date());
-				if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR1
-						|| !(now.get(Calendar.YEAR) == date.get(Calendar.YEAR)
-								&& now.get(Calendar.DAY_OF_MONTH) == date
-										.get(Calendar.DAY_OF_MONTH) && now
-								.get(Calendar.MONTH) == date
-								.get(Calendar.MONTH))) {
-					return DateUtils.getRelativeTimeSpanString(
-							date.getTimeInMillis(), (new Date()).getTime(),
-							DateUtils.DAY_IN_MILLIS);
-				} else {
-					return ctx.getString(R.string.today);
-				}
-			} else {
-				return new SimpleDateFormat(ctx.getString(R.string.dateFormat),
-						Locale.getDefault()).format(date.getTime());
-			}
-		}
-	}
-
-	/**
-	 * Returns the ID of the Color–Resource for a Due–Date
-	 * 
-	 * @param origDue
-	 *            The Due–Date
-	 * @param isDone
-	 *            Is the Task done?
-	 * @return ID of the Color–Resource
-	 */
-	public static int getTaskDueColor(Calendar origDue, boolean isDone) {
-		if (origDue == null)
-			return R.color.Grey;
-		LocalDate today = new LocalDate();
-		LocalDate nextWeek = new LocalDate().plusDays(7);
-		LocalDate due = new LocalDate(origDue);
-		int cmpr = today.compareTo(due);
-		int color;
-		if (isDone) {
-			color = R.color.Grey;
-		} else if (cmpr > 0) {
-			color = R.color.Red;
-		} else if (cmpr == 0) {
-			color = R.color.Orange;
-		} else if (nextWeek.compareTo(due) >= 0) {
-			color = R.color.Yellow;
-		} else {
-			color = R.color.Green;
-		}
-		return color;
 	}
 
 	public static void contact(Context context) {
@@ -281,13 +170,10 @@ public class Helpers {
 		Intent fileDialogIntent = new Intent(Intent.ACTION_GET_CONTENT);
 		fileDialogIntent.setType("*/*");
 		fileDialogIntent.addCategory(Intent.CATEGORY_OPENABLE);
-
 		try {
 			activity.startActivityForResult(
 					Intent.createChooser(fileDialogIntent, title), code);
 		} catch (android.content.ActivityNotFoundException ex) {
-			// Potentially direct the user to the Market with a
-			// Dialog
 			Toast.makeText(activity, R.string.no_filemanager,
 					Toast.LENGTH_SHORT).show();
 		}
@@ -302,114 +188,6 @@ public class Helpers {
 			return "";
 		}
 	}
-
-	public static void updateLog(ListMirakel listMirakel, Context ctx) {
-		if (listMirakel != null)
-			updateLog(LIST, listMirakel.toJson(), ctx);
-
-	}
-
-	private static void updateLog(short type, String json, Context ctx) {
-		if (ctx == null) {
-			Log.e(TAG, "context is null");
-			return;
-		}
-		// Log.d(TAG, json);
-		SharedPreferences.Editor editor = settings.edit();
-		for (int i = settings.getInt("UndoNumber", 10); i > 0; i--) {
-			String old = settings.getString(UNDO + (i - 1), "");
-			editor.putString(UNDO + i, old);
-		}
-		editor.putString(UNDO + 0, type + json);
-		editor.commit();
-	}
-
-	public static void updateLog(Task task, Context ctx) {
-		if (task != null)
-			updateLog(TASK, task.toJson(), ctx);
-
-	}
-
-	public static void undoLast(Context ctx) {
-		String last = settings.getString(UNDO + 0, "");
-		if (last != null && !last.equals("")) {
-			short type = Short.parseShort(last.charAt(0) + "");
-			if (last.charAt(1) != '{') {
-				try {
-					Long id = Long.parseLong(last.substring(1));
-					switch (type) {
-					case TASK:
-						Task.get(id).destroy(true);
-						break;
-					case LIST:
-						ListMirakel.getList(id.intValue()).destroy(true);
-						break;
-					default:
-						Log.wtf(TAG, "unkown Type");
-						break;
-					}
-				} catch (Exception e) {
-					Log.e(TAG, "cannot parse String");
-				}
-
-			} else {
-				JsonObject json = new JsonParser().parse(last.substring(1))
-						.getAsJsonObject();
-				switch (type) {
-				case TASK:
-					try {
-						Task t = Task.parse_json(json);
-						if (Task.get(t.getId()) != null)
-							t.save(false);
-						else {
-							try {
-								Mirakel.getWritableDatabase().insert(
-										Task.TABLE, null, t.getContentValues());
-							} catch (Exception e) {
-								Log.e(TAG, "cannot restore Task");
-							}
-						}
-					} catch (NoSuchListException e) {
-						Log.e(TAG, "List not found");
-					}
-					break;
-				case LIST:
-					ListMirakel l = ListMirakel.parseJson(json);
-					if (ListMirakel.getList(l.getId()) != null)
-						l.save(false);
-					else {
-						try {
-							Mirakel.getWritableDatabase().insert(
-									ListMirakel.TABLE, null,
-									l.getContentValues());
-						} catch (Exception e) {
-							Log.e(TAG, "cannot restore List");
-						}
-					}
-					break;
-				default:
-					Log.wtf(TAG, "unkown Type");
-					break;
-				}
-			}
-		}
-		SharedPreferences.Editor editor = settings.edit();
-		for (int i = 0; i < settings.getInt("UndoNumber", 10); i++) {
-			String old = settings.getString(UNDO + (i + 1), "");
-			editor.putString(UNDO + i, old);
-		}
-		editor.putString(UNDO + 10, "");
-		editor.commit();
-	}
-
-	public static void logCreate(Task newTask, Context ctx) {
-		updateLog(TASK, newTask.getId() + "", ctx);
-	}
-
-	public static void logCreate(ListMirakel newList, Context ctx) {
-		updateLog(LIST, newList.getId() + "", ctx);
-	}
-
 	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
 	public static void setListColorBackground(ListMirakel list, View row,
@@ -560,21 +338,6 @@ public class Helpers {
 		i2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		i2.setData(Uri.parse(url));
 		ctx.startActivity(i2);
-	}
-
-	public static int getPrioColor(int priority, Context context) {
-		final int[] PRIO_COLOR = { Color.parseColor("#669900"),
-				Color.parseColor("#99CC00"), Color.parseColor("#33B5E5"),
-				Color.parseColor("#FFBB33"), Color.parseColor("#FF4444") };
-		final int[] DARK_PRIO_COLOR = { Color.parseColor("#008000"),
-				Color.parseColor("#00c400"), Color.parseColor("#3377FF"),
-				Color.parseColor("#FF7700"), Color.parseColor("#FF3333") };
-		if (settings.getBoolean("DarkTheme", false)) {
-			return DARK_PRIO_COLOR[priority + 2];
-		} else {
-			return PRIO_COLOR[priority + 2];
-		}
-
 	}
 
 	public static Locale getLocal(Context ctx) {

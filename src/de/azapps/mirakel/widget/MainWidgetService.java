@@ -77,7 +77,8 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	}
 
 	public int getCount() {
-		tasks = list.tasks(WidgetHelper.showDone(mContext, widgetId));
+		if (tasks.size() == 0)
+			onDataSetChanged();
 		return tasks.size();
 	}
 
@@ -131,6 +132,7 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	}
 
 	public void onDataSetChanged() {
-		tasks = list.tasks(WidgetHelper.showDone(mContext, widgetId));
+		tasks = Task.getTasks(list.getId(), list.getSortBy(),
+				WidgetHelper.showDone(mContext, widgetId));
 	}
 }

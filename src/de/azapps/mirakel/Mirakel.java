@@ -25,6 +25,7 @@ import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -36,6 +37,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.DatabaseHelper;
+import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -75,9 +77,14 @@ public class Mirakel extends Application {
 	private static final String TAG = "Mirakel";
 
 	private static SQLiteOpenHelper openHelper;
-	public static String MIRAKEL_DIR;
-	
+	private static String MIRAKEL_DIR;
 
+	public static String getMirakelDir() {
+		if (MIRAKEL_DIR == null)
+			MIRAKEL_DIR = Environment.getDataDirectory() + "/data/"
+					+ Mirakel.APK_NAME + "/";
+		return MIRAKEL_DIR;
+	}
 
 	@Override
 	public void onCreate() {
@@ -90,8 +97,6 @@ public class Mirakel extends Application {
 				getBaseContext().getResources().getDisplayMetrics());
 		ACRA.init(this);
 		APK_NAME = getPackageName();
-		MIRAKEL_DIR = Environment.getDataDirectory() + "/data/"
-				+ Mirakel.APK_NAME + "/";
 		try {
 			VERSIONS_NAME = getPackageManager().getPackageInfo(
 					getPackageName(), 0).versionName;
@@ -103,13 +108,15 @@ public class Mirakel extends Application {
 		}
 		openHelper = new DatabaseHelper(this);
 		Mirakel.getWritableDatabase().execSQL("PRAGMA foreign_keys=ON;");
-		ListMirakel.init(getApplicationContext());
-		Task.init(getApplicationContext());
-		SpecialList.init(getApplicationContext());
-		FileMirakel.init(getApplicationContext());
-		Semantic.init(getApplicationContext());
-		Recurring.init(getApplicationContext());
-		Helpers.init(getApplicationContext());
+		Context ctx = getApplicationContext();
+		ListMirakel.init(ctx);
+		Task.init(ctx);
+		SpecialList.init(ctx);
+		FileMirakel.init(ctx);
+		Semantic.init(ctx);
+		Recurring.init(ctx);
+		Helpers.init(ctx);
+		AccountMirakel.init(ctx);
 		// Kill Notification Service if Notification disabled
 		SharedPreferences settings = PreferenceManager
 				.getDefaultSharedPreferences(this);
@@ -130,6 +137,7 @@ public class Mirakel extends Application {
 		FileMirakel.close();
 		Semantic.close();
 		Recurring.close();
+		AccountMirakel.close();
 	}
 
 	public static SQLiteDatabase getWritableDatabase() {

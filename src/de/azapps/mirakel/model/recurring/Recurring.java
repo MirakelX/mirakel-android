@@ -142,7 +142,6 @@ public class Recurring extends RecurringBase {
 		database.delete(TABLE, "temporary=1 AND _id=" + recurrenceId, null);
 		database.setTransactionSuccessful();
 		database.endTransaction();
-
 	}
 
 	public void destroy() {
@@ -225,7 +224,7 @@ public class Recurring extends RecurringBase {
 			if (isDue)
 				id = task.getRecurrenceId();
 			else
-				id = task.getRecurrenceReminderId();
+				id = task.getRecurringReminderId();
 			if (id > -1)
 				where += " OR _id=" + id;
 		}

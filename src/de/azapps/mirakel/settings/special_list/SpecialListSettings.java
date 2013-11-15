@@ -43,8 +43,6 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
-import de.azapps.mirakel.helper.DueDialog;
-import de.azapps.mirakel.helper.DueDialog.VALUE;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -52,7 +50,10 @@ import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.settings.ListSettings;
 import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.R;
+import de.azapps.widgets.DueDialog;
+import de.azapps.widgets.DueDialog.VALUE;
 
+@SuppressLint("NewApi")
 public class SpecialListSettings implements OnPreferenceChangeListener {
 	private SpecialList specialList;
 	private boolean v4_0;
@@ -83,6 +84,7 @@ public class SpecialListSettings implements OnPreferenceChangeListener {
 		name.setSummary(specialList.getName());
 		name.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
+			@SuppressLint("NewApi")
 			@Override
 			public boolean onPreferenceChange(Preference preference,
 					Object newValue) {

@@ -111,7 +111,7 @@ public class ListFragment extends Fragment {
 
 	@SuppressLint("NewApi")
 	public void update() {
-		if (view==null)
+		if (view == null || this.getActivity()==null)
 			return;
 		final List<ListMirakel> values = ListMirakel.all();
 		main.updateLists();
@@ -131,7 +131,7 @@ public class ListFragment extends Fragment {
 		listView.setItemsCanFocus(true);
 		listView.setAdapter(adapter);
 		listView.requestFocus();
-		listView.setDragListener(new DragListener() {
+		listView.setDragListener(new DragNDropListView.DragListener() {
 
 			@Override
 			public void onStopDrag(View itemView) {
@@ -150,7 +150,7 @@ public class ListFragment extends Fragment {
 				// Nothing
 			}
 		});
-		listView.setDropListener(new DropListener() {
+		listView.setDropListener(new DragNDropListView.DropListener() {
 
 			@Override
 			public void onDrop(int from, int to) {

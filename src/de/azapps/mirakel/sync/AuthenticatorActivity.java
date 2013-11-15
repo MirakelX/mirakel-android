@@ -78,7 +78,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.helper.FileUtils;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -89,6 +88,7 @@ import de.azapps.mirakel.sync.caldav.CalDavSync;
 import de.azapps.mirakel.sync.mirakel.MirakelSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.FileUtils;
 
 /**
  * Activity which displays login screen to the user.
@@ -181,7 +181,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				 */
 				String syncTypeString = mType.getSelectedItem().toString();
 				Log.d(TAG, syncTypeString);
-				syncType = SyncAdapter.getSyncType(syncTypeString);
+				syncType = SYNC_TYPES.getSyncType(syncTypeString);
 				mMessage.setText(syncTypeString);
 				ViewSwitcher switcher = (ViewSwitcher) findViewById(R.id.switcher_login);
 				switch (syncType) {
@@ -323,7 +323,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 	 *            The Submit button for which this method is invoked
 	 */
 	public void handleLogin(View view) {
-		syncType = SyncAdapter.getSyncType(mType.getSelectedItem().toString());
+		syncType = SYNC_TYPES.getSyncType(mType.getSelectedItem().toString());
 		if (mRequestNewAccount) {
 			mUsername = mUsernameEdit.getText().toString();
 		}

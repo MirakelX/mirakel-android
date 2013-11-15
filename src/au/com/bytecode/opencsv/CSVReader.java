@@ -1,4 +1,4 @@
-package de.azapps.mirakel.helper;
+package au.com.bytecode.opencsv;
 
 /**
  Copyright 2005 Bytecode Pty Ltd.
@@ -11,6 +11,8 @@ package de.azapps.mirakel.helper;
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
+ @see "http://sourceforge.net/p/opencsv/code/HEAD/tree/trunk/src/au/com/bytecode/opencsv/CSVReader.java"
+ @author Glen Smith
  */
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,6 +22,7 @@ import java.util.List;
 
 /**
  * A very simple CSV reader released under a commercial-friendly license.
+ * 
  * 
  * @author Glen Smith
  * 
