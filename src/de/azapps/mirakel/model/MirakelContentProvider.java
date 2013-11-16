@@ -30,6 +30,7 @@ import org.dmfs.provider.tasks.TaskContract;
 import org.dmfs.provider.tasks.TaskContract.TaskLists;
 import org.dmfs.provider.tasks.TaskContract.Tasks;
 
+import android.accounts.Account;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
@@ -40,6 +41,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
@@ -205,7 +207,7 @@ public class MirakelContentProvider extends ContentProvider {
 		} finally {
 			database.endTransaction();
 		}
-		Log.d(TAG,"insert...");
+		Log.d(TAG, "insert...");
 		return Uri.parse(uri.toString() + "/" + id);
 
 	}
@@ -488,39 +490,46 @@ public class MirakelContentProvider extends ContentProvider {
 	private String getTaskQuery(boolean isSpecial, int list_id,
 			boolean isSyncadapter) {
 		String query = "SELECT ";
-		query += addSegment(DatabaseHelper.NAME, TaskContract.Tasks.TITLE,
+		query += addSegment(Task.TABLE+"."+DatabaseHelper.NAME, TaskContract.Tasks.TITLE,
 				false);
-		query += addSegment(Task.CONTENT, TaskContract.Tasks.DESCRIPTION, true);
-		query += addSegment(Task.PRIORITY, TaskContract.Tasks.PRIORITY, true);
-		query += addSegment("strftime('%s'," + Task.DUE + ")*1000",
+		query += addSegment(Task.TABLE+"."+Task.CONTENT, TaskContract.Tasks.DESCRIPTION, true);
+		query += addSegment(Task.TABLE+"."+Task.PRIORITY, TaskContract.Tasks.PRIORITY, true);
+		query += addSegment("strftime('%s'," + Task.TABLE+"."+Task.DUE + ")*1000",
 				TaskContract.Tasks.DUE, true);
-		query += addSegment(Task.DONE, TaskContract.Tasks.STATUS, true);
+		query += addSegment(Task.TABLE+"."+Task.DONE, TaskContract.Tasks.STATUS, true);
 		if (isSpecial) {
-			query += addSegment("CASE " + Task.LIST_ID + " WHEN 1 THEN "
+			query += addSegment("CASE " + Task.TABLE+"."+Task.LIST_ID + " WHEN 1 THEN "
 					+ list_id + " ELSE " + list_id + " END",
 					TaskContract.Tasks.LIST_ID, true);
 		} else {
-			query += addSegment(Task.LIST_ID, TaskContract.Tasks.LIST_ID, true);
+			query += addSegment(Task.TABLE+"."+Task.LIST_ID, TaskContract.Tasks.LIST_ID, true);
 		}
 		if (isSyncadapter) {
-			query += addSegment("CASE " + SyncAdapter.SYNC_STATE + " WHEN "
+			query += addSegment("CASE " + Task.TABLE+"."+SyncAdapter.SYNC_STATE + " WHEN "
 					+ SYNC_STATE.NEED_SYNC + " THEN 1 ELSE 0 END",
 					TaskContract.Tasks._DIRTY, true);
-			query += addSegment(DatabaseHelper.ID, Tasks._ID, true);
-			query += addSegment("CASE " + SyncAdapter.SYNC_STATE + " WHEN "
+			query += addSegment(Task.TABLE+"."+DatabaseHelper.ID, Tasks._ID, true);
+			query += addSegment("CASE " + Task.TABLE+"."+SyncAdapter.SYNC_STATE + " WHEN "
 					+ SYNC_STATE.DELETE + " THEN 1 ELSE 0 END",
 					TaskContract.Tasks._DELETED, true);
-			query += addSegment("CASE " + SyncAdapter.SYNC_STATE + " WHEN "
-					+ SYNC_STATE.ADD + " THEN 1 ELSE 0 END",
-					TaskContract.Tasks.IS_NEW, true);
-			query += addSegment(Task.UUID, Tasks._SYNC_ID, true);
-			query += addSegment(Task.ADDITIONAL_ENTRIES, Tasks.SYNC1, true);
+//			query += addSegment("CASE " + Task.TABLE+"."+SyncAdapter.SYNC_STATE + " WHEN "
+//					+ SYNC_STATE.ADD + " THEN 1 ELSE 0 END",
+//					TaskContract.Tasks.IS_NEW, true);
+			query += addSegment(Task.TABLE+"."+Task.UUID, Tasks._SYNC_ID, true);
+			query += addSegment(Task.TABLE+"."+Task.ADDITIONAL_ENTRIES, Tasks.SYNC1, true);
 		}
-		query += addSegment("strftime('%s'," + DatabaseHelper.UPDATED_AT
+		query+= addSegment(AccountMirakel.TABLE+"."+DatabaseHelper.NAME, TaskContract.ACCOUNT_NAME, true);
+		query += addSegment("strftime('%s'," + Task.TABLE+"."+DatabaseHelper.UPDATED_AT
 				+ ")*1000", Tasks.LAST_MODIFIED, true);
-		query += addSegment("strftime('%s'," + DatabaseHelper.CREATED_AT
+		query += addSegment("strftime('%s'," + Task.TABLE+"."+DatabaseHelper.CREATED_AT
 				+ ")*1000", Tasks.CREATED, true);
-		query += " FROM " + Task.TABLE;
+		// query += " FROM " + Task.TABLE;
+		query += " FROM (" + Task.TABLE + " inner join " + ListMirakel.TABLE;
+		query += " on " + Task.TABLE + "." + Task.LIST_ID + "="
+				+ ListMirakel.TABLE + "." + DatabaseHelper.ID + ")";
+		query += " inner join " + AccountMirakel.TABLE + " on "
+				+ ListMirakel.TABLE + "." + ListMirakel.ACCOUNT_ID;
+		query += "=" + AccountMirakel.TABLE + "._id";
 		Log.d(TAG, query);
 		return query;
 	}
