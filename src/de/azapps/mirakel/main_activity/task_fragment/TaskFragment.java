@@ -16,7 +16,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package de.azapps.mirakel.main_activity;
+package de.azapps.mirakel.main_activity.task_fragment;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -50,7 +50,8 @@ import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
-import de.azapps.mirakel.main_activity.TaskFragmentAdapter.TYPE;
+import de.azapps.mirakel.main_activity.MainActivity;
+import de.azapps.mirakel.main_activity.task_fragment.TaskFragmentAdapter.TYPE;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;

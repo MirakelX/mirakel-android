@@ -16,7 +16,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package de.azapps.mirakel.main_activity;
+package de.azapps.mirakel.main_activity.task_fragment;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -82,6 +82,7 @@ import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.helper.TaskHelper;
+import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.task.Task;

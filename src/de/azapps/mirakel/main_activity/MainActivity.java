@@ -67,6 +67,9 @@ import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.helper.UndoHistory;
+import de.azapps.mirakel.main_activity.list_fragment.ListFragment;
+import de.azapps.mirakel.main_activity.task_fragment.TaskFragment;
+import de.azapps.mirakel.main_activity.tasks_fragment.TasksFragment;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SearchList;
@@ -107,7 +110,7 @@ public class MainActivity extends ActionBarActivity implements
 
 	// Foo variables (move them out of the MainActivity)
 	private AlertDialog taskMoveDialog;
-	protected boolean isTablet;
+	public boolean isTablet; // TODO remove this…
 	private boolean highlightSelected;
 	private DrawerLayout mDrawerLayout;
 	private Uri fileUri;
@@ -115,8 +118,8 @@ public class MainActivity extends ActionBarActivity implements
 	public static boolean updateTasksUUID = false;
 
 	// Intent variables
-	protected static final int TASKS_FRAGMENT = 0, TASK_FRAGMENT = 1;
-	protected static final int RESULT_SPEECH_NAME = 1, RESULT_SPEECH = 3,
+	public static final int TASKS_FRAGMENT = 0, TASK_FRAGMENT = 1;
+	public static final int RESULT_SPEECH_NAME = 1, RESULT_SPEECH = 3,
 			RESULT_SETTINGS = 4, RESULT_ADD_FILE = 5, RESULT_CAMERA = 6,
 			RESULT_ADD_PICTURE = 7;
 	public static String EXTRA_ID = "de.azapps.mirakel.EXTRA_TASKID",
@@ -474,8 +477,8 @@ public class MainActivity extends ActionBarActivity implements
 			if (intent != null) {
 				ArrayList<String> text = intent
 						.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-				((EditText) getTasksFragment().view
-						.findViewById(R.id.tasks_new)).setText(text.get(0));
+				((EditText) getTasksFragment().getView().findViewById(
+						R.id.tasks_new)).setText(text.get(0));
 			}
 			break;
 		case RESULT_ADD_FILE:
@@ -1059,7 +1062,7 @@ public class MainActivity extends ActionBarActivity implements
 	 * 
 	 * @return
 	 */
-	Task getCurrentTask() {
+	public Task getCurrentTask() {
 		return currentTask;
 	}
 
@@ -1068,7 +1071,7 @@ public class MainActivity extends ActionBarActivity implements
 	 * 
 	 * @param currentTask
 	 */
-	void setCurrentTask(Task currentTask) {
+	public void setCurrentTask(Task currentTask) {
 		setCurrentTask(currentTask, false);
 	}
 
@@ -1102,11 +1105,11 @@ public class MainActivity extends ActionBarActivity implements
 		}
 	}
 
-	void setCurrentTask(Task currentTask, boolean switchFragment) {
+	public void setCurrentTask(Task currentTask, boolean switchFragment) {
 		setCurrentTask(currentTask, switchFragment, true);
 	}
 
-	void setCurrentTask(Task currentTask, boolean switchFragment,
+	public void setCurrentTask(Task currentTask, boolean switchFragment,
 			boolean resetGoBackTo) {
 
 		this.currentTask = currentTask;
@@ -1163,7 +1166,7 @@ public class MainActivity extends ActionBarActivity implements
 	 * 
 	 * @return
 	 */
-	ListMirakel getCurrentList() {
+	public ListMirakel getCurrentList() {
 		if (currentList == null)
 			currentList = SpecialList.firstSpecialSafe(this);
 		return currentList;
@@ -1177,19 +1180,19 @@ public class MainActivity extends ActionBarActivity implements
 	 * @param currentList
 	 * @param switchFragment
 	 */
-	void setCurrentList(ListMirakel currentList, boolean switchFragment) {
+	public void setCurrentList(ListMirakel currentList, boolean switchFragment) {
 		setCurrentList(currentList, null, switchFragment, true);
 	}
 
-	void setCurrentList(ListMirakel currentList, View currentView) {
+	public void setCurrentList(ListMirakel currentList, View currentView) {
 		setCurrentList(currentList, currentView, true, true);
 	}
 
-	void setCurrentList(ListMirakel currentList) {
+	public void setCurrentList(ListMirakel currentList) {
 		setCurrentList(currentList, null, true, true);
 	}
 
-	void setCurrentList(ListMirakel currentList, View currentView,
+	public void setCurrentList(ListMirakel currentList, View currentView,
 			boolean switchFragment, boolean resetGoBackTo) {
 		if (currentList == null)
 			return;
@@ -1250,7 +1253,7 @@ public class MainActivity extends ActionBarActivity implements
 	 * 
 	 * @param task
 	 */
-	void updatesForTask(Task task) {
+	public void updatesForTask(Task task) {
 		if (currentTask != null && task.getId() == currentTask.getId()) {
 			currentTask = task;
 			getTaskFragment().update(task);
@@ -1304,7 +1307,7 @@ public class MainActivity extends ActionBarActivity implements
 		mViewPager.setCurrentItem(TASKS_FRAGMENT);
 	}
 
-	protected void showMessageFromSync() {
+	public void showMessageFromSync() {
 		CharSequence messageFromSync = SyncAdapter.getLastMessage();
 		if (messageFromSync != null) {
 			Toast.makeText(getApplicationContext(), messageFromSync,

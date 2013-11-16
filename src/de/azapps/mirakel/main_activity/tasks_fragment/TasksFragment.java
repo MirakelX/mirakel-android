@@ -16,7 +16,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package de.azapps.mirakel.main_activity;
+package de.azapps.mirakel.main_activity.tasks_fragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,6 +68,8 @@ import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
+import de.azapps.mirakel.main_activity.MainActivity;
+import de.azapps.mirakel.main_activity.task_fragment.TaskFragment;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
@@ -632,6 +634,9 @@ public class TasksFragment extends Fragment {
 				}
 			});
 		}
+	}
+	public View getView() {
+		return view;
 	}
 
 }
