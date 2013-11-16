@@ -54,6 +54,7 @@ import de.azapps.mirakel.main_activity.TaskFragmentAdapter.TYPE;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.FileUtils;
 
 public class TaskFragment extends Fragment {
 	private static final String TAG = "TaskActivity";
@@ -89,7 +90,7 @@ public class TaskFragment extends Fragment {
 				if (type == TYPE.FILE) {
 					FileMirakel file = main.getCurrentTask().getFiles()
 							.get(adapter.getData().get(position).second);
-					String mimetype = Helpers.getMimeType(file.getPath());
+					String mimetype = FileUtils.getMimeType(file.getPath());
 
 					Intent i2 = new Intent();
 					i2.setAction(android.content.Intent.ACTION_VIEW);
@@ -326,8 +327,8 @@ public class TaskFragment extends Fragment {
 					try {
 						Intent cameraIntent = new Intent(
 								MediaStore.ACTION_IMAGE_CAPTURE);
-						Uri fileUri = Helpers
-								.getOutputMediaFileUri(Helpers.MEDIA_TYPE_IMAGE);
+						Uri fileUri = FileUtils
+								.getOutputMediaFileUri(FileUtils.MEDIA_TYPE_IMAGE);
 						if (fileUri == null)
 							return;
 						main.setFileUri(fileUri);

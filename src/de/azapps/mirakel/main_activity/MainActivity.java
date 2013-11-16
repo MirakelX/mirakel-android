@@ -80,6 +80,7 @@ import de.azapps.mirakel.static_activities.SplashScreenActivity;
 import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.widget.MainWidgetProvider;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.FileUtils;
 
 /**
  * This is our main activity. Here happens nearly everything.
@@ -479,7 +480,7 @@ public class MainActivity extends ActionBarActivity implements
 			break;
 		case RESULT_ADD_FILE:
 			if (intent != null) {
-				final String file_path = Helpers.getPathFromUri(
+				final String file_path = FileUtils.getPathFromUri(
 						intent.getData(), this);
 				if (FileMirakel.newFile(this, currentTask, file_path) == null) {
 					Toast.makeText(this, getString(R.string.file_vanished),
@@ -525,7 +526,7 @@ public class MainActivity extends ActionBarActivity implements
 								currentList, false, this);
 						safeSaveTask(task);
 					}
-					task.addFile(this, Helpers.getPathFromUri(fileUri, this));
+					task.addFile(this, FileUtils.getPathFromUri(fileUri, this));
 					setCurrentList(task.getList());
 					setCurrentTask(task, true);
 
@@ -635,12 +636,12 @@ public class MainActivity extends ActionBarActivity implements
 
 		if (Intent.ACTION_SEND.equals(action) && type != null) {
 			Uri uri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
-			t.addFile(this, Helpers.getPathFromUri(uri, this));
+			t.addFile(this, FileUtils.getPathFromUri(uri, this));
 		} else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
 			ArrayList<Uri> imageUris = intent
 					.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
 			for (Uri uri : imageUris) {
-				t.addFile(this, Helpers.getPathFromUri(uri, this));
+				t.addFile(this, FileUtils.getPathFromUri(uri, this));
 			}
 		}
 

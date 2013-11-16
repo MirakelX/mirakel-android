@@ -73,6 +73,7 @@ import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.FileUtils;
 
 public class TasksFragment extends Fragment {
 	private static final String TAG = "TasksFragment";
@@ -613,8 +614,8 @@ public class TasksFragment extends Fragment {
 					try {
 						Intent cameraIntent = new Intent(
 								MediaStore.ACTION_IMAGE_CAPTURE);
-						Uri fileUri = Helpers
-								.getOutputMediaFileUri(Helpers.MEDIA_TYPE_IMAGE);
+						Uri fileUri = FileUtils
+								.getOutputMediaFileUri(FileUtils.MEDIA_TYPE_IMAGE);
 						if (fileUri == null)
 							return;
 						main.setFileUri(fileUri);
