@@ -28,7 +28,6 @@ import de.azapps.mirakelandroid.R;
 @SuppressLint("NewApi")
 public class MainWidgetSettingsFragment extends PreferenceFragment {
 	private static final String TAG = "MainWidgetSettingsFragment";
-	private boolean created = false;
 	private int widgetId;
 
 	@Override

@@ -383,8 +383,8 @@ public class TaskFragmentAdapter extends
 		// Due
 		if (task.getDue() != null) {
 			holder.taskRowDue.setVisibility(View.VISIBLE);
-			holder.taskRowDue
-					.setText(DateTimeHelper.formatDate(context, task.getDue()));
+			holder.taskRowDue.setText(DateTimeHelper.formatDate(context,
+					task.getDue()));
 			holder.taskRowDue.setTextColor(row.getResources().getColor(
 					TaskHelper.getTaskDueColor(task.getDue(), task.isDone())));
 		} else {
@@ -823,7 +823,8 @@ public class TaskFragmentAdapter extends
 			holder.taskReminder.setTextColor(context.getResources().getColor(
 					inactive_color));
 		} else {
-			holder.taskReminder.setText(DateTimeHelper.formatDate(task.getReminder(),
+			holder.taskReminder.setText(DateTimeHelper.formatDate(
+					task.getReminder(),
 					context.getString(R.string.humanDateTimeFormat)));
 			holder.taskReminder.setTextColor(context.getResources().getColor(
 					inactive_color));
@@ -966,7 +967,8 @@ public class TaskFragmentAdapter extends
 			holder.taskDue.setTextColor(context.getResources().getColor(
 					inactive_color));
 		} else {
-			holder.taskDue.setText(DateTimeHelper.formatDate(context, task.getDue()));
+			holder.taskDue.setText(DateTimeHelper.formatDate(context,
+					task.getDue()));
 			holder.taskDue.setTextColor(context.getResources().getColor(
 					TaskHelper.getTaskDueColor(task.getDue(), task.isDone())));
 		}
@@ -996,7 +998,7 @@ public class TaskFragmentAdapter extends
 			holder.taskName.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					if (((MainActivity) context).isTablet) {
+					if (Helpers.isTablet(context)) {
 						((EditText) ((MainActivity) context)
 								.findViewById(R.id.tasks_new))
 								.setOnFocusChangeListener(null);
@@ -1074,7 +1076,7 @@ public class TaskFragmentAdapter extends
 
 		String tname = task.getName();
 		holder.taskName.setText(tname == null ? "" : tname);
-		if (((MainActivity) context).isTablet)
+		if (Helpers.isTablet(context))
 			holder.taskName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
 
 		if (holder.switcher.getCurrentView().getId() == R.id.edit_name

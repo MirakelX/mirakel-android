@@ -149,7 +149,7 @@ public class TasksFragment extends Fragment {
 		listView.setDescendantFocusability(ListView.FOCUS_AFTER_DESCENDANTS);
 		// Events
 		newTask = (EditText) view.findViewById(R.id.tasks_new);
-		if (main.isTablet) {
+		if (Helpers.isTablet(main)) {
 			newTask.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
 		}
 		newTask.setOnEditorActionListener(new OnEditorActionListener() {

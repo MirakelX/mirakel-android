@@ -800,6 +800,12 @@ public class SpecialListSettings implements OnPreferenceChangeListener {
 												.getQuantityString(
 														R.plurals.due_day, val);
 										break;
+									default:
+										// The other things aren't
+										// shown in
+										// the dialog so we haven't to care
+										// about them
+										break;
 									}
 
 									due.setSummary(summary);

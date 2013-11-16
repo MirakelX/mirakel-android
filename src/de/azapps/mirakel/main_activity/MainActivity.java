@@ -109,12 +109,11 @@ public class MainActivity extends ActionBarActivity implements
 	protected int currentPosition = TASKS_FRAGMENT;
 
 	// Foo variables (move them out of the MainActivity)
-	private AlertDialog taskMoveDialog;
-	public boolean isTablet; // TODO remove this…
 	private boolean highlightSelected;
 	private DrawerLayout mDrawerLayout;
 	private Uri fileUri;
 	public SharedPreferences preferences;
+	// TODO We should do this somehow else
 	public static boolean updateTasksUUID = false;
 
 	// Intent variables
@@ -152,7 +151,7 @@ public class MainActivity extends ActionBarActivity implements
 		super.onCreate(savedInstanceState);
 
 		oldLogo();
-		isTablet = Helpers.isTablet(this);
+		boolean isTablet = Helpers.isTablet(this);
 		highlightSelected = preferences.getBoolean("highlightSelected",
 				isTablet);
 		if (!preferences.contains("highlightSelected")) {
@@ -277,7 +276,8 @@ public class MainActivity extends ActionBarActivity implements
 				getTasksFragment().getAdapter().changeData(
 						getCurrentList().tasks(), getCurrentList().getId());
 				getTasksFragment().getAdapter().notifyDataSetChanged();
-				if (!isTablet && currentPosition == TASKS_FRAGMENT)
+				if (!Helpers.isTablet(this)
+						&& currentPosition == TASKS_FRAGMENT)
 					setCurrentList(getCurrentList());
 			}
 			ReminderAlarm.updateAlarms(this);
@@ -403,7 +403,7 @@ public class MainActivity extends ActionBarActivity implements
 			if (getTaskFragment() != null && getTaskFragment().adapter != null) {
 				getTaskFragment().adapter.setEditContent(false);
 			}
-			if (!isTablet)
+			if (!Helpers.isTablet(this))
 				newmenu = R.menu.tasks;
 			else
 				newmenu = R.menu.tablet_right;
@@ -496,7 +496,7 @@ public class MainActivity extends ActionBarActivity implements
 		case RESULT_SETTINGS:
 			getListFragment().update();
 			highlightSelected = preferences.getBoolean("highlightSelected",
-					isTablet);
+					Helpers.isTablet(this));
 			if (!highlightSelected
 					&& (oldClickedList != null || oldClickedTask == null)) {
 				clearAllHighlights();
@@ -933,7 +933,6 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	public void handleMoveTask(final List<Task> tasks) {
-
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(R.string.dialog_move);
 		List<CharSequence> items = new ArrayList<CharSequence>();
@@ -987,12 +986,9 @@ public class MainActivity extends ActionBarActivity implements
 							setCurrentList(getCurrentList());
 							getListFragment().update();
 						}
-						taskMoveDialog.dismiss();
+						dialog.dismiss();
 					}
-				});
-
-		taskMoveDialog = builder.create();
-		taskMoveDialog.show();
+				}).show();
 	}
 
 	private ActionBarDrawerToggle mDrawerToggle;
@@ -1043,7 +1039,7 @@ public class MainActivity extends ActionBarActivity implements
 		TasksFragment tasksFragment = new TasksFragment();
 		tasksFragment.setActivity(this);
 		fragments.add(tasksFragment);
-		if (!isTablet) {
+		if (!Helpers.isTablet(this)) {
 			TaskFragment taskFragment = new TaskFragment();
 			fragments.add(taskFragment);
 		}
@@ -1053,7 +1049,7 @@ public class MainActivity extends ActionBarActivity implements
 		this.mViewPager = (ViewPager) super.findViewById(R.id.viewpager);
 		this.mViewPager.setAdapter(this.mPagerAdapter);
 		this.mViewPager.setOnPageChangeListener(this);
-		mViewPager.setOffscreenPageLimit(isTablet ? 1 : 2);
+		mViewPager.setOffscreenPageLimit(Helpers.isTablet(this) ? 1 : 2);
 
 	}
 
@@ -1076,9 +1072,6 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	private View oldClickedTask = null;
-
-	void highlightCurrentTask(Task currentTask) {
-	}
 
 	void highlightCurrentTask(Task currentTask, boolean multiselect) {
 		if (getTaskFragment() == null
@@ -1116,7 +1109,7 @@ public class MainActivity extends ActionBarActivity implements
 		if (resetGoBackTo)
 			goBackTo.clear();
 
-		highlightCurrentTask(currentTask);
+		highlightCurrentTask(currentTask, false);
 
 		if (getTaskFragment() != null) {
 			getTaskFragment().update(currentTask);
@@ -1212,7 +1205,7 @@ public class MainActivity extends ActionBarActivity implements
 
 		if (getTasksFragment() != null) {
 			getTasksFragment().updateList();
-			if (!isTablet && switchFragment)
+			if (!Helpers.isTablet(this) && switchFragment)
 				mViewPager.setCurrentItem(TASKS_FRAGMENT);
 		}
 		if (currentView == null && listFragment != null
@@ -1286,7 +1279,7 @@ public class MainActivity extends ActionBarActivity implements
 	public TaskFragment getTaskFragment() {
 		if (mPagerAdapter == null)
 			return null;
-		if (isTablet)
+		if (Helpers.isTablet(this))
 			return taskFragment;
 		Fragment f = this.getSupportFragmentManager().findFragmentByTag(
 				getFragmentTag(1));
