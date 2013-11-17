@@ -32,9 +32,11 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Gravity;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.account.AccountMirakel;
@@ -78,6 +80,7 @@ public class Mirakel extends Application {
 
 	private static SQLiteOpenHelper openHelper;
 	private static String MIRAKEL_DIR;
+	public static int GRAVITY_LEFT, GRAVITY_RIGHT;
 
 	public static String getMirakelDir() {
 		if (MIRAKEL_DIR == null)
@@ -89,6 +92,13 @@ public class Mirakel extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+			GRAVITY_LEFT = Gravity.START;
+			GRAVITY_RIGHT = Gravity.END;
+		} else {
+			GRAVITY_LEFT = Gravity.LEFT;
+			GRAVITY_RIGHT = Gravity.RIGHT;
+		}
 		Locale locale = Helpers.getLocal(this);
 		Locale.setDefault(locale);
 		Configuration config = new Configuration();
@@ -109,6 +119,9 @@ public class Mirakel extends Application {
 		openHelper = new DatabaseHelper(this);
 		Mirakel.getWritableDatabase().execSQL("PRAGMA foreign_keys=ON;");
 		Context ctx = getApplicationContext();
+
+		// Initialize Models
+
 		ListMirakel.init(ctx);
 		Task.init(ctx);
 		SpecialList.init(ctx);
@@ -117,6 +130,7 @@ public class Mirakel extends Application {
 		Recurring.init(ctx);
 		Helpers.init(ctx);
 		AccountMirakel.init(ctx);
+
 		// Kill Notification Service if Notification disabled
 		SharedPreferences settings = PreferenceManager
 				.getDefaultSharedPreferences(this);

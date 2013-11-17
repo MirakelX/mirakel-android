@@ -49,7 +49,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -448,7 +447,7 @@ public class MainActivity extends ActionBarActivity implements
 		} else if (currentPosition == TASKS_FRAGMENT && menu != null
 				&& menu.findItem(R.id.share_list) == null
 				&& currentList.countTasks() > 0
-				&& !mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
+				&& !mDrawerLayout.isDrawerOpen(Mirakel.GRAVITY_LEFT)) {
 			loadMenu(TASKS_FRAGMENT, true, true);
 		} else if (menu != null && menu.findItem(R.id.share_list) != null
 				&& currentList.countTasks() > 0) {
@@ -749,7 +748,7 @@ public class MainActivity extends ActionBarActivity implements
 			if (startIntent.getAction().contains(SHOW_LIST_FROM_WIDGET))
 				closeOnBack = true;
 		} else if (startIntent.getAction().equals(SHOW_LISTS)) {
-			mDrawerLayout.openDrawer(Gravity.LEFT);
+			mDrawerLayout.openDrawer(Mirakel.GRAVITY_LEFT);
 		} else if (startIntent.getAction().equals(Intent.ACTION_SEARCH)) {
 			String query = startIntent.getStringExtra(SearchManager.QUERY);
 			search(query);
@@ -1028,7 +1027,7 @@ public class MainActivity extends ActionBarActivity implements
 		// Set the drawer toggle as the DrawerListener
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
 		if (showNavDrawer) {
-			mDrawerLayout.openDrawer(Gravity.LEFT);
+			mDrawerLayout.openDrawer(Mirakel.GRAVITY_LEFT);
 		}
 
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);

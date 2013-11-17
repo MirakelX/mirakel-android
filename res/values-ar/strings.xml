@@ -35,7 +35,6 @@
   <string name="action_undo">التراجع عن التغيير الأخير</string>
   <string name="add_subtasks">إضافة مهمة فرعية...</string>
   <string name="remove_files">إزالة الملفات من المهمة</string>
-  <string name="remove_files_summary">هل تريد إزالة % 1$s من % 2$s؟</string>
   <string name="add_subtask">إضافة مهمة فرعية</string>
   <string name="remove_subtask">إزالة مهمة فرعية</string>
   <string name="subtask_add_options">خيارات &gt;&gt;</string>
