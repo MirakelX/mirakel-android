@@ -477,7 +477,7 @@ public class MainActivity extends ActionBarActivity implements
 			if (intent != null) {
 				ArrayList<String> text = intent
 						.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-				((EditText) getTasksFragment().getView().findViewById(
+				((EditText) getTasksFragment().getFragmentView().findViewById(
 						R.id.tasks_new)).setText(text.get(0));
 			}
 			break;
@@ -1147,7 +1147,7 @@ public class MainActivity extends ActionBarActivity implements
 		if (oldClickedTask == null)
 			return;
 		try {
-			ListView view = (ListView) getTasksFragment().getView()
+			ListView view = (ListView) getTasksFragment().getFragmentView()
 					.findViewById(R.id.tasks_list);
 			int pos_old = (view).getPositionForView(oldClickedTask);
 			if (pos_old != -1) {
