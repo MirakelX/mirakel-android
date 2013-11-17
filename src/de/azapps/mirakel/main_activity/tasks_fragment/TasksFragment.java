@@ -635,7 +635,7 @@ public class TasksFragment extends Fragment {
 			});
 		}
 	}
-	public View getView() {
+	public View getFragmentView() {
 		return view;
 	}
 
