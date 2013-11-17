@@ -16,7 +16,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package de.azapps.mirakel.main_activity;
+package de.azapps.mirakel.main_activity.tasks_fragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,11 +68,14 @@ import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
+import de.azapps.mirakel.main_activity.MainActivity;
+import de.azapps.mirakel.main_activity.task_fragment.TaskFragment;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.FileUtils;
 
 public class TasksFragment extends Fragment {
 	private static final String TAG = "TasksFragment";
@@ -146,7 +149,7 @@ public class TasksFragment extends Fragment {
 		listView.setDescendantFocusability(ListView.FOCUS_AFTER_DESCENDANTS);
 		// Events
 		newTask = (EditText) view.findViewById(R.id.tasks_new);
-		if (main.isTablet) {
+		if (Helpers.isTablet(main)) {
 			newTask.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
 		}
 		newTask.setOnEditorActionListener(new OnEditorActionListener() {
@@ -613,8 +616,8 @@ public class TasksFragment extends Fragment {
 					try {
 						Intent cameraIntent = new Intent(
 								MediaStore.ACTION_IMAGE_CAPTURE);
-						Uri fileUri = Helpers
-								.getOutputMediaFileUri(Helpers.MEDIA_TYPE_IMAGE);
+						Uri fileUri = FileUtils
+								.getOutputMediaFileUri(FileUtils.MEDIA_TYPE_IMAGE);
 						if (fileUri == null)
 							return;
 						main.setFileUri(fileUri);
@@ -631,6 +634,9 @@ public class TasksFragment extends Fragment {
 				}
 			});
 		}
+	}
+	public View getFragmentView() {
+		return view;
 	}
 
 }

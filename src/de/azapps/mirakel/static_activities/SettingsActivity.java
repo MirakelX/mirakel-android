@@ -52,6 +52,7 @@ import de.azapps.mirakel.helper.export_import.ExportImport;
 import de.azapps.mirakel.helper.export_import.WunderlistImport;
 import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.FileUtils;
 
 public class SettingsActivity extends PreferenceActivity {
 
@@ -190,7 +191,7 @@ public class SettingsActivity extends PreferenceActivity {
 		case FILE_IMPORT_DB:
 			if (resultCode != RESULT_OK)
 				return;
-			final String path_db = Helpers.getPathFromUri(data.getData(), this);
+			final String path_db = FileUtils.getPathFromUri(data.getData(), this);
 			// Check if this is an database file
 			if (!path_db.endsWith(".db")) {
 				Toast.makeText(that, R.string.import_wrong_type,
@@ -234,7 +235,7 @@ public class SettingsActivity extends PreferenceActivity {
 		case FILE_WUNDERLIST:
 			if (resultCode != RESULT_OK)
 				return;
-			final String file_path = Helpers.getPathFromUri(data.getData(),
+			final String file_path = FileUtils.getPathFromUri(data.getData(),
 					this);
 
 			// Do the import in a background-task

@@ -16,7 +16,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package de.azapps.mirakel.main_activity;
+package de.azapps.mirakel.main_activity.tasks_fragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,6 +42,7 @@ import de.azapps.mirakel.adapter.MirakelArrayAdapter;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.TaskHelper;
+import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
@@ -84,7 +85,7 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 		selected.add(false);
 	}
 
-	void changeData(List<Task> tasks, int listId) {
+	public void changeData(List<Task> tasks, int listId) {
 		viewsForTasks.clear();
 		this.listId = listId;
 		super.changeData(tasks);

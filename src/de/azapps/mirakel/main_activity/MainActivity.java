@@ -67,6 +67,9 @@ import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.helper.UndoHistory;
+import de.azapps.mirakel.main_activity.list_fragment.ListFragment;
+import de.azapps.mirakel.main_activity.task_fragment.TaskFragment;
+import de.azapps.mirakel.main_activity.tasks_fragment.TasksFragment;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SearchList;
@@ -80,6 +83,7 @@ import de.azapps.mirakel.static_activities.SplashScreenActivity;
 import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.widget.MainWidgetProvider;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.FileUtils;
 
 /**
  * This is our main activity. Here happens nearly everything.
@@ -105,17 +109,16 @@ public class MainActivity extends ActionBarActivity implements
 	protected int currentPosition = TASKS_FRAGMENT;
 
 	// Foo variables (move them out of the MainActivity)
-	private AlertDialog taskMoveDialog;
-	protected boolean isTablet;
 	private boolean highlightSelected;
 	private DrawerLayout mDrawerLayout;
 	private Uri fileUri;
 	public SharedPreferences preferences;
+	// TODO We should do this somehow else
 	public static boolean updateTasksUUID = false;
 
 	// Intent variables
-	protected static final int TASKS_FRAGMENT = 0, TASK_FRAGMENT = 1;
-	protected static final int RESULT_SPEECH_NAME = 1, RESULT_SPEECH = 3,
+	public static final int TASKS_FRAGMENT = 0, TASK_FRAGMENT = 1;
+	public static final int RESULT_SPEECH_NAME = 1, RESULT_SPEECH = 3,
 			RESULT_SETTINGS = 4, RESULT_ADD_FILE = 5, RESULT_CAMERA = 6,
 			RESULT_ADD_PICTURE = 7;
 	public static String EXTRA_ID = "de.azapps.mirakel.EXTRA_TASKID",
@@ -148,7 +151,7 @@ public class MainActivity extends ActionBarActivity implements
 		super.onCreate(savedInstanceState);
 
 		oldLogo();
-		isTablet = Helpers.isTablet(this);
+		boolean isTablet = Helpers.isTablet(this);
 		highlightSelected = preferences.getBoolean("highlightSelected",
 				isTablet);
 		if (!preferences.contains("highlightSelected")) {
@@ -273,7 +276,8 @@ public class MainActivity extends ActionBarActivity implements
 				getTasksFragment().getAdapter().changeData(
 						getCurrentList().tasks(), getCurrentList().getId());
 				getTasksFragment().getAdapter().notifyDataSetChanged();
-				if (!isTablet && currentPosition == TASKS_FRAGMENT)
+				if (!Helpers.isTablet(this)
+						&& currentPosition == TASKS_FRAGMENT)
 					setCurrentList(getCurrentList());
 			}
 			ReminderAlarm.updateAlarms(this);
@@ -399,7 +403,7 @@ public class MainActivity extends ActionBarActivity implements
 			if (getTaskFragment() != null && getTaskFragment().adapter != null) {
 				getTaskFragment().adapter.setEditContent(false);
 			}
-			if (!isTablet)
+			if (!Helpers.isTablet(this))
 				newmenu = R.menu.tasks;
 			else
 				newmenu = R.menu.tablet_right;
@@ -473,13 +477,13 @@ public class MainActivity extends ActionBarActivity implements
 			if (intent != null) {
 				ArrayList<String> text = intent
 						.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-				((EditText) getTasksFragment().view
-						.findViewById(R.id.tasks_new)).setText(text.get(0));
+				((EditText) getTasksFragment().getFragmentView().findViewById(
+						R.id.tasks_new)).setText(text.get(0));
 			}
 			break;
 		case RESULT_ADD_FILE:
 			if (intent != null) {
-				final String file_path = Helpers.getPathFromUri(
+				final String file_path = FileUtils.getPathFromUri(
 						intent.getData(), this);
 				if (FileMirakel.newFile(this, currentTask, file_path) == null) {
 					Toast.makeText(this, getString(R.string.file_vanished),
@@ -492,7 +496,7 @@ public class MainActivity extends ActionBarActivity implements
 		case RESULT_SETTINGS:
 			getListFragment().update();
 			highlightSelected = preferences.getBoolean("highlightSelected",
-					isTablet);
+					Helpers.isTablet(this));
 			if (!highlightSelected
 					&& (oldClickedList != null || oldClickedTask == null)) {
 				clearAllHighlights();
@@ -525,7 +529,7 @@ public class MainActivity extends ActionBarActivity implements
 								currentList, false, this);
 						safeSaveTask(task);
 					}
-					task.addFile(this, Helpers.getPathFromUri(fileUri, this));
+					task.addFile(this, FileUtils.getPathFromUri(fileUri, this));
 					setCurrentList(task.getList());
 					setCurrentTask(task, true);
 
@@ -635,12 +639,12 @@ public class MainActivity extends ActionBarActivity implements
 
 		if (Intent.ACTION_SEND.equals(action) && type != null) {
 			Uri uri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
-			t.addFile(this, Helpers.getPathFromUri(uri, this));
+			t.addFile(this, FileUtils.getPathFromUri(uri, this));
 		} else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
 			ArrayList<Uri> imageUris = intent
 					.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
 			for (Uri uri : imageUris) {
-				t.addFile(this, Helpers.getPathFromUri(uri, this));
+				t.addFile(this, FileUtils.getPathFromUri(uri, this));
 			}
 		}
 
@@ -929,7 +933,6 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	public void handleMoveTask(final List<Task> tasks) {
-
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(R.string.dialog_move);
 		List<CharSequence> items = new ArrayList<CharSequence>();
@@ -983,12 +986,9 @@ public class MainActivity extends ActionBarActivity implements
 							setCurrentList(getCurrentList());
 							getListFragment().update();
 						}
-						taskMoveDialog.dismiss();
+						dialog.dismiss();
 					}
-				});
-
-		taskMoveDialog = builder.create();
-		taskMoveDialog.show();
+				}).show();
 	}
 
 	private ActionBarDrawerToggle mDrawerToggle;
@@ -1039,7 +1039,7 @@ public class MainActivity extends ActionBarActivity implements
 		TasksFragment tasksFragment = new TasksFragment();
 		tasksFragment.setActivity(this);
 		fragments.add(tasksFragment);
-		if (!isTablet) {
+		if (!Helpers.isTablet(this)) {
 			TaskFragment taskFragment = new TaskFragment();
 			fragments.add(taskFragment);
 		}
@@ -1049,7 +1049,7 @@ public class MainActivity extends ActionBarActivity implements
 		this.mViewPager = (ViewPager) super.findViewById(R.id.viewpager);
 		this.mViewPager.setAdapter(this.mPagerAdapter);
 		this.mViewPager.setOnPageChangeListener(this);
-		mViewPager.setOffscreenPageLimit(isTablet ? 1 : 2);
+		mViewPager.setOffscreenPageLimit(Helpers.isTablet(this) ? 1 : 2);
 
 	}
 
@@ -1058,7 +1058,7 @@ public class MainActivity extends ActionBarActivity implements
 	 * 
 	 * @return
 	 */
-	Task getCurrentTask() {
+	public Task getCurrentTask() {
 		return currentTask;
 	}
 
@@ -1067,14 +1067,11 @@ public class MainActivity extends ActionBarActivity implements
 	 * 
 	 * @param currentTask
 	 */
-	void setCurrentTask(Task currentTask) {
+	public void setCurrentTask(Task currentTask) {
 		setCurrentTask(currentTask, false);
 	}
 
 	private View oldClickedTask = null;
-
-	void highlightCurrentTask(Task currentTask) {
-	}
 
 	void highlightCurrentTask(Task currentTask, boolean multiselect) {
 		if (getTaskFragment() == null
@@ -1101,18 +1098,18 @@ public class MainActivity extends ActionBarActivity implements
 		}
 	}
 
-	void setCurrentTask(Task currentTask, boolean switchFragment) {
+	public void setCurrentTask(Task currentTask, boolean switchFragment) {
 		setCurrentTask(currentTask, switchFragment, true);
 	}
 
-	void setCurrentTask(Task currentTask, boolean switchFragment,
+	public void setCurrentTask(Task currentTask, boolean switchFragment,
 			boolean resetGoBackTo) {
 
 		this.currentTask = currentTask;
 		if (resetGoBackTo)
 			goBackTo.clear();
 
-		highlightCurrentTask(currentTask);
+		highlightCurrentTask(currentTask, false);
 
 		if (getTaskFragment() != null) {
 			getTaskFragment().update(currentTask);
@@ -1143,7 +1140,7 @@ public class MainActivity extends ActionBarActivity implements
 		if (oldClickedTask == null)
 			return;
 		try {
-			ListView view = (ListView) getTasksFragment().getView()
+			ListView view = (ListView) getTasksFragment().getFragmentView()
 					.findViewById(R.id.tasks_list);
 			int pos_old = (view).getPositionForView(oldClickedTask);
 			if (pos_old != -1) {
@@ -1162,7 +1159,7 @@ public class MainActivity extends ActionBarActivity implements
 	 * 
 	 * @return
 	 */
-	ListMirakel getCurrentList() {
+	public ListMirakel getCurrentList() {
 		if (currentList == null)
 			currentList = SpecialList.firstSpecialSafe(this);
 		return currentList;
@@ -1176,19 +1173,19 @@ public class MainActivity extends ActionBarActivity implements
 	 * @param currentList
 	 * @param switchFragment
 	 */
-	void setCurrentList(ListMirakel currentList, boolean switchFragment) {
+	public void setCurrentList(ListMirakel currentList, boolean switchFragment) {
 		setCurrentList(currentList, null, switchFragment, true);
 	}
 
-	void setCurrentList(ListMirakel currentList, View currentView) {
+	public void setCurrentList(ListMirakel currentList, View currentView) {
 		setCurrentList(currentList, currentView, true, true);
 	}
 
-	void setCurrentList(ListMirakel currentList) {
+	public void setCurrentList(ListMirakel currentList) {
 		setCurrentList(currentList, null, true, true);
 	}
 
-	void setCurrentList(ListMirakel currentList, View currentView,
+	public void setCurrentList(ListMirakel currentList, View currentView,
 			boolean switchFragment, boolean resetGoBackTo) {
 		if (currentList == null)
 			return;
@@ -1208,7 +1205,7 @@ public class MainActivity extends ActionBarActivity implements
 
 		if (getTasksFragment() != null) {
 			getTasksFragment().updateList();
-			if (!isTablet && switchFragment)
+			if (!Helpers.isTablet(this) && switchFragment)
 				mViewPager.setCurrentItem(TASKS_FRAGMENT);
 		}
 		if (currentView == null && listFragment != null
@@ -1249,7 +1246,7 @@ public class MainActivity extends ActionBarActivity implements
 	 * 
 	 * @param task
 	 */
-	void updatesForTask(Task task) {
+	public void updatesForTask(Task task) {
 		if (currentTask != null && task.getId() == currentTask.getId()) {
 			currentTask = task;
 			getTaskFragment().update(task);
@@ -1282,7 +1279,7 @@ public class MainActivity extends ActionBarActivity implements
 	public TaskFragment getTaskFragment() {
 		if (mPagerAdapter == null)
 			return null;
-		if (isTablet)
+		if (Helpers.isTablet(this))
 			return taskFragment;
 		Fragment f = this.getSupportFragmentManager().findFragmentByTag(
 				getFragmentTag(1));
@@ -1303,7 +1300,7 @@ public class MainActivity extends ActionBarActivity implements
 		mViewPager.setCurrentItem(TASKS_FRAGMENT);
 	}
 
-	protected void showMessageFromSync() {
+	public void showMessageFromSync() {
 		CharSequence messageFromSync = SyncAdapter.getLastMessage();
 		if (messageFromSync != null) {
 			Toast.makeText(getApplicationContext(), messageFromSync,

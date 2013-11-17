@@ -16,30 +16,31 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package de.azapps.mirakel.widget;
+package de.azapps.mirakel.main_activity;
 
-import android.annotation.SuppressLint;
-import android.os.Bundle;
-import android.preference.PreferenceFragment;
-import de.azapps.mirakel.helper.Log;
-import de.azapps.mirakel.helper.PreferencesHelper;
-import de.azapps.mirakelandroid.R;
+import android.support.v4.app.Fragment;
+import android.view.View;
 
-@SuppressLint("NewApi")
-public class MainWidgetSettingsFragment extends PreferenceFragment {
-	private static final String TAG = "MainWidgetSettingsFragment";
-	private int widgetId;
+/**
+ * This is the base Fragment for Mirakel. It defines some necessary variables
+ * and functions.
+ * 
+ * @author az
+ * 
+ */
+public abstract class MirakelFragment extends Fragment {
+	/**
+	 * Often we need to reference the main activity
+	 */
+	protected MainActivity main;
+	/**
+	 * View of the fragment
+	 */
+	protected View view;
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		addPreferencesFromResource(R.xml.settings_widget);
-		Log.e(TAG, "open settings for:" + widgetId);
-		new PreferencesHelper(this).setFunctionsWidget(getActivity(), widgetId);
+	public void setActivity(MainActivity activity) {
+		main = activity;
 	}
 
-	public void setup(int widgetId) {
-		this.widgetId = widgetId;
-	}
-
+	public abstract void update();
 }

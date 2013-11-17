@@ -140,6 +140,11 @@ public class SemanticsSettings implements OnPreferenceChangeListener {
 										case YEAR:
 											semantic.setDue(val * 365);
 											break;
+										default:
+											// The other things aren't shown in
+											// the dialog so we haven't to care
+											// about them
+											break;
 										}
 										semanticsDue
 												.setSummary(updateDueStuff());
