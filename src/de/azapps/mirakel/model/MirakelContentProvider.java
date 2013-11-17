@@ -20,9 +20,13 @@ package de.azapps.mirakel.model;
 
 import java.sql.SQLWarning;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,6 +35,8 @@ import org.dmfs.provider.tasks.TaskContract.TaskLists;
 import org.dmfs.provider.tasks.TaskContract.Tasks;
 
 import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.accounts.OnAccountsUpdateListener;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
@@ -42,13 +48,15 @@ import android.net.Uri;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.account.AccountMirakel;
+import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
+import de.azapps.mirakelandroid.R;
 
-public class MirakelContentProvider extends ContentProvider {
+public class MirakelContentProvider extends ContentProvider implements OnAccountsUpdateListener {
 	// public static final String PROVIDER_NAME = Mirakel.AUTHORITY_TYP;
 	// public static final Uri CONTENT_URI = Uri.parse("content://" +
 	// PROVIDER_NAME);
@@ -179,6 +187,16 @@ public class MirakelContentProvider extends ContentProvider {
 			throw new IllegalArgumentException("Unsupported URI: " + uri);
 		}
 	}
+	
+	protected String getAccountName(Uri uri)
+    {
+            return uri.getQueryParameter(TaskContract.ACCOUNT_NAME);
+    }
+	
+	protected String getAccountType(Uri uri)
+    {
+            return uri.getQueryParameter(TaskContract.ACCOUNT_TYPE);
+    }
 
 	@Override
 	public Uri insert(Uri uri, ContentValues values) {
@@ -191,6 +209,20 @@ public class MirakelContentProvider extends ContentProvider {
 			break;
 		case TASKS:
 			table = Task.TABLE;
+			if(newValues.containsKey(Task.LIST_ID)){
+				ListMirakel l=ListMirakel.getList(newValues.getAsInteger(Task.LIST_ID));
+				if(l==null){
+					l=createNewList(uri);
+					l.setId(newValues.getAsInteger(Task.LIST_ID));
+					l.save();
+				}
+				if(AccountMirakel.getByName(getAccountName(uri))==null){
+					throw new IllegalArgumentException("Unkown account");
+				}
+			}else{
+				ListMirakel l = createNewList(uri);
+				newValues.put(Task.LIST_ID, l.getId());
+			}
 			break;
 		default:
 			throw new IllegalArgumentException("Unsupported URI: " + uri);
@@ -210,6 +242,16 @@ public class MirakelContentProvider extends ContentProvider {
 		Log.d(TAG, "insert...");
 		return Uri.parse(uri.toString() + "/" + id);
 
+	}
+
+	private ListMirakel createNewList(Uri uri) {
+		ListMirakel l=ListMirakel.newList(getContext().getString(R.string.inbox));
+		AccountMirakel a = AccountMirakel.getByName(getAccountName(uri));
+		if(a==null){
+			throw new IllegalArgumentException("Unkown account");
+		}
+		l.setAccount(a);
+		return l;
 	}
 
 	private ContentValues convertValues(ContentValues values,
@@ -289,6 +331,8 @@ public class MirakelContentProvider extends ContentProvider {
 	@Override
 	public boolean onCreate() {
 		database = new DatabaseHelper(getContext()).getWritableDatabase();
+        // register for account updates and check immediately
+        AccountManager.get(getContext()).addOnAccountsUpdatedListener(this, null, true);
 		return database == null;
 	}
 
@@ -604,5 +648,48 @@ public class MirakelContentProvider extends ContentProvider {
 			throw new RuntimeException("id not found");
 		}
 	}
+
+	@Override
+	public void onAccountsUpdated(Account[] accounts) {
+		android.os.Debug.waitForDebugger();
+		List<AccountMirakel> accountList = AccountMirakel.getAll();
+		Map<String, AccountMirakel> map = new HashMap<String, AccountMirakel>();
+		for (AccountMirakel a : accountList) {
+			map.put(a.getName(), a);
+		}
+		for (Account a : accounts) {
+			Log.d(TAG,"Accountname: "+a.name+" | TYPE: "+a.type);
+			if (a.type.equals(AccountMirakel.ACCOUNT_TYPE_MIRAKEL)
+					|| a.type.equals(AccountMirakel.ACCOUNT_TYPE_DAVDROID)) {
+				Log.d(TAG,"is supportet Account");
+				if (!map.containsKey(a.name)) {
+					// Add new account here....
+					AccountMirakel.newAccount(a.name,
+							ACCOUNT_TYPES.parseAccountType(a.type), true);
+				} else {
+					// Account exists..
+					map.remove(a.name);
+				}
+
+			}
+		}
+		for (Entry<String, AccountMirakel> el : map.entrySet()) {
+			// Remove deleted accounts
+			if(el.getValue().getType()!=ACCOUNT_TYPES.LOCAL)
+				el.getValue().destroy();
+		}
+
+	}
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
 
 }

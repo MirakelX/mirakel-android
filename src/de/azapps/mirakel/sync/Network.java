@@ -57,7 +57,7 @@ import android.os.AsyncTask;
 import android.util.Base64;
 import android.widget.Toast;
 import de.azapps.mirakel.helper.Log;
-import de.azapps.mirakel.sync.SyncAdapter.SYNC_TYPES;
+import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 import de.azapps.mirakelandroid.R;
 
 public class Network extends AsyncTask<String, Integer, String> {
@@ -75,7 +75,7 @@ public class Network extends AsyncTask<String, Integer, String> {
 	protected HttpMode mode;
 	protected Context context;
 	protected String token;
-	protected SYNC_TYPES syncTyp;
+	protected ACCOUNT_TYPES syncTyp;
 	private String content;
 	private String username;
 	private String password;
@@ -86,7 +86,7 @@ public class Network extends AsyncTask<String, Integer, String> {
 		this.mode = mode;
 		this.context = context;
 		this.token = Token;
-		this.syncTyp = SYNC_TYPES.MIRAKEL;
+		this.syncTyp = ACCOUNT_TYPES.MIRAKEL;
 	}
 
 	public Network(DataDownloadCommand commands, HttpMode mode,
@@ -96,7 +96,7 @@ public class Network extends AsyncTask<String, Integer, String> {
 		this.headerData = data;
 		this.context = context;
 		this.token = Token;
-		this.syncTyp = SYNC_TYPES.MIRAKEL;
+		this.syncTyp = ACCOUNT_TYPES.MIRAKEL;
 	}
 
 	public Network(DataDownloadCommand commands, HttpMode mode, String content,
@@ -193,7 +193,7 @@ public class Network extends AsyncTask<String, Integer, String> {
 			publishProgress(t);
 		}
 		String authorizationString = null;
-		if (syncTyp == SYNC_TYPES.CALDAV) {
+		if (syncTyp == ACCOUNT_TYPES.CALDAV) {
 			authorizationString = "Basic "
 					+ Base64.encodeToString(
 							(username + ":" + password).getBytes(),
@@ -205,7 +205,7 @@ public class Network extends AsyncTask<String, Integer, String> {
 				HttpVersion.HTTP_1_1);
 		HttpConnectionParams.setTcpNoDelay(params, true);
 		DefaultHttpClient client = new DefaultHttpClient(params);
-		HttpClient httpClient = syncTyp == SYNC_TYPES.MIRAKEL ? sslClient(client)
+		HttpClient httpClient = syncTyp == ACCOUNT_TYPES.MIRAKEL ? sslClient(client)
 				: new DefaultHttpClient(params);
 		httpClient.getParams().setParameter("http.protocol.content-charset",
 				HTTP.UTF_8);
@@ -222,12 +222,12 @@ public class Network extends AsyncTask<String, Integer, String> {
 			case PUT:
 				Log.v(TAG, "PUT " + myurl);
 				HttpPut put = new HttpPut();
-				if (syncTyp == SYNC_TYPES.CALDAV) {
+				if (syncTyp == ACCOUNT_TYPES.CALDAV) {
 					put.addHeader(HTTP.CONTENT_TYPE,
 							"text/calendar; charset=utf-8");
 				}
 				put.setURI(new URI(myurl));
-				if (syncTyp == SYNC_TYPES.MIRAKEL) {
+				if (syncTyp == ACCOUNT_TYPES.MIRAKEL) {
 					UrlEncodedFormEntity data = new UrlEncodedFormEntity(
 							headerData, HTTP.UTF_8);
 					put.setEntity(data);
@@ -254,7 +254,7 @@ public class Network extends AsyncTask<String, Integer, String> {
 			case REPORT:
 				Log.v(TAG, "REPORT " + myurl);
 				HttpReport report = new HttpReport();
-				if (syncTyp == SYNC_TYPES.CALDAV) {
+				if (syncTyp == ACCOUNT_TYPES.CALDAV) {
 					report.setHeader("Authorization", authorizationString);
 				}
 				report.setURI(new URI(myurl));

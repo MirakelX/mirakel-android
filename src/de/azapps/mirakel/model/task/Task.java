@@ -963,6 +963,8 @@ public class Task extends TaskBase {
 							DatabaseHelper.ID + " = " + t.getId(), null);
 				} catch (NoSuchListException e) {
 					Log.d(TAG, "List did vanish");
+				}catch (Exception e) {
+					t.destroy(false);
 				}
 			} else {
 				t.destroy(true);
