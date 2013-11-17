@@ -75,9 +75,10 @@
   <string name="any_do_unsuccess">Při importu z Any.Do došlo k chybě!</string>
   <string name="any_do_success">Všechna data byla úspěšně importována!</string>
   <string name="wait">Počkejte prosím…</string>
+  <string name="import_success">Všechna data byla úspěšně importována!</string>
   <string name="highlightSelected_summary">Zvýraznit seznamy a úkoly po klepnutí</string>
   <string name="highlightSelected">Zvýraznit označené</string>
-  <string name="settings_date_format_relative">Zobrazit datum relativně vůči dnešku</string>
+  <string name="settings_date_format_relative">Zobrazit relativní datum</string>
   <string name="settings_date_format_relative_summary">Například \"Zítra\" místo skutečného data</string>
   <string name="showDone">Zobrazit vyřešené úkoly</string>
   <string name="dark_theme">Tmavé pozadí a světlé písmo</string>
@@ -91,17 +92,17 @@
   <string name="hide_keyboard_summary">Skrýt klávesnici při vytváření nového úkolu</string>
   <string name="undo_number">Počet uložených změn</string>
   <string name="undo_number_summary">Vrátit %s změn</string>
-  <string name="settings_semantic">Sémantická analýza nových úkolů</string>
-  <string name="semantic_new_task">Sémantická analýza nových úkolů</string>
+  <string name="settings_semantic">Sémantická analýza úkolů</string>
+  <string name="semantic_new_task">Sémantická analýza úkolů</string>
   <string name="semantic_new_task_summary">Použít sémantickou analýzu nových úkolů (jen dnes a zítra)</string>
   <string name="semantic_new_task_config_summary">Konfigurovat klíčová slova pro sémantickou analýzu nových úkolů</string>
   <string name="semantic_new_task_config">Konfigurovat sémantickou analýzu nových úkolů</string>
-  <string name="settings_old_logo_summary">To je smutné že se vám nelíbí nové logo. Máte-li Android &gt;= 4.0, restartujte aplikaci</string>
+  <string name="settings_old_logo_summary">Pokud se vám nelíbí nové logo a máte Android &gt;= 4.0. Vyžaduje restart aplikace</string>
   <string name="settings_old_logo">Použít ošklivé staré logo</string>
   <string name="swipeBehavior_title">Zobrazit detail úkolu tažením</string>
   <string name="swipeBehavior_summary">Zobrazit detail taženého nebo naposledy vybraného úkolu</string>
-  <string name="lock_drawer_in_task_fragment_summary">Takže nedojde k jeho nechtěnému otevření</string>
-  <string name="lock_drawer_in_task_fragment">Uzamknout seznam úkolů v detailu úkolu</string>
+  <string name="lock_drawer_in_task_fragment_summary">Takže nedojde k jeho nechtěnému otevření z detailu úkolu</string>
+  <string name="lock_drawer_in_task_fragment">Uzamknout seznam úkolů</string>
   <string name="language">Jazyk</string>
   <string name="delete_done">Odstranit vyřešené úkoly</string>
   <string name="delete_done_summary">Odstranit všechny vyřešené úkoly</string>
@@ -116,7 +117,7 @@
   <string name="special_lists_title">Speciální seznamy úkolů</string>
   <string name="preferences_colorize">Barvy</string>
   <string name="preferences_colorize_tasks">Obarvit úkoly</string>
-  <string name="preferences_colorize_tasks_everywhere">Obarvit úkoly ze všech seznamů</string>
+  <string name="preferences_colorize_tasks_everywhere">Obarvit všechny úkoly</string>
   <string name="preferences_colorize_tasks_everywhere_summary">…nebo jen ve zvláštních seznamech?</string>
   <string name="settings_semantics_title">Nastavit sémantickou analýzu úkolů</string>
   <string name="settings_semantics_condition">Klíčové slovo</string>
@@ -131,13 +132,13 @@
   <string name="settings_subtask">Podúkoly</string>
   <string name="settings_subtask_default_new">Standardně zobrazit nový úkol</string>
   <string name="settings_subtask_default_new_summary">Nebo přidat existující úkol</string>
-  <string name="settings_subtask_add_to_same_list">Přidat podúkol do stejného seznamu</string>
-  <string name="settings_subtask_add_to_same_list_summary">Nebo předvybrat výchozí seznam</string>
+  <string name="settings_subtask_add_to_same_list">Přidat do seznamu rodiče</string>
+  <string name="settings_subtask_add_to_same_list_summary">Nebo do seznamu vyhrazeného pro podúkoly?</string>
   <string name="settings_subtask_add_to_list_summary">Přidat podúkol do %s</string>
   <string name="settings_new_task">Nový úkol</string>
   <string name="settings_use_btn_speak">Zobrazit tlačítko mikrofonu</string>
   <string name="settings_use_btn_camera">Zobrazit tlačítko pro fotoaparát</string>
-  <string name="preferences_colorize_subtasks">Obarvovat podúkoly?</string>
+  <string name="preferences_colorize_subtasks">Obarvit podúkoly?</string>
   <string name="settings_tasks_title">Úkoly</string>
   <string-array name="sync_frequencies">
     <item>5 min</item>

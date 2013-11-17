@@ -39,6 +39,7 @@
   <string name="astrid_import_title">Seleccione archivo Astrid</string>
   <string name="import_wrong_type">¡Este no es un archivo de Mirakel!</string>
   <string name="any_do_success">¡Todos los datos importados con éxito!</string>
+  <string name="import_success">¡Todos los datos importados con éxito!</string>
   <string name="highlightSelected">Resaltar seleccionado</string>
   <string name="showDone">Mostrar tareas realizadas</string>
   <string name="dark_theme">Tema oscuro</string>

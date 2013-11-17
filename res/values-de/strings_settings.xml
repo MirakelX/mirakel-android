@@ -75,6 +75,7 @@
   <string name="any_do_unsuccess">Es ist ein Fehler während des Any.Do-Import aufgetreten!</string>
   <string name="any_do_success">Alle Daten erfolgreich importiert!</string>
   <string name="wait">Bitte warten…</string>
+  <string name="import_success">Alle Daten erfolgreich importiert!</string>
   <string name="highlightSelected_summary">Listen/Aufgaben beim Klick markieren</string>
   <string name="highlightSelected">Ausgewählte hervorheben</string>
   <string name="settings_date_format_relative">Relative Datumsanzeige</string>
@@ -114,7 +115,6 @@
   <string name="howto_setup_server">So setzt du selbst einen Server auf</string>
   <string name="register_server">Wenn du einen Account auf unserem Server benötigst, sende uns bitte eine E-Mail. Mit der nächsten Version wirst du auch selbst einen Account anlegen können.</string>
   <string name="send_mail">E-Mail senden</string>
-  <string name="register">Registrieren</string>
   <string name="special_lists_title">Erweiterte Listen</string>
   <string name="preferences_colorize">Farben</string>
   <string name="preferences_colorize_tasks">Aufgaben einfärben</string>
