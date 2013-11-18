@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
+import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakelandroid.R;
 
 public class AccountMirakel extends AccountBase {
@@ -138,6 +139,9 @@ public class AccountMirakel extends AccountBase {
 
 	public void destroy() {
 		database.delete(TABLE, DatabaseHelper.ID + "=" + getId(), null);
+		ContentValues cv=new ContentValues();
+		cv.put(ListMirakel.ACCOUNT_ID, getLocal().getId());
+		database.update(ListMirakel.TABLE, cv, "account_id="+getId(),null);
 	}
 
 	public static List<AccountMirakel> getAll() {
@@ -178,8 +182,8 @@ public class AccountMirakel extends AccountBase {
 	}
 
 	public static AccountMirakel getByName(String name) {
-		Cursor c = database.query(TABLE, allColumns, DatabaseHelper.NAME + "="
-				+ name, null, null, null, null);
+		Cursor c = database.query(TABLE, allColumns, DatabaseHelper.NAME + "='"
+				+ name+"'", null, null, null, null);
 		if (c.getCount() > 0) {
 			c.moveToFirst();
 			AccountMirakel a = cursorToAccount(c);
