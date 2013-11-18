@@ -52,6 +52,7 @@ class TaskBase {
 	public static final String RECURRING = "recurring";
 	public static final String RECURRING_REMINDER = "recurring_reminder";
 	public static final String ADDITIONAL_ENTRIES = "additional_entries";
+	public static final String PROGRESS = "progress";
 
 	@SuppressWarnings("unused")
 	private static final String TAG = "TaskBase";
@@ -72,12 +73,13 @@ class TaskBase {
 	private Calendar reminder;
 	private int recurrence;
 	private int recurring_reminder;
+	private int progress;
 
 	TaskBase(long id, String uuid, ListMirakel list, String name,
 			String content, boolean done, Calendar due, Calendar reminder,
 			int priority, Calendar created_at, Calendar updated_at,
 			SYNC_STATE sync_state, String additionalEntriesString,
-			int recurring, int recurring_reminder) {
+			int recurring, int recurring_reminder, int progress) {
 		this.id = id;
 		this.uuid = uuid;
 		this.setList(list);
@@ -93,6 +95,7 @@ class TaskBase {
 		this.additionalEntriesString = additionalEntriesString;
 		this.recurrence = recurring;
 		this.recurring_reminder = recurring_reminder;
+		this.progress = progress;
 	}
 
 	TaskBase() {
@@ -114,6 +117,7 @@ class TaskBase {
 		this.setSyncState(SYNC_STATE.NOTHING);
 		this.recurrence = -1;
 		this.recurring_reminder = -1;
+		this.progress = 0;
 	}
 
 	public Recurring getRecurring() {
@@ -320,6 +324,15 @@ class TaskBase {
 		additionalEntries.remove(key);
 	}
 
+	public int getProgress() {
+		return progress;
+	}
+
+	public void setProgress(int progress) {
+		edited.put("progress", true);
+		this.progress = progress;
+	}
+
 	boolean isEdited() {
 		return edited.size() > 0;
 	}
@@ -391,6 +404,7 @@ class TaskBase {
 		cv.put(SyncAdapter.SYNC_STATE, sync_state.toInt());
 		cv.put(RECURRING, recurrence);
 		cv.put(RECURRING_REMINDER, recurring_reminder);
+		cv.put(PROGRESS, progress);
 
 		Gson gson = new GsonBuilder().create();
 		String additionalEntries = gson.toJson(this.additionalEntries);

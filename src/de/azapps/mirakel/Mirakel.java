@@ -92,6 +92,8 @@ public class Mirakel extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		// Some initialization
+		APK_NAME = getPackageName();
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 			GRAVITY_LEFT = Gravity.START;
 			GRAVITY_RIGHT = Gravity.END;
@@ -106,7 +108,6 @@ public class Mirakel extends Application {
 		getBaseContext().getResources().updateConfiguration(config,
 				getBaseContext().getResources().getDisplayMetrics());
 		ACRA.init(this);
-		APK_NAME = getPackageName();
 		try {
 			VERSIONS_NAME = getPackageManager().getPackageInfo(
 					getPackageName(), 0).versionName;
