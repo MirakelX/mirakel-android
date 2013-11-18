@@ -50,7 +50,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String TAG = "DatabaseHelper";
 	private Context context;
-	public static final int DATABASE_VERSION = 25;
+	public static final int DATABASE_VERSION = 26;
 
 	public static final String ID = "_id";
 	public static final String CREATED_AT = "created_at";
@@ -338,6 +338,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ AccountMirakel.TABLE + " (" + ID
 					+ ") ON DELETE CASCADE ON UPDATE CASCADE DEFAULT "
 					+ accountId + "; ");
+		case 25:
+			db.execSQL("ALTER TABLE " + Task.TABLE
+					+ " add column progress int NOT NULL default 0;");
 		}
 	}
 
