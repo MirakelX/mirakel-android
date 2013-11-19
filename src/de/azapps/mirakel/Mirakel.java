@@ -78,6 +78,8 @@ public class Mirakel extends Application {
 	private static String MIRAKEL_DIR;
 
 	public static String getMirakelDir() {
+		if(Mirakel.APK_NAME==null)//wtf
+			APK_NAME="de.azapps.mirakelandroid";
 		if (MIRAKEL_DIR == null)
 			MIRAKEL_DIR = Environment.getDataDirectory() + "/data/"
 					+ Mirakel.APK_NAME + "/";

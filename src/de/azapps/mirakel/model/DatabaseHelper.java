@@ -87,6 +87,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	@Override
+	public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+		Log.e(TAG,"You are downgrading the Database!");
+		// This is only for developers… There shouldn't happen bad things if you use a database with a higher version.
+	}
+
+	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		Log.e(DatabaseHelper.class.getName(),
 				"Upgrading database from version " + oldVersion + " to "
