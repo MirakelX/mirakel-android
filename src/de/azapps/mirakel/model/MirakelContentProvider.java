@@ -231,20 +231,20 @@ public class MirakelContentProvider extends ContentProvider implements
 		long id;
 		database.beginTransaction();
 		try {
-			boolean hasExtras=false;
-			ContentValues extras=new ContentValues();
-			if(table.equals(Task.TABLE)){
-				if(values.containsKey(Tasks.SYNC1)){
+			boolean hasExtras = false;
+			ContentValues extras = new ContentValues();
+			if (table.equals(Task.TABLE)) {
+				if (values.containsKey(Tasks.SYNC1)) {
 					extras.put("ETAG", values.getAsString(Tasks.SYNC1));
-					hasExtras=true;
+					hasExtras = true;
 				}
-				if(values.containsKey(Tasks._SYNC_ID)){
-					extras.put("SYNC_ID",values.getAsString(Tasks._SYNC_ID));
-					hasExtras=true;
+				if (values.containsKey(Tasks._SYNC_ID)) {
+					extras.put("SYNC_ID", values.getAsString(Tasks._SYNC_ID));
+					hasExtras = true;
 				}
 			}
 			id = database.insert(table, null, newValues);
-			if(hasExtras){
+			if (hasExtras) {
 				extras.put(DatabaseHelper.ID, id);
 				database.insert(table, null, extras);
 			}
@@ -558,8 +558,9 @@ public class MirakelContentProvider extends ContentProvider implements
 				TaskContract.Tasks.DESCRIPTION, true);
 		query += addSegment(Task.TABLE + "." + Task.PRIORITY,
 				TaskContract.Tasks.PRIORITY, true);
-		query += addSegment("strftime('%s'," + Task.TABLE + "." + Task.DUE
-				+ ")*1000", TaskContract.Tasks.DUE, true);
+		query += addSegment("(CASE WHEN (" + Task.TABLE + "." + Task.DUE+ " IS NULL) "
+				+ "THEN NULL ELSE strftime('%s'," + Task.TABLE + "." + Task.DUE+ ")*1000 END)", 
+				TaskContract.Tasks.DUE, true);
 		query += addSegment(Task.TABLE + "." + Task.DONE,
 				TaskContract.Tasks.STATUS, true);
 		if (isSpecial) {
@@ -677,22 +678,24 @@ public class MirakelContentProvider extends ContentProvider implements
 		}
 		String s = getIdsFromSelection(uri, selection, selectionArgs, isList);
 		if (!s.equals("")) {
-			boolean hasExtras=false;
-			ContentValues extras=new ContentValues();
-			if(!isList){
-				if(values.containsKey(Tasks.SYNC1)){
+			boolean hasExtras = false;
+			ContentValues extras = new ContentValues();
+			if (!isList) {
+				if (values.containsKey(Tasks.SYNC1)) {
 					extras.put("ETAG", values.getAsString(Tasks.SYNC1));
-					hasExtras=true;
+					hasExtras = true;
 				}
-				if(values.containsKey(Tasks._SYNC_ID)){
-					extras.put("SYNC_ID",values.getAsString(Tasks._SYNC_ID));
-					hasExtras=true;
+				if (values.containsKey(Tasks._SYNC_ID)) {
+					extras.put("SYNC_ID", values.getAsString(Tasks._SYNC_ID));
+					hasExtras = true;
 				}
 			}
-			int count=database.update(isList ? ListMirakel.TABLE : Task.TABLE,
-					newValues, DatabaseHelper.ID + " IN(" + s + ")", null);
-			if(hasExtras){
-				database.update(Task.TABLE, extras, DatabaseHelper.ID + " IN(" + s + ")", null);
+			int count = database.update(
+					isList ? ListMirakel.TABLE : Task.TABLE, newValues,
+					DatabaseHelper.ID + " IN(" + s + ")", null);
+			if (hasExtras) {
+				database.update(Task.TABLE, extras, DatabaseHelper.ID + " IN("
+						+ s + ")", null);
 			}
 			return count;
 		} else {
