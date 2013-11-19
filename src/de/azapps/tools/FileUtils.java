@@ -72,6 +72,10 @@ public class FileUtils {
 	 */
 	@SuppressWarnings("resource")
 	public static void copyFile(File src, File dst) throws IOException {
+		if(!src.canRead()||!dst.canWrite()){
+			Log.e(TAG,"cannot copy file");
+			return;
+		}
 		FileChannel inChannel = new FileInputStream(src).getChannel();
 		FileChannel outChannel = new FileOutputStream(dst).getChannel();
 		try {
