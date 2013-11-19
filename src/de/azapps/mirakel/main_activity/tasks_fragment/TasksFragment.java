@@ -129,7 +129,7 @@ public class TasksFragment extends Fragment {
 					false);
 			TaskFragment t = new TaskFragment();
 			getChildFragmentManager().beginTransaction()
-					.add(R.id.task_fragment_in_tasks, t).commit();
+					.replace(R.id.task_fragment_in_tasks, t).commit();
 			main.setTaskFragment(t);
 		} else {
 			view = inflater.inflate(R.layout.tasks_fragment_phone, container,
