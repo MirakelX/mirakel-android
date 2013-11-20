@@ -499,8 +499,7 @@ public class Task extends TaskBase {
 		Cursor cursor = database.query(TABLE, allColumns, DatabaseHelper.ID
 				+ "='" + id + "' and not " + SyncAdapter.SYNC_STATE + "="
 				+ SYNC_STATE.DELETE, null, null, null, null);
-		cursor.moveToFirst();
-		if (cursor.getCount() != 0) {
+		if (cursor.moveToFirst()) {
 			Task t = cursorToTask(cursor);
 			cursor.close();
 			return t;
@@ -791,17 +790,19 @@ public class Task extends TaskBase {
 				t.addAdditionalEntry(key, val.getAsString());
 			}
 		}
-        if (t.getList() == null){
-        	ListMirakel l=null;
-        	SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(context);
-        	if (p.getBoolean("importDefaultList", false)) {
-        		l=ListMirakel.getList(p.getInt("defaultImportList", SpecialList.firstSpecialSafe(context).getId()));
-        	}
-        	if(l==null){
-        		l=SpecialList.firstSpecialSafe(context);
-        	}
-            t.setList(l);
-        }
+		if (t.getList() == null) {
+			ListMirakel l = null;
+			SharedPreferences p = PreferenceManager
+					.getDefaultSharedPreferences(context);
+			if (p.getBoolean("importDefaultList", false)) {
+				l = ListMirakel.getList(p.getInt("defaultImportList",
+						SpecialList.firstSpecialSafe(context).getId()));
+			}
+			if (l == null) {
+				l = SpecialList.firstSpecialSafe(context);
+			}
+			t.setList(l);
+		}
 		return t;
 	}
 

@@ -71,7 +71,7 @@ public class ListMirakel extends ListBase {
 			String created_at, String updated_at, SYNC_STATE sync_state,
 			int lft, int rgt, int color, AccountMirakel account) {
 		super(id, name, sort_by, created_at, updated_at, sync_state, lft, rgt,
-				color,account);
+				color, account);
 	}
 
 	ListMirakel(int id, String name) {
@@ -86,7 +86,7 @@ public class ListMirakel extends ListBase {
 			String created_at, String updated_at, SYNC_STATE sync_state,
 			int lft, int rgt, int color, int account) {
 		super(id, name, sort_by, created_at, updated_at, sync_state, lft, rgt,
-				color,account);
+				color, account);
 	}
 
 	/**
@@ -178,7 +178,8 @@ public class ListMirakel extends ListBase {
 			where = Task.LIST_ID + " = " + getId();
 		}
 		c = Mirakel.getReadableDatabase().rawQuery(
-				"Select count("+DatabaseHelper.ID+") from " + Task.TABLE + " where " + where
+				"Select count(" + DatabaseHelper.ID + ") from " + Task.TABLE
+						+ " where " + where
 						+ (where.length() != 0 ? " and " : " ") + " "
 						+ Task.DONE + "=0 and not " + SyncAdapter.SYNC_STATE
 						+ "=" + SYNC_STATE.DELETE, null);
@@ -231,7 +232,8 @@ public class ListMirakel extends ListBase {
 	private static DatabaseHelper dbHelper;
 	private static final String[] allColumns = { DatabaseHelper.ID,
 			DatabaseHelper.NAME, SORT_BY, DatabaseHelper.CREATED_AT,
-			DatabaseHelper.UPDATED_AT, SyncAdapter.SYNC_STATE, LFT, RGT, COLOR ,ACCOUNT_ID};
+			DatabaseHelper.UPDATED_AT, SyncAdapter.SYNC_STATE, LFT, RGT, COLOR,
+			ACCOUNT_ID };
 	private static final String TAG = "ListMirakel";
 	private static Context context;
 	private static SharedPreferences preferences;
@@ -315,7 +317,9 @@ public class ListMirakel extends ListBase {
 	public static ListMirakel newList(String name, int sort_by) {
 		return newList(name, sort_by, AccountMirakel.getDefault());
 	}
-	public static ListMirakel newList(String name, int sort_by, AccountMirakel account) {
+
+	public static ListMirakel newList(String name, int sort_by,
+			AccountMirakel account) {
 		ContentValues values = new ContentValues();
 		values.put(DatabaseHelper.NAME, name);
 		values.put(ACCOUNT_ID, account.getId());
@@ -363,30 +367,9 @@ public class ListMirakel extends ListBase {
 		ListMirakel list = new ListMirakel(id, cursor.getString(i++),
 				cursor.getShort(i++), cursor.getString(i++),
 				cursor.getString(i++), SYNC_STATE.parseInt(cursor.getInt(i++)),
-				cursor.getInt(i++), cursor.getInt(i++), cursor.getInt(i++),cursor.getInt(i++));
+				cursor.getInt(i++), cursor.getInt(i++), cursor.getInt(i++),
+				cursor.getInt(i++));
 		return list;
-	}
-
-	/**
-	 * Get a List by id selectionArgs
-	 * 
-	 * @param listId
-	 *            List–ID
-	 * @return List
-	 */
-	public static ListMirakel getListForSync(int listId) {
-		if (listId > 0) {
-			Cursor cursor = database.query(ListMirakel.TABLE, allColumns,
-					DatabaseHelper.ID + "='" + listId + "'", null, null, null,
-					null);
-			cursor.moveToFirst();
-			if (cursor.getCount() != 0) {
-				ListMirakel t = cursorToList(cursor);
-				cursor.close();
-				return t;
-			}
-		}
-		return null;
 	}
 
 	public static ListMirakel findByName(String name) {
@@ -405,8 +388,16 @@ public class ListMirakel extends ListBase {
 	public static ListMirakel getList(int listId) {
 		if (listId < 0)
 			return SpecialList.getSpecialList(-listId);
-		ListMirakel t = getListForSync(listId);
-		return t;
+
+		Cursor cursor = database
+				.query(ListMirakel.TABLE, allColumns, DatabaseHelper.ID + "='"
+						+ listId + "'", null, null, null, null);
+		if (cursor.moveToFirst()) {
+			ListMirakel t = cursorToList(cursor);
+			cursor.close();
+			return t;
+		}
+		return null;
 	}
 
 	public static int count() {
@@ -510,7 +501,7 @@ public class ListMirakel extends ListBase {
 	 * @return
 	 */
 	public static List<ListMirakel> bySyncState(SYNC_STATE state) {
-		
+
 		Cursor c = database.query(ListMirakel.TABLE, allColumns,
 				SyncAdapter.SYNC_STATE + "=" + state, null, null, null, null);
 		c.moveToFirst();
@@ -518,10 +509,10 @@ public class ListMirakel extends ListBase {
 		c.close();
 		return lists;
 	}
-	
+
 	public static List<ListMirakel> byAccount(AccountMirakel a) {
-		Cursor c = database.query(ListMirakel.TABLE, allColumns,
-				ACCOUNT_ID + "=" + a.getId(), null, null, null, null);
+		Cursor c = database.query(ListMirakel.TABLE, allColumns, ACCOUNT_ID
+				+ "=" + a.getId(), null, null, null, null);
 		c.moveToFirst();
 		List<ListMirakel> lists = cursorToListList(c);
 		c.close();

@@ -285,7 +285,6 @@ public class ReminderAlarm extends BroadcastReceiver {
 			alarmManager.set(AlarmManager.RTC_WAKEUP, task.getReminder()
 					.getTimeInMillis(), pendingIntent);
 		} else {
-			Log.e("Blubb", recurrence.getIntervall() + "←intervall");
 			alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, task
 					.getReminder().getTimeInMillis(),
 					recurrence.getIntervall(), pendingIntent);
