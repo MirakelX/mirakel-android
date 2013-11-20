@@ -332,6 +332,10 @@ public class Task extends TaskBase {
 		json += "\"content\":\"" + getContent() + "\",";
 		json += "\"done\":" + (isDone() ? "true" : "false") + ",";
 		json += "\"priority\":" + getPriority() + ",";
+		if (getList() == null) {
+			setList(ListMirakel.getSafeDefaultList(context));
+			safeSave();
+		}
 		json += "\"list_id\":" + getList().getId() + ",";
 		String s = "";
 		if (getDue() != null) {
@@ -791,17 +795,7 @@ public class Task extends TaskBase {
 			}
 		}
 		if (t.getList() == null) {
-			ListMirakel l = null;
-			SharedPreferences p = PreferenceManager
-					.getDefaultSharedPreferences(context);
-			if (p.getBoolean("importDefaultList", false)) {
-				l = ListMirakel.getList(p.getInt("defaultImportList",
-						SpecialList.firstSpecialSafe(context).getId()));
-			}
-			if (l == null) {
-				l = SpecialList.firstSpecialSafe(context);
-			}
-			t.setList(l);
+			t.setList(ListMirakel.getSafeDefaultList(context));
 		}
 		return t;
 	}

@@ -528,4 +528,18 @@ public class ListMirakel extends ListBase {
 		return lists;
 	}
 
+	public static ListMirakel getSafeDefaultList(Context context) {
+		ListMirakel list = null;
+		SharedPreferences p = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		if (p.getBoolean("importDefaultList", false)) {
+			list = ListMirakel.getList(p.getInt("defaultImportList",
+					SpecialList.firstSpecialSafe(context).getId()));
+		}
+		if (list == null) {
+			list = SpecialList.firstSpecialSafe(context);
+		}
+		return list;
+	}
+
 }
