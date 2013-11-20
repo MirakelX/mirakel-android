@@ -885,7 +885,8 @@ public class MainActivity extends ActionBarActivity implements
 		if (tasks == null)
 			return;
 		final MainActivity main = this;
-		if (tasks.size() == 0) // This must then be a bug in a ROM
+		// This must then be a bug in a ROM
+		if (tasks.size() == 0 || tasks.get(0) == null) 
 			return;
 		String names = tasks.get(0).getName();
 		for (int i = 1; i < tasks.size(); i++) {
