@@ -87,6 +87,8 @@ public class TaskFragment extends Fragment {
 					int position, long id) {
 				int type = adapter.getData().get(position).first;
 				if (type == TYPE.FILE) {
+					if(main.getCurrentTask()==null)
+						return;
 					FileMirakel file = main.getCurrentTask().getFiles()
 							.get(adapter.getData().get(position).second);
 					String mimetype = Helpers.getMimeType(file.getPath());
