@@ -159,7 +159,7 @@
     <string name="message_create_socket">Cannot create socket!\nDid you enable your network connection?</string>
     <string name="message_account_suspended">Your account is suspended!</string>
     <string name="message_parse_message">Cannot parse tasks – please write how this happened</string>
-    <string name="message_message_error">Unknown response from the server – please write how this happened</string>    
+    <string name="message_message_error">Unknown response from the server – please write how this happened</string>
     <string name="wrong_config">It looks like you used a wrong config file</string>
     
     <string name="load_config">Select the config file for Taskwarrior</string>
