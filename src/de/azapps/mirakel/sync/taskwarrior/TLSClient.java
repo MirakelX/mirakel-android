@@ -24,6 +24,7 @@ import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.text.ParseException;
 import java.util.Scanner;
 
 import javax.net.ssl.KeyManagerFactory;
@@ -85,14 +86,16 @@ public class TLSClient {
 	}
 
 	private static byte[] parseDERFromPEM(byte[] pem, String beginDelimiter,
-			String endDelimiter) {
+			String endDelimiter) throws ParseException{
 		String data = new String(pem);
 		String[] tokens = data.split(beginDelimiter);
+		if(tokens.length<2)
+			throw new ParseException("Wrong PEM format", 0);
 		tokens = tokens[1].split(endDelimiter);
 		return Base64.decode(tokens[0], Base64.NO_PADDING);
 	}
 
-	private static RSAPrivateKey generatePrivateKeyFromPEM(byte[] keyBytes) {
+	private static RSAPrivateKey generatePrivateKeyFromPEM(byte[] keyBytes) throws ParseException {
 		keyBytes = parseDERFromPEM(keyBytes, "-----BEGIN RSA PRIVATE KEY-----",
 				"-----END RSA PRIVATE KEY-----");
 		PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
@@ -117,7 +120,7 @@ public class TLSClient {
 		}
 	}
 
-	private static X509Certificate generateCertificateFromPEM(byte[] certBytes) {
+	private static X509Certificate generateCertificateFromPEM(byte[] certBytes) throws ParseException{
 		certBytes = parseDERFromPEM(certBytes, "-----BEGIN CERTIFICATE-----",
 				"-----END CERTIFICATE-----");
 		CertificateFactory factory;
@@ -160,7 +163,7 @@ public class TLSClient {
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////
-	public void init(final File root, final File user, final File user_key) {
+	public void init(final File root, final File user, final File user_key) throws ParseException {
 		Log.i(TAG, "init");
 		try {
 			X509Certificate ROOT = generateCertificateFromPEM(fileToBytes(root));

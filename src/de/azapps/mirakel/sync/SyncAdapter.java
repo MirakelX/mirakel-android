@@ -208,6 +208,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			case MESSAGE_ERRORS:
 				last_message = mContext.getText(R.string.message_message_error);
 				break;
+			case CONFIG_PARSE_ERROR:
+				last_message = mContext.getText(R.string.wrong_config);
+				break;
+				
 			}
 			Looper.prepare();
 			Toast.makeText(mContext, last_message, Toast.LENGTH_LONG).show();

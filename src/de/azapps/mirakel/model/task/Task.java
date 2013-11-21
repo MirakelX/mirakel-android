@@ -202,11 +202,6 @@ public class Task extends TaskBase {
 			return false;
 		}
 
-		// progress
-		if (t.getProgress() != getProgress()) {
-			return false;
-		}
-
 		return true;
 	}
 
@@ -337,6 +332,10 @@ public class Task extends TaskBase {
 		json += "\"content\":\"" + getContent() + "\",";
 		json += "\"done\":" + (isDone() ? "true" : "false") + ",";
 		json += "\"priority\":" + getPriority() + ",";
+		if (getList() == null) {
+			setList(ListMirakel.getSafeDefaultList(context));
+			safeSave();
+		}
 		json += "\"list_id\":" + getList().getId() + ",";
 		String s = "";
 		if (getDue() != null) {
@@ -373,7 +372,7 @@ public class Task extends TaskBase {
 			LIST_ID, DatabaseHelper.NAME, CONTENT, DONE, DUE, REMINDER,
 			PRIORITY, DatabaseHelper.CREATED_AT, DatabaseHelper.UPDATED_AT,
 			SyncAdapter.SYNC_STATE, ADDITIONAL_ENTRIES, RECURRING,
-			RECURRING_REMINDER, PROGRESS };
+			RECURRING_REMINDER };
 
 	private static Context context;
 
@@ -432,7 +431,7 @@ public class Task extends TaskBase {
 		Calendar now = new GregorianCalendar();
 		Task t = new Task(0, java.util.UUID.randomUUID().toString(), list,
 				name, content, done, due, null, priority, now, now,
-				SYNC_STATE.ADD, "", -1, -1, 0);
+				SYNC_STATE.ADD, "", -1, -1);
 
 		try {
 			return t.create();
@@ -463,7 +462,6 @@ public class Task extends TaskBase {
 		if (getUpdatedAt() != null)
 			values.put(DatabaseHelper.UPDATED_AT,
 					DateTimeHelper.formatDateTime(getUpdatedAt()));
-		values.put(PROGRESS, getProgress());
 		database.beginTransaction();
 		long insertId = database.insertOrThrow(TABLE, null, values);
 		database.setTransactionSuccessful();
@@ -505,8 +503,7 @@ public class Task extends TaskBase {
 		Cursor cursor = database.query(TABLE, allColumns, DatabaseHelper.ID
 				+ "='" + id + "' and not " + SyncAdapter.SYNC_STATE + "="
 				+ SYNC_STATE.DELETE, null, null, null, null);
-		cursor.moveToFirst();
-		if (cursor.getCount() != 0) {
+		if (cursor.moveToFirst()) {
 			Task t = cursorToTask(cursor);
 			cursor.close();
 			return t;
@@ -798,17 +795,7 @@ public class Task extends TaskBase {
 			}
 		}
 		if (t.getList() == null) {
-			ListMirakel l = null;
-			SharedPreferences p = PreferenceManager
-					.getDefaultSharedPreferences(context);
-			if (p.getBoolean("importDefaultList", false)) {
-				l = ListMirakel.getList(p.getInt("defaultImportList",
-						SpecialList.firstSpecialSafe(context).getId()));
-			}
-			if (l == null) {
-				l = SpecialList.firstSpecialSafe(context);
-			}
-			t.setList(l);
+			t.setList(ListMirakel.getSafeDefaultList(context));
 		}
 		return t;
 	}
@@ -875,8 +862,7 @@ public class Task extends TaskBase {
 				cursor.getString(i++), cursor.getString(i++),
 				cursor.getInt((i++)) == 1, due, reminder, cursor.getInt(8),
 				created_at, updated_at, SYNC_STATE.parseInt(cursor.getInt(11)),
-				cursor.getString(12), cursor.getInt(13), cursor.getInt(14),
-				cursor.getInt(15));
+				cursor.getString(12), cursor.getInt(13), cursor.getInt(14));
 		return task;
 	}
 

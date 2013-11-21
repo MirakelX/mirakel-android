@@ -3,6 +3,7 @@ package de.azapps.mirakel.sync.taskwarrior;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.MalformedInputException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -55,7 +56,7 @@ public class TaskWarriorSync {
 	private HashMap<String, String[]> dependencies;
 
 	public enum TW_ERRORS {
-		CANNOT_CREATE_SOCKET, CANNOT_PARSE_MESSAGE, MESSAGE_ERRORS, TRY_LATER, ACCESS_DENIED, ACCOUNT_SUSPENDED, NO_ERROR;
+		CANNOT_CREATE_SOCKET, CANNOT_PARSE_MESSAGE, MESSAGE_ERRORS, TRY_LATER, ACCESS_DENIED, ACCOUNT_SUSPENDED, NO_ERROR, CONFIG_PARSE_ERROR;
 		public static TW_ERRORS getError(int code) {
 			switch (code) {
 			case 200:
@@ -173,7 +174,11 @@ public class TaskWarriorSync {
 		longInfo(sync.getPayload());
 
 		TLSClient client = new TLSClient();
+		try {
 		client.init(root, user_ca, user_key);
+		} catch(ParseException e) {
+			return TW_ERRORS.CONFIG_PARSE_ERROR;
+		}
 		try {
 			client.connect(_host, _port);
 		} catch (IOException e) {
