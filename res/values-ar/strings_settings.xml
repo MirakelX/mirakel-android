@@ -91,7 +91,6 @@
   <string name="settings_old_logo_summary">أشعر بالحزن لأنك لا تحب الشعار الجديد (إعادة تشغيل التطبيق وتحتاج لأندرويد &gt; = 4.0)</string>
   <string name="settings_old_logo">استخدام الشعار القديم، والقبيح</string>
   <string name="lock_drawer_in_task_fragment_summary">حيث لا يمكنك فتحه عن طريق الخطأ</string>
-  <string name="language">اللغة</string>
   <string name="delete_done">حذف المهام المنجزة</string>
   <string name="delete_done_summary">حذف كافة المهام المنجزة</string>
   <string name="delete_done_warning">هل أنت متأكد؟</string>

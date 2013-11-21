@@ -91,7 +91,6 @@
   <string name="semantic_new_task_config_summary">Configurer les conditions de création de nouvelles tâches</string>
   <string name="semantic_new_task_config">Configurer la création sémantique de nouvelles tâches</string>
   <string name="settings_old_logo_summary">Je me sens triste, que vous n\'aimez pas le nouveau logo (redémarrer l\'application et vous avez besoin d\'Android &gt; = 4.0)</string>
-  <string name="language">Langue</string>
   <string name="delete_done">Supprimer les tâches finies</string>
   <string name="delete_done_summary">Supprimer toutes les tâches finies</string>
   <string name="delete_done_warning">Êtes-vous sûr ?</string>

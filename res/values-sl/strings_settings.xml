@@ -113,7 +113,6 @@
   <string name="lock_drawer_in_task_fragment_summary">Da se seznam ne odpira po pomoti</string>
   <string name="lock_drawer_in_task_fragment">Zakleni pogled seznama med prikazom podrobnosti</string>
   <string name="useTabletLayout">Uporabi tablični način</string>
-  <string name="language">Jezik</string>
   <string name="delete_done">Izbriši končane naloge</string>
   <string name="delete_done_summary">Izbriši vse končane naloge</string>
   <string name="delete_done_warning">Ali ste prepričani?</string>

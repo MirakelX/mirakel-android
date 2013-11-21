@@ -103,7 +103,6 @@
   <string name="swipeBehavior_summary">Zobrazit detail taženého nebo naposledy vybraného úkolu</string>
   <string name="lock_drawer_in_task_fragment_summary">Takže nedojde k jeho nechtěnému otevření z detailu úkolu</string>
   <string name="lock_drawer_in_task_fragment">Uzamknout seznam úkolů</string>
-  <string name="language">Jazyk</string>
   <string name="delete_done">Odstranit vyřešené úkoly</string>
   <string name="delete_done_summary">Odstranit všechny vyřešené úkoly</string>
   <string name="delete_done_warning">Opravdu?</string>

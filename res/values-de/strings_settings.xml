@@ -104,7 +104,6 @@
   <string name="lock_drawer_in_task_fragment_summary">Damit du sie nicht ausversehen öffnest</string>
   <string name="lock_drawer_in_task_fragment">Sperre die Listenübersicht in der Aufgabenansicht</string>
   <string name="useTabletLayout">Tabletlayout benutzen</string>
-  <string name="language">Sprache</string>
   <string name="delete_done">Erledigte Aufgaben löschen</string>
   <string name="delete_done_summary">Löscht alle erledigten Aufgaben</string>
   <string name="delete_done_warning">Bist du sicher?</string>
