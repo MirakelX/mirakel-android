@@ -199,7 +199,7 @@ public class MirakelContentProvider extends ContentProvider implements
 
 	@Override
 	public Uri insert(Uri uri, ContentValues values) {
-//		android.os.Debug.waitForDebugger();
+		// android.os.Debug.waitForDebugger();
 		ContentValues newValues = convertValues(values,
 				isCallerSyncAdapter(uri));
 		String table;
@@ -247,7 +247,7 @@ public class MirakelContentProvider extends ContentProvider implements
 			id = database.insert(table, null, newValues);
 			if (hasExtras) {
 				extras.put(DatabaseHelper.ID, id);
-				database.insert("caldav_extras", null, extras);
+				database.insert("caldav_extra", null, extras);
 			}
 			database.setTransactionSuccessful();
 		} catch (Exception e) {
@@ -338,10 +338,10 @@ public class MirakelContentProvider extends ContentProvider implements
 						.formatDate(due));
 				newValues.put(DatabaseHelper.UPDATED_AT, db);
 			}
-//			if (values.containsKey(Tasks._SYNC_ID)) {
-//				newValues.put("caldav_extra.SYNC_ID",
-//						values.getAsString(Tasks._SYNC_ID));
-//			}
+			// if (values.containsKey(Tasks._SYNC_ID)) {
+			// newValues.put("caldav_extra.SYNC_ID",
+			// values.getAsString(Tasks._SYNC_ID));
+			// }
 			if (values.containsKey(Tasks._DIRTY)) {
 				boolean val = values.getAsBoolean(Tasks._DIRTY);
 				if (!values.containsKey(Tasks._DELETED)) {
@@ -370,7 +370,7 @@ public class MirakelContentProvider extends ContentProvider implements
 								.toInt() : SYNC_STATE.NOTHING.toInt());
 			}
 		}
-//		newValues.put(SyncAdapter.SYNC_STATE, SYNC_STATE.ADD.toInt());
+		// newValues.put(SyncAdapter.SYNC_STATE, SYNC_STATE.ADD.toInt());
 		return newValues;
 	}
 
@@ -705,6 +705,7 @@ public class MirakelContentProvider extends ContentProvider implements
 	@Override
 	public int update(Uri uri, ContentValues values, String selection,
 			String[] selectionArgs) {
+//		android.os.Debug.waitForDebugger();
 		ContentValues newValues = convertValues(values,
 				isCallerSyncAdapter(uri));
 		boolean isList;
@@ -723,11 +724,18 @@ public class MirakelContentProvider extends ContentProvider implements
 			isList = false;
 			break;
 		case TASK_ID:
-			int count = database.update(Task.TABLE, newValues,
-					DatabaseHelper.ID + "=" + getId(uri), null);
-			if (hasExtras) {
-				database.update("caldav_extras", extras, DatabaseHelper.ID
-						+ "=" + getId(uri), null);
+			int count=0;
+			if (newValues.size() > 0) {
+				count = database.update(Task.TABLE, newValues,
+						DatabaseHelper.ID + "=" + getId(uri), null);
+			}
+			if (hasExtras && extras.size() > 0) {
+				count= database.update("caldav_extra", extras, DatabaseHelper.ID + "="
+						+ getId(uri), null);
+				if(count!=1){
+					extras.put(DatabaseHelper.ID, Integer.parseInt(getId(uri)));
+					database.insert("caldav_extra", null, extras);
+				}
 			}
 			return count;
 		case LIST_ID:
@@ -744,7 +752,7 @@ public class MirakelContentProvider extends ContentProvider implements
 					isList ? ListMirakel.TABLE : Task.TABLE, newValues,
 					DatabaseHelper.ID + " IN(" + s + ")", null);
 			if (hasExtras) {
-				database.update("caldav_extras", extras, DatabaseHelper.ID
+				database.update("caldav_extra", extras, DatabaseHelper.ID
 						+ " IN(" + s + ")", null);
 			}
 			return count;
