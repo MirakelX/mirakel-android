@@ -251,6 +251,10 @@
             android:name="de.azapps.mirakel.settings.recurring.RecurringActivity"
             android:label="@string/title_activity_credits" >
         </activity>
+         <activity
+            android:name="de.azapps.mirakel.settings.accounts.AccountSettingsActivity"
+            android:label="@string/title_activity_credits" >
+        </activity>
     </application>
 
 </manifest>

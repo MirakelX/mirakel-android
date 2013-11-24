@@ -1,10 +1,15 @@
 package de.azapps.mirakel.settings.accounts;
 
+import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
 import de.azapps.mirakel.settings.special_list.SpecialListsSettingsFragment;
+import de.azapps.mirakel.sync.SyncAdapter;
+import de.azapps.mirakelandroid.R;
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.preference.EditTextPreference;
@@ -39,10 +44,41 @@ public class AccountSettings implements OnPreferenceChangeListener {
 		if (account == null) {
 			throw new NoSuchListException();
 		}
+		AccountManager am=AccountManager.get(ctx);
+		Account a=getAccount();
+		final Preference syncUsername =  findPreference("syncUsername");
+		if(syncUsername!=null){
+			syncUsername.setEnabled(false);
+			syncUsername.setSummary(a==null?ctx.getString(R.string.local_account):a.name);
+		}
+		final Preference syncServer =  findPreference("syncServer");
+		if(syncServer!=null){
+			syncServer.setEnabled(false);
+			if(a!=null&&a.type.equals(AccountMirakel.ACCOUNT_TYPE_MIRAKEL))
+				syncServer.setSummary(am.getUserData(a, SyncAdapter.BUNDLE_SERVER_URL));
+			else if(a!=null&&a.type.equals(AccountMirakel.ACCOUNT_TYPE_DAVDROID))
+				syncServer.setSummary(a.name);
+			else
+				syncServer.setSummary("");
+		}
+		final Preference syncPassword =  findPreference("syncPassword");
+		if(syncPassword!=null){
+			syncPassword.setEnabled(false);
+		}
+		final Preference syncFrequency = findPreference("syncFrequency");
+		if(syncFrequency!=null){
+			syncFrequency.setEnabled(false);
+		}
+		
+	}
 
-		final EditTextPreference user = (EditTextPreference) findPreference("account_user");
-
-		// TODO: Glue, glue, glue...
+	private Account getAccount() {
+		AccountManager am=AccountManager.get(ctx);
+		for(Account a:am.getAccounts()){
+			if(a.name.equals(account.getName()))
+				return a;
+		}
+		return null;
 	}
 
 	@Override
@@ -58,10 +94,10 @@ public class AccountSettings implements OnPreferenceChangeListener {
 	@SuppressLint("NewApi")
 	private Preference findPreference(String key) {
 		if (v4_0) {
-			return ((SpecialListsSettingsFragment) settings)
+			return ((AccountSettingsFragment) settings)
 					.findPreference(key);
 		} else {
-			return ((SpecialListsSettingsActivity) settings)
+			return ((AccountSettingsActivity) settings)
 					.findPreference(key);
 		}
 	}

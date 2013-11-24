@@ -12,10 +12,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import de.azapps.mirakel.model.account.AccountMirakel;
+import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.settings.ListSettings;
 import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
-import de.azapps.mirakel.sync.SyncAdapter.SYNC_TYPES;
 import de.azapps.mirakelandroid.R;
 
 public class AccountSettingsActivity extends ListSettings {
@@ -26,7 +26,7 @@ public class AccountSettingsActivity extends ListSettings {
 	
 	private AccountMirakel newAccount() {
 		return AccountMirakel.newAccount(getString(R.string.sync_new),
-				SYNC_TYPES.CALDAV, true);
+				ACCOUNT_TYPES.CALDAV, true);
 	}
 
 	
@@ -34,23 +34,26 @@ public class AccountSettingsActivity extends ListSettings {
 
 	@Override
 	protected OnClickListener getAddOnClickListener() {
-		// TODO Auto-generated method stub
-		return new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				newAccount();
-				clickOnLast();
-				invalidateHeaders();
-			}
-
-		};
+		// TODO implement this
+		return null;
+//		return new OnClickListener() {
+//
+//			@Override
+//			public void onClick(View v) {
+//				newAccount();
+//				clickOnLast();
+//				invalidateHeaders();
+//			}
+//
+//		};
 	}
 
 	@SuppressLint("NewApi") // TODO: Is not needed in SpecialListSettingsActivity: Why?
 	@Override
 	public OnClickListener getDelOnClickListener() {
-		return new OnClickListener() {
+		//TODO implement this
+		return null;
+		/*return new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -68,7 +71,7 @@ public class AccountSettingsActivity extends ListSettings {
 					}
 				}
 			}
-		};
+		};*/
 	}
 
 	@Override

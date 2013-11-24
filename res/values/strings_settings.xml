@@ -43,6 +43,8 @@
     <string name="sync_frequency_summary_man">Sync manually only</string>
     <string name="sync_type">Sync Type</string>
     <string name="version">Appversion</string>
+    <string name="menu_edit_listaccount">Account</string>
+    <string name="change_account">Change Account</string>
 
     <string-array name="sync_frequencies">
         <item>5 min</item>

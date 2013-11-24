@@ -29,6 +29,7 @@ import android.view.View;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.PreferencesHelper;
+import de.azapps.mirakel.settings.accounts.AccountSettingsActivity;
 import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
 import de.azapps.mirakelandroid.R;
 
@@ -51,8 +52,14 @@ public class SettingsFragment extends PreferenceFragment {
 			addPreferencesFromResource(R.xml.settings_notifications);
 		} else if (getArguments().getString("type").equals("backup")) {
 			addPreferencesFromResource(R.xml.settings_backup);
-		} else if (getArguments().getString("type").equals("sync")) {
-			addPreferencesFromResource(R.xml.settings_account);
+		} else if (getArguments().getString("type").equals("accounts")) {
+			startActivity(new Intent(getActivity(),
+					AccountSettingsActivity.class));
+			if (!Helpers.isTablet(getActivity()))
+				getActivity().finish();
+			else {
+				addPreferencesFromResource(R.xml.settings_notifications);
+			}
 		} else if (getArguments().getString("type").equals("misc")) {
 			addPreferencesFromResource(R.xml.settings_misc);
 		} else if (getArguments().getString("type").equals("about")) {
@@ -72,7 +79,7 @@ public class SettingsFragment extends PreferenceFragment {
 				addPreferencesFromResource(R.xml.settings_notifications);
 			}
 		} else {
-			Log.wtf(TAG, "unkown prefernce");
+			Log.wtf(TAG, "unkown prefernce "+getArguments().getString("type"));
 		}
 
 		helper = new PreferencesHelper(this);

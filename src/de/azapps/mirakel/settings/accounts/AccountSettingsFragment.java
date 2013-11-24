@@ -25,22 +25,19 @@ public class AccountSettingsFragment extends PreferenceFragment {
 		Bundle b = getArguments();
 		if (b != null) {
 			Log.d(TAG, "id= " + b.getInt("id"));
-			final AccountMirakel account = AccountMirakel.get(b.getInt("id")); // TODO:
-																				// *
-																				// -1?
-
+			final AccountMirakel account = AccountMirakel.get(b.getInt("id")); 
 			((AccountSettingsActivity) getActivity()).setAccount(account);
 
 			ActionBar actionbar = getActivity().getActionBar();
 			if (account == null) {
-				actionbar.setTitle("No list");
+				actionbar.setTitle("No Account");
 			} else {
 				actionbar.setTitle(account.getName()); // TODO: More meaningful
 														// title? (Including
 														// server)
 			}
-			
-			if (!Helpers.isTablet(getActivity())) {
+			//TODO implement this
+			/*if (!Helpers.isTablet(getActivity())) {
 				ImageButton delList = new ImageButton(getActivity());
 				delList.setBackgroundResource(android.R.drawable.ic_menu_delete);
 				actionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
@@ -51,7 +48,7 @@ public class AccountSettingsFragment extends PreferenceFragment {
 						Gravity.CENTER_VERTICAL | Gravity.RIGHT));
 				delList.setOnClickListener(((ListSettings) getActivity())
 						.getDelOnClickListener());
-			}
+			}*/
 			
 			try {
 				new AccountSettings(this, account).setup();
