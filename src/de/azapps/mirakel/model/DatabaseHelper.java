@@ -362,7 +362,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ AccountMirakel.ENABLED + " INTEGER NOT NULL DEFAULT 0, "
 				+ AccountMirakel.TYPE + " INTEGER NOT NULL DEFAULT "
 				+ ACCOUNT_TYPES.LOCAL.toInt() + ")");
-
 	}
 
 	private void createTasksTableString(SQLiteDatabase db) {
