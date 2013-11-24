@@ -36,8 +36,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.UndoHistory;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.task.Task;
@@ -112,7 +112,7 @@ public class ListMirakel extends ListBase {
 					Locale.getDefault()).format(new Date()));
 			ContentValues values = getContentValues();
 			if (log)
-				Helpers.updateLog(ListMirakel.getList(getId()), context);
+				UndoHistory.updateLog(ListMirakel.getList(getId()), context);
 			database.update(ListMirakel.TABLE, values, DatabaseHelper.ID
 					+ " = " + getId(), null);
 			database.setTransactionSuccessful();
@@ -133,7 +133,7 @@ public class ListMirakel extends ListBase {
 
 	public void destroy(boolean force) {
 		if (!force)
-			Helpers.updateLog(this, context);
+			UndoHistory.updateLog(this, context);
 		long id = getId();
 		if (id <= 0)
 			return;
@@ -347,7 +347,7 @@ public class ListMirakel extends ListBase {
 		cursor.moveToFirst();
 		ListMirakel newList = cursorToList(cursor);
 		cursor.close();
-		Helpers.logCreate(newList, context);
+		UndoHistory.logCreate(newList, context);
 		return newList;
 	}
 

@@ -42,6 +42,7 @@
     <string name="sync_frequency_summary">Sync every %s min</string>
     <string name="sync_frequency_summary_man">Sync manually only</string>
     <string name="sync_type">Sync Type</string>
+    <string name="version">Appversion</string>
 
     <string-array name="sync_frequencies">
         <item>5 min</item>
@@ -116,7 +117,6 @@
     <string name="get_dashclock_summary">The Mirakel-Extension for Dashclock</string>
 
     <!-- Astrid -->
-    <string name="import_astrid_click_summary">Import from an Astrid-file</string>
     <string name="import_astrid_click">Import from Astrid</string>
     <string name="astrid_unsuccess">There was an error while importing from Astrid!</string>
     <string name="astrid_success">Successfully imported all data!</string>
@@ -126,7 +126,6 @@
     <string name="astrid_wait">Please wait…</string>
     <string name="astrid_importing">Importing</string>
     <!-- Any.Do -->
-    <string name="import_any_do_click_summary">Import from an Any.Do-file</string>
     <string name="import_any_do_click">Import from Any.Do</string>
     <string name="any_do_import_title">Select Any.Do backupfile</string>
     <string name="any_do_this_file">Import from %s?\nIf not please select a file yourself</string>
@@ -135,6 +134,13 @@
     <string name="any_do_unsuccess">There was an error while importing from Any.Do!</string>
     <string name="any_do_success">Successfully imported all data!</string>
     <string name="wait">Please wait…</string>
+    <!-- Wunderlist -->
+    <string name="import_wunderlist_click">Import from Wunderlist</string>
+    <string name="import_wunderlist_title">Select Wunderlist file</string>
+    <string name="import_unsuccess">There was an error while importing data!</string>
+    <string name="import_success">Successfully imported all data!</string>
+    <string name="import_wunderlist_howto">Howto import from Wunderlist</string>
+    <string name="import_wunderlist_howto_text">The Android-app of Wunderlist does not support a backup functionality.\n\n So you have to login in the web-app. Go to Preferences → Account → Create Backup → (wait) → Click to download. Copy this file to your device and then come back.</string>
     <!-- GUI -->
     <string name="highlightSelected_summary">Highlight lists/tasks when you click on them</string>
     <string name="highlightSelected">Highlight selected</string>

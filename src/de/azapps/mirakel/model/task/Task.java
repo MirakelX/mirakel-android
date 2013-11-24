@@ -31,8 +31,10 @@ import java.util.Set;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.preference.PreferenceManager;
 import android.util.Pair;
 import android.widget.Toast;
 
@@ -44,8 +46,8 @@ import com.google.gson.JsonParser;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.DateTimeHelper;
-import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.UndoHistory;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -116,7 +118,7 @@ public class Task extends TaskBase {
 		ContentValues values = getContentValues();
 		if (log) {
 			Task old = Task.get(getId());
-			Helpers.updateLog(old, context);
+			UndoHistory.updateLog(old, context);
 		}
 		database.beginTransaction();
 		database.update(TABLE, values, DatabaseHelper.ID + " = " + getId(),
@@ -214,7 +216,7 @@ public class Task extends TaskBase {
 
 	public void destroy(boolean force) {
 		if (!force)
-			Helpers.updateLog(this, context);
+			UndoHistory.updateLog(this, context);
 		long id = getId();
 		if (getSyncState() == SYNC_STATE.ADD || force) {
 			database.delete(TABLE, DatabaseHelper.ID + " = " + id, null);
@@ -266,6 +268,9 @@ public class Task extends TaskBase {
 	}
 
 	public void addSubtask(Task t) throws NoSuchListException {
+		if (checkIfParent(t)) {
+			return;
+		}
 		ContentValues cv = new ContentValues();
 		cv.put("parent_id", getId());
 		cv.put("child_id", t.getId());
@@ -428,7 +433,7 @@ public class Task extends TaskBase {
 			return t.create();
 		} catch (NoSuchListException e) {
 			Log.wtf(TAG, "List vanish");
-			Log.e("Blubb", Log.getStackTraceString(e));
+			Log.e(TAG, Log.getStackTraceString(e));
 			Toast.makeText(context, R.string.no_lists, Toast.LENGTH_LONG)
 					.show();
 			return null;
@@ -450,8 +455,10 @@ public class Task extends TaskBase {
 		values.put(SyncAdapter.SYNC_STATE, SYNC_STATE.ADD.toInt());
 		values.put(DatabaseHelper.CREATED_AT,
 				DateTimeHelper.formatDateTime(getCreatedAt()));
+		if (getUpdatedAt() == null)
+			setUpdatedAt(new GregorianCalendar());
 		values.put(DatabaseHelper.UPDATED_AT,
-				DateTimeHelper.formatDateTime(getUpdatedAt()));
+					DateTimeHelper.formatDateTime(getUpdatedAt()));
 		database.beginTransaction();
 		long insertId = database.insertOrThrow(TABLE, null, values);
 		database.setTransactionSuccessful();
@@ -461,7 +468,7 @@ public class Task extends TaskBase {
 		cursor.moveToFirst();
 		Task newTask = cursorToTask(cursor);
 		cursor.close();
-		Helpers.logCreate(newTask, context);
+		UndoHistory.logCreate(newTask, context);
 		return newTask;
 	}
 
@@ -785,6 +792,17 @@ public class Task extends TaskBase {
 				t.addAdditionalEntry(key, val.getAsString());
 			}
 		}
+        if (t.getList() == null){
+        	ListMirakel l=null;
+        	SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(context);
+        	if (p.getBoolean("importDefaultList", false)) {
+        		l=ListMirakel.getList(p.getInt("defaultImportList", SpecialList.firstSpecialSafe(context).getId()));
+        	}
+        	if(l==null){
+        		l=SpecialList.firstSpecialSafe(context);
+        	}
+            t.setList(l);
+        }
 		return t;
 	}
 
@@ -945,6 +963,8 @@ public class Task extends TaskBase {
 							DatabaseHelper.ID + " = " + t.getId(), null);
 				} catch (NoSuchListException e) {
 					Log.d(TAG, "List did vanish");
+				}catch (Exception e) {
+					t.destroy(false);
 				}
 			} else {
 				t.destroy(true);

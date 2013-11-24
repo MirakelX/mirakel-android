@@ -65,7 +65,6 @@
   <string name="settings_help_us">Du kannst uns helfen!</string>
   <string name="get_dashclock">Hol dir Mirakel-Dashclock</string>
   <string name="get_dashclock_summary">Die Mirakel-Erweiterung für Dashclock</string>
-  <string name="import_astrid_click_summary">Importiere aus einer Astrid-Datei</string>
   <string name="import_astrid_click">Import von Astrid</string>
   <string name="astrid_unsuccess">Es ist ein Fehler während des Astrid-Import aufgetreten!</string>
   <string name="astrid_success">Alle Daten erfolgreich importiert!</string>
@@ -74,7 +73,6 @@
   <string name="import_wrong_type">Dies ist keine Mirakel-Datei!</string>
   <string name="astrid_wait">Bitte warten…</string>
   <string name="astrid_importing">Importiere</string>
-  <string name="import_any_do_click_summary">Any.Do import</string>
   <string name="import_any_do_click">Any.Do import</string>
   <string name="any_do_import_title">Any.Do Backup-Datei auswählen</string>
   <string name="any_do_unsuccess">Es ist ein Fehler während des Any.Do-Import aufgetreten!</string>

@@ -57,7 +57,6 @@
   <string name="settings_about">Om</string>
   <string name="get_dashclock">Last ned Mirakel-Dashclock</string>
   <string name="get_dashclock_summary">Mirakel-utvidelse for Dashclock</string>
-  <string name="import_astrid_click_summary">Importer fra en Astrid-fil</string>
   <string name="import_astrid_click">Importer fra Astrid</string>
   <string name="astrid_unsuccess">Det oppstod en feil ved importering fra Astrid!</string>
   <string name="astrid_success">Samtlige data importet suksessfullt!</string>

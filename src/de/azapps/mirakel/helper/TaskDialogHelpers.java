@@ -1,8 +1,28 @@
+/*******************************************************************************
+ * Mirakel is an Android App for managing your ToDo-Lists
+ * 
+ * Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
+ * 
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     any later version.
+ * 
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ * 
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
 package de.azapps.mirakel.helper;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+
+import com.ptashek.widgets.datetimepicker.DateTimePicker;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -35,7 +55,7 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
-import de.azapps.mirakel.helper.DueDialog.VALUE;
+import de.azapps.mirakel.adapter.SubtaskAdapter;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.main_activity.TaskFragmentAdapter;
@@ -49,6 +69,8 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 import de.azapps.mirakelandroid.R;
+import de.azapps.widgets.DueDialog;
+import de.azapps.widgets.DueDialog.VALUE;
 
 public class TaskDialogHelpers {
 	protected static final String TAG = "TaskDialogHelpers";
@@ -155,7 +177,7 @@ public class TaskDialogHelpers {
 		final int extraItems = 2;
 		CharSequence[] items = new String[recurring.size() + extraItems];
 		Recurring r = isDue ? task.getRecurring() : task
-				.getRecurrenceReminder();
+				.getRecurringReminder();
 
 		items[0] = context.getString(R.string.recurrence_no);
 		items[1] = context.getString(R.string.recurrence_custom);
@@ -251,8 +273,8 @@ public class TaskDialogHelpers {
 										task.setRecurrence(r.getId());
 									} else {
 										Recurring.destroyTemporary(task
-												.getRecurrenceReminderId());
-										task.setRecurrenceReminder(r.getId());
+												.getRecurringReminderId());
+										task.setRecurringReminder(r.getId());
 									}
 									task.safeSave();
 
@@ -274,7 +296,7 @@ public class TaskDialogHelpers {
 				if (isDue) {
 					task.setRecurrence(r);
 				} else {
-					task.setRecurrenceReminder(r);
+					task.setRecurringReminder(r);
 				}
 				task.safeSave();
 			}

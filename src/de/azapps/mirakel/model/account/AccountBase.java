@@ -2,7 +2,7 @@ package de.azapps.mirakel.model.account;
 
 import android.content.ContentValues;
 import de.azapps.mirakel.model.DatabaseHelper;
-import de.azapps.mirakel.sync.SyncAdapter.SYNC_TYPES;
+import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 
 public class AccountBase {
 	public final static String TYPE="type";
@@ -13,7 +13,7 @@ public class AccountBase {
 	private int type;
 	private boolean enabled;
 	
-	public AccountBase(int id, String name, SYNC_TYPES type, boolean enabled){
+	public AccountBase(int id, String name, ACCOUNT_TYPES type, boolean enabled){
 		this.setId(id);
 		this.setName(name);
 		this.setType(type.toInt());
@@ -36,8 +36,8 @@ public class AccountBase {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public SYNC_TYPES getType() {
-		return SYNC_TYPES.parseInt(type);
+	public ACCOUNT_TYPES getType() {
+		return ACCOUNT_TYPES.parseInt(type);
 	}
 
 	public void setType(int type) {

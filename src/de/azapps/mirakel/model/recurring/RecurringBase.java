@@ -128,6 +128,21 @@ public class RecurringBase {
 		this.temporary = temporary;
 	}
 
+	/**
+	 * Returns the intervall for a recurrence in ms
+	 * 
+	 * @return
+	 */
+	public long getIntervall() {
+		int minute = 60;
+		int hour = 3600;
+		int day = 86400;
+		int month = 2592000; // That's not right, but who cares?
+		int year = 31536000; // nobody need this…
+		return (minutes * minute + hours * hour + days * day + months * month + years
+				* year) * 1000;
+	}
+
 	public ContentValues getContentValues() {
 		ContentValues cv = new ContentValues();
 		cv.put("_id", _id);

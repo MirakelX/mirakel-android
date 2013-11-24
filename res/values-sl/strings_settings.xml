@@ -62,7 +62,6 @@
   <string name="settings_help_us">Lahko nam tudi pomagate!</string>
   <string name="get_dashclock">Pridobi razširitev za zaslonsko uro</string>
   <string name="get_dashclock_summary">Razširitev programa Mirakel za zaslonsko uro.</string>
-  <string name="import_astrid_click_summary">Uvozi datoteko programa Astrid</string>
   <string name="import_astrid_click">Uvozi iz Astrid</string>
   <string name="astrid_unsuccess">Prišlo je do napake med uvažanjem nalog iz programa Astrid!</string>
   <string name="astrid_success">Vsi podatki so uspešno uvoženi!</string>
@@ -71,7 +70,6 @@
   <string name="import_wrong_type">Datoteka ni ustrezna datoteka programa Mirakel!</string>
   <string name="astrid_wait">Počakajte ...</string>
   <string name="astrid_importing">Poteka uvažanje</string>
-  <string name="import_any_do_click_summary">Uvozi datoteko programa Any.Do</string>
   <string name="import_any_do_click">Uvozi iz Any.Do</string>
   <string name="any_do_import_title">Izbor datoteke Any.Do</string>
   <string name="any_do_unsuccess">Prišlo je do napake med uvozom datoteke Any.Do!</string>

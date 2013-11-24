@@ -1,3 +1,21 @@
+/*******************************************************************************
+ * Mirakel is an Android App for managing your ToDo-Lists
+ * 
+ * Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
+ * 
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     any later version.
+ * 
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ * 
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
 package de.azapps.mirakel.helper;
 
 import java.util.ArrayList;
@@ -5,6 +23,7 @@ import java.util.List;
 
 import org.apache.http.message.BasicNameValuePair;
 
+import sheetrock.panda.changelog.ChangeLog;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
@@ -48,7 +67,10 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.helper.export_import.AnyDoImport;
+import de.azapps.mirakel.helper.export_import.ExportImport;
 import de.azapps.mirakel.main_activity.MainActivity;
+import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
@@ -462,7 +484,7 @@ public class PreferencesHelper {
 		final CheckBoxPreference sync = (CheckBoxPreference) findPreference("syncUse");
 		final Preference syncType = findPreference("syncType");
 		final AccountManager am = AccountManager.get(activity);
-		final Account[] accounts = am.getAccountsByType(Mirakel.ACCOUNT_TYPE);
+		final Account[] accounts = am.getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
 		if (syncType != null && am != null) {
 			if (settings.getBoolean("syncUse", false) && accounts.length > 0) {
 				if (am.getUserData(accounts[0], SyncAdapter.BUNDLE_SERVER_TYPE)
@@ -857,7 +879,7 @@ public class PreferencesHelper {
 			anyDo.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 				@Override
 				public boolean onPreferenceClick(Preference preference) {
-					ExportImport.handleImportAnyDo(activity);
+					AnyDoImport.handleImportAnyDo(activity);
 					return true;
 				}
 			});
@@ -872,6 +894,35 @@ public class PreferencesHelper {
 									SettingsActivity.FILE_ASTRID,
 									activity.getString(R.string.astrid_import_title),
 									activity);
+							return true;
+						}
+					});
+		}
+		Preference importWunderlist = findPreference("import_wunderlist");
+		if (importWunderlist != null) {
+			importWunderlist
+					.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+						@Override
+						public boolean onPreferenceClick(Preference preference) {
+							new AlertDialog.Builder(activity)
+									.setTitle(R.string.import_wunderlist_howto)
+									.setMessage(
+											R.string.import_wunderlist_howto_text)
+									.setPositiveButton(android.R.string.ok,
+											new OnClickListener() {
+
+												@Override
+												public void onClick(
+														DialogInterface dialog,
+														int which) {
+
+													Helpers.showFileChooser(
+															SettingsActivity.FILE_WUNDERLIST,
+															activity.getString(R.string.import_wunderlist_title),
+															activity);
+
+												}
+											}).show();
 							return true;
 						}
 					});
@@ -1137,7 +1188,7 @@ public class PreferencesHelper {
 													if (old_val > val) {
 														for (int i = val; i < max; i++) {
 															editor.putString(
-																	Helpers.UNDO
+																	UndoHistory.UNDO
 																			+ i,
 																	"");
 														}
@@ -1307,6 +1358,10 @@ public class PreferencesHelper {
 						}
 					});
 		}
+
+		final Preference version = findPreference("version");
+		if (version != null)
+			version.setSummary(Mirakel.VERSIONS_NAME);
 	}
 
 	private void setLanguageSummary(ListPreference language, String current) {
@@ -1347,7 +1402,7 @@ public class PreferencesHelper {
 			ctx = (Activity) activity;
 		}
 		final AccountManager am = AccountManager.get(ctx);
-		final Account[] accounts = am.getAccountsByType(Mirakel.ACCOUNT_TYPE);
+		final Account[] accounts = am.getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
 		final SharedPreferences settings = PreferenceManager
 				.getDefaultSharedPreferences(ctx);
 		if (newValue) {
@@ -1422,7 +1477,7 @@ public class PreferencesHelper {
 	public static void updateSyncText(CheckBoxPreference sync,
 			Preference server, Preference syncFrequency, Context ctx) {
 		AccountManager am = AccountManager.get(ctx);
-		Account[] accounts = am.getAccountsByType(Mirakel.ACCOUNT_TYPE);
+		Account[] accounts = am.getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
 		if (accounts.length > 0) {
 			if (sync != null) {
 				if (am.getUserData(accounts[0], SyncAdapter.BUNDLE_SERVER_TYPE)

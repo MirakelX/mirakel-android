@@ -148,10 +148,11 @@ public class SemanticsSettingsActivity extends ListSettings {
 		// TODO Auto-generated method stub
 		return new OnClickListener() {
 
+			@SuppressLint("NewApi")
 			@Override
 			public void onClick(View v) {
 				semantic.destroy();
-				if (!onIsMultiPane())
+				if (Build.VERSION.SDK_INT < 11 || !onIsMultiPane())
 					finish();
 				else {
 					try {

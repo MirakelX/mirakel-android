@@ -1,4 +1,4 @@
-package de.azapps.mirakel.helper;
+package com.ptashek.widgets.datetimepicker;
 
 /**
  * Copyright 2010 Lukasz Szmit <devmail@szmit.eu>

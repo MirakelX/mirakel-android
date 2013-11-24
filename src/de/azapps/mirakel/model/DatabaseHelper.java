@@ -26,15 +26,14 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.graphics.AvoidXfermode;
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.helper.ExportImport;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.export_import.ExportImport;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.account.AccountMirakel;
+import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -43,7 +42,6 @@ import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
-import de.azapps.mirakel.sync.SyncAdapter.SYNC_TYPES;
 import de.azapps.mirakel.sync.mirakel.MirakelSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
 import de.azapps.mirakelandroid.R;
@@ -52,7 +50,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String TAG = "DatabaseHelper";
 	private Context context;
-	public static final int DATABASE_VERSION = 25;
+	public static final int DATABASE_VERSION = 26;
 
 	public static final String ID = "_id";
 	public static final String CREATED_AT = "created_at";
@@ -86,6 +84,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ context.getString(R.string.first_task) + "')");
 		createSpecialListsTable(db);
 		onUpgrade(db, 7, DATABASE_VERSION);
+	}
+
+	@Override
+	public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+		Log.e(TAG,"You are downgrading the Database!");
+		// This is only for developers… There shouldn't happen bad things if you use a database with a higher version.
 	}
 
 	@Override
@@ -314,20 +318,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			// Add Accountmanagment
 		case 24:
 			createAccountTable(db);
-			SYNC_TYPES type = SYNC_TYPES.LOCAL;
+			ACCOUNT_TYPES type = ACCOUNT_TYPES.LOCAL;
 			;
 			AccountManager am = AccountManager.get(context);
 			String accountname = context.getString(R.string.local_account);
-			if (am.getAccountsByType(Mirakel.ACCOUNT_TYPE).length > 0) {
-				Account a = am.getAccountsByType(Mirakel.ACCOUNT_TYPE)[0];
+			if (am.getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL).length > 0) {
+				Account a = am.getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL)[0];
 				String t = (AccountManager.get(context)).getUserData(a,
 						SyncAdapter.BUNDLE_SERVER_TYPE);
 				if (t.equals(MirakelSync.TYPE)) {
-					type = SYNC_TYPES.MIRAKEL;
-					accountname = t;
+					type = ACCOUNT_TYPES.MIRAKEL;
+					accountname = a.name;
 				} else if (t.equals(TaskWarriorSync.TYPE)) {
-					type = SYNC_TYPES.TASKWARRIOR;
-					accountname = t;
+					type = ACCOUNT_TYPES.TASKWARRIOR;
+					accountname = a.name;
 				}
 			}
 			ContentValues cv = new ContentValues();
@@ -340,6 +344,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ AccountMirakel.TABLE + " (" + ID
 					+ ") ON DELETE CASCADE ON UPDATE CASCADE DEFAULT "
 					+ accountId + "; ");
+			//Add some columns for caldavsync
+		case 25:
+			db.execSQL("CREATE TABLE caldav_extra("
+					+ ID +" INTEGER PRIMARY KEY,"
+					+ "ETAG TEXT,"
+					+ "SYNC_ID TEXT DEFAULT NULL, "
+					+ "REMOTE_NAME TEXT)");
+			
 		}
 	}
 
@@ -349,8 +361,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ " TEXT NOT NULL, " + "content TEXT, "
 				+ AccountMirakel.ENABLED + " INTEGER NOT NULL DEFAULT 0, "
 				+ AccountMirakel.TYPE + " INTEGER NOT NULL DEFAULT "
-				+ SYNC_TYPES.LOCAL.toInt() + ")");
-
+				+ ACCOUNT_TYPES.LOCAL.toInt() + ")");
 	}
 
 	private void createTasksTableString(SQLiteDatabase db) {

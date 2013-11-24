@@ -66,8 +66,6 @@ resDialogCommentPrompt = R.string.crash_dialog_comment_prompt, resDialogOkToast 
 )
 public class Mirakel extends Application {
 	public static final int NOTIF_DEFAULT = 123, NOTIF_REMINDER = 124;
-
-	public static final String ACCOUNT_TYPE = "de.azapps.mirakel";
 	public static final String AUTHORITY_TYP = "de.azapps.mirakel.provider";
 	public static String APK_NAME;
 	public static String VERSIONS_NAME;
@@ -77,9 +75,16 @@ public class Mirakel extends Application {
 	private static final String TAG = "Mirakel";
 
 	private static SQLiteOpenHelper openHelper;
-	public static String MIRAKEL_DIR;
-	
+	private static String MIRAKEL_DIR;
 
+	public static String getMirakelDir() {
+		if(Mirakel.APK_NAME==null)//wtf
+			APK_NAME="de.azapps.mirakelandroid";
+		if (MIRAKEL_DIR == null)
+			MIRAKEL_DIR = Environment.getDataDirectory() + "/data/"
+					+ Mirakel.APK_NAME + "/";
+		return MIRAKEL_DIR;
+	}
 
 	@Override
 	public void onCreate() {
@@ -92,8 +97,6 @@ public class Mirakel extends Application {
 				getBaseContext().getResources().getDisplayMetrics());
 		ACRA.init(this);
 		APK_NAME = getPackageName();
-		MIRAKEL_DIR = Environment.getDataDirectory() + "/data/"
-				+ Mirakel.APK_NAME + "/";
 		try {
 			VERSIONS_NAME = getPackageManager().getPackageInfo(
 					getPackageName(), 0).versionName;
@@ -105,7 +108,7 @@ public class Mirakel extends Application {
 		}
 		openHelper = new DatabaseHelper(this);
 		Mirakel.getWritableDatabase().execSQL("PRAGMA foreign_keys=ON;");
-		Context ctx=getApplicationContext();
+		Context ctx = getApplicationContext();
 		ListMirakel.init(ctx);
 		Task.init(ctx);
 		SpecialList.init(ctx);

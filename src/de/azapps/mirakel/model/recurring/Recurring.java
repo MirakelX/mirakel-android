@@ -224,7 +224,7 @@ public class Recurring extends RecurringBase {
 			if (isDue)
 				id = task.getRecurrenceId();
 			else
-				id = task.getRecurrenceReminderId();
+				id = task.getRecurringReminderId();
 			if (id > -1)
 				where += " OR _id=" + id;
 		}
