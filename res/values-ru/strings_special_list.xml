@@ -8,7 +8,7 @@
   <string name="special_list_def_list">Список по умолчанию</string>
   <string name="special_list_def_date">Дата по умолчанию</string>
   <string name="special_list_first">По умолчанию</string>
-  <string name="special_list_contains">Выбор аргументов</string>
+  <string name="special_list_contains">Аргументы выбора</string>
   <string name="special_list_summary">Резюме</string>
   <string name="special_lists_defaults">Значения по умолчанию</string>
   <string name="list_menu_new_special_list">Новый расширенный список</string>
@@ -23,6 +23,9 @@
   <string name="select_by">Выбор</string>
   <string name="done">Выполненные дела</string>
   <string name="undone">Невыполненные дела</string>
+  <string name="recurrence_no">Без повтора</string>
+  <string name="recurrence_custom_title">Пользовательский повтор</string>
+  <string name="recurrence_custom">Пользовательское</string>
   <string name="today">Сегодня</string>
   <string name="tomorrow">Завтра</string>
   <string name="reminder_set">Дела с напоминанием</string>
@@ -33,6 +36,7 @@
   <string name="where_like_begin_text">Начинается с</string>
   <string name="where_like_end_text">Оканчивается на</string>
   <string name="delete">Удалить</string>
+  <string name="nothing">Без повтора</string>
   <string-array name="special_list_def_date_picker">
     <item>Нет даты</item>
     <item>Вчера</item>

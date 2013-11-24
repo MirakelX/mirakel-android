@@ -308,7 +308,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == Activity.RESULT_OK
 				&& requestCode == CONFIG_TASKWARRIOR) {
-			config_file = Helpers.getPathFromUri(data.getData(), this);
+			config_file = FileUtils.getPathFromUri(data.getData(), this);
 			((TextView) findViewById(R.id.login_taskwarrior_path))
 					.setText(config_file);
 		}

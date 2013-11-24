@@ -138,7 +138,10 @@ public class SpecialListSettings implements OnPreferenceChangeListener {
 		});
 		final Preference defList = findPreference("special_default_list");
 		defList.setOnPreferenceChangeListener(this);
-		defList.setSummary(specialList.getDefaultList().getName());
+		String summary = "";
+		if (specialList.getDefaultList() != null)
+			summary = specialList.getDefaultList().getName();
+		defList.setSummary(summary);
 		defList.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
 			@Override
@@ -799,6 +802,12 @@ public class SpecialListSettings implements OnPreferenceChangeListener {
 										summary += ctx.getResources()
 												.getQuantityString(
 														R.plurals.due_day, val);
+										break;
+									default:
+										// The other things aren't
+										// shown in
+										// the dialog so we haven't to care
+										// about them
 										break;
 									}
 

@@ -19,6 +19,7 @@
   <string name="sync_frequency_summary">Uskladi vsakih %s minut</string>
   <string name="sync_frequency_summary_man">Uskladi le ročno</string>
   <string name="sync_type">Vrsta usklajevanja</string>
+  <string name="version">Različica programa</string>
   <string name="no">ne</string>
   <string name="not">ne</string>
   <string name="notification_title">Obvestila</string>
@@ -72,9 +73,18 @@
   <string name="astrid_importing">Poteka uvažanje</string>
   <string name="import_any_do_click">Uvozi iz Any.Do</string>
   <string name="any_do_import_title">Izbor datoteke Any.Do</string>
+  <string name="any_do_this_file">Uvozi iz %s?\nČe želite podatke uvoziti ročno, izberite datoteko</string>
+  <string name="any_do_how_to">Najprej naredite varnostno kopijo podatkov Any.Do. To storite v programu Any.Do v meniju Nastavitve → Varnostna kopija → Ustvari varnostno kopijo. Ko to storite, odprite spet program Mirakel in pritisnite gumb V redu.\n Ali pa seveda, izberite datoteko sami.</string>
+  <string name="select_file">Izbor datoteke</string>
   <string name="any_do_unsuccess">Prišlo je do napake med uvozom datoteke Any.Do!</string>
   <string name="any_do_success">Vsi podatki so uspešno uvoženi!</string>
   <string name="wait">Počakajte ...</string>
+  <string name="import_wunderlist_click">Uvozi iz programa Wunderlist</string>
+  <string name="import_wunderlist_title">Izbor datoteke Wunderlist</string>
+  <string name="import_unsuccess">Prišlo je do napake med uvažanjem podatkov!</string>
+  <string name="import_success">Vsi podatki so uspešno uvoženi!</string>
+  <string name="import_wunderlist_howto">Kako uvoziti iz programa Wunderlist</string>
+  <string name="import_wunderlist_howto_text">Program Wunderlist ne podpira možnosti ustvarjanja varnostnih kopij.\n\n Za pripravo datoteke je treba to storiti preko spletišča. Prijavite se, nato pa med Možnostmi poiščite → Račun → Ustvari varnostno kopijo → (malo počakajte) → Kliknite na gumb Prejmi in kopirajte datoteko na napravo.</string>
   <string name="highlightSelected_summary">Poudari seznam ali nalogo, ko je ta izbrana</string>
   <string name="highlightSelected">Poudari izbrano</string>
   <string name="settings_date_format_relative">Pokaži datume opisno</string>
@@ -103,7 +113,6 @@
   <string name="lock_drawer_in_task_fragment_summary">Da se seznam ne odpira po pomoti</string>
   <string name="lock_drawer_in_task_fragment">Zakleni pogled seznama med prikazom podrobnosti</string>
   <string name="useTabletLayout">Uporabi tablični način</string>
-  <string name="language">Jezik</string>
   <string name="delete_done">Izbriši končane naloge</string>
   <string name="delete_done_summary">Izbriši vse končane naloge</string>
   <string name="delete_done_warning">Ali ste prepričani?</string>
@@ -115,6 +124,7 @@
   <string name="register_server">Če si želite pridobiti tudi račun za usklajevanje nalog na našem strežniku, pošljite elektronsko sporočilo. Z naslednjo različico boste imeli možnost račun tudi vpisati in uporabiti!</string>
   <string name="send_mail">Pošlji elektronsko sporočilo</string>
   <string name="special_lists_title">Posebni seznami</string>
+  <string name="register">Vpis</string>
   <string name="preferences_colorize">Barve</string>
   <string name="preferences_colorize_tasks">Obarvaj naloge</string>
   <string name="preferences_colorize_tasks_everywhere">Ali naj se obarvajo naloge vseh seznamov</string>

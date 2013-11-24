@@ -6,4 +6,7 @@
   <string name="widget_done">Выполненные дела</string>
   <string name="widget_sort">Сортировать</string>
   <string name="widget_sort_summary">Сортировать по \"%s\"</string>
+  <string name="fontcolor">Цвет текста</string>
+  <string name="widget_transparency">Прозрачность</string>
+  <string name="widget_transparency_summary">Прозрачность %s%%</string>
 </resources>

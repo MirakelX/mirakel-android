@@ -16,7 +16,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package de.azapps.mirakel.main_activity;
+package de.azapps.mirakel.main_activity.task_fragment;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -82,6 +82,7 @@ import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.helper.TaskHelper;
+import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.task.Task;
@@ -382,8 +383,8 @@ public class TaskFragmentAdapter extends
 		// Due
 		if (task.getDue() != null) {
 			holder.taskRowDue.setVisibility(View.VISIBLE);
-			holder.taskRowDue
-					.setText(DateTimeHelper.formatDate(context, task.getDue()));
+			holder.taskRowDue.setText(DateTimeHelper.formatDate(context,
+					task.getDue()));
 			holder.taskRowDue.setTextColor(row.getResources().getColor(
 					TaskHelper.getTaskDueColor(task.getDue(), task.isDone())));
 		} else {
@@ -822,7 +823,8 @@ public class TaskFragmentAdapter extends
 			holder.taskReminder.setTextColor(context.getResources().getColor(
 					inactive_color));
 		} else {
-			holder.taskReminder.setText(DateTimeHelper.formatDate(task.getReminder(),
+			holder.taskReminder.setText(DateTimeHelper.formatDate(
+					task.getReminder(),
 					context.getString(R.string.humanDateTimeFormat)));
 			holder.taskReminder.setTextColor(context.getResources().getColor(
 					inactive_color));
@@ -965,7 +967,8 @@ public class TaskFragmentAdapter extends
 			holder.taskDue.setTextColor(context.getResources().getColor(
 					inactive_color));
 		} else {
-			holder.taskDue.setText(DateTimeHelper.formatDate(context, task.getDue()));
+			holder.taskDue.setText(DateTimeHelper.formatDate(context,
+					task.getDue()));
 			holder.taskDue.setTextColor(context.getResources().getColor(
 					TaskHelper.getTaskDueColor(task.getDue(), task.isDone())));
 		}
@@ -995,7 +998,7 @@ public class TaskFragmentAdapter extends
 			holder.taskName.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					if (((MainActivity) context).isTablet) {
+					if (Helpers.isTablet(context)) {
 						((EditText) ((MainActivity) context)
 								.findViewById(R.id.tasks_new))
 								.setOnFocusChangeListener(null);
@@ -1073,7 +1076,7 @@ public class TaskFragmentAdapter extends
 
 		String tname = task.getName();
 		holder.taskName.setText(tname == null ? "" : tname);
-		if (((MainActivity) context).isTablet)
+		if (Helpers.isTablet(context))
 			holder.taskName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
 
 		if (holder.switcher.getCurrentView().getId() == R.id.edit_name

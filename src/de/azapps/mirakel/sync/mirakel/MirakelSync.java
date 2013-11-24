@@ -304,7 +304,7 @@ public class MirakelSync {
 					.replace(":", ""));
 			list_server.setUpdatedAt(list_server.getUpdatedAt()
 					.replace(":", ""));
-			ListMirakel list = ListMirakel.getListForSync(list_server.getId());
+			ListMirakel list = ListMirakel.getList(list_server.getId());
 			if (list == null) {
 				Log.d(TAG, "add list from Server");
 				addListFromServer(list_server);

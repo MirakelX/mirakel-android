@@ -31,7 +31,7 @@
 
     <fragment
         android:id="@+id/navigate_fragment"
-        android:name="de.azapps.mirakel.main_activity.ListFragment"
+        android:name="de.azapps.mirakel.main_activity.list_fragment.ListFragment"
         android:layout_width="300dp"
         android:layout_height="match_parent"
         android:layout_gravity="start" />

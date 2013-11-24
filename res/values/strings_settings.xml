@@ -91,8 +91,8 @@
     <string name="startup_list_summary">Show tasks of \"%s\"</string>
 
     <!-- Special Lists -->
-    <string name="special_lists_click">Manage Special Lists</string>
-    <string name="special_lists_new">New Special List</string>
+    <string name="special_lists_click">Manage Smart Lists</string>
+    <string name="special_lists_new">New Smart List</string>
     <string name="settings_misc">Misc</string>
     <!-- Backup -->
     <string name="settings_backup">Backup and Import</string>
@@ -173,7 +173,7 @@
     <string name="lock_drawer_in_task_fragment">Lock List-View in the Task details</string>
     <string name="useTabletLayout">Use TabletLayout</string>
     <!-- Language -->
-    <string name="language">Language</string>
+    <string name="language" translatable="false">Language</string>
 
     <string-array name="language_values" translatable="false">
         <item>Default</item>
@@ -185,6 +185,7 @@
         <item>Slovenščina</item>
         <item>Norsk</item>
         <item>čeština</item>
+        <item>العربية</item>
     </string-array>
     <string-array name="language_keys" translatable="false">
         <item>-1</item>
@@ -196,6 +197,7 @@
         <item>sl</item>
         <item>no</item>
         <item>cs</item>
+        <item>ar</item>
     </string-array>
 
     <!-- Delete done -->
@@ -209,14 +211,14 @@
     <string name="howto_setup_server">How to setup server</string>
     <string name="register_server">If you need an account for the sync on our server, please send us an e-mail. With the next version you\'ll get the possibility to register an account!</string>
     <string name="send_mail">Send e-mail</string>
-    <string name="special_lists_title">Special Lists</string>
+    <string name="special_lists_title">Smart Lists</string>
     <string name="register">Register</string>
 
     <!-- Colors -->
     <string name="preferences_colorize">Colors</string>
     <string name="preferences_colorize_tasks">Colorize tasks</string>
     <string name="preferences_colorize_tasks_everywhere">Colorize tasks everywhere</string>
-    <string name="preferences_colorize_tasks_everywhere_summary">…or only in the special lists?</string>
+    <string name="preferences_colorize_tasks_everywhere_summary">…or only in the smart lists?</string>
 
     <!-- Semantics -->
     <string name="settings_semantics_title">Configure Semantics</string>

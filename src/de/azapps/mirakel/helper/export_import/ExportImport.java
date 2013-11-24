@@ -48,7 +48,6 @@ import android.widget.Toast;
 import au.com.bytecode.opencsv.CSVReader;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
-import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -110,7 +109,7 @@ public class ExportImport {
 	public static boolean importAstrid(Context context, String path) {
 		File file = new File(path);
 		if (file.exists()) {
-			String mimetype = Helpers.getMimeType(path);
+			String mimetype = FileUtils.getMimeType(path);
 			if (mimetype.equals("application/zip")) {
 				return importAstridZip(context, file);
 			} else if (mimetype.equals("text/xml")) {

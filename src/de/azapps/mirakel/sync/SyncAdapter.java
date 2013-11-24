@@ -35,6 +35,9 @@
  */
 package de.azapps.mirakel.sync;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.support.v4.app.NotificationCompat;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.AbstractThreadedSyncAdapter;
@@ -62,6 +65,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	private static CharSequence last_message = null;
 	private Context mContext;
 	public static final String ACCOUNT_PREFIX = "ACCOUNT_";
+    private NotificationManager mNotificationManager;
+    private int notifyID = 1;
+
 
 	
 
@@ -109,12 +115,23 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	public SyncAdapter(Context context, boolean autoInitialize) {
 		super(context, autoInitialize);
 		mContext = context;
+        mNotificationManager =
+                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+
 	}
 
 	@Override
 	public void onPerformSync(Account account, Bundle extras, String authority,
 			ContentProviderClient provider, SyncResult syncResult) {
 		Log.v(TAG, "SyncAdapter");
+        int icon = android.R.drawable.stat_notify_sync;//R.drawable.mirakel
+        NotificationCompat.Builder mNB = new NotificationCompat.Builder(mContext)
+          .setContentTitle("Mirakel")
+          .setContentText("Sync")
+          .setSmallIcon(icon);
+
+        mNotificationManager.notify(notifyID, mNB.build());
+
 		String type = (AccountManager.get(mContext)).getUserData(account,
 				BUNDLE_SERVER_TYPE);
 		if (type == null)
@@ -146,6 +163,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			case MESSAGE_ERRORS:
 				last_message = mContext.getText(R.string.message_message_error);
 				break;
+			case CONFIG_PARSE_ERROR:
+				last_message = mContext.getText(R.string.wrong_config);
+				break;
+				
 			}
 			Looper.prepare();
 			Toast.makeText(mContext, last_message, Toast.LENGTH_LONG).show();
@@ -155,6 +176,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		} else {
 			Log.wtf(TAG, "Unknown SyncType");
 		}
+    mNotificationManager.cancelAll();
 	}
 
 	public static CharSequence getLastMessage() {
@@ -162,4 +184,5 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		last_message = null;
 		return tmp;
 	}
+
 }

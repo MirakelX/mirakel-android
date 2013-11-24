@@ -19,16 +19,13 @@
   <string name="wrong_sync_type">Le type de synchronisation n\'est pas pris en charge !</string>
   <string name="action_sync_now">Synchroniser maintenant</string>
   <string name="resync">Vous voulez resynchroniser toutes les tâches ?</string>
-  <string name="start">Démarrer</string>
   <string name="menu_sort_lists">Réorganiser les listes</string>
   <string name="no_https">Vous devriez utiliser https !</string>
   <string name="finish_sync">Fin de synchronisation</string>
   <string name="inbox">Boîte de réception</string>
   <string name="first_task">Première tâche</string>
   <string name="tasks_new_str">Nouvelle tâche</string>
-  <string name="task_no_content">Ajouter une note</string>
   <string name="task_change_prio_title">Modifier la priorité</string>
-  <string name="task_change_prio_cont">Priorité</string>
   <string name="task_delete_content">Êtes-vous sûr de que vouloir supprimer %s ?</string>
   <string name="task_menu_sorting">Trier les tâches</string>
   <string name="task_sorting_title">Trier les tâches par</string>
@@ -42,6 +39,7 @@
   <string name="remove_files_summary">Voulez vous supprimer %1$s de %2$s?</string>
   <string name="add_subtask">Ajouter une sous-tâche</string>
   <string name="remove_subtask">Supprimer la sous-tâche</string>
+  <string name="subtask_add_options">Options &gt;&gt;</string>
   <string name="subtask_done">Tâche effectuée ?</string>
   <string name="subtask_reminder">Tâches avec rappel ?</string>
   <string name="subtask_content">Tâche avec note ?</string>
@@ -104,7 +102,6 @@
   <string name="login_activity_newaccount_text">Connexion à votre compte %s. </string>
   <string name="ui_activity_authenticating">Authentification en cours…</string>
   <string name="ui_activity_title">Connexion</string>
-  <string name="title_activity_special_lists_settings">Paramètres pour les listes spéciales</string>
   <string name="changelog_full_title">Journal des modifications</string>
   <string name="changelog_title">Nouveautés</string>
   <string name="changelog_ok_button">OK</string>
@@ -134,12 +131,8 @@ Device: %3$s\n]]>
   <string name="backup_import_ok">L\'importation s\'est bien passée - Veuillez redémarrer Mirakel</string>
   <string name="backup_export_error">Il y a eût une erreur lors de l\'exportation de la base de données</string>
   <string name="backup_export_ok">Exporté vers %s</string>
-  <string name="change_content">Modifier le contenu</string>
-  <string name="content">Contenu</string>
   <string name="add_content">Ajouter une note…</string>
   <string name="task_has_content">La tâche contient quelque chose</string>
-  <string name="help">Aide</string>
-  <string name="help_description">Il y a 3 parties principales : sur la gauche vous pouvez voir toutes les listes, au milieu vous pouvez voir toutes les tâches d\'une liste et sur le droite vous pouvez voir une tâche. Vous passez d\'une partie à l\'autre en faisant glisser ou en cliquant.</string>
   <string name="permission_group_desc">Autorisations d\'accès pour Mirakel</string>
   <string name="permission_group_lbl">Autorisations de Mirakel</string>
   <string name="permission_read_lbl">Lire des données depuis Mirakel</string>
@@ -152,21 +145,39 @@ Device: %3$s\n]]>
   <string name="crash_dialog_comment_prompt">Vous pouvez ajouter vos commentaires sur le problème ci-dessous :</string>
   <string name="crash_dialog_ok_toast">Merci !</string>
   <string name="message_from_server">Le serveur veut vous dire : %s</string>
+  <string name="list_change_color">Changer de couleur</string>
+  <string name="set_color">Définir la Couleur</string>
+  <string name="unset_color">Pas de couleur</string>
+  <string name="add_files">Ajoutez le fichier...</string>
+  <string name="file_no_activity">Je ne sais pas comment ouvrir ce fichier – Désolé</string>
+  <string name="file_select">Sélectionnez un fichier</string>
+  <string name="file_vanished">Aucun fichier</string>
   <string name="edit">Modifier</string>
+  <string name="daily">Quotidien</string>
+  <string name="weekly">Hebdomadaire</string>
+  <string name="two_weekly">Toutes les deux semaines</string>
+  <string name="yearly">Annuel</string>
+  <string name="monthly">Mensuel</string>
+  <string name="hourly">Horaire</string>
+  <string name="minutly">Chaque minute</string>
+  <string name="label">Étiquette</string>
+  <string name="minute">Minute</string>
+  <string name="hour">Heure</string>
   <string name="day">Jour</string>
   <string name="month">Mois</string>
   <string name="year">Année</string>
+  <string name="intervall">Intervalle</string>
+  <string name="beginning">Début</string>
+  <string name="end">Fin</string>
+  <string name="no_begin_end">Aucun %s</string>
+  <string name="beginning_end">Début et fin</string>
+  <string name="save">Sauvegarder</string>
   <string-array name="task_sorting_items">
     <item>Par défaut</item>
     <item>Échéance</item>
     <item>Priorité</item>
     <item>Date de création</item>
-  </string-array>
-  <string-array name="task_sorting_items_values">
-    <item>0</item>
-    <item>1</item>
-    <item>2</item>
-    <item>3</item>
+    <item>First by priority, then by date</item>
   </string-array>
   <string-array name="task_actions_items">
     <item>Modifier</item>
@@ -174,10 +185,10 @@ Device: %3$s\n]]>
     <item>Supprimer</item>
   </string-array>
   <string-array name="list_actions_items">
-    <item>Select color</item>
-    <item>Rename</item>
+    <item>Selectionnez couleur</item>
+    <item>Renommer</item>
     <item>Supprimer</item>
-    <item>Share</item>
+    <item>Partagez</item>
   </string-array>
   <string-array name="server_typs">
     <item>Taskwarrior</item>

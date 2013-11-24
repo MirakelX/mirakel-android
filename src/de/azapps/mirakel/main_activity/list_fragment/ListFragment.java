@@ -16,7 +16,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package de.azapps.mirakel.main_activity;
+package de.azapps.mirakel.main_activity.list_fragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +32,6 @@ import android.content.DialogInterface.OnClickListener;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -56,18 +55,19 @@ import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.account.AccountMirakel;
+import de.azapps.mirakel.main_activity.DragNDropListView;
+import de.azapps.mirakel.main_activity.MainActivity;
+import de.azapps.mirakel.main_activity.MirakelFragment;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 import de.azapps.mirakelandroid.R;
 
-public class ListFragment extends Fragment {
+public class ListFragment extends MirakelFragment {
 	// private static final String TAG = "ListsActivity";
 	private ListAdapter adapter;
-	protected MainActivity main;
 	protected EditText input;
-	private View view;
 	protected boolean EditName;
 	private DragNDropListView listView;
 	private static final int LIST_COLOR = 0, LIST_RENAME = 1, LIST_DESTROY = 2,
@@ -75,21 +75,6 @@ public class ListFragment extends Fragment {
 	protected static final String TAG = "ListFragment";
 	private boolean enableDrag;
 	private ActionMode mActionMode = null;
-
-	public void setActivity(MainActivity activity) {
-		main = activity;
-	}
-
-	private static ListFragment me = null;
-
-	private static void setSingleton(ListFragment me) {
-		if (ListFragment.me == null)
-			ListFragment.me = me;
-	}
-
-	public static ListFragment getSingleton() {
-		return me;
-	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -119,7 +104,7 @@ public class ListFragment extends Fragment {
 
 	@SuppressLint("NewApi")
 	public void update() {
-		if (view == null || this.getActivity()==null)
+		if (view == null || this.getActivity() == null)
 			return;
 		final List<ListMirakel> values = ListMirakel.all();
 		main.updateLists();
@@ -404,7 +389,7 @@ public class ListFragment extends Fragment {
 	 * 
 	 * @param list
 	 */
-	void editList(final ListMirakel list) {
+	public void editList(final ListMirakel list) {
 
 		input = new EditText(main);
 		input.setText(list == null ? "" : list.getName());
@@ -451,6 +436,20 @@ public class ListFragment extends Fragment {
 			}
 		}, 50);
 
+	}
+
+	/**
+	 * Pointer to the fragment itself
+	 */
+	private static ListFragment me = null;
+
+	protected static void setSingleton(ListFragment me) {
+		if (ListFragment.me == null)
+			ListFragment.me = me;
+	}
+
+	public static ListFragment getSingleton() {
+		return me;
 	}
 
 }
