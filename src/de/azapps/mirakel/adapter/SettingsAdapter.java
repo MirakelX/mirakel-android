@@ -40,6 +40,7 @@ import android.widget.TextView;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.PreferencesHelper;
+import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakelandroid.R;
 
 public class SettingsAdapter extends ArrayAdapter<Header> {
@@ -75,12 +76,12 @@ public class SettingsAdapter extends ArrayAdapter<Header> {
 			Log.d(TAG,
 					"account: "
 							+ AccountManager.get(ctx).getAccountsByType(
-									Mirakel.ACCOUNT_TYPE).length);
+									AccountMirakel.ACCOUNT_TYPE_MIRAKEL).length);
 			Editor e = settings.edit();
 			e.putBoolean(
 					"syncUse",
 					AccountManager.get(ctx).getAccountsByType(
-							Mirakel.ACCOUNT_TYPE).length > 0);
+							AccountMirakel.ACCOUNT_TYPE_MIRAKEL).length > 0);
 			e.commit();
 			s.setChecked(settings.getBoolean("syncUse", false));
 			s.setOnCheckedChangeListener(new OnCheckedChangeListener() {

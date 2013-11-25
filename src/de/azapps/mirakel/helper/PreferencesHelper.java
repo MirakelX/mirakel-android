@@ -70,6 +70,7 @@ import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.export_import.AnyDoImport;
 import de.azapps.mirakel.helper.export_import.ExportImport;
 import de.azapps.mirakel.main_activity.MainActivity;
+import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
@@ -483,7 +484,7 @@ public class PreferencesHelper {
 		final CheckBoxPreference sync = (CheckBoxPreference) findPreference("syncUse");
 		final Preference syncType = findPreference("syncType");
 		final AccountManager am = AccountManager.get(activity);
-		final Account[] accounts = am.getAccountsByType(Mirakel.ACCOUNT_TYPE);
+		final Account[] accounts = am.getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
 		if (syncType != null && am != null) {
 			if (settings.getBoolean("syncUse", false) && accounts.length > 0) {
 				if (am.getUserData(accounts[0], SyncAdapter.BUNDLE_SERVER_TYPE)
@@ -1401,7 +1402,7 @@ public class PreferencesHelper {
 			ctx = (Activity) activity;
 		}
 		final AccountManager am = AccountManager.get(ctx);
-		final Account[] accounts = am.getAccountsByType(Mirakel.ACCOUNT_TYPE);
+		final Account[] accounts = am.getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
 		final SharedPreferences settings = PreferenceManager
 				.getDefaultSharedPreferences(ctx);
 		if (newValue) {
@@ -1476,7 +1477,7 @@ public class PreferencesHelper {
 	public static void updateSyncText(CheckBoxPreference sync,
 			Preference server, Preference syncFrequency, Context ctx) {
 		AccountManager am = AccountManager.get(ctx);
-		Account[] accounts = am.getAccountsByType(Mirakel.ACCOUNT_TYPE);
+		Account[] accounts = am.getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
 		if (accounts.length > 0) {
 			if (sync != null) {
 				if (am.getUserData(accounts[0], SyncAdapter.BUNDLE_SERVER_TYPE)

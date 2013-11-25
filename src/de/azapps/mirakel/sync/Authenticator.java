@@ -43,8 +43,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.model.account.AccountMirakel;
 
 /**
  * This class is an implementation of AbstractAccountAuthenticator for
@@ -111,7 +111,7 @@ class Authenticator extends AbstractAccountAuthenticator {
 
 		// If the caller requested an authToken type we don't support, then
 		// return an error
-		if (!authTokenType.equals(Mirakel.ACCOUNT_TYPE)) {
+		if (!authTokenType.equals(AccountMirakel.ACCOUNT_TYPE_MIRAKEL)) {
 			final Bundle result = new Bundle();
 			result.putString(AccountManager.KEY_ERROR_MESSAGE,
 					"invalid authTokenType");
@@ -129,7 +129,7 @@ class Authenticator extends AbstractAccountAuthenticator {
 				final Bundle result = new Bundle();
 				result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
 				result.putString(AccountManager.KEY_ACCOUNT_TYPE,
-						Mirakel.ACCOUNT_TYPE);
+						AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
 				result.putString(AccountManager.KEY_AUTHTOKEN, authToken);
 				return result;
 			}

@@ -20,9 +20,13 @@ package de.azapps.mirakel.model;
 
 import java.sql.SQLWarning;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,6 +34,9 @@ import org.dmfs.provider.tasks.TaskContract;
 import org.dmfs.provider.tasks.TaskContract.TaskLists;
 import org.dmfs.provider.tasks.TaskContract.Tasks;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.accounts.OnAccountsUpdateListener;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
@@ -40,13 +47,17 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.model.account.AccountMirakel;
+import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
+import de.azapps.mirakelandroid.R;
 
-public class MirakelContentProvider extends ContentProvider {
+public class MirakelContentProvider extends ContentProvider implements
+		OnAccountsUpdateListener {
 	// public static final String PROVIDER_NAME = Mirakel.AUTHORITY_TYP;
 	// public static final Uri CONTENT_URI = Uri.parse("content://" +
 	// PROVIDER_NAME);
@@ -178,6 +189,14 @@ public class MirakelContentProvider extends ContentProvider {
 		}
 	}
 
+	protected String getAccountName(Uri uri) {
+		return uri.getQueryParameter(TaskContract.ACCOUNT_NAME);
+	}
+
+	protected String getAccountType(Uri uri) {
+		return uri.getQueryParameter(TaskContract.ACCOUNT_TYPE);
+	}
+
 	@Override
 	public Uri insert(Uri uri, ContentValues values) {
 		ContentValues newValues = convertValues(values,
@@ -189,6 +208,21 @@ public class MirakelContentProvider extends ContentProvider {
 			break;
 		case TASKS:
 			table = Task.TABLE;
+			if (newValues.containsKey(Task.LIST_ID)) {
+				ListMirakel l = ListMirakel.getList(newValues
+						.getAsInteger(Task.LIST_ID));
+				if (l == null) {
+					l = createNewList(uri);
+					l.setId(newValues.getAsInteger(Task.LIST_ID));
+					l.save();
+				}
+				if (AccountMirakel.getByName(getAccountName(uri)) == null) {
+					throw new IllegalArgumentException("Unkown account");
+				}
+			} else {
+				ListMirakel l = createNewList(uri);
+				newValues.put(Task.LIST_ID, l.getId());
+			}
 			break;
 		default:
 			throw new IllegalArgumentException("Unsupported URI: " + uri);
@@ -197,7 +231,23 @@ public class MirakelContentProvider extends ContentProvider {
 		long id;
 		database.beginTransaction();
 		try {
+			boolean hasExtras=false;
+			ContentValues extras=new ContentValues();
+			if(table.equals(Task.TABLE)){
+				if(values.containsKey(Tasks.SYNC1)){
+					extras.put("ETAG", values.getAsString(Tasks.SYNC1));
+					hasExtras=true;
+				}
+				if(values.containsKey(Tasks._SYNC_ID)){
+					extras.put("SYNC_ID",values.getAsString(Tasks._SYNC_ID));
+					hasExtras=true;
+				}
+			}
 			id = database.insert(table, null, newValues);
+			if(hasExtras){
+				extras.put(DatabaseHelper.ID, id);
+				database.insert(table, null, extras);
+			}
 			database.setTransactionSuccessful();
 		} catch (Exception e) {
 			Log.d(TAG, "cannot insert new object");
@@ -205,9 +255,20 @@ public class MirakelContentProvider extends ContentProvider {
 		} finally {
 			database.endTransaction();
 		}
-
+		Log.d(TAG, "insert...");
 		return Uri.parse(uri.toString() + "/" + id);
 
+	}
+
+	private ListMirakel createNewList(Uri uri) {
+		ListMirakel l = ListMirakel.newList(getContext().getString(
+				R.string.inbox));
+		AccountMirakel a = AccountMirakel.getByName(getAccountName(uri));
+		if (a == null) {
+			throw new IllegalArgumentException("Unkown account");
+		}
+		l.setAccount(a);
+		return l;
 	}
 
 	private ContentValues convertValues(ContentValues values,
@@ -281,12 +342,15 @@ public class MirakelContentProvider extends ContentProvider {
 			}
 		}
 		newValues.put(SyncAdapter.SYNC_STATE, SYNC_STATE.ADD.toInt());
-		return null;
+		return newValues;
 	}
 
 	@Override
 	public boolean onCreate() {
 		database = new DatabaseHelper(getContext()).getWritableDatabase();
+		// register for account updates and check immediately
+		AccountManager.get(getContext()).addOnAccountsUpdatedListener(this,
+				null, true);
 		return database == null;
 	}
 
@@ -488,38 +552,63 @@ public class MirakelContentProvider extends ContentProvider {
 	private String getTaskQuery(boolean isSpecial, int list_id,
 			boolean isSyncadapter) {
 		String query = "SELECT ";
-		query += addSegment(DatabaseHelper.NAME, TaskContract.Tasks.TITLE,
-				false);
-		query += addSegment(Task.CONTENT, TaskContract.Tasks.DESCRIPTION, true);
-		query += addSegment(Task.PRIORITY, TaskContract.Tasks.PRIORITY, true);
-		query += addSegment("strftime('%s'," + Task.DUE + ")*1000",
-				TaskContract.Tasks.DUE, true);
-		query += addSegment(Task.DONE, TaskContract.Tasks.STATUS, true);
+		query += addSegment(Task.TABLE + "." + DatabaseHelper.NAME,
+				TaskContract.Tasks.TITLE, false);
+		query += addSegment(Task.TABLE + "." + Task.CONTENT,
+				TaskContract.Tasks.DESCRIPTION, true);
+		query += addSegment(Task.TABLE + "." + Task.PRIORITY,
+				TaskContract.Tasks.PRIORITY, true);
+		query += addSegment("strftime('%s'," + Task.TABLE + "." + Task.DUE
+				+ ")*1000", TaskContract.Tasks.DUE, true);
+		query += addSegment(Task.TABLE + "." + Task.DONE,
+				TaskContract.Tasks.STATUS, true);
 		if (isSpecial) {
-			query += addSegment("CASE " + Task.LIST_ID + " WHEN 1 THEN "
-					+ list_id + " ELSE " + list_id + " END",
+			query += addSegment("CASE " + Task.TABLE + "." + Task.LIST_ID
+					+ " WHEN 1 THEN " + list_id + " ELSE " + list_id + " END",
 					TaskContract.Tasks.LIST_ID, true);
 		} else {
-			query += addSegment(Task.LIST_ID, TaskContract.Tasks.LIST_ID, true);
+			query += addSegment(Task.TABLE + "." + Task.LIST_ID,
+					TaskContract.Tasks.LIST_ID, true);
 		}
 		if (isSyncadapter) {
-			query += addSegment("CASE " + SyncAdapter.SYNC_STATE + " WHEN "
-					+ SYNC_STATE.NEED_SYNC + " THEN TRUE ELSE FALSE",
-					TaskContract.Tasks._DIRTY, true);
-			query += addSegment(DatabaseHelper.ID, Tasks._ID, true);
-			query += addSegment("CASE " + SyncAdapter.SYNC_STATE + " WHEN "
-					+ SYNC_STATE.DELETE + " THEN TRUE ELSE FALSE",
-					TaskContract.Tasks._DELETED, true);
-			query += addSegment("CASE " + SyncAdapter.SYNC_STATE + " WHEN "
-					+ SYNC_STATE.ADD + " THEN TRUE ELSE FALSE",
-					TaskContract.Tasks.IS_NEW, true);
-			query += addSegment(Task.UUID, Tasks._SYNC_ID, true);
+			query += addSegment("CASE " + Task.TABLE + "."
+					+ SyncAdapter.SYNC_STATE + " WHEN " + SYNC_STATE.NEED_SYNC
+					+ " THEN 1 ELSE 0 END", TaskContract.Tasks._DIRTY, true);
+			query += addSegment(Task.TABLE + "." + DatabaseHelper.ID,
+					Tasks._ID, true);
+			query += addSegment("CASE " + Task.TABLE + "."
+					+ SyncAdapter.SYNC_STATE + " WHEN " + SYNC_STATE.DELETE
+					+ " THEN 1 ELSE 0 END", TaskContract.Tasks._DELETED, true);
+			// query += addSegment("CASE " +
+			// Task.TABLE+"."+SyncAdapter.SYNC_STATE + " WHEN "
+			// + SYNC_STATE.ADD + " THEN 1 ELSE 0 END",
+			// TaskContract.Tasks.IS_NEW, true);
+			query += addSegment("caldav_extra.SYNC_ID", Tasks._SYNC_ID,
+					true);
+			query += addSegment("caldav_extra.ETAG",
+					Tasks.SYNC1, true);
+			query += addSegment(AccountMirakel.TABLE + "."
+					+ DatabaseHelper.NAME, TaskContract.ACCOUNT_NAME, true);
 		}
-		query += addSegment("strftime('%s'," + DatabaseHelper.UPDATED_AT
-				+ ")*1000", Tasks.LAST_MODIFIED, true);
-		query += addSegment("strftime('%s'," + DatabaseHelper.CREATED_AT
-				+ ")*1000", Tasks.CREATED, true);
-		query += " FROM " + Task.TABLE;
+		query += addSegment("strftime('%s'," + Task.TABLE + "."
+				+ DatabaseHelper.UPDATED_AT + ")*1000", Tasks.LAST_MODIFIED,
+				true);
+		query += addSegment("strftime('%s'," + Task.TABLE + "."
+				+ DatabaseHelper.CREATED_AT + ")*1000", Tasks.CREATED, true);
+		// query += " FROM " + Task.TABLE;
+		if (isSyncadapter) {
+			query += " FROM (" + Task.TABLE + " inner join "
+					+ ListMirakel.TABLE;
+			query += " on " + Task.TABLE + "." + Task.LIST_ID + "="
+					+ ListMirakel.TABLE + "." + DatabaseHelper.ID + ")";
+			query += " inner join " + AccountMirakel.TABLE + " on "
+					+ ListMirakel.TABLE + "." + ListMirakel.ACCOUNT_ID;
+			query += "=" + AccountMirakel.TABLE + "." + DatabaseHelper.ID;
+			query += " LEFT JOIN caldav_extra ON " + Task.TABLE + "."
+					+ Task.LIST_ID + "=caldav_extra." + DatabaseHelper.ID;
+		} else {
+			query += " FROM " + Task.TABLE;
+		}
 		Log.d(TAG, query);
 		return query;
 	}
@@ -547,14 +636,14 @@ public class MirakelContentProvider extends ContentProvider {
 		query += addSegment(ListMirakel.COLOR, TaskLists.LIST_COLOR, true);
 		if (isSyncAdapter) {
 			query += addSegment("CASE " + SyncAdapter.SYNC_STATE + " WHEN "
-					+ SYNC_STATE.NEED_SYNC + " THEN TRUE ELSE FALSE",
+					+ SYNC_STATE.NEED_SYNC + " THEN 1 ELSE 0 END",
 					TaskLists._DIRTY, true);
 			query += addSegment(DatabaseHelper.ID, Tasks._ID, true);
 			// query += addSegment("CASE " + SyncAdapter.SYNC_STATE + " WHEN "
-			// + SYNC_STATE.DELETE + " THEN TRUE ELSE FALSE",
+			// + SYNC_STATE.DELETE + " THEN 1 ELSE 0 END",
 			// TaskLists._DELETED, true);
 			// query += addSegment("CASE " + SyncAdapter.SYNC_STATE + " WHEN "
-			// + SYNC_STATE.ADD + " THEN TRUE ELSE FALSE",
+			// + SYNC_STATE.ADD + " THEN 1 ELSE 0 END",
 			// TaskLists.IS_NEW, true);
 			query += addSegment(DatabaseHelper.ID, TaskLists._SYNC_ID, true);
 		}
@@ -588,11 +677,59 @@ public class MirakelContentProvider extends ContentProvider {
 		}
 		String s = getIdsFromSelection(uri, selection, selectionArgs, isList);
 		if (!s.equals("")) {
-			return database.update(isList ? ListMirakel.TABLE : Task.TABLE,
+			boolean hasExtras=false;
+			ContentValues extras=new ContentValues();
+			if(!isList){
+				if(values.containsKey(Tasks.SYNC1)){
+					extras.put("ETAG", values.getAsString(Tasks.SYNC1));
+					hasExtras=true;
+				}
+				if(values.containsKey(Tasks._SYNC_ID)){
+					extras.put("SYNC_ID",values.getAsString(Tasks._SYNC_ID));
+					hasExtras=true;
+				}
+			}
+			int count=database.update(isList ? ListMirakel.TABLE : Task.TABLE,
 					newValues, DatabaseHelper.ID + " IN(" + s + ")", null);
+			if(hasExtras){
+				database.update(Task.TABLE, extras, DatabaseHelper.ID + " IN(" + s + ")", null);
+			}
+			return count;
 		} else {
 			throw new RuntimeException("id not found");
 		}
+	}
+
+	@Override
+	public void onAccountsUpdated(Account[] accounts) {
+		// android.os.Debug.waitForDebugger();
+		List<AccountMirakel> accountList = AccountMirakel.getAll();
+		Map<String, AccountMirakel> map = new HashMap<String, AccountMirakel>();
+		for (AccountMirakel a : accountList) {
+			map.put(a.getName(), a);
+		}
+		for (Account a : accounts) {
+			Log.d(TAG, "Accountname: " + a.name + " | TYPE: " + a.type);
+			if (a.type.equals(AccountMirakel.ACCOUNT_TYPE_MIRAKEL)
+					|| a.type.equals(AccountMirakel.ACCOUNT_TYPE_DAVDROID)) {
+				Log.d(TAG, "is supportet Account");
+				if (!map.containsKey(a.name)) {
+					// Add new account here....
+					AccountMirakel.newAccount(a.name,
+							ACCOUNT_TYPES.parseAccountType(a.type), true);
+				} else {
+					// Account exists..
+					map.remove(a.name);
+				}
+
+			}
+		}
+		for (Entry<String, AccountMirakel> el : map.entrySet()) {
+			// Remove deleted accounts
+			if (el.getValue().getType() != ACCOUNT_TYPES.LOCAL)
+				el.getValue().destroy();
+		}
+
 	}
 
 }

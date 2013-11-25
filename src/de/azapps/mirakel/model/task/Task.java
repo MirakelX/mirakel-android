@@ -460,8 +460,9 @@ public class Task extends TaskBase {
 		values.put(SyncAdapter.SYNC_STATE, SYNC_STATE.ADD.toInt());
 		values.put(DatabaseHelper.CREATED_AT,
 				DateTimeHelper.formatDateTime(getCreatedAt()));
-		if (getUpdatedAt() != null)
-			values.put(DatabaseHelper.UPDATED_AT,
+		if (getUpdatedAt() == null)
+			setUpdatedAt(new GregorianCalendar());
+		values.put(DatabaseHelper.UPDATED_AT,
 					DateTimeHelper.formatDateTime(getUpdatedAt()));
 		values.put(PROGRESS, getProgress());
 		database.beginTransaction();
@@ -971,6 +972,8 @@ public class Task extends TaskBase {
 							DatabaseHelper.ID + " = " + t.getId(), null);
 				} catch (NoSuchListException e) {
 					Log.d(TAG, "List did vanish");
+				}catch (Exception e) {
+					t.destroy(false);
 				}
 			} else {
 				t.destroy(true);

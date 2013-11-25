@@ -69,52 +69,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private int notifyID = 1;
 
 
-	public enum SYNC_TYPES {
-		MIRAKEL, TASKWARRIOR, CALDAV, LOCAL;
-		public int toInt() {
-			switch (this) {
-			case CALDAV:
-				return 1;
-			case LOCAL:
-				return -1;
-			case MIRAKEL:
-				Log.w(TAG, "do not use Mirakel-Accounts");
-				return 3;
-			case TASKWARRIOR:
-				return 2;
-			default:
-				throw new RuntimeException();
-			}
-		}
-
-		public static SYNC_TYPES parseInt(int i) {
-			switch (i) {
-			case -1:
-				return LOCAL;
-			case 1:
-				return CALDAV;
-			case 2:
-				return TASKWARRIOR;
-			case 3:
-				return MIRAKEL;
-
-			default:
-				throw new IllegalArgumentException();
-			}
-
-		}
-
-		public static SYNC_TYPES getSyncType(String type) {
-			if (type.equals("Mirakel")) {
-				return MIRAKEL;
-			} else if (type.equals("Taskwarrior")) {
-				return TASKWARRIOR;
-			} else if (type.equals("CalDav")) {
-				return CALDAV;
-			} else
-				return LOCAL;
-		}
-	};
+	
 
 	public enum SYNC_STATE {
 		NOTHING, DELETE, ADD, NEED_SYNC, IS_SYNCED;

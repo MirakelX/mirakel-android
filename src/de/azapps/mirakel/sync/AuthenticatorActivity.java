@@ -80,10 +80,11 @@ import android.widget.ViewSwitcher;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.model.account.AccountMirakel;
+import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
-import de.azapps.mirakel.sync.SyncAdapter.SYNC_TYPES;
 import de.azapps.mirakel.sync.caldav.CalDavSync;
 import de.azapps.mirakel.sync.mirakel.MirakelSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
@@ -135,7 +136,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 
 	private EditText mUsernameEdit;
 
-	private SyncAdapter.SYNC_TYPES syncType;
+	private ACCOUNT_TYPES syncType;
 
 	private String config_file;
 
@@ -181,7 +182,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				 */
 				String syncTypeString = mType.getSelectedItem().toString();
 				Log.d(TAG, syncTypeString);
-				syncType = SYNC_TYPES.getSyncType(syncTypeString);
+				syncType = ACCOUNT_TYPES.getSyncType(syncTypeString);
 				mMessage.setText(syncTypeString);
 				ViewSwitcher switcher = (ViewSwitcher) findViewById(R.id.switcher_login);
 				switch (syncType) {
@@ -323,13 +324,13 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 	 *            The Submit button for which this method is invoked
 	 */
 	public void handleLogin(View view) {
-		syncType = SYNC_TYPES.getSyncType(mType.getSelectedItem().toString());
+		syncType = ACCOUNT_TYPES.getSyncType(mType.getSelectedItem().toString());
 		if (mRequestNewAccount) {
 			mUsername = mUsernameEdit.getText().toString();
 		}
 		mPassword = mPasswordEdit.getText().toString();
 		if ((TextUtils.isEmpty(mUsername) || TextUtils.isEmpty(mPassword))
-				&& syncType != SYNC_TYPES.TASKWARRIOR) {
+				&& syncType != ACCOUNT_TYPES.TASKWARRIOR) {
 			mMessage.setText(getMessage(mType.getSelectedItem().toString()));
 		} else {
 			if (((CheckBox) findViewById(R.id.resync)).isChecked()) {
@@ -377,7 +378,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				final Intent intent = new Intent();
 				intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, mUsername);
 				intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE,
-						Mirakel.ACCOUNT_TYPE);
+						AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
 				setAccountAuthenticatorResult(intent.getExtras());
 				setResult(RESULT_OK, intent);
 				finish();
@@ -397,7 +398,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 
 	private void handleCalDavLogin() {
 		Account account = new Account(mUsernameEdit.getText().toString(),
-				Mirakel.ACCOUNT_TYPE);
+				AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
 		Bundle b = new Bundle();
 		b.putString(SyncAdapter.BUNDLE_SERVER_TYPE, CalDavSync.TYPE);
 		b.putString(SyncAdapter.BUNDLE_SERVER_URL,
@@ -433,7 +434,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				String[] t = content.split("org: ");
 				Log.d(TAG, "user: " + t[0].replace("username: ", ""));
 				final Account account = new Account(t[0].replace("username: ",
-						"").replace("\n", ""), Mirakel.ACCOUNT_TYPE);
+						"").replace("\n", ""), AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
 				t = t[1].split("user key: ");
 				Log.d(TAG, "org: " + t[0].replace("\n", ""));
 				b.putString(SyncAdapter.BUNDLE_ORG, t[0].replace("\n", ""));
@@ -483,7 +484,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 	 */
 	private void finishMirakelLogin(String url, String token) {
 		Log.i(TAG, "finishLogin()");
-		final Account account = new Account(mUsername, Mirakel.ACCOUNT_TYPE);
+		final Account account = new Account(mUsername, AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
 		if (mRequestNewAccount) {
 			Bundle b = new Bundle();
 			b.putString(SyncAdapter.BUNDLE_SERVER_URL, url);

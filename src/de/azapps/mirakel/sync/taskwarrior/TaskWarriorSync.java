@@ -379,7 +379,8 @@ public class TaskWarriorSync {
 		json += ",\"description\":\"" + task.getName() + "\"";
 		if (task.getDue() != null)
 			json += ",\"due\":\"" + formatCal(task.getDue()) + "\"";
-		json += ",\"project\":\"" + task.getList().getName() + "\"";
+		if(task.getList()!=null)
+			json += ",\"project\":\"" + task.getList().getName() + "\"";
 		if (priority != null)
 			json += ",\"priority\":\"" + priority + "\"";
 		json += ",\"modification\":\"" + formatCal(task.getUpdatedAt()) + "\"";
