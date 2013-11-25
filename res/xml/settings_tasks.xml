@@ -78,5 +78,9 @@
             android:key="recurring"
             android:title="@string/recurring" />
     </PreferenceCategory>
+    
+        <Preference
+            android:key="task_fragment"
+            android:title="@string/settings_task_fragment" />
 
 </PreferenceScreen>

@@ -142,11 +142,11 @@
             android:excludeFromRecents="true"
             android:label="@string/ui_activity_title"
             android:theme="@style/Dialog" >
-
-            <!--
-                No intent-filter here! This activity is only ever launched by
-                someone who explicitly knows the class name
-            -->
+        </activity>
+        <activity
+            android:name="de.azapps.mirakel.settings.taskfragment.TaskFragmentSettings"
+            android:label="@string/title_settings"
+            android:windowSoftInputMode="adjustPan" >
         </activity>
 
         <service

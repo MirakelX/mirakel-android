@@ -281,4 +281,7 @@ Device: %3$s\n]]>
     <string name="file_to_large">Failed to create thumbnail</string>
     <string name="recurring_not_zero">Recurring can\'t be zero!</string>
 
+    <!-- TaskFragment -->
+    <string name="settings_task_fragment_title">Task overview</string>
+
 </resources>

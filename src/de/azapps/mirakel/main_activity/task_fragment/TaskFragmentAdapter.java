@@ -75,7 +75,6 @@ import com.fourmob.datetimepicker.date.DatePickerDialog;
 
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.adapter.MirakelArrayAdapter;
-import de.azapps.mirakel.adapter.SubtaskAdapter;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
@@ -105,7 +104,7 @@ public class TaskFragmentAdapter extends
 	private static final Integer inactive_color = android.R.color.darker_gray;
 	private View.OnClickListener cameraButtonClick = null;
 
-	public class TYPE {
+	public static class TYPE {
 		final static int HEADER = 0;
 		final static int FILE = 1;
 		final static int DUE = 2;
@@ -113,6 +112,25 @@ public class TaskFragmentAdapter extends
 		final static int CONTENT = 4;
 		final static int SUBTITLE = 5;
 		final static int SUBTASK = 6;
+
+		public static String getName(int item) {
+			switch (item) {
+			case HEADER:
+				return "header";
+			case FILE:
+				return "file";
+			case DUE:
+				return "due";
+			case REMINDER:
+				return "reminder";
+			case CONTENT:
+				return "content";
+			case SUBTASK:
+				return "subtask";
+			default:
+				throw new RuntimeException("no name"); // Throw exception;
+			}
+		}
 	}
 
 	public TaskFragmentAdapter(Context c) {
@@ -1109,13 +1127,7 @@ public class TaskFragmentAdapter extends
 
 	private static List<Pair<Integer, Integer>> generateData(Task task) {
 		// From config
-		List<Integer> items = new ArrayList<Integer>();
-		items.add(TYPE.HEADER);
-		items.add(TYPE.DUE);
-		items.add(TYPE.REMINDER);
-		items.add(TYPE.CONTENT);
-		items.add(TYPE.SUBTASK);
-		items.add(TYPE.FILE);
+		List<Integer> items = getValues();
 
 		List<Pair<Integer, Integer>> data = new ArrayList<Pair<Integer, Integer>>();
 		for (Integer item : items) {
@@ -1146,4 +1158,14 @@ public class TaskFragmentAdapter extends
 		this.cameraButtonClick = cameraButtonClick;
 	}
 
+	public static List<Integer> getValues() {
+		List<Integer> items = new ArrayList<Integer>();
+		items.add(TYPE.HEADER);
+		items.add(TYPE.DUE);
+		items.add(TYPE.REMINDER);
+		items.add(TYPE.CONTENT);
+		items.add(TYPE.SUBTASK);
+		items.add(TYPE.FILE);
+		return items;
+	}
 }
