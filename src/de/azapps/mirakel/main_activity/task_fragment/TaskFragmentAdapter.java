@@ -75,6 +75,7 @@ import com.fourmob.datetimepicker.date.DatePickerDialog;
 
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.adapter.MirakelArrayAdapter;
+import de.azapps.mirakel.adapter.SubtaskAdapter;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
@@ -879,10 +880,10 @@ public class TaskFragmentAdapter extends
 					mIgnoreTimeSet = false;
 					final Calendar due = (task.getDue() == null ? new GregorianCalendar()
 							: task.getDue());
-//					Spinner recurrence = (Spinner) content
-//							.findViewById(R.id.add_reccuring);
-//					TaskDialogHelpers.handleRecurrence(context, task,
-//							recurrence, true);
+					// Spinner recurrence = (Spinner) content
+					// .findViewById(R.id.add_reccuring);
+					// TaskDialogHelpers.handleRecurrence(context, task,
+					// recurrence, true);
 					final FragmentManager fm = ((MainActivity) context)
 							.getSupportFragmentManager();
 					final DatePickerDialog datePickerDialog = DatePickerDialog
@@ -896,8 +897,7 @@ public class TaskFragmentAdapter extends
 											if (mIgnoreTimeSet)
 												return;
 											task.setDue(new GregorianCalendar(
-													year,
-													month, day));
+													year, month, day));
 											((MainActivity) context)
 													.saveTask(task);
 											holder.taskDue
@@ -916,8 +916,9 @@ public class TaskFragmentAdapter extends
 											((MainActivity) context)
 													.saveTask(task);
 											holder.taskDue
-													.setText(context.getString(R.string.no_date));
-											
+													.setText(context
+															.getString(R.string.no_date));
+
 										}
 									}, due.get(Calendar.YEAR), due
 											.get(Calendar.MONTH), due
@@ -1107,20 +1108,37 @@ public class TaskFragmentAdapter extends
 	}
 
 	private static List<Pair<Integer, Integer>> generateData(Task task) {
+		// From config
+		List<Integer> items = new ArrayList<Integer>();
+		items.add(TYPE.HEADER);
+		items.add(TYPE.DUE);
+		items.add(TYPE.REMINDER);
+		items.add(TYPE.CONTENT);
+		items.add(TYPE.SUBTASK);
+		items.add(TYPE.FILE);
+
 		List<Pair<Integer, Integer>> data = new ArrayList<Pair<Integer, Integer>>();
-		data.add(new Pair<Integer, Integer>(TYPE.HEADER, 0));
-		data.add(new Pair<Integer, Integer>(TYPE.DUE, 0));
-		data.add(new Pair<Integer, Integer>(TYPE.REMINDER, 0));
-		data.add(new Pair<Integer, Integer>(TYPE.CONTENT, 0));
-		data.add(new Pair<Integer, Integer>(TYPE.SUBTITLE, SUBTITLE_SUBTASKS));
-		int subtaskCount = task == null ? 0 : task.getSubtaskCount();
-		for (int i = 0; i < subtaskCount; i++) {
-			data.add(new Pair<Integer, Integer>(TYPE.SUBTASK, i));
+		for (Integer item : items) {
+			switch (item) {
+			case TYPE.SUBTASK:
+				data.add(new Pair<Integer, Integer>(TYPE.SUBTITLE,
+						SUBTITLE_SUBTASKS));
+				int subtaskCount = task == null ? 0 : task.getSubtaskCount();
+				for (int i = 0; i < subtaskCount; i++) {
+					data.add(new Pair<Integer, Integer>(TYPE.SUBTASK, i));
+				}
+				break;
+			case TYPE.FILE:
+				data.add(new Pair<Integer, Integer>(TYPE.SUBTITLE,
+						SUBTITLE_FILES));
+				int fileCount = FileMirakel.getFileCount(task);
+				for (int i = 0; i < fileCount; i++)
+					data.add(new Pair<Integer, Integer>(TYPE.FILE, i));
+				break;
+			default:
+				data.add(new Pair<Integer, Integer>(item, 0));
+			}
 		}
-		data.add(new Pair<Integer, Integer>(TYPE.SUBTITLE, SUBTITLE_FILES));
-		int fileCount = FileMirakel.getFileCount(task);
-		for (int i = 0; i < fileCount; i++)
-			data.add(new Pair<Integer, Integer>(TYPE.FILE, i));
 		return data;
 	}
 
