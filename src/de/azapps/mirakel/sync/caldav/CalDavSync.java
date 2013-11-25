@@ -158,13 +158,14 @@ public class CalDavSync {
 	// Generate VTODO string
 	private String parseTask(Task t) {
 		String ret = "BEGIN:VTODO\n";
-		ret += "X-MIRAKEL-UUID:" + t.getUUID() + "\n";
+		ret += "UID:" + t.getUUID() + "\n"; // MUST be globally unique. I just hope it will be, but with Random UUID it's not a bad guess.
+		ret += "DTSTAMP:" + DateTimeHelper.formateCalDav(t.getUpdatedAt())  + "\n"; // MUST 
 		ret += "SUMMARY:" + t.getName() + "\n";
 		ret += "PRIORITY:" + t.getPriority() + "\n";
 		ret += "CREATED:" + DateTimeHelper.formateCalDav(t.getCreatedAt())
 				+ "\n";
 		ret += "LAST-MODIFIED:"
-				+ DateTimeHelper.formateCalDav(t.getUpdatedAt()) + "\n";
+				+ DateTimeHelper.formateCalDav( t.getUpdatedAt()) + "\n"; // Last time it was revisited
 		if (t.getContent() != null && !t.getContent().equals("")) {
 			ret += "DESCRIPTION:" + t.getContent().replace("\n", "\\n") + "\n";
 		}
@@ -286,8 +287,8 @@ public class CalDavSync {
 
 	private String getUUID(String[] lines) {
 		for (String l : lines) {
-			if (l != null && l.contains("X-MIRAKEL-UUID")) {
-				return l.replace("X-MIRAKEL-UUID:", "");
+			if (l != null && l.contains("UID")) {
+				return l.replace("UID:", "");
 			}
 		}
 		return null;

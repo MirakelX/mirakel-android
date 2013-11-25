@@ -58,7 +58,7 @@
     <Preference
         android:title="@string/sync_title" >
         <intent
-            android:action="de.azapps.mirakel.preferences.SYNC"
+            android:action="de.azapps.mirakel.preferences.ACCOUNTS"
             android:targetClass="de.azapps.mirakel.static_activities.SettingsActivity"
             android:targetPackage="de.azapps.mirakelandroid" />
     </Preference>

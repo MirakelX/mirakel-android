@@ -31,6 +31,9 @@ import javax.net.ssl.X509TrustManager;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpDelete;
@@ -43,6 +46,7 @@ import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
@@ -192,6 +196,8 @@ public class Network extends AsyncTask<String, Integer, String> {
 			Integer[] t = { NoHTTPS };
 			publishProgress(t);
 		}
+		
+		/*
 		String authorizationString = null;
 		if (syncTyp == ACCOUNT_TYPES.CALDAV) {
 			authorizationString = "Basic "
@@ -199,14 +205,25 @@ public class Network extends AsyncTask<String, Integer, String> {
 							(username + ":" + password).getBytes(),
 							Base64.NO_WRAP);
 		}
+		*/
+		
+		CredentialsProvider credentials = new BasicCredentialsProvider();
+		credentials.setCredentials(new AuthScope(new URI(myurl).getHost(), -1), new UsernamePasswordCredentials(username, password));
 
 		HttpParams params = new BasicHttpParams();
 		params.setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
 				HttpVersion.HTTP_1_1);
 		HttpConnectionParams.setTcpNoDelay(params, true);
 		DefaultHttpClient client = new DefaultHttpClient(params);
-		HttpClient httpClient = syncTyp == ACCOUNT_TYPES.MIRAKEL ? sslClient(client)
-				: new DefaultHttpClient(params);
+		HttpClient httpClient;
+		if(syncTyp == ACCOUNT_TYPES.MIRAKEL)
+			httpClient = sslClient(client);
+		else {
+			DefaultHttpClient tmpHttpClient =  new DefaultHttpClient(params);
+			tmpHttpClient.setCredentialsProvider(credentials);
+			
+			httpClient = tmpHttpClient;
+		}
 		httpClient.getParams().setParameter("http.protocol.content-charset",
 				HTTP.UTF_8);
 
@@ -232,7 +249,6 @@ public class Network extends AsyncTask<String, Integer, String> {
 							headerData, HTTP.UTF_8);
 					put.setEntity(data);
 				} else {
-					put.setHeader("Authorization", authorizationString);
 					put.setEntity(new StringEntity(content, HTTP.UTF_8));
 					Log.v(TAG, content);
 				}
@@ -254,9 +270,6 @@ public class Network extends AsyncTask<String, Integer, String> {
 			case REPORT:
 				Log.v(TAG, "REPORT " + myurl);
 				HttpReport report = new HttpReport();
-				if (syncTyp == ACCOUNT_TYPES.CALDAV) {
-					report.setHeader("Authorization", authorizationString);
-				}
 				report.setURI(new URI(myurl));
 				Log.d(TAG, content);
 				report.setEntity(new StringEntity(content, HTTP.UTF_8));

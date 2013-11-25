@@ -9,6 +9,9 @@
   <string name="sync_use_summary_mirakel">Sync mit Mirakel als %s</string>
   <string name="sync_use_summary_caldav">Sync mit CalDav als %s</string>
   <string name="sync_use_summary_nothing">Nicht syncen</string>
+    <string name="sync_user">Benutzername</string>
+      <string name="sync_user_summary">Benutzername auf dem Server</string>
+    
   <string name="sync_server">Server</string>
   <string name="sync_server_summary">Sync mit %s</string>
   <string name="sync_password">Passwort</string>

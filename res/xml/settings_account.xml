@@ -25,24 +25,16 @@
         android:key="syncUse"
         android:title="@string/sync_use" />
 
-    <Preference
-        android:enabled="false"
-        android:key="syncType"
-        android:title="@string/sync_type" />
-
     <EditTextPreference
         android:inputType="textUri"
         android:key="syncServer"
         android:summary="@string/sync_server_summary"
         android:title="@string/sync_server" />
-    <!--
-             <EditTextPreference
-            android:dependency="syncUse"
-            android:key="syncEmail"
-            android:inputType="textEmailAddress"
-            android:summary="@string/sync_email_summary"
-            android:title="@string/sync_email" />
-    -->
+    <EditTextPreference
+        android:inputType="text"
+        android:key="syncUsername"
+        android:summary="@string/sync_user_summary"
+        android:title="@string/sync_user" />
     <EditTextPreference
         android:inputType="textPassword"
         android:key="syncPassword"

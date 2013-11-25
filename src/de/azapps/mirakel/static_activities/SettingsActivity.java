@@ -115,8 +115,8 @@ public class SettingsActivity extends PreferenceActivity {
 						"de.azapps.mirakel.preferences.BACKUP")) {
 					addPreferencesFromResource(R.xml.settings_backup);
 				} else if (i.getAction().equals(
-						"de.azapps.mirakel.preferences.SYNC")) {
-					addPreferencesFromResource(R.xml.settings_sync);
+						"de.azapps.mirakel.preferences.ACCOUNTS")) {
+					addPreferencesFromResource(R.xml.settings_account);
 				} else if (i.getAction().equals(
 						"de.azapps.mirakel.preferences.SPECIAL_LISTS")) {
 					startActivity(new Intent(this,

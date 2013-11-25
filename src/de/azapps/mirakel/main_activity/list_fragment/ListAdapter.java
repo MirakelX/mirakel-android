@@ -81,7 +81,8 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 					.findViewById(R.id.list_row_task_number);
 			holder.listRowDrag = (ImageView) row
 					.findViewById(R.id.list_row_drag);
-
+			holder.listAccount = (TextView) row
+					.findViewById(R.id.list_row_account_name);
 			row.setTag(holder);
 		} else {
 			holder = (ListHolder) row.getTag();
@@ -95,6 +96,13 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 		holder.listRowName.setText(list.getName());
 		holder.listRowName.setTag(list);
 		holder.listRowTaskNumber.setText("" + list.countTasks());
+		if(list.isSpecialList())
+			holder.listAccount.setVisibility(View.GONE);
+		else{
+			holder.listAccount.setVisibility(View.VISIBLE);
+			holder.listAccount.setText(list.getAccount().getName());
+			holder.listAccount.setTextColor(context.getResources().getColor(android.R.color.darker_gray));
+		}
 		viewsForLists.put(list.getId(), row);
 		int w = row.getWidth() == 0 ? parent.getWidth() : row.getWidth();
 		Helpers.setListColorBackground(list, row, darkTheme, w);
@@ -162,6 +170,7 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 	static class ListHolder {
 		TextView listRowName;
 		TextView listRowTaskNumber;
+		TextView listAccount;
 		ImageView listRowDrag;
 	}
 

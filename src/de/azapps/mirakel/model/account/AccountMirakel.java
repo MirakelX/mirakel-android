@@ -1,8 +1,12 @@
 package de.azapps.mirakel.model.account;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import android.accounts.Account;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -231,6 +235,36 @@ public class AccountMirakel extends AccountBase {
 	 */
 	public static void close() {
 		dbHelper.close();
+	}
+
+	public static void update(Account[] accounts) {
+		List<AccountMirakel> accountList = AccountMirakel.getAll();
+		Map<String, AccountMirakel> map = new HashMap<String, AccountMirakel>();
+		for (AccountMirakel a : accountList) {
+			map.put(a.getName(), a);
+		}
+		for (Account a : accounts) {
+			Log.d(TAG, "Accountname: " + a.name + " | TYPE: " + a.type);
+			if (a.type.equals(AccountMirakel.ACCOUNT_TYPE_MIRAKEL)
+					|| a.type.equals(AccountMirakel.ACCOUNT_TYPE_DAVDROID)) {
+				Log.d(TAG, "is supportet Account");
+				if (!map.containsKey(a.name)) {
+					// Add new account here....
+					AccountMirakel.newAccount(a.name,
+							ACCOUNT_TYPES.parseAccountType(a.type), true);
+				} else {
+					// Account exists..
+					map.remove(a.name);
+				}
+
+			}
+		}
+		for (Entry<String, AccountMirakel> el : map.entrySet()) {
+			// Remove deleted accounts
+			if (el.getValue().getType() != ACCOUNT_TYPES.LOCAL)
+				el.getValue().destroy();
+		}
+		
 	}
 
 
