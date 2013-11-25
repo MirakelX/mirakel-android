@@ -58,7 +58,6 @@ import org.apache.http.util.EntityUtils;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Base64;
 import android.widget.Toast;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
