@@ -344,17 +344,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ AccountMirakel.TABLE + " (" + ID
 					+ ") ON DELETE CASCADE ON UPDATE CASCADE DEFAULT "
 					+ accountId + "; ");
-			//Add some columns for caldavsync
+			//add progress
 		case 25:
+			db.execSQL("ALTER TABLE " + Task.TABLE
+					+ " add column progress int NOT NULL default 0;");
+			//Add some columns for caldavsync
+		case 26:
 			db.execSQL("CREATE TABLE caldav_extra("
 					+ ID +" INTEGER PRIMARY KEY,"
 					+ "ETAG TEXT,"
 					+ "SYNC_ID TEXT DEFAULT NULL, "
 					+ "REMOTE_NAME TEXT)");
 			
-		case 26:
-			db.execSQL("ALTER TABLE " + Task.TABLE
-					+ " add column progress int NOT NULL default 0;");
 		}
 	}
 
