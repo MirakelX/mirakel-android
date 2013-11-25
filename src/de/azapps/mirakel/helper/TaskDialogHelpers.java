@@ -22,8 +22,6 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import com.ptashek.widgets.datetimepicker.DateTimePicker;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -31,6 +29,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Looper;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Pair;
@@ -48,12 +47,18 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
+
+import com.fourmob.datetimepicker.date.DatePickerDialog;
+import com.fourmob.datetimepicker.date.DatePickerDialog.OnDateSetListener;
+import com.sleepbot.datetimepicker.time.RadialPickerLayout;
+import com.sleepbot.datetimepicker.time.TimePickerDialog;
+import com.sleepbot.datetimepicker.time.TimePickerDialog.OnTimeSetListener;
+
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.adapter.SubtaskAdapter;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
@@ -114,10 +119,52 @@ public class TaskDialogHelpers {
 
 	public static void handleReminder(final Activity ctx, final Task task,
 			final ExecInterface onSuccess) {
-		Calendar reminder = (task.getReminder() == null ? new GregorianCalendar()
+		final Calendar reminder = (task.getReminder() == null ? new GregorianCalendar()
 				: task.getReminder());
+		final FragmentManager fm=((MainActivity) ctx)
+				.getSupportFragmentManager();
+		final TimePickerDialog tp=TimePickerDialog.newInstance(new OnTimeSetListener() {
+			
+			@Override
+			public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
+				reminder.set(Calendar.HOUR_OF_DAY, hourOfDay);
+				reminder.set(Calendar.MINUTE, minute);
+				task.setReminder(reminder);
+				safeSafeTask(ctx, task);
+				onSuccess.exec();				
+			}
+
+			@Override
+			public void onNoTimeSet() {
+				task.setReminder(null);
+				((MainActivity) ctx)
+						.saveTask(task);
+				onSuccess.exec();				
+			}
+		}, reminder.get(Calendar.HOUR_OF_DAY), reminder.get(Calendar.MINUTE), true);
+		final DatePickerDialog dp=DatePickerDialog.newInstance(new OnDateSetListener() {
+			
+			@Override
+			public void onDateSet(DatePickerDialog datePickerDialog, int year,
+					int month, int day) {
+				tp.show(fm, "time picker");
+				reminder.set(Calendar.YEAR, year);
+				reminder.set(Calendar.MONTH, month);
+				reminder.set(Calendar.DAY_OF_MONTH, day);
+			}
+
+			@Override
+			public void onNoDateSet() {
+					task.setReminder(null);
+					((MainActivity) ctx)
+							.saveTask(task);
+					onSuccess.exec();				
+			}
+		}, reminder.get(Calendar.YEAR), reminder.get(Calendar.MONTH), reminder.get(Calendar.DAY_OF_MONTH),false);
+		dp.setYearRange(2005, 2036);// must be < 2037
+		dp.show(fm, "datepicker");
 		// Inflate the root layout
-		final RelativeLayout mDateTimeDialogView = (RelativeLayout) ctx
+		/*final RelativeLayout mDateTimeDialogView = (RelativeLayout) ctx
 				.getLayoutInflater().inflate(R.layout.date_time_dialog, null);
 		// Grab widget instance
 		final DateTimePicker mDateTimePicker = (DateTimePicker) mDateTimeDialogView
@@ -167,7 +214,7 @@ public class TaskDialogHelpers {
 						}).show();
 		Spinner recurrence = (Spinner) mDateTimeDialogView
 				.findViewById(R.id.add_reccuring);
-		TaskDialogHelpers.handleRecurrence(ctx, task, recurrence, false);
+		TaskDialogHelpers.handleRecurrence(ctx, task, recurrence, false);*/
 	}
 
 	public static void handleRecurrence(final Context context, final Task task,

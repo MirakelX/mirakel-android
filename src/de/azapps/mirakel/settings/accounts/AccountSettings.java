@@ -1,20 +1,15 @@
 package de.azapps.mirakel.settings.accounts;
 
-import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.Mirakel.NoSuchListException;
-import de.azapps.mirakel.model.account.AccountMirakel;
-import de.azapps.mirakel.model.list.SpecialList;
-import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
-import de.azapps.mirakel.settings.special_list.SpecialListsSettingsFragment;
-import de.azapps.mirakel.sync.SyncAdapter;
-import de.azapps.mirakelandroid.R;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
+import de.azapps.mirakel.Mirakel.NoSuchListException;
+import de.azapps.mirakel.model.account.AccountMirakel;
+import de.azapps.mirakel.sync.SyncAdapter;
+import de.azapps.mirakelandroid.R;
 
 public class AccountSettings implements OnPreferenceChangeListener {
 

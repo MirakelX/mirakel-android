@@ -20,27 +20,15 @@ package de.azapps.mirakel.adapter;
 
 import java.util.List;
 
-import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceActivity.Header;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
-import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.helper.Log;
-import de.azapps.mirakel.helper.PreferencesHelper;
-import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakelandroid.R;
 
 public class SettingsAdapter extends ArrayAdapter<Header> {

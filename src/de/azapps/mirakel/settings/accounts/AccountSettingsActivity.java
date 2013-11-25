@@ -9,13 +9,10 @@ import android.os.Build;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.View.OnClickListener;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
-import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.settings.ListSettings;
-import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
 import de.azapps.mirakelandroid.R;
 
 public class AccountSettingsActivity extends ListSettings {

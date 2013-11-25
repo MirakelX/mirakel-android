@@ -17,9 +17,9 @@
 
 package org.dmfs.provider.tasks;
 
-import de.azapps.mirakel.Mirakel;
 import android.content.ContentResolver;
 import android.net.Uri;
+import de.azapps.mirakel.Mirakel;
 
 
 /**

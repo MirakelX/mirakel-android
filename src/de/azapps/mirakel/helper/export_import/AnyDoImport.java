@@ -25,8 +25,17 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.os.Environment;
+import android.util.Pair;
+import android.util.SparseIntArray;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -41,14 +50,6 @@ import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.static_activities.SettingsActivity;
 import de.azapps.mirakelandroid.R;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
-import android.os.Environment;
-import android.util.Pair;
-import android.util.SparseIntArray;
 
 public class AnyDoImport {
 	private static final String TAG = "AnyDoImport";

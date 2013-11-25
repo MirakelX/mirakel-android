@@ -35,17 +35,16 @@
  */
 package de.azapps.mirakel.sync;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.support.v4.app.NotificationCompat;
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.NotificationManager;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.Context;
 import android.content.SyncResult;
 import android.os.Bundle;
 import android.os.Looper;
+import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.sync.caldav.CalDavSync;

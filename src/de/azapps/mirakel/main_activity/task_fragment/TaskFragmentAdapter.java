@@ -28,9 +28,7 @@ import java.util.Locale;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -40,6 +38,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.view.ActionMode;
 import android.text.Editable;
@@ -63,17 +62,17 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.DatePicker;
-import android.widget.DatePicker.OnDateChangedListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.ViewSwitcher;
+
+import com.fourmob.datetimepicker.date.DatePickerDialog;
+
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.adapter.MirakelArrayAdapter;
 import de.azapps.mirakel.helper.DateTimeHelper;
@@ -880,76 +879,51 @@ public class TaskFragmentAdapter extends
 					mIgnoreTimeSet = false;
 					final Calendar due = (task.getDue() == null ? new GregorianCalendar()
 							: task.getDue());
-					final View content = ((Activity) context)
-							.getLayoutInflater().inflate(
-									R.layout.datepicker_dialog, null);
-					final DatePicker dp = (DatePicker) content
-							.findViewById(R.id.dialog_datePicker);
-					Spinner recurrence = (Spinner) content
-							.findViewById(R.id.add_reccuring);
-					TaskDialogHelpers.handleRecurrence(context, task,
-							recurrence, true);
-
-					final SimpleDateFormat dueFormater = new SimpleDateFormat(
-							"E, dd. MMMM yyyy", Locale.getDefault());
-					final AlertDialog dialog = new AlertDialog.Builder(context)
-							.setTitle(dueFormater.format(due.getTime()))
-							.setPositiveButton(android.R.string.ok,
-									new DialogInterface.OnClickListener() {
+//					Spinner recurrence = (Spinner) content
+//							.findViewById(R.id.add_reccuring);
+//					TaskDialogHelpers.handleRecurrence(context, task,
+//							recurrence, true);
+					final FragmentManager fm = ((MainActivity) context)
+							.getSupportFragmentManager();
+					final DatePickerDialog datePickerDialog = DatePickerDialog
+							.newInstance(
+									new DatePickerDialog.OnDateSetListener() {
 
 										@Override
-										public void onClick(
-												DialogInterface dialog,
-												int which) {
-											if (which == DialogInterface.BUTTON_POSITIVE) {
-												if (mIgnoreTimeSet)
-													return;
-												task.setDue(new GregorianCalendar(
-														dp.getYear(), dp
-																.getMonth(),
-														dp.getDayOfMonth()));
-												((MainActivity) context)
-														.saveTask(task);
-												holder.taskDue
-														.setText(new SimpleDateFormat(
-																context.getString(R.string.dateFormat),
-																Locale.getDefault())
-																.format(task
-																		.getDue()
-																		.getTime()));
+										public void onDateSet(
+												DatePickerDialog datePickerDialog,
+												int year, int month, int day) {
+											if (mIgnoreTimeSet)
+												return;
+											task.setDue(new GregorianCalendar(
+													year,
+													month, day));
+											((MainActivity) context)
+													.saveTask(task);
+											holder.taskDue
+													.setText(new SimpleDateFormat(
+															context.getString(R.string.dateFormat),
+															Locale.getDefault())
+															.format(task
+																	.getDue()
+																	.getTime()));
 
-											}
 										}
-									})
-							.setNegativeButton(R.string.no_date,
-									new DialogInterface.OnClickListener() {
-										public void onClick(
-												DialogInterface dialog1,
-												int which) {
-											if (which == DialogInterface.BUTTON_NEGATIVE) {
-												mIgnoreTimeSet = true;
-												Log.v(TAG, "cancel");
-												task.setDue(null);
-												((MainActivity) context)
-														.saveTask(task);
-												holder.taskDue
-														.setText(R.string.no_date);
-											}
-										}
-									}).setView(content).show();
-					dp.init(due.get(Calendar.YEAR), due.get(Calendar.MONTH),
-							due.get(Calendar.DAY_OF_MONTH),
-							new OnDateChangedListener() {
 
-								@Override
-								public void onDateChanged(DatePicker view,
-										int year, int monthOfYear,
-										int dayOfMonth) {
-									due.set(year, monthOfYear, dayOfMonth);
-									dialog.setTitle(dueFormater.format(due
-											.getTime()));
-								}
-							});
+										@Override
+										public void onNoDateSet() {
+											task.setDue(null);
+											((MainActivity) context)
+													.saveTask(task);
+											holder.taskDue
+													.setText(context.getString(R.string.no_date));
+											
+										}
+									}, due.get(Calendar.YEAR), due
+											.get(Calendar.MONTH), due
+											.get(Calendar.DAY_OF_MONTH), false);
+					datePickerDialog.setYearRange(2005, 2036);// must be < 2037
+					datePickerDialog.show(fm, "datepicker");
 				}
 			});
 			due.setTag(holder);
