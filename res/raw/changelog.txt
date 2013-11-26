@@ -23,6 +23,7 @@ $ 2.2-alpha1
     * Basic Multi-Account handling
     * Caldav-Sync over davdroid
     * Dynamic Task Fragment
+    * Set the progress of your tasks
 $ 2.1.4+x
   % Version 2.1.4+x (Beta)
   ! Please report Bugs and errors!
