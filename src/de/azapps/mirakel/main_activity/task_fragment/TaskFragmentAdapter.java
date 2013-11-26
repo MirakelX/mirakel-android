@@ -67,6 +67,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.ViewSwitcher;
@@ -101,7 +103,8 @@ public class TaskFragmentAdapter extends
 	private boolean editContent;
 	protected Handler mHandler;
 	protected ActionMode mActionMode;
-	private static final int SUBTITLE_SUBTASKS = 0, SUBTITLE_FILES = 1;
+	private static final int SUBTITLE_SUBTASKS = 0, SUBTITLE_FILES = 1,
+			SUBTITLE_PROGRESS = 2;
 	private static final Integer inactive_color = android.R.color.darker_gray;
 	private View.OnClickListener cameraButtonClick = null;
 
@@ -113,6 +116,7 @@ public class TaskFragmentAdapter extends
 		final static int CONTENT = 4;
 		final static int SUBTITLE = 5;
 		final static int SUBTASK = 6;
+		final static int PROGRESS = 7;
 
 		public static class NoSuchItemException extends Exception {
 			private static final long serialVersionUID = 4952441280983309615L;
@@ -136,12 +140,15 @@ public class TaskFragmentAdapter extends
 				return "content";
 			case SUBTASK:
 				return "subtask";
+			case PROGRESS:
+				return "progress";
 			default:
 				throw new NoSuchItemException(); // Throw exception;
 			}
 		}
 
-		public static String getTranslatedName(Context ctx, int item) throws NoSuchItemException {
+		public static String getTranslatedName(Context ctx, int item)
+				throws NoSuchItemException {
 			switch (item) {
 			case HEADER:
 				return ctx.getString(R.string.task_fragment_header);
@@ -155,6 +162,8 @@ public class TaskFragmentAdapter extends
 				return ctx.getString(R.string.task_fragment_content);
 			case SUBTASK:
 				return ctx.getString(R.string.task_fragment_subtask);
+			case PROGRESS:
+				return ctx.getString(R.string.task_fragment_progress);
 			default:
 				throw new NoSuchItemException(); // Throw exception;
 			}
@@ -182,7 +191,7 @@ public class TaskFragmentAdapter extends
 
 	@Override
 	public int getViewTypeCount() {
-		return 7;
+		return 8;
 	}
 
 	@Override
@@ -273,7 +282,9 @@ public class TaskFragmentAdapter extends
 					}
 				};
 				break;
-
+			case SUBTITLE_PROGRESS:
+				title = context.getString(R.string.task_fragment_progress);
+				break;
 			default:
 				Log.w(TAG, "unknown subtitle");
 				break;
@@ -283,6 +294,9 @@ public class TaskFragmentAdapter extends
 			break;
 		case TYPE.CONTENT:
 			row = setupContent(parent, convertView);
+			break;
+		case TYPE.PROGRESS:
+			row = setupProgress(parent, convertView);
 			break;
 
 		}
@@ -551,8 +565,9 @@ public class TaskFragmentAdapter extends
 	private View setupSubtitle(ViewGroup parent, String title,
 			boolean pencilButton, boolean cameraButton, OnClickListener action,
 			View convertView) {
-		if (title == null || action == null)
+		if (title == null)
 			return new View(context);
+
 		final View subtitle = convertView == null ? inflater.inflate(
 				R.layout.task_subtitle, parent, false) : convertView;
 
@@ -571,7 +586,12 @@ public class TaskFragmentAdapter extends
 			holder = (SubtitleHolder) subtitle.getTag();
 		}
 		holder.title.setText(title);
-		holder.button.setOnClickListener(action);
+		if (action != null) {
+			holder.button.setOnClickListener(action);
+			holder.button.setVisibility(View.VISIBLE);
+		} else {
+			holder.button.setVisibility(View.GONE);
+		}
 
 		if (cameraButton) {
 
@@ -665,6 +685,37 @@ public class TaskFragmentAdapter extends
 	};
 	private String taskEditText;
 	protected int cursorPos;
+
+	private View setupProgress(ViewGroup parent, View convertView) {
+		final View view = convertView == null ? inflater.inflate(
+				R.layout.task_progress, parent, false) : convertView;
+		final SeekBar progress = (SeekBar) view
+				.findViewById(R.id.task_progress_seekbar);
+		progress.setProgress(task.getProgress());
+		progress.setMax(100);
+		progress.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				task.setProgress(seekBar.getProgress());
+				((MainActivity) context).saveTask(task);
+
+			}
+
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress,
+					boolean fromUser) {
+			}
+		});
+		return view;
+
+	}
 
 	@SuppressLint("NewApi")
 	private View setupContent(ViewGroup parent, View convertView) {
@@ -1177,6 +1228,11 @@ public class TaskFragmentAdapter extends
 				for (int i = 0; i < fileCount; i++)
 					data.add(new Pair<Integer, Integer>(TYPE.FILE, i));
 				break;
+			case TYPE.PROGRESS:
+				data.add(new Pair<Integer, Integer>(TYPE.SUBTITLE,
+						SUBTITLE_PROGRESS));
+				data.add(new Pair<Integer, Integer>(TYPE.PROGRESS, 0));
+				break;
 			default:
 				data.add(new Pair<Integer, Integer>(item, 0));
 			}
@@ -1197,6 +1253,7 @@ public class TaskFragmentAdapter extends
 			items.add(TYPE.DUE);
 			items.add(TYPE.REMINDER);
 			items.add(TYPE.CONTENT);
+			items.add(TYPE.PROGRESS);
 			items.add(TYPE.SUBTASK);
 			items.add(TYPE.FILE);
 		}

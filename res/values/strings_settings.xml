@@ -269,5 +269,6 @@
     <string name="task_fragment_reminder">Reminder</string>
     <string name="task_fragment_content">Notes</string>
     <string name="task_fragment_subtask">Subtasks</string>
+    <string name="task_fragment_progress">Progress</string>
 
 </resources>
