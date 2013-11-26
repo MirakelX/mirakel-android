@@ -79,14 +79,14 @@ public class RadialTextsView extends View {
     }
 
     public void initialize(Resources res, String[] texts, String[] innerTexts,
-                           boolean is24HourMode, boolean disappearsOut) {
+                           boolean is24HourMode, boolean disappearsOut,boolean dark) {
         if (mIsInitialized) {
             Log.e(TAG, "This RadialTextsView may only be initialized once.");
             return;
         }
 
         // Set up the paint.
-        int numbersTextColor = res.getColor(R.color.numbers_text_color);
+        int numbersTextColor = res.getColor(dark?R.color.clock_white:R.color.numbers_text_color);
         mPaint.setColor(numbersTextColor);
         String typefaceFamily = res.getString(R.string.radial_numbers_typeface);
         mTypefaceLight = Typeface.create(typefaceFamily, Typeface.NORMAL);

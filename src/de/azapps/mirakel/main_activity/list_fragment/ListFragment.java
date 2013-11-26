@@ -57,6 +57,7 @@ import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.main_activity.DragNDropListView;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.main_activity.MirakelFragment;
+import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
@@ -294,39 +295,52 @@ public class ListFragment extends MirakelFragment {
 		final View v = ((LayoutInflater) main
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
 				R.layout.dialog_list_account, null);
-		final Spinner s= (Spinner) v.findViewById(R.id.select_account);
+		final Spinner s = (Spinner) v.findViewById(R.id.select_account);
 		final List<AccountMirakel> accounts = AccountMirakel.getAll();
-		List<String> names=new ArrayList<String>();
-		for(AccountMirakel a:accounts){
+		List<String> names = new ArrayList<String>();
+		for (AccountMirakel a : accounts) {
 			names.add(a.getName());
 		}
-		ArrayAdapter<String> adp= new ArrayAdapter<String>(main,
-                android.R.layout.simple_list_item_1,names);
+		ArrayAdapter<String> adp = new ArrayAdapter<String>(main,
+				android.R.layout.simple_list_item_1, names);
 		s.setAdapter(adp);
-		
+
 		new AlertDialog.Builder(main).setView(v)
-		.setTitle(R.string.change_account)
-		.setPositiveButton(android.R.string.ok, new OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				String where=Task.LIST_ID+" IN (";
-				boolean c=false;
-				for(ListMirakel l:lists){
-					l.setAccount(accounts.get((int)s.getSelectedItemId()));
-					l.save();
-					where+=c?",":""+l.getId();
-					c=true;
-				}
-				where+=") AND NOT "+SyncAdapter.SYNC_STATE+"="+SYNC_STATE.DELETE;
-				ContentValues cv=new ContentValues();
-				cv.put(SyncAdapter.SYNC_STATE, SYNC_STATE.ADD.toInt());
-				Mirakel.getWritableDatabase().update(Task.TABLE, cv, where, null);
-				main.getListFragment().update();				
-			}
-		})
-		.setNegativeButton(android.R.string.cancel, null)
-		.show();
-		
+				.setTitle(R.string.change_account)
+				.setPositiveButton(android.R.string.ok, new OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						String where = Task.LIST_ID + " IN (";
+						boolean c = false;
+						for (ListMirakel l : lists) {
+							l.setAccount(accounts.get((int) s
+									.getSelectedItemId()));
+							l.save();
+							where += (c ? "," : "") + l.getId();
+							c = true;
+						}
+						where += ")";
+						ContentValues cv = new ContentValues();
+						cv.put(SyncAdapter.SYNC_STATE, SYNC_STATE.ADD.toInt());
+						Mirakel.getWritableDatabase().update(
+								Task.TABLE,
+								cv,
+								where + " AND NOT " + SyncAdapter.SYNC_STATE
+										+ "=" + SYNC_STATE.DELETE, null);
+String query="DELETE FROM caldav_extra where "
+		+ DatabaseHelper.ID
+		+ " in( select "
+		+ DatabaseHelper.ID + " from "
+		+ Task.TABLE + " where "
+		+ where + ");";
+Log.w(TAG, query);
+						Mirakel.getWritableDatabase()
+								.rawQuery(
+										query, null);
+						main.getListFragment().update();
+					}
+				}).setNegativeButton(android.R.string.cancel, null).show();
+
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)

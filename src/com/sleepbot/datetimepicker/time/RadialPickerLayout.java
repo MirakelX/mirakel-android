@@ -64,6 +64,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
     private Vibrator mVibrator;
     private long mLastVibrate;
     private int mLastValueSelected;
+    private boolean mDark;
 
     private OnValueSelectedListener mListener;
     private boolean mTimeInitialized;
@@ -134,13 +135,14 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         mGrayBox = new View(context);
         mGrayBox.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        mGrayBox.setBackgroundColor(getResources().getColor(R.color.transparent_black));
+        mGrayBox.setBackgroundColor(getResources().getColor(mDark?R.color.circle_background:R.color.transparent_black));
         mGrayBox.setVisibility(View.INVISIBLE);
         addView(mGrayBox);
 
         mAccessibilityManager = (AccessibilityManager) context.getSystemService(Context.ACCESSIBILITY_SERVICE);
 
         mTimeInitialized = false;
+        mDark=false;
     }
 
     /**
@@ -171,16 +173,17 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
      * @param is24HourMode
      */
     public void initialize(Context context, int initialHoursOfDay, int initialMinutes,
-                           boolean is24HourMode) {
+                           boolean is24HourMode,boolean dark) {
         if (mTimeInitialized) {
             Log.e(TAG, "Time has already been initialized.");
             return;
         }
         mIs24HourMode = is24HourMode;
+        mDark=dark;
         mHideAmPm = Utils.isTouchExplorationEnabled(mAccessibilityManager) ? true : mIs24HourMode;
 
         // Initialize the circle and AM/PM circles if applicable.
-        mCircleView.initialize(context, mHideAmPm);
+        mCircleView.initialize(context, mHideAmPm,dark);
         mCircleView.invalidate();
         if (!mHideAmPm) {
             mAmPmCirclesView.initialize(context, initialHoursOfDay < 12 ? AM : PM);
@@ -202,9 +205,9 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
             minutesTexts[i] = String.format("%02d", minutes[i]);
         }
         mHourRadialTextsView.initialize(res,
-                hoursTexts, (is24HourMode ? innerHoursTexts : null), mHideAmPm, true);
+                hoursTexts, (is24HourMode ? innerHoursTexts : null), mHideAmPm, true,mDark);
         mHourRadialTextsView.invalidate();
-        mMinuteRadialTextsView.initialize(res, minutesTexts, null, mHideAmPm, false);
+        mMinuteRadialTextsView.initialize(res, minutesTexts, null, mHideAmPm, false,mDark);
         mMinuteRadialTextsView.invalidate();
 
         // Initialize the currently-selected hour and minute.
@@ -212,10 +215,10 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         setValueForItem(MINUTE_INDEX, initialMinutes);
         int hourDegrees = (initialHoursOfDay % 12) * HOUR_VALUE_TO_DEGREES_STEP_SIZE;
         mHourRadialSelectorView.initialize(context, mHideAmPm, is24HourMode, true,
-                hourDegrees, isHourInnerCircle(initialHoursOfDay));
+                hourDegrees, isHourInnerCircle(initialHoursOfDay),mDark);
         int minuteDegrees = initialMinutes * MINUTE_VALUE_TO_DEGREES_STEP_SIZE;
         mMinuteRadialSelectorView.initialize(context, mHideAmPm, false, false,
-                minuteDegrees, false);
+                minuteDegrees, false,mDark);
 
         mTimeInitialized = true;
     }
@@ -578,8 +581,6 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         int value;
         final Boolean[] isInnerCircle = new Boolean[1];
         isInnerCircle[0] = false;
-
-        long millis = SystemClock.uptimeMillis();
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:

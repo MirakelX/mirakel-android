@@ -24,6 +24,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/header_background_timepicker"
         android:background="@color/white" >
         <include
             layout="@layout/time_header_label"
@@ -41,6 +42,7 @@
         android:focusableInTouchMode="true" />
     <View
         android:layout_width="match_parent"
+        android:id="@+id/hairline_timepicker"
         android:layout_height="1dip"
         android:background="@color/line_background" />
    <include layout="@layout/date_picker_done_button"/>

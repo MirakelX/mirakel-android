@@ -32,8 +32,8 @@ public class CircleView extends View {
 
     private final Paint mPaint = new Paint();
     private boolean mIs24HourMode;
-    private int mWhite;
-    private int mBlack;
+    private int mBackgroundColor;
+    private int mTextColor;
     private float mCircleRadiusMultiplier;
     private float mAmPmCircleRadiusMultiplier;
     private boolean mIsInitialized;
@@ -43,21 +43,30 @@ public class CircleView extends View {
     private int mYCenter;
     private int mCircleRadius;
 
+	private boolean mDark;
+
     public CircleView(Context context) {
         super(context);
 
         Resources res = context.getResources();
-        mWhite = res.getColor(R.color.white);
-        mBlack = res.getColor(R.color.numbers_text_color);
+        mBackgroundColor = res.getColor(R.color.white);
+        mTextColor = res.getColor(R.color.numbers_text_color);
         mPaint.setAntiAlias(true);
 
         mIsInitialized = false;
+        
     }
 
-    public void initialize(Context context, boolean is24HourMode) {
+    public void initialize(Context context, boolean is24HourMode,boolean dark) {
         if (mIsInitialized) {
             Log.e(TAG, "CircleView may only be initialized once.");
             return;
+        }
+        mDark=dark;
+        if(mDark){
+        	Resources res = context.getResources();
+            mBackgroundColor = res.getColor(R.color.dialog_gray);
+            mTextColor = res.getColor(R.color.clock_white);
         }
 
         Resources res = context.getResources();
@@ -99,12 +108,16 @@ public class CircleView extends View {
             mDrawValuesReady = true;
         }
 
-        // Draw the white circle.
-        mPaint.setColor(mWhite);
+        // Draw the circle.
+        mPaint.setColor(mBackgroundColor);
         canvas.drawCircle(mXCenter, mYCenter, mCircleRadius, mPaint);
+        if(mDark){
+        	mPaint.setColor(getResources().getColor(R.color.dialog_dark_gray));
+            canvas.drawCircle(mXCenter, mYCenter, mCircleRadius, mPaint);
+        }
 
-        // Draw a small black circle in the center.
-        mPaint.setColor(mBlack);
+        // Draw a small circle in the center.
+        mPaint.setColor(mTextColor);
         canvas.drawCircle(mXCenter, mYCenter, 2, mPaint);
     }
 }

@@ -3,7 +3,6 @@ package com.fourmob.datetimepicker.date;
 import java.security.InvalidParameterException;
 import java.text.DateFormatSymbols;
 import java.util.Calendar;
-import java.util.Formatter;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -12,6 +11,7 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.preference.PreferenceManager;
 import android.text.format.DateUtils;
 import android.text.format.Time;
 import android.view.MotionEvent;
@@ -38,7 +38,6 @@ public class SimpleMonthView extends View {
 	protected int mDayTextColor;
 	protected int mFirstJulianDay = -1;
 	protected int mFirstMonth = -1;
-	private final Formatter mFormatter;
 	protected boolean mHasToday = false;
 	protected int mLastMonth = -1;
 	protected int mMonth;
@@ -66,26 +65,29 @@ public class SimpleMonthView extends View {
 	protected int mWidth;
 	protected int mYear;
 	private DateFormatSymbols mDateFormatSymbols = new DateFormatSymbols();
+	private boolean mdark=false;
+	private int mBackground;
 
 	public SimpleMonthView(Context context) {
 		super(context);
+		mdark=PreferenceManager.getDefaultSharedPreferences(context).getBoolean("DarkTheme", false);
 		Resources resources = context.getResources();
 		this.mDayLabelCalendar = Calendar.getInstance();
 		this.mCalendar = Calendar.getInstance();
 		this.mDayOfWeekTypeface = resources.getString(R.string.day_of_week_label_typeface);
 		this.mMonthTitleTypeface = resources.getString(R.string.sans_serif);
-		this.mDayTextColor = resources.getColor(R.color.date_picker_text_normal);
-		this.mTodayNumberColor = resources.getColor(R.color.blue);
-		this.mMonthTitleColor = resources.getColor(R.color.white);
-		this.mMonthTitleBGColor = resources.getColor(R.color.circle_background);
+		this.mDayTextColor = resources.getColor(mdark?R.color.white:R.color.date_picker_text_normal);
+		this.mTodayNumberColor = resources.getColor(mdark?R.color.clock_red:R.color.blue);
+		this.mMonthTitleColor = resources.getColor(mdark?R.color.black:R.color.white);
+//		this.mMonthTitleBGColor = resources.getColor(mdark?R.color.blackish:R.color.circle_background);
 		this.mStringBuilder = new StringBuilder(50);
-		this.mFormatter = new Formatter(this.mStringBuilder, Locale.getDefault());
 		MINI_DAY_NUMBER_TEXT_SIZE = resources.getDimensionPixelSize(R.dimen.day_number_size);
 		MONTH_LABEL_TEXT_SIZE = resources.getDimensionPixelSize(R.dimen.month_label_size);
 		MONTH_DAY_LABEL_TEXT_SIZE = resources.getDimensionPixelSize(R.dimen.month_day_label_text_size);
 		MONTH_HEADER_SIZE = resources.getDimensionPixelOffset(R.dimen.month_list_item_header_height);
 		DAY_SELECTED_CIRCLE_SIZE = resources.getDimensionPixelSize(R.dimen.day_number_select_circle_radius);
 		this.mRowHeight = ((resources.getDimensionPixelOffset(R.dimen.date_picker_view_animator_height) - MONTH_HEADER_SIZE) / 6);
+		this.mBackground=resources.getColor(mdark?R.color.dialog_gray:R.color.white);
 		initView();
 	}
 
@@ -213,6 +215,7 @@ public class SimpleMonthView extends View {
 		this.mMonthNumPaint.setStyle(Paint.Style.FILL);
 		this.mMonthNumPaint.setTextAlign(Paint.Align.CENTER);
 		this.mMonthNumPaint.setFakeBoldText(false);
+		setBackgroundColor(mBackground);
 	}
 
 	protected void onDraw(Canvas canvas) {

@@ -50,6 +50,7 @@ public class SimpleMonthAdapter extends BaseAdapter implements SimpleMonthView.O
 			simpleMonthView.setClickable(true);
 			simpleMonthView.setOnDayClickListener(this);
 		}
+		simpleMonthView.setBackgroundColor(mContext.getResources().getColor(android.R.color.transparent));
 		HashMap<String, Integer> monthParams = (HashMap<String, Integer>) simpleMonthView.getTag();
 		if (monthParams == null)
 			monthParams = new HashMap<String, Integer>();
