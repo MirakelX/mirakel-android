@@ -65,8 +65,8 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -334,7 +334,7 @@ public class TaskFragmentAdapter extends
 
 	static class TaskHolder {
 		CheckBox taskRowDone;
-		LinearLayout taskRowDoneWrapper;
+		RelativeLayout taskRowDoneWrapper;
 		TextView taskRowName;
 		TextView taskRowPriority;
 		TextView taskRowDue, taskRowList;
@@ -352,7 +352,7 @@ public class TaskFragmentAdapter extends
 			holder = new TaskHolder();
 			holder.taskRowDone = (CheckBox) row
 					.findViewById(R.id.tasks_row_done);
-			holder.taskRowDoneWrapper = (LinearLayout) row
+			holder.taskRowDoneWrapper = (RelativeLayout) row
 					.findViewById(R.id.tasks_row_done_wrapper);
 			holder.taskRowName = (TextView) row
 					.findViewById(R.id.tasks_row_name);
