@@ -46,12 +46,14 @@
                 ProgressWheel:barLength="20dp"
                 ProgressWheel:barWidth="5dp"
                 ProgressWheel:rimColor="#330097D6"
+                android:layout_centerInParent="true"
                 ProgressWheel:rimWidth="2dp" />
 
             <CheckBox
                 android:id="@+id/tasks_row_done"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
                 android:checked="false" />
         </RelativeLayout>
 
