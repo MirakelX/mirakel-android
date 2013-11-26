@@ -19,8 +19,8 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.azapps.mirakelandroid"
-    android:versionCode="19"
-    android:versionName="2.2-alpha1" >
+    android:versionCode="20"
+    android:versionName="2.2-alpha1+x" >
 
     <!-- TODO Remove Unused Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -142,11 +142,11 @@
             android:excludeFromRecents="true"
             android:label="@string/ui_activity_title"
             android:theme="@style/Dialog" >
-
-            <!--
-                No intent-filter here! This activity is only ever launched by
-                someone who explicitly knows the class name
-            -->
+        </activity>
+        <activity
+            android:name="de.azapps.mirakel.settings.taskfragment.TaskFragmentSettings"
+            android:label="@string/title_settings"
+            android:windowSoftInputMode="adjustPan" >
         </activity>
 
         <service

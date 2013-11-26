@@ -79,6 +79,7 @@ import de.azapps.mirakel.settings.ColorPickerPref;
 import de.azapps.mirakel.settings.recurring.RecurringActivity;
 import de.azapps.mirakel.settings.semantics.SemanticsSettingsActivity;
 import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
+import de.azapps.mirakel.settings.taskfragment.TaskFragmentSettings;
 import de.azapps.mirakel.static_activities.CreditsActivity;
 import de.azapps.mirakel.static_activities.SettingsActivity;
 import de.azapps.mirakel.static_activities.SettingsFragment;
@@ -484,7 +485,8 @@ public class PreferencesHelper {
 		final CheckBoxPreference sync = (CheckBoxPreference) findPreference("syncUse");
 		final Preference syncType = findPreference("syncType");
 		final AccountManager am = AccountManager.get(activity);
-		final Account[] accounts = am.getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
+		final Account[] accounts = am
+				.getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
 		if (syncType != null && am != null) {
 			if (settings.getBoolean("syncUse", false) && accounts.length > 0) {
 				if (am.getUserData(accounts[0], SyncAdapter.BUNDLE_SERVER_TYPE)
@@ -1249,6 +1251,12 @@ public class PreferencesHelper {
 		if (recurring != null) {
 			recurring.setIntent(startRecurringIntent);
 		}
+		Intent startTaskFragmentIntent = new Intent(activity,
+				TaskFragmentSettings.class);
+		Preference taskFragment = findPreference("task_fragment");
+		if (taskFragment != null) {
+			taskFragment.setIntent(startTaskFragmentIntent);
+		}
 
 		final CheckBoxPreference subTaskAddToSameList = (CheckBoxPreference) findPreference("subtaskAddToSameList");
 		if (subTaskAddToSameList != null) {
@@ -1402,7 +1410,8 @@ public class PreferencesHelper {
 			ctx = (Activity) activity;
 		}
 		final AccountManager am = AccountManager.get(ctx);
-		final Account[] accounts = am.getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
+		final Account[] accounts = am
+				.getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
 		final SharedPreferences settings = PreferenceManager
 				.getDefaultSharedPreferences(ctx);
 		if (newValue) {
@@ -1477,7 +1486,8 @@ public class PreferencesHelper {
 	public static void updateSyncText(CheckBoxPreference sync,
 			Preference server, Preference syncFrequency, Context ctx) {
 		AccountManager am = AccountManager.get(ctx);
-		Account[] accounts = am.getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
+		Account[] accounts = am
+				.getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
 		if (accounts.length > 0) {
 			if (sync != null) {
 				if (am.getUserData(accounts[0], SyncAdapter.BUNDLE_SERVER_TYPE)
@@ -1516,4 +1526,34 @@ public class PreferencesHelper {
 		}
 	}
 
+	// The „real“ helper functions
+
+	public static boolean saveIntArray(Context mContext, String preferenceName,
+			List<Integer> items) {
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(mContext);
+		SharedPreferences.Editor editor = prefs.edit();
+		String pref = "";
+		for (Integer item : items) {
+			pref += String.valueOf(item) + "_";
+		}
+		editor.putString(preferenceName, pref);
+		return editor.commit();
+	}
+
+	public static List<Integer> loadIntArray(Context mContext, String arrayName) {
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(mContext);
+		String serialized = prefs.getString(arrayName, null);
+		if (serialized == null)
+			return null;
+		List<Integer> items = new ArrayList<Integer>();
+		String[] string_items = serialized.split("_");
+		for (String item : string_items) {
+			if (item.length() == 0)
+				continue;
+			items.add(Integer.valueOf(item));
+		}
+		return items;
+	}
 }

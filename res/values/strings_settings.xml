@@ -21,8 +21,7 @@
 
     <!-- Sync -->
     <string name="sync_title">Sync</string>
-        <string name="sync_new">New account</string>
-    
+    <string name="sync_new">New account</string>
     <string name="sync_use">Use Sync</string>
     <string name="sync_warning">Sync is Experimental</string>
     <string name="sync_warning_message">The sync is currently very experimental. But you can try it at your own risk (Make a backup!) – Are you sure?</string>
@@ -261,5 +260,15 @@
     <string name="settings_use_btn_camera">Show the camera button</string>
     <string name="preferences_colorize_subtasks">Colorize subtasks?</string>
     <string name="settings_tasks_title">Tasks</string>
+
+    <!-- Task Fragment settings -->
+    <string name="settings_task_fragment">Task Overview settings</string>
+    <string name="task_fragment_header">Header</string>
+    <string name="task_fragment_file">Files</string>
+    <string name="task_fragment_due">Due</string>
+    <string name="task_fragment_reminder">Reminder</string>
+    <string name="task_fragment_content">Notes</string>
+    <string name="task_fragment_subtask">Subtasks</string>
+    <string name="task_fragment_progress">Progress</string>
 
 </resources>

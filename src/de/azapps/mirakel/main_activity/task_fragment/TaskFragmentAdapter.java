@@ -65,8 +65,10 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.ViewSwitcher;
@@ -79,6 +81,7 @@ import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.PreferencesHelper;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.main_activity.MainActivity;
@@ -100,11 +103,12 @@ public class TaskFragmentAdapter extends
 	private boolean editContent;
 	protected Handler mHandler;
 	protected ActionMode mActionMode;
-	private static final int SUBTITLE_SUBTASKS = 0, SUBTITLE_FILES = 1;
+	private static final int SUBTITLE_SUBTASKS = 0, SUBTITLE_FILES = 1,
+			SUBTITLE_PROGRESS = 2;
 	private static final Integer inactive_color = android.R.color.darker_gray;
 	private View.OnClickListener cameraButtonClick = null;
 
-	public class TYPE {
+	public static class TYPE {
 		final static int HEADER = 0;
 		final static int FILE = 1;
 		final static int DUE = 2;
@@ -112,6 +116,59 @@ public class TaskFragmentAdapter extends
 		final static int CONTENT = 4;
 		final static int SUBTITLE = 5;
 		final static int SUBTASK = 6;
+		final static int PROGRESS = 7;
+
+		public static class NoSuchItemException extends Exception {
+			private static final long serialVersionUID = 4952441280983309615L;
+
+			public NoSuchItemException() {
+				super();
+			}
+		}
+
+		public static String getName(int item) throws NoSuchItemException {
+			switch (item) {
+			case HEADER:
+				return "header";
+			case FILE:
+				return "file";
+			case DUE:
+				return "due";
+			case REMINDER:
+				return "reminder";
+			case CONTENT:
+				return "content";
+			case SUBTASK:
+				return "subtask";
+			case PROGRESS:
+				return "progress";
+			default:
+				throw new NoSuchItemException(); // Throw exception;
+			}
+		}
+
+		public static String getTranslatedName(Context ctx, int item)
+				throws NoSuchItemException {
+			switch (item) {
+			case HEADER:
+				return ctx.getString(R.string.task_fragment_header);
+			case FILE:
+				return ctx.getString(R.string.task_fragment_file);
+			case DUE:
+				return ctx.getString(R.string.task_fragment_due);
+			case REMINDER:
+				return ctx.getString(R.string.task_fragment_reminder);
+			case CONTENT:
+				return ctx.getString(R.string.task_fragment_content);
+			case SUBTASK:
+				return ctx.getString(R.string.task_fragment_subtask);
+			case PROGRESS:
+				return ctx.getString(R.string.task_fragment_progress);
+			default:
+				throw new NoSuchItemException(); // Throw exception;
+			}
+
+		}
 	}
 
 	public TaskFragmentAdapter(Context c) {
@@ -120,7 +177,7 @@ public class TaskFragmentAdapter extends
 	}
 
 	public TaskFragmentAdapter(Context context, int textViewResourceId, Task t) {
-		super(context, textViewResourceId, generateData(t));
+		super(context, textViewResourceId, generateData(t, context));
 		this.task = t;
 		if (task == null)
 			task = Task.getDummy(context);
@@ -134,7 +191,7 @@ public class TaskFragmentAdapter extends
 
 	@Override
 	public int getViewTypeCount() {
-		return 7;
+		return 8;
 	}
 
 	@Override
@@ -225,7 +282,9 @@ public class TaskFragmentAdapter extends
 					}
 				};
 				break;
-
+			case SUBTITLE_PROGRESS:
+				title = context.getString(R.string.task_fragment_progress);
+				break;
 			default:
 				Log.w(TAG, "unknown subtitle");
 				break;
@@ -235,6 +294,9 @@ public class TaskFragmentAdapter extends
 			break;
 		case TYPE.CONTENT:
 			row = setupContent(parent, convertView);
+			break;
+		case TYPE.PROGRESS:
+			row = setupProgress(parent, convertView);
 			break;
 
 		}
@@ -272,7 +334,7 @@ public class TaskFragmentAdapter extends
 
 	static class TaskHolder {
 		CheckBox taskRowDone;
-		LinearLayout taskRowDoneWrapper;
+		RelativeLayout taskRowDoneWrapper;
 		TextView taskRowName;
 		TextView taskRowPriority;
 		TextView taskRowDue, taskRowList;
@@ -290,7 +352,7 @@ public class TaskFragmentAdapter extends
 			holder = new TaskHolder();
 			holder.taskRowDone = (CheckBox) row
 					.findViewById(R.id.tasks_row_done);
-			holder.taskRowDoneWrapper = (LinearLayout) row
+			holder.taskRowDoneWrapper = (RelativeLayout) row
 					.findViewById(R.id.tasks_row_done_wrapper);
 			holder.taskRowName = (TextView) row
 					.findViewById(R.id.tasks_row_name);
@@ -503,8 +565,9 @@ public class TaskFragmentAdapter extends
 	private View setupSubtitle(ViewGroup parent, String title,
 			boolean pencilButton, boolean cameraButton, OnClickListener action,
 			View convertView) {
-		if (title == null || action == null)
+		if (title == null)
 			return new View(context);
+
 		final View subtitle = convertView == null ? inflater.inflate(
 				R.layout.task_subtitle, parent, false) : convertView;
 
@@ -523,7 +586,12 @@ public class TaskFragmentAdapter extends
 			holder = (SubtitleHolder) subtitle.getTag();
 		}
 		holder.title.setText(title);
-		holder.button.setOnClickListener(action);
+		if (action != null) {
+			holder.button.setOnClickListener(action);
+			holder.button.setVisibility(View.VISIBLE);
+		} else {
+			holder.button.setVisibility(View.GONE);
+		}
 
 		if (cameraButton) {
 
@@ -617,6 +685,37 @@ public class TaskFragmentAdapter extends
 	};
 	private String taskEditText;
 	protected int cursorPos;
+
+	private View setupProgress(ViewGroup parent, View convertView) {
+		final View view = convertView == null ? inflater.inflate(
+				R.layout.task_progress, parent, false) : convertView;
+		final SeekBar progress = (SeekBar) view
+				.findViewById(R.id.task_progress_seekbar);
+		progress.setProgress(task.getProgress());
+		progress.setMax(100);
+		progress.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				task.setProgress(seekBar.getProgress());
+				((MainActivity) context).saveTask(task);
+
+			}
+
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress,
+					boolean fromUser) {
+			}
+		});
+		return view;
+
+	}
 
 	@SuppressLint("NewApi")
 	private View setupContent(ViewGroup parent, View convertView) {
@@ -879,10 +978,10 @@ public class TaskFragmentAdapter extends
 					mIgnoreTimeSet = false;
 					final Calendar due = (task.getDue() == null ? new GregorianCalendar()
 							: task.getDue());
-//					Spinner recurrence = (Spinner) content
-//							.findViewById(R.id.add_reccuring);
-//					TaskDialogHelpers.handleRecurrence(context, task,
-//							recurrence, true);
+					// Spinner recurrence = (Spinner) content
+					// .findViewById(R.id.add_reccuring);
+					// TaskDialogHelpers.handleRecurrence(context, task,
+					// recurrence, true);
 					final FragmentManager fm = ((MainActivity) context)
 							.getSupportFragmentManager();
 					final DatePickerDialog datePickerDialog = DatePickerDialog
@@ -896,8 +995,7 @@ public class TaskFragmentAdapter extends
 											if (mIgnoreTimeSet)
 												return;
 											task.setDue(new GregorianCalendar(
-													year,
-													month, day));
+													year, month, day));
 											((MainActivity) context)
 													.saveTask(task);
 											holder.taskDue
@@ -916,8 +1014,9 @@ public class TaskFragmentAdapter extends
 											((MainActivity) context)
 													.saveTask(task);
 											holder.taskDue
-													.setText(context.getString(R.string.no_date));
-											
+													.setText(context
+															.getString(R.string.no_date));
+
 										}
 									}, due.get(Calendar.YEAR), due
 											.get(Calendar.MONTH), due
@@ -1090,7 +1189,7 @@ public class TaskFragmentAdapter extends
 			Log.wtf(TAG, "task null");
 			return;
 		}
-		List<Pair<Integer, Integer>> generateData = generateData(t);
+		List<Pair<Integer, Integer>> generateData = generateData(t, context);
 		super.changeData(generateData);
 		task = t;
 		subtasks = task.getSubtasks();
@@ -1106,21 +1205,38 @@ public class TaskFragmentAdapter extends
 		return task;
 	}
 
-	private static List<Pair<Integer, Integer>> generateData(Task task) {
+	private static List<Pair<Integer, Integer>> generateData(Task task,
+			Context context) {
+		// From config
+		List<Integer> items = getValues(context);
+
 		List<Pair<Integer, Integer>> data = new ArrayList<Pair<Integer, Integer>>();
-		data.add(new Pair<Integer, Integer>(TYPE.HEADER, 0));
-		data.add(new Pair<Integer, Integer>(TYPE.DUE, 0));
-		data.add(new Pair<Integer, Integer>(TYPE.REMINDER, 0));
-		data.add(new Pair<Integer, Integer>(TYPE.CONTENT, 0));
-		data.add(new Pair<Integer, Integer>(TYPE.SUBTITLE, SUBTITLE_SUBTASKS));
-		int subtaskCount = task == null ? 0 : task.getSubtaskCount();
-		for (int i = 0; i < subtaskCount; i++) {
-			data.add(new Pair<Integer, Integer>(TYPE.SUBTASK, i));
+		for (Integer item : items) {
+			switch (item) {
+			case TYPE.SUBTASK:
+				data.add(new Pair<Integer, Integer>(TYPE.SUBTITLE,
+						SUBTITLE_SUBTASKS));
+				int subtaskCount = task == null ? 0 : task.getSubtaskCount();
+				for (int i = 0; i < subtaskCount; i++) {
+					data.add(new Pair<Integer, Integer>(TYPE.SUBTASK, i));
+				}
+				break;
+			case TYPE.FILE:
+				data.add(new Pair<Integer, Integer>(TYPE.SUBTITLE,
+						SUBTITLE_FILES));
+				int fileCount = FileMirakel.getFileCount(task);
+				for (int i = 0; i < fileCount; i++)
+					data.add(new Pair<Integer, Integer>(TYPE.FILE, i));
+				break;
+			case TYPE.PROGRESS:
+				data.add(new Pair<Integer, Integer>(TYPE.SUBTITLE,
+						SUBTITLE_PROGRESS));
+				data.add(new Pair<Integer, Integer>(TYPE.PROGRESS, 0));
+				break;
+			default:
+				data.add(new Pair<Integer, Integer>(item, 0));
+			}
 		}
-		data.add(new Pair<Integer, Integer>(TYPE.SUBTITLE, SUBTITLE_FILES));
-		int fileCount = FileMirakel.getFileCount(task);
-		for (int i = 0; i < fileCount; i++)
-			data.add(new Pair<Integer, Integer>(TYPE.FILE, i));
 		return data;
 	}
 
@@ -1128,4 +1244,24 @@ public class TaskFragmentAdapter extends
 		this.cameraButtonClick = cameraButtonClick;
 	}
 
+	public static List<Integer> getValues(Context context) {
+		List<Integer> items = PreferencesHelper.loadIntArray(context,
+				"task_fragment_adapter_settings");
+		if (items == null) {
+			items = new ArrayList<Integer>();
+			items.add(TYPE.HEADER);
+			items.add(TYPE.DUE);
+			items.add(TYPE.REMINDER);
+			items.add(TYPE.CONTENT);
+			items.add(TYPE.PROGRESS);
+			items.add(TYPE.SUBTASK);
+			items.add(TYPE.FILE);
+		}
+		return items;
+	}
+
+	public static void setValues(Context context, List<Integer> newV) {
+		PreferencesHelper.saveIntArray(context,
+				"task_fragment_adapter_settings", newV);
+	}
 }

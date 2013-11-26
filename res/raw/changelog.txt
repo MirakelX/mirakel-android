@@ -18,10 +18,12 @@
   </head>
   <body>
 $ 2.2-alpha1
-  % Version 2.2-alpha1
+  % Version 2.2-alpha+x
   ! Please report Bugs and errors!
     * Basic Multi-Account handling
     * Caldav-Sync over davdroid
+    * Dynamic Task Fragment
+    * Set the progress of your tasks
 $ 2.1.4+x
   % Version 2.1.4+x (Beta)
   ! Please report Bugs and errors!

@@ -27,6 +27,7 @@ import android.accounts.AccountManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.export_import.ExportImport;
@@ -87,8 +88,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		Log.e(TAG,"You are downgrading the Database!");
-		// This is only for developers… There shouldn't happen bad things if you use a database with a higher version.
+		Log.e(TAG, "You are downgrading the Database!");
+		// This is only for developers… There shouldn't happen bad things if you
+		// use a database with a higher version.
 	}
 
 	@Override
@@ -365,6 +367,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ AccountMirakel.ENABLED + " INTEGER NOT NULL DEFAULT 0, "
 				+ AccountMirakel.TYPE + " INTEGER NOT NULL DEFAULT "
 				+ ACCOUNT_TYPES.LOCAL.toInt() + ")");
+
 	}
 
 	private void createTasksTableString(SQLiteDatabase db) {
