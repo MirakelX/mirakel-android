@@ -1,9 +1,7 @@
 package de.azapps.mirakel.settings.taskfragment;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,17 +11,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import de.azapps.mirakel.adapter.MirakelArrayAdapter;
+import de.azapps.mirakel.main_activity.task_fragment.TaskFragmentAdapter;
 import de.azapps.mirakel.main_activity.task_fragment.TaskFragmentAdapter.TYPE;
-import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.main_activity.task_fragment.TaskFragmentAdapter.TYPE.NoSuchItemException;
 import de.azapps.mirakelandroid.R;
 
 public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
-	private Map<Integer, View> viewsForLists = new HashMap<Integer, View>();
-
-	public View getViewForList(ListMirakel list) {
-		return viewsForLists.get(list.getId());
-	}
-
 	public TaskFragmentSettingsAdapter(Context c) {
 		// do not call this, only for error-fixing there
 		super(c, 0, (List<Integer>) new ArrayList<Integer>());
@@ -36,7 +29,6 @@ public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
 
 	@Override
 	public void changeData(List<Integer> lists) {
-		viewsForLists.clear();
 		super.changeData(lists);
 	}
 
@@ -49,8 +41,10 @@ public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
 			LayoutInflater inflater = ((Activity) context).getLayoutInflater();
 			row = inflater.inflate(layoutResourceId, parent, false);
 			holder = new ListHolder();
-			holder.rowName = (TextView) row.findViewById(R.id.list_row_name);
-			holder.rowDrag = (ImageView) row.findViewById(R.id.list_row_drag);
+			holder.rowName = (TextView) row
+					.findViewById(R.id.row_taskfragment_settings_name);
+			holder.rowDrag = (ImageView) row
+					.findViewById(R.id.row_taskfragment_settings_drag);
 			row.setTag(holder);
 		} else {
 			holder = (ListHolder) row.getTag();
@@ -58,9 +52,12 @@ public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
 		Integer item = data.get(position);
 		holder.rowDrag.setVisibility(View.VISIBLE);
 
-		holder.rowName.setText(TYPE.getName(item));
+		try {
+			holder.rowName.setText(TYPE.getTranslatedName(context, item));
+		} catch (NoSuchItemException e) {
+			holder.rowName.setText("");
+		}
 		holder.rowName.setTag(item);
-		viewsForLists.put(item, row);
 		if (selected.get(position)) {
 			row.setBackgroundColor(context.getResources().getColor(
 					darkTheme ? R.color.highlighted_text_holo_dark
@@ -73,12 +70,15 @@ public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
 	public void onRemove(int which) {
 		if (which < 0 || which > data.size())
 			return;
-		viewsForLists.remove(data.get(which));
 		data.remove(which);
 	}
 
 	public void onDrop(final int from, final int to) {
-		// TODO
+		Integer item = data.get(from);
+		data.remove(from);
+		data.add(to, item);
+		TaskFragmentAdapter.setValues(context, data);
+		notifyDataSetChanged();
 	}
 
 	static class ListHolder {

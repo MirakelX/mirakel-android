@@ -1526,4 +1526,34 @@ public class PreferencesHelper {
 		}
 	}
 
+	// The „real“ helper functions
+
+	public static boolean saveIntArray(Context mContext, String preferenceName,
+			List<Integer> items) {
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(mContext);
+		SharedPreferences.Editor editor = prefs.edit();
+		String pref = "";
+		for (Integer item : items) {
+			pref += String.valueOf(item) + "_";
+		}
+		editor.putString(preferenceName, pref);
+		return editor.commit();
+	}
+
+	public static List<Integer> loadIntArray(Context mContext, String arrayName) {
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(mContext);
+		String serialized = prefs.getString(arrayName, null);
+		if (serialized == null)
+			return null;
+		List<Integer> items = new ArrayList<Integer>();
+		String[] string_items = serialized.split("_");
+		for (String item : string_items) {
+			if (item.length() == 0)
+				continue;
+			items.add(Integer.valueOf(item));
+		}
+		return items;
+	}
 }

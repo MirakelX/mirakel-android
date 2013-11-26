@@ -34,7 +34,7 @@ public class TaskFragmentSettings extends Activity {
 	protected void onResume() {
 		super.onResume();
 		// The activity has become visible (it is now "resumed").
-		final List<Integer> values = TaskFragmentAdapter.getValues();
+		final List<Integer> values = TaskFragmentAdapter.getValues(this);
 
 		if (adapter != null) {
 			adapter.changeData(values);
@@ -42,8 +42,8 @@ public class TaskFragmentSettings extends Activity {
 			return;
 		}
 
-		adapter = new TaskFragmentSettingsAdapter(this, R.layout.lists_row,
-				values);
+		adapter = new TaskFragmentSettingsAdapter(this,
+				R.layout.row_taskfragment_settings, values);
 		listView = (DragNDropListView) findViewById(R.id.taskfragment_list);
 		listView.setEnableDrag(true);
 		listView.setItemsCanFocus(true);

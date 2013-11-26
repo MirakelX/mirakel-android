@@ -79,6 +79,7 @@ import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.PreferencesHelper;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.main_activity.MainActivity;
@@ -113,7 +114,15 @@ public class TaskFragmentAdapter extends
 		final static int SUBTITLE = 5;
 		final static int SUBTASK = 6;
 
-		public static String getName(int item) {
+		public static class NoSuchItemException extends Exception {
+			private static final long serialVersionUID = 4952441280983309615L;
+
+			public NoSuchItemException() {
+				super();
+			}
+		}
+
+		public static String getName(int item) throws NoSuchItemException {
 			switch (item) {
 			case HEADER:
 				return "header";
@@ -128,8 +137,28 @@ public class TaskFragmentAdapter extends
 			case SUBTASK:
 				return "subtask";
 			default:
-				throw new RuntimeException("no name"); // Throw exception;
+				throw new NoSuchItemException(); // Throw exception;
 			}
+		}
+
+		public static String getTranslatedName(Context ctx, int item) throws NoSuchItemException {
+			switch (item) {
+			case HEADER:
+				return ctx.getString(R.string.task_fragment_header);
+			case FILE:
+				return ctx.getString(R.string.task_fragment_file);
+			case DUE:
+				return ctx.getString(R.string.task_fragment_due);
+			case REMINDER:
+				return ctx.getString(R.string.task_fragment_reminder);
+			case CONTENT:
+				return ctx.getString(R.string.task_fragment_content);
+			case SUBTASK:
+				return ctx.getString(R.string.task_fragment_subtask);
+			default:
+				throw new NoSuchItemException(); // Throw exception;
+			}
+
 		}
 	}
 
@@ -139,7 +168,7 @@ public class TaskFragmentAdapter extends
 	}
 
 	public TaskFragmentAdapter(Context context, int textViewResourceId, Task t) {
-		super(context, textViewResourceId, generateData(t));
+		super(context, textViewResourceId, generateData(t, context));
 		this.task = t;
 		if (task == null)
 			task = Task.getDummy(context);
@@ -1109,7 +1138,7 @@ public class TaskFragmentAdapter extends
 			Log.wtf(TAG, "task null");
 			return;
 		}
-		List<Pair<Integer, Integer>> generateData = generateData(t);
+		List<Pair<Integer, Integer>> generateData = generateData(t, context);
 		super.changeData(generateData);
 		task = t;
 		subtasks = task.getSubtasks();
@@ -1125,9 +1154,10 @@ public class TaskFragmentAdapter extends
 		return task;
 	}
 
-	private static List<Pair<Integer, Integer>> generateData(Task task) {
+	private static List<Pair<Integer, Integer>> generateData(Task task,
+			Context context) {
 		// From config
-		List<Integer> items = getValues();
+		List<Integer> items = getValues(context);
 
 		List<Pair<Integer, Integer>> data = new ArrayList<Pair<Integer, Integer>>();
 		for (Integer item : items) {
@@ -1158,14 +1188,23 @@ public class TaskFragmentAdapter extends
 		this.cameraButtonClick = cameraButtonClick;
 	}
 
-	public static List<Integer> getValues() {
-		List<Integer> items = new ArrayList<Integer>();
-		items.add(TYPE.HEADER);
-		items.add(TYPE.DUE);
-		items.add(TYPE.REMINDER);
-		items.add(TYPE.CONTENT);
-		items.add(TYPE.SUBTASK);
-		items.add(TYPE.FILE);
+	public static List<Integer> getValues(Context context) {
+		List<Integer> items = PreferencesHelper.loadIntArray(context,
+				"task_fragment_adapter_settings");
+		if (items == null) {
+			items = new ArrayList<Integer>();
+			items.add(TYPE.HEADER);
+			items.add(TYPE.DUE);
+			items.add(TYPE.REMINDER);
+			items.add(TYPE.CONTENT);
+			items.add(TYPE.SUBTASK);
+			items.add(TYPE.FILE);
+		}
 		return items;
+	}
+
+	public static void setValues(Context context, List<Integer> newV) {
+		PreferencesHelper.saveIntArray(context,
+				"task_fragment_adapter_settings", newV);
 	}
 }

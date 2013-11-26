@@ -263,5 +263,11 @@
 
     <!-- Task Fragment settings -->
     <string name="settings_task_fragment">Task Overview settings</string>
+    <string name="task_fragment_header">Header</string>
+    <string name="task_fragment_file">Files</string>
+    <string name="task_fragment_due">Due</string>
+    <string name="task_fragment_reminder">Reminder</string>
+    <string name="task_fragment_content">Notes</string>
+    <string name="task_fragment_subtask">Subtasks</string>
 
 </resources>
