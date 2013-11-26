@@ -36,8 +36,11 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.todddavies.components.progressbar.ProgressWheel;
+
 import de.azapps.mirakel.adapter.MirakelArrayAdapter;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Helpers;
@@ -150,7 +153,7 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 			holder = new TaskHolder();
 			holder.taskRowDone = (CheckBox) row
 					.findViewById(R.id.tasks_row_done);
-			holder.taskRowDoneWrapper = (LinearLayout) row
+			holder.taskRowDoneWrapper = (RelativeLayout) row
 					.findViewById(R.id.tasks_row_done_wrapper);
 			holder.taskRowName = (TextView) row
 					.findViewById(R.id.tasks_row_name);
@@ -161,6 +164,8 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 					.findViewById(R.id.tasks_row_has_content);
 			holder.taskRowList = (TextView) row
 					.findViewById(R.id.tasks_row_list_name);
+			holder.taskRowProgress = (ProgressWheel) row
+					.findViewById(R.id.tasks_row_progress);
 			row.setTag(holder);
 		} else {
 			holder = (TaskHolder) row.getTag();
@@ -168,6 +173,7 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 		if (task == null)
 			return row;
 		// Done
+		holder.taskRowProgress.setProgress(task.getProgress());
 		holder.taskRowDone.setChecked(task.isDone());
 		holder.taskRowDone.setTag(task);
 		holder.taskRowDoneWrapper.setTag(task);
@@ -207,8 +213,8 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 		// Due
 		if (task.getDue() != null) {
 			holder.taskRowDue.setVisibility(View.VISIBLE);
-			holder.taskRowDue
-					.setText(DateTimeHelper.formatDate(context, task.getDue()));
+			holder.taskRowDue.setText(DateTimeHelper.formatDate(context,
+					task.getDue()));
 			holder.taskRowDue.setTextColor(row.getResources().getColor(
 					TaskHelper.getTaskDueColor(task.getDue(), task.isDone())));
 		} else {
@@ -232,7 +238,8 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 	 */
 	static class TaskHolder {
 		CheckBox taskRowDone;
-		LinearLayout taskRowDoneWrapper;
+		RelativeLayout taskRowDoneWrapper;
+		ProgressWheel taskRowProgress;
 		TextView taskRowName;
 		TextView taskRowPriority;
 		TextView taskRowDue, taskRowList;

@@ -18,8 +18,9 @@
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    xmlns:ProgressWheel="http://schemas.android.com/apk/res-auto"
     android:id="@+id/tasks_row"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:descendantFocusability="blocksDescendants"
     android:orientation="horizontal"
@@ -32,17 +33,27 @@
         android:layout_marginRight="41dp"
         android:orientation="horizontal" >
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/tasks_row_done_wrapper"
             android:layout_width="wrap_content"
             android:layout_height="match_parent" >
+
+            <com.todddavies.components.progressbar.ProgressWheel
+                android:id="@+id/tasks_row_progress"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                ProgressWheel:barColor="#0097D6"
+                ProgressWheel:barLength="20dp"
+                ProgressWheel:barWidth="5dp"
+                ProgressWheel:rimColor="#330097D6"
+                ProgressWheel:rimWidth="2dp" />
 
             <CheckBox
                 android:id="@+id/tasks_row_done"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="false" />
-        </LinearLayout>
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -95,15 +106,15 @@
     </LinearLayout>
 
     <TextView
-        android:background="@drawable/priority_rectangle"
         android:id="@+id/tasks_row_priority"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_alignParentRight="true"
+        android:layout_marginLeft="2.5dp"
+        android:background="@drawable/priority_rectangle"
         android:gravity="center"
         android:textIsSelectable="false"
-        android:textSize="18sp" 
-        android:layout_marginLeft="2.5dp">
+        android:textSize="18sp" >
     </TextView>
 
 </RelativeLayout>
