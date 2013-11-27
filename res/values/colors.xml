@@ -50,5 +50,48 @@
     <color name="numbers_text_color">#8c8c8c</color>
 
     <color name="transparent_black">#7F000000</color>
+    
+    <!-- Datepicker dark -->
+    
+	<color name="ampm_off">#ff404040</color>
+    <color name="ampm_on">#ffffffff</color>
+    <color name="time_text_color">#E6FFFFFF</color>
+    <color name="ampm_text_color">#99FFFFFF</color>
+    <color name="screen_saver_color">#FF006688</color>
+    <color name="screen_saver_dim_color">#FF001634</color>
+    <color name="action_bar_button_text_color">#FFFFFF</color>
+    <color name="dialog_gray">#28ffffff</color>
+
+    <color name="black">#ff000000</color>
+    <!-- If this color is changed or no longer used as the primary background, ensure that blackish_trans is changed as well. -->
+    <color name="blackish">#1c1e20</color>
+    <color name="blackish_selected">#0cffffff</color>
+    <!-- Transparent background for use in the footer. 80% opacity. The color must remain the same as "blackish" above. -->
+    <color name="blackish_trans">#cc1c1e20</color>
+    <color name="white">#ffffffff</color>
+    <color name="red">#ffee0000</color>
+    <color name="grey">#ffaaaaaa</color>
+    <color name="transparent">#00000000</color>
+    <color name="transparent_white">#66ffffff</color>
+    <color name="alarm_whiteish">#0cffffff</color>
+
+    <color name="main_button_normal">#606060</color>
+    <color name="main_button_selected">#909090</color>
+    <color name="main_button_red_normal">#ff4444</color> <!-- same as clock_red -->
+    <color name="main_button_red_selected">#c0ff4444</color>
+
+    <color name="clock_red">#ff4444</color>
+    <color name="clock_white">#ffffff</color>
+    <color name="clock_gray">#80ffffff</color>
+    <color name="clock_blue">#ff33b5e5</color>
+    <color name="notification_bg">#ff15444F</color>
+    <color name="alarm_selected_color">#aa0099cc</color>
+
+    <drawable name="notification_template_icon_bg">#3333B5E5</drawable>
+    <drawable name="notification_template_icon_low_bg">#0cffffff</drawable>
+
+    <color name="alarm_timeline_color">#4D4D4D</color>
+    <color name="dialog_dark_gray">#70000000</color>
+    
 
 </resources>

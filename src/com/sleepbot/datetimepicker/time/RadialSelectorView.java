@@ -84,7 +84,7 @@ public class RadialSelectorView extends View {
      *                         Will be ignored when hasInnerCircle is false.
      */
     public void initialize(Context context, boolean is24HourMode, boolean hasInnerCircle,
-                           boolean disappearsOut, int selectionDegrees, boolean isInnerCircle) {
+                           boolean disappearsOut, int selectionDegrees, boolean isInnerCircle, boolean dark) {
         if (mIsInitialized) {
             Log.e(TAG, "This RadialSelectorView may only be initialized once.");
             return;
@@ -92,8 +92,8 @@ public class RadialSelectorView extends View {
 
         Resources res = context.getResources();
 
-        int blue = res.getColor(R.color.blue);
-        mPaint.setColor(blue);
+        int selectorColor = res.getColor(dark?R.color.clock_red:R.color.blue);
+        mPaint.setColor(selectorColor);
         mPaint.setAntiAlias(true);
 
         // Calculate values for the circle radius size.

@@ -902,7 +902,7 @@ public class TaskFragmentAdapter extends
 									ReminderAlarm.updateAlarms(context);
 
 								}
-							});
+							},darkTheme);
 				}
 			});
 			reminder.setTag(holder);
@@ -1020,7 +1020,7 @@ public class TaskFragmentAdapter extends
 										}
 									}, due.get(Calendar.YEAR), due
 											.get(Calendar.MONTH), due
-											.get(Calendar.DAY_OF_MONTH), false);
+											.get(Calendar.DAY_OF_MONTH), false,darkTheme);
 					datePickerDialog.setYearRange(2005, 2036);// must be < 2037
 					datePickerDialog.show(fm, "datepicker");
 				}

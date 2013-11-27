@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.widget.TextView;
 import de.azapps.mirakelandroid.R;
@@ -14,13 +15,12 @@ public class TextViewWithCircularIndicator extends TextView {
 	Paint mCirclePaint = new Paint();
 	private boolean mDrawCircle;
 	private final String mItemIsSelectedText;
-	private final int mRadius;
 
 	public TextViewWithCircularIndicator(Context context, AttributeSet attributeSet) {
 		super(context, attributeSet);
 		Resources localResources = context.getResources();
-		this.mCircleColor = localResources.getColor(R.color.blue);
-		this.mRadius = localResources.getDimensionPixelOffset(R.dimen.month_select_circle_radius);
+		boolean dark=PreferenceManager.getDefaultSharedPreferences(context).getBoolean("DarkTheme", false);
+		this.mCircleColor = localResources.getColor(dark?R.color.clock_red:R.color.blue);
 		this.mItemIsSelectedText = context.getResources().getString(R.string.item_is_selected);
 		init();
 	}

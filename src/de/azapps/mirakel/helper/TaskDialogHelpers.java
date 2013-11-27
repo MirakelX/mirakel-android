@@ -118,7 +118,7 @@ public class TaskDialogHelpers {
 	}
 
 	public static void handleReminder(final Activity ctx, final Task task,
-			final ExecInterface onSuccess) {
+			final ExecInterface onSuccess,boolean dark) {
 		final Calendar reminder = (task.getReminder() == null ? new GregorianCalendar()
 				: task.getReminder());
 		final FragmentManager fm=((MainActivity) ctx)
@@ -141,7 +141,7 @@ public class TaskDialogHelpers {
 						.saveTask(task);
 				onSuccess.exec();				
 			}
-		}, reminder.get(Calendar.HOUR_OF_DAY), reminder.get(Calendar.MINUTE), true);
+		}, reminder.get(Calendar.HOUR_OF_DAY), reminder.get(Calendar.MINUTE), true,dark);//TODO add theme
 		final DatePickerDialog dp=DatePickerDialog.newInstance(new OnDateSetListener() {
 			
 			@Override
@@ -160,7 +160,7 @@ public class TaskDialogHelpers {
 							.saveTask(task);
 					onSuccess.exec();				
 			}
-		}, reminder.get(Calendar.YEAR), reminder.get(Calendar.MONTH), reminder.get(Calendar.DAY_OF_MONTH),false);
+		}, reminder.get(Calendar.YEAR), reminder.get(Calendar.MONTH), reminder.get(Calendar.DAY_OF_MONTH),false,dark);
 		dp.setYearRange(2005, 2036);// must be < 2037
 		dp.show(fm, "datepicker");
 		// Inflate the root layout

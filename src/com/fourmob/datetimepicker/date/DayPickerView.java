@@ -151,14 +151,12 @@ public class DayPickerView extends ListView implements AbsListView.OnScrollListe
 	}
 
 	protected class ScrollStateRunnable implements Runnable {
-		private int mNewState;
 
 		protected ScrollStateRunnable() {
 		}
 
 		public void doScrollStateChange(AbsListView absListView, int newState) {
 			DayPickerView.this.mHandler.removeCallbacks(this);
-			this.mNewState = newState;
 			DayPickerView.this.mHandler.postDelayed(this, 40L);
 		}
 
