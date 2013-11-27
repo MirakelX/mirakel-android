@@ -8,8 +8,10 @@ import java.util.Iterator;
 import java.util.Locale;
 
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.os.SystemClock;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
@@ -70,6 +72,8 @@ public class DatePickerDialog extends DialogFragment implements
 	private boolean mVibrate = true;
 	private Button mNoDateButton;
 	private boolean mDark = false;
+	private boolean restart=false;
+	private boolean yearSelected;
 
 	private void adjustDayInMonthIfNeeded(int month, int year) {
 		int currentDay = this.mCalendar.get(Calendar.DAY_OF_MONTH);
@@ -92,6 +96,7 @@ public class DatePickerDialog extends DialogFragment implements
 				vibrate, true);
 		return datePickerDialog;
 	}
+	
 
 	public void setVibrate(boolean vibrate) {
 		this.mVibrate = vibrate;
@@ -206,10 +211,13 @@ public class DatePickerDialog extends DialogFragment implements
 
 	public void onClick(View view) {
 		tryVibrate();
-		if (view.getId() == R.id.date_picker_year)
+		if (view.getId() == R.id.date_picker_year){
 			setCurrentView(VIEW_DATE_PICKER_YEAR);
-		else if (view.getId() == R.id.date_picker_month_and_day)
+			yearSelected=true;
+		}else if (view.getId() == R.id.date_picker_month_and_day){
 			setCurrentView(VIEW_DATE_PICKER_MONTH_DAY);
+			yearSelected=false;
+		}
 	}
 
 	public void onCreate(Bundle bundle) {
@@ -224,11 +232,39 @@ public class DatePickerDialog extends DialogFragment implements
 			this.mCalendar.set(Calendar.DAY_OF_MONTH, bundle.getInt("day"));
 		}
 	}
+	
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		//on display rotate reload dialog
+		restart=true;
+		final Parcelable yearState = mYearPickerView.onSaveInstanceState();
+		final Parcelable monthState = mDayPickerView.onSaveInstanceState();
+		getDialog().setContentView(onCreateView(LayoutInflater.from(getDialog().getContext()), null, null));
+		if(yearSelected)
+			setCurrentView(VIEW_DATE_PICKER_YEAR);
+		mYearPickerView.postDelayed(new Runnable() {
+			
+			@Override
+			public void run() {
+				mYearPickerView.onRestoreInstanceState(yearState);
+			}
+		}, 100);
+		mDayPickerView.postDelayed(new Runnable() {
+			
+			@Override
+			public void run() {
+				mDayPickerView.onRestoreInstanceState(monthState);
+			}
+		}, 100);
+	}
 
 	public View onCreateView(LayoutInflater layoutInflater, ViewGroup parent,
 			Bundle bundle) {
 		Log.d("DatePickerDialog", "onCreateView: ");
-		getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+		if(!restart)
+			getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+		restart=false;
 		mDark=PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext()).getBoolean("DarkTheme", false);
 		View view = layoutInflater.inflate(R.layout.date_picker_dialog, null);
 		this.mDayOfWeekView = ((TextView) view

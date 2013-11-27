@@ -22,6 +22,7 @@ import java.util.Locale;
 import android.annotation.SuppressLint;
 import android.app.ActionBar.LayoutParams;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Build;
@@ -110,7 +111,9 @@ public class TimePickerDialog extends DialogFragment implements RadialPickerLayo
 
 	private Button mNoDateButton;
 
-	private boolean mDark;
+	private boolean mDark = false;
+
+	private boolean restart = false;
 
     /**
      * The callback interface used to indicate the user is done filling in
@@ -167,7 +170,11 @@ public class TimePickerDialog extends DialogFragment implements RadialPickerLayo
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null && savedInstanceState.containsKey(KEY_HOUR_OF_DAY)
+        setupValues(savedInstanceState);
+    }
+
+	private void setupValues(Bundle savedInstanceState) {
+		if (savedInstanceState != null && savedInstanceState.containsKey(KEY_HOUR_OF_DAY)
                 && savedInstanceState.containsKey(KEY_MINUTE)
                 && savedInstanceState.containsKey(KEY_IS_24_HOUR_VIEW)) {
             mInitialHourOfDay = savedInstanceState.getInt(KEY_HOUR_OF_DAY);
@@ -175,13 +182,27 @@ public class TimePickerDialog extends DialogFragment implements RadialPickerLayo
             mIs24HourMode = savedInstanceState.getBoolean(KEY_IS_24_HOUR_VIEW);
             mInKbMode = savedInstanceState.getBoolean(KEY_IN_KB_MODE);
         }
-    }
+	}
+    
+    
+    
+    
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		restart=true;
+		Bundle saved=new Bundle();
+		onSaveInstanceState(saved);
+		setupValues(saved);
+		getDialog().setContentView(onCreateView(LayoutInflater.from(getDialog().getContext()), null, saved));
+	}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-
+    	if(!restart)
+    		getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+    	restart=false;
         View view = inflater.inflate(R.layout.time_picker_dialog, null);
         KeyboardListener keyboardListener = new KeyboardListener();
         view.findViewById(R.id.time_picker_dialog).setOnKeyListener(keyboardListener);
