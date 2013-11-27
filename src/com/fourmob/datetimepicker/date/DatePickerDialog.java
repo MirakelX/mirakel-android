@@ -328,6 +328,9 @@ public class DatePickerDialog extends DialogFragment implements
 			View header=view.findViewById(R.id.datepicker_header);
 			header.setBackgroundColor(res.getColor(R.color.dialog_dark_gray));
 			
+			if(mDayOfWeekView!=null){
+				mDayOfWeekView.setBackgroundColor(res.getColor(R.color.clock_gray));
+			}
 			
 			mNoDateButton.setTextColor(res.getColor(R.color.clock_white));
 			mDoneButton.setTextColor(res.getColor(R.color.clock_white));

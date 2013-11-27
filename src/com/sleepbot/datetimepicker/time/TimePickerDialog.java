@@ -279,7 +279,8 @@ public class TimePickerDialog extends DialogFragment implements RadialPickerLayo
         	header_background.setBackgroundColor(res.getColor(R.color.dialog_gray));
         	
         	View hairline=view.findViewById(R.id.hairline_timepicker);
-        	hairline.setBackgroundColor(res.getColor(R.color.clock_gray));
+        	if(hairline!=null)
+        		hairline.setBackgroundColor(res.getColor(R.color.clock_gray));
         	
         }
         

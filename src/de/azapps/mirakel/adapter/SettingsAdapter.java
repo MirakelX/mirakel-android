@@ -36,6 +36,8 @@ public class SettingsAdapter extends ArrayAdapter<Header> {
 	@SuppressWarnings("unused")
 	private static final String TAG = "SettingsAdapter";
 	private LayoutInflater mInflater;
+	@SuppressWarnings("unused")
+	private Context ctx;
 
 	public SettingsAdapter(Context context, List<Header> objects) {
 		super(context, 0, objects);
