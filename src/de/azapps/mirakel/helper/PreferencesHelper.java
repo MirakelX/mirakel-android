@@ -217,6 +217,20 @@ public class PreferencesHelper {
 			}
 		});
 
+		final CheckBoxPreference dueColors = (CheckBoxPreference) findPreference("widgetDueColors");
+		dueColors.setChecked(WidgetHelper.dueColors(context, widgetId));
+		dueColors
+				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+					@Override
+					public boolean onPreferenceChange(Preference preference,
+							Object newValue) {
+						WidgetHelper.setDueColors(context, widgetId,
+								(Boolean) newValue);
+						return true;
+					}
+				});
+
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			final Preference widgetTransparency = findPreference("widgetTransparency");
 			final ColorPickerPref widgetFontColor = (ColorPickerPref) findPreference("widgetFontColor");

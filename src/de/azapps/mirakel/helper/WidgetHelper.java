@@ -63,8 +63,16 @@ public class WidgetHelper {
 		}
 		rv.setTextColor(R.id.tasks_row_name,
 				WidgetHelper.getFontColor(context, widgetId));
-		rv.setTextColor(R.id.tasks_row_due,
-				WidgetHelper.getFontColor(context, widgetId));
+		if (getBoolean(context, widgetId, "widgetDueColors", true)) {
+			rv.setTextColor(
+					R.id.tasks_row_due,
+					context.getResources().getColor(
+							TaskHelper.getTaskDueColor(task.getDue(),
+									task.isDone())));
+		} else {
+			rv.setTextColor(R.id.tasks_row_due,
+					WidgetHelper.getFontColor(context, widgetId));
+		}
 		rv.setTextViewText(R.id.tasks_row_name, task.getName());
 		if (task.isDone()) {
 			rv.setTextColor(R.id.tasks_row_name, context.getResources()
@@ -84,7 +92,8 @@ public class WidgetHelper {
 					.getColor(R.color.Black));
 			GradientDrawable drawable = (GradientDrawable) context
 					.getResources().getDrawable(R.drawable.priority_rectangle);
-			drawable.setColor(TaskHelper.getPrioColor(task.getPriority(), context));
+			drawable.setColor(TaskHelper.getPrioColor(task.getPriority(),
+					context));
 			Bitmap bitmap = Bitmap.createBitmap(40, 40, Config.ARGB_8888);
 			Canvas canvas = new Canvas(bitmap);
 			drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -173,6 +182,10 @@ public class WidgetHelper {
 		return getBoolean(context, widgetId, "showDone", false);
 	}
 
+	public static boolean dueColors(Context context, int widgetId) {
+		return getBoolean(context, widgetId, "widgetDueColors", true);
+	}
+
 	public static int getFontColor(Context context, int widgetId) {
 		return getInt(context, widgetId, "widgetFontColor", context
 				.getResources().getColor(android.R.color.white));
@@ -234,6 +247,9 @@ public class WidgetHelper {
 
 	public static void setDark(Context context, int widgetId, boolean dark) {
 		putBool(context, widgetId, "isDark", dark);
+	}
+	public static void setDueColors(Context context, int widgetId, boolean done) {
+		putBool(context, widgetId, "widgetDueColors", done);
 	}
 
 	public static void setFontColor(Context context, int widgetId, int color) {
