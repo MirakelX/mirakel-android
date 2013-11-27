@@ -6,6 +6,7 @@ import java.util.List;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.StateListDrawable;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakelandroid.R;
 
 public class YearPickerView extends ListView implements
@@ -47,6 +49,7 @@ public class YearPickerView extends ListView implements
 	private int getYearFromTextView(TextView textView) {
 		return Integer.valueOf(textView.getText().toString()).intValue();
 	}
+	
 
 	private void init(Context context) {
 		ArrayList<String> years = new ArrayList<String>();
@@ -68,9 +71,10 @@ public class YearPickerView extends ListView implements
 	}
 
 	public void onDateChanged() {
+		Log.d("foo","data changed");
 		this.mAdapter.notifyDataSetChanged();
 		postSetSelectionCentered(this.mController.getSelectedDay().year
-				- this.mController.getMinYear());
+					- this.mController.getMinYear());
 	}
 
 	public void onItemClick(AdapterView<?> parent, View view, int position,
