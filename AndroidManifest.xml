@@ -80,7 +80,9 @@
         android:uiOptions="splitActionBarWhenNarrow" >
         <activity
             android:name="de.azapps.mirakel.static_activities.SplashScreenActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:theme="@style/Theme.SplashScreenDark"
+            android:windowSoftInputMode="stateAlwaysHidden" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

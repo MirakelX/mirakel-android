@@ -148,6 +148,7 @@ public class MainActivity extends ActionBarActivity implements
 		if (darkTheme)
 			setTheme(R.style.AppBaseThemeDARK);
 		super.onCreate(savedInstanceState);
+		
 
 		oldLogo();
 		boolean isTablet = Helpers.isTablet(this);
