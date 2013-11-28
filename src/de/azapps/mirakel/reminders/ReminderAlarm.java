@@ -115,9 +115,6 @@ public class ReminderAlarm extends BroadcastReceiver {
 				context);
 
 		int icon = R.drawable.mirakel;
-		if (preferences.getBoolean("oldLogo", false)) {
-			icon = R.drawable.ic_launcher;
-		}
 		builder.setContentTitle(
 				context.getString(R.string.reminder_notification_title,
 						task.getName()))

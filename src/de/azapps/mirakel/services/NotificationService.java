@@ -134,9 +134,6 @@ public class NotificationService extends Service {
 				true);
 
 		int icon = R.drawable.mirakel;
-		if (preferences.getBoolean("oldLogo", false)) {
-			icon = R.drawable.ic_launcher;
-		}
 		// Build notification
 		NotificationCompat.Builder noti = new NotificationCompat.Builder(this)
 				.setContentTitle(notificationTitle)
