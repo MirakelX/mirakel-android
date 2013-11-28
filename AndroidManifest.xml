@@ -114,6 +114,7 @@
                 <action android:name="android.intent.action.SEND" />
 
                 <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="com.google.android.voicesearch.SELF_NOTE" />
 
                 <data android:mimeType="text/plain" />
                 <data android:mimeType="image/*" />
@@ -251,7 +252,7 @@
             android:name="de.azapps.mirakel.settings.recurring.RecurringActivity"
             android:label="@string/title_activity_credits" >
         </activity>
-         <activity
+        <activity
             android:name="de.azapps.mirakel.settings.accounts.AccountSettingsActivity"
             android:label="@string/title_activity_credits" >
         </activity>
