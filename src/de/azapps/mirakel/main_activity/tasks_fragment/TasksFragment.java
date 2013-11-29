@@ -155,7 +155,9 @@ public class TasksFragment extends Fragment {
 		newTask.setOnEditorActionListener(new OnEditorActionListener() {
 			public boolean onEditorAction(TextView v, int actionId,
 					KeyEvent event) {
-				if (actionId == EditorInfo.IME_ACTION_SEND) {
+				if (actionId == EditorInfo.IME_ACTION_SEND
+						|| (actionId == EditorInfo.IME_NULL && event
+								.getAction() == KeyEvent.ACTION_DOWN)) {
 					newTask(v.getText().toString());
 					v.setText(null);
 				}
