@@ -33,6 +33,7 @@ import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import de.azapps.mirakel.Mirakel;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -45,6 +46,7 @@ public class FileUtils {
 	private static final String TAG = "FileUtils";
 	public static final int MEDIA_TYPE_IMAGE = 1;
 	public static final int MEDIA_TYPE_VIDEO = 2;
+	public static final int MEDIA_TYPE_AUDIO = 3;
 
 	public static String getPath(Context context, Uri uri)
 			throws URISyntaxException {
@@ -80,8 +82,8 @@ public class FileUtils {
 	 */
 	@SuppressWarnings("resource")
 	public static void copyFile(File src, File dst) throws IOException {
-		if(!src.canRead()||!dst.canWrite()){
-			Log.e(TAG,"cannot copy file");
+		if (!src.canRead() || !dst.canWrite()) {
+			Log.e(TAG, "cannot copy file");
 			return;
 		}
 		FileChannel inChannel = new FileInputStream(src).getChannel();
@@ -181,37 +183,64 @@ public class FileUtils {
 	public static File getOutputMediaFile(int type) {
 		// To be safe, you should check that the SDCard is mounted
 		// using Environment.getExternalStorageState() before doing this.
-	
-		File mediaStorageDir = new File(
-				Environment
-						.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-				"Mirakel");
-		// This location works best if you want the created images to be shared
-		// between applications and persist after your app has been uninstalled.
-	
-		// Create the storage directory if it does not exist
-		if (!mediaStorageDir.exists()) {
-			if (!mediaStorageDir.mkdirs()) {
-				Log.d("MyCameraApp", "failed to create directory");
-				return null;
-			}
-		}
-	
+
+		File mediaStorageDir = FileUtils.getMediaStorageDir();
+
 		// Create a media file name
 		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",
 				Locale.getDefault()).format(new Date());
 		File mediaFile;
-		if (type == MEDIA_TYPE_IMAGE) {
+		switch (type) {
+		case MEDIA_TYPE_IMAGE:
 			mediaFile = new File(mediaStorageDir.getPath() + File.separator
 					+ "IMG_" + timeStamp + ".jpg");
-		} else if (type == MEDIA_TYPE_VIDEO) {
+			break;
+		case MEDIA_TYPE_VIDEO:
 			mediaFile = new File(mediaStorageDir.getPath() + File.separator
 					+ "VID_" + timeStamp + ".mp4");
-		} else {
+			break;
+		case MEDIA_TYPE_AUDIO:
+			mediaFile = new File(mediaStorageDir.getPath() + File.separator
+					+ "AUD_" + timeStamp + ".mp3");
+			break;
+		default:
 			return null;
 		}
-	
+
 		return mediaFile;
+	}
+
+	/**
+	 * Returns the directory on the SD-Card
+	 * 
+	 * @return
+	 */
+	public static File getMediaStorageDir() {
+		File mediaStorageDir = new File(
+				Environment
+						.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+				"Mirakel");
+		// Create the storage directory if it does not exist
+		if (!mediaStorageDir.exists()) {
+			if (!mediaStorageDir.mkdirs()) {
+				return null;
+			}
+		}
+		return mediaStorageDir;
+	}
+
+	/**
+	 * Returns the Mirakel dir in /data/data/
+	 * 
+	 * @return
+	 */
+	public static String getMirakelDir() {
+		if (Mirakel.APK_NAME == null)// wtf
+			Mirakel.APK_NAME = "de.azapps.mirakelandroid";
+		if (Mirakel.MIRAKEL_DIR == null)
+			Mirakel.MIRAKEL_DIR = Environment.getDataDirectory() + "/data/"
+					+ Mirakel.APK_NAME + "/";
+		return Mirakel.MIRAKEL_DIR;
 	}
 
 }

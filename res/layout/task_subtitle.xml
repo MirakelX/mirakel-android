@@ -41,11 +41,21 @@
             style="@style/taskViewCaption"
             android:layout_width="wrap_content"
             android:layout_height="42dp"
-            android:gravity="center_vertical"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
+            android:gravity="center_vertical"
             android:paddingRight="@dimen/task_padding"
             android:textIsSelectable="false" />
+
+        <ImageButton
+            android:id="@+id/task_subtitle_audio_button"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="100dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/edit"
+            android:src="@android:drawable/ic_btn_speak_now" />
 
         <ImageButton
             android:id="@+id/task_subtitle_camera_button"

@@ -24,6 +24,7 @@ import org.acra.ACRA;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -33,11 +34,11 @@ import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Build;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
 import de.azapps.mirakel.helper.Helpers;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.file.FileMirakel;
@@ -77,18 +78,10 @@ public class Mirakel extends Application {
 	private static final String TAG = "Mirakel";
 
 	private static SQLiteOpenHelper openHelper;
-	private static String MIRAKEL_DIR;
+	public static String MIRAKEL_DIR;
 	public static int GRAVITY_LEFT, GRAVITY_RIGHT;
 
-	public static String getMirakelDir() {
-		if(Mirakel.APK_NAME==null)//wtf
-			APK_NAME="de.azapps.mirakelandroid";
-		if (MIRAKEL_DIR == null)
-			MIRAKEL_DIR = Environment.getDataDirectory() + "/data/"
-					+ Mirakel.APK_NAME + "/";
-		return MIRAKEL_DIR;
-	}
-
+	@SuppressLint("InlinedApi")
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -131,6 +124,7 @@ public class Mirakel extends Application {
 		Recurring.init(ctx);
 		Helpers.init(ctx);
 		AccountMirakel.init(ctx);
+		MirakelPreferences.init(ctx);
 
 		// Kill Notification Service if Notification disabled
 		SharedPreferences settings = PreferenceManager
