@@ -18,7 +18,7 @@ import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakelandroid.R;
 
 public class YearPickerView extends ListView implements
-		AdapterView.OnItemClickListener, DatePickerDialog.OnDateChangedListener {
+		AdapterView.OnItemClickListener, DatePicker.OnDateChangedListener {
 	private YearAdapter mAdapter;
 	private int mChildSize;
 	private final DatePickerController mController;

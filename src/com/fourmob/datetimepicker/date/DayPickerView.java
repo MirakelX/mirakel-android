@@ -9,7 +9,7 @@ import android.view.ViewConfiguration;
 import android.widget.AbsListView;
 import android.widget.ListView;
 
-public class DayPickerView extends ListView implements AbsListView.OnScrollListener, DatePickerDialog.OnDateChangedListener {
+public class DayPickerView extends ListView implements AbsListView.OnScrollListener, DatePicker.OnDateChangedListener {
 	public static int LIST_TOP_OFFSET = -1;
 	protected SimpleMonthAdapter mAdapter;
 	protected Context mContext;

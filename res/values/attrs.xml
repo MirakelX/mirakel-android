@@ -33,5 +33,17 @@
         <attr name="barWidth" format="dimension" />
         <attr name="barLength" format="dimension" />
     </declare-styleable>
+    <declare-styleable name="DatePicker">
+        <attr name="maxYear" format="integer" />
+        <attr name="minYear" format="integer" />
+        <attr name="initialYear" format="integer" />
+        <attr name="initialMonth" format="integer" />
+        <attr name="initialDay" format="integer" />
+    </declare-styleable>
+    <declare-styleable name="TimePicker">
+        <attr name="initialHour" format="integer" />
+        <attr name="initialMinute" format="integer" />
+        <attr name="is24HourMode" format="boolean" />
+    </declare-styleable>
 
 </resources>

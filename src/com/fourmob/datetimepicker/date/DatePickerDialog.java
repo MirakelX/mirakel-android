@@ -1,86 +1,44 @@
 package com.fourmob.datetimepicker.date;
 
 import java.text.DateFormatSymbols;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Locale;
 
 import android.app.Activity;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.os.SystemClock;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.AlphaAnimation;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.ViewAnimator;
 
 import com.fourmob.datetimepicker.Utils;
-import com.nineoldandroids.animation.ObjectAnimator;
+import com.fourmob.datetimepicker.date.DatePicker.OnDateSetListener;
 
 import de.azapps.mirakelandroid.R;
 
-public class DatePickerDialog extends DialogFragment implements
-		View.OnClickListener, DatePickerController {
+public class DatePickerDialog extends DialogFragment {
 	// https://code.google.com/p/android/issues/detail?id=13050
 	private static final int MAX_YEAR = 2037;
 	private static final int MIN_YEAR = 1902;
 
-	private static final int VIEW_DATE_PICKER_YEAR = 1;
-	private static final int VIEW_DATE_PICKER_MONTH_DAY = 0;
-	private static SimpleDateFormat DAY_FORMAT = new SimpleDateFormat("dd",
-			Locale.getDefault());
-	private static SimpleDateFormat YEAR_FORMAT = new SimpleDateFormat("yyyy",
-			Locale.getDefault());
-	private ViewAnimator mAnimator;
+
 	private final Calendar mCalendar = Calendar.getInstance();
-	private OnDateSetListener mCallBack;
 	private int mCurrentView = -1;
-	private TextView mDayOfWeekView;
-	private String mDayPickerDescription;
 	private DayPickerView mDayPickerView;
-	private boolean mDelayAnimation = true;
-	private Button mDoneButton;
-	private long mLastVibrate;
-	private HashSet<OnDateChangedListener> mListeners = new HashSet<OnDateChangedListener>();
 	private int mMaxYear = MAX_YEAR;
 	private int mMinYear = MIN_YEAR;
-	private LinearLayout mMonthAndDayView;
-	private TextView mSelectedDayTextView;
-	private TextView mSelectedMonthTextView;
-	private Vibrator mVibrator;
 	private int mWeekStart = this.mCalendar.getFirstDayOfWeek();
-	private String mYearPickerDescription;
 	private YearPickerView mYearPickerView;
-	private TextView mYearView;
-	private DateFormatSymbols dateformartsymbols = new DateFormatSymbols();
+	private DatePicker mDatePicker;
+	private OnDateSetListener mCallback;
 
-	private boolean mVibrate = true;
-	private Button mNoDateButton;
-	private boolean mDark = false;
-	private boolean restart=false;
-	private boolean yearSelected;
 
-	private void adjustDayInMonthIfNeeded(int month, int year) {
-		int currentDay = this.mCalendar.get(Calendar.DAY_OF_MONTH);
-		int day = Utils.getDaysInMonth(month, year);
-		if (currentDay > day)
-			this.mCalendar.set(Calendar.DAY_OF_MONTH, day);
-	}
 
 	public static DatePickerDialog newInstance(
 			OnDateSetListener onDateSetListener, int year, int month, int day,
@@ -99,133 +57,46 @@ public class DatePickerDialog extends DialogFragment implements
 	
 
 	public void setVibrate(boolean vibrate) {
-		this.mVibrate = vibrate;
 	}
 
-	private void setCurrentView(int currentView) {
-		setCurrentView(currentView, false);
-	}
 
-	private void setCurrentView(int currentView, boolean forceRefresh) {
-		long timeInMillis = this.mCalendar.getTimeInMillis();
-		switch (currentView) {
-		case VIEW_DATE_PICKER_MONTH_DAY:
-			ObjectAnimator monthDayAnim = Utils.getPulseAnimator(
-					this.mMonthAndDayView, 0.9F, 1.05F);
-			if (this.mDelayAnimation) {
-				monthDayAnim.setStartDelay(500L);
-				this.mDelayAnimation = false;
-			}
-			this.mDayPickerView.onDateChanged();
-			if (this.mCurrentView != currentView || forceRefresh) {
-				this.mMonthAndDayView.setSelected(true);
-				this.mYearView.setSelected(false);
-				this.mAnimator.setDisplayedChild(VIEW_DATE_PICKER_MONTH_DAY);
-				this.mCurrentView = currentView;
-			}
-			monthDayAnim.start();
-			String monthDayDesc = DateUtils.formatDateTime(getActivity(),
-					timeInMillis, DateUtils.FORMAT_SHOW_DATE);
-			this.mAnimator.setContentDescription(this.mDayPickerDescription
-					+ ": " + monthDayDesc);
-			return;
-		case VIEW_DATE_PICKER_YEAR:
-			ObjectAnimator yearAnim = Utils.getPulseAnimator(this.mYearView,
-					0.85F, 1.1F);
-			if (this.mDelayAnimation) {
-				yearAnim.setStartDelay(500L);
-				this.mDelayAnimation = false;
-			}
-			this.mYearPickerView.onDateChanged();
-			if (this.mCurrentView != currentView || forceRefresh) {
-				this.mMonthAndDayView.setSelected(false);
-				this.mYearView.setSelected(true);
-				this.mAnimator.setDisplayedChild(VIEW_DATE_PICKER_YEAR);
-				this.mCurrentView = currentView;
-			}
-			yearAnim.start();
-			String dayDesc = YEAR_FORMAT.format(Long.valueOf(timeInMillis));
-			this.mAnimator.setContentDescription(this.mYearPickerDescription
-					+ ": " + dayDesc);
-		}
-
-	}
-
-	private void updateDisplay() {
-		if (this.mDayOfWeekView != null) {
-			this.mCalendar.setFirstDayOfWeek(mWeekStart);
-			this.mDayOfWeekView
-					.setText(dateformartsymbols.getWeekdays()[this.mCalendar
-							.get(Calendar.DAY_OF_WEEK)].toUpperCase(Locale
-							.getDefault()));
-		}
-
-		this.mSelectedMonthTextView
-				.setText(dateformartsymbols.getMonths()[this.mCalendar
-						.get(Calendar.MONTH)].toUpperCase(Locale.getDefault()));
-		this.mSelectedDayTextView.setText(DAY_FORMAT.format(this.mCalendar
-				.getTime()));
-		this.mYearView.setText(YEAR_FORMAT.format(this.mCalendar.getTime()));
-		long timeInMillis = this.mCalendar.getTimeInMillis();
-		String desc = DateUtils.formatDateTime(getActivity(), timeInMillis, 24);
-		this.mMonthAndDayView.setContentDescription(desc);
-	}
-
-	private void updatePickers() {
-		Iterator<OnDateChangedListener> it = this.mListeners.iterator();
-		while (it.hasNext())
-			it.next().onDateChanged();
-	}
-
-	public int getFirstDayOfWeek() {
-		return this.mWeekStart;
-	}
-
-	public int getMaxYear() {
-		return this.mMaxYear;
-	}
-
-	public int getMinYear() {
-		return this.mMinYear;
-	}
-
-	public SimpleMonthAdapter.CalendarDay getSelectedDay() {
-		return new SimpleMonthAdapter.CalendarDay(this.mCalendar);
-	}
-
-	public void initialize(OnDateSetListener onDateSetListener, int year,
+	public void initialize(final OnDateSetListener onDateSetListener, int year,
 			int month, int day, boolean vibrate, boolean dark) {
 		if (year > MAX_YEAR)
 			throw new IllegalArgumentException("year end must < " + MAX_YEAR);
 		if (year < MIN_YEAR)
 			throw new IllegalArgumentException("year end must > " + MIN_YEAR);
-		this.mCallBack = onDateSetListener;
 		this.mCalendar.set(Calendar.YEAR, year);
 		this.mCalendar.set(Calendar.MONTH, month);
 		this.mCalendar.set(Calendar.DAY_OF_MONTH, day);
-		this.mVibrate = vibrate;
-		this.mDark = dark;
-
-		// mDialog.setBackgroundColor(getResources().getColor(true?R.color.dialog_gray:R.color.clock_white));
+		mCallback=new OnDateSetListener() {
+			
+			@Override
+			public void onNoDateSet() {
+				if(onDateSetListener!=null)
+					onDateSetListener.onNoDateSet();
+				dismiss();
+				
+			}
+			
+			@Override
+			public void onDateSet(DatePicker datePickerDialog, int year, int month,
+					int day) {
+				if(onDateSetListener!=null)
+					onDateSetListener.onDateSet(datePickerDialog, year, month, day);
+				dismiss();
+				
+			}
+		};
 	}
 
-	public void onClick(View view) {
-		tryVibrate();
-		if (view.getId() == R.id.date_picker_year){
-			setCurrentView(VIEW_DATE_PICKER_YEAR);
-			yearSelected=true;
-		}else if (view.getId() == R.id.date_picker_month_and_day){
-			setCurrentView(VIEW_DATE_PICKER_MONTH_DAY);
-			yearSelected=false;
-		}
-	}
+	
 
 	public void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
 		Activity activity = getActivity();
 		activity.getWindow().setSoftInputMode(
 				WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-		this.mVibrator = ((Vibrator) activity.getSystemService("vibrator"));
 		if (bundle != null) {
 			this.mCalendar.set(Calendar.YEAR, bundle.getInt("year"));
 			this.mCalendar.set(Calendar.MONTH, bundle.getInt("month"));
@@ -236,9 +107,11 @@ public class DatePickerDialog extends DialogFragment implements
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
+		if(mDatePicker!=null){
+			mDatePicker.invalidate();
+		}
 		//on display rotate reload dialog
-		restart=true;
-		final Parcelable yearState = mYearPickerView.onSaveInstanceState();
+		/*final Parcelable yearState = mYearPickerView.onSaveInstanceState();
 		final Parcelable monthState = mDayPickerView.onSaveInstanceState();
 		getDialog().setContentView(onCreateView(LayoutInflater.from(getDialog().getContext()), null, null));
 		if(yearSelected)
@@ -256,134 +129,24 @@ public class DatePickerDialog extends DialogFragment implements
 			public void run() {
 				mDayPickerView.onRestoreInstanceState(monthState);
 			}
-		}, 100);
+		}, 100);*/
 	}
 
 	public View onCreateView(LayoutInflater layoutInflater, ViewGroup parent,
 			Bundle bundle) {
 		Log.d("DatePickerDialog", "onCreateView: ");
-		if(!restart)
+		try {
 			getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-		restart=false;
-		mDark=PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext()).getBoolean("DarkTheme", false);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		View view = layoutInflater.inflate(R.layout.date_picker_dialog, null);
-		this.mDayOfWeekView = ((TextView) view
-				.findViewById(R.id.date_picker_header));
-		this.mMonthAndDayView = ((LinearLayout) view
-				.findViewById(R.id.date_picker_month_and_day));
-		this.mMonthAndDayView.setOnClickListener(this);
-		this.mSelectedMonthTextView = ((TextView) view
-				.findViewById(R.id.date_picker_month));
-		this.mSelectedMonthTextView.setTextColor(getResources()
-				.getColorStateList(
-						mDark ? R.color.date_picker_selector_dark
-								: R.color.date_picker_selector));
-		this.mSelectedDayTextView = ((TextView) view
-				.findViewById(R.id.date_picker_day));
-		this.mSelectedDayTextView.setTextColor(getResources()
-				.getColorStateList(
-						mDark ? R.color.date_picker_selector_dark
-								: R.color.date_picker_selector));
-		this.mYearView = ((TextView) view.findViewById(R.id.date_picker_year));
-		this.mYearView.setTextColor(getResources().getColorStateList(
-				mDark ? R.color.date_picker_selector_dark
-						: R.color.date_picker_selector));
-		this.mYearView.setOnClickListener(this);
-		int listPosition = -1;
-		int currentView = VIEW_DATE_PICKER_MONTH_DAY;
-		int listPositionOffset = 0;
-		if (bundle != null) {
-			this.mWeekStart = bundle.getInt("week_start");
-			this.mMinYear = bundle.getInt("year_start");
-			this.mMaxYear = bundle.getInt("year_end");
-			currentView = bundle.getInt("current_view");
-			listPosition = bundle.getInt("list_position");
-			listPositionOffset = bundle.getInt("list_position_offset");
-		}
-		Activity activity = getActivity();
-		this.mDayPickerView = new DayPickerView(activity, this);
-		this.mYearPickerView = new YearPickerView(activity, this);
-		Resources resources = getResources();
-		this.mDayPickerDescription = resources
-				.getString(R.string.day_picker_description);
-		// this.mSelectDay = resources.getString(R.string.select_day);
-		this.mYearPickerDescription = resources
-				.getString(R.string.year_picker_description);
-		// this.mSelectYear = resources.getString(R.string.select_year);
-		this.mAnimator = ((ViewAnimator) view.findViewById(R.id.animator));
-		this.mAnimator.addView(this.mDayPickerView);
-		this.mAnimator.addView(this.mYearPickerView);
-		// this.mAnimator.setDateMillis(this.mCalendar.getTimeInMillis());
-		AlphaAnimation inAlphaAnimation = new AlphaAnimation(0.0F, 1.0F);
-		inAlphaAnimation.setDuration(300L);
-		this.mAnimator.setInAnimation(inAlphaAnimation);
-		AlphaAnimation outAlphaAnimation = new AlphaAnimation(1.0F, 0.0F);
-		outAlphaAnimation.setDuration(300L);
-		this.mAnimator.setOutAnimation(outAlphaAnimation);
-		this.mDoneButton = ((Button) view.findViewById(R.id.done));
-		this.mDoneButton.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View view) {
-				DatePickerDialog.this.tryVibrate();
-				if (DatePickerDialog.this.mCallBack != null)
-					DatePickerDialog.this.mCallBack
-							.onDateSet(DatePickerDialog.this,
-									DatePickerDialog.this.mCalendar
-											.get(Calendar.YEAR),
-									DatePickerDialog.this.mCalendar
-											.get(Calendar.MONTH),
-									DatePickerDialog.this.mCalendar
-											.get(Calendar.DAY_OF_MONTH));
-				DatePickerDialog.this.dismiss();
-			}
-		});
-		this.mNoDateButton = ((Button) view.findViewById(R.id.dismiss));
-		this.mNoDateButton.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View view) {
-				DatePickerDialog.this.tryVibrate();
-				if (DatePickerDialog.this.mCallBack != null)
-					DatePickerDialog.this.mCallBack.onNoDateSet();
-				DatePickerDialog.this.dismiss();
-			}
-		});
-		updateDisplay();
-		setCurrentView(currentView, true);
-
-		if (listPosition != -1) {
-			if (currentView == VIEW_DATE_PICKER_MONTH_DAY) {
-				this.mDayPickerView.postSetSelection(listPosition);
-			}
-			if (currentView == VIEW_DATE_PICKER_YEAR) {
-				this.mYearPickerView.postSetSelectionFromTop(listPosition,
-						listPositionOffset);
-			}
-		}
-		Resources res = getResources();
-		if(mDark){
-			View dialog=view.findViewById(R.id.datepicker_dialog);
-			dialog.setBackgroundColor(res.getColor(R.color.dialog_gray));
-			View header=view.findViewById(R.id.datepicker_header);
-			header.setBackgroundColor(res.getColor(R.color.dialog_dark_gray));
-			
-			if(mDayOfWeekView!=null){
-				mDayOfWeekView.setBackgroundColor(res.getColor(R.color.clock_gray));
-			}
-			
-			mNoDateButton.setTextColor(res.getColor(R.color.clock_white));
-			mDoneButton.setTextColor(res.getColor(R.color.clock_white));
-		}else{
-			View header=view.findViewById(R.id.datepicker_header);
-			header.setBackgroundColor(res.getColor(R.color.white));
-		}
+		mDatePicker =(DatePicker) view.findViewById(R.id.date_picker);		
+		mDatePicker.setOnDateSetListener(mCallback);
 		return view;
 	}
 
-	public void onDayOfMonthSelected(int year, int month, int day) {
-		this.mCalendar.set(Calendar.YEAR, year);
-		this.mCalendar.set(Calendar.MONTH, month);
-		this.mCalendar.set(Calendar.DAY_OF_MONTH, day);
-		updatePickers();
-		updateDisplay();
-	}
 
 	public void onSaveInstanceState(Bundle bundle) {
 		super.onSaveInstanceState(bundle);
@@ -406,66 +169,5 @@ public class DatePickerDialog extends DialogFragment implements
 		}
 	}
 
-	public void onYearSelected(int year) {
-		adjustDayInMonthIfNeeded(this.mCalendar.get(Calendar.MONTH), year);
-		this.mCalendar.set(Calendar.YEAR, year);
-		updatePickers();
-		setCurrentView(0);
-		updateDisplay();
-	}
 
-	public void registerOnDateChangedListener(
-			OnDateChangedListener onDateChangedListener) {
-		this.mListeners.add(onDateChangedListener);
-	}
-
-	public void setFirstDayOfWeek(int weekStart) {
-		if ((weekStart < 1) || (weekStart > 7))
-			throw new IllegalArgumentException(
-					"Value must be between Calendar.SUNDAY and Calendar.SATURDAY");
-		this.mWeekStart = weekStart;
-		if (this.mDayPickerView != null)
-			this.mDayPickerView.onChange();
-	}
-
-	public void setOnDateSetListener(OnDateSetListener onDateSetListener) {
-		this.mCallBack = onDateSetListener;
-	}
-
-	public void setYearRange(int minYear, int maxYear) {
-		if (maxYear <= minYear)
-			throw new IllegalArgumentException(
-					"Year end must be larger than year start");
-		if (maxYear > MAX_YEAR)
-			throw new IllegalArgumentException("max year end must < "
-					+ MAX_YEAR);
-		if (minYear < MIN_YEAR)
-			throw new IllegalArgumentException("min year end must > "
-					+ MIN_YEAR);
-		this.mMinYear = minYear;
-		this.mMaxYear = maxYear;
-		if (this.mDayPickerView != null)
-			this.mDayPickerView.onChange();
-	}
-
-	public void tryVibrate() {
-		if (this.mVibrator != null && this.mVibrate) {
-			long timeInMillis = SystemClock.uptimeMillis();
-			if (timeInMillis - this.mLastVibrate >= 125L) {
-				this.mVibrator.vibrate(5L);
-				this.mLastVibrate = timeInMillis;
-			}
-		}
-	}
-
-	static abstract interface OnDateChangedListener {
-		public abstract void onDateChanged();
-	}
-
-	public static abstract interface OnDateSetListener {
-		public abstract void onDateSet(DatePickerDialog datePickerDialog,
-				int year, int month, int day);
-
-		public abstract void onNoDateSet();
-	}
 }
