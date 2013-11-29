@@ -71,10 +71,6 @@ public class TimePickerDialog extends DialogFragment  {
 
 	private TimePicker mTimePicker;
 
-	private boolean mIs24HourMode;
-
-	private boolean mInKbMode;
-	private ArrayList<Integer> mTypedTimes;
 	private OnTimeSetListener mCallback;
 	/**
 	 * The callback interface used to indicate the user is done filling in the
@@ -101,8 +97,6 @@ public class TimePickerDialog extends DialogFragment  {
 
 	public void initialize(final OnTimeSetListener callback, int hourOfDay,
 			int minute, boolean is24HourMode, boolean dark) {
-		mIs24HourMode = is24HourMode;
-		mInKbMode = false;
 		mCallback=new OnTimeSetListener() {
 			
 			@Override
@@ -126,10 +120,6 @@ public class TimePickerDialog extends DialogFragment  {
 		mCallback=callback;
 	}
 
-	public void setStartTime(int hourOfDay, int minute) {
-
-		mInKbMode = false;
-	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -144,8 +134,8 @@ public class TimePickerDialog extends DialogFragment  {
 				&& savedInstanceState.containsKey(KEY_IS_24_HOUR_VIEW)) {
 //			mInitialHourOfDay = savedInstanceState.getInt(KEY_HOUR_OF_DAY);
 //			mInitialMinute = savedInstanceState.getInt(KEY_MINUTE);
-			mIs24HourMode = savedInstanceState.getBoolean(KEY_IS_24_HOUR_VIEW);
-			mInKbMode = savedInstanceState.getBoolean(KEY_IN_KB_MODE);
+//			mIs24HourMode = savedInstanceState.getBoolean(KEY_IS_24_HOUR_VIEW);
+//			mInKbMode = savedInstanceState.getBoolean(KEY_IN_KB_MODE);
 		}
 	}
 
@@ -172,6 +162,7 @@ public class TimePickerDialog extends DialogFragment  {
 		View view = inflater.inflate(R.layout.time_picker_dialog, null);
 		mTimePicker=(TimePicker) view.findViewById(R.id.time_picker);
 		mTimePicker.setOnTimeSetListener(mCallback);
+		mTimePicker.setOnKeyListener(mTimePicker.getNewKeyboardListner(getDialog()));
 		return view;
 	}
 

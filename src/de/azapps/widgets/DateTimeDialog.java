@@ -4,6 +4,7 @@ import com.fourmob.datetimepicker.date.DatePicker;
 import com.fourmob.datetimepicker.date.DatePicker.OnDateSetListener;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePicker;
+import com.sleepbot.datetimepicker.time.TimePicker.KeyboardListener;
 import com.sleepbot.datetimepicker.time.TimePicker.OnTimeSetListener;
 
 import de.azapps.mirakelandroid.R;
@@ -90,7 +91,7 @@ public class DateTimeDialog extends DialogFragment  {
 		dp=(DatePicker)v.findViewById(R.id.date_picker);
 		tp=(TimePicker)v.findViewById(R.id.time_picker);
 		tp.set24HourMode(true);
-		
+		tp.setOnKeyListener(tp.getNewKeyboardListner(getDialog()));
 		tp.setOnTimeSetListener(new OnTimeSetListener() {
 			
 			@Override

@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import com.fourmob.datetimepicker.Utils;
+import com.sleepbot.datetimepicker.time.TimePicker.KeyboardListener;
 
 import de.azapps.mirakelandroid.R;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -91,6 +93,7 @@ RadialPickerLayout.OnValueSelectedListener{
 	private Button mNoDateButton;
 
 	private boolean mDark = false;
+	public Dialog mDialog;
 	public TimePicker(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		ctx=context;
@@ -111,7 +114,7 @@ RadialPickerLayout.OnValueSelectedListener{
 
 	
 	private void initLayout() {
-		KeyboardListener keyboardListener = new KeyboardListener();
+		KeyboardListener keyboardListener = new KeyboardListener(null);
 		layout.findViewById(R.id.time_picker_dialog).setOnKeyListener(
 				keyboardListener);
 
@@ -433,7 +436,8 @@ RadialPickerLayout.OnValueSelectedListener{
 	private boolean processKeyUp(int keyCode) {
 		if (keyCode == KeyEvent.KEYCODE_ESCAPE
 				|| keyCode == KeyEvent.KEYCODE_BACK) {
-//			dismiss();
+			if(mDialog!=null)
+				mDialog.dismiss();
 			return true;
 		} else if (keyCode == KeyEvent.KEYCODE_TAB) {
 			if (mInKbMode) {
@@ -453,7 +457,8 @@ RadialPickerLayout.OnValueSelectedListener{
 				mCallback.onTimeSet(mTimePicker, mTimePicker.getHours(),
 						mTimePicker.getMinutes());
 			}
-//			dismiss();
+			if(mDialog!=null)
+				mDialog.dismiss();
 			return true;
 		} else if (keyCode == KeyEvent.KEYCODE_DEL) {
 			if (mInKbMode) {
@@ -962,6 +967,10 @@ RadialPickerLayout.OnValueSelectedListener{
 	}
 
 	public class KeyboardListener implements OnKeyListener {
+		public KeyboardListener(Dialog d){
+			mDialog=d;
+		}
+		
 		@Override
 		public boolean onKey(View v, int keyCode, KeyEvent event) {
 			if (event.getAction() == KeyEvent.ACTION_UP) {
@@ -1013,6 +1022,11 @@ RadialPickerLayout.OnValueSelectedListener{
 			mAmPmTextView.setOnKeyListener(keyboardListener);
 		if(mTimePicker!=null)
 			mTimePicker.setOnKeyListener(keyboardListener);
+	}
+
+
+	public KeyboardListener getNewKeyboardListner(Dialog dialog) {
+		return new KeyboardListener(dialog);
 	}
 
 }
