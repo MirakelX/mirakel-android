@@ -305,27 +305,21 @@ public class TasksFragment extends Fragment {
 		}
 
 		ListMirakel list = main.getCurrentList();
-		try {
-			Task task = Semantic.createTask(name, list,
-					main.preferences.getBoolean("semanticNewTask", true),
-					getActivity());
+		Task task = Semantic.createTask(name, list,
+				main.preferences.getBoolean("semanticNewTask", true),
+				getActivity());
 
-			adapter.addToHead(task);
-			values.add(0, task);
-			adapter.notifyDataSetChanged();
+		adapter.addToHead(task);
+		values.add(0, task);
+		adapter.notifyDataSetChanged();
 
-			main.getListFragment().update();
-			if (!PreferenceManager.getDefaultSharedPreferences(main)
-					.getBoolean("hideKeyboard", true)) {
-				focusNew(true);
-			}
-			main.updateShare();
-			return true;
-		} catch (Semantic.NoListsException e) {
-			Toast.makeText(main, R.string.no_lists, Toast.LENGTH_LONG).show();
-			return false;
+		main.getListFragment().update();
+		if (!PreferenceManager.getDefaultSharedPreferences(main).getBoolean(
+				"hideKeyboard", true)) {
+			focusNew(true);
 		}
-
+		main.updateShare();
+		return true;
 	}
 
 	public void updateList() {
@@ -635,6 +629,7 @@ public class TasksFragment extends Fragment {
 			});
 		}
 	}
+
 	public View getFragmentView() {
 		return view;
 	}

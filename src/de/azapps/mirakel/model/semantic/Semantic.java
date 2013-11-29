@@ -163,7 +163,7 @@ public class Semantic extends SemanticBase {
 	}
 
 	public static Task createTask(String taskName, ListMirakel currentList,
-			boolean useSemantic, Context context) throws NoListsException {
+			boolean useSemantic, Context context) {
 		GregorianCalendar due = null;
 		int prio = 0;
 		if (currentList instanceof SearchList) {
@@ -224,7 +224,7 @@ public class Semantic extends SemanticBase {
 					}
 				}
 			} catch (NullPointerException e) {
-				throw new NoListsException();
+				currentList = ListMirakel.safeFirst(context);
 			}
 		}
 
@@ -259,14 +259,6 @@ public class Semantic extends SemanticBase {
 		if (currentList == null) {
 			currentList = ListMirakel.safeFirst(context);
 		}
-		if (currentList == null) {
-			throw new NoListsException();
-		}
 		return Task.newTask(taskName, currentList, due, prio);
-	}
-
-	public static class NoListsException extends Exception {
-		private static final long serialVersionUID = 1380190481;
-
 	}
 }
