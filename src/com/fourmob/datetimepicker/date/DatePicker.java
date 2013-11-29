@@ -453,94 +453,70 @@ public class DatePicker extends LinearLayout implements View.OnClickListener, Da
 			}
 		}, 100);
 	}
+	private static final String YEAR_KEY="year";
+	private static final String MONTH_KEY="month";
+	private static final String DAY_KEY="day";
+	private static final String WEEK_START_KEY="week_start";
+	private static final String YEAR_START_KEY="minYear";
+	private static final String YEAR_END_KEY="maxYear";
+	private static final String CURRENT_VIEW_KEY="currentView";
+	private static final String MOST_VISIBLE_POSITION_KEY="mostVisiblePosition";
+	private static final String LIST_OFFSET_KEY="listOffset"; 
+	
 	
 	 @Override
 	  public Parcelable onSaveInstanceState() {
 	    //begin boilerplate code that allows parent classes to save state
 	    Parcelable superState = super.onSaveInstanceState();
-
-	    SavedState ss = new SavedState(superState);
 	    //end
+	    Bundle b=new Bundle();
+	    b.putInt(YEAR_KEY, this.mCalendar.get(Calendar.YEAR));
+	    b.putInt(MONTH_KEY, this.mCalendar.get(Calendar.MONTH));
+	    b.putInt(DAY_KEY, this.mCalendar.get(Calendar.DAY_OF_MONTH));
+	    b.putInt(WEEK_START_KEY, mWeekStart);
+	    b.putInt(YEAR_START_KEY, mMinYear);
+	    b.putInt(YEAR_END_KEY, mMaxYear);
+	    b.putInt(CURRENT_VIEW_KEY, mCurrentView);
 
-		ss.year=this.mCalendar.get(Calendar.YEAR);
-		ss.month=this.mCalendar.get(Calendar.MONTH);
-		ss.day=this.mCalendar.get(Calendar.DAY_OF_MONTH);
-		ss.week_start= this.mWeekStart;
-		ss.year_start=this.mMinYear;
-		ss.year_end=this.mMaxYear;
-		ss.current_view=this.mCurrentView;
 		int mostVisiblePosition = -1;
 		if (this.mCurrentView == 0)
 			mostVisiblePosition = this.mDayPickerView.getMostVisiblePosition();
-		ss.list_position= mostVisiblePosition;
+//		ss.list_position= mostVisiblePosition;
 		if (this.mCurrentView == 1) {
 			mostVisiblePosition = this.mYearPickerView
 					.getFirstVisiblePosition();
-			ss.list_position_offset=
-					this.mYearPickerView.getFirstPositionOffset();
+			b.putInt(LIST_OFFSET_KEY, mYearPickerView.getFirstPositionOffset());
+//			ss.list_position_offset=
+//					this.mYearPickerView.getFirstPositionOffset();
 		}
+		b.putInt(MOST_VISIBLE_POSITION_KEY, mostVisiblePosition);
 
-	    return ss;
+	    return b;
 	  }
 
 	  @Override
 	  public void onRestoreInstanceState(Parcelable state) {
 	    //begin boilerplate code so parent classes can restore state
-	    if(!(state instanceof SavedState)) {
+	    if(!(state instanceof Bundle)) {
 	      super.onRestoreInstanceState(state);
 	      return;
 	    }
-
-	    SavedState ss = (SavedState)state;
-	    super.onRestoreInstanceState(ss.getSuperState());
 	    //end
+	    Bundle b=(Bundle) state;
 
-	    setYear(ss.year);
-	    setMonth(ss.month);
-	    setDay(ss.day);
+	    setYear(b.getInt(YEAR_KEY));
+	    setMonth(b.getInt(MONTH_KEY));
+	    setDay(b.getInt(DAY_KEY));
 	    
-	    mWeekStart=ss.week_start;
-	    setMinYear(ss.year_start);
-	    setMaxYear(ss.year_end);
-	    setCurrentView(ss.current_view);
-	  }
-
-	  static class SavedState extends BaseSavedState {
-	   int year;
-	   int month;
-	   int day;
-	   int week_start;
-	   int year_start;
-	   int year_end;
-	   int current_view;
-	   int list_position_offset;
-	   int list_position;
-
-	    SavedState(Parcelable superState) {
-	      super(superState);
+	    mWeekStart=b.getInt(WEEK_START_KEY);
+	    setMinYear(b.getInt(YEAR_START_KEY));
+	    setMaxYear(b.getInt(YEAR_END_KEY));
+	    setCurrentView(b.getInt(CURRENT_VIEW_KEY));
+	    //TDOD set scrollstate
+	    if(mCurrentView==VIEW_DATE_PICKER_MONTH_DAY){
+//	    	mDayPickerView.set//
 	    }
-
-	    private SavedState(Parcel in) {
-	      super(in);
-//	      this.stateToSave = in.readInt();
-	    }
-
-	    @Override
-	    public void writeToParcel(Parcel out, int flags) {
-	      super.writeToParcel(out, flags);
-//	      out.writeInt(this.stateToSave);
-	    }
-
-	    //required field that makes Parcelables from a Parcel
-	    public static final Parcelable.Creator<SavedState> CREATOR =
-	        new Parcelable.Creator<SavedState>() {
-	          public SavedState createFromParcel(Parcel in) {
-	            return new SavedState(in);
-	          }
-	          public SavedState[] newArray(int size) {
-	            return new SavedState[size];
-	          }
-	    };
+	    
 	  }
 
 	public int getYear() {

@@ -9,6 +9,7 @@ import com.sleepbot.datetimepicker.time.TimePicker.OnTimeSetListener;
 
 import de.azapps.mirakelandroid.R;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -72,7 +73,12 @@ public class DateTimeDialog extends DialogFragment  {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
-		getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+		try {
+			getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		View v = inflater.inflate(R.layout.date_time_picker, container);
 		final Context ctx = getDialog().getContext();
 		 Button switchToDate = (Button) v
@@ -156,13 +162,6 @@ public class DateTimeDialog extends DialogFragment  {
 		return v;
 
 	};
-
-	protected float getMinSwipe() {
-		int height = viewAnimator.getHeight();
-		int width = viewAnimator.getWidth();
-		return (height > width ? width : height) / 3f;
-	}
-
 	public interface OnDateTimeSetListner {
 
 		/**
@@ -177,6 +176,20 @@ public class DateTimeDialog extends DialogFragment  {
 				int minute);
 
 		void onNoTimeSet();
+	}
+	
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		// TODO Auto-generated method stub
+		super.onConfigurationChanged(newConfig);
+		Bundle time= (Bundle) tp.onSaveInstanceState();
+		Bundle date =(Bundle) dp.onSaveInstanceState();
+		
+		getDialog().setContentView(
+				onCreateView(LayoutInflater.from(getDialog().getContext()),
+						null, null));
+		dp.onRestoreInstanceState(date);
+		tp.onRestoreInstanceState(time);
 	}
 
 }

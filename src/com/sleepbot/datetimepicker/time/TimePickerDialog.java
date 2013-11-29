@@ -142,12 +142,18 @@ public class TimePickerDialog extends DialogFragment  {
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
-		Bundle saved = new Bundle();
-		onSaveInstanceState(saved);
-		setupValues(saved);
+		final Bundle b=(Bundle) mTimePicker.onSaveInstanceState();
+//		setupValues(saved);
 		getDialog().setContentView(
 				onCreateView(LayoutInflater.from(getDialog().getContext()),
-						null, saved));
+						null, b));
+		mTimePicker.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				mTimePicker.onRestoreInstanceState(b);
+			}
+		}, 0);
+
 	}
 
 	@Override

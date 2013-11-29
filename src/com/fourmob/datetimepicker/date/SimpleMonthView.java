@@ -19,6 +19,7 @@ import android.view.View;
 
 import com.fourmob.datetimepicker.Utils;
 
+import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakelandroid.R;
 
 public class SimpleMonthView extends View {
@@ -150,6 +151,7 @@ public class SimpleMonthView extends View {
 		int day = 1;
 
 		while (day <= this.mNumCells) {
+			Log.d("foooo","draw day "+day);
 			int x = paddingDay * (1 + dayOffset * 2) + this.mPadding;
 			if (this.mSelectedDay == day)
 				canvas.drawCircle(x, y - MINI_DAY_NUMBER_TEXT_SIZE / 3, DAY_SELECTED_CIRCLE_SIZE, this.mSelectedCirclePaint);
