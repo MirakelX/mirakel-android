@@ -54,10 +54,8 @@ import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
-import com.fourmob.datetimepicker.date.DatePickerDialog.OnDateSetListener;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
-import com.sleepbot.datetimepicker.time.TimePickerDialog.OnTimeSetListener;
 
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.adapter.SubtaskAdapter;
@@ -74,6 +72,8 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 import de.azapps.mirakelandroid.R;
+import de.azapps.widgets.DateTimeDialog;
+import de.azapps.widgets.DateTimeDialog.OnDateTimeSetListner;
 import de.azapps.widgets.DueDialog;
 import de.azapps.widgets.DueDialog.VALUE;
 
@@ -121,8 +121,37 @@ public class TaskDialogHelpers {
 			final ExecInterface onSuccess,boolean dark) {
 		final Calendar reminder = (task.getReminder() == null ? new GregorianCalendar()
 				: task.getReminder());
+		
+		
 		final FragmentManager fm=((MainActivity) ctx)
 				.getSupportFragmentManager();
+		final DateTimeDialog dtDialog=DateTimeDialog.newInstance(new OnDateTimeSetListner(){
+
+			@Override
+			public void onDateTimeSet(int year, int month, int dayOfMonth,
+					int hourOfDay, int minute) {
+				reminder.set(Calendar.YEAR, year);
+				reminder.set(Calendar.MONTH, month);
+				reminder.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+				reminder.set(Calendar.HOUR_OF_DAY, hourOfDay);
+				reminder.set(Calendar.MINUTE, minute);
+				task.setReminder(reminder);
+				safeSafeTask(ctx, task);
+				onSuccess.exec();	
+				
+			}
+
+			@Override
+			public void onNoTimeSet() {
+				task.setReminder(null);
+				((MainActivity) ctx)
+						.saveTask(task);
+				onSuccess.exec();	
+				
+			}},reminder.get(Calendar.YEAR), reminder.get(Calendar.MONTH),
+				reminder.get(Calendar.DAY_OF_MONTH), reminder.get(Calendar.HOUR_OF_DAY), reminder.get(Calendar.MINUTE), true,dark);
+		dtDialog.show(fm, "datetimedialog");
+		/*
 		final TimePickerDialog tp=TimePickerDialog.newInstance(new OnTimeSetListener() {
 			
 			@Override
@@ -162,7 +191,7 @@ public class TaskDialogHelpers {
 			}
 		}, reminder.get(Calendar.YEAR), reminder.get(Calendar.MONTH), reminder.get(Calendar.DAY_OF_MONTH),false,dark);
 		dp.setYearRange(2005, 2036);// must be < 2037
-		dp.show(fm, "datepicker");
+		dp.show(fm, "datepicker");*/
 		// Inflate the root layout
 		/*final RelativeLayout mDateTimeDialogView = (RelativeLayout) ctx
 				.getLayoutInflater().inflate(R.layout.date_time_dialog, null);

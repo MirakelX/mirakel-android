@@ -73,6 +73,7 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.ViewSwitcher;
 
+import com.fourmob.datetimepicker.date.DatePicker;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 
 import de.azapps.mirakel.Mirakel.NoSuchListException;
@@ -986,11 +987,11 @@ public class TaskFragmentAdapter extends
 							.getSupportFragmentManager();
 					final DatePickerDialog datePickerDialog = DatePickerDialog
 							.newInstance(
-									new DatePickerDialog.OnDateSetListener() {
+									new DatePicker.OnDateSetListener() {
 
 										@Override
 										public void onDateSet(
-												DatePickerDialog datePickerDialog,
+												DatePicker datePickerDialog,
 												int year, int month, int day) {
 											if (mIgnoreTimeSet)
 												return;
@@ -1021,7 +1022,7 @@ public class TaskFragmentAdapter extends
 									}, due.get(Calendar.YEAR), due
 											.get(Calendar.MONTH), due
 											.get(Calendar.DAY_OF_MONTH), false,darkTheme);
-					datePickerDialog.setYearRange(2005, 2036);// must be < 2037
+//					datePickerDialog.setYearRange(2005, 2036);// must be < 2037
 					datePickerDialog.show(fm, "datepicker");
 				}
 			});
