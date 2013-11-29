@@ -999,5 +999,20 @@ RadialPickerLayout.OnValueSelectedListener{
 		else
 			return 0;
 	}
+	
+	public void setOnKeyListener(KeyboardListener keyboardListener){
+		if(mDoneButton!=null)
+			mDoneButton.setOnKeyListener(keyboardListener);
+		if(mNoDateButton!=null)
+			mNoDateButton.setOnKeyListener(keyboardListener);
+		if(mMinuteView!=null)
+			mMinuteView.setOnKeyListener(keyboardListener);
+		if(mHourView!=null)
+			mHourView.setOnKeyListener(keyboardListener);
+		if(mAmPmTextView!=null)
+			mAmPmTextView.setOnKeyListener(keyboardListener);
+		if(mTimePicker!=null)
+			mTimePicker.setOnKeyListener(keyboardListener);
+	}
 
 }

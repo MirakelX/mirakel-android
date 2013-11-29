@@ -25,10 +25,11 @@
             android:text="@string/set_time" />
     </LinearLayout>
 
-    <ViewAnimator
+    <ViewSwitcher
         android:id="@+id/datetime_picker_animator"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:measureAllChildren="false" >
 
         <com.fourmob.datetimepicker.date.DatePicker
             android:id="@+id/date_picker"
@@ -46,7 +47,7 @@
             android:layout_height="wrap_content"
             mirakel:initialHour="0"
             mirakel:initialMinute="0" />
-    </ViewAnimator>
+    </ViewSwitcher>
 
 
 

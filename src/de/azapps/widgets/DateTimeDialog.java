@@ -5,6 +5,7 @@ import com.fourmob.datetimepicker.date.DatePicker.OnDateSetListener;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePicker;
 import com.sleepbot.datetimepicker.time.TimePicker.OnTimeSetListener;
+
 import de.azapps.mirakelandroid.R;
 import android.content.Context;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ViewAnimator;
+import android.widget.ViewSwitcher;
 
 public class DateTimeDialog extends DialogFragment  {
 
@@ -55,7 +57,7 @@ public class DateTimeDialog extends DialogFragment  {
 
 	float startX;
 	float startY;
-	private ViewAnimator viewAnimator;
+	private ViewSwitcher viewAnimator;
 	private TimePicker tp;
 	private DatePicker dp;
 	private boolean isCurrentDatepicker=true;
@@ -76,16 +78,9 @@ public class DateTimeDialog extends DialogFragment  {
 		 .findViewById(R.id.datetime_picker_date);
 		 Button switchToTime = (Button) v
 		 .findViewById(R.id.datetime_picker_time);
-		viewAnimator = (ViewAnimator) v
+		viewAnimator = (ViewSwitcher) v
 				.findViewById(R.id.datetime_picker_animator);
 
-		final Animation inAnim = AnimationUtils.loadAnimation(ctx,
-				android.R.anim.slide_in_left);
-		final Animation outAnim = AnimationUtils.loadAnimation(ctx,
-				android.R.anim.slide_out_right);
-
-		viewAnimator.setInAnimation(inAnim);
-		viewAnimator.setOutAnimation(outAnim);
 
 		viewAnimator.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
