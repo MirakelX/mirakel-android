@@ -357,7 +357,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		case 27:
 			db.execSQL("UPDATE " + Task.TABLE + " SET " + Task.PROGRESS
 					+ "=100 WHERE " + Task.DONE + "= 1 AND " + Task.RECURRING
-					+ "=-1)");
+					+ "=-1");
 
 		}
 	}
