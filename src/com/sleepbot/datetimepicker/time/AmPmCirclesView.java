@@ -39,9 +39,9 @@ public class AmPmCirclesView extends View {
     private static final int PRESSED_ALPHA = 175;
 
     private final Paint mPaint = new Paint();
-    private int mWhite;
+    private int mUnselected;
     private int mAmPmTextColor;
-    private int mBlue;
+    private int mSelected;
     private float mCircleRadiusMultiplier;
     private float mAmPmCircleRadiusMultiplier;
     private String mAmText;
@@ -59,21 +59,24 @@ public class AmPmCirclesView extends View {
     private int mAmOrPm;
     private int mAmOrPmPressed;
 
+	private boolean mDark;
+
     public AmPmCirclesView(Context context) {
         super(context);
         mIsInitialized = false;
     }
 
-    public void initialize(Context context, int amOrPm) {
+    public void initialize(Context context, int amOrPm, boolean dark) {
         if (mIsInitialized) {
             Log.e(TAG, "AmPmCirclesView may only be initialized once.");
             return;
         }
-
+        mDark=dark;
         Resources res = context.getResources();
-        mWhite = res.getColor(R.color.white);
-        mAmPmTextColor = res.getColor(R.color.ampm_text_color);
-        mBlue = res.getColor(R.color.blue);
+        mUnselected = res.getColor(dark?R.color.dialog_dark_gray:R.color.white);
+        
+        mAmPmTextColor = res.getColor(dark?R.color.ampm_text_color:R.color.dialog_dark_gray);
+        mSelected = res.getColor(dark?R.color.clock_red:R.color.blue);
         String typefaceFamily = res.getString(R.string.sans_serif);
         Typeface tf = Typeface.create(typefaceFamily, Typeface.NORMAL);
         mPaint.setTypeface(tf);
@@ -156,22 +159,22 @@ public class AmPmCirclesView extends View {
 
         // We'll need to draw either a lighter blue (for selection), a darker blue (for touching)
         // or white (for not selected).
-        int amColor = mWhite;
-        int amAlpha = 255;
-        int pmColor = mWhite;
-        int pmAlpha = 255;
+        int amColor = mUnselected;
+        int amAlpha = mDark?SELECTED_ALPHA:255;
+        int pmColor = mUnselected;
+        int pmAlpha = mDark?SELECTED_ALPHA:255;
         if (mAmOrPm == AM) {
-            amColor = mBlue;
+            amColor = mSelected;
             amAlpha = SELECTED_ALPHA;
         } else if (mAmOrPm == PM) {
-            pmColor = mBlue;
+            pmColor = mSelected;
             pmAlpha = SELECTED_ALPHA;
         }
         if (mAmOrPmPressed == AM) {
-            amColor = mBlue;
+            amColor = mSelected;
             amAlpha = PRESSED_ALPHA;
         } else if (mAmOrPmPressed == PM) {
-            pmColor = mBlue;
+            pmColor = mSelected;
             pmAlpha = PRESSED_ALPHA;
         }
 

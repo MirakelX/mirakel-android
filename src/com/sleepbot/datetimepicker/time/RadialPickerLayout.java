@@ -186,7 +186,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         mCircleView.initialize(context, mHideAmPm,dark);
         mCircleView.invalidate();
         if (!mHideAmPm) {
-            mAmPmCirclesView.initialize(context, initialHoursOfDay < 12 ? AM : PM);
+            mAmPmCirclesView.initialize(context, initialHoursOfDay < 12 ? AM : PM,dark);
             mAmPmCirclesView.invalidate();
         }
 
