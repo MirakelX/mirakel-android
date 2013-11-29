@@ -26,9 +26,9 @@ import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceManager;
 import android.widget.FrameLayout;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.PreferencesHelper;
 import de.azapps.mirakelandroid.R;
 
@@ -42,8 +42,7 @@ public class MainWidgetSettingsActivity extends PreferenceActivity {
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
-				"DarkTheme", false))
+		if (MirakelPreferences.isDark())
 			setTheme(R.style.AppBaseThemeDARK);
 		super.onCreate(savedInstanceState);
 		mAppWidgetId = getIntent().getIntExtra(

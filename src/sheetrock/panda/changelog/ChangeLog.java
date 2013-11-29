@@ -34,6 +34,7 @@ import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.webkit.WebView;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakelandroid.R;
 
 public class ChangeLog {
@@ -153,7 +154,7 @@ public class ChangeLog {
 		String log = this.getLog(full);
 		SharedPreferences preferences = PreferenceManager
 				.getDefaultSharedPreferences(context);
-		if (preferences.getBoolean("DarkTheme", false))
+		if (MirakelPreferences.isDark())
 			log = "<font color='"
 					+ String.format("#%06X", 0xFFFFFF & context.getResources()
 							.getColor(R.color.holo_blue_light)) + "'>" + log

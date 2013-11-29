@@ -61,6 +61,7 @@ import de.azapps.mirakel.PagerAdapter;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.helper.UndoHistory;
@@ -142,7 +143,7 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		preferences = PreferenceManager.getDefaultSharedPreferences(this);
-		darkTheme = preferences.getBoolean("DarkTheme", false);
+		darkTheme = MirakelPreferences.isDark();
 		if (darkTheme)
 			setTheme(R.style.AppBaseThemeDARK);
 		super.onCreate(savedInstanceState);
@@ -497,7 +498,7 @@ public class MainActivity extends ActionBarActivity implements
 					&& (oldClickedList != null || oldClickedTask == null)) {
 				clearAllHighlights();
 			}
-			if (darkTheme != preferences.getBoolean("DarkTheme", false)) {
+			if (darkTheme != MirakelPreferences.isDark()) {
 				finish();
 				if (startIntent == null) {
 					startIntent = new Intent(MainActivity.this,

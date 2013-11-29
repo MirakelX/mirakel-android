@@ -6,8 +6,6 @@ import java.util.List;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.StateListDrawable;
-import android.os.Parcelable;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -15,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakelandroid.R;
 
 public class YearPickerView extends ListView implements
@@ -59,7 +58,7 @@ public class YearPickerView extends ListView implements
 		}
 		this.mAdapter = new YearAdapter(context, R.layout.year_label_text_view,
 				years);
-		mDark=PreferenceManager.getDefaultSharedPreferences(context).getBoolean("DarkTheme", false);
+		mDark=MirakelPreferences.isDark();
 		setAdapter(this.mAdapter);
 	}
 

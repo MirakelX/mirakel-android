@@ -4,17 +4,12 @@ import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import com.fourmob.datetimepicker.Utils;
-import com.sleepbot.datetimepicker.time.TimePicker.KeyboardListener;
-
-import de.azapps.mirakelandroid.R;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.text.method.TransformationMethod;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -25,6 +20,11 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.fourmob.datetimepicker.Utils;
+
+import de.azapps.mirakel.helper.MirakelPreferences;
+import de.azapps.mirakelandroid.R;
 
 public class TimePicker extends LinearLayout implements
 RadialPickerLayout.OnValueSelectedListener{
@@ -108,7 +108,7 @@ RadialPickerLayout.OnValueSelectedListener{
 			a.recycle();
 		}
 		layout=inflate(context, R.layout.time_picker_view, this);
-		mDark=PreferenceManager.getDefaultSharedPreferences(context).getBoolean("DarkTheme", false);//Dirty, maybe do this somehow better
+		mDark=MirakelPreferences.isDark();
 		initLayout();
 	}
 

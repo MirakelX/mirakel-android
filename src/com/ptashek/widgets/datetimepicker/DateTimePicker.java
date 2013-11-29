@@ -21,7 +21,6 @@ import java.util.Calendar;
 
 import android.content.Context;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +32,7 @@ import android.widget.RelativeLayout;
 import android.widget.TimePicker;
 import android.widget.TimePicker.OnTimeChangedListener;
 import android.widget.ViewSwitcher;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakelandroid.R;
 
 public class DateTimePicker extends RelativeLayout implements
@@ -60,8 +60,7 @@ public class DateTimePicker extends RelativeLayout implements
 	public DateTimePicker(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 
-		this.darkTheme = PreferenceManager.getDefaultSharedPreferences(context)
-				.getBoolean("DarkTheme", false);
+		this.darkTheme = MirakelPreferences.isDark();
 		// Get LayoutInflater instance
 		final LayoutInflater inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

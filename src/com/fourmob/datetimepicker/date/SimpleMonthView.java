@@ -11,7 +11,6 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.preference.PreferenceManager;
 import android.text.format.DateUtils;
 import android.text.format.Time;
 import android.view.MotionEvent;
@@ -19,6 +18,7 @@ import android.view.View;
 
 import com.fourmob.datetimepicker.Utils;
 
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakelandroid.R;
 
 public class SimpleMonthView extends View {
@@ -70,7 +70,7 @@ public class SimpleMonthView extends View {
 
 	public SimpleMonthView(Context context) {
 		super(context);
-		mdark=PreferenceManager.getDefaultSharedPreferences(context).getBoolean("DarkTheme", false);
+		mdark=MirakelPreferences.isDark();
 		Resources resources = context.getResources();
 		this.mDayLabelCalendar = Calendar.getInstance();
 		this.mCalendar = Calendar.getInstance();

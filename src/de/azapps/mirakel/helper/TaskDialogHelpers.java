@@ -506,7 +506,7 @@ public class TaskDialogHelpers {
 				.findViewById(R.id.subtask_newtask);
 		final Button subtaskSelectOld = (Button) v
 				.findViewById(R.id.subtask_select_old);
-		final boolean darkTheme = settings.getBoolean("DarkTheme", false);
+		final boolean darkTheme = MirakelPreferences.isDark();
 		if (asSubtask) {
 			v.findViewById(R.id.subtask_header).setVisibility(View.GONE);
 			switcher.showNext();

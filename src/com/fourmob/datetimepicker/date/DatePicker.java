@@ -8,27 +8,14 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
 
-import com.fourmob.datetimepicker.Utils;
-import com.fourmob.datetimepicker.date.DatePickerDialog;
-import com.fourmob.datetimepicker.date.DayPickerView;
-import com.fourmob.datetimepicker.date.SimpleMonthAdapter;
-import com.fourmob.datetimepicker.date.YearPickerView;
-import com.nineoldandroids.animation.ObjectAnimator;
-
-import de.azapps.mirakel.helper.Log;
-import de.azapps.mirakelandroid.R;
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.Canvas;
-import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.SystemClock;
 import android.os.Vibrator;
-import android.preference.PreferenceManager;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -37,6 +24,13 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewAnimator;
+
+import com.fourmob.datetimepicker.Utils;
+import com.nineoldandroids.animation.ObjectAnimator;
+
+import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.MirakelPreferences;
+import de.azapps.mirakelandroid.R;
 
 public class DatePicker extends LinearLayout implements View.OnClickListener, DatePickerController {
 	private static final int MAX_YEAR = 2037;
@@ -98,7 +92,7 @@ public class DatePicker extends LinearLayout implements View.OnClickListener, Da
 	}
 
 	private void setupView(Context context) {
-		mDark=PreferenceManager.getDefaultSharedPreferences(context).getBoolean("DarkTheme", false);//Dirty, maybe do this somehow better
+		mDark=MirakelPreferences.isDark();
 		ctx=context;
 		layout=View.inflate(context, R.layout.date_picker_view, this);
 		initLayout();

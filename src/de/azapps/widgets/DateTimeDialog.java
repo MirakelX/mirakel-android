@@ -1,13 +1,5 @@
 package de.azapps.widgets;
 
-import com.fourmob.datetimepicker.date.DatePicker;
-import com.fourmob.datetimepicker.date.DatePicker.OnDateSetListener;
-import com.sleepbot.datetimepicker.time.RadialPickerLayout;
-import com.sleepbot.datetimepicker.time.TimePicker;
-import com.sleepbot.datetimepicker.time.TimePicker.KeyboardListener;
-import com.sleepbot.datetimepicker.time.TimePicker.OnTimeSetListener;
-
-import de.azapps.mirakelandroid.R;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -15,11 +7,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.ViewAnimator;
 import android.widget.ViewSwitcher;
+
+import com.fourmob.datetimepicker.date.DatePicker;
+import com.fourmob.datetimepicker.date.DatePicker.OnDateSetListener;
+import com.sleepbot.datetimepicker.time.RadialPickerLayout;
+import com.sleepbot.datetimepicker.time.TimePicker;
+import com.sleepbot.datetimepicker.time.TimePicker.OnTimeSetListener;
+
+import de.azapps.mirakelandroid.R;
 
 public class DateTimeDialog extends DialogFragment  {
 

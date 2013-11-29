@@ -33,7 +33,6 @@ import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import de.azapps.mirakel.Mirakel;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -41,6 +40,7 @@ import android.os.Environment;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
+import de.azapps.mirakel.Mirakel;
 
 public class FileUtils {
 	private static final String TAG = "FileUtils";

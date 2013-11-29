@@ -1,14 +1,10 @@
 package com.fourmob.datetimepicker.date;
 
-import java.text.DateFormatSymbols;
 import java.util.Calendar;
-import java.util.HashSet;
 
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Vibrator;
-import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,7 +13,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.fourmob.datetimepicker.Utils;
 import com.fourmob.datetimepicker.date.DatePicker.OnDateSetListener;
 
 import de.azapps.mirakelandroid.R;

@@ -4,9 +4,9 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.widget.TextView;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakelandroid.R;
 
 
@@ -19,7 +19,7 @@ public class TextViewWithCircularIndicator extends TextView {
 	public TextViewWithCircularIndicator(Context context, AttributeSet attributeSet) {
 		super(context, attributeSet);
 		Resources localResources = context.getResources();
-		boolean dark=PreferenceManager.getDefaultSharedPreferences(context).getBoolean("DarkTheme", false);
+		boolean dark=MirakelPreferences.isDark();
 		this.mCircleColor = localResources.getColor(dark?R.color.clock_red:R.color.blue);
 		this.mItemIsSelectedText = context.getResources().getString(R.string.item_is_selected);
 		init();

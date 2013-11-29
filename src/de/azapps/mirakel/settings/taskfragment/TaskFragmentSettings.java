@@ -3,13 +3,12 @@ package de.azapps.mirakel.settings.taskfragment;
 import java.util.List;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.main_activity.DragNDropListView;
 import de.azapps.mirakel.main_activity.task_fragment.TaskFragmentAdapter;
 import de.azapps.mirakelandroid.R;
@@ -17,15 +16,13 @@ import de.azapps.mirakelandroid.R;
 public class TaskFragmentSettings extends Activity {
 	private final static String TAG = "de.azapps.mirakel.settings.taskfragment.TaskFragmentSettings";
 	private DragNDropListView listView;
-	private SharedPreferences preferences;
 	private TaskFragmentSettingsAdapter adapter;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// The activity is being created.
-		preferences = PreferenceManager.getDefaultSharedPreferences(this);
-		if (preferences.getBoolean("DarkTheme", false))
+		if (MirakelPreferences.isDark())
 			setTheme(R.style.AppBaseThemeDARK);
 		setContentView(R.layout.activity_task_fragment_settings);
 	}
