@@ -220,6 +220,8 @@ class TaskBase {
 				reminder = getRecurring().addRecurring(reminder);
 			}
 			this.done = false;
+		} else if (done) {
+			this.progress = 100;
 		}
 	}
 

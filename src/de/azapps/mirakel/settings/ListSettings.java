@@ -87,12 +87,6 @@ public abstract class ListSettings extends PreferenceActivity {
 		if (preferences.getBoolean("DarkTheme", false))
 			setTheme(R.style.AppBaseThemeDARK);
 		super.onCreate(savedInstanceState);
-
-		if (preferences.getBoolean("oldLogo", false)
-				&& Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-			getActionBar().setIcon(R.drawable.ic_launcher);
-			getActionBar().setLogo(R.drawable.ic_launcher);
-		}
 		loaded = true;
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 			if (getIntent().hasExtra("id")) {

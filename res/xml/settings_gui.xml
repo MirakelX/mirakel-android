@@ -35,9 +35,10 @@
         android:key="dateFormatRelative"
         android:summary="@string/settings_date_format_relative_summary"
         android:title="@string/settings_date_format_relative" />
-    <CheckBoxPreference android:defaultValue="@bool/isTablet"
+    <CheckBoxPreference
+        android:defaultValue="@bool/isTablet"
         android:key="useTabletLayout"
-        android:title="@string/useTabletLayout"/>
+        android:title="@string/useTabletLayout" />
     <CheckBoxPreference
         android:defaultValue="true"
         android:key="useBtnSpeak"
@@ -68,10 +69,5 @@
         android:defaultValue="false"
         android:key="KillButton"
         android:title="@string/kill_button" />
-    <!-- <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="oldLogo"
-        android:summary="@string/settings_old_logo_summary"
-        android:title="@string/settings_old_logo" />-->
 
 </PreferenceScreen>

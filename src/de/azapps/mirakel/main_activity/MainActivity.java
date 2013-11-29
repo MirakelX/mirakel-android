@@ -148,8 +148,7 @@ public class MainActivity extends ActionBarActivity implements
 		if (darkTheme)
 			setTheme(R.style.AppBaseThemeDARK);
 		super.onCreate(savedInstanceState);
-
-		oldLogo();
+		
 		boolean isTablet = Helpers.isTablet(this);
 		highlightSelected = preferences.getBoolean("highlightSelected",
 				isTablet);
@@ -1324,40 +1323,6 @@ public class MainActivity extends ActionBarActivity implements
 
 	public void setFileUri(Uri file) {
 		fileUri = file;
-	}
-
-	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-	private void oldLogo() {
-		new Runnable() {
-
-			@Override
-			public void run() {
-
-				if (preferences.getBoolean("oldLogo", false)) {
-					getPackageManager()
-							.setComponentEnabledSetting(
-									new ComponentName(
-											"de.azapps.mirakelandroid",
-											"de.azapps.mirakel.static_activities.SplashScreenActivity-Old"),
-									PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-									PackageManager.DONT_KILL_APP);
-					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-						getActionBar().setIcon(R.drawable.ic_launcher);
-						getActionBar().setLogo(R.drawable.ic_launcher);
-					}
-				} else {
-					getPackageManager()
-							.setComponentEnabledSetting(
-									new ComponentName(
-											"de.azapps.mirakelandroid",
-											"de.azapps.mirakel.static_activities.SplashScreenActivity-Old"),
-									PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-									PackageManager.DONT_KILL_APP);
-
-				}
-
-			}
-		}.run();
 	}
 
 	public int getCurrentPosition() {

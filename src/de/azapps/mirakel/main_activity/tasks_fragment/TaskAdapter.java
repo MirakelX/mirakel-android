@@ -173,10 +173,12 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 		if (task == null)
 			return row;
 		// Done
-		if (task.getProgress() == 0)
+		if (task.getProgress() == 0
+				|| (task.isDone() && task.getProgress() == 100)) {
 			holder.taskRowProgress.setVisibility(View.GONE);
-		else
+		} else {
 			holder.taskRowProgress.setVisibility(View.VISIBLE);
+		}
 
 		holder.taskRowProgress.setProgress(Math.round((360.0f / 100.0f)
 				* (float) task.getProgress()));

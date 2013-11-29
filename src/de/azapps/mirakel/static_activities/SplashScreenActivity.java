@@ -25,7 +25,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
-import android.view.Window;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -37,22 +36,20 @@ public class SplashScreenActivity extends Activity {
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		SharedPreferences preferences = PreferenceManager
-				.getDefaultSharedPreferences(getApplicationContext());
-		boolean darkTheme = preferences.getBoolean("DarkTheme", false);
-		if (darkTheme)
-			setTheme(R.style.AppBaseThemeDARK);
 		super.onCreate(savedInstanceState);
-		getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
 		if (getIntent().getAction() == EXIT) {
 			finish();
 			return;
 		}
-		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-			getActionBar().hide();
-		}
-		setContentView(R.layout.activity_splash_screen);
 
+		// Setup splashscreen
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(getApplicationContext());
+		boolean darkTheme = preferences.getBoolean("DarkTheme", false);
+		if (!darkTheme)
+			setTheme(R.style.Theme_SplashScreen);
+
+		// Intents
 		if (preferences.getBoolean("startupAllLists", false)) {
 			Intent intent = new Intent(SplashScreenActivity.this,
 					MainActivity.class);

@@ -27,7 +27,6 @@ import android.accounts.AccountManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.export_import.ExportImport;
@@ -50,7 +49,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String TAG = "DatabaseHelper";
 	private Context context;
-	public static final int DATABASE_VERSION = 27;
+	public static final int DATABASE_VERSION = 28;
 
 	public static final String ID = "_id";
 	public static final String CREATED_AT = "created_at";
@@ -324,7 +323,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			AccountManager am = AccountManager.get(context);
 			String accountname = context.getString(R.string.local_account);
 			if (am.getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL).length > 0) {
-				Account a = am.getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL)[0];
+				Account a = am
+						.getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL)[0];
 				String t = (AccountManager.get(context)).getUserData(a,
 						SyncAdapter.BUNDLE_SERVER_TYPE);
 				if (t.equals(MirakelSync.TYPE)) {
@@ -345,18 +345,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ AccountMirakel.TABLE + " (" + ID
 					+ ") ON DELETE CASCADE ON UPDATE CASCADE DEFAULT "
 					+ accountId + "; ");
-			//add progress
+			// add progress
 		case 25:
 			db.execSQL("ALTER TABLE " + Task.TABLE
 					+ " add column progress int NOT NULL default 0;");
-			//Add some columns for caldavsync
+			// Add some columns for caldavsync
 		case 26:
-			db.execSQL("CREATE TABLE caldav_extra("
-					+ ID +" INTEGER PRIMARY KEY,"
-					+ "ETAG TEXT,"
-					+ "SYNC_ID TEXT DEFAULT NULL, "
-					+ "REMOTE_NAME TEXT)");
-			
+			db.execSQL("CREATE TABLE caldav_extra(" + ID
+					+ " INTEGER PRIMARY KEY," + "ETAG TEXT,"
+					+ "SYNC_ID TEXT DEFAULT NULL, " + "REMOTE_NAME TEXT)");
+		case 27:
+			db.execSQL("UPDATE " + Task.TABLE + " SET " + Task.PROGRESS
+					+ "=100 WHERE " + Task.DONE + "= 1 AND " + Task.RECURRING
+					+ "=-1)");
+
 		}
 	}
 

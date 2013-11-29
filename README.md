@@ -1,39 +1,51 @@
 mirakel-android
 ===============
 
-The Android App for [Mirakel](https://github.com/azapps/mirakel)
+*easy task management for professionals*
 
-Mirakel is a free (as in freedom) Todo List App with some Features for Powerusers.
+Mirakel aims to help you to organize your tasks in a simple but powerfull manner.
 
-* Sync the lists with your own (or the official) server
-* Manage your Tasks in Lists
-* Simple, but powerfull User Interface
-* Homescreen Widget
-* Fully Configurable
-* Sort your Tasks in different ways
-* Notifications
 
-**More Informations and Downloads you can get [here](http://mirakel.azapps.de/)**
+1. [About](#about)
+2. [Beta](#beta)
+2. [Contribute](#contribute)
+  1. [Bug reports / Feature requests](#bug-reports--feature-requests)
+  2. [Development](#development)
+  3. [Translations](#translations)
+3. [Contact](#contact)
+3. [License](#license)
 
-# Translations
+# About
 
-Please help us to translate the app: http://crowdin.net/project/mirakel
+More Informations (like screenshots and features) and Downloads you can get [here](http://mirakel.azapps.de/)
 
-# Development
+# Beta
+
+Please help us testing our app by joining our [Google+-Community](https://plus.google.com/u/0/communities/110640831388790835840) and testing our Beta releases! If you don't want to use Google+ just write us an email, we can solve this problem ;)
+
+# Contribute
+
+## Bug reports / Feature requests
+
+Please use our github-issue tracker to submit Bug reports or feature requests. You should first look, if someone else has already posted your problem. But don't hesitate to post it one time more if you're not sure.
+
+Please open for **every** bug report or feature request a new issue so we can handle them more easy.
+
+## Development
 
 Clone the git-repo and use your favorite IDE or editor.
 
+Please contact us if you want to implement some features, don't hesitate, we are friendly people ;) Just write an email to mirakel@azapps.de
+
 If your Feature works, cleanup your Branch and make a [pull-request](https://help.github.com/articles/using-pull-requests).
 
-# Screenshots
+## Translations
 
-| Lists | Tasks | Task |
-|--------|-----|----|
-| ![Lists](http://azapps.de/wp-content/uploads/2013/04/Screenshot_2013-04-21-14-31-44-150x150.png "Manage your Lists")[Big Image](http://azapps.de/wp-content/uploads/2013/04/Screenshot_2013-04-21-14-31-44-614x1024.png)|![Tasks](http://azapps.de/wp-content/uploads/2013/04/Screenshot_2013-04-21-14-33-04-150x150.png "Organize your Tasks")[Big Image](http://azapps.de/wp-content/uploads/2013/04/Screenshot_2013-04-21-14-33-04-614x1024.png)|![Task](http://azapps.de/wp-content/uploads/2013/04/Screenshot_2013-04-21-14-33-13-150x150.png "Edit your Tasks")[Big Image](http://azapps.de/wp-content/uploads/2013/04/Screenshot_2013-04-21-14-33-13-614x1024.png)|
-| Notification | Widget | |
-| ![Notification](http://azapps.de/wp-content/uploads/2013/04/Screenshot_2013-04-21-14-33-26-150x150.png "Be notified") [Big Image](http://azapps.de/wp-content/uploads/2013/04/Screenshot_2013-04-21-14-33-26-614x1024.png) | ![Widget](http://azapps.de/wp-content/uploads/2013/04/Screenshot_2013-04-21-14-33-51-150x150.png "Homescreen Widget") [Big Image](http://azapps.de/wp-content/uploads/2013/04/Screenshot_2013-04-21-14-33-51-614x1024.png) |
+Please help us to translate the app: http://crowdin.net/project/mirakel. If your language is not listed theire, just write us an e-mail.
 
+# Contact
 
+Don't hesitate to contact us, just write us an e-mail to mirakel@azapps.de.
 
 # License
 
