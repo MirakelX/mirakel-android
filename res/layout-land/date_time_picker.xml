@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:mirakel="http://schemas.android.com/apk/res/de.azapps.mirakelandroid"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+
+    <LinearLayout
+        style="@android:style/ButtonBar"
+        android:layout_width="60dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/datetime_picker_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:rotation="90"
+            android:text="@string/set_date" />
+
+        <Button
+            android:id="@+id/datetime_picker_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:rotation="90"
+            android:text="@string/set_time" />
+    </LinearLayout>
+
+    <ViewSwitcher
+        android:id="@+id/datetime_picker_animator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:measureAllChildren="false" >
+
+        <com.fourmob.datetimepicker.date.DatePicker
+            android:id="@+id/date_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            mirakel:initialDay="28"
+            mirakel:initialMonth="11"
+            mirakel:initialYear="2013"
+            mirakel:maxYear="2036"
+            mirakel:minYear="2005" />
+
+        <com.sleepbot.datetimepicker.time.TimePicker
+            android:id="@+id/time_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            mirakel:initialHour="10"
+            mirakel:initialMinute="10" />
+    </ViewSwitcher>
+
+</LinearLayout>
