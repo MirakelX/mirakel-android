@@ -12,6 +12,7 @@ import com.fourmob.datetimepicker.Utils;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.fourmob.datetimepicker.date.DayPickerView;
 import com.fourmob.datetimepicker.date.SimpleMonthAdapter;
+import com.fourmob.datetimepicker.date.SimpleMonthAdapter.CalendarDay;
 import com.fourmob.datetimepicker.date.YearPickerView;
 import com.nineoldandroids.animation.ObjectAnimator;
 
@@ -134,15 +135,25 @@ public class DatePicker extends LinearLayout implements View.OnClickListener, Da
 	}
 	
 	public void setDay(int day) {
-		mCalendar.set(Calendar.DAY_OF_MONTH, day);		
+		mCalendar.set(Calendar.DAY_OF_MONTH, day);	
+		update();
+	}
+
+	private void update() {
+		if(mSelectedMonthTextView!=null){//is init
+			updateDisplay();
+			mDayPickerView.goTo(new CalendarDay(mCalendar), false, true, true);
+		}
 	}
 
 	public void setMonth(int month) {
-		mCalendar.set(Calendar.MONTH, month);		
+		mCalendar.set(Calendar.MONTH, month);
+		update();
 	}
 
 	public void setYear(int year) {
-		mCalendar.set(Calendar.YEAR, year);		
+		mCalendar.set(Calendar.YEAR, year);
+		update();
 	}
 	
 	@Override
@@ -300,15 +311,7 @@ public class DatePicker extends LinearLayout implements View.OnClickListener, Da
 		updateDisplay();
 		setCurrentView(currentView, true);
 
-		if (listPosition != -1) {
-			if (currentView == VIEW_DATE_PICKER_MONTH_DAY) {
-				this.mDayPickerView.postSetSelection(listPosition);
-			}
-			if (currentView == VIEW_DATE_PICKER_YEAR) {
-				this.mYearPickerView.postSetSelectionFromTop(listPosition,
-						listPositionOffset);
-			}
-		}
+		setScroll(listPosition, currentView, listPositionOffset);
 		Resources res = getResources();
 		if(mDark){
 			View dialog=layout.findViewById(R.id.datepicker_dialog);
@@ -327,6 +330,19 @@ public class DatePicker extends LinearLayout implements View.OnClickListener, Da
 			header.setBackgroundColor(res.getColor(R.color.white));
 		}
 		
+	}
+
+	private void setScroll(int listPosition, int currentView,
+			int listPositionOffset) {
+		if (listPosition != -1) {
+			if (currentView == VIEW_DATE_PICKER_MONTH_DAY) {
+				this.mDayPickerView.postSetSelection(listPosition);
+			}
+			if (currentView == VIEW_DATE_PICKER_YEAR) {
+				this.mYearPickerView.postSetSelectionFromTop(listPosition,
+						listPositionOffset);
+			}
+		}
 	}
 	
 	private void updateDisplay() {
@@ -511,11 +527,9 @@ public class DatePicker extends LinearLayout implements View.OnClickListener, Da
 	    mWeekStart=b.getInt(WEEK_START_KEY);
 	    setMinYear(b.getInt(YEAR_START_KEY));
 	    setMaxYear(b.getInt(YEAR_END_KEY));
-	    setCurrentView(b.getInt(CURRENT_VIEW_KEY));
-	    //TDOD set scrollstate
-	    if(mCurrentView==VIEW_DATE_PICKER_MONTH_DAY){
-//	    	mDayPickerView.set//
-	    }
+	    int currentView=b.getInt(CURRENT_VIEW_KEY);
+	    setCurrentView(currentView);
+	    setScroll(b.getInt(MOST_VISIBLE_POSITION_KEY, -1), currentView, b.getInt(LIST_OFFSET_KEY,0));
 	    
 	  }
 
