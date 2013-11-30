@@ -28,6 +28,8 @@ $ 2.2-alpha+x
     * Google Now integration
     * New date and timepicker
     * Widget updates
+    * Auto backup
+    * Clone a task
 $ 2.1.4+x
   % Version 2.1.4+x (Beta)
   ! Please report Bugs and errors!
