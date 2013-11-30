@@ -1035,9 +1035,18 @@ public class TimePicker extends LinearLayout implements
 	@Override
 	public Parcelable onSaveInstanceState() {
 		super.onSaveInstanceState();
-		Bundle b = new Bundle();
-
-		return b;
+		Bundle outState = new Bundle();
+		 if (mTimePicker != null) {
+	            outState.putInt(KEY_HOUR_OF_DAY, mTimePicker.getHours());
+	            outState.putInt(KEY_MINUTE, mTimePicker.getMinutes());
+	            outState.putBoolean(KEY_IS_24_HOUR_VIEW, mIs24HourMode);
+	            outState.putInt(KEY_CURRENT_ITEM_SHOWING, mTimePicker.getCurrentItemShowing());
+	            outState.putBoolean(KEY_IN_KB_MODE, mInKbMode);
+	            if (mInKbMode) {
+	                outState.putIntegerArrayList(KEY_TYPED_TIMES, mTypedTimes);
+	            }
+	        }
+		return outState;
 	}
 
 	@Override
@@ -1046,6 +1055,7 @@ public class TimePicker extends LinearLayout implements
 			super.onRestoreInstanceState(state);
 			return;
 		}
+		Bundle b=(Bundle) state;
 	}
 
 }
