@@ -9,7 +9,6 @@ import java.util.Iterator;
 import java.util.Locale;
 
 import com.fourmob.datetimepicker.Utils;
-import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.fourmob.datetimepicker.date.DayPickerView;
 import com.fourmob.datetimepicker.date.SimpleMonthAdapter;
 import com.fourmob.datetimepicker.date.SimpleMonthAdapter.CalendarDay;
@@ -18,14 +17,11 @@ import com.nineoldandroids.animation.ObjectAnimator;
 
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakelandroid.R;
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.Canvas;
 import android.os.Bundle;
-import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.SystemClock;
 import android.os.Vibrator;
@@ -482,8 +478,7 @@ public class DatePicker extends LinearLayout implements View.OnClickListener, Da
 	
 	 @Override
 	  public Parcelable onSaveInstanceState() {
-	    //begin boilerplate code that allows parent classes to save state
-	    Parcelable superState = super.onSaveInstanceState();
+	    super.onSaveInstanceState();
 	    //end
 	    Bundle b=new Bundle();
 	    b.putInt(YEAR_KEY, this.mCalendar.get(Calendar.YEAR));

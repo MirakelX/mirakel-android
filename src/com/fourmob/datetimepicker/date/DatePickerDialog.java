@@ -1,6 +1,5 @@
 package com.fourmob.datetimepicker.date;
 
-import java.util.Calendar;
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -17,19 +16,12 @@ import com.fourmob.datetimepicker.date.DatePicker.OnDateSetListener;
 import de.azapps.mirakelandroid.R;
 
 public class DatePickerDialog extends DialogFragment {
-	// https://code.google.com/p/android/issues/detail?id=13050
-	private static final int MAX_YEAR = 2037;
-	private static final int MIN_YEAR = 1902;
 
-	private final Calendar mCalendar = Calendar.getInstance();
-	private int mCurrentView = -1;
-	private DayPickerView mDayPickerView;
-	private int mMaxYear = MAX_YEAR;
-	private int mMinYear = MIN_YEAR;
-	private int mWeekStart = this.mCalendar.getFirstDayOfWeek();
-	private YearPickerView mYearPickerView;
 	private DatePicker mDatePicker;
 	private OnDateSetListener mCallback;
+	private int mInitYear;
+	private int mInitMonth;
+	private int mInitDay;
 
 	public static DatePickerDialog newInstance(
 			OnDateSetListener onDateSetListener, int year, int month, int day,
@@ -51,13 +43,6 @@ public class DatePickerDialog extends DialogFragment {
 
 	public void initialize(final OnDateSetListener onDateSetListener, int year,
 			int month, int day, boolean vibrate, boolean dark) {
-		if (year > MAX_YEAR)
-			throw new IllegalArgumentException("year end must < " + MAX_YEAR);
-		if (year < MIN_YEAR)
-			throw new IllegalArgumentException("year end must > " + MIN_YEAR);
-		this.mCalendar.set(Calendar.YEAR, year);
-		this.mCalendar.set(Calendar.MONTH, month);
-		this.mCalendar.set(Calendar.DAY_OF_MONTH, day);
 		mCallback = new OnDateSetListener() {
 
 			@Override
@@ -78,6 +63,10 @@ public class DatePickerDialog extends DialogFragment {
 
 			}
 		};
+		mInitYear=year;
+		mInitMonth=month;
+		mInitDay=day;
+		
 	}
 
 	public void onCreate(Bundle bundle) {
@@ -85,11 +74,6 @@ public class DatePickerDialog extends DialogFragment {
 		Activity activity = getActivity();
 		activity.getWindow().setSoftInputMode(
 				WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-		if (bundle != null) {
-			this.mCalendar.set(Calendar.YEAR, bundle.getInt("year"));
-			this.mCalendar.set(Calendar.MONTH, bundle.getInt("month"));
-			this.mCalendar.set(Calendar.DAY_OF_MONTH, bundle.getInt("day"));
-		}
 	}
 
 	@Override
@@ -120,28 +104,22 @@ public class DatePickerDialog extends DialogFragment {
 		View view = layoutInflater.inflate(R.layout.date_picker_dialog, null);
 		mDatePicker = (DatePicker) view.findViewById(R.id.date_picker);
 		mDatePicker.setOnDateSetListener(mCallback);
+		mDatePicker.postDelayed(new Runnable() {
+			
+			@Override
+			public void run() {
+				mDatePicker.setYear(mInitYear);
+				mDatePicker.setMonth(mInitMonth);
+				mDatePicker.setDay(mInitDay);				
+			}
+		}, 0);
+
 		return view;
 	}
 
 	public void onSaveInstanceState(Bundle bundle) {
 		super.onSaveInstanceState(bundle);
-		bundle.putInt("year", this.mCalendar.get(Calendar.YEAR));
-		bundle.putInt("month", this.mCalendar.get(Calendar.MONTH));
-		bundle.putInt("day", this.mCalendar.get(Calendar.DAY_OF_MONTH));
-		bundle.putInt("week_start", this.mWeekStart);
-		bundle.putInt("year_start", this.mMinYear);
-		bundle.putInt("year_end", this.mMaxYear);
-		bundle.putInt("current_view", this.mCurrentView);
-		int mostVisiblePosition = -1;
-		if (this.mCurrentView == 0)
-			mostVisiblePosition = this.mDayPickerView.getMostVisiblePosition();
-		bundle.putInt("list_position", mostVisiblePosition);
-		if (this.mCurrentView == 1) {
-			mostVisiblePosition = this.mYearPickerView
-					.getFirstVisiblePosition();
-			bundle.putInt("list_position_offset",
-					this.mYearPickerView.getFirstPositionOffset());
-		}
+		bundle.putAll((Bundle) mDatePicker.onSaveInstanceState());
 	}
 
 }
