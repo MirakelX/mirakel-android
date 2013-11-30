@@ -212,6 +212,8 @@
     <string name="send_mail">Send e-mail</string>
     <string name="special_lists_title">Smart Lists</string>
     <string name="register">Register</string>
+    <string name="auto_backup_intervall">Auto backup intervall</string>
+    <string name="auto_backup_intervall_summary">Backup the database every %s days</string>
 
     <!-- Colors -->
     <string name="preferences_colorize">Colors</string>

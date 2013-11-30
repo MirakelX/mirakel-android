@@ -18,6 +18,8 @@
  ******************************************************************************/
 package de.azapps.mirakel;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import org.acra.ACRA;
@@ -28,17 +30,17 @@ import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Build;
-import android.preference.PreferenceManager;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Gravity;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelPreferences;
+import de.azapps.mirakel.helper.export_import.ExportImport;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.file.FileMirakel;
@@ -85,7 +87,7 @@ public class Mirakel extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		// Some initialization
+		// Init variables
 		APK_NAME = getPackageName();
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 			GRAVITY_LEFT = Gravity.START;
@@ -94,25 +96,27 @@ public class Mirakel extends Application {
 			GRAVITY_LEFT = Gravity.LEFT;
 			GRAVITY_RIGHT = Gravity.RIGHT;
 		}
-		Locale locale = Helpers.getLocal(this);
-		Locale.setDefault(locale);
-		Configuration config = new Configuration();
-		config.locale = locale;
-		getBaseContext().getResources().updateConfiguration(config,
-				getBaseContext().getResources().getDisplayMetrics());
-		ACRA.init(this);
+
 		try {
 			VERSIONS_NAME = getPackageManager().getPackageInfo(
 					getPackageName(), 0).versionName;
 		} catch (NameNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			Log.wtf(TAG, "App not found");
 			VERSIONS_NAME = "";
 		}
+
+		Locale locale = Helpers.getLocal(this);
+		Locale.setDefault(locale);
+
+		Configuration config = new Configuration();
+		config.locale = locale;
+		getBaseContext().getResources().updateConfiguration(config,
+				getBaseContext().getResources().getDisplayMetrics());
+
 		openHelper = new DatabaseHelper(this);
 		Mirakel.getWritableDatabase().execSQL("PRAGMA foreign_keys=ON;");
-		Context ctx = getApplicationContext();
+		final Context ctx = getApplicationContext();
 
 		// Initialize Models
 
@@ -126,15 +130,36 @@ public class Mirakel extends Application {
 		AccountMirakel.init(ctx);
 		MirakelPreferences.init(ctx);
 
-		// Kill Notification Service if Notification disabled
-		SharedPreferences settings = PreferenceManager
-				.getDefaultSharedPreferences(this);
-		if (!settings.getBoolean("notificationsUse", false)
-				&& startService(new Intent(this, NotificationService.class)) != null) {
-			stopService(new Intent(Mirakel.this, NotificationService.class));
-		}
-		// Set Alarms
-		ReminderAlarm.updateAlarms(getApplicationContext());
+		// And now, after the Database initialization!!! We init ACRA
+		ACRA.init(this);
+
+		// Stuff we can do in another thread
+		final Mirakel that = this;
+		new Thread(new Runnable() {
+			public void run() {
+				Looper.prepare();
+				// Notifications
+				if (!MirakelPreferences.useNotifications()
+						&& startService(new Intent(that,
+								NotificationService.class)) != null) {
+					stopService(new Intent(Mirakel.this,
+							NotificationService.class));
+				}
+				// Set Alarms
+				ReminderAlarm.updateAlarms(getApplicationContext());
+				// Auto Backup?
+				Calendar nextBackup = MirakelPreferences.getNextAutoBackup();
+				if (nextBackup != null
+						&& nextBackup.compareTo(new GregorianCalendar()) < 0) {
+					ExportImport.exportDB(ctx);
+					Calendar nextB = new GregorianCalendar();
+					nextB.add(Calendar.DATE,
+							MirakelPreferences.getAutoBackupIntervall());
+					MirakelPreferences.setNextBackup(nextB);
+				}
+			}
+		}).start();
+
 	}
 
 	@Override
