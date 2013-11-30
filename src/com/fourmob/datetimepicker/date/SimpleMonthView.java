@@ -19,7 +19,6 @@ import android.view.View;
 
 import com.fourmob.datetimepicker.Utils;
 
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakelandroid.R;
 
 public class SimpleMonthView extends View {
@@ -80,7 +79,7 @@ public class SimpleMonthView extends View {
 		this.mDayTextColor = resources.getColor(mdark?R.color.white:R.color.date_picker_text_normal);
 		this.mTodayNumberColor = resources.getColor(mdark?R.color.clock_red:R.color.blue);
 		this.mMonthTitleColor = resources.getColor(mdark?R.color.black:R.color.white);
-//		this.mMonthTitleBGColor = resources.getColor(mdark?R.color.blackish:R.color.circle_background);
+		this.mMonthTitleBGColor = resources.getColor(mdark?R.color.blackish:R.color.circle_background);
 		this.mStringBuilder = new StringBuilder(50);
 		MINI_DAY_NUMBER_TEXT_SIZE = resources.getDimensionPixelSize(R.dimen.day_number_size);
 		MONTH_LABEL_TEXT_SIZE = resources.getDimensionPixelSize(R.dimen.month_label_size);
@@ -126,7 +125,11 @@ public class SimpleMonthView extends View {
 		} else {
 			off = this.mDayOfWeekStart;
 		}
-		return off - this.mWeekStart;
+		off=off - this.mWeekStart;
+		while(off>6){
+			off-=7;
+		}
+		return off;
 	}
 
 	private String getMonthAndYearString() {
@@ -149,9 +152,7 @@ public class SimpleMonthView extends View {
 		int paddingDay = (this.mWidth - 2 * this.mPadding) / (2 * this.mNumDays);
 		int dayOffset = findDayOffset();
 		int day = 1;
-
 		while (day <= this.mNumCells) {
-			Log.d("foooo","draw day "+day);
 			int x = paddingDay * (1 + dayOffset * 2) + this.mPadding;
 			if (this.mSelectedDay == day)
 				canvas.drawCircle(x, y - MINI_DAY_NUMBER_TEXT_SIZE / 3, DAY_SELECTED_CIRCLE_SIZE, this.mSelectedCirclePaint);
@@ -217,7 +218,7 @@ public class SimpleMonthView extends View {
 		this.mMonthNumPaint.setStyle(Paint.Style.FILL);
 		this.mMonthNumPaint.setTextAlign(Paint.Align.CENTER);
 		this.mMonthNumPaint.setFakeBoldText(false);
-		setBackgroundColor(mBackground);
+		this.setBackgroundColor(this.mBackground);
 	}
 
 	protected void onDraw(Canvas canvas) {
