@@ -53,6 +53,10 @@
         android:title="@string/as_subtask"
         mirakel:showAsAction="never"/>
     <item
+        android:id="@+id/menu_task_clone"
+        android:title="@string/task_clone"
+        mirakel:showAsAction="never"/>
+    <item
         android:id="@+id/menu_sync_now"
         android:title="@string/action_sync_now"
         mirakel:showAsAction="never"/>

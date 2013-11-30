@@ -282,6 +282,16 @@ public class MainActivity extends ActionBarActivity implements
 		case R.id.mark_as_subtask:
 			TaskDialogHelpers.handleSubtask(this, currentTask, null, true);
 			break;
+		case R.id.menu_task_clone:
+			try {
+				Task newTask = currentTask.create();
+				setCurrentTask(newTask, true);
+				getListFragment().update();
+				updatesForTask(newTask);
+			} catch (NoSuchListException e) {
+				Log.wtf(TAG, "List vanished on task cloning");
+			}
+			break;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
