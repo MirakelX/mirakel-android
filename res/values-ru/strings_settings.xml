@@ -9,6 +9,7 @@
   <string name="sync_use_summary_mirakel">Синхронизировать с Mirakel как %s</string>
   <string name="sync_use_summary_caldav">Синхронизация с CalDav как %s</string>
   <string name="sync_use_summary_nothing">Синхронизацию не применять</string>
+  <string name="sync_user">Имя пользователя</string>
   <string name="sync_server">Сервер</string>
   <string name="sync_server_summary">Синхронизировать с %s</string>
   <string name="sync_password">Пароль</string>
@@ -39,8 +40,6 @@
   <string name="startup_show_lists_summary">Показать все списки при старте</string>
   <string name="startup_list">Выбрать список</string>
   <string name="startup_list_summary">Показать дела из \"%s\"</string>
-  <string name="special_lists_click">Управление расширенными списками</string>
-  <string name="special_lists_new">Новый специальный список</string>
   <string name="settings_misc">Прочее</string>
   <string name="settings_backup">Резервное копирование и импорт</string>
   <string name="backup_click_summary">Резервное копирование базы данных на SD карту (%s)</string>
@@ -98,11 +97,9 @@
   <string name="menu_delete">Удалить</string>
   <string name="menu_color">Изменить цвет</string>
   <string name="howto_setup_server">Как настроить сервер</string>
-  <string name="special_lists_title">Расширенные списки</string>
   <string name="preferences_colorize">Цвета</string>
   <string name="preferences_colorize_tasks">Раскрасить дела</string>
   <string name="preferences_colorize_tasks_everywhere">Раскрасить дела везде</string>
-  <string name="preferences_colorize_tasks_everywhere_summary">...или только в определённых списках?</string>
   <string name="settings_semantics_title">Настройка семантики</string>
   <string name="settings_semantics_condition">Состояние</string>
   <string name="settings_semantics_actions">Действия</string>
@@ -124,6 +121,9 @@
   <string name="settings_use_btn_camera">Показать кнопку камеры</string>
   <string name="preferences_colorize_subtasks">Раскрасить подзадачи?</string>
   <string name="settings_tasks_title">Дела</string>
+  <string name="task_fragment_due">Срок</string>
+  <string name="task_fragment_reminder">Напоминание</string>
+  <string name="task_fragment_subtask">Подзадачи</string>
   <string-array name="sync_frequencies">
     <item>5 мин.</item>
     <item>10 мин.</item>
@@ -141,6 +141,16 @@
     <item>60</item>
     <item>1440</item>
     <item>-1</item>
+  </string-array>
+  <string-array name="weekdays">
+    <item>Don\'t set</item>
+    <item>Monday</item>
+    <item>Tuesday</item>
+    <item>Wednesday</item>
+    <item>Thursday</item>
+    <item>Friday</item>
+    <item>Saturday</item>
+    <item>Sunday</item>
   </string-array>
   <string-array name="priority_entries">
     <item>Не задавайте приоритет</item>

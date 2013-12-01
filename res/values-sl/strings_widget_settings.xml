@@ -9,4 +9,5 @@
   <string name="fontcolor">Barva pisave</string>
   <string name="widget_transparency">Prozornost</string>
   <string name="widget_transparency_summary">%s%% prozornost</string>
+  <string name="widget_due_colors"></string>
 </resources>

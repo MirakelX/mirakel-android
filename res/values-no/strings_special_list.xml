@@ -11,7 +11,6 @@
   <string name="special_list_contains">Utvalgs argumenter</string>
   <string name="special_list_summary">Sammendrag</string>
   <string name="special_lists_defaults">Standardverdier</string>
-  <string name="list_menu_new_special_list">Ny Spesialliste</string>
   <string name="special_list_where_prio_title_text">Prioritet</string>
   <string name="special_list_where_name_title_text">Navn</string>
   <string name="special_list_where_content_title_text">Innhold</string>
@@ -30,7 +29,6 @@
   <string name="inverte">Inverter merking</string>
   <string name="not_in">Ikke i</string>
   <string name="where_like_contain_text">Inneholder</string>
-  <string name="where_like_begin_text">Begynner med</string>
   <string name="where_like_end_text">Slutter med</string>
   <string name="delete">Slett</string>
   <string-array name="special_list_def_date_picker">

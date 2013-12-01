@@ -22,6 +22,7 @@
   <string name="menu_sort_lists">Réorganiser les listes</string>
   <string name="no_https">Vous devriez utiliser https !</string>
   <string name="finish_sync">Fin de synchronisation</string>
+  <string name="local_account">Compte utilisateur</string>
   <string name="inbox">Boîte de réception</string>
   <string name="first_task">Première tâche</string>
   <string name="tasks_new_str">Nouvelle tâche</string>
@@ -141,7 +142,9 @@ Device: %3$s\n]]>
   <string name="permission_write_desc">Autorisation d\'écrire des données dans Mirakel</string>
   <string name="permission_read_write_lbl">Lecture/écriture données de Mirakel</string>
   <string name="permission_read_write_desc">Autorisation de lecture/écriture de données depuis/dans Mirakel</string>
+  <string name="crash_toast_text">Oups, j\'ai perdu le file. Veuillez me redémarrer pour que je puisse demander assistance à mon développeur</string>
   <string name="crash_dialog_title">Mirakel est planté</string>
+  <string name="crash_dialog_text">L\'application s\'est soudainement interrompue. Confirmez vous l\'envoi de rapport anonyme sur votre utilisation afin de nous aider à améliorer l\'application ?</string>
   <string name="crash_dialog_comment_prompt">Vous pouvez ajouter vos commentaires sur le problème ci-dessous :</string>
   <string name="crash_dialog_ok_toast">Merci !</string>
   <string name="message_from_server">Le serveur veut vous dire : %s</string>
@@ -152,32 +155,41 @@ Device: %3$s\n]]>
   <string name="file_no_activity">Je ne sais pas comment ouvrir ce fichier – Désolé</string>
   <string name="file_select">Sélectionnez un fichier</string>
   <string name="file_vanished">Aucun fichier</string>
+  <string name="file_default_title">Titre par défaut</string>
+  <string name="photo_default_title">Photo par défaut</string>
   <string name="edit">Modifier</string>
   <string name="daily">Quotidien</string>
+  <string name="second_day">Tous les deux jours</string>
   <string name="weekly">Hebdomadaire</string>
   <string name="two_weekly">Toutes les deux semaines</string>
   <string name="yearly">Annuel</string>
   <string name="monthly">Mensuel</string>
   <string name="hourly">Horaire</string>
   <string name="minutly">Chaque minute</string>
+  <string name="recurring">Répetition</string>
   <string name="label">Étiquette</string>
+  <string name="forDue">Utilisez-le avec raison</string>
   <string name="minute">Minute</string>
   <string name="hour">Heure</string>
   <string name="day">Jour</string>
   <string name="month">Mois</string>
   <string name="year">Année</string>
+  <string name="new_recurring">Nouvelle fréquence</string>
+  <string name="add_recurring">Répétez ...</string>
   <string name="intervall">Intervalle</string>
   <string name="beginning">Début</string>
   <string name="end">Fin</string>
   <string name="no_begin_end">Aucun %s</string>
   <string name="beginning_end">Début et fin</string>
   <string name="save">Sauvegarder</string>
+  <string name="file_to_large">Impossible de créer la vignette</string>
+  <string name="recurring_not_zero">A quelle fréqeucen me répétez ?</string>
   <string-array name="task_sorting_items">
     <item>Par défaut</item>
     <item>Échéance</item>
     <item>Priorité</item>
     <item>Date de création</item>
-    <item>First by priority, then by date</item>
+    <item>En premier les plus urgent, ensuite par date</item>
   </string-array>
   <string-array name="task_actions_items">
     <item>Modifier</item>

@@ -21,6 +21,7 @@
   <string name="menu_sort_lists">Razvrsti sezname</string>
   <string name="no_https">Priporočljivo je uporabiti varno povezavo HTTPS!</string>
   <string name="finish_sync">Končaj usklajevanje</string>
+  <string name="local_account">Krajevni račun</string>
   <string name="inbox">Vpisane naloge</string>
   <string name="first_task">Prva naloga</string>
   <string name="tasks_new_str">Nova naloga</string>

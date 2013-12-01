@@ -21,6 +21,7 @@
   <string name="menu_sort_lists">إعادة ترتيب القوائم</string>
   <string name="no_https">يجب عليك استخدام https!</string>
   <string name="finish_sync">إنهاء المزامنة</string>
+  <string name="local_account">حساب محلي</string>
   <string name="inbox">البريد الوارد</string>
   <string name="first_task">المهمة الأولى</string>
   <string name="tasks_new_str">مهمة جديدة</string>
@@ -35,6 +36,7 @@
   <string name="action_undo">التراجع عن التغيير الأخير</string>
   <string name="add_subtasks">إضافة مهمة فرعية...</string>
   <string name="remove_files">إزالة الملفات من المهمة</string>
+  <string name="remove_files_summary">هل تريد إزالة % 1$s من % 2$s؟</string>
   <string name="add_subtask">إضافة مهمة فرعية</string>
   <string name="remove_subtask">إزالة مهمة فرعية</string>
   <string name="subtask_add_options">خيارات &gt;&gt;</string>
@@ -83,8 +85,13 @@
   <string name="task_vanished">اوو، لقد اختفت قائمة المهام. اسف…</string>
   <string name="message_try_later">حاول المزامنة لاحقاً</string>
   <string name="message_access_denied">تم رفض الوصول! \nDid هل استخدمت ملف التكوين الصحيح؟</string>
+  <string name="message_create_socket">لا يمكن إنشاء مأخذ توصيل! \nهل تمكنت من الاتصال بالشبكة؟</string>
   <string name="message_account_suspended">تم تعطيل الحساب الخاص بك!</string>
+  <string name="message_parse_message">لا يمكن تحليل المهام – يرجى كتابة كيف حدث هذا</string>
+  <string name="message_message_error">استجابة غير معروفة من الخادم – الرجاء كتابة كيف حدث هذا</string>
   <string name="wrong_config">يبدو أنك إستخدمت ملف تكوين غير صحيح</string>
+  <string name="load_config">قم بتحديد ملف التكوين Taskwarrior</string>
+  <string name="select_config">قم بتحديد ملف التكوين Taskwarrior</string>
   <string name="login_activity_username_label">اسم المستخدم</string>
   <string name="login_activity_server_label">رايط الخادم</string>
   <string name="login_activity_server_typ">نوع الخادم</string>
@@ -124,6 +131,7 @@ SDK-نسخة: %2$d\n
   <string name="backup_export_ok">تصدير إلى %s</string>
   <string name="add_content">إضافة ملاحظة...</string>
   <string name="task_has_content">مهمة مع ملاحظة</string>
+  <string name="permission_group_desc">إذن للوصول إلى Mirakel</string>
   <string name="permission_group_lbl">إذن Mirakel</string>
   <string name="permission_read_lbl">قراءة البيانات من Mirakel</string>
   <string name="permission_read_desc">إذن قراءة البيانات من Mirakel</string>
@@ -131,20 +139,27 @@ SDK-نسخة: %2$d\n
   <string name="permission_write_desc">إذن لكتابة البيانات إلى Mirakel</string>
   <string name="permission_read_write_lbl">القراءة/الكتابة Mirakel-البيانات</string>
   <string name="permission_read_write_desc">إذن قراءة البيانات من وكتابة البيانات إلى Mirakel</string>
+  <string name="crash_dialog_comment_prompt">يمكنك إضافة تعليق حول المشكلة أدناه:</string>
   <string name="crash_dialog_ok_toast">شكرا!</string>
+  <string name="message_from_server">لقد بعث خادم Taskwarrior برسالة: %s</string>
   <string name="list_change_color">تغيير اللون</string>
   <string name="set_color">تحديد لون</string>
   <string name="unset_color">لا لون</string>
   <string name="add_files">إضافة ملف...</string>
   <string name="file_no_activity">لا أعرف كيفية فتح هذا الملف – عذراً</string>
   <string name="file_select">حدد ملف</string>
+  <string name="file_vanished">لا يوجد مثل هذا الملف</string>
+  <string name="file_default_title">تحقق من هذا الملف</string>
+  <string name="photo_default_title">تحقق من هذه الصورة</string>
   <string name="edit">تحرير</string>
   <string name="daily">يوميا</string>
   <string name="weekly">أسبوعيّا</string>
+  <string name="two_weekly">كل أسبوعين</string>
   <string name="yearly">سنويا</string>
   <string name="monthly">شهريّا</string>
   <string name="hourly">كل ساعة</string>
   <string name="minutly">كل دقيقة</string>
+  <string name="label">ملصق</string>
   <string name="minute">دقيقة</string>
   <string name="hour">ساعة</string>
   <string name="day">يوم</string>
@@ -161,7 +176,7 @@ SDK-نسخة: %2$d\n
     <item>الموعد النهائي</item>
     <item>أولوية</item>
     <item>تاريخ الإنشاء</item>
-    <item>First by priority, then by date</item>
+    <item>أولاً حسب الأولوية، ثم حسب التاريخ</item>
   </string-array>
   <string-array name="task_actions_items">
     <item>تحرير</item>

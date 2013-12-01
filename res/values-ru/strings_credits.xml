@@ -4,4 +4,43 @@
   <string name="action_credits">Авторы</string>
   <string name="action_credits_summary">О нас ;)</string>
   <string name="title_activity_credits">Об авторах</string>
+  <string name="credit"><![CDATA[<h1>Mirakel - Клиент списков дел</h1>
+        <p>&copy; 2013 <a href="mailto:az@azapps.de">Anatolij Zelenin</a>, <a href="mailto:georg_semmler_05@web.de">Georg Semmler</a></p>
+        <p>Это свободное программное обеспечение (под лицензией <a href="https://www.gnu.org/licenses/gpl.html">GPLv3</a>).</p>
+        <p>Исходный код находится в свободном доступе здесь:</p>
+        <p><a href="https://github.com/azapps/mirakel-android">https://github.com/azapps/mirakel-android</a></p>
+        <p>      Данная программа является свободным программным обеспечением: вы можете распространять и / или изменять его в соответствии с условиями <a href="https://www.gnu.org/licenses/gpl.html">GNU General Public License</a> опубликованной Фондом Свободного Программного Обеспечения, версии 3, либо (по вашему выбору) любой более поздней версии.</p>  
+      <p>Эта программа распространяется в надежде, что она будет полезной,
+       но БЕЗ ВСЯКИХ ГАРАНТИЙ, даже без подразумеваемой гарантии
+       РАБОТОСПОСОБНОСТИ или ПРИГОДНОСТИ ДЛЯ КОНКРЕТНЫХ ЦЕЛЕЙ. Смотрите
+       GNU General Public License для более подробной информации.</p>
+      <h2>Ошибки и функции</h2>
+      <p>Если вы нашли ошибку или хотите запросить функцию, пожалуйста, оставьте детальное сообщение об ошибке (запросе) здесь:
+      <a href="https://github.com/azapps/mirakel-android/issues">https://github.com/azapps/mirakel-android/issues</a></p>
+        <h2>Авторы</h2>
+        <h3>Новый логотип / App-Иконка</h3>
+        <b>by <a href="http://www.alexkaessner.de/">Alexander Käßner</a></b>
+        
+        <h3>Переводы</h3>
+        <p><b>Испанский:</b> by macebal</p>
+        <p><b>Французский:</b> by Ghost of Kendo</p>
+        <p><b>Норвежский:</b> by Jim-Stefhan Johansen</p>
+        <p><b>Словенский:</b> by mateju</p>
+        <p><b>Чешский:</b> by sarimak</p>
+        <h3>Библиотеки</h3>
+        <p><a href="https://code.google.com/p/google-gson/">Gson</a><br />
+        License: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a></p>
+        <p><a href="http://joda-time.sourceforge.net/">Joda-Time</a><br />
+        License: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a></p>
+        <p><a href="https://code.google.com/p/datetimepicker/">DateTimePicker</a><br />
+        License: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a></p>
+        <p><a href="https://code.google.com/p/android-change-log/">Android Change Log</a><br />
+        License: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a></p>
+        <p><a href="http://acra.ch/">ACRA</a> (Crash reports)<br />
+        License: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a></p>
+        <p><a href="https://github.com/LarsWerkman/HoloColorPicker">HoloColorPicker</a><br />
+        License: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a></p>
+        
+        ]]>
+    </string>
 </resources>
