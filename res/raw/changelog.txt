@@ -30,6 +30,7 @@ $ 2.2-alpha+x
     * Widget updates
     * Auto backup
     * Clone a task
+    * Add Weekdays to semantics
 $ 2.1.4+x
   % Version 2.1.4+x (Beta)
   ! Please report Bugs and errors!
