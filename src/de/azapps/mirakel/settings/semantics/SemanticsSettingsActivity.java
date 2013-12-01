@@ -41,7 +41,7 @@ public class SemanticsSettingsActivity extends ListSettings {
 
 	private Semantic newSemantic() {
 		return Semantic.newSemantic(getString(R.string.semantic_new), null,
-				null, null);
+				null, null, null);
 	}
 
 	@SuppressLint("NewApi")

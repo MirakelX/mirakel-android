@@ -2,6 +2,7 @@ package de.azapps.mirakel.model.semantic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -25,12 +26,12 @@ public class Semantic extends SemanticBase {
 	private static final String TAG = "Semantic";
 	private static DatabaseHelper dbHelper;
 	private static final String[] allColumns = { "_id", "condition",
-			"priority", "due", "default_list_id" };
+			"priority", "due", "default_list_id", "weekday" };
 	private static Map<String, Semantic> semantics = new HashMap<String, Semantic>();
 
 	protected Semantic(int id, String condition, Integer priority, Integer due,
-			ListMirakel list) {
-		super(id, condition, priority, due, list);
+			ListMirakel list, Integer weekday) {
+		super(id, condition, priority, due, list, weekday);
 	}
 
 	public void save() {
@@ -64,8 +65,8 @@ public class Semantic extends SemanticBase {
 	}
 
 	public static Semantic newSemantic(String condition, Integer priority,
-			Integer due, ListMirakel list) {
-		Semantic m = new Semantic(0, condition, priority, due, list);
+			Integer due, ListMirakel list, Integer weekday) {
+		Semantic m = new Semantic(0, condition, priority, due, list, weekday);
 		return m.create();
 	}
 
@@ -158,8 +159,11 @@ public class Semantic extends SemanticBase {
 		ListMirakel list = null;
 		if (!c.isNull(4))
 			list = ListMirakel.getList(c.getInt(4));
+		Integer weekday = null;
+		if (!c.isNull(5))
+			weekday = c.getInt(5);
 
-		return new Semantic(id, condition, priority, due, list);
+		return new Semantic(id, condition, priority, due, list, weekday);
 	}
 
 	public static Task createTask(String taskName, ListMirakel currentList,
@@ -251,6 +255,19 @@ public class Semantic extends SemanticBase {
 				// Set list
 				if (s.getList() != null) {
 					currentList = s.getList();
+				}
+				// Weekday?
+				if (s.getWeekday() != null) {
+					tempdue = new GregorianCalendar();
+					int nextWeekday = s.getWeekday() + 1;
+					// Because there are some dudes which means, sunday is the
+					// first day of the week… That's obviously wrong!
+					if (nextWeekday == 8)
+						nextWeekday = 1;
+					do {
+						tempdue.add(Calendar.DAY_OF_YEAR, 1);
+					} while (tempdue.get(Calendar.DAY_OF_WEEK) != nextWeekday);
+					due = tempdue;
 				}
 				taskName = taskName.substring(word.length()).trim();
 				words.remove(0);
