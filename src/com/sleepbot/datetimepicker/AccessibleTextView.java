@@ -1,5 +1,6 @@
 package com.sleepbot.datetimepicker;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 /**
  * Fake Button class, used so TextViews can announce themselves as Buttons, for accessibility.
  */
+@SuppressLint("NewApi")
 public class AccessibleTextView extends TextView {
 
     public AccessibleTextView(Context context, AttributeSet attrs) {

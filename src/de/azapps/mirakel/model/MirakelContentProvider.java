@@ -25,14 +25,13 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.dmfs.provider.tasks.TaskContract;
 import org.dmfs.provider.tasks.TaskContract.TaskLists;
 import org.dmfs.provider.tasks.TaskContract.Tasks;
-
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.OnAccountsUpdateListener;
+import android.annotation.SuppressLint;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
@@ -41,6 +40,7 @@ import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.os.Build;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.account.AccountMirakel;
@@ -149,7 +149,7 @@ public class MirakelContentProvider extends ContentProvider implements
 				new String[] { isList ? TaskLists._ID : Tasks._ID }, selection,
 				selectionArgs, null);
 		String s = "";
-		if (c.getCount() > 0&&c.moveToFirst()) {
+		if (c.getCount() > 0 && c.moveToFirst()) {
 			while (!c.isAfterLast()) {
 				s += (s.equals("") ? "" : ",") + c.getInt(0);
 				c.moveToNext();
@@ -217,9 +217,9 @@ public class MirakelContentProvider extends ContentProvider implements
 						throw new IllegalArgumentException("Unkown account");
 					}
 					if (l.getAccount().getId() != a.getId()) {
-						lID=createNewList(uri);
-					}else{
-						lID=l.getId();
+						lID = createNewList(uri);
+					} else {
+						lID = l.getId();
 					}
 				}
 			} else {
@@ -283,7 +283,7 @@ public class MirakelContentProvider extends ContentProvider implements
 			return l.getId();
 		} else {
 			c.moveToFirst();
-			int id=c.getInt(0);
+			int id = c.getInt(0);
 			c.close();
 			return id;
 		}
@@ -430,6 +430,7 @@ public class MirakelContentProvider extends ContentProvider implements
 		}
 	}
 
+	@SuppressLint("NewApi")
 	private Cursor listQuery(String[] projection, String selection,
 			String sortOrder, SQLiteQueryBuilder sqlBuilder,
 			boolean isSyncAdapter, boolean hasId, String _id) {
@@ -443,14 +444,21 @@ public class MirakelContentProvider extends ContentProvider implements
 			listQuery += "WHERE " + TaskLists._ID + "=" + _id;
 		}
 		sqlBuilder.setTables("(" + listQuery + ")");
+		String query;
+		if (Build.VERSION.SDK_INT >= 11) {
+			query = sqlBuilder.buildQuery(projection, selection, null, null,
+					sortOrder, null);
+		} else {
+			query = sqlBuilder.buildQuery(projection, selection, null, null,
+					null, sortOrder, null);
 
-		String query = sqlBuilder.buildQuery(projection, selection, null, null,
-				sortOrder, null);
+		}
 		Log.d(TAG, query);
 		Cursor c = database.rawQuery(query, null);
 		return c;
 	}
 
+	@SuppressLint("NewApi")
 	private Cursor taskQuery(String[] projection, String selection,
 			String sortOrder, SQLiteQueryBuilder sqlBuilder,
 			boolean isSyncAdapter, Uri uri, String _id, boolean hasID) {
@@ -473,8 +481,15 @@ public class MirakelContentProvider extends ContentProvider implements
 		}
 
 		sqlBuilder.setTables("(" + taskQuery + ")");
-		String query = sqlBuilder.buildQuery(projection, selection, null, null,
-				sortOrder, null);
+		String query;
+		if (Build.VERSION.SDK_INT >= 11) {
+			query = sqlBuilder.buildQuery(projection, selection, null, null,
+					sortOrder, null);
+		} else {
+			query = sqlBuilder.buildQuery(projection, selection, null, null,
+					null, sortOrder, null);
+
+		}
 		Log.d(TAG, query);
 		return database.rawQuery(query, null);
 	}

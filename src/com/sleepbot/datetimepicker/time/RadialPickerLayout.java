@@ -521,7 +521,8 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
      *
      * @param animate True to animate the transition, false to show with no animation.
      */
-    public void setCurrentItemShowing(int index, boolean animate) {
+    @SuppressLint("NewApi")
+	public void setCurrentItemShowing(int index, boolean animate) {
         if (index != HOUR_INDEX && index != MINUTE_INDEX) {
             Log.e(TAG, "TimePicker does not support view at index " + index);
             return;

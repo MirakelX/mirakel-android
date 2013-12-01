@@ -1,9 +1,9 @@
 package com.fourmob.datetimepicker;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
-
 import com.nineoldandroids.animation.Keyframe;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.animation.PropertyValuesHolder;
@@ -61,6 +61,7 @@ public class Utils {
 		// TODO
 	}
 
+	@SuppressLint("NewApi")
 	public static boolean isTouchExplorationEnabled(
 			AccessibilityManager accessibilityManager) {
 		if (Build.VERSION.SDK_INT >= 14) {

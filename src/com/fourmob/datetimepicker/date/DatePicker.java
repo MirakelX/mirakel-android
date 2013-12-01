@@ -7,11 +7,12 @@ import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
-
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.SystemClock;
@@ -24,10 +25,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewAnimator;
-
 import com.fourmob.datetimepicker.Utils;
 import com.nineoldandroids.animation.ObjectAnimator;
-
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakelandroid.R;
@@ -139,10 +138,11 @@ public class DatePicker extends LinearLayout implements View.OnClickListener, Da
 		mCalendar.set(Calendar.YEAR, year);		
 	}
 	
+	@SuppressLint("NewApi")
 	@Override
 	public void onScreenStateChanged(int screenState) {
-		// TODO Auto-generated method stub
-		super.onScreenStateChanged(screenState);
+		if (Build.VERSION.SDK_INT >= 16)
+			super.onScreenStateChanged(screenState);
 		Log.d("dooo","screenta");
 	}
 

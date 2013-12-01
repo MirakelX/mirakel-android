@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector
   xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_pressed="true" android:color="@android:color/holo_red_dark" />
-    <item android:state_selected="true" android:state_pressed="false" android:color="@android:color/holo_red_dark" />
+    <item android:state_pressed="true" android:color="@color/holo_red_dark" />
+    <item android:state_selected="true" android:state_pressed="false" android:color="@color/holo_red_dark" />
     <item android:state_selected="false" android:state_pressed="false" android:color="@color/clock_white" />
 </selector>
