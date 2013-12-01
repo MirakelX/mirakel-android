@@ -122,7 +122,7 @@
   <string name="menu_delete">Eliminar</string>
   <string name="menu_color">Mudar cor</string>
   <string name="howto_setup_server">Como configurar um servidor</string>
-  <string name="register_server">Se precisar de uma conta para sincronização com o nosso servidor, escreva-nos uma mensagem eletrónica. na próxima versão terá a possibilidade de registar uma conta!</string>
+  <string name="register_server">Se precisar de uma conta para sincronização com o nosso servidor, escreva-nos uma mensagem eletrónica. na próxima versão terá a possibilidade de registar uma conta!</string>
   <string name="send_mail">Enviar mensagem</string>
   <string name="special_lists_title">Listas inteligentes</string>
   <string name="register">Registar</string>
