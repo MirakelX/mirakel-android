@@ -16,34 +16,15 @@ package com.sleepbot.datetimepicker.time;
  * limitations under the License
  */
 
-import java.text.DateFormatSymbols;
-import java.util.ArrayList;
-import java.util.Locale;
-
 import android.annotation.SuppressLint;
-import android.app.ActionBar.LayoutParams;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.graphics.Rect;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.text.method.TransformationMethod;
-import android.util.Log;
-import android.view.KeyCharacterMap;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.Button;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-
-import com.fourmob.datetimepicker.Utils;
 import com.sleepbot.datetimepicker.time.TimePicker.OnTimeSetListener;
 
 import de.azapps.mirakelandroid.R;

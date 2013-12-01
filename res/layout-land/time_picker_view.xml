@@ -18,15 +18,10 @@
     android:id="@+id/time_picker_dialog"
     android:layout_width="wrap_content"
     android:layout_height="@dimen/dialog_height"
-    android:layout_marginBottom="@dimen/minimum_margin_top_bottom"
-    android:layout_marginLeft="@dimen/minimum_margin_sides"
-    android:layout_marginRight="@dimen/minimum_margin_sides"
-    android:layout_marginTop="@dimen/minimum_margin_top_bottom"
     android:focusable="true"
     android:orientation="horizontal" >
 
     <LinearLayout
-        
         android:layout_width="@dimen/left_side_width"
         android:layout_height="match_parent"
         android:orientation="vertical" >

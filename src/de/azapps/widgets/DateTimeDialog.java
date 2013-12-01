@@ -4,7 +4,6 @@ import com.fourmob.datetimepicker.date.DatePicker;
 import com.fourmob.datetimepicker.date.DatePicker.OnDateSetListener;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePicker;
-import com.sleepbot.datetimepicker.time.TimePicker.KeyboardListener;
 import com.sleepbot.datetimepicker.time.TimePicker.OnTimeSetListener;
 
 import de.azapps.mirakelandroid.R;
@@ -16,10 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.ViewAnimator;
 import android.widget.ViewSwitcher;
 
 public class DateTimeDialog extends DialogFragment  {
@@ -59,7 +55,7 @@ public class DateTimeDialog extends DialogFragment  {
 
 	float startX;
 	float startY;
-	private ViewSwitcher viewAnimator;
+	private ViewSwitcher viewSwitcher;
 	private TimePicker tp;
 	private DatePicker dp;
 	private boolean isCurrentDatepicker=true;
@@ -85,11 +81,11 @@ public class DateTimeDialog extends DialogFragment  {
 		 .findViewById(R.id.datetime_picker_date);
 		 Button switchToTime = (Button) v
 		 .findViewById(R.id.datetime_picker_time);
-		viewAnimator = (ViewSwitcher) v
+		viewSwitcher = (ViewSwitcher) v
 				.findViewById(R.id.datetime_picker_animator);
 
 
-		viewAnimator.setOnClickListener(new View.OnClickListener() {
+		viewSwitcher.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				// viewAnimator.showNext();
 			}
@@ -144,7 +140,7 @@ public class DateTimeDialog extends DialogFragment  {
 		switchToDate.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				if(!isCurrentDatepicker){
-					viewAnimator.showPrevious();
+					viewSwitcher.showPrevious();
 					isCurrentDatepicker=true;
 				}
 			}
@@ -153,7 +149,7 @@ public class DateTimeDialog extends DialogFragment  {
 		switchToTime.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				if(isCurrentDatepicker){
-					viewAnimator.showNext();
+					viewSwitcher.showNext();
 					isCurrentDatepicker=false;
 
 				}
@@ -180,14 +176,17 @@ public class DateTimeDialog extends DialogFragment  {
 	
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
-		// TODO Auto-generated method stub
 		super.onConfigurationChanged(newConfig);
 		Bundle time= (Bundle) tp.onSaveInstanceState();
 		Bundle date =(Bundle) dp.onSaveInstanceState();
-		
 		getDialog().setContentView(
 				onCreateView(LayoutInflater.from(getDialog().getContext()),
 						null, null));
+		if(isCurrentDatepicker&&viewSwitcher.getCurrentView().getId()!=R.id.date_picker){
+			viewSwitcher.showPrevious();
+		}else if(!isCurrentDatepicker&&viewSwitcher.getCurrentView().getId()!=R.id.time_picker){
+			viewSwitcher.showNext();
+		}
 		dp.onRestoreInstanceState(date);
 		tp.onRestoreInstanceState(time);
 	}

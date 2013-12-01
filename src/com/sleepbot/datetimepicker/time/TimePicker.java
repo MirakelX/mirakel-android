@@ -214,7 +214,14 @@ public class TimePicker extends LinearLayout implements
 			}
 		});
 		mDoneButton.setOnKeyListener(keyboardListener);
-		this.mDoneButton.setTextColor(mUnselectedColor);
+		this.mNoDateButton = ((Button) layout.findViewById(R.id.dismiss));
+		this.mNoDateButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View view) {
+				// DatePickerDialog.this.tryVibrate();/
+				if (mCallback != null)
+					mCallback.onNoTimeSet();
+			}
+		});
 		if (mDark) {
 			View header = layout.findViewById(R.id.time_dialog_head);
 			header.setBackgroundColor(res.getColor(R.color.dialog_dark_gray));
@@ -230,18 +237,13 @@ public class TimePicker extends LinearLayout implements
 			View hairline = layout.findViewById(R.id.hairline_timepicker);
 			if (hairline != null)
 				hairline.setBackgroundColor(res.getColor(R.color.clock_gray));
+			this.mDoneButton.setTextColor(mUnselectedColor);
+			this.mNoDateButton.setTextColor(mUnselectedColor);
 
+		}else{
+			mDoneButton.setTextColor(res.getColor(R.color.Black));
+			mNoDateButton.setTextColor(res.getColor(R.color.Black));
 		}
-
-		this.mNoDateButton = ((Button) layout.findViewById(R.id.dismiss));
-		this.mNoDateButton.setTextColor(mUnselectedColor);
-		this.mNoDateButton.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View view) {
-				// DatePickerDialog.this.tryVibrate();/
-				if (mCallback != null)
-					mCallback.onNoTimeSet();
-			}
-		});
 
 		// Enable or disable the AM/PM view.
 		mAmPmHitspace = layout.findViewById(R.id.ampm_hitspace);

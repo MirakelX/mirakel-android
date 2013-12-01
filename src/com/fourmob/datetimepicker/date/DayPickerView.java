@@ -1,5 +1,6 @@
 package com.fourmob.datetimepicker.date;
 
+import de.azapps.mirakel.helper.Log;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
@@ -10,6 +11,7 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 
 public class DayPickerView extends ListView implements AbsListView.OnScrollListener, DatePicker.OnDateChangedListener {
+	private static final String TAG = "DayPickerView";
 	public static int LIST_TOP_OFFSET = -1;
 	protected SimpleMonthAdapter mAdapter;
 	protected Context mContext;
@@ -63,6 +65,7 @@ public class DayPickerView extends ListView implements AbsListView.OnScrollListe
 	}
 
 	public boolean goTo(SimpleMonthAdapter.CalendarDay calendarDay, boolean scrollToTop, boolean selectDay, boolean displayMonth) {
+		Log.w(TAG,"goto");
 		if (selectDay)
 			this.mSelectedDay.set(calendarDay);
 

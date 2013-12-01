@@ -88,7 +88,7 @@ public class DatePickerDialog extends DialogFragment {
 			public void run() {
 				mDatePicker.onRestoreInstanceState(b);
 			}
-		}, 0);
+		}, 50);
 
 	}
 
@@ -98,7 +98,6 @@ public class DatePickerDialog extends DialogFragment {
 		try {
 			getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		View view = layoutInflater.inflate(R.layout.date_picker_dialog, null);
