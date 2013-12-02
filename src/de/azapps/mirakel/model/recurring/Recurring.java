@@ -213,13 +213,13 @@ public class Recurring extends RecurringBase {
 		return c;
 	}
 
-	public static List<Pair<Integer, String>> getForDialog(boolean isDue,
-			Task task) {
+	public static List<Pair<Integer, String>> getForDialog(boolean isDue/*,
+			Task task*/) {
 		String where = "temporary=0";
 		if (isDue) {
 			where += " AND for_due=1";
 		}
-		if (task != null) {
+		/*if (task != null) {
 			int id = -1;
 			if (isDue)
 				id = task.getRecurrenceId();
@@ -227,7 +227,7 @@ public class Recurring extends RecurringBase {
 				id = task.getRecurringReminderId();
 			if (id > -1)
 				where += " OR _id=" + id;
-		}
+		}*/
 		Cursor c = database.query(TABLE, new String[] { "_id", "label" },
 				where, null, null, null, null);
 		List<Pair<Integer, String>> ret = new ArrayList<Pair<Integer, String>>();

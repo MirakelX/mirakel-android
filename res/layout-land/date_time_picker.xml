@@ -34,8 +34,8 @@
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ellipsize="none"
             android:layout_weight="1"
+            android:ellipsize="none"
             android:rotation="90"
             android:text="@string/set_date" />
 

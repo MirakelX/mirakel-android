@@ -33,7 +33,7 @@
     <color name="holo_blue_dark">#ff0099cc</color>
     <color name="holo_blue_light">#ff33b5e5</color>
     <color name="holo_orange_dark">#ffff8800</color>
-    
+
     <!-- Datepicker -->
     <color name="white">#ffffffff</color>
     <color name="circle_background">#fff2f2f2</color>
@@ -45,15 +45,13 @@
     <color name="date_picker_text_normal">#ff999999</color>
     <color name="calendar_header">#ff999999</color>
     <color name="date_picker_view_animator">#fff2f2f2</color>
-
     <color name="ampm_text_color">#8c8c8c</color>
     <color name="numbers_text_color">#8c8c8c</color>
-
     <color name="transparent_black">#7F000000</color>
-    
+
     <!-- Datepicker dark -->
-    
-	<color name="ampm_off">#ff404040</color>
+
+    <color name="ampm_off">#ff404040</color>
     <color name="ampm_on">#ffffffff</color>
     <color name="time_text_color">#E6FFFFFF</color>
     <color name="ampm_text_color">#99FFFFFF</color>
@@ -61,7 +59,6 @@
     <color name="screen_saver_dim_color">#FF001634</color>
     <color name="action_bar_button_text_color">#FFFFFF</color>
     <color name="dialog_gray">#28ffffff</color>
-
     <color name="black">#ff000000</color>
     <!-- If this color is changed or no longer used as the primary background, ensure that blackish_trans is changed as well. -->
     <color name="blackish">#1c1e20</color>
@@ -74,12 +71,10 @@
     <color name="transparent">#00000000</color>
     <color name="transparent_white">#66ffffff</color>
     <color name="alarm_whiteish">#0cffffff</color>
-
     <color name="main_button_normal">#606060</color>
     <color name="main_button_selected">#909090</color>
     <color name="main_button_red_normal">#ff4444</color> <!-- same as clock_red -->
     <color name="main_button_red_selected">#c0ff4444</color>
-
     <color name="clock_red">#ff4444</color>
     <color name="clock_white">#ffffff</color>
     <color name="clock_gray">#80ffffff</color>
@@ -92,6 +87,7 @@
 
     <color name="alarm_timeline_color">#4D4D4D</color>
     <color name="dialog_dark_gray">#70000000</color>
-    
+    <color name="recurrence_picker_background">#fff2f2f2</color>
+    <color name="recurrence_bubble_text_normal">#ff737373</color>
 
 </resources>

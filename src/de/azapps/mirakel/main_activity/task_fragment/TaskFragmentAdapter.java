@@ -874,7 +874,7 @@ public class TaskFragmentAdapter extends
 
 	private View setupReminder(ViewGroup parent, View convertView) {
 		final View reminder = convertView == null
-				|| convertView.getId() != R.id.task_reminder ? inflater
+				|| convertView.getId() != R.id.reminder_wrapper ? inflater
 				.inflate(R.layout.task_reminder, parent, false) : convertView;
 		setupReminderView(convertView, reminder);
 		return reminder;
@@ -942,11 +942,12 @@ public class TaskFragmentAdapter extends
 
 	static class DueHolder {
 		TextView taskDue;
+		ImageButton reccurence;
 	}
 
 	private View setupDue(ViewGroup parent, View convertView, int width) {
 		if (width < 600) {
-			final View due = (convertView == null || convertView.getId() != R.id.task_due) ? inflater
+			final View due = (convertView == null || convertView.getId() != R.id.due_wrapper) ? inflater
 					.inflate(R.layout.task_due, parent, false) : convertView;
 			setupDueView(convertView, due);
 			return due;
@@ -971,6 +972,14 @@ public class TaskFragmentAdapter extends
 		if (convertView == null || convertView.getTag() == null) {
 			holder = new DueHolder();
 			holder.taskDue = (TextView) due.findViewById(R.id.task_due);
+			holder.reccurence=(ImageButton)due.findViewById(R.id.reccuring_due);
+			holder.reccurence.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					TaskDialogHelpers.handleRecurrence((Activity) context, task, true,holder.reccurence);				
+				}
+			});
 			holder.taskDue.setOnClickListener(new View.OnClickListener() {
 
 				@TargetApi(Build.VERSION_CODES.HONEYCOMB)

@@ -17,13 +17,28 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/task_due"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
+    android:id="@+id/due_wrapper"
     android:layout_height="wrap_content"
-    android:drawablePadding="5dp"
-    android:paddingBottom="5dp"
-    android:paddingLeft="@dimen/task_padding_for_icons"
-    android:paddingRight="@dimen/task_padding_for_icons"
-    android:textAppearance="?android:attr/textAppearanceLarge"
-    android:textSize="@dimen/due_reminder_text_size" />
+    android:orientation="horizontal" >
+
+    <TextView
+        android:id="@+id/task_due"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawablePadding="5dp"
+        android:paddingBottom="5dp"
+        android:paddingLeft="@dimen/task_padding_for_icons"
+        android:paddingRight="@dimen/task_padding_for_icons"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="@dimen/due_reminder_text_size" />
+
+    <ImageButton
+        android:id="@+id/reccuring_due"
+        android:layout_marginLeft="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:drawable/ic_menu_mylocation" />
+
+</LinearLayout>

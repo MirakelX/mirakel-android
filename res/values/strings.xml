@@ -284,4 +284,11 @@ Device: %3$s\n]]>
     <!-- TaskFragment -->
     <string name="settings_task_fragment_title">Task overview</string>
 
+    <!-- Repeat an monthly event on the same day of every month [CHAR LIMIT=20] -->
+    <string name="recurrence_month_pattern_by_day">on the same day each month</string>
+    <!-- Description of the selected marker for accessibility support [CHAR LIMIT = NONE] -->
+    <string name="acessibility_recurrence_choose_end_date_description">change end date</string>
+    <!-- The button label for saving an event -->
+    <string name="save_label">Done</string>
+
 </resources>
