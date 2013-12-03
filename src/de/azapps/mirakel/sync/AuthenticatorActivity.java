@@ -55,14 +55,12 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
@@ -80,6 +78,7 @@ import android.widget.ViewSwitcher;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -146,9 +145,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 	@Override
 	public void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
-		SharedPreferences preferences = PreferenceManager
-				.getDefaultSharedPreferences(this);
-		if (preferences.getBoolean("DarkTheme", false))
+		if (MirakelPreferences.isDark())
 			setTheme(R.style.DialogDark);
 		mAccountManager = AccountManager.get(this);
 		final Intent intent = getIntent();
@@ -221,7 +218,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 		});
 		mMessage.setText(getMessage(getResources().getStringArray(
 				R.array.server_typs)[0]));
-		if (preferences.getBoolean("DarkTheme", false)
+		if (MirakelPreferences.isDark()
 				&& VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB) {
 			findViewById(R.id.login_button_frame).setBackgroundColor(
 					getResources().getColor(android.R.color.transparent));

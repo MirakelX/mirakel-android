@@ -8,6 +8,7 @@
   <string name="sync_use_summary_taskwarrior">Synkroniser med Taskwarrior som %s</string>
   <string name="sync_use_summary_mirakel">Synkroniser med Mirakel som %s</string>
   <string name="sync_use_summary_nothing">Ikke bruk synkronisering</string>
+  <string name="sync_user">Brukernavn</string>
   <string name="sync_server">Server</string>
   <string name="sync_server_summary">Synkroniserer med %s</string>
   <string name="sync_password">Passord</string>
@@ -37,7 +38,6 @@
   <string name="startup_show_lists_summary">Vis alle lister ved oppstart</string>
   <string name="startup_list">Velg liste</string>
   <string name="startup_list_summary">Vis oppgaver av \"%s\"</string>
-  <string name="special_lists_click">Behandle Spesiallister</string>
   <string name="settings_misc">Diverse</string>
   <string name="settings_backup">Sikkerhetskopi og importering</string>
   <string name="backup_click_summary">Sikkerhetskopier databasen til SD-kort (%s)</string>
@@ -92,11 +92,9 @@
   <string name="menu_delete">Slett</string>
   <string name="menu_color">Endre farge</string>
   <string name="howto_setup_server">Hvordan sette opp en server</string>
-  <string name="special_lists_title">Spesiallister</string>
   <string name="preferences_colorize">Farger</string>
   <string name="preferences_colorize_tasks">Fargelegge oppgaver</string>
   <string name="preferences_colorize_tasks_everywhere">Fargelegge oppgaver overalt</string>
-  <string name="preferences_colorize_tasks_everywhere_summary">... eller bare i Spesiallister?</string>
   <string name="settings_semantics_title">Konfigurere semantikk</string>
   <string name="settings_semantics_condition">Tilstand</string>
   <string name="settings_semantics_actions">Handlinger</string>
@@ -113,6 +111,9 @@
   <string name="settings_subtask_add_to_same_list">Legg til deloppgave i listen over oppgaver</string>
   <string name="settings_subtask_add_to_same_list_summary">Eller velg en standardliste, der deloppgaven vil bli lagt til</string>
   <string name="settings_subtask_add_to_list_summary">Legg til deloppgave til %s</string>
+  <string name="task_fragment_due">Forfall</string>
+  <string name="task_fragment_reminder">Påminnelse</string>
+  <string name="task_fragment_subtask">Deloppgave</string>
   <string-array name="sync_frequencies">
     <item>5 min</item>
     <item>10 min</item>
@@ -130,6 +131,16 @@
     <item>60</item>
     <item>1440</item>
     <item>-1</item>
+  </string-array>
+  <string-array name="weekdays">
+    <item>Don\'t set</item>
+    <item>Monday</item>
+    <item>Tuesday</item>
+    <item>Wednesday</item>
+    <item>Thursday</item>
+    <item>Friday</item>
+    <item>Saturday</item>
+    <item>Sunday</item>
   </string-array>
   <string-array name="priority_entries">
     <item>Ikke angi prioritet</item>

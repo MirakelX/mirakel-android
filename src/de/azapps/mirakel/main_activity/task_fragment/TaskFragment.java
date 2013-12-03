@@ -19,6 +19,7 @@
 package de.azapps.mirakel.main_activity.task_fragment;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,8 @@ import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -44,11 +47,13 @@ import android.view.ViewGroup;
 import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.main_activity.task_fragment.TaskFragmentAdapter.TYPE;
@@ -83,17 +88,38 @@ public class TaskFragment extends Fragment {
 		listView.setAdapter(adapter);
 		listView.setItemsCanFocus(true);
 		listView.setOnItemClickListener(new OnItemClickListener() {
+			private boolean playing = false;
+			private MediaPlayer mPlayer;
 
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1,
 					int position, long id) {
 				int type = adapter.getData().get(position).first;
 				if (type == TYPE.FILE) {
-					if(main.getCurrentTask()==null)
+					if (main.getCurrentTask() == null)
 						return;
 					FileMirakel file = main.getCurrentTask().getFiles()
 							.get(adapter.getData().get(position).second);
 					String mimetype = FileUtils.getMimeType(file.getPath());
+					if (file.getPath().endsWith(".mp3")) {
+						if (playing) {
+							mPlayer.release();
+							mPlayer = null;
+							playing = false;
+						} else {
+							mPlayer = new MediaPlayer();
+							try {
+								mPlayer.setDataSource(file.getPath());
+								mPlayer.prepare();
+								mPlayer.start();
+								playing = true;
+							} catch (IOException e) {
+								Log.e(TAG, "prepare() failed");
+							}
+
+						}
+						return;
+					}
 
 					Intent i2 = new Intent();
 					i2.setAction(android.content.Intent.ACTION_VIEW);
@@ -323,6 +349,47 @@ public class TaskFragment extends Fragment {
 		if (main.getPreferences().getBoolean("useBtnCamera", true)
 				&& Helpers.isIntentAvailable(main,
 						MediaStore.ACTION_IMAGE_CAPTURE)) {
+			adapter.setaudioButtonClick(new View.OnClickListener() {
+				private boolean startRecording = true;
+				private MediaRecorder mRecorder;
+				private String filePath = null;
+
+				@Override
+				public void onClick(View v) {
+					ImageButton button = (ImageButton) v;
+					if (startRecording) {
+						mRecorder = new MediaRecorder();
+						mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+						mRecorder
+								.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+						filePath = FileUtils.getOutputMediaFile(
+								FileUtils.MEDIA_TYPE_AUDIO).getAbsolutePath();
+						mRecorder.setOutputFile(filePath);
+						mRecorder
+								.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+						int resid = R.drawable.ic_action_stop;
+						if (MirakelPreferences.isDark())
+							resid = R.drawable.ic_action_stop_dark;
+						button.setImageResource(resid);
+						try {
+							mRecorder.prepare();
+						} catch (IOException e) {
+							Log.e(TAG, "prepare() failed");
+						}
+						mRecorder.start();
+						startRecording = false;
+					} else {
+						mRecorder.stop();
+						mRecorder.release();
+						mRecorder = null;
+						startRecording = true;
+						button.setImageResource(android.R.drawable.ic_btn_speak_now);
+						main.getCurrentTask().addFile(getActivity(), filePath);
+						update(main.getCurrentTask());
+					}
+
+				}
+			});
 			adapter.setcameraButtonClick(new View.OnClickListener() {
 
 				@Override

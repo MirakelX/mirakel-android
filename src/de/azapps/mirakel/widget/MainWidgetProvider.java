@@ -122,6 +122,13 @@ public class MainWidgetProvider extends AppWidgetProvider {
 								context.getResources().getDrawable(
 										R.drawable.ic_action_overflow),
 								new int[] { 52, 52, 52 }, 3));
+				views.setImageViewBitmap(
+						R.id.widget_add_task,
+						colorizeBitmap(
+								WidgetHelper.getFontColor(context, widgetId),
+								context.getResources().getDrawable(
+										R.drawable.ic_action_new),
+								new int[] { 52, 52, 52 }, 3));
 			}
 
 			if (!isMinimalistic && !oldAPI) {

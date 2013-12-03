@@ -27,7 +27,6 @@ import java.util.Vector;
 
 import sheetrock.panda.changelog.ChangeLog;
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.appwidget.AppWidgetManager;
@@ -37,7 +36,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
@@ -63,6 +61,7 @@ import de.azapps.mirakel.PagerAdapter;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.helper.UndoHistory;
@@ -144,11 +143,11 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		preferences = PreferenceManager.getDefaultSharedPreferences(this);
-		darkTheme = preferences.getBoolean("DarkTheme", false);
+		darkTheme = MirakelPreferences.isDark();
 		if (darkTheme)
 			setTheme(R.style.AppBaseThemeDARK);
 		super.onCreate(savedInstanceState);
-		
+
 		boolean isTablet = Helpers.isTablet(this);
 		highlightSelected = preferences.getBoolean("highlightSelected",
 				isTablet);
@@ -282,6 +281,16 @@ public class MainActivity extends ActionBarActivity implements
 			break;
 		case R.id.mark_as_subtask:
 			TaskDialogHelpers.handleSubtask(this, currentTask, null, true);
+			break;
+		case R.id.menu_task_clone:
+			try {
+				Task newTask = currentTask.create();
+				setCurrentTask(newTask, true);
+				getListFragment().update();
+				updatesForTask(newTask);
+			} catch (NoSuchListException e) {
+				Log.wtf(TAG, "List vanished on task cloning");
+			}
 			break;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -499,7 +508,7 @@ public class MainActivity extends ActionBarActivity implements
 					&& (oldClickedList != null || oldClickedTask == null)) {
 				clearAllHighlights();
 			}
-			if (darkTheme != preferences.getBoolean("DarkTheme", false)) {
+			if (darkTheme != MirakelPreferences.isDark()) {
 				finish();
 				if (startIntent == null) {
 					startIntent = new Intent(MainActivity.this,
@@ -516,25 +525,19 @@ public class MainActivity extends ActionBarActivity implements
 		case RESULT_CAMERA:
 		case RESULT_ADD_PICTURE:
 			if (isOk) {
-				try {
-					Task task;
-					if (requestCode == RESULT_ADD_PICTURE) {
-						task = getCurrentTask();
-					} else {
-						task = Semantic.createTask(preferences.getString(
-								"photoDefaultTitle",
-								getString(R.string.photo_default_title)),
-								currentList, false, this);
-						safeSaveTask(task);
-					}
-					task.addFile(this, FileUtils.getPathFromUri(fileUri, this));
-					setCurrentList(task.getList());
-					setCurrentTask(task, true);
-
-				} catch (Semantic.NoListsException e) {
-					Toast.makeText(this, R.string.no_lists, Toast.LENGTH_LONG)
-							.show();
+				Task task;
+				if (requestCode == RESULT_ADD_PICTURE) {
+					task = getCurrentTask();
+				} else {
+					task = Semantic.createTask(preferences.getString(
+							"photoDefaultTitle",
+							getString(R.string.photo_default_title)),
+							currentList, false, this);
+					safeSaveTask(task);
 				}
+				task.addFile(this, FileUtils.getPathFromUri(fileUri, this));
+				setCurrentList(task.getList());
+				setCurrentTask(task, true);
 			}
 			break;
 		}
@@ -649,8 +652,10 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	private void addTaskFromSharing(int list_id) {
-		Task task = Task.newTask(newTaskSubject == null ? "" : newTaskSubject,
-				ListMirakel.getList(list_id));
+		if (newTaskSubject == null)
+			return;
+		Task task = Semantic.createTask(newTaskSubject,
+				ListMirakel.getList(list_id), true, this);
 		task.setContent(newTaskContent == null ? "" : newTaskContent);
 		safeSaveTask(task);
 		setCurrentTask(task);
@@ -688,10 +693,18 @@ public class MainActivity extends ActionBarActivity implements
 				closeOnBack = true;
 		} else if (startIntent.getAction().equals(Intent.ACTION_SEND)
 				|| startIntent.getAction().equals(Intent.ACTION_SEND_MULTIPLE)) {
-
 			closeOnBack = true;
 			newTaskContent = startIntent.getStringExtra(Intent.EXTRA_TEXT);
 			newTaskSubject = startIntent.getStringExtra(Intent.EXTRA_SUBJECT);
+
+			// If from google now, the content is the subject…
+			if (startIntent.getCategories().contains(
+					"com.google.android.voicesearch.SELF_NOTE")) {
+				if (!newTaskContent.equals("")) {
+					newTaskSubject = newTaskContent;
+					newTaskContent = "";
+				}
+			}
 
 			if (!startIntent.getType().equals("text/plain")) {
 				if (newTaskSubject == null) {
@@ -888,7 +901,7 @@ public class MainActivity extends ActionBarActivity implements
 			return;
 		final MainActivity main = this;
 		// This must then be a bug in a ROM
-		if (tasks.size() == 0 || tasks.get(0) == null) 
+		if (tasks.size() == 0 || tasks.get(0) == null)
 			return;
 		String names = tasks.get(0).getName();
 		for (int i = 1; i < tasks.size(); i++) {

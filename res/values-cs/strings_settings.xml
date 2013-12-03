@@ -9,6 +9,7 @@
   <string name="sync_use_summary_mirakel">Synchronizovat s Mirakel jako %s</string>
   <string name="sync_use_summary_caldav">Synchronizovat s CalDav jako %s</string>
   <string name="sync_use_summary_nothing">Nesynchronizovat</string>
+  <string name="sync_user">Uživatelské jméno</string>
   <string name="sync_server">Server</string>
   <string name="sync_server_summary">Synchronizace s %s</string>
   <string name="sync_password">Heslo</string>
@@ -39,8 +40,6 @@
   <string name="startup_show_lists_summary">Po spuštění zobrazit všechny seznamy</string>
   <string name="startup_list">Vybrat seznam</string>
   <string name="startup_list_summary">Zobrazit úkoly z \"%s\"</string>
-  <string name="special_lists_click">Spravovat speciální seznamy</string>
-  <string name="special_lists_new">Nový speciální seznam</string>
   <string name="settings_misc">Různá nastavení</string>
   <string name="settings_backup">Záloha, obnovení a import dat</string>
   <string name="backup_click_summary">Zálohovat databázi na SD kartu (%s)</string>
@@ -113,11 +112,9 @@
   <string name="howto_setup_server">Jak nastavit server</string>
   <string name="register_server">Pokud budete potřebovat synchronizační účet na našem serveru, pošlete nám e-mail. V dalších verzích aplikace bude možné účet založit rovnou.</string>
   <string name="send_mail">Odeslat e-mail</string>
-  <string name="special_lists_title">Speciální seznamy úkolů</string>
   <string name="preferences_colorize">Barvy</string>
   <string name="preferences_colorize_tasks">Obarvit úkoly</string>
   <string name="preferences_colorize_tasks_everywhere">Obarvit všechny úkoly</string>
-  <string name="preferences_colorize_tasks_everywhere_summary">…nebo jen ve zvláštních seznamech?</string>
   <string name="settings_semantics_title">Nastavit sémantickou analýzu úkolů</string>
   <string name="settings_semantics_condition">Klíčové slovo</string>
   <string name="settings_semantics_actions">Akce</string>
@@ -139,6 +136,9 @@
   <string name="settings_use_btn_camera">Zobrazit tlačítko pro fotoaparát</string>
   <string name="preferences_colorize_subtasks">Obarvit podúkoly?</string>
   <string name="settings_tasks_title">Úkoly</string>
+  <string name="task_fragment_due">Termín</string>
+  <string name="task_fragment_reminder">Upozornění</string>
+  <string name="task_fragment_subtask">Podúkoly</string>
   <string-array name="sync_frequencies">
     <item>5 min</item>
     <item>10 min</item>
@@ -156,6 +156,16 @@
     <item>60</item>
     <item>1440</item>
     <item>-1</item>
+  </string-array>
+  <string-array name="weekdays">
+    <item>Don\'t set</item>
+    <item>Monday</item>
+    <item>Tuesday</item>
+    <item>Wednesday</item>
+    <item>Thursday</item>
+    <item>Friday</item>
+    <item>Saturday</item>
+    <item>Sunday</item>
   </string-array>
   <string-array name="priority_entries">
     <item>Bez určení priority</item>

@@ -25,6 +25,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -45,7 +46,7 @@ public class SplashScreenActivity extends Activity {
 		// Setup splashscreen
 		SharedPreferences preferences = PreferenceManager
 				.getDefaultSharedPreferences(getApplicationContext());
-		boolean darkTheme = preferences.getBoolean("DarkTheme", false);
+		boolean darkTheme = MirakelPreferences.isDark();
 		if (!darkTheme)
 			setTheme(R.style.Theme_SplashScreen);
 

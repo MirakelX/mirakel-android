@@ -9,15 +9,19 @@ public class SemanticBase {
 	private Integer priority;
 	private Integer due;
 	private ListMirakel list;
+	private Integer weekday;
+	public static final String CONDITION = "condition", PRIORITY = "priority",
+			LIST = "list", DUE = "due", WEEKDAY = "weekday";
 
 	public SemanticBase(int id, String condition, Integer priority,
-			Integer due, ListMirakel list) {
+			Integer due, ListMirakel list, Integer weekday) {
 		super();
 		this.id = id;
 		this.condition = condition.toLowerCase();
 		this.priority = priority;
 		this.list = list;
 		this.due = due;
+		this.weekday = weekday;
 	}
 
 	public int getId() {
@@ -60,6 +64,14 @@ public class SemanticBase {
 		this.list = list;
 	}
 
+	public Integer getWeekday() {
+		return weekday;
+	}
+
+	public void setWeekday(Integer weekday) {
+		this.weekday = weekday;
+	}
+
 	@Override
 	public String toString() {
 		return this.condition;
@@ -72,6 +84,7 @@ public class SemanticBase {
 		cv.put("default_list_id", list == null ? null : list.getId());
 		cv.put("priority", priority);
 		cv.put("due", due);
+		cv.put("weekday", weekday);
 		return cv;
 	}
 

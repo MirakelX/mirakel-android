@@ -34,6 +34,8 @@
     <color name="holo_blue_light">#ff33b5e5</color>
     <color name="holo_orange_dark">#ffff8800</color>
 
+
+    <color name="holo_red_dark">#ffcc0000</color>
     <!-- Datepicker -->
     <color name="white">#ffffffff</color>
     <color name="circle_background">#fff2f2f2</color>
@@ -65,7 +67,6 @@
     <color name="blackish_selected">#0cffffff</color>
     <!-- Transparent background for use in the footer. 80% opacity. The color must remain the same as "blackish" above. -->
     <color name="blackish_trans">#cc1c1e20</color>
-    <color name="white">#ffffffff</color>
     <color name="red">#ffee0000</color>
     <color name="grey">#ffaaaaaa</color>
     <color name="transparent">#00000000</color>

@@ -30,7 +30,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -46,6 +45,7 @@ import android.widget.Toast;
 import de.azapps.mirakel.adapter.SettingsAdapter;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.PreferencesHelper;
 import de.azapps.mirakel.helper.export_import.AnyDoImport;
 import de.azapps.mirakel.helper.export_import.ExportImport;
@@ -67,9 +67,7 @@ public class SettingsActivity extends PreferenceActivity {
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		SharedPreferences preferences = PreferenceManager
-				.getDefaultSharedPreferences(this);
-		darkTheme = preferences.getBoolean("DarkTheme", false);
+		darkTheme = MirakelPreferences.isDark();
 		if (darkTheme)
 			setTheme(R.style.AppBaseThemeDARK);
 		super.onCreate(savedInstanceState);
@@ -168,8 +166,7 @@ public class SettingsActivity extends PreferenceActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if (darkTheme != PreferenceManager.getDefaultSharedPreferences(this)
-				.getBoolean("DarkTheme", false) && !Helpers.isTablet(this)) {
+		if (darkTheme != MirakelPreferences.isDark()) {
 			finish();
 			startActivity(getIntent());
 		}

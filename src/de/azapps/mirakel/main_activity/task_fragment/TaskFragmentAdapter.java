@@ -32,6 +32,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -82,6 +83,7 @@ import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.PreferencesHelper;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.helper.TaskHelper;
@@ -108,6 +110,7 @@ public class TaskFragmentAdapter extends
 			SUBTITLE_PROGRESS = 2;
 	private static final Integer inactive_color = android.R.color.darker_gray;
 	private View.OnClickListener cameraButtonClick = null;
+	private View.OnClickListener audioButtonClick = null;
 
 	public static class TYPE {
 		final static int HEADER = 0;
@@ -492,6 +495,8 @@ public class TaskFragmentAdapter extends
 		TextView filePath;
 	}
 
+	Bitmap preview;
+
 	private View setupFile(ViewGroup parent, final FileMirakel file,
 			View convertView, int position) {
 		final View row = convertView == null ? inflater.inflate(
@@ -508,7 +513,13 @@ public class TaskFragmentAdapter extends
 		}
 		new Thread(new Runnable() {
 			public void run() {
-				final Bitmap preview = file.getPreview();
+				preview = file.getPreview();
+				if (file.getPath().endsWith(".mp3")) {
+					int resource_id = MirakelPreferences.isDark() ? R.drawable.ic_action_play_dark
+							: R.drawable.ic_action_play;
+					preview = BitmapFactory.decodeResource(
+							context.getResources(), resource_id);
+				}
 				if (preview != null) {
 					holder.fileImage.post(new Runnable() {
 						@Override
@@ -559,6 +570,7 @@ public class TaskFragmentAdapter extends
 	static class SubtitleHolder {
 		TextView title;
 		ImageButton button;
+		ImageButton audioButton;
 		ImageButton cameraButton;
 		View divider;
 	}
@@ -579,6 +591,8 @@ public class TaskFragmentAdapter extends
 					.findViewById(R.id.task_subtitle));
 			holder.button = ((ImageButton) subtitle
 					.findViewById(R.id.task_subtitle_button));
+			holder.audioButton = ((ImageButton) subtitle
+					.findViewById(R.id.task_subtitle_audio_button));
 			holder.cameraButton = ((ImageButton) subtitle
 					.findViewById(R.id.task_subtitle_camera_button));
 			holder.divider = subtitle.findViewById(R.id.item_separator);
@@ -597,10 +611,14 @@ public class TaskFragmentAdapter extends
 		if (cameraButton) {
 
 			holder.cameraButton.setVisibility(View.VISIBLE);
+			holder.audioButton.setVisibility(View.VISIBLE);
 			if (cameraButtonClick != null)
 				holder.cameraButton.setOnClickListener(cameraButtonClick);
+			if (audioButtonClick != null)
+				holder.audioButton.setOnClickListener(audioButtonClick);
 		} else {
 			holder.cameraButton.setVisibility(View.INVISIBLE);
+			holder.audioButton.setVisibility(View.INVISIBLE);
 		}
 		if (pencilButton) {
 			if (editContent) {
@@ -903,7 +921,7 @@ public class TaskFragmentAdapter extends
 									ReminderAlarm.updateAlarms(context);
 
 								}
-							},darkTheme);
+							}, darkTheme);
 				}
 			});
 			reminder.setTag(holder);
@@ -1029,9 +1047,11 @@ public class TaskFragmentAdapter extends
 
 										}
 									}, due.get(Calendar.YEAR), due
-											.get(Calendar.MONTH), due
-											.get(Calendar.DAY_OF_MONTH), false,darkTheme);
-//					datePickerDialog.setYearRange(2005, 2036);// must be < 2037
+											.get(Calendar.MONTH),
+									due.get(Calendar.DAY_OF_MONTH), false,
+									darkTheme);
+					// datePickerDialog.setYearRange(2005, 2036);// must be <
+					// 2037
 					datePickerDialog.show(fm, "datepicker");
 				}
 			});
@@ -1252,6 +1272,10 @@ public class TaskFragmentAdapter extends
 
 	public void setcameraButtonClick(OnClickListener cameraButtonClick) {
 		this.cameraButtonClick = cameraButtonClick;
+	}
+
+	public void setaudioButtonClick(OnClickListener audioButtonClick) {
+		this.audioButtonClick = audioButtonClick;
 	}
 
 	public static List<Integer> getValues(Context context) {

@@ -21,6 +21,10 @@ package de.azapps.mirakel.helper;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+
+import com.android.calendar.recurrencepicker.RecurrencePickerDialog;
+import com.android.calendar.recurrencepicker.RecurrencePickerDialog.OnReccurenceSetListner;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -53,11 +57,6 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
-import com.android.calendar.recurrencepicker.RecurrencePickerDialog;
-import com.android.calendar.recurrencepicker.RecurrencePickerDialog.OnReccurenceSetListner;
-import com.fourmob.datetimepicker.date.DatePickerDialog;
-import com.sleepbot.datetimepicker.time.RadialPickerLayout;
-import com.sleepbot.datetimepicker.time.TimePickerDialog;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.adapter.SubtaskAdapter;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
@@ -399,7 +398,7 @@ public class TaskDialogHelpers {
 				.findViewById(R.id.subtask_newtask);
 		final Button subtaskSelectOld = (Button) v
 				.findViewById(R.id.subtask_select_old);
-		final boolean darkTheme = settings.getBoolean("DarkTheme", false);
+		final boolean darkTheme = MirakelPreferences.isDark();
 		if (asSubtask) {
 			v.findViewById(R.id.subtask_header).setVisibility(View.GONE);
 			switcher.showNext();
@@ -596,29 +595,24 @@ public class TaskDialogHelpers {
 	private static Task newSubtask(String name, Task parent, Context ctx) {
 		final SharedPreferences settings = PreferenceManager
 				.getDefaultSharedPreferences(ctx);
-		try {
-			ListMirakel list;
-			if (settings.getBoolean("subtaskAddToSameList", true)) {
+		ListMirakel list;
+		if (settings.getBoolean("subtaskAddToSameList", true)) {
+			list = parent.getList();
+		} else {
+			list = ListMirakel.getList(settings.getInt("subtaskAddToList",
+					-1));
+			if (list == null)
 				list = parent.getList();
-			} else {
-				list = ListMirakel.getList(settings.getInt("subtaskAddToList",
-						-1));
-				if (list == null)
-					list = parent.getList();
-			}
-			Task t = Semantic.createTask(name, list,
-					settings.getBoolean("semanticNewTask", true), ctx);
-			try {
-				parent.addSubtask(t);
-			} catch (NoSuchListException e) {
-				Log.e(TAG, "list did vanish");
-			}
-
-			return t;
-		} catch (Semantic.NoListsException e) {
-			Toast.makeText(ctx, R.string.no_lists, Toast.LENGTH_LONG).show();
 		}
-		return null;
+		Task t = Semantic.createTask(name, list,
+				settings.getBoolean("semanticNewTask", true), ctx);
+		try {
+			parent.addSubtask(t);
+		} catch (NoSuchListException e) {
+			Log.e(TAG, "list did vanish");
+		}
+
+		return t;
 	}
 
 	protected static String generateQuery(Task t) {

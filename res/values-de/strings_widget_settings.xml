@@ -9,4 +9,5 @@
   <string name="fontcolor">Schriftfarbe</string>
   <string name="widget_transparency">Transparenz</string>
   <string name="widget_transparency_summary">zu %s%% transparent</string>
+  <string name="widget_due_colors"></string>
 </resources>

@@ -46,7 +46,7 @@ public class SemanticsSettings implements OnPreferenceChangeListener {
 
 	protected AlertDialog alert;
 	private EditTextPreference semanticsCondition;
-	private ListPreference semanticsList, semanticsPriority;
+	private ListPreference semanticsList, semanticsPriority, semanticsWeekday;
 	private Preference semanticsDue;
 	private int dueDialogValue;
 	private VALUE dueDialogDayYear;
@@ -158,6 +158,20 @@ public class SemanticsSettings implements OnPreferenceChangeListener {
 					}
 				});
 
+		// Weekday
+		Integer weekday = semantic.getWeekday();
+		semanticsWeekday = (ListPreference) findPreference("semantics_weekday");
+		semanticsWeekday.setOnPreferenceChangeListener(this);
+		semanticsWeekday.setEntries(R.array.weekdays);
+		CharSequence[] weekdaysNum = { "0", "1", "2", "3", "4", "5", "6", "7" };
+
+		semanticsWeekday.setEntryValues(weekdaysNum);
+		if (weekday == null)
+			semanticsWeekday.setValueIndex(0);
+		else
+			semanticsWeekday.setValueIndex(weekday);
+		semanticsWeekday.setSummary(semanticsWeekday.getEntry());
+
 		// List
 		semanticsList = (ListPreference) findPreference("semantics_list");
 		semanticsList.setOnPreferenceChangeListener(this);
@@ -250,6 +264,14 @@ public class SemanticsSettings implements OnPreferenceChangeListener {
 			semantic.save();
 		} else if (key.equals("semantics_due")) {
 
+		} else if (key.equals("semantics_weekday")) {
+			Integer weekday = Integer.parseInt(newValue);
+			if (weekday == 0)
+				weekday = null;
+			semantic.setWeekday(weekday);
+			semanticsWeekday.setValue(newValue);
+			semanticsWeekday.setSummary(semanticsWeekday.getEntry());
+			semantic.save();
 		} else if (key.equals("semantics_list")) {
 			if (newValue.equals("null")) {
 				semantic.setList(null);

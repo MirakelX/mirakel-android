@@ -11,7 +11,6 @@
   <string name="special_list_contains">Аргументы выбора</string>
   <string name="special_list_summary">Резюме</string>
   <string name="special_lists_defaults">Значения по умолчанию</string>
-  <string name="list_menu_new_special_list">Новый расширенный список</string>
   <string name="special_list_where_prio_title_text">Приоритет</string>
   <string name="special_list_where_name_title_text">Имя</string>
   <string name="special_list_where_content_title_text">Комментарий</string>
@@ -33,7 +32,6 @@
   <string name="inverte">Инвертировать выбор</string>
   <string name="not_in">Не в</string>
   <string name="where_like_contain_text">Содержит</string>
-  <string name="where_like_begin_text">Начинается с</string>
   <string name="where_like_end_text">Оканчивается на</string>
   <string name="delete">Удалить</string>
   <string name="nothing">Без повтора</string>

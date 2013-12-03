@@ -49,7 +49,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String TAG = "DatabaseHelper";
 	private Context context;
-	public static final int DATABASE_VERSION = 28;
+	public static final int DATABASE_VERSION = 29;
 
 	public static final String ID = "_id";
 	public static final String CREATED_AT = "created_at";
@@ -358,6 +358,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			db.execSQL("UPDATE " + Task.TABLE + " SET " + Task.PROGRESS
 					+ "=100 WHERE " + Task.DONE + "= 1 AND " + Task.RECURRING
 					+ "=-1");
+		case 28:
+			db.execSQL("ALTER TABLE " + Semantic.TABLE
+					+ " add column weekday int;");
+			String[] weekdays = context.getResources().getStringArray(
+					R.array.weekdays);
+			for (int i = 1; i < weekdays.length; i++) { // Ignore first element
+				db.execSQL("INSERT INTO " + Semantic.TABLE + " ("
+						+ Semantic.CONDITION + "," + Semantic.WEEKDAY
+						+ ") VALUES (?, " + i + ")",new String[] {weekdays[i]});
+			}
 
 		}
 	}

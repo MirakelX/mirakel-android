@@ -22,9 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
-import android.preference.PreferenceManager;
 import android.widget.ArrayAdapter;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.MirakelPreferences;
 
 public class MirakelArrayAdapter<T> extends ArrayAdapter<T> {
 	private static final String TAG = "MirakelArrayAdapter";
@@ -41,8 +41,7 @@ public class MirakelArrayAdapter<T> extends ArrayAdapter<T> {
 		this.layoutResourceId = textViewResourceId;
 		this.data = data;
 		this.context = context;
-		this.darkTheme = PreferenceManager.getDefaultSharedPreferences(context)
-				.getBoolean("DarkTheme", false);
+		this.darkTheme = MirakelPreferences.isDark();
 		this.selected = new ArrayList<Boolean>();
 		for (int i = 0; i < data.size(); i++) {
 			this.selected.add(false);

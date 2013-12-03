@@ -102,7 +102,7 @@ public class TaskHelper {
 		final int[] DARK_PRIO_COLOR = { Color.parseColor("#008000"),
 				Color.parseColor("#00c400"), Color.parseColor("#3377FF"),
 				Color.parseColor("#FF7700"), Color.parseColor("#FF3333") };
-		if (Helpers.settings.getBoolean("DarkTheme", false)) {
+		if (MirakelPreferences.isDark()) {
 			return DARK_PRIO_COLOR[priority + 2];
 		} else {
 			return PRIO_COLOR[priority + 2];

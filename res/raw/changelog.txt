@@ -17,13 +17,21 @@
     </style>
   </head>
   <body>
-$ 2.2-alpha1
+$ 2.2-alpha+x
   % Version 2.2-alpha+x
   ! Please report Bugs and errors!
     * Basic Multi-Account handling
     * Caldav-Sync over davdroid
     * Dynamic Task Fragment
     * Set the progress of your tasks
+    * Splashscreen instead of an empty activity view
+    * Google Now integration
+    * New date and timepicker
+    * Widget updates
+    * Auto backup
+    * Clone a task
+    * Add Weekdays to semantics
+    * Added Portuguese translations
 $ 2.1.4+x
   % Version 2.1.4+x (Beta)
   ! Please report Bugs and errors!

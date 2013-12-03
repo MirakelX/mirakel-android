@@ -17,15 +17,16 @@ import com.nineoldandroids.animation.ObjectAnimator;
 
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakelandroid.R;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.os.Build;
 import android.os.Parcelable;
 import android.os.SystemClock;
 import android.os.Vibrator;
-import android.preference.PreferenceManager;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -34,6 +35,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewAnimator;
+import de.azapps.mirakel.helper.MirakelPreferences;
 
 public class DatePicker extends LinearLayout implements View.OnClickListener,
 		DatePickerController {
@@ -101,11 +103,9 @@ public class DatePicker extends LinearLayout implements View.OnClickListener,
 	}
 
 	private void setupView(Context context) {
-		mDark = PreferenceManager.getDefaultSharedPreferences(context)
-				.getBoolean("DarkTheme", false);// Dirty, maybe do this somehow
-												// better
-		ctx = context;
-		layout = View.inflate(context, R.layout.date_picker_view, this);
+		mDark=MirakelPreferences.isDark();//Dirty get Theme or so
+		ctx=context;
+		layout=View.inflate(context, R.layout.date_picker_view, this);
 		initLayout();
 		updateYearRange();
 	}
@@ -162,11 +162,12 @@ public class DatePicker extends LinearLayout implements View.OnClickListener,
 		mCalendar.set(Calendar.YEAR, year);
 		update();
 	}
-
+	
+	@SuppressLint("NewApi")
 	@Override
 	public void onScreenStateChanged(int screenState) {
-		super.onScreenStateChanged(screenState);
-		Log.d("dooo", "screenta");
+		if (Build.VERSION.SDK_INT >= 16)
+			super.onScreenStateChanged(screenState);
 	}
 
 	public void onClick(View view) {
@@ -371,13 +372,6 @@ public class DatePicker extends LinearLayout implements View.OnClickListener,
 		this.mMonthAndDayView.setContentDescription(desc);
 	}
 
-	// @Override
-	// protected void onDraw(Canvas canvas) {
-	// // TODO Auto-generated method stub
-	// super.onDraw(canvas);
-	// TODO Auto-generated method stub
-	// layout.draw(canvas);
-	// }
 
 	static abstract interface OnDateChangedListener {
 		public abstract void onDateChanged();

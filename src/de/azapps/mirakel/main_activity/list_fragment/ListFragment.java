@@ -31,7 +31,6 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -54,6 +53,7 @@ import com.larswerkman.colorpicker.SVBar;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.main_activity.DragNDropListView;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.main_activity.MirakelFragment;
@@ -85,8 +85,7 @@ public class ListFragment extends MirakelFragment {
 		EditName = false;
 		enableDrag = false;
 		view = inflater.inflate(R.layout.list_fragment, container, false);
-		if (PreferenceManager.getDefaultSharedPreferences(main).getBoolean(
-				"DarkTheme", false)) {
+		if (MirakelPreferences.isDark()) {
 			view.findViewById(R.id.lists_list).setBackgroundResource(
 					android.R.drawable.screen_background_dark);
 		} else {

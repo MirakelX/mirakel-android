@@ -74,6 +74,7 @@
     <string name="task_name">Task Name:</string>
     <string name="no_loop">Subtasks cannot form a loop</string>
     <string name="as_subtask">Add to a task</string>
+    <string name="task_clone">Clone task</string>
 
     <string-array name="task_sorting_items">
         <item>Default</item>

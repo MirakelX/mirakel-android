@@ -1100,6 +1100,117 @@ public class PreferencesHelper {
 						}
 					});
 		}
+		final Preference autoBackupIntervall = (Preference) findPreference("autoBackupIntervall");
+		if (autoBackupIntervall != null) {
+			autoBackupIntervall.setSummary(activity.getString(
+					R.string.auto_backup_intervall_summary,
+					MirakelPreferences.getAutoBackupIntervall()));
+			autoBackupIntervall
+					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+						@Override
+						public boolean onPreferenceClick(Preference preference) {
+
+							final int old_val = MirakelPreferences
+									.getAutoBackupIntervall();
+							final int max = 31;
+							final int min = 0;
+							if (v4_0) {
+								numberPicker = new NumberPicker(activity);
+								((NumberPicker) numberPicker).setMaxValue(max);
+								((NumberPicker) numberPicker).setMinValue(min);
+								((NumberPicker) numberPicker)
+										.setWrapSelectorWheel(false);
+								((NumberPicker) numberPicker).setValue(old_val);
+								((NumberPicker) numberPicker)
+										.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+							} else {
+								numberPicker = ((LayoutInflater) activity
+										.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
+										.inflate(
+												R.layout.dialog_num_picker_v10,
+												null);
+
+								((TextView) numberPicker
+										.findViewById(R.id.dialog_num_pick_val))
+										.setText(old_val + "");
+								((Button) numberPicker
+										.findViewById(R.id.dialog_num_pick_plus))
+										.setOnClickListener(new View.OnClickListener() {
+											@Override
+											public void onClick(View v) {
+												int val = Integer
+														.parseInt(((TextView) numberPicker
+																.findViewById(R.id.dialog_num_pick_val))
+																.getText()
+																.toString());
+												if (val < max) {
+													((TextView) numberPicker
+															.findViewById(R.id.dialog_num_pick_val))
+															.setText(++val + "");
+												}
+											}
+										});
+								((Button) numberPicker
+										.findViewById(R.id.dialog_num_pick_minus))
+										.setOnClickListener(new View.OnClickListener() {
+											@Override
+											public void onClick(View v) {
+												int val = Integer
+														.parseInt(((TextView) numberPicker
+																.findViewById(R.id.dialog_num_pick_val))
+																.getText()
+																.toString());
+												if (val > min) {
+													((TextView) numberPicker
+															.findViewById(R.id.dialog_num_pick_val))
+															.setText(--val + "");
+												}
+											}
+										});
+							}
+							new AlertDialog.Builder(activity)
+									.setTitle(R.string.auto_backup_intervall)
+									.setView(numberPicker)
+									.setPositiveButton(
+											android.R.string.ok,
+											new DialogInterface.OnClickListener() {
+												public void onClick(
+														DialogInterface dialog,
+														int whichButton) {
+													int val;
+													if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
+														val = ((NumberPicker) numberPicker)
+																.getValue();
+													} else {
+														val = Integer
+																.parseInt(((TextView) numberPicker
+																		.findViewById(R.id.dialog_num_pick_val))
+																		.getText()
+																		.toString());
+													}
+													MirakelPreferences
+															.setAutoBackupIntervall(val);
+													autoBackupIntervall
+															.setSummary(activity
+																	.getString(
+																			R.string.auto_backup_intervall_summary,
+																			val));
+												}
+											})
+									.setNegativeButton(
+											android.R.string.cancel,
+											new DialogInterface.OnClickListener() {
+												public void onClick(
+														DialogInterface dialog,
+														int whichButton) {
+													// Do nothing.
+												}
+											}).show();
+							return false;
+						}
+					});
+		}
 		final Preference undoNumber = (Preference) findPreference("UndoNumber");
 		if (undoNumber != null) {
 			undoNumber.setSummary(activity.getString(

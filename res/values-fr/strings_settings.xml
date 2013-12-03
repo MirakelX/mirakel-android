@@ -9,6 +9,7 @@
   <string name="sync_use_summary_mirakel">Synchroniser avec Mirakel en tant que %s</string>
   <string name="sync_use_summary_caldav">Synchronisation avec CalDav comme %s</string>
   <string name="sync_use_summary_nothing">Ne pas utiliser la synchronisation</string>
+  <string name="sync_user">Nom d\'utilisateur</string>
   <string name="sync_server">Serveur</string>
   <string name="sync_server_summary">Synchroniser avec %s</string>
   <string name="sync_password">Mot de passe</string>
@@ -39,8 +40,6 @@
   <string name="startup_show_lists_summary">Afficher toutes les listes au démarrage</string>
   <string name="startup_list">Sélectionner une liste</string>
   <string name="startup_list_summary">Afficher les tâches de \"%s\"</string>
-  <string name="special_lists_click">Gérer les listes spéciales</string>
-  <string name="special_lists_new">Nouvelle liste spéciale</string>
   <string name="settings_misc">Divers</string>
   <string name="settings_backup">Sauvegarde et importation</string>
   <string name="backup_click_summary">Sauvegarder la base de données sur la carte SD (%s)</string>
@@ -100,7 +99,6 @@
   <string name="menu_color">Changer de couleur</string>
   <string name="howto_setup_server">Comment configurer un serveur</string>
   <string name="send_mail">Envoyer un e-mail</string>
-  <string name="special_lists_title">Listes spéciales</string>
   <string name="preferences_colorize">Couleurs</string>
   <string name="preferences_colorize_tasks">Coloriser les tâches</string>
   <string name="preferences_colorize_tasks_everywhere">Coloriser les tâches partout</string>
@@ -115,6 +113,9 @@
   <string name="settings_use_btn_camera">Afficher le bouton de la caméra</string>
   <string name="preferences_colorize_subtasks">Coloriser les tâches subordonnées ?</string>
   <string name="settings_tasks_title">Tâches</string>
+  <string name="task_fragment_due">Échéance</string>
+  <string name="task_fragment_reminder">Rappel</string>
+  <string name="task_fragment_subtask">Tâches subordonnées</string>
   <string-array name="sync_frequencies">
     <item>5 min</item>
     <item>10 min</item>
@@ -132,6 +133,16 @@
     <item>60</item>
     <item>1440</item>
     <item>-1</item>
+  </string-array>
+  <string-array name="weekdays">
+    <item>Don\'t set</item>
+    <item>Monday</item>
+    <item>Tuesday</item>
+    <item>Wednesday</item>
+    <item>Thursday</item>
+    <item>Friday</item>
+    <item>Saturday</item>
+    <item>Sunday</item>
   </string-array>
   <string-array name="priority_entries">
     <item>Do not set priority</item>

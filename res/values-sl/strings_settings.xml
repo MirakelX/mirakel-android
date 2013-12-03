@@ -9,6 +9,7 @@
   <string name="sync_use_summary_mirakel">Uskladi s programom Mirakel kot %s</string>
   <string name="sync_use_summary_caldav">Uskladi s CalDav kot %s</string>
   <string name="sync_use_summary_nothing">Ne uporabi usklajevanja</string>
+  <string name="sync_user">Uporabniško ime</string>
   <string name="sync_server">Strežnik</string>
   <string name="sync_server_summary">Uskladi z %s</string>
   <string name="sync_password">Geslo</string>
@@ -40,8 +41,8 @@
   <string name="startup_show_lists_summary">Ob zagonu pokaži vse sezname</string>
   <string name="startup_list">Izbor seznama</string>
   <string name="startup_list_summary">Pokaži nalogo \"%s\"</string>
-  <string name="special_lists_click">Upravljanje posebnih seznamov</string>
-  <string name="special_lists_new">Nov poseben seznam</string>
+  <string name="special_lists_click">Upravljanje pametnih seznamov</string>
+  <string name="special_lists_new">Nov pametni seznam</string>
   <string name="settings_misc">Razno</string>
   <string name="settings_backup">Varnostna kopija in uvoz</string>
   <string name="backup_click_summary">Varnostna kopija podatkov na kartico SD (%s)</string>
@@ -123,12 +124,12 @@
   <string name="howto_setup_server">Kako nastaviti strežnik</string>
   <string name="register_server">Če si želite pridobiti tudi račun za usklajevanje nalog na našem strežniku, pošljite elektronsko sporočilo. Z naslednjo različico boste imeli možnost račun tudi vpisati in uporabiti!</string>
   <string name="send_mail">Pošlji elektronsko sporočilo</string>
-  <string name="special_lists_title">Posebni seznami</string>
+  <string name="special_lists_title">Pametni seznami</string>
   <string name="register">Vpis</string>
   <string name="preferences_colorize">Barve</string>
   <string name="preferences_colorize_tasks">Obarvaj naloge</string>
   <string name="preferences_colorize_tasks_everywhere">Ali naj se obarvajo naloge vseh seznamov</string>
-  <string name="preferences_colorize_tasks_everywhere_summary">... ali pa le naloge na posebnih seznamih?</string>
+  <string name="preferences_colorize_tasks_everywhere_summary">... ali pa le v pametnih seznamih?</string>
   <string name="settings_semantics_title">Nastavitev pomenskega vpisa</string>
   <string name="settings_semantics_condition">Pogoj</string>
   <string name="settings_semantics_actions">Dejanja</string>
@@ -150,6 +151,9 @@
   <string name="settings_use_btn_camera">Pokaži gumb kamere</string>
   <string name="preferences_colorize_subtasks">Ali naj se obarvajo tudi podrejene naloge?</string>
   <string name="settings_tasks_title">Naloge</string>
+  <string name="task_fragment_due">Zapadlost</string>
+  <string name="task_fragment_reminder">Opomnik</string>
+  <string name="task_fragment_subtask">Podrejena naloga</string>
   <string-array name="sync_frequencies">
     <item>5 min</item>
     <item>10 min</item>
@@ -167,6 +171,16 @@
     <item>60</item>
     <item>1440</item>
     <item>-1</item>
+  </string-array>
+  <string-array name="weekdays">
+    <item>Don\'t set</item>
+    <item>Monday</item>
+    <item>Tuesday</item>
+    <item>Wednesday</item>
+    <item>Thursday</item>
+    <item>Friday</item>
+    <item>Saturday</item>
+    <item>Sunday</item>
   </string-array>
   <string-array name="priority_entries">
     <item>Brez določene prednosti</item>

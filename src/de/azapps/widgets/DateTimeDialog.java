@@ -18,7 +18,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ViewSwitcher;
 
-public class DateTimeDialog extends DialogFragment  {
+public class DateTimeDialog extends DialogFragment {
 
 	protected static final String TAG = "DateTimeDialog";
 
@@ -26,7 +26,7 @@ public class DateTimeDialog extends DialogFragment  {
 			int year, int month, int dayOfMonth, int hourOfDay, int minute,
 			boolean vibrate, boolean dark) {
 		DateTimeDialog dt = new DateTimeDialog();
-		dt.init(year,month,dayOfMonth,hourOfDay,minute);
+		dt.init(year, month, dayOfMonth, hourOfDay, minute);
 		dt.setOnDateTimeSetListner(callback);
 		// dt.initialize(callback, year, month, dayOfMonth, hourOfDay, minute,
 		// vibrate, dark);
@@ -35,16 +35,16 @@ public class DateTimeDialog extends DialogFragment  {
 
 	private void init(int year, int month, int dayOfMonth, int hourOfDay,
 			int minute) {
-		if(tp!=null){
-			tp.setHour(hourOfDay,false);
+		if (tp != null) {
+			tp.setHour(hourOfDay, false);
 			tp.setMinute(minute);
 		}
-		if(dp!=null){
+		if (dp != null) {
 			dp.setYear(year);
 			dp.setMonth(month);
 			dp.setDay(dayOfMonth);
 		}
-		
+
 	}
 
 	@Override
@@ -58,11 +58,11 @@ public class DateTimeDialog extends DialogFragment  {
 	private ViewSwitcher viewSwitcher;
 	private TimePicker tp;
 	private DatePicker dp;
-	private boolean isCurrentDatepicker=true;
+	private boolean isCurrentDatepicker = true;
 	private OnDateTimeSetListner mCallback;
-	
-	void setOnDateTimeSetListner(OnDateTimeSetListner listner){
-		mCallback=listner;
+
+	void setOnDateTimeSetListner(OnDateTimeSetListner listner) {
+		mCallback = listner;
 	}
 
 	@Override
@@ -76,81 +76,82 @@ public class DateTimeDialog extends DialogFragment  {
 			e.printStackTrace();
 		}
 		View v = inflater.inflate(R.layout.date_time_picker, container);
-		final Context ctx = getDialog().getContext();
-		 Button switchToDate = (Button) v
-		 .findViewById(R.id.datetime_picker_date);
-		 Button switchToTime = (Button) v
-		 .findViewById(R.id.datetime_picker_time);
+		Button switchToDate = (Button) v
+				.findViewById(R.id.datetime_picker_date);
+		Button switchToTime = (Button) v
+				.findViewById(R.id.datetime_picker_time);
 		viewSwitcher = (ViewSwitcher) v
 				.findViewById(R.id.datetime_picker_animator);
-
 
 		viewSwitcher.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				// viewAnimator.showNext();
 			}
 		});
-		dp=(DatePicker)v.findViewById(R.id.date_picker);
-		tp=(TimePicker)v.findViewById(R.id.time_picker);
+		dp = (DatePicker) v.findViewById(R.id.date_picker);
+		tp = (TimePicker) v.findViewById(R.id.time_picker);
 		tp.set24HourMode(true);
 		tp.setOnKeyListener(tp.getNewKeyboardListner(getDialog()));
 		tp.setOnTimeSetListener(new OnTimeSetListener() {
-			
+
 			@Override
-			public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
-				if(mCallback!=null){
-					mCallback.onDateTimeSet(dp.getYear(), dp.getMonth(), dp.getDay(), hourOfDay, minute);
+			public void onTimeSet(RadialPickerLayout view, int hourOfDay,
+					int minute) {
+				if (mCallback != null) {
+					mCallback.onDateTimeSet(dp.getYear(), dp.getMonth(),
+							dp.getDay(), hourOfDay, minute);
 				}
 				dismiss();
-				
+
 			}
-			
+
 			@Override
 			public void onNoTimeSet() {
-				if(mCallback!=null){
+				if (mCallback != null) {
 					mCallback.onNoTimeSet();
 				}
 				dismiss();
-				
+
 			}
 		});
-		
+
 		dp.setOnDateSetListener(new OnDateSetListener() {
-			
+
 			@Override
 			public void onNoDateSet() {
-				if(mCallback!=null){
+				if (mCallback != null) {
 					mCallback.onNoTimeSet();
 				}
 				dismiss();
-				
+
 			}
-			
+
 			@Override
-			public void onDateSet(DatePicker datePickerDialog, int year, int month,
-					int day) {
-				if(mCallback!=null){
-					mCallback.onDateTimeSet(year, month, day, tp.getHour(), tp.getMinute());
+			public void onDateSet(DatePicker datePickerDialog, int year,
+					int month, int day) {
+				if (mCallback != null) {
+					mCallback.onDateTimeSet(year, month, day, tp.getHour(),
+							tp.getMinute());
 				}
 				dismiss();
-				
+
 			}
 		});
 
 		switchToDate.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				if(!isCurrentDatepicker){
+				if (!isCurrentDatepicker) {
 					viewSwitcher.showPrevious();
-					isCurrentDatepicker=true;
+					isCurrentDatepicker = true;
 				}
 			}
 		});
 
 		switchToTime.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				if(isCurrentDatepicker){
+				if (isCurrentDatepicker) {
 					viewSwitcher.showNext();
-					isCurrentDatepicker=false;
+					isCurrentDatepicker = false;
 
 				}
 			}
@@ -158,6 +159,7 @@ public class DateTimeDialog extends DialogFragment  {
 		return v;
 
 	};
+
 	public interface OnDateTimeSetListner {
 
 		/**
@@ -173,18 +175,20 @@ public class DateTimeDialog extends DialogFragment  {
 
 		void onNoTimeSet();
 	}
-	
+
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
-		Bundle time= (Bundle) tp.onSaveInstanceState();
-		Bundle date =(Bundle) dp.onSaveInstanceState();
+		Bundle time = (Bundle) tp.onSaveInstanceState();
+		Bundle date = (Bundle) dp.onSaveInstanceState();
 		getDialog().setContentView(
 				onCreateView(LayoutInflater.from(getDialog().getContext()),
 						null, null));
-		if(isCurrentDatepicker&&viewSwitcher.getCurrentView().getId()!=R.id.date_picker){
+		if (isCurrentDatepicker
+				&& viewSwitcher.getCurrentView().getId() != R.id.date_picker) {
 			viewSwitcher.showPrevious();
-		}else if(!isCurrentDatepicker&&viewSwitcher.getCurrentView().getId()!=R.id.time_picker){
+		} else if (!isCurrentDatepicker
+				&& viewSwitcher.getCurrentView().getId() != R.id.time_picker) {
 			viewSwitcher.showNext();
 		}
 		dp.onRestoreInstanceState(date);
