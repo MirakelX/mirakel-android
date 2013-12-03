@@ -698,8 +698,9 @@ public class MainActivity extends ActionBarActivity implements
 			newTaskSubject = startIntent.getStringExtra(Intent.EXTRA_SUBJECT);
 
 			// If from google now, the content is the subject…
-			if (startIntent.getCategories().contains(
-					"com.google.android.voicesearch.SELF_NOTE")) {
+			if (startIntent.getCategories() != null
+					&& startIntent.getCategories().contains(
+							"com.google.android.voicesearch.SELF_NOTE")) {
 				if (!newTaskContent.equals("")) {
 					newTaskSubject = newTaskContent;
 					newTaskContent = "";
