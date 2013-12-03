@@ -35,21 +35,6 @@ import de.azapps.mirakelandroid.R;
  */
 @SuppressLint("ValidFragment")
 public class TimePickerDialog extends DialogFragment  {
-	private static final String KEY_HOUR_OF_DAY = "hour_of_day";
-	private static final String KEY_MINUTE = "minute";
-	private static final String KEY_IS_24_HOUR_VIEW = "is_24_hour_view";
-	private static final String KEY_CURRENT_ITEM_SHOWING = "current_item_showing";
-	private static final String KEY_IN_KB_MODE = "in_kb_mode";
-	private static final String KEY_TYPED_TIMES = "typed_times";
-
-	public static final int HOUR_INDEX = 0;
-	public static final int MINUTE_INDEX = 1;
-	// NOT a real index for the purpose of what's showing.
-	public static final int AMPM_INDEX = 2;
-	// Also NOT a real index, just used for keyboard mode.
-	public static final int ENABLE_PICKER_INDEX = 3;
-	public static final int AM = 0;
-	public static final int PM = 1;
 
 	private TimePicker mTimePicker;
 
@@ -106,30 +91,24 @@ public class TimePickerDialog extends DialogFragment  {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setupValues(savedInstanceState);
 	}
 
-	private void setupValues(Bundle savedInstanceState) {
-		if (savedInstanceState != null
-				&& savedInstanceState.containsKey(KEY_HOUR_OF_DAY)
-				&& savedInstanceState.containsKey(KEY_MINUTE)
-				&& savedInstanceState.containsKey(KEY_IS_24_HOUR_VIEW)) {
-//			mInitialHourOfDay = savedInstanceState.getInt(KEY_HOUR_OF_DAY);
-//			mInitialMinute = savedInstanceState.getInt(KEY_MINUTE);
-//			mIs24HourMode = savedInstanceState.getBoolean(KEY_IS_24_HOUR_VIEW);
-//			mInKbMode = savedInstanceState.getBoolean(KEY_IN_KB_MODE);
-		}
-	}
 
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
-		Bundle saved = new Bundle();
-		onSaveInstanceState(saved);
-		setupValues(saved);
+		final Bundle b=(Bundle) mTimePicker.onSaveInstanceState();
+//		setupValues(saved);
 		getDialog().setContentView(
 				onCreateView(LayoutInflater.from(getDialog().getContext()),
-						null, saved));
+						null, b));
+		mTimePicker.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				mTimePicker.onRestoreInstanceState(b);
+			}
+		}, 0);
+
 	}
 
 	@Override

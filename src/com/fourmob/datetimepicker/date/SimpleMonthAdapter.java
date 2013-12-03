@@ -4,7 +4,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -51,13 +50,13 @@ public class SimpleMonthAdapter extends BaseAdapter implements SimpleMonthView.O
 			simpleMonthView.setOnDayClickListener(this);
 		}
 		simpleMonthView.setBackgroundColor(mContext.getResources().getColor(android.R.color.transparent));
+		@SuppressWarnings("unchecked")
 		HashMap<String, Integer> monthParams = (HashMap<String, Integer>) simpleMonthView.getTag();
 		if (monthParams == null)
 			monthParams = new HashMap<String, Integer>();
 		monthParams.clear();
 		int month = position % 12;
 		int year = position / 12 + this.mController.getMinYear();
-		Log.d("SimpleMonthAdapter", "Year: " + year + ", Month: " + month);
 		int selectedDay = -1;
 		if (isSelectedDayInMonth(year, month))
 			selectedDay = this.mSelectedDay.day;

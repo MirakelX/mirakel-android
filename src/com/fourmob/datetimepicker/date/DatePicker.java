@@ -7,13 +7,23 @@ import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
+
+import com.fourmob.datetimepicker.Utils;
+import com.fourmob.datetimepicker.date.DayPickerView;
+import com.fourmob.datetimepicker.date.SimpleMonthAdapter;
+import com.fourmob.datetimepicker.date.SimpleMonthAdapter.CalendarDay;
+import com.fourmob.datetimepicker.date.YearPickerView;
+import com.nineoldandroids.animation.ObjectAnimator;
+
+import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakelandroid.R;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.os.Bundle;
 import android.os.Build;
-import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.SystemClock;
 import android.os.Vibrator;
@@ -25,22 +35,20 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewAnimator;
-import com.fourmob.datetimepicker.Utils;
-import com.nineoldandroids.animation.ObjectAnimator;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.MirakelPreferences;
-import de.azapps.mirakelandroid.R;
 
-public class DatePicker extends LinearLayout implements View.OnClickListener, DatePickerController {
+public class DatePicker extends LinearLayout implements View.OnClickListener,
+		DatePickerController {
 	private static final int MAX_YEAR = 2037;
 	private static final int MIN_YEAR = 1902;
 	private static final int VIEW_DATE_PICKER_YEAR = 1;
 	private static final int VIEW_DATE_PICKER_MONTH_DAY = 0;
+	private static final String TAG = "DatePicker";
 	private static SimpleDateFormat DAY_FORMAT = new SimpleDateFormat("dd",
 			Locale.getDefault());
 	private static SimpleDateFormat YEAR_FORMAT = new SimpleDateFormat("yyyy",
 			Locale.getDefault());
-	
+
 	private int mMaxYear;
 	private int mMinYear;
 	private View layout;
@@ -74,15 +82,19 @@ public class DatePicker extends LinearLayout implements View.OnClickListener, Da
 		super(context, attrs);
 		TypedArray a = context.getTheme().obtainStyledAttributes(attrs,
 				R.styleable.DatePicker, 0, 0);
-		mCalendar=new GregorianCalendar();
+		mCalendar = new GregorianCalendar();
 
 		try {
-			setYear(a.getInt(R.styleable.DatePicker_initialYear, mCalendar.get(Calendar.YEAR)));
-			setMonth(a.getInt(R.styleable.DatePicker_initialMonth, mCalendar.get(Calendar.MONTH)));
-			setDay(a.getInt(R.styleable.DatePicker_initialDay, mCalendar.get(Calendar.DAY_OF_MONTH)));
-			
-			mMaxYear=a.getInt(R.styleable.DatePicker_maxYear, MAX_YEAR);
-			mMinYear=a.getInt(R.styleable.DatePicker_minYear, MIN_YEAR);
+			setYear(a.getInt(R.styleable.DatePicker_initialYear,
+					mCalendar.get(Calendar.YEAR)));
+			setMonth(a.getInt(R.styleable.DatePicker_initialMonth,
+					mCalendar.get(Calendar.MONTH)));
+			setDay(a.getInt(R.styleable.DatePicker_initialDay,
+					mCalendar.get(Calendar.DAY_OF_MONTH)));
+
+			mMaxYear = a.getInt(R.styleable.DatePicker_maxYear, MAX_YEAR);
+			mMinYear = a.getInt(R.styleable.DatePicker_minYear, MIN_YEAR);
+			Log.w(TAG, "create");
 		} finally {
 			a.recycle();
 		}
@@ -91,27 +103,27 @@ public class DatePicker extends LinearLayout implements View.OnClickListener, Da
 	}
 
 	private void setupView(Context context) {
-		mDark=MirakelPreferences.isDark();
+		mDark=MirakelPreferences.isDark();//Dirty get Theme or so
 		ctx=context;
 		layout=View.inflate(context, R.layout.date_picker_view, this);
 		initLayout();
 		updateYearRange();
 	}
-	
-	void setMaxYear(int max){
-		if(max >=mMinYear&&max<MAX_YEAR){
-			mMaxYear=max;
+
+	void setMaxYear(int max) {
+		if (max >= mMinYear && max < MAX_YEAR) {
+			mMaxYear = max;
 			updateYearRange();
 		}
 	}
-	
-	void setMinYear(int min){
-		if(min <=mMaxYear&&min>MIN_YEAR){
-			mMinYear=min;
+
+	void setMinYear(int min) {
+		if (min <= mMaxYear && min > MIN_YEAR) {
+			mMinYear = min;
 			updateYearRange();
 		}
 	}
-	
+
 	private void updateYearRange() {
 		if (mMaxYear <= mMinYear)
 			throw new IllegalArgumentException(
@@ -125,17 +137,30 @@ public class DatePicker extends LinearLayout implements View.OnClickListener, Da
 		if (this.mDayPickerView != null)
 			this.mDayPickerView.onChange();
 	}
-	
+
 	public void setDay(int day) {
-		mCalendar.set(Calendar.DAY_OF_MONTH, day);		
+		Log.d(TAG, "SET DAY: " + day);
+		mCalendar.set(Calendar.DAY_OF_MONTH, day);
+		update();
+	}
+
+	private void update() {
+		if (mSelectedMonthTextView != null) {// is init
+			updateDisplay();
+			mDayPickerView.goTo(new CalendarDay(mCalendar), false, true, true);
+		}
 	}
 
 	public void setMonth(int month) {
-		mCalendar.set(Calendar.MONTH, month);		
+		Log.d(TAG, "SET MONTH: " + month);
+		mCalendar.set(Calendar.MONTH, month);
+		update();
 	}
 
 	public void setYear(int year) {
-		mCalendar.set(Calendar.YEAR, year);		
+		Log.d(TAG, "SET YEAR: " + year);
+		mCalendar.set(Calendar.YEAR, year);
+		update();
 	}
 	
 	@SuppressLint("NewApi")
@@ -143,19 +168,19 @@ public class DatePicker extends LinearLayout implements View.OnClickListener, Da
 	public void onScreenStateChanged(int screenState) {
 		if (Build.VERSION.SDK_INT >= 16)
 			super.onScreenStateChanged(screenState);
-		Log.d("dooo","screenta");
 	}
 
 	public void onClick(View view) {
 		tryVibrate();
-		if (view.getId() == R.id.date_picker_year){
+		if (view.getId() == R.id.date_picker_year) {
 			setCurrentView(VIEW_DATE_PICKER_YEAR);
-			yearSelected=true;
-		}else if (view.getId() == R.id.date_picker_month_and_day){
+			yearSelected = true;
+		} else if (view.getId() == R.id.date_picker_month_and_day) {
 			setCurrentView(VIEW_DATE_PICKER_MONTH_DAY);
-			yearSelected=false;
+			yearSelected = false;
 		}
 	}
+
 	public void tryVibrate() {
 		if (this.mVibrator != null && this.mVibrate) {
 			long timeInMillis = SystemClock.uptimeMillis();
@@ -165,7 +190,7 @@ public class DatePicker extends LinearLayout implements View.OnClickListener, Da
 			}
 		}
 	}
-	
+
 	private void setCurrentView(int currentView) {
 		setCurrentView(currentView, false);
 	}
@@ -188,8 +213,8 @@ public class DatePicker extends LinearLayout implements View.OnClickListener, Da
 				this.mCurrentView = currentView;
 			}
 			monthDayAnim.start();
-			String monthDayDesc = DateUtils.formatDateTime(ctx,
-					timeInMillis, DateUtils.FORMAT_SHOW_DATE);
+			String monthDayDesc = DateUtils.formatDateTime(ctx, timeInMillis,
+					DateUtils.FORMAT_SHOW_DATE);
 			this.mAnimator.setContentDescription(this.mDayPickerDescription
 					+ ": " + monthDayDesc);
 			return;
@@ -214,7 +239,7 @@ public class DatePicker extends LinearLayout implements View.OnClickListener, Da
 		}
 
 	}
-	
+
 	private void initLayout() {
 		this.mDayOfWeekView = ((TextView) layout
 				.findViewById(R.id.date_picker_header));
@@ -241,14 +266,14 @@ public class DatePicker extends LinearLayout implements View.OnClickListener, Da
 		int listPosition = -1;
 		int currentView = VIEW_DATE_PICKER_MONTH_DAY;
 		int listPositionOffset = 0;
-		/*if (bundle != null) {
-			this.mWeekStart = bundle.getInt("week_start");
-			this.mMinYear = bundle.getInt("year_start");
-			this.mMaxYear = bundle.getInt("year_end");
-			currentView = bundle.getInt("current_view");
-			listPosition = bundle.getInt("list_position");
-			listPositionOffset = bundle.getInt("list_position_offset");
-		}*/
+		/*
+		 * if (bundle != null) { this.mWeekStart = bundle.getInt("week_start");
+		 * this.mMinYear = bundle.getInt("year_start"); this.mMaxYear =
+		 * bundle.getInt("year_end"); currentView =
+		 * bundle.getInt("current_view"); listPosition =
+		 * bundle.getInt("list_position"); listPositionOffset =
+		 * bundle.getInt("list_position_offset"); }
+		 */
 		this.mDayPickerView = new DayPickerView(ctx, this);
 		this.mYearPickerView = new YearPickerView(ctx, this);
 		Resources resources = getResources();
@@ -275,12 +300,10 @@ public class DatePicker extends LinearLayout implements View.OnClickListener, Da
 				tryVibrate();
 				if (mCallBack != null)
 					mCallBack.onDateSet(DatePicker.this,
-									DatePicker.this.mCalendar
-											.get(Calendar.YEAR),
-									DatePicker.this.mCalendar
-											.get(Calendar.MONTH),
-									DatePicker.this.mCalendar
-											.get(Calendar.DAY_OF_MONTH));
+							DatePicker.this.mCalendar.get(Calendar.YEAR),
+							DatePicker.this.mCalendar.get(Calendar.MONTH),
+							DatePicker.this.mCalendar
+									.get(Calendar.DAY_OF_MONTH));
 			}
 		});
 		this.mNoDateButton = ((Button) layout.findViewById(R.id.dismiss));
@@ -294,6 +317,30 @@ public class DatePicker extends LinearLayout implements View.OnClickListener, Da
 		updateDisplay();
 		setCurrentView(currentView, true);
 
+		setScroll(listPosition, currentView, listPositionOffset);
+		Resources res = getResources();
+		if (mDark) {
+			View dialog = layout.findViewById(R.id.datepicker_dialog);
+			dialog.setBackgroundColor(res.getColor(R.color.dialog_gray));
+			View header = layout.findViewById(R.id.datepicker_header);
+			header.setBackgroundColor(res.getColor(R.color.dialog_dark_gray));
+
+			if (mDayOfWeekView != null) {
+				mDayOfWeekView.setBackgroundColor(res
+						.getColor(R.color.clock_gray));
+			}
+
+			mNoDateButton.setTextColor(res.getColor(R.color.clock_white));
+			mDoneButton.setTextColor(res.getColor(R.color.clock_white));
+		} else {
+			View header = layout.findViewById(R.id.datepicker_header);
+			header.setBackgroundColor(res.getColor(R.color.white));
+		}
+
+	}
+
+	private void setScroll(int listPosition, int currentView,
+			int listPositionOffset) {
 		if (listPosition != -1) {
 			if (currentView == VIEW_DATE_PICKER_MONTH_DAY) {
 				this.mDayPickerView.postSetSelection(listPosition);
@@ -303,26 +350,8 @@ public class DatePicker extends LinearLayout implements View.OnClickListener, Da
 						listPositionOffset);
 			}
 		}
-		Resources res = getResources();
-		if(mDark){
-			View dialog=layout.findViewById(R.id.datepicker_dialog);
-			dialog.setBackgroundColor(res.getColor(R.color.dialog_gray));
-			View header=layout.findViewById(R.id.datepicker_header);
-			header.setBackgroundColor(res.getColor(R.color.dialog_dark_gray));
-			
-			if(mDayOfWeekView!=null){
-				mDayOfWeekView.setBackgroundColor(res.getColor(R.color.clock_gray));
-			}
-			
-			mNoDateButton.setTextColor(res.getColor(R.color.clock_white));
-			mDoneButton.setTextColor(res.getColor(R.color.clock_white));
-		}else{
-			View header=layout.findViewById(R.id.datepicker_header);
-			header.setBackgroundColor(res.getColor(R.color.white));
-		}
-		
 	}
-	
+
 	private void updateDisplay() {
 		if (this.mDayOfWeekView != null) {
 			this.mCalendar.setFirstDayOfWeek(mWeekStart);
@@ -343,28 +372,22 @@ public class DatePicker extends LinearLayout implements View.OnClickListener, Da
 		this.mMonthAndDayView.setContentDescription(desc);
 	}
 
-//	@Override
-//	protected void onDraw(Canvas canvas) {
-//		// TODO Auto-generated method stub
-//		super.onDraw(canvas);
-//		layout.draw(canvas);
-//	}
-	
-	
+
 	static abstract interface OnDateChangedListener {
 		public abstract void onDateChanged();
 	}
 
 	public static abstract interface OnDateSetListener {
-		public abstract void onDateSet(DatePicker datePickerDialog,
-				int year, int month, int day);
+		public abstract void onDateSet(DatePicker datePickerDialog, int year,
+				int month, int day);
 
 		public abstract void onNoDateSet();
 	}
 
 	@Override
-	public void registerOnDateChangedListener(OnDateChangedListener onDateChangedListener) {
-		this.mListeners.add(onDateChangedListener);		
+	public void registerOnDateChangedListener(
+			OnDateChangedListener onDateChangedListener) {
+		this.mListeners.add(onDateChangedListener);
 	}
 
 	@Override
@@ -379,9 +402,9 @@ public class DatePicker extends LinearLayout implements View.OnClickListener, Da
 	public int getMinYear() {
 		return this.mMinYear;
 	}
-	
-	public void setOnDateSetListener(OnDateSetListener dt){
-		mCallBack=dt;
+
+	public void setOnDateSetListener(OnDateSetListener dt) {
+		mCallBack = dt;
 	}
 
 	@Override
@@ -405,149 +428,121 @@ public class DatePicker extends LinearLayout implements View.OnClickListener, Da
 		setCurrentView(0);
 		updateDisplay();
 	}
-	
-	
-		
+
 	private void adjustDayInMonthIfNeeded(int month, int year) {
 		int currentDay = this.mCalendar.get(Calendar.DAY_OF_MONTH);
 		int day = Utils.getDaysInMonth(month, year);
 		if (currentDay > day)
 			this.mCalendar.set(Calendar.DAY_OF_MONTH, day);
 	}
-	
+
 	private void updatePickers() {
 		Iterator<OnDateChangedListener> it = this.mListeners.iterator();
 		while (it.hasNext())
 			it.next().onDateChanged();
 	}
-	
+
 	@Override
 	protected void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
-		Log.d("foo","config changed");
-		//on display rotate reload dialog
+		Log.d("foo", "config changed");
+		// on display rotate reload dialog
 		final Parcelable yearState = mYearPickerView.onSaveInstanceState();
 		final Parcelable monthState = mDayPickerView.onSaveInstanceState();
-//		layout=inflate(getContext(), R.layout.date_picker_view, this);
+		// layout=inflate(getContext(), R.layout.date_picker_view, this);
 		initLayout();
-		if(yearSelected)
+		if (yearSelected)
 			setCurrentView(VIEW_DATE_PICKER_YEAR);
 		mYearPickerView.postDelayed(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				mYearPickerView.onRestoreInstanceState(yearState);
 			}
 		}, 100);
 		mDayPickerView.postDelayed(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				mDayPickerView.onRestoreInstanceState(monthState);
 			}
 		}, 100);
 	}
-	
-	 @Override
-	  public Parcelable onSaveInstanceState() {
-	    //begin boilerplate code that allows parent classes to save state
-	    Parcelable superState = super.onSaveInstanceState();
 
-	    SavedState ss = new SavedState(superState);
-	    //end
+	private static final String YEAR_KEY = "year";
+	private static final String MONTH_KEY = "month";
+	private static final String DAY_KEY = "day";
+	private static final String WEEK_START_KEY = "week_start";
+	private static final String YEAR_START_KEY = "minYear";
+	private static final String YEAR_END_KEY = "maxYear";
+	private static final String CURRENT_VIEW_KEY = "currentView";
+	private static final String MOST_VISIBLE_POSITION_KEY = "mostVisiblePosition";
+	private static final String LIST_OFFSET_KEY = "listOffset";
 
-		ss.year=this.mCalendar.get(Calendar.YEAR);
-		ss.month=this.mCalendar.get(Calendar.MONTH);
-		ss.day=this.mCalendar.get(Calendar.DAY_OF_MONTH);
-		ss.week_start= this.mWeekStart;
-		ss.year_start=this.mMinYear;
-		ss.year_end=this.mMaxYear;
-		ss.current_view=this.mCurrentView;
+	@Override
+	public Parcelable onSaveInstanceState() {
+		super.onSaveInstanceState();
+		// end
+		Bundle b = new Bundle();
+		b.putInt(YEAR_KEY, this.mCalendar.get(Calendar.YEAR));
+		b.putInt(MONTH_KEY, this.mCalendar.get(Calendar.MONTH));
+		b.putInt(DAY_KEY, this.mCalendar.get(Calendar.DAY_OF_MONTH));
+		b.putInt(WEEK_START_KEY, mWeekStart);
+		b.putInt(YEAR_START_KEY, mMinYear);
+		b.putInt(YEAR_END_KEY, mMaxYear);
+		b.putInt(CURRENT_VIEW_KEY, mCurrentView);
+
 		int mostVisiblePosition = -1;
 		if (this.mCurrentView == 0)
 			mostVisiblePosition = this.mDayPickerView.getMostVisiblePosition();
-		ss.list_position= mostVisiblePosition;
+		// ss.list_position= mostVisiblePosition;
 		if (this.mCurrentView == 1) {
 			mostVisiblePosition = this.mYearPickerView
 					.getFirstVisiblePosition();
-			ss.list_position_offset=
-					this.mYearPickerView.getFirstPositionOffset();
+			b.putInt(LIST_OFFSET_KEY, mYearPickerView.getFirstPositionOffset());
+			// ss.list_position_offset=
+			// this.mYearPickerView.getFirstPositionOffset();
 		}
+		b.putInt(MOST_VISIBLE_POSITION_KEY, mostVisiblePosition);
 
-	    return ss;
-	  }
+		return b;
+	}
 
-	  @Override
-	  public void onRestoreInstanceState(Parcelable state) {
-	    //begin boilerplate code so parent classes can restore state
-	    if(!(state instanceof SavedState)) {
-	      super.onRestoreInstanceState(state);
-	      return;
-	    }
+	@Override
+	public void onRestoreInstanceState(Parcelable state) {
+		// begin boilerplate code so parent classes can restore state
+		if (!(state instanceof Bundle)) {
+			super.onRestoreInstanceState(state);
+			return;
+		}
+		// end
+		final Bundle b = (Bundle) state;
 
-	    SavedState ss = (SavedState)state;
-	    super.onRestoreInstanceState(ss.getSuperState());
-	    //end
-
-	    setYear(ss.year);
-	    setMonth(ss.month);
-	    setDay(ss.day);
-	    
-	    mWeekStart=ss.week_start;
-	    setMinYear(ss.year_start);
-	    setMaxYear(ss.year_end);
-	    setCurrentView(ss.current_view);
-	  }
-
-	  static class SavedState extends BaseSavedState {
-	   int year;
-	   int month;
-	   int day;
-	   int week_start;
-	   int year_start;
-	   int year_end;
-	   int current_view;
-	   int list_position_offset;
-	   int list_position;
-
-	    SavedState(Parcelable superState) {
-	      super(superState);
-	    }
-
-	    private SavedState(Parcel in) {
-	      super(in);
-//	      this.stateToSave = in.readInt();
-	    }
-
-	    @Override
-	    public void writeToParcel(Parcel out, int flags) {
-	      super.writeToParcel(out, flags);
-//	      out.writeInt(this.stateToSave);
-	    }
-
-	    //required field that makes Parcelables from a Parcel
-	    public static final Parcelable.Creator<SavedState> CREATOR =
-	        new Parcelable.Creator<SavedState>() {
-	          public SavedState createFromParcel(Parcel in) {
-	            return new SavedState(in);
-	          }
-	          public SavedState[] newArray(int size) {
-	            return new SavedState[size];
-	          }
-	    };
-	  }
+		mWeekStart = b.getInt(WEEK_START_KEY);
+		setMinYear(b.getInt(YEAR_START_KEY));
+		setMaxYear(b.getInt(YEAR_END_KEY));
+		int currentView = b.getInt(CURRENT_VIEW_KEY);
+		setCurrentView(currentView);
+		setScroll(b.getInt(MOST_VISIBLE_POSITION_KEY, -1), currentView,
+				b.getInt(LIST_OFFSET_KEY, 0));
+		int year=b.getInt(YEAR_KEY);
+		int month=b.getInt(MONTH_KEY);
+		int day=b.getInt(DAY_KEY);
+		setYear(year);
+		setMonth(month);
+		setDay(day);
+	}
 
 	public int getYear() {
 		return mCalendar.get(Calendar.YEAR);
 	}
-	
+
 	public int getMonth() {
 		return mCalendar.get(Calendar.MONTH);
 	}
-	
+
 	public int getDay() {
 		return mCalendar.get(Calendar.DAY_OF_MONTH);
 	}
-	
 
 }

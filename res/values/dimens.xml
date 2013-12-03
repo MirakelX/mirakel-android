@@ -36,15 +36,14 @@
     <dimen name="bar_length">240dp</dimen>
     <dimen name="bar_pointer_radius">6dp</dimen>
     <dimen name="bar_pointer_halo_radius">14dp</dimen>
-    
     <dimen name="marginTopDivider">10dp</dimen>
     <dimen name="task_padding">7.5dp</dimen>
     <dimen name="task_padding_for_icons">12.5dp</dimen>
     <dimen name="text_padding">5dp</dimen>
     <dimen name="due_reminder_text_size">18sp</dimen>
-    
+
     <!-- Datepicker -->
-        <dimen name="done_label_size">14sp</dimen>
+    <dimen name="done_label_size">14sp</dimen>
     <dimen name="date_picker_component_width">270dip</dimen>
     <dimen name="date_picker_header_height">30dip</dimen>
     <dimen name="selected_calendar_layout_height">155dip</dimen>
@@ -61,7 +60,6 @@
     <dimen name="day_number_size">16sp</dimen>
     <dimen name="year_label_height">64dip</dimen>
     <dimen name="year_label_text_size">22dip</dimen>
-
     <dimen name="time_label_size">60sp</dimen>
     <dimen name="extra_time_label_margin">-30dp</dimen>
     <dimen name="ampm_label_size">16sp</dimen>
@@ -82,5 +80,9 @@
     <item name="text_size_multiplier_normal" format="float" type="string">0.17</item>
     <item name="text_size_multiplier_inner" format="float" type="string">0.14</item>
     <item name="text_size_multiplier_outer" format="float" type="string">0.11</item>
+
+    <!-- Reccurence picker -->
+    <dimen name="recurrence_picker_height">340dp</dimen>
+    <dimen name="recurrence_picker_width">300dp</dimen>
 
 </resources>

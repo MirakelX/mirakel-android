@@ -10,6 +10,8 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.method.TransformationMethod;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -27,12 +29,11 @@ import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakelandroid.R;
 
 public class TimePicker extends LinearLayout implements
-RadialPickerLayout.OnValueSelectedListener{
+		RadialPickerLayout.OnValueSelectedListener {
 
 	private Context ctx;
 	private View layout;
 
-	
 	private static final String KEY_HOUR_OF_DAY = "hour_of_day";
 	private static final String KEY_MINUTE = "minute";
 	private static final String KEY_IS_24_HOUR_VIEW = "is_24_hour_view";
@@ -94,25 +95,26 @@ RadialPickerLayout.OnValueSelectedListener{
 
 	private boolean mDark = false;
 	public Dialog mDialog;
+
 	public TimePicker(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		ctx=context;
+		ctx = context;
 		TypedArray a = context.getTheme().obtainStyledAttributes(attrs,
 				R.styleable.DatePicker, 0, 0);
 
 		try {
-			mInitialHourOfDay=a.getInt(R.styleable.TimePicker_initialHour, 0);
-			mInitialMinute=a.getInt(R.styleable.TimePicker_initialMinute, 0);
-			mIs24HourMode=a.getBoolean(R.styleable.TimePicker_is24HourMode, true);
+			mInitialHourOfDay = a.getInt(R.styleable.TimePicker_initialHour, 0);
+			mInitialMinute = a.getInt(R.styleable.TimePicker_initialMinute, 0);
+			mIs24HourMode = a.getBoolean(R.styleable.TimePicker_is24HourMode,
+					true);
 		} finally {
 			a.recycle();
 		}
 		layout=inflate(context, R.layout.time_picker_view, this);
-		mDark=MirakelPreferences.isDark();
+		mDark=MirakelPreferences.isDark();//TODO get this from theme or so...
 		initLayout();
 	}
 
-	
 	private void initLayout() {
 		KeyboardListener keyboardListener = new KeyboardListener(null);
 		layout.findViewById(R.id.time_picker_dialog).setOnKeyListener(
@@ -163,17 +165,18 @@ RadialPickerLayout.OnValueSelectedListener{
 		mAmText = amPmTexts[0];
 		mPmText = amPmTexts[1];
 
-		mTimePicker = (RadialPickerLayout) layout.findViewById(R.id.time_picker_radial);
+		mTimePicker = (RadialPickerLayout) layout
+				.findViewById(R.id.time_picker_radial);
 		mTimePicker.setOnValueSelectedListener(this);
 		mTimePicker.setOnKeyListener(keyboardListener);
-		mTimePicker.initialize(ctx, mInitialHourOfDay,
-				mInitialMinute, mIs24HourMode, mDark);
+		mTimePicker.initialize(ctx, mInitialHourOfDay, mInitialMinute,
+				mIs24HourMode, mDark);
 		int currentItemShowing = HOUR_INDEX;
-//		if (savedInstanceState != null
-//				&& savedInstanceState.containsKey(KEY_CURRENT_ITEM_SHOWING)) {
-//			currentItemShowing = savedInstanceState
-//					.getInt(KEY_CURRENT_ITEM_SHOWING);
-//		}
+		// if (savedInstanceState != null
+		// && savedInstanceState.containsKey(KEY_CURRENT_ITEM_SHOWING)) {
+		// currentItemShowing = savedInstanceState
+		// .getInt(KEY_CURRENT_ITEM_SHOWING);
+		// }
 		setCurrentItemShowing(currentItemShowing, false, true, true);
 		mTimePicker.invalidate();
 
@@ -183,6 +186,7 @@ RadialPickerLayout.OnValueSelectedListener{
 				setCurrentItemShowing(HOUR_INDEX, true, false, true);
 				mTimePicker.tryVibrate();
 			}
+
 		});
 		mMinuteView.setOnClickListener(new OnClickListener() {
 			@Override
@@ -208,7 +212,14 @@ RadialPickerLayout.OnValueSelectedListener{
 			}
 		});
 		mDoneButton.setOnKeyListener(keyboardListener);
-		this.mDoneButton.setTextColor(mUnselectedColor);
+		this.mNoDateButton = ((Button) layout.findViewById(R.id.dismiss));
+		this.mNoDateButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View view) {
+				// DatePickerDialog.this.tryVibrate();/
+				if (mCallback != null)
+					mCallback.onNoTimeSet();
+			}
+		});
 		if (mDark) {
 			View header = layout.findViewById(R.id.time_dialog_head);
 			header.setBackgroundColor(res.getColor(R.color.dialog_dark_gray));
@@ -224,18 +235,13 @@ RadialPickerLayout.OnValueSelectedListener{
 			View hairline = layout.findViewById(R.id.hairline_timepicker);
 			if (hairline != null)
 				hairline.setBackgroundColor(res.getColor(R.color.clock_gray));
+			this.mDoneButton.setTextColor(mUnselectedColor);
+			this.mNoDateButton.setTextColor(mUnselectedColor);
 
+		}else{
+			mDoneButton.setTextColor(res.getColor(R.color.Black));
+			mNoDateButton.setTextColor(res.getColor(R.color.Black));
 		}
-
-		this.mNoDateButton = ((Button) layout.findViewById(R.id.dismiss));
-		this.mNoDateButton.setTextColor(mUnselectedColor);
-		this.mNoDateButton.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View view) {
-				// DatePickerDialog.this.tryVibrate();/
-				if (mCallback != null)
-					mCallback.onNoTimeSet();
-			}
-		});
 
 		// Enable or disable the AM/PM view.
 		mAmPmHitspace = layout.findViewById(R.id.ampm_hitspace);
@@ -278,17 +284,16 @@ RadialPickerLayout.OnValueSelectedListener{
 		mAmKeyCode = mPmKeyCode = -1;
 		generateLegalTimesTree();
 		if (mInKbMode) {
-//			mTypedTimes = savedInstanceState
-//					.getIntegerArrayList(KEY_TYPED_TIMES);
+			// mTypedTimes = savedInstanceState
+			// .getIntegerArrayList(KEY_TYPED_TIMES);
 			tryStartingKbMode(-1);
 			mHourView.invalidate();
 		} else if (mTypedTimes == null) {
 			mTypedTimes = new ArrayList<Integer>();
 		}
 
-		
 	}
-	
+
 	private void updateAmPmDisplay(int amOrPm) {
 		if (amOrPm == AM) {
 			mAmPmTextView.setText(mAmText);
@@ -302,7 +307,6 @@ RadialPickerLayout.OnValueSelectedListener{
 			mAmPmTextView.setText(mDoublePlaceholderText);
 		}
 	}
-
 
 	/**
 	 * Called by the picker for updating the header display.
@@ -329,7 +333,7 @@ RadialPickerLayout.OnValueSelectedListener{
 			finishKbMode(true);
 		}
 	}
-	
+
 	public void setOnTimeSetListener(OnTimeSetListener callback) {
 		mCallback = callback;
 	}
@@ -339,7 +343,7 @@ RadialPickerLayout.OnValueSelectedListener{
 		mInitialMinute = minute;
 		mInKbMode = false;
 	}
-	
+
 	public void setHour(int value, boolean announce) {
 		String format;
 		if (mIs24HourMode) {
@@ -353,20 +357,20 @@ RadialPickerLayout.OnValueSelectedListener{
 		}
 
 		CharSequence text = String.format(format, value);
-		if(mHourView!=null)
+		if (mHourView != null)
 			mHourView.setText(text);
-		if(mHourSpaceView!=null)
+		if (mHourSpaceView != null)
 			mHourSpaceView.setText(text);
 		if (announce) {
 			Utils.tryAccessibilityAnnounce(mTimePicker, text);
 		}
 	}
-	
-	public void set24HourMode(boolean mode){
-		mIs24HourMode=mode;
-		if(mTimePicker!=null){
-			mTimePicker.initialize(ctx, mInitialHourOfDay,
-					mInitialMinute, mIs24HourMode, mDark);
+
+	public void set24HourMode(boolean mode) {
+		mIs24HourMode = mode;
+		if (mTimePicker != null) {
+			mTimePicker.initialize(ctx, mInitialHourOfDay, mInitialMinute,
+					mIs24HourMode, mDark);
 			mTimePicker.invalidate();
 		}
 		updateDisplay(true);
@@ -378,9 +382,9 @@ RadialPickerLayout.OnValueSelectedListener{
 		}
 		CharSequence text = String.format(Locale.getDefault(), "%02d", value);
 		Utils.tryAccessibilityAnnounce(mTimePicker, text);
-		if (mMinuteView!=null)
+		if (mMinuteView != null)
 			mMinuteView.setText(text);
-		if(mMinuteSpaceView!=null)
+		if (mMinuteSpaceView != null)
 			mMinuteSpaceView.setText(text);
 	}
 
@@ -436,7 +440,7 @@ RadialPickerLayout.OnValueSelectedListener{
 	private boolean processKeyUp(int keyCode) {
 		if (keyCode == KeyEvent.KEYCODE_ESCAPE
 				|| keyCode == KeyEvent.KEYCODE_BACK) {
-			if(mDialog!=null)
+			if (mDialog != null)
 				mDialog.dismiss();
 			return true;
 		} else if (keyCode == KeyEvent.KEYCODE_TAB) {
@@ -457,7 +461,7 @@ RadialPickerLayout.OnValueSelectedListener{
 				mCallback.onTimeSet(mTimePicker, mTimePicker.getHours(),
 						mTimePicker.getMinutes());
 			}
-			if(mDialog!=null)
+			if (mDialog != null)
 				mDialog.dismiss();
 			return true;
 		} else if (keyCode == KeyEvent.KEYCODE_DEL) {
@@ -967,10 +971,10 @@ RadialPickerLayout.OnValueSelectedListener{
 	}
 
 	public class KeyboardListener implements OnKeyListener {
-		public KeyboardListener(Dialog d){
-			mDialog=d;
+		public KeyboardListener(Dialog d) {
+			mDialog = d;
 		}
-		
+
 		@Override
 		public boolean onKey(View v, int keyCode, KeyEvent event) {
 			if (event.getAction() == KeyEvent.ACTION_UP) {
@@ -996,37 +1000,62 @@ RadialPickerLayout.OnValueSelectedListener{
 	}
 
 	public int getHour() {
-		if(mTimePicker!=null)
-			return mTimePicker.getHours()+(mAmKeyCode==PM?12:0);
+		if (mTimePicker != null)
+			return mTimePicker.getHours() + (mAmKeyCode == PM ? 12 : 0);
 		else
 			return 0;
 	}
-	
+
 	public int getMinute() {
-		if(mTimePicker!=null)
+		if (mTimePicker != null)
 			return mTimePicker.getMinutes();
 		else
 			return 0;
 	}
-	
-	public void setOnKeyListener(KeyboardListener keyboardListener){
-		if(mDoneButton!=null)
+
+	public void setOnKeyListener(KeyboardListener keyboardListener) {
+		if (mDoneButton != null)
 			mDoneButton.setOnKeyListener(keyboardListener);
-		if(mNoDateButton!=null)
+		if (mNoDateButton != null)
 			mNoDateButton.setOnKeyListener(keyboardListener);
-		if(mMinuteView!=null)
+		if (mMinuteView != null)
 			mMinuteView.setOnKeyListener(keyboardListener);
-		if(mHourView!=null)
+		if (mHourView != null)
 			mHourView.setOnKeyListener(keyboardListener);
-		if(mAmPmTextView!=null)
+		if (mAmPmTextView != null)
 			mAmPmTextView.setOnKeyListener(keyboardListener);
-		if(mTimePicker!=null)
+		if (mTimePicker != null)
 			mTimePicker.setOnKeyListener(keyboardListener);
 	}
 
-
 	public KeyboardListener getNewKeyboardListner(Dialog dialog) {
 		return new KeyboardListener(dialog);
+	}
+
+	@Override
+	public Parcelable onSaveInstanceState() {
+		super.onSaveInstanceState();
+		Bundle outState = new Bundle();
+		 if (mTimePicker != null) {
+	            outState.putInt(KEY_HOUR_OF_DAY, mTimePicker.getHours());
+	            outState.putInt(KEY_MINUTE, mTimePicker.getMinutes());
+	            outState.putBoolean(KEY_IS_24_HOUR_VIEW, mIs24HourMode);
+	            outState.putInt(KEY_CURRENT_ITEM_SHOWING, mTimePicker.getCurrentItemShowing());
+	            outState.putBoolean(KEY_IN_KB_MODE, mInKbMode);
+	            if (mInKbMode) {
+	                outState.putIntegerArrayList(KEY_TYPED_TIMES, mTypedTimes);
+	            }
+	        }
+		return outState;
+	}
+
+	@Override
+	public void onRestoreInstanceState(Parcelable state) {
+		if (!(state instanceof Bundle)) {
+			super.onRestoreInstanceState(state);
+			return;
+		}
+		Bundle b=(Bundle) state;
 	}
 
 }

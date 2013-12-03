@@ -21,27 +21,31 @@
     xmlns:mirakel="http://schemas.android.com/apk/res/de.azapps.mirakelandroid"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical" >
-
+    android:orientation="horizontal" >
+    
     <LinearLayout
         style="?android:attr/buttonBarStyle"
-        android:layout_width="@dimen/date_picker_component_width"
-        android:layout_height="wrap_content" >
+        android:layout_width="40dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
 
         <Button
             android:id="@+id/datetime_picker_date"
             style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:ellipsize="none"
+            android:rotation="90"
             android:text="@string/set_date" />
 
         <Button
             android:id="@+id/datetime_picker_time"
             style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:rotation="90"
             android:text="@string/set_time" />
     </LinearLayout>
 
@@ -65,8 +69,8 @@
             android:id="@+id/time_picker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            mirakel:initialHour="0"
-            mirakel:initialMinute="0" />
+            mirakel:initialHour="10"
+            mirakel:initialMinute="10" />
     </ViewSwitcher>
 
 </LinearLayout>

@@ -22,6 +22,10 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import com.android.calendar.recurrencepicker.RecurrencePickerDialog;
+import com.android.calendar.recurrencepicker.RecurrencePickerDialog.OnReccurenceSetListner;
+
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -45,6 +49,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -241,142 +246,29 @@ public class TaskDialogHelpers {
 		TaskDialogHelpers.handleRecurrence(ctx, task, recurrence, false);*/
 	}
 
-	public static void handleRecurrence(final Context context, final Task task,
-			Spinner spinner, final boolean isDue) {
-		final List<Pair<Integer, String>> recurring = Recurring.getForDialog(
-				isDue, task);
-		final int extraItems = 2;
-		CharSequence[] items = new String[recurring.size() + extraItems];
-		Recurring r = isDue ? task.getRecurring() : task
-				.getRecurringReminder();
-
-		items[0] = context.getString(R.string.recurrence_no);
-		items[1] = context.getString(R.string.recurrence_custom);
-		int pos = 0;
-		for (int i = 2; i < recurring.size() + extraItems; i++) {
-			items[i] = recurring.get(i - extraItems).second;
-			if (r != null && items[i].equals(r.getLabel())) {
-				pos = i;
-			}
-		}
-		ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(
-				context, android.R.layout.simple_spinner_item, items);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		spinner.setAdapter(adapter);
-		spinner.setSelection(pos);
-		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-
-			public void onItemSelected(AdapterView<?> parent, View view,
-					int pos, long id) {
-				int r;
-				switch (pos) {
-				case 0: // no
-					r = -1;
-					break;
-				case 1: // custom
-					task.safeSave();
-					final DueDialog dueDialog = new DueDialog(context, !isDue);
-					dueDialog.setTitle(R.string.recurrence_custom_title);
-					dueDialog.setPositiveButton(android.R.string.ok,
-							new DialogInterface.OnClickListener() {
-
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									int minute = 0, hour = 0, day = 0, month = 0, year = 0;
-									int val = dueDialog.getValue();
-									if (val == 0) {
-										Toast.makeText(
-												context,
-												context.getString(R.string.recurring_not_zero),
-												Toast.LENGTH_LONG).show();
-										return;
-									}
-									VALUE dayYear = dueDialog.getDayYear();
-									String label = "";
-									switch (dayYear) {
-									case MINUTE:
-										minute = val;
-										label = context
-												.getResources()
-												.getQuantityString(
-														R.plurals.every_minutes,
-														val, val);
-										break;
-									case HOUR:
-										minute = val;
-										label = context
-												.getResources()
-												.getQuantityString(
-														R.plurals.every_minutes,
-														val, val);
-										break;
-									case DAY:
-										day = val;
-										label = context.getResources()
-												.getQuantityString(
-														R.plurals.every_days,
-														val, val);
-										break;
-									case MONTH:
-										month = val;
-										label = context.getResources()
-												.getQuantityString(
-														R.plurals.every_months,
-														val, val);
-										break;
-									case YEAR:
-										year = val;
-										label = context.getResources()
-												.getQuantityString(
-														R.plurals.every_years,
-														val, val);
-										break;
-									}
-									Calendar startDate = isDue ? task.getDue()
-											: task.getReminder();
-									Recurring r = Recurring.newRecurring(label,
-											minute, hour, day, month, year,
-											isDue, startDate, null, true);
-									if (isDue) {
-										Recurring.destroyTemporary(task
-												.getRecurrenceId());
-										task.setRecurrence(r.getId());
-									} else {
-										Recurring.destroyTemporary(task
-												.getRecurringReminderId());
-										task.setRecurringReminder(r.getId());
-									}
-									task.safeSave();
-
-								}
-							});
-					dueDialog.setNegativeButton(android.R.string.cancel,
-							new DialogInterface.OnClickListener() {
-
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-								}
-							});
-					dueDialog.show();
-					return;
-				default:
-					r = recurring.get(pos - extraItems).first;
+	@SuppressLint("NewApi")
+	public static void handleRecurrence(final Activity activity, final Task task,
+			final boolean isDue, final ImageButton image) {
+		android.app.FragmentManager fm = ((MainActivity)activity).getFragmentManager();
+		RecurrencePickerDialog rp=RecurrencePickerDialog.newInstance(new OnReccurenceSetListner() {
+			
+			@Override
+			public void OnReccurnceSet(Recurring r) {
+				int id=-1;
+				image.setBackground(activity.getResources().getDrawable(android.R.drawable.ic_menu_mylocation));
+				if(r!=null){
+					id=r.getId();
+					image.setBackground(activity.getResources().getDrawable(android.R.drawable.ic_menu_rotate));
 				}
-				if (isDue) {
-					task.setRecurrence(r);
-				} else {
-					task.setRecurringReminder(r);
+				if(isDue){
+					task.setRecurrence(id);
+				}else{
+					task.setRecurringReminder(id);
 				}
 				task.safeSave();
 			}
-
-			public void onNothingSelected(AdapterView<?> parent) {
-				// Another interface callback
-			}
-
-		});
+		},task.getRecurring(),isDue);
+		rp.show(fm, "reccurence");
 
 	}
 

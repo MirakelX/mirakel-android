@@ -34,6 +34,7 @@
     <color name="holo_blue_light">#ff33b5e5</color>
     <color name="holo_orange_dark">#ffff8800</color>
 
+
     <color name="holo_red_dark">#ffcc0000</color>
     <!-- Datepicker -->
     <color name="white">#ffffffff</color>
@@ -46,6 +47,7 @@
     <color name="date_picker_text_normal">#ff999999</color>
     <color name="calendar_header">#ff999999</color>
     <color name="date_picker_view_animator">#fff2f2f2</color>
+    <color name="ampm_text_color">#8c8c8c</color>
     <color name="numbers_text_color">#8c8c8c</color>
     <color name="transparent_black">#7F000000</color>
 
@@ -86,5 +88,7 @@
 
     <color name="alarm_timeline_color">#4D4D4D</color>
     <color name="dialog_dark_gray">#70000000</color>
+    <color name="recurrence_picker_background">#fff2f2f2</color>
+    <color name="recurrence_bubble_text_normal">#ff737373</color>
 
 </resources>
