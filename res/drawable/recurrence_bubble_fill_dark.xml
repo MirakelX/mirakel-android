@@ -18,8 +18,10 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:state_checked="true" android:color="@android:color/white"/>
-    <item android:state_enabled="false" android:color="@color/done_text_color_disabled"/>
-    <item android:color="@color/recurrence_bubble_text_normal"/>
+    <item android:drawable="@drawable/ic_recurrence_bubble_outline_disabled" android:state_checked="false" android:state_enabled="false"/>
+    <item android:drawable="@drawable/ic_recurrence_bubble_disabled" android:state_checked="true" android:state_enabled="false"/>
+    <item android:drawable="@drawable/ic_recurrence_bubble_fill_dark" android:state_pressed="true" android:state_window_focused="true"/>
+    <item android:drawable="@drawable/ic_recurrence_bubble_fill_dark" android:state_checked="true"/>
+    <item android:drawable="@drawable/ic_recurrence_bubble_outline_dark"/>
 
 </selector>

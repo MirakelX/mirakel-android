@@ -16,6 +16,9 @@
 
 package com.android.calendar.recurrencepicker;
 
+import de.azapps.mirakel.helper.Helpers;
+import de.azapps.mirakel.helper.MirakelPreferences;
+import de.azapps.mirakelandroid.R;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
@@ -23,22 +26,39 @@ import android.view.View;
 public class WeekButton extends android.widget.ToggleButton {
 
     private static int mWidth;
+    private static boolean mDark;
 
     public WeekButton(Context context) {
         super(context);
+        setTheme();
     }
 
-    public WeekButton(Context context, AttributeSet attrs) {
+    private void setTheme() {
+		mDark=MirakelPreferences.isDark();
+		if(mDark){
+			setBackground(getResources().getDrawable(R.drawable.recurrence_bubble_fill_dark));
+			setTextColor(getResources().getColorStateList(R.color.recurrence_bubble_text_color_dark));
+		}else{
+			setBackground(getResources().getDrawable(R.drawable.recurrence_bubble_fill));
+			setTextColor(getResources().getColorStateList(R.color.recurrence_bubble_text_color));
+		}
+	}
+
+	public WeekButton(Context context, AttributeSet attrs) {
         super(context, attrs);
+        setTheme();
+        
     }
 
     public WeekButton(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        setTheme();
     }
 
     public static void setSuggestedWidth(int w) {
         mWidth = w;
     }
+    
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {

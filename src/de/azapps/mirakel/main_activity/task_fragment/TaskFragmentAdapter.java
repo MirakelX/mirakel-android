@@ -995,7 +995,7 @@ public class TaskFragmentAdapter extends
 				
 				@Override
 				public void onClick(View v) {
-					TaskDialogHelpers.handleRecurrence((Activity) context, task, true,holder.reccurence);				
+					TaskDialogHelpers.handleRecurrence((Activity) context, task, true,holder.reccurence,darkTheme);				
 				}
 			});
 			holder.taskDue.setOnClickListener(new View.OnClickListener() {
@@ -1063,8 +1063,7 @@ public class TaskFragmentAdapter extends
 		Drawable dueImg = context.getResources().getDrawable(
 				android.R.drawable.ic_menu_today);
 		dueImg.setBounds(0, 1, 42, 42);
-		holder.taskDue.setCompoundDrawables(dueImg, null,
-				getRecurringDrawable(task.getRecurring()), null);
+		setupRecurrenceDrawable(holder.reccurence,task.getRecurring());
 		if (task.getDue() == null) {
 			holder.taskDue.setText(context.getString(R.string.no_date));
 			holder.taskDue.setTextColor(context.getResources().getColor(
@@ -1075,6 +1074,16 @@ public class TaskFragmentAdapter extends
 			holder.taskDue.setTextColor(context.getResources().getColor(
 					TaskHelper.getTaskDueColor(task.getDue(), task.isDone())));
 		}
+	}
+
+	private void setupRecurrenceDrawable(ImageButton reccurence,
+			Recurring recurring) {
+		if(recurring==null||recurring.getId()==-1){
+			reccurence.setBackground(context.getResources().getDrawable(android.R.drawable.ic_menu_mylocation));
+		}else{
+			reccurence.setBackground(context.getResources().getDrawable(android.R.drawable.ic_menu_rotate));
+		}
+		
 	}
 
 	static class HeaderHolder {

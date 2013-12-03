@@ -248,7 +248,7 @@ public class TaskDialogHelpers {
 
 	@SuppressLint("NewApi")
 	public static void handleRecurrence(final Activity activity, final Task task,
-			final boolean isDue, final ImageButton image) {
+			final boolean isDue, final ImageButton image,boolean dark) {
 		android.app.FragmentManager fm = ((MainActivity)activity).getFragmentManager();
 		RecurrencePickerDialog rp=RecurrencePickerDialog.newInstance(new OnReccurenceSetListner() {
 			
@@ -267,7 +267,7 @@ public class TaskDialogHelpers {
 				}
 				task.safeSave();
 			}
-		},task.getRecurring(),isDue);
+		},task.getRecurring(),isDue,dark);
 		rp.show(fm, "reccurence");
 
 	}
