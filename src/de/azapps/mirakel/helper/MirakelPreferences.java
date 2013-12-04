@@ -60,4 +60,7 @@ public class MirakelPreferences {
 	public static boolean useNotifications() {
 		return settings.getBoolean("notificationsUse", false);
 	}
+	public static int getAlarmLater() {
+		return settings.getInt("alarm_later", 15);
+	}
 }

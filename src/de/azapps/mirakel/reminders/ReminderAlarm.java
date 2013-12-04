@@ -44,6 +44,7 @@ import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.services.NotificationService;
+import de.azapps.mirakel.services.TaskService;
 import de.azapps.mirakelandroid.R;
 
 public class ReminderAlarm extends BroadcastReceiver {
@@ -90,20 +91,21 @@ public class ReminderAlarm extends BroadcastReceiver {
 		PendingIntent pOpenIntent = PendingIntent.getActivity(context, 0,
 				openIntent, 0);
 
-		Intent doneIntent = new Intent(context, MainActivity.class);
-		doneIntent.setAction(MainActivity.TASK_DONE);
+		Intent doneIntent = new Intent(context, TaskService.class);
+		doneIntent.setAction(TaskService.TASK_DONE);
 		doneIntent.putExtra(MainActivity.EXTRA_ID, task.getId());
 		doneIntent
 				.setData(Uri.parse(doneIntent.toUri(Intent.URI_INTENT_SCHEME)));
-		PendingIntent pDoneIntent = PendingIntent.getActivity(context, 0,
+
+		PendingIntent pDoneIntent = PendingIntent.getService(context, 0,
 				doneIntent, 0);
 
-		Intent laterIntent = new Intent(context, MainActivity.class);
-		laterIntent.setAction(MainActivity.TASK_LATER);
+		Intent laterIntent = new Intent(context, TaskService.class);
+		laterIntent.setAction(TaskService.TASK_LATER);
 		laterIntent.putExtra(MainActivity.EXTRA_ID, task.getId());
 		laterIntent.setData(Uri.parse(laterIntent
 				.toUri(Intent.URI_INTENT_SCHEME)));
-		PendingIntent pLaterIntent = PendingIntent.getActivity(context, 0,
+		PendingIntent pLaterIntent = PendingIntent.getService(context, 0,
 				laterIntent, 0);
 
 		boolean persistent = preferences

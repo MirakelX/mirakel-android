@@ -90,8 +90,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-   
-        
         <activity
             android:name="de.azapps.mirakel.main_activity.MainActivity"
             android:configChanges="orientation|screenSize"
@@ -220,6 +218,7 @@
         </provider>
 
         <service android:name="de.azapps.mirakel.services.NotificationService" />
+        <service android:name="de.azapps.mirakel.services.TaskService" />
 
         <receiver
             android:name="de.azapps.mirakel.receivers.BootUpReceiver"
