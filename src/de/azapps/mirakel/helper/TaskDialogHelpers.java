@@ -23,7 +23,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import com.android.calendar.recurrencepicker.RecurrencePickerDialog;
-import com.android.calendar.recurrencepicker.RecurrencePickerDialog.OnReccurenceSetListner;
+import com.android.calendar.recurrencepicker.RecurrencePickerDialog.OnRecurenceSetListner;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -42,9 +42,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -52,7 +49,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
@@ -74,8 +70,6 @@ import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 import de.azapps.mirakelandroid.R;
 import de.azapps.widgets.DateTimeDialog;
 import de.azapps.widgets.DateTimeDialog.OnDateTimeSetListner;
-import de.azapps.widgets.DueDialog;
-import de.azapps.widgets.DueDialog.VALUE;
 
 public class TaskDialogHelpers {
 	protected static final String TAG = "TaskDialogHelpers";
@@ -118,63 +112,98 @@ public class TaskDialogHelpers {
 	}
 
 	public static void handleReminder(final Activity ctx, final Task task,
-			final ExecInterface onSuccess,boolean dark) {
+			final ExecInterface onSuccess, boolean dark) {
 		final Calendar reminder = (task.getReminder() == null ? new GregorianCalendar()
 				: task.getReminder());
-		
-		
-		final FragmentManager fm=((MainActivity) ctx)
+
+		final FragmentManager fm = ((MainActivity) ctx)
 				.getSupportFragmentManager();
-		final DateTimeDialog dtDialog=DateTimeDialog.newInstance(new OnDateTimeSetListner(){
+		final DateTimeDialog dtDialog = DateTimeDialog.newInstance(
+				new OnDateTimeSetListner() {
 
-			@Override
-			public void onDateTimeSet(int year, int month, int dayOfMonth,
-					int hourOfDay, int minute) {
-				reminder.set(Calendar.YEAR, year);
-				reminder.set(Calendar.MONTH, month);
-				reminder.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-				reminder.set(Calendar.HOUR_OF_DAY, hourOfDay);
-				reminder.set(Calendar.MINUTE, minute);
-				task.setReminder(reminder);
-				safeSafeTask(ctx, task);
-				onSuccess.exec();	
-				
-			}
+					@Override
+					public void onDateTimeSet(int year, int month,
+							int dayOfMonth, int hourOfDay, int minute) {
+						reminder.set(Calendar.YEAR, year);
+						reminder.set(Calendar.MONTH, month);
+						reminder.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+						reminder.set(Calendar.HOUR_OF_DAY, hourOfDay);
+						reminder.set(Calendar.MINUTE, minute);
+						task.setReminder(reminder);
+						safeSafeTask(ctx, task);
+						onSuccess.exec();
 
-			@Override
-			public void onNoTimeSet() {
-				task.setReminder(null);
-				((MainActivity) ctx)
-						.saveTask(task);
-				onSuccess.exec();	
-				
-			}},reminder.get(Calendar.YEAR), reminder.get(Calendar.MONTH),
-				reminder.get(Calendar.DAY_OF_MONTH), reminder.get(Calendar.HOUR_OF_DAY), reminder.get(Calendar.MINUTE), true,dark);
+					}
+
+					@Override
+					public void onNoTimeSet() {
+						task.setReminder(null);
+						((MainActivity) ctx).saveTask(task);
+						onSuccess.exec();
+
+					}
+				}, reminder.get(Calendar.YEAR), reminder.get(Calendar.MONTH),
+				reminder.get(Calendar.DAY_OF_MONTH), reminder
+						.get(Calendar.HOUR_OF_DAY), reminder
+						.get(Calendar.MINUTE), true, dark);
 		dtDialog.show(fm, "datetimedialog");
 	}
 
 	@SuppressLint("NewApi")
-	public static void handleRecurrence(final Activity activity, final Task task,
-			final boolean isDue, final ImageButton image,boolean dark) {
-		android.app.FragmentManager fm = ((MainActivity)activity).getFragmentManager();
-		RecurrencePickerDialog rp=RecurrencePickerDialog.newInstance(new OnReccurenceSetListner() {
-			
-			@Override
-			public void OnReccurnceSet(Recurring r) {
-				int id=-1;
-				image.setBackground(activity.getResources().getDrawable(android.R.drawable.ic_menu_mylocation));
-				if(r!=null){
-					id=r.getId();
-					image.setBackground(activity.getResources().getDrawable(android.R.drawable.ic_menu_rotate));
-				}
-				if(isDue){
-					task.setRecurrence(id);
-				}else{
-					task.setRecurringReminder(id);
-				}
-				task.safeSave();
-			}
-		},task.getRecurring(),isDue,dark);
+	public static void handleRecurrence(final Activity activity,
+			final Task task, final boolean isDue, final ImageButton image,
+			boolean dark) {
+		FragmentManager fm = ((MainActivity) activity)
+				.getSupportFragmentManager();
+		RecurrencePickerDialog rp = RecurrencePickerDialog.newInstance(
+				new OnRecurenceSetListner() {
+
+					@Override
+					public void OnCustomRecurnceSetIntervall(boolean isDue,
+							int intervalYears, int intervalMonths,
+							int intervalDays, int intervalHours,
+							int intervalMinutes, Calendar endDate) {
+						Recurring r = Recurring.newRecurring("", intervalMinutes,
+								intervalHours, intervalDays, intervalMonths, intervalYears, isDue, null, endDate,
+								true);
+						if (isDue) {
+							Recurring.destroyTemporary(task.getRecurrenceId());
+							task.setRecurrence(r.getId());
+						} else {
+							Recurring.destroyTemporary(task
+									.getRecurringReminderId());
+							task.setRecurringReminder(r.getId());
+						}
+						task.safeSave();
+
+					}
+
+					@Override
+					public void OnCustomRecurnceSetWeekdays(boolean isDue,
+							List<Integer> weekdays, Calendar endDate) {
+						
+						//TODO add db fields for this
+						//TODO add db field to set if reminder is exact to due or to completed... 
+					}
+
+					@Override
+					public void OnRecurrenceSet(Recurring r) {
+						int id = r.getId();
+						image.setBackground(activity.getResources()
+								.getDrawable(android.R.drawable.ic_menu_rotate));
+						setRecurence(task, isDue, id);
+
+					}
+
+					@Override
+					public void onNoRecurrenceSet() {
+						image.setBackground(activity.getResources()
+								.getDrawable(
+										android.R.drawable.ic_menu_mylocation));
+						setRecurence(task, isDue, -1);
+					}
+
+				}, isDue?task.getRecurring():task.getRecurringReminder(), isDue, dark);
 		rp.show(fm, "reccurence");
 
 	}
@@ -506,8 +535,7 @@ public class TaskDialogHelpers {
 		if (settings.getBoolean("subtaskAddToSameList", true)) {
 			list = parent.getList();
 		} else {
-			list = ListMirakel.getList(settings.getInt("subtaskAddToList",
-					-1));
+			list = ListMirakel.getList(settings.getInt("subtaskAddToList", -1));
 			if (list == null)
 				list = parent.getList();
 		}
@@ -531,20 +559,21 @@ public class TaskDialogHelpers {
 				+ " WHERE name LIKE '%" + searchString + "%' AND";
 		query += " NOT _id IN (SELECT parent_id from " + Task.SUBTASK_TABLE
 				+ " where child_id=" + t.getId() + ") AND ";
-		query += "NOT "+DatabaseHelper.ID+"=" + t.getId();
-		query += " AND NOT "+SyncAdapter.SYNC_STATE+"="+SYNC_STATE.DELETE;
+		query += "NOT " + DatabaseHelper.ID + "=" + t.getId();
+		query += " AND NOT " + SyncAdapter.SYNC_STATE + "=" + SYNC_STATE.DELETE;
 		if (optionEnabled) {
 			if (!done) {
-				query += " and "+Task.DONE+"=0";
+				query += " and " + Task.DONE + "=0";
 			}
 			if (content) {
-				query += " and "+Task.CONTENT+" is not null and not "+Task.CONTENT+" =''";
+				query += " and " + Task.CONTENT + " is not null and not "
+						+ Task.CONTENT + " =''";
 			}
 			if (reminder) {
-				query += " and "+Task.REMINDER+" is not null";
+				query += " and " + Task.REMINDER + " is not null";
 			}
 			if (listId > 0) {
-				query += " and "+Task.LIST_ID+"=" + listId;
+				query += " and " + Task.LIST_ID + "=" + listId;
 			} else {
 				String where = ((SpecialList) ListMirakel.getList(listId))
 						.getWhereQuery(false);
@@ -605,5 +634,15 @@ public class TaskDialogHelpers {
 			}
 		}).start();
 
+	}
+
+	private static void setRecurence(final Task task, final boolean isDue,
+			int id) {
+		if (isDue) {
+			task.setRecurrence(id);
+		} else {
+			task.setRecurringReminder(id);
+		}
+		task.safeSave();
 	}
 }

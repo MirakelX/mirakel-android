@@ -281,6 +281,11 @@ Device: %3$s\n]]>
     <string name="save">Save</string>
     <string name="file_to_large">Failed to create thumbnail</string>
     <string name="recurring_not_zero">Recurring can\'t be zero!</string>
+    <string name="every">Every</string>
+        <!-- Specifies that a repeating event to repeat forever (based on the defined frequency) instead of ending at a future date[CHAR LIMIT=20] -->
+    <string name="recurrence_end_continously">Forever</string>
+    <!-- Specifies that a repeating event to repeat until a certain date[CHAR LIMIT=25] -->
+    <string name="recurrence_end_date_label">Until a date</string>
 
     <!-- TaskFragment -->
     <string name="settings_task_fragment_title">Task overview</string>
