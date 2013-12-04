@@ -19,8 +19,6 @@
 package de.azapps.mirakel.main_activity;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
@@ -121,8 +119,6 @@ public class MainActivity extends ActionBarActivity implements
 			RESULT_ADD_PICTURE = 7;
 	public static String EXTRA_ID = "de.azapps.mirakel.EXTRA_TASKID",
 			SHOW_TASK = "de.azapps.mirakel.SHOW_TASK",
-			TASK_DONE = "de.azapps.mirakel.TASK_DONE",
-			TASK_LATER = "de.azapps.mirakel.TASK_LATER",
 			SHOW_LIST = "de.azapps.mirakel.SHOW_LIST",
 			SHOW_LISTS = "de.azapps.mirakel.SHOW_LISTS",
 			SHOW_LIST_FROM_WIDGET = "de.azapps.mirakel.SHOW_LIST_FROM_WIDGET",
@@ -739,10 +735,6 @@ public class MainActivity extends ActionBarActivity implements
 						});
 				builder.create().show();
 			}
-
-		} else if (startIntent.getAction().equals(TASK_DONE)
-				|| startIntent.getAction().equals(TASK_LATER)) {
-			handleReminder(startIntent);
 		} else if (startIntent.getAction().equals(SHOW_LIST)
 				|| startIntent.getAction().contains(SHOW_LIST_FROM_WIDGET)) {
 
@@ -803,35 +795,6 @@ public class MainActivity extends ActionBarActivity implements
 			Toast.makeText(getApplicationContext(), R.string.list_vanished,
 					Toast.LENGTH_LONG).show();
 		}
-	}
-
-	private void handleReminder(Intent intent) {
-		Task task = TaskHelper.getTaskFromIntent(intent);
-		if (task == null)
-			return;
-		if (intent.getAction() == TASK_DONE) {
-			task.setDone(true);
-			safeSaveTask(task);
-			Toast.makeText(this,
-					getString(R.string.reminder_notification_done_confirm),
-					Toast.LENGTH_LONG).show();
-		} else if (intent.getAction() == TASK_LATER
-				&& !task.hasRecurringReminder()) {
-			GregorianCalendar reminder = new GregorianCalendar();
-			int addMinutes = preferences.getInt("alarm_later", 15);
-			reminder.add(Calendar.MINUTE, addMinutes);
-			task.setReminder(reminder);
-			safeSaveTask(task);
-			Toast.makeText(
-					this,
-					getString(R.string.reminder_notification_later_confirm,
-							addMinutes), Toast.LENGTH_LONG).show();
-		}
-		ReminderAlarm.closeNotificationFor(this, task.getId());
-		ReminderAlarm.updateAlarms(this);
-		getListFragment().update();
-		setCurrentList(task.getList());
-		setCurrentTask(task);
 	}
 
 	/**
