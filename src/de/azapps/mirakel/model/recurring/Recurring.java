@@ -210,8 +210,8 @@ public class Recurring extends RecurringBase {
 		Integer derivedFrom=c.isNull(19)?null:c.getInt(19);
 		return new Recurring(c.getInt(i++), c.getString(i++), c.getInt(i++),
 				c.getInt(i++), c.getInt(i++), c.getInt(i++), c.getInt(i++),
-				c.getInt(i++) == 1, start, end, c.getInt(++i) == 1,
-				c.getInt(++i) == 1, weekdays,derivedFrom);
+				c.getInt(i++) == 1, start, end, c.getInt(10) == 1,
+				c.getInt(11) == 1, weekdays,derivedFrom);
 	}
 
 	public Calendar addRecurring(Calendar c) {
