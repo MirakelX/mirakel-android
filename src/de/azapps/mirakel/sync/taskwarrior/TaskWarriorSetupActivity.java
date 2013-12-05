@@ -9,7 +9,9 @@ import java.net.URL;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -50,11 +52,24 @@ public class TaskWarriorSetupActivity extends Activity {
 					intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
 					startActivityForResult(intent, CONFIG_QR);
 				} catch (Exception e) {
-					Uri marketUri = Uri
-							.parse("market://details?id=com.google.zxing.client.android");
-					Intent marketIntent = new Intent(Intent.ACTION_VIEW,
-							marketUri);
-					startActivity(marketIntent);
+					new AlertDialog.Builder(getApplicationContext())
+							.setTitle(R.string.no_barcode_app)
+							.setMessage(R.string.no_barcode_app_message)
+							.setPositiveButton(R.string.no_barcode_app_install,
+									new DialogInterface.OnClickListener() {
+
+										@Override
+										public void onClick(
+												DialogInterface dialog,
+												int which) {
+											Uri marketUri = Uri
+													.parse("market://details?id=com.google.zxing.client.android");
+											Intent marketIntent = new Intent(
+													Intent.ACTION_VIEW,
+													marketUri);
+											startActivity(marketIntent);
+										}
+									}).show();
 				}
 
 			}
