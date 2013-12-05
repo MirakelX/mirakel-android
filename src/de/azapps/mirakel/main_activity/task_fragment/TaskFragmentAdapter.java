@@ -888,6 +888,7 @@ public class TaskFragmentAdapter extends
 
 	static class ReminderHolder {
 		TextView taskReminder;
+		ImageButton recurringButton;
 	}
 
 	private View setupReminder(ViewGroup parent, View convertView) {
@@ -924,6 +925,17 @@ public class TaskFragmentAdapter extends
 							}, darkTheme);
 				}
 			});
+			holder.recurringButton = (ImageButton) reminder
+					.findViewById(R.id.reccuring_reminder);
+			holder.recurringButton.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					TaskDialogHelpers.handleRecurrence((Activity) context,
+							task, false, holder.recurringButton, darkTheme);
+
+				}
+			});
 			reminder.setTag(holder);
 		} else {
 			holder = (ReminderHolder) reminder.getTag();
@@ -932,8 +944,8 @@ public class TaskFragmentAdapter extends
 		Drawable reminder_img = context.getResources().getDrawable(
 				android.R.drawable.ic_menu_recent_history);
 		reminder_img.setBounds(0, 1, 42, 42);
-		holder.taskReminder.setCompoundDrawables(reminder_img, null,
-				getRecurringDrawable(task.getRecurringReminder()), null);
+		holder.taskReminder
+				.setCompoundDrawables(reminder_img, null, null, null);
 		if (task.getReminder() == null) {
 			holder.taskReminder
 					.setText(context.getString(R.string.no_reminder));
@@ -946,16 +958,6 @@ public class TaskFragmentAdapter extends
 			holder.taskReminder.setTextColor(context.getResources().getColor(
 					inactive_color));
 		}
-	}
-
-	private Drawable getRecurringDrawable(Recurring recurring) {
-		if (recurring != null) {
-			Drawable r = context.getResources().getDrawable(
-					android.R.drawable.ic_menu_rotate);
-			r.setBounds(0, 1, 42, 42);
-			return r;
-		}
-		return null;
 	}
 
 	static class DueHolder {
@@ -990,12 +992,14 @@ public class TaskFragmentAdapter extends
 		if (convertView == null || convertView.getTag() == null) {
 			holder = new DueHolder();
 			holder.taskDue = (TextView) due.findViewById(R.id.task_due);
-			holder.reccurence=(ImageButton)due.findViewById(R.id.reccuring_due);
+			holder.reccurence = (ImageButton) due
+					.findViewById(R.id.reccuring_due);
 			holder.reccurence.setOnClickListener(new OnClickListener() {
-				
+
 				@Override
 				public void onClick(View v) {
-					TaskDialogHelpers.handleRecurrence((Activity) context, task, true,holder.reccurence,darkTheme);				
+					TaskDialogHelpers.handleRecurrence((Activity) context,
+							task, true, holder.reccurence, darkTheme);
 				}
 			});
 			holder.taskDue.setOnClickListener(new View.OnClickListener() {
@@ -1006,10 +1010,6 @@ public class TaskFragmentAdapter extends
 					mIgnoreTimeSet = false;
 					final Calendar due = (task.getDue() == null ? new GregorianCalendar()
 							: task.getDue());
-					// Spinner recurrence = (Spinner) content
-					// .findViewById(R.id.add_reccuring);
-					// TaskDialogHelpers.handleRecurrence(context, task,
-					// recurrence, true);
 					final FragmentManager fm = ((MainActivity) context)
 							.getSupportFragmentManager();
 					final DatePickerDialog datePickerDialog = DatePickerDialog
@@ -1049,7 +1049,7 @@ public class TaskFragmentAdapter extends
 									}, due.get(Calendar.YEAR), due
 											.get(Calendar.MONTH),
 									due.get(Calendar.DAY_OF_MONTH), false,
-									darkTheme);
+									darkTheme, true);
 					// datePickerDialog.setYearRange(2005, 2036);// must be <
 					// 2037
 					datePickerDialog.show(fm, "datepicker");
@@ -1063,7 +1063,8 @@ public class TaskFragmentAdapter extends
 		Drawable dueImg = context.getResources().getDrawable(
 				android.R.drawable.ic_menu_today);
 		dueImg.setBounds(0, 1, 42, 42);
-		setupRecurrenceDrawable(holder.reccurence,task.getRecurring());
+		setupRecurrenceDrawable(holder.reccurence, task.getRecurring());
+		holder.taskDue.setCompoundDrawables(dueImg, null, null, null);
 		if (task.getDue() == null) {
 			holder.taskDue.setText(context.getString(R.string.no_date));
 			holder.taskDue.setTextColor(context.getResources().getColor(
@@ -1078,12 +1079,14 @@ public class TaskFragmentAdapter extends
 
 	private void setupRecurrenceDrawable(ImageButton reccurence,
 			Recurring recurring) {
-		if(recurring==null||recurring.getId()==-1){
-			reccurence.setBackground(context.getResources().getDrawable(android.R.drawable.ic_menu_mylocation));
-		}else{
-			reccurence.setBackground(context.getResources().getDrawable(android.R.drawable.ic_menu_rotate));
+		if (recurring == null || recurring.getId() == -1) {
+			reccurence.setBackground(context.getResources().getDrawable(
+					android.R.drawable.ic_menu_mylocation));
+		} else {
+			reccurence.setBackground(context.getResources().getDrawable(
+					android.R.drawable.ic_menu_rotate));
 		}
-		
+
 	}
 
 	static class HeaderHolder {

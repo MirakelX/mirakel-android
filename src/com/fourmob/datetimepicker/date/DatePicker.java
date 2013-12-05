@@ -545,4 +545,9 @@ public class DatePicker extends LinearLayout implements View.OnClickListener,
 		return mCalendar.get(Calendar.DAY_OF_MONTH);
 	}
 
+	public void hideNoDate() {
+		Log.d(TAG,"hide");
+		mNoDateButton.setVisibility(View.GONE);		
+	}
+
 }

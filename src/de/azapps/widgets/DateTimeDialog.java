@@ -33,17 +33,19 @@ public class DateTimeDialog extends DialogFragment {
 		return dt;
 	}
 
+	private int mInitialYear;
+	private int mInitialMonth;
+	private int mInitialDay;
+	private int mInitialHour;
+	private int mInitialMinute;
+
 	private void init(int year, int month, int dayOfMonth, int hourOfDay,
 			int minute) {
-		if (tp != null) {
-			tp.setHour(hourOfDay, false);
-			tp.setMinute(minute);
-		}
-		if (dp != null) {
-			dp.setYear(year);
-			dp.setMonth(month);
-			dp.setDay(dayOfMonth);
-		}
+		mInitialYear=year;
+		mInitialMonth=month;
+		mInitialDay=dayOfMonth;
+		mInitialHour=hourOfDay;
+		mInitialMinute=minute;
 
 	}
 
@@ -156,6 +158,11 @@ public class DateTimeDialog extends DialogFragment {
 				}
 			}
 		});
+		dp.setYear(mInitialYear);
+		dp.setMonth(mInitialMonth);
+		dp.setDay(mInitialDay);
+		tp.setHour(mInitialHour, false);
+		tp.setMinute(mInitialMinute);
 		return v;
 
 	};

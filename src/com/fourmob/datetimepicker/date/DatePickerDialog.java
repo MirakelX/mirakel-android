@@ -1,6 +1,7 @@
 package com.fourmob.datetimepicker.date;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -22,19 +23,20 @@ public class DatePickerDialog extends DialogFragment {
 	private int mInitYear;
 	private int mInitMonth;
 	private int mInitDay;
+	private boolean mHasNoDate;
 
 	public static DatePickerDialog newInstance(
 			OnDateSetListener onDateSetListener, int year, int month, int day,
-			boolean dark) {
-		return newInstance(onDateSetListener, year, month, day, true, dark);
+			boolean dark,boolean hasNoDate) {
+		return newInstance(onDateSetListener, year, month, day, true, dark,hasNoDate);
 	}
 
 	public static DatePickerDialog newInstance(
 			OnDateSetListener onDateSetListener, int year, int month, int day,
-			boolean vibrate, boolean dark) {
+			boolean vibrate, boolean dark,boolean hasNoDate) {
 		DatePickerDialog datePickerDialog = new DatePickerDialog();
 		datePickerDialog.initialize(onDateSetListener, year, month, day,
-				vibrate, true);
+				vibrate, dark,hasNoDate);
 		return datePickerDialog;
 	}
 
@@ -42,7 +44,7 @@ public class DatePickerDialog extends DialogFragment {
 	}
 
 	public void initialize(final OnDateSetListener onDateSetListener, int year,
-			int month, int day, boolean vibrate, boolean dark) {
+			int month, int day, boolean vibrate, boolean dark, boolean hasNoDate) {
 		mCallback = new OnDateSetListener() {
 
 			@Override
@@ -66,7 +68,7 @@ public class DatePickerDialog extends DialogFragment {
 		mInitYear=year;
 		mInitMonth=month;
 		mInitDay=day;
-		
+		mHasNoDate=hasNoDate;
 	}
 
 	public void onCreate(Bundle bundle) {
@@ -112,7 +114,8 @@ public class DatePickerDialog extends DialogFragment {
 				mDatePicker.setDay(mInitDay);				
 			}
 		}, 0);
-
+		if(!mHasNoDate)
+			mDatePicker.hideNoDate();
 		return view;
 	}
 
