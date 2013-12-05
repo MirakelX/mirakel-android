@@ -33,6 +33,8 @@ public class DownloadTask extends AsyncTask<Pair<URL, File>, Integer, Integer> {
 		HttpURLConnection connection = null;
 		try {
 			connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("GET");
+			connection.setDoOutput(true);
 			connection.connect();
 
 			// expect HTTP 200 OK, so we don't mistakenly save error report

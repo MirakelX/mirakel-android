@@ -1,6 +1,7 @@
 package de.azapps.mirakel.sync.taskwarrior;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -157,8 +158,11 @@ public class TaskWarriorSetupActivity extends Activity {
 		String error = "";
 		if (configFile.exists() && configFile.canRead()) {
 			try {
-				// TODO remove
+
+				FileInputStream fis = new FileInputStream(configFile);
 				byte[] buffer = new byte[(int) configFile.length()];
+				fis.read(buffer);
+				fis.close();
 				Bundle b = new Bundle();
 				b.putString(SyncAdapter.BUNDLE_SERVER_TYPE,
 						TaskWarriorSync.TYPE);
