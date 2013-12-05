@@ -269,6 +269,11 @@
                         android:textSize="15sp"
                         android:visibility="gone" />
                 </LinearLayout>
+                <CheckBox android:id="@+id/recurrence_is_exact"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    android:text="@string/use_exact_recurrence"/>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

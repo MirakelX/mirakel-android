@@ -49,7 +49,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String TAG = "DatabaseHelper";
 	private Context context;
-	public static final int DATABASE_VERSION = 29;
+	public static final int DATABASE_VERSION = 30;
 
 	public static final String ID = "_id";
 	public static final String CREATED_AT = "created_at";
@@ -366,8 +366,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			for (int i = 1; i < weekdays.length; i++) { // Ignore first element
 				db.execSQL("INSERT INTO " + Semantic.TABLE + " ("
 						+ Semantic.CONDITION + "," + Semantic.WEEKDAY
-						+ ") VALUES (?, " + i + ")",new String[] {weekdays[i]});
+						+ ") VALUES (?, " + i + ")",
+						new String[] { weekdays[i] });
 			}
+			// add some options to reccuring
+		case 29:
+			db.execSQL("ALTER TABLE "+Recurring.TABLE+ " add column isExact INTEGER DEFAULT 0;");
+			
+			db.execSQL("ALTER TABLE "+Recurring.TABLE+ " add column monday INTEGER DEFAULT 0;");
+			db.execSQL("ALTER TABLE "+Recurring.TABLE+ " add column tuesday INTEGER DEFAULT 0;");
+			db.execSQL("ALTER TABLE "+Recurring.TABLE+ " add column wednesday INTEGER DEFAULT 0;");
+			db.execSQL("ALTER TABLE "+Recurring.TABLE+ " add column thursday INTEGER DEFAULT 0;");
+			db.execSQL("ALTER TABLE "+Recurring.TABLE+ " add column friday INTEGER DEFAULT 0;");
+			db.execSQL("ALTER TABLE "+Recurring.TABLE+ " add column saturday INTEGER DEFAULT 0;");
+			db.execSQL("ALTER TABLE "+Recurring.TABLE+ " add column sunnday INTEGER DEFAULT 0;");
+			
+			db.execSQL("ALTER TABLE "+Recurring.TABLE+ " add column derived_from INTEGER DAFAULT NULL");
 
 		}
 	}

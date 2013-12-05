@@ -35,6 +35,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Environment;
 import android.util.Pair;
+import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
 
 import com.google.gson.JsonElement;
@@ -163,28 +164,28 @@ public class AnyDoImport {
 					if (r == null) {
 						r = Recurring.newRecurring(
 								ctx.getString(R.string.daily), 0, 0, 1, 0, 0,
-								true, null, null, false);
+								true, null, null, false, false,new SparseBooleanArray());
 					}
 				} else if (repeat.equals("TASK_REPEAT_WEEK")) {
 					r = Recurring.get(7, 0, 0);
 					if (r == null) {
 						r = Recurring.newRecurring(
 								ctx.getString(R.string.weekly), 0, 0, 7, 0, 0,
-								true, null, null, false);
+								true, null, null, false, false,new SparseBooleanArray());
 					}
 				} else if (repeat.equals("TASK_REPEAT_MONTH")) {
 					r = Recurring.get(0, 1, 0);
 					if (r == null) {
 						r = Recurring.newRecurring(
 								ctx.getString(R.string.monthly), 0, 0, 0, 1, 0,
-								true, null, null, false);
+								true, null, null, false, false,new SparseBooleanArray());
 					}
 				} else if (repeat.equals("TASK_REPEAT_YEAR")) {
 					r = Recurring.get(0, 0, 1);
 					if (r == null) {
 						r = Recurring.newRecurring(
 								ctx.getString(R.string.yearly), 0, 0, 0, 0, 1,
-								true, null, null, false);
+								true, null, null, false, false,new SparseBooleanArray());
 					}
 				}
 				if (r != null) {
