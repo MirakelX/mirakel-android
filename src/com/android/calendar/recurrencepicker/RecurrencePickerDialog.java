@@ -40,6 +40,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
@@ -108,6 +109,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
 	private GregorianCalendar mEndDate;
 	private TextView mEndDateView;
 	protected boolean mIsCustom = false;
+	private CheckBox mUseExact;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -235,6 +237,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
 		if (mPosition != 0) {
 			mOptions.setVisibility(View.GONE);
 		}
+		mUseExact=(CheckBox)view.findViewById(R.id.recurrence_is_exact);
 		mToggle = (Switch) view.findViewById(R.id.repeat_switch);
 		mToggle.setChecked(mRecurring != null && mRecurring.getId() != -1);
 		mToggle.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -265,7 +268,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
 						}
 						if (isOneChecked) {
 							mCallback.OnCustomRecurnceSetWeekdays(mForDue,
-									checked, mEndDate);
+									checked, mEndDate,mUseExact.isChecked());
 						} else {
 							int intervalMonths = 0;
 							int intervalYears = 0;
@@ -299,10 +302,13 @@ public class RecurrencePickerDialog extends DialogFragment implements
 							mCallback.OnCustomRecurnceSetIntervall(mForDue,
 									intervalYears, intervalMonths,
 									intervalDays, intervalHours,
-									intervalMinutes, mEndDate);
+									intervalMinutes, mEndDate,mUseExact.isChecked());
 						}
 					} else {
-						mCallback.OnRecurrenceSet(mRecurring);
+						Recurring r = Recurring.createTemporayCopy(mRecurring);
+						r.setExact(mUseExact.isChecked());
+						r.save();
+						mCallback.OnRecurrenceSet(r);
 					}
 				} else {
 					mCallback.onNoRecurrenceSet();
@@ -498,10 +504,10 @@ public class RecurrencePickerDialog extends DialogFragment implements
 	public interface OnRecurenceSetListner {
 		void OnCustomRecurnceSetIntervall(boolean isDue, int intervalYears,
 				int intervalMonths, int intervalDays, int intervalHours,
-				int intervalMinutes, Calendar endDate);
+				int intervalMinutes, Calendar endDate,boolean isExact);
 
 		void OnCustomRecurnceSetWeekdays(boolean isDue, List<Integer> weekdays,
-				Calendar endDate);
+				Calendar endDate,boolean isExact);
 
 		void OnRecurrenceSet(Recurring r);
 

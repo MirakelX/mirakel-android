@@ -37,6 +37,7 @@ import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Pair;
+import android.util.SparseBooleanArray;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -155,6 +156,10 @@ public class TaskDialogHelpers {
 			boolean dark) {
 		FragmentManager fm = ((MainActivity) activity)
 				.getSupportFragmentManager();
+		Recurring r=isDue?task.getRecurring():task.getRecurringReminder();
+		if(r.getDerivedFrom()!=null){
+			r=Recurring.get(r.getDerivedFrom());
+		}
 		RecurrencePickerDialog rp = RecurrencePickerDialog.newInstance(
 				new OnRecurenceSetListner() {
 
@@ -162,36 +167,29 @@ public class TaskDialogHelpers {
 					public void OnCustomRecurnceSetIntervall(boolean isDue,
 							int intervalYears, int intervalMonths,
 							int intervalDays, int intervalHours,
-							int intervalMinutes, Calendar endDate) {
+							int intervalMinutes, Calendar endDate,boolean isExact) {
 						Recurring r = Recurring.newRecurring("", intervalMinutes,
 								intervalHours, intervalDays, intervalMonths, intervalYears, isDue, null, endDate,
-								true);
-						if (isDue) {
-							Recurring.destroyTemporary(task.getRecurrenceId());
-							task.setRecurrence(r.getId());
-						} else {
-							Recurring.destroyTemporary(task
-									.getRecurringReminderId());
-							task.setRecurringReminder(r.getId());
-						}
-						task.safeSave();
-
+								true,isExact,new SparseBooleanArray());
+						setRecurence(task, isDue, r.getId());
 					}
 
 					@Override
 					public void OnCustomRecurnceSetWeekdays(boolean isDue,
-							List<Integer> weekdays, Calendar endDate) {
-						
-						//TODO add db fields for this
-						//TODO add db field to set if reminder is exact to due or to completed... 
+							List<Integer> weekdays, Calendar endDate, boolean isExact) {
+						SparseBooleanArray weekdaysArray=new SparseBooleanArray();
+						for(int day:weekdays){
+							weekdaysArray.put(day, true);
+						}
+						Recurring r=Recurring.newRecurring("", 0, 0, 0, 0, 0, isDue, null, endDate, true, isExact, weekdaysArray);
+						setRecurence(task, isDue, r.getId());						
 					}
 
 					@Override
 					public void OnRecurrenceSet(Recurring r) {
-						int id = r.getId();
 						image.setBackground(activity.getResources()
 								.getDrawable(android.R.drawable.ic_menu_rotate));
-						setRecurence(task, isDue, id);
+						setRecurence(task, isDue, r.getId());
 
 					}
 
@@ -203,7 +201,7 @@ public class TaskDialogHelpers {
 						setRecurence(task, isDue, -1);
 					}
 
-				}, isDue?task.getRecurring():task.getRecurringReminder(), isDue, dark);
+				}, r, isDue, dark);
 		rp.show(fm, "reccurence");
 
 	}
@@ -639,8 +637,11 @@ public class TaskDialogHelpers {
 	private static void setRecurence(final Task task, final boolean isDue,
 			int id) {
 		if (isDue) {
+			Recurring.destroyTemporary(task.getRecurrenceId());
 			task.setRecurrence(id);
 		} else {
+			Recurring.destroyTemporary(task
+					.getRecurringReminderId());
 			task.setRecurringReminder(id);
 		}
 		task.safeSave();

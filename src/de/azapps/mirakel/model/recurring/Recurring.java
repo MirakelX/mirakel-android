@@ -11,6 +11,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Pair;
+import android.util.SparseBooleanArray;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
@@ -21,15 +22,17 @@ public class Recurring extends RecurringBase {
 	private final static String TAG = "Recurring";
 	private final static String[] allColumns = { "_id", "label", "minutes",
 			"hours", "days", "months", "years", "for_due", "start_date",
-			"end_date", "temporary" };
+			"end_date", "temporary", "isExact", "monday", "tuesday",
+			"wednesday", "thursday", "friday", "saturday", "sunnday","derived_from" };
 	private static SQLiteDatabase database;
 	private static DatabaseHelper dbHelper;
 
 	public Recurring(int _id, String label, int minutes, int hours, int days,
 			int months, int years, boolean forDue, Calendar startDate,
-			Calendar endDate, boolean temporary) {
+			Calendar endDate, boolean temporary, boolean isExact,
+			SparseBooleanArray weekdays,Integer derivedFrom) {
 		super(_id, label, minutes, hours, days, months, years, forDue,
-				startDate, endDate, temporary);
+				startDate, endDate, temporary, isExact, weekdays, derivedFrom);
 	}
 
 	public void save() {
@@ -60,11 +63,20 @@ public class Recurring extends RecurringBase {
 		dbHelper.close();
 	}
 
+	public static Recurring createTemporayCopy(Recurring r) {
+		Recurring newR=new Recurring(0,r.getLabel(), r.getMinutes(), r.getHours(),
+				r.getDays(), r.getMonths(), r.getYears(), r.isForDue(),
+				r.getStartDate(), r.getEndDate(), true, r.isExact(),
+				r.getWeekdaysRaw(),r.getId());
+		return newR.create();
+	}
+
 	public static Recurring newRecurring(String label, int minutes, int hours,
 			int days, int months, int years, boolean forDue,
-			Calendar startDate, Calendar endDate, boolean temporary) {
+			Calendar startDate, Calendar endDate, boolean temporary,
+			boolean isExact, SparseBooleanArray weekdays) {
 		Recurring r = new Recurring(0, label, minutes, hours, days, months,
-				years, forDue, startDate, endDate, temporary);
+				years, forDue, startDate, endDate, temporary, isExact, weekdays,null);
 		return r.create();
 	}
 
@@ -187,9 +199,19 @@ public class Recurring extends RecurringBase {
 			Log.d(TAG, "cannot parse Date");
 			end = null;
 		}
+		SparseBooleanArray weekdays = new SparseBooleanArray();
+		weekdays.put(Calendar.MONDAY, c.getInt(12) == 1);
+		weekdays.put(Calendar.TUESDAY, c.getInt(13) == 1);
+		weekdays.put(Calendar.WEDNESDAY, c.getInt(14) == 1);
+		weekdays.put(Calendar.THURSDAY, c.getInt(15) == 1);
+		weekdays.put(Calendar.FRIDAY, c.getInt(16) == 1);
+		weekdays.put(Calendar.SATURDAY, c.getInt(17) == 1);
+		weekdays.put(Calendar.SUNDAY, c.getInt(18) == 1);
+		Integer derivedFrom=c.isNull(19)?null:c.getInt(19);
 		return new Recurring(c.getInt(i++), c.getString(i++), c.getInt(i++),
 				c.getInt(i++), c.getInt(i++), c.getInt(i++), c.getInt(i++),
-				c.getInt(i++) == 1, start, end, c.getInt(++i) == 1);
+				c.getInt(i++) == 1, start, end, c.getInt(++i) == 1,
+				c.getInt(++i) == 1, weekdays,derivedFrom);
 	}
 
 	public Calendar addRecurring(Calendar c) {
@@ -213,21 +235,20 @@ public class Recurring extends RecurringBase {
 		return c;
 	}
 
-	public static List<Pair<Integer, String>> getForDialog(boolean isDue/*,
-			Task task*/) {
+	public static List<Pair<Integer, String>> getForDialog(boolean isDue/*
+																		 * ,
+																		 * Task
+																		 * task
+																		 */) {
 		String where = "temporary=0";
 		if (isDue) {
 			where += " AND for_due=1";
 		}
-		/*if (task != null) {
-			int id = -1;
-			if (isDue)
-				id = task.getRecurrenceId();
-			else
-				id = task.getRecurringReminderId();
-			if (id > -1)
-				where += " OR _id=" + id;
-		}*/
+		/*
+		 * if (task != null) { int id = -1; if (isDue) id =
+		 * task.getRecurrenceId(); else id = task.getRecurringReminderId(); if
+		 * (id > -1) where += " OR _id=" + id; }
+		 */
 		Cursor c = database.query(TABLE, new String[] { "_id", "label" },
 				where, null, null, null, null);
 		List<Pair<Integer, String>> ret = new ArrayList<Pair<Integer, String>>();

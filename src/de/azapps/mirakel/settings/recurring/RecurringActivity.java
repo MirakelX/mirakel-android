@@ -24,6 +24,7 @@ import java.util.List;
 import android.annotation.SuppressLint;
 import android.os.Build;
 import android.util.Pair;
+import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.View.OnClickListener;
 import de.azapps.mirakel.model.recurring.Recurring;
@@ -50,7 +51,7 @@ public class RecurringActivity extends ListSettings {
 
 	protected Recurring newRecurring(boolean temporary) {
 		return Recurring.newRecurring(getString(R.string.new_recurring), 0, 0,
-				0, 0, 1, true, null, null, temporary);
+				0, 0, 1, true, null, null, temporary,false,new SparseBooleanArray());//TODO add option for exakt...
 
 	}
 
