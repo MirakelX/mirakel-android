@@ -137,18 +137,22 @@ public class FileUtils {
 		}
 	}
 
-	public static void writeToFile(File f, String s) {
+	public static void safeWriteToFile(File f, String s) {
 		try {
-			if (f.exists())
-				f.delete();
-			BufferedWriter out = new BufferedWriter(new FileWriter(f));
-			out.write(s);
-			out.close();
+			writeToFile(f, s);
 		} catch (IOException e) {
 			Log.e(TAG, "cannot write to file");
 			Log.e(TAG, Log.getStackTraceString(e));
 		}
 
+	}
+
+	public static void writeToFile(File f, String s) throws IOException {
+		if (f.exists())
+			f.delete();
+		BufferedWriter out = new BufferedWriter(new FileWriter(f));
+		out.write(s);
+		out.close();
 	}
 
 	static public String getPathFromUri(Uri uri, Context ctx) {

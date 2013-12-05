@@ -4,24 +4,46 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/sync_taskwarrior_scan_qr"
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/sync_taskwarrior_about"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/sync_taskwarrior_scan_qr" />
+        android:orientation="horizontal"
+        android:weightSum="1.0" >
+
+        <Button
+            android:id="@+id/sync_taskwarrior_scan_qr"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:text="@string/sync_taskwarrior_scan_qr" />
+
+        <Button
+            android:id="@+id/sync_taskwarrior_select_file"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:text="@string/sync_taskwarrior_select_file" />
+    </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="@string/sync_taskwarrior_or"
+        android:text="@string/sync_taskwarrior_register"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <Button
-        android:id="@+id/sync_taskwarrior_select_file"
+        android:id="@+id/sync_taskwarrior_register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/sync_taskwarrior_select_file" />
+        android:text="@string/sync_taskwarrior_register_button" />
 
     <TextView
         android:layout_width="wrap_content"

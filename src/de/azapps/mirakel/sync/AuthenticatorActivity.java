@@ -447,16 +447,16 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				t = t[1].split("Client.key:\n");
 				Log.d(TAG, "client cert: " + t[0].replace("\n", ""));
 
-				FileUtils.writeToFile(
+				FileUtils.safeWriteToFile(
 						new File(TaskWarriorSync.CLIENT_CERT_FILE), t[0]);
 
 				t = t[1].split("ca.cert:\n");
 				Log.d(TAG, "client key: " + t[0].replace("\n", ""));
 
-				FileUtils.writeToFile(
+				FileUtils.safeWriteToFile(
 						new File(TaskWarriorSync.CLIENT_KEY_FILE), t[0]);
 				Log.d(TAG, "ca: " + t[1].replace("\n", ""));
-				FileUtils.writeToFile(new File(TaskWarriorSync.CA_FILE), t[1]);
+				FileUtils.safeWriteToFile(new File(TaskWarriorSync.CA_FILE), t[1]);
 				mAccountManager.addAccountExplicitly(account, pwd, b);
 			} catch (ArrayIndexOutOfBoundsException e) {
 				Log.e(TAG, "wrong Configfile");
