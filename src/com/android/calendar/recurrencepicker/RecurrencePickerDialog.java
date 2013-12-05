@@ -68,9 +68,9 @@ public class RecurrencePickerDialog extends DialogFragment implements
 	protected static final String TAG = null;
 
 	public static RecurrencePickerDialog newInstance(OnRecurenceSetListner r,
-			Recurring recurring, boolean forDue, boolean dark) {
+			Recurring recurring, boolean forDue, boolean dark, boolean exact) {
 		RecurrencePickerDialog re = new RecurrencePickerDialog();
-		re.initialize(r, recurring, forDue, dark);
+		re.initialize(r, recurring, forDue, dark,exact);
 		return re;
 	}
 
@@ -88,11 +88,12 @@ public class RecurrencePickerDialog extends DialogFragment implements
 	private int numOfButtonsInRow2;
 
 	public void initialize(OnRecurenceSetListner r, Recurring recurring,
-			boolean forDue, boolean dark) {
+			boolean forDue, boolean dark,boolean exact) {
 		mRecurring = recurring;
 		mCallback = r;
 		mForDue = forDue;
 		mDark = dark;
+		mInitialExact=exact;
 	}
 
 	private final int[] TIME_DAY_TO_CALENDAR_DAY = new int[] { Calendar.SUNDAY,
@@ -110,6 +111,10 @@ public class RecurrencePickerDialog extends DialogFragment implements
 	private TextView mEndDateView;
 	protected boolean mIsCustom = false;
 	private CheckBox mUseExact;
+	private boolean mInitialExact;
+	private Spinner mStartSpinner;
+	private GregorianCalendar mStartDate;
+	private TextView mStartDateView;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -238,6 +243,8 @@ public class RecurrencePickerDialog extends DialogFragment implements
 			mOptions.setVisibility(View.GONE);
 		}
 		mUseExact=(CheckBox)view.findViewById(R.id.recurrence_is_exact);
+		Log.w(TAG,"exact: "+mInitialExact);
+		mUseExact.setChecked(mInitialExact);
 		mToggle = (Switch) view.findViewById(R.id.repeat_switch);
 		mToggle.setChecked(mRecurring != null && mRecurring.getId() != -1);
 		mToggle.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -268,7 +275,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
 						}
 						if (isOneChecked) {
 							mCallback.OnCustomRecurnceSetWeekdays(mForDue,
-									checked, mEndDate,mUseExact.isChecked());
+									checked,mStartDate, mEndDate,mUseExact.isChecked());
 						} else {
 							int intervalMonths = 0;
 							int intervalYears = 0;
@@ -302,11 +309,12 @@ public class RecurrencePickerDialog extends DialogFragment implements
 							mCallback.OnCustomRecurnceSetIntervall(mForDue,
 									intervalYears, intervalMonths,
 									intervalDays, intervalHours,
-									intervalMinutes, mEndDate,mUseExact.isChecked());
+									intervalMinutes,mStartDate, mEndDate,mUseExact.isChecked());
 						}
 					} else {
 						Recurring r = Recurring.createTemporayCopy(mRecurring);
 						r.setExact(mUseExact.isChecked());
+						Log.d(TAG,"exact: "+r.isExact() );
 						r.save();
 						mCallback.OnRecurrenceSet(r);
 					}
@@ -443,6 +451,75 @@ public class RecurrencePickerDialog extends DialogFragment implements
 			}
 		});
 		mEndSpinner.setAdapter(endSpinnerAdapter);
+		
+		String[] start = { res.getString(R.string.recurrence_from_now),
+				res.getString(R.string.recurrence_from) // ,res.getString(R.string.recurrence_end_count_label)
+																	// Dont
+																	// support
+																	// this
+																	// now...*/
+																	// };
+		};
+
+		mStartSpinner = (Spinner) view.findViewById(R.id.startSpinner);
+		mStartSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1, int pos,
+					long arg3) {
+				switch (pos) {
+				case 1:
+					mStartDateView.setVisibility(View.VISIBLE);
+					break;
+				default:// FOREVER
+					mStartDateView.setVisibility(View.GONE);
+					break;
+				}
+
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+		ArrayAdapter<CharSequence> startSpinnerAdapter = new ArrayAdapter<CharSequence>(
+				ctx, android.R.layout.simple_spinner_item, start);
+		startSpinnerAdapter
+				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		mStartDateView = (TextView) view.findViewById(mDark ? R.id.startDate_dark
+				: R.id.startDate_light);
+		mStartDate = new GregorianCalendar();
+		mStartDateView.setText(DateTimeHelper.formatDate(mStartDate));
+		mStartDateView.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				DatePickerDialog dp = DatePickerDialog.newInstance(
+						new OnDateSetListener() {
+
+							@Override
+							public void onNoDateSet() {
+								// Nothing
+							}
+
+							@Override
+							public void onDateSet(DatePicker datePickerDialog,
+									int year, int month, int day) {
+								mStartDate.set(Calendar.YEAR, year);
+								mStartDate.set(Calendar.MONTH, month);
+								mStartDate.set(Calendar.DAY_OF_WEEK, day);
+
+							}
+						}, mStartDate.get(Calendar.YEAR), mStartDate
+								.get(Calendar.MONTH), mStartDate
+								.get(Calendar.DAY_OF_MONTH), mDark, false);
+				dp.show(getFragmentManager(), "startDate");
+
+			}
+		});
+		mStartSpinner.setAdapter(startSpinnerAdapter);
 		setEnabledComponents(mRecurring != null
 				&& mRecurring.getId() != -1);
 		if (mDark) {
@@ -454,6 +531,8 @@ public class RecurrencePickerDialog extends DialogFragment implements
 			mToggle.setThumbDrawable(res
 					.getDrawable(R.drawable.switch_thumb_dark));
 			mEndDateView.setTextColor(res.getColor(R.color.White));
+			mStartDateView.setTextColor(res.getColor(R.color.White));
+			mUseExact.setButtonDrawable(R.drawable.btn_check_holo_dark_red);
 		}
 
 		return view;
@@ -468,6 +547,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
 		}
 		mIntervalCount.setEnabled(b);
 		mIntervalType.setEnabled(b);
+		mUseExact.setEnabled(b);
 		
 	}
 
@@ -504,9 +584,9 @@ public class RecurrencePickerDialog extends DialogFragment implements
 	public interface OnRecurenceSetListner {
 		void OnCustomRecurnceSetIntervall(boolean isDue, int intervalYears,
 				int intervalMonths, int intervalDays, int intervalHours,
-				int intervalMinutes, Calendar endDate,boolean isExact);
+				int intervalMinutes,Calendar startDate, Calendar endDate,boolean isExact);
 
-		void OnCustomRecurnceSetWeekdays(boolean isDue, List<Integer> weekdays,
+		void OnCustomRecurnceSetWeekdays(boolean isDue, List<Integer> weekdays,Calendar startDate,
 				Calendar endDate,boolean isExact);
 
 		void OnRecurrenceSet(Recurring r);

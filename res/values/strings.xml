@@ -287,6 +287,8 @@ Device: %3$s\n]]>
     <!-- Specifies that a repeating event to repeat until a certain date[CHAR LIMIT=25] -->
     <string name="recurrence_end_date_label">Until a date</string>
     <string name="use_exact_recurrence">Should be Reccuing on done date?</string>
+    <string name="recurrence_from_now">From now</string>
+    <string name="recurrence_from">From</string>
 
     <!-- TaskFragment -->
     <string name="settings_task_fragment_title">Task overview</string>
