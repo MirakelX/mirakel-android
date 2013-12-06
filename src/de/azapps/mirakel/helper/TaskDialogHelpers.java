@@ -157,9 +157,9 @@ public class TaskDialogHelpers {
 		FragmentManager fm = ((MainActivity) activity)
 				.getSupportFragmentManager();
 		Recurring r=isDue?task.getRecurring():task.getRecurringReminder();
-		boolean isExact=r.isExact();
+		boolean isExact=r==null?false:r.isExact();
 		Log.d(TAG,"exact: "+isExact);
-		if(r.getDerivedFrom()!=null){
+		if(r!=null&&r.getDerivedFrom()!=null){
 			r=Recurring.get(r.getDerivedFrom());
 		}
 		RecurrencePickerDialog rp = RecurrencePickerDialog.newInstance(
