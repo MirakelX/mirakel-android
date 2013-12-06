@@ -20,6 +20,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <!-- Sync -->
+    <string name="sync_add">Add account</string>
     <string name="sync_title">Sync</string>
     <string name="sync_new">New account</string>
     <string name="sync_use">Use Sync</string>
@@ -41,7 +42,35 @@
     <string name="sync_frequency_summary">Sync every %s min</string>
     <string name="sync_frequency_summary_man">Sync manually only</string>
     <string name="sync_type">Sync Type</string>
-    <string name="version">Appversion</string>
+
+    <string-array name="sync_types">
+        <item>CalDAV sync</item>
+        <item>Taskwarrior sync</item>
+    </string-array>
+
+    <string name="sync_caldav">CalDAV sync</string>
+    <string name="sync_caldav_howto">
+<![CDATA[You have to setup a Mirakel-compatible CalDAV-syncing app like <a href="https://play.google.com/store/apps/details?id=at.bitfire.davdroid">DAVdroid</a>.
+        
+        Please add afterwards an account in that app and from this moment on the sync should just work. Please select the lists you want to sync.
+        ]]>
+    </string>
+    <string name="sync_add_account">Add account</string>
+    <string name="sync_taskwarrior_configure">Configure Taskwarrior</string>
+    <string name="sync_taskwarrior_scan_qr">Scan QR code</string>
+    <string name="sync_taskwarrior_select_file">Select config file</string>
+    <string name="sync_taskwarrior_how_to">How to setup your own server</string>
+    <string name="sync_taskwarrior_own_server">or just use your own server</string>
+    <string name="sync_taskwarrior_url_error">The URL is not correct. Did you really scanned the right code?</string>
+    <string name="sync_taskwarrior_configuring">Configuring sync…</string>
+    <string name="sync_taskwarrior_about">If you already have a taskwarrior account:</string>
+    <string name="sync_taskwarrior_register">If not, you can register a new account on our server:</string>
+    <string name="sync_taskwarrior_register_button">Register</string>
+    <string name="sync_taskwarrior_setup_success">Account setup was successfull</string>
+    <string name="sync_taskwarrior_error_download">Could not download config file</string>
+    <string name="no_barcode_app">No barcode scanner installed</string>
+    <string name="no_barcode_app_message">We recommend the Barcode scanner:</string>
+    <string name="no_barcode_app_install">Install</string>
     <string name="menu_edit_listaccount">Account</string>
     <string name="change_account">Change Account</string>
 
@@ -63,7 +92,8 @@
         <item>1440</item>
         <item>-1</item>
     </string-array>
-
+    <!-- Other stuff -->
+    <string name="version">Appversion</string>
     <string name="no">no</string>
     <string name="not">not</string>
 

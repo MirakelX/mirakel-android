@@ -4,15 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
+import android.provider.Settings;
+import android.text.Html;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.View.OnClickListener;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 import de.azapps.mirakel.settings.ListSettings;
+import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSetupActivity;
 import de.azapps.mirakelandroid.R;
 
 public class AccountSettingsActivity extends ListSettings {
@@ -20,55 +27,75 @@ public class AccountSettingsActivity extends ListSettings {
 	@SuppressWarnings("unused")
 	private static final String TAG = "AccountSettingsActivity";
 	private AccountMirakel account;
-	
+
 	private AccountMirakel newAccount() {
 		return AccountMirakel.newAccount(getString(R.string.sync_new),
 				ACCOUNT_TYPES.CALDAV, true);
 	}
 
-	
-	@SuppressLint("NewApi")
+	private void handleCalDAV() {
+		new AlertDialog.Builder(this)
+				.setTitle(R.string.sync_caldav)
+				.setMessage(
+						Html.fromHtml(this
+								.getString(R.string.sync_caldav_howto)))
+				.setPositiveButton(R.string.sync_add_account,
+						new DialogInterface.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								startActivity(new Intent(
+										Settings.ACTION_ADD_ACCOUNT));
+
+							}
+						}).show();
+	}
 
 	@Override
 	protected OnClickListener getAddOnClickListener() {
-		// TODO implement this
-		return null;
-//		return new OnClickListener() {
-//
-//			@Override
-//			public void onClick(View v) {
-//				newAccount();
-//				clickOnLast();
-//				invalidateHeaders();
-//			}
-//
-//		};
-	}
-
-	@SuppressLint("NewApi") // TODO: Is not needed in SpecialListSettingsActivity: Why?
-	@Override
-	public OnClickListener getDelOnClickListener() {
-		//TODO implement this
-		return null;
-		/*return new OnClickListener() {
+		final Activity that = this;
+		return new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				account.destroy();
-				if (!onIsMultiPane()) {
-					finish();
-				} else {
-					try {
-						if (getHeader().size() > 0) {
-							onHeaderClick(getHeader().get(0), 0);
-							invalidateHeaders();
-						}
-					} catch (Exception e) {
-						finish();
-					}
-				}
+				CharSequence[] items = that.getResources().getTextArray(
+						R.array.sync_types);
+				new AlertDialog.Builder(that).setTitle(R.string.sync_add)
+						.setItems(items, new DialogInterface.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								switch (which) {
+								case 0:
+									handleCalDAV();
+									break;
+								case 1:
+									startActivity(new Intent(that,
+											TaskWarriorSetupActivity.class));
+									break;
+								}
+							}
+						}).show();
 			}
-		};*/
+		};
+	}
+
+	@SuppressLint("NewApi")
+	// TODO: Is not needed in SpecialListSettingsActivity: Why?
+	@Override
+	public OnClickListener getDelOnClickListener() {
+		// TODO implement this
+		return null;
+		/*
+		 * return new OnClickListener() {
+		 * 
+		 * @Override public void onClick(View v) { account.destroy(); if
+		 * (!onIsMultiPane()) { finish(); } else { try { if (getHeader().size()
+		 * > 0) { onHeaderClick(getHeader().get(0), 0); invalidateHeaders(); } }
+		 * catch (Exception e) { finish(); } } } };
+		 */
 	}
 
 	@Override
@@ -118,7 +145,7 @@ public class AccountSettingsActivity extends ListSettings {
 	public void setAccount(AccountMirakel account) {
 		this.account = account;
 	}
-	
+
 	public boolean onCreateOptionsMenu(Menu menu) {
 		if (Build.VERSION_CODES.ICE_CREAM_SANDWICH > Build.VERSION.SDK_INT) {
 			if (getIntent().hasExtra("id")) {
@@ -146,8 +173,7 @@ public class AccountSettingsActivity extends ListSettings {
 				return true;
 			} else if (item.getTitle().equals(getString(R.string.add))) {
 				AccountMirakel s = newAccount();
-				Intent intent = new Intent(this,
-						AccountSettingsActivity.class);
+				Intent intent = new Intent(this, AccountSettingsActivity.class);
 				intent.putExtra("id", s.getId());
 				startActivity(intent);
 				return true;

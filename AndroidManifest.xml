@@ -127,11 +127,10 @@
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
-            android:name="de.azapps.mirakel.sync.AuthenticatorActivity"
+            android:name="de.azapps.mirakel.sync.taskwarrior.TaskWarriorSetupActivity"
             android:configChanges="orientation"
             android:excludeFromRecents="true"
-            android:label="@string/ui_activity_title"
-            android:theme="@style/Dialog" >
+            android:label="@string/sync_taskwarrior_configure" >
         </activity>
         <activity
             android:name="de.azapps.mirakel.settings.taskfragment.TaskFragmentSettings"
