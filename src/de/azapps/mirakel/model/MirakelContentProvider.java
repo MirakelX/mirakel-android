@@ -115,6 +115,9 @@ public class MirakelContentProvider extends ContentProvider implements
 				throw new IllegalArgumentException("Unsupported URI: " + uri);
 			}
 		} else {
+			AccountMirakel a = AccountMirakel.getByName(getAccountName(uri));
+			if (a != null && !a.isEnabeld())
+				return 0;
 			boolean isList = true;
 			switch (uriMatcher.match(uri)) {
 			case LIST_ID:
@@ -194,6 +197,9 @@ public class MirakelContentProvider extends ContentProvider implements
 
 	@Override
 	public Uri insert(Uri uri, ContentValues values) {
+		AccountMirakel a = AccountMirakel.getByName(getAccountName(uri));
+		if (a != null && !a.isEnabeld())
+			return null;
 		ContentValues newValues = convertValues(values,
 				isCallerSyncAdapter(uri));
 		newValues.put(SyncAdapter.SYNC_STATE, SYNC_STATE.NOTHING.toInt());
@@ -211,8 +217,6 @@ public class MirakelContentProvider extends ContentProvider implements
 				if (l == null) {
 					lID = createNewList(uri);
 				} else {
-					AccountMirakel a = AccountMirakel
-							.getByName(getAccountName(uri));
 					if (a == null) {
 						throw new IllegalArgumentException("Unkown account");
 					}
@@ -450,7 +454,7 @@ public class MirakelContentProvider extends ContentProvider implements
 					sortOrder, null);
 		} else {
 			query = sqlBuilder.buildQuery(projection, selection, null, null,
-					null, sortOrder, null);
+					sortOrder, null);
 
 		}
 		Log.d(TAG, query);
@@ -487,7 +491,7 @@ public class MirakelContentProvider extends ContentProvider implements
 					sortOrder, null);
 		} else {
 			query = sqlBuilder.buildQuery(projection, selection, null, null,
-					null, sortOrder, null);
+					sortOrder, null);
 
 		}
 		Log.d(TAG, query);
@@ -737,6 +741,9 @@ public class MirakelContentProvider extends ContentProvider implements
 	@Override
 	public int update(Uri uri, ContentValues values, String selection,
 			String[] selectionArgs) {
+		AccountMirakel a = AccountMirakel.getByName(getAccountName(uri));
+		if (a != null && !a.isEnabeld())
+			return 0;
 		ContentValues newValues = convertValues(values,
 				isCallerSyncAdapter(uri));
 		boolean isList;

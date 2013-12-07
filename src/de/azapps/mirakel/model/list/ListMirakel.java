@@ -543,7 +543,7 @@ public class ListMirakel extends ListBase {
 	}
 
 	public static List<ListMirakel> getListsForAccount(AccountMirakel account) {
-		if(account==null){
+		if(account==null||!account.isEnabeld()){
 			return new ArrayList<ListMirakel>();
 		}
 		Cursor c = database.query(TABLE, allColumns, "NOT "
