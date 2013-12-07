@@ -267,5 +267,17 @@ public class AccountMirakel extends AccountBase {
 		
 	}
 
+	public static AccountMirakel get(Account account) {
+		Cursor c=database.query(TABLE, allColumns, DatabaseHelper.NAME+"='"+account.name+"'", null, null, null, null);
+		if(c.getCount()<1){
+			c.close();
+			return null;
+		}
+		c.moveToFirst();
+		AccountMirakel a=cursorToAccount(c);
+		c.close();
+		return a;
+	}
+
 
 }
