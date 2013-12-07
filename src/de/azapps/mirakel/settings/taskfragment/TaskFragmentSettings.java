@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -31,7 +32,8 @@ public class TaskFragmentSettings extends Activity {
 	protected void onResume() {
 		super.onResume();
 		// The activity has become visible (it is now "resumed").
-		final List<Integer> values = TaskFragmentAdapter.getValues(this);
+		final List<Pair<Integer, Boolean>> values = TaskFragmentAdapter
+				.getValuesForConfig(this);
 
 		if (adapter != null) {
 			adapter.changeData(values);

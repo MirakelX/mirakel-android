@@ -5,9 +5,13 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 import de.azapps.mirakel.adapter.MirakelArrayAdapter;
@@ -16,24 +20,28 @@ import de.azapps.mirakel.main_activity.task_fragment.TaskFragmentAdapter.TYPE;
 import de.azapps.mirakel.main_activity.task_fragment.TaskFragmentAdapter.TYPE.NoSuchItemException;
 import de.azapps.mirakelandroid.R;
 
-public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
+public class TaskFragmentSettingsAdapter extends
+		MirakelArrayAdapter<Pair<Integer, Boolean>> {
 	public TaskFragmentSettingsAdapter(Context c) {
 		// do not call this, only for error-fixing there
-		super(c, 0, (List<Integer>) new ArrayList<Integer>());
+		super(
+				c,
+				0,
+				(List<Pair<Integer, Boolean>>) new ArrayList<Pair<Integer, Boolean>>());
 	}
 
 	public TaskFragmentSettingsAdapter(Context context, int layoutResourceId,
-			List<Integer> data) {
+			List<Pair<Integer, Boolean>> data) {
 		super(context, layoutResourceId, data);
 	}
 
 	@Override
-	public void changeData(List<Integer> lists) {
+	public void changeData(List<Pair<Integer, Boolean>> lists) {
 		super.changeData(lists);
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(final int position, View convertView, ViewGroup parent) {
 		View row = convertView;
 		ListHolder holder = null;
 
@@ -45,18 +53,35 @@ public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
 					.findViewById(R.id.row_taskfragment_settings_name);
 			holder.rowDrag = (ImageView) row
 					.findViewById(R.id.row_taskfragment_settings_drag);
+			holder.rowShow = (CheckBox) row
+					.findViewById(R.id.row_taskfragment_settings_show);
 			row.setTag(holder);
 		} else {
 			holder = (ListHolder) row.getTag();
 		}
-		Integer item = data.get(position);
+		final Pair<Integer, Boolean> item = data.get(position);
 		holder.rowDrag.setVisibility(View.VISIBLE);
 
 		try {
-			holder.rowName.setText(TYPE.getTranslatedName(context, item));
+			holder.rowName.setText(TYPE.getTranslatedName(context, item.first));
 		} catch (NoSuchItemException e) {
 			holder.rowName.setText("");
 		}
+		if (item.second)
+			holder.rowShow.setChecked(true);
+		else
+			holder.rowShow.setChecked(false);
+		holder.rowShow
+				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+					@Override
+					public void onCheckedChanged(CompoundButton buttonView,
+							boolean isChecked) {
+						data.set(position, new Pair<Integer, Boolean>(
+								item.first, isChecked));
+						TaskFragmentAdapter.setValues(context, data);
+					}
+				});
 		holder.rowName.setTag(item);
 		if (selected.get(position)) {
 			row.setBackgroundColor(context.getResources().getColor(
@@ -74,7 +99,7 @@ public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
 	}
 
 	public void onDrop(final int from, final int to) {
-		Integer item = data.get(from);
+		Pair<Integer, Boolean> item = data.get(from);
 		data.remove(from);
 		data.add(to, item);
 		TaskFragmentAdapter.setValues(context, data);
@@ -84,6 +109,7 @@ public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
 	static class ListHolder {
 		TextView rowName;
 		ImageView rowDrag;
+		CheckBox rowShow;
 	}
 
 }
