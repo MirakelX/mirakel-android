@@ -83,19 +83,27 @@ public class AccountSettingsActivity extends ListSettings {
 	}
 
 	@SuppressLint("NewApi")
-	// TODO: Is not needed in SpecialListSettingsActivity: Why?
 	@Override
 	public OnClickListener getDelOnClickListener() {
-		// TODO implement this
-		return null;
-		/*
-		 * return new OnClickListener() {
-		 * 
-		 * @Override public void onClick(View v) { account.destroy(); if
-		 * (!onIsMultiPane()) { finish(); } else { try { if (getHeader().size()
-		 * > 0) { onHeaderClick(getHeader().get(0), 0); invalidateHeaders(); } }
-		 * catch (Exception e) { finish(); } } } };
-		 */
+		return new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				account.destroy();
+				if (Build.VERSION.SDK_INT < 11 || !onIsMultiPane())
+					finish();
+				else {
+					try {
+						if (getHeader().size() > 0)
+							onHeaderClick(getHeader().get(0), 0);
+						invalidateHeaders();
+					} catch (Exception e) {
+						finish();
+					}
+				}
+			}
+		};
+
 	}
 
 	@Override
