@@ -37,7 +37,6 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Handler;
-import android.renderscript.Type;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.view.ActionMode;
@@ -239,7 +238,7 @@ public class TaskFragmentAdapter extends
 		}
 		switch (getItemViewType(position)) {
 		case TYPE.DUE:
-			row = setupDue(parent, convertView, width,position);
+			row = setupDue(parent, convertView, width, position);
 			break;
 		case TYPE.FILE:
 			row = setupFile(parent, files.get(data.get(position).second),
@@ -250,7 +249,9 @@ public class TaskFragmentAdapter extends
 			break;
 		case TYPE.REMINDER:
 			if (width < minDueNextToReminderSize
-					|| (position > 1 && data.get(position - 1).first != TYPE.DUE))
+					|| (position > 1
+							&& data.get(position - 1).first != TYPE.DUE
+							&& position < data.size() && data.get(position + 1).first != TYPE.DUE))
 				row = setupReminder(parent, convertView);
 			break;
 		case TYPE.SUBTASK:
@@ -975,7 +976,8 @@ public class TaskFragmentAdapter extends
 			View due = due_reminder.findViewById(R.id.wrapper_due);
 			View reminder = due_reminder.findViewById(R.id.wrapper_reminder);
 			setupDueView(due, due);
-			if (data.get(pos+1).first==TYPE.REMINDER) {
+			if (pos < data.size() && data.get(pos + 1).first == TYPE.REMINDER
+					|| (pos > 1 && data.get(pos - 1).first == TYPE.REMINDER)) {
 				setupReminderView(reminder, reminder);
 			} else {
 				reminder.setVisibility(View.GONE);

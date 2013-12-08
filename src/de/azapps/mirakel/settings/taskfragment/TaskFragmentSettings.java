@@ -89,7 +89,7 @@ public class TaskFragmentSettings extends Activity {
 
 			@Override
 			public void onDrop(int from, int to) {
-				if (from != to) {
+				if (from != to&&to!=listView.getCount()-1) {
 					adapter.onDrop(from, to);
 					listView.requestLayout();
 				}
