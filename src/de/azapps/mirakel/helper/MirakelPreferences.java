@@ -107,7 +107,12 @@ public class MirakelPreferences {
 	}
 
 	public static int getNotificationsListId() {
-		return settings.getInt("notificationsList", -1);
+		try {
+			return Integer.parseInt(settings.getString("notificationsList",
+					"-1"));
+		} catch (NumberFormatException E) {
+			return -1;
+		}
 	}
 
 	public static ListMirakel getNotificationsList() {
@@ -156,7 +161,12 @@ public class MirakelPreferences {
 	}
 
 	public static ListMirakel getStartupList() {
-		return ListMirakel.getList(settings.getInt("startupList", -1));
+		try {
+			return ListMirakel.getList(Integer.parseInt(settings.getString(
+					"startupList", "-1")));
+		} catch (NumberFormatException E) {
+			return null;
+		}
 	}
 
 	public static boolean useSync() {
@@ -164,7 +174,11 @@ public class MirakelPreferences {
 	}
 
 	public static int getSyncFrequency() {
-		return settings.getInt("syncFrequency", -1);
+		try {
+			return Integer.parseInt(settings.getString("syncFrequency", "-1"));
+		} catch (NumberFormatException E) {
+			return -1;
+		}
 	}
 
 	public static String getImportFileTitle() {
@@ -177,7 +191,12 @@ public class MirakelPreferences {
 	}
 
 	public static ListMirakel subtaskAddToList() {
-		return ListMirakel.getList(settings.getInt("subtaskAddToList", -1));
+		try {
+			return ListMirakel.getList(Integer.parseInt(settings.getString(
+					"subtaskAddToList", "-1")));
+		} catch (NumberFormatException E) {
+			return null;
+		}
 	}
 
 	public static String getLanguage() {
@@ -271,7 +290,11 @@ public class MirakelPreferences {
 	}
 
 	public static int getDefaultAccount() {
-		return settings.getInt("defaultAccount", -1);
+		try {
+			return Integer.parseInt(settings.getString("defaultAccount", "-1"));
+		} catch (NumberFormatException E) {
+			return -1;
+		}
 	}
 
 	public static boolean usePersistentReminders() {
@@ -289,7 +312,12 @@ public class MirakelPreferences {
 	public static boolean hideEmptyNotifications() {
 		return settings.getBoolean("notificationsZeroHide", true);
 	}
+
 	public static String getVersionKey() {
 		return settings.getString("PREFS_VERSION_KEY", "");
+	}
+
+	public static int getOldVersion() {
+		return settings.getInt("mirakel_old_version", -1);
 	}
 }

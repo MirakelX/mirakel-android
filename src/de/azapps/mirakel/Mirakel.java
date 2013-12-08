@@ -28,7 +28,6 @@ import org.acra.annotation.ReportsCrashes;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
@@ -105,6 +104,8 @@ public class Mirakel extends Application {
 			Log.wtf(TAG, "App not found");
 			VERSIONS_NAME = "";
 		}
+		// This we have to initialize as early as possible
+		MirakelPreferences.init(this);
 
 		Locale locale = Helpers.getLocal(this);
 		Locale.setDefault(locale);
@@ -116,18 +117,16 @@ public class Mirakel extends Application {
 
 		openHelper = new DatabaseHelper(this);
 		Mirakel.getWritableDatabase().execSQL("PRAGMA foreign_keys=ON;");
-		final Context ctx = getApplicationContext();
 
 		// Initialize Models
 
-		ListMirakel.init(ctx);
-		Task.init(ctx);
-		SpecialList.init(ctx);
-		FileMirakel.init(ctx);
-		Semantic.init(ctx);
-		Recurring.init(ctx);
-		AccountMirakel.init(ctx);
-		MirakelPreferences.init(ctx);
+		ListMirakel.init(this);
+		Task.init(this);
+		SpecialList.init(this);
+		FileMirakel.init(this);
+		Semantic.init(this);
+		Recurring.init(this);
+		AccountMirakel.init(this);
 
 		// And now, after the Database initialization!!! We init ACRA
 		ACRA.init(this);
@@ -150,7 +149,7 @@ public class Mirakel extends Application {
 				Calendar nextBackup = MirakelPreferences.getNextAutoBackup();
 				if (nextBackup != null
 						&& nextBackup.compareTo(new GregorianCalendar()) < 0) {
-					ExportImport.exportDB(ctx);
+					ExportImport.exportDB(that);
 					Calendar nextB = new GregorianCalendar();
 					nextB.add(Calendar.DATE,
 							MirakelPreferences.getAutoBackupIntervall());
