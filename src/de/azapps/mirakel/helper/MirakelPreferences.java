@@ -27,6 +27,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
+import de.azapps.mirakel.main_activity.task_fragment.TaskFragmentAdapter.TYPE;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakelandroid.R;
@@ -345,7 +346,18 @@ public class MirakelPreferences {
 		;
 	}
 	public static List<Integer> getTaskFragmentLayout() {
-		return MirakelPreferences.loadIntArray("task_fragment_adapter_settings");
+		List<Integer> items = MirakelPreferences.loadIntArray("task_fragment_adapter_settings");
+		if(items.size()==0){//should not be, add all
+			items.add(TYPE.HEADER);
+			items.add(TYPE.DUE);
+			items.add(TYPE.REMINDER);
+			items.add(TYPE.CONTENT);
+			items.add(TYPE.PROGRESS);
+			items.add(TYPE.SUBTASK);
+			items.add(TYPE.FILE);
+			setTaskFragmentLayout(items);
+		}
+		return items;
 	}
 	
 	public static boolean isShowAccountName() {

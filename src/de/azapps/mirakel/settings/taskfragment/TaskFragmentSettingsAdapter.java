@@ -109,8 +109,8 @@ public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
 					TYPE.getTranslatedName(context, TYPE.PROGRESS));
 			allItems.put(TYPE.SUBTASK,
 					TYPE.getTranslatedName(context, TYPE.SUBTASK));
-			allItems.put(TYPE.SUBTITLE,
-					TYPE.getTranslatedName(context, TYPE.SUBTITLE));
+//			allItems.put(TYPE.SUBTITLE,
+//					TYPE.getTranslatedName(context, TYPE.SUBTITLE));
 			allItems.put(TYPE.REMINDER,
 					TYPE.getTranslatedName(context, TYPE.REMINDER));
 		} catch (NoSuchItemException e) {
