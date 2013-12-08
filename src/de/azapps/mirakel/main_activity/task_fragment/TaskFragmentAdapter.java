@@ -37,6 +37,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Handler;
+import android.renderscript.Type;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.view.ActionMode;
@@ -228,7 +229,6 @@ public class TaskFragmentAdapter extends
 		int width;
 		Display display = ((Activity) context).getWindowManager()
 				.getDefaultDisplay();
-		;
 		try {
 			Point size = new Point();
 			display.getRealSize(size);
@@ -239,7 +239,7 @@ public class TaskFragmentAdapter extends
 		}
 		switch (getItemViewType(position)) {
 		case TYPE.DUE:
-			row = setupDue(parent, convertView, width);
+			row = setupDue(parent, convertView, width,position);
 			break;
 		case TYPE.FILE:
 			row = setupFile(parent, files.get(data.get(position).second),
@@ -249,7 +249,8 @@ public class TaskFragmentAdapter extends
 			row = setupHeader(parent, convertView);
 			break;
 		case TYPE.REMINDER:
-			if (width < minDueNextToReminderSize)
+			if (width < minDueNextToReminderSize
+					|| (position > 1 && data.get(position - 1).first != TYPE.DUE))
 				row = setupReminder(parent, convertView);
 			break;
 		case TYPE.SUBTASK:
@@ -961,7 +962,7 @@ public class TaskFragmentAdapter extends
 		ImageButton reccurence;
 	}
 
-	private View setupDue(ViewGroup parent, View convertView, int width) {
+	private View setupDue(ViewGroup parent, View convertView, int width, int pos) {
 		if (width < minDueNextToReminderSize) {
 			final View due = (convertView == null || convertView.getId() != R.id.due_wrapper) ? inflater
 					.inflate(R.layout.task_due, parent, false) : convertView;
@@ -974,7 +975,11 @@ public class TaskFragmentAdapter extends
 			View due = due_reminder.findViewById(R.id.wrapper_due);
 			View reminder = due_reminder.findViewById(R.id.wrapper_reminder);
 			setupDueView(due, due);
-			setupReminderView(reminder, reminder);
+			if (data.get(pos+1).first==TYPE.REMINDER) {
+				setupReminderView(reminder, reminder);
+			} else {
+				reminder.setVisibility(View.GONE);
+			}
 			return due_reminder;
 		}
 	}
