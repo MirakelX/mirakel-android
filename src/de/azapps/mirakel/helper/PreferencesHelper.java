@@ -53,7 +53,6 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -529,9 +528,8 @@ public class PreferencesHelper {
 			// Get Account if existing
 			final Account account;
 			if (!(accounts.length > 0)) {
-				SharedPreferences settings = PreferenceManager
-						.getDefaultSharedPreferences(activity);
-				SharedPreferences.Editor editor = settings.edit();
+				SharedPreferences.Editor editor = MirakelPreferences
+						.getEditor();
 				editor.putBoolean("syncUse", false);
 				editor.commit();
 				sync.setChecked(false);
@@ -584,10 +582,8 @@ public class PreferencesHelper {
 												activity.getString(R.string.inavlidPassword),
 												Toast.LENGTH_LONG).show();
 									}
-									SharedPreferences settings = PreferenceManager
-											.getDefaultSharedPreferences(activity);
-									SharedPreferences.Editor editor = settings
-											.edit();
+									SharedPreferences.Editor editor = MirakelPreferences
+											.getEditor();
 									editor.putString("syncPassword", "");
 									editor.commit();
 
@@ -664,10 +660,7 @@ public class PreferencesHelper {
 												activity,
 												activity.getString(R.string.inavlidUrl),
 												Toast.LENGTH_LONG).show();
-										SharedPreferences settings = PreferenceManager
-												.getDefaultSharedPreferences(activity);
-										SharedPreferences.Editor editor = settings
-												.edit();
+										SharedPreferences.Editor editor = MirakelPreferences.getEditor();
 										editor.putString(
 												"syncServer",
 												am.getUserData(
@@ -1198,9 +1191,7 @@ public class PreferencesHelper {
 
 						@Override
 						public boolean onPreferenceClick(Preference preference) {
-							final int old_val = PreferenceManager
-									.getDefaultSharedPreferences(activity)
-									.getInt("UndoNumber", 10);
+							final int old_val =MirakelPreferences.getUndoNumber();
 							final int max = 25;
 							final int min = 1;
 							if (v4_0) {
@@ -1267,10 +1258,7 @@ public class PreferencesHelper {
 												public void onClick(
 														DialogInterface dialog,
 														int whichButton) {
-													SharedPreferences.Editor editor = PreferenceManager
-															.getDefaultSharedPreferences(
-																	activity)
-															.edit();
+													SharedPreferences.Editor editor = MirakelPreferences.getEditor();
 													int val;
 													if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
 														val = ((NumberPicker) numberPicker)
@@ -1514,8 +1502,6 @@ public class PreferencesHelper {
 		final AccountManager am = AccountManager.get(ctx);
 		final Account[] accounts = am
 				.getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
-		final SharedPreferences settings = PreferenceManager
-				.getDefaultSharedPreferences(ctx);
 		if (newValue) {
 			new AlertDialog.Builder(ctx)
 					.setTitle(R.string.sync_warning)
@@ -1547,8 +1533,7 @@ public class PreferencesHelper {
 														intent,
 														SettingsActivity.NEW_ACCOUNT);
 									}
-									SharedPreferences.Editor editor = settings
-											.edit();
+									SharedPreferences.Editor editor = MirakelPreferences.getEditor();
 									editor.putBoolean("syncUse", true);
 									editor.commit();
 								}
@@ -1559,8 +1544,7 @@ public class PreferencesHelper {
 								@Override
 								public void onClick(
 										DialogInterface dialogInterface, int i) {
-									SharedPreferences.Editor editor = settings
-											.edit();
+									SharedPreferences.Editor editor = MirakelPreferences.getEditor();
 									editor.putBoolean("syncUse", false);
 									editor.commit();
 									if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
@@ -1574,7 +1558,7 @@ public class PreferencesHelper {
 								}
 							}).show();
 		} else {
-			SharedPreferences.Editor editor = settings.edit();
+			SharedPreferences.Editor editor = MirakelPreferences.getEditor();
 			editor.putBoolean("syncUse", false);
 			editor.commit();
 			try {
@@ -1618,8 +1602,7 @@ public class PreferencesHelper {
 			}
 			server.setSummary("");
 		}
-		Editor editor = PreferenceManager.getDefaultSharedPreferences(ctx)
-				.edit();
+		Editor editor = MirakelPreferences.getEditor();
 		editor.putString("syncFrequency", "-1");
 		editor.commit();
 		if (syncFrequency != null) {
@@ -1630,32 +1613,4 @@ public class PreferencesHelper {
 
 	// The „real“ helper functions
 
-	public static boolean saveIntArray(Context mContext, String preferenceName,
-			List<Integer> items) {
-		SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(mContext);
-		SharedPreferences.Editor editor = prefs.edit();
-		String pref = "";
-		for (Integer item : items) {
-			pref += String.valueOf(item) + "_";
-		}
-		editor.putString(preferenceName, pref);
-		return editor.commit();
-	}
-
-	public static List<Integer> loadIntArray(Context mContext, String arrayName) {
-		SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(mContext);
-		String serialized = prefs.getString(arrayName, null);
-		if (serialized == null)
-			return null;
-		List<Integer> items = new ArrayList<Integer>();
-		String[] string_items = serialized.split("_");
-		for (String item : string_items) {
-			if (item.length() == 0)
-				continue;
-			items.add(Integer.valueOf(item));
-		}
-		return items;
-	}
 }

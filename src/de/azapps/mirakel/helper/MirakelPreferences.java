@@ -1,7 +1,9 @@
 package de.azapps.mirakel.helper;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -173,5 +175,37 @@ public class MirakelPreferences {
 
 	public static String getLanguage() {
 		return settings.getString("language", "-1");
+	}
+
+	public static List<Integer> loadIntArray(String arrayName) {
+		String serialized = settings.getString(arrayName, null);
+		if (serialized == null)
+			return null;
+		List<Integer> items = new ArrayList<Integer>();
+		String[] string_items = serialized.split("_");
+		for (String item : string_items) {
+			if (item.length() == 0)
+				continue;
+			items.add(Integer.valueOf(item));
+		}
+		return items;
+	}
+
+	public static boolean saveIntArray(String preferenceName,
+			List<Integer> items) {
+		SharedPreferences.Editor editor = getEditor();
+		String pref = "";
+		for (Integer item : items) {
+			pref += String.valueOf(item) + "_";
+		}
+		editor.putString(preferenceName, pref);
+		return editor.commit();
+	}
+
+	public static boolean isSubtaskDefaultNew() {
+		return settings.getBoolean("subtaskDefaultNew", true);
+	}
+	public static boolean useSemanticNewTask() {
+		return settings.getBoolean("semanticNewTask", true);
 	}
 }

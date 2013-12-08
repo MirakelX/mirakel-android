@@ -36,7 +36,6 @@ import android.graphics.Shader;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.net.Uri;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Toast;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -203,8 +202,7 @@ public class Helpers {
 	}
 
 	public static Locale getLocal(Context ctx) {
-		String current = PreferenceManager.getDefaultSharedPreferences(ctx)
-				.getString("language", "-1");
+		String current = MirakelPreferences.getLanguage();
 		return current.equals("-1") ? Locale.getDefault() : new Locale(current);
 
 	}

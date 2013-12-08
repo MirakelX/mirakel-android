@@ -84,7 +84,6 @@ import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.MirakelPreferences;
-import de.azapps.mirakel.helper.PreferencesHelper;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.main_activity.MainActivity;
@@ -1297,8 +1296,7 @@ public class TaskFragmentAdapter extends
 
 	public static List<Pair<Integer, Boolean>> getValuesForConfig(
 			Context context) {
-		List<Integer> cfg_items = PreferencesHelper.loadIntArray(context,
-				"task_fragment_adapter_settings");
+		List<Integer> cfg_items = MirakelPreferences.loadIntArray("task_fragment_adapter_settings");
 		List<Pair<Integer, Boolean>> items = new ArrayList<Pair<Integer, Boolean>>();
 		if (cfg_items == null) {
 			cfg_items = new ArrayList<Integer>();
@@ -1320,8 +1318,7 @@ public class TaskFragmentAdapter extends
 	}
 
 	public static List<Pair<Integer, Boolean>> getValues(Context context) {
-		List<Integer> cfg_items = PreferencesHelper.loadIntArray(context,
-				"task_fragment_adapter_settings");
+		List<Integer> cfg_items = MirakelPreferences.loadIntArray("task_fragment_adapter_settings");
 		List<Pair<Integer, Boolean>> items = new ArrayList<Pair<Integer, Boolean>>();
 		if (cfg_items == null) {
 			cfg_items = new ArrayList<Integer>();
@@ -1349,7 +1346,7 @@ public class TaskFragmentAdapter extends
 			if (item.second)
 				items.add(item.first);
 		}
-		PreferencesHelper.saveIntArray(context,
-				"task_fragment_adapter_settings", items);
+		MirakelPreferences.saveIntArray("task_fragment_adapter_settings",
+				items);
 	}
 }
