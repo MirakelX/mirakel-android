@@ -25,7 +25,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
@@ -115,12 +114,6 @@ public class Helpers {
 	 */
 	public interface ExecInterface {
 		public void exec();
-	}
-
-	static SharedPreferences settings = null;
-
-	public static void init(Context context) {
-		settings = PreferenceManager.getDefaultSharedPreferences(context);
 	}
 
 	public static void showFileChooser(int code, String title, Activity activity) {

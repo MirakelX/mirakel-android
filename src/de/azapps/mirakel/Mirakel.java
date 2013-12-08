@@ -126,7 +126,6 @@ public class Mirakel extends Application {
 		FileMirakel.init(ctx);
 		Semantic.init(ctx);
 		Recurring.init(ctx);
-		Helpers.init(ctx);
 		AccountMirakel.init(ctx);
 		MirakelPreferences.init(ctx);
 

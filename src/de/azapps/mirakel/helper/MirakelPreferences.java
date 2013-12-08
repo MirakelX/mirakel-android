@@ -82,4 +82,20 @@ public class MirakelPreferences {
 		}
 		return null;
 	}
+
+	public static boolean isDateFormatRelative() {
+		return settings.getBoolean("dateFormatRelative", true);
+	}
+
+	public static int getUndoNumber() {
+		return settings.getInt("UndoNumber", 10);
+	}
+	
+	public static String getFromLog(int id) {
+		return settings.getString("OLD" + id, "");
+	}
+
+	public static Editor getEditor() {
+		return settings.edit();
+	}
 }

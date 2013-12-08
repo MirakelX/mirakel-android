@@ -136,7 +136,7 @@ public class DateTimeHelper {
 		if (date == null)
 			return "";
 		else {
-			if (Helpers.settings.getBoolean("dateFormatRelative", true)) {
+			if (MirakelPreferences.isDateFormatRelative()) {
 				GregorianCalendar now = new GregorianCalendar();
 				now.setTime(new Date());
 				if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR1

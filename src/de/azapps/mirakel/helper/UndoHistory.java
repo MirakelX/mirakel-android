@@ -35,7 +35,6 @@ public class UndoHistory {
 	private static String TAG = "UndoHistory";
 	public static String UNDO = "OLD";
 
-
 	public static void updateLog(ListMirakel listMirakel, Context ctx) {
 		if (listMirakel != null)
 			updateLog(LIST, listMirakel.toJson(), ctx);
@@ -48,9 +47,9 @@ public class UndoHistory {
 			return;
 		}
 		// Log.d(TAG, json);
-		SharedPreferences.Editor editor = Helpers.settings.edit();
-		for (int i = Helpers.settings.getInt("UndoNumber", 10); i > 0; i--) {
-			String old = Helpers.settings.getString(UNDO + (i - 1), "");
+		SharedPreferences.Editor editor = MirakelPreferences.getEditor();
+		for (int i = MirakelPreferences.getUndoNumber(); i > 0; i--) {
+			String old = MirakelPreferences.getFromLog(i - 1);
 			editor.putString(UNDO + i, old);
 		}
 		editor.putString(UNDO + 0, type + json);
@@ -64,7 +63,7 @@ public class UndoHistory {
 	}
 
 	public static void undoLast(Context ctx) {
-		String last = Helpers.settings.getString(UNDO + 0, "");
+		String last = MirakelPreferences.getFromLog(0);
 		if (last != null && !last.equals("")) {
 			short type = Short.parseShort(last.charAt(0) + "");
 			if (last.charAt(1) != '{') {
@@ -126,9 +125,9 @@ public class UndoHistory {
 				}
 			}
 		}
-		SharedPreferences.Editor editor = Helpers.settings.edit();
-		for (int i = 0; i < Helpers.settings.getInt("UndoNumber", 10); i++) {
-			String old = Helpers.settings.getString(UNDO + (i + 1), "");
+		SharedPreferences.Editor editor = MirakelPreferences.getEditor();
+		for (int i = 0; i < MirakelPreferences.getUndoNumber(); i++) {
+			String old = MirakelPreferences.getFromLog(i+1);
 			editor.putString(UNDO + i, old);
 		}
 		editor.putString(UNDO + 10, "");
