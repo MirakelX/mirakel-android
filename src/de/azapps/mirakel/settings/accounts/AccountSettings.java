@@ -60,6 +60,8 @@ public class AccountSettings implements OnPreferenceChangeListener {
 		if(syncPassword!=null){
 			syncPassword.setEnabled(false);
 		}
+		
+		
 		final Preference syncFrequency = findPreference("syncFrequency");
 		if(syncFrequency!=null){
 			syncFrequency.setEnabled(false);
@@ -96,5 +98,6 @@ public class AccountSettings implements OnPreferenceChangeListener {
 					.findPreference(key);
 		}
 	}
+	
 
 }

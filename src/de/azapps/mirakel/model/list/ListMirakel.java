@@ -542,4 +542,17 @@ public class ListMirakel extends ListBase {
 		return list;
 	}
 
+	public static List<ListMirakel> getListsForAccount(AccountMirakel account) {
+		if(account==null||!account.isEnabeld()){
+			return new ArrayList<ListMirakel>();
+		}
+		Cursor c = database.query(TABLE, allColumns, "NOT "
+				+ SyncAdapter.SYNC_STATE + "=" + SYNC_STATE.DELETE + " and "
+				+ ACCOUNT_ID + "=" + account.getId(), null, null, null, null);
+		c.moveToFirst();
+		List<ListMirakel> list = cursorToListList(c);
+		c.close();
+		return list;
+	}
+
 }

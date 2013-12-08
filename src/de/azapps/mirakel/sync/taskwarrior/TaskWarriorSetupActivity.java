@@ -232,6 +232,7 @@ public class TaskWarriorSetupActivity extends Activity {
 			Toast.makeText(this,
 					getString(R.string.sync_taskwarrior_setup_success),
 					Toast.LENGTH_LONG).show();
+			finish();
 		} else {
 			Toast.makeText(this, error, Toast.LENGTH_LONG).show();
 		}

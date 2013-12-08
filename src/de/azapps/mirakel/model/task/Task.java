@@ -29,6 +29,7 @@ import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import android.accounts.Account;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -49,6 +50,7 @@ import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.UndoHistory;
 import de.azapps.mirakel.model.DatabaseHelper;
+import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -463,7 +465,7 @@ public class Task extends TaskBase {
 		if (getUpdatedAt() == null)
 			setUpdatedAt(new GregorianCalendar());
 		values.put(DatabaseHelper.UPDATED_AT,
-					DateTimeHelper.formatDateTime(getUpdatedAt()));
+				DateTimeHelper.formatDateTime(getUpdatedAt()));
 		values.put(PROGRESS, getProgress());
 		database.beginTransaction();
 		long insertId = database.insertOrThrow(TABLE, null, values);
@@ -628,9 +630,17 @@ public class Task extends TaskBase {
 		return cursorToTaskList(cursor);
 	}
 
-	public static List<Task> getTasksToSync() {
+	public static List<Task> getTasksToSync(Account account) {
+		AccountMirakel a = AccountMirakel.get(account);
+		List<ListMirakel> lists = ListMirakel.getListsForAccount(a);
+		String listIDs = "";
+		boolean first = true;
+		for (ListMirakel l : lists) {
+			listIDs += (first ? "" : ",") + l.getId();
+			first = false;
+		}
 		String where = "NOT " + SyncAdapter.SYNC_STATE + "='"
-				+ SYNC_STATE.NOTHING + "'";
+				+ SYNC_STATE.NOTHING + "' and " + LIST_ID + " IN ("+listIDs+")";
 		Cursor cursor = Mirakel.getReadableDatabase().query(TABLE, allColumns,
 				where, null, null, null, null);
 		return cursorToTaskList(cursor);
@@ -972,7 +982,7 @@ public class Task extends TaskBase {
 							DatabaseHelper.ID + " = " + t.getId(), null);
 				} catch (NoSuchListException e) {
 					Log.d(TAG, "List did vanish");
-				}catch (Exception e) {
+				} catch (Exception e) {
 					t.destroy(false);
 				}
 			} else {

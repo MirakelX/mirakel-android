@@ -141,7 +141,7 @@ public class TaskWarriorSync {
 		sync.set("org", _org);
 		sync.set("user", _user);
 		sync.set("key", _key);
-		List<Task> local_tasks = Task.getTasksToSync();
+		List<Task> local_tasks = Task.getTasksToSync(account);
 		for (Task task : local_tasks) {
 			payload += taskToJson(task) + "\n";
 		}

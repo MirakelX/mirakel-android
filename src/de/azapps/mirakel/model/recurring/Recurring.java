@@ -216,21 +216,37 @@ public class Recurring extends RecurringBase {
 
 	public Calendar addRecurring(Calendar c) {
 		Calendar now = new GregorianCalendar();
+		if(isExact()) {
+			c=now;
+		}
 		now.set(Calendar.SECOND, 0);
 		now.add(Calendar.MINUTE, -1);
-		if ((getStartDate() == null || (getStartDate() != null && now
-				.after(getStartDate())))
-				&& (getEndDate() == null || (getEndDate() != null && now
-						.before((getEndDate()))))) {
-			do {
-				c.add(Calendar.DAY_OF_MONTH, getDays());
-				c.add(Calendar.MONTH, getMonths());
-				c.add(Calendar.YEAR, getYears());
-				if (!isForDue()) {
-					c.add(Calendar.MINUTE, getMinutes());
-					c.add(Calendar.HOUR, getHours());
-				}
-			} while (c.before(now));
+		List<Integer> weekdays = getWeekdays();
+		if(weekdays.size()==0){
+			if ((getStartDate() == null || (getStartDate() != null && now
+					.after(getStartDate())))
+					&& (getEndDate() == null || (getEndDate() != null && now
+							.before((getEndDate()))))) {
+				do {
+					c.add(Calendar.DAY_OF_MONTH, getDays());
+					c.add(Calendar.MONTH, getMonths());
+					c.add(Calendar.YEAR, getYears());
+					if (!isForDue()) {
+						c.add(Calendar.MINUTE, getMinutes());
+						c.add(Calendar.HOUR, getHours());
+					}
+				} while (c.before(now));
+			}
+		}else{
+			int diff=8;
+			for(Integer day:weekdays){
+				int local_diff=day-c.get(Calendar.DAY_OF_WEEK);
+				if(local_diff<0)
+					local_diff+=7;
+				if(diff>local_diff)
+					diff=local_diff;
+			}
+			c.add(Calendar.DAY_OF_MONTH, diff);	
 		}
 		return c;
 	}

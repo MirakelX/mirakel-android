@@ -22,12 +22,17 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import com.android.calendar.recurrencepicker.RecurrencePickerDialog;
+import com.android.calendar.recurrencepicker.RecurrencePickerDialog.OnRecurenceSetListner;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -49,10 +54,6 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
-
-import com.android.calendar.recurrencepicker.RecurrencePickerDialog;
-import com.android.calendar.recurrencepicker.RecurrencePickerDialog.OnRecurenceSetListner;
-
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.adapter.SubtaskAdapter;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
@@ -155,11 +156,11 @@ public class TaskDialogHelpers {
 			boolean dark) {
 		FragmentManager fm = ((MainActivity) activity)
 				.getSupportFragmentManager();
-		Recurring r = isDue ? task.getRecurring() : task.getRecurringReminder();
-		boolean isExact = r.isExact();
-		Log.d(TAG, "exact: " + isExact);
-		if (r.getDerivedFrom() != null) {
-			r = Recurring.get(r.getDerivedFrom());
+		Recurring r=isDue?task.getRecurring():task.getRecurringReminder();
+		boolean isExact=r.isExact();
+		Log.d(TAG,"exact: "+isExact);
+		if(r.getDerivedFrom()!=null){
+			r=Recurring.get(r.getDerivedFrom());
 		}
 		RecurrencePickerDialog rp = RecurrencePickerDialog.newInstance(
 				new OnRecurenceSetListner() {
@@ -168,28 +169,22 @@ public class TaskDialogHelpers {
 					public void OnCustomRecurnceSetIntervall(boolean isDue,
 							int intervalYears, int intervalMonths,
 							int intervalDays, int intervalHours,
-							int intervalMinutes, Calendar startDate,
-							Calendar endDate, boolean isExact) {
-						Recurring r = Recurring.newRecurring("",
-								intervalMinutes, intervalHours, intervalDays,
-								intervalMonths, intervalYears, isDue,
-								startDate, endDate, true, isExact,
-								new SparseBooleanArray());
+							int intervalMinutes,Calendar startDate, Calendar endDate,boolean isExact) {
+						Recurring r = Recurring.newRecurring("", intervalMinutes,
+								intervalHours, intervalDays, intervalMonths, intervalYears, isDue, startDate, endDate,
+								true,isExact,new SparseBooleanArray());
 						setRecurence(task, isDue, r.getId());
 					}
 
 					@Override
 					public void OnCustomRecurnceSetWeekdays(boolean isDue,
-							List<Integer> weekdays, Calendar startDate,
-							Calendar endDate, boolean isExact) {
-						SparseBooleanArray weekdaysArray = new SparseBooleanArray();
-						for (int day : weekdays) {
+							List<Integer> weekdays,Calendar startDate, Calendar endDate, boolean isExact) {
+						SparseBooleanArray weekdaysArray=new SparseBooleanArray();
+						for(int day:weekdays){
 							weekdaysArray.put(day, true);
 						}
-						Recurring r = Recurring.newRecurring("", 0, 0, 0, 0, 0,
-								isDue, startDate, endDate, true, isExact,
-								weekdaysArray);
-						setRecurence(task, isDue, r.getId());
+						Recurring r=Recurring.newRecurring("", 0, 0, 0, 0, 0, isDue, startDate, endDate, true, isExact, weekdaysArray);
+						setRecurence(task, isDue, r.getId());						
 					}
 
 					@Override
@@ -208,7 +203,7 @@ public class TaskDialogHelpers {
 						setRecurence(task, isDue, -1);
 					}
 
-				}, r, isDue, dark, isExact);
+				}, r, isDue, dark,isExact);
 		rp.show(fm, "reccurence");
 
 	}
@@ -532,6 +527,8 @@ public class TaskDialogHelpers {
 	}
 
 	private static Task newSubtask(String name, Task parent, Context ctx) {
+		final SharedPreferences settings = PreferenceManager
+				.getDefaultSharedPreferences(ctx);
 		ListMirakel list;
 		if (MirakelPreferences.addSubtaskToSameList()) {
 			list = parent.getList();

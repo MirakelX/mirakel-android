@@ -534,6 +534,9 @@ public class RecurrencePickerDialog extends DialogFragment implements
 			mStartDateView.setTextColor(res.getColor(R.color.White));
 			mUseExact.setButtonDrawable(R.drawable.btn_check_holo_dark_red);
 		}
+		if(!mForDue){
+			mUseExact.setVisibility(View.GONE);
+		}
 
 		return view;
 	}
@@ -542,13 +545,23 @@ public class RecurrencePickerDialog extends DialogFragment implements
 		mRecurenceSelection.setEnabled(b);
 		mEndSpinner.setEnabled(b);
 		mEndDateView.setEnabled(b);
+		mStartSpinner.setEnabled(b);
+		mStartDateView.setEnabled(b);
 		for(ToggleButton t: mWeekByDayButtons){
 			t.setEnabled(b);
 		}
 		mIntervalCount.setEnabled(b);
 		mIntervalType.setEnabled(b);
 		mUseExact.setEnabled(b);
-		
+		if(mDark){
+			if(b){
+				mStartDateView.setTextColor(getResources().getColor(R.color.White));
+				mEndDateView.setTextColor(getResources().getColor(R.color.White));
+			}else{
+				mStartDateView.setTextColor(getResources().getColor(R.color.grey));
+				mEndDateView.setTextColor(getResources().getColor(R.color.grey));
+			}
+		}
 	}
 
 	private void updateIntervallType() {

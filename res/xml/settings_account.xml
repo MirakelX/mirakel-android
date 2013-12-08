@@ -35,11 +35,11 @@
         android:key="syncUsername"
         android:summary="@string/sync_user_summary"
         android:title="@string/sync_user" />
-    <EditTextPreference
+   <!--  <EditTextPreference
         android:inputType="textPassword"
         android:key="syncPassword"
         android:summary="@string/sync_password_summary"
-        android:title="@string/sync_password" />
+        android:title="@string/sync_password" />-->
 
     <ListPreference
         android:entries="@array/sync_frequencies"

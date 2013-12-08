@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -141,11 +142,27 @@ public class AccountMirakel extends AccountBase {
 				+ getId(), null);
 	}
 
-	public void destroy() {
+	public void destroy() {		
 		database.delete(TABLE, DatabaseHelper.ID + "=" + getId(), null);
 		ContentValues cv=new ContentValues();
 		cv.put(ListMirakel.ACCOUNT_ID, getLocal().getId());
 		database.update(ListMirakel.TABLE, cv, "account_id="+getId(),null);
+		Account a=getAndroidAccount();
+		if(a==null){
+			Log.wtf(TAG, "account not found");
+			return;
+		}
+		AccountManager.get(context).removeAccount(a, null, null);
+	}
+
+	private Account getAndroidAccount() {
+		AccountManager am = AccountManager.get(context);
+		Account[] accounts = am.getAccountsByType(ACCOUNT_TYPES.toName(getType()));
+		for(Account a:accounts){
+			if(a.name.equals(getName()))
+				return a;
+		}
+		return null;
 	}
 
 	public static List<AccountMirakel> getAll() {
@@ -265,6 +282,18 @@ public class AccountMirakel extends AccountBase {
 				el.getValue().destroy();
 		}
 		
+	}
+
+	public static AccountMirakel get(Account account) {
+		Cursor c=database.query(TABLE, allColumns, DatabaseHelper.NAME+"='"+account.name+"'", null, null, null, null);
+		if(c.getCount()<1){
+			c.close();
+			return null;
+		}
+		c.moveToFirst();
+		AccountMirakel a=cursorToAccount(c);
+		c.close();
+		return a;
 	}
 
 
