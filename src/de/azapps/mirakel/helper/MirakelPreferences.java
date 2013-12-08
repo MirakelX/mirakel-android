@@ -347,4 +347,8 @@ public class MirakelPreferences {
 	public static List<Integer> getTaskFragmentLayout() {
 		return MirakelPreferences.loadIntArray("task_fragment_adapter_settings");
 	}
+	
+	public static boolean isShowAccountName() {
+		return settings.getBoolean("show_account_name", false);
+	}
 }

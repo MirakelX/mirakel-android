@@ -34,6 +34,7 @@ import android.widget.TextView;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.adapter.MirakelArrayAdapter;
 import de.azapps.mirakel.helper.Helpers;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakelandroid.R;
@@ -96,7 +97,7 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 		holder.listRowName.setText(list.getName());
 		holder.listRowName.setTag(list);
 		holder.listRowTaskNumber.setText("" + list.countTasks());
-		if(list.isSpecialList())
+		if(list.isSpecialList()||!MirakelPreferences.isShowAccountName())
 			holder.listAccount.setVisibility(View.GONE);
 		else{
 			holder.listAccount.setVisibility(View.VISIBLE);

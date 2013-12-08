@@ -21,7 +21,7 @@
     android:key="category_gui"
     android:title="@string/ui_settings_title" >
 
-    <PreferenceCategory android:title="@string/general">
+    <PreferenceCategory android:title="@string/general" >
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="DarkTheme"
@@ -40,19 +40,26 @@
             android:defaultValue="@bool/isTablet"
             android:key="useTabletLayout"
             android:title="@string/useTabletLayout" />
+
         <ListPreference
             android:defaultValue="-1"
             android:entries="@array/language_values"
             android:entryValues="@array/language_keys"
             android:key="language"
             android:title="@string/language" />
+
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="swipeBehavior"
             android:summary="@string/swipeBehavior_summary"
             android:title="@string/swipeBehavior_title" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/tasks_fragment">
+    <PreferenceCategory android:title="@string/list_fragment" >
+        <CheckBoxPreference
+            android:key="show_account_name"
+            android:title="@string/show_account_name" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/tasks_fragment" >
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="useBtnSpeak"
@@ -62,7 +69,7 @@
             android:key="useBtnCamera"
             android:title="@string/settings_use_btn_camera" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/task_fragment">
+    <PreferenceCategory android:title="@string/task_fragment" >
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="lockDrawerInTaskFragment"
@@ -73,7 +80,7 @@
             android:key="task_fragment"
             android:title="@string/settings_task_fragment" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/do_not_touch">
+    <PreferenceCategory android:title="@string/do_not_touch" >
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="KillButton"

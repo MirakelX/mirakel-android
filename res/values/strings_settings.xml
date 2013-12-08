@@ -205,6 +205,9 @@
     <string name="tasks_fragment">Tasks Overview</string>
     <string name="task_fragment">Task Deteils</string>
     <string name="do_not_touch">Do not Touch</string>
+    <string name="list_fragment">List Overview</string>
+    <string name="show_account_name">Show account name</string>
+    
     <!-- Language -->
     <string name="language" translatable="false">Language</string>
 
