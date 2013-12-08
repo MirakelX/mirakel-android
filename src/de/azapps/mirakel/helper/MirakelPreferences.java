@@ -3,12 +3,12 @@ package de.azapps.mirakel.helper;
 import java.text.ParseException;
 import java.util.Calendar;
 
-import de.azapps.mirakelandroid.R;
-import de.azapps.mirakelandroid.R.bool;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
+import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakelandroid.R;
 
 /**
  * In this class we collect all functions to get the current settings. The
@@ -62,6 +62,7 @@ public class MirakelPreferences {
 	public static boolean useNotifications() {
 		return settings.getBoolean("notificationsUse", false);
 	}
+
 	public static int getAlarmLater() {
 		return settings.getInt("alarm_later", 15);
 	}
@@ -70,5 +71,15 @@ public class MirakelPreferences {
 		return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
 				"useTabletLayout",
 				ctx.getResources().getBoolean(R.bool.isTablet));
+	}
+
+	public static ListMirakel getImportDefaultList() {
+		if (settings.getBoolean("importDefaultList", false)) {
+			int listId = settings.getInt("defaultImportList", 0);
+			if (listId == 0)
+				return null;
+			return ListMirakel.getList(listId);
+		}
+		return null;
 	}
 }

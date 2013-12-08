@@ -41,13 +41,12 @@ import org.xml.sax.SAXException;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.widget.Toast;
 import au.com.bytecode.opencsv.CSVReader;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
@@ -148,8 +147,6 @@ public class ExportImport {
 		doc.getDocumentElement().normalize();
 
 		NodeList nList = doc.getDocumentElement().getChildNodes();
-		SharedPreferences settings = PreferenceManager
-				.getDefaultSharedPreferences(context);
 		for (int i = 0; i < nList.getLength(); i++) {
 			Node n = nList.item(i);
 			if (n.getNodeType() == Node.ELEMENT_NODE) {
@@ -171,16 +168,8 @@ public class ExportImport {
 							list = ListMirakel.newList(listname);
 						}
 					} else {
-						if (settings.getBoolean("importDefaultList", false)) {
-							list = ListMirakel
-									.getList(settings.getInt(
-											"defaultImportList", SpecialList
-													.firstSpecialSafe(context)
-													.getId()));
-							if (list == null) {
-								list = SpecialList.firstSpecialSafe(context);
-							}
-						} else {
+						list=MirakelPreferences.getImportDefaultList();
+						if(list==null) {
 							list = SpecialList.firstSpecialSafe(context);
 						}
 					}
