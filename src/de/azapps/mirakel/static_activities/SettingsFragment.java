@@ -28,6 +28,7 @@ import android.preference.PreferenceFragment;
 import android.view.View;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.PreferencesHelper;
 import de.azapps.mirakel.settings.accounts.AccountSettingsActivity;
 import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
@@ -55,7 +56,7 @@ public class SettingsFragment extends PreferenceFragment {
 		} else if (getArguments().getString("type").equals("accounts")) {
 			startActivity(new Intent(getActivity(),
 					AccountSettingsActivity.class));
-			if (!Helpers.isTablet(getActivity()))
+			if (!MirakelPreferences.isTablet(getActivity()))
 				getActivity().finish();
 			else {
 				addPreferencesFromResource(R.xml.settings_notifications);
@@ -73,7 +74,7 @@ public class SettingsFragment extends PreferenceFragment {
 		} else if (getArguments().getString("type").equals("speciallists")) {
 			startActivity(new Intent(getActivity(),
 					SpecialListsSettingsActivity.class));
-			if (!Helpers.isTablet(getActivity()))
+			if (!MirakelPreferences.isTablet(getActivity()))
 				getActivity().finish();
 			else {
 				addPreferencesFromResource(R.xml.settings_notifications);

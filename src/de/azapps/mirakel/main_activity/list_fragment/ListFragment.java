@@ -51,9 +51,9 @@ import com.larswerkman.colorpicker.ColorPicker;
 import com.larswerkman.colorpicker.SVBar;
 
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.MirakelPreferences;
+import de.azapps.mirakel.helper.SharingHelper;
 import de.azapps.mirakel.main_activity.DragNDropListView;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.main_activity.MirakelFragment;
@@ -202,7 +202,7 @@ public class ListFragment extends MirakelFragment {
 										main.handleDestroyList(list);
 										break;
 									case LIST_SHARE:
-										Helpers.share(getActivity(), list);
+										SharingHelper.share(getActivity(), list);
 										break;
 									}
 								}
@@ -260,7 +260,7 @@ public class ListFragment extends MirakelFragment {
 						editList(lists.get(0));
 						break;
 					case R.id.share_list_from_lists:
-						Helpers.share(getActivity(), lists.get(0));
+						SharingHelper.share(getActivity(), lists.get(0));
 						break;
 					case R.id.edit_listaccount:
 						editListAccount(lists);

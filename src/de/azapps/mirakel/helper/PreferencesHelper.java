@@ -790,7 +790,7 @@ public class PreferencesHelper {
 										isChecked);
 								findPreference("syncFrequency").setEnabled(
 										isChecked);
-								if (Helpers.isTablet(activity)) {
+								if (MirakelPreferences.isTablet(activity)) {
 									final Switch s = ((Switch) activity
 											.findViewById(R.id.switchWidget));
 									if (s != null) {

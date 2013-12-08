@@ -36,7 +36,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakelandroid.R;
@@ -102,7 +101,7 @@ public abstract class ListSettings extends PreferenceActivity {
 			ImageButton addList = new ImageButton(this);
 			addList.setBackgroundResource(android.R.drawable.ic_menu_add);
 			addList.setOnClickListener(getAddOnClickListener());
-			if (Helpers.isTablet(this)) {
+			if (MirakelPreferences.isTablet(this)) {
 				LinearLayout l = new LinearLayout(this);
 				l.setLayoutDirection(LinearLayout.VERTICAL);
 				l.addView(addList);
@@ -180,7 +179,7 @@ public abstract class ListSettings extends PreferenceActivity {
 
 	@Override
 	public boolean onIsMultiPane() {
-		return Helpers.isTablet(this);
+		return MirakelPreferences.isTablet(this);
 	};
 
 	@Override

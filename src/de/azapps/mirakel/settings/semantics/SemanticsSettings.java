@@ -30,7 +30,7 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
-import de.azapps.mirakel.helper.Helpers;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.settings.ListSettings;
@@ -290,7 +290,7 @@ public class SemanticsSettings implements OnPreferenceChangeListener {
 			semantic.save();
 			semanticsCondition.setSummary(newValue);
 			semanticsCondition.setText(newValue);
-			if (Helpers.isTablet(ctx) && v4_0) {
+			if (MirakelPreferences.isTablet(ctx) && v4_0) {
 				((ListSettings) ctx).invalidateHeaders();
 			}
 		}

@@ -114,7 +114,7 @@ public class SettingsActivity extends PreferenceActivity {
 						"de.azapps.mirakel.preferences.SPECIAL_LISTS")) {
 					startActivity(new Intent(this,
 							SpecialListsSettingsActivity.class));
-					if (!Helpers.isTablet(this))
+					if (!MirakelPreferences.isTablet(this))
 						finish();
 				} else {
 					Log.wtf(TAG, "unkown Preference");
@@ -283,7 +283,7 @@ public class SettingsActivity extends PreferenceActivity {
 
 	@Override
 	public boolean onIsMultiPane() {
-		return Helpers.isTablet(this);
+		return MirakelPreferences.isTablet(this);
 	}
 
 	@Override

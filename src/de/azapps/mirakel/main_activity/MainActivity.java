@@ -60,6 +60,7 @@ import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.MirakelPreferences;
+import de.azapps.mirakel.helper.SharingHelper;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.helper.UndoHistory;
@@ -144,7 +145,7 @@ public class MainActivity extends ActionBarActivity implements
 			setTheme(R.style.AppBaseThemeDARK);
 		super.onCreate(savedInstanceState);
 
-		boolean isTablet = Helpers.isTablet(this);
+		boolean isTablet = MirakelPreferences.isTablet(this);
 		highlightSelected = preferences.getBoolean("highlightSelected",
 				isTablet);
 		if (!preferences.contains("highlightSelected")) {
@@ -236,10 +237,10 @@ public class MainActivity extends ActionBarActivity implements
 			ContentResolver.requestSync(null, Mirakel.AUTHORITY_TYP, bundle);
 			break;
 		case R.id.share_task:
-			Helpers.share(this, getCurrentTask());
+			SharingHelper.share(this, getCurrentTask());
 			break;
 		case R.id.share_list:
-			Helpers.share(this, getCurrentList());
+			SharingHelper.share(this, getCurrentList());
 			break;
 		case R.id.search:
 			onSearchRequested();
@@ -269,7 +270,7 @@ public class MainActivity extends ActionBarActivity implements
 				getTasksFragment().getAdapter().changeData(
 						getCurrentList().tasks(), getCurrentList().getId());
 				getTasksFragment().getAdapter().notifyDataSetChanged();
-				if (!Helpers.isTablet(this)
+				if (!MirakelPreferences.isTablet(this)
 						&& currentPosition == TASKS_FRAGMENT)
 					setCurrentList(getCurrentList());
 			}
@@ -406,7 +407,7 @@ public class MainActivity extends ActionBarActivity implements
 			if (getTaskFragment() != null && getTaskFragment().adapter != null) {
 				getTaskFragment().adapter.setEditContent(false);
 			}
-			if (!Helpers.isTablet(this))
+			if (!MirakelPreferences.isTablet(this))
 				newmenu = R.menu.tasks;
 			else
 				newmenu = R.menu.tablet_right;
@@ -499,7 +500,7 @@ public class MainActivity extends ActionBarActivity implements
 		case RESULT_SETTINGS:
 			getListFragment().update();
 			highlightSelected = preferences.getBoolean("highlightSelected",
-					Helpers.isTablet(this));
+					MirakelPreferences.isTablet(this));
 			if (!highlightSelected
 					&& (oldClickedList != null || oldClickedTask == null)) {
 				clearAllHighlights();
@@ -1015,7 +1016,7 @@ public class MainActivity extends ActionBarActivity implements
 		TasksFragment tasksFragment = new TasksFragment();
 		tasksFragment.setActivity(this);
 		fragments.add(tasksFragment);
-		if (!Helpers.isTablet(this)) {
+		if (!MirakelPreferences.isTablet(this)) {
 			TaskFragment taskFragment = new TaskFragment();
 			fragments.add(taskFragment);
 		}
@@ -1025,7 +1026,7 @@ public class MainActivity extends ActionBarActivity implements
 		this.mViewPager = (ViewPager) super.findViewById(R.id.viewpager);
 		this.mViewPager.setAdapter(this.mPagerAdapter);
 		this.mViewPager.setOnPageChangeListener(this);
-		mViewPager.setOffscreenPageLimit(Helpers.isTablet(this) ? 1 : 2);
+		mViewPager.setOffscreenPageLimit(MirakelPreferences.isTablet(this) ? 1 : 2);
 
 	}
 
@@ -1181,7 +1182,7 @@ public class MainActivity extends ActionBarActivity implements
 
 		if (getTasksFragment() != null) {
 			getTasksFragment().updateList();
-			if (!Helpers.isTablet(this) && switchFragment)
+			if (!MirakelPreferences.isTablet(this) && switchFragment)
 				mViewPager.setCurrentItem(TASKS_FRAGMENT);
 		}
 		if (currentView == null && listFragment != null
@@ -1255,7 +1256,7 @@ public class MainActivity extends ActionBarActivity implements
 	public TaskFragment getTaskFragment() {
 		if (mPagerAdapter == null)
 			return null;
-		if (Helpers.isTablet(this))
+		if (MirakelPreferences.isTablet(this))
 			return taskFragment;
 		Fragment f = this.getSupportFragmentManager().findFragmentByTag(
 				getFragmentTag(1));

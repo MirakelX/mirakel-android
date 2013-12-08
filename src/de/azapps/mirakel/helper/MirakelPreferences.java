@@ -3,6 +3,8 @@ package de.azapps.mirakel.helper;
 import java.text.ParseException;
 import java.util.Calendar;
 
+import de.azapps.mirakelandroid.R;
+import de.azapps.mirakelandroid.R.bool;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -62,5 +64,11 @@ public class MirakelPreferences {
 	}
 	public static int getAlarmLater() {
 		return settings.getInt("alarm_later", 15);
+	}
+
+	public static boolean isTablet(Context ctx) {
+		return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
+				"useTabletLayout",
+				ctx.getResources().getBoolean(R.bool.isTablet));
 	}
 }
