@@ -1,4 +1,4 @@
-  package de.azapps.mirakel.settings.accounts;
+package de.azapps.mirakel.settings.accounts;
 
 import android.annotation.TargetApi;
 import android.app.ActionBar;
@@ -8,8 +8,8 @@ import android.preference.PreferenceFragment;
 import android.view.Gravity;
 import android.widget.ImageButton;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
-import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.settings.ListSettings;
 import de.azapps.mirakelandroid.R;
@@ -25,7 +25,7 @@ public class AccountSettingsFragment extends PreferenceFragment {
 		Bundle b = getArguments();
 		if (b != null) {
 			Log.d(TAG, "id= " + b.getInt("id"));
-			final AccountMirakel account = AccountMirakel.get(b.getInt("id")); 
+			final AccountMirakel account = AccountMirakel.get(b.getInt("id"));
 			((AccountSettingsActivity) getActivity()).setAccount(account);
 
 			ActionBar actionbar = getActivity().getActionBar();
@@ -36,8 +36,8 @@ public class AccountSettingsFragment extends PreferenceFragment {
 														// title? (Including
 														// server)
 			}
-			//TODO implement this
-			if (!Helpers.isTablet(getActivity())) {
+			// TODO implement this
+			if (!MirakelPreferences.isTablet()) {
 				ImageButton delList = new ImageButton(getActivity());
 				delList.setBackgroundResource(android.R.drawable.ic_menu_delete);
 				actionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
@@ -49,12 +49,11 @@ public class AccountSettingsFragment extends PreferenceFragment {
 				delList.setOnClickListener(((ListSettings) getActivity())
 						.getDelOnClickListener());
 			}
-			
+
 			try {
 				new AccountSettings(this, account).setup();
-				
-			}
-			catch (NoSuchListException e) {
+
+			} catch (NoSuchListException e) {
 				getActivity().finish();
 			}
 		}

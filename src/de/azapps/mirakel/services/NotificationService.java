@@ -26,12 +26,10 @@ import android.app.Service;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.MirakelPreferences;
@@ -43,7 +41,6 @@ import de.azapps.mirakelandroid.R;
 
 public class NotificationService extends Service {
 	private static final String TAG = "NotificationService";
-	private SharedPreferences preferences;
 	private boolean existsNotification = false;
 	public static NotificationService notificationService;
 
@@ -55,8 +52,6 @@ public class NotificationService extends Service {
 
 	@Override
 	public void onCreate() {
-		preferences = PreferenceManager
-				.getDefaultSharedPreferences(getApplicationContext());
 		notifier();
 		NotificationService.setNotificationService(this);
 	}
@@ -76,8 +71,7 @@ public class NotificationService extends Service {
 	 * Updates the Notification
 	 */
 	public void notifier() {
-		if (!preferences.getBoolean("notificationsUse", true)
-				&& !existsNotification) {
+		if (!MirakelPreferences.useNotifications() && !existsNotification) {
 			return;
 		}
 		int listId = MirakelPreferences.getNotificationsListId();
@@ -95,8 +89,7 @@ public class NotificationService extends Service {
 		ListMirakel todayList = ListMirakel.getList(listId);
 		if (todayList == null)
 			return;
-		List<Task> todayTasks = todayList.tasks(preferences.getBoolean(
-				"notificationDone", false));
+		List<Task> todayTasks = todayList.tasks(false);
 		String notificationTitle;
 		String notificationText;
 		if (todayTasks.size() == 0) {
@@ -115,8 +108,7 @@ public class NotificationService extends Service {
 			notificationText = todayTasks.get(0).getName();
 		}
 
-		boolean persistent = preferences.getBoolean("notificationsPersistent",
-				true);
+		boolean persistent = MirakelPreferences.usePersistentNotifications();
 
 		int icon = R.drawable.mirakel;
 		// Build notification
@@ -126,8 +118,7 @@ public class NotificationService extends Service {
 				.setContentIntent(pOpenIntent).setOngoing(persistent);
 
 		// Big View
-		if (preferences.getBoolean("notificationsBig", true)
-				&& todayTasks.size() > 1
+		if (MirakelPreferences.useBigNotifications() && todayTasks.size() > 1
 				&& VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN) {
 			NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 			for (Task task : todayTasks) {
@@ -138,9 +129,9 @@ public class NotificationService extends Service {
 
 		NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		notificationManager.notify(Mirakel.NOTIF_DEFAULT, noti.build());
-		if ((preferences.getBoolean("notificationsZeroHide", true) && todayTasks
+		if ((MirakelPreferences.hideEmptyNotifications() && todayTasks
 				.size() == 0)
-				|| !preferences.getBoolean("notificationsUse", true)) {
+				|| !MirakelPreferences.useNotifications()) {
 			notificationManager.cancel(Mirakel.NOTIF_DEFAULT);
 			existsNotification = false;
 		} else {

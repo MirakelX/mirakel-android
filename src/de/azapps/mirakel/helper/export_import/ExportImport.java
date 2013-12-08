@@ -48,7 +48,6 @@ import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
-import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.FileUtils;
@@ -168,10 +167,7 @@ public class ExportImport {
 							list = ListMirakel.newList(listname);
 						}
 					} else {
-						list=MirakelPreferences.getImportDefaultList();
-						if(list==null) {
-							list = SpecialList.firstSpecialSafe(context);
-						}
+						list = MirakelPreferences.getImportDefaultList(true);
 					}
 					Task t = Task.newTask(name, list);
 					// Priority

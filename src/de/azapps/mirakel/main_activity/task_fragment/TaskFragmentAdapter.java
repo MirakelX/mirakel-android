@@ -29,7 +29,6 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -38,7 +37,6 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.view.ActionMode;
@@ -454,14 +452,12 @@ public class TaskFragmentAdapter extends
 		} else {
 			holder.taskRowDue.setVisibility(View.GONE);
 		}
-		SharedPreferences settings = PreferenceManager
-				.getDefaultSharedPreferences(context);
 		if (selected.get(position)) {
 			row.setBackgroundColor(context.getResources().getColor(
 					darkTheme ? R.color.highlighted_text_holo_dark
 							: R.color.highlighted_text_holo_light));
-		} else if (settings.getBoolean("colorize_tasks", true)) {
-			if (settings.getBoolean("colorize_subtasks", true)) {
+		} else if (MirakelPreferences.colorizeTasks()) {
+			if (MirakelPreferences.colorizeSubTasks()) {
 				int w = row.getWidth() == 0 ? parent.getWidth() : row
 						.getWidth();
 				Helpers.setListColorBackground(task.getList(), row, darkTheme,

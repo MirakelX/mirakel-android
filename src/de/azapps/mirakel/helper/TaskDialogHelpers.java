@@ -22,17 +22,12 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import com.android.calendar.recurrencepicker.RecurrencePickerDialog;
-import com.android.calendar.recurrencepicker.RecurrencePickerDialog.OnRecurenceSetListner;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Looper;
-import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -54,6 +49,10 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
+
+import com.android.calendar.recurrencepicker.RecurrencePickerDialog;
+import com.android.calendar.recurrencepicker.RecurrencePickerDialog.OnRecurenceSetListner;
+
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.adapter.SubtaskAdapter;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
@@ -527,8 +526,6 @@ public class TaskDialogHelpers {
 	}
 
 	private static Task newSubtask(String name, Task parent, Context ctx) {
-		final SharedPreferences settings = PreferenceManager
-				.getDefaultSharedPreferences(ctx);
 		ListMirakel list;
 		if (MirakelPreferences.addSubtaskToSameList()) {
 			list = parent.getList();

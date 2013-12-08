@@ -12,8 +12,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.preference.PreferenceManager;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakelandroid.R;
@@ -21,7 +21,7 @@ import de.azapps.mirakelandroid.R;
 public class AccountMirakel extends AccountBase {
 	public static final String ACCOUNT_TYPE_MIRAKEL = "de.azapps.mirakel";
 	public static final String ACCOUNT_TYPE_DAVDROID = "bitfire.at.davdroid";
-	
+
 	public static final String TABLE = "account";
 	private static SQLiteDatabase database;
 	private static DatabaseHelper dbHelper;
@@ -29,7 +29,7 @@ public class AccountMirakel extends AccountBase {
 			DatabaseHelper.NAME, TYPE, ENABLED };
 	private static final String TAG = "Account";
 	private static Context context;
-	
+
 	public enum ACCOUNT_TYPES {
 		MIRAKEL, TASKWARRIOR, CALDAV, LOCAL;
 		public int toInt() {
@@ -63,18 +63,18 @@ public class AccountMirakel extends AccountBase {
 			}
 
 		}
-		
-		public static ACCOUNT_TYPES parseAccountType(String type){
-			if(type.equals(ACCOUNT_TYPE_DAVDROID)){
+
+		public static ACCOUNT_TYPES parseAccountType(String type) {
+			if (type.equals(ACCOUNT_TYPE_DAVDROID)) {
 				return CALDAV;
-			}else if(type.equals(ACCOUNT_TYPE_MIRAKEL)){
+			} else if (type.equals(ACCOUNT_TYPE_MIRAKEL)) {
 				return TASKWARRIOR;
-			}else{
+			} else {
 				return LOCAL;
 			}
 		}
-		
-		public static String toName(ACCOUNT_TYPES type){
+
+		public static String toName(ACCOUNT_TYPES type) {
 			switch (type) {
 			case CALDAV:
 				return ACCOUNT_TYPE_DAVDROID;
@@ -99,7 +99,8 @@ public class AccountMirakel extends AccountBase {
 		}
 	};
 
-	public AccountMirakel(int id, String name, ACCOUNT_TYPES type, boolean enabled) {
+	public AccountMirakel(int id, String name, ACCOUNT_TYPES type,
+			boolean enabled) {
 		super(id, name, type, enabled);
 	}
 
@@ -142,13 +143,13 @@ public class AccountMirakel extends AccountBase {
 				+ getId(), null);
 	}
 
-	public void destroy() {		
+	public void destroy() {
 		database.delete(TABLE, DatabaseHelper.ID + "=" + getId(), null);
-		ContentValues cv=new ContentValues();
+		ContentValues cv = new ContentValues();
 		cv.put(ListMirakel.ACCOUNT_ID, getLocal().getId());
-		database.update(ListMirakel.TABLE, cv, "account_id="+getId(),null);
-		Account a=getAndroidAccount();
-		if(a==null){
+		database.update(ListMirakel.TABLE, cv, "account_id=" + getId(), null);
+		Account a = getAndroidAccount();
+		if (a == null) {
 			Log.wtf(TAG, "account not found");
 			return;
 		}
@@ -157,9 +158,10 @@ public class AccountMirakel extends AccountBase {
 
 	private Account getAndroidAccount() {
 		AccountManager am = AccountManager.get(context);
-		Account[] accounts = am.getAccountsByType(ACCOUNT_TYPES.toName(getType()));
-		for(Account a:accounts){
-			if(a.name.equals(getName()))
+		Account[] accounts = am.getAccountsByType(ACCOUNT_TYPES
+				.toName(getType()));
+		for (Account a : accounts) {
+			if (a.name.equals(getName()))
 				return a;
 		}
 		return null;
@@ -204,7 +206,7 @@ public class AccountMirakel extends AccountBase {
 
 	public static AccountMirakel getByName(String name) {
 		Cursor c = database.query(TABLE, allColumns, DatabaseHelper.NAME + "='"
-				+ name+"'", null, null, null, null);
+				+ name + "'", null, null, null, null);
 		if (c.getCount() > 0) {
 			c.moveToFirst();
 			AccountMirakel a = cursorToAccount(c);
@@ -219,8 +221,7 @@ public class AccountMirakel extends AccountBase {
 	// Get the default account
 	public static AccountMirakel getDefault() {
 		// TODO set this somewhere
-		int id = PreferenceManager.getDefaultSharedPreferences(context).getInt(
-				"defaultAccount", -1);
+		int id = MirakelPreferences.getDefaultAccount();
 		AccountMirakel a = null;
 		if (id != -1) {
 			a = get(id);
@@ -281,20 +282,20 @@ public class AccountMirakel extends AccountBase {
 			if (el.getValue().getType() != ACCOUNT_TYPES.LOCAL)
 				el.getValue().destroy();
 		}
-		
+
 	}
 
 	public static AccountMirakel get(Account account) {
-		Cursor c=database.query(TABLE, allColumns, DatabaseHelper.NAME+"='"+account.name+"'", null, null, null, null);
-		if(c.getCount()<1){
+		Cursor c = database.query(TABLE, allColumns, DatabaseHelper.NAME + "='"
+				+ account.name + "'", null, null, null, null);
+		if (c.getCount() < 1) {
 			c.close();
 			return null;
 		}
 		c.moveToFirst();
-		AccountMirakel a=cursorToAccount(c);
+		AccountMirakel a = cursorToAccount(c);
 		c.close();
 		return a;
 	}
-
 
 }

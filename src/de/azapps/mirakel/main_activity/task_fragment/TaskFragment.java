@@ -346,7 +346,7 @@ public class TaskFragment extends Fragment {
 			});
 		}
 
-		if (main.getPreferences().getBoolean("useBtnCamera", true)
+		if (MirakelPreferences.useBtnCamera()
 				&& Helpers.isIntentAvailable(main,
 						MediaStore.ACTION_IMAGE_CAPTURE)) {
 			adapter.setaudioButtonClick(new View.OnClickListener() {

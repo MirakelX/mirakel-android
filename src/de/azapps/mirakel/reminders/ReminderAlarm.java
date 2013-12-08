@@ -30,16 +30,15 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.task.Task;
@@ -80,8 +79,6 @@ public class ReminderAlarm extends BroadcastReceiver {
 		Log.w(TAG, task.getName());
 		NotificationManager nm = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
-		SharedPreferences preferences = PreferenceManager
-				.getDefaultSharedPreferences(context);
 
 		Intent openIntent = new Intent(context, MainActivity.class);
 		openIntent.setAction(MainActivity.SHOW_TASK);
@@ -108,8 +105,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 		PendingIntent pLaterIntent = PendingIntent.getService(context, 0,
 				laterIntent, 0);
 
-		boolean persistent = preferences
-				.getBoolean("remindersPersistent", true);
+		boolean persistent = MirakelPreferences.usePersistentReminders();
 
 		// Build Notification
 
@@ -137,7 +133,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 						context.getString(R.string.reminder_notification_later),
 						pLaterIntent);
 
-		if (preferences.getBoolean("notificationsBig", true)) {
+		if (MirakelPreferences.useBigNotifications()) {
 			NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 
 			String priority = ""

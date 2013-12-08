@@ -35,7 +35,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceManager;
 import android.view.MenuItem;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -139,9 +138,7 @@ public class SettingsActivity extends PreferenceActivity {
 				// need to reset onchangelistner else valuechange will triger
 				// event
 				s.setOnCheckedChangeListener(null);
-				s.setChecked(PreferenceManager
-						.getDefaultSharedPreferences(this).getBoolean(
-								"syncUse", false));
+				s.setChecked(MirakelPreferences.useSync());
 				s.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 					@Override
@@ -183,7 +180,8 @@ public class SettingsActivity extends PreferenceActivity {
 		case FILE_IMPORT_DB:
 			if (resultCode != RESULT_OK)
 				return;
-			final String path_db = FileUtils.getPathFromUri(data.getData(), this);
+			final String path_db = FileUtils.getPathFromUri(data.getData(),
+					this);
 			// Check if this is an database file
 			if (!path_db.endsWith(".db")) {
 				Toast.makeText(that, R.string.import_wrong_type,

@@ -25,9 +25,7 @@ import java.util.Map;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.drawable.GradientDrawable;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -44,6 +42,7 @@ import com.todddavies.components.progressbar.ProgressWheel;
 import de.azapps.mirakel.adapter.MirakelArrayAdapter;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Helpers;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -107,14 +106,12 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 		holder.taskRowDone.setOnClickListener(clickCheckbox);
 		holder.taskRowDoneWrapper.setOnClickListener(clickCheckbox);
 		viewsForTasks.put(task.getId(), row);
-		SharedPreferences settings = PreferenceManager
-				.getDefaultSharedPreferences(context);
 		if (selected.get(position)) {
 			row.setBackgroundColor(context.getResources().getColor(
 					darkTheme ? R.color.highlighted_text_holo_dark
 							: R.color.highlighted_text_holo_light));
-		} else if (settings.getBoolean("colorize_tasks", true)) {
-			if (settings.getBoolean("colorize_tasks_everywhere", false)
+		} else if (MirakelPreferences.colorizeTasks()) {
+			if (MirakelPreferences.colorizeTasksEverywhere()
 					|| ((MainActivity) context).getCurrentList()
 							.isSpecialList()) {
 				int w = row.getWidth() == 0 ? parent.getWidth() : row

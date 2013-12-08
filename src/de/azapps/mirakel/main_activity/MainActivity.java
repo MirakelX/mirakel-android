@@ -38,7 +38,6 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
@@ -109,7 +108,6 @@ public class MainActivity extends ActionBarActivity implements
 	private boolean highlightSelected;
 	private DrawerLayout mDrawerLayout;
 	private Uri fileUri;
-	public SharedPreferences preferences;
 	// TODO We should do this somehow else
 	public static boolean updateTasksUUID = false;
 
@@ -139,22 +137,20 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		preferences = PreferenceManager.getDefaultSharedPreferences(this);
 		darkTheme = MirakelPreferences.isDark();
 		if (darkTheme)
 			setTheme(R.style.AppBaseThemeDARK);
 		super.onCreate(savedInstanceState);
 
 		boolean isTablet = MirakelPreferences.isTablet();
-		highlightSelected = preferences.getBoolean("highlightSelected",
-				isTablet);
-		if (!preferences.contains("highlightSelected")) {
-			SharedPreferences.Editor editor = preferences.edit();
+		highlightSelected = MirakelPreferences.highlightSelected();
+		if (!MirakelPreferences.containsHighlightSelected()) {
+			SharedPreferences.Editor editor = MirakelPreferences.getEditor();
 			editor.putBoolean("highlightSelected", isTablet);
 			editor.commit();
 		}
-		if (!preferences.contains("startupAllLists")) {
-			SharedPreferences.Editor editor = preferences.edit();
+		if (!MirakelPreferences.containsStartupAllLists()) {
+			SharedPreferences.Editor editor = MirakelPreferences.getEditor();
 			editor.putBoolean("startupAllLists", false);
 			editor.putString("startupList", "" + SpecialList.first().getId());
 			editor.commit();
@@ -302,8 +298,8 @@ public class MainActivity extends ActionBarActivity implements
 			currentTask = Task.get(currentTask.getId());
 		else {
 			if (currentList != null) {
-				List<Task> currentTasks = currentList.tasks(preferences
-						.getBoolean("showDoneMain", true));
+				List<Task> currentTasks = currentList.tasks(MirakelPreferences
+						.showDoneMain());
 				if (currentTasks.size() == 0) {
 					currentTask = Task.getDummy(getApplicationContext());
 				} else {
@@ -341,7 +337,7 @@ public class MainActivity extends ActionBarActivity implements
 			int positionOffsetPixels) {
 		if (getTasksFragment() != null
 				&& getTasksFragment().getAdapter() != null
-				&& preferences.getBoolean("swipeBehavior", true) && !skipSwipe
+				&& MirakelPreferences.swipeBehavior() && !skipSwipe
 				&& position == TASKS_FRAGMENT) {
 			setCurrentTask(getTasksFragment().getAdapter().lastTouched(), false);
 			skipSwipe = true;
@@ -357,7 +353,7 @@ public class MainActivity extends ActionBarActivity implements
 			return;
 		getTasksFragment().closeActionMode();
 		getTaskFragment().closeActionMode();
-		if (preferences.getBoolean("lockDrawerInTaskFragment", false)
+		if (MirakelPreferences.lockDrawerInTaskFragment()
 				&& position == TASK_FRAGMENT) {
 			mDrawerLayout
 					.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
@@ -436,10 +432,10 @@ public class MainActivity extends ActionBarActivity implements
 		inflater.inflate(newmenu, menu);
 		if (menu.findItem(R.id.menu_sync_now) != null)
 			menu.findItem(R.id.menu_sync_now).setVisible(
-					preferences.getBoolean("syncUse", false));
+					MirakelPreferences.useSync());
 		if (menu.findItem(R.id.menu_kill_button) != null)
 			menu.findItem(R.id.menu_kill_button).setVisible(
-					preferences.getBoolean("KillButton", false));
+					MirakelPreferences.showKillButton());
 		if (!fromShare)
 			updateShare();
 
@@ -499,8 +495,7 @@ public class MainActivity extends ActionBarActivity implements
 			break;
 		case RESULT_SETTINGS:
 			getListFragment().update();
-			highlightSelected = preferences.getBoolean("highlightSelected",
-					MirakelPreferences.isTablet());
+			highlightSelected = MirakelPreferences.highlightSelected();
 			if (!highlightSelected
 					&& (oldClickedList != null || oldClickedTask == null)) {
 				clearAllHighlights();
@@ -526,9 +521,8 @@ public class MainActivity extends ActionBarActivity implements
 				if (requestCode == RESULT_ADD_PICTURE) {
 					task = getCurrentTask();
 				} else {
-					task = Semantic.createTask(preferences.getString(
-							"photoDefaultTitle",
-							getString(R.string.photo_default_title)),
+					task = Semantic.createTask(
+							MirakelPreferences.getPhotoDefaultTitle(),
 							currentList, false, this);
 					safeSaveTask(task);
 				}
@@ -648,11 +642,10 @@ public class MainActivity extends ActionBarActivity implements
 
 	}
 
-	private void addTaskFromSharing(int list_id) {
+	private void addTaskFromSharing(ListMirakel list) {
 		if (newTaskSubject == null)
 			return;
-		Task task = Semantic.createTask(newTaskSubject,
-				ListMirakel.getList(list_id), true, this);
+		Task task = Semantic.createTask(newTaskSubject, list, true, this);
 		task.setContent(newTaskContent == null ? "" : newTaskContent);
 		safeSaveTask(task);
 		setCurrentTask(task);
@@ -706,14 +699,13 @@ public class MainActivity extends ActionBarActivity implements
 
 			if (!startIntent.getType().equals("text/plain")) {
 				if (newTaskSubject == null) {
-					newTaskSubject = preferences.getString("import_file_title",
-							getString(R.string.file_default_title));
+					newTaskSubject = MirakelPreferences.getImportFileTitle();
 				}
 			}
-			int id = getCurrentList().getId();
-			if (preferences.getBoolean("importDefaultList", false)) {
-				id = preferences.getInt("defaultImportList", id);
-				addTaskFromSharing(id);
+			ListMirakel listFromSharing = MirakelPreferences
+					.getImportDefaultList(false);
+			if (listFromSharing != null) {
+				addTaskFromSharing(listFromSharing);
 			} else {
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);
 				builder.setTitle(R.string.import_to);
@@ -730,7 +722,8 @@ public class MainActivity extends ActionBarActivity implements
 						items.toArray(new CharSequence[items.size()]),
 						currentItem, new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int item) {
-								addTaskFromSharing(list_ids.get(item));
+								addTaskFromSharing(ListMirakel.getList(list_ids
+										.get(item)));
 								dialog.dismiss();
 							}
 						});
@@ -1172,8 +1165,8 @@ public class MainActivity extends ActionBarActivity implements
 		if (mDrawerLayout != null)
 			mDrawerLayout.closeDrawers();
 
-		List<Task> currentTasks = currentList.tasks(preferences.getBoolean(
-				"showDoneMain", true));
+		List<Task> currentTasks = currentList.tasks(MirakelPreferences
+				.showDoneMain());
 		if (currentTasks.size() == 0) {
 			currentTask = Task.getDummy(getApplicationContext());
 		} else {
@@ -1283,10 +1276,6 @@ public class MainActivity extends ActionBarActivity implements
 			Toast.makeText(getApplicationContext(), messageFromSync,
 					Toast.LENGTH_SHORT).show();
 		}
-	}
-
-	public SharedPreferences getPreferences() {
-		return preferences;
 	}
 
 	/**

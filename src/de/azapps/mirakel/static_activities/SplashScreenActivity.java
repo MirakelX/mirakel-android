@@ -21,9 +21,7 @@ package de.azapps.mirakel.static_activities;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.Menu;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.main_activity.MainActivity;
@@ -44,14 +42,12 @@ public class SplashScreenActivity extends Activity {
 		}
 
 		// Setup splashscreen
-		SharedPreferences preferences = PreferenceManager
-				.getDefaultSharedPreferences(getApplicationContext());
 		boolean darkTheme = MirakelPreferences.isDark();
 		if (!darkTheme)
 			setTheme(R.style.Theme_SplashScreen);
 
 		// Intents
-		if (preferences.getBoolean("startupAllLists", false)) {
+		if (MirakelPreferences.isStartupAllLists()) {
 			Intent intent = new Intent(SplashScreenActivity.this,
 					MainActivity.class);
 			intent.setAction(MainActivity.SHOW_LISTS);
@@ -62,8 +58,7 @@ public class SplashScreenActivity extends Activity {
 				sl = SpecialList.newSpecialList(getString(R.string.list_all),
 						" done=0 ", true, this);
 			}
-			int listId = Integer.parseInt(preferences.getString("startupList",
-					"" + sl.getId()));
+			int listId = MirakelPreferences.getStartupList().getId();
 			Intent intent = new Intent(SplashScreenActivity.this,
 					MainActivity.class);
 			intent.setAction(MainActivity.SHOW_LIST);

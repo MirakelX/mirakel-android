@@ -30,13 +30,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.preference.PreferenceManager;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.UndoHistory;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.account.AccountMirakel;
@@ -100,7 +100,7 @@ public class ListMirakel extends ListBase {
 	}
 
 	public void save(boolean log) {
-		SharedPreferences.Editor editor = preferences.edit();
+		SharedPreferences.Editor editor = MirakelPreferences.getEditor();
 		// TODO implement for specialLists
 		if (getId() > 0) {
 			database.beginTransaction();
@@ -236,7 +236,6 @@ public class ListMirakel extends ListBase {
 			ACCOUNT_ID };
 	private static final String TAG = "ListMirakel";
 	private static Context context;
-	private static SharedPreferences preferences;
 
 	public static ListMirakel parseJson(JsonObject el) {
 		ListMirakel t = null;
@@ -284,7 +283,6 @@ public class ListMirakel extends ListBase {
 	public static void init(Context context) {
 		ListMirakel.context = context;
 		dbHelper = new DatabaseHelper(context);
-		preferences = PreferenceManager.getDefaultSharedPreferences(context);
 		database = dbHelper.getWritableDatabase();
 	}
 
@@ -529,21 +527,12 @@ public class ListMirakel extends ListBase {
 	}
 
 	public static ListMirakel getSafeDefaultList(Context context) {
-		ListMirakel list = null;
-		SharedPreferences p = PreferenceManager
-				.getDefaultSharedPreferences(context);
-		if (p.getBoolean("importDefaultList", false)) {
-			list = ListMirakel.getList(p.getInt("defaultImportList",
-					SpecialList.firstSpecialSafe(context).getId()));
-		}
-		if (list == null) {
-			list = SpecialList.firstSpecialSafe(context);
-		}
+		ListMirakel list = MirakelPreferences.getImportDefaultList(true);
 		return list;
 	}
 
 	public static List<ListMirakel> getListsForAccount(AccountMirakel account) {
-		if(account==null||!account.isEnabeld()){
+		if (account == null || !account.isEnabeld()) {
 			return new ArrayList<ListMirakel>();
 		}
 		Cursor c = database.query(TABLE, allColumns, "NOT "

@@ -32,10 +32,8 @@ import java.util.Set;
 import android.accounts.Account;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.preference.PreferenceManager;
 import android.util.Pair;
 import android.widget.Toast;
 
@@ -48,6 +46,7 @@ import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.UndoHistory;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.account.AccountMirakel;
@@ -640,7 +639,8 @@ public class Task extends TaskBase {
 			first = false;
 		}
 		String where = "NOT " + SyncAdapter.SYNC_STATE + "='"
-				+ SYNC_STATE.NOTHING + "' and " + LIST_ID + " IN ("+listIDs+")";
+				+ SYNC_STATE.NOTHING + "' and " + LIST_ID + " IN (" + listIDs
+				+ ")";
 		Cursor cursor = Mirakel.getReadableDatabase().query(TABLE, allColumns,
 				where, null, null, null, null);
 		return cursorToTaskList(cursor);
@@ -809,16 +809,7 @@ public class Task extends TaskBase {
 			}
 		}
 		if (t.getList() == null) {
-			ListMirakel l = null;
-			SharedPreferences p = PreferenceManager
-					.getDefaultSharedPreferences(context);
-			if (p.getBoolean("importDefaultList", false)) {
-				l = ListMirakel.getList(p.getInt("defaultImportList",
-						SpecialList.firstSpecialSafe(context).getId()));
-			}
-			if (l == null) {
-				l = SpecialList.firstSpecialSafe(context);
-			}
+			ListMirakel l = MirakelPreferences.getImportDefaultList(true);
 			t.setList(l);
 		}
 		return t;

@@ -77,14 +77,17 @@ public class MirakelPreferences {
 				.getBoolean(R.bool.isTablet));
 	}
 
-	public static ListMirakel getImportDefaultList() {
+	public static ListMirakel getImportDefaultList(boolean safe) {
 		if (settings.getBoolean("importDefaultList", false)) {
 			int listId = settings.getInt("defaultImportList", 0);
 			if (listId == 0)
 				return null;
 			return ListMirakel.getList(listId);
 		}
-		return null;
+		if (!safe)
+			return null;
+		else
+			return ListMirakel.safeFirst(context);
 	}
 
 	public static boolean isDateFormatRelative() {
@@ -148,6 +151,10 @@ public class MirakelPreferences {
 		return settings.getBoolean("startupAllLists", false);
 	}
 
+	public static boolean containsStartupAllLists() {
+		return settings.contains("startupAllLists");
+	}
+
 	public static ListMirakel getStartupList() {
 		return ListMirakel.getList(settings.getInt("startupList", -1));
 	}
@@ -205,7 +212,84 @@ public class MirakelPreferences {
 	public static boolean isSubtaskDefaultNew() {
 		return settings.getBoolean("subtaskDefaultNew", true);
 	}
+
 	public static boolean useSemanticNewTask() {
 		return settings.getBoolean("semanticNewTask", true);
+	}
+
+	public static boolean colorizeTasks() {
+		return settings.getBoolean("colorize_tasks", true);
+	}
+
+	public static boolean colorizeTasksEverywhere() {
+		return settings.getBoolean("colorize_tasks_everywhere", false);
+	}
+
+	public static boolean colorizeSubTasks() {
+		return settings.getBoolean("colorize_subtasks", true);
+	}
+
+	public static boolean hideKeyboard() {
+		return settings.getBoolean("hideKeyboard", true);
+	}
+
+	public static boolean highlightSelected() {
+		return settings.getBoolean("highlightSelected", isTablet());
+	}
+
+	public static boolean containsHighlightSelected() {
+		return settings.contains("highlightSelected");
+	}
+
+	public static boolean showDoneMain() {
+		return settings.getBoolean("showDoneMain", true);
+	}
+
+	public static boolean swipeBehavior() {
+		return settings.getBoolean("swipeBehavior", false);
+	}
+
+	public static boolean lockDrawerInTaskFragment() {
+		return settings.getBoolean("lockDrawerInTaskFragment", false);
+	}
+
+	public static boolean showKillButton() {
+		return settings.getBoolean("KillButton", false);
+	}
+
+	public static String getPhotoDefaultTitle() {
+		return settings.getString("photoDefaultTitle",
+				context.getString(R.string.photo_default_title));
+	}
+
+	public static boolean useBtnCamera() {
+		return settings.getBoolean("useBtnCamera", true);
+	}
+
+	public static boolean useBtnSpeak() {
+		return settings.getBoolean("useBtnSpeak", true);
+	}
+
+	public static int getDefaultAccount() {
+		return settings.getInt("defaultAccount", -1);
+	}
+
+	public static boolean usePersistentReminders() {
+		return settings.getBoolean("remindersPersistent", true);
+	}
+
+	public static boolean useBigNotifications() {
+		return settings.getBoolean("notificationsBig", true);
+	}
+
+	public static boolean usePersistentNotifications() {
+		return settings.getBoolean("notificationsPersistent", true);
+	}
+
+	public static boolean hideEmptyNotifications() {
+		return settings.getBoolean("notificationsZeroHide", true);
+	}
+	public static String getVersionKey() {
+		return settings.getString("PREFS_VERSION_KEY", "");
 	}
 }

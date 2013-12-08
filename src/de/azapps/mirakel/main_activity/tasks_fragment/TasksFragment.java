@@ -34,7 +34,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
@@ -111,8 +110,7 @@ public class TasksFragment extends Fragment {
 
 	public void onResume() {
 		super.onResume();
-		if (main != null)
-			showDone = main.preferences.getBoolean("showDoneMain", true);
+		showDone = MirakelPreferences.showDoneMain();
 	}
 
 	@Override
@@ -122,7 +120,7 @@ public class TasksFragment extends Fragment {
 		loadMore = false;
 		ItemCount = 0;
 		main = (MainActivity) getActivity();
-		showDone = main.preferences.getBoolean("showDoneMain", true);
+		showDone = MirakelPreferences.showDoneMain();
 		listId = main.getCurrentList().getId();
 
 		if (MirakelPreferences.isTablet()) {
@@ -309,16 +307,14 @@ public class TasksFragment extends Fragment {
 
 		ListMirakel list = main.getCurrentList();
 		Task task = Semantic.createTask(name, list,
-				main.preferences.getBoolean("semanticNewTask", true),
-				getActivity());
+				MirakelPreferences.useSemanticNewTask(), getActivity());
 
 		adapter.addToHead(task);
 		values.add(0, task);
 		adapter.notifyDataSetChanged();
 
 		main.getListFragment().update();
-		if (!PreferenceManager.getDefaultSharedPreferences(main).getBoolean(
-				"hideKeyboard", true)) {
+		if (!MirakelPreferences.hideKeyboard()) {
 			focusNew(true);
 		}
 		main.updateShare();
@@ -566,7 +562,7 @@ public class TasksFragment extends Fragment {
 		// a) Android 2.3 dosen't support speech toText
 		// b) The user can switch off the button
 		if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.HONEYCOMB
-				|| !main.getPreferences().getBoolean("useBtnSpeak", true)) {
+				|| !MirakelPreferences.useBtnSpeak()) {
 			view.findViewById(R.id.btnSpeak_tasks).setVisibility(View.GONE);
 		} else {
 			ImageButton btnSpeak = (ImageButton) view
@@ -599,7 +595,7 @@ public class TasksFragment extends Fragment {
 				}
 			});
 		}
-		if (!main.getPreferences().getBoolean("useBtnCamera", true)
+		if (!MirakelPreferences.useBtnCamera()
 				|| !Helpers.isIntentAvailable(main,
 						MediaStore.ACTION_IMAGE_CAPTURE)) {
 			view.findViewById(R.id.btnCamera).setVisibility(View.GONE);
