@@ -108,7 +108,7 @@ public class TaskFragmentAdapter extends
 	private static final Integer inactive_color = android.R.color.darker_gray;
 	private View.OnClickListener cameraButtonClick = null;
 	private View.OnClickListener audioButtonClick = null;
-	private static int minDueNextToReminderSize = 900;
+	private static int minDueNextToReminderSize = 750;
 
 	public static class TYPE {
 		public final static int HEADER = 0;
