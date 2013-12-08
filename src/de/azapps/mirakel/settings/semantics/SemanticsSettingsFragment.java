@@ -48,7 +48,7 @@ public class SemanticsSettingsFragment extends PreferenceFragment {
 			semantic = Semantic.get(getArguments().getInt("id"));
 			((SemanticsSettingsActivity) getActivity()).setSemantic(semantic);
 			actionBar.setTitle(semantic.getCondition());
-			if (!MirakelPreferences.isTablet(getActivity())) {
+			if (!MirakelPreferences.isTablet()) {
 				ImageButton delSemantic = new ImageButton(getActivity());
 				delSemantic
 						.setBackgroundResource(android.R.drawable.ic_menu_delete);

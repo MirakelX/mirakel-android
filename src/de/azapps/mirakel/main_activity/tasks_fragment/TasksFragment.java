@@ -125,7 +125,7 @@ public class TasksFragment extends Fragment {
 		showDone = main.preferences.getBoolean("showDoneMain", true);
 		listId = main.getCurrentList().getId();
 
-		if (MirakelPreferences.isTablet(main)) {
+		if (MirakelPreferences.isTablet()) {
 			view = inflater.inflate(R.layout.tasks_fragment_tablet, container,
 					false);
 			TaskFragment t = new TaskFragment();
@@ -150,7 +150,7 @@ public class TasksFragment extends Fragment {
 		listView.setDescendantFocusability(ListView.FOCUS_AFTER_DESCENDANTS);
 		// Events
 		newTask = (EditText) view.findViewById(R.id.tasks_new);
-		if (MirakelPreferences.isTablet(main)) {
+		if (MirakelPreferences.isTablet()) {
 			newTask.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
 		}
 		newTask.setOnEditorActionListener(new OnEditorActionListener() {

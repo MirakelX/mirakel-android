@@ -56,7 +56,7 @@ public class SettingsFragment extends PreferenceFragment {
 		} else if (getArguments().getString("type").equals("accounts")) {
 			startActivity(new Intent(getActivity(),
 					AccountSettingsActivity.class));
-			if (!MirakelPreferences.isTablet(getActivity()))
+			if (!MirakelPreferences.isTablet())
 				getActivity().finish();
 			else {
 				addPreferencesFromResource(R.xml.settings_notifications);
@@ -74,7 +74,7 @@ public class SettingsFragment extends PreferenceFragment {
 		} else if (getArguments().getString("type").equals("speciallists")) {
 			startActivity(new Intent(getActivity(),
 					SpecialListsSettingsActivity.class));
-			if (!MirakelPreferences.isTablet(getActivity()))
+			if (!MirakelPreferences.isTablet())
 				getActivity().finish();
 			else {
 				addPreferencesFromResource(R.xml.settings_notifications);

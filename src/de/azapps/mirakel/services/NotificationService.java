@@ -34,10 +34,9 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.list.ListMirakel;
-import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.widget.MainWidgetProvider;
 import de.azapps.mirakelandroid.R;
@@ -81,22 +80,8 @@ public class NotificationService extends Service {
 				&& !existsNotification) {
 			return;
 		}
-		int listId = 0;
-		int listIdToOpen = 0;
-		try {
-			listId = Integer.parseInt(preferences.getString(
-					"notificationsList", "" + SpecialList.first()));
-			String listOpen = preferences.getString("notificationsListOpen",
-					"default");
-			if (listOpen.equals("default")) {
-				listIdToOpen = listId;
-			} else {
-				listIdToOpen = Integer.parseInt(listOpen);
-			}
-		} catch (NumberFormatException e) {
-			Log.e(TAG, "cannot parse list");
-			return;
-		}
+		int listId = MirakelPreferences.getNotificationsListId();
+		int listIdToOpen = MirakelPreferences.getNotificationsListOpenId();
 		// Set onClick Intent
 		Intent openIntent = new Intent(this, MainActivity.class);
 		openIntent.setAction(MainActivity.SHOW_LIST);

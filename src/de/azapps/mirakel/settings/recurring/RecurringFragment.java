@@ -48,7 +48,7 @@ public class RecurringFragment extends PreferenceFragment {
 			recurring = Recurring.get(getArguments().getInt("id"));
 			((RecurringActivity) getActivity()).setReccuring(recurring);
 			actionBar.setTitle(recurring.getLabel());
-			if (!MirakelPreferences.isTablet(getActivity())) {
+			if (!MirakelPreferences.isTablet()) {
 				ImageButton delSemantic = new ImageButton(getActivity());
 				delSemantic
 						.setBackgroundResource(android.R.drawable.ic_menu_delete);

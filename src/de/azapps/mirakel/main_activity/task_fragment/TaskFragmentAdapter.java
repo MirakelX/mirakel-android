@@ -1116,7 +1116,7 @@ public class TaskFragmentAdapter extends
 			holder.taskName.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					if (MirakelPreferences.isTablet(context)) {
+					if (MirakelPreferences.isTablet()) {
 						((EditText) ((MainActivity) context)
 								.findViewById(R.id.tasks_new))
 								.setOnFocusChangeListener(null);
@@ -1194,7 +1194,7 @@ public class TaskFragmentAdapter extends
 
 		String tname = task.getName();
 		holder.taskName.setText(tname == null ? "" : tname);
-		if (MirakelPreferences.isTablet(context))
+		if (MirakelPreferences.isTablet())
 			holder.taskName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
 
 		if (holder.switcher.getCurrentView().getId() == R.id.edit_name

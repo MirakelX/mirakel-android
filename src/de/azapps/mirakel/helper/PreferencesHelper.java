@@ -102,7 +102,6 @@ public class PreferencesHelper {
 	private final Activity activity;
 	private static boolean v4_0;
 	static View numberPicker;
-	private SharedPreferences settings;
 	public Switch actionBarSwitch;
 
 	public PreferencesHelper(SettingsActivity c) {
@@ -307,21 +306,8 @@ public class PreferencesHelper {
 		}
 	}
 
-	private ListMirakel getListFromIdString(String preference) {
-		ListMirakel list;
-		try {
-			list = ListMirakel.getList(Integer.parseInt(preference));
-		} catch (NumberFormatException e) {
-			list = SpecialList.firstSpecial();
-		}
-		if (list == null)
-			list = ListMirakel.safeFirst(activity);
-		return list;
-	}
-
 	@SuppressLint("NewApi")
 	public void setFunctionsApp() {
-		settings = PreferenceManager.getDefaultSharedPreferences(activity);
 
 		// Initialize needed Arrays
 		final List<ListMirakel> lists = ListMirakel.all();
@@ -350,8 +336,8 @@ public class PreferencesHelper {
 			final ListPreference notificationsListOpenPreference = (ListPreference) findPreference("notificationsListOpen");
 			notificationsListPreference.setEntries(entries);
 			notificationsListPreference.setEntryValues(entryValues);
-			ListMirakel notificationsList = getListFromIdString(settings
-					.getString("notificationsList", "-1"));
+			ListMirakel notificationsList = MirakelPreferences
+					.getNotificationsList();
 
 			notificationsListPreference.setSummary(activity.getString(
 					R.string.notifications_list_summary,
@@ -368,8 +354,8 @@ public class PreferencesHelper {
 									.getString(
 											R.string.notifications_list_summary,
 											list));
-							if (settings.getString("notificationsListOpen",
-									"default").equals("default")) {
+							if (MirakelPreferences
+									.isNotificationListOpenDefault()) {
 								notificationsListOpenPreference.setSummary(activity
 										.getString(
 												R.string.notifications_list_summary,
@@ -382,8 +368,8 @@ public class PreferencesHelper {
 			notificationsListOpenPreference.setEntries(entriesWithDefault);
 			notificationsListOpenPreference
 					.setEntryValues(entryValuesWithDefault);
-			ListMirakel notificationsListOpen = getListFromIdString(settings
-					.getString("notificationsListOpen", "-1"));
+			ListMirakel notificationsListOpen = MirakelPreferences
+					.getNotificationsListOpen();
 			notificationsListOpenPreference.setSummary(activity.getString(
 					R.string.notifications_list_open_summary,
 					notificationsListOpen.getName()));
@@ -398,10 +384,8 @@ public class PreferencesHelper {
 										Integer.parseInt((String) newValue))
 										.getName();
 							} else {
-								list = ListMirakel.getList(
-										Integer.parseInt(settings.getString(
-												"notificationsList", "-1")))
-										.getName();
+								list = MirakelPreferences
+										.getNotificationsList().getName();
 							}
 							notificationsListOpenPreference.setSummary(activity
 									.getString(
@@ -453,10 +437,9 @@ public class PreferencesHelper {
 								startupListPreference.setSummary(activity
 										.getString(
 												R.string.startup_list_summary,
-												ListMirakel.getList(Integer.parseInt(settings
-														.getString(
-																"startupList",
-																"-1")))));
+												MirakelPreferences
+														.getStartupList()
+														.getName()));
 								startupListPreference.setEnabled(true);
 							} else {
 								startupListPreference.setSummary(" ");
@@ -467,12 +450,11 @@ public class PreferencesHelper {
 					});
 			startupListPreference.setEntries(entries);
 			startupListPreference.setEntryValues(entryValues);
-			if (settings.getBoolean("startupAllLists", false)) {
+			if (MirakelPreferences.isStartupAllLists()) {
 				startupListPreference.setSummary(" ");
 				startupListPreference.setEnabled(false);
 			} else {
-				ListMirakel startupList = getListFromIdString(settings
-						.getString("startupList", "-1"));
+				ListMirakel startupList = MirakelPreferences.getStartupList();
 				if (startupList == null) {
 					startupList = SpecialList.firstSpecialSafe(activity);
 				}
@@ -502,7 +484,7 @@ public class PreferencesHelper {
 		final Account[] accounts = am
 				.getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
 		if (syncType != null && am != null) {
-			if (settings.getBoolean("syncUse", false) && accounts.length > 0) {
+			if (MirakelPreferences.useSync() && accounts.length > 0) {
 				if (am.getUserData(accounts[0], SyncAdapter.BUNDLE_SERVER_TYPE)
 						.equals(TaskWarriorSync.TYPE)) {
 					syncType.setSummary(activity.getString(
@@ -709,12 +691,12 @@ public class PreferencesHelper {
 
 			// Change Sync-Interval
 			final ListPreference syncInterval = (ListPreference) findPreference("syncFrequency");
-			if (settings.getString("syncFrequency", "-1").equals("-1")) {
+			if (MirakelPreferences.getSyncFrequency() == -1) {
 				syncInterval.setSummary(R.string.sync_frequency_summary_man);
 			} else {
 				syncInterval.setSummary(activity.getString(
 						R.string.sync_frequency_summary,
-						settings.getString("syncFrequency", "-1")));
+						MirakelPreferences.getSyncFrequency()));
 			}
 			syncInterval
 					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
@@ -754,7 +736,7 @@ public class PreferencesHelper {
 						}
 					});
 
-			if (!settings.getBoolean("syncUse", false)) {
+			if (!MirakelPreferences.useSync()) {
 				findPreference("syncServer").setEnabled(false);
 				findPreference("syncPassword").setEnabled(false);
 				findPreference("syncFrequency").setEnabled(false);
@@ -774,8 +756,7 @@ public class PreferencesHelper {
 								ActionBar.LayoutParams.WRAP_CONTENT,
 								ActionBar.LayoutParams.WRAP_CONTENT,
 								Gravity.CENTER_VERTICAL | Gravity.RIGHT));
-				actionBarSwitch.setChecked(settings
-						.getBoolean("syncUse", false));
+				actionBarSwitch.setChecked(MirakelPreferences.useSync());
 				actionBarSwitch
 						.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
@@ -790,7 +771,7 @@ public class PreferencesHelper {
 										isChecked);
 								findPreference("syncFrequency").setEnabled(
 										isChecked);
-								if (MirakelPreferences.isTablet(activity)) {
+								if (MirakelPreferences.isTablet()) {
 									final Switch s = ((Switch) activity
 											.findViewById(R.id.switchWidget));
 									if (s != null) {
@@ -984,16 +965,12 @@ public class PreferencesHelper {
 		}
 		final EditTextPreference importFileType = (EditTextPreference) findPreference("import_file_title");
 		if (importFileType != null) {
-			importFileType.setSummary(settings.getString("import_file_title",
-					activity.getString(R.string.file_default_title)));
+			importFileType.setSummary(MirakelPreferences.getImportFileTitle());
 		}
 		final CheckBoxPreference importDefaultList = (CheckBoxPreference) findPreference("importDefaultList");
 		if (importDefaultList != null) {
-			if (settings.getBoolean("importDefaultList", false)) {
-				ListMirakel list = ListMirakel.getList(settings.getInt(
-						"defaultImportList", -1));
-				if (list == null)
-					list = ListMirakel.first();
+			ListMirakel list = MirakelPreferences.getImportDefaultList();
+			if (list != null) {
 				importDefaultList.setSummary(activity.getString(
 						R.string.import_default_list_summary, list.getName()));
 			} else {
@@ -1032,8 +1009,8 @@ public class PreferencesHelper {
 														.getString(
 																R.string.import_default_list_summary,
 																items.get(item)));
-												SharedPreferences.Editor editor = settings
-														.edit();
+												SharedPreferences.Editor editor = MirakelPreferences
+														.getEditor();
 												editor.putInt(
 														"defaultImportList",
 														list_ids.get(item));
@@ -1215,7 +1192,7 @@ public class PreferencesHelper {
 		if (undoNumber != null) {
 			undoNumber.setSummary(activity.getString(
 					R.string.undo_number_summary,
-					settings.getInt("UndoNumber", 10)));
+					MirakelPreferences.getUndoNumber()));
 			undoNumber
 					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
@@ -1385,12 +1362,10 @@ public class PreferencesHelper {
 
 		final CheckBoxPreference subTaskAddToSameList = (CheckBoxPreference) findPreference("subtaskAddToSameList");
 		if (subTaskAddToSameList != null) {
-			if (!settings.getBoolean("subtaskAddToSameList", true)) {
+			if (!MirakelPreferences.addSubtaskToSameList()) {
 				subTaskAddToSameList.setSummary(activity.getString(
 						R.string.settings_subtask_add_to_list_summary,
-						ListMirakel.getList(
-								settings.getInt("subtaskAddToList", -1))
-								.getName()));
+						MirakelPreferences.subtaskAddToList().getName()));
 			} else {
 				subTaskAddToSameList
 						.setSummary(R.string.settings_subtask_add_to_same_list_summary);
@@ -1430,8 +1405,8 @@ public class PreferencesHelper {
 														.getString(
 																R.string.settings_subtask_add_to_list_summary,
 																items.get(item)));
-												SharedPreferences.Editor editor = settings
-														.edit();
+												SharedPreferences.Editor editor = MirakelPreferences
+														.getEditor();
 												editor.putInt(
 														"subtaskAddToList",
 														list_ids.get(item));
@@ -1458,14 +1433,15 @@ public class PreferencesHelper {
 		}
 		final ListPreference language = (ListPreference) findPreference("language");
 		if (language != null) {
-			setLanguageSummary(language, settings.getString("language", "-1"));
+			setLanguageSummary(language, MirakelPreferences.getLanguage());
 			language.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 				@Override
 				public boolean onPreferenceChange(Preference preference,
 						Object newValue) {
 					setLanguageSummary(language, newValue.toString());
-					settings.edit().putString("language", newValue.toString())
+					MirakelPreferences.getEditor()
+							.putString("language", newValue.toString())
 							.commit();
 					android.os.Process.killProcess(android.os.Process.myPid());
 					return false;
@@ -1482,7 +1458,8 @@ public class PreferencesHelper {
 						@Override
 						public boolean onPreferenceChange(
 								Preference preference, Object newValue) {
-							settings.edit()
+							MirakelPreferences
+									.getEditor()
 									.putBoolean("useTabletLayout",
 											(Boolean) newValue).commit();
 							android.os.Process.killProcess(android.os.Process

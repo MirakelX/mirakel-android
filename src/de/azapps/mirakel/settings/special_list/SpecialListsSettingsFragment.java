@@ -53,7 +53,7 @@ public class SpecialListsSettingsFragment extends PreferenceFragment {
 				actionbar.setTitle("No list");
 			else
 				actionbar.setTitle(specialList.getName());
-			if (!MirakelPreferences.isTablet(getActivity())) {
+			if (!MirakelPreferences.isTablet()) {
 				ImageButton delList = new ImageButton(getActivity());
 				delList.setBackgroundResource(android.R.drawable.ic_menu_delete);
 				actionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,

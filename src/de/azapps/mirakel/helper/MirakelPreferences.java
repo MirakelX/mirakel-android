@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakelandroid.R;
 
 /**
@@ -19,9 +20,11 @@ import de.azapps.mirakelandroid.R;
  */
 public class MirakelPreferences {
 	private static SharedPreferences settings;
+	private static Context context;
 
-	public static void init(Context ctx) {
-		settings = PreferenceManager.getDefaultSharedPreferences(ctx);
+	public static void init(Context context) {
+		MirakelPreferences.context = context;
+		settings = PreferenceManager.getDefaultSharedPreferences(context);
 	}
 
 	public static boolean isDark() {
@@ -67,10 +70,9 @@ public class MirakelPreferences {
 		return settings.getInt("alarm_later", 15);
 	}
 
-	public static boolean isTablet(Context ctx) {
-		return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
-				"useTabletLayout",
-				ctx.getResources().getBoolean(R.bool.isTablet));
+	public static boolean isTablet() {
+		return settings.getBoolean("useTabletLayout", context.getResources()
+				.getBoolean(R.bool.isTablet));
 	}
 
 	public static ListMirakel getImportDefaultList() {
@@ -90,12 +92,86 @@ public class MirakelPreferences {
 	public static int getUndoNumber() {
 		return settings.getInt("UndoNumber", 10);
 	}
-	
+
 	public static String getFromLog(int id) {
 		return settings.getString("OLD" + id, "");
 	}
 
 	public static Editor getEditor() {
 		return settings.edit();
+	}
+
+	public static int getNotificationsListId() {
+		return settings.getInt("notificationsList", -1);
+	}
+
+	public static ListMirakel getNotificationsList() {
+		return getListFromIdString(getNotificationsListId());
+	}
+
+	private static ListMirakel getListFromIdString(int preference) {
+		ListMirakel list;
+		try {
+			list = ListMirakel.getList(preference);
+		} catch (NumberFormatException e) {
+			list = SpecialList.firstSpecial();
+		}
+		if (list == null)
+			list = ListMirakel.safeFirst(context);
+		return list;
+	}
+
+	public static boolean isNotificationListOpenDefault() {
+
+		String listOpen = settings
+				.getString("notificationsListOpen", "default");
+		return listOpen.equals("default");
+	}
+
+	public static int getNotificationsListOpenId() {
+		int listId = getNotificationsListId();
+		String listOpen = settings
+				.getString("notificationsListOpen", "default");
+		if (!listOpen.equals("default")) {
+			listId = Integer.parseInt(listOpen);
+		}
+		return listId;
+	}
+
+	public static ListMirakel getNotificationsListOpen() {
+		return ListMirakel.getList(getNotificationsListOpenId());
+	}
+
+	public static boolean isStartupAllLists() {
+		return settings.getBoolean("startupAllLists", false);
+	}
+
+	public static ListMirakel getStartupList() {
+		return ListMirakel.getList(settings.getInt("startupList", -1));
+	}
+
+	public static boolean useSync() {
+		return settings.getBoolean("syncUse", false);
+	}
+
+	public static int getSyncFrequency() {
+		return settings.getInt("syncFrequency", -1);
+	}
+
+	public static String getImportFileTitle() {
+		return settings.getString("import_file_title",
+				context.getString(R.string.file_default_title));
+	}
+
+	public static boolean addSubtaskToSameList() {
+		return settings.getBoolean("subtaskAddToSameList", true);
+	}
+
+	public static ListMirakel subtaskAddToList() {
+		return ListMirakel.getList(settings.getInt("subtaskAddToList", -1));
+	}
+
+	public static String getLanguage() {
+		return settings.getString("language", "-1");
 	}
 }

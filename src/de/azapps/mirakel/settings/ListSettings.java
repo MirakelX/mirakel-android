@@ -101,7 +101,7 @@ public abstract class ListSettings extends PreferenceActivity {
 			ImageButton addList = new ImageButton(this);
 			addList.setBackgroundResource(android.R.drawable.ic_menu_add);
 			addList.setOnClickListener(getAddOnClickListener());
-			if (MirakelPreferences.isTablet(this)) {
+			if (MirakelPreferences.isTablet()) {
 				LinearLayout l = new LinearLayout(this);
 				l.setLayoutDirection(LinearLayout.VERTICAL);
 				l.addView(addList);
@@ -179,7 +179,7 @@ public abstract class ListSettings extends PreferenceActivity {
 
 	@Override
 	public boolean onIsMultiPane() {
-		return MirakelPreferences.isTablet(this);
+		return MirakelPreferences.isTablet();
 	};
 
 	@Override

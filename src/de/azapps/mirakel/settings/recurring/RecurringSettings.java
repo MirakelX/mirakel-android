@@ -186,7 +186,7 @@ public class RecurringSettings {
 						((EditTextPreference) preference).setText(recurring
 								.getLabel());
 						recurring.save();
-						if (MirakelPreferences.isTablet(ctx) && v4_0) {
+						if (MirakelPreferences.isTablet() && v4_0) {
 							((ListSettings) ctx).invalidateHeaders();
 						}
 						return false;

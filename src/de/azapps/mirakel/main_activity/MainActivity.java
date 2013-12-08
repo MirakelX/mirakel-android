@@ -145,7 +145,7 @@ public class MainActivity extends ActionBarActivity implements
 			setTheme(R.style.AppBaseThemeDARK);
 		super.onCreate(savedInstanceState);
 
-		boolean isTablet = MirakelPreferences.isTablet(this);
+		boolean isTablet = MirakelPreferences.isTablet();
 		highlightSelected = preferences.getBoolean("highlightSelected",
 				isTablet);
 		if (!preferences.contains("highlightSelected")) {
@@ -270,7 +270,7 @@ public class MainActivity extends ActionBarActivity implements
 				getTasksFragment().getAdapter().changeData(
 						getCurrentList().tasks(), getCurrentList().getId());
 				getTasksFragment().getAdapter().notifyDataSetChanged();
-				if (!MirakelPreferences.isTablet(this)
+				if (!MirakelPreferences.isTablet()
 						&& currentPosition == TASKS_FRAGMENT)
 					setCurrentList(getCurrentList());
 			}
@@ -407,7 +407,7 @@ public class MainActivity extends ActionBarActivity implements
 			if (getTaskFragment() != null && getTaskFragment().adapter != null) {
 				getTaskFragment().adapter.setEditContent(false);
 			}
-			if (!MirakelPreferences.isTablet(this))
+			if (!MirakelPreferences.isTablet())
 				newmenu = R.menu.tasks;
 			else
 				newmenu = R.menu.tablet_right;
@@ -500,7 +500,7 @@ public class MainActivity extends ActionBarActivity implements
 		case RESULT_SETTINGS:
 			getListFragment().update();
 			highlightSelected = preferences.getBoolean("highlightSelected",
-					MirakelPreferences.isTablet(this));
+					MirakelPreferences.isTablet());
 			if (!highlightSelected
 					&& (oldClickedList != null || oldClickedTask == null)) {
 				clearAllHighlights();
@@ -1016,7 +1016,7 @@ public class MainActivity extends ActionBarActivity implements
 		TasksFragment tasksFragment = new TasksFragment();
 		tasksFragment.setActivity(this);
 		fragments.add(tasksFragment);
-		if (!MirakelPreferences.isTablet(this)) {
+		if (!MirakelPreferences.isTablet()) {
 			TaskFragment taskFragment = new TaskFragment();
 			fragments.add(taskFragment);
 		}
@@ -1026,7 +1026,7 @@ public class MainActivity extends ActionBarActivity implements
 		this.mViewPager = (ViewPager) super.findViewById(R.id.viewpager);
 		this.mViewPager.setAdapter(this.mPagerAdapter);
 		this.mViewPager.setOnPageChangeListener(this);
-		mViewPager.setOffscreenPageLimit(MirakelPreferences.isTablet(this) ? 1 : 2);
+		mViewPager.setOffscreenPageLimit(MirakelPreferences.isTablet() ? 1 : 2);
 
 	}
 
@@ -1182,7 +1182,7 @@ public class MainActivity extends ActionBarActivity implements
 
 		if (getTasksFragment() != null) {
 			getTasksFragment().updateList();
-			if (!MirakelPreferences.isTablet(this) && switchFragment)
+			if (!MirakelPreferences.isTablet() && switchFragment)
 				mViewPager.setCurrentItem(TASKS_FRAGMENT);
 		}
 		if (currentView == null && listFragment != null
@@ -1256,7 +1256,7 @@ public class MainActivity extends ActionBarActivity implements
 	public TaskFragment getTaskFragment() {
 		if (mPagerAdapter == null)
 			return null;
-		if (MirakelPreferences.isTablet(this))
+		if (MirakelPreferences.isTablet())
 			return taskFragment;
 		Fragment f = this.getSupportFragmentManager().findFragmentByTag(
 				getFragmentTag(1));
