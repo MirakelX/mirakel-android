@@ -56,6 +56,7 @@ public class DragNDropListView extends ListView {
 
 	private int startX;
 
+	@SuppressWarnings("unused")
 	private int startY;
 
 	public void setEnableDrag(boolean enableDrag) {

@@ -155,11 +155,14 @@ public class TaskDialogHelpers {
 			boolean dark) {
 		FragmentManager fm = ((MainActivity) activity)
 				.getSupportFragmentManager();
-		Recurring r=isDue?task.getRecurring():task.getRecurringReminder();
-		boolean isExact=r.isExact();
-		Log.d(TAG,"exact: "+isExact);
-		if(r.getDerivedFrom()!=null){
-			r=Recurring.get(r.getDerivedFrom());
+		Recurring r = isDue ? task.getRecurring() : task.getRecurringReminder();
+		boolean isExact = false;
+		if (r != null) {
+			isExact = r.isExact();
+			Log.d(TAG, "exact: " + isExact);
+			if (r.getDerivedFrom() != null) {
+				r = Recurring.get(r.getDerivedFrom());
+			}
 		}
 		RecurrencePickerDialog rp = RecurrencePickerDialog.newInstance(
 				new OnRecurenceSetListner() {
@@ -168,22 +171,28 @@ public class TaskDialogHelpers {
 					public void OnCustomRecurnceSetIntervall(boolean isDue,
 							int intervalYears, int intervalMonths,
 							int intervalDays, int intervalHours,
-							int intervalMinutes,Calendar startDate, Calendar endDate,boolean isExact) {
-						Recurring r = Recurring.newRecurring("", intervalMinutes,
-								intervalHours, intervalDays, intervalMonths, intervalYears, isDue, startDate, endDate,
-								true,isExact,new SparseBooleanArray());
+							int intervalMinutes, Calendar startDate,
+							Calendar endDate, boolean isExact) {
+						Recurring r = Recurring.newRecurring("",
+								intervalMinutes, intervalHours, intervalDays,
+								intervalMonths, intervalYears, isDue,
+								startDate, endDate, true, isExact,
+								new SparseBooleanArray());
 						setRecurence(task, isDue, r.getId());
 					}
 
 					@Override
 					public void OnCustomRecurnceSetWeekdays(boolean isDue,
-							List<Integer> weekdays,Calendar startDate, Calendar endDate, boolean isExact) {
-						SparseBooleanArray weekdaysArray=new SparseBooleanArray();
-						for(int day:weekdays){
+							List<Integer> weekdays, Calendar startDate,
+							Calendar endDate, boolean isExact) {
+						SparseBooleanArray weekdaysArray = new SparseBooleanArray();
+						for (int day : weekdays) {
 							weekdaysArray.put(day, true);
 						}
-						Recurring r=Recurring.newRecurring("", 0, 0, 0, 0, 0, isDue, startDate, endDate, true, isExact, weekdaysArray);
-						setRecurence(task, isDue, r.getId());						
+						Recurring r = Recurring.newRecurring("", 0, 0, 0, 0, 0,
+								isDue, startDate, endDate, true, isExact,
+								weekdaysArray);
+						setRecurence(task, isDue, r.getId());
 					}
 
 					@Override
@@ -202,7 +211,7 @@ public class TaskDialogHelpers {
 						setRecurence(task, isDue, -1);
 					}
 
-				}, r, isDue, dark,isExact);
+				}, r, isDue, dark, isExact);
 		rp.show(fm, "reccurence");
 
 	}

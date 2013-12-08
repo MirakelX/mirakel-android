@@ -89,14 +89,14 @@ public class Helpers {
 		String url = "http://mirakel.azapps.de/help_en.html";
 		if (title != null)
 			url += "#" + title;
-		Intent i2 = new Intent(Intent.ACTION_VIEW);
-		i2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		i2.setData(Uri.parse(url));
-		ctx.startActivity(i2);
+		openURL(ctx, url);
 	}
 
 	public static void openHelpUs(Context ctx) {
-		String url = "http://mirakel.azapps.de/help_us.html";
+		openURL(ctx, "http://mirakel.azapps.de/help_us.html");
+	}
+
+	public static void openURL(Context ctx, String url) {
 		Intent i2 = new Intent(Intent.ACTION_VIEW);
 		i2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		i2.setData(Uri.parse(url));

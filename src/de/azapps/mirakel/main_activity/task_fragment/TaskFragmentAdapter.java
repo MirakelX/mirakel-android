@@ -108,6 +108,7 @@ public class TaskFragmentAdapter extends
 	private static final Integer inactive_color = android.R.color.darker_gray;
 	private View.OnClickListener cameraButtonClick = null;
 	private View.OnClickListener audioButtonClick = null;
+	private static int minDueNextToReminderSize = 900;
 
 	public static class TYPE {
 		public final static int HEADER = 0;
@@ -248,7 +249,7 @@ public class TaskFragmentAdapter extends
 			row = setupHeader(parent, convertView);
 			break;
 		case TYPE.REMINDER:
-			if (width < 600)
+			if (width < minDueNextToReminderSize)
 				row = setupReminder(parent, convertView);
 			break;
 		case TYPE.SUBTASK:
@@ -961,7 +962,7 @@ public class TaskFragmentAdapter extends
 	}
 
 	private View setupDue(ViewGroup parent, View convertView, int width) {
-		if (width < 600) {
+		if (width < minDueNextToReminderSize) {
 			final View due = (convertView == null || convertView.getId() != R.id.due_wrapper) ? inflater
 					.inflate(R.layout.task_due, parent, false) : convertView;
 			setupDueView(convertView, due);
@@ -1287,27 +1288,4 @@ public class TaskFragmentAdapter extends
 	public void setaudioButtonClick(OnClickListener audioButtonClick) {
 		this.audioButtonClick = audioButtonClick;
 	}
-
-
-
-//	public static List<Pair<Integer, Boolean>> getValues(Context context) {
-//		List<Integer> cfg_items = MirakelPreferences.loadIntArray("task_fragment_adapter_settings");
-//		List<Pair<Integer, Boolean>> items = new ArrayList<Pair<Integer, Boolean>>();
-//		for (Integer item : cfg_items) {
-//			items.add(new Pair<Integer, Boolean>(item, true));
-//		}
-//
-//		Integer[] all = { TYPE.HEADER, TYPE.DUE, TYPE.REMINDER, TYPE.CONTENT,
-//				TYPE.PROGRESS, TYPE.SUBTASK, TYPE.FILE };
-//		for (Integer item : all) {
-//			Pair<Integer, Boolean> p = new Pair<Integer, Boolean>(item, true);
-//			if (!items.contains(p)) {
-//				items.add(new Pair<Integer, Boolean>(item, false));
-//			}
-//
-//		}
-//		return items;
-//	}
-
-
 }
