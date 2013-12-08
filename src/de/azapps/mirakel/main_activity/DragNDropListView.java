@@ -52,6 +52,12 @@ public class DragNDropListView extends ListView {
 
 	private boolean isSpecial;
 
+	private boolean allowRemove;
+
+	private int startX;
+
+	private int startY;
+
 	public void setEnableDrag(boolean enableDrag) {
 		this.enableDrag = enableDrag;
 	}
@@ -72,12 +78,17 @@ public class DragNDropListView extends ListView {
 		mDragListener = l;
 	}
 
+	public void allowRemove(boolean allow) {
+		this.allowRemove = allow;
+	}
+
 	@Override
 	public boolean onTouchEvent(MotionEvent ev) {
 		final int action = ev.getAction();
 		final int x = (int) ev.getX();
 		final int y = (int) ev.getY();
-		if (action == MotionEvent.ACTION_DOWN && x < this.getWidth() / 3) {// width<~imagewidth
+		if (action == MotionEvent.ACTION_DOWN && (x < this.getWidth() / 3
+				|| allowRemove)) {// width<~imagewidth
 			mDragMode = true;
 		}
 
@@ -104,9 +115,15 @@ public class DragNDropListView extends ListView {
 				startDrag(mItemPosition, y);
 				drag(0, y);
 			}
+			startX = x;
+			startY = y;
 			break;
 		case MotionEvent.ACTION_MOVE:
-			drag(0, y);
+			if (allowRemove)
+				drag(x, y);
+			else {
+				drag(0, y);
+			}
 			break;
 		case MotionEvent.ACTION_CANCEL:
 		case MotionEvent.ACTION_UP:
@@ -123,8 +140,13 @@ public class DragNDropListView extends ListView {
 				Log.d(TAG, "special");
 			}
 			if (mDropListener != null && mStartPosition != INVALID_POSITION
-					&& mEndPosition != INVALID_POSITION)
+					&& mEndPosition != INVALID_POSITION&&Math.abs(x - startX) <  getWidth() / 3) {
 				mDropListener.onDrop(mStartPosition, mEndPosition);
+			} else if (mRemoveListener != null
+					&& mStartPosition != INVALID_POSITION && allowRemove
+					&& Math.abs(x - startX) > 2 * getWidth() / 3) {
+				mRemoveListener.onRemove(mStartPosition);
+			}
 			break;
 		}
 		return true;

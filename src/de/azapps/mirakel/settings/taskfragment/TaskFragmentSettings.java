@@ -11,6 +11,7 @@ import android.widget.ListView;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.main_activity.DragNDropListView;
+import de.azapps.mirakel.main_activity.DragNDropListView.RemoveListener;
 import de.azapps.mirakel.main_activity.task_fragment.TaskFragmentAdapter;
 import de.azapps.mirakelandroid.R;
 
@@ -18,6 +19,7 @@ public class TaskFragmentSettings extends Activity {
 	private final static String TAG = "de.azapps.mirakel.settings.taskfragment.TaskFragmentSettings";
 	private DragNDropListView listView;
 	private TaskFragmentSettingsAdapter adapter;
+	public static final int ADD_KEY=-1;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -32,8 +34,8 @@ public class TaskFragmentSettings extends Activity {
 	protected void onResume() {
 		super.onResume();
 		// The activity has become visible (it is now "resumed").
-		final List<Pair<Integer, Boolean>> values = TaskFragmentAdapter
-				.getValuesForConfig(this);
+		final List<Integer> values = MirakelPreferences.getTaskFragmentLayout();
+		values.add(ADD_KEY);
 
 		if (adapter != null) {
 			adapter.changeData(values);
@@ -86,6 +88,15 @@ public class TaskFragmentSettings extends Activity {
 					int position, long id) {
 			}
 		});
+		listView.setRemoveListener(new RemoveListener() {
+			
+			@Override
+			public void onRemove(int which) {
+				if(which!=adapter.getCount()-1)
+					adapter.onRemove(which);				
+			}
+		});
+		listView.allowRemove(true);
 	}
 
 	@Override

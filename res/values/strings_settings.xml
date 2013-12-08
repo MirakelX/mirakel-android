@@ -201,6 +201,10 @@
     <string name="lock_drawer_in_task_fragment_summary">So you don\'t open it accidentally</string>
     <string name="lock_drawer_in_task_fragment">Lock List-View in the Task details</string>
     <string name="useTabletLayout">Use TabletLayout</string>
+    <string name="general">General</string>
+    <string name="tasks_fragment">Tasks Overview</string>
+    <string name="task_fragment">Task Deteils</string>
+    <string name="do_not_touch">Do not Touch</string>
     <!-- Language -->
     <string name="language" translatable="false">Language</string>
 

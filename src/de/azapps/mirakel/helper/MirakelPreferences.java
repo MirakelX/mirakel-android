@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
+import android.util.Pair;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakelandroid.R;
@@ -205,14 +206,14 @@ public class MirakelPreferences {
 
 	public static List<Integer> loadIntArray(String arrayName) {
 		String serialized = settings.getString(arrayName, null);
-		if (serialized == null)
-			return null;
 		List<Integer> items = new ArrayList<Integer>();
-		String[] string_items = serialized.split("_");
-		for (String item : string_items) {
-			if (item.length() == 0)
-				continue;
-			items.add(Integer.valueOf(item));
+		if (serialized != null) {
+			String[] string_items = serialized.split("_");
+			for (String item : string_items) {
+				if (item.length() == 0)
+					continue;
+				items.add(Integer.valueOf(item));
+			}
 		}
 		return items;
 	}
@@ -319,5 +320,14 @@ public class MirakelPreferences {
 
 	public static int getOldVersion() {
 		return settings.getInt("mirakel_old_version", -1);
+	}
+	
+	public static void setTaskFragmentLayout(List<Integer> newV) {
+		MirakelPreferences.saveIntArray("task_fragment_adapter_settings",
+				newV)
+		;
+	}
+	public static List<Integer> getTaskFragmentLayout() {
+		return MirakelPreferences.loadIntArray("task_fragment_adapter_settings");
 	}
 }

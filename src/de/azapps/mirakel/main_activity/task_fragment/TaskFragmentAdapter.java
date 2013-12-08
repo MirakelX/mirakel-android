@@ -110,14 +110,14 @@ public class TaskFragmentAdapter extends
 	private View.OnClickListener audioButtonClick = null;
 
 	public static class TYPE {
-		final static int HEADER = 0;
-		final static int FILE = 1;
-		final static int DUE = 2;
-		final static int REMINDER = 3;
-		final static int CONTENT = 4;
-		final static int SUBTITLE = 5;
-		final static int SUBTASK = 6;
-		final static int PROGRESS = 7;
+		public final static int HEADER = 0;
+		public final static int FILE = 1;
+		public final static int DUE = 2;
+		public final static int REMINDER = 3;
+		public final static int CONTENT = 4;
+		public final static int SUBTITLE = 5;
+		public final static int SUBTASK = 6;
+		public final static int PROGRESS = 7;
 
 		public static class NoSuchItemException extends Exception {
 			private static final long serialVersionUID = 4952441280983309615L;
@@ -1248,13 +1248,11 @@ public class TaskFragmentAdapter extends
 	private static List<Pair<Integer, Integer>> generateData(Task task,
 			Context context) {
 		// From config
-		List<Pair<Integer, Boolean>> items = getValues(context);
+		List<Integer> items = MirakelPreferences.getTaskFragmentLayout();
 
 		List<Pair<Integer, Integer>> data = new ArrayList<Pair<Integer, Integer>>();
-		for (Pair<Integer, Boolean> item : items) {
-			if(!item.second)
-				continue;
-			switch (item.first) {
+		for (Integer item : items) {
+			switch (item) {
 			case TYPE.SUBTASK:
 				data.add(new Pair<Integer, Integer>(TYPE.SUBTITLE,
 						SUBTITLE_SUBTASKS));
@@ -1276,7 +1274,7 @@ public class TaskFragmentAdapter extends
 				data.add(new Pair<Integer, Integer>(TYPE.PROGRESS, 0));
 				break;
 			default:
-				data.add(new Pair<Integer, Integer>(item.first, 0));
+				data.add(new Pair<Integer, Integer>(item, 0));
 			}
 		}
 		return data;
@@ -1290,59 +1288,26 @@ public class TaskFragmentAdapter extends
 		this.audioButtonClick = audioButtonClick;
 	}
 
-	public static List<Pair<Integer, Boolean>> getValuesForConfig(
-			Context context) {
-		List<Integer> cfg_items = MirakelPreferences.loadIntArray("task_fragment_adapter_settings");
-		List<Pair<Integer, Boolean>> items = new ArrayList<Pair<Integer, Boolean>>();
-		if (cfg_items == null) {
-			cfg_items = new ArrayList<Integer>();
-		}
-		for (Integer item : cfg_items) {
-			items.add(new Pair<Integer, Boolean>(item, true));
-		}
 
-		Integer[] all = { TYPE.HEADER, TYPE.DUE, TYPE.REMINDER, TYPE.CONTENT,
-				TYPE.PROGRESS, TYPE.SUBTASK, TYPE.FILE };
-		for (Integer item : all) {
-			Pair<Integer, Boolean> p = new Pair<Integer, Boolean>(item, true);
-			if (!items.contains(p)) {
-				items.add(new Pair<Integer, Boolean>(item, false));
-			}
 
-		}
-		return items;
-	}
+//	public static List<Pair<Integer, Boolean>> getValues(Context context) {
+//		List<Integer> cfg_items = MirakelPreferences.loadIntArray("task_fragment_adapter_settings");
+//		List<Pair<Integer, Boolean>> items = new ArrayList<Pair<Integer, Boolean>>();
+//		for (Integer item : cfg_items) {
+//			items.add(new Pair<Integer, Boolean>(item, true));
+//		}
+//
+//		Integer[] all = { TYPE.HEADER, TYPE.DUE, TYPE.REMINDER, TYPE.CONTENT,
+//				TYPE.PROGRESS, TYPE.SUBTASK, TYPE.FILE };
+//		for (Integer item : all) {
+//			Pair<Integer, Boolean> p = new Pair<Integer, Boolean>(item, true);
+//			if (!items.contains(p)) {
+//				items.add(new Pair<Integer, Boolean>(item, false));
+//			}
+//
+//		}
+//		return items;
+//	}
 
-	public static List<Pair<Integer, Boolean>> getValues(Context context) {
-		List<Integer> cfg_items = MirakelPreferences.loadIntArray("task_fragment_adapter_settings");
-		List<Pair<Integer, Boolean>> items = new ArrayList<Pair<Integer, Boolean>>();
-		if (cfg_items == null) {
-			cfg_items = new ArrayList<Integer>();
-		}
-		for (Integer item : cfg_items) {
-			items.add(new Pair<Integer, Boolean>(item, true));
-		}
 
-		Integer[] all = { TYPE.HEADER, TYPE.DUE, TYPE.REMINDER, TYPE.CONTENT,
-				TYPE.PROGRESS, TYPE.SUBTASK, TYPE.FILE };
-		for (Integer item : all) {
-			Pair<Integer, Boolean> p = new Pair<Integer, Boolean>(item, true);
-			if (!items.contains(p)) {
-				items.add(new Pair<Integer, Boolean>(item, false));
-			}
-
-		}
-		return items;
-	}
-
-	public static void setValues(Context context,
-			List<Pair<Integer, Boolean>> newV) {
-		List<Integer> items = new ArrayList<Integer>();
-		for (Pair<Integer, Boolean> item : newV) {
-			if (item.second)
-				items.add(item.first);
-		}
-		MirakelPreferences.saveIntArray("task_fragment_adapter_settings",
-				items);
-	}
 }
