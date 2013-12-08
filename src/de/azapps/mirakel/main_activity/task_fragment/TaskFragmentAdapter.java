@@ -108,6 +108,7 @@ public class TaskFragmentAdapter extends
 	private static final Integer inactive_color = android.R.color.darker_gray;
 	private View.OnClickListener cameraButtonClick = null;
 	private View.OnClickListener audioButtonClick = null;
+	private static int minDueNextToReminderSize = 900;
 
 	public static class TYPE {
 		final static int HEADER = 0;
@@ -248,7 +249,7 @@ public class TaskFragmentAdapter extends
 			row = setupHeader(parent, convertView);
 			break;
 		case TYPE.REMINDER:
-			if (width < 600)
+			if (width < minDueNextToReminderSize)
 				row = setupReminder(parent, convertView);
 			break;
 		case TYPE.SUBTASK:
@@ -961,7 +962,7 @@ public class TaskFragmentAdapter extends
 	}
 
 	private View setupDue(ViewGroup parent, View convertView, int width) {
-		if (width < 600) {
+		if (width < minDueNextToReminderSize) {
 			final View due = (convertView == null || convertView.getId() != R.id.due_wrapper) ? inflater
 					.inflate(R.layout.task_due, parent, false) : convertView;
 			setupDueView(convertView, due);
@@ -1252,7 +1253,7 @@ public class TaskFragmentAdapter extends
 
 		List<Pair<Integer, Integer>> data = new ArrayList<Pair<Integer, Integer>>();
 		for (Pair<Integer, Boolean> item : items) {
-			if(!item.second)
+			if (!item.second)
 				continue;
 			switch (item.first) {
 			case TYPE.SUBTASK:
@@ -1292,7 +1293,8 @@ public class TaskFragmentAdapter extends
 
 	public static List<Pair<Integer, Boolean>> getValuesForConfig(
 			Context context) {
-		List<Integer> cfg_items = MirakelPreferences.loadIntArray("task_fragment_adapter_settings");
+		List<Integer> cfg_items = MirakelPreferences
+				.loadIntArray("task_fragment_adapter_settings");
 		List<Pair<Integer, Boolean>> items = new ArrayList<Pair<Integer, Boolean>>();
 		if (cfg_items == null) {
 			cfg_items = new ArrayList<Integer>();
@@ -1314,7 +1316,8 @@ public class TaskFragmentAdapter extends
 	}
 
 	public static List<Pair<Integer, Boolean>> getValues(Context context) {
-		List<Integer> cfg_items = MirakelPreferences.loadIntArray("task_fragment_adapter_settings");
+		List<Integer> cfg_items = MirakelPreferences
+				.loadIntArray("task_fragment_adapter_settings");
 		List<Pair<Integer, Boolean>> items = new ArrayList<Pair<Integer, Boolean>>();
 		if (cfg_items == null) {
 			cfg_items = new ArrayList<Integer>();
@@ -1342,7 +1345,7 @@ public class TaskFragmentAdapter extends
 			if (item.second)
 				items.add(item.first);
 		}
-		MirakelPreferences.saveIntArray("task_fragment_adapter_settings",
-				items);
+		MirakelPreferences
+				.saveIntArray("task_fragment_adapter_settings", items);
 	}
 }
