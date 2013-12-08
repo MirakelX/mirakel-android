@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/datepicker_dialog"
     android:layout_width="wrap_content"
     android:layout_height="fill_parent"
     android:gravity="center"
-     android:id="@+id/datepicker_dialog"
     android:orientation="vertical" >
 
     <LinearLayout
+        android:id="@+id/datepicker_header"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/selected_calendar_layout_height"
-        android:id="@+id/datepicker_header"
         android:orientation="vertical" >
 
         <include layout="@layout/date_picker_header_view" />
