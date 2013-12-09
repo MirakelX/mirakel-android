@@ -91,11 +91,7 @@
   <string name="hide_keyboard_summary">Skrýt klávesnici při vytváření nového úkolu</string>
   <string name="undo_number">Počet uložených změn</string>
   <string name="undo_number_summary">Vrátit %s změn</string>
-  <string name="settings_semantic">Sémantická analýza úkolů</string>
-  <string name="semantic_new_task">Sémantická analýza úkolů</string>
-  <string name="semantic_new_task_summary">Použít sémantickou analýzu nových úkolů (jen dnes a zítra)</string>
   <string name="semantic_new_task_config_summary">Konfigurovat klíčová slova pro sémantickou analýzu nových úkolů</string>
-  <string name="semantic_new_task_config">Konfigurovat sémantickou analýzu nových úkolů</string>
   <string name="settings_old_logo_summary">Pokud se vám nelíbí nové logo a máte Android &gt;= 4.0. Vyžaduje restart aplikace</string>
   <string name="settings_old_logo">Použít ošklivé staré logo</string>
   <string name="swipeBehavior_title">Zobrazit detail úkolu tažením</string>
@@ -115,7 +111,6 @@
   <string name="preferences_colorize">Barvy</string>
   <string name="preferences_colorize_tasks">Obarvit úkoly</string>
   <string name="preferences_colorize_tasks_everywhere">Obarvit všechny úkoly</string>
-  <string name="settings_semantics_title">Nastavit sémantickou analýzu úkolů</string>
   <string name="settings_semantics_condition">Klíčové slovo</string>
   <string name="settings_semantics_actions">Akce</string>
   <string name="settings_semantics_list">Vybrat seznam</string>
@@ -124,7 +119,6 @@
   <string name="semantics_no_list">Nenastavovat seznam</string>
   <string name="semantics_no_due">Nenastavovat termín</string>
   <string name="settings_file_default_title">Název úkolu pro importované soubory</string>
-  <string name="semantic_new">Vytvořit sémantické pravidlo</string>
   <string name="settings_subtask">Podúkoly</string>
   <string name="settings_subtask_default_new">Standardně zobrazit nový úkol</string>
   <string name="settings_subtask_default_new_summary">Nebo přidat existující úkol</string>
@@ -139,6 +133,10 @@
   <string name="task_fragment_due">Termín</string>
   <string name="task_fragment_reminder">Upozornění</string>
   <string name="task_fragment_subtask">Podúkoly</string>
+  <string-array name="sync_types">
+    <item>CalDAV sync</item>
+    <item>Taskwarrior sync</item>
+  </string-array>
   <string-array name="sync_frequencies">
     <item>5 min</item>
     <item>10 min</item>

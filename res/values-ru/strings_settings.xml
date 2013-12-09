@@ -82,11 +82,7 @@
   <string name="hide_keyboard_summary">Скрыть клавиатуру после создания нового дела</string>
   <string name="undo_number">Количество дел, сохраняемых в протоколе изменений</string>
   <string name="undo_number_summary">Отменить %s изменений</string>
-  <string name="settings_semantic">Cемантические новые дела</string>
-  <string name="semantic_new_task">Cемантические новые дела</string>
-  <string name="semantic_new_task_summary">Использовать семантическое новое дело. Например: создайте новое дело \"сегодня стирать вещи\" (актуально только сегодня и завтра)</string>
   <string name="semantic_new_task_config_summary">Сконфигурируйте условия для создания новых дел</string>
-  <string name="semantic_new_task_config">Конфигурация семантических новых дел</string>
   <string name="settings_old_logo_summary">Жаль, что Вам не нравится новый логотип (перезапустите приложение; Вам нужен Android >= 4.0)</string>
   <string name="settings_old_logo">Использовать старый уродливый логотип</string>
   <string name="delete_done">Удаление выполненных дел</string>
@@ -100,7 +96,6 @@
   <string name="preferences_colorize">Цвета</string>
   <string name="preferences_colorize_tasks">Раскрасить дела</string>
   <string name="preferences_colorize_tasks_everywhere">Раскрасить дела везде</string>
-  <string name="settings_semantics_title">Настройка семантики</string>
   <string name="settings_semantics_condition">Состояние</string>
   <string name="settings_semantics_actions">Действия</string>
   <string name="settings_semantics_list">Установить список</string>
@@ -109,7 +104,6 @@
   <string name="semantics_no_list">Не задавайте список</string>
   <string name="semantics_no_due">Не устанавливайте срок</string>
   <string name="settings_file_default_title">Название дела для импортированных файлов</string>
-  <string name="semantic_new">Новая семантика</string>
   <string name="settings_subtask">Подзадачи</string>
   <string name="settings_subtask_default_new">Создавать новое дело по умолчанию</string>
   <string name="settings_subtask_default_new_summary">В противном случае выбирать существующее дело</string>
@@ -124,6 +118,10 @@
   <string name="task_fragment_due">Срок</string>
   <string name="task_fragment_reminder">Напоминание</string>
   <string name="task_fragment_subtask">Подзадачи</string>
+  <string-array name="sync_types">
+    <item>CalDAV sync</item>
+    <item>Taskwarrior sync</item>
+  </string-array>
   <string-array name="sync_frequencies">
     <item>5 мин.</item>
     <item>10 мин.</item>

@@ -4,4 +4,10 @@
   <string name="action_credits">Credits</string>
   <string name="action_credits_summary">Über uns ;)</string>
   <string name="title_activity_credits">Über uns</string>
+  <string name="credits_googleplus_description">Trete unserer G+ Gruppe bei</string>
+  <string name="credits_translations">Übersetzungen</string>
+  <string name="feedback">Feedback geben</string>
+  <string name="credits_libraries">Verwendete Bibliotheken</string>
+  <string name="credits_translations" tools:ignore="DuplicateDefinition">Übersetzungen</string>
+  <string name="credits_license_title">Lizenz</string>
 </resources>

@@ -22,9 +22,10 @@
   <string name="sync_frequency_summary">Synchronisiere alle %s min</string>
   <string name="sync_frequency_summary_man">Nur manuell synchronisieren</string>
   <string name="sync_type">Sync-Typ</string>
-  <string name="version">Version</string>
+  <string name="sync_taskwarrior_register_button">Registrieren</string>
   <string name="menu_edit_listaccount">Konto</string>
   <string name="change_account">Konto ändern</string>
+  <string name="version">Version</string>
   <string name="no">Nein</string>
   <string name="not">nicht</string>
   <string name="notification_title">Benachrichtigungen</string>
@@ -45,8 +46,6 @@
   <string name="startup_show_lists_summary">Beim Start alle Listen anzeigen</string>
   <string name="startup_list">Wähle eine Liste</string>
   <string name="startup_list_summary">Zeige Aufgaben aus \"%s\"</string>
-  <string name="special_lists_click">Intelligente Listen verwalten</string>
-  <string name="special_lists_new">Neue intelligente Liste</string>
   <string name="settings_misc">Sonstiges</string>
   <string name="settings_backup">Backup und Import</string>
   <string name="backup_click_summary">Sichere die Datenbank auf die SD-Karte (%s)</string>
@@ -106,11 +105,8 @@
   <string name="hide_keyboard_summary">Blende die Tastatur aus, nachdem du eine neue Aufgabe erstellt hast</string>
   <string name="undo_number">Anzahl der Änderungen im Log</string>
   <string name="undo_number_summary">%s Änderungen rückgängig machen</string>
-  <string name="settings_semantic">Semantische neue Aufgaben</string>
-  <string name="semantic_new_task">Semantische neue Aufgaben</string>
-  <string name="semantic_new_task_summary">Zum Beispiel: Erstelle neue Aufgabe „heute wäsche waschen“ (aktuell nur heute und morgen)</string>
+  <string name="semantic_new_task_summary">Welche Prioritäten sollen eingeschlossen sein</string>
   <string name="semantic_new_task_config_summary">Konfiguriere die Bedingungen für das erstellen neuer Aufgaben</string>
-  <string name="semantic_new_task_config">Semantische neue Aufgaben konfigurieren</string>
   <string name="settings_old_logo_summary">Ich finde es traurig, dass du das neue Logo nicht magst (Starte die App neu; du benötigst Android >= 4.0)</string>
   <string name="settings_old_logo">Das alte, hässliche Logo verwenden</string>
   <string name="swipeBehavior_title">Mit wischen zur Aufgabe wechseln</string>
@@ -128,15 +124,12 @@
   <string name="howto_setup_server">So setzt du selbst einen Server auf</string>
   <string name="register_server">Wenn du einen Account auf unserem Server benötigst, sende uns bitte eine E-Mail. Mit der nächsten Version wirst du auch selbst einen Account anlegen können.</string>
   <string name="send_mail">E-Mail senden</string>
-  <string name="special_lists_title">Intelligente Listen</string>
   <string name="register">Registrieren</string>
   <string name="auto_backup_intervall">Auto backup intervall</string>
   <string name="auto_backup_intervall_summary">Alle %s Tage ein Datenbankbackup erstellen</string>
   <string name="preferences_colorize">Farben</string>
   <string name="preferences_colorize_tasks">Aufgaben einfärben</string>
   <string name="preferences_colorize_tasks_everywhere">Aufgaben überall Einfärben</string>
-  <string name="preferences_colorize_tasks_everywhere_summary">…oder nur in den intelligenten Listen?</string>
-  <string name="settings_semantics_title">Semantik konfigurieren</string>
   <string name="settings_semantics_condition">Bedingung</string>
   <string name="settings_semantics_actions">Aktionen</string>
   <string name="settings_semantics_list">Liste festlegen</string>
@@ -147,7 +140,6 @@
   <string name="semantics_no_list">Keine Liste festlegen</string>
   <string name="semantics_no_due">Kein Fälligkeitsdatum setzen</string>
   <string name="settings_file_default_title">Aufgabenname für importierte Dateien</string>
-  <string name="semantic_new">Neue Semantik</string>
   <string name="settings_subtask">Unteraufgaben</string>
   <string name="settings_subtask_default_new">Standardmäßig neue Aufgabe erstellen</string>
   <string name="settings_subtask_default_new_summary">Sonst vorhandene Aufgabe auswählen</string>
@@ -167,6 +159,10 @@
   <string name="task_fragment_content">Notizen</string>
   <string name="task_fragment_subtask">Unteraufgaben</string>
   <string name="task_fragment_progress">Fortschritt</string>
+  <string-array name="sync_types">
+    <item>CalDAV sync</item>
+    <item>Taskwarrior sync</item>
+  </string-array>
   <string-array name="sync_frequencies">
     <item>5 min</item>
     <item>10 min</item>

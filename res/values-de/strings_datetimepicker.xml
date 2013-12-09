@@ -4,8 +4,6 @@
   <string name="done_label">Erledigt</string>
   <string name="day_picker_description">Monatsübersicht</string>
   <string name="year_picker_description">Jahre</string>
-  <string name="select_day">Monat und Tag auswählen</string>
-  <string name="select_year">Jahr auswählen</string>
   <string name="item_is_selected">%1$s ausgewählt</string>
   <string name="deleted_key"><xliff:g id="key" example="4">%1$s</xliff:g> gelöscht</string>
   <string name="hour_picker_description">Stundenauswahl</string>

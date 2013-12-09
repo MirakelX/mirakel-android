@@ -11,6 +11,8 @@
   <string name="inavlidUrl">¡La URL no es válida!</string>
   <string name="sync_password_summary">Tu contraseña</string>
   <string name="sync_frequency">Frecuencia</string>
+  <string name="no">No</string>
+  <string name="not">No</string>
   <string name="notifications_list_open">Open List</string>
   <string name="default_list">Lista predeterminada</string>
   <string name="notificationsShowDone">Configurar tareas realizadas</string>
@@ -50,9 +52,8 @@
   <string name="ui_settings_title">Interfaz de usuario</string>
   <string name="hide_keyboard">Ocultar teclado</string>
   <string name="undo_number">Number of Changes saved</string>
-  <string name="semantic_new_task">Semantic New Tasks</string>
+  <string name="semantic_new_task_summary"> </string>
   <string name="semantic_new_task_config_summary">Configure the conditions for creating new Tasks</string>
-  <string name="semantic_new_task_config">Configure Semantic new Tasks</string>
   <string name="delete_done">Delete done tasks</string>
   <string name="delete_done_summary">Delete all done tasks</string>
   <string name="delete_done_warning">Are you sure?</string>
@@ -61,6 +62,10 @@
   <string name="menu_delete">Eliminar</string>
   <string name="task_fragment_due">vencimiento</string>
   <string name="task_fragment_reminder">Recordatorio</string>
+  <string-array name="sync_types">
+    <item>CalDAV sync</item>
+    <item>Taskwarrior sync</item>
+  </string-array>
   <string-array name="sync_frequencies">
     <item>5 min</item>
     <item>10 min</item>
@@ -81,13 +86,13 @@
   </string-array>
   <string-array name="weekdays">
     <item>Don\'t set</item>
-    <item>Monday</item>
-    <item>Tuesday</item>
-    <item>Wednesday</item>
-    <item>Thursday</item>
-    <item>Friday</item>
-    <item>Saturday</item>
-    <item>Sunday</item>
+    <item>Lunes</item>
+    <item>Martes</item>
+    <item>Miércoles</item>
+    <item>Jueves</item>
+    <item>Viernes</item>
+    <item>Sábado</item>
+    <item>Domingo</item>
   </string-array>
   <string-array name="priority_entries">
     <item>Do not set priority</item>

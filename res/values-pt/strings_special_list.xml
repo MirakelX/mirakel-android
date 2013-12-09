@@ -11,7 +11,6 @@
   <string name="special_list_contains">Argumentos de seleção</string>
   <string name="special_list_summary">Resumo</string>
   <string name="special_lists_defaults">Valores pré-definidos</string>
-  <string name="list_menu_new_special_list">Nova lista inteligente</string>
   <string name="special_list_where_prio_title_text">Prioridade</string>
   <string name="special_list_where_name_title_text">Nome</string>
   <string name="special_list_where_content_title_text">Conteúdo</string>
@@ -23,8 +22,6 @@
   <string name="select_by">Selecionar por</string>
   <string name="done">Tarefas terminadas</string>
   <string name="undone">Tarefas não terminadas</string>
-  <string name="recurrence_no">Sem recorrência</string>
-  <string name="recurrence_custom_title">Recorrência personalizada</string>
   <string name="recurrence_custom">Personalizado</string>
   <string name="today">Hoje</string>
   <string name="tomorrow">Amanhã</string>

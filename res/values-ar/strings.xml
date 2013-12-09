@@ -36,7 +36,6 @@
   <string name="action_undo">التراجع عن التغيير الأخير</string>
   <string name="add_subtasks">إضافة مهمة فرعية...</string>
   <string name="remove_files">إزالة الملفات من المهمة</string>
-  <string name="remove_files_summary" formatted="false">هل تريد إزالة % 1$s من % 2$s؟</string>
   <string name="add_subtask">إضافة مهمة فرعية</string>
   <string name="remove_subtask">إزالة مهمة فرعية</string>
   <string name="subtask_add_options">خيارات &gt;&gt;</string>
@@ -49,6 +48,7 @@
   <string name="task_name">اسم المهمة:</string>
   <string name="no_loop">مهام فرعية لا يمكنها تشكيل حلقة</string>
   <string name="as_subtask">إضافة إلى مهمة</string>
+  <string name="task_clone">استنساخ مهمة</string>
   <string name="dialog_move">نقل المهمة</string>
   <string name="list_title">القوائم</string>
   <string name="list_menu_new_list">قائمة جديدة</string>
@@ -159,18 +159,22 @@ SDK-نسخة: %2$d\n
   <string name="monthly">شهريّا</string>
   <string name="hourly">كل ساعة</string>
   <string name="minutly">كل دقيقة</string>
+  <string name="recurring">تكرار</string>
   <string name="label">ملصق</string>
   <string name="minute">دقيقة</string>
   <string name="hour">ساعة</string>
   <string name="day">يوم</string>
   <string name="month">في الشهر</string>
   <string name="year">سنة</string>
+  <string name="new_recurring">تكرار جديد</string>
+  <string name="add_recurring">تعيين تكرار</string>
   <string name="intervall">الفاصل الزمني</string>
   <string name="beginning">بداية</string>
   <string name="end">نهاية</string>
   <string name="no_begin_end">لا %s</string>
   <string name="beginning_end">بداية ونهاية</string>
   <string name="save">حفظ</string>
+  <string name="settings_task_fragment_title">نظرة عامة حول المهمة</string>
   <string-array name="task_sorting_items">
     <item>الافتراضي</item>
     <item>الموعد النهائي</item>
