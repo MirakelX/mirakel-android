@@ -17,8 +17,8 @@
     </style>
   </head>
   <body>
-$ 2.2-alpha+x
-  % Version 2.2-alpha+x
+$ 2.2-beta2
+  % Version 2.2-beta2
   ! Please report Bugs and errors!
     * Basic Multi-Account handling
     * Caldav-Sync over davdroid
