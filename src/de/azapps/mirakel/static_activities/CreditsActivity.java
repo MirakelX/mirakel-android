@@ -15,30 +15,34 @@ import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakelandroid.R;
 
 public class CreditsActivity extends Activity {
-	private final String[][] libraries = {
+	private final String[][]	libraries		= {
 			{ "Gson", "Apache 2.0", "https://code.google.com/p/google-gson/" },
 			{ "Joda-Time", "Apache 2.0", "http://joda-time.sourceforge.net" },
 			{ "Android Change Log", "Apache 2.0",
-					"https://code.google.com/p/android-change-log/" },
+			"https://code.google.com/p/android-change-log/" },
 			{ "ACRA", "Apache 2.0", "http://acra.ch" },
 			{ "HoloColorPicker", "Apache 2.0",
-					"https://github.com/LarsWerkman/HoloColorPicker" },
+			"https://github.com/LarsWerkman/HoloColorPicker" },
 			{ "Progress Wheel", "",
-					"https://github.com/Todd-Davies/ProgressWheel" },
+			"https://github.com/Todd-Davies/ProgressWheel" },
 			{ "DateTimePicker Compatibility Library", "Apache 2.0",
-					"https://github.com/flavienlaurent/datetimepicker" } };
-	private final String[][] translations = { { "Spanish", "macebal" },
-			{ "French", "Ghost of Kendo" },
+			"https://github.com/flavienlaurent/datetimepicker" },
+			{ "Webicons", "CC-Attrib", "http://fairheadcreative.com/" } };
+	private final String[][]	translations	= { { "Spanish", "macebal" },
+			{ "French", "Ghost of Kendo, waghanza, npettiaux, benasse" },
+			{"German","Anatolij Zelenin, Georg Semmler, Patschi"},
+			{"Portuguese","smarquespt"},
+			{"Russian","Katy, Derjavin"},
+			{"Spanisch","macebal, RaindropR","monofluor"},
 			{ "Norwegian", "Jim-Stefhan Johansen" }, { "Slovenian", "mateju" },
-			{ "Czech", "sarimak" }, };
+			{ "Czech", "sarimak" },			};
 
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		if (MirakelPreferences.isDark())
-			setTheme(R.style.AppBaseThemeDARK);
+		if (MirakelPreferences.isDark()) setTheme(R.style.AppBaseThemeDARK);
 		setContentView(R.layout.activity_credits);
 		TextView creditTextHead = (TextView) findViewById(R.id.credits_text_head);
 		creditTextHead.setText(Html
@@ -74,9 +78,9 @@ public class CreditsActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case android.R.id.home:
-			finish();
-			return true;
+			case android.R.id.home:
+				finish();
+				return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
