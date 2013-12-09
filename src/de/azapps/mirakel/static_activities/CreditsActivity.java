@@ -30,10 +30,9 @@ public class CreditsActivity extends Activity {
 			{ "Webicons", "CC-Attrib", "http://fairheadcreative.com/" } };
 	private final String[][]	translations	= { { "Spanish", "macebal" },
 			{ "French", "Ghost of Kendo, waghanza, npettiaux, benasse" },
-			{"German","Anatolij Zelenin, Georg Semmler, Patschi"},
-			{"Portuguese","smarquespt"},
-			{"Russian","Katy, Derjavin"},
-			{"Spanisch","macebal, RaindropR","monofluor"},
+			{ "German", "Anatolij Zelenin, Georg Semmler, Patschi" },
+			{ "Portuguese", "smarquespt" }, { "Russian", "Katy, Derjavin" },
+			{ "Spanisch", "macebal, RaindropR", "monofluor" },
 			{ "Norwegian", "Jim-Stefhan Johansen" }, { "Slovenian", "mateju" },
 			{ "Czech", "sarimak" },			};
 
