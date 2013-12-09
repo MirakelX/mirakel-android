@@ -103,7 +103,7 @@ public class MainActivity extends ActionBarActivity implements
 	private Task currentTask;
 	private ListMirakel currentList;
 	private List<ListMirakel> lists;
-	protected int currentPosition = LEFT_FRAGMENT;
+	protected int				currentPosition;
 
 	// Foo variables (move them out of the MainActivity)
 	private boolean highlightSelected;
@@ -147,7 +147,7 @@ public class MainActivity extends ActionBarActivity implements
 		boolean isTablet = MirakelPreferences.isTablet();
 		isRTL = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
 				&& getResources().getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
-		if (isRTL) currentPosition = RIGHT_FRAGMENT;
+		currentPosition = getTasksFragmentPosition();
 		highlightSelected = MirakelPreferences.highlightSelected();
 		if (!MirakelPreferences.containsHighlightSelected()) {
 			SharedPreferences.Editor editor = MirakelPreferences.getEditor();
@@ -187,6 +187,16 @@ public class MainActivity extends ActionBarActivity implements
 					Log.wtf(TAG, "WTF? No such list");
 				}
 			}
+		}
+		if (mViewPager.getCurrentItem() != currentPosition) {
+			mViewPager.postDelayed(new Runnable() {
+
+				@Override
+				public void run() {
+					mViewPager.setCurrentItem(currentPosition);
+
+				}
+			}, 10);
 		}
 	}
 
@@ -380,7 +390,7 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
+	public boolean onCreateOptionsMenu(@SuppressWarnings("hiding") Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		updateLists();
 		getMenuInflater().inflate(R.menu.main, menu);
@@ -560,6 +570,9 @@ public class MainActivity extends ActionBarActivity implements
 				setCurrentTask(task, true);
 			}
 			break;
+			default:
+				Log.w(TAG, "unknown activity result");
+				break;
 		}
 	}
 
@@ -580,15 +593,22 @@ public class MainActivity extends ActionBarActivity implements
 		 * case TASKS_FRAGMENT: mDrawerLayout.openDrawer(Gravity.LEFT); break;
 		 */
 			case LEFT_FRAGMENT:
-				if (!isRTL) mViewPager.setCurrentItem(getTasksFragmentPosition());
+				if (isRTL) {
+					mViewPager.setCurrentItem(getTasksFragmentPosition());
+					return;
+				}
 				break;
 			case RIGHT_FRAGMENT:
-				if (isRTL)
+				if (!isRTL) {
 					mViewPager.setCurrentItem(getTasksFragmentPosition());
-			break;
+					return;
+				}
+				break;
 		default:
-			super.onBackPressed();
+				// Cannot be, do nothing
+				break;
 		}
+		super.onBackPressed();
 	}
 
 	@Override
@@ -842,7 +862,7 @@ public class MainActivity extends ActionBarActivity implements
 		handleDestroyList(l);
 	}
 
-	public void handleDestroyList(final List<ListMirakel> lists) {
+	public void handleDestroyList(@SuppressWarnings("hiding") final List<ListMirakel> lists) {
 		String names = lists.get(0).getName();
 		for (int i = 1; i < lists.size(); i++) {
 			names += ", " + lists.get(i).getName();
@@ -1045,8 +1065,7 @@ public class MainActivity extends ActionBarActivity implements
 		tasksFragment.setActivity(this);
 		fragments.add(tasksFragment);
 		if (!MirakelPreferences.isTablet()) {
-			TaskFragment taskFragment = new TaskFragment();
-			fragments.add(taskFragment);
+			fragments.add(new TaskFragment());
 		}
 		if (isRTL) {
 			Fragment[] fragmentsLocal = new Fragment[fragments.size()];
@@ -1090,7 +1109,7 @@ public class MainActivity extends ActionBarActivity implements
 
 	private View oldClickedTask = null;
 
-	void highlightCurrentTask(Task currentTask, boolean multiselect) {
+	void highlightCurrentTask(@SuppressWarnings("hiding") Task currentTask, boolean multiselect) {
 		if (getTaskFragment() == null
 				|| getTasksFragment().getAdapter() == null
 				|| currentTask == null)
