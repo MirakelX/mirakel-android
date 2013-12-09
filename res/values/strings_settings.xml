@@ -120,8 +120,8 @@
     <string name="startup_list_summary">Show tasks of \"%s\"</string>
 
     <!-- Special Lists -->
-    <string name="special_lists_click">Manage Smart Lists</string>
-    <string name="special_lists_new">New Smart List</string>
+    <string name="special_lists_click">Manage meta lists</string>
+    <string name="special_lists_new">New meta list</string>
     <string name="settings_misc">Misc</string>
     <!-- Backup -->
     <string name="settings_backup">Backup and Import</string>
@@ -189,11 +189,11 @@
     <string name="hide_keyboard_summary">Hide keyboard when new task is being created</string>
     <string name="undo_number">Number of changes saved</string>
     <string name="undo_number_summary">Undo %s changes</string>
-    <string name="settings_semantic">Semantic new tasks</string>
-    <string name="semantic_new_task">Semantic new tasks</string>
-    <string name="semantic_new_task_summary">Use semantic new task(only today and tomorow)</string>
+    <string name="settings_semantic">Task templates</string>
+    <string name="semantic_new_task">New task template</string>
+    <string name="semantic_new_task_summary"></string>
     <string name="semantic_new_task_config_summary">Configure the conditions for creating new tasks</string>
-    <string name="semantic_new_task_config">Configure semantic new tasks</string>
+    <string name="semantic_new_task_config">Configure task templates</string>
     <string name="settings_old_logo_summary">I feel sad, that you don\'t like the new logo (restart the app and you need Android >= 4.0)</string>
     <string name="settings_old_logo">Use the old, ugly logo</string>
     <string name="swipeBehavior_title">Switch on swipe to touched Task</string>
@@ -207,7 +207,7 @@
     <string name="do_not_touch">Do not Touch</string>
     <string name="list_fragment">List Overview</string>
     <string name="show_account_name">Show account name</string>
-    
+
     <!-- Language -->
     <string name="language" translatable="false">Language</string>
 
@@ -247,7 +247,7 @@
     <string name="howto_setup_server">How to setup server</string>
     <string name="register_server">If you need an account for the sync on our server, please send us an e-mail. With the next version you\'ll get the possibility to register an account!</string>
     <string name="send_mail">Send e-mail</string>
-    <string name="special_lists_title">Smart Lists</string>
+    <string name="special_lists_title">Meta lists</string>
     <string name="register">Register</string>
     <string name="auto_backup_intervall">Auto backup intervall</string>
     <string name="auto_backup_intervall_summary">Backup the database every %s days</string>
@@ -256,10 +256,10 @@
     <string name="preferences_colorize">Colors</string>
     <string name="preferences_colorize_tasks">Colorize tasks</string>
     <string name="preferences_colorize_tasks_everywhere">Colorize tasks everywhere</string>
-    <string name="preferences_colorize_tasks_everywhere_summary">…or only in the smart lists?</string>
+    <string name="preferences_colorize_tasks_everywhere_summary">…or only in the meta lists?</string>
 
     <!-- Semantics -->
-    <string name="settings_semantics_title">Configure Semantics</string>
+    <string name="settings_semantics_title">Configure task templates</string>
     <string name="settings_semantics_condition">Condition</string>
     <string name="settings_semantics_actions">Actions</string>
     <string name="settings_semantics_list">Set list</string>
@@ -298,7 +298,7 @@
     <string name="semantics_no_list">Do not set list</string>
     <string name="semantics_no_due">Do not set due date</string>
     <string name="settings_file_default_title">Task name for imported files</string>
-    <string name="semantic_new">New Semantic</string>
+    <string name="semantic_new">template</string>
     <!-- Subtasks -->
     <string name="settings_subtask">Subtasks</string>
     <string name="settings_subtask_default_new">Show new task per default</string>
