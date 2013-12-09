@@ -231,7 +231,8 @@ public class TasksFragment extends Fragment {
 		newTask.setOnFocusChangeListener(new OnFocusChangeListener() {
 			@Override
 			public void onFocusChange(final View v, final boolean hasFocus) {
-				if (main.getCurrentPosition() != MainActivity.TASKS_FRAGMENT)
+				if (main.getCurrentPosition() != MainActivity
+						.getTasksFragmentPosition())
 					return;
 				newTask.post(new Runnable() {
 					@Override

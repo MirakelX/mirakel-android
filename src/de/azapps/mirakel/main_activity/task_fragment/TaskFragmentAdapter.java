@@ -29,6 +29,7 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -897,6 +898,7 @@ public class TaskFragmentAdapter extends
 		return reminder;
 	}
 
+	@SuppressLint("NewApi")
 	private void setupReminderView(View convertView, final View reminder) {
 		if (reminder == null) {
 			Log.wtf(TAG, "reminder=null");
@@ -942,8 +944,15 @@ public class TaskFragmentAdapter extends
 		Drawable reminder_img = context.getResources().getDrawable(
 				android.R.drawable.ic_menu_recent_history);
 		reminder_img.setBounds(0, 1, 42, 42);
-		holder.taskReminder
-				.setCompoundDrawables(reminder_img, null, null, null);
+		Configuration config = context.getResources().getConfiguration();
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
+				&& config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
+			holder.taskReminder.setCompoundDrawables(null, null, reminder_img,
+					null);
+		} else {
+			holder.taskReminder.setCompoundDrawables(reminder_img, null, null,
+					null);
+		}
 		if (task.getReminder() == null) {
 			holder.taskReminder
 					.setText(context.getString(R.string.no_reminder));
@@ -969,23 +978,23 @@ public class TaskFragmentAdapter extends
 					.inflate(R.layout.task_due, parent, false) : convertView;
 			setupDueView(convertView, due);
 			return due;
-		} else {
-			View due_reminder = (convertView == null || convertView.getId() != R.id.wrapper_reminder_due) ? inflater
-					.inflate(R.layout.due_reminder_row, parent, false)
-					: convertView;
-			View due = due_reminder.findViewById(R.id.wrapper_due);
-			View reminder = due_reminder.findViewById(R.id.wrapper_reminder);
-			setupDueView(due, due);
-			if (pos < data.size() && data.get(pos + 1).first == TYPE.REMINDER
-					|| (pos > 1 && data.get(pos - 1).first == TYPE.REMINDER)) {
-				setupReminderView(reminder, reminder);
-			} else {
-				reminder.setVisibility(View.GONE);
-			}
-			return due_reminder;
 		}
+		View due_reminder = (convertView == null || convertView.getId() != R.id.wrapper_reminder_due) ? inflater
+				.inflate(R.layout.due_reminder_row, parent, false)
+				: convertView;
+		View due = due_reminder.findViewById(R.id.wrapper_due);
+		View reminder = due_reminder.findViewById(R.id.wrapper_reminder);
+		setupDueView(due, due);
+		if (pos < data.size() && data.get(pos + 1).first == TYPE.REMINDER
+				|| (pos > 1 && data.get(pos - 1).first == TYPE.REMINDER)) {
+			setupReminderView(reminder, reminder);
+		} else {
+			reminder.setVisibility(View.GONE);
+		}
+		return due_reminder;
 	}
 
+	@SuppressLint("NewApi")
 	private void setupDueView(View convertView, final View due) {
 		if (due == null) {
 			Log.wtf(TAG, "due=null");
@@ -1066,8 +1075,14 @@ public class TaskFragmentAdapter extends
 		Drawable dueImg = context.getResources().getDrawable(
 				android.R.drawable.ic_menu_today);
 		dueImg.setBounds(0, 1, 42, 42);
+		Configuration config = context.getResources().getConfiguration();
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
+				&& config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
+			holder.taskDue.setCompoundDrawables(null, null, dueImg, null);
+		} else {
+			holder.taskDue.setCompoundDrawables(dueImg, null, null, null);
+		}
 		setupRecurrenceDrawable(holder.reccurence, task.getRecurring());
-		holder.taskDue.setCompoundDrawables(dueImg, null, null, null);
 		if (task.getDue() == null) {
 			holder.taskDue.setText(context.getString(R.string.no_date));
 			holder.taskDue.setTextColor(context.getResources().getColor(

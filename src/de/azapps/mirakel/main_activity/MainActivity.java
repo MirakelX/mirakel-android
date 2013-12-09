@@ -19,6 +19,7 @@
 package de.azapps.mirakel.main_activity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
@@ -102,7 +103,7 @@ public class MainActivity extends ActionBarActivity implements
 	private Task currentTask;
 	private ListMirakel currentList;
 	private List<ListMirakel> lists;
-	protected int currentPosition = TASKS_FRAGMENT;
+	protected int currentPosition = LEFT_FRAGMENT;
 
 	// Foo variables (move them out of the MainActivity)
 	private boolean highlightSelected;
@@ -112,7 +113,7 @@ public class MainActivity extends ActionBarActivity implements
 	public static boolean updateTasksUUID = false;
 
 	// Intent variables
-	public static final int TASKS_FRAGMENT = 0, TASK_FRAGMENT = 1;
+	public static final int		LEFT_FRAGMENT		= 0, RIGHT_FRAGMENT = 1;
 	public static final int RESULT_SPEECH_NAME = 1, RESULT_SPEECH = 3,
 			RESULT_SETTINGS = 4, RESULT_ADD_FILE = 5, RESULT_CAMERA = 6,
 			RESULT_ADD_PICTURE = 7;
@@ -135,6 +136,7 @@ public class MainActivity extends ActionBarActivity implements
 	private boolean showNavDrawer = false;
 	private boolean skipSwipe;
 
+	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		darkTheme = MirakelPreferences.isDark();
@@ -143,6 +145,9 @@ public class MainActivity extends ActionBarActivity implements
 		super.onCreate(savedInstanceState);
 
 		boolean isTablet = MirakelPreferences.isTablet();
+		isRTL = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
+				&& getResources().getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
+		if (isRTL) currentPosition = RIGHT_FRAGMENT;
 		highlightSelected = MirakelPreferences.highlightSelected();
 		if (!MirakelPreferences.containsHighlightSelected()) {
 			SharedPreferences.Editor editor = MirakelPreferences.getEditor();
@@ -183,6 +188,16 @@ public class MainActivity extends ActionBarActivity implements
 				}
 			}
 		}
+	}
+
+	public static int getTasksFragmentPosition() {
+		if (isRTL) return RIGHT_FRAGMENT;
+		return LEFT_FRAGMENT;
+	}
+
+	private int getTaskFragmentPosition() {
+		if (isRTL) return LEFT_FRAGMENT;
+		return RIGHT_FRAGMENT;
 	}
 
 	@Override
@@ -258,7 +273,7 @@ public class MainActivity extends ActionBarActivity implements
 		case R.id.menu_undo:
 			UndoHistory.undoLast(this);
 			updateCurrentListAndTask();
-			if (currentPosition == TASK_FRAGMENT)
+				if (currentPosition == getTaskFragmentPosition())
 				setCurrentTask(getCurrentTask());
 			else {
 				getListFragment().getAdapter().changeData(ListMirakel.all());
@@ -267,7 +282,7 @@ public class MainActivity extends ActionBarActivity implements
 						getCurrentList().tasks(), getCurrentList().getId());
 				getTasksFragment().getAdapter().notifyDataSetChanged();
 				if (!MirakelPreferences.isTablet()
-						&& currentPosition == TASKS_FRAGMENT)
+							&& currentPosition == getTasksFragmentPosition())
 					setCurrentList(getCurrentList());
 			}
 			ReminderAlarm.updateAlarms(this);
@@ -338,11 +353,11 @@ public class MainActivity extends ActionBarActivity implements
 		if (getTasksFragment() != null
 				&& getTasksFragment().getAdapter() != null
 				&& MirakelPreferences.swipeBehavior() && !skipSwipe
-				&& position == TASKS_FRAGMENT) {
+				&& position == getTasksFragmentPosition()) {
 			setCurrentTask(getTasksFragment().getAdapter().lastTouched(), false);
 			skipSwipe = true;
 		}
-		if (positionOffset == 0.0f && position == TASKS_FRAGMENT) {
+		if (positionOffset == 0.0f && position == getTasksFragmentPosition()) {
 			skipSwipe = false;
 		}
 	}
@@ -354,7 +369,7 @@ public class MainActivity extends ActionBarActivity implements
 		getTasksFragment().closeActionMode();
 		getTaskFragment().closeActionMode();
 		if (MirakelPreferences.lockDrawerInTaskFragment()
-				&& position == TASK_FRAGMENT) {
+				&& position == getTaskFragmentPosition()) {
 			mDrawerLayout
 					.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 		} else {
@@ -398,24 +413,13 @@ public class MainActivity extends ActionBarActivity implements
 			newmenu = R.menu.activity_list;
 			getSupportActionBar().setTitle(getString(R.string.list_title));
 			break;
-		case TASKS_FRAGMENT:
-			getListFragment().enableDrop(false);
-			if (getTaskFragment() != null && getTaskFragment().adapter != null) {
-				getTaskFragment().adapter.setEditContent(false);
-			}
-			if (!MirakelPreferences.isTablet())
-				newmenu = R.menu.tasks;
-			else
-				newmenu = R.menu.tablet_right;
-			if (currentList == null)
-				return;
-			getSupportActionBar().setTitle(currentList.getName());
+			case RIGHT_FRAGMENT:
+				newmenu = isRTL ? handleTaskFragmentMenu()
+						: handleTasksFragmentMenu();
 			break;
-		case TASK_FRAGMENT:
-			newmenu = R.menu.activity_task;
-			getTaskFragment().update(currentTask);
-			if (getSupportActionBar() != null && currentTask != null)
-				getSupportActionBar().setTitle(currentTask.getName());
+			case LEFT_FRAGMENT:
+				newmenu = isRTL ? handleTasksFragmentMenu()
+						: handleTaskFragmentMenu();
 			break;
 		default:
 			Toast.makeText(getApplicationContext(), "Where are the dragons?",
@@ -426,7 +430,7 @@ public class MainActivity extends ActionBarActivity implements
 			currentPosition = position;
 
 		// Configure to use the desired menu
-
+		if (newmenu == -1) return;
 		menu.clear();
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(newmenu, menu);
@@ -441,15 +445,40 @@ public class MainActivity extends ActionBarActivity implements
 
 	}
 
+	private int handleTaskFragmentMenu() {
+		int newmenu;
+		newmenu = R.menu.activity_task;
+		getTaskFragment().update(currentTask);
+		if (getSupportActionBar() != null && currentTask != null)
+			getSupportActionBar().setTitle(currentTask.getName());
+		return newmenu;
+	}
+
+	private int handleTasksFragmentMenu() {
+		int newmenu;
+		getListFragment().enableDrop(false);
+		if (getTaskFragment() != null && getTaskFragment().adapter != null) {
+			getTaskFragment().adapter.setEditContent(false);
+		}
+		if (currentList == null) return -1;
+		if (!MirakelPreferences.isTablet())
+			newmenu = R.menu.tasks;
+		else
+			newmenu = R.menu.tablet_right;
+		getSupportActionBar().setTitle(currentList.getName());
+		return newmenu;
+	}
+
 	public void updateShare() {
 		if (menu != null && menu.findItem(R.id.share_list) != null
 				&& currentList.countTasks() == 0) {
 			menu.findItem(R.id.share_list).setVisible(false);
-		} else if (currentPosition == TASKS_FRAGMENT && menu != null
+		} else if (currentPosition == getTasksFragmentPosition()
+				&& menu != null
 				&& menu.findItem(R.id.share_list) == null
 				&& currentList.countTasks() > 0
 				&& !mDrawerLayout.isDrawerOpen(Mirakel.GRAVITY_LEFT)) {
-			loadMenu(TASKS_FRAGMENT, true, true);
+			loadMenu(getTasksFragmentPosition(), true, true);
 		} else if (menu != null && menu.findItem(R.id.share_list) != null
 				&& currentList.countTasks() > 0) {
 			menu.findItem(R.id.share_list).setVisible(true);
@@ -536,7 +565,7 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	public void onBackPressed() {
-		if (goBackTo.size() > 0 && currentPosition == TASK_FRAGMENT) {
+		if (goBackTo.size() > 0 && currentPosition == getTaskFragmentPosition()) {
 			Task goBack = goBackTo.pop();
 			setCurrentList(goBack.getList(), null, false, false);
 			setCurrentTask(goBack, false, false);
@@ -550,8 +579,12 @@ public class MainActivity extends ActionBarActivity implements
 		/*
 		 * case TASKS_FRAGMENT: mDrawerLayout.openDrawer(Gravity.LEFT); break;
 		 */
-		case TASK_FRAGMENT:
-			mViewPager.setCurrentItem(TASKS_FRAGMENT);
+			case LEFT_FRAGMENT:
+				if (!isRTL) mViewPager.setCurrentItem(getTasksFragmentPosition());
+				break;
+			case RIGHT_FRAGMENT:
+				if (isRTL)
+					mViewPager.setCurrentItem(getTasksFragmentPosition());
 			break;
 		default:
 			super.onBackPressed();
@@ -627,7 +660,7 @@ public class MainActivity extends ActionBarActivity implements
 	private void addFilesForTask(Task t, Intent intent) {
 		String action = intent.getAction();
 		String type = intent.getType();
-		currentPosition = TASK_FRAGMENT;
+		currentPosition = getTaskFragmentPosition();
 
 		if (Intent.ACTION_SEND.equals(action) && type != null) {
 			Uri uri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
@@ -675,7 +708,7 @@ public class MainActivity extends ActionBarActivity implements
 				skipSwipe = true;
 				setCurrentList(task.getList());
 				setCurrentTask(task, true);
-				mViewPager.setCurrentItem(TASK_FRAGMENT, false);
+				mViewPager.setCurrentItem(getTaskFragmentPosition(), false);
 			} else {
 				Log.d(TAG, "task null");
 			}
@@ -772,7 +805,7 @@ public class MainActivity extends ActionBarActivity implements
 			}
 
 		} else {
-			mViewPager.setCurrentItem(TASKS_FRAGMENT);
+			mViewPager.setCurrentItem(getTaskFragmentPosition());
 		}
 		if ((startIntent == null || startIntent.getAction() == null || (!startIntent
 				.getAction().contains(ADD_TASK_FROM_WIDGET)))
@@ -943,7 +976,7 @@ public class MainActivity extends ActionBarActivity implements
 						 * 
 						 * 3: Set the currentList to the old List
 						 */
-						if (currentPosition == TASK_FRAGMENT) {
+						if (currentPosition == getTaskFragmentPosition()) {
 							Task task = tasks.get(0);
 							if (task == null) {
 								// What the hell?
@@ -962,10 +995,12 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	private ActionBarDrawerToggle mDrawerToggle;
+	private static boolean			isRTL;
 
 	/**
 	 * Initialize ViewPager
 	 */
+	@SuppressLint("NewApi")
 	private void intializeFragments() {
 		/*
 		 * Setup NavigationDrawer
@@ -1013,8 +1048,20 @@ public class MainActivity extends ActionBarActivity implements
 			TaskFragment taskFragment = new TaskFragment();
 			fragments.add(taskFragment);
 		}
-		this.mPagerAdapter = new PagerAdapter(
-				super.getSupportFragmentManager(), fragments);
+		if (isRTL) {
+			Fragment[] fragmentsLocal = new Fragment[fragments.size()];
+			for (int i = 0; i < fragments.size(); i++) {
+				fragmentsLocal[fragmentsLocal.length - 1 - i] = fragments
+						.get(i);
+			}
+			this.mPagerAdapter = new PagerAdapter(
+					super.getSupportFragmentManager(),
+					Arrays.asList(fragmentsLocal));
+		} else {
+			this.mPagerAdapter = new PagerAdapter(
+					super.getSupportFragmentManager(), fragments);
+		}
+
 		//
 		this.mViewPager = (ViewPager) super.findViewById(R.id.viewpager);
 		this.mViewPager.setAdapter(this.mPagerAdapter);
@@ -1083,14 +1130,14 @@ public class MainActivity extends ActionBarActivity implements
 
 		if (getTaskFragment() != null) {
 			getTaskFragment().update(currentTask);
-			boolean smooth = mViewPager.getCurrentItem() != TASK_FRAGMENT;
+			boolean smooth = mViewPager.getCurrentItem() != getTaskFragmentPosition();
 			if (!switchFragment)
 				return;
 			// Fix buggy behavior
-			mViewPager.setCurrentItem(TASKS_FRAGMENT, false);
-			mViewPager.setCurrentItem(TASK_FRAGMENT, false);
-			mViewPager.setCurrentItem(TASKS_FRAGMENT, false);
-			mViewPager.setCurrentItem(TASK_FRAGMENT, smooth);
+			mViewPager.setCurrentItem(getTasksFragmentPosition(), false);
+			mViewPager.setCurrentItem(getTaskFragmentPosition(), false);
+			mViewPager.setCurrentItem(getTasksFragmentPosition(), false);
+			mViewPager.setCurrentItem(getTaskFragmentPosition(), smooth);
 		}
 	}
 
@@ -1176,7 +1223,7 @@ public class MainActivity extends ActionBarActivity implements
 		if (getTasksFragment() != null) {
 			getTasksFragment().updateList();
 			if (!MirakelPreferences.isTablet() && switchFragment)
-				mViewPager.setCurrentItem(TASKS_FRAGMENT);
+				mViewPager.setCurrentItem(getTasksFragmentPosition());
 		}
 		if (currentView == null && listFragment != null
 				&& getListFragment().getAdapter() != null)
@@ -1195,7 +1242,7 @@ public class MainActivity extends ActionBarActivity implements
 		}
 		if (switchFragment)
 			setCurrentTask(currentTask);
-		if (currentPosition == TASKS_FRAGMENT)
+		if (currentPosition == getTasksFragmentPosition())
 			getSupportActionBar().setTitle(currentList.getName());
 
 	}
@@ -1242,7 +1289,7 @@ public class MainActivity extends ActionBarActivity implements
 			return null;
 		}
 		Fragment f = this.getSupportFragmentManager().findFragmentByTag(
-				getFragmentTag(0));
+				getFragmentTag(getTasksFragmentPosition()));
 		return (TasksFragment) f;
 	}
 
@@ -1252,7 +1299,7 @@ public class MainActivity extends ActionBarActivity implements
 		if (MirakelPreferences.isTablet())
 			return taskFragment;
 		Fragment f = this.getSupportFragmentManager().findFragmentByTag(
-				getFragmentTag(1));
+				getFragmentTag(getTaskFragmentPosition()));
 		return (TaskFragment) f;
 	}
 
@@ -1267,7 +1314,7 @@ public class MainActivity extends ActionBarActivity implements
 
 	private void search(String query) {
 		setCurrentList(new SearchList(this, query));
-		mViewPager.setCurrentItem(TASKS_FRAGMENT);
+		mViewPager.setCurrentItem(getTasksFragmentPosition());
 	}
 
 	public void showMessageFromSync() {
