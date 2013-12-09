@@ -4,7 +4,7 @@
   <string name="action_credits">Авторы</string>
   <string name="action_credits_summary">О нас ;)</string>
   <string name="title_activity_credits">Об авторах</string>
-  <string name="credit"><![CDATA[<h1>Mirakel - Клиент списков дел</h1>
+  <string name="credit" tools:ignore="ExtraTranslation"><![CDATA[<h1>Mirakel - Клиент списков дел</h1>
         <p>&copy; 2013 <a href="mailto:az@azapps.de">Anatolij Zelenin</a>, <a href="mailto:georg_semmler_05@web.de">Georg Semmler</a></p>
         <p>Это свободное программное обеспечение (под лицензией <a href="https://www.gnu.org/licenses/gpl.html">GPLv3</a>).</p>
         <p>Исходный код находится в свободном доступе здесь:</p>

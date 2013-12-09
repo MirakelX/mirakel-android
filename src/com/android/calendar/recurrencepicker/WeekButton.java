@@ -16,12 +16,12 @@
 
 package com.android.calendar.recurrencepicker;
 
-import de.azapps.mirakel.helper.Helpers;
-import de.azapps.mirakel.helper.MirakelPreferences;
-import de.azapps.mirakelandroid.R;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import de.azapps.mirakel.helper.MirakelPreferences;
+import de.azapps.mirakelandroid.R;
 
 public class WeekButton extends android.widget.ToggleButton {
 
@@ -33,7 +33,8 @@ public class WeekButton extends android.widget.ToggleButton {
         setTheme();
     }
 
-    private void setTheme() {
+	@SuppressLint("NewApi")
+	private void setTheme() {
 		mDark=MirakelPreferences.isDark();
 		if(mDark){
 			setBackground(getResources().getDrawable(R.drawable.recurrence_bubble_fill_dark));
@@ -60,7 +61,8 @@ public class WeekButton extends android.widget.ToggleButton {
     }
     
 
-    @Override
+	@SuppressLint("NewApi")
+	@Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int h = getMeasuredHeight();

@@ -3,6 +3,7 @@ package com.fourmob.datetimepicker.date;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.StateListDrawable;
@@ -16,6 +17,7 @@ import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakelandroid.R;
 
+@SuppressLint("ViewConstructor")
 public class YearPickerView extends ListView implements
 		AdapterView.OnItemClickListener, DatePicker.OnDateChangedListener {
 	private YearAdapter mAdapter;

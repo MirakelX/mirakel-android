@@ -19,7 +19,6 @@
     android:id="@+id/recurrence_picker_dialog"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@color/recurrence_picker_background"
     android:orientation="vertical"
     android:padding="0dp"
     tools:ignore="newApi" >
@@ -43,8 +42,10 @@
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:paddingBottom="4dip"
+                android:paddingEnd="12dip"
                 android:paddingLeft="12dip"
                 android:paddingRight="12dip"
+                android:paddingStart="12dip"
                 android:paddingTop="12dip" >
 
                 <Spinner
@@ -54,7 +55,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_weight="1"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:padding="0dp" />
 
                 <Switch
@@ -63,6 +64,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="4dp"
+                    android:layout_marginStart="4dp"
                     android:thumb="@drawable/switch_thumb" />
             </LinearLayout>
 
@@ -73,8 +75,10 @@
                 android:measureAllChildren="true"
                 android:orientation="vertical"
                 android:paddingBottom="4dp"
+                android:paddingEnd="12dp"
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
+                android:paddingStart="12dp"
                 android:paddingTop="4dp" >
 
                 <LinearLayout
@@ -82,7 +86,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="start"
-                    android:paddingLeft="4dp" >
+                    android:paddingLeft="4dp"
+                    android:paddingStart="4dp" >
 
                     <TextView
                         android:id="@+id/intervalPreText"
@@ -99,8 +104,10 @@
                         android:gravity="center_horizontal"
                         android:inputType="number"
                         android:maxLength="2"
+                        android:paddingEnd="4dp"
                         android:paddingLeft="4dp"
                         android:paddingRight="4dp"
+                        android:paddingStart="4dp"
                         android:selectAllOnFocus="true"
                         android:singleLine="true"
                         android:textSize="15sp" >
@@ -123,8 +130,10 @@
                     android:id="@+id/weekGroup"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
                     android:layout_marginLeft="4dp"
                     android:layout_marginRight="4dp"
+                    android:layout_marginStart="4dp"
                     android:layout_marginTop="8dp"
                     android:gravity="center_horizontal"
                     android:orientation="horizontal" >
@@ -148,8 +157,10 @@
                     android:id="@+id/weekGroup2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
                     android:layout_marginLeft="4dp"
                     android:layout_marginRight="4dp"
+                    android:layout_marginStart="4dp"
                     android:gravity="center_horizontal"
                     android:orientation="horizontal"
                     android:visibility="gone" >
@@ -185,22 +196,25 @@
                         android:layout_height="wrap_content" />
                 </RadioGroup>
 
-              <LinearLayout
+                <LinearLayout
                     android:id="@+id/startGroup"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="start"
                     android:orientation="horizontal"
-                    android:paddingLeft="0dp" >
+                    android:paddingLeft="0dp"
+                    android:paddingStart="0dp" >
 
                     <Spinner
                         android:id="@+id/startSpinner"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="8dp"
                         android:layout_marginLeft="-4dp"
                         android:layout_marginRight="8dp"
-                        android:gravity="left|center_vertical"
+                        android:layout_marginStart="-4dp"
+                        android:gravity="start|center_vertical"
                         android:padding="0dp" />
 
                     <TextView
@@ -209,15 +223,19 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:layout_marginEnd="0dp"
                         android:layout_marginLeft="0dp"
                         android:layout_marginRight="0dp"
+                        android:layout_marginStart="0dp"
                         android:layout_marginTop="3dp"
                         android:contentDescription="@string/acessibility_recurrence_choose_end_date_description"
                         android:gravity="center_horizontal|bottom"
                         android:minWidth="80dp"
                         android:paddingBottom="8dp"
+                        android:paddingEnd="12dp"
                         android:paddingLeft="12dp"
                         android:paddingRight="16dp"
+                        android:paddingStart="12dp"
                         android:singleLine="true"
                         android:textColor="@color/recurrence_spinner_text_color"
                         android:textSize="15sp"
@@ -229,36 +247,44 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:layout_marginEnd="0dp"
                         android:layout_marginLeft="0dp"
                         android:layout_marginRight="0dp"
+                        android:layout_marginStart="0dp"
                         android:layout_marginTop="3dp"
                         android:contentDescription="@string/acessibility_recurrence_choose_end_date_description"
                         android:gravity="center_horizontal|bottom"
                         android:minWidth="80dp"
                         android:paddingBottom="8dp"
+                        android:paddingEnd="16dp"
                         android:paddingLeft="12dp"
                         android:paddingRight="16dp"
+                        android:paddingStart="12dp"
                         android:singleLine="true"
                         android:textColor="@color/recurrence_spinner_text_color"
                         android:textSize="15sp"
                         android:visibility="gone" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/endGroup"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="start"
                     android:orientation="horizontal"
-                    android:paddingLeft="0dp" >
+                    android:paddingLeft="0dp"
+                    android:paddingStart="0dp" >
 
                     <Spinner
                         android:id="@+id/endSpinner"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="8dp"
                         android:layout_marginLeft="-4dp"
                         android:layout_marginRight="8dp"
-                        android:gravity="left|center_vertical"
+                        android:layout_marginStart="-4dp"
+                        android:gravity="start|center_vertical"
                         android:padding="0dp" />
 
                     <EditText
@@ -293,15 +319,19 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:layout_marginEnd="0dp"
                         android:layout_marginLeft="0dp"
                         android:layout_marginRight="0dp"
+                        android:layout_marginStart="0dp"
                         android:layout_marginTop="3dp"
                         android:contentDescription="@string/acessibility_recurrence_choose_end_date_description"
                         android:gravity="center_horizontal|bottom"
                         android:minWidth="80dp"
                         android:paddingBottom="8dp"
+                        android:paddingEnd="16dp"
                         android:paddingLeft="12dp"
                         android:paddingRight="16dp"
+                        android:paddingStart="12dp"
                         android:singleLine="true"
                         android:textColor="@color/recurrence_spinner_text_color"
                         android:textSize="15sp"
@@ -313,15 +343,19 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:layout_marginEnd="0dp"
                         android:layout_marginLeft="0dp"
                         android:layout_marginRight="0dp"
+                        android:layout_marginStart="0dp"
                         android:layout_marginTop="3dp"
                         android:contentDescription="@string/acessibility_recurrence_choose_end_date_description"
                         android:gravity="center_horizontal|bottom"
                         android:minWidth="80dp"
                         android:paddingBottom="8dp"
+                        android:paddingEnd="16dp"
                         android:paddingLeft="12dp"
                         android:paddingRight="16dp"
+                        android:paddingStart="12dp"
                         android:singleLine="true"
                         android:textColor="@color/recurrence_spinner_text_color"
                         android:textSize="15sp"

@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.view.Gravity;
 import android.widget.ImageButton;
+import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.MirakelPreferences;
@@ -61,7 +62,7 @@ public class SpecialListsSettingsFragment extends PreferenceFragment {
 				actionbar.setCustomView(delList, new ActionBar.LayoutParams(
 						ActionBar.LayoutParams.WRAP_CONTENT,
 						ActionBar.LayoutParams.WRAP_CONTENT,
-						Gravity.CENTER_VERTICAL | Gravity.RIGHT));
+						Gravity.CENTER_VERTICAL | Mirakel.GRAVITY_RIGHT));
 				delList.setOnClickListener(((ListSettings) getActivity())
 						.getDelOnClickListener());
 			}

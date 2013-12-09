@@ -19,6 +19,7 @@
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:mirakel="http://schemas.android.com/apk/res/de.azapps.mirakelandroid"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal" >
@@ -27,7 +28,8 @@
         style="?android:attr/buttonBarStyle"
         android:layout_width="40dp"
         android:layout_height="match_parent"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        tools:ignore="NewApi" >
 
         <Button
             android:id="@+id/datetime_picker_date"

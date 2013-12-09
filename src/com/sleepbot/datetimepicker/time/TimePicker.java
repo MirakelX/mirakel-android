@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.fourmob.datetimepicker.Utils;
 
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakelandroid.R;
 
@@ -316,7 +317,8 @@ public class TimePicker extends LinearLayout implements
 			boolean autoAdvance) {
 		if (pickerIndex == HOUR_INDEX) {
 			setHour(newValue, false);
-			String announcement = String.format("%d", newValue);
+			String announcement = String.format(Helpers.getLocal(getContext()),
+					"%d", newValue);
 			if (mAllowAutoAdvance && autoAdvance) {
 				setCurrentItemShowing(MINUTE_INDEX, true, true, false);
 				announcement += ". " + mSelectMinutes;
@@ -474,7 +476,8 @@ public class TimePicker extends LinearLayout implements
 					} else if (deleted == getAmOrPmKeyCode(PM)) {
 						deletedKeyStr = mPmText;
 					} else {
-						deletedKeyStr = String.format("%d",
+						deletedKeyStr = String.format(
+								Helpers.getLocal(getContext()), "%d",
 								getValFromKeyCode(deleted));
 					}
 					Utils.tryAccessibilityAnnounce(mTimePicker,
@@ -588,13 +591,12 @@ public class TimePicker extends LinearLayout implements
 			// in 24hour mode.
 			int[] values = getEnteredTime(null);
 			return (values[0] >= 0 && values[1] >= 0 && values[1] < 60);
-		} else {
-			// For AM/PM mode, the time is legal if it contains an AM or PM, as
-			// those can only be
-			// legally added at specific times based on the tree's algorithm.
-			return (mTypedTimes.contains(getAmOrPmKeyCode(AM)) || mTypedTimes
-					.contains(getAmOrPmKeyCode(PM)));
 		}
+		// For AM/PM mode, the time is legal if it contains an AM or PM, as
+		// those can only be
+		// legally added at specific times based on the tree's algorithm.
+		return (mTypedTimes.contains(getAmOrPmKeyCode(AM)) || mTypedTimes
+				.contains(getAmOrPmKeyCode(PM)));
 	}
 
 	private int deleteLastTypedKey() {
@@ -1002,15 +1004,13 @@ public class TimePicker extends LinearLayout implements
 	public int getHour() {
 		if (mTimePicker != null)
 			return mTimePicker.getHours() + (mAmKeyCode == PM ? 12 : 0);
-		else
-			return 0;
+		return 0;
 	}
 
 	public int getMinute() {
 		if (mTimePicker != null)
 			return mTimePicker.getMinutes();
-		else
-			return 0;
+		return 0;
 	}
 
 	public void setOnKeyListener(KeyboardListener keyboardListener) {
@@ -1055,7 +1055,7 @@ public class TimePicker extends LinearLayout implements
 			super.onRestoreInstanceState(state);
 			return;
 		}
-		Bundle b=(Bundle) state;
+		// Bundle b=(Bundle) state;
 	}
 
 }

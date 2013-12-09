@@ -35,14 +35,16 @@
         android:id="@+id/tasks_row_due"
         style="@style/minimalisticWidgetText"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:paddingLeft="10dp"
-        android:layout_height="wrap_content" />
+        android:paddingStart="10dp" />
 
     <TextView
         android:id="@+id/tasks_row_name"
         style="@style/minimalisticWidgetText"
-        android:paddingLeft="10dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingStart="10dp" />
 
 </LinearLayout>

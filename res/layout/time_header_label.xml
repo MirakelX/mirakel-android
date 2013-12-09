@@ -13,106 +13,132 @@
   ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License
-  -->
-  <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-      android:layout_width="match_parent"
-      android:id="@+id/time_dialog_head"
-      android:layout_height="fill_parent"
-      android:layout_gravity="center" >
-        <View
-            android:id="@+id/center_view"
-            android:layout_width="1dp"
-            android:layout_height="1dp"
-            android:background="#00000000"
-            android:layout_centerInParent="true"
-            android:visibility="invisible"
-            android:importantForAccessibility="no" />
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/time_dialog_head"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:layout_gravity="center" >
 
-        <TextView
-            android:id="@+id/hour_space"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/time_placeholder"
-            android:layout_toLeftOf="@+id/separator"
-            android:layout_centerVertical="true"
-            android:visibility="invisible"
-            style="@style/time_label"
-            android:importantForAccessibility="no" />
-        <FrameLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_alignRight="@+id/hour_space"
-            android:layout_alignLeft="@+id/hour_space"
-            android:layout_marginLeft="@dimen/extra_time_label_margin"
-            android:layout_marginRight="@dimen/extra_time_label_margin"
-            android:layout_centerVertical="true" >
-            <com.sleepbot.datetimepicker.AccessibleTextView
-                android:id="@+id/hours"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/time_placeholder"
-                android:textColor="@color/blue"
-                android:gravity="center_horizontal"
-                android:layout_gravity="center"
-                style="@style/time_label" />
-            </FrameLayout>
+    <View
+        android:id="@+id/center_view"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:layout_centerInParent="true"
+        android:background="#00000000"
+        android:importantForAccessibility="no"
+        android:visibility="invisible" />
 
-        <TextView
-            android:id="@+id/separator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/time_separator"
-            android:paddingLeft="@dimen/separator_padding"
-            android:paddingRight="@dimen/separator_padding"
-            android:layout_alignRight="@+id/center_view"
-            android:layout_centerVertical="true"
-            style="@style/time_label"
-            android:importantForAccessibility="no" />
+    <TextView
+        android:id="@+id/hour_space"
+        style="@style/time_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/separator"
+        android:layout_toStartOf="@+id/separator"
+        android:importantForAccessibility="no"
+        android:text="@string/time_placeholder"
+        android:visibility="invisible" />
 
-        <TextView
-            android:id="@+id/minutes_space"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/time_placeholder"
-            android:layout_toRightOf="@+id/separator"
-            android:layout_centerVertical="true"
-            android:visibility="invisible"
-            style="@style/time_label"
-            android:importantForAccessibility="no" />
-        <FrameLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_alignRight="@+id/minutes_space"
-            android:layout_alignLeft="@+id/minutes_space"
-            android:layout_marginLeft="@dimen/extra_time_label_margin"
-            android:layout_marginRight="@dimen/extra_time_label_margin"
-            android:layout_centerVertical="true" >
-            <com.sleepbot.datetimepicker.AccessibleTextView
-                android:id="@+id/minutes"
-                style="@style/time_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:text="@string/time_placeholder"
-                android:layout_gravity="center" />
-        </FrameLayout>
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_alignEnd="@+id/hour_space"
+        android:layout_alignLeft="@+id/hour_space"
+        android:layout_alignRight="@+id/hour_space"
+        android:layout_alignStart="@+id/hour_space"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/extra_time_label_margin"
+        android:layout_marginLeft="@dimen/extra_time_label_margin"
+        android:layout_marginRight="@dimen/extra_time_label_margin"
+        android:layout_marginStart="@dimen/extra_time_label_margin" >
+
         <com.sleepbot.datetimepicker.AccessibleTextView
-            android:id="@+id/ampm_hitspace"
-            android:layout_width="@dimen/ampm_label_size"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentBottom="true"
-            android:layout_alignLeft="@+id/ampm_label"
-            android:layout_alignRight="@+id/ampm_label" />
-        <TextView
-            android:id="@+id/ampm_label"
+            android:id="@+id/hours"
+            style="@style/time_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center_horizontal"
             android:text="@string/time_placeholder"
-            android:paddingLeft="@dimen/ampm_left_padding"
-            android:paddingRight="@dimen/ampm_left_padding"
-            android:layout_toRightOf="@+id/minutes_space"
-            android:layout_alignBaseline="@+id/separator"
-            style="@style/ampm_label"
-            android:importantForAccessibility="no" />
-  </RelativeLayout>
+            android:textColor="@color/blue" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/separator"
+        style="@style/time_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/center_view"
+        android:layout_alignRight="@+id/center_view"
+        android:layout_centerVertical="true"
+        android:importantForAccessibility="no"
+        android:paddingEnd="@dimen/separator_padding"
+        android:paddingLeft="@dimen/separator_padding"
+        android:paddingRight="@dimen/separator_padding"
+        android:paddingStart="@dimen/separator_padding"
+        android:text="@string/time_separator" />
+
+    <TextView
+        android:id="@+id/minutes_space"
+        style="@style/time_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/separator"
+        android:layout_toRightOf="@+id/separator"
+        android:importantForAccessibility="no"
+        android:text="@string/time_placeholder"
+        android:visibility="invisible" />
+
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_alignEnd="@+id/minutes_space"
+        android:layout_alignLeft="@+id/minutes_space"
+        android:layout_alignRight="@+id/minutes_space"
+        android:layout_alignStart="@+id/minutes_space"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/extra_time_label_margin"
+        android:layout_marginLeft="@dimen/extra_time_label_margin"
+        android:layout_marginRight="@dimen/extra_time_label_margin"
+        android:layout_marginStart="@dimen/extra_time_label_margin" >
+
+        <com.sleepbot.datetimepicker.AccessibleTextView
+            android:id="@+id/minutes"
+            style="@style/time_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center_horizontal"
+            android:text="@string/time_placeholder" />
+    </FrameLayout>
+
+    <com.sleepbot.datetimepicker.AccessibleTextView
+        android:id="@+id/ampm_hitspace"
+        android:layout_width="@dimen/ampm_label_size"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/ampm_label"
+        android:layout_alignLeft="@+id/ampm_label"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/ampm_label"
+        android:layout_alignStart="@+id/ampm_label" />
+
+    <TextView
+        android:id="@+id/ampm_label"
+        style="@style/ampm_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/separator"
+        android:layout_toEndOf="@+id/minutes_space"
+        android:layout_toRightOf="@+id/minutes_space"
+        android:importantForAccessibility="no"
+        android:paddingEnd="@dimen/ampm_left_padding"
+        android:paddingLeft="@dimen/ampm_left_padding"
+        android:paddingRight="@dimen/ampm_left_padding"
+        android:paddingStart="@dimen/ampm_left_padding"
+        android:text="@string/time_placeholder" />
+
+</RelativeLayout>

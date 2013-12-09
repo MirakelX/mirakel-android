@@ -52,6 +52,7 @@ import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakelandroid.R;
 
+@SuppressLint("RtlHardcoded")
 @ReportsCrashes(
 // This is required for backward compatibility but not used
 formKey = "",
@@ -80,6 +81,7 @@ public class Mirakel extends Application {
 
 	private static SQLiteOpenHelper openHelper;
 	public static String MIRAKEL_DIR;
+	// FIXME move this somewhere else?
 	public static int GRAVITY_LEFT, GRAVITY_RIGHT;
 
 	@SuppressLint("InlinedApi")

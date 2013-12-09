@@ -28,6 +28,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.export_import.ExportImport;
 import de.azapps.mirakel.main_activity.MainActivity;
@@ -92,6 +93,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		// use a database with a higher version.
 	}
 
+	@SuppressWarnings({ "incomplete-switch", "fallthrough" })
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		Log.e(DatabaseHelper.class.getName(),
@@ -106,7 +108,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		case 1:// Nothing, Startversion
 		case 2:
 			// Add sync-state
-			;
 			db.execSQL("Alter Table " + Task.TABLE + " add column "
 					+ SyncAdapter.SYNC_STATE + " INTEGER DEFAULT "
 					+ SYNC_STATE.ADD + ";");
@@ -232,10 +233,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ "priority INTEGER, " + "list INTEGER);");
 			db.execSQL("INSERT INTO semantic_conditions (condition,due) VALUES "
 					+ "(\""
-					+ context.getString(R.string.today).toLowerCase()
+						+ context.getString(R.string.today).toLowerCase(
+								Helpers.getLocal(context))
 					+ "\",0);"
 					+ "INSERT INTO semantic_conditions (condition,due) VALUES (\""
-					+ context.getString(R.string.tomorrow).toLowerCase()
+						+ context.getString(R.string.tomorrow).toLowerCase(
+								Helpers.getLocal(context))
 					+ "\",1);");
 		case 15:// Add Color
 			db.execSQL("Alter Table " + ListMirakel.TABLE + " add column "
@@ -319,7 +322,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		case 24:
 			createAccountTable(db);
 			ACCOUNT_TYPES type = ACCOUNT_TYPES.LOCAL;
-			;
 			AccountManager am = AccountManager.get(context);
 			String accountname = context.getString(R.string.local_account);
 			if (am.getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL).length > 0) {

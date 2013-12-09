@@ -14,8 +14,10 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingEnd="20dp"
         android:paddingLeft="20dp"
-        android:paddingRight="20dp" >
+        android:paddingRight="20dp"
+        android:paddingStart="20dp" >
 
         <NumberPicker
             android:id="@+id/numberPicker"
@@ -28,6 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/numberPicker"
             android:layout_toRightOf="@+id/numberPicker"
             android:textAppearance="?android:attr/textAppearanceLarge" />
     </RelativeLayout>

@@ -17,7 +17,7 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
+<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
@@ -105,7 +105,7 @@
         <item name="android:layout_marginRight">8dip</item>
         <item name="android:layout_weight">1</item>
         <item name="android:textColor">@color/recurrence_bubble_text_color</item>
-        <item name="android:textAllCaps">true</item>
+        <item name="android:textAllCaps" tools:ignore="NewApi">true</item>
         <item name="android:textSize">12sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:singleLine">true</item>
@@ -126,9 +126,9 @@
     <style name="TextAppearance.EditEvent_SpinnerButton" parent="TextAppearance.EditEvent_Spinner">
         <item name="android:paddingLeft">12dp</item>
         <item name="android:paddingRight">12dp</item>
-        
     </style>
-        <style name="TextAppearance.EditEvent_Spinner_Dark" parent="android:style/Widget.Holo.Spinner">
+
+    <style name="TextAppearance.EditEvent_Spinner_Dark" parent="android:style/Widget.Holo.Spinner">
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:layout_marginRight">12dp</item>

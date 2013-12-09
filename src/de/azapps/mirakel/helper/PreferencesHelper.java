@@ -21,17 +21,13 @@ package de.azapps.mirakel.helper;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.message.BasicNameValuePair;
-
 import sheetrock.panda.changelog.ChangeLog;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
@@ -39,11 +35,8 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
@@ -53,13 +46,10 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.NumberPicker;
 import android.widget.SeekBar;
 import android.widget.Switch;
@@ -83,10 +73,7 @@ import de.azapps.mirakel.static_activities.CreditsActivity;
 import de.azapps.mirakel.static_activities.SettingsActivity;
 import de.azapps.mirakel.static_activities.SettingsFragment;
 import de.azapps.mirakel.sync.AuthenticatorActivity;
-import de.azapps.mirakel.sync.DataDownloadCommand;
-import de.azapps.mirakel.sync.Network;
 import de.azapps.mirakel.sync.SyncAdapter;
-import de.azapps.mirakel.sync.caldav.CalDavSync;
 import de.azapps.mirakel.sync.mirakel.MirakelSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
 import de.azapps.mirakel.widget.MainWidgetSettingsActivity;
@@ -134,9 +121,8 @@ public class PreferencesHelper {
 	private Preference findPreference(String key) {
 		if (v4_0) {
 			return ((PreferenceFragment) ctx).findPreference(key);
-		} else {
-			return ((PreferenceActivity) ctx).findPreference(key);
 		}
+		return ((PreferenceActivity) ctx).findPreference(key);
 	}
 
 	@SuppressLint("NewApi")
@@ -170,6 +156,7 @@ public class PreferencesHelper {
 							Object newValue) {
 						WidgetHelper.setList(context, widgetId,
 								Integer.parseInt((String) newValue));
+						@SuppressWarnings("hiding")
 						String list = ListMirakel.getList(
 								Integer.parseInt((String) newValue)).getName();
 						widgetListPreference.setSummary(activity.getString(
@@ -476,319 +463,57 @@ public class PreferencesHelper {
 						}
 					});
 		}
-		// Enable/Disbale Sync
-		final CheckBoxPreference sync = (CheckBoxPreference) findPreference("syncUse");
-		final Preference syncType = findPreference("syncType");
-		final AccountManager am = AccountManager.get(activity);
-		final Account[] accounts = am
-				.getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
-		if (syncType != null && am != null) {
-			if (MirakelPreferences.useSync() && accounts.length > 0) {
-				if (am.getUserData(accounts[0], SyncAdapter.BUNDLE_SERVER_TYPE)
-						.equals(TaskWarriorSync.TYPE)) {
-					syncType.setSummary(activity.getString(
-							R.string.sync_use_summary_taskwarrior,
-							accounts[0].name));
-				} else if (am.getUserData(accounts[0],
-						SyncAdapter.BUNDLE_SERVER_TYPE)
-						.equals(MirakelSync.TYPE)) {
-					syncType.setSummary(activity
-							.getString(R.string.sync_use_summary_mirakel,
-									accounts[0].name));
-				} else if (am.getUserData(accounts[0],
-						SyncAdapter.BUNDLE_SERVER_TYPE).equals(CalDavSync.TYPE)) {
 
-					syncType.setSummary(activity.getString(
-							R.string.sync_use_summary_caldav, accounts[0].name));
 
-				} else {
-					// sync.setChecked(false);
-					sync.setSummary(R.string.sync_use_summary_nothing);
-					am.removeAccount(accounts[0], null, null);
-				}
-			} else {
-				// sync.setChecked(false);
-				sync.setSummary(R.string.sync_use_summary_nothing);
-			}
-		}
-		if (sync != null) {
-			sync.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-				@Override
-				public boolean onPreferenceChange(Preference preference,
-						Object newValue) {
-					boolean isChecked = (Boolean) newValue;
-					createAuthActivity(isChecked, activity, sync, false);
-					findPreference("syncServer").setEnabled(isChecked);
-					findPreference("syncPassword").setEnabled(isChecked);
-					findPreference("syncFrequency").setEnabled(isChecked);
-					return false;
-				}
-
-			});
-			// Get Account if existing
-			final Account account;
-			if (!(accounts.length > 0)) {
-				SharedPreferences.Editor editor = MirakelPreferences
-						.getEditor();
-				editor.putBoolean("syncUse", false);
-				editor.commit();
-				sync.setChecked(false);
-				account = null;
-			} else {
-				sync.setChecked(true);
-				account = accounts[0];
-			}
-
-			// Change Password
-			final EditTextPreference Password = (EditTextPreference) findPreference("syncPassword");
-			Password.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-
-				@Override
-				public boolean onPreferenceChange(Preference preference,
-						final Object password) {
-					if (account != null) {
-						ConnectivityManager cm = (ConnectivityManager) activity
-								.getSystemService(Context.CONNECTIVITY_SERVICE);
-						NetworkInfo netInfo = cm.getActiveNetworkInfo();
-						if (netInfo != null && netInfo.isConnected()) {
-							List<BasicNameValuePair> data = new ArrayList<BasicNameValuePair>();
-							data.add(new BasicNameValuePair("email",
-									account.name));
-							data.add(new BasicNameValuePair("password",
-									(String) password));
-
-							new Network(new DataDownloadCommand() {
-								@Override
-								public void after_exec(String result) {
-									String t = Network.getToken(result);
-									if (t != null) {
-										am.setPassword(account,
-												(String) password);
-										Password.setText(am
-												.getPassword(account));
-										new Network(new DataDownloadCommand() {
-											@Override
-											public void after_exec(String result) {
-											}
-										}, Network.HttpMode.DELETE,
-												activity, null).execute(am
-												.getUserData(
-														account,
-														SyncAdapter.BUNDLE_SERVER_URL)
-												+ "/tokens/" + t);
-									} else {
-										Toast.makeText(
-												activity,
-												activity.getString(R.string.inavlidPassword),
-												Toast.LENGTH_LONG).show();
-									}
-									SharedPreferences.Editor editor = MirakelPreferences
-											.getEditor();
-									editor.putString("syncPassword", "");
-									editor.commit();
-
-								}
-							}, Network.HttpMode.POST, data, activity, null)
-									.execute(am.getUserData(account,
-											SyncAdapter.BUNDLE_SERVER_URL)
-											+ "/tokens.json");
-						} else {
-							Toast.makeText(activity,
-									activity.getString(R.string.NoNetwork),
-									Toast.LENGTH_LONG).show();
-						}
-					}
-					return true;
-				}
-			});
-
-			// Set old Password to Textbox
-			Password.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-				@Override
-				public boolean onPreferenceClick(Preference preference) {
-					if (account != null) {
-						Password.setText(am.getPassword(account));
-					}
-					return false;
-				}
-			});
-
-			// TODO Add Option To Resync all
-			// Change Url
-			EditTextPreference url = (EditTextPreference) findPreference("syncServer");
-			if (account != null) {
-				url.setText(am.getUserData(account, "url"));
-				url.setSummary(activity.getString(R.string.sync_server_summary,
-						am.getUserData(account, "url")));
-			} else {
-				url.setSummary("");
-			}
-			url.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-				@Override
-				public boolean onPreferenceChange(Preference preference,
-						final Object url) {
-					if (account != null) {
-						ConnectivityManager cm = (ConnectivityManager) activity
-								.getSystemService(Context.CONNECTIVITY_SERVICE);
-						NetworkInfo netInfo = cm.getActiveNetworkInfo();
-						if (netInfo != null && netInfo.isConnected()) {
-							List<BasicNameValuePair> data = new ArrayList<BasicNameValuePair>();
-							data.add(new BasicNameValuePair("email",
-									account.name));
-							data.add(new BasicNameValuePair("password",
-									AccountManager.get(activity).getPassword(
-											account)));
-
-							new Network(new DataDownloadCommand() {
-								@Override
-								public void after_exec(String result) {
-									String t = Network.getToken(result);
-									if (t != null) {
-										am.setUserData(account, "url",
-												(String) url);
-										Password.setText(am
-												.getPassword(account));
-										new Network(new DataDownloadCommand() {
-											@Override
-											public void after_exec(String result) {
-											}
-										}, Network.HttpMode.DELETE,
-												activity, null).execute(url
-												+ "/tokens/" + t);
-									} else {
-										Toast.makeText(
-												activity,
-												activity.getString(R.string.inavlidUrl),
-												Toast.LENGTH_LONG).show();
-										SharedPreferences.Editor editor = MirakelPreferences.getEditor();
-										editor.putString(
-												"syncServer",
-												am.getUserData(
-														account,
-														SyncAdapter.BUNDLE_SERVER_URL));
-										editor.commit();
-									}
-								}
-							}, Network.HttpMode.POST, data, activity, null)
-									.execute((String) url + "/tokens.json");
-						} else {
-							Toast.makeText(activity,
-									activity.getString(R.string.NoNetwork),
-									Toast.LENGTH_LONG).show();
-						}
-
-					}
-					return true;
-				}
-			});
 
 			// Change Sync-Interval
-			final ListPreference syncInterval = (ListPreference) findPreference("syncFrequency");
-			if (MirakelPreferences.getSyncFrequency() == -1) {
-				syncInterval.setSummary(R.string.sync_frequency_summary_man);
-			} else {
-				syncInterval.setSummary(activity.getString(
-						R.string.sync_frequency_summary,
-						MirakelPreferences.getSyncFrequency()));
-			}
-			syncInterval
-					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+		// FIXME move to accountsettings
+		// final ListPreference syncInterval = (ListPreference) findPreference("syncFrequency");
+		// if (MirakelPreferences.getSyncFrequency() == -1) {
+		// syncInterval.setSummary(R.string.sync_frequency_summary_man);
+		// } else {
+		// syncInterval.setSummary(activity.getString(
+		// R.string.sync_frequency_summary,
+		// MirakelPreferences.getSyncFrequency()));
+		// }
+		// syncInterval
+		// .setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+		//
+		// @Override
+		// public boolean onPreferenceChange(
+		// Preference preference, Object newValue) {
+		// Log.e(TAG, "" + newValue.toString());
+		// final Bundle bundle = new Bundle();
+		// long longVal = Long.parseLong(newValue.toString());
+		// if (longVal == -1) {
+		// syncInterval
+		// .setSummary(R.string.sync_frequency_summary_man);
+		// } else {
+		// syncInterval.setSummary(activity.getString(
+		// R.string.sync_frequency_summary,
+		// longVal));
+		// }
+		// if (account != null) {
+		// ContentResolver.removePeriodicSync(account,
+		// Mirakel.AUTHORITY_TYP, bundle);
+		// if (longVal != -1) {
+		// ContentResolver.setSyncAutomatically(
+		// account, Mirakel.AUTHORITY_TYP,
+		// true);
+		// ContentResolver.setIsSyncable(account,
+		// Mirakel.AUTHORITY_TYP, 1);
+		// // ContentResolver.setMasterSyncAutomatically(true);
+		// ContentResolver.addPeriodicSync(account,
+		// Mirakel.AUTHORITY_TYP, bundle,
+		// longVal * 60);
+		// }
+		// } else {
+		// Log.d(TAG, "account does not exsist");
+		// }
+		// return true;
+		// }
+		// });
 
-						@Override
-						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
-							Log.e(TAG, "" + newValue.toString());
-							final Bundle bundle = new Bundle();
-							long longVal = Long.parseLong(newValue.toString());
-							if (longVal == -1) {
-								syncInterval
-										.setSummary(R.string.sync_frequency_summary_man);
-							} else {
-								syncInterval.setSummary(activity.getString(
-										R.string.sync_frequency_summary,
-										longVal));
-							}
-							if (account != null) {
-								ContentResolver.removePeriodicSync(account,
-										Mirakel.AUTHORITY_TYP, bundle);
-								if (longVal != -1) {
-									ContentResolver.setSyncAutomatically(
-											account, Mirakel.AUTHORITY_TYP,
-											true);
-									ContentResolver.setIsSyncable(account,
-											Mirakel.AUTHORITY_TYP, 1);
-									// ContentResolver.setMasterSyncAutomatically(true);
-									ContentResolver.addPeriodicSync(account,
-											Mirakel.AUTHORITY_TYP, bundle,
-											longVal * 60);
-								}
-							} else {
-								Log.d(TAG, "account does not exsist");
-							}
-							return true;
-						}
-					});
-
-			if (!MirakelPreferences.useSync()) {
-				findPreference("syncServer").setEnabled(false);
-				findPreference("syncPassword").setEnabled(false);
-				findPreference("syncFrequency").setEnabled(false);
-			}
-
-			if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-				removePreference("syncUse");
-				ActionBar actionbar = activity.getActionBar();
-
-				actionBarSwitch = new Switch(activity);
-				actionBarSwitch.setId(R.id.preferences_switch_top);
-
-				actionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
-						ActionBar.DISPLAY_SHOW_CUSTOM);
-				actionbar.setCustomView(actionBarSwitch,
-						new ActionBar.LayoutParams(
-								ActionBar.LayoutParams.WRAP_CONTENT,
-								ActionBar.LayoutParams.WRAP_CONTENT,
-								Gravity.CENTER_VERTICAL | Gravity.RIGHT));
-				actionBarSwitch.setChecked(MirakelPreferences.useSync());
-				actionBarSwitch
-						.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
-							@Override
-							public void onCheckedChanged(
-									CompoundButton buttonView, boolean isChecked) {
-								PreferencesHelper.createAuthActivity(isChecked,
-										(Fragment) ctx, actionBarSwitch, true);
-								findPreference("syncServer").setEnabled(
-										isChecked);
-								findPreference("syncPassword").setEnabled(
-										isChecked);
-								findPreference("syncFrequency").setEnabled(
-										isChecked);
-								if (MirakelPreferences.isTablet()) {
-									final Switch s = ((Switch) activity
-											.findViewById(R.id.switchWidget));
-									if (s != null) {
-										s.setOnCheckedChangeListener(null);
-										s.setChecked(isChecked);
-										s.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-											@Override
-											public void onCheckedChanged(
-													CompoundButton buttonView,
-													boolean isChecked) {
-												PreferencesHelper
-														.createAuthActivity(
-																isChecked,
-																(Activity) ctx,
-																s, false);
-											}
-										});
-									}
-
-								}
-							}
-						});
-			}
-		}
 
 		final CheckBoxPreference notificationsUse = (CheckBoxPreference) findPreference("notificationsUse");
 		if (notificationsUse != null) {
@@ -984,7 +709,8 @@ public class PreferencesHelper {
 								final List<CharSequence> items = new ArrayList<CharSequence>();
 								final List<Integer> list_ids = new ArrayList<Integer>();
 								int currentItem = 0;
-								for (ListMirakel list : ListMirakel.all()) {
+								for (@SuppressWarnings("hiding")
+								ListMirakel list : ListMirakel.all()) {
 									if (list.getId() > 0) {
 										items.add(list.getName());
 										list_ids.add(list.getId());
@@ -1030,7 +756,7 @@ public class PreferencesHelper {
 		}
 
 		// Delete done tasks
-		Preference deleteDone = (Preference) findPreference("deleteDone");
+		Preference deleteDone = findPreference("deleteDone");
 		if (deleteDone != null) {
 			deleteDone
 					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
@@ -1046,7 +772,7 @@ public class PreferencesHelper {
 												@Override
 												public void onClick(
 														DialogInterface dialogInterface,
-														int i) {
+ @SuppressWarnings("hiding") int i) {
 													Task.deleteDoneTasks();
 													Toast.makeText(
 															activity,
@@ -1063,14 +789,14 @@ public class PreferencesHelper {
 												@Override
 												public void onClick(
 														DialogInterface dialogInterface,
-														int i) {
+ @SuppressWarnings("hiding") int i) {
 												}
 											}).show();
 							return true;
 						}
 					});
 		}
-		final Preference autoBackupIntervall = (Preference) findPreference("autoBackupIntervall");
+		final Preference autoBackupIntervall = findPreference("autoBackupIntervall");
 		if (autoBackupIntervall != null) {
 			autoBackupIntervall.setSummary(activity.getString(
 					R.string.auto_backup_intervall_summary,
@@ -1181,7 +907,7 @@ public class PreferencesHelper {
 						}
 					});
 		}
-		final Preference undoNumber = (Preference) findPreference("UndoNumber");
+		final Preference undoNumber = findPreference("UndoNumber");
 		if (undoNumber != null) {
 			undoNumber.setSummary(activity.getString(
 					R.string.undo_number_summary,
@@ -1278,7 +1004,8 @@ public class PreferencesHelper {
 																			R.string.undo_number_summary,
 																			val));
 													if (old_val > val) {
-														for (int i = val; i < max; i++) {
+														for (@SuppressWarnings("hiding")
+														int i = val; i < max; i++) {
 															editor.putString(
 																	UndoHistory.UNDO
 																			+ i,

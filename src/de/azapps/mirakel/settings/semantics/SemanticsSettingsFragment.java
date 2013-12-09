@@ -26,6 +26,7 @@ import android.preference.PreferenceFragment;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.ImageButton;
+import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.semantic.Semantic;
@@ -58,7 +59,8 @@ public class SemanticsSettingsFragment extends PreferenceFragment {
 						new ActionBar.LayoutParams(
 								ActionBar.LayoutParams.WRAP_CONTENT,
 								ActionBar.LayoutParams.WRAP_CONTENT,
-								Gravity.CENTER_VERTICAL | Gravity.RIGHT));
+										Gravity.CENTER_VERTICAL
+												| Mirakel.GRAVITY_RIGHT));
 				delSemantic.setOnClickListener(((ListSettings) getActivity())
 						.getDelOnClickListener());
 			}

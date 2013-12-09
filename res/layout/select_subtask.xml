@@ -46,9 +46,9 @@
             style="@style/Button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:ellipsize="end"
             android:lines="1"
-            android:layout_weight="1"
             android:text="@string/add_existing"
             android:textColor="@color/Grey" />
     </LinearLayout>
@@ -87,6 +87,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@android:drawable/ic_menu_search"
+                android:drawableStart="@android:drawable/ic_menu_search"
                 android:ems="10"
                 android:inputType="text" >
 

@@ -30,6 +30,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginEnd="41dp"
         android:layout_marginRight="41dp"
         android:orientation="horizontal" >
 
@@ -42,11 +44,11 @@
                 android:id="@+id/tasks_row_progress"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
+                android:layout_centerInParent="true"
                 ProgressWheel:barColor="#0097D6"
                 ProgressWheel:barLength="20dp"
                 ProgressWheel:barWidth="5dp"
                 ProgressWheel:rimColor="#330097D6"
-                android:layout_centerInParent="true"
                 ProgressWheel:rimWidth="2dp" />
 
             <CheckBox
@@ -80,6 +82,7 @@
                     android:id="@+id/tasks_row_due"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
                     android:layout_marginRight="5dp"
                     android:textColor="@color/Grey"
                     android:textIsSelectable="false"
@@ -89,6 +92,7 @@
                     android:id="@+id/tasks_row_list_name"
                     android:layout_width="0dip"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
                     android:layout_marginRight="5dp"
                     android:layout_weight="1"
                     android:ellipsize="end"
@@ -111,8 +115,10 @@
         android:id="@+id/tasks_row_priority"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_marginLeft="2.5dp"
+        android:layout_marginStart="2.5dp"
         android:background="@drawable/priority_rectangle"
         android:gravity="center"
         android:textIsSelectable="false"

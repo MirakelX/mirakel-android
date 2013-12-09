@@ -36,6 +36,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakelandroid.R;
@@ -121,7 +122,7 @@ public abstract class ListSettings extends PreferenceActivity {
 			actionbar.setCustomView(v, new ActionBar.LayoutParams(
 					ActionBar.LayoutParams.WRAP_CONTENT,
 					ActionBar.LayoutParams.WRAP_CONTENT,
-					Gravity.CENTER_VERTICAL | Gravity.RIGHT));
+					Gravity.CENTER_VERTICAL | Mirakel.GRAVITY_RIGHT));
 
 		}
 	}
@@ -142,6 +143,9 @@ public abstract class ListSettings extends PreferenceActivity {
 		case android.R.id.home:
 			finish();
 			return true;
+			default:
+				Log.d(TAG, "unknown menuentry");
+				break;
 		}
 		if (item.getTitle() == getString(R.string.add)) {
 			getAddOnClickListener().onClick(null);
@@ -180,7 +184,7 @@ public abstract class ListSettings extends PreferenceActivity {
 	@Override
 	public boolean onIsMultiPane() {
 		return MirakelPreferences.isTablet();
-	};
+	}
 
 	@Override
 	public void onResume() {

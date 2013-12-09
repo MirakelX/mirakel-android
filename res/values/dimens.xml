@@ -51,7 +51,6 @@
     <dimen name="month_list_item_header_height">50dip</dimen>
     <dimen name="month_day_label_text_size">10sp</dimen>
     <dimen name="day_number_select_circle_radius">16dip</dimen>
-    <dimen name="month_select_circle_radius">45dip</dimen>
     <dimen name="selected_date_year_size">30dip</dimen>
     <dimen name="selected_date_day_size">75dip</dimen>
     <dimen name="selected_date_month_size">30dip</dimen>
@@ -67,8 +66,6 @@
     <dimen name="separator_padding">4dip</dimen>
     <dimen name="header_height">96dip</dimen>
     <dimen name="picker_dimen">270dip</dimen>
-    <dimen name="minimum_margin_sides">48dip</dimen>
-    <dimen name="minimum_margin_top_bottom">24dip</dimen>
 
     <item name="circle_radius_multiplier" format="float" type="string">0.82</item>
     <item name="circle_radius_multiplier_24HourMode" format="float" type="string">0.85</item>
@@ -80,9 +77,5 @@
     <item name="text_size_multiplier_normal" format="float" type="string">0.17</item>
     <item name="text_size_multiplier_inner" format="float" type="string">0.14</item>
     <item name="text_size_multiplier_outer" format="float" type="string">0.11</item>
-
-    <!-- Reccurence picker -->
-    <dimen name="recurrence_picker_height">340dp</dimen>
-    <dimen name="recurrence_picker_width">300dp</dimen>
 
 </resources>

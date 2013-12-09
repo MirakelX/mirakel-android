@@ -38,11 +38,10 @@
 <p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.</p>]]>
     </string>
-    <string name="credits_used_libraries">Used libraries</string>
     <string name="credits_translations">Translations</string>
     <string name="feedback">Send feedback</string>
     <string name="credits_libraries">Used libraries</string>
-    <string name="credits_translations">Translations</string>
+    <string name="credits_translations" tools:ignore="DuplicateDefinition">Translations</string>
     <string name="credits_license_title">License</string>
 
 </resources>

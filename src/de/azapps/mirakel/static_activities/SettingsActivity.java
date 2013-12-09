@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -36,10 +35,7 @@ import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.PreferenceActivity;
 import android.view.MenuItem;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListAdapter;
-import android.widget.Switch;
 import android.widget.Toast;
 import de.azapps.mirakel.adapter.SettingsAdapter;
 import de.azapps.mirakel.helper.Helpers;
@@ -132,25 +128,25 @@ public class SettingsActivity extends PreferenceActivity {
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			// if(getParent()!=null){
-			final Switch s = (Switch) findViewById(R.id.switchWidget);
-			final Activity a = this;
-			if (s != null) {
-				// need to reset onchangelistner else valuechange will triger
-				// event
-				s.setOnCheckedChangeListener(null);
-				s.setChecked(MirakelPreferences.useSync());
-				s.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
-					@Override
-					public void onCheckedChanged(CompoundButton buttonView,
-							boolean isChecked) {
-						PreferencesHelper.createAuthActivity(isChecked, a, s,
-								false);
-					}
-				});
-			} else {
-				Log.d(TAG, "switch not found");
-			}
+				// final Switch s = (Switch) findViewById(R.id.switchWidget);
+				// final Activity a = this;
+				// if (s != null) {
+				// // need to reset onchangelistner else valuechange will triger
+				// // event
+				// s.setOnCheckedChangeListener(null);
+				// s.setChecked(MirakelPreferences.useSync());
+				// s.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+				//
+				// @Override
+				// public void onCheckedChanged(CompoundButton buttonView,
+				// boolean isChecked) {
+				// PreferencesHelper.createAuthActivity(isChecked, a, s,
+				// false);
+				// }
+				// });
+				// } else {
+				// Log.d(TAG, "switch not found");
+				// }
 			// }else{
 			// Log.d(TAG,"Parent=null");
 			// }

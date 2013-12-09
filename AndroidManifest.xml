@@ -77,6 +77,7 @@
         android:allowBackup="true"
         android:icon="@drawable/mirakel"
         android:label="@string/app_name"
+        android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:uiOptions="splitActionBarWhenNarrow" >
         <activity
