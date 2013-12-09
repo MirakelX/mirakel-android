@@ -30,11 +30,12 @@ public class CreditsActivity extends Activity {
 			{ "Webicons", "CC-Attrib", "http://fairheadcreative.com/" } };
 	private final String[][]	translations	= { { "Spanish", "macebal" },
 			{ "French", "Ghost of Kendo, waghanza, npettiaux, benasse" },
-			{ "German", "Anatolij Zelenin, Georg Semmler, Patschi" },
-			{ "Portuguese", "smarquespt" }, { "Russian", "Katy, Derjavin" },
+			{ "German", "Anatolij Zelenin, Georg Semmler, Patrik Kernstock" },
+			{ "Portuguese", "Sérgio Marques" },
+			{ "Russian", "Katy, Dmitry Derjavin" },
 			{ "Spanisch", "macebal, RaindropR", "monofluor" },
 			{ "Norwegian", "Jim-Stefhan Johansen" }, { "Slovenian", "mateju" },
-			{ "Czech", "sarimak" },			};
+			{ "Arabic", "Rajaa Gutknecht" }, { "Czech", "sarimak" }, };
 
 	@SuppressLint("NewApi")
 	@Override
