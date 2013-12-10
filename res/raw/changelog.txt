@@ -17,8 +17,8 @@
     </style>
   </head>
   <body>
-$ 2.2-beta1
-  % Version 2.2-beta1
+$ 2.2-beta1+x
+  % Version 2.2-beta1+x
   _2013-12-10
   ! Please report Bugs and errors!
     * Basic Multi-Account handling
