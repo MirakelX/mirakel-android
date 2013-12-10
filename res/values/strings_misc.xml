@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+
+    <string name="help_about">
+<![CDATA[
+Mirakel is easy to use (We hope so). You have three main screens:
+
+* The list of your lists (left side)
+* The tasks in the current list (center)
+* The detailed view of the current task (right side)
+
+You can switch between the screens by swiping to the right or the left. To open the Lists-Screen you can swipe from the left edge of the device or tap the Mirakel-logo in the Action Bar.
+]]>
+    </string>
+    <string name="help_advanced_title">Advanced Features</string>
+    <string name="help_special_lists_title">Meta lists</string>
+    <string name="help_special_lists">
+<![CDATA[
+The Meta lists are lists, where you can not store tasks, but you can define, which tasks should be shown if you open this list. To **configure** this open `Settings→Manage meta lists`. There you can create new lists or change the properties of the old ones.
+
+#### HowTo
+For example, you want to create a list `Next two weeks`, where you want to show all tasks you have to do in the next two weeks.
+
+1. Go to `Settings→Manage meta lists`
+2. Tap on the `+`-Button (or open the menu point to add a special list)
+3. Set the name to `Next two weeks`
+4. The the `Due` to `+14 Days`
+5. You\'re ready. But you can configure a lot more things here.
+]]>
+    </string>
+    <string name="help_semantic_title">Task templates</string>
+    <string name="help_semantic">
+<![CDATA[
+The semantic new tasks can speed up your daily use of Mirakel. For example you can create a new Task called `Today wash the dishes` and Mirakel create then a Task `wash the dishes` with the current date as the due date.
+
+You can also combine the conditions. But consider that your conditions must be the first words of a task and a condition can only be one word.
+
+For example I also use the following condition: `Mirakel today fix that bug` This creates me a new Task in the list `NA: Mirakel` (first condition) and set the due date to today (second condition)
+
+#### Please note:
+
+* The last condition overrides the previous conditions if they do the same action. (If you create a Task `Today Tomorrow Foo`, then the due-date will be tommorrow`)
+* The Semantic new tasks are stronger then the SpecialLists.
+
+#### HowTo
+Yo want to create a condition `Mirakel` to put the task in the list `NA: Mirakel`
+
+1. Go to `Settings→Tasks`
+2. Activate the `Semantic New Tasks`
+3. Go to `Configure Semantic new Tasks`
+2. Tap on the `+`-Button (or open the menu point to add a special list)
+5. Set the condition to `Mirakel` (It\'s case insensitive)
+6. Tap `Set List` and select the list `NA: Mirakel` (or the list you want)
+]]>
+    </string>
+    <string name="help_subtasks_title">Subtasks</string>
+    <string name="help_subtasks">
+<![CDATA[
+Subtasks are a nice way to better organize your tasks. You can create for example a new Task `shopping` and create subtasks for every item you want to buy.
+
+#### Please note:
+* The Subtasks are stored in a List. So if you don\'t want to see the subtasks anywhere, create a new List `Subtasks` and Configure the Subtasks so they would be saved to this list: `Settings→Tasks→Add Subtask to the list of Task` (There you can select the default list)
+* You can also add normal tasks to a Task as a subtask.
+* A Task can be a subtask of many tasks
+* If you mark a parent task as `done` all subtasks will be marked as `done`
+]]>
+    </string>
+    <string name="help_sync_title">Sync</string>
+    <string name="help_sync">
+<![CDATA[
+]]>
+    </string>
+    <string name="help_sync_taskwarrior_title">Taskwarrior sync</string>
+    <string name="help_sync_taskwarrior">
+<![CDATA[
+You can sync your tasks with [Taskwarrior](http://taskwarrior.org/projects/show/taskwarrior).
+
+This is the **preferred** (and best tested) way of syncing your tasks. If you want to setup your own server, read [this tutorial](/taskwarrior.html).
+
+##### Please note:
+* You can not sync your files with Taskwarrior
+
+]]>
+    </string>
+    <string name="help_sync_caldav_title">CalDAV sync</string>
+    <string name="help_sync_caldav">
+<![CDATA[
+#### CalDAV-Sync
+For the CalDAV Sync you need an app which supports the synchronisation with Mirakel. We use [DAVdroid](https://play.google.com/store/apps/details?id=at.bitfire.davdroid) ([F-Droid](https://f-droid.org/repository/browse/?fdid=at.bitfire.davdroid)).
+Currently you have to install our modified version of DAVdroid: http://mirakel.azapps.de/davdroid.apk
+    ]]>
+    </string>
+    <string name="play_store_description">
+<![CDATA[
+Easy task management for professionals! 
+
+Please do not report bugs in the comments! Send us an email to mirakel@azapps.de or open an issue on our github page: https://github.com/azapps/mirakel-android/
+
+We want to manage our tasks with a simple, powerful tool!
+We love free software!
+We want to keep our data under control!
+
+How about you?
+
+Features
+
+• Manage your tasks in lists
+• Simple, but powerful User Interface
+• Tablet-UI
+• Nice little widget
+• Sort your tasks in different ways
+• Fully configurable
+• Notifications & Reminders
+• Easy Backup and Import
+• Import your tasks from Astrid
+• Sync the lists with your own (or the official) server (→Experimental!)
+
+We love to implement new features!
+You\'ve got an idea? Get in touch with us!
+
+If you find a Bug, please create an issue on our Github-page or write us an e-mail.
+https://github.com/azapps/mirakel-android/
+
+Mirakel is free Software (licensed under the GPLv3). You can find the sourcecode at: http://mirakel.azapps.de
+    ]]>
+    </string>
+    <string name="list_friends">Friends</string>
+    <string name="list_home">At Home</string>
+    <string name="list_work">At work</string>
+    <string name="meet_alice">Meet Alice</string>
+    <string name="invitations">Send invitations</string>
+    <string name="invitations_content">For the great party</string>
+    <string name="review">Organize meeting</string>
+    <string name="review_content">With all colleges</string>
+    <string name="wash_dishes">Wash the dishes</string>
+    <string name="presentation">Finalize presentation</string>
+
+</resources>
