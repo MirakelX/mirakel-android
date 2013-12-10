@@ -33,7 +33,7 @@ public class CreditsActivity extends Activity {
 			{ "German", "Anatolij Zelenin, Georg Semmler, Patrik Kernstock" },
 			{ "Portuguese", "Sérgio Marques" },
 			{ "Russian", "Katy, Dmitry Derjavin" },
-			{ "Spanisch", "macebal, RaindropR", "monofluor" },
+			{ "Spanisch", "macebal, RaindropR", "Pablo Corbalán (@monofluor)" },
 			{ "Norwegian", "Jim-Stefhan Johansen" }, { "Slovenian", "mateju" },
 			{ "Arabic", "Rajaa Gutknecht" }, { "Czech", "sarimak" }, };
 
