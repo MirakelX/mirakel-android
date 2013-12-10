@@ -31,6 +31,7 @@
   <string name="where_like_begin_text">يبدأ مع</string>
   <string name="where_like_end_text">ينتهي ب</string>
   <string name="delete">حذف</string>
+  <string name="nothing">لا يوجد تكرار</string>
   <string-array name="special_list_def_date_picker">
     <item>لا يوجد تاريخ</item>
     <item>أمس</item>

@@ -22,8 +22,6 @@
   <string name="select_by">Vybrat podle</string>
   <string name="done">Vyřešené úkoly</string>
   <string name="undone">Nevyřešené úkoly</string>
-  <string name="recurrence_no">Bez opakování</string>
-  <string name="recurrence_custom_title">Vlastní opakování</string>
   <string name="recurrence_custom">Vlastní</string>
   <string name="today">Dnes</string>
   <string name="tomorrow">Zítra</string>

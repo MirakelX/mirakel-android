@@ -49,6 +49,7 @@
   <string name="task_name">Ime naloge:</string>
   <string name="no_loop">Sporočil v zanki ni mogoče ustvariti</string>
   <string name="as_subtask">Dodaj k nalogi</string>
+  <string name="task_clone">Kloniraj nalogo</string>
   <string name="dialog_move">Premakni nalogo</string>
   <string name="list_title">Seznami</string>
   <string name="list_menu_new_list">Nov seznam</string>
@@ -185,6 +186,7 @@ Naprava: %3$s\n]]>
   <string name="save">Shrani</string>
   <string name="file_to_large">Ustvarjanje sličice je spodletelo</string>
   <string name="recurring_not_zero">Nastavitev ponavljaja ne more biti nič!</string>
+  <string name="settings_task_fragment_title">Pregled naloge</string>
   <string-array name="task_sorting_items">
     <item>Privzeto</item>
     <item>roku zapadlosti</item>

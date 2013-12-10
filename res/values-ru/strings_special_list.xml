@@ -22,8 +22,6 @@
   <string name="select_by">Выбор</string>
   <string name="done">Выполненные дела</string>
   <string name="undone">Невыполненные дела</string>
-  <string name="recurrence_no">Без повтора</string>
-  <string name="recurrence_custom_title">Пользовательский повтор</string>
   <string name="recurrence_custom">Пользовательское</string>
   <string name="today">Сегодня</string>
   <string name="tomorrow">Завтра</string>

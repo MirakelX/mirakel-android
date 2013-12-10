@@ -4,10 +4,7 @@
   <string name="widget_list">Seznam</string>
   <string name="widget_list_summary">Pokaži \"%s\"</string>
   <string name="widget_done">Končane naloge</string>
-  <string name="widget_sort">Razvrščanje</string>
-  <string name="widget_sort_summary">Razvrsti po \"%s\"</string>
   <string name="fontcolor">Barva pisave</string>
   <string name="widget_transparency">Prozornost</string>
   <string name="widget_transparency_summary">%s%% prozornost</string>
-  <string name="widget_due_colors"></string>
 </resources>

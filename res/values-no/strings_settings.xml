@@ -79,11 +79,7 @@
   <string name="hide_keyboard_summary">Skjul tastaturet hvis ny oppgave opprettes</string>
   <string name="undo_number">Antall endringer lagret</string>
   <string name="undo_number_summary">Angre %s endringer</string>
-  <string name="settings_semantic">Lag nye semantiske oppgaver</string>
-  <string name="semantic_new_task">Lag nye semantiske oppgaver</string>
-  <string name="semantic_new_task_summary">Bruk ny semantisk oppgave (bare i dag og i morgen)</string>
   <string name="semantic_new_task_config_summary">Konfigurere betingelsene for å opprette nye oppgaver</string>
-  <string name="semantic_new_task_config">Konfigurer nye semantiske oppgaver</string>
   <string name="delete_done">Slett ferdige oppgaver</string>
   <string name="delete_done_summary">Slett alle ferdige oppgaver</string>
   <string name="delete_done_warning">Er du sikker?</string>
@@ -95,7 +91,6 @@
   <string name="preferences_colorize">Farger</string>
   <string name="preferences_colorize_tasks">Fargelegge oppgaver</string>
   <string name="preferences_colorize_tasks_everywhere">Fargelegge oppgaver overalt</string>
-  <string name="settings_semantics_title">Konfigurere semantikk</string>
   <string name="settings_semantics_condition">Tilstand</string>
   <string name="settings_semantics_actions">Handlinger</string>
   <string name="settings_semantics_list">Angi listen</string>
@@ -104,7 +99,6 @@
   <string name="semantics_no_list">Ikke angi listen</string>
   <string name="semantics_no_due">Ikke angi forfalls dato</string>
   <string name="settings_file_default_title">Aktivitetsnavn for importerte filer</string>
-  <string name="semantic_new">Ny semantikk</string>
   <string name="settings_subtask">Deloppgave</string>
   <string name="settings_subtask_default_new">Vis nye oppgaver som standard</string>
   <string name="settings_subtask_default_new_summary">Eller legg til eksisterende oppgave</string>
@@ -114,6 +108,10 @@
   <string name="task_fragment_due">Forfall</string>
   <string name="task_fragment_reminder">Påminnelse</string>
   <string name="task_fragment_subtask">Deloppgave</string>
+  <string-array name="sync_types">
+    <item>CalDAV sync</item>
+    <item>Taskwarrior sync</item>
+  </string-array>
   <string-array name="sync_frequencies">
     <item>5 min</item>
     <item>10 min</item>
