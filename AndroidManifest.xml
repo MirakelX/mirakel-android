@@ -133,11 +133,6 @@
             android:excludeFromRecents="true"
             android:label="@string/sync_taskwarrior_configure" >
         </activity>
-        <activity
-            android:name="de.azapps.mirakel.settings.taskfragment.TaskFragmentSettings"
-            android:label="@string/title_settings"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
 
         <service
             android:name="de.azapps.mirakel.sync.AuthenticationService"

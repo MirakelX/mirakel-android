@@ -78,7 +78,8 @@
 
         <Preference
             android:key="task_fragment"
-            android:title="@string/settings_task_fragment" />
+            android:title="@string/settings_task_fragment" >
+        </Preference>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/do_not_touch" >
         <CheckBoxPreference

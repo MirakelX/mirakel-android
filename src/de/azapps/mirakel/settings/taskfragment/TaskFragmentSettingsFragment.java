@@ -20,9 +20,12 @@ package de.azapps.mirakel.settings.taskfragment;
 
 import java.util.List;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
+import android.app.Fragment;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import de.azapps.mirakel.helper.Log;
@@ -31,7 +34,8 @@ import de.azapps.mirakel.main_activity.DragNDropListView;
 import de.azapps.mirakel.main_activity.DragNDropListView.RemoveListener;
 import de.azapps.mirakelandroid.R;
 
-public class TaskFragmentSettings extends Activity {
+@SuppressLint("NewApi")
+public class TaskFragmentSettingsFragment extends Fragment {
 	private final static String TAG = "de.azapps.mirakel.settings.taskfragment.TaskFragmentSettings";
 	private DragNDropListView listView;
 	private TaskFragmentSettingsAdapter adapter;
@@ -40,16 +44,18 @@ public class TaskFragmentSettings extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// The activity is being created.
-		if (MirakelPreferences.isDark())
-			setTheme(R.style.AppBaseThemeDARK);
-		setContentView(R.layout.activity_task_fragment_settings);
 	}
 
 	@Override
-	protected void onResume() {
-		super.onResume();
-		// The activity has become visible (it is now "resumed").
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		View view = inflater.inflate(R.layout.activity_task_fragment_settings,
+				null);
+		setupView(view);
+		getActivity().getActionBar().setTitle(R.string.settings_task_fragment);
+		return view;
+	}
+
+	void setupView(View v) {
 		final List<Integer> values = MirakelPreferences.getTaskFragmentLayout();
 		values.add(ADD_KEY);
 
@@ -59,9 +65,9 @@ public class TaskFragmentSettings extends Activity {
 			return;
 		}
 
-		adapter = new TaskFragmentSettingsAdapter(this,
+		adapter = new TaskFragmentSettingsAdapter(getActivity(),
 				R.layout.row_taskfragment_settings, values);
-		listView = (DragNDropListView) findViewById(R.id.taskfragment_list);
+		listView = (DragNDropListView) v.findViewById(R.id.taskfragment_list);
 		listView.setEnableDrag(true);
 		listView.setItemsCanFocus(true);
 		listView.setAdapter(adapter);
@@ -81,7 +87,7 @@ public class TaskFragmentSettings extends Activity {
 			}
 
 			@Override
-			public void onDrag(int x, int y, ListView listView) {
+			public void onDrag(int x, int y, ListView l) {
 				// Nothing
 			}
 		});
@@ -113,13 +119,6 @@ public class TaskFragmentSettings extends Activity {
 			}
 		});
 		listView.allowRemove(true);
-	}
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-		// Another activity is taking focus (this activity is about to be
-		// "paused").
 	}
 
 }

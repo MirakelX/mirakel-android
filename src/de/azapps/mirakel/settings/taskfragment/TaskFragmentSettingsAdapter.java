@@ -20,6 +20,7 @@ package de.azapps.mirakel.settings.taskfragment;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import android.app.Activity;
 import android.content.Context;
 import android.util.SparseArray;
@@ -44,7 +45,7 @@ public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
 
 	public TaskFragmentSettingsAdapter(Context c) {
 		// do not call this, only for error-fixing there
-		super(c, 0, (List<Integer>) new ArrayList<Integer>());
+		super(c, 0, new ArrayList<Integer>());
 	}
 
 	public TaskFragmentSettingsAdapter(Context context, int layoutResourceId,
@@ -60,7 +61,7 @@ public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		if (data.size() - 1 == position
-				&& data.get(position) == TaskFragmentSettings.ADD_KEY) {
+				&& data.get(position) == TaskFragmentSettingsFragment.ADD_KEY) {
 			return setupAddButton();
 		}
 		View row = convertView;
@@ -117,7 +118,7 @@ public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
 			Log.wtf(TAG, "go sleeping, its to late");
 		}
 		for (int d : data) {
-			if (d != TaskFragmentSettings.ADD_KEY) {
+			if (d != TaskFragmentSettingsFragment.ADD_KEY) {
 				allItems.remove(d);
 			}
 		}
@@ -167,7 +168,7 @@ public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
 		super.notifyDataSetChanged();
 		data.remove(data.size()-1);
 		MirakelPreferences.setTaskFragmentLayout(data);
-		data.add(TaskFragmentSettings.ADD_KEY);
+		data.add(TaskFragmentSettingsFragment.ADD_KEY);
 	}
 
 	public void onDrop(final int from, final int to) {
