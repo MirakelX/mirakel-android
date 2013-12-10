@@ -30,6 +30,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.export_import.ExportImport;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.account.AccountMirakel;
@@ -59,6 +60,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	public DatabaseHelper(Context ctx) {
 		super(ctx, "mirakel.db", null, DATABASE_VERSION);
+		MirakelPreferences.init(ctx);
 		context = ctx;
 	}
 

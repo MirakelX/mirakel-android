@@ -1,20 +1,12 @@
 /*******************************************************************************
- * Mirakel is an Android App for managing your ToDo-Lists
- * 
- * Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
- * 
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
- * 
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- * 
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Mirakel is an Android App for managing your ToDo-Lists Copyright (c) 2013 Anatolij Zelenin, Georg
+ * Semmler. This program is free software: you can redistribute it and/or modify it under the terms
+ * of the GNU General Public License as published by the Free Software Foundation, either version 3
+ * of the License, or any later version. This program is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have
+ * received a copy of the GNU General Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package de.azapps.mirakel.helper;
 
@@ -33,19 +25,20 @@ import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakelandroid.R;
 
 /**
- * In this class we collect all functions to get the current settings. The
- * advantage is, that we can set the default value at a central place
+ * In this class we collect all functions to get the current settings. The advantage is, that we can
+ * set the default value at a central place
  * 
  * @author az
- * 
  */
 public class MirakelPreferences {
-	private static SharedPreferences settings;
-	private static Context context;
+	private static SharedPreferences	settings;
+	private static Context				context;
 
 	public static void init(Context context) {
-		MirakelPreferences.context = context;
-		settings = PreferenceManager.getDefaultSharedPreferences(context);
+		if (settings == null || MirakelPreferences.context == null) {
+			MirakelPreferences.context = context;
+			settings = PreferenceManager.getDefaultSharedPreferences(context);
+		}
 	}
 
 	public static boolean isDark() {
@@ -99,14 +92,11 @@ public class MirakelPreferences {
 	public static ListMirakel getImportDefaultList(boolean safe) {
 		if (settings.getBoolean("importDefaultList", false)) {
 			int listId = settings.getInt("defaultImportList", 0);
-			if (listId == 0)
-				return null;
+			if (listId == 0) return null;
 			return ListMirakel.getList(listId);
 		}
-		if (!safe)
-			return null;
-		else
-			return ListMirakel.safeFirst(context);
+		if (!safe) return null;
+		else return ListMirakel.safeFirst(context);
 	}
 
 	public static boolean isDateFormatRelative() {
@@ -145,8 +135,7 @@ public class MirakelPreferences {
 		} catch (NumberFormatException e) {
 			list = SpecialList.firstSpecial();
 		}
-		if (list == null)
-			list = ListMirakel.safeFirst(context);
+		if (list == null) list = ListMirakel.safeFirst(context);
 		return list;
 	}
 
@@ -228,16 +217,14 @@ public class MirakelPreferences {
 		if (serialized != null) {
 			String[] string_items = serialized.split("_");
 			for (String item : string_items) {
-				if (item.length() == 0)
-					continue;
+				if (item.length() == 0) continue;
 				items.add(Integer.valueOf(item));
 			}
 		}
 		return items;
 	}
 
-	public static boolean saveIntArray(String preferenceName,
-			List<Integer> items) {
+	public static boolean saveIntArray(String preferenceName, List<Integer> items) {
 		SharedPreferences.Editor editor = getEditor();
 		String pref = "";
 		for (Integer item : items) {
@@ -339,15 +326,15 @@ public class MirakelPreferences {
 	public static int getOldVersion() {
 		return settings.getInt("mirakel_old_version", -1);
 	}
-	
+
 	public static void setTaskFragmentLayout(List<Integer> newV) {
-		MirakelPreferences.saveIntArray("task_fragment_adapter_settings",
-				newV)
-		;
+		MirakelPreferences.saveIntArray("task_fragment_adapter_settings", newV);
 	}
+
 	public static List<Integer> getTaskFragmentLayout() {
-		List<Integer> items = MirakelPreferences.loadIntArray("task_fragment_adapter_settings");
-		if(items.size()==0){//should not be, add all
+		List<Integer> items = MirakelPreferences
+				.loadIntArray("task_fragment_adapter_settings");
+		if (items.size() == 0) {// should not be, add all
 			items.add(TYPE.HEADER);
 			items.add(TYPE.DUE);
 			items.add(TYPE.REMINDER);
@@ -359,7 +346,7 @@ public class MirakelPreferences {
 		}
 		return items;
 	}
-	
+
 	public static boolean isShowAccountName() {
 		return settings.getBoolean("show_account_name", false);
 	}
