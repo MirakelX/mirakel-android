@@ -199,13 +199,13 @@
     <string name="swipeBehavior_title">Switch on swipe to touched Task</string>
     <string name="swipeBehavior_summary">Switch to Task which is touched or switch to last selected task</string>
     <string name="lock_drawer_in_task_fragment_summary">So you don\'t open it accidentally</string>
-    <string name="lock_drawer_in_task_fragment">Lock List-View in the Task details</string>
+    <string name="lock_drawer_in_task_fragment">Lock List-iew in the Task details</string>
     <string name="useTabletLayout">Use TabletLayout</string>
     <string name="general">General</string>
-    <string name="tasks_fragment">Tasks Overview</string>
-    <string name="task_fragment">Task Deteils</string>
-    <string name="do_not_touch">Do not Touch</string>
-    <string name="list_fragment">List Overview</string>
+    <string name="tasks_fragment">Tasks overview</string>
+    <string name="task_fragment">Task details</string>
+    <string name="do_not_touch">Do not touch</string>
+    <string name="list_fragment">List overview</string>
     <string name="show_account_name">Show account name</string>
 
     <!-- Language -->
