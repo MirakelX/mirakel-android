@@ -424,12 +424,12 @@ public class MainActivity extends ActionBarActivity implements
 			getSupportActionBar().setTitle(getString(R.string.list_title));
 			break;
 			case RIGHT_FRAGMENT:
-				newmenu = isRTL ? handleTaskFragmentMenu()
-						: handleTasksFragmentMenu();
-			break;
-			case LEFT_FRAGMENT:
 				newmenu = isRTL ? handleTasksFragmentMenu()
 						: handleTaskFragmentMenu();
+				break;
+			case LEFT_FRAGMENT:
+				newmenu = isRTL ? handleTaskFragmentMenu()
+						: handleTasksFragmentMenu();
 			break;
 		default:
 			Toast.makeText(getApplicationContext(), "Where are the dragons?",
