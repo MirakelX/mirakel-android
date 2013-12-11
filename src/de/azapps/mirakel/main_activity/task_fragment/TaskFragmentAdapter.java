@@ -180,7 +180,7 @@ public class TaskFragmentAdapter extends
 	}
 
 	public TaskFragmentAdapter(Context context, int textViewResourceId, Task t) {
-		super(context, textViewResourceId, generateData(t, context));
+		super(context, textViewResourceId, generateData(t));
 		this.task = t;
 		if (task == null)
 			task = Task.getDummy(context);
@@ -238,71 +238,77 @@ public class TaskFragmentAdapter extends
 			width = display.getWidth();
 		}
 		switch (getItemViewType(position)) {
-		case TYPE.DUE:
-			row = setupDue(parent, convertView, width, position);
-			break;
-		case TYPE.FILE:
-			row = setupFile(parent, files.get(data.get(position).second),
-					convertView, position);
-			break;
-		case TYPE.HEADER:
-			row = setupHeader(parent, convertView);
-			break;
-		case TYPE.REMINDER:
-			if (width < minDueNextToReminderSize
-					|| (position > 1
-							&& data.get(position - 1).first != TYPE.DUE
-							&& position < data.size() && data.get(position + 1).first != TYPE.DUE))
-				row = setupReminder(parent, convertView);
-			break;
-		case TYPE.SUBTASK:
-			row = setupSubtask(parent, convertView,
-					subtasks.get(data.get(position).second), position);
-			break;
-		case TYPE.SUBTITLE:
-			String title = null;
-			OnClickListener action = null;
-			boolean pencilButton = false;
-			boolean cameraButton = false;
-			switch (data.get(position).second) {
-			case SUBTITLE_SUBTASKS:
-				title = context.getString(R.string.add_subtasks);
-				action = new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						TaskDialogHelpers.handleSubtask(context, task, adapter,
-								false);
-					}
-				};
+			case TYPE.DUE:
+				row = setupDue(parent, convertView, width, position);
 				break;
-			case SUBTITLE_FILES:
-				cameraButton = true;
-				title = context.getString(R.string.add_files);
-				action = new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						Helpers.showFileChooser(MainActivity.RESULT_ADD_FILE,
-								context.getString(R.string.file_select),
-								(Activity) context);
-					}
-				};
+			case TYPE.FILE:
+				row = setupFile(parent, files.get(data.get(position).second),
+						convertView, position);
 				break;
-			case SUBTITLE_PROGRESS:
-				title = context.getString(R.string.task_fragment_progress);
+			case TYPE.HEADER:
+				row = setupHeader(convertView);
+				break;
+			case TYPE.REMINDER:
+				if (width < minDueNextToReminderSize
+						|| (position > 1
+								&& data.get(position - 1).first != TYPE.DUE
+								&& position < data.size() && data
+								.get(position + 1).first != TYPE.DUE))
+					row = setupReminder(parent, convertView);
+				break;
+			case TYPE.SUBTASK:
+				row = setupSubtask(parent, convertView,
+						subtasks.get(data.get(position).second), position);
+				break;
+			case TYPE.SUBTITLE:
+				String title = null;
+				OnClickListener action = null;
+				boolean pencilButton = false;
+				boolean cameraButton = false;
+				switch (data.get(position).second) {
+					case SUBTITLE_SUBTASKS:
+						title = context.getString(R.string.add_subtasks);
+						action = new OnClickListener() {
+							@Override
+							public void onClick(View v) {
+								TaskDialogHelpers.handleSubtask(context, task,
+										adapter, false);
+							}
+						};
+						break;
+					case SUBTITLE_FILES:
+						cameraButton = true;
+						title = context.getString(R.string.add_files);
+						action = new OnClickListener() {
+							@Override
+							public void onClick(View v) {
+								Helpers.showFileChooser(
+										MainActivity.RESULT_ADD_FILE,
+										context.getString(R.string.file_select),
+										(Activity) context);
+							}
+						};
+						break;
+					case SUBTITLE_PROGRESS:
+						title = context
+								.getString(R.string.task_fragment_progress);
+						break;
+					default:
+						Log.w(TAG, "unknown subtitle");
+						break;
+				}
+				row = setupSubtitle(parent, title, pencilButton, cameraButton,
+						action, convertView);
+				break;
+			case TYPE.CONTENT:
+				row = setupContent(parent, convertView);
+				break;
+			case TYPE.PROGRESS:
+				row = setupProgress(parent, convertView);
 				break;
 			default:
-				Log.w(TAG, "unknown subtitle");
+				Log.d(TAG, "unknown view-type");
 				break;
-			}
-			row = setupSubtitle(parent, title, pencilButton, cameraButton,
-					action, convertView);
-			break;
-		case TYPE.CONTENT:
-			row = setupContent(parent, convertView);
-			break;
-		case TYPE.PROGRESS:
-			row = setupProgress(parent, convertView);
-			break;
 
 		}
 
@@ -372,20 +378,20 @@ public class TaskFragmentAdapter extends
 			holder.taskRowDoneWrapper.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					Task task = (Task) v.getTag();
-					task.toggleDone();
-					((MainActivity) context).saveTask(task);
+					Task taskLocal = (Task) v.getTag();
+					taskLocal.toggleDone();
+					((MainActivity) context).saveTask(taskLocal);
 					ReminderAlarm.updateAlarms(context);
-					holder.taskRowDone.setChecked(task.isDone());
-					updateName(task, row, holder);
+					holder.taskRowDone.setChecked(taskLocal.isDone());
+					updateName(taskLocal, row, holder);
 				}
 			});
 
 			holder.taskRowPriority.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(final View v) {
-					final Task task = (Task) v.getTag();
-					TaskDialogHelpers.handlePriority(context, task,
+					final Task taskLocal = (Task) v.getTag();
+					TaskDialogHelpers.handlePriority(context, taskLocal,
 							new ExecInterface() {
 								@Override
 								public void exec() {
@@ -413,12 +419,12 @@ public class TaskFragmentAdapter extends
 		holder.taskRowDone.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Task task = (Task) v.getTag();
-				task.toggleDone();
-				((MainActivity) context).saveTask(task);
+				Task taskLocal = (Task) v.getTag();
+				taskLocal.toggleDone();
+				((MainActivity) context).saveTask(taskLocal);
 				ReminderAlarm.updateAlarms(context);
-				holder.taskRowDone.setChecked(task.isDone());
-				updateName(task, row, holder);
+				holder.taskRowDone.setChecked(taskLocal.isDone());
+				updateName(taskLocal, row, holder);
 			}
 		});
 		if (task.getContent().length() != 0) {
@@ -426,7 +432,7 @@ public class TaskFragmentAdapter extends
 		} else {
 			holder.taskRowHasContent.setVisibility(View.INVISIBLE);
 		}
-		if (task != null && task.getList() != null) {
+		if (task.getList() != null) {
 			holder.taskRowList.setVisibility(View.VISIBLE);
 			holder.taskRowList.setText(task.getList().getName());
 		} else {
@@ -477,8 +483,8 @@ public class TaskFragmentAdapter extends
 		return row;
 	}
 
-	private void updateName(Task task, View row, final TaskHolder holder) {
-		if (task.isDone()) {
+	private void updateName(Task taskLocal, View row, final TaskHolder holder) {
+		if (taskLocal.isDone()) {
 			holder.taskRowName.setTextColor(row.getResources().getColor(
 					R.color.Grey));
 		} else {
@@ -646,63 +652,80 @@ public class TaskFragmentAdapter extends
 		View divider;
 	}
 
-	private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+	private ActionMode.Callback	mActionModeCallback	= new ActionMode.Callback() {
 
-		// Called when the action mode is created; startActionMode() was called
-		@Override
-		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-			// Inflate a menu resource providing context menu items
-			MenuInflater inflater = mode.getMenuInflater();
-			inflater.inflate(R.menu.save, menu);
-			return true;
-		}
+														// Called when the action mode is created;
+														// startActionMode() was called
+														@Override
+														public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+															// Inflate a menu resource providing
+															// context menu items
+															MenuInflater menuInflater = mode
+																	.getMenuInflater();
+															menuInflater
+																	.inflate(
+																			R.menu.save,
+																			menu);
+															return true;
+														}
 
-		// Called each time the action mode is shown. Always called after
-		// onCreateActionMode, but
-		// may be called multiple times if the mode is invalidated.
-		@Override
-		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-			return false; // Return false if nothing is done
-		}
+														// Called each time the action mode is
+														// shown. Always called after
+														// onCreateActionMode, but
+														// may be called multiple times if the mode
+														// is invalidated.
+														@Override
+														public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+															return false; // Return false if nothing
+																			// is done
+														}
 
-		// Called when the user selects a contextual menu item
-		@Override
-		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-			switch (item.getItemId()) {
-			case R.id.save:
-				editContent = !editContent;
-				saveContent();
-				notifyDataSetChanged();
-				break;
-			case R.id.cancel:
-				editContent = !editContent;
-				notifyDataSetChanged();
-				mode.finish();
-			}
-			return true;
-		}
+														// Called when the user selects a contextual
+														// menu item
+														@Override
+														public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+															switch (item
+																	.getItemId()) {
+																case R.id.save:
+																	editContent = !editContent;
+																	saveContent();
+																	notifyDataSetChanged();
+																	break;
+																case R.id.cancel:
+																	editContent = !editContent;
+																	notifyDataSetChanged();
+																	mode.finish();
+																	break;
+																default:
+																	Log.d(TAG,
+																			"unkown menubutton");
+																	break;
+															}
+															return true;
+														}
 
-		// Called when the user exits the action mode
-		@Override
-		public void onDestroyActionMode(ActionMode mode) {
-			if (editContent
-					&& Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {// on
-																				// 2.x
-																				// you
-																				// cannot
-																				// get
-																				// done
-																				// button
-				editContent = !editContent;
-				saveContent();
-				notifyDataSetChanged();
-			}
-			mActionMode = null;
-		}
+														// Called when the user exits the action
+														// mode
+														@Override
+														public void onDestroyActionMode(ActionMode mode) {
+															if (editContent
+																	&& Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {// on
+																																// 2.x
+																																// you
+																																// cannot
+																																// get
+																																// done
+																																// button
+																editContent = !editContent;
+																saveContent();
+																notifyDataSetChanged();
+															}
+															mActionMode = null;
+														}
 
-	};
-	private String taskEditText;
-	protected int cursorPos;
+													};
+	private String				taskEditText;
+	protected int				cursorPos;
 
 	private View setupProgress(ViewGroup parent, View convertView) {
 		final View view = convertView == null ? inflater.inflate(
@@ -727,9 +750,7 @@ public class TaskFragmentAdapter extends
 			}
 
 			@Override
-			public void onProgressChanged(SeekBar seekBar, int progress,
-					boolean fromUser) {
-			}
+			public void onProgressChanged(SeekBar seekBar, int progressLocal, boolean fromUser) {}
 		});
 		return view;
 
@@ -1020,7 +1041,7 @@ public class TaskFragmentAdapter extends
 				@Override
 				public void onClick(View v) {
 					mIgnoreTimeSet = false;
-					final Calendar due = (task.getDue() == null ? new GregorianCalendar()
+					final Calendar dueLocal = (task.getDue() == null ? new GregorianCalendar()
 							: task.getDue());
 					final FragmentManager fm = ((MainActivity) context)
 							.getSupportFragmentManager();
@@ -1030,7 +1051,7 @@ public class TaskFragmentAdapter extends
 
 										@Override
 										public void onDateSet(
-												DatePicker datePickerDialog,
+												DatePicker dp,
 												int year, int month, int day) {
 											if (mIgnoreTimeSet)
 												return;
@@ -1058,9 +1079,9 @@ public class TaskFragmentAdapter extends
 															.getString(R.string.no_date));
 
 										}
-									}, due.get(Calendar.YEAR), due
+									}, dueLocal.get(Calendar.YEAR), dueLocal
 											.get(Calendar.MONTH),
-									due.get(Calendar.DAY_OF_MONTH), false,
+									dueLocal.get(Calendar.DAY_OF_MONTH), false,
 									darkTheme, true);
 					// datePickerDialog.setYearRange(2005, 2036);// must be <
 					// 2037
@@ -1118,7 +1139,7 @@ public class TaskFragmentAdapter extends
 		EditText txt;
 	}
 
-	private View setupHeader(ViewGroup parent, View convertView) {
+	private View setupHeader(View convertView) {
 		// Task Name
 		final View header = convertView == null ? inflater.inflate(
 				R.layout.task_head_line, null, false) : convertView;
@@ -1146,7 +1167,7 @@ public class TaskFragmentAdapter extends
 							.setOnFocusChangeListener(new OnFocusChangeListener() {
 
 								@Override
-								public void onFocusChange(View v,
+								public void onFocusChange(View view,
 										boolean hasFocus) {
 									InputMethodManager imm = (InputMethodManager) context
 											.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -1165,7 +1186,7 @@ public class TaskFragmentAdapter extends
 					holder.txt.requestFocus();
 					holder.txt
 							.setOnEditorActionListener(new OnEditorActionListener() {
-								public boolean onEditorAction(TextView v,
+								public boolean onEditorAction(TextView view,
 										int actionId, KeyEvent event) {
 									if (actionId == EditorInfo.IME_ACTION_DONE) {
 										EditText txt = (EditText) header
@@ -1252,7 +1273,7 @@ public class TaskFragmentAdapter extends
 			Log.wtf(TAG, "task null");
 			return;
 		}
-		List<Pair<Integer, Integer>> generateData = generateData(t, context);
+		List<Pair<Integer, Integer>> generateData = generateData(t);
 		super.changeData(generateData);
 		task = t;
 		subtasks = task.getSubtasks();
@@ -1268,8 +1289,7 @@ public class TaskFragmentAdapter extends
 		return task;
 	}
 
-	private static List<Pair<Integer, Integer>> generateData(Task task,
-			Context context) {
+	private static List<Pair<Integer, Integer>> generateData(Task task) {
 		// From config
 		List<Integer> items = MirakelPreferences.getTaskFragmentLayout();
 
