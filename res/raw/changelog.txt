@@ -19,7 +19,7 @@
   <body>
 $ 2.2-beta1+x
   % Version 2.2-beta1+x
-  _2013-12-10
+  _2013-12-11
   ! Please report Bugs and errors!
     * Basic Multi-Account handling
     * Caldav-Sync over davdroid
@@ -34,6 +34,7 @@ $ 2.2-beta1+x
     * Add Weekdays to semantics
     * Added Portuguese translations
     * support Right-to-Left layout for arabic translation
+    * Record audio and create tasks directly from audio records
 $ 2.1.4+x
   % Version 2.1.4+x (Beta)
   ! Please report Bugs and errors!
