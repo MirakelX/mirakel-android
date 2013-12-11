@@ -1294,10 +1294,10 @@ public class TaskFragmentAdapter extends
 			case TYPE.PROGRESS:
 				data.add(new Pair<Integer, Integer>(TYPE.SUBTITLE,
 						SUBTITLE_PROGRESS));
-				data.add(new Pair<Integer, Integer>(TYPE.PROGRESS, 0));
-				break;
-			default:
-				data.add(new Pair<Integer, Integer>(item, 0));
+					data.add(new Pair<Integer, Integer>(TYPE.PROGRESS, 0));
+					break;
+				default:
+					data.add(new Pair<Integer, Integer>(item, 0));
 			}
 		}
 		return data;

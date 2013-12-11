@@ -22,6 +22,7 @@ import android.preference.PreferenceManager;
 import de.azapps.mirakel.main_activity.task_fragment.TaskFragmentAdapter.TYPE;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 
 /**
@@ -192,6 +193,20 @@ public class MirakelPreferences {
 	public static String getImportFileTitle() {
 		return settings.getString("import_file_title",
 				context.getString(R.string.file_default_title));
+	}
+
+	public static ListMirakel getListForSubtask(Task parent) {
+		if (settings.contains("subtaskAddToSameList")) {
+			if (addSubtaskToSameList()) {
+				return parent.getList();
+			} else {
+				return subtaskAddToList();
+			}
+		} else {
+			// Create a new list and set this list as the default list for future subtasks
+			return ListMirakel.newList(context
+					.getString(R.string.subtask_list_name));
+		}
 	}
 
 	public static boolean addSubtaskToSameList() {

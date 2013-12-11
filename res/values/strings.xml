@@ -60,6 +60,7 @@
     <string name="task_set_reminder">Set Reminder</string>
     <string name="action_undo">Undo the last Change</string>
     <string name="add_subtasks">Add subtask…</string>
+    <string name="subtask_list_name">Subtasks</string>
     <string name="remove_files">Remove Files from Task</string>
     <string name="remove_files_summary">Do you want to remove %1$s from %2$s?</string>
     <string name="add_subtask">Add Subtask</string>
