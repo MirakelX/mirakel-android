@@ -254,6 +254,9 @@ Device: %3$s\n]]>
     <string name="file_default_title">Check out this file</string>
     <string name="photo_default_title">Check out this photo</string>
     <string name="edit">Edit</string>
+    <string name="audio_record_stop">Stop recording</string>
+    <string name="audio_record_title">Audio recording…</string>
+    <string name="audio_record_message">Recording…</string>
 
     <!-- Reccuring -->
     <string name="daily">Daily</string>
