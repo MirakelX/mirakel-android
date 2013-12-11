@@ -280,7 +280,7 @@ public class ListMirakel extends ListBase {
 	 * @param context
 	 *            The Application-Context
 	 */
-	public static void init(Context context) {
+	public static void init(@SuppressWarnings("hiding") Context context) {
 		ListMirakel.context = context;
 		dbHelper = new DatabaseHelper(context);
 		database = dbHelper.getWritableDatabase();
@@ -395,6 +395,7 @@ public class ListMirakel extends ListBase {
 			cursor.close();
 			return t;
 		}
+		cursor.close();
 		return null;
 	}
 
@@ -526,7 +527,7 @@ public class ListMirakel extends ListBase {
 		return lists;
 	}
 
-	public static ListMirakel getSafeDefaultList(Context context) {
+	public static ListMirakel getSafeDefaultList() {
 		ListMirakel list = MirakelPreferences.getImportDefaultList(true);
 		return list;
 	}
