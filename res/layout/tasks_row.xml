@@ -80,7 +80,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:text="test"
             android:textIsSelectable="false"
             android:textSize="18sp" />
 
@@ -100,7 +99,7 @@
 
             <TextView
                 android:id="@+id/tasks_row_list_name"
-                android:layout_width="0dip"
+                android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:layout_marginEnd="5dp"
                 android:layout_marginRight="5dp"
