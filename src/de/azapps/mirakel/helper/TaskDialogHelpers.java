@@ -1,23 +1,17 @@
 /*******************************************************************************
- * Mirakel is an Android App for managing your ToDo-Lists
- * 
- * Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
- * 
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
- * 
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- * 
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Mirakel is an Android App for managing your ToDo-Lists Copyright (c) 2013 Anatolij Zelenin, Georg
+ * Semmler. This program is free software: you can redistribute it and/or modify it under the terms
+ * of the GNU General Public License as published by the Free Software Foundation, either version 3
+ * of the License, or any later version. This program is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have
+ * received a copy of the GNU General Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package de.azapps.mirakel.helper;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -27,6 +21,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
+import android.media.MediaRecorder;
 import android.os.Looper;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
@@ -56,6 +52,7 @@ import com.android.calendar.recurrencepicker.RecurrencePickerDialog.OnRecurenceS
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.adapter.SubtaskAdapter;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
+import de.azapps.mirakel.helper.Helpers.ExecInterfaceWithTask;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.main_activity.task_fragment.TaskFragmentAdapter;
 import de.azapps.mirakel.model.DatabaseHelper;
@@ -68,6 +65,7 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.FileUtils;
 import de.azapps.widgets.DateTimeDialog;
 import de.azapps.widgets.DateTimeDialog.OnDateTimeSetListner;
 
@@ -614,5 +612,50 @@ public class TaskDialogHelpers {
 			task.setRecurringReminder(id);
 		}
 		task.safeSave();
+	}
+
+	public static void handleAudioRecord(final Context context, final Task task, final ExecInterfaceWithTask onSuccess) {
+		final MediaRecorder mRecorder = new MediaRecorder();
+		mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+		mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+		final String filePath = FileUtils.getOutputMediaFile(
+				FileUtils.MEDIA_TYPE_AUDIO).getAbsolutePath();
+		mRecorder.setOutputFile(filePath);
+		mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+		try {
+			mRecorder.prepare();
+		} catch (IOException e) {
+			Log.e(TAG, "prepare() failed");
+		}
+		mRecorder.start();
+		new AlertDialog.Builder(context)
+				.setTitle(R.string.audio_record_title)
+				.setMessage(R.string.audio_record_message)
+				.setPositiveButton(R.string.audio_record_stop,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								Task mTask = task;
+								if (task.getId() == 0) {
+									mTask = Semantic.createTask(
+											MirakelPreferences
+													.getAudioDefaultTitle(),
+											task.getList(), true, context);
+								}
+								mRecorder.stop();
+								mRecorder.release();
+								mTask.addFile(context, filePath);
+								onSuccess.exec(mTask);
+							}
+						}).setOnCancelListener(new OnCancelListener() {
+					@Override
+					public void onCancel(DialogInterface dialog) {
+						mRecorder.stop();
+						mRecorder.release();
+						try {
+							new File(filePath).delete();
+						} catch (Exception e) {}
+					}
+				}).show();
 	}
 }

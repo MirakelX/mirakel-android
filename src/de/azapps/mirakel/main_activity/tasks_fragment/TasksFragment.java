@@ -65,6 +65,7 @@ import android.widget.Toast;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
+import de.azapps.mirakel.helper.Helpers.ExecInterfaceWithTask;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
@@ -78,31 +79,38 @@ import de.azapps.mirakelandroid.R;
 import de.azapps.tools.FileUtils;
 
 public class TasksFragment extends Fragment {
-	private static final String TAG = "TasksFragment";
-	private TaskAdapter adapter;
-	private MainActivity main;
-	View view;
-	protected EditText newTask;
-	private boolean created = false;
-	private boolean finishLoad;
-	private boolean loadMore;
-	private ListView listView;
-	private int ItemCount;
-	private List<Task> values;
-	private static final int TASK_RENAME = 0, TASK_MOVE = 1, TASK_DESTROY = 2;
-	private int listId;
-	private boolean showDone = true;
-	private ActionMode mActionMode = null;
-	final Handler mHandler = new Handler();
+	private static final String	TAG				= "TasksFragment";
+	private TaskAdapter			adapter;
+	private MainActivity		main;
+	View						view;
+	protected EditText			newTask;
+	private boolean				created			= false;
+	private boolean				finishLoad;
+	private boolean				loadMore;
+	private ListView			listView;
+	private int					ItemCount;
+	private List<Task>			values;
+	private static final int	TASK_RENAME		= 0, TASK_MOVE = 1,
+			TASK_DESTROY = 2;
+	private int					listId;
+	private boolean				showDone		= true;
+	private ActionMode			mActionMode		= null;
+	final Handler				mHandler		= new Handler();
 
-	final Runnable mUpdateResults = new Runnable() {
-		public void run() {
-			adapter.changeData(
-					new ArrayList<Task>(values.subList(0, ItemCount > values
-							.size() ? values.size() : ItemCount)), listId);
-			adapter.notifyDataSetChanged();
-		}
-	};
+	final Runnable				mUpdateResults	= new Runnable() {
+													public void run() {
+														adapter.changeData(
+																new ArrayList<Task>(
+																		values.subList(
+																				0,
+																				ItemCount > values
+																						.size() ? values
+																						.size()
+																						: ItemCount)),
+																listId);
+														adapter.notifyDataSetChanged();
+													}
+												};
 
 	public void setActivity(MainActivity activity) {
 		main = activity;
@@ -114,8 +122,7 @@ public class TasksFragment extends Fragment {
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		finishLoad = false;
 		loadMore = false;
 		ItemCount = 0;
@@ -152,8 +159,7 @@ public class TasksFragment extends Fragment {
 			newTask.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
 		}
 		newTask.setOnEditorActionListener(new OnEditorActionListener() {
-			public boolean onEditorAction(TextView v, int actionId,
-					KeyEvent event) {
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 				if (actionId == EditorInfo.IME_ACTION_SEND
 						|| (actionId == EditorInfo.IME_NULL && event
 								.getAction() == KeyEvent.ACTION_DOWN)) {
@@ -166,23 +172,17 @@ public class TasksFragment extends Fragment {
 		newTask.addTextChangedListener(new TextWatcher() {
 
 			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
-			}
+			public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
 			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-			}
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
 			@Override
 			public void afterTextChanged(Editable s) {
 				ImageButton send = (ImageButton) view
 						.findViewById(R.id.btnEnter);
-				if (s.length() > 0)
-					send.setVisibility(View.VISIBLE);
-				else
-					send.setVisibility(View.GONE);
+				if (s.length() > 0) send.setVisibility(View.VISIBLE);
+				else send.setVisibility(View.GONE);
 
 			}
 		});
@@ -197,8 +197,7 @@ public class TasksFragment extends Fragment {
 			}
 
 			@Override
-			public void onScroll(AbsListView view, int firstVisibleItem,
-					int visibleItemCount, final int totalItemCount) {
+			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, final int totalItemCount) {
 				int lastInScreen = firstVisibleItem + visibleItemCount;
 				if ((lastInScreen == totalItemCount) && !(loadMore)
 						&& finishLoad && adapter != null
@@ -226,14 +225,12 @@ public class TasksFragment extends Fragment {
 	}
 
 	public void focusNew(final boolean request_focus) {
-		if (newTask == null)
-			return;
+		if (newTask == null) return;
 		newTask.setOnFocusChangeListener(new OnFocusChangeListener() {
 			@Override
 			public void onFocusChange(final View v, final boolean hasFocus) {
 				if (main.getCurrentPosition() != MainActivity
-						.getTasksFragmentPosition())
-					return;
+						.getTasksFragmentPosition()) return;
 				newTask.post(new Runnable() {
 					@Override
 					public void run() {
@@ -276,12 +273,10 @@ public class TasksFragment extends Fragment {
 				@Override
 				public void run() {
 					Log.d(TAG, "clear focus");
-					if (newTask == null)
-						return;
+					if (newTask == null) return;
 					newTask.setOnFocusChangeListener(null);
 					newTask.clearFocus();
-					if (getActivity() == null)
-						return;
+					if (getActivity() == null) return;
 
 					InputMethodManager imm = (InputMethodManager) getActivity()
 							.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -342,8 +337,7 @@ public class TasksFragment extends Fragment {
 
 	@SuppressLint("NewApi")
 	protected void update(boolean reset) {
-		if (!created)
-			return;
+		if (!created) return;
 		if (values == null) {
 			try {
 				values = main.getCurrentList().tasks(showDone);
@@ -354,8 +348,7 @@ public class TasksFragment extends Fragment {
 		}
 		if (adapter != null && finishLoad) {
 			mHandler.post(mUpdateResults);
-			if (reset)
-				setScrollPosition(0);
+			if (reset) setScrollPosition(0);
 			return;
 		}
 		if (adapter != null) {
@@ -408,8 +401,7 @@ public class TasksFragment extends Fragment {
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
 			listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 				@Override
-				public boolean onItemLongClick(AdapterView<?> parent,
-						View item, int position, final long id) {
+				public boolean onItemLongClick(AdapterView<?> parent, View item, int position, final long id) {
 					AlertDialog.Builder builder = new AlertDialog.Builder(
 							getActivity());
 					Task task = values.get((int) id);
@@ -421,19 +413,18 @@ public class TasksFragment extends Fragment {
 					builder.setItems(
 							items.toArray(new CharSequence[items.size()]),
 							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int item) {
+								public void onClick(DialogInterface dialog, int item) {
 									Task task = values.get((int) id);
 									switch (item) {
-									case TASK_RENAME:
-										main.setCurrentTask(task);
-										break;
-									case TASK_MOVE:
-										main.handleMoveTask(task);
-										break;
-									case TASK_DESTROY:
-										main.handleDestroyTask(task);
-										break;
+										case TASK_RENAME:
+											main.setCurrentTask(task);
+											break;
+										case TASK_MOVE:
+											main.handleMoveTask(task);
+											break;
+										case TASK_DESTROY:
+											main.handleDestroyTask(task);
+											break;
 									}
 								}
 							});
@@ -473,38 +464,36 @@ public class TasksFragment extends Fragment {
 				}
 
 				@Override
-				public boolean onActionItemClicked(ActionMode mode,
-						MenuItem item) {
+				public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 					List<Task> tasks = adapter.getSelected();
 					switch (item.getItemId()) {
-					case R.id.menu_delete:
-						main.handleDestroyTask(tasks);
-						break;
-					case R.id.menu_move:
-						main.handleMoveTask(tasks);
-						break;
-					case R.id.edit_task:
-						main.setCurrentTask(tasks.get(0), true);
-						break;
-					case R.id.done_task:
-						for (Task t : tasks) {
-							t.setDone(true);
-							try {
-								t.save();
-							} catch (NoSuchListException e) {
-								Log.d(TAG, "list did vanish");
+						case R.id.menu_delete:
+							main.handleDestroyTask(tasks);
+							break;
+						case R.id.menu_move:
+							main.handleMoveTask(tasks);
+							break;
+						case R.id.edit_task:
+							main.setCurrentTask(tasks.get(0), true);
+							break;
+						case R.id.done_task:
+							for (Task t : tasks) {
+								t.setDone(true);
+								try {
+									t.save();
+								} catch (NoSuchListException e) {
+									Log.d(TAG, "list did vanish");
+								}
 							}
-						}
-						adapter.notifyDataSetChanged();
-						break;
+							adapter.notifyDataSetChanged();
+							break;
 					}
 					mode.finish();
 					return false;
 				}
 
 				@Override
-				public void onItemCheckedStateChanged(ActionMode mode,
-						int position, long id, boolean checked) {
+				public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
 					Log.d(TAG, "item " + position + " selected");
 					int oldCount = adapter.getSelectedCount();
 					adapter.setSelected(position, checked);
@@ -523,8 +512,7 @@ public class TasksFragment extends Fragment {
 		}
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> parent, View item,
-					int position, long id) {
+			public void onItemClick(AdapterView<?> parent, View item, int position, long id) {
 				// TODO Remove Bad Hack
 				Task task = values.get((int) id);
 				Log.v(TAG,
@@ -551,12 +539,9 @@ public class TasksFragment extends Fragment {
 	}
 
 	public void setScrollPosition(int pos) {
-		if (listView == null)
-			return;
-		if (listView.getCount() > pos)
-			listView.setSelectionFromTop(pos, 0);
-		else
-			listView.setSelectionFromTop(0, 0);
+		if (listView == null) return;
+		if (listView.getCount() > pos) listView.setSelectionFromTop(pos, 0);
+		else listView.setSelectionFromTop(0, 0);
 	}
 
 	public void updateButtons() {
@@ -596,6 +581,32 @@ public class TasksFragment extends Fragment {
 				}
 			});
 		}
+		if (!MirakelPreferences.useBtnAudioRecord()) {
+			view.findViewById(R.id.btnAudio_tasks).setVisibility(View.GONE);
+		} else {
+			ImageButton btnAudio = (ImageButton) view
+					.findViewById(R.id.btnAudio_tasks);
+			btnAudio.setVisibility(View.VISIBLE);
+			btnAudio.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					// TODO BAHHHH this is ugly!
+					final Task task = new Task("");
+					task.setList(main.getCurrentList());
+					task.setId(0);
+					TaskDialogHelpers.handleAudioRecord(main, task,
+							new ExecInterfaceWithTask() {
+								@Override
+								public void exec(Task task) {
+									main.setCurrentList(task.getList());
+									main.setCurrentTask(task, true);
+								}
+							});
+				}
+			});
+
+		}
 		if (!MirakelPreferences.useBtnCamera()
 				|| !Helpers.isIntentAvailable(main,
 						MediaStore.ACTION_IMAGE_CAPTURE)) {
@@ -612,8 +623,7 @@ public class TasksFragment extends Fragment {
 								MediaStore.ACTION_IMAGE_CAPTURE);
 						Uri fileUri = FileUtils
 								.getOutputMediaFileUri(FileUtils.MEDIA_TYPE_IMAGE);
-						if (fileUri == null)
-							return;
+						if (fileUri == null) return;
 						main.setFileUri(fileUri);
 						cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
 						getActivity().startActivityForResult(cameraIntent,

@@ -1,20 +1,12 @@
 /*******************************************************************************
- * Mirakel is an Android App for managing your ToDo-Lists
- * 
- * Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
- * 
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
- * 
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- * 
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Mirakel is an Android App for managing your ToDo-Lists Copyright (c) 2013 Anatolij Zelenin, Georg
+ * Semmler. This program is free software: you can redistribute it and/or modify it under the terms
+ * of the GNU General Public License as published by the Free Software Foundation, either version 3
+ * of the License, or any later version. This program is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have
+ * received a copy of the GNU General Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package de.azapps.mirakel.main_activity.task_fragment;
 
@@ -30,7 +22,6 @@ import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaPlayer;
-import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -47,11 +38,11 @@ import android.view.ViewGroup;
 import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Helpers;
+import de.azapps.mirakel.helper.Helpers.ExecInterfaceWithTask;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
@@ -63,23 +54,20 @@ import de.azapps.mirakelandroid.R;
 import de.azapps.tools.FileUtils;
 
 public class TaskFragment extends Fragment {
-	private static final String TAG = "TaskActivity";
+	private static final String	TAG			= "TaskActivity";
 
-	public TaskFragmentAdapter adapter;
-	private ActionMode mActionMode = null;
+	public TaskFragmentAdapter	adapter;
+	private ActionMode			mActionMode	= null;
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public void closeActionMode() {
-		if (mActionMode != null)
-			mActionMode.finish();
-		if (adapter != null)
-			adapter.closeActionMode();
+		if (mActionMode != null) mActionMode.finish();
+		if (adapter != null) adapter.closeActionMode();
 	}
 
 	@SuppressLint("NewApi")
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		final MainActivity main = (MainActivity) getActivity();
 		View view = inflater.inflate(R.layout.task_fragment, container, false);
 		ListView listView = (ListView) view.findViewById(R.id.taskFragment);
@@ -88,16 +76,14 @@ public class TaskFragment extends Fragment {
 		listView.setAdapter(adapter);
 		listView.setItemsCanFocus(true);
 		listView.setOnItemClickListener(new OnItemClickListener() {
-			private boolean playing = false;
-			private MediaPlayer mPlayer;
+			private boolean		playing	= false;
+			private MediaPlayer	mPlayer;
 
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1,
-					int position, long id) {
+			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long id) {
 				int type = adapter.getData().get(position).first;
 				if (type == TYPE.FILE) {
-					if (main.getCurrentTask() == null)
-						return;
+					if (main.getCurrentTask() == null) return;
 					FileMirakel file = main.getCurrentTask().getFiles()
 							.get(adapter.getData().get(position).second);
 					String mimetype = FileUtils.getMimeType(file.getPath());
@@ -148,8 +134,7 @@ public class TaskFragment extends Fragment {
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
 			listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 				@Override
-				public boolean onItemLongClick(AdapterView<?> parent,
-						View item, final int position, final long id) {
+				public boolean onItemLongClick(AdapterView<?> parent, View item, final int position, final long id) {
 					Integer typ = adapter.getData().get(position).first;
 					if (typ == TYPE.SUBTASK) {
 						AlertDialog.Builder builder = new AlertDialog.Builder(
@@ -163,8 +148,7 @@ public class TaskFragment extends Fragment {
 								new DialogInterface.OnClickListener() {
 
 									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
+									public void onClick(DialogInterface dialog, int which) {
 										if (which == 0) {
 											List<Task> l = new ArrayList<Task>();
 											l.add(adapter
@@ -194,8 +178,7 @@ public class TaskFragment extends Fragment {
 								new DialogInterface.OnClickListener() {
 
 									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
+									public void onClick(DialogInterface dialog, int which) {
 										if (which == 0) {
 											List<FileMirakel> l = new ArrayList<FileMirakel>();
 											l.add(adapter
@@ -254,70 +237,74 @@ public class TaskFragment extends Fragment {
 				}
 
 				@Override
-				public boolean onActionItemClicked(ActionMode mode,
-						MenuItem item) {
+				public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 
 					switch (item.getItemId()) {
-					case R.id.menu_delete:
-						List<Pair<Integer, Integer>> selected = adapter
-								.getSelected();
-						if (adapter.getSelectedCount() > 0
-								&& adapter.getSelected().get(0).first == TYPE.FILE) {
-							List<FileMirakel> files = adapter.getTask()
-									.getFiles();
-							List<FileMirakel> selectedItems = new ArrayList<FileMirakel>();
-							for (Pair<Integer, Integer> p : selected) {
-								if (p.first == TYPE.FILE) {
-									selectedItems.add(files.get(p.second));
+						case R.id.menu_delete:
+							List<Pair<Integer, Integer>> selected = adapter
+									.getSelected();
+							if (adapter.getSelectedCount() > 0
+									&& adapter.getSelected().get(0).first == TYPE.FILE) {
+								List<FileMirakel> files = adapter.getTask()
+										.getFiles();
+								List<FileMirakel> selectedItems = new ArrayList<FileMirakel>();
+								for (Pair<Integer, Integer> p : selected) {
+									if (p.first == TYPE.FILE) {
+										selectedItems.add(files.get(p.second));
+									}
 								}
+								TaskDialogHelpers.handleDeleteFile(
+										selectedItems, main, adapter.getTask(),
+										adapter);
+								break;
+							} else if (adapter.getSelectedCount() > 0
+									&& adapter.getSelected().get(0).first == TYPE.SUBTASK) {
+								List<Task> subtasks = adapter.getTask()
+										.getSubtasks();
+								List<Task> selectedItems = new ArrayList<Task>();
+								for (Pair<Integer, Integer> p : selected) {
+									if (p.first == TYPE.SUBTASK) {
+										selectedItems.add(subtasks
+												.get(p.second));
+									}
+								}
+								TaskDialogHelpers.handleRemoveSubtask(
+										selectedItems, main, adapter,
+										adapter.getTask());
+							} else {
+								Log.e(TAG, "How did you get selected this?");
 							}
-							TaskDialogHelpers.handleDeleteFile(selectedItems,
-									main, adapter.getTask(), adapter);
+						case R.id.edit_task:
+							if (adapter.getSelectedCount() == 1) {
+								adapter.setData(adapter
+										.getTask()
+										.getSubtasks()
+										.get(adapter.getSelected().get(0).second));
+							}
 							break;
-						} else if (adapter.getSelectedCount() > 0
-								&& adapter.getSelected().get(0).first == TYPE.SUBTASK) {
+						case R.id.done_task:
 							List<Task> subtasks = adapter.getTask()
 									.getSubtasks();
-							List<Task> selectedItems = new ArrayList<Task>();
-							for (Pair<Integer, Integer> p : selected) {
-								if (p.first == TYPE.SUBTASK) {
-									selectedItems.add(subtasks.get(p.second));
+							for (Pair<Integer, Integer> s : adapter
+									.getSelected()) {
+								Task t = subtasks.get(s.second);
+								t.setDone(true);
+								try {
+									t.save();
+								} catch (NoSuchListException e) {
+									Log.d(TAG, "list did vanish");
 								}
 							}
-							TaskDialogHelpers.handleRemoveSubtask(
-									selectedItems, main, adapter,
-									adapter.getTask());
-						} else {
-							Log.e(TAG, "How did you get selected this?");
-						}
-					case R.id.edit_task:
-						if (adapter.getSelectedCount() == 1) {
-							adapter.setData(adapter.getTask().getSubtasks()
-									.get(adapter.getSelected().get(0).second));
-						}
-						break;
-					case R.id.done_task:
-						List<Task> subtasks = adapter.getTask().getSubtasks();
-						for (Pair<Integer, Integer> s : adapter.getSelected()) {
-							Task t = subtasks.get(s.second);
-							t.setDone(true);
-							try {
-								t.save();
-							} catch (NoSuchListException e) {
-								Log.d(TAG, "list did vanish");
-							}
-						}
-						break;
-					default:
-						break;
+							break;
+						default:
+							break;
 					}
 					mode.finish();
 					return false;
 				}
 
 				@Override
-				public void onItemCheckedStateChanged(ActionMode mode,
-						int position, long id, boolean checked) {
+				public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
 					Log.d(TAG, "item " + position + " selected");
 					Integer type = adapter.getData().get(position).first;
 					int count = adapter.getSelectedCount();
@@ -350,44 +337,15 @@ public class TaskFragment extends Fragment {
 				&& Helpers.isIntentAvailable(main,
 						MediaStore.ACTION_IMAGE_CAPTURE)) {
 			adapter.setaudioButtonClick(new View.OnClickListener() {
-				private boolean startRecording = true;
-				private MediaRecorder mRecorder;
-				private String filePath = null;
-
 				@Override
 				public void onClick(View v) {
-					ImageButton button = (ImageButton) v;
-					if (startRecording) {
-						mRecorder = new MediaRecorder();
-						mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-						mRecorder
-								.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-						filePath = FileUtils.getOutputMediaFile(
-								FileUtils.MEDIA_TYPE_AUDIO).getAbsolutePath();
-						mRecorder.setOutputFile(filePath);
-						mRecorder
-								.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-						int resid = R.drawable.ic_action_stop;
-						if (MirakelPreferences.isDark())
-							resid = R.drawable.ic_action_stop_dark;
-						button.setImageResource(resid);
-						try {
-							mRecorder.prepare();
-						} catch (IOException e) {
-							Log.e(TAG, "prepare() failed");
-						}
-						mRecorder.start();
-						startRecording = false;
-					} else {
-						mRecorder.stop();
-						mRecorder.release();
-						mRecorder = null;
-						startRecording = true;
-						button.setImageResource(android.R.drawable.ic_btn_speak_now);
-						main.getCurrentTask().addFile(getActivity(), filePath);
-						update(main.getCurrentTask());
-					}
-
+					TaskDialogHelpers.handleAudioRecord(getActivity(),
+							main.getCurrentTask(), new ExecInterfaceWithTask() {
+								@Override
+								public void exec(Task t) {
+									update(t);
+								}
+							});
 				}
 			});
 			adapter.setcameraButtonClick(new View.OnClickListener() {
@@ -399,8 +357,7 @@ public class TaskFragment extends Fragment {
 								MediaStore.ACTION_IMAGE_CAPTURE);
 						Uri fileUri = FileUtils
 								.getOutputMediaFileUri(FileUtils.MEDIA_TYPE_IMAGE);
-						if (fileUri == null)
-							return;
+						if (fileUri == null) return;
 						main.setFileUri(fileUri);
 						cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
 						getActivity().startActivityForResult(cameraIntent,
