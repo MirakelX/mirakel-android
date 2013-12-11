@@ -72,18 +72,17 @@ import de.azapps.widgets.DateTimeDialog;
 import de.azapps.widgets.DateTimeDialog.OnDateTimeSetListner;
 
 public class TaskDialogHelpers {
-	protected static final String TAG = "TaskDialogHelpers";
-	private static final DialogInterface.OnClickListener dialogDoNothing = new DialogInterface.OnClickListener() {
+	protected static final String							TAG				= "TaskDialogHelpers";
+	private static final DialogInterface.OnClickListener	dialogDoNothing	= new DialogInterface.OnClickListener() {
 
-		@Override
-		public void onClick(DialogInterface dialog, int which) {
-			// Nothing
+																				@Override
+																				public void onClick(DialogInterface dialog, int which) {
+																					// Nothing
 
-		}
-	};
+																				}
+																			};
 
-	public static void handlePriority(final Context ctx, final Task task,
-			final Helpers.ExecInterface onSuccess) {
+	public static void handlePriority(final Context ctx, final Task task, final Helpers.ExecInterface onSuccess) {
 
 		final String[] t = { "2", "1", "0", "-1", "-2" };
 		AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
@@ -111,8 +110,7 @@ public class TaskDialogHelpers {
 		}
 	}
 
-	public static void handleReminder(final Activity ctx, final Task task,
-			final ExecInterface onSuccess, boolean dark) {
+	public static void handleReminder(final Activity ctx, final Task task, final ExecInterface onSuccess, boolean dark) {
 		final Calendar reminder = (task.getReminder() == null ? new GregorianCalendar()
 				: task.getReminder());
 
@@ -122,8 +120,7 @@ public class TaskDialogHelpers {
 				new OnDateTimeSetListner() {
 
 					@Override
-					public void onDateTimeSet(int year, int month,
-							int dayOfMonth, int hourOfDay, int minute) {
+					public void onDateTimeSet(int year, int month, int dayOfMonth, int hourOfDay, int minute) {
 						reminder.set(Calendar.YEAR, year);
 						reminder.set(Calendar.MONTH, month);
 						reminder.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -143,16 +140,14 @@ public class TaskDialogHelpers {
 
 					}
 				}, reminder.get(Calendar.YEAR), reminder.get(Calendar.MONTH),
-				reminder.get(Calendar.DAY_OF_MONTH), reminder
-						.get(Calendar.HOUR_OF_DAY), reminder
-						.get(Calendar.MINUTE), true, dark);
+				reminder.get(Calendar.DAY_OF_MONTH),
+				reminder.get(Calendar.HOUR_OF_DAY),
+				reminder.get(Calendar.MINUTE), true, dark);
 		dtDialog.show(fm, "datetimedialog");
 	}
 
 	@SuppressLint("NewApi")
-	public static void handleRecurrence(final Activity activity,
-			final Task task, final boolean isDue, final ImageButton image,
-			boolean dark) {
+	public static void handleRecurrence(final Activity activity, final Task task, final boolean isDue, final ImageButton image, boolean dark) {
 		FragmentManager fm = ((MainActivity) activity)
 				.getSupportFragmentManager();
 		Recurring r = isDue ? task.getRecurring() : task.getRecurringReminder();
@@ -168,11 +163,7 @@ public class TaskDialogHelpers {
 				new OnRecurenceSetListner() {
 
 					@Override
-					public void OnCustomRecurnceSetIntervall(boolean isDue,
-							int intervalYears, int intervalMonths,
-							int intervalDays, int intervalHours,
-							int intervalMinutes, Calendar startDate,
-							Calendar endDate, boolean isExact) {
+					public void OnCustomRecurnceSetIntervall(boolean isDue, int intervalYears, int intervalMonths, int intervalDays, int intervalHours, int intervalMinutes, Calendar startDate, Calendar endDate, boolean isExact) {
 						Recurring r = Recurring.newRecurring("",
 								intervalMinutes, intervalHours, intervalDays,
 								intervalMonths, intervalYears, isDue,
@@ -182,9 +173,7 @@ public class TaskDialogHelpers {
 					}
 
 					@Override
-					public void OnCustomRecurnceSetWeekdays(boolean isDue,
-							List<Integer> weekdays, Calendar startDate,
-							Calendar endDate, boolean isExact) {
+					public void OnCustomRecurnceSetWeekdays(boolean isDue, List<Integer> weekdays, Calendar startDate, Calendar endDate, boolean isExact) {
 						SparseBooleanArray weekdaysArray = new SparseBooleanArray();
 						for (int day : weekdays) {
 							weekdaysArray.put(day, true);
@@ -216,8 +205,7 @@ public class TaskDialogHelpers {
 
 	}
 
-	public static void handleDeleteFile(final List<FileMirakel> selectedItems,
-			Context ctx, final Task t, final TaskFragmentAdapter adapter) {
+	public static void handleDeleteFile(final List<FileMirakel> selectedItems, Context ctx, final Task t, final TaskFragmentAdapter adapter) {
 		if (selectedItems.size() < 1) {
 			return;
 		}
@@ -234,8 +222,7 @@ public class TaskDialogHelpers {
 						new DialogInterface.OnClickListener() {
 
 							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
+							public void onClick(DialogInterface dialog, int which) {
 								for (FileMirakel f : selectedItems) {
 									f.destroy();
 								}
@@ -248,17 +235,16 @@ public class TaskDialogHelpers {
 
 	}
 
-	private static String searchString;
-	private static boolean done;
-	private static boolean content;
-	private static boolean reminder;
-	private static int listId;
-	private static boolean optionEnabled;
-	private static boolean newTask;
-	private static SubtaskAdapter subtaskAdapter;
+	private static String			searchString;
+	private static boolean			done;
+	private static boolean			content;
+	private static boolean			reminder;
+	private static int				listId;
+	private static boolean			optionEnabled;
+	private static boolean			newTask;
+	private static SubtaskAdapter	subtaskAdapter;
 
-	public static void handleSubtask(final Context ctx, final Task task,
-			final TaskFragmentAdapter adapter, final boolean asSubtask) {
+	public static void handleSubtask(final Context ctx, final Task task, final TaskFragmentAdapter adapter, final boolean asSubtask) {
 		final List<Pair<Long, String>> names = Task.getTaskNames();
 		CharSequence[] values = new String[names.size()];
 		for (int i = 0; i < names.size(); i++) {
@@ -293,16 +279,14 @@ public class TaskDialogHelpers {
 		search.addTextChangedListener(new TextWatcher() {
 
 			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				searchString = s.toString();
 				updateListView(subtaskAdapter, task, lv);
 
 			}
 
 			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 				// Nothing
 
 			}
@@ -350,8 +334,7 @@ public class TaskDialogHelpers {
 
 				@Override
 				public void onClick(View v) {
-					if (newTask)
-						return;
+					if (newTask) return;
 					switcher.showPrevious();
 					subtaskNewtask.setTextColor(ctx.getResources().getColor(
 							darkTheme ? R.color.White : R.color.Black));
@@ -364,8 +347,7 @@ public class TaskDialogHelpers {
 			subtaskSelectOld.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					if (!newTask)
-						return;
+					if (!newTask) return;
 					switcher.showNext();
 					subtaskNewtask.setTextColor(ctx.getResources().getColor(
 							R.color.Grey));
@@ -379,8 +361,7 @@ public class TaskDialogHelpers {
 		doneBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
 			@Override
-			public void onCheckedChanged(CompoundButton buttonView,
-					boolean isChecked) {
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				done = isChecked;
 				updateListView(subtaskAdapter, task, lv);
 			}
@@ -391,8 +372,7 @@ public class TaskDialogHelpers {
 				.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
 					@Override
-					public void onCheckedChanged(CompoundButton buttonView,
-							boolean isChecked) {
+					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 						reminder = isChecked;
 						updateListView(subtaskAdapter, task, lv);
 					}
@@ -412,8 +392,7 @@ public class TaskDialogHelpers {
 						new DialogInterface.OnClickListener() {
 
 							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
+							public void onClick(DialogInterface dialog, int which) {
 								listId = lists.get(which).getId();
 								updateListView(subtaskAdapter, task, lv);
 								list.setText(lists.get(which).getName());
@@ -429,8 +408,7 @@ public class TaskDialogHelpers {
 				.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
 					@Override
-					public void onCheckedChanged(CompoundButton buttonView,
-							boolean isChecked) {
+					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 						content = isChecked;
 						updateListView(subtaskAdapter, task, lv);
 					}
@@ -446,8 +424,7 @@ public class TaskDialogHelpers {
 						new DialogInterface.OnClickListener() {
 
 							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
+							public void onClick(DialogInterface dialog, int which) {
 								if (newTask
 										&& newTaskEdit.getText().length() > 0) {
 									newSubtask(
@@ -515,8 +492,7 @@ public class TaskDialogHelpers {
 				.show();
 
 		newTaskEdit.setOnEditorActionListener(new OnEditorActionListener() {
-			public boolean onEditorAction(TextView v, int actionId,
-					KeyEvent event) {
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 				if (actionId == EditorInfo.IME_ACTION_SEND) {
 					newSubtask(v.getText().toString(), task, ctx);
 					v.setText(null);
@@ -535,14 +511,7 @@ public class TaskDialogHelpers {
 	}
 
 	private static Task newSubtask(String name, Task parent, Context ctx) {
-		ListMirakel list;
-		if (MirakelPreferences.addSubtaskToSameList()) {
-			list = parent.getList();
-		} else {
-			list = MirakelPreferences.subtaskAddToList();
-			if (list == null)
-				list = parent.getList();
-		}
+		ListMirakel list = MirakelPreferences.getListForSubtask(parent);
 		Task t = Semantic.createTask(name, list,
 				MirakelPreferences.useSemanticNewTask(), ctx);
 		try {
@@ -591,10 +560,8 @@ public class TaskDialogHelpers {
 		return query;
 	}
 
-	public static void handleRemoveSubtask(final List<Task> subtasks,
-			Context ctx, final TaskFragmentAdapter adapter, final Task task) {
-		if (subtasks.size() == 0)
-			return;
+	public static void handleRemoveSubtask(final List<Task> subtasks, Context ctx, final TaskFragmentAdapter adapter, final Task task) {
+		if (subtasks.size() == 0) return;
 		String names = subtasks.get(0).getName();
 		for (int i = 1; i < subtasks.size(); i++) {
 			names += ", " + subtasks.get(i).getName();
@@ -608,8 +575,7 @@ public class TaskDialogHelpers {
 						new DialogInterface.OnClickListener() {
 
 							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
+							public void onClick(DialogInterface dialog, int which) {
 								for (Task s : subtasks) {
 									task.deleteSubtask(s);
 								}
@@ -621,8 +587,7 @@ public class TaskDialogHelpers {
 
 	}
 
-	private static void updateListView(final SubtaskAdapter a, final Task t,
-			final ListView lv) {
+	private static void updateListView(final SubtaskAdapter a, final Task t, final ListView lv) {
 		new Thread(new Runnable() {
 			public void run() {
 				a.setData(Task.rawQuery(generateQuery(t)));
@@ -640,8 +605,7 @@ public class TaskDialogHelpers {
 
 	}
 
-	private static void setRecurence(final Task task, final boolean isDue,
-			int id) {
+	private static void setRecurence(final Task task, final boolean isDue, int id) {
 		if (isDue) {
 			Recurring.destroyTemporary(task.getRecurrenceId());
 			task.setRecurrence(id);
