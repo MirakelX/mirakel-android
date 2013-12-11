@@ -301,6 +301,10 @@ public class MirakelPreferences {
 		return settings.getString("photoDefaultTitle",
 				context.getString(R.string.photo_default_title));
 	}
+	public static String getAudioDefaultTitle() {
+		return settings.getString("audioDefaultTitle",
+				context.getString(R.string.audio_default_title));
+	}
 
 	public static boolean useBtnCamera() {
 		return settings.getBoolean("useBtnCamera", true);
@@ -308,6 +312,9 @@ public class MirakelPreferences {
 
 	public static boolean useBtnSpeak() {
 		return settings.getBoolean("useBtnSpeak", true);
+	}
+	public static boolean useBtnAudioRecord() {
+		return settings.getBoolean("useBtnAudioRecord", true);
 	}
 
 	public static int getDefaultAccount() {

@@ -52,6 +52,7 @@ import com.android.calendar.recurrencepicker.RecurrencePickerDialog.OnRecurenceS
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.adapter.SubtaskAdapter;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
+import de.azapps.mirakel.helper.Helpers.ExecInterfaceWithTask;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.main_activity.task_fragment.TaskFragmentAdapter;
 import de.azapps.mirakel.model.DatabaseHelper;
@@ -613,7 +614,7 @@ public class TaskDialogHelpers {
 		task.safeSave();
 	}
 
-	public static void handleAudioRecord(final Context context, final Task task, final ExecInterface onSuccess) {
+	public static void handleAudioRecord(final Context context, final Task task, final ExecInterfaceWithTask onSuccess) {
 		final MediaRecorder mRecorder = new MediaRecorder();
 		mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 		mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
@@ -634,10 +635,17 @@ public class TaskDialogHelpers {
 						new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
+								Task mTask = task;
+								if (task.getId() == 0) {
+									mTask = Semantic.createTask(
+											MirakelPreferences
+													.getAudioDefaultTitle(),
+											task.getList(), true, context);
+								}
 								mRecorder.stop();
 								mRecorder.release();
-								task.addFile(context, filePath);
-								onSuccess.exec();
+								mTask.addFile(context, filePath);
+								onSuccess.exec(mTask);
 							}
 						}).setOnCancelListener(new OnCancelListener() {
 					@Override

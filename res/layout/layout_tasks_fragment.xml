@@ -40,6 +40,14 @@
         android:orientation="horizontal" >
 
         <ImageButton
+            android:id="@+id/btnAudio_tasks"
+            style="@style/imgButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:contentDescription="@string/speak"
+            android:src="@android:drawable/ic_btn_speak_now" />
+
+        <ImageButton
             android:id="@+id/btnSpeak_tasks"
             style="@style/imgButton"
             android:layout_width="48dp"

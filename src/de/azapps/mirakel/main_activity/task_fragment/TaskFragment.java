@@ -42,7 +42,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Helpers;
-import de.azapps.mirakel.helper.Helpers.ExecInterface;
+import de.azapps.mirakel.helper.Helpers.ExecInterfaceWithTask;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
@@ -340,11 +340,10 @@ public class TaskFragment extends Fragment {
 				@Override
 				public void onClick(View v) {
 					TaskDialogHelpers.handleAudioRecord(getActivity(),
-							main.getCurrentTask(), new ExecInterface() {
+							main.getCurrentTask(), new ExecInterfaceWithTask() {
 								@Override
-								public void exec() {
-									update(main.getCurrentTask());
-
+								public void exec(Task t) {
+									update(t);
 								}
 							});
 				}

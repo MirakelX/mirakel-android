@@ -39,6 +39,7 @@ import android.net.Uri;
 import android.view.View;
 import android.widget.Toast;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 
 public class Helpers {
@@ -113,6 +114,9 @@ public class Helpers {
 	 */
 	public interface ExecInterface {
 		public void exec();
+	}
+	public interface ExecInterfaceWithTask {
+		public void exec(Task task);
 	}
 
 	public static void showFileChooser(int code, String title, Activity activity) {

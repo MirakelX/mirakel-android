@@ -253,6 +253,7 @@ Device: %3$s\n]]>
     <string name="file_vanished">No such file</string>
     <string name="file_default_title">Check out this file</string>
     <string name="photo_default_title">Check out this photo</string>
+    <string name="audio_default_title">Listen to that!</string>
     <string name="edit">Edit</string>
     <string name="audio_record_stop">Stop recording</string>
     <string name="audio_record_title">Audio recording…</string>
@@ -286,7 +287,7 @@ Device: %3$s\n]]>
     <string name="file_to_large">Failed to create thumbnail</string>
     <string name="recurring_not_zero">Recurring can\'t be zero!</string>
     <string name="every">Every</string>
-        <!-- Specifies that a repeating event to repeat forever (based on the defined frequency) instead of ending at a future date[CHAR LIMIT=20] -->
+    <!-- Specifies that a repeating event to repeat forever (based on the defined frequency) instead of ending at a future date[CHAR LIMIT=20] -->
     <string name="recurrence_end_continously">Forever</string>
     <!-- Specifies that a repeating event to repeat until a certain date[CHAR LIMIT=25] -->
     <string name="recurrence_end_date_label">Until a date</string>
