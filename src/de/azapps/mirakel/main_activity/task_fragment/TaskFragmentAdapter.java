@@ -801,6 +801,8 @@ public class TaskFragmentAdapter extends
 						int count, int after) {
 					if (editContent) {
 						cursorPos = holder.taskContentEdit.getSelectionEnd();
+						if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB)
+							++cursorPos;// ugly hack to make this work on android 2.x....
 					}
 
 				}
@@ -836,10 +838,22 @@ public class TaskFragmentAdapter extends
 			holder.divider.setBackgroundColor(context.getResources().getColor(
 					inactive_color));
 			editContent = false;// do not record Textchanges
-			holder.taskContentEdit.setText(taskEditText);
-			holder.taskContentEdit.setSelection(cursorPos == 0
-					|| cursorPos > taskEditText.length() ? taskEditText
-					.length() : cursorPos);
+
+			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {// Buggy android 2.x
+				holder.taskContentEdit.postDelayed(new Runnable() {
+
+					@Override
+					public void run() {
+						setContentCursorPosition(holder);
+
+					}
+				}, 1);
+			} else {
+				setContentCursorPosition(holder);
+			}
+
+
+
 			Linkify.addLinks(holder.taskContentEdit, Linkify.WEB_URLS);
 			holder.taskContentEdit.requestFocus();
 			InputMethodManager imm = ((InputMethodManager) context
@@ -896,7 +910,7 @@ public class TaskFragmentAdapter extends
 				holder.taskContent.setTextColor(context.getResources()
 						.getColor(inactive_color));
 				taskEditText = "";
-				cursorPos = 0;
+				if (!editContent) cursorPos = 0;
 			}
 			InputMethodManager imm = (InputMethodManager) context
 					.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -904,6 +918,17 @@ public class TaskFragmentAdapter extends
 					holder.taskContentEdit.getWindowToken(), 0);
 		}
 		return content;
+	}
+
+	private void setContentCursorPosition(final ContentHolder holder) {
+		holder.taskContentEdit.setText(taskEditText);
+		if (cursorPos == 0
+				|| cursorPos > holder.taskContentEdit.getText().length()) {
+			holder.taskContentEdit.setSelection(holder.taskContentEdit
+					.getText().length());
+		} else {
+			holder.taskContentEdit.setSelection(cursorPos);
+		}
 	}
 
 	static class ReminderHolder {
