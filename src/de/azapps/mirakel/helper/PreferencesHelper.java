@@ -68,7 +68,6 @@ import de.azapps.mirakel.settings.ColorPickerPref;
 import de.azapps.mirakel.settings.recurring.RecurringActivity;
 import de.azapps.mirakel.settings.semantics.SemanticsSettingsActivity;
 import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
-import de.azapps.mirakel.settings.taskfragment.TaskFragmentSettings;
 import de.azapps.mirakel.static_activities.CreditsActivity;
 import de.azapps.mirakel.static_activities.SettingsActivity;
 import de.azapps.mirakel.static_activities.SettingsFragment;
@@ -1068,11 +1067,23 @@ public class PreferencesHelper {
 		if (recurring != null) {
 			recurring.setIntent(startRecurringIntent);
 		}
-		Intent startTaskFragmentIntent = new Intent(activity,
-				TaskFragmentSettings.class);
+		// Intent startTaskFragmentIntent = new Intent(activity,
+		// TaskFragmentSettings.class);
 		Preference taskFragment = findPreference("task_fragment");
 		if (taskFragment != null) {
-			taskFragment.setIntent(startTaskFragmentIntent);
+		// taskFragment.setIntent(startTaskFragmentIntent);
+			taskFragment
+					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+						@Override
+						public boolean onPreferenceClick(Preference preference) {
+							if (v4_0) {
+								((SettingsFragment) ctx)
+										.showTaskFragmentSettings();
+							}
+							return false;
+						}
+					});
 		}
 
 		final CheckBoxPreference subTaskAddToSameList = (CheckBoxPreference) findPreference("subtaskAddToSameList");

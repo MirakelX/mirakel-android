@@ -25,9 +25,11 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.dmfs.provider.tasks.TaskContract;
 import org.dmfs.provider.tasks.TaskContract.TaskLists;
 import org.dmfs.provider.tasks.TaskContract.Tasks;
+
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.OnAccountsUpdateListener;
@@ -114,12 +116,11 @@ public class MirakelContentProvider extends ContentProvider implements
 			default:
 				throw new IllegalArgumentException("Unsupported URI: " + uri);
 			}
-		} else {
-			AccountMirakel a = AccountMirakel.getByName(getAccountName(uri));
-			if (a != null && !a.isEnabeld())
-				return 0;
-			boolean isList = true;
-			switch (uriMatcher.match(uri)) {
+		}
+		AccountMirakel a = AccountMirakel.getByName(getAccountName(uri));
+		if (a != null && !a.isEnabeld()) return 0;
+		boolean isList = true;
+		switch (uriMatcher.match(uri)) {
 			case LIST_ID:
 				return database.delete(ListMirakel.TABLE, DatabaseHelper.ID
 						+ "=" + getId(uri), null);
@@ -134,16 +135,21 @@ public class MirakelContentProvider extends ContentProvider implements
 						+ getId(uri), null);
 			default:
 				throw new IllegalArgumentException("Unsupported URI: " + uri);
-			}
-			String s = getIdsFromSelection(uri, selection, selectionArgs,
-					isList);
-			if (!s.equals("")) {
-				return database.delete(isList ? ListMirakel.TABLE : Task.TABLE,
-						DatabaseHelper.ID + " IN (" + s + ")", null);
-			} else {
-				throw new RuntimeException("id not found");
-			}
 		}
+		String s;
+		try {
+			s = getIdsFromSelection(uri, selection, selectionArgs, isList);
+		} catch (RuntimeException e) {
+			if (e.getMessage().equals("id not found")) {
+				return 0;
+			}
+			throw e;
+		}
+		if (!s.equals("")) {
+			return database.delete(isList ? ListMirakel.TABLE : Task.TABLE,
+					DatabaseHelper.ID + " IN (" + s + ")", null);
+		}
+		throw new RuntimeException("id not found");
 	}
 
 	private String getIdsFromSelection(Uri uri, String selection,
@@ -285,12 +291,11 @@ public class MirakelContentProvider extends ContentProvider implements
 			l.setAccount(a);
 			l.save(false);
 			return l.getId();
-		} else {
-			c.moveToFirst();
-			int id = c.getInt(0);
-			c.close();
-			return id;
 		}
+		c.moveToFirst();
+		int id = c.getInt(0);
+		c.close();
+		return id;
 	}
 
 	private ContentValues convertValues(ContentValues values,
@@ -309,7 +314,7 @@ public class MirakelContentProvider extends ContentProvider implements
 			Date d = new Date(values.getAsLong(Tasks.DUE));
 			GregorianCalendar due = new GregorianCalendar();
 			d.setTime(values.getAsLong(Tasks.DUE));
-			String db = (due == null ? null : DateTimeHelper.formatDate(due));
+			String db = DateTimeHelper.formatDate(due);
 			newValues.put(Task.DUE, db);
 		}
 		if (values.containsKey(Tasks.PRIORITY)) {
@@ -347,16 +352,14 @@ public class MirakelContentProvider extends ContentProvider implements
 				Date d = new Date(values.getAsLong(Tasks.CREATED));
 				GregorianCalendar due = new GregorianCalendar();
 				d.setTime(values.getAsLong(Tasks.CREATED));
-				String db = (due == null ? null : DateTimeHelper
-						.formatDate(due));
+				String db = DateTimeHelper.formatDate(due);
 				newValues.put(DatabaseHelper.CREATED_AT, db);
 			}
 			if (values.containsKey(Tasks.LAST_MODIFIED)) {
 				Date d = new Date(values.getAsLong(Tasks.LAST_MODIFIED));
 				GregorianCalendar due = new GregorianCalendar();
 				d.setTime(values.getAsLong(Tasks.LAST_MODIFIED));
-				String db = (due == null ? null : DateTimeHelper
-						.formatDate(due));
+				String db = DateTimeHelper.formatDate(due);
 				newValues.put(DatabaseHelper.UPDATED_AT, db);
 			}
 			// if (values.containsKey(Tasks._SYNC_ID)) {
@@ -477,7 +480,7 @@ public class MirakelContentProvider extends ContentProvider implements
 		}
 		if (selection != null && selection.contains(TaskContract.Tasks.LIST_ID)) {
 			try {
-				taskQuery = handleListID(projection, selection, isSyncAdapter,
+				taskQuery = handleListID(selection, isSyncAdapter,
 						taskQuery);
 			} catch (SQLWarning s) {
 				return new MatrixCursor(projection);
@@ -498,7 +501,7 @@ public class MirakelContentProvider extends ContentProvider implements
 		return database.rawQuery(query, null);
 	}
 
-	private String handleListID(String[] projection, String selection,
+	private String handleListID(String selection,
 			boolean isSyncAdapter, String taskQuery) throws SQLWarning {
 		String[] t = selection.split(TaskContract.Tasks.LIST_ID);
 		if (t.length < 2) {
@@ -781,10 +784,19 @@ public class MirakelContentProvider extends ContentProvider implements
 					DatabaseHelper.ID + "=" + getId(uri), null);
 		case LISTS:
 			isList = true;
+				break;
 		default:
 			throw new IllegalArgumentException("Unsupported URI: " + uri);
 		}
-		String s = getIdsFromSelection(uri, selection, selectionArgs, isList);
+		String s;
+		try {
+			s = getIdsFromSelection(uri, selection, selectionArgs, isList);
+		} catch (RuntimeException e) {
+			if (e.getMessage().equals("id not found")) {
+				return 0;
+			}
+			throw e;
+		}
 		if (!s.equals("")) {
 			int count = database.update(
 					isList ? ListMirakel.TABLE : Task.TABLE, newValues,
@@ -794,9 +806,8 @@ public class MirakelContentProvider extends ContentProvider implements
 						+ " IN(" + s + ")", null);
 			}
 			return count;
-		} else {
-			throw new RuntimeException("id not found");
 		}
+			throw new RuntimeException("id not found");
 	}
 
 	@Override
