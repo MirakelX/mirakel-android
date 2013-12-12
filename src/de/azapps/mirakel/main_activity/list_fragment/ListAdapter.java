@@ -35,6 +35,7 @@ import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.adapter.MirakelArrayAdapter;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelPreferences;
+import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakelandroid.R;
@@ -52,7 +53,7 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 
 	public ListAdapter(Context c) {
 		// do not call this, only for error-fixing there
-		super(c, 0, (List<ListMirakel>) new ArrayList<ListMirakel>());
+		super(c, 0, new ArrayList<ListMirakel>());
 	}
 
 	public ListAdapter(Context context, int layoutResourceId,
@@ -101,7 +102,13 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 			holder.listAccount.setVisibility(View.GONE);
 		else{
 			holder.listAccount.setVisibility(View.VISIBLE);
-			holder.listAccount.setText(list.getAccount().getName());
+			AccountMirakel a = list.getAccount();
+			if (a == null) {
+				a = AccountMirakel.getLocal();
+				list.setAccount(a);
+				list.save(false);
+			}
+			holder.listAccount.setText(a.getName());
 			holder.listAccount.setTextColor(context.getResources().getColor(android.R.color.darker_gray));
 		}
 		viewsForLists.put(list.getId(), row);

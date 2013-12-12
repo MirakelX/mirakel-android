@@ -53,24 +53,23 @@ import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 import de.azapps.mirakelandroid.R;
 
-public class MirakelContentProvider extends ContentProvider implements
-		OnAccountsUpdateListener {
+public class MirakelContentProvider extends ContentProvider implements OnAccountsUpdateListener {
 	// public static final String PROVIDER_NAME = Mirakel.AUTHORITY_TYP;
 	// public static final Uri CONTENT_URI = Uri.parse("content://" +
 	// PROVIDER_NAME);
-	private SQLiteDatabase database;
-	private static final UriMatcher uriMatcher;
-	private static final int LISTS = 5;
-	private static final int LIST_ID = 6;
-	private static final int TASKS = 2;
-	private static final int TASK_ID = 3;
+	private SQLiteDatabase			database;
+	private static final UriMatcher	uriMatcher;
+	private static final int		LISTS		= 5;
+	private static final int		LIST_ID		= 6;
+	private static final int		TASKS		= 2;
+	private static final int		TASK_ID		= 3;
 
-	private static final String TAG = "MirakelContentProvider";
+	private static final String		TAG			= "MirakelContentProvider";
 	// TODO for what we will need this?
-	private static final int INSTANCE_ID = 0;
-	private static final int INSTANCES = 1;
-	private static final int CATEGORIES = 6;
-	private static final int CATEGORY_ID = 7;
+	private static final int		INSTANCE_ID	= 0;
+	private static final int		INSTANCES	= 1;
+	private static final int		CATEGORIES	= 6;
+	private static final int		CATEGORY_ID	= 7;
 
 	static {
 		uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -102,19 +101,20 @@ public class MirakelContentProvider extends ContentProvider implements
 			ContentValues cv = new ContentValues();
 			cv.put(SyncAdapter.SYNC_STATE, SYNC_STATE.DELETE.toInt());
 			switch (uriMatcher.match(uri)) {
-			case LISTS:
-			case TASKS:
-				return update(uri, cv, selection, selectionArgs);
-			case LIST_ID:
-				database.update(ListMirakel.TABLE, cv, DatabaseHelper.ID + "="
-						+ getId(uri), null);
-				return 1;
-			case TASK_ID:
-				database.update(Task.TABLE, cv, DatabaseHelper.ID + "="
-						+ getId(uri), null);
-				return 1;
-			default:
-				throw new IllegalArgumentException("Unsupported URI: " + uri);
+				case LISTS:
+				case TASKS:
+					return update(uri, cv, selection, selectionArgs);
+				case LIST_ID:
+					database.update(ListMirakel.TABLE, cv, DatabaseHelper.ID
+							+ "=" + getId(uri), null);
+					return 1;
+				case TASK_ID:
+					database.update(Task.TABLE, cv, DatabaseHelper.ID + "="
+							+ getId(uri), null);
+					return 1;
+				default:
+					throw new IllegalArgumentException("Unsupported URI: "
+							+ uri);
 			}
 		}
 		AccountMirakel a = AccountMirakel.getByName(getAccountName(uri));
@@ -152,8 +152,7 @@ public class MirakelContentProvider extends ContentProvider implements
 		throw new RuntimeException("id not found");
 	}
 
-	private String getIdsFromSelection(Uri uri, String selection,
-			String[] selectionArgs, boolean isList) {
+	private String getIdsFromSelection(Uri uri, String selection, String[] selectionArgs, boolean isList) {
 		Cursor c = query(uri,
 				new String[] { isList ? TaskLists._ID : Tasks._ID }, selection,
 				selectionArgs, null);
@@ -178,18 +177,18 @@ public class MirakelContentProvider extends ContentProvider implements
 	@Override
 	public String getType(Uri uri) {
 		switch (uriMatcher.match(uri)) {
-		case LISTS:
-			return TaskContract.TaskLists.CONTENT_TYPE;
-		case LIST_ID:
-			return TaskContract.TaskLists.CONTENT_ITEM_TYPE;
-		case TASKS:
-			return TaskContract.Tasks.CONTENT_TYPE;
-		case TASK_ID:
-			return TaskContract.Tasks.CONTENT_ITEM_TYPE;
-		case INSTANCES:
-			return TaskContract.Instances.CONTENT_TYPE;
-		default:
-			throw new IllegalArgumentException("Unsupported URI: " + uri);
+			case LISTS:
+				return TaskContract.TaskLists.CONTENT_TYPE;
+			case LIST_ID:
+				return TaskContract.TaskLists.CONTENT_ITEM_TYPE;
+			case TASKS:
+				return TaskContract.Tasks.CONTENT_TYPE;
+			case TASK_ID:
+				return TaskContract.Tasks.CONTENT_ITEM_TYPE;
+			case INSTANCES:
+				return TaskContract.Instances.CONTENT_TYPE;
+			default:
+				throw new IllegalArgumentException("Unsupported URI: " + uri);
 		}
 	}
 
@@ -203,42 +202,42 @@ public class MirakelContentProvider extends ContentProvider implements
 
 	@Override
 	public Uri insert(Uri uri, ContentValues values) {
+		// android.os.Debug.waitForDebugger();
 		AccountMirakel a = AccountMirakel.getByName(getAccountName(uri));
-		if (a != null && !a.isEnabeld())
-			return null;
+		if (a != null && !a.isEnabeld()) return null;
 		ContentValues newValues = convertValues(values,
 				isCallerSyncAdapter(uri));
 		newValues.put(SyncAdapter.SYNC_STATE, SYNC_STATE.NOTHING.toInt());
 		String table;
 		switch (uriMatcher.match(uri)) {
-		case LISTS:
-			table = ListMirakel.TABLE;
-			break;
-		case TASKS:
-			table = Task.TABLE;
-			int lID;
-			if (newValues.containsKey(Task.LIST_ID)) {
-				ListMirakel l = ListMirakel.getList(newValues
-						.getAsInteger(Task.LIST_ID));
-				if (l == null) {
-					lID = createNewList(uri);
-				} else {
-					if (a == null) {
-						throw new IllegalArgumentException("Unkown account");
-					}
-					if (l.getAccount().getId() != a.getId()) {
-						lID = createNewList(uri);
-					} else {
-						lID = l.getId();
-					}
-				}
-			} else {
+			case LISTS:
+				table = ListMirakel.TABLE;
+				break;
+			case TASKS:
+				table = Task.TABLE;
+				int lID;
+				// if (newValues.containsKey(Task.LIST_ID)) {
+				// ListMirakel l = ListMirakel.getList(newValues
+				// .getAsInteger(Task.LIST_ID));
+				// if (l == null) {
+				// lID = createNewList(uri);
+				// } else {
+				// if (a == null) {
+				// throw new IllegalArgumentException("Unkown account");
+				// }
+				// if (l.getAccount().getId() != a.getId()) {
+				// lID = createNewList(uri);
+				// } else {
+				// lID = l.getId();
+				// }
+				// }
+				// } else {
 				lID = createNewList(uri);
-			}
-			newValues.put(Task.LIST_ID, lID);
-			break;
-		default:
-			throw new IllegalArgumentException("Unsupported URI: " + uri);
+				// }
+				newValues.put(Task.LIST_ID, lID);
+				break;
+			default:
+				throw new IllegalArgumentException("Unsupported URI: " + uri);
 
 		}
 		long id;
@@ -253,6 +252,10 @@ public class MirakelContentProvider extends ContentProvider implements
 				}
 				if (values.containsKey(Tasks._SYNC_ID)) {
 					extras.put("SYNC_ID", values.getAsString(Tasks._SYNC_ID));
+					hasExtras = true;
+				}
+				if (values.containsKey(Tasks.LIST_ID)) {
+					extras.put("REMOTE_NAME", values.getAsString(Tasks.LIST_ID));
 					hasExtras = true;
 				}
 			}
@@ -298,8 +301,7 @@ public class MirakelContentProvider extends ContentProvider implements
 		return id;
 	}
 
-	private ContentValues convertValues(ContentValues values,
-			boolean isSyncadapter) {
+	private ContentValues convertValues(ContentValues values, boolean isSyncadapter) {
 		ContentValues newValues = new ContentValues();
 		if (values.containsKey(Tasks.TITLE)) {
 			newValues.put(DatabaseHelper.NAME, values.getAsString(Tasks.TITLE));
@@ -412,35 +414,32 @@ public class MirakelContentProvider extends ContentProvider implements
 	}
 
 	@Override
-	public Cursor query(Uri uri, String[] projection, String selection,
-			String[] selectionArgs, String sortOrder) {
+	public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
 		SQLiteQueryBuilder sqlBuilder = new SQLiteQueryBuilder();
 		boolean isSyncAdapter = isCallerSyncAdapter(uri);
 		selection = insertSelectionArgs(selection, selectionArgs);
 		int matcher = uriMatcher.match(uri);
 		switch (matcher) {
-		case LIST_ID:
-			return listQuery(projection, selection, sortOrder, sqlBuilder,
-					isSyncAdapter, true, getId(uri));
-		case LISTS:
-			return listQuery(projection, selection, sortOrder, sqlBuilder,
-					isSyncAdapter, false, "");
-		case TASK_ID:
-			return taskQuery(projection, selection, sortOrder, sqlBuilder,
-					isSyncAdapter, uri, getId(uri), true);
-		case TASKS:
-			return taskQuery(projection, selection, sortOrder, sqlBuilder,
-					isSyncAdapter, uri, "", false);
+			case LIST_ID:
+				return listQuery(projection, selection, sortOrder, sqlBuilder,
+						isSyncAdapter, true, getId(uri));
+			case LISTS:
+				return listQuery(projection, selection, sortOrder, sqlBuilder,
+						isSyncAdapter, false, "");
+			case TASK_ID:
+				return taskQuery(projection, selection, sortOrder, sqlBuilder,
+						isSyncAdapter, uri, getId(uri), true);
+			case TASKS:
+				return taskQuery(projection, selection, sortOrder, sqlBuilder,
+						isSyncAdapter, uri, "", false);
 
-		default:
-			throw new IllegalArgumentException("Unsupported URI: " + uri);
+			default:
+				throw new IllegalArgumentException("Unsupported URI: " + uri);
 		}
 	}
 
 	@SuppressLint("NewApi")
-	private Cursor listQuery(String[] projection, String selection,
-			String sortOrder, SQLiteQueryBuilder sqlBuilder,
-			boolean isSyncAdapter, boolean hasId, String _id) {
+	private Cursor listQuery(String[] projection, String selection, String sortOrder, SQLiteQueryBuilder sqlBuilder, boolean isSyncAdapter, boolean hasId, String _id) {
 		String listQuery;
 		if (selection.equals("1=1")) {
 			listQuery = getListQuerySpecial();
@@ -466,9 +465,7 @@ public class MirakelContentProvider extends ContentProvider implements
 	}
 
 	@SuppressLint("NewApi")
-	private Cursor taskQuery(String[] projection, String selection,
-			String sortOrder, SQLiteQueryBuilder sqlBuilder,
-			boolean isSyncAdapter, Uri uri, String _id, boolean hasID) {
+	private Cursor taskQuery(String[] projection, String selection, String sortOrder, SQLiteQueryBuilder sqlBuilder, boolean isSyncAdapter, Uri uri, String _id, boolean hasID) {
 		String taskQuery = getTaskQuery(isSyncAdapter);
 		if (isSyncAdapter) {
 			taskQuery += " WHERE " + AccountMirakel.TABLE + "."
@@ -479,11 +476,13 @@ public class MirakelContentProvider extends ContentProvider implements
 					+ "." + DatabaseHelper.ID + "=" + _id;
 		}
 		if (selection != null && selection.contains(TaskContract.Tasks.LIST_ID)) {
-			try {
-				taskQuery = handleListID(selection, isSyncAdapter,
-						taskQuery);
-			} catch (SQLWarning s) {
-				return new MatrixCursor(projection);
+			if (!isSyncAdapter) {
+				try {
+					taskQuery = handleListID(selection, isSyncAdapter,
+							taskQuery);
+				} catch (SQLWarning s) {
+					return new MatrixCursor(projection);
+				}
 			}
 		}
 
@@ -501,8 +500,7 @@ public class MirakelContentProvider extends ContentProvider implements
 		return database.rawQuery(query, null);
 	}
 
-	private String handleListID(String selection,
-			boolean isSyncAdapter, String taskQuery) throws SQLWarning {
+	private String handleListID(String selection, boolean isSyncAdapter, String taskQuery) throws SQLWarning {
 		String[] t = selection.split(TaskContract.Tasks.LIST_ID);
 		if (t.length < 2) {
 			return taskQuery;
@@ -522,8 +520,7 @@ public class MirakelContentProvider extends ContentProvider implements
 		return taskQuery;
 	}
 
-	private String handleListIDIn(boolean isSyncAdapter, String taskQuery,
-			String[] t, boolean not) throws SQLWarning {
+	private String handleListIDIn(boolean isSyncAdapter, String taskQuery, String[] t, boolean not) throws SQLWarning {
 		if (t[1].trim().substring(0, 2).equalsIgnoreCase("in")) {
 			t[1] = t[1].trim().substring(3).trim();
 			int counter = 1;
@@ -594,8 +591,7 @@ public class MirakelContentProvider extends ContentProvider implements
 		return taskQuery;
 	}
 
-	private String handleListIDEqual(boolean isSyncAdapter, String taskQuery,
-			String[] t, boolean not) throws SQLWarning {
+	private String handleListIDEqual(boolean isSyncAdapter, String taskQuery, String[] t, boolean not) throws SQLWarning {
 		t[1] = t[1].trim().substring(1);
 		int list_id = 0;
 		try {
@@ -635,8 +631,7 @@ public class MirakelContentProvider extends ContentProvider implements
 		return getTaskQuery(false, 0, isSyncAdapter);
 	}
 
-	private String getTaskQuery(boolean isSpecial, int list_id,
-			boolean isSyncadapter) {
+	private String getTaskQuery(boolean isSpecial, int list_id, boolean isSyncadapter) {
 		String query = "SELECT ";
 		query += addSegment(Task.TABLE + "." + DatabaseHelper.NAME,
 				TaskContract.Tasks.TITLE, false);
@@ -650,14 +645,6 @@ public class MirakelContentProvider extends ContentProvider implements
 				+ "." + Task.DUE + ")*1000 END)", TaskContract.Tasks.DUE, true);
 		query += addSegment("(CASE " + Task.TABLE + "." + Task.DONE
 				+ " WHEN 1 THEN 2 ELSE 0 END)", TaskContract.Tasks.STATUS, true);
-		if (isSpecial) {
-			query += addSegment("CASE " + Task.TABLE + "." + Task.LIST_ID
-					+ " WHEN 1 THEN " + list_id + " ELSE " + list_id + " END",
-					TaskContract.Tasks.LIST_ID, true);
-		} else {
-			query += addSegment(Task.TABLE + "." + Task.LIST_ID,
-					TaskContract.Tasks.LIST_ID, true);
-		}
 		if (isSyncadapter) {
 			query += addSegment("CASE " + Task.TABLE + "."
 					+ SyncAdapter.SYNC_STATE + " WHEN " + SYNC_STATE.NEED_SYNC
@@ -676,6 +663,16 @@ public class MirakelContentProvider extends ContentProvider implements
 			query += addSegment("caldav_extra.ETAG", Tasks.SYNC1, true);
 			query += addSegment(AccountMirakel.TABLE + "."
 					+ DatabaseHelper.NAME, TaskContract.ACCOUNT_NAME, true);
+			query += addSegment("caldav_extra.REMOTE_NAME", Tasks.LIST_ID, true);
+		} else {
+			if (isSpecial) {
+				query += addSegment("CASE " + Task.TABLE + "." + Task.LIST_ID
+						+ " WHEN 1 THEN " + list_id + " ELSE " + list_id
+						+ " END", TaskContract.Tasks.LIST_ID, true);
+			} else {
+				query += addSegment(Task.TABLE + "." + Task.LIST_ID,
+						TaskContract.Tasks.LIST_ID, true);
+			}
 		}
 		query += addSegment("strftime('%s'," + Task.TABLE + "."
 				+ DatabaseHelper.UPDATED_AT + ")*1000", Tasks.LAST_MODIFIED,
@@ -742,11 +739,9 @@ public class MirakelContentProvider extends ContentProvider implements
 	}
 
 	@Override
-	public int update(Uri uri, ContentValues values, String selection,
-			String[] selectionArgs) {
+	public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
 		AccountMirakel a = AccountMirakel.getByName(getAccountName(uri));
-		if (a != null && !a.isEnabeld())
-			return 0;
+		if (a != null && !a.isEnabeld()) return 0;
 		ContentValues newValues = convertValues(values,
 				isCallerSyncAdapter(uri));
 		boolean isList;
@@ -761,32 +756,33 @@ public class MirakelContentProvider extends ContentProvider implements
 			hasExtras = true;
 		}
 		switch (uriMatcher.match(uri)) {
-		case TASKS:
-			isList = false;
-			break;
-		case TASK_ID:
-			int count = 0;
-			if (newValues.size() > 0) {
-				count = database.update(Task.TABLE, newValues,
-						DatabaseHelper.ID + "=" + getId(uri), null);
-			}
-			if (hasExtras && extras.size() > 0) {
-				count = database.update("caldav_extra", extras,
-						DatabaseHelper.ID + "=" + getId(uri), null);
-				if (count != 1) {
-					extras.put(DatabaseHelper.ID, Integer.parseInt(getId(uri)));
-					database.insert("caldav_extra", null, extras);
-				}
-			}
-			return count;
-		case LIST_ID:
-			return database.update(ListMirakel.TABLE, newValues,
-					DatabaseHelper.ID + "=" + getId(uri), null);
-		case LISTS:
-			isList = true;
+			case TASKS:
+				isList = false;
 				break;
-		default:
-			throw new IllegalArgumentException("Unsupported URI: " + uri);
+			case TASK_ID:
+				int count = 0;
+				if (newValues.size() > 0) {
+					count = database.update(Task.TABLE, newValues,
+							DatabaseHelper.ID + "=" + getId(uri), null);
+				}
+				if (hasExtras && extras.size() > 0) {
+					count = database.update("caldav_extra", extras,
+							DatabaseHelper.ID + "=" + getId(uri), null);
+					if (count != 1) {
+						extras.put(DatabaseHelper.ID,
+								Integer.parseInt(getId(uri)));
+						database.insert("caldav_extra", null, extras);
+					}
+				}
+				return count;
+			case LIST_ID:
+				return database.update(ListMirakel.TABLE, newValues,
+						DatabaseHelper.ID + "=" + getId(uri), null);
+			case LISTS:
+				isList = true;
+				break;
+			default:
+				throw new IllegalArgumentException("Unsupported URI: " + uri);
 		}
 		String s;
 		try {
@@ -807,7 +803,7 @@ public class MirakelContentProvider extends ContentProvider implements
 			}
 			return count;
 		}
-			throw new RuntimeException("id not found");
+		throw new RuntimeException("id not found");
 	}
 
 	@Override
