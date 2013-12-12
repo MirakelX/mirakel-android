@@ -383,6 +383,14 @@ public class ListMirakel extends ListBase {
 		return null;
 	}
 
+	public static ListMirakel safeGetList(int listId) {
+		ListMirakel l=getList(listId);
+		if (l == null) {
+			l = safeFirst(context);
+		}
+		return l;
+	}
+
 	public static ListMirakel getList(int listId) {
 		if (listId < 0)
 			return SpecialList.getSpecialList(-listId);

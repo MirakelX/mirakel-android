@@ -35,10 +35,10 @@ public class MirakelPreferences {
 	private static SharedPreferences	settings;
 	private static Context				context;
 
-	public static void init(Context context) {
+	public static void init(Context ctx) {
 		if (settings == null || MirakelPreferences.context == null) {
-			MirakelPreferences.context = context;
-			settings = PreferenceManager.getDefaultSharedPreferences(context);
+			MirakelPreferences.context = ctx;
+			settings = PreferenceManager.getDefaultSharedPreferences(ctx);
 		}
 	}
 
@@ -97,7 +97,7 @@ public class MirakelPreferences {
 			return ListMirakel.getList(listId);
 		}
 		if (!safe) return null;
-		else return ListMirakel.safeFirst(context);
+		return ListMirakel.safeFirst(context);
 	}
 
 	public static boolean isDateFormatRelative() {
@@ -171,10 +171,10 @@ public class MirakelPreferences {
 
 	public static ListMirakel getStartupList() {
 		try {
-			return ListMirakel.getList(Integer.parseInt(settings.getString(
+			return ListMirakel.safeGetList(Integer.parseInt(settings.getString(
 					"startupList", "-1")));
 		} catch (NumberFormatException E) {
-			return null;
+			return ListMirakel.safeFirst(context);
 		}
 	}
 
@@ -199,14 +199,12 @@ public class MirakelPreferences {
 		if (settings.contains("subtaskAddToSameList")) {
 			if (addSubtaskToSameList()) {
 				return parent.getList();
-			} else {
-				return subtaskAddToList();
 			}
-		} else {
-			// Create a new list and set this list as the default list for future subtasks
-			return ListMirakel.newList(context
-					.getString(R.string.subtask_list_name));
+			return subtaskAddToList();
 		}
+		// Create a new list and set this list as the default list for future subtasks
+		return ListMirakel.newList(context
+				.getString(R.string.subtask_list_name));
 	}
 
 	public static boolean addSubtaskToSameList() {
