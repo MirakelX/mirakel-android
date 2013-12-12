@@ -68,6 +68,7 @@
     <string name="sync_taskwarrior_register_button">Register</string>
     <string name="sync_taskwarrior_setup_success">Account setup was successfull</string>
     <string name="sync_taskwarrior_error_download">Could not download config file</string>
+    <string name="sync_taskwarrior_select_file_not_exists">File does not exist</string>
     <string name="no_barcode_app">No barcode scanner installed</string>
     <string name="no_barcode_app_message">We recommend the Barcode scanner:</string>
     <string name="no_barcode_app_install">Install</string>

@@ -36,6 +36,7 @@ import java.util.zip.ZipInputStream;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
@@ -53,24 +54,28 @@ public class FileUtils {
 		if (uri == null)
 			return null;
 		if ("content".equalsIgnoreCase(uri.getScheme())) {
-			String[] projection = { "_data" };
-			Cursor cursor = null;
+			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+				String[] projection = { "_data" };
+				Cursor cursor = null;
 
-			try {
-				cursor = context.getContentResolver().query(uri, projection,
-						null, null, null);
-				int column_index = cursor.getColumnIndexOrThrow("_data");
-				if (cursor.moveToFirst()) {
-					return cursor.getString(column_index);
+				try {
+					cursor = context.getContentResolver().query(uri,
+							projection, null, null, null);
+					int column_index = cursor.getColumnIndexOrThrow("_data");
+					if (cursor.moveToFirst()) {
+						return cursor.getString(column_index);
+					}
+				} catch (Exception e) {
+					// Eat it
 				}
-			} catch (Exception e) {
-				// Eat it
+			} else {
+				return null;
 			}
 		} else if ("file".equalsIgnoreCase(uri.getScheme())) {
 			return uri.getPath();
 		}
-
-		return null;
+		throw new URISyntaxException(uri.toString(),
+				"dont be equal to cont || file");
 	}
 
 	/**
