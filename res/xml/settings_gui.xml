@@ -36,11 +36,15 @@
             android:key="dateFormatRelative"
             android:summary="@string/settings_date_format_relative_summary"
             android:title="@string/settings_date_format_relative" />
-        <CheckBoxPreference
+        <!--
+             <CheckBoxPreference
             android:defaultValue="@bool/isTablet"
             android:key="useTabletLayout"
             android:title="@string/useTabletLayout" />
-
+        -->
+        <ListPreference
+            android:key="useTabletLayoutNew"
+            android:title="@string/useTabletLayout" />
         <ListPreference
             android:defaultValue="-1"
             android:entries="@array/language_values"

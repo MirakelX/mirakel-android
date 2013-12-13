@@ -18,6 +18,7 @@ import java.util.List;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.Configuration;
 import android.preference.PreferenceManager;
 import de.azapps.mirakel.main_activity.task_fragment.TaskFragmentAdapter.TYPE;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -86,8 +87,24 @@ public class MirakelPreferences {
 	}
 
 	public static boolean isTablet() {
+		String value=settings.getString("useTabletLayoutNew", null);
+		if(value!=null){
+			int orientation = context.getResources().getConfiguration().orientation;
+			int v = Integer.parseInt(value);
+			if (v == 0) {
+				return false;
+			} else if (v == 1) {
+				return orientation == Configuration.ORIENTATION_LANDSCAPE;
+			} else if (v == 2) {
+				return (orientation == Configuration.ORIENTATION_PORTRAIT);
+			} else if (v == 3) {
+				return true;
+			}
+		}
+		
 		return settings.getBoolean("useTabletLayout", context.getResources()
-				.getBoolean(R.bool.isTablet));
+		.getBoolean(R.bool.isTablet));	
+	
 	}
 
 	public static ListMirakel getImportDefaultList(boolean safe) {

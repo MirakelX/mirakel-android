@@ -135,6 +135,7 @@ public class MainActivity extends ActionBarActivity implements
 	private Stack<Task> goBackTo = new Stack<Task>();
 	private boolean showNavDrawer = false;
 	private boolean skipSwipe;
+	private boolean				isTablet;
 
 	@SuppressLint("NewApi")
 	@Override
@@ -144,7 +145,7 @@ public class MainActivity extends ActionBarActivity implements
 			setTheme(R.style.AppBaseThemeDARK);
 		super.onCreate(savedInstanceState);
 
-		boolean isTablet = MirakelPreferences.isTablet();
+		isTablet = MirakelPreferences.isTablet();
 		isRTL = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
 				&& getResources().getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
 		currentPosition = getTasksFragmentPosition();
@@ -160,22 +161,7 @@ public class MainActivity extends ActionBarActivity implements
 			editor.putString("startupList", "" + SpecialList.first().getId());
 			editor.commit();
 		}
-		if (isTablet) {
-			setContentView(R.layout.activity_main);
-		} else {
-			setContentView(R.layout.activity_main);
-		}
-		mPagerAdapter = null;
-		// Show ChangeLog
-		ChangeLog cl = new ChangeLog(this);
-		if (cl.firstRun()) {
-			cl.getLogDialog().show();
-			showNavDrawer = true;
-		}
-		// currentList=preferences.getInt("s", defValue)
-		skipSwipe = false;
-		setupLayout();
-		isResumend = false;
+		draw();
 
 		if (MainActivity.updateTasksUUID) {
 			List<Task> tasks = Task.all();
@@ -198,6 +184,25 @@ public class MainActivity extends ActionBarActivity implements
 				}
 			}, 10);
 		}
+	}
+
+	private void draw() {
+		if (isTablet) {
+			setContentView(R.layout.activity_main);
+		} else {
+			setContentView(R.layout.activity_main);
+		}
+		mPagerAdapter = null;
+		// Show ChangeLog
+		ChangeLog cl = new ChangeLog(this);
+		if (cl.firstRun()) {
+			cl.getLogDialog().show();
+			showNavDrawer = true;
+		}
+		// currentList=preferences.getInt("s", defValue)
+		skipSwipe = false;
+		setupLayout();
+		isResumend = false;
 	}
 
 	public static int getTasksFragmentPosition() {
@@ -662,9 +667,24 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
-		getListFragment().setActivity(this);
-		getTasksFragment().setActivity(this);
-		mDrawerToggle.onConfigurationChanged(newConfig);
+		boolean tabletLocal = MirakelPreferences.isTablet();
+		if (tabletLocal != isTablet) {
+			Intent intent = new Intent(MainActivity.this, MainActivity.class);
+			if (isTablet || currentPosition == getTasksFragmentPosition()) {
+			intent.setAction(MainActivity.SHOW_LIST);
+				intent.putExtra(MainActivity.EXTRA_ID, getCurrentList().getId());
+			} else if (getCurrentTask() != null) {
+				intent.setAction(MainActivity.SHOW_TASK);
+				intent.putExtra(MainActivity.EXTRA_ID, getCurrentTask().getId());
+			}
+			finish();
+			finish();
+			startActivity(intent);
+		} else {
+			getListFragment().setActivity(this);
+			getTasksFragment().setActivity(this);
+			mDrawerToggle.onConfigurationChanged(newConfig);
+		}
 	}
 
 	// Fix Intent-behavior

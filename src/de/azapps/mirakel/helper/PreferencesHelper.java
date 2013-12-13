@@ -564,6 +564,24 @@ public class PreferencesHelper {
 			});
 		}
 
+		final ListPreference isTablet = (ListPreference) findPreference("useTabletLayoutNew");
+		if (isTablet != null) {
+			String[] values = { "0", "1", "2", "3" };
+			final String[] e = activity.getResources().getStringArray(
+					R.array.tablet_options);
+			isTablet.setEntries(e);
+			isTablet.setEntryValues(values);
+			isTablet.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+				@Override
+				public boolean onPreferenceChange(Preference preference, Object newValue) {
+					int value = Integer.parseInt(newValue.toString());
+					isTablet.setSummary(e[value]);
+					return true;
+				}
+			});
+		}
+
 		Preference importDB = findPreference("import");
 		if (importDB != null) {
 			importDB.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {

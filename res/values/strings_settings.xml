@@ -209,6 +209,13 @@
     <string name="list_fragment">List overview</string>
     <string name="show_account_name">Show account name</string>
 
+    <string-array name="tablet_options">
+        <item>never</item>
+        <item>landscape</item>
+        <item>portrait</item>
+        <item>portrait &amp; landscape</item>
+    </string-array>
+
     <!-- Language -->
     <string name="language" translatable="false">Language</string>
 

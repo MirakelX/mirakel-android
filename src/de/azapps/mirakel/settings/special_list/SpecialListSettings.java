@@ -91,7 +91,6 @@ public class SpecialListSettings implements OnPreferenceChangeListener {
 				if (newValue != null && !((String) newValue).equals("")) {
 					specialList.setName(newValue.toString());
 					specialList.save();
-
 					name.setSummary(specialList.getName());
 					if (MirakelPreferences.isTablet() && v4_0) {
 						((ListSettings) ctx).invalidateHeaders();
