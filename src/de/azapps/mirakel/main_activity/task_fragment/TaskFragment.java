@@ -68,6 +68,7 @@ public class TaskFragment extends Fragment {
 	@SuppressLint("NewApi")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		Log.w(TAG, "taskfragment");
 		final MainActivity main = (MainActivity) getActivity();
 		View view = inflater.inflate(R.layout.task_fragment, container, false);
 		ListView listView = (ListView) view.findViewById(R.id.taskFragment);
@@ -230,8 +231,8 @@ public class TaskFragment extends Fragment {
 
 				@Override
 				public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-					MenuInflater inflater = mode.getMenuInflater();
-					inflater.inflate(R.menu.context_task, menu);
+					MenuInflater menuInflater = mode.getMenuInflater();
+					menuInflater.inflate(R.menu.context_task, menu);
 					mActionMode = mode;
 					return true;
 				}
@@ -274,6 +275,7 @@ public class TaskFragment extends Fragment {
 							} else {
 								Log.e(TAG, "How did you get selected this?");
 							}
+							break;
 						case R.id.edit_task:
 							if (adapter.getSelectedCount() == 1) {
 								adapter.setData(adapter
