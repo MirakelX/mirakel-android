@@ -141,7 +141,6 @@ public class TasksFragment extends Fragment {
 			view = inflater.inflate(R.layout.tasks_fragment_phone, container,
 					false);
 		}
-
 		// getResources().getString(R.string.action_settings);
 		try {
 			values = main.getCurrentList().tasks(showDone);
@@ -191,13 +190,13 @@ public class TasksFragment extends Fragment {
 		listView.setOnScrollListener(new AbsListView.OnScrollListener() {
 
 			@Override
-			public void onScrollStateChanged(AbsListView view, int scrollState) {
+			public void onScrollStateChanged(AbsListView v, int scrollState) {
 				// Nothing
 
 			}
 
 			@Override
-			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, final int totalItemCount) {
+			public void onScroll(AbsListView v, int firstVisibleItem, int visibleItemCount, final int totalItemCount) {
 				int lastInScreen = firstVisibleItem + visibleItemCount;
 				if ((lastInScreen == totalItemCount) && !(loadMore)
 						&& finishLoad && adapter != null
@@ -357,7 +356,7 @@ public class TasksFragment extends Fragment {
 
 		main.showMessageFromSync();
 
-		final ListView listView = (ListView) view.findViewById(R.id.tasks_list);
+		final ListView lv = (ListView) view.findViewById(R.id.tasks_list);
 		AsyncTask<Void, Void, TaskAdapter> asyncTask = new AsyncTask<Void, Void, TaskAdapter>() {
 			@Override
 			protected TaskAdapter doInBackground(Void... params) {
@@ -391,15 +390,15 @@ public class TasksFragment extends Fragment {
 			}
 
 			@Override
-			protected void onPostExecute(TaskAdapter adapter) {
-				listView.setAdapter(adapter);
+			protected void onPostExecute(TaskAdapter a) {
+				lv.setAdapter(adapter);
 				finishLoad = true;
 			}
 		};
 
 		asyncTask.execute();
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-			listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+			lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 				@Override
 				public boolean onItemLongClick(AdapterView<?> parent, View item, int position, final long id) {
 					AlertDialog.Builder builder = new AlertDialog.Builder(
@@ -413,17 +412,19 @@ public class TasksFragment extends Fragment {
 					builder.setItems(
 							items.toArray(new CharSequence[items.size()]),
 							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int item) {
-									Task task = values.get((int) id);
+								public void onClick(DialogInterface dialog, @SuppressWarnings("hiding") int item) {
+									Task t = values.get((int) id);
 									switch (item) {
 										case TASK_RENAME:
-											main.setCurrentTask(task);
+											main.setCurrentTask(t);
 											break;
 										case TASK_MOVE:
-											main.handleMoveTask(task);
+											main.handleMoveTask(t);
 											break;
 										case TASK_DESTROY:
-											main.handleDestroyTask(task);
+											main.handleDestroyTask(t);
+											break;
+										default:
 											break;
 									}
 								}
@@ -435,12 +436,12 @@ public class TasksFragment extends Fragment {
 				}
 			});
 		} else {
-			listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+			lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 			if (adapter != null) {
 				adapter.resetSelected();
 			}
-			listView.setHapticFeedbackEnabled(true);
-			listView.setMultiChoiceModeListener(new MultiChoiceModeListener() {
+			lv.setHapticFeedbackEnabled(true);
+			lv.setMultiChoiceModeListener(new MultiChoiceModeListener() {
 
 				@Override
 				public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
@@ -487,6 +488,8 @@ public class TasksFragment extends Fragment {
 							}
 							adapter.notifyDataSetChanged();
 							break;
+						default:
+							break;
 					}
 					mode.finish();
 					return false;
@@ -510,7 +513,7 @@ public class TasksFragment extends Fragment {
 				}
 			});
 		}
-		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+		lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View item, int position, long id) {
 				// TODO Remove Bad Hack
@@ -598,9 +601,9 @@ public class TasksFragment extends Fragment {
 					TaskDialogHelpers.handleAudioRecord(main, task,
 							new ExecInterfaceWithTask() {
 								@Override
-								public void exec(Task task) {
-									main.setCurrentList(task.getList());
-									main.setCurrentTask(task, true);
+								public void exec(Task t) {
+									main.setCurrentList(t.getList());
+									main.setCurrentTask(t, true);
 								}
 							});
 				}

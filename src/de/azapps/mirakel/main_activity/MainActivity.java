@@ -1126,7 +1126,7 @@ public class MainActivity extends ActionBarActivity implements
 	private View oldClickedTask = null;
 
 	void highlightCurrentTask(@SuppressWarnings("hiding") Task currentTask, boolean multiselect) {
-		if (getTaskFragment() == null
+		if (getTaskFragment() == null || getTasksFragment() == null
 				|| getTasksFragment().getAdapter() == null
 				|| currentTask == null)
 			return;
