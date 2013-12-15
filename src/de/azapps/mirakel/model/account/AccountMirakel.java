@@ -97,7 +97,7 @@ public class AccountMirakel extends AccountBase {
 			} else
 				return LOCAL;
 		}
-	};
+	}
 
 	public AccountMirakel(int id, String name, ACCOUNT_TYPES type,
 			boolean enabled) {
@@ -132,10 +132,9 @@ public class AccountMirakel extends AccountBase {
 			AccountMirakel a = cursorToAccount(c);
 			c.close();
 			return a;
-		} else {
-			c.close();
-			return null;
 		}
+		c.close();
+		return null;
 	}
 
 	public void save() {
@@ -156,7 +155,7 @@ public class AccountMirakel extends AccountBase {
 		AccountManager.get(context).removeAccount(a, null, null);
 	}
 
-	private Account getAndroidAccount() {
+	public Account getAndroidAccount() {
 		AccountManager am = AccountManager.get(context);
 		Account[] accounts = am.getAccountsByType(ACCOUNT_TYPES
 				.toName(getType()));
@@ -193,14 +192,13 @@ public class AccountMirakel extends AccountBase {
 			}
 			return accounts;
 
-		} else {
-			return null;
 		}
+		return null;
 	}
 
-	public static void init(Context context) {
-		AccountMirakel.context = context;
-		dbHelper = new DatabaseHelper(context);
+	public static void init(Context ctx) {
+		AccountMirakel.context = ctx;
+		dbHelper = new DatabaseHelper(ctx);
 		database = dbHelper.getWritableDatabase();
 	}
 
@@ -212,10 +210,9 @@ public class AccountMirakel extends AccountBase {
 			AccountMirakel a = cursorToAccount(c);
 			c.close();
 			return a;
-		} else {
-			c.close();
-			return null;
 		}
+		c.close();
+		return null;
 	}
 
 	// Get the default account
@@ -241,11 +238,10 @@ public class AccountMirakel extends AccountBase {
 			AccountMirakel a = cursorToAccount(c);
 			c.close();
 			return a;
-		} else {
-			c.close();
-			return newAccount(context.getString(R.string.local_account),
-					ACCOUNT_TYPES.LOCAL, true);
 		}
+		c.close();
+		return newAccount(context.getString(R.string.local_account),
+				ACCOUNT_TYPES.LOCAL, true);
 	}
 
 	/**
