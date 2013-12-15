@@ -606,10 +606,13 @@ public class MirakelContentProvider extends ContentProvider implements OnAccount
 		if (list_id < 0) {// is special list...
 			SpecialList s = SpecialList.getSpecialList(-1 * list_id);
 			if (s != null) {
-				taskQuery = getTaskQuery(true, not ? 0 : list_id, isSyncAdapter)
-						+ " WHERE "
-						+ (not ? "NOT ( " : "")
-						+ s.getWhereQuery(true) + (not ? " )" : "");
+				taskQuery = getTaskQuery(true, not ? 0 : list_id, isSyncAdapter);
+				if (s.getWhereQuery(true) != null
+						&& !s.getWhereQuery(true).trim().equals("")) {
+					taskQuery += " WHERE "
+							+ (not ? "NOT ( " : "")
+							+ s.getWhereQuery(true) + (not ? " )" : "");
+				}
 			} else {
 				Log.e(TAG, "no matching list found");
 				throw new SQLWarning();
