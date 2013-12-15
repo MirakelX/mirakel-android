@@ -1323,8 +1323,7 @@ public class MainActivity extends ActionBarActivity implements
 			Log.i(TAG, "pageadapter null");
 			return null;
 		}
-		Fragment f = this.getSupportFragmentManager().findFragmentByTag(
-				getFragmentTag(getTasksFragmentPosition()));
+		Fragment f = mPagerAdapter.getItem(getTasksFragmentPosition());
 		return (TasksFragment) f;
 	}
 
@@ -1333,8 +1332,7 @@ public class MainActivity extends ActionBarActivity implements
 			return null;
 		if (MirakelPreferences.isTablet())
 			return taskFragment;
-		Fragment f = this.getSupportFragmentManager().findFragmentByTag(
-				getFragmentTag(getTaskFragmentPosition()));
+		Fragment f = mPagerAdapter.getItem(getTaskFragmentPosition());
 		return (TaskFragment) f;
 	}
 
