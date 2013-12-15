@@ -63,6 +63,7 @@ public class SplashScreenActivity extends Activity {
 					MainActivity.class);
 			intent.setAction(MainActivity.SHOW_LIST);
 			intent.putExtra(MainActivity.EXTRA_ID, listId);
+			finish();
 			startActivityForResult(intent, 1);
 		}
 

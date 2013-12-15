@@ -55,7 +55,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
-import de.azapps.mirakel.PagerAdapter;
+import de.azapps.mirakel.adapter.PagerAdapter;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.helper.Log;
@@ -187,11 +187,7 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	private void draw() {
-		if (isTablet) {
-			setContentView(R.layout.activity_main);
-		} else {
-			setContentView(R.layout.activity_main);
-		}
+		setContentView(R.layout.activity_main);
 		mPagerAdapter = null;
 		// Show ChangeLog
 		ChangeLog cl = new ChangeLog(this);
@@ -669,17 +665,10 @@ public class MainActivity extends ActionBarActivity implements
 		super.onConfigurationChanged(newConfig);
 		boolean tabletLocal = MirakelPreferences.isTablet();
 		if (tabletLocal != isTablet) {
-			Intent intent = new Intent(MainActivity.this, MainActivity.class);
-			if (isTablet || currentPosition == getTasksFragmentPosition()) {
-			intent.setAction(MainActivity.SHOW_LIST);
-				intent.putExtra(MainActivity.EXTRA_ID, getCurrentList().getId());
-			} else if (getCurrentTask() != null) {
-				intent.setAction(MainActivity.SHOW_TASK);
-				intent.putExtra(MainActivity.EXTRA_ID, getCurrentTask().getId());
-			}
-			finish();
-			finish();
-			startActivity(intent);
+			isTablet = tabletLocal;
+			mPagerAdapter = null;
+			isResumend = false;
+			setupLayout();
 		} else {
 			getListFragment().setActivity(this);
 			getTasksFragment().setActivity(this);
@@ -1084,7 +1073,7 @@ public class MainActivity extends ActionBarActivity implements
 		TasksFragment tasksFragment = new TasksFragment();
 		tasksFragment.setActivity(this);
 		fragments.add(tasksFragment);
-		if (!MirakelPreferences.isTablet()) {
+		if (!isTablet) {
 			fragments.add(new TaskFragment());
 		}
 		if (isRTL) {
@@ -1102,7 +1091,14 @@ public class MainActivity extends ActionBarActivity implements
 		}
 
 		//
-		this.mViewPager = (ViewPager) super.findViewById(R.id.viewpager);
+		if (mViewPager == null) {
+			this.mViewPager = (ViewPager) super.findViewById(R.id.viewpager);
+		}
+		if (mViewPager == null) {
+			Log.wtf(TAG, "viewpager null");
+			return;
+		}
+		mViewPager.setOffscreenPageLimit(MirakelPreferences.isTablet() ? 1 : 2);
 		this.mViewPager.setAdapter(this.mPagerAdapter);
 		this.mViewPager.setOnPageChangeListener(this);
 		mViewPager.setOffscreenPageLimit(MirakelPreferences.isTablet() ? 1 : 2);
