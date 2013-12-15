@@ -1341,9 +1341,6 @@ public class MainActivity extends ActionBarActivity implements
 
 	}
 
-	private String getFragmentTag(int pos) {
-		return "android:switcher:" + R.id.viewpager + ":" + pos;
-	}
 
 	private void search(String query) {
 		setCurrentList(new SearchList(this, query));
