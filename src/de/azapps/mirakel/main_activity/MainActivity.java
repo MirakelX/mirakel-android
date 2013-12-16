@@ -1126,7 +1126,7 @@ public class MainActivity extends ActionBarActivity implements
 	private View oldClickedTask = null;
 
 	void highlightCurrentTask(@SuppressWarnings("hiding") Task currentTask, boolean multiselect) {
-		if (getTaskFragment() == null
+		if (getTaskFragment() == null || getTasksFragment() == null
 				|| getTasksFragment().getAdapter() == null
 				|| currentTask == null)
 			return;
@@ -1323,8 +1323,7 @@ public class MainActivity extends ActionBarActivity implements
 			Log.i(TAG, "pageadapter null");
 			return null;
 		}
-		Fragment f = this.getSupportFragmentManager().findFragmentByTag(
-				getFragmentTag(getTasksFragmentPosition()));
+		Fragment f = mPagerAdapter.getItem(getTasksFragmentPosition());
 		return (TasksFragment) f;
 	}
 
@@ -1333,8 +1332,7 @@ public class MainActivity extends ActionBarActivity implements
 			return null;
 		if (MirakelPreferences.isTablet())
 			return taskFragment;
-		Fragment f = this.getSupportFragmentManager().findFragmentByTag(
-				getFragmentTag(getTaskFragmentPosition()));
+		Fragment f = mPagerAdapter.getItem(getTaskFragmentPosition());
 		return (TaskFragment) f;
 	}
 
@@ -1343,9 +1341,6 @@ public class MainActivity extends ActionBarActivity implements
 
 	}
 
-	private String getFragmentTag(int pos) {
-		return "android:switcher:" + R.id.viewpager + ":" + pos;
-	}
 
 	private void search(String query) {
 		setCurrentList(new SearchList(this, query));

@@ -21,6 +21,7 @@ import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.preference.PreferenceManager;
 import de.azapps.mirakel.main_activity.task_fragment.TaskFragmentAdapter.TYPE;
+import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
@@ -199,9 +200,10 @@ public class MirakelPreferences {
 		return settings.getBoolean("syncUse", false);
 	}
 
-	public static int getSyncFrequency() {
+	public static int getSyncFrequency(AccountMirakel account) {
 		try {
-			return Integer.parseInt(settings.getString("syncFrequency", "-1"));
+			return Integer.parseInt(settings.getString("syncFrequency"
+					+ account.getName(), "-1"));
 		} catch (NumberFormatException E) {
 			return -1;
 		}
