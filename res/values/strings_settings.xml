@@ -200,7 +200,7 @@
     <string name="swipeBehavior_title">Switch on swipe to touched Task</string>
     <string name="swipeBehavior_summary">Switch to Task which is touched or switch to last selected task</string>
     <string name="lock_drawer_in_task_fragment_summary">So you don\'t open it accidentally</string>
-    <string name="lock_drawer_in_task_fragment">Lock List-iew in the Task details</string>
+    <string name="lock_drawer_in_task_fragment">Lock List-view in the Task details</string>
     <string name="useTabletLayout">Use TabletLayout</string>
     <string name="general">General</string>
     <string name="tasks_fragment">Tasks overview</string>
@@ -306,7 +306,7 @@
     <string name="semantics_no_list">Do not set list</string>
     <string name="semantics_no_due">Do not set due date</string>
     <string name="settings_file_default_title">Task name for imported files</string>
-    <string name="semantic_new">template</string>
+    <string name="semantic_new">Template</string>
     <!-- Subtasks -->
     <string name="settings_subtask">Subtasks</string>
     <string name="settings_subtask_default_new">Show new task per default</string>
