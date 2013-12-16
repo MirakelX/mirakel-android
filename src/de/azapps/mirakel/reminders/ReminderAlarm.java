@@ -34,6 +34,7 @@ import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
+import android.util.Pair;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.DateTimeHelper;
@@ -47,10 +48,10 @@ import de.azapps.mirakel.services.TaskService;
 import de.azapps.mirakelandroid.R;
 
 public class ReminderAlarm extends BroadcastReceiver {
-	private static final String TAG = "ReminderAlarm";
-	public static String UPDATE_NOTIFICATION = "de.azapps.mirakel.reminders.ReminderAlarm.UPDATE_NOTIFICATION";
-	public static String SHOW_TASK = "de.azapps.mirakel.reminders.ReminderAlarm.SHOW_TASK";
-	public static String EXTRA_ID = "de.azapps.mirakel.reminders.ReminderAlarm.EXTRA_ID";
+	private static final String	TAG					= "ReminderAlarm";
+	public static String		UPDATE_NOTIFICATION	= "de.azapps.mirakel.reminders.ReminderAlarm.UPDATE_NOTIFICATION";
+	public static String		SHOW_TASK			= "de.azapps.mirakel.reminders.ReminderAlarm.SHOW_TASK";
+	public static String		EXTRA_ID			= "de.azapps.mirakel.reminders.ReminderAlarm.EXTRA_ID";
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -62,8 +63,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 		}
 
 		long taskId = intent.getLongExtra(EXTRA_ID, 0);
-		if (taskId == 0)
-			return;
+		if (taskId == 0) return;
 
 		Task task = Task.get(taskId);
 		if (task == null) {
@@ -161,9 +161,9 @@ public class ReminderAlarm extends BroadcastReceiver {
 				builder.build());
 	}
 
-	private static AlarmManager alarmManager;
+	private static AlarmManager						alarmManager;
 
-	private static List<Task> activeAlarms = new ArrayList<Task>();
+	private static List<Pair<Task, PendingIntent>>	activeAlarms	= new ArrayList<Pair<Task, PendingIntent>>();
 
 	public static void updateAlarms(final Context ctx) {
 
@@ -191,9 +191,10 @@ public class ReminderAlarm extends BroadcastReceiver {
 				// Alarms
 				List<Task> tasks = Task.getTasksWithReminders();
 				for (int i = 0; i < activeAlarms.size(); i++) {
-					Task t = activeAlarms.get(i);
+					Task t = activeAlarms.get(i).first;
 					if (t == null) {
-						i = cancelAlarm(ctx, t, null, i);
+						i = cancelAlarm(ctx, t, null, i,
+								activeAlarms.get(i).second);
 						continue;
 					}
 					Task newTask = Task.get(t.getId());
@@ -202,7 +203,9 @@ public class ReminderAlarm extends BroadcastReceiver {
 							|| newTask.isDone()
 							|| newTask.getReminder().after(
 									new GregorianCalendar())) {
-						i = cancelAlarm(ctx, t, newTask, i);
+						i = cancelAlarm(ctx, t, newTask, i,
+								activeAlarms.get(i).second);
+						Log.d(TAG, "remove because its done");
 						continue;
 					} else if (newTask.getReminder() != null) {
 						Calendar now = new GregorianCalendar();
@@ -223,8 +226,8 @@ public class ReminderAlarm extends BroadcastReceiver {
 				}
 				for (Task t : tasks) {
 					if (!isAlarm(t)) {
-						updateAlarm(ctx, t);
-						activeAlarms.add(t);
+						PendingIntent p = updateAlarm(ctx, t);
+						activeAlarms.add(new Pair<Task, PendingIntent>(t, p));
 					}
 				}
 			}
@@ -237,42 +240,48 @@ public class ReminderAlarm extends BroadcastReceiver {
 	}
 
 	private static boolean isAlarm(Task t2) {
-		for (Task t : activeAlarms) {
-			if (t.getId() == t2.getId())
-				return true;
+		for (int i = 0; i < activeAlarms.size(); i++) {
+			Task t = activeAlarms.get(i).first;
+			if (t.getId() == t2.getId()) return true;
 		}
 		return false;
 	}
 
-	private static int cancelAlarm(Context ctx, Task t, Task newTask, int i) {
+	private static int cancelAlarm(Context ctx, Task t, Task newTask, int i, PendingIntent pendingIntent) {
 		activeAlarms.remove(i--);
 		closeNotificationFor(ctx, t.getId());
 		if (newTask == null) {
 			return i;
 		}
-		Intent intent = new Intent(ctx, ReminderAlarm.class);
-		intent.setAction(SHOW_TASK);
-		intent.putExtra(EXTRA_ID, t.getId());
-		PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx, 0,
-				intent, PendingIntent.FLAG_CANCEL_CURRENT);
 		alarmManager.cancel(pendingIntent);
 		return i;
 	}
 
 	public static void cancelAlarm(Context ctx, Task task) {
-		int i = activeAlarms.indexOf(task);
-		cancelAlarm(ctx, task, Task.get(task.getId()), i);
+		try {
+			int i = findTask(task);
+			cancelAlarm(ctx, task, Task.get(task.getId()), i,
+					activeAlarms.get(i).second);
+		} catch (IndexOutOfBoundsException e) {
+			Log.d(TAG, "task not found");
+		}
 	}
 
-	private static void updateAlarm(Context ctx, Task task) {
+	private static int findTask(Task task) {
+		for (int i = 0; i < activeAlarms.size(); i++) {
+			if (task.getId() == activeAlarms.get(i).first.getId()) return i;
+		}
+		throw new IndexOutOfBoundsException();
+	}
+
+	private static PendingIntent updateAlarm(Context ctx, Task task) {
 		Intent intent = new Intent(ctx, ReminderAlarm.class);
 		intent.setAction(SHOW_TASK);
 		intent.putExtra(EXTRA_ID, task.getId());
 		intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx, 0,
 				intent, PendingIntent.FLAG_UPDATE_CURRENT);
-		if (pendingIntent == null || task.getReminder() == null)
-			return;
+		if (pendingIntent == null || task.getReminder() == null) return null;
 		Log.v(TAG, "Set alarm for " + task.getName() + " on "
 				+ task.getReminder().getTimeInMillis());
 		Recurring recurrence = task.getRecurringReminder();
@@ -285,6 +294,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 					recurrence.getIntervall(), pendingIntent);
 
 		}
+		return pendingIntent;
 	}
 
 	public static void closeNotificationFor(Context context, Long taskId) {
