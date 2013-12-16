@@ -19,10 +19,17 @@ import java.util.List;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.DialogInterface.OnShowListener;
+import android.content.Intent;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.Looper;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
@@ -657,5 +664,114 @@ public class TaskDialogHelpers {
 						} catch (Exception e) {}
 					}
 				}).show();
+	}
+
+	public static void openFile(Context context, FileMirakel file) {
+		String mimetype = FileUtils.getMimeType(file.getPath());
+		Intent i2 = new Intent();
+		i2.setAction(android.content.Intent.ACTION_VIEW);
+		i2.setDataAndType(Uri.fromFile(new File(file.getPath())), mimetype);
+		try {
+			context.startActivity(i2);
+		} catch (ActivityNotFoundException e) {
+			Toast.makeText(context,
+					context.getString(R.string.file_no_activity),
+					Toast.LENGTH_SHORT).show();
+		}
+	}
+
+	private static boolean		audio_playback_playing;
+	private static AlertDialog	audio_playback_dialog;
+
+	public static void playbackFile(final Context context, FileMirakel file, boolean loud) {
+
+		final MediaPlayer mPlayer = new MediaPlayer();
+
+		try {
+			mPlayer.setDataSource(file.getPath());
+			mPlayer.prepare();
+			mPlayer.start();
+			mPlayer.setOnCompletionListener(new OnCompletionListener() {
+				@Override
+				public void onCompletion(MediaPlayer mp) {
+					audio_playback_dialog.dismiss();
+				}
+			});
+
+			audio_playback_playing = true;
+		} catch (IOException e) {
+			Log.e(TAG, "prepare() failed");
+		}
+		audio_playback_dialog = new AlertDialog.Builder(context)
+				.setTitle(R.string.audio_playback_title)
+				.setPositiveButton(R.string.audio_playback_pause, null)
+				.setNegativeButton(R.string.audio_playback_stop,
+						new DialogInterface.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								mPlayer.release();
+							}
+						}).setOnCancelListener(new OnCancelListener() {
+
+					@Override
+					public void onCancel(DialogInterface dialog) {
+						mPlayer.release();
+						dialog.cancel();
+					}
+				}).create();
+		audio_playback_dialog.setOnShowListener(new OnShowListener() {
+
+			@Override
+			public void onShow(DialogInterface dialog) {
+				final Button button = ((AlertDialog) dialog)
+						.getButton(ProgressDialog.BUTTON_POSITIVE);
+				button.setOnClickListener(new View.OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						if (audio_playback_playing) {
+							button.setText(R.string.audio_playback_play);
+							mPlayer.pause();
+							audio_playback_playing = false;
+						} else {
+							button.setText(R.string.audio_playback_pause);
+							mPlayer.start();
+							audio_playback_playing = true;
+						}
+
+					}
+				});
+
+			}
+		});
+		audio_playback_dialog.show();
+	}
+
+	public static void handleAudioPlayback(final Context context, final FileMirakel file) {
+
+		new AlertDialog.Builder(context)
+				.setTitle(R.string.audio_playback_select_title)
+				.setItems(
+						context.getResources().getStringArray(
+								R.array.audio_playback_options),
+						new DialogInterface.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								switch (which) {
+									case 0: // Open
+										openFile(context, file);
+										break;
+									case 1: // Loud playback
+										playbackFile(context, file, true);
+										break;
+									default: // Silent playback // For later
+										playbackFile(context, file, false);
+										break;
+								}
+							}
+						}).show();
+
 	}
 }

@@ -10,8 +10,6 @@
  ******************************************************************************/
 package de.azapps.mirakel.main_activity.task_fragment;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +19,6 @@ import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -77,9 +74,6 @@ public class TaskFragment extends Fragment {
 		listView.setAdapter(adapter);
 		listView.setItemsCanFocus(true);
 		listView.setOnItemClickListener(new OnItemClickListener() {
-			private boolean		playing	= false;
-			private MediaPlayer	mPlayer;
-
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long id) {
 				int type = adapter.getData().get(position).first;
@@ -87,37 +81,11 @@ public class TaskFragment extends Fragment {
 					if (main.getCurrentTask() == null) return;
 					FileMirakel file = main.getCurrentTask().getFiles()
 							.get(adapter.getData().get(position).second);
-					String mimetype = FileUtils.getMimeType(file.getPath());
 					if (file.getPath().endsWith(".mp3")) {
-						if (playing) {
-							mPlayer.release();
-							mPlayer = null;
-							playing = false;
-						} else {
-							mPlayer = new MediaPlayer();
-							try {
-								mPlayer.setDataSource(file.getPath());
-								mPlayer.prepare();
-								mPlayer.start();
-								playing = true;
-							} catch (IOException e) {
-								Log.e(TAG, "prepare() failed");
-							}
-
-						}
+						TaskDialogHelpers.handleAudioPlayback(main,file);
 						return;
-					}
-
-					Intent i2 = new Intent();
-					i2.setAction(android.content.Intent.ACTION_VIEW);
-					i2.setDataAndType(Uri.fromFile(new File(file.getPath())),
-							mimetype);
-					try {
-						main.startActivity(i2);
-					} catch (ActivityNotFoundException e) {
-						Toast.makeText(main,
-								main.getString(R.string.file_no_activity),
-								Toast.LENGTH_SHORT).show();
+					} else {
+						TaskDialogHelpers.openFile(main, file);
 					}
 				} else if (type == TYPE.SUBTASK) {
 					Task t = adapter.getTask().getSubtasks()

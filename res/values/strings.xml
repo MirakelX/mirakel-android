@@ -258,6 +258,18 @@ Device: %3$s\n]]>
     <string name="audio_record_stop">Stop recording</string>
     <string name="audio_record_title">Audio recording…</string>
     <string name="audio_record_message">Recording…</string>
+    <string name="audio_playback_title">Audio playback…</string>
+    <string name="audio_playback_select_title">What do you want to do?</string>
+    <string name="audio_playback_pause">Pause</string>
+    <string name="audio_playback_play">Play</string>
+    <string name="audio_playback_stop">Stop</string>
+    <string name="audio_playback_status" translatable="false">%s / %s</string>
+
+    <string-array name="audio_playback_options">
+        <item>Open file</item>
+        <item>Play</item>
+        <!-- <item>Play silent</item> -->
+    </string-array>
 
     <!-- Reccuring -->
     <string name="daily">Daily</string>
