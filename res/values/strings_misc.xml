@@ -31,7 +31,7 @@ For example, you want to create a list `Next two weeks`, where you want to show 
     <string name="help_semantic_title">Task templates</string>
     <string name="help_semantic">
 <![CDATA[
-The semantic new tasks can speed up your daily use of Mirakel. For example you can create a new Task called `Today wash the dishes` and Mirakel create then a Task `wash the dishes` with the current date as the due date.
+The task templates can speed up your daily use of Mirakel. For example you can create a new Task called `Today plan project` and Mirakel create then a Task `plan project` with the current date as the due date.
 
 You can also combine the conditions. But consider that your conditions must be the first words of a task and a condition can only be one word.
 
@@ -39,16 +39,16 @@ For example I also use the following condition: `Mirakel today fix that bug` Thi
 
 #### Please note:
 
-* The last condition overrides the previous conditions if they do the same action. (If you create a Task `Today Tomorrow Foo`, then the due-date will be tommorrow`)
-* The Semantic new tasks are stronger then the SpecialLists.
+* The last condition overrides the previous conditions if they do the same action. (If you create a Task `Today Tomorrow Foo`, then the due-date will be tomorrow`)
+* The task templates are stronger then the SpecialLists.
 
 #### HowTo
 Yo want to create a condition `Mirakel` to put the task in the list `NA: Mirakel`
 
 1. Go to `Settings→Tasks`
-2. Activate the `Semantic New Tasks`
-3. Go to `Configure Semantic new Tasks`
-2. Tap on the `+`-Button (or open the menu point to add a special list)
+2. Activate the `Task templates`
+3. Go to `Configure Task templates`
+2. Tap on the `+`-button (or open the menu point to add a special list)
 5. Set the condition to `Mirakel` (It\'s case insensitive)
 6. Tap `Set List` and select the list `NA: Mirakel` (or the list you want)
 ]]>
@@ -97,7 +97,7 @@ Easy task management for professionals!
 Please do not report bugs in the comments! Send us an email to mirakel@azapps.de or open an issue on our github page: https://github.com/azapps/mirakel-android/
 
 We want to manage our tasks with a simple, powerful tool!
-We love free software!
+We love free, open source software!
 We want to keep our data under control!
 
 How about you?
@@ -107,7 +107,7 @@ Features
 • Manage your tasks in lists
 • Simple, but powerful User Interface
 • Tablet-UI
-• Nice little widget
+• Nice scaleable widget
 • Sort your tasks in different ways
 • Fully configurable
 • Notifications & Reminders
