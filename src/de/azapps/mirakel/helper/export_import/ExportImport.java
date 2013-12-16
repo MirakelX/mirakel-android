@@ -20,7 +20,9 @@ package de.azapps.mirakel.helper.export_import;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -92,6 +94,20 @@ public class ExportImport {
 
 		try {
 			FileUtils.copyFile(file, dbFile);
+			Toast.makeText(ctx, ctx.getString(R.string.backup_import_ok),
+					Toast.LENGTH_LONG).show();
+			android.os.Process.killProcess(android.os.Process.myPid());
+		} catch (IOException e) {
+			Log.e("mypck", e.getMessage(), e);
+			Toast.makeText(ctx, ctx.getString(R.string.backup_import_error),
+					Toast.LENGTH_LONG).show();
+		}
+	}
+
+	public static void importDB(Context ctx, FileInputStream inputstream) {
+
+		try {
+			FileUtils.copyByStream(inputstream, new FileOutputStream(dbFile));
 			Toast.makeText(ctx, ctx.getString(R.string.backup_import_ok),
 					Toast.LENGTH_LONG).show();
 			android.os.Process.killProcess(android.os.Process.myPid());

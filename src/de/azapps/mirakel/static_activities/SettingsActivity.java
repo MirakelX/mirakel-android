@@ -11,6 +11,8 @@
 package de.azapps.mirakel.static_activities;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -161,7 +163,7 @@ public class SettingsActivity extends PreferenceActivity {
 	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
 	@Override
-	protected void onActivityResult(final int requestCode, int resultCode, Intent data) {
+	protected void onActivityResult(final int requestCode, int resultCode, final Intent data) {
 		Log.d(TAG, "activity");
 		final Context that = this;
 		switch (requestCode) {
@@ -170,7 +172,7 @@ public class SettingsActivity extends PreferenceActivity {
 				final String path_db = FileUtils.getPathFromUri(data.getData(),
 						this);
 				// Check if this is an database file
-				if (!path_db.endsWith(".db")) {
+				if (path_db != null && !path_db.endsWith(".db")) {
 					Toast.makeText(that, R.string.import_wrong_type,
 							Toast.LENGTH_LONG).show();
 					return;
@@ -193,8 +195,22 @@ public class SettingsActivity extends PreferenceActivity {
 
 									@Override
 									public void onClick(DialogInterface dialog, int which) {
-										ExportImport.importDB(that, new File(
-												path_db));
+										if (path_db != null) {
+											ExportImport.importDB(that,
+													new File(path_db));
+										} else {
+											try {
+												ExportImport
+														.importDB(
+																that,
+																(FileInputStream) getContentResolver()
+																		.openInputStream(
+																				data.getData()));
+											} catch (FileNotFoundException e) {
+												// TODO Auto-generated catch block
+												e.printStackTrace();
+											}
+										}
 									}
 								}).create().show();
 				break;
