@@ -21,6 +21,9 @@
     package="de.azapps.mirakelandroid"
     android:versionCode="24"
     android:versionName="2.2-beta1+3" >
+    <!-- Only for Google Play builds -->
+  	<uses-permission android:name="com.android.vending.BILLING" />
+    
 
     <!-- TODO Remove Unused Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -125,6 +128,11 @@
         <activity
             android:name="de.azapps.mirakel.static_activities.SettingsActivity"
             android:label="@string/title_settings"
+            android:windowSoftInputMode="adjustPan" >
+        </activity>
+        <activity
+            android:name="de.azapps.mirakel.static_activities.DonationsActivity"
+            android:label="@string/title_donations"
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity

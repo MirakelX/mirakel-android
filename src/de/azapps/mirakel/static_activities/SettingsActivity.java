@@ -87,8 +87,8 @@ public class SettingsActivity extends PreferenceActivity {
 					Helpers.openHelp(this);
 					finish();
 				} else if (i.getAction().equals(
-						"de.azapps.mirakel.preferences.HELP_US")) {
-					Helpers.openHelpUs(this);
+						"de.azapps.mirakel.preferences.DONATE")) {
+					startActivity(new Intent(this, DonationsActivity.class));
 					finish();
 				} else if (i.getAction().equals(
 						"de.azapps.mirakel.preferences.MISC")) {
@@ -311,6 +311,5 @@ public class SettingsActivity extends PreferenceActivity {
 				|| fragmentName.equals(TaskFragmentSettingsFragment.class
 						.getCanonicalName());
 	}
-
 
 }

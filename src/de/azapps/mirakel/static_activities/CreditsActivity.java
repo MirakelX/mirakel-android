@@ -27,7 +27,8 @@ public class CreditsActivity extends Activity {
 			"https://github.com/Todd-Davies/ProgressWheel" },
 			{ "DateTimePicker Compatibility Library", "Apache 2.0",
 			"https://github.com/flavienlaurent/datetimepicker" },
-			{ "Webicons", "CC-Attrib", "http://fairheadcreative.com/" } };
+			{ "Webicons", "CC-Attrib", "http://fairheadcreative.com/" },
+			{"Android Donations Lib","Apache 2.0","https://github.com/dschuermann/android-donations-lib"}};
 	private final String[][]	translations	= { { "Spanish", "macebal" },
 			{ "French", "Ghost of Kendo, waghanza, npettiaux, benasse" },
 			{ "German", "Anatolij Zelenin, Georg Semmler, Patrik Kernstock" },

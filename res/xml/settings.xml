@@ -85,10 +85,10 @@
     </header>
     <header
         android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
-        android:title="@string/settings_help_us" >
+        android:title="@string/title_donations" >
         <extra
             android:name="type"
-            android:value="help_us" />
+            android:value="donate" />
     </header>
 </preference-headers>
 
