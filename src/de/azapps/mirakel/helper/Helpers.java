@@ -43,7 +43,7 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 
 public class Helpers {
-	private static String TAG = "Helpers";
+	private static String	TAG	= "Helpers";
 
 	// Contact
 	public static void contact(Context context) {
@@ -88,8 +88,7 @@ public class Helpers {
 
 	public static void openHelp(Context ctx, String title) {
 		String url = "http://mirakel.azapps.de/help_en.html";
-		if (title != null)
-			url += "#" + title;
+		if (title != null) url += "#" + title;
 		openURL(ctx, url);
 	}
 
@@ -110,7 +109,6 @@ public class Helpers {
 	 * Wrapper-Class
 	 * 
 	 * @author az
-	 * 
 	 */
 	public interface ExecInterface {
 		public void exec();
@@ -135,14 +133,11 @@ public class Helpers {
 
 	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
-	public static void setListColorBackground(ListMirakel list, View row,
-			boolean darkTheme, int w) {
+	public static void setListColorBackground(ListMirakel list, View row, boolean darkTheme, int w) {
 
 		int color;
-		if (list == null)
-			color = 0;
-		else
-			color = list.getColor();
+		if (list == null) color = 0;
+		else color = list.getColor();
 		if (color != 0) {
 			if (darkTheme) {
 				color ^= 0x66000000;
@@ -154,18 +149,16 @@ public class Helpers {
 		mDrawable.getPaint().setShader(
 				new LinearGradient(0, 0, w / 4, 0, color, Color
 						.parseColor("#00FFFFFF"), Shader.TileMode.CLAMP));
-		if (android.os.Build.VERSION.SDK_INT >= 16)
-			row.setBackground(mDrawable);
-		else
-			row.setBackgroundDrawable(mDrawable);
+		if (android.os.Build.VERSION.SDK_INT >= 16) row
+				.setBackground(mDrawable);
+		else row.setBackgroundDrawable(mDrawable);
 	}
 
 	/*
 	 * Scaling down the image
 	 * "Source: http://www.androiddevelopersolution.com/2012/09/bitmap-how-to-scale-down-image-for.html"
 	 */
-	public static Bitmap getScaleImage(Bitmap bitmap, float boundBoxInDp,
-			int rotate) {
+	public static Bitmap getScaleImage(Bitmap bitmap, float boundBoxInDp, int rotate) {
 
 		// Get current dimensions
 		int width = bitmap.getWidth();
