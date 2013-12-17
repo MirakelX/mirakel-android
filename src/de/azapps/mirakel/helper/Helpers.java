@@ -92,10 +92,6 @@ public class Helpers {
 		openURL(ctx, url);
 	}
 
-	public static void openHelpUs(Context ctx) {
-		openURL(ctx, "http://mirakel.azapps.de/help_us.html");
-	}
-
 	public static void openURL(Context ctx, String url) {
 		Intent i2 = new Intent(Intent.ACTION_VIEW);
 		i2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

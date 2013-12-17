@@ -62,9 +62,8 @@ public class SettingsFragment extends PreferenceFragment {
 		} else if (getArguments().getString("type").equals("help")) {
 			Helpers.openHelp(getActivity());
 			getActivity().finish();
-		} else if (getArguments().getString("type").equals("help_us")) {
-			Helpers.openHelpUs(getActivity());
-			getActivity().finish();
+		} else if (getArguments().getString("type").equals("donate")) {
+			startActivity(new Intent(getActivity(), DonationsActivity.class));
 		} else if (getArguments().getString("type").equals("speciallists")) {
 			startActivity(new Intent(getActivity(),
 					SpecialListsSettingsActivity.class));
