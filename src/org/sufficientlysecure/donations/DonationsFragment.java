@@ -190,14 +190,8 @@ public class DonationsFragment extends Fragment {
             // choose donation amount
             mGoogleSpinner = (Spinner) getActivity().findViewById(
                     R.id.donations__google_android_market_spinner);
-            ArrayAdapter<CharSequence> adapter;
-            if (mDebug) {
-                adapter = new ArrayAdapter<CharSequence>(getActivity(),
-                        android.R.layout.simple_spinner_item, CATALOG_DEBUG);
-            } else {
-                adapter = new ArrayAdapter<CharSequence>(getActivity(),
+            ArrayAdapter<CharSequence> adapter= new ArrayAdapter<CharSequence>(getActivity(),
                         android.R.layout.simple_spinner_item, mGoogleCatalogValues);
-            }
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             mGoogleSpinner.setAdapter(adapter);
 
