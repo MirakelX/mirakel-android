@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import de.azapps.mirakel.helper.BuildHelper;
 import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.R;
 
@@ -47,7 +48,7 @@ public class DonationsActivity extends FragmentActivity {
 
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		DonationsFragment donationsFragment;
-		if (true) {
+		if (BuildHelper.isForPlayStore()) {
 			donationsFragment = DonationsFragment.newInstance(
 					BuildConfig.DEBUG,
 					true,
