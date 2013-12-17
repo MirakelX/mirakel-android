@@ -2,12 +2,15 @@ package de.azapps.mirakel.static_activities;
 
 import org.sufficientlysecure.donations.DonationsFragment;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.MenuItem;
 import de.azapps.mirakel.helper.BuildHelper;
 import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.R;
@@ -40,6 +43,7 @@ public class DonationsActivity extends FragmentActivity {
 	/**
 	 * Called when the activity is first created.
 	 */
+	@SuppressLint("NewApi")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -68,7 +72,24 @@ public class DonationsActivity extends FragmentActivity {
 		ft.replace(R.id.donations_activity_container, donationsFragment,
 				"donationsFragment");
 		ft.commit();
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+			getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case android.R.id.home:
+				setResult(RESULT_OK);
+				finish();
+				return true;
+			default:
+				break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+	
+
 
 	/**
 	 * Needed for Google Play In-app Billing. It uses startIntentSenderForResult(). The result is

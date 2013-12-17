@@ -63,7 +63,9 @@ public class SettingsFragment extends PreferenceFragment {
 			Helpers.openHelp(getActivity());
 			getActivity().finish();
 		} else if (getArguments().getString("type").equals("donate")) {
-			startActivity(new Intent(getActivity(), DonationsActivity.class));
+			startActivityForResult(new Intent(getActivity(),
+					DonationsActivity.class), SettingsActivity.DONATE);
+			if (!MirakelPreferences.isTablet()) getActivity().finish();
 		} else if (getArguments().getString("type").equals("speciallists")) {
 			startActivity(new Intent(getActivity(),
 					SpecialListsSettingsActivity.class));

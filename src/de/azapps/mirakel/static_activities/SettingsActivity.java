@@ -49,6 +49,7 @@ public class SettingsActivity extends PreferenceActivity {
 	public static final int		FILE_ASTRID	= 0, FILE_IMPORT_DB = 1,
 			NEW_ACCOUNT = 2, FILE_ANY_DO = 3, FILE_WUNDERLIST = 4;
 	private static final String	TAG			= "SettingsActivity";
+	public static final int		DONATE		= 5;
 	private List<Header>		mHeaders;
 	private boolean				darkTheme;
 	private SettingsAdapter		mAdapter;
@@ -88,8 +89,9 @@ public class SettingsActivity extends PreferenceActivity {
 					finish();
 				} else if (i.getAction().equals(
 						"de.azapps.mirakel.preferences.DONATE")) {
-					startActivity(new Intent(this, DonationsActivity.class));
-					finish();
+					startActivityForResult(new Intent(this,
+							DonationsActivity.class), DONATE);
+					if (!MirakelPreferences.isTablet()) finish();
 				} else if (i.getAction().equals(
 						"de.azapps.mirakel.preferences.MISC")) {
 					addPreferencesFromResource(R.xml.settings_misc);
@@ -273,6 +275,10 @@ public class SettingsActivity extends PreferenceActivity {
 					}
 				}.execute("");
 				break;
+			case DONATE:
+				if (resultCode != RESULT_OK) return;
+				if (!onIsMultiPane()) finish();
+
 			default:
 				break;
 		}
