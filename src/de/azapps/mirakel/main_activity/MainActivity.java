@@ -637,6 +637,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 			}
 		}
 		sendBroadcast(intent);
+		TaskDialogHelpers.stopRecording();
 		super.onPause();
 	}
 
