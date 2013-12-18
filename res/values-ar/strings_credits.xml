@@ -4,4 +4,10 @@
   <string name="action_credits">الإعتمادات</string>
   <string name="action_credits_summary">عنا ;)</string>
   <string name="title_activity_credits">حول البرنامج و الاعتمادات</string>
+  <string name="credits_googleplus_description">الانضمام إلى مجتمعنا G+</string>
+  <string name="credits_translations">الترجمات</string>
+  <string name="feedback">أرسل ملاحظاتك</string>
+  <string name="credits_libraries">المكتبات المستعملة</string>
+  <string name="credits_translations" tools:ignore="DuplicateDefinition">الترجمات</string>
+  <string name="credits_license_title">الترخيص</string>
 </resources>

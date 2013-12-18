@@ -20,6 +20,7 @@
   <string name="sync_frequency_summary">Синхронизировать каждые %s мин</string>
   <string name="sync_frequency_summary_man">Синхронизировать только вручную</string>
   <string name="sync_type">Тип синхронизации</string>
+  <string name="version">Версия</string>
   <string name="no">нет</string>
   <string name="not">не</string>
   <string name="notification_title">Оповещения</string>
@@ -40,6 +41,8 @@
   <string name="startup_show_lists_summary">Показать все списки при старте</string>
   <string name="startup_list">Выбрать список</string>
   <string name="startup_list_summary">Показать дела из \"%s\"</string>
+  <string name="special_lists_click">Управление метасписками</string>
+  <string name="special_lists_new">Новый метасписок</string>
   <string name="settings_misc">Прочее</string>
   <string name="settings_backup">Резервное копирование и импорт</string>
   <string name="backup_click_summary">Резервное копирование базы данных на SD карту (%s)</string>
@@ -58,6 +61,7 @@
   <string name="changelog_click">Список изменений</string>
   <string name="settings_about">О нас</string>
   <string name="settings_help">Помощь</string>
+  <string name="settings_help_us">Как помочь разработчикам?</string>
   <string name="get_dashclock">Получить Mirakel-Dashclock</string>
   <string name="get_dashclock_summary">Mirakel-расширение для Dashclock</string>
   <string name="import_astrid_click">Импорт из Astrid</string>
@@ -82,9 +86,13 @@
   <string name="hide_keyboard_summary">Скрыть клавиатуру после создания нового дела</string>
   <string name="undo_number">Количество дел, сохраняемых в протоколе изменений</string>
   <string name="undo_number_summary">Отменить %s изменений</string>
+  <string name="settings_semantic">Шаблоны задач</string>
+  <string name="semantic_new_task">Новый шаблон задачи</string>
   <string name="semantic_new_task_config_summary">Сконфигурируйте условия для создания новых дел</string>
+  <string name="semantic_new_task_config">Настройка шаблонов задач</string>
   <string name="settings_old_logo_summary">Жаль, что Вам не нравится новый логотип (перезапустите приложение; Вам нужен Android >= 4.0)</string>
   <string name="settings_old_logo">Использовать старый уродливый логотип</string>
+  <string name="useTabletLayout">Планшетный интерфейс</string>
   <string name="delete_done">Удаление выполненных дел</string>
   <string name="delete_done_summary">Удалить все выполненные дела</string>
   <string name="delete_done_warning">Вы уверены?</string>
@@ -96,6 +104,8 @@
   <string name="preferences_colorize">Цвета</string>
   <string name="preferences_colorize_tasks">Раскрасить дела</string>
   <string name="preferences_colorize_tasks_everywhere">Раскрасить дела везде</string>
+  <string name="preferences_colorize_tasks_everywhere_summary">…или только в метасписках?</string>
+  <string name="settings_semantics_title">Настройка шаблонов задач</string>
   <string name="settings_semantics_condition">Состояние</string>
   <string name="settings_semantics_actions">Действия</string>
   <string name="settings_semantics_list">Установить список</string>
@@ -139,6 +149,12 @@
     <item>60</item>
     <item>1440</item>
     <item>-1</item>
+  </string-array>
+  <string-array name="tablet_options">
+    <item>never</item>
+    <item>landscape</item>
+    <item>portrait</item>
+    <item>portrait &amp; landscape</item>
   </string-array>
   <string-array name="weekdays">
     <item>Don\'t set</item>

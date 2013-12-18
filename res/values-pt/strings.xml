@@ -35,6 +35,7 @@
   <string name="task_set_reminder">Definir lembrete</string>
   <string name="action_undo">Anular última alteração</string>
   <string name="add_subtasks">Adicionar subtarefa...</string>
+  <string name="subtask_list_name">Subtarefas</string>
   <string name="remove_files">Remover ficheiros da tarefa</string>
   <string name="remove_files_summary">Pretende remover %1$s de %2$s?</string>
   <string name="add_subtask">Adicionar subtarefa</string>
@@ -185,6 +186,7 @@ Dispositivo: %3$s\n]]>
   <string name="file_to_large">falha ao criar miniatura</string>
   <string name="recurring_not_zero">A recorrência não pode ser nula!</string>
   <string name="settings_task_fragment_title">Resumo da tarefa</string>
+  <string name="save_label">Terminada</string>
   <string-array name="task_sorting_items">
     <item>Pré-definida</item>
     <item>Prazo</item>
@@ -207,5 +209,9 @@ Dispositivo: %3$s\n]]>
     <item>Taskwarrior</item>
     <item>CalDav</item>
     <item>Mirakel</item>
+  </string-array>
+  <string-array name="audio_playback_options">
+    <item>Open file</item>
+    <item>Play</item>
   </string-array>
 </resources>

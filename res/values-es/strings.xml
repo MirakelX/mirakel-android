@@ -129,6 +129,7 @@ Device: %3$s\n]]>
   <string name="year">Año</string>
   <string name="end">Final</string>
   <string name="no_begin_end">No %s</string>
+  <string name="save_label">Hecho</string>
   <string-array name="task_sorting_items">
     <item>Predeterminado</item>
     <item>Fecha límite</item>
@@ -151,5 +152,9 @@ Device: %3$s\n]]>
     <item>Taskwarrior</item>
     <item>CalDav</item>
     <item>Mirakel</item>
+  </string-array>
+  <string-array name="audio_playback_options">
+    <item>Open file</item>
+    <item>Play</item>
   </string-array>
 </resources>

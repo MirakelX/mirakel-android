@@ -5,7 +5,7 @@
   <string name="action_settings">Nastavitve</string>
   <string name="action_contact">Stik / Poročilo o hrošču</string>
   <string name="action_contact_summary">Pošljite elektronsko sporočilo!</string>
-  <string name="no_date">Ni določenega končnega roka</string>
+  <string name="no_date">Brez roka</string>
   <string name="no_reminder">Nastavi opomnik</string>
   <string name="no_lists">Naloge ni mogoče uskladiti, ker je brez seznamov</string>
   <string name="speak">Govori</string>
@@ -35,6 +35,7 @@
   <string name="task_set_reminder">Nastavi opomnik</string>
   <string name="action_undo">Razveljavi zadnjo spremembo</string>
   <string name="add_subtasks">Dodaj podrejeno nalogo ...</string>
+  <string name="subtask_list_name">Podrejena naloga</string>
   <string name="remove_files">Odstrani datoteke iz naloge</string>
   <string name="remove_files_summary">Ali želite odstraniti %1$s iz %2$s?</string>
   <string name="add_subtask">Dodaj podrejeno nalogo</string>
@@ -55,10 +56,10 @@
   <string name="list_menu_new_list">Nov seznam</string>
   <string name="list_change_name_cont">Nov naslov seznama</string>
   <string name="list_change_name_title">Spremeni ime seznama</string>
-  <string name="list_all">Vsi seznami</string>
+  <string name="list_all">Združen prikaz seznamov</string>
   <string name="list_today">Današnje naloge</string>
-  <string name="list_week">Ta teden</string>
-  <string name="list_overdue">Zapadlo</string>
+  <string name="list_week">Naloge tega tedna</string>
+  <string name="list_overdue">Zapadle naloge</string>
   <string name="list_delete_content">Ali ste prepričani, da želite izbrisati %s?</string>
   <string name="menu_delete_list">Izbriši seznam</string>
   <string name="menu_delete_task">Izbriši nalogo</string>
@@ -77,7 +78,7 @@
   <string name="reminder_notification_title">Naloga: %s</string>
   <string name="reminder_notification_priority">Prednost: %s</string>
   <string name="reminder_notification_list">Seznam: %s</string>
-  <string name="reminder_notification_due">Zapadlost: %s</string>
+  <string name="reminder_notification_due">Zapade: %s</string>
   <string name="reminder_notification_done">Končano</string>
   <string name="reminder_notification_later">Kasneje</string>
   <string name="reminder_notification_done_confirm">Naloga je označena kot „končana“</string>
@@ -157,8 +158,8 @@ Naprava: %3$s\n]]>
   <string name="file_no_activity">Odpiranje te vrste datoteke ni podprto</string>
   <string name="file_select">Izbor datoteke</string>
   <string name="file_vanished">Ni takšne datoteke</string>
-  <string name="file_default_title">Oglejte si to datoteko</string>
-  <string name="photo_default_title">Oglejte si to fotografijo</string>
+  <string name="file_default_title">Seznam izbranih datotek</string>
+  <string name="photo_default_title">Seznam izbranih fotografij</string>
   <string name="edit">Uredi</string>
   <string name="daily">Dnevno</string>
   <string name="second_day">Dvodnevno</string>
@@ -187,9 +188,10 @@ Naprava: %3$s\n]]>
   <string name="file_to_large">Ustvarjanje sličice je spodletelo</string>
   <string name="recurring_not_zero">Nastavitev ponavljaja ne more biti nič!</string>
   <string name="settings_task_fragment_title">Pregled naloge</string>
+  <string name="save_label">Končano</string>
   <string-array name="task_sorting_items">
     <item>Privzeto</item>
-    <item>roku zapadlosti</item>
+    <item>Rok</item>
     <item>prednosti</item>
     <item>datumu vpisa</item>
     <item>Najprej po prednosti, nato po datumu</item>
@@ -209,5 +211,9 @@ Naprava: %3$s\n]]>
     <item>Taskwarrior</item>
     <item>CalDav</item>
     <item>Mirakel</item>
+  </string-array>
+  <string-array name="audio_playback_options">
+    <item>Open file</item>
+    <item>Play</item>
   </string-array>
 </resources>

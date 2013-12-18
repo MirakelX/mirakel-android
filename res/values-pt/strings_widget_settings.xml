@@ -7,4 +7,5 @@
   <string name="fontcolor">Cor de letra</string>
   <string name="widget_transparency">Transparência</string>
   <string name="widget_transparency_summary">%s%% transparente</string>
+  <string name="widget_due_colors">Datas de vencimento coloridas</string>
 </resources>

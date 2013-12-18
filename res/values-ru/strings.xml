@@ -35,6 +35,7 @@
   <string name="task_set_reminder">Установить напоминание</string>
   <string name="action_undo">Отменить последнее изменение</string>
   <string name="add_subtasks">Добавить подзадачу…</string>
+  <string name="subtask_list_name">Подзадачи</string>
   <string name="remove_files">Удалить файлы из дела</string>
   <string name="remove_files_summary">Вы хотите удалить %1$s из %2$s?</string>
   <string name="add_subtask">Добавить подзадачу</string>
@@ -139,7 +140,7 @@ Device: %3$s\n]]>
   <string name="permission_write_desc">Допуск на запись данных в Mirakel</string>
   <string name="permission_read_write_lbl">Чтение/запись данных из/в Mirakel</string>
   <string name="permission_read_write_desc">Допуск на чтение данных из и записи данных в Mirakel</string>
-  <string name="crash_toast_text">Ооооох! Я завис! Пожалуйста, запустите приложение заново, что бы я мог послать сообщение моим разработчикам</string>
+  <string name="crash_toast_text">Ооооох! Я завис! Пожалуйста, запустите приложение заново, чтобы я мог послать сообщение моим разработчикам</string>
   <string name="crash_dialog_title">Mirakel завис</string>
   <string name="crash_dialog_text">Произошла непредвиденная ошибка, вызвавшая остановку работы приложения. Пожалуйста, помогите нам найти ошибку, отправив нам данные о ней. Все что Вам нужно сделать, это нажать на ОК.</string>
   <string name="crash_dialog_comment_prompt">Ниже Вы можете ввести комментарии к ошибке:</string>
@@ -180,6 +181,7 @@ Device: %3$s\n]]>
   <string name="beginning_end">Начало и конец</string>
   <string name="save">Сохранить</string>
   <string name="file_to_large">Не удалось создать миниатюру</string>
+  <string name="save_label">Выполнено</string>
   <string-array name="task_sorting_items">
     <item>По умолчанию</item>
     <item>Крайний срок</item>
@@ -202,5 +204,9 @@ Device: %3$s\n]]>
     <item>Taskwarrior</item>
     <item>CalDav</item>
     <item>Mirakel</item>
+  </string-array>
+  <string-array name="audio_playback_options">
+    <item>Open file</item>
+    <item>Play</item>
   </string-array>
 </resources>

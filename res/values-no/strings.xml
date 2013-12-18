@@ -33,6 +33,7 @@
   <string name="set_time">Angi klokkeslett</string>
   <string name="task_set_reminder">Angi påminnelse</string>
   <string name="action_undo">Angre den siste endringen</string>
+  <string name="subtask_list_name">Deloppgave</string>
   <string name="remove_files">Fjern filer fra oppgave</string>
   <string name="remove_files_summary">Vil du fjerne %1$s fra %2$s?</string>
   <string name="add_subtask">Legg til deloppgave</string>
@@ -154,6 +155,7 @@ Device: %3$s\n]]>
   <string name="day">Dag</string>
   <string name="month">Måned</string>
   <string name="year">År</string>
+  <string name="save_label">Ferdig</string>
   <string-array name="task_sorting_items">
     <item>Standard</item>
     <item>Tidsfrist</item>
@@ -176,5 +178,9 @@ Device: %3$s\n]]>
     <item>Taskwarrior</item>
     <item>CalDav</item>
     <item>Mirakel</item>
+  </string-array>
+  <string-array name="audio_playback_options">
+    <item>Open file</item>
+    <item>Play</item>
   </string-array>
 </resources>

@@ -36,6 +36,7 @@
   <string name="task_set_reminder">Fixer le rappel</string>
   <string name="action_undo">Annuler la dernière modification</string>
   <string name="add_subtasks">Ajouter une sous-tâche …</string>
+  <string name="subtask_list_name">Tâches subordonnées</string>
   <string name="remove_files">Enlever les fichier de la tâche</string>
   <string name="remove_files_summary">Voulez vous supprimer %1$s de %2$s?</string>
   <string name="add_subtask">Ajouter une sous-tâche</string>
@@ -184,6 +185,7 @@ Device: %3$s\n]]>
   <string name="save">Sauvegarder</string>
   <string name="file_to_large">Impossible de créer la vignette</string>
   <string name="recurring_not_zero">A quelle fréqeucen me répétez ?</string>
+  <string name="save_label">Fini</string>
   <string-array name="task_sorting_items">
     <item>Par défaut</item>
     <item>Échéance</item>
@@ -206,5 +208,9 @@ Device: %3$s\n]]>
     <item>Taskwarrior</item>
     <item>CalDav</item>
     <item>Mirakel</item>
+  </string-array>
+  <string-array name="audio_playback_options">
+    <item>Open file</item>
+    <item>Play</item>
   </string-array>
 </resources>
