@@ -197,7 +197,16 @@ public class MirakelPreferences {
 	}
 
 	public static boolean useSync() {
-		return settings.getBoolean("syncUse", false);
+		List<AccountMirakel>all=AccountMirakel.getAll();
+		for (AccountMirakel a : all) {
+			if (a.isEnabeld()) {
+				Log.d("foo", a.getName());
+				return true;
+
+			}
+		}
+		return false;
+//		return settings.getBoolean("syncUse", false);
 	}
 
 	public static int getSyncFrequency(AccountMirakel account) {

@@ -86,38 +86,36 @@ import de.azapps.tools.FileUtils;
  * This is our main activity. Here happens nearly everything.
  * 
  * @author az
- * 
  */
-public class MainActivity extends ActionBarActivity implements
-		ViewPager.OnPageChangeListener {
+public class MainActivity extends ActionBarActivity implements ViewPager.OnPageChangeListener {
 
 	// Layout variables
-	ViewPager mViewPager;
-	private PagerAdapter mPagerAdapter;
-	protected ListFragment listFragment;
-	protected TaskFragment taskFragment;
-	private Menu menu;
-	public boolean darkTheme;
+	ViewPager					mViewPager;
+	private PagerAdapter		mPagerAdapter;
+	protected ListFragment		listFragment;
+	protected TaskFragment		taskFragment;
+	private Menu				menu;
+	public boolean				darkTheme;
 
 	// State variables
-	private Task currentTask;
-	private ListMirakel currentList;
-	private List<ListMirakel> lists;
+	private Task				currentTask;
+	private ListMirakel			currentList;
+	private List<ListMirakel>	lists;
 	protected int				currentPosition;
 
 	// Foo variables (move them out of the MainActivity)
-	private boolean highlightSelected;
-	private DrawerLayout mDrawerLayout;
-	private Uri fileUri;
+	private boolean				highlightSelected;
+	private DrawerLayout		mDrawerLayout;
+	private Uri					fileUri;
 	// TODO We should do this somehow else
-	public static boolean updateTasksUUID = false;
+	public static boolean		updateTasksUUID		= false;
 
 	// Intent variables
 	public static final int		LEFT_FRAGMENT		= 0, RIGHT_FRAGMENT = 1;
-	public static final int RESULT_SPEECH_NAME = 1, RESULT_SPEECH = 3,
+	public static final int		RESULT_SPEECH_NAME	= 1, RESULT_SPEECH = 3,
 			RESULT_SETTINGS = 4, RESULT_ADD_FILE = 5, RESULT_CAMERA = 6,
 			RESULT_ADD_PICTURE = 7;
-	public static String EXTRA_ID = "de.azapps.mirakel.EXTRA_TASKID",
+	public static String		EXTRA_ID			= "de.azapps.mirakel.EXTRA_TASKID",
 			SHOW_TASK = "de.azapps.mirakel.SHOW_TASK",
 			SHOW_LIST = "de.azapps.mirakel.SHOW_LIST",
 			SHOW_LISTS = "de.azapps.mirakel.SHOW_LISTS",
@@ -125,24 +123,23 @@ public class MainActivity extends ActionBarActivity implements
 			ADD_TASK_FROM_WIDGET = "de.azapps.mirakel.ADD_TASK_FROM_WIDGET",
 			SHOW_TASK_FROM_WIDGET = "de.azapps.mirakel.SHOW_TASK_FROM_WIDGET",
 			TASK_ID = "de.azapp.mirakel.TASK_ID";
-	private Intent startIntent;
+	private Intent				startIntent;
 
-	private static final String TAG = "MainActivity";
+	private static final String	TAG					= "MainActivity";
 
 	// User interaction variables
-	private boolean isResumend;
-	private boolean closeOnBack = false;
-	private Stack<Task> goBackTo = new Stack<Task>();
-	private boolean showNavDrawer = false;
-	private boolean skipSwipe;
+	private boolean				isResumend;
+	private boolean				closeOnBack			= false;
+	private Stack<Task>			goBackTo			= new Stack<Task>();
+	private boolean				showNavDrawer		= false;
+	private boolean				skipSwipe;
 	private boolean				isTablet;
 
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		darkTheme = MirakelPreferences.isDark();
-		if (darkTheme)
-			setTheme(R.style.AppBaseThemeDARK);
+		if (darkTheme) setTheme(R.style.AppBaseThemeDARK);
 		super.onCreate(savedInstanceState);
 
 		isTablet = MirakelPreferences.isTablet();
@@ -217,111 +214,113 @@ public class MainActivity extends ActionBarActivity implements
 			return true;
 		}
 		switch (item.getItemId()) {
-		case R.id.menu_delete:
-			handleDestroyTask(currentTask);
-			updateShare();
-			return true;
-		case R.id.menu_move:
-			handleMoveTask(currentTask);
-			return true;
-		case R.id.list_delete:
-			handleDestroyList(currentList);
-			return true;
-		case R.id.task_sorting:
-			currentList = ListDialogHelpers.handleSortBy(this, currentList,
-					new Helpers.ExecInterface() {
+			case R.id.menu_delete:
+				handleDestroyTask(currentTask);
+				updateShare();
+				return true;
+			case R.id.menu_move:
+				handleMoveTask(currentTask);
+				return true;
+			case R.id.list_delete:
+				handleDestroyList(currentList);
+				return true;
+			case R.id.task_sorting:
+				currentList = ListDialogHelpers.handleSortBy(this, currentList,
+						new Helpers.ExecInterface() {
 
-						@Override
-						public void exec() {
-							setCurrentList(currentList);
-						}
-					}, null);
-			return true;
-		case R.id.menu_new_list:
-			getListFragment().editList(null);
-			return true;
-		case R.id.menu_sort_lists:
-			boolean t = !item.isChecked();
-			getListFragment().enableDrop(t);
-			item.setChecked(t);
-			return true;
-		case R.id.menu_settings:
-			Intent intent = new Intent(MainActivity.this,
-					SettingsActivity.class);
-			startActivityForResult(intent, RESULT_SETTINGS);
-			break;
-		case R.id.menu_sync_now:
-			Bundle bundle = new Bundle();
-			bundle.putBoolean(ContentResolver.SYNC_EXTRAS_DO_NOT_RETRY, true);
-			// bundle.putBoolean(ContentResolver.SYNC_EXTRAS_INITIALIZE,true);
-			bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-			bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-			ContentResolver.requestSync(null, Mirakel.AUTHORITY_TYP, bundle);
-			break;
-		case R.id.share_task:
-			SharingHelper.share(this, getCurrentTask());
-			break;
-		case R.id.share_list:
-			SharingHelper.share(this, getCurrentList());
-			break;
-		case R.id.search:
-			onSearchRequested();
-			break;
-		case R.id.menu_kill_button:
-			// Only Close
-			NotificationService.stop(this);
-			if (startService(new Intent(MainActivity.this,
-					NotificationService.class)) != null) {
-				stopService(new Intent(MainActivity.this,
-						NotificationService.class));
-			}
-			Intent killIntent = new Intent(getApplicationContext(),
-					SplashScreenActivity.class);
-			killIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			killIntent.setAction(SplashScreenActivity.EXIT);
-			startActivity(killIntent);
-			return false;
-		case R.id.menu_undo:
-			UndoHistory.undoLast(this);
-			updateCurrentListAndTask();
-				if (currentPosition == getTaskFragmentPosition())
-				setCurrentTask(getCurrentTask());
-			else {
-				getListFragment().getAdapter().changeData(ListMirakel.all());
-				getListFragment().getAdapter().notifyDataSetChanged();
-				getTasksFragment().getAdapter().changeData(
-						getCurrentList().tasks(), getCurrentList().getId());
-				getTasksFragment().getAdapter().notifyDataSetChanged();
-				if (!MirakelPreferences.isTablet()
+							@Override
+							public void exec() {
+								setCurrentList(currentList);
+							}
+						}, null);
+				return true;
+			case R.id.menu_new_list:
+				getListFragment().editList(null);
+				return true;
+			case R.id.menu_sort_lists:
+				boolean t = !item.isChecked();
+				getListFragment().enableDrop(t);
+				item.setChecked(t);
+				return true;
+			case R.id.menu_settings:
+				Intent intent = new Intent(MainActivity.this,
+						SettingsActivity.class);
+				startActivityForResult(intent, RESULT_SETTINGS);
+				break;
+			case R.id.menu_sync_now:
+				Bundle bundle = new Bundle();
+				bundle.putBoolean(ContentResolver.SYNC_EXTRAS_DO_NOT_RETRY,
+						true);
+				// bundle.putBoolean(ContentResolver.SYNC_EXTRAS_INITIALIZE,true);
+				bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+				bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+				ContentResolver
+						.requestSync(null, Mirakel.AUTHORITY_TYP, bundle);
+				ContentResolver
+						.requestSync(null, Mirakel.AUTHORITY_TYP, bundle);
+				break;
+			case R.id.share_task:
+				SharingHelper.share(this, getCurrentTask());
+				break;
+			case R.id.share_list:
+				SharingHelper.share(this, getCurrentList());
+				break;
+			case R.id.search:
+				onSearchRequested();
+				break;
+			case R.id.menu_kill_button:
+				// Only Close
+				NotificationService.stop(this);
+				if (startService(new Intent(MainActivity.this,
+						NotificationService.class)) != null) {
+					stopService(new Intent(MainActivity.this,
+							NotificationService.class));
+				}
+				Intent killIntent = new Intent(getApplicationContext(),
+						SplashScreenActivity.class);
+				killIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				killIntent.setAction(SplashScreenActivity.EXIT);
+				startActivity(killIntent);
+				return false;
+			case R.id.menu_undo:
+				UndoHistory.undoLast(this);
+				updateCurrentListAndTask();
+				if (currentPosition == getTaskFragmentPosition()) setCurrentTask(getCurrentTask());
+				else {
+					getListFragment().getAdapter()
+							.changeData(ListMirakel.all());
+					getListFragment().getAdapter().notifyDataSetChanged();
+					getTasksFragment().getAdapter().changeData(
+							getCurrentList().tasks(), getCurrentList().getId());
+					getTasksFragment().getAdapter().notifyDataSetChanged();
+					if (!MirakelPreferences.isTablet()
 							&& currentPosition == getTasksFragmentPosition())
-					setCurrentList(getCurrentList());
-			}
-			ReminderAlarm.updateAlarms(this);
-			break;
-		case R.id.mark_as_subtask:
-			TaskDialogHelpers.handleSubtask(this, currentTask, null, true);
-			break;
-		case R.id.menu_task_clone:
-			try {
-				Task newTask = currentTask.create();
-				setCurrentTask(newTask, true);
-				getListFragment().update();
-				updatesForTask(newTask);
-			} catch (NoSuchListException e) {
-				Log.wtf(TAG, "List vanished on task cloning");
-			}
-			break;
-		default:
-			return super.onOptionsItemSelected(item);
+						setCurrentList(getCurrentList());
+				}
+				ReminderAlarm.updateAlarms(this);
+				break;
+			case R.id.mark_as_subtask:
+				TaskDialogHelpers.handleSubtask(this, currentTask, null, true);
+				break;
+			case R.id.menu_task_clone:
+				try {
+					Task newTask = currentTask.create();
+					setCurrentTask(newTask, true);
+					getListFragment().update();
+					updatesForTask(newTask);
+				} catch (NoSuchListException e) {
+					Log.wtf(TAG, "List vanished on task cloning");
+				}
+				break;
+			default:
+				return super.onOptionsItemSelected(item);
 		}
 		return true;
 	}
 
 	private void updateCurrentListAndTask() {
-		if (currentTask == null && currentList == null)
-			return;
-		if (currentTask != null)
-			currentTask = Task.get(currentTask.getId());
+		if (currentTask == null && currentList == null) return;
+		if (currentTask != null) currentTask = Task.get(currentTask.getId());
 		else {
 			if (currentList != null) {
 				List<Task> currentTasks = currentList.tasks(MirakelPreferences
@@ -359,8 +358,7 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	@Override
-	public void onPageScrolled(int position, float positionOffset,
-			int positionOffsetPixels) {
+	public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 		if (getTasksFragment() != null
 				&& getTasksFragment().getAdapter() != null
 				&& MirakelPreferences.swipeBehavior() && !skipSwipe
@@ -375,8 +373,7 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	public void onPageSelected(int position) {
-		if (getTasksFragment() == null)
-			return;
+		if (getTasksFragment() == null) return;
 		getTasksFragment().closeActionMode();
 		getTaskFragment().closeActionMode();
 		if (MirakelPreferences.lockDrawerInTaskFragment()
@@ -416,14 +413,13 @@ public class MainActivity extends ActionBarActivity implements
 			imm.hideSoftInputFromWindow(getTaskFragment().getView()
 					.getWindowToken(), 0);
 		}
-		if (menu == null)
-			return;
+		if (menu == null) return;
 		int newmenu;
 		switch (position) {
-		case -1:
-			newmenu = R.menu.activity_list;
-			getSupportActionBar().setTitle(getString(R.string.list_title));
-			break;
+			case -1:
+				newmenu = R.menu.activity_list;
+				getSupportActionBar().setTitle(getString(R.string.list_title));
+				break;
 			case RIGHT_FRAGMENT:
 				newmenu = isRTL ? handleTasksFragmentMenu()
 						: handleTaskFragmentMenu();
@@ -431,14 +427,13 @@ public class MainActivity extends ActionBarActivity implements
 			case LEFT_FRAGMENT:
 				newmenu = isRTL ? handleTaskFragmentMenu()
 						: handleTasksFragmentMenu();
-			break;
-		default:
-			Toast.makeText(getApplicationContext(), "Where are the dragons?",
-					Toast.LENGTH_LONG).show();
-			return;
+				break;
+			default:
+				Toast.makeText(getApplicationContext(),
+						"Where are the dragons?", Toast.LENGTH_LONG).show();
+				return;
 		}
-		if (setPosition)
-			currentPosition = position;
+		if (setPosition) currentPosition = position;
 
 		// Configure to use the desired menu
 		if (newmenu == -1) return;
@@ -451,8 +446,7 @@ public class MainActivity extends ActionBarActivity implements
 		if (menu.findItem(R.id.menu_kill_button) != null)
 			menu.findItem(R.id.menu_kill_button).setVisible(
 					MirakelPreferences.showKillButton());
-		if (!fromShare)
-			updateShare();
+		if (!fromShare) updateShare();
 
 	}
 
@@ -472,10 +466,8 @@ public class MainActivity extends ActionBarActivity implements
 			getTaskFragment().adapter.setEditContent(false);
 		}
 		if (currentList == null) return -1;
-		if (!MirakelPreferences.isTablet())
-			newmenu = R.menu.tasks;
-		else
-			newmenu = R.menu.tablet_right;
+		if (!MirakelPreferences.isTablet()) newmenu = R.menu.tasks;
+		else newmenu = R.menu.tablet_right;
 		getSupportActionBar().setTitle(currentList.getName());
 		return newmenu;
 	}
@@ -485,8 +477,7 @@ public class MainActivity extends ActionBarActivity implements
 				&& currentList.countTasks() == 0) {
 			menu.findItem(R.id.share_list).setVisible(false);
 		} else if (currentPosition == getTasksFragmentPosition()
-				&& menu != null
-				&& menu.findItem(R.id.share_list) == null
+				&& menu != null && menu.findItem(R.id.share_list) == null
 				&& currentList.countTasks() > 0
 				&& !mDrawerLayout.isDrawerOpen(Mirakel.GRAVITY_LEFT)) {
 			loadMenu(getTasksFragmentPosition(), true, true);
@@ -497,80 +488,79 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	@Override
-	public void onPageScrollStateChanged(int state) {
-	}
+	public void onPageScrollStateChanged(int state) {}
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode,
-			Intent intent) {
+	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		boolean isOk = resultCode == RESULT_OK;
 		Log.v(TAG, "Result:" + requestCode);
 		switch (requestCode) {
-		case RESULT_SPEECH_NAME:
-			if (intent != null) {
-				ArrayList<String> text = intent
-						.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-				((EditText) findViewById(R.id.edit_name)).setText(text.get(0));
-			}
-			break;
-		case RESULT_SPEECH:
-			if (intent != null) {
-				ArrayList<String> text = intent
-						.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-				((EditText) getTasksFragment().getFragmentView().findViewById(
-						R.id.tasks_new)).setText(text.get(0));
-			}
-			break;
-		case RESULT_ADD_FILE:
-			if (intent != null) {
-				final String file_path = FileUtils.getPathFromUri(
-						intent.getData(), this);
-				if (FileMirakel.newFile(this, currentTask, file_path) == null) {
-					Toast.makeText(this, getString(R.string.file_vanished),
-							Toast.LENGTH_SHORT).show();
-				} else {
-					getTaskFragment().adapter.setData(currentTask);
+			case RESULT_SPEECH_NAME:
+				if (intent != null) {
+					ArrayList<String> text = intent
+							.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+					((EditText) findViewById(R.id.edit_name)).setText(text
+							.get(0));
 				}
-			}
-			break;
-		case RESULT_SETTINGS:
-			getListFragment().update();
-			highlightSelected = MirakelPreferences.highlightSelected();
-			if (!highlightSelected
-					&& (oldClickedList != null || oldClickedTask == null)) {
-				clearAllHighlights();
-			}
-			if (darkTheme != MirakelPreferences.isDark()) {
-				finish();
-				if (startIntent == null) {
-					startIntent = new Intent(MainActivity.this,
-							MainActivity.class);
-					startIntent.setAction(MainActivity.SHOW_LISTS);
-					Log.wtf(TAG, "startIntent is null by switching theme");
+				break;
+			case RESULT_SPEECH:
+				if (intent != null) {
+					ArrayList<String> text = intent
+							.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+					((EditText) getTasksFragment().getFragmentView()
+							.findViewById(R.id.tasks_new)).setText(text.get(0));
+				}
+				break;
+			case RESULT_ADD_FILE:
+				if (intent != null) {
+					final String file_path = FileUtils.getPathFromUri(
+							intent.getData(), this);
+					if (FileMirakel.newFile(this, currentTask, file_path) == null) {
+						Toast.makeText(this, getString(R.string.file_vanished),
+								Toast.LENGTH_SHORT).show();
+					} else {
+						getTaskFragment().adapter.setData(currentTask);
+					}
+				}
+				break;
+			case RESULT_SETTINGS:
+				getListFragment().update();
+				highlightSelected = MirakelPreferences.highlightSelected();
+				if (!highlightSelected
+						&& (oldClickedList != null || oldClickedTask == null)) {
+					clearAllHighlights();
+				}
+				if (darkTheme != MirakelPreferences.isDark()) {
+					finish();
+					if (startIntent == null) {
+						startIntent = new Intent(MainActivity.this,
+								MainActivity.class);
+						startIntent.setAction(MainActivity.SHOW_LISTS);
+						Log.wtf(TAG, "startIntent is null by switching theme");
 
+					}
+					startActivity(startIntent);
 				}
-				startActivity(startIntent);
-			}
-			loadMenu(mViewPager.getCurrentItem());
-			getTasksFragment().updateButtons();
-			return;
-		case RESULT_CAMERA:
-		case RESULT_ADD_PICTURE:
-			if (isOk) {
-				Task task;
-				if (requestCode == RESULT_ADD_PICTURE) {
-					task = getCurrentTask();
-				} else {
-					task = Semantic.createTask(
-							MirakelPreferences.getPhotoDefaultTitle(),
-							currentList, false, this);
-					safeSaveTask(task);
+				loadMenu(mViewPager.getCurrentItem());
+				getTasksFragment().updateButtons();
+				return;
+			case RESULT_CAMERA:
+			case RESULT_ADD_PICTURE:
+				if (isOk) {
+					Task task;
+					if (requestCode == RESULT_ADD_PICTURE) {
+						task = getCurrentTask();
+					} else {
+						task = Semantic.createTask(
+								MirakelPreferences.getPhotoDefaultTitle(),
+								currentList, false, this);
+						safeSaveTask(task);
+					}
+					task.addFile(this, FileUtils.getPathFromUri(fileUri, this));
+					setCurrentList(task.getList());
+					setCurrentTask(task, true);
 				}
-				task.addFile(this, FileUtils.getPathFromUri(fileUri, this));
-				setCurrentList(task.getList());
-				setCurrentTask(task, true);
-			}
-			break;
+				break;
 			default:
 				Log.w(TAG, "unknown activity result");
 				break;
@@ -605,7 +595,7 @@ public class MainActivity extends ActionBarActivity implements
 					return;
 				}
 				break;
-		default:
+			default:
 				// Cannot be, do nothing
 				break;
 		}
@@ -627,8 +617,7 @@ public class MainActivity extends ActionBarActivity implements
 	@SuppressLint("NewApi")
 	@Override
 	protected void onPause() {
-		if (getTasksFragment() != null)
-			getTasksFragment().clearFocus();
+		if (getTasksFragment() != null) getTasksFragment().clearFocus();
 		Intent intent = new Intent(this, MainWidgetProvider.class);
 		intent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
 		// Use an array and EXTRA_APPWIDGET_IDS instead of
@@ -654,8 +643,7 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if (isResumend)
-			setupLayout();
+		if (isResumend) setupLayout();
 		isResumend = true;
 		showMessageFromSync();
 	}
@@ -684,7 +672,7 @@ public class MainActivity extends ActionBarActivity implements
 		setIntent(intent);
 	}
 
-	private String newTaskContent, newTaskSubject;
+	private String	newTaskContent, newTaskSubject;
 
 	private void addFilesForTask(Task t, Intent intent) {
 		String action = intent.getAction();
@@ -705,8 +693,7 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	private void addTaskFromSharing(ListMirakel list) {
-		if (newTaskSubject == null)
-			return;
+		if (newTaskSubject == null) return;
 		Task task = Semantic.createTask(newTaskSubject, list, true, this);
 		task.setContent(newTaskContent == null ? "" : newTaskContent);
 		safeSaveTask(task);
@@ -721,11 +708,9 @@ public class MainActivity extends ActionBarActivity implements
 	 */
 	private void setupLayout() {
 		closeOnBack = false;
-		if (currentList == null)
-			setCurrentList(SpecialList.firstSpecial());
+		if (currentList == null) setCurrentList(SpecialList.firstSpecial());
 		// Initialize ViewPager
-		if (!isResumend && mPagerAdapter == null)
-			intializeFragments();
+		if (!isResumend && mPagerAdapter == null) intializeFragments();
 		NotificationService.updateNotificationAndWidget(this);
 		startIntent = getIntent();
 		if (startIntent == null || startIntent.getAction() == null) {
@@ -803,8 +788,7 @@ public class MainActivity extends ActionBarActivity implements
 			}
 			Log.wtf(TAG, "ListId: " + listId);
 			ListMirakel list = ListMirakel.getList(listId);
-			if (list == null)
-				list = SpecialList.firstSpecial();
+			if (list == null) list = SpecialList.firstSpecial();
 			setCurrentList(list);
 			if (startIntent.getAction().contains(SHOW_LIST_FROM_WIDGET))
 				closeOnBack = true;
@@ -883,8 +867,7 @@ public class MainActivity extends ActionBarActivity implements
 				.setMessage(this.getString(R.string.list_delete_content, names))
 				.setPositiveButton(this.getString(android.R.string.yes),
 						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog,
-									int which) {
+							public void onClick(DialogInterface dialog, int which) {
 								for (ListMirakel list : lists) {
 									list.destroy();
 									getListFragment().update();
@@ -898,8 +881,7 @@ public class MainActivity extends ActionBarActivity implements
 						})
 				.setNegativeButton(this.getString(android.R.string.no),
 						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog,
-									int which) {
+							public void onClick(DialogInterface dialog, int which) {
 								// do nothing
 							}
 						}).show();
@@ -917,12 +899,10 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	public void handleDestroyTask(final List<Task> tasks) {
-		if (tasks == null)
-			return;
+		if (tasks == null) return;
 		final MainActivity main = this;
 		// This must then be a bug in a ROM
-		if (tasks.size() == 0 || tasks.get(0) == null)
-			return;
+		if (tasks.size() == 0 || tasks.get(0) == null) return;
 		String names = tasks.get(0).getName();
 		for (int i = 1; i < tasks.size(); i++) {
 			names += ", " + tasks.get(i).getName();
@@ -934,8 +914,7 @@ public class MainActivity extends ActionBarActivity implements
 				.setMessage(this.getString(R.string.task_delete_content, names))
 				.setPositiveButton(this.getString(android.R.string.yes),
 						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog,
-									int which) {
+							public void onClick(DialogInterface dialog, int which) {
 								for (Task t : tasks) {
 									t.destroy();
 								}
@@ -946,8 +925,7 @@ public class MainActivity extends ActionBarActivity implements
 						})
 				.setNegativeButton(this.getString(android.R.string.no),
 						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog,
-									int which) {
+							public void onClick(DialogInterface dialog, int which) {
 								// do nothing
 							}
 						}).show();
@@ -991,19 +969,11 @@ public class MainActivity extends ActionBarActivity implements
 							safeSaveTask(t);
 						}
 						/*
-						 * There are 3 possibilities how to handle the post-move
-						 * of a task:
-						 * 
-						 * 1: update the currentList to the List, the task was
-						 * 
-						 * moved to setCurrentList(task.getList());
-						 * 
-						 * 2: update the tasksView but not update the taskView:
-						 * 
-						 * getTasksFragment().updateList();
-						 * getTasksFragment().update();
-						 * 
-						 * 3: Set the currentList to the old List
+						 * There are 3 possibilities how to handle the post-move of a task: 1:
+						 * update the currentList to the List, the task was moved to
+						 * setCurrentList(task.getList()); 2: update the tasksView but not update
+						 * the taskView: getTasksFragment().updateList();
+						 * getTasksFragment().update(); 3: Set the currentList to the old List
 						 */
 						if (currentPosition == getTaskFragmentPosition()) {
 							Task task = tasks.get(0);
@@ -1023,7 +993,7 @@ public class MainActivity extends ActionBarActivity implements
 				}).show();
 	}
 
-	private ActionBarDrawerToggle mDrawerToggle;
+	private ActionBarDrawerToggle	mDrawerToggle;
 	private static boolean			isRTL;
 
 	/**
@@ -1123,13 +1093,12 @@ public class MainActivity extends ActionBarActivity implements
 		setCurrentTask(currentTask, false);
 	}
 
-	private View oldClickedTask = null;
+	private View	oldClickedTask	= null;
 
 	void highlightCurrentTask(@SuppressWarnings("hiding") Task currentTask, boolean multiselect) {
 		if (getTaskFragment() == null || getTasksFragment() == null
 				|| getTasksFragment().getAdapter() == null
-				|| currentTask == null)
-			return;
+				|| currentTask == null) return;
 		Log.v(TAG, currentTask.getName());
 		View currentView = getTasksFragment().getAdapter().getViewForTask(
 				currentTask);
@@ -1154,20 +1123,17 @@ public class MainActivity extends ActionBarActivity implements
 		setCurrentTask(currentTask, switchFragment, true);
 	}
 
-	public void setCurrentTask(Task currentTask, boolean switchFragment,
-			boolean resetGoBackTo) {
+	public void setCurrentTask(Task currentTask, boolean switchFragment, boolean resetGoBackTo) {
 
 		this.currentTask = currentTask;
-		if (resetGoBackTo)
-			goBackTo.clear();
+		if (resetGoBackTo) goBackTo.clear();
 
 		highlightCurrentTask(currentTask, false);
 
 		if (getTaskFragment() != null) {
 			getTaskFragment().update(currentTask);
 			boolean smooth = mViewPager.getCurrentItem() != getTaskFragmentPosition();
-			if (!switchFragment)
-				return;
+			if (!switchFragment) return;
 			// Fix buggy behavior
 			mViewPager.setCurrentItem(getTasksFragmentPosition(), false);
 			mViewPager.setCurrentItem(getTaskFragmentPosition(), false);
@@ -1189,8 +1155,7 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	private void clearHighlighted() {
-		if (oldClickedTask == null)
-			return;
+		if (oldClickedTask == null) return;
 		try {
 			ListView view = (ListView) getTasksFragment().getFragmentView()
 					.findViewById(R.id.tasks_list);
@@ -1217,7 +1182,7 @@ public class MainActivity extends ActionBarActivity implements
 		return currentList;
 	}
 
-	private View oldClickedList = null;
+	private View	oldClickedList	= null;
 
 	/**
 	 * Set the current list and update the views
@@ -1237,15 +1202,11 @@ public class MainActivity extends ActionBarActivity implements
 		setCurrentList(currentList, null, true, true);
 	}
 
-	public void setCurrentList(ListMirakel currentList, View currentView,
-			boolean switchFragment, boolean resetGoBackTo) {
-		if (currentList == null)
-			return;
-		if (resetGoBackTo)
-			goBackTo.clear();
+	public void setCurrentList(ListMirakel currentList, View currentView, boolean switchFragment, boolean resetGoBackTo) {
+		if (currentList == null) return;
+		if (resetGoBackTo) goBackTo.clear();
 		this.currentList = currentList;
-		if (mDrawerLayout != null)
-			mDrawerLayout.closeDrawers();
+		if (mDrawerLayout != null) mDrawerLayout.closeDrawers();
 
 		List<Task> currentTasks = currentList.tasks(MirakelPreferences
 				.showDoneMain());
@@ -1275,8 +1236,7 @@ public class MainActivity extends ActionBarActivity implements
 					R.color.pressed_color));
 			oldClickedList = currentView;
 		}
-		if (switchFragment)
-			setCurrentTask(currentTask);
+		if (switchFragment) setCurrentTask(currentTask);
 		if (currentPosition == getTasksFragmentPosition())
 			getSupportActionBar().setTitle(currentList.getName());
 
@@ -1328,10 +1288,8 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	public TaskFragment getTaskFragment() {
-		if (mPagerAdapter == null)
-			return null;
-		if (MirakelPreferences.isTablet())
-			return taskFragment;
+		if (mPagerAdapter == null) return null;
+		if (MirakelPreferences.isTablet()) return taskFragment;
 		Fragment f = mPagerAdapter.getItem(getTaskFragmentPosition());
 		return (TaskFragment) f;
 	}
@@ -1340,7 +1298,6 @@ public class MainActivity extends ActionBarActivity implements
 		taskFragment = tf;
 
 	}
-
 
 	private void search(String query) {
 		setCurrentList(new SearchList(this, query));
@@ -1356,8 +1313,8 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	/**
-	 * Set the Task, to which we switch, if the user press the back-button. It
-	 * is reseted, if one of the setCurrent*-functions on called
+	 * Set the Task, to which we switch, if the user press the back-button. It is reseted, if one of
+	 * the setCurrent*-functions on called
 	 * 
 	 * @param t
 	 */

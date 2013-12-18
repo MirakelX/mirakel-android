@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import de.azapps.mirakel.Mirakel;
@@ -63,6 +64,25 @@ public class AccountSettings implements OnPreferenceChangeListener {
 					.setSummary(a.name);
 			else syncServer.setSummary("");
 		}
+		final CheckBoxPreference syncUse = (CheckBoxPreference) findPreference("syncUse");
+		if (syncUse != null) {
+			syncUse.setChecked(account.isEnabeld());
+			syncUse.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+				@Override
+				public boolean onPreferenceChange(Preference preference, Object newValue) {
+					account.setEnabeld((Boolean) newValue);
+					account.save();
+					return true;
+				}
+			});
+		}
+		if (account.getType() == ACCOUNT_TYPES.LOCAL) {
+			removePreference("syncUse");
+			account.setEnabeld(false);
+			account.save();
+		}
+
 		final Preference syncPassword = findPreference("syncPassword");
 		if (syncPassword != null) {
 			syncPassword.setEnabled(false);
