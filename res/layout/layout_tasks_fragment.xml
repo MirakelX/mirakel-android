@@ -45,7 +45,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:contentDescription="@string/speak"
-            android:src="@android:drawable/ic_btn_speak_now" />
+            android:src="@drawable/recording" />
 
         <ImageButton
             android:id="@+id/btnSpeak_tasks"
