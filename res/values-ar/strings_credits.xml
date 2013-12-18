@@ -8,6 +8,5 @@
   <string name="credits_translations">الترجمات</string>
   <string name="feedback">أرسل ملاحظاتك</string>
   <string name="credits_libraries">المكتبات المستعملة</string>
-  <string name="credits_translations" tools:ignore="DuplicateDefinition">الترجمات</string>
   <string name="credits_license_title">الترخيص</string>
 </resources>
