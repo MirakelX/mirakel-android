@@ -170,7 +170,8 @@ public class TaskWarriorSetupActivity extends Activity {
 			// String content = new String(buffer);
 			String[] t = content.split("(?i)org: ");
 			// Log.d(TAG, "user: " + t[0].replace("username: ", ""));
-			final Account account = new Account(t[0].replace("(?i)username: ",
+			final Account account = new Account(t[0].replaceAll(
+					"(?i)username: ",
 					"")
 					.replace("\n", ""), AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
 			t = t[1].split("(?i)user key: ");
