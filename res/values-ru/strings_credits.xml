@@ -4,4 +4,9 @@
   <string name="action_credits">Авторы</string>
   <string name="action_credits_summary">О нас ;)</string>
   <string name="title_activity_credits">Об авторах</string>
+  <string name="credits_translations">Локализация</string>
+  <string name="feedback">Обратная связь</string>
+  <string name="credits_libraries">Задействованные сторонние компоненты</string>
+  <string name="credits_translations" tools:ignore="DuplicateDefinition">Локализация</string>
+  <string name="credits_license_title">Условия использования</string>
 </resources>

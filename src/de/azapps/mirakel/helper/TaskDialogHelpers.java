@@ -621,24 +621,51 @@ public class TaskDialogHelpers {
 		task.safeSave();
 	}
 
-	public static void handleAudioRecord(final Context context, final Task task, final ExecInterfaceWithTask onSuccess) {
-		final MediaRecorder mRecorder = new MediaRecorder();
-		mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-		mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-		final String filePath = FileUtils.getOutputMediaFile(
-				FileUtils.MEDIA_TYPE_AUDIO).getAbsolutePath();
-		mRecorder.setOutputFile(filePath);
-		mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+	private static MediaRecorder	audio_record_mRecorder;
+	private static AlertDialog		audio_record_alert_dialog;
+	private static String			audio_record_filePath;
+
+	public static void stopRecording() {
+		if (audio_record_mRecorder != null) {
+			try {
+				cancelRecording();
+				audio_record_alert_dialog.dismiss();
+			} catch (Exception e) {
+
+			}
+
+		}
+	}
+
+	private static void cancelRecording() {
+		audio_record_mRecorder.stop();
+		audio_record_mRecorder.release();
+		audio_record_mRecorder = null;
 		try {
-			mRecorder.prepare();
+			new File(audio_record_filePath).delete();
+		} catch (Exception e) {}
+	}
+
+	public static void handleAudioRecord(final Context context, final Task task, final ExecInterfaceWithTask onSuccess) {
+		audio_record_mRecorder = new MediaRecorder();
+		audio_record_mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+		audio_record_mRecorder
+				.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+		audio_record_filePath = FileUtils.getOutputMediaFile(
+				FileUtils.MEDIA_TYPE_AUDIO).getAbsolutePath();
+		audio_record_mRecorder.setOutputFile(audio_record_filePath);
+		audio_record_mRecorder
+				.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+		try {
+			audio_record_mRecorder.prepare();
 		} catch (IOException e) {
 			Log.e(TAG, "prepare() failed");
 		}
-		mRecorder.start();
-		new AlertDialog.Builder(context)
+		audio_record_mRecorder.start();
+		audio_record_alert_dialog = new AlertDialog.Builder(context)
 				.setTitle(R.string.audio_record_title)
 				.setMessage(R.string.audio_record_message)
-				.setPositiveButton(R.string.audio_record_stop,
+				.setPositiveButton(android.R.string.ok,
 						new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
@@ -649,19 +676,25 @@ public class TaskDialogHelpers {
 													.getAudioDefaultTitle(),
 											task.getList(), true, context);
 								}
-								mRecorder.stop();
-								mRecorder.release();
-								mTask.addFile(context, filePath);
+								audio_record_mRecorder.stop();
+								audio_record_mRecorder.release();
+								audio_record_mRecorder = null;
+								mTask.addFile(context, audio_record_filePath);
 								onSuccess.exec(mTask);
+							}
+						})
+				.setNegativeButton(android.R.string.cancel,
+						new DialogInterface.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								cancelRecording();
+
 							}
 						}).setOnCancelListener(new OnCancelListener() {
 					@Override
 					public void onCancel(DialogInterface dialog) {
-						mRecorder.stop();
-						mRecorder.release();
-						try {
-							new File(filePath).delete();
-						} catch (Exception e) {}
+						cancelRecording();
 					}
 				}).show();
 	}

@@ -36,6 +36,7 @@
   <string name="task_set_reminder">Erinnerungen einstellen</string>
   <string name="action_undo">Rückgängig</string>
   <string name="add_subtasks">Unteraufgabe hinzufügen…</string>
+  <string name="subtask_list_name">Unteraufgaben</string>
   <string name="remove_files">Lösche Dateien</string>
   <string name="remove_files_summary">Möchtest du %1$s aus %2$s entfernen?</string>
   <string name="add_subtask">Unteraufgabe hinzufügen</string>
@@ -185,6 +186,7 @@ Device: %3$s\n]]>
   <string name="file_to_large">Vorschaubild konnte nicht erstellt werden</string>
   <string name="recurring_not_zero">Dieser Eintrag darf nicht null sein!</string>
   <string name="settings_task_fragment_title">Aufgabenübersicht</string>
+  <string name="save_label">Erledigt</string>
   <string-array name="task_sorting_items">
     <item>Standard</item>
     <item>Termin</item>
@@ -207,5 +209,9 @@ Device: %3$s\n]]>
     <item>Taskwarrior</item>
     <item>CalDav</item>
     <item>Mirakel</item>
+  </string-array>
+  <string-array name="audio_playback_options">
+    <item>Open file</item>
+    <item>Play</item>
   </string-array>
 </resources>

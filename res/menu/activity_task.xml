@@ -61,6 +61,10 @@
         android:title="@string/action_sync_now"
         mirakel:showAsAction="never"/>
     <item
+        android:id="@+id/menu_contact"
+        android:title="@string/action_contact"
+        mirakel:showAsAction="never"/>
+    <item
         android:id="@+id/menu_settings"
         android:title="@string/menu_settings"
         mirakel:showAsAction="never"/>

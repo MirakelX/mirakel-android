@@ -4,4 +4,11 @@
   <string name="action_credits">Créditos</string>
   <string name="action_credits_summary">Sobre nós ;)</string>
   <string name="title_activity_credits">Créditos e sobre</string>
+  <string name="credits_github_description">Fork no github</string>
+  <string name="credits_googleplus_description">Integre a nossa comunidade no G+</string>
+  <string name="credits_translations">Traduções</string>
+  <string name="feedback">Enviar comentários</string>
+  <string name="credits_libraries">Bibliotecas utilizdaas</string>
+  <string name="credits_translations" tools:ignore="DuplicateDefinition">Traduções</string>
+  <string name="credits_license_title">Licença</string>
 </resources>

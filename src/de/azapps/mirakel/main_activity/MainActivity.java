@@ -56,6 +56,7 @@ import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.adapter.PagerAdapter;
+import de.azapps.mirakel.helper.BuildHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.helper.Log;
@@ -246,6 +247,9 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 				Intent intent = new Intent(MainActivity.this,
 						SettingsActivity.class);
 				startActivityForResult(intent, RESULT_SETTINGS);
+				break;
+			case R.id.menu_contact:
+				Helpers.contact(this);
 				break;
 			case R.id.menu_sync_now:
 				Bundle bundle = new Bundle();
@@ -446,6 +450,10 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		if (menu.findItem(R.id.menu_kill_button) != null)
 			menu.findItem(R.id.menu_kill_button).setVisible(
 					MirakelPreferences.showKillButton());
+		if (menu.findItem(R.id.menu_kill_button) != null)
+			menu.findItem(R.id.menu_kill_button).setVisible(
+					BuildHelper.isBeta());
+
 		if (!fromShare) updateShare();
 
 	}
@@ -637,6 +645,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 			}
 		}
 		sendBroadcast(intent);
+		TaskDialogHelpers.stopRecording();
 		super.onPause();
 	}
 

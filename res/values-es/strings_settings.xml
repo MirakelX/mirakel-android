@@ -84,6 +84,12 @@
     <item>1440</item>
     <item>-1</item>
   </string-array>
+  <string-array name="tablet_options">
+    <item>never</item>
+    <item>landscape</item>
+    <item>portrait</item>
+    <item>portrait &amp; landscape</item>
+  </string-array>
   <string-array name="weekdays">
     <item>Don\'t set</item>
     <item>Lunes</item>

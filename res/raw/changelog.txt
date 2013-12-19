@@ -17,6 +17,18 @@
     </style>
   </head>
   <body>
+$ 2.2-beta2
+  % Version 2.2-beta2
+  _ 2013-12-18
+  ! Sorry for the confusing version numbers. We will improve ourselves.
+  ! <div style="color:red">This is our first release candidate for Mirakel 2.2! Please report <b>EVERY</b> bug you find!</div>
+  ! We want to publish a mostly bug-free version.
+    * Many Bugfixes
+    * Donate us directly from the app!
+    * Improved Sound playback and recording
+    * Updated translations
+    * Report bugs directly from the menu (only Beta).
+  ! Thank you for your support! 
 $ 2.2-beta1+x
   % Version 2.2-beta1+x
   _2013-12-11
