@@ -726,12 +726,19 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 			Log.d(TAG, "action null");
 		} else if (startIntent.getAction().equals(SHOW_TASK)
 				|| startIntent.getAction().equals(SHOW_TASK_FROM_WIDGET)) {
-			Task task = TaskHelper.getTaskFromIntent(startIntent);
+			final Task task = TaskHelper.getTaskFromIntent(startIntent);
 			if (task != null) {
 				skipSwipe = true;
 				setCurrentList(task.getList());
-				setCurrentTask(task, true);
-				mViewPager.setCurrentItem(getTaskFragmentPosition(), false);
+				mViewPager.postDelayed(new Runnable() {
+					
+					@Override
+					public void run() {
+						setCurrentTask(task, true);
+						mViewPager.setCurrentItem(getTaskFragmentPosition(), false);						
+					}
+				}, 1);
+
 			} else {
 				Log.d(TAG, "task null");
 			}
