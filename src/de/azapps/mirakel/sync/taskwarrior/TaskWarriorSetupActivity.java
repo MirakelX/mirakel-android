@@ -168,28 +168,29 @@ public class TaskWarriorSetupActivity extends Activity {
 			Bundle b = new Bundle();
 			b.putString(SyncAdapter.BUNDLE_SERVER_TYPE, TaskWarriorSync.TYPE);
 			// String content = new String(buffer);
-			String[] t = content.split("org: ");
+			String[] t = content.split("(?i)org: ");
 			// Log.d(TAG, "user: " + t[0].replace("username: ", ""));
-			final Account account = new Account(t[0].replace("username: ", "")
+			final Account account = new Account(t[0].replace("(?i)username: ",
+					"")
 					.replace("\n", ""), AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
-			t = t[1].split("user key: ");
+			t = t[1].split("(?i)user key: ");
 			// Log.d(TAG, "org: " + t[0].replace("\n", ""));
 			b.putString(SyncAdapter.BUNDLE_ORG, t[0].replace("\n", ""));
 
-			t = t[1].split("server: ");
+			t = t[1].split("(?i)server: ");
 			// Log.d(TAG, "user key: " + t[0].replace("\n", ""));
 			String pwd = t[0].replace("\n", "");
 
-			t = t[1].split("Client.cert:\n");
+			t = t[1].split("(?i)Client.cert:\n");
 			// Log.d(TAG, "server: " + t[0].replace("\n", ""));
 			b.putString(SyncAdapter.BUNDLE_SERVER_URL, t[0].replace("\n", ""));
-			t = t[1].split("Client.key:\n");
+			t = t[1].split("(?i)Client.key:\n");
 			// Log.d(TAG, "client cert: " + t[0].replace("\n", ""));
 
 			FileUtils.writeToFile(new File(TaskWarriorSync.CLIENT_CERT_FILE),
 					t[0]);
 
-			t = t[1].split("ca.cert:\n");
+			t = t[1].split("(?i)ca.cert:\n");
 			// Log.d(TAG, "client key: " + t[0].replace("\n", ""));
 
 			FileUtils.writeToFile(new File(TaskWarriorSync.CLIENT_KEY_FILE),
