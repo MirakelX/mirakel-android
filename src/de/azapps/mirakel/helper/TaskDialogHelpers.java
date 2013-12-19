@@ -26,6 +26,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnShowListener;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaRecorder;
@@ -716,11 +717,21 @@ public class TaskDialogHelpers {
 	private static boolean		audio_playback_playing;
 	private static AlertDialog	audio_playback_dialog;
 
-	public static void playbackFile(final Context context, FileMirakel file, boolean loud) {
-
+	public static void playbackFile(final Activity context, FileMirakel file, boolean loud) {
 		final MediaPlayer mPlayer = new MediaPlayer();
 
+		AudioManager am = (AudioManager) context
+				.getSystemService(Context.AUDIO_SERVICE);
+		if (!loud) {
+			am.setSpeakerphoneOn(false);
+			am.setMode(AudioManager.MODE_IN_CALL);
+			context.setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
+		}
+
 		try {
+			mPlayer.reset();
+			if (!loud)
+				mPlayer.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);
 			mPlayer.setDataSource(file.getPath());
 			mPlayer.prepare();
 			mPlayer.start();
@@ -730,7 +741,7 @@ public class TaskDialogHelpers {
 					audio_playback_dialog.dismiss();
 				}
 			});
-
+			am.setMode(AudioManager.MODE_NORMAL);
 			audio_playback_playing = true;
 		} catch (IOException e) {
 			Log.e(TAG, "prepare() failed");
@@ -781,7 +792,7 @@ public class TaskDialogHelpers {
 		audio_playback_dialog.show();
 	}
 
-	public static void handleAudioPlayback(final Context context, final FileMirakel file) {
+	public static void handleAudioPlayback(final Activity context, final FileMirakel file) {
 
 		new AlertDialog.Builder(context)
 				.setTitle(R.string.audio_playback_select_title)
