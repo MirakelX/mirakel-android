@@ -450,8 +450,8 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		if (menu.findItem(R.id.menu_kill_button) != null)
 			menu.findItem(R.id.menu_kill_button).setVisible(
 					MirakelPreferences.showKillButton());
-		if (menu.findItem(R.id.menu_kill_button) != null)
-			menu.findItem(R.id.menu_kill_button).setVisible(
+		if (menu.findItem(R.id.menu_contact) != null)
+			menu.findItem(R.id.menu_contact).setVisible(
 					BuildHelper.isBeta());
 
 		if (!fromShare) updateShare();
