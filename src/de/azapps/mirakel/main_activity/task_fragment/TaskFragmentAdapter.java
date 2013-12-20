@@ -1163,21 +1163,35 @@ public class TaskFragmentAdapter extends
 		ViewSwitcher switcher;
 		EditText txt;
 	}
+	private HeaderHolder	headerHolder;
+
+	public void cancelEditing() {
+		// TaskName
+		if (headerHolder != null) {
+			InputMethodManager imm = (InputMethodManager) context
+					.getSystemService(Context.INPUT_METHOD_SERVICE);
+			headerHolder.taskName.setText(task.getName());
+			headerHolder.txt.setText(task.getName());
+			headerHolder.txt.setOnFocusChangeListener(null);
+			imm.hideSoftInputFromWindow(headerHolder.txt.getWindowToken(), 0);
+			headerHolder.switcher.showPrevious();
+		}
+
+	}
 
 	private View setupHeader(View convertView) {
 		// Task Name
 		final View header = convertView == null ? inflater.inflate(
 				R.layout.task_head_line, null, false) : convertView;
-		final HeaderHolder holder;
 		if (convertView == null) {
-			holder = new HeaderHolder();
-			holder.taskName = (TextView) header.findViewById(R.id.task_name);
-			holder.taskDone = (CheckBox) header.findViewById(R.id.task_done);
-			holder.taskPrio = (TextView) header.findViewById(R.id.task_prio);
-			holder.switcher = (ViewSwitcher) header
+			headerHolder = new HeaderHolder();
+			headerHolder.taskName = (TextView) header.findViewById(R.id.task_name);
+			headerHolder.taskDone = (CheckBox) header.findViewById(R.id.task_done);
+			headerHolder.taskPrio = (TextView) header.findViewById(R.id.task_prio);
+			headerHolder.switcher = (ViewSwitcher) header
 					.findViewById(R.id.switch_name);
-			holder.txt = (EditText) header.findViewById(R.id.edit_name);
-			holder.taskName.setOnClickListener(new View.OnClickListener() {
+			headerHolder.txt = (EditText) header.findViewById(R.id.edit_name);
+			headerHolder.taskName.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					if (MirakelPreferences.isTablet()) {
@@ -1185,10 +1199,10 @@ public class TaskFragmentAdapter extends
 								.findViewById(R.id.tasks_new))
 								.setOnFocusChangeListener(null);
 					}
-					holder.switcher.showNext(); // or switcher.showPrevious();
-					CharSequence name = holder.taskName.getText();
-					holder.txt.setText(name);
-					holder.txt
+					headerHolder.switcher.showNext(); // or switcher.showPrevious();
+					CharSequence name = headerHolder.taskName.getText();
+					headerHolder.txt.setText(name);
+					headerHolder.txt
 							.setOnFocusChangeListener(new OnFocusChangeListener() {
 
 								@Override
@@ -1198,18 +1212,18 @@ public class TaskFragmentAdapter extends
 											.getSystemService(Context.INPUT_METHOD_SERVICE);
 									if (hasFocus) {
 										imm.showSoftInput(
-												holder.txt,
+												headerHolder.txt,
 												InputMethodManager.SHOW_IMPLICIT);
 									} else {
 										imm.showSoftInput(
-												holder.txt,
+												headerHolder.txt,
 												InputMethodManager.HIDE_IMPLICIT_ONLY);
 									}
 
 								}
 							});
-					holder.txt.requestFocus();
-					holder.txt
+					headerHolder.txt.requestFocus();
+					headerHolder.txt
 							.setOnEditorActionListener(new OnEditorActionListener() {
 								public boolean onEditorAction(TextView view,
 										int actionId, KeyEvent event) {
@@ -1220,11 +1234,11 @@ public class TaskFragmentAdapter extends
 												.getSystemService(Context.INPUT_METHOD_SERVICE);
 										task.setName(txt.getText().toString());
 										((MainActivity) context).saveTask(task);
-										holder.taskName.setText(task.getName());
+										headerHolder.taskName.setText(task.getName());
 										txt.setOnFocusChangeListener(null);
 										imm.hideSoftInputFromWindow(
 												txt.getWindowToken(), 0);
-										holder.switcher.showPrevious();
+										headerHolder.switcher.showPrevious();
 
 										return true;
 									}
@@ -1232,10 +1246,10 @@ public class TaskFragmentAdapter extends
 								}
 
 							});
-					holder.txt.setSelection(name.length());
+					headerHolder.txt.setSelection(name.length());
 				}
 			});
-			holder.taskPrio.setOnClickListener(new OnClickListener() {
+			headerHolder.taskPrio.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					TaskDialogHelpers.handlePriority(context, task,
@@ -1244,31 +1258,31 @@ public class TaskFragmentAdapter extends
 								public void exec() {
 									((MainActivity) context)
 											.updatesForTask(task);
-									setPrio(holder.taskPrio, task);
+									setPrio(headerHolder.taskPrio, task);
 
 								}
 							});
 				}
 			});
-			header.setTag(holder);
+			header.setTag(headerHolder);
 		} else {
-			holder = (HeaderHolder) header.getTag();
-			holder.taskDone.setOnCheckedChangeListener(null);
+			headerHolder = (HeaderHolder) header.getTag();
+			headerHolder.taskDone.setOnCheckedChangeListener(null);
 		}
 
 		String tname = task.getName();
-		holder.taskName.setText(tname == null ? "" : tname);
+		headerHolder.taskName.setText(tname == null ? "" : tname);
 		if (MirakelPreferences.isTablet())
-			holder.taskName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
+			headerHolder.taskName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
 
-		if (holder.switcher.getCurrentView().getId() == R.id.edit_name
-				&& !task.getName().equals(holder.txt.getText().toString())) {
-			holder.switcher.showPrevious();
+		if (headerHolder.switcher.getCurrentView().getId() == R.id.edit_name
+				&& !task.getName().equals(headerHolder.txt.getText().toString())) {
+			headerHolder.switcher.showPrevious();
 		}
 
 		// Task done
-		holder.taskDone.setChecked(task.isDone());
-		holder.taskDone
+		headerHolder.taskDone.setChecked(task.isDone());
+		headerHolder.taskDone
 				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 					@Override
 					public void onCheckedChanged(CompoundButton buttonView,
@@ -1281,7 +1295,7 @@ public class TaskFragmentAdapter extends
 				});
 
 		// Task priority
-		setPrio(holder.taskPrio, task);
+		setPrio(headerHolder.taskPrio, task);
 		return header;
 	}
 
