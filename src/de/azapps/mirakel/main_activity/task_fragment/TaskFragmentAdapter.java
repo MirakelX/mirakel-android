@@ -533,7 +533,6 @@ public class TaskFragmentAdapter extends
 
 						}
 					});
-					Log.e(TAG, file.getPath());
 				} else {
 
 					holder.fileImage.post(new Runnable() {
