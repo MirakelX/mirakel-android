@@ -4,7 +4,7 @@
     <string name="donations__button_close">Close</string>
     <string name="donations__flattr">Flattr</string>
     <string name="donations__description">Do you find this application useful?\nSupport it\'s development by sending a donation to the developer!</string>
-    <string name="donations__flattr_description">Flattr takes 10 \% as a monthly fee!</string>
+    <string name="donations__flattr_description" formatted="false">Flattr takes 10 % as a monthly fee!</string>
     <string name="donations__google_android_market">Google Play Store</string>
     <string name="donations__google_android_market_not_supported_title">In-App Donations are not supported.</string>
     <string name="donations__google_android_market_not_supported">In-App Donations are not supported. Is Google Play Store installed correctly?</string>
@@ -30,5 +30,5 @@
     </string-array>
 
     <string name="donation_paypal_item">Mirakel Donation</string>
-    <string name="title_donations">Donation</string>
+    <string name="title_donations">Donate</string>
 </resources>
