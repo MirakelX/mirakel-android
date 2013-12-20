@@ -143,6 +143,13 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		if (darkTheme) setTheme(R.style.AppBaseThemeDARK);
 		super.onCreate(savedInstanceState);
 
+		// Set Alarms
+
+		new Thread(new Runnable() {
+			public void run() {
+				ReminderAlarm.updateAlarms(getApplicationContext());
+			}
+		}).run();
 		isTablet = MirakelPreferences.isTablet();
 		isRTL = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
 				&& getResources().getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
@@ -274,17 +281,12 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 				break;
 			case R.id.menu_kill_button:
 				// Only Close
-				NotificationService.stop(this);
-				if (startService(new Intent(MainActivity.this,
-						NotificationService.class)) != null) {
-					stopService(new Intent(MainActivity.this,
-							NotificationService.class));
-				}
 				Intent killIntent = new Intent(getApplicationContext(),
 						SplashScreenActivity.class);
 				killIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				killIntent.setAction(SplashScreenActivity.EXIT);
 				startActivity(killIntent);
+				finish();
 				return false;
 			case R.id.menu_undo:
 				UndoHistory.undoLast(this);
@@ -451,8 +453,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 			menu.findItem(R.id.menu_kill_button).setVisible(
 					MirakelPreferences.showKillButton());
 		if (menu.findItem(R.id.menu_contact) != null)
-			menu.findItem(R.id.menu_contact).setVisible(
-					BuildHelper.isBeta());
+			menu.findItem(R.id.menu_contact).setVisible(BuildHelper.isBeta());
 
 		if (!fromShare) updateShare();
 
@@ -732,11 +733,12 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 				skipSwipe = true;
 				setCurrentList(task.getList());
 				mViewPager.postDelayed(new Runnable() {
-					
+
 					@Override
 					public void run() {
 						setCurrentTask(task, true);
-						mViewPager.setCurrentItem(getTaskFragmentPosition(), false);						
+						mViewPager.setCurrentItem(getTaskFragmentPosition(),
+								false);
 					}
 				}, 1);
 

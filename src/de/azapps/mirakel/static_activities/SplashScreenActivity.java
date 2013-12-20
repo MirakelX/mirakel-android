@@ -22,29 +22,36 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.reminders.ReminderAlarm;
+import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakelandroid.R;
 
 public class SplashScreenActivity extends Activity {
-	public static final String EXIT = "de.azapps.mirakel.EXIT";
+	public static final String	EXIT	= "de.azapps.mirakel.EXIT";
 
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (getIntent().getAction() == EXIT) {
+		// Setup splashscreen
+
+		if (getIntent() != null && getIntent().getAction() == EXIT) {
+			NotificationService.stop(this);
+			ReminderAlarm.stopAll(this);
+			if (startService(new Intent(SplashScreenActivity.this,
+					NotificationService.class)) != null) {
+				stopService(new Intent(SplashScreenActivity.this,
+						NotificationService.class));
+			}
 			finish();
 			return;
 		}
-
-		// Setup splashscreen
 		boolean darkTheme = MirakelPreferences.isDark();
-		if (!darkTheme)
-			setTheme(R.style.Theme_SplashScreen);
+		if (!darkTheme) setTheme(R.style.Theme_SplashScreen);
 
 		// Intents
 		if (MirakelPreferences.isStartupAllLists()) {
