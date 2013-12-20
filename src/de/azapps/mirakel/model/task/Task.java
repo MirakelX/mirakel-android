@@ -262,7 +262,7 @@ public class Task extends TaskBase {
 	public static List<Pair<Long, String>> getTaskNames() {
 		Cursor c = database.query(TABLE, new String[] { DatabaseHelper.ID,
 				DatabaseHelper.NAME }, "not " + SyncAdapter.SYNC_STATE + "="
-				+ SYNC_STATE.DELETE, null, null, null, null);
+				+ SYNC_STATE.DELETE + " and done = 0", null, null, null, null);
 		c.moveToFirst();
 		List<Pair<Long, String>> names = new ArrayList<Pair<Long, String>>();
 		while (!c.isAfterLast()) {
