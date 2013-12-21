@@ -984,6 +984,8 @@ public class TaskFragmentAdapter extends MirakelArrayAdapter<Pair<Integer, Integ
 				android.R.drawable.ic_menu_recent_history);
 		reminder_img.setBounds(0, 1, 42, 42);
 		Configuration config = context.getResources().getConfiguration();
+		setRecurringImage(holder.recurringButton, context,
+				task.getRecurringReminderId());
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
 				&& config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
 			holder.taskReminder.setCompoundDrawables(null, null, reminder_img,
@@ -992,6 +994,7 @@ public class TaskFragmentAdapter extends MirakelArrayAdapter<Pair<Integer, Integ
 			holder.taskReminder.setCompoundDrawables(reminder_img, null, null,
 					null);
 		}
+
 		if (task.getReminder() == null) {
 			holder.taskReminder
 					.setText(context.getString(R.string.no_reminder));
@@ -1112,6 +1115,7 @@ public class TaskFragmentAdapter extends MirakelArrayAdapter<Pair<Integer, Integ
 				android.R.drawable.ic_menu_today);
 		dueImg.setBounds(0, 1, 42, 42);
 		Configuration config = context.getResources().getConfiguration();
+		setRecurringImage(holder.reccurence, context, task.getRecurrenceId());
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
 				&& config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
 			holder.taskDue.setCompoundDrawables(null, null, dueImg, null);
@@ -1364,5 +1368,17 @@ public class TaskFragmentAdapter extends MirakelArrayAdapter<Pair<Integer, Integ
 
 	public void setaudioButtonClick(OnClickListener audioButtonClick) {
 		this.audioButtonClick = audioButtonClick;
+	}
+
+	@SuppressLint("NewApi")
+	public static void setRecurringImage(ImageButton image, Context ctx, int id) {
+		Drawable d = ctx.getResources().getDrawable(
+				id == -1 ? android.R.drawable.ic_menu_mylocation
+						: android.R.drawable.ic_menu_rotate);
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+			image.setBackgroundDrawable(d);
+		} else {
+			image.setBackground(d);
+		}
 	}
 }

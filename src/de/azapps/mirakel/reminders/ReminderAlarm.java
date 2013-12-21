@@ -209,7 +209,6 @@ public class ReminderAlarm extends BroadcastReceiver {
 									new GregorianCalendar())) {
 						i = cancelAlarm(ctx, t, newTask, i,
 								activeAlarms.get(i).second);
-						Log.d(TAG, "remove because its done");
 						continue;
 					} else if (newTask.getReminder() != null) {
 						Calendar now = new GregorianCalendar();
@@ -225,11 +224,17 @@ public class ReminderAlarm extends BroadcastReceiver {
 														newTask.getReminder())) > 0
 								&& !now.after(newTask.getReminder())) {
 							updateAlarm(ctx, newTask);
+						} else if (t.getRecurringReminderId() != newTask
+								.getRecurringReminderId()) {
+							updateAlarm(ctx, newTask);
+							i = cancelAlarm(ctx, t, newTask, i,
+										activeAlarms.get(i).second);
 						}
 					}
 				}
 				for (Task t : tasks) {
 					if (!isAlarm(t)) {
+						Log.d(TAG, "add: " + t.getName());
 						PendingIntent p = updateAlarm(ctx, t);
 						activeAlarms.add(new Pair<Task, PendingIntent>(t, p));
 					}

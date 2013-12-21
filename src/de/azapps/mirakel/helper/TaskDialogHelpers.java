@@ -175,7 +175,7 @@ public class TaskDialogHelpers {
 								intervalMonths, intervalYears, isDue,
 								startDate, endDate, true, isExact,
 								new SparseBooleanArray());
-						setRecurence(task, isDue, r.getId());
+						setRecurence(task, isDue, r.getId(), activity, image);
 					}
 
 					@Override
@@ -187,23 +187,18 @@ public class TaskDialogHelpers {
 						Recurring r = Recurring.newRecurring("", 0, 0, 0, 0, 0,
 								isDue, startDate, endDate, true, isExact,
 								weekdaysArray);
-						setRecurence(task, isDue, r.getId());
+						setRecurence(task, isDue, r.getId(), activity, image);
 					}
 
 					@Override
 					public void OnRecurrenceSet(Recurring r) {
-						image.setBackground(activity.getResources()
-								.getDrawable(android.R.drawable.ic_menu_rotate));
-						setRecurence(task, isDue, r.getId());
+						setRecurence(task, isDue, r.getId(), activity, image);
 
 					}
 
 					@Override
 					public void onNoRecurrenceSet() {
-						image.setBackground(activity.getResources()
-								.getDrawable(
-										android.R.drawable.ic_menu_mylocation));
-						setRecurence(task, isDue, -1);
+						setRecurence(task, isDue, -1, activity, image);
 					}
 
 				}, r, isDue, dark, isExact);
@@ -226,7 +221,6 @@ public class TaskDialogHelpers {
 								t.getName()))
 				.setPositiveButton(android.R.string.ok,
 						new DialogInterface.OnClickListener() {
-
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
 								for (FileMirakel f : selectedItems) {
@@ -615,7 +609,8 @@ public class TaskDialogHelpers {
 
 	}
 
-	private static void setRecurence(final Task task, final boolean isDue, int id) {
+	@SuppressLint("NewApi")
+	private static void setRecurence(final Task task, final boolean isDue, int id, Context ctx, ImageButton image) {
 		if (isDue) {
 			Recurring.destroyTemporary(task.getRecurrenceId());
 			task.setRecurrence(id);
@@ -623,7 +618,11 @@ public class TaskDialogHelpers {
 			Recurring.destroyTemporary(task.getRecurringReminderId());
 			task.setRecurringReminder(id);
 		}
+		TaskFragmentAdapter.setRecurringImage(image, ctx, id);
 		task.safeSave();
+		// if (!isDue) {
+		// ReminderAlarm.updateAlarms(ctx);
+		// }
 	}
 
 	private static MediaRecorder	audio_record_mRecorder;
