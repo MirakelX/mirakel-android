@@ -577,6 +577,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 
 	@Override
 	public void onBackPressed() {
+		getTaskFragment().cancelEditing();
 		if (goBackTo.size() > 0 && currentPosition == getTaskFragmentPosition()) {
 			Task goBack = goBackTo.pop();
 			setCurrentList(goBack.getList(), null, false, false);

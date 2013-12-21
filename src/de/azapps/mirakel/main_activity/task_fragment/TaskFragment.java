@@ -82,7 +82,7 @@ public class TaskFragment extends Fragment {
 					FileMirakel file = main.getCurrentTask().getFiles()
 							.get(adapter.getData().get(position).second);
 					if (file.getPath().endsWith(".mp3")) {
-						TaskDialogHelpers.handleAudioPlayback(main,file);
+						TaskDialogHelpers.handleAudioPlayback(main, file);
 						return;
 					} else {
 						TaskDialogHelpers.openFile(main, file);
@@ -351,6 +351,10 @@ public class TaskFragment extends Fragment {
 		if (adapter != null) {
 			adapter.setData(task);
 		}
+	}
+
+	public void cancelEditing() {
+		adapter.cancelEditing();
 	}
 
 }
