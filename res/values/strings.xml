@@ -303,7 +303,7 @@ Device: %3$s\n]]>
     <string name="recurrence_end_continously">Forever</string>
     <!-- Specifies that a repeating event to repeat until a certain date[CHAR LIMIT=25] -->
     <string name="recurrence_end_date_label">Until a date</string>
-    <string name="use_exact_recurrence">Should be recurring on done date?</string>
+    <string name="use_exact_recurrence">Set recurrence based on done date?</string>
     <string name="recurrence_from_now">From now</string>
     <string name="recurrence_from">From</string>
 
