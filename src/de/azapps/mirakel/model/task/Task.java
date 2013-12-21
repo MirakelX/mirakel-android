@@ -671,14 +671,14 @@ public class Task extends TaskBase {
 	 * @param result
 	 * @return
 	 */
-	public static List<Task> parse_json(String result) {
+	public static List<Task> parse_json(String result, AccountMirakel account) {
 		try {
 			List<Task> tasks = new ArrayList<Task>();
 			Iterator<JsonElement> i = new JsonParser().parse(result)
 					.getAsJsonArray().iterator();
 			while (i.hasNext()) {
 				JsonObject el = (JsonObject) i.next();
-				Task t = parse_json(el);
+				Task t = parse_json(el, account);
 				tasks.add(t);
 			}
 			return tasks;
@@ -696,7 +696,7 @@ public class Task extends TaskBase {
 	 * @param el
 	 * @return
 	 */
-	public static Task parse_json(JsonObject el) {
+	public static Task parse_json(JsonObject el, AccountMirakel account) {
 		Task t = null;
 		JsonElement id = el.get("id");
 		if (id != null) {
@@ -744,8 +744,10 @@ public class Task extends TaskBase {
 				t.setList(list);
 			} else if (key.equals("project")) {
 				ListMirakel list = ListMirakel.findByName(val.getAsString());
-				if (list == null) {
-					list = ListMirakel.newList(val.getAsString());
+				if (list == null
+						|| list.getAccount().getId() != account.getId()) {
+					list = ListMirakel.newList(val.getAsString(),
+							ListMirakel.SORT_BY_OPT, account);
 				}
 				t.setList(list);
 			} else if (key.equals("created_at")) {

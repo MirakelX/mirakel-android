@@ -90,7 +90,7 @@ public class UndoHistory {
 				switch (type) {
 				case TASK:
 					try {
-						Task t = Task.parse_json(json);
+							Task t = Task.parse_json(json, null);
 						if (Task.get(t.getId()) != null)
 							t.save(false);
 						else {

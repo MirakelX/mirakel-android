@@ -553,4 +553,17 @@ public class ListMirakel extends ListBase {
 		return list;
 	}
 
+	public static ListMirakel getInboxList(AccountMirakel account) {
+		Cursor c = database.query(TABLE, allColumns, DatabaseHelper.NAME + "='"
+				+ context.getString(R.string.inbox) + "' and " + ACCOUNT_ID
+				+ "=" + account.getId(), null, null, null, null);
+		c.moveToFirst();
+		if (c.getCount() > 0) {
+			ListMirakel l = cursorToList(c);
+			c.close();
+			return l;
+		}
+		return newList(context.getString(R.string.inbox), SORT_BY_OPT, account);
+	}
+
 }

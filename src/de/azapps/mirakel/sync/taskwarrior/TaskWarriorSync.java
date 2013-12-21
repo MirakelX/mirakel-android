@@ -23,6 +23,7 @@ import com.google.gson.JsonParser;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.account.AccountMirakel;
+import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
@@ -178,7 +179,7 @@ public class TaskWarriorSync {
 	}
 
 	private TW_ERRORS doSync(Account a, Msg sync) {
-
+		AccountMirakel accountMirakel=AccountMirakel.get(account);
 		longInfo(sync.getPayload());
 
 		TLSClient client = new TLSClient();
@@ -238,7 +239,17 @@ public class TaskWarriorSync {
 				try {
 					taskObject = new JsonParser().parse(taskString)
 							.getAsJsonObject();
-					server_task = Task.parse_json(taskObject);
+					server_task = Task.parse_json(taskObject, accountMirakel);
+					if (server_task.getList().getAccount().getId() != accountMirakel
+							.getId()) {
+						ListMirakel list = ListMirakel
+								.getInboxList(accountMirakel);
+						server_task.setList(list);
+					}
+					Calendar due = server_task.getDue();
+					due.add(Calendar.DAY_OF_MONTH, 1);
+					server_task.setDue(due);
+
 					dependencies.put(server_task.getUUID(),
 							server_task.getDependencies());
 					local_task = Task.getByUUID(server_task.getUUID());
