@@ -33,6 +33,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -40,6 +41,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -81,7 +83,8 @@ public class RecurrencePickerDialog extends DialogFragment implements OnCheckedC
 	private boolean					mForDue;
 	private Spinner					mRecurenceSelection;
 	private int						extraItems;
-	private Switch					mToggle;
+	private CompoundButton			mToggle;
+	private boolean					toggleIsSwitch		= true;
 	private Button					mDoneButton;
 	private int						mPosition;
 	private boolean					mDark;
@@ -99,30 +102,41 @@ public class RecurrencePickerDialog extends DialogFragment implements OnCheckedC
 		mEndDate = null;
 	}
 
-	private final int[]			TIME_DAY_TO_CALENDAR_DAY	= new int[] {
+	private final int[]		TIME_DAY_TO_CALENDAR_DAY	= new int[] {
 			Calendar.SUNDAY, Calendar.MONDAY, Calendar.TUESDAY,
 			Calendar.WEDNESDAY, Calendar.THURSDAY, Calendar.FRIDAY,
-			Calendar.SATURDAY,								};
-	private LinearLayout		mWeekGroup;
-	private LinearLayout		mWeekGroup2;
-	private LinearLayout		mOptions;
-	private Spinner				mIntervalType;
-	private EditText			mIntervalCount;
-	protected int				mIntervalValue;
-	private RadioGroup			mRadioGroup;
-	private Spinner				mEndSpinner;
-	private Calendar			mEndDate;
-	private TextView			mEndDateView;
-	protected boolean			mIsCustom					= false;
-	private CheckBox			mUseExact;
-	private boolean				mInitialExact;
-	private Spinner				mStartSpinner;
+			Calendar.SATURDAY,							};
+	private LinearLayout	mWeekGroup;
+	private LinearLayout	mWeekGroup2;
+	private LinearLayout	mOptions;
+	private Spinner			mIntervalType;
+	private EditText		mIntervalCount;
+	protected int			mIntervalValue;
+	private RadioGroup		mRadioGroup;
+	private Spinner			mEndSpinner;
+	private Calendar		mEndDate;
+	private TextView		mEndDateView;
+	protected boolean		mIsCustom					= false;
+	private CheckBox		mUseExact;
+	private boolean			mInitialExact;
+	private Spinner			mStartSpinner;
 	private Calendar		mStartDate;
-	private TextView			mStartDateView;
+	private TextView		mStartDateView;
+	private Context			ctx;
+
+	public int pxToDp(int px) {
+
+		Resources resources = ctx.getResources();
+
+		DisplayMetrics metrics = resources.getDisplayMetrics();
+
+		return (int) (px / (metrics.density));
+
+	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		Context ctx = getDialog().getContext();
+		ctx = getDialog().getContext();
 		try {
 			getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 		} catch (Exception e) {
@@ -149,7 +163,14 @@ public class RecurrencePickerDialog extends DialogFragment implements OnCheckedC
 				.inflate(R.layout.recurrencepicker, container);
 		mRecurenceSelection = (Spinner) view.findViewById(R.id.freqSpinner);
 		Resources res = ctx.getResources();
-		final boolean isNotTwoRows = res.getConfiguration().screenWidthDp > MIN_SCREEN_WIDTH_FOR_SINGLE_ROW_WEEK;
+		boolean isNotTwoRows;
+		try {
+			isNotTwoRows = res.getConfiguration().screenWidthDp > MIN_SCREEN_WIDTH_FOR_SINGLE_ROW_WEEK;
+		} catch (NoSuchFieldError e) {
+			isNotTwoRows = pxToDp(((WindowManager) ctx
+					.getSystemService(Context.WINDOW_SERVICE))
+					.getDefaultDisplay().getWidth()) > MIN_SCREEN_WIDTH_FOR_SINGLE_ROW_WEEK;
+		}
 		ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(
 				ctx, android.R.layout.simple_spinner_item, items);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -247,7 +268,11 @@ public class RecurrencePickerDialog extends DialogFragment implements OnCheckedC
 		mUseExact = (CheckBox) view.findViewById(R.id.recurrence_is_exact);
 		Log.w(TAG, "exact: " + mInitialExact);
 		mUseExact.setChecked(mInitialExact);
-		mToggle = (Switch) view.findViewById(R.id.repeat_switch);
+		mToggle = (CompoundButton) view.findViewById(R.id.repeat_switch);
+		if (mToggle == null) {
+			mToggle = (CheckBox) view.findViewById(R.id.repeat_checkbox);
+			toggleIsSwitch = false;
+		}
 		mToggle.setChecked(mRecurring != null && mRecurring.getId() != -1);
 		mToggle.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
@@ -537,8 +562,9 @@ public class RecurrencePickerDialog extends DialogFragment implements OnCheckedC
 			view.findViewById(R.id.recurrence_picker_head).setBackgroundColor(
 					res.getColor(R.color.dialog_dark_gray));
 			mDoneButton.setTextColor(res.getColor(R.color.White));
-			mToggle.setThumbDrawable(res
-					.getDrawable(R.drawable.switch_thumb_dark));
+			if (toggleIsSwitch)
+				((Switch) mToggle).setThumbDrawable(res
+						.getDrawable(R.drawable.switch_thumb_dark));
 			mEndDateView.setTextColor(res.getColor(R.color.White));
 			mStartDateView.setTextColor(res.getColor(R.color.White));
 			mUseExact.setButtonDrawable(R.drawable.btn_check_holo_dark_red);
