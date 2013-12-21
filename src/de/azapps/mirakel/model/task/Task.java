@@ -53,6 +53,7 @@ import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 import de.azapps.mirakelandroid.R;
@@ -126,6 +127,9 @@ public class Task extends TaskBase {
 				null);
 		database.setTransactionSuccessful();
 		database.endTransaction();
+		if (isEdited(REMINDER) || isEdited(RECURRING_REMINDER)) {
+			ReminderAlarm.updateAlarms(context);
+		}
 		clearEdited();
 	}
 
