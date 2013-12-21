@@ -1043,6 +1043,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 
 			public void onDrawerOpened(View drawerView) {
 				loadMenu(-1, false, false);
+				listFragment.refresh();
 			}
 		};
 
@@ -1091,6 +1092,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		mViewPager.setOffscreenPageLimit(MirakelPreferences.isTablet() ? 1 : 2);
 
 	}
+
 
 	/**
 	 * Return the currently showed tasks
