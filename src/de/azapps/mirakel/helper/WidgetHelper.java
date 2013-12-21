@@ -175,7 +175,7 @@ public class WidgetHelper {
 	}
 
 	public static boolean isMinimalistic(Context context, int widgetId) {
-		return getBoolean(context, widgetId, "isMinimalistic", true);
+		return true;
 	}
 
 	public static boolean showDone(Context context, int widgetId) {

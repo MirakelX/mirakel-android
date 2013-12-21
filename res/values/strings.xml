@@ -65,7 +65,7 @@
     <string name="remove_files_summary">Do you want to remove %1$s from %2$s?</string>
     <string name="add_subtask">Add Subtask</string>
     <string name="remove_subtask">Remove Subtask</string>
-    <string name="subtask_add_options">Options >></string>
+    <string name="subtask_add_options">Filter >></string>
     <string name="subtask_done">Task done?</string>
     <string name="subtask_reminder">Task with reminder?</string>
     <string name="subtask_content">Task with note?</string>
@@ -303,7 +303,7 @@ Device: %3$s\n]]>
     <string name="recurrence_end_continously">Forever</string>
     <!-- Specifies that a repeating event to repeat until a certain date[CHAR LIMIT=25] -->
     <string name="recurrence_end_date_label">Until a date</string>
-    <string name="use_exact_recurrence">Should be recurring on done date?</string>
+    <string name="use_exact_recurrence">Set recurrence based on done date?</string>
     <string name="recurrence_from_now">From now</string>
     <string name="recurrence_from">From</string>
 
@@ -316,5 +316,7 @@ Device: %3$s\n]]>
     <string name="acessibility_recurrence_choose_end_date_description">change end date</string>
     <!-- The button label for saving an event -->
     <string name="save_label">Done</string>
+    <string name="audio_record_file">Audio record</string>
+    <string name="image_file">Image</string>
 
 </resources>

@@ -145,8 +145,6 @@ public class Mirakel extends Application {
 					stopService(new Intent(Mirakel.this,
 							NotificationService.class));
 				}
-				// Set Alarms
-				ReminderAlarm.updateAlarms(getApplicationContext());
 				// Auto Backup?
 				Calendar nextBackup = MirakelPreferences.getNextAutoBackup();
 				if (nextBackup != null

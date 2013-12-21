@@ -588,9 +588,13 @@ public class TaskDialogHelpers {
 	}
 
 	private static void updateListView(final SubtaskAdapter a, final Task t, final ListView lv) {
+		if (t == null || a == null || lv == null) return;
 		new Thread(new Runnable() {
 			public void run() {
-				a.setData(Task.rawQuery(generateQuery(t)));
+				List<Task> tasks = Task.rawQuery(generateQuery(t));
+				if (tasks == null) return;
+
+				a.setData(tasks);
 				lv.post(new Runnable() {
 
 					@Override

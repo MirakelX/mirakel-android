@@ -143,35 +143,48 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		if (darkTheme) setTheme(R.style.AppBaseThemeDARK);
 		super.onCreate(savedInstanceState);
 
+		// Set Alarms
+
+		new Thread(new Runnable() {
+			public void run() {
+				ReminderAlarm.updateAlarms(getApplicationContext());
+				if (!MirakelPreferences.containsHighlightSelected()) {
+					SharedPreferences.Editor editor = MirakelPreferences
+							.getEditor();
+					editor.putBoolean("highlightSelected", isTablet);
+					editor.commit();
+				}
+
+				if (!MirakelPreferences.containsStartupAllLists()) {
+					SharedPreferences.Editor editor = MirakelPreferences
+							.getEditor();
+					editor.putBoolean("startupAllLists", false);
+					editor.putString("startupList", ""
+							+ SpecialList.first().getId());
+					editor.commit();
+				}
+				// We should remove this in the future, nobody uses such old versions (hopefully)
+				if (MainActivity.updateTasksUUID) {
+					List<Task> tasks = Task.all();
+					for (Task t : tasks) {
+						t.setUUID(java.util.UUID.randomUUID().toString());
+						try {
+							t.save();
+						} catch (NoSuchListException e) {
+							Log.wtf(TAG, "WTF? No such list");
+						}
+					}
+				}
+			}
+		}).run();
 		isTablet = MirakelPreferences.isTablet();
 		isRTL = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
 				&& getResources().getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
 		currentPosition = getTasksFragmentPosition();
 		highlightSelected = MirakelPreferences.highlightSelected();
-		if (!MirakelPreferences.containsHighlightSelected()) {
-			SharedPreferences.Editor editor = MirakelPreferences.getEditor();
-			editor.putBoolean("highlightSelected", isTablet);
-			editor.commit();
-		}
-		if (!MirakelPreferences.containsStartupAllLists()) {
-			SharedPreferences.Editor editor = MirakelPreferences.getEditor();
-			editor.putBoolean("startupAllLists", false);
-			editor.putString("startupList", "" + SpecialList.first().getId());
-			editor.commit();
-		}
+
 		draw();
 
-		if (MainActivity.updateTasksUUID) {
-			List<Task> tasks = Task.all();
-			for (Task t : tasks) {
-				t.setUUID(java.util.UUID.randomUUID().toString());
-				try {
-					t.save();
-				} catch (NoSuchListException e) {
-					Log.wtf(TAG, "WTF? No such list");
-				}
-			}
-		}
 		if (mViewPager.getCurrentItem() != currentPosition) {
 			mViewPager.postDelayed(new Runnable() {
 
@@ -274,17 +287,12 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 				break;
 			case R.id.menu_kill_button:
 				// Only Close
-				NotificationService.stop(this);
-				if (startService(new Intent(MainActivity.this,
-						NotificationService.class)) != null) {
-					stopService(new Intent(MainActivity.this,
-							NotificationService.class));
-				}
 				Intent killIntent = new Intent(getApplicationContext(),
 						SplashScreenActivity.class);
 				killIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				killIntent.setAction(SplashScreenActivity.EXIT);
 				startActivity(killIntent);
+				finish();
 				return false;
 			case R.id.menu_undo:
 				UndoHistory.undoLast(this);
@@ -450,9 +458,8 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		if (menu.findItem(R.id.menu_kill_button) != null)
 			menu.findItem(R.id.menu_kill_button).setVisible(
 					MirakelPreferences.showKillButton());
-		if (menu.findItem(R.id.menu_kill_button) != null)
-			menu.findItem(R.id.menu_kill_button).setVisible(
-					BuildHelper.isBeta());
+		if (menu.findItem(R.id.menu_contact) != null)
+			menu.findItem(R.id.menu_contact).setVisible(BuildHelper.isBeta());
 
 		if (!fromShare) updateShare();
 
@@ -732,11 +739,12 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 				skipSwipe = true;
 				setCurrentList(task.getList());
 				mViewPager.postDelayed(new Runnable() {
-					
+
 					@Override
 					public void run() {
 						setCurrentTask(task, true);
-						mViewPager.setCurrentItem(getTaskFragmentPosition(), false);						
+						mViewPager.setCurrentItem(getTaskFragmentPosition(),
+								false);
 					}
 				}, 1);
 
@@ -803,7 +811,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 				listId = Integer.parseInt(startIntent.getAction().replace(
 						SHOW_LIST_FROM_WIDGET, ""));
 			}
-			Log.wtf(TAG, "ListId: " + listId);
+			Log.v(TAG, "ListId: " + listId);
 			ListMirakel list = ListMirakel.getList(listId);
 			if (list == null) list = SpecialList.firstSpecial();
 			setCurrentList(list);

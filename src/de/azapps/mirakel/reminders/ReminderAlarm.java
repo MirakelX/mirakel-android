@@ -21,7 +21,9 @@ package de.azapps.mirakel.reminders;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -49,9 +51,10 @@ import de.azapps.mirakelandroid.R;
 
 public class ReminderAlarm extends BroadcastReceiver {
 	private static final String	TAG					= "ReminderAlarm";
-	public static String		UPDATE_NOTIFICATION	= "de.azapps.mirakel.reminders.ReminderAlarm.UPDATE_NOTIFICATION";
-	public static String		SHOW_TASK			= "de.azapps.mirakel.reminders.ReminderAlarm.SHOW_TASK";
-	public static String		EXTRA_ID			= "de.azapps.mirakel.reminders.ReminderAlarm.EXTRA_ID";
+	public static final String	UPDATE_NOTIFICATION	= "de.azapps.mirakel.reminders.ReminderAlarm.UPDATE_NOTIFICATION";
+	public static final String	SHOW_TASK			= "de.azapps.mirakel.reminders.ReminderAlarm.SHOW_TASK";
+	public static final String	EXTRA_ID			= "de.azapps.mirakel.reminders.ReminderAlarm.EXTRA_ID";
+	private static Set<Long>	allReminders		= new HashSet<Long>();
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -157,6 +160,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 		}
 
 		// Build notification
+		allReminders.add(task.getId());
 		nm.notify(Mirakel.NOTIF_REMINDER + ((int) task.getId()),
 				builder.build());
 	}
@@ -306,6 +310,18 @@ public class ReminderAlarm extends BroadcastReceiver {
 		NotificationManager nm = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 		nm.cancel(Mirakel.NOTIF_REMINDER + taskId.intValue());
+		allReminders.remove(taskId);
 	}
 
+	public static void stopAll(Context context) {
+		NotificationManager nm = (NotificationManager) context
+				.getSystemService(Context.NOTIFICATION_SERVICE);
+		// This hack is a must because otherwise we get a concurrentModificationException
+		Long[] array={};
+		Long[] reminders = allReminders.toArray(array);
+		for (Long id : reminders) {
+			nm.cancel(Mirakel.NOTIF_REMINDER + id.intValue());
+			cancelAlarm(context, Task.get(id));
+		}
+	}
 }

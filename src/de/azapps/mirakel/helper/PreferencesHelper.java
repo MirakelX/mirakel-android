@@ -82,12 +82,12 @@ import de.azapps.mirakelandroid.R;
 @SuppressLint("SimpleDateFormat")
 public class PreferencesHelper {
 
-	private static final String TAG = "PreferencesHelper";
-	private final Object ctx;
-	private final Activity activity;
-	private static boolean v4_0;
-	static View numberPicker;
-	public Switch actionBarSwitch;
+	private static final String	TAG	= "PreferencesHelper";
+	private final Object		ctx;
+	private final Activity		activity;
+	private static boolean		v4_0;
+	static View					numberPicker;
+	public Switch				actionBarSwitch;
 
 	public PreferencesHelper(SettingsActivity c) {
 		ctx = c;
@@ -151,8 +151,7 @@ public class PreferencesHelper {
 		widgetListPreference
 				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 					@Override
-					public boolean onPreferenceChange(Preference preference,
-							Object newValue) {
+					public boolean onPreferenceChange(Preference preference, Object newValue) {
 						WidgetHelper.setList(context, widgetId,
 								Integer.parseInt((String) newValue));
 						@SuppressWarnings("hiding")
@@ -168,34 +167,33 @@ public class PreferencesHelper {
 		isDark.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 			@Override
-			public boolean onPreferenceChange(Preference preference,
-					Object newValue) {
+			public boolean onPreferenceChange(Preference preference, Object newValue) {
 				WidgetHelper.setDark(context, widgetId, (Boolean) newValue);
 				return true;
 			}
 		});
 		CheckBoxPreference isMinimalistic = (CheckBoxPreference) findPreference("isMinimalistic");
-		isMinimalistic.setChecked(WidgetHelper
-				.isMinimalistic(context, widgetId));
-		isMinimalistic
-				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+		if (isMinimalistic != null) {
+			isMinimalistic.setChecked(WidgetHelper.isMinimalistic(context,
+					widgetId));
+			isMinimalistic
+					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
-					@Override
-					public boolean onPreferenceChange(Preference preference,
-							Object newValue) {
-						WidgetHelper.setMinimalistic(context, widgetId,
-								(Boolean) newValue);
-						return true;
-					}
-				});
+						@Override
+						public boolean onPreferenceChange(Preference preference, Object newValue) {
+							WidgetHelper.setMinimalistic(context, widgetId,
+									(Boolean) newValue);
+							return true;
+						}
+					});
+		}
 
 		CheckBoxPreference showDone = (CheckBoxPreference) findPreference("showDone");
 		showDone.setChecked(WidgetHelper.showDone(context, widgetId));
 		showDone.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 			@Override
-			public boolean onPreferenceChange(Preference preference,
-					Object newValue) {
+			public boolean onPreferenceChange(Preference preference, Object newValue) {
 				WidgetHelper.setDone(context, widgetId, (Boolean) newValue);
 				return true;
 			}
@@ -207,8 +205,7 @@ public class PreferencesHelper {
 				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 					@Override
-					public boolean onPreferenceChange(Preference preference,
-							Object newValue) {
+					public boolean onPreferenceChange(Preference preference, Object newValue) {
 						WidgetHelper.setDueColors(context, widgetId,
 								(Boolean) newValue);
 						return true;
@@ -228,8 +225,7 @@ public class PreferencesHelper {
 					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 						@Override
-						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
+						public boolean onPreferenceChange(Preference preference, Object newValue) {
 							WidgetHelper.setFontColor(context, widgetId,
 									widgetFontColor.getColor());
 							return false;
@@ -257,9 +253,7 @@ public class PreferencesHelper {
 											new OnClickListener() {
 
 												@Override
-												public void onClick(
-														DialogInterface dialog,
-														int which) {
+												public void onClick(DialogInterface dialog, int which) {
 													// Fix Direction
 													WidgetHelper
 															.setTransparency(
@@ -287,7 +281,7 @@ public class PreferencesHelper {
 		} else {
 			removePreference("widgetTransparency");
 			removePreference("widgetFontColor");
-			removePreference("isMinimalistic");
+			if (isMinimalistic != null) removePreference("isMinimalistic");
 		}
 	}
 
@@ -330,8 +324,7 @@ public class PreferencesHelper {
 			notificationsListPreference
 					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 						@Override
-						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
+						public boolean onPreferenceChange(Preference preference, Object newValue) {
 							String list = ListMirakel.getList(
 									Integer.parseInt((String) newValue))
 									.getName();
@@ -361,8 +354,7 @@ public class PreferencesHelper {
 			notificationsListOpenPreference
 					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 						@Override
-						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
+						public boolean onPreferenceChange(Preference preference, Object newValue) {
 							String list;
 							if (!"default".equals(newValue.toString())) {
 								list = ListMirakel.getList(
@@ -399,8 +391,7 @@ public class PreferencesHelper {
 					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 						@Override
-						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
+						public boolean onPreferenceChange(Preference preference, Object newValue) {
 							activity.finish();
 							activity.startActivity(activity.getIntent());
 
@@ -416,8 +407,7 @@ public class PreferencesHelper {
 			startupAllListPreference
 					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 						@Override
-						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
+						public boolean onPreferenceChange(Preference preference, Object newValue) {
 							if (!(Boolean) newValue) {
 								startupListPreference.setSummary(activity
 										.getString(
@@ -451,8 +441,7 @@ public class PreferencesHelper {
 					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 						@Override
-						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
+						public boolean onPreferenceChange(Preference preference, Object newValue) {
 							startupListPreference.setSummary(activity
 									.getString(
 											R.string.startup_list_summary,
@@ -463,9 +452,7 @@ public class PreferencesHelper {
 					});
 		}
 
-
-
-			// Change Sync-Interval
+		// Change Sync-Interval
 		// FIXME move to accountsettings
 		// final ListPreference syncInterval = (ListPreference) findPreference("syncFrequency");
 		// if (MirakelPreferences.getSyncFrequency() == -1) {
@@ -513,15 +500,13 @@ public class PreferencesHelper {
 		// }
 		// });
 
-
 		final CheckBoxPreference notificationsUse = (CheckBoxPreference) findPreference("notificationsUse");
 		if (notificationsUse != null) {
 			notificationsUse
 					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 						@Override
-						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
+						public boolean onPreferenceChange(Preference preference, Object newValue) {
 							if ((Boolean) newValue) {
 								activity.startService(new Intent(activity,
 										NotificationService.class));
@@ -644,9 +629,7 @@ public class PreferencesHelper {
 											new OnClickListener() {
 
 												@Override
-												public void onClick(
-														DialogInterface dialog,
-														int which) {
+												public void onClick(DialogInterface dialog, int which) {
 
 													Helpers.showFileChooser(
 															SettingsActivity.FILE_WUNDERLIST,
@@ -665,8 +648,7 @@ public class PreferencesHelper {
 					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 						@Override
-						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
+						public boolean onPreferenceChange(Preference preference, Object newValue) {
 							if ((Boolean) newValue) {
 								AlertDialog.Builder builder = new AlertDialog.Builder(
 										activity);
@@ -676,18 +658,13 @@ public class PreferencesHelper {
 												android.R.string.yes,
 												new DialogInterface.OnClickListener() {
 													@Override
-													public void onClick(
-															DialogInterface dialog,
-															int which) {
-													}
+													public void onClick(DialogInterface dialog, int which) {}
 												})
 										.setNegativeButton(
 												android.R.string.cancel,
 												new OnClickListener() {
 													@Override
-													public void onClick(
-															DialogInterface dialog,
-															int which) {
+													public void onClick(DialogInterface dialog, int which) {
 														((CheckBoxPreference) findPreference("KillButton"))
 																.setChecked(false);
 
@@ -717,8 +694,7 @@ public class PreferencesHelper {
 					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 						@Override
-						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
+						public boolean onPreferenceChange(Preference preference, Object newValue) {
 							if ((Boolean) newValue) {
 								AlertDialog.Builder builder = new AlertDialog.Builder(
 										activity);
@@ -738,9 +714,7 @@ public class PreferencesHelper {
 										items.toArray(new CharSequence[items
 												.size()]), currentItem,
 										new DialogInterface.OnClickListener() {
-											public void onClick(
-													DialogInterface dialog,
-													int item) {
+											public void onClick(DialogInterface dialog, int item) {
 												importDefaultList.setSummary(activity
 														.getString(
 																R.string.import_default_list_summary,
@@ -787,9 +761,7 @@ public class PreferencesHelper {
 									.setPositiveButton(android.R.string.ok,
 											new OnClickListener() {
 												@Override
-												public void onClick(
-														DialogInterface dialogInterface,
- @SuppressWarnings("hiding") int i) {
+												public void onClick(DialogInterface dialogInterface, @SuppressWarnings("hiding") int i) {
 													Task.deleteDoneTasks();
 													Toast.makeText(
 															activity,
@@ -804,10 +776,7 @@ public class PreferencesHelper {
 									.setNegativeButton(android.R.string.cancel,
 											new OnClickListener() {
 												@Override
-												public void onClick(
-														DialogInterface dialogInterface,
- @SuppressWarnings("hiding") int i) {
-												}
+												public void onClick(DialogInterface dialogInterface, @SuppressWarnings("hiding") int i) {}
 											}).show();
 							return true;
 						}
@@ -888,9 +857,7 @@ public class PreferencesHelper {
 									.setPositiveButton(
 											android.R.string.ok,
 											new DialogInterface.OnClickListener() {
-												public void onClick(
-														DialogInterface dialog,
-														int whichButton) {
+												public void onClick(DialogInterface dialog, int whichButton) {
 													int val;
 													if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
 														val = ((NumberPicker) numberPicker)
@@ -914,9 +881,7 @@ public class PreferencesHelper {
 									.setNegativeButton(
 											android.R.string.cancel,
 											new DialogInterface.OnClickListener() {
-												public void onClick(
-														DialogInterface dialog,
-														int whichButton) {
+												public void onClick(DialogInterface dialog, int whichButton) {
 													// Do nothing.
 												}
 											}).show();
@@ -934,7 +899,8 @@ public class PreferencesHelper {
 
 						@Override
 						public boolean onPreferenceClick(Preference preference) {
-							final int old_val =MirakelPreferences.getUndoNumber();
+							final int old_val = MirakelPreferences
+									.getUndoNumber();
 							final int max = 25;
 							final int min = 1;
 							if (v4_0) {
@@ -998,10 +964,9 @@ public class PreferencesHelper {
 									.setPositiveButton(
 											android.R.string.ok,
 											new DialogInterface.OnClickListener() {
-												public void onClick(
-														DialogInterface dialog,
-														int whichButton) {
-													SharedPreferences.Editor editor = MirakelPreferences.getEditor();
+												public void onClick(DialogInterface dialog, int whichButton) {
+													SharedPreferences.Editor editor = MirakelPreferences
+															.getEditor();
 													int val;
 													if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
 														val = ((NumberPicker) numberPicker)
@@ -1035,9 +1000,7 @@ public class PreferencesHelper {
 									.setNegativeButton(
 											android.R.string.cancel,
 											new DialogInterface.OnClickListener() {
-												public void onClick(
-														DialogInterface dialog,
-														int whichButton) {
+												public void onClick(DialogInterface dialog, int whichButton) {
 													// Do nothing.
 												}
 											}).show();
@@ -1089,7 +1052,7 @@ public class PreferencesHelper {
 		// TaskFragmentSettings.class);
 		Preference taskFragment = findPreference("task_fragment");
 		if (taskFragment != null) {
-		// taskFragment.setIntent(startTaskFragmentIntent);
+			// taskFragment.setIntent(startTaskFragmentIntent);
 			taskFragment
 					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
@@ -1119,8 +1082,7 @@ public class PreferencesHelper {
 					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 						@Override
-						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
+						public boolean onPreferenceChange(Preference preference, Object newValue) {
 							if (!(Boolean) newValue) {
 								AlertDialog.Builder builder = new AlertDialog.Builder(
 										activity);
@@ -1139,9 +1101,7 @@ public class PreferencesHelper {
 										items.toArray(new CharSequence[items
 												.size()]), currentItem,
 										new DialogInterface.OnClickListener() {
-											public void onClick(
-													DialogInterface dialog,
-													int item) {
+											public void onClick(DialogInterface dialog, int item) {
 												subTaskAddToSameList
 														.setSummary(items
 																.get(item));
@@ -1181,8 +1141,7 @@ public class PreferencesHelper {
 			language.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 				@Override
-				public boolean onPreferenceChange(Preference preference,
-						Object newValue) {
+				public boolean onPreferenceChange(Preference preference, Object newValue) {
 					setLanguageSummary(language, newValue.toString());
 					MirakelPreferences.getEditor()
 							.putString("language", newValue.toString())
@@ -1200,8 +1159,7 @@ public class PreferencesHelper {
 					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 						@Override
-						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
+						public boolean onPreferenceChange(Preference preference, Object newValue) {
 							MirakelPreferences
 									.getEditor()
 									.putBoolean("useTabletLayout",
@@ -1214,8 +1172,7 @@ public class PreferencesHelper {
 		}
 
 		final Preference version = findPreference("version");
-		if (version != null)
-			version.setSummary(Mirakel.VERSIONS_NAME);
+		if (version != null) version.setSummary(Mirakel.VERSIONS_NAME);
 	}
 
 	private void setLanguageSummary(ListPreference language, String current) {
@@ -1247,8 +1204,7 @@ public class PreferencesHelper {
 	}
 
 	@SuppressLint("NewApi")
-	public static void createAuthActivity(boolean newValue,
-			final Object activity, final Object box, final boolean fragment) {
+	public static void createAuthActivity(boolean newValue, final Object activity, final Object box, final boolean fragment) {
 		final Context ctx;
 		if (fragment) {
 			ctx = ((Fragment) activity).getActivity();
@@ -1266,8 +1222,7 @@ public class PreferencesHelper {
 							new OnClickListener() {
 								@SuppressLint("NewApi")
 								@Override
-								public void onClick(
-										DialogInterface dialogInterface, int i) {
+								public void onClick(DialogInterface dialogInterface, int i) {
 									for (Account a : accounts) {
 										try {
 											am.removeAccount(a, null, null);
@@ -1289,7 +1244,8 @@ public class PreferencesHelper {
 														intent,
 														SettingsActivity.NEW_ACCOUNT);
 									}
-									SharedPreferences.Editor editor = MirakelPreferences.getEditor();
+									SharedPreferences.Editor editor = MirakelPreferences
+											.getEditor();
 									editor.putBoolean("syncUse", true);
 									editor.commit();
 								}
@@ -1298,9 +1254,9 @@ public class PreferencesHelper {
 							new OnClickListener() {
 								@SuppressLint("NewApi")
 								@Override
-								public void onClick(
-										DialogInterface dialogInterface, int i) {
-									SharedPreferences.Editor editor = MirakelPreferences.getEditor();
+								public void onClick(DialogInterface dialogInterface, int i) {
+									SharedPreferences.Editor editor = MirakelPreferences
+											.getEditor();
 									editor.putBoolean("syncUse", false);
 									editor.commit();
 									if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
@@ -1325,8 +1281,7 @@ public class PreferencesHelper {
 		}
 	}
 
-	public static void updateSyncText(CheckBoxPreference sync,
-			Preference server, Preference syncFrequency, Context ctx) {
+	public static void updateSyncText(CheckBoxPreference sync, Preference server, Preference syncFrequency, Context ctx) {
 		AccountManager am = AccountManager.get(ctx);
 		Account[] accounts = am
 				.getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
