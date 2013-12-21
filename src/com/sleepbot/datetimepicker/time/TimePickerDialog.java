@@ -39,6 +39,10 @@ public class TimePickerDialog extends DialogFragment  {
 	private TimePicker mTimePicker;
 
 	private OnTimeSetListener mCallback;
+
+	private int					mInitialHour;
+
+	private int					mInitialMinute;
 	/**
 	 * The callback interface used to indicate the user is done filling in the
 	 * time (they clicked on the 'Set' button).
@@ -64,6 +68,8 @@ public class TimePickerDialog extends DialogFragment  {
 
 	public void initialize(final OnTimeSetListener callback, int hourOfDay,
 			int minute, boolean is24HourMode, boolean dark) {
+		mInitialHour = hourOfDay;
+		mInitialMinute = minute;
 		mCallback=new OnTimeSetListener() {
 			
 			@Override
@@ -124,6 +130,7 @@ public class TimePickerDialog extends DialogFragment  {
 		mTimePicker=(TimePicker) view.findViewById(R.id.time_picker);
 		mTimePicker.setOnTimeSetListener(mCallback);
 		mTimePicker.setOnKeyListener(mTimePicker.getNewKeyboardListner(getDialog()));
+		mTimePicker.setTime(mInitialHour, mInitialMinute);
 		return view;
 	}
 

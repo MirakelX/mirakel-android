@@ -336,6 +336,10 @@ public class TimePicker extends LinearLayout implements
 		}
 	}
 
+	public void setTime(int hourOfDay, int minutes) {
+		mTimePicker.setTime(hourOfDay, minutes);
+	}
+
 	public void setOnTimeSetListener(OnTimeSetListener callback) {
 		mCallback = callback;
 	}

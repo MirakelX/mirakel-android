@@ -1,13 +1,5 @@
 package de.azapps.widgets;
 
-import com.fourmob.datetimepicker.date.DatePicker;
-import com.fourmob.datetimepicker.date.DatePicker.OnDateSetListener;
-import com.sleepbot.datetimepicker.time.RadialPickerLayout;
-import com.sleepbot.datetimepicker.time.TimePicker;
-import com.sleepbot.datetimepicker.time.TimePicker.OnTimeSetListener;
-
-import de.azapps.mirakelandroid.R;
-import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -17,6 +9,14 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ViewSwitcher;
+
+import com.fourmob.datetimepicker.date.DatePicker;
+import com.fourmob.datetimepicker.date.DatePicker.OnDateSetListener;
+import com.sleepbot.datetimepicker.time.RadialPickerLayout;
+import com.sleepbot.datetimepicker.time.TimePicker;
+import com.sleepbot.datetimepicker.time.TimePicker.OnTimeSetListener;
+
+import de.azapps.mirakelandroid.R;
 
 public class DateTimeDialog extends DialogFragment {
 
@@ -53,7 +53,7 @@ public class DateTimeDialog extends DialogFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-	};
+	}
 
 	float startX;
 	float startY;
@@ -84,15 +84,10 @@ public class DateTimeDialog extends DialogFragment {
 				.findViewById(R.id.datetime_picker_time);
 		viewSwitcher = (ViewSwitcher) v
 				.findViewById(R.id.datetime_picker_animator);
-
-		viewSwitcher.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				// viewAnimator.showNext();
-			}
-		});
 		dp = (DatePicker) v.findViewById(R.id.date_picker);
 		tp = (TimePicker) v.findViewById(R.id.time_picker);
 		tp.set24HourMode(true);
+		tp.setTime(mInitialHour, mInitialMinute);
 		tp.setOnKeyListener(tp.getNewKeyboardListner(getDialog()));
 		tp.setOnTimeSetListener(new OnTimeSetListener() {
 
@@ -165,7 +160,7 @@ public class DateTimeDialog extends DialogFragment {
 		tp.setMinute(mInitialMinute);
 		return v;
 
-	};
+	}
 
 	public interface OnDateTimeSetListner {
 
