@@ -7,7 +7,7 @@
   <string name="help_subtasks_title">Unteraufgaben</string>
   <string name="help_sync_title">Sync</string>
   <string name="help_sync_taskwarrior_title">Taskwarrior-Sync</string>
-  <string name="help_sync_caldav_title">CalDAV synchronisieren</string>
+  <string name="help_sync_caldav_title">CalDAV-Sync</string>
   <string name="list_friends">Freunde</string>
   <string name="list_home">Zu Hause</string>
   <string name="list_work">Auf Arbeit</string>

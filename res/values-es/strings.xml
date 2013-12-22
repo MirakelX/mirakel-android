@@ -155,6 +155,7 @@ Device: %3$s\n]]>
   </string-array>
   <string-array name="audio_playback_options">
     <item>Open file</item>
-    <item>Play</item>
+    <item>Play loud</item>
+    <item>Play silent</item>
   </string-array>
 </resources>

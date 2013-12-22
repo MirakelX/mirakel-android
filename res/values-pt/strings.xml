@@ -40,7 +40,6 @@
   <string name="remove_files_summary">Pretende remover %1$s de %2$s?</string>
   <string name="add_subtask">Adicionar subtarefa</string>
   <string name="remove_subtask">Remover subtarefa</string>
-  <string name="subtask_add_options">Opções &gt;&gt;</string>
   <string name="subtask_done">Tarefa terminada?</string>
   <string name="subtask_reminder">Tarefa com lembrete?</string>
   <string name="subtask_content">Tarefa com nota?</string>
@@ -158,7 +157,16 @@ Dispositivo: %3$s\n]]>
   <string name="file_vanished">Ficheiro inexistente</string>
   <string name="file_default_title">Procurar este ficheiro</string>
   <string name="photo_default_title">Procurar esta foto</string>
+  <string name="audio_default_title">Escute isto!</string>
   <string name="edit">Editar</string>
+  <string name="audio_record_stop">Parar gravação</string>
+  <string name="audio_record_title">Gravação áudio…</string>
+  <string name="audio_record_message">Gravação…</string>
+  <string name="audio_playback_title">Reprodução áudio…</string>
+  <string name="audio_playback_select_title">O que deseja fazer?</string>
+  <string name="audio_playback_pause">Pausa</string>
+  <string name="audio_playback_play">Reproduzir</string>
+  <string name="audio_playback_stop">Parar</string>
   <string name="daily">Diário</string>
   <string name="second_day">A cada 2 dias</string>
   <string name="weekly">Semanal</string>
@@ -185,7 +193,14 @@ Dispositivo: %3$s\n]]>
   <string name="save">Gravar</string>
   <string name="file_to_large">falha ao criar miniatura</string>
   <string name="recurring_not_zero">A recorrência não pode ser nula!</string>
+  <string name="every">A cada</string>
+  <string name="recurrence_end_continously">Eternamente</string>
+  <string name="recurrence_end_date_label">Até uma data</string>
+  <string name="recurrence_from_now">Desde já</string>
+  <string name="recurrence_from">Desde</string>
   <string name="settings_task_fragment_title">Resumo da tarefa</string>
+  <string name="recurrence_month_pattern_by_day">no mesmo dia de cada mês</string>
+  <string name="acessibility_recurrence_choose_end_date_description">mudar data final</string>
   <string name="save_label">Terminada</string>
   <string-array name="task_sorting_items">
     <item>Pré-definida</item>
@@ -211,7 +226,8 @@ Dispositivo: %3$s\n]]>
     <item>Mirakel</item>
   </string-array>
   <string-array name="audio_playback_options">
-    <item>Open file</item>
-    <item>Play</item>
+    <item>Abrir ficheiro</item>
+    <item>Play loud</item>
+    <item>Play silent</item>
   </string-array>
 </resources>

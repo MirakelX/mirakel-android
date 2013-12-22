@@ -37,9 +37,9 @@
   <string name="add_subtasks">إضافة مهمة فرعية...</string>
   <string name="subtask_list_name">المهام الفرعية</string>
   <string name="remove_files">إزالة الملفات من المهمة</string>
+  <string name="remove_files_summary">هل تريد إزالة % 1$s من % 2$s؟</string>
   <string name="add_subtask">إضافة مهمة فرعية</string>
   <string name="remove_subtask">إزالة مهمة فرعية</string>
-  <string name="subtask_add_options">خيارات &gt;&gt;</string>
   <string name="subtask_done">مهمة منجزة؟</string>
   <string name="subtask_reminder">مهمة مع تذكير؟</string>
   <string name="subtask_content">مهمة مع ملاحظة؟</string>
@@ -202,6 +202,7 @@ SDK-نسخة: %2$d\n
   </string-array>
   <string-array name="audio_playback_options">
     <item>Open file</item>
-    <item>Play</item>
+    <item>Play loud</item>
+    <item>Play silent</item>
   </string-array>
 </resources>

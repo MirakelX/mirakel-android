@@ -43,6 +43,7 @@
   <string name="sync_taskwarrior_register_button">Registar</string>
   <string name="sync_taskwarrior_setup_success">Conta configurada com sucesso</string>
   <string name="sync_taskwarrior_error_download">Não foi possível transferir o ficheiro de configuração</string>
+  <string name="sync_taskwarrior_select_file_not_exists">O ficheiro não existe</string>
   <string name="no_barcode_app">Não tem instalado um analisador de códigos QR</string>
   <string name="no_barcode_app_message">Recomendamos o analisador de códigos:</string>
   <string name="no_barcode_app_install">Instalar</string>
@@ -155,7 +156,7 @@
   <string name="menu_delete">Eliminar</string>
   <string name="menu_color">Mudar cor</string>
   <string name="howto_setup_server">Como configurar um servidor</string>
-  <string name="register_server">Se precisar de uma conta para sincronização com o nosso servidor, escreva-nos uma mensagem eletrónica. na próxima versão terá a possibilidade de registar uma conta!</string>
+  <string name="register_server">Se precisar de uma conta para sincronização com o nosso servidor, escreva-nos uma mensagem eletrónica. na próxima versão terá a possibilidade de registar uma conta!</string>
   <string name="send_mail">Enviar mensagem</string>
   <string name="special_lists_title">Meta-listas</string>
   <string name="register">Registar</string>
@@ -185,6 +186,7 @@
   <string name="settings_subtask_add_to_list_summary">Adicionar subtarefa a %s</string>
   <string name="settings_new_task">Nova tarefa</string>
   <string name="settings_use_btn_speak">Mostrar botão microfone</string>
+  <string name="settings_use_btn_audio">Mostrar o botão de gravação áudio</string>
   <string name="settings_use_btn_camera">Mostrar botão câmara</string>
   <string name="preferences_colorize_subtasks">Colorir subtarefas?</string>
   <string name="settings_tasks_title">Tarefas</string>
@@ -219,10 +221,10 @@
     <item>-1</item>
   </string-array>
   <string-array name="tablet_options">
-    <item>never</item>
-    <item>landscape</item>
-    <item>portrait</item>
-    <item>portrait &amp; landscape</item>
+    <item>nunca</item>
+    <item>horizontal</item>
+    <item>vertical</item>
+    <item>horizontal e vertical</item>
   </string-array>
   <string-array name="weekdays">
     <item>Não definir</item>

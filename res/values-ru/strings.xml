@@ -40,7 +40,6 @@
   <string name="remove_files_summary">Вы хотите удалить %1$s из %2$s?</string>
   <string name="add_subtask">Добавить подзадачу</string>
   <string name="remove_subtask">Удалить подзадачу</string>
-  <string name="subtask_add_options">Параметры &gt;&gt;</string>
   <string name="subtask_done">Задача выполнена?</string>
   <string name="subtask_reminder">Дело с напоминанием?</string>
   <string name="subtask_content">Дела с комментариями?</string>
@@ -207,6 +206,7 @@ Device: %3$s\n]]>
   </string-array>
   <string-array name="audio_playback_options">
     <item>Open file</item>
-    <item>Play</item>
+    <item>Play loud</item>
+    <item>Play silent</item>
   </string-array>
 </resources>

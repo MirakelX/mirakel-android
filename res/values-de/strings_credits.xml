@@ -6,10 +6,18 @@
   <string name="title_activity_credits">Über uns</string>
   <string name="credits_github_description">Finde uns auf GitHub</string>
   <string name="credits_googleplus_description">Trete unserer G+ Gruppe bei</string>
+  <string name="credits_text_head"><![CDATA[
+<h3>Mirakel ist freie (und open source) Software, du kannst uns gerne helfen Mirakel zu verbessern.</h3>
+<p>&copy; 2013 <a href="mailto:az@azapps.de">Anatolij Zelenin</a>, <a href="mailto:georg_semmler_05@web.de">Georg Semmler</a></p>
+<p>Icon und Designverbesserungen <a href="http://alexkaessner.de/>Alexander Käßner</a></p>
+<p>Das ist freie Software (Lizensiert unter der <a href="https://www.gnu.org/licenses/gpl.html">GPLv3</a>).</p>
+<p>Besuch uns auf</p>
+]]></string>
   <string name="credits_license"><![CDATA[<p>This program is free software: you can redistribute it and/or modify it under the terms of the <a href="https://www.gnu.org/licenses/gpl.html">GNU General Public License</a> as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
 <p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>]]></string>
   <string name="credits_translations">Übersetzungen</string>
   <string name="feedback">Feedback geben</string>
   <string name="credits_libraries">Verwendete Bibliotheken</string>
+  <string name="credits_translations" tools:ignore="DuplicateDefinition">Übersetzungen</string>
   <string name="credits_license_title">Lizenz</string>
 </resources>
