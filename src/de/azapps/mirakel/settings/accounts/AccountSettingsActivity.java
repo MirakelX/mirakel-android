@@ -9,6 +9,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.text.Html;
 import android.util.Pair;
@@ -130,15 +131,36 @@ public class AccountSettingsActivity extends ListSettings {
 
 	@Override
 	protected List<Pair<Integer, String>> getItems() {
+		return new ArrayList<Pair<Integer, String>>();
+	}
 
+	@SuppressLint("NewApi")
+	@Override
+	public void onBuildHeaders(List<Header> target) {
 		List<AccountMirakel> accounts = AccountMirakel.getAll();
-
-		List<Pair<Integer, String>> items = new ArrayList<Pair<Integer, String>>();
 		for (AccountMirakel a : accounts) {
-			items.add(new Pair<Integer, String>(a.getId(), a
-					.getName())); // TODO: Add more info to the title
+			Bundle b = new Bundle();
+			b.putInt("id", a.getId());
+			Header header = new Header();
+			header.fragment = getDestFragmentClass().getCanonicalName();
+			header.title = a.getName();
+			header.summary = a.getType().typeName(this);
+			header.fragmentArguments = b;
+			header.extras = b;
+			target.add(header);
+			Log.d(TAG, "accountname: " + a.getName());
 		}
-		return items;
+		if (accounts.size() == 0) {
+			Header header = new Header();
+			header.title = " ";
+			header.fragment = getDestFragmentClass().getCanonicalName();
+			target.add(header);
+		}
+		if (clickOnLast) {
+			onHeaderClick(mTarget.get(mTarget.size() - 1), mTarget.size() - 1);
+			clickOnLast = false;
+		}
+		mTarget = target;
 	}
 
 	@Override

@@ -174,7 +174,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			Log.wtf(TAG, "Unknown SyncType");
 		}
 		mNotificationManager.cancel(notifyTag, notifyID);
-		// mNotificationManager.cancelAll();
 		mNB = new NotificationCompat.Builder(mContext)
 				.setContentTitle(
 						"Mirakel: " + mContext.getText(R.string.finish_sync))

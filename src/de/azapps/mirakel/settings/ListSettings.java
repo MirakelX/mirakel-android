@@ -66,8 +66,8 @@ public abstract class ListSettings extends PreferenceActivity {
 	protected abstract void setupSettings();
 
 	private boolean loaded = false;
-	private boolean clickOnLast = false;
-	private List<Header> mTarget;
+	protected boolean		clickOnLast	= false;
+	protected List<Header>	mTarget;
 
 	protected abstract List<Pair<Integer, String>> getItems();
 
