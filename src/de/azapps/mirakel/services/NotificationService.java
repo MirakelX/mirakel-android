@@ -40,9 +40,9 @@ import de.azapps.mirakel.widget.MainWidgetProvider;
 import de.azapps.mirakelandroid.R;
 
 public class NotificationService extends Service {
-	private static final String TAG = "NotificationService";
-	private boolean existsNotification = false;
-	public static NotificationService notificationService;
+	private static final String			TAG					= "NotificationService";
+	private boolean						existsNotification	= false;
+	public static NotificationService	notificationService;
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -87,8 +87,7 @@ public class NotificationService extends Service {
 
 		// Get the data
 		ListMirakel todayList = ListMirakel.getList(listId);
-		if (todayList == null)
-			return;
+		if (todayList == null) return;
 		List<Task> todayTasks = todayList.tasks(false);
 		String notificationTitle;
 		String notificationText;
@@ -96,14 +95,12 @@ public class NotificationService extends Service {
 			notificationTitle = getString(R.string.notification_title_empty);
 			notificationText = "";
 		} else {
-			if (todayTasks.size() == 1)
-				notificationTitle = getString(
-						R.string.notification_title_general_single,
-						todayList.getName());
-			else
-				notificationTitle = String.format(
-						getString(R.string.notification_title_general),
-						todayTasks.size(), todayList.getName());
+			if (todayTasks.size() == 1) notificationTitle = getString(
+					R.string.notification_title_general_single,
+					todayList.getName());
+			else notificationTitle = String.format(
+					getString(R.string.notification_title_general),
+					todayTasks.size(), todayList.getName());
 
 			notificationText = todayTasks.get(0).getName();
 		}
@@ -129,8 +126,7 @@ public class NotificationService extends Service {
 
 		NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		notificationManager.notify(Mirakel.NOTIF_DEFAULT, noti.build());
-		if ((MirakelPreferences.hideEmptyNotifications() && todayTasks
-				.size() == 0)
+		if ((MirakelPreferences.hideEmptyNotifications() && todayTasks.size() == 0)
 				|| !MirakelPreferences.useNotifications()) {
 			notificationManager.cancel(Mirakel.NOTIF_DEFAULT);
 			existsNotification = false;
@@ -155,15 +151,18 @@ public class NotificationService extends Service {
 	 * @param context
 	 */
 	public static void updateNotificationAndWidget(Context context) {
-
+		// Widget update
 		Intent widgetIntent = new Intent(context, MainWidgetProvider.class);
 		widgetIntent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
-		// Use an array and EXTRA_APPWIDGET_IDS instead of
-		// AppWidgetManager.EXTRA_APPWIDGET_ID,
-		// since it seems the onUpdate() is only fired on that:
 		widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,
 				Mirakel.widgets);
 		context.sendBroadcast(widgetIntent);
+
+		// Dashclock update
+		Intent dashclockIntent = new Intent();
+		dashclockIntent.setAction("de.azapps.mirakel.dashclock.UPDATE");
+		context.sendBroadcast(dashclockIntent);
+
 		if (NotificationService.notificationService == null) {
 			Intent intent = new Intent(context, NotificationService.class);
 			context.startService(intent);
