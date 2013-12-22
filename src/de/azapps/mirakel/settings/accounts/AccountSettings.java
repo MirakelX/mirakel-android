@@ -61,7 +61,7 @@ public class AccountSettings implements OnPreferenceChangeListener {
 							.getUserData(a, SyncAdapter.BUNDLE_SERVER_URL));
 			else if (a != null
 					&& a.type.equals(AccountMirakel.ACCOUNT_TYPE_DAVDROID)) syncServer
-					.setSummary(a.name);
+					.setSummary(am.getUserData(a, "principal_url"));// a.name);
 			else syncServer.setSummary("");
 		}
 		final CheckBoxPreference syncUse = (CheckBoxPreference) findPreference("syncUse");
@@ -79,8 +79,34 @@ public class AccountSettings implements OnPreferenceChangeListener {
 		}
 		if (account.getType() == ACCOUNT_TYPES.LOCAL) {
 			removePreference("syncUse");
-			account.setEnabeld(false);
-			account.save();
+			removePreference("syncServer");
+			removePreference("syncUsername");
+		}
+		Preference syneType = findPreference("sync_type");
+		if (syneType != null) {
+			syneType.setSummary(account.getType().typeName(ctx));
+		}
+
+		final CheckBoxPreference defaultAccount = (CheckBoxPreference) findPreference("defaultAccount");
+		if (defaultAccount != null) {
+			defaultAccount.setChecked(MirakelPreferences.getDefaultAccount()
+					.getId() == account.getId());
+			defaultAccount
+					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+						@Override
+						public boolean onPreferenceChange(Preference preference, Object newValue) {
+							if ((Boolean) newValue) {
+								MirakelPreferences.setDefaultAccount(account);
+							} else {
+								MirakelPreferences
+										.setDefaultAccount(AccountMirakel
+												.getLocal());
+							}
+							defaultAccount.setChecked((Boolean) newValue);
+							return false;
+						}
+					});
 		}
 
 		final Preference syncPassword = findPreference("syncPassword");

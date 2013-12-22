@@ -69,6 +69,10 @@
     <string name="sync_taskwarrior_setup_success">Account setup was successful</string>
     <string name="sync_taskwarrior_error_download">Could not download config file</string>
     <string name="sync_taskwarrior_select_file_not_exists">File does not exist</string>
+    <string name="sync_defaultAccount">Use as default account?</string>
+    <string name="tw_account">Taskwarrior</string>
+    <string name="calDavName">CalDav</string>
+    <string name="type">Type</string>
     <string name="no_barcode_app">No barcode scanner installed</string>
     <string name="no_barcode_app_message">We recommend the Barcode scanner:</string>
     <string name="no_barcode_app_install">Install</string>

@@ -24,6 +24,15 @@
         android:defaultValue="false"
         android:key="syncUse"
         android:title="@string/sync_use" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="defaultAccount"
+        android:title="@string/sync_defaultAccount" />
+
+    <Preference
+        android:enabled="false"
+        android:key="sync_type"
+        android:title="@string/type" />
 
     <EditTextPreference
         android:inputType="textUri"
@@ -35,11 +44,13 @@
         android:key="syncUsername"
         android:summary="@string/sync_user_summary"
         android:title="@string/sync_user" />
-   <!--  <EditTextPreference
+    <!--
+         <EditTextPreference
         android:inputType="textPassword"
         android:key="syncPassword"
         android:summary="@string/sync_password_summary"
-        android:title="@string/sync_password" />-->
+        android:title="@string/sync_password" />
+    -->
 
     <ListPreference
         android:entries="@array/sync_frequencies"
