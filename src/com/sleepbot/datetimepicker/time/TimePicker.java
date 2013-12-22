@@ -117,6 +117,11 @@ public class TimePicker extends LinearLayout implements
 	}
 
 	private void initLayout() {
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+			View v = layout.findViewById(R.id.time_picker_dialog);
+			v.setBackgroundColor(ctx.getResources().getColor(
+					mDark ? android.R.color.black : android.R.color.white));
+		}
 		KeyboardListener keyboardListener = new KeyboardListener(null);
 		layout.findViewById(R.id.time_picker_dialog).setOnKeyListener(
 				keyboardListener);

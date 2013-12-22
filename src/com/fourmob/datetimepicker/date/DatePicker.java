@@ -8,22 +8,13 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
 
-import com.fourmob.datetimepicker.Utils;
-import com.fourmob.datetimepicker.date.DayPickerView;
-import com.fourmob.datetimepicker.date.SimpleMonthAdapter;
-import com.fourmob.datetimepicker.date.SimpleMonthAdapter.CalendarDay;
-import com.fourmob.datetimepicker.date.YearPickerView;
-import com.nineoldandroids.animation.ObjectAnimator;
-
-import de.azapps.mirakel.helper.Log;
-import de.azapps.mirakelandroid.R;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.os.Bundle;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.SystemClock;
 import android.os.Vibrator;
@@ -35,7 +26,14 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewAnimator;
+
+import com.fourmob.datetimepicker.Utils;
+import com.fourmob.datetimepicker.date.SimpleMonthAdapter.CalendarDay;
+import com.nineoldandroids.animation.ObjectAnimator;
+
+import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.MirakelPreferences;
+import de.azapps.mirakelandroid.R;
 
 public class DatePicker extends LinearLayout implements View.OnClickListener,
 		DatePickerController {
@@ -241,6 +239,11 @@ public class DatePicker extends LinearLayout implements View.OnClickListener,
 	}
 
 	private void initLayout() {
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+			View v = layout.findViewById(R.id.datepicker_dialog);
+			v.setBackgroundColor(ctx.getResources().getColor(
+					mDark ? android.R.color.black : android.R.color.white));
+		}
 		this.mDayOfWeekView = ((TextView) layout
 				.findViewById(R.id.date_picker_header));
 		this.mMonthAndDayView = ((LinearLayout) layout

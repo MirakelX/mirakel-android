@@ -16,6 +16,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import de.azapps.mirakel.Mirakel.NoSuchListException;
+import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 import de.azapps.mirakel.settings.ListSettings;
@@ -118,7 +120,12 @@ public class AccountSettingsActivity extends ListSettings {
 
 	@Override
 	protected void setupSettings() {
-		// TODO
+		account = AccountMirakel.get(getIntent().getIntExtra("id", 0));
+		try {
+			new AccountSettings(this, account).setup();
+		} catch (NoSuchListException e) {
+			Log.d(TAG, "no account attached");
+		}
 	}
 
 	@Override

@@ -29,6 +29,7 @@ import java.util.List;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.text.Editable;
@@ -161,6 +162,11 @@ public class RecurrencePickerDialog extends DialogFragment implements OnCheckedC
 
 		final View view = inflater
 				.inflate(R.layout.recurrencepicker, container);
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+			View v = view.findViewById(R.id.recurrence_picker_dialog);
+			v.setBackgroundColor(ctx.getResources().getColor(
+					mDark ? android.R.color.black : android.R.color.white));
+		}
 		mRecurenceSelection = (Spinner) view.findViewById(R.id.freqSpinner);
 		Resources res = ctx.getResources();
 		boolean isNotTwoRows;

@@ -39,6 +39,7 @@ import de.azapps.mirakel.helper.PreferencesHelper;
 import de.azapps.mirakel.helper.export_import.AnyDoImport;
 import de.azapps.mirakel.helper.export_import.ExportImport;
 import de.azapps.mirakel.helper.export_import.WunderlistImport;
+import de.azapps.mirakel.settings.accounts.AccountSettingsActivity;
 import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
 import de.azapps.mirakel.settings.taskfragment.TaskFragmentSettingsFragment;
 import de.azapps.mirakelandroid.R;
@@ -100,7 +101,12 @@ public class SettingsActivity extends PreferenceActivity {
 					addPreferencesFromResource(R.xml.settings_backup);
 				} else if (i.getAction().equals(
 						"de.azapps.mirakel.preferences.ACCOUNTS")) {
-					addPreferencesFromResource(R.xml.settings_account);
+					startActivity(new Intent(this,
+							AccountSettingsActivity.class));
+					if (!MirakelPreferences.isTablet()) finish();
+					else {
+						addPreferencesFromResource(R.xml.settings_notifications);
+					}
 				} else if (i.getAction().equals(
 						"de.azapps.mirakel.preferences.SPECIAL_LISTS")) {
 					startActivity(new Intent(this,
