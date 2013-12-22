@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
-    <string name="done_label">Done</string>
     <string name="day_picker_description">Month grid of days</string>
     <string name="year_picker_description">Year list</string>
     <string name="item_is_selected">%1$s selected</string>

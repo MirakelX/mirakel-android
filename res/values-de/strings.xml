@@ -22,7 +22,7 @@
   <string name="menu_sort_lists">Umsortieren</string>
   <string name="no_https">Du solltest https benutzen!</string>
   <string name="finish_sync">Synchronisation abgeschlossen</string>
-  <string name="local_account">Lokales Konto</string>
+  <string name="local_account">Lokaler Account</string>
   <string name="inbox">Eingang</string>
   <string name="first_task">Erste Aufgabe</string>
   <string name="tasks_new_str">Neue Aufgabe…</string>
@@ -33,7 +33,6 @@
   <string name="task_empty">Keine Aufgabe ausgewählt…</string>
   <string name="set_date">Datum</string>
   <string name="set_time">Zeit</string>
-  <string name="task_set_reminder">Erinnerungen einstellen</string>
   <string name="action_undo">Rückgängig</string>
   <string name="add_subtasks">Unteraufgabe hinzufügen…</string>
   <string name="subtask_list_name">Unteraufgaben</string>
@@ -41,7 +40,7 @@
   <string name="remove_files_summary">Möchtest du %1$s aus %2$s entfernen?</string>
   <string name="add_subtask">Unteraufgabe hinzufügen</string>
   <string name="remove_subtask">Lösche Unteraufgabe</string>
-  <string name="subtask_add_options">Optionen &gt;&gt;</string>
+  <string name="subtask_add_options">Filter &gt;&gt;</string>
   <string name="subtask_done">Erledigte Aufgaben?</string>
   <string name="subtask_reminder">Aufgabe mit Erinnerung?</string>
   <string name="subtask_content">Aufgabe mit Notiz?</string>
@@ -87,24 +86,23 @@
   <string name="list_vanished">Huch, die Aufgabe ist verschwunden. Es tut mir leid…</string>
   <string name="task_vanished">Huch, die Liste der Aufgabe ist verschwunden. Es tut mir leid…</string>
   <string name="message_try_later">Versuche es später noch einmal</string>
-  <string name="message_access_denied">Zugriff verweigert!\nVerwendest du die richtige Config-Datei?</string>
+  <string name="message_access_denied">Zugriff verweigert!\nVerwendest du die richtige Konfigurationsdatei?</string>
   <string name="message_create_socket">Kann den Socket nicht erstellen!\nWahrscheinlich keine Netzwerkverbindung.</string>
-  <string name="message_account_suspended">Ihr Konto ist gesperrt!</string>
+  <string name="message_account_suspended">Ihr Account ist gesperrt!</string>
   <string name="message_parse_message">Konnte die Aufgabe nicht parsen – schreib uns, wie das passiert ist</string>
   <string name="message_message_error">Unbekannte Antwort vom Server – bitte schreib uns, wie das passieren konnte</string>
   <string name="wrong_config">Die Konfigurationsdatei ist fehlerhaft</string>
-  <string name="load_config">Wähle die Config-Datei für Taskwarrior aus</string>
-  <string name="select_config">Wähle die Config-Datei für Taskwarrior aus</string>
+  <string name="load_config">Wähle die Konfigurationsdatei für Taskwarrior aus</string>
+  <string name="select_config">Wähle die Konfigurationsdatei für Taskwarrior aus</string>
   <string name="login_activity_username_label">Nutzername</string>
   <string name="login_activity_server_label">Server-URL</string>
   <string name="login_activity_server_typ">Server-Typ</string>
   <string name="login_activity_password_label">Passwort</string>
   <string name="login_activity_ok_button">Anmelden</string>
-  <string name="login_activity_loginfail_text_both">Der Benutzername oder das Kennwort ist ungültig. Es ist ein Mirakel-Konto erforderlich. Versuche es noch mal.</string>
+  <string name="login_activity_loginfail_text_both">Der Benutzername oder das Kennwort ist ungültig. Es ist ein Mirakel-Account erforderlich. Versuche es noch mal.</string>
   <string name="login_activity_loginfail_text_pwmissing">Gib das Passwort bitte an.</string>
-  <string name="login_activity_newaccount_text">Melde dich bei deinem %s-Konto an.</string>
+  <string name="login_activity_newaccount_text">Melde dich bei deinem %s-Account an.</string>
   <string name="ui_activity_authenticating">Authentifizierung…</string>
-  <string name="ui_activity_title">Anmelden</string>
   <string name="changelog_full_title">Changelog</string>
   <string name="changelog_title">Was ist neu?</string>
   <string name="changelog_ok_button">OK</string>
@@ -155,10 +153,18 @@ Device: %3$s\n]]>
   <string name="add_files">Datei hinzufügen…</string>
   <string name="file_no_activity">Ich weiß nicht, wie ich diese Datei öffnen soll – tut mir leid</string>
   <string name="file_select">Wähle eine Datei</string>
-  <string name="file_vanished">Keine solche Datei vorhanden</string>
+  <string name="file_vanished">Datei nicht vorhanden</string>
   <string name="file_default_title">Datei anschauen</string>
   <string name="photo_default_title">Foto anschauen</string>
+  <string name="audio_default_title">Hör dir das an!</string>
   <string name="edit">Bearbeiten</string>
+  <string name="audio_record_title">Aufnahme…</string>
+  <string name="audio_record_message">Aufnehmen...</string>
+  <string name="audio_playback_title">Audio-Wiedergabe...</string>
+  <string name="audio_playback_select_title">Was willst du tun?</string>
+  <string name="audio_playback_pause">Pause</string>
+  <string name="audio_playback_play">Wiedergabe</string>
+  <string name="audio_playback_stop">Stopp</string>
   <string name="daily">Täglich</string>
   <string name="second_day">Zweitägig</string>
   <string name="weekly">Wöchentlich</string>
@@ -176,7 +182,6 @@ Device: %3$s\n]]>
   <string name="month">Monat</string>
   <string name="year">Jahr</string>
   <string name="new_recurring">Neue Regel</string>
-  <string name="add_recurring">Wiederholen</string>
   <string name="intervall">Intervall</string>
   <string name="beginning">Start</string>
   <string name="end">Ende</string>
@@ -184,9 +189,16 @@ Device: %3$s\n]]>
   <string name="beginning_end">Anfang und Ende</string>
   <string name="save">Speichern</string>
   <string name="file_to_large">Vorschaubild konnte nicht erstellt werden</string>
-  <string name="recurring_not_zero">Dieser Eintrag darf nicht null sein!</string>
-  <string name="settings_task_fragment_title">Aufgabenübersicht</string>
+  <string name="every">Jede</string>
+  <string name="recurrence_end_continously">Wiederhole fortlaufend</string>
+  <string name="recurrence_end_date_label">Bis zu einem Zeitpunkt</string>
+  <string name="recurrence_from_now">Ab sofort</string>
+  <string name="recurrence_from">Ab</string>
+  <string name="recurrence_month_pattern_by_day">am selben Tag jeden Monats</string>
+  <string name="acessibility_recurrence_choose_end_date_description">End-Datum ändern</string>
   <string name="save_label">Erledigt</string>
+  <string name="audio_record_file">Audio-Aufnahme</string>
+  <string name="image_file">Bild</string>
   <string-array name="task_sorting_items">
     <item>Standard</item>
     <item>Termin</item>
@@ -209,5 +221,10 @@ Device: %3$s\n]]>
     <item>Taskwarrior</item>
     <item>CalDav</item>
     <item>Mirakel</item>
+  </string-array>
+  <string-array name="audio_playback_options">
+    <item>Datei öffnen</item>
+    <item>Laut abspielen</item>
+    <item>Leise abspielen</item>
   </string-array>
 </resources>

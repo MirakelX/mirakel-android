@@ -57,7 +57,6 @@
     <string name="task_empty">No task selected…</string>
     <string name="set_date">Set Date</string>
     <string name="set_time">Set Time</string>
-    <string name="task_set_reminder">Set Reminder</string>
     <string name="action_undo">Undo the last Change</string>
     <string name="add_subtasks">Add subtask…</string>
     <string name="subtask_list_name">Subtasks</string>
@@ -178,7 +177,6 @@
     <string name="login_activity_newaccount_text">Sign in to your %s-account.</string>
     <!-- Message shown in progress dialog while app connects to the server -->
     <string name="ui_activity_authenticating">Authenticating…</string>
-    <string name="ui_activity_title">Sign-in</string>
 
     <!-- Changelog -->
     <string name="changelog_full_title">Changelog</string>
@@ -255,7 +253,6 @@ Device: %3$s\n]]>
     <string name="photo_default_title">Check out this photo</string>
     <string name="audio_default_title">Listen to that!</string>
     <string name="edit">Edit</string>
-    <string name="audio_record_stop">Stop recording</string>
     <string name="audio_record_title">Audio recording…</string>
     <string name="audio_record_message">Recording…</string>
     <string name="audio_playback_title">Audio playback…</string>
@@ -263,7 +260,6 @@ Device: %3$s\n]]>
     <string name="audio_playback_pause">Pause</string>
     <string name="audio_playback_play">Play</string>
     <string name="audio_playback_stop">Stop</string>
-    <string name="audio_playback_status" translatable="false">%s / %s</string>
 
     <string-array name="audio_playback_options">
         <item>Open file</item>
@@ -289,7 +285,6 @@ Device: %3$s\n]]>
     <string name="month">Month</string>
     <string name="year">Year</string>
     <string name="new_recurring">New recurrence</string>
-    <string name="add_recurring">Set recurrence</string>
     <string name="intervall">Interval</string>
     <string name="beginning">Beginning</string>
     <string name="end">End</string>
@@ -297,7 +292,6 @@ Device: %3$s\n]]>
     <string name="beginning_end">Beginning and End</string>
     <string name="save">Save</string>
     <string name="file_to_large">Failed to create thumbnail</string>
-    <string name="recurring_not_zero">Recurring can\'t be zero!</string>
     <string name="every">Every</string>
     <!-- Specifies that a repeating event to repeat forever (based on the defined frequency) instead of ending at a future date[CHAR LIMIT=20] -->
     <string name="recurrence_end_continously">Forever</string>
@@ -308,7 +302,6 @@ Device: %3$s\n]]>
     <string name="recurrence_from">From</string>
 
     <!-- TaskFragment -->
-    <string name="settings_task_fragment_title">Task overview</string>
 
     <!-- Repeat an monthly event on the same day of every month [CHAR LIMIT=20] -->
     <string name="recurrence_month_pattern_by_day">on the same day each month</string>

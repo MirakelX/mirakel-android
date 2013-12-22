@@ -32,7 +32,6 @@
   <string name="task_empty">Ni izbrane naloge ...</string>
   <string name="set_date">Nastavi datum</string>
   <string name="set_time">Nastavi čas</string>
-  <string name="task_set_reminder">Nastavi opomnik</string>
   <string name="action_undo">Razveljavi zadnjo spremembo</string>
   <string name="add_subtasks">Dodaj podrejeno nalogo ...</string>
   <string name="subtask_list_name">Podrejena naloga</string>
@@ -40,7 +39,7 @@
   <string name="remove_files_summary">Ali želite odstraniti %1$s iz %2$s?</string>
   <string name="add_subtask">Dodaj podrejeno nalogo</string>
   <string name="remove_subtask">Odstrani podrejeno nalogo</string>
-  <string name="subtask_add_options">Možnosti &gt;&gt;</string>
+  <string name="subtask_add_options">Filter &gt;&gt;</string>
   <string name="subtask_done">Ali je naloga končana?</string>
   <string name="subtask_reminder">Ali želite dodati opomnik?</string>
   <string name="subtask_content">Ali je to naloga z vsebino?</string>
@@ -103,7 +102,6 @@
   <string name="login_activity_loginfail_text_pwmissing">Vnesite geslo za ta račun.</string>
   <string name="login_activity_newaccount_text">Prijava v račun %s. </string>
   <string name="ui_activity_authenticating">Overjanje ...</string>
-  <string name="ui_activity_title">Prijava</string>
   <string name="changelog_full_title">Zadnje spremembe</string>
   <string name="changelog_title">Kaj je novega</string>
   <string name="changelog_ok_button">V redu</string>
@@ -160,7 +158,15 @@ Naprava: %3$s\n]]>
   <string name="file_vanished">Ni takšne datoteke</string>
   <string name="file_default_title">Seznam izbranih datotek</string>
   <string name="photo_default_title">Seznam izbranih fotografij</string>
+  <string name="audio_default_title">Poslušaj to!</string>
   <string name="edit">Uredi</string>
+  <string name="audio_record_title">Zvočno snemanje ...</string>
+  <string name="audio_record_message">Snemanje ...</string>
+  <string name="audio_playback_title">Predvajanje posnetka ...</string>
+  <string name="audio_playback_select_title">Kaj želite storiti?</string>
+  <string name="audio_playback_pause">Premor</string>
+  <string name="audio_playback_play">Predvajaj</string>
+  <string name="audio_playback_stop">Zaustavi</string>
   <string name="daily">Dnevno</string>
   <string name="second_day">Dvodnevno</string>
   <string name="weekly">Tedensko</string>
@@ -178,7 +184,6 @@ Naprava: %3$s\n]]>
   <string name="month">mesec</string>
   <string name="year">leto</string>
   <string name="new_recurring">Novo ponavljajoče</string>
-  <string name="add_recurring">Nastavite ponavljajoče</string>
   <string name="intervall">Časovni razmik</string>
   <string name="beginning">Začetek</string>
   <string name="end">Konec</string>
@@ -186,9 +191,17 @@ Naprava: %3$s\n]]>
   <string name="beginning_end">Začetek in konec</string>
   <string name="save">Shrani</string>
   <string name="file_to_large">Ustvarjanje sličice je spodletelo</string>
-  <string name="recurring_not_zero">Nastavitev ponavljaja ne more biti nič!</string>
-  <string name="settings_task_fragment_title">Pregled naloge</string>
+  <string name="every">Vsakih</string>
+  <string name="recurrence_end_continously">V nedolged</string>
+  <string name="recurrence_end_date_label">Do datuma</string>
+  <string name="use_exact_recurrence">Ali naj se nastavi ponavljanje po datumu končanja?</string>
+  <string name="recurrence_from_now">Od zdaj</string>
+  <string name="recurrence_from">Od</string>
+  <string name="recurrence_month_pattern_by_day">na isti dan v mesecu</string>
+  <string name="acessibility_recurrence_choose_end_date_description">spremeni končni datum</string>
   <string name="save_label">Končano</string>
+  <string name="audio_record_file">Zvočni posnetek</string>
+  <string name="image_file">Slika</string>
   <string-array name="task_sorting_items">
     <item>Privzeto</item>
     <item>Rok</item>
@@ -213,7 +226,8 @@ Naprava: %3$s\n]]>
     <item>Mirakel</item>
   </string-array>
   <string-array name="audio_playback_options">
-    <item>Open file</item>
-    <item>Play</item>
+    <item>Odpri datoteko</item>
+    <item>Predvajaj glasno</item>
+    <item>Predvajaj potiho</item>
   </string-array>
 </resources>

@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:minHeight="48dip"
         android:layout_weight="1"
-        android:text="@string/done_label"
+        android:text="@android:string/ok"
         style="?attr/buttonBarButtonStyle" />
      <Button
         android:textSize="@dimen/done_label_size"

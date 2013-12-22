@@ -9,21 +9,18 @@
   <string name="sync_warning_message">Die Synchronisierung läuft noch sehr instabil. Du kannst sie aber gerne Ausprobieren (Mach vorher aber ein Backup!) – Bist du sicher?</string>
   <string name="sync_use_summary_taskwarrior">Sync mit Taskwarrior als %s</string>
   <string name="sync_use_summary_mirakel">Sync mit Mirakel als %s</string>
-  <string name="sync_use_summary_caldav">Sync mit CalDav als %s</string>
   <string name="sync_use_summary_nothing">Nicht syncen</string>
   <string name="sync_user">Nutzername</string>
   <string name="sync_user_summary">Nutzername auf dem Server</string>
   <string name="sync_server">Server</string>
   <string name="sync_server_summary">Sync mit %s</string>
-  <string name="sync_password">Passwort</string>
-  <string name="inavlidPassword">Passwort ist falsch!</string>
-  <string name="inavlidUrl">URL ist falsch!</string>
-  <string name="sync_password_summary">Dein Passwort</string>
   <string name="sync_frequency">Häufigkeit</string>
   <string name="sync_frequency_summary">Synchronisiere alle %s min</string>
   <string name="sync_frequency_summary_man">Nur manuell synchronisieren</string>
-  <string name="sync_type">Sync-Typ</string>
   <string name="sync_caldav">CalDAV synchronisieren</string>
+  <string name="sync_caldav_howto"><![CDATA[Du musst eine zu Mirakel kompatible Sync-App installieren. Z.B.: <a href="https://play.google.com/store/apps/details?id=at.bitfire.davdroid">DAVdroid</a>.
+
+Erstelle bitte dort einen Account und dann sollte der sync einfach funktionieren. Bitte wähle dann die Listen aus, die synchronisiert werden sollen.]]></string>
   <string name="sync_add_account">Konto hinzufügen</string>
   <string name="sync_taskwarrior_configure">Taskwarrior konfigurieren</string>
   <string name="sync_taskwarrior_scan_qr">QR-Code scannen</string>
@@ -31,13 +28,17 @@
   <string name="sync_taskwarrior_how_to">Wie installiert man seinen eigenen Server</string>
   <string name="sync_taskwarrior_own_server">oder nutzen Sie Ihren eigenen Server</string>
   <string name="sync_taskwarrior_url_error">Die URL ist nicht korrekt. Wurde der Code richtig eingescannt?</string>
-  <string name="sync_taskwarrior_configuring">Richte Synchronisierung ein...</string>
+  <string name="sync_taskwarrior_configuring">Richte Synchronisierung ein…</string>
   <string name="sync_taskwarrior_about">Wenn Sie bereits ein Taskwarrior-Konto besitzen:</string>
   <string name="sync_taskwarrior_register">Wenn nicht, können Sie ein Konto auf unserem Server erstellen:</string>
   <string name="sync_taskwarrior_register_button">Registrieren</string>
-  <string name="sync_taskwarrior_setup_success">Konto-Einrichtung erfolgreich</string>
+  <string name="sync_taskwarrior_setup_success">Einrichtung war Erfolgreich</string>
   <string name="sync_taskwarrior_error_download">Konnte Konfiguration nicht herunterladen</string>
   <string name="sync_taskwarrior_select_file_not_exists">Datei ist nicht vorhanden</string>
+  <string name="sync_defaultAccount">Als Standardkonto verwenden?</string>
+  <string name="tw_account">Taskwarrior</string>
+  <string name="calDavName">CalDav</string>
+  <string name="type">Typ</string>
   <string name="no_barcode_app">Kein Barcodescanner installiert</string>
   <string name="no_barcode_app_message">Wir empfehlen den Barcode-Scanner:</string>
   <string name="no_barcode_app_install">Installieren</string>
@@ -56,7 +57,6 @@
   <string name="default_list">Standardliste</string>
   <string name="notifications_big">Große Benachrichtigungen</string>
   <string name="notifications_zero_show">Leere Benachrichtigungen ausblenden</string>
-  <string name="notificationsShowDone">Zeige erledigte Aufgaben</string>
   <string name="reminder">Erinnerungen</string>
   <string name="reminders_persistent">Dauerhafte Erinnerungen</string>
   <string name="startup_title">Startvorgang</string>
@@ -84,7 +84,6 @@
   <string name="changelog_click">Changelog</string>
   <string name="settings_about">Über uns</string>
   <string name="settings_help">Hilfe</string>
-  <string name="settings_help_us">Du kannst uns helfen!</string>
   <string name="get_dashclock">Hol dir Mirakel-Dashclock</string>
   <string name="get_dashclock_summary">Die Mirakel-Erweiterung für Dashclock</string>
   <string name="import_astrid_click">Import von Astrid</string>
@@ -93,20 +92,14 @@
   <string name="importing">Importiere</string>
   <string name="astrid_import_title">Astrid Datei auswählen</string>
   <string name="import_wrong_type">Dies ist keine Mirakel-Datei!</string>
-  <string name="astrid_wait">Bitte warten…</string>
-  <string name="astrid_importing">Importiere</string>
   <string name="import_any_do_click">Any.Do import</string>
   <string name="any_do_import_title">Any.Do Backup-Datei auswählen</string>
   <string name="any_do_this_file">Soll ich von %s importieren?\nWenn nicht, dann wähle eine Datei aus</string>
   <string name="any_do_how_to">Bitte erstelle zuerst ein Backup deiner Any.Do Daten. Öffne Any.Do → Einstellungen → Backup → Backup erstellen. Dann komm zurück und klicke OK.\nOder wähle die Datei händisch aus.</string>
   <string name="select_file">Datei auswählen</string>
-  <string name="any_do_unsuccess">Es ist ein Fehler während des Any.Do-Import aufgetreten!</string>
-  <string name="any_do_success">Alle Daten erfolgreich importiert!</string>
   <string name="wait">Bitte warten…</string>
   <string name="import_wunderlist_click">Importiere aus Wunderlist</string>
   <string name="import_wunderlist_title">Wunderlist-Datei auswählen</string>
-  <string name="import_unsuccess">Beim Import der Daten ist ein Fehler aufgetreten!</string>
-  <string name="import_success">Alle Daten erfolgreich importiert!</string>
   <string name="import_wunderlist_howto">Wie importiere ich die Wunderlist-Daten?</string>
   <string name="import_wunderlist_howto_text">Die Android App unterstützt kein Backup.\n\nBitte logge dich im Webinterface an. Dann gehe zu Einstellungen → Account → Backup erstellen → Herunterladen. Kopiere die Datei auf dein Gerät und komm zurück.</string>
   <string name="highlightSelected_summary">Listen/Aufgaben beim Klick markieren</string>
@@ -115,7 +108,6 @@
   <string name="settings_date_format_relative_summary">Zum Beispiel „Morgen“ anstatt des wirklichen Datums</string>
   <string name="showDone">Erledigt Aufgaben anzeigen</string>
   <string name="dark_theme">Dunkles Theme</string>
-  <string name="minimalistic_widget">Minimalistisches Widget</string>
   <string name="kill_button">Schließen-Button</string>
   <string name="kill_app">App schließen</string>
   <string name="kill_sure">Bist du wirklich sicher???</string>
@@ -130,8 +122,6 @@
   <string name="semantic_new_task_summary">Welche Prioritäten sollen eingeschlossen sein</string>
   <string name="semantic_new_task_config_summary">Konfiguriere die Bedingungen für das erstellen neuer Aufgaben</string>
   <string name="semantic_new_task_config">Aufgabenvorlagen konfigurieren</string>
-  <string name="settings_old_logo_summary">Ich finde es traurig, dass du das neue Logo nicht magst (Starte die App neu; du benötigst Android >= 4.0)</string>
-  <string name="settings_old_logo">Das alte, hässliche Logo verwenden</string>
   <string name="swipeBehavior_title">Mit wischen zur Aufgabe wechseln</string>
   <string name="swipeBehavior_summary">Wechsle beim wischen zur Aufgabe, die du gerade berührst</string>
   <string name="lock_drawer_in_task_fragment_summary">Damit du sie nicht ausversehen öffnest</string>
@@ -148,11 +138,9 @@
   <string name="delete_done_warning">Bist du sicher?</string>
   <string name="delete_done_warning_message">Du kannst das nicht rückgängig machen. Mach ein Backup!</string>
   <string name="delete_done_success">Die erledigten Aufgaben wurden erfolgreich gelöscht.</string>
-  <string name="menu_delete">Löschen</string>
   <string name="menu_color">Farbe ändern</string>
   <string name="howto_setup_server">So setzt du selbst einen Server auf</string>
   <string name="register_server">Wenn du einen Account auf unserem Server benötigst, sende uns bitte eine E-Mail. Mit der nächsten Version wirst du auch selbst einen Account anlegen können.</string>
-  <string name="send_mail">E-Mail senden</string>
   <string name="special_lists_title">Meta-Listen</string>
   <string name="register">Registrieren</string>
   <string name="auto_backup_intervall">Auto backup intervall</string>
@@ -160,7 +148,7 @@
   <string name="preferences_colorize">Farben</string>
   <string name="preferences_colorize_tasks">Aufgaben einfärben</string>
   <string name="preferences_colorize_tasks_everywhere">Aufgaben überall Einfärben</string>
-  <string name="preferences_colorize_tasks_everywhere_summary">...oder nur in den Meta-Listen?</string>
+  <string name="preferences_colorize_tasks_everywhere_summary">…oder nur in den Meta-Listen?</string>
   <string name="settings_semantics_title">Aufgabenvorlagen konfigurieren</string>
   <string name="settings_semantics_condition">Bedingung</string>
   <string name="settings_semantics_actions">Aktionen</string>
@@ -168,18 +156,15 @@
   <string name="settings_semantics_priority">Priorität festlegen</string>
   <string name="settings_semantics_due">Setze Fälligkeitsdatum</string>
   <string name="settings_semantics_weekday">Setze die Fälligkeit auf den nächsten Wochentag</string>
-  <string name="settings_semantics_weekday_summary">Nächsten %s</string>
   <string name="semantics_no_list">Keine Liste festlegen</string>
   <string name="semantics_no_due">Kein Fälligkeitsdatum setzen</string>
   <string name="settings_file_default_title">Aufgabenname für importierte Dateien</string>
   <string name="semantic_new">Vorlage</string>
   <string name="settings_subtask">Unteraufgaben</string>
   <string name="settings_subtask_default_new">Standardmäßig neue Aufgabe erstellen</string>
-  <string name="settings_subtask_default_new_summary">Sonst vorhandene Aufgabe auswählen</string>
   <string name="settings_subtask_add_to_same_list">Füge die Unteraufgabe zur Liste der Aufgabe hinzu</string>
   <string name="settings_subtask_add_to_same_list_summary">Oder wähle eine Standardliste aus, wo die Unteraufgaben erstellt werden</string>
   <string name="settings_subtask_add_to_list_summary">Erstelle Unteraufgabe zu %s</string>
-  <string name="settings_new_task">Neue Aufgabe</string>
   <string name="settings_use_btn_speak">Zeige Mikrofon-Knopf</string>
   <string name="settings_use_btn_audio">Aufnehmen-Knopf anzeigen</string>
   <string name="settings_use_btn_camera">Zeige Kamera-Knopf</string>

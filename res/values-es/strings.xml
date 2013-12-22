@@ -29,7 +29,6 @@
   <string name="task_empty">No hay ninguna tarea seleccionada…</string>
   <string name="set_date">Fijar fecha</string>
   <string name="set_time">Fijar hora</string>
-  <string name="task_set_reminder">Fijar recordatorio</string>
   <string name="action_undo">Undo the last Change</string>
   <string name="new_task">Nueva tarea</string>
   <string name="dialog_move">Mover tarea</string>
@@ -76,7 +75,6 @@
         required. Please try again.</string>
   <string name="login_activity_loginfail_text_pwmissing">Escriba la contraseña para esta cuenta.</string>
   <string name="login_activity_newaccount_text">Ingresa a tu cuenta de %s. </string>
-  <string name="ui_activity_title">Iniciar sesión</string>
   <string name="changelog_full_title">Registro de cambios</string>
   <string name="changelog_title">¿Que hay de nuevo?</string>
   <string name="changelog_ok_button">OK</string>
@@ -155,6 +153,7 @@ Device: %3$s\n]]>
   </string-array>
   <string-array name="audio_playback_options">
     <item>Open file</item>
-    <item>Play</item>
+    <item>Play loud</item>
+    <item>Play silent</item>
   </string-array>
 </resources>

@@ -6,6 +6,19 @@
   <string name="title_activity_credits">Créditos e sobre</string>
   <string name="credits_github_description">Fork no github</string>
   <string name="credits_googleplus_description">Integre a nossa comunidade no G+</string>
+  <string name="credits_text_head">
+<![CDATA[
+<h3>Mirakel é uma aplicação open source. Pode colaborar no desenvolvimento através do GitHub.</h3>
+<p>&copy; 2013 <a href="mailto:az@azapps.de">Anatolij Zelenin</a>, <a href="mailto:georg_semmler_05@web.de">Georg Semmler</a></p>
+<p>Ícone e design por <a href="http://alexkaessner.de/>Alexander Käßner</a></p>
+<p>Esta é uma aplicação livre (licenciada nos termos da <a href="https://www.gnu.org/licenses/gpl.html">GPLv3</a>).</p>
+<p>Visite-nos em</p>
+]]>
+    </string>
+  <string name="credits_license">
+<![CDATA[<p>Esta é uma aplicação livre: pode distribuir e/ou modificar a aplicação nos termos da <a href="https://www.gnu.org/licenses/gpl.html">GNU General Public License</a> conforme publicada pela Free Software Foundation, tanto na versão 3 da licença como (por opção) qualquer versão posterior.</p>
+<p>Este programa é disponibilizado com o intuito de ser útil mas NÃO POSSUI QUALQUER GARANTIA; nem mesmo a garantia implícita de COMERCIALIZAÇÃO OU ADEQUAÇÃO A UM OBJETIVO CONCRETO. Consulte a GNU General Public License para mais detalhes.</p>]]>
+    </string>
   <string name="credits_translations">Traduções</string>
   <string name="feedback">Enviar comentários</string>
   <string name="credits_libraries">Bibliotecas utilizdaas</string>

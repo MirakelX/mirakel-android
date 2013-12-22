@@ -9,21 +9,11 @@
   <string name="sync_warning_message">A sincronização ainda está em modo experimental. Mas pode testar por sua conta e risco (não se esqueça do backup). Tem a certeza?</string>
   <string name="sync_use_summary_taskwarrior">Sincronizar com o Taskwarrior como %s</string>
   <string name="sync_use_summary_mirakel">Sincronizar com o Mirakel como %s</string>
-  <string name="sync_use_summary_caldav">Sincronizar com o CalDav como %s</string>
-  <string name="sync_use_summary_nothing">Não sincronizar</string>
   <string name="sync_user">Utilizador</string>
   <string name="sync_user_summary">Nome de utilizador no servidor</string>
   <string name="sync_server">Servidor</string>
   <string name="sync_server_summary">Sincronizar com %s</string>
-  <string name="sync_password">Senha</string>
-  <string name="inavlidPassword">Senha inválida!</string>
-  <string name="inavlidUrl">URL inválido!</string>
-  <string name="sync_password_summary">A sua senha</string>
   <string name="sync_frequency">Frequência</string>
-  <string name="sync_frequency_summary">Sincronizar a cada %s minutos</string>
-  <string name="sync_frequency_summary_man">Sincronização manual</string>
-  <string name="sync_type">Tipo de sincronização</string>
-  <string name="sync_caldav">Sincronização CalDAV</string>
   <string name="sync_caldav_howto">
 <![CDATA[Tem que instalar e configurar uma aplicação de sincronização CalDAV compatível com o Mirakel como por exemplo <a href="https://play.google.com/store/apps/details?id=at.bitfire.davdroid">DAVdroid</a>.
         
@@ -41,8 +31,10 @@
   <string name="sync_taskwarrior_about">Se já possuir uma conta Taskwarrior:</string>
   <string name="sync_taskwarrior_register">Se não tem, pode registar uma nova conta no nosso servidor:</string>
   <string name="sync_taskwarrior_register_button">Registar</string>
-  <string name="sync_taskwarrior_setup_success">Conta configurada com sucesso</string>
   <string name="sync_taskwarrior_error_download">Não foi possível transferir o ficheiro de configuração</string>
+  <string name="sync_taskwarrior_select_file_not_exists">O ficheiro não existe</string>
+  <string name="tw_account">Taskwarrior</string>
+  <string name="calDavName">CalDav</string>
   <string name="no_barcode_app">Não tem instalado um analisador de códigos QR</string>
   <string name="no_barcode_app_message">Recomendamos o analisador de códigos:</string>
   <string name="no_barcode_app_install">Instalar</string>
@@ -61,7 +53,6 @@
   <string name="default_list">Lista pré-definida</string>
   <string name="notifications_big">Mostrar notificação grande</string>
   <string name="notifications_zero_show">Ocultar notificação se vazia</string>
-  <string name="notificationsShowDone">Mostrar tarefas terminadas na barra de notificação</string>
   <string name="reminder">Lembrete</string>
   <string name="reminders_persistent">Lembrete persistente</string>
   <string name="startup_title">Ao iniciar</string>
@@ -89,7 +80,6 @@
   <string name="changelog_click">Registo de alterações</string>
   <string name="settings_about">Sobre</string>
   <string name="settings_help">Ajuda</string>
-  <string name="settings_help_us">Você ode ajudar-nos!</string>
   <string name="get_dashclock">Obter Mirakel-Dashclock</string>
   <string name="get_dashclock_summary">A extensão Mirakel para o Dashclock</string>
   <string name="import_astrid_click">Importar do Astrid</string>
@@ -98,20 +88,14 @@
   <string name="importing">Importação</string>
   <string name="astrid_import_title">Selecione o ficheiro Astrid</string>
   <string name="import_wrong_type">Este não é um ficheiro Mirakel!</string>
-  <string name="astrid_wait">Por favor aguarde…</string>
-  <string name="astrid_importing">Importação</string>
   <string name="import_any_do_click">Importar de Any.Do</string>
   <string name="any_do_import_title">Selecione o ficheiro Any.Do</string>
   <string name="any_do_this_file">Importar de %s?\nSe não, escolha manualmente o ficheiro</string>
   <string name="any_do_how_to">Por favor, faça um backup dos seus dados Any.Do. Para o fazer, aceda a Any.Do -> Definições -> Backup -> Criar backup. Volte à aplicação e clique OK.\nOu então, escolha o ficheiro.</string>
   <string name="select_file">Selecionar ficheiro</string>
-  <string name="any_do_unsuccess">Ocorreu um erro ao importar do Any.Do!</string>
-  <string name="any_do_success">Todos os dados foram importados!</string>
   <string name="wait">Por favor aguarde…</string>
   <string name="import_wunderlist_click">Importar de Wunderlist</string>
   <string name="import_wunderlist_title">Selecione o ficheiro Wunderlist</string>
-  <string name="import_unsuccess">Ocorreu um erro ao importar os dados!</string>
-  <string name="import_success">Todos os dados foram importados!</string>
   <string name="import_wunderlist_howto">Como importar dados do Wunderlist</string>
   <string name="import_wunderlist_howto_text">A versão Android do Wunderlist não tem a possibilidade de backups.\n\nPara o fazer, tem que iniciar sessão na aplicação web. Aceda a Preferências -> Conta -> (aguarde um pouco) -> Clique para transferir. Copie o ficheiro para o seu dispositivo e regresse à aplicação.</string>
   <string name="highlightSelected_summary">Destacar listas/tarefas ao clicar nelas</string>
@@ -120,7 +104,6 @@
   <string name="settings_date_format_relative_summary">Por exemplo, \"Amanhã\" em vez da data efetiva</string>
   <string name="showDone">Mostrar tarefas terminadas</string>
   <string name="dark_theme">Tema escuro</string>
-  <string name="minimalistic_widget">Widget minimal</string>
   <string name="kill_button">Botão para terminar</string>
   <string name="kill_app">Fechar aplicação</string>
   <string name="kill_sure">Tem a certeza?</string>
@@ -134,8 +117,6 @@
   <string name="semantic_new_task">Novo modelo de tarefa</string>
   <string name="semantic_new_task_config_summary">Configurar condições para criação de novas tarefas</string>
   <string name="semantic_new_task_config">Configurar modelos de tarefa</string>
-  <string name="settings_old_logo_summary">Tenho pena que não goste do logótipo (Reinicie a aplicação. Irá precisar do Android &gt;= 4.0)</string>
-  <string name="settings_old_logo">Utilizar logótipo anterior</string>
   <string name="swipeBehavior_title">Trocar ao deslizar na tarefa clicada</string>
   <string name="swipeBehavior_summary">Trocar para a tarefa clicada ou para a última tarefa selecionada</string>
   <string name="lock_drawer_in_task_fragment_summary">Para que não seja aberta acidentalmente</string>
@@ -152,11 +133,9 @@
   <string name="delete_done_warning">Tem a certeza?</string>
   <string name="delete_done_warning_message">Esta ação não pode ser anulada. Faça um backup!</string>
   <string name="delete_done_success">Todas as tarefas terminadas foram eliminadas.</string>
-  <string name="menu_delete">Eliminar</string>
   <string name="menu_color">Mudar cor</string>
   <string name="howto_setup_server">Como configurar um servidor</string>
   <string name="register_server">Se precisar de uma conta para sincronização com o nosso servidor, escreva-nos uma mensagem eletrónica. na próxima versão terá a possibilidade de registar uma conta!</string>
-  <string name="send_mail">Enviar mensagem</string>
   <string name="special_lists_title">Meta-listas</string>
   <string name="register">Registar</string>
   <string name="auto_backup_intervall">Intervalo entre backups</string>
@@ -172,19 +151,17 @@
   <string name="settings_semantics_priority">Definir prioridade</string>
   <string name="settings_semantics_due">Definir data limite</string>
   <string name="settings_semantics_weekday">Definir como data limite o próximo dia</string>
-  <string name="settings_semantics_weekday_summary">Próximo(a) %s</string>
   <string name="semantics_no_list">Não definir lista</string>
   <string name="semantics_no_due">Não definir data limite</string>
   <string name="settings_file_default_title">Nome da tarefa para ficheiros importados</string>
   <string name="semantic_new">modelo</string>
   <string name="settings_subtask">Subtarefas</string>
   <string name="settings_subtask_default_new">Por definição, mostrar nova tarefa</string>
-  <string name="settings_subtask_default_new_summary">Ou mostrar tarefa existente</string>
   <string name="settings_subtask_add_to_same_list">Adicionar subtarefa à lista da tarefa</string>
   <string name="settings_subtask_add_to_same_list_summary">Ou selecionar a lista para adição da subtarefa</string>
   <string name="settings_subtask_add_to_list_summary">Adicionar subtarefa a %s</string>
-  <string name="settings_new_task">Nova tarefa</string>
   <string name="settings_use_btn_speak">Mostrar botão microfone</string>
+  <string name="settings_use_btn_audio">Mostrar o botão de gravação áudio</string>
   <string name="settings_use_btn_camera">Mostrar botão câmara</string>
   <string name="preferences_colorize_subtasks">Colorir subtarefas?</string>
   <string name="settings_tasks_title">Tarefas</string>
@@ -219,10 +196,10 @@
     <item>-1</item>
   </string-array>
   <string-array name="tablet_options">
-    <item>never</item>
-    <item>landscape</item>
-    <item>portrait</item>
-    <item>portrait &amp; landscape</item>
+    <item>nunca</item>
+    <item>horizontal</item>
+    <item>vertical</item>
+    <item>horizontal e vertical</item>
   </string-array>
   <string-array name="weekdays">
     <item>Não definir</item>

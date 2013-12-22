@@ -28,20 +28,14 @@
     <string name="sync_warning_message">The sync is currently very experimental. But you can try it at your own risk (Make a backup!) – Are you sure?</string>
     <string name="sync_use_summary_taskwarrior">Sync with Taskwarrior as %s</string>
     <string name="sync_use_summary_mirakel">Sync with Mirakel as %s</string>
-    <string name="sync_use_summary_caldav">Sync with CalDav as %s</string>
     <string name="sync_use_summary_nothing">Do not use the sync</string>
     <string name="sync_user">Username</string>
     <string name="sync_user_summary">Server side username</string>
     <string name="sync_server">Server</string>
     <string name="sync_server_summary">Sync with %s</string>
-    <string name="sync_password">Password</string>
-    <string name="inavlidPassword">Password is invalid!</string>
-    <string name="inavlidUrl">URL is invalid!</string>
-    <string name="sync_password_summary">Your Password</string>
     <string name="sync_frequency">Frequency</string>
     <string name="sync_frequency_summary">Sync every %s min</string>
     <string name="sync_frequency_summary_man">Sync manually only</string>
-    <string name="sync_type">Sync Type</string>
 
     <string-array name="sync_types">
         <item>CalDAV sync</item>
@@ -113,7 +107,6 @@
     <string name="default_list">Default List</string>
     <string name="notifications_big">Show big notifications</string>
     <string name="notifications_zero_show">Hide notification if empty</string>
-    <string name="notificationsShowDone">Display done tasks in notification bar</string>
     <string name="reminder">Reminder</string>
     <string name="reminders_persistent">Persistent reminder</string>
 
@@ -148,7 +141,6 @@
     <string name="changelog_click">Changelog</string>
     <string name="settings_about">About</string>
     <string name="settings_help">Help</string>
-    <string name="settings_help_us">You can help us!</string>
     <string name="get_dashclock">Get Mirakel-Dashclock</string>
     <string name="get_dashclock_summary">The Mirakel-Extension for Dashclock</string>
 
@@ -159,22 +151,16 @@
     <string name="importing">Importing</string>
     <string name="astrid_import_title">Select Astrid File</string>
     <string name="import_wrong_type">This is not a Mirakel-file!</string>
-    <string name="astrid_wait">Please wait…</string>
-    <string name="astrid_importing">Importing</string>
     <!-- Any.Do -->
     <string name="import_any_do_click">Import from Any.Do</string>
     <string name="any_do_import_title">Select Any.Do backupfile</string>
     <string name="any_do_this_file">Import from %s?\nIf not please select a file yourself</string>
     <string name="any_do_how_to">Please backup first your Any.Do data. To do so, go to Any.Do → Settings → Backup → Create Backup. Then come back and press OK.\nOr select the file yourself.</string>
     <string name="select_file">Select file</string>
-    <string name="any_do_unsuccess">There was an error while importing from Any.Do!</string>
-    <string name="any_do_success">Successfully imported all data!</string>
     <string name="wait">Please wait…</string>
     <!-- Wunderlist -->
     <string name="import_wunderlist_click">Import from Wunderlist</string>
     <string name="import_wunderlist_title">Select Wunderlist file</string>
-    <string name="import_unsuccess">There was an error while importing data!</string>
-    <string name="import_success">Successfully imported all data!</string>
     <string name="import_wunderlist_howto">Howto import from Wunderlist</string>
     <string name="import_wunderlist_howto_text">The Android-app of Wunderlist does not support a backup functionality.\n\n So you have to login in the web-app. Go to Preferences → Account → Create Backup → (wait) → Click to download. Copy this file to your device and then come back.</string>
     <!-- GUI -->
@@ -184,7 +170,6 @@
     <string name="settings_date_format_relative_summary">For example "tomorrow" instead of the real date</string>
     <string name="showDone">Show done tasks</string>
     <string name="dark_theme">Dark theme</string>
-    <string name="minimalistic_widget">Minimalistic widget</string>
     <string name="kill_button">Kill button</string>
     <string name="kill_app">Close app</string>
     <string name="kill_sure">Are you really sure???</string>
@@ -199,8 +184,6 @@
     <string name="semantic_new_task_summary"></string>
     <string name="semantic_new_task_config_summary">Configure the conditions for creating new tasks</string>
     <string name="semantic_new_task_config">Configure task templates</string>
-    <string name="settings_old_logo_summary">I feel sad, that you don\'t like the new logo (restart the app and you need Android >= 4.0)</string>
-    <string name="settings_old_logo">Use the old, ugly logo</string>
     <string name="swipeBehavior_title">Switch on swipe to touched Task</string>
     <string name="swipeBehavior_summary">Switch to Task which is touched or switch to last selected task</string>
     <string name="lock_drawer_in_task_fragment_summary">So you don\'t open it accidentally</string>
@@ -254,11 +237,9 @@
     <string name="delete_done_warning">Are you sure?</string>
     <string name="delete_done_warning_message">You can not undo this. Make a backup!</string>
     <string name="delete_done_success">Successfully deleted your done tasks.</string>
-    <string name="menu_delete">Delete</string>
     <string name="menu_color">Change color</string>
     <string name="howto_setup_server">How to setup server</string>
     <string name="register_server">If you need an account for the sync on our server, please send us an e-mail. With the next version you\'ll get the possibility to register an account!</string>
-    <string name="send_mail">Send e-mail</string>
     <string name="special_lists_title">Meta lists</string>
     <string name="register">Register</string>
     <string name="auto_backup_intervall">Auto backup intervall</string>
@@ -278,7 +259,6 @@
     <string name="settings_semantics_priority">Set priority</string>
     <string name="settings_semantics_due">Set due date</string>
     <string name="settings_semantics_weekday">Set due on the next weekday</string>
-    <string name="settings_semantics_weekday_summary">Next %s</string>
 
     <string-array name="weekdays">
         <item>Don\'t set</item>
@@ -314,11 +294,9 @@
     <!-- Subtasks -->
     <string name="settings_subtask">Subtasks</string>
     <string name="settings_subtask_default_new">Show new task per default</string>
-    <string name="settings_subtask_default_new_summary">Otherwise add existing task</string>
     <string name="settings_subtask_add_to_same_list">Add Subtask to the list of the task</string>
     <string name="settings_subtask_add_to_same_list_summary">Or select a default list, where the subtask will be added</string>
     <string name="settings_subtask_add_to_list_summary">Add subtask to %s</string>
-    <string name="settings_new_task">New task</string>
     <string name="settings_use_btn_speak">Show the speech recognition button</string>
     <string name="settings_use_btn_audio">Show the record audio button</string>
     <string name="settings_use_btn_camera">Show the camera button</string>

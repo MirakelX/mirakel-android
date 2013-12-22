@@ -9,20 +9,14 @@
   <string name="sync_warning_message">Usklajevanje je še vedno v razvoju. Možnost preizkušate na lastno odgovornost. Ustvarite varnostno kopijo! - Ali ste prepričani, da želite nadaljevati?</string>
   <string name="sync_use_summary_taskwarrior">Uskladi s programom Taskwarrior kot %s</string>
   <string name="sync_use_summary_mirakel">Uskladi s programom Mirakel kot %s</string>
-  <string name="sync_use_summary_caldav">Uskladi s CalDav kot %s</string>
   <string name="sync_use_summary_nothing">Ne uporabi usklajevanja</string>
   <string name="sync_user">Uporabniško ime</string>
   <string name="sync_user_summary">Strežniško uporabniško ime</string>
   <string name="sync_server">Strežnik</string>
   <string name="sync_server_summary">Uskladi z %s</string>
-  <string name="sync_password">Geslo</string>
-  <string name="inavlidPassword">Geslo ni veljavno!</string>
-  <string name="inavlidUrl">Naslov URL ni veljaven!</string>
-  <string name="sync_password_summary">Vaše geslo</string>
   <string name="sync_frequency">Pogostost</string>
   <string name="sync_frequency_summary">Uskladi vsakih %s minut</string>
   <string name="sync_frequency_summary_man">Uskladi le ročno</string>
-  <string name="sync_type">Vrsta usklajevanja</string>
   <string name="sync_caldav">Usklajevanje CalDAV</string>
   <string name="sync_caldav_howto">
 <![CDATA[Namestiti je treba program za usklajevanje CalDAV, ki je skladen s programom Mirakel, kot je na primer <a href="https://play.google.com/store/apps/details?id=at.bitfire.davdroid">DAVdroid</a>.
@@ -41,9 +35,10 @@ Dodati je treba račun v tak program in usklajevanje bi moralo samodejno delovat
   <string name="sync_taskwarrior_about">Če že imate račun strežnika taskwarrior:</string>
   <string name="sync_taskwarrior_register">Lahko vpišete nov račun na našem strežniku:</string>
   <string name="sync_taskwarrior_register_button">Vpis</string>
-  <string name="sync_taskwarrior_setup_success">Nastavitev računa je uspešno končana</string>
   <string name="sync_taskwarrior_error_download">Nastavitvene datoteke ni mogoče prejeti</string>
   <string name="sync_taskwarrior_select_file_not_exists">Datoteka ne obstaja</string>
+  <string name="tw_account">Taskwarrior</string>
+  <string name="calDavName">CalDav</string>
   <string name="no_barcode_app">Ni nameščenega programa za brane črtnih kod</string>
   <string name="no_barcode_app_message">Priporočen je uporaba bralnika:</string>
   <string name="no_barcode_app_install">Namesti</string>
@@ -62,7 +57,6 @@ Dodati je treba račun v tak program in usklajevanje bi moralo samodejno delovat
   <string name="default_list">Privzeti seznam</string>
   <string name="notifications_big">Pokaži velika obvestila</string>
   <string name="notifications_zero_show">Ne prikaži obvestil brez vsebine</string>
-  <string name="notificationsShowDone">Upravljanje končanih nalog</string>
   <string name="reminder">Opomnik</string>
   <string name="reminders_persistent">Vztrajno prikazuj opomnike</string>
   <string name="startup_title">Zagon programa</string>
@@ -90,7 +84,6 @@ Dodati je treba račun v tak program in usklajevanje bi moralo samodejno delovat
   <string name="changelog_click">Zadnje spremembe</string>
   <string name="settings_about">O programu</string>
   <string name="settings_help">Pomoč</string>
-  <string name="settings_help_us">Lahko tudi pomagate!</string>
   <string name="get_dashclock">Pridobi razširitev za zaslonsko uro</string>
   <string name="get_dashclock_summary">Razširitev programa Mirakel za zaslonsko uro.</string>
   <string name="import_astrid_click">Uvozi iz Astrid</string>
@@ -99,20 +92,14 @@ Dodati je treba račun v tak program in usklajevanje bi moralo samodejno delovat
   <string name="importing">Poteka uvažanje</string>
   <string name="astrid_import_title">Izberite datoteko programa Astrid</string>
   <string name="import_wrong_type">Datoteka ni ustrezna datoteka programa Mirakel!</string>
-  <string name="astrid_wait">Počakajte ...</string>
-  <string name="astrid_importing">Poteka uvažanje</string>
   <string name="import_any_do_click">Uvozi iz Any.Do</string>
   <string name="any_do_import_title">Izbor datoteke Any.Do</string>
   <string name="any_do_this_file">Uvozi iz %s?\nČe želite podatke uvoziti ročno, izberite datoteko</string>
   <string name="any_do_how_to">Najprej naredite varnostno kopijo podatkov Any.Do. To storite v programu Any.Do v meniju Nastavitve → Varnostna kopija → Ustvari varnostno kopijo. Ko to storite, odprite spet program Mirakel in pritisnite gumb V redu.\n Ali pa seveda, izberite datoteko sami.</string>
   <string name="select_file">Izbor datoteke</string>
-  <string name="any_do_unsuccess">Prišlo je do napake med uvozom datoteke Any.Do!</string>
-  <string name="any_do_success">Vsi podatki so uspešno uvoženi!</string>
   <string name="wait">Počakajte ...</string>
   <string name="import_wunderlist_click">Uvozi iz programa Wunderlist</string>
   <string name="import_wunderlist_title">Izbor datoteke Wunderlist</string>
-  <string name="import_unsuccess">Prišlo je do napake med uvažanjem podatkov!</string>
-  <string name="import_success">Vsi podatki so uspešno uvoženi!</string>
   <string name="import_wunderlist_howto">Kako uvoziti iz programa Wunderlist</string>
   <string name="import_wunderlist_howto_text">Program Wunderlist ne podpira možnosti ustvarjanja varnostnih kopij.\n\n Za pripravo datoteke je treba to storiti preko spletišča. Prijavite se, nato pa med Možnostmi poiščite → Račun → Ustvari varnostno kopijo → (malo počakajte) → Kliknite na gumb Prejmi in kopirajte datoteko na napravo.</string>
   <string name="highlightSelected_summary">Poudari seznam ali nalogo, ko je ta izbrana</string>
@@ -121,7 +108,6 @@ Dodati je treba račun v tak program in usklajevanje bi moralo samodejno delovat
   <string name="settings_date_format_relative_summary">Namesto jutrišnjega datuma pokaže izpis \"jutri\"</string>
   <string name="showDone">Pokaži že končane naloge</string>
   <string name="dark_theme">Temna tema vmesnika</string>
-  <string name="minimalistic_widget">Osnovni prikaz</string>
   <string name="kill_button">Gumb za vsiljeno končanje</string>
   <string name="kill_app">Končaj program</string>
   <string name="kill_sure">Ali ste prepričani?</string>
@@ -135,8 +121,6 @@ Dodati je treba račun v tak program in usklajevanje bi moralo samodejno delovat
   <string name="semantic_new_task">Predloga nove naloge</string>
   <string name="semantic_new_task_config_summary">Nastavitev pogojev za ustvarjanje novih nalog</string>
   <string name="semantic_new_task_config">Nastavitev predloge naloge</string>
-  <string name="settings_old_logo_summary">Žal nam je, da vam nov logotip ni všeč (program je  treba znova zagnati, podprto pa je le okolje Android &gt; = 4,0).</string>
-  <string name="settings_old_logo">Uporabi star logotip</string>
   <string name="swipeBehavior_title">Ob potegu preklopi na nalogo</string>
   <string name="swipeBehavior_summary">Preklopi na nalogo v žarišču dotika, ali pa na zadnje izbrano nalogo</string>
   <string name="lock_drawer_in_task_fragment_summary">Seznam se ne odpira po pomoti</string>
@@ -153,11 +137,9 @@ Dodati je treba račun v tak program in usklajevanje bi moralo samodejno delovat
   <string name="delete_done_warning">Ali ste prepričani?</string>
   <string name="delete_done_warning_message">Tega dejanja ni mogoče razveljaviti. Priporočljivo je ustvariti varnostno kopijo!</string>
   <string name="delete_done_success">Končane naloge so uspešno izbrisane.</string>
-  <string name="menu_delete">Izbriši</string>
   <string name="menu_color">Spremeni barvo</string>
   <string name="howto_setup_server">Kako nastaviti strežnik</string>
   <string name="register_server">Če si želite pridobiti tudi račun za usklajevanje nalog na našem strežniku, pošljite elektronsko sporočilo. Z naslednjo različico boste imeli možnost račun tudi vpisati in uporabiti!</string>
-  <string name="send_mail">Pošlji elektronsko sporočilo</string>
   <string name="special_lists_title">Meta seznami</string>
   <string name="register">Vpis</string>
   <string name="auto_backup_intervall">Časovni razmik samodejnega ustvarjanja varnostnih kopij</string>
@@ -173,18 +155,15 @@ Dodati je treba račun v tak program in usklajevanje bi moralo samodejno delovat
   <string name="settings_semantics_priority">Nastavi prednost</string>
   <string name="settings_semantics_due">Nastavite datum zapadlosti</string>
   <string name="settings_semantics_weekday">Nastavi datum preteka na naslednji delovni dan</string>
-  <string name="settings_semantics_weekday_summary">Naslednji %s</string>
   <string name="semantics_no_list">Ne nastavi seznama</string>
   <string name="semantics_no_due">Ne nastavi datuma zapadlosti</string>
   <string name="settings_file_default_title">Ime seznama uvoženih datotek</string>
   <string name="semantic_new">predloga</string>
   <string name="settings_subtask">Podrejena naloga</string>
   <string name="settings_subtask_default_new">Privzeto pokaži nove naloge</string>
-  <string name="settings_subtask_default_new_summary">Dodaj obstoječo nalogo</string>
   <string name="settings_subtask_add_to_same_list">Dodaj podrejeno nalogo na seznam naloge</string>
   <string name="settings_subtask_add_to_same_list_summary">Izbor seznama, kateremu bodo dodane podrejene naloge</string>
   <string name="settings_subtask_add_to_list_summary">Dodaj podrejeno nalogo k nalogi %s</string>
-  <string name="settings_new_task">Nova naloga</string>
   <string name="settings_use_btn_speak">Pokaži gumb mikrofona</string>
   <string name="settings_use_btn_audio">Pokaži gumb snemanja zvoka</string>
   <string name="settings_use_btn_camera">Pokaži gumb kamere</string>
