@@ -297,7 +297,6 @@ public class TimePicker extends LinearLayout implements
 		} else if (mTypedTimes == null) {
 			mTypedTimes = new ArrayList<Integer>();
 		}
-
 	}
 
 	private void updateAmPmDisplay(int amOrPm) {
@@ -343,6 +342,7 @@ public class TimePicker extends LinearLayout implements
 
 	public void setTime(int hourOfDay, int minutes) {
 		mTimePicker.setTime(hourOfDay, minutes);
+		setCurrentItemShowing(HOUR_INDEX, true, false, true);
 	}
 
 	public void setOnTimeSetListener(OnTimeSetListener callback) {

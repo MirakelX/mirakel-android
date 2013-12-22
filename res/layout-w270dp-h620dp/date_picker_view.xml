@@ -9,7 +9,7 @@
     <LinearLayout
         android:id="@+id/datepicker_header"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/selected_calendar_layout_height"
+        android:layout_height="wrap_content"
         android:orientation="vertical" >
 
         <include layout="@layout/date_picker_header_view" />
