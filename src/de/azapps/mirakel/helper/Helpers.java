@@ -23,6 +23,8 @@ import java.util.Locale;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -40,6 +42,7 @@ import android.view.View;
 import android.widget.Toast;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.static_activities.SplashScreenActivity;
 import de.azapps.mirakelandroid.R;
 
 public class Helpers {
@@ -109,6 +112,7 @@ public class Helpers {
 	public interface ExecInterface {
 		public void exec();
 	}
+
 	public interface ExecInterfaceWithTask {
 		public void exec(Task task);
 	}
@@ -198,6 +202,15 @@ public class Helpers {
 		String current = MirakelPreferences.getLanguage();
 		return current.equals("-1") ? Locale.getDefault() : new Locale(current);
 
+	}
+
+	public static void restartApp(Context context) {
+		PendingIntent intent = PendingIntent.getActivity(context, 0,
+				new Intent(context, SplashScreenActivity.class), 0);
+		AlarmManager manager = (AlarmManager) context
+				.getSystemService(Context.ALARM_SERVICE);
+		manager.set(AlarmManager.RTC, System.currentTimeMillis() + 100, intent);
+		System.exit(2);
 	}
 
 }

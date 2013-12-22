@@ -26,8 +26,10 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
@@ -71,6 +73,7 @@ import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
 import de.azapps.mirakel.static_activities.CreditsActivity;
 import de.azapps.mirakel.static_activities.SettingsActivity;
 import de.azapps.mirakel.static_activities.SettingsFragment;
+import de.azapps.mirakel.static_activities.SplashScreenActivity;
 import de.azapps.mirakel.sync.AuthenticatorActivity;
 import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.mirakel.MirakelSync;
@@ -1146,7 +1149,7 @@ public class PreferencesHelper {
 					MirakelPreferences.getEditor()
 							.putString("language", newValue.toString())
 							.commit();
-					android.os.Process.killProcess(android.os.Process.myPid());
+					Helpers.restartApp(activity);
 					return false;
 				}
 			});
@@ -1164,8 +1167,7 @@ public class PreferencesHelper {
 									.getEditor()
 									.putBoolean("useTabletLayout",
 											(Boolean) newValue).commit();
-							android.os.Process.killProcess(android.os.Process
-									.myPid());
+							Helpers.restartApp(activity);
 							return false;
 						}
 					});
