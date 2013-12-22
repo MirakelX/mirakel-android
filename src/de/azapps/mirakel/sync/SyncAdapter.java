@@ -178,7 +178,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		mNB = new NotificationCompat.Builder(mContext)
 				.setContentTitle(
 						"Mirakel: " + mContext.getText(R.string.finish_sync))
-				.setContentText(last_message).setSmallIcon(icon);
+				.setContentText(last_message).setSmallIcon(icon)
+				.setPriority(NotificationCompat.PRIORITY_LOW);
 		mNotificationManager.notify(notifyID, mNB.build());
 	}
 
