@@ -66,6 +66,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	public static final String ACCOUNT_PREFIX = "ACCOUNT_";
     private NotificationManager mNotificationManager;
     private int notifyID = 1;
+	final private String		notifyTag			= "notifySync";
 
 
 	
@@ -128,8 +129,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
           .setContentTitle("Mirakel")
           .setContentText("Sync")
           .setSmallIcon(icon);
-
-        mNotificationManager.notify(notifyID, mNB.build());
+		mNotificationManager.notify(notifyTag, notifyID, mNB.build());
 
 		String type = (AccountManager.get(mContext)).getUserData(account,
 				BUNDLE_SERVER_TYPE);
@@ -175,7 +175,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		} else {
 			Log.wtf(TAG, "Unknown SyncType");
 		}
-    mNotificationManager.cancelAll();
+		mNotificationManager.cancel(notifyTag, notifyID);
+		// mNotificationManager.cancelAll();
 	}
 
 	public static CharSequence getLastMessage() {
