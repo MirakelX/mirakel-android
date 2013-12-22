@@ -43,9 +43,7 @@ import android.content.ContentProviderClient;
 import android.content.Context;
 import android.content.SyncResult;
 import android.os.Bundle;
-import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
-import android.widget.Toast;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.sync.caldav.CalDavSync;
 import de.azapps.mirakel.sync.mirakel.MirakelSync;
@@ -167,8 +165,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				break;
 				
 			}
-			Looper.prepare();
-			Toast.makeText(mContext, last_message, Toast.LENGTH_LONG).show();
+			// Looper.prepare();
+			// Toast.makeText(mContext, last_message, Toast.LENGTH_LONG).show();
 			Log.d(TAG, "finish Sync");
 		} else if (type.equals(CalDavSync.TYPE)) {
 			new CalDavSync(mContext).sync(account);
@@ -177,6 +175,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		}
 		mNotificationManager.cancel(notifyTag, notifyID);
 		// mNotificationManager.cancelAll();
+		mNB = new NotificationCompat.Builder(mContext)
+				.setContentTitle(
+						"Mirakel: " + mContext.getText(R.string.finish_sync))
+				.setContentText(last_message).setSmallIcon(icon);
+		mNotificationManager.notify(notifyID, mNB.build());
 	}
 
 	public static CharSequence getLastMessage() {
