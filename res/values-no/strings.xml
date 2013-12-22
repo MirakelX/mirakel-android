@@ -31,7 +31,6 @@
   <string name="task_empty">Ingen oppgave valgt ...</string>
   <string name="set_date">Angi dato</string>
   <string name="set_time">Angi klokkeslett</string>
-  <string name="task_set_reminder">Angi påminnelse</string>
   <string name="action_undo">Angre den siste endringen</string>
   <string name="subtask_list_name">Deloppgave</string>
   <string name="remove_files">Fjern filer fra oppgave</string>
@@ -97,7 +96,6 @@
   <string name="login_activity_loginfail_text_pwmissing">Skriv passordet for denne kontoen.</string>
   <string name="login_activity_newaccount_text">Logg inn på din %s-konto.</string>
   <string name="ui_activity_authenticating">Godkjenning ...</string>
-  <string name="ui_activity_title">Logg inn</string>
   <string name="changelog_full_title">Endringslogg</string>
   <string name="changelog_title">Hva som er nytt</string>
   <string name="changelog_ok_button">OK</string>

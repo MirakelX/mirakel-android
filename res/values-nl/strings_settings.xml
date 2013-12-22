@@ -9,20 +9,14 @@
   <string name="sync_warning_message">De synchronisatie is momenteel zeer experimenteel. Je kunt het op eigen risico proberen (Maak een back-up!)</string>
   <string name="sync_use_summary_taskwarrior">Synchronisatie met Taskwarrior als %s</string>
   <string name="sync_use_summary_mirakel">Synchronisatie met Mirakel als %s</string>
-  <string name="sync_use_summary_caldav">Synchronisatie met CalDav als %s</string>
   <string name="sync_use_summary_nothing">Gebruik niet de synchronisatie</string>
   <string name="sync_user">Gebruikersnaam</string>
   <string name="sync_user_summary">Server gebruikersnaam</string>
   <string name="sync_server">Server</string>
   <string name="sync_server_summary">Synchroniseer met %s</string>
-  <string name="sync_password">Wachtwoord</string>
-  <string name="inavlidPassword">Wachtwoord is ongeldig!</string>
-  <string name="inavlidUrl">URL is ongeldig!</string>
-  <string name="sync_password_summary">Uw wachtwoord</string>
   <string name="sync_frequency">Frequentie</string>
   <string name="sync_frequency_summary">Synchroniseer elke %s min</string>
   <string name="sync_frequency_summary_man">Alleen handmatig synchroniseren</string>
-  <string name="sync_type">Synchronisatie manier</string>
   <string name="sync_caldav">CalDAV synchronisatie</string>
   <string name="sync_caldav_howto">
 <![CDATA[U dient een CalDAV synchronisatie app te installeren die met Mirakel kan samen werken <a href="https://play.google.com/store/apps/details?id=at.bitfire.davdroid">DAVdroid</a>.
@@ -40,9 +34,10 @@
   <string name="sync_taskwarrior_about">Als u al een taskwarrior account hebt:</string>
   <string name="sync_taskwarrior_register">Als dat niet het geval is, kunt u een nieuwe account op onze server registreren:</string>
   <string name="sync_taskwarrior_register_button">Registreren</string>
-  <string name="sync_taskwarrior_setup_success">Accountconfiguratie was succesvol</string>
   <string name="sync_taskwarrior_error_download">Kon het configuratiebestand niet downloaden</string>
   <string name="sync_taskwarrior_select_file_not_exists">Bestand bestaat niet</string>
+  <string name="tw_account">Taskwarrior</string>
+  <string name="calDavName">CalDav</string>
   <string name="no_barcode_app">Geen barcodescanner geïnstalleerd</string>
   <string name="no_barcode_app_message">Wij raden de volgende barcodescanner aan:</string>
   <string name="no_barcode_app_install">Installeren</string>
@@ -61,7 +56,6 @@
   <string name="default_list">voorkeurslijst</string>
   <string name="notifications_big">Meldingen groot weergeven</string>
   <string name="notifications_zero_show">Meldingen verbergen bij een leeg veld</string>
-  <string name="notificationsShowDone">Afgehandelde taken bij meldingen weergeven</string>
   <string name="reminder">Herinnnering</string>
   <string name="reminders_persistent">Aanhoudende herinnering</string>
   <string name="startup_title">Start applicatie</string>
@@ -89,7 +83,6 @@
   <string name="changelog_click">Logboekwijzigingen</string>
   <string name="settings_about">Over</string>
   <string name="settings_help">Help</string>
-  <string name="settings_help_us">U kunt ons helpen!</string>
   <string name="get_dashclock">Mirakel-Dashclock verkrijgen</string>
   <string name="get_dashclock_summary">De Mirakel-extensie voor Dashclock</string>
   <string name="import_astrid_click">Astrid importeren</string>
@@ -98,20 +91,14 @@
   <string name="importing">Importeren</string>
   <string name="astrid_import_title">Astrid bestand selecteren</string>
   <string name="import_wrong_type">Dit is geen Mirakel-bestand!</string>
-  <string name="astrid_wait">Even geduld a.u.b.…</string>
-  <string name="astrid_importing">Importeren</string>
   <string name="import_any_do_click">Any.Do importeren</string>
   <string name="any_do_import_title">Any.Do reservekopie selecteren</string>
   <string name="any_do_this_file">Importeren uit %s?\nWanneer niet selecteer zelf een bestand</string>
   <string name="any_do_how_to">Maak eerst uw reservekopie van de Any.Do gegevens . Om dit te doen, ga naar Any.Do → instellingen → Backup → reservekopie maken. Kom dan terug en druk op OK.\nSelecteer het bestand zelf.</string>
   <string name="select_file">bestand selecteren</string>
-  <string name="any_do_unsuccess">Er is een fout opgetreden tijdens het importeren van Any.Do!</string>
-  <string name="any_do_success">Alle gegevens zijn geïmporteerd!</string>
   <string name="wait">Even geduld a.u.b.…</string>
   <string name="import_wunderlist_click">Importeren uit Wunderlist</string>
   <string name="import_wunderlist_title">Wunderlist bestand selecteren</string>
-  <string name="import_unsuccess">Er is een fout opgetreden bij het importeren van de gegevens!</string>
-  <string name="import_success">Alle gegevens zijn geïmporteerd!</string>
   <string name="import_wunderlist_howto">Howto importeren van Wunderlist</string>
   <string name="import_wunderlist_howto_text">De Android-app van Wunderlist biedt geen ondersteuning voor een reservekopie.\n\n dus je moet inloggen in het web-app. Ga naar Voorkeuren → Account → reservekopie maken → (wachten) → Klik om te downloaden. Kopieer dit bestand naar uw apparaat en kom dan terug.</string>
   <string name="highlightSelected_summary">Lijsten/taken markeren wanneer u op hen klikt</string>
@@ -120,7 +107,6 @@
   <string name="settings_date_format_relative_summary">Bijvoorbeeld \'morgen\' in plaats van de echte datum</string>
   <string name="showDone">Afgeronde taken weergeven</string>
   <string name="dark_theme">Donkere thema</string>
-  <string name="minimalistic_widget">Minimalistische widget</string>
   <string name="kill_button">Doden knop</string>
   <string name="kill_app">Applicatie sluiten</string>
   <string name="kill_sure">Bent u werkelijk zeker???</string>
@@ -134,8 +120,6 @@
   <string name="semantic_new_task">Nieuwe taak sjabloon</string>
   <string name="semantic_new_task_config_summary">De condities van nieuwe taken instellen</string>
   <string name="semantic_new_task_config">Taak sjablonen instellen</string>
-  <string name="settings_old_logo_summary">WIj vinden het jammer dat u het nieuwe logo niet leuk vind. Start de app opnieuw op. U moet Android &gt; = 4.0 hebben.</string>
-  <string name="settings_old_logo">Het oude, lelijk logo gebruiken</string>
   <string name="swipeBehavior_title">Bij vegen overschakelen naar de geselecteerde taak</string>
   <string name="swipeBehavior_summary">Schakel over naar de geselecteerde of laatste geselecteerde taak</string>
   <string name="lock_drawer_in_task_fragment_summary">Zodat u het niet per ongeluk opent</string>
@@ -152,11 +136,9 @@
   <string name="delete_done_warning">Weet u het zeker?</string>
   <string name="delete_done_warning_message">U kunt dit niet ongedaan maken. Maak een reservekopie!</string>
   <string name="delete_done_success">Alle afgeronde taken zijn verwijderd.</string>
-  <string name="menu_delete">Verwijderen</string>
   <string name="menu_color">Kleur wijzigen</string>
   <string name="howto_setup_server">Hoe een server op te zetten</string>
   <string name="register_server">Als u een account nodig voor de synchronisatie op onze server, stuur ons dan een e-mail. Met de volgende versie krijgt u de mogelijkheid om een account te registreren!</string>
-  <string name="send_mail">E-mail versturen</string>
   <string name="special_lists_title">Meta lijsten</string>
   <string name="register">Registreren</string>
   <string name="auto_backup_intervall">Automatische reservekopie interval</string>
@@ -172,18 +154,15 @@
   <string name="settings_semantics_priority">Prioriteit instellen</string>
   <string name="settings_semantics_due">Vervaldatum instellen</string>
   <string name="settings_semantics_weekday">Vervaldatum instellen op de volgende weekdag</string>
-  <string name="settings_semantics_weekday_summary">Volgende %s</string>
   <string name="semantics_no_list">Lijst niet instellen</string>
   <string name="semantics_no_due">Vervaldatum niet instellen</string>
   <string name="settings_file_default_title">Taaknaam voor geïmporteerde bestanden</string>
   <string name="semantic_new">sjabloon</string>
   <string name="settings_subtask">Subtaken</string>
   <string name="settings_subtask_default_new">Nieuwe taak als voorkeur weergeven</string>
-  <string name="settings_subtask_default_new_summary">Anders bestaande taak toevoegen</string>
   <string name="settings_subtask_add_to_same_list">Subtaak toevoegen aan de lijst van de taak</string>
   <string name="settings_subtask_add_to_same_list_summary">Of selecteer een standaardlijst, waar de subtaak wordt toegevoegd</string>
   <string name="settings_subtask_add_to_list_summary">Subtaak toevoegen bij %s</string>
-  <string name="settings_new_task">Nieuwe taak</string>
   <string name="settings_use_btn_speak">De microfoon knop weergeven</string>
   <string name="settings_use_btn_audio">Toon de audio opname knop</string>
   <string name="settings_use_btn_camera">Toon de camera knop</string>

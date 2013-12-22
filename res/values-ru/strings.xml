@@ -32,7 +32,6 @@
   <string name="task_empty">Дело не выбрано…</string>
   <string name="set_date">Установить дату</string>
   <string name="set_time">Установить время</string>
-  <string name="task_set_reminder">Установить напоминание</string>
   <string name="action_undo">Отменить последнее изменение</string>
   <string name="add_subtasks">Добавить подзадачу…</string>
   <string name="subtask_list_name">Подзадачи</string>
@@ -101,7 +100,6 @@
   <string name="login_activity_loginfail_text_pwmissing">Введите пароль для этого аккаунта.</string>
   <string name="login_activity_newaccount_text">Войдите в Ваш %s-аккаунт. </string>
   <string name="ui_activity_authenticating">Аутентификация…</string>
-  <string name="ui_activity_title">Вход в систему</string>
   <string name="changelog_full_title">Список изменений</string>
   <string name="changelog_title">Что нового?</string>
   <string name="changelog_ok_button">ОК</string>
@@ -172,7 +170,6 @@ Device: %3$s\n]]>
   <string name="month">Месяц</string>
   <string name="year">Год</string>
   <string name="new_recurring">Новое правило</string>
-  <string name="add_recurring">Повторение</string>
   <string name="intervall">Интервал</string>
   <string name="beginning">Начало</string>
   <string name="end">Конец</string>

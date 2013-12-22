@@ -18,6 +18,5 @@
   <string name="credits_translations">Übersetzungen</string>
   <string name="feedback">Feedback geben</string>
   <string name="credits_libraries">Verwendete Bibliotheken</string>
-  <string name="credits_translations" tools:ignore="DuplicateDefinition">Übersetzungen</string>
   <string name="credits_license_title">Lizenz</string>
 </resources>

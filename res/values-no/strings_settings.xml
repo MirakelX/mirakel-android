@@ -11,10 +11,6 @@
   <string name="sync_user">Brukernavn</string>
   <string name="sync_server">Server</string>
   <string name="sync_server_summary">Synkroniserer med %s</string>
-  <string name="sync_password">Passord</string>
-  <string name="inavlidPassword">Passordet er ugyldig!</string>
-  <string name="inavlidUrl">URL-adressen er ugyldig!</string>
-  <string name="sync_password_summary">Ditt passord</string>
   <string name="sync_frequency">Frekvens</string>
   <string name="sync_frequency_summary">Synkroniser hvert %s min</string>
   <string name="sync_frequency_summary_man">Bare synkroniser manuelt</string>
@@ -30,7 +26,6 @@
   <string name="default_list">Standardliste</string>
   <string name="notifications_big">Vis store varslinger</string>
   <string name="notifications_zero_show">Skjul varsling hvis tom</string>
-  <string name="notificationsShowDone">Håndter ferdige oppgaver</string>
   <string name="reminder">Påminnelse</string>
   <string name="reminders_persistent">Vedvarende påminnelse</string>
   <string name="startup_title">App Start</string>
@@ -62,8 +57,6 @@
   <string name="astrid_success">Samtlige data importet suksessfullt!</string>
   <string name="astrid_import_title">Velg Astrid fil</string>
   <string name="import_wrong_type">Dette er ikke en Mirakel fil!</string>
-  <string name="any_do_success">Samtlige data importet suksessfullt!</string>
-  <string name="import_success">Samtlige data importet suksessfullt!</string>
   <string name="highlightSelected_summary">Marker lister/oppgaver når du klikker dem</string>
   <string name="highlightSelected">Marker valgt</string>
   <string name="settings_date_format_relative">Vis relative datoer</string>
@@ -85,7 +78,6 @@
   <string name="delete_done_warning">Er du sikker?</string>
   <string name="delete_done_warning_message">Du kan ikke angre dette. Lag en sikkerhetskopi!</string>
   <string name="delete_done_success">Dine ferdige oppgaver er slettet.</string>
-  <string name="menu_delete">Slett</string>
   <string name="menu_color">Endre farge</string>
   <string name="howto_setup_server">Hvordan sette opp en server</string>
   <string name="preferences_colorize">Farger</string>
@@ -101,7 +93,6 @@
   <string name="settings_file_default_title">Aktivitetsnavn for importerte filer</string>
   <string name="settings_subtask">Deloppgave</string>
   <string name="settings_subtask_default_new">Vis nye oppgaver som standard</string>
-  <string name="settings_subtask_default_new_summary">Eller legg til eksisterende oppgave</string>
   <string name="settings_subtask_add_to_same_list">Legg til deloppgave i listen over oppgaver</string>
   <string name="settings_subtask_add_to_same_list_summary">Eller velg en standardliste, der deloppgaven vil bli lagt til</string>
   <string name="settings_subtask_add_to_list_summary">Legg til deloppgave til %s</string>

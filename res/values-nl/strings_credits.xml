@@ -22,6 +22,5 @@
   <string name="credits_translations">Vertalingen</string>
   <string name="feedback">Een terugkoppelingen versturen</string>
   <string name="credits_libraries">Gebruikte bibliotheken</string>
-  <string name="credits_translations" tools:ignore="DuplicateDefinition">Vertalingen</string>
   <string name="credits_license_title">Licentie</string>
 </resources>

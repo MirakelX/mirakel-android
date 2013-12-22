@@ -32,7 +32,6 @@
   <string name="task_empty">لم يتم تحديد أي مهمة…</string>
   <string name="set_date">تحديد التاريخ</string>
   <string name="set_time">تحديد الوقت</string>
-  <string name="task_set_reminder">تحديد تذكير</string>
   <string name="action_undo">التراجع عن التغيير الأخير</string>
   <string name="add_subtasks">إضافة مهمة فرعية…</string>
   <string name="subtask_list_name">المهام الفرعية</string>
@@ -101,7 +100,6 @@
   <string name="login_activity_loginfail_text_pwmissing">اكتب كلمة المرور لهذا الحساب.</string>
   <string name="login_activity_newaccount_text">سجل الدخول إلى %s -حسابك. </string>
   <string name="ui_activity_authenticating">جاري المصادقة…</string>
-  <string name="ui_activity_title">تسجيل الدخول</string>
   <string name="changelog_full_title">سِجل التغييرات</string>
   <string name="changelog_title">ما الجديد</string>
   <string name="changelog_ok_button">موافق</string>
@@ -167,14 +165,12 @@ SDK-نسخة: %2$d\n
   <string name="month">في الشهر</string>
   <string name="year">سنة</string>
   <string name="new_recurring">تكرار جديد</string>
-  <string name="add_recurring">تعيين تكرار</string>
   <string name="intervall">الفاصل الزمني</string>
   <string name="beginning">بداية</string>
   <string name="end">نهاية</string>
   <string name="no_begin_end">لا %s</string>
   <string name="beginning_end">بداية ونهاية</string>
   <string name="save">حفظ</string>
-  <string name="settings_task_fragment_title">نظرة عامة حول المهمة</string>
   <string name="save_label">منجز</string>
   <string-array name="task_sorting_items">
     <item>الافتراضي</item>

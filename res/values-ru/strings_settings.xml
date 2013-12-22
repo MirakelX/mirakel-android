@@ -7,19 +7,15 @@
   <string name="sync_warning_message">Синхронизация протекает ещё очень нестабильно. Но на свой страх и риск Вы можете её испробовать (сделайте предварительно резервную копию!) - Вы уверены?</string>
   <string name="sync_use_summary_taskwarrior">Синхронизировать с Taskwarrior как %s</string>
   <string name="sync_use_summary_mirakel">Синхронизировать с Mirakel как %s</string>
-  <string name="sync_use_summary_caldav">Синхронизация с CalDav как %s</string>
   <string name="sync_use_summary_nothing">Синхронизацию не применять</string>
   <string name="sync_user">Имя пользователя</string>
   <string name="sync_server">Сервер</string>
   <string name="sync_server_summary">Синхронизировать с %s</string>
-  <string name="sync_password">Пароль</string>
-  <string name="inavlidPassword">Неверный пароль!</string>
-  <string name="inavlidUrl">Неверный URL-адрес!</string>
-  <string name="sync_password_summary">Ваш пароль</string>
   <string name="sync_frequency">Частота</string>
   <string name="sync_frequency_summary">Синхронизировать каждые %s мин</string>
   <string name="sync_frequency_summary_man">Синхронизировать только вручную</string>
-  <string name="sync_type">Тип синхронизации</string>
+  <string name="tw_account">Taskwarrior</string>
+  <string name="calDavName">CalDav</string>
   <string name="version">Версия</string>
   <string name="no">нет</string>
   <string name="not">не</string>
@@ -33,7 +29,6 @@
   <string name="default_list">Список по умолчанию</string>
   <string name="notifications_big">Показывать уведомления крупно</string>
   <string name="notifications_zero_show">Скрыть пустые оповещения</string>
-  <string name="notificationsShowDone">Показать выполненные дела</string>
   <string name="reminder">Напоминания</string>
   <string name="reminders_persistent">Постоянные напоминания</string>
   <string name="startup_title">Запуск приложения</string>
@@ -61,7 +56,6 @@
   <string name="changelog_click">Список изменений</string>
   <string name="settings_about">О нас</string>
   <string name="settings_help">Помощь</string>
-  <string name="settings_help_us">Как помочь разработчикам?</string>
   <string name="get_dashclock">Получить Mirakel-Dashclock</string>
   <string name="get_dashclock_summary">Mirakel-расширение для Dashclock</string>
   <string name="import_astrid_click">Импорт из Astrid</string>
@@ -69,8 +63,6 @@
   <string name="astrid_success">Все данные успешно импортированы!</string>
   <string name="astrid_import_title">Выберите Astrid-файл</string>
   <string name="import_wrong_type">Это не Mirakel-файл!</string>
-  <string name="any_do_success">Все данные успешно импортированы!</string>
-  <string name="import_success">Все данные успешно импортированы!</string>
   <string name="highlightSelected_summary">Выделите списки/дела нажатием на них</string>
   <string name="highlightSelected">Выбранное выделить?</string>
   <string name="settings_date_format_relative">Показывать относительные даты</string>
@@ -90,15 +82,12 @@
   <string name="semantic_new_task">Новый шаблон задачи</string>
   <string name="semantic_new_task_config_summary">Сконфигурируйте условия для создания новых дел</string>
   <string name="semantic_new_task_config">Настройка шаблонов задач</string>
-  <string name="settings_old_logo_summary">Жаль, что Вам не нравится новый логотип (перезапустите приложение; Вам нужен Android >= 4.0)</string>
-  <string name="settings_old_logo">Использовать старый уродливый логотип</string>
   <string name="useTabletLayout">Планшетный интерфейс</string>
   <string name="delete_done">Удаление выполненных дел</string>
   <string name="delete_done_summary">Удалить все выполненные дела</string>
   <string name="delete_done_warning">Вы уверены?</string>
   <string name="delete_done_warning_message">Вы не можете это отменить. Сделайте резервную копию!</string>
   <string name="delete_done_success">Выполненные дела успешно удалены.</string>
-  <string name="menu_delete">Удалить</string>
   <string name="menu_color">Изменить цвет</string>
   <string name="howto_setup_server">Как настроить сервер</string>
   <string name="preferences_colorize">Цвета</string>
@@ -116,11 +105,9 @@
   <string name="settings_file_default_title">Название дела для импортированных файлов</string>
   <string name="settings_subtask">Подзадачи</string>
   <string name="settings_subtask_default_new">Создавать новое дело по умолчанию</string>
-  <string name="settings_subtask_default_new_summary">В противном случае выбирать существующее дело</string>
   <string name="settings_subtask_add_to_same_list">Добавте подзадачу в список дела</string>
   <string name="settings_subtask_add_to_same_list_summary">Или укажите, в какой список по умолчанию должны добавляться подзадачи</string>
   <string name="settings_subtask_add_to_list_summary">Добавить подзадачу к %s</string>
-  <string name="settings_new_task">Новое дело</string>
   <string name="settings_use_btn_speak">Показать кнопку микрофона</string>
   <string name="settings_use_btn_camera">Показать кнопку камеры</string>
   <string name="preferences_colorize_subtasks">Раскрасить подзадачи?</string>

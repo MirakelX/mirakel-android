@@ -4,7 +4,7 @@
   <string name="donations__button_close">Zapri</string>
   <string name="donations__flattr">Flattr</string>
   <string name="donations__description">Ali se vam zdi program uporaben?\nNadaljnji razvoj lahko podprete tudi denarno!</string>
-  <string name="donations__flattr_description">Flattr zahteva 10 % vsake donacije!</string>
+  <string name="donations__flattr_description" formatted="false">Flattr zahteva 10 % vsake donacije!</string>
   <string name="donations__google_android_market">Trgovina Google Play</string>
   <string name="donations__google_android_market_not_supported_title">Donacije znotraj programa niso podprte.</string>
   <string name="donations__google_android_market_not_supported">Donacije znotraj programa niso podprte. Ali je paket Google Play nameščen pravilno?</string>
@@ -18,7 +18,6 @@
   <string name="donations__alert_dialog_title">Prišlo je do napake</string>
   <string name="donations__alert_dialog_no_browser">Ni brskalnika, s katerim bi bilo mogoče prikazati spletno stran!</string>
   <string name="donation_paypal_item">Prispevek za Mirakel</string>
-  <string name="title_donations">Prispevek</string>
   <string-array name="donation_google_catalog_values">
     <item>0,5 evra</item>
     <item>1 evro</item>

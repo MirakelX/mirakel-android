@@ -31,7 +31,6 @@
   <string name="task_empty">Není vybrán žádný úkol…</string>
   <string name="set_date">Nastavit datum</string>
   <string name="set_time">Nastavit čas</string>
-  <string name="task_set_reminder">Nastavit připomenutí</string>
   <string name="action_undo">Vrátit zpět poslední změnu</string>
   <string name="add_subtasks">Přidat podúkol…</string>
   <string name="subtask_list_name">Podúkoly</string>
@@ -100,7 +99,6 @@
   <string name="login_activity_loginfail_text_pwmissing">Zadejte heslo pro tento účet.</string>
   <string name="login_activity_newaccount_text">Přihlaste se k účtu %s. </string>
   <string name="ui_activity_authenticating">Probíhá ověřování…</string>
-  <string name="ui_activity_title">Přihlášení</string>
   <string name="changelog_full_title">Seznam změn</string>
   <string name="changelog_title">Novinky</string>
   <string name="changelog_ok_button">OK</string>
@@ -173,7 +171,6 @@ Zařízení: %3$s\n]]>
   <string name="month">Měsíc</string>
   <string name="year">Rok</string>
   <string name="new_recurring">Nové opakování</string>
-  <string name="add_recurring">Nastavit opakování</string>
   <string name="intervall">Interval</string>
   <string name="beginning">Začátek</string>
   <string name="end">Konec</string>

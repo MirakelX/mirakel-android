@@ -32,7 +32,6 @@
   <string name="task_empty">geen taak geselecteerd…</string>
   <string name="set_date">Datum instellen</string>
   <string name="set_time">Tijd instellen</string>
-  <string name="task_set_reminder">Herinnering instellen</string>
   <string name="action_undo">Maak de laatste wijziging ongedaan</string>
   <string name="add_subtasks">Subtaak toevoegen…</string>
   <string name="subtask_list_name">Subtaken</string>
@@ -104,7 +103,6 @@ vereist. Aub probeer opnieuw.</string>
   <string name="login_activity_loginfail_text_pwmissing">Typ het paswoord voor dit account.</string>
   <string name="login_activity_newaccount_text">Login bij uw %s-account. </string>
   <string name="ui_activity_authenticating">Verificatie…</string>
-  <string name="ui_activity_title">Inloggen</string>
   <string name="changelog_full_title">Logboekwijzigingen</string>
   <string name="changelog_title">Wat is nieuw</string>
   <string name="changelog_ok_button">OK</string>
@@ -161,7 +159,6 @@ Device: %3$s\n]]>
   <string name="photo_default_title">Bekijk deze foto</string>
   <string name="audio_default_title">Luister naar dat!</string>
   <string name="edit">Wijzig</string>
-  <string name="audio_record_stop">Stop de opname</string>
   <string name="audio_record_title">Audio opname...</string>
   <string name="audio_record_message">Opname...</string>
   <string name="audio_playback_title">
@@ -187,7 +184,6 @@ Audio afspelen…</string>
   <string name="month">Maand</string>
   <string name="year">Jaar</string>
   <string name="new_recurring">Nieuwe herhalingspatroon</string>
-  <string name="add_recurring">Herhaling instellen</string>
   <string name="intervall">Interval</string>
   <string name="beginning">Vanaf</string>
   <string name="end">Einde</string>
@@ -195,14 +191,12 @@ Audio afspelen…</string>
   <string name="beginning_end">Begin en einde</string>
   <string name="save">Opslaan</string>
   <string name="file_to_large">Het maken van een miniatuurweergave is mislukt</string>
-  <string name="recurring_not_zero">Herhaling kan niet gelijk zijn aan nul!</string>
   <string name="every">Elke</string>
   <string name="recurrence_end_continously">Altijd</string>
   <string name="recurrence_end_date_label">Tot een datum</string>
   <string name="use_exact_recurrence">Wilt u de eerder gebruikte datum instellen?</string>
   <string name="recurrence_from_now">Vanaf nu</string>
   <string name="recurrence_from">Van</string>
-  <string name="settings_task_fragment_title">Taak overzicht</string>
   <string name="recurrence_month_pattern_by_day">op dezelfde dag elke maand</string>
   <string name="acessibility_recurrence_choose_end_date_description">einddatum wijzigen</string>
   <string name="save_label">Afgerond</string>

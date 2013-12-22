@@ -4,7 +4,7 @@
   <string name="donations__button_close">Fechar</string>
   <string name="donations__flattr">Flattr</string>
   <string name="donations__description">Acha que esta aplicação é útil?\nApoie o seu desenvolvimento efetuando um donativo ao programador!</string>
-  <string name="donations__flattr_description">O Flattr recebe 10% do valor mensal de donativos!</string>
+  <string name="donations__flattr_description" formatted="false">O Flattr recebe 10% do valor mensal de donativos!</string>
   <string name="donations__google_android_market">Google Play Store</string>
   <string name="donations__google_android_market_not_supported_title">Donativos In-App não são suportados.</string>
   <string name="donations__google_android_market_not_supported">Os donativos In-App não são suportados. A aplicação Google Play está instalada corretamente?</string>
@@ -18,7 +18,6 @@
   <string name="donations__alert_dialog_title">Ocorreu um erro</string>
   <string name="donations__alert_dialog_no_browser">Não foi encontrado o navegador do sistema!</string>
   <string name="donation_paypal_item">Donativo Mirakel</string>
-  <string name="title_donations">Donativo</string>
   <string-array name="donation_google_catalog_values">
     <item>0,5 euro</item>
     <item>1 euro</item>

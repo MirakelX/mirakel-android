@@ -33,7 +33,6 @@
   <string name="task_empty">Keine Aufgabe ausgewählt…</string>
   <string name="set_date">Datum</string>
   <string name="set_time">Zeit</string>
-  <string name="task_set_reminder">Erinnerungen einstellen</string>
   <string name="action_undo">Rückgängig</string>
   <string name="add_subtasks">Unteraufgabe hinzufügen…</string>
   <string name="subtask_list_name">Unteraufgaben</string>
@@ -104,7 +103,6 @@
   <string name="login_activity_loginfail_text_pwmissing">Gib das Passwort bitte an.</string>
   <string name="login_activity_newaccount_text">Melde dich bei deinem %s-Account an.</string>
   <string name="ui_activity_authenticating">Authentifizierung…</string>
-  <string name="ui_activity_title">Anmelden</string>
   <string name="changelog_full_title">Changelog</string>
   <string name="changelog_title">Was ist neu?</string>
   <string name="changelog_ok_button">OK</string>
@@ -160,7 +158,6 @@ Device: %3$s\n]]>
   <string name="photo_default_title">Foto anschauen</string>
   <string name="audio_default_title">Hör dir das an!</string>
   <string name="edit">Bearbeiten</string>
-  <string name="audio_record_stop">Aufnahme beenden</string>
   <string name="audio_record_title">Aufnahme…</string>
   <string name="audio_record_message">Aufnehmen...</string>
   <string name="audio_playback_title">Audio-Wiedergabe...</string>
@@ -185,7 +182,6 @@ Device: %3$s\n]]>
   <string name="month">Monat</string>
   <string name="year">Jahr</string>
   <string name="new_recurring">Neue Regel</string>
-  <string name="add_recurring">Wiederholen</string>
   <string name="intervall">Intervall</string>
   <string name="beginning">Start</string>
   <string name="end">Ende</string>
@@ -193,13 +189,11 @@ Device: %3$s\n]]>
   <string name="beginning_end">Anfang und Ende</string>
   <string name="save">Speichern</string>
   <string name="file_to_large">Vorschaubild konnte nicht erstellt werden</string>
-  <string name="recurring_not_zero">Dieser Eintrag darf nicht null sein!</string>
   <string name="every">Jede</string>
   <string name="recurrence_end_continously">Wiederhole fortlaufend</string>
   <string name="recurrence_end_date_label">Bis zu einem Zeitpunkt</string>
   <string name="recurrence_from_now">Ab sofort</string>
   <string name="recurrence_from">Ab</string>
-  <string name="settings_task_fragment_title">Aufgabenübersicht</string>
   <string name="recurrence_month_pattern_by_day">am selben Tag jeden Monats</string>
   <string name="acessibility_recurrence_choose_end_date_description">End-Datum ändern</string>
   <string name="save_label">Erledigt</string>
