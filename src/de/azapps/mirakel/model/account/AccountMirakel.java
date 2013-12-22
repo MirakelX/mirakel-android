@@ -13,7 +13,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import de.azapps.mirakel.helper.Log;
-import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakelandroid.R;
@@ -97,6 +96,21 @@ public class AccountMirakel extends AccountBase {
 			} else
 				return LOCAL;
 		}
+
+		public String typeName(Context ctx) {
+			switch (this) {
+				case CALDAV:
+					return ctx.getString(R.string.calDavName);
+				case LOCAL:
+					return ctx.getString(R.string.local_account);
+				case MIRAKEL:
+					return ctx.getString(R.string.app_name);
+				case TASKWARRIOR:
+					return ctx.getString(R.string.tw_account);
+				default:
+					return "Unkown account type";
+			}
+		}
 	}
 
 	public AccountMirakel(int id, String name, ACCOUNT_TYPES type,
@@ -143,6 +157,7 @@ public class AccountMirakel extends AccountBase {
 	}
 
 	public void destroy() {
+		if (getType() == ACCOUNT_TYPES.LOCAL) return;
 		database.delete(TABLE, DatabaseHelper.ID + "=" + getId(), null);
 		ContentValues cv = new ContentValues();
 		cv.put(ListMirakel.ACCOUNT_ID, getLocal().getId());
@@ -215,26 +230,13 @@ public class AccountMirakel extends AccountBase {
 		return null;
 	}
 
-	// Get the default account
-	public static AccountMirakel getDefault() {
-		// TODO set this somewhere
-		int id = MirakelPreferences.getDefaultAccount();
-		AccountMirakel a = null;
-		if (id != -1) {
-			a = get(id);
-		}
-		if (a == null) {
-			a = getLocal();
-		}
-		return a;
-	}
 
 	public static AccountMirakel getLocal() {
 		Cursor c = database.query(TABLE, allColumns, TYPE + "="
 				+ ACCOUNT_TYPES.LOCAL.toInt() + " AND " + ENABLED + "=1", null,
 				null, null, null);
+		c.moveToFirst();
 		if (c.getCount() > 0) {
-			c.moveToFirst();
 			AccountMirakel a = cursorToAccount(c);
 			c.close();
 			return a;

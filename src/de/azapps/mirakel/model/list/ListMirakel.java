@@ -313,7 +313,7 @@ public class ListMirakel extends ListBase {
 	 * @return new List
 	 */
 	public static ListMirakel newList(String name, int sort_by) {
-		return newList(name, sort_by, AccountMirakel.getDefault());
+		return newList(name, sort_by, MirakelPreferences.getDefaultAccount());
 	}
 
 	public static ListMirakel newList(String name, int sort_by,

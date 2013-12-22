@@ -22,6 +22,7 @@ import android.content.res.Configuration;
 import android.preference.PreferenceManager;
 import de.azapps.mirakel.main_activity.task_fragment.TaskFragmentAdapter.TYPE;
 import de.azapps.mirakel.model.account.AccountMirakel;
+import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
@@ -199,14 +200,11 @@ public class MirakelPreferences {
 	public static boolean useSync() {
 		List<AccountMirakel>all=AccountMirakel.getAll();
 		for (AccountMirakel a : all) {
-			if (a.isEnabeld()) {
-				Log.d("foo", a.getName());
+			if (a.getType() != ACCOUNT_TYPES.LOCAL && a.isEnabeld()) {
 				return true;
-
 			}
 		}
 		return false;
-//		return settings.getBoolean("syncUse", false);
 	}
 
 	public static int getSyncFrequency(AccountMirakel account) {
@@ -345,14 +343,6 @@ public class MirakelPreferences {
 		return settings.getBoolean("useBtnAudioRecord", true);
 	}
 
-	public static int getDefaultAccount() {
-		try {
-			return Integer.parseInt(settings.getString("defaultAccount", "-1"));
-		} catch (NumberFormatException E) {
-			return -1;
-		}
-	}
-
 	public static boolean usePersistentReminders() {
 		return settings.getBoolean("remindersPersistent", true);
 	}
@@ -399,5 +389,17 @@ public class MirakelPreferences {
 
 	public static boolean isShowAccountName() {
 		return settings.getBoolean("show_account_name", false);
+	}
+
+	public static AccountMirakel getDefaultAccount() {
+		int id = settings.getInt("defaultAccountID", AccountMirakel.getLocal()
+				.getId());
+		AccountMirakel a = AccountMirakel.get(id);
+		if (a != null) return a;
+		return AccountMirakel.getLocal();
+	}
+
+	public static void setDefaultAccount(AccountMirakel a) {
+		settings.edit().putInt("defaultAccountID", a.getId()).commit();
 	}
 }

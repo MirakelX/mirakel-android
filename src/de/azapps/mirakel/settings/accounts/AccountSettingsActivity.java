@@ -25,8 +25,8 @@ import de.azapps.mirakelandroid.R;
 public class AccountSettingsActivity extends ListSettings {
 
 	@SuppressWarnings("unused")
-	private static final String TAG = "AccountSettingsActivity";
-	private AccountMirakel account;
+	private static final String	TAG	= "AccountSettingsActivity";
+	private AccountMirakel		account;
 
 	private AccountMirakel newAccount() {
 		return AccountMirakel.newAccount(getString(R.string.sync_new),
@@ -43,8 +43,7 @@ public class AccountSettingsActivity extends ListSettings {
 						new DialogInterface.OnClickListener() {
 
 							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
+							public void onClick(DialogInterface dialog, int which) {
 								startActivity(new Intent(
 										Settings.ACTION_ADD_ACCOUNT));
 
@@ -65,16 +64,17 @@ public class AccountSettingsActivity extends ListSettings {
 						.setItems(items, new DialogInterface.OnClickListener() {
 
 							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
+							public void onClick(DialogInterface dialog, int which) {
 								switch (which) {
-								case 0:
-									handleCalDAV();
-									break;
-								case 1:
-									startActivity(new Intent(that,
-											TaskWarriorSetupActivity.class));
-									break;
+									case 0:
+										handleCalDAV();
+										break;
+									case 1:
+										startActivity(new Intent(that,
+												TaskWarriorSetupActivity.class));
+										break;
+									default:
+										break;
 								}
 							}
 						}).show();
@@ -90,8 +90,7 @@ public class AccountSettingsActivity extends ListSettings {
 			@Override
 			public void onClick(View v) {
 				account.destroy();
-				if (Build.VERSION.SDK_INT < 11 || !onIsMultiPane())
-					finish();
+				if (Build.VERSION.SDK_INT < 11 || !onIsMultiPane()) finish();
 				else {
 					try {
 						if (getHeader().size() > 0)
@@ -128,8 +127,8 @@ public class AccountSettingsActivity extends ListSettings {
 		List<AccountMirakel> accounts = AccountMirakel.getAll();
 
 		List<Pair<Integer, String>> items = new ArrayList<Pair<Integer, String>>();
-		for (AccountMirakel account : accounts) {
-			items.add(new Pair<Integer, String>(account.getId(), account
+		for (AccountMirakel a : accounts) {
+			items.add(new Pair<Integer, String>(a.getId(), a
 					.getName())); // TODO: Add more info to the title
 		}
 		return items;
@@ -169,24 +168,25 @@ public class AccountSettingsActivity extends ListSettings {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case android.R.id.home:
-			finish();
-			return true;
-		default:
-			if (item.getTitle().equals(getString(R.string.delete))) {
-				if (account != null) {
-					account.destroy();
-				}
+			case android.R.id.home:
 				finish();
 				return true;
-			} else if (item.getTitle().equals(getString(R.string.add))) {
-				AccountMirakel s = newAccount();
-				Intent intent = new Intent(this, AccountSettingsActivity.class);
-				intent.putExtra("id", s.getId());
-				startActivity(intent);
-				return true;
-			}
-			break;
+			default:
+				if (item.getTitle().equals(getString(R.string.delete))) {
+					if (account != null) {
+						account.destroy();
+					}
+					finish();
+					return true;
+				} else if (item.getTitle().equals(getString(R.string.add))) {
+					AccountMirakel s = newAccount();
+					Intent intent = new Intent(this,
+							AccountSettingsActivity.class);
+					intent.putExtra("id", s.getId());
+					startActivity(intent);
+					return true;
+				}
+				break;
 		}
 		return super.onOptionsItemSelected(item);
 	}
