@@ -29,15 +29,14 @@
   <string name="task_delete_content">هل أنت متأكد أنك تريد حذف %s؟</string>
   <string name="task_menu_sorting">فرز المهام</string>
   <string name="task_sorting_title">فرز المهام حسب</string>
-  <string name="task_empty">لم يتم تحديد أي مهمة...</string>
+  <string name="task_empty">لم يتم تحديد أي مهمة…</string>
   <string name="set_date">تحديد التاريخ</string>
   <string name="set_time">تحديد الوقت</string>
   <string name="task_set_reminder">تحديد تذكير</string>
   <string name="action_undo">التراجع عن التغيير الأخير</string>
-  <string name="add_subtasks">إضافة مهمة فرعية...</string>
+  <string name="add_subtasks">إضافة مهمة فرعية…</string>
   <string name="subtask_list_name">المهام الفرعية</string>
   <string name="remove_files">إزالة الملفات من المهمة</string>
-  <string name="remove_files_summary">هل تريد إزالة % 1$s من % 2$s؟</string>
   <string name="add_subtask">إضافة مهمة فرعية</string>
   <string name="remove_subtask">إزالة مهمة فرعية</string>
   <string name="subtask_done">مهمة منجزة؟</string>
@@ -106,7 +105,7 @@
   <string name="changelog_full_title">سِجل التغييرات</string>
   <string name="changelog_title">ما الجديد</string>
   <string name="changelog_ok_button">موافق</string>
-  <string name="changelog_show_full">المزيد...</string>
+  <string name="changelog_show_full">المزيد…</string>
   <string name="share_using">مشاركة مع</string>
   <string name="share_task">مشاركة المهمة</string>
   <string name="share_task_title_with_date">%1$s (%2$s)</string>
@@ -125,12 +124,12 @@ SDK-نسخة: %2$d\n
 جهاز: %3$s\n]]>
     </string>
   <string name="contact_no_client">لا يوجد أي بريد إلكتروني عميل مثبت</string>
-  <string name="contact_chooser">إرسال البريد الإلكتروني...</string>
+  <string name="contact_chooser">إرسال البريد الإلكتروني…</string>
   <string name="backup_import_error">حدث خطأ أثناء استيراد قاعدة البيانات</string>
   <string name="backup_import_ok">الاستيراد على ما يرام--يرجى إعادة تشغيل Mirakel</string>
   <string name="backup_export_error">حدث خطأ أثناء تصدير قاعدة البيانات</string>
   <string name="backup_export_ok">تصدير إلى %s</string>
-  <string name="add_content">إضافة ملاحظة...</string>
+  <string name="add_content">إضافة ملاحظة…</string>
   <string name="task_has_content">مهمة مع ملاحظة</string>
   <string name="permission_group_desc">إذن للوصول إلى Mirakel</string>
   <string name="permission_group_lbl">إذن Mirakel</string>
@@ -146,7 +145,7 @@ SDK-نسخة: %2$d\n
   <string name="list_change_color">تغيير اللون</string>
   <string name="set_color">تحديد لون</string>
   <string name="unset_color">لا لون</string>
-  <string name="add_files">إضافة ملف...</string>
+  <string name="add_files">إضافة ملف…</string>
   <string name="file_no_activity">لا أعرف كيفية فتح هذا الملف – عذراً</string>
   <string name="file_select">حدد ملف</string>
   <string name="file_vanished">لا يوجد مثل هذا الملف</string>

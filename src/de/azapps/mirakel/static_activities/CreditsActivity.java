@@ -36,7 +36,7 @@ public class CreditsActivity extends Activity {
 			{ "Russian", "Katy, Dmitry Derjavin" },
 			{ "Spanisch", "macebal, RaindropR", "Pablo Corbalán (@monofluor)" },
 			{ "Norwegian", "Jim-Stefhan Johansen" }, { "Slovenian", "mateju" },
-			{ "Arabic", "Rajaa Gutknecht" }, { "Czech", "sarimak" }, };
+			{ "Arabic", "Rajaa Gutknecht" }, { "Czech", "sarimak" },{"Dutch","Toon van Gerwen"} };
 
 	@SuppressLint("NewApi")
 	@Override

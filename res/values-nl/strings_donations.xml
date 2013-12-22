@@ -4,7 +4,7 @@
   <string name="donations__button_close">Sluiten</string>
   <string name="donations__flattr">Flattr</string>
   <string name="donations__description">Vind je deze app nuttig? \nSupport de ontwikkeling door een donatie te sturen naar de ontwikkelaar!</string>
-  <string name="donations__flattr_description">Flattr neemt 10% als een maandelijkse vergoeding!</string>
+  <string name="donations__flattr_description">Flattr neemt 10\% als een maandelijkse vergoeding!</string>
   <string name="donations__google_android_market">Google Play Store</string>
   <string name="donations__google_android_market_not_supported_title">In-App donaties worden niet ondersteund.</string>
   <string name="donations__google_android_market_not_supported">In-App donaties worden niet ondersteund. Is Google Play winkel op de juiste manier geïnstalleerd?</string>
