@@ -17,6 +17,11 @@
     </style>
   </head>
   <body>
+$ 2.2-beta3
+  % Version 2.2-beta3
+  _ 2013-12-22
+  ! <div style="color:red">This is our second release candidate for Mirakel 2.2! Please report <b>EVERY</b> bug you find!</div>
+    * Bugfixes, Bugfixes, Bugfixes
 $ 2.2-beta2
   % Version 2.2-beta2
   _ 2013-12-18

@@ -1101,7 +1101,6 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 
 	}
 
-
 	/**
 	 * Return the currently showed tasks
 	 * 

@@ -228,6 +228,9 @@ public class RecurrencePickerDialog extends DialogFragment implements OnCheckedC
 		}
 
 		/* First row */
+
+		List<Integer> weekdays = new ArrayList<Integer>();
+		if (mRecurring != null) weekdays = mRecurring.getWeekdays();
 		for (int i = 0; i < 7; i++) {
 			if (i >= numOfButtonsInRow1) {
 				mWeekGroup.getChildAt(i).setVisibility(View.GONE);
@@ -238,7 +241,11 @@ public class RecurrencePickerDialog extends DialogFragment implements OnCheckedC
 					.setTextOff(dayOfWeekString[TIME_DAY_TO_CALENDAR_DAY[idx]]);
 			mWeekByDayButtons[idx]
 					.setTextOn(dayOfWeekString[TIME_DAY_TO_CALENDAR_DAY[idx]]);
-			mWeekByDayButtons[idx].setChecked(false);
+			/*
+			 * It's so stupid… Sunday is called 'weekend' but it's the first day of the week.
+			 */
+			boolean checked = weekdays.contains(idx + 1);
+			mWeekByDayButtons[idx].setChecked(checked);
 			mWeekByDayButtons[idx].setOnCheckedChangeListener(this);
 			if (++idx >= 7) {
 				idx = 0;
@@ -256,7 +263,11 @@ public class RecurrencePickerDialog extends DialogFragment implements OnCheckedC
 					.setTextOff(dayOfWeekString[TIME_DAY_TO_CALENDAR_DAY[idx]]);
 			mWeekByDayButtons[idx]
 					.setTextOn(dayOfWeekString[TIME_DAY_TO_CALENDAR_DAY[idx]]);
-			mWeekByDayButtons[idx].setChecked(false);
+			/*
+			 * It's so stupid… Sunday is called 'weekend' but it's the first day of the week.
+			 */
+			boolean checked = weekdays.contains(idx + 1);
+			mWeekByDayButtons[idx].setChecked(checked);
 			mWeekByDayButtons[idx].setOnCheckedChangeListener(this);
 			if (++idx >= 7) {
 				idx = 0;
