@@ -14,8 +14,6 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Looper;
-import android.widget.Toast;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -168,6 +166,7 @@ public class TaskWarriorSync {
 		sync.setPayload(payload);
 		TW_ERRORS error = doSync(a, sync);
 		if (error == TW_ERRORS.NO_ERROR) {
+			Log.w(TAG, "clear sync state");
 			Task.resetSyncState(local_tasks);
 		} else {
 			setDependencies();
@@ -179,7 +178,7 @@ public class TaskWarriorSync {
 	}
 
 	private TW_ERRORS doSync(Account a, Msg sync) {
-		AccountMirakel accountMirakel=AccountMirakel.get(account);
+		AccountMirakel accountMirakel = AccountMirakel.get(account);
 		longInfo(sync.getPayload());
 
 		TLSClient client = new TLSClient();
@@ -216,8 +215,7 @@ public class TaskWarriorSync {
 
 		if (remotes.get("status").equals("Client sync key not found.")) {
 			Log.d(TAG, "reset sync-key");
-			accountManager.setUserData(a, SyncAdapter.TASKWARRIOR_KEY,
-					null);
+			accountManager.setUserData(a, SyncAdapter.TASKWARRIOR_KEY, null);
 			sync(a);
 		}
 
@@ -229,8 +227,8 @@ public class TaskWarriorSync {
 			for (String taskString : tasksString) {
 				if (taskString.charAt(0) != '{') {
 					Log.d(TAG, "Key: " + taskString);
-					accountManager.setUserData(a,
-							SyncAdapter.TASKWARRIOR_KEY, taskString);
+					accountManager.setUserData(a, SyncAdapter.TASKWARRIOR_KEY,
+							taskString);
 					continue;
 				}
 				JsonObject taskObject;
@@ -247,8 +245,10 @@ public class TaskWarriorSync {
 						server_task.setList(list);
 					}
 					Calendar due = server_task.getDue();
-					due.add(Calendar.DAY_OF_MONTH, 1);
-					server_task.setDue(due);
+					if (due != null) {
+						// due.add(Calendar.DAY_OF_MONTH, 1);
+						// server_task.setDue(due);
+					}
 
 					dependencies.put(server_task.getUUID(),
 							server_task.getDependencies());
@@ -261,18 +261,21 @@ public class TaskWarriorSync {
 				}
 
 				if (server_task.getSyncState() == SYNC_STATE.DELETE) {
+					Log.d(TAG, "destroy " + server_task.getName());
 					if (local_task != null) local_task.destroy(true);
 				} else if (local_task == null) {
 					try {
 						server_task.create();
+						Log.d(TAG, "create " + server_task.getName());
 					} catch (NoSuchListException e) {
 						Log.wtf(TAG, "List vanish");
-						Looper.prepare();
-						Toast.makeText(mContext, R.string.no_lists,
-								Toast.LENGTH_LONG).show();
+						// Looper.prepare();
+						// Toast.makeText(mContext, R.string.no_lists,
+						// Toast.LENGTH_LONG).show();
 					}
 				} else {
 					server_task.setId(local_task.getId());
+					Log.d(TAG, "update " + server_task.getName());
 					try {
 						server_task.save();
 					} catch (NoSuchListException e) {
@@ -284,9 +287,9 @@ public class TaskWarriorSync {
 		}
 		String message = remotes.get("message");
 		if (message != null && message != "") {
-			Toast.makeText(mContext,
-					mContext.getString(R.string.message_from_server, message),
-					Toast.LENGTH_LONG).show();
+			// Toast.makeText(mContext,
+			// mContext.getString(R.string.message_from_server, message),
+			// Toast.LENGTH_LONG).show();
 			Log.v(TAG, "Message from Server: " + message);
 		}
 		client.close();

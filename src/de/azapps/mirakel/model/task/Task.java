@@ -60,15 +60,11 @@ import de.azapps.mirakelandroid.R;
 
 public class Task extends TaskBase {
 
-	public static final String TABLE = "tasks";
-	public static final String SUBTASK_TABLE = "subtasks";
-	private String dependencies[];
+	public static final String	TABLE			= "tasks";
+	public static final String	SUBTASK_TABLE	= "subtasks";
+	private String				dependencies[];
 
-	public Task(long id, String uuid, ListMirakel list, String name,
-			String content, boolean done, Calendar due, Calendar reminder,
-			int priority, Calendar created_at, Calendar updated_at,
-			SYNC_STATE sync_state, String additionalEntriesString,
-			int recurring, int recurring_reminder, int progress) {
+	public Task(long id, String uuid, ListMirakel list, String name, String content, boolean done, Calendar due, Calendar reminder, int priority, Calendar created_at, Calendar updated_at, SYNC_STATE sync_state, String additionalEntriesString, int recurring, int recurring_reminder, int progress) {
 		super(id, uuid, list, name, content, done, due, reminder, priority,
 				created_at, updated_at, sync_state, additionalEntriesString,
 				recurring, recurring_reminder, progress);
@@ -115,8 +111,7 @@ public class Task extends TaskBase {
 		setSyncState(getSyncState() == SYNC_STATE.ADD
 				|| getSyncState() == SYNC_STATE.IS_SYNCED ? getSyncState()
 				: SYNC_STATE.NEED_SYNC);
-		if (context != null)
-			setUpdatedAt(new GregorianCalendar());
+		if (context != null) setUpdatedAt(new GregorianCalendar());
 		ContentValues values = getContentValues();
 		if (log) {
 			Task old = Task.get(getId());
@@ -148,49 +143,39 @@ public class Task extends TaskBase {
 	@Override
 	public boolean equals(Object o) {
 
-		if (!(o instanceof Task))
-			return false;
+		if (!(o instanceof Task)) return false;
 		Task t = (Task) o;
 		// Id
-		if (getId() != t.getId())
-			return false;
+		if (getId() != t.getId()) return false;
 
 		// List
 		if (t.getList() != null && getList() != null) {
-			if (t.getList().getId() != getList().getId())
-				return false;
-		} else if (t.getList() != null || getList() != null)
-			return false;
+			if (t.getList().getId() != getList().getId()) return false;
+		} else if (t.getList() != null || getList() != null) return false;
 
 		// Name
 		if (t.getName() != null && getName() != null) {
-			if (!t.getName().equals(getName()))
-				return false;
-		} else if (getName() != null || t.getName() != null)
-			return false;
+			if (!t.getName().equals(getName())) return false;
+		} else if (getName() != null || t.getName() != null) return false;
 
 		// Content
 		if (t.getContent() != null && getContent() != null) {
-			if (!t.getContent().equals(getContent()))
-				return false;
+			if (!t.getContent().equals(getContent())) return false;
 		} else if (getContent() != null || t.getContent() != null)
 			return false;
 
 		// Done
-		if (t.isDone() != isDone())
-			return false;
+		if (t.isDone() != isDone()) return false;
 
 		// Due
 		if (t.getDue() != null && getDue() != null) {
-			if (t.getDue().compareTo(getDue()) != 0)
-				return false;
+			if (t.getDue().compareTo(getDue()) != 0) return false;
 		} else if (t.getDue() != null || getDue() != null) {
 			return false;
 		}
 
 		// Priority
-		if (t.getPriority() != getPriority())
-			return false;
+		if (t.getPriority() != getPriority()) return false;
 		// Additional Entries
 		if (t.getAdditionalEntries() != null && getAdditionalEntries() != null) {
 			if (!t.getAdditionalEntries().equals(getAdditionalEntries()))
@@ -201,8 +186,7 @@ public class Task extends TaskBase {
 		}
 		// Reminder
 		if (t.getReminder() != null && getReminder() != null) {
-			if (t.getReminder().compareTo(getReminder()) != 0)
-				return false;
+			if (t.getReminder().compareTo(getReminder()) != 0) return false;
 		} else if (getReminder() != null || t.getReminder() != null) {
 			return false;
 		}
@@ -225,8 +209,7 @@ public class Task extends TaskBase {
 	}
 
 	public void destroy(boolean force) {
-		if (!force)
-			UndoHistory.updateLog(this, context);
+		if (!force) UndoHistory.updateLog(this, context);
 		long id = getId();
 		if (getSyncState() == SYNC_STATE.ADD || force) {
 			database.delete(TABLE, DatabaseHelper.ID + " = " + id, null);
@@ -277,7 +260,7 @@ public class Task extends TaskBase {
 		return names;
 	}
 
-	public void addSubtask(Task t) throws NoSuchListException {
+	public void addSubtask(Task t) {
 		if (checkIfParent(t)) {
 			return;
 		}
@@ -371,16 +354,16 @@ public class Task extends TaskBase {
 
 	// Static Methods
 
-	private static final String TAG = "TasksDataSource";
-	private static SQLiteDatabase database;
-	private static DatabaseHelper dbHelper;
-	public static final String[] allColumns = { DatabaseHelper.ID, UUID,
+	private static final String		TAG			= "TasksDataSource";
+	private static SQLiteDatabase	database;
+	private static DatabaseHelper	dbHelper;
+	public static final String[]	allColumns	= { DatabaseHelper.ID, UUID,
 			LIST_ID, DatabaseHelper.NAME, CONTENT, DONE, DUE, REMINDER,
 			PRIORITY, DatabaseHelper.CREATED_AT, DatabaseHelper.UPDATED_AT,
 			SyncAdapter.SYNC_STATE, ADDITIONAL_ENTRIES, RECURRING,
-			RECURRING_REMINDER, PROGRESS };
+			RECURRING_REMINDER, PROGRESS		};
 
-	private static Context context;
+	private static Context			context;
 
 	public static Task getDummy(Context ctx) {
 		return new Task(ctx.getString(R.string.task_empty));
@@ -396,10 +379,10 @@ public class Task extends TaskBase {
 	 * Initialize the Database and the preferences
 	 * 
 	 * @param context
-	 *            The Application-Context
+	 *        The Application-Context
 	 */
-	public static void init(Context context) {
-		Task.context = context;
+	public static void init(Context ctx) {
+		Task.context = ctx;
 		dbHelper = new DatabaseHelper(context);
 		database = dbHelper.getWritableDatabase();
 	}
@@ -411,8 +394,7 @@ public class Task extends TaskBase {
 		dbHelper.close();
 	}
 
-	public static Task newTask(String name, ListMirakel list,
-			GregorianCalendar due, int prio) {
+	public static Task newTask(String name, ListMirakel list, GregorianCalendar due, int prio) {
 		return newTask(name, list, "", false, due, prio);
 	}
 
@@ -432,8 +414,7 @@ public class Task extends TaskBase {
 	 * @return
 	 */
 
-	public static Task newTask(String name, ListMirakel list, String content,
-			boolean done, GregorianCalendar due, int priority) {
+	public static Task newTask(String name, ListMirakel list, String content, boolean done, GregorianCalendar due, int priority) {
 		Calendar now = new GregorianCalendar();
 		Task t = new Task(0, java.util.UUID.randomUUID().toString(), list,
 				name, content, done, due, null, priority, now, now,
@@ -454,8 +435,7 @@ public class Task extends TaskBase {
 		ContentValues values = new ContentValues();
 		values.put(UUID, getUUID());
 		values.put(DatabaseHelper.NAME, getName());
-		if (getList() == null)
-			throw new NoSuchListException();
+		if (getList() == null) throw new NoSuchListException();
 		values.put(LIST_ID, getList().getId());
 		values.put(CONTENT, getContent());
 		values.put(DONE, isDone());
@@ -465,8 +445,7 @@ public class Task extends TaskBase {
 		values.put(SyncAdapter.SYNC_STATE, SYNC_STATE.ADD.toInt());
 		values.put(DatabaseHelper.CREATED_AT,
 				DateTimeHelper.formatDateTime(getCreatedAt()));
-		if (getUpdatedAt() == null)
-			setUpdatedAt(new GregorianCalendar());
+		if (getUpdatedAt() == null) setUpdatedAt(new GregorianCalendar());
 		values.put(DatabaseHelper.UPDATED_AT,
 				DateTimeHelper.formatDateTime(getUpdatedAt()));
 		values.put(PROGRESS, getProgress());
@@ -602,12 +581,11 @@ public class Task extends TaskBase {
 	 * 
 	 * @param listId
 	 * @param sorting
-	 *            The Sorting (@see Mirakel.SORT_*)
+	 *        The Sorting (@see Mirakel.SORT_*)
 	 * @param showDone
 	 * @return
 	 */
-	public static List<Task> getTasks(ListMirakel list, int sorting,
-			boolean showDone) {
+	public static List<Task> getTasks(ListMirakel list, int sorting, boolean showDone) {
 		return getTasks(list.getId(), sorting, showDone);
 	}
 
@@ -616,12 +594,11 @@ public class Task extends TaskBase {
 	 * 
 	 * @param listId
 	 * @param sorting
-	 *            The Sorting (@see Mirakel.SORT_*)
+	 *        The Sorting (@see Mirakel.SORT_*)
 	 * @param showDone
 	 * @return
 	 */
-	public static List<Task> getTasks(ListMirakel list, int sorting,
-			boolean showDone, String where) {
+	public static List<Task> getTasks(ListMirakel list, int sorting, boolean showDone, String where) {
 		Cursor cursor = getTasksCursor(list.getId(), sorting, where);
 		return cursorToTaskList(cursor);
 	}
@@ -656,7 +633,7 @@ public class Task extends TaskBase {
 	 * 
 	 * @param listId
 	 * @param sorting
-	 *            The Sorting (@see Mirakel.SORT_*)
+	 *        The Sorting (@see Mirakel.SORT_*)
 	 * @param showDone
 	 * @return
 	 */
@@ -703,8 +680,7 @@ public class Task extends TaskBase {
 			t = Task.get(id.getAsLong());
 		} else {
 			id = el.get("uuid");
-			if (id != null)
-				t = Task.getByUUID(id.getAsString());
+			if (id != null) t = Task.getByUUID(id.getAsString());
 		}
 		if (t == null) {
 			t = new Task();
@@ -715,16 +691,14 @@ public class Task extends TaskBase {
 		for (Entry<String, JsonElement> entry : entries) {
 			String key = entry.getKey();
 			JsonElement val = entry.getValue();
-			if (key == null || key.equals("id"))
-				continue;
+			if (key == null || key.equals("id")) continue;
 			if (key.equals("uuid")) {
 				t.setUUID(val.getAsString());
 			} else if (key.equals("name") || key.equals("description")) {
 				t.setName(val.getAsString());
 			} else if (key.equals("content")) {
 				String content = val.getAsString();
-				if (content == null)
-					content = "";
+				if (content == null) content = "";
 				t.setContent(content);
 			} else if (key.equals("priority")) {
 				String prioString = val.getAsString().trim();
@@ -778,6 +752,12 @@ public class Task extends TaskBase {
 				if (due == null) {
 					due = parseDate(val.getAsString(),
 							context.getString(R.string.TWDateFormat));
+					if (val.getAsString().contains("T230000Z")) {
+						// Hope this works around a tw-bug
+						// if you add a task with due:today, the task which will be sync will be
+						// due:yesterday:23:00
+						due.add(Calendar.DAY_OF_MONTH, 1);
+					}
 				}
 				t.setDue(due);
 			} else if (key.equals("reminder")) {
@@ -793,10 +773,8 @@ public class Task extends TaskBase {
 					JsonArray annotations = val.getAsJsonArray();
 					boolean first = true;
 					for (JsonElement a : annotations) {
-						if (first)
-							first = false;
-						else
-							content += "\n";
+						if (first) first = false;
+						else content += "\n";
 						content += a.getAsJsonObject().get("description")
 								.getAsString();
 					}
@@ -836,7 +814,7 @@ public class Task extends TaskBase {
 					.parse(date));
 			return temp;
 		} catch (ParseException e) {
-			return (Calendar) null;
+			return null;
 		}
 	}
 
@@ -895,8 +873,7 @@ public class Task extends TaskBase {
 	 * @param sorting
 	 * @return
 	 */
-	private static Cursor getTasksCursor(int listId, int sorting,
-			boolean showDone) {
+	private static Cursor getTasksCursor(int listId, int sorting, boolean showDone) {
 		String where;
 		if (listId < 0) {
 			where = SpecialList.getSpecialList(-1 * listId).getWhereQuery(true);
@@ -913,22 +890,24 @@ public class Task extends TaskBase {
 	private static String getSorting(int sorting) {
 		String order = "";
 		switch (sorting) {
-		case ListMirakel.SORT_BY_PRIO:
-			order = PRIORITY + " desc";
-			break;
-		case ListMirakel.SORT_BY_OPT:
-			order = ", " + PRIORITY + " DESC";
-		case ListMirakel.SORT_BY_DUE:
-			order = " CASE WHEN (" + DUE
-					+ " IS NULL) THEN date('now','+1000 years') ELSE date("
-					+ DUE + ") END ASC" + order;
-			break;
-		case ListMirakel.SORT_BY_REVERT_DEFAULT:
-			order = PRIORITY + " DESC,  CASE WHEN (" + DUE
-					+ " IS NULL) THEN date('now','+1000 years') ELSE date("
-					+ DUE + ") END ASC" + order;
-		default:
-			order = DatabaseHelper.ID + " ASC";
+			case ListMirakel.SORT_BY_PRIO:
+				order = PRIORITY + " desc";
+				break;
+			case ListMirakel.SORT_BY_OPT:
+				order = ", " + PRIORITY + " DESC";
+				break;
+			case ListMirakel.SORT_BY_DUE:
+				order = " CASE WHEN (" + DUE
+						+ " IS NULL) THEN date('now','+1000 years') ELSE date("
+						+ DUE + ") END ASC" + order;
+				break;
+			case ListMirakel.SORT_BY_REVERT_DEFAULT:
+				order = PRIORITY + " DESC,  CASE WHEN (" + DUE
+						+ " IS NULL) THEN date('now','+1000 years') ELSE date("
+						+ DUE + ") END ASC" + order;
+				break;
+			default:
+				order = DatabaseHelper.ID + " ASC";
 		}
 		return order;
 	}
@@ -961,8 +940,7 @@ public class Task extends TaskBase {
 		where += " not " + SyncAdapter.SYNC_STATE + "=" + SYNC_STATE.DELETE;
 		String order = getSorting(sorting);
 
-		if (listId < 0)
-			order += ", " + LIST_ID + " ASC";
+		if (listId < 0) order += ", " + LIST_ID + " ASC";
 		return database.query(TABLE, allColumns, where, null, null, null, DONE
 				+ ", " + order);
 	}
@@ -981,8 +959,11 @@ public class Task extends TaskBase {
 					Log.d(TAG, "List did vanish");
 				} catch (Exception e) {
 					t.destroy(false);
+					Log.d(TAG, "destroy: " + t.getName());
+					Log.w(TAG, Log.getStackTraceString(e));
 				}
 			} else {
+				Log.d(TAG, "destroy: " + t.getName());
 				t.destroy(true);
 			}
 		}
