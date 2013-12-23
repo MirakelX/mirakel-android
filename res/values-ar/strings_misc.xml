@@ -7,6 +7,7 @@
   <string name="help_sync">
 <![CDATA[
 ]]></string>
+  <string name="help_sync_taskwarrior_title">مزامنة Taskwarrior</string>
   <string name="help_sync_caldav_title">مزامنة CalDAV</string>
   <string name="list_friends">أصدقاء</string>
   <string name="list_home">بالبيت</string>

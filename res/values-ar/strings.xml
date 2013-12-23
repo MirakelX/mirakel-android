@@ -38,6 +38,7 @@
   <string name="remove_files">إزالة الملفات من المهمة</string>
   <string name="add_subtask">إضافة مهمة فرعية</string>
   <string name="remove_subtask">إزالة مهمة فرعية</string>
+  <string name="subtask_add_options">تصفية &gt;&gt;</string>
   <string name="subtask_done">مهمة منجزة؟</string>
   <string name="subtask_reminder">مهمة مع تذكير؟</string>
   <string name="subtask_content">مهمة مع ملاحظة؟</string>
@@ -124,7 +125,7 @@ SDK-نسخة: %2$d\n
   <string name="contact_no_client">لا يوجد أي بريد إلكتروني عميل مثبت</string>
   <string name="contact_chooser">إرسال البريد الإلكتروني…</string>
   <string name="backup_import_error">حدث خطأ أثناء استيراد قاعدة البيانات</string>
-  <string name="backup_import_ok">الاستيراد على ما يرام--يرجى إعادة تشغيل Mirakel</string>
+  <string name="backup_import_ok">الاستيراد على ما يرام–يرجى إعادة تشغيل Mirakel</string>
   <string name="backup_export_error">حدث خطأ أثناء تصدير قاعدة البيانات</string>
   <string name="backup_export_ok">تصدير إلى %s</string>
   <string name="add_content">إضافة ملاحظة…</string>
@@ -149,7 +150,14 @@ SDK-نسخة: %2$d\n
   <string name="file_vanished">لا يوجد مثل هذا الملف</string>
   <string name="file_default_title">تحقق من هذا الملف</string>
   <string name="photo_default_title">تحقق من هذه الصورة</string>
+  <string name="audio_default_title">الاستماع إلى ذلك!</string>
   <string name="edit">تحرير</string>
+  <string name="audio_record_title">تسجيل الصوت…</string>
+  <string name="audio_record_message">جاري التسجيل…</string>
+  <string name="audio_playback_select_title">ماذا تريد أن تفعل؟</string>
+  <string name="audio_playback_pause">توقف</string>
+  <string name="audio_playback_play">تشغيل</string>
+  <string name="audio_playback_stop">إيقاف</string>
   <string name="daily">يوميا</string>
   <string name="weekly">أسبوعيّا</string>
   <string name="two_weekly">كل أسبوعين</string>
@@ -171,7 +179,16 @@ SDK-نسخة: %2$d\n
   <string name="no_begin_end">لا %s</string>
   <string name="beginning_end">بداية ونهاية</string>
   <string name="save">حفظ</string>
+  <string name="every">كل</string>
+  <string name="recurrence_end_continously">أبدا</string>
+  <string name="recurrence_end_date_label">حتى تاريخ</string>
+  <string name="recurrence_from_now">من الآن</string>
+  <string name="recurrence_from">من</string>
+  <string name="recurrence_month_pattern_by_day">في نفس اليوم من كل شهر</string>
+  <string name="acessibility_recurrence_choose_end_date_description">تغيير تاريخ انتهاء</string>
   <string name="save_label">منجز</string>
+  <string name="audio_record_file">تسجيل الصوت</string>
+  <string name="image_file">الصورة</string>
   <string-array name="task_sorting_items">
     <item>الافتراضي</item>
     <item>الموعد النهائي</item>
@@ -196,7 +213,7 @@ SDK-نسخة: %2$d\n
     <item>Mirakel</item>
   </string-array>
   <string-array name="audio_playback_options">
-    <item>Open file</item>
+    <item>فتح ملف</item>
     <item>Play loud</item>
     <item>Play silent</item>
   </string-array>
