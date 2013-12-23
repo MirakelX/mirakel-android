@@ -84,9 +84,8 @@ public class TaskFragment extends Fragment {
 					if (file.getPath().endsWith(".mp3")) {
 						TaskDialogHelpers.handleAudioPlayback(main, file);
 						return;
-					} else {
-						TaskDialogHelpers.openFile(main, file);
 					}
+					TaskDialogHelpers.openFile(main, file);
 				} else if (type == TYPE.SUBTASK) {
 					Task t = adapter.getTask().getSubtasks()
 							.get(adapter.getData().get(position).second);
@@ -354,7 +353,9 @@ public class TaskFragment extends Fragment {
 	}
 
 	public void cancelEditing() {
-		adapter.cancelEditing();
+		if (adapter != null) {
+			adapter.cancelEditing();
+		}
 	}
 
 }

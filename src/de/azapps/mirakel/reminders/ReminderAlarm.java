@@ -194,11 +194,11 @@ public class ReminderAlarm extends BroadcastReceiver {
 
 				// Alarms
 				List<Task> tasks = Task.getTasksWithReminders();
-				for (int i = 0; i < activeAlarms.size(); i++) {
-					Task t = activeAlarms.get(i).first;
+				// for (int i = 0; i < activeAlarms.size(); i++) {
+				for (Pair<Task, PendingIntent> p : activeAlarms) {
+					Task t = p.first;
 					if (t == null) {
-						i = cancelAlarm(ctx, t, null, i,
-								activeAlarms.get(i).second);
+						cancelAlarm(ctx, t, null, p, p.second);
 						continue;
 					}
 					Task newTask = Task.get(t.getId());
@@ -207,8 +207,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 							|| newTask.isDone()
 							|| newTask.getReminder().after(
 									new GregorianCalendar())) {
-						i = cancelAlarm(ctx, t, newTask, i,
-								activeAlarms.get(i).second);
+						cancelAlarm(ctx, t, newTask, p, p.second);
 						continue;
 					} else if (newTask.getReminder() != null) {
 						Calendar now = new GregorianCalendar();
@@ -227,8 +226,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 						} else if (t.getRecurringReminderId() != newTask
 								.getRecurringReminderId()) {
 							updateAlarm(ctx, newTask);
-							i = cancelAlarm(ctx, t, newTask, i,
-										activeAlarms.get(i).second);
+							cancelAlarm(ctx, t, newTask, p, p.second);
 						}
 					}
 				}
@@ -256,29 +254,27 @@ public class ReminderAlarm extends BroadcastReceiver {
 		return false;
 	}
 
-	private static int cancelAlarm(Context ctx, Task t, Task newTask, int i, PendingIntent pendingIntent) {
-		activeAlarms.remove(i--);
+	private static void cancelAlarm(Context ctx, Task t, Task newTask, Pair<Task, PendingIntent> p, PendingIntent pendingIntent) {
+		activeAlarms.remove(p);
 		closeNotificationFor(ctx, t.getId());
 		if (newTask == null) {
-			return i;
+			return;
 		}
 		alarmManager.cancel(pendingIntent);
-		return i;
 	}
 
 	public static void cancelAlarm(Context ctx, Task task) {
 		try {
-			int i = findTask(task);
-			cancelAlarm(ctx, task, Task.get(task.getId()), i,
-					activeAlarms.get(i).second);
+			Pair<Task, PendingIntent> p = findTask(task);
+			cancelAlarm(ctx, task, Task.get(task.getId()), p, p.second);
 		} catch (IndexOutOfBoundsException e) {
 			Log.d(TAG, "task not found");
 		}
 	}
 
-	private static int findTask(Task task) {
-		for (int i = 0; i < activeAlarms.size(); i++) {
-			if (task.getId() == activeAlarms.get(i).first.getId()) return i;
+	private static Pair<Task, PendingIntent> findTask(Task task) {
+		for (Pair<Task, PendingIntent> p : activeAlarms) {
+			if (task.getId() == p.first.getId()) return p;
 		}
 		throw new IndexOutOfBoundsException();
 	}
@@ -317,8 +313,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 		NotificationManager nm = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 		// This hack is a must because otherwise we get a concurrentModificationException
-		Long[] array={};
-		Long[] reminders = allReminders.toArray(array);
+		Long[] reminders = allReminders.toArray(new Long[] {});
 		for (Long id : reminders) {
 			nm.cancel(Mirakel.NOTIF_REMINDER + id.intValue());
 			cancelAlarm(context, Task.get(id));

@@ -27,7 +27,6 @@ import de.azapps.mirakelandroid.R;
 
 public class AccountSettingsActivity extends ListSettings {
 
-	@SuppressWarnings("unused")
 	private static final String	TAG	= "AccountSettingsActivity";
 	private AccountMirakel		account;
 

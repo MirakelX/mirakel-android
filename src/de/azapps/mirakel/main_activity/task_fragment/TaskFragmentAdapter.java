@@ -1370,6 +1370,7 @@ public class TaskFragmentAdapter extends MirakelArrayAdapter<Pair<Integer, Integ
 		this.audioButtonClick = audioButtonClick;
 	}
 
+	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
 	public static void setRecurringImage(ImageButton image, Context ctx, int id) {
 		Drawable d = ctx.getResources().getDrawable(
