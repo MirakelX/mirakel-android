@@ -26,10 +26,8 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Fragment;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
@@ -65,6 +63,7 @@ import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.settings.ColorPickerPref;
 import de.azapps.mirakel.settings.recurring.RecurringActivity;
@@ -73,7 +72,6 @@ import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
 import de.azapps.mirakel.static_activities.CreditsActivity;
 import de.azapps.mirakel.static_activities.SettingsActivity;
 import de.azapps.mirakel.static_activities.SettingsFragment;
-import de.azapps.mirakel.static_activities.SplashScreenActivity;
 import de.azapps.mirakel.sync.AuthenticatorActivity;
 import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.mirakel.MirakelSync;
@@ -528,6 +526,46 @@ public class PreferencesHelper {
 							return true;
 						}
 					});
+		}
+		String[] settings = { "notificationsPersistent",
+				"notificationsZeroHide", "notificationsBig" };
+		for (final String key : settings) {
+			final CheckBoxPreference notifSetting = (CheckBoxPreference) findPreference(key);
+			if (notifSetting != null) {
+				notifSetting
+						.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+							@Override
+							public boolean onPreferenceChange(Preference preference, Object newValue) {
+								Editor e = preference.getEditor();
+								e.putBoolean(key, (Boolean) newValue);
+								e.commit();
+								NotificationService
+										.updateNotificationAndWidget(activity);
+								return true;
+							}
+						});
+
+			}
+		}
+
+		final CheckBoxPreference remindersPersistent = (CheckBoxPreference) findPreference("remindersPersistent");
+		if (remindersPersistent != null) {
+			remindersPersistent
+					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+						@Override
+						public boolean onPreferenceChange(Preference preference, Object newValue) {
+							Editor e = preference.getEditor();
+							e.putBoolean("remindersPersistent",
+									(Boolean) newValue);
+							e.commit();
+							ReminderAlarm.stopAll(activity);
+							ReminderAlarm.updateAlarms(activity);
+							return true;
+						}
+					});
+
 		}
 
 		Intent startSpecialListsIntent = new Intent(activity,

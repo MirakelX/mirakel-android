@@ -17,6 +17,13 @@
     </style>
   </head>
   <body>
+$ 2.2-beta4
+  % Version 2.2-beta4
+  _ 2013-12-22
+  ! It seems, that everything works. If everything will be ok, we'll publish the next version tomorrow.
+    * Bugfixes, Bugfixes, Bugfixes
+    * Updated translations
+    * Added dutch translation
 $ 2.2-beta3
   % Version 2.2-beta3
   _ 2013-12-22
