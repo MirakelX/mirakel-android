@@ -107,7 +107,7 @@ public class ListFragment extends MirakelFragment {
 		final List<ListMirakel> values = ListMirakel.all();
 		main.updateLists();
 
-		main.showMessageFromSync();
+		// main.showMessageFromSync();
 
 		if (adapter != null && enableDrag == adapter.isDropEnabled()) {
 			adapter.changeData(values);
@@ -199,6 +199,8 @@ public class ListFragment extends MirakelFragment {
 										case LIST_SHARE:
 											SharingHelper.share(getActivity(),
 													list);
+											break;
+										default:
 											break;
 									}
 								}

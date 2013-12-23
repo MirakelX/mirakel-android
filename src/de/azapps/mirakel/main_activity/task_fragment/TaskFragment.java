@@ -347,15 +347,12 @@ public class TaskFragment extends Fragment {
 	}
 
 	public void update(Task task) {
-		if (adapter != null) {
-			adapter.setData(task);
-		}
+		if (adapter != null) adapter.setData(task);
+
 	}
 
 	public void cancelEditing() {
-		if (adapter != null) {
-			adapter.cancelEditing();
-		}
+		if (adapter != null) adapter.cancelEditing();
 	}
 
 }

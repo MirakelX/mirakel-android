@@ -439,14 +439,8 @@ public class TaskDialogHelpers {
 											if (!asSubtask) {
 												if (!tasks.get(i)
 														.checkIfParent(task)) {
-													try {
-														task.addSubtask(tasks
+													task.addSubtask(tasks
 																.get(i));
-
-													} catch (NoSuchListException e) {
-														Log.e(TAG,
-																"list did vanish");
-													}
 												} else {
 													Toast.makeText(
 															ctx,
@@ -459,15 +453,8 @@ public class TaskDialogHelpers {
 											} else {
 												if (!task.checkIfParent(tasks
 														.get(i))) {
-													try {
-														tasks.get(i)
-																.addSubtask(
-																		task);
-
-													} catch (NoSuchListException e) {
-														Log.e(TAG,
-																"list did vanish");
-													}
+													tasks.get(i).addSubtask(
+															task);
 												} else {
 													Toast.makeText(
 															ctx,
@@ -514,12 +501,7 @@ public class TaskDialogHelpers {
 		ListMirakel list = MirakelPreferences.getListForSubtask(parent);
 		Task t = Semantic.createTask(name, list,
 				MirakelPreferences.useSemanticNewTask(), ctx);
-		try {
-			parent.addSubtask(t);
-		} catch (NoSuchListException e) {
-			Log.e(TAG, "list did vanish");
-		}
-
+		parent.addSubtask(t);
 		return t;
 	}
 

@@ -194,8 +194,8 @@ public class ReminderAlarm extends BroadcastReceiver {
 
 				// Alarms
 				List<Task> tasks = Task.getTasksWithReminders();
-				// for (int i = 0; i < activeAlarms.size(); i++) {
-				for (Pair<Task, PendingIntent> p : activeAlarms) {
+				for (int i = 0; i < activeAlarms.size(); i++) {
+					Pair<Task, PendingIntent> p = activeAlarms.get(i);
 					Task t = p.first;
 					if (t == null) {
 						cancelAlarm(ctx, t, null, p, p.second);

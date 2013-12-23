@@ -354,7 +354,7 @@ public class TasksFragment extends Fragment {
 			adapter.resetSelected();
 		}
 
-		main.showMessageFromSync();
+		// main.showMessageFromSync();
 
 		final ListView lv = (ListView) view.findViewById(R.id.tasks_list);
 		AsyncTask<Void, Void, TaskAdapter> asyncTask = new AsyncTask<Void, Void, TaskAdapter>() {
@@ -550,6 +550,7 @@ public class TasksFragment extends Fragment {
 	public void updateButtons() {
 		// a) Android 2.3 dosen't support speech toText
 		// b) The user can switch off the button
+		if (view == null) return;
 		if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.HONEYCOMB
 				|| !MirakelPreferences.useBtnSpeak()) {
 			view.findViewById(R.id.btnSpeak_tasks).setVisibility(View.GONE);

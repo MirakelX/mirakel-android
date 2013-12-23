@@ -78,7 +78,6 @@ import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.static_activities.SettingsActivity;
 import de.azapps.mirakel.static_activities.SplashScreenActivity;
-import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.widget.MainWidgetProvider;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.FileUtils;
@@ -662,7 +661,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		super.onResume();
 		if (isResumend) setupLayout();
 		isResumend = true;
-		showMessageFromSync();
+		// showMessageFromSync();
 	}
 
 	@Override
@@ -1330,13 +1329,13 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		mViewPager.setCurrentItem(getTasksFragmentPosition());
 	}
 
-	public void showMessageFromSync() {
-		CharSequence messageFromSync = SyncAdapter.getLastMessage();
-		if (messageFromSync != null) {
-			Toast.makeText(getApplicationContext(), messageFromSync,
-					Toast.LENGTH_SHORT).show();
-		}
-	}
+	// public void showMessageFromSync() {
+	// CharSequence messageFromSync = SyncAdapter.getLastMessage();
+	// if (messageFromSync != null) {
+	// Toast.makeText(getApplicationContext(), messageFromSync,
+	// Toast.LENGTH_SHORT).show();
+	// }
+	// }
 
 	/**
 	 * Set the Task, to which we switch, if the user press the back-button. It is reseted, if one of
