@@ -43,6 +43,7 @@
     </string-array>
 
     <string name="sync_caldav">CalDAV sync</string>
+    <string name="sync_caldav_howto"></string>
     <string name="sync_caldav_howto_">
 <![CDATA[You have to setup a Mirakel-compatible CalDAV-syncing app. Currently you have to install our modified DAVdroid version from our page.<br /><br />
 Soon the official DAVdroid app will also support Mirakel and we are working together with some others to make it possible to sync with Mirakel.
