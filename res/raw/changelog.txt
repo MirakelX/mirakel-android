@@ -20,23 +20,20 @@
 $ 2.2.0
   % Version 2.1.4
   _ 2013-12-24
-  ! Happy Christmas
-  * Multi-Account handling
-  * Caldav-Sync over davdroid
-  * Dynamic Task Fragment
+  ! Our huge Christmas release. We've worked hard to give you an awesome new, bugfree release. We hope the waiting has been worth it.
+  ! <b>We wish you a Merry Christmas!</b>
   * Set the progress of your tasks
-  * Splashscreen instead of an empty activity view
   * Google Now integration
   * New date and timepicker
-  * Widget updates
+  * Audio records
+  * More task templates
+  * Multi-Account handling
+  * Caldav-Sync via davdroid
   * Auto backup
-  * Clone a task
-  * Add Weekdays to semantics
-  * support Right-to-Left layout for arabic translation
-  * Record audio and create tasks directly from audio records 
-  * Updated translations
   * Added portuguese, dutch and arabic translation
-  ! This will be the last version of Mirakel which supports Android < 4.0
+  * Dynamic Task Fragment
+  * And many more awesome stuff
+  ! This will be the last version of Mirakel which supports Android < 4.0. We'll provide of course bugfixes for your phone ;)
 $ 2.1.4
   % Version 2.1.4
   _ 2013-11-20
