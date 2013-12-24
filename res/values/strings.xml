@@ -17,10 +17,9 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<resources xmlns:tools="http://schemas.android.com/tools"    tools:ignore="MissingTranslation">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <string name="app_name">Mirakel</string>
-    <string name="app_name_old">Mirakel old logo</string>
     <string name="action_settings">Settings</string>
     <string name="action_contact">Contact / report bug</string>
     <string name="action_contact_summary">Write us an e-mail!</string>
@@ -40,7 +39,6 @@
     <string name="wrong_sync_type">The sync-type is not supported!</string>
     <string name="action_sync_now">Sync Now</string>
     <string name="resync">Do you want to resync all tasks?</string>
-    <string name="start">Start</string>
     <string name="menu_sort_lists">Reorder lists</string>
     <string name="no_https">You should use https!</string>
     <string name="finish_sync">Finish sync</string>
@@ -52,24 +50,21 @@
 
     <!-- Tasks -->
     <string name="tasks_new_str">New Task</string>
-    <string name="task_no_content">Add a Note</string>
     <string name="task_change_prio_title">Change Priority</string>
-    <string name="task_change_prio_cont">Priority</string>
     <string name="task_delete_content">Are you sure you want to delete %s?</string>
     <string name="task_menu_sorting">Sort tasks</string>
     <string name="task_sorting_title">Sort tasks by</string>
     <string name="task_empty">No task selected…</string>
     <string name="set_date">Set Date</string>
     <string name="set_time">Set Time</string>
-    <string name="task_set_reminder">Set Reminder</string>
     <string name="action_undo">Undo the last Change</string>
-    <string name="subtasks">Subtasks</string>
     <string name="add_subtasks">Add subtask…</string>
+    <string name="subtask_list_name">Subtasks</string>
     <string name="remove_files">Remove Files from Task</string>
     <string name="remove_files_summary">Do you want to remove %1$s from %2$s?</string>
     <string name="add_subtask">Add Subtask</string>
     <string name="remove_subtask">Remove Subtask</string>
-    <string name="subtask_add_options">Options >></string>
+    <string name="subtask_add_options">Filter >></string>
     <string name="subtask_done">Task done?</string>
     <string name="subtask_reminder">Task with reminder?</string>
     <string name="subtask_content">Task with note?</string>
@@ -78,8 +73,8 @@
     <string name="add_existing">Add existing Task</string>
     <string name="task_name">Task Name:</string>
     <string name="no_loop">Subtasks cannot form a loop</string>
-    <string name="set_due">Set Due</string>
     <string name="as_subtask">Add to a task</string>
+    <string name="task_clone">Clone task</string>
 
     <string-array name="task_sorting_items">
         <item>Default</item>
@@ -87,12 +82,6 @@
         <item>Priority</item>
         <item>Created date</item>
         <item>First by priority, then by date</item>
-    </string-array>
-    <string-array name="task_sorting_items_values">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
     </string-array>
     <string-array name="task_actions_items">
         <item>Edit</item>
@@ -135,7 +124,6 @@
     <!-- Widget -->
     <string name="empty_list">No tasks</string>
     <string name="preferences">Preferences</string>
-    <string name="due_to"> (Due to %s)</string>
 
     <!-- Notification -->
     <string name="notification_title_general">%1$d tasks in %2$s</string>
@@ -161,16 +149,16 @@
     <string name="message_parse_message">Cannot parse tasks – please write how this happened</string>
     <string name="message_message_error">Unknown response from the server – please write how this happened</string>
     <string name="wrong_config">It looks like you used a wrong config file</string>
-    
     <string name="load_config">Select the config file for Taskwarrior</string>
     <string name="select_config">Select Taskwarrior config file</string>
     <string name="login_activity_username_label">Username</string>
     <string name="login_activity_server_label">Server URL</string>
     <string name="login_activity_server_typ">Server type</string>
+
     <string-array name="server_typs">
-        <item >Taskwarrior</item>
-        <item >CalDav</item>
-        <item >Mirakel</item>
+        <item>Taskwarrior</item>
+        <item>CalDav</item>
+        <item>Mirakel</item>
     </string-array>
     <!-- Label above password EditText -->
     <string name="login_activity_password_label">Password</string>
@@ -189,9 +177,6 @@
     <string name="login_activity_newaccount_text">Sign in to your %s-account.</string>
     <!-- Message shown in progress dialog while app connects to the server -->
     <string name="ui_activity_authenticating">Authenticating…</string>
-    <string name="ui_activity_title">Sign-in</string>
-    <string name="title_activity_special_lists_settings">Settings for special lists</string>
-    <string name="title_activity_semantic_settings">Settings for semantics</string>
 
     <!-- Changelog -->
     <string name="changelog_full_title">Changelog</string>
@@ -231,12 +216,8 @@ Device: %3$s\n]]>
     <string name="backup_import_ok">The import was fine - please restart Mirakel</string>
     <string name="backup_export_error">There was an error while exporting the database</string>
     <string name="backup_export_ok">Exported to %s</string>
-    <string name="change_content">Change note</string>
-    <string name="content">Note</string>
     <string name="add_content">Add note…</string>
     <string name="task_has_content">Task with note</string>
-    <string name="help">Help</string>
-    <string name="help_description">There are 3 main parts: on the left side you can see all lists, in the middle you can see all tasks of a list and at the right side you can see a task. You switch between the parts by swiping or clicking.</string>
 
     <!-- Permissions -->
     <string name="permission_group_desc">Permission for access Mirakel</string>
@@ -256,54 +237,79 @@ Device: %3$s\n]]>
     all you have to do is to press OK.</string>
     <string name="crash_dialog_comment_prompt">You can add a comment about the problem below:</string>
     <string name="crash_dialog_ok_toast">Thank you !</string>
-    
+
     <!-- Sync -->
     <string name="message_from_server">Taskwarrior server has sent a message: %s</string>
-    
+
     <!-- Colors -->
     <string name="list_change_color">Change Color</string>
     <string name="set_color">Set Color</string>
     <string name="unset_color">No Color</string>
-    
-    <string name="files">Files</string>
     <string name="add_files">Add file…</string>
     <string name="file_no_activity">I don\'t know, how to open this file – sorry</string>
     <string name="file_select">Select a file</string>
     <string name="file_vanished">No such file</string>
     <string name="file_default_title">Check out this file</string>
     <string name="photo_default_title">Check out this photo</string>
+    <string name="audio_default_title">Listen to that!</string>
     <string name="edit">Edit</string>
-    
+    <string name="audio_record_title">Audio recording…</string>
+    <string name="audio_record_message">Recording…</string>
+    <string name="audio_playback_title">Audio playback…</string>
+    <string name="audio_playback_select_title">What do you want to do?</string>
+    <string name="audio_playback_pause">Pause</string>
+    <string name="audio_playback_play">Play</string>
+    <string name="audio_playback_stop">Stop</string>
+
+    <string-array name="audio_playback_options">
+        <item>Open file</item>
+        <item>Play loud</item>
+        <item>Play silent</item>
+    </string-array>
+
     <!-- Reccuring -->
     <string name="daily">Daily</string>
     <string name="second_day">Bidaily</string>
     <string name="weekly">Weekly</string>
     <string name="two_weekly">Biweekly</string>
-	<string name="yearly">Yearly</string>
-	<string name="monthly">Monthly</string>
-	
-	<string name="hourly">Hourly</string>
-	<string name="minutly">Every Minute</string>
-	<string name="recurring">Recurrence</string>
-	<string name="label">Label</string>
-	<string name="forDue">Use it for due</string>
-	
-	<string name="minute">Minute</string>
-	<string name="hour">Hour</string>
-	<string name="day">Day</string>
-	<string name="month">Month</string>
-	<string name="year">Year</string>
-	<string name="recurring_summary">Every %1$s%2$s</string>
-	<string name="new_recurring">New recurrence</string>
-	<string name="add_recurring">Set recurrence</string>
-	<string name="intervall">Interval</string>
-	<string name="beginning">Beginning</string>
-	<string name="end">End</string>
-	<string name="no_begin_end">No %s</string>
-	<string name="beginning_end">Beginning and End</string>
-	<string name="save">Save</string>
-	<string name="file_to_large">Failed to create thumbnail</string>
-	<string name="recurring_not_zero">Recurring can\'t be zero!</string>
-	
-	
+    <string name="yearly">Yearly</string>
+    <string name="monthly">Monthly</string>
+    <string name="hourly">Hourly</string>
+    <string name="minutly">Every Minute</string>
+    <string name="recurring">Recurrence</string>
+    <string name="label">Label</string>
+    <string name="forDue">Use it for due</string>
+    <string name="minute">Minute</string>
+    <string name="hour">Hour</string>
+    <string name="day">Day</string>
+    <string name="month">Month</string>
+    <string name="year">Year</string>
+    <string name="new_recurring">New recurrence</string>
+    <string name="intervall">Interval</string>
+    <string name="beginning">Beginning</string>
+    <string name="end">End</string>
+    <string name="no_begin_end">No %s</string>
+    <string name="beginning_end">Beginning and End</string>
+    <string name="save">Save</string>
+    <string name="file_to_large">Failed to create thumbnail</string>
+    <string name="every">Every</string>
+    <!-- Specifies that a repeating event to repeat forever (based on the defined frequency) instead of ending at a future date[CHAR LIMIT=20] -->
+    <string name="recurrence_end_continously">Forever</string>
+    <!-- Specifies that a repeating event to repeat until a certain date[CHAR LIMIT=25] -->
+    <string name="recurrence_end_date_label">Until a date</string>
+    <string name="use_exact_recurrence">Set recurrence based on done date?</string>
+    <string name="recurrence_from_now">From now</string>
+    <string name="recurrence_from">From</string>
+
+    <!-- TaskFragment -->
+
+    <!-- Repeat an monthly event on the same day of every month [CHAR LIMIT=20] -->
+    <string name="recurrence_month_pattern_by_day">on the same day each month</string>
+    <!-- Description of the selected marker for accessibility support [CHAR LIMIT = NONE] -->
+    <string name="acessibility_recurrence_choose_end_date_description">change end date</string>
+    <!-- The button label for saving an event -->
+    <string name="save_label">Done</string>
+    <string name="audio_record_file">Audio record</string>
+    <string name="image_file">Image</string>
+
 </resources>

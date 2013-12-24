@@ -16,16 +16,16 @@ import android.media.ExifInterface;
 import android.util.Log;
 import android.util.TypedValue;
 import android.widget.Toast;
-import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.FileUtils;
 
 public class FileMirakel extends FileBase {
 
-	public static final String cacheDirPath = Mirakel.getMirakelDir()
+	public static final String cacheDirPath = FileUtils.getMirakelDir()
 			+ "image_cache";
 	public static final File cacheDir = new File(cacheDirPath);
 	public static final String TABLE = "files";

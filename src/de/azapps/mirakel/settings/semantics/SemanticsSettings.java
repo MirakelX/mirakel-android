@@ -30,7 +30,7 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
-import de.azapps.mirakel.helper.Helpers;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.settings.ListSettings;
@@ -46,7 +46,7 @@ public class SemanticsSettings implements OnPreferenceChangeListener {
 
 	protected AlertDialog alert;
 	private EditTextPreference semanticsCondition;
-	private ListPreference semanticsList, semanticsPriority;
+	private ListPreference semanticsList, semanticsPriority, semanticsWeekday;
 	private Preference semanticsDue;
 	private int dueDialogValue;
 	private VALUE dueDialogDayYear;
@@ -140,6 +140,11 @@ public class SemanticsSettings implements OnPreferenceChangeListener {
 										case YEAR:
 											semantic.setDue(val * 365);
 											break;
+										default:
+											// The other things aren't shown in
+											// the dialog so we haven't to care
+											// about them
+											break;
 										}
 										semanticsDue
 												.setSummary(updateDueStuff());
@@ -152,6 +157,20 @@ public class SemanticsSettings implements OnPreferenceChangeListener {
 
 					}
 				});
+
+		// Weekday
+		Integer weekday = semantic.getWeekday();
+		semanticsWeekday = (ListPreference) findPreference("semantics_weekday");
+		semanticsWeekday.setOnPreferenceChangeListener(this);
+		semanticsWeekday.setEntries(R.array.weekdays);
+		CharSequence[] weekdaysNum = { "0", "1", "2", "3", "4", "5", "6", "7" };
+
+		semanticsWeekday.setEntryValues(weekdaysNum);
+		if (weekday == null)
+			semanticsWeekday.setValueIndex(0);
+		else
+			semanticsWeekday.setValueIndex(weekday);
+		semanticsWeekday.setSummary(semanticsWeekday.getEntry());
 
 		// List
 		semanticsList = (ListPreference) findPreference("semantics_list");
@@ -245,6 +264,14 @@ public class SemanticsSettings implements OnPreferenceChangeListener {
 			semantic.save();
 		} else if (key.equals("semantics_due")) {
 
+		} else if (key.equals("semantics_weekday")) {
+			Integer weekday = Integer.parseInt(newValue);
+			if (weekday == 0)
+				weekday = null;
+			semantic.setWeekday(weekday);
+			semanticsWeekday.setValue(newValue);
+			semanticsWeekday.setSummary(semanticsWeekday.getEntry());
+			semantic.save();
 		} else if (key.equals("semantics_list")) {
 			if (newValue.equals("null")) {
 				semantic.setList(null);
@@ -263,7 +290,7 @@ public class SemanticsSettings implements OnPreferenceChangeListener {
 			semantic.save();
 			semanticsCondition.setSummary(newValue);
 			semanticsCondition.setText(newValue);
-			if (Helpers.isTablet(ctx) && v4_0) {
+			if (MirakelPreferences.isTablet() && v4_0) {
 				((ListSettings) ctx).invalidateHeaders();
 			}
 		}

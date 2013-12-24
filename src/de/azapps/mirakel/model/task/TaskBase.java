@@ -34,6 +34,7 @@ import com.google.gson.reflect.TypeToken;
 
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.DateTimeHelper;
+import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -42,42 +43,39 @@ import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 
 class TaskBase {
-	public static final String PRIORITY = "priority";
-	public static final String CONTENT = "content";
-	public static final String DUE = "due";
-	public static final String DONE = "done";
-	public static final String UUID = "uuid";
-	public static final String LIST_ID = "list_id";
-	public static final String REMINDER = "reminder";
-	public static final String RECURRING = "recurring";
-	public static final String RECURRING_REMINDER = "recurring_reminder";
-	public static final String ADDITIONAL_ENTRIES = "additional_entries";
+	public static final String		PRIORITY			= "priority";
+	public static final String		CONTENT				= "content";
+	public static final String		DUE					= "due";
+	public static final String		DONE				= "done";
+	public static final String		UUID				= "uuid";
+	public static final String		LIST_ID				= "list_id";
+	public static final String		REMINDER			= "reminder";
+	public static final String		RECURRING			= "recurring";
+	public static final String		RECURRING_REMINDER	= "recurring_reminder";
+	public static final String		ADDITIONAL_ENTRIES	= "additional_entries";
+	public static final String		PROGRESS			= "progress";
 
-	@SuppressWarnings("unused")
-	private static final String TAG = "TaskBase";
-	private long id = 0;
-	private String uuid = "";
-	private ListMirakel list;
-	private String name;
-	private String content;
-	private boolean done;
-	private Calendar due;
-	private int priority;
-	private Calendar createdAt;
-	private Calendar updatedAt;
-	protected Map<String, Boolean> edited = new HashMap<String, Boolean>();
-	private Map<String, String> additionalEntries = null;
-	private String additionalEntriesString;
-	private SYNC_STATE sync_state;
-	private Calendar reminder;
-	private int recurrence;
-	private int recurring_reminder;
+	private static final String		TAG					= "TaskBase";
+	private long					id					= 0;
+	private String					uuid				= "";
+	private ListMirakel				list;
+	private String					name;
+	private String					content;
+	private boolean					done;
+	private Calendar				due;
+	private int						priority;
+	private Calendar				createdAt;
+	private Calendar				updatedAt;
+	protected Map<String, Boolean>	edited				= new HashMap<String, Boolean>();
+	private Map<String, String>		additionalEntries	= null;
+	private String					additionalEntriesString;
+	private SYNC_STATE				sync_state;
+	private Calendar				reminder;
+	private int						recurrence;
+	private int						recurring_reminder;
+	private int						progress;
 
-	TaskBase(long id, String uuid, ListMirakel list, String name,
-			String content, boolean done, Calendar due, Calendar reminder,
-			int priority, Calendar created_at, Calendar updated_at,
-			SYNC_STATE sync_state, String additionalEntriesString,
-			int recurring, int recurring_reminder) {
+	TaskBase(long id, String uuid, ListMirakel list, String name, String content, boolean done, Calendar due, Calendar reminder, int priority, Calendar created_at, Calendar updated_at, SYNC_STATE sync_state, String additionalEntriesString, int recurring, int recurring_reminder, int progress) {
 		this.id = id;
 		this.uuid = uuid;
 		this.setList(list);
@@ -93,6 +91,7 @@ class TaskBase {
 		this.additionalEntriesString = additionalEntriesString;
 		this.recurrence = recurring;
 		this.recurring_reminder = recurring_reminder;
+		this.progress = progress;
 	}
 
 	TaskBase() {
@@ -114,6 +113,7 @@ class TaskBase {
 		this.setSyncState(SYNC_STATE.NOTHING);
 		this.recurrence = -1;
 		this.recurring_reminder = -1;
+		this.progress = 0;
 	}
 
 	public Recurring getRecurring() {
@@ -184,10 +184,8 @@ class TaskBase {
 	}
 
 	public String getContent() {
-		if (content == null)
-			return "";
-		else
-			return content;
+		if (content == null) return "";
+		return content;
 	}
 
 	public void setContent(String content) {
@@ -209,13 +207,19 @@ class TaskBase {
 		this.done = done;
 		edited.put(DONE, true);
 		if (done && recurrence != -1 && due != null) {
-			due = getRecurring().addRecurring(due);
-			if (reminder != null) {
-				// Fix for #84
-				// Update Reminder if set Task done
-				reminder = getRecurring().addRecurring(reminder);
+			if (getRecurring() != null) {
+				due = getRecurring().addRecurring(due);
+				if (reminder != null) {
+					// Fix for #84
+					// Update Reminder if set Task done
+					reminder = getRecurring().addRecurring(reminder);
+				}
+				this.done = false;
+			} else {
+				Log.wtf(TAG, "Reccuring vanish");
 			}
-			this.done = false;
+		} else if (done) {
+			this.progress = 100;
 		}
 	}
 
@@ -320,6 +324,15 @@ class TaskBase {
 		additionalEntries.remove(key);
 	}
 
+	public int getProgress() {
+		return progress;
+	}
+
+	public void setProgress(int progress) {
+		edited.put("progress", true);
+		this.progress = progress;
+	}
+
 	boolean isEdited() {
 		return edited.size() > 0;
 	}
@@ -343,8 +356,8 @@ class TaskBase {
 				this.additionalEntries = new HashMap<String, String>();
 			} else {
 				Gson gson = new Gson();
-				Type mapType = new TypeToken<Map<String, String>>() {
-				}.getType();
+				Type mapType = new TypeToken<Map<String, String>>() {}
+						.getType();
 				this.additionalEntries = gson.fromJson(additionalEntriesString,
 						mapType);
 			}
@@ -365,8 +378,7 @@ class TaskBase {
 			// list so we can do something with it.
 			list = ListMirakel.first();
 			// Bad things happened… Now we can throw our beloved exception
-			if (list == null)
-				throw new NoSuchListException();
+			if (list == null) throw new NoSuchListException();
 		}
 		cv.put(LIST_ID, list.getId());
 		cv.put(DatabaseHelper.NAME, name);
@@ -391,6 +403,7 @@ class TaskBase {
 		cv.put(SyncAdapter.SYNC_STATE, sync_state.toInt());
 		cv.put(RECURRING, recurrence);
 		cv.put(RECURRING_REMINDER, recurring_reminder);
+		cv.put(PROGRESS, progress);
 
 		Gson gson = new GsonBuilder().create();
 		String additionalEntries = gson.toJson(this.additionalEntries);

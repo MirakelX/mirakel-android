@@ -11,7 +11,6 @@
   <string name="special_list_contains">Argumenti izbire</string>
   <string name="special_list_summary">Povzetek</string>
   <string name="special_lists_defaults">Privzete vrednosti</string>
-  <string name="list_menu_new_special_list">Nov posebni seznam</string>
   <string name="special_list_where_prio_title_text">Prednost</string>
   <string name="special_list_where_name_title_text">ime</string>
   <string name="special_list_where_content_title_text">Vsebina</string>
@@ -23,8 +22,6 @@
   <string name="select_by">Izberi z</string>
   <string name="done">Končane naloge</string>
   <string name="undone">Razveljavljene naloge</string>
-  <string name="recurrence_no">Brez ponavljanja</string>
-  <string name="recurrence_custom_title">Ponavljanje po meri</string>
   <string name="recurrence_custom">Po meri</string>
   <string name="today">Danes</string>
   <string name="tomorrow">Jutri</string>
@@ -48,9 +45,9 @@
     <item>+ 1 leto</item>
   </string-array>
   <string-array name="due_day_year_values">
-    <item>dan</item>
-    <item>mesec</item>
-    <item>leto</item>
+    <item>Dan</item>
+    <item>Mesec</item>
+    <item>Leto</item>
   </string-array>
   <string-array name="due_day_year_values_plural">
     <item>dni</item>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:mirakel="http://schemas.android.com/apk/res/de.azapps.mirakelandroid"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <com.sleepbot.datetimepicker.time.TimePicker
+        android:id="@+id/time_picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        mirakel:initialHour="0"
+        mirakel:initialMinute="0"
+        mirakel:is24HourMode="true" />
+
+</LinearLayout>

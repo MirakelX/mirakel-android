@@ -7,7 +7,8 @@
   <string name="special_list_def_list">Liste par défaut</string>
   <string name="special_list_def_date">Date par défaut</string>
   <string name="special_list_first">Par défaut</string>
-  <string name="list_menu_new_special_list">Nouvelle liste spéciale</string>
+  <string name="special_list_summary">Résumé</string>
+  <string name="special_lists_defaults">Valeurs par Défaut</string>
   <string name="special_list_where_prio_title_text">Priorité</string>
   <string name="special_list_where_name_title_text">Nom</string>
   <string name="special_list_where_content_title_text">Contenu</string>
@@ -19,6 +20,7 @@
   <string name="select_by">Sélectionner par</string>
   <string name="done">Tâches finies</string>
   <string name="undone">Tâches à refaire</string>
+  <string name="recurrence_custom">Personnalisé</string>
   <string name="today">Aujourd’hui</string>
   <string name="tomorrow">Demain</string>
   <string name="reminder_set">Le rappel est défini</string>

@@ -30,13 +30,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.preference.PreferenceManager;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.UndoHistory;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.account.AccountMirakel;
@@ -100,7 +100,7 @@ public class ListMirakel extends ListBase {
 	}
 
 	public void save(boolean log) {
-		SharedPreferences.Editor editor = preferences.edit();
+		SharedPreferences.Editor editor = MirakelPreferences.getEditor();
 		// TODO implement for specialLists
 		if (getId() > 0) {
 			database.beginTransaction();
@@ -236,7 +236,6 @@ public class ListMirakel extends ListBase {
 			ACCOUNT_ID };
 	private static final String TAG = "ListMirakel";
 	private static Context context;
-	private static SharedPreferences preferences;
 
 	public static ListMirakel parseJson(JsonObject el) {
 		ListMirakel t = null;
@@ -281,10 +280,9 @@ public class ListMirakel extends ListBase {
 	 * @param context
 	 *            The Application-Context
 	 */
-	public static void init(Context context) {
+	public static void init(@SuppressWarnings("hiding") Context context) {
 		ListMirakel.context = context;
 		dbHelper = new DatabaseHelper(context);
-		preferences = PreferenceManager.getDefaultSharedPreferences(context);
 		database = dbHelper.getWritableDatabase();
 	}
 
@@ -315,7 +313,7 @@ public class ListMirakel extends ListBase {
 	 * @return new List
 	 */
 	public static ListMirakel newList(String name, int sort_by) {
-		return newList(name, sort_by, AccountMirakel.getDefault());
+		return newList(name, sort_by, MirakelPreferences.getDefaultAccount());
 	}
 
 	public static ListMirakel newList(String name, int sort_by,
@@ -385,6 +383,14 @@ public class ListMirakel extends ListBase {
 		return null;
 	}
 
+	public static ListMirakel safeGetList(int listId) {
+		ListMirakel l=getList(listId);
+		if (l == null) {
+			l = safeFirst(context);
+		}
+		return l;
+	}
+
 	public static ListMirakel getList(int listId) {
 		if (listId < 0)
 			return SpecialList.getSpecialList(-listId);
@@ -397,6 +403,7 @@ public class ListMirakel extends ListBase {
 			cursor.close();
 			return t;
 		}
+		cursor.close();
 		return null;
 	}
 
@@ -528,18 +535,35 @@ public class ListMirakel extends ListBase {
 		return lists;
 	}
 
-	public static ListMirakel getSafeDefaultList(Context context) {
-		ListMirakel list = null;
-		SharedPreferences p = PreferenceManager
-				.getDefaultSharedPreferences(context);
-		if (p.getBoolean("importDefaultList", false)) {
-			list = ListMirakel.getList(p.getInt("defaultImportList",
-					SpecialList.firstSpecialSafe(context).getId()));
-		}
-		if (list == null) {
-			list = SpecialList.firstSpecialSafe(context);
-		}
+	public static ListMirakel getSafeDefaultList() {
+		ListMirakel list = MirakelPreferences.getImportDefaultList(true);
 		return list;
+	}
+
+	public static List<ListMirakel> getListsForAccount(AccountMirakel account) {
+		if (account == null || !account.isEnabeld()) {
+			return new ArrayList<ListMirakel>();
+		}
+		Cursor c = database.query(TABLE, allColumns, "NOT "
+				+ SyncAdapter.SYNC_STATE + "=" + SYNC_STATE.DELETE + " and "
+				+ ACCOUNT_ID + "=" + account.getId(), null, null, null, null);
+		c.moveToFirst();
+		List<ListMirakel> list = cursorToListList(c);
+		c.close();
+		return list;
+	}
+
+	public static ListMirakel getInboxList(AccountMirakel account) {
+		Cursor c = database.query(TABLE, allColumns, DatabaseHelper.NAME + "='"
+				+ context.getString(R.string.inbox) + "' and " + ACCOUNT_ID
+				+ "=" + account.getId(), null, null, null, null);
+		c.moveToFirst();
+		if (c.getCount() > 0) {
+			ListMirakel l = cursorToList(c);
+			c.close();
+			return l;
+		}
+		return newList(context.getString(R.string.inbox), SORT_BY_OPT, account);
 	}
 
 }

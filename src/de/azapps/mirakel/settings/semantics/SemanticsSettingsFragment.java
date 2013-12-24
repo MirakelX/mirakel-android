@@ -26,8 +26,9 @@ import android.preference.PreferenceFragment;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.ImageButton;
-import de.azapps.mirakel.helper.Helpers;
+import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.settings.ListSettings;
 import de.azapps.mirakelandroid.R;
@@ -48,7 +49,7 @@ public class SemanticsSettingsFragment extends PreferenceFragment {
 			semantic = Semantic.get(getArguments().getInt("id"));
 			((SemanticsSettingsActivity) getActivity()).setSemantic(semantic);
 			actionBar.setTitle(semantic.getCondition());
-			if (!Helpers.isTablet(getActivity())) {
+			if (!MirakelPreferences.isTablet()) {
 				ImageButton delSemantic = new ImageButton(getActivity());
 				delSemantic
 						.setBackgroundResource(android.R.drawable.ic_menu_delete);
@@ -58,7 +59,8 @@ public class SemanticsSettingsFragment extends PreferenceFragment {
 						new ActionBar.LayoutParams(
 								ActionBar.LayoutParams.WRAP_CONTENT,
 								ActionBar.LayoutParams.WRAP_CONTENT,
-								Gravity.CENTER_VERTICAL | Gravity.RIGHT));
+										Gravity.CENTER_VERTICAL
+												| Mirakel.GRAVITY_RIGHT));
 				delSemantic.setOnClickListener(((ListSettings) getActivity())
 						.getDelOnClickListener());
 			}

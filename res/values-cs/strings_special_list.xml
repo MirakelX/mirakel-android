@@ -11,7 +11,6 @@
   <string name="special_list_contains">Argumenty výběru</string>
   <string name="special_list_summary">Popis</string>
   <string name="special_lists_defaults">Výchozí hodnoty</string>
-  <string name="list_menu_new_special_list">Nový speciální seznam</string>
   <string name="special_list_where_prio_title_text">Priorita</string>
   <string name="special_list_where_name_title_text">Jméno</string>
   <string name="special_list_where_content_title_text">Obsah</string>
@@ -23,8 +22,6 @@
   <string name="select_by">Vybrat podle</string>
   <string name="done">Vyřešené úkoly</string>
   <string name="undone">Nevyřešené úkoly</string>
-  <string name="recurrence_no">Bez opakování</string>
-  <string name="recurrence_custom_title">Vlastní opakování</string>
   <string name="recurrence_custom">Vlastní</string>
   <string name="today">Dnes</string>
   <string name="tomorrow">Zítra</string>
@@ -33,7 +30,6 @@
   <string name="inverte">Invertovat výběr</string>
   <string name="not_in">Nepatří do</string>
   <string name="where_like_contain_text">Obsahuje</string>
-  <string name="where_like_begin_text">Začíná na</string>
   <string name="where_like_end_text">Končí na</string>
   <string name="delete">Smazat</string>
   <string name="nothing">Bez opakování</string>

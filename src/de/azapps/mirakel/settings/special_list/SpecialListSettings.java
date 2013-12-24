@@ -43,8 +43,8 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
-import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.ListDialogHelpers;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.settings.ListSettings;
@@ -91,9 +91,8 @@ public class SpecialListSettings implements OnPreferenceChangeListener {
 				if (newValue != null && !((String) newValue).equals("")) {
 					specialList.setName(newValue.toString());
 					specialList.save();
-
 					name.setSummary(specialList.getName());
-					if (Helpers.isTablet(ctx) && v4_0) {
+					if (MirakelPreferences.isTablet() && v4_0) {
 						((ListSettings) ctx).invalidateHeaders();
 					}
 				}
@@ -802,6 +801,12 @@ public class SpecialListSettings implements OnPreferenceChangeListener {
 										summary += ctx.getResources()
 												.getQuantityString(
 														R.plurals.due_day, val);
+										break;
+									default:
+										// The other things aren't
+										// shown in
+										// the dialog so we haven't to care
+										// about them
 										break;
 									}
 

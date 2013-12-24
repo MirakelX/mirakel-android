@@ -55,14 +55,12 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
@@ -80,10 +78,12 @@ import android.widget.ViewSwitcher;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.MirakelPreferences;
+import de.azapps.mirakel.model.account.AccountMirakel;
+import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
-import de.azapps.mirakel.sync.SyncAdapter.SYNC_TYPES;
 import de.azapps.mirakel.sync.caldav.CalDavSync;
 import de.azapps.mirakel.sync.mirakel.MirakelSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
@@ -135,7 +135,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 
 	private EditText mUsernameEdit;
 
-	private SyncAdapter.SYNC_TYPES syncType;
+	private ACCOUNT_TYPES syncType;
 
 	private String config_file;
 
@@ -145,9 +145,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 	@Override
 	public void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
-		SharedPreferences preferences = PreferenceManager
-				.getDefaultSharedPreferences(this);
-		if (preferences.getBoolean("DarkTheme", false))
+		if (MirakelPreferences.isDark())
 			setTheme(R.style.DialogDark);
 		mAccountManager = AccountManager.get(this);
 		final Intent intent = getIntent();
@@ -181,7 +179,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				 */
 				String syncTypeString = mType.getSelectedItem().toString();
 				Log.d(TAG, syncTypeString);
-				syncType = SYNC_TYPES.getSyncType(syncTypeString);
+				syncType = ACCOUNT_TYPES.getSyncType(syncTypeString);
 				mMessage.setText(syncTypeString);
 				ViewSwitcher switcher = (ViewSwitcher) findViewById(R.id.switcher_login);
 				switch (syncType) {
@@ -220,7 +218,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 		});
 		mMessage.setText(getMessage(getResources().getStringArray(
 				R.array.server_typs)[0]));
-		if (preferences.getBoolean("DarkTheme", false)
+		if (MirakelPreferences.isDark()
 				&& VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB) {
 			findViewById(R.id.login_button_frame).setBackgroundColor(
 					getResources().getColor(android.R.color.transparent));
@@ -307,7 +305,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == Activity.RESULT_OK
 				&& requestCode == CONFIG_TASKWARRIOR) {
-			config_file = Helpers.getPathFromUri(data.getData(), this);
+			config_file = FileUtils.getPathFromUri(data.getData(), this);
 			((TextView) findViewById(R.id.login_taskwarrior_path))
 					.setText(config_file);
 		}
@@ -323,13 +321,13 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 	 *            The Submit button for which this method is invoked
 	 */
 	public void handleLogin(View view) {
-		syncType = SYNC_TYPES.getSyncType(mType.getSelectedItem().toString());
+		syncType = ACCOUNT_TYPES.getSyncType(mType.getSelectedItem().toString());
 		if (mRequestNewAccount) {
 			mUsername = mUsernameEdit.getText().toString();
 		}
 		mPassword = mPasswordEdit.getText().toString();
 		if ((TextUtils.isEmpty(mUsername) || TextUtils.isEmpty(mPassword))
-				&& syncType != SYNC_TYPES.TASKWARRIOR) {
+				&& syncType != ACCOUNT_TYPES.TASKWARRIOR) {
 			mMessage.setText(getMessage(mType.getSelectedItem().toString()));
 		} else {
 			if (((CheckBox) findViewById(R.id.resync)).isChecked()) {
@@ -377,7 +375,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				final Intent intent = new Intent();
 				intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, mUsername);
 				intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE,
-						Mirakel.ACCOUNT_TYPE);
+						AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
 				setAccountAuthenticatorResult(intent.getExtras());
 				setResult(RESULT_OK, intent);
 				finish();
@@ -397,7 +395,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 
 	private void handleCalDavLogin() {
 		Account account = new Account(mUsernameEdit.getText().toString(),
-				Mirakel.ACCOUNT_TYPE);
+				AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
 		Bundle b = new Bundle();
 		b.putString(SyncAdapter.BUNDLE_SERVER_TYPE, CalDavSync.TYPE);
 		b.putString(SyncAdapter.BUNDLE_SERVER_URL,
@@ -433,7 +431,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				String[] t = content.split("org: ");
 				Log.d(TAG, "user: " + t[0].replace("username: ", ""));
 				final Account account = new Account(t[0].replace("username: ",
-						"").replace("\n", ""), Mirakel.ACCOUNT_TYPE);
+						"").replace("\n", ""), AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
 				t = t[1].split("user key: ");
 				Log.d(TAG, "org: " + t[0].replace("\n", ""));
 				b.putString(SyncAdapter.BUNDLE_ORG, t[0].replace("\n", ""));
@@ -449,16 +447,16 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				t = t[1].split("Client.key:\n");
 				Log.d(TAG, "client cert: " + t[0].replace("\n", ""));
 
-				FileUtils.writeToFile(
+				FileUtils.safeWriteToFile(
 						new File(TaskWarriorSync.CLIENT_CERT_FILE), t[0]);
 
 				t = t[1].split("ca.cert:\n");
 				Log.d(TAG, "client key: " + t[0].replace("\n", ""));
 
-				FileUtils.writeToFile(
+				FileUtils.safeWriteToFile(
 						new File(TaskWarriorSync.CLIENT_KEY_FILE), t[0]);
 				Log.d(TAG, "ca: " + t[1].replace("\n", ""));
-				FileUtils.writeToFile(new File(TaskWarriorSync.CA_FILE), t[1]);
+				FileUtils.safeWriteToFile(new File(TaskWarriorSync.CA_FILE), t[1]);
 				mAccountManager.addAccountExplicitly(account, pwd, b);
 			} catch (ArrayIndexOutOfBoundsException e) {
 				Log.e(TAG, "wrong Configfile");
@@ -483,7 +481,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 	 */
 	private void finishMirakelLogin(String url, String token) {
 		Log.i(TAG, "finishLogin()");
-		final Account account = new Account(mUsername, Mirakel.ACCOUNT_TYPE);
+		final Account account = new Account(mUsername, AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
 		if (mRequestNewAccount) {
 			Bundle b = new Bundle();
 			b.putString(SyncAdapter.BUNDLE_SERVER_URL, url);

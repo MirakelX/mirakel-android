@@ -25,8 +25,9 @@ import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.view.Gravity;
 import android.widget.ImageButton;
-import de.azapps.mirakel.helper.Helpers;
+import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.settings.ListSettings;
 import de.azapps.mirakelandroid.R;
@@ -48,7 +49,7 @@ public class RecurringFragment extends PreferenceFragment {
 			recurring = Recurring.get(getArguments().getInt("id"));
 			((RecurringActivity) getActivity()).setReccuring(recurring);
 			actionBar.setTitle(recurring.getLabel());
-			if (!Helpers.isTablet(getActivity())) {
+			if (!MirakelPreferences.isTablet()) {
 				ImageButton delSemantic = new ImageButton(getActivity());
 				delSemantic
 						.setBackgroundResource(android.R.drawable.ic_menu_delete);
@@ -58,7 +59,8 @@ public class RecurringFragment extends PreferenceFragment {
 						new ActionBar.LayoutParams(
 								ActionBar.LayoutParams.WRAP_CONTENT,
 								ActionBar.LayoutParams.WRAP_CONTENT,
-								Gravity.CENTER_VERTICAL | Gravity.RIGHT));
+										Gravity.CENTER_VERTICAL
+												| Mirakel.GRAVITY_RIGHT));
 				delSemantic.setOnClickListener(((ListSettings) getActivity())
 						.getDelOnClickListener());
 			}

@@ -4,6 +4,4 @@
   <string name="widget_list">Liste</string>
   <string name="widget_list_summary">Vis \"%s\"</string>
   <string name="widget_done">Ferdige oppgaver</string>
-  <string name="widget_sort">Sortering</string>
-  <string name="widget_sort_summary">Sorter etter \"%s\"</string>
 </resources>

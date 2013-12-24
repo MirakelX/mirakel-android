@@ -11,9 +11,7 @@
   <string name="special_list_contains">Auswahl-Argumente</string>
   <string name="special_list_summary">Zusammenfassung</string>
   <string name="special_lists_defaults">Standard Werte</string>
-  <string name="list_menu_new_special_list">Neu Erweiterte Liste</string>
   <string name="special_list_where_prio_title_text">Priorität</string>
-  <string name="special_list_where_prio_content_text">Welche Prioritäten sollen eingeschlossen sein</string>
   <string name="special_list_where_name_title_text">Name</string>
   <string name="special_list_where_content_title_text">Notiz</string>
   <string name="special_list_where_list_title_text">Liste</string>
@@ -24,14 +22,12 @@
   <string name="select_by">Auswählen</string>
   <string name="done">Erledigte Aufgaben</string>
   <string name="undone">Unerledigte Aufgaben</string>
-  <string name="recurrence_no">Keine Wiederholung</string>
-  <string name="recurrence_custom_title">Benutzerdefiniert</string>
   <string name="recurrence_custom">Benutzerdefiniert</string>
   <string name="today">Heute</string>
   <string name="tomorrow">Morgen</string>
   <string name="reminder_set">Aufgaben mit Erinnerung</string>
   <string name="reminder_unset">Aufgaben ohne Erinnerung</string>
-  <string name="inverte">Auswahl invertieren</string>
+  <string name="inverte">Auswahl umkehren</string>
   <string name="not_in">Nicht in</string>
   <string name="where_like_contain_text">Enthält</string>
   <string name="where_like_begin_text">Beginnt mit</string>

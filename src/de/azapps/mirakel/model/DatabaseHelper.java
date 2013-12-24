@@ -28,11 +28,13 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.export_import.ExportImport;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.account.AccountMirakel;
+import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -41,7 +43,6 @@ import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
-import de.azapps.mirakel.sync.SyncAdapter.SYNC_TYPES;
 import de.azapps.mirakel.sync.mirakel.MirakelSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
 import de.azapps.mirakelandroid.R;
@@ -50,7 +51,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String TAG = "DatabaseHelper";
 	private Context context;
-	public static final int DATABASE_VERSION = 25;
+	public static final int DATABASE_VERSION = 30;
 
 	public static final String ID = "_id";
 	public static final String CREATED_AT = "created_at";
@@ -59,6 +60,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	public DatabaseHelper(Context ctx) {
 		super(ctx, "mirakel.db", null, DATABASE_VERSION);
+		MirakelPreferences.init(ctx);
 		context = ctx;
 	}
 
@@ -88,10 +90,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		Log.e(TAG,"You are downgrading the Database!");
-		// This is only for developers… There shouldn't happen bad things if you use a database with a higher version.
+		Log.e(TAG, "You are downgrading the Database!");
+		// This is only for developers… There shouldn't happen bad things if you
+		// use a database with a higher version.
 	}
 
+	@SuppressWarnings({ "incomplete-switch", "fallthrough" })
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		Log.e(DatabaseHelper.class.getName(),
@@ -106,7 +110,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		case 1:// Nothing, Startversion
 		case 2:
 			// Add sync-state
-			;
 			db.execSQL("Alter Table " + Task.TABLE + " add column "
 					+ SyncAdapter.SYNC_STATE + " INTEGER DEFAULT "
 					+ SYNC_STATE.ADD + ";");
@@ -232,10 +235,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ "priority INTEGER, " + "list INTEGER);");
 			db.execSQL("INSERT INTO semantic_conditions (condition,due) VALUES "
 					+ "(\""
-					+ context.getString(R.string.today).toLowerCase()
+						+ context.getString(R.string.today).toLowerCase(
+								Helpers.getLocal(context))
 					+ "\",0);"
 					+ "INSERT INTO semantic_conditions (condition,due) VALUES (\""
-					+ context.getString(R.string.tomorrow).toLowerCase()
+						+ context.getString(R.string.tomorrow).toLowerCase(
+								Helpers.getLocal(context))
 					+ "\",1);");
 		case 15:// Add Color
 			db.execSQL("Alter Table " + ListMirakel.TABLE + " add column "
@@ -318,20 +323,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			// Add Accountmanagment
 		case 24:
 			createAccountTable(db);
-			SYNC_TYPES type = SYNC_TYPES.LOCAL;
-			;
+			ACCOUNT_TYPES type = ACCOUNT_TYPES.LOCAL;
 			AccountManager am = AccountManager.get(context);
 			String accountname = context.getString(R.string.local_account);
-			if (am.getAccountsByType(Mirakel.ACCOUNT_TYPE).length > 0) {
-				Account a = am.getAccountsByType(Mirakel.ACCOUNT_TYPE)[0];
+			if (am.getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL).length > 0) {
+				Account a = am
+						.getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL)[0];
 				String t = (AccountManager.get(context)).getUserData(a,
 						SyncAdapter.BUNDLE_SERVER_TYPE);
 				if (t.equals(MirakelSync.TYPE)) {
-					type = SYNC_TYPES.MIRAKEL;
-					accountname = t;
+					type = ACCOUNT_TYPES.MIRAKEL;
+					accountname = a.name;
 				} else if (t.equals(TaskWarriorSync.TYPE)) {
-					type = SYNC_TYPES.TASKWARRIOR;
-					accountname = t;
+					type = ACCOUNT_TYPES.TASKWARRIOR;
+					accountname = a.name;
 				}
 			}
 			ContentValues cv = new ContentValues();
@@ -344,6 +349,44 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ AccountMirakel.TABLE + " (" + ID
 					+ ") ON DELETE CASCADE ON UPDATE CASCADE DEFAULT "
 					+ accountId + "; ");
+			// add progress
+		case 25:
+			db.execSQL("ALTER TABLE " + Task.TABLE
+					+ " add column progress int NOT NULL default 0;");
+			// Add some columns for caldavsync
+		case 26:
+			db.execSQL("CREATE TABLE caldav_extra(" + ID
+					+ " INTEGER PRIMARY KEY," + "ETAG TEXT,"
+					+ "SYNC_ID TEXT DEFAULT NULL, " + "REMOTE_NAME TEXT)");
+		case 27:
+			db.execSQL("UPDATE " + Task.TABLE + " SET " + Task.PROGRESS
+					+ "=100 WHERE " + Task.DONE + "= 1 AND " + Task.RECURRING
+					+ "=-1");
+		case 28:
+			db.execSQL("ALTER TABLE " + Semantic.TABLE
+					+ " add column weekday int;");
+			String[] weekdays = context.getResources().getStringArray(
+					R.array.weekdays);
+			for (int i = 1; i < weekdays.length; i++) { // Ignore first element
+				db.execSQL("INSERT INTO " + Semantic.TABLE + " ("
+						+ Semantic.CONDITION + "," + Semantic.WEEKDAY
+						+ ") VALUES (?, " + i + ")",
+						new String[] { weekdays[i] });
+			}
+			// add some options to reccuring
+		case 29:
+			db.execSQL("ALTER TABLE "+Recurring.TABLE+ " add column isExact INTEGER DEFAULT 0;");
+			
+			db.execSQL("ALTER TABLE "+Recurring.TABLE+ " add column monday INTEGER DEFAULT 0;");
+			db.execSQL("ALTER TABLE "+Recurring.TABLE+ " add column tuesday INTEGER DEFAULT 0;");
+			db.execSQL("ALTER TABLE "+Recurring.TABLE+ " add column wednesday INTEGER DEFAULT 0;");
+			db.execSQL("ALTER TABLE "+Recurring.TABLE+ " add column thursday INTEGER DEFAULT 0;");
+			db.execSQL("ALTER TABLE "+Recurring.TABLE+ " add column friday INTEGER DEFAULT 0;");
+			db.execSQL("ALTER TABLE "+Recurring.TABLE+ " add column saturday INTEGER DEFAULT 0;");
+			db.execSQL("ALTER TABLE "+Recurring.TABLE+ " add column sunnday INTEGER DEFAULT 0;");
+			
+			db.execSQL("ALTER TABLE "+Recurring.TABLE+ " add column derived_from INTEGER DAFAULT NULL");
+
 		}
 	}
 
@@ -353,7 +396,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ " TEXT NOT NULL, " + "content TEXT, "
 				+ AccountMirakel.ENABLED + " INTEGER NOT NULL DEFAULT 0, "
 				+ AccountMirakel.TYPE + " INTEGER NOT NULL DEFAULT "
-				+ SYNC_TYPES.LOCAL.toInt() + ")");
+				+ ACCOUNT_TYPES.LOCAL.toInt() + ")");
 
 	}
 

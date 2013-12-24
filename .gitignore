@@ -45,3 +45,4 @@ lint.xml
 .idea/**
 *.iml
 out/**
+misc/crowdin.yaml

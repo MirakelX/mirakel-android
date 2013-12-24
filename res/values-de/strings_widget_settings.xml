@@ -4,9 +4,8 @@
   <string name="widget_list">Liste</string>
   <string name="widget_list_summary">Zeige \"%s\"</string>
   <string name="widget_done">Erledigte Aufgaben</string>
-  <string name="widget_sort">Sortieren</string>
-  <string name="widget_sort_summary">Sortiere nach \"%s\"</string>
   <string name="fontcolor">Schriftfarbe</string>
   <string name="widget_transparency">Transparenz</string>
   <string name="widget_transparency_summary">zu %s%% transparent</string>
+  <string name="widget_due_colors">Fälligkeitsdatum einfärben</string>
 </resources>

@@ -18,18 +18,15 @@
  ******************************************************************************/
 package de.azapps.mirakel.helper;
 
-import java.io.File;
-import java.net.URISyntaxException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
@@ -41,95 +38,17 @@ import android.graphics.Shader;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.net.Uri;
-import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.view.View;
-import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.static_activities.SplashScreenActivity;
 import de.azapps.mirakelandroid.R;
-import de.azapps.tools.FileUtils;
 
 public class Helpers {
-	private static String TAG = "Helpers";
+	private static String	TAG	= "Helpers";
 
-	/**
-	 * Wrapper-Class
-	 * 
-	 * @author az
-	 * 
-	 */
-	public interface ExecInterface {
-		public void exec();
-	}
-
-	public static boolean isTablet(Context ctx) {
-		return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
-				"useTabletLayout",
-				ctx.getResources().getBoolean(R.bool.isTablet));
-	}
-
-	/**
-	 * Share a Task as text with other apps
-	 * 
-	 * @param ctx
-	 * @param t
-	 */
-	public static void share(Context ctx, Task t) {
-		String subject = TaskHelper.getTaskName(ctx, t);
-		share(ctx, subject, t.getContent());
-	}
-
-	/**
-	 * Share a list of Tasks from a List with other apps
-	 * 
-	 * @param ctx
-	 * @param l
-	 */
-	public static void share(Context ctx, ListMirakel l) {
-		String subject = ctx.getString(R.string.share_list_title, l.getName(),
-				l.countTasks());
-		String body = "";
-		for (Task t : l.tasks()) {
-			if (t.isDone()) {
-				// body += "* ";
-				continue;
-			} else {
-				body += "* ";
-			}
-			body += TaskHelper.getTaskName(ctx, t) + "\n";
-		}
-		share(ctx, subject, body);
-	}
-
-	/**
-	 * Share something
-	 * 
-	 * @param context
-	 * @param subject
-	 * @param shareBody
-	 */
-	private static void share(Context context, String subject, String shareBody) {
-		shareBody += "\n\n" + context.getString(R.string.share_footer);
-		Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-		sharingIntent.setType("text/plain");
-		sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
-		sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-
-		Intent ci = Intent.createChooser(sharingIntent, context.getResources()
-				.getString(R.string.share_using));
-		ci.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		context.startActivity(ci);
-	}
-
-
-	static SharedPreferences settings = null;
-
-	public static void init(Context context) {
-		settings = PreferenceManager.getDefaultSharedPreferences(context);
-	}
-
+	// Contact
 	public static void contact(Context context) {
 		String mirakelVersion = "unknown";
 		try {
@@ -165,6 +84,39 @@ public class Helpers {
 		}
 	}
 
+	// Help
+	public static void openHelp(Context ctx) {
+		openHelp(ctx, null);
+	}
+
+	public static void openHelp(Context ctx, String title) {
+		String url = "http://mirakel.azapps.de/help_en.html";
+		if (title != null) url += "#" + title;
+		openURL(ctx, url);
+	}
+
+	public static void openURL(Context ctx, String url) {
+		Intent i2 = new Intent(Intent.ACTION_VIEW);
+		i2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		i2.setData(Uri.parse(url));
+		ctx.startActivity(i2);
+	}
+
+	// MISC
+
+	/**
+	 * Wrapper-Class
+	 * 
+	 * @author az
+	 */
+	public interface ExecInterface {
+		public void exec();
+	}
+
+	public interface ExecInterfaceWithTask {
+		public void exec(Task task);
+	}
+
 	public static void showFileChooser(int code, String title, Activity activity) {
 
 		Intent fileDialogIntent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -179,25 +131,13 @@ public class Helpers {
 		}
 	}
 
-	static public String getPathFromUri(Uri uri, Context ctx) {
-		try {
-			return FileUtils.getPath(ctx, uri);
-		} catch (URISyntaxException e) {
-			Toast.makeText(ctx, "Something terrible happened…",
-					Toast.LENGTH_LONG).show();
-			return "";
-		}
-	}
 	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
-	public static void setListColorBackground(ListMirakel list, View row,
-			boolean darkTheme, int w) {
+	public static void setListColorBackground(ListMirakel list, View row, boolean darkTheme, int w) {
 
 		int color;
-		if (list == null)
-			color = 0;
-		else
-			color = list.getColor();
+		if (list == null) color = 0;
+		else color = list.getColor();
 		if (color != 0) {
 			if (darkTheme) {
 				color ^= 0x66000000;
@@ -209,28 +149,16 @@ public class Helpers {
 		mDrawable.getPaint().setShader(
 				new LinearGradient(0, 0, w / 4, 0, color, Color
 						.parseColor("#00FFFFFF"), Shader.TileMode.CLAMP));
-		if (android.os.Build.VERSION.SDK_INT >= 16)
-			row.setBackground(mDrawable);
-		else
-			row.setBackgroundDrawable(mDrawable);
-	}
-
-	public static String getMimeType(String url) {
-		String type = null;
-		String extension = MimeTypeMap.getFileExtensionFromUrl(url);
-		if (extension != null) {
-			MimeTypeMap mime = MimeTypeMap.getSingleton();
-			type = mime.getMimeTypeFromExtension(extension);
-		}
-		return type;
+		if (android.os.Build.VERSION.SDK_INT >= 16) row
+				.setBackground(mDrawable);
+		else row.setBackgroundDrawable(mDrawable);
 	}
 
 	/*
 	 * Scaling down the image
 	 * "Source: http://www.androiddevelopersolution.com/2012/09/bitmap-how-to-scale-down-image-for.html"
 	 */
-	public static Bitmap getScaleImage(Bitmap bitmap, float boundBoxInDp,
-			int rotate) {
+	public static Bitmap getScaleImage(Bitmap bitmap, float boundBoxInDp, int rotate) {
 
 		// Get current dimensions
 		int width = bitmap.getWidth();
@@ -262,54 +190,6 @@ public class Helpers {
 
 	}
 
-	public static final int MEDIA_TYPE_IMAGE = 1;
-	public static final int MEDIA_TYPE_VIDEO = 2;
-
-	/** Create a file Uri for saving an image or video */
-	public static Uri getOutputMediaFileUri(int type) {
-		File file = getOutputMediaFile(type);
-		if (file == null)
-			return null;
-		return Uri.fromFile(file);
-	}
-
-	/** Create a File for saving an image or video */
-	private static File getOutputMediaFile(int type) {
-		// To be safe, you should check that the SDCard is mounted
-		// using Environment.getExternalStorageState() before doing this.
-
-		File mediaStorageDir = new File(
-				Environment
-						.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-				"Mirakel");
-		// This location works best if you want the created images to be shared
-		// between applications and persist after your app has been uninstalled.
-
-		// Create the storage directory if it does not exist
-		if (!mediaStorageDir.exists()) {
-			if (!mediaStorageDir.mkdirs()) {
-				Log.d("MyCameraApp", "failed to create directory");
-				return null;
-			}
-		}
-
-		// Create a media file name
-		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",
-				Locale.getDefault()).format(new Date());
-		File mediaFile;
-		if (type == MEDIA_TYPE_IMAGE) {
-			mediaFile = new File(mediaStorageDir.getPath() + File.separator
-					+ "IMG_" + timeStamp + ".jpg");
-		} else if (type == MEDIA_TYPE_VIDEO) {
-			mediaFile = new File(mediaStorageDir.getPath() + File.separator
-					+ "VID_" + timeStamp + ".mp4");
-		} else {
-			return null;
-		}
-
-		return mediaFile;
-	}
-
 	public static boolean isIntentAvailable(Context context, String action) {
 		final PackageManager packageManager = context.getPackageManager();
 		final Intent intent = new Intent(action);
@@ -318,33 +198,19 @@ public class Helpers {
 		return list.size() > 0;
 	}
 
-	public static void openHelp(Context ctx) {
-		openHelp(ctx, null);
-	}
-
-	public static void openHelp(Context ctx, String title) {
-		String url = "http://mirakel.azapps.de/help_en.html";
-		if (title != null)
-			url += "#" + title;
-		Intent i2 = new Intent(Intent.ACTION_VIEW);
-		i2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		i2.setData(Uri.parse(url));
-		ctx.startActivity(i2);
-	}
-
-	public static void openHelpUs(Context ctx) {
-		String url = "http://mirakel.azapps.de/help_us.html";
-		Intent i2 = new Intent(Intent.ACTION_VIEW);
-		i2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		i2.setData(Uri.parse(url));
-		ctx.startActivity(i2);
-	}
-
 	public static Locale getLocal(Context ctx) {
-		String current = PreferenceManager.getDefaultSharedPreferences(ctx)
-				.getString("language", "-1");
+		String current = MirakelPreferences.getLanguage();
 		return current.equals("-1") ? Locale.getDefault() : new Locale(current);
 
+	}
+
+	public static void restartApp(Context context) {
+		PendingIntent intent = PendingIntent.getActivity(context, 0,
+				new Intent(context, SplashScreenActivity.class), 0);
+		AlarmManager manager = (AlarmManager) context
+				.getSystemService(Context.ALARM_SERVICE);
+		manager.set(AlarmManager.RTC, System.currentTimeMillis() + 100, intent);
+		System.exit(2);
 	}
 
 }

@@ -29,11 +29,11 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Color;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.webkit.WebView;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakelandroid.R;
 
 public class ChangeLog {
@@ -55,26 +55,14 @@ public class ChangeLog {
 	 * SharedPreferences
 	 * 
 	 * @param context
-	 */
-	public ChangeLog(Context context) {
-		this(context, PreferenceManager.getDefaultSharedPreferences(context));
-	}
-
-	/**
-	 * Constructor
-	 * 
-	 * Retrieves the version names and stores the new version name in
-	 * SharedPreferences
-	 * 
-	 * @param context
 	 * @param sp
 	 *            the shared preferences to store the last version name into
 	 */
-	public ChangeLog(Context context, SharedPreferences sp) {
+	public ChangeLog(Context context) {
 		this.context = context;
 
 		// get version numbers
-		this.lastVersion = sp.getString(VERSION_KEY, NO_VERSION);
+		this.lastVersion = MirakelPreferences.getVersionKey();
 		Log.d(TAG, "lastVersion: " + lastVersion);
 		try {
 			this.thisVersion = context.getPackageManager().getPackageInfo(
@@ -151,9 +139,7 @@ public class ChangeLog {
 			wv.setBackgroundColor(Color.WHITE);
 		}
 		String log = this.getLog(full);
-		SharedPreferences preferences = PreferenceManager
-				.getDefaultSharedPreferences(context);
-		if (preferences.getBoolean("DarkTheme", false))
+		if (MirakelPreferences.isDark())
 			log = "<font color='"
 					+ String.format("#%06X", 0xFFFFFF & context.getResources()
 							.getColor(R.color.holo_blue_light)) + "'>" + log
@@ -193,10 +179,7 @@ public class ChangeLog {
 
 	@SuppressLint("NewApi")
 	private void updateVersionInPreferences() {
-		// save new version number to preferences
-		SharedPreferences sp = PreferenceManager
-				.getDefaultSharedPreferences(context);
-		SharedPreferences.Editor editor = sp.edit();
+		SharedPreferences.Editor editor = MirakelPreferences.getEditor();
 		editor.putString(VERSION_KEY, thisVersion);
 		// // on SDK-Versions > 9 you should use this:
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD) {

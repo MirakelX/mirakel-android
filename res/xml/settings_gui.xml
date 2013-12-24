@@ -21,57 +21,79 @@
     android:key="category_gui"
     android:title="@string/ui_settings_title" >
 
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="DarkTheme"
-        android:title="@string/dark_theme" />
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="highlightSelected"
-        android:summary="@string/highlightSelected_summary"
-        android:title="@string/highlightSelected" />
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="dateFormatRelative"
-        android:summary="@string/settings_date_format_relative_summary"
-        android:title="@string/settings_date_format_relative" />
-    <CheckBoxPreference android:defaultValue="@bool/isTablet"
-        android:key="useTabletLayout"
-        android:title="@string/useTabletLayout"/>
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="useBtnSpeak"
-        android:title="@string/settings_use_btn_speak" />
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="useBtnCamera"
-        android:title="@string/settings_use_btn_camera" />
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="swipeBehavior"
-        android:summary="@string/swipeBehavior_summary"
-        android:title="@string/swipeBehavior_title" />
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="lockDrawerInTaskFragment"
-        android:summary="@string/lock_drawer_in_task_fragment_summary"
-        android:title="@string/lock_drawer_in_task_fragment" />
+    <PreferenceCategory android:title="@string/general" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="DarkTheme"
+            android:title="@string/dark_theme" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="highlightSelected"
+            android:summary="@string/highlightSelected_summary"
+            android:title="@string/highlightSelected" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="dateFormatRelative"
+            android:summary="@string/settings_date_format_relative_summary"
+            android:title="@string/settings_date_format_relative" />
+        <!--
+             <CheckBoxPreference
+            android:defaultValue="@bool/isTablet"
+            android:key="useTabletLayout"
+            android:title="@string/useTabletLayout" />
+        -->
+        <ListPreference
+            android:key="useTabletLayoutNew"
+            android:title="@string/useTabletLayout" />
+        <ListPreference
+            android:defaultValue="-1"
+            android:entries="@array/language_values"
+            android:entryValues="@array/language_keys"
+            android:key="language"
+            android:title="@string/language" />
 
-    <ListPreference
-        android:defaultValue="-1"
-        android:entries="@array/language_values"
-        android:entryValues="@array/language_keys"
-        android:key="language"
-        android:title="@string/language" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="swipeBehavior"
+            android:summary="@string/swipeBehavior_summary"
+            android:title="@string/swipeBehavior_title" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/list_fragment" >
+        <CheckBoxPreference
+            android:key="show_account_name"
+            android:title="@string/show_account_name" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/tasks_fragment" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="useBtnAudioRecord"
+            android:title="@string/settings_use_btn_audio" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="useBtnSpeak"
+            android:title="@string/settings_use_btn_speak" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="useBtnCamera"
+            android:title="@string/settings_use_btn_camera" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/task_fragment" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="lockDrawerInTaskFragment"
+            android:summary="@string/lock_drawer_in_task_fragment_summary"
+            android:title="@string/lock_drawer_in_task_fragment" />
 
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="KillButton"
-        android:title="@string/kill_button" />
-    <!-- <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="oldLogo"
-        android:summary="@string/settings_old_logo_summary"
-        android:title="@string/settings_old_logo" />-->
+        <Preference
+            android:key="task_fragment"
+            android:title="@string/settings_task_fragment" >
+        </Preference>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/do_not_touch" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="KillButton"
+            android:title="@string/kill_button" />
+    </PreferenceCategory>
 
 </PreferenceScreen>

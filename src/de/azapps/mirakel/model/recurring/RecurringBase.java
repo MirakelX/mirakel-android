@@ -1,8 +1,11 @@
 package de.azapps.mirakel.model.recurring;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import android.content.ContentValues;
+import android.util.SparseBooleanArray;
 import de.azapps.mirakel.helper.DateTimeHelper;
 
 public class RecurringBase {
@@ -17,10 +20,14 @@ public class RecurringBase {
 	private Calendar startDate;
 	private Calendar endDate;
 	private boolean temporary;
+	private boolean isExact;
+	private SparseBooleanArray weekdays;
+	private Integer derivedFrom; 
 
 	public RecurringBase(int _id, String label, int minutes, int hours,
 			int days, int months, int years, boolean forDue,
-			Calendar startDate, Calendar endDate, boolean temporary) {
+			Calendar startDate, Calendar endDate, boolean temporary,
+			boolean isExact, SparseBooleanArray weekdays, Integer derivedFrom) {
 		super();
 		this.days = days;
 		this.forDue = forDue;
@@ -33,6 +40,9 @@ public class RecurringBase {
 		this.setStartDate(startDate);
 		this.setEndDate(endDate);
 		this.temporary = temporary;
+		this.setExact(isExact);
+		this.setWeekdays(weekdays);
+		this.derivedFrom=derivedFrom;
 	}
 
 	public String getLabel() {
@@ -128,6 +138,57 @@ public class RecurringBase {
 		this.temporary = temporary;
 	}
 
+	public boolean isExact() {
+		return isExact;
+	}
+
+	public List<Integer> getWeekdays() {
+		ArrayList<Integer> ret = new ArrayList<Integer>();
+		if (weekdays.get(Calendar.SUNDAY, false)) {
+			ret.add(Calendar.SUNDAY);
+		}
+		if (weekdays.get(Calendar.MONDAY, false)) {
+			ret.add(Calendar.MONDAY);
+		}
+		if (weekdays.get(Calendar.TUESDAY, false)) {
+			ret.add(Calendar.TUESDAY);
+		}
+		if (weekdays.get(Calendar.WEDNESDAY, false)) {
+			ret.add(Calendar.WEDNESDAY);
+		}
+		if (weekdays.get(Calendar.THURSDAY, false)) {
+			ret.add(Calendar.THURSDAY);
+		}
+		if (weekdays.get(Calendar.FRIDAY, false)) {
+			ret.add(Calendar.FRIDAY);
+		}
+		if (weekdays.get(Calendar.SATURDAY, false)) {
+			ret.add(Calendar.SATURDAY);
+		}
+
+		return ret;
+	}
+	
+	protected SparseBooleanArray getWeekdaysRaw() {
+		return weekdays;
+	}
+
+	public void setWeekdays(SparseBooleanArray weekdays) {
+		this.weekdays = weekdays;
+	}
+
+	public Integer getDerivedFrom() {
+		return derivedFrom;
+	}
+
+	public void setDerivedFrom(Integer derivedFrom) {
+		this.derivedFrom = derivedFrom;
+	}
+
+	public void setExact(boolean isExact) {
+		this.isExact = isExact;
+	}
+
 	/**
 	 * Returns the intervall for a recurrence in ms
 	 * 
@@ -156,6 +217,15 @@ public class RecurringBase {
 		cv.put("start_date", DateTimeHelper.formatDateTime(startDate));
 		cv.put("end_date", DateTimeHelper.formatDateTime(endDate));
 		cv.put("temporary", temporary);
+		cv.put("isExact", isExact);
+		cv.put("monday", weekdays.get(Calendar.MONDAY, false));
+		cv.put("tuesday", weekdays.get(Calendar.TUESDAY, false));
+		cv.put("wednesday", weekdays.get(Calendar.WEDNESDAY, false));
+		cv.put("thursday", weekdays.get(Calendar.THURSDAY, false));
+		cv.put("friday", weekdays.get(Calendar.FRIDAY, false));
+		cv.put("saturday", weekdays.get(Calendar.SATURDAY, false));
+		cv.put("sunnday", weekdays.get(Calendar.SUNDAY, false));
+		cv.put("derived_from", derivedFrom);
 		return cv;
 	}
 

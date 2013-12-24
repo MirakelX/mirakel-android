@@ -37,13 +37,13 @@ package de.azapps.mirakel.sync;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.NotificationManager;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.Context;
 import android.content.SyncResult;
 import android.os.Bundle;
-import android.os.Looper;
-import android.widget.Toast;
+import android.support.v4.app.NotificationCompat;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.sync.caldav.CalDavSync;
 import de.azapps.mirakel.sync.mirakel.MirakelSync;
@@ -52,63 +52,18 @@ import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync.TW_ERRORS;
 import de.azapps.mirakelandroid.R;
 
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
-	private final static String TAG = "SyncAdapter";
-	public static final String BUNDLE_SERVER_URL = "url",
+	private final static String	TAG					= "SyncAdapter";
+	public static final String	BUNDLE_SERVER_URL	= "url",
 			BUNDLE_CERT = "de.azapps.mirakel.cert",
 			BUNDLE_ORG = "de.azapps.mirakel.org";
-	public static final String BUNDLE_SERVER_TYPE = "type";
-	public static final String TASKWARRIOR_KEY = "key";
-	public static final String SYNC_STATE = "sync_state";
-	private static CharSequence last_message = null;
-	private Context mContext;
-	public static final String ACCOUNT_PREFIX = "ACCOUNT_";
-
-	public enum SYNC_TYPES {
-		MIRAKEL, TASKWARRIOR, CALDAV, LOCAL;
-		public int toInt() {
-			switch (this) {
-			case CALDAV:
-				return 1;
-			case LOCAL:
-				return -1;
-			case MIRAKEL:
-				Log.w(TAG, "do not use Mirakel-Accounts");
-				return 3;
-			case TASKWARRIOR:
-				return 2;
-			default:
-				throw new RuntimeException();
-			}
-		}
-
-		public static SYNC_TYPES parseInt(int i) {
-			switch (i) {
-			case -1:
-				return LOCAL;
-			case 1:
-				return CALDAV;
-			case 2:
-				return TASKWARRIOR;
-			case 3:
-				return MIRAKEL;
-
-			default:
-				throw new IllegalArgumentException();
-			}
-
-		}
-
-		public static SYNC_TYPES getSyncType(String type) {
-			if (type.equals("Mirakel")) {
-				return MIRAKEL;
-			} else if (type.equals("Taskwarrior")) {
-				return TASKWARRIOR;
-			} else if (type.equals("CalDav")) {
-				return CALDAV;
-			} else
-				return LOCAL;
-		}
-	};
+	public static final String	BUNDLE_SERVER_TYPE	= "type";
+	public static final String	TASKWARRIOR_KEY		= "key";
+	public static final String	SYNC_STATE			= "sync_state";
+	private static CharSequence	last_message		= null;
+	private Context				mContext;
+	public static final String	ACCOUNT_PREFIX		= "ACCOUNT_";
+	private NotificationManager	mNotificationManager;
+	private int					notifyID			= 1;
 
 	public enum SYNC_STATE {
 		NOTHING, DELETE, ADD, NEED_SYNC, IS_SYNCED;
@@ -119,34 +74,34 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 		public short toInt() {
 			switch (this) {
-			case ADD:
-				return 1;
-			case DELETE:
-				return -1;
-			case IS_SYNCED:
-				return 3;
-			case NEED_SYNC:
-				return 2;
-			case NOTHING:
-				return 0;
-			default:
-				return 0;
+				case ADD:
+					return 1;
+				case DELETE:
+					return -1;
+				case IS_SYNCED:
+					return 3;
+				case NEED_SYNC:
+					return 2;
+				case NOTHING:
+					return 0;
+				default:
+					return 0;
 			}
 		}
 
 		public static SYNC_STATE parseInt(int i) {
 			switch (i) {
-			case -1:
-				return DELETE;
-			case 1:
-				return ADD;
-			case 2:
-				return NEED_SYNC;
-			case 3:
-				return IS_SYNCED;
-			case 0:
-			default:
-				return NOTHING;
+				case -1:
+					return DELETE;
+				case 1:
+					return ADD;
+				case 2:
+					return NEED_SYNC;
+				case 3:
+					return IS_SYNCED;
+				case 0:
+				default:
+					return NOTHING;
 			}
 		}
 	}
@@ -154,56 +109,78 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	public SyncAdapter(Context context, boolean autoInitialize) {
 		super(context, autoInitialize);
 		mContext = context;
+		mNotificationManager = (NotificationManager) mContext
+				.getSystemService(Context.NOTIFICATION_SERVICE);
+
 	}
 
 	@Override
-	public void onPerformSync(Account account, Bundle extras, String authority,
-			ContentProviderClient provider, SyncResult syncResult) {
+	public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
 		Log.v(TAG, "SyncAdapter");
+		NotificationCompat.Builder mNB = new NotificationCompat.Builder(
+				mContext).setContentTitle("Mirakel").setContentText("Sync")
+				.setSmallIcon(android.R.drawable.stat_notify_sync)
+				.setWhen(System.currentTimeMillis()).setOngoing(true);
+		mNotificationManager.notify(notifyID, mNB.build());
+
 		String type = (AccountManager.get(mContext)).getUserData(account,
 				BUNDLE_SERVER_TYPE);
-		if (type == null)
-			type = MirakelSync.TYPE;
+		if (type == null) type = MirakelSync.TYPE;
 		if (type.equals(MirakelSync.TYPE)) {
 			new MirakelSync(mContext).sync(account);
 		} else if (type.equals(TaskWarriorSync.TYPE)) {
 			TW_ERRORS error = new TaskWarriorSync(mContext).sync(account);
 			switch (error) {
-			case NO_ERROR:
-				last_message = mContext.getText(R.string.finish_sync);
-				break;
-			case TRY_LATER:
-				last_message = mContext.getText(R.string.message_try_later);
-				break;
-			case ACCESS_DENIED:
-				last_message = mContext.getText(R.string.message_access_denied);
-				break;
-			case CANNOT_CREATE_SOCKET:
-				last_message = mContext.getText(R.string.message_create_socket);
-				break;
-			case ACCOUNT_SUSPENDED:
-				last_message = mContext
-						.getText(R.string.message_account_suspended);
-				break;
-			case CANNOT_PARSE_MESSAGE:
-				last_message = mContext.getText(R.string.message_parse_message);
-				break;
-			case MESSAGE_ERRORS:
-				last_message = mContext.getText(R.string.message_message_error);
-				break;
-			case CONFIG_PARSE_ERROR:
-				last_message = mContext.getText(R.string.wrong_config);
-				break;
-				
+				case NO_ERROR:
+					last_message = mContext.getText(R.string.finish_sync);
+					break;
+				case TRY_LATER:
+					last_message = mContext.getText(R.string.message_try_later);
+					break;
+				case ACCESS_DENIED:
+					last_message = mContext
+							.getText(R.string.message_access_denied);
+					break;
+				case CANNOT_CREATE_SOCKET:
+					last_message = mContext
+							.getText(R.string.message_create_socket);
+					break;
+				case ACCOUNT_SUSPENDED:
+					last_message = mContext
+							.getText(R.string.message_account_suspended);
+					break;
+				case CANNOT_PARSE_MESSAGE:
+					last_message = mContext
+							.getText(R.string.message_parse_message);
+					break;
+				case MESSAGE_ERRORS:
+					last_message = mContext
+							.getText(R.string.message_message_error);
+					break;
+				case CONFIG_PARSE_ERROR:
+					last_message = mContext.getText(R.string.wrong_config);
+					break;
+				case NOT_ENABLED:
+				default:
+					return;
+
 			}
-			Looper.prepare();
-			Toast.makeText(mContext, last_message, Toast.LENGTH_LONG).show();
+			// Looper.prepare();
+			// Toast.makeText(mContext, last_message, Toast.LENGTH_LONG).show();
 			Log.d(TAG, "finish Sync");
 		} else if (type.equals(CalDavSync.TYPE)) {
 			new CalDavSync(mContext).sync(account);
 		} else {
 			Log.wtf(TAG, "Unknown SyncType");
 		}
+		mNotificationManager.cancel(notifyID);
+		mNB = new NotificationCompat.Builder(mContext)
+				.setContentTitle(
+						"Mirakel: " + mContext.getText(R.string.finish_sync))
+				.setContentText(last_message)
+				.setSmallIcon(android.R.drawable.stat_notify_sync)
+				.setPriority(NotificationCompat.PRIORITY_LOW);
+		mNotificationManager.notify(notifyID, mNB.build());
 	}
 
 	public static CharSequence getLastMessage() {
@@ -211,4 +188,5 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		last_message = null;
 		return tmp;
 	}
+
 }

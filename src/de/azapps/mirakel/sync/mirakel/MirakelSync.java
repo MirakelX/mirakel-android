@@ -126,7 +126,7 @@ public class MirakelSync {
 				new Network(new DataDownloadCommand() {
 					@Override
 					public void after_exec(String result) {
-						merge_with_server(Task.parse_json(result));
+						merge_with_server(Task.parse_json(result, null));
 						doSync();
 					}
 				}, Network.HttpMode.GET, mContext, Token).execute(ServerUrl
@@ -494,7 +494,8 @@ public class MirakelSync {
 					public void after_exec(String result) {
 						try {
 
-							Task taskNew = Task.parse_json("[" + result + "]")
+							Task taskNew = Task.parse_json("[" + result + "]",
+									null)
 									.get(0);
 							if (taskNew.getId() > task.getId()) {
 								// Prevent id-Collision

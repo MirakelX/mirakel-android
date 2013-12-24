@@ -4,50 +4,22 @@
   <string name="action_credits">Zahvala</string>
   <string name="action_credits_summary">O nas ;)</string>
   <string name="title_activity_credits">O programu</string>
-  <string name="credit"><![CDATA[<h1>Mirakel - Upravljalnik nalog</h1>
+  <string name="credits_github_description">Ustvarite vejo na github</string>
+  <string name="credits_googleplus_description">Pridružite se skupnosti G+</string>
+  <string name="credits_text_head">
+<![CDATA[
+<h3>Program Mirakel je odprtokodni program. Sodelujete lahko preko sistema GitHub.</h3>
 <p>&copy; 2013 <a href="mailto:az@azapps.de">Anatolij Zelenin</a>, <a href="mailto:georg_semmler_05@web.de">Georg Semmler</a></p>
-
-<p>Program je prosta programska oprema (objavljena pod pogoji <a href="https://www.gnu.org/licenses/gpl.html">GNU GPLv3</a>).</p>
-
-<p>Izvorna koda je na voljo na spletnem naslovu:</p>
-<p><a href="https://github.com/azapps/mirakel-android">https://github.com/azapps/mirakel-android</a></p>
-
-<p>Program je prosta programska oprema. Dovoljeno je razširjanje in/ali spreminjanje pod pogoji <a href="https://www.gnu.org/licenses/gpl.html">Splošnega javnega dovoljenja GNU</a>, kot je objavljen s strani Free Software Foundation, različice 3 ali (po želji) katerekoli kasnejše različice.</p>  
-
-<p>Program se razširja v upanju, da bo uporaben, vendar BREZ VSAKRŠNEGA JAMSTVA; tudi brez posredne zagotovitve CENOVNE VREDNOSTI ali PRIMERNOSTI ZA DOLOČEN NAMEN. Za podrobnosti si poglejte besedilo Splošnega javnega dovoljenja GNU.</p>
-
-<h2>Hrošči in Zmožnosti</h2>
-<p>V primeru, da naletite na hrošča ali pa bi želeli vključiti dodatne programske zmožnosti, pošljite poročilo na:
-<a href="https://github.com/azapps/mirakel-android/issues">https://github.com/azapps/mirakel-android/issues</a></p>
-
-<h2>Zahvala</h2>
-<h3>Nov logotip in ikona</h3>
-<b>by <a href="http://www.alexkaessner.de/">Alexander Käßner</a></b>
-
-<h3>Prevodi</h3>
-<p><b>Spanski:</b> Macebal</p>
-<p><b>Francoski:</b> Ghost of Kendo</p>
-<p><b>Norveški:</b> Jim-Stefhan Johansen</p>
-<p><b>Slovenski:</b> Matej</p>
-<p><b>Češki:</b> Sarimak</p>
-
-<h3>Knjižnice</h3>
-<p><a href="https://code.google.com/p/google-gson/">Gson</a><br />
-        Dovoljenje: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a></p>
-
-<p><a href="http://joda-time.sourceforge.net/">Joda-Time</a><br />
-        Dovoljenje: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a></p>
-
-<p><a href="https://code.google.com/p/datetimepicker/">DateTimePicker</a><br />
-        Dovoljenje: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a></p>
-
-<p><a href="https://code.google.com/p/android-change-log/">Dnevniški program za Android</a><br />
-        Dovoljenje: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a></p>
-
-<p><a href="http://acra.ch/">ACRA</a> (Poročila o sesutjih)<br />
-        Dovoljenje: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a></p>
-
-<p><a href="https://github.com/LarsWerkman/HoloColorPicker">HoloColorPicker</a><br />
-        Dovoljenje: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a></p>
-        ]]>  </string>
+<p>Ikone in oblikovna zasnova <a href="http://alexkaessner.de/>Alexander Käßner</a></p>
+<p>Program je objavljen pod pogoji dovoljenja <a href="https://www.gnu.org/licenses/gpl.html">GPLv3</a>).</p>
+<p>Več podrobnosti najdete na domači strani programa</p>
+]]>
+    </string>
+  <string name="credits_license"> <![CDATA[<p>Ta program je prosta programska oprema: dovoljeno je razširjanje in/ali spreminjanje pod pogoji Splošnega javnega dovoljenja <a href="https://www.gnu.org/licenses/gpl.html"> GNU GPL</a>, kot je oljavljen pri Free Software Foundation, bodisi različica 3 ali (po vaši izbiri) katerekoli poznejše različice.</p>
+<p>Program se razširja v upanju, da bo uporaben, vendar BREZ VSAKRŠNEGA JAMSTVA; tudi brez posredne zagotovitve CENOVNE VREDNOSTI ali PRIMERNOSTI ZA DOLOČEN NAMEN. Za več podrobnosti si oglejte besedilo dovoljenja GNU GPL.</p>]]>
+     </string>
+  <string name="credits_translations">Prevodi</string>
+  <string name="feedback">Pošlji odziv</string>
+  <string name="credits_libraries">Uporabljene knjižnice</string>
+  <string name="credits_license_title">Dovoljenje</string>
 </resources>

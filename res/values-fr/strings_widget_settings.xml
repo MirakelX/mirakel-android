@@ -4,6 +4,7 @@
   <string name="widget_list">Liste</string>
   <string name="widget_list_summary">Afficher \"%s\"</string>
   <string name="widget_done">Tâches finies</string>
-  <string name="widget_sort">Tri en cours</string>
-  <string name="widget_sort_summary">Trier après \"%s\"</string>
+  <string name="fontcolor">Couleur du font</string>
+  <string name="widget_transparency">Transparence</string>
+  <string name="widget_transparency_summary">%s %% transparent</string>
 </resources>

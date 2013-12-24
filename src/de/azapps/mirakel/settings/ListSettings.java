@@ -23,13 +23,11 @@ import java.util.List;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceManager;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.Menu;
@@ -38,8 +36,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import de.azapps.mirakel.helper.Helpers;
+import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakelandroid.R;
 
 /**
@@ -67,8 +66,8 @@ public abstract class ListSettings extends PreferenceActivity {
 	protected abstract void setupSettings();
 
 	private boolean loaded = false;
-	private boolean clickOnLast = false;
-	private List<Header> mTarget;
+	protected boolean		clickOnLast	= false;
+	protected List<Header>	mTarget;
 
 	protected abstract List<Pair<Integer, String>> getItems();
 
@@ -82,17 +81,9 @@ public abstract class ListSettings extends PreferenceActivity {
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		SharedPreferences preferences = PreferenceManager
-				.getDefaultSharedPreferences(this);
-		if (preferences.getBoolean("DarkTheme", false))
+		if (MirakelPreferences.isDark())
 			setTheme(R.style.AppBaseThemeDARK);
 		super.onCreate(savedInstanceState);
-
-		if (preferences.getBoolean("oldLogo", false)
-				&& Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-			getActionBar().setIcon(R.drawable.ic_launcher);
-			getActionBar().setLogo(R.drawable.ic_launcher);
-		}
 		loaded = true;
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 			if (getIntent().hasExtra("id")) {
@@ -111,7 +102,7 @@ public abstract class ListSettings extends PreferenceActivity {
 			ImageButton addList = new ImageButton(this);
 			addList.setBackgroundResource(android.R.drawable.ic_menu_add);
 			addList.setOnClickListener(getAddOnClickListener());
-			if (Helpers.isTablet(this)) {
+			if (MirakelPreferences.isTablet()) {
 				LinearLayout l = new LinearLayout(this);
 				l.setLayoutDirection(LinearLayout.VERTICAL);
 				l.addView(addList);
@@ -131,7 +122,7 @@ public abstract class ListSettings extends PreferenceActivity {
 			actionbar.setCustomView(v, new ActionBar.LayoutParams(
 					ActionBar.LayoutParams.WRAP_CONTENT,
 					ActionBar.LayoutParams.WRAP_CONTENT,
-					Gravity.CENTER_VERTICAL | Gravity.RIGHT));
+					Gravity.CENTER_VERTICAL | Mirakel.GRAVITY_RIGHT));
 
 		}
 	}
@@ -152,6 +143,9 @@ public abstract class ListSettings extends PreferenceActivity {
 		case android.R.id.home:
 			finish();
 			return true;
+			default:
+				Log.d(TAG, "unknown menuentry");
+				break;
 		}
 		if (item.getTitle() == getString(R.string.add)) {
 			getAddOnClickListener().onClick(null);
@@ -189,8 +183,8 @@ public abstract class ListSettings extends PreferenceActivity {
 
 	@Override
 	public boolean onIsMultiPane() {
-		return Helpers.isTablet(this);
-	};
+		return MirakelPreferences.isTablet();
+	}
 
 	@Override
 	public void onResume() {

@@ -17,7 +17,7 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<resources xmlns:tools="http://schemas.android.com/tools"    tools:ignore="MissingTranslation">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <string name="special_list_name">Name</string>
     <string name="special_list_active">Show</string>
@@ -52,9 +52,7 @@
         <item>365</item>
     </integer-array>
 
-    <string name="list_menu_new_special_list">New Special list</string>
     <string name="special_list_where_prio_title_text">Priority</string>
-    <string name="special_list_where_prio_content_text"> </string>
     <string name="special_list_where_name_title_text">Name</string>
     <string name="special_list_where_content_title_text">Content</string>
     <string name="special_list_where_list_title_text">List</string>
@@ -65,8 +63,6 @@
     <string name="select_by">Select By</string>
     <string name="done">Done Tasks</string>
     <string name="undone">Undone Tasks</string>
-    <string name="recurrence_no">No recurrence</string>
-    <string name="recurrence_custom_title">Custom recurrence</string>
     <string name="recurrence_custom">Custom</string>
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
@@ -78,6 +74,7 @@
     <string name="where_like_begin_text">Begins with</string>
     <string name="where_like_end_text">Ends with</string>
     <string name="delete">Delete</string>
+
     <string-array name="due_day_year_values">
         <item>Day</item>
         <item>Month</item>
@@ -88,6 +85,7 @@
         <item>Months</item>
         <item>Years</item>
     </string-array>
-  <string name="nothing">No recurrence</string>
+
+    <string name="nothing">No recurrence</string>
 
 </resources>

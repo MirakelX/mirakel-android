@@ -78,5 +78,4 @@
             android:key="recurring"
             android:title="@string/recurring" />
     </PreferenceCategory>
-
 </PreferenceScreen>

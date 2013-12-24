@@ -18,30 +18,25 @@
   <string name="wrong_sync_type">Synk. typen er ikke støttet!</string>
   <string name="action_sync_now">Synkroniser</string>
   <string name="resync">Vil du synkronisere alle oppgaver igjen?</string>
-  <string name="start">Start</string>
   <string name="menu_sort_lists">Endre rekkefølge i Listene</string>
   <string name="no_https">Du bør bruke https!</string>
   <string name="finish_sync">Avslutt synkronisering</string>
   <string name="inbox">Innboks</string>
   <string name="first_task">Første oppgave</string>
   <string name="tasks_new_str">Ny oppgave</string>
-  <string name="task_no_content">Legg til et notat</string>
   <string name="task_change_prio_title">Endre prioritet</string>
-  <string name="task_change_prio_cont">Prioritet</string>
   <string name="task_delete_content">Er du sikker på at du vil slette %s?</string>
   <string name="task_menu_sorting">Sorter oppgaver</string>
   <string name="task_sorting_title">Sorter oppgaver etter</string>
   <string name="task_empty">Ingen oppgave valgt ...</string>
   <string name="set_date">Angi dato</string>
   <string name="set_time">Angi klokkeslett</string>
-  <string name="task_set_reminder">Angi påminnelse</string>
   <string name="action_undo">Angre den siste endringen</string>
-  <string name="subtasks">Deloppgave</string>
+  <string name="subtask_list_name">Deloppgave</string>
   <string name="remove_files">Fjern filer fra oppgave</string>
   <string name="remove_files_summary">Vil du fjerne %1$s fra %2$s?</string>
   <string name="add_subtask">Legg til deloppgave</string>
   <string name="remove_subtask">Fjerne deloppgave</string>
-  <string name="subtask_add_options">Alternativer &gt;&gt;</string>
   <string name="subtask_done">Oppgave ferdig?</string>
   <string name="subtask_reminder">Oppgave med påminnelse?</string>
   <string name="subtask_content">Oppgave med innhold?</string>
@@ -101,9 +96,6 @@
   <string name="login_activity_loginfail_text_pwmissing">Skriv passordet for denne kontoen.</string>
   <string name="login_activity_newaccount_text">Logg inn på din %s-konto.</string>
   <string name="ui_activity_authenticating">Godkjenning ...</string>
-  <string name="ui_activity_title">Logg inn</string>
-  <string name="title_activity_special_lists_settings">Innstillinger for Spesiallister</string>
-  <string name="title_activity_semantic_settings">Innstillinger for semantikk</string>
   <string name="changelog_full_title">Endringslogg</string>
   <string name="changelog_title">Hva som er nytt</string>
   <string name="changelog_ok_button">OK</string>
@@ -133,10 +125,7 @@ Device: %3$s\n]]>
   <string name="backup_import_ok">Importeringen er ferdig - Vennlist start Mirakel på nytt</string>
   <string name="backup_export_error">Det oppstod en feil ved eksportering av databasen</string>
   <string name="backup_export_ok">Eksportert til %s</string>
-  <string name="change_content">Endre innhold</string>
-  <string name="content">Innhold</string>
   <string name="task_has_content">Oppgaven har innhold</string>
-  <string name="help_description">Det er 3 hoveddeler: til venstre finner du alle lister, i midten finner du alle oppgaver i en liste og på høyre side finner du en oppgave. Du bytter mellom delene ved å dra eller klikke.</string>
   <string name="permission_group_desc">Tillatelse for tilgang til Mirakel</string>
   <string name="permission_group_lbl">Mirakel tillatelse</string>
   <string name="permission_read_lbl">Lese data fra Mirakel</string>
@@ -154,7 +143,6 @@ Device: %3$s\n]]>
   <string name="list_change_color">Endre farge</string>
   <string name="set_color">Angi farge</string>
   <string name="unset_color">Ingen farge</string>
-  <string name="files">Filer</string>
   <string name="file_no_activity">Jeg vet ikke hvordan jeg åpner denne filen – beklager</string>
   <string name="file_select">Velg en fil</string>
   <string name="file_vanished">Ingen slik fil</string>
@@ -164,17 +152,13 @@ Device: %3$s\n]]>
   <string name="day">Dag</string>
   <string name="month">Måned</string>
   <string name="year">År</string>
+  <string name="save_label">Ferdig</string>
   <string-array name="task_sorting_items">
     <item>Standard</item>
     <item>Tidsfrist</item>
     <item>Prioritet</item>
     <item>Opprettet dato</item>
-  </string-array>
-  <string-array name="task_sorting_items_values">
-    <item>0</item>
-    <item>1</item>
-    <item>2</item>
-    <item>3</item>
+    <item>First by priority, then by date</item>
   </string-array>
   <string-array name="task_actions_items">
     <item>Rediger</item>
@@ -191,5 +175,10 @@ Device: %3$s\n]]>
     <item>Taskwarrior</item>
     <item>CalDav</item>
     <item>Mirakel</item>
+  </string-array>
+  <string-array name="audio_playback_options">
+    <item>Open file</item>
+    <item>Play loud</item>
+    <item>Play silent</item>
   </string-array>
 </resources>

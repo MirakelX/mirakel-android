@@ -33,6 +33,10 @@
         <Preference
             android:key="semantics_due"
             android:title="@string/settings_semantics_due" />
+        
+        <ListPreference
+            android:key="semantics_weekday"
+            android:title="@string/settings_semantics_weekday" />
 
         <ListPreference
             android:key="semantics_list"

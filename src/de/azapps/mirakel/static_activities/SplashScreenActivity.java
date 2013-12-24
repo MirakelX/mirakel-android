@@ -21,39 +21,40 @@ package de.azapps.mirakel.static_activities;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.view.Menu;
-import android.view.Window;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.reminders.ReminderAlarm;
+import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakelandroid.R;
 
 public class SplashScreenActivity extends Activity {
-	public static final String EXIT = "de.azapps.mirakel.EXIT";
+	public static final String	EXIT	= "de.azapps.mirakel.EXIT";
 
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		SharedPreferences preferences = PreferenceManager
-				.getDefaultSharedPreferences(getApplicationContext());
-		boolean darkTheme = preferences.getBoolean("DarkTheme", false);
-		if (darkTheme)
-			setTheme(R.style.AppBaseThemeDARK);
 		super.onCreate(savedInstanceState);
-		getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-		if (getIntent().getAction() == EXIT) {
+		// Setup splashscreen
+
+		if (getIntent() != null && getIntent().getAction() == EXIT) {
+			NotificationService.stop(this);
+			ReminderAlarm.stopAll(this);
+			if (startService(new Intent(SplashScreenActivity.this,
+					NotificationService.class)) != null) {
+				stopService(new Intent(SplashScreenActivity.this,
+						NotificationService.class));
+			}
 			finish();
 			return;
 		}
-		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-			getActionBar().hide();
-		}
-		setContentView(R.layout.activity_splash_screen);
+		boolean darkTheme = MirakelPreferences.isDark();
+		if (!darkTheme) setTheme(R.style.Theme_SplashScreen);
 
-		if (preferences.getBoolean("startupAllLists", false)) {
+		// Intents
+		if (MirakelPreferences.isStartupAllLists()) {
 			Intent intent = new Intent(SplashScreenActivity.this,
 					MainActivity.class);
 			intent.setAction(MainActivity.SHOW_LISTS);
@@ -64,12 +65,12 @@ public class SplashScreenActivity extends Activity {
 				sl = SpecialList.newSpecialList(getString(R.string.list_all),
 						" done=0 ", true, this);
 			}
-			int listId = Integer.parseInt(preferences.getString("startupList",
-					"" + sl.getId()));
+			int listId = MirakelPreferences.getStartupList().getId();
 			Intent intent = new Intent(SplashScreenActivity.this,
 					MainActivity.class);
 			intent.setAction(MainActivity.SHOW_LIST);
 			intent.putExtra(MainActivity.EXTRA_ID, listId);
+			finish();
 			startActivityForResult(intent, 1);
 		}
 
@@ -78,12 +79,5 @@ public class SplashScreenActivity extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		finish();
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.splash_screen, menu);
-		return true;
 	}
 }

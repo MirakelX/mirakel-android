@@ -10,7 +10,7 @@
   <string name="no_lists">Esta tarea no puede ser sincronizada, porque no tienes listas</string>
   <string name="humanDateTimeFormat">yyyy-MM-dd – kk:mm</string>
   <string name="speak">Hable</string>
-  <string name="speak_lang_code">es-Es</string>
+  <string name="speak_lang_code">en-US</string>
   <string name="Email">Correo electrónico</string>
   <string name="Password">Contraseña</string>
   <string name="Server">Servidor</string>
@@ -18,21 +18,17 @@
   <string name="wrong_sync_type">¡El tipo de sincronización no está soportado!</string>
   <string name="action_sync_now">Sincronizar ahora</string>
   <string name="resync">¿Quieres resincronizar todas las tareas?</string>
-  <string name="start">Inicio</string>
   <string name="menu_sort_lists">Reordenar las listas</string>
   <string name="no_https">¡Deberías utilizar https!</string>
   <string name="inbox">Bandeja de entrada</string>
   <string name="first_task">Primera tarea</string>
   <string name="tasks_new_str">Nueva tarea</string>
-  <string name="task_no_content">Agregar una nota</string>
   <string name="task_change_prio_title">Cambiar prioridad</string>
-  <string name="task_change_prio_cont">Prioridad</string>
   <string name="task_menu_sorting">Ordenar tareas</string>
   <string name="task_sorting_title">Ordenar tareas por</string>
   <string name="task_empty">No hay ninguna tarea seleccionada…</string>
   <string name="set_date">Fijar fecha</string>
   <string name="set_time">Fijar hora</string>
-  <string name="task_set_reminder">Fijar recordatorio</string>
   <string name="action_undo">Undo the last Change</string>
   <string name="new_task">Nueva tarea</string>
   <string name="dialog_move">Mover tarea</string>
@@ -79,7 +75,6 @@
         required. Please try again.</string>
   <string name="login_activity_loginfail_text_pwmissing">Escriba la contraseña para esta cuenta.</string>
   <string name="login_activity_newaccount_text">Ingresa a tu cuenta de %s. </string>
-  <string name="ui_activity_title">Iniciar sesión</string>
   <string name="changelog_full_title">Registro de cambios</string>
   <string name="changelog_title">¿Que hay de nuevo?</string>
   <string name="changelog_ok_button">OK</string>
@@ -109,10 +104,7 @@ Device: %3$s\n]]>
   <string name="backup_import_ok">La importación se realizo correctamente - Por favor reinicie Mirakel</string>
   <string name="backup_export_error">Hubo un error al importar la base de datos</string>
   <string name="backup_export_ok">Exportado a %s</string>
-  <string name="change_content">Cambiar contenido</string>
-  <string name="content">Contenido</string>
   <string name="task_has_content">La tarea tiene contenido</string>
-  <string name="help_description">Hay tres partes principales: en el lado izquierdo puedes ver todas las listas, en el centro se pueden ver todas las tareas de una lista y en el lado derecho se puede ver una tarea. Cambias entre las partes deslizando o haciendo clic.</string>
   <string name="permission_read_lbl">Leer datos de Mirakel</string>
   <string name="permission_read_desc">Permiso para leer datos de Mirakel</string>
   <string name="permission_write_lbl">Escribir datos en Mirakel</string>
@@ -124,20 +116,24 @@ Device: %3$s\n]]>
   <string name="crash_dialog_ok_toast">¡Gracias!</string>
   <string name="message_from_server">El servidor te quiere decir que: %s</string>
   <string name="edit">Editar</string>
+  <string name="weekly">Semanal</string>
+  <string name="yearly">Anual</string>
+  <string name="monthly">Mensual</string>
+  <string name="hourly">Por hora</string>
+  <string name="minute">Minuto</string>
+  <string name="hour">Hora</string>
   <string name="day">Día</string>
   <string name="month">Mes</string>
   <string name="year">Año</string>
+  <string name="end">Final</string>
+  <string name="no_begin_end">No %s</string>
+  <string name="save_label">Hecho</string>
   <string-array name="task_sorting_items">
     <item>Predeterminado</item>
     <item>Fecha límite</item>
     <item>Prioridad</item>
     <item>Fecha de creación</item>
-  </string-array>
-  <string-array name="task_sorting_items_values">
-    <item>0</item>
-    <item>1</item>
-    <item>2</item>
-    <item>3</item>
+    <item>First by priority, then by date</item>
   </string-array>
   <string-array name="task_actions_items">
     <item>Editar</item>
@@ -154,5 +150,10 @@ Device: %3$s\n]]>
     <item>Taskwarrior</item>
     <item>CalDav</item>
     <item>Mirakel</item>
+  </string-array>
+  <string-array name="audio_playback_options">
+    <item>Open file</item>
+    <item>Play loud</item>
+    <item>Play silent</item>
   </string-array>
 </resources>

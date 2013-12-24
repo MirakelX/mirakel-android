@@ -18,24 +18,28 @@
  ******************************************************************************/
 package de.azapps.mirakel;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import org.acra.ACRA;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Environment;
-import android.preference.PreferenceManager;
+import android.os.Build;
+import android.os.Looper;
 import android.util.Log;
+import android.view.Gravity;
 import de.azapps.mirakel.helper.Helpers;
+import de.azapps.mirakel.helper.MirakelPreferences;
+import de.azapps.mirakel.helper.export_import.ExportImport;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.file.FileMirakel;
@@ -48,6 +52,7 @@ import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakelandroid.R;
 
+@SuppressLint("RtlHardcoded")
 @ReportsCrashes(
 // This is required for backward compatibility but not used
 formKey = "",
@@ -66,8 +71,6 @@ resDialogCommentPrompt = R.string.crash_dialog_comment_prompt, resDialogOkToast 
 )
 public class Mirakel extends Application {
 	public static final int NOTIF_DEFAULT = 123, NOTIF_REMINDER = 124;
-
-	public static final String ACCOUNT_TYPE = "de.azapps.mirakel";
 	public static final String AUTHORITY_TYP = "de.azapps.mirakel.provider";
 	public static String APK_NAME;
 	public static String VERSIONS_NAME;
@@ -77,57 +80,84 @@ public class Mirakel extends Application {
 	private static final String TAG = "Mirakel";
 
 	private static SQLiteOpenHelper openHelper;
-	private static String MIRAKEL_DIR;
+	public static String MIRAKEL_DIR;
+	// FIXME move this somewhere else?
+	public static int GRAVITY_LEFT, GRAVITY_RIGHT;
 
-	public static String getMirakelDir() {
-		if(Mirakel.APK_NAME==null)//wtf
-			APK_NAME="de.azapps.mirakelandroid";
-		if (MIRAKEL_DIR == null)
-			MIRAKEL_DIR = Environment.getDataDirectory() + "/data/"
-					+ Mirakel.APK_NAME + "/";
-		return MIRAKEL_DIR;
-	}
-
+	@SuppressLint("InlinedApi")
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		Locale locale = Helpers.getLocal(this);
-		Locale.setDefault(locale);
-		Configuration config = new Configuration();
-		config.locale = locale;
-		getBaseContext().getResources().updateConfiguration(config,
-				getBaseContext().getResources().getDisplayMetrics());
-		ACRA.init(this);
+		// Init variables
 		APK_NAME = getPackageName();
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+			GRAVITY_LEFT = Gravity.START;
+			GRAVITY_RIGHT = Gravity.END;
+		} else {
+			GRAVITY_LEFT = Gravity.LEFT;
+			GRAVITY_RIGHT = Gravity.RIGHT;
+		}
+
 		try {
 			VERSIONS_NAME = getPackageManager().getPackageInfo(
 					getPackageName(), 0).versionName;
 		} catch (NameNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			Log.wtf(TAG, "App not found");
 			VERSIONS_NAME = "";
 		}
+		// This we have to initialize as early as possible
+		MirakelPreferences.init(this);
+
+		Locale locale = Helpers.getLocal(this);
+		Locale.setDefault(locale);
+
+		Configuration config = new Configuration();
+		config.locale = locale;
+		getBaseContext().getResources().updateConfiguration(config,
+				getBaseContext().getResources().getDisplayMetrics());
+
 		openHelper = new DatabaseHelper(this);
 		Mirakel.getWritableDatabase().execSQL("PRAGMA foreign_keys=ON;");
-		Context ctx = getApplicationContext();
-		ListMirakel.init(ctx);
-		Task.init(ctx);
-		SpecialList.init(ctx);
-		FileMirakel.init(ctx);
-		Semantic.init(ctx);
-		Recurring.init(ctx);
-		Helpers.init(ctx);
-		AccountMirakel.init(ctx);
-		// Kill Notification Service if Notification disabled
-		SharedPreferences settings = PreferenceManager
-				.getDefaultSharedPreferences(this);
-		if (!settings.getBoolean("notificationsUse", false)
-				&& startService(new Intent(this, NotificationService.class)) != null) {
-			stopService(new Intent(Mirakel.this, NotificationService.class));
-		}
-		// Set Alarms
-		ReminderAlarm.updateAlarms(getApplicationContext());
+
+		// Initialize Models
+
+		ListMirakel.init(this);
+		Task.init(this);
+		SpecialList.init(this);
+		FileMirakel.init(this);
+		Semantic.init(this);
+		Recurring.init(this);
+		AccountMirakel.init(this);
+
+		// And now, after the Database initialization!!! We init ACRA
+		ACRA.init(this);
+
+		// Stuff we can do in another thread
+		final Mirakel that = this;
+		new Thread(new Runnable() {
+			public void run() {
+				Looper.prepare();
+				// Notifications
+				if (!MirakelPreferences.useNotifications()
+						&& startService(new Intent(that,
+								NotificationService.class)) != null) {
+					stopService(new Intent(Mirakel.this,
+							NotificationService.class));
+				}
+				// Auto Backup?
+				Calendar nextBackup = MirakelPreferences.getNextAutoBackup();
+				if (nextBackup != null
+						&& nextBackup.compareTo(new GregorianCalendar()) < 0) {
+					ExportImport.exportDB(that);
+					Calendar nextB = new GregorianCalendar();
+					nextB.add(Calendar.DATE,
+							MirakelPreferences.getAutoBackupIntervall());
+					MirakelPreferences.setNextBackup(nextB);
+				}
+			}
+		}).start();
+
 	}
 
 	@Override

@@ -31,6 +31,9 @@ import javax.net.ssl.X509TrustManager;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpDelete;
@@ -43,6 +46,7 @@ import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
@@ -54,10 +58,9 @@ import org.apache.http.util.EntityUtils;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Base64;
 import android.widget.Toast;
 import de.azapps.mirakel.helper.Log;
-import de.azapps.mirakel.sync.SyncAdapter.SYNC_TYPES;
+import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 import de.azapps.mirakelandroid.R;
 
 public class Network extends AsyncTask<String, Integer, String> {
@@ -75,7 +78,7 @@ public class Network extends AsyncTask<String, Integer, String> {
 	protected HttpMode mode;
 	protected Context context;
 	protected String token;
-	protected SYNC_TYPES syncTyp;
+	protected ACCOUNT_TYPES syncTyp;
 	private String content;
 	private String username;
 	private String password;
@@ -86,7 +89,7 @@ public class Network extends AsyncTask<String, Integer, String> {
 		this.mode = mode;
 		this.context = context;
 		this.token = Token;
-		this.syncTyp = SYNC_TYPES.MIRAKEL;
+		this.syncTyp = ACCOUNT_TYPES.MIRAKEL;
 	}
 
 	public Network(DataDownloadCommand commands, HttpMode mode,
@@ -96,7 +99,7 @@ public class Network extends AsyncTask<String, Integer, String> {
 		this.headerData = data;
 		this.context = context;
 		this.token = Token;
-		this.syncTyp = SYNC_TYPES.MIRAKEL;
+		this.syncTyp = ACCOUNT_TYPES.MIRAKEL;
 	}
 
 	public Network(DataDownloadCommand commands, HttpMode mode, String content,
@@ -192,21 +195,34 @@ public class Network extends AsyncTask<String, Integer, String> {
 			Integer[] t = { NoHTTPS };
 			publishProgress(t);
 		}
+		
+		/*
 		String authorizationString = null;
-		if (syncTyp == SYNC_TYPES.CALDAV) {
+		if (syncTyp == ACCOUNT_TYPES.CALDAV) {
 			authorizationString = "Basic "
 					+ Base64.encodeToString(
 							(username + ":" + password).getBytes(),
 							Base64.NO_WRAP);
 		}
+		*/
+		
+		CredentialsProvider credentials = new BasicCredentialsProvider();
+		credentials.setCredentials(new AuthScope(new URI(myurl).getHost(), -1), new UsernamePasswordCredentials(username, password));
 
 		HttpParams params = new BasicHttpParams();
 		params.setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
 				HttpVersion.HTTP_1_1);
 		HttpConnectionParams.setTcpNoDelay(params, true);
 		DefaultHttpClient client = new DefaultHttpClient(params);
-		HttpClient httpClient = syncTyp == SYNC_TYPES.MIRAKEL ? sslClient(client)
-				: new DefaultHttpClient(params);
+		HttpClient httpClient;
+		if(syncTyp == ACCOUNT_TYPES.MIRAKEL)
+			httpClient = sslClient(client);
+		else {
+			DefaultHttpClient tmpHttpClient =  new DefaultHttpClient(params);
+			tmpHttpClient.setCredentialsProvider(credentials);
+			
+			httpClient = tmpHttpClient;
+		}
 		httpClient.getParams().setParameter("http.protocol.content-charset",
 				HTTP.UTF_8);
 
@@ -222,17 +238,16 @@ public class Network extends AsyncTask<String, Integer, String> {
 			case PUT:
 				Log.v(TAG, "PUT " + myurl);
 				HttpPut put = new HttpPut();
-				if (syncTyp == SYNC_TYPES.CALDAV) {
+				if (syncTyp == ACCOUNT_TYPES.CALDAV) {
 					put.addHeader(HTTP.CONTENT_TYPE,
 							"text/calendar; charset=utf-8");
 				}
 				put.setURI(new URI(myurl));
-				if (syncTyp == SYNC_TYPES.MIRAKEL) {
+				if (syncTyp == ACCOUNT_TYPES.MIRAKEL) {
 					UrlEncodedFormEntity data = new UrlEncodedFormEntity(
 							headerData, HTTP.UTF_8);
 					put.setEntity(data);
 				} else {
-					put.setHeader("Authorization", authorizationString);
 					put.setEntity(new StringEntity(content, HTTP.UTF_8));
 					Log.v(TAG, content);
 				}
@@ -254,9 +269,6 @@ public class Network extends AsyncTask<String, Integer, String> {
 			case REPORT:
 				Log.v(TAG, "REPORT " + myurl);
 				HttpReport report = new HttpReport();
-				if (syncTyp == SYNC_TYPES.CALDAV) {
-					report.setHeader("Authorization", authorizationString);
-				}
 				report.setURI(new URI(myurl));
 				Log.d(TAG, content);
 				report.setEntity(new StringEntity(content, HTTP.UTF_8));

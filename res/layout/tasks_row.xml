@@ -18,92 +18,108 @@
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    xmlns:ProgressWheel="http://schemas.android.com/apk/res-auto"
     android:id="@+id/tasks_row"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:descendantFocusability="blocksDescendants"
+    android:gravity="center_horizontal"
     android:orientation="horizontal"
     android:padding="@dimen/task_padding" >
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <RelativeLayout
+        android:id="@+id/tasks_row_done_wrapper"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_alignParentLeft="true"
-        android:layout_marginRight="41dp"
-        android:orientation="horizontal" >
+        android:layout_alignParentStart="true" >
 
-        <LinearLayout
-            android:id="@+id/tasks_row_done_wrapper"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent" >
+        <com.todddavies.components.progressbar.ProgressWheel
+            android:id="@+id/tasks_row_progress"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true"
+            ProgressWheel:barColor="#0097D6"
+            ProgressWheel:barLength="20dp"
+            ProgressWheel:barWidth="5dp"
+            ProgressWheel:rimColor="#330097D6"
+            ProgressWheel:rimWidth="2dp" />
 
-            <CheckBox
-                android:id="@+id/tasks_row_done"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="false" />
-        </LinearLayout>
-
-        <LinearLayout
+        <CheckBox
+            android:id="@+id/tasks_row_done"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
-
-            <TextView
-                android:id="@+id/tasks_row_name"
-                android:layout_width="wrap_content"
-                android:layout_height="0dip"
-                android:layout_weight="1"
-                android:ellipsize="end"
-                android:textIsSelectable="false"
-                android:textSize="18sp" >
-            </TextView>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
-
-                <TextView
-                    android:id="@+id/tasks_row_due"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="5dp"
-                    android:textColor="@color/Grey"
-                    android:textIsSelectable="false"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/tasks_row_list_name"
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="5dp"
-                    android:layout_weight="1"
-                    android:ellipsize="end"
-                    android:textColor="@color/Grey"
-                    android:textIsSelectable="false"
-                    android:textSize="12sp" />
-
-                <ImageView
-                    android:id="@+id/tasks_row_has_content"
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
-                    android:contentDescription="@null"
-                    android:src="@android:drawable/ic_input_get"
-                    android:visibility="gone" />
-            </LinearLayout>
-        </LinearLayout>
-    </LinearLayout>
+            android:layout_centerInParent="true"
+            android:checked="false" />
+    </RelativeLayout>
 
     <TextView
-        android:background="@drawable/priority_rectangle"
         android:id="@+id/tasks_row_priority"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
+        android:layout_marginLeft="2.5dp"
+        android:layout_marginStart="2.5dp"
+        android:background="@drawable/priority_rectangle"
         android:gravity="center"
         android:textIsSelectable="false"
-        android:textSize="18sp" 
-        android:layout_marginLeft="2.5dp">
+        android:textSize="18sp" >
     </TextView>
+
+    <LinearLayout
+        android:id="@+id/tasks_row_wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/tasks_row_done_wrapper"
+        android:layout_toLeftOf="@+id/tasks_row_priority"
+        android:layout_toRightOf="@+id/tasks_row_done_wrapper"
+        android:layout_toStartOf="@+id/tasks_row_priority"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/tasks_row_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="middle"
+            android:scrollHorizontally="false"
+            android:singleLine="false"
+            android:textIsSelectable="false"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/tasks_row_due"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_marginRight="5dp"
+                android:textColor="@color/Grey"
+                android:textIsSelectable="false"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tasks_row_list_name"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginRight="5dp"
+                android:ellipsize="end"
+                android:textColor="@color/Grey"
+                android:textIsSelectable="false"
+                android:textSize="12sp" />
+
+            <ImageView
+                android:id="@+id/tasks_row_has_content"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:contentDescription="@null"
+                android:src="@android:drawable/ic_input_get"
+                android:visibility="gone" />
+        </LinearLayout>
+    </LinearLayout>
 
 </RelativeLayout>

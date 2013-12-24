@@ -35,8 +35,8 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceCategory;
 import android.widget.DatePicker;
 import de.azapps.mirakel.helper.DateTimeHelper;
-import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.settings.ListSettings;
 import de.azapps.mirakel.settings.NumPickerPref;
@@ -186,7 +186,7 @@ public class RecurringSettings {
 						((EditTextPreference) preference).setText(recurring
 								.getLabel());
 						recurring.save();
-						if (Helpers.isTablet(ctx) && v4_0) {
+						if (MirakelPreferences.isTablet() && v4_0) {
 							((ListSettings) ctx).invalidateHeaders();
 						}
 						return false;

@@ -267,8 +267,11 @@ public class TLSClient {
 		try {
 			byte[] header = new byte[4];
 			in.read(header);
-			Scanner s = new Scanner(in).useDelimiter("\\A");
-			return s.hasNext() ? s.next() : "";
+			Scanner scanner = new Scanner(in);
+			Scanner s = scanner.useDelimiter("\\A");
+			String result = s.hasNext() ? s.next() : "";
+			scanner.close();
+			return result;
 		} catch (IOException e) {
 			Log.e(TAG, "cannot read Inputstream");
 		}

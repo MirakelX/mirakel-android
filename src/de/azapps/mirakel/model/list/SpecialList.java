@@ -38,7 +38,7 @@ public class SpecialList extends ListMirakel {
 	public String getWhereQuery(boolean forQuery) {
 		if (forQuery) {
 			String tmpWhere = whereQuery;
-			Pattern p = Pattern.compile(Task.LIST_ID + " in[(](.*)[)]");
+			Pattern p = Pattern.compile(Task.LIST_ID + " in[(]([^)]*)[)]");
 			Matcher m = p.matcher(whereQuery);
 
 			if (m.find()) {

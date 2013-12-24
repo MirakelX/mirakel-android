@@ -28,6 +28,7 @@ import java.util.Locale;
 import android.content.Context;
 import android.os.Build;
 import android.text.format.DateUtils;
+import android.text.format.Time;
 import de.azapps.mirakelandroid.R;
 
 public class DateTimeHelper {
@@ -135,7 +136,7 @@ public class DateTimeHelper {
 		if (date == null)
 			return "";
 		else {
-			if (Helpers.settings.getBoolean("dateFormatRelative", true)) {
+			if (MirakelPreferences.isDateFormatRelative()) {
 				GregorianCalendar now = new GregorianCalendar();
 				now.setTime(new Date());
 				if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR1
@@ -156,4 +157,23 @@ public class DateTimeHelper {
 			}
 		}
 	}
+	
+	
+
+    /**
+	* Get first day of week as android.text.format.Time constant.
+	*
+	* @return the first day of week in android.text.format.Time
+	*/
+    public static int getFirstDayOfWeek() {
+        int startDay = Calendar.getInstance().getFirstDayOfWeek();
+
+        if (startDay == Calendar.SATURDAY) {
+            return Time.SATURDAY;
+        } else if (startDay == Calendar.MONDAY) {
+            return Time.MONDAY;
+        } else {
+            return Time.SUNDAY;
+        }
+    }
 }

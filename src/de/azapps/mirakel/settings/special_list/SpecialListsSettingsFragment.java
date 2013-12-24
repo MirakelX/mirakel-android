@@ -25,9 +25,10 @@ import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.view.Gravity;
 import android.widget.ImageButton;
+import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
-import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.settings.ListSettings;
 import de.azapps.mirakelandroid.R;
@@ -53,7 +54,7 @@ public class SpecialListsSettingsFragment extends PreferenceFragment {
 				actionbar.setTitle("No list");
 			else
 				actionbar.setTitle(specialList.getName());
-			if (!Helpers.isTablet(getActivity())) {
+			if (!MirakelPreferences.isTablet()) {
 				ImageButton delList = new ImageButton(getActivity());
 				delList.setBackgroundResource(android.R.drawable.ic_menu_delete);
 				actionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
@@ -61,7 +62,7 @@ public class SpecialListsSettingsFragment extends PreferenceFragment {
 				actionbar.setCustomView(delList, new ActionBar.LayoutParams(
 						ActionBar.LayoutParams.WRAP_CONTENT,
 						ActionBar.LayoutParams.WRAP_CONTENT,
-						Gravity.CENTER_VERTICAL | Gravity.RIGHT));
+						Gravity.CENTER_VERTICAL | Mirakel.GRAVITY_RIGHT));
 				delList.setOnClickListener(((ListSettings) getActivity())
 						.getDelOnClickListener());
 			}

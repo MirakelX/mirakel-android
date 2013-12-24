@@ -8,16 +8,13 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
-import android.preference.PreferenceManager;
-import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
-import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.DataDownloadCommand;
 import de.azapps.mirakel.sync.Network;
@@ -158,13 +155,21 @@ public class CalDavSync {
 	// Generate VTODO string
 	private String parseTask(Task t) {
 		String ret = "BEGIN:VTODO\n";
-		ret += "X-MIRAKEL-UUID:" + t.getUUID() + "\n";
+		ret += "UID:" + t.getUUID() + "\n"; // MUST be globally unique. I just
+											// hope it will be, but with Random
+											// UUID it's not a bad guess.
+		ret += "DTSTAMP:" + DateTimeHelper.formateCalDav(t.getUpdatedAt())
+				+ "\n"; // MUST
 		ret += "SUMMARY:" + t.getName() + "\n";
 		ret += "PRIORITY:" + t.getPriority() + "\n";
 		ret += "CREATED:" + DateTimeHelper.formateCalDav(t.getCreatedAt())
 				+ "\n";
 		ret += "LAST-MODIFIED:"
-				+ DateTimeHelper.formateCalDav(t.getUpdatedAt()) + "\n";
+				+ DateTimeHelper.formateCalDav(t.getUpdatedAt()) + "\n"; // Last
+																			// time
+																			// it
+																			// was
+																			// revisited
 		if (t.getContent() != null && !t.getContent().equals("")) {
 			ret += "DESCRIPTION:" + t.getContent().replace("\n", "\\n") + "\n";
 		}
@@ -214,29 +219,7 @@ public class CalDavSync {
 		String uuid = getUUID(lines);
 		Task t = Task.getByUUID(uuid);
 		if (t == null) {
-			ListMirakel list;
-			SharedPreferences preferences = PreferenceManager
-					.getDefaultSharedPreferences(ctx);
-			int id;
-			SpecialList sl = SpecialList.firstSpecial();
-			if (sl != null) {
-				id = sl.getId();
-			} else {
-				ListMirakel m = ListMirakel.first();
-				if (m != null) {
-					id = m.getId();
-				} else {
-					Toast.makeText(ctx, R.string.no_lists, Toast.LENGTH_LONG)
-							.show();
-					return null;
-				}
-			}
-			if (preferences.getBoolean("importDefaultList", false)) {
-				list = ListMirakel.getList(preferences.getInt(
-						"defaultImportList", id));
-			} else {
-				list = ListMirakel.getList(id);
-			}
+			ListMirakel list = MirakelPreferences.getImportDefaultList(true);
 			t = Task.newTask(ctx.getString(R.string.new_task), list);
 		}
 		for (String l : lines) {
@@ -286,8 +269,8 @@ public class CalDavSync {
 
 	private String getUUID(String[] lines) {
 		for (String l : lines) {
-			if (l != null && l.contains("X-MIRAKEL-UUID")) {
-				return l.replace("X-MIRAKEL-UUID:", "");
+			if (l != null && l.contains("UID")) {
+				return l.replace("UID:", "");
 			}
 		}
 		return null;

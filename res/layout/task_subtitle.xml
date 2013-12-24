@@ -34,6 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="42dp"
         android:orientation="horizontal"
+        android:paddingEnd="@dimen/task_padding"
         android:paddingRight="@dimen/task_padding" >
 
         <TextView
@@ -41,17 +42,33 @@
             style="@style/taskViewCaption"
             android:layout_width="wrap_content"
             android:layout_height="42dp"
-            android:gravity="center_vertical"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
+            android:gravity="center_vertical"
+            android:paddingEnd="@dimen/task_padding"
             android:paddingRight="@dimen/task_padding"
             android:textIsSelectable="false" />
+
+        <ImageButton
+            android:id="@+id/task_subtitle_audio_button"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="100dp"
+            android:layout_marginRight="100dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/edit"
+            android:src="@android:drawable/ic_btn_speak_now" />
 
         <ImageButton
             android:id="@+id/task_subtitle_camera_button"
             android:layout_width="42dp"
             android:layout_height="42dp"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
+            android:layout_marginEnd="48dp"
             android:layout_marginRight="48dp"
             android:background="@android:color/transparent"
             android:contentDescription="@string/edit"
@@ -61,9 +78,11 @@
             android:id="@+id/task_subtitle_button"
             android:layout_width="42dp"
             android:layout_height="42dp"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:background="@android:color/transparent"
             android:contentDescription="@string/edit"
+            android:paddingEnd="-2dp"
             android:paddingRight="-2dp"
             android:src="@android:drawable/ic_menu_add" />
     </RelativeLayout>

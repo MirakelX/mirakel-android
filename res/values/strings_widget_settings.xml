@@ -17,15 +17,14 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<resources xmlns:tools="http://schemas.android.com/tools"    tools:ignore="MissingTranslation">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <string name="widget_list">List</string>
     <string name="widget_list_summary">Show \"%s\"</string>
     <string name="widget_done">Done Tasks</string>
-    <string name="widget_sort">Sorting</string>
-    <string name="widget_sort_summary">Sort after \"%s\"</string>
     <string name="fontcolor">Font Color</string>
     <string name="widget_transparency">Transparency</string>
     <string name="widget_transparency_summary">%s%% transparent</string>
+    <string name="widget_due_colors">Colorize due dates</string>
 
 </resources>

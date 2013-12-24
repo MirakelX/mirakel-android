@@ -20,7 +20,9 @@ package de.azapps.mirakel.helper.export_import;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -41,23 +43,19 @@ import org.xml.sax.SAXException;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.widget.Toast;
 import au.com.bytecode.opencsv.CSVReader;
-import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
-import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
-import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.FileUtils;
 
 public class ExportImport {
-	private static final File dbFile = new File(Mirakel.getMirakelDir()
+	private static final File dbFile = new File(FileUtils.getMirakelDir()
 			+ "databases/mirakel.db");
 	private static final String TAG = "ExportImport";
 	private static final File exportDir = new File(
@@ -106,11 +104,25 @@ public class ExportImport {
 		}
 	}
 
+	public static void importDB(Context ctx, FileInputStream inputstream) {
+
+		try {
+			FileUtils.copyByStream(inputstream, new FileOutputStream(dbFile));
+			Toast.makeText(ctx, ctx.getString(R.string.backup_import_ok),
+					Toast.LENGTH_LONG).show();
+			android.os.Process.killProcess(android.os.Process.myPid());
+		} catch (IOException e) {
+			Log.e("mypck", e.getMessage(), e);
+			Toast.makeText(ctx, ctx.getString(R.string.backup_import_error),
+					Toast.LENGTH_LONG).show();
+		}
+	}
+
 	@SuppressLint("SimpleDateFormat")
 	public static boolean importAstrid(Context context, String path) {
 		File file = new File(path);
 		if (file.exists()) {
-			String mimetype = Helpers.getMimeType(path);
+			String mimetype = FileUtils.getMimeType(path);
 			if (mimetype.equals("application/zip")) {
 				return importAstridZip(context, file);
 			} else if (mimetype.equals("text/xml")) {
@@ -150,8 +162,6 @@ public class ExportImport {
 		doc.getDocumentElement().normalize();
 
 		NodeList nList = doc.getDocumentElement().getChildNodes();
-		SharedPreferences settings = PreferenceManager
-				.getDefaultSharedPreferences(context);
 		for (int i = 0; i < nList.getLength(); i++) {
 			Node n = nList.item(i);
 			if (n.getNodeType() == Node.ELEMENT_NODE) {
@@ -173,18 +183,7 @@ public class ExportImport {
 							list = ListMirakel.newList(listname);
 						}
 					} else {
-						if (settings.getBoolean("importDefaultList", false)) {
-							list = ListMirakel
-									.getList(settings.getInt(
-											"defaultImportList", SpecialList
-													.firstSpecialSafe(context)
-													.getId()));
-							if (list == null) {
-								list = SpecialList.firstSpecialSafe(context);
-							}
-						} else {
-							list = SpecialList.firstSpecialSafe(context);
-						}
+						list = MirakelPreferences.getImportDefaultList(true);
 					}
 					Task t = Task.newTask(name, list);
 					// Priority
