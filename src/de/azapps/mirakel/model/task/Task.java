@@ -895,7 +895,7 @@ public class Task extends TaskBase {
 				break;
 			case ListMirakel.SORT_BY_OPT:
 				order = ", " + PRIORITY + " DESC";
-				break;
+				//$FALL-THROUGH$
 			case ListMirakel.SORT_BY_DUE:
 				order = " CASE WHEN (" + DUE
 						+ " IS NULL) THEN date('now','+1000 years') ELSE date("
@@ -905,7 +905,7 @@ public class Task extends TaskBase {
 				order = PRIORITY + " DESC,  CASE WHEN (" + DUE
 						+ " IS NULL) THEN date('now','+1000 years') ELSE date("
 						+ DUE + ") END ASC" + order;
-				break;
+				//$FALL-THROUGH$
 			default:
 				order = DatabaseHelper.ID + " ASC";
 		}
