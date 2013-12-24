@@ -43,12 +43,12 @@
     </string-array>
 
     <string name="sync_caldav">CalDAV sync</string>
-    <string name="sync_caldav_howto">
-<![CDATA[You have to setup a Mirakel-compatible CalDAV-syncing app like <a href="https://play.google.com/store/apps/details?id=at.bitfire.davdroid">DAVdroid</a>.
-        
-        Please add afterwards an account in that app and from this moment on the sync should just work. Please select the lists you want to sync.
+    <string name="sync_caldav_howto_">
+<![CDATA[You have to setup a Mirakel-compatible CalDAV-syncing app. Currently you have to install our modified DAVdroid version from our page.<br /><br />
+Soon the official DAVdroid app will also support Mirakel and we are working together with some others to make it possible to sync with Mirakel.
         ]]>
     </string>
+    <string name="download">Download</string>
     <string name="sync_add_account">Add account</string>
     <string name="sync_taskwarrior_configure">Configure Taskwarrior</string>
     <string name="sync_taskwarrior_scan_qr">Scan QR code</string>

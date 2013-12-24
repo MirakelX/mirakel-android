@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
@@ -40,7 +41,15 @@ public class AccountSettingsActivity extends ListSettings {
 				.setTitle(R.string.sync_caldav)
 				.setMessage(
 						Html.fromHtml(this
-								.getString(R.string.sync_caldav_howto)))
+								.getString(R.string.sync_caldav_howto_)))
+								.setNegativeButton(R.string.download, new DialogInterface.OnClickListener() {
+									
+									@Override
+									public void onClick(DialogInterface dialog, int which) {
+										Helpers.openURL(getBaseContext(), "http://mirakel.azapps.de/releases.html#davdroid");
+										
+									}
+								})
 				.setPositiveButton(R.string.sync_add_account,
 						new DialogInterface.OnClickListener() {
 
