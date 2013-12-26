@@ -254,6 +254,10 @@ public class TaskFragmentAdapter extends MirakelArrayAdapter<Pair<Integer, Integ
 					row = setupReminder(parent, convertView);
 				break;
 			case TYPE.SUBTASK:
+				if (data.get(position).second >= subtasks.size()) {
+					setData(task);
+					break;
+				}
 				row = setupSubtask(parent, convertView,
 						subtasks.get(data.get(position).second), position);
 				break;
