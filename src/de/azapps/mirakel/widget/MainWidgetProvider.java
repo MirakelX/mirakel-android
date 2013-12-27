@@ -170,7 +170,12 @@ public class MainWidgetProvider extends AppWidgetProvider {
 				intent.putExtra(EXTRA_WIDGET_ID, widgetId);
 				intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
 				views.setRemoteAdapter(R.id.widget_tasks_list, intent);
-				appWidgetManager.updateAppWidget(new int[] { widgetId }, views);
+				try {
+					appWidgetManager.updateAppWidget(new int[] { widgetId }, views);
+				} catch (Exception e) {
+					Log.d(TAG, "cannot create widget");
+					return;
+				}
 				// Empty view
 				views.setEmptyView(R.id.widget_tasks_list, R.id.empty_view);
 
