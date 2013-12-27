@@ -64,7 +64,7 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 
 	public TaskAdapter(Context c) {
 		// do not call this, only for error-fixing there
-		super(c, 0, (List<Task>) new ArrayList<Task>());
+		super(c, 0, new ArrayList<Task>());
 	}
 
 	public TaskAdapter(Context context, int layoutResourceId, List<Task> data,
@@ -87,9 +87,9 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 		selected.add(false);
 	}
 
-	public void changeData(List<Task> tasks, int listId) {
+	public void changeData(List<Task> tasks, int listID) {
 		viewsForTasks.clear();
-		this.listId = listId;
+		this.listId = listID;
 		super.changeData(tasks);
 	}
 
@@ -178,7 +178,7 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 		}
 
 		holder.taskRowProgress.setProgress(Math.round((360.0f / 100.0f)
-				* (float) task.getProgress()));
+				* task.getProgress()));
 		holder.taskRowDone.setChecked(task.isDone());
 		holder.taskRowDone.setTag(task);
 		holder.taskRowDoneWrapper.setTag(task);
@@ -188,7 +188,7 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 		} else {
 			holder.taskRowHasContent.setVisibility(View.INVISIBLE);
 		}
-		if (showList && task != null && task.getList() != null) {
+		if (showList && task.getList() != null) {
 			holder.taskRowList.setVisibility(View.VISIBLE);
 			holder.taskRowList.setText(task.getList().getName());
 		} else {
@@ -212,7 +212,7 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 
 		GradientDrawable bg = (GradientDrawable) holder.taskRowPriority
 				.getBackground();
-		bg.setColor(TaskHelper.getPrioColor(task.getPriority(), context));
+		bg.setColor(TaskHelper.getPrioColor(task.getPriority()));
 		holder.taskRowPriority.setTag(task);
 
 		// Due
@@ -231,8 +231,7 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 	public Task lastTouched() {
 		if (touchPosition < data.size())
 			return data.get(touchPosition);
-		else
-			return null;
+		return null;
 	}
 
 	/**
