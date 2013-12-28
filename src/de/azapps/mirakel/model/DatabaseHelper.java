@@ -385,7 +385,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			db.execSQL("ALTER TABLE "+Recurring.TABLE+ " add column saturday INTEGER DEFAULT 0;");
 			db.execSQL("ALTER TABLE "+Recurring.TABLE+ " add column sunnday INTEGER DEFAULT 0;");
 			
-			db.execSQL("ALTER TABLE "+Recurring.TABLE+ " add column derived_from INTEGER DAFAULT NULL");
+			db.execSQL("ALTER TABLE "+Recurring.TABLE+ " add column derived_from INTEGER DEFAULT NULL");
 
 		}
 	}
