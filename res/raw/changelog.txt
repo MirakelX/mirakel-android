@@ -17,6 +17,10 @@
     </style>
   </head>
   <body>
+$ 2.2.1
+  % Version 2.2.1
+  _ 2013-12-28
+  ! This is a bugfix release.
 $ 2.2.0
   % Version 2.2.0
   _ 2013-12-24
