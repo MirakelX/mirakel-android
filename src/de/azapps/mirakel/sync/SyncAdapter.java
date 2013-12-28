@@ -38,13 +38,16 @@ package de.azapps.mirakel.sync;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SyncResult;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.sync.caldav.CalDavSync;
 import de.azapps.mirakel.sync.mirakel.MirakelSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
@@ -117,10 +120,14 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	@Override
 	public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
 		Log.v(TAG, "SyncAdapter");
+		Intent intent = new Intent(mContext,
+				MainActivity.class);
+		intent.setAction(MainActivity.SHOW_LISTS);
+		PendingIntent p = PendingIntent.getService(mContext, 0, intent, 0);
 		NotificationCompat.Builder mNB = new NotificationCompat.Builder(
 				mContext).setContentTitle("Mirakel").setContentText("Sync")
 				.setSmallIcon(android.R.drawable.stat_notify_sync)
-				.setWhen(System.currentTimeMillis()).setOngoing(true);
+				.setWhen(System.currentTimeMillis()).setOngoing(true).setContentIntent(p);
 		mNotificationManager.notify(notifyID, mNB.build());
 
 		String type = (AccountManager.get(mContext)).getUserData(account,
@@ -179,7 +186,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						"Mirakel: " + mContext.getText(R.string.finish_sync))
 				.setContentText(last_message)
 				.setSmallIcon(android.R.drawable.stat_notify_sync)
-				.setPriority(NotificationCompat.PRIORITY_LOW);
+				.setPriority(NotificationCompat.PRIORITY_LOW)
+				.setContentIntent(p);
 		mNotificationManager.notify(notifyID, mNB.build());
 	}
 

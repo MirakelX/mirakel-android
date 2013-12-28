@@ -59,9 +59,6 @@ public class AccountSettings implements OnPreferenceChangeListener {
 			if (a != null && a.type.equals(AccountMirakel.ACCOUNT_TYPE_MIRAKEL)) syncServer
 					.setSummary(am
 							.getUserData(a, SyncAdapter.BUNDLE_SERVER_URL));
-			else if (a != null
-					&& a.type.equals(AccountMirakel.ACCOUNT_TYPE_DAVDROID)) syncServer
-					.setSummary(am.getUserData(a, "principal_url"));// a.name);
 			else syncServer.setSummary("");
 		}
 		final CheckBoxPreference syncUse = (CheckBoxPreference) findPreference("syncUse");
