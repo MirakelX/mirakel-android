@@ -1,7 +1,6 @@
 package com.fourmob.datetimepicker.date;
 
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;

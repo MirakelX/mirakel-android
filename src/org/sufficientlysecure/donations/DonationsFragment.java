@@ -96,7 +96,7 @@ public class DonationsFragment extends Fragment {
     /**
      * Instantiate DonationsFragment.
      *
-     * @param debug               You can use BuildConfig.DEBUG to propagate the debug flag from your app to the Donations library
+     * @param debug               You can use BuildHelper.DEBUG to propagate the debug flag from your app to the Donations library
      * @param googleEnabled       Enabled Google Play donations
      * @param googlePubkey        Your Google Play public key
      * @param googleCatalog       Possible item names that can be purchased from Google Play
