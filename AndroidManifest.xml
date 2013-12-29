@@ -19,11 +19,8 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.azapps.mirakelandroid"
-    android:versionCode="30"
+    android:versionCode="31"
     android:versionName="2.2.1" >
-
-    <!-- Only for Google Play builds -->
-    <uses-permission android:name="com.android.vending.BILLING" />
 
     <!-- TODO Remove Unused Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
