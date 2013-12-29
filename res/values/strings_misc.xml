@@ -39,11 +39,11 @@ For example I also use the following condition: `Mirakel today fix that bug` Thi
 
 #### Please note:
 
-* The last condition overrides the previous conditions if they do the same action. (If you create a Task `Today Tomorrow Foo`, then the due-date will be tomorrow`)
+* The last condition overrides the previous conditions if they do the same action. (If you create a Task `Today Tomorrow Foo`, then the due-date will be tomorrow)
 * The task templates are stronger then the SpecialLists.
 
 #### HowTo
-Yo want to create a condition `Mirakel` to put the task in the list `NA: Mirakel`
+You want to create a condition `Mirakel` to put the task in the list `NA: Mirakel`
 
 1. Go to `Settings→Tasks`
 2. Activate the `Task templates`

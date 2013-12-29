@@ -18,13 +18,12 @@
  ******************************************************************************/
 package de.azapps.mirakel.helper;
 
-import de.azapps.mirakelandroid.BuildConfig;
 
 public class Log {
 	public static void d(String tag, String msg) {
 		if (tag == null || msg == null)
 			return;
-		if (BuildConfig.DEBUG)
+		if (BuildHelper.DEBUG)
 			android.util.Log.d(tag, msg);
 	}
 
@@ -43,21 +42,21 @@ public class Log {
 	public static void i(String tag, String msg) {
 		if (tag == null || msg == null)
 			return;
-		if (BuildConfig.DEBUG)
+		if (BuildHelper.DEBUG)
 			android.util.Log.i(tag, msg);
 	}
 
 	public static void v(String tag, String msg) {
 		if (tag == null || msg == null)
 			return;
-		if (BuildConfig.DEBUG)
+		if (BuildHelper.DEBUG)
 			android.util.Log.v(tag, msg);
 	}
 
 	public static void w(String tag, String msg) {
 		if (tag == null || msg == null)
 			return;
-		if (BuildConfig.DEBUG)
+		if (BuildHelper.DEBUG)
 			android.util.Log.w(tag, msg);
 	}
 

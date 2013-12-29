@@ -254,6 +254,10 @@ public class TaskFragmentAdapter extends MirakelArrayAdapter<Pair<Integer, Integ
 					row = setupReminder(parent, convertView);
 				break;
 			case TYPE.SUBTASK:
+				if (data.get(position).second >= subtasks.size()) {
+					setData(task);
+					break;
+				}
 				row = setupSubtask(parent, convertView,
 						subtasks.get(data.get(position).second), position);
 				break;
@@ -444,7 +448,7 @@ public class TaskFragmentAdapter extends MirakelArrayAdapter<Pair<Integer, Integ
 
 		GradientDrawable bg = (GradientDrawable) holder.taskRowPriority
 				.getBackground();
-		bg.setColor(TaskHelper.getPrioColor(task.getPriority(), context));
+		bg.setColor(TaskHelper.getPrioColor(task.getPriority()));
 		holder.taskRowPriority.setTag(task);
 
 		// Due
@@ -1302,7 +1306,7 @@ public class TaskFragmentAdapter extends MirakelArrayAdapter<Pair<Integer, Integ
 		Task_prio.setText("" + task.getPriority());
 
 		GradientDrawable bg = (GradientDrawable) Task_prio.getBackground();
-		bg.setColor(TaskHelper.getPrioColor(task.getPriority(), context));
+		bg.setColor(TaskHelper.getPrioColor(task.getPriority()));
 
 	}
 

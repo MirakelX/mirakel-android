@@ -36,7 +36,7 @@ public class TaskHelper {
 		long taskId = intent.getLongExtra(MainActivity.EXTRA_ID, 0);
 		if (taskId == 0) {
 			// ugly fix for show Task from Widget
-			taskId = (long) intent.getIntExtra(MainActivity.EXTRA_ID, 0);
+			taskId = intent.getIntExtra(MainActivity.EXTRA_ID, 0);
 		}
 		if (taskId != 0) {
 			task = Task.get(taskId);
@@ -95,7 +95,7 @@ public class TaskHelper {
 		return color;
 	}
 
-	public static int getPrioColor(int priority, Context context) {
+	public static int getPrioColor(int priority) {
 		final int[] PRIO_COLOR = { Color.parseColor("#669900"),
 				Color.parseColor("#99CC00"), Color.parseColor("#33B5E5"),
 				Color.parseColor("#FFBB33"), Color.parseColor("#FF4444") };
@@ -104,9 +104,8 @@ public class TaskHelper {
 				Color.parseColor("#FF7700"), Color.parseColor("#FF3333") };
 		if (MirakelPreferences.isDark()) {
 			return DARK_PRIO_COLOR[priority + 2];
-		} else {
-			return PRIO_COLOR[priority + 2];
 		}
+		return PRIO_COLOR[priority + 2];
 
 	}
 

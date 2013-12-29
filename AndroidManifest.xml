@@ -19,8 +19,8 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.azapps.mirakelandroid"
-    android:versionCode="29"
-    android:versionName="2.2.0" >
+    android:versionCode="30"
+    android:versionName="2.2.1" >
 
     <!-- Only for Google Play builds -->
     <uses-permission android:name="com.android.vending.BILLING" />

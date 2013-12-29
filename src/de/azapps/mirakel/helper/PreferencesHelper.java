@@ -1000,7 +1000,11 @@ public class PreferencesHelper {
 							}
 							new AlertDialog.Builder(activity)
 									.setTitle(R.string.undo_number)
-									.setMessage(R.string.undo_number_summary)
+									.setMessage(
+											activity.getString(
+													R.string.undo_number_summary,
+													MirakelPreferences
+															.getUndoNumber()))
 									.setView(numberPicker)
 									.setPositiveButton(
 											android.R.string.ok,

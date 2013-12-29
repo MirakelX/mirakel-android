@@ -656,7 +656,7 @@ public class TaskDialogHelpers {
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
 								Task mTask = task;
-								if (task.getId() == 0) {
+								if (task == null || task.getId() == 0) {
 									mTask = Semantic.createTask(
 											MirakelPreferences
 													.getAudioDefaultTitle(),

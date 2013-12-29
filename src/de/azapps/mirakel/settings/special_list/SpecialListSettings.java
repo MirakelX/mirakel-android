@@ -43,12 +43,12 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
+import de.azapps.mirakel.helper.BuildHelper;
 import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.settings.ListSettings;
-import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.R;
 import de.azapps.widgets.DueDialog;
 import de.azapps.widgets.DueDialog.VALUE;
@@ -112,7 +112,7 @@ public class SpecialListSettings implements OnPreferenceChangeListener {
 			}
 		});
 
-		if (!BuildConfig.DEBUG) {
+		if (!BuildHelper.DEBUG) {
 			getPreferenceScreen().removePreference(
 					findPreference("special_lists_where"));
 		} else {
@@ -880,7 +880,7 @@ public class SpecialListSettings implements OnPreferenceChangeListener {
 							+ newWhere);
 		}
 		specialList.save();
-		if (BuildConfig.DEBUG) {
+		if (BuildHelper.DEBUG) {
 			findPreference("special_lists_where").setSummary(
 					specialList.getWhereQuery(false));
 		}

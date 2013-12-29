@@ -17,8 +17,12 @@
     </style>
   </head>
   <body>
+$ 2.2.1
+  % Version 2.2.1
+  _ 2013-12-28
+  ! This is a bugfix release.
 $ 2.2.0
-  % Version 2.1.4
+  % Version 2.2.0
   _ 2013-12-24
   ! Our huge Christmas release. We've worked hard to give you an awesome new, bugfree release. We hope the waiting has been worth it.
   ! <b>We wish you a Merry Christmas!</b>
