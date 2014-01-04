@@ -21,7 +21,7 @@ More Informations (like screenshots and features) and Downloads you can get [her
 
 # Beta
 
-Please help us testing our app by joining our [Google+-Community](https://plus.google.com/u/0/communities/110640831388790835840) and testing our Beta releases! If you don't want to use Google+ just write us an email, we can solve this problem ;)
+Please help us testing our app by joining our [Google+-Community](https://plus.google.com/u/0/communities/110640831388790835840) and testing our Beta releases! Or just go to our **[releases-page](http://mirakel.azapps.de/releases.html)**
 
 # Contribute
 
