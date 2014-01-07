@@ -49,7 +49,7 @@ Don't hesitate to contact us, just write us an e-mail to mirakel@azapps.de.
 
 # License
 
-Copyright (c) 2013 Anatolij Zelenin, Georg Semmler
+Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler
 
 
     This program is free software: you can redistribute it and/or modify
