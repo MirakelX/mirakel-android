@@ -56,7 +56,6 @@
                 android:paddingEnd="@dimen/task_padding"
                 android:paddingLeft="@dimen/task_padding"
                 android:paddingRight="@dimen/task_padding"
-                android:paddingStart="@dimen/task_padding"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <EditText
@@ -69,7 +68,6 @@
                 android:paddingEnd="@dimen/task_padding"
                 android:paddingLeft="@dimen/task_padding"
                 android:paddingRight="@dimen/task_padding"
-                android:paddingStart="@dimen/task_padding"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
         </ViewSwitcher>
 
