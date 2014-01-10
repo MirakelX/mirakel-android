@@ -77,7 +77,6 @@
         android:paddingEnd="@dimen/separator_padding"
         android:paddingLeft="@dimen/separator_padding"
         android:paddingRight="@dimen/separator_padding"
-        android:paddingStart="@dimen/separator_padding"
         android:text="@string/time_separator" />
 
     <TextView
@@ -138,7 +137,6 @@
         android:paddingEnd="@dimen/ampm_left_padding"
         android:paddingLeft="@dimen/ampm_left_padding"
         android:paddingRight="@dimen/ampm_left_padding"
-        android:paddingStart="@dimen/ampm_left_padding"
         android:text="@string/time_placeholder" />
 
 </RelativeLayout>
