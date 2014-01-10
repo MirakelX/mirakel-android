@@ -26,7 +26,6 @@
     android:paddingEnd="@dimen/task_padding"
     android:paddingLeft="@dimen/task_padding"
     android:paddingRight="@dimen/task_padding"
-    android:paddingStart="@dimen/task_padding"
     android:paddingTop="7.5dp" >
 
     <ImageView
@@ -46,7 +45,6 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:paddingLeft="@dimen/text_padding"
-            android:paddingStart="@dimen/text_padding"
             android:textIsSelectable="false"
             android:textSize="18sp" />
 
@@ -56,7 +54,6 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:paddingLeft="@dimen/text_padding"
-            android:paddingStart="@dimen/text_padding"
             android:textColor="@color/Grey"
             android:textIsSelectable="false"
             android:textSize="12sp" />
