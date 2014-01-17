@@ -36,6 +36,7 @@
             android:paddingEnd="20dip"
             android:paddingLeft="20dip"
             android:paddingRight="20dip"
+            android:paddingStart="20dip"
             android:paddingTop="5dip" >
 
             <TextView
@@ -195,6 +196,7 @@
         android:paddingEnd="2dip"
         android:paddingLeft="2dip"
         android:paddingRight="2dip"
+        android:paddingStart="2dip"
         android:paddingTop="4dip" >
 
         <Button

@@ -45,6 +45,7 @@
                 android:paddingEnd="12dip"
                 android:paddingLeft="12dip"
                 android:paddingRight="12dip"
+                android:paddingStart="12dip"
                 android:paddingTop="12dip" >
 
                 <Spinner
@@ -71,6 +72,7 @@
                 android:paddingEnd="12dp"
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
+                android:paddingStart="12dp"
                 android:paddingTop="4dp" >
 
                 <LinearLayout
@@ -78,7 +80,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="start"
-                    android:paddingLeft="4dp">
+                    android:paddingLeft="4dp"
+                    android:paddingStart="4dp" >
 
                     <TextView
                         android:id="@+id/intervalPreText"
@@ -98,6 +101,7 @@
                         android:paddingEnd="4dp"
                         android:paddingLeft="4dp"
                         android:paddingRight="4dp"
+                        android:paddingStart="4dp"
                         android:selectAllOnFocus="true"
                         android:singleLine="true"
                         android:textSize="15sp" >
@@ -192,7 +196,8 @@
                     android:layout_height="wrap_content"
                     android:gravity="start"
                     android:orientation="horizontal"
-                    android:paddingLeft="0dp">
+                    android:paddingLeft="0dp"
+                    android:paddingStart="0dp" >
 
                     <Spinner
                         android:id="@+id/startSpinner"
@@ -224,6 +229,7 @@
                         android:paddingEnd="12dp"
                         android:paddingLeft="12dp"
                         android:paddingRight="16dp"
+                        android:paddingStart="12dp"
                         android:singleLine="true"
                         android:textColor="@color/recurrence_spinner_text_color"
                         android:textSize="15sp"
@@ -247,6 +253,7 @@
                         android:paddingEnd="16dp"
                         android:paddingLeft="12dp"
                         android:paddingRight="16dp"
+                        android:paddingStart="12dp"
                         android:singleLine="true"
                         android:textColor="@color/recurrence_spinner_text_color"
                         android:textSize="15sp"
@@ -259,7 +266,8 @@
                     android:layout_height="wrap_content"
                     android:gravity="start"
                     android:orientation="horizontal"
-                    android:paddingLeft="0dp">
+                    android:paddingLeft="0dp"
+                    android:paddingStart="0dp" >
 
                     <Spinner
                         android:id="@+id/endSpinner"
@@ -317,6 +325,7 @@
                         android:paddingEnd="16dp"
                         android:paddingLeft="12dp"
                         android:paddingRight="16dp"
+                        android:paddingStart="12dp"
                         android:singleLine="true"
                         android:textColor="@color/recurrence_spinner_text_color"
                         android:textSize="15sp"
@@ -340,6 +349,7 @@
                         android:paddingEnd="16dp"
                         android:paddingLeft="12dp"
                         android:paddingRight="16dp"
+                        android:paddingStart="12dp"
                         android:singleLine="true"
                         android:textColor="@color/recurrence_spinner_text_color"
                         android:textSize="15sp"
