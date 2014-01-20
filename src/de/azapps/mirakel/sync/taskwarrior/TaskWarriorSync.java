@@ -482,7 +482,7 @@ public class TaskWarriorSync {
 		if (task.getAdditionalEntries() != null) {
 			Map<String, String> additionalEntries = task.getAdditionalEntries();
 			for (String key : additionalEntries.keySet()) {
-					json += ",\"" + key + "\":" + additionalEntries.get(key);
+				json += ",\"" + key + "\":" + additionalEntries.get(key);
 			}
 		}
 		// end Additional Strings

@@ -126,6 +126,18 @@ class TaskBase {
 		return this.additionalEntries;
 	}
 
+	protected String getAdditionalEntriesString() {
+		String additionalEntries="{";
+		boolean first=true;
+		initAdditionalEntries();
+		for(Entry<String, String> p:this.additionalEntries.entrySet()){
+			additionalEntries+=(first?"":",")+"\""+p.getKey()+"\":"+p.getValue();
+			first=false;
+		}
+		this.additionalEntriesString = additionalEntries + "}";
+		return additionalEntries+"}";
+	}
+
 	public String getContent() {
 		if (this.content == null) return "";
 		return this.content;
@@ -171,22 +183,7 @@ class TaskBase {
 		cv.put(RECURRING_REMINDER, this.recurring_reminder);
 		cv.put(PROGRESS, this.progress);
 
-		//		Gson gson = new GsonBuilder().create();
-		//		String additionalEntries = gson.toJson(this.additionalEntries);
-		String additionalEntries="{";
-		boolean first=true;
-		Log.w(TAG, this.additionalEntriesString);
-		initAdditionalEntries();
-		if (this.additionalEntries.entrySet() == null) {
-			Log.d(TAG,"set is null");
-		}
-		Log.wtf(TAG, "here");
-		for(Entry<String, String> p:this.additionalEntries.entrySet()){
-			additionalEntries+=(first?"":",")+"\""+p.getKey()+"\":"+p.getValue();
-			first=false;
-		}
-		Log.d(TAG, additionalEntries);
-		cv.put("additional_entries", additionalEntries+"}");
+		cv.put("additional_entries", getAdditionalEntriesString());
 		return cv;
 	}
 
@@ -264,11 +261,10 @@ class TaskBase {
 	 */
 	private void initAdditionalEntries() {
 		if (this.additionalEntries == null) {
-			if (this.additionalEntriesString == null
-					|| this.additionalEntriesString.trim().equals("")
-					|| this.additionalEntriesString.trim().equals("null")) {
-				this.additionalEntries = new HashMap<String, String>();
-			} else {
+			this.additionalEntries = new HashMap<String, String>();
+			if (this.additionalEntriesString != null
+					&& !this.additionalEntriesString.trim().equals("")
+					&& !this.additionalEntriesString.trim().equals("null")) {
 				String t = this.additionalEntriesString.substring(1,
 						this.additionalEntriesString.length() - 1);// remove { and }
 				String [] parts=t.split(",");
@@ -280,11 +276,6 @@ class TaskBase {
 						this.additionalEntries.put(key, keyValue[1]);
 					}
 				}
-				//				Gson gson = new Gson();
-				//				Type mapType = new TypeToken<Map<String, String>>() {}
-				//						.getType();
-				//				this.additionalEntries = gson.fromJson(additionalEntriesString,
-				//						mapType);
 			}
 		}
 	}

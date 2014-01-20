@@ -541,7 +541,7 @@ public class Task extends TaskBase {
 				} else {
 					t.setDone(true);
 				}
-				t.addAdditionalEntry(key, val.getAsString());
+				t.addAdditionalEntry(key, "\"" + val.getAsString() + "\"");
 				// TODO don't ignore waiting and recurring!!!
 			} else if (key.equals("due")) {
 				Calendar due = parseDate(val.getAsString(), "yyyy-MM-dd");
@@ -587,19 +587,7 @@ public class Task extends TaskBase {
 				t.setSyncState(SYNC_STATE.parseInt(val.getAsInt()));
 			} else if (key.equals("depends")) {
 				t.setDependencies(val.getAsString().split(","));
-			} /*else if (key.equals("tags")) {
-				// tags is a json array...
-				JsonArray j = val.getAsJsonArray();
-				List<String> tags = new ArrayList<String>();
-				for (JsonElement e : j) {
-					tags.add(e.getAsString());
-				}
-				Gson gson = new GsonBuilder().create();
-				String additionalEntries = gson.toJson(tags);
-				Log.d(TAG, "additional Entries: " + additionalEntries);
-				// TODO we should use tags...
-				t.addAdditionalEntry(key, additionalEntries);
-			}*/ else {
+			} else {
 				if(val.isJsonPrimitive()){
 					JsonPrimitive p=(JsonPrimitive)val;
 					if(p.isBoolean()){
@@ -643,14 +631,8 @@ public class Task extends TaskBase {
 				} else {
 					Log.w(TAG, "unkown json-type");
 				}
-				// TODO fix arrays here..
-				// t.addAdditionalEntry(key, val.getAsString());
 			}
 		}
-		//		if (t.getList() == null) {
-		//			ListMirakel l = MirakelPreferences.getImportDefaultList(true);
-		//			t.setList(l);
-		//		}
 		return t;
 	}
 
@@ -798,6 +780,8 @@ public class Task extends TaskBase {
 		values.put(DatabaseHelper.UPDATED_AT,
 				DateTimeHelper.formatDateTime(getUpdatedAt()));
 		values.put(PROGRESS, getProgress());
+
+		values.put("additional_entries", getAdditionalEntriesString());
 		database.beginTransaction();
 		long insertId = database.insertOrThrow(TABLE, null, values);
 		database.setTransactionSuccessful();
