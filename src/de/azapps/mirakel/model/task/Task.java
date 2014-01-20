@@ -41,6 +41,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
@@ -586,8 +587,64 @@ public class Task extends TaskBase {
 				t.setSyncState(SYNC_STATE.parseInt(val.getAsInt()));
 			} else if (key.equals("depends")) {
 				t.setDependencies(val.getAsString().split(","));
-			} else {
-				t.addAdditionalEntry(key, val.getAsString());
+			} /*else if (key.equals("tags")) {
+				// tags is a json array...
+				JsonArray j = val.getAsJsonArray();
+				List<String> tags = new ArrayList<String>();
+				for (JsonElement e : j) {
+					tags.add(e.getAsString());
+				}
+				Gson gson = new GsonBuilder().create();
+				String additionalEntries = gson.toJson(tags);
+				Log.d(TAG, "additional Entries: " + additionalEntries);
+				// TODO we should use tags...
+				t.addAdditionalEntry(key, additionalEntries);
+			}*/ else {
+				if(val.isJsonPrimitive()){
+					JsonPrimitive p=(JsonPrimitive)val;
+					if(p.isBoolean()){
+						t.addAdditionalEntry(key, val.getAsBoolean()+"");
+					}else if(p.isNumber()){
+						t.addAdditionalEntry(key, val.getAsInt()+"");
+					}else if(p.isJsonNull()){
+						t.addAdditionalEntry(key, "null");
+					}else if(p.isString()){
+						t.addAdditionalEntry(key, "\""+val.getAsString()+"\"");
+					}else{
+						Log.w(TAG, "unkown json-type");
+					}
+				}else if(val.isJsonArray()){
+					JsonArray a=(JsonArray)val;
+					String s="[";
+					boolean first = true;
+					for(JsonElement e:a){
+						if (e.isJsonPrimitive()) {
+							JsonPrimitive p = (JsonPrimitive) e;
+							String add;
+							if (p.isBoolean()) {
+								add = p.getAsBoolean() + "";
+							} else if (p.isNumber()) {
+								add = p.getAsInt() + "";
+							} else if (p.isString()) {
+								add = "\"" + p.getAsString() + "\"";
+							} else if (p.isJsonNull()) {
+								add = "null";
+							} else {
+								Log.w(TAG, "unkown json-type");
+								break;
+							}
+							s += (first ? "" : ",") + add;
+							first = false;
+						} else {
+							Log.w(TAG, "unkown json-type");
+						}
+					}
+					t.addAdditionalEntry(key, s + "]");
+				} else {
+					Log.w(TAG, "unkown json-type");
+				}
+				// TODO fix arrays here..
+				// t.addAdditionalEntry(key, val.getAsString());
 			}
 		}
 		//		if (t.getList() == null) {

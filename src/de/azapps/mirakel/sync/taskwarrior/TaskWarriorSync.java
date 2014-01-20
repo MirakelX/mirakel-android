@@ -217,12 +217,6 @@ public class TaskWarriorSync {
 								.getInboxList(accountMirakel);
 						server_task.setList(list);
 					}
-					Calendar due = server_task.getDue();
-					if (due != null) {
-						// due.add(Calendar.DAY_OF_MONTH, 1);
-						// server_task.setDue(due);
-					}
-
 					this.dependencies.put(server_task.getUUID(),
 							server_task.getDependencies());
 					local_task = Task.getByUUID(server_task.getUUID());
@@ -405,7 +399,7 @@ public class TaskWarriorSync {
 			status = "completed";
 			end=formatCal(new GregorianCalendar());
 		}
-		Log.e(TAG, "Status waiting / recurring is not implemented now");
+		Log.i(TAG, "Status waiting / recurring is not implemented now");
 		// TODO
 
 		String priority = null;
@@ -488,8 +482,7 @@ public class TaskWarriorSync {
 		if (task.getAdditionalEntries() != null) {
 			Map<String, String> additionalEntries = task.getAdditionalEntries();
 			for (String key : additionalEntries.keySet()) {
-				json += ",\"" + key + "\":\"" + additionalEntries.get(key)
-						+ "\"";
+					json += ",\"" + key + "\":" + additionalEntries.get(key);
 			}
 		}
 		// end Additional Strings
