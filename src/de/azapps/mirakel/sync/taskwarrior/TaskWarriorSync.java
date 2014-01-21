@@ -454,15 +454,17 @@ public class TaskWarriorSync {
 			String annotations[] = task.getContent().replace("\"", "\\\"")
 					.split("\n");
 			boolean first = true;
+			Calendar d = task.getUpdatedAt();
 			for (String a : annotations) {
 				if (first) {
 					first = false;
 				} else {
 					json += ",";
 				}
-				json += "{\"entry\":\"" + formatCal(task.getUpdatedAt())
+				json += "{\"entry\":\"" + formatCal(d)
 						+ "\",";
 				json += "\"description\":\"" + a + "\"}";
+				d.add(Calendar.SECOND, 1);
 			}
 			json += "]";
 		}
