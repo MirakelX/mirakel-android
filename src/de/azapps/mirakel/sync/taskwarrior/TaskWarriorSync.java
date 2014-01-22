@@ -3,6 +3,7 @@ package de.azapps.mirakel.sync.taskwarrior;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.MalformedInputException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -19,6 +20,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import de.azapps.mirakel.Mirakel.NoSuchListException;
+import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
@@ -26,7 +28,6 @@ import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.FileUtils;
-import de.azapps.tools.Log;
 
 public class TaskWarriorSync {
 
@@ -159,7 +160,11 @@ public class TaskWarriorSync {
 		longInfo(sync.getPayload());
 
 		TLSClient client = new TLSClient();
-		client.init(root, user_ca, user_key);
+		try {
+			client.init(root, user_ca, user_key);
+		} catch(ParseException e) {
+			return TW_ERRORS.CANNOT_PARSE_MESSAGE;
+		}
 		try {
 			client.connect(_host, _port);
 		} catch (IOException e) {

@@ -294,7 +294,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 				finish();
 				return false;
 			case R.id.menu_undo:
-				UndoHistory.undoLast(this);
+				UndoHistory.undoLast();
 				updateCurrentListAndTask();
 				if (currentPosition == getTaskFragmentPosition()) setCurrentTask(getCurrentTask());
 				else {
