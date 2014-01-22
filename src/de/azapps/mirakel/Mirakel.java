@@ -53,35 +53,45 @@ import de.azapps.mirakelandroid.R;
 
 @SuppressLint("RtlHardcoded")
 @ReportsCrashes(
-// This is required for backward compatibility but not used
-formKey = "",
-// optional, displayed as soon as the crash occurs, before collecting data which
-// can take a few seconds
-reportType = org.acra.sender.HttpSender.Type.JSON, httpMethod = org.acra.sender.HttpSender.Method.PUT, formUri = "https://mirakel.iriscouch.com/acra-mirakel/_design/acra-storage/_update/report", formUriBasicAuthLogin = "android", formUriBasicAuthPassword = "Kd4PBcVi2lwAbi763qaS", disableSSLCertValidation = true, mode = ReportingInteractionMode.DIALOG, resToastText = R.string.crash_toast_text,
-// optional. default is a warning sign
-resDialogText = R.string.crash_dialog_text, resDialogIcon = android.R.drawable.ic_dialog_info,
-// optional. default is your application name
-resDialogTitle = R.string.crash_dialog_title,
-// optional. when defined, adds a user text field input with this text resource
-// as a label
-resDialogCommentPrompt = R.string.crash_dialog_comment_prompt, resDialogOkToast = R.string.crash_dialog_ok_toast
+		// This is required for backward compatibility but not used
+		formKey = "",
+		// optional, displayed as soon as the crash occurs, before collecting data which
+		// can take a few seconds
+		reportType = org.acra.sender.HttpSender.Type.JSON,
+		httpMethod = org.acra.sender.HttpSender.Method.PUT,
+		formUri = "https://mirakel.iriscouch.com/acra-mirakel/_design/acra-storage/_update/report",
+		formUriBasicAuthLogin = "android",
+		formUriBasicAuthPassword = "Kd4PBcVi2lwAbi763qaS",
+		disableSSLCertValidation = true,
+		mode = ReportingInteractionMode.DIALOG,
+		resToastText = R.string.crash_toast_text,
+		// optional. default is a warning sign
+		resDialogText = R.string.crash_dialog_text,
+		resDialogIcon = android.R.drawable.ic_dialog_info,
+		// optional. default is your application name
+		resDialogTitle = R.string.crash_dialog_title,
+		// optional. when defined, adds a user text field input with this text resource
+		// as a label
+		resDialogCommentPrompt = R.string.crash_dialog_comment_prompt,
+		resDialogOkToast = R.string.crash_dialog_ok_toast
 // optional. displays a Toast message when the user accepts to send a report.
 
 )
 public class Mirakel extends Application {
-	public static final int NOTIF_DEFAULT = 123, NOTIF_REMINDER = 124;
-	public static final String AUTHORITY_TYP = "de.azapps.mirakel.provider";
-	public static String APK_NAME;
-	public static String VERSIONS_NAME;
+	public static final int			NOTIF_DEFAULT	= 123,
+			NOTIF_REMINDER = 124;
+	public static final String		AUTHORITY_TYP	= "de.azapps.mirakel.provider";
+	public static String			APK_NAME;
+	public static String			VERSIONS_NAME;
 
-	public static int widgets[] = {};
+	public static int				widgets[]		= {};
 
-	private static final String TAG = "Mirakel";
+	private static final String		TAG				= "Mirakel";
 
-	private static SQLiteOpenHelper openHelper;
-	public static String MIRAKEL_DIR;
+	private static SQLiteOpenHelper	openHelper;
+	public static String			MIRAKEL_DIR;
 	// FIXME move this somewhere else?
-	public static int GRAVITY_LEFT, GRAVITY_RIGHT;
+	public static int				GRAVITY_LEFT, GRAVITY_RIGHT;
 
 	@SuppressLint("InlinedApi")
 	@Override
@@ -180,10 +190,10 @@ public class Mirakel extends Application {
 	}
 
 	public static class NoSuchListException extends Exception {
-		static final long serialVersionUID = 1374828057;
+		static final long	serialVersionUID	= 1374828057;
 	}
 
 	public static class NoSuchTaskException extends Exception {
-		static final long serialVersionUID = 1374828058;
+		static final long	serialVersionUID	= 1374828058;
 	}
 }

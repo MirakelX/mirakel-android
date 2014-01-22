@@ -48,16 +48,14 @@ import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 
 public class FileUtils {
-	private static final String TAG = "FileUtils";
-	public static final int MEDIA_TYPE_IMAGE = 1;
-	public static final int MEDIA_TYPE_VIDEO = 2;
-	public static final int MEDIA_TYPE_AUDIO = 3;
+	private static final String	TAG					= "FileUtils";
+	public static final int		MEDIA_TYPE_IMAGE	= 1;
+	public static final int		MEDIA_TYPE_VIDEO	= 2;
+	public static final int		MEDIA_TYPE_AUDIO	= 3;
 
 	@SuppressLint("NewApi")
-	public static String getPath(Context context, Uri uri)
-			throws URISyntaxException {
-		if (uri == null)
-			return null;
+	public static String getPath(Context context, Uri uri) throws URISyntaxException {
+		if (uri == null) return null;
 		final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
 
 		// DocumentProvider
@@ -69,15 +67,13 @@ public class FileUtils {
 				final String type = split[0];
 				// Environment.
 				// TODO somehow handle that here may be the diskuuid as type
-				//if ("primary".equalsIgnoreCase(type)) {
+				// if ("primary".equalsIgnoreCase(type)) {
 				String path = Environment.getExternalStorageDirectory()
-						.getPath()
-							+ "/"
-							+ split[1];
+						.getPath() + "/" + split[1];
 				if (new File(path).exists()) return path;
-				//} else {
-				//	Log.d(TAG, type);
-				//}
+				// } else {
+				// Log.d(TAG, type);
+				// }
 
 				// TODO handle non-primary volumes
 			}
@@ -209,10 +205,8 @@ public class FileUtils {
 		try {
 			inChannel.transferTo(0, inChannel.size(), outChannel);
 		} finally {
-			if (inChannel != null)
-				inChannel.close();
-			if (outChannel != null)
-				outChannel.close();
+			if (inChannel != null) inChannel.close();
+			if (outChannel != null) outChannel.close();
 		}
 	}
 
@@ -222,8 +216,7 @@ public class FileUtils {
 	 * @param zipFile
 	 * @param location
 	 */
-	public static void unzip(File zipFile, File location)
-			throws FileNotFoundException, IOException {
+	public static void unzip(File zipFile, File location) throws FileNotFoundException, IOException {
 
 		FileInputStream fin = new FileInputStream(zipFile);
 		ZipInputStream zin = new ZipInputStream(fin);
@@ -266,8 +259,7 @@ public class FileUtils {
 	}
 
 	public static void writeToFile(File f, String s) throws IOException {
-		if (f.exists())
-			f.delete();
+		if (f.exists()) f.delete();
 		BufferedWriter out = new BufferedWriter(new FileWriter(f));
 		out.write(s);
 		out.close();
@@ -299,8 +291,7 @@ public class FileUtils {
 	/** Create a file Uri for saving an image or video */
 	public static Uri getOutputMediaFileUri(int type) {
 		File file = FileUtils.getOutputMediaFile(type);
-		if (file == null)
-			return null;
+		if (file == null) return null;
 		return Uri.fromFile(file);
 	}
 
@@ -316,20 +307,20 @@ public class FileUtils {
 				Locale.getDefault()).format(new Date());
 		File mediaFile;
 		switch (type) {
-		case MEDIA_TYPE_IMAGE:
-			mediaFile = new File(mediaStorageDir.getPath() + File.separator
-					+ "IMG_" + timeStamp + ".jpg");
-			break;
-		case MEDIA_TYPE_VIDEO:
-			mediaFile = new File(mediaStorageDir.getPath() + File.separator
-					+ "VID_" + timeStamp + ".mp4");
-			break;
-		case MEDIA_TYPE_AUDIO:
-			mediaFile = new File(mediaStorageDir.getPath() + File.separator
-					+ "AUD_" + timeStamp + ".mp3");
-			break;
-		default:
-			return null;
+			case MEDIA_TYPE_IMAGE:
+				mediaFile = new File(mediaStorageDir.getPath() + File.separator
+						+ "IMG_" + timeStamp + ".jpg");
+				break;
+			case MEDIA_TYPE_VIDEO:
+				mediaFile = new File(mediaStorageDir.getPath() + File.separator
+						+ "VID_" + timeStamp + ".mp4");
+				break;
+			case MEDIA_TYPE_AUDIO:
+				mediaFile = new File(mediaStorageDir.getPath() + File.separator
+						+ "AUD_" + timeStamp + ".mp3");
+				break;
+			default:
+				return null;
 		}
 
 		return mediaFile;
@@ -360,7 +351,7 @@ public class FileUtils {
 	 * @return
 	 */
 	public static String getMirakelDir() {
-		if (Mirakel.APK_NAME == null)// wtf
+		if (Mirakel.APK_NAME == null) // wtf
 			Mirakel.APK_NAME = "de.azapps.mirakelandroid";
 		if (Mirakel.MIRAKEL_DIR == null)
 			Mirakel.MIRAKEL_DIR = Environment.getDataDirectory() + "/data/"
