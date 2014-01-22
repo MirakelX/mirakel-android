@@ -20,11 +20,9 @@ import de.azapps.mirakelandroid.R;
 
 public class DateTimeDialog extends DialogFragment {
 
-	protected static final String TAG = "DateTimeDialog";
+	protected static final String	TAG	= "DateTimeDialog";
 
-	public static DateTimeDialog newInstance(OnDateTimeSetListner callback,
-			int year, int month, int dayOfMonth, int hourOfDay, int minute,
-			boolean vibrate, boolean dark) {
+	public static DateTimeDialog newInstance(OnDateTimeSetListner callback, int year, int month, int dayOfMonth, int hourOfDay, int minute, boolean vibrate, boolean dark) {
 		DateTimeDialog dt = new DateTimeDialog();
 		dt.init(year, month, dayOfMonth, hourOfDay, minute);
 		dt.setOnDateTimeSetListner(callback);
@@ -33,19 +31,18 @@ public class DateTimeDialog extends DialogFragment {
 		return dt;
 	}
 
-	private int mInitialYear;
-	private int mInitialMonth;
-	private int mInitialDay;
-	private int mInitialHour;
-	private int mInitialMinute;
+	private int	mInitialYear;
+	private int	mInitialMonth;
+	private int	mInitialDay;
+	private int	mInitialHour;
+	private int	mInitialMinute;
 
-	private void init(int year, int month, int dayOfMonth, int hourOfDay,
-			int minute) {
-		mInitialYear=year;
-		mInitialMonth=month;
-		mInitialDay=dayOfMonth;
-		mInitialHour=hourOfDay;
-		mInitialMinute=minute;
+	private void init(int year, int month, int dayOfMonth, int hourOfDay, int minute) {
+		mInitialYear = year;
+		mInitialMonth = month;
+		mInitialDay = dayOfMonth;
+		mInitialHour = hourOfDay;
+		mInitialMinute = minute;
 
 	}
 
@@ -55,21 +52,20 @@ public class DateTimeDialog extends DialogFragment {
 
 	}
 
-	float startX;
-	float startY;
-	private ViewSwitcher viewSwitcher;
-	private TimePicker tp;
-	private DatePicker dp;
-	private boolean isCurrentDatepicker = true;
-	private OnDateTimeSetListner mCallback;
+	float							startX;
+	float							startY;
+	private ViewSwitcher			viewSwitcher;
+	private TimePicker				tp;
+	private DatePicker				dp;
+	private boolean					isCurrentDatepicker	= true;
+	private OnDateTimeSetListner	mCallback;
 
 	void setOnDateTimeSetListner(OnDateTimeSetListner listner) {
 		mCallback = listner;
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 		try {
 			getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
@@ -92,8 +88,7 @@ public class DateTimeDialog extends DialogFragment {
 		tp.setOnTimeSetListener(new OnTimeSetListener() {
 
 			@Override
-			public void onTimeSet(RadialPickerLayout view, int hourOfDay,
-					int minute) {
+			public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
 				if (mCallback != null) {
 					mCallback.onDateTimeSet(dp.getYear(), dp.getMonth(),
 							dp.getDay(), hourOfDay, minute);
@@ -124,8 +119,7 @@ public class DateTimeDialog extends DialogFragment {
 			}
 
 			@Override
-			public void onDateSet(DatePicker datePickerDialog, int year,
-					int month, int day) {
+			public void onDateSet(DatePicker datePickerDialog, int year, int month, int day) {
 				if (mCallback != null) {
 					mCallback.onDateTimeSet(year, month, day, tp.getHour(),
 							tp.getMinute());
@@ -166,14 +160,13 @@ public class DateTimeDialog extends DialogFragment {
 
 		/**
 		 * @param view
-		 *            The view associated with this listener.
+		 *        The view associated with this listener.
 		 * @param hourOfDay
-		 *            The hour that was set.
+		 *        The hour that was set.
 		 * @param minute
-		 *            The minute that was set.
+		 *        The minute that was set.
 		 */
-		void onDateTimeSet(int year, int month, int dayOfMonth, int hourOfDay,
-				int minute);
+		void onDateTimeSet(int year, int month, int dayOfMonth, int hourOfDay, int minute);
 
 		void onNoTimeSet();
 	}

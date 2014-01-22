@@ -89,6 +89,32 @@ import de.azapps.tools.FileUtils;
  */
 public class MainActivity extends ActionBarActivity implements ViewPager.OnPageChangeListener {
 
+	// Layout variables
+	ViewPager					mViewPager;
+	private PagerAdapter		mPagerAdapter;
+	protected ListFragment		listFragment;
+	protected TaskFragment		taskFragment;
+	private Menu				menu;
+	public boolean				darkTheme;
+
+	// State variables
+	private Task				currentTask;
+	private ListMirakel			currentList;
+	private List<ListMirakel>	lists;
+	protected int				currentPosition;
+
+	// Foo variables (move them out of the MainActivity)
+	private boolean				highlightSelected;
+	private DrawerLayout		mDrawerLayout;
+	private Uri					fileUri;
+	// TODO We should do this somehow else
+	public static boolean		updateTasksUUID		= false;
+
+	// Intent variables
+	public static final int		LEFT_FRAGMENT		= 0, RIGHT_FRAGMENT = 1;
+	public static final int		RESULT_SPEECH_NAME	= 1, RESULT_SPEECH = 3,
+			RESULT_SETTINGS = 4, RESULT_ADD_FILE = 5, RESULT_CAMERA = 6,
+			RESULT_ADD_PICTURE = 7;
 	public static String		EXTRA_ID			= "de.azapps.mirakel.EXTRA_TASKID",
 			SHOW_TASK = "de.azapps.mirakel.SHOW_TASK",
 			SHOW_LIST = "de.azapps.mirakel.SHOW_LIST",
@@ -97,482 +123,294 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 			ADD_TASK_FROM_WIDGET = "de.azapps.mirakel.ADD_TASK_FROM_WIDGET",
 			SHOW_TASK_FROM_WIDGET = "de.azapps.mirakel.SHOW_TASK_FROM_WIDGET",
 			TASK_ID = "de.azapp.mirakel.TASK_ID";
-	private static boolean			isRTL;
-	// Intent variables
-	public static final int		LEFT_FRAGMENT		= 0, RIGHT_FRAGMENT = 1;
-	public static final int		RESULT_SPEECH_NAME	= 1, RESULT_SPEECH = 3,
-			RESULT_SETTINGS = 4, RESULT_ADD_FILE = 5, RESULT_CAMERA = 6,
-			RESULT_ADD_PICTURE = 7;
-	private static final String	TAG					= "MainActivity";
-	// TODO We should do this somehow else
-	public static boolean		updateTasksUUID		= false;
-
-	private static int getTaskFragmentPosition() {
-		if (MainActivity.isRTL || MirakelPreferences.isTablet())
-			return MainActivity.LEFT_FRAGMENT;
-		return MainActivity.RIGHT_FRAGMENT;
-	}
-	public static int getTasksFragmentPosition() {
-		if (MainActivity.isRTL && !MirakelPreferences.isTablet())
-			return MainActivity.RIGHT_FRAGMENT;
-		return MainActivity.LEFT_FRAGMENT;
-	}
-	private boolean				closeOnBack			= false;
-
-	private ListMirakel			currentList;
-	protected int				currentPosition;
-	// State variables
-	private Task				currentTask;
-	public boolean				darkTheme;
-
-	private Uri					fileUri;
-	private final Stack<Task>			goBackTo			= new Stack<Task>();
-	// Foo variables (move them out of the MainActivity)
-	private boolean				highlightSelected;
-	// User interaction variables
-	private boolean				isResumend;
-
-	private boolean				isTablet;
-
-	protected ListFragment		listFragment;
-	private List<ListMirakel>	lists;
-	private DrawerLayout		mDrawerLayout;
-	private ActionBarDrawerToggle	mDrawerToggle;
-	private Menu				menu;
-	private PagerAdapter		mPagerAdapter;
-
-	// Layout variables
-	ViewPager					mViewPager;
-
-	private String	newTaskContent, newTaskSubject;
-
-	private View	oldClickedList	= null;
-
-	private View	oldClickedTask	= null;
-
-	private boolean				showNavDrawer		= false;
-
-	private boolean				skipSwipe;
-
 	private Intent				startIntent;
 
-	protected TaskFragment		taskFragment;
+	private static final String	TAG					= "MainActivity";
 
-	private void addFilesForTask(Task t, Intent intent) {
-		String action = intent.getAction();
-		String type = intent.getType();
-		this.currentPosition = getTaskFragmentPosition();
+	// User interaction variables
+	private boolean				isResumend;
+	private boolean				closeOnBack			= false;
+	private Stack<Task>			goBackTo			= new Stack<Task>();
+	private boolean				showNavDrawer		= false;
+	private boolean				skipSwipe;
+	private boolean				isTablet;
 
-		if (Intent.ACTION_SEND.equals(action) && type != null) {
-			Uri uri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
-			t.addFile(this, FileUtils.getPathFromUri(uri, this));
-		} else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
-			ArrayList<Uri> imageUris = intent
-					.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
-			for (Uri uri : imageUris) {
-				t.addFile(this, FileUtils.getPathFromUri(uri, this));
+	@SuppressLint("NewApi")
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		darkTheme = MirakelPreferences.isDark();
+		if (darkTheme) setTheme(R.style.AppBaseThemeDARK);
+		super.onCreate(savedInstanceState);
+
+		// Set Alarms
+
+		new Thread(new Runnable() {
+			public void run() {
+				ReminderAlarm.updateAlarms(getApplicationContext());
+				if (!MirakelPreferences.containsHighlightSelected()) {
+					SharedPreferences.Editor editor = MirakelPreferences
+							.getEditor();
+					editor.putBoolean("highlightSelected", isTablet);
+					editor.commit();
+				}
+
+				if (!MirakelPreferences.containsStartupAllLists()) {
+					SharedPreferences.Editor editor = MirakelPreferences
+							.getEditor();
+					editor.putBoolean("startupAllLists", false);
+					editor.putString("startupList", ""
+							+ SpecialList.first().getId());
+					editor.commit();
+				}
+				// We should remove this in the future, nobody uses such old versions (hopefully)
+				if (MainActivity.updateTasksUUID) {
+					List<Task> tasks = Task.all();
+					for (Task t : tasks) {
+						t.setUUID(java.util.UUID.randomUUID().toString());
+						try {
+							t.save();
+						} catch (NoSuchListException e) {
+							Log.wtf(TAG, "WTF? No such list");
+						}
+					}
+				}
 			}
-		}
+		}).run();
+		isTablet = MirakelPreferences.isTablet();
+		isRTL = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
+				&& getResources().getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
+		currentPosition = getTasksFragmentPosition();
+		highlightSelected = MirakelPreferences.highlightSelected();
 
-	}
+		draw();
 
-	private void addTaskFromSharing(ListMirakel list) {
-		if (this.newTaskSubject == null) return;
-		Task task = Semantic.createTask(this.newTaskSubject, list, true, this);
-		task.setContent(this.newTaskContent == null ? "" : this.newTaskContent);
-		safeSaveTask(task);
-		setCurrentTask(task);
-		addFilesForTask(task, this.startIntent);
-		setCurrentList(task.getList());
-		setCurrentTask(task, true);
-	}
+		if (mViewPager.getCurrentItem() != currentPosition) {
+			mViewPager.postDelayed(new Runnable() {
 
-	private void clearAllHighlights() {
-		if (this.oldClickedList != null) {
-			this.oldClickedList.setSelected(false);
-			this.oldClickedList.setBackgroundColor(0x00000000);
-		}
-		if (this.oldClickedTask != null) {
-			this.oldClickedTask.setSelected(false);
-			this.oldClickedTask.setBackgroundColor(0x00000000);
-		}
-		clearHighlighted();
-	}
+				@Override
+				public void run() {
+					mViewPager.setCurrentItem(currentPosition);
 
-	private void clearHighlighted() {
-		if (this.oldClickedTask == null) return;
-		try {
-			ListView view = (ListView) getTasksFragment().getFragmentView()
-					.findViewById(R.id.tasks_list);
-			int pos_old = view.getPositionForView(this.oldClickedTask);
-			if (pos_old != -1) {
-				view.getChildAt(pos_old).setBackgroundColor(0x00000000);
-			} else {
-				Log.wtf(TAG, "View not found");
-			}
-		} catch (Exception e) {
-			Log.wtf(TAG, "Listview not found");
-			Log.e(TAG, Log.getStackTraceString(e));
+				}
+			}, 10);
 		}
 	}
 
 	private void draw() {
 		setContentView(R.layout.activity_main);
-		this.mPagerAdapter = null;
+		mPagerAdapter = null;
 		// Show ChangeLog
 		ChangeLog cl = new ChangeLog(this);
 		if (cl.firstRun()) {
 			cl.getLogDialog().show();
-			this.showNavDrawer = true;
+			showNavDrawer = true;
 		}
 		// currentList=preferences.getInt("s", defValue)
-		this.skipSwipe = false;
+		skipSwipe = false;
 		setupLayout();
-		this.isResumend = false;
+		isResumend = false;
 	}
 
-	/**
-	 * Return the currently showed List
-	 * 
-	 * @return
-	 */
-	public ListMirakel getCurrentList() {
-		if (this.currentList == null) {
-			this.currentList = SpecialList.firstSpecialSafe(this);
+	public static int getTasksFragmentPosition() {
+		if (isRTL) return RIGHT_FRAGMENT;
+		return LEFT_FRAGMENT;
+	}
+
+	private int getTaskFragmentPosition() {
+		if (isRTL) return LEFT_FRAGMENT;
+		return RIGHT_FRAGMENT;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (mDrawerToggle.onOptionsItemSelected(item)) {
+			return true;
 		}
-		return this.currentList;
-	}
+		switch (item.getItemId()) {
+			case R.id.menu_delete:
+				handleDestroyTask(currentTask);
+				updateShare();
+				return true;
+			case R.id.menu_move:
+				handleMoveTask(currentTask);
+				return true;
+			case R.id.list_delete:
+				handleDestroyList(currentList);
+				return true;
+			case R.id.task_sorting:
+				currentList = ListDialogHelpers.handleSortBy(this, currentList,
+						new Helpers.ExecInterface() {
 
-	public int getCurrentPosition() {
-		return this.currentPosition;
-	}
-
-	/**
-	 * Return the currently showed tasks
-	 * 
-	 * @return
-	 */
-	public Task getCurrentTask() {
-		this.currentTask = this.currentList.getFirstTask();
-		if (this.currentTask == null) {
-			this.currentTask = Task.getDummy(getApplicationContext());
-		}
-
-		return this.currentTask;
-	}
-
-	/**
-	 * Returns the ListFragment
-	 * 
-	 * @return
-	 */
-	public ListFragment getListFragment() {
-		return this.listFragment;
-	}
-
-	public TaskFragment getTaskFragment() {
-		if (this.mPagerAdapter == null) return null;
-		if (MirakelPreferences.isTablet()) return this.taskFragment;
-		Fragment f = this.mPagerAdapter.getItem(getTaskFragmentPosition());
-		return (TaskFragment) f;
-	}
-
-	public TasksFragment getTasksFragment() {
-		if (this.mPagerAdapter == null) {
-			Log.i(TAG, "pageadapter null");
-			return null;
-		}
-		Fragment f = this.mPagerAdapter.getItem(getTasksFragmentPosition());
-		return (TasksFragment) f;
-	}
-
-	public void handleDestroyList(@SuppressWarnings("hiding") final List<ListMirakel> lists) {
-		String names = lists.get(0).getName();
-		for (int i = 1; i < lists.size(); i++) {
-			names += ", " + lists.get(i).getName();
-		}
-		new AlertDialog.Builder(this)
-		.setTitle(
-				getResources().getQuantityString(R.plurals.list_delete,
-						lists.size()))
-						.setMessage(this.getString(R.string.list_delete_content, names))
-						.setPositiveButton(this.getString(android.R.string.yes),
-								new DialogInterface.OnClickListener() {
 							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								for (ListMirakel list : lists) {
-									list.destroy();
-									getListFragment().update();
-									if (getCurrentList().getId() == list
-											.getId()) {
-										setCurrentList(SpecialList
-												.firstSpecial());
-									}
-								}
+							public void exec() {
+								setCurrentList(currentList);
 							}
-						})
-						.setNegativeButton(this.getString(android.R.string.no),
-								new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								// do nothing
-							}
-						}).show();
-	}
-
-	/**
-	 * Handle the actions after clicking on a destroy-list button
-	 * 
-	 * @param list
-	 */
-	public void handleDestroyList(final ListMirakel list) {
-		List<ListMirakel> l = new ArrayList<ListMirakel>();
-		l.add(list);
-		handleDestroyList(l);
-	}
-
-	public void handleDestroyTask(final List<Task> tasks) {
-		if (tasks == null) return;
-		final MainActivity main = this;
-		// This must then be a bug in a ROM
-		if (tasks.size() == 0 || tasks.get(0) == null) return;
-		String names = tasks.get(0).getName();
-		for (int i = 1; i < tasks.size(); i++) {
-			names += ", " + tasks.get(i).getName();
-		}
-		new AlertDialog.Builder(this)
-		.setTitle(
-				getResources().getQuantityString(
-						R.plurals.task_delete, tasks.size()))
-						.setMessage(this.getString(R.string.task_delete_content, names))
-						.setPositiveButton(this.getString(android.R.string.yes),
-								new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								for (Task t : tasks) {
-									t.destroy();
-								}
-								setCurrentList(MainActivity.this.currentList);
-								ReminderAlarm.updateAlarms(main);
-								updateShare();
-							}
-						})
-						.setNegativeButton(this.getString(android.R.string.no),
-								new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								// do nothing
-							}
-						}).show();
-	}
-
-	/**
-	 * Handle the actions after clicking on a destroy-task button
-	 * 
-	 * @param task
-	 */
-	public void handleDestroyTask(final Task task) {
-		List<Task> t = new ArrayList<Task>();
-		t.add(task);
-		handleDestroyTask(t);
-	}
-
-	public void handleMoveTask(final List<Task> tasks) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle(R.string.dialog_move);
-		List<CharSequence> items = new ArrayList<CharSequence>();
-		final List<Integer> list_ids = new ArrayList<Integer>();
-		int currentItem = 0, i = 0;
-		for (ListMirakel list : this.lists) {
-			if (list.getId() > 0) {
-				items.add(list.getName());
-				if (tasks.get(0).getList().getId() == list.getId()
-						&& tasks.size() == 1) {
-					currentItem = i;
+						}, null);
+				return true;
+			case R.id.menu_new_list:
+				getListFragment().editList(null);
+				return true;
+			case R.id.menu_sort_lists:
+				boolean t = !item.isChecked();
+				getListFragment().enableDrop(t);
+				item.setChecked(t);
+				return true;
+			case R.id.menu_settings:
+				Intent intent = new Intent(MainActivity.this,
+						SettingsActivity.class);
+				startActivityForResult(intent, RESULT_SETTINGS);
+				break;
+			case R.id.menu_contact:
+				Helpers.contact(this);
+				break;
+			case R.id.menu_sync_now:
+				Bundle bundle = new Bundle();
+				bundle.putBoolean(ContentResolver.SYNC_EXTRAS_DO_NOT_RETRY,
+						true);
+				// bundle.putBoolean(ContentResolver.SYNC_EXTRAS_INITIALIZE,true);
+				bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+				bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+				ContentResolver
+						.requestSync(null, Mirakel.AUTHORITY_TYP, bundle);
+				ContentResolver
+						.requestSync(null, Mirakel.AUTHORITY_TYP, bundle);
+				break;
+			case R.id.share_task:
+				SharingHelper.share(this, getCurrentTask());
+				break;
+			case R.id.share_list:
+				SharingHelper.share(this, getCurrentList());
+				break;
+			case R.id.search:
+				onSearchRequested();
+				break;
+			case R.id.menu_kill_button:
+				// Only Close
+				Intent killIntent = new Intent(getApplicationContext(),
+						SplashScreenActivity.class);
+				killIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				killIntent.setAction(SplashScreenActivity.EXIT);
+				startActivity(killIntent);
+				finish();
+				return false;
+			case R.id.menu_undo:
+				UndoHistory.undoLast();
+				updateCurrentListAndTask();
+				if (currentPosition == getTaskFragmentPosition()) setCurrentTask(getCurrentTask());
+				else {
+					getListFragment().getAdapter()
+							.changeData(ListMirakel.all());
+					getListFragment().getAdapter().notifyDataSetChanged();
+					getTasksFragment().getAdapter().changeData(
+							getCurrentList().tasks(), getCurrentList().getId());
+					getTasksFragment().getAdapter().notifyDataSetChanged();
+					if (!MirakelPreferences.isTablet()
+							&& currentPosition == getTasksFragmentPosition())
+						setCurrentList(getCurrentList());
 				}
-				list_ids.add(list.getId());
-				++i;
+				ReminderAlarm.updateAlarms(this);
+				break;
+			case R.id.mark_as_subtask:
+				TaskDialogHelpers.handleSubtask(this, currentTask, null, true);
+				break;
+			case R.id.menu_task_clone:
+				try {
+					Task newTask = currentTask.create();
+					setCurrentTask(newTask, true);
+					getListFragment().update();
+					updatesForTask(newTask);
+				} catch (NoSuchListException e) {
+					Log.wtf(TAG, "List vanished on task cloning");
+				}
+				break;
+			default:
+				return super.onOptionsItemSelected(item);
+		}
+		return true;
+	}
+
+	private void updateCurrentListAndTask() {
+		if (currentTask == null && currentList == null) return;
+		if (currentTask != null) currentTask = Task.get(currentTask.getId());
+		else {
+			if (currentList != null) {
+				List<Task> currentTasks = currentList.tasks(MirakelPreferences
+						.showDoneMain());
+				if (currentTasks.size() == 0) {
+					currentTask = Task.getDummy(getApplicationContext());
+				} else {
+					currentTask = currentTasks.get(0);
+				}
 			}
 		}
+		if (currentList != null) {
+			currentList = ListMirakel.getList(currentList.getId());
+		} else {
+			currentList = currentTask.getList();
+		}
 
-		builder.setSingleChoiceItems(
-				items.toArray(new CharSequence[items.size()]), currentItem,
-				new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int item) {
-						for (Task t : tasks) {
-							t.setList(ListMirakel.getList(list_ids.get(item)));
-							safeSaveTask(t);
-						}
-						/*
-						 * There are 3 possibilities how to handle the post-move of a task: 1:
-						 * update the currentList to the List, the task was moved to
-						 * setCurrentList(task.getList()); 2: update the tasksView but not update
-						 * the taskView: getTasksFragment().updateList();
-						 * getTasksFragment().update(); 3: Set the currentList to the old List
-						 */
-						if (MainActivity.this.currentPosition == getTaskFragmentPosition()) {
-							Task task = tasks.get(0);
-							if (task == null) {
-								// What the hell?
-								Log.wtf(TAG, "Task vanished");
-							} else {
-								setCurrentList(task.getList());
-								setCurrentTask(task, true);
-							}
-						} else {
-							setCurrentList(getCurrentList());
-							getListFragment().update();
-						}
-						dialog.dismiss();
-					}
-				}).show();
 	}
 
 	/**
-	 * Handle the actions after clicking on a move task button
+	 * (non-Javadoc)
 	 * 
-	 * @param tasks
+	 * @see android.support.v4.app.FragmentActivity#onSaveInstanceState(android.os.Bundle)
 	 */
-	public void handleMoveTask(final Task task) {
-		List<Task> t = new ArrayList<Task>();
-		t.add(task);
-		handleMoveTask(t);
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		// outState.putString("tab", mTabHost.getCurrentTabTag()); // save the
+		// tab
+		// selected
+		super.onSaveInstanceState(outState);
 	}
 
-	private int handleTaskFragmentMenu() {
-		int newmenu;
-		newmenu = R.menu.activity_task;
-		getTaskFragment().update(this.currentTask);
-		if (getSupportActionBar() != null && this.currentTask != null) {
-			getSupportActionBar().setTitle(this.currentTask.getName());
-		}
-		return newmenu;
+	public void setSkipSwipe() {
+		skipSwipe = true;
 	}
 
-	private int handleTasksFragmentMenu() {
-		int newmenu;
-		getListFragment().enableDrop(false);
-		if (getTaskFragment() != null && getTaskFragment().adapter != null) {
-			getTaskFragment().adapter.setEditContent(false);
+	@Override
+	public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+		if (getTasksFragment() != null
+				&& getTasksFragment().getAdapter() != null
+				&& MirakelPreferences.swipeBehavior() && !skipSwipe
+				&& position == getTasksFragmentPosition()) {
+			setCurrentTask(getTasksFragment().getAdapter().lastTouched(), false);
+			skipSwipe = true;
 		}
-		if (this.currentList == null) return -1;
-		if (!MirakelPreferences.isTablet()) {
-			newmenu = R.menu.tasks;
+		if (positionOffset == 0.0f && position == getTasksFragmentPosition()) {
+			skipSwipe = false;
+		}
+	}
+
+	@Override
+	public void onPageSelected(int position) {
+		if (getTasksFragment() == null) return;
+		getTasksFragment().closeActionMode();
+		getTaskFragment().closeActionMode();
+		if (MirakelPreferences.lockDrawerInTaskFragment()
+				&& position == getTaskFragmentPosition()) {
+			mDrawerLayout
+					.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 		} else {
-			newmenu = R.menu.tablet_right;
+			mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 		}
-		getSupportActionBar().setTitle(this.currentList.getName());
-		return newmenu;
+		loadMenu(position);
+
 	}
 
-	void highlightCurrentTask(@SuppressWarnings("hiding") Task currentTask, boolean multiselect) {
-		if (getTaskFragment() == null || getTasksFragment() == null
-				|| getTasksFragment().getAdapter() == null
-				|| currentTask == null) return;
-		Log.v(TAG, currentTask.getName());
-		View currentView = getTasksFragment().getAdapter().getViewForTask(
-				currentTask);
-		if (currentView == null) {
-			currentView = getTasksFragment().getListView().getChildAt(0);
-			Log.v(TAG, "current view is null");
-		}
-
-		if (currentView != null && this.highlightSelected && !multiselect) {
-			if (this.oldClickedTask != null) {
-				this.oldClickedTask.setSelected(false);
-				this.oldClickedTask.setBackgroundColor(0x00000000);
-			}
-			currentView.setBackgroundColor(getResources().getColor(
-					this.darkTheme ? R.color.highlighted_text_holo_dark
-							: R.color.highlighted_text_holo_light));
-			this.oldClickedTask = currentView;
-		}
-	}
-
-	/**
-	 * Initialize ViewPager
-	 */
-	@SuppressLint("NewApi")
-	private void intializeFragments() {
-		/*
-		 * Setup NavigationDrawer
-		 */
-		if (ListFragment.getSingleton() != null) {
-			this.listFragment = ListFragment.getSingleton();
-		}
-		// listFragment = new ListFragment();
-		getListFragment().setActivity(this);
-		// fragments.add(listFragment);
-
-		final List<Fragment> fragments = new Vector<Fragment>();
-		this.mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-
-		this.mDrawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
-				this.mDrawerLayout, /* DrawerLayout object */
-				R.drawable.ic_drawer, /* nav drawer icon to replace 'Up' caret */
-				R.string.list_title, /* "open drawer" description */
-				R.string.list_title /* "close drawer" description */
-				) {
-			@Override
-			public void onDrawerClosed(final View view) {
-				loadMenu(MainActivity.this.currentPosition);
-				getListFragment().closeActionMode();
-			}
-
-			@Override
-			public void onDrawerOpened(final View drawerView) {
-				loadMenu(-1, false, false);
-				MainActivity.this.listFragment.refresh();
-			}
-		};
-
-		// Set the drawer toggle as the DrawerListener
-		this.mDrawerLayout.setDrawerListener(this.mDrawerToggle);
-		if (this.showNavDrawer) {
-			this.mDrawerLayout.openDrawer(Mirakel.GRAVITY_LEFT);
-		}
-
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-		getActionBar().setHomeButtonEnabled(true);
-		/*
-		 * Setup other Fragments
-		 */
-		final TasksFragment tasksFragment = new TasksFragment();
-		tasksFragment.setActivity(this);
-		fragments.add(tasksFragment);
-		if (!MirakelPreferences.isTablet()) {
-			fragments.add(new TaskFragment());
-		}
-		if (MainActivity.isRTL && !MirakelPreferences.isTablet()) {
-			final Fragment[] fragmentsLocal = new Fragment[fragments.size()];
-			for (int i = 0; i < fragments.size(); i++) {
-				fragmentsLocal[fragmentsLocal.length - 1 - i] = fragments
-						.get(i);
-			}
-			this.mPagerAdapter = new PagerAdapter(
-					super.getSupportFragmentManager(),
-					Arrays.asList(fragmentsLocal));
+	@Override
+	public boolean onCreateOptionsMenu(@SuppressWarnings("hiding") Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		updateLists();
+		getMenuInflater().inflate(R.menu.main, menu);
+		this.menu = menu;
+		if (!showNavDrawer) {
+			loadMenu(currentPosition, false, false);
 		} else {
-			this.mPagerAdapter = new PagerAdapter(
-					super.getSupportFragmentManager(), fragments);
+			showNavDrawer = false;
+			loadMenu(-1, false, false);
 		}
-
-		//
-		if (this.mViewPager == null) {
-			this.mViewPager = (ViewPager) super.findViewById(R.id.viewpager);
-		}
-		if (this.mViewPager == null) {
-			Log.wtf(MainActivity.TAG, "viewpager null");
-			return;
-		}
-		this.mViewPager.setOffscreenPageLimit(MirakelPreferences.isTablet() ? 1
-				: 2);
-		this.mViewPager.setAdapter(this.mPagerAdapter);
-		this.mViewPager.setOnPageChangeListener(this);
-		this.mViewPager.setOffscreenPageLimit(MirakelPreferences.isTablet() ? 1
-				: 2);
-
+		return true;
 	}
 
 	public void loadMenu(int position) {
@@ -581,11 +419,12 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 
 	public void loadMenu(int position, boolean setPosition, boolean fromShare) {
 		if (getTaskFragment() != null && getTaskFragment().getView() != null) {
-			final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+			final InputMethodManager imm = (InputMethodManager) this
+					.getSystemService(Context.INPUT_METHOD_SERVICE);
 			imm.hideSoftInputFromWindow(getTaskFragment().getView()
 					.getWindowToken(), 0);
 		}
-		if (this.menu == null) return;
+		if (menu == null) return;
 		int newmenu;
 		switch (position) {
 			case -1:
@@ -605,32 +444,65 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 						"Where are the dragons?", Toast.LENGTH_LONG).show();
 				return;
 		}
-		if (setPosition) {
-			this.currentPosition = position;
-		}
+		if (setPosition) currentPosition = position;
 
 		// Configure to use the desired menu
 		if (newmenu == -1) return;
-		this.menu.clear();
+		menu.clear();
 		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(newmenu, this.menu);
-		if (this.menu.findItem(R.id.menu_sync_now) != null) {
-			this.menu.findItem(R.id.menu_sync_now).setVisible(
+		inflater.inflate(newmenu, menu);
+		if (menu.findItem(R.id.menu_sync_now) != null)
+			menu.findItem(R.id.menu_sync_now).setVisible(
 					MirakelPreferences.useSync());
-		}
-		if (this.menu.findItem(R.id.menu_kill_button) != null) {
-			this.menu.findItem(R.id.menu_kill_button).setVisible(
+		if (menu.findItem(R.id.menu_kill_button) != null)
+			menu.findItem(R.id.menu_kill_button).setVisible(
 					MirakelPreferences.showKillButton());
-		}
-		if (this.menu.findItem(R.id.menu_contact) != null) {
-			this.menu.findItem(R.id.menu_contact).setVisible(BuildHelper.isBeta());
-		}
+		if (menu.findItem(R.id.menu_contact) != null)
+			menu.findItem(R.id.menu_contact).setVisible(BuildHelper.isBeta());
 
-		if (!fromShare) {
-			updateShare();
-		}
+		if (!fromShare) updateShare();
 
 	}
+
+	private int handleTaskFragmentMenu() {
+		int newmenu;
+		newmenu = R.menu.activity_task;
+		getTaskFragment().update(currentTask);
+		if (getSupportActionBar() != null && currentTask != null)
+			getSupportActionBar().setTitle(currentTask.getName());
+		return newmenu;
+	}
+
+	private int handleTasksFragmentMenu() {
+		int newmenu;
+		getListFragment().enableDrop(false);
+		if (getTaskFragment() != null && getTaskFragment().adapter != null) {
+			getTaskFragment().adapter.setEditContent(false);
+		}
+		if (currentList == null) return -1;
+		if (!MirakelPreferences.isTablet()) newmenu = R.menu.tasks;
+		else newmenu = R.menu.tablet_right;
+		getSupportActionBar().setTitle(currentList.getName());
+		return newmenu;
+	}
+
+	public void updateShare() {
+		if (menu != null && menu.findItem(R.id.share_list) != null
+				&& currentList.countTasks() == 0) {
+			menu.findItem(R.id.share_list).setVisible(false);
+		} else if (currentPosition == getTasksFragmentPosition()
+				&& menu != null && menu.findItem(R.id.share_list) == null
+				&& currentList.countTasks() > 0
+				&& !mDrawerLayout.isDrawerOpen(Mirakel.GRAVITY_LEFT)) {
+			loadMenu(getTasksFragmentPosition(), true, true);
+		} else if (menu != null && menu.findItem(R.id.share_list) != null
+				&& currentList.countTasks() > 0) {
+			menu.findItem(R.id.share_list).setVisible(true);
+		}
+	}
+
+	@Override
+	public void onPageScrollStateChanged(int state) {}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -657,33 +529,33 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 				if (intent != null) {
 					final String file_path = FileUtils.getPathFromUri(
 							intent.getData(), this);
-					if (FileMirakel.newFile(this, this.currentTask, file_path) == null) {
+					if (FileMirakel.newFile(this, currentTask, file_path) == null) {
 						Toast.makeText(this, getString(R.string.file_vanished),
 								Toast.LENGTH_SHORT).show();
 					} else {
-						getTaskFragment().adapter.setData(this.currentTask);
+						getTaskFragment().adapter.setData(currentTask);
 					}
 				}
 				break;
 			case RESULT_SETTINGS:
 				getListFragment().update();
-				this.highlightSelected = MirakelPreferences.highlightSelected();
-				if (!this.highlightSelected
-						&& (this.oldClickedList != null || this.oldClickedTask == null)) {
+				highlightSelected = MirakelPreferences.highlightSelected();
+				if (!highlightSelected
+						&& (oldClickedList != null || oldClickedTask == null)) {
 					clearAllHighlights();
 				}
-				if (this.darkTheme != MirakelPreferences.isDark()) {
+				if (darkTheme != MirakelPreferences.isDark()) {
 					finish();
-					if (this.startIntent == null) {
-						this.startIntent = new Intent(MainActivity.this,
+					if (startIntent == null) {
+						startIntent = new Intent(MainActivity.this,
 								MainActivity.class);
-						this.startIntent.setAction(MainActivity.SHOW_LISTS);
+						startIntent.setAction(MainActivity.SHOW_LISTS);
 						Log.wtf(TAG, "startIntent is null by switching theme");
 
 					}
-					startActivity(this.startIntent);
+					startActivity(startIntent);
 				}
-				loadMenu(this.mViewPager.getCurrentItem());
+				loadMenu(mViewPager.getCurrentItem());
 				getTasksFragment().updateButtons();
 				return;
 			case RESULT_CAMERA:
@@ -695,10 +567,10 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 					} else {
 						task = Semantic.createTask(
 								MirakelPreferences.getPhotoDefaultTitle(),
-								this.currentList, false, this);
+								currentList, false, this);
 						safeSaveTask(task);
 					}
-					task.addFile(this, FileUtils.getPathFromUri(this.fileUri, this));
+					task.addFile(this, FileUtils.getPathFromUri(fileUri, this));
 					setCurrentList(task.getList());
 					setCurrentTask(task, true);
 				}
@@ -712,29 +584,29 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 	@Override
 	public void onBackPressed() {
 		getTaskFragment().cancelEditing();
-		if (this.goBackTo.size() > 0 && this.currentPosition == getTaskFragmentPosition()) {
-			Task goBack = this.goBackTo.pop();
+		if (goBackTo.size() > 0 && currentPosition == getTaskFragmentPosition()) {
+			Task goBack = goBackTo.pop();
 			setCurrentList(goBack.getList(), null, false, false);
 			setCurrentTask(goBack, false, false);
 			return;
 		}
-		if (this.closeOnBack) {
+		if (closeOnBack) {
 			super.onBackPressed();
 			return;
 		}
-		switch (this.mViewPager.getCurrentItem()) {
-			/*
-			 * case TASKS_FRAGMENT: mDrawerLayout.openDrawer(Gravity.LEFT); break;
-			 */
+		switch (mViewPager.getCurrentItem()) {
+		/*
+		 * case TASKS_FRAGMENT: mDrawerLayout.openDrawer(Gravity.LEFT); break;
+		 */
 			case LEFT_FRAGMENT:
 				if (isRTL) {
-					this.mViewPager.setCurrentItem(getTasksFragmentPosition());
+					mViewPager.setCurrentItem(getTasksFragmentPosition());
 					return;
 				}
 				break;
 			case RIGHT_FRAGMENT:
 				if (!isRTL) {
-					this.mViewPager.setCurrentItem(getTasksFragmentPosition());
+					mViewPager.setCurrentItem(getTasksFragmentPosition());
 					return;
 				}
 				break;
@@ -746,98 +618,10 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 	}
 
 	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-		super.onConfigurationChanged(newConfig);
-		boolean tabletLocal = MirakelPreferences.isTablet();
-		if (tabletLocal != this.isTablet) {
-			this.isTablet = tabletLocal;
-			this.mPagerAdapter = null;
-			this.isResumend = false;
-			setupLayout();
-		} else {
-			getListFragment().setActivity(this);
-			getTasksFragment().setActivity(this);
-			this.mDrawerToggle.onConfigurationChanged(newConfig);
-		}
-	}
-
-	@SuppressLint("NewApi")
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		this.darkTheme = MirakelPreferences.isDark();
-		if (this.darkTheme) {
-			setTheme(R.style.AppBaseThemeDARK);
-		}
-		super.onCreate(savedInstanceState);
-
-		// Set Alarms
-
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				ReminderAlarm.updateAlarms(getApplicationContext());
-				if (!MirakelPreferences.containsHighlightSelected()) {
-					SharedPreferences.Editor editor = MirakelPreferences
-							.getEditor();
-					editor.putBoolean("highlightSelected", MainActivity.this.isTablet);
-					editor.commit();
-				}
-
-				if (!MirakelPreferences.containsStartupAllLists()) {
-					SharedPreferences.Editor editor = MirakelPreferences
-							.getEditor();
-					editor.putBoolean("startupAllLists", false);
-					editor.putString("startupList", ""
-							+ SpecialList.first().getId());
-					editor.commit();
-				}
-				// We should remove this in the future, nobody uses such old versions (hopefully)
-				if (MainActivity.updateTasksUUID) {
-					List<Task> tasks = Task.all();
-					for (Task t : tasks) {
-						t.setUUID(java.util.UUID.randomUUID().toString());
-						try {
-							t.save();
-						} catch (NoSuchListException e) {
-							Log.wtf(TAG, "WTF? No such list");
-						}
-					}
-				}
-			}
-		}).run();
-		this.isTablet = MirakelPreferences.isTablet();
-		isRTL = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
-				&& getResources().getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
-		this.currentPosition = getTasksFragmentPosition();
-		this.highlightSelected = MirakelPreferences.highlightSelected();
-
-		draw();
-
-		if (this.mViewPager.getCurrentItem() != this.currentPosition) {
-			this.mViewPager.postDelayed(new Runnable() {
-
-				@Override
-				public void run() {
-					MainActivity.this.mViewPager.setCurrentItem(MainActivity.this.currentPosition);
-
-				}
-			}, 10);
-		}
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(@SuppressWarnings("hiding") Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		updateLists();
-		getMenuInflater().inflate(R.menu.main, menu);
-		this.menu = menu;
-		if (!this.showNavDrawer) {
-			loadMenu(this.currentPosition, false, false);
-		} else {
-			this.showNavDrawer = false;
-			loadMenu(-1, false, false);
-		}
-		return true;
+	protected void onPostCreate(Bundle savedInstanceState) {
+		super.onPostCreate(savedInstanceState);
+		// Sync the toggle state after onRestoreInstanceState has occurred.
+		mDrawerToggle.syncState();
 	}
 
 	@Override
@@ -845,160 +629,10 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		super.onDestroy();
 	}
 
-	// Fix Intent-behavior
-	// default is not return new Intent by calling getIntent
-	@Override
-	protected void onNewIntent(Intent intent) {
-		super.onNewIntent(intent);
-		setIntent(intent);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		if (this.mDrawerToggle.onOptionsItemSelected(item)) return true;
-		switch (item.getItemId()) {
-			case R.id.menu_delete:
-				handleDestroyTask(this.currentTask);
-				updateShare();
-				return true;
-			case R.id.menu_move:
-				handleMoveTask(this.currentTask);
-				return true;
-			case R.id.list_delete:
-				handleDestroyList(this.currentList);
-				return true;
-			case R.id.task_sorting:
-				this.currentList = ListDialogHelpers.handleSortBy(this, this.currentList,
-						new Helpers.ExecInterface() {
-
-					@Override
-					public void exec() {
-						setCurrentList(MainActivity.this.currentList);
-					}
-				}, null);
-				return true;
-			case R.id.menu_new_list:
-				getListFragment().editList(null);
-				return true;
-			case R.id.menu_sort_lists:
-				boolean t = !item.isChecked();
-				getListFragment().enableDrop(t);
-				item.setChecked(t);
-				return true;
-			case R.id.menu_settings:
-				Intent intent = new Intent(MainActivity.this,
-						SettingsActivity.class);
-				startActivityForResult(intent, RESULT_SETTINGS);
-				break;
-			case R.id.menu_contact:
-				Helpers.contact(this);
-				break;
-			case R.id.menu_sync_now:
-				Bundle bundle = new Bundle();
-				bundle.putBoolean(ContentResolver.SYNC_EXTRAS_DO_NOT_RETRY,
-						true);
-				// bundle.putBoolean(ContentResolver.SYNC_EXTRAS_INITIALIZE,true);
-				bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-				bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-				ContentResolver
-				.requestSync(null, Mirakel.AUTHORITY_TYP, bundle);
-				ContentResolver
-				.requestSync(null, Mirakel.AUTHORITY_TYP, bundle);
-				break;
-			case R.id.share_task:
-				SharingHelper.share(this, getCurrentTask());
-				break;
-			case R.id.share_list:
-				SharingHelper.share(this, getCurrentList());
-				break;
-			case R.id.search:
-				onSearchRequested();
-				break;
-			case R.id.menu_kill_button:
-				// Only Close
-				Intent killIntent = new Intent(getApplicationContext(),
-						SplashScreenActivity.class);
-				killIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				killIntent.setAction(SplashScreenActivity.EXIT);
-				startActivity(killIntent);
-				finish();
-				return false;
-			case R.id.menu_undo:
-				UndoHistory.undoLast(this);
-				updateCurrentListAndTask();
-				if (this.currentPosition == getTaskFragmentPosition()) {
-					setCurrentTask(getCurrentTask());
-				} else {
-					getListFragment().getAdapter()
-					.changeData(ListMirakel.all());
-					getListFragment().getAdapter().notifyDataSetChanged();
-					getTasksFragment().getAdapter().changeData(
-							getCurrentList().tasks(), getCurrentList().getId());
-					getTasksFragment().getAdapter().notifyDataSetChanged();
-					if (!MirakelPreferences.isTablet()
-							&& this.currentPosition == getTasksFragmentPosition()) {
-						setCurrentList(getCurrentList());
-					}
-				}
-				ReminderAlarm.updateAlarms(this);
-				break;
-			case R.id.mark_as_subtask:
-				TaskDialogHelpers.handleSubtask(this, this.currentTask, null, true);
-				break;
-			case R.id.menu_task_clone:
-				try {
-					Task newTask = this.currentTask.create();
-					setCurrentTask(newTask, true);
-					getListFragment().update();
-					updatesForTask(newTask);
-				} catch (NoSuchListException e) {
-					Log.wtf(TAG, "List vanished on task cloning");
-				}
-				break;
-			default:
-				return super.onOptionsItemSelected(item);
-		}
-		return true;
-	}
-	@Override
-	public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-		if (getTasksFragment() != null
-				&& getTasksFragment().getAdapter() != null
-				&& MirakelPreferences.swipeBehavior() && !this.skipSwipe
-				&& position == getTasksFragmentPosition()) {
-			setCurrentTask(getTasksFragment().getAdapter().lastTouched(), false);
-			this.skipSwipe = true;
-		}
-		if (positionOffset == 0.0f && position == getTasksFragmentPosition()) {
-			this.skipSwipe = false;
-		}
-	}
-
-	@Override
-	public void onPageScrollStateChanged(int state) {}
-
-	@Override
-	public void onPageSelected(int position) {
-		if (getTasksFragment() == null) return;
-		getTasksFragment().closeActionMode();
-		getTaskFragment().closeActionMode();
-		if (MirakelPreferences.lockDrawerInTaskFragment()
-				&& position == getTaskFragmentPosition()) {
-			this.mDrawerLayout
-			.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-		} else {
-			this.mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-		}
-		loadMenu(position);
-
-	}
-
 	@SuppressLint("NewApi")
 	@Override
 	protected void onPause() {
-		if (getTasksFragment() != null) {
-			getTasksFragment().clearFocus();
-		}
+		if (getTasksFragment() != null) getTasksFragment().clearFocus();
 		Intent intent = new Intent(this, MainWidgetProvider.class);
 		intent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
 		// Use an array and EXTRA_APPWIDGET_IDS instead of
@@ -1013,8 +647,8 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			for (int id : widgets) {
 				AppWidgetManager.getInstance(this)
-				.notifyAppWidgetViewDataChanged(id,
-						R.id.widget_tasks_list);
+						.notifyAppWidgetViewDataChanged(id,
+								R.id.widget_tasks_list);
 			}
 		}
 		sendBroadcast(intent);
@@ -1023,209 +657,92 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 	}
 
 	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
-		super.onPostCreate(savedInstanceState);
-		// Sync the toggle state after onRestoreInstanceState has occurred.
-		this.mDrawerToggle.syncState();
-	}
-
-	@Override
 	protected void onResume() {
 		super.onResume();
-		if (this.isResumend) {
-			setupLayout();
-		}
-		this.isResumend = true;
+		if (isResumend) setupLayout();
+		isResumend = true;
 		// showMessageFromSync();
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see android.support.v4.app.FragmentActivity#onSaveInstanceState(android.os.Bundle)
-	 */
 	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		// outState.putString("tab", mTabHost.getCurrentTabTag()); // save the
-		// tab
-		// selected
-		super.onSaveInstanceState(outState);
-	}
-
-	private void safeSaveTask(Task task) {
-		try {
-			task.save();
-		} catch (NoSuchListException e) {
-			Toast.makeText(getApplicationContext(), R.string.list_vanished,
-					Toast.LENGTH_LONG).show();
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		boolean tabletLocal = MirakelPreferences.isTablet();
+		if (tabletLocal != isTablet) {
+			isTablet = tabletLocal;
+			mPagerAdapter = null;
+			isResumend = false;
+			setupLayout();
+		} else {
+			getListFragment().setActivity(this);
+			getTasksFragment().setActivity(this);
+			mDrawerToggle.onConfigurationChanged(newConfig);
 		}
 	}
 
-	/**
-	 * Ugly Wrapper TODO make it more beautiful
-	 * 
-	 * @param task
-	 */
-	public void saveTask(Task task) {
-		Log.v(TAG, "Saving task… (task:" + task.getId());
+	// Fix Intent-behavior
+	// default is not return new Intent by calling getIntent
+	@Override
+	protected void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
+		setIntent(intent);
+	}
+
+	private String	newTaskContent, newTaskSubject;
+
+	private void addFilesForTask(Task t, Intent intent) {
+		String action = intent.getAction();
+		String type = intent.getType();
+		currentPosition = getTaskFragmentPosition();
+
+		if (Intent.ACTION_SEND.equals(action) && type != null) {
+			Uri uri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+			t.addFile(this, FileUtils.getPathFromUri(uri, this));
+		} else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
+			ArrayList<Uri> imageUris = intent
+					.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+			for (Uri uri : imageUris) {
+				t.addFile(this, FileUtils.getPathFromUri(uri, this));
+			}
+		}
+
+	}
+
+	private void addTaskFromSharing(ListMirakel list) {
+		if (newTaskSubject == null) return;
+		Task task = Semantic.createTask(newTaskSubject, list, true, this);
+		task.setContent(newTaskContent == null ? "" : newTaskContent);
 		safeSaveTask(task);
-		updatesForTask(task);
-	}
-
-	private void search(String query) {
-		setCurrentList(new SearchList(this, query));
-		this.mViewPager.setCurrentItem(getTasksFragmentPosition());
-	}
-
-	public void setCurrentList(ListMirakel currentList) {
-		setCurrentList(currentList, null, true, true);
-	}
-
-	/**
-	 * Set the current list and update the views
-	 * 
-	 * @param currentList
-	 * @param switchFragment
-	 */
-	public void setCurrentList(ListMirakel currentList, boolean switchFragment) {
-		setCurrentList(currentList, null, switchFragment, true);
-	}
-
-	public void setCurrentList(ListMirakel currentList, View currentView) {
-		setCurrentList(currentList, currentView, true, true);
-	}
-
-	public void setCurrentList(ListMirakel currentList, View currentView, boolean switchFragment, boolean resetGoBackTo) {
-		if (currentList == null) return;
-		if (resetGoBackTo) {
-			this.goBackTo.clear();
-		}
-		this.currentList = currentList;
-		if (this.mDrawerLayout != null) {
-			this.mDrawerLayout.closeDrawers();
-		}
-
-		this.currentTask = currentList.getFirstTask();
-		if (this.currentTask == null) {
-			this.currentTask = Task.getDummy(getApplicationContext());
-		}
-
-		if (getTasksFragment() != null) {
-			getTasksFragment().updateList();
-			if (!MirakelPreferences.isTablet() && switchFragment) {
-				this.mViewPager.setCurrentItem(getTasksFragmentPosition());
-			}
-		}
-		if (currentView == null && this.listFragment != null
-				&& getListFragment().getAdapter() != null) {
-			currentView = getListFragment().getAdapter().getViewForList(
-					currentList);
-		}
-
-		if (currentView != null && this.highlightSelected) {
-			clearHighlighted();
-			if (this.oldClickedList != null) {
-				this.oldClickedList.setSelected(false);
-				this.oldClickedList.setBackgroundColor(0x00000000);
-			}
-			currentView.setBackgroundColor(getResources().getColor(
-					R.color.pressed_color));
-			this.oldClickedList = currentView;
-		}
-		if (switchFragment) {
-			setCurrentTask(this.currentTask);
-		}
-		if (this.currentPosition == getTasksFragmentPosition()) {
-			getSupportActionBar().setTitle(currentList.getName());
-		}
-
-	}
-
-	/**
-	 * Set the current task and update the view
-	 * 
-	 * @param currentTask
-	 */
-	public void setCurrentTask(Task currentTask) {
-		setCurrentTask(currentTask, false);
-	}
-
-	public void setCurrentTask(Task currentTask, boolean switchFragment) {
-		setCurrentTask(currentTask, switchFragment, true);
-	}
-
-	public void setCurrentTask(Task currentTask, boolean switchFragment, boolean resetGoBackTo) {
-
-		this.currentTask = currentTask;
-		if (resetGoBackTo) {
-			this.goBackTo.clear();
-		}
-
-		highlightCurrentTask(currentTask, false);
-
-		if (getTaskFragment() != null) {
-			getTaskFragment().update(currentTask);
-			boolean smooth = this.mViewPager.getCurrentItem() != getTaskFragmentPosition();
-			if (!switchFragment) return;
-			// Fix buggy behavior
-			this.mViewPager.setCurrentItem(getTasksFragmentPosition(), false);
-			this.mViewPager.setCurrentItem(getTaskFragmentPosition(), false);
-			this.mViewPager.setCurrentItem(getTasksFragmentPosition(), false);
-			this.mViewPager.setCurrentItem(getTaskFragmentPosition(), smooth);
-		}
-	}
-
-	public void setFileUri(Uri file) {
-		this.fileUri = file;
-	}
-
-	/**
-	 * Set the Task, to which we switch, if the user press the back-button. It is reseted, if one of
-	 * the setCurrent*-functions on called
-	 * 
-	 * @param t
-	 */
-	public void setGoBackTo(Task t) {
-		this.goBackTo.push(t);
-	}
-
-	public void setSkipSwipe() {
-		this.skipSwipe = true;
-	}
-
-	public void setTaskFragment(TaskFragment tf) {
-		this.taskFragment = tf;
-
+		setCurrentTask(task);
+		addFilesForTask(task, startIntent);
+		setCurrentList(task.getList());
+		setCurrentTask(task, true);
 	}
 
 	/**
 	 * Initialize the ViewPager and setup the rest of the layout
 	 */
 	private void setupLayout() {
-		this.closeOnBack = false;
-		if (this.currentList == null) {
-			setCurrentList(SpecialList.firstSpecial());
-		}
+		closeOnBack = false;
+		if (currentList == null) setCurrentList(SpecialList.firstSpecial());
 		// Initialize ViewPager
-		if (!this.isResumend && this.mPagerAdapter == null) {
-			intializeFragments();
-		}
+		if (!isResumend && mPagerAdapter == null) intializeFragments();
 		NotificationService.updateNotificationAndWidget(this);
-		this.startIntent = getIntent();
-		if (this.startIntent == null || this.startIntent.getAction() == null) {
+		startIntent = getIntent();
+		if (startIntent == null || startIntent.getAction() == null) {
 			Log.d(TAG, "action null");
-		} else if (this.startIntent.getAction().equals(SHOW_TASK)
-				|| this.startIntent.getAction().equals(SHOW_TASK_FROM_WIDGET)) {
-			final Task task = TaskHelper.getTaskFromIntent(this.startIntent);
+		} else if (startIntent.getAction().equals(SHOW_TASK)
+				|| startIntent.getAction().equals(SHOW_TASK_FROM_WIDGET)) {
+			final Task task = TaskHelper.getTaskFromIntent(startIntent);
 			if (task != null) {
-				this.skipSwipe = true;
+				skipSwipe = true;
 				setCurrentList(task.getList());
-				this.mViewPager.postDelayed(new Runnable() {
+				mViewPager.postDelayed(new Runnable() {
 
 					@Override
 					public void run() {
 						setCurrentTask(task, true);
-						MainActivity.this.mViewPager.setCurrentItem(getTaskFragmentPosition(),
+						mViewPager.setCurrentItem(getTaskFragmentPosition(),
 								false);
 					}
 				}, 1);
@@ -1233,28 +750,27 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 			} else {
 				Log.d(TAG, "task null");
 			}
-			if (this.startIntent.getAction().equals(SHOW_TASK_FROM_WIDGET)) {
-				this.closeOnBack = true;
-			}
-		} else if (this.startIntent.getAction().equals(Intent.ACTION_SEND)
-				|| this.startIntent.getAction().equals(Intent.ACTION_SEND_MULTIPLE)) {
-			this.closeOnBack = true;
-			this.newTaskContent = this.startIntent.getStringExtra(Intent.EXTRA_TEXT);
-			this.newTaskSubject = this.startIntent.getStringExtra(Intent.EXTRA_SUBJECT);
+			if (startIntent.getAction().equals(SHOW_TASK_FROM_WIDGET))
+				closeOnBack = true;
+		} else if (startIntent.getAction().equals(Intent.ACTION_SEND)
+				|| startIntent.getAction().equals(Intent.ACTION_SEND_MULTIPLE)) {
+			closeOnBack = true;
+			newTaskContent = startIntent.getStringExtra(Intent.EXTRA_TEXT);
+			newTaskSubject = startIntent.getStringExtra(Intent.EXTRA_SUBJECT);
 
 			// If from google now, the content is the subject…
-			if (this.startIntent.getCategories() != null
-					&& this.startIntent.getCategories().contains(
+			if (startIntent.getCategories() != null
+					&& startIntent.getCategories().contains(
 							"com.google.android.voicesearch.SELF_NOTE")) {
-				if (!this.newTaskContent.equals("")) {
-					this.newTaskSubject = this.newTaskContent;
-					this.newTaskContent = "";
+				if (!newTaskContent.equals("")) {
+					newTaskSubject = newTaskContent;
+					newTaskContent = "";
 				}
 			}
 
-			if (!this.startIntent.getType().equals("text/plain")) {
-				if (this.newTaskSubject == null) {
-					this.newTaskSubject = MirakelPreferences.getImportFileTitle();
+			if (!startIntent.getType().equals("text/plain")) {
+				if (newTaskSubject == null) {
+					newTaskSubject = MirakelPreferences.getImportFileTitle();
 				}
 			}
 			ListMirakel listFromSharing = MirakelPreferences
@@ -1276,7 +792,6 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 				builder.setSingleChoiceItems(
 						items.toArray(new CharSequence[items.size()]),
 						currentItem, new DialogInterface.OnClickListener() {
-							@Override
 							public void onClick(DialogInterface dialog, int item) {
 								addTaskFromSharing(ListMirakel.getList(list_ids
 										.get(item)));
@@ -1285,39 +800,36 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 						});
 				builder.create().show();
 			}
-		} else if (this.startIntent.getAction().equals(SHOW_LIST)
-				|| this.startIntent.getAction().contains(SHOW_LIST_FROM_WIDGET)) {
+		} else if (startIntent.getAction().equals(SHOW_LIST)
+				|| startIntent.getAction().contains(SHOW_LIST_FROM_WIDGET)) {
 
 			int listId;
-			if (this.startIntent.getAction().equals(SHOW_LIST)) {
-				listId = this.startIntent.getIntExtra(EXTRA_ID, 0);
+			if (startIntent.getAction().equals(SHOW_LIST)) {
+				listId = startIntent.getIntExtra(EXTRA_ID, 0);
 			} else {
-				listId = Integer.parseInt(this.startIntent.getAction().replace(
+				listId = Integer.parseInt(startIntent.getAction().replace(
 						SHOW_LIST_FROM_WIDGET, ""));
 			}
 			Log.v(TAG, "ListId: " + listId);
 			ListMirakel list = ListMirakel.getList(listId);
-			if (list == null) {
-				list = SpecialList.firstSpecial();
-			}
+			if (list == null) list = SpecialList.firstSpecial();
 			setCurrentList(list);
-			if (this.startIntent.getAction().contains(SHOW_LIST_FROM_WIDGET)) {
-				this.closeOnBack = true;
-			}
-		} else if (this.startIntent.getAction().equals(SHOW_LISTS)) {
-			this.mDrawerLayout.openDrawer(Mirakel.GRAVITY_LEFT);
-		} else if (this.startIntent.getAction().equals(Intent.ACTION_SEARCH)) {
-			String query = this.startIntent.getStringExtra(SearchManager.QUERY);
+			if (startIntent.getAction().contains(SHOW_LIST_FROM_WIDGET))
+				closeOnBack = true;
+		} else if (startIntent.getAction().equals(SHOW_LISTS)) {
+			mDrawerLayout.openDrawer(Mirakel.GRAVITY_LEFT);
+		} else if (startIntent.getAction().equals(Intent.ACTION_SEARCH)) {
+			String query = startIntent.getStringExtra(SearchManager.QUERY);
 			search(query);
-		} else if (this.startIntent.getAction().contains(ADD_TASK_FROM_WIDGET)) {
+		} else if (startIntent.getAction().contains(ADD_TASK_FROM_WIDGET)) {
 			Log.d(TAG, "add");
-			int listId = Integer.parseInt(this.startIntent.getAction().replace(
+			int listId = Integer.parseInt(startIntent.getAction().replace(
 					ADD_TASK_FROM_WIDGET, ""));
 			setCurrentList(ListMirakel.getList(listId));
 			if (getTasksFragment() != null) {
 				getTasksFragment().focusNew(true);
 			} else {
-				this.mViewPager.postDelayed(new Runnable() {
+				mViewPager.postDelayed(new Runnable() {
 					@Override
 					public void run() {
 						if (getTasksFragment() != null) {
@@ -1330,37 +842,491 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 			}
 
 		} else {
-			this.mViewPager.setCurrentItem(getTaskFragmentPosition());
+			mViewPager.setCurrentItem(getTaskFragmentPosition());
 		}
-		if ((this.startIntent == null || this.startIntent.getAction() == null || !this.startIntent
-				.getAction().contains(ADD_TASK_FROM_WIDGET))
+		if ((startIntent == null || startIntent.getAction() == null || (!startIntent
+				.getAction().contains(ADD_TASK_FROM_WIDGET)))
 				&& getTasksFragment() != null) {
 			getTasksFragment().clearFocus();
 		}
 		setIntent(null);
 	}
 
-	private void updateCurrentListAndTask() {
-		if (this.currentTask == null && this.currentList == null) return;
-		if (this.currentTask != null) {
-			this.currentTask = Task.get(this.currentTask.getId());
-		} else {
-			if (this.currentList != null) {
-				List<Task> currentTasks = this.currentList.tasks(MirakelPreferences
-						.showDoneMain());
-				if (currentTasks.size() == 0) {
-					this.currentTask = Task.getDummy(getApplicationContext());
-				} else {
-					this.currentTask = currentTasks.get(0);
+	private void safeSaveTask(Task task) {
+		try {
+			task.save();
+		} catch (NoSuchListException e) {
+			Toast.makeText(getApplicationContext(), R.string.list_vanished,
+					Toast.LENGTH_LONG).show();
+		}
+	}
+
+	/**
+	 * Update the internal List of Lists (e.g. for the Move Task dialog)
+	 */
+	public void updateLists() {
+		this.lists = ListMirakel.all(false);
+	}
+
+	/**
+	 * Handle the actions after clicking on a destroy-list button
+	 * 
+	 * @param list
+	 */
+	public void handleDestroyList(final ListMirakel list) {
+		List<ListMirakel> l = new ArrayList<ListMirakel>();
+		l.add(list);
+		handleDestroyList(l);
+	}
+
+	public void handleDestroyList(@SuppressWarnings("hiding") final List<ListMirakel> lists) {
+		String names = lists.get(0).getName();
+		for (int i = 1; i < lists.size(); i++) {
+			names += ", " + lists.get(i).getName();
+		}
+		new AlertDialog.Builder(this)
+				.setTitle(
+						getResources().getQuantityString(R.plurals.list_delete,
+								lists.size()))
+				.setMessage(this.getString(R.string.list_delete_content, names))
+				.setPositiveButton(this.getString(android.R.string.yes),
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								for (ListMirakel list : lists) {
+									list.destroy();
+									getListFragment().update();
+									if (getCurrentList().getId() == list
+											.getId()) {
+										setCurrentList(SpecialList
+												.firstSpecial());
+									}
+								}
+							}
+						})
+				.setNegativeButton(this.getString(android.R.string.no),
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								// do nothing
+							}
+						}).show();
+	}
+
+	/**
+	 * Handle the actions after clicking on a destroy-task button
+	 * 
+	 * @param task
+	 */
+	public void handleDestroyTask(final Task task) {
+		List<Task> t = new ArrayList<Task>();
+		t.add(task);
+		handleDestroyTask(t);
+	}
+
+	public void handleDestroyTask(final List<Task> tasks) {
+		if (tasks == null) return;
+		final MainActivity main = this;
+		// This must then be a bug in a ROM
+		if (tasks.size() == 0 || tasks.get(0) == null) return;
+		String names = tasks.get(0).getName();
+		for (int i = 1; i < tasks.size(); i++) {
+			names += ", " + tasks.get(i).getName();
+		}
+		new AlertDialog.Builder(this)
+				.setTitle(
+						this.getResources().getQuantityString(
+								R.plurals.task_delete, tasks.size()))
+				.setMessage(this.getString(R.string.task_delete_content, names))
+				.setPositiveButton(this.getString(android.R.string.yes),
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								for (Task t : tasks) {
+									t.destroy();
+								}
+								setCurrentList(currentList);
+								ReminderAlarm.updateAlarms(main);
+								updateShare();
+							}
+						})
+				.setNegativeButton(this.getString(android.R.string.no),
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								// do nothing
+							}
+						}).show();
+	}
+
+	/**
+	 * Handle the actions after clicking on a move task button
+	 * 
+	 * @param tasks
+	 */
+	public void handleMoveTask(final Task task) {
+		List<Task> t = new ArrayList<Task>();
+		t.add(task);
+		handleMoveTask(t);
+	}
+
+	public void handleMoveTask(final List<Task> tasks) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(R.string.dialog_move);
+		List<CharSequence> items = new ArrayList<CharSequence>();
+		final List<Integer> list_ids = new ArrayList<Integer>();
+		int currentItem = 0, i = 0;
+		for (ListMirakel list : lists) {
+			if (list.getId() > 0) {
+				items.add(list.getName());
+				if (tasks.get(0).getList().getId() == list.getId()
+						&& tasks.size() == 1) {
+					currentItem = i;
 				}
+				list_ids.add(list.getId());
+				++i;
 			}
 		}
-		if (this.currentList != null) {
-			this.currentList = ListMirakel.getList(this.currentList.getId());
-		} else {
-			this.currentList = this.currentTask.getList();
+
+		builder.setSingleChoiceItems(
+				items.toArray(new CharSequence[items.size()]), currentItem,
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int item) {
+						for (Task t : tasks) {
+							t.setList(ListMirakel.getList(list_ids.get(item)));
+							safeSaveTask(t);
+						}
+						/*
+						 * There are 3 possibilities how to handle the post-move of a task: 1:
+						 * update the currentList to the List, the task was moved to
+						 * setCurrentList(task.getList()); 2: update the tasksView but not update
+						 * the taskView: getTasksFragment().updateList();
+						 * getTasksFragment().update(); 3: Set the currentList to the old List
+						 */
+						if (currentPosition == getTaskFragmentPosition()) {
+							Task task = tasks.get(0);
+							if (task == null) {
+								// What the hell?
+								Log.wtf(TAG, "Task vanished");
+							} else {
+								setCurrentList(task.getList());
+								setCurrentTask(task, true);
+							}
+						} else {
+							setCurrentList(getCurrentList());
+							getListFragment().update();
+						}
+						dialog.dismiss();
+					}
+				}).show();
+	}
+
+	private ActionBarDrawerToggle	mDrawerToggle;
+	private static boolean			isRTL;
+
+	/**
+	 * Initialize ViewPager
+	 */
+	@SuppressLint("NewApi")
+	private void intializeFragments() {
+		/*
+		 * Setup NavigationDrawer
+		 */
+		if (ListFragment.getSingleton() != null)
+			listFragment = ListFragment.getSingleton();
+		// listFragment = new ListFragment();
+		getListFragment().setActivity(this);
+		// fragments.add(listFragment);
+
+		List<Fragment> fragments = new Vector<Fragment>();
+		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+		mDrawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
+		mDrawerLayout, /* DrawerLayout object */
+		R.drawable.ic_drawer, /* nav drawer icon to replace 'Up' caret */
+		R.string.list_title, /* "open drawer" description */
+		R.string.list_title /* "close drawer" description */
+		) {
+			public void onDrawerClosed(View view) {
+				loadMenu(currentPosition);
+				getListFragment().closeActionMode();
+			}
+
+			public void onDrawerOpened(View drawerView) {
+				loadMenu(-1, false, false);
+				listFragment.refresh();
+			}
+		};
+
+		// Set the drawer toggle as the DrawerListener
+		mDrawerLayout.setDrawerListener(mDrawerToggle);
+		if (showNavDrawer) {
+			mDrawerLayout.openDrawer(Mirakel.GRAVITY_LEFT);
 		}
 
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setHomeButtonEnabled(true);
+		/*
+		 * Setup other Fragments
+		 */
+		TasksFragment tasksFragment = new TasksFragment();
+		tasksFragment.setActivity(this);
+		fragments.add(tasksFragment);
+		if (!isTablet) {
+			fragments.add(new TaskFragment());
+		}
+		if (isRTL) {
+			Fragment[] fragmentsLocal = new Fragment[fragments.size()];
+			for (int i = 0; i < fragments.size(); i++) {
+				fragmentsLocal[fragmentsLocal.length - 1 - i] = fragments
+						.get(i);
+			}
+			this.mPagerAdapter = new PagerAdapter(
+					super.getSupportFragmentManager(),
+					Arrays.asList(fragmentsLocal));
+		} else {
+			this.mPagerAdapter = new PagerAdapter(
+					super.getSupportFragmentManager(), fragments);
+		}
+
+		//
+		if (mViewPager == null) {
+			this.mViewPager = (ViewPager) super.findViewById(R.id.viewpager);
+		}
+		if (mViewPager == null) {
+			Log.wtf(TAG, "viewpager null");
+			return;
+		}
+		mViewPager.setOffscreenPageLimit(MirakelPreferences.isTablet() ? 1 : 2);
+		this.mViewPager.setAdapter(this.mPagerAdapter);
+		this.mViewPager.setOnPageChangeListener(this);
+		mViewPager.setOffscreenPageLimit(MirakelPreferences.isTablet() ? 1 : 2);
+
+	}
+
+	/**
+	 * Return the currently showed tasks
+	 * 
+	 * @return
+	 */
+	public Task getCurrentTask() {
+		currentTask = currentList.getFirstTask();
+		if (currentTask == null)
+			currentTask = Task.getDummy(getApplicationContext());
+		
+		return currentTask;
+	}
+
+	/**
+	 * Set the current task and update the view
+	 * 
+	 * @param currentTask
+	 */
+	public void setCurrentTask(Task currentTask) {
+		setCurrentTask(currentTask, false);
+	}
+
+	private View	oldClickedTask	= null;
+
+	void highlightCurrentTask(@SuppressWarnings("hiding") Task currentTask, boolean multiselect) {
+		if (getTaskFragment() == null || getTasksFragment() == null
+				|| getTasksFragment().getAdapter() == null
+				|| currentTask == null) return;
+		Log.v(TAG, currentTask.getName());
+		View currentView = getTasksFragment().getAdapter().getViewForTask(
+				currentTask);
+		if (currentView == null) {
+			currentView = getTasksFragment().getListView().getChildAt(0);
+			Log.v(TAG, "current view is null");
+		}
+
+		if (currentView != null && highlightSelected && !multiselect) {
+			if (oldClickedTask != null) {
+				oldClickedTask.setSelected(false);
+				oldClickedTask.setBackgroundColor(0x00000000);
+			}
+			currentView.setBackgroundColor(getResources().getColor(
+					darkTheme ? R.color.highlighted_text_holo_dark
+							: R.color.highlighted_text_holo_light));
+			oldClickedTask = currentView;
+		}
+	}
+
+	public void setCurrentTask(Task currentTask, boolean switchFragment) {
+		setCurrentTask(currentTask, switchFragment, true);
+	}
+
+	public void setCurrentTask(Task currentTask, boolean switchFragment, boolean resetGoBackTo) {
+
+		this.currentTask = currentTask;
+		if (resetGoBackTo) goBackTo.clear();
+
+		highlightCurrentTask(currentTask, false);
+
+		if (getTaskFragment() != null) {
+			getTaskFragment().update(currentTask);
+			boolean smooth = mViewPager.getCurrentItem() != getTaskFragmentPosition();
+			if (!switchFragment) return;
+			// Fix buggy behavior
+			mViewPager.setCurrentItem(getTasksFragmentPosition(), false);
+			mViewPager.setCurrentItem(getTaskFragmentPosition(), false);
+			mViewPager.setCurrentItem(getTasksFragmentPosition(), false);
+			mViewPager.setCurrentItem(getTaskFragmentPosition(), smooth);
+		}
+	}
+
+	private void clearAllHighlights() {
+		if (oldClickedList != null) {
+			oldClickedList.setSelected(false);
+			oldClickedList.setBackgroundColor(0x00000000);
+		}
+		if (oldClickedTask != null) {
+			oldClickedTask.setSelected(false);
+			oldClickedTask.setBackgroundColor(0x00000000);
+		}
+		clearHighlighted();
+	}
+
+	private void clearHighlighted() {
+		if (oldClickedTask == null) return;
+		try {
+			ListView view = (ListView) getTasksFragment().getFragmentView()
+					.findViewById(R.id.tasks_list);
+			int pos_old = (view).getPositionForView(oldClickedTask);
+			if (pos_old != -1) {
+				(view).getChildAt(pos_old).setBackgroundColor(0x00000000);
+			} else {
+				Log.wtf(TAG, "View not found");
+			}
+		} catch (Exception e) {
+			Log.wtf(TAG, "Listview not found");
+			Log.e(TAG, Log.getStackTraceString(e));
+		}
+	}
+
+	/**
+	 * Return the currently showed List
+	 * 
+	 * @return
+	 */
+	public ListMirakel getCurrentList() {
+		if (currentList == null)
+			currentList = SpecialList.firstSpecialSafe(this);
+		return currentList;
+	}
+
+	private View	oldClickedList	= null;
+
+	/**
+	 * Set the current list and update the views
+	 * 
+	 * @param currentList
+	 * @param switchFragment
+	 */
+	public void setCurrentList(ListMirakel currentList, boolean switchFragment) {
+		setCurrentList(currentList, null, switchFragment, true);
+	}
+
+	public void setCurrentList(ListMirakel currentList, View currentView) {
+		setCurrentList(currentList, currentView, true, true);
+	}
+
+	public void setCurrentList(ListMirakel currentList) {
+		setCurrentList(currentList, null, true, true);
+	}
+
+	public void setCurrentList(ListMirakel currentList, View currentView, boolean switchFragment, boolean resetGoBackTo) {
+		if (currentList == null) return;
+		if (resetGoBackTo) goBackTo.clear();
+		this.currentList = currentList;
+		if (mDrawerLayout != null) mDrawerLayout.closeDrawers();
+
+		currentTask = currentList.getFirstTask();
+		if (currentTask == null)
+			currentTask = Task.getDummy(getApplicationContext());
+
+		if (getTasksFragment() != null) {
+			getTasksFragment().updateList();
+			if (!MirakelPreferences.isTablet() && switchFragment)
+				mViewPager.setCurrentItem(getTasksFragmentPosition());
+		}
+		if (currentView == null && listFragment != null
+				&& getListFragment().getAdapter() != null)
+			currentView = getListFragment().getAdapter().getViewForList(
+					currentList);
+
+		if (currentView != null && highlightSelected) {
+			clearHighlighted();
+			if (oldClickedList != null) {
+				oldClickedList.setSelected(false);
+				oldClickedList.setBackgroundColor(0x00000000);
+			}
+			currentView.setBackgroundColor(getResources().getColor(
+					R.color.pressed_color));
+			oldClickedList = currentView;
+		}
+		if (switchFragment) setCurrentTask(currentTask);
+		if (currentPosition == getTasksFragmentPosition())
+			getSupportActionBar().setTitle(currentList.getName());
+
+	}
+
+	/**
+	 * Ugly Wrapper TODO make it more beautiful
+	 * 
+	 * @param task
+	 */
+	public void saveTask(Task task) {
+		Log.v(TAG, "Saving task… (task:" + task.getId());
+		safeSaveTask(task);
+		updatesForTask(task);
+	}
+
+	/**
+	 * Executes some View–Updates if a Task was changed
+	 * 
+	 * @param task
+	 */
+	public void updatesForTask(Task task) {
+		if (currentTask != null && task.getId() == currentTask.getId()) {
+			currentTask = task;
+			getTaskFragment().update(task);
+		}
+		getTasksFragment().updateList(false);
+		getListFragment().update();
+		NotificationService.updateNotificationAndWidget(this);
+
+	}
+
+	/**
+	 * Returns the ListFragment
+	 * 
+	 * @return
+	 */
+	public ListFragment getListFragment() {
+		return listFragment;
+	}
+
+	public TasksFragment getTasksFragment() {
+		if (mPagerAdapter == null) {
+			Log.i(TAG, "pageadapter null");
+			return null;
+		}
+		Fragment f = mPagerAdapter.getItem(getTasksFragmentPosition());
+		return (TasksFragment) f;
+	}
+
+	public TaskFragment getTaskFragment() {
+		if (mPagerAdapter == null) return null;
+		if (MirakelPreferences.isTablet()) return taskFragment;
+		Fragment f = mPagerAdapter.getItem(getTaskFragmentPosition());
+		return (TaskFragment) f;
+	}
+
+	public void setTaskFragment(TaskFragment tf) {
+		taskFragment = tf;
+
+	}
+
+	private void search(String query) {
+		setCurrentList(new SearchList(this, query));
+		mViewPager.setCurrentItem(getTasksFragmentPosition());
 	}
 
 	// public void showMessageFromSync() {
@@ -1372,40 +1338,20 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 	// }
 
 	/**
-	 * Update the internal List of Lists (e.g. for the Move Task dialog)
-	 */
-	public void updateLists() {
-		this.lists = ListMirakel.all(false);
-	}
-
-	/**
-	 * Executes some View–Updates if a Task was changed
+	 * Set the Task, to which we switch, if the user press the back-button. It is reseted, if one of
+	 * the setCurrent*-functions on called
 	 * 
-	 * @param task
+	 * @param t
 	 */
-	public void updatesForTask(Task task) {
-		if (this.currentTask != null && task.getId() == this.currentTask.getId()) {
-			this.currentTask = task;
-			getTaskFragment().update(task);
-		}
-		getTasksFragment().updateList(false);
-		getListFragment().update();
-		NotificationService.updateNotificationAndWidget(this);
-
+	public void setGoBackTo(Task t) {
+		goBackTo.push(t);
 	}
 
-	public void updateShare() {
-		if (this.menu != null && this.menu.findItem(R.id.share_list) != null
-				&& this.currentList.countTasks() == 0) {
-			this.menu.findItem(R.id.share_list).setVisible(false);
-		} else if (this.currentPosition == getTasksFragmentPosition()
-				&& this.menu != null && this.menu.findItem(R.id.share_list) == null
-				&& this.currentList.countTasks() > 0
-				&& !this.mDrawerLayout.isDrawerOpen(Mirakel.GRAVITY_LEFT)) {
-			loadMenu(getTasksFragmentPosition(), true, true);
-		} else if (this.menu != null && this.menu.findItem(R.id.share_list) != null
-				&& this.currentList.countTasks() > 0) {
-			this.menu.findItem(R.id.share_list).setVisible(true);
-		}
+	public void setFileUri(Uri file) {
+		fileUri = file;
+	}
+
+	public int getCurrentPosition() {
+		return currentPosition;
 	}
 }
