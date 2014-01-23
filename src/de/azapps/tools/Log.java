@@ -16,7 +16,9 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package de.azapps.mirakel.helper;
+package de.azapps.tools;
+
+import de.azapps.mirakel.helper.BuildHelper;
 
 
 public class Log {

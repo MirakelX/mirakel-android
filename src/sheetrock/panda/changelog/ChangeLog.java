@@ -32,9 +32,9 @@ import android.os.Build;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.webkit.WebView;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.Log;
 
 public class ChangeLog {
 

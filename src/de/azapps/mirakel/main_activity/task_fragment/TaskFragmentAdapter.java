@@ -81,7 +81,6 @@ import de.azapps.mirakel.adapter.MirakelArrayAdapter;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.helper.TaskHelper;
@@ -91,6 +90,7 @@ import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.Log;
 
 public class TaskFragmentAdapter extends MirakelArrayAdapter<Pair<Integer, Integer>> {// TYPE,INDEX
 	private static final String		TAG							= "TaskFragmentAdapter";

@@ -27,12 +27,12 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
 import de.azapps.mirakel.helper.Helpers;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.FileUtils;
+import de.azapps.tools.Log;
 
 public class TaskWarriorSetupActivity extends Activity {
 	private final static String	TAG	= "TaskWarriorSetupActivity";
@@ -281,9 +281,7 @@ public class TaskWarriorSetupActivity extends Activity {
 	private static final Integer	RESULT_SUCCESS	= 1;
 
 	private class DownloadTask extends AsyncTask<URL, Integer, Integer> {
-		@SuppressWarnings("hiding")
 		private final static String	TAG	= "DownloadTask";
-
 		private Exec				pre, progress, post;
 
 		public DownloadTask(Exec pre, Exec progress, Exec post) {

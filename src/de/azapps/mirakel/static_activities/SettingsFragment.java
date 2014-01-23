@@ -21,13 +21,13 @@ import android.preference.PreferenceFragment;
 import android.view.View;
 import android.view.ViewGroup;
 import de.azapps.mirakel.helper.Helpers;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.PreferencesHelper;
 import de.azapps.mirakel.settings.accounts.AccountSettingsActivity;
 import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
 import de.azapps.mirakel.settings.taskfragment.TaskFragmentSettingsFragment;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.Log;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class SettingsFragment extends PreferenceFragment {

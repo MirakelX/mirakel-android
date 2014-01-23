@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.AbsListView;
 import android.widget.ListView;
-import de.azapps.mirakel.helper.Log;
+import de.azapps.tools.Log;
 
 public class DayPickerView extends ListView implements AbsListView.OnScrollListener, DatePicker.OnDateChangedListener {
 	private static final String TAG = "DayPickerView";

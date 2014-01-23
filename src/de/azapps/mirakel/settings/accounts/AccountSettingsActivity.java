@@ -19,12 +19,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Helpers;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 import de.azapps.mirakel.settings.ListSettings;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSetupActivity;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.Log;
 
 public class AccountSettingsActivity extends ListSettings {
 

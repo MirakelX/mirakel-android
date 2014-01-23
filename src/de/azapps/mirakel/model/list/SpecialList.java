@@ -69,9 +69,8 @@ public class SpecialList extends ListMirakel {
 				}
 			}
 			return tmpWhere;
-		} else {
-			return whereQuery;
-		}
+		} 
+		return whereQuery;
 	}
 
 	public void setWhereQuery(String whereQuery) {

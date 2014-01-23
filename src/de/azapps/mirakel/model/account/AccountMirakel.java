@@ -12,10 +12,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.Log;
 
 public class AccountMirakel extends AccountBase {
 	public static final String ACCOUNT_TYPE_MIRAKEL = "de.azapps.mirakel";

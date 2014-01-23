@@ -37,9 +37,9 @@ import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.Log;
 
 /**
  * This is a generic Activity for showing Lists in the settings (and edit the

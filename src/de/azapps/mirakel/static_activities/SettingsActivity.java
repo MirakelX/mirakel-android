@@ -33,7 +33,6 @@ import android.widget.ListAdapter;
 import android.widget.Toast;
 import de.azapps.mirakel.adapter.SettingsAdapter;
 import de.azapps.mirakel.helper.Helpers;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.PreferencesHelper;
 import de.azapps.mirakel.helper.export_import.AnyDoImport;
@@ -44,6 +43,7 @@ import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
 import de.azapps.mirakel.settings.taskfragment.TaskFragmentSettingsFragment;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.FileUtils;
+import de.azapps.tools.Log;
 
 public class SettingsActivity extends PreferenceActivity {
 

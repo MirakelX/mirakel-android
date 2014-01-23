@@ -9,11 +9,11 @@ import android.view.Gravity;
 import android.widget.ImageButton;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.settings.ListSettings;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.Log;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class AccountSettingsFragment extends PreferenceFragment {

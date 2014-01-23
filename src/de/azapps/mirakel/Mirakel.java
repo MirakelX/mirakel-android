@@ -78,20 +78,36 @@ import de.azapps.mirakelandroid.R;
 
 )
 public class Mirakel extends Application {
+	public static class NoSuchListException extends Exception {
+		static final long	serialVersionUID	= 1374828057;
+	}
+	public static class NoSuchTaskException extends Exception {
+		static final long	serialVersionUID	= 1374828058;
+	}
+	public static String			APK_NAME;
+	public static final String		AUTHORITY_TYP	= "de.azapps.mirakel.provider";
+
+	// FIXME move this somewhere else?
+	public static int				GRAVITY_LEFT, GRAVITY_RIGHT;
+
+	public static String			MIRAKEL_DIR;
+
 	public static final int			NOTIF_DEFAULT	= 123,
 			NOTIF_REMINDER = 124;
-	public static final String		AUTHORITY_TYP	= "de.azapps.mirakel.provider";
-	public static String			APK_NAME;
+	private static SQLiteOpenHelper	openHelper;
+	private static final String		TAG				= "Mirakel";
+
 	public static String			VERSIONS_NAME;
 
 	public static int				widgets[]		= {};
 
-	private static final String		TAG				= "Mirakel";
+	public static SQLiteDatabase getReadableDatabase() {
+		return openHelper.getReadableDatabase();
+	}
 
-	private static SQLiteOpenHelper	openHelper;
-	public static String			MIRAKEL_DIR;
-	// FIXME move this somewhere else?
-	public static int				GRAVITY_LEFT, GRAVITY_RIGHT;
+	public static SQLiteDatabase getWritableDatabase() {
+		return openHelper.getWritableDatabase();
+	}
 
 	@SuppressLint("InlinedApi")
 	@Override
@@ -118,7 +134,7 @@ public class Mirakel extends Application {
 		// This we have to initialize as early as possible
 		MirakelPreferences.init(this);
 
-		Locale locale = Helpers.getLocal(this);
+		Locale locale = Helpers.getLocal();
 		Locale.setDefault(locale);
 
 		Configuration config = new Configuration();
@@ -145,6 +161,7 @@ public class Mirakel extends Application {
 		// Stuff we can do in another thread
 		final Mirakel that = this;
 		new Thread(new Runnable() {
+			@Override
 			public void run() {
 				Looper.prepare();
 				// Notifications
@@ -179,21 +196,5 @@ public class Mirakel extends Application {
 		Semantic.close();
 		Recurring.close();
 		AccountMirakel.close();
-	}
-
-	public static SQLiteDatabase getWritableDatabase() {
-		return openHelper.getWritableDatabase();
-	}
-
-	public static SQLiteDatabase getReadableDatabase() {
-		return openHelper.getReadableDatabase();
-	}
-
-	public static class NoSuchListException extends Exception {
-		static final long	serialVersionUID	= 1374828057;
-	}
-
-	public static class NoSuchTaskException extends Exception {
-		static final long	serialVersionUID	= 1374828058;
 	}
 }

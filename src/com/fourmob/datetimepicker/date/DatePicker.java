@@ -31,9 +31,9 @@ import com.fourmob.datetimepicker.Utils;
 import com.fourmob.datetimepicker.date.SimpleMonthAdapter.CalendarDay;
 import com.nineoldandroids.animation.ObjectAnimator;
 
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.Log;
 
 public class DatePicker extends LinearLayout implements View.OnClickListener,
 		DatePickerController {

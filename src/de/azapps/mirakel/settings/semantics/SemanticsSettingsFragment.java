@@ -27,11 +27,11 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.ImageButton;
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.settings.ListSettings;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.Log;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class SemanticsSettingsFragment extends PreferenceFragment {

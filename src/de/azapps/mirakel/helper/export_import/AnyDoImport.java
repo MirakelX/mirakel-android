@@ -45,12 +45,12 @@ import com.google.gson.JsonSyntaxException;
 
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Helpers;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.static_activities.SettingsActivity;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.Log;
 
 public class AnyDoImport {
 	private static final String TAG = "AnyDoImport";

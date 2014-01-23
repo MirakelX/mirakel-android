@@ -34,11 +34,11 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import de.azapps.mirakel.adapter.MirakelArrayAdapter;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.main_activity.task_fragment.TaskFragmentAdapter.TYPE;
 import de.azapps.mirakel.main_activity.task_fragment.TaskFragmentAdapter.TYPE.NoSuchItemException;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.Log;
 
 public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
 	private static final String TAG = "TaskFragmentSettingsAdapter";

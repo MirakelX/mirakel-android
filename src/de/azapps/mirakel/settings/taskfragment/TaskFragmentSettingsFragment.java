@@ -28,11 +28,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.main_activity.DragNDropListView;
 import de.azapps.mirakel.main_activity.DragNDropListView.RemoveListener;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.Log;
 
 @SuppressLint("NewApi")
 public class TaskFragmentSettingsFragment extends Fragment {

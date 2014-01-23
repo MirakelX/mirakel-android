@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  * 
- * Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
+ * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
  * 
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -58,8 +58,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -77,7 +75,6 @@ import android.widget.Toast;
 import android.widget.ViewSwitcher;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.Helpers;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
@@ -89,55 +86,56 @@ import de.azapps.mirakel.sync.mirakel.MirakelSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.FileUtils;
+import de.azapps.tools.Log;
 
 /**
  * Activity which displays login screen to the user.
  */
 public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 	/** The Intent flag to confirm credentials. */
-	public static final String PARAM_CONFIRM_CREDENTIALS = "confirmCredentials";
+	public static final String	PARAM_CONFIRM_CREDENTIALS	= "confirmCredentials";
 
 	/** The Intent extra to store password. */
-	public static final String PARAM_PASSWORD = "password";
+	public static final String	PARAM_PASSWORD				= "password";
 
 	/** The Intent extra to store username. */
-	public static final String PARAM_USERNAME = "username";
+	public static final String	PARAM_USERNAME				= "username";
 
 	/** The Intent extra to store username. */
-	public static final String PARAM_AUTHTOKEN_TYPE = "authtokenType";
+	public static final String	PARAM_AUTHTOKEN_TYPE		= "authtokenType";
 
 	/** The tag used to log to adb console. */
-	private static final String TAG = "AuthenticatorActivity";
-	private final int CONFIG_TASKWARRIOR = 1;
-	private AccountManager mAccountManager;
+	private static final String	TAG							= "AuthenticatorActivity";
+	private final int			CONFIG_TASKWARRIOR			= 1;
+	private AccountManager		mAccountManager;
 
 	/** Keep track of the login task so can cancel it if requested */
 	// private UserLoginTask mAuthTask = null;
 
 	/** Keep track of the progress dialog so we can dismiss it */
-	private ProgressDialog mProgressDialog = null;
+	private ProgressDialog		mProgressDialog				= null;
 
 	/** for posting authentication attempts back to UI thread */
 	// private final Handler mHandler = new Handler();
 
-	private TextView mMessage;
+	private TextView			mMessage;
 
-	private Spinner mType;
+	private Spinner				mType;
 
-	private String mPassword;
+	private String				mPassword;
 
-	private EditText mPasswordEdit;
+	private EditText			mPasswordEdit;
 
 	/** Was the original caller asking for an entirely new account? */
-	protected boolean mRequestNewAccount = false;
+	protected boolean			mRequestNewAccount			= false;
 
-	private String mUsername;
+	private String				mUsername;
 
-	private EditText mUsernameEdit;
+	private EditText			mUsernameEdit;
 
-	private ACCOUNT_TYPES syncType;
+	private ACCOUNT_TYPES		syncType;
 
-	private String config_file;
+	private String				config_file;
 
 	/**
 	 * {@inheritDoc}
@@ -145,8 +143,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 	@Override
 	public void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
-		if (MirakelPreferences.isDark())
-			setTheme(R.style.DialogDark);
+		if (MirakelPreferences.isDark()) setTheme(R.style.DialogDark);
 		mAccountManager = AccountManager.get(this);
 		final Intent intent = getIntent();
 
@@ -154,9 +151,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 		mRequestNewAccount = mUsername == null;
 		requestWindowFeature(Window.FEATURE_LEFT_ICON);
 		setContentView(R.layout.login_activity);
-
-		if (VERSION.SDK_INT < VERSION_CODES.HONEYCOMB)
-			setTheme(R.style.Dialog);
 
 		getWindow().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON,
 				android.R.drawable.ic_dialog_alert);
@@ -166,14 +160,12 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 		mPasswordEdit = (EditText) findViewById(R.id.password_edit);
 		config_file = null;
 
-		if (!TextUtils.isEmpty(mUsername))
-			mUsernameEdit.setText(mUsername);
+		if (!TextUtils.isEmpty(mUsername)) mUsernameEdit.setText(mUsername);
 		mType = (Spinner) findViewById(R.id.server_typ);
 
 		mType.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
-			public void onItemSelected(AdapterView<?> parent, View view,
-					int position, long id) {
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 				/**
 				 * SYNC-Views Edit this if you want to implement a new Sync
 				 */
@@ -183,30 +175,30 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				mMessage.setText(syncTypeString);
 				ViewSwitcher switcher = (ViewSwitcher) findViewById(R.id.switcher_login);
 				switch (syncType) {
-				case TASKWARRIOR:
-					if (switcher.getCurrentView().getId() != R.id.login_taskwarrior)
-						switcher.showPrevious();
-					break;
-				case MIRAKEL:
-					if (switcher.getCurrentView().getId() != R.id.login_mirakel)
-						switcher.showPrevious();
-					mUsernameEdit.setHint(R.string.Email);
-					mUsernameEdit
-							.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-					((EditText) findViewById(R.id.server_edit))
-							.setText(R.string.offical_server_url);
-					break;
-				case CALDAV:
-					if (switcher.getCurrentView().getId() != R.id.login_mirakel) {
-						switcher.showPrevious();
-					}
-					mUsernameEdit
-							.setHint(R.string.login_activity_username_label);
-					mUsernameEdit.setInputType(InputType.TYPE_CLASS_TEXT);
-					((EditText) findViewById(R.id.server_edit)).setText("");
-					break;
-				default:
-					break;
+					case TASKWARRIOR:
+						if (switcher.getCurrentView().getId() != R.id.login_taskwarrior)
+							switcher.showPrevious();
+						break;
+					case MIRAKEL:
+						if (switcher.getCurrentView().getId() != R.id.login_mirakel)
+							switcher.showPrevious();
+						mUsernameEdit.setHint(R.string.Email);
+						mUsernameEdit
+								.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+						((EditText) findViewById(R.id.server_edit))
+								.setText(R.string.offical_server_url);
+						break;
+					case CALDAV:
+						if (switcher.getCurrentView().getId() != R.id.login_mirakel) {
+							switcher.showPrevious();
+						}
+						mUsernameEdit
+								.setHint(R.string.login_activity_username_label);
+						mUsernameEdit.setInputType(InputType.TYPE_CLASS_TEXT);
+						((EditText) findViewById(R.id.server_edit)).setText("");
+						break;
+					default:
+						break;
 				}
 			}
 
@@ -218,8 +210,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 		});
 		mMessage.setText(getMessage(getResources().getStringArray(
 				R.array.server_typs)[0]));
-		if (MirakelPreferences.isDark()
-				&& VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB) {
+		if (MirakelPreferences.isDark()) {
 			findViewById(R.id.login_button_frame).setBackgroundColor(
 					getResources().getColor(android.R.color.transparent));
 		}
@@ -318,10 +309,11 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 	 * handleLogin() in the layout XML.
 	 * 
 	 * @param view
-	 *            The Submit button for which this method is invoked
+	 *        The Submit button for which this method is invoked
 	 */
 	public void handleLogin(View view) {
-		syncType = ACCOUNT_TYPES.getSyncType(mType.getSelectedItem().toString());
+		syncType = ACCOUNT_TYPES
+				.getSyncType(mType.getSelectedItem().toString());
 		if (mRequestNewAccount) {
 			mUsername = mUsernameEdit.getText().toString();
 		}
@@ -351,25 +343,25 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 			 */
 			boolean successfull = true;
 			switch (syncType) {
-			case TASKWARRIOR:
-				Log.v(TAG, "Use Taskwarrior");
-				try {
-					finishTWLogin();
-				} catch (FileNotFoundException e) {
-					successfull = false;
-				}
-				break;
-			case MIRAKEL:
-				handleMirakelLogin();
-				break;
-			case CALDAV:
-				handleCalDavLogin();
-				break;
-			default:
-				Log.wtf(TAG, "Not supported sync-type.");
-				Toast.makeText(getApplicationContext(),
-						R.string.wrong_sync_type, Toast.LENGTH_LONG).show();
-				return;
+				case TASKWARRIOR:
+					Log.v(TAG, "Use Taskwarrior");
+					try {
+						finishTWLogin();
+					} catch (FileNotFoundException e) {
+						successfull = false;
+					}
+					break;
+				case MIRAKEL:
+					handleMirakelLogin();
+					break;
+				case CALDAV:
+					handleCalDavLogin();
+					break;
+				default:
+					Log.wtf(TAG, "Not supported sync-type.");
+					Toast.makeText(getApplicationContext(),
+							R.string.wrong_sync_type, Toast.LENGTH_LONG).show();
+					return;
 			}
 			if (successfull) {
 				final Intent intent = new Intent();
@@ -381,13 +373,13 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				finish();
 			} else {
 				switch (syncType) {
-				case TASKWARRIOR:
-					((TextView) findViewById(R.id.message_bottom))
-							.setText(R.string.wrong_config);
-					break;
-				default:
-					Log.wtf(TAG, "unkown error");
-					break;
+					case TASKWARRIOR:
+						((TextView) findViewById(R.id.message_bottom))
+								.setText(R.string.wrong_config);
+						break;
+					default:
+						Log.wtf(TAG, "unkown error");
+						break;
 				}
 			}
 		}
@@ -409,8 +401,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 	private void finishTWLogin() throws FileNotFoundException {
 		// TODO add errorhandling
 		Log.d(TAG, config_file);
-		if (config_file == null)
-			return;
+		if (config_file == null) return;
 		File f = new File(config_file);
 		if (f.exists() && f.canRead()) {
 			byte[] buffer = new byte[(int) f.length()];// TODO remove cast
@@ -431,7 +422,8 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				String[] t = content.split("org: ");
 				Log.d(TAG, "user: " + t[0].replace("username: ", ""));
 				final Account account = new Account(t[0].replace("username: ",
-						"").replace("\n", ""), AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
+						"").replace("\n", ""),
+						AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
 				t = t[1].split("user key: ");
 				Log.d(TAG, "org: " + t[0].replace("\n", ""));
 				b.putString(SyncAdapter.BUNDLE_ORG, t[0].replace("\n", ""));
@@ -447,16 +439,17 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 				t = t[1].split("Client.key:\n");
 				Log.d(TAG, "client cert: " + t[0].replace("\n", ""));
 
-				FileUtils.safeWriteToFile(
-						new File(TaskWarriorSync.CLIENT_CERT_FILE), t[0]);
+				FileUtils.safeWriteToFile(new File(
+						TaskWarriorSync.CLIENT_CERT_FILE), t[0]);
 
 				t = t[1].split("ca.cert:\n");
 				Log.d(TAG, "client key: " + t[0].replace("\n", ""));
 
-				FileUtils.safeWriteToFile(
-						new File(TaskWarriorSync.CLIENT_KEY_FILE), t[0]);
+				FileUtils.safeWriteToFile(new File(
+						TaskWarriorSync.CLIENT_KEY_FILE), t[0]);
 				Log.d(TAG, "ca: " + t[1].replace("\n", ""));
-				FileUtils.safeWriteToFile(new File(TaskWarriorSync.CA_FILE), t[1]);
+				FileUtils.safeWriteToFile(new File(TaskWarriorSync.CA_FILE),
+						t[1]);
 				mAccountManager.addAccountExplicitly(account, pwd, b);
 			} catch (ArrayIndexOutOfBoundsException e) {
 				Log.e(TAG, "wrong Configfile");
@@ -477,11 +470,12 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 	 * account - so we're never storing the user's actual password locally.
 	 * 
 	 * @param result
-	 *            the confirmCredentials result.
+	 *        the confirmCredentials result.
 	 */
 	private void finishMirakelLogin(String url, String token) {
 		Log.i(TAG, "finishLogin()");
-		final Account account = new Account(mUsername, AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
+		final Account account = new Account(mUsername,
+				AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
 		if (mRequestNewAccount) {
 			Bundle b = new Bundle();
 			b.putString(SyncAdapter.BUNDLE_SERVER_URL, url);
