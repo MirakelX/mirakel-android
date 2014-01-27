@@ -30,6 +30,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
@@ -98,9 +99,28 @@ public class Helpers {
 		}
 	}
 
-	public static Locale getLocal() {
+	// public static Locale getLocal() {
+	// String current = MirakelPreferences.getLanguage();
+	// Log.d(TAG, "LOCALE: " + current);
+	// return current.equals("-1") ? Locale.getDefault() : new Locale(current);
+	//
+	// }
+
+	public static Locale getLocal(Context ctx) {
+
 		String current = MirakelPreferences.getLanguage();
-		return current.equals("-1") ? Locale.getDefault() : new Locale(current);
+		Locale locale = current.equals("-1") ? Locale.getDefault()
+				: new Locale(current);
+		Locale.setDefault(locale);
+		Configuration config = new Configuration();
+		config.locale = locale;
+		ctx.getApplicationContext()
+				.getResources()
+				.updateConfiguration(
+						config,
+						ctx.getApplicationContext().getResources()
+								.getDisplayMetrics());
+		return locale;
 
 	}
 

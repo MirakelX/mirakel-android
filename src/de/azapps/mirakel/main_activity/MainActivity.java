@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  * 
- * Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
+ * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
  * 
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -21,11 +21,13 @@ package de.azapps.mirakel.main_activity;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Stack;
 import java.util.Vector;
 
 import sheetrock.panda.changelog.ChangeLog;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.appwidget.AppWidgetManager;
@@ -108,12 +110,17 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 	public static boolean		updateTasksUUID		= false;
 
 	private static int getTaskFragmentPosition() {
-		if (isRTL) return LEFT_FRAGMENT;
-		return RIGHT_FRAGMENT;
+		if (MainActivity.isRTL || MirakelPreferences.isTablet())
+			return MainActivity.LEFT_FRAGMENT;
+		return MainActivity.RIGHT_FRAGMENT;
 	}
+
+
 	public static int getTasksFragmentPosition() {
-		if (isRTL) return RIGHT_FRAGMENT;
-		return LEFT_FRAGMENT;
+		if (MainActivity.isRTL && !MirakelPreferences.isTablet())
+			return MainActivity.RIGHT_FRAGMENT;
+		return MainActivity.LEFT_FRAGMENT;
+
 	}
 	private boolean				closeOnBack			= false;
 	private ListMirakel			currentList;
@@ -161,21 +168,23 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		this.currentPosition = getTaskFragmentPosition();
 
 		if (Intent.ACTION_SEND.equals(action) && type != null) {
-			Uri uri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+			final Uri uri = (Uri) intent
+					.getParcelableExtra(Intent.EXTRA_STREAM);
 			t.addFile(this, FileUtils.getPathFromUri(uri, this));
 		} else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
-			ArrayList<Uri> imageUris = intent
+			final ArrayList<Uri> imageUris = intent
 					.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
-			for (Uri uri : imageUris) {
+			for (final Uri uri : imageUris) {
 				t.addFile(this, FileUtils.getPathFromUri(uri, this));
 			}
 		}
 
 	}
 
-	private void addTaskFromSharing(ListMirakel list) {
+	private void addTaskFromSharing(final ListMirakel list) {
 		if (this.newTaskSubject == null) return;
-		Task task = Semantic.createTask(this.newTaskSubject, list, true, this);
+		final Task task = Semantic.createTask(this.newTaskSubject, list, true,
+				this);
 		task.setContent(this.newTaskContent == null ? "" : this.newTaskContent);
 		safeSaveTask(task);
 		setCurrentTask(task);
@@ -199,17 +208,17 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 	private void clearHighlighted() {
 		if (this.oldClickedTask == null) return;
 		try {
-			ListView view = (ListView) getTasksFragment().getFragmentView()
-					.findViewById(R.id.tasks_list);
-			int pos_old = view.getPositionForView(this.oldClickedTask);
+			final ListView view = (ListView) getTasksFragment()
+					.getFragmentView().findViewById(R.id.tasks_list);
+			final int pos_old = view.getPositionForView(this.oldClickedTask);
 			if (pos_old != -1) {
 				view.getChildAt(pos_old).setBackgroundColor(0x00000000);
 			} else {
 				Log.wtf(TAG, "View not found");
 			}
-		} catch (Exception e) {
-			Log.wtf(TAG, "Listview not found");
-			Log.e(TAG, Log.getStackTraceString(e));
+		} catch (final Exception e) {
+			Log.wtf(MainActivity.TAG, "Listview not found");
+			Log.e(MainActivity.TAG, Log.getStackTraceString(e));
 		}
 	}
 
@@ -217,7 +226,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		setContentView(R.layout.activity_main);
 		this.mPagerAdapter = null;
 		// Show ChangeLog
-		ChangeLog cl = new ChangeLog(this);
+		final ChangeLog cl = new ChangeLog(this);
 		if (cl.firstRun()) {
 			cl.getLogDialog().show();
 			this.showNavDrawer = true;
@@ -270,16 +279,18 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 	public TaskFragment getTaskFragment() {
 		if (this.mPagerAdapter == null) return null;
 		if (MirakelPreferences.isTablet()) return this.taskFragment;
-		Fragment f = this.mPagerAdapter.getItem(getTaskFragmentPosition());
+		final Fragment f = this.mPagerAdapter
+				.getItem(getTaskFragmentPosition());
 		return (TaskFragment) f;
 	}
 
 	public TasksFragment getTasksFragment() {
 		if (this.mPagerAdapter == null) {
-			Log.i(TAG, "pageadapter null");
+			Log.i(MainActivity.TAG, "pageadapter null");
 			return null;
 		}
-		Fragment f = this.mPagerAdapter.getItem(getTasksFragmentPosition());
+		final Fragment f = this.mPagerAdapter.getItem(MainActivity
+				.getTasksFragmentPosition());
 		return (TasksFragment) f;
 	}
 
@@ -296,8 +307,8 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 						.setPositiveButton(this.getString(android.R.string.yes),
 								new DialogInterface.OnClickListener() {
 							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								for (ListMirakel list : lists) {
+							public void onClick(final DialogInterface dialog, final int which) {
+								for (final ListMirakel list : lists) {
 									list.destroy();
 									getListFragment().update();
 									if (getCurrentList().getId() == list
@@ -308,13 +319,8 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 								}
 							}
 						})
-						.setNegativeButton(this.getString(android.R.string.no),
-								new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								// do nothing
-							}
-						}).show();
+						.setNegativeButton(this.getString(android.R.string.no), null)
+						.show();
 	}
 
 	/**
@@ -323,7 +329,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 	 * @param list
 	 */
 	public void handleDestroyList(final ListMirakel list) {
-		List<ListMirakel> l = new ArrayList<ListMirakel>();
+		final List<ListMirakel> l = new ArrayList<ListMirakel>();
 		l.add(list);
 		handleDestroyList(l);
 	}
@@ -339,14 +345,14 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		}
 		new AlertDialog.Builder(this)
 		.setTitle(
-				getResources().getQuantityString(
-						R.plurals.task_delete, tasks.size()))
+				getResources().getQuantityString(R.plurals.task_delete,
+						tasks.size()))
 						.setMessage(this.getString(R.string.task_delete_content, names))
 						.setPositiveButton(this.getString(android.R.string.yes),
 								new DialogInterface.OnClickListener() {
 							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								for (Task t : tasks) {
+							public void onClick(final DialogInterface dialog, final int which) {
+								for (final Task t : tasks) {
 									t.destroy();
 								}
 								setCurrentList(MainActivity.this.currentList);
@@ -354,13 +360,8 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 								updateShare();
 							}
 						})
-						.setNegativeButton(this.getString(android.R.string.no),
-								new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								// do nothing
-							}
-						}).show();
+						.setNegativeButton(this.getString(android.R.string.no), null)
+						.show();
 	}
 
 	/**
@@ -369,18 +370,18 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 	 * @param task
 	 */
 	public void handleDestroyTask(final Task task) {
-		List<Task> t = new ArrayList<Task>();
+		final List<Task> t = new ArrayList<Task>();
 		t.add(task);
 		handleDestroyTask(t);
 	}
 
 	public void handleMoveTask(final List<Task> tasks) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(R.string.dialog_move);
-		List<CharSequence> items = new ArrayList<CharSequence>();
+		final List<CharSequence> items = new ArrayList<CharSequence>();
 		final List<Integer> list_ids = new ArrayList<Integer>();
 		int currentItem = 0, i = 0;
-		for (ListMirakel list : this.lists) {
+		for (final ListMirakel list : this.lists) {
 			if (list.getId() > 0) {
 				items.add(list.getName());
 				if (tasks.get(0).getList().getId() == list.getId()
@@ -396,9 +397,10 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 				items.toArray(new CharSequence[items.size()]), currentItem,
 				new DialogInterface.OnClickListener() {
 					@Override
-					public void onClick(DialogInterface dialog, int item) {
-						for (Task t : tasks) {
-							t.setList(ListMirakel.getList(list_ids.get(item)),true);
+					public void onClick(final DialogInterface dialog, final int item) {
+						for (final Task t : tasks) {
+							t.setList(ListMirakel.getList(list_ids.get(item)),
+									true);
 							safeSaveTask(t);
 						}
 						/*
@@ -409,10 +411,10 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 						 * getTasksFragment().update(); 3: Set the currentList to the old List
 						 */
 						if (MainActivity.this.currentPosition == getTaskFragmentPosition()) {
-							Task task = tasks.get(0);
+							final Task task = tasks.get(0);
 							if (task == null) {
 								// What the hell?
-								Log.wtf(TAG, "Task vanished");
+								Log.wtf(MainActivity.TAG, "Task vanished");
 							} else {
 								setCurrentList(task.getList());
 								setCurrentTask(task, true);
@@ -432,7 +434,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 	 * @param tasks
 	 */
 	public void handleMoveTask(final Task task) {
-		List<Task> t = new ArrayList<Task>();
+		final List<Task> t = new ArrayList<Task>();
 		t.add(task);
 		handleMoveTask(t);
 	}
@@ -463,11 +465,11 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		return newmenu;
 	}
 
-	void highlightCurrentTask(Task currentTask, boolean multiselect) {
+	void highlightCurrentTask(final Task currentTask, final boolean multiselect) {
 		if (getTaskFragment() == null || getTasksFragment() == null
 				|| getTasksFragment().getAdapter() == null
 				|| currentTask == null) return;
-		Log.v(TAG, currentTask.getName());
+		Log.v(MainActivity.TAG, currentTask.getName());
 		View currentView = getTasksFragment().getAdapter().getViewForTask(
 				currentTask);
 		if (currentView == null) {
@@ -502,7 +504,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		getListFragment().setActivity(this);
 		// fragments.add(listFragment);
 
-		List<Fragment> fragments = new Vector<Fragment>();
+		final List<Fragment> fragments = new Vector<Fragment>();
 		this.mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
 		this.mDrawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
@@ -512,13 +514,13 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 				R.string.list_title /* "close drawer" description */
 				) {
 			@Override
-			public void onDrawerClosed(View view) {
+			public void onDrawerClosed(final View view) {
 				loadMenu(MainActivity.this.currentPosition);
 				getListFragment().closeActionMode();
 			}
 
 			@Override
-			public void onDrawerOpened(View drawerView) {
+			public void onDrawerOpened(final View drawerView) {
 				loadMenu(-1, false, false);
 				MainActivity.this.listFragment.refresh();
 			}
@@ -535,14 +537,14 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		/*
 		 * Setup other Fragments
 		 */
-		TasksFragment tasksFragment = new TasksFragment();
+		final TasksFragment tasksFragment = new TasksFragment();
 		tasksFragment.setActivity(this);
 		fragments.add(tasksFragment);
-		if (!this.isTablet) {
+		if (!MirakelPreferences.isTablet()) {
 			fragments.add(new TaskFragment());
 		}
-		if (isRTL) {
-			Fragment[] fragmentsLocal = new Fragment[fragments.size()];
+		if (MainActivity.isRTL && !MirakelPreferences.isTablet()) {
+			final Fragment[] fragmentsLocal = new Fragment[fragments.size()];
 			for (int i = 0; i < fragments.size(); i++) {
 				fragmentsLocal[fragmentsLocal.length - 1 - i] = fragments
 						.get(i);
@@ -560,17 +562,19 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 			this.mViewPager = (ViewPager) super.findViewById(R.id.viewpager);
 		}
 		if (this.mViewPager == null) {
-			Log.wtf(TAG, "viewpager null");
+			Log.wtf(MainActivity.TAG, "viewpager null");
 			return;
 		}
-		this.mViewPager.setOffscreenPageLimit(MirakelPreferences.isTablet() ? 1 : 2);
+		this.mViewPager.setOffscreenPageLimit(MirakelPreferences.isTablet() ? 1
+				: 2);
 		this.mViewPager.setAdapter(this.mPagerAdapter);
 		this.mViewPager.setOnPageChangeListener(this);
-		this.mViewPager.setOffscreenPageLimit(MirakelPreferences.isTablet() ? 1 : 2);
+		this.mViewPager.setOffscreenPageLimit(MirakelPreferences.isTablet() ? 1
+				: 2);
 
 	}
 
-	public void loadMenu(int position) {
+	public void loadMenu(final int position) {
 		loadMenu(position, true, false);
 	}
 
@@ -628,13 +632,13 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 	}
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-		boolean isOk = resultCode == RESULT_OK;
-		Log.v(TAG, "Result:" + requestCode);
+	protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
+		final boolean isOk = resultCode == Activity.RESULT_OK;
+		Log.v(MainActivity.TAG, "Result:" + requestCode);
 		switch (requestCode) {
 			case RESULT_SPEECH_NAME:
 				if (intent != null) {
-					ArrayList<String> text = intent
+					final ArrayList<String> text = intent
 							.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 					((EditText) findViewById(R.id.edit_name)).setText(text
 							.get(0));
@@ -642,7 +646,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 				break;
 			case RESULT_SPEECH:
 				if (intent != null) {
-					ArrayList<String> text = intent
+					final ArrayList<String> text = intent
 							.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 					((EditText) getTasksFragment().getFragmentView()
 							.findViewById(R.id.tasks_new)).setText(text.get(0));
@@ -673,7 +677,8 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 						this.startIntent = new Intent(MainActivity.this,
 								MainActivity.class);
 						this.startIntent.setAction(MainActivity.SHOW_LISTS);
-						Log.wtf(TAG, "startIntent is null by switching theme");
+						Log.wtf(MainActivity.TAG,
+								"startIntent is null by switching theme");
 
 					}
 					startActivity(this.startIntent);
@@ -685,21 +690,22 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 			case RESULT_ADD_PICTURE:
 				if (isOk) {
 					Task task;
-					if (requestCode == RESULT_ADD_PICTURE) {
-						task = getCurrentTask();
+					if (requestCode == MainActivity.RESULT_ADD_PICTURE) {
+						task = this.currentTask;
 					} else {
 						task = Semantic.createTask(
 								MirakelPreferences.getPhotoDefaultTitle(),
 								this.currentList, false, this);
 						safeSaveTask(task);
 					}
-					task.addFile(this, FileUtils.getPathFromUri(this.fileUri, this));
+					task.addFile(this,
+							FileUtils.getPathFromUri(this.fileUri, this));
 					setCurrentList(task.getList());
 					setCurrentTask(task, true);
 				}
 				break;
 			default:
-				Log.w(TAG, "unknown activity result");
+				Log.w(MainActivity.TAG, "unknown activity result");
 				break;
 		}
 	}
@@ -722,14 +728,16 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 			 * case TASKS_FRAGMENT: mDrawerLayout.openDrawer(Gravity.LEFT); break;
 			 */
 			case LEFT_FRAGMENT:
-				if (isRTL) {
-					this.mViewPager.setCurrentItem(getTasksFragmentPosition());
+				if (MainActivity.isRTL) {
+					this.mViewPager.setCurrentItem(MainActivity
+							.getTasksFragmentPosition());
 					return;
 				}
 				break;
 			case RIGHT_FRAGMENT:
-				if (!isRTL) {
-					this.mViewPager.setCurrentItem(getTasksFragmentPosition());
+				if (!MainActivity.isRTL) {
+					this.mViewPager.setCurrentItem(MainActivity
+							.getTasksFragmentPosition());
 					return;
 				}
 				break;
@@ -741,9 +749,10 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 	}
 
 	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
+	public void onConfigurationChanged(final Configuration newConfig) {
+		Locale.setDefault(Helpers.getLocal(this));
 		super.onConfigurationChanged(newConfig);
-		boolean tabletLocal = MirakelPreferences.isTablet();
+		final boolean tabletLocal = MirakelPreferences.isTablet();
 		if (tabletLocal != this.isTablet) {
 			this.isTablet = tabletLocal;
 			this.mPagerAdapter = null;
@@ -754,15 +763,17 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 			getTasksFragment().setActivity(this);
 			this.mDrawerToggle.onConfigurationChanged(newConfig);
 		}
+
 	}
 
 	@SuppressLint("NewApi")
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(final Bundle savedInstanceState) {
 		this.darkTheme = MirakelPreferences.isDark();
 		if (this.darkTheme) {
 			setTheme(R.style.AppBaseThemeDARK);
 		}
+		Locale.setDefault(Helpers.getLocal(this));
 		super.onCreate(savedInstanceState);
 
 		// Set Alarms
@@ -772,38 +783,39 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 			public void run() {
 				ReminderAlarm.updateAlarms(getApplicationContext());
 				if (!MirakelPreferences.containsHighlightSelected()) {
-					SharedPreferences.Editor editor = MirakelPreferences
+					final SharedPreferences.Editor editor = MirakelPreferences
 							.getEditor();
-					editor.putBoolean("highlightSelected", MainActivity.this.isTablet);
+					editor.putBoolean("highlightSelected",
+							MainActivity.this.isTablet);
 					editor.commit();
 				}
 
 				if (!MirakelPreferences.containsStartupAllLists()) {
-					SharedPreferences.Editor editor = MirakelPreferences
+					final SharedPreferences.Editor editor = MirakelPreferences
 							.getEditor();
 					editor.putBoolean("startupAllLists", false);
 					editor.putString("startupList", ""
-							+ SpecialList.first().getId());
+							+ ListMirakel.first().getId());
 					editor.commit();
 				}
 				// We should remove this in the future, nobody uses such old versions (hopefully)
 				if (MainActivity.updateTasksUUID) {
-					List<Task> tasks = Task.all();
-					for (Task t : tasks) {
+					final List<Task> tasks = Task.all();
+					for (final Task t : tasks) {
 						t.setUUID(java.util.UUID.randomUUID().toString());
 						try {
 							t.save();
-						} catch (NoSuchListException e) {
-							Log.wtf(TAG, "WTF? No such list");
+						} catch (final NoSuchListException e) {
+							Log.wtf(MainActivity.TAG, "WTF? No such list");
 						}
 					}
 				}
 			}
 		}).run();
 		this.isTablet = MirakelPreferences.isTablet();
-		isRTL = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
+		MainActivity.isRTL = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
 				&& getResources().getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
-		this.currentPosition = getTasksFragmentPosition();
+		this.currentPosition = MainActivity.getTasksFragmentPosition();
 		this.highlightSelected = MirakelPreferences.highlightSelected();
 
 		draw();
@@ -813,7 +825,8 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 
 				@Override
 				public void run() {
-					MainActivity.this.mViewPager.setCurrentItem(MainActivity.this.currentPosition);
+					MainActivity.this.mViewPager
+					.setCurrentItem(MainActivity.this.currentPosition);
 
 				}
 			}, 10);
@@ -821,7 +834,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
+	public boolean onCreateOptionsMenu(final Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		updateLists();
 		getMenuInflater().inflate(R.menu.main, menu);
@@ -843,13 +856,13 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 	// Fix Intent-behavior
 	// default is not return new Intent by calling getIntent
 	@Override
-	protected void onNewIntent(Intent intent) {
+	protected void onNewIntent(final Intent intent) {
 		super.onNewIntent(intent);
 		setIntent(intent);
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
+	public boolean onOptionsItemSelected(final MenuItem item) {
 		if (this.mDrawerToggle.onOptionsItemSelected(item)) return true;
 		switch (item.getItemId()) {
 			case R.id.menu_delete:
@@ -863,8 +876,8 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 				handleDestroyList(this.currentList);
 				return true;
 			case R.id.task_sorting:
-				this.currentList = ListDialogHelpers.handleSortBy(this, this.currentList,
-						new Helpers.ExecInterface() {
+				this.currentList = ListDialogHelpers.handleSortBy(this,
+						this.currentList, new Helpers.ExecInterface() {
 
 					@Override
 					public void exec() {
@@ -876,20 +889,20 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 				getListFragment().editList(null);
 				return true;
 			case R.id.menu_sort_lists:
-				boolean t = !item.isChecked();
+				final boolean t = !item.isChecked();
 				getListFragment().enableDrop(t);
 				item.setChecked(t);
 				return true;
 			case R.id.menu_settings:
-				Intent intent = new Intent(MainActivity.this,
+				final Intent intent = new Intent(MainActivity.this,
 						SettingsActivity.class);
-				startActivityForResult(intent, RESULT_SETTINGS);
+				startActivityForResult(intent, MainActivity.RESULT_SETTINGS);
 				break;
 			case R.id.menu_contact:
 				Helpers.contact(this);
 				break;
 			case R.id.menu_sync_now:
-				Bundle bundle = new Bundle();
+				final Bundle bundle = new Bundle();
 				bundle.putBoolean(ContentResolver.SYNC_EXTRAS_DO_NOT_RETRY,
 						true);
 				// bundle.putBoolean(ContentResolver.SYNC_EXTRAS_INITIALIZE,true);
@@ -911,7 +924,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 				break;
 			case R.id.menu_kill_button:
 				// Only Close
-				Intent killIntent = new Intent(getApplicationContext(),
+				final Intent killIntent = new Intent(getApplicationContext(),
 						SplashScreenActivity.class);
 				killIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				killIntent.setAction(SplashScreenActivity.EXIT);
@@ -922,7 +935,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 				UndoHistory.undoLast();
 				updateCurrentListAndTask();
 				if (this.currentPosition == getTaskFragmentPosition()) {
-					setCurrentTask(getCurrentTask());
+					setCurrentTask(this.currentTask);
 				} else {
 					getListFragment().getAdapter()
 					.changeData(ListMirakel.all());
@@ -931,23 +944,25 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 							getCurrentList().tasks(), getCurrentList().getId());
 					getTasksFragment().getAdapter().notifyDataSetChanged();
 					if (!MirakelPreferences.isTablet()
-							&& this.currentPosition == getTasksFragmentPosition()) {
+							&& this.currentPosition == MainActivity
+							.getTasksFragmentPosition()) {
 						setCurrentList(getCurrentList());
 					}
 				}
 				ReminderAlarm.updateAlarms(this);
 				break;
 			case R.id.mark_as_subtask:
-				TaskDialogHelpers.handleSubtask(this, this.currentTask, null, true);
+				TaskDialogHelpers.handleSubtask(this, this.currentTask, null,
+						true);
 				break;
 			case R.id.menu_task_clone:
 				try {
-					Task newTask = this.currentTask.create();
+					final Task newTask = this.currentTask.create();
 					setCurrentTask(newTask, true);
 					getListFragment().update();
 					updatesForTask(newTask);
-				} catch (NoSuchListException e) {
-					Log.wtf(TAG, "List vanished on task cloning");
+				} catch (final NoSuchListException e) {
+					Log.wtf(MainActivity.TAG, "List vanished on task cloning");
 				}
 				break;
 			default:
@@ -982,7 +997,8 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 			this.mDrawerLayout
 			.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 		} else {
-			this.mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+			this.mDrawerLayout
+			.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 		}
 		loadMenu(position);
 
@@ -994,16 +1010,16 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		if (getTasksFragment() != null) {
 			getTasksFragment().clearFocus();
 		}
-		Intent intent = new Intent(this, MainWidgetProvider.class);
+		final Intent intent = new Intent(this, MainWidgetProvider.class);
 		intent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
 		// Use an array and EXTRA_APPWIDGET_IDS instead of
 		// AppWidgetManager.EXTRA_APPWIDGET_ID,
 		// since it seems the onUpdate() is only fired on that:
-		Context context = getApplicationContext();
-		ComponentName name = new ComponentName(context,
+		final Context context = getApplicationContext();
+		final ComponentName name = new ComponentName(context,
 				MainWidgetProvider.class);
-		int widgets[] = AppWidgetManager.getInstance(context).getAppWidgetIds(
-				name);
+		final int widgets[] = AppWidgetManager.getInstance(context)
+				.getAppWidgetIds(name);
 		intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, widgets);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			for (int id : widgets) {
@@ -1018,7 +1034,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 	}
 
 	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
+	protected void onPostCreate(final Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
 		// Sync the toggle state after onRestoreInstanceState has occurred.
 		this.mDrawerToggle.syncState();
@@ -1040,17 +1056,17 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 	 * @see android.support.v4.app.FragmentActivity#onSaveInstanceState(android.os.Bundle)
 	 */
 	@Override
-	protected void onSaveInstanceState(Bundle outState) {
+	protected void onSaveInstanceState(final Bundle outState) {
 		// outState.putString("tab", mTabHost.getCurrentTabTag()); // save the
 		// tab
 		// selected
 		super.onSaveInstanceState(outState);
 	}
 
-	private void safeSaveTask(Task task) {
+	private void safeSaveTask(final Task task) {
 		try {
 			task.save();
-		} catch (NoSuchListException e) {
+		} catch (final NoSuchListException e) {
 			Toast.makeText(getApplicationContext(), R.string.list_vanished,
 					Toast.LENGTH_LONG).show();
 		}
@@ -1061,18 +1077,18 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 	 * 
 	 * @param task
 	 */
-	public void saveTask(Task task) {
-		Log.v(TAG, "Saving task… (task:" + task.getId());
+	public void saveTask(final Task task) {
+		Log.v(MainActivity.TAG, "Saving task… (task:" + task.getId());
 		safeSaveTask(task);
 		updatesForTask(task);
 	}
 
-	private void search(String query) {
+	private void search(final String query) {
 		setCurrentList(new SearchList(this, query));
-		this.mViewPager.setCurrentItem(getTasksFragmentPosition());
+		this.mViewPager.setCurrentItem(MainActivity.getTasksFragmentPosition());
 	}
 
-	public void setCurrentList(ListMirakel currentList) {
+	public void setCurrentList(final ListMirakel currentList) {
 		setCurrentList(currentList, null, true, true);
 	}
 
@@ -1082,15 +1098,15 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 	 * @param currentList
 	 * @param switchFragment
 	 */
-	public void setCurrentList(ListMirakel currentList, boolean switchFragment) {
+	public void setCurrentList(final ListMirakel currentList, final boolean switchFragment) {
 		setCurrentList(currentList, null, switchFragment, true);
 	}
 
-	public void setCurrentList(ListMirakel currentList, View currentView) {
+	public void setCurrentList(final ListMirakel currentList, final View currentView) {
 		setCurrentList(currentList, currentView, true, true);
 	}
 
-	public void setCurrentList(ListMirakel currentList, View currentView, boolean switchFragment, boolean resetGoBackTo) {
+	public void setCurrentList(final ListMirakel currentList, View currentView, final boolean switchFragment, final boolean resetGoBackTo) {
 		if (currentList == null) return;
 		if (resetGoBackTo) {
 			this.goBackTo.clear();
@@ -1108,7 +1124,8 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		if (getTasksFragment() != null) {
 			getTasksFragment().updateList();
 			if (!MirakelPreferences.isTablet() && switchFragment) {
-				this.mViewPager.setCurrentItem(getTasksFragmentPosition());
+				this.mViewPager.setCurrentItem(MainActivity
+						.getTasksFragmentPosition());
 			}
 		}
 		if (currentView == null && this.listFragment != null
@@ -1141,15 +1158,15 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 	 * 
 	 * @param currentTask
 	 */
-	public void setCurrentTask(Task currentTask) {
+	public void setCurrentTask(final Task currentTask) {
 		setCurrentTask(currentTask, false);
 	}
 
-	public void setCurrentTask(Task currentTask, boolean switchFragment) {
+	public void setCurrentTask(final Task currentTask, final boolean switchFragment) {
 		setCurrentTask(currentTask, switchFragment, true);
 	}
 
-	public void setCurrentTask(Task currentTask, boolean switchFragment, boolean resetGoBackTo) {
+	public void setCurrentTask(final Task currentTask, final boolean switchFragment, final boolean resetGoBackTo) {
 
 		this.currentTask = currentTask;
 		if (resetGoBackTo) {
@@ -1160,17 +1177,19 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 
 		if (getTaskFragment() != null) {
 			getTaskFragment().update(currentTask);
-			boolean smooth = this.mViewPager.getCurrentItem() != getTaskFragmentPosition();
+			final boolean smooth = this.mViewPager.getCurrentItem() != getTaskFragmentPosition();
 			if (!switchFragment) return;
 			// Fix buggy behavior
-			this.mViewPager.setCurrentItem(getTasksFragmentPosition(), false);
+			this.mViewPager.setCurrentItem(
+					MainActivity.getTasksFragmentPosition(), false);
 			this.mViewPager.setCurrentItem(getTaskFragmentPosition(), false);
-			this.mViewPager.setCurrentItem(getTasksFragmentPosition(), false);
+			this.mViewPager.setCurrentItem(
+					MainActivity.getTasksFragmentPosition(), false);
 			this.mViewPager.setCurrentItem(getTaskFragmentPosition(), smooth);
 		}
 	}
 
-	public void setFileUri(Uri file) {
+	public void setFileUri(final Uri file) {
 		this.fileUri = file;
 	}
 
@@ -1180,7 +1199,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 	 * 
 	 * @param t
 	 */
-	public void setGoBackTo(Task t) {
+	public void setGoBackTo(final Task t) {
 		this.goBackTo.push(t);
 	}
 
@@ -1188,7 +1207,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		this.skipSwipe = true;
 	}
 
-	public void setTaskFragment(TaskFragment tf) {
+	public void setTaskFragment(final TaskFragment tf) {
 		this.taskFragment = tf;
 
 	}
@@ -1208,9 +1227,10 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		NotificationService.updateNotificationAndWidget(this);
 		this.startIntent = getIntent();
 		if (this.startIntent == null || this.startIntent.getAction() == null) {
-			Log.d(TAG, "action null");
-		} else if (this.startIntent.getAction().equals(SHOW_TASK)
-				|| this.startIntent.getAction().equals(SHOW_TASK_FROM_WIDGET)) {
+			Log.d(MainActivity.TAG, "action null");
+		} else if (this.startIntent.getAction().equals(MainActivity.SHOW_TASK)
+				|| this.startIntent.getAction().equals(
+						MainActivity.SHOW_TASK_FROM_WIDGET)) {
 			final Task task = TaskHelper.getTaskFromIntent(this.startIntent);
 			if (task != null) {
 				this.skipSwipe = true;
@@ -1220,22 +1240,27 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 					@Override
 					public void run() {
 						setCurrentTask(task, true);
-						MainActivity.this.mViewPager.setCurrentItem(getTaskFragmentPosition(),
-								false);
+						MainActivity.this.mViewPager.setCurrentItem(
+								getTaskFragmentPosition(), false);
+
 					}
 				}, 1);
 
 			} else {
-				Log.d(TAG, "task null");
+				Log.d(MainActivity.TAG, "task null");
 			}
-			if (this.startIntent.getAction().equals(SHOW_TASK_FROM_WIDGET)) {
+			if (this.startIntent.getAction().equals(
+					MainActivity.SHOW_TASK_FROM_WIDGET)) {
 				this.closeOnBack = true;
 			}
 		} else if (this.startIntent.getAction().equals(Intent.ACTION_SEND)
-				|| this.startIntent.getAction().equals(Intent.ACTION_SEND_MULTIPLE)) {
+				|| this.startIntent.getAction().equals(
+						Intent.ACTION_SEND_MULTIPLE)) {
 			this.closeOnBack = true;
-			this.newTaskContent = this.startIntent.getStringExtra(Intent.EXTRA_TEXT);
-			this.newTaskSubject = this.startIntent.getStringExtra(Intent.EXTRA_SUBJECT);
+			this.newTaskContent = this.startIntent
+					.getStringExtra(Intent.EXTRA_TEXT);
+			this.newTaskSubject = this.startIntent
+					.getStringExtra(Intent.EXTRA_SUBJECT);
 
 			// If from google now, the content is the subject…
 			if (this.startIntent.getCategories() != null
@@ -1249,20 +1274,22 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 
 			if (!this.startIntent.getType().equals("text/plain")) {
 				if (this.newTaskSubject == null) {
-					this.newTaskSubject = MirakelPreferences.getImportFileTitle();
+					this.newTaskSubject = MirakelPreferences
+							.getImportFileTitle();
 				}
 			}
-			ListMirakel listFromSharing = MirakelPreferences
+			final ListMirakel listFromSharing = MirakelPreferences
 					.getImportDefaultList(false);
 			if (listFromSharing != null) {
 				addTaskFromSharing(listFromSharing);
 			} else {
-				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				final AlertDialog.Builder builder = new AlertDialog.Builder(
+						this);
 				builder.setTitle(R.string.import_to);
-				List<CharSequence> items = new ArrayList<CharSequence>();
+				final List<CharSequence> items = new ArrayList<CharSequence>();
 				final List<Integer> list_ids = new ArrayList<Integer>();
-				int currentItem = 0;
-				for (ListMirakel list : ListMirakel.all()) {
+				final int currentItem = 0;
+				for (final ListMirakel list : ListMirakel.all()) {
 					if (list.getId() > 0) {
 						items.add(list.getName());
 						list_ids.add(list.getId());
@@ -1272,7 +1299,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 						items.toArray(new CharSequence[items.size()]),
 						currentItem, new DialogInterface.OnClickListener() {
 							@Override
-							public void onClick(DialogInterface dialog, int item) {
+							public void onClick(final DialogInterface dialog, final int item) {
 								addTaskFromSharing(ListMirakel.getList(list_ids
 										.get(item)));
 								dialog.dismiss();
@@ -1280,34 +1307,37 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 						});
 				builder.create().show();
 			}
-		} else if (this.startIntent.getAction().equals(SHOW_LIST)
-				|| this.startIntent.getAction().contains(SHOW_LIST_FROM_WIDGET)) {
+		} else if (this.startIntent.getAction().equals(MainActivity.SHOW_LIST)
+				|| this.startIntent.getAction().contains(
+						MainActivity.SHOW_LIST_FROM_WIDGET)) {
 
 			int listId;
-			if (this.startIntent.getAction().equals(SHOW_LIST)) {
-				listId = this.startIntent.getIntExtra(EXTRA_ID, 0);
+			if (this.startIntent.getAction().equals(MainActivity.SHOW_LIST)) {
+				listId = this.startIntent.getIntExtra(MainActivity.EXTRA_ID, 0);
 			} else {
 				listId = Integer.parseInt(this.startIntent.getAction().replace(
-						SHOW_LIST_FROM_WIDGET, ""));
+						MainActivity.SHOW_LIST_FROM_WIDGET, ""));
 			}
-			Log.v(TAG, "ListId: " + listId);
+			Log.v(MainActivity.TAG, "ListId: " + listId);
 			ListMirakel list = ListMirakel.getList(listId);
 			if (list == null) {
 				list = SpecialList.firstSpecial();
 			}
 			setCurrentList(list);
-			if (this.startIntent.getAction().contains(SHOW_LIST_FROM_WIDGET)) {
+			if (this.startIntent.getAction().contains(
+					MainActivity.SHOW_LIST_FROM_WIDGET)) {
 				this.closeOnBack = true;
 			}
-		} else if (this.startIntent.getAction().equals(SHOW_LISTS)) {
+		} else if (this.startIntent.getAction().equals(MainActivity.SHOW_LISTS)) {
 			this.mDrawerLayout.openDrawer(Mirakel.GRAVITY_LEFT);
 		} else if (this.startIntent.getAction().equals(Intent.ACTION_SEARCH)) {
-			String query = this.startIntent.getStringExtra(SearchManager.QUERY);
+			final String query = this.startIntent
+					.getStringExtra(SearchManager.QUERY);
 			search(query);
-		} else if (this.startIntent.getAction().contains(ADD_TASK_FROM_WIDGET)) {
-			Log.d(TAG, "add");
-			int listId = Integer.parseInt(this.startIntent.getAction().replace(
-					ADD_TASK_FROM_WIDGET, ""));
+		} else if (this.startIntent.getAction().contains(
+				MainActivity.ADD_TASK_FROM_WIDGET)) {
+			final int listId = Integer.parseInt(this.startIntent.getAction()
+					.replace(MainActivity.ADD_TASK_FROM_WIDGET, ""));
 			setCurrentList(ListMirakel.getList(listId));
 			if (getTasksFragment() != null) {
 				getTasksFragment().focusNew(true);
@@ -1318,7 +1348,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 						if (getTasksFragment() != null) {
 							getTasksFragment().focusNew(true);
 						} else {
-							Log.wtf(TAG, "Tasksfragment null");
+							Log.wtf(MainActivity.TAG, "Tasksfragment null");
 						}
 					}
 				}, 10);
@@ -1328,11 +1358,14 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 			this.mViewPager.setCurrentItem(getTaskFragmentPosition());
 		}
 		if ((this.startIntent == null || this.startIntent.getAction() == null || !this.startIntent
-				.getAction().contains(ADD_TASK_FROM_WIDGET))
+				.getAction().contains(MainActivity.ADD_TASK_FROM_WIDGET))
 				&& getTasksFragment() != null) {
 			getTasksFragment().clearFocus();
 		}
 		setIntent(null);
+		if (this.currentList == null) {
+			setCurrentList(SpecialList.firstSpecial());
+		}
 	}
 
 	private void updateCurrentListAndTask() {
@@ -1341,8 +1374,8 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 			this.currentTask = Task.get(this.currentTask.getId());
 		} else {
 			if (this.currentList != null) {
-				List<Task> currentTasks = this.currentList.tasks(MirakelPreferences
-						.showDoneMain());
+				final List<Task> currentTasks = this.currentList
+						.tasks(MirakelPreferences.showDoneMain());
 				if (currentTasks.size() == 0) {
 					this.currentTask = Task.getDummy(getApplicationContext());
 				} else {
@@ -1378,8 +1411,9 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 	 * 
 	 * @param task
 	 */
-	public void updatesForTask(Task task) {
-		if (this.currentTask != null && task.getId() == this.currentTask.getId()) {
+	public void updatesForTask(final Task task) {
+		if (this.currentTask != null
+				&& task.getId() == this.currentTask.getId()) {
 			this.currentTask = task;
 			getTaskFragment().update(task);
 		}
@@ -1390,17 +1424,31 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 	}
 
 	public void updateShare() {
-		if (this.menu != null && this.menu.findItem(R.id.share_list) != null
-				&& this.currentList.countTasks() == 0) {
-			this.menu.findItem(R.id.share_list).setVisible(false);
-		} else if (this.currentPosition == getTasksFragmentPosition()
-				&& this.menu != null && this.menu.findItem(R.id.share_list) == null
-				&& this.currentList.countTasks() > 0
-				&& !this.mDrawerLayout.isDrawerOpen(Mirakel.GRAVITY_LEFT)) {
-			loadMenu(getTasksFragmentPosition(), true, true);
-		} else if (this.menu != null && this.menu.findItem(R.id.share_list) != null
-				&& this.currentList.countTasks() > 0) {
-			this.menu.findItem(R.id.share_list).setVisible(true);
+		if (this.menu != null) {
+			final MenuItem share_list = this.menu.findItem(R.id.share_list);
+			if (share_list != null && this.mViewPager != null) {
+				this.mViewPager.post(new Runnable() {
+
+					@Override
+					public void run() {
+						if (MainActivity.this.currentList.countTasks() == 0) {
+							share_list.setVisible(false);
+						} else if (MainActivity.this.currentList.countTasks() > 0) {
+							share_list.setVisible(true);
+						}
+
+					}
+				});
+
+			} else if (this.currentPosition == MainActivity
+					.getTasksFragmentPosition()
+					&& share_list == null
+					&& this.currentList.countTasks() > 0
+					&& !this.mDrawerLayout.isDrawerOpen(Mirakel.GRAVITY_LEFT)) {
+				loadMenu(MainActivity.getTasksFragmentPosition(), true, true);
+
+			}
 		}
+
 	}
 }

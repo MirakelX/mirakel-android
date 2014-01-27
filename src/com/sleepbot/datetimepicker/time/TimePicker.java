@@ -79,6 +79,8 @@ RadialPickerLayout.OnValueSelectedListener {
 
 	public interface OnTimeSetListener {
 
+		void onNoTimeSet();
+
 		/**
 		 * @param view
 		 *            The view associated with this listener.
@@ -88,8 +90,6 @@ RadialPickerLayout.OnValueSelectedListener {
 		 *            The minute that was set.
 		 */
 		void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute);
-
-		void onNoTimeSet();
 	}
 	public static final int AM = 0;
 	// NOT a real index for the purpose of what's showing.
@@ -757,7 +757,7 @@ RadialPickerLayout.OnValueSelectedListener {
 			boolean autoAdvance) {
 		if (pickerIndex == HOUR_INDEX) {
 			setHour(newValue, false);
-			String announcement = String.format(Helpers.getLocal(),
+			String announcement = String.format(Helpers.getLocal(getContext()),
 					"%d", newValue);
 			if (this.mAllowAutoAdvance && autoAdvance) {
 				setCurrentItemShowing(MINUTE_INDEX, true, true, false);
@@ -821,7 +821,7 @@ RadialPickerLayout.OnValueSelectedListener {
 						deletedKeyStr = this.mPmText;
 					} else {
 						deletedKeyStr = String.format(
-								Helpers.getLocal(), "%d",
+								Helpers.getLocal(getContext()), "%d",
 								getValFromKeyCode(deleted));
 					}
 					Utils.tryAccessibilityAnnounce(this.mTimePicker,

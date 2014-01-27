@@ -74,9 +74,9 @@ import de.azapps.mirakelandroid.R;
 		// as a label
 		resDialogCommentPrompt = R.string.crash_dialog_comment_prompt,
 		resDialogOkToast = R.string.crash_dialog_ok_toast
-// optional. displays a Toast message when the user accepts to send a report.
+		// optional. displays a Toast message when the user accepts to send a report.
 
-)
+		)
 public class Mirakel extends Application {
 	public static class NoSuchListException extends Exception {
 		static final long	serialVersionUID	= 1374828057;
@@ -134,7 +134,7 @@ public class Mirakel extends Application {
 		// This we have to initialize as early as possible
 		MirakelPreferences.init(this);
 
-		Locale locale = Helpers.getLocal();
+		Locale locale = Helpers.getLocal(this);
 		Locale.setDefault(locale);
 
 		Configuration config = new Configuration();
