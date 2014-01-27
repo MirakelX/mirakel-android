@@ -155,7 +155,15 @@ Device: %3$s\n]]>
   <string name="file_vanished">Aucun fichier</string>
   <string name="file_default_title">Titre par défaut</string>
   <string name="photo_default_title">Photo par défaut</string>
+  <string name="audio_default_title">Écouter ça!</string>
   <string name="edit">Modifier</string>
+  <string name="audio_record_title">Enregistrement audio...</string>
+  <string name="audio_record_message">Enregistrement en cours…</string>
+  <string name="audio_playback_title">Lecture audio…</string>
+  <string name="audio_playback_select_title">Que voulez-vous faire?</string>
+  <string name="audio_playback_pause">Mettre en pause</string>
+  <string name="audio_playback_play">Lire</string>
+  <string name="audio_playback_stop">Arrêt</string>
   <string name="daily">Quotidien</string>
   <string name="second_day">Tous les deux jours</string>
   <string name="weekly">Hebdomadaire</string>
@@ -180,7 +188,16 @@ Device: %3$s\n]]>
   <string name="beginning_end">Début et fin</string>
   <string name="save">Sauvegarder</string>
   <string name="file_to_large">Impossible de créer la vignette</string>
+  <string name="every">Chaque</string>
+  <string name="recurrence_end_continously">Toujours</string>
+  <string name="recurrence_end_date_label">Jusqu\'à date</string>
+  <string name="recurrence_from_now">A partir de maintenant</string>
+  <string name="recurrence_from">De</string>
+  <string name="recurrence_month_pattern_by_day">le même jour de chaque mois</string>
+  <string name="acessibility_recurrence_choose_end_date_description">changer la date de fin</string>
   <string name="save_label">Fini</string>
+  <string name="audio_record_file">Enregistrer de l\'audio</string>
+  <string name="image_file">Image</string>
   <string-array name="task_sorting_items">
     <item>Par défaut</item>
     <item>Échéance</item>
@@ -205,8 +222,8 @@ Device: %3$s\n]]>
     <item>Mirakel</item>
   </string-array>
   <string-array name="audio_playback_options">
-    <item>Open file</item>
-    <item>Play loud</item>
-    <item>Play silent</item>
+    <item>Ouvrir le fichier</item>
+    <item>Jouer fort</item>
+    <item>Lecture silencieuse</item>
   </string-array>
 </resources>

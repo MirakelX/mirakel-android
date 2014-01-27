@@ -15,7 +15,7 @@
 <p>Več podrobnosti najdete na domači strani programa</p>
 ]]>
     </string>
-  <string name="credits_license"> <![CDATA[<p>Ta program je prosta programska oprema: dovoljeno je razširjanje in/ali spreminjanje pod pogoji Splošnega javnega dovoljenja <a href="https://www.gnu.org/licenses/gpl.html"> GNU GPL</a>, kot je oljavljen pri Free Software Foundation, bodisi različica 3 ali (po vaši izbiri) katerekoli poznejše različice.</p>
+  <string name="credits_license"> <! [CDATA [<p>Ta program je prosta programska oprema: dovoljeno je razširjanje in/ali spreminjanje pod pogoji Splošnega javnega dovoljenja <a href="https://www.gnu.org/licenses/gpl.html"> GNU GPL</a>, kot je oljavljen pri Free Software Foundation, bodisi različica 3 ali (po vaši izbiri) katerekoli poznejše različice.</p>
 <p>Program se razširja v upanju, da bo uporaben, vendar BREZ VSAKRŠNEGA JAMSTVA; tudi brez posredne zagotovitve CENOVNE VREDNOSTI ali PRIMERNOSTI ZA DOLOČEN NAMEN. Za več podrobnosti si oglejte besedilo dovoljenja GNU GPL.</p>]]>
      </string>
   <string name="credits_translations">Prevodi</string>

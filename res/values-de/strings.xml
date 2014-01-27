@@ -159,8 +159,8 @@ Device: %3$s\n]]>
   <string name="audio_default_title">Hör dir das an!</string>
   <string name="edit">Bearbeiten</string>
   <string name="audio_record_title">Aufnahme…</string>
-  <string name="audio_record_message">Aufnehmen...</string>
-  <string name="audio_playback_title">Audio-Wiedergabe...</string>
+  <string name="audio_record_message">Aufnehmen…</string>
+  <string name="audio_playback_title">Audio-Wiedergabe…</string>
   <string name="audio_playback_select_title">Was willst du tun?</string>
   <string name="audio_playback_pause">Pause</string>
   <string name="audio_playback_play">Wiedergabe</string>

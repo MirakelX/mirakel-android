@@ -10,6 +10,7 @@
   <string name="no_lists">Esta tarea no puede ser sincronizada, porque no tienes listas</string>
   <string name="humanDateTimeFormat">yyyy-MM-dd – kk:mm</string>
   <string name="speak">Hable</string>
+  <string name="takePhoto">Toma una foto</string>
   <string name="speak_lang_code">en-US</string>
   <string name="Email">Correo electrónico</string>
   <string name="Password">Contraseña</string>
@@ -20,6 +21,7 @@
   <string name="resync">¿Quieres resincronizar todas las tareas?</string>
   <string name="menu_sort_lists">Reordenar las listas</string>
   <string name="no_https">¡Deberías utilizar https!</string>
+  <string name="local_account">Cuenta Local</string>
   <string name="inbox">Bandeja de entrada</string>
   <string name="first_task">Primera tarea</string>
   <string name="tasks_new_str">Nueva tarea</string>
@@ -30,6 +32,9 @@
   <string name="set_date">Fijar fecha</string>
   <string name="set_time">Fijar hora</string>
   <string name="action_undo">Undo the last Change</string>
+  <string name="add_subtasks">Agregar subtarea...</string>
+  <string name="add_subtask">Agregar subtarea</string>
+  <string name="add">Agregar</string>
   <string name="new_task">Nueva tarea</string>
   <string name="dialog_move">Mover tarea</string>
   <string name="list_title">Listas</string>
@@ -42,6 +47,7 @@
   <string name="list_overdue">Atrasado</string>
   <string name="menu_settings">Configuración</string>
   <string name="menu_move_task">Mover tarea</string>
+  <string name="menu_edit_task">Editar tarea</string>
   <string name="offical_server_url">https://mirakel.azapps.de</string>
   <string name="title_settings">Configuración</string>
   <string name="empty_list">No hay tareas</string>
@@ -104,6 +110,7 @@ Device: %3$s\n]]>
   <string name="backup_import_ok">La importación se realizo correctamente - Por favor reinicie Mirakel</string>
   <string name="backup_export_error">Hubo un error al importar la base de datos</string>
   <string name="backup_export_ok">Exportado a %s</string>
+  <string name="add_content">Agregar nota...</string>
   <string name="task_has_content">La tarea tiene contenido</string>
   <string name="permission_read_lbl">Leer datos de Mirakel</string>
   <string name="permission_read_desc">Permiso para leer datos de Mirakel</string>
