@@ -46,7 +46,6 @@ import com.google.gson.JsonPrimitive;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.DateTimeHelper;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.UndoHistory;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.account.AccountMirakel;
@@ -57,6 +56,7 @@ import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.Log;
 
 public class Task extends TaskBase {
 
@@ -225,7 +225,7 @@ public class Task extends TaskBase {
 
 	public static Task getDummy(Context ctx, ListMirakel list) {
 		Task task = new Task(ctx.getString(R.string.task_empty));
-		task.setList(list);
+		task.setList(list, false);
 		return task;
 	}
 
@@ -511,7 +511,7 @@ public class Task extends TaskBase {
 				if (list == null) {
 					list = SpecialList.firstSpecial().getDefaultList();
 				}
-				t.setList(list);
+				t.setList(list, true);
 			} else if (key.equals("project")) {
 				ListMirakel list = ListMirakel.findByName(val.getAsString());
 				if (list == null
@@ -519,7 +519,7 @@ public class Task extends TaskBase {
 					list = ListMirakel.newList(val.getAsString(),
 							ListMirakel.SORT_BY_OPT, account);
 				}
-				t.setList(list);
+				t.setList(list, true);
 			} else if (key.equals("created_at")) {
 				t.setCreatedAt(val.getAsString().replace(":", ""));
 			} else if (key.equals("updated_at")) {

@@ -15,8 +15,8 @@ import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.NumberPicker.OnValueChangeListener;
 import android.widget.TextView;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.Log;
 
 public class NumPickerPref extends DialogPreference {
 	private static final String TAG = "NumPickerPref";

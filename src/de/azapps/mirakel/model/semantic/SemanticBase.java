@@ -1,5 +1,7 @@
 package de.azapps.mirakel.model.semantic;
 
+import java.util.Locale;
+
 import android.content.ContentValues;
 import de.azapps.mirakel.model.list.ListMirakel;
 
@@ -17,7 +19,7 @@ public class SemanticBase {
 			Integer due, ListMirakel list, Integer weekday) {
 		super();
 		this.id = id;
-		this.condition = condition.toLowerCase();
+		this.condition = condition.toLowerCase(Locale.getDefault());
 		this.priority = priority;
 		this.list = list;
 		this.due = due;
@@ -37,7 +39,7 @@ public class SemanticBase {
 	}
 
 	public void setCondition(String condition) {
-		this.condition = condition.toLowerCase();
+		this.condition = condition.toLowerCase(Locale.getDefault());
 	}
 
 	public Integer getPriority() {

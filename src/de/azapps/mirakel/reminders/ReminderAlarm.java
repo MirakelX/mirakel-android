@@ -40,7 +40,6 @@ import android.util.Pair;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.DateTimeHelper;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.recurring.Recurring;
@@ -48,6 +47,7 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.services.TaskService;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.Log;
 
 public class ReminderAlarm extends BroadcastReceiver {
 	private static final String	TAG					= "ReminderAlarm";

@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  * 
- * Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
+ * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
  * 
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -59,9 +59,9 @@ import org.apache.http.util.EntityUtils;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.Log;
 
 public class Network extends AsyncTask<String, Integer, String> {
 

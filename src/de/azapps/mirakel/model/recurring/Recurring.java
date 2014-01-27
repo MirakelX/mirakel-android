@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  * 
- * Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
+ * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
  * 
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -31,9 +31,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Pair;
 import android.util.SparseBooleanArray;
 import de.azapps.mirakel.helper.DateTimeHelper;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.tools.Log;
 
 public class Recurring extends RecurringBase {
 	public final static String		TABLE		= "recurring";

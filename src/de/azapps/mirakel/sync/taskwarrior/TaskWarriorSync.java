@@ -3,7 +3,6 @@ package de.azapps.mirakel.sync.taskwarrior;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.MalformedInputException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -20,7 +19,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import de.azapps.mirakel.Mirakel.NoSuchListException;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
@@ -28,6 +26,7 @@ import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.FileUtils;
+import de.azapps.tools.Log;
 
 public class TaskWarriorSync {
 
@@ -120,6 +119,7 @@ public class TaskWarriorSync {
 	public static final String			CLIENT_KEY_FILE		= FileUtils
 			.getMirakelDir()
 			+ "client.key.pem";
+	public static final String	NO_PROJECT			= "NO_PROJECT";
 	private static File					root;
 	private static final String			TAG					= "TaskWarroirSync";
 	public static final String			TYPE				= "TaskWarrior";
@@ -160,11 +160,7 @@ public class TaskWarriorSync {
 		longInfo(sync.getPayload());
 
 		TLSClient client = new TLSClient();
-		try {
-			client.init(root, user_ca, user_key);
-		} catch(ParseException e) {
-			return TW_ERRORS.CANNOT_PARSE_MESSAGE;
-		}
+		client.init(root, user_ca, user_key);
 		try {
 			client.connect(_host, _port);
 		} catch (IOException e) {
@@ -217,10 +213,11 @@ public class TaskWarriorSync {
 					if (server_task.getList()==null||
 							server_task.getList().getAccount().getId() != accountMirakel
 							.getId()) {
-						Log.d(TAG,"change list to eingang");
 						ListMirakel list = ListMirakel
 								.getInboxList(accountMirakel);
-						server_task.setList(list);
+						server_task.setList(list, false);
+						Log.d(TAG, "no list");
+						server_task.addAdditionalEntry(NO_PROJECT, "true");
 					}
 					this.dependencies.put(server_task.getUUID(),
 							server_task.getDependencies());
@@ -432,7 +429,9 @@ public class TaskWarriorSync {
 		if (task.getDue() != null) {
 			json += ",\"due\":\"" + formatCal(task.getDue()) + "\"";
 		}
-		if (task.getList() != null) {
+		if (task.getList() != null
+				&& !task.getAdditionalEntries().containsKey(NO_PROJECT)) {
+			Log.d(TAG, "set project");
 			json += ",\"project\":\"" + task.getList().getName() + "\"";
 		}
 		if (priority != null) {
@@ -489,7 +488,9 @@ public class TaskWarriorSync {
 		if (task.getAdditionalEntries() != null) {
 			Map<String, String> additionalEntries = task.getAdditionalEntries();
 			for (String key : additionalEntries.keySet()) {
-				json += ",\"" + key + "\":" + additionalEntries.get(key);
+				if (!key.equals(NO_PROJECT)) {
+					json += ",\"" + key + "\":" + additionalEntries.get(key);
+				}
 			}
 		}
 		// end Additional Strings

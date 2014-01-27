@@ -79,6 +79,7 @@ import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
 import de.azapps.mirakel.widget.MainWidgetSettingsActivity;
 import de.azapps.mirakel.widget.MainWidgetSettingsFragment;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.Log;
 
 @SuppressLint("SimpleDateFormat")
 public class PreferencesHelper {

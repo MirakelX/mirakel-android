@@ -19,10 +19,12 @@
 package de.azapps.mirakel.settings;
 
 import java.util.List;
+import java.util.Locale;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -37,9 +39,10 @@ import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.helper.Log;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.Log;
 
 /**
  * This is a generic Activity for showing Lists in the settings (and edit the
@@ -55,36 +58,99 @@ public abstract class ListSettings extends PreferenceActivity {
 
 	private static final String TAG = "ListSettings";
 
+	protected boolean		clickOnLast	= false;
+
+	private boolean loaded = false;
+	private boolean	isTablet;
+
+	protected List<Header>	mTarget;
+
+	public void clickOnLast() {
+		this.clickOnLast = true;
+	}
+
 	protected abstract OnClickListener getAddOnClickListener();
 
 	public abstract OnClickListener getDelOnClickListener();
+	protected abstract Class<?> getDestClass();
+	protected abstract Class<?> getDestFragmentClass();
+
+	public List<Header> getHeader() {
+		return this.mTarget;
+	}
 
 	protected abstract OnClickListener getHelpOnClickListener();
 
-	protected abstract int getSettingsRessource();
-
-	protected abstract void setupSettings();
-
-	private boolean loaded = false;
-	protected boolean		clickOnLast	= false;
-	protected List<Header>	mTarget;
-
 	protected abstract List<Pair<Integer, String>> getItems();
 
-	protected abstract Class<?> getDestClass();
-
-	protected abstract Class<?> getDestFragmentClass();
+	protected abstract int getSettingsRessource();
 
 	protected abstract int getTitleRessource();
+
+	@SuppressLint("NewApi")
+	@SuppressWarnings("deprecation")
+	@Override
+	public void invalidateHeaders() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+			super.invalidateHeaders();
+		} else if (!this.loaded) {
+			getPreferenceScreen().removeAll();
+			setup();
+		}
+		this.loaded = false;
+	}
+
+	@Override
+	protected boolean isValidFragment(String fragmentName) {
+		return fragmentName.equals(getDestFragmentClass().getCanonicalName());
+	}
+
+	@SuppressLint("NewApi")
+	@Override
+	public void onBuildHeaders(List<Header> target) {
+		for (Pair<Integer, String> item : getItems()) {
+			Bundle b = new Bundle();
+			b.putInt("id", item.first);
+			Header header = new Header();
+			header.fragment = getDestFragmentClass().getCanonicalName();
+			header.title = item.second;
+			header.fragmentArguments = b;
+			header.extras = b;
+			target.add(header);
+		}
+		if (getItems().size() == 0) {
+			Header header = new Header();
+			header.title = " ";
+			header.fragment = getDestFragmentClass().getCanonicalName();
+			target.add(header);
+		}
+		if (this.clickOnLast) {
+			onHeaderClick(this.mTarget.get(this.mTarget.size() - 1), this.mTarget.size() - 1);
+			this.clickOnLast = false;
+		}
+		this.mTarget = target;
+	}
+
+	@Override
+	public void onConfigurationChanged(final Configuration newConfig) {
+		Locale.setDefault(Helpers.getLocal(this));
+		super.onConfigurationChanged(newConfig);
+		if (this.isTablet != MirakelPreferences.isTablet()) {
+			onCreate(null);
+		}
+	}
 
 	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		if (MirakelPreferences.isDark())
+		if (MirakelPreferences.isDark()) {
 			setTheme(R.style.AppBaseThemeDARK);
+		}
+		Locale.setDefault(Helpers.getLocal(this));
 		super.onCreate(savedInstanceState);
-		loaded = true;
+		this.loaded = true;
+		this.isTablet = MirakelPreferences.isTablet();
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 			if (getIntent().hasExtra("id")) {
 				addPreferencesFromResource(getSettingsRessource());
@@ -123,6 +189,7 @@ public abstract class ListSettings extends PreferenceActivity {
 					ActionBar.LayoutParams.WRAP_CONTENT,
 					ActionBar.LayoutParams.WRAP_CONTENT,
 					Gravity.CENTER_VERTICAL | Mirakel.GRAVITY_RIGHT));
+			invalidateHeaders();
 
 		}
 	}
@@ -136,13 +203,24 @@ public abstract class ListSettings extends PreferenceActivity {
 		return true;
 	}
 
+	@SuppressLint("NewApi")
+	@Override
+	public void onHeaderClick(Header header, int position) {
+		super.onHeaderClick(header, position);
+	}
+
+	@Override
+	public boolean onIsMultiPane() {
+		return MirakelPreferences.isTablet();
+	}
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 		switch (item.getItemId()) {
-		case android.R.id.home:
-			finish();
-			return true;
+			case android.R.id.home:
+				finish();
+				return true;
 			default:
 				Log.d(TAG, "unknown menuentry");
 				break;
@@ -151,6 +229,13 @@ public abstract class ListSettings extends PreferenceActivity {
 			getAddOnClickListener().onClick(null);
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		invalidateHeaders();
+		this.loaded = false;
 	}
 
 	@SuppressWarnings("deprecation")
@@ -175,74 +260,5 @@ public abstract class ListSettings extends PreferenceActivity {
 		}
 	}
 
-	@SuppressLint("NewApi")
-	@Override
-	public void onHeaderClick(Header header, int position) {
-		super.onHeaderClick(header, position);
-	}
-
-	@Override
-	public boolean onIsMultiPane() {
-		return MirakelPreferences.isTablet();
-	}
-
-	@Override
-	public void onResume() {
-		super.onResume();
-		invalidateHeaders();
-		loaded = false;
-	}
-
-	public List<Header> getHeader() {
-		return mTarget;
-	}
-
-	@SuppressLint("NewApi")
-	@Override
-	public void onBuildHeaders(List<Header> target) {
-		for (Pair<Integer, String> item : getItems()) {
-			Bundle b = new Bundle();
-			b.putInt("id", item.first);
-			Header header = new Header();
-			header.fragment = getDestFragmentClass().getCanonicalName();
-			header.title = item.second;
-			header.fragmentArguments = b;
-			header.extras = b;
-			target.add(header);
-		}
-		if (getItems().size() == 0) {
-			Header header = new Header();
-			header.title = " ";
-			header.fragment = getDestFragmentClass().getCanonicalName();
-			target.add(header);
-		}
-		if (clickOnLast) {
-			onHeaderClick(mTarget.get(mTarget.size() - 1), mTarget.size() - 1);
-			clickOnLast = false;
-		}
-		mTarget = target;
-	}
-
-	public void clickOnLast() {
-		clickOnLast = true;
-	}
-
-	@SuppressLint("NewApi")
-	@SuppressWarnings("deprecation")
-	@Override
-	public void invalidateHeaders() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-			super.invalidateHeaders();
-		} else if (!loaded) {
-			getPreferenceScreen().removeAll();
-			setup();
-		}
-		loaded = false;
-	}
-
-	@Override
-	protected boolean isValidFragment(String fragmentName) {
-		// TODO test this if have kitkat
-		return true;
-	}
+	protected abstract void setupSettings();
 }

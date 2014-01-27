@@ -30,6 +30,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
@@ -44,8 +45,22 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.static_activities.SplashScreenActivity;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.Log;
 
 public class Helpers {
+	/**
+	 * Wrapper-Class
+	 * 
+	 * @author az
+	 */
+	public interface ExecInterface {
+		public void exec();
+	}
+
+	public interface ExecInterfaceWithTask {
+		public void exec(Task task);
+	}
+
 	private static String	TAG	= "Helpers";
 
 	// Contact
@@ -84,81 +99,38 @@ public class Helpers {
 		}
 	}
 
-	// Help
-	public static void openHelp(Context ctx) {
-		openHelp(ctx, null);
-	}
+	// public static Locale getLocal() {
+	// String current = MirakelPreferences.getLanguage();
+	// Log.d(TAG, "LOCALE: " + current);
+	// return current.equals("-1") ? Locale.getDefault() : new Locale(current);
+	//
+	// }
 
-	public static void openHelp(Context ctx, String title) {
-		String url = "http://mirakel.azapps.de/help_en.html";
-		if (title != null) url += "#" + title;
-		openURL(ctx, url);
-	}
+	public static Locale getLocal(Context ctx) {
 
-	public static void openURL(Context ctx, String url) {
-		Intent i2 = new Intent(Intent.ACTION_VIEW);
-		i2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		i2.setData(Uri.parse(url));
-		ctx.startActivity(i2);
+		String current = MirakelPreferences.getLanguage();
+		Locale locale = current.equals("-1") ? Locale.getDefault()
+				: new Locale(current);
+		Locale.setDefault(locale);
+		Configuration config = new Configuration();
+		config.locale = locale;
+		ctx.getApplicationContext()
+				.getResources()
+				.updateConfiguration(
+						config,
+						ctx.getApplicationContext().getResources()
+								.getDisplayMetrics());
+		return locale;
+
 	}
 
 	// MISC
-
-	/**
-	 * Wrapper-Class
-	 * 
-	 * @author az
-	 */
-	public interface ExecInterface {
-		public void exec();
-	}
-
-	public interface ExecInterfaceWithTask {
-		public void exec(Task task);
-	}
-
-	public static void showFileChooser(int code, String title, Activity activity) {
-
-		Intent fileDialogIntent = new Intent(Intent.ACTION_GET_CONTENT);
-		fileDialogIntent.setType("*/*");
-		fileDialogIntent.addCategory(Intent.CATEGORY_OPENABLE);
-		try {
-			activity.startActivityForResult(
-					Intent.createChooser(fileDialogIntent, title), code);
-		} catch (android.content.ActivityNotFoundException ex) {
-			Toast.makeText(activity, R.string.no_filemanager,
-					Toast.LENGTH_SHORT).show();
-		}
-	}
-
-	@SuppressWarnings("deprecation")
-	@SuppressLint("NewApi")
-	public static void setListColorBackground(ListMirakel list, View row, boolean darkTheme, int w) {
-
-		int color;
-		if (list == null) color = 0;
-		else color = list.getColor();
-		if (color != 0) {
-			if (darkTheme) {
-				color ^= 0x66000000;
-			} else {
-				color ^= 0xCC000000;
-			}
-		}
-		ShapeDrawable mDrawable = new ShapeDrawable(new RectShape());
-		mDrawable.getPaint().setShader(
-				new LinearGradient(0, 0, w / 4, 0, color, Color
-						.parseColor("#00FFFFFF"), Shader.TileMode.CLAMP));
-		if (android.os.Build.VERSION.SDK_INT >= 16) row
-				.setBackground(mDrawable);
-		else row.setBackgroundDrawable(mDrawable);
-	}
 
 	/*
 	 * Scaling down the image
 	 * "Source: http://www.androiddevelopersolution.com/2012/09/bitmap-how-to-scale-down-image-for.html"
 	 */
-	public static Bitmap getScaleImage(Bitmap bitmap, float boundBoxInDp, int rotate) {
+	public static Bitmap getScaleImage(Bitmap bitmap, float boundBoxInDp) {
 
 		// Get current dimensions
 		int width = bitmap.getWidth();
@@ -169,9 +141,9 @@ public class Helpers {
 		// closer to the its side. This way the image always
 		// stays inside your.
 		// bounding box AND either x/y axis touches it.
-		float xScale = ((float) boundBoxInDp) / width;
-		float yScale = ((float) boundBoxInDp) / height;
-		float scale = (xScale <= yScale) ? xScale : yScale;
+		float xScale = boundBoxInDp / width;
+		float yScale = boundBoxInDp / height;
+		float scale = xScale <= yScale ? xScale : yScale;
 
 		// Create a matrix for the scaling and add the scaling data
 		Matrix matrix = new Matrix();
@@ -198,10 +170,24 @@ public class Helpers {
 		return list.size() > 0;
 	}
 
-	public static Locale getLocal(Context ctx) {
-		String current = MirakelPreferences.getLanguage();
-		return current.equals("-1") ? Locale.getDefault() : new Locale(current);
+	// Help
+	public static void openHelp(Context ctx) {
+		openHelp(ctx, null);
+	}
 
+	public static void openHelp(Context ctx, String title) {
+		String url = "http://mirakel.azapps.de/help_en.html";
+		if (title != null) {
+			url += "#" + title;
+		}
+		openURL(ctx, url);
+	}
+
+	public static void openURL(Context ctx, String url) {
+		Intent i2 = new Intent(Intent.ACTION_VIEW);
+		i2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		i2.setData(Uri.parse(url));
+		ctx.startActivity(i2);
 	}
 
 	public static void restartApp(Context context) {
@@ -211,6 +197,49 @@ public class Helpers {
 				.getSystemService(Context.ALARM_SERVICE);
 		manager.set(AlarmManager.RTC, System.currentTimeMillis() + 100, intent);
 		System.exit(2);
+	}
+
+	@SuppressWarnings("deprecation")
+	@SuppressLint("NewApi")
+	public static void setListColorBackground(ListMirakel list, View row, boolean darkTheme, int w) {
+
+		int color;
+		if (list == null) {
+			color = 0;
+		} else {
+			color = list.getColor();
+		}
+		if (color != 0) {
+			if (darkTheme) {
+				color ^= 0x66000000;
+			} else {
+				color ^= 0xCC000000;
+			}
+		}
+		ShapeDrawable mDrawable = new ShapeDrawable(new RectShape());
+		mDrawable.getPaint().setShader(
+				new LinearGradient(0, 0, w / 4, 0, color, Color
+						.parseColor("#00FFFFFF"), Shader.TileMode.CLAMP));
+		if (android.os.Build.VERSION.SDK_INT >= 16) {
+			row
+			.setBackground(mDrawable);
+		} else {
+			row.setBackgroundDrawable(mDrawable);
+		}
+	}
+
+	public static void showFileChooser(int code, String title, Activity activity) {
+
+		Intent fileDialogIntent = new Intent(Intent.ACTION_GET_CONTENT);
+		fileDialogIntent.setType("*/*");
+		fileDialogIntent.addCategory(Intent.CATEGORY_OPENABLE);
+		try {
+			activity.startActivityForResult(
+					Intent.createChooser(fileDialogIntent, title), code);
+		} catch (android.content.ActivityNotFoundException ex) {
+			Toast.makeText(activity, R.string.no_filemanager,
+					Toast.LENGTH_SHORT).show();
+		}
 	}
 
 }

@@ -74,6 +74,7 @@ import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.FileUtils;
+import de.azapps.tools.Log;
 import de.azapps.widgets.DateTimeDialog;
 import de.azapps.widgets.DateTimeDialog.OnDateTimeSetListner;
 

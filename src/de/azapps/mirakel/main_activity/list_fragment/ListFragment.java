@@ -51,7 +51,6 @@ import com.larswerkman.colorpicker.ColorPicker;
 import com.larswerkman.colorpicker.SVBar;
 
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.SharingHelper;
 import de.azapps.mirakel.main_activity.DragNDropListView;
@@ -64,6 +63,7 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.Log;
 
 public class ListFragment extends MirakelFragment {
 	private static final int		LIST_COLOR	= 0, LIST_RENAME = 1,

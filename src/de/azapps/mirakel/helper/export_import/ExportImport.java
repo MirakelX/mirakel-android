@@ -47,12 +47,12 @@ import android.os.Environment;
 import android.widget.Toast;
 import au.com.bytecode.opencsv.CSVReader;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.FileUtils;
+import de.azapps.tools.Log;
 
 public class ExportImport {
 	private static final File dbFile = new File(FileUtils.getMirakelDir()
