@@ -23,8 +23,8 @@ import java.util.List;
 
 import android.content.Context;
 import android.widget.ArrayAdapter;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.MirakelPreferences;
+import de.azapps.tools.Log;
 
 public class MirakelArrayAdapter<T> extends ArrayAdapter<T> {
 	private static final String TAG = "MirakelArrayAdapter";

@@ -35,10 +35,13 @@ Dodati je treba račun v tak program in usklajevanje bi moralo samodejno delovat
   <string name="sync_taskwarrior_about">Če že imate račun strežnika taskwarrior:</string>
   <string name="sync_taskwarrior_register">Lahko vpišete nov račun na našem strežniku:</string>
   <string name="sync_taskwarrior_register_button">Vpis</string>
+  <string name="sync_taskwarrior_setup_success">Nastavitev računa je uspešno končana</string>
   <string name="sync_taskwarrior_error_download">Nastavitvene datoteke ni mogoče prejeti</string>
   <string name="sync_taskwarrior_select_file_not_exists">Datoteka ne obstaja</string>
+  <string name="sync_defaultAccount">Ali naj se račun uporabi kot privzeti račun?</string>
   <string name="tw_account">Taskwarrior</string>
   <string name="calDavName">CalDav</string>
+  <string name="type">Vrsta</string>
   <string name="no_barcode_app">Ni nameščenega programa za brane črtnih kod</string>
   <string name="no_barcode_app_message">Priporočen je uporaba bralnika:</string>
   <string name="no_barcode_app_install">Namesti</string>
@@ -119,6 +122,7 @@ Dodati je treba račun v tak program in usklajevanje bi moralo samodejno delovat
   <string name="undo_number_summary">Razveljavi zadnjih %s sprememb</string>
   <string name="settings_semantic">Predloge nalog</string>
   <string name="semantic_new_task">Predloga nove naloge</string>
+  <string name="semantic_new_task_summary"> </string>
   <string name="semantic_new_task_config_summary">Nastavitev pogojev za ustvarjanje novih nalog</string>
   <string name="semantic_new_task_config">Nastavitev predloge naloge</string>
   <string name="swipeBehavior_title">Ob potegu preklopi na nalogo</string>

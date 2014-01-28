@@ -35,12 +35,12 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceCategory;
 import android.widget.DatePicker;
 import de.azapps.mirakel.helper.DateTimeHelper;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.settings.ListSettings;
 import de.azapps.mirakel.settings.NumPickerPref;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.Log;
 
 public class RecurringSettings {
 	private static final String TAG = "RecurringSettings";

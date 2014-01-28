@@ -39,9 +39,9 @@ import com.google.gson.JsonSyntaxException;
 
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.DateTimeHelper;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.tools.Log;
 
 public class WunderlistImport {
 	private static final String TAG = "WunderlistImport";

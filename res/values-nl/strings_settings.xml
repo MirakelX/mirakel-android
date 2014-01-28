@@ -34,10 +34,13 @@
   <string name="sync_taskwarrior_about">Als u al een taskwarrior account hebt:</string>
   <string name="sync_taskwarrior_register">Als dat niet het geval is, kunt u een nieuwe account op onze server registreren:</string>
   <string name="sync_taskwarrior_register_button">Registreren</string>
+  <string name="sync_taskwarrior_setup_success">Accountinstelling was succesvol</string>
   <string name="sync_taskwarrior_error_download">Kon het configuratiebestand niet downloaden</string>
   <string name="sync_taskwarrior_select_file_not_exists">Bestand bestaat niet</string>
+  <string name="sync_defaultAccount">Gebruik als standaard account?</string>
   <string name="tw_account">Taskwarrior</string>
   <string name="calDavName">CalDav</string>
+  <string name="type">Type</string>
   <string name="no_barcode_app">Geen barcodescanner geïnstalleerd</string>
   <string name="no_barcode_app_message">Wij raden de volgende barcodescanner aan:</string>
   <string name="no_barcode_app_install">Installeren</string>
@@ -97,7 +100,7 @@
   <string name="any_do_how_to">Maak eerst uw reservekopie van de Any.Do gegevens . Om dit te doen, ga naar Any.Do → instellingen → Backup → reservekopie maken. Kom dan terug en druk op OK.\nSelecteer het bestand zelf.</string>
   <string name="select_file">bestand selecteren</string>
   <string name="wait">Even geduld a.u.b.…</string>
-  <string name="import_wunderlist_click">Importeren uit Wunderlist</string>
+  <string name="import_wunderlist_click">Wunderlist importeren</string>
   <string name="import_wunderlist_title">Wunderlist bestand selecteren</string>
   <string name="import_wunderlist_howto">Howto importeren van Wunderlist</string>
   <string name="import_wunderlist_howto_text">De Android-app van Wunderlist biedt geen ondersteuning voor een reservekopie.\n\n dus je moet inloggen in het web-app. Ga naar Voorkeuren → Account → reservekopie maken → (wachten) → Klik om te downloaden. Kopieer dit bestand naar uw apparaat en kom dan terug.</string>
@@ -141,7 +144,7 @@
   <string name="register_server">Als u een account nodig voor de synchronisatie op onze server, stuur ons dan een e-mail. Met de volgende versie krijgt u de mogelijkheid om een account te registreren!</string>
   <string name="special_lists_title">Meta lijsten</string>
   <string name="register">Registreren</string>
-  <string name="auto_backup_intervall">Automatische reservekopie interval</string>
+  <string name="auto_backup_intervall">Reservekopie interval</string>
   <string name="auto_backup_intervall_summary">Reservekopie maken van de database om %s dagen</string>
   <string name="preferences_colorize">Kleuren</string>
   <string name="preferences_colorize_tasks">Taken inkleuren</string>
@@ -156,7 +159,7 @@
   <string name="settings_semantics_weekday">Vervaldatum instellen op de volgende weekdag</string>
   <string name="semantics_no_list">Lijst niet instellen</string>
   <string name="semantics_no_due">Vervaldatum niet instellen</string>
-  <string name="settings_file_default_title">Taaknaam voor geïmporteerde bestanden</string>
+  <string name="settings_file_default_title">Taaknaam bij geïmporteerd bestand</string>
   <string name="semantic_new">sjabloon</string>
   <string name="settings_subtask">Subtaken</string>
   <string name="settings_subtask_default_new">Nieuwe taak als voorkeur weergeven</string>

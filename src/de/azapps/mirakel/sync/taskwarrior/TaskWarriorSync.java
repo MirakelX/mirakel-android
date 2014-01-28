@@ -3,9 +3,9 @@ package de.azapps.mirakel.sync.taskwarrior;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.MalformedInputException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +19,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import de.azapps.mirakel.Mirakel.NoSuchListException;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
@@ -27,39 +26,12 @@ import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.FileUtils;
+import de.azapps.tools.Log;
 
 public class TaskWarriorSync {
 
-	public static final String			TYPE				= "TaskWarrior";
-	public static final String			CA_FILE				= FileUtils
-																	.getMirakelDir()
-																	+ "ca.cert.pem";
-	public static final String			CLIENT_CERT_FILE	= FileUtils
-																	.getMirakelDir()
-																	+ "client.cert.pem";
-	public static final String			CLIENT_KEY_FILE		= FileUtils
-																	.getMirakelDir()
-																	+ "client.key.pem";
-	private static final String			TAG					= "TaskWarroirSync";
-	private Context						mContext;
-
-	// Outgoing.
-	// private static int _debug_level = 0;
-	// private static int _limit = (1024 * 1024);
-	private static String				_host				= "localhost";
-	private static int					_port				= 6544;
-	private static String				_org				= "";
-	private static String				_user				= "";
-	private static String				_key				= "";
-	private static File					root;
-	private static File					user_ca;
-	private static File					user_key;
-	private AccountManager				accountManager;
-	private Account						account;
-	private HashMap<String, String[]>	dependencies;
-
 	public enum TW_ERRORS {
-		CANNOT_CREATE_SOCKET, CANNOT_PARSE_MESSAGE, MESSAGE_ERRORS, TRY_LATER, ACCESS_DENIED, ACCOUNT_SUSPENDED, NO_ERROR, CONFIG_PARSE_ERROR, NOT_ENABLED;
+		ACCESS_DENIED, ACCOUNT_SUSPENDED, CANNOT_CREATE_SOCKET, CANNOT_PARSE_MESSAGE, CONFIG_PARSE_ERROR, MESSAGE_ERRORS, NO_ERROR, NOT_ENABLED, TRY_LATER;
 		public static TW_ERRORS getError(int code) {
 			switch (code) {
 				case 200:
@@ -129,64 +101,66 @@ public class TaskWarriorSync {
 			return NO_ERROR;
 		}
 	}
+	// Outgoing.
+	// private static int _debug_level = 0;
+	// private static int _limit = (1024 * 1024);
+	private static String				_host				= "localhost";
+	private static String				_key				= "";
+	private static String				_org				= "";
+	private static int					_port				= 6544;
+	private static String				_user				= "";
+
+	public static final String			CA_FILE				= FileUtils
+			.getMirakelDir()
+			+ "ca.cert.pem";
+	public static final String			CLIENT_CERT_FILE	= FileUtils
+			.getMirakelDir()
+			+ "client.cert.pem";
+	public static final String			CLIENT_KEY_FILE		= FileUtils
+			.getMirakelDir()
+			+ "client.key.pem";
+	public static final String	NO_PROJECT			= "NO_PROJECT";
+	private static File					root;
+	private static final String			TAG					= "TaskWarroirSync";
+	public static final String			TYPE				= "TaskWarrior";
+	private static File					user_ca;
+	private static File					user_key;
+	/**
+	 * Handle an error
+	 * 
+	 * @param what
+	 * @param code
+	 */
+	private static void error(String what, int code) {
+		Log.e(TAG, what + " (Code: " + code + ")");
+		// Toast.makeText(mContext, what, Toast.LENGTH_SHORT).show();
+	}
+	public static void longInfo(String str) {
+		if (str.length() > 4000) {
+			Log.i(TAG, str.substring(0, 4000));
+			longInfo(str.substring(4000));
+		} else {
+			Log.i(TAG, str);
+		}
+	}
+	private Account						account;
+
+	private AccountManager				accountManager;
+
+	private HashMap<String, String[]>	dependencies;
+
+	private final Context						mContext;
 
 	public TaskWarriorSync(Context ctx) {
-		mContext = ctx;
-	}
-
-	public TW_ERRORS sync(Account a) {
-		accountManager = AccountManager.get(mContext);
-		this.account = a;
-		AccountMirakel aMirakel = AccountMirakel.get(a);
-		if (!aMirakel.isEnabeld()) return TW_ERRORS.NOT_ENABLED;
-		init();
-
-		Msg sync = new Msg();
-		String payload = "";
-		sync.set("protocol", "v1");
-		sync.set("type", "sync");
-		sync.set("org", _org);
-		sync.set("user", _user);
-		sync.set("key", _key);
-		List<Task> local_tasks = Task.getTasksToSync(a);
-		for (Task task : local_tasks) {
-			payload += taskToJson(task) + "\n";
-		}
-		// Format: {UUID:[UUID]}
-		dependencies = new HashMap<String, String[]>();
-		// for (int i = 0; i < parts; i++) {
-		String old_key = accountManager.getUserData(a,
-				SyncAdapter.TASKWARRIOR_KEY);
-		if (old_key != null && !old_key.equals("")) {
-			payload += old_key + "\n";
-		}
-
-		// Build sync-request
-
-		sync.setPayload(payload);
-		TW_ERRORS error = doSync(a, sync);
-		if (error == TW_ERRORS.NO_ERROR) {
-			Log.w(TAG, "clear sync state");
-			Task.resetSyncState(local_tasks);
-		} else {
-			setDependencies();
-			return error;
-		}
-		// }
-		setDependencies();
-		return TW_ERRORS.NO_ERROR;
+		this.mContext = ctx;
 	}
 
 	private TW_ERRORS doSync(Account a, Msg sync) {
-		AccountMirakel accountMirakel = AccountMirakel.get(account);
+		AccountMirakel accountMirakel = AccountMirakel.get(this.account);
 		longInfo(sync.getPayload());
 
 		TLSClient client = new TLSClient();
-		try {
-			client.init(root, user_ca, user_key);
-		} catch (ParseException e) {
-			return TW_ERRORS.CONFIG_PARSE_ERROR;
-		}
+		client.init(root, user_ca, user_key);
 		try {
 			client.connect(_host, _port);
 		} catch (IOException e) {
@@ -199,7 +173,6 @@ public class TaskWarriorSync {
 		// FileUtils.writeToFile(new File("/sdcard/mirakel.log"), response);
 
 		// longInfo(response);
-
 		Msg remotes = new Msg();
 		try {
 			remotes.parse(response);
@@ -209,13 +182,11 @@ public class TaskWarriorSync {
 		}
 		int code = Integer.parseInt(remotes.get("code"));
 		TW_ERRORS error = TW_ERRORS.getError(code);
-		if (error != TW_ERRORS.NO_ERROR) {
-			return error;
-		}
+		if (error != TW_ERRORS.NO_ERROR) return error;
 
 		if (remotes.get("status").equals("Client sync key not found.")) {
 			Log.d(TAG, "reset sync-key");
-			accountManager.setUserData(a, SyncAdapter.TASKWARRIOR_KEY, null);
+			this.accountManager.setUserData(a, SyncAdapter.TASKWARRIOR_KEY, null);
 			sync(a);
 		}
 
@@ -227,7 +198,7 @@ public class TaskWarriorSync {
 			for (String taskString : tasksString) {
 				if (taskString.charAt(0) != '{') {
 					Log.d(TAG, "Key: " + taskString);
-					accountManager.setUserData(a, SyncAdapter.TASKWARRIOR_KEY,
+					this.accountManager.setUserData(a, SyncAdapter.TASKWARRIOR_KEY,
 							taskString);
 					continue;
 				}
@@ -237,20 +208,18 @@ public class TaskWarriorSync {
 				try {
 					taskObject = new JsonParser().parse(taskString)
 							.getAsJsonObject();
+					Log.i(TAG, taskString);
 					server_task = Task.parse_json(taskObject, accountMirakel);
-					if (server_task.getList().getAccount().getId() != accountMirakel
+					if (server_task.getList()==null||
+							server_task.getList().getAccount().getId() != accountMirakel
 							.getId()) {
 						ListMirakel list = ListMirakel
 								.getInboxList(accountMirakel);
-						server_task.setList(list);
+						server_task.setList(list, false);
+						Log.d(TAG, "no list");
+						server_task.addAdditionalEntry(NO_PROJECT, "true");
 					}
-					Calendar due = server_task.getDue();
-					if (due != null) {
-						// due.add(Calendar.DAY_OF_MONTH, 1);
-						// server_task.setDue(due);
-					}
-
-					dependencies.put(server_task.getUUID(),
+					this.dependencies.put(server_task.getUUID(),
 							server_task.getDependencies());
 					local_task = Task.getByUUID(server_task.getUUID());
 				} catch (Exception e) {
@@ -262,10 +231,12 @@ public class TaskWarriorSync {
 
 				if (server_task.getSyncState() == SYNC_STATE.DELETE) {
 					Log.d(TAG, "destroy " + server_task.getName());
-					if (local_task != null) local_task.destroy(true);
+					if (local_task != null) {
+						local_task.destroy(true);
+					}
 				} else if (local_task == null) {
 					try {
-						server_task.create();
+						server_task.create(false);
 						Log.d(TAG, "create " + server_task.getName());
 					} catch (NoSuchListException e) {
 						Log.wtf(TAG, "List vanish");
@@ -296,46 +267,30 @@ public class TaskWarriorSync {
 		return TW_ERRORS.NO_ERROR;
 	}
 
-	private void setDependencies() {
-		for (String uuid : dependencies.keySet()) {
-			Task parent = Task.getByUUID(uuid);
-			if (uuid == null || dependencies == null) continue;
-			String[] childs = dependencies.get(uuid);
-			if (childs == null) continue;
-			for (String childUuid : childs) {
-				Task child = Task.getByUUID(childUuid);
-				if (child == null) continue;
-				if (child.isSubtaskOf(parent)) {
-					continue;
-				}
-				try {
-					parent.addSubtask(child);
-				} catch (Exception e) {
-
-				}
-			}
-
-		}
-	}
-
-	public static void longInfo(String str) {
-		if (str.length() > 4000) {
-			Log.i(TAG, str.substring(0, 4000));
-			longInfo(str.substring(4000));
-		} else Log.i(TAG, str);
+	/**
+	 * Format a Calendar to the taskwarrior-date-format
+	 * 
+	 * @param c
+	 * @return
+	 */
+	@SuppressLint("SimpleDateFormat")
+	private String formatCal(Calendar c) {
+		SimpleDateFormat df = new SimpleDateFormat(
+				this.mContext.getString(R.string.TWDateFormat));
+		return df.format(c.getTime());
 	}
 
 	/**
 	 * Initialize the variables
 	 */
 	private void init() {
-		String server = accountManager.getUserData(account,
+		String server = this.accountManager.getUserData(this.account,
 				SyncAdapter.BUNDLE_SERVER_URL);
 		String srv[] = server.split(":");
 		if (srv.length != 2) {
 			error("port", 1376235889);
 		}
-		String key = accountManager.getPassword(account);
+		String key = this.accountManager.getPassword(this.account);
 		if (key.length() != 0 && key.length() != 36) {
 			error("key", 1376235890);
 		}
@@ -350,12 +305,83 @@ public class TaskWarriorSync {
 		}
 		_host = srv[0];
 		_port = Integer.parseInt(srv[1]);
-		_user = account.name;
-		_org = accountManager.getUserData(account, SyncAdapter.BUNDLE_ORG);
-		_key = accountManager.getPassword(account);
+		_user = this.account.name;
+		_org = this.accountManager.getUserData(this.account, SyncAdapter.BUNDLE_ORG);
+		_key = this.accountManager.getPassword(this.account);
 		TaskWarriorSync.root = r;
 		TaskWarriorSync.user_ca = user_cert;
 		TaskWarriorSync.user_key = userKey;
+	}
+
+	private void setDependencies() {
+		for (String uuid : this.dependencies.keySet()) {
+			Task parent = Task.getByUUID(uuid);
+			if (uuid == null || this.dependencies == null) {
+				continue;
+			}
+			String[] childs = this.dependencies.get(uuid);
+			if (childs == null) {
+				continue;
+			}
+			for (String childUuid : childs) {
+				Task child = Task.getByUUID(childUuid);
+				if (child == null) {
+					continue;
+				}
+				if (child.isSubtaskOf(parent)) {
+					continue;
+				}
+				try {
+					parent.addSubtask(child);
+				} catch (Exception e) {
+
+				}
+			}
+
+		}
+	}
+
+	public TW_ERRORS sync(Account a) {
+		this.accountManager = AccountManager.get(this.mContext);
+		this.account = a;
+		AccountMirakel aMirakel = AccountMirakel.get(a);
+		if (!aMirakel.isEnabeld()) return TW_ERRORS.NOT_ENABLED;
+		init();
+
+		Msg sync = new Msg();
+		String payload = "";
+		sync.set("protocol", "v1");
+		sync.set("type", "sync");
+		sync.set("org", _org);
+		sync.set("user", _user);
+		sync.set("key", _key);
+		List<Task> local_tasks = Task.getTasksToSync(a);
+		for (Task task : local_tasks) {
+			payload += taskToJson(task) + "\n";
+		}
+		// Format: {UUID:[UUID]}
+		this.dependencies = new HashMap<String, String[]>();
+		// for (int i = 0; i < parts; i++) {
+		String old_key = this.accountManager.getUserData(a,
+				SyncAdapter.TASKWARRIOR_KEY);
+		if (old_key != null && !old_key.equals("")) {
+			payload += old_key + "\n";
+		}
+
+		// Build sync-request
+
+		sync.setPayload(payload);
+		TW_ERRORS error = doSync(a, sync);
+		if (error == TW_ERRORS.NO_ERROR) {
+			Log.w(TAG, "clear sync state");
+			Task.resetSyncState(local_tasks);
+		} else {
+			setDependencies();
+			return error;
+		}
+		// }
+		setDependencies();
+		return TW_ERRORS.NO_ERROR;
 	}
 
 	/**
@@ -365,11 +391,17 @@ public class TaskWarriorSync {
 	 * @return
 	 */
 	public String taskToJson(Task task) {
-
+		String end=null;
 		String status = "pending";
-		if (task.getSyncState() == SYNC_STATE.DELETE) status = "deleted";
-		else if (task.isDone()) status = "completed";
-		Log.e(TAG, "Status waiting / recurring is not implemented now");
+		if (task.getSyncState() == SYNC_STATE.DELETE){
+			status = "deleted";
+			end=formatCal(new GregorianCalendar());
+		}
+		else if (task.isDone()){
+			status = "completed";
+			end=formatCal(new GregorianCalendar());
+		}
+		Log.i(TAG, "Status waiting / recurring is not implemented now");
 		// TODO
 
 		String priority = null;
@@ -394,15 +426,24 @@ public class TaskWarriorSync {
 		json += ",\"status\":\"" + status + "\"";
 		json += ",\"entry\":\"" + formatCal(task.getCreatedAt()) + "\"";
 		json += ",\"description\":\"" + task.getName() + "\"";
-		if (task.getDue() != null)
+		if (task.getDue() != null) {
 			json += ",\"due\":\"" + formatCal(task.getDue()) + "\"";
-		if (task.getList() != null)
+		}
+		if (task.getList() != null
+				&& !task.getAdditionalEntries().containsKey(NO_PROJECT)) {
+			Log.d(TAG, "set project");
 			json += ",\"project\":\"" + task.getList().getName() + "\"";
-		if (priority != null) json += ",\"priority\":\"" + priority + "\"";
+		}
+		if (priority != null) {
+			json += ",\"priority\":\"" + priority + "\"";
+		}
 		json += ",\"modification\":\"" + formatCal(task.getUpdatedAt()) + "\"";
-		if (task.getReminder() != null)
+		if (task.getReminder() != null) {
 			json += ",\"reminder\":\"" + formatCal(task.getReminder()) + "\"";
-
+		}
+		if(end!=null) {
+			json+=",\"end\":\"" + end + "\"";
+		}
 		// Annotations
 		if (task.getContent() != null && !task.getContent().equals("")) {
 			json += ",\"annotations\":[";
@@ -412,66 +453,49 @@ public class TaskWarriorSync {
 			String annotations[] = task.getContent().replace("\"", "\\\"")
 					.split("\n");
 			boolean first = true;
+			Calendar d = task.getUpdatedAt();
 			for (String a : annotations) {
-				if (first) first = false;
-				else json += ",";
-				json += "{\"entry\":\"" + formatCal(task.getUpdatedAt())
+				if (first) {
+					first = false;
+				} else {
+					json += ",";
+				}
+				json += "{\"entry\":\"" + formatCal(d)
 						+ "\",";
 				json += "\"description\":\"" + a + "\"}";
+				d.add(Calendar.SECOND, 1);
 			}
 			json += "]";
 		}
 		// Anotations end
-
 		// TW.depends==Mirakel.subtasks!
 		// Dependencies
 		if (task.getSubtaskCount() > 0) {
 			json += ",\"depends\":\"";
 			boolean first1 = true;
 			for (Task subtask : task.getSubtasks()) {
-				if (first1) first1 = false;
-				else json += ",";
+				if (first1) {
+					first1 = false;
+				} else {
+					json += ",";
+				}
 				json += subtask.getUUID();
 			}
 			json += "\"";
 		}
 		// end Dependencies
-
 		// Additional Strings
 		if (task.getAdditionalEntries() != null) {
 			Map<String, String> additionalEntries = task.getAdditionalEntries();
 			for (String key : additionalEntries.keySet()) {
-				json += ",\"" + key + "\":\"" + additionalEntries.get(key)
-						+ "\"";
+				if (!key.equals(NO_PROJECT)) {
+					json += ",\"" + key + "\":" + additionalEntries.get(key);
+				}
 			}
 		}
 		// end Additional Strings
 		json += "}";
 		return json;
-	}
-
-	/**
-	 * Format a Calendar to the taskwarrior-date-format
-	 * 
-	 * @param c
-	 * @return
-	 */
-	@SuppressLint("SimpleDateFormat")
-	private String formatCal(Calendar c) {
-		SimpleDateFormat df = new SimpleDateFormat(
-				mContext.getString(R.string.TWDateFormat));
-		return df.format(c.getTime());
-	}
-
-	/**
-	 * Handle an error
-	 * 
-	 * @param what
-	 * @param code
-	 */
-	private void error(String what, int code) {
-		Log.e(TAG, what + " (Code: " + code + ")");
-		// Toast.makeText(mContext, what, Toast.LENGTH_SHORT).show();
 	}
 
 }

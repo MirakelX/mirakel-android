@@ -12,27 +12,27 @@ import android.widget.TextView;
 import de.azapps.mirakelandroid.R;
 
 public class DueDialog extends AlertDialog {
-	private Context ctx;
-	private VALUE dayYear = VALUE.DAY;
-	private int count;
-	private View dialogView;
-	private String[] s;
+	private Context		ctx;
+	private VALUE		dayYear	= VALUE.DAY;
+	private int			count;
+	private View		dialogView;
+	private String[]	s;
 
 	public enum VALUE {
 		MINUTE, HOUR, DAY, MONTH, YEAR;
 
 		public int getInt() {
 			switch (this) {
-			case DAY:
-				return 0;
-			case MONTH:
-				return 1;
-			case YEAR:
-				return 2;
-			case MINUTE:
-				return 3;
-			case HOUR:
-				return 4;
+				case DAY:
+					return 0;
+				case MONTH:
+					return 1;
+				case YEAR:
+					return 2;
+				case MINUTE:
+					return 3;
+				case HOUR:
+					return 4;
 			}
 			return 0;
 		}
@@ -85,8 +85,7 @@ public class DueDialog extends AlertDialog {
 					.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
 
 						@Override
-						public void onValueChange(NumberPicker picker,
-								int oldVal, int newVal) {
+						public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
 							pickerDay.setDisplayedValues(getDayYearValues(
 									newVal - 10, minuteHour));
 							count = newVal - 10;
@@ -96,18 +95,17 @@ public class DueDialog extends AlertDialog {
 					.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
 
 						@Override
-						public void onValueChange(NumberPicker picker,
-								int oldVal, int newVal) {
+						public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
 							switch (newVal) {
-							case 0:
-								dayYear = VALUE.DAY;
-								break;
-							case 1:
-								dayYear = VALUE.MONTH;
-								break;
-							case 2:
-								dayYear = VALUE.YEAR;
-								break;
+								case 0:
+									dayYear = VALUE.DAY;
+									break;
+								case 1:
+									dayYear = VALUE.MONTH;
+									break;
+								case 2:
+									dayYear = VALUE.YEAR;
+									break;
 							}
 
 						}
@@ -186,21 +184,21 @@ public class DueDialog extends AlertDialog {
 
 	protected String updateDayYear() {
 		switch (dayYear) {
-		case MINUTE:
-			return ctx.getResources().getQuantityString(R.plurals.due_minute,
-					count);
-		case HOUR:
-			return ctx.getResources().getQuantityString(R.plurals.due_hour,
-					count);
-		case DAY:
-			return ctx.getResources().getQuantityString(R.plurals.due_day,
-					count);
-		case MONTH:
-			return ctx.getResources().getQuantityString(R.plurals.due_month,
-					count);
-		case YEAR:
-			return ctx.getResources().getQuantityString(R.plurals.due_year,
-					count);
+			case MINUTE:
+				return ctx.getResources().getQuantityString(
+						R.plurals.due_minute, count);
+			case HOUR:
+				return ctx.getResources().getQuantityString(R.plurals.due_hour,
+						count);
+			case DAY:
+				return ctx.getResources().getQuantityString(R.plurals.due_day,
+						count);
+			case MONTH:
+				return ctx.getResources().getQuantityString(
+						R.plurals.due_month, count);
+			case YEAR:
+				return ctx.getResources().getQuantityString(R.plurals.due_year,
+						count);
 		}
 		return "";
 
@@ -227,10 +225,9 @@ public class DueDialog extends AlertDialog {
 	}
 
 	protected View getNumericPicker() {
-		if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB)
-			return getLayoutInflater().inflate(R.layout.due_dialog, null);
-		else
-			return getLayoutInflater().inflate(R.layout.due_dialog_v10, null);
+		if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB) return getLayoutInflater()
+				.inflate(R.layout.due_dialog, null);
+		else return getLayoutInflater().inflate(R.layout.due_dialog_v10, null);
 	}
 
 	@SuppressLint("NewApi")
@@ -238,11 +235,9 @@ public class DueDialog extends AlertDialog {
 		if (VERSION.SDK_INT > VERSION_CODES.HONEYCOMB) {
 			int _day = dayYear.getInt();
 			((NumberPicker) dialogView.findViewById(R.id.due_day_year))
-					.setValue(_day);
-			;
+					.setValue(_day);;
 			((NumberPicker) dialogView.findViewById(R.id.due_val))
-					.setValue(val + 10);
-			;
+					.setValue(val + 10);;
 		} else {
 			count = val;
 			dayYear = day;

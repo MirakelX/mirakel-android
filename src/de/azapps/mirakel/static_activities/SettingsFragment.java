@@ -10,6 +10,8 @@
  ******************************************************************************/
 package de.azapps.mirakel.static_activities;
 
+import java.util.Locale;
+
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.FragmentManager;
@@ -21,13 +23,13 @@ import android.preference.PreferenceFragment;
 import android.view.View;
 import android.view.ViewGroup;
 import de.azapps.mirakel.helper.Helpers;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.PreferencesHelper;
 import de.azapps.mirakel.settings.accounts.AccountSettingsActivity;
 import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
 import de.azapps.mirakel.settings.taskfragment.TaskFragmentSettingsFragment;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.Log;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class SettingsFragment extends PreferenceFragment {
@@ -35,61 +37,6 @@ public class SettingsFragment extends PreferenceFragment {
 	private PreferencesHelper	helper;
 
 	// private MainActivity main;
-
-	@SuppressLint("NewApi")
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		if (getArguments().getString("type").equals("gui")) {
-			addPreferencesFromResource(R.xml.settings_gui);
-		} else if (getArguments().getString("type").equals("tasks")) {
-			addPreferencesFromResource(R.xml.settings_tasks);
-		} else if (getArguments().getString("type").equals("notification")) {
-			addPreferencesFromResource(R.xml.settings_notifications);
-		} else if (getArguments().getString("type").equals("backup")) {
-			addPreferencesFromResource(R.xml.settings_backup);
-		} else if (getArguments().getString("type").equals("accounts")) {
-			startActivity(new Intent(getActivity(),
-					AccountSettingsActivity.class));
-			if (!MirakelPreferences.isTablet()) getActivity().finish();
-			else {
-				addPreferencesFromResource(R.xml.settings_notifications);
-			}
-		} else if (getArguments().getString("type").equals("misc")) {
-			addPreferencesFromResource(R.xml.settings_misc);
-		} else if (getArguments().getString("type").equals("about")) {
-			addPreferencesFromResource(R.xml.settings_about);
-		} else if (getArguments().getString("type").equals("help")) {
-			Helpers.openHelp(getActivity());
-			getActivity().finish();
-		} else if (getArguments().getString("type").equals("donate")) {
-			startActivityForResult(new Intent(getActivity(),
-					DonationsActivity.class), SettingsActivity.DONATE);
-			if (!MirakelPreferences.isTablet()) getActivity().finish();
-		} else if (getArguments().getString("type").equals("speciallists")) {
-			startActivity(new Intent(getActivity(),
-					SpecialListsSettingsActivity.class));
-			if (!MirakelPreferences.isTablet()) getActivity().finish();
-			else {
-				addPreferencesFromResource(R.xml.settings_notifications);
-			}
-		} else {
-
-			Log.wtf(TAG, "unkown prefernce " + getArguments().getString("type"));
-		}
-
-		helper = new PreferencesHelper(this);
-		helper.setFunctionsApp();
-	}
-
-	@SuppressLint("NewApi")
-	@Override
-	public void onDestroy() {
-		if (helper.actionBarSwitch != null) {
-			helper.actionBarSwitch.setVisibility(View.GONE);
-		}
-		super.onDestroy();
-	}
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -105,6 +52,66 @@ public class SettingsFragment extends PreferenceFragment {
 				break;
 		}
 		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	@SuppressLint("NewApi")
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		Locale.setDefault(Helpers.getLocal(getActivity()));
+		if (getArguments().getString("type").equals("gui")) {
+			addPreferencesFromResource(R.xml.settings_gui);
+		} else if (getArguments().getString("type").equals("tasks")) {
+			addPreferencesFromResource(R.xml.settings_tasks);
+		} else if (getArguments().getString("type").equals("notification")) {
+			addPreferencesFromResource(R.xml.settings_notifications);
+		} else if (getArguments().getString("type").equals("backup")) {
+			addPreferencesFromResource(R.xml.settings_backup);
+		} else if (getArguments().getString("type").equals("accounts")) {
+			startActivity(new Intent(getActivity(),
+					AccountSettingsActivity.class));
+			if (!MirakelPreferences.isTablet()) {
+				getActivity().finish();
+			} else {
+				addPreferencesFromResource(R.xml.settings_notifications);
+			}
+		} else if (getArguments().getString("type").equals("misc")) {
+			addPreferencesFromResource(R.xml.settings_misc);
+		} else if (getArguments().getString("type").equals("about")) {
+			addPreferencesFromResource(R.xml.settings_about);
+		} else if (getArguments().getString("type").equals("help")) {
+			Helpers.openHelp(getActivity());
+			getActivity().finish();
+		} else if (getArguments().getString("type").equals("donate")) {
+			startActivityForResult(new Intent(getActivity(),
+					DonationsActivity.class), SettingsActivity.DONATE);
+			if (!MirakelPreferences.isTablet()) {
+				getActivity().finish();
+			}
+		} else if (getArguments().getString("type").equals("speciallists")) {
+			startActivity(new Intent(getActivity(),
+					SpecialListsSettingsActivity.class));
+			if (!MirakelPreferences.isTablet()) {
+				getActivity().finish();
+			} else {
+				addPreferencesFromResource(R.xml.settings_notifications);
+			}
+		} else {
+
+			Log.wtf(TAG, "unkown prefernce " + getArguments().getString("type"));
+		}
+
+		this.helper = new PreferencesHelper(this);
+		this.helper.setFunctionsApp();
+	}
+
+	@SuppressLint("NewApi")
+	@Override
+	public void onDestroy() {
+		if (this.helper.actionBarSwitch != null) {
+			this.helper.actionBarSwitch.setVisibility(View.GONE);
+		}
+		super.onDestroy();
 	}
 
 	public void showTaskFragmentSettings() {

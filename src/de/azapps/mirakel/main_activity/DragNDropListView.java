@@ -29,8 +29,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ListView;
-import de.azapps.mirakel.helper.Log;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.tools.Log;
 
 public class DragNDropListView extends ListView {
 

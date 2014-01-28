@@ -11,6 +11,7 @@
   <string name="special_list_contains">Argumentos de seleção</string>
   <string name="special_list_summary">Resumo</string>
   <string name="special_lists_defaults">Valores pré-definidos</string>
+  <string name="special_list_where_prio_title_text">Prioridade</string>
   <string name="special_list_where_name_title_text">Nome</string>
   <string name="special_list_where_content_title_text">Conteúdo</string>
   <string name="special_list_where_list_title_text">Lista</string>

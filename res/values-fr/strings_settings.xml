@@ -17,12 +17,25 @@
   <string name="sync_frequency">Fréquence</string>
   <string name="sync_frequency_summary">Synchroniser toutes les %s min</string>
   <string name="sync_frequency_summary_man">Ne synchroniser que manuellement</string>
+  <string name="sync_caldav">CalDAV sync</string>
   <string name="sync_add_account">Ajouter un compte</string>
+  <string name="sync_taskwarrior_configure">Configurer Taskwarrior</string>
+  <string name="sync_taskwarrior_scan_qr">Scanner le code QR</string>
+  <string name="sync_taskwarrior_select_file">Sélectionnez le fichier de config</string>
   <string name="sync_taskwarrior_how_to">Comment configurer votre propre serveur</string>
   <string name="sync_taskwarrior_own_server">ou il suffit d\'utiliser votre propre serveur</string>
+  <string name="sync_taskwarrior_url_error">L\'URL n\'est pas correcte. Avez-vous vraiment scanné le bon code?</string>
+  <string name="sync_taskwarrior_configuring">Configuration de synchronisation…</string>
+  <string name="sync_taskwarrior_about">Si vous avez déjà un compte taskwarrior:</string>
+  <string name="sync_taskwarrior_register">Si ce n\'est pas le cas, vous pouvez enregistrer un nouveau compte sur notre serveur:</string>
   <string name="sync_taskwarrior_register_button">S\'enregistrer</string>
+  <string name="sync_taskwarrior_setup_success">Configuration des comptes a réussi</string>
+  <string name="sync_taskwarrior_error_download">Pas pu télécharger le fichier de config</string>
+  <string name="sync_taskwarrior_select_file_not_exists">Le fichier n\'existe pas</string>
+  <string name="sync_defaultAccount">Utiliser comme compte par défaut?</string>
   <string name="tw_account">Taskwarrior</string>
   <string name="calDavName">CalDav</string>
+  <string name="type">Type</string>
   <string name="no_barcode_app_install">Installer</string>
   <string name="menu_edit_listaccount">Compte</string>
   <string name="change_account">Changer le compte</string>
@@ -71,8 +84,13 @@
   <string name="importing">Importation en cours</string>
   <string name="astrid_import_title">Sélectionner un fichier Astrid</string>
   <string name="import_wrong_type">Ce n\'est pas un fichier Mirakel !</string>
+  <string name="import_any_do_click">Importation de Any.Do</string>
+  <string name="any_do_this_file">Importation de %s?\nsi non s\'il vous plaît sélectionner un fichier vous-même</string>
   <string name="select_file">Sélectionnez un fichier</string>
   <string name="wait">Veuillez patienter…</string>
+  <string name="import_wunderlist_click">Importation de Wunderlist</string>
+  <string name="import_wunderlist_title">Sélectionnez le fichier Wunderlist</string>
+  <string name="import_wunderlist_howto">Importation de Wunderlist</string>
   <string name="highlightSelected_summary">Mettre en surbrillance les listes/tâches quand vous cliquez dessus</string>
   <string name="highlightSelected">Mise en surbrillance sélectionnée</string>
   <string name="settings_date_format_relative_summary">Par exemple \"demain\" au lieu de la date réelle</string>
@@ -104,13 +122,17 @@
   <string name="preferences_colorize_tasks_everywhere">Coloriser les tâches partout</string>
   <string name="settings_semantics_condition">Condition</string>
   <string name="settings_semantics_actions">Actions</string>
+  <string name="settings_file_default_title">Nom de la tâche pour les fichiers importés</string>
+  <string name="semantic_new">Modèle</string>
   <string name="settings_subtask">Tâches subordonnées</string>
   <string name="settings_subtask_default_new">Voir la nouvelle tâche par défaut</string>
   <string name="settings_subtask_add_to_list_summary">Ajouter tâche subordonnée à %s</string>
   <string name="settings_use_btn_speak">Afficher le bouton de microphone</string>
+  <string name="settings_use_btn_audio">Afficher le bouton d\'enregistrement audio</string>
   <string name="settings_use_btn_camera">Afficher le bouton de la caméra</string>
   <string name="preferences_colorize_subtasks">Coloriser les tâches subordonnées ?</string>
   <string name="settings_tasks_title">Tâches</string>
+  <string name="settings_task_fragment">Paramètres de tâche Overview</string>
   <string name="task_fragment_header">Entête</string>
   <string name="task_fragment_file">Fichiers</string>
   <string name="task_fragment_due">Échéance</string>
@@ -141,8 +163,8 @@
     <item>-1</item>
   </string-array>
   <string-array name="tablet_options">
-    <item>never</item>
-    <item>landscape</item>
+    <item>jamais</item>
+    <item>paysage</item>
     <item>portrait</item>
     <item>portrait &amp; landscape</item>
   </string-array>
