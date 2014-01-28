@@ -62,6 +62,7 @@
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="remindersPersistent"
+            android:summary="@string/reminders_persistent_summary"
             android:title="@string/reminders_persistent" />
     </PreferenceCategory>
 
