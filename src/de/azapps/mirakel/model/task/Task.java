@@ -513,7 +513,8 @@ public class Task extends TaskBase {
 				}
 				t.setList(list, true);
 			} else if (key.equals("project")) {
-				ListMirakel list = ListMirakel.findByName(val.getAsString());
+				ListMirakel list = ListMirakel.findByName(val.getAsString(),
+						account);
 				if (list == null
 						|| list.getAccount().getId() != account.getId()) {
 					list = ListMirakel.newList(val.getAsString(),

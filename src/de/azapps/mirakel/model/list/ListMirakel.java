@@ -50,9 +50,9 @@ import de.azapps.tools.Log;
  */
 public class ListMirakel extends ListBase {
 	private static final String[]	allColumns	= { DatabaseHelper.ID,
-			DatabaseHelper.NAME, SORT_BY, DatabaseHelper.CREATED_AT,
-			DatabaseHelper.UPDATED_AT, SyncAdapter.SYNC_STATE, LFT, RGT, COLOR,
-			ACCOUNT_ID							};
+		DatabaseHelper.NAME, SORT_BY, DatabaseHelper.CREATED_AT,
+		DatabaseHelper.UPDATED_AT, SyncAdapter.SYNC_STATE, LFT, RGT, COLOR,
+		ACCOUNT_ID							};
 	private static Context			context;
 
 	private static SQLiteDatabase	database;
@@ -175,12 +175,20 @@ public class ListMirakel extends ListBase {
 	}
 
 	public static ListMirakel findByName(String name) {
-		String[] args = { name };
+		return findByName(name, null);
+	}
+
+	public static ListMirakel findByName(String name,AccountMirakel account) {
 		Cursor cursor = database.query(ListMirakel.TABLE, allColumns,
-				DatabaseHelper.NAME + "=?", args, null, null, null);
+				DatabaseHelper.NAME
+				+ "='"
+				+ name
+				+ "'"
+						+ (account == null ? "" : " AND " + ACCOUNT_ID + "="
+								+ account.getId()), null, null, null,
+						null);
 		cursor.moveToFirst();
 		if (cursor.getCount() != 0) {
-			Log.v(TAG, "get list");
 			ListMirakel t = cursorToList(cursor);
 			cursor.close();
 			return t;
@@ -217,10 +225,12 @@ public class ListMirakel extends ListBase {
 				+ "=" + account.getId()+";");
 		c.moveToFirst();
 		if (c.getCount() > 0) {
+			Log.d(TAG, "get old eingang");
 			ListMirakel l = cursorToList(c);
 			c.close();
 			return l;
 		}
+		Log.d(TAG, "create new eingang");
 		return newList(context.getString(R.string.inbox), SORT_BY_OPT, account);
 	}
 	public static ListMirakel getList(int listId) {
@@ -315,11 +325,11 @@ public class ListMirakel extends ListBase {
 		values.put(DatabaseHelper.CREATED_AT,
 				new SimpleDateFormat(
 						context.getString(R.string.dateTimeFormat), Locale.US)
-						.format(new Date()));
+		.format(new Date()));
 		values.put(DatabaseHelper.UPDATED_AT,
 				new SimpleDateFormat(
 						context.getString(R.string.dateTimeFormat), Locale.US)
-						.format(new Date()));
+		.format(new Date()));
 		values.put(RGT, 0);
 		values.put(LFT, 0);
 		database.beginTransaction();
@@ -442,10 +452,10 @@ public class ListMirakel extends ListBase {
 		}
 		c = Mirakel.getReadableDatabase().rawQuery(
 				"Select count(" + DatabaseHelper.ID + ") from " + Task.TABLE
-						+ " where " + where
-						+ (where.length() != 0 ? " and " : " ") + " "
-						+ Task.DONE + "=0 and not " + SyncAdapter.SYNC_STATE
-						+ "=" + SYNC_STATE.DELETE, null);
+				+ " where " + where
+				+ (where.length() != 0 ? " and " : " ") + " "
+				+ Task.DONE + "=0 and not " + SyncAdapter.SYNC_STATE
+				+ "=" + SYNC_STATE.DELETE, null);
 		c.moveToFirst();
 		if (c.getCount() > 0) {
 			int n = c.getInt(0);
@@ -500,7 +510,7 @@ public class ListMirakel extends ListBase {
 	public Task getFirstTask() {
 		List<Task> tasks = tasks();
 		if (tasks.size() > 0) return tasks.get(0);
-		
+
 		return null;
 	}
 
@@ -525,7 +535,7 @@ public class ListMirakel extends ListBase {
 			database.beginTransaction();
 			setSyncState(getSyncState() == SYNC_STATE.ADD
 					|| getSyncState() == SYNC_STATE.IS_SYNCED ? getSyncState()
-					: SYNC_STATE.NEED_SYNC);
+							: SYNC_STATE.NEED_SYNC);
 			setUpdatedAt(new SimpleDateFormat(
 					context.getString(R.string.dateTimeFormat),
 					Locale.getDefault()).format(new Date()));
