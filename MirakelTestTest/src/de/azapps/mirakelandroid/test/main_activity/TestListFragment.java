@@ -1,10 +1,12 @@
 package de.azapps.mirakelandroid.test.main_activity;
 
+import android.graphics.PointF;
 import android.test.ActivityInstrumentationTestCase2;
 
 import com.jayway.android.robotium.solo.Solo;
 
 import de.azapps.mirakel.main_activity.MainActivity;
+import de.azapps.mirakel.model.list.ListMirakel;
 
 public class TestListFragment extends
 		ActivityInstrumentationTestCase2<MainActivity> {
@@ -24,33 +26,39 @@ public class TestListFragment extends
 	protected void tearDown() throws Exception {
 		solo.finishOpenedActivities();
 	}
-
-	public void testClick() {
-
-	}
-
-	public void testAdd() {
-
-	}
-
-	public void testDelete() {
-
-	}
-
-	public void testMove() {
-
-	}
-
-	public void testShareList() {
-
-	}
-
-	public void testEditList() {
-
-	}
-
-	public void testChangeAccount() {
-
+//
+//	public void testClick() {
+//
+//	}
+//
+//	public void testAdd() {
+//
+//	}
+//
+//	public void testDelete() {
+//
+//	}
+//
+//	public void testMove() {
+//
+//	}
+//
+//	public void testShareList() {
+//
+//	}
+//
+//	public void testEditList() {
+//
+//	}
+//
+//	public void testChangeAccount() {
+//
+//	}
+	
+	public void testOpenNavDrawer(){
+			solo.drag(0, 100, 50, 100, 100);
+			solo.clickInList(6);//hardcoded list for sync
+			
 	}
 
 }

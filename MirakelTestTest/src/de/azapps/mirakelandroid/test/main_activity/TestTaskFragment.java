@@ -1,6 +1,5 @@
 package de.azapps.mirakelandroid.test.main_activity;
 
-import android.content.Context;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.TextView;
 
@@ -40,11 +39,12 @@ public class TestTaskFragment extends
 
 	}
 
-	public void testPriority(Context ctx) {
+	public void testPriority() {
 		solo.clickOnView(solo.getView(R.id.task_prio));
-		assertTrue(solo.searchText(ctx
+		assertTrue(solo.searchText(getActivity()
 				.getString(R.string.task_change_prio_title)));
-		solo.goBack();
+		solo.clickInList(0);
+		//solo.goBack();
 
 	}
 
