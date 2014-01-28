@@ -110,6 +110,7 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="notifications_zero_show">Hide notification if empty</string>
     <string name="reminder">Reminder</string>
     <string name="reminders_persistent">Persistent reminder</string>
+    <string name="reminders_persistent_summary">Make it impossible to close the reminder</string>
 
     <!-- startup -->
     <string name="startup_title">App Start</string>
