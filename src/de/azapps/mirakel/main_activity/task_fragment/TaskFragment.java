@@ -29,8 +29,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+//import android.support.v7.view.ActionMode;
 import android.util.SparseArray;
-import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -55,8 +55,8 @@ import de.azapps.mirakelandroid.R;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 
-public class TaskFragment extends Fragment {
-	private enum ActionbarState {
+public abstract class TaskFragment extends Fragment {
+	protected enum ActionbarState {
 		CONTENT, FILE, SUBTASK;
 	}
 
@@ -64,173 +64,144 @@ public class TaskFragment extends Fragment {
 
 	private ActionbarState				cabState;
 	private TaskDetailView				detailView;
-	private ActionMode					mActionMode;
-	private final ActionMode.Callback	mActionModeCallback	= new ActionMode.Callback() {
 
-		// Called when the user selects a
-		// contextual menu item
-		@Override
-		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-			switch (item
-					.getItemId()) {
-						case R.id.save:
-							if (TaskFragment.this.detailView != null) {
-								TaskFragment.this.detailView
-								.saveContent();
-							}
-							break;
-						case R.id.cancel:
-							if (TaskFragment.this.detailView != null) {
-								TaskFragment.this.detailView
-								.cancelContent();
-							}
-							break;
-						case R.id.menu_delete:
-							if (TaskFragment.this.cabState == ActionbarState.FILE) {
-								List<FileMirakel> selectedItems = new ArrayList<FileMirakel>();
-								for (int i = 0; i < TaskFragment.this.markedFiles
-										.size(); i++) {
-									selectedItems
-									.add(TaskFragment.this.markedFiles
-											.valueAt(i));
-								}
-								TaskDialogHelpers
-								.handleDeleteFile(
-										selectedItems,
-										getActivity(),
-										TaskFragment.this.task,
-										TaskFragment.this);
-							} else {// Subtask
 
-								List<Task> selectedItems = new ArrayList<Task>();
-
-								for (Map.Entry<Long, Task> e : TaskFragment.this.markedSubtasks
-										.entrySet()) {
-									selectedItems
-									.add(e.getValue());
-								}
-								TaskDialogHelpers
-								.handleRemoveSubtask(
-										selectedItems,
-										getActivity(),
-										TaskFragment.this,
-										TaskFragment.this.task);
-							}
-							break;
-						case R.id.edit_task:
-							if (TaskFragment.this.main != null) {
-								TaskFragment.this.main
-								.setCurrentTask(TaskFragment.this.markedSubtasks
-										.entrySet()
-										.iterator()
-										.next()
-										.getValue());
-							}
-							break;
-						case R.id.done_task:
-							for (Map.Entry<Long, Task> e : TaskFragment.this.markedSubtasks
-									.entrySet()) {
-								if (e.getValue() != null) {
-									e.getValue()
-									.setDone(
-											true);
-									e.getValue()
-									.safeSave();
-								}
-							}
-							update(TaskFragment.this.task);
-							TaskFragment.this.main
-							.getTasksFragment()
-							.updateList();
-							TaskFragment.this.main
-							.getListFragment()
-							.update();
-							break;
-						default:
-							return false;
-			}
-			mode.finish();
-			return true;
-		}
-
-		// Called when the action mode is
-		// created; startActionMode() was
-		// called
-		@Override
-		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-			// Inflate a menu resource
-			// providing context menu items
-			MenuInflater inflater = mode
-					.getMenuInflater();
-			if (TaskFragment.this.cabState == null)
-				return false;
-			switch (TaskFragment.this.cabState) {
-				case CONTENT:
-					inflater.inflate(
-							R.menu.save,
-							menu);
-					break;
-				case FILE:
-					inflater.inflate(
-							R.menu.context_file,
-							menu);
-					break;
-				case SUBTASK:
-					inflater.inflate(
-							R.menu.context_subtask,
-							menu);
-					break;
-				default:
-					Log.d(TAG,
-							"where are the dragons");
-					return false;
-
-			}
-			TaskFragment.this.mActionMode = mode;
-			TaskFragment.this.mMenu = menu;
-			return true;
-		}
-
-		// Called when the user exits the
-		// action mode
-		@Override
-		public void onDestroyActionMode(ActionMode mode) {
-			TaskFragment.this.mActionMode = null;
-			TaskFragment.this.cabState = null;
-			if (TaskFragment.this.detailView != null) {
-				TaskFragment.this.detailView
-				.unmark();
-			}
-			TaskFragment.this.markedFiles = new SparseArray<FileMirakel>();
-			TaskFragment.this.markedSubtasks = new HashMap<Long, Task>();
-		}
-
-		// Called each time the action mode
-		// is shown. Always called after
-		// onCreateActionMode, but
-		// may be called multiple times if
-		// the mode is invalidated.
-		@Override
-		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-			return false; // Return false if
-			// nothing is
-			// done
-		}
-	};
-
-	private MainActivity	main;
+	protected MainActivity		main;
 	SparseArray<FileMirakel>			markedFiles;
 
 	Map<Long, Task>						markedSubtasks;
 
-	private Menu mMenu;
+	protected Menu				mMenu;
 
 	private Task						task;
 
-	public void closeActionMode() {
-		if (this.mActionMode != null) {
-			this.mActionMode.finish();
+	abstract protected void changeVisiblity(boolean visible, MenuItem item);
+
+	abstract public void closeActionMode();
+
+	protected boolean handleActionBarClick(MenuItem item) {
+		switch (item
+				.getItemId()) {
+					case R.id.save:
+						if (TaskFragment.this.detailView != null) {
+							TaskFragment.this.detailView
+							.saveContent();
+						}
+						break;
+					case R.id.cancel:
+						if (TaskFragment.this.detailView != null) {
+							TaskFragment.this.detailView
+							.cancelContent();
+						}
+						break;
+					case R.id.menu_delete:
+						if (TaskFragment.this.cabState == ActionbarState.FILE) {
+							List<FileMirakel> selectedItems = new ArrayList<FileMirakel>();
+							for (int i = 0; i < TaskFragment.this.markedFiles
+									.size(); i++) {
+								selectedItems
+								.add(TaskFragment.this.markedFiles
+										.valueAt(i));
+							}
+							TaskDialogHelpers
+							.handleDeleteFile(
+									selectedItems,
+									getActivity(),
+									TaskFragment.this.task,
+									TaskFragment.this);
+						} else {// Subtask
+
+							List<Task> selectedItems = new ArrayList<Task>();
+
+							for (Map.Entry<Long, Task> e : TaskFragment.this.markedSubtasks
+									.entrySet()) {
+								selectedItems
+								.add(e.getValue());
+							}
+							TaskDialogHelpers
+							.handleRemoveSubtask(
+									selectedItems,
+									getActivity(),
+									TaskFragment.this,
+									TaskFragment.this.task);
+						}
+						break;
+					case R.id.edit_task:
+						if (TaskFragment.this.main != null) {
+							TaskFragment.this.main
+							.setCurrentTask(TaskFragment.this.markedSubtasks
+									.entrySet()
+									.iterator()
+									.next()
+									.getValue());
+						}
+						break;
+					case R.id.done_task:
+						for (Map.Entry<Long, Task> e : TaskFragment.this.markedSubtasks
+								.entrySet()) {
+							if (e.getValue() != null) {
+								e.getValue()
+								.setDone(
+										true);
+								e.getValue()
+								.safeSave();
+							}
+						}
+						update(TaskFragment.this.task);
+						TaskFragment.this.main
+						.getTasksFragment()
+						.updateList();
+						TaskFragment.this.main
+						.getListFragment()
+						.update();
+						break;
+					default:
+						return false;
 		}
+		Log.i(TAG,
+				"item clicked");
+		return true;
+
+	}
+
+	protected boolean handleCabCreateMenu(MenuInflater inflater,Menu menu){
+		if (TaskFragment.this.cabState == null)
+			return false;
+		switch (TaskFragment.this.cabState) {
+			case CONTENT:
+				inflater.inflate(
+						R.menu.save,
+						menu);
+				break;
+			case FILE:
+				inflater.inflate(
+						R.menu.context_file,
+						menu);
+				break;
+			case SUBTASK:
+				inflater.inflate(
+						R.menu.context_subtask,
+						menu);
+				break;
+			default:
+				Log.d(TAG,
+						"where are the dragons");
+				return false;
+
+		}
+		return true;
+	}
+
+	protected void handleCloseCab(){
+		TaskFragment.this.cabState = null;
+		if (TaskFragment.this.detailView != null) {
+			TaskFragment.this.detailView
+			.unmark();
+		}
+		TaskFragment.this.markedFiles = new SparseArray<FileMirakel>();
+		TaskFragment.this.markedSubtasks = new HashMap<Long, Task>();
+		Log.d(TAG,
+				"kill mode");
 	}
 
 	@Override
@@ -319,10 +290,7 @@ public class TaskFragment extends Fragment {
 					return;
 				if (marked) {
 					TaskFragment.this.cabState = ActionbarState.SUBTASK;
-					if (TaskFragment.this.mActionMode == null) {
-						getActivity().startActionMode(
-								TaskFragment.this.mActionModeCallback);
-					}
+					startCab();
 					v.setBackgroundColor(Helpers
 							.getHighlightedColor(getActivity()));
 					TaskFragment.this.markedSubtasks.put(t.getId(), t);
@@ -332,18 +300,14 @@ public class TaskFragment extends Fragment {
 					v.setBackgroundColor(getActivity().getResources().getColor(
 							android.R.color.transparent));
 					TaskFragment.this.markedSubtasks.remove(t.getId());
-					if (TaskFragment.this.markedSubtasks.isEmpty()
-							&& TaskFragment.this.mActionMode != null) {
-						TaskFragment.this.mActionMode.finish();
+					if (TaskFragment.this.markedSubtasks.isEmpty()) {
+						closeActionMode();
 					}
 				}
 				if (TaskFragment.this.mMenu != null) {
 					MenuItem item=TaskFragment.this.mMenu.findItem(R.id.edit_task);
-					if(TaskFragment.this.markedSubtasks.size()>1&&item!=null){
-						item.setVisible(false);
-					}else if(TaskFragment.this.mActionMode!=null&&item!=null){
-						item.setVisible(true);
-					}
+					changeVisiblity(
+							TaskFragment.this.markedSubtasks.size() == 1, item);
 				}
 			}
 		});
@@ -357,10 +321,7 @@ public class TaskFragment extends Fragment {
 					return;
 				if (marked) {
 					TaskFragment.this.cabState = ActionbarState.FILE;
-					if (TaskFragment.this.mActionMode == null) {
-						getActivity().startActionMode(
-								TaskFragment.this.mActionModeCallback);
-					}
+					startCab();
 					v.setBackgroundColor(Helpers
 							.getHighlightedColor(getActivity()));
 					TaskFragment.this.markedFiles.put(e.getId(), e);
@@ -368,9 +329,8 @@ public class TaskFragment extends Fragment {
 					v.setBackgroundColor(getActivity().getResources().getColor(
 							android.R.color.transparent));
 					TaskFragment.this.markedFiles.remove(e.getId());
-					if (TaskFragment.this.markedFiles.size() == 0
-							&& TaskFragment.this.mActionMode != null) {
-						TaskFragment.this.mActionMode.finish();
+					if (TaskFragment.this.markedFiles.size() == 0) {
+						closeActionMode();
 					}
 				}
 			}
@@ -381,11 +341,12 @@ public class TaskFragment extends Fragment {
 			@Override
 			public void handleCab(boolean startEdit) {
 				if (startEdit) {
+					Log.d(TAG, "start actionmode");
 					TaskFragment.this.cabState = ActionbarState.CONTENT;
-					getActivity().startActionMode(
-							TaskFragment.this.mActionModeCallback);
-				} else if (TaskFragment.this.mActionMode != null) {
-					TaskFragment.this.mActionMode.finish();
+					startCab();
+				} else {
+					Log.d(TAG, "end actionmode");
+					closeActionMode();;
 				}
 
 			}
@@ -393,6 +354,8 @@ public class TaskFragment extends Fragment {
 
 		return view;
 	}
+
+	abstract protected void startCab();
 
 	public void update(Task t) {
 		this.task = t;

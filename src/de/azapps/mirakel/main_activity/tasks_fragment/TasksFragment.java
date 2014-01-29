@@ -68,6 +68,8 @@ import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.main_activity.task_fragment.TaskFragment;
+import de.azapps.mirakel.main_activity.task_fragment.TaskFragmentV14;
+import de.azapps.mirakel.main_activity.task_fragment.TaskFragmentV8;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
@@ -241,7 +243,12 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 		if (MirakelPreferences.isTablet()) {
 			this.view = inflater.inflate(R.layout.tasks_fragment_tablet, container,
 					false);
-			TaskFragment t = new TaskFragment();
+			TaskFragment t;
+			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+				t = new TaskFragmentV8();
+			} else {
+				t = new TaskFragmentV14();
+			}
 			getChildFragmentManager().beginTransaction()
 			.replace(R.id.task_fragment_in_tasks, t).commit();
 			this.main.setTaskFragment(t);
@@ -382,7 +389,7 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 
 		// main.showMessageFromSync();
 
-		final ListView lv = (ListView) this.view.findViewById(R.id.tasks_list);
+		this.listView = (ListView) this.view.findViewById(R.id.tasks_list);
 		AsyncTask<Void, Void, TaskAdapter> asyncTask = new AsyncTask<Void, Void, TaskAdapter>() {
 			@Override
 			protected TaskAdapter doInBackground(Void... params) {
@@ -397,14 +404,16 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 
 			@Override
 			protected void onPostExecute(TaskAdapter a) {
-				lv.setAdapter(TasksFragment.this.adapter);
+				TasksFragment.this.listView
+				.setAdapter(TasksFragment.this.adapter);
 				TasksFragment.this.finishLoad = true;
 			}
 		};
 
 		asyncTask.execute();
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-			lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+			this.listView
+			.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 				@Override
 				public boolean onItemLongClick(AdapterView<?> parent, View item, int position, final long id) {
 					AlertDialog.Builder builder = new AlertDialog.Builder(
@@ -443,12 +452,13 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 				}
 			});
 		} else {
-			lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+			this.listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 			if (this.adapter != null) {
 				this.adapter.resetSelected();
 			}
-			lv.setHapticFeedbackEnabled(true);
-			lv.setMultiChoiceModeListener(new MultiChoiceModeListener() {
+			this.listView.setHapticFeedbackEnabled(true);
+			this.listView
+			.setMultiChoiceModeListener(new MultiChoiceModeListener() {
 
 				@Override
 				public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
@@ -516,19 +526,18 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 					return false;
 				}
 			});
-
-			lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-				@Override
-				public void onItemClick(AdapterView<?> parent, View item, int position, long id) {
-					// TODO Remove Bad Hack
-					Task task = TasksFragment.this.values.get((int) id);
-					Log.v(TAG,
-							"Switch to Task " + task.getId() + " ("
-									+ task.getUUID() + ")");
-					TasksFragment.this.main.setCurrentTask(task, true);
-				}
-			});
 		}
+		this.listView
+		.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View item, int position, long id) {
+				// TODO Remove Bad Hack
+				Task task = TasksFragment.this.values.get((int) id);
+				Log.v(TAG, "Switch to Task " + task.getId() + " ("
+						+ task.getUUID() + ")");
+				TasksFragment.this.main.setCurrentTask(task, true);
+			}
+		});
 	}
 
 	public void updateButtons() {

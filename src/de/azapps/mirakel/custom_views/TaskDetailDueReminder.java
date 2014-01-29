@@ -183,13 +183,21 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
 		});
 	}
 
+	@SuppressWarnings("deprecation")
+	@SuppressLint("NewApi")
 	private void handleMultiline() {
 		if (this.type == null || this.type != Type.Combined) return;
+		int width;
 		Display display = ((Activity) this.context).getWindowManager()
 				.getDefaultDisplay();
-		Point size = new Point();
-		display.getSize(size);
-		if (size.x < MIN_DUE_NEXT_TO_REMINDER_SIZE) {
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR2) {
+			width = display.getWidth();
+		} else {
+			Point size = new Point();
+			display.getSize(size);
+			width = size.x;
+		}
+		if (width < MIN_DUE_NEXT_TO_REMINDER_SIZE) {
 			this.mainWrapper.setOrientation(VERTICAL);
 			android.view.ViewGroup.LayoutParams dueParams = this.dueWrapper
 					.getLayoutParams();

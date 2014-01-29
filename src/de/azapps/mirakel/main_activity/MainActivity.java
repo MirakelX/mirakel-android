@@ -68,6 +68,8 @@ import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.helper.UndoHistory;
 import de.azapps.mirakel.main_activity.list_fragment.ListFragment;
 import de.azapps.mirakel.main_activity.task_fragment.TaskFragment;
+import de.azapps.mirakel.main_activity.task_fragment.TaskFragmentV14;
+import de.azapps.mirakel.main_activity.task_fragment.TaskFragmentV8;
 import de.azapps.mirakel.main_activity.tasks_fragment.TasksFragment;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -567,7 +569,11 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		tasksFragment.setActivity(this);
 		fragments.add(tasksFragment);
 		if (!MirakelPreferences.isTablet()) {
-			fragments.add(new TaskFragment());
+			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+				fragments.add(new TaskFragmentV8());
+			} else {
+				fragments.add(new TaskFragmentV14());
+			}
 		}
 		if (MainActivity.isRTL && !MirakelPreferences.isTablet()) {
 			final Fragment[] fragmentsLocal = new Fragment[fragments.size()];

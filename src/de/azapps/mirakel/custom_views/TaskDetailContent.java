@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.Log;
 
 public class TaskDetailContent extends BaseTaskDetailRow {
 
@@ -57,6 +58,7 @@ public class TaskDetailContent extends BaseTaskDetailRow {
 
 			@Override
 			public void onClick(View v) {
+				Log.d(TAG, "edit content");
 				TaskDetailContent.this.isContentEdit = !TaskDetailContent.this.isContentEdit;
 				if (!TaskDetailContent.this.isContentEdit) {
 					saveContentHelper();
