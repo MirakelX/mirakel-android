@@ -42,14 +42,17 @@ import de.azapps.mirakelandroid.R;
 
 @SuppressLint("UseSparseArrays")
 public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
+	static class ListHolder {
+		TextView listAccount;
+		ImageView listRowDrag;
+		TextView listRowName;
+		TextView listRowTaskNumber;
+	}
 	@SuppressWarnings("unused")
 	private static final String TAG = "ListAdapter";
 	private boolean enableDrop;
-	private Map<Integer, View> viewsForLists = new HashMap<Integer, View>();
 
-	public View getViewForList(ListMirakel list) {
-		return viewsForLists.get(list.getId());
-	}
+	private final Map<Integer, View> viewsForLists = new HashMap<Integer, View>();
 
 	public ListAdapter(Context c) {
 		// do not call this, only for error-fixing there
@@ -64,7 +67,7 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 
 	@Override
 	public void changeData(List<ListMirakel> lists) {
-		viewsForLists.clear();
+		this.viewsForLists.clear();
 		super.changeData(lists);
 	}
 
@@ -74,8 +77,8 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 		ListHolder holder = null;
 
 		if (row == null) {
-			LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-			row = inflater.inflate(layoutResourceId, parent, false);
+			LayoutInflater inflater = ((Activity) this.context).getLayoutInflater();
+			row = inflater.inflate(this.layoutResourceId, parent, false);
 			holder = new ListHolder();
 			holder.listRowName = (TextView) row
 					.findViewById(R.id.list_row_name);
@@ -89,18 +92,19 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 		} else {
 			holder = (ListHolder) row.getTag();
 		}
-		ListMirakel list = data.get(position);
-		if (!enableDrop)
+		ListMirakel list = this.data.get(position);
+		if (!this.enableDrop) {
 			holder.listRowDrag.setVisibility(View.GONE);
-		else
+		} else {
 			holder.listRowDrag.setVisibility(View.VISIBLE);
+		}
 
 		holder.listRowName.setText(list.getName());
 		holder.listRowName.setTag(list);
 		holder.listRowTaskNumber.setText("" + list.countTasks());
-		if(list.isSpecialList()||!MirakelPreferences.isShowAccountName())
+		if(list.isSpecialList()||!MirakelPreferences.isShowAccountName()) {
 			holder.listAccount.setVisibility(View.GONE);
-		else{
+		} else{
 			holder.listAccount.setVisibility(View.VISIBLE);
 			AccountMirakel a = list.getAccount();
 			if (a == null) {
@@ -109,29 +113,30 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 				list.save(false);
 			}
 			holder.listAccount.setText(a.getName());
-			holder.listAccount.setTextColor(context.getResources().getColor(android.R.color.darker_gray));
+			holder.listAccount.setTextColor(this.context.getResources().getColor(android.R.color.darker_gray));
 		}
-		viewsForLists.put(list.getId(), row);
+		this.viewsForLists.put(list.getId(), row);
 		int w = row.getWidth() == 0 ? parent.getWidth() : row.getWidth();
-		Helpers.setListColorBackground(list, row, darkTheme, w);
-		if (selected.get(position)) {
-			row.setBackgroundColor(context.getResources().getColor(
-					darkTheme ? R.color.highlighted_text_holo_dark
+		Helpers.setListColorBackground(list, row, w);
+		if (this.selected.get(position)) {
+			row.setBackgroundColor(this.context.getResources().getColor(
+					this.darkTheme ? R.color.highlighted_text_holo_dark
 							: R.color.highlighted_text_holo_light));
 		}
 
 		return row;
 	}
 
-	public void onRemove(int which) {
-		if (which < 0 || which > data.size())
-			return;
-		viewsForLists.remove(data.get(which).getId());
-		data.remove(which);
+	public View getViewForList(ListMirakel list) {
+		return this.viewsForLists.get(list.getId());
+	}
+
+	public boolean isDropEnabled() {
+		return this.enableDrop;
 	}
 
 	public void onDrop(final int from, final int to) {
-		ListMirakel t = data.get(from);
+		ListMirakel t = this.data.get(from);
 		String TABLE;
 		if (t.getId() < 0) {
 			TABLE = SpecialList.TABLE;
@@ -141,45 +146,39 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 		if (to < from) {// move list up
 			Mirakel.getWritableDatabase().execSQL(
 					"UPDATE " + TABLE + " SET lft=lft+2 where lft>="
-							+ data.get(to).getLft() + " and lft<"
-							+ data.get(from).getLft());
+							+ this.data.get(to).getLft() + " and lft<"
+							+ this.data.get(from).getLft());
 		} else if (to > from) {// move list down
 			Mirakel.getWritableDatabase().execSQL(
 					"UPDATE " + TABLE + " SET lft=lft-2 where lft>"
-							+ data.get(from).getLft() + " and lft<="
-							+ data.get(to).getLft());
-		} else {// Nothing
-			return;
-		}
-		t.setLft(data.get(to).getLft());
+							+ this.data.get(from).getLft() + " and lft<="
+							+ this.data.get(to).getLft());
+		} else return;
+		t.setLft(this.data.get(to).getLft());
 		t.save();
 		Mirakel.getWritableDatabase().execSQL(
 				"UPDATE " + TABLE + " SET rgt=lft+1;");// Fix rgt
-		data.remove(from);
-		data.add(to, t);
+		this.data.remove(from);
+		this.data.add(to, t);
 		notifyDataSetChanged();
 		Thread load = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				data = ListMirakel.all();
+				ListAdapter.this.data = ListMirakel.all();
 			}
 		});
 		load.start();
 	}
 
+	public void onRemove(int which) {
+		if (which < 0 || which > this.data.size())
+			return;
+		this.viewsForLists.remove(this.data.get(which).getId());
+		this.data.remove(which);
+	}
+
 	public void setEnableDrop(boolean enableDrop) {
 		this.enableDrop = enableDrop;
-	}
-
-	public boolean isDropEnabled() {
-		return enableDrop;
-	}
-
-	static class ListHolder {
-		TextView listRowName;
-		TextView listRowTaskNumber;
-		TextView listAccount;
-		ImageView listRowDrag;
 	}
 
 }

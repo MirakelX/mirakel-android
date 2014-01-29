@@ -34,13 +34,18 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import de.azapps.mirakel.adapter.MirakelArrayAdapter;
+import de.azapps.mirakel.custom_views.TaskDetailView.TYPE;
+import de.azapps.mirakel.custom_views.TaskDetailView.TYPE.NoSuchItemException;
 import de.azapps.mirakel.helper.MirakelPreferences;
-import de.azapps.mirakel.main_activity.task_fragment.TaskFragmentAdapter.TYPE;
-import de.azapps.mirakel.main_activity.task_fragment.TaskFragmentAdapter.TYPE.NoSuchItemException;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.Log;
 
 public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
+	static class ListHolder {
+		ImageView rowDrag;
+		TextView rowName;
+	}
+
 	private static final String TAG = "TaskFragmentSettingsAdapter";
 
 	public TaskFragmentSettingsAdapter(Context c) {
@@ -60,15 +65,13 @@ public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
 
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
-		if (data.size() - 1 == position
-				&& data.get(position) == TaskFragmentSettingsFragment.ADD_KEY) {
-			return setupAddButton();
-		}
+		if (this.data.size() - 1 == position
+				&& this.data.get(position) == TaskFragmentSettingsFragment.ADD_KEY) return setupAddButton();
 		View row = convertView;
 		ListHolder holder = null;
 		if (row == null || row.getId() != R.id.wrapper_taskfragmentsettings_row) {
-			LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-			row = inflater.inflate(layoutResourceId, parent, false);
+			LayoutInflater inflater = ((Activity) this.context).getLayoutInflater();
+			row = inflater.inflate(this.layoutResourceId, parent, false);
 			holder = new ListHolder();
 			holder.rowName = (TextView) row
 					.findViewById(R.id.row_taskfragment_settings_name);
@@ -78,46 +81,69 @@ public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
 		} else {
 			holder = (ListHolder) row.getTag();
 		}
-		final Integer item = data.get(position);
+		final Integer item = this.data.get(position);
 		holder.rowDrag.setVisibility(View.VISIBLE);
 
 		try {
-			holder.rowName.setText(TYPE.getTranslatedName(context, item));
+			holder.rowName.setText(TYPE.getTranslatedName(this.context, item));
 		} catch (NoSuchItemException e) {
 			holder.rowName.setText("");
 		}
 		holder.rowName.setTag(item);
-		if (selected.get(position)) {
-			row.setBackgroundColor(context.getResources().getColor(
-					darkTheme ? R.color.highlighted_text_holo_dark
+		if (this.selected.get(position)) {
+			row.setBackgroundColor(this.context.getResources().getColor(
+					this.darkTheme ? R.color.highlighted_text_holo_dark
 							: R.color.highlighted_text_holo_light));
 		}
 
 		return row;
 	}
 
+	@Override
+	public void notifyDataSetChanged() {
+		super.notifyDataSetChanged();
+		this.data.remove(this.data.size()-1);
+		MirakelPreferences.setTaskFragmentLayout(this.data);
+		this.data.add(TaskFragmentSettingsFragment.ADD_KEY);
+	}
+
+	public void onDrop(final int from, final int to) {
+		Integer item = this.data.get(from);
+		this.data.remove(from);
+		this.data.add(to, item);
+		notifyDataSetChanged();
+	}
+
+	public void onRemove(int which) {
+		Log.d(TAG, "which" + which);
+		if (which < 0 || which > this.data.size())
+			return;
+		this.data.remove(which);
+		notifyDataSetChanged();
+	}
+
 	private View setupAddButton() {
-		Spinner b = new Spinner(context);
+		Spinner b = new Spinner(this.context);
 		final SparseArray<String> allItems = new SparseArray<String>();
 		try {
 			allItems.put(TYPE.HEADER,
-					TYPE.getTranslatedName(context, TYPE.HEADER));
+					TYPE.getTranslatedName(this.context, TYPE.HEADER));
 			allItems.put(TYPE.CONTENT,
-					TYPE.getTranslatedName(context, TYPE.CONTENT));
-			allItems.put(TYPE.DUE, TYPE.getTranslatedName(context, TYPE.DUE));
-			allItems.put(TYPE.FILE, TYPE.getTranslatedName(context, TYPE.FILE));
+					TYPE.getTranslatedName(this.context, TYPE.CONTENT));
+			allItems.put(TYPE.DUE, TYPE.getTranslatedName(this.context, TYPE.DUE));
+			allItems.put(TYPE.FILE, TYPE.getTranslatedName(this.context, TYPE.FILE));
 			allItems.put(TYPE.PROGRESS,
-					TYPE.getTranslatedName(context, TYPE.PROGRESS));
+					TYPE.getTranslatedName(this.context, TYPE.PROGRESS));
 			allItems.put(TYPE.SUBTASK,
-					TYPE.getTranslatedName(context, TYPE.SUBTASK));
+					TYPE.getTranslatedName(this.context, TYPE.SUBTASK));
 //			allItems.put(TYPE.SUBTITLE,
 //					TYPE.getTranslatedName(context, TYPE.SUBTITLE));
 			allItems.put(TYPE.REMINDER,
-					TYPE.getTranslatedName(context, TYPE.REMINDER));
+					TYPE.getTranslatedName(this.context, TYPE.REMINDER));
 		} catch (NoSuchItemException e) {
 			Log.wtf(TAG, "go sleeping, its to late");
 		}
-		for (int d : data) {
+		for (int d : this.data) {
 			if (d != TaskFragmentSettingsFragment.ADD_KEY) {
 				allItems.remove(d);
 			}
@@ -128,7 +154,7 @@ public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
 			items[i + 1] = allItems.valueAt(i);
 		}
 		ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(
-				context, android.R.layout.simple_spinner_item, items);
+				this.context, android.R.layout.simple_spinner_item, items);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		b.setAdapter(adapter);
 		b.setSelection(0);
@@ -138,7 +164,7 @@ public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
 			public void onItemSelected(AdapterView<?> arg0, View arg1, int pos,
 					long arg3) {
 				if (pos != 0) {
-					data.add(data.size()-1, allItems.keyAt(pos - 1));
+					TaskFragmentSettingsAdapter.this.data.add(TaskFragmentSettingsAdapter.this.data.size()-1, allItems.keyAt(pos - 1));
 					notifyDataSetChanged();
 				}
 
@@ -151,36 +177,10 @@ public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
 			}
 		});
 		if(items.length==1)
+		 {
 			b.setEnabled(false);//Nothing to add
+		}
 		return b;
-	}
-
-	public void onRemove(int which) {
-		Log.d(TAG, "which" + which);
-		if (which < 0 || which > data.size())
-			return;
-		data.remove(which);
-		notifyDataSetChanged();
-	}
-
-	@Override
-	public void notifyDataSetChanged() {
-		super.notifyDataSetChanged();
-		data.remove(data.size()-1);
-		MirakelPreferences.setTaskFragmentLayout(data);
-		data.add(TaskFragmentSettingsFragment.ADD_KEY);
-	}
-
-	public void onDrop(final int from, final int to) {
-		Integer item = data.get(from);
-		data.remove(from);
-		data.add(to, item);
-		notifyDataSetChanged();
-	}
-
-	static class ListHolder {
-		TextView rowName;
-		ImageView rowDrag;
 	}
 
 }

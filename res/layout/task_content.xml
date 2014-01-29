@@ -25,6 +25,7 @@
     <View
         android:id="@+id/item_separator"
         android:layout_width="match_parent"
+        android:background="@android:color/darker_gray"
         android:layout_height="1dp"
         android:layout_marginBottom="@dimen/marginTopDivider"
         android:layout_marginTop="@dimen/marginTopDivider" />
@@ -82,8 +83,7 @@
             android:background="@android:color/transparent"
             android:contentDescription="@string/edit"
             android:paddingEnd="-2dp"
-            android:paddingRight="-2dp"
-            android:src="@android:drawable/ic_menu_add" />
+            android:paddingRight="-2dp"/>
     </RelativeLayout>
 
 </LinearLayout>

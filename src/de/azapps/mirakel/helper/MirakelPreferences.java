@@ -20,7 +20,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.preference.PreferenceManager;
-import de.azapps.mirakel.main_activity.task_fragment.TaskFragmentAdapter.TYPE;
+import de.azapps.mirakel.custom_views.TaskDetailView.TYPE;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -282,10 +282,10 @@ public class MirakelPreferences {
 			else if (v == 2) return orientation == Configuration.ORIENTATION_PORTRAIT;
 			else if (v == 3) return true;
 		}
-
+		
 		return settings.getBoolean("useTabletLayout", context.getResources()
-				.getBoolean(R.bool.isTablet));
-
+		.getBoolean(R.bool.isTablet));	
+	
 	}
 
 	public static List<Integer> loadIntArray(String arrayName) {

@@ -63,7 +63,6 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Helpers;
-import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.Helpers.ExecInterfaceWithTask;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
@@ -72,7 +71,6 @@ import de.azapps.mirakel.main_activity.task_fragment.TaskFragment;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
@@ -175,6 +173,8 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 									WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 						} else if (!hasFocus) {
 							TasksFragment.this.newTask.requestFocus();
+							imm.showSoftInput(TasksFragment.this.newTask,
+									InputMethodManager.SHOW_IMPLICIT);
 						} else if (!request_focus) {
 							clearFocus();
 						}
@@ -195,6 +195,10 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 
 	public ListView getListView() {
 		return this.listView;
+	}
+
+	public boolean isReady() {
+		return this.newTask!=null;
 	}
 
 	private boolean newTask(String name) {
@@ -382,32 +386,12 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 		AsyncTask<Void, Void, TaskAdapter> asyncTask = new AsyncTask<Void, Void, TaskAdapter>() {
 			@Override
 			protected TaskAdapter doInBackground(Void... params) {
-				TasksFragment.this.adapter = new TaskAdapter(TasksFragment.this.main, R.layout.tasks_row,
+				TasksFragment.this.adapter = new TaskAdapter(
+						TasksFragment.this.main,
+						R.layout.task_summary,
 						new ArrayList<Task>(TasksFragment.this.values.subList(0,
 								TasksFragment.this.ItemCount > TasksFragment.this.values.size() ? TasksFragment.this.values.size()
-										: TasksFragment.this.ItemCount)), new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						Task task = (Task) v.getTag();
-						task.toggleDone();
-						TasksFragment.this.main.saveTask(task);
-						ReminderAlarm.updateAlarms(getActivity());
-					}
-				}, new OnClickListener() {
-					@Override
-					public void onClick(final View v) {
-						final Task task = (Task) v.getTag();
-						TaskDialogHelpers.handlePriority(TasksFragment.this.main, task,
-								new ExecInterface() {
-
-							@Override
-							public void exec() {
-								TasksFragment.this.main.updatesForTask(task);
-							}
-						});
-
-					}
-				}, TasksFragment.this.main.getCurrentList().getId());
+										: TasksFragment.this.ItemCount)), TasksFragment.this.main.getCurrentList().getId());
 				return TasksFragment.this.adapter;
 			}
 
@@ -435,7 +419,7 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 							items.toArray(new CharSequence[items.size()]),
 							new DialogInterface.OnClickListener() {
 								@Override
-								public void onClick(DialogInterface dialog, @SuppressWarnings("hiding") int item) {
+								public void onClick(DialogInterface dialog, int item) {
 									Task t = TasksFragment.this.values.get((int) id);
 									switch (item) {
 										case TASK_RENAME:
@@ -513,12 +497,9 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 
 				@Override
 				public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-					Log.d(TAG, "item " + position + " selected");
 					int oldCount = TasksFragment.this.adapter.getSelectedCount();
 					TasksFragment.this.adapter.setSelected(position, checked);
 					int newCount = TasksFragment.this.adapter.getSelectedCount();
-					Log.e(TAG, "old count: " + oldCount + " | newCount: "
-							+ newCount);
 					mode.setTitle(TasksFragment.this.main.getResources().getQuantityString(
 							R.plurals.selected_tasks, newCount, newCount));
 					if (oldCount < 2 && newCount >= 2
@@ -535,18 +516,19 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 					return false;
 				}
 			});
+
+			lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+				@Override
+				public void onItemClick(AdapterView<?> parent, View item, int position, long id) {
+					// TODO Remove Bad Hack
+					Task task = TasksFragment.this.values.get((int) id);
+					Log.v(TAG,
+							"Switch to Task " + task.getId() + " ("
+									+ task.getUUID() + ")");
+					TasksFragment.this.main.setCurrentTask(task, true);
+				}
+			});
 		}
-		lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View item, int position, long id) {
-				// TODO Remove Bad Hack
-				Task task = TasksFragment.this.values.get((int) id);
-				Log.v(TAG,
-						"Switch to Task " + task.getId() + " ("
-								+ task.getUUID() + ")");
-				TasksFragment.this.main.setCurrentTask(task, true);
-			}
-		});
 	}
 
 	public void updateButtons() {
@@ -599,7 +581,7 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 				public void onClick(View v) {
 					// TODO BAHHHH this is ugly!
 					final Task task = new Task("");
-					task.setList(TasksFragment.this.main.getCurrentList(),true);
+					task.setList(TasksFragment.this.main.getCurrentList(), true);
 					task.setId(0);
 					TaskDialogHelpers.handleAudioRecord(TasksFragment.this.main, task,
 							new ExecInterfaceWithTask() {
