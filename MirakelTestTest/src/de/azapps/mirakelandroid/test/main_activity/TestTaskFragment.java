@@ -12,6 +12,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
 import com.jayway.android.robotium.solo.Solo;
 
 import de.azapps.mirakel.helper.DateTimeHelper;
@@ -115,12 +116,31 @@ public class TestTaskFragment extends
 				+ "");
 	}
 
+	public void testReminder() {
+		// TODO set custom date and time
+		TextView reminder = (TextView) solo.getView(R.id.task_reminder);
+		if (!reminder.getText().toString()
+				.equals(solo.getString(R.string.no_reminder))) {
+			clearReminder(reminder);
+		}
+
+		solo.clickOnView(reminder);
+		solo.waitForDialogToOpen();
+		solo.clickOnButton(solo.getString(android.R.string.ok));
+		solo.waitForDialogToClose();
+		assertEquals("Change reminder failed", DateTimeHelper.formatReminder(
+				getActivity(), new GregorianCalendar()), reminder.getText()
+				.toString());
+
+		clearReminder(reminder);
+	}
+
 	public void testDue() {
 		TextView due = (TextView) solo.getView(R.id.task_due);
-		if(!due.getText().toString().equals(solo.getString(R.string.no_date))){
+		if (!due.getText().toString().equals(solo.getString(R.string.no_date))) {
 			clearDue(due);
 		}
-		
+
 		solo.clickOnView(due);
 		solo.waitForDialogToOpen();
 		// TODO Fix here to set other due
@@ -144,17 +164,17 @@ public class TestTaskFragment extends
 		// solo.clickOnText(then.get(Calendar.YEAR) + "");
 		solo.clickOnButton(solo.getString(android.R.string.ok));
 		solo.waitForDialogToClose();
-//		if (((CheckBox) solo.getView(R.id.task_done)).isChecked()) {
-//			Log.d(TAG,"done");
-//			assertEquals("Change due failed",
-//					DateTimeHelper.formatDate(new GregorianCalendar()), due
-//							.getText().toString());
-//		} else {
-//			Log.d(TAG,"not done");
-			assertEquals("Change due failed", DateTimeHelper.formatDate(
-					getActivity(), new GregorianCalendar()), due.getText()
-					.toString());
-//		}
+		// if (((CheckBox) solo.getView(R.id.task_done)).isChecked()) {
+		// Log.d(TAG,"done");
+		// assertEquals("Change due failed",
+		// DateTimeHelper.formatDate(new GregorianCalendar()), due
+		// .getText().toString());
+		// } else {
+		// Log.d(TAG,"not done");
+		assertEquals("Change due failed", DateTimeHelper.formatDate(
+				getActivity(), new GregorianCalendar()), due.getText()
+				.toString());
+		// }
 
 		clearDue(due);
 
@@ -167,6 +187,16 @@ public class TestTaskFragment extends
 		solo.waitForDialogToClose();
 		assertEquals("Clear due failed", solo.getString(R.string.no_date), due
 				.getText().toString());
+	}
+
+	private void clearReminder(TextView reminder) {
+		solo.clickOnView(reminder);
+		solo.waitForDialogToOpen();
+		solo.clickOnButton(solo.getString(R.string.no_date));
+		solo.waitForDialogToClose();
+		assertEquals("Clear reminder failed",
+				solo.getString(R.string.no_reminder), reminder.getText()
+						.toString());
 	}
 
 	//
