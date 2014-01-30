@@ -68,6 +68,7 @@ public class TaskFragmentV14 extends TaskFragment {
 		@Override
 		public void onDestroyActionMode(ActionMode mode) {
 			handleCloseCab();
+			TaskFragmentV14.this.mActionMode = null;
 		}
 
 		// Called each time the action mode
@@ -85,7 +86,7 @@ public class TaskFragmentV14 extends TaskFragment {
 
 	@Override
 	protected void changeVisiblity(boolean visible, MenuItem item) {
-		if(this.mActionMode!=null&&item!=null){
+		if (this.mActionMode != null && item != null) {
 			item.setVisible(visible);
 		}
 	}

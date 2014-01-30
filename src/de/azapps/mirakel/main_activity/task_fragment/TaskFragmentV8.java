@@ -24,7 +24,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-
 public class TaskFragmentV8 extends TaskFragment {
 
 	private ActionMode					mActionMode;
@@ -66,6 +65,7 @@ public class TaskFragmentV8 extends TaskFragment {
 		@Override
 		public void onDestroyActionMode(ActionMode mode) {
 			handleCloseCab();
+			TaskFragmentV8.this.mActionMode = null;
 		}
 
 		// Called each time the action mode
@@ -83,7 +83,7 @@ public class TaskFragmentV8 extends TaskFragment {
 
 	@Override
 	protected void changeVisiblity(boolean visible, MenuItem item) {
-		if(this.mActionMode!=null&&item!=null){
+		if (this.mActionMode != null && item != null) {
 			item.setVisible(visible);
 		}
 	}
