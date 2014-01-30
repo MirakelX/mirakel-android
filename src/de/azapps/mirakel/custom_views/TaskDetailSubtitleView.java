@@ -63,6 +63,12 @@ public abstract class TaskDetailSubtitleView<E, T extends TaskDetailSubListBase<
 		addView(this.subtitle);
 	}
 
+	public void disableMarked(){
+		for(T l:this.viewList){
+			l.disableMark();
+		}
+	}
+
 	abstract T newElement();
 
 	protected void updateSubviews(List<E> elementList) {

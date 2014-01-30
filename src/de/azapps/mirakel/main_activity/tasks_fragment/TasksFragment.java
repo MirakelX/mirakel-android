@@ -503,6 +503,7 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 				@Override
 				public void onDestroyActionMode(ActionMode mode) {
 					TasksFragment.this.adapter.resetSelected();
+
 				}
 
 				@Override

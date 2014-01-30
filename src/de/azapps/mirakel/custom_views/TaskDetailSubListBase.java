@@ -21,10 +21,15 @@ package de.azapps.mirakel.custom_views;
 import android.content.Context;
 
 public abstract class TaskDetailSubListBase<T> extends BaseTaskDetailRow {
-
+	protected boolean	markedEnabled;
 
 	public TaskDetailSubListBase(Context ctx) {
 		super(ctx);
+	}
+
+
+	public void disableMark(){
+		this.markedEnabled=false;
 	}
 
 	abstract public void updatePart(T newValue);

@@ -26,6 +26,7 @@ import android.util.SparseArray;
 import de.azapps.mirakel.custom_views.BaseTaskDetailRow.OnTaskChangedListner;
 import de.azapps.mirakel.custom_views.TaskDetailContent.OnEditChanged;
 import de.azapps.mirakel.custom_views.TaskDetailDueReminder.Type;
+import de.azapps.mirakel.custom_views.TaskDetailFilePart.OnFileClickListner;
 import de.azapps.mirakel.custom_views.TaskDetailFilePart.OnFileMarkedListner;
 import de.azapps.mirakel.custom_views.TaskDetailHeader.OnDoneChangedListner;
 import de.azapps.mirakel.custom_views.TaskSummary.OnTaskClickListner;
@@ -174,6 +175,13 @@ public class TaskDetailView extends BaseTaskDetailRow implements OnTaskChangedLi
 		}
 	}
 
+	public void setOnFileClicked(OnFileClickListner l) {
+		BaseTaskDetailRow v = this.views.get(TYPE.FILE);
+		if (v != null) {
+			((TaskDetailFile) v).setOnFileClicked(l);
+		}
+	}
+
 	public void setOnFileMarked(OnFileMarkedListner l) {
 		BaseTaskDetailRow v = this.views.get(TYPE.FILE);
 		if (v != null) {
@@ -270,10 +278,12 @@ public class TaskDetailView extends BaseTaskDetailRow implements OnTaskChangedLi
 		BaseTaskDetailRow v = this.views.get(TYPE.SUBTASK);
 		if(v!=null){
 			v.update(this.task);
+			((TaskDetailSubtask) v).disableMarked();
 		}
 		v = this.views.get(TYPE.FILE);
 		if(v!=null){
 			v.update(this.task);
+			((TaskDetailFile) v).disableMarked();
 		}
 		cancelContent();
 

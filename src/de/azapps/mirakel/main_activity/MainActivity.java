@@ -686,6 +686,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 				break;
 			case RESULT_ADD_FILE:
 				if (intent != null) {
+					Log.d(TAG, "taskname " + this.currentTask.getName());
 					final String file_path = FileUtils.getPathFromUri(
 							intent.getData(), this);
 					if (FileMirakel.newFile(this, this.currentTask, file_path) == null) {
@@ -733,8 +734,9 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 					}
 					task.addFile(this,
 							FileUtils.getPathFromUri(this.fileUri, this));
-					setCurrentList(task.getList());
-					setCurrentTask(task, true);
+					// setCurrentList(task.getList());
+					// setCurrentTask(task, true);
+					getTaskFragment().update(task);
 				}
 				break;
 			default:
@@ -1202,8 +1204,9 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 	}
 
 	public void setCurrentTask(final Task currentTask, final boolean switchFragment, final boolean resetGoBackTo) {
-
+		Log.d(TAG, "setTask " + currentTask.getName());
 		this.currentTask = currentTask;
+		Log.d(TAG, "setTask " + this.currentTask.getName());
 		if (resetGoBackTo) {
 			this.goBackTo.clear();
 		}
@@ -1222,6 +1225,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 					MainActivity.getTasksFragmentPosition(), false);
 			this.mViewPager.setCurrentItem(getTaskFragmentPosition(), smooth);
 		}
+		Log.d(TAG, "setTask " + this.currentTask.getName());
 	}
 
 	public void setFileUri(final Uri file) {

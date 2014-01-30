@@ -40,6 +40,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 import de.azapps.mirakel.custom_views.BaseTaskDetailRow.OnTaskChangedListner;
 import de.azapps.mirakel.custom_views.TaskDetailContent.OnEditChanged;
+import de.azapps.mirakel.custom_views.TaskDetailFilePart.OnFileClickListner;
 import de.azapps.mirakel.custom_views.TaskDetailFilePart.OnFileMarkedListner;
 import de.azapps.mirakel.custom_views.TaskDetailView;
 import de.azapps.mirakel.custom_views.TaskSummary.OnTaskClickListner;
@@ -160,6 +161,7 @@ public abstract class TaskFragment extends Fragment {
 		}
 		Log.i(TAG,
 				"item clicked");
+		closeActionMode();
 		return true;
 
 	}
@@ -243,7 +245,8 @@ public abstract class TaskFragment extends Fragment {
 				@Override
 				public void onClick(View v) {
 					TaskDialogHelpers.handleAudioRecord(getActivity(),
-							TaskFragment.this.main.getCurrentTask(), new ExecInterfaceWithTask() {
+							TaskFragment.this.task,
+							new ExecInterfaceWithTask() {
 						@Override
 						public void exec(Task t) {
 							update(t);
@@ -349,6 +352,14 @@ public abstract class TaskFragment extends Fragment {
 					closeActionMode();;
 				}
 
+			}
+		});
+		this.detailView.setOnFileClicked(new OnFileClickListner() {
+
+			@Override
+			public void clickOnFile(FileMirakel file) {
+				TaskDialogHelpers.handleFileOpen(TaskFragment.this.main, file);
+				return;
 			}
 		});
 

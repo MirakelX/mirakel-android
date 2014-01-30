@@ -27,20 +27,28 @@ import android.widget.TextView;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.Log;
 
 public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
+
+	public interface OnFileClickListner{
+		abstract public void clickOnFile(FileMirakel f);
+	}
 
 	public interface OnFileMarkedListner {
 		abstract public void markFile(View v, FileMirakel e, boolean marked);
 	}
+
+	private static final String	TAG	= "TaskDetailFilePart";
+
+	private OnFileClickListner clickListner;
 	private final Context	ctx;
 	private FileMirakel	file;
-	private final ImageView	fileImage;
 
+	private final ImageView	fileImage;
 	private final TextView	fileName;
 	private final TextView	filePath;
 	private boolean			marked;
-	private boolean			markedEnabled;
 	private OnFileMarkedListner	markedListner;
 
 	public TaskDetailFilePart(Context context) {
@@ -56,8 +64,10 @@ public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
 			public void onClick(View v) {
 				if (TaskDetailFilePart.this.markedEnabled) {
 					handleMark();
+				} else if (TaskDetailFilePart.this.clickListner != null) {
+					TaskDetailFilePart.this.clickListner
+					.clickOnFile(TaskDetailFilePart.this.file);
 				}
-
 			}
 		});
 		setOnLongClickListener(new OnLongClickListener() {
@@ -77,6 +87,10 @@ public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
 		}
 	}
 
+	public void setOnFileClickListner(final OnFileClickListner l) {
+		this.clickListner = l;
+	}
+
 	public void setOnFileMarked(final OnFileMarkedListner l) {
 		this.markedListner = l;
 	}
@@ -92,6 +106,7 @@ public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
 				android.R.color.transparent));
 		// this will break the preview images...
 		// if (f==null&&this.file==null||f!=null&&f.equals(this.file)) return;
+		Log.d(TAG, "update");
 		this.file = f;
 		new Thread(new Runnable() {
 			private Bitmap	preview;

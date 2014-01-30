@@ -52,7 +52,6 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements android.
 	private static final String		TAG	= "TaskSummary";
 	private boolean marked;
 	private OnTaskMarkedListner	markedListner;
-	private boolean	markEnabeld;
 	private final ProgressWheel taskProgress;
 	private final CheckBox			taskRowDone;
 	private final RelativeLayout	taskRowDoneWrapper;
@@ -117,7 +116,7 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements android.
 		setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (!TaskSummary.this.markEnabeld) {
+				if (!TaskSummary.this.markedEnabled) {
 					l.onTaskClick(TaskSummary.this.task);
 				} else {
 					handleMark();
@@ -140,7 +139,7 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements android.
 
 	public void setShortMark(boolean shortMark) {
 		Log.w(TAG, "enable shortmark " + shortMark);
-		this.markEnabeld = shortMark;
+		this.markedEnabled = shortMark;
 	}
 
 	private void updateName() {

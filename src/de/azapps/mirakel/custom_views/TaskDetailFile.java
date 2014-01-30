@@ -21,6 +21,7 @@ package de.azapps.mirakel.custom_views;
 import android.app.Activity;
 import android.content.Context;
 import android.view.View;
+import de.azapps.mirakel.custom_views.TaskDetailFilePart.OnFileClickListner;
 import de.azapps.mirakel.custom_views.TaskDetailFilePart.OnFileMarkedListner;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.main_activity.MainActivity;
@@ -29,6 +30,7 @@ import de.azapps.mirakelandroid.R;
 
 public class TaskDetailFile extends TaskDetailSubtitleView<FileMirakel, TaskDetailFilePart> implements OnFileMarkedListner {
 	private int					markCounter;
+	private OnFileClickListner	onFileClicked;
 	private OnFileMarkedListner	onFileMarked;
 
 	public TaskDetailFile(Context ctx) {
@@ -69,6 +71,7 @@ public class TaskDetailFile extends TaskDetailSubtitleView<FileMirakel, TaskDeta
 	TaskDetailFilePart newElement() {
 		TaskDetailFilePart t = new TaskDetailFilePart(this.context);
 		t.setOnFileMarked(this);
+		t.setOnFileClickListner(this.onFileClicked);
 		return t;
 	}
 
@@ -83,6 +86,10 @@ public class TaskDetailFile extends TaskDetailSubtitleView<FileMirakel, TaskDeta
 		if(this.cameraButton!=null){
 			this.cameraButton.setOnClickListener(onClick);
 		}
+	}
+
+	public void setOnFileClicked(OnFileClickListner l) {
+		this.onFileClicked = l;
 	}
 
 	public void setOnFileMarked(OnFileMarkedListner l) {
