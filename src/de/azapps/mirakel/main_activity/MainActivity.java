@@ -311,12 +311,17 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 							public void onClick(final DialogInterface dialog, final int which) {
 								for (final ListMirakel list : lists) {
 									list.destroy();
-									getListFragment().update();
 									if (getCurrentList().getId() == list
 											.getId()) {
 										setCurrentList(SpecialList
 												.firstSpecial());
 									}
+								}
+								if (getListFragment() != null
+										&& getListFragment().getAdapter() != null) {
+									getListFragment().getAdapter().changeData(
+											ListMirakel.all());
+									getListFragment().getAdapter().notifyDataSetChanged();
 								}
 							}
 						})
@@ -618,23 +623,27 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		}
 		if (this.menu == null) return;
 		int newmenu;
-		switch (position) {
-			case -1:
-				newmenu = R.menu.activity_list;
-				getSupportActionBar().setTitle(getString(R.string.list_title));
-				break;
-			case RIGHT_FRAGMENT:
-				newmenu = isRTL ? handleTasksFragmentMenu()
-						: handleTaskFragmentMenu();
-				break;
-			case LEFT_FRAGMENT:
-				newmenu = isRTL ? handleTaskFragmentMenu()
-						: handleTasksFragmentMenu();
-				break;
-			default:
-				Toast.makeText(getApplicationContext(),
-						"Where are the dragons?", Toast.LENGTH_LONG).show();
-				return;
+		if (this.isTablet && position != -1) {
+			newmenu = R.menu.tablet_right;
+		} else {
+			switch (position) {
+				case -1:
+					newmenu = R.menu.activity_list;
+					getSupportActionBar().setTitle(getString(R.string.list_title));
+					break;
+				case RIGHT_FRAGMENT:
+					newmenu = isRTL ? handleTasksFragmentMenu()
+							: handleTaskFragmentMenu();
+					break;
+				case LEFT_FRAGMENT:
+					newmenu = isRTL ? handleTaskFragmentMenu()
+							: handleTasksFragmentMenu();
+					break;
+				default:
+					Toast.makeText(getApplicationContext(),
+							"Where are the dragons?", Toast.LENGTH_LONG).show();
+					return;
+			}
 		}
 		if (setPosition) {
 			this.currentPosition = position;
@@ -797,6 +806,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 			setupLayout();
 			this.skipSwipe = true;
 			getTaskFragment().update(MainActivity.this.currentTask);
+			loadMenu(this.currentPosition, false, false);
 		} else {
 			getListFragment().setActivity(this);
 			getTasksFragment().setActivity(this);
