@@ -228,39 +228,6 @@ public class TaskDialogHelpers {
 
 	}
 
-	public static void handleFileOpen(final Activity context, final FileMirakel file) {
-		String[] items;
-		if (file.getPath().endsWith(".mp3")) {
-			items = context.getResources().getStringArray(
-					R.array.audio_playback_options);
-		} else {
-			items = new String[1];
-			items[0] = context.getResources().getStringArray(
-					R.array.audio_playback_options)[0];
-		}
-		new AlertDialog.Builder(context)
-		.setTitle(R.string.audio_playback_select_title)
-		.setItems(
-items,
-				new DialogInterface.OnClickListener() {
-
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						switch (which) {
-							case 0: // Open
-								openFile(context, file);
-								break;
-							case 1: // Loud playback
-								playbackFile(context, file, true);
-								break;
-							default: // Silent playback // For later
-								playbackFile(context, file, false);
-								break;
-						}
-					}
-				}).show();
-
-	}
 
 	public static void handlePriority(final Context ctx, final Task task, final Helpers.ExecInterface onSuccess) {
 

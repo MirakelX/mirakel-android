@@ -23,7 +23,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -357,8 +360,35 @@ public abstract class TaskFragment extends Fragment {
 		this.detailView.setOnFileClicked(new OnFileClickListner() {
 
 			@Override
-			public void clickOnFile(FileMirakel file) {
-				TaskDialogHelpers.handleFileOpen(TaskFragment.this.main, file);
+			public void clickOnFile(final FileMirakel file) {
+				final Context context = getActivity();
+				String[] items;
+				if (file.getPath().endsWith(".mp3")) {
+					items = context.getResources().getStringArray(
+							R.array.audio_playback_options);
+				} else {
+					TaskDialogHelpers.openFile(context, file);
+					return;
+				}
+				new AlertDialog.Builder(context)
+				.setTitle(R.string.audio_playback_select_title)
+				.setItems(items, new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						switch (which) {
+							case 0: // Open
+								TaskDialogHelpers.openFile(context,
+										file);
+								break;
+									default: // playback
+								TaskDialogHelpers
+								.playbackFile(getActivity(),
+										file, which == 1);
+								break;
+						}
+					}
+				}).show();
 				return;
 			}
 		});
