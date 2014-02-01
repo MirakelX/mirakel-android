@@ -615,14 +615,14 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		loadMenu(position, true, false);
 	}
 
-	public void loadMenu(int position, boolean setPosition, boolean fromShare) {
+	public void loadMenu(int position, boolean setPosition, final boolean fromShare) {
 		if (getTaskFragment() != null && getTaskFragment().getView() != null) {
 			final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 			imm.hideSoftInputFromWindow(getTaskFragment().getView()
 					.getWindowToken(), 0);
 		}
 		if (this.menu == null) return;
-		int newmenu;
+		final int newmenu;
 		if (this.isTablet && position != -1) {
 			newmenu = R.menu.tablet_right;
 		} else {
@@ -651,24 +651,34 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 
 		// Configure to use the desired menu
 		if (newmenu == -1) return;
-		this.menu.clear();
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(newmenu, this.menu);
-		if (this.menu.findItem(R.id.menu_sync_now) != null) {
-			this.menu.findItem(R.id.menu_sync_now).setVisible(
-					MirakelPreferences.useSync());
-		}
-		if (this.menu.findItem(R.id.menu_kill_button) != null) {
-			this.menu.findItem(R.id.menu_kill_button).setVisible(
-					MirakelPreferences.showKillButton());
-		}
-		if (this.menu.findItem(R.id.menu_contact) != null) {
-			this.menu.findItem(R.id.menu_contact).setVisible(BuildHelper.isBeta());
+		if(this.mViewPager!=null) {
+			this.mViewPager.post(new Runnable() {
+
+				@Override
+				public void run() {
+					MainActivity.this.menu.clear();
+					MenuInflater inflater = getMenuInflater();
+					inflater.inflate(newmenu, MainActivity.this.menu);
+					if (MainActivity.this.menu.findItem(R.id.menu_sync_now) != null) {
+						MainActivity.this.menu.findItem(R.id.menu_sync_now).setVisible(
+								MirakelPreferences.useSync());
+					}
+					if (MainActivity.this.menu.findItem(R.id.menu_kill_button) != null) {
+						MainActivity.this.menu.findItem(R.id.menu_kill_button).setVisible(
+								MirakelPreferences.showKillButton());
+					}
+					if (MainActivity.this.menu.findItem(R.id.menu_contact) != null) {
+						MainActivity.this.menu.findItem(R.id.menu_contact).setVisible(BuildHelper.isBeta());
+					}
+
+					if (!fromShare) {
+						updateShare();
+					}
+
+				}
+			});
 		}
 
-		if (!fromShare) {
-			updateShare();
-		}
 
 	}
 
