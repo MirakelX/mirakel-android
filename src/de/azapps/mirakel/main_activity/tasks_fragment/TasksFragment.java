@@ -61,7 +61,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
-import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Helpers.ExecInterfaceWithTask;
 import de.azapps.mirakel.helper.MirakelPreferences;
@@ -476,11 +475,7 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 						case R.id.done_task:
 							for (Task t : tasks) {
 								t.setDone(true);
-								try {
-									t.save();
-								} catch (NoSuchListException e) {
-									Log.d(TAG, "list did vanish");
-								}
+								t.safeSave();
 							}
 							TasksFragment.this.adapter.notifyDataSetChanged();
 							break;

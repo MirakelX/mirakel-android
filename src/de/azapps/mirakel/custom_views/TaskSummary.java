@@ -110,6 +110,7 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements android.
 		save();
 		updateName();
 		updateProgress();
+		updateDue();
 	}
 
 	public void setOnTaskClick(final OnTaskClickListner l) {
@@ -140,6 +141,19 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements android.
 	public void setShortMark(boolean shortMark) {
 		Log.w(TAG, "enable shortmark " + shortMark);
 		this.markedEnabled = shortMark;
+	}
+
+	private void updateDue() {
+		if (this.task.getDue() != null) {
+			this.taskRowDue.setVisibility(View.VISIBLE);
+			this.taskRowDue.setText(DateTimeHelper.formatDate(this.context,
+					this.task.getDue()));
+			this.taskRowDue.setTextColor(this.context.getResources().getColor(
+					TaskHelper.getTaskDueColor(this.task.getDue(),
+							this.task.isDone())));
+		} else {
+			this.taskRowDue.setVisibility(View.GONE);
+		}
 	}
 
 	private void updateName() {
@@ -192,16 +206,7 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements android.
 
 
 		// Due
-		if (this.task.getDue() != null) {
-			this.taskRowDue.setVisibility(View.VISIBLE);
-			this.taskRowDue.setText(DateTimeHelper.formatDate(this.context,
-					this.task.getDue()));
-			this.taskRowDue.setTextColor(this.context.getResources().getColor(
-					TaskHelper.getTaskDueColor(this.task.getDue(),
-							this.task.isDone())));
-		} else {
-			this.taskRowDue.setVisibility(View.GONE);
-		}
+		updateDue();
 		if (MirakelPreferences.colorizeTasks()) {
 			if (MirakelPreferences.colorizeSubTasks()) {
 				int w = getWidth();
