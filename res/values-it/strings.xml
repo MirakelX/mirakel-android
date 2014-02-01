@@ -28,7 +28,7 @@
   <string name="task_change_prio_title">Modifica priorità</string>
   <string name="task_delete_content">Eliminare veramente %s?</string>
   <string name="task_menu_sorting">Ordina attività</string>
-  <string name="task_sorting_title">Ordinamento delle attività</string>
+  <string name="task_sorting_title">Ordina le attività per</string>
   <string name="task_empty">Nessuna attività selezionata…</string>
   <string name="set_date">Imposta data</string>
   <string name="set_time">Imposta ora</string>

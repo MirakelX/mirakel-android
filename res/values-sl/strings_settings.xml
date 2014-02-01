@@ -18,12 +18,8 @@
   <string name="sync_frequency_summary">Uskladi vsakih %s minut</string>
   <string name="sync_frequency_summary_man">Uskladi le ročno</string>
   <string name="sync_caldav">Usklajevanje CalDAV</string>
-  <string name="sync_caldav_howto">
-<![CDATA[Namestiti je treba program za usklajevanje CalDAV, ki je skladen s programom Mirakel, kot je na primer <a href="https://play.google.com/store/apps/details?id=at.bitfire.davdroid">DAVdroid</a>.
-
-Dodati je treba račun v tak program in usklajevanje bi moralo samodejno delovati. Izbrati je treba le še seznam za usklajevanje.
-        ]]>
-    </string>
+  <string name="sync_caldav_howto"> </string>
+  <string name="download">Prejmi</string>
   <string name="sync_add_account">Dodaj račun</string>
   <string name="sync_taskwarrior_configure">Nastavitev strežnika Taskwarrior</string>
   <string name="sync_taskwarrior_scan_qr">Preberi kodo QR</string>
@@ -62,6 +58,7 @@ Dodati je treba račun v tak program in usklajevanje bi moralo samodejno delovat
   <string name="notifications_zero_show">Ne prikaži obvestil brez vsebine</string>
   <string name="reminder">Opomnik</string>
   <string name="reminders_persistent">Vztrajno prikazuj opomnike</string>
+  <string name="reminders_persistent_summary">Omogoči zapiranje opomnika</string>
   <string name="startup_title">Zagon programa</string>
   <string name="startup_show_lists">Pokaži vse sezname</string>
   <string name="startup_show_lists_summary">Ob zagonu pokaži vse sezname</string>

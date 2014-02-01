@@ -4,4 +4,9 @@
   <string name="action_credits">Créditos</string>
   <string name="action_credits_summary">Acerca de nosotros ;)</string>
   <string name="title_activity_credits">Créditos y acerca de</string>
+  <string name="credits_googleplus_description">Únete a nuestra comunidad G+</string>
+  <string name="credits_translations">Traducciones</string>
+  <string name="feedback">Enviar comentario</string>
+  <string name="credits_libraries">Bibliotecas usadas</string>
+  <string name="credits_license_title">Licencia</string>
 </resources>
