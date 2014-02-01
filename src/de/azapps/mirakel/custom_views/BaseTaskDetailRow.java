@@ -18,6 +18,7 @@
  ******************************************************************************/
 package de.azapps.mirakel.custom_views;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
@@ -44,6 +45,7 @@ public abstract class BaseTaskDetailRow extends LinearLayout {
 		this.context = ctx;
 	}
 
+	@SuppressLint("NewApi")
 	public BaseTaskDetailRow(Context ctx, AttributeSet attrs, int defStyle) {
 		super(ctx, attrs, defStyle);
 		this.context = ctx;
