@@ -113,24 +113,31 @@ public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
 
 			@Override
 			public void run() {
-				this.preview = TaskDetailFilePart.this.file.getPreview();
 				if (TaskDetailFilePart.this.file.getPath().endsWith(".mp3")) {
 					int resource_id = MirakelPreferences.isDark() ? R.drawable.ic_action_play_dark
 							: R.drawable.ic_action_play;
 					this.preview = BitmapFactory.decodeResource(
 							TaskDetailFilePart.this.ctx.getResources(),
 							resource_id);
+				} else {
+					this.preview = TaskDetailFilePart.this.file.getPreview();
 				}
 				if (this.preview != null) {
+					Log.i(TAG, "preview not null");
 					TaskDetailFilePart.this.fileImage.post(new Runnable() {
 						@Override
 						public void run() {
 							TaskDetailFilePart.this.fileImage
 							.setImageBitmap(preview);
-
+							LayoutParams params = (LayoutParams) TaskDetailFilePart.this.fileImage
+									.getLayoutParams();
+							params.height = preview.getHeight();
+							TaskDetailFilePart.this.fileImage
+									.setLayoutParams(params);
 						}
 					});
 				} else {
+					Log.i(TAG, "preview null");
 					TaskDetailFilePart.this.fileImage.post(new Runnable() {
 						@Override
 						public void run() {
