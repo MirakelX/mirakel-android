@@ -41,6 +41,7 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
@@ -71,6 +72,8 @@ import de.azapps.mirakel.main_activity.task_fragment.TaskFragment;
 import de.azapps.mirakel.main_activity.task_fragment.TaskFragmentV14;
 import de.azapps.mirakel.main_activity.task_fragment.TaskFragmentV8;
 import de.azapps.mirakel.main_activity.tasks_fragment.TasksFragment;
+import de.azapps.mirakel.model.account.AccountMirakel;
+import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SearchList;
@@ -966,10 +969,25 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 				// bundle.putBoolean(ContentResolver.SYNC_EXTRAS_INITIALIZE,true);
 				bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
 				bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-				ContentResolver
-				.requestSync(null, Mirakel.AUTHORITY_TYP, bundle);
-				ContentResolver
-				.requestSync(null, Mirakel.AUTHORITY_TYP, bundle);
+				new Thread(new Runnable() {
+
+					@SuppressLint("InlinedApi")
+					@Override
+					public void run() {
+						List<AccountMirakel> accounts = AccountMirakel
+								.getEnabled(true);
+						for (AccountMirakel a : accounts) {
+							ContentResolver.requestSync(
+									a.getAndroidAccount(),
+									a.getType() == ACCOUNT_TYPES.MIRAKEL ? Mirakel.AUTHORITY_TYP
+											: CalendarContract.AUTHORITY,// davdroid accounts should
+																			// be there only from
+																			// API>=14...
+											bundle);
+						}
+
+					}
+				}).start();
 				break;
 			case R.id.share_task:
 				SharingHelper.share(this, getCurrentTask());
