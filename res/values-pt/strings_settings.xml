@@ -18,12 +18,6 @@
   <string name="sync_frequency_summary">Sincronizar a cada %s minutos</string>
   <string name="sync_frequency_summary_man">Sincronização manual</string>
   <string name="sync_caldav">Sincronização CalDAV</string>
-  <string name="sync_caldav_howto">
-<![CDATA[Tem que instalar e configurar uma aplicação de sincronização CalDAV compatível com o Mirakel como por exemplo <a href="https://play.google.com/store/apps/details?id=at.bitfire.davdroid">DAVdroid</a>.
-        
-        Adicione uma conta nessa aplicação e a partir desse momento a sincronização deve funcionar corretamente. Escolha as listas que pretende sincronizar.
-        ]]>
-    </string>
   <string name="sync_add_account">Adicionar conta</string>
   <string name="sync_taskwarrior_configure">Configurar Taskwarrior</string>
   <string name="sync_taskwarrior_scan_qr">Ler código QR</string>

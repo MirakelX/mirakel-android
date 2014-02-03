@@ -29,11 +29,11 @@
   <string name="task_delete_content">Bent u zeker dat u %s wil verwijderen?</string>
   <string name="task_menu_sorting">Sorteer taken</string>
   <string name="task_sorting_title">Sorteer taken op</string>
-  <string name="task_empty">geen taak geselecteerd…</string>
+  <string name="task_empty">geen taak geselecteerd&#8230;</string>
   <string name="set_date">Datum instellen</string>
   <string name="set_time">Tijd instellen</string>
   <string name="action_undo">Laatste ongedaan maken</string>
-  <string name="add_subtasks">Subtaak toevoegen…</string>
+  <string name="add_subtasks">Subtaak toevoegen&#8230;</string>
   <string name="subtask_list_name">Subtaken</string>
   <string name="remove_files">Verwijder taakbijlage</string>
   <string name="remove_files_summary">Wilt u %1$s van %2$s verwijderen?</string>
@@ -82,8 +82,8 @@
   <string name="reminder_notification_later">Later</string>
   <string name="reminder_notification_done_confirm">De taak is \"afgerond\"</string>
   <string name="reminder_notification_later_confirm">Ik tip je in %d minuten</string>
-  <string name="list_vanished">De taak is verdwenen. Het spijt me…</string>
-  <string name="task_vanished">De lijst van de taak is verdwenen. Het spijt me…</string>
+  <string name="list_vanished">De taak is verdwenen. Het spijt me&#8230;</string>
+  <string name="task_vanished">De lijst van de taak is verdwenen. Het spijt me&#8230;</string>
   <string name="message_try_later">Probeer de synchronisatie later opnieuw</string>
   <string name="message_access_denied">Toegang geweigerd!\nIs de goede config file gebruikt?</string>
   <string name="message_create_socket">De aansluiting kan niet worden gemaakt!\nStaat de netwerk verbinding aan?</string>
@@ -102,11 +102,11 @@
 vereist. Aub probeer opnieuw.</string>
   <string name="login_activity_loginfail_text_pwmissing">Typ het paswoord voor dit account.</string>
   <string name="login_activity_newaccount_text">Login bij uw %s-account. </string>
-  <string name="ui_activity_authenticating">Verificatie…</string>
+  <string name="ui_activity_authenticating">Verificatie&#8230;</string>
   <string name="changelog_full_title">Logboekwijzigingen</string>
   <string name="changelog_title">Wat is nieuw</string>
   <string name="changelog_ok_button">OK</string>
-  <string name="changelog_show_full">meer…</string>
+  <string name="changelog_show_full">meer&#8230;</string>
   <string name="share_using">Deel met</string>
   <string name="share_task">Deel taak</string>
   <string name="share_task_title_with_date">%1$s (%2$s)</string>
@@ -127,12 +127,12 @@ SDK-version: %2$d\n
 Device: %3$s\n]]>
     </string>
   <string name="contact_no_client">Geen E-mail cliënt ingesteld</string>
-  <string name="contact_chooser">E-mail verzenden…</string>
+  <string name="contact_chooser">E-mail verzenden&#8230;</string>
   <string name="backup_import_error">Er is een fout opgetreden bij het importeren van het reservekopie</string>
   <string name="backup_import_ok">Herstart Mirakel - het importeren is geslaagd</string>
   <string name="backup_export_error">Er is een fout opgetreden bij het exporteren van de reservekopie</string>
   <string name="backup_export_ok">Exporteren naar %s</string>
-  <string name="add_content">Notitie toevoegen…</string>
+  <string name="add_content">Notitie toevoegen&#8230;</string>
   <string name="task_has_content">Taak met notitie</string>
   <string name="permission_group_desc">Toestemming voor toegang Mirakel</string>
   <string name="permission_group_lbl">Mirakel toestemming</string>
@@ -151,7 +151,7 @@ Device: %3$s\n]]>
   <string name="list_change_color">Kleur wijzigen</string>
   <string name="set_color">Kleur instellen</string>
   <string name="unset_color">Geen kleur</string>
-  <string name="add_files">Bestand toevoegen…</string>
+  <string name="add_files">Bestand toevoegen&#8230;</string>
   <string name="file_no_activity">Ik weet niet hoe dit bestand kan worden geopend – sorry</string>
   <string name="file_select">bestand selecteren</string>
   <string name="file_vanished">Een dergelijk bestand is niet aanwezig</string>
@@ -162,7 +162,7 @@ Device: %3$s\n]]>
   <string name="audio_record_title">Audio opname...</string>
   <string name="audio_record_message">Opname...</string>
   <string name="audio_playback_title">
-Audio afspelen…</string>
+Audio afspelen&#8230;</string>
   <string name="audio_playback_select_title">Wat wilt u doen?</string>
   <string name="audio_playback_pause">Pauze</string>
   <string name="audio_playback_play">Spelen</string>

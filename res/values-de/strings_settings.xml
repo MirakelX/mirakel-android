@@ -18,9 +18,7 @@
   <string name="sync_frequency_summary">Synchronisiere alle %s min</string>
   <string name="sync_frequency_summary_man">Nur manuell synchronisieren</string>
   <string name="sync_caldav">CalDAV synchronisieren</string>
-  <string name="sync_caldav_howto"><![CDATA[Du musst eine zu Mirakel kompatible Sync-App installieren. Z.B.: <a href="https://play.google.com/store/apps/details?id=at.bitfire.davdroid">DAVdroid</a>.
-
-Erstelle bitte dort einen Account und dann sollte der sync einfach funktionieren. Bitte wähle dann die Listen aus, die synchronisiert werden sollen.]]></string>
+  <string name="sync_caldav_howto">Welche Prioritäten sollen eingeschlossen sein</string>
   <string name="sync_add_account">Konto hinzufügen</string>
   <string name="sync_taskwarrior_configure">Taskwarrior konfigurieren</string>
   <string name="sync_taskwarrior_scan_qr">QR-Code scannen</string>

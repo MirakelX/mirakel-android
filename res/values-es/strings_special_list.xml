@@ -3,10 +3,14 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
   <string name="special_list_name">Nombre</string>
   <string name="special_list_active">Mostrar</string>
+  <string name="special_list_where">SQL-Where Query</string>
   <string name="special_list_sort_by">Ordenar por</string>
   <string name="special_list_def_list">Lista predeterminada</string>
   <string name="special_list_def_date">Fecha predeterminada</string>
   <string name="special_list_first">Predeterminado</string>
+  <string name="special_list_contains">Selección de argumentos</string>
+  <string name="special_list_summary">Resumen</string>
+  <string name="special_lists_defaults">Valores por defecto</string>
   <string name="special_list_where_prio_title_text">Prioridad</string>
   <string name="special_list_where_name_title_text">Nombre</string>
   <string name="special_list_where_content_title_text">Contenido</string>
@@ -16,14 +20,20 @@
   <string name="special_list_where_due_title_text">vencimiento</string>
   <string name="empty">Irrelevante</string>
   <string name="select_by">Seleccionar por</string>
+  <string name="done">Tarea realizadas</string>
+  <string name="undone">Tareas no finalizadas</string>
+  <string name="recurrence_custom">Personalizado</string>
   <string name="today">Hoy</string>
   <string name="tomorrow">mañana</string>
   <string name="reminder_set">Recordatorio establecido</string>
   <string name="reminder_unset">Recordatorio no establecido</string>
+  <string name="inverte">Invertis selección</string>
   <string name="not_in">No en</string>
   <string name="where_like_contain_text">Contiene</string>
+  <string name="where_like_begin_text">Comieza con</string>
   <string name="where_like_end_text">Termina en</string>
   <string name="delete">Eliminar</string>
+  <string name="nothing">Ninguna repetición</string>
   <string-array name="special_list_def_date_picker">
     <item>Sin fecha</item>
     <item>Ayer</item>
