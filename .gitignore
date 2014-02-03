@@ -33,6 +33,9 @@ lint.xml
 # External tool builders
 .externalToolBuilders/
 
+#Python temp
+*.pyc
+
 # Locally stored "Eclipse launch configurations"
 *.launch
 
