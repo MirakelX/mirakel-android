@@ -11,6 +11,13 @@ buildscript {
 apply plugin: 'android'
 apply plugin: 'eclipse'
 
+
+gradle.projectsEvaluated {
+    def script = "scripts/generate_v14_compatible_resources.py --res-dir res --res-v14-compatibility-dir res-v14".execute()
+    script.err.eachLine {line -> println "ERROR: " + line}
+    script.waitFor()
+}
+
 android {
     buildToolsVersion '19.0.0'
     compileSdkVersion 19   
@@ -18,6 +25,11 @@ android {
             exclude 'META-INF/LICENSE.txt'
             exclude 'META-INF/NOTICE.txt'
     }
+    defaultConfig {
+        targetSdkVersion 19
+        minSdkVersion 17
+    }
+    flavorGroups "stores", "api_related"
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -50,10 +62,18 @@ android {
     }
     productFlavors {
         google {
-
+            flavorGroup "stores"
         }
         fdroid {
-
+            flavorGroup "stores"
+        }
+        newAPI {
+            flavorGroup "api_related"
+        }
+        oldAPI {
+            minSdkVersion 8
+            targetSdkVersion 16
+            flavorGroup "api_related"
         }
     }
 
@@ -66,6 +86,11 @@ android {
             srcDir "res-google"
         }
     }
+    android.sourceSets.oldAPI {
+        res{
+            srcDir "res-v14"
+        }
+    }
 }
 
 dependencies {
@@ -73,5 +98,4 @@ dependencies {
     compile 'com.android.support:appcompat-v7:19.0.+'
     compile fileTree(dir: 'libs', include: '*.jar', exclude: 'android-support-v4.jar')
 }
-
 

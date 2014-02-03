@@ -42,7 +42,6 @@
                 android:id="@+id/widget_preferences"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/preferences"
@@ -53,7 +52,6 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/preferences"
                 android:src="@android:drawable/ic_menu_add" />
