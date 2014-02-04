@@ -969,20 +969,19 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 				// bundle.putBoolean(ContentResolver.SYNC_EXTRAS_INITIALIZE,true);
 				bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
 				bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-				new Thread(new Runnable() {
 
+				new Thread(new Runnable() {
 					@SuppressLint("InlinedApi")
 					@Override
 					public void run() {
 						List<AccountMirakel> accounts = AccountMirakel
 								.getEnabled(true);
 						for (AccountMirakel a : accounts) {
+							// davdroid accounts should be there only from API>=14...
 							ContentResolver.requestSync(
 									a.getAndroidAccount(),
-									a.getType() == ACCOUNT_TYPES.MIRAKEL ? Mirakel.AUTHORITY_TYP
-											: CalendarContract.AUTHORITY,// davdroid accounts should
-																			// be there only from
-																			// API>=14...
+									a.getType() == ACCOUNT_TYPES.TASKWARRIOR ? Mirakel.AUTHORITY_TYP
+											: CalendarContract.AUTHORITY,
 											bundle);
 						}
 
