@@ -64,149 +64,115 @@ public abstract class TaskFragment extends Fragment {
 		CONTENT, FILE, SUBTASK;
 	}
 
-	private static final String			TAG					= "TaskActivity";
+	private static final String	TAG	= "TaskActivity";
 
-	private ActionbarState				cabState;
-	private TaskDetailView				detailView;
-
+	private ActionbarState		cabState;
+	private TaskDetailView		detailView;
 
 	protected MainActivity		main;
-	SparseArray<FileMirakel>			markedFiles;
+	SparseArray<FileMirakel>	markedFiles;
 
-	Map<Long, Task>						markedSubtasks;
+	Map<Long, Task>				markedSubtasks;
 
 	protected Menu				mMenu;
 
-	private Task						task;
+	private Task				task;
 
 	abstract protected void changeVisiblity(boolean visible, MenuItem item);
 
 	abstract public void closeActionMode();
 
 	protected boolean handleActionBarClick(MenuItem item) {
-		switch (item
-				.getItemId()) {
-					case R.id.save:
-						if (TaskFragment.this.detailView != null) {
-							TaskFragment.this.detailView
-							.saveContent();
-						}
-						break;
-					case R.id.cancel:
-						if (TaskFragment.this.detailView != null) {
-							TaskFragment.this.detailView
-							.cancelContent();
-						}
-						break;
-					case R.id.menu_delete:
-						if (TaskFragment.this.cabState == ActionbarState.FILE) {
-							List<FileMirakel> selectedItems = new ArrayList<FileMirakel>();
-							for (int i = 0; i < TaskFragment.this.markedFiles
-									.size(); i++) {
-								selectedItems
-								.add(TaskFragment.this.markedFiles
-										.valueAt(i));
-							}
-							TaskDialogHelpers
-							.handleDeleteFile(
-									selectedItems,
-									getActivity(),
-									TaskFragment.this.task,
-									TaskFragment.this);
-						} else {// Subtask
+		switch (item.getItemId()) {
+			case R.id.save:
+				if (TaskFragment.this.detailView != null) {
+					TaskFragment.this.detailView.saveContent();
+				}
+				break;
+			case R.id.cancel:
+				if (TaskFragment.this.detailView != null) {
+					TaskFragment.this.detailView.cancelContent();
+				}
+				break;
+			case R.id.menu_delete:
+				if (TaskFragment.this.cabState == ActionbarState.FILE) {
+					List<FileMirakel> selectedItems = new ArrayList<FileMirakel>();
+					for (int i = 0; i < TaskFragment.this.markedFiles.size(); i++) {
+						selectedItems.add(TaskFragment.this.markedFiles
+								.valueAt(i));
+					}
+					TaskDialogHelpers.handleDeleteFile(selectedItems,
+							getActivity(), TaskFragment.this.task,
+							TaskFragment.this);
+				} else {// Subtask
 
-							List<Task> selectedItems = new ArrayList<Task>();
+					List<Task> selectedItems = new ArrayList<Task>();
 
-							for (Map.Entry<Long, Task> e : TaskFragment.this.markedSubtasks
-									.entrySet()) {
-								selectedItems
-								.add(e.getValue());
-							}
-							TaskDialogHelpers
-							.handleRemoveSubtask(
-									selectedItems,
-									getActivity(),
-									TaskFragment.this,
-									TaskFragment.this.task);
-						}
-						break;
-					case R.id.edit_task:
-						if (TaskFragment.this.main != null) {
-							TaskFragment.this.main
+					for (Map.Entry<Long, Task> e : TaskFragment.this.markedSubtasks
+							.entrySet()) {
+						selectedItems.add(e.getValue());
+					}
+					TaskDialogHelpers.handleRemoveSubtask(selectedItems,
+							getActivity(), TaskFragment.this,
+							TaskFragment.this.task);
+				}
+				break;
+			case R.id.edit_task:
+				if (TaskFragment.this.main != null) {
+					TaskFragment.this.main
 							.setCurrentTask(TaskFragment.this.markedSubtasks
-									.entrySet()
-									.iterator()
-									.next()
-									.getValue());
-						}
-						break;
-					case R.id.done_task:
-						for (Map.Entry<Long, Task> e : TaskFragment.this.markedSubtasks
-								.entrySet()) {
-							if (e.getValue() != null) {
-								e.getValue()
-								.setDone(
-										true);
-								e.getValue()
-								.safeSave();
-							}
-						}
-						update(TaskFragment.this.task);
-						TaskFragment.this.main
-						.getTasksFragment()
-						.updateList();
-						TaskFragment.this.main
-						.getListFragment()
-						.update();
-						break;
-					default:
-						return false;
+									.entrySet().iterator().next().getValue());
+				}
+				break;
+			case R.id.done_task:
+				for (Map.Entry<Long, Task> e : TaskFragment.this.markedSubtasks
+						.entrySet()) {
+					if (e.getValue() != null) {
+						e.getValue().setDone(true);
+						e.getValue().safeSave();
+					}
+				}
+				update(TaskFragment.this.task);
+				TaskFragment.this.main.getTasksFragment().updateList();
+				TaskFragment.this.main.getListFragment().update();
+				break;
+			default:
+				return false;
 		}
-		Log.i(TAG,
-				"item clicked");
+		Log.i(TAG, "item clicked");
 		closeActionMode();
 		return true;
 
 	}
 
-	protected boolean handleCabCreateMenu(MenuInflater inflater,Menu menu){
-		if (TaskFragment.this.cabState == null)
-			return false;
+	protected boolean handleCabCreateMenu(MenuInflater inflater, Menu menu) {
+		if (TaskFragment.this.cabState == null) return false;
 		switch (TaskFragment.this.cabState) {
 			case CONTENT:
-				inflater.inflate(
-						R.menu.save,
-						menu);
+				inflater.inflate(R.menu.save, menu);
 				break;
 			case FILE:
-				inflater.inflate(
-						R.menu.context_file,
-						menu);
+				inflater.inflate(R.menu.context_file, menu);
 				break;
 			case SUBTASK:
-				inflater.inflate(
-						R.menu.context_subtask,
-						menu);
+				inflater.inflate(R.menu.context_subtask, menu);
 				break;
 			default:
-				Log.d(TAG,
-						"where are the dragons");
+				Log.d(TAG, "where are the dragons");
 				return false;
 
 		}
 		return true;
 	}
 
-	protected void handleCloseCab(){
+	protected void handleCloseCab() {
 		TaskFragment.this.cabState = null;
 		if (TaskFragment.this.detailView != null) {
-			TaskFragment.this.detailView
-			.unmark();
+			TaskFragment.this.detailView.unmark();
 		}
 		TaskFragment.this.markedFiles = new SparseArray<FileMirakel>();
 		TaskFragment.this.markedSubtasks = new HashMap<Long, Task>();
-		Log.d(TAG,
-				"kill mode");
+		Log.d(TAG, "kill mode");
 	}
 
 	@Override
@@ -250,11 +216,11 @@ public abstract class TaskFragment extends Fragment {
 					TaskDialogHelpers.handleAudioRecord(getActivity(),
 							TaskFragment.this.task,
 							new ExecInterfaceWithTask() {
-						@Override
-						public void exec(Task t) {
-							update(t);
-						}
-					});
+								@Override
+								public void exec(Task t) {
+									update(t);
+								}
+							});
 				}
 			});
 			this.detailView.setCameraButtonClick(new View.OnClickListener() {
@@ -311,7 +277,8 @@ public abstract class TaskFragment extends Fragment {
 					}
 				}
 				if (TaskFragment.this.mMenu != null) {
-					MenuItem item=TaskFragment.this.mMenu.findItem(R.id.edit_task);
+					MenuItem item = TaskFragment.this.mMenu
+							.findItem(R.id.edit_task);
 					changeVisiblity(
 							TaskFragment.this.markedSubtasks.size() == 1, item);
 				}
@@ -371,28 +338,29 @@ public abstract class TaskFragment extends Fragment {
 					return;
 				}
 				new AlertDialog.Builder(context)
-				.setTitle(R.string.audio_playback_select_title)
-				.setItems(items, new DialogInterface.OnClickListener() {
+						.setTitle(R.string.audio_playback_select_title)
+						.setItems(items, new DialogInterface.OnClickListener() {
 
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						switch (which) {
-							case 0: // Open
-								TaskDialogHelpers.openFile(context,
-										file);
-								break;
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								switch (which) {
+									case 0: // Open
+										TaskDialogHelpers.openFile(context,
+												file);
+										break;
 									default: // playback
-								TaskDialogHelpers
-								.playbackFile(getActivity(),
-										file, which == 1);
-								break;
-						}
-					}
-				}).show();
+										TaskDialogHelpers
+												.playbackFile(getActivity(),
+														file, which == 1);
+										break;
+								}
+							}
+						}).show();
 				return;
 			}
 		});
 
+		if (task == null) main.setCurrentTask(main.getCurrentTask(), false);
 		return view;
 	}
 

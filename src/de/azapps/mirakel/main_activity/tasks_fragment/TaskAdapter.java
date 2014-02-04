@@ -42,7 +42,7 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 	 * 
 	 */
 	static class TaskHolder {
-		TaskSummary	summary;	;
+		TaskSummary	summary;
 	}
 
 	int listId;
@@ -108,6 +108,7 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 			}
 		});
 		row.setOnTaskChangedListner(this.onTaskChanged);
+		viewsForTasks.put(task.getId(), row);
 		return row;
 	}
 
