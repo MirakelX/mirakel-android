@@ -164,6 +164,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 	private boolean					skipSwipe;
 
 	private Intent					startIntent;
+
 	protected TaskFragment			taskFragment;
 
 	private void addFilesForTask(final Task t, final Intent intent) {
@@ -1285,6 +1286,9 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 
 	public void setTaskFragment(final TaskFragment tf) {
 		this.taskFragment = tf;
+		if (this.taskFragment != null && this.currentTask != null) {
+			this.taskFragment.update(this.currentTask);
+		}
 
 	}
 
