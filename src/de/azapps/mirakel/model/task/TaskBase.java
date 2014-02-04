@@ -269,12 +269,17 @@ class TaskBase {
 				String t = this.additionalEntriesString.substring(1,
 						this.additionalEntriesString.length() - 1);// remove { and }
 				String [] parts=t.split(",");
+				String key = null;
 				for(String p:parts){
 					String[] keyValue=p.split(":");
 					if(keyValue.length==2){
-						String key=keyValue[0];
+						key=keyValue[0];
 						key=key.replaceAll("\"", "");
 						this.additionalEntries.put(key, keyValue[1]);
+					}else if(keyValue.length==1&&key!=null){
+						this.additionalEntries.put(key,
+								this.additionalEntries.get(key) + ","
+										+ keyValue[0]);
 					}
 				}
 			}
