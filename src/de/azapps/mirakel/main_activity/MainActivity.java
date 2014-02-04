@@ -741,7 +741,12 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 					startActivity(this.startIntent);
 				}
 				loadMenu(this.mViewPager.getCurrentItem());
-				getTasksFragment().updateButtons();
+				if (getTasksFragment() != null) {
+					getTasksFragment().updateButtons();
+				}
+				if (getTaskFragment() != null) {
+					getTaskFragment().update(this.currentTask);
+				}
 				return;
 			case RESULT_CAMERA:
 			case RESULT_ADD_PICTURE:
