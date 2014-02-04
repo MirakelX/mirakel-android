@@ -120,18 +120,19 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	@Override
 	public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
 		Log.v(TAG, "SyncAdapter");
-		Intent intent = new Intent(mContext,
-				MainActivity.class);
+		Intent intent = new Intent(mContext, MainActivity.class);
 		intent.setAction(MainActivity.SHOW_LISTS);
 		PendingIntent p = PendingIntent.getService(mContext, 0, intent, 0);
 		NotificationCompat.Builder mNB = new NotificationCompat.Builder(
 				mContext).setContentTitle("Mirakel").setContentText("Sync")
 				.setSmallIcon(android.R.drawable.stat_notify_sync)
-				.setWhen(System.currentTimeMillis()).setOngoing(true).setContentIntent(p);
+				.setWhen(System.currentTimeMillis()).setOngoing(true)
+				.setContentIntent(p);
 		mNotificationManager.notify(notifyID, mNB.build());
 
 		String type = (AccountManager.get(mContext)).getUserData(account,
 				BUNDLE_SERVER_TYPE);
+		boolean success = false;
 		if (type == null) type = MirakelSync.TYPE;
 		if (type.equals(MirakelSync.TYPE)) {
 			new MirakelSync(mContext).sync(account);
@@ -140,6 +141,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			switch (error) {
 				case NO_ERROR:
 					last_message = mContext.getText(R.string.finish_sync);
+					success = true;
 					break;
 				case TRY_LATER:
 					last_message = mContext.getText(R.string.message_try_later);
@@ -181,14 +183,17 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			Log.wtf(TAG, "Unknown SyncType");
 		}
 		mNotificationManager.cancel(notifyID);
-		mNB = new NotificationCompat.Builder(mContext)
-				.setContentTitle(
-						"Mirakel: " + mContext.getText(R.string.finish_sync))
-				.setContentText(last_message)
-				.setSmallIcon(android.R.drawable.stat_notify_sync)
-				.setPriority(NotificationCompat.PRIORITY_LOW)
-				.setContentIntent(p);
-		mNotificationManager.notify(notifyID, mNB.build());
+		if (!success) {
+			mNB = new NotificationCompat.Builder(mContext)
+					.setContentTitle(
+							"Mirakel: "
+									+ mContext.getText(R.string.finish_sync))
+					.setContentText(last_message)
+					.setSmallIcon(android.R.drawable.stat_notify_sync)
+					.setPriority(NotificationCompat.PRIORITY_LOW)
+					.setContentIntent(p);
+			mNotificationManager.notify(notifyID, mNB.build());
+		}
 	}
 
 	public static CharSequence getLastMessage() {
