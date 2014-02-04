@@ -29,6 +29,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import de.azapps.mirakel.adapter.MirakelArrayAdapter;
+import de.azapps.mirakel.custom_views.BaseTaskDetailRow.OnTaskChangedListner;
 import de.azapps.mirakel.custom_views.TaskSummary;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.task.Task;
@@ -46,9 +47,11 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 
 	int listId;
 
+	private OnTaskChangedListner	onTaskChanged;
+
 	protected int touchPosition;
 
-	private final Map<Long, View> viewsForTasks = new HashMap<Long, View>();
+	private final Map<Long, View>	viewsForTasks	= new HashMap<Long, View>();
 
 	public TaskAdapter(Context c) {
 		// do not call this, only for error-fixing there
@@ -56,9 +59,10 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 	}
 
 	public TaskAdapter(Context context, int layoutResourceId, List<Task> data,
-			int listId) {
+ int listId, OnTaskChangedListner onTaskChanged) {
 		super(context, layoutResourceId, data);
 		this.listId = listId;
+		this.onTaskChanged = onTaskChanged;
 
 	}
 
@@ -103,6 +107,7 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 				return false;
 			}
 		});
+		row.setOnTaskChangedListner(this.onTaskChanged);
 		return row;
 	}
 

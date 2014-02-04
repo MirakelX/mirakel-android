@@ -31,7 +31,6 @@
         android:id="@+id/tasks_row_done_wrapper"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" >
 
         <com.todddavies.components.progressbar.ProgressWheel
@@ -58,8 +57,6 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginLeft="2.5dp"
         android:layout_marginStart="2.5dp"
         android:background="@drawable/priority_rectangle"
         android:gravity="center"
@@ -72,8 +69,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@+id/tasks_row_done_wrapper"
-        android:layout_toLeftOf="@+id/tasks_row_priority"
-        android:layout_toRightOf="@+id/tasks_row_done_wrapper"
         android:layout_toStartOf="@+id/tasks_row_priority"
         android:orientation="vertical" >
 
@@ -96,7 +91,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
-                android:layout_marginRight="5dp"
                 android:textColor="@color/Grey"
                 android:textIsSelectable="false"
                 android:textSize="12sp" />
@@ -106,7 +100,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:layout_marginEnd="5dp"
-                android:layout_marginRight="5dp"
                 android:ellipsize="end"
                 android:textColor="@color/Grey"
                 android:textIsSelectable="false"

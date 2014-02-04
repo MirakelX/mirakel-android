@@ -61,6 +61,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
+import de.azapps.mirakel.custom_views.BaseTaskDetailRow.OnTaskChangedListner;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.Helpers.ExecInterfaceWithTask;
 import de.azapps.mirakel.helper.MirakelPreferences;
@@ -397,7 +398,20 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 						R.layout.task_summary,
 						new ArrayList<Task>(TasksFragment.this.values.subList(0,
 								TasksFragment.this.ItemCount > TasksFragment.this.values.size() ? TasksFragment.this.values.size()
-										: TasksFragment.this.ItemCount)), TasksFragment.this.main.getCurrentList().getId());
+										: TasksFragment.this.ItemCount)), TasksFragment.this.main.getCurrentList().getId(),new OnTaskChangedListner() {
+
+							@Override
+							public void onTaskChanged(Task newTask) {
+								if (MirakelPreferences.isTablet()
+										&& TasksFragment.this.main != null
+										&& TasksFragment.this.main
+												.getCurrentTask().getId() == newTask
+												.getId()) {
+									TasksFragment.this.main.setCurrentTask(newTask, false);
+								}
+
+							}
+						});
 				return TasksFragment.this.adapter;
 			}
 

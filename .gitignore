@@ -11,6 +11,8 @@
 # generated files
 bin/
 gen/
+build/
+res-v14/
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -30,8 +32,13 @@ local.properties
 .loadpath
 *.db
 lint.xml
+*~
+.gradle
 # External tool builders
 .externalToolBuilders/
+
+#Python temp
+*.pyc
 
 # Locally stored "Eclipse launch configurations"
 *.launch

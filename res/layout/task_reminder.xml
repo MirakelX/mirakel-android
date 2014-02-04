@@ -31,8 +31,6 @@
         android:drawablePadding="5dp"
         android:paddingBottom="5dp"
         android:paddingEnd="@dimen/task_padding_for_icons"
-        android:paddingLeft="@dimen/task_padding_for_icons"
-        android:paddingRight="@dimen/task_padding_for_icons"
         android:paddingStart="@dimen/task_padding_for_icons"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textSize="@dimen/due_reminder_text_size" />
@@ -42,7 +40,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/transparent"
-        android:layout_marginLeft="5dp"
         android:layout_marginStart="5dp"
         tools:ignore="ContentDescription" />
 

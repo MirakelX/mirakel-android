@@ -90,8 +90,9 @@ public class Mirakel extends Application {
 	// FIXME move this somewhere else?
 	public static int				GRAVITY_LEFT, GRAVITY_RIGHT;
 
-	public static String			MIRAKEL_DIR;
+	public static boolean			IS_PLAYSTORE;
 
+	public static String			MIRAKEL_DIR;
 	public static final int			NOTIF_DEFAULT	= 123,
 			NOTIF_REMINDER = 124;
 	private static SQLiteOpenHelper	openHelper;
@@ -131,9 +132,10 @@ public class Mirakel extends Application {
 			Log.wtf(TAG, "App not found");
 			VERSIONS_NAME = "";
 		}
+
 		// This we have to initialize as early as possible
 		MirakelPreferences.init(this);
-
+		IS_PLAYSTORE = getResources().getBoolean(R.bool.is_playstore);
 		Locale locale = Helpers.getLocal(this);
 		Locale.setDefault(locale);
 
