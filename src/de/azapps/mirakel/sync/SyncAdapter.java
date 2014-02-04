@@ -48,7 +48,6 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.sync.caldav.CalDavSync;
-import de.azapps.mirakel.sync.mirakel.MirakelSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync.TW_ERRORS;
 import de.azapps.mirakelandroid.R;
@@ -133,10 +132,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		String type = (AccountManager.get(mContext)).getUserData(account,
 				BUNDLE_SERVER_TYPE);
 		boolean success = false;
-		if (type == null) type = MirakelSync.TYPE;
-		if (type.equals(MirakelSync.TYPE)) {
-			new MirakelSync(mContext).sync(account);
-		} else if (type.equals(TaskWarriorSync.TYPE)) {
+		if (type == null) type = TaskWarriorSync.TYPE;
+		if (type.equals(TaskWarriorSync.TYPE)) {
 			TW_ERRORS error = new TaskWarriorSync(mContext).sync(account);
 			switch (error) {
 				case NO_ERROR:

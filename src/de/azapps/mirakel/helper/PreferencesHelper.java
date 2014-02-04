@@ -74,7 +74,6 @@ import de.azapps.mirakel.static_activities.SettingsActivity;
 import de.azapps.mirakel.static_activities.SettingsFragment;
 import de.azapps.mirakel.sync.AuthenticatorActivity;
 import de.azapps.mirakel.sync.SyncAdapter;
-import de.azapps.mirakel.sync.mirakel.MirakelSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
 import de.azapps.mirakel.widget.MainWidgetSettingsActivity;
 import de.azapps.mirakel.widget.MainWidgetSettingsFragment;
@@ -1337,12 +1336,6 @@ public class PreferencesHelper {
 					sync.setSummary(ctx.getString(
 							R.string.sync_use_summary_taskwarrior,
 							accounts[0].name));
-				} else if (am.getUserData(accounts[0],
-						SyncAdapter.BUNDLE_SERVER_TYPE)
-						.equals(MirakelSync.TYPE)) {
-					sync.setSummary(ctx
-							.getString(R.string.sync_use_summary_mirakel,
-									accounts[0].name));
 				} else {
 					sync.setChecked(false);
 					sync.setSummary(R.string.sync_use_summary_nothing);
