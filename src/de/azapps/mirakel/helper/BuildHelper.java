@@ -6,17 +6,16 @@ import de.azapps.mirakelandroid.BuildConfig;
 
 public class BuildHelper {
 	public static boolean	DEBUG				= BuildConfig.DEBUG;
-	private static boolean	PLAYSTORE_RELEASE	= Mirakel.IS_PLAYSTORE;
 	public static boolean isBeta() {
 		return DEBUG;
 	}
 
 	public static boolean isForFDroid() {
-		return !PLAYSTORE_RELEASE;
+		return !Mirakel.IS_PLAYSTORE;
 	}
 
 	public static boolean isForPlayStore() {
-		return PLAYSTORE_RELEASE;
+		return Mirakel.IS_PLAYSTORE;
 	}
 
 	public static boolean isNightly() {
