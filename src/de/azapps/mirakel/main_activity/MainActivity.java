@@ -242,6 +242,17 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		this.isResumend = false;
 	}
 
+	private void forceRebuildLayout(final boolean tabletLocal) {
+		this.isTablet = tabletLocal;
+		this.mPagerAdapter = null;
+		this.isResumend = false;
+		this.skipSwipe = true;
+		setupLayout();
+		this.skipSwipe = true;
+		getTaskFragment().update(MainActivity.this.currentTask);
+		loadMenu(this.currentPosition, false, false);
+	}
+
 	/**
 	 * Return the currently showed List
 	 * 
@@ -286,7 +297,13 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		if (MirakelPreferences.isTablet()) return this.taskFragment;
 		final Fragment f = this.mPagerAdapter
 				.getItem(getTaskFragmentPosition());
-		return (TaskFragment) f;
+		try {
+			return (TaskFragment) f;
+		} catch (ClassCastException e) {
+			Log.wtf(TAG, "cannot cast fragment");
+			forceRebuildLayout(MirakelPreferences.isTablet());
+			return getTaskFragment();
+		}
 	}
 
 	public TasksFragment getTasksFragment() {
@@ -740,7 +757,11 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 					}
 					startActivity(this.startIntent);
 				}
-				loadMenu(this.mViewPager.getCurrentItem());
+				if(this.isTablet != MirakelPreferences.isTablet()){
+					forceRebuildLayout(MirakelPreferences.isTablet());
+				} else {
+					loadMenu(this.mViewPager.getCurrentItem());
+				}
 				if (getTasksFragment() != null) {
 					getTasksFragment().updateButtons();
 				}
@@ -818,14 +839,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		super.onConfigurationChanged(newConfig);
 		final boolean tabletLocal = MirakelPreferences.isTablet();
 		if (tabletLocal != this.isTablet) {
-			this.isTablet = tabletLocal;
-			this.mPagerAdapter = null;
-			this.isResumend = false;
-			this.skipSwipe = true;
-			setupLayout();
-			this.skipSwipe = true;
-			getTaskFragment().update(MainActivity.this.currentTask);
-			loadMenu(this.currentPosition, false, false);
+			forceRebuildLayout(tabletLocal);
 		} else {
 			getListFragment().setActivity(this);
 			getTasksFragment().setActivity(this);
@@ -1247,9 +1261,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 	}
 
 	public void setCurrentTask(final Task currentTask, final boolean switchFragment, final boolean resetGoBackTo) {
-		Log.d(TAG, "setTask " + currentTask.getName());
 		this.currentTask = currentTask;
-		Log.d(TAG, "setTask " + this.currentTask.getName());
 		if (resetGoBackTo) {
 			this.goBackTo.clear();
 		}
@@ -1268,7 +1280,6 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 					MainActivity.getTasksFragmentPosition(), false);
 			this.mViewPager.setCurrentItem(getTaskFragmentPosition(), smooth);
 		}
-		Log.d(TAG, "setTask " + this.currentTask.getName());
 	}
 
 	public void setFileUri(final Uri file) {
