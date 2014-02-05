@@ -55,7 +55,7 @@ public class TapTest {
 			newTest();
 		} else if (item.getTitle().equals(newTapTestComment)) {
 			final EditText input = new EditText(context);
-				new AlertDialog.Builder(context)
+			new AlertDialog.Builder(context)
 					.setTitle("Comment")
 					.setView(input)
 					.setPositiveButton("Ok",

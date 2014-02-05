@@ -12,14 +12,14 @@ public class TapGestureDetector extends GestureDetector.SimpleOnGestureListener 
 
 	@Override
 	public boolean onSingleTapConfirmed(MotionEvent e) {
-		taptest.write("solo.clickOnScreen(" + e.getX() + ", " + e.getY() + ");");
+		taptest.write("solo.clickOnScreen(" + e.getX() + "f, " + e.getY() + "f);");
 		return true;
 	}
 
 	@Override
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-		taptest.write("solo.drag(" + e1.getX() + ", " + e2.getX() + ", "
-				+ e1.getY() + ", " + e2.getY() + ", 10);");
+		taptest.write("solo.drag(" + e1.getX() + "f, " + e2.getX() + "f, "
+				+ e1.getY() + "f, " + e2.getY() + "f, 10);");
 		return true;
 	}
 
