@@ -18,6 +18,7 @@
  ******************************************************************************/
 package de.azapps.mirakel;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
@@ -34,6 +35,7 @@ import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Build;
+import android.os.Environment;
 import android.os.Looper;
 import android.util.Log;
 import android.view.Gravity;
@@ -109,6 +111,9 @@ public class Mirakel extends Application {
 	public static SQLiteDatabase getWritableDatabase() {
 		return openHelper.getWritableDatabase();
 	}
+
+	public static final File	exportDir = new File(
+	Environment.getExternalStorageDirectory(), "mirakel");
 
 	@SuppressLint("InlinedApi")
 	@Override
