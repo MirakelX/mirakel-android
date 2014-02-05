@@ -25,11 +25,9 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v4.app.FragmentManager;
-import android.view.Display;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -90,6 +88,9 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
 
 	private Type				type;
 
+
+	private int					width;
+
 	public TaskDetailDueReminder(Context ctx) {
 		super(ctx);
 		inflate(ctx, R.layout.due_reminder_row, this);
@@ -108,7 +109,7 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
 								save();
 								update(TaskDetailDueReminder.this.task);
 								ReminderAlarm
-										.updateAlarms(TaskDetailDueReminder.this.context);
+								.updateAlarms(TaskDetailDueReminder.this.context);
 
 							}
 						});
@@ -149,60 +150,49 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
 				TaskDetailDueReminder.this.mIgnoreTimeSet = false;
 				final Calendar dueLocal = TaskDetailDueReminder.this.task
 						.getDue() == null ? new GregorianCalendar()
-						: TaskDetailDueReminder.this.task.getDue();
-				final FragmentManager fm = ((MainActivity) TaskDetailDueReminder.this.context)
-						.getSupportFragmentManager();
-				final DatePickerDialog datePickerDialog = DatePickerDialog
-						.newInstance(
-								new DatePicker.OnDateSetListener() {
+				: TaskDetailDueReminder.this.task.getDue();
+						final FragmentManager fm = ((MainActivity) TaskDetailDueReminder.this.context)
+								.getSupportFragmentManager();
+						final DatePickerDialog datePickerDialog = DatePickerDialog
+								.newInstance(
+										new DatePicker.OnDateSetListener() {
 
-									@Override
-									public void onDateSet(DatePicker dp, int year, int month, int day) {
-										if (TaskDetailDueReminder.this.mIgnoreTimeSet)
-											return;
-										TaskDetailDueReminder.this.task
+											@Override
+											public void onDateSet(DatePicker dp, int year, int month, int day) {
+												if (TaskDetailDueReminder.this.mIgnoreTimeSet)
+													return;
+												TaskDetailDueReminder.this.task
 												.setDue(new GregorianCalendar(
 														year, month, day));
-										save();
-										setDue();
+												save();
+												setDue();
 
-									}
+											}
 
-									@Override
-									public void onNoDateSet() {
-										TaskDetailDueReminder.this.task
+											@Override
+											public void onNoDateSet() {
+												TaskDetailDueReminder.this.task
 												.setDue(null);
-										save();
-										setDue();
+												save();
+												setDue();
 
-									}
-								}, dueLocal.get(Calendar.YEAR), dueLocal
+											}
+										}, dueLocal.get(Calendar.YEAR), dueLocal
 										.get(Calendar.MONTH), dueLocal
 										.get(Calendar.DAY_OF_MONTH), false,
-								MirakelPreferences.isDark(), true);
-				// datePickerDialog.setYearRange(2005, 2036);// must be <
-				// 2037
-				// TODO fix this(its a int->long problem somewhere;))
-				datePickerDialog.show(fm, "datepicker");
+										MirakelPreferences.isDark(), true);
+						// datePickerDialog.setYearRange(2005, 2036);// must be <
+						// 2037
+						// TODO fix this(its a int->long problem somewhere;))
+						datePickerDialog.show(fm, "datepicker");
 			}
 		});
+		measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
 	}
 
-	@SuppressWarnings("deprecation")
-	@SuppressLint("NewApi")
 	private void handleMultiline() {
 		if (this.type == null || this.type != Type.Combined) return;
-		int width;
-		Display display = ((Activity) this.context).getWindowManager()
-				.getDefaultDisplay();
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR2) {
-			width = display.getWidth();
-		} else {
-			Point size = new Point();
-			display.getSize(size);
-			width = size.x;
-		}
-		if (width < MIN_DUE_NEXT_TO_REMINDER_SIZE) {
+		if (this.width < MIN_DUE_NEXT_TO_REMINDER_SIZE) {
 			this.mainWrapper.setOrientation(VERTICAL);
 			android.view.ViewGroup.LayoutParams dueParams = this.dueWrapper
 					.getLayoutParams();
@@ -223,14 +213,16 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
 			this.reminderWrapper.setLayoutParams(new LayoutParams(
 					reminderParams.width, reminderParams.height, 0.66f));
 		}
-
 	}
+
 
 	@Override
-	protected void onConfigurationChanged(Configuration newConfig) {
-		super.onConfigurationChanged(newConfig);
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+		this.width=getMeasuredWidth();
 		handleMultiline();
 	}
+
 
 	private void setDue() {
 		if (this.task.getDue() == null) {
@@ -303,7 +295,7 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
 			this.taskReminder.setTextColor(this.context.getResources()
 					.getColor(inactive_color));
 		} else {
-			this.taskReminder.setText(DateTimeHelper.formatReminder(context,
+			this.taskReminder.setText(DateTimeHelper.formatReminder(this.context,
 					this.task.getReminder()));
 			this.taskReminder.setTextColor(this.context.getResources()
 					.getColor(inactive_color));

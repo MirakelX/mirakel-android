@@ -56,6 +56,7 @@ public class AccountSettingsActivity extends ListSettings {
 							default:
 								break;
 						}
+								dialog.dismiss();
 					}
 				}).show();
 			}
@@ -205,12 +206,7 @@ public class AccountSettingsActivity extends ListSettings {
 					finish();
 					return true;
 				} else if (item.getTitle().equals(getString(R.string.add))) {
-					AccountMirakel s = newAccount();
-					Intent intent = new Intent(this,
-							AccountSettingsActivity.class);
-					intent.putExtra("id", s.getId());
-					startActivity(intent);
-					return true;
+					getAddOnClickListener().onClick(null);
 				}
 				break;
 		}
