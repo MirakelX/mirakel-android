@@ -4,6 +4,7 @@ import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 
 import com.fourmob.datetimepicker.Utils;
 
+import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakelandroid.R;
@@ -112,6 +114,32 @@ RadialPickerLayout.OnValueSelectedListener {
 
 	private static final String TAG = "TimePicker";
 
+	private static int getValFromKeyCode(int keyCode) {
+		switch (keyCode) {
+			case KeyEvent.KEYCODE_0:
+				return 0;
+			case KeyEvent.KEYCODE_1:
+				return 1;
+			case KeyEvent.KEYCODE_2:
+				return 2;
+			case KeyEvent.KEYCODE_3:
+				return 3;
+			case KeyEvent.KEYCODE_4:
+				return 4;
+			case KeyEvent.KEYCODE_5:
+				return 5;
+			case KeyEvent.KEYCODE_6:
+				return 6;
+			case KeyEvent.KEYCODE_7:
+				return 7;
+			case KeyEvent.KEYCODE_8:
+				return 8;
+			case KeyEvent.KEYCODE_9:
+				return 9;
+			default:
+				return -1;
+		}
+	}
 	private final Context ctx;
 	private final View layout;
 	private boolean mAllowAutoAdvance;
@@ -119,37 +147,38 @@ RadialPickerLayout.OnValueSelectedListener {
 	private View mAmPmHitspace;
 	private TextView mAmPmTextView;
 	private String mAmText;
-	private OnTimeSetListener mCallback;
 
+	private OnTimeSetListener mCallback;
 	private boolean mDark = false;
 	private String mDeletedKeyFormat;
 	public Dialog mDialog;
-	private TextView mDoneButton;
 
+	private TextView mDoneButton;
 	private String mDoublePlaceholderText;
 	// Accessibility strings.
 	private String mHourPickerDescription;
 	private TextView mHourSpaceView;
-	private TextView mHourView;
 
+	private TextView mHourView;
 	private int mInitialHourOfDay;
 	private int mInitialMinute;
 	private boolean mInKbMode;
-	private boolean mIs24HourMode;
+	private boolean				mIs24HourMode;
 	private Node mLegalTimesTree;
 	private String mMinutePickerDescription;
 	private TextView mMinuteSpaceView;
-	private TextView mMinuteView;
 
+	private TextView mMinuteView;
 	private Button mNoDateButton;
 	// For hardware IME input.
 	private char mPlaceholderText;
 	private int mPmKeyCode;
+
 	private String mPmText;
 
 	private int mSelectedColor;
-
 	private String mSelectHours;
+
 	private String mSelectMinutes;
 
 	private RadialPickerLayout mTimePicker;
@@ -157,6 +186,7 @@ RadialPickerLayout.OnValueSelectedListener {
 	private ArrayList<Integer> mTypedTimes;
 
 	private int mUnselectedColor;
+
 
 	public TimePicker(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -167,11 +197,11 @@ RadialPickerLayout.OnValueSelectedListener {
 		try {
 			this.mInitialHourOfDay = a.getInt(R.styleable.TimePicker_initialHour, 0);
 			this.mInitialMinute = a.getInt(R.styleable.TimePicker_initialMinute, 0);
-			this.mIs24HourMode = a.getBoolean(R.styleable.TimePicker_is24HourMode,
-					true);
 		} finally {
 			a.recycle();
 		}
+		this.mIs24HourMode = DateTimeHelper.is24HourLocale(Helpers
+				.getLocal(context));
 		this.layout=inflate(context, R.layout.time_picker_view, this);
 		this.mDark=MirakelPreferences.isDark();//TODO get this from theme or so...
 		initLayout();
@@ -380,6 +410,7 @@ RadialPickerLayout.OnValueSelectedListener {
 	/**
 	 * Get the keycode value for AM and PM in the current language.
 	 */
+	@SuppressLint("InlinedApi")
 	private int getAmOrPmKeyCode(int amOrPm) {
 		// Cache the codes.
 		if (this.mAmKeyCode == -1 || this.mPmKeyCode == -1) {
@@ -479,33 +510,6 @@ RadialPickerLayout.OnValueSelectedListener {
 		return new KeyboardListener(dialog);
 	}
 
-	private int getValFromKeyCode(int keyCode) {
-		switch (keyCode) {
-			case KeyEvent.KEYCODE_0:
-				return 0;
-			case KeyEvent.KEYCODE_1:
-				return 1;
-			case KeyEvent.KEYCODE_2:
-				return 2;
-			case KeyEvent.KEYCODE_3:
-				return 3;
-			case KeyEvent.KEYCODE_4:
-				return 4;
-			case KeyEvent.KEYCODE_5:
-				return 5;
-			case KeyEvent.KEYCODE_6:
-				return 6;
-			case KeyEvent.KEYCODE_7:
-				return 7;
-			case KeyEvent.KEYCODE_8:
-				return 8;
-			case KeyEvent.KEYCODE_9:
-				return 9;
-			default:
-				return -1;
-		}
-	}
-
 	private void initLayout() {
 		View dialog = this.layout.findViewById(R.id.time_picker_dialog);
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
@@ -540,7 +544,8 @@ RadialPickerLayout.OnValueSelectedListener {
 
 			this.mAmPmTextView.setTransformationMethod(new TransformationMethod() {
 
-				private final Locale locale = getResources().getConfiguration().locale;
+						private final Locale	locale	= Helpers
+																.getLocal(getContext());
 
 				@Override
 				public CharSequence getTransformation(CharSequence source,
@@ -705,14 +710,13 @@ RadialPickerLayout.OnValueSelectedListener {
 		// For AM/PM mode, the time is legal if it contains an AM or PM, as
 		// those can only be
 		// legally added at specific times based on the tree's algorithm.
-		return this.mTypedTimes.contains(getAmOrPmKeyCode(AM)) || this.mTypedTimes
-				.contains(getAmOrPmKeyCode(PM));
+		return this.mTypedTimes.contains(getAmOrPmKeyCode(AM))
+				|| this.mTypedTimes.contains(getAmOrPmKeyCode(PM));
 	}
 
 	/**
-	 * Traverse the tree to see if the keys that have been typed so far are
-	 * legal as is, or may become legal as more keys are typed (excluding
-	 * backspace).
+	 * Traverse the tree to see if the keys that have been typed so far are legal as is, or may
+	 * become legal as more keys are typed (excluding backspace).
 	 */
 	private boolean isTypedTimeLegalSoFar() {
 		Node node = this.mLegalTimesTree;
