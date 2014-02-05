@@ -34,21 +34,21 @@ import de.azapps.mirakelandroid.R;
 public class DateTimeHelper {
 
 	private static final SimpleDateFormat	CalDav			= new SimpleDateFormat(
-																	"yyyyMMdd'T'kkmmss",
-																	Locale.getDefault());
+			"yyyyMMdd'T'kkmmss",
+			Locale.getDefault());
 	private static final SimpleDateFormat	CalDavDue		= new SimpleDateFormat(
-																	"yyyyMMdd",
-																	Locale.getDefault());
+			"yyyyMMdd",
+			Locale.getDefault());
 	private static final SimpleDateFormat	dateFormat		= new SimpleDateFormat(
-																	"yyyy-MM-dd",
-																	Locale.getDefault());
+			"yyyy-MM-dd",
+			Locale.getDefault());
 	private static final SimpleDateFormat	dateTimeFormat	= new SimpleDateFormat(
-																	"yyyy-MM-dd'T'kkmmss'Z'",
-																	Locale.getDefault());
+			"yyyy-MM-dd'T'kkmmss'Z'",
+			Locale.getDefault());
 
 	private static final SimpleDateFormat	TWFormat		= new SimpleDateFormat(
-																	"yyyyMMdd'T'kkmmss'Z'",
-																	Locale.getDefault());
+			"yyyyMMdd'T'kkmmss'Z'",
+			Locale.getDefault());
 
 	public static String formatDate(Calendar c) {
 		return c == null ? null : dateFormat.format(c.getTime());
@@ -69,11 +69,6 @@ public class DateTimeHelper {
 				.getTime());
 	}
 
-	public static CharSequence formatReminder(Context ctx, Calendar date) {
-		return DateTimeHelper.formatDate(date,
-				ctx.getString(R.string.humanDateTimeFormat));
-	}
-
 	/**
 	 * Formats the Date in the format, the user want to see. The default
 	 * configuration is the relative date format. So the due date is for example
@@ -90,9 +85,9 @@ public class DateTimeHelper {
 			now.setTime(new Date());
 			if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR1
 					|| !(now.get(Calendar.YEAR) == date.get(Calendar.YEAR)
-							&& now.get(Calendar.DAY_OF_MONTH) == date
-									.get(Calendar.DAY_OF_MONTH) && now
-							.get(Calendar.MONTH) == date.get(Calendar.MONTH)))
+					&& now.get(Calendar.DAY_OF_MONTH) == date
+					.get(Calendar.DAY_OF_MONTH) && now
+					.get(Calendar.MONTH) == date.get(Calendar.MONTH)))
 				return DateUtils.getRelativeTimeSpanString(
 						date.getTimeInMillis(), new Date().getTime(),
 						DateUtils.DAY_IN_MILLIS);
@@ -114,6 +109,11 @@ public class DateTimeHelper {
 		return c == null ? null : CalDavDue.format(c.getTime());
 	}
 
+	public static CharSequence formatReminder(Context ctx, Calendar date) {
+		return DateTimeHelper.formatDate(date,
+				ctx.getString(R.string.humanDateTimeFormat));
+	}
+
 	public static String formatTaskWarrior(Calendar c) {
 		return c == null ? null : TWFormat.format(c.getTime());
 	}
@@ -129,6 +129,12 @@ public class DateTimeHelper {
 		if (startDay == Calendar.SATURDAY) return Time.SATURDAY;
 		else if (startDay == Calendar.MONDAY) return Time.MONDAY;
 		else return Time.SUNDAY;
+	}
+
+	public static boolean is24HourLocale(Locale l) {
+		String output = SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT,l).format(new Date());
+		if (output.contains(" AM") || output.contains(" PM")) return false;
+		return true;
 	}
 
 	public static Calendar parseCalDav(String date) throws ParseException {

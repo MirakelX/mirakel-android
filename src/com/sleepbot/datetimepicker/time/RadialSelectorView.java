@@ -34,344 +34,339 @@ import de.azapps.mirakelandroid.R;
  * line coming from the center of the main circle to the edge of the blue selection.
  */
 public class RadialSelectorView extends View {
-    private static final String TAG = "RadialSelectorView";
+	/**
+	 * We'll need to invalidate during the animation.
+	 */
+	private class InvalidateUpdateListener implements ValueAnimator.AnimatorUpdateListener {
+		@Override
+		public void onAnimationUpdate(ValueAnimator animation) {
+			RadialSelectorView.this.invalidate();
+		}
+	}
 
-    private final Paint mPaint = new Paint();
+	private static final String TAG = "RadialSelectorView";
 
-    private boolean mIsInitialized;
-    private boolean mDrawValuesReady;
+	private float mAmPmCircleRadiusMultiplier;
+	private float mAnimationRadiusMultiplier;
 
-    private float mCircleRadiusMultiplier;
-    private float mAmPmCircleRadiusMultiplier;
-    private float mInnerNumbersRadiusMultiplier;
-    private float mOuterNumbersRadiusMultiplier;
-    private float mNumbersRadiusMultiplier;
-    private float mSelectionRadiusMultiplier;
-    private float mAnimationRadiusMultiplier;
-    private boolean mIs24HourMode;
-    private boolean mHasInnerCircle;
+	private int mCircleRadius;
+	private float mCircleRadiusMultiplier;
+	private boolean	mDark;
+	private boolean mDrawValuesReady;
+	private boolean mForceDrawDot;
+	private boolean mHasInnerCircle;
+	private float mInnerNumbersRadiusMultiplier;
+	private InvalidateUpdateListener mInvalidateUpdateListener;
+	private boolean mIs24HourMode;
 
-    private int mXCenter;
-    private int mYCenter;
-    private int mCircleRadius;
-    private float mTransitionMidRadiusMultiplier;
-    private float mTransitionEndRadiusMultiplier;
-    private int mLineLength;
-    private int mSelectionRadius;
-    private InvalidateUpdateListener mInvalidateUpdateListener;
+	private boolean mIsInitialized;
+	private int mLineLength;
+	private float mNumbersRadiusMultiplier;
+	private float mOuterNumbersRadiusMultiplier;
+	private final Paint mPaint = new Paint();
+	private int mSelectionDegrees;
+	private double mSelectionRadians;
+	private int mSelectionRadius;
 
-    private int mSelectionDegrees;
-    private double mSelectionRadians;
-    private boolean mForceDrawDot;
+	private float mSelectionRadiusMultiplier;
+	private float mTransitionEndRadiusMultiplier;
+	private float mTransitionMidRadiusMultiplier;
 
-    public RadialSelectorView(Context context) {
-        super(context);
-        mIsInitialized = false;
-    }
+	private int							mXCenter;
 
-    /**
-     * Initialize this selector with the state of the picker.
-     *
-     * @param context          Current context.
-     * @param is24HourMode     Whether the selector is in 24-hour mode, which will tell us
-     *                         whether the circle's center is moved up slightly to make room for the AM/PM circles.
-     * @param hasInnerCircle   Whether we have both an inner and an outer circle of numbers
-     *                         that may be selected. Should be true for 24-hour mode in the hours circle.
-     * @param disappearsOut    Whether the numbers' animation will have them disappearing out
-     *                         or disappearing in.
-     * @param selectionDegrees The initial degrees to be selected.
-     * @param isInnerCircle    Whether the initial selection is in the inner or outer circle.
-     *                         Will be ignored when hasInnerCircle is false.
-     */
-    public void initialize(Context context, boolean is24HourMode, boolean hasInnerCircle,
-                           boolean disappearsOut, int selectionDegrees, boolean isInnerCircle, boolean dark) {
-        if (mIsInitialized) {
-            Log.e(TAG, "This RadialSelectorView may only be initialized once.");
-            return;
-        }
+	private int mYCenter;
 
-        Resources res = context.getResources();
+	public RadialSelectorView(Context context) {
+		super(context);
+		this.mIsInitialized = false;
+	}
 
-        int selectorColor = res.getColor(dark?R.color.clock_red:R.color.blue);
-        mPaint.setColor(selectorColor);
-        mPaint.setAntiAlias(true);
+	public int getDegreesFromCoords(float pointX, float pointY, boolean forceLegal,
+			final Boolean[] isInnerCircle) {
+		if (!this.mDrawValuesReady) return -1;
 
-        // Calculate values for the circle radius size.
-        mIs24HourMode = is24HourMode;
-        if (is24HourMode) {
-            mCircleRadiusMultiplier = Float.parseFloat(
-                    res.getString(R.string.circle_radius_multiplier_24HourMode));
-        } else {
-            mCircleRadiusMultiplier = Float.parseFloat(
-                    res.getString(R.string.circle_radius_multiplier));
-            mAmPmCircleRadiusMultiplier =
-                    Float.parseFloat(res.getString(R.string.ampm_circle_radius_multiplier));
-        }
+		double hypotenuse = Math.sqrt(
+				(pointY - this.mYCenter) * (pointY - this.mYCenter) +
+				(pointX - this.mXCenter) * (pointX - this.mXCenter));
+		// Check if we're outside the range
+		if (this.mHasInnerCircle) {
+			if (forceLegal) {
+				// If we're told to force the coordinates to be legal, we'll set the isInnerCircle
+				// boolean based based off whichever number the coordinates are closer to.
+				int innerNumberRadius = (int) (this.mCircleRadius * this.mInnerNumbersRadiusMultiplier);
+				int distanceToInnerNumber = (int) Math.abs(hypotenuse - innerNumberRadius);
+				int outerNumberRadius = (int) (this.mCircleRadius * this.mOuterNumbersRadiusMultiplier);
+				int distanceToOuterNumber = (int) Math.abs(hypotenuse - outerNumberRadius);
 
-        // Calculate values for the radius size(s) of the numbers circle(s).
-        mHasInnerCircle = hasInnerCircle;
-        if (hasInnerCircle) {
-            mInnerNumbersRadiusMultiplier =
-                    Float.parseFloat(res.getString(R.string.numbers_radius_multiplier_inner));
-            mOuterNumbersRadiusMultiplier =
-                    Float.parseFloat(res.getString(R.string.numbers_radius_multiplier_outer));
-        } else {
-            mNumbersRadiusMultiplier =
-                    Float.parseFloat(res.getString(R.string.numbers_radius_multiplier_normal));
-        }
-        mSelectionRadiusMultiplier =
-                Float.parseFloat(res.getString(R.string.selection_radius_multiplier));
+				isInnerCircle[0] = distanceToInnerNumber <= distanceToOuterNumber;
+			} else {
+				// Otherwise, if we're close enough to either number (with the space between the
+				// two allotted equally), set the isInnerCircle boolean as the closer one.
+				// appropriately, but otherwise return -1.
+				int minAllowedHypotenuseForInnerNumber =
+						(int) (this.mCircleRadius * this.mInnerNumbersRadiusMultiplier) - this.mSelectionRadius;
+				int maxAllowedHypotenuseForOuterNumber =
+						(int) (this.mCircleRadius * this.mOuterNumbersRadiusMultiplier) + this.mSelectionRadius;
+				int halfwayHypotenusePoint = (int) (this.mCircleRadius *
+						((this.mOuterNumbersRadiusMultiplier + this.mInnerNumbersRadiusMultiplier) / 2));
 
-        // Calculate values for the transition mid-way states.
-        mAnimationRadiusMultiplier = 1;
-        mTransitionMidRadiusMultiplier = 1f + (0.05f * (disappearsOut ? -1 : 1));
-        mTransitionEndRadiusMultiplier = 1f + (0.3f * (disappearsOut ? 1 : -1));
-        mInvalidateUpdateListener = new InvalidateUpdateListener();
-
-        setSelection(selectionDegrees, isInnerCircle, false);
-        mIsInitialized = true;
-    }
-
-    /**
-     * Set the selection.
-     *
-     * @param selectionDegrees The degrees to be selected.
-     * @param isInnerCircle    Whether the selection should be in the inner circle or outer. Will be
-     *                         ignored if hasInnerCircle was initialized to false.
-     * @param forceDrawDot     Whether to force the dot in the center of the selection circle to be
-     *                         drawn. If false, the dot will be drawn only when the degrees is not a multiple of 30, i.e.
-     *                         the selection is not on a visible number.
-     */
-    public void setSelection(int selectionDegrees, boolean isInnerCircle, boolean forceDrawDot) {
-        mSelectionDegrees = selectionDegrees;
-        mSelectionRadians = selectionDegrees * Math.PI / 180;
-        mForceDrawDot = forceDrawDot;
-
-        if (mHasInnerCircle) {
-            if (isInnerCircle) {
-                mNumbersRadiusMultiplier = mInnerNumbersRadiusMultiplier;
-            } else {
-                mNumbersRadiusMultiplier = mOuterNumbersRadiusMultiplier;
-            }
-        }
-    }
-
-    /**
-     * Allows for smoother animations.
-     */
-    @Override
-    public boolean hasOverlappingRendering() {
-        return false;
-    }
-
-    /**
-     * Set the multiplier for the radius. Will be used during animations to move in/out.
-     */
-    public void setAnimationRadiusMultiplier(float animationRadiusMultiplier) {
-        mAnimationRadiusMultiplier = animationRadiusMultiplier;
-    }
-
-    public int getDegreesFromCoords(float pointX, float pointY, boolean forceLegal,
-                                    final Boolean[] isInnerCircle) {
-        if (!mDrawValuesReady) {
-            return -1;
-        }
-
-        double hypotenuse = Math.sqrt(
-                (pointY - mYCenter) * (pointY - mYCenter) +
-                        (pointX - mXCenter) * (pointX - mXCenter));
-        // Check if we're outside the range
-        if (mHasInnerCircle) {
-            if (forceLegal) {
-                // If we're told to force the coordinates to be legal, we'll set the isInnerCircle
-                // boolean based based off whichever number the coordinates are closer to.
-                int innerNumberRadius = (int) (mCircleRadius * mInnerNumbersRadiusMultiplier);
-                int distanceToInnerNumber = (int) Math.abs(hypotenuse - innerNumberRadius);
-                int outerNumberRadius = (int) (mCircleRadius * mOuterNumbersRadiusMultiplier);
-                int distanceToOuterNumber = (int) Math.abs(hypotenuse - outerNumberRadius);
-
-                isInnerCircle[0] = (distanceToInnerNumber <= distanceToOuterNumber);
-            } else {
-                // Otherwise, if we're close enough to either number (with the space between the
-                // two allotted equally), set the isInnerCircle boolean as the closer one.
-                // appropriately, but otherwise return -1.
-                int minAllowedHypotenuseForInnerNumber =
-                        (int) (mCircleRadius * mInnerNumbersRadiusMultiplier) - mSelectionRadius;
-                int maxAllowedHypotenuseForOuterNumber =
-                        (int) (mCircleRadius * mOuterNumbersRadiusMultiplier) + mSelectionRadius;
-                int halfwayHypotenusePoint = (int) (mCircleRadius *
-                        ((mOuterNumbersRadiusMultiplier + mInnerNumbersRadiusMultiplier) / 2));
-
-                if (hypotenuse >= minAllowedHypotenuseForInnerNumber &&
-                        hypotenuse <= halfwayHypotenusePoint) {
-                    isInnerCircle[0] = true;
-                } else if (hypotenuse <= maxAllowedHypotenuseForOuterNumber &&
-                        hypotenuse >= halfwayHypotenusePoint) {
-                    isInnerCircle[0] = false;
-                } else {
-                    return -1;
-                }
-            }
-        } else {
-            // If there's just one circle, we'll need to return -1 if:
-            // we're not told to force the coordinates to be legal, and
-            // the coordinates' distance to the number is within the allowed distance.
-            if (!forceLegal) {
-                int distanceToNumber = (int) Math.abs(hypotenuse - mLineLength);
-                // The max allowed distance will be defined as the distance from the center of the
-                // number to the edge of the circle.
-                int maxAllowedDistance = (int) (mCircleRadius * (1 - mNumbersRadiusMultiplier));
-                if (distanceToNumber > maxAllowedDistance) {
-                    return -1;
-                }
-            }
-        }
+				if (hypotenuse >= minAllowedHypotenuseForInnerNumber &&
+						hypotenuse <= halfwayHypotenusePoint) {
+					isInnerCircle[0] = true;
+				} else if (hypotenuse <= maxAllowedHypotenuseForOuterNumber &&
+						hypotenuse >= halfwayHypotenusePoint) {
+					isInnerCircle[0] = false;
+				} else return -1;
+			}
+		} else {
+			// If there's just one circle, we'll need to return -1 if:
+			// we're not told to force the coordinates to be legal, and
+			// the coordinates' distance to the number is within the allowed distance.
+			if (!forceLegal) {
+				int distanceToNumber = (int) Math.abs(hypotenuse - this.mLineLength);
+				// The max allowed distance will be defined as the distance from the center of the
+				// number to the edge of the circle.
+				int maxAllowedDistance = (int) (this.mCircleRadius * (1 - this.mNumbersRadiusMultiplier));
+				if (distanceToNumber > maxAllowedDistance) return -1;
+			}
+		}
 
 
-        float opposite = Math.abs(pointY - mYCenter);
-        double radians = Math.asin(opposite / hypotenuse);
-        int degrees = (int) (radians * 180 / Math.PI);
+		float opposite = Math.abs(pointY - this.mYCenter);
+		double radians = Math.asin(opposite / hypotenuse);
+		int degrees = (int) (radians * 180 / Math.PI);
 
-        // Now we have to translate to the correct quadrant.
-        boolean rightSide = (pointX > mXCenter);
-        boolean topSide = (pointY < mYCenter);
-        if (rightSide && topSide) {
-            degrees = 90 - degrees;
-        } else if (rightSide && !topSide) {
-            degrees = 90 + degrees;
-        } else if (!rightSide && !topSide) {
-            degrees = 270 - degrees;
-        } else if (!rightSide && topSide) {
-            degrees = 270 + degrees;
-        }
-        return degrees;
-    }
+		// Now we have to translate to the correct quadrant.
+		boolean rightSide = pointX > this.mXCenter;
+		boolean topSide = pointY < this.mYCenter;
+		if (rightSide && topSide) {
+			degrees = 90 - degrees;
+		} else if (rightSide && !topSide) {
+			degrees = 90 + degrees;
+		} else if (!rightSide && !topSide) {
+			degrees = 270 - degrees;
+		} else if (!rightSide && topSide) {
+			degrees = 270 + degrees;
+		}
+		return degrees;
+	}
 
-    @Override
-    public void onDraw(Canvas canvas) {
-        int viewWidth = getWidth();
-        if (viewWidth == 0 || !mIsInitialized) {
-            return;
-        }
+	public ObjectAnimator getDisappearAnimator() {
+		if (!this.mIsInitialized || !this.mDrawValuesReady) {
+			Log.e(TAG, "RadialSelectorView was not ready for animation.");
+			return null;
+		}
 
-        if (!mDrawValuesReady) {
-            mXCenter = getWidth() / 2;
-            mYCenter = getHeight() / 2;
-            mCircleRadius = (int) (Math.min(mXCenter, mYCenter) * mCircleRadiusMultiplier);
+		Keyframe kf0, kf1, kf2;
+		float midwayPoint = 0.2f;
+		int duration = 500;
 
-            if (!mIs24HourMode) {
-                // We'll need to draw the AM/PM circles, so the main circle will need to have
-                // a slightly higher center. To keep the entire view centered vertically, we'll
-                // have to push it up by half the radius of the AM/PM circles.
-                int amPmCircleRadius = (int) (mCircleRadius * mAmPmCircleRadiusMultiplier);
-                mYCenter -= amPmCircleRadius / 2;
-            }
+		kf0 = Keyframe.ofFloat(0f, 1);
+		kf1 = Keyframe.ofFloat(midwayPoint, this.mTransitionMidRadiusMultiplier);
+		kf2 = Keyframe.ofFloat(1f, this.mTransitionEndRadiusMultiplier);
+		PropertyValuesHolder radiusDisappear = PropertyValuesHolder.ofKeyframe(
+				"animationRadiusMultiplier", kf0, kf1, kf2);
 
-            mSelectionRadius = (int) (mCircleRadius * mSelectionRadiusMultiplier);
+		kf0 = Keyframe.ofFloat(0f, 1f);
+		kf1 = Keyframe.ofFloat(1f, 0f);
+		PropertyValuesHolder fadeOut = PropertyValuesHolder.ofKeyframe("alpha", kf0, kf1);
 
-            mDrawValuesReady = true;
-        }
+		ObjectAnimator disappearAnimator = ObjectAnimator.ofPropertyValuesHolder(
+				this, radiusDisappear, fadeOut).setDuration(duration);
+		disappearAnimator.addUpdateListener(this.mInvalidateUpdateListener);
 
-        // Calculate the current radius at which to place the selection circle.
-        mLineLength = (int) (mCircleRadius * mNumbersRadiusMultiplier * mAnimationRadiusMultiplier);
-        int pointX = mXCenter + (int) (mLineLength * Math.sin(mSelectionRadians));
-        int pointY = mYCenter - (int) (mLineLength * Math.cos(mSelectionRadians));
+		return disappearAnimator;
+	}
 
-        // Draw the selection circle.
-        mPaint.setAlpha(51);
-        canvas.drawCircle(pointX, pointY, mSelectionRadius, mPaint);
+	public ObjectAnimator getReappearAnimator() {
+		if (!this.mIsInitialized || !this.mDrawValuesReady) {
+			Log.e(TAG, "RadialSelectorView was not ready for animation.");
+			return null;
+		}
 
-        if (mForceDrawDot | mSelectionDegrees % 30 != 0) {
-            // We're not on a direct tick (or we've been told to draw the dot anyway).
-            mPaint.setAlpha(255);
-            canvas.drawCircle(pointX, pointY, (mSelectionRadius * 2 / 7), mPaint);
-        } else {
-            // We're not drawing the dot, so shorten the line to only go as far as the edge of the
-            // selection circle.
-            int lineLength = mLineLength;
-            lineLength -= mSelectionRadius;
-            pointX = mXCenter + (int) (lineLength * Math.sin(mSelectionRadians));
-            pointY = mYCenter - (int) (lineLength * Math.cos(mSelectionRadians));
-        }
+		Keyframe kf0, kf1, kf2, kf3;
+		float midwayPoint = 0.2f;
+		int duration = 500;
 
-        // Draw the line from the center of the circle.
-        mPaint.setAlpha(255);
-        mPaint.setStrokeWidth(1);
-        canvas.drawLine(mXCenter, mYCenter, pointX, pointY, mPaint);
-    }
+		// The time points are half of what they would normally be, because this animation is
+		// staggered against the disappear so they happen seamlessly. The reappear starts
+		// halfway into the disappear.
+		float delayMultiplier = 0.25f;
+		float transitionDurationMultiplier = 1f;
+		float totalDurationMultiplier = transitionDurationMultiplier + delayMultiplier;
+		int totalDuration = (int) (duration * totalDurationMultiplier);
+		float delayPoint = delayMultiplier * duration / totalDuration;
+		midwayPoint = 1 - midwayPoint * (1 - delayPoint);
 
-    public ObjectAnimator getDisappearAnimator() {
-        if (!mIsInitialized || !mDrawValuesReady) {
-            Log.e(TAG, "RadialSelectorView was not ready for animation.");
-            return null;
-        }
+		kf0 = Keyframe.ofFloat(0f, this.mTransitionEndRadiusMultiplier);
+		kf1 = Keyframe.ofFloat(delayPoint, this.mTransitionEndRadiusMultiplier);
+		kf2 = Keyframe.ofFloat(midwayPoint, this.mTransitionMidRadiusMultiplier);
+		kf3 = Keyframe.ofFloat(1f, 1);
+		PropertyValuesHolder radiusReappear = PropertyValuesHolder.ofKeyframe(
+				"animationRadiusMultiplier", kf0, kf1, kf2, kf3);
 
-        Keyframe kf0, kf1, kf2;
-        float midwayPoint = 0.2f;
-        int duration = 500;
+		kf0 = Keyframe.ofFloat(0f, 0f);
+		kf1 = Keyframe.ofFloat(delayPoint, 0f);
+		kf2 = Keyframe.ofFloat(1f, 1f);
+		PropertyValuesHolder fadeIn = PropertyValuesHolder.ofKeyframe("alpha", kf0, kf1, kf2);
 
-        kf0 = Keyframe.ofFloat(0f, 1);
-        kf1 = Keyframe.ofFloat(midwayPoint, mTransitionMidRadiusMultiplier);
-        kf2 = Keyframe.ofFloat(1f, mTransitionEndRadiusMultiplier);
-        PropertyValuesHolder radiusDisappear = PropertyValuesHolder.ofKeyframe(
-                "animationRadiusMultiplier", kf0, kf1, kf2);
+		ObjectAnimator reappearAnimator = ObjectAnimator.ofPropertyValuesHolder(
+				this, radiusReappear, fadeIn).setDuration(totalDuration);
+		reappearAnimator.addUpdateListener(this.mInvalidateUpdateListener);
+		return reappearAnimator;
+	}
 
-        kf0 = Keyframe.ofFloat(0f, 1f);
-        kf1 = Keyframe.ofFloat(1f, 0f);
-        PropertyValuesHolder fadeOut = PropertyValuesHolder.ofKeyframe("alpha", kf0, kf1);
+	/**
+	 * Allows for smoother animations.
+	 */
+	@Override
+	public boolean hasOverlappingRendering() {
+		return false;
+	}
 
-        ObjectAnimator disappearAnimator = ObjectAnimator.ofPropertyValuesHolder(
-                this, radiusDisappear, fadeOut).setDuration(duration);
-        disappearAnimator.addUpdateListener(mInvalidateUpdateListener);
+	/**
+	 * Initialize this selector with the state of the picker.
+	 *
+	 * @param context          Current context.
+	 * @param is24HourMode     Whether the selector is in 24-hour mode, which will tell us
+	 *                         whether the circle's center is moved up slightly to make room for the AM/PM circles.
+	 * @param hasInnerCircle   Whether we have both an inner and an outer circle of numbers
+	 *                         that may be selected. Should be true for 24-hour mode in the hours circle.
+	 * @param disappearsOut    Whether the numbers' animation will have them disappearing out
+	 *                         or disappearing in.
+	 * @param selectionDegrees The initial degrees to be selected.
+	 * @param isInnerCircle    Whether the initial selection is in the inner or outer circle.
+	 *                         Will be ignored when hasInnerCircle is false.
+	 */
+	public void initialize(Context context, boolean is24HourMode, boolean hasInnerCircle,
+			boolean disappearsOut, int selectionDegrees, boolean isInnerCircle, boolean dark) {
+		if (this.mIsInitialized) {
+			Log.e(TAG, "This RadialSelectorView may only be initialized once.");
+			return;
+		}
 
-        return disappearAnimator;
-    }
+		Resources res = context.getResources();
 
-    public ObjectAnimator getReappearAnimator() {
-        if (!mIsInitialized || !mDrawValuesReady) {
-            Log.e(TAG, "RadialSelectorView was not ready for animation.");
-            return null;
-        }
+		int selectorColor = res.getColor(dark ? R.color.Red : R.color.blue);
+		this.mPaint.setColor(selectorColor);
+		this.mPaint.setAntiAlias(true);
 
-        Keyframe kf0, kf1, kf2, kf3;
-        float midwayPoint = 0.2f;
-        int duration = 500;
+		// Calculate values for the circle radius size.
+		this.mIs24HourMode = is24HourMode;
+		if (is24HourMode) {
+			this.mCircleRadiusMultiplier = Float.parseFloat(
+					res.getString(R.string.circle_radius_multiplier_24HourMode));
+		} else {
+			this.mCircleRadiusMultiplier = Float.parseFloat(
+					res.getString(R.string.circle_radius_multiplier));
+			this.mAmPmCircleRadiusMultiplier =
+					Float.parseFloat(res.getString(R.string.ampm_circle_radius_multiplier));
+		}
 
-        // The time points are half of what they would normally be, because this animation is
-        // staggered against the disappear so they happen seamlessly. The reappear starts
-        // halfway into the disappear.
-        float delayMultiplier = 0.25f;
-        float transitionDurationMultiplier = 1f;
-        float totalDurationMultiplier = transitionDurationMultiplier + delayMultiplier;
-        int totalDuration = (int) (duration * totalDurationMultiplier);
-        float delayPoint = (delayMultiplier * duration) / totalDuration;
-        midwayPoint = 1 - (midwayPoint * (1 - delayPoint));
+		// Calculate values for the radius size(s) of the numbers circle(s).
+		this.mHasInnerCircle = hasInnerCircle;
+		if (hasInnerCircle) {
+			this.mInnerNumbersRadiusMultiplier =
+					Float.parseFloat(res.getString(R.string.numbers_radius_multiplier_inner));
+			this.mOuterNumbersRadiusMultiplier =
+					Float.parseFloat(res.getString(R.string.numbers_radius_multiplier_outer));
+		} else {
+			this.mNumbersRadiusMultiplier =
+					Float.parseFloat(res.getString(R.string.numbers_radius_multiplier_normal));
+		}
+		this.mSelectionRadiusMultiplier =
+				Float.parseFloat(res.getString(R.string.selection_radius_multiplier));
 
-        kf0 = Keyframe.ofFloat(0f, mTransitionEndRadiusMultiplier);
-        kf1 = Keyframe.ofFloat(delayPoint, mTransitionEndRadiusMultiplier);
-        kf2 = Keyframe.ofFloat(midwayPoint, mTransitionMidRadiusMultiplier);
-        kf3 = Keyframe.ofFloat(1f, 1);
-        PropertyValuesHolder radiusReappear = PropertyValuesHolder.ofKeyframe(
-                "animationRadiusMultiplier", kf0, kf1, kf2, kf3);
+		// Calculate values for the transition mid-way states.
+		this.mAnimationRadiusMultiplier = 1;
+		this.mTransitionMidRadiusMultiplier = 1f + 0.05f * (disappearsOut ? -1 : 1);
+		this.mTransitionEndRadiusMultiplier = 1f + 0.3f * (disappearsOut ? 1 : -1);
+		this.mInvalidateUpdateListener = new InvalidateUpdateListener();
 
-        kf0 = Keyframe.ofFloat(0f, 0f);
-        kf1 = Keyframe.ofFloat(delayPoint, 0f);
-        kf2 = Keyframe.ofFloat(1f, 1f);
-        PropertyValuesHolder fadeIn = PropertyValuesHolder.ofKeyframe("alpha", kf0, kf1, kf2);
+		setSelection(selectionDegrees, isInnerCircle, false);
+		this.mIsInitialized = true;
+		this.mDark=dark;
+	}
 
-        ObjectAnimator reappearAnimator = ObjectAnimator.ofPropertyValuesHolder(
-                this, radiusReappear, fadeIn).setDuration(totalDuration);
-        reappearAnimator.addUpdateListener(mInvalidateUpdateListener);
-        return reappearAnimator;
-    }
+	@Override
+	public void onDraw(Canvas canvas) {
+		int viewWidth = getWidth();
+		if (viewWidth == 0 || !this.mIsInitialized) return;
 
-    /**
-     * We'll need to invalidate during the animation.
-     */
-    private class InvalidateUpdateListener implements ValueAnimator.AnimatorUpdateListener {
-        @Override
-        public void onAnimationUpdate(ValueAnimator animation) {
-            RadialSelectorView.this.invalidate();
-        }
-    }
+		if (!this.mDrawValuesReady) {
+			this.mXCenter = getWidth() / 2;
+			this.mYCenter = getHeight() / 2;
+			this.mCircleRadius = (int) (Math.min(this.mXCenter, this.mYCenter) * this.mCircleRadiusMultiplier);
+
+			if (!this.mIs24HourMode) {
+				// We'll need to draw the AM/PM circles, so the main circle will need to have
+				// a slightly higher center. To keep the entire view centered vertically, we'll
+				// have to push it up by half the radius of the AM/PM circles.
+				int amPmCircleRadius = (int) (this.mCircleRadius * this.mAmPmCircleRadiusMultiplier);
+				this.mYCenter -= amPmCircleRadius / 2;
+			}
+
+			this.mSelectionRadius = (int) (this.mCircleRadius * this.mSelectionRadiusMultiplier);
+
+			this.mDrawValuesReady = true;
+		}
+
+		// Calculate the current radius at which to place the selection circle.
+		this.mLineLength = (int) (this.mCircleRadius * this.mNumbersRadiusMultiplier * this.mAnimationRadiusMultiplier);
+		int pointX = this.mXCenter + (int) (this.mLineLength * Math.sin(this.mSelectionRadians));
+		int pointY = this.mYCenter - (int) (this.mLineLength * Math.cos(this.mSelectionRadians));
+
+		// Draw the selection circle.
+		this.mPaint.setAlpha(this.mDark ? 100 : 51);
+		canvas.drawCircle(pointX, pointY, this.mSelectionRadius, this.mPaint);
+
+		if (this.mForceDrawDot | this.mSelectionDegrees % 30 != 0) {
+			// We're not on a direct tick (or we've been told to draw the dot anyway).
+			this.mPaint.setAlpha(255);
+			canvas.drawCircle(pointX, pointY, this.mSelectionRadius * 2 / 7, this.mPaint);
+		} else {
+			// We're not drawing the dot, so shorten the line to only go as far as the edge of the
+			// selection circle.
+			int lineLength = this.mLineLength;
+			lineLength -= this.mSelectionRadius;
+			pointX = this.mXCenter + (int) (lineLength * Math.sin(this.mSelectionRadians));
+			pointY = this.mYCenter - (int) (lineLength * Math.cos(this.mSelectionRadians));
+		}
+
+		// Draw the line from the center of the circle.
+		this.mPaint.setAlpha(255);
+		this.mPaint.setStrokeWidth(1);
+		canvas.drawLine(this.mXCenter, this.mYCenter, pointX, pointY, this.mPaint);
+	}
+
+	/**
+	 * Set the multiplier for the radius. Will be used during animations to move in/out.
+	 */
+	public void setAnimationRadiusMultiplier(float animationRadiusMultiplier) {
+		this.mAnimationRadiusMultiplier = animationRadiusMultiplier;
+	}
+
+	/**
+	 * Set the selection.
+	 *
+	 * @param selectionDegrees The degrees to be selected.
+	 * @param isInnerCircle    Whether the selection should be in the inner circle or outer. Will be
+	 *                         ignored if hasInnerCircle was initialized to false.
+	 * @param forceDrawDot     Whether to force the dot in the center of the selection circle to be
+	 *                         drawn. If false, the dot will be drawn only when the degrees is not a multiple of 30, i.e.
+	 *                         the selection is not on a visible number.
+	 */
+	public void setSelection(int selectionDegrees, boolean isInnerCircle, boolean forceDrawDot) {
+		this.mSelectionDegrees = selectionDegrees;
+		this.mSelectionRadians = selectionDegrees * Math.PI / 180;
+		this.mForceDrawDot = forceDrawDot;
+
+		if (this.mHasInnerCircle) {
+			if (isInnerCircle) {
+				this.mNumbersRadiusMultiplier = this.mInnerNumbersRadiusMultiplier;
+			} else {
+				this.mNumbersRadiusMultiplier = this.mOuterNumbersRadiusMultiplier;
+			}
+		}
+	}
 }

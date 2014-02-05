@@ -82,7 +82,8 @@ public class SimpleMonthView extends View {
 		this.mDayOfWeekTypeface = resources.getString(R.string.day_of_week_label_typeface);
 		this.mMonthTitleTypeface = resources.getString(R.string.sans_serif);
 		this.mDayTextColor = resources.getColor(this.mdark?R.color.white:R.color.date_picker_text_normal);
-		this.mTodayNumberColor = resources.getColor(this.mdark?R.color.clock_red:R.color.blue);
+		this.mTodayNumberColor = resources.getColor(this.mdark ? R.color.Red
+				: R.color.clock_blue);
 		this.mMonthTitleColor = resources.getColor(this.mdark?R.color.black:R.color.white);
 		this.mMonthTitleBGColor = resources.getColor(this.mdark?R.color.blackish:R.color.circle_background);
 		this.mStringBuilder = new StringBuilder(50);
@@ -129,7 +130,8 @@ public class SimpleMonthView extends View {
 			if (this.mSelectedDay == day) {
 				canvas.drawCircle(x, y - MINI_DAY_NUMBER_TEXT_SIZE / 3, DAY_SELECTED_CIRCLE_SIZE, this.mSelectedCirclePaint);
 			}
-			if (this.mHasToday && this.mToday == day) {
+			if (this.mHasToday && this.mToday == day
+					|| this.mSelectedDay == day) {
 				this.mMonthNumPaint.setColor(this.mTodayNumberColor);
 			} else {
 				this.mMonthNumPaint.setColor(this.mDayTextColor);
@@ -204,7 +206,7 @@ public class SimpleMonthView extends View {
 		this.mSelectedCirclePaint.setColor(this.mTodayNumberColor);
 		this.mSelectedCirclePaint.setTextAlign(Paint.Align.CENTER);
 		this.mSelectedCirclePaint.setStyle(Paint.Style.FILL);
-		this.mSelectedCirclePaint.setAlpha(60);
+		this.mSelectedCirclePaint.setAlpha(this.mdark ? 80 : 60);
 		this.mMonthDayLabelPaint = new Paint();
 		this.mMonthDayLabelPaint.setAntiAlias(true);
 		this.mMonthDayLabelPaint.setTextSize(MONTH_DAY_LABEL_TEXT_SIZE);
