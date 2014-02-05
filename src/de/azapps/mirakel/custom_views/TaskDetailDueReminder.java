@@ -213,6 +213,10 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
 			this.reminderWrapper.setLayoutParams(new LayoutParams(
 					reminderParams.width, reminderParams.height, 0.66f));
 		}
+		invalidate();
+		setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+				LayoutParams.WRAP_CONTENT));
+		save();
 	}
 
 
@@ -300,7 +304,7 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
 			this.taskReminder.setTextColor(this.context.getResources()
 					.getColor(inactive_color));
 		}
-		handleMultiline();
+		// handleMultiline();
 
 	}
 
