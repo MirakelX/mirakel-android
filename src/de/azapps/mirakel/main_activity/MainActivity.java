@@ -18,8 +18,6 @@
  ******************************************************************************/
 package de.azapps.mirakel.main_activity;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,7 +45,6 @@ import android.provider.CalendarContract;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -91,9 +88,6 @@ import de.azapps.mirakel.widget.MainWidgetProvider;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
-import de.azapps.tools.taptest.TapGestureDetector;
-import de.azapps.tools.taptest.TapTest;
-import de.azapps.tools.taptest.TapTestLayout;
 
 /**
  * This is our main activity. Here happens nearly everything.
@@ -171,9 +165,6 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 
 	private Intent					startIntent;
 	protected TaskFragment			taskFragment;
-
-	// TapTest
-	private TapTest					taptest;
 
 	private void addFilesForTask(final Task t, final Intent intent) {
 		final String action = intent.getAction();
@@ -704,10 +695,6 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 								.setVisible(BuildHelper.isBeta());
 					}
 
-					if (BuildHelper.TAPTEST) {
-						taptest.addToMenu(menu);
-					}
-
 					if (!fromShare) {
 						updateShare();
 					}
@@ -929,17 +916,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 			}, 10);
 		}
 
-		setCurrentTask(currentTask, false);
-		if (BuildHelper.TAPTEST) {
-			try {
-				taptest = new TapTest(this, new File(Mirakel.exportDir,
-						"log.java"));
-				TapTestLayout.setGestureDetector(new GestureDetectorCompat(
-						this, new TapGestureDetector(taptest)));
-			} catch (FileNotFoundException e) {
-
-			}
-		}
+		setCurrentTask(this.currentTask, false);
 	}
 
 	@Override
@@ -1089,9 +1066,6 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 				}
 				break;
 			default:
-				if (taptest != null) {
-					taptest.handleMenuItem(item);
-				}
 				return super.onOptionsItemSelected(item);
 		}
 		return true;

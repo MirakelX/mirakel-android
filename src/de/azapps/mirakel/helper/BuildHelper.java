@@ -3,10 +3,9 @@ package de.azapps.mirakel.helper;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakelandroid.BuildConfig;
 
-public class BuildHelper {
-	public final static boolean	DEBUG	= BuildConfig.DEBUG;
-	public final static boolean	TAPTEST	= DEBUG;
 
+public class BuildHelper {
+	public static boolean	DEBUG				= BuildConfig.DEBUG;
 	public static boolean isBeta() {
 		return DEBUG;
 	}
