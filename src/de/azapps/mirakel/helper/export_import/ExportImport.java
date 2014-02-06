@@ -43,9 +43,9 @@ import org.xml.sax.SAXException;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Environment;
 import android.widget.Toast;
 import au.com.bytecode.opencsv.CSVReader;
+import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -58,11 +58,8 @@ public class ExportImport {
 	private static final File dbFile = new File(FileUtils.getMirakelDir()
 			+ "databases/mirakel.db");
 	private static final String TAG = "ExportImport";
-	private static final File exportDir = new File(
-			Environment.getExternalStorageDirectory(), "mirakel");
-
 	public static File getBackupDir() {
-		return exportDir;
+		return Mirakel.exportDir;
 	}
 
 	@SuppressLint("SimpleDateFormat")
@@ -71,10 +68,10 @@ public class ExportImport {
 		Date today = new Date();
 		DateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");// SimpleDateFormat.getDateInstance();
 		String filename = "mirakel_" + sdf.format(today) + ".db";
-		final File file = new File(exportDir, filename);
+		final File file = new File(Mirakel.exportDir, filename);
 
-		if (!exportDir.exists()) {
-			exportDir.mkdirs();
+		if (!Mirakel.exportDir.exists()) {
+			Mirakel.exportDir.mkdirs();
 		}
 		try {
 			file.createNewFile();
