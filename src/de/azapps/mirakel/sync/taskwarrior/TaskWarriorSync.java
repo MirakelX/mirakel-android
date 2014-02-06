@@ -179,11 +179,11 @@ public class TaskWarriorSync {
 				FileUtils
 				.writeToFile(
 						new File(Environment.getExternalStorageState()
-										+ "/mirakel"
-										+ new SimpleDateFormat(
-												"dd-MM-yyyy_hh-mm-ss")
-												.format(new Date()) + ".log"),
-								response);
+								+ "/mirakel"
+								+ new SimpleDateFormat(
+										"dd-MM-yyyy_hh-mm-ss")
+						.format(new Date()) + ".log"),
+						response);
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -480,7 +480,7 @@ public class TaskWarriorSync {
 				}
 				json += "{\"entry\":\"" + formatCal(d)
 						+ "\",";
-				json += "\"description\":\"" + a + "\"}";
+				json += "\"description\":\"" + a.trim() + "\"}";
 				d.add(Calendar.SECOND, 1);
 			}
 			json += "]";
