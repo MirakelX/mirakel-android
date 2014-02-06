@@ -318,5 +318,17 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="task_fragment_content">Notes</string>
     <string name="task_fragment_subtask">Subtasks</string>
     <string name="task_fragment_progress">Progress</string>
+    
+    <!-- Dev Settings -->
+    <string name="settings_dev">Development Settings</string>
+    <string name="settings_dev_sync">Sync</string>
+    <string name="settings_dev_dump_tw_summary">Dump the recived text to /sdcard/mirakel/</string>
+    <string name="settings_dev_dump_tw">Dump recived TW-Messages</string>
+    <string name="enable">enabling</string>
+    <string name="disable">disabling</string>
+    <string name="enabled">enabled</string>
+    <string name="disabled">disabled</string>
+    <string name="change_dev_mode">You have %s the development settings!</string>
+    <string name="enableDebugLog">Enable Debug-Logcat?</string>
 
 </resources>

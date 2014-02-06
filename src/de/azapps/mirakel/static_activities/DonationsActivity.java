@@ -90,7 +90,7 @@ public class DonationsActivity extends FragmentActivity {
 		DonationsFragment donationsFragment;
 		if (BuildHelper.isForPlayStore()) {
 			donationsFragment = DonationsFragment.newInstance(
-					BuildHelper.DEBUG,
+					MirakelPreferences.isDebug(),
 					true,
 					GOOGLE_PUBKEY,
 					GOOGLE_CATALOG,
@@ -99,7 +99,8 @@ public class DonationsActivity extends FragmentActivity {
 							null, null, null, false, FLATTR_PROJECT_URL, FLATTR_URL);
 		} else {
 			donationsFragment = DonationsFragment.newInstance(
-					BuildHelper.DEBUG, false, null, null, null, true,
+					MirakelPreferences.isDebug(), false, null, null, null,
+					true,
 					PAYPAL_USER, PAYPAL_CURRENCY_CODE,
 					getString(R.string.donation_paypal_item), true,
 					FLATTR_PROJECT_URL, FLATTR_URL);

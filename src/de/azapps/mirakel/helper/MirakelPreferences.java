@@ -26,6 +26,7 @@ import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.R;
 
 /**
@@ -253,6 +254,19 @@ public class MirakelPreferences {
 		return settings.getBoolean("dateFormatRelative", true);
 	}
 
+	public static boolean isDebug() {
+		if(settings!=null&&MirakelPreferences.isEnabledDebugMenu()) return settings.getBoolean("enabledDebug", BuildConfig.DEBUG);
+		return BuildConfig.DEBUG;
+	}
+
+	public static boolean isDumpTw() {
+		return settings.getBoolean("dump_tw_sync_to_sdcard", false);
+	}
+
+	public static boolean isEnabledDebugMenu() {
+		return settings.getBoolean("enableDebugMenu", false);
+	}
+
 	public static boolean isNotificationListOpenDefault() {
 
 		String listOpen = settings
@@ -282,10 +296,10 @@ public class MirakelPreferences {
 			else if (v == 2) return orientation == Configuration.ORIENTATION_PORTRAIT;
 			else if (v == 3) return true;
 		}
-		
+
 		return settings.getBoolean("useTabletLayout", context.getResources()
-		.getBoolean(R.bool.isTablet));	
-	
+				.getBoolean(R.bool.isTablet));
+
 	}
 
 	public static List<Integer> loadIntArray(String arrayName) {
@@ -361,6 +375,11 @@ public class MirakelPreferences {
 
 	public static boolean swipeBehavior() {
 		return settings.getBoolean("swipeBehavior", false);
+	}
+
+	public static void toogleDebugMenu() {
+		settings.edit().putBoolean("enableDebugMenu", !MirakelPreferences.isEnabledDebugMenu()).commit();
+
 	}
 
 	public static boolean useBigNotifications() {

@@ -96,6 +96,8 @@ public class SettingsFragment extends PreferenceFragment {
 			} else {
 				addPreferencesFromResource(R.xml.settings_notifications);
 			}
+		} else if (getArguments().getString("type").equals("dev")) {
+			addPreferencesFromResource(R.xml.settings_dev);
 		} else {
 
 			Log.wtf(TAG, "unkown prefernce " + getArguments().getString("type"));

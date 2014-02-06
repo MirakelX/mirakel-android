@@ -1,13 +1,12 @@
 package de.azapps.mirakel.helper;
 
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakelandroid.BuildConfig;
 
 
 public class BuildHelper {
-	public static boolean	DEBUG				= BuildConfig.DEBUG;
+
 	public static boolean isBeta() {
-		return DEBUG;
+		return MirakelPreferences.isDebug();
 	}
 
 	public static boolean isForFDroid() {
@@ -19,11 +18,11 @@ public class BuildHelper {
 	}
 
 	public static boolean isNightly() {
-		return DEBUG;
+		return MirakelPreferences.isDebug();
 	}
 
 	public static boolean isRelease() {
-		return !DEBUG;
+		return !MirakelPreferences.isDebug();
 	}
 
 	public static boolean useAutoUpdater() {

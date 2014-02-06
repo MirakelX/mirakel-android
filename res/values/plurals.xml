@@ -103,5 +103,10 @@
         <item quantity="one">One File</item>
         <item quantity="other">%d Files</item>
     </plurals>
+    
+    <plurals name="dev_toast">
+        <item quantity="one">You are now %1$d step away from %2$s development settings.</item>
+        <item quantity="other">You are now %1$d steps away from %2$s development settings.</item>
+    </plurals>
 
 </resources>

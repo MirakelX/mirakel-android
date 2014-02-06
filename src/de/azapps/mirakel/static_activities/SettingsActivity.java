@@ -58,6 +58,14 @@ public class SettingsActivity extends PreferenceActivity {
 	private SettingsAdapter		mAdapter;
 	private List<Header>		mHeaders;
 
+	@SuppressLint("NewApi")
+	@Override
+	public void invalidateHeaders() {
+		if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB) {
+			super.invalidateHeaders();
+		}
+	}
+
 	@Override
 	protected boolean isValidFragment(String fragmentName) {
 		return fragmentName.equals(SettingsFragment.class.getCanonicalName())
@@ -194,6 +202,15 @@ public class SettingsActivity extends PreferenceActivity {
 	@Override
 	public void onBuildHeaders(List<Header> target) {
 		loadHeadersFromResource(R.xml.settings, target);
+		if (!MirakelPreferences.isEnabledDebugMenu()) {
+			for (int i = 0; i < target.size(); i++) {
+				Header h = target.get(i);
+				if (h.id == R.id.header_dev) {
+					target.remove(i);
+					break;
+				}
+			}
+		}
 		this.mHeaders = target;
 	}
 
@@ -270,6 +287,9 @@ public class SettingsActivity extends PreferenceActivity {
 					if (!MirakelPreferences.isTablet()) {
 						finish();
 					}
+				} else if (i.getAction().equals(
+						"de.azapps.mirakel.preferences.DEV")) {
+					addPreferencesFromResource(R.xml.settings_dev);
 				} else {
 					Log.wtf(TAG, "unkown Preference");
 				}
@@ -331,6 +351,7 @@ public class SettingsActivity extends PreferenceActivity {
 			finish();
 			startActivity(getIntent());
 		}
+		invalidateHeaders();
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.charset.MalformedInputException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -14,11 +15,13 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Environment;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import de.azapps.mirakel.Mirakel.NoSuchListException;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
@@ -170,7 +173,22 @@ public class TaskWarriorSync {
 		client.send(sync.serialize());
 
 		String response = client.recv();
-		// FileUtils.writeToFile(new File("/sdcard/mirakel.log"), response);
+		if (MirakelPreferences.isEnabledDebugMenu()
+				&& MirakelPreferences.isDumpTw()) {
+			try {
+				FileUtils
+				.writeToFile(
+						new File(Environment.getExternalStorageState()
+										+ "/mirakel"
+										+ new SimpleDateFormat(
+												"dd-MM-yyyy_hh-mm-ss")
+												.format(new Date()) + ".log"),
+								response);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
 
 		// longInfo(response);
 		Msg remotes = new Msg();

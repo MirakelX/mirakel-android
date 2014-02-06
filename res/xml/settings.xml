@@ -71,6 +71,14 @@
     </header>
     <header
         android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
+        android:id="@+id/header_dev"
+        android:title="@string/settings_dev" >
+        <extra
+            android:name="type"
+            android:value="dev" />
+    </header>
+    <header
+        android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
         android:title="@string/settings_about" >
         <extra
             android:name="type"
