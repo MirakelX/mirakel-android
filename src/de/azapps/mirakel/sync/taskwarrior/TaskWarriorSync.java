@@ -480,8 +480,8 @@ public class TaskWarriorSync {
 				}
 				json += "{\"entry\":\"" + formatCal(d)
 						+ "\",";
-				json += "\"description\":\"" + a.trim().replace("\n", "")
-						+ "\"}";
+				json += "\"description\":\"" + a.trim().replace("\n", "").replace("\"", "\\\"");
+				+ "\"}";
 				d.add(Calendar.SECOND, 1);
 			}
 			json += "]";
