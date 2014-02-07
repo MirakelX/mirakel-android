@@ -28,12 +28,12 @@ import de.azapps.tools.Log;
 
 public class MirakelArrayAdapter<T> extends ArrayAdapter<T> {
 	private static final String TAG = "MirakelArrayAdapter";
+	protected Context context;
+	protected boolean darkTheme;
 	protected List<T> data;
 	protected int layoutResourceId;
-	protected Context context;
 	protected List<Boolean> selected;
 	protected int selectedCount;
-	protected boolean darkTheme;
 
 	public MirakelArrayAdapter(Context context, int textViewResourceId,
 			List<T> data) {
@@ -50,47 +50,57 @@ public class MirakelArrayAdapter<T> extends ArrayAdapter<T> {
 
 	}
 
-	@Override
-	public int getCount() {
-		return data.size();
+	void addToEnd(T el) {
+		this.data.add(el);
+		this.selected.add(false);
 	}
 
-	public void setSelected(int position, boolean selected) {
-		this.selected.set(position, selected);
-		selectedCount += (selected ? 1 : -1);
-		notifyDataSetChanged();
-	}
-
-	public int getSelectedCount() {
-		return selectedCount;
-	}
-
-	public void resetSelected() {
-		Log.d(TAG, "reset selected");
-		selected = new ArrayList<Boolean>();
-		for (int i = 0; i < data.size(); i++) {
-			selected.add(false);
-		}
-		notifyDataSetChanged();
-		selectedCount = 0;
+	void addToHead(T el) {
+		this.data.add(0, el);
+		this.selected.add(false);
 	}
 
 	public void changeData(List<T> newData) {
-		data.clear();
-		data.addAll(newData);
-		while (data.size() > selected.size()) {
-			selected.add(false);
+		this.data.clear();
+		this.data.addAll(newData);
+		while (this.data.size() > this.selected.size()) {
+			this.selected.add(false);
 		}
+	}
+
+	@Override
+	public int getCount() {
+		return this.data.size();
 	}
 
 	public List<T> getSelected() {
 		List<T> selected = new ArrayList<T>();
-		for (int i = 0; i < data.size(); i++) {
+		for (int i = 0; i < this.data.size(); i++) {
 			if (this.selected.get(i)) {
-				selected.add(data.get(i));
+				selected.add(this.data.get(i));
 			}
 		}
 		return selected;
+	}
+
+	public int getSelectedCount() {
+		return this.selectedCount;
+	}
+
+	public void resetSelected() {
+		Log.d(TAG, "reset selected");
+		this.selected = new ArrayList<Boolean>();
+		for (int i = 0; i < this.data.size(); i++) {
+			this.selected.add(false);
+		}
+		notifyDataSetChanged();
+		this.selectedCount = 0;
+	}
+
+	public void setSelected(int position, boolean selected) {
+		this.selected.set(position, selected);
+		this.selectedCount += selected ? 1 : -1;
+		notifyDataSetChanged();
 	}
 
 }
