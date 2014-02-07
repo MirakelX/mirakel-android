@@ -298,7 +298,7 @@ public class TaskWarriorSetupActivity extends Activity {
 		this.progressDialog.setIndeterminate(true);
 		this.progressDialog.show();
 
-		if (!inputUrl.contains("http://")) {
+		if (!inputUrl.startsWith("http")) {
 			inputUrl = "http://" + inputUrl;
 		}
 
