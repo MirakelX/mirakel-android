@@ -128,7 +128,7 @@ public class TaskDetailContent extends BaseTaskDetailRow {
 		TaskDetailContent.this.task
 		.setContent(TaskDetailContent.this.taskContentEdit.getText()
 				.toString());
-		save();
+		// save();
 		this.content = this.task.getContent();
 		if (this.task.getContent().length() > 0) {
 			this.taskContent.setText(this.task.getContent());

@@ -216,7 +216,6 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
 		invalidate();
 		setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT));
-		save();
 	}
 
 
