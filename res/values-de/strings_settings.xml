@@ -19,6 +19,7 @@
   <string name="sync_frequency_summary_man">Nur manuell synchronisieren</string>
   <string name="sync_caldav">CalDAV synchronisieren</string>
   <string name="sync_caldav_howto">Welche Prioritäten sollen eingeschlossen sein</string>
+  <string name="download">Herunterladen</string>
   <string name="sync_add_account">Konto hinzufügen</string>
   <string name="sync_taskwarrior_configure">Taskwarrior konfigurieren</string>
   <string name="sync_taskwarrior_scan_qr">QR-Code scannen</string>
@@ -26,7 +27,7 @@
   <string name="sync_taskwarrior_how_to">Wie installiert man seinen eigenen Server</string>
   <string name="sync_taskwarrior_own_server">oder nutzen Sie Ihren eigenen Server</string>
   <string name="sync_taskwarrior_url_error">Die URL ist nicht korrekt. Wurde der Code richtig eingescannt?</string>
-  <string name="sync_taskwarrior_configuring">Richte Synchronisierung ein…</string>
+  <string name="sync_taskwarrior_configuring">Richte Synchronisierung ein&#8230;</string>
   <string name="sync_taskwarrior_about">Wenn Sie bereits ein Taskwarrior-Konto besitzen:</string>
   <string name="sync_taskwarrior_register">Wenn nicht, können Sie ein Konto auf unserem Server erstellen:</string>
   <string name="sync_taskwarrior_register_button">Registrieren</string>
@@ -57,6 +58,7 @@
   <string name="notifications_zero_show">Leere Benachrichtigungen ausblenden</string>
   <string name="reminder">Erinnerungen</string>
   <string name="reminders_persistent">Dauerhafte Erinnerungen</string>
+  <string name="reminders_persistent_summary">Mache es unmöglich die Erinnerung zu schließen</string>
   <string name="startup_title">Startvorgang</string>
   <string name="startup_show_lists">Alle Listen anzeigen</string>
   <string name="startup_show_lists_summary">Beim Start alle Listen anzeigen</string>
@@ -95,7 +97,7 @@
   <string name="any_do_this_file">Soll ich von %s importieren?\nWenn nicht, dann wähle eine Datei aus</string>
   <string name="any_do_how_to">Bitte erstelle zuerst ein Backup deiner Any.Do Daten. Öffne Any.Do → Einstellungen → Backup → Backup erstellen. Dann komm zurück und klicke OK.\nOder wähle die Datei händisch aus.</string>
   <string name="select_file">Datei auswählen</string>
-  <string name="wait">Bitte warten…</string>
+  <string name="wait">Bitte warten&#8230;</string>
   <string name="import_wunderlist_click">Importiere aus Wunderlist</string>
   <string name="import_wunderlist_title">Wunderlist-Datei auswählen</string>
   <string name="import_wunderlist_howto">Wie importiere ich die Wunderlist-Daten?</string>
@@ -146,7 +148,7 @@
   <string name="preferences_colorize">Farben</string>
   <string name="preferences_colorize_tasks">Aufgaben einfärben</string>
   <string name="preferences_colorize_tasks_everywhere">Aufgaben überall Einfärben</string>
-  <string name="preferences_colorize_tasks_everywhere_summary">…oder nur in den Meta-Listen?</string>
+  <string name="preferences_colorize_tasks_everywhere_summary">&#8230;oder nur in den Meta-Listen?</string>
   <string name="settings_semantics_title">Aufgabenvorlagen konfigurieren</string>
   <string name="settings_semantics_condition">Bedingung</string>
   <string name="settings_semantics_actions">Aktionen</string>

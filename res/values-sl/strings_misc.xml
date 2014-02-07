@@ -30,6 +30,30 @@ Meta-seznami so seznami, na katerih ni shranjenih nalog, ampak določajo katera 
 ]]>
     </string>
   <string name="help_semantic_title">Predloge nalog</string>
+  <string name="help_semantic">
+<![CDATA[
+Predloge nalog lahko močno olajšajo delo s programom Mirakel. Vpišete lahko novo nalogo z naslovom `Danes Projekt Plus`, ki bo ustvarjena kot naloga `Projekt Plus`, kot datum zapadlosti pa bo določen današnji datum.
+
+Prav tako je mogoče pogoje združevati, vendar pa morajo biti pogoji enobesedni in vedno zapisani na začetku niza.
+
+Pri vpisu pogojev `Mirakel danes Uredi naslove` program ustvari novo nalogo na seznamu `NA: Mirakel` (prvi pogoj) in nastavi datum zapadlosti na današnji datum (drugi pogoj)
+
+#### Opombe:
+
+* Zadnji pogoj v vrsti prepiše vse predhodne, če so nezdružljivi in so del enakega nabora pogojev. Če ustvarite nalogo `Danes Jutri Naloga`, bo na primer datum zapadlosti jutrišnji datum.
+* Predloge nalog so nadrejene posebnim seznamom.
+
+#### Kako začeti
+Če želite ustvariti pogoj `Mirakel` za uvrščanje naloge na seznam  `NA: Mirakel`
+
+1. Odprite meni `Nastavitve→Naloge`
+2. Omogočite možnost `Predloge nalog`
+3. Poiščite `Ustvari predloge nalog`
+2. Pritisnite na gumb `+` (ali pa odprite meni in dodajte posebni seznam)
+5. Nastavite pogoj `Mirakel` (imena pogojev ne upoštevajo velikosti črk)
+6. Pritisnite na `Nastavi seznam` in izberite seznam `NA: Mirakel` (oziroma poljubni seznam)
+]]>
+    </string>
   <string name="help_subtasks_title">Podrejena naloga</string>
   <string name="help_subtasks">
 <![CDATA[

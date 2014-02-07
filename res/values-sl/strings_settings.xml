@@ -19,6 +19,11 @@
   <string name="sync_frequency_summary_man">Uskladi le ročno</string>
   <string name="sync_caldav">Usklajevanje CalDAV</string>
   <string name="sync_caldav_howto"> </string>
+  <string name="sync_caldav_howto_">
+<![CDATA[Nastaviti je treba program za usklajevanje CalDAV, ki deluje v povezavi s programom Mirakel. Trenutno je na voljo le predelana različica programa DAVdroid z naše spletne strani.<br /><br />
+Pričakovati je, da bo tudi uradna različica DAVdroid kmalu podpirala delovanje programa Mirakel. Trenutno potekajo usklajevanja z razvojnima skupinama za čim boljše delovanje.
+        ]]>
+    </string>
   <string name="download">Prejmi</string>
   <string name="sync_add_account">Dodaj račun</string>
   <string name="sync_taskwarrior_configure">Nastavitev strežnika Taskwarrior</string>
