@@ -23,6 +23,7 @@ import com.google.gson.JsonParser;
 
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -117,11 +118,11 @@ public class TaskWarriorSync {
 	private static String		_user				= "";
 
 	public static final String	CA_FILE				= FileUtils.getMirakelDir()
-															+ "ca.cert.pem";
+			+ "ca.cert.pem";
 	public static final String	CLIENT_CERT_FILE	= FileUtils.getMirakelDir()
-															+ "client.cert.pem";
+			+ "client.cert.pem";
 	public static final String	CLIENT_KEY_FILE		= FileUtils.getMirakelDir()
-															+ "client.key.pem";
+			+ "client.key.pem";
 	public static final String	NO_PROJECT			= "NO_PROJECT";
 	private static File			root;
 	private static final String	TAG					= "TaskWarroirSync";
@@ -138,6 +139,10 @@ public class TaskWarriorSync {
 	private static void error(String what, int code) {
 		Log.e(TAG, what + " (Code: " + code + ")");
 		// Toast.makeText(mContext, what, Toast.LENGTH_SHORT).show();
+	}
+
+	private static String escape(String string) {
+		return string.replace("\"", "\\\"");
 	}
 
 	public static void longInfo(String str) {
@@ -180,13 +185,14 @@ public class TaskWarriorSync {
 				&& MirakelPreferences.isDumpTw()) {
 			try {
 				FileUtils
-						.writeToFile(
-								new File(Environment.getExternalStorageState()
-										+ "/mirakel"
-										+ new SimpleDateFormat(
-												"dd-MM-yyyy_hh-mm-ss")
-												.format(new Date()) + ".log"),
-								response);
+				.writeToFile(
+						new File(Environment.getExternalStorageState()
+								+ "/mirakel"
+								+ new SimpleDateFormat(
+														"dd-MM-yyyy_hh-mm-ss",
+														Helpers.getLocal(this.mContext))
+						.format(new Date()) + ".log"),
+						response);
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -234,7 +240,7 @@ public class TaskWarriorSync {
 					server_task = Task.parse_json(taskObject, accountMirakel);
 					if (server_task.getList() == null
 							|| server_task.getList().getAccount().getId() != accountMirakel
-									.getId()) {
+							.getId()) {
 						ListMirakel list = ListMirakel
 								.getInboxList(accountMirakel);
 						server_task.setList(list, false);
@@ -415,10 +421,6 @@ public class TaskWarriorSync {
 		// }
 		setDependencies();
 		return TW_ERRORS.NO_ERROR;
-	}
-
-	private String escape(String string) {
-		return string.replace("\"", "\\\"");
 	}
 
 	/**

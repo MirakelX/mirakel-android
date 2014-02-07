@@ -45,6 +45,7 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 		TaskSummary	summary;
 	}
 
+
 	int listId;
 
 	private OnTaskChangedListner	onTaskChanged;
@@ -59,7 +60,7 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 	}
 
 	public TaskAdapter(Context context, int layoutResourceId, List<Task> data,
- int listId, OnTaskChangedListner onTaskChanged) {
+			int listId, OnTaskChangedListner onTaskChanged) {
 		super(context, layoutResourceId, data);
 		this.listId = listId;
 		this.onTaskChanged = onTaskChanged;
@@ -80,6 +81,10 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 		this.viewsForTasks.clear();
 		this.listId = listID;
 		super.changeData(tasks);
+	}
+
+	public int getListID() {
+		return this.listId;
 	}
 
 	@Override
@@ -108,7 +113,9 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 			}
 		});
 		row.setOnTaskChangedListner(this.onTaskChanged);
-		viewsForTasks.put(task.getId(), row);
+		if(task!=null) {
+			this.viewsForTasks.put(task.getId(), row);
+		}
 		return row;
 	}
 
@@ -120,6 +127,10 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 		if (this.touchPosition < this.data.size())
 			return this.data.get(this.touchPosition);
 		return null;
+	}
+
+	public void setListID(int listId) {
+		this.listId = listId;
 	}
 
 }

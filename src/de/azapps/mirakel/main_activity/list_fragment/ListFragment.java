@@ -71,26 +71,29 @@ public class ListFragment extends MirakelFragment {
 	/**
 	 * Pointer to the fragment itself
 	 */
-	private static ListFragment	me	= null;
+	private static ListFragment		me			= null;
 	protected static final String	TAG			= "ListFragment";
+
 	public static ListFragment getSingleton() {
 		return me;
 	}
+
 	protected static void setSingleton(ListFragment me) {
 		if (ListFragment.me == null) {
 			ListFragment.me = me;
 		}
 	}
+
 	// private static final String TAG = "ListsActivity";
-	private ListAdapter				adapter;
-	protected boolean				EditName;
-	private boolean					enableDrag;
+	private ListAdapter			adapter;
+	protected boolean			EditName;
+	private boolean				enableDrag;
 
-	protected EditText				input;
+	protected EditText			input;
 
-	private DragNDropListView		listView;
+	private DragNDropListView	listView;
 
-	private ActionMode				mActionMode	= null;
+	private ActionMode			mActionMode	= null;
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public void closeActionMode() {
@@ -168,38 +171,43 @@ public class ListFragment extends MirakelFragment {
 				// List_mirakle list = values.get((int) id);
 				ListMirakel l = list;
 				if (l == null) {
-					l = ListMirakel.newList(ListFragment.this.input
-							.getText().toString());
+					l = ListMirakel
+							.newList(ListFragment.this.input
+									.getText().toString());
 				} else {
-					l.setName(ListFragment.this.input.getText().toString());
+					l.setName(ListFragment.this.input.getText()
+							.toString());
 				}
 				l.save(list != null);
 				update();
 				if (list == null) {
-					ListFragment.this.listView.setSelection(ListFragment.this.listView.getAdapter()
-							.getCount() - 1);
+					ListFragment.this.listView
+					.setSelection(ListFragment.this.listView
+							.getAdapter().getCount() - 1);
 				}
 				imm.hideSoftInputFromWindow(getActivity()
-										.getCurrentFocus().getWindowToken(),
-										InputMethodManager.HIDE_NOT_ALWAYS);
+						.getCurrentFocus().getWindowToken(),
+						InputMethodManager.HIDE_NOT_ALWAYS);
 			}
 		})
-		.setNegativeButton(this.main.getString(android.R.string.cancel),
+		.setNegativeButton(
+				this.main.getString(android.R.string.cancel),
 				new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int whichButton) {
-				imm.hideSoftInputFromWindow(getActivity()
-										.getCurrentFocus().getWindowToken(),
-										InputMethodManager.HIDE_NOT_ALWAYS);
-			}
-		}).show();
+					@Override
+					public void onClick(DialogInterface dialog, int whichButton) {
+						imm.hideSoftInputFromWindow(getActivity()
+								.getCurrentFocus().getWindowToken(),
+								InputMethodManager.HIDE_NOT_ALWAYS);
+					}
+				}).show();
 		this.input.postDelayed(new Runnable() {
 			@Override
 			public void run() {
 				if (getActivity() == null) return;
 				InputMethodManager keyboard = (InputMethodManager) getActivity()
 						.getSystemService(Context.INPUT_METHOD_SERVICE);
-				keyboard.showSoftInput(ListFragment.this.input, InputMethodManager.SHOW_IMPLICIT);
+				keyboard.showSoftInput(ListFragment.this.input,
+						InputMethodManager.SHOW_IMPLICIT);
 			}
 		}, 50);
 
@@ -295,7 +303,8 @@ public class ListFragment extends MirakelFragment {
 
 		// main.showMessageFromSync();
 
-		if (this.adapter != null && this.enableDrag == this.adapter.isDropEnabled()) {
+		if (this.adapter != null
+				&& this.enableDrag == this.adapter.isDropEnabled()) {
 			this.adapter.changeData(values);
 			this.adapter.notifyDataSetChanged();
 			return;
@@ -303,7 +312,8 @@ public class ListFragment extends MirakelFragment {
 
 		this.adapter = new ListAdapter(getActivity(), R.layout.lists_row,
 				values, this.enableDrag);
-		this.listView = (DragNDropListView) this.view.findViewById(R.id.lists_list);
+		this.listView = (DragNDropListView) this.view
+				.findViewById(R.id.lists_list);
 		this.listView.setEnableDrag(this.enableDrag);
 		this.listView.setItemsCanFocus(true);
 		this.listView.setAdapter(this.adapter);
@@ -340,7 +350,8 @@ public class ListFragment extends MirakelFragment {
 			}
 		});
 
-		this.listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+		this.listView
+		.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View item, int position, long id) {
 				if (ListFragment.this.EditName) {
@@ -353,7 +364,8 @@ public class ListFragment extends MirakelFragment {
 			}
 		});
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-			this.listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+			this.listView
+			.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
 				@Override
 				public boolean onItemLongClick(AdapterView<?> parent, View item, int position, final long id) {
@@ -364,34 +376,38 @@ public class ListFragment extends MirakelFragment {
 					builder.setTitle(list.getName());
 					List<CharSequence> items = new ArrayList<CharSequence>(
 							Arrays.asList(getActivity().getResources()
-									.getStringArray(R.array.list_actions_items)));
+									.getStringArray(
+											R.array.list_actions_items)));
 
-					builder.setItems(
-							items.toArray(new CharSequence[items.size()]),
+					builder.setItems(items
+							.toArray(new CharSequence[items.size()]),
 							new DialogInterface.OnClickListener() {
 
-								@Override
-								public void onClick(DialogInterface dialog, int item) {
-									ListMirakel list = values.get((int) id);
-									switch (item) {
-										case LIST_COLOR:
-											editColor(list);
-											break;
-										case LIST_RENAME:
-											editList(list);
-											break;
-										case LIST_DESTROY:
-											ListFragment.this.main.handleDestroyList(list);
-											break;
-										case LIST_SHARE:
-											SharingHelper.share(getActivity(),
-													list);
-											break;
-										default:
-											break;
-									}
-								}
-							});
+						@Override
+						public void onClick(DialogInterface dialog, int item) {
+							ListMirakel list = values
+									.get((int) id);
+							switch (item) {
+								case LIST_COLOR:
+									editColor(list);
+									break;
+								case LIST_RENAME:
+									editList(list);
+									break;
+								case LIST_DESTROY:
+									ListFragment.this.main
+									.handleDestroyList(list);
+									break;
+								case LIST_SHARE:
+									SharingHelper
+									.share(getActivity(),
+											list);
+									break;
+								default:
+									break;
+							}
+						}
+					});
 
 					AlertDialog dialog = builder.create();
 					dialog.show();
@@ -405,14 +421,17 @@ public class ListFragment extends MirakelFragment {
 				this.adapter.resetSelected();
 			}
 			this.listView.setHapticFeedbackEnabled(true);
-			this.listView.setMultiChoiceModeListener(new MultiChoiceModeListener() {
+			this.listView
+			.setMultiChoiceModeListener(new MultiChoiceModeListener() {
 
 				@Override
 				public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-					List<ListMirakel> lists = ListFragment.this.adapter.getSelected();
+					List<ListMirakel> lists = ListFragment.this.adapter
+							.getSelected();
 					switch (item.getItemId()) {
 						case R.id.menu_delete:
-							ListFragment.this.main.handleDestroyList(lists);
+							ListFragment.this.main
+							.handleDestroyList(lists);
 							break;
 						case R.id.menu_color:
 							editColor(lists);
@@ -421,10 +440,14 @@ public class ListFragment extends MirakelFragment {
 							editList(lists.get(0));
 							break;
 						case R.id.share_list_from_lists:
-							SharingHelper.share(getActivity(), lists.get(0));
+							SharingHelper.share(getActivity(),
+									lists.get(0));
 							break;
 						case R.id.edit_listaccount:
 							editListAccount(lists);
+							break;
+						default:
+							break;
 					}
 					mode.finish();
 					return false;
@@ -447,15 +470,20 @@ public class ListFragment extends MirakelFragment {
 				@Override
 				public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
 					Log.d(TAG, "item " + position + " selected");
-					int oldCount = ListFragment.this.adapter.getSelectedCount();
-					ListFragment.this.adapter.setSelected(position, checked);
-					int newCount = ListFragment.this.adapter.getSelectedCount();
-					Log.e(TAG, "old count: " + oldCount + " | newCount: "
-							+ newCount);
-					mode.setTitle(ListFragment.this.main.getResources().getQuantityString(
-							R.plurals.selected_lists, newCount, newCount));
-					if (oldCount < 2 && newCount >= 2
-							|| oldCount >= 2 && newCount < 2) {
+					int oldCount = ListFragment.this.adapter
+							.getSelectedCount();
+					ListFragment.this.adapter.setSelected(position,
+							checked);
+					int newCount = ListFragment.this.adapter
+							.getSelectedCount();
+					Log.e(TAG, "old count: " + oldCount
+							+ " | newCount: " + newCount);
+					mode.setTitle(ListFragment.this.main.getResources()
+							.getQuantityString(
+									R.plurals.selected_lists, newCount,
+									newCount));
+					if (oldCount < 2 && newCount >= 2 || oldCount >= 2
+							&& newCount < 2) {
 						mode.invalidate();
 					}
 
@@ -464,9 +492,12 @@ public class ListFragment extends MirakelFragment {
 				@Override
 				public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
 					menu.findItem(R.id.edit_list).setVisible(
-							ListFragment.this.adapter.getSelectedCount() <= 1);
-					menu.findItem(R.id.share_list_from_lists).setVisible(
-							ListFragment.this.adapter.getSelectedCount() <= 1);
+							ListFragment.this.adapter
+							.getSelectedCount() <= 1);
+					menu.findItem(R.id.share_list_from_lists)
+					.setVisible(
+							ListFragment.this.adapter
+							.getSelectedCount() <= 1);
 					return false;
 				}
 			});
