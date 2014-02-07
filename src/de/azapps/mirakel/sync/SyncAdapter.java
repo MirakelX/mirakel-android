@@ -47,6 +47,7 @@ import android.content.Intent;
 import android.content.SyncResult;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.sync.caldav.CalDavSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
@@ -197,6 +198,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					.setContentIntent(p);
 			mNotificationManager.notify(notifyID, mNB.build());
 		}
+		Intent i = new Intent(Mirakel.SYNC_FINISHED);
+		mContext.sendBroadcast(i);
 	}
 
 	public static CharSequence getLastMessage() {

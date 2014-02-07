@@ -36,6 +36,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
@@ -703,7 +704,6 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 			});
 		}
 
-
 	}
 
 	@Override
@@ -760,7 +760,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 					}
 					startActivity(this.startIntent);
 				}
-				if(this.isTablet != MirakelPreferences.isTablet()){
+				if (this.isTablet != MirakelPreferences.isTablet()) {
 					forceRebuildLayout(MirakelPreferences.isTablet());
 				} else {
 					loadMenu(this.mViewPager.getCurrentItem());
@@ -894,6 +894,10 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 						}
 					}
 				}
+
+				registerReceiver(new MainActivityBroadcastReceiver(
+						MainActivity.this), new IntentFilter(
+						Mirakel.SYNC_FINISHED));
 			}
 		}).run();
 		this.isTablet = MirakelPreferences.isTablet();
@@ -1558,5 +1562,11 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 			}
 		}
 
+	}
+
+	public void updateUI() {
+		getTasksFragment().updateList();
+		// This is very buggy
+		//getTaskFragment().updateLayout();
 	}
 }
