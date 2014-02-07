@@ -17,6 +17,15 @@
     </style>
   </head>
   <body>
+$ 2.2.2-beta2
+  % Version 2.2.2 Beta2
+  _ 2014-02-07
+  ! Bugs, bugs, bugs
+  * Even more bugfixes
+  * Updated translations
+  * New debug settings ;)
+  ! 2.3 will be released soon
+  ! Please test Mirakel and report Bugs!
 $ 2.2.2-beta1
   % Version 2.2.2 Beta1
   _ 2014-02-01

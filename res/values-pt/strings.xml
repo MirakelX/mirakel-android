@@ -158,9 +158,9 @@ Dispositivo: %3$s\n]]>
   <string name="photo_default_title">Procurar esta foto</string>
   <string name="audio_default_title">Escute isto!</string>
   <string name="edit">Editar</string>
-  <string name="audio_record_title">Gravação áudio…</string>
-  <string name="audio_record_message">Gravação…</string>
-  <string name="audio_playback_title">Reprodução áudio…</string>
+  <string name="audio_record_title">Gravação áudio&#8230;</string>
+  <string name="audio_record_message">Gravação&#8230;</string>
+  <string name="audio_playback_title">Reprodução áudio&#8230;</string>
   <string name="audio_playback_select_title">O que deseja fazer?</string>
   <string name="audio_playback_pause">Pausa</string>
   <string name="audio_playback_play">Reproduzir</string>

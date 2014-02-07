@@ -80,14 +80,24 @@ import de.azapps.mirakelandroid.R;
 
 		)
 public class Mirakel extends Application {
+	// Public Constants
 	public static class NoSuchListException extends Exception {
 		static final long	serialVersionUID	= 1374828057;
 	}
 	public static class NoSuchTaskException extends Exception {
 		static final long	serialVersionUID	= 1374828058;
 	}
-	public static String			APK_NAME;
 	public static final String		AUTHORITY_TYP	= "de.azapps.mirakel.provider";
+	public static final int			NOTIF_DEFAULT	= 123,
+			NOTIF_REMINDER = 124;
+
+	public static final File exportDir = new File(
+	Environment.getExternalStorageDirectory(), "mirakel");
+	public static final String SYNC_FINISHED="de.azapps.mirakel.sync_finished";
+	
+	// Other stuff
+	
+	public static String			APK_NAME;
 
 	// FIXME move this somewhere else?
 	public static int				GRAVITY_LEFT, GRAVITY_RIGHT;
@@ -95,8 +105,6 @@ public class Mirakel extends Application {
 	public static boolean			IS_PLAYSTORE;
 
 	public static String			MIRAKEL_DIR;
-	public static final int			NOTIF_DEFAULT	= 123,
-			NOTIF_REMINDER = 124;
 	private static SQLiteOpenHelper	openHelper;
 	private static final String		TAG				= "Mirakel";
 
@@ -112,8 +120,6 @@ public class Mirakel extends Application {
 		return openHelper.getWritableDatabase();
 	}
 
-	public static final File exportDir = new File(
-	Environment.getExternalStorageDirectory(), "mirakel");
 
 	@SuppressLint("InlinedApi")
 	@Override

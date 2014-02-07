@@ -30,11 +30,11 @@
   <string name="task_delete_content">Bist du sicher, dass du %s löschen möchten?</string>
   <string name="task_menu_sorting">Sortiere Aufgaben</string>
   <string name="task_sorting_title">Sortiere nach</string>
-  <string name="task_empty">Keine Aufgabe ausgewählt…</string>
+  <string name="task_empty">Keine Aufgabe ausgewählt&#8230;</string>
   <string name="set_date">Datum</string>
   <string name="set_time">Zeit</string>
   <string name="action_undo">Rückgängig</string>
-  <string name="add_subtasks">Unteraufgabe hinzufügen…</string>
+  <string name="add_subtasks">Unteraufgabe hinzufügen&#8230;</string>
   <string name="subtask_list_name">Unteraufgaben</string>
   <string name="remove_files">Lösche Dateien</string>
   <string name="remove_files_summary">Möchtest du %1$s aus %2$s entfernen?</string>
@@ -83,8 +83,8 @@
   <string name="reminder_notification_later">Später</string>
   <string name="reminder_notification_done_confirm">Ich habe die Aufgabe als „erledigt“ markiert</string>
   <string name="reminder_notification_later_confirm">Ich erinnere dich in %d Minuten</string>
-  <string name="list_vanished">Huch, die Aufgabe ist verschwunden. Es tut mir leid…</string>
-  <string name="task_vanished">Huch, die Liste der Aufgabe ist verschwunden. Es tut mir leid…</string>
+  <string name="list_vanished">Huch, die Aufgabe ist verschwunden. Es tut mir leid&#8230;</string>
+  <string name="task_vanished">Huch, die Liste der Aufgabe ist verschwunden. Es tut mir leid&#8230;</string>
   <string name="message_try_later">Versuche es später noch einmal</string>
   <string name="message_access_denied">Zugriff verweigert!\nVerwendest du die richtige Konfigurationsdatei?</string>
   <string name="message_create_socket">Kann den Socket nicht erstellen!\nWahrscheinlich keine Netzwerkverbindung.</string>
@@ -102,11 +102,11 @@
   <string name="login_activity_loginfail_text_both">Der Benutzername oder das Kennwort ist ungültig. Es ist ein Mirakel-Account erforderlich. Versuche es noch mal.</string>
   <string name="login_activity_loginfail_text_pwmissing">Gib das Passwort bitte an.</string>
   <string name="login_activity_newaccount_text">Melde dich bei deinem %s-Account an.</string>
-  <string name="ui_activity_authenticating">Authentifizierung…</string>
+  <string name="ui_activity_authenticating">Authentifizierung&#8230;</string>
   <string name="changelog_full_title">Changelog</string>
   <string name="changelog_title">Was ist neu?</string>
   <string name="changelog_ok_button">OK</string>
-  <string name="changelog_show_full">mehr…</string>
+  <string name="changelog_show_full">mehr&#8230;</string>
   <string name="share_using">Teilen</string>
   <string name="share_task">Aufgabe teilen</string>
   <string name="share_task_title_with_date">%1$s (%2$s)</string>
@@ -126,12 +126,12 @@ SDK-version: %2$d\n
 Device: %3$s\n]]>
     </string>
   <string name="contact_no_client">Keine Mail-App installiert</string>
-  <string name="contact_chooser">Sende E-Mail…</string>
+  <string name="contact_chooser">Sende E-Mail&#8230;</string>
   <string name="backup_import_error">Beim Importieren der Datenbank ist ein Fehler aufgetreten</string>
   <string name="backup_import_ok">Der Import war erfolgreich – Starte neu…</string>
   <string name="backup_export_error">Es gab ein Fehler beim Exportieren der Datenbank</string>
   <string name="backup_export_ok">Nach %s exportiert</string>
-  <string name="add_content">Notizen…</string>
+  <string name="add_content">Notizen&#8230;</string>
   <string name="task_has_content">Aufgabe hat eine Notiz</string>
   <string name="permission_group_desc">Zugriffsberechtigung für Mirakel</string>
   <string name="permission_group_lbl">Mirakel-Berechtigung</string>
@@ -150,7 +150,7 @@ Device: %3$s\n]]>
   <string name="list_change_color">Farbe ändern</string>
   <string name="set_color">Farbe auswählen</string>
   <string name="unset_color">Keine Farbe</string>
-  <string name="add_files">Datei hinzufügen…</string>
+  <string name="add_files">Datei hinzufügen&#8230;</string>
   <string name="file_no_activity">Ich weiß nicht, wie ich diese Datei öffnen soll – tut mir leid</string>
   <string name="file_select">Wähle eine Datei</string>
   <string name="file_vanished">Datei nicht vorhanden</string>
@@ -158,9 +158,9 @@ Device: %3$s\n]]>
   <string name="photo_default_title">Foto anschauen</string>
   <string name="audio_default_title">Hör dir das an!</string>
   <string name="edit">Bearbeiten</string>
-  <string name="audio_record_title">Aufnahme…</string>
-  <string name="audio_record_message">Aufnehmen…</string>
-  <string name="audio_playback_title">Audio-Wiedergabe…</string>
+  <string name="audio_record_title">Aufnahme&#8230;</string>
+  <string name="audio_record_message">Aufnehmen&#8230;</string>
+  <string name="audio_playback_title">Audio-Wiedergabe&#8230;</string>
   <string name="audio_playback_select_title">Was willst du tun?</string>
   <string name="audio_playback_pause">Pause</string>
   <string name="audio_playback_play">Wiedergabe</string>

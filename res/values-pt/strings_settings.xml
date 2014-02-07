@@ -18,6 +18,12 @@
   <string name="sync_frequency_summary">Sincronizar a cada %s minutos</string>
   <string name="sync_frequency_summary_man">Sincronização manual</string>
   <string name="sync_caldav">Sincronização CalDAV</string>
+  <string name="sync_caldav_howto_">
+<![CDATA[Tem que instalar e configurar ama aplicação compatível com o Mirakel para sincronização CalDAV-syncing. Atualmente tem que instalar, através da nossa páginba web, a nossa versão modificada da aplicação DAVdroid.<br /><br />
+Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além disso, estamos a trabalhar em conjunto com outros programadores para que mais aplicações possam ser utilizadas em conjunto com o Mirakel.
+]]>
+    </string>
+  <string name="download">Transferir</string>
   <string name="sync_add_account">Adicionar conta</string>
   <string name="sync_taskwarrior_configure">Configurar Taskwarrior</string>
   <string name="sync_taskwarrior_scan_qr">Ler código QR</string>
@@ -25,7 +31,7 @@
   <string name="sync_taskwarrior_how_to">Como configurar o seu servidor</string>
   <string name="sync_taskwarrior_own_server">ou simplesmente utilizar o seu servidor</string>
   <string name="sync_taskwarrior_url_error">O URL não está correto. Leu o código QR correto?</string>
-  <string name="sync_taskwarrior_configuring">Configurar sincronização…</string>
+  <string name="sync_taskwarrior_configuring">Configurar sincronização&#8230;</string>
   <string name="sync_taskwarrior_about">Se já possuir uma conta Taskwarrior:</string>
   <string name="sync_taskwarrior_register">Se não tem, pode registar uma nova conta no nosso servidor:</string>
   <string name="sync_taskwarrior_register_button">Registar</string>
@@ -56,6 +62,7 @@
   <string name="notifications_zero_show">Ocultar notificação se vazia</string>
   <string name="reminder">Lembrete</string>
   <string name="reminders_persistent">Lembrete persistente</string>
+  <string name="reminders_persistent_summary">O lembrete nunca poderá ser fechado</string>
   <string name="startup_title">Ao iniciar</string>
   <string name="startup_show_lists">Mostrar todas as listas</string>
   <string name="startup_show_lists_summary">Mostrar todas as listas ao iniciar</string>
@@ -94,7 +101,7 @@
   <string name="any_do_this_file">Importar de %s?\nSe não, escolha manualmente o ficheiro</string>
   <string name="any_do_how_to">Por favor, faça um backup dos seus dados Any.Do. Para o fazer, aceda a Any.Do -> Definições -> Backup -> Criar backup. Volte à aplicação e clique OK.\nOu então, escolha o ficheiro.</string>
   <string name="select_file">Selecionar ficheiro</string>
-  <string name="wait">Por favor aguarde…</string>
+  <string name="wait">Por favor aguarde&#8230;</string>
   <string name="import_wunderlist_click">Importar de Wunderlist</string>
   <string name="import_wunderlist_title">Selecione o ficheiro Wunderlist</string>
   <string name="import_wunderlist_howto">Como importar dados do Wunderlist</string>
