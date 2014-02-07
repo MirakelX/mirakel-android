@@ -1506,14 +1506,6 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 
 	}
 
-	// public void showMessageFromSync() {
-	// CharSequence messageFromSync = SyncAdapter.getLastMessage();
-	// if (messageFromSync != null) {
-	// Toast.makeText(getApplicationContext(), messageFromSync,
-	// Toast.LENGTH_SHORT).show();
-	// }
-	// }
-
 	/**
 	 * Update the internal List of Lists (e.g. for the Move Task dialog)
 	 */
