@@ -43,7 +43,8 @@ public class CreditsActivity extends Activity {
 			{ "Norwegian", "Jim-Stefhan Johansen" }, { "Slovenian", "mateju" },
 			{ "Arabic", "Rajaa Gutknecht" }, { "Czech", "sarimak" },
 			{ "Dutch", "Toon van Gerwen" },
-			{ "Italian", "Rajaa Gutknecht, fazen, Claudio Arseni" } };
+			{ "Italian", "Rajaa Gutknecht, fazen, Claudio Arseni" },
+			{ "Bulgarian", "boriana_tcholakova"}};
 
 	@Override
 	public void onConfigurationChanged(final Configuration newConfig) {

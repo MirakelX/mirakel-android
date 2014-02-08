@@ -4,7 +4,7 @@
   <string name="app_name">Mirakel</string>
   <string name="action_settings">Definições</string>
   <string name="action_contact">Contacto/Reporte de erros</string>
-  <string name="action_contact_summary">Escrever mensagem eletrónica!</string>
+  <string name="action_contact_summary">Escrever mensagem electrónica!</string>
   <string name="no_date">Sem prazo</string>
   <string name="no_reminder">Definir lembrete</string>
   <string name="no_lists">Esta tarefa não pode ser sincronizada porque não existem listas</string>

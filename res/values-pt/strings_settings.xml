@@ -143,7 +143,7 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="delete_done_success">Todas as tarefas terminadas foram eliminadas.</string>
   <string name="menu_color">Mudar cor</string>
   <string name="howto_setup_server">Como configurar um servidor</string>
-  <string name="register_server">Se precisar de uma conta para sincronização com o nosso servidor, escreva-nos uma mensagem eletrónica. na próxima versão terá a possibilidade de registar uma conta!</string>
+  <string name="register_server">Se precisar de uma conta para sincronização com o nosso servidor, escreva-nos uma mensagem electrónica. na próxima versão terá a possibilidade de registar uma conta!</string>
   <string name="special_lists_title">Meta-listas</string>
   <string name="register">Registar</string>
   <string name="auto_backup_intervall">Intervalo entre backups</string>
