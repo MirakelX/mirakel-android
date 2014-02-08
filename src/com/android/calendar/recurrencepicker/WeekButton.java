@@ -26,7 +26,6 @@ import de.azapps.mirakelandroid.R;
 
 public class WeekButton extends android.widget.ToggleButton {
 
-	private static int		mWidth;
 	private static boolean	mDark;
 
 	public WeekButton(Context context) {
@@ -62,7 +61,7 @@ public class WeekButton extends android.widget.ToggleButton {
 	}
 
 	public static void setSuggestedWidth(int w) {
-		mWidth = w;
+		// mWidth = w; not used
 	}
 
 	@SuppressLint("NewAPI")

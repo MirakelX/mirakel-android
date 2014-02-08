@@ -40,7 +40,6 @@ import de.azapps.mirakel.widget.MainWidgetProvider;
 import de.azapps.mirakelandroid.R;
 
 public class NotificationService extends Service {
-	private static final String			TAG					= "NotificationService";
 	private boolean						existsNotification	= false;
 	public static NotificationService	notificationService;
 

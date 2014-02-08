@@ -67,21 +67,6 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 
 	}
 
-	void addToEnd(Task task) {
-		this.data.add(task);
-		this.selected.add(false);
-	}
-
-	/**
-	 * Add a task to the head of the List
-	 * 
-	 * @param task
-	 */
-	void addToHead(Task task) {
-		this.data.add(0, task);
-		this.selected.add(false);
-	}
-
 	public void changeData(List<Task> tasks, int listID) {
 		this.viewsForTasks.clear();
 		this.listId = listID;

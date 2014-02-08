@@ -64,7 +64,8 @@ public class FileUtils {
 			if (isExternalStorageDocument(uri)) {
 				final String docId = DocumentsContract.getDocumentId(uri);
 				final String[] split = docId.split(":");
-				final String type = split[0];
+				// final String type = split[0]; not used
+				
 				// Environment.
 				// TODO somehow handle that here may be the diskuuid as type
 				// if ("primary".equalsIgnoreCase(type)) {

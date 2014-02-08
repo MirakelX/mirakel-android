@@ -50,12 +50,12 @@ public class MirakelArrayAdapter<T> extends ArrayAdapter<T> {
 
 	}
 
-	void addToEnd(T el) {
+	public void addToEnd(T el) {
 		this.data.add(el);
 		this.selected.add(false);
 	}
 
-	void addToHead(T el) {
+	public void addToHead(T el) {
 		this.data.add(0, el);
 		this.selected.add(false);
 	}
