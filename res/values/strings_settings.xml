@@ -322,8 +322,8 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <!-- Dev Settings -->
     <string name="settings_dev">Development Settings</string>
     <string name="settings_dev_sync">Sync</string>
-    <string name="settings_dev_dump_tw_summary">Dump the recived text to /sdcard/mirakel/</string>
-    <string name="settings_dev_dump_tw">Dump recived TW-Messages</string>
+    <string name="settings_dev_dump_tw_summary">Dump the received text to /sdcard/mirakel/</string>
+    <string name="settings_dev_dump_tw">Dump received TW-Messages</string>
     <string name="enable">enabling</string>
     <string name="disable">disabling</string>
     <string name="enabled">enabled</string>

@@ -239,9 +239,9 @@ public class DatePicker extends LinearLayout implements View.OnClickListener,
 	}
 
 	private void initLayout() {
+		View datepicker_dialog=layout.findViewById(R.id.datepicker_dialog);
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-			View v = layout.findViewById(R.id.datepicker_dialog);
-			v.setBackgroundColor(ctx.getResources().getColor(
+			datepicker_dialog.setBackgroundColor(ctx.getResources().getColor(
 					mDark ? android.R.color.black : android.R.color.white));
 		}
 		this.mDayOfWeekView = ((TextView) layout
@@ -323,8 +323,7 @@ public class DatePicker extends LinearLayout implements View.OnClickListener,
 		setScroll(listPosition, currentView, listPositionOffset);
 		Resources res = getResources();
 		if (mDark) {
-			View dialog = layout.findViewById(R.id.datepicker_dialog);
-			dialog.setBackgroundColor(res.getColor(R.color.dialog_gray));
+			datepicker_dialog.setBackgroundColor(res.getColor(R.color.dialog_gray));
 			View header = layout.findViewById(R.id.datepicker_header);
 			header.setBackgroundColor(res.getColor(R.color.dialog_dark_gray));
 
