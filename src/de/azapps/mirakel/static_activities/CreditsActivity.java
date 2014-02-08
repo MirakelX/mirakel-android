@@ -44,7 +44,7 @@ public class CreditsActivity extends Activity {
 			{ "Arabic", "Rajaa Gutknecht" }, { "Czech", "sarimak" },
 			{ "Dutch", "Toon van Gerwen" },
 			{ "Italian", "Rajaa Gutknecht, fazen, Claudio Arseni" },
-			{ "Bulgarian", "boriana_tcholakova"}};
+			{ "Bulgarian", "Boriana Tcholakova"}};
 
 	@Override
 	public void onConfigurationChanged(final Configuration newConfig) {
