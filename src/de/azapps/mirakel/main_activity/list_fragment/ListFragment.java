@@ -153,7 +153,10 @@ public class ListFragment extends MirakelFragment {
 	 * @param list
 	 */
 	public void editList(final ListMirakel list) {
-
+		if(list==null) {
+			Log.wtf(TAG, "ListFragment.editList() List is null");
+			return;
+		}
 		this.input = new EditText(this.main);
 		this.input.setText(list == null ? "" : list.getName());
 		this.input.setTag(this.main);
