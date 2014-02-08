@@ -1,14 +1,28 @@
 buildscript {
-	repositories {
-	    maven {
-            url "http://repo1.maven.org/maven2"
+      dependencies {
+        repositories {
+            mavenCentral()
+            maven {
+                url "file:~/.m2/"
+                artifactUrls "file:~/.m2/"
+            }
         }
-     }
-	dependencies {
-		classpath 'com.android.tools.build:gradle:0.7.+'
+                              //
+        classpath 'com.android.tools.build:gradle:0.7.+'
+        classpath 'com.jakewharton.hugo:hugo-plugin:1.0.+'
     }
 }
+dependencies {
+      repositories {
+        mavenCentral()
+
+        // NOTE: This is only needed when developing the plugin!
+        mavenLocal()
+    }
+}
+
 apply plugin: 'android'
+apply plugin: 'hugo'
 apply plugin: 'eclipse'
 
 
@@ -71,8 +85,8 @@ android {
             flavorGroup "api_related"
         }
         oldAPI {
-            minSdkVersion 8
-            targetSdkVersion 16
+            minSdkVersion 9//needed for hugo.. 
+            targetSdkVersion 19//again...
             flavorGroup "api_related"
         }
     }
