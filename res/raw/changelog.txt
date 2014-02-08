@@ -17,6 +17,14 @@
     </style>
   </head>
   <body>
+$ 2.3
+  % Version 2.3
+  _ 2014-02-
+  ! Sorry for the late update! We've fixed lot of bugs.
+  * Bugfixes
+  * Updated translations
+  * Added Bulgarian language
+  ! Please try out the taskwarrior sync! It should be stable but make a backup before!
 $ 2.2.2-beta2
   % Version 2.2.2 Beta2
   _ 2014-02-07
