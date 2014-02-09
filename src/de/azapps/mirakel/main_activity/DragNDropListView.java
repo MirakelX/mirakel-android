@@ -151,11 +151,11 @@ public class DragNDropListView extends ListView {
 		final int action = ev.getAction();
 		final int x = (int) ev.getX();
 		final int y = (int) ev.getY();
-		if (action == MotionEvent.ACTION_DOWN && (x < getWidth() / 3
+		if (action == MotionEvent.ACTION_DOWN
+				&& (x < getWidth() / 2
 				|| this.allowRemove)) {// width<~imagewidth
 			this.mDragMode = true;
 		}
-		Log.w(TAG, "x: " + x + "   Y: " + y);
 		if (!this.mDragMode || !this.enableDrag) return super.onTouchEvent(ev);
 
 		switch (action) {
