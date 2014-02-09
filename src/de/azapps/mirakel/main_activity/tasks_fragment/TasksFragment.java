@@ -110,8 +110,8 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 									: TasksFragment.this.adapter
 									.getCount(); i < maxCount; i++) {
 								TasksFragment.this.adapter
-																	.addToEnd(TasksFragment.this.values
-																			.get(i));
+								.addToEnd(TasksFragment.this.values
+										.get(i));
 							}
 							TasksFragment.this.adapter
 							.notifyDataSetChanged();

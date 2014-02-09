@@ -322,12 +322,12 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 			names += ", " + lists.get(i).getName();
 		}
 		new AlertDialog.Builder(this)
-				.setTitle(
-						getResources().getQuantityString(R.plurals.list_delete,
-								lists.size()))
-				.setMessage(this.getString(R.string.list_delete_content, names))
-				.setPositiveButton(this.getString(android.R.string.yes),
-						new DialogInterface.OnClickListener() {
+		.setTitle(
+				getResources().getQuantityString(R.plurals.list_delete,
+						lists.size()))
+						.setMessage(this.getString(R.string.list_delete_content, names))
+						.setPositiveButton(this.getString(android.R.string.yes),
+								new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(final DialogInterface dialog, final int which) {
 								for (final ListMirakel list : lists) {
@@ -343,12 +343,12 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 									getListFragment().getAdapter().changeData(
 											ListMirakel.all());
 									getListFragment().getAdapter()
-											.notifyDataSetChanged();
+									.notifyDataSetChanged();
 								}
 							}
 						})
-				.setNegativeButton(this.getString(android.R.string.no), null)
-				.show();
+						.setNegativeButton(this.getString(android.R.string.no), null)
+						.show();
 	}
 
 	/**
@@ -372,12 +372,12 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 			names += ", " + tasks.get(i).getName();
 		}
 		new AlertDialog.Builder(this)
-				.setTitle(
-						getResources().getQuantityString(R.plurals.task_delete,
-								tasks.size()))
-				.setMessage(this.getString(R.string.task_delete_content, names))
-				.setPositiveButton(this.getString(android.R.string.yes),
-						new DialogInterface.OnClickListener() {
+		.setTitle(
+				getResources().getQuantityString(R.plurals.task_delete,
+						tasks.size()))
+						.setMessage(this.getString(R.string.task_delete_content, names))
+						.setPositiveButton(this.getString(android.R.string.yes),
+								new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(final DialogInterface dialog, final int which) {
 								for (final Task t : tasks) {
@@ -388,8 +388,8 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 								updateShare();
 							}
 						})
-				.setNegativeButton(this.getString(android.R.string.no), null)
-				.show();
+						.setNegativeButton(this.getString(android.R.string.no), null)
+						.show();
 	}
 
 	/**
@@ -563,15 +563,18 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		this.mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
 		this.mDrawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
-		this.mDrawerLayout, /* DrawerLayout object */
-		R.drawable.ic_drawer, /* nav drawer icon to replace 'Up' caret */
-		R.string.list_title, /* "open drawer" description */
-		R.string.list_title /* "close drawer" description */
-		) {
+				this.mDrawerLayout, /* DrawerLayout object */
+				R.drawable.ic_drawer, /* nav drawer icon to replace 'Up' caret */
+				R.string.list_title, /* "open drawer" description */
+				R.string.list_title /* "close drawer" description */
+				) {
 			@Override
 			public void onDrawerClosed(final View view) {
 				loadMenu(MainActivity.this.currentPosition);
-				getListFragment().closeActionMode();
+				if (getListFragment() != null) {
+					getListFragment().closeNavDrawer();
+				}
+
 			}
 
 			@Override
@@ -684,16 +687,16 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 					inflater.inflate(newmenu, MainActivity.this.menu);
 					if (MainActivity.this.menu.findItem(R.id.menu_sync_now) != null) {
 						MainActivity.this.menu.findItem(R.id.menu_sync_now)
-								.setVisible(MirakelPreferences.useSync());
+						.setVisible(MirakelPreferences.useSync());
 					}
 					if (MainActivity.this.menu.findItem(R.id.menu_kill_button) != null) {
 						MainActivity.this.menu
-								.findItem(R.id.menu_kill_button)
-								.setVisible(MirakelPreferences.showKillButton());
+						.findItem(R.id.menu_kill_button)
+						.setVisible(MirakelPreferences.showKillButton());
 					}
 					if (MainActivity.this.menu.findItem(R.id.menu_contact) != null) {
 						MainActivity.this.menu.findItem(R.id.menu_contact)
-								.setVisible(BuildHelper.isBeta());
+						.setVisible(BuildHelper.isBeta());
 					}
 
 					if (!fromShare) {
@@ -812,9 +815,9 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 			return;
 		}
 		switch (this.mViewPager.getCurrentItem()) {
-		/*
-		 * case TASKS_FRAGMENT: mDrawerLayout.openDrawer(Gravity.LEFT); break;
-		 */
+			/*
+			 * case TASKS_FRAGMENT: mDrawerLayout.openDrawer(Gravity.LEFT); break;
+			 */
 			case LEFT_FRAGMENT:
 				if (MainActivity.isRTL) {
 					this.mViewPager.setCurrentItem(MainActivity
@@ -897,7 +900,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 
 				registerReceiver(new MainActivityBroadcastReceiver(
 						MainActivity.this), new IntentFilter(
-						Mirakel.SYNC_FINISHED));
+								Mirakel.SYNC_FINISHED));
 			}
 		}).run();
 		this.isTablet = MirakelPreferences.isTablet();
@@ -914,7 +917,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 				@Override
 				public void run() {
 					MainActivity.this.mViewPager
-							.setCurrentItem(MainActivity.this.currentPosition);
+					.setCurrentItem(MainActivity.this.currentPosition);
 
 				}
 			}, 10);
@@ -969,11 +972,11 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 				this.currentList = ListDialogHelpers.handleSortBy(this,
 						this.currentList, new Helpers.ExecInterface() {
 
-							@Override
-							public void exec() {
-								setCurrentList(MainActivity.this.currentList);
-							}
-						}, null);
+					@Override
+					public void exec() {
+						setCurrentList(MainActivity.this.currentList);
+					}
+				}, null);
 				return true;
 			case R.id.menu_new_list:
 				getListFragment().editList(null);
@@ -1011,7 +1014,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 									a.getAndroidAccount(),
 									a.getType() == ACCOUNT_TYPES.TASKWARRIOR ? Mirakel.AUTHORITY_TYP
 											: CalendarContract.AUTHORITY,
-									bundle);
+											bundle);
 						}
 
 					}
@@ -1042,14 +1045,14 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 					setCurrentTask(this.currentTask);
 				} else {
 					getListFragment().getAdapter()
-							.changeData(ListMirakel.all());
+					.changeData(ListMirakel.all());
 					getListFragment().getAdapter().notifyDataSetChanged();
 					getTasksFragment().getAdapter().changeData(
 							getCurrentList().tasks(), getCurrentList().getId());
 					getTasksFragment().getAdapter().notifyDataSetChanged();
 					if (!MirakelPreferences.isTablet()
 							&& this.currentPosition == MainActivity
-									.getTasksFragmentPosition()) {
+							.getTasksFragmentPosition()) {
 						setCurrentList(getCurrentList());
 					}
 				}
@@ -1100,10 +1103,10 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		if (MirakelPreferences.lockDrawerInTaskFragment()
 				&& position == getTaskFragmentPosition()) {
 			this.mDrawerLayout
-					.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+			.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 		} else {
 			this.mDrawerLayout
-					.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+			.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 		}
 		loadMenu(position);
 
@@ -1129,8 +1132,8 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			for (final int id : widgets) {
 				AppWidgetManager.getInstance(this)
-						.notifyAppWidgetViewDataChanged(id,
-								R.id.widget_tasks_list);
+				.notifyAppWidgetViewDataChanged(id,
+						R.id.widget_tasks_list);
 			}
 		}
 		sendBroadcast(intent);

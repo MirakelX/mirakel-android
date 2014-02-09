@@ -34,6 +34,7 @@ import de.azapps.mirakel.custom_views.TaskSummary;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.task.Task;
 
+
 public class TaskAdapter extends MirakelArrayAdapter<Task> {
 	/**
 	 * The class, holding the Views of the Row
