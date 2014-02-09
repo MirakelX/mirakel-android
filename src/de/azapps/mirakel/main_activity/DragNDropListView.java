@@ -152,7 +152,7 @@ public class DragNDropListView extends ListView {
 		final int x = (int) ev.getX();
 		final int y = (int) ev.getY();
 		if (action == MotionEvent.ACTION_DOWN
-				&& (x < getWidth() / 2
+				&& (x < getWidth() / 3
 				|| this.allowRemove)) {// width<~imagewidth
 			this.mDragMode = true;
 		}

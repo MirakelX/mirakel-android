@@ -1572,4 +1572,13 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		// This is very buggy
 		//getTaskFragment().updateLayout();
 	}
+
+	public void unlockDrawer() {
+		mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+	}
+
+	public void lockDrawer() {
+		mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+	}
+
 }
