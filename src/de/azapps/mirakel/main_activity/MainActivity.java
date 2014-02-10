@@ -18,7 +18,6 @@
  ******************************************************************************/
 package de.azapps.mirakel.main_activity;
 
-import hugo.weaving.DebugLog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -550,7 +549,6 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 	 * Initialize ViewPager
 	 */
 	@SuppressLint("NewApi")
-	@DebugLog
 	private void intializeFragments() {
 		/*
 		 * Setup NavigationDrawer
