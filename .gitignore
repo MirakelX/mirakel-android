@@ -53,5 +53,3 @@ lint.xml
 *.iml
 out/**
 misc/crowdin.yaml
-build.gradle
-keystore

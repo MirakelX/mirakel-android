@@ -19,7 +19,7 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.azapps.mirakelandroid"
-    android:versionCode="37"
+    android:versionCode="36"
     android:versionName="2.2.2-beta3" >
 
     <!-- TODO Remove Unused Permissions -->
