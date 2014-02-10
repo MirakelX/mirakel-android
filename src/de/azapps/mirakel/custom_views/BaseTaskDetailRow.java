@@ -68,7 +68,12 @@ public abstract class BaseTaskDetailRow extends LinearLayout {
 	public void update(Task t) {
 		this.task = t;
 		if (t != null) {
-			updateView();
+			post(new Runnable() {
+				@Override
+				public void run() {
+					updateView();
+				}
+			});
 		}
 	}
 

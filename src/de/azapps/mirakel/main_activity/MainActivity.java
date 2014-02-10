@@ -18,6 +18,8 @@
  ******************************************************************************/
 package de.azapps.mirakel.main_activity;
 
+import hugo.weaving.DebugLog;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -548,6 +550,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 	 * Initialize ViewPager
 	 */
 	@SuppressLint("NewApi")
+	@DebugLog
 	private void intializeFragments() {
 		/*
 		 * Setup NavigationDrawer
@@ -707,6 +710,10 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 			});
 		}
 
+	}
+
+	public void lockDrawer() {
+		this.mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
 	}
 
 	@Override
@@ -1490,6 +1497,10 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		}
 	}
 
+	public void unlockDrawer() {
+		this.mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+	}
+
 	private void updateCurrentListAndTask() {
 		if (this.currentTask == null && this.currentList == null) return;
 		if (this.currentTask != null) {
@@ -1571,14 +1582,6 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		getTasksFragment().updateList();
 		// This is very buggy
 		//getTaskFragment().updateLayout();
-	}
-
-	public void unlockDrawer() {
-		mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-	}
-
-	public void lockDrawer() {
-		mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
 	}
 
 }

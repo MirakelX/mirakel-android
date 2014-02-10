@@ -18,6 +18,8 @@
  ******************************************************************************/
 package de.azapps.mirakel.main_activity.task_fragment;
 
+
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -67,7 +69,7 @@ public abstract class TaskFragment extends Fragment {
 	private static final String	TAG	= "TaskActivity";
 
 	private ActionbarState		cabState;
-	private TaskDetailView		detailView;
+	protected TaskDetailView	detailView;
 
 	protected MainActivity		main;
 	SparseArray<FileMirakel>	markedFiles;
@@ -76,7 +78,9 @@ public abstract class TaskFragment extends Fragment {
 
 	protected Menu				mMenu;
 
-	private Task				task;
+	protected Task				task;
+
+	private Runnable			updateThread;
 
 	abstract protected void changeVisiblity(boolean visible, MenuItem item);
 
@@ -120,8 +124,8 @@ public abstract class TaskFragment extends Fragment {
 			case R.id.edit_task:
 				if (TaskFragment.this.main != null) {
 					TaskFragment.this.main
-							.setCurrentTask(TaskFragment.this.markedSubtasks
-									.entrySet().iterator().next().getValue());
+					.setCurrentTask(TaskFragment.this.markedSubtasks
+							.entrySet().iterator().next().getValue());
 				}
 				break;
 			case R.id.done_task:
@@ -180,10 +184,14 @@ public abstract class TaskFragment extends Fragment {
 		this.cabState = null;
 		this.markedFiles = new SparseArray<FileMirakel>();
 		this.markedSubtasks = new HashMap<Long, Task>();
-
-		Log.w(TAG, "taskfragment");
 		this.main = (MainActivity) getActivity();
 		View view;
+		this.updateThread = new Runnable() {
+			@Override
+			public void run() {
+				TaskFragment.this.detailView.update(TaskFragment.this.task);
+			}
+		};
 		try {
 			view = inflater.inflate(R.layout.task_fragment, container, false);
 		} catch (Exception e) {
@@ -216,11 +224,11 @@ public abstract class TaskFragment extends Fragment {
 					TaskDialogHelpers.handleAudioRecord(getActivity(),
 							TaskFragment.this.task,
 							new ExecInterfaceWithTask() {
-								@Override
-								public void exec(Task t) {
-									update(t);
-								}
-							});
+						@Override
+						public void exec(Task t) {
+							update(t);
+						}
+					});
 				}
 			});
 			this.detailView.setCameraButtonClick(new View.OnClickListener() {
@@ -338,38 +346,40 @@ public abstract class TaskFragment extends Fragment {
 					return;
 				}
 				new AlertDialog.Builder(context)
-						.setTitle(R.string.audio_playback_select_title)
-						.setItems(items, new DialogInterface.OnClickListener() {
+				.setTitle(R.string.audio_playback_select_title)
+				.setItems(items, new DialogInterface.OnClickListener() {
 
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								switch (which) {
-									case 0: // Open
-										TaskDialogHelpers.openFile(context,
-												file);
-										break;
-									default: // playback
-										TaskDialogHelpers
-												.playbackFile(getActivity(),
-														file, which == 1);
-										break;
-								}
-							}
-						}).show();
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						switch (which) {
+							case 0: // Open
+								TaskDialogHelpers.openFile(context,
+										file);
+								break;
+							default: // playback
+								TaskDialogHelpers
+								.playbackFile(getActivity(),
+										file, which == 1);
+								break;
+						}
+					}
+				}).show();
 				return;
 			}
 		});
 
-		if (task == null) main.setCurrentTask(main.getCurrentTask(), false);
+		if (this.task == null) {
+			this.main.setCurrentTask(this.main.getCurrentTask(), false);
+		}
 		return view;
 	}
 
 	abstract protected void startCab();
 
-	public void update(Task t) {
+	public void update(final Task t) {
 		this.task = t;
-		if (this.detailView != null) {
-			this.detailView.update(t);
+		if (this.detailView != null && this.updateThread != null) {
+			new Thread(this.updateThread).start();
 		}
 
 	}
