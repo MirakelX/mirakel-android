@@ -133,7 +133,7 @@ public abstract class TaskFragment extends Fragment {
 					}
 				}
 				update(TaskFragment.this.task);
-				TaskFragment.this.main.getTasksFragment().updateList();
+				TaskFragment.this.main.getTasksFragment().updateList(false);
 				TaskFragment.this.main.getListFragment().update();
 				break;
 			default:
@@ -195,7 +195,7 @@ public abstract class TaskFragment extends Fragment {
 
 			@Override
 			public void onTaskChanged(Task newTask) {
-				TaskFragment.this.main.getTasksFragment().updateList();
+				TaskFragment.this.main.getTasksFragment().updateList(false);
 				TaskFragment.this.main.getListFragment().update();
 			}
 		});

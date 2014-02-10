@@ -390,6 +390,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 						})
 						.setNegativeButton(this.getString(android.R.string.no), null)
 						.show();
+		getTasksFragment().updateList(false);
 	}
 
 	/**
@@ -1230,7 +1231,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		}
 
 		if (getTasksFragment() != null) {
-			getTasksFragment().updateList();
+			getTasksFragment().updateList(true);
 			if (!MirakelPreferences.isTablet() && switchFragment) {
 				this.mViewPager.setCurrentItem(MainActivity
 						.getTasksFragmentPosition());
@@ -1568,7 +1569,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 	}
 
 	public void updateUI() {
-		getTasksFragment().updateList();
+		getTasksFragment().updateList(false);
 		// This is very buggy
 		//getTaskFragment().updateLayout();
 	}

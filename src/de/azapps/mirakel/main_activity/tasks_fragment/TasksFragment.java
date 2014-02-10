@@ -696,14 +696,11 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 		}
 	}
 
-	public void updateList() {
-		updateList(true);
-	}
-
 	public void updateList(final boolean reset) {
 		try {
 			this.listId = this.main.getCurrentList().getId();
 			this.values = this.main.getCurrentList().tasks(this.showDone);
+			this.adapter.changeData(this.values);
 			update(reset);
 		} catch (NullPointerException e) {
 			this.values = null;
