@@ -81,15 +81,15 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 	private static final String	TAG				= "TasksFragment";
 	private static final int	TASK_RENAME		= 0, TASK_MOVE = 1,
 			TASK_DESTROY = 2;
-	private TaskAdapter			adapter;
-	private boolean				created			= false;
-	private boolean				finishLoad;
-	private int					ItemCount;
-	private int					listId;
-	private ListView			listView;
-	private boolean				loadMore;
-	private ActionMode			mActionMode		= null;
-	private MainActivity		main;
+	protected TaskAdapter		adapter;
+	protected boolean			created			= false;
+	protected boolean			finishLoad;
+	protected int				ItemCount;
+	protected int				listId;
+	protected ListView			listView;
+	protected boolean			loadMore;
+	protected ActionMode		mActionMode		= null;
+	protected MainActivity		main;
 	final Handler				mHandler		= new Handler();
 	final Runnable				mUpdateResults	= new Runnable() {
 		@Override
@@ -119,7 +119,7 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 	};
 	protected EditText			newTask;
 	private boolean				showDone		= true;
-	private List<Task>			values;
+	protected List<Task>		values;
 
 	View						view;
 
@@ -213,7 +213,7 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 		return this.newTask != null;
 	}
 
-	private boolean newTask(String name) {
+	protected boolean newTask(String name) {
 		this.newTask.setText(null);
 		InputMethodManager imm = (InputMethodManager) this.main
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -278,7 +278,7 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 
 		this.listView = (ListView) this.view.findViewById(R.id.tasks_list);
 		this.listView
-		.setDescendantFocusability(ListView.FOCUS_AFTER_DESCENDANTS);
+		.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
 		// Events
 		this.newTask = (EditText) this.view.findViewById(R.id.tasks_new);
 		if (MirakelPreferences.isTablet()) {
@@ -311,10 +311,16 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 			}
 
 			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+				// Nothing
+
+			}
 
 			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count) {}
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				// Nothing
+
+			}
 		});
 		this.ItemCount = 10;// TODO get this from somewhere
 		update(true);
@@ -497,7 +503,7 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 				}
 			});
 		} else {
-			this.listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+			this.listView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
 			if (this.adapter != null) {
 				this.adapter.resetSelected();
 			}
@@ -583,12 +589,20 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 		this.listView
 		.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> parent, View item, int position, long id) {
-				// TODO Remove Bad Hack
-				Task task = TasksFragment.this.values.get((int) id);
-				Log.v(TAG, "Switch to Task " + task.getId() + " ("
-						+ task.getUUID() + ")");
-				TasksFragment.this.main.setCurrentTask(task, true);
+			public void onItemClick(AdapterView<?> parent, View item, int position, final long id) {
+				new Thread(new Runnable(){
+					@Override
+					public void run() {
+						// TODO Remove Bad Hack
+						Task task = TasksFragment.this.values
+								.get((int) id);
+						Log.v(TAG, "Switch to Task " + task.getId()
+								+ " (" + task.getUUID() + ")");
+						TasksFragment.this.main.setCurrentTask(task,
+								true);
+					}
+				}).start();
+
 			}
 		});
 	}

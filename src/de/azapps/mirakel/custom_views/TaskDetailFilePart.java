@@ -133,7 +133,7 @@ public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
 									.getLayoutParams();
 							params.height = preview.getHeight();
 							TaskDetailFilePart.this.fileImage
-									.setLayoutParams(params);
+							.setLayoutParams(params);
 						}
 					});
 				} else {
