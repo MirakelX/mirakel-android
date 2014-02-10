@@ -118,11 +118,11 @@ public class TaskWarriorSync {
 	private static String		_user				= "";
 
 	public static final String	CA_FILE				= FileUtils.getMirakelDir()
-			+ "ca.cert.pem";
+															+ "ca.cert.pem";
 	public static final String	CLIENT_CERT_FILE	= FileUtils.getMirakelDir()
-			+ "client.cert.pem";
+															+ "client.cert.pem";
 	public static final String	CLIENT_KEY_FILE		= FileUtils.getMirakelDir()
-			+ "client.key.pem";
+															+ "client.key.pem";
 	public static final String	NO_PROJECT			= "NO_PROJECT";
 	private static File			root;
 	private static final String	TAG					= "TaskWarroirSync";
@@ -185,14 +185,15 @@ public class TaskWarriorSync {
 				&& MirakelPreferences.isDumpTw()) {
 			try {
 				FileUtils
-				.writeToFile(
-						new File(Environment.getExternalStorageState()
-								+ "/mirakel"
-								+ new SimpleDateFormat(
+						.writeToFile(
+								new File(
+										Environment.getExternalStorageState()
+												+ "/mirakel"
+												+ new SimpleDateFormat(
 														"dd-MM-yyyy_hh-mm-ss",
 														Helpers.getLocal(this.mContext))
-						.format(new Date()) + ".log"),
-						response);
+														.format(new Date())
+												+ ".log"), response);
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -205,6 +206,9 @@ public class TaskWarriorSync {
 			remotes.parse(response);
 		} catch (MalformedInputException e) {
 			Log.e(TAG, "cannot parse Message");
+			return TW_ERRORS.CANNOT_PARSE_MESSAGE;
+		} catch (NullPointerException e) {
+			Log.wtf(TAG, "remotes.pars throwed NullPointer");
 			return TW_ERRORS.CANNOT_PARSE_MESSAGE;
 		}
 		int code = Integer.parseInt(remotes.get("code"));
@@ -240,7 +244,7 @@ public class TaskWarriorSync {
 					server_task = Task.parse_json(taskObject, accountMirakel);
 					if (server_task.getList() == null
 							|| server_task.getList().getAccount().getId() != accountMirakel
-							.getId()) {
+									.getId()) {
 						ListMirakel list = ListMirakel
 								.getInboxList(accountMirakel);
 						server_task.setList(list, false);
