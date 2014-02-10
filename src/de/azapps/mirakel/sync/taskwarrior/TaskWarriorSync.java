@@ -16,7 +16,6 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Environment;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -118,11 +117,11 @@ public class TaskWarriorSync {
 	private static String		_user				= "";
 
 	public static final String	CA_FILE				= FileUtils.getMirakelDir()
-															+ "ca.cert.pem";
+			+ "ca.cert.pem";
 	public static final String	CLIENT_CERT_FILE	= FileUtils.getMirakelDir()
-															+ "client.cert.pem";
+			+ "client.cert.pem";
 	public static final String	CLIENT_KEY_FILE		= FileUtils.getMirakelDir()
-															+ "client.key.pem";
+			+ "client.key.pem";
 	public static final String	NO_PROJECT			= "NO_PROJECT";
 	private static File			root;
 	private static final String	TAG					= "TaskWarroirSync";
@@ -185,15 +184,12 @@ public class TaskWarriorSync {
 				&& MirakelPreferences.isDumpTw()) {
 			try {
 				FileUtils
-						.writeToFile(
-								new File(
-										Environment.getExternalStorageState()
-												+ "/mirakel"
-												+ new SimpleDateFormat(
-														"dd-MM-yyyy_hh-mm-ss",
-														Helpers.getLocal(this.mContext))
-														.format(new Date())
-												+ ".log"), response);
+				.writeToFile(
+						new File(Mirakel.exportDir, new SimpleDateFormat(
+								"dd-MM-yyyy_hh-mm-ss",
+								Helpers.getLocal(this.mContext))
+						.format(new Date())
+						+ ".tw_down.log"), response);
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -244,7 +240,7 @@ public class TaskWarriorSync {
 					server_task = Task.parse_json(taskObject, accountMirakel);
 					if (server_task.getList() == null
 							|| server_task.getList().getAccount().getId() != accountMirakel
-									.getId()) {
+							.getId()) {
 						ListMirakel list = ListMirakel
 								.getInboxList(accountMirakel);
 						server_task.setList(list, false);
@@ -407,7 +403,11 @@ public class TaskWarriorSync {
 		if (MirakelPreferences.isDumpTw()) {
 			try {
 				FileWriter f = new FileWriter(new File(Mirakel.exportDir,
-						"log.tw"));
+						new SimpleDateFormat(
+								"dd-MM-yyyy_hh-mm-ss",
+								Helpers.getLocal(this.mContext))
+				.format(new Date())
+				+ ".tw_up.log"));
 				f.write(payload);
 				f.close();
 			} catch (Exception e) {
