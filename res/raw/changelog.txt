@@ -17,9 +17,10 @@
     </style>
   </head>
   <body>
-$ 2.3
-  % Version 2.3
-  _ 2014-02-
+$ 2.2.2-beta3
+  % Version 2.2.2 Beta3
+  _ 2014-02-10
+  ! This is a nearly 2.3 release. 2.3 is coming soon – please report bugs
   ! Sorry for the late update! We've fixed lot of bugs.
   * Bugfixes
   * Updated translations
