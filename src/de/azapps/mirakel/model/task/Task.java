@@ -488,6 +488,7 @@ public class Task extends TaskBase {
 		for (Entry<String, JsonElement> entry : entries) {
 			String key = entry.getKey();
 			JsonElement val = entry.getValue();
+			Log.e("Blubb",key);
 			if (key == null || key.equals("id")) {
 				continue;
 			}
@@ -512,6 +513,9 @@ public class Task extends TaskBase {
 				} else if (!prioString.equals("L")) {
 					t.setPriority(val.getAsInt());
 				}
+			} else if(key.equals("progress")) {
+				int progress=(int) val.getAsDouble();
+				t.setProgress(progress);
 			} else if (key.equals("list_id")) {
 				ListMirakel list = ListMirakel.getList(val.getAsInt());
 				if (list == null) {
