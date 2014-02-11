@@ -84,7 +84,7 @@ class TaskBase {
 		setDone(done);
 		setDue(due);
 		setReminder(reminder);
-		setPriority(priority);
+		this.priority = priority;
 		this.setCreatedAt(created_at);
 		this.setUpdatedAt(updated_at);
 		setSyncState(sync_state);
@@ -104,7 +104,7 @@ class TaskBase {
 		setDone(false);
 		setDue(null);
 		setReminder(null);
-		setPriority(0);
+		priority = 0;
 		this.setCreatedAt((Calendar) null);
 		this.setUpdatedAt((Calendar) null);
 		setSyncState(SYNC_STATE.NOTHING);
@@ -130,15 +130,16 @@ class TaskBase {
 	}
 
 	protected String getAdditionalEntriesString() {
-		String additionalEntries="{";
-		boolean first=true;
+		String additionalEntries = "{";
+		boolean first = true;
 		initAdditionalEntries();
-		for(Entry<String, String> p:this.additionalEntries.entrySet()){
-			additionalEntries+=(first?"":",")+"\""+p.getKey()+"\":"+p.getValue();
-			first=false;
+		for (Entry<String, String> p : this.additionalEntries.entrySet()) {
+			additionalEntries += (first ? "" : ",") + "\"" + p.getKey() + "\":"
+					+ p.getValue();
+			first = false;
 		}
 		this.additionalEntriesString = additionalEntries + "}";
-		return additionalEntries+"}";
+		return additionalEntries + "}";
 	}
 
 	public String getContent() {
@@ -270,15 +271,15 @@ class TaskBase {
 					&& !this.additionalEntriesString.trim().equals("null")) {
 				String t = this.additionalEntriesString.substring(1,
 						this.additionalEntriesString.length() - 1);// remove { and }
-				String [] parts=t.split(",");
+				String[] parts = t.split(",");
 				String key = null;
-				for(String p:parts){
-					String[] keyValue=p.split(":");
-					if(keyValue.length==2){
-						key=keyValue[0];
-						key=key.replaceAll("\"", "");
+				for (String p : parts) {
+					String[] keyValue = p.split(":");
+					if (keyValue.length == 2) {
+						key = keyValue[0];
+						key = key.replaceAll("\"", "");
 						this.additionalEntries.put(key, keyValue[1]);
-					}else if(keyValue.length==1&&key!=null){
+					} else if (keyValue.length == 1 && key != null) {
 						this.additionalEntries.put(key,
 								this.additionalEntries.get(key) + ","
 										+ keyValue[0]);
@@ -314,7 +315,7 @@ class TaskBase {
 		if (content != null) {
 			this.content = StringUtils.replaceEach(content.trim(),
 					new String[] { "\\n", "\\\"", "\b" }, new String[] { "\n",
-				"\"", "" });
+							"\"", "" });
 		} else {
 			this.content = null;
 		}
@@ -365,7 +366,6 @@ class TaskBase {
 		this.id = id;
 		this.edited.put(DatabaseHelper.ID, true);
 	}
-
 
 	public void setList(ListMirakel list, boolean removeNoListFalg) {
 		this.list = list;
