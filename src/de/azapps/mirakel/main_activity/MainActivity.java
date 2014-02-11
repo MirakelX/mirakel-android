@@ -528,22 +528,28 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 				|| getTasksFragment().getAdapter() == null
 				|| currentTask == null) return;
 		Log.v(MainActivity.TAG, currentTask.getName());
-		View currentView = getTasksFragment().getAdapter().getViewForTask(
-				currentTask);
-		if (currentView == null) {
-			currentView = getTasksFragment().getListView().getChildAt(0);
-		}
+		final View currentView = getTasksFragment().getAdapter().getViewForTask(
+				currentTask)==null?getTasksFragment().getListView().getChildAt(0):getTasksFragment().getAdapter().getViewForTask(
+						currentTask);
 
-		if (currentView != null && this.highlightSelected && !multiselect) {
-			if (this.oldClickedTask != null) {
-				this.oldClickedTask.setSelected(false);
-				this.oldClickedTask.setBackgroundColor(0x00000000);
-			}
-			currentView.setBackgroundColor(getResources().getColor(
-					this.darkTheme ? R.color.highlighted_text_holo_dark
-							: R.color.highlighted_text_holo_light));
-			this.oldClickedTask = currentView;
-		}
+				if (currentView != null && this.highlightSelected && !multiselect) {
+
+					currentView.post(new Runnable(){
+
+						@Override
+						public void run() {
+							if (MainActivity.this.oldClickedTask != null) {
+								MainActivity.this.oldClickedTask.setSelected(false);
+								MainActivity.this.oldClickedTask
+								.setBackgroundColor(0x00000000);
+							}
+							currentView.setBackgroundColor(getResources().getColor(
+									MainActivity.this.darkTheme ? R.color.highlighted_text_holo_dark
+											: R.color.highlighted_text_holo_light));
+							MainActivity.this.oldClickedTask = currentView;
+						}
+					});
+				}
 	}
 
 	/**
