@@ -92,6 +92,7 @@ class TaskBase {
 		this.recurrence = recurring;
 		this.recurring_reminder = recurring_reminder;
 		this.progress = progress;
+		clearEdited();
 	}
 
 	TaskBase(String name) {
@@ -110,6 +111,7 @@ class TaskBase {
 		this.recurrence = -1;
 		this.recurring_reminder = -1;
 		this.progress = 0;
+		clearEdited();
 	}
 
 	public void addAdditionalEntry(String key, String value) {
