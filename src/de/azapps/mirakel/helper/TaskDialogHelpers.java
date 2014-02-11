@@ -56,7 +56,6 @@ import android.widget.ViewSwitcher;
 import com.android.calendar.recurrencepicker.RecurrencePickerDialog;
 import com.android.calendar.recurrencepicker.RecurrencePickerDialog.OnRecurenceSetListner;
 
-import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.adapter.SubtaskAdapter;
 import de.azapps.mirakel.custom_views.BaseTaskDetailRow.OnTaskChangedListner;
 import de.azapps.mirakel.custom_views.TaskDetailDueReminder;
@@ -241,7 +240,7 @@ public class TaskDialogHelpers {
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.dismiss();
 				task.setPriority(2 - which);
-				safeSafeTask(ctx, task);
+				task.safeSave();
 				onSuccess.exec();
 			}
 		});
@@ -318,7 +317,7 @@ public class TaskDialogHelpers {
 						reminder.set(Calendar.HOUR_OF_DAY, hourOfDay);
 						reminder.set(Calendar.MINUTE, minute);
 						task.setReminder(reminder);
-						safeSafeTask(ctx, task);
+						task.safeSave();
 						onSuccess.onTaskChanged(task);
 
 					}
@@ -714,15 +713,6 @@ public class TaskDialogHelpers {
 			}
 		});
 		audio_playback_dialog.show();
-	}
-
-	private static void safeSafeTask(Context context, Task task) {
-		try {
-			task.save();
-		} catch (NoSuchListException e) {
-			Toast.makeText(context, R.string.list_vanished, Toast.LENGTH_LONG)
-			.show();
-		}
 	}
 
 	private static void setRecurence(final Task task, final boolean isDue, int id, ImageButton image) {

@@ -944,29 +944,23 @@ public class Task extends TaskBase {
 		return count > 0;
 	}
 
+	public void safeSave() {
+		safeSave(true);
+	}
+
 	/**
 	 * Save a Task
 	 * 
 	 * @param task
 	 */
-	public void safeSave() {
+	public void safeSave(boolean log) {
 		try {
-			save();
+			save(log);
 		} catch (NoSuchListException e) {
 			Log.w(TAG, "List did vanish");
 		}
 	}
-
-	/**
-	 * Save a Task
-	 * 
-	 * @param task
-	 */
-	public void save() throws NoSuchListException {
-		save(true);
-	}
-
-	public void save(boolean log) throws NoSuchListException {
+	private void save(boolean log) throws NoSuchListException {
 		if (!isEdited()) {
 			Log.d(TAG, "new Task equals old, didnt need to save it");
 			return;
@@ -1006,7 +1000,7 @@ public class Task extends TaskBase {
 		for (Task t : subTasks) {
 			t.setDone(true);
 			try {
-				t.save();
+				t.save(true);
 			} catch (NoSuchListException e) {
 				Log.d(TAG, "List did vanish");
 			}

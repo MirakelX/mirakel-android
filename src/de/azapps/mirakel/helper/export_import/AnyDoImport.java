@@ -43,7 +43,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
-import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.recurring.Recurring;
@@ -53,8 +52,8 @@ import de.azapps.mirakelandroid.R;
 import de.azapps.tools.Log;
 
 public class AnyDoImport {
-	private static final String TAG = "AnyDoImport";
-	private static SparseIntArray taskMapping;
+	private static final String		TAG	= "AnyDoImport";
+	private static SparseIntArray	taskMapping;
 
 	public static boolean exec(Context ctx, String path_any_do) {
 		String json;
@@ -104,11 +103,7 @@ public class AnyDoImport {
 			String oldContent = t.getContent();
 			t.setContent(oldContent == null || oldContent.equals("") ? pair.second
 					: oldContent + "\n" + pair.second);
-			try {
-				t.save();
-			} catch (NoSuchListException e1) {
-				Log.wtf(TAG, "List did vanish");
-			}
+			t.safeSave(false);
 		}
 		return true;
 	}
@@ -127,8 +122,7 @@ public class AnyDoImport {
 				}
 			}
 			final File backupFile = lastBackup;
-			if(backupFile==null)
-				return;
+			if (backupFile == null) return;
 			new AlertDialog.Builder(activity)
 					.setTitle(activity.getString(R.string.import_any_do_click))
 					.setMessage(
@@ -138,8 +132,7 @@ public class AnyDoImport {
 							new OnClickListener() {
 
 								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
+								public void onClick(DialogInterface dialog, int which) {
 									exec(activity, backupFile.getAbsolutePath());
 									android.os.Process
 											.killProcess(android.os.Process
@@ -151,8 +144,7 @@ public class AnyDoImport {
 							new OnClickListener() {
 
 								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
+								public void onClick(DialogInterface dialog, int which) {
 									Helpers.showFileChooser(
 											SettingsActivity.FILE_ANY_DO,
 											activity.getString(R.string.any_do_import_title),
@@ -167,8 +159,7 @@ public class AnyDoImport {
 							new OnClickListener() {
 
 								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
+								public void onClick(DialogInterface dialog, int which) {
 									handleImportAnyDo(activity);
 								}
 							})
@@ -177,8 +168,7 @@ public class AnyDoImport {
 							new OnClickListener() {
 
 								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
+								public void onClick(DialogInterface dialog, int which) {
 									Helpers.showFileChooser(
 											SettingsActivity.FILE_ANY_DO,
 											activity.getString(R.string.any_do_import_title),
@@ -189,8 +179,7 @@ public class AnyDoImport {
 		}
 	}
 
-	private static SparseIntArray parseList(JsonObject jsonList,
-			SparseIntArray listMapping) {
+	private static SparseIntArray parseList(JsonObject jsonList, SparseIntArray listMapping) {
 		String name = jsonList.get("name").getAsString();
 		int id = jsonList.get("id").getAsInt();
 		ListMirakel l = ListMirakel.newList(name);
@@ -199,9 +188,7 @@ public class AnyDoImport {
 
 	}
 
-	private static List<Pair<Integer, String>> parseTask(JsonObject jsonTask,
-			SparseIntArray listMapping, List<Pair<Integer, String>> contents,
-			Context ctx) {
+	private static List<Pair<Integer, String>> parseTask(JsonObject jsonTask, SparseIntArray listMapping, List<Pair<Integer, String>> contents, Context ctx) {
 		String name = jsonTask.get("title").getAsString();
 		if (jsonTask.has("parentId")) {
 			contents.add(new Pair<Integer, String>(jsonTask.get("parentId")
@@ -240,28 +227,32 @@ public class AnyDoImport {
 					if (r == null) {
 						r = Recurring.newRecurring(
 								ctx.getString(R.string.daily), 0, 0, 1, 0, 0,
-								true, null, null, false, false,new SparseBooleanArray());
+								true, null, null, false, false,
+								new SparseBooleanArray());
 					}
 				} else if (repeat.equals("TASK_REPEAT_WEEK")) {
 					r = Recurring.get(7, 0, 0);
 					if (r == null) {
 						r = Recurring.newRecurring(
 								ctx.getString(R.string.weekly), 0, 0, 7, 0, 0,
-								true, null, null, false, false,new SparseBooleanArray());
+								true, null, null, false, false,
+								new SparseBooleanArray());
 					}
 				} else if (repeat.equals("TASK_REPEAT_MONTH")) {
 					r = Recurring.get(0, 1, 0);
 					if (r == null) {
 						r = Recurring.newRecurring(
 								ctx.getString(R.string.monthly), 0, 0, 0, 1, 0,
-								true, null, null, false, false,new SparseBooleanArray());
+								true, null, null, false, false,
+								new SparseBooleanArray());
 					}
 				} else if (repeat.equals("TASK_REPEAT_YEAR")) {
 					r = Recurring.get(0, 0, 1);
 					if (r == null) {
 						r = Recurring.newRecurring(
 								ctx.getString(R.string.yearly), 0, 0, 0, 0, 1,
-								true, null, null, false, false,new SparseBooleanArray());
+								true, null, null, false, false,
+								new SparseBooleanArray());
 					}
 				}
 				if (r != null) {
@@ -272,11 +263,7 @@ public class AnyDoImport {
 
 			}
 		}
-		try {
-			t.save();
-		} catch (NoSuchListException e) {
-			Log.wtf(TAG, "list did vanish");
-		}
+		t.safeSave(false);
 		return contents;
 	}
 

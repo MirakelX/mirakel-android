@@ -274,12 +274,7 @@ public class TaskWarriorSync {
 				} else {
 					server_task.setId(local_task.getId());
 					Log.d(TAG, "update " + server_task.getName());
-					try {
-						server_task.save();
-					} catch (NoSuchListException e) {
-						// Should not happen, because the list should be created
-						// while parsing the task
-					}
+					server_task.safeSave();
 				}
 			}
 		}

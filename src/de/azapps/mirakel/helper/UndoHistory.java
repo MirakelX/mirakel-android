@@ -25,17 +25,16 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
 
 public class UndoHistory {
-	private static final short LIST = 1;
-	private static String TAG = "UndoHistory";
-	private static final short TASK = 0;
-	public static String UNDO = "OLD";
+	private static final short	LIST	= 1;
+	private static String		TAG		= "UndoHistory";
+	private static final short	TASK	= 0;
+	public static String		UNDO	= "OLD";
 
 	public static void logCreate(ListMirakel newList, Context ctx) {
 		updateLog(LIST, newList.getId() + "", ctx);
@@ -72,21 +71,17 @@ public class UndoHistory {
 						.getAsJsonObject();
 				switch (type) {
 					case TASK:
-						try {
-							Task t = Task.parse_json(json,
-									AccountMirakel.getLocal());
-							if (Task.get(t.getId()) != null) {
-								t.save(false);
-							} else {
-								try {
-									Mirakel.getWritableDatabase().insert(
-											Task.TABLE, null, t.getContentValues());
-								} catch (Exception e) {
-									Log.e(TAG, "cannot restore Task");
-								}
+						Task t = Task.parse_json(json,
+								AccountMirakel.getLocal());
+						if (Task.get(t.getId()) != null) {
+							t.safeSave(false);
+						} else {
+							try {
+								Mirakel.getWritableDatabase().insert(
+										Task.TABLE, null, t.getContentValues());
+							} catch (Exception e) {
+								Log.e(TAG, "cannot restore Task");
 							}
-						} catch (NoSuchListException e) {
-							Log.e(TAG, "List not found");
 						}
 						break;
 					case LIST:
@@ -111,7 +106,7 @@ public class UndoHistory {
 		}
 		SharedPreferences.Editor editor = MirakelPreferences.getEditor();
 		for (int i = 0; i < MirakelPreferences.getUndoNumber(); i++) {
-			String old = MirakelPreferences.getFromLog(i+1);
+			String old = MirakelPreferences.getFromLog(i + 1);
 			editor.putString(UNDO + i, old);
 		}
 		editor.putString(UNDO + 10, "");
