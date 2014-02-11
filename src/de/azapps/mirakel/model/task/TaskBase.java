@@ -307,11 +307,13 @@ class TaskBase {
 	}
 
 	public void setAdditionalEntries(Map<String, String> additionalEntries) {
+		if (this.additionalEntries!=null && this.additionalEntries.equals(additionalEntries)) return;
 		this.additionalEntries = additionalEntries;
 		this.edited.put("additionalEntries", true);
 	}
 
 	public void setContent(String content) {
+		if (this.content != null && this.content.equals(content)) return;
 		if (content != null) {
 			this.content = StringUtils.replaceEach(content.trim(),
 					new String[] { "\\n", "\\\"", "\b" }, new String[] { "\n",
@@ -335,6 +337,7 @@ class TaskBase {
 	}
 
 	public void setDone(boolean done) {
+		if (this.done == done) return;
 		this.done = done;
 		this.edited.put(DONE, true);
 		if (done && this.recurrence != -1 && this.due != null) {
@@ -355,6 +358,7 @@ class TaskBase {
 	}
 
 	public void setDue(Calendar due) {
+		if (this.due!= null && this.due.equals(due)) return;
 		this.due = due;
 		this.edited.put(DUE, true);
 		if (due == null) {
@@ -364,10 +368,10 @@ class TaskBase {
 
 	public void setId(long id) {
 		this.id = id;
-		this.edited.put(DatabaseHelper.ID, true);
 	}
 
 	public void setList(ListMirakel list, boolean removeNoListFalg) {
+		if (this.list!=null && list!=null && this.list.getId() == list.getId()) return;
 		this.list = list;
 		this.edited.put(LIST_ID, true);
 		if (removeNoListFalg) {
@@ -379,31 +383,38 @@ class TaskBase {
 	}
 
 	public void setName(String name) {
+		if (this.name!=null && this.name.equals(name)) return;
 		this.name = name;
 		this.edited.put(DatabaseHelper.NAME, true);
 	}
 
 	public void setPriority(int priority) {
+		if (this.priority == priority) return;
 		this.priority = priority;
 		this.edited.put(PRIORITY, true);
 	}
 
 	public void setProgress(int progress) {
+		if (this.progress == progress) return;
 		this.edited.put("progress", true);
 		this.progress = progress;
 	}
 
-	public void setRecurrence(int recurring) {
-		this.recurrence = recurring;
+	public void setRecurrence(int recurrence) {
+		if (this.recurrence == recurrence) return;
+		this.recurrence = recurrence;
 		this.edited.put(RECURRING, true);
 	}
 
-	public void setRecurringReminder(int recurring) {
-		this.recurring_reminder = recurring;
+	public void setRecurringReminder(int recurrence) {
+		if (this.recurring_reminder == recurrence) return;
+		this.recurring_reminder = recurrence;
 		this.edited.put(RECURRING_REMINDER, true);
 	}
 
 	public void setReminder(Calendar reminder) {
+		if(this.reminder!=null && this.reminder.equals(reminder))
+			return;
 		this.reminder = reminder;
 		this.edited.put(REMINDER, true);
 		if (reminder == null) {
@@ -429,7 +440,6 @@ class TaskBase {
 
 	public void setUUID(String uuid) {
 		this.uuid = uuid;
-		this.edited.put(UUID, true);
 	}
 
 	public void toggleDone() {
