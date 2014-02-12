@@ -21,13 +21,7 @@ package de.azapps.mirakel.sync;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.List;
-
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
@@ -41,10 +35,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpReport;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -69,41 +59,30 @@ public class Network extends AsyncTask<String, Integer, String> {
 		GET, POST, PUT, DELETE, REPORT;
 	}
 
-	private static String TAG = "MirakelNetwork";
-	private static final Integer NoNetwork = 1;
-	private static final Integer NoHTTPS = 2;
+	private static String				TAG			= "MirakelNetwork";
+	private static final Integer		NoNetwork	= 1;
+	private static final Integer		NoHTTPS		= 2;
 
-	protected DataDownloadCommand commands;
-	protected List<BasicNameValuePair> headerData;
-	protected HttpMode mode;
-	protected Context context;
-	protected String token;
-	protected ACCOUNT_TYPES syncTyp;
-	private String content;
-	private String username;
-	private String password;
+	protected DataDownloadCommand		commands;
+	protected List<BasicNameValuePair>	headerData;
+	protected HttpMode					mode;
+	protected Context					context;
+	protected String					token;
+	protected ACCOUNT_TYPES				syncTyp;
+	private String						content;
+	private String						username;
+	private String						password;
 
-	public Network(DataDownloadCommand commands, HttpMode mode,
-			Context context, String Token) {
-		this.commands = commands;
-		this.mode = mode;
-		this.context = context;
-		this.token = Token;
-		this.syncTyp = ACCOUNT_TYPES.MIRAKEL;
-	}
-
-	public Network(DataDownloadCommand commands, HttpMode mode,
-			List<BasicNameValuePair> data, Context context, String Token) {
+	public Network(DataDownloadCommand commands, HttpMode mode, List<BasicNameValuePair> data, Context context, String Token) {
 		this.commands = commands;
 		this.mode = mode;
 		this.headerData = data;
 		this.context = context;
 		this.token = Token;
-		this.syncTyp = ACCOUNT_TYPES.MIRAKEL;
+		this.syncTyp = ACCOUNT_TYPES.CALDAV;
 	}
 
-	public Network(DataDownloadCommand commands, HttpMode mode, String content,
-			Context ctx, String username, String password) {
+	public Network(DataDownloadCommand commands, HttpMode mode, String content, Context ctx, String username, String password) {
 		this.commands = commands;
 		this.mode = mode;
 		this.content = content;
@@ -120,8 +99,7 @@ public class Network extends AsyncTask<String, Integer, String> {
 				Log.d(TAG, "Unkown responsformat");
 				return null;
 			}
-		} else
-			return null;
+		} else return null;
 	}
 
 	@Override
@@ -155,39 +133,8 @@ public class Network extends AsyncTask<String, Integer, String> {
 		Log.d(TAG, "No Response");
 		commands.after_exec(result);
 	}
-
-	private HttpClient sslClient(HttpClient client) {
-		try {
-			X509TrustManager tm = new X509TrustManager() {
-				public void checkClientTrusted(X509Certificate[] xcs,
-						String string) throws CertificateException {
-				}
-
-				public void checkServerTrusted(X509Certificate[] xcs,
-						String string) throws CertificateException {
-				}
-
-				public X509Certificate[] getAcceptedIssuers() {
-					return null;
-				}
-			};
-			SSLContext ctx = SSLContext.getInstance("TLS");
-			ctx.init(null, new TrustManager[] { tm }, null);
-			SSLSocketFactory ssf = new MirakelSSLSocketFactory(ctx);
-			ssf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-			ClientConnectionManager ccm = client.getConnectionManager();
-			SchemeRegistry sr = ccm.getSchemeRegistry();
-			sr.register(new Scheme("https", ssf, 443));
-			sr.register(new Scheme("http", ssf, 80));
-			return new DefaultHttpClient(ccm, client.getParams());
-		} catch (Exception ex) {
-			Log.d(TAG, "Cannot create new SSL-Client");
-			return null;
-		}
-	}
-
-	private String downloadUrl(String myurl) throws IOException,
-			URISyntaxException {
+	
+	private String downloadUrl(String myurl) throws IOException, URISyntaxException {
 		if (token != null) {
 			myurl += "?authentication_key=" + token;
 		}
@@ -195,88 +142,86 @@ public class Network extends AsyncTask<String, Integer, String> {
 			Integer[] t = { NoHTTPS };
 			publishProgress(t);
 		}
-		
+
 		/*
-		String authorizationString = null;
-		if (syncTyp == ACCOUNT_TYPES.CALDAV) {
-			authorizationString = "Basic "
-					+ Base64.encodeToString(
-							(username + ":" + password).getBytes(),
-							Base64.NO_WRAP);
-		}
-		*/
-		
+		 * String authorizationString = null;
+		 * if (syncTyp == ACCOUNT_TYPES.CALDAV) {
+		 * authorizationString = "Basic "
+		 * + Base64.encodeToString(
+		 * (username + ":" + password).getBytes(),
+		 * Base64.NO_WRAP);
+		 * }
+		 */
+
 		CredentialsProvider credentials = new BasicCredentialsProvider();
-		credentials.setCredentials(new AuthScope(new URI(myurl).getHost(), -1), new UsernamePasswordCredentials(username, password));
+		credentials.setCredentials(new AuthScope(new URI(myurl).getHost(), -1),
+				new UsernamePasswordCredentials(username, password));
 
 		HttpParams params = new BasicHttpParams();
 		params.setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
 				HttpVersion.HTTP_1_1);
 		HttpConnectionParams.setTcpNoDelay(params, true);
-		DefaultHttpClient client = new DefaultHttpClient(params);
 		HttpClient httpClient;
-		if(syncTyp == ACCOUNT_TYPES.MIRAKEL)
-			httpClient = sslClient(client);
-		else {
-			DefaultHttpClient tmpHttpClient =  new DefaultHttpClient(params);
-			tmpHttpClient.setCredentialsProvider(credentials);
-			
-			httpClient = tmpHttpClient;
-		}
+		/*
+		 * if(syncTyp == ACCOUNT_TYPES.MIRAKEL)
+		 * httpClient = sslClient(client);
+		 * else {
+		 */
+		DefaultHttpClient tmpHttpClient = new DefaultHttpClient(params);
+		tmpHttpClient.setCredentialsProvider(credentials);
+
+		httpClient = tmpHttpClient;
+		// }
 		httpClient.getParams().setParameter("http.protocol.content-charset",
 				HTTP.UTF_8);
 
 		HttpResponse response;
 		try {
 			switch (mode) {
-			case GET:
-				Log.v(TAG, "GET " + myurl);
-				HttpGet get = new HttpGet();
-				get.setURI(new URI(myurl));
-				response = httpClient.execute(get);
-				break;
-			case PUT:
-				Log.v(TAG, "PUT " + myurl);
-				HttpPut put = new HttpPut();
-				if (syncTyp == ACCOUNT_TYPES.CALDAV) {
-					put.addHeader(HTTP.CONTENT_TYPE,
-							"text/calendar; charset=utf-8");
-				}
-				put.setURI(new URI(myurl));
-				if (syncTyp == ACCOUNT_TYPES.MIRAKEL) {
-					UrlEncodedFormEntity data = new UrlEncodedFormEntity(
-							headerData, HTTP.UTF_8);
-					put.setEntity(data);
-				} else {
+				case GET:
+					Log.v(TAG, "GET " + myurl);
+					HttpGet get = new HttpGet();
+					get.setURI(new URI(myurl));
+					response = httpClient.execute(get);
+					break;
+				case PUT:
+					Log.v(TAG, "PUT " + myurl);
+					HttpPut put = new HttpPut();
+					if (syncTyp == ACCOUNT_TYPES.CALDAV) {
+						put.addHeader(HTTP.CONTENT_TYPE,
+								"text/calendar; charset=utf-8");
+					}
+					put.setURI(new URI(myurl));
 					put.setEntity(new StringEntity(content, HTTP.UTF_8));
 					Log.v(TAG, content);
-				}
-				response = httpClient.execute(put);
-				break;
-			case POST:
-				Log.v(TAG, "POST " + myurl);
-				HttpPost post = new HttpPost();
-				post.setURI(new URI(myurl));
-				post.setEntity(new UrlEncodedFormEntity(headerData, HTTP.UTF_8));
-				response = httpClient.execute(post);
-				break;
-			case DELETE:
-				Log.v(TAG, "DELETE " + myurl);
-				HttpDelete delete = new HttpDelete();
-				delete.setURI(new URI(myurl));
-				response = httpClient.execute(delete);
-				break;
-			case REPORT:
-				Log.v(TAG, "REPORT " + myurl);
-				HttpReport report = new HttpReport();
-				report.setURI(new URI(myurl));
-				Log.d(TAG, content);
-				report.setEntity(new StringEntity(content, HTTP.UTF_8));
-				response = httpClient.execute(report);
-				break;
-			default:
-				Log.wtf("HTTP-MODE", "Unknown Http-Mode");
-				return null;
+
+					response = httpClient.execute(put);
+					break;
+				case POST:
+					Log.v(TAG, "POST " + myurl);
+					HttpPost post = new HttpPost();
+					post.setURI(new URI(myurl));
+					post.setEntity(new UrlEncodedFormEntity(headerData,
+							HTTP.UTF_8));
+					response = httpClient.execute(post);
+					break;
+				case DELETE:
+					Log.v(TAG, "DELETE " + myurl);
+					HttpDelete delete = new HttpDelete();
+					delete.setURI(new URI(myurl));
+					response = httpClient.execute(delete);
+					break;
+				case REPORT:
+					Log.v(TAG, "REPORT " + myurl);
+					HttpReport report = new HttpReport();
+					report.setURI(new URI(myurl));
+					Log.d(TAG, content);
+					report.setEntity(new StringEntity(content, HTTP.UTF_8));
+					response = httpClient.execute(report);
+					break;
+				default:
+					Log.wtf("HTTP-MODE", "Unknown Http-Mode");
+					return null;
 			}
 		} catch (Exception e) {
 			Log.e(TAG, "No Networkconnection available");
@@ -284,8 +229,7 @@ public class Network extends AsyncTask<String, Integer, String> {
 			return "";
 		}
 		Log.v(TAG, "Http-Status: " + response.getStatusLine().getStatusCode());
-		if (response.getEntity() == null)
-			return "";
+		if (response.getEntity() == null) return "";
 		String r = EntityUtils.toString(response.getEntity(), HTTP.UTF_8);
 		Log.d(TAG, r);
 		return r;

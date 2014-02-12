@@ -4,6 +4,7 @@
   <string name="action_credits">Remerciements</string>
   <string name="action_credits_summary">À propos de nous ;)</string>
   <string name="title_activity_credits">Remerciements et à propos</string>
+  <string name="credits_github_description">Nous fourche sur github</string>
   <string name="credits_googleplus_description">Rejoignez notre communauté G +</string>
   <string name="credits_translations">Traductions</string>
   <string name="feedback">Envoyez vos commentaires</string>

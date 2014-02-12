@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Mirakel is an Android App for managing your ToDo-Lists Copyright (c) 2013 Anatolij Zelenin, Georg
+ * Mirakel is an Android App for managing your ToDo-Lists Copyright (c) 2013-2014 Anatolij Zelenin, Georg
  * Semmler. This program is free software: you can redistribute it and/or modify it under the terms
  * of the GNU General Public License as published by the Free Software Foundation, either version 3
  * of the License, or any later version. This program is distributed in the hope that it will be
@@ -96,6 +96,8 @@ public class SettingsFragment extends PreferenceFragment {
 			} else {
 				addPreferencesFromResource(R.xml.settings_notifications);
 			}
+		} else if (getArguments().getString("type").equals("dev")) {
+			addPreferencesFromResource(R.xml.settings_dev);
 		} else {
 
 			Log.wtf(TAG, "unkown prefernce " + getArguments().getString("type"));

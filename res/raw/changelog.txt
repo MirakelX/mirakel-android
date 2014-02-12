@@ -17,6 +17,31 @@
     </style>
   </head>
   <body>
+$ 2.2.2-beta3
+  % Version 2.2.2 Beta3
+  _ 2014-02-10
+  ! This is a nearly 2.3 release. 2.3 is coming soon – please report bugs
+  ! Sorry for the late update! We've fixed lot of bugs.
+  * Bugfixes
+  * Updated translations
+  * Added Bulgarian language
+  ! Please try out the taskwarrior sync! It should be stable but make a backup before!
+$ 2.2.2-beta2
+  % Version 2.2.2 Beta2
+  _ 2014-02-07
+  ! Bugs, bugs, bugs
+  * Even more bugfixes
+  * Updated translations
+  * New debug settings ;)
+  ! 2.3 will be released soon
+  ! Please test Mirakel and report Bugs!
+$ 2.2.2-beta1
+  % Version 2.2.2 Beta1
+  _ 2014-02-01
+  ! Bugs, bugs bugs
+  * Fixed a lot of bugs (hopefully)
+  * Updated translations
+  ! Please test Mirakel and report Bugs!
 $ 2.2.1
   % Version 2.2.1
   _ 2013-12-28

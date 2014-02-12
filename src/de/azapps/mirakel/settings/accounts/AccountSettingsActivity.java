@@ -20,7 +20,6 @@ import android.view.View.OnClickListener;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.account.AccountMirakel;
-import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 import de.azapps.mirakel.settings.ListSettings;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSetupActivity;
 import de.azapps.mirakelandroid.R;
@@ -56,6 +55,7 @@ public class AccountSettingsActivity extends ListSettings {
 							default:
 								break;
 						}
+								dialog.dismiss();
 					}
 				}).show();
 			}
@@ -144,11 +144,6 @@ public class AccountSettingsActivity extends ListSettings {
 						}).show();
 	}
 
-	private AccountMirakel newAccount() {
-		return AccountMirakel.newAccount(getString(R.string.sync_new),
-				ACCOUNT_TYPES.CALDAV, true);
-	}
-
 	@SuppressLint("NewApi")
 	@Override
 	public void onBuildHeaders(List<Header> target) {
@@ -205,12 +200,7 @@ public class AccountSettingsActivity extends ListSettings {
 					finish();
 					return true;
 				} else if (item.getTitle().equals(getString(R.string.add))) {
-					AccountMirakel s = newAccount();
-					Intent intent = new Intent(this,
-							AccountSettingsActivity.class);
-					intent.putExtra("id", s.getId());
-					startActivity(intent);
-					return true;
+					getAddOnClickListener().onClick(null);
 				}
 				break;
 		}

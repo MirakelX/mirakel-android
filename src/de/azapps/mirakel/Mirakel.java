@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  * 
- * Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
+ * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
  * 
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
  ******************************************************************************/
 package de.azapps.mirakel;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
@@ -34,6 +35,7 @@ import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Build;
+import android.os.Environment;
 import android.os.Looper;
 import android.util.Log;
 import android.view.Gravity;
@@ -78,22 +80,31 @@ import de.azapps.mirakelandroid.R;
 
 		)
 public class Mirakel extends Application {
+	// Public Constants
 	public static class NoSuchListException extends Exception {
 		static final long	serialVersionUID	= 1374828057;
 	}
 	public static class NoSuchTaskException extends Exception {
 		static final long	serialVersionUID	= 1374828058;
 	}
-	public static String			APK_NAME;
 	public static final String		AUTHORITY_TYP	= "de.azapps.mirakel.provider";
+	public static final int			NOTIF_DEFAULT	= 123,
+			NOTIF_REMINDER = 124;
+
+	public static final File exportDir = new File(
+	Environment.getExternalStorageDirectory(), "mirakel");
+	public static final String SYNC_FINISHED="de.azapps.mirakel.sync_finished";
+	
+	// Other stuff
+	
+	public static String			APK_NAME;
 
 	// FIXME move this somewhere else?
 	public static int				GRAVITY_LEFT, GRAVITY_RIGHT;
 
-	public static String			MIRAKEL_DIR;
+	public static boolean			IS_PLAYSTORE;
 
-	public static final int			NOTIF_DEFAULT	= 123,
-			NOTIF_REMINDER = 124;
+	public static String			MIRAKEL_DIR;
 	private static SQLiteOpenHelper	openHelper;
 	private static final String		TAG				= "Mirakel";
 
@@ -108,6 +119,7 @@ public class Mirakel extends Application {
 	public static SQLiteDatabase getWritableDatabase() {
 		return openHelper.getWritableDatabase();
 	}
+
 
 	@SuppressLint("InlinedApi")
 	@Override
@@ -131,9 +143,10 @@ public class Mirakel extends Application {
 			Log.wtf(TAG, "App not found");
 			VERSIONS_NAME = "";
 		}
+
 		// This we have to initialize as early as possible
 		MirakelPreferences.init(this);
-
+		IS_PLAYSTORE = getResources().getBoolean(R.bool.is_playstore);
 		Locale locale = Helpers.getLocal(this);
 		Locale.setDefault(locale);
 

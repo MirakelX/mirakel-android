@@ -42,7 +42,6 @@ import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
-import de.azapps.mirakel.sync.mirakel.MirakelSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.Log;
@@ -398,10 +397,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 							.getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL)[0];
 					String t = AccountManager.get(this.context).getUserData(a,
 							SyncAdapter.BUNDLE_SERVER_TYPE);
-					if (t.equals(MirakelSync.TYPE)) {
-						type = ACCOUNT_TYPES.MIRAKEL;
-						accountname = a.name;
-					} else if (t.equals(TaskWarriorSync.TYPE)) {
+					if (t.equals(TaskWarriorSync.TYPE)) {
 						type = ACCOUNT_TYPES.TASKWARRIOR;
 						accountname = a.name;
 					}

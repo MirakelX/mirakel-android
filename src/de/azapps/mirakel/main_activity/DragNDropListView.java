@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  * 
- * Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
+ * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
  * 
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -34,53 +34,116 @@ import de.azapps.tools.Log;
 
 public class DragNDropListView extends ListView {
 
-	private static final String TAG = "DragNDropListView";
+	public interface DragListener {
+		/**
+		 * Called when a drag is to be performed.
+		 * 
+		 * @param x
+		 *            - horizontal coordinate of MotionEvent.
+		 * @param y
+		 *            - verital coordinate of MotionEvent.
+		 * @param listView
+		 *            - the listView
+		 */
+		void onDrag(int x, int y, ListView listView);
 
-	boolean mDragMode;
+		/**
+		 * Called when a drag starts.
+		 * 
+		 * @param itemView
+		 *            - the view of the item to be dragged i.e. the drag view
+		 */
+		void onStartDrag(View itemView);
+
+		/**
+		 * Called when a drag stops. Any changes in onStartDrag need to be
+		 * undone here so that the view can be used in the list again.
+		 * 
+		 * @param itemView
+		 *            - the view of the item to be dragged i.e. the drag view
+		 */
+		void onStopDrag(View itemView);
+	}
+
+	public interface DropListener {
+
+		/**
+		 * Called when an item is to be dropped.
+		 * 
+		 * @param from
+		 *            - index item started at.
+		 * @param to
+		 *            - index to place item at.
+		 */
+		void onDrop(int from, int to);
+	}
+	public interface RemoveListener {
+
+		/**
+		 * Called when an item is to be removed
+		 * 
+		 * @param which
+		 *            - indicates which item to remove.
+		 */
+		void onRemove(int which);
+	}
+
+	private static final String TAG = "DragNDropListView";
+	protected boolean			allowRemove;
 	private boolean enableDrag;
 
-	int mStartPosition;
-	int mEndPosition;
-	int mDragPointOffset; // Used to adjust drag view location
-
-	ImageView mDragView;
-	GestureDetector mGestureDetector;
-
-	DropListener mDropListener;
-	RemoveListener mRemoveListener;
+	protected boolean			isSpecial;
 	DragListener mDragListener;
 
-	private boolean isSpecial;
+	protected boolean			mDragMode;
+	int mDragPointOffset; // Used to adjust drag view location
+	ImageView mDragView;
 
-	private boolean allowRemove;
+	DropListener mDropListener;
 
-	private int startX;
+	int mEndPosition;
 
-	@SuppressWarnings("unused")
-	private int startY;
+	GestureDetector mGestureDetector;
 
-	public void setEnableDrag(boolean enableDrag) {
-		this.enableDrag = enableDrag;
-	}
+	RemoveListener mRemoveListener;
+	int mStartPosition;
+
+	protected boolean			resetEndDrop;
+
+	protected int				startX;
+
+	protected int				startY;
+	private int					xOffset;
 
 	public DragNDropListView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-	}
-
-	public void setDropListener(DropListener l) {
-		mDropListener = l;
-	}
-
-	public void setRemoveListener(RemoveListener l) {
-		mRemoveListener = l;
-	}
-
-	public void setDragListener(DragListener l) {
-		mDragListener = l;
+		this.resetEndDrop = true;
 	}
 
 	public void allowRemove(boolean allow) {
 		this.allowRemove = allow;
+	}
+
+	// move the drag view
+	private void drag(int x, int y) {
+		if (this.mDragView != null) {
+			WindowManager.LayoutParams layoutParams = (WindowManager.LayoutParams) this.mDragView
+					.getLayoutParams();
+			layoutParams.x = this.allowRemove ? x : this.xOffset;
+			layoutParams.y = y - this.mDragPointOffset;
+			WindowManager mWindowManager = (WindowManager) getContext()
+					.getSystemService(Context.WINDOW_SERVICE);
+			mWindowManager.updateViewLayout(this.mDragView, layoutParams);
+			if (y > 8 / 9 * getHeight()
+					&& getChildCount() > getLastVisiblePosition()) {
+				smoothScrollToPosition(pointToPosition(x, y) + 1);
+			} else if (y < 3 / 9 * getHeight()) {
+				smoothScrollToPosition(pointToPosition(x, y) - 1);
+			}
+			if (this.mDragListener != null) {
+				this.mDragListener.onDrag(x, y, this);
+			}
+		}
 	}
 
 	@Override
@@ -88,90 +151,118 @@ public class DragNDropListView extends ListView {
 		final int action = ev.getAction();
 		final int x = (int) ev.getX();
 		final int y = (int) ev.getY();
-		if (action == MotionEvent.ACTION_DOWN && (x < this.getWidth() / 3
-				|| allowRemove)) {// width<~imagewidth
-			mDragMode = true;
+		if (action == MotionEvent.ACTION_DOWN
+				&& (x < getWidth() / 3
+				|| this.allowRemove)) {// width<~imagewidth
+			this.mDragMode = true;
 		}
-
-		if (!mDragMode || !enableDrag) {
-			return super.onTouchEvent(ev);
-		}
+		if (!this.mDragMode || !this.enableDrag) return super.onTouchEvent(ev);
 
 		switch (action) {
-		case MotionEvent.ACTION_DOWN:
-			mStartPosition = pointToPosition(x, y);
-			if (mStartPosition != INVALID_POSITION) {
-
-				int mItemPosition = mStartPosition - getFirstVisiblePosition();
-				if (mItemPosition < SpecialList.getSpecialListCount()
-						- getFirstVisiblePosition()) {
-					isSpecial = true;
-					// break;
-				} else {
-					isSpecial = false;
+			case MotionEvent.ACTION_DOWN:
+				if (!this.resetEndDrop) {
+					break;
 				}
-				Log.d(TAG, "" + mItemPosition);
-				mDragPointOffset = y - getChildAt(mItemPosition).getTop();
-				mDragPointOffset -= ((int) ev.getRawY()) - y;
-				startDrag(mItemPosition, y);
-				drag(0, y);
-			}
-			startX = x;
-			startY = y;
-			break;
-		case MotionEvent.ACTION_MOVE:
-			if (allowRemove)
-				drag(x, y);
-			else {
-				drag(0, y);
-			}
-			break;
-		case MotionEvent.ACTION_CANCEL:
-		case MotionEvent.ACTION_UP:
-		default:
-			mDragMode = false;
-			mEndPosition = pointToPosition(x, y);
-			stopDrag(mStartPosition - getFirstVisiblePosition());
-			if (mEndPosition < SpecialList.getSpecialListCount() && !isSpecial) {
-				mEndPosition = SpecialList.getSpecialListCount();
-				Log.d(TAG, "not special");
-			} else if (mEndPosition > SpecialList.getSpecialListCount()
-					&& isSpecial) {
-				mEndPosition = SpecialList.getSpecialListCount() - 1;
-				Log.d(TAG, "special");
-			}
-			if (mDropListener != null && mStartPosition != INVALID_POSITION
-					&& mEndPosition != INVALID_POSITION&&Math.abs(x - startX) <  getWidth() / 3) {
-				mDropListener.onDrop(mStartPosition, mEndPosition);
-			} else if (mRemoveListener != null
-					&& mStartPosition != INVALID_POSITION && allowRemove
-					&& Math.abs(x - startX) > 2 * getWidth() / 3) {
-				mRemoveListener.onRemove(mStartPosition);
-			}
-			break;
+				this.mStartPosition = pointToPosition(x, y);
+				if (this.mStartPosition != INVALID_POSITION) {
+
+					int mItemPosition = this.mStartPosition
+							- getFirstVisiblePosition();
+					if (mItemPosition < SpecialList.getSpecialListCount()
+							- getFirstVisiblePosition()) {
+						this.isSpecial = true;
+						// break;
+					} else {
+						this.isSpecial = false;
+					}
+					Log.d(TAG, "" + mItemPosition);
+					this.mDragPointOffset = y
+							- getChildAt(mItemPosition).getTop();
+					this.mDragPointOffset -= (int) ev.getRawY() - y;
+					startDrag(mItemPosition, y);
+					drag(0, y);
+				}
+				this.startX = x;
+				this.startY = y;
+				break;
+			case MotionEvent.ACTION_MOVE:
+				if (this.allowRemove) {
+					drag(x, y);
+				} else {
+					drag(0, y);
+				}
+				break;
+			case MotionEvent.ACTION_CANCEL:
+			case MotionEvent.ACTION_UP:
+			default:
+
+				this.mDragMode = false;
+				postDelayed(new Runnable() {
+
+					@Override
+					public void run() {
+						if (DragNDropListView.this.mDragMode == false) {
+							DragNDropListView.this.mEndPosition = pointToPosition(
+									x, y);
+							if (DragNDropListView.this.mStartPosition >= DragNDropListView.this.mEndPosition
+									&& y - DragNDropListView.this.startY > 0) {
+								DragNDropListView.this.mEndPosition=getLastVisiblePosition();
+							}
+							stopDrag(DragNDropListView.this.mStartPosition
+									- getFirstVisiblePosition());
+							if (DragNDropListView.this.mEndPosition < SpecialList.getSpecialListCount()
+									&& !DragNDropListView.this.isSpecial) {
+								DragNDropListView.this.mEndPosition = SpecialList.getSpecialListCount();
+								Log.d(TAG, "not special");
+							} else if (DragNDropListView.this.mEndPosition > SpecialList
+									.getSpecialListCount()
+									&& DragNDropListView.this.isSpecial) {
+								DragNDropListView.this.mEndPosition = SpecialList
+										.getSpecialListCount() - 1;
+								Log.d(TAG, "special");
+							}
+							if (DragNDropListView.this.mDropListener != null
+									&& DragNDropListView.this.mStartPosition != INVALID_POSITION
+									&& DragNDropListView.this.mEndPosition != INVALID_POSITION
+									&& Math.abs(x
+											- DragNDropListView.this.startX) < getWidth() / 3) {
+								DragNDropListView.this.mDropListener.onDrop(
+										DragNDropListView.this.mStartPosition,
+										DragNDropListView.this.mEndPosition);
+							} else if (DragNDropListView.this.mRemoveListener != null
+									&& DragNDropListView.this.mStartPosition != INVALID_POSITION
+									&& DragNDropListView.this.allowRemove
+									&& Math.abs(x
+											- DragNDropListView.this.startX) > 2 * getWidth() / 3) {
+								DragNDropListView.this.mRemoveListener
+								.onRemove(DragNDropListView.this.mStartPosition);
+							}
+							DragNDropListView.this.resetEndDrop = true;
+						}
+
+					}
+				}, 100);
+				break;
 		}
 		return true;
 	}
 
-	// move the drag view
-	private void drag(int x, int y) {
-		if (mDragView != null) {
-			WindowManager.LayoutParams layoutParams = (WindowManager.LayoutParams) mDragView
-					.getLayoutParams();
-			layoutParams.x = x;
-			layoutParams.y = y - mDragPointOffset;
-			WindowManager mWindowManager = (WindowManager) getContext()
-					.getSystemService(Context.WINDOW_SERVICE);
-			mWindowManager.updateViewLayout(mDragView, layoutParams);
-			if (y > (8 / 9) * getHeight()
-					&& getChildCount() > getLastVisiblePosition()) {
-				smoothScrollToPosition(pointToPosition(x, y) + 1);
-			} else if (y < (3 / 9) * getHeight()) {
-				smoothScrollToPosition(pointToPosition(x, y) - 1);
-			}
-			if (mDragListener != null)
-				mDragListener.onDrag(x, y, this);
-		}
+	public void setDragListener(DragListener l) {
+		this.mDragListener = l;
+	}
+
+	public void setDropListener(DropListener l) {
+		this.mDropListener = l;
+	}
+
+	public void setEnableDrag(boolean enableDrag) {
+		this.enableDrag = enableDrag;
+		this.resetEndDrop = true;
+		this.xOffset = -1 * getWidth() / 2 + getWidth() / 6;
+	}
+
+	public void setRemoveListener(RemoveListener l) {
+		this.mRemoveListener = l;
 	}
 
 	// enable the drag view for dragging
@@ -184,8 +275,9 @@ public class DragNDropListView extends ListView {
 		item.setDrawingCacheEnabled(true);
 		item.destroyDrawingCache();
 		item.buildDrawingCache();
-		if (mDragListener != null)
-			mDragListener.onStartDrag(item);
+		if (this.mDragListener != null) {
+			this.mDragListener.onStartDrag(item);
+		}
 
 		// Create a copy of the drawing cache so that it does not get recycled
 		// by the framework when the list tries to clean up memory
@@ -193,11 +285,11 @@ public class DragNDropListView extends ListView {
 
 		WindowManager.LayoutParams mWindowParams = new WindowManager.LayoutParams();
 		mWindowParams.gravity = Gravity.TOP;
-		mWindowParams.x = 0;
-		mWindowParams.y = y - mDragPointOffset;
+		mWindowParams.x = -this.xOffset;
+		mWindowParams.y = y - this.mDragPointOffset;
 
-		mWindowParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-		mWindowParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
+		mWindowParams.height = android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+		mWindowParams.width = android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 		mWindowParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
 				| WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
 				| WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
@@ -213,76 +305,22 @@ public class DragNDropListView extends ListView {
 		WindowManager mWindowManager = (WindowManager) context
 				.getSystemService(Context.WINDOW_SERVICE);
 		mWindowManager.addView(v, mWindowParams);
-		mDragView = v;
+		this.mDragView = v;
 	}
 
 	// destroy drag view
-	private void stopDrag(int itemIndex) {
-		if (mDragView != null) {
-			if (mDragListener != null)
-				mDragListener.onStopDrag(getChildAt(itemIndex));
-			mDragView.setVisibility(GONE);
+	protected void stopDrag(int itemIndex) {
+		if (this.mDragView != null) {
+			if (this.mDragListener != null) {
+				this.mDragListener.onStopDrag(getChildAt(itemIndex));
+			}
+			this.mDragView.setVisibility(GONE);
 			WindowManager wm = (WindowManager) getContext().getSystemService(
 					Context.WINDOW_SERVICE);
-			wm.removeView(mDragView);
-			mDragView.setImageDrawable(null);
-			mDragView = null;
+			wm.removeView(this.mDragView);
+			this.mDragView.setImageDrawable(null);
+			this.mDragView = null;
 		}
-	}
-
-	public interface DropListener {
-
-		/**
-		 * Called when an item is to be dropped.
-		 * 
-		 * @param from
-		 *            - index item started at.
-		 * @param to
-		 *            - index to place item at.
-		 */
-		void onDrop(int from, int to);
-	}
-
-	public interface DragListener {
-		/**
-		 * Called when a drag starts.
-		 * 
-		 * @param itemView
-		 *            - the view of the item to be dragged i.e. the drag view
-		 */
-		void onStartDrag(View itemView);
-
-		/**
-		 * Called when a drag is to be performed.
-		 * 
-		 * @param x
-		 *            - horizontal coordinate of MotionEvent.
-		 * @param y
-		 *            - verital coordinate of MotionEvent.
-		 * @param listView
-		 *            - the listView
-		 */
-		void onDrag(int x, int y, ListView listView);
-
-		/**
-		 * Called when a drag stops. Any changes in onStartDrag need to be
-		 * undone here so that the view can be used in the list again.
-		 * 
-		 * @param itemView
-		 *            - the view of the item to be dragged i.e. the drag view
-		 */
-		void onStopDrag(View itemView);
-	}
-
-	public interface RemoveListener {
-
-		/**
-		 * Called when an item is to be removed
-		 * 
-		 * @param which
-		 *            - indicates which item to remove.
-		 */
-		void onRemove(int which);
 	}
 
 }

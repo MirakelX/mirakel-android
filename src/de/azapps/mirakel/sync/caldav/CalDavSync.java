@@ -10,7 +10,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import de.azapps.mirakel.Mirakel;
-import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -144,12 +143,8 @@ public class CalDavSync {
 	}
 
 	private void saveTask(Task t) {
-		try {
-			t.setSyncState(SYNC_STATE.IS_SYNCED);
-			t.save(false);
-		} catch (NoSuchListException e) {
-			Log.wtf(TAG, "List did vanish");
-		}
+		t.setSyncState(SYNC_STATE.IS_SYNCED);
+		t.safeSave(false);
 	}
 
 	// Generate VTODO string

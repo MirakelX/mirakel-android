@@ -2,7 +2,7 @@
 <!--
   Mirakel is an Android App for Managing your ToDo-Lists
   
-  Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
+  Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
   
       This program is free software: you can redistribute it and/or modify
       it under the terms of the GNU General Public License as published by
@@ -102,6 +102,11 @@
     <plurals name="file">
         <item quantity="one">One File</item>
         <item quantity="other">%d Files</item>
+    </plurals>
+    
+    <plurals name="dev_toast">
+        <item quantity="one">You are now %1$d step away from %2$s development settings.</item>
+        <item quantity="other">You are now %1$d steps away from %2$s development settings.</item>
     </plurals>
 
 </resources>

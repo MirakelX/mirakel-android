@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  * 
- * Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
+ * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
  * 
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -37,15 +37,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
-import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
 
 public class WunderlistImport {
-	private static final String TAG = "WunderlistImport";
-	private static Map<String, Integer> taskMapping;
+	private static final String			TAG	= "WunderlistImport";
+	private static Map<String, Integer>	taskMapping;
 
 	public static Boolean exec(Context ctx, String file_path) {
 		String json;
@@ -98,8 +97,7 @@ public class WunderlistImport {
 		return true;
 	}
 
-	private static Map<String, Integer> parseList(JsonObject jsonList,
-			Map<String, Integer> listMapping) {
+	private static Map<String, Integer> parseList(JsonObject jsonList, Map<String, Integer> listMapping) {
 		String name = jsonList.get("title").getAsString();
 		String id = jsonList.get("id").getAsString();
 		ListMirakel l = ListMirakel.newList(name);
@@ -114,11 +112,9 @@ public class WunderlistImport {
 	/**
 	 * <Subtask, id of parent>
 	 */
-	private static List<Pair<Task, String>> subtasks = new ArrayList<Pair<Task, String>>();
+	private static List<Pair<Task, String>>	subtasks	= new ArrayList<Pair<Task, String>>();
 
-	private static List<Pair<Integer, String>> parseTask(JsonObject jsonTask,
-			Map<String, Integer> listMapping,
-			List<Pair<Integer, String>> contents, Context ctx) {
+	private static List<Pair<Integer, String>> parseTask(JsonObject jsonTask, Map<String, Integer> listMapping, List<Pair<Integer, String>> contents, Context ctx) {
 		String name = jsonTask.get("title").getAsString();
 		String list_id_string = jsonTask.get("list_id").getAsString();
 		Integer listId = listMapping.get(list_id_string);
@@ -160,11 +156,7 @@ public class WunderlistImport {
 			subtasks.add(new Pair<Task, String>(t, jsonTask.get("parent_id")
 					.getAsString()));
 		}
-		try {
-			t.save();
-		} catch (NoSuchListException e) {
-			Log.wtf(TAG, "list did vanish");
-		}
+		t.safeSave(false);
 		return contents;
 	}
 }

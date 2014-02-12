@@ -1,7 +1,7 @@
 <!--
   Mirakel is an Android App for Managing your ToDo-Lists
   
-  Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
+  Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
   
       This program is free software: you can redistribute it and/or modify
       it under the terms of the GNU General Public License as published by
@@ -46,7 +46,6 @@
     <dimen name="done_label_size">14sp</dimen>
     <dimen name="date_picker_component_width">270dip</dimen>
     <dimen name="date_picker_header_height">30dip</dimen>
-    <dimen name="selected_calendar_layout_height">155dip</dimen>
     <dimen name="date_picker_view_animator_height">270dip</dimen>
     <dimen name="month_list_item_header_height">50dip</dimen>
     <dimen name="month_day_label_text_size">10sp</dimen>

@@ -5,8 +5,8 @@
   <string name="action_settings">Instellingen</string>
   <string name="action_contact">Contact / meld een probleem</string>
   <string name="action_contact_summary">Schrijf ons een E-mail!</string>
-  <string name="no_date">Geen uiterste termijn</string>
-  <string name="no_reminder">Een herinnering instellen</string>
+  <string name="no_date">Geen termijn</string>
+  <string name="no_reminder">Herinnering instellen</string>
   <string name="no_lists">De taak kan niet worden gesynchroniseerd, omdat er geen lijst is</string>
   <string name="speak">Spreek</string>
   <string name="takePhoto">Neem een foto</string>
@@ -27,18 +27,18 @@
   <string name="tasks_new_str">Nieuwe taak</string>
   <string name="task_change_prio_title">Wijzig prioriteit</string>
   <string name="task_delete_content">Bent u zeker dat u %s wil verwijderen?</string>
-  <string name="task_menu_sorting">taken sorteren</string>
-  <string name="task_sorting_title">taken sorteren volgens</string>
-  <string name="task_empty">geen taak geselecteerd…</string>
+  <string name="task_menu_sorting">Sorteer taken</string>
+  <string name="task_sorting_title">Sorteer taken op</string>
+  <string name="task_empty">geen taak geselecteerd&#8230;</string>
   <string name="set_date">Datum instellen</string>
   <string name="set_time">Tijd instellen</string>
-  <string name="action_undo">Maak de laatste wijziging ongedaan</string>
-  <string name="add_subtasks">Subtaak toevoegen…</string>
+  <string name="action_undo">Laatste ongedaan maken</string>
+  <string name="add_subtasks">Subtaak toevoegen&#8230;</string>
   <string name="subtask_list_name">Subtaken</string>
-  <string name="remove_files">Bijlage van de taak verwijderen</string>
+  <string name="remove_files">Verwijder taakbijlage</string>
   <string name="remove_files_summary">Wilt u %1$s van %2$s verwijderen?</string>
   <string name="add_subtask">Subtaak toevoegen</string>
-  <string name="remove_subtask">Subtaak verwijderen</string>
+  <string name="remove_subtask">Verwijder subtaak</string>
   <string name="subtask_add_options">Filter &gt;&gt;</string>
   <string name="subtask_done">Taak afronden?</string>
   <string name="subtask_reminder">Taak met herinnering?</string>
@@ -50,7 +50,7 @@
   <string name="no_loop">Subtaak kan geen lus vormen</string>
   <string name="as_subtask">Bij taak toevoegen</string>
   <string name="task_clone">Kloon taak</string>
-  <string name="dialog_move">Taak verplaatsen</string>
+  <string name="dialog_move">Verplaats taak</string>
   <string name="list_title">Lijsten</string>
   <string name="list_menu_new_list">Nieuwe lijst</string>
   <string name="list_change_name_cont">Nieuwe lijst titel</string>
@@ -63,7 +63,7 @@
   <string name="menu_delete_list">Verwijder lijst</string>
   <string name="menu_delete_task">Verwijder taak</string>
   <string name="menu_settings">Instellingen</string>
-  <string name="menu_move_task">Taak verplaatsen</string>
+  <string name="menu_move_task">Verplaats taak</string>
   <string name="menu_edit_task">Taak bewerken</string>
   <string name="menu_edit_list">Lijst hernoemen</string>
   <string name="menu_do_task">Taak instellen als afgerond</string>
@@ -82,8 +82,8 @@
   <string name="reminder_notification_later">Later</string>
   <string name="reminder_notification_done_confirm">De taak is \"afgerond\"</string>
   <string name="reminder_notification_later_confirm">Ik tip je in %d minuten</string>
-  <string name="list_vanished">De taak is verdwenen. Het spijt me…</string>
-  <string name="task_vanished">De lijst van de taak is verdwenen. Het spijt me…</string>
+  <string name="list_vanished">De taak is verdwenen. Het spijt me&#8230;</string>
+  <string name="task_vanished">De lijst van de taak is verdwenen. Het spijt me&#8230;</string>
   <string name="message_try_later">Probeer de synchronisatie later opnieuw</string>
   <string name="message_access_denied">Toegang geweigerd!\nIs de goede config file gebruikt?</string>
   <string name="message_create_socket">De aansluiting kan niet worden gemaakt!\nStaat de netwerk verbinding aan?</string>
@@ -102,11 +102,11 @@
 vereist. Aub probeer opnieuw.</string>
   <string name="login_activity_loginfail_text_pwmissing">Typ het paswoord voor dit account.</string>
   <string name="login_activity_newaccount_text">Login bij uw %s-account. </string>
-  <string name="ui_activity_authenticating">Verificatie…</string>
+  <string name="ui_activity_authenticating">Verificatie&#8230;</string>
   <string name="changelog_full_title">Logboekwijzigingen</string>
   <string name="changelog_title">Wat is nieuw</string>
   <string name="changelog_ok_button">OK</string>
-  <string name="changelog_show_full">meer…</string>
+  <string name="changelog_show_full">meer&#8230;</string>
   <string name="share_using">Deel met</string>
   <string name="share_task">Deel taak</string>
   <string name="share_task_title_with_date">%1$s (%2$s)</string>
@@ -127,12 +127,12 @@ SDK-version: %2$d\n
 Device: %3$s\n]]>
     </string>
   <string name="contact_no_client">Geen E-mail cliënt ingesteld</string>
-  <string name="contact_chooser">E-mail verzenden…</string>
+  <string name="contact_chooser">E-mail verzenden&#8230;</string>
   <string name="backup_import_error">Er is een fout opgetreden bij het importeren van het reservekopie</string>
   <string name="backup_import_ok">Herstart Mirakel - het importeren is geslaagd</string>
   <string name="backup_export_error">Er is een fout opgetreden bij het exporteren van de reservekopie</string>
   <string name="backup_export_ok">Exporteren naar %s</string>
-  <string name="add_content">Notitie toevoegen…</string>
+  <string name="add_content">Notitie toevoegen&#8230;</string>
   <string name="task_has_content">Taak met notitie</string>
   <string name="permission_group_desc">Toestemming voor toegang Mirakel</string>
   <string name="permission_group_lbl">Mirakel toestemming</string>
@@ -151,7 +151,7 @@ Device: %3$s\n]]>
   <string name="list_change_color">Kleur wijzigen</string>
   <string name="set_color">Kleur instellen</string>
   <string name="unset_color">Geen kleur</string>
-  <string name="add_files">Bestand toevoegen…</string>
+  <string name="add_files">Bestand toevoegen&#8230;</string>
   <string name="file_no_activity">Ik weet niet hoe dit bestand kan worden geopend – sorry</string>
   <string name="file_select">bestand selecteren</string>
   <string name="file_vanished">Een dergelijk bestand is niet aanwezig</string>
@@ -162,7 +162,7 @@ Device: %3$s\n]]>
   <string name="audio_record_title">Audio opname...</string>
   <string name="audio_record_message">Opname...</string>
   <string name="audio_playback_title">
-Audio afspelen…</string>
+Audio afspelen&#8230;</string>
   <string name="audio_playback_select_title">Wat wilt u doen?</string>
   <string name="audio_playback_pause">Pauze</string>
   <string name="audio_playback_play">Spelen</string>

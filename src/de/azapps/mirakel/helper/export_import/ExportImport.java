@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  * 
- * Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
+ * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
  * 
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -43,10 +43,9 @@ import org.xml.sax.SAXException;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Environment;
 import android.widget.Toast;
 import au.com.bytecode.opencsv.CSVReader;
-import de.azapps.mirakel.Mirakel.NoSuchListException;
+import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
@@ -55,14 +54,12 @@ import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 
 public class ExportImport {
-	private static final File dbFile = new File(FileUtils.getMirakelDir()
-			+ "databases/mirakel.db");
-	private static final String TAG = "ExportImport";
-	private static final File exportDir = new File(
-			Environment.getExternalStorageDirectory(), "mirakel");
+	private static final File	dbFile	= new File(FileUtils.getMirakelDir()
+												+ "databases/mirakel.db");
+	private static final String	TAG		= "ExportImport";
 
 	public static File getBackupDir() {
-		return exportDir;
+		return Mirakel.exportDir;
 	}
 
 	@SuppressLint("SimpleDateFormat")
@@ -71,10 +68,10 @@ public class ExportImport {
 		Date today = new Date();
 		DateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");// SimpleDateFormat.getDateInstance();
 		String filename = "mirakel_" + sdf.format(today) + ".db";
-		final File file = new File(exportDir, filename);
+		final File file = new File(Mirakel.exportDir, filename);
 
-		if (!exportDir.exists()) {
-			exportDir.mkdirs();
+		if (!Mirakel.exportDir.exists()) {
+			Mirakel.exportDir.mkdirs();
 		}
 		try {
 			file.createNewFile();
@@ -190,20 +187,20 @@ public class ExportImport {
 					int prio = Integer.parseInt(m.getNamedItem("importance")
 							.getTextContent());
 					switch (prio) {
-					case 0:
-						t.setPriority(2);
-						break;
-					case 1:
-						t.setPriority(1);
-						break;
-					case 2:
-						t.setPriority(0);
-						break;
-					case 3:
-						t.setPriority(-2);
-						break;
-					default:
-						t.setPriority(0);
+						case 0:
+							t.setPriority(2);
+							break;
+						case 1:
+							t.setPriority(1);
+							break;
+						case 2:
+							t.setPriority(0);
+							break;
+						case 3:
+							t.setPriority(-2);
+							break;
+						default:
+							t.setPriority(0);
 					}
 					// Due
 					long due = Long.parseLong(m.getNamedItem("dueDate")
@@ -229,12 +226,7 @@ public class ExportImport {
 					String content = m.getNamedItem("notes").getTextContent();
 					t.setContent(content.trim());
 					// TODO Reminder
-					try {
-						t.save(false);
-					} catch (NoSuchListException e) {
-						Log.wtf(TAG, "List did vanish");
-					}
-
+					t.safeSave(false);
 				} else {
 					Log.w(TAG, "empty node");
 				}
@@ -304,13 +296,7 @@ public class ExportImport {
 				t.setPriority(priority);
 				t.setDue(due);
 				t.setDone(done);
-				try {
-					t.save();
-				} catch (NoSuchListException e) {
-					Log.wtf(TAG, "List vanished while Import!?!?");
-					Toast.makeText(context, R.string.list_vanished,
-							Toast.LENGTH_LONG).show();
-				}
+				t.safeSave(false);
 				Log.v(TAG, "created task:" + name);
 
 			}
@@ -324,8 +310,7 @@ public class ExportImport {
 		return true;
 	}
 
-	public static String getStringFromFile(String path, Context ctx)
-			throws IOException {
+	public static String getStringFromFile(String path, Context ctx) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader(path));
 		StringBuilder sb = new StringBuilder();
 		String line = br.readLine();

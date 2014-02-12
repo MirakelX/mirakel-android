@@ -1,10 +1,12 @@
 package de.azapps.mirakel.sync.taskwarrior;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.MalformedInputException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +20,10 @@ import android.content.Context;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
+import de.azapps.mirakel.helper.Helpers;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
@@ -101,30 +106,29 @@ public class TaskWarriorSync {
 			return NO_ERROR;
 		}
 	}
+
 	// Outgoing.
 	// private static int _debug_level = 0;
 	// private static int _limit = (1024 * 1024);
-	private static String				_host				= "localhost";
-	private static String				_key				= "";
-	private static String				_org				= "";
-	private static int					_port				= 6544;
-	private static String				_user				= "";
+	private static String		_host				= "localhost";
+	private static String		_key				= "";
+	private static String		_org				= "";
+	private static int			_port				= 6544;
+	private static String		_user				= "";
 
-	public static final String			CA_FILE				= FileUtils
-			.getMirakelDir()
-			+ "ca.cert.pem";
-	public static final String			CLIENT_CERT_FILE	= FileUtils
-			.getMirakelDir()
-			+ "client.cert.pem";
-	public static final String			CLIENT_KEY_FILE		= FileUtils
-			.getMirakelDir()
-			+ "client.key.pem";
+	public static final String	CA_FILE				= FileUtils.getMirakelDir()
+															+ "ca.cert.pem";
+	public static final String	CLIENT_CERT_FILE	= FileUtils.getMirakelDir()
+															+ "client.cert.pem";
+	public static final String	CLIENT_KEY_FILE		= FileUtils.getMirakelDir()
+															+ "client.key.pem";
 	public static final String	NO_PROJECT			= "NO_PROJECT";
-	private static File					root;
-	private static final String			TAG					= "TaskWarroirSync";
-	public static final String			TYPE				= "TaskWarrior";
-	private static File					user_ca;
-	private static File					user_key;
+	private static File			root;
+	private static final String	TAG					= "TaskWarroirSync";
+	public static final String	TYPE				= "TaskWarrior";
+	private static File			user_ca;
+	private static File			user_key;
+
 	/**
 	 * Handle an error
 	 * 
@@ -135,6 +139,11 @@ public class TaskWarriorSync {
 		Log.e(TAG, what + " (Code: " + code + ")");
 		// Toast.makeText(mContext, what, Toast.LENGTH_SHORT).show();
 	}
+
+	private static String escape(String string) {
+		return string.replace("\"", "\\\"");
+	}
+
 	public static void longInfo(String str) {
 		if (str.length() > 4000) {
 			Log.i(TAG, str.substring(0, 4000));
@@ -143,13 +152,14 @@ public class TaskWarriorSync {
 			Log.i(TAG, str);
 		}
 	}
+
 	private Account						account;
 
 	private AccountManager				accountManager;
 
 	private HashMap<String, String[]>	dependencies;
 
-	private final Context						mContext;
+	private final Context				mContext;
 
 	public TaskWarriorSync(Context ctx) {
 		this.mContext = ctx;
@@ -170,7 +180,20 @@ public class TaskWarriorSync {
 		client.send(sync.serialize());
 
 		String response = client.recv();
-		// FileUtils.writeToFile(new File("/sdcard/mirakel.log"), response);
+		if (MirakelPreferences.isEnabledDebugMenu()
+				&& MirakelPreferences.isDumpTw()) {
+			try {
+				FileUtils.writeToFile(
+						new File(Mirakel.exportDir, new SimpleDateFormat(
+								"dd-MM-yyyy_hh-mm-ss", Helpers
+										.getLocal(this.mContext))
+								.format(new Date())
+								+ ".tw_down.log"), response);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
 
 		// longInfo(response);
 		Msg remotes = new Msg();
@@ -179,6 +202,9 @@ public class TaskWarriorSync {
 		} catch (MalformedInputException e) {
 			Log.e(TAG, "cannot parse Message");
 			return TW_ERRORS.CANNOT_PARSE_MESSAGE;
+		} catch (NullPointerException e) {
+			Log.wtf(TAG, "remotes.pars throwed NullPointer");
+			return TW_ERRORS.CANNOT_PARSE_MESSAGE;
 		}
 		int code = Integer.parseInt(remotes.get("code"));
 		TW_ERRORS error = TW_ERRORS.getError(code);
@@ -186,7 +212,8 @@ public class TaskWarriorSync {
 
 		if (remotes.get("status").equals("Client sync key not found.")) {
 			Log.d(TAG, "reset sync-key");
-			this.accountManager.setUserData(a, SyncAdapter.TASKWARRIOR_KEY, null);
+			this.accountManager.setUserData(a, SyncAdapter.TASKWARRIOR_KEY,
+					null);
 			sync(a);
 		}
 
@@ -198,8 +225,8 @@ public class TaskWarriorSync {
 			for (String taskString : tasksString) {
 				if (taskString.charAt(0) != '{') {
 					Log.d(TAG, "Key: " + taskString);
-					this.accountManager.setUserData(a, SyncAdapter.TASKWARRIOR_KEY,
-							taskString);
+					this.accountManager.setUserData(a,
+							SyncAdapter.TASKWARRIOR_KEY, taskString);
 					continue;
 				}
 				JsonObject taskObject;
@@ -210,9 +237,9 @@ public class TaskWarriorSync {
 							.getAsJsonObject();
 					Log.i(TAG, taskString);
 					server_task = Task.parse_json(taskObject, accountMirakel);
-					if (server_task.getList()==null||
-							server_task.getList().getAccount().getId() != accountMirakel
-							.getId()) {
+					if (server_task.getList() == null
+							|| server_task.getList().getAccount().getId() != accountMirakel
+									.getId()) {
 						ListMirakel list = ListMirakel
 								.getInboxList(accountMirakel);
 						server_task.setList(list, false);
@@ -247,12 +274,7 @@ public class TaskWarriorSync {
 				} else {
 					server_task.setId(local_task.getId());
 					Log.d(TAG, "update " + server_task.getName());
-					try {
-						server_task.save();
-					} catch (NoSuchListException e) {
-						// Should not happen, because the list should be created
-						// while parsing the task
-					}
+					server_task.safeSave();
 				}
 			}
 		}
@@ -306,7 +328,8 @@ public class TaskWarriorSync {
 		_host = srv[0];
 		_port = Integer.parseInt(srv[1]);
 		_user = this.account.name;
-		_org = this.accountManager.getUserData(this.account, SyncAdapter.BUNDLE_ORG);
+		_org = this.accountManager.getUserData(this.account,
+				SyncAdapter.BUNDLE_ORG);
 		_key = this.accountManager.getPassword(this.account);
 		TaskWarriorSync.root = r;
 		TaskWarriorSync.user_ca = user_cert;
@@ -371,6 +394,18 @@ public class TaskWarriorSync {
 		// Build sync-request
 
 		sync.setPayload(payload);
+		if (MirakelPreferences.isDumpTw()) {
+			try {
+				FileWriter f = new FileWriter(new File(Mirakel.exportDir,
+						new SimpleDateFormat("dd-MM-yyyy_hh-mm-ss", Helpers
+								.getLocal(this.mContext)).format(new Date())
+								+ ".tw_up.log"));
+				f.write(payload);
+				f.close();
+			} catch (Exception e) {
+
+			}
+		}
 		TW_ERRORS error = doSync(a, sync);
 		if (error == TW_ERRORS.NO_ERROR) {
 			Log.w(TAG, "clear sync state");
@@ -391,15 +426,14 @@ public class TaskWarriorSync {
 	 * @return
 	 */
 	public String taskToJson(Task task) {
-		String end=null;
+		String end = null;
 		String status = "pending";
-		if (task.getSyncState() == SYNC_STATE.DELETE){
+		if (task.getSyncState() == SYNC_STATE.DELETE) {
 			status = "deleted";
-			end=formatCal(new GregorianCalendar());
-		}
-		else if (task.isDone()){
+			end = formatCal(new GregorianCalendar());
+		} else if (task.isDone()) {
 			status = "completed";
-			end=formatCal(new GregorianCalendar());
+			end = formatCal(new GregorianCalendar());
 		}
 		Log.i(TAG, "Status waiting / recurring is not implemented now");
 		// TODO
@@ -425,7 +459,7 @@ public class TaskWarriorSync {
 		json += "\"uuid\":\"" + task.getUUID() + "\"";
 		json += ",\"status\":\"" + status + "\"";
 		json += ",\"entry\":\"" + formatCal(task.getCreatedAt()) + "\"";
-		json += ",\"description\":\"" + task.getName() + "\"";
+		json += ",\"description\":\"" + escape(task.getName()) + "\"";
 		if (task.getDue() != null) {
 			json += ",\"due\":\"" + formatCal(task.getDue()) + "\"";
 		}
@@ -441,17 +475,17 @@ public class TaskWarriorSync {
 		if (task.getReminder() != null) {
 			json += ",\"reminder\":\"" + formatCal(task.getReminder()) + "\"";
 		}
-		if(end!=null) {
-			json+=",\"end\":\"" + end + "\"";
+		if (end != null) {
+			json += ",\"end\":\"" + end + "\"";
 		}
+		json += ",\"progress\":" + task.getProgress();
 		// Annotations
 		if (task.getContent() != null && !task.getContent().equals("")) {
 			json += ",\"annotations\":[";
 			/*
 			 * An annotation in taskd is a line of content in Mirakel!
 			 */
-			String annotations[] = task.getContent().replace("\"", "\\\"")
-					.split("\n");
+			String annotations[] = escape(task.getContent()).split("\n");
 			boolean first = true;
 			Calendar d = task.getUpdatedAt();
 			for (String a : annotations) {
@@ -460,9 +494,9 @@ public class TaskWarriorSync {
 				} else {
 					json += ",";
 				}
-				json += "{\"entry\":\"" + formatCal(d)
-						+ "\",";
-				json += "\"description\":\"" + a + "\"}";
+				json += "{\"entry\":\"" + formatCal(d) + "\",";
+				json += "\"description\":\"" + a.trim().replace("\n", "")
+						+ "\"}";
 				d.add(Calendar.SECOND, 1);
 			}
 			json += "]";

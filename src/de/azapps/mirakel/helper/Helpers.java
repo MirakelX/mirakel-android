@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  * 
- * Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
+ * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
  * 
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -99,12 +99,12 @@ public class Helpers {
 		}
 	}
 
-	// public static Locale getLocal() {
-	// String current = MirakelPreferences.getLanguage();
-	// Log.d(TAG, "LOCALE: " + current);
-	// return current.equals("-1") ? Locale.getDefault() : new Locale(current);
-	//
-	// }
+	public static int getHighlightedColor(Context ctx) {
+		if (MirakelPreferences.isDark())
+			return ctx.getResources().getColor(
+					R.color.highlighted_text_holo_dark);
+		return ctx.getResources().getColor(R.color.highlighted_text_holo_light);
+	}
 
 	public static Locale getLocal(Context ctx) {
 
@@ -115,11 +115,11 @@ public class Helpers {
 		Configuration config = new Configuration();
 		config.locale = locale;
 		ctx.getApplicationContext()
-				.getResources()
-				.updateConfiguration(
-						config,
-						ctx.getApplicationContext().getResources()
-								.getDisplayMetrics());
+		.getResources()
+		.updateConfiguration(
+				config,
+				ctx.getApplicationContext().getResources()
+				.getDisplayMetrics());
 		return locale;
 
 	}
@@ -201,7 +201,7 @@ public class Helpers {
 
 	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
-	public static void setListColorBackground(ListMirakel list, View row, boolean darkTheme, int w) {
+	public static void setListColorBackground(ListMirakel list, View row, int w) {
 
 		int color;
 		if (list == null) {
@@ -210,7 +210,7 @@ public class Helpers {
 			color = list.getColor();
 		}
 		if (color != 0) {
-			if (darkTheme) {
+			if (MirakelPreferences.isDark()) {
 				color ^= 0x66000000;
 			} else {
 				color ^= 0xCC000000;

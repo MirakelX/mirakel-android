@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  * 
- * Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
+ * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
  * 
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -36,10 +36,10 @@ import de.azapps.tools.Log;
 
 @SuppressLint("NewApi")
 public class TaskFragmentSettingsFragment extends Fragment {
-	private final static String TAG = "de.azapps.mirakel.settings.taskfragment.TaskFragmentSettings";
-	private DragNDropListView listView;
-	private TaskFragmentSettingsAdapter adapter;
 	public static final int ADD_KEY=-1;
+	private final static String TAG = "de.azapps.mirakel.settings.taskfragment.TaskFragmentSettings";
+	private TaskFragmentSettingsAdapter adapter;
+	private DragNDropListView listView;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -59,25 +59,24 @@ public class TaskFragmentSettingsFragment extends Fragment {
 		final List<Integer> values = MirakelPreferences.getTaskFragmentLayout();
 		values.add(ADD_KEY);
 
-		if (adapter != null) {
-			adapter.changeData(values);
-			adapter.notifyDataSetChanged();
+		if (this.adapter != null) {
+			this.adapter.changeData(values);
+			this.adapter.notifyDataSetChanged();
 			return;
 		}
 
-		adapter = new TaskFragmentSettingsAdapter(getActivity(),
+		this.adapter = new TaskFragmentSettingsAdapter(getActivity(),
 				R.layout.row_taskfragment_settings, values);
-		listView = (DragNDropListView) v.findViewById(R.id.taskfragment_list);
-		listView.setEnableDrag(true);
-		listView.setItemsCanFocus(true);
-		listView.setAdapter(adapter);
-		listView.requestFocus();
-		listView.setDragListener(new DragNDropListView.DragListener() {
+		this.listView = (DragNDropListView) v.findViewById(R.id.taskfragment_list);
+		this.listView.setEnableDrag(true);
+		this.listView.setItemsCanFocus(true);
+		this.listView.setAdapter(this.adapter);
+		this.listView.requestFocus();
+		this.listView.setDragListener(new DragNDropListView.DragListener() {
 
 			@Override
-			public void onStopDrag(View itemView) {
-				itemView.setVisibility(View.VISIBLE);
-
+			public void onDrag(int x, int y, ListView l) {
+				// Nothing
 			}
 
 			@Override
@@ -87,38 +86,40 @@ public class TaskFragmentSettingsFragment extends Fragment {
 			}
 
 			@Override
-			public void onDrag(int x, int y, ListView l) {
-				// Nothing
+			public void onStopDrag(View itemView) {
+				itemView.setVisibility(View.VISIBLE);
+
 			}
 		});
-		listView.setDropListener(new DragNDropListView.DropListener() {
+		this.listView.setDropListener(new DragNDropListView.DropListener() {
 
 			@Override
 			public void onDrop(int from, int to) {
-				if (from != to&&to!=listView.getCount()-1) {
-					adapter.onDrop(from, to);
-					listView.requestLayout();
+				if (from != to&&to!=TaskFragmentSettingsFragment.this.listView.getCount()-1) {
+					TaskFragmentSettingsFragment.this.adapter.onDrop(from, to);
+					TaskFragmentSettingsFragment.this.listView.requestLayout();
 				}
 				Log.e(TAG, "Drop from:" + from + " to:" + to);
 
 			}
 		});
 
-		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+		this.listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View item,
 					int position, long id) {
 			}
 		});
-		listView.setRemoveListener(new RemoveListener() {
-			
+		this.listView.setRemoveListener(new RemoveListener() {
+
 			@Override
 			public void onRemove(int which) {
-				if(which!=adapter.getCount()-1)
-					adapter.onRemove(which);				
+				if(which!=TaskFragmentSettingsFragment.this.adapter.getCount()-1) {
+					TaskFragmentSettingsFragment.this.adapter.onRemove(which);
+				}
 			}
 		});
-		listView.allowRemove(true);
+		this.listView.allowRemove(true);
 	}
 
 }

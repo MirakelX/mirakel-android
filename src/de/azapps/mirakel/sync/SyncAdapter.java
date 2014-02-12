@@ -41,14 +41,15 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SyncResult;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.sync.caldav.CalDavSync;
-import de.azapps.mirakel.sync.mirakel.MirakelSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync.TW_ERRORS;
 import de.azapps.mirakelandroid.R;
@@ -114,32 +115,39 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		mContext = context;
 		mNotificationManager = (NotificationManager) mContext
 				.getSystemService(Context.NOTIFICATION_SERVICE);
-
 	}
 
 	@Override
 	public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
+		// Mostly it is annoying if there is a notification. So don't show it
+		boolean showNotification = false;
+		// But if the user actively clicks on "sync" – then show it.
+		if (extras.containsKey(ContentResolver.SYNC_EXTRAS_MANUAL))
+			showNotification = true;
+
 		Log.v(TAG, "SyncAdapter");
-		Intent intent = new Intent(mContext,
-				MainActivity.class);
+		Intent intent = new Intent(mContext, MainActivity.class);
 		intent.setAction(MainActivity.SHOW_LISTS);
 		PendingIntent p = PendingIntent.getService(mContext, 0, intent, 0);
+
 		NotificationCompat.Builder mNB = new NotificationCompat.Builder(
 				mContext).setContentTitle("Mirakel").setContentText("Sync")
 				.setSmallIcon(android.R.drawable.stat_notify_sync)
-				.setWhen(System.currentTimeMillis()).setOngoing(true).setContentIntent(p);
-		mNotificationManager.notify(notifyID, mNB.build());
+				.setWhen(System.currentTimeMillis()).setOngoing(true)
+				.setContentIntent(p);
+		if (showNotification)
+			mNotificationManager.notify(notifyID, mNB.build());
 
 		String type = (AccountManager.get(mContext)).getUserData(account,
 				BUNDLE_SERVER_TYPE);
-		if (type == null) type = MirakelSync.TYPE;
-		if (type.equals(MirakelSync.TYPE)) {
-			new MirakelSync(mContext).sync(account);
-		} else if (type.equals(TaskWarriorSync.TYPE)) {
+		boolean success = false;
+		if (type == null) type = TaskWarriorSync.TYPE;
+		if (type.equals(TaskWarriorSync.TYPE)) {
 			TW_ERRORS error = new TaskWarriorSync(mContext).sync(account);
 			switch (error) {
 				case NO_ERROR:
 					last_message = mContext.getText(R.string.finish_sync);
+					success = true;
 					break;
 				case TRY_LATER:
 					last_message = mContext.getText(R.string.message_try_later);
@@ -172,8 +180,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					return;
 
 			}
-			// Looper.prepare();
-			// Toast.makeText(mContext, last_message, Toast.LENGTH_LONG).show();
 			Log.d(TAG, "finish Sync");
 		} else if (type.equals(CalDavSync.TYPE)) {
 			new CalDavSync(mContext).sync(account);
@@ -181,14 +187,19 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			Log.wtf(TAG, "Unknown SyncType");
 		}
 		mNotificationManager.cancel(notifyID);
-		mNB = new NotificationCompat.Builder(mContext)
-				.setContentTitle(
-						"Mirakel: " + mContext.getText(R.string.finish_sync))
-				.setContentText(last_message)
-				.setSmallIcon(android.R.drawable.stat_notify_sync)
-				.setPriority(NotificationCompat.PRIORITY_LOW)
-				.setContentIntent(p);
-		mNotificationManager.notify(notifyID, mNB.build());
+		if (showNotification && !success) {
+			mNB = new NotificationCompat.Builder(mContext)
+					.setContentTitle(
+							"Mirakel: "
+									+ mContext.getText(R.string.finish_sync))
+					.setContentText(last_message)
+					.setSmallIcon(android.R.drawable.stat_notify_sync)
+					.setPriority(NotificationCompat.PRIORITY_LOW)
+					.setContentIntent(p);
+			mNotificationManager.notify(notifyID, mNB.build());
+		}
+		Intent i = new Intent(Mirakel.SYNC_FINISHED);
+		mContext.sendBroadcast(i);
 	}
 
 	public static CharSequence getLastMessage() {

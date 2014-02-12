@@ -18,6 +18,7 @@
   <string name="donations__alert_dialog_title">Fout opgetreden</string>
   <string name="donations__alert_dialog_no_browser">Geen browser werd gevonden om een website te openen!</string>
   <string name="donation_paypal_item">Mirakel donatie</string>
+  <string name="title_donations">Doneer</string>
   <string-array name="donation_google_catalog_values">
     <item>0,5 Euro</item>
     <item>1 Euro</item>

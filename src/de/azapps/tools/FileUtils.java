@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  * 
- * Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
+ * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
  * 
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -64,7 +64,8 @@ public class FileUtils {
 			if (isExternalStorageDocument(uri)) {
 				final String docId = DocumentsContract.getDocumentId(uri);
 				final String[] split = docId.split(":");
-				final String type = split[0];
+				// final String type = split[0]; not used
+				
 				// Environment.
 				// TODO somehow handle that here may be the diskuuid as type
 				// if ("primary".equalsIgnoreCase(type)) {

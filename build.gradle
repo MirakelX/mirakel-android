@@ -1,0 +1,116 @@
+buildscript {
+      dependencies {
+        repositories {
+            mavenCentral()
+            maven {
+                url "file:~/.m2/"
+                artifactUrls "file:~/.m2/"
+            }
+        }
+                              //
+        classpath 'com.android.tools.build:gradle:0.7.+'
+        classpath 'com.jakewharton.hugo:hugo-plugin:1.0.+'
+    }
+}
+dependencies {
+      repositories {
+        mavenCentral()
+
+        // NOTE: This is only needed when developing the plugin!
+        mavenLocal()
+    }
+}
+
+apply plugin: 'android'
+apply plugin: 'hugo'
+apply plugin: 'eclipse'
+
+
+gradle.projectsEvaluated {
+    def script = "scripts/generate_v14_compatible_resources.py --res-dir res --res-v14-compatibility-dir res-v14".execute()
+    script.err.eachLine {line -> println "ERROR: " + line}
+    script.waitFor()
+}
+
+android {
+    buildToolsVersion '19.0.0'
+    compileSdkVersion 19   
+    packagingOptions {
+            exclude 'META-INF/LICENSE.txt'
+            exclude 'META-INF/NOTICE.txt'
+    }
+    defaultConfig {
+        targetSdkVersion 19
+        minSdkVersion 17
+    }
+    flavorGroups "stores", "api_related"
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            resources.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            renderscript.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
+        }
+
+    }
+    signingConfigs {
+        release {
+            storeFile file("debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            runProguard true
+            proguardFile 'proguard-android.txt'
+        }
+	    debug {
+            signingConfig signingConfigs.release
+        }
+    }
+    productFlavors {
+        google {
+            flavorGroup "stores"
+        }
+        fdroid {
+            flavorGroup "stores"
+        }
+        newAPI {
+            flavorGroup "api_related"
+        }
+        oldAPI {
+            minSdkVersion 9//needed for hugo.. 
+            targetSdkVersion 19//again...
+            flavorGroup "api_related"
+        }
+    }
+
+    android.sourceSets.google {
+
+        manifest {
+            srcFile "res-google/AndroidManifest.xml"
+        }
+        res{
+            srcDir "res-google"
+        }
+    }
+    android.sourceSets.oldAPI {
+        res{
+            srcDir "res-v14"
+        }
+    }
+}
+
+dependencies {
+    compile 'com.android.support:support-v4:19.0.+'
+    compile 'com.android.support:appcompat-v7:19.0.+'
+    compile fileTree(dir: 'libs', include: '*.jar', exclude: 'android-support-v4.jar')
+    compile project(':ilovefs-android')
+}
+

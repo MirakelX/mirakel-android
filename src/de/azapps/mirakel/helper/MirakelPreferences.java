@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Mirakel is an Android App for managing your ToDo-Lists Copyright (c) 2013 Anatolij Zelenin, Georg
+ * Mirakel is an Android App for managing your ToDo-Lists Copyright (c) 2013-2014 Anatolij Zelenin, Georg
  * Semmler. This program is free software: you can redistribute it and/or modify it under the terms
  * of the GNU General Public License as published by the Free Software Foundation, either version 3
  * of the License, or any later version. This program is distributed in the hope that it will be
@@ -20,12 +20,13 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.preference.PreferenceManager;
-import de.azapps.mirakel.main_activity.task_fragment.TaskFragmentAdapter.TYPE;
+import de.azapps.mirakel.custom_views.TaskDetailView.TYPE;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.R;
 
 /**
@@ -127,8 +128,16 @@ public class MirakelPreferences {
 			return subtaskAddToList();
 		}
 		// Create a new list and set this list as the default list for future subtasks
-		return ListMirakel.newList(context
-				.getString(R.string.subtask_list_name));
+		final String listname=context
+				.getString(R.string.subtask_list_name);
+		final AccountMirakel a = parent.getList().getAccount();
+		ListMirakel l = ListMirakel.findByName(listname, a);
+		if (l == null) {
+			l = ListMirakel.newList(listname);
+			l.setAccount(a);
+			l.save(false);
+		}
+		return l;
 	}
 
 	private static ListMirakel getListFromIdString(int preference) {
@@ -202,6 +211,7 @@ public class MirakelPreferences {
 		}
 	}
 
+	@SuppressWarnings("boxing")
 	public static List<Integer> getTaskFragmentLayout() {
 		List<Integer> items = MirakelPreferences
 				.loadIntArray("task_fragment_adapter_settings");
@@ -251,6 +261,19 @@ public class MirakelPreferences {
 
 	public static boolean isDateFormatRelative() {
 		return settings.getBoolean("dateFormatRelative", true);
+	}
+
+	public static boolean isDebug() {
+		if(settings!=null&&MirakelPreferences.isEnabledDebugMenu()) return settings.getBoolean("enabledDebug", BuildConfig.DEBUG);
+		return BuildConfig.DEBUG;
+	}
+
+	public static boolean isDumpTw() {
+		return settings.getBoolean("dump_tw_sync_to_sdcard", false);
+	}
+
+	public static boolean isEnabledDebugMenu() {
+		return settings.getBoolean("enableDebugMenu", false);
 	}
 
 	public static boolean isNotificationListOpenDefault() {
@@ -361,6 +384,11 @@ public class MirakelPreferences {
 
 	public static boolean swipeBehavior() {
 		return settings.getBoolean("swipeBehavior", false);
+	}
+
+	public static void toogleDebugMenu() {
+		settings.edit().putBoolean("enableDebugMenu", !MirakelPreferences.isEnabledDebugMenu()).commit();
+
 	}
 
 	public static boolean useBigNotifications() {

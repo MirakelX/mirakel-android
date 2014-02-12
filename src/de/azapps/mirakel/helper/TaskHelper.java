@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  * 
- * Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
+ * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
  * 
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -25,6 +25,8 @@ import org.joda.time.LocalDate;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
+import android.widget.TextView;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
@@ -106,6 +108,13 @@ public class TaskHelper {
 			return DARK_PRIO_COLOR[priority + 2];
 		}
 		return PRIO_COLOR[priority + 2];
+
+	}
+
+	public static void setPrio(TextView taskPrio, Task task) {
+		taskPrio.setText("" + task.getPriority());
+		GradientDrawable bg = (GradientDrawable) taskPrio.getBackground();
+		bg.setColor(TaskHelper.getPrioColor(task.getPriority()));
 
 	}
 

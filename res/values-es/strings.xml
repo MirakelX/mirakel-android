@@ -10,6 +10,7 @@
   <string name="no_lists">Esta tarea no puede ser sincronizada, porque no tienes listas</string>
   <string name="humanDateTimeFormat">yyyy-MM-dd – kk:mm</string>
   <string name="speak">Hable</string>
+  <string name="takePhoto">Toma una foto</string>
   <string name="speak_lang_code">en-US</string>
   <string name="Email">Correo electrónico</string>
   <string name="Password">Contraseña</string>
@@ -20,17 +21,35 @@
   <string name="resync">¿Quieres resincronizar todas las tareas?</string>
   <string name="menu_sort_lists">Reordenar las listas</string>
   <string name="no_https">¡Deberías utilizar https!</string>
+  <string name="finish_sync">Sincronización terminada</string>
+  <string name="local_account">Cuenta Local</string>
   <string name="inbox">Bandeja de entrada</string>
   <string name="first_task">Primera tarea</string>
   <string name="tasks_new_str">Nueva tarea</string>
   <string name="task_change_prio_title">Cambiar prioridad</string>
+  <string name="task_delete_content">¿Está seguro de eliminar %s?</string>
   <string name="task_menu_sorting">Ordenar tareas</string>
   <string name="task_sorting_title">Ordenar tareas por</string>
-  <string name="task_empty">No hay ninguna tarea seleccionada…</string>
+  <string name="task_empty">No hay ninguna tarea seleccionada&#8230;</string>
   <string name="set_date">Fijar fecha</string>
   <string name="set_time">Fijar hora</string>
   <string name="action_undo">Undo the last Change</string>
+  <string name="add_subtasks">Agregar subtarea...</string>
+  <string name="subtask_list_name">Subtareas</string>
+  <string name="remove_files">Eliminar Archivos de Tarea</string>
+  <string name="remove_files_summary">Quieres eliminar %1$s de %2$s?</string>
+  <string name="add_subtask">Agregar subtarea</string>
+  <string name="remove_subtask">Eliminar Subtarea</string>
+  <string name="subtask_add_options">Filtro &gt;&gt;</string>
+  <string name="subtask_done">Tarea finalizada?</string>
+  <string name="subtask_reminder">¿Tarea con recordatorio?</string>
+  <string name="subtask_content">Tarea con nota?</string>
+  <string name="add">Agregar</string>
   <string name="new_task">Nueva tarea</string>
+  <string name="add_existing">Añadir tarea existente</string>
+  <string name="task_name">Nombre de la tarea:</string>
+  <string name="as_subtask">Añadir a una tarea</string>
+  <string name="task_clone">Clonar Tarea</string>
   <string name="dialog_move">Mover tarea</string>
   <string name="list_title">Listas</string>
   <string name="list_menu_new_list">Nueva lista</string>
@@ -40,8 +59,14 @@
   <string name="list_today">Tareas para hoy</string>
   <string name="list_week">Esta semana</string>
   <string name="list_overdue">Atrasado</string>
+  <string name="list_delete_content">¿Está seguro de eliminar %s?</string>
+  <string name="menu_delete_list">Eliminar lista</string>
+  <string name="menu_delete_task">Eliminar tarea</string>
   <string name="menu_settings">Configuración</string>
   <string name="menu_move_task">Mover tarea</string>
+  <string name="menu_edit_task">Editar tarea</string>
+  <string name="menu_edit_list">Renombrar lista</string>
+  <string name="menu_do_task">Dar tarea por finalizada</string>
   <string name="offical_server_url">https://mirakel.azapps.de</string>
   <string name="title_settings">Configuración</string>
   <string name="empty_list">No hay tareas</string>
@@ -57,11 +82,12 @@
   <string name="reminder_notification_later">Más tarde</string>
   <string name="reminder_notification_done_confirm">He puesto la tarea como „hecho“</string>
   <string name="reminder_notification_later_confirm">Te lo recordaré en %d minutos</string>
-  <string name="list_vanished">Yikes, the task has vanished. I\'m sorry…</string>
-  <string name="task_vanished">Yikes, the list of the task has vanished. I\'m sorry…</string>
+  <string name="list_vanished">Yikes, the task has vanished. I\'m sorry&#8230;</string>
+  <string name="task_vanished">Yikes, the list of the task has vanished. I\'m sorry&#8230;</string>
   <string name="message_try_later">Try to Sync later</string>
   <string name="message_access_denied">Access denied!\nDo you use the right Config-File?</string>
   <string name="message_create_socket">Cannot Create Socket!\nDo you enable your network connection?</string>
+  <string name="message_account_suspended">Su cuenta está suspendida!</string>
   <string name="message_parse_message">Cannot parse Tasks – please write us, how this happened</string>
   <string name="message_message_error">Unknown response from Server – please write us, how this happened</string>
   <string name="load_config">Select the config file for Taskwarrior</string>
@@ -75,10 +101,11 @@
         required. Please try again.</string>
   <string name="login_activity_loginfail_text_pwmissing">Escriba la contraseña para esta cuenta.</string>
   <string name="login_activity_newaccount_text">Ingresa a tu cuenta de %s. </string>
+  <string name="ui_activity_authenticating">Autenticando...</string>
   <string name="changelog_full_title">Registro de cambios</string>
   <string name="changelog_title">¿Que hay de nuevo?</string>
   <string name="changelog_ok_button">OK</string>
-  <string name="changelog_show_full">más…</string>
+  <string name="changelog_show_full">más&#8230;</string>
   <string name="share_using">Compartir con</string>
   <string name="share_task">Compartir tarea</string>
   <string name="share_task_title_with_date">%1$s (%2$s)</string>
@@ -99,12 +126,15 @@ SDK-version: %2$d\n
 Device: %3$s\n]]>
     </string>
   <string name="contact_no_client">Ningún cliente de correo instalado</string>
-  <string name="contact_chooser">Enviar correo…</string>
+  <string name="contact_chooser">Enviar correo&#8230;</string>
   <string name="backup_import_error">Hubo un error al importar la base de datos</string>
   <string name="backup_import_ok">La importación se realizo correctamente - Por favor reinicie Mirakel</string>
   <string name="backup_export_error">Hubo un error al importar la base de datos</string>
   <string name="backup_export_ok">Exportado a %s</string>
+  <string name="add_content">Agregar nota...</string>
   <string name="task_has_content">La tarea tiene contenido</string>
+  <string name="permission_group_desc">Permisos para acceder Mirakel</string>
+  <string name="permission_group_lbl">Permiso Mirakel</string>
   <string name="permission_read_lbl">Leer datos de Mirakel</string>
   <string name="permission_read_desc">Permiso para leer datos de Mirakel</string>
   <string name="permission_write_lbl">Escribir datos en Mirakel</string>
@@ -115,11 +145,17 @@ Device: %3$s\n]]>
   <string name="crash_dialog_comment_prompt">Puede añadir sus comentarios sobre el problema aquí abajo:</string>
   <string name="crash_dialog_ok_toast">¡Gracias!</string>
   <string name="message_from_server">El servidor te quiere decir que: %s</string>
+  <string name="list_change_color">Cambiar color</string>
   <string name="edit">Editar</string>
+  <string name="audio_playback_pause">Detener</string>
+  <string name="audio_playback_stop">Detener</string>
+  <string name="daily">Diariamente</string>
   <string name="weekly">Semanal</string>
   <string name="yearly">Anual</string>
   <string name="monthly">Mensual</string>
   <string name="hourly">Por hora</string>
+  <string name="minutly">Cada minuto</string>
+  <string name="label">Etiqueta</string>
   <string name="minute">Minuto</string>
   <string name="hour">Hora</string>
   <string name="day">Día</string>
@@ -127,7 +163,14 @@ Device: %3$s\n]]>
   <string name="year">Año</string>
   <string name="end">Final</string>
   <string name="no_begin_end">No %s</string>
+  <string name="every">Cada</string>
+  <string name="recurrence_end_continously">Siempre</string>
+  <string name="recurrence_from_now">A partir de ahora</string>
+  <string name="recurrence_from">De</string>
+  <string name="acessibility_recurrence_choose_end_date_description">Cambiar fecha de finalización</string>
   <string name="save_label">Hecho</string>
+  <string name="audio_record_file">Grabación de audio</string>
+  <string name="image_file">Imagen</string>
   <string-array name="task_sorting_items">
     <item>Predeterminado</item>
     <item>Fecha límite</item>
@@ -141,10 +184,10 @@ Device: %3$s\n]]>
     <item>Eliminar</item>
   </string-array>
   <string-array name="list_actions_items">
-    <item>Select color</item>
-    <item>Rename</item>
+    <item>Seleccionar color</item>
+    <item>Renombrar</item>
     <item>Eliminar</item>
-    <item>Share</item>
+    <item>Compartir</item>
   </string-array>
   <string-array name="server_typs">
     <item>Taskwarrior</item>
@@ -152,7 +195,7 @@ Device: %3$s\n]]>
     <item>Mirakel</item>
   </string-array>
   <string-array name="audio_playback_options">
-    <item>Open file</item>
+    <item>Abrir el archivo</item>
     <item>Play loud</item>
     <item>Play silent</item>
   </string-array>

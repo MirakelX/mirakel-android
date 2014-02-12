@@ -22,6 +22,7 @@ package org.sufficientlysecure.donations.google.util;
  * call {@link #getResult()}.
  */
 public class IabException extends Exception {
+	static final long	serialVersionUID	= 1391887734;
     IabResult mResult;
 
     public IabException(IabResult r) {

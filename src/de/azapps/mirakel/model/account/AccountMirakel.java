@@ -20,10 +20,9 @@ import de.azapps.tools.Log;
 
 public class AccountMirakel extends AccountBase {
 	public enum ACCOUNT_TYPES {
-		CALDAV, LOCAL, MIRAKEL, TASKWARRIOR;
+		CALDAV, LOCAL, TASKWARRIOR;
 		public static ACCOUNT_TYPES getSyncType(String type) {
-			if (type.equals("Mirakel")) return MIRAKEL;
-			else if (type.equals("Taskwarrior")) return TASKWARRIOR;
+			if (type.equals("Taskwarrior")) return TASKWARRIOR;
 			else if (type.equals("CalDav")) return CALDAV;
 			else
 				return LOCAL;
@@ -43,8 +42,6 @@ public class AccountMirakel extends AccountBase {
 					return CALDAV;
 				case 2:
 					return TASKWARRIOR;
-				case 3:
-					return MIRAKEL;
 				default:
 					throw new IllegalArgumentException();
 			}
@@ -55,7 +52,6 @@ public class AccountMirakel extends AccountBase {
 			switch (type) {
 				case CALDAV:
 					return ACCOUNT_TYPE_DAVDROID;
-				case MIRAKEL:
 				case TASKWARRIOR:
 					return ACCOUNT_TYPE_MIRAKEL;
 				case LOCAL:
@@ -70,9 +66,6 @@ public class AccountMirakel extends AccountBase {
 					return 1;
 				case LOCAL:
 					return -1;
-				case MIRAKEL:
-					Log.w(TAG, "do not use Mirakel-Accounts");
-					return 3;
 				case TASKWARRIOR:
 					return 2;
 				default:
@@ -86,8 +79,6 @@ public class AccountMirakel extends AccountBase {
 					return ctx.getString(R.string.calDavName);
 				case LOCAL:
 					return ctx.getString(R.string.local_account);
-				case MIRAKEL:
-					return ctx.getString(R.string.app_name);
 				case TASKWARRIOR:
 					return ctx.getString(R.string.tw_account);
 				default:

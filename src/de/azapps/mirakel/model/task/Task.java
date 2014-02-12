@@ -53,6 +53,7 @@ import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.reminders.ReminderAlarm;
+import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 import de.azapps.mirakelandroid.R;
@@ -60,21 +61,21 @@ import de.azapps.tools.Log;
 
 public class Task extends TaskBase {
 
-	public static final String[]	allColumns	= { DatabaseHelper.ID, UUID,
-		LIST_ID, DatabaseHelper.NAME, CONTENT, DONE, DUE, REMINDER,
-		PRIORITY, DatabaseHelper.CREATED_AT, DatabaseHelper.UPDATED_AT,
-		SyncAdapter.SYNC_STATE, ADDITIONAL_ENTRIES, RECURRING,
-		RECURRING_REMINDER, PROGRESS		};
+	public static final String[]	allColumns		= { DatabaseHelper.ID,
+			UUID, LIST_ID, DatabaseHelper.NAME, CONTENT, DONE, DUE, REMINDER,
+			PRIORITY, DatabaseHelper.CREATED_AT, DatabaseHelper.UPDATED_AT,
+			SyncAdapter.SYNC_STATE, ADDITIONAL_ENTRIES, RECURRING,
+			RECURRING_REMINDER, PROGRESS			};
 	private static Context			context;
 	private static SQLiteDatabase	database;
 
 	private static DatabaseHelper	dbHelper;
 
-	public static final String	SUBTASK_TABLE	= "subtasks";
+	public static final String		SUBTASK_TABLE	= "subtasks";
 
-	public static final String	TABLE			= "tasks";
+	public static final String		TABLE			= "tasks";
 
-	private static final String		TAG			= "TasksDataSource";
+	private static final String		TAG				= "TasksDataSource";
 
 	/**
 	 * Get all Tasks
@@ -114,7 +115,7 @@ public class Task extends TaskBase {
 				"yyyy-MM-dd'T'kkmmss'Z'", Locale.getDefault());
 		try {
 			due.setTime(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-			.parse(cursor.getString(6)));
+					.parse(cursor.getString(6)));
 		} catch (ParseException e) {
 			due = null;
 		} catch (NullPointerException e) {
@@ -240,13 +241,13 @@ public class Task extends TaskBase {
 				//$FALL-THROUGH$
 			case ListMirakel.SORT_BY_DUE:
 				order = " CASE WHEN (" + DUE
-				+ " IS NULL) THEN date('now','+1000 years') ELSE date("
-				+ DUE + ") END ASC" + order;
+						+ " IS NULL) THEN date('now','+1000 years') ELSE date("
+						+ DUE + ") END ASC" + order;
 				break;
 			case ListMirakel.SORT_BY_REVERT_DEFAULT:
 				order = PRIORITY + " DESC,  CASE WHEN (" + DUE
-				+ " IS NULL) THEN date('now','+1000 years') ELSE date("
-				+ DUE + ") END ASC" + order;
+						+ " IS NULL) THEN date('now','+1000 years') ELSE date("
+						+ DUE + ") END ASC" + order;
 				//$FALL-THROUGH$
 			default:
 				order = DatabaseHelper.ID + " ASC";
@@ -257,7 +258,7 @@ public class Task extends TaskBase {
 	public static List<Pair<Long, String>> getTaskNames() {
 		Cursor c = database.query(TABLE, new String[] { DatabaseHelper.ID,
 				DatabaseHelper.NAME }, "not " + SyncAdapter.SYNC_STATE + "="
-						+ SYNC_STATE.DELETE + " and done = 0", null, null, null, null);
+				+ SYNC_STATE.DELETE + " and done = 0", null, null, null, null);
 		c.moveToFirst();
 		List<Pair<Long, String>> names = new ArrayList<Pair<Long, String>>();
 		while (!c.isAfterLast()) {
@@ -362,7 +363,7 @@ public class Task extends TaskBase {
 				+ " t INNER JOIN " + SUBTASK_TABLE
 				+ " s on t._id=s.child_id WHERE s.parent_id=? ORDER BY "
 				+ getSorting(ListMirakel.SORT_BY_OPT), new String[] { ""
-						+ subtask.getId() });
+				+ subtask.getId() });
 	}
 
 	// Static Methods
@@ -384,12 +385,14 @@ public class Task extends TaskBase {
 		return cursorToTaskList(cursor);
 
 	}
+
 	public static List<Task> getTasksWithReminders() {
 		String where = REMINDER + " NOT NULL and " + DONE + "=0";
 		Cursor cursor = Mirakel.getReadableDatabase().query(TABLE, allColumns,
 				where, null, null, null, null);
 		return cursorToTaskList(cursor);
 	}
+
 	/**
 	 * Get a Task to sync it
 	 * 
@@ -407,6 +410,7 @@ public class Task extends TaskBase {
 		}
 		return null;
 	}
+
 	/**
 	 * Initialize the Database and the preferences
 	 * 
@@ -446,12 +450,14 @@ public class Task extends TaskBase {
 				SYNC_STATE.ADD, "", -1, -1, 0);
 
 		try {
-			return t.create();
+			Task task = t.create();
+			NotificationService.updateNotificationAndWidget(context);
+			return task;
 		} catch (NoSuchListException e) {
 			Log.wtf(TAG, "List vanish");
 			Log.e(TAG, Log.getStackTraceString(e));
 			Toast.makeText(context, R.string.no_lists, Toast.LENGTH_LONG)
-			.show();
+					.show();
 			return null;
 		}
 	}
@@ -462,7 +468,7 @@ public class Task extends TaskBase {
 	 * @param el
 	 * @return
 	 */
-	public static Task parse_json(JsonObject el,AccountMirakel account) {
+	public static Task parse_json(JsonObject el, AccountMirakel account) {
 		Task t = null;
 		JsonElement id = el.get("id");
 		if (id != null) {
@@ -482,6 +488,7 @@ public class Task extends TaskBase {
 		for (Entry<String, JsonElement> entry : entries) {
 			String key = entry.getKey();
 			JsonElement val = entry.getValue();
+			Log.e("Blubb",key);
 			if (key == null || key.equals("id")) {
 				continue;
 			}
@@ -506,6 +513,9 @@ public class Task extends TaskBase {
 				} else if (!prioString.equals("L")) {
 					t.setPriority(val.getAsInt());
 				}
+			} else if(key.equals("progress")) {
+				int progress=(int) val.getAsDouble();
+				t.setProgress(progress);
 			} else if (key.equals("list_id")) {
 				ListMirakel list = ListMirakel.getList(val.getAsInt());
 				if (list == null) {
@@ -589,24 +599,25 @@ public class Task extends TaskBase {
 			} else if (key.equals("depends")) {
 				t.setDependencies(val.getAsString().split(","));
 			} else {
-				if(val.isJsonPrimitive()){
-					JsonPrimitive p=(JsonPrimitive)val;
-					if(p.isBoolean()){
-						t.addAdditionalEntry(key, val.getAsBoolean()+"");
-					}else if(p.isNumber()){
-						t.addAdditionalEntry(key, val.getAsInt()+"");
-					}else if(p.isJsonNull()){
+				if (val.isJsonPrimitive()) {
+					JsonPrimitive p = (JsonPrimitive) val;
+					if (p.isBoolean()) {
+						t.addAdditionalEntry(key, val.getAsBoolean() + "");
+					} else if (p.isNumber()) {
+						t.addAdditionalEntry(key, val.getAsInt() + "");
+					} else if (p.isJsonNull()) {
 						t.addAdditionalEntry(key, "null");
-					}else if(p.isString()){
-						t.addAdditionalEntry(key, "\""+val.getAsString()+"\"");
-					}else{
+					} else if (p.isString()) {
+						t.addAdditionalEntry(key, "\"" + val.getAsString()
+								+ "\"");
+					} else {
 						Log.w(TAG, "unkown json-type");
 					}
-				}else if(val.isJsonArray()){
-					JsonArray a=(JsonArray)val;
-					String s="[";
+				} else if (val.isJsonArray()) {
+					JsonArray a = (JsonArray) val;
+					String s = "[";
 					boolean first = true;
-					for(JsonElement e:a){
+					for (JsonElement e : a) {
 						if (e.isJsonPrimitive()) {
 							JsonPrimitive p = (JsonPrimitive) e;
 							String add;
@@ -666,7 +677,7 @@ public class Task extends TaskBase {
 		GregorianCalendar temp = new GregorianCalendar();
 		try {
 			temp.setTime(new SimpleDateFormat(format, Locale.getDefault())
-			.parse(date));
+					.parse(date));
 			return temp;
 		} catch (ParseException e) {
 			return null;
@@ -722,7 +733,7 @@ public class Task extends TaskBase {
 		return cursorToTaskList(cursor);
 	}
 
-	private String				dependencies[];
+	private String	dependencies[];
 
 	Task() {
 		super();
@@ -757,7 +768,7 @@ public class Task extends TaskBase {
 		return isChildRec(t);
 	}
 
-	public Task create() throws NoSuchListException{
+	public Task create() throws NoSuchListException {
 		return create(true);
 	}
 
@@ -772,7 +783,8 @@ public class Task extends TaskBase {
 		values.put(DUE,
 				getDue() == null ? null : DateTimeHelper.formatDate(getDue()));
 		values.put(PRIORITY, getPriority());
-		values.put(SyncAdapter.SYNC_STATE, addFlag?SYNC_STATE.ADD.toInt():SYNC_STATE.NOTHING.toInt());
+		values.put(SyncAdapter.SYNC_STATE, addFlag ? SYNC_STATE.ADD.toInt()
+				: SYNC_STATE.NOTHING.toInt());
 		values.put(DatabaseHelper.CREATED_AT,
 				DateTimeHelper.formatDateTime(getCreatedAt()));
 		if (getUpdatedAt() == null) {
@@ -875,7 +887,8 @@ public class Task extends TaskBase {
 		// Reminder
 		if (t.getReminder() != null && getReminder() != null) {
 			if (t.getReminder().compareTo(getReminder()) != 0) return false;
-		} else if (getReminder() != null || t.getReminder() != null) return false;
+		} else if (getReminder() != null || t.getReminder() != null)
+			return false;
 
 		// progress
 		if (t.getProgress() != getProgress()) return false;
@@ -931,29 +944,23 @@ public class Task extends TaskBase {
 		return count > 0;
 	}
 
+	public void safeSave() {
+		safeSave(true);
+	}
+
 	/**
 	 * Save a Task
 	 * 
 	 * @param task
 	 */
-	public void safeSave() {
+	public void safeSave(boolean log) {
 		try {
-			save();
+			save(log);
 		} catch (NoSuchListException e) {
 			Log.w(TAG, "List did vanish");
 		}
 	}
-
-	/**
-	 * Save a Task
-	 * 
-	 * @param task
-	 */
-	public void save() throws NoSuchListException {
-		save(true);
-	}
-
-	public void save(boolean log) throws NoSuchListException {
+	private void save(boolean log) throws NoSuchListException {
 		if (!isEdited()) {
 			Log.d(TAG, "new Task equals old, didnt need to save it");
 			return;
@@ -963,7 +970,7 @@ public class Task extends TaskBase {
 		}
 		setSyncState(getSyncState() == SYNC_STATE.ADD
 				|| getSyncState() == SYNC_STATE.IS_SYNCED ? getSyncState()
-						: SYNC_STATE.NEED_SYNC);
+				: SYNC_STATE.NEED_SYNC);
 		if (context != null) {
 			setUpdatedAt(new GregorianCalendar());
 		}
@@ -981,6 +988,7 @@ public class Task extends TaskBase {
 			ReminderAlarm.updateAlarms(context);
 		}
 		clearEdited();
+		NotificationService.updateNotificationAndWidget(context);
 	}
 
 	private void setDependencies(String[] dep) {
@@ -992,7 +1000,7 @@ public class Task extends TaskBase {
 		for (Task t : subTasks) {
 			t.setDone(true);
 			try {
-				t.save();
+				t.save(true);
 			} catch (NoSuchListException e) {
 				Log.d(TAG, "List did vanish");
 			}

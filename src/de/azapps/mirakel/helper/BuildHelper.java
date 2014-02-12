@@ -1,27 +1,28 @@
 package de.azapps.mirakel.helper;
 
+import de.azapps.mirakel.Mirakel;
+
 
 public class BuildHelper {
-	public static boolean	DEBUG				= true;
-	private static boolean PLAYSTORE_RELEASE=false;
+
 	public static boolean isBeta() {
-		return DEBUG;
+		return MirakelPreferences.isDebug();
 	}
 
 	public static boolean isForFDroid() {
-		return !PLAYSTORE_RELEASE;
+		return !Mirakel.IS_PLAYSTORE;
 	}
 
 	public static boolean isForPlayStore() {
-		return PLAYSTORE_RELEASE;
+		return Mirakel.IS_PLAYSTORE;
 	}
 
 	public static boolean isNightly() {
-		return DEBUG;
+		return MirakelPreferences.isDebug();
 	}
 
 	public static boolean isRelease() {
-		return !DEBUG;
+		return !MirakelPreferences.isDebug();
 	}
 
 	public static boolean useAutoUpdater() {

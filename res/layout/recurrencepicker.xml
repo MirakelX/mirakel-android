@@ -43,8 +43,6 @@
                 android:background="@color/white"
                 android:paddingBottom="4dip"
                 android:paddingEnd="12dip"
-                android:paddingLeft="12dip"
-                android:paddingRight="12dip"
                 android:paddingStart="12dip"
                 android:paddingTop="12dip" >
 
@@ -70,8 +68,6 @@
                 android:orientation="vertical"
                 android:paddingBottom="4dp"
                 android:paddingEnd="12dp"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp"
                 android:paddingStart="12dp"
                 android:paddingTop="4dp" >
 
@@ -80,7 +76,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="start"
-                    android:paddingLeft="4dp"
                     android:paddingStart="4dp" >
 
                     <TextView
@@ -99,8 +94,6 @@
                         android:inputType="number"
                         android:maxLength="2"
                         android:paddingEnd="4dp"
-                        android:paddingLeft="4dp"
-                        android:paddingRight="4dp"
                         android:paddingStart="4dp"
                         android:selectAllOnFocus="true"
                         android:singleLine="true"
@@ -125,8 +118,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="4dp"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginRight="4dp"
                     android:layout_marginStart="4dp"
                     android:layout_marginTop="8dp"
                     android:gravity="center_horizontal"
@@ -152,8 +143,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="4dp"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginRight="4dp"
                     android:layout_marginStart="4dp"
                     android:gravity="center_horizontal"
                     android:orientation="horizontal"
@@ -196,7 +185,6 @@
                     android:layout_height="wrap_content"
                     android:gravity="start"
                     android:orientation="horizontal"
-                    android:paddingLeft="0dp"
                     android:paddingStart="0dp" >
 
                     <Spinner
@@ -205,8 +193,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="8dp"
-                        android:layout_marginLeft="-4dp"
-                        android:layout_marginRight="8dp"
                         android:layout_marginStart="-4dp"
                         android:gravity="start|center_vertical"
                         android:padding="0dp" />
@@ -218,8 +204,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginEnd="0dp"
-                        android:layout_marginLeft="0dp"
-                        android:layout_marginRight="0dp"
                         android:layout_marginStart="0dp"
                         android:layout_marginTop="3dp"
                         android:contentDescription="@string/acessibility_recurrence_choose_end_date_description"
@@ -227,8 +211,6 @@
                         android:minWidth="80dp"
                         android:paddingBottom="8dp"
                         android:paddingEnd="12dp"
-                        android:paddingLeft="12dp"
-                        android:paddingRight="16dp"
                         android:paddingStart="12dp"
                         android:singleLine="true"
                         android:textColor="@color/recurrence_spinner_text_color"
@@ -242,8 +224,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginEnd="0dp"
-                        android:layout_marginLeft="0dp"
-                        android:layout_marginRight="0dp"
                         android:layout_marginStart="0dp"
                         android:layout_marginTop="3dp"
                         android:contentDescription="@string/acessibility_recurrence_choose_end_date_description"
@@ -251,8 +231,6 @@
                         android:minWidth="80dp"
                         android:paddingBottom="8dp"
                         android:paddingEnd="16dp"
-                        android:paddingLeft="12dp"
-                        android:paddingRight="16dp"
                         android:paddingStart="12dp"
                         android:singleLine="true"
                         android:textColor="@color/recurrence_spinner_text_color"
@@ -266,7 +244,6 @@
                     android:layout_height="wrap_content"
                     android:gravity="start"
                     android:orientation="horizontal"
-                    android:paddingLeft="0dp"
                     android:paddingStart="0dp" >
 
                     <Spinner
@@ -275,8 +252,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="8dp"
-                        android:layout_marginLeft="-4dp"
-                        android:layout_marginRight="8dp"
                         android:layout_marginStart="-4dp"
                         android:gravity="start|center_vertical"
                         android:padding="0dp" />
@@ -314,8 +289,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginEnd="0dp"
-                        android:layout_marginLeft="0dp"
-                        android:layout_marginRight="0dp"
                         android:layout_marginStart="0dp"
                         android:layout_marginTop="3dp"
                         android:contentDescription="@string/acessibility_recurrence_choose_end_date_description"
@@ -323,8 +296,6 @@
                         android:minWidth="80dp"
                         android:paddingBottom="8dp"
                         android:paddingEnd="16dp"
-                        android:paddingLeft="12dp"
-                        android:paddingRight="16dp"
                         android:paddingStart="12dp"
                         android:singleLine="true"
                         android:textColor="@color/recurrence_spinner_text_color"
@@ -338,8 +309,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginEnd="0dp"
-                        android:layout_marginLeft="0dp"
-                        android:layout_marginRight="0dp"
                         android:layout_marginStart="0dp"
                         android:layout_marginTop="3dp"
                         android:contentDescription="@string/acessibility_recurrence_choose_end_date_description"
@@ -347,8 +316,6 @@
                         android:minWidth="80dp"
                         android:paddingBottom="8dp"
                         android:paddingEnd="16dp"
-                        android:paddingLeft="12dp"
-                        android:paddingRight="16dp"
                         android:paddingStart="12dp"
                         android:singleLine="true"
                         android:textColor="@color/recurrence_spinner_text_color"

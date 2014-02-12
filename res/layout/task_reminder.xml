@@ -2,7 +2,7 @@
 <!--
   Mirakel is an Android App for Managing your ToDo-Lists
   
-  Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
+  Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
   
       This program is free software: you can redistribute it and/or modify
       it under the terms of the GNU General Public License as published by
@@ -22,7 +22,8 @@
     android:id="@+id/reminder_wrapper"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="horizontal" >
+    android:layout_margin="7dp"
+    android:orientation="horizontal" xmlns:tools="http://schemas.android.com/tools">
 
     <TextView
         android:id="@+id/task_reminder"
@@ -31,8 +32,7 @@
         android:drawablePadding="5dp"
         android:paddingBottom="5dp"
         android:paddingEnd="@dimen/task_padding_for_icons"
-        android:paddingLeft="@dimen/task_padding_for_icons"
-        android:paddingRight="@dimen/task_padding_for_icons"
+        android:paddingStart="@dimen/task_padding_for_icons"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textSize="@dimen/due_reminder_text_size" />
 
@@ -40,8 +40,8 @@
         android:id="@+id/reccuring_reminder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="5dp"
+        android:background="@android:color/transparent"
         android:layout_marginStart="5dp"
-        android:background="@android:drawable/ic_menu_mylocation" />
+        tools:ignore="ContentDescription" />
 
 </LinearLayout>

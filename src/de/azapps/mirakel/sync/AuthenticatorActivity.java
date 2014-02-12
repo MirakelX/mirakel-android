@@ -40,10 +40,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.http.message.BasicNameValuePair;
 
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
@@ -51,12 +47,8 @@ import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
@@ -82,7 +74,6 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.SyncAdapter.SYNC_STATE;
 import de.azapps.mirakel.sync.caldav.CalDavSync;
-import de.azapps.mirakel.sync.mirakel.MirakelSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.FileUtils;
@@ -178,15 +169,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 					case TASKWARRIOR:
 						if (switcher.getCurrentView().getId() != R.id.login_taskwarrior)
 							switcher.showPrevious();
-						break;
-					case MIRAKEL:
-						if (switcher.getCurrentView().getId() != R.id.login_mirakel)
-							switcher.showPrevious();
-						mUsernameEdit.setHint(R.string.Email);
-						mUsernameEdit
-								.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-						((EditText) findViewById(R.id.server_edit))
-								.setText(R.string.offical_server_url);
 						break;
 					case CALDAV:
 						if (switcher.getCurrentView().getId() != R.id.login_mirakel) {
@@ -351,9 +333,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 						successfull = false;
 					}
 					break;
-				case MIRAKEL:
-					handleMirakelLogin();
-					break;
 				case CALDAV:
 					handleCalDavLogin();
 					break;
@@ -462,40 +441,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 		Log.i(TAG, "finishTWLogin()");
 	}
 
-	/**
-	 * Called when response is received from the server for authentication
-	 * request. See onAuthenticationResult(). Sets the
-	 * AccountAuthenticatorResult which is sent back to the caller. We store the
-	 * authToken that's returned from the server as the 'password' for this
-	 * account - so we're never storing the user's actual password locally.
-	 * 
-	 * @param result
-	 *        the confirmCredentials result.
-	 */
-	private void finishMirakelLogin(String url, String token) {
-		Log.i(TAG, "finishLogin()");
-		final Account account = new Account(mUsername,
-				AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
-		if (mRequestNewAccount) {
-			Bundle b = new Bundle();
-			b.putString(SyncAdapter.BUNDLE_SERVER_URL, url);
-			b.putString(SyncAdapter.BUNDLE_SERVER_TYPE, MirakelSync.TYPE);
-			mAccountManager.addAccountExplicitly(account, mPassword, b);
-			// Set contacts sync for this account.
-		} else {
-			mAccountManager.setPassword(account, mPassword);
-		}
-		new Network(new DataDownloadCommand() {
-			@Override
-			public void after_exec(String result) {
-				ContentResolver.setIsSyncable(account, Mirakel.AUTHORITY_TYP, 1);
-				ContentResolver.setSyncAutomatically(account,
-						Mirakel.AUTHORITY_TYP, true);
-			}
-		}, Network.HttpMode.DELETE, this, null).execute(url + "/tokens/"
-				+ token);
-	}
-
 	public void onAuthenticationCancel() {
 		Log.i(TAG, "onAuthenticationCancel()");
 
@@ -525,56 +470,12 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 	}
 
 	/**
-	 * Shows the progress UI for a lengthy operation.
-	 */
-	// TODO Fix This!!
-	@SuppressWarnings("deprecation")
-	private void showProgress() {
-		showDialog(0);
-	}
-
-	/**
 	 * Hides the progress UI for a lengthy operation.
 	 */
 	private void hideProgress() {
 		if (mProgressDialog != null) {
 			mProgressDialog.dismiss();
 			mProgressDialog = null;
-		}
-	}
-
-	private void handleMirakelLogin() {
-		Log.v(TAG, "Use Mirakel");
-		// Show a progress dialog, and kick off a background task to
-		// perform
-		// the user login attempt.
-		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-		List<BasicNameValuePair> data = new ArrayList<BasicNameValuePair>();
-		data.add(new BasicNameValuePair("email", mUsername));
-		data.add(new BasicNameValuePair("password", mPassword));
-		if (networkInfo != null && networkInfo.isConnected()) {
-			showProgress();
-			final String url = ((EditText) findViewById(R.id.server_edit))
-					.getText().toString();
-			new Network(new DataDownloadCommand() {
-				@Override
-				public void after_exec(String result) {
-					String token = Network.getToken(result);
-					if (token == null) {
-						Log.e(TAG, "Login failed");
-						hideProgress();
-					} else {
-						Log.e(TAG, "Login sucess");
-						finishMirakelLogin(url, token);
-					}
-				}
-			}, Network.HttpMode.POST, data, this, null).execute(url
-					+ "/tokens.json");
-		} else {
-			Log.e(TAG, "No network connection available.");
-			Toast.makeText(getApplicationContext(), R.string.NoNetwork,
-					Toast.LENGTH_LONG).show();
 		}
 	}
 

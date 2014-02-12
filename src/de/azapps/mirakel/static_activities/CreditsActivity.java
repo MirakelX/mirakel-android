@@ -31,15 +31,20 @@ public class CreditsActivity extends Activity {
 			{ "DateTimePicker Compatibility Library", "Apache 2.0",
 			"https://github.com/flavienlaurent/datetimepicker" },
 			{ "Webicons", "CC-Attrib", "http://fairheadcreative.com/" },
-			{"Android Donations Lib","Apache 2.0","https://github.com/dschuermann/android-donations-lib"}};
-	private final String[][]	translations	= { { "Spanish", "macebal" },
+			{ "Android Donations Lib", "Apache 2.0",
+			"https://github.com/dschuermann/android-donations-lib" } };
+	private final String[][]	translations	= {
+			{ "Spanish", "macebal" },
 			{ "French", "Ghost of Kendo, waghanza, npettiaux, benasse" },
 			{ "German", "Anatolij Zelenin, Georg Semmler, Patrik Kernstock" },
 			{ "Portuguese", "Sérgio Marques" },
 			{ "Russian", "Katy, Dmitry Derjavin" },
 			{ "Spanisch", "macebal, RaindropR", "Pablo Corbalán (@monofluor)" },
 			{ "Norwegian", "Jim-Stefhan Johansen" }, { "Slovenian", "mateju" },
-			{ "Arabic", "Rajaa Gutknecht" }, { "Czech", "sarimak" },{"Dutch","Toon van Gerwen"} };
+			{ "Arabic", "Rajaa Gutknecht" }, { "Czech", "sarimak" },
+			{ "Dutch", "Toon van Gerwen" },
+			{ "Italian", "Rajaa Gutknecht, fazen, Claudio Arseni" },
+			{ "Bulgarian", "Boriana Tcholakova"}};
 
 	@Override
 	public void onConfigurationChanged(final Configuration newConfig) {
