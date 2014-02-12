@@ -57,6 +57,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+import de.azapps.ilovefs.ILoveFS;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.adapter.PagerAdapter;
@@ -83,6 +84,7 @@ import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
+import de.azapps.mirakel.static_activities.DonationsActivity;
 import de.azapps.mirakel.static_activities.SettingsActivity;
 import de.azapps.mirakel.static_activities.SplashScreenActivity;
 import de.azapps.mirakel.widget.MainWidgetProvider;
@@ -527,28 +529,31 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 				|| getTasksFragment().getAdapter() == null
 				|| currentTask == null) return;
 		Log.v(MainActivity.TAG, currentTask.getName());
-		final View currentView = getTasksFragment().getAdapter().getViewForTask(
-				currentTask)==null?getTasksFragment().getListView().getChildAt(0):getTasksFragment().getAdapter().getViewForTask(
-						currentTask);
+		final View currentView = getTasksFragment().getAdapter()
+				.getViewForTask(currentTask) == null ? getTasksFragment()
+				.getListView().getChildAt(0) : getTasksFragment().getAdapter()
+				.getViewForTask(currentTask);
 
-				if (currentView != null && this.highlightSelected && !multiselect) {
+		if (currentView != null && this.highlightSelected && !multiselect) {
 
-					currentView.post(new Runnable(){
+			currentView.post(new Runnable() {
 
-						@Override
-						public void run() {
-							if (MainActivity.this.oldClickedTask != null) {
-								MainActivity.this.oldClickedTask.setSelected(false);
-								MainActivity.this.oldClickedTask
+				@Override
+				public void run() {
+					if (MainActivity.this.oldClickedTask != null) {
+						MainActivity.this.oldClickedTask.setSelected(false);
+						MainActivity.this.oldClickedTask
 								.setBackgroundColor(0x00000000);
-							}
-							currentView.setBackgroundColor(getResources().getColor(
-									MainActivity.this.darkTheme ? R.color.highlighted_text_holo_dark
-											: R.color.highlighted_text_holo_light));
-							MainActivity.this.oldClickedTask = currentView;
-						}
-					});
+					}
+					currentView
+							.setBackgroundColor(getResources()
+									.getColor(
+											MainActivity.this.darkTheme ? R.color.highlighted_text_holo_dark
+													: R.color.highlighted_text_holo_light));
+					MainActivity.this.oldClickedTask = currentView;
 				}
+			});
+		}
 	}
 
 	/**
@@ -930,6 +935,19 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		}
 
 		setCurrentTask(this.currentTask, false);
+		ILoveFS ilfs = new ILoveFS(this, "mirakel@azapps.de", Mirakel.APK_NAME);
+		if (ilfs.isILFSDay()) {
+			ilfs.donateListener = new DialogInterface.OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					Intent intent = new Intent(MainActivity.this,
+							DonationsActivity.class);
+					startActivity(intent);
+				}
+			};
+			ilfs.show();
+		}
 	}
 
 	@Override

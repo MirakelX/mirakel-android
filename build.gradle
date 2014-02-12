@@ -111,5 +111,6 @@ dependencies {
     compile 'com.android.support:support-v4:19.0.+'
     compile 'com.android.support:appcompat-v7:19.0.+'
     compile fileTree(dir: 'libs', include: '*.jar', exclude: 'android-support-v4.jar')
+    compile project(':ilovefs-android')
 }
 
