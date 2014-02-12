@@ -184,8 +184,8 @@ public class ListMirakel extends ListBase {
 				+ "='"
 				+ name
 				+ "'"
-						+ (account == null ? "" : " AND " + ACCOUNT_ID + "="
-								+ account.getId()), null, null, null,
+				+ (account == null ? "" : " AND " + ACCOUNT_ID + "="
+						+ account.getId()), null, null, null,
 						null);
 		cursor.moveToFirst();
 		if (cursor.getCount() != 0) {
@@ -193,6 +193,7 @@ public class ListMirakel extends ListBase {
 			cursor.close();
 			return t;
 		}
+		cursor.close();
 		return null;
 	}
 

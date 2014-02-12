@@ -18,7 +18,6 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -78,35 +77,37 @@ import de.azapps.widgets.DateTimeDialog;
 import de.azapps.widgets.DateTimeDialog.OnDateTimeSetListner;
 
 public class TaskDialogHelpers {
-	private static AlertDialog	audio_playback_dialog;
-	private static boolean		audio_playback_playing;
+	protected static AlertDialog							audio_playback_dialog;
+	protected static boolean								audio_playback_playing;
 
 	private static AlertDialog		audio_record_alert_dialog;
 
-	private static String			audio_record_filePath;
+	protected static String									audio_record_filePath;
 
-	private static MediaRecorder	audio_record_mRecorder;
+	protected static MediaRecorder							audio_record_mRecorder;
 
-	private static boolean			content;
+	protected static boolean								content;
 
 	private static final DialogInterface.OnClickListener	dialogDoNothing	= null;
 
-	private static boolean			done;
-	private static int				listId;
-	private static boolean			newTask;
-	private static boolean			optionEnabled;
-	private static boolean			reminder;
-	private static String			searchString;
-	private static SubtaskAdapter	subtaskAdapter;
+	protected static boolean								done;
+	protected static int									listId;
+	protected static boolean								newTask;
+	protected static boolean								optionEnabled;
+	protected static boolean								reminder;
+	protected static String									searchString;
+	protected static SubtaskAdapter							subtaskAdapter;
 	protected static final String							TAG				= "TaskDialogHelpers";
 
-	private static void cancelRecording() {
+	protected static void cancelRecording() {
 		audio_record_mRecorder.stop();
 		audio_record_mRecorder.release();
 		audio_record_mRecorder = null;
 		try {
 			new File(audio_record_filePath).delete();
-		} catch (Exception e) {}
+		} catch (Exception e) {
+			// eat it
+		}
 	}
 
 	protected static String generateQuery(Task t) {
@@ -247,6 +248,7 @@ public class TaskDialogHelpers {
 		builder.show();
 	}
 
+	@SuppressWarnings("boxing")
 	public static void handleRecurrence(final Activity activity, final Task task, final boolean isDue, final ImageButton image) {
 		FragmentManager fm = ((MainActivity) activity)
 				.getSupportFragmentManager();
@@ -617,7 +619,7 @@ public class TaskDialogHelpers {
 
 	}
 
-	private static Task newSubtask(String name, Task parent, Context ctx) {
+	protected static Task newSubtask(String name, Task parent, Context ctx) {
 		ListMirakel list = MirakelPreferences.getListForSubtask(parent);
 		Task t = Semantic.createTask(name, list,
 				MirakelPreferences.useSemanticNewTask(), ctx);
@@ -692,7 +694,7 @@ public class TaskDialogHelpers {
 			@Override
 			public void onShow(DialogInterface dialog) {
 				final Button button = ((AlertDialog) dialog)
-						.getButton(ProgressDialog.BUTTON_POSITIVE);
+						.getButton(DialogInterface.BUTTON_POSITIVE);
 				button.setOnClickListener(new View.OnClickListener() {
 
 					@Override
@@ -715,7 +717,7 @@ public class TaskDialogHelpers {
 		audio_playback_dialog.show();
 	}
 
-	private static void setRecurence(final Task task, final boolean isDue, int id, ImageButton image) {
+	protected static void setRecurence(final Task task, final boolean isDue, int id, ImageButton image) {
 		if (isDue) {
 			Recurring.destroyTemporary(task.getRecurrenceId());
 			task.setRecurrence(id);
@@ -736,13 +738,12 @@ public class TaskDialogHelpers {
 				cancelRecording();
 				audio_record_alert_dialog.dismiss();
 			} catch (Exception e) {
-
+				// eat it
 			}
-
 		}
 	}
 
-	private static void updateListView(final SubtaskAdapter a, final Task t, final ListView lv) {
+	protected static void updateListView(final SubtaskAdapter a, final Task t, final ListView lv) {
 		if (t == null || a == null || lv == null) return;
 		new Thread(new Runnable() {
 			@Override

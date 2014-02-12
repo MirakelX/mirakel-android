@@ -128,8 +128,16 @@ public class MirakelPreferences {
 			return subtaskAddToList();
 		}
 		// Create a new list and set this list as the default list for future subtasks
-		return ListMirakel.newList(context
-				.getString(R.string.subtask_list_name));
+		final String listname=context
+				.getString(R.string.subtask_list_name);
+		final AccountMirakel a = parent.getList().getAccount();
+		ListMirakel l = ListMirakel.findByName(listname, a);
+		if (l == null) {
+			l = ListMirakel.newList(listname);
+			l.setAccount(a);
+			l.save(false);
+		}
+		return l;
 	}
 
 	private static ListMirakel getListFromIdString(int preference) {
@@ -203,6 +211,7 @@ public class MirakelPreferences {
 		}
 	}
 
+	@SuppressWarnings("boxing")
 	public static List<Integer> getTaskFragmentLayout() {
 		List<Integer> items = MirakelPreferences
 				.loadIntArray("task_fragment_adapter_settings");

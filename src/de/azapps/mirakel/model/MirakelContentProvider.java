@@ -151,6 +151,8 @@ public class MirakelContentProvider extends ContentProvider implements OnAccount
 		if (values.containsKey(Tasks.STATUS)) {
 			int status = values.getAsInteger(Tasks.STATUS);
 			boolean done = status == Tasks.STATUS_COMPLETED;
+			Log.wtf(TAG, "status: " + status + "  COMPLETED: "
+					+ Tasks.STATUS_COMPLETED);
 			newValues.put(Task.DONE, done);
 		}
 		if (values.containsKey(Tasks.LIST_ID)) {
