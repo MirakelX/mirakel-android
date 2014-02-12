@@ -221,6 +221,7 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
         <item>العربية</item>
         <item>Portuguese</item>
         <item>Italiano</item>
+        <item>Bulgarian</item>
     </string-array>
     <string-array name="language_keys" translatable="false">
         <item>-1</item>
@@ -235,6 +236,7 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
         <item>ar</item>
         <item>pt</item>
         <item>it</item>
+        <item>bg</item>
     </string-array>
 
     <!-- Delete done -->
