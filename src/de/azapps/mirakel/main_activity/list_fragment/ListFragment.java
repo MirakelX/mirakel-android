@@ -85,7 +85,7 @@ public class ListFragment extends MirakelFragment {
 	}
 
 	// private static final String TAG = "ListsActivity";
-	private ListAdapter			adapter;
+	protected ListAdapter		adapter;
 	protected boolean			EditName;
 	private boolean				enableDrag;
 
@@ -303,9 +303,9 @@ public class ListFragment extends MirakelFragment {
 				.findViewById(R.id.lists_list);
 		if (this.adapter != null
 				&& this.enableDrag == this.adapter.isDropEnabled()
-				&& this.listView != null) {
+				&& this.main != null) {
 			this.adapter.changeData(values);
-			this.listView.post(new Runnable() {
+			this.main.runOnUiThread(new Runnable() {
 
 				@Override
 				public void run() {

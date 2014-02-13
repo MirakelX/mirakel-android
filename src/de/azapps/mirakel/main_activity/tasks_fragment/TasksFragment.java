@@ -378,13 +378,20 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 		update(true);
 	}
 
-	public void setScrollPosition(int pos) {
-		if (this.listView == null) return;
-		if (this.listView.getCount() > pos) {
-			this.listView.setSelectionFromTop(pos, 0);
-		} else {
-			this.listView.setSelectionFromTop(0, 0);
-		}
+	public void setScrollPosition(final int pos) {
+		if (this.listView == null || this.main == null) return;
+		this.main.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				if (TasksFragment.this.listView.getCount() > pos) {
+					TasksFragment.this.listView.setSelectionFromTop(pos, 0);
+				} else {
+					TasksFragment.this.listView.setSelectionFromTop(0, 0);
+				}
+
+			}
+
+		});
 	}
 
 	public void setTasks(List<Task> tasks) {
