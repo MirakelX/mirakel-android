@@ -47,9 +47,8 @@ Subtaken zijn handig om je taken beter te organiseren. Het is als een soort afvi
 ]]>
     </string>
   <string name="help_sync_title">Synchronisatie</string>
-  <string name="help_sync"> <![CDATA[
-]]>
-     </string>
+  <string name="help_sync"><![CDATA[
+]]></string>
   <string name="help_sync_taskwarrior_title">Taskwarrior syngronisatie</string>
   <string name="help_sync_taskwarrior">
 <![CDATA[

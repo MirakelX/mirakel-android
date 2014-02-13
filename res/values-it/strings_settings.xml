@@ -25,7 +25,7 @@
   <string name="sync_taskwarrior_how_to">Come configurare il proprio server</string>
   <string name="sync_taskwarrior_own_server">o usare il proprio server</string>
   <string name="sync_taskwarrior_url_error">L\'URL non è corretto. È stato utilizzato il codice QR corretto?</string>
-  <string name="sync_taskwarrior_configuring">Configurazione sincronizzazione…</string>
+  <string name="sync_taskwarrior_configuring">Configurazione sincronizzazione&#8230;</string>
   <string name="sync_taskwarrior_about">Se si possiede già un account Taskwarrior:</string>
   <string name="sync_taskwarrior_register">Altrimenti è possibile creare un nuovo account sui nostri server:</string>
   <string name="sync_taskwarrior_register_button">Registra</string>
@@ -94,7 +94,7 @@
   <string name="any_do_this_file">Importare da %s?\nIn caso contrario selezionare manualmente un file</string>
   <string name="any_do_how_to">Fai prima il backup dei dati di Any.Do. Per farlo, vai a Any.Do → Impostazioni → Backup → Crea Backup. Poi ritorna indietro e premi OK.\nOppure seleziona tu stesso un file.</string>
   <string name="select_file">Seleziona file</string>
-  <string name="wait">Attendere…</string>
+  <string name="wait">Attendere&#8230;</string>
   <string name="import_wunderlist_click">Importa da Wunderlist</string>
   <string name="import_wunderlist_title">Seleziona il file Wunderlist</string>
   <string name="import_wunderlist_howto">Come importare da Wunderlist</string>
@@ -144,7 +144,7 @@
   <string name="preferences_colorize">Colori</string>
   <string name="preferences_colorize_tasks">Colorare attività</string>
   <string name="preferences_colorize_tasks_everywhere">Colorare attività ovunque</string>
-  <string name="preferences_colorize_tasks_everywhere_summary">…o solo nei meta-elenchi?</string>
+  <string name="preferences_colorize_tasks_everywhere_summary">&#8230;o solo nei meta-elenchi?</string>
   <string name="settings_semantics_title">Configura modelli attività</string>
   <string name="settings_semantics_condition">Condizione</string>
   <string name="settings_semantics_actions">Azioni</string>

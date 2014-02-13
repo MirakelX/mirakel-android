@@ -24,6 +24,7 @@
   <string name="sync_taskwarrior_select_file">حدد ملف التهيئة</string>
   <string name="sync_taskwarrior_how_to">كيفية إعداد الخادم الخاص بك</string>
   <string name="sync_taskwarrior_own_server">أو مجرد استخدام الخادم الخاص بك</string>
+  <string name="sync_taskwarrior_url_error">عنوان URL غير صحيح. هل تفحصت التعليمة البرمجية الصحيحة؟</string>
   <string name="sync_taskwarrior_configuring">تكوين المزامنة…</string>
   <string name="sync_taskwarrior_about">إذا كان لديك حساب taskwarrior:</string>
   <string name="sync_taskwarrior_register">إذا لم يكن الأمر كذلك، يمكنك تسجيل حساب جديد على الخادم لدينا:</string>
@@ -59,6 +60,7 @@
   <string name="startup_list_summary">إظهار المهام من \"%s\"</string>
   <string name="settings_misc">متفرقات</string>
   <string name="settings_backup">الاحتياطي والاستيراد</string>
+  <string name="backup_click_summary">قم بوضع نسخ إحتياطية لقاعدة البيانات على بطاقةs %)SD)</string>
   <string name="backup_click">النسخ الاحتياطية</string>
   <string name="import_click_summary">استيراد قاعدة البيانات</string>
   <string name="import_click">استيراد</string>
@@ -101,7 +103,10 @@
   <string name="hide_keyboard_summary">إخفاء لوحة المفاتيح عندما يتم إنشاء مهمة جديدة</string>
   <string name="undo_number">عدد من التغييرات المحفوظة</string>
   <string name="undo_number_summary">التراجع عن التغييرات %s</string>
+  <string name="settings_semantic">قوالب مهمة</string>
+  <string name="semantic_new_task">قالب المهمة الجديدة</string>
   <string name="semantic_new_task_config_summary">تكوين الشروط اللازمة لإنشاء مهام جديدة</string>
+  <string name="semantic_new_task_config">تكوين قوالب مهمة</string>
   <string name="lock_drawer_in_task_fragment_summary">حيث لا يمكنك فتحه عن طريق الخطأ</string>
   <string name="general">عام</string>
   <string name="tasks_fragment">نظرة عامة حول المهمة</string>
@@ -118,9 +123,11 @@
   <string name="howto_setup_server">كيفية إعداد الخادم</string>
   <string name="register_server">إذا كنت بحاجة حساب للمزامنة على الخادم الخاص بنا، الرجاء إرسال بريد إلكتروني إلينا. مع الإصدار التالي ستحصل على إمكانية تسجيل حساب جديد!</string>
   <string name="register">تسجيل</string>
+  <string name="auto_backup_intervall_summary">النسخ الاحتياطي لقاعدة البيانات كل أيام %s</string>
   <string name="preferences_colorize">الألوان</string>
   <string name="preferences_colorize_tasks">تلوين المهام</string>
   <string name="preferences_colorize_tasks_everywhere">تلوين المهام في كل مكان</string>
+  <string name="settings_semantics_title">تكوين قوالب مهمة</string>
   <string name="settings_semantics_condition">الشرط</string>
   <string name="settings_semantics_actions">الاجراءات</string>
   <string name="settings_semantics_list">تعيين قائمة</string>
@@ -130,12 +137,14 @@
   <string name="semantics_no_list">لا تقم بتعيين قائمة</string>
   <string name="semantics_no_due">لا تقم بتعيين تاريخ الواجب</string>
   <string name="settings_file_default_title">اسم المهمة للملفات التي تم استيرادها</string>
+  <string name="semantic_new">قالب</string>
   <string name="settings_subtask">المهام الفرعية</string>
   <string name="settings_subtask_default_new">إظهار المهام الجديدة الافتراضية</string>
   <string name="settings_subtask_add_to_same_list">إضافة مهمة فرعية إلى قائمة المهمة</string>
   <string name="settings_subtask_add_to_same_list_summary">أو حدد قائمة افتراضية، حيث سيتم إضافة المهمة الفرعية</string>
   <string name="settings_subtask_add_to_list_summary">إضافة المهمة الفرعية إلى %s</string>
   <string name="settings_use_btn_speak">إظهار زر الميكروفون</string>
+  <string name="settings_use_btn_audio">إظهار الزر تسجيل الصوت</string>
   <string name="settings_use_btn_camera">إظهار زر الكاميرا</string>
   <string name="preferences_colorize_subtasks">تلوين المهام الفرعية؟</string>
   <string name="settings_tasks_title">المهام</string>
