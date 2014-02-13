@@ -34,7 +34,7 @@ public class CreditsActivity extends Activity {
 			{ "Android Donations Lib", "Apache 2.0",
 			"https://github.com/dschuermann/android-donations-lib" } };
 	private final String[][]	translations	= {
-			{ "Spanish", "macebal" },
+			{ "Spanish", "macebal, sml" },
 			{ "French", "Ghost of Kendo, waghanza, npettiaux, benasse" },
 			{ "German", "Anatolij Zelenin, Georg Semmler, Patrik Kernstock" },
 			{ "Portuguese", "Sérgio Marques" },
@@ -44,7 +44,8 @@ public class CreditsActivity extends Activity {
 			{ "Arabic", "Rajaa Gutknecht" }, { "Czech", "sarimak" },
 			{ "Dutch", "Toon van Gerwen" },
 			{ "Italian", "Rajaa Gutknecht, fazen, Claudio Arseni" },
-			{ "Bulgarian", "Boriana Tcholakova"}};
+			{ "Bulgarian", "Boriana Tcholakova" }, { "Polish", "mruwek" },
+			{ "Catalan", "sml" }				};
 
 	@Override
 	public void onConfigurationChanged(final Configuration newConfig) {
