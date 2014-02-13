@@ -3,7 +3,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
   <string name="donations__button_close">Chiudi</string>
   <string name="donations__flattr">Flattr</string>
-  <string name="donations__description">Ritieni che queta applicazione sia utile?\nSupportane lo sviluppo facedno una donazione!</string>
+  <string name="donations__description">Ritieni che questa applicazione sia utile?\nSupportane lo sviluppo facendo una donazione!</string>
   <string name="donations__flattr_description" formatted="false">Flattr trattiene il 10% come canone mensile.</string>
   <string name="donations__google_android_market">Google Play Store</string>
   <string name="donations__google_android_market_not_supported_title">Le donazioni \"in-app\" non sono supportate.</string>
@@ -16,7 +16,7 @@
   <string name="donations__thanks_dialog_title">Grazie!</string>
   <string name="donations__thanks_dialog">Grazie per la donazione!\nÈ un gesto molto apprezzato.</string>
   <string name="donations__alert_dialog_title">Si è verificato un errore</string>
-  <string name="donations__alert_dialog_no_browser">Non è stato trovato alcun browser per arpire il sito web.</string>
+  <string name="donations__alert_dialog_no_browser">Non è stato trovato alcun browser per aprire il sito web.</string>
   <string name="donation_paypal_item">Donazioni per Mirakel</string>
   <string name="title_donations">Dona</string>
   <string-array name="donation_google_catalog_values">
