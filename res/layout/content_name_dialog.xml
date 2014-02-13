@@ -1,54 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+<LinearLayout android:layout_height="match_parent" android:layout_width="match_parent" android:orientation="vertical" xmlns:android="http://schemas.android.com/apk/res/android">
+  
 
-    <EditText
-        android:id="@+id/where_like"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        android:layout_marginStart="10dp"
-        android:ems="10"
-        android:inputType="text" >
+    
+  <EditText android:ems="10" android:id="@+id/where_like" android:inputType="text" android:layout_height="wrap_content" android:layout_marginLeft="10dp" android:layout_marginRight="10dp" android:layout_width="match_parent">
+    
 
-        <requestFocus />
-    </EditText>
+        
+    <requestFocus/>
+    
+    
+  </EditText>
+  
 
-    <RadioGroup
-        android:id="@+id/where_like_radio"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        android:layout_marginStart="10dp"
-        android:orientation="vertical" >
+    
+  <RadioGroup android:id="@+id/where_like_radio" android:layout_height="wrap_content" android:layout_marginLeft="10dp" android:layout_marginRight="10dp" android:layout_width="fill_parent" android:orientation="vertical">
+    
 
-        <RadioButton
-            android:id="@+id/where_like_begin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/where_like_begin_text" />
+        
+    <RadioButton android:id="@+id/where_like_begin" android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="@string/where_like_begin_text"/>
+    
 
-        <RadioButton
-            android:id="@+id/where_like_contain"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/where_like_contain_text" />
+        
+    <RadioButton android:id="@+id/where_like_contain" android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="@string/where_like_contain_text"/>
+    
 
-        <RadioButton
-            android:id="@+id/where_like_end"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/where_like_end_text" />
-    </RadioGroup>
+        
+    <RadioButton android:id="@+id/where_like_end" android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="@string/where_like_end_text"/>
+    
+    
+  </RadioGroup>
+  
 
-    <CheckBox
-        android:id="@+id/where_like_inverte"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        android:layout_marginStart="10dp"
-        android:text="@string/inverte" />
+    
+  <CheckBox android:id="@+id/where_like_inverte" android:layout_height="wrap_content" android:layout_marginLeft="10dp" android:layout_marginRight="10dp" android:layout_width="wrap_content" android:text="@string/inverte"/>
+  
+
 
 </LinearLayout>

@@ -17,30 +17,16 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/due_wrapper"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_margin="7dp"
-    android:orientation="horizontal" xmlns:tools="http://schemas.android.com/tools">
+<LinearLayout android:id="@+id/due_wrapper" android:layout_height="wrap_content" android:layout_margin="7dp" android:layout_width="wrap_content" android:orientation="horizontal" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+  
 
-    <TextView
-        android:id="@+id/task_due"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawablePadding="5dp"
-        android:paddingBottom="5dp"
-        android:paddingEnd="@dimen/task_padding_for_icons"
-        android:paddingStart="@dimen/task_padding_for_icons"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="@dimen/due_reminder_text_size" />
+    
+  <TextView android:drawablePadding="5dp" android:id="@+id/task_due" android:layout_height="wrap_content" android:layout_width="wrap_content" android:paddingBottom="5dp" android:paddingLeft="@dimen/task_padding_for_icons" android:paddingRight="@dimen/task_padding_for_icons" android:textAppearance="?android:attr/textAppearanceLarge" android:textSize="@dimen/due_reminder_text_size"/>
+  
 
-    <ImageButton
-        android:id="@+id/reccuring_due"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/transparent"
-        android:layout_marginStart="5dp"
-        tools:ignore="ContentDescription" />
+    
+  <ImageButton android:background="@android:color/transparent" android:id="@+id/reccuring_due" android:layout_height="match_parent" android:layout_marginLeft="5dp" android:layout_width="match_parent" tools:ignore="ContentDescription"/>
+  
+
 
 </LinearLayout>
