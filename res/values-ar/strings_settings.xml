@@ -60,7 +60,7 @@
   <string name="startup_list_summary">إظهار المهام من \"%s\"</string>
   <string name="settings_misc">متفرقات</string>
   <string name="settings_backup">الاحتياطي والاستيراد</string>
-  <string name="backup_click_summary">قم بوضع نسخ إحتياطية لقاعدة البيانات على بطاقةs %)SD)</string>
+  <string name="backup_click_summary">قم بوضع نسخ إحتياطية لقاعدة البيانات على بطاقة (%s)SD</string>
   <string name="backup_click">النسخ الاحتياطية</string>
   <string name="import_click_summary">استيراد قاعدة البيانات</string>
   <string name="import_click">استيراد</string>
