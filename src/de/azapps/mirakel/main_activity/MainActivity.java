@@ -57,7 +57,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
-import de.azapps.ilovefs.ILoveFS;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.adapter.PagerAdapter;
@@ -117,7 +116,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 	// TODO We should do this somehow else
 	public static boolean		updateTasksUUID		= false;
 
-	private static int getTaskFragmentPosition() {
+	protected static int getTaskFragmentPosition() {
 		if (MainActivity.isRTL || MirakelPreferences.isTablet())
 			return MainActivity.LEFT_FRAGMENT;
 		return MainActivity.RIGHT_FRAGMENT;
@@ -1320,12 +1319,23 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 			final boolean smooth = this.mViewPager.getCurrentItem() != getTaskFragmentPosition();
 			if (!switchFragment) return;
 			// Fix buggy behavior
-			this.mViewPager.setCurrentItem(
-					MainActivity.getTasksFragmentPosition(), false);
-			this.mViewPager.setCurrentItem(getTaskFragmentPosition(), false);
-			this.mViewPager.setCurrentItem(
-					MainActivity.getTasksFragmentPosition(), false);
-			this.mViewPager.setCurrentItem(getTaskFragmentPosition(), smooth);
+			runOnUiThread(new Runnable() {
+
+				@Override
+				public void run() {
+					MainActivity.this.mViewPager.setCurrentItem(
+							MainActivity.getTasksFragmentPosition(), false);
+					MainActivity.this.mViewPager.setCurrentItem(
+							getTaskFragmentPosition(),
+							false);
+					MainActivity.this.mViewPager.setCurrentItem(
+							MainActivity.getTasksFragmentPosition(), false);
+					MainActivity.this.mViewPager.setCurrentItem(
+							getTaskFragmentPosition(),
+							smooth);
+
+				}
+			});
 		}
 	}
 
