@@ -17,38 +17,64 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:orientation="vertical" xmlns:android="http://schemas.android.com/apk/res/android">
-  
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
 
-    
-  <View android:background="@android:color/darker_gray" android:id="@+id/item_separator" android:layout_height="1dp" android:layout_marginBottom="@dimen/marginTopDivider" android:layout_marginTop="@dimen/marginTopDivider" android:layout_width="match_parent"/>
-  
+    <View
+        android:id="@+id/item_separator"
+        android:layout_width="match_parent"
+        android:background="@android:color/darker_gray"
+        android:layout_height="1dp"
+        android:layout_marginBottom="@dimen/marginTopDivider"
+        android:layout_marginTop="@dimen/marginTopDivider" />
 
-    
-  <RelativeLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:paddingRight="@dimen/task_padding">
-    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/task_padding" >
 
-        
-    <ViewSwitcher android:id="@+id/switcher_content" android:layout_alignParentLeft="true" android:layout_alignParentTop="true" android:layout_gravity="start" android:layout_height="wrap_content" android:layout_toLeftOf="@+id/edit_content" android:layout_width="300dp" android:measureAllChildren="false">
-      
+        <ViewSwitcher
+            android:id="@+id/switcher_content"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="start"
+            android:layout_toStartOf="@+id/edit_content"
+            android:measureAllChildren="false" >
 
-            
-      <TextView android:gravity="center_vertical" android:id="@+id/task_content" android:layout_height="wrap_content" android:layout_width="match_parent" android:minHeight="42dp" android:paddingLeft="@dimen/task_padding" android:paddingRight="@dimen/task_padding" android:textAppearance="?android:attr/textAppearanceMedium"/>
-      
+            <TextView
+                android:id="@+id/task_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:minHeight="42dp"
+                android:paddingEnd="@dimen/task_padding"
+                android:paddingStart="@dimen/task_padding"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
-            
-      <EditText android:gravity="center_vertical" android:id="@+id/task_content_edit" android:inputType="textMultiLine" android:layout_height="wrap_content" android:layout_width="match_parent" android:minHeight="42dp" android:paddingLeft="@dimen/task_padding" android:paddingRight="@dimen/task_padding" android:textAppearance="?android:attr/textAppearanceMedium"/>
-      
-        
-    </ViewSwitcher>
-    
+            <EditText
+                android:id="@+id/task_content_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:inputType="textMultiLine"
+                android:minHeight="42dp"
+                android:paddingEnd="@dimen/task_padding"
+                android:paddingStart="@dimen/task_padding"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </ViewSwitcher>
 
-        
-    <ImageButton android:background="@android:color/transparent" android:contentDescription="@string/edit" android:id="@+id/edit_content" android:layout_alignParentRight="true" android:layout_height="42dp" android:layout_width="42dp" android:paddingRight="-2dp"/>
-    
-    
-  </RelativeLayout>
-  
-
+        <ImageButton
+            android:id="@+id/edit_content"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_alignParentEnd="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/edit"
+            android:paddingEnd="-2dp"/>
+    </RelativeLayout>
 
 </LinearLayout>

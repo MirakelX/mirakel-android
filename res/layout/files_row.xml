@@ -17,27 +17,45 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<LinearLayout android:descendantFocusability="blocksDescendants" android:id="@+id/files_row" android:layout_height="wrap_content" android:layout_width="match_parent" android:orientation="horizontal" android:paddingLeft="@dimen/task_padding" android:paddingRight="@dimen/task_padding" android:paddingTop="7.5dp" xmlns:android="http://schemas.android.com/apk/res/android">
-  
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/files_row"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants"
+    android:orientation="horizontal"
+    android:paddingEnd="@dimen/task_padding"
+    android:paddingStart="@dimen/task_padding"
+    android:paddingTop="7.5dp" >
 
-    
-  <ImageView android:adjustViewBounds="true" android:id="@+id/file_image" android:layout_height="150dp" android:layout_width="150dp"/>
-  
+    <ImageView
+        android:id="@+id/file_image"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:adjustViewBounds="true" />
 
-    
-  <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:orientation="vertical">
-    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
 
-        
-    <TextView android:ellipsize="end" android:id="@+id/file_name" android:layout_height="wrap_content" android:layout_width="wrap_content" android:paddingLeft="@dimen/text_padding" android:textIsSelectable="false" android:textSize="18sp"/>
-    
+        <TextView
+            android:id="@+id/file_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:paddingStart="@dimen/text_padding"
+            android:textIsSelectable="false"
+            android:textSize="18sp" />
 
-        
-    <TextView android:ellipsize="end" android:id="@+id/file_path" android:layout_height="wrap_content" android:layout_width="wrap_content" android:paddingLeft="@dimen/text_padding" android:textColor="@color/Grey" android:textIsSelectable="false" android:textSize="12sp"/>
-    
-    
-  </LinearLayout>
-  
-
+        <TextView
+            android:id="@+id/file_path"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:paddingStart="@dimen/text_padding"
+            android:textColor="@color/Grey"
+            android:textIsSelectable="false"
+            android:textSize="12sp" />
+    </LinearLayout>
 
 </LinearLayout>

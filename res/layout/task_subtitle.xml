@@ -17,35 +17,65 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<LinearLayout android:layout_height="wrap_content" android:layout_marginTop="10dp" android:layout_width="wrap_content" android:orientation="vertical" xmlns:android="http://schemas.android.com/apk/res/android">
-  
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:orientation="vertical" >
 
-    
-  <View android:id="@+id/item_separator" android:layout_height="1dp" android:layout_marginBottom="@dimen/marginTopDivider" android:layout_marginTop="@dimen/marginTopDivider" android:layout_width="match_parent"/>
-  
+    <View
+        android:id="@+id/item_separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="@dimen/marginTopDivider"
+        android:layout_marginTop="@dimen/marginTopDivider" />
 
-    
-  <RelativeLayout android:layout_height="42dp" android:layout_width="match_parent" android:orientation="horizontal" android:paddingRight="@dimen/task_padding">
-    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:orientation="horizontal"
+        android:paddingEnd="@dimen/task_padding" >
 
-        
-    <TextView android:gravity="center_vertical" android:id="@+id/task_subtitle" android:layout_alignParentLeft="true" android:layout_alignParentTop="true" android:layout_height="42dp" android:layout_width="wrap_content" android:paddingRight="@dimen/task_padding" android:textIsSelectable="false" style="@style/taskViewCaption"/>
-    
+        <TextView
+            android:id="@+id/task_subtitle"
+            style="@style/taskViewCaption"
+            android:layout_width="wrap_content"
+            android:layout_height="42dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:gravity="center_vertical"
+            android:paddingEnd="@dimen/task_padding"
+            android:textIsSelectable="false" />
 
-        
-    <ImageButton android:background="@android:color/transparent" android:contentDescription="@string/edit" android:id="@+id/task_subtitle_audio_button" android:layout_alignParentRight="true" android:layout_height="42dp" android:layout_marginRight="100dp" android:layout_width="42dp" android:src="@android:drawable/ic_btn_speak_now"/>
-    
+        <ImageButton
+            android:id="@+id/task_subtitle_audio_button"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="100dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/edit"
+            android:src="@android:drawable/ic_btn_speak_now" />
 
-        
-    <ImageButton android:background="@android:color/transparent" android:contentDescription="@string/edit" android:id="@+id/task_subtitle_camera_button" android:layout_alignParentRight="true" android:layout_height="42dp" android:layout_marginRight="48dp" android:layout_width="42dp" android:src="@android:drawable/ic_menu_camera"/>
-    
+        <ImageButton
+            android:id="@+id/task_subtitle_camera_button"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="48dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/edit"
+            android:src="@android:drawable/ic_menu_camera" />
 
-        
-    <ImageButton android:background="@android:color/transparent" android:contentDescription="@string/edit" android:id="@+id/task_subtitle_button" android:layout_alignParentRight="true" android:layout_height="42dp" android:layout_width="42dp" android:paddingRight="-2dp" android:src="@android:drawable/ic_menu_add"/>
-    
-    
-  </RelativeLayout>
-  
-
+        <ImageButton
+            android:id="@+id/task_subtitle_button"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_alignParentEnd="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/edit"
+            android:paddingEnd="-2dp"
+            android:src="@android:drawable/ic_menu_add" />
+    </RelativeLayout>
 
 </LinearLayout>
