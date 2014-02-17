@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TimeZone;
 
 import android.accounts.Account;
 import android.content.ContentValues;
@@ -62,10 +63,10 @@ import de.azapps.tools.Log;
 public class Task extends TaskBase {
 
 	public static final String[]	allColumns		= { DatabaseHelper.ID,
-			UUID, LIST_ID, DatabaseHelper.NAME, CONTENT, DONE, DUE, REMINDER,
-			PRIORITY, DatabaseHelper.CREATED_AT, DatabaseHelper.UPDATED_AT,
-			SyncAdapter.SYNC_STATE, ADDITIONAL_ENTRIES, RECURRING,
-			RECURRING_REMINDER, PROGRESS			};
+		UUID, LIST_ID, DatabaseHelper.NAME, CONTENT, DONE, DUE, REMINDER,
+		PRIORITY, DatabaseHelper.CREATED_AT, DatabaseHelper.UPDATED_AT,
+		SyncAdapter.SYNC_STATE, ADDITIONAL_ENTRIES, RECURRING,
+		RECURRING_REMINDER, PROGRESS			};
 	private static Context			context;
 	private static SQLiteDatabase	database;
 
@@ -92,6 +93,7 @@ public class Task extends TaskBase {
 			tasks.add(cursorToTask(c));
 			c.moveToNext();
 		}
+		c.close();
 		return tasks;
 	}
 
@@ -115,7 +117,7 @@ public class Task extends TaskBase {
 				"yyyy-MM-dd'T'kkmmss'Z'", Locale.getDefault());
 		try {
 			due.setTime(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-					.parse(cursor.getString(6)));
+			.parse(cursor.getString(6)));
 		} catch (ParseException e) {
 			due = null;
 		} catch (NullPointerException e) {
@@ -241,13 +243,13 @@ public class Task extends TaskBase {
 				//$FALL-THROUGH$
 			case ListMirakel.SORT_BY_DUE:
 				order = " CASE WHEN (" + DUE
-						+ " IS NULL) THEN date('now','+1000 years') ELSE date("
-						+ DUE + ") END ASC" + order;
+				+ " IS NULL) THEN date('now','+1000 years') ELSE date("
+				+ DUE + ") END ASC" + order;
 				break;
 			case ListMirakel.SORT_BY_REVERT_DEFAULT:
 				order = PRIORITY + " DESC,  CASE WHEN (" + DUE
-						+ " IS NULL) THEN date('now','+1000 years') ELSE date("
-						+ DUE + ") END ASC" + order;
+				+ " IS NULL) THEN date('now','+1000 years') ELSE date("
+				+ DUE + ") END ASC" + order;
 				//$FALL-THROUGH$
 			default:
 				order = DatabaseHelper.ID + " ASC";
@@ -258,7 +260,7 @@ public class Task extends TaskBase {
 	public static List<Pair<Long, String>> getTaskNames() {
 		Cursor c = database.query(TABLE, new String[] { DatabaseHelper.ID,
 				DatabaseHelper.NAME }, "not " + SyncAdapter.SYNC_STATE + "="
-				+ SYNC_STATE.DELETE + " and done = 0", null, null, null, null);
+						+ SYNC_STATE.DELETE + " and done = 0", null, null, null, null);
 		c.moveToFirst();
 		List<Pair<Long, String>> names = new ArrayList<Pair<Long, String>>();
 		while (!c.isAfterLast()) {
@@ -363,7 +365,7 @@ public class Task extends TaskBase {
 				+ " t INNER JOIN " + SUBTASK_TABLE
 				+ " s on t._id=s.child_id WHERE s.parent_id=? ORDER BY "
 				+ getSorting(ListMirakel.SORT_BY_OPT), new String[] { ""
-				+ subtask.getId() });
+						+ subtask.getId() });
 	}
 
 	// Static Methods
@@ -457,7 +459,7 @@ public class Task extends TaskBase {
 			Log.wtf(TAG, "List vanish");
 			Log.e(TAG, Log.getStackTraceString(e));
 			Toast.makeText(context, R.string.no_lists, Toast.LENGTH_LONG)
-					.show();
+			.show();
 			return null;
 		}
 	}
@@ -559,12 +561,9 @@ public class Task extends TaskBase {
 				if (due == null) {
 					due = parseDate(val.getAsString(),
 							context.getString(R.string.TWDateFormat));
-					if (val.getAsString().contains("T230000Z")) {
-						// Hope this works around a tw-bug
-						// if you add a task with due:today, the task which will be sync will be
-						// due:yesterday:23:00
-						due.add(Calendar.DAY_OF_MONTH, 1);
-					}
+					// try to workaround timezone-bug
+					due.setTimeInMillis(due.getTimeInMillis()
+							+ TimeZone.getDefault().getRawOffset());
 				}
 				t.setDue(due);
 			} else if (key.equals("reminder")) {
@@ -677,7 +676,7 @@ public class Task extends TaskBase {
 		GregorianCalendar temp = new GregorianCalendar();
 		try {
 			temp.setTime(new SimpleDateFormat(format, Locale.getDefault())
-					.parse(date));
+			.parse(date));
 			return temp;
 		} catch (ParseException e) {
 			return null;
@@ -970,7 +969,7 @@ public class Task extends TaskBase {
 		}
 		setSyncState(getSyncState() == SYNC_STATE.ADD
 				|| getSyncState() == SYNC_STATE.IS_SYNCED ? getSyncState()
-				: SYNC_STATE.NEED_SYNC);
+						: SYNC_STATE.NEED_SYNC);
 		if (context != null) {
 			setUpdatedAt(new GregorianCalendar());
 		}

@@ -11,6 +11,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -117,11 +118,11 @@ public class TaskWarriorSync {
 	private static String		_user				= "";
 
 	public static final String	CA_FILE				= FileUtils.getMirakelDir()
-															+ "ca.cert.pem";
+			+ "ca.cert.pem";
 	public static final String	CLIENT_CERT_FILE	= FileUtils.getMirakelDir()
-															+ "client.cert.pem";
+			+ "client.cert.pem";
 	public static final String	CLIENT_KEY_FILE		= FileUtils.getMirakelDir()
-															+ "client.key.pem";
+			+ "client.key.pem";
 	public static final String	NO_PROJECT			= "NO_PROJECT";
 	private static File			root;
 	private static final String	TAG					= "TaskWarroirSync";
@@ -186,9 +187,9 @@ public class TaskWarriorSync {
 				FileUtils.writeToFile(
 						new File(Mirakel.exportDir, new SimpleDateFormat(
 								"dd-MM-yyyy_hh-mm-ss", Helpers
-										.getLocal(this.mContext))
-								.format(new Date())
-								+ ".tw_down.log"), response);
+								.getLocal(this.mContext))
+						.format(new Date())
+						+ ".tw_down.log"), response);
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -239,13 +240,14 @@ public class TaskWarriorSync {
 					server_task = Task.parse_json(taskObject, accountMirakel);
 					if (server_task.getList() == null
 							|| server_task.getList().getAccount().getId() != accountMirakel
-									.getId()) {
+							.getId()) {
 						ListMirakel list = ListMirakel
 								.getInboxList(accountMirakel);
 						server_task.setList(list, false);
 						Log.d(TAG, "no list");
 						server_task.addAdditionalEntry(NO_PROJECT, "true");
 					}
+
 					this.dependencies.put(server_task.getUUID(),
 							server_task.getDependencies());
 					local_task = Task.getByUUID(server_task.getUUID());
@@ -357,7 +359,7 @@ public class TaskWarriorSync {
 				try {
 					parent.addSubtask(child);
 				} catch (Exception e) {
-
+					// Eat it
 				}
 			}
 
@@ -403,7 +405,7 @@ public class TaskWarriorSync {
 				f.write(payload);
 				f.close();
 			} catch (Exception e) {
-
+				// eat it
 			}
 		}
 		TW_ERRORS error = doSync(a, sync);
@@ -461,7 +463,10 @@ public class TaskWarriorSync {
 		json += ",\"entry\":\"" + formatCal(task.getCreatedAt()) + "\"";
 		json += ",\"description\":\"" + escape(task.getName()) + "\"";
 		if (task.getDue() != null) {
-			json += ",\"due\":\"" + formatCal(task.getDue()) + "\"";
+			Calendar due = task.getDue();
+			due.setTimeInMillis(due.getTimeInMillis()
+					- TimeZone.getDefault().getRawOffset());
+			json += ",\"due\":\"" + formatCal(due) + "\"";
 		}
 		if (task.getList() != null
 				&& !task.getAdditionalEntries().containsKey(NO_PROJECT)) {
