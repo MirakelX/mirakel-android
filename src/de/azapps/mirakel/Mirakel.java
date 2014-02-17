@@ -61,9 +61,9 @@ import de.azapps.mirakelandroid.R;
 		// can take a few seconds
 		reportType = org.acra.sender.HttpSender.Type.JSON,
 		httpMethod = org.acra.sender.HttpSender.Method.PUT,
-		formUri = "https://mirakel.iriscouch.com/acra-mirakel/_design/acra-storage/_update/report",
-		formUriBasicAuthLogin = "android",
-		formUriBasicAuthPassword = "Kd4PBcVi2lwAbi763qaS",
+		formUri = "http://couchdb.azapps.de/acra-mirakel/_design/acra-storage/_update/report",
+		formUriBasicAuthLogin = "mirakel",
+		formUriBasicAuthPassword = "Ieshi8Egheic0etaipeeTeibo",
 		disableSSLCertValidation = true,
 		mode = ReportingInteractionMode.DIALOG,
 		resToastText = R.string.crash_toast_text,
@@ -76,27 +76,31 @@ import de.azapps.mirakelandroid.R;
 		// as a label
 		resDialogCommentPrompt = R.string.crash_dialog_comment_prompt,
 		resDialogOkToast = R.string.crash_dialog_ok_toast
-		// optional. displays a Toast message when the user accepts to send a report.
+// optional. displays a Toast message when the user accepts to send a report.
 
-		)
+)
 public class Mirakel extends Application {
 	// Public Constants
 	public static class NoSuchListException extends Exception {
 		static final long	serialVersionUID	= 1374828057;
 	}
+
 	public static class NoSuchTaskException extends Exception {
 		static final long	serialVersionUID	= 1374828058;
 	}
+
 	public static final String		AUTHORITY_TYP	= "de.azapps.mirakel.provider";
 	public static final int			NOTIF_DEFAULT	= 123,
 			NOTIF_REMINDER = 124;
 
-	public static final File exportDir = new File(
-	Environment.getExternalStorageDirectory(), "mirakel");
-	public static final String SYNC_FINISHED="de.azapps.mirakel.sync_finished";
-	
+	public static final File		exportDir		= new File(
+															Environment
+																	.getExternalStorageDirectory(),
+															"mirakel");
+	public static final String		SYNC_FINISHED	= "de.azapps.mirakel.sync_finished";
+
 	// Other stuff
-	
+
 	public static String			APK_NAME;
 
 	// FIXME move this somewhere else?
@@ -119,7 +123,6 @@ public class Mirakel extends Application {
 	public static SQLiteDatabase getWritableDatabase() {
 		return openHelper.getWritableDatabase();
 	}
-
 
 	@SuppressLint("InlinedApi")
 	@Override
