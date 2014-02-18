@@ -49,7 +49,7 @@ import de.azapps.tools.Log;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
 	public static final String	CREATED_AT			= "created_at";
-	public static final int		DATABASE_VERSION	= 30;
+	public static final int		DATABASE_VERSION	= 31;
 	public static final String	ID					= "_id";
 
 	public static final String	NAME				= "name";
@@ -304,7 +304,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 								+ "INSERT INTO semantic_conditions (condition,due) VALUES (\""
 								+ this.context.getString(R.string.tomorrow)
 								.toLowerCase(Helpers.getLocal(this.context))
-						+ "\",1);");
+								+ "\",1);");
 			case 15:// Add Color
 				db.execSQL("Alter Table " + ListMirakel.TABLE + " add column "
 						+ ListMirakel.COLOR + " INTEGER;");
@@ -458,6 +458,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 				db.execSQL("ALTER TABLE " + Recurring.TABLE
 						+ " add column derived_from INTEGER DEFAULT NULL");
+			case 30:
+				db.execSQL("UPDATE " + Task.TABLE + " set " + Task.DUE
+						+ "=" + Task.DUE + "||'T000000Z'");
 			default:
 				break;
 

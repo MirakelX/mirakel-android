@@ -47,6 +47,7 @@ import com.google.gson.JsonPrimitive;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.helper.DateTimeHelper;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.UndoHistory;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.account.AccountMirakel;
@@ -114,10 +115,10 @@ public class Task extends TaskBase {
 		int i = 0;
 		GregorianCalendar due = new GregorianCalendar();
 		SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
-				"yyyy-MM-dd'T'kkmmss'Z'", Locale.getDefault());
+				"yyyy-MM-dd'T'kkmmss'Z'", Helpers.getLocal(context));
 		try {
-			due.setTime(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-			.parse(cursor.getString(6)));
+			due.setTime(dateTimeFormat
+					.parse(cursor.getString(6)));
 		} catch (ParseException e) {
 			due = null;
 		} catch (NullPointerException e) {

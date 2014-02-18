@@ -104,7 +104,7 @@ class TaskBase {
 		setDone(false);
 		setDue(null);
 		setReminder(null);
-		priority = 0;
+		this.priority = 0;
 		this.setCreatedAt((Calendar) null);
 		this.setUpdatedAt((Calendar) null);
 		setSyncState(SYNC_STATE.NOTHING);
@@ -164,7 +164,7 @@ class TaskBase {
 		cv.put(CONTENT, this.content);
 		cv.put(DONE, this.done);
 		String due = this.due == null ? null : DateTimeHelper
-				.formatDate(getDue());
+				.formatDateTime(getDue());
 		cv.put(DUE, due);
 		String reminder = null;
 		if (this.reminder != null) {
@@ -317,7 +317,7 @@ class TaskBase {
 		if (content != null) {
 			this.content = StringUtils.replaceEach(content.trim(),
 					new String[] { "\\n", "\\\"", "\b" }, new String[] { "\n",
-							"\"", "" });
+				"\"", "" });
 		} else {
 			this.content = null;
 		}
