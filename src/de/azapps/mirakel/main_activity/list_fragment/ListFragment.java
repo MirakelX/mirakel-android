@@ -68,21 +68,7 @@ import de.azapps.tools.Log;
 public class ListFragment extends MirakelFragment {
 	private static final int		LIST_COLOR	= 0, LIST_RENAME = 1,
 			LIST_DESTROY = 2, LIST_SHARE = 3;
-	/**
-	 * Pointer to the fragment itself
-	 */
-	private static ListFragment		me			= null;
 	protected static final String	TAG			= "ListFragment";
-
-	public static ListFragment getSingleton() {
-		return me;
-	}
-
-	protected static void setSingleton(ListFragment me) {
-		if (ListFragment.me == null) {
-			ListFragment.me = me;
-		}
-	}
 
 	// private static final String TAG = "ListsActivity";
 	protected ListAdapter		adapter;
@@ -269,7 +255,6 @@ public class ListFragment extends MirakelFragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		setSingleton(this);
 		this.main = (MainActivity) getActivity();
 		this.EditName = false;
 		this.enableDrag = false;
