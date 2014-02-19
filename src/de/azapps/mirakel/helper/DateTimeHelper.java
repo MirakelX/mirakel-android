@@ -33,22 +33,26 @@ import de.azapps.mirakelandroid.R;
 
 public class DateTimeHelper {
 
-	private static final SimpleDateFormat	CalDav			= new SimpleDateFormat(
-			"yyyyMMdd'T'kkmmss",
-			Locale.getDefault());
-	private static final SimpleDateFormat	CalDavDue		= new SimpleDateFormat(
-			"yyyyMMdd",
-			Locale.getDefault());
-	private static final SimpleDateFormat	dateFormat		= new SimpleDateFormat(
-			"yyyy-MM-dd",
-			Locale.getDefault());
-	private static final SimpleDateFormat	dateTimeFormat	= new SimpleDateFormat(
-			"yyyy-MM-dd'T'kkmmss'Z'",
-			Locale.getDefault());
+	public static final SimpleDateFormat	caldavFormat		= new SimpleDateFormat(
+																		"yyyyMMdd'T'kkmmss",
+																		Locale.getDefault());
+	public static final SimpleDateFormat	caldavDueFormat		= new SimpleDateFormat(
+																		"yyyyMMdd",
+																		Locale.getDefault());
+	public static final SimpleDateFormat	dateFormat			= new SimpleDateFormat(
+																		"yyyy-MM-dd",
+																		Locale.getDefault());
+	public static final SimpleDateFormat	dateTimeFormat		= new SimpleDateFormat(
+																		"yyyy-MM-dd'T'kkmmss'Z'",
+																		Locale.getDefault());
 
-	private static final SimpleDateFormat	TWFormat		= new SimpleDateFormat(
-			"yyyyMMdd'T'kkmmss'Z'",
-			Locale.getDefault());
+	public static final SimpleDateFormat	dbDateTimeFormat	= new SimpleDateFormat(
+																		"yyyy-MM-dd kk:mm:ss",
+																		Locale.getDefault());
+
+	public static final SimpleDateFormat	taskwarriorFormat	= new SimpleDateFormat(
+																		"yyyyMMdd'T'kkmmss'Z'",
+																		Locale.getDefault());
 
 	public static String formatDate(Calendar c) {
 		return c == null ? null : dateFormat.format(c.getTime());
@@ -85,9 +89,9 @@ public class DateTimeHelper {
 			now.setTime(new Date());
 			if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR1
 					|| !(now.get(Calendar.YEAR) == date.get(Calendar.YEAR)
-					&& now.get(Calendar.DAY_OF_MONTH) == date
-					.get(Calendar.DAY_OF_MONTH) && now
-					.get(Calendar.MONTH) == date.get(Calendar.MONTH)))
+							&& now.get(Calendar.DAY_OF_MONTH) == date
+									.get(Calendar.DAY_OF_MONTH) && now
+							.get(Calendar.MONTH) == date.get(Calendar.MONTH)))
 				return DateUtils.getRelativeTimeSpanString(
 						date.getTimeInMillis(), new Date().getTime(),
 						DateUtils.DAY_IN_MILLIS);
@@ -101,12 +105,16 @@ public class DateTimeHelper {
 		return c == null ? null : dateTimeFormat.format(c.getTime());
 	}
 
+	public static String formatDBDateTime(Calendar c) {
+		return c == null ? null : dbDateTimeFormat.format(c.getTime());
+	}
+
 	public static String formateCalDav(Calendar c) {
-		return c == null ? null : CalDav.format(c.getTime());
+		return c == null ? null : caldavFormat.format(c.getTime());
 	}
 
 	public static String formateCalDavDue(Calendar c) {
-		return c == null ? null : CalDavDue.format(c.getTime());
+		return c == null ? null : caldavDueFormat.format(c.getTime());
 	}
 
 	public static CharSequence formatReminder(Context ctx, Calendar date) {
@@ -115,7 +123,7 @@ public class DateTimeHelper {
 	}
 
 	public static String formatTaskWarrior(Calendar c) {
-		return c == null ? null : TWFormat.format(c.getTime());
+		return c == null ? null : taskwarriorFormat.format(c.getTime());
 	}
 
 	/**
@@ -132,7 +140,8 @@ public class DateTimeHelper {
 	}
 
 	public static boolean is24HourLocale(Locale l) {
-		String output = SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT,l).format(new Date());
+		String output = SimpleDateFormat.getTimeInstance(
+				SimpleDateFormat.SHORT, l).format(new Date());
 		if (output.contains(" AM") || output.contains(" PM")) return false;
 		return true;
 	}
@@ -140,35 +149,34 @@ public class DateTimeHelper {
 	public static Calendar parseCalDav(String date) throws ParseException {
 		if (date == null || date.equals("")) return null;
 		GregorianCalendar temp = new GregorianCalendar();
-		temp.setTime(CalDav.parse(date));
+		temp.setTime(caldavFormat.parse(date));
+		return temp;
+	}
+
+	private static Calendar parseDate(String date, SimpleDateFormat format) throws ParseException {
+		if (date == null || date.equals("")) return null;
+		GregorianCalendar temp = new GregorianCalendar();
+		temp.setTime(format.parse(date));
 		return temp;
 	}
 
 	public static Calendar parseCalDavDue(String date) throws ParseException {
-		if (date == null || date.equals("")) return null;
-		GregorianCalendar temp = new GregorianCalendar();
-		temp.setTime(CalDavDue.parse(date));
-		return temp;
+		return parseDate(date, caldavDueFormat);
 	}
 
 	public static Calendar parseDate(String date) throws ParseException {
-		if (date == null || date.equals("")) return null;
-		GregorianCalendar temp = new GregorianCalendar();
-		temp.setTime(dateFormat.parse(date));
-		return temp;
+		return parseDate(date, dateFormat);
 	}
 
 	public static Calendar parseDateTime(String date) throws ParseException {
-		if (date == null || date.equals("")) return null;
-		GregorianCalendar temp = new GregorianCalendar();
-		temp.setTime(dateTimeFormat.parse(date));
-		return temp;
+		return parseDate(date, dateTimeFormat);
+	}
+
+	public static Calendar parseDBDateTime(String date) throws ParseException {
+		return parseDate(date, dbDateTimeFormat);
 	}
 
 	public static Calendar parseTaskWarrior(String date) throws ParseException {
-		if (date == null || date.equals("")) return null;
-		GregorianCalendar temp = new GregorianCalendar();
-		temp.setTime(TWFormat.parse(date));
-		return temp;
+		return parseDate(date, taskwarriorFormat);
 	}
 }
