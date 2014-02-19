@@ -1,4 +1,4 @@
-
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   Mirakel is an Android App for Managing your ToDo-Lists
   
@@ -17,82 +17,44 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/box_tasks_fragment"
-    android:layout_width="0dp"
-    android:layout_height="match_parent"
-    android:layout_weight=".50"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingEnd="@dimen/activity_horizontal_margin"
-    android:paddingStart="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".TasksActivity" >
+<LinearLayout android:id="@+id/box_tasks_fragment" android:layout_height="match_parent" android:layout_weight=".50" android:layout_width="0dp" android:orientation="vertical" android:paddingBottom="@dimen/activity_vertical_margin" android:paddingLeft="@dimen/activity_horizontal_margin" android:paddingRight="@dimen/activity_horizontal_margin" android:paddingTop="@dimen/activity_vertical_margin" tools:context=".TasksActivity" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+  
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:orientation="horizontal" >
+    
+  <LinearLayout android:focusable="true" android:focusableInTouchMode="true" android:layout_height="wrap_content" android:layout_width="match_parent" android:orientation="horizontal">
+    
 
-        <ImageButton
-            android:id="@+id/btnAudio_tasks"
-            style="@style/imgButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:contentDescription="@string/speak"
-            android:src="@drawable/recording" />
+        
+    <ImageButton android:contentDescription="@string/speak" android:id="@+id/btnAudio_tasks" android:layout_height="48dp" android:layout_width="48dp" android:src="@drawable/recording" style="@style/imgButton"/>
+    
 
-        <ImageButton
-            android:id="@+id/btnSpeak_tasks"
-            style="@style/imgButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:contentDescription="@string/speak"
-            android:src="@android:drawable/ic_btn_speak_now" />
+        
+    <ImageButton android:contentDescription="@string/speak" android:id="@+id/btnSpeak_tasks" android:layout_height="48dp" android:layout_width="48dp" android:src="@android:drawable/ic_btn_speak_now" style="@style/imgButton"/>
+    
 
-        <ImageButton
-            android:id="@+id/btnCamera"
-            style="@style/imgButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:contentDescription="@string/takePhoto"
-            android:src="@android:drawable/ic_menu_camera" />
+        
+    <ImageButton android:contentDescription="@string/takePhoto" android:id="@+id/btnCamera" android:layout_height="48dp" android:layout_width="48dp" android:src="@android:drawable/ic_menu_camera" style="@style/imgButton"/>
+    
 
-        <EditText
-            android:id="@+id/tasks_new"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:hint="@string/tasks_new_str"
-            android:imeOptions="actionSend"
-            android:singleLine="true"
-            android:textSize="20sp" />
+        
+    <EditText android:hint="@string/tasks_new_str" android:id="@+id/tasks_new" android:imeOptions="actionSend" android:layout_height="48dp" android:layout_weight="1" android:layout_width="0dp" android:singleLine="true" android:textSize="20sp"/>
+    
 
-        <ImageButton
-            android:id="@+id/btnEnter"
-            style="@style/imgButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:contentDescription="@android:string/ok"
-            android:src="@android:drawable/ic_menu_send"
-            android:visibility="gone" />
-    </LinearLayout>
+        
+    <ImageButton android:contentDescription="@android:string/ok" android:id="@+id/btnEnter" android:layout_height="48dp" android:layout_width="48dp" android:src="@android:drawable/ic_menu_send" android:visibility="gone" style="@style/imgButton"/>
+    
+    
+  </LinearLayout>
+  
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="@dimen/marginTopDivider"
-        android:background="?android:attr/listDivider" />
+    
+  <View android:background="?android:attr/listDivider" android:layout_height="1dp" android:layout_marginTop="@dimen/marginTopDivider" android:layout_width="match_parent"/>
+  
 
-    <ListView
-        android:id="@+id/tasks_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clickable="true"
-        android:descendantFocusability="beforeDescendants" >
+    
+  <ListView android:clickable="true" android:descendantFocusability="beforeDescendants" android:id="@+id/tasks_list" android:layout_height="match_parent" android:layout_width="match_parent">
     </ListView>
+  
+
 
 </LinearLayout>

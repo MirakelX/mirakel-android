@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   Mirakel is an Android App for Managing your ToDo-Lists
   
@@ -16,19 +17,16 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:baselineAligned="false" >
+<LinearLayout android:baselineAligned="false" android:layout_height="match_parent" android:layout_width="match_parent" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+  
 
-    <include layout="@layout/layout_tasks_fragment" />
+    
+  <include layout="@layout/layout_tasks_fragment"/>
+  
 
-    <FrameLayout
-        android:id="@+id/task_fragment_in_tasks"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_marginStart="10dp"
-        android:layout_weight=".70" />
+    
+  <FrameLayout android:id="@+id/task_fragment_in_tasks" android:layout_height="match_parent" android:layout_marginLeft="10dp" android:layout_weight=".70" android:layout_width="0dp"/>
+  
+
 
 </LinearLayout>

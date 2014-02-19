@@ -17,79 +17,48 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/tasks_row"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:descendantFocusability="blocksDescendants"
-    android:orientation="horizontal"
-    android:padding="5dp" >
+<RelativeLayout android:descendantFocusability="blocksDescendants" android:id="@+id/tasks_row" android:layout_height="match_parent" android:layout_width="match_parent" android:orientation="horizontal" android:padding="5dp" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+  
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_marginEnd="41dp"
-        android:orientation="vertical" >
+    
+  <LinearLayout android:layout_alignParentLeft="true" android:layout_height="wrap_content" android:layout_marginRight="41dp" android:layout_width="wrap_content" android:orientation="vertical">
+    
 
-        <TextView
-            android:id="@+id/tasks_row_name"
-            android:layout_width="wrap_content"
-            android:layout_height="0dip"
-            android:layout_weight="1"
-            android:ellipsize="end"
-            android:textSize="18sp" >
+        
+    <TextView android:ellipsize="end" android:id="@+id/tasks_row_name" android:layout_height="0dip" android:layout_weight="1" android:layout_width="wrap_content" android:textSize="18sp">
         </TextView>
+    
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+        
+    <LinearLayout android:layout_height="wrap_content" android:layout_width="wrap_content">
+      
 
-            <TextView
-                android:id="@+id/tasks_row_due"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
-                android:textColor="@color/Grey"
-                android:textSize="12sp" />
+            
+      <TextView android:id="@+id/tasks_row_due" android:layout_height="wrap_content" android:layout_marginRight="5dp" android:layout_width="wrap_content" android:textColor="@color/Grey" android:textSize="12sp"/>
+      
 
-            <TextView
-                android:id="@+id/tasks_row_list_name"
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
-                android:layout_weight="1"
-                android:ellipsize="end"
-                android:textColor="@color/Grey"
-                android:textSize="12sp" />
+            
+      <TextView android:ellipsize="end" android:id="@+id/tasks_row_list_name" android:layout_height="wrap_content" android:layout_marginRight="5dp" android:layout_weight="1" android:layout_width="0dip" android:textColor="@color/Grey" android:textSize="12sp"/>
+      
 
-            <ImageView
-                android:id="@+id/tasks_row_has_content"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:contentDescription="@string/task_has_content"
-                android:src="@android:drawable/ic_input_get"
-                android:visibility="gone" />
-        </LinearLayout>
+            
+      <ImageView android:contentDescription="@string/task_has_content" android:id="@+id/tasks_row_has_content" android:layout_height="15dp" android:layout_width="15dp" android:src="@android:drawable/ic_input_get" android:visibility="gone"/>
+      
+        
     </LinearLayout>
+    
+    
+  </LinearLayout>
+  
 
-    <ImageView
-        android:id="@+id/label_bg"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentEnd="true"
-        android:layout_gravity="center"
-        android:scaleType="fitXY"
-        tools:ignore="contentDescription" />
+    
+  <ImageView android:id="@+id/label_bg" android:layout_alignParentRight="true" android:layout_gravity="center" android:layout_height="40dp" android:layout_width="40dp" android:scaleType="fitXY" tools:ignore="contentDescription"/>
+  
 
-    <TextView
-        android:id="@+id/tasks_row_priority"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentEnd="true"
-        android:gravity="center"
-        android:textSize="18sp" >
+    
+  <TextView android:gravity="center" android:id="@+id/tasks_row_priority" android:layout_alignParentRight="true" android:layout_height="40dp" android:layout_width="40dp" android:textSize="18sp">
     </TextView>
+  
+
 
 </RelativeLayout>

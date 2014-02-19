@@ -17,32 +17,20 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/tasks_row"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:descendantFocusability="blocksDescendants"
-    android:orientation="horizontal"
-    android:padding="5dp" >
+<LinearLayout android:descendantFocusability="blocksDescendants" android:id="@+id/tasks_row" android:layout_height="match_parent" android:layout_width="match_parent" android:orientation="horizontal" android:padding="5dp" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+  
 
-    <ImageButton
-        android:id="@+id/tasks_row_priority"
-        android:layout_width="16dp"
-        android:layout_height="16dp" />
+    
+  <ImageButton android:id="@+id/tasks_row_priority" android:layout_height="16dp" android:layout_width="16dp"/>
+  
 
-    <TextView
-        android:id="@+id/tasks_row_due"
-        style="@style/minimalisticWidgetText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="10dp" />
+    
+  <TextView android:id="@+id/tasks_row_due" android:layout_height="wrap_content" android:layout_width="wrap_content" android:paddingLeft="10dp" style="@style/minimalisticWidgetText"/>
+  
 
-    <TextView
-        android:id="@+id/tasks_row_name"
-        style="@style/minimalisticWidgetText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="10dp" />
+    
+  <TextView android:id="@+id/tasks_row_name" android:layout_height="wrap_content" android:layout_width="wrap_content" android:paddingLeft="10dp" style="@style/minimalisticWidgetText"/>
+  
+
 
 </LinearLayout>
