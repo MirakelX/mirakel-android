@@ -33,7 +33,7 @@
   <string name="where_like_begin_text">Inizia con</string>
   <string name="where_like_end_text">Termina con</string>
   <string name="delete">Elimina</string>
-  <string name="nothing">Nessuna ricorrenza</string>
+  <string name="nothing">Nessuna replica</string>
   <string-array name="special_list_def_date_picker">
     <item>Nessuna data</item>
     <item>Ieri</item>

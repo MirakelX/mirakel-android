@@ -7,5 +7,5 @@
   <string name="fontcolor">Colore carattere</string>
   <string name="widget_transparency">Trasparenza</string>
   <string name="widget_transparency_summary">%s%% trasparente</string>
-  <string name="widget_due_colors">Scadenze colorate</string>
+  <string name="widget_due_colors">Colora le scadenze</string>
 </resources>

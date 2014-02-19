@@ -19,7 +19,7 @@
   <string name="sync_frequency_summary_man">Sincronização manual</string>
   <string name="sync_caldav">Sincronização CalDAV</string>
   <string name="sync_caldav_howto_">
-<![CDATA[Tem que instalar e configurar ama aplicação compatível com o Mirakel para sincronização CalDAV-syncing. Atualmente tem que instalar, através da nossa páginba web, a nossa versão modificada da aplicação DAVdroid.<br /><br />
+<![CDATA[Tem que instalar e configurar uma aplicação compatível com o Mirakel para a sincronização CalDAV. Atualmente tem que instalar, através da nossa página web, uma versão modificada da aplicação DAVdroid.<br /><br />
 Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além disso, estamos a trabalhar em conjunto com outros programadores para que mais aplicações possam ser utilizadas em conjunto com o Mirakel.
 ]]>
     </string>

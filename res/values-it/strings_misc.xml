@@ -30,6 +30,30 @@ Per esempio, si vuole creare un elenco `Prossime due settimane`, dove mostrare t
 ]]>
     </string>
   <string name="help_semantic_title">Modelli attività</string>
+  <string name="help_semantic">
+<![CDATA[
+I modelli di attività possono velocizzare l\'utilizzo quotidiano di Mirakel. Per esempio, è possibile creare una nuova Attività col nome \'Oggi da fare\' e Mirakel creerà un\'Attività \'Da fare\' con la data odierna come data di scadenza.
+
+Si possono anche combinare più condizioni tra loro. Bisogna però tenere in considerazione che le condizioni devono essere le prime parole del nome dell\'attività e che ogni condizione deve essere rappresentata da una sola parola.
+
+Per esempio è possibile utilizzare la seguente condizione: `Mirakel oggi correggi quel problema` In questo modo verrà creata una nuova Attività nell\'elenco `NA: Mirakel` (prima condizione) e verrà impostata la data odierna come scadenza (seconda condizione).
+
+#### Attenzione:
+
+* L\'ultima condizione sovrascrive le precedenti se queste svolgono la stessa azione. (Se si crea un\'Attività `Oggi domani eccetera`, la data di scadenza sarà impostata a domani).
+* I modelli di attività sono più sicuri degli elenchi speciali.
+
+#### Come fare
+Creiamo una condizione `Mirakel` che aggiunga le attività nell\'elenco `NA: Mirakel`
+
+1. Andare in `Impostazioni→Attività`
+2. Attivare i `Modelli di attività`
+3. Andare in `Configura modelli attività`
+4. Premere il  pulsante `+` (o aprire la voce di menu per aggiungere un elenco speciale)
+5. Impostare la condizione a `Mirakel` (non fa distinzione tra maiuscole e minuscole)
+6. Premere`Imposta elenco` e selezionare l\'elenco `NA: Mirakel` (o l\'elenco che si desidera utilizzare)
+]]>
+    </string>
   <string name="help_subtasks_title">Attività secondarie</string>
   <string name="help_subtasks">
 <![CDATA[
@@ -103,7 +127,7 @@ Mirakel è software libero (rilasciato secondo i temrini della licenza GPLv3). I
     </string>
   <string name="list_friends">Amici</string>
   <string name="list_home">A casa</string>
-  <string name="list_work">A lavoro</string>
+  <string name="list_work">Al lavoro</string>
   <string name="meet_alice">Incontrare Alice</string>
   <string name="invitations">Spedire inviti</string>
   <string name="invitations_content">Per la grande festa</string>
