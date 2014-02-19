@@ -77,7 +77,6 @@ public class SettingsActivity extends PreferenceActivity {
 	@SuppressLint("NewApi")
 	@Override
 	protected void onActivityResult(final int requestCode, int resultCode, final Intent data) {
-		Log.d(TAG, "activity");
 		final Context that = this;
 		switch (requestCode) {
 			case FILE_IMPORT_DB:
@@ -95,14 +94,7 @@ public class SettingsActivity extends PreferenceActivity {
 				.setMessage(
 						this.getString(R.string.import_sure_summary,
 								path_db))
-								.setNegativeButton(android.R.string.cancel,
-										new OnClickListener() {
-
-									@Override
-									public void onClick(DialogInterface dialog, int which) {
-
-									}
-								})
+						.setNegativeButton(android.R.string.cancel, null)
 								.setPositiveButton(android.R.string.yes,
 										new OnClickListener() {
 

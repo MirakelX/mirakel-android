@@ -57,6 +57,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+import de.azapps.ilovefs.ILoveFS;
 import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.Mirakel.NoSuchListException;
 import de.azapps.mirakel.adapter.PagerAdapter;
@@ -133,7 +134,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 
 	protected int					currentPosition;
 	// State variables
-	private Task					currentTask;
+	protected Task					currentTask;
 	public boolean					darkTheme;
 	private Uri						fileUri;
 
@@ -147,7 +148,7 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 
 	protected ListFragment			listFragment;
 	private List<ListMirakel>		lists;
-	private DrawerLayout			mDrawerLayout;
+	protected DrawerLayout			mDrawerLayout;
 	private ActionBarDrawerToggle	mDrawerToggle;
 	private Menu					menu;
 	private PagerAdapter			mPagerAdapter;
@@ -463,7 +464,9 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 							setCurrentList(getCurrentList());
 							getListFragment().update();
 						}
-						dialog.dismiss();
+						if (dialog != null) {
+							dialog.dismiss();
+						}
 					}
 				}).show();
 	}
@@ -1076,7 +1079,10 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 				updateCurrentListAndTask();
 				if (this.currentPosition == getTaskFragmentPosition()) {
 					setCurrentTask(this.currentTask);
-				} else {
+				} else if (getListFragment() != null
+						&& getTasksFragment() != null
+						&& getListFragment().getAdapter() != null
+						&& getTasksFragment().getAdapter() != null) {
 					getListFragment().getAdapter()
 					.changeData(ListMirakel.all());
 					getListFragment().getAdapter().notifyDataSetChanged();
@@ -1133,14 +1139,20 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		if (getTasksFragment() == null) return;
 		getTasksFragment().closeActionMode();
 		getTaskFragment().closeActionMode();
-		if (MirakelPreferences.lockDrawerInTaskFragment()
-				&& position == getTaskFragmentPosition()) {
-			this.mDrawerLayout
-			.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-		} else {
-			this.mDrawerLayout
-			.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-		}
+		runOnUiThread(new Runnable() {
+
+			@Override
+			public void run() {
+				if (MirakelPreferences.lockDrawerInTaskFragment()
+						&& position == getTaskFragmentPosition()) {
+					MainActivity.this.mDrawerLayout
+					.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+				} else {
+					MainActivity.this.mDrawerLayout
+					.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+				}
+			}
+		});
 		loadMenu(position);
 
 	}
@@ -1245,7 +1257,13 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 		}
 		this.currentList = currentList;
 		if (this.mDrawerLayout != null) {
-			this.mDrawerLayout.closeDrawers();
+			runOnUiThread(new Runnable() {
+
+				@Override
+				public void run() {
+					MainActivity.this.mDrawerLayout.closeDrawers();
+				}
+			});
 		}
 
 		this.currentTask = currentList.getFirstTask();
