@@ -114,8 +114,7 @@ public class Task extends TaskBase {
 	private static Task cursorToTask(Cursor cursor) {
 		int i = 0;
 		GregorianCalendar due = new GregorianCalendar();
-		SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
-				"yyyy-MM-dd'T'kkmmss'Z'", Helpers.getLocal(context));
+		SimpleDateFormat dateTimeFormat =DateTimeHelper.dbDateTimeFormat;
 		try {
 			due.setTime(dateTimeFormat
 					.parse(cursor.getString(6)));
@@ -781,7 +780,7 @@ public class Task extends TaskBase {
 		values.put(CONTENT, getContent());
 		values.put(DONE, isDone());
 		values.put(DUE,
-				getDue() == null ? null : DateTimeHelper.formatDate(getDue()));
+				getDue() == null ? null : DateTimeHelper.formatDBDateTime(getDue()));
 		values.put(PRIORITY, getPriority());
 		values.put(SyncAdapter.SYNC_STATE, addFlag ? SYNC_STATE.ADD.toInt()
 				: SYNC_STATE.NOTHING.toInt());

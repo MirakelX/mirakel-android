@@ -460,7 +460,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 						+ " add column derived_from INTEGER DEFAULT NULL");
 			case 30:
 				db.execSQL("UPDATE " + Task.TABLE + " set " + Task.DUE
-						+ "=" + Task.DUE + "||'T000000Z'");
+						+ "=" + Task.DUE + "||' 00:00:00'");
 			default:
 				break;
 
