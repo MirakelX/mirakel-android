@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   Mirakel is an Android App for Managing your ToDo-Lists
   
@@ -17,63 +17,40 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
+<LinearLayout android:gravity="center_vertical" android:layout_height="wrap_content" android:layout_width="match_parent" android:minHeight="?android:attr/listPreferredItemHeight" android:paddingRight="?android:attr/scrollbarSize" xmlns:android="http://schemas.android.com/apk/res/android">
+  
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center_vertical"
-    android:minHeight="?android:attr/listPreferredItemHeight"
-    android:paddingEnd="?android:attr/scrollbarSize" >
+    
+  <ImageView android:id="@+android:id/icon" android:layout_gravity="center" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
+  
 
-    <ImageView
-        android:id="@+android:id/icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center" />
+    
+  <RelativeLayout android:layout_height="wrap_content" android:layout_marginBottom="6dip" android:layout_marginLeft="6dip" android:layout_marginRight="6dip" android:layout_marginTop="6dip" android:layout_weight="1" android:layout_width="0dip">
+    
 
-    <RelativeLayout
-        android:layout_width="0dip"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="6dip"
-        android:layout_marginEnd="6dip"
-        android:layout_marginStart="6dip"
-        android:layout_marginTop="6dip"
-        android:layout_weight="1" >
+        
+    <TextView android:ellipsize="marquee" android:fadingEdge="horizontal" android:id="@+android:id/title" android:layout_height="wrap_content" android:layout_width="wrap_content" android:singleLine="true" android:textAppearance="?android:attr/textAppearanceMedium"/>
+    
 
-        <TextView
-            android:id="@+android:id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="marquee"
-            android:fadingEdge="horizontal"
-            android:singleLine="true"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+        
+    <TextView android:id="@+android:id/summary" android:layout_alignLeft="@android:id/title" android:layout_below="@android:id/title" android:layout_height="wrap_content" android:layout_width="wrap_content" android:maxLines="4" android:textAppearance="?android:attr/textAppearanceSmall" android:textColor="?android:attr/textColorSecondary"/>
+    
+    
+  </RelativeLayout>
+  
 
-        <TextView
-            android:id="@+android:id/summary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@android:id/title"
-            android:layout_below="@android:id/title"
-            android:maxLines="4"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="?android:attr/textColorSecondary" />
-    </RelativeLayout>
+    
+  <!-- Preference should place its actual preference widget here. -->
+  
 
-    <!-- Preference should place its actual preference widget here. -->
-
-    <LinearLayout
-        android:id="@+android:id/widget_frame"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        android:orientation="vertical" >
+    
+  <LinearLayout android:gravity="center_vertical" android:id="@+android:id/widget_frame" android:layout_height="match_parent" android:layout_width="wrap_content" android:orientation="vertical">
     </LinearLayout>
+  
 
-    <ImageView
-        android:id="@+id/color_box"
-        android:layout_width="32dip"
-        android:layout_height="42dp"
-        android:layout_gravity="center" />
+    
+  <ImageView android:id="@+id/color_box" android:layout_gravity="center" android:layout_height="42dp" android:layout_width="32dip"/>
+  
+
 
 </LinearLayout>

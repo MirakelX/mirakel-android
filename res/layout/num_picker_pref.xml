@@ -1,35 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:ignore="newApi" >
+<LinearLayout android:layout_height="match_parent" android:layout_width="match_parent" android:orientation="vertical" tools:ignore="newApi" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+  
 
-    <TextView
-        android:id="@+id/num_picker_pref_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    
+  <TextView android:id="@+id/num_picker_pref_title" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
+  
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingEnd="20dp"
-        android:paddingStart="20dp" >
+    
+  <RelativeLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:paddingLeft="20dp" android:paddingRight="20dp">
+    
 
-        <NumberPicker
-            android:id="@+id/numberPicker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:descendantFocusability="blocksDescendants" />
+        
+    <NumberPicker android:descendantFocusability="blocksDescendants" android:id="@+id/numberPicker" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
+    
 
-        <TextView
-            android:id="@+id/num_picker_pref_summary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toEndOf="@+id/numberPicker"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-    </RelativeLayout>
+        
+    <TextView android:id="@+id/num_picker_pref_summary" android:layout_centerVertical="true" android:layout_height="wrap_content" android:layout_toRightOf="@+id/numberPicker" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"/>
+    
+    
+  </RelativeLayout>
+  
+
 
 </LinearLayout>
