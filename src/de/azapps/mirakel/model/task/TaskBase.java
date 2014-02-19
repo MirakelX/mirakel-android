@@ -164,7 +164,7 @@ class TaskBase {
 		cv.put(CONTENT, this.content);
 		cv.put(DONE, this.done);
 		String due = this.due == null ? null : DateTimeHelper
-				.formatDateTime(getDue());
+				.formatDBDateTime(getDue());
 		cv.put(DUE, due);
 		String reminder = null;
 		if (this.reminder != null) {
