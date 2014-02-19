@@ -38,13 +38,13 @@ public class TaskDetailContent extends BaseTaskDetailRow {
 
 	protected static final String	TAG	= "TaskDetailContent";
 	private String content;
-	private OnEditChanged			editChanged;
+	protected OnEditChanged			editChanged;
 	private final ImageButton		editContent;
-	private boolean					isContentEdit;
+	protected boolean				isContentEdit;
 	private final TextView			taskContent;
 
-	private final EditText			taskContentEdit;
-	private final ViewSwitcher		taskContentSwitcher;
+	protected final EditText		taskContentEdit;
+	protected final ViewSwitcher	taskContentSwitcher;
 
 	public TaskDetailContent(Context ctx) {
 		super(ctx);
@@ -128,7 +128,7 @@ public class TaskDetailContent extends BaseTaskDetailRow {
 		TaskDetailContent.this.task
 		.setContent(TaskDetailContent.this.taskContentEdit.getText()
 				.toString());
-		// save();
+		save();
 		this.content = this.task.getContent();
 		if (this.task.getContent().length() > 0) {
 			this.taskContent.setText(this.task.getContent());

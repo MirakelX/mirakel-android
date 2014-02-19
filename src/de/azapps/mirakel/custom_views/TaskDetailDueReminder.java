@@ -76,9 +76,9 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
 
 	protected boolean			mIgnoreTimeSet;
 
-	private ImageButton			recurrenceDue;
+	protected ImageButton		recurrenceDue;
 
-	private final ImageButton	recurrenceReminder;
+	protected final ImageButton	recurrenceReminder;
 
 	private final LinearLayout	reminderWrapper;
 
@@ -214,8 +214,9 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
 					reminderParams.width, reminderParams.height, 0.66f));
 		}
 		invalidate();
-		setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-				LayoutParams.WRAP_CONTENT));
+		setLayoutParams(new LayoutParams(
+				android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+				android.view.ViewGroup.LayoutParams.WRAP_CONTENT));
 	}
 
 
@@ -227,7 +228,7 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
 	}
 
 
-	private void setDue() {
+	protected void setDue() {
 		if (this.task.getDue() == null) {
 			this.taskDue.setText(this.context.getString(R.string.no_date));
 			this.taskDue.setTextColor(this.context.getResources().getColor(
@@ -238,6 +239,20 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
 			this.taskDue.setTextColor(this.context.getResources().getColor(
 					TaskHelper.getTaskDueColor(this.task.getDue(),
 							this.task.isDone())));
+		}
+	}
+
+	private void setReminder() {
+		if (this.task.getReminder() == null) {
+			this.taskReminder.setText(this.context
+					.getString(R.string.no_reminder));
+			this.taskReminder.setTextColor(this.context.getResources()
+					.getColor(inactive_color));
+		} else {
+			this.taskReminder.setText(DateTimeHelper.formatReminder(this.context,
+					this.task.getReminder()));
+			this.taskReminder.setTextColor(this.context.getResources()
+					.getColor(inactive_color));
 		}
 	}
 
@@ -292,17 +307,7 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
 		setupRecurrenceDrawable(this.recurrenceReminder,
 				this.task.getRecurringReminder());
 		setDue();
-		if (this.task.getReminder() == null) {
-			this.taskReminder.setText(this.context
-					.getString(R.string.no_reminder));
-			this.taskReminder.setTextColor(this.context.getResources()
-					.getColor(inactive_color));
-		} else {
-			this.taskReminder.setText(DateTimeHelper.formatReminder(this.context,
-					this.task.getReminder()));
-			this.taskReminder.setTextColor(this.context.getResources()
-					.getColor(inactive_color));
-		}
+		setReminder();
 		// handleMultiline();
 
 	}
