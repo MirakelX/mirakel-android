@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--
   Mirakel is an Android App for Managing your ToDo-Lists
   
@@ -17,99 +18,125 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<LinearLayout android:layout_height="match_parent" android:layout_width="match_parent" android:orientation="vertical" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
-  
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
 
-    
-  <LinearLayout android:id="@+id/subtask_header" android:layout_height="wrap_content" android:layout_width="match_parent">
-    
+    <LinearLayout
+        android:id="@+id/subtask_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
 
-        
-    <Button android:id="@+id/subtask_newtask" android:layout_height="match_parent" android:layout_weight="1" android:layout_width="0dp" android:text="@string/new_task" style="@style/Button"/>
-    
+        <Button
+            android:id="@+id/subtask_newtask"
+            style="@style/Button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/new_task" />
 
-        
-    <View android:layout_height="match_parent" style="@style/buttonDivider"/>
-    
+        <View
+            style="@style/buttonDivider"
+            android:layout_height="match_parent" />
 
-        
-    <Button android:ellipsize="end" android:id="@+id/subtask_select_old" android:layout_height="wrap_content" android:layout_weight="1" android:layout_width="0dp" android:lines="1" android:text="@string/add_existing" android:textColor="@color/Grey" style="@style/Button"/>
-    
-    
-  </LinearLayout>
-  
-
-    
-  <ViewSwitcher android:id="@+id/subtask_switcher" android:layout_height="match_parent" android:layout_width="match_parent">
-    
-
-        
-    <LinearLayout android:layout_height="match_parent" android:layout_width="match_parent" android:orientation="vertical">
-      
-
-            
-      <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="@string/task_name"/>
-      
-
-            
-      <EditText android:focusableInTouchMode="true" android:id="@+id/subtask_add_task_edit" android:imeOptions="actionSend" android:inputType="text" android:layout_height="wrap_content" android:layout_width="match_parent"/>
-      
-        
+        <Button
+            android:id="@+id/subtask_select_old"
+            style="@style/Button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:lines="1"
+            android:text="@string/add_existing"
+            android:textColor="@color/Grey" />
     </LinearLayout>
-    
 
-        
-    <LinearLayout android:layout_height="match_parent" android:layout_width="match_parent" android:orientation="vertical">
-      
+    <ViewSwitcher
+        android:id="@+id/subtask_switcher"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
 
-            
-      <EditText android:drawableLeft="@android:drawable/ic_menu_search" android:ems="10" android:id="@+id/subtask_searchbox" android:inputType="text" android:layout_height="wrap_content" android:layout_width="match_parent">
-        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
 
-                
-        <requestFocus/>
-        
-            
-      </EditText>
-      
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/task_name" />
 
-            
-      <Button android:id="@+id/subtasks_options" android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="@string/subtask_add_options" style="@style/selectableButton"/>
-      
+            <EditText
+                android:id="@+id/subtask_add_task_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusableInTouchMode="true"
+                android:imeOptions="actionSend"
+                android:inputType="text" />
+        </LinearLayout>
 
-            
-      <LinearLayout android:id="@+id/subtask_option_wrapper" android:layout_height="wrap_content" android:layout_width="match_parent" android:orientation="vertical">
-        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
 
-                
-        <CheckBox android:id="@+id/subtask_done" android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="@string/subtask_done"/>
-        
+            <EditText
+                android:id="@+id/subtask_searchbox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@android:drawable/ic_menu_search"
+                android:ems="10"
+                android:inputType="text" >
 
-                
-        <CheckBox android:id="@+id/subtask_reminder" android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="@string/subtask_reminder"/>
-        
+                <requestFocus />
+            </EditText>
 
-                
-        <CheckBox android:id="@+id/subtask_content" android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="@string/subtask_content"/>
-        
+            <Button
+                android:id="@+id/subtasks_options"
+                style="@style/selectableButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/subtask_add_options" />
 
-                
-        <Button android:id="@+id/subtask_list" android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="@string/list_all"/>
-        
-            
-      </LinearLayout>
-      
+            <LinearLayout
+                android:id="@+id/subtask_option_wrapper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
 
-            
-      <ListView android:id="@+id/subtask_listview" android:layout_height="match_parent" android:layout_width="match_parent">
+                <CheckBox
+                    android:id="@+id/subtask_done"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/subtask_done" />
+
+                <CheckBox
+                    android:id="@+id/subtask_reminder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/subtask_reminder" />
+
+                <CheckBox
+                    android:id="@+id/subtask_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/subtask_content" />
+
+                <Button
+                    android:id="@+id/subtask_list"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/list_all" />
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/subtask_listview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
             </ListView>
-      
-        
-    </LinearLayout>
-    
-    
-  </ViewSwitcher>
-  
-
+        </LinearLayout>
+    </ViewSwitcher>
 
 </LinearLayout>
