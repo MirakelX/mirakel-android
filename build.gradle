@@ -53,7 +53,7 @@ android {
     }
 }
 dependencies {
-    compile project(':mirakel_helper')
+    compile project(':helper')
     compile fileTree(dir: 'libs', include: '*.jar', exclude: 'android-support-v4.jar')
 }
 
