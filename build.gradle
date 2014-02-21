@@ -108,12 +108,12 @@ android {
 }
 
 dependencies {
-    compile project(':mirakel_modell')
-    compile project(':mirakel_helper')
-    compile project(':mirakel_widget')
-    compile project(':mirakel_tw_sync')
+    compile project(':modell')
+    compile project(':helper')
+    compile project(':widget')
+    compile project(':tw_sync')
     compile project(':changelog')
-    compile project(':mirakel_settings')
+    compile project(':settings')
     compile project(':ilovefs-android')
     compile project(':custom_views')
     compile fileTree(dir: 'libs', include: '*.jar', exclude: 'android-support-v4.jar')
