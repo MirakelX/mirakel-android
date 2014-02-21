@@ -108,7 +108,7 @@ android {
 }
 
 dependencies {
-    compile project(':modell')
+    compile project(':model')
     compile project(':helper')
     compile project(':widget')
     compile project(':tw_sync')

@@ -1,7 +1,7 @@
 include 'main'
 include 'helper'
 include 'donationslib'
-include 'modell'
+include 'model'
 include 'widget'
 include 'settings'
 include 'progressbar'
