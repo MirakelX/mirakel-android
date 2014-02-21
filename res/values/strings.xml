@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="audio_default_title">Listen to that!</string>
+    <string name="file_default_title">Check out this file</string>
+    <string name="photo_default_title">Check out this photo</string>
+    
+    <string name="humanDateTimeFormat">yyyy-MM-dd – kk:mm</string>
+    <string name="today">Today</string>
+    
+        <!-- Contact -->
+    <string name="contact_email">mirakel@azapps.de</string>
+    <string name="contact_subject">Mirakel Bug-report/Contact request</string>
+    <string name="contact_text">
+<![CDATA[\n\n
+--\n
+Mirakel-version: %1$s\n
+SDK-version: %2$d\n
+Device: %3$s\n]]>
+    </string>
+    <string name="contact_no_client">No e-mail client installed</string>
+    <string name="contact_chooser">Send e-mail&#8230;</string>
+    
+    <string name="no_filemanager">Please install a file manager</string>
+    
+</resources>

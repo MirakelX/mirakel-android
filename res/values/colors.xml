@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Mirakel is an Android App for Managing your ToDo-Lists
+  
+  Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+  
+      This program is free software: you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation, either version 3 of the License, or
+      any later version.
+  
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+  
+      You should have received a copy of the GNU General Public License
+      along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<resources>
+
+    <color name="Grey">#7F7F7F</color>
+    <color name="Black">#000000</color>
+    <color name="Red">#FF0000</color>
+    <color name="Orange">#EF0381</color>
+    <color name="Yellow">#FFA500</color>
+    <color name="Green">#00c400</color>
+    <color name="pressed_color">#6633b5e5</color>
+    <color name="White">#FFFFFF</color>
+    <color name="highlighted_text_holo_dark">#6633b5e5</color>
+    <color name="highlighted_text_holo_light">#6633b5e5</color>
+    <color name="holo_blue_dark">#ff0099cc</color>
+    <color name="holo_blue_light">#ff33b5e5</color>
+    <color name="holo_orange_dark">#ffff8800</color>
+    <color name="holo_red_dark">#ffcc0000</color>
+    <!-- Datepicker -->
+    <color name="white">#ffffffff</color>
+    <color name="circle_background">#fff2f2f2</color>
+    <color name="line_background">#ffcccccc</color>
+    <color name="done_text_color_normal">#ff333333</color>
+    <color name="done_text_color_disabled">#ffcccccc</color>
+    <color name="blue">#ff33b5e5</color>
+    <color name="darker_blue">#ff0099cc</color>
+    <color name="date_picker_text_normal">#ff999999</color>
+    <color name="ampm_text_color">#8c8c8c</color>
+    <color name="numbers_text_color">#8c8c8c</color>
+    <color name="transparent_black">#7F000000</color>
+
+    <!-- Datepicker dark -->
+
+    <color name="dialog_gray">#28ffffff</color>
+    <color name="black">#ff000000</color>
+    <!-- If this color is changed or no longer used as the primary background, ensure that blackish_trans is changed as well. -->
+    <color name="blackish">#1c1e20</color>
+    <!-- Transparent background for use in the footer. 80% opacity. The color must remain the same as "blackish" above. -->
+    <color name="grey">#ffaaaaaa</color>
+    <color name="transparent">#00000000</color>
+    <color name="clock_white">#ffffff</color>
+    <color name="clock_gray">#80ffffff</color>
+    <color name="clock_blue">#ff33b5e5</color>
+    <color name="dialog_dark_gray">#70000000</color>
+    <color name="recurrence_bubble_text_normal">#ff737373</color>
+
+</resources>
