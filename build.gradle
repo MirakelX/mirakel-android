@@ -53,8 +53,8 @@ android {
     }
 }
 dependencies {
-    compile project(':mirakel_modell')
-    compile project(':mirakel_helper')
+    compile project(':modell')
+    compile project(':helper')
     compile project(':progressbar')
     compile project(':date-time-picker')
     compile fileTree(dir: 'libs', include: '*.jar', exclude: 'android-support-v4.jar')
