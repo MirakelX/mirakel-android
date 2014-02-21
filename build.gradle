@@ -53,9 +53,9 @@ android {
     }
 }
 dependencies {
-    compile project(':mirakel_modell')
-    compile project(':mirakel_helper')
-    compile project(':mirakel_tw_sync')
+    compile project(':modell')
+    compile project(':helper')
+    compile project(':tw_sync')
     compile project(':changelog')
     compile project(':custom_views')
     compile project(':donationslib')
