@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="subtask_list_name">Subtasks</string>
+    
+     <!-- Reccuring -->
+    <string name="daily">Daily</string>
+    <string name="second_day">Bidaily</string>
+    <string name="weekly">Weekly</string>
+    <string name="two_weekly">Biweekly</string>
+    <string name="yearly">Yearly</string>
+    <string name="monthly">Monthly</string>
+    <string name="hourly">Hourly</string>
+    <string name="minutly">Every Minute</string>
+    <string name="recurring">Recurrence</string>
+    <string name="label">Label</string>
+    <string name="forDue">Use it for due</string>
+    <string name="minute">Minute</string>
+    <string name="hour">Hour</string>
+    <string name="day">Day</string>
+    <string name="month">Month</string>
+    <string name="year">Year</string>
+    <string name="new_recurring">New recurrence</string>
+    <string name="intervall">Interval</string>
+    <string name="beginning">Beginning</string>
+    <string name="end">End</string>
+    <string name="no_begin_end">No %s</string>
+    <string name="beginning_end">Beginning and End</string>
+    <string name="save">Save</string>
+    <string name="file_to_large">Failed to create thumbnail</string>
+    <string name="every">Every</string>
+    <!-- Specifies that a repeating event to repeat forever (based on the defined frequency) instead of ending at a future date[CHAR LIMIT=20] -->
+    <string name="recurrence_end_continously">Forever</string>
+    <!-- Specifies that a repeating event to repeat until a certain date[CHAR LIMIT=25] -->
+    <string name="recurrence_end_date_label">Until a date</string>
+    <string name="use_exact_recurrence">Set recurrence based on done date?</string>
+    <string name="recurrence_from_now">From now</string>
+    <string name="recurrence_from">From</string>
+    
+        <string name="list_all">All Lists</string>
+    <string name="list_today">Tasks today</string>
+    <string name="list_week">This week</string>
+    <string name="list_overdue">Overdue</string>
+    
+    <!-- Example Data -->
+    <string name="inbox">Inbox</string>
+    <string name="first_task">First task</string>
+    
+    <string-array name="weekdays">
+        <item>Don\'t set</item>
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+        <item>Sunday</item>
+    </string-array>
+    
+    <string name="local_account">Local Account</string>
+    <string name="tw_account">Taskwarrior</string>
+    <string name="calDavName">CalDav</string>
+    
+    <string name="search_result_title">Search for %s</string>
+    
+    <string name="task_empty">No task selected…</string>
+    <string name="no_lists">This task cannot be synced, because you have no lists</string>
+    
+        <!-- Any.Do -->
+    <string name="import_any_do_click">Import from Any.Do</string>
+    <string name="any_do_import_title">Select Any.Do backupfile</string>
+    <string name="any_do_this_file">Import from %s?\nIf not please select a file yourself</string>
+    <string name="any_do_how_to">Please backup first your Any.Do data. To do so, go to Any.Do → Settings → Backup → Create Backup. Then come back and press OK.\nOr select the file yourself.</string>
+    <string name="select_file">Select file</string>
+    <string name="wait">Please wait…</string>
+    
+    <!-- Backup -->
+    <string name="backup_import_error">There was an error while importing the database</string>
+    <string name="backup_import_ok">The import was fine - please restart Mirakel</string>
+    <string name="backup_export_error">There was an error while exporting the database</string>
+    <string name="backup_export_ok">Exported to %s</string>
+    <string name="add_content">Add note…</string>
+    <string name="task_has_content">Task with note</string>
+    
+        <!-- Notification -->
+    <string name="notification_title_general">%1$d tasks in %2$s</string>
+    <string name="notification_title_general_single">1 task in %s</string>
+    <string name="notification_title_empty">Enjoy your day!</string>
+    <string name="reminder_notification_title">To do: %s</string>
+    <string name="reminder_notification_priority">Priority: %s</string>
+    <string name="reminder_notification_list">List: %s</string>
+    <string name="reminder_notification_due">Due: %s</string>
+    <string name="reminder_notification_done">Done</string>
+    <string name="reminder_notification_later">Later</string>
+    <string name="reminder_notification_done_confirm">I have set the task as "done"</string>
+    <string name="reminder_notification_later_confirm">I\'ll remind you in %d minutes</string>
+    <string name="list_vanished">Yikes, the task has vanished. I\'m sorry…</string>
+    <string name="task_vanished">Yikes, the list of the task has vanished. I\'m sorry…</string>
+    
+    <string name="no_date">No deadline</string>
+    
+     <string name="task_sorting_title">Sort tasks by</string>
+     
+     <!-- Sharing -->
+    <string name="share_using">Share with</string>
+    <string name="share_task">Share task</string>
+    <string name="share_task_title_with_date">%1$s (%2$s)</string>
+    <string name="share_task_title">%s</string>
+    <string name="share_list">Share list</string>
+    <string name="share_list_title">%1$s (%2$d)</string>
+    <string name="share_footer">Shared with Mirakel\nThe free (like in freedom) ToDo–List tool for Android and the Web\nhttp://mirakel.azapps.de</string>
+</resources>
