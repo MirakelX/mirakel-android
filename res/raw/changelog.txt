@@ -1,0 +1,178 @@
+<html>
+  <head>
+    <style type='text/css'>
+      a            {  }
+      div.title    {  
+          font-size:1.2em; 
+          font-weight:bold; 
+          margin-top:1em; 
+          margin-bottom:0.5em; 
+          text-align:center }
+      div.subtitle {  
+          font-size:0.8em; 
+          margin-bottom:1em; 
+          text-align:center }
+      div.freetext {  }
+      div.list     {  }
+    </style>
+  </head>
+  <body>
+$ 2.3.0
+  % Version 2.3.0
+  _ 2014-02-13
+  * Bugfixes
+  * Updated translations
+  * Added Bulgarian language
+  * Fixed a lot of bugs (hopefully)
+  * Updated translations
+  * New debug settings ;)
+  ! Please try out the taskwarrior sync! It should be stable but make a backup before!
+$ 2.2.1
+  % Version 2.2.1
+  _ 2013-12-28
+  ! This is a bugfix release.
+$ 2.2.0
+  % Version 2.2.0
+  _ 2013-12-24
+  ! Our huge Christmas release. We've worked hard to give you an awesome new, bugfree release. We hope the waiting has been worth it.
+  ! <b>We wish you a Merry Christmas!</b>
+  * Set the progress of your tasks
+  * Google Now integration
+  * New date and timepicker
+  * Audio records
+  * More task templates
+  * Multi-Account handling
+  * Caldav-Sync via davdroid
+  * Auto backup
+  * Added portuguese, dutch and arabic translation
+  * Dynamic Task Fragment
+  * And many more awesome stuff
+  ! This will be the last version of Mirakel which supports Android < 4.0. We'll provide of course bugfixes for your phone ;)
+$ 2.1.4
+  % Version 2.1.4
+  _ 2013-11-20
+  ! And some more Bugfixes…
+$ 2.1.3
+  % Version 2.1.3
+  _ 2013-11-18
+  ! Thank you for all the help. Here is the hopefully last small update before 2.2
+    * Bugfixes
+    * Improved Any.Do import
+    * Import from Wunderlist
+    * We prepare Mirakel for the CalDAV sync…
+  ! We are working hard implementing the <b>CalDAV</b> sync the right way. We hope we can publish a working version next week. If you want to test it, please join our <a href="https://plus.google.com/communities/110640831388790835840">Google+</a> community or sent us just an email.
+  ! If you use it, you have to update the <b>Mirakel-Dashclock</b> app too.
+$ 2.1.2
+  % Version 2.1.2
+  _ 2013-11-06
+  ! Sorry for the inconvenience but we wanted to fix the last bugs which let the app crash ;)
+    * Bugfixes
+   ! Some of you asked, we delivered: <a href="https://flattr.com/thing/2188714/Mirakel-easy-task-management-for-professionals">Flattr</a> us!
+   ! You are welcome to help us fixing some of our <a href="https://github.com/azapps/mirakel-android/issues">issues</a> ;)
+$ 2.1.1
+  % Version 2.1.1
+  _ 2013-11-03
+  ! Bugfixes + Czech translation
+    * Some urgent bug fixes.
+    * Czech translation (thank you, sarimak)
+  ! You want to test our beta releases? Join our <a href="https://plus.google.com/communities/110640831388790835840">Google+-community</a> 
+$ 2.1
+  % Version 2.1
+  _ 2013-11-01
+  ! Some new features, improved UI, Bugfixes
+    * New transparent widget! 
+    * Improved Task-detail view
+    * Improved reccurence
+    * Any.Do import
+    * Many bugfixes
+    * Updated Taskwarrior sync
+  ! Thank you for your support and your great feedback! Now we need <a href="http://mirakel.azapps.de/help_us.html">YOUR help</a>!
+  ! Spread Mirakel and rate it!
+  ! <b>@Taskwarrior-users:</b> Please update your taskwarrior-server! Contact us if you need help.
+$ 2.0
+  % Version 2.0
+  _ 2013-10-13
+  ! Awesome new UI and many new and cool features!
+    * New logo
+    * New UI
+    * <a href="http://mirakel.azapps.de/help_en.html#subtasks">Subtasks</a>
+    * Add files to Tasks
+    * Recurring Tasks
+    * Configure your <a href="http://mirakel.azapps.de/help_en.html#semantic-new-tasks">Semantic new Tasks</a>
+    * Redesign settings
+    * New translations: Norwegian, Slovenian
+    * Sync with <a href="http://mirakel.azapps.de/help_en.html#caldav-sync">CalDAV</a>
+    * Improved <a href="http://mirakel.azapps.de/help_en.html#taskwarrior-sync">Taswkarrior</a>-sync
+    * <a href="http://mirakel.azapps.de/help_en.html">Help</a>
+    * Bugfixes
+  ! Now Mirakel is the best todo list app on the market ;) If you don't think so, tell us, what we can improve!
+  
+$ 1.1.1
+  % Version 1.1.1
+  _ 2013-09-22
+  ! We are back – and we brought some bugfixes with us ;)
+    * Bugfixes
+    * Improved Configurations
+    * Small UI-Improvements
+    * French translation
+  ! New features coming soon ;)
+$ 1.1.0
+  % Version 1.1.0
+  _ 2013-08-26
+  ! You've waited a long time. Here is the new version! Many, many Bugfixes and new awesome features.
+    * Bugfixes
+    * Sync now with <a href="http://mirakel.azapps.de/taskwarrior.html">Taskwarrior</a> (preferred)
+    * Check the settings for new features! (Opt in)
+    * UI-Improvements
+    * Dark widget
+    * Spanish translation (thank you macebal)
+  ! We are the next few weeks on vacation – forgive us that we could not maintain Mirakel in this time. Afterwards we will give you more new and cool features.
+$ 1.0.1
+  % Version 1.0.1
+  _ 2013-07-30
+  ! Hey you, thank you for using this app! We have already more than 500 downloads. Thank you for your ideas and Bug-reports. Please send more!
+    * Bugfixes
+    * Improved Tablet-UI
+    * Dark theme
+    * Close Button
+    * Russian translation
+    * ActionBar for Android 2.2
+  ! We are working hard, programming a new, easy to install server for Mirakel! 
+  ! If you want to help us, get in touch with us!
+$ 1.0.0
+  % Version 1.0.0
+  _ 2013-07-21
+  ! Many Bugfixes
+    * Bugfixes
+    * Better help
+    * Improved Backup/Import
+    * Added Icon
+    * UI improvements
+    * Import Data from Astrid
+	* Tablet-UI
+    * Play Store-Release 
+$ 0.1.2
+  % Version 0.1.2
+  _ 2013-06-06
+  ! Feature Stop
+    * Reminders
+    * Search
+    * Share Lists and Tasks
+    * Better Where-Clause Input in Special-Lists-Settings
+    * Experimental Support Android >=2.2(API 8)
+    * Bugfixes
+$ 0.1.1
+  % Version 0.1.1
+  _ 2013-05-29
+  ! Now with this nice Change Log!
+  We've implemented some cool new functions:
+   * Reminders (on the other Branch)
+   * Change Log
+   * Only one big feature and many bugfixes till v1.0
+$ Pre 0.1.1
+  % Version <0.1.1
+  _ <2013-05-29
+    * alpha, but working :D
+$ END_OF_CHANGE_LOG
+  </body>
+</html>
