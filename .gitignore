@@ -34,6 +34,7 @@ local.properties
 lint.xml
 *~
 .gradle
+res-google/project.properties
 # External tool builders
 .externalToolBuilders/
 
