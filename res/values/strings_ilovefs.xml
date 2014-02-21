@@ -1,0 +1,18 @@
+<resources>
+
+    <string name="app_name">ILoveFS</string>
+    <string name="ilovefs_title">I ♥ Free Software Day</string>
+    <string name="ilovefs_message"><![CDATA[
+        <p>Valentine\'s Day traditionally is a day to show and celebrate love. So why do not take this as a chance to show your love for Free Software this year?</p>
+        <p><a href="https://fsfe.org/campaigns/ilovefs/">Learn more</a></p> 
+        ]]></string>
+    <string name="ilovefs_rate">Rate!</string>
+    <string name="ilovefs_email">Write us!</string>
+    <string name="ilovefs_email_no_client">Didn\'t find any mail client</string>
+    <string name="ilovefs_donate">Donate</string>
+    <string name="ilovefs_email_title">#ILoveFS</string>
+    <!-- 
+    <string name="ilovefs_"></string>
+     -->
+
+</resources>
