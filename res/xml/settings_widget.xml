@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Mirakel is an Android App for Managing your ToDo-Lists
+  
+  Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+  
+      This program is free software: you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation, either version 3 of the License, or
+      any later version.
+  
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+  
+      You should have received a copy of the GNU General Public License
+      along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <ListPreference
+        android:key="widgetList"
+        android:summary="@string/widget_list_summary"
+        android:title="@string/widget_list" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="isDark"
+        android:title="@string/dark_theme" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="showDone"
+        android:title="@string/widget_done" />
+
+    <de.azapps.mirakel.settings.ColorPickerPref
+        android:key="widgetFontColor"
+        android:title="@string/fontcolor" />
+
+    <Preference
+        android:defaultValue="0.5"
+        android:key="widgetTransparency"
+        android:title="@string/widget_transparency" />
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="widgetDueColors"
+        android:title="@string/widget_due_colors" />
+
+</PreferenceScreen>

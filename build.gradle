@@ -1,0 +1,61 @@
+buildscript {
+      dependencies {
+        repositories {
+            mavenCentral()
+            maven {
+                url "file:~/.m2/"
+                artifactUrls "file:~/.m2/"
+            }
+        }
+                              //
+        classpath 'com.android.tools.build:gradle:0.7.+'
+        classpath 'com.jakewharton.hugo:hugo-plugin:1.0.+'
+    }
+}
+dependencies {
+      repositories {
+        mavenCentral()
+
+        // NOTE: This is only needed when developing the plugin!
+        mavenLocal()
+    }
+}
+
+apply plugin: 'android-library'
+//apply plugin: 'hugo'
+apply plugin: 'eclipse'
+
+
+//gradle.projectsEvaluated {
+//    def script = "scripts/generate_v14_compatible_resources.py --res-dir res --res-v14-compatibility-dir res-v14".execute()
+//    script.err.eachLine {line -> println "ERROR: " + line}
+//    script.waitFor()
+//}
+
+android {
+    buildToolsVersion '19.0.0'
+    compileSdkVersion 19   
+    packagingOptions {
+            exclude 'META-INF/LICENSE.txt'
+            exclude 'META-INF/NOTICE.txt'
+    }
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            resources.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            renderscript.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
+        }
+
+    }
+}
+dependencies {
+    compile project(':mirakel_modell')
+    compile project(':mirakel_helper')
+    compile project(':colorpickerprefernce')
+    compile fileTree(dir: 'libs', include: '*.jar', exclude: 'android-support-v4.jar')
+}
+
