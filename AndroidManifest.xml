@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Mirakel is an Android App for Managing your ToDo-Lists
+  
+  Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
+  
+      This program is free software: you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation, either version 3 of the License, or
+      any later version.
+  
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+  
+      You should have received a copy of the GNU General Public License
+      along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="de.azapps.mirakelandroid"
+    android:versionCode="40"
+    android:versionName="2.3.1" >
+
+    <!-- TODO Remove Unused Permissions -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_SYNC_STATS" />
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+
+    <permission-group
+        android:name="de.azapps.mirakel.PERMISSION"
+        android:description="@string/permission_group_desc"
+        android:label="@string/permission_group_lbl" />
+    <!-- Maybe use "signature" instead of "dangerous"? -->
+    <permission
+        android:name="de.azapps.mirakel.provider.READ_DATA"
+        android:description="@string/permission_read_desc"
+        android:label="@string/permission_read_lbl"
+        android:permissionGroup="de.azapps.mirakel.PERMISSION"
+        android:protectionLevel="dangerous" />
+    <permission
+        android:name="de.azapps.mirakel.provider.WRITE_DATA"
+        android:description="@string/permission_write_desc"
+        android:label="@string/permission_write_lbl"
+        android:permissionGroup="de.azapps.mirakel.PERMISSION"
+        android:protectionLevel="dangerous" />
+    <permission
+        android:name="de.azapps.mirakel.provider.READ_WRITE_DATA"
+        android:description="@string/permission_read_write_desc"
+        android:label="@string/permission_read_write_lbl"
+        android:permissionGroup="de.azapps.mirakel.PERMISSION"
+        android:protectionLevel="dangerous" />
+    <!-- Dummy Permission for Sync-Service -->
+    <permission
+        android:name="de.azapps.mirakel.SYNC"
+        android:label=""
+        android:permissionGroup="de.azapps.mirakel.PERMISSION"
+        android:protectionLevel="signatureOrSystem" />
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="19" />
+
+    <application
+        android:name="de.azapps.mirakel.Mirakel"
+        android:allowBackup="true"
+        android:icon="@drawable/mirakel"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:hardwareAccelerated="true"
+        android:uiOptions="splitActionBarWhenNarrow" >
+        <activity
+            android:name="de.azapps.mirakel.static_activities.SplashScreenActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.SplashScreenDark"
+            android:windowSoftInputMode="stateAlwaysHidden" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="de.azapps.mirakel.main_activity.MainActivity"
+            android:configChanges="orientation|screenSize"
+            android:exported="true"
+            android:launchMode="singleTop" >
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="com.google.android.voicesearch.SELF_NOTE" />
+
+                <data android:mimeType="text/plain" />
+                <data android:mimeType="image/*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="image/*" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
+        <!-- android:launchMode="singleTop" -->
+        <activity
+            android:name="de.azapps.mirakel.static_activities.SettingsActivity"
+            android:label="@string/title_settings"
+            android:configChanges="orientation|screenSize"
+            android:windowSoftInputMode="adjustPan" >
+        </activity>
+        <activity
+            android:name="de.azapps.mirakel.static_activities.DonationsActivity"
+            android:label="@string/title_donations"
+            android:configChanges="orientation|screenSize"
+            android:parentActivityName="e.azapps.mirakel.static_activities.SettingsActivity"
+            android:windowSoftInputMode="adjustPan" >
+        </activity>
+        <activity
+            android:name="de.azapps.mirakel.sync.taskwarrior.TaskWarriorSetupActivity"
+            android:configChanges="orientation|screenSize"
+            android:excludeFromRecents="true"
+            android:label="@string/sync_taskwarrior_configure" >
+        </activity>
+
+        <service
+            android:name="de.azapps.mirakel.sync.AuthenticationService"
+            android:exported="true"
+            android:permission="de.azapps.mirakel.SYNC" >
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service>
+        <service
+            android:name="de.azapps.mirakel.sync.SyncService"
+            android:exported="true"
+            android:permission="de.azapps.mirakel.SYNC" >
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" >
+                </action>
+            </intent-filter>
+
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/adapter_sync" >
+            </meta-data>
+        </service>
+
+        <activity
+            android:name="de.azapps.mirakel.widget.MainWidgetSettingsActivity"
+            android:configChanges="orientation|screenSize"
+            android:windowSoftInputMode="adjustPan" >
+        </activity>
+        <activity
+            android:name="de.azapps.mirakel.static_activities.CreditsActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/title_activity_credits" >
+        </activity>
+        <activity
+            android:name="de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/title_activity_credits" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.azapps.mirakel.settings.special_list.SpecialListsSettings" />
+        </activity>
+        <activity
+            android:name="org.acra.CrashReportDialog"
+            android:excludeFromRecents="true"
+            android:finishOnTaskLaunch="true"
+            android:launchMode="singleInstance"
+            android:theme="@style/Dialog" />
+
+        <receiver android:name="de.azapps.mirakel.widget.MainWidgetProvider" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/provider_widget" />
+        </receiver>
+        <receiver
+            android:name="de.azapps.mirakel.reminders.ReminderAlarm"
+            android:enabled="true" >
+        </receiver>
+
+        <!-- The service serving the RemoteViews to the collection widget -->
+        <service
+            android:name="de.azapps.mirakel.widget.MainWidgetService"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <provider
+            android:name="de.azapps.mirakel.model.MirakelContentProvider"
+            android:authorities="de.azapps.mirakel.provider"
+            android:exported="true"
+            android:permission="de.azapps.mirakel.provider.READ_WRITE_DATA"
+            android:readPermission="de.azapps.mirakel.provider.READ_DATA"
+            android:writePermission="de.azapps.mirakel.provider.WRITE_DATA" >
+        </provider>
+
+        <service android:name="de.azapps.mirakel.services.NotificationService" />
+        <service android:name="de.azapps.mirakel.services.TaskService" />
+
+        <receiver
+            android:name="de.azapps.mirakel.receivers.BootUpReceiver"
+            android:enabled="true"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name="de.azapps.mirakel.settings.semantics.SemanticsSettingsActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/title_activity_credits" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.azapps.mirakel.settings.semantics.SemanticsSettings" />
+        </activity>
+        <activity
+            android:name="de.azapps.mirakel.settings.recurring.RecurringActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/title_activity_credits" >
+        </activity>
+        <activity
+            android:name="de.azapps.mirakel.settings.accounts.AccountSettingsActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/title_activity_credits" >
+        </activity>
+    </application>
+
+</manifest>
