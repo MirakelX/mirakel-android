@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Mirakel is an Android App for Managing your ToDo-Lists
+  
+  Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+  
+      This program is free software: you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation, either version 3 of the License, or
+      any later version.
+  
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+  
+      You should have received a copy of the GNU General Public License
+      along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/due_wrapper"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="7dp"
+    android:orientation="horizontal" xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        android:id="@+id/task_due"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawablePadding="5dp"
+        android:paddingBottom="5dp"
+        android:paddingEnd="@dimen/task_padding_for_icons"
+        android:paddingStart="@dimen/task_padding_for_icons"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="@dimen/due_reminder_text_size" />
+
+    <ImageButton
+        android:id="@+id/reccuring_due"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:layout_marginStart="5dp"
+        tools:ignore="ContentDescription" />
+
+</LinearLayout>

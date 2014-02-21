@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="taskViewCaption">
+        <item name="android:textSize">18sp</item>
+        <item name="android:paddingLeft">8dp</item>
+    </style>
+    <style name="selectableButton">
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+    </style>
+</resources>
