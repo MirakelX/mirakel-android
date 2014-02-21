@@ -53,7 +53,7 @@ android {
     }
 }
 dependencies {
-    compile project(':modell')
+    compile project(':model')
     compile project(':helper')
     compile project(':progressbar')
     compile project(':date-time-picker')
