@@ -15,13 +15,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
-import android.preference.PreferenceManager;
-import de.azapps.mirakel.helper.BuildConfig;
-import de.azapps.mirakel.helper.R;
 
 /**
  * In this class we collect all functions to get the current settings. The advantage is, that we can
@@ -307,6 +303,17 @@ public class MirakelCommonPreferences  extends MirakelPreferences{
 
 	public static boolean useSemanticNewTask() {
 		return settings.getBoolean("semanticNewTask", true);
+	}
+
+	public static boolean isDemoMode() {
+		if(settings==null) return false;
+		return settings.getBoolean("demoMode", false);
+	}
+
+	public static void setDemoMode(boolean val) {
+		Editor ed = settings.edit();
+		ed.putBoolean("demoMode", val);
+		ed.commit();
 	}
 
 }
