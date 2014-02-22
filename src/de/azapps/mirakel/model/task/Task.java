@@ -541,7 +541,7 @@ public class Task extends TaskBase {
 			} else if (key.equals("entry")) {
 				t.setCreatedAt(parseDate(val.getAsString(),
 						context.getString(R.string.TWDateFormat)));
-			} else if (key.equals("modification")) {
+			} else if (key.equals("modification")||key.equals("modified")) {
 				t.setUpdatedAt(parseDate(val.getAsString(),
 						context.getString(R.string.TWDateFormat)));
 			} else if (key.equals("done")) {
