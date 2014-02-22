@@ -60,6 +60,7 @@ import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
+import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.recurring.RecurringActivity;
 import de.azapps.mirakel.settings.semantics.SemanticsSettingsActivity;
 import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
@@ -68,7 +69,6 @@ import de.azapps.mirakel.static_activities.SettingsActivity;
 import de.azapps.mirakel.static_activities.SettingsFragment;
 import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
-import de.azapps.mirakel.settings.R;
 
 @SuppressLint("SimpleDateFormat")
 public class PreferencesAppHelper extends PreferencesHelper{
@@ -1129,6 +1129,17 @@ public class PreferencesAppHelper extends PreferencesHelper{
 					.putBoolean("useTabletLayout",
 							(Boolean) newValue).commit();
 					Helpers.restartApp(PreferencesAppHelper.this.activity);
+					return false;
+				}
+			});
+		}
+		final CheckBoxPreference demoMode = (CheckBoxPreference) findPreference("demoMode");
+		if(demoMode!= null) {
+			demoMode.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+				@Override
+				public boolean onPreferenceChange(Preference preference, Object newValue) {
+					MirakelCommonPreferences.setDemoMode((Boolean) newValue); 
+					Helpers.restartApp(activity);
 					return false;
 				}
 			});

@@ -22,6 +22,9 @@
     <CheckBoxPreference
         android:key="enabledDebug"
         android:title="@string/enableDebugLog" />
+    <CheckBoxPreference
+        android:key="demoMode"
+        android:title="@string/demo_mode" />
 
     <PreferenceCategory android:title="@string/settings_dev_sync" >
         <CheckBoxPreference
