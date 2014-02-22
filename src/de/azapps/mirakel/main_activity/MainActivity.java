@@ -61,14 +61,12 @@ import android.widget.Toast;
 import de.azapps.ilovefs.ILoveFS;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
-import de.azapps.mirakel.Mirakel;
 import de.azapps.mirakel.adapter.PagerAdapter;
 import de.azapps.mirakel.helper.BuildHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
-import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.SharingHelper;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.helper.TaskHelper;
@@ -928,6 +926,22 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 				registerReceiver(MainActivity.this.mSyncReciver,
 						new IntentFilter(
 								DefinitionsHelper.SYNC_FINISHED));
+				if(MirakelCommonPreferences.isDemoMode() && ListMirakel.count()<2) {
+					String[] lists=getResources().getStringArray(R.array.demo_lists);
+					for(String list : lists) {
+						ListMirakel.newList(list);
+					}
+					String[] tasks=getResources().getStringArray(R.array.demo_tasks);
+					String[] task_lists={lists[1],lists[1],lists[0],lists[2],lists[2],lists[2]};
+					int[] priorities={2,-1,1,2,0,0};
+					int i=0;
+					for(String task : tasks) {
+						Task t=Semantic.createTask(task, ListMirakel.findByName(task_lists[i]), true, MainActivity.this);
+						t.setPriority(priorities[i]);
+						t.safeSave();
+						i++;
+					}
+				}
 			}
 		}).run();
 		this.isTablet = MirakelCommonPreferences.isTablet();
