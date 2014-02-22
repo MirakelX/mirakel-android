@@ -404,7 +404,7 @@ public class TaskWarriorSync {
 				f.write(payload);
 				f.close();
 			} catch (Exception e) {
-
+				//eat it
 			}
 		}
 		TW_ERRORS error = doSync(a, sync);
@@ -434,7 +434,12 @@ public class TaskWarriorSync {
 			end = formatCal(new GregorianCalendar());
 		} else if (task.isDone()) {
 			status = "completed";
-			end = formatCal(new GregorianCalendar());
+			Map<String, String> additionals=task.getAdditionalEntries();
+			if(additionals.containsKey("end")){
+				end=task.getAdditionalEntries().get("end");
+			}else{
+				end = formatCal(new GregorianCalendar());
+			}
 		}
 		Log.i(TAG, "Status waiting / recurring is not implemented now");
 		// TODO
@@ -466,13 +471,12 @@ public class TaskWarriorSync {
 		}
 		if (task.getList() != null
 				&& !task.getAdditionalEntries().containsKey(NO_PROJECT)) {
-			Log.d(TAG, "set project");
 			json += ",\"project\":\"" + task.getList().getName() + "\"";
 		}
 		if (priority != null) {
 			json += ",\"priority\":\"" + priority + "\"";
 		}
-		json += ",\"modification\":\"" + formatCal(task.getUpdatedAt()) + "\"";
+		json += ",\"modified\":\"" + formatCal(task.getUpdatedAt()) + "\"";
 		if (task.getReminder() != null) {
 			json += ",\"reminder\":\"" + formatCal(task.getReminder()) + "\"";
 		}
