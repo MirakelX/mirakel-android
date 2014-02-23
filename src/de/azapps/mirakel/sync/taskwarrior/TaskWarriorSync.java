@@ -476,7 +476,7 @@ public class TaskWarriorSync {
 		if (priority != null) {
 			json += ",\"priority\":\"" + priority + "\"";
 		}
-		json += ",\"modified\":\"" + formatCal(task.getUpdatedAt()) + "\"";
+		json += ",\"modified\":\"" + task.getUpdatedAt().getTime().getTime() + "\"";
 		if (task.getReminder() != null) {
 			json += ",\"reminder\":\"" + formatCal(task.getReminder()) + "\"";
 		}
