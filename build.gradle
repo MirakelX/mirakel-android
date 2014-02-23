@@ -6,9 +6,30 @@ buildscript {
         classpath 'com.android.tools.build:gradle:0.7.+'
     }
 }
-
+gradle.projectsEvaluated {
+    def projects=["custom_views","date-time-picker"]
+    for(String proj:projects){
+        def res_dir=rootDir.toString()+"/"+proj+"/res"
+        def res_v14_dir=rootDir.toString()+"/"+proj+"/res-v14"
+        def script = (rootDir.toString()+"/build/scripts/generate_v14_compatible_resources.py --res-dir "+res_dir+" --res-v14-compatibility-dir "+res_v14_dir+"").execute()
+        script.err.eachLine {line -> println "ERROR: " + line}
+        script.waitFor()
+        def res = fileTree(dir: res_dir)
+        def res_v14 =fileTree(dir: res_v14_dir)
+        def res_dest=fileTree(dir: rootDir.toString()+"/build/merged-res")
+        copy{
+            from (res_dir){
+                include '**/*.xml'
+            }
+            from (res_v14_dir){
+                include '**/*.xml'
+            }
+            into (rootDir.toString()+"/"+proj+"/merged-res") 
+        }
+    }
+}
 allprojects {
-    repositories {
+    repositories {                   
         mavenCentral()
     }
 }
