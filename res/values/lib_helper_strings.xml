@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
     <string name="audio_default_title">Listen to that!</string>
     <string name="file_default_title">Check out this file</string>
     <string name="photo_default_title">Check out this photo</string>
