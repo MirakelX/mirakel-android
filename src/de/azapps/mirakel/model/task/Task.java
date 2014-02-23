@@ -541,9 +541,14 @@ public class Task extends TaskBase {
 			} else if (key.equals("entry")) {
 				t.setCreatedAt(parseDate(val.getAsString(),
 						context.getString(R.string.TWDateFormat)));
-			} else if (key.equals("modification")||key.equals("modified")) {
+			} else if (key.equals("modification")) {
 				t.setUpdatedAt(parseDate(val.getAsString(),
 						context.getString(R.string.TWDateFormat)));
+			} else if (key.equals("modified")) {
+				Calendar modification = new GregorianCalendar();
+				modification
+						.setTimeInMillis(Long.parseLong(val.getAsString()) * 1000);
+				t.setUpdatedAt(modification);
 			} else if (key.equals("done")) {
 				t.setDone(val.getAsBoolean());
 			} else if (key.equals("status")) {
