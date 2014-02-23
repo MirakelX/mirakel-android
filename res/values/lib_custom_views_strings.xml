@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
     <string name="edit">Edit</string>
     <string name="no_reminder">Set a reminder</string>
     <string name="add_files">Add file…</string>
