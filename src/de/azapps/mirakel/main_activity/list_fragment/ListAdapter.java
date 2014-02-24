@@ -32,11 +32,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import de.azapps.mirakel.adapter.MirakelArrayAdapter;
-import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
-import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.ModellHelper;
-import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.MirakelContentProvider;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -51,6 +48,7 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 		TextView listRowName;
 		TextView listRowTaskNumber;
 	}
+
 	@SuppressWarnings("unused")
 	private static final String TAG = "ListAdapter";
 	private boolean enableDrop;
@@ -80,7 +78,8 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 		ListHolder holder = null;
 
 		if (row == null) {
-			LayoutInflater inflater = ((Activity) this.context).getLayoutInflater();
+			LayoutInflater inflater = ((Activity) this.context)
+					.getLayoutInflater();
 			row = inflater.inflate(this.layoutResourceId, parent, false);
 			holder = new ListHolder();
 			holder.listRowName = (TextView) row
@@ -105,9 +104,10 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 		holder.listRowName.setText(list.getName());
 		holder.listRowName.setTag(list);
 		holder.listRowTaskNumber.setText("" + list.countTasks());
-		if(list.isSpecialList()||!MirakelCommonPreferences.isShowAccountName()) {
+		if (list.isSpecialList()
+				|| !MirakelCommonPreferences.isShowAccountName()) {
 			holder.listAccount.setVisibility(View.GONE);
-		} else{
+		} else {
 			holder.listAccount.setVisibility(View.VISIBLE);
 			AccountMirakel a = list.getAccount();
 			if (a == null) {
@@ -116,7 +116,8 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 				list.save(false);
 			}
 			holder.listAccount.setText(a.getName());
-			holder.listAccount.setTextColor(this.context.getResources().getColor(android.R.color.darker_gray));
+			holder.listAccount.setTextColor(this.context.getResources()
+					.getColor(android.R.color.darker_gray));
 		}
 		this.viewsForLists.put(list.getId(), row);
 		int w = row.getWidth() == 0 ? parent.getWidth() : row.getWidth();
@@ -156,7 +157,8 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 					"UPDATE " + TABLE + " SET lft=lft-2 where lft>"
 							+ this.data.get(from).getLft() + " and lft<="
 							+ this.data.get(to).getLft());
-		} else return;
+		} else
+			return;
 		t.setLft(this.data.get(to).getLft());
 		t.save();
 		MirakelContentProvider.getWritableDatabase().execSQL(

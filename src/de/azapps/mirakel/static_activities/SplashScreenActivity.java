@@ -32,7 +32,7 @@ import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakelandroid.R;
 
 public class SplashScreenActivity extends Activity {
-	public static final String	EXIT	= "de.azapps.mirakel.EXIT";
+	public static final String EXIT = "de.azapps.mirakel.EXIT";
 
 	@SuppressLint("NewApi")
 	@Override
@@ -52,7 +52,8 @@ public class SplashScreenActivity extends Activity {
 			return;
 		}
 		boolean darkTheme = MirakelCommonPreferences.isDark();
-		if (!darkTheme) setTheme(R.style.Theme_SplashScreen);
+		if (!darkTheme)
+			setTheme(R.style.Theme_SplashScreen);
 
 		// Intents
 		if (MirakelCommonPreferences.isStartupAllLists()) {

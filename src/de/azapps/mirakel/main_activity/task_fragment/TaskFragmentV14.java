@@ -29,9 +29,9 @@ import android.view.MenuItem;
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class TaskFragmentV14 extends TaskFragment {
 
-	private ActionMode					mActionMode;
+	private ActionMode mActionMode;
 	@SuppressLint("NewApi")
-	private final ActionMode.Callback	mActionModeCallback	= new ActionMode.Callback() {
+	private final ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
 
 		// Called when the user selects a
 		// contextual menu item
@@ -51,11 +51,8 @@ public class TaskFragmentV14 extends TaskFragment {
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 			// Inflate a menu resource
 			// providing context menu items
-			MenuInflater inflater = mode
-					.getMenuInflater();
-			boolean b = handleCabCreateMenu(
-					inflater,
-					menu);
+			MenuInflater inflater = mode.getMenuInflater();
+			boolean b = handleCabCreateMenu(inflater, menu);
 			if (b) {
 				TaskFragmentV14.this.mActionMode = mode;
 				TaskFragmentV14.this.mMenu = menu;
