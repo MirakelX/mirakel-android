@@ -25,7 +25,6 @@ import de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
-import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
@@ -427,6 +426,7 @@ public class TaskWarriorSync {
 	 * @return
 	 */
 	public String taskToJson(Task task) {
+		Map<String, String> additionals=task.getAdditionalEntries();
 		String end = null;
 		String status = "pending";
 		if (task.getSyncState() == SYNC_STATE.DELETE) {
@@ -434,9 +434,9 @@ public class TaskWarriorSync {
 			end = formatCal(new GregorianCalendar());
 		} else if (task.isDone()) {
 			status = "completed";
-			Map<String, String> additionals=task.getAdditionalEntries();
 			if(additionals.containsKey("end")){
-				end=task.getAdditionalEntries().get("end");
+				end=additionals.get("end");
+				end=end.substring(1,end.length()-1); // Clear redundant \"
 			}else{
 				end = formatCal(new GregorianCalendar());
 			}
@@ -470,13 +470,13 @@ public class TaskWarriorSync {
 			json += ",\"due\":\"" + formatCal(task.getDue()) + "\"";
 		}
 		if (task.getList() != null
-				&& !task.getAdditionalEntries().containsKey(NO_PROJECT)) {
+				&& !additionals.containsKey(NO_PROJECT)) {
 			json += ",\"project\":\"" + task.getList().getName() + "\"";
 		}
 		if (priority != null) {
 			json += ",\"priority\":\"" + priority + "\"";
 		}
-		json += ",\"modified\":\"" + task.getUpdatedAt().getTime().getTime() + "\"";
+		json += ",\"modified\":\"" + formatCal(task.getUpdatedAt()) + "\"";
 		if (task.getReminder() != null) {
 			json += ",\"reminder\":\"" + formatCal(task.getReminder()) + "\"";
 		}
@@ -524,11 +524,10 @@ public class TaskWarriorSync {
 		}
 		// end Dependencies
 		// Additional Strings
-		if (task.getAdditionalEntries() != null) {
-			Map<String, String> additionalEntries = task.getAdditionalEntries();
-			for (String key : additionalEntries.keySet()) {
+		if (additionals != null) {
+			for (String key : additionals.keySet()) {
 				if (!key.equals(NO_PROJECT)) {
-					json += ",\"" + key + "\":" + additionalEntries.get(key);
+					json += ",\"" + key + "\":" + additionals.get(key);
 				}
 			}
 		}
