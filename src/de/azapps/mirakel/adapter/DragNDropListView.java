@@ -312,7 +312,11 @@ public class DragNDropListView extends ListView {
 	protected void stopDrag(int itemIndex) {
 		if (this.mDragView != null) {
 			if (this.mDragListener != null) {
-				this.mDragListener.onStopDrag(getChildAt(itemIndex));
+				View v=getChildAt(itemIndex);
+				if(v==null){
+					v=getChildAt(getChildCount());
+				}
+				this.mDragListener.onStopDrag(v);
 			}
 			this.mDragView.setVisibility(GONE);
 			WindowManager wm = (WindowManager) getContext().getSystemService(
