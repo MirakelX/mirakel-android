@@ -38,6 +38,9 @@ android {
         minSdkVersion 17
     }
     flavorGroups "stores", "api_related"
+    lintOptions {
+        abortOnError false
+    }
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
