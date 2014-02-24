@@ -53,7 +53,7 @@ public class Msg {
 	public String get(String name) {
 		for (Pair<String, String> p : this._header) {
 			if (p.first.equals(name))
-				return p.second;
+				return p.second.trim();
 		}
 		return "";
 

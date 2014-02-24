@@ -308,7 +308,7 @@ public class TaskWarriorSync {
 	private void init() {
 		String server = this.accountManager.getUserData(this.account,
 				SyncAdapter.BUNDLE_SERVER_URL);
-		String srv[] = server.split(":");
+		String srv[] = server.trim().split(":");
 		if (srv.length != 2) {
 			error("port", 1376235889);
 		}
@@ -357,7 +357,7 @@ public class TaskWarriorSync {
 				try {
 					parent.addSubtask(child);
 				} catch (Exception e) {
-
+					//eat it
 				}
 			}
 
