@@ -1439,16 +1439,15 @@ public class MainActivity extends ActionBarActivity implements ViewPager.OnPageC
 
 					}
 				}, 1);
-				new Thread(new Runnable() {
-
+				runOnUiThread(new Runnable() {
+					
 					@Override
 					public void run() {
 						MainActivity.this.mViewPager.setCurrentItem(
 								getTaskFragmentPosition(), false);
-
+						
 					}
-				}).start();
-
+				});
 			} else {
 				Log.d(MainActivity.TAG, "task null");
 			}
