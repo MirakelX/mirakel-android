@@ -84,10 +84,16 @@ public class MirakelModelPreferences extends MirakelPreferences {
 	
 	public static ListMirakel subtaskAddToList() {
 		try {
-			return ListMirakel.getList(Integer.parseInt(settings.getString(
-					"subtaskAddToList", "-1")));
-		} catch (NumberFormatException E) {
-			return null;
+			return ListMirakel.getList(settings.getInt(
+					"subtaskAddToList", -1));
+		} catch (Exception E) {
+			//let old as fallback
+			try {
+				return ListMirakel.getList(Integer.parseInt(settings.getString(
+						"subtaskAddToList", "-1")));
+			} catch (NumberFormatException e) {
+				return null;
+			}
 		}
 	}
 	
