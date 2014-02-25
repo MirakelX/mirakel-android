@@ -49,8 +49,8 @@ public class WidgetHelper {
 			Log.wtf(TAG,"no mainactivity found");
 			return null;
 		}
-		openIntent.setAction(DefinitionsHelper.MAIN_SHOW_TASK);
-		openIntent.putExtra(DefinitionsHelper.MAIN_EXTRA_ID, task.getId());
+		openIntent.setAction(DefinitionsHelper.SHOW_TASK);
+		openIntent.putExtra(DefinitionsHelper.EXTRA_ID, task.getId());
 		openIntent
 				.setData(Uri.parse(openIntent.toUri(Intent.URI_INTENT_SCHEME)));
 		PendingIntent pOpenIntent = PendingIntent.getActivity(context, 0,

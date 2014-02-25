@@ -149,7 +149,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
 				Log.wtf(TAG, "mainactivity not found");
 				return;
 			}
-			mainIntent.setAction(DefinitionsHelper.MAIN_SHOW_LIST_FROM_WIDGET
+			mainIntent.setAction(DefinitionsHelper.SHOW_LIST_FROM_WIDGET
 					+ list.getId());
 			PendingIntent mainPendingIntent = PendingIntent.getActivity(
 					context, 0, mainIntent, 0);
@@ -167,7 +167,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
 				Log.wtf(TAG, "mainactivity not found");
 				return;
 			}
-			addIntent.setAction(DefinitionsHelper.MAIN_ADD_TASK_FROM_WIDGET
+			addIntent.setAction(DefinitionsHelper.ADD_TASK_FROM_WIDGET
 					+ list.getId());
 			PendingIntent addPendingIntent = PendingIntent.getActivity(context,
 					0, addIntent, 0);
@@ -280,8 +280,8 @@ public class MainWidgetProvider extends AppWidgetProvider {
 				Log.wtf(TAG, "mainactivity not found");
 				return;
 			}
-			startMainIntent.setAction(DefinitionsHelper.MAIN_SHOW_TASK_FROM_WIDGET);
-			startMainIntent.putExtra(DefinitionsHelper.MAIN_EXTRA_ID, taskId);
+			startMainIntent.setAction(DefinitionsHelper.SHOW_TASK_FROM_WIDGET);
+			startMainIntent.putExtra(DefinitionsHelper.EXTRA_ID, taskId);
 			startMainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			startMainIntent.setData(Uri.parse(startMainIntent
 					.toUri(Intent.URI_INTENT_SCHEME)));
