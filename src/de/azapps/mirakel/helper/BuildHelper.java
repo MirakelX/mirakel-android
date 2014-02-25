@@ -1,21 +1,20 @@
 package de.azapps.mirakel.helper;
 
-import de.azapps.mirakel.DefinitionsHelper;
-
-
 
 public class BuildHelper {
+
+	private static boolean IS_PLAYSTORE = false;
 
 	public static boolean isBeta() {
 		return MirakelCommonPreferences.isDebug();
 	}
 
 	public static boolean isForFDroid() {
-		return !DefinitionsHelper.IS_PLAYSTORE;
+		return !IS_PLAYSTORE;
 	}
 
 	public static boolean isForPlayStore() {
-		return DefinitionsHelper.IS_PLAYSTORE;
+		return IS_PLAYSTORE;
 	}
 
 	public static boolean isNightly() {
@@ -28,5 +27,9 @@ public class BuildHelper {
 
 	public static boolean useAutoUpdater() {
 		return !(isForPlayStore() || isForFDroid());
+	}
+	
+	public static void setPlaystore(boolean isPlaystore){
+		IS_PLAYSTORE=isPlaystore;
 	}
 }
