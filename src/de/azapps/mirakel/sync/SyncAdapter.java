@@ -89,7 +89,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			Log.wtf(TAG, "no mainactivity found");
 			return;
 		}
-		intent.setAction(DefinitionsHelper.MAIN_SHOW_LISTS);
+		intent.setAction(DefinitionsHelper.SHOW_LISTS);
 		PendingIntent p = PendingIntent.getService(this.mContext, 0, intent, 0);
 
 		NotificationCompat.Builder mNB = new NotificationCompat.Builder(
