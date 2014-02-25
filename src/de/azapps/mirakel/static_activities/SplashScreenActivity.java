@@ -22,6 +22,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.main_activity.MainActivity;
@@ -59,7 +60,7 @@ public class SplashScreenActivity extends Activity {
 		if (MirakelCommonPreferences.isStartupAllLists()) {
 			Intent intent = new Intent(SplashScreenActivity.this,
 					MainActivity.class);
-			intent.setAction(MainActivity.SHOW_LISTS);
+			intent.setAction(DefinitionsHelper.SHOW_LISTS);
 			startActivityForResult(intent, 42);
 		} else {
 			ListMirakel sl = SpecialList.firstSpecial();
@@ -70,8 +71,8 @@ public class SplashScreenActivity extends Activity {
 			int listId = MirakelModelPreferences.getStartupList().getId();
 			Intent intent = new Intent(SplashScreenActivity.this,
 					MainActivity.class);
-			intent.setAction(MainActivity.SHOW_LIST);
-			intent.putExtra(MainActivity.EXTRA_ID, listId);
+			intent.setAction(DefinitionsHelper.SHOW_LIST);
+			intent.putExtra(DefinitionsHelper.EXTRA_ID, listId);
 			finish();
 			startActivityForResult(intent, 1);
 		}

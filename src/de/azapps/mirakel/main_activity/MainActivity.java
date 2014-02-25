@@ -101,15 +101,6 @@ import de.azapps.tools.Log;
  */
 public class MainActivity extends ActionBarActivity implements
 		ViewPager.OnPageChangeListener {
-
-	public static String EXTRA_ID = "de.azapps.mirakel.EXTRA_TASKID",
-			SHOW_TASK = "de.azapps.mirakel.SHOW_TASK",
-			SHOW_LIST = "de.azapps.mirakel.SHOW_LIST",
-			SHOW_LISTS = "de.azapps.mirakel.SHOW_LISTS",
-			SHOW_LIST_FROM_WIDGET = "de.azapps.mirakel.SHOW_LIST_FROM_WIDGET",
-			ADD_TASK_FROM_WIDGET = "de.azapps.mirakel.ADD_TASK_FROM_WIDGET",
-			SHOW_TASK_FROM_WIDGET = "de.azapps.mirakel.SHOW_TASK_FROM_WIDGET",
-			TASK_ID = "de.azapp.mirakel.TASK_ID";
 	private static boolean isRTL;
 	// Intent variables
 	public static final int LEFT_FRAGMENT = 0, RIGHT_FRAGMENT = 1;
@@ -803,7 +794,7 @@ public class MainActivity extends ActionBarActivity implements
 				if (this.startIntent == null) {
 					this.startIntent = new Intent(MainActivity.this,
 							MainActivity.class);
-					this.startIntent.setAction(MainActivity.SHOW_LISTS);
+					this.startIntent.setAction(DefinitionsHelper.SHOW_LISTS);
 					Log.wtf(MainActivity.TAG,
 							"startIntent is null by switching theme");
 
@@ -1453,9 +1444,10 @@ public class MainActivity extends ActionBarActivity implements
 		this.startIntent = getIntent();
 		if (this.startIntent == null || this.startIntent.getAction() == null) {
 			Log.d(MainActivity.TAG, "action null");
-		} else if (this.startIntent.getAction().equals(MainActivity.SHOW_TASK)
+		} else if (this.startIntent.getAction().equals(
+				DefinitionsHelper.SHOW_TASK)
 				|| this.startIntent.getAction().equals(
-						MainActivity.SHOW_TASK_FROM_WIDGET)) {
+						DefinitionsHelper.SHOW_TASK_FROM_WIDGET)) {
 			final Task task = TaskHelper.getTaskFromIntent(this.startIntent);
 			if (task != null) {
 				this.skipSwipe = true;
@@ -1473,19 +1465,19 @@ public class MainActivity extends ActionBarActivity implements
 					}
 				}, 1);
 				runOnUiThread(new Runnable() {
-					
+
 					@Override
 					public void run() {
 						MainActivity.this.mViewPager.setCurrentItem(
 								getTaskFragmentPosition(), false);
-						
+
 					}
 				});
 			} else {
 				Log.d(MainActivity.TAG, "task null");
 			}
 			if (this.startIntent.getAction().equals(
-					MainActivity.SHOW_TASK_FROM_WIDGET)) {
+					DefinitionsHelper.SHOW_TASK_FROM_WIDGET)) {
 				this.closeOnBack = true;
 			}
 		} else if (this.startIntent.getAction().equals(Intent.ACTION_SEND)
@@ -1543,16 +1535,19 @@ public class MainActivity extends ActionBarActivity implements
 						});
 				builder.create().show();
 			}
-		} else if (this.startIntent.getAction().equals(MainActivity.SHOW_LIST)
+		} else if (this.startIntent.getAction().equals(
+				DefinitionsHelper.SHOW_LIST)
 				|| this.startIntent.getAction().contains(
-						MainActivity.SHOW_LIST_FROM_WIDGET)) {
+						DefinitionsHelper.SHOW_LIST_FROM_WIDGET)) {
 
 			int listId;
-			if (this.startIntent.getAction().equals(MainActivity.SHOW_LIST)) {
-				listId = this.startIntent.getIntExtra(MainActivity.EXTRA_ID, 0);
+			if (this.startIntent.getAction()
+					.equals(DefinitionsHelper.SHOW_LIST)) {
+				listId = this.startIntent.getIntExtra(
+						DefinitionsHelper.EXTRA_ID, 0);
 			} else {
 				listId = Integer.parseInt(this.startIntent.getAction().replace(
-						MainActivity.SHOW_LIST_FROM_WIDGET, ""));
+						DefinitionsHelper.SHOW_LIST_FROM_WIDGET, ""));
 			}
 			Log.v(MainActivity.TAG, "ListId: " + listId);
 			ListMirakel list = ListMirakel.getList(listId);
@@ -1561,19 +1556,20 @@ public class MainActivity extends ActionBarActivity implements
 			}
 			setCurrentList(list);
 			if (this.startIntent.getAction().contains(
-					MainActivity.SHOW_LIST_FROM_WIDGET)) {
+					DefinitionsHelper.SHOW_LIST_FROM_WIDGET)) {
 				this.closeOnBack = true;
 			}
-		} else if (this.startIntent.getAction().equals(MainActivity.SHOW_LISTS)) {
+		} else if (this.startIntent.getAction().equals(
+				DefinitionsHelper.SHOW_LISTS)) {
 			this.mDrawerLayout.openDrawer(DefinitionsHelper.GRAVITY_LEFT);
 		} else if (this.startIntent.getAction().equals(Intent.ACTION_SEARCH)) {
 			final String query = this.startIntent
 					.getStringExtra(SearchManager.QUERY);
 			search(query);
 		} else if (this.startIntent.getAction().contains(
-				MainActivity.ADD_TASK_FROM_WIDGET)) {
+				DefinitionsHelper.ADD_TASK_FROM_WIDGET)) {
 			final int listId = Integer.parseInt(this.startIntent.getAction()
-					.replace(MainActivity.ADD_TASK_FROM_WIDGET, ""));
+					.replace(DefinitionsHelper.ADD_TASK_FROM_WIDGET, ""));
 			setCurrentList(ListMirakel.getList(listId));
 			if (getTasksFragment() != null && getTasksFragment().isReady()) {
 				getTasksFragment().focusNew(true);
@@ -1594,7 +1590,7 @@ public class MainActivity extends ActionBarActivity implements
 			this.mViewPager.setCurrentItem(getTaskFragmentPosition());
 		}
 		if ((this.startIntent == null || this.startIntent.getAction() == null || !this.startIntent
-				.getAction().contains(MainActivity.ADD_TASK_FROM_WIDGET))
+				.getAction().contains(DefinitionsHelper.ADD_TASK_FROM_WIDGET))
 				&& getTasksFragment() != null) {
 			getTasksFragment().clearFocus();
 		}
