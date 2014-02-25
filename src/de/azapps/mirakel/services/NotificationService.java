@@ -84,8 +84,8 @@ public class NotificationService extends Service {
 			Log.wtf(TAG,"mainactivity not found");
 			return;
 		}
-		openIntent.setAction(DefinitionsHelper.MAIN_SHOW_LIST);
-		openIntent.putExtra(DefinitionsHelper.MAIN_EXTRA_ID, listIdToOpen);
+		openIntent.setAction(DefinitionsHelper.SHOW_LIST);
+		openIntent.putExtra(DefinitionsHelper.EXTRA_ID, listIdToOpen);
 		openIntent
 				.setData(Uri.parse(openIntent.toUri(Intent.URI_INTENT_SCHEME)));
 		PendingIntent pOpenIntent = PendingIntent.getActivity(this, 0,

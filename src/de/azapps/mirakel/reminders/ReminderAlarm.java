@@ -89,8 +89,8 @@ public class ReminderAlarm extends BroadcastReceiver {
 			Log.wtf(TAG, "mainactivtity not found");
 			return;
 		}
-		openIntent.setAction(DefinitionsHelper.MAIN_SHOW_TASK);
-		openIntent.putExtra(DefinitionsHelper.MAIN_EXTRA_ID, task.getId());
+		openIntent.setAction(DefinitionsHelper.SHOW_TASK);
+		openIntent.putExtra(DefinitionsHelper.EXTRA_ID, task.getId());
 		openIntent
 				.setData(Uri.parse(openIntent.toUri(Intent.URI_INTENT_SCHEME)));
 		PendingIntent pOpenIntent = PendingIntent.getActivity(context, 0,
@@ -98,7 +98,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 
 		Intent doneIntent = new Intent(context, TaskService.class);
 		doneIntent.setAction(TaskService.TASK_DONE);
-		doneIntent.putExtra(DefinitionsHelper.MAIN_EXTRA_ID, task.getId());
+		doneIntent.putExtra(DefinitionsHelper.EXTRA_ID, task.getId());
 		doneIntent
 				.setData(Uri.parse(doneIntent.toUri(Intent.URI_INTENT_SCHEME)));
 
@@ -107,7 +107,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 
 		Intent laterIntent = new Intent(context, TaskService.class);
 		laterIntent.setAction(TaskService.TASK_LATER);
-		laterIntent.putExtra(DefinitionsHelper.MAIN_EXTRA_ID, task.getId());
+		laterIntent.putExtra(DefinitionsHelper.EXTRA_ID, task.getId());
 		laterIntent.setData(Uri.parse(laterIntent
 				.toUri(Intent.URI_INTENT_SCHEME)));
 		PendingIntent pLaterIntent = PendingIntent.getService(context, 0,

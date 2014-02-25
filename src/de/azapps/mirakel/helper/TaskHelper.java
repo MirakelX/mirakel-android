@@ -28,8 +28,8 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.widget.TextView;
 import de.azapps.mirakel.DefinitionsHelper;
-import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.model.R;
+import de.azapps.mirakel.model.task.Task;
 
 public class TaskHelper {
 
@@ -37,10 +37,10 @@ public class TaskHelper {
 		Task task = null;
 		if (intent == null)
 			return task;
-		long taskId = intent.getLongExtra(DefinitionsHelper.MAIN_EXTRA_ID, 0);
+		long taskId = intent.getLongExtra(DefinitionsHelper.EXTRA_ID, 0);
 		if (taskId == 0) {
 			// ugly fix for show Task from Widget
-			taskId = intent.getIntExtra(DefinitionsHelper.MAIN_EXTRA_ID, 0);
+			taskId = intent.getIntExtra(DefinitionsHelper.EXTRA_ID, 0);
 		}
 		if (taskId != 0) {
 			task = Task.get(taskId);
