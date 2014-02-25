@@ -944,26 +944,27 @@ public class MainActivity extends ActionBarActivity implements
 						MainActivity.this);
 				registerReceiver(MainActivity.this.mSyncReciver,
 						new IntentFilter(DefinitionsHelper.SYNC_FINISHED));
-				if (MirakelCommonPreferences.isDemoMode()
-						&& ListMirakel.count() < 2) {
+				if (DefinitionsHelper.freshInstall) {
 					String[] lists = getResources().getStringArray(
 							R.array.demo_lists);
 					for (String list : lists) {
 						ListMirakel.newList(list);
 					}
-					String[] tasks = getResources().getStringArray(
-							R.array.demo_tasks);
-					String[] task_lists = { lists[1], lists[1], lists[0],
-							lists[2], lists[2], lists[2] };
-					int[] priorities = { 2, -1, 1, 2, 0, 0 };
-					int i = 0;
-					for (String task : tasks) {
-						Task t = Semantic.createTask(task,
-								ListMirakel.findByName(task_lists[i]), true,
-								MainActivity.this);
-						t.setPriority(priorities[i]);
-						t.safeSave();
-						i++;
+					if (MirakelCommonPreferences.isDemoMode()) {
+						String[] tasks = getResources().getStringArray(
+								R.array.demo_tasks);
+						String[] task_lists = { lists[1], lists[1], lists[0],
+								lists[2], lists[2], lists[2] };
+						int[] priorities = { 2, -1, 1, 2, 0, 0 };
+						int i = 0;
+						for (String task : tasks) {
+							Task t = Semantic.createTask(task,
+									ListMirakel.findByName(task_lists[i]),
+									true, MainActivity.this);
+							t.setPriority(priorities[i]);
+							t.safeSave();
+							i++;
+						}
 					}
 				}
 			}
