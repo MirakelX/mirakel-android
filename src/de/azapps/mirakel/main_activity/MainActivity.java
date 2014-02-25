@@ -302,12 +302,30 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	public TaskFragment getTaskFragment() {
-		if (this.mPagerAdapter == null)
-			return null;
-		if (MirakelCommonPreferences.isTablet())
+		checkPageAdapter();
+		if (MirakelCommonPreferences.isTablet()){
+			if(this.taskFragment==null){
+				forceRebuildLayout(MirakelCommonPreferences.isTablet());	
+				if(this.taskFragment==null){
+					//something terrible happened
+					Log.wtf(TAG, "no taskfragment found");
+					Helpers.restartApp(this);
+				}	
+			}
 			return this.taskFragment;
-		final Fragment f = this.mPagerAdapter
+		}
+		
+		Fragment f = this.mPagerAdapter
 				.getItem(getTaskFragmentPosition());
+		if(f==null){
+			forceRebuildLayout(MirakelCommonPreferences.isTablet());
+			f = this.mPagerAdapter
+					.getItem(getTaskFragmentPosition());
+			if(f==null){
+				Log.wtf(TAG, "no taskfragment found");
+				Helpers.restartApp(this);
+			}
+		}
 		try {
 			return (TaskFragment) f;
 		} catch (ClassCastException e) {
@@ -317,14 +335,37 @@ public class MainActivity extends ActionBarActivity implements
 		}
 	}
 
-	public TasksFragment getTasksFragment() {
-		if (this.mPagerAdapter == null) {
-			Log.i(MainActivity.TAG, "pageadapter null");
-			return null;
+	private void checkPageAdapter() {
+		if (this.mPagerAdapter == null){
+			forceRebuildLayout(MirakelCommonPreferences.isTablet());
+			if(this.mPagerAdapter==null){
+				//something terrible happened
+				Log.wtf(TAG, "pageadapter after init null");
+				Helpers.restartApp(this);
+			}
 		}
-		final Fragment f = this.mPagerAdapter.getItem(MainActivity
+	}
+
+	public TasksFragment getTasksFragment() {
+		checkPageAdapter();
+		Fragment f = this.mPagerAdapter.getItem(MainActivity
 				.getTasksFragmentPosition());
-		return (TasksFragment) f;
+		if(f==null){
+			forceRebuildLayout(MirakelCommonPreferences.isTablet());
+			f = this.mPagerAdapter
+					.getItem(getTasksFragmentPosition());
+			if(f==null){
+				Log.wtf(TAG, "no taskfragment found");
+				Helpers.restartApp(this);
+			}
+		}
+		try {
+			return (TasksFragment) f;
+		} catch (ClassCastException e) {
+			Log.wtf(TAG, "cannot cast fragment");
+			forceRebuildLayout(MirakelCommonPreferences.isTablet());
+			return getTasksFragment();
+		}
 	}
 
 	public void handleDestroyList(final List<ListMirakel> lists) {
