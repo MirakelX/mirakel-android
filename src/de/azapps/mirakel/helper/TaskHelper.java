@@ -35,6 +35,8 @@ public class TaskHelper {
 
 	public static Task getTaskFromIntent(Intent intent) {
 		Task task = null;
+		if (intent == null)
+			return task;
 		long taskId = intent.getLongExtra(DefinitionsHelper.MAIN_EXTRA_ID, 0);
 		if (taskId == 0) {
 			// ugly fix for show Task from Widget
