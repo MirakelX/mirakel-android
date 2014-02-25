@@ -58,12 +58,10 @@ public class DefinitionsHelper {
 	public static String APK_NAME;
 	public static String			VERSIONS_NAME;
 	public static int widgets[] = {};
-	public static boolean IS_PLAYSTORE;
 
 	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	public static void init(Context ctx) {
 		APK_NAME = ctx.getPackageName();
-		IS_PLAYSTORE = ctx.getResources().getBoolean(R.bool.is_playstore);
 		try {
 			VERSIONS_NAME = ctx.getPackageManager().getPackageInfo(
 					ctx.getPackageName(), 0).versionName;
