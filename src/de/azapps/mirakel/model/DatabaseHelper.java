@@ -147,6 +147,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		Log.d(TAG, "onCreate");
+		DefinitionsHelper.freshInstall=true;
 
 		db.execSQL("CREATE TABLE " + ListMirakel.TABLE + " (" + ID
 				+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + NAME
