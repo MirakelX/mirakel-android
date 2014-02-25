@@ -22,7 +22,7 @@ dependencies {
 }
 
 apply plugin: 'android'
-apply plugin: 'hugo'
+//apply plugin: 'hugo'
 apply plugin: 'eclipse'
 
 
@@ -33,11 +33,7 @@ android {
             exclude 'META-INF/LICENSE.txt'
             exclude 'META-INF/NOTICE.txt'
     }
-    defaultConfig {
-        targetSdkVersion 19
-        minSdkVersion 17
-    }
-    flavorGroups "stores", "api_related"
+    flavorGroups "stores"
     lintOptions {
         abortOnError false
     }
@@ -78,28 +74,13 @@ android {
         fdroid {
             flavorGroup "stores"
         }
-        newAPI {
-            flavorGroup "api_related"
-        }
-        oldAPI {
-            minSdkVersion 9//needed for hugo.. 
-            targetSdkVersion 19//again...
-            flavorGroup "api_related"
-        }
     }
-
     android.sourceSets.google {
-
-   //     manifest {
-   //         srcFile "res-google/AndroidManifest.xml"
-   //     }
- //       res{
-//            srcDir "res-google"
- //       }
-    }
-    android.sourceSets.oldAPI {
+        manifest {
+            srcFile "res-google/AndroidManifest.xml"
+        }
         res{
-  //          srcDir "res-v14"
+            srcDir "res-google"
         }
     }
 }
