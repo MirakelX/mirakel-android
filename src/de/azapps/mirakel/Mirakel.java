@@ -47,36 +47,23 @@ import de.azapps.mirakelandroid.R;
 
 @SuppressLint("RtlHardcoded")
 @ReportsCrashes(
-		// This is required for backward compatibility but not used
-		formKey = "",
-		// optional, displayed as soon as the crash occurs, before collecting data which
-		// can take a few seconds
-		reportType = org.acra.sender.HttpSender.Type.JSON,
-		httpMethod = org.acra.sender.HttpSender.Method.PUT,
-		formUri = "http://couchdb.azapps.de/acra-mirakel/_design/acra-storage/_update/report",
-		formUriBasicAuthLogin = "mirakel",
-		formUriBasicAuthPassword = "Ieshi8Egheic0etaipeeTeibo",
-		disableSSLCertValidation = true,
-		mode = ReportingInteractionMode.DIALOG,
-		resToastText = R.string.crash_toast_text,
-		// optional. default is a warning sign
-		resDialogText = R.string.crash_dialog_text,
-		resDialogIcon = android.R.drawable.ic_dialog_info,
-		// optional. default is your application name
-		resDialogTitle = R.string.crash_dialog_title,
-		// optional. when defined, adds a user text field input with this text resource
-		// as a label
-		resDialogCommentPrompt = R.string.crash_dialog_comment_prompt,
-		resDialogOkToast = R.string.crash_dialog_ok_toast
-		// optional. displays a Toast message when the user accepts to send a report.
+// This is required for backward compatibility but not used
+formKey = "",
+// optional, displayed as soon as the crash occurs, before collecting data which
+// can take a few seconds
+reportType = org.acra.sender.HttpSender.Type.JSON, httpMethod = org.acra.sender.HttpSender.Method.PUT, formUri = "http://couchdb.azapps.de/acra-mirakel/_design/acra-storage/_update/report", formUriBasicAuthLogin = "mirakel", formUriBasicAuthPassword = "Ieshi8Egheic0etaipeeTeibo", disableSSLCertValidation = true, mode = ReportingInteractionMode.DIALOG, resToastText = R.string.crash_toast_text,
+// optional. default is a warning sign
+resDialogText = R.string.crash_dialog_text, resDialogIcon = android.R.drawable.ic_dialog_info,
+// optional. default is your application name
+resDialogTitle = R.string.crash_dialog_title,
+// optional. when defined, adds a user text field input with this text resource
+// as a label
+resDialogCommentPrompt = R.string.crash_dialog_comment_prompt, resDialogOkToast = R.string.crash_dialog_ok_toast
+// optional. displays a Toast message when the user accepts to send a report.
 
-		)
+)
 public class Mirakel extends Application {
 	// Public Constants
-
-
-
-
 
 	@SuppressLint("InlinedApi")
 	@Override
@@ -87,7 +74,7 @@ public class Mirakel extends Application {
 		DefinitionsHelper.init(this);
 		MirakelCommonPreferences.init(this);
 		MirakelContentProvider.init(getBaseContext());
-		
+
 		Locale locale = Helpers.getLocal(this);
 		Locale.setDefault(locale);
 
@@ -95,8 +82,6 @@ public class Mirakel extends Application {
 		config.locale = locale;
 		getBaseContext().getResources().updateConfiguration(config,
 				getBaseContext().getResources().getDisplayMetrics());
-
-		
 
 		// Initialize Models
 
@@ -125,7 +110,8 @@ public class Mirakel extends Application {
 							NotificationService.class));
 				}
 				// Auto Backup?
-				Calendar nextBackup = MirakelCommonPreferences.getNextAutoBackup();
+				Calendar nextBackup = MirakelCommonPreferences
+						.getNextAutoBackup();
 				if (nextBackup != null
 						&& nextBackup.compareTo(new GregorianCalendar()) < 0) {
 					ExportImport.exportDB(that);

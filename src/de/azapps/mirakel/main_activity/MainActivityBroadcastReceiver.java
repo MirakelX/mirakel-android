@@ -1,12 +1,12 @@
 package de.azapps.mirakel.main_activity;
 
-import de.azapps.mirakel.DefinitionsHelper;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import de.azapps.mirakel.DefinitionsHelper;
 
 public class MainActivityBroadcastReceiver extends BroadcastReceiver {
-	private MainActivity	main;
+	private MainActivity main;
 
 	public MainActivityBroadcastReceiver(MainActivity main) {
 		this.main = main;

@@ -33,7 +33,6 @@ import de.azapps.mirakel.custom_views.TaskSummary;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.task.Task;
 
-
 public class TaskAdapter extends MirakelArrayAdapter<Task> {
 	/**
 	 * The class, holding the Views of the Row
@@ -42,17 +41,16 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 	 * 
 	 */
 	static class TaskHolder {
-		TaskSummary	summary;
+		TaskSummary summary;
 	}
-
 
 	int listId;
 
-	private OnTaskChangedListner	onTaskChanged;
+	private OnTaskChangedListner onTaskChanged;
 
 	protected int touchPosition;
 
-	private final LongSparseArray<View>	viewsForTasks	= new LongSparseArray<View>();
+	private final LongSparseArray<View> viewsForTasks = new LongSparseArray<View>();
 
 	public TaskAdapter(Context c) {
 		// do not call this, only for error-fixing there
@@ -91,8 +89,7 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 		row.updatePart(task);
 
 		if (this.selected.get(position)) {
-			row.setBackgroundColor(Helpers
-					.getHighlightedColor(this.context));
+			row.setBackgroundColor(Helpers.getHighlightedColor(this.context));
 		}
 		row.setOnTouchListener(new OnTouchListener() {
 
@@ -103,7 +100,7 @@ public class TaskAdapter extends MirakelArrayAdapter<Task> {
 			}
 		});
 		row.setOnTaskChangedListner(this.onTaskChanged);
-		if(task!=null) {
+		if (task != null) {
 			this.viewsForTasks.put(task.getId(), row);
 		}
 		return row;
