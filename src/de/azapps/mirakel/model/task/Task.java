@@ -937,6 +937,8 @@ public class Task extends TaskBase {
 	}
 
 	public boolean isSubtaskOf(Task otherTask) {
+		if(otherTask==null)
+			return false;
 		Cursor c = database.rawQuery("Select count(_id) from " + SUBTASK_TABLE
 				+ " where parent_id=" + otherTask.getId() + " AND child_id="
 				+ getId(), null);
