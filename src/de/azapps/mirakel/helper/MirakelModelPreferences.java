@@ -32,15 +32,22 @@ public class MirakelModelPreferences extends MirakelPreferences {
 		if (!safe) return null;
 		return ListMirakel.safeFirst(context);
 	}
-	
+
 	public static ListMirakel getListForSubtask(Task parent) {
+		ListMirakel list = null;
 		if (settings.contains("subtaskAddToSameList")) {
-			if (MirakelCommonPreferences.addSubtaskToSameList()) return parent.getList();
-			return subtaskAddToList();
+			if (MirakelCommonPreferences.addSubtaskToSameList()) {
+				list = parent.getList();
+			} else {
+				list = subtaskAddToList();
+			}
 		}
-		// Create a new list and set this list as the default list for future subtasks
-		return ListMirakel.newList(context
-				.getString(R.string.subtask_list_name));
+		// Create a new list and set this list as the default list for future
+		// subtasks
+		if (list == null)
+			list = ListMirakel.newList(context
+					.getString(R.string.subtask_list_name));
+		return list;
 	}
 
 	private static ListMirakel getListFromIdString(int preference) {
