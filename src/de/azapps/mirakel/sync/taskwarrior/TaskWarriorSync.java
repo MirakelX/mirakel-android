@@ -22,7 +22,6 @@ import android.content.Context;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.helper.Helpers;
@@ -193,12 +192,8 @@ public class TaskWarriorSync {
 		if (MirakelCommonPreferences.isEnabledDebugMenu()
 				&& MirakelCommonPreferences.isDumpTw()) {
 			try {
-				FileUtils.writeToFile(
-						new File(DefinitionsHelper.EXPORT_DIR, new SimpleDateFormat(
-								"dd-MM-yyyy_hh-mm-ss", Helpers
-										.getLocal(this.mContext))
-								.format(new Date())
-								+ ".tw_down.log"), response);
+				FileUtils.writeToFile(new File(FileUtils.getLogDir(), getTime()
+						+ ".tw_down.log"), response);
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -374,6 +369,11 @@ public class TaskWarriorSync {
 		}
 	}
 
+	public String getTime() {
+		return new SimpleDateFormat("dd-MM-yyyy_hh-mm-ss",
+				Helpers.getLocal(this.mContext)).format(new Date());
+	}
+
 	public TW_ERRORS sync(Account a) {
 		this.accountManager = AccountManager.get(this.mContext);
 		this.account = a;
@@ -406,10 +406,8 @@ public class TaskWarriorSync {
 		sync.setPayload(payload);
 		if (MirakelCommonPreferences.isDumpTw()) {
 			try {
-				FileWriter f = new FileWriter(new File(DefinitionsHelper.EXPORT_DIR,
-						new SimpleDateFormat("dd-MM-yyyy_hh-mm-ss", Helpers
-								.getLocal(this.mContext)).format(new Date())
-								+ ".tw_up.log"));
+				FileWriter f = new FileWriter(new File(FileUtils.getLogDir(),
+						getTime() + ".tw_up.log"));
 				f.write(payload);
 				f.close();
 			} catch (Exception e) {
