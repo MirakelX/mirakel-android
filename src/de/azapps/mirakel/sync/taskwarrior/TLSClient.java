@@ -13,10 +13,13 @@ import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.security.KeyFactory;
+import java.security.KeyManagementException;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -201,37 +204,53 @@ public class TLSClient {
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////
-	public void init(final File root, final File user, final File user_key) {
+	public void init(final File root, final File user, final File user_key) throws ParseException, CertificateException {
 		Log.i(TAG, "init");
-		try {
-			X509Certificate ROOT = generateCertificateFromPEM(fileToBytes(root));
-			X509Certificate USER_CERT = generateCertificateFromPEM(fileToBytes(user));
-			RSAPrivateKey USER_KEY = generatePrivateKeyFromPEM(fileToBytes(user_key));
-			KeyStore trusted = KeyStore.getInstance(KeyStore.getDefaultType());
-			trusted.load(null);
-			trusted.setCertificateEntry("taskwarrior-ROOT", ROOT);
-			trusted.setCertificateEntry("taskwarrior-USER", USER_CERT);
-			Certificate[] chain = { USER_CERT, ROOT };
-			KeyManagerFactory keyManagerFactory = KeyManagerFactory
-					.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-			// Hack to get it working on android 2.2
-			String pwd = "secret";
-			trusted.setEntry("user", new KeyStore.PrivateKeyEntry(USER_KEY,
-					chain), new KeyStore.PasswordProtection(pwd.toCharArray()));
+			try {
+				X509Certificate ROOT = generateCertificateFromPEM(fileToBytes(root));
+				X509Certificate USER_CERT = generateCertificateFromPEM(fileToBytes(user));
+				RSAPrivateKey USER_KEY = generatePrivateKeyFromPEM(fileToBytes(user_key));
+				KeyStore trusted = KeyStore.getInstance(KeyStore.getDefaultType());
+				trusted.load(null);
+				trusted.setCertificateEntry("taskwarrior-ROOT", ROOT);
+				trusted.setCertificateEntry("taskwarrior-USER", USER_CERT);
+				Certificate[] chain = { USER_CERT, ROOT };
+				KeyManagerFactory keyManagerFactory = KeyManagerFactory
+						.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+				// Hack to get it working on android 2.2
+				String pwd = "secret";
+				trusted.setEntry("user", new KeyStore.PrivateKeyEntry(USER_KEY,
+						chain), new KeyStore.PasswordProtection(pwd.toCharArray()));
 
-			keyManagerFactory.init(trusted, pwd.toCharArray());
+				keyManagerFactory.init(trusted, pwd.toCharArray());
 
-			SSLContext context = SSLContext.getInstance("TLS");
-			TrustManagerFactory tmf = TrustManagerFactory
-					.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-			tmf.init(trusted);
-			TrustManager[] trustManagers = tmf.getTrustManagers();
-			context.init(keyManagerFactory.getKeyManagers(), trustManagers,
-					new SecureRandom());
-			this.sslFact = context.getSocketFactory();
-		} catch (Exception e) {
-			throw new AssertionError(e);
-		}
+				SSLContext context = SSLContext.getInstance("TLS");
+				TrustManagerFactory tmf = TrustManagerFactory
+						.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+				tmf.init(trusted);
+				TrustManager[] trustManagers = tmf.getTrustManagers();
+				context.init(keyManagerFactory.getKeyManagers(), trustManagers,
+						new SecureRandom());
+				this.sslFact = context.getSocketFactory();
+			} catch (UnrecoverableKeyException e) {
+				Log.w(TAG, "cannot restore key");
+				throw new CertificateException(e);
+			} catch (KeyManagementException e) {
+				Log.w(TAG, "cannot access key");
+				throw new CertificateException(e);
+			} catch (KeyStoreException e) {
+				Log.w(TAG, "cannot handle keystore");
+				throw new CertificateException(e);
+			} catch (NoSuchAlgorithmException e) {
+				Log.w(TAG, "no matching algorithm founr");
+				throw new CertificateException(e);
+			} catch (CertificateException e) {
+				Log.w(TAG, "certificat not readable");
+				throw new CertificateException(e);
+			} catch (IOException e) {
+				Log.w(TAG, "general io problem");
+				throw new CertificateException(e);
+			}
 
 	}
 
@@ -249,6 +268,7 @@ public class TLSClient {
 			Scanner scanner = new Scanner(this.in);
 			Scanner s = scanner.useDelimiter("\\A");
 			String result = s.hasNext() ? s.next() : "";
+			s.close();
 			scanner.close();
 			return result;
 		} catch (IOException e) {

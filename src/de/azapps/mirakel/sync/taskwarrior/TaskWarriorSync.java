@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.MalformedInputException;
+import java.security.cert.CertificateException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -170,7 +172,15 @@ public class TaskWarriorSync {
 		longInfo(sync.getPayload());
 
 		TLSClient client = new TLSClient();
-		client.init(root, user_ca, user_key);
+		try {
+			client.init(root, user_ca, user_key);
+		} catch (ParseException e) {
+			Log.e(TAG,"cannot open certificate");
+			return TW_ERRORS.CONFIG_PARSE_ERROR;
+		} catch (CertificateException e) {
+			Log.e(TAG, "general problem with init");
+			return TW_ERRORS.CONFIG_PARSE_ERROR;
+		}
 		try {
 			client.connect(_host, _port);
 		} catch (IOException e) {
