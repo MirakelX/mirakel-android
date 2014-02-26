@@ -25,6 +25,9 @@
     <CheckBoxPreference
         android:key="demoMode"
         android:title="@string/demo_mode" />
+    <CheckBoxPreference
+        android:key="writeLogsToFile"
+        android:title="@string/write_logs_to_file"/>
 
     <PreferenceCategory android:title="@string/settings_dev_sync" >
         <CheckBoxPreference

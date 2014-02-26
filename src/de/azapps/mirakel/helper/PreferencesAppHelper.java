@@ -69,6 +69,7 @@ import de.azapps.mirakel.static_activities.SettingsActivity;
 import de.azapps.mirakel.static_activities.SettingsFragment;
 import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
+import de.azapps.tools.FileUtils;
 
 @SuppressLint("SimpleDateFormat")
 public class PreferencesAppHelper extends PreferencesHelper{
@@ -490,7 +491,7 @@ public class PreferencesAppHelper extends PreferencesHelper{
 		if (backup != null) {
 
 			backup.setSummary(this.activity.getString(R.string.backup_click_summary,
-					ExportImport.getBackupDir().getAbsolutePath()));
+					FileUtils.getExportDir().getAbsolutePath()));
 
 			backup.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 				@Override
