@@ -46,6 +46,7 @@ import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.Log;
 
 @SuppressLint("RtlHardcoded")
 @ReportsCrashes(
@@ -123,6 +124,8 @@ public class Mirakel extends Application {
 							MirakelCommonPreferences.getAutoBackupIntervall());
 					MirakelCommonPreferences.setNextBackup(nextB);
 				}
+				if (MirakelCommonPreferences.writeLogsToFile())
+					Log.enableLoggingToFile();
 			}
 		}).start();
 
