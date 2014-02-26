@@ -215,7 +215,14 @@ public class AnyDoImport {
 			t.setPriority(prio);
 		}
 		if (jsonTask.has("status")) {
-			t.setDone(jsonTask.get("status").getAsString().equals("DONE"));
+			boolean done=false;
+			String status=jsonTask.get("status").getAsString();
+			if(status.equals("DONE")||status.equals("CHECKED")){
+				done=true;
+			}else if(status.equals("UNCHECKED")){
+				done=false;
+			}
+			t.setDone(done);
 		}
 		if (jsonTask.has("repeatMethod")) {
 			String repeat = jsonTask.get("repeatMethod").getAsString();
