@@ -492,40 +492,40 @@ public class Task extends TaskBase {
 		for (Entry<String, JsonElement> entry : entries) {
 			String key = entry.getKey();
 			JsonElement val = entry.getValue();
-			if (key == null || key.equals("id")) {
+			if (key == null || key.equalsIgnoreCase("id")) {
 				continue;
 			}
 			if (key.equals("uuid")) {
 				t.setUUID(val.getAsString());
-			} else if (key.equals("name") || key.equals("description")) {
+			} else if (key.equalsIgnoreCase("name") || key.equalsIgnoreCase("description")) {
 				t.setName(val.getAsString());
-			} else if (key.equals("content")) {
+			} else if (key.equalsIgnoreCase("content")) {
 				String content = val.getAsString();
 				if (content == null) {
 					content = "";
 				}
 				t.setContent(content);
-			} else if (key.equals("priority")) {
+			} else if (key.equalsIgnoreCase("priority")) {
 				String prioString = val.getAsString().trim();
-				if (prioString.equals("L") && t.getPriority() != -1) {
+				if (prioString.equalsIgnoreCase("L") && t.getPriority() != -1) {
 					t.setPriority(-2);
-				} else if (prioString.equals("M")) {
+				} else if (prioString.equalsIgnoreCase("M")) {
 					t.setPriority(1);
-				} else if (prioString.equals("H")) {
+				} else if (prioString.equalsIgnoreCase("H")) {
 					t.setPriority(2);
-				} else if (!prioString.equals("L")) {
+				} else if (!prioString.equalsIgnoreCase("L")) {
 					t.setPriority(val.getAsInt());
 				}
-			} else if(key.equals("progress")) {
+			} else if(key.equalsIgnoreCase("progress")) {
 				int progress=(int) val.getAsDouble();
 				t.setProgress(progress);
-			} else if (key.equals("list_id")) {
+			} else if (key.equalsIgnoreCase("list_id")) {
 				ListMirakel list = ListMirakel.getList(val.getAsInt());
 				if (list == null) {
 					list = SpecialList.firstSpecial().getDefaultList();
 				}
 				t.setList(list, true);
-			} else if (key.equals("project")) {
+			} else if (key.equalsIgnoreCase("project")) {
 				ListMirakel list = ListMirakel.findByName(val.getAsString(),
 						account);
 				if (list == null
@@ -534,30 +534,30 @@ public class Task extends TaskBase {
 							ListMirakel.SORT_BY_OPT, account);
 				}
 				t.setList(list, true);
-			} else if (key.equals("created_at")) {
+			} else if (key.equalsIgnoreCase("created_at")) {
 				t.setCreatedAt(val.getAsString().replace(":", ""));
-			} else if (key.equals("updated_at")) {
+			} else if (key.equalsIgnoreCase("updated_at")) {
 				t.setUpdatedAt(val.getAsString().replace(":", ""));
-			} else if (key.equals("entry")) {
+			} else if (key.equalsIgnoreCase("entry")) {
 				t.setCreatedAt(parseDate(val.getAsString(),
 						context.getString(R.string.TWDateFormat)));
-			} else if (key.equals("modification") || key.equals("modified")) {
+			} else if (key.equalsIgnoreCase("modification") || key.equalsIgnoreCase("modified")) {
 				t.setUpdatedAt(parseDate(val.getAsString(),
 						context.getString(R.string.TWDateFormat)));
 			} else if (key.equals("done")) {
 				t.setDone(val.getAsBoolean());
-			} else if (key.equals("status")) {
+			} else if (key.equalsIgnoreCase("status")) {
 				String status = val.getAsString();
-				if (status.equals("pending")) {
-					t.setDone(false);
-				} else if (status.equals("deleted")) {
+				if (status.equalsIgnoreCase("completed")) {
+					t.setDone(true);
+				} else if (status.equalsIgnoreCase("deleted")) {
 					t.setSyncState(SYNC_STATE.DELETE);
 				} else {
-					t.setDone(true);
+					t.setDone(false);
 				}
 				t.addAdditionalEntry(key, "\"" + val.getAsString() + "\"");
 				// TODO don't ignore waiting and recurring!!!
-			} else if (key.equals("due")) {
+			} else if (key.equalsIgnoreCase("due")) {
 				Calendar due = parseDate(val.getAsString(), "yyyy-MM-dd");
 				if (due == null) {
 					due = parseDate(val.getAsString(),
@@ -569,14 +569,14 @@ public class Task extends TaskBase {
 					}
 				}
 				t.setDue(due);
-			} else if (key.equals("reminder")) {
+			} else if (key.equalsIgnoreCase("reminder")) {
 				Calendar reminder = parseDate(val.getAsString(), "yyyy-MM-dd");
 				if (reminder == null) {
 					reminder = parseDate(val.getAsString(),
 							context.getString(R.string.TWDateFormat));
 				}
 				t.setReminder(reminder);
-			} else if (key.equals("annotations")) {
+			} else if (key.equalsIgnoreCase("annotations")) {
 				String content = "";
 				try {
 					JsonArray annotations = val.getAsJsonArray();
@@ -594,11 +594,11 @@ public class Task extends TaskBase {
 					Log.e(TAG, "cannot parse json");
 				}
 				t.setContent(content);
-			} else if (key.equals("content")) {
+			} else if (key.equalsIgnoreCase("content")) {
 				t.setContent(val.getAsString());
-			} else if (key.equals("sync_state")) {
+			} else if (key.equalsIgnoreCase("sync_state")) {
 				t.setSyncState(SYNC_STATE.parseInt(val.getAsInt()));
-			} else if (key.equals("depends")) {
+			} else if (key.equalsIgnoreCase("depends")) {
 				t.setDependencies(val.getAsString().split(","));
 			} else {
 				if (val.isJsonPrimitive()) {
