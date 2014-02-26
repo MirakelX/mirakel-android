@@ -45,7 +45,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.widget.Toast;
 import au.com.bytecode.opencsv.CSVReader;
-import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -58,9 +57,6 @@ public class ExportImport {
 												+ "databases/mirakel.db");
 	private static final String	TAG		= "ExportImport";
 
-	public static File getBackupDir() {
-		return DefinitionsHelper.EXPORT_DIR;
-	}
 
 	@SuppressLint("SimpleDateFormat")
 	public static void exportDB(Context ctx) {
@@ -68,11 +64,8 @@ public class ExportImport {
 		Date today = new Date();
 		DateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");// SimpleDateFormat.getDateInstance();
 		String filename = "mirakel_" + sdf.format(today) + ".db";
-		final File file = new File(DefinitionsHelper.EXPORT_DIR, filename);
+		final File file = new File(FileUtils.getExportDir(), filename);
 
-		if (!DefinitionsHelper.EXPORT_DIR.exists()) {
-			DefinitionsHelper.EXPORT_DIR.mkdirs();
-		}
 		try {
 			file.createNewFile();
 			FileUtils.copyFile(dbFile, file);
