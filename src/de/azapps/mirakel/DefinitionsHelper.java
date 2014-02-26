@@ -1,13 +1,9 @@
 package de.azapps.mirakel;
 
-import java.io.File;
-
-import de.azapps.mirakel.helper.R;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
-import android.os.Environment;
 import android.util.Log;
 import android.view.Gravity;
 
@@ -42,9 +38,6 @@ public class DefinitionsHelper {
 	public static final String TASK_ID = "de.azapp.mirakel.TASK_ID";
 	public static int				GRAVITY_LEFT, GRAVITY_RIGHT;
 	public static boolean freshInstall=false;
-	
-	public static final File EXPORT_DIR = new File(
-			Environment.getExternalStorageDirectory(), "mirakel");
 	public static final int REQUEST_FILE_ASTRID = 0;
 	public static final int REQUEST_FILE_IMPORT_DB = 1;
 	public static final int REQUEST_NEW_ACCOUNT = 2;

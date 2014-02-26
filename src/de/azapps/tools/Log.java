@@ -18,10 +18,28 @@
  ******************************************************************************/
 package de.azapps.tools;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 
-
 public class Log {
+	private static final String TAG = "de.azapps.tools.Log";
+	private static FileWriter fileWriter = null;
+	private static boolean writeToFile = false;
+
+	public static void enableLoggingToFile() {
+		writeToFile = true;
+	}
+
+	public static void disableLoggingToFile() {
+		writeToFile = false;
+		fileWriter=null;
+	}
+
+
 	public static void d(String tag, String msg) {
 		if (tag == null || msg == null)
 			return;
@@ -34,12 +52,14 @@ public class Log {
 		if (tag == null || msg == null)
 			return;
 		android.util.Log.e(tag, msg);
+		write("e",tag, msg);
 	}
 
 	public static void e(String tag, String msg, Throwable tr) {
 		if (tag == null || msg == null)
 			return;
 		android.util.Log.e(tag, msg, tr);
+		write("e",tag, msg, tr);
 	}
 
 	public static String getStackTraceString(Throwable tr) {
@@ -68,11 +88,52 @@ public class Log {
 		if (MirakelCommonPreferences.isDebug()) {
 			android.util.Log.w(tag, msg);
 		}
+		write("w",tag, msg);
 	}
 
 	public static void wtf(String tag, String msg) {
 		if (tag == null || msg == null)
 			return;
 		android.util.Log.wtf(tag, msg);
+		write("wtf",tag, msg);
+	}
+	private static String getTime() {
+		return new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss")
+		.format(new Date());
+	}
+
+	private static void init() {
+		if (fileWriter != null)
+			return;
+		try {
+			fileWriter = new FileWriter(new File(FileUtils.getLogDir(),
+					getTime() + ".log"));
+		} catch (Exception e) {
+			fileWriter = null;
+			Log.e(TAG, "Could not open file for logging");
+		}
+	}
+
+	public static void write(String critic,String tag, String msg) {
+		write(critic,tag, msg, null);
+	}
+
+	public static void write(String critic,String tag, String msg, Throwable throwable) {
+		if (!writeToFile)
+			return;
+		init();
+		if (fileWriter != null) {
+			String stacktrace = "";
+			if (throwable != null)
+				stacktrace = "\nStackTrace:" + getStackTraceString(throwable);
+			try {
+				fileWriter
+						.write(getTime() + "::" + critic + "::" + tag + "::" + msg + stacktrace+"\n");
+				fileWriter.flush();
+			} catch (Exception e) {
+				fileWriter = null;
+				Log.e(TAG, "Could not write to file for logging");
+			}
+		}
 	}
 }

@@ -361,4 +361,19 @@ public class FileUtils {
 		return MIRAKEL_DIR;
 	}
 
+	public static File getExportDir() {
+		File dir = new File(Environment.getExternalStorageDirectory(),
+				"mirakel");
+		if (!dir.exists())
+			dir.mkdirs();
+		return dir;
+	}
+
+	public static File getLogDir() {
+		File dir = new File(getExportDir(), "logs");
+		if (!dir.exists())
+			dir.mkdirs();
+		return dir;
+	}
+
 }

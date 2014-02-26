@@ -316,4 +316,9 @@ public class MirakelCommonPreferences  extends MirakelPreferences{
 		ed.commit();
 	}
 
+	public static boolean writeLogsToFile() {
+		if(settings==null) return false;
+		return settings.getBoolean("writeLogsToFile", false);
+	}
+
 }
