@@ -35,6 +35,7 @@ lint.xml
 *~
 .gradle
 res-google/project.properties
+keystore
 # External tool builders
 .externalToolBuilders/
 
