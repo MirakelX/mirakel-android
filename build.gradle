@@ -49,7 +49,7 @@ android {
 dependencies {
     compile project(':model')
     compile project(':helper')
-    compile project(':progressbar')
+    compile project(':progresswheel')
     compile project(':date-time-picker')
     compile fileTree(dir: 'libs', include: '*.jar', exclude: 'android-support-v4.jar')
 }
