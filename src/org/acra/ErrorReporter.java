@@ -383,6 +383,13 @@ public class ErrorReporter implements Thread.UncaughtExceptionHandler {
      * 
      */
     private void endApplication() {
+    	try {
+		de.azapps.tools.Log.write("e",LOG_TAG, mContext.getPackageName()
+				+ " fatal error : " + unhandledThrowable.getMessage(),
+				unhandledThrowable);
+    	} catch(Exception e) {
+    		// It's java… Who knows what could happen…
+    	}
         if (ACRA.getConfig().mode() == ReportingInteractionMode.SILENT
                 || (ACRA.getConfig().mode() == ReportingInteractionMode.TOAST && ACRA.getConfig()
                         .forceCloseDialogAfterToast())) {
@@ -392,7 +399,7 @@ public class ErrorReporter implements Thread.UncaughtExceptionHandler {
         } else {
             // If ACRA handles user notifications with a Toast or a Notification
             // the Force Close dialog is one more notification to the user...
-            // We choose to close the process ourselves using the same actions.
+			// We choose to close the process ourselves using the same actions.
             Log.e(LOG_TAG, mContext.getPackageName() + " fatal error : " + unhandledThrowable.getMessage(),
                     unhandledThrowable);
 
