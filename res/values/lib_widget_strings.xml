@@ -32,5 +32,6 @@
         <!-- Widget -->
     <string name="empty_list">No tasks</string>
     <string name="preferences">Preferences</string>
+    <string name="widget_use_gradient">Use Gradient</string>
 
 </resources>

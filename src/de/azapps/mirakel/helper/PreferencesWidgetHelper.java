@@ -90,6 +90,22 @@ public class PreferencesWidgetHelper extends PreferencesHelper{
 				}
 			});
 		}
+		
+		CheckBoxPreference noGradient = (CheckBoxPreference) findPreference("widgetUseGradient");
+		if (noGradient != null) {
+			noGradient.setChecked(WidgetHelper.gethasGradient(context,
+					widgetId));
+			noGradient
+			.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+				@Override
+				public boolean onPreferenceChange(Preference preference, Object newValue) {
+					WidgetHelper.setHasGradient(context, widgetId,
+							(Boolean) newValue);
+					return true;
+				}
+			});
+		}
 
 		CheckBoxPreference showDone = (CheckBoxPreference) findPreference("showDone");
 		showDone.setChecked(WidgetHelper.showDone(context, widgetId));

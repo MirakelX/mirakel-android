@@ -45,5 +45,9 @@
         android:defaultValue="true"
         android:key="widgetDueColors"
         android:title="@string/widget_due_colors" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="widgetUseGradient"
+        android:title="@string/widget_use_gradient" />
 
 </PreferenceScreen>

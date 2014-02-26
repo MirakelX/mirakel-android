@@ -265,4 +265,14 @@ public class WidgetHelper {
 			int transparency) {
 		putInt(context, widgetId, "widgetTransparency", transparency);
 	}
+
+	public static void setHasGradient(Context context, int widgetId,
+			Boolean newValue) {
+		putBool(context, widgetId, "widgetUseGradient", newValue);
+		
+	}
+
+	public static boolean gethasGradient(Context context, int widgetId) {
+		return getBoolean(context, widgetId, "widgetUseGradient", true);
+	}
 }

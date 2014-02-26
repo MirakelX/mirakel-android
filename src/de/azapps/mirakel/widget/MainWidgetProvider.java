@@ -80,12 +80,22 @@ public class MainWidgetProvider extends AppWidgetProvider {
 					layout_id);
 
 			int widgetBackground;
-			if (isMinimalistic) {
-				widgetBackground = isDark ? R.drawable.widget_background_minimalistic_dark
-						: R.drawable.widget_background_minimalistic;
-			} else {
-				widgetBackground = isDark ? R.drawable.widget_background_dark
-						: R.drawable.widget_background;
+			if(WidgetHelper.gethasGradient(context, widgetId)){
+				if (isMinimalistic) {
+					widgetBackground = isDark ? R.drawable.widget_background_minimalistic_dark
+							: R.drawable.widget_background_minimalistic;
+				} else {
+					widgetBackground = isDark ? R.drawable.widget_background_dark
+							: R.drawable.widget_background;
+				}
+			}else{
+				if (isMinimalistic) {
+					widgetBackground = isDark ? R.drawable.widget_background_minimalistic_dark_wo_gradient
+							: R.drawable.widget_background_minimalistic_wo_gradient;
+				} else {
+					widgetBackground = isDark ? R.drawable.widget_background_dark_wo_gradient
+							: R.drawable.widget_background_wo_gradient;
+				}
 			}
 			if (!oldAPI) {
 				GradientDrawable drawable = (GradientDrawable) context
