@@ -72,7 +72,7 @@ public class UndoHistory {
 				switch (type) {
 					case TASK:
 						Task t = Task.parse_json(json,
-								AccountMirakel.getLocal());
+								AccountMirakel.getLocal(),false);
 						if (Task.get(t.getId()) != null) {
 							t.safeSave(false);
 						} else {
