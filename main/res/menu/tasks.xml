@@ -1,0 +1,77 @@
+<!--
+  Mirakel is an Android App for Managing your ToDo-Lists
+  
+  Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+  
+      This program is free software: you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation, either version 3 of the License, or
+      any later version.
+  
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+  
+      You should have received a copy of the GNU General Public License
+      along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:mirakel="http://schemas.android.com/apk/res-auto" >
+
+    <!--
+    Search
+    Share
+    Sync
+    Sort
+    Delete
+    Config
+    Credits
+    Bugreport
+    -->
+    <item
+        android:id="@+id/list_delete"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:title="@string/menu_delete_list"
+        mirakel:showAsAction="ifRoom|withText">
+    </item>
+    <item
+        android:id="@+id/search"
+        android:icon="@android:drawable/ic_menu_search"
+        android:title="@string/search"
+        mirakel:showAsAction="ifRoom|withText">
+    </item>
+    <item
+        android:id="@+id/menu_undo"
+        android:title="@string/action_undo"
+        mirakel:showAsAction="never"/>
+    <item
+        android:id="@+id/share_list"
+        android:icon="@android:drawable/ic_menu_share"
+        android:title="@string/share_list"
+        mirakel:showAsAction="ifRoom|withText">
+    </item>
+    <item
+        android:id="@+id/menu_sync_now"
+        android:title="@string/action_sync_now"
+        mirakel:showAsAction="never"/>
+    <item
+        android:id="@+id/task_sorting"
+        android:icon="@android:drawable/ic_menu_sort_alphabetically"
+        android:title="@string/task_menu_sorting"
+        mirakel:showAsAction="ifRoom|withText">
+    </item>
+    <item
+        android:id="@+id/menu_contact"
+        android:title="@string/action_contact"
+        mirakel:showAsAction="never"/>
+    <item
+        android:id="@+id/menu_settings"
+        android:title="@string/action_settings"
+        mirakel:showAsAction="never"/>
+    <item
+        android:id="@+id/menu_kill_button"
+        android:title="@string/kill_app"
+        mirakel:showAsAction="never"/>
+
+</menu>
