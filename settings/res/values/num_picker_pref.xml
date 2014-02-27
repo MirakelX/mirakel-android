@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="num_picker_pref" >
+        <attr
+            name="maximumValue"
+            format="integer" />
+        <attr
+            name="minimumValue"
+            format="integer" />
+        <attr
+            name="summaryString"
+            format="integer" />
+    </declare-styleable>
+
+
+</resources>

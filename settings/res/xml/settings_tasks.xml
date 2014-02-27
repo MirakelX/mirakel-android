@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Mirakel is an Android App for Managing your ToDo-Lists
+  
+  Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+  
+      This program is free software: you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation, either version 3 of the License, or
+      any later version.
+  
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+  
+      You should have received a copy of the GNU General Public License
+      along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="category_tasks"
+    android:title="@string/settings_tasks_title" >
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="showDoneMain"
+        android:title="@string/showDone" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="hideKeyboard"
+        android:summary="@string/hide_keyboard_summary"
+        android:title="@string/hide_keyboard" />
+
+    <PreferenceCategory android:title="@string/settings_semantic" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="semanticNewTask"
+            android:summary="@string/semantic_new_task_summary"
+            android:title="@string/semantic_new_task" />
+
+        <Preference
+            android:dependency="semanticNewTask"
+            android:key="semanticNewTaskSettings"
+            android:summary="@string/semantic_new_task_config_summary"
+            android:title="@string/semantic_new_task_config" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/preferences_colorize" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="colorize_tasks"
+            android:title="@string/preferences_colorize_tasks" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:dependency="colorize_tasks"
+            android:key="colorize_tasks_everywhere"
+            android:summary="@string/preferences_colorize_tasks_everywhere_summary"
+            android:title="@string/preferences_colorize_tasks_everywhere" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:dependency="colorize_tasks"
+            android:key="colorize_subtasks"
+            android:title="@string/preferences_colorize_subtasks" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/settings_subtask" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="subtaskDefaultNew"
+            android:summary="@string/settings_subtask_default_new"
+            android:title="@string/settings_subtask_default_new" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="subtaskAddToSameList"
+            android:summary="@string/settings_subtask_add_to_same_list_summary"
+            android:title="@string/settings_subtask_add_to_same_list" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/recurring" >
+        <Preference
+            android:key="recurring"
+            android:title="@string/recurring" />
+    </PreferenceCategory>
+</PreferenceScreen>
