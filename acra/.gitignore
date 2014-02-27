@@ -1,0 +1,10 @@
+.classpath
+.project
+.settings
+target
+pom.xml.releaseBackup
+release.properties
+bin
+gen
+.gradle
+build
