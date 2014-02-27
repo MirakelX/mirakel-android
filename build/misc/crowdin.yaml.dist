@@ -1,0 +1,42 @@
+project_identifier: mirakel
+api_key:  #EDIT THIS 
+base_url: https://api.crowdin.net
+base_path:  #EDIT THIS 
+
+files:
+  -
+    source: /main/res/values/strings.xml
+    translation: /main/res/values-%two_letters_code%/%original_file_name%
+  -
+    source: /helper/res/values/lib_helper_strings.xml
+    translation: /helper/res/values-%two_letters_code%/%original_file_name%
+  -
+    source: /model/res/values/lib_model_strings.xml
+    translation: /model/res/values-%two_letters_code%/%original_file_name%
+  -
+    source: /tw_sync/res/values/lib_tw_sync_strings.xml
+    translation: /tw_sync/res/values-%two_letters_code%/%original_file_name%
+  -
+    source: /ilovefs-android/res/values/lib_ilovefs_strings.xml
+    translation: /ilovefs-android/res/values-%two_letters_code%/%original_file_name%
+  -
+    source: /settings/res/values/lib_settings_strings.xml
+    translation: /settings/res/values-%two_letters_code%/%original_file_name%
+  -
+    source: /date-time-picker/res/values/lib_date-time-picker_strings.xml
+    translation: /date-time-picker/res/values-%two_letters_code%/%original_file_name%
+  -
+    source: /widget/res/values/lib_widget_strings.xml
+    translation: /widget/res/values-%two_letters_code%/%original_file_name%
+  -
+    source: /widget/res/values/lib_widget_strings.xml
+    translation: /widget/res/values-%two_letters_code%/%original_file_name%
+  -
+    source: /custom_views/res/values/lib_custom_views_strings.xml
+    translation: /custom_views/res/values-%two_letters_code%/%original_file_name%
+  -
+    source: /changelog/res/values/lib_changelog_strings.xml
+    translation: /changelog/res/values-%two_letters_code%/%original_file_name%
+  -
+    source: /donationslib/res/values/lib_donationslib_strings.xml
+    translation: /donationslib/res/values-%two_letters_code%/%original_file_name%
