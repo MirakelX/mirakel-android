@@ -55,7 +55,7 @@ android {
 dependencies {
     compile project(':model')
     compile project(':helper')
-    compile project(':colorpickerprefernce')
+    compile project(':colorpickerpreference')
     compile fileTree(dir: 'libs', include: '*.jar', exclude: 'android-support-v4.jar')
 }
 
