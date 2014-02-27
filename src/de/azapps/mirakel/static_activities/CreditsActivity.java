@@ -15,7 +15,6 @@ import android.view.View;
 import android.widget.TextView;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
-import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.settings.R;
 
 public class CreditsActivity extends Activity {
@@ -33,7 +32,8 @@ public class CreditsActivity extends Activity {
 			"https://github.com/flavienlaurent/datetimepicker" },
 			{ "Webicons", "CC-Attrib", "http://fairheadcreative.com/" },
 			{ "Android Donations Lib", "Apache 2.0",
-			"https://github.com/dschuermann/android-donations-lib" } };
+			"https://github.com/dschuermann/android-donations-lib" },
+			{"Changelog","","https://code.google.com/p/android-change-log/"}};
 	private final String[][]	translations	= {
 			{ "Spanish", "macebal, sml" },
 			{ "French", "Ghost of Kendo, waghanza, npettiaux, benasse" },
