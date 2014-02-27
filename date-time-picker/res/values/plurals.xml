@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Mirakel is an Android App for Managing your ToDo-Lists
+  
+  Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+  
+      This program is free software: you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation, either version 3 of the License, or
+      any later version.
+  
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+  
+      You should have received a copy of the GNU General Public License
+      along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<resources>
+
+    <plurals name="selected_tasks">
+        <item quantity="one">One Task</item>
+        <item quantity="other">%d Tasks</item>
+    </plurals>
+    <plurals name="selected_lists">
+        <item quantity="one">One List</item>
+        <item quantity="other">%d Lists</item>
+    </plurals>
+    <plurals name="list_delete">
+        <item quantity="one">Delete List?</item>
+        <item quantity="other">Delete Lists?</item>
+    </plurals>
+    <plurals name="task_delete">
+        <item quantity="one">Delete Task?</item>
+        <item quantity="other">Delete Tasks?</item>
+    </plurals>
+    <plurals name="due_year">
+        <item quantity="one">Year</item>
+        <item quantity="other">Years</item>
+    </plurals>
+    <plurals name="due_day">
+        <item quantity="one">Day</item>
+        <item quantity="other">Days</item>
+    </plurals>
+    <plurals name="due_minute">
+        <item quantity="one">Minute</item>
+        <item quantity="other">Minutes</item>
+    </plurals>
+    <plurals name="due_hour">
+        <item quantity="one">Hour</item>
+        <item quantity="other">Hours</item>
+    </plurals>
+    <plurals name="due_month">
+        <item quantity="one">Month</item>
+        <item quantity="other">Months</item>
+    </plurals>
+    <plurals name="months">
+        <item quantity="one">Month</item>
+        <item quantity="other">Months</item>
+    </plurals>
+    <plurals name="every_months">
+        <item quantity="one">Every month</item>
+        <item quantity="other">Every %d months</item>
+    </plurals>
+    <plurals name="days">
+        <item quantity="one">Day</item>
+        <item quantity="other">Days</item>
+    </plurals>
+    <plurals name="every_days">
+        <item quantity="one">Every day</item>
+        <item quantity="other">Every %d days</item>
+    </plurals>
+    <plurals name="years">
+        <item quantity="one">Year</item>
+        <item quantity="other">Years</item>
+    </plurals>
+    <plurals name="every_years">
+        <item quantity="one">Every year</item>
+        <item quantity="other">Every %d years</item>
+    </plurals>
+    <plurals name="minutes">
+        <item quantity="one">Minute</item>
+        <item quantity="other">Minutes</item>
+    </plurals>
+    <plurals name="every_minutes">
+        <item quantity="one">Every minute</item>
+        <item quantity="other">Every %d minutes</item>
+    </plurals>
+    <plurals name="hours">
+        <item quantity="one">Hour</item>
+        <item quantity="other">Hours</item>
+    </plurals>
+    <plurals name="every_hours">
+        <item quantity="one">Every hour</item>
+        <item quantity="other">Every %d hours</item>
+    </plurals>
+    <plurals name="subtasks">
+        <item quantity="one">One Subtask</item>
+        <item quantity="other">%d Subtasks</item>
+    </plurals>
+    <plurals name="file">
+        <item quantity="one">One File</item>
+        <item quantity="other">%d Files</item>
+    </plurals>
+    
+    <plurals name="dev_toast">
+        <item quantity="one">You are now %1$d step away from %2$s development settings.</item>
+        <item quantity="other">You are now %1$d steps away from %2$s development settings.</item>
+    </plurals>
+
+</resources>
