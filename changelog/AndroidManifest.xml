@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="de.azapps.mirakel.changelog">
+        <uses-sdk android:minSdkVersion="8"
+                 android:targetSdkVersion="19" />
+        <!-- need to build with gradle-->
+        <application />
+</manifest>
