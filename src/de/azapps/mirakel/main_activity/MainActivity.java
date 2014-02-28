@@ -1332,7 +1332,7 @@ public class MainActivity extends ActionBarActivity implements
 		setCurrentList(currentList, currentView, true, true);
 	}
 
-	public void setCurrentList(final ListMirakel currentList, View currentView,
+	public void setCurrentList(final ListMirakel currentList,  View currentView,
 			final boolean switchFragment, final boolean resetGoBackTo) {
 		if (currentList == null)
 			return;
@@ -1362,22 +1362,25 @@ public class MainActivity extends ActionBarActivity implements
 						.getTasksFragmentPosition());
 			}
 		}
-		if (currentView == null && getListFragment() != null
-				&& getListFragment().getAdapter() != null) {
-			currentView = getListFragment().getAdapter().getViewForList(
-					currentList);
-		}
+		final View currentViewL=getCurrentView(currentView);
+		
 
-		if (currentView != null && this.highlightSelected) {
-			clearHighlighted();
-			if (this.oldClickedList != null) {
-				this.oldClickedList.setSelected(false);
-				this.oldClickedList.setBackgroundColor(0x00000000);
+		runOnUiThread(new Runnable() {
+
+			@Override
+			public void run() {
+				if (currentViewL != null && MainActivity.this.highlightSelected) {
+					clearHighlighted();
+					if (MainActivity.this.oldClickedList != null) {
+						MainActivity.this.oldClickedList.setSelected(false);
+						MainActivity.this.oldClickedList.setBackgroundColor(0x00000000);
+					}
+					currentViewL.setBackgroundColor(getResources().getColor(
+							R.color.pressed_color));
+					MainActivity.this.oldClickedList = currentViewL;
+				}
 			}
-			currentView.setBackgroundColor(getResources().getColor(
-					R.color.pressed_color));
-			this.oldClickedList = currentView;
-		}
+		});
 		if (switchFragment) {
 			setCurrentTask(this.currentTask);
 		}
@@ -1392,6 +1395,15 @@ public class MainActivity extends ActionBarActivity implements
 			});
 		}
 
+	}
+	
+	private View getCurrentView(View currentView){
+		if (currentView == null && getListFragment() != null
+				&& getListFragment().getAdapter() != null) {
+			return  getListFragment().getAdapter().getViewForList(
+					currentList);
+		}
+		return currentView;
 	}
 
 	/**
