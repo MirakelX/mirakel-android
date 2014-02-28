@@ -164,7 +164,7 @@ public class MainActivity extends ActionBarActivity implements
 
 	protected TaskFragment taskFragment;
 
-	private void addFilesForTask(final Task t, final Intent intent) {
+	private void addFilesForTask(final Task t, final Intent intent) {	
 		final String action = intent.getAction();
 		final String type = intent.getType();
 		this.currentPosition = getTaskFragmentPosition();
@@ -191,7 +191,9 @@ public class MainActivity extends ActionBarActivity implements
 		task.setContent(this.newTaskContent == null ? "" : this.newTaskContent);
 		task.safeSave();
 		setCurrentTask(task);
-		addFilesForTask(task, this.startIntent);
+		if(this.startIntent!=null){
+			addFilesForTask(task, this.startIntent);
+		}
 		setCurrentList(task.getList());
 		setCurrentTask(task, true);
 	}
