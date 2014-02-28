@@ -472,7 +472,7 @@ public class Task extends TaskBase {
 	 * @param el
 	 * @return
 	 */
-	public static Task parse_json(JsonObject el, AccountMirakel account) {
+	public static Task parse_json(JsonObject el, AccountMirakel account,boolean isTW) {
 		Task t = null;
 		JsonElement id = el.get("id");
 		if (id != null) {
@@ -485,6 +485,14 @@ public class Task extends TaskBase {
 		}
 		if (t == null) {
 			t = new Task();
+		}
+		if(isTW){
+			t.setDue(null);
+			t.setDone(false);
+			t.setContent(null);
+			t.setPriority(0);
+			t.setProgress(0);
+			t.setList(null, false);
 		}
 
 		// Name
@@ -663,7 +671,7 @@ public class Task extends TaskBase {
 					.getAsJsonArray().iterator();
 			while (i.hasNext()) {
 				JsonObject el = (JsonObject) i.next();
-				Task t = parse_json(el, account);
+				Task t = parse_json(el, account,false);
 				tasks.add(t);
 			}
 			return tasks;
