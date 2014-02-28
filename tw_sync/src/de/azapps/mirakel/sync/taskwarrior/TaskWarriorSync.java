@@ -241,7 +241,7 @@ public class TaskWarriorSync {
 					taskObject = new JsonParser().parse(taskString)
 							.getAsJsonObject();
 					Log.i(TAG, taskString);
-					server_task = Task.parse_json(taskObject, accountMirakel);
+					server_task = Task.parse_json(taskObject, accountMirakel,true);
 					if (server_task.getList() == null
 							|| server_task.getList().getAccount().getId() != accountMirakel
 									.getId()) {
