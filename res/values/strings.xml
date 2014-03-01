@@ -91,5 +91,7 @@
         <item>Move</item>
         <item>Delete</item>
     </string-array>
+    <!-- Misc -->
+    <string name="message_notification">Notification</string>
     
 </resources>
