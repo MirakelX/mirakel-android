@@ -1640,7 +1640,18 @@ public class MainActivity extends ActionBarActivity implements
 					}
 				}, 10);
 			}
+		} else if (this.startIntent.getAction().equals(
+				DefinitionsHelper.SHOW_MESSAGE)) {
+			String message = this.startIntent.getStringExtra(Intent.EXTRA_TEXT);
+			String subject = this.startIntent
+					.getStringExtra(Intent.EXTRA_SUBJECT);
+			if (message != null) {
+				if (subject == null)
+					subject = getString(R.string.message_notification);
+				new AlertDialog.Builder(this).setTitle(subject)
+						.setMessage(message).show();
 
+			}
 		} else {
 			this.mViewPager.setCurrentItem(getTaskFragmentPosition());
 		}
