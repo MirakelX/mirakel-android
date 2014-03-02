@@ -37,6 +37,7 @@ package de.azapps.mirakel.sync;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.AbstractThreadedSyncAdapter;
@@ -45,9 +46,11 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SyncResult;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import de.azapps.mirakel.DefinitionsHelper;
+import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync.TW_ERRORS;
 import de.azapps.tools.Log;
@@ -75,6 +78,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 	@Override
 	public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
+		// Do not sync if Mirakel is in demo mode 
+		if(MirakelCommonPreferences.isDemoMode())
+			return;
+		
 		// Mostly it is annoying if there is a notification. So don't show it
 		boolean showNotification = false;
 		// But if the user actively clicks on "sync" – then show it.
@@ -148,15 +155,32 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		}
 		this.mNotificationManager.cancel(this.notifyID);
 		if (showNotification && !success) {
-			mNB = new NotificationCompat.Builder(this.mContext)
-					.setContentTitle(
-							"Mirakel: "
-									+ this.mContext.getText(R.string.finish_sync))
-					.setContentText(last_message)
+			String title = "Mirakel: "
+					+ this.mContext.getText(R.string.finish_sync);
+
+			Intent openIntent;
+			try {
+				openIntent = new Intent(mContext, Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
+			} catch (ClassNotFoundException e) {
+				Log.wtf(TAG,"mainactivity not found");
+				return;
+			}
+			openIntent.setAction(DefinitionsHelper.SHOW_MESSAGE);
+			openIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, title);
+			openIntent.putExtra(android.content.Intent.EXTRA_TEXT, last_message);
+			openIntent
+					.setData(Uri.parse(openIntent.toUri(Intent.URI_INTENT_SCHEME)));
+			PendingIntent pOpenIntent = PendingIntent.getActivity(mContext, 0,
+					openIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+			Notification notification = new NotificationCompat.Builder(this.mContext)
+					.setContentTitle(title).setContentText(last_message)
 					.setSmallIcon(android.R.drawable.stat_notify_sync)
 					.setPriority(NotificationCompat.PRIORITY_LOW)
-					.setContentIntent(p);
-			this.mNotificationManager.notify(this.notifyID, mNB.build());
+					.setContentIntent(pOpenIntent).build();
+			notification.flags=Notification.FLAG_AUTO_CANCEL
+;
+			this.mNotificationManager.notify(this.notifyID, notification);
 		}
 		Intent i = new Intent(DefinitionsHelper.SYNC_FINISHED);
 		this.mContext.sendBroadcast(i);

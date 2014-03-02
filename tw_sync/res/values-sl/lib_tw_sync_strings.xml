@@ -9,6 +9,7 @@
   <string name="sync_warning_message">Usklajevanje je še vedno v razvoju. Možnost preizkušate na lastno odgovornost. Ustvarite varnostno kopijo! - Ali ste prepričani, da želite nadaljevati?</string>
   <string name="sync_use_summary_taskwarrior">Uskladi s programom Taskwarrior kot %s</string>
   <string name="sync_use_summary_mirakel">Uskladi s programom Mirakel kot %s</string>
+  <string name="sync_use_summary_nothing">Ne omogoči usklajevanja</string>
   <string name="sync_user">Uporabniško ime</string>
   <string name="sync_user_summary">Strežniško uporabniško ime</string>
   <string name="sync_server">Strežnik</string>
@@ -47,8 +48,16 @@ Pričakovati je, da bo tudi uradna različica DAVdroid kmalu podpirala delovanje
   <string name="no_barcode_app_install">Namesti</string>
   <string name="menu_edit_listaccount">Račun</string>
   <string name="change_account">Spremeni račun</string>
+  <string name="wrong_config">Kaže, da je izbrana napačna nastavitvena datoteka</string>
   <string name="load_config">Izberite nastavitveno datoteko za Taskwarrior</string>
   <string name="select_config">Izbor nastavitvene datoteke za strežnik Taskwarrior</string>
+  <string name="message_try_later">Poskusi usklajevati kasneje</string>
+  <string name="message_access_denied">Dostop je zavrnjen!\nAli je uporabljena prava nastavitvena datoteka?</string>
+  <string name="message_create_socket">Ni mogoče ustvariti vodila!\nAli je omrežna povezava omogočena?</string>
+  <string name="message_account_suspended">Vaš račun je začasno izklopljen!</string>
+  <string name="message_parse_message">Ni mogoče razčleniti nalog. Pošljite poročilo o napaki.</string>
+  <string name="message_message_error">Neznan odziv strežnika. Pošljite poročilo o napaki.</string>
+  <string name="finish_sync">Končaj usklajevanje</string>
   <string-array name="sync_types">
     <item>Usklajevanje CalDAV</item>
     <item>Usklajevanje preko strežnika Taskwarrior</item>
