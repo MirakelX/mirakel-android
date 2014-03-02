@@ -29,12 +29,14 @@ public class DefinitionsHelper {
 	public static final String MAINACTIVITY_CLASS = "de.azapps.mirakel.main_activity.MainActivity";
 	public static final String MAINWIDGET_CLASS = "de.azapps.mirakel.widget.MainWidgetProvider";
 	public static final String EXTRA_ID = "de.azapps.mirakel.EXTRA_TASKID";
+	public static final String EXTRA_MESSAGE = "de.azapps.mirakel.EXTRA_MESSAGE";
 	public static final String SHOW_TASK = "de.azapps.mirakel.SHOW_TASK";
 	public static final String SHOW_LIST = "de.azapps.mirakel.SHOW_LIST";
 	public static final String SHOW_LISTS = "de.azapps.mirakel.SHOW_LISTS";
 	public static final String SHOW_LIST_FROM_WIDGET = "de.azapps.mirakel.SHOW_LIST_FROM_WIDGET";
 	public static final String ADD_TASK_FROM_WIDGET = "de.azapps.mirakel.ADD_TASK_FROM_WIDGET";
 	public static final String SHOW_TASK_FROM_WIDGET = "de.azapps.mirakel.SHOW_TASK_FROM_WIDGET";
+	public static final String SHOW_MESSAGE = "de.azapps.mirakel.SHOW_MESSAGE";
 	public static final String TASK_ID = "de.azapp.mirakel.TASK_ID";
 	public static int				GRAVITY_LEFT, GRAVITY_RIGHT;
 	public static boolean freshInstall=false;
