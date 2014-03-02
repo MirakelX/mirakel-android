@@ -164,7 +164,7 @@ public class MainActivity extends ActionBarActivity implements
 
 	protected TaskFragment taskFragment;
 
-	private void addFilesForTask(final Task t, final Intent intent) {
+	private void addFilesForTask(final Task t, final Intent intent) {	
 		final String action = intent.getAction();
 		final String type = intent.getType();
 		this.currentPosition = getTaskFragmentPosition();
@@ -191,7 +191,9 @@ public class MainActivity extends ActionBarActivity implements
 		task.setContent(this.newTaskContent == null ? "" : this.newTaskContent);
 		task.safeSave();
 		setCurrentTask(task);
-		addFilesForTask(task, this.startIntent);
+		if(this.startIntent!=null){
+			addFilesForTask(task, this.startIntent);
+		}
 		setCurrentList(task.getList());
 		setCurrentTask(task, true);
 	}
@@ -248,7 +250,9 @@ public class MainActivity extends ActionBarActivity implements
 		this.skipSwipe = true;
 		setupLayout();
 		this.skipSwipe = true;
-		getTaskFragment().update(MainActivity.this.currentTask);
+		if(getTaskFragment()!=null){
+			getTaskFragment().update(MainActivity.this.currentTask);
+		}
 		loadMenu(this.currentPosition, false, false);
 	}
 
@@ -295,14 +299,7 @@ public class MainActivity extends ActionBarActivity implements
 	public TaskFragment getTaskFragment() {
 		checkPageAdapter();
 		if (MirakelCommonPreferences.isTablet()){
-			if(this.taskFragment==null){
-				forceRebuildLayout(MirakelCommonPreferences.isTablet());	
-				if(this.taskFragment==null){
-					//something terrible happened
-					Log.wtf(TAG, "no taskfragment found");
-					Helpers.restartApp(this);
-				}	
-			}
+			//warning can be null
 			return this.taskFragment;
 		}
 		
@@ -314,7 +311,8 @@ public class MainActivity extends ActionBarActivity implements
 					.getItem(getTaskFragmentPosition());
 			if(f==null){
 				Log.wtf(TAG, "no taskfragment found");
-				Helpers.restartApp(this);
+				//Helpers.restartApp(this);
+				return null;
 			}
 		}
 		try {
@@ -322,7 +320,8 @@ public class MainActivity extends ActionBarActivity implements
 		} catch (ClassCastException e) {
 			Log.wtf(TAG, "cannot cast fragment");
 			forceRebuildLayout(MirakelCommonPreferences.isTablet());
-			return getTaskFragment();
+			return (TaskFragment)this.mPagerAdapter
+					.getItem(getTaskFragmentPosition());
 		}
 	}
 
@@ -332,7 +331,7 @@ public class MainActivity extends ActionBarActivity implements
 			if(this.mPagerAdapter==null){
 				//something terrible happened
 				Log.wtf(TAG, "pageadapter after init null");
-				Helpers.restartApp(this);
+				//Helpers.restartApp(this);
 			}
 		}
 	}
@@ -347,7 +346,8 @@ public class MainActivity extends ActionBarActivity implements
 					.getItem(getTasksFragmentPosition());
 			if(f==null){
 				Log.wtf(TAG, "no taskfragment found");
-				Helpers.restartApp(this);
+				//Helpers.restartApp(this);
+				return null;
 			}
 		}
 		try {
@@ -1428,7 +1428,7 @@ public class MainActivity extends ActionBarActivity implements
 		if (resetGoBackTo) {
 			this.goBackTo.clear();
 		}
-
+		
 		highlightCurrentTask(currentTask, false);
 
 		if (getTaskFragment() != null) {
@@ -1475,8 +1475,11 @@ public class MainActivity extends ActionBarActivity implements
 
 	public void setTaskFragment(final TaskFragment tf) {
 		this.taskFragment = tf;
-		if (this.taskFragment != null && this.currentTask != null) {
-			this.taskFragment.update(this.currentTask);
+		if (getTaskFragment() != null ) {
+			Log.wtf(TAG,"update");
+			getTaskFragment().update(currentTask);
+		}else{
+			Log.d(TAG," is null");
 		}
 
 	}
@@ -1612,6 +1615,10 @@ public class MainActivity extends ActionBarActivity implements
 					DefinitionsHelper.SHOW_LIST_FROM_WIDGET)) {
 				this.closeOnBack = true;
 			}
+			currentTask=list.getFirstTask();
+			if(getTaskFragment()!=null){
+				getTaskFragment().update(currentTask);
+			}
 		} else if (this.startIntent.getAction().equals(
 				DefinitionsHelper.SHOW_LISTS)) {
 			this.mDrawerLayout.openDrawer(DefinitionsHelper.GRAVITY_LEFT);
@@ -1638,7 +1645,18 @@ public class MainActivity extends ActionBarActivity implements
 					}
 				}, 10);
 			}
+		} else if (this.startIntent.getAction().equals(
+				DefinitionsHelper.SHOW_MESSAGE)) {
+			String message = this.startIntent.getStringExtra(Intent.EXTRA_TEXT);
+			String subject = this.startIntent
+					.getStringExtra(Intent.EXTRA_SUBJECT);
+			if (message != null) {
+				if (subject == null)
+					subject = getString(R.string.message_notification);
+				new AlertDialog.Builder(this).setTitle(subject)
+						.setMessage(message).show();
 
+			}
 		} else {
 			this.mViewPager.setCurrentItem(getTaskFragmentPosition());
 		}
