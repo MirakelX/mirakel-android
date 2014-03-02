@@ -50,6 +50,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import de.azapps.mirakel.DefinitionsHelper;
+import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync.TW_ERRORS;
 import de.azapps.tools.Log;
@@ -77,6 +78,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 	@Override
 	public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
+		// Do not sync if Mirakel is in demo mode 
+		if(MirakelCommonPreferences.isDemoMode())
+			return;
+		
 		// Mostly it is annoying if there is a notification. So don't show it
 		boolean showNotification = false;
 		// But if the user actively clicks on "sync" – then show it.
