@@ -1615,7 +1615,10 @@ public class MainActivity extends ActionBarActivity implements
 					DefinitionsHelper.SHOW_LIST_FROM_WIDGET)) {
 				this.closeOnBack = true;
 			}
-			setCurrentTask(list.getFirstTask());
+			currentTask=list.getFirstTask();
+			if(getTaskFragment()!=null){
+				getTaskFragment().update(currentTask);
+			}
 		} else if (this.startIntent.getAction().equals(
 				DefinitionsHelper.SHOW_LISTS)) {
 			this.mDrawerLayout.openDrawer(DefinitionsHelper.GRAVITY_LEFT);
