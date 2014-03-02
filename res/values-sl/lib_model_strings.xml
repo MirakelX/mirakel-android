@@ -10,12 +10,16 @@
   <string name="monthly">Mesečno</string>
   <string name="hourly">Urno</string>
   <string name="minutly">Vsako minuto</string>
+  <string name="recurring">Ponavljanje</string>
   <string name="label">Oznaka</string>
+  <string name="forDue">Uporabite za končano</string>
   <string name="minute">minuta</string>
   <string name="hour">ura</string>
   <string name="day">Dan</string>
   <string name="month">Mesec</string>
   <string name="year">Leto</string>
+  <string name="new_recurring">Novo ponavljanje</string>
+  <string name="intervall">Časovni razmik</string>
   <string name="beginning">Začetek</string>
   <string name="end">Konec</string>
   <string name="no_begin_end">Ni %s</string>
@@ -29,6 +33,8 @@
   <string name="recurrence_from_now">Od zdaj</string>
   <string name="recurrence_from">Od</string>
   <string name="list_all">Združen prikaz seznamov</string>
+  <string name="list_today">Današnje naloge</string>
+  <string name="list_week">Ta teden</string>
   <string name="list_overdue">Zapadle naloge</string>
   <string name="inbox">Vpisane naloge</string>
   <string name="first_task">Prva naloga</string>
@@ -44,17 +50,26 @@
   <string name="any_do_how_to">Najprej naredite varnostno kopijo podatkov Any.Do. To storite v programu Any.Do v meniju Nastavitve → Varnostna kopija → Ustvari varnostno kopijo. Ko to storite, odprite spet program Mirakel in pritisnite gumb V redu.\n Ali pa seveda, izberite datoteko sami.</string>
   <string name="select_file">Izbor datoteke</string>
   <string name="wait">Počakajte ...</string>
+  <string name="backup_import_error">Prišlo je do napake med uvažanjem podatkovne zbirke</string>
+  <string name="backup_import_ok">Uvoz je uspešno končan. Program Mirakel je treba znova zagnati.</string>
+  <string name="backup_export_error">Prišlo je do napake med izvažanjem podatkovne zbirke</string>
   <string name="backup_export_ok">Izvoženo v %s</string>
   <string name="add_content">Dodaj vsebino ...</string>
+  <string name="task_has_content">Naloga z opombo</string>
+  <string name="notification_title_general">%1$d nalog v %2$s</string>
+  <string name="notification_title_general_single">1 naloga v %s</string>
   <string name="notification_title_empty">Lep dan!</string>
+  <string name="reminder_notification_title">Naloga: %s</string>
   <string name="reminder_notification_priority">Prednost: %s</string>
   <string name="reminder_notification_list">Seznam: %s</string>
   <string name="reminder_notification_due">Zapade: %s</string>
   <string name="reminder_notification_done">Končano</string>
   <string name="reminder_notification_later">Kasneje</string>
+  <string name="reminder_notification_done_confirm">Naloga je označena kot \"končana\".</string>
   <string name="reminder_notification_later_confirm">Opomnik bo prikazan čez %d minut</string>
   <string name="list_vanished">Ops! Nalog je izginila! To je lahko napaka programa ...</string>
   <string name="task_vanished">Ops! Seznam nalog je izginil! To je lahko napaka programa ...</string>
+  <string name="no_date">Ni roka</string>
   <string name="task_sorting_title">Razvrsti naloge po:</string>
   <string name="share_using">Souporaba z</string>
   <string name="share_task">Souporabi</string>
@@ -132,5 +147,18 @@
     <item>dni</item>
     <item>mesecev</item>
     <item>let</item>
+  </string-array>
+  <string-array name="demo_lists">
+    <item>Work</item>
+    <item>Home</item>
+    <item>Shopping</item>
+  </string-array>
+  <string-array name="demo_tasks">
+    <item>today Buy birthday present for grandpa</item>
+    <item>Music</item>
+    <item>monday Organize the party</item>
+    <item>today Finish presentation</item>
+    <item>Milk</item>
+    <item>Cheese</item>
   </string-array>
 </resources>
