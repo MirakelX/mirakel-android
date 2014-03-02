@@ -382,10 +382,7 @@ public abstract class TaskFragment extends Fragment {
 			}
 		});
 
-//		if (this.task == null) {
-//			this.main.setCurrentTask(this.main.getCurrentTask(), false);
-//		}
-		update(main.getCurrentTask());
+		detailView.update(main.getCurrentTask());
 		return view;
 	}
 
