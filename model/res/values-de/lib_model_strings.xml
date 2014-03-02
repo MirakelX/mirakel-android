@@ -10,12 +10,16 @@
   <string name="monthly">Monatlich</string>
   <string name="hourly">Stündlich</string>
   <string name="minutly">Minütlich</string>
+  <string name="recurring">Wiederholung</string>
   <string name="label">Bezeichnung</string>
+  <string name="forDue">Für Termin nutzen</string>
   <string name="minute">Minute</string>
   <string name="hour">Stunde</string>
   <string name="day">Tag</string>
   <string name="month">Monat</string>
   <string name="year">Jahr</string>
+  <string name="new_recurring">Neue Wiederholung</string>
+  <string name="intervall">Intervall</string>
   <string name="beginning">Start</string>
   <string name="end">Ende</string>
   <string name="no_begin_end">Keine %s</string>
@@ -28,6 +32,8 @@
   <string name="recurrence_from_now">Ab sofort</string>
   <string name="recurrence_from">Ab</string>
   <string name="list_all">Alle Listen</string>
+  <string name="list_today">Heutige Aufgaben</string>
+  <string name="list_week">Diese Woche</string>
   <string name="list_overdue">Überfällig</string>
   <string name="inbox">Eingang</string>
   <string name="first_task">Erste Aufgabe</string>
@@ -43,17 +49,26 @@
   <string name="any_do_how_to">Bitte erstelle zuerst ein Backup deiner Any.Do Daten. Öffne Any.Do → Einstellungen → Backup → Backup erstellen. Dann komm zurück und klicke OK.\nOder wähle die Datei händisch aus.</string>
   <string name="select_file">Datei auswählen</string>
   <string name="wait">Bitte warten&#8230;</string>
+  <string name="backup_import_error">Beim Import der Daten ist ein Fehler aufgetreten!</string>
+  <string name="backup_import_ok">Import erfolgreich – Bitte starte Mirakel neu</string>
+  <string name="backup_export_error">Beim Import der Daten ist ein Fehler aufgetreten!</string>
   <string name="backup_export_ok">Nach %s exportiert</string>
   <string name="add_content">Notizen&#8230;</string>
+  <string name="task_has_content">Aufgabe mit Notiz</string>
+  <string name="notification_title_general">%1$d Aufgaben in %2$s</string>
+  <string name="notification_title_general_single">1 Aufgabe in %s</string>
   <string name="notification_title_empty">Genieße deinen Tag!</string>
+  <string name="reminder_notification_title">Zu tun: %s</string>
   <string name="reminder_notification_priority">Priorität: %s</string>
   <string name="reminder_notification_list">Liste: %s</string>
   <string name="reminder_notification_due">Termin: %s</string>
   <string name="reminder_notification_done">Erledigt</string>
   <string name="reminder_notification_later">Später</string>
+  <string name="reminder_notification_done_confirm">Ich habe die Aufgabe als erledigt markiert</string>
   <string name="reminder_notification_later_confirm">Ich erinnere dich in %d Minuten</string>
   <string name="list_vanished">Huch, die Aufgabe ist verschwunden. Es tut mir leid&#8230;</string>
   <string name="task_vanished">Huch, die Liste der Aufgabe ist verschwunden. Es tut mir leid&#8230;</string>
+  <string name="no_date">Kein Termin</string>
   <string name="task_sorting_title">Sortiere nach</string>
   <string name="share_using">Teilen</string>
   <string name="share_task">Aufgabe teilen</string>
@@ -131,5 +146,18 @@
     <item>Tage</item>
     <item>Monate</item>
     <item>Jahre</item>
+  </string-array>
+  <string-array name="demo_lists">
+    <item>Auf Arbeit</item>
+    <item>Zu Hause</item>
+    <item>Einkaufen</item>
+  </string-array>
+  <string-array name="demo_tasks">
+    <item>heute Geburtstagsgeschenk für Opa kaufen</item>
+    <item>Musik</item>
+    <item>Montag Party organisieren</item>
+    <item>heute Präsentation fertig machen</item>
+    <item>Milch</item>
+    <item>Käse</item>
   </string-array>
 </resources>
