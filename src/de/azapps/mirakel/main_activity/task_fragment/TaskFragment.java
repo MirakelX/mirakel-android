@@ -211,13 +211,15 @@ public abstract class TaskFragment extends Fragment {
 			Log.i(TAG, Log.getStackTraceString(e));
 			return null;
 		}
-		this.detailView = (TaskDetailView) view.findViewById(R.id.taskFragment);
+		this.detailView = (TaskDetailView) view.findViewById(R.id.task_fragment_view);
 		this.detailView.setOnTaskChangedListner(new OnTaskChangedListner() {
 
 			@Override
 			public void onTaskChanged(Task newTask) {
-				TaskFragment.this.main.getTasksFragment().updateList(false);
-				TaskFragment.this.main.getListFragment().update();
+				if(TaskFragment.this.main.getTasksFragment()!=null&&TaskFragment.this.main.getListFragment()!=null){
+					TaskFragment.this.main.getTasksFragment().updateList(false);
+					TaskFragment.this.main.getListFragment().update();
+				}
 			}
 		});
 		this.detailView.setOnSubtaskClick(new OnTaskClickListner() {
@@ -382,13 +384,14 @@ public abstract class TaskFragment extends Fragment {
 			}
 		});
 
-		detailView.update(main.getCurrentTask());
+		this.detailView.update(this.main.getCurrentTask());
 		return view;
 	}
 
 	abstract protected void startCab();
 
 	public void update(final Task t) {
+		//getChildFragmentManager().beginTransaction().replace(R.id.task_fragment, this).commit();
 		this.task = t;
 		if (this.detailView != null && this.updateThread != null) {
 			new Thread(this.updateThread).start();

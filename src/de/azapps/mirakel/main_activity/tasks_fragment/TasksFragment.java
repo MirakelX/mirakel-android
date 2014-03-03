@@ -67,9 +67,6 @@ import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.main_activity.MainActivity;
-import de.azapps.mirakel.main_activity.task_fragment.TaskFragment;
-import de.azapps.mirakel.main_activity.task_fragment.TaskFragmentV14;
-import de.azapps.mirakel.main_activity.task_fragment.TaskFragmentV8;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
@@ -248,23 +245,9 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 		this.showDone = MirakelCommonPreferences.showDoneMain();
 		this.listId = this.main.getCurrentList().getId();
 
-		if (MirakelCommonPreferences.isTablet()) {
-			this.view = inflater.inflate(R.layout.tasks_fragment_tablet,
-					container, false);
-			TaskFragment t;
-			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-				t = new TaskFragmentV8();
-			} else {
-				t = new TaskFragmentV14();
-			}
-			getChildFragmentManager().beginTransaction()
-					.replace(R.id.task_fragment_in_tasks, t).commit();
-			this.main.setTaskFragment(t);
-		} else {
-			this.view = inflater.inflate(R.layout.tasks_fragment_phone,
-					container, false);
-		}
-		// getResources().getString(R.string.action_settings);
+		this.view = inflater.inflate(R.layout.layout_tasks_fragment, container,
+				false);
+
 		try {
 			this.values = this.main.getCurrentList().tasks(this.showDone);
 		} catch (NullPointerException e) {

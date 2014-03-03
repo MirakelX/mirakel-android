@@ -19,7 +19,7 @@
 package de.azapps.mirakel.main_activity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Stack;
@@ -45,6 +45,7 @@ import android.speech.RecognizerIntent;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -52,8 +53,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 import de.azapps.ilovefs.ILoveFS;
@@ -135,9 +138,8 @@ public class MainActivity extends ActionBarActivity implements
 	// Foo variables (move them out of the MainActivity)
 	private boolean highlightSelected;
 	// User interaction variables
-	private boolean isResumend;
+	private boolean isResumed;
 
-	private boolean isTablet;
 	private List<ListMirakel> lists;
 	protected DrawerLayout mDrawerLayout;
 	private ActionBarDrawerToggle mDrawerToggle;
@@ -232,10 +234,9 @@ public class MainActivity extends ActionBarActivity implements
 		}
 	}
 
-	private void forceRebuildLayout(final boolean tabletLocal) {
-		this.isTablet = tabletLocal;
+	private void forceRebuildLayout() {
 		this.mPagerAdapter = null;
-		this.isResumend = false;
+		this.isResumed = false;
 		this.skipSwipe = true;
 		setupLayout();
 		this.skipSwipe = true;
@@ -302,9 +303,8 @@ public class MainActivity extends ActionBarActivity implements
 
 		if (getTasksFragment() != null) {
 			getTasksFragment().updateList(true);
-			if (!MirakelCommonPreferences.isTablet() && switchFragment) {
-				this.mViewPager.setCurrentItem(MainActivity
-						.getTasksFragmentPosition());
+			if (switchFragment) {
+				setCurrentItem(MainActivity.getTasksFragmentPosition());
 			}
 		}
 		final View currentViewL = getCurrentView(currentView);
@@ -383,25 +383,25 @@ public class MainActivity extends ActionBarActivity implements
 
 		if (getTaskFragment() != null) {
 			getTaskFragment().update(currentTask);
-			final boolean smooth = this.mViewPager.getCurrentItem() != getTaskFragmentPosition();
-			if (!switchFragment)
-				return;
+			if (!MirakelCommonPreferences.isTablet() && switchFragment) {
+				setCurrentItem(getTaskFragmentPosition());
+			}
 			// Fix buggy behavior
-			runOnUiThread(new Runnable() {
-
-				@Override
-				public void run() {
-					MainActivity.this.mViewPager.setCurrentItem(
-							MainActivity.getTasksFragmentPosition(), false);
-					MainActivity.this.mViewPager.setCurrentItem(
-							getTaskFragmentPosition(), false);
-					MainActivity.this.mViewPager.setCurrentItem(
-							MainActivity.getTasksFragmentPosition(), false);
-					MainActivity.this.mViewPager.setCurrentItem(
-							getTaskFragmentPosition(), smooth);
-
-				}
-			});
+			// runOnUiThread(new Runnable() {
+			//
+			// @Override
+			// public void run() {
+			// MainActivity.this.mViewPager.setCurrentItem(
+			// MainActivity.getTasksFragmentPosition(), false);
+			// MainActivity.this.mViewPager.setCurrentItem(
+			// getTaskFragmentPosition(), false);
+			// MainActivity.this.mViewPager.setCurrentItem(
+			// MainActivity.getTasksFragmentPosition(), false);
+			// MainActivity.this.mViewPager.setCurrentItem(
+			// getTaskFragmentPosition(), smooth);
+			//
+			// }
+			// });
 		}
 	}
 
@@ -430,29 +430,31 @@ public class MainActivity extends ActionBarActivity implements
 	 * @return
 	 */
 	public TaskFragment getTaskFragment() {
-		checkPageAdapter();
 		if (MirakelCommonPreferences.isTablet()) {
-			// warning can be null
-			return this.taskFragment;
-		}
-
-		Fragment f = this.mPagerAdapter.getItem(getTaskFragmentPosition());
-		if (f == null) {
-			forceRebuildLayout(MirakelCommonPreferences.isTablet());
-			f = this.mPagerAdapter.getItem(getTaskFragmentPosition());
-			if (f == null) {
-				Log.wtf(TAG, "no taskfragment found");
-				// Helpers.restartApp(this);
-				return null;
-			}
-		}
-		try {
-			return (TaskFragment) f;
-		} catch (ClassCastException e) {
-			Log.wtf(TAG, "cannot cast fragment");
-			forceRebuildLayout(MirakelCommonPreferences.isTablet());
+			return (TaskFragment) this.fragmentManager
+					.findFragmentById(R.id.task_fragment);
+		} else {
+			checkPageAdapter();
 			return (TaskFragment) this.mPagerAdapter
 					.getItem(getTaskFragmentPosition());
+			// This must not happen
+			// if (f == null) {
+			// forceRebuildLayout(MirakelCommonPreferences.isTablet());
+			// f = this.mPagerAdapter.getItem(getTaskFragmentPosition());
+			// if (f == null) {
+			// Log.wtf(TAG, "no taskfragment found");
+			// // Helpers.restartApp(this);
+			// return null;
+			// }
+			// }
+			// try {
+			// return (TaskFragment) f;
+			// } catch (ClassCastException e) {
+			// Log.wtf(TAG, "cannot cast fragment");
+			// forceRebuildLayout(MirakelCommonPreferences.isTablet());
+			// return (TaskFragment) this.mPagerAdapter
+			// .getItem(getTaskFragmentPosition());
+			// }
 		}
 	}
 
@@ -462,30 +464,44 @@ public class MainActivity extends ActionBarActivity implements
 	 * @return
 	 */
 	public TasksFragment getTasksFragment() {
-		checkPageAdapter();
-		Fragment f = this.mPagerAdapter.getItem(MainActivity
-				.getTasksFragmentPosition());
-		if (f == null) {
-			forceRebuildLayout(MirakelCommonPreferences.isTablet());
+		Fragment f;
+		if (MirakelCommonPreferences.isTablet()) {
+			f = this.fragmentManager.findFragmentById(R.id.tasks_fragment);
+			if(f==null)
+				this.fragmentManager.findFragmentByTag("tasks");
+			
+			if(f==null)
+				Log.wtf(TAG,"fragment is null");
+
+		} else {
+			checkPageAdapter();
+			f = this.mPagerAdapter.getItem(MainActivity
+					.getTasksFragmentPosition());
+		}
+		// This must not happen
+		if (f == null && this.mPagerAdapter != null) {
+			// forceRebuildLayout();
 			f = this.mPagerAdapter.getItem(getTasksFragmentPosition());
 			if (f == null) {
 				Log.wtf(TAG, "no taskfragment found");
 				// Helpers.restartApp(this);
 				return null;
 			}
+		} else {
+			return null;
 		}
 		try {
 			return (TasksFragment) f;
 		} catch (ClassCastException e) {
 			Log.wtf(TAG, "cannot cast fragment");
-			forceRebuildLayout(MirakelCommonPreferences.isTablet());
+			forceRebuildLayout();
 			return getTasksFragment();
 		}
 	}
 
 	private void checkPageAdapter() {
-		if (this.mPagerAdapter == null) {
-			forceRebuildLayout(MirakelCommonPreferences.isTablet());
+		if (this.mPagerAdapter == null && !MirakelCommonPreferences.isTablet()) {
+			forceRebuildLayout();
 			if (this.mPagerAdapter == null) {
 				// something terrible happened
 				Log.wtf(TAG, "pageadapter after init null");
@@ -587,7 +603,9 @@ public class MainActivity extends ActionBarActivity implements
 						})
 				.setNegativeButton(this.getString(android.R.string.no), null)
 				.show();
-		getTasksFragment().updateList(false);
+		if (getTasksFragment() != null) {
+			getTasksFragment().updateList(false);
+		}
 	}
 
 	/**
@@ -676,9 +694,8 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	private int handleTaskFragmentMenu() {
-		if (getSupportActionBar() != null && this.currentTask != null
-				&& this.mViewPager != null) {
-			this.mViewPager.post(new Runnable() {
+		if (getSupportActionBar() != null && this.currentTask != null) {
+			runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
 					getTaskFragment().update(MainActivity.this.currentTask);
@@ -705,15 +722,13 @@ public class MainActivity extends ActionBarActivity implements
 		} else {
 			newmenu = R.menu.tablet_right;
 		}
-		if (this.mViewPager != null) {
-			this.mViewPager.post(new Runnable() {
-				@Override
-				public void run() {
-					getSupportActionBar().setTitle(
-							MainActivity.this.currentList.getName());
-				}
-			});
-		}
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				getSupportActionBar().setTitle(
+						MainActivity.this.currentList.getName());
+			}
+		});
 
 		return newmenu;
 	}
@@ -757,17 +772,10 @@ public class MainActivity extends ActionBarActivity implements
 		}
 	}
 
-	/**
-	 * Initialize ViewPager
+	/*
+	 * Setup NavigationDrawer
 	 */
-	@SuppressLint("NewApi")
-	private void intializeFragments() {
-		/*
-		 * Setup NavigationDrawer
-		 */
-		getListFragment().setActivity(this);
-
-		final List<Fragment> fragments = new Vector<Fragment>();
+	private void initNavDrawer() {
 		this.mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
 		this.mDrawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
@@ -779,8 +787,10 @@ public class MainActivity extends ActionBarActivity implements
 			@Override
 			public void onDrawerClosed(final View view) {
 				loadMenu(MainActivity.this.currentPosition);
-				if (getListFragment() != null) {
-					getListFragment().closeNavDrawer();
+				ListFragment listFragment = getListFragment();
+				if (listFragment != null) {
+					listFragment.closeNavDrawer();
+					listFragment.setActivity(MainActivity.this);
 				}
 
 			}
@@ -797,50 +807,66 @@ public class MainActivity extends ActionBarActivity implements
 		if (this.showNavDrawer) {
 			this.mDrawerLayout.openDrawer(DefinitionsHelper.GRAVITY_LEFT);
 		}
+	}
 
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		getSupportActionBar().setHomeButtonEnabled(true);
-		/*
-		 * Setup other Fragments
-		 */
+	/**
+	 * Initialize ViewPager
+	 */
+	@SuppressLint("NewApi")
+	private void initViewPager() {
+		final List<Fragment> fragments = new Vector<Fragment>();
 		final TasksFragment tasksFragment = new TasksFragment();
 		tasksFragment.setActivity(this);
 		fragments.add(tasksFragment);
-		if (!MirakelCommonPreferences.isTablet()) {
-			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-				fragments.add(new TaskFragmentV8());
-			} else {
-				fragments.add(new TaskFragmentV14());
-			}
-		}
-		if (MainActivity.isRTL && !MirakelCommonPreferences.isTablet()) {
-			final Fragment[] fragmentsLocal = new Fragment[fragments.size()];
-			for (int i = 0; i < fragments.size(); i++) {
-				fragmentsLocal[fragmentsLocal.length - 1 - i] = fragments
-						.get(i);
-			}
-			this.mPagerAdapter = new PagerAdapter(this.fragmentManager,
-					Arrays.asList(fragmentsLocal));
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+			fragments.add(new TaskFragmentV8());
 		} else {
+			fragments.add(new TaskFragmentV14());
+		}
+		if (!MirakelCommonPreferences.isTablet() && !this.isResumed
+				&& this.mPagerAdapter == null) {
+			if (MainActivity.isRTL) {
+				Collections.reverse(fragments);
+			}
 			this.mPagerAdapter = new PagerAdapter(this.fragmentManager,
 					fragments);
-		}
 
-		//
-		if (this.mViewPager == null) {
+			// if (this.mViewPager == null) {
 			this.mViewPager = (ViewPager) super.findViewById(R.id.viewpager);
-		}
-		if (this.mViewPager == null) {
-			Log.wtf(MainActivity.TAG, "viewpager null");
-			return;
-		}
-		this.mViewPager.setOffscreenPageLimit(MirakelCommonPreferences
-				.isTablet() ? 1 : 2);
-		this.mViewPager.setAdapter(this.mPagerAdapter);
-		this.mViewPager.setOnPageChangeListener(this);
-		this.mViewPager.setOffscreenPageLimit(MirakelCommonPreferences
-				.isTablet() ? 1 : 2);
+			// }
+			if (this.mViewPager == null) {
+				Log.wtf(MainActivity.TAG, "viewpager null");
+				return;
+			}
+			this.mViewPager.setOffscreenPageLimit(2);
+			this.mViewPager.setAdapter(this.mPagerAdapter);
+			this.mViewPager.setOnPageChangeListener(this);
+		} else if (this.fragmentManager != null
+				&& findViewById(R.id.tasks_fragment) != null
+				&& findViewById(R.id.task_fragment) != null) {
+			// add fragment to the fragment container layout
 
+			this.fragmentManager.beginTransaction()
+					.add(R.id.tasks_fragment, fragments.get(0), "tasks")
+					.add(R.id.task_fragment, fragments.get(1), "task")
+					.commitAllowingStateLoss();
+
+		}
+		if (this.fragmentManager != null
+				&& findViewById(R.id.navigate_fragment) != null) {
+			ListFragment listFragment = new ListFragment();
+			// add fragment to the fragment container layout
+			this.fragmentManager.beginTransaction()
+					.add(R.id.navigate_fragment, listFragment).commit();
+		}
+
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		outState.putString("WORKAROUND_FOR_BUG_19917_KEY",
+				"WORKAROUND_FOR_BUG_19917_VALUE");
+		super.onSaveInstanceState(outState);
 	}
 
 	public void loadMenu(final int position) {
@@ -864,7 +890,7 @@ public class MainActivity extends ActionBarActivity implements
 		if (this.menu == null)
 			return;
 		final int newmenu;
-		if (this.isTablet && position != -1) {
+		if (MirakelCommonPreferences.isTablet() && position != -1) {
 			newmenu = R.menu.tablet_right;
 		} else {
 			switch (position) {
@@ -893,37 +919,33 @@ public class MainActivity extends ActionBarActivity implements
 		// Configure to use the desired menu
 		if (newmenu == -1)
 			return;
-		if (this.mViewPager != null) {
-			this.mViewPager.post(new Runnable() {
+		runOnUiThread(new Runnable() {
 
-				@Override
-				public void run() {
-					MainActivity.this.menu.clear();
-					MenuInflater inflater = getMenuInflater();
-					inflater.inflate(newmenu, MainActivity.this.menu);
-					if (MainActivity.this.menu.findItem(R.id.menu_sync_now) != null) {
-						MainActivity.this.menu.findItem(R.id.menu_sync_now)
-								.setVisible(MirakelModelPreferences.useSync());
-					}
-					if (MainActivity.this.menu.findItem(R.id.menu_kill_button) != null) {
-						MainActivity.this.menu.findItem(R.id.menu_kill_button)
-								.setVisible(
-										MirakelCommonPreferences
-												.showKillButton());
-					}
-					if (MainActivity.this.menu.findItem(R.id.menu_contact) != null) {
-						MainActivity.this.menu.findItem(R.id.menu_contact)
-								.setVisible(BuildHelper.isBeta());
-					}
-
-					if (!fromShare) {
-						updateShare();
-					}
-
+			@Override
+			public void run() {
+				MainActivity.this.menu.clear();
+				MenuInflater inflater = getMenuInflater();
+				inflater.inflate(newmenu, MainActivity.this.menu);
+				if (MainActivity.this.menu.findItem(R.id.menu_sync_now) != null) {
+					MainActivity.this.menu.findItem(R.id.menu_sync_now)
+							.setVisible(MirakelModelPreferences.useSync());
 				}
-			});
-		}
+				if (MainActivity.this.menu.findItem(R.id.menu_kill_button) != null) {
+					MainActivity.this.menu.findItem(R.id.menu_kill_button)
+							.setVisible(
+									MirakelCommonPreferences.showKillButton());
+				}
+				if (MainActivity.this.menu.findItem(R.id.menu_contact) != null) {
+					MainActivity.this.menu.findItem(R.id.menu_contact)
+							.setVisible(BuildHelper.isBeta());
+				}
 
+				if (!fromShare) {
+					updateShare();
+				}
+
+			}
+		});
 	}
 
 	/**
@@ -996,8 +1018,8 @@ public class MainActivity extends ActionBarActivity implements
 				}
 				startActivity(this.startIntent);
 			}
-			if (this.isTablet != MirakelCommonPreferences.isTablet()) {
-				forceRebuildLayout(MirakelCommonPreferences.isTablet());
+			if (MirakelCommonPreferences.isTablet()) {
+				forceRebuildLayout();
 			} else {
 				loadMenu(this.mViewPager.getCurrentItem());
 			}
@@ -1044,24 +1066,26 @@ public class MainActivity extends ActionBarActivity implements
 			super.onBackPressed();
 			return;
 		}
-		switch (this.mViewPager.getCurrentItem()) {
-		case LEFT_FRAGMENT:
-			if (MainActivity.isRTL) {
-				this.mViewPager.setCurrentItem(MainActivity
-						.getTasksFragmentPosition());
-				return;
+		if (!MirakelCommonPreferences.isTablet()) {
+			switch (this.mViewPager.getCurrentItem()) {
+			case LEFT_FRAGMENT:
+				if (MainActivity.isRTL) {
+					this.mViewPager.setCurrentItem(MainActivity
+							.getTasksFragmentPosition());
+					return;
+				}
+				break;
+			case RIGHT_FRAGMENT:
+				if (!MainActivity.isRTL) {
+					this.mViewPager.setCurrentItem(MainActivity
+							.getTasksFragmentPosition());
+					return;
+				}
+				break;
+			default:
+				// Cannot be, do nothing
+				break;
 			}
-			break;
-		case RIGHT_FRAGMENT:
-			if (!MainActivity.isRTL) {
-				this.mViewPager.setCurrentItem(MainActivity
-						.getTasksFragmentPosition());
-				return;
-			}
-			break;
-		default:
-			// Cannot be, do nothing
-			break;
 		}
 		super.onBackPressed();
 	}
@@ -1069,11 +1093,13 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	public void onConfigurationChanged(final Configuration newConfig) {
 		Locale.setDefault(Helpers.getLocal(this));
+		Configuration oldConfig = getResources().getConfiguration();
 		super.onConfigurationChanged(newConfig);
-		final boolean tabletLocal = MirakelCommonPreferences.isTablet();
-		if (tabletLocal != this.isTablet) {
-			forceRebuildLayout(tabletLocal);
-		} else {
+		this.mPagerAdapter = null;
+		this.isResumed = false;
+		draw();
+		if (getListFragment() != null && getTasksFragment() != null
+				&& this.mDrawerToggle != null) {
 			getListFragment().setActivity(this);
 			getTasksFragment().setActivity(this);
 			this.mDrawerToggle.onConfigurationChanged(newConfig);
@@ -1090,7 +1116,6 @@ public class MainActivity extends ActionBarActivity implements
 		} else {
 			setTheme(android.support.v7.appcompat.R.style.Theme_AppCompat_Light_DarkActionBar);
 		}
-		Locale.setDefault(Helpers.getLocal(this));
 	}
 
 	/**
@@ -1098,7 +1123,7 @@ public class MainActivity extends ActionBarActivity implements
 	 */
 	@SuppressLint("NewApi")
 	private void initConfiguration() {
-		this.isTablet = MirakelCommonPreferences.isTablet();
+		Locale.setDefault(Helpers.getLocal(this));
 		MainActivity.isRTL = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
 				&& getResources().getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
 		this.currentPosition = MainActivity.getTasksFragmentPosition();
@@ -1141,21 +1166,33 @@ public class MainActivity extends ActionBarActivity implements
 		super.onCreate(savedInstanceState);
 		BackgroundTasks.run(this);
 		initThirdParty();
+		draw();
+	}
 
-		setContentView(R.layout.activity_main);
+	private void draw() {
+		if (MirakelCommonPreferences.isTablet()) {
+			setContentView(R.layout.pane_multi);
+		} else {
+			setContentView(R.layout.pane_single);
+		}
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setHomeButtonEnabled(true);
 		setupLayout();
-		this.isResumend = false;
+		this.isResumed = false;
+		setCurrentItem(this.currentPosition);
+		loadMenu(this.currentPosition);
+	}
 
-		if (this.mViewPager.getCurrentItem() != this.currentPosition) {
+	private void setCurrentItem(final int pos) {
+		if (!MirakelCommonPreferences.isTablet()
+				&& this.mViewPager.getCurrentItem() != pos) {
 			this.mViewPager.postDelayed(new Runnable() {
 				@Override
 				public void run() {
-					MainActivity.this.mViewPager
-							.setCurrentItem(MainActivity.this.currentPosition);
+					MainActivity.this.mViewPager.setCurrentItem(pos);
 				}
 			}, 10);
 		}
-		setCurrentTask(this.currentTask, false);
 	}
 
 	@Override
@@ -1318,7 +1355,7 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	public void onPageScrolled(final int position, final float positionOffset,
 			final int positionOffsetPixels) {
-		if (getTaskFragment() != null
+		if (getTaskFragment() != null && getTasksFragment() != null
 				&& getTasksFragment().getAdapter() != null
 				&& MirakelCommonPreferences.swipeBehavior() && !this.skipSwipe) {
 			this.skipSwipe = true;
@@ -1328,17 +1365,18 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	public void onPageScrollStateChanged(final int state) {
-		if (this.mViewPager.getCurrentItem() == getTaskFragmentPosition()) {
+		if (!MirakelCommonPreferences.isTablet()
+				&& this.mViewPager.getCurrentItem() == getTaskFragmentPosition()) {
 			this.skipSwipe = false;
 		}
 	}
 
 	@Override
 	public void onPageSelected(final int position) {
-		if (getTasksFragment() == null)
-			return;
-		getTasksFragment().closeActionMode();
-		getTaskFragment().closeActionMode();
+		if (getTasksFragment() != null)
+			getTasksFragment().closeActionMode();
+		if (getTaskFragment() != null)
+			getTaskFragment().closeActionMode();
 		runOnUiThread(new Runnable() {
 
 			@Override
@@ -1390,17 +1428,18 @@ public class MainActivity extends ActionBarActivity implements
 	protected void onPostCreate(final Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
 		// Sync the toggle state after onRestoreInstanceState has occurred.
-		this.mDrawerToggle.syncState();
+		if (this.mDrawerToggle != null) {
+			this.mDrawerToggle.syncState();
+		}
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if (this.isResumend) {
+		if (this.isResumed) {
 			setupLayout();
 		}
-		this.isResumend = true;
-		// showMessageFromSync();
+		this.isResumed = true;
 	}
 
 	/**
@@ -1416,13 +1455,15 @@ public class MainActivity extends ActionBarActivity implements
 
 	private void search(final String query) {
 		setCurrentList(new SearchList(this, query));
-		this.mViewPager.setCurrentItem(MainActivity.getTasksFragmentPosition());
+		if (!MirakelCommonPreferences.isTablet())
+			setCurrentItem(MainActivity.getTasksFragmentPosition());
 	}
 
 	private View getCurrentView(View currentView) {
 		if (currentView == null && getListFragment() != null
 				&& getListFragment().getAdapter() != null) {
-			return getListFragment().getAdapter().getViewForList(currentList);
+			return getListFragment().getAdapter().getViewForList(
+					this.currentList);
 		}
 		return currentView;
 	}
@@ -1448,10 +1489,7 @@ public class MainActivity extends ActionBarActivity implements
 	public void setTaskFragment(final TaskFragment tf) {
 		this.taskFragment = tf;
 		if (getTaskFragment() != null) {
-			Log.wtf(TAG, "update");
-			getTaskFragment().update(currentTask);
-		} else {
-			Log.d(TAG, " is null");
+			getTaskFragment().update(this.currentTask);
 		}
 
 	}
@@ -1468,25 +1506,8 @@ public class MainActivity extends ActionBarActivity implements
 				this.skipSwipe = true;
 				this.currentList = task.getList();
 
-				this.mViewPager.postDelayed(new Runnable() {
-
-					@Override
-					public void run() {
-						setCurrentTask(task, true);
-						MainActivity.this.mViewPager.setCurrentItem(
-								getTaskFragmentPosition(), false);
-
-					}
-				}, 1);
-				runOnUiThread(new Runnable() {
-
-					@Override
-					public void run() {
-						MainActivity.this.mViewPager.setCurrentItem(
-								getTaskFragmentPosition(), false);
-
-					}
-				});
+				setCurrentTask(task, true);
+				setCurrentItem(getTaskFragmentPosition());
 			} else {
 				Log.d(MainActivity.TAG, "task null");
 			}
@@ -1573,9 +1594,9 @@ public class MainActivity extends ActionBarActivity implements
 					DefinitionsHelper.SHOW_LIST_FROM_WIDGET)) {
 				this.closeOnBack = true;
 			}
-			currentTask = list.getFirstTask();
+			this.currentTask = list.getFirstTask();
 			if (getTaskFragment() != null) {
-				getTaskFragment().update(currentTask);
+				getTaskFragment().update(this.currentTask);
 			}
 		} else if (this.startIntent.getAction().equals(
 				DefinitionsHelper.SHOW_LISTS)) {
@@ -1591,8 +1612,8 @@ public class MainActivity extends ActionBarActivity implements
 			setCurrentList(ListMirakel.getList(listId));
 			if (getTasksFragment() != null && getTasksFragment().isReady()) {
 				getTasksFragment().focusNew(true);
-			} else {
-				this.mViewPager.postDelayed(new Runnable() {
+			} else if (!MirakelCommonPreferences.isTablet()) {
+				runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
 						if (getTasksFragment() != null) {
@@ -1601,7 +1622,7 @@ public class MainActivity extends ActionBarActivity implements
 							Log.wtf(MainActivity.TAG, "Tasksfragment null");
 						}
 					}
-				}, 10);
+				});
 			}
 		} else if (this.startIntent.getAction().equals(
 				DefinitionsHelper.SHOW_MESSAGE)) {
@@ -1616,7 +1637,7 @@ public class MainActivity extends ActionBarActivity implements
 
 			}
 		} else {
-			this.mViewPager.setCurrentItem(getTaskFragmentPosition());
+			setCurrentItem(getTaskFragmentPosition());
 		}
 		if ((this.startIntent == null || this.startIntent.getAction() == null || !this.startIntent
 				.getAction().contains(DefinitionsHelper.ADD_TASK_FROM_WIDGET))
@@ -1637,9 +1658,14 @@ public class MainActivity extends ActionBarActivity implements
 			setCurrentList(SpecialList.firstSpecial());
 		}
 		// Initialize ViewPager
-		if (!this.isResumend && this.mPagerAdapter == null) {
-			intializeFragments();
+		try {
+			initViewPager();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		initNavDrawer();
+
 		handleIntent();
 	}
 
@@ -1694,8 +1720,8 @@ public class MainActivity extends ActionBarActivity implements
 	public void updateShare() {
 		if (this.menu != null) {
 			final MenuItem share_list = this.menu.findItem(R.id.share_list);
-			if (share_list != null && this.mViewPager != null) {
-				this.mViewPager.post(new Runnable() {
+			if (share_list != null) {
+				runOnUiThread(new Runnable() {
 
 					@Override
 					public void run() {
