@@ -18,106 +18,45 @@
  ******************************************************************************/
 package de.azapps.mirakel.main_activity.tasks_fragment;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
-import android.support.v4.util.LongSparseArray;
-import android.view.MotionEvent;
+import android.database.Cursor;
+import android.support.v4.widget.CursorAdapter;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import de.azapps.mirakel.adapter.MirakelArrayAdapter;
 import de.azapps.mirakel.custom_views.BaseTaskDetailRow.OnTaskChangedListner;
 import de.azapps.mirakel.custom_views.TaskSummary;
-import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.tools.Log;
 
-public class TaskAdapter extends MirakelArrayAdapter<Task> {
-	/**
-	 * The class, holding the Views of the Row
-	 * 
-	 * @author az
-	 * 
-	 */
-	static class TaskHolder {
-		TaskSummary summary;
+public class TaskAdapter extends CursorAdapter {
+
+	private static final String TAG = "TaskAdapter";
+	private OnTaskChangedListner taskChange;
+
+	public TaskAdapter(Context context, Cursor c, boolean autoRequery,OnTaskChangedListner taskChange) {
+		super(context, c, autoRequery);
+		this.taskChange=taskChange;
 	}
 
-	int listId;
-
-	private OnTaskChangedListner onTaskChanged;
-
-	protected int touchPosition;
-
-	private final LongSparseArray<View> viewsForTasks = new LongSparseArray<View>();
-
-	public TaskAdapter(Context c) {
-		// do not call this, only for error-fixing there
-		super(c, 0, new ArrayList<Task>());
-	}
-
-	public TaskAdapter(Context context, int layoutResourceId, List<Task> data,
-			int listId, OnTaskChangedListner onTaskChanged) {
-		super(context, layoutResourceId, data);
-		this.listId = listId;
-		this.onTaskChanged = onTaskChanged;
-
-	}
-
-	public void changeData(List<Task> tasks, int listID) {
-		this.viewsForTasks.clear();
-		this.listId = listID;
-		super.changeData(tasks);
-	}
-
-	public int getListID() {
-		return this.listId;
-	}
-
+	//update view here
 	@Override
-	public View getView(final int position, View convertView, ViewGroup parent) {
-		final Task task = position >= this.data.size() ? null : this.data
-				.get(position);
-		TaskSummary row;
-		if (convertView == null) {
-			row = new TaskSummary(this.context);
-		} else {
-			row = (TaskSummary) convertView;
+	public void bindView(View v, Context ctx, Cursor c) {
+		if(v==null||! (v instanceof TaskSummary)){
+			Log.d(TAG,"create new tasksummary");
+			v=new TaskSummary(ctx);
 		}
-
-		row.updatePart(task);
-
-		if (this.selected.get(position)) {
-			row.setBackgroundColor(Helpers.getHighlightedColor(this.context));
-		}
-		row.setOnTouchListener(new OnTouchListener() {
-
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				TaskAdapter.this.touchPosition = position;
-				return false;
-			}
-		});
-		row.setOnTaskChangedListner(this.onTaskChanged);
-		if (task != null) {
-			this.viewsForTasks.put(task.getId(), row);
-		}
-		return row;
+		Task t=Task.cursorToTask(c);
+		((TaskSummary)v).updatePart(t);
+		v.setTag(t.getId());
+		
 	}
 
-	public View getViewForTask(Task task) {
-		return this.viewsForTasks.get(task.getId());
-	}
-
-	public Task lastTouched() {
-		if (this.touchPosition < this.data.size())
-			return this.data.get(this.touchPosition);
-		return null;
-	}
-
-	public void setListID(int listId) {
-		this.listId = listId;
+	//create new views
+	@Override
+	public View newView(Context ctx, Cursor c, ViewGroup parent) {
+		TaskSummary summary=new TaskSummary(ctx);
+		summary.setOnTaskChangedListner(this.taskChange);
+		return summary;
 	}
 
 }

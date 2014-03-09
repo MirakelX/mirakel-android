@@ -162,7 +162,6 @@ public class MainActivity extends ActionBarActivity implements
 	private boolean skipSwipe;
 	private Intent startIntent;
 
-	protected TaskFragment taskFragment;
 
 	private void addFilesForTask(final Task t, final Intent intent) {
 		final String action = intent.getAction();
@@ -469,7 +468,10 @@ public class MainActivity extends ActionBarActivity implements
 			f = this.fragmentManager.findFragmentById(R.id.tasks_fragment);
 			if(f==null)
 				this.fragmentManager.findFragmentByTag("tasks");
-			
+			if(f==null){
+				f=new TasksFragment();
+				this.fragmentManager.beginTransaction().replace(R.id.tasks_fragment, f).commit();
+			}
 			if(f==null)
 				Log.wtf(TAG,"fragment is null");
 
@@ -745,10 +747,10 @@ public class MainActivity extends ActionBarActivity implements
 				|| currentTask == null)
 			return;
 		Log.v(MainActivity.TAG, currentTask.getName());
-		final View currentView = getTasksFragment().getAdapter()
+		final View currentView =null;/* getTasksFragment().getAdapter()
 				.getViewForTask(currentTask) == null ? getTasksFragment()
 				.getListView().getChildAt(0) : getTasksFragment().getAdapter()
-				.getViewForTask(currentTask);
+				.getViewForTask(currentTask);*/
 
 		if (currentView != null && this.highlightSelected && !multiselect) {
 
@@ -814,8 +816,9 @@ public class MainActivity extends ActionBarActivity implements
 	 */
 	@SuppressLint("NewApi")
 	private void initViewPager() {
+		this.fragmentManager.enableDebugLogging(true);
 		final List<Fragment> fragments = new Vector<Fragment>();
-		final TasksFragment tasksFragment = new TasksFragment();
+		TasksFragment tasksFragment = new TasksFragment();
 		tasksFragment.setActivity(this);
 		fragments.add(tasksFragment);
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
@@ -1170,6 +1173,7 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	private void draw() {
+		((ViewGroup)findViewById(android.R.id.content)).removeAllViews();
 		if (MirakelCommonPreferences.isTablet()) {
 			setContentView(R.layout.pane_multi);
 		} else {
@@ -1322,8 +1326,8 @@ public class MainActivity extends ActionBarActivity implements
 					&& getTasksFragment().getAdapter() != null) {
 				getListFragment().getAdapter().changeData(ListMirakel.all());
 				getListFragment().getAdapter().notifyDataSetChanged();
-				getTasksFragment().getAdapter().changeData(
-						getCurrentList().tasks(), getCurrentList().getId());
+				/*getTasksFragment().getAdapter().changeData(
+						getCurrentList().tasks(), getCurrentList().getId());*/
 				getTasksFragment().getAdapter().notifyDataSetChanged();
 				if (!MirakelCommonPreferences.isTablet()
 						&& this.currentPosition == MainActivity
@@ -1359,7 +1363,7 @@ public class MainActivity extends ActionBarActivity implements
 				&& getTasksFragment().getAdapter() != null
 				&& MirakelCommonPreferences.swipeBehavior() && !this.skipSwipe) {
 			this.skipSwipe = true;
-			setCurrentTask(getTasksFragment().getAdapter().lastTouched(), false);
+		//	setCurrentTask(getTasksFragment().getAdapter().lastTouched(), false);
 		}
 	}
 
@@ -1486,13 +1490,7 @@ public class MainActivity extends ActionBarActivity implements
 		this.skipSwipe = true;
 	}
 
-	public void setTaskFragment(final TaskFragment tf) {
-		this.taskFragment = tf;
-		if (getTaskFragment() != null) {
-			getTaskFragment().update(this.currentTask);
-		}
-
-	}
+	
 
 	private void handleIntent() {
 		if (this.startIntent == null || this.startIntent.getAction() == null) {
