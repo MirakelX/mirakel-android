@@ -583,4 +583,8 @@ public class ListMirakel extends ListBase {
 		return json;
 	}
 
+	
+	public String getWhereQuery(boolean forQuery){
+		return DatabaseHelper.ID+"="+getId();
+	}
 }

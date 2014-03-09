@@ -110,7 +110,7 @@ public class Task extends TaskBase {
 	 * @param cursor
 	 * @return
 	 */
-	private static Task cursorToTask(Cursor cursor) {
+	public static Task cursorToTask(Cursor cursor) {
 		int i = 0;
 		GregorianCalendar due = new GregorianCalendar();
 		SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
@@ -233,7 +233,7 @@ public class Task extends TaskBase {
 		return task;
 	}
 
-	private static String getSorting(int sorting) {
+	public static String getSorting(int sorting) {
 		String order = "";
 		switch (sorting) {
 			case ListMirakel.SORT_BY_PRIO:
