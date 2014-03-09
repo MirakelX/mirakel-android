@@ -46,6 +46,7 @@ public class DefinitionsHelper {
 	public static final int REQUEST_FILE_ANY_DO = 3;
 	public static final int REQUEST_FILE_WUNDERLIST = 4;
 	public static final String SYNC_FINISHED="de.azapps.mirakel.sync_finished";
+	public static final String AUTHORITY_INTERNAL="de.azapps.mirakel.provider.internal";
 	private static final String TAG = "DefinitionsHelper";
 	
 
