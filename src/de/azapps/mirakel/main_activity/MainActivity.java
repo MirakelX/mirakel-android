@@ -467,11 +467,11 @@ public class MainActivity extends ActionBarActivity implements
 		Fragment f;
 		if (MirakelCommonPreferences.isTablet()) {
 			f = this.fragmentManager.findFragmentById(R.id.tasks_fragment);
-			if(f==null)
+			if (f == null)
 				this.fragmentManager.findFragmentByTag("tasks");
-			
-			if(f==null)
-				Log.wtf(TAG,"fragment is null");
+
+			if (f == null)
+				Log.wtf(TAG, "fragment is null");
 
 		} else {
 			checkPageAdapter();
@@ -1749,9 +1749,10 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	public void updateUI() {
-		getTasksFragment().updateList(false);
-		// This is very buggy
-		// getTaskFragment().updateLayout();
+		// TODO FIXIT!
+		TasksFragment tasksFragment = getTasksFragment();
+		if (tasksFragment != null)
+			tasksFragment.updateList(false);
 	}
 
 }
