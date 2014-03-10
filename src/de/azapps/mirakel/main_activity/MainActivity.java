@@ -45,7 +45,6 @@ import android.speech.RecognizerIntent;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -56,7 +55,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 import de.azapps.ilovefs.ILoveFS;
@@ -81,7 +79,6 @@ import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
-import de.azapps.mirakel.model.list.SearchList;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
@@ -466,14 +463,10 @@ public class MainActivity extends ActionBarActivity implements
 		Fragment f;
 		if (MirakelCommonPreferences.isTablet()) {
 			f = this.fragmentManager.findFragmentById(R.id.tasks_fragment);
-			if(f==null)
+			if (f == null)
 				this.fragmentManager.findFragmentByTag("tasks");
-			if(f==null){
-				f=new TasksFragment();
-				this.fragmentManager.beginTransaction().replace(R.id.tasks_fragment, f).commit();
-			}
-			if(f==null)
-				Log.wtf(TAG,"fragment is null");
+			if (f == null)
+				Log.wtf(TAG, "fragment is null");
 
 		} else {
 			checkPageAdapter();
@@ -489,8 +482,6 @@ public class MainActivity extends ActionBarActivity implements
 				// Helpers.restartApp(this);
 				return null;
 			}
-		} else {
-			return null;
 		}
 		try {
 			return (TasksFragment) f;
@@ -1230,6 +1221,8 @@ public class MainActivity extends ActionBarActivity implements
 	protected void onNewIntent(final Intent intent) {
 		super.onNewIntent(intent);
 		setIntent(intent);
+		this.startIntent=intent;
+		handleIntent();
 	}
 
 	@Override
@@ -1363,7 +1356,9 @@ public class MainActivity extends ActionBarActivity implements
 				&& getTasksFragment().getAdapter() != null
 				&& MirakelCommonPreferences.swipeBehavior() && !this.skipSwipe) {
 			this.skipSwipe = true;
-		//	setCurrentTask(getTasksFragment().getAdapter().lastTouched(), false);
+			if(getTasksFragment()!=null){
+				setCurrentTask(getTasksFragment().getLastTouched(), false);
+			}
 		}
 	}
 
@@ -1458,11 +1453,13 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	private void search(final String query) {
+		Log.wtf(TAG,query);
 		if(getTasksFragment()!=null){
 			getTasksFragment().search(query);
 		}
 		if (!MirakelCommonPreferences.isTablet())
 			setCurrentItem(MainActivity.getTasksFragmentPosition());
+		getSupportActionBar().setTitle(getString(R.string.search_result_title, query));
 	}
 
 	private View getCurrentView(View currentView) {
@@ -1601,8 +1598,10 @@ public class MainActivity extends ActionBarActivity implements
 				DefinitionsHelper.SHOW_LISTS)) {
 			this.mDrawerLayout.openDrawer(DefinitionsHelper.GRAVITY_LEFT);
 		} else if (this.startIntent.getAction().equals(Intent.ACTION_SEARCH)) {
+			Log.wtf(TAG, "search");
 			final String query = this.startIntent
 					.getStringExtra(SearchManager.QUERY);
+			Log.wtf(TAG, "search "+query);
 			search(query);
 		} else if (this.startIntent.getAction().contains(
 				DefinitionsHelper.ADD_TASK_FROM_WIDGET)) {
@@ -1748,9 +1747,10 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	public void updateUI() {
-		getTasksFragment().updateList(false);
-		// This is very buggy
-		// getTaskFragment().updateLayout();
+		// TODO FIXIT!
+		TasksFragment tasksFragment = getTasksFragment();
+		if (tasksFragment != null)
+			tasksFragment.updateList(false);
 	}
 
 }

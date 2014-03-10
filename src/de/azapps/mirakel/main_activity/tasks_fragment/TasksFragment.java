@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.w3c.dom.ls.LSInput;
+
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -343,7 +345,7 @@ public class TasksFragment extends android.support.v4.app.Fragment implements  L
 			return;
 
 		this.listView = (ListView) this.view.findViewById(R.id.tasks_list);
-		this.adapter=new TaskAdapter(getActivity(), null, true,new OnTaskChangedListner() {
+		this.adapter=new TaskAdapter(getActivity(),new OnTaskChangedListner() {
 			
 			@Override
 			public void onTaskChanged(Task newTask) {
@@ -501,6 +503,11 @@ public class TasksFragment extends android.support.v4.app.Fragment implements  L
 	
 	public void search(String query){
 		this.query=query;
+		try {
+			getLoaderManager().restartLoader(0, null, this);
+		} catch (Exception e) {
+			//eat it
+		}
 	}
 
 
@@ -611,7 +618,12 @@ public class TasksFragment extends android.support.v4.app.Fragment implements  L
 
 	public void updateList(final boolean reset) {
 		this.listId = this.main.getCurrentList().getId();
-		getLoaderManager().restartLoader(0, null, this);
+		this.query=null;
+		try {
+			getLoaderManager().restartLoader(0, null, this);
+		} catch (Exception e) {
+			//ignore it
+		}
 	}
 
 	@Override
@@ -620,9 +632,12 @@ public class TasksFragment extends android.support.v4.app.Fragment implements  L
 		Uri u=Uri.parse("content://" + DefinitionsHelper.AUTHORITY_INTERNAL + "/" + "tasks");
 		String q=l.getWhereQuery(true);
 		if(this.query!=null){
-			q="("+q+")"+" AND "+DatabaseHelper.NAME+"LIKE '%"+this.query+"%'";
-			this.query=null;
+			if(q!=null&&q.trim()!=""&&q.length()>0){
+				q="("+q+") AND ";
+			}
+			q+=DatabaseHelper.NAME+" LIKE '%"+this.query+"%'";
 		}
+		Log.wtf(TAG,q);
 		return new CursorLoader(getActivity(), u
 				, Task.allColumns, q, null, Task.getSorting(l.getSortBy()));
 	}
@@ -635,6 +650,13 @@ public class TasksFragment extends android.support.v4.app.Fragment implements  L
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
 		this.adapter.swapCursor(null);
+	}
+
+	public Task getLastTouched() {
+		if(this.adapter!=null&&this.listView!=null){
+			return Task.get((Long)this.listView.getChildAt(this.adapter.getLastTouched()).getTag());
+		}
+		return null;
 	}
 
 }

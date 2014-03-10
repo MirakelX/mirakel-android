@@ -21,20 +21,23 @@ package de.azapps.mirakel.main_activity.tasks_fragment;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import de.azapps.mirakel.custom_views.BaseTaskDetailRow.OnTaskChangedListner;
 import de.azapps.mirakel.custom_views.TaskSummary;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.tools.Log;
 
 public class TaskAdapter extends CursorAdapter {
 
+	@SuppressWarnings("unused")
 	private static final String TAG = "TaskAdapter";
 	private OnTaskChangedListner taskChange;
+	protected int touchedPosition;
 
-	public TaskAdapter(Context context, Cursor c, boolean autoRequery,OnTaskChangedListner taskChange) {
-		super(context, c, autoRequery);
+	public TaskAdapter(Context context, OnTaskChangedListner taskChange) {
+		super(context, null, false);
 		this.taskChange=taskChange;
 	}
 
@@ -42,13 +45,30 @@ public class TaskAdapter extends CursorAdapter {
 	@Override
 	public void bindView(View v, Context ctx, Cursor c) {
 		if(v==null||! (v instanceof TaskSummary)){
-			Log.d(TAG,"create new tasksummary");
 			v=new TaskSummary(ctx);
 		}
 		Task t=Task.cursorToTask(c);
 		((TaskSummary)v).updatePart(t);
 		v.setTag(t.getId());
 		
+	}
+	
+	@Override
+	public View getView(final int position, View convertView, ViewGroup parent) {
+		View v= super.getView(position, convertView, parent);
+		v.setOnTouchListener(new OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				TaskAdapter.this.touchedPosition=position;
+				return false;
+			}
+		});
+		return v;
+	}
+	
+	public int getLastTouched(){
+		return this.touchedPosition;
 	}
 
 	//create new views
