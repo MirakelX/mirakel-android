@@ -1453,7 +1453,6 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	private void search(final String query) {
-		Log.wtf(TAG,query);
 		if(getTasksFragment()!=null){
 			getTasksFragment().search(query);
 		}
@@ -1598,10 +1597,8 @@ public class MainActivity extends ActionBarActivity implements
 				DefinitionsHelper.SHOW_LISTS)) {
 			this.mDrawerLayout.openDrawer(DefinitionsHelper.GRAVITY_LEFT);
 		} else if (this.startIntent.getAction().equals(Intent.ACTION_SEARCH)) {
-			Log.wtf(TAG, "search");
 			final String query = this.startIntent
 					.getStringExtra(SearchManager.QUERY);
-			Log.wtf(TAG, "search "+query);
 			search(query);
 		} else if (this.startIntent.getAction().contains(
 				DefinitionsHelper.ADD_TASK_FROM_WIDGET)) {

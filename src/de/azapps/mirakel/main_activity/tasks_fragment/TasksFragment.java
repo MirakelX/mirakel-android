@@ -637,7 +637,6 @@ public class TasksFragment extends android.support.v4.app.Fragment implements  L
 			}
 			q+=DatabaseHelper.NAME+" LIKE '%"+this.query+"%'";
 		}
-		Log.wtf(TAG,q);
 		return new CursorLoader(getActivity(), u
 				, Task.allColumns, q, null, Task.getSorting(l.getSortBy()));
 	}
