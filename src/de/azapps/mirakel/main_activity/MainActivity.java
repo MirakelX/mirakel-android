@@ -45,7 +45,6 @@ import android.speech.RecognizerIntent;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -53,10 +52,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 import de.azapps.ilovefs.ILoveFS;
@@ -487,8 +484,6 @@ public class MainActivity extends ActionBarActivity implements
 				// Helpers.restartApp(this);
 				return null;
 			}
-		} else {
-			return null;
 		}
 		try {
 			return (TasksFragment) f;
