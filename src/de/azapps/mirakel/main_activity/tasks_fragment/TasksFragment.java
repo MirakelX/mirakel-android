@@ -72,6 +72,7 @@ import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.main_activity.MainActivity;
+import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
@@ -496,6 +497,11 @@ public class TasksFragment extends android.support.v4.app.Fragment implements  L
 		
 	}
 	private List<Task> selectedTasks;
+	private String query;
+	
+	public void search(String query){
+		this.query=query;
+	}
 
 
 	public void updateButtons() {
@@ -612,8 +618,13 @@ public class TasksFragment extends android.support.v4.app.Fragment implements  L
 	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
 		ListMirakel l=ListMirakel.getList(this.listId);
 		Uri u=Uri.parse("content://" + DefinitionsHelper.AUTHORITY_INTERNAL + "/" + "tasks");
+		String q=l.getWhereQuery(true);
+		if(this.query!=null){
+			q="("+q+")"+" AND "+DatabaseHelper.NAME+"LIKE '%"+this.query+"%'";
+			this.query=null;
+		}
 		return new CursorLoader(getActivity(), u
-				, Task.allColumns, l.getWhereQuery(true), null, Task.getSorting(l.getSortBy()));
+				, Task.allColumns, q, null, Task.getSorting(l.getSortBy()));
 	}
 
 	@Override

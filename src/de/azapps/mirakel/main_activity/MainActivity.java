@@ -1458,7 +1458,9 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	private void search(final String query) {
-		setCurrentList(new SearchList(this, query));
+		if(getTasksFragment()!=null){
+			getTasksFragment().search(query);
+		}
 		if (!MirakelCommonPreferences.isTablet())
 			setCurrentItem(MainActivity.getTasksFragmentPosition());
 	}
@@ -1503,7 +1505,6 @@ public class MainActivity extends ActionBarActivity implements
 			if (task != null) {
 				this.skipSwipe = true;
 				this.currentList = task.getList();
-
 				setCurrentTask(task, true);
 				setCurrentItem(getTaskFragmentPosition());
 			} else {
