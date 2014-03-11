@@ -381,10 +381,10 @@ public class MirakelContentProvider extends ContentProvider implements OnAccount
 			SpecialList s = SpecialList.getSpecialList(-1 * list_id);
 			if (s != null) {
 				taskQuery = getTaskQuery(true, not ? 0 : list_id, isSyncAdapter);
-				if (s.getWhereQuery(true) != null
-						&& !s.getWhereQuery(true).trim().equals("")) {
+				if (s.getWhereQueryForTasks(true) != null
+						&& !s.getWhereQueryForTasks(true).trim().equals("")) {
 					taskQuery += " WHERE " + (not ? "NOT ( " : "")
-							+ s.getWhereQuery(true) + (not ? " )" : "");
+							+ s.getWhereQueryForTasks(true) + (not ? " )" : "");
 				}
 			} else {
 				Log.e(TAG, "no matching list found");
@@ -434,7 +434,7 @@ public class MirakelContentProvider extends ContentProvider implements OnAccount
 				if (id < 0) {
 					SpecialList s = SpecialList.getSpecialList(-1 * id);
 					if (s != null) {
-						wheres.add(s.getWhereQuery(true));
+						wheres.add(s.getWhereQueryForTasks(true));
 					} else {
 						Log.e(TAG, "no matching list found");
 						throw new SQLWarning();

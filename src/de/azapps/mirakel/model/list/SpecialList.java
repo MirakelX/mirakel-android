@@ -35,7 +35,8 @@ public class SpecialList extends ListMirakel {
 		this.active = active;
 	}
 
-	public String getWhereQuery(boolean forQuery) {
+	@Override
+	public String getWhereQueryForTasks(boolean forQuery) {
 		if (forQuery) {
 			String tmpWhere = this.whereQuery;
 			Pattern p = Pattern.compile(Task.LIST_ID + " in[(]([^)]*)[)]");
@@ -60,7 +61,7 @@ public class SpecialList extends ListMirakel {
 					}
 					listConditions += " OR ("
 							+ SpecialList.getSpecialList(-listId)
-									.getWhereQuery(true) + ")";
+									.getWhereQueryForTasks(true) + ")";
 				}
 				if (!listConditions.equals("")) {
 					tmpWhere = m.replaceFirst("(" + Task.LIST_ID + " in ("
@@ -117,7 +118,7 @@ public class SpecialList extends ListMirakel {
 	 */
 	@Override
 	public List<Task> tasks() {
-		return Task.getTasks(this, getSortBy(), false, getWhereQuery(true));
+		return Task.getTasks(this, getSortBy(), false, getWhereQueryForTasks(true));
 	}
 
 	/**
@@ -128,7 +129,7 @@ public class SpecialList extends ListMirakel {
 	 */
 	@Override
 	public List<Task> tasks(boolean showDone) {
-		return Task.getTasks(this, getSortBy(), showDone, getWhereQuery(true));
+		return Task.getTasks(this, getSortBy(), showDone, getWhereQueryForTasks(true));
 	}
 
 	// Static Methods
@@ -241,7 +242,7 @@ public class SpecialList extends ListMirakel {
 		cv.put(SORT_BY, getSortBy());
 		cv.put(DatabaseHelper.SYNC_STATE_FIELD, getSyncState().toInt());
 		cv.put(ACTIVE, isActive() ? 1 : 0);
-		cv.put(WHERE_QUERY, getWhereQuery(false));
+		cv.put(WHERE_QUERY, getWhereQueryForTasks(false));
 		cv.put(DEFAULT_LIST, this.defaultList == null ? null : this.defaultList.getId());
 		cv.put(DEFAULT_DUE, this.defaultDate);
 		cv.put(COLOR, getColor());

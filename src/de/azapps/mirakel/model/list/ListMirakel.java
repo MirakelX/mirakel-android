@@ -443,7 +443,7 @@ public class ListMirakel extends ListBase {
 		Cursor c;
 		String where;
 		if (getId() < 0) {
-			where = ((SpecialList) this).getWhereQuery(true);
+			where = ((SpecialList) this).getWhereQueryForTasks(true);
 		} else {
 
 			where = Task.LIST_ID + " = " + getId();
@@ -583,8 +583,7 @@ public class ListMirakel extends ListBase {
 		return json;
 	}
 
-	
-	public String getWhereQuery(boolean forQuery){
-		return DatabaseHelper.ID+"="+getId();
+	public String getWhereQueryForTasks(boolean forQuery) {
+		return Task.LIST_ID + "=" + getId();
 	}
 }
