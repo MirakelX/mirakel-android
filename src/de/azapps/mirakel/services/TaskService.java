@@ -7,6 +7,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.widget.Toast;
+import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.model.R;
@@ -49,6 +50,8 @@ public class TaskService extends Service {
 		}
 		ReminderAlarm.closeNotificationFor(this, task.getId());
 		ReminderAlarm.updateAlarms(this);
+		Intent i = new Intent(DefinitionsHelper.SYNC_FINISHED);
+		sendBroadcast(i);
 		stopSelf();
 	}
 
