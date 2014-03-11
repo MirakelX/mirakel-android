@@ -243,7 +243,7 @@ public class Task extends TaskBase {
 				order = ", " + PRIORITY + " DESC";
 				//$FALL-THROUGH$
 			case ListMirakel.SORT_BY_DUE:
-				order = " CASE WHEN (" + DUE
+				order = "done ASC, CASE WHEN (" + DUE
 						+ " IS NULL) THEN date('now','+1000 years') ELSE date("
 						+ DUE + ") END ASC" + order;
 				break;
@@ -323,7 +323,7 @@ public class Task extends TaskBase {
 	private static Cursor getTasksCursor(int listId, int sorting, boolean showDone) {
 		String where;
 		if (listId < 0) {
-			where = SpecialList.getSpecialList(-1 * listId).getWhereQuery(true);
+			where = SpecialList.getSpecialList(-1 * listId).getWhereQueryForTasks(true);
 		} else {
 			where = "list_id='" + listId + "'";
 		}
