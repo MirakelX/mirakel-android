@@ -3,17 +3,20 @@ package de.azapps.mirakel.settings.accounts;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
+import android.preference.Preference.OnPreferenceClickListener;
+import android.widget.TimePicker;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
-import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
-import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 import de.azapps.mirakel.settings.R;
@@ -22,21 +25,23 @@ import de.azapps.tools.Log;
 
 public class AccountSettings implements OnPreferenceChangeListener {
 
-	protected static final String	TAG	= "AccountSettings";
-	private AccountMirakel			account;
-	private boolean					v4_0;
-	private Object					settings;
-	private Context					ctx;
+	protected static final String TAG = "AccountSettings";
+	private AccountMirakel account;
+	private boolean v4_0;
+	private Object settings;
+	private Context ctx;
 
 	@SuppressLint("NewApi")
-	public AccountSettings(AccountSettingsFragment accountSettingsFragment, AccountMirakel account) {
+	public AccountSettings(AccountSettingsFragment accountSettingsFragment,
+			AccountMirakel account) {
 		this.account = account;
 		this.v4_0 = true;
 		this.settings = accountSettingsFragment;
 		this.ctx = accountSettingsFragment.getActivity();
 	}
 
-	public AccountSettings(AccountSettingsActivity accountSettingsFragment, AccountMirakel account) {
+	public AccountSettings(AccountSettingsActivity accountSettingsFragment,
+			AccountMirakel account) {
 		this.account = account;
 		this.v4_0 = false;
 		this.settings = accountSettingsFragment;
@@ -58,10 +63,11 @@ public class AccountSettings implements OnPreferenceChangeListener {
 		final Preference syncServer = findPreference("syncServer");
 		if (syncServer != null) {
 			syncServer.setEnabled(false);
-			if (a != null && a.type.equals(AccountMirakel.ACCOUNT_TYPE_MIRAKEL)) syncServer
-					.setSummary(am
-							.getUserData(a, SyncAdapter.BUNDLE_SERVER_URL));
-			else syncServer.setSummary("");
+			if (a != null && a.type.equals(AccountMirakel.ACCOUNT_TYPE_MIRAKEL))
+				syncServer.setSummary(am.getUserData(a,
+						SyncAdapter.BUNDLE_SERVER_URL));
+			else
+				syncServer.setSummary("");
 		}
 		final CheckBoxPreference syncUse = (CheckBoxPreference) findPreference("syncUse");
 		if (syncUse != null) {
@@ -69,7 +75,8 @@ public class AccountSettings implements OnPreferenceChangeListener {
 			syncUse.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 				@Override
-				public boolean onPreferenceChange(Preference preference, Object newValue) {
+				public boolean onPreferenceChange(Preference preference,
+						Object newValue) {
 					AccountSettings.this.account.setEnabeld((Boolean) newValue);
 					AccountSettings.this.account.save();
 					return true;
@@ -88,15 +95,17 @@ public class AccountSettings implements OnPreferenceChangeListener {
 
 		final CheckBoxPreference defaultAccount = (CheckBoxPreference) findPreference("defaultAccount");
 		if (defaultAccount != null) {
-			defaultAccount.setChecked(MirakelModelPreferences.getDefaultAccount()
-					.getId() == this.account.getId());
+			defaultAccount.setChecked(MirakelModelPreferences
+					.getDefaultAccount().getId() == this.account.getId());
 			defaultAccount
 					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 						@Override
-						public boolean onPreferenceChange(Preference preference, Object newValue) {
+						public boolean onPreferenceChange(
+								Preference preference, Object newValue) {
 							if ((Boolean) newValue) {
-								MirakelModelPreferences.setDefaultAccount(AccountSettings.this.account);
+								MirakelModelPreferences
+										.setDefaultAccount(AccountSettings.this.account);
 							} else {
 								MirakelModelPreferences
 										.setDefaultAccount(AccountMirakel
@@ -116,51 +125,101 @@ public class AccountSettings implements OnPreferenceChangeListener {
 		final Preference syncInterval = findPreference("syncFrequency");
 		if (syncInterval != null) {
 			syncInterval.setEnabled(false);
-
-			// final ListPreference syncInterval = (ListPreference) findPreference("syncFrequency");
 			if (MirakelModelPreferences.getSyncFrequency(this.account) == -1) {
 				syncInterval.setSummary(R.string.sync_frequency_summary_man);
 			} else {
-				syncInterval.setSummary(this.ctx.getString(
-						R.string.sync_frequency_summary,
-						MirakelModelPreferences.getSyncFrequency(this.account)));
+				syncInterval
+						.setSummary(this.ctx.getString(
+								R.string.sync_frequency_summary,
+								MirakelModelPreferences
+										.getSyncFrequency(this.account)));
 			}
 			syncInterval
-					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
 						@Override
-						public boolean onPreferenceChange(Preference preference, Object newValue) {
-							Log.e(TAG, "" + newValue.toString());
-							final Bundle bundle = new Bundle();
-							long longVal = Long.parseLong(newValue.toString());
-							if (longVal == -1) {
-								syncInterval
-										.setSummary(R.string.sync_frequency_summary_man);
-							} else {
-								syncInterval.setSummary(AccountSettings.this.ctx.getString(
-										R.string.sync_frequency_summary,
-										longVal));
-							}
-							if (AccountSettings.this.account != null) {
-								ContentResolver.removePeriodicSync(a,
-										DefinitionsHelper.AUTHORITY_TYP, bundle);
-								if (longVal != -1) {
-									ContentResolver.setSyncAutomatically(a,
-											DefinitionsHelper.AUTHORITY_TYP, true);
-									ContentResolver.setIsSyncable(a,
-											DefinitionsHelper.AUTHORITY_TYP, 1);
-									// ContentResolver.setMasterSyncAutomatically(true);
-									ContentResolver.addPeriodicSync(a,
-											DefinitionsHelper.AUTHORITY_TYP, bundle,
-											longVal * 60);
-								}
-							} else {
-								Log.d(TAG, "account does not exsist");
-							}
-							return true;
+						public boolean onPreferenceClick(Preference preference) {
+							int hours = MirakelModelPreferences
+									.getSyncFrequency(AccountSettings.this.account);
+							if (hours == -1)
+								hours = 0;
+							int minutes = hours % 60;
+							hours = (int) Math.floor(hours / 60.);
+
+							final TimePicker timePicker = new TimePicker(ctx);
+							timePicker.setIs24HourView(true);
+							timePicker.setCurrentHour(hours);
+							timePicker.setCurrentMinute(minutes);
+
+							AlertDialog.Builder dialog = new AlertDialog.Builder(
+									ctx)
+									.setTitle(R.string.sync_frequency)
+									.setView(timePicker)
+									.setPositiveButton(android.R.string.ok,
+											new OnClickListener() {
+
+												@Override
+												public void onClick(
+														DialogInterface dialog,
+														int which) {
+													int newValue = timePicker
+															.getCurrentHour()
+															* 60
+															+ timePicker
+																	.getCurrentMinute();
+													if (newValue == 0)
+														newValue = -1;
+													final Bundle bundle = new Bundle();
+													if (newValue == -1) {
+														syncInterval
+																.setSummary(R.string.sync_frequency_summary_man);
+													} else {
+														syncInterval
+																.setSummary(AccountSettings.this.ctx
+																		.getString(
+																				R.string.sync_frequency_summary,
+																				newValue));
+													}
+													if (AccountSettings.this.account != null) {
+														ContentResolver
+																.removePeriodicSync(
+																		a,
+																		DefinitionsHelper.AUTHORITY_TYP,
+																		bundle);
+														if (newValue != -1) {
+															ContentResolver
+																	.setSyncAutomatically(
+																			a,
+																			DefinitionsHelper.AUTHORITY_TYP,
+																			true);
+															ContentResolver
+																	.setIsSyncable(
+																			a,
+																			DefinitionsHelper.AUTHORITY_TYP,
+																			1);
+															ContentResolver
+																	.addPeriodicSync(
+																			a,
+																			DefinitionsHelper.AUTHORITY_TYP,
+																			bundle,
+																			newValue * 60);
+														}
+													} else {
+														Log.d(TAG,
+																"account does not exsist");
+													}
+													MirakelModelPreferences
+															.setSyncFrequency(
+																	account,
+																	newValue);
+												}
+											});
+							dialog.show();
+							return false;
 						}
 					});
-			if (this.account.getType() != ACCOUNT_TYPES.TASKWARRIOR) {// we can control this only for tw
+			if (this.account.getType() != ACCOUNT_TYPES.TASKWARRIOR) {
+				// we can control this only for tw
 				removePreference("syncFrequency");
 			} else {
 				syncInterval.setEnabled(true);
@@ -168,7 +227,6 @@ public class AccountSettings implements OnPreferenceChangeListener {
 		}
 
 	}
-
 
 	@Override
 	public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -183,7 +241,8 @@ public class AccountSettings implements OnPreferenceChangeListener {
 	@SuppressLint("NewApi")
 	private Preference findPreference(String key) {
 		if (this.v4_0) {
-			return ((AccountSettingsFragment) this.settings).findPreference(key);
+			return ((AccountSettingsFragment) this.settings)
+					.findPreference(key);
 		}
 		return ((AccountSettingsActivity) this.settings).findPreference(key);
 	}

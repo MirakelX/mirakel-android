@@ -74,24 +74,6 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="menu_edit_listaccount">Account</string>
     <string name="change_account">Change Account</string>
 
-    <string-array name="sync_frequencies">
-        <item>5 min</item>
-        <item>10 min</item>
-        <item>15 min</item>
-        <item>30 min</item>
-        <item>1 h</item>
-        <item>24 h</item>
-        <item>Manually</item>
-    </string-array>
-    <string-array name="sync_frequencies_values">
-        <item>5</item>
-        <item>10</item>
-        <item>15</item>
-        <item>30</item>
-        <item>60</item>
-        <item>1440</item>
-        <item>-1</item>
-    </string-array>
     <!-- Other stuff -->
     <string name="version">Appversion</string>
     <string name="no">no</string>
@@ -222,8 +204,10 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
         <item>Portuguese</item>
         <item>Italiano</item>
         <item>Bulgarian</item>
-        <!-- <item>Catalan</item>
-        <item>Polish</item>-->
+        <!--
+        <item>Catalan</item>
+        <item>Polish</item>
+        -->
     </string-array>
     <string-array name="language_keys" translatable="false">
         <item>-1</item>
@@ -239,8 +223,10 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
         <item>pt</item>
         <item>it</item>
         <item>bg</item>
-        <!-- <item>ca</item>
-        <item>pl</item>-->
+        <!--
+        <item>ca</item>
+        <item>pl</item>
+        -->
     </string-array>
 
     <!-- Delete done -->
@@ -315,7 +301,7 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="preferences_colorize_subtasks">Colorize subtasks?</string>
     <string name="settings_tasks_title">Tasks</string>
     <string name="settings_task_fragment">Task Overview settings</string>
-    
+
     <!-- Dev Settings -->
     <string name="settings_dev">Development Settings</string>
     <string name="settings_dev_sync">Sync</string>
@@ -327,13 +313,10 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="disabled">disabled</string>
     <string name="change_dev_mode">You have %s the development settings!</string>
     <string name="enableDebugLog">Enable Debug-Logcat?</string>
-    
-    
     <string name="action_contact">Contact / report bug</string>
     <string name="action_contact_summary">Write us an e-mail!</string>
     <string name="title_donations">Donate</string>
     <string name="add">Add</string>
-
     <string name="action_credits">Credits</string>
     <string name="action_credits_summary">About us ;)</string>
     <string name="title_activity_credits">Credits and about</string>
@@ -356,7 +339,7 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="credits_translations">Translations</string>
     <string name="feedback">Send feedback</string>
     <string name="credits_libraries">Used libraries</string>
-    <string name="credits_license_title">License</string>    
+    <string name="credits_license_title">License</string>
     <string name="demo_mode">Demo mode</string>
     <string name="write_logs_to_file">Write logs to file</string>
 
