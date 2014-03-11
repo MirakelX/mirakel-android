@@ -40,18 +40,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.larswerkman.colorpicker.ColorPicker;
 import com.larswerkman.colorpicker.SVBar;
+import com.mobeta.android.dslv.DragSortListView;
+import com.mobeta.android.dslv.DragSortListView.DropListener;
 
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
-import de.azapps.mirakel.adapter.DragNDropListView;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.SharingHelper;
 import de.azapps.mirakel.main_activity.MainActivity;
@@ -77,9 +78,11 @@ public class ListFragment extends MirakelFragment {
 
 	protected EditText input;
 
-	private DragNDropListView listView;
+	//private DragNDropListView listView;
+	protected DragSortListView listView;
+	
 
-	private ActionMode mActionMode = null;
+	protected ActionMode mActionMode = null;
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public void closeNavDrawer() {
@@ -290,8 +293,9 @@ public class ListFragment extends MirakelFragment {
 		this.main.updateLists();
 
 		// main.showMessageFromSync();
-		this.listView = (DragNDropListView) this.view
-				.findViewById(R.id.lists_list);
+		//this.listView = (DragNDropListView) this.view
+		//		.findViewById(R.id.lists_list);
+		this.listView=(DragSortListView)this.view.findViewById(R.id.lists_list);
 		if (this.adapter != null
 				&& this.enableDrag == this.adapter.isDropEnabled()
 				&& this.main != null) {
@@ -308,8 +312,23 @@ public class ListFragment extends MirakelFragment {
 
 		this.adapter = new ListAdapter(getActivity(), R.layout.lists_row,
 				values, this.enableDrag);
+		this.listView.setDragEnabled(this.enableDrag);
+		this.listView.setAdapter(this.adapter);
+		this.listView.requestFocus();
+		this.listView.setDropListener(new DropListener() {
+			
+			@Override
+			public void drop(int from, int to) {
+				if (from != to) {
+					ListFragment.this.adapter.onDrop(from, to);
+					ListFragment.this.listView.requestLayout();
+				}
+				Log.v(TAG, "Drop from:" + from + " to:" + to);
+				
+			}
+		});
 
-		this.listView.setEnableDrag(this.enableDrag);
+		/*this.listView.setEnableDrag(this.enableDrag);
 		this.listView.setItemsCanFocus(true);
 		this.listView.setAdapter(this.adapter);
 		this.listView.requestFocus();
@@ -343,7 +362,7 @@ public class ListFragment extends MirakelFragment {
 				Log.e(TAG, "Drop from:" + from + " to:" + to);
 
 			}
-		});
+		});*/
 
 		this.listView
 				.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -413,7 +432,7 @@ public class ListFragment extends MirakelFragment {
 						}
 					});
 		} else {
-			this.listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+			this.listView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
 			if (this.adapter != null) {
 				this.adapter.resetSelected();
 			}

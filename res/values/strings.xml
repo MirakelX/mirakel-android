@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources  xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- Permissions -->
     <string name="permission_group_desc">Permission for access Mirakel</string>
     <string name="permission_group_lbl">Mirakel permission</string>

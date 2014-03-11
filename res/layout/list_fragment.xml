@@ -17,17 +17,21 @@
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dslv="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ListActivity" >
 
-    <de.azapps.mirakel.adapter.DragNDropListView
+      <com.mobeta.android.dslv.DragSortListView
         android:id="@+id/lists_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        dslv:remove_enabled="false"
+        dslv:drag_enabled="true"
+        dslv:float_alpha="0.25"
         android:descendantFocusability="beforeDescendants" />
 
 </RelativeLayout>
