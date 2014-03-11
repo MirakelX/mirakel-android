@@ -2,6 +2,7 @@ package de.azapps.mirakel.helper;
 
 import java.util.List;
 
+import android.content.SharedPreferences.Editor;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
@@ -10,26 +11,29 @@ import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 
 public class MirakelModelPreferences extends MirakelPreferences {
-	
+
 	public static void setDefaultAccount(AccountMirakel a) {
 		settings.edit().putInt("defaultAccountID", a.getId()).commit();
 	}
-	
+
 	public static AccountMirakel getDefaultAccount() {
 		int id = settings.getInt("defaultAccountID", AccountMirakel.getLocal()
 				.getId());
 		AccountMirakel a = AccountMirakel.get(id);
-		if (a != null) return a;
+		if (a != null)
+			return a;
 		return AccountMirakel.getLocal();
 	}
-	
+
 	public static ListMirakel getImportDefaultList(boolean safe) {
 		if (settings.getBoolean("importDefaultList", false)) {
 			int listId = settings.getInt("defaultImportList", 0);
-			if (listId == 0) return null;
+			if (listId == 0)
+				return null;
 			return ListMirakel.getList(listId);
 		}
-		if (!safe) return null;
+		if (!safe)
+			return null;
 		return ListMirakel.safeFirst(context);
 	}
 
@@ -62,15 +66,17 @@ public class MirakelModelPreferences extends MirakelPreferences {
 		}
 		return list;
 	}
-	
+
 	public static ListMirakel getNotificationsList() {
-		return getListFromIdString(MirakelCommonPreferences.getNotificationsListId());
+		return getListFromIdString(MirakelCommonPreferences
+				.getNotificationsListId());
 	}
-	
+
 	public static ListMirakel getNotificationsListOpen() {
-		return ListMirakel.getList(MirakelCommonPreferences.getNotificationsListOpenId());
+		return ListMirakel.getList(MirakelCommonPreferences
+				.getNotificationsListOpenId());
 	}
-	
+
 	public static ListMirakel getStartupList() {
 		try {
 			return ListMirakel.safeGetList(Integer.parseInt(settings.getString(
@@ -88,13 +94,18 @@ public class MirakelModelPreferences extends MirakelPreferences {
 			return -1;
 		}
 	}
-	
+
+	public static boolean setSyncFrequency(AccountMirakel account, int minutes) {
+		Editor editor = getEditor();
+		editor.putString("syncFrequency" + account.getName(), minutes + "");
+		return editor.commit();
+	}
+
 	public static ListMirakel subtaskAddToList() {
 		try {
-			return ListMirakel.getList(settings.getInt(
-					"subtaskAddToList", -1));
+			return ListMirakel.getList(settings.getInt("subtaskAddToList", -1));
 		} catch (Exception E) {
-			//let old as fallback
+			// let old as fallback
 			try {
 				return ListMirakel.getList(Integer.parseInt(settings.getString(
 						"subtaskAddToList", "-1")));
@@ -103,11 +114,12 @@ public class MirakelModelPreferences extends MirakelPreferences {
 			}
 		}
 	}
-	
+
 	public static boolean useSync() {
-		List<AccountMirakel>all=AccountMirakel.getAll();
+		List<AccountMirakel> all = AccountMirakel.getAll();
 		for (AccountMirakel a : all) {
-			if (a.getType() != ACCOUNT_TYPES.LOCAL && a.isEnabeld()) return true;
+			if (a.getType() != ACCOUNT_TYPES.LOCAL && a.isEnabeld())
+				return true;
 		}
 		return false;
 	}
