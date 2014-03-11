@@ -95,6 +95,7 @@ dependencies {
     compile project(':ilovefs-android')
     compile project(':custom_views')
     compile project(':acra')
+    compile project(':drag-sort-listview')
     compile fileTree(dir: 'libs', include: '*.jar', exclude: 'android-support-v4.jar')
 }
 
