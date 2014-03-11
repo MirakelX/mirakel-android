@@ -22,26 +22,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.w3c.dom.ls.LSInput;
-
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.TypedValue;
@@ -628,17 +625,18 @@ public class TasksFragment extends android.support.v4.app.Fragment implements  L
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
-		ListMirakel l=ListMirakel.getList(this.listId);
-		Uri u=Uri.parse("content://" + DefinitionsHelper.AUTHORITY_INTERNAL + "/" + "tasks");
-		String q=l.getWhereQuery(true);
-		if(this.query!=null){
-			if(q!=null&&q.trim()!=""&&q.length()>0){
-				q="("+q+") AND ";
+		ListMirakel list = ListMirakel.getList(this.listId);
+		Uri u = Uri.parse("content://" + DefinitionsHelper.AUTHORITY_INTERNAL
+				+ "/" + "tasks");
+		String dbQuery = list.getWhereQueryForTasks(true);
+		if (this.query != null) {
+			if (dbQuery != null && dbQuery.trim() != "" && dbQuery.length() > 0) {
+				dbQuery = "(" + dbQuery + ") AND ";
 			}
-			q+=DatabaseHelper.NAME+" LIKE '%"+this.query+"%'";
+			dbQuery += DatabaseHelper.NAME + " LIKE '%" + this.query + "%'";
 		}
-		return new CursorLoader(getActivity(), u
-				, Task.allColumns, q, null, Task.getSorting(l.getSortBy()));
+		return new CursorLoader(getActivity(), u, Task.allColumns, dbQuery,
+				null, Task.getSorting(list.getSortBy()));
 	}
 
 	@Override
