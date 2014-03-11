@@ -20,12 +20,12 @@ import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 
 /**
- * In this class we collect all functions to get the current settings. The advantage is, that we can
- * set the default value at a central place
+ * In this class we collect all functions to get the current settings. The
+ * advantage is, that we can set the default value at a central place
  * 
  * @author az
  */
-public class MirakelCommonPreferences  extends MirakelPreferences{
+public class MirakelCommonPreferences extends MirakelPreferences {
 
 	public static boolean addSubtaskToSameList() {
 		return settings.getBoolean("subtaskAddToSameList", true);
@@ -75,14 +75,9 @@ public class MirakelCommonPreferences  extends MirakelPreferences{
 		return ret;
 	}
 
-	public static Editor getEditor() {
-		return settings.edit();
-	}
-
 	public static String getFromLog(int id) {
 		return settings.getString("OLD" + id, "");
 	}
-
 
 	public static String getImportFileTitle() {
 		return settings.getString("import_file_title",
@@ -93,11 +88,9 @@ public class MirakelCommonPreferences  extends MirakelPreferences{
 		return settings.getString("language", "-1");
 	}
 
-
 	public static Calendar getNextAutoBackup() {
 		return getCalendar("autoBackupNext", "");
 	}
-
 
 	public static int getNotificationsListId() {
 		try {
@@ -107,7 +100,6 @@ public class MirakelCommonPreferences  extends MirakelPreferences{
 			return -1;
 		}
 	}
-
 
 	public static int getNotificationsListOpenId() {
 		int listId = getNotificationsListId();
@@ -127,7 +119,6 @@ public class MirakelCommonPreferences  extends MirakelPreferences{
 		return settings.getString("photoDefaultTitle",
 				context.getString(R.string.photo_default_title));
 	}
-
 
 	public static int getUndoNumber() {
 		return settings.getInt("UndoNumber", 10);
@@ -158,7 +149,8 @@ public class MirakelCommonPreferences  extends MirakelPreferences{
 	}
 
 	public static boolean isDebug() {
-		if(settings!=null&&MirakelCommonPreferences.isEnabledDebugMenu()) return settings.getBoolean("enabledDebug", BuildConfig.DEBUG);
+		if (settings != null && MirakelCommonPreferences.isEnabledDebugMenu())
+			return settings.getBoolean("enabledDebug", BuildConfig.DEBUG);
 		return BuildConfig.DEBUG;
 	}
 
@@ -190,14 +182,18 @@ public class MirakelCommonPreferences  extends MirakelPreferences{
 	}
 
 	public static boolean isTablet() {
-		String value=settings.getString("useTabletLayoutNew", null);
-		if(value!=null){
+		String value = settings.getString("useTabletLayoutNew", null);
+		if (value != null) {
 			int orientation = context.getResources().getConfiguration().orientation;
 			int v = Integer.parseInt(value);
-			if (v == 0) return false;
-			else if (v == 1) return orientation == Configuration.ORIENTATION_LANDSCAPE;
-			else if (v == 2) return orientation == Configuration.ORIENTATION_PORTRAIT;
-			else if (v == 3) return true;
+			if (v == 0)
+				return false;
+			else if (v == 1)
+				return orientation == Configuration.ORIENTATION_LANDSCAPE;
+			else if (v == 2)
+				return orientation == Configuration.ORIENTATION_PORTRAIT;
+			else if (v == 3)
+				return true;
 		}
 
 		return settings.getBoolean("useTabletLayout", context.getResources()
@@ -224,7 +220,8 @@ public class MirakelCommonPreferences  extends MirakelPreferences{
 		return settings.getBoolean("lockDrawerInTaskFragment", false);
 	}
 
-	public static boolean saveIntArray(String preferenceName, List<Integer> items) {
+	public static boolean saveIntArray(String preferenceName,
+			List<Integer> items) {
 		SharedPreferences.Editor editor = getEditor();
 		String pref = "";
 		for (Integer item : items) {
@@ -240,7 +237,6 @@ public class MirakelCommonPreferences  extends MirakelPreferences{
 		ed.commit();
 	}
 
-
 	public static void setNextBackup(Calendar val) {
 		Editor ed = settings.edit();
 		ed.putString("autoBackupNext", DateTimeHelper.formatDate(val));
@@ -253,7 +249,8 @@ public class MirakelCommonPreferences  extends MirakelPreferences{
 	}
 
 	public static void setTaskFragmentLayout(List<Integer> newV) {
-		MirakelCommonPreferences.saveIntArray("task_fragment_adapter_settings", newV);
+		MirakelCommonPreferences.saveIntArray("task_fragment_adapter_settings",
+				newV);
 	}
 
 	public static boolean showDoneMain() {
@@ -269,7 +266,10 @@ public class MirakelCommonPreferences  extends MirakelPreferences{
 	}
 
 	public static void toogleDebugMenu() {
-		settings.edit().putBoolean("enableDebugMenu", !MirakelCommonPreferences.isEnabledDebugMenu()).commit();
+		settings.edit()
+				.putBoolean("enableDebugMenu",
+						!MirakelCommonPreferences.isEnabledDebugMenu())
+				.commit();
 
 	}
 
@@ -306,7 +306,8 @@ public class MirakelCommonPreferences  extends MirakelPreferences{
 	}
 
 	public static boolean isDemoMode() {
-		if(settings==null) return false;
+		if (settings == null)
+			return false;
 		return settings.getBoolean("demoMode", false);
 	}
 
@@ -317,7 +318,8 @@ public class MirakelCommonPreferences  extends MirakelPreferences{
 	}
 
 	public static boolean writeLogsToFile() {
-		if(settings==null) return false;
+		if (settings == null)
+			return false;
 		return settings.getBoolean("writeLogsToFile", false);
 	}
 

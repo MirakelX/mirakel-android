@@ -2,6 +2,7 @@ package de.azapps.mirakel.helper;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 
 public class MirakelPreferences {
@@ -14,6 +15,10 @@ public class MirakelPreferences {
 			MirakelPreferences.context = ctx;
 			settings = PreferenceManager.getDefaultSharedPreferences(ctx);
 		}
+	}
+
+	public static Editor getEditor() {
+		return settings.edit();
 	}
 
 }
