@@ -488,9 +488,7 @@ public class TasksFragment extends android.support.v4.app.Fragment implements  L
 					public void onItemClick(AdapterView<?> parent, View item,
 							int position, final long id) {
 							Task t=Task.get((Long)item.getTag());
-							TasksFragment.this.main.setCurrentTask(t);
-							
-
+							TasksFragment.this.main.setCurrentTask(t,true);
 					}
 				});
 		
