@@ -70,7 +70,7 @@ public class SpecialListSettings extends PreferencesHelper implements
 	}
 
 	protected String getFieldText(String queryPart) {
-		String[] whereParts = this.specialList.getWhereQuery(false)
+		String[] whereParts = this.specialList.getWhereQueryForTasks(false)
 				.split("and");
 		String returnString = "";
 		for (String s : whereParts) {
@@ -122,7 +122,7 @@ public class SpecialListSettings extends PreferencesHelper implements
 							.getString(R.string.reminder_set) : this.activity
 							.getString(R.string.reminder_unset);
 				if (queryPart.equals("list_id")) {
-					returnString = this.specialList.getWhereQuery(false)
+					returnString = this.specialList.getWhereQueryForTasks(false)
 							.contains("not list_id") ? this.activity
 							.getString(R.string.not_in) + " " : "";
 					String[] p = s
@@ -139,7 +139,7 @@ public class SpecialListSettings extends PreferencesHelper implements
 					return returnString;
 				}
 				if (queryPart.equals("priority")) {
-					returnString = this.specialList.getWhereQuery(false)
+					returnString = this.specialList.getWhereQueryForTasks(false)
 							.contains("not priority") ? this.activity
 							.getString(R.string.not_in) + " " : "";
 					return returnString
@@ -256,7 +256,7 @@ public class SpecialListSettings extends PreferencesHelper implements
 					findPreference("special_lists_where"));
 		} else {
 			findPreference("special_lists_where").setSummary(
-					this.specialList.getWhereQuery(false));
+					this.specialList.getWhereQueryForTasks(false));
 		}
 
 		final List<ListMirakel> lists = ListMirakel.all(false);
@@ -346,10 +346,10 @@ public class SpecialListSettings extends PreferencesHelper implements
 						SpecialListSettings.this.activity
 								.getString(R.string.undone) };
 				int defVal = 0;
-				if (SpecialListSettings.this.specialList.getWhereQuery(false)
+				if (SpecialListSettings.this.specialList.getWhereQueryForTasks(false)
 						.contains("done=0")) {
 					defVal = 2;
-				} else if (SpecialListSettings.this.specialList.getWhereQuery(
+				} else if (SpecialListSettings.this.specialList.getWhereQueryForTasks(
 						false).contains("done=1")) {
 					defVal = 1;
 				}
@@ -401,10 +401,10 @@ public class SpecialListSettings extends PreferencesHelper implements
 								.getString(R.string.reminder_unset) };
 
 				int defVal = 0;
-				if (SpecialListSettings.this.specialList.getWhereQuery(false)
+				if (SpecialListSettings.this.specialList.getWhereQueryForTasks(false)
 						.contains("not")) {
 					defVal = 1;
-				} else if (SpecialListSettings.this.specialList.getWhereQuery(
+				} else if (SpecialListSettings.this.specialList.getWhereQueryForTasks(
 						false).contains("reminder")) {
 					defVal = 2;
 				}
@@ -464,7 +464,7 @@ public class SpecialListSettings extends PreferencesHelper implements
 				this.mSelectedItems = new boolean[SortingItems.length];
 				values[0] = 0;
 				this.mSelectedItems[0] = SpecialListSettings.this.specialList
-						.getWhereQuery(false).contains("not list_id");
+						.getWhereQueryForTasks(false).contains("not list_id");
 				SortingItems[0] = SpecialListSettings.this.activity
 						.getString(R.string.inverte);
 				for (int i = 0; i < lists.size(); i++) {
@@ -472,14 +472,14 @@ public class SpecialListSettings extends PreferencesHelper implements
 					SortingItems[i + 1] = lists.get(i).getName();
 					this.mSelectedItems[i + 1] = false;
 					this.mSelectedItems[i + 1] = (SpecialListSettings.this.specialList
-							.getWhereQuery(false).contains(
+							.getWhereQueryForTasks(false).contains(
 									"," + lists.get(i).getId()) || SpecialListSettings.this.specialList
-							.getWhereQuery(false).contains(
+							.getWhereQueryForTasks(false).contains(
 									"(" + lists.get(i).getId()))
 							&& (SpecialListSettings.this.specialList
-									.getWhereQuery(false).contains(
+									.getWhereQueryForTasks(false).contains(
 											lists.get(i).getId() + ",") || SpecialListSettings.this.specialList
-									.getWhereQuery(false).contains(
+									.getWhereQueryForTasks(false).contains(
 											lists.get(i).getId() + ")"));
 				}
 				new AlertDialog.Builder(SpecialListSettings.this.activity)
@@ -550,7 +550,7 @@ public class SpecialListSettings extends PreferencesHelper implements
 				this.mSelectedItems = new boolean[SortingItems.length];
 				values[0] = -5;
 				this.mSelectedItems[0] = SpecialListSettings.this.specialList
-						.getWhereQuery(false).contains("not priority");
+						.getWhereQueryForTasks(false).contains("not priority");
 				SortingItems[0] = SpecialListSettings.this.activity
 						.getString(R.string.inverte);
 				for (int i = 1; i < SortingItems.length; i++) {
@@ -559,7 +559,7 @@ public class SpecialListSettings extends PreferencesHelper implements
 					this.mSelectedItems[i] = false;
 				}
 				String[] p = SpecialListSettings.this.specialList
-						.getWhereQuery(false).split("and");
+						.getWhereQueryForTasks(false).split("and");
 				for (String s : p) {
 					if (s.contains("priority")) {
 						String[] r = s
@@ -655,7 +655,7 @@ public class SpecialListSettings extends PreferencesHelper implements
 
 				final View dialogView = getView(R.layout.content_name_dialog);
 				String[] p = SpecialListSettings.this.specialList
-						.getWhereQuery(false).split("and");
+						.getWhereQueryForTasks(false).split("and");
 				((RadioButton) dialogView.findViewById(R.id.where_like_contain))
 						.setChecked(true);
 				for (String s : p) {
@@ -767,7 +767,7 @@ public class SpecialListSettings extends PreferencesHelper implements
 			public boolean onPreferenceClick(Preference preference) {
 				final View dialogView = getView(R.layout.content_name_dialog);
 				String[] p = SpecialListSettings.this.specialList
-						.getWhereQuery(false).split("and");
+						.getWhereQueryForTasks(false).split("and");
 				((RadioButton) dialogView.findViewById(R.id.where_like_contain))
 						.setChecked(true);
 				for (String s : p) {
@@ -881,7 +881,7 @@ public class SpecialListSettings extends PreferencesHelper implements
 			public boolean onPreferenceClick(Preference preference) {
 
 				String[] p = SpecialListSettings.this.specialList
-						.getWhereQuery(false).split("and");
+						.getWhereQueryForTasks(false).split("and");
 				VALUE day = VALUE.DAY;
 				int val = 0;
 				for (String r : p) {
@@ -1011,8 +1011,8 @@ public class SpecialListSettings extends PreferencesHelper implements
 	}
 
 	void updateWhere(String attr, String newWhere) {
-		if (this.specialList.getWhereQuery(false).contains(attr)) {
-			String[] parts = this.specialList.getWhereQuery(false).split("and");
+		if (this.specialList.getWhereQueryForTasks(false).contains(attr)) {
+			String[] parts = this.specialList.getWhereQueryForTasks(false).split("and");
 			String n = "";
 			boolean first = true;
 			for (int i = 0; i < parts.length; i++) {
@@ -1028,7 +1028,7 @@ public class SpecialListSettings extends PreferencesHelper implements
 				first = false;
 			}
 			this.specialList.setWhereQuery(n);
-		} else if (this.specialList.getWhereQuery(false).trim().length() == 0
+		} else if (this.specialList.getWhereQueryForTasks(false).trim().length() == 0
 				&& !newWhere.trim().equals("")) {
 			this.specialList
 					.setWhereQuery((attr.equals("due") ? "due is not null and "
@@ -1037,13 +1037,13 @@ public class SpecialListSettings extends PreferencesHelper implements
 			this.specialList
 					.setWhereQuery((attr.equals("due") ? "due is not null and "
 							: "")
-							+ this.specialList.getWhereQuery(false)
+							+ this.specialList.getWhereQueryForTasks(false)
 							+ " and " + newWhere);
 		}
 		this.specialList.save();
 		if (MirakelCommonPreferences.isDebug()) {
 			findPreference("special_lists_where").setSummary(
-					this.specialList.getWhereQuery(false));
+					this.specialList.getWhereQueryForTasks(false));
 		}
 	}
 }
