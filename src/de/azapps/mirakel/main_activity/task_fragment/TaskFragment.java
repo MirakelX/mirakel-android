@@ -398,6 +398,9 @@ public abstract class TaskFragment extends Fragment {
 		}
 
 	}
+	public Task getTask(){
+		return this.task;
+	}
 
 	public void updateLayout() {
 		if (this.detailView != null) {

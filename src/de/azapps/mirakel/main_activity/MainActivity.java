@@ -1743,10 +1743,11 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	public void updateUI() {
-		// TODO FIXIT!
-		TasksFragment tasksFragment = getTasksFragment();
-		if (tasksFragment != null)
-			tasksFragment.updateList(false);
+		if (getTasksFragment() != null)
+			getTasksFragment().updateList(false);
+		if(getTaskFragment()!=null&&getTaskFragment().getTask()!=null){
+			getTaskFragment().update(Task.get(getTaskFragment().getTask().getId()));
+		}
 	}
 
 }
