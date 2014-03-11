@@ -31,14 +31,14 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginStart="0dp"
-            android:layout_weight=".30" />
+            android:layout_weight="@integer/tasks_fragment" />
 
         <FrameLayout
             android:id="@+id/task_fragment"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
-            android:layout_weight=".70" />
+            android:layout_weight="@integer/task_fragment" />
     </LinearLayout>
 
     <FrameLayout
