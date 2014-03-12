@@ -89,6 +89,7 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="import_sure">Tem a certeza?</string>
   <string name="import_sure_summary">Os dados existentes serão substituídos! (Importação de %s)</string>
   <string name="import_title">Escolha o ficheiro Mirakel</string>
+  <string name="no_filemanager">Instale um gestor de ficheiros</string>
   <string name="import_default_list_summary">Importar para \"%s\"</string>
   <string name="import_no_default_list_summary">Não selecionou a lista</string>
   <string name="import_default_list">Importar lista pré-definida</string>

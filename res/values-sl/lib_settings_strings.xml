@@ -229,6 +229,8 @@ Pričakovati je, da bo tudi uradna različica DAVdroid kmalu podpirala delovanje
   <string name="feedback">Pošlji odziv</string>
   <string name="credits_libraries">Uporabljene knjižnice</string>
   <string name="credits_license_title">Dovoljenje</string>
+  <string name="demo_mode">Preizkusni način</string>
+  <string name="write_logs_to_file">Zapiši dnevnik v datoteko</string>
   <string-array name="sync_types">
     <item>Usklajevanje CalDAV</item>
     <item>Usklajevanje preko strežnika Taskwarrior</item>
