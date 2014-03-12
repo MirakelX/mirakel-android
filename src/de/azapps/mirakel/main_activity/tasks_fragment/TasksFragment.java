@@ -58,6 +58,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -459,7 +460,7 @@ public class TasksFragment extends android.support.v4.app.Fragment implements  L
 						@Override
 						public void onItemCheckedStateChanged(ActionMode mode,
 								int position, long id, boolean checked) {
-							View v=TasksFragment.this.listView.getChildAt(position);
+							final View v=TasksFragment.this.listView.getChildAt(position);
 							Task t=Task.get((Long)v.getTag());
 							if(!TasksFragment.this.selectedTasks.contains(t)&&checked){
 								TasksFragment.this.selectedTasks.add(t);
@@ -470,7 +471,16 @@ public class TasksFragment extends android.support.v4.app.Fragment implements  L
 								v.setBackgroundColor(getActivity().getResources()
 										.getColor(android.R.color.transparent));
 							}else{
-								v.setBackgroundColor(Helpers.getHighlightedColor(getActivity()));
+								if(TasksFragment.this.selectedTasks.size()==1){
+									TasksFragment.this.listView.postDelayed( new Runnable() {
+										@Override
+										public void run() {
+											v.setBackgroundColor(Helpers.getHighlightedColor(getActivity()));
+										}
+									}, 10);
+								}else{
+									v.setBackgroundColor(Helpers.getHighlightedColor(getActivity()));
+								}
 							}
 						}
 
@@ -493,7 +503,7 @@ public class TasksFragment extends android.support.v4.app.Fragment implements  L
 				});
 		
 	}
-	private List<Task> selectedTasks;
+	protected List<Task> selectedTasks;
 	private String query;
 	
 	public void search(String query){
