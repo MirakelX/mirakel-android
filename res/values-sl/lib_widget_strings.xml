@@ -30,4 +30,5 @@
   <string name="notifications_list_summary">Pokaži \"%s\"</string>
   <string name="empty_list">Ni nalog</string>
   <string name="preferences">Možnosti</string>
+  <string name="widget_use_gradient">Uporabi preliv</string>
 </resources>
