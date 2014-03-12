@@ -56,7 +56,7 @@ android {
     }
 }
 dependencies {
-    compile 'com.android.support:appcompat-v7:19.0.+'
+    compile project(':helper')
     compile fileTree(dir: 'libs', include: '*.jar', exclude: 'android-support-v4.jar')
 }
 
