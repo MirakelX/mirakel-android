@@ -31,50 +31,50 @@ import de.azapps.mirakel.model.task.Task;
 
 public class TaskAdapter extends CursorAdapter {
 
-	@SuppressWarnings("unused")
-	private static final String TAG = "TaskAdapter";
-	private OnTaskChangedListner taskChange;
+	private final OnTaskChangedListner taskChange;
 	protected int touchedPosition;
 
-	public TaskAdapter(Context context, OnTaskChangedListner taskChange) {
+	public TaskAdapter(final Context context,
+			final OnTaskChangedListner taskChange) {
 		super(context, null, false);
-		this.taskChange=taskChange;
+		this.taskChange = taskChange;
 	}
 
-	//update view here
+	// update view here
 	@Override
-	public void bindView(View v, Context ctx, Cursor c) {
-		if(v==null||! (v instanceof TaskSummary)){
-			v=new TaskSummary(ctx);
+	public void bindView(View v, final Context ctx, final Cursor c) {
+		if (v == null || !(v instanceof TaskSummary)) {
+			v = new TaskSummary(ctx);
 		}
-		Task t=Task.cursorToTask(c);
-		((TaskSummary)v).updatePart(t);
+		final Task t = Task.cursorToTask(c);
+		((TaskSummary) v).updatePart(t);
 		v.setTag(t.getId());
-		
 	}
-	
+
 	@Override
-	public View getView(final int position, View convertView, ViewGroup parent) {
-		View v= super.getView(position, convertView, parent);
+	public View getView(final int position, final View convertView,
+			final ViewGroup parent) {
+		final View v = super.getView(position, convertView, parent);
 		v.setOnTouchListener(new OnTouchListener() {
-			
+
 			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				TaskAdapter.this.touchedPosition=position;
+			public boolean onTouch(final View v, final MotionEvent event) {
+				TaskAdapter.this.touchedPosition = position;
 				return false;
 			}
 		});
 		return v;
 	}
-	
-	public int getLastTouched(){
+
+	public int getLastTouched() {
 		return this.touchedPosition;
 	}
 
-	//create new views
+	// create new views
 	@Override
-	public View newView(Context ctx, Cursor c, ViewGroup parent) {
-		TaskSummary summary=new TaskSummary(ctx);
+	public View newView(final Context ctx, final Cursor c,
+			final ViewGroup parent) {
+		final TaskSummary summary = new TaskSummary(ctx);
 		summary.setOnTaskChangedListner(this.taskChange);
 		return summary;
 	}

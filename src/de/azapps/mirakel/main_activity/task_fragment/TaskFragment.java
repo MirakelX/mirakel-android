@@ -80,11 +80,12 @@ public abstract class TaskFragment extends Fragment {
 
 	private Runnable updateThread;
 
-	abstract protected void changeVisiblity(boolean visible, MenuItem item);
+	abstract protected void changeVisiblity(final boolean visible,
+			final MenuItem item);
 
 	abstract public void closeActionMode();
 
-	protected boolean handleActionBarClick(MenuItem item) {
+	protected boolean handleActionBarClick(final MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.save:
 			if (TaskFragment.this.detailView != null) {
@@ -98,7 +99,7 @@ public abstract class TaskFragment extends Fragment {
 			break;
 		case R.id.menu_delete:
 			if (TaskFragment.this.cabState == ActionbarState.FILE) {
-				List<FileMirakel> selectedItems = new ArrayList<FileMirakel>();
+				final List<FileMirakel> selectedItems = new ArrayList<FileMirakel>();
 				for (int i = 0; i < TaskFragment.this.markedFiles.size(); i++) {
 					selectedItems.add(TaskFragment.this.markedFiles.valueAt(i));
 				}
@@ -107,16 +108,16 @@ public abstract class TaskFragment extends Fragment {
 						new ExecInterfaceWithTask() {
 
 							@Override
-							public void exec(Task task) {
+							public void exec(final Task task) {
 								update(task);
 
 							}
 						});
 			} else {// Subtask
 
-				List<Task> selectedItems = new ArrayList<Task>();
+				final List<Task> selectedItems = new ArrayList<Task>();
 
-				for (Map.Entry<Long, Task> e : TaskFragment.this.markedSubtasks
+				for (final Map.Entry<Long, Task> e : TaskFragment.this.markedSubtasks
 						.entrySet()) {
 					selectedItems.add(e.getValue());
 				}
@@ -125,7 +126,7 @@ public abstract class TaskFragment extends Fragment {
 						new ExecInterfaceWithTask() {
 
 							@Override
-							public void exec(Task task) {
+							public void exec(final Task task) {
 								update(task);
 
 							}
@@ -140,7 +141,7 @@ public abstract class TaskFragment extends Fragment {
 			}
 			break;
 		case R.id.done_task:
-			for (Map.Entry<Long, Task> e : TaskFragment.this.markedSubtasks
+			for (final Map.Entry<Long, Task> e : TaskFragment.this.markedSubtasks
 					.entrySet()) {
 				if (e.getValue() != null) {
 					e.getValue().setDone(true);
@@ -154,15 +155,17 @@ public abstract class TaskFragment extends Fragment {
 		default:
 			return false;
 		}
-		Log.i(TAG, "item clicked");
+		Log.i(TaskFragment.TAG, "item clicked");
 		closeActionMode();
 		return true;
 
 	}
 
-	protected boolean handleCabCreateMenu(MenuInflater inflater, Menu menu) {
-		if (TaskFragment.this.cabState == null)
+	protected boolean handleCabCreateMenu(final MenuInflater inflater,
+			final Menu menu) {
+		if (TaskFragment.this.cabState == null) {
 			return false;
+		}
 		switch (TaskFragment.this.cabState) {
 		case CONTENT:
 			inflater.inflate(R.menu.save, menu);
@@ -174,7 +177,7 @@ public abstract class TaskFragment extends Fragment {
 			inflater.inflate(R.menu.context_subtask, menu);
 			break;
 		default:
-			Log.d(TAG, "where are the dragons");
+			Log.d(TaskFragment.TAG, "where are the dragons");
 			return false;
 
 		}
@@ -188,12 +191,12 @@ public abstract class TaskFragment extends Fragment {
 		}
 		TaskFragment.this.markedFiles = new SparseArray<FileMirakel>();
 		TaskFragment.this.markedSubtasks = new HashMap<Long, Task>();
-		Log.d(TAG, "kill mode");
+		Log.d(TaskFragment.TAG, "kill mode");
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(final LayoutInflater inflater,
+			final ViewGroup container, final Bundle savedInstanceState) {
 		this.cabState = null;
 		this.markedFiles = new SparseArray<FileMirakel>();
 		this.markedSubtasks = new HashMap<Long, Task>();
@@ -207,16 +210,18 @@ public abstract class TaskFragment extends Fragment {
 		};
 		try {
 			view = inflater.inflate(R.layout.task_fragment, container, false);
-		} catch (Exception e) {
-			Log.i(TAG, Log.getStackTraceString(e));
+		} catch (final Exception e) {
+			Log.i(TaskFragment.TAG, Log.getStackTraceString(e));
 			return null;
 		}
-		this.detailView = (TaskDetailView) view.findViewById(R.id.task_fragment_view);
+		this.detailView = (TaskDetailView) view
+				.findViewById(R.id.task_fragment_view);
 		this.detailView.setOnTaskChangedListner(new OnTaskChangedListner() {
 
 			@Override
-			public void onTaskChanged(Task newTask) {
-				if(TaskFragment.this.main.getTasksFragment()!=null&&TaskFragment.this.main.getListFragment()!=null){
+			public void onTaskChanged(final Task newTask) {
+				if (TaskFragment.this.main.getTasksFragment() != null
+						&& TaskFragment.this.main.getListFragment() != null) {
 					TaskFragment.this.main.getTasksFragment().updateList(false);
 					TaskFragment.this.main.getListFragment().update();
 				}
@@ -225,7 +230,7 @@ public abstract class TaskFragment extends Fragment {
 		this.detailView.setOnSubtaskClick(new OnTaskClickListner() {
 
 			@Override
-			public void onTaskClick(Task t) {
+			public void onTaskClick(final Task t) {
 				TaskFragment.this.main.setCurrentTask(t);
 			}
 		});
@@ -235,12 +240,12 @@ public abstract class TaskFragment extends Fragment {
 						MediaStore.ACTION_IMAGE_CAPTURE)) {
 			this.detailView.setAudioButtonClick(new View.OnClickListener() {
 				@Override
-				public void onClick(View v) {
+				public void onClick(final View v) {
 					TaskDialogHelpers.handleAudioRecord(getActivity(),
 							TaskFragment.this.task,
 							new ExecInterfaceWithTask() {
 								@Override
-								public void exec(Task t) {
+								public void exec(final Task t) {
 									update(t);
 								}
 							});
@@ -249,20 +254,21 @@ public abstract class TaskFragment extends Fragment {
 			this.detailView.setCameraButtonClick(new View.OnClickListener() {
 
 				@Override
-				public void onClick(View v) {
+				public void onClick(final View v) {
 					try {
-						Intent cameraIntent = new Intent(
+						final Intent cameraIntent = new Intent(
 								MediaStore.ACTION_IMAGE_CAPTURE);
-						Uri fileUri = FileUtils
+						final Uri fileUri = FileUtils
 								.getOutputMediaFileUri(FileUtils.MEDIA_TYPE_IMAGE);
-						if (fileUri == null)
+						if (fileUri == null) {
 							return;
+						}
 						TaskFragment.this.main.setFileUri(fileUri);
 						cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
 						getActivity().startActivityForResult(cameraIntent,
 								MainActivity.RESULT_ADD_PICTURE);
 
-					} catch (ActivityNotFoundException a) {
+					} catch (final ActivityNotFoundException a) {
 						Toast.makeText(
 								TaskFragment.this.main,
 								"Opps! Your device doesn't support taking photos",
@@ -280,10 +286,12 @@ public abstract class TaskFragment extends Fragment {
 		this.detailView.setOnSubtaskMarked(new OnTaskMarkedListner() {
 
 			@Override
-			public void markTask(View v, Task t, boolean marked) {
+			public void markTask(final View v, final Task t,
+					final boolean marked) {
 				if (t == null || TaskFragment.this.cabState != null
-						&& TaskFragment.this.cabState != ActionbarState.SUBTASK)
+						&& TaskFragment.this.cabState != ActionbarState.SUBTASK) {
 					return;
+				}
 				if (marked) {
 					TaskFragment.this.cabState = ActionbarState.SUBTASK;
 					startCab();
@@ -292,7 +300,7 @@ public abstract class TaskFragment extends Fragment {
 					TaskFragment.this.markedSubtasks.put(t.getId(), t);
 
 				} else {
-					Log.d(TAG, "not marked");
+					Log.d(TaskFragment.TAG, "not marked");
 					v.setBackgroundColor(getActivity().getResources().getColor(
 							android.R.color.transparent));
 					TaskFragment.this.markedSubtasks.remove(t.getId());
@@ -301,7 +309,7 @@ public abstract class TaskFragment extends Fragment {
 					}
 				}
 				if (TaskFragment.this.mMenu != null) {
-					MenuItem item = TaskFragment.this.mMenu
+					final MenuItem item = TaskFragment.this.mMenu
 							.findItem(R.id.edit_task);
 					changeVisiblity(
 							TaskFragment.this.markedSubtasks.size() == 1, item);
@@ -312,10 +320,12 @@ public abstract class TaskFragment extends Fragment {
 		this.detailView.setOnFileMarked(new OnFileMarkedListner() {
 
 			@Override
-			public void markFile(View v, FileMirakel e, boolean marked) {
+			public void markFile(final View v, final FileMirakel e,
+					final boolean marked) {
 				if (e == null || TaskFragment.this.cabState != null
-						&& TaskFragment.this.cabState != ActionbarState.FILE)
+						&& TaskFragment.this.cabState != ActionbarState.FILE) {
 					return;
+				}
 				if (marked) {
 					TaskFragment.this.cabState = ActionbarState.FILE;
 					startCab();
@@ -336,13 +346,13 @@ public abstract class TaskFragment extends Fragment {
 		this.detailView.setOnContentEdit(new OnEditChanged() {
 
 			@Override
-			public void handleCab(boolean startEdit) {
+			public void handleCab(final boolean startEdit) {
 				if (startEdit) {
-					Log.d(TAG, "start actionmode");
+					Log.d(TaskFragment.TAG, "start actionmode");
 					TaskFragment.this.cabState = ActionbarState.CONTENT;
 					startCab();
 				} else {
-					Log.d(TAG, "end actionmode");
+					Log.d(TaskFragment.TAG, "end actionmode");
 					closeActionMode();
 					;
 				}
@@ -367,8 +377,8 @@ public abstract class TaskFragment extends Fragment {
 						.setItems(items, new DialogInterface.OnClickListener() {
 
 							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
+							public void onClick(final DialogInterface dialog,
+									final int which) {
 								switch (which) {
 								case 0: // Open
 									TaskDialogHelpers.openFile(context, file);
@@ -391,14 +401,14 @@ public abstract class TaskFragment extends Fragment {
 	abstract protected void startCab();
 
 	public void update(final Task t) {
-		//getChildFragmentManager().beginTransaction().replace(R.id.task_fragment, this).commit();
 		this.task = t;
 		if (this.detailView != null && this.updateThread != null) {
 			new Thread(this.updateThread).start();
 		}
 
 	}
-	public Task getTask(){
+
+	public Task getTask() {
 		return this.task;
 	}
 
