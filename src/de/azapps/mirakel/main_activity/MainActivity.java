@@ -807,7 +807,6 @@ public class MainActivity extends ActionBarActivity implements
 	 */
 	@SuppressLint("NewApi")
 	private void initViewPager() {
-		this.fragmentManager.enableDebugLogging(true);
 		final List<Fragment> fragments = new Vector<Fragment>();
 		TasksFragment tasksFragment = new TasksFragment();
 		tasksFragment.setActivity(this);
@@ -1014,7 +1013,7 @@ public class MainActivity extends ActionBarActivity implements
 			}
 			if (MirakelCommonPreferences.isTablet()) {
 				forceRebuildLayout();
-			} else {
+			} else if(this.mViewPager!=null){
 				loadMenu(this.mViewPager.getCurrentItem());
 			}
 			if (getTasksFragment() != null) {
