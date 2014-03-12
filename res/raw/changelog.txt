@@ -17,6 +17,13 @@
     </style>
   </head>
   <body>
+ $ 2.4.0-beta1
+  % Version 2.4.0-beta1
+  _2014-03-12
+  * More bugfixes
+  * Reimplement tasksfragment
+  * Replace drag&drop-listview by better on
+  * improve overall performance
 $ 2.3.2
   % Version 2.3.2
   _2014-03-02
