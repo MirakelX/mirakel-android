@@ -59,6 +59,7 @@
   <string name="crash_dialog_comment_prompt">Spodaj lahko dodate opombo o napaki:</string>
   <string name="crash_dialog_ok_toast">Hvala!</string>
   <string name="speak_lang_code">sl-SI</string>
+  <string name="message_notification">Obvestilo</string>
   <string-array name="list_actions_items">
     <item>Izbor barve</item>
     <item>Preimenuj</item>
