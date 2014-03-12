@@ -46,8 +46,16 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="no_barcode_app_install">Instalar</string>
   <string name="menu_edit_listaccount">Conta</string>
   <string name="change_account">Mudar conta</string>
+  <string name="wrong_config">Parece que está a utilizar um ficheiro de configuração inválido</string>
   <string name="load_config">Selecione o ficheiro de configurações do Taskwarrior</string>
   <string name="select_config">Selecione o ficheiro de configuração Taskwarrior</string>
+  <string name="message_try_later">Tentar mais tarde</string>
+  <string name="message_access_denied">Acesso recusado!\nO ficheiro de configuração está correto?</string>
+  <string name="message_create_socket">Não é possível criar o socket!\nAtivou a ligação de rede?</string>
+  <string name="message_account_suspended">A sua conta está suspensa!</string>
+  <string name="message_parse_message">Tarefas não processadas. Indique-nos como é que o erro ocorreu</string>
+  <string name="message_message_error">Resposta desconhecida do servidor. Indique-nos como é que o erro ocorreu</string>
+  <string name="finish_sync">Terminar sincronização</string>
   <string-array name="sync_types">
     <item>Sincronização CalDAV</item>
     <item>Sincronização Taskwarrior</item>

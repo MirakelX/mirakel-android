@@ -9,6 +9,7 @@
   <string name="sync_warning_message">La sincronizzazione è attualmente in fase sperimentale. È possibile provare a proprio rischio (eseguendo prima un backup.) - Proseguire?</string>
   <string name="sync_use_summary_taskwarrior">Sincronizza con Taskwarrior come %s</string>
   <string name="sync_use_summary_mirakel">Sincronizza con MIrakel come %s</string>
+  <string name="sync_use_summary_nothing">Non usare la sincronizzazione</string>
   <string name="sync_user">Nome utente</string>
   <string name="sync_user_summary">Nome utente per il server</string>
   <string name="sync_server">Server</string>
@@ -46,8 +47,16 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="no_barcode_app_install">Installa</string>
   <string name="menu_edit_listaccount">Account</string>
   <string name="change_account">Cambia account</string>
+  <string name="wrong_config">Sembra che sia stato utilizzato un file di configurazione errato</string>
   <string name="load_config">Selezionare il file di configurazione per Taskwarrior</string>
   <string name="select_config">Selezionare il file di configurazione di Taskwarrior</string>
+  <string name="message_try_later">Provare a sincronizzare più tardi</string>
+  <string name="message_access_denied">Accesso negato.\nÈ stato usato il file di configurazione corretto?</string>
+  <string name="message_create_socket">Impossibile creare il socket.\nÈ stata abilitata la connessione di rete?</string>
+  <string name="message_account_suspended">Account sospeso!</string>
+  <string name="message_parse_message">Impossibile analizzare le attivita. Scrivere come questo si è verificato</string>
+  <string name="message_message_error">Rsposta sconosciuta dal server. Scrivere come questo si è verificato</string>
+  <string name="finish_sync">Sincronizzazione completata</string>
   <string-array name="sync_types">
     <item>Sincronizzazione CalDAV</item>
     <item>Sincronizzazione Taskwarrior</item>
