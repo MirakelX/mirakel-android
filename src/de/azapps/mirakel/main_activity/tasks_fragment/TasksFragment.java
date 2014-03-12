@@ -58,7 +58,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -662,6 +661,10 @@ public class TasksFragment extends android.support.v4.app.Fragment implements  L
 			return Task.get((Long)this.listView.getChildAt(this.adapter.getLastTouched()).getTag());
 		}
 		return null;
+	}
+
+	public View getViewForTask(Task task) {
+		return getListView().findViewWithTag(task.getId());
 	}
 
 }

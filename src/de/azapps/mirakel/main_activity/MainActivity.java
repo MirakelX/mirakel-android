@@ -133,7 +133,6 @@ public class MainActivity extends ActionBarActivity implements
 	private final FragmentManager fragmentManager = getSupportFragmentManager();
 	private final Stack<Task> goBackTo = new Stack<Task>();
 	// Foo variables (move them out of the MainActivity)
-	private boolean highlightSelected;
 	// User interaction variables
 	private boolean isResumed;
 
@@ -309,7 +308,8 @@ public class MainActivity extends ActionBarActivity implements
 
 			@Override
 			public void run() {
-				if (currentViewL != null && MainActivity.this.highlightSelected) {
+				if (currentViewL != null && MirakelCommonPreferences
+						.highlightSelected()) {
 					clearHighlighted();
 					if (MainActivity.this.oldClickedList != null) {
 						MainActivity.this.oldClickedList.setSelected(false);
@@ -701,12 +701,11 @@ public class MainActivity extends ActionBarActivity implements
 				|| currentTask == null)
 			return;
 		Log.v(MainActivity.TAG, currentTask.getName());
-		final View currentView =null;/* getTasksFragment().getAdapter()
-				.getViewForTask(currentTask) == null ? getTasksFragment()
-				.getListView().getChildAt(0) : getTasksFragment().getAdapter()
-				.getViewForTask(currentTask);*/
-
-		if (currentView != null && this.highlightSelected && !multiselect) {
+		View tmpView = getTasksFragment().getViewForTask(currentTask);
+		final View currentView = tmpView == null ? getTasksFragment()
+				.getListView().getChildAt(0) : tmpView;
+		if (currentView != null && MirakelCommonPreferences.highlightSelected()
+				&& !multiselect) {
 
 			currentView.post(new Runnable() {
 
@@ -956,9 +955,8 @@ public class MainActivity extends ActionBarActivity implements
 		case RESULT_SETTINGS:
 			getListFragment().update();
 			getTaskFragment().updateLayout();
-			this.highlightSelected = MirakelCommonPreferences
-					.highlightSelected();
-			if (!this.highlightSelected
+			if (!MirakelCommonPreferences
+					.highlightSelected()
 					&& (this.oldClickedList != null || this.oldClickedTask == null)) {
 				clearAllHighlights();
 			}
@@ -1081,7 +1079,6 @@ public class MainActivity extends ActionBarActivity implements
 		MainActivity.isRTL = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
 				&& getResources().getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
 		this.currentPosition = MainActivity.getTasksFragmentPosition();
-		this.highlightSelected = MirakelCommonPreferences.highlightSelected();
 		this.mPagerAdapter = null;
 		this.skipSwipe = false;
 		this.startIntent = getIntent();
