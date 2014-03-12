@@ -29,11 +29,14 @@
   <string name="add_existing">Adicionar tarefa existente</string>
   <string name="task_name">Nome da tarefa:</string>
   <string name="subtask_add_options">Filtro &gt;&gt;</string>
+  <string name="subtask_done">Tarefa terminada?</string>
   <string name="subtask_reminder">Tarefa com lembrete?</string>
+  <string name="subtask_content">Tarefa com nota?</string>
   <string name="new_task">Nova tarefa</string>
   <string name="add_subtasks">Adicionar subtarefa...</string>
   <string name="add">Adicionar</string>
   <string name="add_subtask">Adicionar subtarefa</string>
+  <string name="no_loop">Subtarefas não podem fazer um ciclo</string>
   <string name="file_no_activity">Não sei como abrir este ficheiro. Desculpe.</string>
   <string name="remove_files">Remover ficheiros da tarefa</string>
 </resources>
