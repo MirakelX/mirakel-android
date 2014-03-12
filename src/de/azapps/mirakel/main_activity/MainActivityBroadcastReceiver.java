@@ -6,6 +6,8 @@ import android.content.Intent;
 import de.azapps.mirakel.DefinitionsHelper;
 
 public class MainActivityBroadcastReceiver extends BroadcastReceiver {
+	@SuppressWarnings("unused")
+	private static final String TAG = "MainActivityBroadcastReceiver";
 	private MainActivity main;
 
 	public MainActivityBroadcastReceiver(MainActivity main) {
