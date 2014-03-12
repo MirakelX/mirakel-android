@@ -318,8 +318,7 @@ public class TaskDialogHelpers {
 						reminder.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 						reminder.set(Calendar.HOUR_OF_DAY, hourOfDay);
 						reminder.set(Calendar.MINUTE, minute);
-						task.setReminder(reminder);
-						task.safeSave();
+						task.setReminder(reminder,true);
 						onSuccess.onTaskChanged(task);
 
 					}
