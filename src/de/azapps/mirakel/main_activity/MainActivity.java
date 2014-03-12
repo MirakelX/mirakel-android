@@ -382,22 +382,6 @@ public class MainActivity extends ActionBarActivity implements
 			if (!MirakelCommonPreferences.isTablet() && switchFragment) {
 				setCurrentItem(getTaskFragmentPosition());
 			}
-			// Fix buggy behavior
-			// runOnUiThread(new Runnable() {
-			//
-			// @Override
-			// public void run() {
-			// MainActivity.this.mViewPager.setCurrentItem(
-			// MainActivity.getTasksFragmentPosition(), false);
-			// MainActivity.this.mViewPager.setCurrentItem(
-			// getTaskFragmentPosition(), false);
-			// MainActivity.this.mViewPager.setCurrentItem(
-			// MainActivity.getTasksFragmentPosition(), false);
-			// MainActivity.this.mViewPager.setCurrentItem(
-			// getTaskFragmentPosition(), smooth);
-			//
-			// }
-			// });
 		}
 	}
 
@@ -433,24 +417,6 @@ public class MainActivity extends ActionBarActivity implements
 			checkPageAdapter();
 			return (TaskFragment) this.mPagerAdapter
 					.getItem(getTaskFragmentPosition());
-			// This must not happen
-			// if (f == null) {
-			// forceRebuildLayout(MirakelCommonPreferences.isTablet());
-			// f = this.mPagerAdapter.getItem(getTaskFragmentPosition());
-			// if (f == null) {
-			// Log.wtf(TAG, "no taskfragment found");
-			// // Helpers.restartApp(this);
-			// return null;
-			// }
-			// }
-			// try {
-			// return (TaskFragment) f;
-			// } catch (ClassCastException e) {
-			// Log.wtf(TAG, "cannot cast fragment");
-			// forceRebuildLayout(MirakelCommonPreferences.isTablet());
-			// return (TaskFragment) this.mPagerAdapter
-			// .getItem(getTaskFragmentPosition());
-			// }
 		}
 	}
 
@@ -475,11 +441,9 @@ public class MainActivity extends ActionBarActivity implements
 		}
 		// This must not happen
 		if (f == null && this.mPagerAdapter != null) {
-			// forceRebuildLayout();
 			f = this.mPagerAdapter.getItem(getTasksFragmentPosition());
 			if (f == null) {
 				Log.wtf(TAG, "no taskfragment found");
-				// Helpers.restartApp(this);
 				return null;
 			}
 		}
@@ -498,7 +462,6 @@ public class MainActivity extends ActionBarActivity implements
 			if (this.mPagerAdapter == null) {
 				// something terrible happened
 				Log.wtf(TAG, "pageadapter after init null");
-				// Helpers.restartApp(this);
 			}
 		}
 	}
@@ -1047,7 +1010,6 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	public void onBackPressed() {
-		// getTaskFragment().cancelEditing();
 		if (this.goBackTo.size() > 0
 				&& this.currentPosition == getTaskFragmentPosition()) {
 			final Task goBack = this.goBackTo.pop();
@@ -1086,7 +1048,6 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	public void onConfigurationChanged(final Configuration newConfig) {
 		Locale.setDefault(Helpers.getLocal(this));
-		Configuration oldConfig = getResources().getConfiguration();
 		super.onConfigurationChanged(newConfig);
 		this.mPagerAdapter = null;
 		this.isResumed = false;
@@ -1214,7 +1175,7 @@ public class MainActivity extends ActionBarActivity implements
 		super.onDestroy();
 	}
 
-	// Fix Intent-behavior
+	// TODO Fix Intent-behavior
 	// default is not return new Intent by calling getIntent
 	@Override
 	protected void onNewIntent(final Intent intent) {
@@ -1268,7 +1229,6 @@ public class MainActivity extends ActionBarActivity implements
 		case R.id.menu_sync_now:
 			final Bundle bundle = new Bundle();
 			bundle.putBoolean(ContentResolver.SYNC_EXTRAS_DO_NOT_RETRY, true);
-			// bundle.putBoolean(ContentResolver.SYNC_EXTRAS_INITIALIZE,true);
 			bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
 			bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
 
@@ -1318,8 +1278,6 @@ public class MainActivity extends ActionBarActivity implements
 					&& getTasksFragment().getAdapter() != null) {
 				getListFragment().getAdapter().changeData(ListMirakel.all());
 				getListFragment().getAdapter().notifyDataSetChanged();
-				/*getTasksFragment().getAdapter().changeData(
-						getCurrentList().tasks(), getCurrentList().getId());*/
 				getTasksFragment().getAdapter().notifyDataSetChanged();
 				if (!MirakelCommonPreferences.isTablet()
 						&& this.currentPosition == MainActivity
@@ -1652,6 +1610,9 @@ public class MainActivity extends ActionBarActivity implements
 			setCurrentList(SpecialList.firstSpecial());
 		}
 		// Initialize ViewPager
+		/*
+		 * TODO We need the try catch because it throws sometimes a runtimeexception when adding fragments. 
+		 */
 		try {
 			initViewPager();
 		} catch (Exception e) {
