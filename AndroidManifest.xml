@@ -4,7 +4,7 @@
       android:versionCode="4"
       android:versionName="0.6.1">
     <uses-sdk android:targetSdkVersion="19"
-      android:minSdkVersion="7" />
+      android:minSdkVersion="8" />
       <!-- need to build with gradle-->
       <application />
 </manifest> 
