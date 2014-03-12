@@ -29,6 +29,7 @@ import de.azapps.mirakel.custom_views.TaskDetailDueReminder.Type;
 import de.azapps.mirakel.custom_views.TaskDetailFilePart.OnFileClickListner;
 import de.azapps.mirakel.custom_views.TaskDetailFilePart.OnFileMarkedListner;
 import de.azapps.mirakel.custom_views.TaskDetailHeader.OnDoneChangedListner;
+import de.azapps.mirakel.custom_views.TaskDetailView.TYPE.NoSuchItemException;
 import de.azapps.mirakel.custom_views.TaskSummary.OnTaskClickListner;
 import de.azapps.mirakel.custom_views.TaskSummary.OnTaskMarkedListner;
 import de.azapps.mirakel.customviews.R;
@@ -36,6 +37,7 @@ import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.MirakelViewPreferences;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.tools.Log;
 
 public class TaskDetailView extends BaseTaskDetailRow implements OnTaskChangedListner {
 
@@ -101,6 +103,9 @@ public class TaskDetailView extends BaseTaskDetailRow implements OnTaskChangedLi
 
 		}
 	}
+
+
+	private static final String TAG = "TaskDetailView";
 
 
 	private final Context							context;
@@ -235,10 +240,12 @@ public class TaskDetailView extends BaseTaskDetailRow implements OnTaskChangedLi
 					item=new TaskDetailContent(this.context);
 					break;
 				case TYPE.REMINDER:
-					if (position > 1
+					if (position > 0
 							&& this.items.get(position - 1) != TYPE.DUE
-							&& position < this.items.size() && this.items
-							.get(position + 1) != TYPE.DUE) {
+							&& position < this.items.size()-1 && this.items
+							.get(position + 1) != TYPE.DUE
+							||position==0 &&items.size()>1&&items.get(1)!= TYPE.DUE
+							||position==items.size()-1&&position!=0&&items.get(items.size()-2)!=TYPE.DUE) {
 						TaskDetailDueReminder t = new TaskDetailDueReminder(
 								this.context);
 						t.setType(Type.Reminder);
@@ -251,7 +258,7 @@ public class TaskDetailView extends BaseTaskDetailRow implements OnTaskChangedLi
 							this.context);
 					if (position > 1
 							&& this.items.get(position - 1) == TYPE.REMINDER
-							|| position < this.items.size()
+							|| position < this.items.size()-1
 							&& this.items.get(position + 1) == TYPE.REMINDER) {
 						t.setType(Type.Combined);
 					}else{
