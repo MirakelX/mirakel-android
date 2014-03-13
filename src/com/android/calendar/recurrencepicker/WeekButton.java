@@ -24,10 +24,9 @@ import android.view.View;
 import de.azapps.mirakel.date_time.R;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 
-
 public class WeekButton extends android.widget.ToggleButton {
 
-	private static boolean	mDark;
+	private static boolean mDark;
 
 	public WeekButton(Context context) {
 		super(context);

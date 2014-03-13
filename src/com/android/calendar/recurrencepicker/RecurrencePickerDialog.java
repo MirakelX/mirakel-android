@@ -67,33 +67,36 @@ import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.model.recurring.Recurring;
 
 @SuppressLint("NewApi")
-public class RecurrencePickerDialog extends DialogFragment implements OnCheckedChangeListener {
+public class RecurrencePickerDialog extends DialogFragment implements
+		OnCheckedChangeListener {
 
 	// in dp's
-	private static final int		MIN_SCREEN_WIDTH_FOR_SINGLE_ROW_WEEK	= 450;
-	protected static final String	TAG										= null;
+	private static final int MIN_SCREEN_WIDTH_FOR_SINGLE_ROW_WEEK = 450;
+	protected static final String TAG = null;
 
-	public static RecurrencePickerDialog newInstance(OnRecurenceSetListner r, Recurring recurring, boolean forDue, boolean dark, boolean exact) {
+	public static RecurrencePickerDialog newInstance(OnRecurenceSetListner r,
+			Recurring recurring, boolean forDue, boolean dark, boolean exact) {
 		RecurrencePickerDialog re = new RecurrencePickerDialog();
 		re.initialize(r, recurring, forDue, dark, exact);
 		return re;
 	}
 
-	private OnRecurenceSetListner	mCallback;
-	private Recurring				mRecurring;
-	private boolean					mForDue;
-	private Spinner					mRecurenceSelection;
-	private int						extraItems;
-	private CompoundButton			mToggle;
-	private boolean					toggleIsSwitch		= true;
-	private Button					mDoneButton;
-	private int						mPosition;
-	private boolean					mDark;
-	private ToggleButton[]			mWeekByDayButtons	= new ToggleButton[7];
-	private int						numOfButtonsInRow1;
-	private int						numOfButtonsInRow2;
+	private OnRecurenceSetListner mCallback;
+	private Recurring mRecurring;
+	private boolean mForDue;
+	private Spinner mRecurenceSelection;
+	private int extraItems;
+	private CompoundButton mToggle;
+	private boolean toggleIsSwitch = true;
+	private Button mDoneButton;
+	private int mPosition;
+	private boolean mDark;
+	private ToggleButton[] mWeekByDayButtons = new ToggleButton[7];
+	private int numOfButtonsInRow1;
+	private int numOfButtonsInRow2;
 
-	public void initialize(OnRecurenceSetListner r, Recurring recurring, boolean forDue, boolean dark, boolean exact) {
+	public void initialize(OnRecurenceSetListner r, Recurring recurring,
+			boolean forDue, boolean dark, boolean exact) {
 		this.mRecurring = recurring;
 		this.mCallback = r;
 		this.mForDue = forDue;
@@ -103,27 +106,26 @@ public class RecurrencePickerDialog extends DialogFragment implements OnCheckedC
 		this.mEndDate = null;
 	}
 
-	private final int[]		TIME_DAY_TO_CALENDAR_DAY	= new int[] {
-			Calendar.SUNDAY, Calendar.MONDAY, Calendar.TUESDAY,
-			Calendar.WEDNESDAY, Calendar.THURSDAY, Calendar.FRIDAY,
-			Calendar.SATURDAY,							};
-	private LinearLayout	mWeekGroup;
-	private LinearLayout	mWeekGroup2;
-	private LinearLayout	mOptions;
-	private Spinner			mIntervalType;
-	private EditText		mIntervalCount;
-	protected int			mIntervalValue;
-	private RadioGroup		mRadioGroup;
-	private Spinner			mEndSpinner;
-	private Calendar		mEndDate;
-	private TextView		mEndDateView;
-	protected boolean		mIsCustom					= false;
-	private CheckBox		mUseExact;
-	private boolean			mInitialExact;
-	private Spinner			mStartSpinner;
-	private Calendar		mStartDate;
-	private TextView		mStartDateView;
-	private Context			ctx;
+	private final int[] TIME_DAY_TO_CALENDAR_DAY = new int[] { Calendar.SUNDAY,
+			Calendar.MONDAY, Calendar.TUESDAY, Calendar.WEDNESDAY,
+			Calendar.THURSDAY, Calendar.FRIDAY, Calendar.SATURDAY, };
+	private LinearLayout mWeekGroup;
+	private LinearLayout mWeekGroup2;
+	private LinearLayout mOptions;
+	private Spinner mIntervalType;
+	private EditText mIntervalCount;
+	protected int mIntervalValue;
+	private RadioGroup mRadioGroup;
+	private Spinner mEndSpinner;
+	private Calendar mEndDate;
+	private TextView mEndDateView;
+	protected boolean mIsCustom = false;
+	private CheckBox mUseExact;
+	private boolean mInitialExact;
+	private Spinner mStartSpinner;
+	private Calendar mStartDate;
+	private TextView mStartDateView;
+	private Context ctx;
 
 	public int pxToDp(int px) {
 
@@ -136,7 +138,8 @@ public class RecurrencePickerDialog extends DialogFragment implements OnCheckedC
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
 		this.ctx = getDialog().getContext();
 		try {
 			getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
@@ -155,7 +158,8 @@ public class RecurrencePickerDialog extends DialogFragment implements OnCheckedC
 		this.mPosition = 0;
 		for (int i = this.extraItems; i < recurring.size() + this.extraItems; i++) {
 			items[i] = recurring.get(i - this.extraItems).second;
-			if (this.mRecurring != null && items[i].equals(this.mRecurring.getLabel())) {
+			if (this.mRecurring != null
+					&& items[i].equals(this.mRecurring.getLabel())) {
 				this.mPosition = i;
 			}
 		}
@@ -167,7 +171,8 @@ public class RecurrencePickerDialog extends DialogFragment implements OnCheckedC
 			v.setBackgroundColor(this.ctx.getResources().getColor(
 					this.mDark ? android.R.color.black : android.R.color.white));
 		}
-		this.mRecurenceSelection = (Spinner) view.findViewById(R.id.freqSpinner);
+		this.mRecurenceSelection = (Spinner) view
+				.findViewById(R.id.freqSpinner);
 		Resources res = this.ctx.getResources();
 		boolean isNotTwoRows;
 		try {
@@ -188,24 +193,28 @@ public class RecurrencePickerDialog extends DialogFragment implements OnCheckedC
 		this.mRecurenceSelection
 				.setOnItemSelectedListener(new OnItemSelectedListener() {
 					@Override
-					public void onItemSelected(AdapterView<?> arg0, View arg1, int pos, long id) {
+					public void onItemSelected(AdapterView<?> arg0, View arg1,
+							int pos, long id) {
 						RecurrencePickerDialog.this.mPosition = pos;
 						if (pos < RecurrencePickerDialog.this.extraItems) {
 							switch (pos) {
-								case 0:// CUSTOM
-									RecurrencePickerDialog.this.mOptions.setVisibility(View.VISIBLE);
-									RecurrencePickerDialog.this.mIsCustom = true;
-									break;
+							case 0:// CUSTOM
+								RecurrencePickerDialog.this.mOptions
+										.setVisibility(View.VISIBLE);
+								RecurrencePickerDialog.this.mIsCustom = true;
+								break;
 
-								default:
-									Log.wtf(TAG, "cannot be");
-									break;
+							default:
+								Log.wtf(TAG, "cannot be");
+								break;
 							}
 						} else {
 							RecurrencePickerDialog.this.mIsCustom = false;
-							RecurrencePickerDialog.this.mOptions.setVisibility(View.GONE);
-							RecurrencePickerDialog.this.mRecurring = Recurring.get(recurring.get(pos
-									- RecurrencePickerDialog.this.extraItems).first);
+							RecurrencePickerDialog.this.mOptions
+									.setVisibility(View.GONE);
+							RecurrencePickerDialog.this.mRecurring = Recurring.get(recurring
+									.get(pos
+											- RecurrencePickerDialog.this.extraItems).first);
 						}
 
 					}
@@ -236,19 +245,22 @@ public class RecurrencePickerDialog extends DialogFragment implements OnCheckedC
 		/* First row */
 
 		List<Integer> weekdays = new ArrayList<Integer>();
-		if (this.mRecurring != null) weekdays = this.mRecurring.getWeekdays();
+		if (this.mRecurring != null)
+			weekdays = this.mRecurring.getWeekdays();
 		for (int i = 0; i < 7; i++) {
 			if (i >= this.numOfButtonsInRow1) {
 				this.mWeekGroup.getChildAt(i).setVisibility(View.GONE);
 				continue;
 			}
-			this.mWeekByDayButtons[idx] = (ToggleButton) this.mWeekGroup.getChildAt(i);
+			this.mWeekByDayButtons[idx] = (ToggleButton) this.mWeekGroup
+					.getChildAt(i);
 			this.mWeekByDayButtons[idx]
 					.setTextOff(dayOfWeekString[this.TIME_DAY_TO_CALENDAR_DAY[idx]]);
 			this.mWeekByDayButtons[idx]
 					.setTextOn(dayOfWeekString[this.TIME_DAY_TO_CALENDAR_DAY[idx]]);
 			/*
-			 * It's so stupid… Sunday is called 'weekend' but it's the first day of the week.
+			 * It's so stupid… Sunday is called 'weekend' but it's the first day
+			 * of the week.
 			 */
 			boolean checked = weekdays.contains(idx + 1);
 			this.mWeekByDayButtons[idx].setChecked(checked);
@@ -264,13 +276,15 @@ public class RecurrencePickerDialog extends DialogFragment implements OnCheckedC
 				this.mWeekGroup2.getChildAt(i).setVisibility(View.GONE);
 				continue;
 			}
-			this.mWeekByDayButtons[idx] = (ToggleButton) this.mWeekGroup2.getChildAt(i);
+			this.mWeekByDayButtons[idx] = (ToggleButton) this.mWeekGroup2
+					.getChildAt(i);
 			this.mWeekByDayButtons[idx]
 					.setTextOff(dayOfWeekString[this.TIME_DAY_TO_CALENDAR_DAY[idx]]);
 			this.mWeekByDayButtons[idx]
 					.setTextOn(dayOfWeekString[this.TIME_DAY_TO_CALENDAR_DAY[idx]]);
 			/*
-			 * It's so stupid… Sunday is called 'weekend' but it's the first day of the week.
+			 * It's so stupid… Sunday is called 'weekend' but it's the first day
+			 * of the week.
 			 */
 			boolean checked = weekdays.contains(idx + 1);
 			this.mWeekByDayButtons[idx].setChecked(checked);
@@ -290,11 +304,13 @@ public class RecurrencePickerDialog extends DialogFragment implements OnCheckedC
 			this.mToggle = (CheckBox) view.findViewById(R.id.repeat_checkbox);
 			this.toggleIsSwitch = false;
 		}
-		this.mToggle.setChecked(this.mRecurring != null && this.mRecurring.getId() != -1);
+		this.mToggle.setChecked(this.mRecurring != null
+				&& this.mRecurring.getId() != -1);
 		this.mToggle.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
 				setEnabledComponents(isChecked);
 
 			}
@@ -311,22 +327,29 @@ public class RecurrencePickerDialog extends DialogFragment implements OnCheckedC
 						ArrayList<Integer> checked = new ArrayList<Integer>();
 						boolean isOneChecked = false;
 						for (int i = 0; i < RecurrencePickerDialog.this.mWeekByDayButtons.length; i++) {
-							if (RecurrencePickerDialog.this.mWeekByDayButtons[i].isChecked()) {
+							if (RecurrencePickerDialog.this.mWeekByDayButtons[i]
+									.isChecked()) {
 								isOneChecked = true;
 								checked.add(RecurrencePickerDialog.this.TIME_DAY_TO_CALENDAR_DAY[i]);
 							}
 						}
 						if (isOneChecked) {
-							RecurrencePickerDialog.this.mCallback.OnCustomRecurnceSetWeekdays(RecurrencePickerDialog.this.mForDue,
-									checked, RecurrencePickerDialog.this.mStartDate, RecurrencePickerDialog.this.mEndDate,
-									RecurrencePickerDialog.this.mUseExact.isChecked());
+							RecurrencePickerDialog.this.mCallback
+									.OnCustomRecurnceSetWeekdays(
+											RecurrencePickerDialog.this.mForDue,
+											checked,
+											RecurrencePickerDialog.this.mStartDate,
+											RecurrencePickerDialog.this.mEndDate,
+											RecurrencePickerDialog.this.mUseExact
+													.isChecked());
 						} else {
 							int intervalMonths = 0;
 							int intervalYears = 0;
 							int intervalDays = 0;
 							int intervalMinutes = 0;
 							int intervalHours = 0;
-							int type = RecurrencePickerDialog.this.mIntervalType.getSelectedItemPosition();
+							int type = RecurrencePickerDialog.this.mIntervalType
+									.getSelectedItemPosition();
 							Log.d(TAG, "TYPE: " + type);
 							if (type == 0) {
 								if (RecurrencePickerDialog.this.mForDue) {
@@ -351,18 +374,28 @@ public class RecurrencePickerDialog extends DialogFragment implements OnCheckedC
 							} else if (type == 4) {
 								intervalYears = RecurrencePickerDialog.this.mIntervalValue;
 							}
-							RecurrencePickerDialog.this.mCallback.OnCustomRecurnceSetIntervall(RecurrencePickerDialog.this.mForDue,
-									intervalYears, intervalMonths,
-									intervalDays, intervalHours,
-									intervalMinutes, RecurrencePickerDialog.this.mStartDate, RecurrencePickerDialog.this.mEndDate,
-									RecurrencePickerDialog.this.mUseExact.isChecked());
+							RecurrencePickerDialog.this.mCallback
+									.OnCustomRecurnceSetIntervall(
+											RecurrencePickerDialog.this.mForDue,
+											intervalYears,
+											intervalMonths,
+											intervalDays,
+											intervalHours,
+											intervalMinutes,
+											RecurrencePickerDialog.this.mStartDate,
+											RecurrencePickerDialog.this.mEndDate,
+											RecurrencePickerDialog.this.mUseExact
+													.isChecked());
 						}
 					} else {
-						Recurring r = Recurring.createTemporayCopy(RecurrencePickerDialog.this.mRecurring);
-						r.setExact(RecurrencePickerDialog.this.mUseExact.isChecked());
+						Recurring r = Recurring
+								.createTemporayCopy(RecurrencePickerDialog.this.mRecurring);
+						r.setExact(RecurrencePickerDialog.this.mUseExact
+								.isChecked());
 						Log.d(TAG, "exact: " + r.isExact());
 						r.save();
-						RecurrencePickerDialog.this.mCallback.OnRecurrenceSet(r);
+						RecurrencePickerDialog.this.mCallback
+								.OnRecurrenceSet(r);
 					}
 				} else {
 					RecurrencePickerDialog.this.mCallback.onNoRecurrenceSet();
@@ -378,7 +411,8 @@ public class RecurrencePickerDialog extends DialogFragment implements OnCheckedC
 		this.mIntervalCount.addTextChangedListener(new TextWatcher() {
 
 			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count) {
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
 				int newValue = RecurrencePickerDialog.this.mIntervalValue;
 				try {
 					newValue = Integer.parseInt(s.toString());
@@ -386,42 +420,52 @@ public class RecurrencePickerDialog extends DialogFragment implements OnCheckedC
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				if (newValue == 0) RecurrencePickerDialog.this.mIntervalCount.setText("" + RecurrencePickerDialog.this.mIntervalValue);
+				if (newValue == 0)
+					RecurrencePickerDialog.this.mIntervalCount.setText(""
+							+ RecurrencePickerDialog.this.mIntervalValue);
 				updateIntervallType();
 				RecurrencePickerDialog.this.mIntervalValue = newValue;
 			}
 
 			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+			}
 
 			@Override
-			public void afterTextChanged(Editable s) {}
+			public void afterTextChanged(Editable s) {
+			}
 		});
 		final int dayPosition = this.mForDue ? 0 : 2;
-		this.mIntervalType.setOnItemSelectedListener(new OnItemSelectedListener() {
+		this.mIntervalType
+				.setOnItemSelectedListener(new OnItemSelectedListener() {
 
-			@Override
-			public void onItemSelected(AdapterView<?> arg0, View arg1, int pos, long arg3) {
-				if (pos == dayPosition) {
-					view.findViewById(R.id.weekGroup).setVisibility(
-							View.VISIBLE);
-					view.findViewById(R.id.weekGroup2).setVisibility(
-							View.VISIBLE);
-				} else {
-					view.findViewById(R.id.weekGroup).setVisibility(View.GONE);
-					view.findViewById(R.id.weekGroup2).setVisibility(View.GONE);
-				}
+					@Override
+					public void onItemSelected(AdapterView<?> arg0, View arg1,
+							int pos, long arg3) {
+						if (pos == dayPosition) {
+							view.findViewById(R.id.weekGroup).setVisibility(
+									View.VISIBLE);
+							view.findViewById(R.id.weekGroup2).setVisibility(
+									View.VISIBLE);
+						} else {
+							view.findViewById(R.id.weekGroup).setVisibility(
+									View.GONE);
+							view.findViewById(R.id.weekGroup2).setVisibility(
+									View.GONE);
+						}
 
-			}
+					}
 
-			@Override
-			public void onNothingSelected(AdapterView<?> arg0) {
-				// TODO Auto-generated method stub
+					@Override
+					public void onNothingSelected(AdapterView<?> arg0) {
+						// TODO Auto-generated method stub
 
-			}
-		});
+					}
+				});
 		this.mRadioGroup = (RadioGroup) view.findViewById(R.id.monthGroup);
-		this.mRadioGroup.setVisibility(View.GONE);// Don't support this for now...
+		this.mRadioGroup.setVisibility(View.GONE);// Don't support this for
+													// now...
 
 		String[] end = { res.getString(R.string.recurrence_end_continously),
 				res.getString(R.string.recurrence_end_date_label) // ,res.getString(R.string.recurrence_end_count_label)
@@ -438,8 +482,9 @@ public class RecurrencePickerDialog extends DialogFragment implements OnCheckedC
 				this.ctx, android.R.layout.simple_spinner_item, end);
 		endSpinnerAdapter
 				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		this.mEndDateView = (TextView) view.findViewById(this.mDark ? R.id.endDate_dark
-				: R.id.endDate_light);
+		this.mEndDateView = (TextView) view
+				.findViewById(this.mDark ? R.id.endDate_dark
+						: R.id.endDate_light);
 		this.mEndDateView.setText(DateTimeHelper.formatDate(endDate));
 		this.mEndDateView.setOnClickListener(new OnClickListener() {
 
@@ -454,47 +499,57 @@ public class RecurrencePickerDialog extends DialogFragment implements OnCheckedC
 							}
 
 							@Override
-							public void onDateSet(DatePicker datePickerDialog, int year, int month, int day) {
-								RecurrencePickerDialog.this.mEndDate.set(Calendar.YEAR, year);
-								RecurrencePickerDialog.this.mEndDate.set(Calendar.MONTH, month);
-								RecurrencePickerDialog.this.mEndDate.set(Calendar.DAY_OF_WEEK, day);
+							public void onDateSet(DatePicker datePickerDialog,
+									int year, int month, int day) {
+								RecurrencePickerDialog.this.mEndDate.set(
+										Calendar.YEAR, year);
+								RecurrencePickerDialog.this.mEndDate.set(
+										Calendar.MONTH, month);
+								RecurrencePickerDialog.this.mEndDate.set(
+										Calendar.DAY_OF_WEEK, day);
 
 							}
-						}, endDate.get(Calendar.YEAR),
-						endDate.get(Calendar.MONTH),
-						endDate.get(Calendar.DAY_OF_MONTH), RecurrencePickerDialog.this.mDark, false);
+						}, endDate.get(Calendar.YEAR), endDate
+								.get(Calendar.MONTH), endDate
+								.get(Calendar.DAY_OF_MONTH),
+						RecurrencePickerDialog.this.mDark, false);
 				dp.show(getFragmentManager(), "endDate");
 
 			}
 		});
-		this.mEndSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+		this.mEndSpinner
+				.setOnItemSelectedListener(new OnItemSelectedListener() {
 
-			@Override
-			public void onItemSelected(AdapterView<?> arg0, View arg1, int pos, long arg3) {
-				switch (pos) {
-					case 1:
-						RecurrencePickerDialog.this.mEndDateView.setVisibility(View.VISIBLE);
-						try {
-							RecurrencePickerDialog.this.mEndDate = DateTimeHelper.parseDate(RecurrencePickerDialog.this.mEndDateView
-									.getText().toString());
-						} catch (ParseException e) {
-							RecurrencePickerDialog.this.mEndDate = endDate;
+					@Override
+					public void onItemSelected(AdapterView<?> arg0, View arg1,
+							int pos, long arg3) {
+						switch (pos) {
+						case 1:
+							RecurrencePickerDialog.this.mEndDateView
+									.setVisibility(View.VISIBLE);
+							try {
+								RecurrencePickerDialog.this.mEndDate = DateTimeHelper
+										.parseDate(RecurrencePickerDialog.this.mEndDateView
+												.getText().toString());
+							} catch (ParseException e) {
+								RecurrencePickerDialog.this.mEndDate = endDate;
+							}
+							break;
+						default:// FOREVER
+							RecurrencePickerDialog.this.mEndDateView
+									.setVisibility(View.GONE);
+							RecurrencePickerDialog.this.mEndDate = null;
+							break;
 						}
-						break;
-					default:// FOREVER
-						RecurrencePickerDialog.this.mEndDateView.setVisibility(View.GONE);
-						RecurrencePickerDialog.this.mEndDate = null;
-						break;
-				}
 
-			}
+					}
 
-			@Override
-			public void onNothingSelected(AdapterView<?> arg0) {
-				// TODO Auto-generated method stub
+					@Override
+					public void onNothingSelected(AdapterView<?> arg0) {
+						// TODO Auto-generated method stub
 
-			}
-		});
+					}
+				});
 		this.mEndSpinner.setAdapter(endSpinnerAdapter);
 
 		String[] start = { res.getString(R.string.recurrence_from_now),
@@ -507,35 +562,39 @@ public class RecurrencePickerDialog extends DialogFragment implements OnCheckedC
 		};
 
 		this.mStartSpinner = (Spinner) view.findViewById(R.id.startSpinner);
-		this.mStartSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+		this.mStartSpinner
+				.setOnItemSelectedListener(new OnItemSelectedListener() {
 
-			@Override
-			public void onItemSelected(AdapterView<?> arg0, View arg1, int pos, long arg3) {
-				switch (pos) {
-					case 1:
-						RecurrencePickerDialog.this.mStartDateView.setVisibility(View.VISIBLE);
-						try {
-							RecurrencePickerDialog.this.mStartDate = DateTimeHelper
-									.parseDate(RecurrencePickerDialog.this.mStartDateView.getText()
-											.toString());
-						} catch (ParseException e) {
-							RecurrencePickerDialog.this.mStartDate = endDate;
+					@Override
+					public void onItemSelected(AdapterView<?> arg0, View arg1,
+							int pos, long arg3) {
+						switch (pos) {
+						case 1:
+							RecurrencePickerDialog.this.mStartDateView
+									.setVisibility(View.VISIBLE);
+							try {
+								RecurrencePickerDialog.this.mStartDate = DateTimeHelper
+										.parseDate(RecurrencePickerDialog.this.mStartDateView
+												.getText().toString());
+							} catch (ParseException e) {
+								RecurrencePickerDialog.this.mStartDate = endDate;
+							}
+							break;
+						default:// FOREVER
+							RecurrencePickerDialog.this.mStartDateView
+									.setVisibility(View.GONE);
+							RecurrencePickerDialog.this.mStartDate = null;
+							break;
 						}
-						break;
-					default:// FOREVER
-						RecurrencePickerDialog.this.mStartDateView.setVisibility(View.GONE);
-						RecurrencePickerDialog.this.mStartDate = null;
-						break;
-				}
 
-			}
+					}
 
-			@Override
-			public void onNothingSelected(AdapterView<?> arg0) {
-				// TODO Auto-generated method stub
+					@Override
+					public void onNothingSelected(AdapterView<?> arg0) {
+						// TODO Auto-generated method stub
 
-			}
-		});
+					}
+				});
 		ArrayAdapter<CharSequence> startSpinnerAdapter = new ArrayAdapter<CharSequence>(
 				this.ctx, android.R.layout.simple_spinner_item, start);
 		startSpinnerAdapter
@@ -558,21 +617,27 @@ public class RecurrencePickerDialog extends DialogFragment implements OnCheckedC
 							}
 
 							@Override
-							public void onDateSet(DatePicker datePickerDialog, int year, int month, int day) {
-								RecurrencePickerDialog.this.mStartDate.set(Calendar.YEAR, year);
-								RecurrencePickerDialog.this.mStartDate.set(Calendar.MONTH, month);
-								RecurrencePickerDialog.this.mStartDate.set(Calendar.DAY_OF_WEEK, day);
+							public void onDateSet(DatePicker datePickerDialog,
+									int year, int month, int day) {
+								RecurrencePickerDialog.this.mStartDate.set(
+										Calendar.YEAR, year);
+								RecurrencePickerDialog.this.mStartDate.set(
+										Calendar.MONTH, month);
+								RecurrencePickerDialog.this.mStartDate.set(
+										Calendar.DAY_OF_WEEK, day);
 
 							}
-						}, startDate.get(Calendar.YEAR),
-						startDate.get(Calendar.MONTH),
-						startDate.get(Calendar.DAY_OF_MONTH), RecurrencePickerDialog.this.mDark, false);
+						}, startDate.get(Calendar.YEAR), startDate
+								.get(Calendar.MONTH), startDate
+								.get(Calendar.DAY_OF_MONTH),
+						RecurrencePickerDialog.this.mDark, false);
 				dp.show(getFragmentManager(), "startDate");
 
 			}
 		});
 		this.mStartSpinner.setAdapter(startSpinnerAdapter);
-		setEnabledComponents(this.mRecurring != null && this.mRecurring.getId() != -1);
+		setEnabledComponents(this.mRecurring != null
+				&& this.mRecurring.getId() != -1);
 		if (this.mDark) {
 			view.findViewById(R.id.recurrence_picker_dialog)
 					.setBackgroundColor(res.getColor(R.color.dialog_gray));
@@ -584,7 +649,8 @@ public class RecurrencePickerDialog extends DialogFragment implements OnCheckedC
 						.getDrawable(R.drawable.switch_thumb_dark));
 			this.mEndDateView.setTextColor(res.getColor(R.color.White));
 			this.mStartDateView.setTextColor(res.getColor(R.color.White));
-			this.mUseExact.setButtonDrawable(R.drawable.btn_check_holo_dark_red);
+			this.mUseExact
+					.setButtonDrawable(R.drawable.btn_check_holo_dark_red);
 		}
 		if (!this.mForDue) {
 			this.mUseExact.setVisibility(View.GONE);
@@ -609,13 +675,13 @@ public class RecurrencePickerDialog extends DialogFragment implements OnCheckedC
 			if (b) {
 				this.mStartDateView.setTextColor(getResources().getColor(
 						R.color.White));
-				this.mEndDateView.setTextColor(getResources()
-						.getColor(R.color.White));
+				this.mEndDateView.setTextColor(getResources().getColor(
+						R.color.White));
 			} else {
 				this.mStartDateView.setTextColor(getResources().getColor(
 						R.color.grey));
-				this.mEndDateView
-						.setTextColor(getResources().getColor(R.color.grey));
+				this.mEndDateView.setTextColor(getResources().getColor(
+						R.color.grey));
 			}
 		}
 	}
@@ -651,9 +717,13 @@ public class RecurrencePickerDialog extends DialogFragment implements OnCheckedC
 	}
 
 	public interface OnRecurenceSetListner {
-		void OnCustomRecurnceSetIntervall(boolean isDue, int intervalYears, int intervalMonths, int intervalDays, int intervalHours, int intervalMinutes, Calendar startDate, Calendar endDate, boolean isExact);
+		void OnCustomRecurnceSetIntervall(boolean isDue, int intervalYears,
+				int intervalMonths, int intervalDays, int intervalHours,
+				int intervalMinutes, Calendar startDate, Calendar endDate,
+				boolean isExact);
 
-		void OnCustomRecurnceSetWeekdays(boolean isDue, List<Integer> weekdays, Calendar startDate, Calendar endDate, boolean isExact);
+		void OnCustomRecurnceSetWeekdays(boolean isDue, List<Integer> weekdays,
+				Calendar startDate, Calendar endDate, boolean isExact);
 
 		void OnRecurrenceSet(Recurring r);
 

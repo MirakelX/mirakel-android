@@ -76,16 +76,19 @@ public class DateTimePicker extends RelativeLayout implements
 		// Grab a Calendar instance
 		this.mCalendar = Calendar.getInstance();
 		// Grab the ViewSwitcher so we can attach our picker views to it
-		this.viewSwitcher = (ViewSwitcher) this.findViewById(R.id.DateTimePickerVS);
+		this.viewSwitcher = (ViewSwitcher) this
+				.findViewById(R.id.DateTimePickerVS);
 
 		// Init date picker
-		this.datePicker = (DatePicker) datePickerView.findViewById(R.id.DatePicker);
+		this.datePicker = (DatePicker) datePickerView
+				.findViewById(R.id.DatePicker);
 		this.datePicker.init(this.mCalendar.get(Calendar.YEAR),
 				this.mCalendar.get(Calendar.MONTH),
 				this.mCalendar.get(Calendar.DAY_OF_MONTH), this);
 
 		// Init time picker
-		this.timePicker = (TimePicker) timePickerView.findViewById(R.id.TimePicker);
+		this.timePicker = (TimePicker) timePickerView
+				.findViewById(R.id.TimePicker);
 		this.timePicker.setOnTimeChangedListener(this);
 
 		// Handle button clicks
@@ -138,21 +141,21 @@ public class DateTimePicker extends RelativeLayout implements
 		if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB)
 			((Button) v).setTextColor(getResources().getColor(
 					this.darkTheme ? R.color.White : R.color.Black));
-		if(v.getId()== R.id.SwitchToDate){
+		if (v.getId() == R.id.SwitchToDate) {
 			v.setEnabled(false);
 			findViewById(R.id.SwitchToTime).setEnabled(true);
 			if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB)
 				((Button) findViewById(R.id.SwitchToTime))
 						.setTextColor(getResources().getColor(R.color.Grey));
 			this.viewSwitcher.showPrevious();
-		}else if(v.getId()== R.id.SwitchToTime){
+		} else if (v.getId() == R.id.SwitchToTime) {
 			v.setEnabled(false);
 			findViewById(R.id.SwitchToDate).setEnabled(true);
 			if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB)
 				((Button) findViewById(R.id.SwitchToDate))
 						.setTextColor(getResources().getColor(R.color.Grey));
 			this.viewSwitcher.showNext();
-		
+
 		}
 	}
 
