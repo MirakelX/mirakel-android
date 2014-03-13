@@ -38,8 +38,8 @@ public abstract class MirakelFragment extends Fragment {
 	 */
 	protected View view;
 
-	public void setActivity(MainActivity activity) {
-		main = activity;
+	public void setActivity(final MainActivity activity) {
+		this.main = activity;
 	}
 
 	public abstract void update();

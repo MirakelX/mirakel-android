@@ -6,6 +6,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
@@ -24,7 +25,7 @@ public class BackgroundTasks {
 				NotificationService.updateNotificationAndWidget(context);
 
 				if (!MirakelCommonPreferences.containsHighlightSelected()) {
-					final SharedPreferences.Editor editor = MirakelCommonPreferences
+					final SharedPreferences.Editor editor = MirakelPreferences
 							.getEditor();
 					editor.putBoolean("highlightSelected",
 							MirakelCommonPreferences.isTablet());
@@ -32,7 +33,7 @@ public class BackgroundTasks {
 				}
 
 				if (!MirakelCommonPreferences.containsStartupAllLists()) {
-					final SharedPreferences.Editor editor = MirakelCommonPreferences
+					final SharedPreferences.Editor editor = MirakelPreferences
 							.getEditor();
 					editor.putBoolean("startupAllLists", false);
 					editor.putString("startupList", ""
@@ -52,20 +53,20 @@ public class BackgroundTasks {
 				context.registerReceiver(mSyncReciver, new IntentFilter(
 						DefinitionsHelper.SYNC_FINISHED));
 				if (DefinitionsHelper.freshInstall) {
-					String[] lists = context.getResources().getStringArray(
-							R.array.demo_lists);
-					for (String list : lists) {
+					final String[] lists = context.getResources()
+							.getStringArray(R.array.demo_lists);
+					for (final String list : lists) {
 						ListMirakel.newList(list);
 					}
 					if (MirakelCommonPreferences.isDemoMode()) {
-						String[] tasks = context.getResources().getStringArray(
-								R.array.demo_tasks);
-						String[] task_lists = { lists[1], lists[1], lists[0],
-								lists[2], lists[2], lists[2] };
-						int[] priorities = { 2, -1, 1, 2, 0, 0 };
+						final String[] tasks = context.getResources()
+								.getStringArray(R.array.demo_tasks);
+						final String[] task_lists = { lists[1], lists[1],
+								lists[0], lists[2], lists[2], lists[2] };
+						final int[] priorities = { 2, -1, 1, 2, 0, 0 };
 						int i = 0;
-						for (String task : tasks) {
-							Task t = Semantic.createTask(task,
+						for (final String task : tasks) {
+							final Task t = Semantic.createTask(task,
 									ListMirakel.findByName(task_lists[i]),
 									true, context);
 							t.setPriority(priorities[i]);
@@ -79,7 +80,7 @@ public class BackgroundTasks {
 		}).run();
 	}
 
-	static void onDestroy(MainActivity context) {
+	static void onDestroy(final MainActivity context) {
 		context.unregisterReceiver(mSyncReciver);
 	}
 }

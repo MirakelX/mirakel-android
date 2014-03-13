@@ -33,8 +33,9 @@ public class TaskFragmentV8 extends TaskFragment {
 		// Called when the user selects a
 		// contextual menu item
 		@Override
-		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-			boolean b = handleActionBarClick(item);
+		public boolean onActionItemClicked(final ActionMode mode,
+				final MenuItem item) {
+			final boolean b = handleActionBarClick(item);
 			if (!b) {
 				mode.finish();
 			}
@@ -45,11 +46,11 @@ public class TaskFragmentV8 extends TaskFragment {
 		// created; startActionMode() was
 		// called
 		@Override
-		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+		public boolean onCreateActionMode(final ActionMode mode, final Menu menu) {
 			// Inflate a menu resource
 			// providing context menu items
-			MenuInflater inflater = mode.getMenuInflater();
-			boolean b = handleCabCreateMenu(inflater, menu);
+			final MenuInflater inflater = mode.getMenuInflater();
+			final boolean b = handleCabCreateMenu(inflater, menu);
 			if (b) {
 				TaskFragmentV8.this.mActionMode = mode;
 				TaskFragmentV8.this.mMenu = menu;
@@ -60,7 +61,7 @@ public class TaskFragmentV8 extends TaskFragment {
 		// Called when the user exits the
 		// action mode
 		@Override
-		public void onDestroyActionMode(ActionMode mode) {
+		public void onDestroyActionMode(final ActionMode mode) {
 			handleCloseCab();
 			TaskFragmentV8.this.mActionMode = null;
 		}
@@ -71,7 +72,8 @@ public class TaskFragmentV8 extends TaskFragment {
 		// may be called multiple times if
 		// the mode is invalidated.
 		@Override
-		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+		public boolean onPrepareActionMode(final ActionMode mode,
+				final Menu menu) {
 			return false; // Return false if
 			// nothing is
 			// done
@@ -79,7 +81,7 @@ public class TaskFragmentV8 extends TaskFragment {
 	};
 
 	@Override
-	protected void changeVisiblity(boolean visible, MenuItem item) {
+	protected void changeVisiblity(final boolean visible, final MenuItem item) {
 		if (this.mActionMode != null && item != null) {
 			item.setVisible(visible);
 		}

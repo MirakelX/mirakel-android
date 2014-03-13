@@ -106,13 +106,15 @@ public class ListFragment extends MirakelFragment {
 		}
 		final SVBar op = (SVBar) v.findViewById(R.id.svbar_color_picker);
 		cp.addSVBar(op);
-		new AlertDialog.Builder(this.main).setView(v)
+		new AlertDialog.Builder(this.main)
+				.setView(v)
 				.setTitle(this.main.getString(R.string.list_change_color))
 				.setPositiveButton(R.string.set_color, new OnClickListener() {
 
 					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						for (ListMirakel list : lists) {
+					public void onClick(final DialogInterface dialog,
+							final int which) {
+						for (final ListMirakel list : lists) {
 							list.setColor(cp.getColor());
 							list.save();
 						}
@@ -123,8 +125,9 @@ public class ListFragment extends MirakelFragment {
 				.setNegativeButton(R.string.unset_color, new OnClickListener() {
 
 					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						for (ListMirakel list : lists) {
+					public void onClick(final DialogInterface dialog,
+							final int which) {
+						for (final ListMirakel list : lists) {
 							list.setColor(0);
 							list.save();
 						}
@@ -134,7 +137,7 @@ public class ListFragment extends MirakelFragment {
 	}
 
 	void editColor(final ListMirakel list) {
-		List<ListMirakel> l = new ArrayList<ListMirakel>();
+		final List<ListMirakel> l = new ArrayList<ListMirakel>();
 		l.add(list);
 		editColor(l);
 	}
@@ -158,8 +161,8 @@ public class ListFragment extends MirakelFragment {
 				.setPositiveButton(this.main.getString(android.R.string.ok),
 						new DialogInterface.OnClickListener() {
 							@Override
-							public void onClick(DialogInterface dialog,
-									int whichButton) {
+							public void onClick(final DialogInterface dialog,
+									final int whichButton) {
 								ListMirakel l = list;
 								if (l == null) {
 									l = ListMirakel
@@ -180,8 +183,8 @@ public class ListFragment extends MirakelFragment {
 						this.main.getString(android.R.string.cancel),
 						new DialogInterface.OnClickListener() {
 							@Override
-							public void onClick(DialogInterface dialog,
-									int whichButton) {
+							public void onClick(final DialogInterface dialog,
+									final int whichButton) {
 								imm.hideSoftInputFromWindow(getActivity()
 										.getCurrentFocus().getWindowToken(),
 										InputMethodManager.HIDE_NOT_ALWAYS);
@@ -190,9 +193,10 @@ public class ListFragment extends MirakelFragment {
 		this.input.postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				if (getActivity() == null)
+				if (getActivity() == null) {
 					return;
-				InputMethodManager keyboard = (InputMethodManager) getActivity()
+				}
+				final InputMethodManager keyboard = (InputMethodManager) getActivity()
 						.getSystemService(Context.INPUT_METHOD_SERVICE);
 				keyboard.showSoftInput(ListFragment.this.input,
 						InputMethodManager.SHOW_IMPLICIT);
@@ -207,11 +211,11 @@ public class ListFragment extends MirakelFragment {
 				R.layout.dialog_list_account, null);
 		final Spinner s = (Spinner) v.findViewById(R.id.select_account);
 		final List<AccountMirakel> accounts = AccountMirakel.getAll();
-		List<String> names = new ArrayList<String>();
-		for (AccountMirakel a : accounts) {
+		final List<String> names = new ArrayList<String>();
+		for (final AccountMirakel a : accounts) {
 			names.add(a.getName());
 		}
-		ArrayAdapter<String> adp = new ArrayAdapter<String>(this.main,
+		final ArrayAdapter<String> adp = new ArrayAdapter<String>(this.main,
 				android.R.layout.simple_list_item_1, names);
 		s.setAdapter(adp);
 
@@ -219,10 +223,11 @@ public class ListFragment extends MirakelFragment {
 				.setTitle(R.string.change_account)
 				.setPositiveButton(android.R.string.ok, new OnClickListener() {
 					@Override
-					public void onClick(DialogInterface dialog, int which) {
+					public void onClick(final DialogInterface dialog,
+							final int which) {
 						String where = Task.LIST_ID + " IN (";
 						boolean c = false;
-						for (ListMirakel l : lists) {
+						for (final ListMirakel l : lists) {
 							l.setAccount(accounts.get((int) s
 									.getSelectedItemId()));
 							l.save();
@@ -230,14 +235,14 @@ public class ListFragment extends MirakelFragment {
 							c = true;
 						}
 						where += ")";
-						ContentValues cv = new ContentValues();
+						final ContentValues cv = new ContentValues();
 						cv.put(SyncAdapter.SYNC_STATE, SYNC_STATE.ADD.toInt());
 						MirakelContentProvider.getWritableDatabase().update(
 								Task.TABLE,
 								cv,
 								where + " AND NOT " + SyncAdapter.SYNC_STATE
 										+ "=" + SYNC_STATE.DELETE, null);
-						String query = "DELETE FROM caldav_extra where "
+						final String query = "DELETE FROM caldav_extra where "
 								+ DatabaseHelper.ID + " in( select "
 								+ DatabaseHelper.ID + " from " + Task.TABLE
 								+ " where " + where + ");";
@@ -250,7 +255,7 @@ public class ListFragment extends MirakelFragment {
 
 	}
 
-	public void enableDrop(boolean drag) {
+	public void enableDrop(final boolean drag) {
 		this.enableDrag = drag;
 		update();
 	}
@@ -260,8 +265,8 @@ public class ListFragment extends MirakelFragment {
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(final LayoutInflater inflater,
+			final ViewGroup container, final Bundle savedInstanceState) {
 		this.main = (MainActivity) getActivity();
 		this.EditName = false;
 		this.enableDrag = false;
@@ -286,8 +291,9 @@ public class ListFragment extends MirakelFragment {
 	@Override
 	@SuppressLint("NewApi")
 	public void update() {
-		if (this.view == null || getActivity() == null)
+		if (this.view == null || getActivity() == null) {
 			return;
+		}
 		final List<ListMirakel> values = ListMirakel.all();
 		this.main.updateLists();
 
@@ -318,7 +324,7 @@ public class ListFragment extends MirakelFragment {
 		this.listView.setDropListener(new DropListener() {
 
 			@Override
-			public void drop(int from, int to) {
+			public void drop(final int from, final int to) {
 				if (from != to) {
 					ListFragment.this.adapter.onDrop(from, to);
 					ListFragment.this.listView.requestLayout();
@@ -357,14 +363,14 @@ public class ListFragment extends MirakelFragment {
 		this.listView
 				.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 					@Override
-					public void onItemClick(AdapterView<?> parent, View item,
-							int position, long id) {
+					public void onItemClick(final AdapterView<?> parent,
+							final View item, final int position, final long id) {
 						if (ListFragment.this.EditName) {
 							ListFragment.this.EditName = false;
 							return;
 						}
 
-						ListMirakel list = values.get((int) id);
+						final ListMirakel list = values.get((int) id);
 						ListFragment.this.main.setCurrentList(list, item);
 					}
 				});
@@ -373,14 +379,15 @@ public class ListFragment extends MirakelFragment {
 					.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
 						@Override
-						public boolean onItemLongClick(AdapterView<?> parent,
-								View item, int position, final long id) {
+						public boolean onItemLongClick(
+								final AdapterView<?> parent, final View item,
+								final int position, final long id) {
 
-							AlertDialog.Builder builder = new AlertDialog.Builder(
+							final AlertDialog.Builder builder = new AlertDialog.Builder(
 									getActivity());
-							ListMirakel list = values.get((int) id);
+							final ListMirakel list = values.get((int) id);
 							builder.setTitle(list.getName());
-							List<CharSequence> items = new ArrayList<CharSequence>(
+							final List<CharSequence> items = new ArrayList<CharSequence>(
 									Arrays.asList(getActivity().getResources()
 											.getStringArray(
 													R.array.list_actions_items)));
@@ -391,8 +398,9 @@ public class ListFragment extends MirakelFragment {
 
 										@Override
 										public void onClick(
-												DialogInterface dialog, int item) {
-											ListMirakel list = values
+												final DialogInterface dialog,
+												final int item) {
+											final ListMirakel list = values
 													.get((int) id);
 											switch (item) {
 											case LIST_COLOR:
@@ -415,7 +423,7 @@ public class ListFragment extends MirakelFragment {
 										}
 									});
 
-							AlertDialog dialog = builder.create();
+							final AlertDialog dialog = builder.create();
 							dialog.show();
 
 							return false;
@@ -431,9 +439,9 @@ public class ListFragment extends MirakelFragment {
 					.setMultiChoiceModeListener(new MultiChoiceModeListener() {
 
 						@Override
-						public boolean onActionItemClicked(ActionMode mode,
-								MenuItem item) {
-							List<ListMirakel> lists = ListFragment.this.adapter
+						public boolean onActionItemClicked(
+								final ActionMode mode, final MenuItem item) {
+							final List<ListMirakel> lists = ListFragment.this.adapter
 									.getSelected();
 							switch (item.getItemId()) {
 							case R.id.menu_delete:
@@ -460,28 +468,30 @@ public class ListFragment extends MirakelFragment {
 
 						@SuppressLint("NewApi")
 						@Override
-						public boolean onCreateActionMode(ActionMode mode,
-								Menu menu) {
-							MenuInflater inflater = mode.getMenuInflater();
+						public boolean onCreateActionMode(
+								final ActionMode mode, final Menu menu) {
+							final MenuInflater inflater = mode
+									.getMenuInflater();
 							inflater.inflate(R.menu.context_lists, menu);
 							ListFragment.this.mActionMode = mode;
 							return true;
 						}
 
 						@Override
-						public void onDestroyActionMode(ActionMode mode) {
+						public void onDestroyActionMode(final ActionMode mode) {
 							ListFragment.this.adapter.resetSelected();
 						}
 
 						@Override
-						public void onItemCheckedStateChanged(ActionMode mode,
-								int position, long id, boolean checked) {
+						public void onItemCheckedStateChanged(
+								final ActionMode mode, final int position,
+								final long id, final boolean checked) {
 							Log.d(TAG, "item " + position + " selected");
-							int oldCount = ListFragment.this.adapter
+							final int oldCount = ListFragment.this.adapter
 									.getSelectedCount();
 							ListFragment.this.adapter.setSelected(position,
 									checked);
-							int newCount = ListFragment.this.adapter
+							final int newCount = ListFragment.this.adapter
 									.getSelectedCount();
 							Log.e(TAG, "old count: " + oldCount
 									+ " | newCount: " + newCount);
@@ -497,8 +507,8 @@ public class ListFragment extends MirakelFragment {
 						}
 
 						@Override
-						public boolean onPrepareActionMode(ActionMode mode,
-								Menu menu) {
+						public boolean onPrepareActionMode(
+								final ActionMode mode, final Menu menu) {
 							menu.findItem(R.id.edit_list).setVisible(
 									ListFragment.this.adapter
 											.getSelectedCount() <= 1);
