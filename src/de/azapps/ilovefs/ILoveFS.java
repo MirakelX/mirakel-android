@@ -70,20 +70,20 @@ public class ILoveFS {
 	/**
 	 * Show the AlertDialog if today is I love Free Software day
 	 */
-	public void show() {		
+	public void show() {
 		final TextView message = new TextView(context);
 		message.setTextAppearance(context,
 				android.R.style.TextAppearance_Medium);
 		message.setText(Html.fromHtml(context
 				.getString(R.string.ilovefs_message)));
-		if(Build.VERSION.SDK_INT<11)
+		if (Build.VERSION.SDK_INT < 11)
 			message.setTextColor(context.getResources().getColor(R.color.white));
-		
+
 		int padding = 10;
 		message.setPadding(padding, padding, padding, padding);
 		message.setMovementMethod(LinkMovementMethod.getInstance());
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
-		
+
 		builder.setTitle(R.string.ilovefs_title).setView(message);
 		if (rateListener != null && package_name != null)
 			builder.setPositiveButton(R.string.ilovefs_rate, rateListener);
