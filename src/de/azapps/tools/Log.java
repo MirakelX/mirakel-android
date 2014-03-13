@@ -36,9 +36,8 @@ public class Log {
 
 	public static void disableLoggingToFile() {
 		writeToFile = false;
-		fileWriter=null;
+		fileWriter = null;
 	}
-
 
 	public static void d(String tag, String msg) {
 		if (tag == null || msg == null)
@@ -52,14 +51,14 @@ public class Log {
 		if (tag == null || msg == null)
 			return;
 		android.util.Log.e(tag, msg);
-		write("e",tag, msg);
+		write("e", tag, msg);
 	}
 
 	public static void e(String tag, String msg, Throwable tr) {
 		if (tag == null || msg == null)
 			return;
 		android.util.Log.e(tag, msg, tr);
-		write("e",tag, msg, tr);
+		write("e", tag, msg, tr);
 	}
 
 	public static String getStackTraceString(Throwable tr) {
@@ -88,18 +87,18 @@ public class Log {
 		if (MirakelCommonPreferences.isDebug()) {
 			android.util.Log.w(tag, msg);
 		}
-		write("w",tag, msg);
+		write("w", tag, msg);
 	}
 
 	public static void wtf(String tag, String msg) {
 		if (tag == null || msg == null)
 			return;
 		android.util.Log.wtf(tag, msg);
-		write("wtf",tag, msg);
+		write("wtf", tag, msg);
 	}
+
 	private static String getTime() {
-		return new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss")
-		.format(new Date());
+		return new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss").format(new Date());
 	}
 
 	private static void init() {
@@ -114,11 +113,12 @@ public class Log {
 		}
 	}
 
-	public static void write(String critic,String tag, String msg) {
-		write(critic,tag, msg, null);
+	public static void write(String critic, String tag, String msg) {
+		write(critic, tag, msg, null);
 	}
 
-	public static void write(String critic,String tag, String msg, Throwable throwable) {
+	public static void write(String critic, String tag, String msg,
+			Throwable throwable) {
 		if (!writeToFile)
 			return;
 		init();
@@ -127,8 +127,8 @@ public class Log {
 			if (throwable != null)
 				stacktrace = "\nStackTrace:" + getStackTraceString(throwable);
 			try {
-				fileWriter
-						.write(getTime() + "::" + critic + "::" + tag + "::" + msg + stacktrace+"\n");
+				fileWriter.write(getTime() + "::" + critic + "::" + tag + "::"
+						+ msg + stacktrace + "\n");
 				fileWriter.flush();
 			} catch (Exception e) {
 				fileWriter = null;

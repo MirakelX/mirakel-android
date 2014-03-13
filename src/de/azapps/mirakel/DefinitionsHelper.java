@@ -15,7 +15,8 @@ public class DefinitionsHelper {
 	public static class NoSuchTaskException extends Exception {
 		static final long serialVersionUID = 1374828058;
 	}
-	public static final int		RESULT_SPEECH_NAME	= 1, RESULT_SPEECH = 3,
+
+	public static final int RESULT_SPEECH_NAME = 1, RESULT_SPEECH = 3,
 			RESULT_SETTINGS = 4, RESULT_ADD_FILE = 5, RESULT_CAMERA = 6,
 			RESULT_ADD_PICTURE = 7;
 	public static final String TW_NO_PROJECT = "NO_PROJECT";
@@ -38,21 +39,20 @@ public class DefinitionsHelper {
 	public static final String SHOW_TASK_FROM_WIDGET = "de.azapps.mirakel.SHOW_TASK_FROM_WIDGET";
 	public static final String SHOW_MESSAGE = "de.azapps.mirakel.SHOW_MESSAGE";
 	public static final String TASK_ID = "de.azapp.mirakel.TASK_ID";
-	public static int				GRAVITY_LEFT, GRAVITY_RIGHT;
-	public static boolean freshInstall=false;
+	public static int GRAVITY_LEFT, GRAVITY_RIGHT;
+	public static boolean freshInstall = false;
 	public static final int REQUEST_FILE_ASTRID = 0;
 	public static final int REQUEST_FILE_IMPORT_DB = 1;
 	public static final int REQUEST_NEW_ACCOUNT = 2;
 	public static final int REQUEST_FILE_ANY_DO = 3;
 	public static final int REQUEST_FILE_WUNDERLIST = 4;
-	public static final String SYNC_FINISHED="de.azapps.mirakel.sync_finished";
-	public static final String AUTHORITY_INTERNAL="de.azapps.mirakel.provider.internal";
+	public static final String SYNC_FINISHED = "de.azapps.mirakel.sync_finished";
+	public static final String AUTHORITY_INTERNAL = "de.azapps.mirakel.provider.internal";
 	private static final String TAG = "DefinitionsHelper";
-	
 
 	public static String MIRAKEL_DIR;
 	public static String APK_NAME;
-	public static String			VERSIONS_NAME;
+	public static String VERSIONS_NAME;
 	public static int widgets[] = {};
 
 	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
@@ -66,7 +66,7 @@ public class DefinitionsHelper {
 			Log.wtf(TAG, "App not found");
 			VERSIONS_NAME = "";
 		}
-		
+
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 			GRAVITY_LEFT = Gravity.START;
 			GRAVITY_RIGHT = Gravity.END;
