@@ -86,7 +86,7 @@ public class SVBar extends View {
 	/**
 	 * The rectangle enclosing the bar.
 	 */
-	private RectF mBarRect = new RectF();
+	private final RectF mBarRect = new RectF();
 
 	/**
 	 * {@code Shader} instance used to fill the shader of the paint.
@@ -110,7 +110,7 @@ public class SVBar extends View {
 	 * An array of floats that can be build into a {@code Color} <br>
 	 * Where we can extract the Saturation and Value from.
 	 */
-	private float[] mHSVColor = new float[3];
+	private final float[] mHSVColor = new float[3];
 
 	/**
 	 * Factor used to calculate the position to the Saturation/Value on the bar.
@@ -127,22 +127,23 @@ public class SVBar extends View {
 	 */
 	private ColorPicker mPicker = null;
 
-	public SVBar(Context context) {
+	public SVBar(final Context context) {
 		super(context);
 		init(null, 0);
 	}
 
-	public SVBar(Context context, AttributeSet attrs) {
+	public SVBar(final Context context, final AttributeSet attrs) {
 		super(context, attrs);
 		init(attrs, 0);
 	}
 
-	public SVBar(Context context, AttributeSet attrs, int defStyle) {
+	public SVBar(final Context context, final AttributeSet attrs,
+			final int defStyle) {
 		super(context, attrs, defStyle);
 		init(attrs, defStyle);
 	}
 
-	private void init(AttributeSet attrs, int defStyle) {
+	private void init(final AttributeSet attrs, final int defStyle) {
 		final TypedArray a = getContext().obtainStyledAttributes(attrs,
 				R.styleable.ColorBars, defStyle, 0);
 		final Resources b = getContext().getResources();
@@ -166,7 +167,7 @@ public class SVBar extends View {
 		this.mBarPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		this.mBarPaint.setShader(this.shader);
 
-		this.mBarPointerPosition = (this.mBarLength / 2)
+		this.mBarPointerPosition = this.mBarLength / 2
 				+ this.mBarPointerHaloRadius;
 
 		this.mBarPointerHaloPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -177,17 +178,18 @@ public class SVBar extends View {
 		this.mBarPointerPaint.setColor(0xff81ff00);
 
 		this.mPosToSVFactor = 1 / ((float) this.mBarLength / 2);
-		this.mSVToPosFactor = ((float) this.mBarLength / 2) / 1;
+		this.mSVToPosFactor = (float) this.mBarLength / 2 / 1;
 
 	}
 
 	@Override
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+	protected void onMeasure(final int widthMeasureSpec,
+			final int heightMeasureSpec) {
 		final int intrinsicSize = this.mPreferredBarLength
-				+ (this.mBarPointerHaloRadius * 2);
+				+ this.mBarPointerHaloRadius * 2;
 
-		int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-		int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+		final int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+		final int widthSize = MeasureSpec.getSize(widthMeasureSpec);
 
 		int width;
 		if (widthMode == MeasureSpec.EXACTLY) {
@@ -198,33 +200,33 @@ public class SVBar extends View {
 			width = intrinsicSize;
 		}
 
-		this.mBarLength = width - (this.mBarPointerHaloRadius * 2);
-		setMeasuredDimension(
-				(this.mBarLength + (this.mBarPointerHaloRadius * 2)),
-				(this.mBarPointerHaloRadius * 2));
+		this.mBarLength = width - this.mBarPointerHaloRadius * 2;
+		setMeasuredDimension(this.mBarLength + this.mBarPointerHaloRadius * 2,
+				this.mBarPointerHaloRadius * 2);
 	}
 
 	@Override
-	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+	protected void onSizeChanged(final int w, final int h, final int oldw,
+			final int oldh) {
 		super.onSizeChanged(w, h, oldw, oldh);
-		this.mBarLength = w - (this.mBarPointerHaloRadius * 2);
+		this.mBarLength = w - this.mBarPointerHaloRadius * 2;
 
 		// Fill the rectangle instance.
 		this.mBarRect.set(this.mBarPointerHaloRadius,
-				(this.mBarPointerHaloRadius - (this.mBarThickness / 2)),
-				(this.mBarLength + (this.mBarPointerHaloRadius)),
-				(this.mBarPointerHaloRadius + (this.mBarThickness / 2)));
+				this.mBarPointerHaloRadius - this.mBarThickness / 2,
+				this.mBarLength + this.mBarPointerHaloRadius,
+				this.mBarPointerHaloRadius + this.mBarThickness / 2);
 
 		// Update variables that depend of mBarLength.
 		if (!isInEditMode()) {
 			this.shader = new LinearGradient(this.mBarPointerHaloRadius, 0,
-					(this.mBarLength + this.mBarPointerHaloRadius),
+					this.mBarLength + this.mBarPointerHaloRadius,
 					this.mBarThickness, new int[] { 0xffffffff,
 							Color.HSVToColor(this.mHSVColor), 0xff000000 },
 					null, Shader.TileMode.CLAMP);
 		} else {
 			this.shader = new LinearGradient(this.mBarPointerHaloRadius, 0,
-					(this.mBarLength + this.mBarPointerHaloRadius),
+					this.mBarLength + this.mBarPointerHaloRadius,
 					this.mBarThickness, new int[] { 0xffffffff, 0xff81ff00,
 							0xff000000 }, null, Shader.TileMode.CLAMP);
 			Color.colorToHSV(0xff81ff00, this.mHSVColor);
@@ -232,27 +234,25 @@ public class SVBar extends View {
 
 		this.mBarPaint.setShader(this.shader);
 		this.mPosToSVFactor = 1 / ((float) this.mBarLength / 2);
-		this.mSVToPosFactor = ((float) this.mBarLength / 2) / 1;
-		float[] hsvColor = new float[3];
+		this.mSVToPosFactor = (float) this.mBarLength / 2 / 1;
+		final float[] hsvColor = new float[3];
 		Color.colorToHSV(this.mColor, hsvColor);
 		if (hsvColor[1] < hsvColor[2]) {
-			this.mBarPointerPosition = Math
-					.round((this.mSVToPosFactor * hsvColor[1])
-							+ this.mBarPointerHaloRadius);
+			this.mBarPointerPosition = Math.round(this.mSVToPosFactor
+					* hsvColor[1] + this.mBarPointerHaloRadius);
 		} else {
-			this.mBarPointerPosition = Math
-					.round((this.mSVToPosFactor * (1 - hsvColor[2]))
-							+ this.mBarPointerHaloRadius
-							+ (this.mBarLength / 2));
+			this.mBarPointerPosition = Math.round(this.mSVToPosFactor
+					* (1 - hsvColor[2]) + this.mBarPointerHaloRadius
+					+ this.mBarLength / 2);
 		}
 		if (isInEditMode()) {
-			this.mBarPointerPosition = (this.mBarLength / 2)
+			this.mBarPointerPosition = this.mBarLength / 2
 					+ this.mBarPointerHaloRadius;
 		}
 	}
 
 	@Override
-	protected void onDraw(Canvas canvas) {
+	protected void onDraw(final Canvas canvas) {
 		// Draw the bar.
 		canvas.drawRect(this.mBarRect, this.mBarPaint);
 		// Draw the pointer halo.
@@ -264,18 +264,18 @@ public class SVBar extends View {
 	}
 
 	@Override
-	public boolean onTouchEvent(MotionEvent event) {
+	public boolean onTouchEvent(final MotionEvent event) {
 		getParent().requestDisallowInterceptTouchEvent(true);
 
 		// Convert coordinates to our internal coordinate system
-		float x = event.getX();
+		final float x = event.getX();
 
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
 			this.mIsMovingPointer = true;
 			// Check whether the user pressed on the pointer
-			if (x >= (this.mBarPointerHaloRadius)
-					&& x <= (this.mBarPointerHaloRadius + this.mBarLength)) {
+			if (x >= this.mBarPointerHaloRadius
+					&& x <= this.mBarPointerHaloRadius + this.mBarLength) {
 				this.mBarPointerPosition = Math.round(x);
 				calculateColor(Math.round(x));
 				this.mBarPointerPaint.setColor(this.mColor);
@@ -286,7 +286,7 @@ public class SVBar extends View {
 			if (this.mIsMovingPointer) {
 				// Move the the pointer on the bar.
 				if (x >= this.mBarPointerHaloRadius
-						&& x <= (this.mBarPointerHaloRadius + this.mBarLength)) {
+						&& x <= this.mBarPointerHaloRadius + this.mBarLength) {
 					this.mBarPointerPosition = Math.round(x);
 					calculateColor(Math.round(x));
 					this.mBarPointerPaint.setColor(this.mColor);
@@ -304,7 +304,7 @@ public class SVBar extends View {
 						this.mPicker.changeOpacityBarColor(this.mColor);
 					}
 					invalidate();
-				} else if (x > (this.mBarPointerHaloRadius + this.mBarLength)) {
+				} else if (x > this.mBarPointerHaloRadius + this.mBarLength) {
 					this.mBarPointerPosition = this.mBarPointerHaloRadius
 							+ this.mBarLength;
 					this.mColor = Color.BLACK;
@@ -332,10 +332,9 @@ public class SVBar extends View {
 	 * @param saturation
 	 *            float between 0 > 1
 	 */
-	public void setSaturation(float saturation) {
-		this.mBarPointerPosition = Math
-				.round((this.mSVToPosFactor * saturation)
-						+ this.mBarPointerHaloRadius);
+	public void setSaturation(final float saturation) {
+		this.mBarPointerPosition = Math.round(this.mSVToPosFactor * saturation
+				+ this.mBarPointerHaloRadius);
 		calculateColor(this.mBarPointerPosition);
 		this.mBarPointerPaint.setColor(this.mColor);
 		// Check whether the Saturation/Value bar is added to the ColorPicker
@@ -353,10 +352,9 @@ public class SVBar extends View {
 	 * @param value
 	 *            float between 0 > 1
 	 */
-	public void setValue(float value) {
-		this.mBarPointerPosition = Math
-				.round((this.mSVToPosFactor * (1 - value))
-						+ this.mBarPointerHaloRadius + (this.mBarLength / 2));
+	public void setValue(final float value) {
+		this.mBarPointerPosition = Math.round(this.mSVToPosFactor * (1 - value)
+				+ this.mBarPointerHaloRadius + this.mBarLength / 2);
 		calculateColor(this.mBarPointerPosition);
 		this.mBarPointerPaint.setColor(this.mColor);
 		// Check whether the Saturation/Value bar is added to the ColorPicker
@@ -375,10 +373,10 @@ public class SVBar extends View {
 	 * 
 	 * @param color
 	 */
-	public void setColor(int color) {
+	public void setColor(final int color) {
 		Color.colorToHSV(color, this.mHSVColor);
 		this.shader = new LinearGradient(this.mBarPointerHaloRadius, 0,
-				(this.mBarLength + this.mBarPointerHaloRadius),
+				this.mBarLength + this.mBarPointerHaloRadius,
 				this.mBarThickness,
 				new int[] { 0xffffffff, color, 0xff000000 }, null,
 				Shader.TileMode.CLAMP);
@@ -398,19 +396,23 @@ public class SVBar extends View {
 	 * @param x
 	 *            X-Coordinate of the pointer.
 	 */
-	private void calculateColor(int x) {
-		if (x > (this.mBarPointerHaloRadius + (this.mBarLength / 2))
-				&& x < (this.mBarPointerHaloRadius + this.mBarLength)) {
+	private void calculateColor(final int x) {
+		if (x > this.mBarPointerHaloRadius + this.mBarLength / 2
+				&& x < this.mBarPointerHaloRadius + this.mBarLength) {
 			this.mColor = Color
 					.HSVToColor(new float[] {
 							this.mHSVColor[0],
 							1f,
-							1 - (this.mPosToSVFactor * (x - (this.mBarPointerHaloRadius + (this.mBarLength / 2)))) });
+							1
+									- this.mPosToSVFactor
+									* (x - (this.mBarPointerHaloRadius + this.mBarLength / 2)) });
 		} else if (x > this.mBarPointerHaloRadius
-				&& x < (this.mBarPointerHaloRadius + this.mBarLength)) {
-			this.mColor = Color.HSVToColor(new float[] { this.mHSVColor[0],
-					((this.mPosToSVFactor * (x - this.mBarPointerHaloRadius))),
-					1f });
+				&& x < this.mBarPointerHaloRadius + this.mBarLength) {
+			this.mColor = Color
+					.HSVToColor(new float[] {
+							this.mHSVColor[0],
+							this.mPosToSVFactor
+									* (x - this.mBarPointerHaloRadius), 1f });
 		} else if (x == this.mBarPointerHaloRadius) {
 			this.mColor = Color.WHITE;
 		} else if (x == this.mBarPointerHaloRadius + this.mBarLength) {
@@ -436,18 +438,18 @@ public class SVBar extends View {
 	 * @see ColorPicker#addSVBar(SVBar)
 	 * @param picker
 	 */
-	public void setColorPicker(ColorPicker picker) {
+	public void setColorPicker(final ColorPicker picker) {
 		this.mPicker = picker;
 	}
 
 	@Override
 	protected Parcelable onSaveInstanceState() {
-		Parcelable superState = super.onSaveInstanceState();
+		final Parcelable superState = super.onSaveInstanceState();
 
-		Bundle state = new Bundle();
+		final Bundle state = new Bundle();
 		state.putParcelable(STATE_PARENT, superState);
 		state.putFloatArray(STATE_COLOR, this.mHSVColor);
-		float[] hsvColor = new float[3];
+		final float[] hsvColor = new float[3];
 		Color.colorToHSV(this.mColor, hsvColor);
 		if (hsvColor[1] < hsvColor[2]) {
 			state.putFloat(STATE_SATURATION, hsvColor[1]);
@@ -459,10 +461,10 @@ public class SVBar extends View {
 	}
 
 	@Override
-	protected void onRestoreInstanceState(Parcelable state) {
-		Bundle savedState = (Bundle) state;
+	protected void onRestoreInstanceState(final Parcelable state) {
+		final Bundle savedState = (Bundle) state;
 
-		Parcelable superState = savedState.getParcelable(STATE_PARENT);
+		final Parcelable superState = savedState.getParcelable(STATE_PARENT);
 		super.onRestoreInstanceState(superState);
 
 		setColor(Color.HSVToColor(savedState.getFloatArray(STATE_COLOR)));

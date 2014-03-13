@@ -112,12 +112,12 @@ public class ColorPicker extends View {
 	/**
 	 * The rectangle enclosing the color wheel.
 	 */
-	private RectF mColorWheelRectangle = new RectF();
+	private final RectF mColorWheelRectangle = new RectF();
 
 	/**
 	 * The rectangle enclosing the center inside the color wheel.
 	 */
-	private RectF mCenterRectangle = new RectF();
+	private final RectF mCenterRectangle = new RectF();
 
 	/**
 	 * {@code true} if the user clicked on the pointer to start the move mode. <br>
@@ -187,7 +187,7 @@ public class ColorPicker extends View {
 	 * An array of floats that can be build into a {@code Color} <br>
 	 * Where we can extract the Saturation and Value from.
 	 */
-	private float[] mHSV = new float[3];
+	private final float[] mHSV = new float[3];
 
 	/**
 	 * {@code SVBar} instance used to control the Saturation/Value bar.
@@ -214,17 +214,18 @@ public class ColorPicker extends View {
 	 */
 	private OnColorChangedListener onColorChangedListener;
 
-	public ColorPicker(Context context) {
+	public ColorPicker(final Context context) {
 		super(context);
 		init(null, 0);
 	}
 
-	public ColorPicker(Context context, AttributeSet attrs) {
+	public ColorPicker(final Context context, final AttributeSet attrs) {
 		super(context, attrs);
 		init(attrs, 0);
 	}
 
-	public ColorPicker(Context context, AttributeSet attrs, int defStyle) {
+	public ColorPicker(final Context context, final AttributeSet attrs,
+			final int defStyle) {
 		super(context, attrs, defStyle);
 		init(attrs, defStyle);
 	}
@@ -237,7 +238,7 @@ public class ColorPicker extends View {
 	 * 
 	 */
 	public interface OnColorChangedListener {
-		public void onColorChanged(int color);
+		public void onColorChanged(final int color);
 	}
 
 	/**
@@ -245,7 +246,7 @@ public class ColorPicker extends View {
 	 * 
 	 * @param {@code OnColorChangedListener}
 	 */
-	public void setOnColorChangedListener(OnColorChangedListener listener) {
+	public void setOnColorChangedListener(final OnColorChangedListener listener) {
 		this.onColorChangedListener = listener;
 	}
 
@@ -258,7 +259,7 @@ public class ColorPicker extends View {
 		return this.onColorChangedListener;
 	}
 
-	private void init(AttributeSet attrs, int defStyle) {
+	private void init(final AttributeSet attrs, final int defStyle) {
 		final TypedArray a = getContext().obtainStyledAttributes(attrs,
 				R.styleable.ColorPicker, defStyle, 0);
 		final Resources b = getContext().getResources();
@@ -289,7 +290,7 @@ public class ColorPicker extends View {
 
 		this.mAngle = (float) (-Math.PI / 2);
 
-		Shader s = new SweepGradient(0, 0, COLORS, null);
+		final Shader s = new SweepGradient(0, 0, COLORS, null);
 
 		this.mColorWheelPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		this.mColorWheelPaint.setShader(s);
@@ -318,7 +319,7 @@ public class ColorPicker extends View {
 	}
 
 	@Override
-	protected void onDraw(Canvas canvas) {
+	protected void onDraw(final Canvas canvas) {
 		// All of our positions are using our internal coordinate system.
 		// Instead of translating
 		// them we let Canvas do the work for us.
@@ -327,7 +328,7 @@ public class ColorPicker extends View {
 		// Draw the color wheel.
 		canvas.drawOval(this.mColorWheelRectangle, this.mColorWheelPaint);
 
-		float[] pointerPosition = calculatePointerPosition(this.mAngle);
+		final float[] pointerPosition = calculatePointerPosition(this.mAngle);
 
 		// Draw the pointer's "halo"
 		canvas.drawCircle(pointerPosition[0], pointerPosition[1],
@@ -352,13 +353,14 @@ public class ColorPicker extends View {
 	}
 
 	@Override
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+	protected void onMeasure(final int widthMeasureSpec,
+			final int heightMeasureSpec) {
 		final int intrinsicSize = 2 * (this.mPreferredColorWheelRadius + this.mColorPointerHaloRadius);
 
-		int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-		int widthSize = MeasureSpec.getSize(widthMeasureSpec);
-		int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-		int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+		final int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+		final int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+		final int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+		final int heightSize = MeasureSpec.getSize(heightMeasureSpec);
 
 		int width;
 		int height;
@@ -379,7 +381,7 @@ public class ColorPicker extends View {
 			height = intrinsicSize;
 		}
 
-		int min = Math.min(width, height);
+		final int min = Math.min(width, height);
 		setMeasuredDimension(min, min);
 		this.mTranslationOffset = min * 0.5f;
 
@@ -397,7 +399,7 @@ public class ColorPicker extends View {
 				this.mColorCenterRadius);
 	}
 
-	private static int ave(int s, int d, float p) {
+	private static int ave(final int s, final int d, final float p) {
 		return s + java.lang.Math.round(p * (d - s));
 	}
 
@@ -410,7 +412,7 @@ public class ColorPicker extends View {
 	 * @return The ARGB value of the color on the color wheel at the specified
 	 *         angle.
 	 */
-	private int calculateColor(float angle) {
+	private int calculateColor(final float angle) {
 		float unit = (float) (angle / (2 * Math.PI));
 		if (unit < 0) {
 			unit += 1;
@@ -426,15 +428,15 @@ public class ColorPicker extends View {
 		}
 
 		float p = unit * (COLORS.length - 1);
-		int i = (int) p;
+		final int i = (int) p;
 		p -= i;
 
-		int c0 = COLORS[i];
-		int c1 = COLORS[i + 1];
-		int a = ave(Color.alpha(c0), Color.alpha(c1), p);
-		int r = ave(Color.red(c0), Color.red(c1), p);
-		int g = ave(Color.green(c0), Color.green(c1), p);
-		int b = ave(Color.blue(c0), Color.blue(c1), p);
+		final int c0 = COLORS[i];
+		final int c1 = COLORS[i + 1];
+		final int a = ave(Color.alpha(c0), Color.alpha(c1), p);
+		final int r = ave(Color.red(c0), Color.red(c1), p);
+		final int g = ave(Color.green(c0), Color.green(c1), p);
+		final int b = ave(Color.blue(c0), Color.blue(c1), p);
 
 		this.mColor = Color.argb(a, r, g, b);
 		return Color.argb(a, r, g, b);
@@ -461,7 +463,7 @@ public class ColorPicker extends View {
 	 *            won't look close to the original color. This is especially
 	 *            true for shades of grey. You have been warned!
 	 */
-	public void setColor(int color) {
+	public void setColor(final int color) {
 		this.mAngle = colorToAngle(color);
 		this.mPointerColor.setColor(calculateColor(this.mAngle));
 
@@ -515,29 +517,29 @@ public class ColorPicker extends View {
 	 * @return The angle (in rad) the "normalized" color is displayed on the
 	 *         color wheel.
 	 */
-	private static float colorToAngle(int color) {
-		float[] colors = new float[3];
+	private static float colorToAngle(final int color) {
+		final float[] colors = new float[3];
 		Color.colorToHSV(color, colors);
 
 		return (float) Math.toRadians(-colors[0]);
 	}
 
 	@Override
-	public boolean onTouchEvent(MotionEvent event) {
+	public boolean onTouchEvent(final MotionEvent event) {
 		getParent().requestDisallowInterceptTouchEvent(true);
 
 		// Convert coordinates to our internal coordinate system
-		float x = event.getX() - this.mTranslationOffset;
-		float y = event.getY() - this.mTranslationOffset;
+		final float x = event.getX() - this.mTranslationOffset;
+		final float y = event.getY() - this.mTranslationOffset;
 
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
 			// Check whether the user pressed on the pointer.
-			float[] pointerPosition = calculatePointerPosition(this.mAngle);
-			if (x >= (pointerPosition[0] - this.mColorPointerHaloRadius)
-					&& x <= (pointerPosition[0] + this.mColorPointerHaloRadius)
-					&& y >= (pointerPosition[1] - this.mColorPointerHaloRadius)
-					&& y <= (pointerPosition[1] + this.mColorPointerHaloRadius)) {
+			final float[] pointerPosition = calculatePointerPosition(this.mAngle);
+			if (x >= pointerPosition[0] - this.mColorPointerHaloRadius
+					&& x <= pointerPosition[0] + this.mColorPointerHaloRadius
+					&& y >= pointerPosition[1] - this.mColorPointerHaloRadius
+					&& y <= pointerPosition[1] + this.mColorPointerHaloRadius) {
 				this.mUserIsMovingPointer = true;
 				invalidate();
 			}
@@ -609,9 +611,9 @@ public class ColorPicker extends View {
 	 * @return The coordinates of the pointer's center in our internal
 	 *         coordinate system.
 	 */
-	private float[] calculatePointerPosition(float angle) {
-		float x = (float) (this.mColorWheelRadius * Math.cos(angle));
-		float y = (float) (this.mColorWheelRadius * Math.sin(angle));
+	private float[] calculatePointerPosition(final float angle) {
+		final float x = (float) (this.mColorWheelRadius * Math.cos(angle));
+		final float y = (float) (this.mColorWheelRadius * Math.sin(angle));
 
 		return new float[] { x, y };
 	}
@@ -622,7 +624,7 @@ public class ColorPicker extends View {
 	 * @param bar
 	 *            The instance of the Saturation/Value bar.
 	 */
-	public void addSVBar(SVBar bar) {
+	public void addSVBar(final SVBar bar) {
 		this.mSVbar = bar;
 		// Give an instance of the color picker to the Saturation/Value bar.
 		this.mSVbar.setColorPicker(this);
@@ -635,21 +637,21 @@ public class ColorPicker extends View {
 	 * @param bar
 	 *            The instance of the Opacity bar.
 	 */
-	public void addOpacityBar(OpacityBar bar) {
+	public void addOpacityBar(final OpacityBar bar) {
 		this.mOpacityBar = bar;
 		// Give an instance of the color picker to the Opacity bar.
 		this.mOpacityBar.setColorPicker(this);
 		this.mOpacityBar.setColor(this.mColor);
 	}
 
-	public void addSaturationBar(SaturationBar bar) {
+	public void addSaturationBar(final SaturationBar bar) {
 		this.mSaturationBar = bar;
 
 		this.mSaturationBar.setColorPicker(this);
 		this.mSaturationBar.setColor(this.mColor);
 	}
 
-	public void addValueBar(ValueBar bar) {
+	public void addValueBar(final ValueBar bar) {
 		this.mValueBar = bar;
 		this.mValueBar.setColorPicker(this);
 		this.mValueBar.setColor(this.mColor);
@@ -661,7 +663,7 @@ public class ColorPicker extends View {
 	 * @param color
 	 *            int of the color.
 	 */
-	public void setNewCenterColor(int color) {
+	public void setNewCenterColor(final int color) {
 		this.mCenterNewColor = color;
 		this.mCenterNewPaint.setColor(color);
 		if (this.mCenterOldColor == 0) {
@@ -680,7 +682,7 @@ public class ColorPicker extends View {
 	 * @param color
 	 *            int of the color.
 	 */
-	public void setOldCenterColor(int color) {
+	public void setOldCenterColor(final int color) {
 		this.mCenterOldColor = color;
 		this.mCenterOldPaint.setColor(color);
 		invalidate();
@@ -697,7 +699,7 @@ public class ColorPicker extends View {
 	 * @param color
 	 *            int of the color used to change the opacity bar color.
 	 */
-	public void changeOpacityBarColor(int color) {
+	public void changeOpacityBarColor(final int color) {
 		if (this.mOpacityBar != null) {
 			this.mOpacityBar.setColor(color);
 		}
@@ -709,7 +711,7 @@ public class ColorPicker extends View {
 	 * @param color
 	 *            int of the color used to change the opacity bar color.
 	 */
-	public void changeSaturationBarColor(int color) {
+	public void changeSaturationBarColor(final int color) {
 		if (this.mSaturationBar != null) {
 			this.mSaturationBar.setColor(color);
 		}
@@ -721,7 +723,7 @@ public class ColorPicker extends View {
 	 * @param color
 	 *            int of the color used to change the opacity bar color.
 	 */
-	public void changeValueBarColor(int color) {
+	public void changeValueBarColor(final int color) {
 		if (this.mValueBar != null) {
 			this.mValueBar.setColor(color);
 		}
@@ -729,9 +731,9 @@ public class ColorPicker extends View {
 
 	@Override
 	protected Parcelable onSaveInstanceState() {
-		Parcelable superState = super.onSaveInstanceState();
+		final Parcelable superState = super.onSaveInstanceState();
 
-		Bundle state = new Bundle();
+		final Bundle state = new Bundle();
 		state.putParcelable(STATE_PARENT, superState);
 		state.putFloat(STATE_ANGLE, this.mAngle);
 		state.putInt(STATE_OLD_COLOR, this.mCenterOldColor);
@@ -740,15 +742,15 @@ public class ColorPicker extends View {
 	}
 
 	@Override
-	protected void onRestoreInstanceState(Parcelable state) {
-		Bundle savedState = (Bundle) state;
+	protected void onRestoreInstanceState(final Parcelable state) {
+		final Bundle savedState = (Bundle) state;
 
-		Parcelable superState = savedState.getParcelable(STATE_PARENT);
+		final Parcelable superState = savedState.getParcelable(STATE_PARENT);
 		super.onRestoreInstanceState(superState);
 
 		this.mAngle = savedState.getFloat(STATE_ANGLE);
 		setOldCenterColor(savedState.getInt(STATE_OLD_COLOR));
-		int currentColor = calculateColor(this.mAngle);
+		final int currentColor = calculateColor(this.mAngle);
 		this.mPointerColor.setColor(currentColor);
 		setNewCenterColor(currentColor);
 	}
