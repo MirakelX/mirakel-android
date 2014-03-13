@@ -80,7 +80,8 @@ public class Mirakel extends Application {
 
 		Locale locale = Helpers.getLocal(this);
 		Locale.setDefault(locale);
-		BuildHelper.setPlaystore(getResources().getBoolean(R.bool.is_playstore));
+		BuildHelper
+				.setPlaystore(getResources().getBoolean(R.bool.is_playstore));
 
 		Configuration config = new Configuration();
 		config.locale = locale;
