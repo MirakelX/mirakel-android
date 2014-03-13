@@ -49,19 +49,19 @@ import de.azapps.tools.Log;
 
 public class SettingsActivity extends PreferenceActivity {
 
-	public static final int		DONATE		= 5;
-	public static final int		FILE_ASTRID	= 0, FILE_IMPORT_DB = 1,
+	public static final int DONATE = 5;
+	public static final int FILE_ASTRID = 0, FILE_IMPORT_DB = 1,
 			NEW_ACCOUNT = 2, FILE_ANY_DO = 3, FILE_WUNDERLIST = 4;
-	private static final String	TAG			= "SettingsActivity";
-	private boolean				darkTheme;
+	private static final String TAG = "SettingsActivity";
+	private boolean darkTheme;
 	private boolean isTablet;
-	private SettingsAdapter		mAdapter;
-	private List<Header>		mHeaders;
+	private SettingsAdapter mAdapter;
+	private List<Header> mHeaders;
 
 	@SuppressLint("NewApi")
 	@Override
 	public void invalidateHeaders() {
-		if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			super.invalidateHeaders();
 		}
 	}
@@ -76,117 +76,121 @@ public class SettingsActivity extends PreferenceActivity {
 	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
 	@Override
-	protected void onActivityResult(final int requestCode, int resultCode, final Intent data) {
+	protected void onActivityResult(final int requestCode, int resultCode,
+			final Intent data) {
 		Log.d(TAG, "activity");
 		final Context that = this;
 		switch (requestCode) {
-			case FILE_IMPORT_DB:
-				if (resultCode != RESULT_OK) return;
-				final String path_db = FileUtils.getPathFromUri(data.getData(),
-						this);
-				// Check if this is an database file
-				if (path_db != null && !path_db.endsWith(".db")) {
-					Toast.makeText(that, R.string.import_wrong_type,
-							Toast.LENGTH_LONG).show();
-					return;
-				}
-				new AlertDialog.Builder(this)
-				.setTitle(R.string.import_sure)
-				.setMessage(
-						this.getString(R.string.import_sure_summary,
-								path_db))
-						.setNegativeButton(android.R.string.cancel, null)
-								.setPositiveButton(android.R.string.yes,
-										new OnClickListener() {
+		case FILE_IMPORT_DB:
+			if (resultCode != RESULT_OK)
+				return;
+			final String path_db = FileUtils.getPathFromUri(data.getData(),
+					this);
+			// Check if this is an database file
+			if (path_db != null && !path_db.endsWith(".db")) {
+				Toast.makeText(that, R.string.import_wrong_type,
+						Toast.LENGTH_LONG).show();
+				return;
+			}
+			new AlertDialog.Builder(this)
+					.setTitle(R.string.import_sure)
+					.setMessage(
+							this.getString(R.string.import_sure_summary,
+									path_db))
+					.setNegativeButton(android.R.string.cancel, null)
+					.setPositiveButton(android.R.string.yes,
+							new OnClickListener() {
 
-									@Override
-									public void onClick(DialogInterface dialog, int which) {
-										if (path_db != null) {
-											ExportImport.importDB(that,
-													new File(path_db));
-										} else {
-											try {
-												ExportImport
-												.importDB(
-														that,
-														(FileInputStream) getContentResolver()
-														.openInputStream(
-																data.getData()));
-											} catch (FileNotFoundException e) {
-												// TODO Auto-generated catch block
-												e.printStackTrace();
-											}
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									if (path_db != null) {
+										ExportImport.importDB(that, new File(
+												path_db));
+									} else {
+										try {
+											ExportImport
+													.importDB(
+															that,
+															(FileInputStream) getContentResolver()
+																	.openInputStream(
+																			data.getData()));
+										} catch (FileNotFoundException e) {
+											// TODO Auto-generated catch block
+											e.printStackTrace();
 										}
 									}
-								}).create().show();
-				break;
-			case NEW_ACCOUNT:
-				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-					PreferencesAppHelper.updateSyncText(
-							(CheckBoxPreference) findPreference("syncUse"),
-							findPreference("syncServer"),
-							findPreference("syncFrequency"), this);
+								}
+							}).create().show();
+			break;
+		case NEW_ACCOUNT:
+			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+				PreferencesAppHelper.updateSyncText(
+						(CheckBoxPreference) findPreference("syncUse"),
+						findPreference("syncServer"),
+						findPreference("syncFrequency"), this);
+			}
+			break;
+		case FILE_ASTRID:
+		case FILE_ANY_DO:
+		case FILE_WUNDERLIST:
+			if (resultCode != RESULT_OK)
+				return;
+			final String file_path = FileUtils.getPathFromUri(data.getData(),
+					this);
+
+			// Do the import in a background-task
+			new AsyncTask<String, Void, Boolean>() {
+				ProgressDialog dialog;
+
+				@Override
+				protected Boolean doInBackground(String... params) {
+					switch (requestCode) {
+					case FILE_ASTRID:
+						return ExportImport.importAstrid(that, file_path);
+					case FILE_ANY_DO:
+						return AnyDoImport.exec(that, file_path);
+					case FILE_WUNDERLIST:
+						return WunderlistImport.exec(that, file_path);
+					default:
+						return false;
+					}
+
 				}
-				break;
-			case FILE_ASTRID:
-			case FILE_ANY_DO:
-			case FILE_WUNDERLIST:
-				if (resultCode != RESULT_OK) return;
-				final String file_path = FileUtils.getPathFromUri(
-						data.getData(), this);
 
-				// Do the import in a background-task
-				new AsyncTask<String, Void, Boolean>() {
-					ProgressDialog	dialog;
-
-					@Override
-					protected Boolean doInBackground(String... params) {
-						switch (requestCode) {
-							case FILE_ASTRID:
-								return ExportImport.importAstrid(that,
-										file_path);
-							case FILE_ANY_DO:
-								return AnyDoImport.exec(that, file_path);
-							case FILE_WUNDERLIST:
-								return WunderlistImport.exec(that, file_path);
-							default:
-								return false;
-						}
-
+				@Override
+				protected void onPostExecute(Boolean success) {
+					this.dialog.dismiss();
+					if (!success) {
+						Toast.makeText(that, R.string.astrid_unsuccess,
+								Toast.LENGTH_LONG).show();
+					} else {
+						Toast.makeText(that, R.string.astrid_success,
+								Toast.LENGTH_SHORT).show();
+						android.os.Process.killProcess(android.os.Process
+								.myPid()); // ugly
+						// but
+						// simple
 					}
-
-					@Override
-					protected void onPostExecute(Boolean success) {
-						this.dialog.dismiss();
-						if (!success) {
-							Toast.makeText(that, R.string.astrid_unsuccess,
-									Toast.LENGTH_LONG).show();
-						} else {
-							Toast.makeText(that, R.string.astrid_success,
-									Toast.LENGTH_SHORT).show();
-							android.os.Process.killProcess(android.os.Process
-									.myPid()); // ugly
-							// but
-							// simple
-						}
-					}
-
-					@Override
-					protected void onPreExecute() {
-						this.dialog = ProgressDialog.show(that,
-								that.getString(R.string.importing),
-								that.getString(R.string.wait), true);
-					}
-				}.execute("");
-				break;
-			case DONATE:
-				if (resultCode != RESULT_OK) return;
-				if (!onIsMultiPane()) {
-					finish();
 				}
-				break;
-			default:
-				break;
+
+				@Override
+				protected void onPreExecute() {
+					this.dialog = ProgressDialog.show(that,
+							that.getString(R.string.importing),
+							that.getString(R.string.wait), true);
+				}
+			}.execute("");
+			break;
+		case DONATE:
+			if (resultCode != RESULT_OK)
+				return;
+			if (!onIsMultiPane()) {
+				finish();
+			}
+			break;
+		default:
+			break;
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
@@ -224,7 +228,7 @@ public class SettingsActivity extends PreferenceActivity {
 		if (this.darkTheme) {
 			setTheme(R.style.AppBaseThemeDARK);
 		}
-		//Locale.setDefault(Helpers.getLocal());
+		// Locale.setDefault(Helpers.getLocal());
 		super.onCreate(savedInstanceState);
 		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
 
@@ -305,34 +309,34 @@ public class SettingsActivity extends PreferenceActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Log.d(TAG, "Menu");
 		switch (item.getItemId()) {
-			case android.R.id.home:
-				// if(getParent()!=null){
-				// final Switch s = (Switch) findViewById(R.id.switchWidget);
-				// final Activity a = this;
-				// if (s != null) {
-				// // need to reset onchangelistner else valuechange will triger
-				// // event
-				// s.setOnCheckedChangeListener(null);
-				// s.setChecked(MirakelPreferences.useSync());
-				// s.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-				//
-				// @Override
-				// public void onCheckedChanged(CompoundButton buttonView,
-				// boolean isChecked) {
-				// PreferencesHelper.createAuthActivity(isChecked, a, s,
-				// false);
-				// }
-				// });
-				// } else {
-				// Log.d(TAG, "switch not found");
-				// }
-				// }else{
-				// Log.d(TAG,"Parent=null");
-				// }
-				finish();
-				return true;
-			default:
-				break;
+		case android.R.id.home:
+			// if(getParent()!=null){
+			// final Switch s = (Switch) findViewById(R.id.switchWidget);
+			// final Activity a = this;
+			// if (s != null) {
+			// // need to reset onchangelistner else valuechange will triger
+			// // event
+			// s.setOnCheckedChangeListener(null);
+			// s.setChecked(MirakelPreferences.useSync());
+			// s.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			//
+			// @Override
+			// public void onCheckedChanged(CompoundButton buttonView,
+			// boolean isChecked) {
+			// PreferencesHelper.createAuthActivity(isChecked, a, s,
+			// false);
+			// }
+			// });
+			// } else {
+			// Log.d(TAG, "switch not found");
+			// }
+			// }else{
+			// Log.d(TAG,"Parent=null");
+			// }
+			finish();
+			return true;
+		default:
+			break;
 		}
 		return super.onOptionsItemSelected(item);
 	}

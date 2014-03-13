@@ -18,23 +18,23 @@ import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.settings.R;
 
 public class CreditsActivity extends Activity {
-	private final String[][]	libraries		= {
+	private final String[][] libraries = {
 			{ "Gson", "Apache 2.0", "https://code.google.com/p/google-gson/" },
 			{ "Joda-Time", "Apache 2.0", "http://joda-time.sourceforge.net" },
 			{ "Android Change Log", "Apache 2.0",
-			"https://code.google.com/p/android-change-log/" },
+					"https://code.google.com/p/android-change-log/" },
 			{ "ACRA", "Apache 2.0", "http://acra.ch" },
 			{ "HoloColorPicker", "Apache 2.0",
-			"https://github.com/LarsWerkman/HoloColorPicker" },
+					"https://github.com/LarsWerkman/HoloColorPicker" },
 			{ "Progress Wheel", "",
-			"https://github.com/Todd-Davies/ProgressWheel" },
+					"https://github.com/Todd-Davies/ProgressWheel" },
 			{ "DateTimePicker Compatibility Library", "Apache 2.0",
-			"https://github.com/flavienlaurent/datetimepicker" },
+					"https://github.com/flavienlaurent/datetimepicker" },
 			{ "Webicons", "CC-Attrib", "http://fairheadcreative.com/" },
 			{ "Android Donations Lib", "Apache 2.0",
-			"https://github.com/dschuermann/android-donations-lib" },
-			{"Changelog","","https://code.google.com/p/android-change-log/"}};
-	private final String[][]	translations	= {
+					"https://github.com/dschuermann/android-donations-lib" },
+			{ "Changelog", "", "https://code.google.com/p/android-change-log/" } };
+	private final String[][] translations = {
 			{ "Spanish", "macebal, sml" },
 			{ "French", "Ghost of Kendo, waghanza, npettiaux, benasse" },
 			{ "German", "Anatolij Zelenin, Georg Semmler, Patrik Kernstock" },
@@ -46,7 +46,7 @@ public class CreditsActivity extends Activity {
 			{ "Dutch", "Toon van Gerwen" },
 			{ "Italian", "Rajaa Gutknecht, fazen, Claudio Arseni" },
 			{ "Bulgarian", "Boriana Tcholakova" }, { "Polish", "mruwek" },
-			{ "Catalan", "sml" }				};
+			{ "Catalan", "sml" } };
 
 	@Override
 	public void onConfigurationChanged(final Configuration newConfig) {
@@ -107,9 +107,9 @@ public class CreditsActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-			case android.R.id.home:
-				finish();
-				return true;
+		case android.R.id.home:
+			finish();
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}

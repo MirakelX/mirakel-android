@@ -42,7 +42,6 @@ import android.widget.LinearLayout;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
-import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.tools.Log;
 
 /**
@@ -59,12 +58,12 @@ public abstract class ListSettings extends PreferenceActivity {
 
 	private static final String TAG = "ListSettings";
 
-	protected boolean		clickOnLast	= false;
+	protected boolean clickOnLast = false;
 
 	private boolean loaded = false;
-	private boolean	isTablet;
+	private boolean isTablet;
 
-	protected List<Header>	mTarget;
+	protected List<Header> mTarget;
 
 	public void clickOnLast() {
 		this.clickOnLast = true;
@@ -73,7 +72,9 @@ public abstract class ListSettings extends PreferenceActivity {
 	protected abstract OnClickListener getAddOnClickListener();
 
 	public abstract OnClickListener getDelOnClickListener();
+
 	protected abstract Class<?> getDestClass();
+
 	protected abstract Class<?> getDestFragmentClass();
 
 	public List<Header> getHeader() {
@@ -126,7 +127,8 @@ public abstract class ListSettings extends PreferenceActivity {
 			target.add(header);
 		}
 		if (this.clickOnLast) {
-			onHeaderClick(this.mTarget.get(this.mTarget.size() - 1), this.mTarget.size() - 1);
+			onHeaderClick(this.mTarget.get(this.mTarget.size() - 1),
+					this.mTarget.size() - 1);
 			this.clickOnLast = false;
 		}
 		this.mTarget = target;
@@ -187,8 +189,7 @@ public abstract class ListSettings extends PreferenceActivity {
 			actionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
 					ActionBar.DISPLAY_SHOW_CUSTOM);
 			actionbar.setCustomView(v, new ActionBar.LayoutParams(
-					LayoutParams.WRAP_CONTENT,
-					LayoutParams.WRAP_CONTENT,
+					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
 					Gravity.CENTER_VERTICAL | DefinitionsHelper.GRAVITY_RIGHT));
 			invalidateHeaders();
 
@@ -219,12 +220,12 @@ public abstract class ListSettings extends PreferenceActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 		switch (item.getItemId()) {
-			case android.R.id.home:
-				finish();
-				return true;
-			default:
-				Log.d(TAG, "unknown menuentry");
-				break;
+		case android.R.id.home:
+			finish();
+			return true;
+		default:
+			Log.d(TAG, "unknown menuentry");
+			break;
 		}
 		if (item.getTitle() == getString(R.string.add)) {
 			getAddOnClickListener().onClick(null);

@@ -1,6 +1,5 @@
 package de.azapps.widgets;
 
-import de.azapps.mirakel.settings.R;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -11,29 +10,30 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import de.azapps.mirakel.settings.R;
 
 public class DueDialog extends AlertDialog {
-	private Context		ctx;
-	protected VALUE		dayYear	= VALUE.DAY;
-	protected int			count;
-	private View		dialogView;
-	protected String[]	s;
+	private Context ctx;
+	protected VALUE dayYear = VALUE.DAY;
+	protected int count;
+	private View dialogView;
+	protected String[] s;
 
 	public enum VALUE {
 		MINUTE, HOUR, DAY, MONTH, YEAR;
 
 		public int getInt() {
 			switch (this) {
-				case DAY:
-					return 0;
-				case MONTH:
-					return 1;
-				case YEAR:
-					return 2;
-				case MINUTE:
-					return 3;
-				case HOUR:
-					return 4;
+			case DAY:
+				return 0;
+			case MONTH:
+				return 1;
+			case YEAR:
+				return 2;
+			case MINUTE:
+				return 3;
+			case HOUR:
+				return 4;
 			default:
 				break;
 			}
@@ -88,7 +88,8 @@ public class DueDialog extends AlertDialog {
 					.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
 
 						@Override
-						public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+						public void onValueChange(NumberPicker picker,
+								int oldVal, int newVal) {
 							pickerDay.setDisplayedValues(getDayYearValues(
 									newVal - 10, minuteHour));
 							DueDialog.this.count = newVal - 10;
@@ -98,17 +99,18 @@ public class DueDialog extends AlertDialog {
 					.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
 
 						@Override
-						public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+						public void onValueChange(NumberPicker picker,
+								int oldVal, int newVal) {
 							switch (newVal) {
-								case 0:
-									DueDialog.this.dayYear = VALUE.DAY;
-									break;
-								case 1:
-									DueDialog.this.dayYear = VALUE.MONTH;
-									break;
-								case 2:
-									DueDialog.this.dayYear = VALUE.YEAR;
-									break;
+							case 0:
+								DueDialog.this.dayYear = VALUE.DAY;
+								break;
+							case 1:
+								DueDialog.this.dayYear = VALUE.MONTH;
+								break;
+							case 2:
+								DueDialog.this.dayYear = VALUE.YEAR;
+								break;
 							default:
 								break;
 							}
@@ -127,7 +129,8 @@ public class DueDialog extends AlertDialog {
 					R.plurals.due_day, 0));
 			this.dayYear = VALUE.DAY;
 
-			((Button) this.dialogView.findViewById(R.id.dialog_due_pick_plus_val))
+			((Button) this.dialogView
+					.findViewById(R.id.dialog_due_pick_plus_val))
 					.setOnClickListener(new View.OnClickListener() {
 
 						@Override
@@ -142,7 +145,8 @@ public class DueDialog extends AlertDialog {
 
 						}
 					});
-			((Button) this.dialogView.findViewById(R.id.dialog_due_pick_minus_val))
+			((Button) this.dialogView
+					.findViewById(R.id.dialog_due_pick_minus_val))
 					.setOnClickListener(new View.OnClickListener() {
 
 						@Override
@@ -156,7 +160,8 @@ public class DueDialog extends AlertDialog {
 							pickerDay.setText(updateDayYear());
 						}
 					});
-			((Button) this.dialogView.findViewById(R.id.dialog_due_pick_plus_day))
+			((Button) this.dialogView
+					.findViewById(R.id.dialog_due_pick_plus_day))
 					.setOnClickListener(new View.OnClickListener() {
 
 						@Override
@@ -169,7 +174,8 @@ public class DueDialog extends AlertDialog {
 							pickerDay.setText(updateDayYear());
 						}
 					});
-			((Button) this.dialogView.findViewById(R.id.dialog_due_pick_minus_day))
+			((Button) this.dialogView
+					.findViewById(R.id.dialog_due_pick_minus_day))
 					.setOnClickListener(new View.OnClickListener() {
 
 						@Override
@@ -189,21 +195,21 @@ public class DueDialog extends AlertDialog {
 
 	protected String updateDayYear() {
 		switch (this.dayYear) {
-			case MINUTE:
-				return this.ctx.getResources().getQuantityString(
-						R.plurals.due_minute, this.count);
-			case HOUR:
-				return this.ctx.getResources().getQuantityString(R.plurals.due_hour,
-						this.count);
-			case DAY:
-				return this.ctx.getResources().getQuantityString(R.plurals.due_day,
-						this.count);
-			case MONTH:
-				return this.ctx.getResources().getQuantityString(
-						R.plurals.due_month, this.count);
-			case YEAR:
-				return this.ctx.getResources().getQuantityString(R.plurals.due_year,
-						this.count);
+		case MINUTE:
+			return this.ctx.getResources().getQuantityString(
+					R.plurals.due_minute, this.count);
+		case HOUR:
+			return this.ctx.getResources().getQuantityString(
+					R.plurals.due_hour, this.count);
+		case DAY:
+			return this.ctx.getResources().getQuantityString(R.plurals.due_day,
+					this.count);
+		case MONTH:
+			return this.ctx.getResources().getQuantityString(
+					R.plurals.due_month, this.count);
+		case YEAR:
+			return this.ctx.getResources().getQuantityString(
+					R.plurals.due_year, this.count);
 		default:
 			break;
 		}
@@ -218,13 +224,13 @@ public class DueDialog extends AlertDialog {
 		if (minutesHour) {
 			ret[i++] = this.ctx.getResources().getQuantityString(
 					R.plurals.due_minute, newVal);
-			ret[i++] = this.ctx.getResources().getQuantityString(R.plurals.due_hour,
-					newVal);
+			ret[i++] = this.ctx.getResources().getQuantityString(
+					R.plurals.due_hour, newVal);
 		}
 		ret[i++] = this.ctx.getResources().getQuantityString(R.plurals.due_day,
 				newVal);
-		ret[i++] = this.ctx.getResources().getQuantityString(R.plurals.due_month,
-				newVal);
+		ret[i++] = this.ctx.getResources().getQuantityString(
+				R.plurals.due_month, newVal);
 		ret[i] = this.ctx.getResources().getQuantityString(R.plurals.due_year,
 				newVal);
 
@@ -232,8 +238,8 @@ public class DueDialog extends AlertDialog {
 	}
 
 	protected View getNumericPicker() {
-		if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB) return getLayoutInflater()
-				.inflate(R.layout.due_dialog, null);
+		if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB)
+			return getLayoutInflater().inflate(R.layout.due_dialog, null);
 		return getLayoutInflater().inflate(R.layout.due_dialog_v10, null);
 	}
 
@@ -250,7 +256,8 @@ public class DueDialog extends AlertDialog {
 			this.dayYear = day;
 			((TextView) this.dialogView.findViewById(R.id.dialog_due_pick_val))
 					.setText("" + (val + 10));
-			((TextView) this.dialogView.findViewById(R.id.dialog_due_pick_val_day))
+			((TextView) this.dialogView
+					.findViewById(R.id.dialog_due_pick_val_day))
 					.setText(updateDayYear());
 		}
 

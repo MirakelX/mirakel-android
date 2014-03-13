@@ -24,9 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
-import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.PreferencesAppHelper;
-import de.azapps.mirakel.helper.PreferencesHelper;
 import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.accounts.AccountSettingsActivity;
 import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
@@ -35,8 +33,8 @@ import de.azapps.tools.Log;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class SettingsFragment extends PreferenceFragment {
-	private static final String	TAG	= "SettingsFragment";
-	private PreferencesAppHelper	helper;
+	private static final String TAG = "SettingsFragment";
+	private PreferencesAppHelper helper;
 
 	// private MainActivity main;
 
@@ -44,14 +42,14 @@ public class SettingsFragment extends PreferenceFragment {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		Log.d(TAG, "fragment");
 		switch (requestCode) {
-			case SettingsActivity.NEW_ACCOUNT:
-				Preference server = findPreference("syncServer");
-				PreferencesAppHelper.updateSyncText(null, server,
-						findPreference("syncFrequency"), getActivity());
-				break;
-			default:
-				Log.d(TAG, "unkown activity result");
-				break;
+		case SettingsActivity.NEW_ACCOUNT:
+			Preference server = findPreference("syncServer");
+			PreferencesAppHelper.updateSyncText(null, server,
+					findPreference("syncFrequency"), getActivity());
+			break;
+		default:
+			Log.d(TAG, "unkown activity result");
+			break;
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}

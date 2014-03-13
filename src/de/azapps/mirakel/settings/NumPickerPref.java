@@ -15,7 +15,6 @@ import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.NumberPicker.OnValueChangeListener;
 import android.widget.TextView;
-import de.azapps.mirakel.settings.R;
 import de.azapps.tools.Log;
 
 public class NumPickerPref extends DialogPreference {
@@ -55,7 +54,8 @@ public class NumPickerPref extends DialogPreference {
 					.findViewById(R.id.dialog_num_pick_plus);
 			final Button minus = (Button) this.dialog
 					.findViewById(R.id.dialog_num_pick_minus);
-			this.tx = (TextView) this.dialog.findViewById(R.id.dialog_num_pick_val);
+			this.tx = (TextView) this.dialog
+					.findViewById(R.id.dialog_num_pick_val);
 			updateV10Value();
 			plus.setOnClickListener(new OnClickListener() {
 
@@ -82,7 +82,8 @@ public class NumPickerPref extends DialogPreference {
 		} else {
 			this.dialog = ((Activity) this.ctx).getLayoutInflater().inflate(
 					R.layout.num_picker_pref, null);
-			this.picker = (NumberPicker) this.dialog.findViewById(R.id.numberPicker);
+			this.picker = (NumberPicker) this.dialog
+					.findViewById(R.id.numberPicker);
 			this.picker.setMaxValue(this.MAX_VAL);
 			this.picker.setMinValue(this.MIN_VAL);
 			this.picker.setValue(this.VALUE);
@@ -125,8 +126,8 @@ public class NumPickerPref extends DialogPreference {
 	protected void updateSummary() {
 		if (this.SUMMARY_ID != 0 && this.dialog != null) {
 			((TextView) this.dialog.findViewById(R.id.num_picker_pref_summary))
-					.setText(this.ctx.getResources().getQuantityString(this.SUMMARY_ID,
-							this.VALUE));
+					.setText(this.ctx.getResources().getQuantityString(
+							this.SUMMARY_ID, this.VALUE));
 		}
 
 	}
