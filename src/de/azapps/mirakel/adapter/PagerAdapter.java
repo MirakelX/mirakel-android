@@ -27,18 +27,18 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 @SuppressWarnings("unused")
 public class PagerAdapter extends FragmentStatePagerAdapter {
 
-	private static final String TAG = "PagerAdapter";
-	private List<Fragment> fragments;
+	private final List<Fragment> fragments;
 
-	public PagerAdapter(FragmentManager fm, List<Fragment> fragments) {
+	public PagerAdapter(final FragmentManager fm, final List<Fragment> fragments) {
 		super(fm);
 		this.fragments = fragments;
 	}
 
 	@Override
-	public Fragment getItem(int position) {
-		if (position < fragments.size())
+	public Fragment getItem(final int position) {
+		if (position < this.fragments.size()) {
 			return this.fragments.get(position);
+		}
 		return new Fragment();
 	}
 

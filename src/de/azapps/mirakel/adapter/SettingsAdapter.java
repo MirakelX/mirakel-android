@@ -33,13 +33,9 @@ import de.azapps.mirakel.customviews.R;
 
 public class SettingsAdapter extends ArrayAdapter<Header> {
 
-	@SuppressWarnings("unused")
-	private static final String TAG = "SettingsAdapter";
-	private LayoutInflater mInflater;
-	@SuppressWarnings("unused")
-	private Context ctx;
+	private final LayoutInflater mInflater;
 
-	public SettingsAdapter(Context context, List<Header> objects) {
+	public SettingsAdapter(final Context context, final List<Header> objects) {
 		super(context, 0, objects);
 		this.mInflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -47,8 +43,9 @@ public class SettingsAdapter extends ArrayAdapter<Header> {
 
 	@Override
 	@SuppressLint("NewApi")
-	public View getView(int position, View convertView, ViewGroup parent) {
-		Header header = getItem(position);
+	public View getView(final int position, final View convertView,
+			final ViewGroup parent) {
+		final Header header = getItem(position);
 		View view = null;
 		view = this.mInflater.inflate(R.layout.preferences_header_item, parent,
 				false);

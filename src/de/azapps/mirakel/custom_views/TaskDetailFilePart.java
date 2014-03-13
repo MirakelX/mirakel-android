@@ -32,11 +32,12 @@ import de.azapps.tools.Log;
 public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
 
 	public interface OnFileClickListner {
-		abstract public void clickOnFile(FileMirakel f);
+		abstract public void clickOnFile(final FileMirakel f);
 	}
 
 	public interface OnFileMarkedListner {
-		abstract public void markFile(View v, FileMirakel e, boolean marked);
+		abstract public void markFile(final View v, final FileMirakel e,
+				final boolean marked);
 	}
 
 	private static final String TAG = "TaskDetailFilePart";
@@ -51,7 +52,7 @@ public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
 	private boolean marked;
 	private OnFileMarkedListner markedListner;
 
-	public TaskDetailFilePart(Context context) {
+	public TaskDetailFilePart(final Context context) {
 		super(context);
 		this.ctx = context;
 		inflate(context, R.layout.files_row, this);
@@ -61,7 +62,7 @@ public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
 		setOnClickListener(new OnClickListener() {
 
 			@Override
-			public void onClick(View v) {
+			public void onClick(final View v) {
 				if (TaskDetailFilePart.this.markedEnabled) {
 					handleMark();
 				} else if (TaskDetailFilePart.this.clickListner != null) {
@@ -72,7 +73,7 @@ public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
 		});
 		setOnLongClickListener(new OnLongClickListener() {
 			@Override
-			public boolean onLongClick(View v) {
+			public boolean onLongClick(final View v) {
 				handleMark();
 				return true;
 			}
@@ -95,12 +96,12 @@ public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
 		this.markedListner = l;
 	}
 
-	public void setShortMark(boolean shortMark) {
+	public void setShortMark(final boolean shortMark) {
 		this.markedEnabled = shortMark;
 	}
 
 	@Override
-	public void updatePart(FileMirakel f) {
+	public void updatePart(final FileMirakel f) {
 		setBackgroundColor(this.context.getResources().getColor(
 				android.R.color.transparent));
 		// this will break the preview images...
@@ -113,7 +114,7 @@ public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
 			@Override
 			public void run() {
 				if (TaskDetailFilePart.this.file.getPath().endsWith(".mp3")) {
-					int resource_id = MirakelCommonPreferences.isDark() ? R.drawable.ic_action_play_dark
+					final int resource_id = MirakelCommonPreferences.isDark() ? R.drawable.ic_action_play_dark
 							: R.drawable.ic_action_play;
 					this.preview = BitmapFactory.decodeResource(
 							TaskDetailFilePart.this.ctx.getResources(),
@@ -128,7 +129,7 @@ public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
 						public void run() {
 							TaskDetailFilePart.this.fileImage
 									.setImageBitmap(preview);
-							LayoutParams params = (LayoutParams) TaskDetailFilePart.this.fileImage
+							final LayoutParams params = (LayoutParams) TaskDetailFilePart.this.fileImage
 									.getLayoutParams();
 							params.height = preview.getHeight();
 							TaskDetailFilePart.this.fileImage
@@ -140,7 +141,7 @@ public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
 					TaskDetailFilePart.this.fileImage.post(new Runnable() {
 						@Override
 						public void run() {
-							LayoutParams params = (LayoutParams) TaskDetailFilePart.this.fileImage
+							final LayoutParams params = (LayoutParams) TaskDetailFilePart.this.fileImage
 									.getLayoutParams();
 							params.height = 0;
 							TaskDetailFilePart.this.fileImage

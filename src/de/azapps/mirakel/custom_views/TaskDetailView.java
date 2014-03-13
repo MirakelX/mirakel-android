@@ -57,7 +57,7 @@ public class TaskDetailView extends BaseTaskDetailRow implements
 
 		public final static int SUBTITLE = 5;
 
-		public static String getName(int item) throws NoSuchItemException {
+		public static String getName(final int item) throws NoSuchItemException {
 			switch (item) {
 			case HEADER:
 				return "header";
@@ -78,7 +78,7 @@ public class TaskDetailView extends BaseTaskDetailRow implements
 			}
 		}
 
-		public static String getTranslatedName(Context ctx, int item)
+		public static String getTranslatedName(final Context ctx, final int item)
 				throws NoSuchItemException {
 			switch (item) {
 			case HEADER:
@@ -102,13 +102,11 @@ public class TaskDetailView extends BaseTaskDetailRow implements
 		}
 	}
 
-	private static final String TAG = "TaskDetailView";
-
 	private final Context context;
 	private List<Integer> items;
 	protected final SparseArray<BaseTaskDetailRow> views;
 
-	public TaskDetailView(Context ctx) {
+	public TaskDetailView(final Context ctx) {
 		super(ctx);
 		this.context = ctx;
 		this.items = MirakelViewPreferences.getTaskFragmentLayout();
@@ -116,7 +114,7 @@ public class TaskDetailView extends BaseTaskDetailRow implements
 		setupView();
 	}
 
-	public TaskDetailView(Context ctx, AttributeSet a) {
+	public TaskDetailView(final Context ctx, final AttributeSet a) {
 		super(ctx, a);
 		this.context = ctx;
 		this.items = MirakelViewPreferences.getTaskFragmentLayout();
@@ -124,7 +122,8 @@ public class TaskDetailView extends BaseTaskDetailRow implements
 		setupView();
 	}
 
-	public TaskDetailView(Context ctx, AttributeSet attrs, int defStyle) {
+	public TaskDetailView(final Context ctx, final AttributeSet attrs,
+			final int defStyle) {
 		super(ctx, attrs, defStyle);
 		this.context = ctx;
 		this.items = MirakelViewPreferences.getTaskFragmentLayout();
@@ -133,7 +132,7 @@ public class TaskDetailView extends BaseTaskDetailRow implements
 	}
 
 	public void cancelContent() {
-		BaseTaskDetailRow v = this.views.get(TYPE.CONTENT);
+		final BaseTaskDetailRow v = this.views.get(TYPE.CONTENT);
 		if (v != null) {
 			((TaskDetailContent) v).cancelContent();
 		}
@@ -141,7 +140,7 @@ public class TaskDetailView extends BaseTaskDetailRow implements
 	}
 
 	@Override
-	public void onTaskChanged(Task newTask) {
+	public void onTaskChanged(final Task newTask) {
 		if (this.taskChangedListner != null) {
 			this.taskChangedListner.onTaskChanged(newTask);
 		}
@@ -150,57 +149,57 @@ public class TaskDetailView extends BaseTaskDetailRow implements
 	}
 
 	public void saveContent() {
-		BaseTaskDetailRow v = this.views.get(TYPE.CONTENT);
+		final BaseTaskDetailRow v = this.views.get(TYPE.CONTENT);
 		if (v != null) {
 			((TaskDetailContent) v).saveContent();
 		}
 
 	}
 
-	public void setAudioButtonClick(OnClickListener l) {
-		BaseTaskDetailRow v = this.views.get(TYPE.FILE);
+	public void setAudioButtonClick(final OnClickListener l) {
+		final BaseTaskDetailRow v = this.views.get(TYPE.FILE);
 		if (v != null) {
 			((TaskDetailFile) v).setAudioClick(l);
 		}
 	}
 
-	public void setCameraButtonClick(OnClickListener l) {
-		BaseTaskDetailRow v = this.views.get(TYPE.FILE);
+	public void setCameraButtonClick(final OnClickListener l) {
+		final BaseTaskDetailRow v = this.views.get(TYPE.FILE);
 		if (v != null) {
 			((TaskDetailFile) v).setCameraClick(l);
 		}
 	}
 
-	public void setOnContentEdit(OnEditChanged l) {
-		BaseTaskDetailRow v = this.views.get(TYPE.CONTENT);
+	public void setOnContentEdit(final OnEditChanged l) {
+		final BaseTaskDetailRow v = this.views.get(TYPE.CONTENT);
 		if (v != null) {
 			((TaskDetailContent) v).setOnEditChanged(l);
 		}
 	}
 
-	public void setOnFileClicked(OnFileClickListner l) {
-		BaseTaskDetailRow v = this.views.get(TYPE.FILE);
+	public void setOnFileClicked(final OnFileClickListner l) {
+		final BaseTaskDetailRow v = this.views.get(TYPE.FILE);
 		if (v != null) {
 			((TaskDetailFile) v).setOnFileClicked(l);
 		}
 	}
 
-	public void setOnFileMarked(OnFileMarkedListner l) {
-		BaseTaskDetailRow v = this.views.get(TYPE.FILE);
+	public void setOnFileMarked(final OnFileMarkedListner l) {
+		final BaseTaskDetailRow v = this.views.get(TYPE.FILE);
 		if (v != null) {
 			((TaskDetailFile) v).setOnFileMarked(l);
 		}
 	}
 
-	public void setOnSubtaskClick(OnTaskClickListner l) {
-		BaseTaskDetailRow v = this.views.get(TYPE.SUBTASK);
+	public void setOnSubtaskClick(final OnTaskClickListner l) {
+		final BaseTaskDetailRow v = this.views.get(TYPE.SUBTASK);
 		if (v != null) {
 			((TaskDetailSubtask) v).setOnClick(l);
 		}
 	}
 
-	public void setOnSubtaskMarked(OnTaskMarkedListner l) {
-		BaseTaskDetailRow v = this.views.get(TYPE.SUBTASK);
+	public void setOnSubtaskMarked(final OnTaskMarkedListner l) {
+		final BaseTaskDetailRow v = this.views.get(TYPE.SUBTASK);
 		if (v != null) {
 			((TaskDetailSubtask) v).setOnTaskMarked(l);
 		}
@@ -210,15 +209,15 @@ public class TaskDetailView extends BaseTaskDetailRow implements
 		removeAllViews();
 		setOrientation(VERTICAL);
 		for (int position = 0; position < this.items.size(); position++) {
-			int i = this.items.get(position);
+			final int i = this.items.get(position);
 			BaseTaskDetailRow item;
 			switch (i) {
 			case TYPE.HEADER:
-				TaskDetailHeader h = new TaskDetailHeader(this.context);
+				final TaskDetailHeader h = new TaskDetailHeader(this.context);
 				h.setOnDoneChangedListner(new OnDoneChangedListner() {
 
 					@Override
-					public void onDoneChanged(Task newTask) {
+					public void onDoneChanged(final Task newTask) {
 						if (TaskDetailView.this.views.get(TYPE.DUE) != null) {
 							TaskDetailView.this.views.get(TYPE.DUE).update(
 									newTask);
@@ -240,11 +239,11 @@ public class TaskDetailView extends BaseTaskDetailRow implements
 				if (position > 0 && this.items.get(position - 1) != TYPE.DUE
 						&& position < this.items.size() - 1
 						&& this.items.get(position + 1) != TYPE.DUE
-						|| position == 0 && items.size() > 1
-						&& items.get(1) != TYPE.DUE
-						|| position == items.size() - 1 && position != 0
-						&& items.get(items.size() - 2) != TYPE.DUE) {
-					TaskDetailDueReminder t = new TaskDetailDueReminder(
+						|| position == 0 && this.items.size() > 1
+						&& this.items.get(1) != TYPE.DUE
+						|| position == this.items.size() - 1 && position != 0
+						&& this.items.get(this.items.size() - 2) != TYPE.DUE) {
+					final TaskDetailDueReminder t = new TaskDetailDueReminder(
 							this.context);
 					t.setType(Type.Reminder);
 					item = t;
@@ -252,7 +251,7 @@ public class TaskDetailView extends BaseTaskDetailRow implements
 				}
 				continue;
 			case TYPE.DUE:
-				TaskDetailDueReminder t = new TaskDetailDueReminder(
+				final TaskDetailDueReminder t = new TaskDetailDueReminder(
 						this.context);
 				if (position > 1
 						&& this.items.get(position - 1) == TYPE.REMINDER

@@ -35,8 +35,8 @@ public class MirakelArrayAdapter<T> extends ArrayAdapter<T> {
 	protected List<Boolean> selected;
 	protected int selectedCount;
 
-	public MirakelArrayAdapter(Context context, int textViewResourceId,
-			List<T> data) {
+	public MirakelArrayAdapter(final Context context,
+			final int textViewResourceId, final List<T> data) {
 		super(context, textViewResourceId, textViewResourceId, data);
 		this.layoutResourceId = textViewResourceId;
 		this.data = data;
@@ -50,17 +50,17 @@ public class MirakelArrayAdapter<T> extends ArrayAdapter<T> {
 
 	}
 
-	public void addToEnd(T el) {
+	public void addToEnd(final T el) {
 		this.data.add(el);
 		this.selected.add(false);
 	}
 
-	public void addToHead(T el) {
+	public void addToHead(final T el) {
 		this.data.add(0, el);
 		this.selected.add(false);
 	}
 
-	public void changeData(List<T> newData) {
+	public void changeData(final List<T> newData) {
 		this.data.clear();
 		this.data.addAll(newData);
 		while (this.data.size() > this.selected.size()) {
@@ -74,7 +74,7 @@ public class MirakelArrayAdapter<T> extends ArrayAdapter<T> {
 	}
 
 	public List<T> getSelected() {
-		List<T> selected = new ArrayList<T>();
+		final List<T> selected = new ArrayList<T>();
 		for (int i = 0; i < this.data.size(); i++) {
 			if (this.selected.get(i)) {
 				selected.add(this.data.get(i));
@@ -97,7 +97,7 @@ public class MirakelArrayAdapter<T> extends ArrayAdapter<T> {
 		this.selectedCount = 0;
 	}
 
-	public void setSelected(int position, boolean selected) {
+	public void setSelected(final int position, final boolean selected) {
 		this.selected.set(position, selected);
 		this.selectedCount += selected ? 1 : -1;
 		notifyDataSetChanged();

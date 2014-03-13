@@ -43,11 +43,12 @@ import de.azapps.tools.Log;
 public class TaskSummary extends TaskDetailSubListBase<Task> implements
 		android.view.View.OnClickListener {
 	public interface OnTaskClickListner {
-		public abstract void onTaskClick(Task t);
+		public abstract void onTaskClick(final Task t);
 	}
 
 	public interface OnTaskMarkedListner {
-		abstract public void markTask(View v, Task t, boolean markted);
+		abstract public void markTask(final View v, final Task t,
+				final boolean markted);
 	}
 
 	private static final String TAG = "TaskSummary";
@@ -63,7 +64,7 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements
 	private final TextView taskRowName;
 	private final TextView taskRowPriority;
 
-	public TaskSummary(Context ctx) {
+	public TaskSummary(final Context ctx) {
 		super(ctx);
 		inflate(ctx, R.layout.task_summary, this);
 		this.taskRowDone = (CheckBox) findViewById(R.id.tasks_row_done);
@@ -103,7 +104,7 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements
 	}
 
 	@Override
-	public void onClick(View v) {
+	public void onClick(final View v) {
 		this.task.toggleDone();
 		ReminderAlarm.updateAlarms(TaskSummary.this.context);
 		TaskSummary.this.taskRowDone.setChecked(this.task.isDone());
@@ -116,7 +117,7 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements
 	public void setOnTaskClick(final OnTaskClickListner l) {
 		setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View v) {
+			public void onClick(final View v) {
 				if (!TaskSummary.this.markedEnabled) {
 					l.onTaskClick(TaskSummary.this.task);
 				} else {
@@ -131,14 +132,14 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements
 		setOnLongClickListener(new OnLongClickListener() {
 
 			@Override
-			public boolean onLongClick(View v) {
+			public boolean onLongClick(final View v) {
 				handleMark();
 				return true;
 			}
 		});
 	}
 
-	public void setShortMark(boolean shortMark) {
+	public void setShortMark(final boolean shortMark) {
 		Log.w(TAG, "enable shortmark " + shortMark);
 		this.markedEnabled = shortMark;
 	}
@@ -171,7 +172,7 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements
 	}
 
 	@Override
-	public void updatePart(Task newValue) {
+	public void updatePart(final Task newValue) {
 		setBackgroundColor(this.context.getResources().getColor(
 				android.R.color.transparent));
 		this.task = newValue;
@@ -209,7 +210,7 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements
 		updateDue();
 		if (MirakelCommonPreferences.colorizeTasks()) {
 			if (MirakelCommonPreferences.colorizeSubTasks()) {
-				int w = getWidth();
+				final int w = getWidth();
 				ModellHelper.setListColorBackground(this.task.getList(), this,
 						w);
 			} else {
@@ -224,7 +225,7 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements
 
 	protected void updatePriority() {
 		this.taskRowPriority.setText("" + this.task.getPriority());
-		GradientDrawable bg = (GradientDrawable) this.taskRowPriority
+		final GradientDrawable bg = (GradientDrawable) this.taskRowPriority
 				.getBackground();
 		bg.setColor(TaskHelper.getPrioColor(this.task.getPriority()));
 	}

@@ -30,7 +30,7 @@ public class TaskDetailProgress extends
 
 	private TaskDetailProgressBar progressBar;
 
-	public TaskDetailProgress(Context ctx) {
+	public TaskDetailProgress(final Context ctx) {
 		super(ctx);
 		this.title.setText(R.string.task_fragment_progress);
 		this.audioButton.setVisibility(GONE);
@@ -44,7 +44,7 @@ public class TaskDetailProgress extends
 		this.progressBar.setOnTaskChangedListner(new OnTaskChangedListner() {
 
 			@Override
-			public void onTaskChanged(Task newTask) {
+			public void onTaskChanged(final Task newTask) {
 				TaskDetailProgress.this.task = newTask;
 				save();
 
@@ -57,7 +57,7 @@ public class TaskDetailProgress extends
 
 	@Override
 	protected void updateView() {
-		List<Integer> l = new ArrayList<Integer>();
+		final List<Integer> l = new ArrayList<Integer>();
 		l.add(this.task.getProgress());
 		if (this.progressBar != null) {
 			this.progressBar.setTask(this.task);

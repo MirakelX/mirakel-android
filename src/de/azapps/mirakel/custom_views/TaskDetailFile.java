@@ -35,14 +35,14 @@ public class TaskDetailFile extends
 	private OnFileClickListner onFileClicked;
 	private OnFileMarkedListner onFileMarked;
 
-	public TaskDetailFile(Context ctx) {
+	public TaskDetailFile(final Context ctx) {
 		super(ctx);
 		this.markCounter = 0;
 		this.title.setText(R.string.add_files);
 		this.button.setOnClickListener(new OnClickListener() {
 
 			@Override
-			public void onClick(View v) {
+			public void onClick(final View v) {
 				Helpers.showFileChooser(DefinitionsHelper.RESULT_ADD_FILE,
 						TaskDetailFile.this.context
 								.getString(R.string.file_select),
@@ -54,22 +54,23 @@ public class TaskDetailFile extends
 	}
 
 	@Override
-	public void clickOnFile(FileMirakel f) {
+	public void clickOnFile(final FileMirakel f) {
 		if (this.onFileClicked != null) {
 			this.onFileClicked.clickOnFile(f);
 		}
 
 	}
 
-	private void markFile(boolean markted) {
+	private void markFile(final boolean markted) {
 		this.markCounter += markted ? 1 : -1;
-		for (TaskDetailFilePart v : this.viewList) {
+		for (final TaskDetailFilePart v : this.viewList) {
 			v.setShortMark(this.markCounter > 0);
 		}
 	}
 
 	@Override
-	public void markFile(View v, FileMirakel e, boolean markted) {
+	public void markFile(final View v, final FileMirakel e,
+			final boolean markted) {
 		if (this.onFileMarked != null) {
 			markFile(markted);
 			this.onFileMarked.markFile(v, e, markted);
@@ -78,29 +79,29 @@ public class TaskDetailFile extends
 
 	@Override
 	TaskDetailFilePart newElement() {
-		TaskDetailFilePart t = new TaskDetailFilePart(this.context);
+		final TaskDetailFilePart t = new TaskDetailFilePart(this.context);
 		t.setOnFileMarked(this);
 		t.setOnFileClickListner(this);
 		return t;
 	}
 
-	public void setAudioClick(OnClickListener onClick) {
+	public void setAudioClick(final OnClickListener onClick) {
 		if (this.audioButton != null) {
 			this.audioButton.setOnClickListener(onClick);
 		}
 	}
 
-	public void setCameraClick(OnClickListener onClick) {
+	public void setCameraClick(final OnClickListener onClick) {
 		if (this.cameraButton != null) {
 			this.cameraButton.setOnClickListener(onClick);
 		}
 	}
 
-	public void setOnFileClicked(OnFileClickListner l) {
+	public void setOnFileClicked(final OnFileClickListner l) {
 		this.onFileClicked = l;
 	}
 
-	public void setOnFileMarked(OnFileMarkedListner l) {
+	public void setOnFileMarked(final OnFileMarkedListner l) {
 		this.onFileMarked = l;
 	}
 

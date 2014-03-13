@@ -33,7 +33,7 @@ import de.azapps.tools.Log;
 public class TaskDetailContent extends BaseTaskDetailRow {
 
 	public interface OnEditChanged {
-		abstract public void handleCab(boolean startEdit);
+		abstract public void handleCab(final boolean startEdit);
 	}
 
 	protected static final String TAG = "TaskDetailContent";
@@ -46,7 +46,7 @@ public class TaskDetailContent extends BaseTaskDetailRow {
 	protected final EditText taskContentEdit;
 	protected final ViewSwitcher taskContentSwitcher;
 
-	public TaskDetailContent(Context ctx) {
+	public TaskDetailContent(final Context ctx) {
 		super(ctx);
 		inflate(ctx, R.layout.task_content, this);
 		this.taskContent = (TextView) findViewById(R.id.task_content);
@@ -57,7 +57,7 @@ public class TaskDetailContent extends BaseTaskDetailRow {
 		this.editContent.setOnClickListener(new OnClickListener() {
 
 			@Override
-			public void onClick(View v) {
+			public void onClick(final View v) {
 				Log.d(TAG, "edit content");
 				TaskDetailContent.this.isContentEdit = !TaskDetailContent.this.isContentEdit;
 				if (!TaskDetailContent.this.isContentEdit) {
@@ -74,9 +74,9 @@ public class TaskDetailContent extends BaseTaskDetailRow {
 							.setOnFocusChangeListener(new OnFocusChangeListener() {
 
 								@Override
-								public void onFocusChange(View view,
-										boolean hasFocus) {
-									InputMethodManager imm = (InputMethodManager) TaskDetailContent.this.context
+								public void onFocusChange(final View view,
+										final boolean hasFocus) {
+									final InputMethodManager imm = (InputMethodManager) TaskDetailContent.this.context
 											.getSystemService(Context.INPUT_METHOD_SERVICE);
 									if (hasFocus) {
 										imm.showSoftInput(
@@ -147,7 +147,7 @@ public class TaskDetailContent extends BaseTaskDetailRow {
 		}
 	}
 
-	public void setOnEditChanged(OnEditChanged l) {
+	public void setOnEditChanged(final OnEditChanged l) {
 		this.editChanged = l;
 	}
 
@@ -155,8 +155,9 @@ public class TaskDetailContent extends BaseTaskDetailRow {
 	protected void updateView() {
 		if (this.task.getContent() == null && this.content == null
 				|| this.task.getContent() != null
-				&& this.task.getContent().equals(this.content))
+				&& this.task.getContent().equals(this.content)) {
 			return;
+		}
 		this.content = this.task.getContent();
 		this.editContent.setBackgroundResource(android.R.drawable.ic_menu_edit);
 		if (this.task.getContent().length() > 0) {

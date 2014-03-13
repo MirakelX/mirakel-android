@@ -23,7 +23,7 @@ import android.content.Context;
 public abstract class TaskDetailSubListBase<T> extends BaseTaskDetailRow {
 	protected boolean markedEnabled;
 
-	public TaskDetailSubListBase(Context ctx) {
+	public TaskDetailSubListBase(final Context ctx) {
 		super(ctx);
 	}
 
@@ -31,7 +31,7 @@ public abstract class TaskDetailSubListBase<T> extends BaseTaskDetailRow {
 		this.markedEnabled = false;
 	}
 
-	abstract public void updatePart(T newValue);
+	abstract public void updatePart(final T newValue);
 
 	@Override
 	protected void updateView() {
