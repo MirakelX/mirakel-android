@@ -34,7 +34,8 @@ public class MainWidgetSettingsFragment extends PreferenceFragment {
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.settings_widget);
 		Log.e(TAG, "open settings for:" + this.widgetId);
-		new PreferencesWidgetHelper(this).setFunctionsWidget(getActivity(), this.widgetId);
+		new PreferencesWidgetHelper(this).setFunctionsWidget(getActivity(),
+				this.widgetId);
 	}
 
 	public void setup(int widgetId) {

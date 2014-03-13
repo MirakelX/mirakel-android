@@ -48,7 +48,8 @@ public class MainWidgetSettingsActivity extends PreferenceActivity {
 				MainWidgetProvider.EXTRA_WIDGET_ID, 0);
 		if (VERSION.SDK_INT < VERSION_CODES.HONEYCOMB) {
 			addPreferencesFromResource(R.xml.settings_widget);
-			new PreferencesWidgetHelper(this).setFunctionsWidget(this, mAppWidgetId);
+			new PreferencesWidgetHelper(this).setFunctionsWidget(this,
+					mAppWidgetId);
 		} else {
 			// Display the fragment as the main content.
 			((FrameLayout) findViewById(android.R.id.content)).removeAllViews();

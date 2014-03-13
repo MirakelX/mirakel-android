@@ -60,7 +60,8 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			Log.wtf(TAG, "falscher provider");
 		}
 		this.mContext = context;
-		this.widgetId = intent.getIntExtra(MainWidgetProvider.EXTRA_WIDGET_ID, 0);
+		this.widgetId = intent.getIntExtra(MainWidgetProvider.EXTRA_WIDGET_ID,
+				0);
 	}
 
 	/**
@@ -69,12 +70,13 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	@Override
 	public void onCreate() {
 		this.list = WidgetHelper.getList(this.mContext, this.widgetId);
-		this.tasks = this.list.tasks(WidgetHelper.showDone(this.mContext, this.widgetId));
+		this.tasks = this.list.tasks(WidgetHelper.showDone(this.mContext,
+				this.widgetId));
 	}
 
 	@Override
 	public void onDestroy() {
-		//nothing
+		// nothing
 	}
 
 	@Override
@@ -91,15 +93,15 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		}
 		Task task = this.tasks.get(position);
 		// Get The Task
-		boolean isMinimalistic = WidgetHelper
-				.isMinimalistic(this.mContext, this.widgetId);
+		boolean isMinimalistic = WidgetHelper.isMinimalistic(this.mContext,
+				this.widgetId);
 		RemoteViews rv = new RemoteViews(this.mContext.getPackageName(),
 				isMinimalistic ? R.layout.widget_row_minimal
 						: R.layout.widget_row);
 
 		// Set the Contents of the Row
-		rv = WidgetHelper.configureItem(rv, task, this.mContext, this.list.getId(),
-				isMinimalistic, this.widgetId);
+		rv = WidgetHelper.configureItem(rv, task, this.mContext,
+				this.list.getId(), isMinimalistic, this.widgetId);
 
 		// Set the Click–Intent
 		// We need to do so, because we can not start the Activity directly from

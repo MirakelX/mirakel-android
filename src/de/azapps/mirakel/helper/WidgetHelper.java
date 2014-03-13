@@ -44,9 +44,10 @@ public class WidgetHelper {
 			Context context, int listId, boolean isMinimal, int widgetId) {
 		Intent openIntent;
 		try {
-			openIntent = new Intent(context, Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
+			openIntent = new Intent(context,
+					Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
 		} catch (ClassNotFoundException e) {
-			Log.wtf(TAG,"no mainactivity found");
+			Log.wtf(TAG, "no mainactivity found");
 			return null;
 		}
 		openIntent.setAction(DefinitionsHelper.SHOW_TASK);
@@ -253,6 +254,7 @@ public class WidgetHelper {
 	public static void setDark(Context context, int widgetId, boolean dark) {
 		putBool(context, widgetId, "isDark", dark);
 	}
+
 	public static void setDueColors(Context context, int widgetId, boolean done) {
 		putBool(context, widgetId, "widgetDueColors", done);
 	}
@@ -269,7 +271,7 @@ public class WidgetHelper {
 	public static void setHasGradient(Context context, int widgetId,
 			Boolean newValue) {
 		putBool(context, widgetId, "widgetUseGradient", newValue);
-		
+
 	}
 
 	public static boolean gethasGradient(Context context, int widgetId) {

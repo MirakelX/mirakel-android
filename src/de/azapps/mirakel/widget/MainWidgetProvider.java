@@ -80,7 +80,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
 					layout_id);
 
 			int widgetBackground;
-			if(WidgetHelper.gethasGradient(context, widgetId)){
+			if (WidgetHelper.gethasGradient(context, widgetId)) {
 				if (isMinimalistic) {
 					widgetBackground = isDark ? R.drawable.widget_background_minimalistic_dark
 							: R.drawable.widget_background_minimalistic;
@@ -88,7 +88,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
 					widgetBackground = isDark ? R.drawable.widget_background_dark
 							: R.drawable.widget_background;
 				}
-			}else{
+			} else {
 				if (isMinimalistic) {
 					widgetBackground = isDark ? R.drawable.widget_background_minimalistic_dark_wo_gradient
 							: R.drawable.widget_background_minimalistic_wo_gradient;
@@ -137,8 +137,8 @@ public class MainWidgetProvider extends AppWidgetProvider {
 						colorizeBitmap(
 								WidgetHelper.getFontColor(context, widgetId),
 								context.getResources().getDrawable(
-										R.drawable.ic_action_new),
-								new int[] { 52, 52, 52 }, 3));
+										R.drawable.ic_action_new), new int[] {
+										52, 52, 52 }, 3));
 			}
 
 			if (!isMinimalistic && !oldAPI) {
@@ -154,7 +154,8 @@ public class MainWidgetProvider extends AppWidgetProvider {
 			// Create an Intent to launch MainActivity and show the List
 			Intent mainIntent;
 			try {
-				mainIntent = new Intent(context,  Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
+				mainIntent = new Intent(context,
+						Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
 			} catch (ClassNotFoundException e) {
 				Log.wtf(TAG, "mainactivity not found");
 				return;
@@ -172,7 +173,8 @@ public class MainWidgetProvider extends AppWidgetProvider {
 			// Create an Intent to launch MainActivity and create a new Task
 			Intent addIntent;
 			try {
-				addIntent = new Intent(context,  Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
+				addIntent = new Intent(context,
+						Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
 			} catch (ClassNotFoundException e) {
 				Log.wtf(TAG, "mainactivity not found");
 				return;
@@ -193,7 +195,8 @@ public class MainWidgetProvider extends AppWidgetProvider {
 				intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
 				views.setRemoteAdapter(R.id.widget_tasks_list, intent);
 				try {
-					appWidgetManager.updateAppWidget(new int[] { widgetId }, views);
+					appWidgetManager.updateAppWidget(new int[] { widgetId },
+							views);
 				} catch (Exception e) {
 					Log.d(TAG, "cannot create widget");
 					return;
@@ -249,9 +252,9 @@ public class MainWidgetProvider extends AppWidgetProvider {
 			appWidgetManager.updateAppWidget(widgetId, views);
 
 		}
-//		if (!oldAPI)
-//			appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds,
-//					R.id.tasks_list);
+		// if (!oldAPI)
+		// appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds,
+		// R.id.tasks_list);
 
 	}
 
@@ -285,7 +288,8 @@ public class MainWidgetProvider extends AppWidgetProvider {
 			int taskId = intent.getIntExtra(EXTRA_TASKID, 0);
 			Intent startMainIntent;
 			try {
-				startMainIntent = new Intent(context,  Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
+				startMainIntent = new Intent(context,
+						Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
 			} catch (ClassNotFoundException e) {
 				Log.wtf(TAG, "mainactivity not found");
 				return;
@@ -303,8 +307,8 @@ public class MainWidgetProvider extends AppWidgetProvider {
 			AppWidgetManager a = AppWidgetManager.getInstance(context);
 			for (int w : a.getAppWidgetIds(new ComponentName(context,
 					MainWidgetProvider.class))) {
-//				if (!oldAPI)
-//					a.notifyAppWidgetViewDataChanged(w, R.id.tasks_list);
+				// if (!oldAPI)
+				// a.notifyAppWidgetViewDataChanged(w, R.id.tasks_list);
 			}
 			onUpdate(context, a, a.getAppWidgetIds(new ComponentName(context,
 					MainWidgetProvider.class)));
