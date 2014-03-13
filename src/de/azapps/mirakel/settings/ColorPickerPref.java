@@ -20,7 +20,6 @@ import com.larswerkman.colorpicker.SVBar;
 import de.azapps.mirakel.colorpicker_pref.R;
 import de.azapps.tools.Log;
 
-
 public class ColorPickerPref extends DialogPreference {
 	private static final String TAG = "NumPickerPref";
 	private Context ctx;
@@ -61,7 +60,7 @@ public class ColorPickerPref extends DialogPreference {
 		// super.onPrepareDialogBuilder(builder);
 		final View v = ((LayoutInflater) this.ctx
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
-						R.layout.color_picker, null);
+				R.layout.color_picker, null);
 		final ColorPicker cp = ((ColorPicker) v.findViewById(R.id.color_picker));
 		final SVBar op = ((SVBar) v.findViewById(R.id.svbar_color_picker));
 		cp.addSVBar(op);
@@ -75,7 +74,8 @@ public class ColorPickerPref extends DialogPreference {
 							public void onClick(DialogInterface dialog,
 									int which) {
 								ColorPickerPref.this.COLOR = cp.getColor();
-								ColorPickerPref.this.colorBox.setBackgroundColor(cp.getColor());
+								ColorPickerPref.this.colorBox
+										.setBackgroundColor(cp.getColor());
 								callChangeListener(ColorPickerPref.this.COLOR);
 							}
 						})
