@@ -6,9 +6,9 @@ import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 
 public class MirakelPreferences {
-	
-	protected static Context				context;
-	protected static SharedPreferences	settings;
+
+	protected static Context context;
+	protected static SharedPreferences settings;
 
 	public static void init(Context ctx) {
 		if (settings == null || MirakelPreferences.context == null) {

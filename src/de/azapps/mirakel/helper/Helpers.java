@@ -48,8 +48,7 @@ public class Helpers {
 		public void exec();
 	}
 
-
-	private static String	TAG	= "Helpers";
+	private static String TAG = "Helpers";
 
 	// Contact
 	public static void contact(Context context) {
@@ -65,9 +64,8 @@ public class Helpers {
 				context.getString(R.string.contact_text, mirakelVersion,
 						android.os.Build.VERSION.SDK_INT,
 						android.os.Build.DEVICE));
-		
-		
-		}
+
+	}
 
 	public static void contact(Context context, String subject, String content) {
 
@@ -86,7 +84,7 @@ public class Helpers {
 			Toast.makeText(context,
 					context.getString(R.string.contact_no_client),
 					Toast.LENGTH_SHORT).show();
-			
+
 		}
 	}
 
@@ -106,11 +104,11 @@ public class Helpers {
 		Configuration config = new Configuration();
 		config.locale = locale;
 		ctx.getApplicationContext()
-		.getResources()
-		.updateConfiguration(
-				config,
-				ctx.getApplicationContext().getResources()
-				.getDisplayMetrics());
+				.getResources()
+				.updateConfiguration(
+						config,
+						ctx.getApplicationContext().getResources()
+								.getDisplayMetrics());
 		return locale;
 
 	}
@@ -180,12 +178,18 @@ public class Helpers {
 		i2.setData(Uri.parse(url));
 		ctx.startActivity(i2);
 	}
-	
+
 	public static void restartApp(Context context) {
 		PendingIntent intent;
 		try {
-			intent = PendingIntent.getActivity(context, 0,
-					new Intent(context, Class.forName("de.azapps.mirakel.static_activities.SplashScreenActivity")), 0);
+			intent = PendingIntent
+					.getActivity(
+							context,
+							0,
+							new Intent(
+									context,
+									Class.forName("de.azapps.mirakel.static_activities.SplashScreenActivity")),
+							0);
 		} catch (ClassNotFoundException e) {
 			Log.wtf(TAG, "splashscreen not found");
 			return;

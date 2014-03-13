@@ -33,26 +33,20 @@ import android.text.format.Time;
 
 public class DateTimeHelper {
 
-	public static final SimpleDateFormat	caldavFormat		= new SimpleDateFormat(
-																		"yyyyMMdd'T'kkmmss",
-																		Locale.getDefault());
-	public static final SimpleDateFormat	caldavDueFormat		= new SimpleDateFormat(
-																		"yyyyMMdd",
-																		Locale.getDefault());
-	public static final SimpleDateFormat	dateFormat			= new SimpleDateFormat(
-																		"yyyy-MM-dd",
-																		Locale.getDefault());
-	public static final SimpleDateFormat	dateTimeFormat		= new SimpleDateFormat(
-																		"yyyy-MM-dd'T'kkmmss'Z'",
-																		Locale.getDefault());
+	public static final SimpleDateFormat caldavFormat = new SimpleDateFormat(
+			"yyyyMMdd'T'kkmmss", Locale.getDefault());
+	public static final SimpleDateFormat caldavDueFormat = new SimpleDateFormat(
+			"yyyyMMdd", Locale.getDefault());
+	public static final SimpleDateFormat dateFormat = new SimpleDateFormat(
+			"yyyy-MM-dd", Locale.getDefault());
+	public static final SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
+			"yyyy-MM-dd'T'kkmmss'Z'", Locale.getDefault());
 
-	public static final SimpleDateFormat	dbDateTimeFormat	= new SimpleDateFormat(
-																		"yyyy-MM-dd kk:mm:ss",
-																		Locale.getDefault());
+	public static final SimpleDateFormat dbDateTimeFormat = new SimpleDateFormat(
+			"yyyy-MM-dd kk:mm:ss", Locale.getDefault());
 
-	public static final SimpleDateFormat	taskwarriorFormat	= new SimpleDateFormat(
-																		"yyyyMMdd'T'kkmmss'Z'",
-																		Locale.getDefault());
+	public static final SimpleDateFormat taskwarriorFormat = new SimpleDateFormat(
+			"yyyyMMdd'T'kkmmss'Z'", Locale.getDefault());
 
 	public static String formatDate(Calendar c) {
 		return c == null ? null : dateFormat.format(c.getTime());
@@ -62,13 +56,14 @@ public class DateTimeHelper {
 	 * Format a Date for showing it in the app
 	 * 
 	 * @param date
-	 *        Date
+	 *            Date
 	 * @param format
-	 *        Format–String (like dd.MM.YY)
+	 *            Format–String (like dd.MM.YY)
 	 * @return The formatted Date as String
 	 */
 	public static CharSequence formatDate(Calendar date, String format) {
-		if (date == null) return "";
+		if (date == null)
+			return "";
 		return new SimpleDateFormat(format, Locale.getDefault()).format(date
 				.getTime());
 	}
@@ -83,15 +78,16 @@ public class DateTimeHelper {
 	 * @return
 	 */
 	public static CharSequence formatDate(Context ctx, Calendar date) {
-		if (date == null) return "";
+		if (date == null)
+			return "";
 		if (MirakelCommonPreferences.isDateFormatRelative()) {
 			GregorianCalendar now = new GregorianCalendar();
 			now.setTime(new Date());
 			if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR1
 					|| !(now.get(Calendar.YEAR) == date.get(Calendar.YEAR)
-					&& now.get(Calendar.DAY_OF_MONTH) == date
-					.get(Calendar.DAY_OF_MONTH) && now
-					.get(Calendar.MONTH) == date.get(Calendar.MONTH)))
+							&& now.get(Calendar.DAY_OF_MONTH) == date
+									.get(Calendar.DAY_OF_MONTH) && now
+							.get(Calendar.MONTH) == date.get(Calendar.MONTH)))
 				return DateUtils.getRelativeTimeSpanString(
 						date.getTimeInMillis(), new Date().getTime(),
 						DateUtils.DAY_IN_MILLIS);
@@ -134,27 +130,34 @@ public class DateTimeHelper {
 	public static int getFirstDayOfWeek() {
 		int startDay = Calendar.getInstance().getFirstDayOfWeek();
 
-		if (startDay == Calendar.SATURDAY) return Time.SATURDAY;
-		else if (startDay == Calendar.MONDAY) return Time.MONDAY;
-		else return Time.SUNDAY;
+		if (startDay == Calendar.SATURDAY)
+			return Time.SATURDAY;
+		else if (startDay == Calendar.MONDAY)
+			return Time.MONDAY;
+		else
+			return Time.SUNDAY;
 	}
 
 	public static boolean is24HourLocale(Locale l) {
 		String output = SimpleDateFormat.getTimeInstance(
 				SimpleDateFormat.SHORT, l).format(new Date());
-		if (output.contains(" AM") || output.contains(" PM")) return false;
+		if (output.contains(" AM") || output.contains(" PM"))
+			return false;
 		return true;
 	}
 
 	public static Calendar parseCalDav(String date) throws ParseException {
-		if (date == null || date.equals("")) return null;
+		if (date == null || date.equals(""))
+			return null;
 		GregorianCalendar temp = new GregorianCalendar();
 		temp.setTime(caldavFormat.parse(date));
 		return temp;
 	}
 
-	private static Calendar parseDate(String date, SimpleDateFormat format) throws ParseException {
-		if (date == null || date.equals("")) return null;
+	private static Calendar parseDate(String date, SimpleDateFormat format)
+			throws ParseException {
+		if (date == null || date.equals(""))
+			return null;
 		GregorianCalendar temp = new GregorianCalendar();
 		temp.setTime(format.parse(date));
 		return temp;
