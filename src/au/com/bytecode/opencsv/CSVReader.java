@@ -29,11 +29,11 @@ import java.util.List;
  */
 public class CSVReader {
 
-	private BufferedReader br;
+	private final BufferedReader br;
 	private boolean hasNext = true;
-	private char separator;
-	private char quotechar;
-	private int skipLines;
+	private final char separator;
+	private final char quotechar;
+	private final int skipLines;
 	private boolean linesSkiped;
 	/** The default separator to use if none is supplied to the constructor. */
 	public static final char DEFAULT_SEPARATOR = ',';
@@ -53,7 +53,7 @@ public class CSVReader {
 	 * @param reader
 	 *            the reader to an underlying CSV source.
 	 */
-	public CSVReader(Reader reader) {
+	public CSVReader(final Reader reader) {
 		this(reader, DEFAULT_SEPARATOR);
 	}
 
@@ -65,7 +65,7 @@ public class CSVReader {
 	 * @param separator
 	 *            the delimiter to use for separating entries.
 	 */
-	public CSVReader(Reader reader, char separator) {
+	public CSVReader(final Reader reader, final char separator) {
 		this(reader, separator, DEFAULT_QUOTE_CHARACTER);
 	}
 
@@ -79,7 +79,8 @@ public class CSVReader {
 	 * @param quotechar
 	 *            the character to use for quoted elements
 	 */
-	public CSVReader(Reader reader, char separator, char quotechar) {
+	public CSVReader(final Reader reader, final char separator,
+			final char quotechar) {
 		this(reader, separator, quotechar, DEFAULT_SKIP_LINES);
 	}
 
@@ -95,7 +96,8 @@ public class CSVReader {
 	 * @param line
 	 *            the line number to skip for start reading
 	 */
-	public CSVReader(Reader reader, char separator, char quotechar, int line) {
+	public CSVReader(final Reader reader, final char separator,
+			final char quotechar, final int line) {
 		this.br = new BufferedReader(reader);
 		this.separator = separator;
 		this.quotechar = quotechar;
@@ -114,11 +116,12 @@ public class CSVReader {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public List readAll() throws IOException {
-		List allElements = new ArrayList();
-		while (hasNext) {
-			String[] nextLineAsTokens = readNext();
-			if (nextLineAsTokens != null)
+		final List allElements = new ArrayList();
+		while (this.hasNext) {
+			final String[] nextLineAsTokens = readNext();
+			if (nextLineAsTokens != null) {
 				allElements.add(nextLineAsTokens);
+			}
 		}
 		return allElements;
 	}
@@ -133,8 +136,8 @@ public class CSVReader {
 	 *             if bad things happen during the read
 	 */
 	public String[] readNext() throws IOException {
-		String nextLine = getNextLine();
-		return hasNext ? parseLine(nextLine) : null;
+		final String nextLine = getNextLine();
+		return this.hasNext ? parseLine(nextLine) : null;
 	}
 
 	/**
@@ -146,16 +149,16 @@ public class CSVReader {
 	 */
 	private String getNextLine() throws IOException {
 		if (!this.linesSkiped) {
-			for (int i = 0; i < skipLines; i++) {
-				br.readLine();
+			for (int i = 0; i < this.skipLines; i++) {
+				this.br.readLine();
 			}
 			this.linesSkiped = true;
 		}
-		String nextLine = br.readLine();
+		final String nextLine = this.br.readLine();
 		if (nextLine == null) {
-			hasNext = false;
+			this.hasNext = false;
 		}
-		return hasNext ? nextLine : null;
+		return this.hasNext ? nextLine : null;
 	}
 
 	/**
@@ -173,7 +176,7 @@ public class CSVReader {
 			return null;
 		}
 		@SuppressWarnings("rawtypes")
-		List tokensOnThisLine = new ArrayList();
+		final List tokensOnThisLine = new ArrayList();
 		StringBuffer sb = new StringBuffer();
 		boolean inQuotes = false;
 		do {
@@ -181,26 +184,28 @@ public class CSVReader {
 				// continuing a quoted section, reappend newline
 				sb.append("\n");
 				nextLine = getNextLine();
-				if (nextLine == null)
+				if (nextLine == null) {
 					break;
+				}
 			}
 			for (int i = 0; i < nextLine.length(); i++) {
-				char c = nextLine.charAt(i);
-				if (c == quotechar) {
+				final char c = nextLine.charAt(i);
+				if (c == this.quotechar) {
 					// this gets complex... the quote may end a quoted block, or
 					// escape another quote.
 					// do a 1-char lookahead:
 					if (inQuotes // we are in quotes, therefore there can be
 									// escaped quotes in here.
-							&& nextLine.length() > (i + 1) // there is indeed
+							&& nextLine.length() > i + 1 // there is indeed
 															// another character
 															// to check.
-							&& nextLine.charAt(i + 1) == quotechar) { // ..and
-																		// that
-																		// char.
-																		// is a
-																		// quote
-																		// also.
+							&& nextLine.charAt(i + 1) == this.quotechar) { // ..and
+																			// that
+																			// char.
+																			// is
+																			// a
+																			// quote
+																			// also.
 						// we have two quote chars in a row == one quote char,
 						// so
 						// consume them both and
@@ -221,7 +226,7 @@ public class CSVReader {
 																			// an
 																			// escape
 																			// sequence
-								&& nextLine.length() > (i + 1)
+								&& nextLine.length() > i + 1
 								&& nextLine.charAt(i + 1) != this.separator // not
 																			// at
 																			// the
@@ -234,7 +239,7 @@ public class CSVReader {
 							sb.append(c);
 						}
 					}
-				} else if (c == separator && !inQuotes) {
+				} else if (c == this.separator && !inQuotes) {
 					tokensOnThisLine.add(sb.toString());
 					sb = new StringBuffer(); // start work on next token
 				} else {
@@ -253,7 +258,7 @@ public class CSVReader {
 	 *             if the close fails
 	 */
 	public void close() throws IOException {
-		br.close();
+		this.br.close();
 	}
 
 }

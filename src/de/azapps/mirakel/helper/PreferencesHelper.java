@@ -11,14 +11,14 @@ public class PreferencesHelper {
 	protected final Object ctx;
 	protected boolean v4_0;
 
-	public PreferencesHelper(PreferenceActivity c) {
+	public PreferencesHelper(final PreferenceActivity c) {
 		this.ctx = c;
 		this.v4_0 = false;
 		this.activity = c;
 	}
 
 	@SuppressLint("NewApi")
-	public PreferencesHelper(PreferenceFragment c) {
+	public PreferencesHelper(final PreferenceFragment c) {
 		this.ctx = c;
 		this.v4_0 = true;
 		this.activity = c.getActivity();
@@ -26,16 +26,17 @@ public class PreferencesHelper {
 
 	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
-	protected Preference findPreference(String key) {
-		if (this.v4_0)
+	protected Preference findPreference(final String key) {
+		if (this.v4_0) {
 			return ((PreferenceFragment) this.ctx).findPreference(key);
+		}
 		return ((PreferenceActivity) this.ctx).findPreference(key);
 	}
 
 	@SuppressLint("NewApi")
 	@SuppressWarnings("deprecation")
-	protected void removePreference(String which) {
-		Preference pref = findPreference(which);
+	protected void removePreference(final String which) {
+		final Preference pref = findPreference(which);
 		if (pref != null) {
 			if (this.v4_0) {
 				((PreferenceFragment) this.ctx).getPreferenceScreen()

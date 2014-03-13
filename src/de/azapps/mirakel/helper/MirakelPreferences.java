@@ -10,7 +10,7 @@ public class MirakelPreferences {
 	protected static Context context;
 	protected static SharedPreferences settings;
 
-	public static void init(Context ctx) {
+	public static void init(final Context ctx) {
 		if (settings == null || MirakelPreferences.context == null) {
 			MirakelPreferences.context = ctx;
 			settings = PreferenceManager.getDefaultSharedPreferences(ctx);

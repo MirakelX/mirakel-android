@@ -56,12 +56,12 @@ public class DefinitionsHelper {
 	public static int widgets[] = {};
 
 	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-	public static void init(Context ctx) {
+	public static void init(final Context ctx) {
 		APK_NAME = ctx.getPackageName();
 		try {
 			VERSIONS_NAME = ctx.getPackageManager().getPackageInfo(
 					ctx.getPackageName(), 0).versionName;
-		} catch (NameNotFoundException e) {
+		} catch (final NameNotFoundException e) {
 			e.printStackTrace();
 			Log.wtf(TAG, "App not found");
 			VERSIONS_NAME = "";
@@ -99,7 +99,7 @@ public class DefinitionsHelper {
 			}
 		}
 
-		public static SYNC_STATE parseInt(int i) {
+		public static SYNC_STATE parseInt(final int i) {
 			switch (i) {
 			case -1:
 				return DELETE;

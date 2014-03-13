@@ -55,10 +55,11 @@ public class FileUtils {
 	private static String MIRAKEL_DIR;
 
 	@SuppressLint("NewApi")
-	public static String getPath(Context context, Uri uri)
+	public static String getPath(final Context context, final Uri uri)
 			throws URISyntaxException {
-		if (uri == null)
+		if (uri == null) {
 			return null;
+		}
 		final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
 
 		// DocumentProvider
@@ -72,13 +73,14 @@ public class FileUtils {
 				// Environment.
 				// TODO somehow handle that here may be the diskuuid as type
 				// if ("primary".equalsIgnoreCase(type)) {
-				String path = Environment.getExternalStorageDirectory()
+				final String path = Environment.getExternalStorageDirectory()
 						.getPath() + "/" + split[1];
-				if (new File(path).exists())
+				if (new File(path).exists()) {
 					return path;
-				// } else {
-				// Log.d(TAG, type);
-				// }
+					// } else {
+					// Log.d(TAG, type);
+					// }
+				}
 
 				// TODO handle non-primary volumes
 			}
@@ -140,8 +142,8 @@ public class FileUtils {
 	 *            (Optional) Selection arguments used in the query.
 	 * @return The value of the _data column, which is typically a file path.
 	 */
-	public static String getDataColumn(Context context, Uri uri,
-			String selection, String[] selectionArgs) {
+	public static String getDataColumn(final Context context, final Uri uri,
+			final String selection, final String[] selectionArgs) {
 
 		Cursor cursor = null;
 		final String column = "_data";
@@ -155,8 +157,9 @@ public class FileUtils {
 				return cursor.getString(column_index);
 			}
 		} finally {
-			if (cursor != null)
+			if (cursor != null) {
 				cursor.close();
+			}
 		}
 		return null;
 	}
@@ -166,7 +169,7 @@ public class FileUtils {
 	 *            The Uri to check.
 	 * @return Whether the Uri authority is ExternalStorageProvider.
 	 */
-	public static boolean isExternalStorageDocument(Uri uri) {
+	public static boolean isExternalStorageDocument(final Uri uri) {
 		return "com.android.externalstorage.documents".equals(uri
 				.getAuthority());
 	}
@@ -176,7 +179,7 @@ public class FileUtils {
 	 *            The Uri to check.
 	 * @return Whether the Uri authority is DownloadsProvider.
 	 */
-	public static boolean isDownloadsDocument(Uri uri) {
+	public static boolean isDownloadsDocument(final Uri uri) {
 		return "com.android.providers.downloads.documents".equals(uri
 				.getAuthority());
 	}
@@ -186,7 +189,7 @@ public class FileUtils {
 	 *            The Uri to check.
 	 * @return Whether the Uri authority is MediaProvider.
 	 */
-	public static boolean isMediaDocument(Uri uri) {
+	public static boolean isMediaDocument(final Uri uri) {
 		return "com.android.providers.media.documents".equals(uri
 				.getAuthority());
 	}
@@ -198,7 +201,8 @@ public class FileUtils {
 	 * @param dst
 	 * @throws IOException
 	 */
-	public static void copyFile(File src, File dst) throws IOException {
+	public static void copyFile(final File src, final File dst)
+			throws IOException {
 		if (!src.canRead() || !dst.canWrite()) {
 			Log.e(TAG, "cannot copy file");
 			return;
@@ -206,17 +210,19 @@ public class FileUtils {
 		copyByStream(new FileInputStream(src), new FileOutputStream(dst));
 	}
 
-	public static void copyByStream(FileInputStream src, FileOutputStream dst)
-			throws IOException {
-		FileChannel inChannel = src.getChannel();
-		FileChannel outChannel = dst.getChannel();
+	public static void copyByStream(final FileInputStream src,
+			final FileOutputStream dst) throws IOException {
+		final FileChannel inChannel = src.getChannel();
+		final FileChannel outChannel = dst.getChannel();
 		try {
 			inChannel.transferTo(0, inChannel.size(), outChannel);
 		} finally {
-			if (inChannel != null)
+			if (inChannel != null) {
 				inChannel.close();
-			if (outChannel != null)
+			}
+			if (outChannel != null) {
 				outChannel.close();
+			}
 		}
 	}
 
@@ -226,18 +232,18 @@ public class FileUtils {
 	 * @param zipFile
 	 * @param location
 	 */
-	public static void unzip(File zipFile, File location)
+	public static void unzip(final File zipFile, final File location)
 			throws FileNotFoundException, IOException {
 
-		FileInputStream fin = new FileInputStream(zipFile);
-		ZipInputStream zin = new ZipInputStream(fin);
+		final FileInputStream fin = new FileInputStream(zipFile);
+		final ZipInputStream zin = new ZipInputStream(fin);
 		ZipEntry ze = null;
 		while ((ze = zin.getNextEntry()) != null) {
 			if (ze.isDirectory()) {
 				dirChecker(location, ze.getName());
 			} else {
-				FileOutputStream fout = new FileOutputStream(new File(location,
-						ze.getName()));
+				final FileOutputStream fout = new FileOutputStream(new File(
+						location, ze.getName()));
 				for (int c = zin.read(); c != -1; c = zin.read()) {
 					fout.write(c);
 				}
@@ -251,38 +257,40 @@ public class FileUtils {
 
 	}
 
-	private static void dirChecker(File location, String dir) {
-		File f = new File(location, dir);
+	private static void dirChecker(final File location, final String dir) {
+		final File f = new File(location, dir);
 
 		if (!f.isDirectory()) {
 			f.mkdirs();
 		}
 	}
 
-	public static void safeWriteToFile(File f, String s) {
+	public static void safeWriteToFile(final File f, final String s) {
 		try {
 			writeToFile(f, s);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			Log.e(TAG, "cannot write to file");
 			Log.e(TAG, Log.getStackTraceString(e));
 		}
 
 	}
 
-	public static void writeToFile(File f, String s) throws IOException {
-		if (f.exists())
+	public static void writeToFile(final File f, final String s)
+			throws IOException {
+		if (f.exists()) {
 			f.delete();
-		BufferedWriter out = new BufferedWriter(new FileWriter(f));
+		}
+		final BufferedWriter out = new BufferedWriter(new FileWriter(f));
 		out.write(s);
 		out.close();
 	}
 
-	static public String getPathFromUri(Uri uri, Context ctx) {
+	static public String getPathFromUri(final Uri uri, final Context ctx) {
 		try {
-			String path = getPath(ctx, uri);
+			final String path = getPath(ctx, uri);
 			Log.w(TAG, "PATH: " + path);
 			return path;
-		} catch (URISyntaxException e) {
+		} catch (final URISyntaxException e) {
 			Log.w(TAG, Log.getStackTraceString(e));
 			Toast.makeText(ctx, "Something terrible happened…",
 					Toast.LENGTH_LONG).show();
@@ -290,33 +298,34 @@ public class FileUtils {
 		}
 	}
 
-	public static String getMimeType(String url) {
+	public static String getMimeType(final String url) {
 		String type = null;
-		String extension = MimeTypeMap.getFileExtensionFromUrl(url);
+		final String extension = MimeTypeMap.getFileExtensionFromUrl(url);
 		if (extension != null) {
-			MimeTypeMap mime = MimeTypeMap.getSingleton();
+			final MimeTypeMap mime = MimeTypeMap.getSingleton();
 			type = mime.getMimeTypeFromExtension(extension);
 		}
 		return type;
 	}
 
 	/** Create a file Uri for saving an image or video */
-	public static Uri getOutputMediaFileUri(int type) {
-		File file = FileUtils.getOutputMediaFile(type);
-		if (file == null)
+	public static Uri getOutputMediaFileUri(final int type) {
+		final File file = FileUtils.getOutputMediaFile(type);
+		if (file == null) {
 			return null;
+		}
 		return Uri.fromFile(file);
 	}
 
 	/** Create a File for saving an image or video */
-	public static File getOutputMediaFile(int type) {
+	public static File getOutputMediaFile(final int type) {
 		// To be safe, you should check that the SDCard is mounted
 		// using Environment.getExternalStorageState() before doing this.
 
-		File mediaStorageDir = FileUtils.getMediaStorageDir();
+		final File mediaStorageDir = FileUtils.getMediaStorageDir();
 
 		// Create a media file name
-		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",
+		final String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",
 				Locale.getDefault()).format(new Date());
 		File mediaFile;
 		switch (type) {
@@ -345,7 +354,7 @@ public class FileUtils {
 	 * @return
 	 */
 	public static File getMediaStorageDir() {
-		File mediaStorageDir = new File(
+		final File mediaStorageDir = new File(
 				Environment
 						.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
 				"Mirakel");
@@ -364,26 +373,30 @@ public class FileUtils {
 	 * @return
 	 */
 	public static String getMirakelDir() {
-		if (DefinitionsHelper.APK_NAME == null) // wtf
+		if (DefinitionsHelper.APK_NAME == null) {
 			DefinitionsHelper.APK_NAME = "de.azapps.mirakelandroid";
-		if (MIRAKEL_DIR == null)
+		}
+		if (MIRAKEL_DIR == null) {
 			MIRAKEL_DIR = Environment.getDataDirectory() + "/data/"
 					+ DefinitionsHelper.APK_NAME + "/";
+		}
 		return MIRAKEL_DIR;
 	}
 
 	public static File getExportDir() {
-		File dir = new File(Environment.getExternalStorageDirectory(),
+		final File dir = new File(Environment.getExternalStorageDirectory(),
 				"mirakel");
-		if (!dir.exists())
+		if (!dir.exists()) {
 			dir.mkdirs();
+		}
 		return dir;
 	}
 
 	public static File getLogDir() {
-		File dir = new File(getExportDir(), "logs");
-		if (!dir.exists())
+		final File dir = new File(getExportDir(), "logs");
+		if (!dir.exists()) {
 			dir.mkdirs();
+		}
 		return dir;
 	}
 

@@ -28,7 +28,7 @@ public class BuildHelper {
 		return !(isForPlayStore() || isForFDroid());
 	}
 
-	public static void setPlaystore(boolean isPlaystore) {
+	public static void setPlaystore(final boolean isPlaystore) {
 		IS_PLAYSTORE = isPlaystore;
 	}
 }
