@@ -33,11 +33,11 @@ public class Purchase {
 	String mOriginalJson;
 	String mSignature;
 
-	public Purchase(String itemType, String jsonPurchaseInfo, String signature)
-			throws JSONException {
+	public Purchase(final String itemType, final String jsonPurchaseInfo,
+			final String signature) throws JSONException {
 		this.mItemType = itemType;
 		this.mOriginalJson = jsonPurchaseInfo;
-		JSONObject o = new JSONObject(this.mOriginalJson);
+		final JSONObject o = new JSONObject(this.mOriginalJson);
 		this.mOrderId = o.optString("orderId");
 		this.mPackageName = o.optString("packageName");
 		this.mSku = o.optString("productId");

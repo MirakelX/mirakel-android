@@ -212,8 +212,9 @@ public class Base64 {
 	 * @return the <var>destination</var> array
 	 * @since 1.3
 	 */
-	private static byte[] encode3to4(byte[] source, int srcOffset,
-			int numSigBytes, byte[] destination, int destOffset, byte[] alphabet) {
+	private static byte[] encode3to4(final byte[] source, final int srcOffset,
+			final int numSigBytes, final byte[] destination,
+			final int destOffset, final byte[] alphabet) {
 		// 1 2 3
 		// 01234567890123456789012345678901 Bit position
 		// --------000000001111111122222222 Array position from threeBytes
@@ -226,26 +227,26 @@ public class Base64 {
 		// We have to shift left 24 in order to flush out the 1's that appear
 		// when Java treats a value as negative that is cast from a byte to an
 		// int.
-		int inBuff = (numSigBytes > 0 ? ((source[srcOffset] << 24) >>> 8) : 0)
-				| (numSigBytes > 1 ? ((source[srcOffset + 1] << 24) >>> 16) : 0)
-				| (numSigBytes > 2 ? ((source[srcOffset + 2] << 24) >>> 24) : 0);
+		final int inBuff = (numSigBytes > 0 ? source[srcOffset] << 24 >>> 8 : 0)
+				| (numSigBytes > 1 ? source[srcOffset + 1] << 24 >>> 16 : 0)
+				| (numSigBytes > 2 ? source[srcOffset + 2] << 24 >>> 24 : 0);
 
 		switch (numSigBytes) {
 		case 3:
-			destination[destOffset] = alphabet[(inBuff >>> 18)];
-			destination[destOffset + 1] = alphabet[(inBuff >>> 12) & 0x3f];
-			destination[destOffset + 2] = alphabet[(inBuff >>> 6) & 0x3f];
-			destination[destOffset + 3] = alphabet[(inBuff) & 0x3f];
+			destination[destOffset] = alphabet[inBuff >>> 18];
+			destination[destOffset + 1] = alphabet[inBuff >>> 12 & 0x3f];
+			destination[destOffset + 2] = alphabet[inBuff >>> 6 & 0x3f];
+			destination[destOffset + 3] = alphabet[inBuff & 0x3f];
 			return destination;
 		case 2:
-			destination[destOffset] = alphabet[(inBuff >>> 18)];
-			destination[destOffset + 1] = alphabet[(inBuff >>> 12) & 0x3f];
-			destination[destOffset + 2] = alphabet[(inBuff >>> 6) & 0x3f];
+			destination[destOffset] = alphabet[inBuff >>> 18];
+			destination[destOffset + 1] = alphabet[inBuff >>> 12 & 0x3f];
+			destination[destOffset + 2] = alphabet[inBuff >>> 6 & 0x3f];
 			destination[destOffset + 3] = EQUALS_SIGN;
 			return destination;
 		case 1:
-			destination[destOffset] = alphabet[(inBuff >>> 18)];
-			destination[destOffset + 1] = alphabet[(inBuff >>> 12) & 0x3f];
+			destination[destOffset] = alphabet[inBuff >>> 18];
+			destination[destOffset + 1] = alphabet[inBuff >>> 12 & 0x3f];
 			destination[destOffset + 2] = EQUALS_SIGN;
 			destination[destOffset + 3] = EQUALS_SIGN;
 			return destination;
@@ -262,7 +263,7 @@ public class Base64 {
 	 *            The data to convert
 	 * @since 1.4
 	 */
-	public static String encode(byte[] source) {
+	public static String encode(final byte[] source) {
 		return encode(source, 0, source.length, ALPHABET, true);
 	}
 
@@ -275,7 +276,8 @@ public class Base64 {
 	 *            is {@code true} to pad result with '=' chars if it does not
 	 *            fall on 3 byte boundaries
 	 */
-	public static String encodeWebSafe(byte[] source, boolean doPadding) {
+	public static String encodeWebSafe(final byte[] source,
+			final boolean doPadding) {
 		return encode(source, 0, source.length, WEBSAFE_ALPHABET, doPadding);
 	}
 
@@ -295,9 +297,10 @@ public class Base64 {
 	 *            fall on 3 byte boundaries
 	 * @since 1.4
 	 */
-	public static String encode(byte[] source, int off, int len,
-			byte[] alphabet, boolean doPadding) {
-		byte[] outBuff = encode(source, off, len, alphabet, Integer.MAX_VALUE);
+	public static String encode(final byte[] source, final int off,
+			final int len, final byte[] alphabet, final boolean doPadding) {
+		final byte[] outBuff = encode(source, off, len, alphabet,
+				Integer.MAX_VALUE);
 		int outLen = outBuff.length;
 
 		// If doPadding is false, set length to truncate '='
@@ -327,29 +330,29 @@ public class Base64 {
 	 *            maximum length of one line.
 	 * @return the BASE64-encoded byte array
 	 */
-	public static byte[] encode(byte[] source, int off, int len,
-			byte[] alphabet, int maxLineLength) {
-		int lenDiv3 = (len + 2) / 3; // ceil(len / 3)
-		int len43 = lenDiv3 * 4;
-		byte[] outBuff = new byte[len43 // Main 4:3
-				+ (len43 / maxLineLength)]; // New lines
+	public static byte[] encode(final byte[] source, final int off,
+			final int len, final byte[] alphabet, final int maxLineLength) {
+		final int lenDiv3 = (len + 2) / 3; // ceil(len / 3)
+		final int len43 = lenDiv3 * 4;
+		final byte[] outBuff = new byte[len43 // Main 4:3
+				+ len43 / maxLineLength]; // New lines
 
 		int d = 0;
 		int e = 0;
-		int len2 = len - 2;
+		final int len2 = len - 2;
 		int lineLength = 0;
 		for (; d < len2; d += 3, e += 4) {
 
 			// The following block of code is the same as
 			// encode3to4( source, d + off, 3, outBuff, e, alphabet );
 			// but inlined for faster encoding (~20% improvement)
-			int inBuff = ((source[d + off] << 24) >>> 8)
-					| ((source[d + 1 + off] << 24) >>> 16)
-					| ((source[d + 2 + off] << 24) >>> 24);
-			outBuff[e] = alphabet[(inBuff >>> 18)];
-			outBuff[e + 1] = alphabet[(inBuff >>> 12) & 0x3f];
-			outBuff[e + 2] = alphabet[(inBuff >>> 6) & 0x3f];
-			outBuff[e + 3] = alphabet[(inBuff) & 0x3f];
+			final int inBuff = source[d + off] << 24 >>> 8
+					| source[d + 1 + off] << 24 >>> 16
+					| source[d + 2 + off] << 24 >>> 24;
+			outBuff[e] = alphabet[inBuff >>> 18];
+			outBuff[e + 1] = alphabet[inBuff >>> 12 & 0x3f];
+			outBuff[e + 2] = alphabet[inBuff >>> 6 & 0x3f];
+			outBuff[e + 3] = alphabet[inBuff & 0x3f];
 
 			lineLength += 4;
 			if (lineLength == maxLineLength) {
@@ -371,7 +374,7 @@ public class Base64 {
 			e += 4;
 		}
 
-		assert (e == outBuff.length);
+		assert e == outBuff.length;
 		return outBuff;
 	}
 
@@ -402,34 +405,35 @@ public class Base64 {
 	 * @return the number of decoded bytes converted
 	 * @since 1.3
 	 */
-	private static int decode4to3(byte[] source, int srcOffset,
-			byte[] destination, int destOffset, byte[] decodabet) {
+	private static int decode4to3(final byte[] source, final int srcOffset,
+			final byte[] destination, final int destOffset,
+			final byte[] decodabet) {
 		// Example: Dk==
 		if (source[srcOffset + 2] == EQUALS_SIGN) {
-			int outBuff = ((decodabet[source[srcOffset]] << 24) >>> 6)
-					| ((decodabet[source[srcOffset + 1]] << 24) >>> 12);
+			final int outBuff = decodabet[source[srcOffset]] << 24 >>> 6
+					| decodabet[source[srcOffset + 1]] << 24 >>> 12;
 
 			destination[destOffset] = (byte) (outBuff >>> 16);
 			return 1;
 		} else if (source[srcOffset + 3] == EQUALS_SIGN) {
 			// Example: DkL=
-			int outBuff = ((decodabet[source[srcOffset]] << 24) >>> 6)
-					| ((decodabet[source[srcOffset + 1]] << 24) >>> 12)
-					| ((decodabet[source[srcOffset + 2]] << 24) >>> 18);
+			final int outBuff = decodabet[source[srcOffset]] << 24 >>> 6
+					| decodabet[source[srcOffset + 1]] << 24 >>> 12
+					| decodabet[source[srcOffset + 2]] << 24 >>> 18;
 
 			destination[destOffset] = (byte) (outBuff >>> 16);
 			destination[destOffset + 1] = (byte) (outBuff >>> 8);
 			return 2;
 		} else {
 			// Example: DkLE
-			int outBuff = ((decodabet[source[srcOffset]] << 24) >>> 6)
-					| ((decodabet[source[srcOffset + 1]] << 24) >>> 12)
-					| ((decodabet[source[srcOffset + 2]] << 24) >>> 18)
-					| ((decodabet[source[srcOffset + 3]] << 24) >>> 24);
+			final int outBuff = decodabet[source[srcOffset]] << 24 >>> 6
+					| decodabet[source[srcOffset + 1]] << 24 >>> 12
+					| decodabet[source[srcOffset + 2]] << 24 >>> 18
+					| decodabet[source[srcOffset + 3]] << 24 >>> 24;
 
 			destination[destOffset] = (byte) (outBuff >> 16);
 			destination[destOffset + 1] = (byte) (outBuff >> 8);
-			destination[destOffset + 2] = (byte) (outBuff);
+			destination[destOffset + 2] = (byte) outBuff;
 			return 3;
 		}
 	} // end decodeToBytes
@@ -442,8 +446,8 @@ public class Base64 {
 	 * @return the decoded data
 	 * @since 1.4
 	 */
-	public static byte[] decode(String s) throws Base64DecoderException {
-		byte[] bytes = s.getBytes();
+	public static byte[] decode(final String s) throws Base64DecoderException {
+		final byte[] bytes = s.getBytes();
 		return decode(bytes, 0, bytes.length);
 	}
 
@@ -455,8 +459,9 @@ public class Base64 {
 	 *            the string to decode (decoded in default encoding)
 	 * @return the decoded data
 	 */
-	public static byte[] decodeWebSafe(String s) throws Base64DecoderException {
-		byte[] bytes = s.getBytes();
+	public static byte[] decodeWebSafe(final String s)
+			throws Base64DecoderException {
+		final byte[] bytes = s.getBytes();
 		return decodeWebSafe(bytes, 0, bytes.length);
 	}
 
@@ -470,7 +475,8 @@ public class Base64 {
 	 * @since 1.3
 	 * @throws Base64DecoderException
 	 */
-	public static byte[] decode(byte[] source) throws Base64DecoderException {
+	public static byte[] decode(final byte[] source)
+			throws Base64DecoderException {
 		return decode(source, 0, source.length);
 	}
 
@@ -483,7 +489,7 @@ public class Base64 {
 	 *            the string to decode (decoded in default encoding)
 	 * @return the decoded data
 	 */
-	public static byte[] decodeWebSafe(byte[] source)
+	public static byte[] decodeWebSafe(final byte[] source)
 			throws Base64DecoderException {
 		return decodeWebSafe(source, 0, source.length);
 	}
@@ -502,8 +508,8 @@ public class Base64 {
 	 * @since 1.3
 	 * @throws Base64DecoderException
 	 */
-	public static byte[] decode(byte[] source, int off, int len)
-			throws Base64DecoderException {
+	public static byte[] decode(final byte[] source, final int off,
+			final int len) throws Base64DecoderException {
 		return decode(source, off, len, DECODABET);
 	}
 
@@ -520,8 +526,8 @@ public class Base64 {
 	 *            the length of characters to decode
 	 * @return decoded data
 	 */
-	public static byte[] decodeWebSafe(byte[] source, int off, int len)
-			throws Base64DecoderException {
+	public static byte[] decodeWebSafe(final byte[] source, final int off,
+			final int len) throws Base64DecoderException {
 		return decode(source, off, len, WEBSAFE_DECODABET);
 	}
 
@@ -539,13 +545,15 @@ public class Base64 {
 	 *            the decodabet for decoding Base64 content
 	 * @return decoded data
 	 */
-	public static byte[] decode(byte[] source, int off, int len,
-			byte[] decodabet) throws Base64DecoderException {
-		int len34 = len * 3 / 4;
-		byte[] outBuff = new byte[2 + len34]; // Upper limit on size of output
+	public static byte[] decode(final byte[] source, final int off,
+			final int len, final byte[] decodabet)
+			throws Base64DecoderException {
+		final int len34 = len * 3 / 4;
+		final byte[] outBuff = new byte[2 + len34]; // Upper limit on size of
+													// output
 		int outBuffPosn = 0;
 
-		byte[] b4 = new byte[4];
+		final byte[] b4 = new byte[4];
 		int b4Posn = 0;
 		int i = 0;
 		byte sbiCrop = 0;
@@ -562,14 +570,14 @@ public class Base64 {
 					// or 1
 					// and must be the last byte[s] in the encoded value
 					if (sbiCrop == EQUALS_SIGN) {
-						int bytesLeft = len - i;
-						byte lastByte = (byte) (source[len - 1 + off] & 0x7f);
+						final int bytesLeft = len - i;
+						final byte lastByte = (byte) (source[len - 1 + off] & 0x7f);
 						if (b4Posn == 0 || b4Posn == 1) {
 							throw new Base64DecoderException(
 									"invalid padding byte '=' at byte offset "
 											+ i);
-						} else if ((b4Posn == 3 && bytesLeft > 2)
-								|| (b4Posn == 4 && bytesLeft > 1)) {
+						} else if (b4Posn == 3 && bytesLeft > 2 || b4Posn == 4
+								&& bytesLeft > 1) {
 							throw new Base64DecoderException(
 									"padding byte '=' falsely signals end of encoded value "
 											+ "at offset " + i);
@@ -610,7 +618,7 @@ public class Base64 {
 			outBuffPosn += decode4to3(b4, 0, outBuff, outBuffPosn, decodabet);
 		}
 
-		byte[] out = new byte[outBuffPosn];
+		final byte[] out = new byte[outBuffPosn];
 		System.arraycopy(outBuff, 0, out, 0, outBuffPosn);
 		return out;
 	}

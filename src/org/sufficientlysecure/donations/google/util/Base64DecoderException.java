@@ -24,7 +24,7 @@ public class Base64DecoderException extends Exception {
 		super();
 	}
 
-	public Base64DecoderException(String s) {
+	public Base64DecoderException(final String s) {
 		super(s);
 	}
 

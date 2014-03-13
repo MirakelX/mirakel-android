@@ -24,20 +24,21 @@ public class IabException extends Exception {
 	static final long serialVersionUID = 1391887734;
 	IabResult mResult;
 
-	public IabException(IabResult r) {
+	public IabException(final IabResult r) {
 		this(r, null);
 	}
 
-	public IabException(int response, String message) {
+	public IabException(final int response, final String message) {
 		this(new IabResult(response, message));
 	}
 
-	public IabException(IabResult r, Exception cause) {
+	public IabException(final IabResult r, final Exception cause) {
 		super(r.getMessage(), cause);
 		this.mResult = r;
 	}
 
-	public IabException(int response, String message, Exception cause) {
+	public IabException(final int response, final String message,
+			final Exception cause) {
 		this(new IabResult(response, message), cause);
 	}
 

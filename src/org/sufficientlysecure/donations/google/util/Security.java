@@ -55,8 +55,8 @@ public class Security {
 	 * @param signature
 	 *            the signature for the data, signed with the private key
 	 */
-	public static boolean verifyPurchase(String base64PublicKey,
-			String signedData, String signature) {
+	public static boolean verifyPurchase(final String base64PublicKey,
+			final String signedData, final String signature) {
 		if (signedData == null) {
 			Log.e(TAG, "data is null");
 			return false;
@@ -64,7 +64,7 @@ public class Security {
 
 		boolean verified = false;
 		if (!TextUtils.isEmpty(signature)) {
-			PublicKey key = Security.generatePublicKey(base64PublicKey);
+			final PublicKey key = Security.generatePublicKey(base64PublicKey);
 			verified = Security.verify(key, signedData, signature);
 			if (!verified) {
 				Log.w(TAG, "signature does not match data.");
@@ -83,19 +83,19 @@ public class Security {
 	 * @throws IllegalArgumentException
 	 *             if encodedPublicKey is invalid
 	 */
-	public static PublicKey generatePublicKey(String encodedPublicKey) {
+	public static PublicKey generatePublicKey(final String encodedPublicKey) {
 		try {
-			byte[] decodedKey = Base64.decode(encodedPublicKey);
-			KeyFactory keyFactory = KeyFactory
+			final byte[] decodedKey = Base64.decode(encodedPublicKey);
+			final KeyFactory keyFactory = KeyFactory
 					.getInstance(KEY_FACTORY_ALGORITHM);
 			return keyFactory
 					.generatePublic(new X509EncodedKeySpec(decodedKey));
-		} catch (NoSuchAlgorithmException e) {
+		} catch (final NoSuchAlgorithmException e) {
 			throw new RuntimeException(e);
-		} catch (InvalidKeySpecException e) {
+		} catch (final InvalidKeySpecException e) {
 			Log.e(TAG, "Invalid key specification.");
 			throw new IllegalArgumentException(e);
-		} catch (Base64DecoderException e) {
+		} catch (final Base64DecoderException e) {
 			Log.e(TAG, "Base64 decoding failed.");
 			throw new IllegalArgumentException(e);
 		}
@@ -113,8 +113,8 @@ public class Security {
 	 *            server signature
 	 * @return true if the data and signature match
 	 */
-	public static boolean verify(PublicKey publicKey, String signedData,
-			String signature) {
+	public static boolean verify(final PublicKey publicKey,
+			final String signedData, final String signature) {
 		Signature sig;
 		try {
 			sig = Signature.getInstance(SIGNATURE_ALGORITHM);
@@ -125,13 +125,13 @@ public class Security {
 				return false;
 			}
 			return true;
-		} catch (NoSuchAlgorithmException e) {
+		} catch (final NoSuchAlgorithmException e) {
 			Log.e(TAG, "NoSuchAlgorithmException.");
-		} catch (InvalidKeyException e) {
+		} catch (final InvalidKeyException e) {
 			Log.e(TAG, "Invalid key specification.");
-		} catch (SignatureException e) {
+		} catch (final SignatureException e) {
 			Log.e(TAG, "Signature exception.");
-		} catch (Base64DecoderException e) {
+		} catch (final Base64DecoderException e) {
 			Log.e(TAG, "Base64 decoding failed.");
 		}
 		return false;

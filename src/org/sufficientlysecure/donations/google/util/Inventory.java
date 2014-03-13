@@ -32,7 +32,7 @@ public class Inventory {
 	}
 
 	/** Returns the listing details for an in-app product. */
-	public SkuDetails getSkuDetails(String sku) {
+	public SkuDetails getSkuDetails(final String sku) {
 		return this.mSkuMap.get(sku);
 	}
 
@@ -40,17 +40,17 @@ public class Inventory {
 	 * Returns purchase information for a given product, or null if there is no
 	 * purchase.
 	 */
-	public Purchase getPurchase(String sku) {
+	public Purchase getPurchase(final String sku) {
 		return this.mPurchaseMap.get(sku);
 	}
 
 	/** Returns whether or not there exists a purchase of the given product. */
-	public boolean hasPurchase(String sku) {
+	public boolean hasPurchase(final String sku) {
 		return this.mPurchaseMap.containsKey(sku);
 	}
 
 	/** Return whether or not details about the given product are available. */
-	public boolean hasDetails(String sku) {
+	public boolean hasDetails(final String sku) {
 		return this.mSkuMap.containsKey(sku);
 	}
 
@@ -62,9 +62,10 @@ public class Inventory {
 	 * successfully, which means that erasing its purchase data from the
 	 * Inventory you already have is quicker than querying for a new Inventory.
 	 */
-	public void erasePurchase(String sku) {
-		if (this.mPurchaseMap.containsKey(sku))
+	public void erasePurchase(final String sku) {
+		if (this.mPurchaseMap.containsKey(sku)) {
 			this.mPurchaseMap.remove(sku);
+		}
 	}
 
 	/** Returns a list of all owned product IDs. */
@@ -73,11 +74,12 @@ public class Inventory {
 	}
 
 	/** Returns a list of all owned product IDs of a given type */
-	List<String> getAllOwnedSkus(String itemType) {
-		List<String> result = new ArrayList<String>();
-		for (Purchase p : this.mPurchaseMap.values()) {
-			if (p.getItemType().equals(itemType))
+	List<String> getAllOwnedSkus(final String itemType) {
+		final List<String> result = new ArrayList<String>();
+		for (final Purchase p : this.mPurchaseMap.values()) {
+			if (p.getItemType().equals(itemType)) {
 				result.add(p.getSku());
+			}
 		}
 		return result;
 	}
@@ -87,11 +89,11 @@ public class Inventory {
 		return new ArrayList<Purchase>(this.mPurchaseMap.values());
 	}
 
-	void addSkuDetails(SkuDetails d) {
+	void addSkuDetails(final SkuDetails d) {
 		this.mSkuMap.put(d.getSku(), d);
 	}
 
-	void addPurchase(Purchase p) {
+	void addPurchase(final Purchase p) {
 		this.mPurchaseMap.put(p.getSku(), p);
 	}
 }

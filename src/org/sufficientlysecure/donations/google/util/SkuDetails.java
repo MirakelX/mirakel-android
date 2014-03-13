@@ -30,15 +30,15 @@ public class SkuDetails {
 	String mDescription;
 	String mJson;
 
-	public SkuDetails(String jsonSkuDetails) throws JSONException {
+	public SkuDetails(final String jsonSkuDetails) throws JSONException {
 		this(IabHelper.ITEM_TYPE_INAPP, jsonSkuDetails);
 	}
 
-	public SkuDetails(String itemType, String jsonSkuDetails)
+	public SkuDetails(final String itemType, final String jsonSkuDetails)
 			throws JSONException {
 		this.mItemType = itemType;
 		this.mJson = jsonSkuDetails;
-		JSONObject o = new JSONObject(this.mJson);
+		final JSONObject o = new JSONObject(this.mJson);
 		this.mSku = o.optString("productId");
 		this.mType = o.optString("type");
 		this.mPrice = o.optString("price");

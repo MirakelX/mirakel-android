@@ -26,7 +26,7 @@ public class IabResult {
 	int mResponse;
 	String mMessage;
 
-	public IabResult(int response, String message) {
+	public IabResult(final int response, final String message) {
 		this.mResponse = response;
 		if (message == null || message.trim().length() == 0) {
 			this.mMessage = IabHelper.getResponseDesc(response);
