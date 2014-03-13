@@ -21,7 +21,7 @@ public class DragSortItemView extends ViewGroup {
 
 	private int mGravity = Gravity.TOP;
 
-	public DragSortItemView(Context context) {
+	public DragSortItemView(final Context context) {
 		super(context);
 
 		// always init with standard ListView layout params
@@ -32,24 +32,24 @@ public class DragSortItemView extends ViewGroup {
 		// setClipChildren(true);
 	}
 
-	public void setGravity(int gravity) {
-		mGravity = gravity;
+	public void setGravity(final int gravity) {
+		this.mGravity = gravity;
 	}
 
 	public int getGravity() {
-		return mGravity;
+		return this.mGravity;
 	}
 
 	@Override
-	protected void onLayout(boolean changed, int left, int top, int right,
-			int bottom) {
+	protected void onLayout(final boolean changed, final int left,
+			final int top, final int right, final int bottom) {
 		final View child = getChildAt(0);
 
 		if (child == null) {
 			return;
 		}
 
-		if (mGravity == Gravity.TOP) {
+		if (this.mGravity == Gravity.TOP) {
 			child.layout(0, 0, getMeasuredWidth(), child.getMeasuredHeight());
 		} else {
 			child.layout(0, getMeasuredHeight() - child.getMeasuredHeight(),
@@ -61,12 +61,13 @@ public class DragSortItemView extends ViewGroup {
      * 
      */
 	@Override
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+	protected void onMeasure(final int widthMeasureSpec,
+			final int heightMeasureSpec) {
 
 		int height = MeasureSpec.getSize(heightMeasureSpec);
-		int width = MeasureSpec.getSize(widthMeasureSpec);
+		final int width = MeasureSpec.getSize(widthMeasureSpec);
 
-		int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+		final int heightMode = MeasureSpec.getMode(heightMeasureSpec);
 
 		final View child = getChildAt(0);
 		if (child == null) {
@@ -81,7 +82,7 @@ public class DragSortItemView extends ViewGroup {
 		}
 
 		if (heightMode == MeasureSpec.UNSPECIFIED) {
-			ViewGroup.LayoutParams lp = getLayoutParams();
+			final ViewGroup.LayoutParams lp = getLayoutParams();
 
 			if (lp.height > 0) {
 				height = lp.height;

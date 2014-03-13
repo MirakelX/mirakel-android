@@ -354,7 +354,7 @@ public class SimpleDragSortCursorAdapter extends ResourceDragSortCursorAdapter {
 		if (c != null) {
 			int i;
 			final int count = from.length;
-			if ((this.mFrom == null) || (this.mFrom.length != count)) {
+			if (this.mFrom == null || this.mFrom.length != count) {
 				this.mFrom = new int[count];
 			}
 			for (i = 0; i < count; i++) {

@@ -21,14 +21,14 @@ public class SimpleFloatViewManager implements
 
 	private int mFloatBGColor = Color.BLACK;
 
-	private ListView mListView;
+	private final ListView mListView;
 
-	public SimpleFloatViewManager(ListView lv) {
-		mListView = lv;
+	public SimpleFloatViewManager(final ListView lv) {
+		this.mListView = lv;
 	}
 
-	public void setBackgroundColor(int color) {
-		mFloatBGColor = color;
+	public void setBackgroundColor(final int color) {
+		this.mFloatBGColor = color;
 	}
 
 	/**
@@ -36,12 +36,12 @@ public class SimpleFloatViewManager implements
 	 * currently shown at ListView <code>position</code>.
 	 */
 	@Override
-	public View onCreateFloatView(int position) {
+	public View onCreateFloatView(final int position) {
 		// Guaranteed that this will not be null? I think so. Nope, got
 		// a NullPointerException once...
-		View v = mListView.getChildAt(position
-				+ mListView.getHeaderViewsCount()
-				- mListView.getFirstVisiblePosition());
+		final View v = this.mListView.getChildAt(position
+				+ this.mListView.getHeaderViewsCount()
+				- this.mListView.getFirstVisiblePosition());
 
 		if (v == null) {
 			return null;
@@ -53,26 +53,27 @@ public class SimpleFloatViewManager implements
 		// recycled by the framework when the list tries to clean up memory
 		// v.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
 		v.setDrawingCacheEnabled(true);
-		mFloatBitmap = Bitmap.createBitmap(v.getDrawingCache());
+		this.mFloatBitmap = Bitmap.createBitmap(v.getDrawingCache());
 		v.setDrawingCacheEnabled(false);
 
-		if (mImageView == null) {
-			mImageView = new ImageView(mListView.getContext());
+		if (this.mImageView == null) {
+			this.mImageView = new ImageView(this.mListView.getContext());
 		}
-		mImageView.setBackgroundColor(mFloatBGColor);
-		mImageView.setPadding(0, 0, 0, 0);
-		mImageView.setImageBitmap(mFloatBitmap);
-		mImageView.setLayoutParams(new ViewGroup.LayoutParams(v.getWidth(), v
-				.getHeight()));
+		this.mImageView.setBackgroundColor(this.mFloatBGColor);
+		this.mImageView.setPadding(0, 0, 0, 0);
+		this.mImageView.setImageBitmap(this.mFloatBitmap);
+		this.mImageView.setLayoutParams(new ViewGroup.LayoutParams(
+				v.getWidth(), v.getHeight()));
 
-		return mImageView;
+		return this.mImageView;
 	}
 
 	/**
 	 * This does nothing
 	 */
 	@Override
-	public void onDragFloatView(View floatView, Point position, Point touch) {
+	public void onDragFloatView(final View floatView, final Point position,
+			final Point touch) {
 		// do nothing
 	}
 
@@ -81,11 +82,11 @@ public class SimpleFloatViewManager implements
 	 * tells the system to recycle it.
 	 */
 	@Override
-	public void onDestroyFloatView(View floatView) {
+	public void onDestroyFloatView(final View floatView) {
 		((ImageView) floatView).setImageDrawable(null);
 
-		mFloatBitmap.recycle();
-		mFloatBitmap = null;
+		this.mFloatBitmap.recycle();
+		this.mFloatBitmap = null;
 	}
 
 }

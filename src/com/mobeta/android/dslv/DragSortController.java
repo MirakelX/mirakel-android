@@ -46,11 +46,11 @@ public class DragSortController extends SimpleFloatViewManager implements
 	private boolean mRemoveEnabled = false;
 	private boolean mIsRemoving = false;
 
-	private GestureDetector mDetector;
+	private final GestureDetector mDetector;
 
-	private GestureDetector mFlingRemoveDetector;
+	private final GestureDetector mFlingRemoveDetector;
 
-	private int mTouchSlop;
+	private final int mTouchSlop;
 
 	public static final int MISS = -1;
 
@@ -59,7 +59,7 @@ public class DragSortController extends SimpleFloatViewManager implements
 
 	private int mClickRemoveHitPos = MISS;
 
-	private int[] mTempLoc = new int[2];
+	private final int[] mTempLoc = new int[2];
 
 	private int mItemX;
 	private int mItemY;
@@ -69,7 +69,7 @@ public class DragSortController extends SimpleFloatViewManager implements
 
 	private boolean mDragging = false;
 
-	private float mFlingSpeed = 500f;
+	private final float mFlingSpeed = 500f;
 
 	private int mDragHandleId;
 
@@ -78,7 +78,7 @@ public class DragSortController extends SimpleFloatViewManager implements
 	private int mFlingHandleId;
 	private boolean mCanDrag;
 
-	private DragSortListView mDslv;
+	private final DragSortListView mDslv;
 	private int mPositionX;
 
 	/**
@@ -89,17 +89,18 @@ public class DragSortController extends SimpleFloatViewManager implements
 	 * @param dslv
 	 *            The DSLV instance
 	 */
-	public DragSortController(DragSortListView dslv) {
+	public DragSortController(final DragSortListView dslv) {
 		this(dslv, 0, ON_DOWN, FLING_REMOVE);
 	}
 
-	public DragSortController(DragSortListView dslv, int dragHandleId,
-			int dragInitMode, int removeMode) {
+	public DragSortController(final DragSortListView dslv,
+			final int dragHandleId, final int dragInitMode, final int removeMode) {
 		this(dslv, dragHandleId, dragInitMode, removeMode, 0);
 	}
 
-	public DragSortController(DragSortListView dslv, int dragHandleId,
-			int dragInitMode, int removeMode, int clickRemoveId) {
+	public DragSortController(final DragSortListView dslv,
+			final int dragHandleId, final int dragInitMode,
+			final int removeMode, final int clickRemoveId) {
 		this(dslv, dragHandleId, dragInitMode, removeMode, clickRemoveId, 0);
 	}
 
@@ -112,26 +113,27 @@ public class DragSortController extends SimpleFloatViewManager implements
 	 *            The resource id of the View that represents the drag handle in
 	 *            a list item.
 	 */
-	public DragSortController(DragSortListView dslv, int dragHandleId,
-			int dragInitMode, int removeMode, int clickRemoveId,
-			int flingHandleId) {
+	public DragSortController(final DragSortListView dslv,
+			final int dragHandleId, final int dragInitMode,
+			final int removeMode, final int clickRemoveId,
+			final int flingHandleId) {
 		super(dslv);
-		mDslv = dslv;
-		mDetector = new GestureDetector(dslv.getContext(), this);
-		mFlingRemoveDetector = new GestureDetector(dslv.getContext(),
-				mFlingRemoveListener);
-		mFlingRemoveDetector.setIsLongpressEnabled(false);
-		mTouchSlop = ViewConfiguration.get(dslv.getContext())
+		this.mDslv = dslv;
+		this.mDetector = new GestureDetector(dslv.getContext(), this);
+		this.mFlingRemoveDetector = new GestureDetector(dslv.getContext(),
+				this.mFlingRemoveListener);
+		this.mFlingRemoveDetector.setIsLongpressEnabled(false);
+		this.mTouchSlop = ViewConfiguration.get(dslv.getContext())
 				.getScaledTouchSlop();
-		mDragHandleId = dragHandleId;
-		mClickRemoveId = clickRemoveId;
-		mFlingHandleId = flingHandleId;
+		this.mDragHandleId = dragHandleId;
+		this.mClickRemoveId = clickRemoveId;
+		this.mFlingHandleId = flingHandleId;
 		setRemoveMode(removeMode);
 		setDragInitMode(dragInitMode);
 	}
 
 	public int getDragInitMode() {
-		return mDragInitMode;
+		return this.mDragInitMode;
 	}
 
 	/**
@@ -141,8 +143,8 @@ public class DragSortController extends SimpleFloatViewManager implements
 	 * @param mode
 	 *            The drag init mode.
 	 */
-	public void setDragInitMode(int mode) {
-		mDragInitMode = mode;
+	public void setDragInitMode(final int mode) {
+		this.mDragInitMode = mode;
 	}
 
 	/**
@@ -152,12 +154,12 @@ public class DragSortController extends SimpleFloatViewManager implements
 	 * @param enabled
 	 *            Set <code>true</code> to enable list item sorting.
 	 */
-	public void setSortEnabled(boolean enabled) {
-		mSortEnabled = enabled;
+	public void setSortEnabled(final boolean enabled) {
+		this.mSortEnabled = enabled;
 	}
 
 	public boolean isSortEnabled() {
-		return mSortEnabled;
+		return this.mSortEnabled;
 	}
 
 	/**
@@ -165,23 +167,23 @@ public class DragSortController extends SimpleFloatViewManager implements
 	 * {@link FLING_LEFT_REMOVE}, {@link SLIDE_RIGHT_REMOVE}, or
 	 * {@link SLIDE_LEFT_REMOVE}.
 	 */
-	public void setRemoveMode(int mode) {
-		mRemoveMode = mode;
+	public void setRemoveMode(final int mode) {
+		this.mRemoveMode = mode;
 	}
 
 	public int getRemoveMode() {
-		return mRemoveMode;
+		return this.mRemoveMode;
 	}
 
 	/**
 	 * Enable/Disable item removal without affecting remove mode.
 	 */
-	public void setRemoveEnabled(boolean enabled) {
-		mRemoveEnabled = enabled;
+	public void setRemoveEnabled(final boolean enabled) {
+		this.mRemoveEnabled = enabled;
 	}
 
 	public boolean isRemoveEnabled() {
-		return mRemoveEnabled;
+		return this.mRemoveEnabled;
 	}
 
 	/**
@@ -191,8 +193,8 @@ public class DragSortController extends SimpleFloatViewManager implements
 	 * @param id
 	 *            An android resource id.
 	 */
-	public void setDragHandleId(int id) {
-		mDragHandleId = id;
+	public void setDragHandleId(final int id) {
+		this.mDragHandleId = id;
 	}
 
 	/**
@@ -202,8 +204,8 @@ public class DragSortController extends SimpleFloatViewManager implements
 	 * @param id
 	 *            An android resource id.
 	 */
-	public void setFlingHandleId(int id) {
-		mFlingHandleId = id;
+	public void setFlingHandleId(final int id) {
+		this.mFlingHandleId = id;
 	}
 
 	/**
@@ -212,8 +214,8 @@ public class DragSortController extends SimpleFloatViewManager implements
 	 * @param id
 	 *            An android resource id.
 	 */
-	public void setClickRemoveId(int id) {
-		mClickRemoveId = id;
+	public void setClickRemoveId(final int id) {
+		this.mClickRemoveId = id;
 	}
 
 	/**
@@ -230,51 +232,55 @@ public class DragSortController extends SimpleFloatViewManager implements
 	 * 
 	 * @return True if drag started, false otherwise.
 	 */
-	public boolean startDrag(int position, int deltaX, int deltaY) {
+	public boolean startDrag(final int position, final int deltaX,
+			final int deltaY) {
 
 		int dragFlags = 0;
-		if (mSortEnabled && !mIsRemoving) {
+		if (this.mSortEnabled && !this.mIsRemoving) {
 			dragFlags |= DragSortListView.DRAG_POS_Y
 					| DragSortListView.DRAG_NEG_Y;
 		}
-		if (mRemoveEnabled && mIsRemoving) {
+		if (this.mRemoveEnabled && this.mIsRemoving) {
 			dragFlags |= DragSortListView.DRAG_POS_X;
 			dragFlags |= DragSortListView.DRAG_NEG_X;
 		}
 
-		mDragging = mDslv.startDrag(position - mDslv.getHeaderViewsCount(),
-				dragFlags, deltaX, deltaY);
-		return mDragging;
+		this.mDragging = this.mDslv.startDrag(
+				position - this.mDslv.getHeaderViewsCount(), dragFlags, deltaX,
+				deltaY);
+		return this.mDragging;
 	}
 
 	@Override
-	public boolean onTouch(View v, MotionEvent ev) {
-		if (!mDslv.isDragEnabled() || mDslv.listViewIntercepted()) {
+	public boolean onTouch(final View v, final MotionEvent ev) {
+		if (!this.mDslv.isDragEnabled() || this.mDslv.listViewIntercepted()) {
 			return false;
 		}
 
-		mDetector.onTouchEvent(ev);
-		if (mRemoveEnabled && mDragging && mRemoveMode == FLING_REMOVE) {
-			mFlingRemoveDetector.onTouchEvent(ev);
+		this.mDetector.onTouchEvent(ev);
+		if (this.mRemoveEnabled && this.mDragging
+				&& this.mRemoveMode == FLING_REMOVE) {
+			this.mFlingRemoveDetector.onTouchEvent(ev);
 		}
 
-		int action = ev.getAction() & MotionEvent.ACTION_MASK;
+		final int action = ev.getAction() & MotionEvent.ACTION_MASK;
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
-			mCurrX = (int) ev.getX();
-			mCurrY = (int) ev.getY();
+			this.mCurrX = (int) ev.getX();
+			this.mCurrY = (int) ev.getY();
 			break;
 		case MotionEvent.ACTION_UP:
-			if (mRemoveEnabled && mIsRemoving) {
-				int x = mPositionX >= 0 ? mPositionX : -mPositionX;
-				int removePoint = mDslv.getWidth() / 2;
+			if (this.mRemoveEnabled && this.mIsRemoving) {
+				final int x = this.mPositionX >= 0 ? this.mPositionX
+						: -this.mPositionX;
+				final int removePoint = this.mDslv.getWidth() / 2;
 				if (x > removePoint) {
-					mDslv.stopDragWithVelocity(true, 0);
+					this.mDslv.stopDragWithVelocity(true, 0);
 				}
 			}
 		case MotionEvent.ACTION_CANCEL:
-			mIsRemoving = false;
-			mDragging = false;
+			this.mIsRemoving = false;
+			this.mDragging = false;
 			break;
 		}
 
@@ -285,10 +291,11 @@ public class DragSortController extends SimpleFloatViewManager implements
 	 * Overrides to provide fading when slide removal is enabled.
 	 */
 	@Override
-	public void onDragFloatView(View floatView, Point position, Point touch) {
+	public void onDragFloatView(final View floatView, final Point position,
+			final Point touch) {
 
-		if (mRemoveEnabled && mIsRemoving) {
-			mPositionX = position.x;
+		if (this.mRemoveEnabled && this.mIsRemoving) {
+			this.mPositionX = position.x;
 		}
 	}
 
@@ -304,12 +311,13 @@ public class DragSortController extends SimpleFloatViewManager implements
 	 * @return The list position to drag if a drag-init gesture is detected;
 	 *         MISS if unsuccessful.
 	 */
-	public int startDragPosition(MotionEvent ev) {
+	public int startDragPosition(final MotionEvent ev) {
 		return dragHandleHitPosition(ev);
 	}
 
-	public int startFlingPosition(MotionEvent ev) {
-		return mRemoveMode == FLING_REMOVE ? flingHandleHitPosition(ev) : MISS;
+	public int startFlingPosition(final MotionEvent ev) {
+		return this.mRemoveMode == FLING_REMOVE ? flingHandleHitPosition(ev)
+				: MISS;
 	}
 
 	/**
@@ -323,44 +331,45 @@ public class DragSortController extends SimpleFloatViewManager implements
 	 * @return The list position of the item whose drag handle was touched; MISS
 	 *         if unsuccessful.
 	 */
-	public int dragHandleHitPosition(MotionEvent ev) {
-		return viewIdHitPosition(ev, mDragHandleId);
+	public int dragHandleHitPosition(final MotionEvent ev) {
+		return viewIdHitPosition(ev, this.mDragHandleId);
 	}
 
-	public int flingHandleHitPosition(MotionEvent ev) {
-		return viewIdHitPosition(ev, mFlingHandleId);
+	public int flingHandleHitPosition(final MotionEvent ev) {
+		return viewIdHitPosition(ev, this.mFlingHandleId);
 	}
 
-	public int viewIdHitPosition(MotionEvent ev, int id) {
+	public int viewIdHitPosition(final MotionEvent ev, final int id) {
 		final int x = (int) ev.getX();
 		final int y = (int) ev.getY();
 
-		int touchPos = mDslv.pointToPosition(x, y); // includes headers/footers
+		final int touchPos = this.mDslv.pointToPosition(x, y); // includes
+																// headers/footers
 
-		final int numHeaders = mDslv.getHeaderViewsCount();
-		final int numFooters = mDslv.getFooterViewsCount();
-		final int count = mDslv.getCount();
+		final int numHeaders = this.mDslv.getHeaderViewsCount();
+		final int numFooters = this.mDslv.getFooterViewsCount();
+		final int count = this.mDslv.getCount();
 
 		// Log.d("mobeta", "touch down on position " + itemnum);
 		// We're only interested if the touch was on an
 		// item that's not a header or footer.
 		if (touchPos != AdapterView.INVALID_POSITION && touchPos >= numHeaders
-				&& touchPos < (count - numFooters)) {
-			final View item = mDslv.getChildAt(touchPos
-					- mDslv.getFirstVisiblePosition());
+				&& touchPos < count - numFooters) {
+			final View item = this.mDslv.getChildAt(touchPos
+					- this.mDslv.getFirstVisiblePosition());
 			final int rawX = (int) ev.getRawX();
 			final int rawY = (int) ev.getRawY();
 
-			View dragBox = id == 0 ? item : (View) item.findViewById(id);
+			final View dragBox = id == 0 ? item : (View) item.findViewById(id);
 			if (dragBox != null) {
-				dragBox.getLocationOnScreen(mTempLoc);
+				dragBox.getLocationOnScreen(this.mTempLoc);
 
-				if (rawX > mTempLoc[0] && rawY > mTempLoc[1]
-						&& rawX < mTempLoc[0] + dragBox.getWidth()
-						&& rawY < mTempLoc[1] + dragBox.getHeight()) {
+				if (rawX > this.mTempLoc[0] && rawY > this.mTempLoc[1]
+						&& rawX < this.mTempLoc[0] + dragBox.getWidth()
+						&& rawY < this.mTempLoc[1] + dragBox.getHeight()) {
 
-					mItemX = item.getLeft();
-					mItemY = item.getTop();
+					this.mItemX = item.getLeft();
+					this.mItemY = item.getTop();
 
 					return touchPos;
 				}
@@ -371,54 +380,57 @@ public class DragSortController extends SimpleFloatViewManager implements
 	}
 
 	@Override
-	public boolean onDown(MotionEvent ev) {
-		if (mRemoveEnabled && mRemoveMode == CLICK_REMOVE) {
-			mClickRemoveHitPos = viewIdHitPosition(ev, mClickRemoveId);
+	public boolean onDown(final MotionEvent ev) {
+		if (this.mRemoveEnabled && this.mRemoveMode == CLICK_REMOVE) {
+			this.mClickRemoveHitPos = viewIdHitPosition(ev, this.mClickRemoveId);
 		}
 
-		mHitPos = startDragPosition(ev);
-		if (mHitPos != MISS && mDragInitMode == ON_DOWN) {
-			startDrag(mHitPos, (int) ev.getX() - mItemX, (int) ev.getY()
-					- mItemY);
+		this.mHitPos = startDragPosition(ev);
+		if (this.mHitPos != MISS && this.mDragInitMode == ON_DOWN) {
+			startDrag(this.mHitPos, (int) ev.getX() - this.mItemX,
+					(int) ev.getY() - this.mItemY);
 		}
 
-		mIsRemoving = false;
-		mCanDrag = true;
-		mPositionX = 0;
-		mFlingHitPos = startFlingPosition(ev);
+		this.mIsRemoving = false;
+		this.mCanDrag = true;
+		this.mPositionX = 0;
+		this.mFlingHitPos = startFlingPosition(ev);
 
 		return true;
 	}
 
 	@Override
-	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
-			float distanceY) {
+	public boolean onScroll(final MotionEvent e1, final MotionEvent e2,
+			final float distanceX, final float distanceY) {
 
 		final int x1 = (int) e1.getX();
 		final int y1 = (int) e1.getY();
 		final int x2 = (int) e2.getX();
 		final int y2 = (int) e2.getY();
-		final int deltaX = x2 - mItemX;
-		final int deltaY = y2 - mItemY;
+		final int deltaX = x2 - this.mItemX;
+		final int deltaY = y2 - this.mItemY;
 
-		if (mCanDrag && !mDragging && (mHitPos != MISS || mFlingHitPos != MISS)) {
-			if (mHitPos != MISS) {
-				if (mDragInitMode == ON_DRAG && Math.abs(y2 - y1) > mTouchSlop
-						&& mSortEnabled) {
-					startDrag(mHitPos, deltaX, deltaY);
-				} else if (mDragInitMode != ON_DOWN
-						&& Math.abs(x2 - x1) > mTouchSlop && mRemoveEnabled) {
-					mIsRemoving = true;
-					startDrag(mFlingHitPos, deltaX, deltaY);
+		if (this.mCanDrag && !this.mDragging
+				&& (this.mHitPos != MISS || this.mFlingHitPos != MISS)) {
+			if (this.mHitPos != MISS) {
+				if (this.mDragInitMode == ON_DRAG
+						&& Math.abs(y2 - y1) > this.mTouchSlop
+						&& this.mSortEnabled) {
+					startDrag(this.mHitPos, deltaX, deltaY);
+				} else if (this.mDragInitMode != ON_DOWN
+						&& Math.abs(x2 - x1) > this.mTouchSlop
+						&& this.mRemoveEnabled) {
+					this.mIsRemoving = true;
+					startDrag(this.mFlingHitPos, deltaX, deltaY);
 				}
-			} else if (mFlingHitPos != MISS) {
-				if (Math.abs(x2 - x1) > mTouchSlop && mRemoveEnabled) {
-					mIsRemoving = true;
-					startDrag(mFlingHitPos, deltaX, deltaY);
-				} else if (Math.abs(y2 - y1) > mTouchSlop) {
-					mCanDrag = false; // if started to scroll the list then
-										// don't allow sorting nor
-										// fling-removing
+			} else if (this.mFlingHitPos != MISS) {
+				if (Math.abs(x2 - x1) > this.mTouchSlop && this.mRemoveEnabled) {
+					this.mIsRemoving = true;
+					startDrag(this.mFlingHitPos, deltaX, deltaY);
+				} else if (Math.abs(y2 - y1) > this.mTouchSlop) {
+					this.mCanDrag = false; // if started to scroll the list then
+											// don't allow sorting nor
+											// fling-removing
 				}
 			}
 		}
@@ -427,28 +439,30 @@ public class DragSortController extends SimpleFloatViewManager implements
 	}
 
 	@Override
-	public void onLongPress(MotionEvent e) {
+	public void onLongPress(final MotionEvent e) {
 		// Log.d("mobeta", "lift listener long pressed");
-		if (mHitPos != MISS && mDragInitMode == ON_LONG_PRESS) {
-			mDslv.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-			startDrag(mHitPos, mCurrX - mItemX, mCurrY - mItemY);
+		if (this.mHitPos != MISS && this.mDragInitMode == ON_LONG_PRESS) {
+			this.mDslv
+					.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+			startDrag(this.mHitPos, this.mCurrX - this.mItemX, this.mCurrY
+					- this.mItemY);
 		}
 	}
 
 	// complete the OnGestureListener interface
 	@Override
-	public final boolean onFling(MotionEvent e1, MotionEvent e2,
-			float velocityX, float velocityY) {
+	public final boolean onFling(final MotionEvent e1, final MotionEvent e2,
+			final float velocityX, final float velocityY) {
 		return false;
 	}
 
 	// complete the OnGestureListener interface
 	@Override
-	public boolean onSingleTapUp(MotionEvent ev) {
-		if (mRemoveEnabled && mRemoveMode == CLICK_REMOVE) {
-			if (mClickRemoveHitPos != MISS) {
-				mDslv.removeItem(mClickRemoveHitPos
-						- mDslv.getHeaderViewsCount());
+	public boolean onSingleTapUp(final MotionEvent ev) {
+		if (this.mRemoveEnabled && this.mRemoveMode == CLICK_REMOVE) {
+			if (this.mClickRemoveHitPos != MISS) {
+				this.mDslv.removeItem(this.mClickRemoveHitPos
+						- this.mDslv.getHeaderViewsCount());
 			}
 		}
 		return true;
@@ -456,28 +470,32 @@ public class DragSortController extends SimpleFloatViewManager implements
 
 	// complete the OnGestureListener interface
 	@Override
-	public void onShowPress(MotionEvent ev) {
+	public void onShowPress(final MotionEvent ev) {
 		// do nothing
 	}
 
-	private GestureDetector.OnGestureListener mFlingRemoveListener = new GestureDetector.SimpleOnGestureListener() {
+	private final GestureDetector.OnGestureListener mFlingRemoveListener = new GestureDetector.SimpleOnGestureListener() {
 		@Override
-		public final boolean onFling(MotionEvent e1, MotionEvent e2,
-				float velocityX, float velocityY) {
+		public final boolean onFling(final MotionEvent e1,
+				final MotionEvent e2, final float velocityX,
+				final float velocityY) {
 			// Log.d("mobeta", "on fling remove called");
-			if (mRemoveEnabled && mIsRemoving) {
-				int w = mDslv.getWidth();
-				int minPos = w / 5;
-				if (velocityX > mFlingSpeed) {
-					if (mPositionX > -minPos) {
-						mDslv.stopDragWithVelocity(true, velocityX);
+			if (DragSortController.this.mRemoveEnabled
+					&& DragSortController.this.mIsRemoving) {
+				final int w = DragSortController.this.mDslv.getWidth();
+				final int minPos = w / 5;
+				if (velocityX > DragSortController.this.mFlingSpeed) {
+					if (DragSortController.this.mPositionX > -minPos) {
+						DragSortController.this.mDslv.stopDragWithVelocity(
+								true, velocityX);
 					}
-				} else if (velocityX < -mFlingSpeed) {
-					if (mPositionX < minPos) {
-						mDslv.stopDragWithVelocity(true, velocityX);
+				} else if (velocityX < -DragSortController.this.mFlingSpeed) {
+					if (DragSortController.this.mPositionX < minPos) {
+						DragSortController.this.mDslv.stopDragWithVelocity(
+								true, velocityX);
 					}
 				}
-				mIsRemoving = false;
+				DragSortController.this.mIsRemoving = false;
 			}
 			return false;
 		}

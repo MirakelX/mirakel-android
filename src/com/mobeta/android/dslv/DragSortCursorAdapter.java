@@ -31,19 +31,21 @@ public abstract class DragSortCursorAdapter extends CursorAdapter implements
 	/**
 	 * Key is ListView position, value is Cursor position
 	 */
-	private SparseIntArray mListMapping = new SparseIntArray();
+	private final SparseIntArray mListMapping = new SparseIntArray();
 
-	private ArrayList<Integer> mRemovedCursorPositions = new ArrayList<Integer>();
+	private final ArrayList<Integer> mRemovedCursorPositions = new ArrayList<Integer>();
 
-	public DragSortCursorAdapter(Context context, Cursor c) {
+	public DragSortCursorAdapter(final Context context, final Cursor c) {
 		super(context, c);
 	}
 
-	public DragSortCursorAdapter(Context context, Cursor c, boolean autoRequery) {
+	public DragSortCursorAdapter(final Context context, final Cursor c,
+			final boolean autoRequery) {
 		super(context, c, autoRequery);
 	}
 
-	public DragSortCursorAdapter(Context context, Cursor c, int flags) {
+	public DragSortCursorAdapter(final Context context, final Cursor c,
+			final int flags) {
 		super(context, c, flags);
 	}
 
@@ -53,8 +55,8 @@ public abstract class DragSortCursorAdapter extends CursorAdapter implements
 	 * @see android.widget.CursorAdapter#swapCursor(android.database.Cursor)
 	 */
 	@Override
-	public Cursor swapCursor(Cursor newCursor) {
-		Cursor old = super.swapCursor(newCursor);
+	public Cursor swapCursor(final Cursor newCursor) {
+		final Cursor old = super.swapCursor(newCursor);
 		resetMappings();
 		return old;
 	}
@@ -65,7 +67,7 @@ public abstract class DragSortCursorAdapter extends CursorAdapter implements
 	 * @see android.widget.CursorAdapter#changeCursor(android.database.Cursor)
 	 */
 	@Override
-	public void changeCursor(Cursor cursor) {
+	public void changeCursor(final Cursor cursor) {
 		super.changeCursor(cursor);
 		resetMappings();
 	}
@@ -79,30 +81,32 @@ public abstract class DragSortCursorAdapter extends CursorAdapter implements
 	}
 
 	private void resetMappings() {
-		mListMapping.clear();
-		mRemovedCursorPositions.clear();
+		this.mListMapping.clear();
+		this.mRemovedCursorPositions.clear();
 	}
 
 	@Override
-	public Object getItem(int position) {
-		return super.getItem(mListMapping.get(position, position));
+	public Object getItem(final int position) {
+		return super.getItem(this.mListMapping.get(position, position));
 	}
 
 	@Override
-	public long getItemId(int position) {
-		return super.getItemId(mListMapping.get(position, position));
+	public long getItemId(final int position) {
+		return super.getItemId(this.mListMapping.get(position, position));
 	}
 
 	@Override
-	public View getDropDownView(int position, View convertView, ViewGroup parent) {
-		return super.getDropDownView(mListMapping.get(position, position),
+	public View getDropDownView(final int position, final View convertView,
+			final ViewGroup parent) {
+		return super.getDropDownView(this.mListMapping.get(position, position),
 				convertView, parent);
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		return super.getView(mListMapping.get(position, position), convertView,
-				parent);
+	public View getView(final int position, final View convertView,
+			final ViewGroup parent) {
+		return super.getView(this.mListMapping.get(position, position),
+				convertView, parent);
 	}
 
 	/**
@@ -113,20 +117,22 @@ public abstract class DragSortCursorAdapter extends CursorAdapter implements
 	 * @see DragSortListView.DropListener#drop(int, int)
 	 */
 	@Override
-	public void drop(int from, int to) {
+	public void drop(final int from, final int to) {
 		if (from != to) {
-			int cursorFrom = mListMapping.get(from, from);
+			final int cursorFrom = this.mListMapping.get(from, from);
 
 			if (from > to) {
 				for (int i = from; i > to; --i) {
-					mListMapping.put(i, mListMapping.get(i - 1, i - 1));
+					this.mListMapping.put(i,
+							this.mListMapping.get(i - 1, i - 1));
 				}
 			} else {
 				for (int i = from; i < to; ++i) {
-					mListMapping.put(i, mListMapping.get(i + 1, i + 1));
+					this.mListMapping.put(i,
+							this.mListMapping.get(i + 1, i + 1));
 				}
 			}
-			mListMapping.put(to, cursorFrom);
+			this.mListMapping.put(to, cursorFrom);
 
 			cleanMapping();
 			notifyDataSetChanged();
@@ -141,18 +147,18 @@ public abstract class DragSortCursorAdapter extends CursorAdapter implements
 	 * @see DragSortListView.RemoveListener#remove(int)
 	 */
 	@Override
-	public void remove(int which) {
-		int cursorPos = mListMapping.get(which, which);
-		if (!mRemovedCursorPositions.contains(cursorPos)) {
-			mRemovedCursorPositions.add(cursorPos);
+	public void remove(final int which) {
+		final int cursorPos = this.mListMapping.get(which, which);
+		if (!this.mRemovedCursorPositions.contains(cursorPos)) {
+			this.mRemovedCursorPositions.add(cursorPos);
 		}
 
-		int newCount = getCount();
+		final int newCount = getCount();
 		for (int i = which; i < newCount; ++i) {
-			mListMapping.put(i, mListMapping.get(i + 1, i + 1));
+			this.mListMapping.put(i, this.mListMapping.get(i + 1, i + 1));
 		}
 
-		mListMapping.delete(newCount);
+		this.mListMapping.delete(newCount);
 
 		cleanMapping();
 		notifyDataSetChanged();
@@ -162,7 +168,7 @@ public abstract class DragSortCursorAdapter extends CursorAdapter implements
 	 * Does nothing. Just completes DragSortListener interface.
 	 */
 	@Override
-	public void drag(int from, int to) {
+	public void drag(final int from, final int to) {
 		// do nothing
 	}
 
@@ -170,24 +176,24 @@ public abstract class DragSortCursorAdapter extends CursorAdapter implements
 	 * Remove unnecessary mappings from sparse array.
 	 */
 	private void cleanMapping() {
-		ArrayList<Integer> toRemove = new ArrayList<Integer>();
+		final ArrayList<Integer> toRemove = new ArrayList<Integer>();
 
-		int size = mListMapping.size();
+		int size = this.mListMapping.size();
 		for (int i = 0; i < size; ++i) {
-			if (mListMapping.keyAt(i) == mListMapping.valueAt(i)) {
-				toRemove.add(mListMapping.keyAt(i));
+			if (this.mListMapping.keyAt(i) == this.mListMapping.valueAt(i)) {
+				toRemove.add(this.mListMapping.keyAt(i));
 			}
 		}
 
 		size = toRemove.size();
 		for (int i = 0; i < size; ++i) {
-			mListMapping.delete(toRemove.get(i));
+			this.mListMapping.delete(toRemove.get(i));
 		}
 	}
 
 	@Override
 	public int getCount() {
-		return super.getCount() - mRemovedCursorPositions.size();
+		return super.getCount() - this.mRemovedCursorPositions.size();
 	}
 
 	/**
@@ -199,18 +205,18 @@ public abstract class DragSortCursorAdapter extends CursorAdapter implements
 	 * 
 	 * @return The mapped-to Cursor position
 	 */
-	public int getCursorPosition(int position) {
-		return mListMapping.get(position, position);
+	public int getCursorPosition(final int position) {
+		return this.mListMapping.get(position, position);
 	}
 
 	/**
 	 * Get the current order of Cursor positions presented by the list.
 	 */
 	public ArrayList<Integer> getCursorPositions() {
-		ArrayList<Integer> result = new ArrayList<Integer>();
+		final ArrayList<Integer> result = new ArrayList<Integer>();
 
 		for (int i = 0; i < getCount(); ++i) {
-			result.add(mListMapping.get(i, i));
+			result.add(this.mListMapping.get(i, i));
 		}
 
 		return result;
@@ -225,16 +231,16 @@ public abstract class DragSortCursorAdapter extends CursorAdapter implements
 	 *            A Cursor position
 	 * @return The mapped-to list position or REMOVED
 	 */
-	public int getListPosition(int cursorPosition) {
-		if (mRemovedCursorPositions.contains(cursorPosition)) {
+	public int getListPosition(final int cursorPosition) {
+		if (this.mRemovedCursorPositions.contains(cursorPosition)) {
 			return REMOVED;
 		}
 
-		int index = mListMapping.indexOfValue(cursorPosition);
+		final int index = this.mListMapping.indexOfValue(cursorPosition);
 		if (index < 0) {
 			return cursorPosition;
 		} else {
-			return mListMapping.keyAt(index);
+			return this.mListMapping.keyAt(index);
 		}
 	}
 
