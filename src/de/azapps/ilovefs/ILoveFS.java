@@ -26,14 +26,14 @@ public class ILoveFS {
 	/**
 	 * Context where to open the alertdialog
 	 */
-	private Context context;
+	private final Context context;
 
 	/**
 	 * Simple Constructor.
 	 * 
 	 * @param context
 	 */
-	public ILoveFS(Context context) {
+	public ILoveFS(final Context context) {
 		this.context = context;
 	}
 
@@ -43,7 +43,7 @@ public class ILoveFS {
 	 * @param context
 	 * @param email
 	 */
-	public ILoveFS(Context context, String email) {
+	public ILoveFS(final Context context, final String email) {
 		this.email = email;
 		this.context = context;
 	}
@@ -55,14 +55,15 @@ public class ILoveFS {
 	 * @param email
 	 * @param package_name
 	 */
-	public ILoveFS(Context context, String email, String package_name) {
+	public ILoveFS(final Context context, final String email,
+			final String package_name) {
 		this.email = email;
 		this.package_name = package_name;
 		this.context = context;
 	}
 
 	public boolean isILFSDay() {
-		Calendar today = new GregorianCalendar();
+		final Calendar today = new GregorianCalendar();
 		return today.get(Calendar.MONTH) == Calendar.FEBRUARY
 				&& today.get(Calendar.DAY_OF_MONTH) == 14;
 	}
@@ -71,26 +72,34 @@ public class ILoveFS {
 	 * Show the AlertDialog if today is I love Free Software day
 	 */
 	public void show() {
-		final TextView message = new TextView(context);
-		message.setTextAppearance(context,
+		final TextView message = new TextView(this.context);
+		message.setTextAppearance(this.context,
 				android.R.style.TextAppearance_Medium);
-		message.setText(Html.fromHtml(context
+		message.setText(Html.fromHtml(this.context
 				.getString(R.string.ilovefs_message)));
-		if (Build.VERSION.SDK_INT < 11)
-			message.setTextColor(context.getResources().getColor(R.color.white));
+		if (Build.VERSION.SDK_INT < 11) {
+			message.setTextColor(this.context.getResources().getColor(
+					R.color.white));
+		}
 
-		int padding = 10;
+		final int padding = 10;
 		message.setPadding(padding, padding, padding, padding);
 		message.setMovementMethod(LinkMovementMethod.getInstance());
-		AlertDialog.Builder builder = new AlertDialog.Builder(context);
+		final AlertDialog.Builder builder = new AlertDialog.Builder(
+				this.context);
 
 		builder.setTitle(R.string.ilovefs_title).setView(message);
-		if (rateListener != null && package_name != null)
-			builder.setPositiveButton(R.string.ilovefs_rate, rateListener);
-		if (emailListener != null && email != null)
-			builder.setNegativeButton(R.string.ilovefs_email, emailListener);
-		if (donateListener != null)
-			builder.setNeutralButton(R.string.ilovefs_donate, donateListener);
+		if (this.rateListener != null && this.package_name != null) {
+			builder.setPositiveButton(R.string.ilovefs_rate, this.rateListener);
+		}
+		if (this.emailListener != null && this.email != null) {
+			builder.setNegativeButton(R.string.ilovefs_email,
+					this.emailListener);
+		}
+		if (this.donateListener != null) {
+			builder.setNeutralButton(R.string.ilovefs_donate,
+					this.donateListener);
+		}
 		builder.show();
 	}
 
@@ -100,14 +109,17 @@ public class ILoveFS {
 	public DialogInterface.OnClickListener rateListener = new DialogInterface.OnClickListener() {
 
 		@Override
-		public void onClick(DialogInterface dialog, int which) {
+		public void onClick(final DialogInterface dialog, final int which) {
 			try {
-				context.startActivity(new Intent(Intent.ACTION_VIEW, Uri
-						.parse("market://details?id=" + package_name)));
-			} catch (android.content.ActivityNotFoundException anfe) {
-				context.startActivity(new Intent(Intent.ACTION_VIEW, Uri
-						.parse("http://play.google.com/store/apps/details?id="
-								+ package_name)));
+				ILoveFS.this.context.startActivity(new Intent(
+						Intent.ACTION_VIEW, Uri.parse("market://details?id="
+								+ ILoveFS.this.package_name)));
+			} catch (final android.content.ActivityNotFoundException anfe) {
+				ILoveFS.this.context
+						.startActivity(new Intent(
+								Intent.ACTION_VIEW,
+								Uri.parse("http://play.google.com/store/apps/details?id="
+										+ ILoveFS.this.package_name)));
 			}
 		}
 	};
@@ -117,20 +129,22 @@ public class ILoveFS {
 	public DialogInterface.OnClickListener emailListener = new DialogInterface.OnClickListener() {
 
 		@Override
-		public void onClick(DialogInterface dialog, int which) {
-			Intent i = new Intent(Intent.ACTION_SEND);
+		public void onClick(final DialogInterface dialog, final int which) {
+			final Intent i = new Intent(Intent.ACTION_SEND);
 			i.setType("message/rfc822");
-			i.putExtra(Intent.EXTRA_EMAIL, new String[] { email });
-			i.putExtra(Intent.EXTRA_SUBJECT,
-					context.getString(R.string.ilovefs_email_title));
+			i.putExtra(Intent.EXTRA_EMAIL, new String[] { ILoveFS.this.email });
+			i.putExtra(Intent.EXTRA_SUBJECT, ILoveFS.this.context
+					.getString(R.string.ilovefs_email_title));
 			try {
-				Intent ci = Intent.createChooser(i,
-						context.getString(R.string.ilovefs_email));
+				final Intent ci = Intent.createChooser(i,
+						ILoveFS.this.context.getString(R.string.ilovefs_email));
 				ci.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				context.startActivity(ci);
-			} catch (android.content.ActivityNotFoundException ex) {
-				Toast.makeText(context,
-						context.getString(R.string.ilovefs_email_no_client),
+				ILoveFS.this.context.startActivity(ci);
+			} catch (final android.content.ActivityNotFoundException ex) {
+				Toast.makeText(
+						ILoveFS.this.context,
+						ILoveFS.this.context
+								.getString(R.string.ilovefs_email_no_client),
 						Toast.LENGTH_SHORT).show();
 			}
 
