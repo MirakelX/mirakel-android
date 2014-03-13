@@ -35,8 +35,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
-import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.UndoHistory;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.MirakelContentProvider;
@@ -77,17 +77,17 @@ public class ListMirakel extends ListBase {
 		return all(true);
 	}
 
-	public static List<ListMirakel> all(boolean withSpecial) {
-		List<ListMirakel> lists = new ArrayList<ListMirakel>();
+	public static List<ListMirakel> all(final boolean withSpecial) {
+		final List<ListMirakel> lists = new ArrayList<ListMirakel>();
 
 		if (withSpecial) {
-			List<SpecialList> slists = SpecialList.allSpecial();
-			for (SpecialList slist : slists) {
+			final List<SpecialList> slists = SpecialList.allSpecial();
+			for (final SpecialList slist : slists) {
 				lists.add(slist);
 			}
 		}
 
-		Cursor cursor = database.rawQuery("  SELECT n.*, "
+		final Cursor cursor = database.rawQuery("  SELECT n.*, "
 				+ "COUNT(*)-1 AS level " + "FROM " + ListMirakel.TABLE
 				+ " AS n, " + ListMirakel.TABLE + " p " + "WHERE n." + LFT
 				+ " BETWEEN p." + LFT + " AND p." + RGT + " " + " and not n."
@@ -98,7 +98,7 @@ public class ListMirakel extends ListBase {
 		// null, null);
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
-			ListMirakel list = cursorToList(cursor);
+			final ListMirakel list = cursorToList(cursor);
 			lists.add(list);
 			cursor.moveToNext();
 		}
@@ -106,11 +106,11 @@ public class ListMirakel extends ListBase {
 		return lists;
 	}
 
-	public static List<ListMirakel> byAccount(AccountMirakel a) {
-		Cursor c = database.query(ListMirakel.TABLE, allColumns, ACCOUNT_ID
-				+ "=" + a.getId(), null, null, null, null);
+	public static List<ListMirakel> byAccount(final AccountMirakel a) {
+		final Cursor c = database.query(ListMirakel.TABLE, allColumns,
+				ACCOUNT_ID + "=" + a.getId(), null, null, null, null);
 		c.moveToFirst();
-		List<ListMirakel> lists = cursorToListList(c);
+		final List<ListMirakel> lists = cursorToListList(c);
 		c.close();
 		return lists;
 	}
@@ -122,13 +122,13 @@ public class ListMirakel extends ListBase {
 	 * @see Mirakel.SYNC_STATE*
 	 * @return
 	 */
-	public static List<ListMirakel> bySyncState(SYNC_STATE state) {
+	public static List<ListMirakel> bySyncState(final SYNC_STATE state) {
 
-		Cursor c = database.query(ListMirakel.TABLE, allColumns,
+		final Cursor c = database.query(ListMirakel.TABLE, allColumns,
 				DatabaseHelper.SYNC_STATE_FIELD + "=" + state, null, null,
 				null, null);
 		c.moveToFirst();
-		List<ListMirakel> lists = cursorToListList(c);
+		final List<ListMirakel> lists = cursorToListList(c);
 		c.close();
 		return lists;
 	}
@@ -141,10 +141,10 @@ public class ListMirakel extends ListBase {
 	}
 
 	public static int count() {
-		Cursor c = database.rawQuery("Select count(" + DatabaseHelper.ID
+		final Cursor c = database.rawQuery("Select count(" + DatabaseHelper.ID
 				+ ") from " + TABLE, null);
 		c.moveToFirst();
-		int count = c.getInt(0);
+		final int count = c.getInt(0);
 		c.close();
 		return count;
 	}
@@ -155,10 +155,10 @@ public class ListMirakel extends ListBase {
 	 * @param cursor
 	 * @return
 	 */
-	private static ListMirakel cursorToList(Cursor cursor) {
+	private static ListMirakel cursorToList(final Cursor cursor) {
 		int i = 0;
-		int id = cursor.getInt(i++);
-		ListMirakel list = new ListMirakel(id, cursor.getString(i++),
+		final int id = cursor.getInt(i++);
+		final ListMirakel list = new ListMirakel(id, cursor.getString(i++),
 				cursor.getShort(i++), cursor.getString(i++),
 				cursor.getString(i++), SYNC_STATE.parseInt(cursor.getInt(i++)),
 				cursor.getInt(i++), cursor.getInt(i++), cursor.getInt(i++),
@@ -166,8 +166,8 @@ public class ListMirakel extends ListBase {
 		return list;
 	}
 
-	private static List<ListMirakel> cursorToListList(Cursor c) {
-		List<ListMirakel> lists = new ArrayList<ListMirakel>();
+	private static List<ListMirakel> cursorToListList(final Cursor c) {
+		final List<ListMirakel> lists = new ArrayList<ListMirakel>();
 		while (!c.isAfterLast()) {
 			lists.add(cursorToList(c));
 			c.moveToNext();
@@ -175,12 +175,13 @@ public class ListMirakel extends ListBase {
 		return lists;
 	}
 
-	public static ListMirakel findByName(String name) {
+	public static ListMirakel findByName(final String name) {
 		return findByName(name, null);
 	}
 
-	public static ListMirakel findByName(String name, AccountMirakel account) {
-		Cursor cursor = database.query(ListMirakel.TABLE, allColumns,
+	public static ListMirakel findByName(final String name,
+			final AccountMirakel account) {
+		final Cursor cursor = database.query(ListMirakel.TABLE, allColumns,
 				DatabaseHelper.NAME
 						+ "='"
 						+ name
@@ -189,7 +190,7 @@ public class ListMirakel extends ListBase {
 								+ account.getId()), null, null, null, null);
 		cursor.moveToFirst();
 		if (cursor.getCount() != 0) {
-			ListMirakel t = cursorToList(cursor);
+			final ListMirakel t = cursorToList(cursor);
 			cursor.close();
 			return t;
 		}
@@ -205,9 +206,9 @@ public class ListMirakel extends ListBase {
 	 * @return List
 	 */
 	public static ListMirakel first() {
-		Cursor cursor = database.query(ListMirakel.TABLE, allColumns, "not "
-				+ DatabaseHelper.SYNC_STATE_FIELD + "=" + SYNC_STATE.DELETE,
-				null, null, null, LFT + " ASC");
+		final Cursor cursor = database.query(ListMirakel.TABLE, allColumns,
+				"not " + DatabaseHelper.SYNC_STATE_FIELD + "="
+						+ SYNC_STATE.DELETE, null, null, null, LFT + " ASC");
 		ListMirakel list = null;
 		cursor.moveToFirst();
 		if (!cursor.isAfterLast()) {
@@ -218,14 +219,14 @@ public class ListMirakel extends ListBase {
 		return list;
 	}
 
-	public static ListMirakel getInboxList(AccountMirakel account) {
-		Cursor c = database.query(TABLE, allColumns, DatabaseHelper.NAME + "='"
-				+ context.getString(R.string.inbox) + "' and " + ACCOUNT_ID
-				+ "=" + account.getId(), null, null, null, null);
+	public static ListMirakel getInboxList(final AccountMirakel account) {
+		final Cursor c = database.query(TABLE, allColumns, DatabaseHelper.NAME
+				+ "='" + context.getString(R.string.inbox) + "' and "
+				+ ACCOUNT_ID + "=" + account.getId(), null, null, null, null);
 		c.moveToFirst();
 		if (c.getCount() > 0) {
 			Log.d(TAG, "get old eingang");
-			ListMirakel l = cursorToList(c);
+			final ListMirakel l = cursorToList(c);
 			c.close();
 			return l;
 		}
@@ -233,15 +234,16 @@ public class ListMirakel extends ListBase {
 		return newList(context.getString(R.string.inbox), SORT_BY_OPT, account);
 	}
 
-	public static ListMirakel getList(int listId) {
-		if (listId < 0)
+	public static ListMirakel getList(final int listId) {
+		if (listId < 0) {
 			return SpecialList.getSpecialList(-listId);
+		}
 
-		Cursor cursor = database
+		final Cursor cursor = database
 				.query(ListMirakel.TABLE, allColumns, DatabaseHelper.ID + "='"
 						+ listId + "'", null, null, null, null);
 		if (cursor.moveToFirst()) {
-			ListMirakel t = cursorToList(cursor);
+			final ListMirakel t = cursorToList(cursor);
 			cursor.close();
 			return t;
 		}
@@ -249,21 +251,24 @@ public class ListMirakel extends ListBase {
 		return null;
 	}
 
-	public static List<ListMirakel> getListsForAccount(AccountMirakel account) {
-		if (account == null || !account.isEnabeld())
+	public static List<ListMirakel> getListsForAccount(
+			final AccountMirakel account) {
+		if (account == null || !account.isEnabeld()) {
 			return new ArrayList<ListMirakel>();
-		Cursor c = database.query(TABLE, allColumns, "NOT "
+		}
+		final Cursor c = database.query(TABLE, allColumns, "NOT "
 				+ DatabaseHelper.SYNC_STATE_FIELD + "=" + SYNC_STATE.DELETE
 				+ " and " + ACCOUNT_ID + "=" + account.getId(), null, null,
 				null, null);
 		c.moveToFirst();
-		List<ListMirakel> list = cursorToListList(c);
+		final List<ListMirakel> list = cursorToListList(c);
 		c.close();
 		return list;
 	}
 
 	public static ListMirakel getSafeDefaultList() {
-		ListMirakel list = MirakelModelPreferences.getImportDefaultList(true);
+		final ListMirakel list = MirakelModelPreferences
+				.getImportDefaultList(true);
 		return list;
 	}
 
@@ -273,7 +278,7 @@ public class ListMirakel extends ListBase {
 	 * @param context
 	 *            The Application-Context
 	 */
-	public static void init(Context ctx) {
+	public static void init(final Context ctx) {
 		ListMirakel.context = ctx;
 		dbHelper = new DatabaseHelper(ctx);
 		database = dbHelper.getWritableDatabase();
@@ -285,9 +290,10 @@ public class ListMirakel extends ListBase {
 	 * @return List
 	 */
 	public static ListMirakel last() {
-		Cursor cursor = database.query(ListMirakel.TABLE, allColumns, "not "
-				+ DatabaseHelper.SYNC_STATE_FIELD + "=" + SYNC_STATE.DELETE,
-				null, null, null, DatabaseHelper.ID + " DESC");
+		final Cursor cursor = database.query(ListMirakel.TABLE, allColumns,
+				"not " + DatabaseHelper.SYNC_STATE_FIELD + "="
+						+ SYNC_STATE.DELETE, null, null, null,
+				DatabaseHelper.ID + " DESC");
 		ListMirakel list = null;
 		cursor.moveToFirst();
 		if (!cursor.isAfterLast()) {
@@ -304,7 +310,7 @@ public class ListMirakel extends ListBase {
 	 * @param name
 	 * @return
 	 */
-	public static ListMirakel newList(String name) {
+	public static ListMirakel newList(final String name) {
 		return newList(name, SORT_BY_OPT);
 	}
 
@@ -317,14 +323,14 @@ public class ListMirakel extends ListBase {
 	 *            the default sorting
 	 * @return new List
 	 */
-	public static ListMirakel newList(String name, int sort_by) {
+	public static ListMirakel newList(final String name, final int sort_by) {
 		return newList(name, sort_by,
 				MirakelModelPreferences.getDefaultAccount());
 	}
 
-	public static ListMirakel newList(String name, int sort_by,
-			AccountMirakel account) {
-		ContentValues values = new ContentValues();
+	public static ListMirakel newList(final String name, final int sort_by,
+			final AccountMirakel account) {
+		final ContentValues values = new ContentValues();
 		values.put(DatabaseHelper.NAME, name);
 		values.put(ACCOUNT_ID, account.getId());
 		values.put(SORT_BY, sort_by);
@@ -350,18 +356,18 @@ public class ListMirakel extends ListBase {
 		database.setTransactionSuccessful();
 		database.endTransaction();
 
-		Cursor cursor = database.query(ListMirakel.TABLE, allColumns,
+		final Cursor cursor = database.query(ListMirakel.TABLE, allColumns,
 				DatabaseHelper.ID + " = " + insertId, null, null, null, null);
 		cursor.moveToFirst();
-		ListMirakel newList = cursorToList(cursor);
+		final ListMirakel newList = cursorToList(cursor);
 		cursor.close();
 		UndoHistory.logCreate(newList, context);
 		return newList;
 	}
 
-	public static ListMirakel parseJson(JsonObject el) {
+	public static ListMirakel parseJson(final JsonObject el) {
 		ListMirakel t = null;
-		JsonElement id = el.get("id");
+		final JsonElement id = el.get("id");
 		if (id != null) {
 			// use old List from db if existing
 			t = ListMirakel.getList(id.getAsInt());
@@ -402,7 +408,7 @@ public class ListMirakel extends ListBase {
 		return t;
 	}
 
-	public static ListMirakel safeFirst(Context ctx) {
+	public static ListMirakel safeFirst(final Context ctx) {
 		ListMirakel s = first();
 		if (s == null) {
 			s = ListMirakel.newList(ctx.getString(R.string.inbox));
@@ -410,7 +416,7 @@ public class ListMirakel extends ListBase {
 		return s;
 	}
 
-	public static ListMirakel safeGetList(int listId) {
+	public static ListMirakel safeGetList(final int listId) {
 		ListMirakel l = getList(listId);
 		if (l == null) {
 			l = safeFirst(context);
@@ -422,7 +428,7 @@ public class ListMirakel extends ListBase {
 		super();
 	}
 
-	ListMirakel(int id, String name) {
+	ListMirakel(final int id, final String name) {
 		super(id, name);
 	}
 
@@ -433,16 +439,18 @@ public class ListMirakel extends ListBase {
 	 * private ListMirakel() { }
 	 */
 
-	protected ListMirakel(int id, String name, short sort_by,
-			String created_at, String updated_at, SYNC_STATE sync_state,
-			int lft, int rgt, int color, AccountMirakel account) {
+	protected ListMirakel(final int id, final String name, final short sort_by,
+			final String created_at, final String updated_at,
+			final SYNC_STATE sync_state, final int lft, final int rgt,
+			final int color, final AccountMirakel account) {
 		super(id, name, sort_by, created_at, updated_at, sync_state, lft, rgt,
 				color, account);
 	}
 
-	protected ListMirakel(int id, String name, short sort_by,
-			String created_at, String updated_at, SYNC_STATE sync_state,
-			int lft, int rgt, int color, int account) {
+	protected ListMirakel(final int id, final String name, final short sort_by,
+			final String created_at, final String updated_at,
+			final SYNC_STATE sync_state, final int lft, final int rgt,
+			final int color, final int account) {
 		super(id, name, sort_by, created_at, updated_at, sync_state, lft, rgt,
 				color, account);
 	}
@@ -470,7 +478,7 @@ public class ListMirakel extends ListBase {
 						+ SYNC_STATE.DELETE, null);
 		c.moveToFirst();
 		if (c.getCount() > 0) {
-			int n = c.getInt(0);
+			final int n = c.getInt(0);
 			c.close();
 			return n;
 		}
@@ -487,13 +495,14 @@ public class ListMirakel extends ListBase {
 		destroy(false);
 	}
 
-	public void destroy(boolean force) {
+	public void destroy(final boolean force) {
 		if (!force) {
 			UndoHistory.updateLog(this, context);
 		}
-		long id = getId();
-		if (id <= 0)
+		final long id = getId();
+		if (id <= 0) {
 			return;
+		}
 		database.beginTransaction();
 		try {
 			if (getSyncState() == SYNC_STATE.ADD || force) {
@@ -501,7 +510,7 @@ public class ListMirakel extends ListBase {
 				database.delete(ListMirakel.TABLE, DatabaseHelper.ID + " = "
 						+ id, null);
 			} else {
-				ContentValues values = new ContentValues();
+				final ContentValues values = new ContentValues();
 				values.put(DatabaseHelper.SYNC_STATE_FIELD,
 						SYNC_STATE.DELETE.toInt());
 				database.update(Task.TABLE, values, Task.LIST_ID + " = " + id,
@@ -514,7 +523,7 @@ public class ListMirakel extends ListBase {
 					+ "; UPDATE " + ListMirakel.TABLE + " SET " + RGT + "="
 					+ RGT + "-2 WHERE " + LFT + ">" + getRgt() + ";", null);
 			database.setTransactionSuccessful();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			Log.wtf(TAG, "cannot remove List");
 		} finally {
 			database.endTransaction();
@@ -522,9 +531,10 @@ public class ListMirakel extends ListBase {
 	}
 
 	public Task getFirstTask() {
-		List<Task> tasks = tasks();
-		if (tasks.size() > 0)
+		final List<Task> tasks = tasks();
+		if (tasks.size() > 0) {
 			return tasks.get(0);
+		}
 
 		return null;
 	}
@@ -543,8 +553,8 @@ public class ListMirakel extends ListBase {
 		save(true);
 	}
 
-	public void save(boolean log) {
-		SharedPreferences.Editor editor = MirakelCommonPreferences.getEditor();
+	public void save(final boolean log) {
+		final SharedPreferences.Editor editor = MirakelPreferences.getEditor();
 		// TODO implement for specialLists
 		if (getId() > 0) {
 			database.beginTransaction();
@@ -554,7 +564,7 @@ public class ListMirakel extends ListBase {
 			setUpdatedAt(new SimpleDateFormat(
 					context.getString(R.string.dateTimeFormat),
 					Locale.getDefault()).format(new Date()));
-			ContentValues values = getContentValues();
+			final ContentValues values = getContentValues();
 			if (log) {
 				UndoHistory.updateLog(ListMirakel.getList(getId()), context);
 			}
@@ -582,7 +592,7 @@ public class ListMirakel extends ListBase {
 	 * @param showDone
 	 * @return
 	 */
-	public List<Task> tasks(boolean showDone) {
+	public List<Task> tasks(final boolean showDone) {
 		return Task.getTasks(this, getSortBy(), showDone);
 	}
 
@@ -600,7 +610,7 @@ public class ListMirakel extends ListBase {
 		return json;
 	}
 
-	public String getWhereQueryForTasks(boolean forQuery) {
+	public String getWhereQueryForTasks(final boolean forQuery) {
 		return Task.LIST_ID + "=" + getId();
 	}
 }

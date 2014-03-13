@@ -30,9 +30,7 @@ import org.dmfs.provider.tasks.TaskContract;
 import org.dmfs.provider.tasks.TaskContract.CommonSyncColumns;
 import org.dmfs.provider.tasks.TaskContract.TaskColumns;
 import org.dmfs.provider.tasks.TaskContract.TaskListColumns;
-import org.dmfs.provider.tasks.TaskContract.TaskLists;
 import org.dmfs.provider.tasks.TaskContract.TaskSyncColumns;
-import org.dmfs.provider.tasks.TaskContract.Tasks;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -95,14 +93,14 @@ public class MirakelContentProvider extends ContentProvider implements
 				TaskContract.Categories.CONTENT_URI_PATH + "/#", CATEGORY_ID);
 	}
 
-	private static String addSegment(String ownName, String remoteName,
-			boolean comma) {
+	private static String addSegment(final String ownName,
+			final String remoteName, final boolean comma) {
 		return (comma ? " , " : " ") + ownName + " as " + remoteName;
 	}
 
-	private static ContentValues convertValues(ContentValues values,
-			boolean isSyncadapter) {
-		ContentValues newValues = new ContentValues();
+	private static ContentValues convertValues(final ContentValues values,
+			final boolean isSyncadapter) {
+		final ContentValues newValues = new ContentValues();
 		if (values.containsKey(TaskColumns.TITLE)) {
 			newValues.put(DatabaseHelper.NAME,
 					values.getAsString(TaskColumns.TITLE));
@@ -116,10 +114,10 @@ public class MirakelContentProvider extends ContentProvider implements
 					values.getAsString(TaskColumns.DESCRIPTION));
 		}
 		if (values.containsKey(TaskColumns.DUE)) {
-			Date d = new Date(values.getAsLong(TaskColumns.DUE));
-			GregorianCalendar due = new GregorianCalendar();
+			final Date d = new Date(values.getAsLong(TaskColumns.DUE));
+			final GregorianCalendar due = new GregorianCalendar();
 			d.setTime(values.getAsLong(TaskColumns.DUE));
-			String db = DateTimeHelper.formatDate(due);
+			final String db = DateTimeHelper.formatDate(due);
 			newValues.put(Task.DUE, db);
 		}
 		if (values.containsKey(TaskColumns.PRIORITY)) {
@@ -159,8 +157,8 @@ public class MirakelContentProvider extends ContentProvider implements
 					values.getAsInteger(TaskColumns.PERCENT_COMPLETE));
 		}
 		if (values.containsKey(TaskColumns.STATUS)) {
-			int status = values.getAsInteger(TaskColumns.STATUS);
-			boolean done = status == TaskColumns.STATUS_COMPLETED;
+			final int status = values.getAsInteger(TaskColumns.STATUS);
+			final boolean done = status == TaskColumns.STATUS_COMPLETED;
 			Log.wtf(TAG, "status: " + status + "  COMPLETED: "
 					+ TaskColumns.STATUS_COMPLETED);
 			newValues.put(Task.DONE, done);
@@ -183,17 +181,18 @@ public class MirakelContentProvider extends ContentProvider implements
 						values.getAsInteger(TaskListColumns.LIST_COLOR));
 			}
 			if (values.containsKey(TaskColumns.CREATED)) {
-				Date d = new Date(values.getAsLong(TaskColumns.CREATED));
-				GregorianCalendar due = new GregorianCalendar();
+				final Date d = new Date(values.getAsLong(TaskColumns.CREATED));
+				final GregorianCalendar due = new GregorianCalendar();
 				d.setTime(values.getAsLong(TaskColumns.CREATED));
-				String db = DateTimeHelper.formatDate(due);
+				final String db = DateTimeHelper.formatDate(due);
 				newValues.put(DatabaseHelper.CREATED_AT, db);
 			}
 			if (values.containsKey(TaskColumns.LAST_MODIFIED)) {
-				Date d = new Date(values.getAsLong(TaskColumns.LAST_MODIFIED));
-				GregorianCalendar due = new GregorianCalendar();
+				final Date d = new Date(
+						values.getAsLong(TaskColumns.LAST_MODIFIED));
+				final GregorianCalendar due = new GregorianCalendar();
 				d.setTime(values.getAsLong(TaskColumns.LAST_MODIFIED));
-				String db = DateTimeHelper.formatDate(due);
+				final String db = DateTimeHelper.formatDate(due);
 				newValues.put(DatabaseHelper.UPDATED_AT, db);
 			}
 			// if (values.containsKey(Tasks._SYNC_ID)) {
@@ -201,13 +200,15 @@ public class MirakelContentProvider extends ContentProvider implements
 			// values.getAsString(Tasks._SYNC_ID));
 			// }
 			if (values.containsKey(CommonSyncColumns._DIRTY)) {
-				boolean val = values.getAsBoolean(CommonSyncColumns._DIRTY);
+				final boolean val = values
+						.getAsBoolean(CommonSyncColumns._DIRTY);
 				if (!values.containsKey(TaskSyncColumns._DELETED)) {
 					newValues.put(DatabaseHelper.SYNC_STATE_FIELD,
 							val ? SYNC_STATE.NEED_SYNC.toInt()
 									: SYNC_STATE.NOTHING.toInt());
 				} else {
-					boolean del = values.getAsBoolean(TaskSyncColumns._DELETED);
+					final boolean del = values
+							.getAsBoolean(TaskSyncColumns._DELETED);
 					if (del) {
 						newValues.put(DatabaseHelper.SYNC_STATE_FIELD,
 								SYNC_STATE.DELETE.toInt());
@@ -233,11 +234,11 @@ public class MirakelContentProvider extends ContentProvider implements
 		return newValues;
 	}
 
-	private static String getId(Uri uri) {
+	private static String getId(final Uri uri) {
 		return uri.getPathSegments().get(1);
 	}
 
-	private static String getListQuery(boolean isSyncAdapter) {
+	private static String getListQuery(final boolean isSyncAdapter) {
 		String query = getListQueryBase(isSyncAdapter);
 		query += addSegment(DatabaseHelper.ID, TaskListColumns._ID, true);
 		query += " FROM " + ListMirakel.TABLE;
@@ -245,7 +246,7 @@ public class MirakelContentProvider extends ContentProvider implements
 		return query;
 	}
 
-	private static String getListQueryBase(boolean isSyncAdapter) {
+	private static String getListQueryBase(final boolean isSyncAdapter) {
 		String query = "SELECT ";
 		query += addSegment(DatabaseHelper.NAME, TaskListColumns.LIST_NAME,
 				false);
@@ -277,12 +278,12 @@ public class MirakelContentProvider extends ContentProvider implements
 		return query;
 	}
 
-	private static String getTaskQuery(boolean isSyncAdapter) {
+	private static String getTaskQuery(final boolean isSyncAdapter) {
 		return getTaskQuery(false, 0, isSyncAdapter);
 	}
 
-	private static String getTaskQuery(boolean isSpecial, int list_id,
-			boolean isSyncadapter) {
+	private static String getTaskQuery(final boolean isSpecial,
+			final int list_id, final boolean isSyncadapter) {
 		String query = "SELECT ";
 		query += addSegment(Task.TABLE + "." + DatabaseHelper.NAME,
 				TaskColumns.TITLE, false);
@@ -358,16 +359,17 @@ public class MirakelContentProvider extends ContentProvider implements
 		return query;
 	}
 
-	private static String handleListID(String selection, boolean isSyncAdapter,
-			String taskQuery) throws SQLWarning {
-		String[] t = selection.split(TaskColumns.LIST_ID);
-		if (t.length < 2)
+	private static String handleListID(final String selection,
+			final boolean isSyncAdapter, String taskQuery) throws SQLWarning {
+		final String[] t = selection.split(TaskColumns.LIST_ID);
+		if (t.length < 2) {
 			return taskQuery;
+		}
 		boolean not;
 		try {
 			not = t[0].trim().substring(t[0].trim().length() - 3)
 					.equalsIgnoreCase("not");
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			not = false;
 		}
 		if (t[1].trim().charAt(0) == '=') {
@@ -378,21 +380,22 @@ public class MirakelContentProvider extends ContentProvider implements
 		return taskQuery;
 	}
 
-	private static String handleListIDEqual(boolean isSyncAdapter,
-			String taskQuery, String[] t, boolean not) throws SQLWarning {
+	private static String handleListIDEqual(final boolean isSyncAdapter,
+			String taskQuery, final String[] t, final boolean not)
+			throws SQLWarning {
 		t[1] = t[1].trim().substring(1);
 		int list_id = 0;
 		try {
-			boolean negative = t[1].trim().charAt(0) == '-';
-			Matcher matcher = Pattern.compile("\\d+").matcher(t[1]);
+			final boolean negative = t[1].trim().charAt(0) == '-';
+			final Matcher matcher = Pattern.compile("\\d+").matcher(t[1]);
 			matcher.find();
 			list_id = (negative ? -1 : 1) * Integer.valueOf(matcher.group());
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			Log.e(TAG, "cannot parse list_id");
 			throw new SQLWarning();
 		}
 		if (list_id < 0) {// is special list...
-			SpecialList s = SpecialList.getSpecialList(-1 * list_id);
+			final SpecialList s = SpecialList.getSpecialList(-1 * list_id);
 			if (s != null) {
 				taskQuery = getTaskQuery(true, not ? 0 : list_id, isSyncAdapter);
 				if (s.getWhereQueryForTasks(true) != null
@@ -408,13 +411,14 @@ public class MirakelContentProvider extends ContentProvider implements
 		return taskQuery;
 	}
 
-	private static String handleListIDIn(boolean isSyncAdapter,
-			String taskQuery, String[] t, boolean not) throws SQLWarning {
+	private static String handleListIDIn(final boolean isSyncAdapter,
+			String taskQuery, final String[] t, final boolean not)
+			throws SQLWarning {
 		if (t[1].trim().substring(0, 2).equalsIgnoreCase("in")) {
 			t[1] = t[1].trim().substring(3).trim();
 			int counter = 1;
 			String buffer = "";
-			List<Integer> idList = new ArrayList<Integer>();
+			final List<Integer> idList = new ArrayList<Integer>();
 			while (t[1].charAt(counter) >= '0' && t[1].charAt(counter) <= '9'
 					|| t[1].charAt(counter) == ','
 					|| t[1].charAt(counter) == ' '
@@ -423,7 +427,7 @@ public class MirakelContentProvider extends ContentProvider implements
 					try {
 						idList.add(Integer.parseInt(buffer));
 						buffer = "";
-					} catch (NumberFormatException e) {
+					} catch (final NumberFormatException e) {
 						Log.e(TAG, "cannot parse list id");
 						throw new SQLWarning();
 					}
@@ -436,7 +440,7 @@ public class MirakelContentProvider extends ContentProvider implements
 			}
 			try {
 				idList.add(Integer.parseInt(buffer));
-			} catch (NumberFormatException e) {
+			} catch (final NumberFormatException e) {
 				Log.e(TAG, "cannot parse list id");
 				throw new SQLWarning();
 			}
@@ -444,11 +448,11 @@ public class MirakelContentProvider extends ContentProvider implements
 				Log.e(TAG, "inavlid SQL");
 				throw new SQLWarning();
 			}
-			List<String> wheres = new ArrayList<String>();
-			List<Integer> ordonaryIds = new ArrayList<Integer>();
-			for (int id : idList) {
+			final List<String> wheres = new ArrayList<String>();
+			final List<Integer> ordonaryIds = new ArrayList<Integer>();
+			for (final int id : idList) {
 				if (id < 0) {
-					SpecialList s = SpecialList.getSpecialList(-1 * id);
+					final SpecialList s = SpecialList.getSpecialList(-1 * id);
 					if (s != null) {
 						wheres.add(s.getWhereQueryForTasks(true));
 					} else {
@@ -482,9 +486,9 @@ public class MirakelContentProvider extends ContentProvider implements
 	}
 
 	private static String insertSelectionArgs(String selection,
-			String[] selectionArgs) {
+			final String[] selectionArgs) {
 		if (selectionArgs != null) {
-			for (String selectionArg : selectionArgs) {
+			for (final String selectionArg : selectionArgs) {
 				selection = selection.replace("?", selectionArg);
 			}
 		}
@@ -495,13 +499,15 @@ public class MirakelContentProvider extends ContentProvider implements
 	// public static final Uri CONTENT_URI = Uri.parse("content://" +
 	// PROVIDER_NAME);
 
-	private int createNewList(Uri uri) {
-		String name = getContext().getString(R.string.inbox);
-		AccountMirakel a = AccountMirakel.getByName(getAccountName(uri));
-		if (a == null)
+	private int createNewList(final Uri uri) {
+		final String name = getContext().getString(R.string.inbox);
+		final AccountMirakel a = AccountMirakel.getByName(getAccountName(uri));
+		if (a == null) {
 			throw new IllegalArgumentException("Unkown account");
-		Cursor c = MirakelContentProvider.openHelper.getWritableDatabase()
-				.query(ListMirakel.TABLE,
+		}
+		final Cursor c = MirakelContentProvider.openHelper
+				.getWritableDatabase().query(
+						ListMirakel.TABLE,
 						new String[] { DatabaseHelper.ID },
 						DatabaseHelper.NAME + "='" + name + "' and "
 								+ ListMirakel.ACCOUNT_ID + "=" + a.getId(),
@@ -515,15 +521,16 @@ public class MirakelContentProvider extends ContentProvider implements
 			return l.getId();
 		}
 		c.moveToFirst();
-		int id = c.getInt(0);
+		final int id = c.getInt(0);
 		c.close();
 		return id;
 	}
 
 	@Override
-	public int delete(Uri uri, String selection, String[] selectionArgs) {
+	public int delete(final Uri uri, final String selection,
+			final String[] selectionArgs) {
 		if (!isCallerSyncAdapter(uri)) {
-			ContentValues cv = new ContentValues();
+			final ContentValues cv = new ContentValues();
 			cv.put(DatabaseHelper.SYNC_STATE_FIELD, SYNC_STATE.DELETE.toInt());
 			switch (uriMatcher.match(uri)) {
 			case LISTS:
@@ -543,9 +550,10 @@ public class MirakelContentProvider extends ContentProvider implements
 				throw new IllegalArgumentException("Unsupported URI: " + uri);
 			}
 		}
-		AccountMirakel a = AccountMirakel.getByName(getAccountName(uri));
-		if (a != null && !a.isEnabeld())
+		final AccountMirakel a = AccountMirakel.getByName(getAccountName(uri));
+		if (a != null && !a.isEnabeld()) {
 			return 0;
+		}
 		boolean isList = true;
 		switch (uriMatcher.match(uri)) {
 		case LIST_ID:
@@ -568,29 +576,31 @@ public class MirakelContentProvider extends ContentProvider implements
 		String s;
 		try {
 			s = getIdsFromSelection(uri, selection, selectionArgs, isList);
-		} catch (RuntimeException e) {
-			if (e.getMessage().equals("id not found"))
+		} catch (final RuntimeException e) {
+			if (e.getMessage().equals("id not found")) {
 				return 0;
+			}
 			throw e;
 		}
-		if (!s.equals(""))
+		if (!s.equals("")) {
 			return MirakelContentProvider.openHelper.getWritableDatabase()
 					.delete(isList ? ListMirakel.TABLE : Task.TABLE,
 							DatabaseHelper.ID + " IN (" + s + ")", null);
+		}
 		throw new RuntimeException("id not found");
 	}
 
-	protected static String getAccountName(Uri uri) {
+	protected static String getAccountName(final Uri uri) {
 		return uri.getQueryParameter(TaskContract.ACCOUNT_NAME);
 	}
 
-	protected static String getAccountType(Uri uri) {
+	protected static String getAccountType(final Uri uri) {
 		return uri.getQueryParameter(TaskContract.ACCOUNT_TYPE);
 	}
 
-	private String getIdsFromSelection(Uri uri, String selection,
-			String[] selectionArgs, boolean isList) {
-		Cursor c = query(uri, new String[] { isList ? TaskListColumns._ID
+	private String getIdsFromSelection(final Uri uri, final String selection,
+			final String[] selectionArgs, final boolean isList) {
+		final Cursor c = query(uri, new String[] { isList ? TaskListColumns._ID
 				: TaskColumns._ID }, selection, selectionArgs, null);
 		String s = "";
 		if (c.getCount() > 0 && c.moveToFirst()) {
@@ -598,13 +608,14 @@ public class MirakelContentProvider extends ContentProvider implements
 				s += (s.equals("") ? "" : ",") + c.getInt(0);
 				c.moveToNext();
 			}
-		} else
+		} else {
 			throw new RuntimeException("id not found");
+		}
 		return s;
 	}
 
 	@Override
-	public String getType(Uri uri) {
+	public String getType(final Uri uri) {
 		switch (uriMatcher.match(uri)) {
 		case LISTS:
 			return TaskContract.TaskLists.CONTENT_TYPE;
@@ -622,12 +633,13 @@ public class MirakelContentProvider extends ContentProvider implements
 	}
 
 	@Override
-	public Uri insert(Uri uri, ContentValues values) {
+	public Uri insert(final Uri uri, final ContentValues values) {
 		// android.os.Debug.waitForDebugger();
-		AccountMirakel a = AccountMirakel.getByName(getAccountName(uri));
-		if (a != null && !a.isEnabeld())
+		final AccountMirakel a = AccountMirakel.getByName(getAccountName(uri));
+		if (a != null && !a.isEnabeld()) {
 			return null;
-		ContentValues newValues = convertValues(values,
+		}
+		final ContentValues newValues = convertValues(values,
 				isCallerSyncAdapter(uri));
 		newValues.put(DatabaseHelper.SYNC_STATE_FIELD,
 				SYNC_STATE.NOTHING.toInt());
@@ -664,11 +676,11 @@ public class MirakelContentProvider extends ContentProvider implements
 
 		}
 		long id;
-		SQLiteDatabase database = openHelper.getWritableDatabase();
+		final SQLiteDatabase database = openHelper.getWritableDatabase();
 		database.beginTransaction();
 		try {
 			boolean hasExtras = false;
-			ContentValues extras = new ContentValues();
+			final ContentValues extras = new ContentValues();
 			if (table.equals(Task.TABLE)) {
 				if (values.containsKey(CommonSyncColumns.SYNC1)) {
 					extras.put("ETAG",
@@ -692,7 +704,7 @@ public class MirakelContentProvider extends ContentProvider implements
 				database.insert("caldav_extra", null, extras);
 			}
 			database.setTransactionSuccessful();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			Log.d(TAG, "cannot insert new object");
 			throw new RuntimeException();
 		} finally {
@@ -704,17 +716,18 @@ public class MirakelContentProvider extends ContentProvider implements
 
 	}
 
-	protected static boolean isCallerSyncAdapter(Uri uri) {
-		String param = uri
+	protected static boolean isCallerSyncAdapter(final Uri uri) {
+		final String param = uri
 				.getQueryParameter(TaskContract.CALLER_IS_SYNCADAPTER);
 		return param != null && !"false".equals(param);
 	}
 
 	@SuppressLint("NewApi")
 	@SuppressWarnings("deprecation")
-	private static Cursor listQuery(String[] projection, String selection,
-			String sortOrder, SQLiteQueryBuilder sqlBuilder,
-			boolean isSyncAdapter, boolean hasId, String _id) {
+	private static Cursor listQuery(final String[] projection,
+			final String selection, final String sortOrder,
+			final SQLiteQueryBuilder sqlBuilder, final boolean isSyncAdapter,
+			final boolean hasId, final String _id) {
 		String listQuery;
 		if (selection.equals("1=1")) {
 			listQuery = getListQuerySpecial();
@@ -735,13 +748,13 @@ public class MirakelContentProvider extends ContentProvider implements
 
 		}
 		Log.d(TAG, query);
-		Cursor c = MirakelContentProvider.openHelper.getReadableDatabase()
-				.rawQuery(query, null);
+		final Cursor c = MirakelContentProvider.openHelper
+				.getReadableDatabase().rawQuery(query, null);
 		return c;
 	}
 
 	@Override
-	public void onAccountsUpdated(Account[] accounts) {
+	public void onAccountsUpdated(final Account[] accounts) {
 		AccountMirakel.update(accounts);
 
 	}
@@ -765,18 +778,19 @@ public class MirakelContentProvider extends ContentProvider implements
 		return MirakelContentProvider.openHelper == null;
 	}
 
-	public static void init(Context ctx) {
+	public static void init(final Context ctx) {
 		openHelper = new DatabaseHelper(ctx);
 		openHelper.getWritableDatabase().execSQL("PRAGMA foreign_keys=ON;");
 	}
 
 	@Override
-	public Cursor query(Uri uri, String[] projection, String selection,
-			String[] selectionArgs, String sortOrder) {
-		SQLiteQueryBuilder sqlBuilder = new SQLiteQueryBuilder();
-		boolean isSyncAdapter = isCallerSyncAdapter(uri);
+	public Cursor query(final Uri uri, final String[] projection,
+			String selection, final String[] selectionArgs,
+			final String sortOrder) {
+		final SQLiteQueryBuilder sqlBuilder = new SQLiteQueryBuilder();
+		final boolean isSyncAdapter = isCallerSyncAdapter(uri);
 		selection = insertSelectionArgs(selection, selectionArgs);
-		int matcher = uriMatcher.match(uri);
+		final int matcher = uriMatcher.match(uri);
 		switch (matcher) {
 		case LIST_ID:
 			return listQuery(projection, selection, sortOrder, sqlBuilder,
@@ -798,9 +812,10 @@ public class MirakelContentProvider extends ContentProvider implements
 
 	@SuppressLint("NewApi")
 	@SuppressWarnings("deprecation")
-	private static Cursor taskQuery(String[] projection, String selection,
-			String sortOrder, SQLiteQueryBuilder sqlBuilder,
-			boolean isSyncAdapter, Uri uri, String _id, boolean hasID) {
+	private static Cursor taskQuery(final String[] projection,
+			final String selection, final String sortOrder,
+			final SQLiteQueryBuilder sqlBuilder, final boolean isSyncAdapter,
+			final Uri uri, final String _id, final boolean hasID) {
 		String taskQuery = getTaskQuery(isSyncAdapter);
 		if (isSyncAdapter) {
 			taskQuery += " WHERE " + AccountMirakel.TABLE + "."
@@ -815,7 +830,7 @@ public class MirakelContentProvider extends ContentProvider implements
 				try {
 					taskQuery = handleListID(selection, isSyncAdapter,
 							taskQuery);
-				} catch (SQLWarning s) {
+				} catch (final SQLWarning s) {
 					return new MatrixCursor(projection);
 				}
 			}
@@ -835,16 +850,17 @@ public class MirakelContentProvider extends ContentProvider implements
 	}
 
 	@Override
-	public int update(Uri uri, ContentValues values, String selection,
-			String[] selectionArgs) {
-		AccountMirakel a = AccountMirakel.getByName(getAccountName(uri));
-		if (a != null && !a.isEnabeld())
+	public int update(final Uri uri, final ContentValues values,
+			final String selection, final String[] selectionArgs) {
+		final AccountMirakel a = AccountMirakel.getByName(getAccountName(uri));
+		if (a != null && !a.isEnabeld()) {
 			return 0;
-		ContentValues newValues = convertValues(values,
+		}
+		final ContentValues newValues = convertValues(values,
 				isCallerSyncAdapter(uri));
 		boolean isList;
 		boolean hasExtras = false;
-		ContentValues extras = new ContentValues();
+		final ContentValues extras = new ContentValues();
 		if (values.containsKey(CommonSyncColumns.SYNC1)) {
 			extras.put("ETAG", values.getAsString(CommonSyncColumns.SYNC1));
 			hasExtras = true;
@@ -889,14 +905,16 @@ public class MirakelContentProvider extends ContentProvider implements
 		String s;
 		try {
 			s = getIdsFromSelection(uri, selection, selectionArgs, isList);
-		} catch (RuntimeException e) {
-			if (e.getMessage().equals("id not found"))
+		} catch (final RuntimeException e) {
+			if (e.getMessage().equals("id not found")) {
 				return 0;
+			}
 			throw e;
 		}
 		if (!s.equals("")) {
-			int count = MirakelContentProvider.openHelper.getWritableDatabase()
-					.update(isList ? ListMirakel.TABLE : Task.TABLE, newValues,
+			final int count = MirakelContentProvider.openHelper
+					.getWritableDatabase().update(
+							isList ? ListMirakel.TABLE : Task.TABLE, newValues,
 							DatabaseHelper.ID + " IN(" + s + ")", null);
 			if (hasExtras) {
 				MirakelContentProvider.openHelper.getWritableDatabase().update(

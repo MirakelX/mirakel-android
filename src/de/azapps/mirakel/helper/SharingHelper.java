@@ -2,9 +2,9 @@ package de.azapps.mirakel.helper;
 
 import android.content.Context;
 import android.content.Intent;
+import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakel.model.R;
 
 public class SharingHelper {
 
@@ -15,15 +15,17 @@ public class SharingHelper {
 	 * @param subject
 	 * @param shareBody
 	 */
-	static void share(Context context, String subject, String shareBody) {
+	static void share(final Context context, final String subject,
+			String shareBody) {
 		shareBody += "\n\n" + context.getString(R.string.share_footer);
-		Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+		final Intent sharingIntent = new Intent(
+				android.content.Intent.ACTION_SEND);
 		sharingIntent.setType("text/plain");
 		sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
 		sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
 
-		Intent ci = Intent.createChooser(sharingIntent, context.getResources()
-				.getString(R.string.share_using));
+		final Intent ci = Intent.createChooser(sharingIntent, context
+				.getResources().getString(R.string.share_using));
 		ci.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		context.startActivity(ci);
 	}
@@ -34,11 +36,11 @@ public class SharingHelper {
 	 * @param ctx
 	 * @param l
 	 */
-	public static void share(Context ctx, ListMirakel l) {
-		String subject = ctx.getString(R.string.share_list_title, l.getName(),
-				l.countTasks());
+	public static void share(final Context ctx, final ListMirakel l) {
+		final String subject = ctx.getString(R.string.share_list_title,
+				l.getName(), l.countTasks());
 		String body = "";
-		for (Task t : l.tasks()) {
+		for (final Task t : l.tasks()) {
 			if (t.isDone()) {
 				// body += "* ";
 				continue;
@@ -56,8 +58,8 @@ public class SharingHelper {
 	 * @param ctx
 	 * @param t
 	 */
-	public static void share(Context ctx, Task t) {
-		String subject = TaskHelper.getTaskName(ctx, t);
+	public static void share(final Context ctx, final Task t) {
+		final String subject = TaskHelper.getTaskName(ctx, t);
 		share(ctx, subject, t.getContent());
 	}
 

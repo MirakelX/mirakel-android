@@ -1,14 +1,14 @@
 package de.azapps.mirakel.model;
 
-import de.azapps.mirakel.DefinitionsHelper;
-import de.azapps.mirakel.model.list.ListMirakel;
-import de.azapps.mirakel.model.task.Task;
-import de.azapps.tools.Log;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
+import de.azapps.mirakel.DefinitionsHelper;
+import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.task.Task;
+import de.azapps.tools.Log;
 
 public class MirakelInternalContentProvider extends ContentProvider {
 
@@ -25,19 +25,20 @@ public class MirakelInternalContentProvider extends ContentProvider {
 	}
 
 	@Override
-	public int delete(Uri uri, String selection, String[] selectionArgs) {
+	public int delete(final Uri uri, final String selection,
+			final String[] selectionArgs) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public String getType(Uri uri) {
+	public String getType(final Uri uri) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Uri insert(Uri uri, ContentValues values) {
+	public Uri insert(final Uri uri, final ContentValues values) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -49,8 +50,9 @@ public class MirakelInternalContentProvider extends ContentProvider {
 	}
 
 	@Override
-	public Cursor query(Uri uri, String[] projection, String selection,
-			String[] selectionArgs, String sortOrder) {
+	public Cursor query(final Uri uri, final String[] projection,
+			final String selection, final String[] selectionArgs,
+			final String sortOrder) {
 		String table;
 		switch (uriMatcher.match(uri)) {
 		case TASKS:
@@ -68,8 +70,8 @@ public class MirakelInternalContentProvider extends ContentProvider {
 	}
 
 	@Override
-	public int update(Uri uri, ContentValues values, String selection,
-			String[] selectionArgs) {
+	public int update(final Uri uri, final ContentValues values,
+			final String selection, final String[] selectionArgs) {
 		// TODO Auto-generated method stub
 		return 0;
 	}

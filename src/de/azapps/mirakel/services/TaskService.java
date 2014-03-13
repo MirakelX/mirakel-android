@@ -21,15 +21,16 @@ public class TaskService extends Service {
 			TASK_LATER = "de.azapps.mirakel.services.TaskService.TASK_LATER";
 
 	@Override
-	public IBinder onBind(Intent intent) {
+	public IBinder onBind(final Intent intent) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	private void handleCommand(Intent intent) {
-		Task task = TaskHelper.getTaskFromIntent(intent);
-		if (task == null)
+	private void handleCommand(final Intent intent) {
+		final Task task = TaskHelper.getTaskFromIntent(intent);
+		if (task == null) {
 			return;
+		}
 		if (intent.getAction() == TASK_DONE) {
 			task.setDone(true);
 			task.safeSave();
@@ -38,8 +39,8 @@ public class TaskService extends Service {
 					Toast.LENGTH_LONG).show();
 		} else if (intent.getAction() == TASK_LATER
 				&& !task.hasRecurringReminder()) {
-			GregorianCalendar reminder = new GregorianCalendar();
-			int addMinutes = MirakelCommonPreferences.getAlarmLater();
+			final GregorianCalendar reminder = new GregorianCalendar();
+			final int addMinutes = MirakelCommonPreferences.getAlarmLater();
 			reminder.add(Calendar.MINUTE, addMinutes);
 			task.setReminder(reminder);
 			task.safeSave();
@@ -50,13 +51,14 @@ public class TaskService extends Service {
 		}
 		ReminderAlarm.closeNotificationFor(this, task.getId());
 		ReminderAlarm.updateAlarms(this);
-		Intent i = new Intent(DefinitionsHelper.SYNC_FINISHED);
+		final Intent i = new Intent(DefinitionsHelper.SYNC_FINISHED);
 		sendBroadcast(i);
 		stopSelf();
 	}
 
 	@Override
-	public int onStartCommand(Intent intent, int flags, int startid) {
+	public int onStartCommand(final Intent intent, final int flags,
+			final int startid) {
 		handleCommand(intent);
 		return START_STICKY;
 	}

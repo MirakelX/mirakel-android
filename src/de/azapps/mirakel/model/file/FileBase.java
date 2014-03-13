@@ -12,7 +12,8 @@ public class FileBase {
 	private String path;
 	private File file;
 
-	public FileBase(int id, Task task, String name, String path) {
+	public FileBase(final int id, final Task task, final String name,
+			final String path) {
 		super();
 		this.id = id;
 		this.task = task;
@@ -24,7 +25,7 @@ public class FileBase {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(final int id) {
 		this.id = id;
 	}
 
@@ -32,7 +33,7 @@ public class FileBase {
 		return this.task;
 	}
 
-	public void setTask_id(Task task) {
+	public void setTask_id(final Task task) {
 		this.task = task;
 	}
 
@@ -40,7 +41,7 @@ public class FileBase {
 		return this.name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
@@ -48,13 +49,14 @@ public class FileBase {
 		return this.path;
 	}
 
-	public void setPath(String path) {
+	public void setPath(final String path) {
 		this.path = path;
 	}
 
 	public File getFile() {
-		if (this.file == null)
+		if (this.file == null) {
 			this.file = new File(this.path);
+		}
 		return this.file;
 	}
 
@@ -64,7 +66,7 @@ public class FileBase {
 	}
 
 	public ContentValues getContentValues() {
-		ContentValues cv = new ContentValues();
+		final ContentValues cv = new ContentValues();
 		cv.put("_id", this.id);
 		cv.put("task_id", this.task.getId());
 		cv.put("name", this.name);

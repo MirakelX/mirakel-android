@@ -58,11 +58,11 @@ public class ExportImport {
 	private static final String TAG = "ExportImport";
 
 	@SuppressLint("SimpleDateFormat")
-	public static void exportDB(Context ctx) {
+	public static void exportDB(final Context ctx) {
 
-		Date today = new Date();
-		DateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");// SimpleDateFormat.getDateInstance();
-		String filename = "mirakel_" + sdf.format(today) + ".db";
+		final Date today = new Date();
+		final DateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");// SimpleDateFormat.getDateInstance();
+		final String filename = "mirakel_" + sdf.format(today) + ".db";
 		final File file = new File(FileUtils.getExportDir(), filename);
 
 		try {
@@ -72,35 +72,36 @@ public class ExportImport {
 					ctx,
 					ctx.getString(R.string.backup_export_ok,
 							file.getAbsolutePath()), Toast.LENGTH_LONG).show();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			Log.e("mypck", e.getMessage(), e);
 			Toast.makeText(ctx, ctx.getString(R.string.backup_export_error),
 					Toast.LENGTH_LONG).show();
 		}
 	}
 
-	public static void importDB(Context ctx, File file) {
+	public static void importDB(final Context ctx, final File file) {
 
 		try {
 			FileUtils.copyFile(file, dbFile);
 			Toast.makeText(ctx, ctx.getString(R.string.backup_import_ok),
 					Toast.LENGTH_LONG).show();
 			android.os.Process.killProcess(android.os.Process.myPid());
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			Log.e("mypck", e.getMessage(), e);
 			Toast.makeText(ctx, ctx.getString(R.string.backup_import_error),
 					Toast.LENGTH_LONG).show();
 		}
 	}
 
-	public static void importDB(Context ctx, FileInputStream inputstream) {
+	public static void importDB(final Context ctx,
+			final FileInputStream inputstream) {
 
 		try {
 			FileUtils.copyByStream(inputstream, new FileOutputStream(dbFile));
 			Toast.makeText(ctx, ctx.getString(R.string.backup_import_ok),
 					Toast.LENGTH_LONG).show();
 			android.os.Process.killProcess(android.os.Process.myPid());
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			Log.e("mypck", e.getMessage(), e);
 			Toast.makeText(ctx, ctx.getString(R.string.backup_import_error),
 					Toast.LENGTH_LONG).show();
@@ -108,10 +109,10 @@ public class ExportImport {
 	}
 
 	@SuppressLint("SimpleDateFormat")
-	public static boolean importAstrid(Context context, String path) {
-		File file = new File(path);
+	public static boolean importAstrid(final Context context, final String path) {
+		final File file = new File(path);
 		if (file.exists()) {
-			String mimetype = FileUtils.getMimeType(path);
+			final String mimetype = FileUtils.getMimeType(path);
 			if (mimetype.equals("application/zip")) {
 				return importAstridZip(context, file);
 			} else if (mimetype.equals("text/xml")) {
@@ -125,22 +126,24 @@ public class ExportImport {
 		return false;
 	}
 
-	private static boolean importAstridXml(Context context, File file) {
-		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+	private static boolean importAstridXml(final Context context,
+			final File file) {
+		final DocumentBuilderFactory dbFactory = DocumentBuilderFactory
+				.newInstance();
 		DocumentBuilder dBuilder;
 		try {
 			dBuilder = dbFactory.newDocumentBuilder();
-		} catch (ParserConfigurationException e) {
+		} catch (final ParserConfigurationException e) {
 			Log.d(TAG, "cannot configure parser");
 			return false;
 		}
 		Document doc;
 		try {
 			doc = dBuilder.parse(file);
-		} catch (SAXException e) {
+		} catch (final SAXException e) {
 			Log.d(TAG, "cannot parse file");
 			return false;
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			Log.d(TAG, "cannot read file");
 			return false;
 		}
@@ -150,14 +153,15 @@ public class ExportImport {
 		// http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
 		doc.getDocumentElement().normalize();
 
-		NodeList nList = doc.getDocumentElement().getChildNodes();
+		final NodeList nList = doc.getDocumentElement().getChildNodes();
 		for (int i = 0; i < nList.getLength(); i++) {
-			Node n = nList.item(i);
+			final Node n = nList.item(i);
 			if (n.getNodeType() == Node.ELEMENT_NODE) {
-				NamedNodeMap m = n.getAttributes();
+				final NamedNodeMap m = n.getAttributes();
 				if (m != null) {
 					// Name
-					String name = m.getNamedItem("title").getTextContent();
+					final String name = m.getNamedItem("title")
+							.getTextContent();
 					// List
 					ListMirakel list;
 					Node child = null;
@@ -165,7 +169,7 @@ public class ExportImport {
 						child = n.getChildNodes().item(1);
 					}
 					if (child != null && child.getAttributes() != null) {
-						String listname = child.getAttributes()
+						final String listname = child.getAttributes()
 								.getNamedItem("value").getTextContent();
 						list = ListMirakel.findByName(listname);
 						if (list == null) {
@@ -175,10 +179,10 @@ public class ExportImport {
 						list = MirakelModelPreferences
 								.getImportDefaultList(true);
 					}
-					Task t = Task.newTask(name, list);
+					final Task t = Task.newTask(name, list);
 					// Priority
-					int prio = Integer.parseInt(m.getNamedItem("importance")
-							.getTextContent());
+					final int prio = Integer.parseInt(m.getNamedItem(
+							"importance").getTextContent());
 					switch (prio) {
 					case 0:
 						t.setPriority(2);
@@ -196,27 +200,29 @@ public class ExportImport {
 						t.setPriority(0);
 					}
 					// Due
-					long due = Long.parseLong(m.getNamedItem("dueDate")
+					final long due = Long.parseLong(m.getNamedItem("dueDate")
 							.getTextContent());
-					GregorianCalendar d = new GregorianCalendar();
+					final GregorianCalendar d = new GregorianCalendar();
 					d.setTimeInMillis(due);
 					t.setDue(d);
 					// Created At
-					long created = Long.parseLong(m.getNamedItem("created")
-							.getTextContent());
-					GregorianCalendar c = new GregorianCalendar();
+					final long created = Long.parseLong(m.getNamedItem(
+							"created").getTextContent());
+					final GregorianCalendar c = new GregorianCalendar();
 					c.setTimeInMillis(created);
 					t.setCreatedAt(c);
 					// Update At
-					long update = Long.parseLong(m.getNamedItem("modified")
-							.getTextContent());
-					GregorianCalendar u = new GregorianCalendar();
+					final long update = Long.parseLong(m.getNamedItem(
+							"modified").getTextContent());
+					final GregorianCalendar u = new GregorianCalendar();
 					u.setTimeInMillis(update);
 					t.setDue(u);
 					// Done
-					String done = m.getNamedItem("completed").getTextContent();
+					final String done = m.getNamedItem("completed")
+							.getTextContent();
 					t.setDone(!done.equals("0"));
-					String content = m.getNamedItem("notes").getTextContent();
+					final String content = m.getNamedItem("notes")
+							.getTextContent();
 					t.setContent(content.trim());
 					// TODO Reminder
 					t.safeSave(false);
@@ -230,63 +236,64 @@ public class ExportImport {
 	}
 
 	@SuppressLint("SimpleDateFormat")
-	private static boolean importAstridZip(Context context, File zipped) {
-		File outputDir = new File(context.getCacheDir(), "astrid");
+	private static boolean importAstridZip(final Context context,
+			final File zipped) {
+		final File outputDir = new File(context.getCacheDir(), "astrid");
 		if (!outputDir.isDirectory()) {
 			outputDir.mkdirs();
 		} else {
-			String[] children = outputDir.list();
-			for (int i = 0; i < children.length; i++) {
-				new File(outputDir, children[i]).delete();
+			final String[] children = outputDir.list();
+			for (final String element : children) {
+				new File(outputDir, element).delete();
 			}
 		}
 		try {
 			FileUtils.unzip(zipped, outputDir);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			return false;
 		}
 		FileReader tasks, lists;
 		try {
 			lists = new FileReader(new File(outputDir, "lists.csv"));
-			CSVReader listsReader = new CSVReader(lists, ',');
+			final CSVReader listsReader = new CSVReader(lists, ',');
 			lists.close();
 			String[] row;
 			listsReader.readNext(); // Skip first line
 
-			SimpleDateFormat astridFormat = new SimpleDateFormat(
+			final SimpleDateFormat astridFormat = new SimpleDateFormat(
 					"yyyy-MM-dd HH:mm:ss");
 			while ((row = listsReader.readNext()) != null) {
-				String name = row[0];
+				final String name = row[0];
 				if (ListMirakel.findByName(name) == null) {
 					ListMirakel.newList(name);
 					Log.v(TAG, "created list:" + name);
 				}
 			}
 			tasks = new FileReader(new File(outputDir, "tasks.csv"));
-			CSVReader tasksReader = new CSVReader(tasks, ',');
+			final CSVReader tasksReader = new CSVReader(tasks, ',');
 			tasks.close();
 			tasksReader.readNext(); // Skip first line
 			while ((row = tasksReader.readNext()) != null) {
-				String name = row[0];
-				String content = row[8];
-				String listName = row[7];
-				int priority = Integer.valueOf(row[5]) - 1;
+				final String name = row[0];
+				final String content = row[8];
+				final String listName = row[7];
+				final int priority = Integer.valueOf(row[5]) - 1;
 
 				// Due
 				GregorianCalendar due = new GregorianCalendar();
 				try {
 					due.setTime(astridFormat.parse(row[4]));
-				} catch (ParseException e) {
+				} catch (final ParseException e) {
 					due = null;
 				}
 				// Done
-				boolean done = !row[9].equals("");
+				final boolean done = !row[9].equals("");
 
 				ListMirakel list = ListMirakel.findByName(listName);
 				if (list == null) {
 					list = ListMirakel.first();
 				}
-				Task t = Task.newTask(name, list);
+				final Task t = Task.newTask(name, list);
 				t.setContent(content);
 				t.setPriority(priority);
 				t.setDue(due);
@@ -296,18 +303,18 @@ public class ExportImport {
 
 			}
 
-		} catch (FileNotFoundException e) {
+		} catch (final FileNotFoundException e) {
 			return false;
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			return false;
 		}
 		return true;
 	}
 
-	public static String getStringFromFile(String path, Context ctx)
+	public static String getStringFromFile(final String path, final Context ctx)
 			throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader(path));
-		StringBuilder sb = new StringBuilder();
+		final BufferedReader br = new BufferedReader(new FileReader(path));
+		final StringBuilder sb = new StringBuilder();
 		String line = br.readLine();
 
 		while (line != null) {

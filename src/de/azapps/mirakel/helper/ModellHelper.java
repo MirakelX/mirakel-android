@@ -1,6 +1,5 @@
 package de.azapps.mirakel.helper;
 
-import de.azapps.mirakel.model.list.ListMirakel;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
@@ -8,12 +7,14 @@ import android.graphics.Shader;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.view.View;
+import de.azapps.mirakel.model.list.ListMirakel;
 
 public class ModellHelper {
 
 	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
-	public static void setListColorBackground(ListMirakel list, View row, int w) {
+	public static void setListColorBackground(final ListMirakel list,
+			final View row, final int w) {
 
 		int color;
 		if (list == null) {
@@ -28,7 +29,7 @@ public class ModellHelper {
 				color ^= 0xCC000000;
 			}
 		}
-		ShapeDrawable mDrawable = new ShapeDrawable(new RectShape());
+		final ShapeDrawable mDrawable = new ShapeDrawable(new RectShape());
 		mDrawable.getPaint().setShader(
 				new LinearGradient(0, 0, w / 4, 0, color, Color
 						.parseColor("#00FFFFFF"), Shader.TileMode.CLAMP));

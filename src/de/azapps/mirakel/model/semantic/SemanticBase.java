@@ -15,8 +15,9 @@ public class SemanticBase {
 	public static final String CONDITION = "condition", PRIORITY = "priority",
 			LIST = "list", DUE = "due", WEEKDAY = "weekday";
 
-	public SemanticBase(int id, String condition, Integer priority,
-			Integer due, ListMirakel list, Integer weekday) {
+	public SemanticBase(final int id, final String condition,
+			final Integer priority, final Integer due, final ListMirakel list,
+			final Integer weekday) {
 		super();
 		this.id = id;
 		this.condition = condition.toLowerCase(Locale.getDefault());
@@ -30,7 +31,7 @@ public class SemanticBase {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(final int id) {
 		this.id = id;
 	}
 
@@ -38,7 +39,7 @@ public class SemanticBase {
 		return this.condition;
 	}
 
-	public void setCondition(String condition) {
+	public void setCondition(final String condition) {
 		this.condition = condition.toLowerCase(Locale.getDefault());
 	}
 
@@ -46,7 +47,7 @@ public class SemanticBase {
 		return this.priority;
 	}
 
-	public void setPriority(Integer priority) {
+	public void setPriority(final Integer priority) {
 		this.priority = priority;
 	}
 
@@ -54,7 +55,7 @@ public class SemanticBase {
 		return this.due;
 	}
 
-	public void setDue(Integer due) {
+	public void setDue(final Integer due) {
 		this.due = due;
 	}
 
@@ -62,7 +63,7 @@ public class SemanticBase {
 		return this.list;
 	}
 
-	public void setList(ListMirakel list) {
+	public void setList(final ListMirakel list) {
 		this.list = list;
 	}
 
@@ -70,7 +71,7 @@ public class SemanticBase {
 		return this.weekday;
 	}
 
-	public void setWeekday(Integer weekday) {
+	public void setWeekday(final Integer weekday) {
 		this.weekday = weekday;
 	}
 
@@ -80,7 +81,7 @@ public class SemanticBase {
 	}
 
 	public ContentValues getContentValues() {
-		ContentValues cv = new ContentValues();
+		final ContentValues cv = new ContentValues();
 		cv.put("_id", this.id);
 		cv.put("condition", this.condition);
 		cv.put("default_list_id", this.list == null ? null : this.list.getId());

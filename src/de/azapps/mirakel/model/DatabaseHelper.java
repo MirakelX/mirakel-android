@@ -44,7 +44,6 @@ import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.semantic.SemanticBase;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakel.model.R;
 import de.azapps.tools.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -58,7 +57,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public static final String UPDATED_AT = "updated_at";
 	public static final String SYNC_STATE_FIELD = "sync_state";
 
-	private static void createAccountTable(SQLiteDatabase db) {
+	private static void createAccountTable(final SQLiteDatabase db) {
 		db.execSQL("CREATE TABLE " + AccountMirakel.TABLE + " (" + ID
 				+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + NAME
 				+ " TEXT NOT NULL, " + "content TEXT, " + AccountBase.ENABLED
@@ -68,7 +67,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	}
 
-	private static void createTasksTableString(SQLiteDatabase db) {
+	private static void createTasksTableString(final SQLiteDatabase db) {
 		db.execSQL("CREATE TABLE " + Task.TABLE + " (" + ID
 				+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + Task.LIST_ID
 				+ " INTEGER REFERENCES " + ListMirakel.TABLE + " (" + ID
@@ -83,7 +82,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private final Context context;
 
-	public DatabaseHelper(Context ctx) {
+	public DatabaseHelper(final Context ctx) {
 		super(ctx, getDBName(), null, DATABASE_VERSION);
 		MirakelPreferences.init(ctx);
 		this.context = ctx;
@@ -104,14 +103,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				db_name = "demo_" + MirakelCommonPreferences.getLanguage()
 						+ ".db";
 			}
-		} catch (NullPointerException e) {
+		} catch (final NullPointerException e) {
 			// Then the settings are not initialized and we should not do
 			// anything
 		}
 		return db_name;
 	}
 
-	private void createSpecialListsTable(SQLiteDatabase db) {
+	private void createSpecialListsTable(final SQLiteDatabase db) {
 		db.execSQL("CREATE TABLE " + SpecialList.TABLE + " (" + ID
 				+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + NAME
 				+ " TEXT NOT NULL, " + SpecialList.ACTIVE
@@ -144,7 +143,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	@Override
-	public void onCreate(SQLiteDatabase db) {
+	public void onCreate(final SQLiteDatabase db) {
 		Log.d(TAG, "onCreate");
 		DefinitionsHelper.freshInstall = true;
 
@@ -169,7 +168,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	@Override
-	public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+	public void onDowngrade(final SQLiteDatabase db, final int oldVersion,
+			final int newVersion) {
 		Log.e(TAG, "You are downgrading the Database!");
 		// This is only for developers… There shouldn't happen bad things if you
 		// use a database with a higher version.
@@ -177,13 +177,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	@SuppressWarnings({ "fallthrough" })
 	@Override
-	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+	public void onUpgrade(final SQLiteDatabase db, final int oldVersion,
+			final int newVersion) {
 		Log.e(DatabaseHelper.class.getName(),
 				"Upgrading database from version " + oldVersion + " to "
 						+ newVersion);
 		try {
 			ExportImport.exportDB(this.context);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			Log.w(TAG, "Cannot backup database");
 		}
 		switch (oldVersion) {
@@ -211,7 +212,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 			db.execSQL("UPDATE " + Task.TABLE + " set " + Task.DUE
 					+ "='null' where " + Task.DUE + "='1970-01-01'");
-			String newDate = new SimpleDateFormat(
+			final String newDate = new SimpleDateFormat(
 					this.context.getString(R.string.dateTimeFormat), Locale.US)
 					.format(new Date());
 			db.execSQL("UPDATE " + Task.TABLE + " set " + CREATED_AT + "='"
@@ -403,23 +404,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		case 24:
 			createAccountTable(db);
 			ACCOUNT_TYPES type = ACCOUNT_TYPES.LOCAL;
-			AccountManager am = AccountManager.get(this.context);
+			final AccountManager am = AccountManager.get(this.context);
 			String accountname = this.context.getString(R.string.local_account);
 			if (am.getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL).length > 0) {
-				Account a = am
+				final Account a = am
 						.getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL)[0];
-				String t = AccountManager.get(this.context).getUserData(a,
-						DefinitionsHelper.BUNDLE_SERVER_TYPE);
+				final String t = AccountManager.get(this.context).getUserData(
+						a, DefinitionsHelper.BUNDLE_SERVER_TYPE);
 				if (t.equals(DefinitionsHelper.TYPE_TW_SYNC)) {
 					type = ACCOUNT_TYPES.TASKWARRIOR;
 					accountname = a.name;
 				}
 			}
-			ContentValues cv = new ContentValues();
+			final ContentValues cv = new ContentValues();
 			cv.put(DatabaseHelper.NAME, accountname);
 			cv.put(AccountBase.TYPE, type.toInt());
 			cv.put(AccountBase.ENABLED, true);
-			long accountId = db.insert(AccountMirakel.TABLE, null, cv);
+			final long accountId = db.insert(AccountMirakel.TABLE, null, cv);
 			db.execSQL("ALTER TABLE " + ListMirakel.TABLE + " add column "
 					+ ListMirakel.ACCOUNT_ID + " REFERENCES "
 					+ AccountMirakel.TABLE + " (" + ID
@@ -441,8 +442,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		case 28:
 			db.execSQL("ALTER TABLE " + Semantic.TABLE
 					+ " add column weekday int;");
-			String[] weekdays = this.context.getResources().getStringArray(
-					R.array.weekdays);
+			final String[] weekdays = this.context.getResources()
+					.getStringArray(R.array.weekdays);
 			for (int i = 1; i < weekdays.length; i++) { // Ignore first element
 				db.execSQL("INSERT INTO " + Semantic.TABLE + " ("
 						+ SemanticBase.CONDITION + "," + SemanticBase.WEEKDAY

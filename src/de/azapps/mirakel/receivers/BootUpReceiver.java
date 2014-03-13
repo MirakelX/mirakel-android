@@ -27,7 +27,7 @@ import de.azapps.mirakel.services.NotificationService;
 public class BootUpReceiver extends BroadcastReceiver {
 
 	@Override
-	public void onReceive(Context context, Intent arg1) {
+	public void onReceive(final Context context, final Intent arg1) {
 		NotificationService.updateNotificationAndWidget(context);
 		ReminderAlarm.updateAlarms(context);
 	}

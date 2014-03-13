@@ -24,10 +24,12 @@ public class RecurringBase {
 	private SparseBooleanArray weekdays;
 	private Integer derivedFrom;
 
-	public RecurringBase(int _id, String label, int minutes, int hours,
-			int days, int months, int years, boolean forDue,
-			Calendar startDate, Calendar endDate, boolean temporary,
-			boolean isExact, SparseBooleanArray weekdays, Integer derivedFrom) {
+	public RecurringBase(final int _id, final String label, final int minutes,
+			final int hours, final int days, final int months, final int years,
+			final boolean forDue, final Calendar startDate,
+			final Calendar endDate, final boolean temporary,
+			final boolean isExact, final SparseBooleanArray weekdays,
+			final Integer derivedFrom) {
 		super();
 		this.days = days;
 		this.forDue = forDue;
@@ -49,7 +51,7 @@ public class RecurringBase {
 		return this.label;
 	}
 
-	public void setLabel(String label) {
+	public void setLabel(final String label) {
 		this.label = label;
 	}
 
@@ -57,7 +59,7 @@ public class RecurringBase {
 		return this.years;
 	}
 
-	public void setYears(int years) {
+	public void setYears(final int years) {
 		this.years = years;
 	}
 
@@ -65,7 +67,7 @@ public class RecurringBase {
 		return this.forDue;
 	}
 
-	public void setForDue(boolean for_due) {
+	public void setForDue(final boolean for_due) {
 		this.forDue = for_due;
 	}
 
@@ -73,7 +75,7 @@ public class RecurringBase {
 		return this.months;
 	}
 
-	public void setMonths(int months) {
+	public void setMonths(final int months) {
 		this.months = months;
 	}
 
@@ -81,7 +83,7 @@ public class RecurringBase {
 		return this.days;
 	}
 
-	public void setDays(int days) {
+	public void setDays(final int days) {
 		this.days = days;
 	}
 
@@ -89,7 +91,7 @@ public class RecurringBase {
 		return this.hours;
 	}
 
-	public void setHours(int hours) {
+	public void setHours(final int hours) {
 		this.hours = hours;
 	}
 
@@ -97,7 +99,7 @@ public class RecurringBase {
 		return this.minutes;
 	}
 
-	public void setMinutes(int minutes) {
+	public void setMinutes(final int minutes) {
 		this.minutes = minutes;
 	}
 
@@ -110,7 +112,7 @@ public class RecurringBase {
 		return this._id;
 	}
 
-	public void setId(int _id) {
+	public void setId(final int _id) {
 		this._id = _id;
 	}
 
@@ -118,7 +120,7 @@ public class RecurringBase {
 		return this.startDate;
 	}
 
-	public void setStartDate(Calendar startDate) {
+	public void setStartDate(final Calendar startDate) {
 		this.startDate = startDate;
 	}
 
@@ -126,7 +128,7 @@ public class RecurringBase {
 		return this.endDate;
 	}
 
-	public void setEndDate(Calendar endDate) {
+	public void setEndDate(final Calendar endDate) {
 		this.endDate = endDate;
 	}
 
@@ -134,7 +136,7 @@ public class RecurringBase {
 		return this.temporary;
 	}
 
-	public void setTemporary(boolean temporary) {
+	public void setTemporary(final boolean temporary) {
 		this.temporary = temporary;
 	}
 
@@ -143,7 +145,7 @@ public class RecurringBase {
 	}
 
 	public List<Integer> getWeekdays() {
-		ArrayList<Integer> ret = new ArrayList<Integer>();
+		final ArrayList<Integer> ret = new ArrayList<Integer>();
 		if (this.weekdays.get(Calendar.SUNDAY, false)) {
 			ret.add(Calendar.SUNDAY);
 		}
@@ -173,7 +175,7 @@ public class RecurringBase {
 		return this.weekdays;
 	}
 
-	public void setWeekdays(SparseBooleanArray weekdays) {
+	public void setWeekdays(final SparseBooleanArray weekdays) {
 		this.weekdays = weekdays;
 	}
 
@@ -181,11 +183,11 @@ public class RecurringBase {
 		return this.derivedFrom;
 	}
 
-	public void setDerivedFrom(Integer derivedFrom) {
+	public void setDerivedFrom(final Integer derivedFrom) {
 		this.derivedFrom = derivedFrom;
 	}
 
-	public void setExact(boolean isExact) {
+	public void setExact(final boolean isExact) {
 		this.isExact = isExact;
 	}
 
@@ -195,17 +197,17 @@ public class RecurringBase {
 	 * @return
 	 */
 	public long getIntervall() {
-		int minute = 60;
-		int hour = 3600;
-		int day = 86400;
-		int month = 2592000; // That's not right, but who cares?
-		int year = 31536000; // nobody need this…
+		final int minute = 60;
+		final int hour = 3600;
+		final int day = 86400;
+		final int month = 2592000; // That's not right, but who cares?
+		final int year = 31536000; // nobody need this…
 		return (this.minutes * minute + this.hours * hour + this.days * day
 				+ this.months * month + this.years * year) * 1000;
 	}
 
 	public ContentValues getContentValues() {
-		ContentValues cv = new ContentValues();
+		final ContentValues cv = new ContentValues();
 		cv.put("_id", this._id);
 		cv.put("minutes", this.minutes);
 		cv.put("hours", this.hours);

@@ -21,25 +21,27 @@ import de.azapps.tools.Log;
 public class AccountMirakel extends AccountBase {
 	public enum ACCOUNT_TYPES {
 		CALDAV, LOCAL, TASKWARRIOR;
-		public static ACCOUNT_TYPES getSyncType(String type) {
-			if (type.equals("Taskwarrior"))
+		public static ACCOUNT_TYPES getSyncType(final String type) {
+			if (type.equals("Taskwarrior")) {
 				return TASKWARRIOR;
-			else if (type.equals("CalDav"))
+			} else if (type.equals("CalDav")) {
 				return CALDAV;
-			else
+			} else {
 				return LOCAL;
+			}
 		}
 
-		public static ACCOUNT_TYPES parseAccountType(String type) {
-			if (type.equals(ACCOUNT_TYPE_DAVDROID))
+		public static ACCOUNT_TYPES parseAccountType(final String type) {
+			if (type.equals(ACCOUNT_TYPE_DAVDROID)) {
 				return CALDAV;
-			else if (type.equals(ACCOUNT_TYPE_MIRAKEL))
+			} else if (type.equals(ACCOUNT_TYPE_MIRAKEL)) {
 				return TASKWARRIOR;
-			else
+			} else {
 				return LOCAL;
+			}
 		}
 
-		public static ACCOUNT_TYPES parseInt(int i) {
+		public static ACCOUNT_TYPES parseInt(final int i) {
 			switch (i) {
 			case -1:
 				return LOCAL;
@@ -53,7 +55,7 @@ public class AccountMirakel extends AccountBase {
 
 		}
 
-		public static String toName(ACCOUNT_TYPES type) {
+		public static String toName(final ACCOUNT_TYPES type) {
 			switch (type) {
 			case CALDAV:
 				return ACCOUNT_TYPE_DAVDROID;
@@ -78,7 +80,7 @@ public class AccountMirakel extends AccountBase {
 			}
 		}
 
-		public String typeName(Context ctx) {
+		public String typeName(final Context ctx) {
 			switch (this) {
 			case CALDAV:
 				return ctx.getString(R.string.calDavName);
@@ -111,14 +113,14 @@ public class AccountMirakel extends AccountBase {
 		dbHelper.close();
 	}
 
-	private static AccountMirakel cursorToAccount(Cursor c) {
+	private static AccountMirakel cursorToAccount(final Cursor c) {
 		return new AccountMirakel(c.getInt(0), c.getString(1),
 				ACCOUNT_TYPES.parseInt(c.getInt(2)), c.getInt(3) == 1);
 	}
 
-	private static List<AccountMirakel> cursorToAccountList(Cursor c) {
+	private static List<AccountMirakel> cursorToAccountList(final Cursor c) {
 		if (c.getCount() > 0) {
-			List<AccountMirakel> accounts = new ArrayList<AccountMirakel>();
+			final List<AccountMirakel> accounts = new ArrayList<AccountMirakel>();
 			c.moveToFirst();
 			while (!c.isAfterLast()) {
 				accounts.add(cursorToAccount(c));
@@ -130,25 +132,25 @@ public class AccountMirakel extends AccountBase {
 		return null;
 	}
 
-	public static AccountMirakel get(Account account) {
-		Cursor c = database.query(TABLE, allColumns, DatabaseHelper.NAME + "='"
-				+ account.name + "'", null, null, null, null);
+	public static AccountMirakel get(final Account account) {
+		final Cursor c = database.query(TABLE, allColumns, DatabaseHelper.NAME
+				+ "='" + account.name + "'", null, null, null, null);
 		if (c.getCount() < 1) {
 			c.close();
 			return null;
 		}
 		c.moveToFirst();
-		AccountMirakel a = cursorToAccount(c);
+		final AccountMirakel a = cursorToAccount(c);
 		c.close();
 		return a;
 	}
 
-	public static AccountMirakel get(int id) {
-		Cursor c = database.query(TABLE, allColumns, DatabaseHelper.ID + " = "
-				+ id, null, null, null, null);
+	public static AccountMirakel get(final int id) {
+		final Cursor c = database.query(TABLE, allColumns, DatabaseHelper.ID
+				+ " = " + id, null, null, null, null);
 		if (c.getCount() > 0) {
 			c.moveToFirst();
-			AccountMirakel a = cursorToAccount(c);
+			final AccountMirakel a = cursorToAccount(c);
 			c.close();
 			return a;
 		}
@@ -157,19 +159,19 @@ public class AccountMirakel extends AccountBase {
 	}
 
 	public static List<AccountMirakel> getAll() {
-		Cursor c = database.query(TABLE, allColumns, null, null, null, null,
-				null);
-		List<AccountMirakel> accounts = cursorToAccountList(c);
+		final Cursor c = database.query(TABLE, allColumns, null, null, null,
+				null, null);
+		final List<AccountMirakel> accounts = cursorToAccountList(c);
 		c.close();
 		return accounts;
 	}
 
-	public static AccountMirakel getByName(String name) {
-		Cursor c = database.query(TABLE, allColumns, DatabaseHelper.NAME + "='"
-				+ name + "'", null, null, null, null);
+	public static AccountMirakel getByName(final String name) {
+		final Cursor c = database.query(TABLE, allColumns, DatabaseHelper.NAME
+				+ "='" + name + "'", null, null, null, null);
 		if (c.getCount() > 0) {
 			c.moveToFirst();
-			AccountMirakel a = cursorToAccount(c);
+			final AccountMirakel a = cursorToAccount(c);
 			c.close();
 			return a;
 		}
@@ -177,21 +179,21 @@ public class AccountMirakel extends AccountBase {
 		return null;
 	}
 
-	public static List<AccountMirakel> getEnabled(boolean isEnabled) {
-		Cursor c = database.query(TABLE, allColumns, ENABLED + "="
+	public static List<AccountMirakel> getEnabled(final boolean isEnabled) {
+		final Cursor c = database.query(TABLE, allColumns, ENABLED + "="
 				+ (isEnabled ? 1 : 0), null, null, null, null);
-		List<AccountMirakel> accounts = cursorToAccountList(c);
+		final List<AccountMirakel> accounts = cursorToAccountList(c);
 		c.close();
 		return accounts;
 	}
 
 	public static AccountMirakel getLocal() {
-		Cursor c = database.query(TABLE, allColumns, TYPE + "="
+		final Cursor c = database.query(TABLE, allColumns, TYPE + "="
 				+ ACCOUNT_TYPES.LOCAL.toInt() + " AND " + ENABLED + "=1", null,
 				null, null, null);
 		c.moveToFirst();
 		if (c.getCount() > 0) {
-			AccountMirakel a = cursorToAccount(c);
+			final AccountMirakel a = cursorToAccount(c);
 			c.close();
 			return a;
 		}
@@ -200,35 +202,35 @@ public class AccountMirakel extends AccountBase {
 				ACCOUNT_TYPES.LOCAL, true);
 	}
 
-	public static void init(Context ctx) {
+	public static void init(final Context ctx) {
 		AccountMirakel.context = ctx;
 		dbHelper = new DatabaseHelper(ctx);
 		database = dbHelper.getWritableDatabase();
 	}
 
-	public static AccountMirakel newAccount(String name, ACCOUNT_TYPES type,
-			boolean enabled) {
-		ContentValues cv = new ContentValues();
+	public static AccountMirakel newAccount(final String name,
+			final ACCOUNT_TYPES type, final boolean enabled) {
+		final ContentValues cv = new ContentValues();
 		cv.put(DatabaseHelper.NAME, name);
 		cv.put(TYPE, type.toInt());
 		cv.put(ENABLED, enabled);
-		long id = database.insert(TABLE, null, cv);
-		Cursor cursor = database.query(TABLE, allColumns, DatabaseHelper.ID
-				+ " = " + id, null, null, null, null);
+		final long id = database.insert(TABLE, null, cv);
+		final Cursor cursor = database.query(TABLE, allColumns,
+				DatabaseHelper.ID + " = " + id, null, null, null, null);
 		cursor.moveToFirst();
-		AccountMirakel newAccount = cursorToAccount(cursor);
+		final AccountMirakel newAccount = cursorToAccount(cursor);
 		cursor.close();
 		return newAccount;
 	}
 
-	public static void update(Account[] accounts) {
+	public static void update(final Account[] accounts) {
 		List<AccountMirakel> accountList = AccountMirakel.getAll();
-		int accountCountStart = accountList.size();
-		Map<String, AccountMirakel> map = new HashMap<String, AccountMirakel>();
-		for (AccountMirakel a : accountList) {
+		final int accountCountStart = accountList.size();
+		final Map<String, AccountMirakel> map = new HashMap<String, AccountMirakel>();
+		for (final AccountMirakel a : accountList) {
 			map.put(a.getName(), a);
 		}
-		for (Account a : accounts) {
+		for (final Account a : accounts) {
 			Log.d(TAG, "Accountname: " + a.name + " | TYPE: " + a.type);
 			if (a.type.equals(AccountMirakel.ACCOUNT_TYPE_MIRAKEL)
 					|| a.type.equals(AccountMirakel.ACCOUNT_TYPE_DAVDROID)) {
@@ -244,14 +246,14 @@ public class AccountMirakel extends AccountBase {
 
 			}
 		}
-		for (Entry<String, AccountMirakel> el : map.entrySet()) {
+		for (final Entry<String, AccountMirakel> el : map.entrySet()) {
 			// Remove deleted accounts
 			if (el.getValue().getType() != ACCOUNT_TYPES.LOCAL) {
 				el.getValue().destroy();
 			}
 		}
 		accountList = AccountMirakel.getAll();
-		int accountCountEnd = accountList.size();
+		final int accountCountEnd = accountList.size();
 		if (Math.abs(accountCountEnd - accountCountStart) == 1
 				&& accountCountStart == 1) {
 			MirakelCommonPreferences.setShowAccountName(true);
@@ -259,19 +261,20 @@ public class AccountMirakel extends AccountBase {
 
 	}
 
-	public AccountMirakel(int id, String name, ACCOUNT_TYPES type,
-			boolean enabled) {
+	public AccountMirakel(final int id, final String name,
+			final ACCOUNT_TYPES type, final boolean enabled) {
 		super(id, name, type, enabled);
 	}
 
 	public void destroy() {
-		if (getType() == ACCOUNT_TYPES.LOCAL)
+		if (getType() == ACCOUNT_TYPES.LOCAL) {
 			return;
+		}
 		database.delete(TABLE, DatabaseHelper.ID + "=" + getId(), null);
-		ContentValues cv = new ContentValues();
+		final ContentValues cv = new ContentValues();
 		cv.put(ListMirakel.ACCOUNT_ID, getLocal().getId());
 		database.update(ListMirakel.TABLE, cv, "account_id=" + getId(), null);
-		Account a = getAndroidAccount();
+		final Account a = getAndroidAccount();
 		if (a == null) {
 			Log.wtf(TAG, "account not found");
 			return;
@@ -280,12 +283,13 @@ public class AccountMirakel extends AccountBase {
 	}
 
 	public Account getAndroidAccount() {
-		AccountManager am = AccountManager.get(context);
-		Account[] accounts = am.getAccountsByType(ACCOUNT_TYPES
+		final AccountManager am = AccountManager.get(context);
+		final Account[] accounts = am.getAccountsByType(ACCOUNT_TYPES
 				.toName(getType()));
-		for (Account a : accounts) {
-			if (a.name.equals(getName()))
+		for (final Account a : accounts) {
+			if (a.name.equals(getName())) {
 				return a;
+			}
 		}
 		return null;
 	}
