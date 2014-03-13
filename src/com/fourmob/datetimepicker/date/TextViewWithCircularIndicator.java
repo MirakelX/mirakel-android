@@ -9,27 +9,26 @@ import android.widget.TextView;
 import de.azapps.mirakel.date_time.R;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 
-
-
 public class TextViewWithCircularIndicator extends TextView {
 	private final int mCircleColor;
 	Paint mCirclePaint = new Paint();
-	private final boolean	mDark;
+	private final boolean mDark;
 	private boolean mDrawCircle;
 	private final String mItemIsSelectedText;
-	private int				mSeclectedTextColor;
-	private int				mUnselectedTextColor;
+	private int mSeclectedTextColor;
+	private int mUnselectedTextColor;
 
-	public TextViewWithCircularIndicator(Context context, AttributeSet attributeSet) {
+	public TextViewWithCircularIndicator(Context context,
+			AttributeSet attributeSet) {
 		super(context, attributeSet);
 		Resources localResources = context.getResources();
 		this.mDark = MirakelCommonPreferences.isDark();
 		this.mCircleColor = localResources.getColor(this.mDark ? R.color.Red
 				: R.color.blue);
 		this.mSeclectedTextColor = localResources
-				.getColor(this.mDark ? R.color.Red
-						: R.color.clock_blue);
-		this.mItemIsSelectedText = context.getResources().getString(R.string.item_is_selected);
+				.getColor(this.mDark ? R.color.Red : R.color.clock_blue);
+		this.mItemIsSelectedText = context.getResources().getString(
+				R.string.item_is_selected);
 		this.mUnselectedTextColor = context.getResources().getColor(
 				this.mDark ? R.color.white : R.color.dialog_dark_gray);
 		init();
@@ -73,14 +72,14 @@ public class TextViewWithCircularIndicator extends TextView {
 
 	@Override
 	public void setTextColor(int color) {
-		setTextColor(color,false);
+		setTextColor(color, false);
 	}
 
 	private void setTextColor(int color, boolean intern) {
 		super.setTextColor(color);
-		if(!intern){
-			this.mSeclectedTextColor=color;
-			this.mUnselectedTextColor=color;
+		if (!intern) {
+			this.mSeclectedTextColor = color;
+			this.mUnselectedTextColor = color;
 		}
 	}
 }

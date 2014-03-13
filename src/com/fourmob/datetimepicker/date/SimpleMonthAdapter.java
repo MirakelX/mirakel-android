@@ -10,13 +10,15 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 
-public class SimpleMonthAdapter extends BaseAdapter implements SimpleMonthView.OnDayClickListener {
+public class SimpleMonthAdapter extends BaseAdapter implements
+		SimpleMonthView.OnDayClickListener {
 	protected static int WEEK_7_OVERHANG_HEIGHT = 7;
 	private final Context mContext;
 	private final DatePickerController mController;
 	private CalendarDay mSelectedDay;
 
-	public SimpleMonthAdapter(Context context, DatePickerController datePickerController) {
+	public SimpleMonthAdapter(Context context,
+			DatePickerController datePickerController) {
 		this.mContext = context;
 		this.mController = datePickerController;
 		init();
@@ -24,11 +26,13 @@ public class SimpleMonthAdapter extends BaseAdapter implements SimpleMonthView.O
 	}
 
 	private boolean isSelectedDayInMonth(int year, int month) {
-		return (this.mSelectedDay.year == year) && (this.mSelectedDay.month == month);
+		return (this.mSelectedDay.year == year)
+				&& (this.mSelectedDay.month == month);
 	}
 
 	public int getCount() {
-		return 12 * (1 + (this.mController.getMaxYear() - this.mController.getMinYear()));
+		return 12 * (1 + (this.mController.getMaxYear() - this.mController
+				.getMinYear()));
 	}
 
 	public Object getItem(int position) {
@@ -45,13 +49,16 @@ public class SimpleMonthAdapter extends BaseAdapter implements SimpleMonthView.O
 			simpleMonthView = (SimpleMonthView) convertView;
 		else {
 			simpleMonthView = new SimpleMonthView(this.mContext);
-			simpleMonthView.setLayoutParams(new AbsListView.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+			simpleMonthView.setLayoutParams(new AbsListView.LayoutParams(
+					LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 			simpleMonthView.setClickable(true);
 			simpleMonthView.setOnDayClickListener(this);
 		}
-		simpleMonthView.setBackgroundColor(mContext.getResources().getColor(android.R.color.transparent));
+		simpleMonthView.setBackgroundColor(mContext.getResources().getColor(
+				android.R.color.transparent));
 		@SuppressWarnings("unchecked")
-		HashMap<String, Integer> monthParams = (HashMap<String, Integer>) simpleMonthView.getTag();
+		HashMap<String, Integer> monthParams = (HashMap<String, Integer>) simpleMonthView
+				.getTag();
 		if (monthParams == null)
 			monthParams = new HashMap<String, Integer>();
 		monthParams.clear();
@@ -64,7 +71,8 @@ public class SimpleMonthAdapter extends BaseAdapter implements SimpleMonthView.O
 		monthParams.put("selected_day", Integer.valueOf(selectedDay));
 		monthParams.put("year", Integer.valueOf(year));
 		monthParams.put("month", Integer.valueOf(month));
-		monthParams.put("week_start", Integer.valueOf(this.mController.getFirstDayOfWeek()));
+		monthParams.put("week_start",
+				Integer.valueOf(this.mController.getFirstDayOfWeek()));
 		simpleMonthView.setMonthParams(monthParams);
 		simpleMonthView.invalidate();
 		return simpleMonthView;
@@ -74,14 +82,16 @@ public class SimpleMonthAdapter extends BaseAdapter implements SimpleMonthView.O
 		this.mSelectedDay = new CalendarDay(System.currentTimeMillis());
 	}
 
-	public void onDayClick(SimpleMonthView simpleMonthView, CalendarDay calendarDay) {
+	public void onDayClick(SimpleMonthView simpleMonthView,
+			CalendarDay calendarDay) {
 		if (calendarDay != null)
 			onDayTapped(calendarDay);
 	}
 
 	protected void onDayTapped(CalendarDay calendarDay) {
 		this.mController.tryVibrate();
-		this.mController.onDayOfMonthSelected(calendarDay.year, calendarDay.month, calendarDay.day);
+		this.mController.onDayOfMonthSelected(calendarDay.year,
+				calendarDay.month, calendarDay.day);
 		setSelectedDay(calendarDay);
 	}
 

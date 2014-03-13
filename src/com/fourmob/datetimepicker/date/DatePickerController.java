@@ -13,7 +13,8 @@ abstract interface DatePickerController {
 
 	public abstract void onYearSelected(int year);
 
-	public abstract void registerOnDateChangedListener(DatePicker.OnDateChangedListener onDateChangedListener);
+	public abstract void registerOnDateChangedListener(
+			DatePicker.OnDateChangedListener onDateChangedListener);
 
 	public abstract void tryVibrate();
 }

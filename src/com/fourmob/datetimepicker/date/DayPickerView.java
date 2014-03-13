@@ -10,7 +10,8 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 import de.azapps.tools.Log;
 
-public class DayPickerView extends ListView implements AbsListView.OnScrollListener, DatePicker.OnDateChangedListener {
+public class DayPickerView extends ListView implements
+		AbsListView.OnScrollListener, DatePicker.OnDateChangedListener {
 	private static final String TAG = "DayPickerView";
 	public static int LIST_TOP_OFFSET = -1;
 	protected SimpleMonthAdapter mAdapter;
@@ -30,11 +31,13 @@ public class DayPickerView extends ListView implements AbsListView.OnScrollListe
 	protected boolean mShowWeekNumber = false;
 	protected SimpleMonthAdapter.CalendarDay mTempDay = new SimpleMonthAdapter.CalendarDay();
 
-	public DayPickerView(Context context, DatePickerController datePickerController) {
+	public DayPickerView(Context context,
+			DatePickerController datePickerController) {
 		super(context);
 		this.mController = datePickerController;
 		this.mController.registerOnDateChangedListener(this);
-		setLayoutParams(new AbsListView.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+		setLayoutParams(new AbsListView.LayoutParams(LayoutParams.MATCH_PARENT,
+				LayoutParams.MATCH_PARENT));
 		setDrawSelectorOnTop(false);
 		init(context);
 		onDateChanged();
@@ -51,7 +54,8 @@ public class DayPickerView extends ListView implements AbsListView.OnScrollListe
 		while ((childView = getChildAt(childIndex)) != null) {
 			if (bottom < height) {
 				bottom = childView.getBottom();
-				int gap = Math.min(bottom, height) - Math.max(0, childView.getTop());
+				int gap = Math.min(bottom, height)
+						- Math.max(0, childView.getTop());
 				if (gap > maxGap) {
 					mostVisiblePosition = childIndex;
 					maxGap = gap;
@@ -64,13 +68,16 @@ public class DayPickerView extends ListView implements AbsListView.OnScrollListe
 		return firstVisiblePosition + mostVisiblePosition;
 	}
 
-	public boolean goTo(SimpleMonthAdapter.CalendarDay calendarDay, boolean scrollToTop, boolean selectDay, boolean displayMonth) {
-		Log.w(TAG,"goto");
+	public boolean goTo(SimpleMonthAdapter.CalendarDay calendarDay,
+			boolean scrollToTop, boolean selectDay, boolean displayMonth) {
+		Log.w(TAG, "goto");
 		if (selectDay)
 			this.mSelectedDay.set(calendarDay);
 
 		this.mTempDay.set(calendarDay);
-		int monthIndex = 12 * (calendarDay.year - this.mController.getMinYear()) + calendarDay.month;
+		int monthIndex = 12
+				* (calendarDay.year - this.mController.getMinYear())
+				+ calendarDay.month;
 		postSetSelection(monthIndex);
 
 		// TODO improve
@@ -101,16 +108,20 @@ public class DayPickerView extends ListView implements AbsListView.OnScrollListe
 		goTo(this.mController.getSelectedDay(), false, true, true);
 	}
 
-	public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-		SimpleMonthView simpleMonthView = (SimpleMonthView) absListView.getChildAt(0);
+	public void onScroll(AbsListView absListView, int firstVisibleItem,
+			int visibleItemCount, int totalItemCount) {
+		SimpleMonthView simpleMonthView = (SimpleMonthView) absListView
+				.getChildAt(0);
 		if (simpleMonthView == null)
 			return;
-		this.mPreviousScrollPosition = (absListView.getFirstVisiblePosition() * simpleMonthView.getHeight() - simpleMonthView.getBottom());
+		this.mPreviousScrollPosition = (absListView.getFirstVisiblePosition()
+				* simpleMonthView.getHeight() - simpleMonthView.getBottom());
 		this.mPreviousScrollState = this.mCurrentScrollState;
 	}
 
 	public void onScrollStateChanged(AbsListView absListView, int scroll) {
-		this.mScrollStateChangedRunnable.doScrollStateChange(absListView, scroll);
+		this.mScrollStateChangedRunnable.doScrollStateChange(absListView,
+				scroll);
 	}
 
 	public void postSetSelection(final int position) {
@@ -130,7 +141,8 @@ public class DayPickerView extends ListView implements AbsListView.OnScrollListe
 
 	protected void setUpAdapter() {
 		if (this.mAdapter == null)
-			this.mAdapter = new SimpleMonthAdapter(getContext(), this.mController);
+			this.mAdapter = new SimpleMonthAdapter(getContext(),
+					this.mController);
 		this.mAdapter.setSelectedDay(this.mSelectedDay);
 		this.mAdapter.notifyDataSetChanged();
 	}
@@ -143,12 +155,13 @@ public class DayPickerView extends ListView implements AbsListView.OnScrollListe
 		setVerticalScrollBarEnabled(false);
 		setOnScrollListener(this);
 		setFadingEdgeLength(0);
-		setFrictionIfSupported(ViewConfiguration.getScrollFriction() * this.mFriction);
+		setFrictionIfSupported(ViewConfiguration.getScrollFriction()
+				* this.mFriction);
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	void setFrictionIfSupported(float friction) {
-		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			setFriction(friction);
 		}
 	}

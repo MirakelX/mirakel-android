@@ -15,33 +15,33 @@ import com.fourmob.datetimepicker.date.DatePicker.OnDateSetListener;
 
 import de.azapps.mirakel.date_time.R;
 
-
 public class DatePickerDialog extends DialogFragment {
 
 	protected DatePicker mDatePicker;
 	private OnDateSetListener mCallback;
 	protected int mInitYear;
-	protected  int mInitMonth;
-	protected  int mInitDay;
+	protected int mInitMonth;
+	protected int mInitDay;
 	private boolean mHasNoDate;
 
 	public static DatePickerDialog newInstance(
 			OnDateSetListener onDateSetListener, int year, int month, int day,
-			boolean dark,boolean hasNoDate) {
-		return newInstance(onDateSetListener, year, month, day, true, dark,hasNoDate);
+			boolean dark, boolean hasNoDate) {
+		return newInstance(onDateSetListener, year, month, day, true, dark,
+				hasNoDate);
 	}
 
 	public static DatePickerDialog newInstance(
 			OnDateSetListener onDateSetListener, int year, int month, int day,
-			boolean vibrate, boolean dark,boolean hasNoDate) {
+			boolean vibrate, boolean dark, boolean hasNoDate) {
 		DatePickerDialog datePickerDialog = new DatePickerDialog();
 		datePickerDialog.initialize(onDateSetListener, year, month, day,
-				vibrate, dark,hasNoDate);
+				vibrate, dark, hasNoDate);
 		return datePickerDialog;
 	}
 
 	public void setVibrate(boolean vibrate) {
-		//nothing
+		// nothing
 	}
 
 	public void initialize(final OnDateSetListener onDateSetListener, int year,
@@ -66,10 +66,10 @@ public class DatePickerDialog extends DialogFragment {
 
 			}
 		};
-		this.mInitYear=year;
-		this.mInitMonth=month;
-		this.mInitDay=day;
-		this.mHasNoDate=hasNoDate;
+		this.mInitYear = year;
+		this.mInitMonth = month;
+		this.mInitDay = day;
+		this.mHasNoDate = hasNoDate;
 	}
 
 	@Override
@@ -109,15 +109,18 @@ public class DatePickerDialog extends DialogFragment {
 		this.mDatePicker = (DatePicker) view.findViewById(R.id.date_picker);
 		this.mDatePicker.setOnDateSetListener(this.mCallback);
 		this.mDatePicker.postDelayed(new Runnable() {
-			
+
 			@Override
 			public void run() {
-				DatePickerDialog.this.mDatePicker.setYear(DatePickerDialog.this.mInitYear);
-				DatePickerDialog.this.mDatePicker.setMonth(DatePickerDialog.this.mInitMonth);
-				DatePickerDialog.this.mDatePicker.setDay(DatePickerDialog.this.mInitDay);				
+				DatePickerDialog.this.mDatePicker
+						.setYear(DatePickerDialog.this.mInitYear);
+				DatePickerDialog.this.mDatePicker
+						.setMonth(DatePickerDialog.this.mInitMonth);
+				DatePickerDialog.this.mDatePicker
+						.setDay(DatePickerDialog.this.mInitDay);
 			}
 		}, 0);
-		if(!this.mHasNoDate)
+		if (!this.mHasNoDate)
 			this.mDatePicker.hideNoDate();
 		return view;
 	}

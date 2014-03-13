@@ -24,8 +24,10 @@ import de.azapps.mirakel.helper.MirakelCommonPreferences;
 
 public class SimpleMonthView extends View {
 	public static abstract interface OnDayClickListener {
-		public abstract void onDayClick(SimpleMonthView simpleMonthView, SimpleMonthAdapter.CalendarDay calendarDay);
+		public abstract void onDayClick(SimpleMonthView simpleMonthView,
+				SimpleMonthAdapter.CalendarDay calendarDay);
 	}
+
 	protected static int DAY_SELECTED_CIRCLE_SIZE;
 	protected static int DAY_SEPARATOR_WIDTH = 1;
 	protected static int DEFAULT_HEIGHT = 32;
@@ -38,7 +40,7 @@ public class SimpleMonthView extends View {
 	protected static float mScale = 0.0F;
 	private final int mBackground;
 	private final Calendar mCalendar;
-	private boolean mdark=false;
+	private boolean mdark = false;
 	private final DateFormatSymbols mDateFormatSymbols = new DateFormatSymbols();
 	private final Calendar mDayLabelCalendar;
 	private int mDayOfWeekStart = 0;
@@ -56,7 +58,7 @@ public class SimpleMonthView extends View {
 	protected int mMonthTitleColor;
 	protected Paint mMonthTitlePaint;
 	private final String mMonthTitleTypeface;
-	protected int					mNumCells			= SimpleMonthView.mNumDays;
+	protected int mNumCells = SimpleMonthView.mNumDays;
 	private int mNumRows = 6;
 	private OnDayClickListener mOnDayClickListener;
 	protected int mPadding = 0;
@@ -75,25 +77,37 @@ public class SimpleMonthView extends View {
 
 	public SimpleMonthView(Context context) {
 		super(context);
-		this.mdark=MirakelCommonPreferences.isDark();
+		this.mdark = MirakelCommonPreferences.isDark();
 		Resources resources = context.getResources();
 		this.mDayLabelCalendar = Calendar.getInstance();
 		this.mCalendar = Calendar.getInstance();
-		this.mDayOfWeekTypeface = resources.getString(R.string.day_of_week_label_typeface);
+		this.mDayOfWeekTypeface = resources
+				.getString(R.string.day_of_week_label_typeface);
 		this.mMonthTitleTypeface = resources.getString(R.string.sans_serif);
-		this.mDayTextColor = resources.getColor(this.mdark?R.color.white:R.color.date_picker_text_normal);
+		this.mDayTextColor = resources.getColor(this.mdark ? R.color.white
+				: R.color.date_picker_text_normal);
 		this.mTodayNumberColor = resources.getColor(this.mdark ? R.color.Red
 				: R.color.clock_blue);
-		this.mMonthTitleColor = resources.getColor(this.mdark?R.color.black:R.color.white);
-		this.mMonthTitleBGColor = resources.getColor(this.mdark?R.color.blackish:R.color.circle_background);
+		this.mMonthTitleColor = resources.getColor(this.mdark ? R.color.black
+				: R.color.white);
+		this.mMonthTitleBGColor = resources
+				.getColor(this.mdark ? R.color.blackish
+						: R.color.circle_background);
 		this.mStringBuilder = new StringBuilder(50);
-		MINI_DAY_NUMBER_TEXT_SIZE = resources.getDimensionPixelSize(R.dimen.day_number_size);
-		MONTH_LABEL_TEXT_SIZE = resources.getDimensionPixelSize(R.dimen.month_label_size);
-		MONTH_DAY_LABEL_TEXT_SIZE = resources.getDimensionPixelSize(R.dimen.month_day_label_text_size);
-		MONTH_HEADER_SIZE = resources.getDimensionPixelOffset(R.dimen.month_list_item_header_height);
-		DAY_SELECTED_CIRCLE_SIZE = resources.getDimensionPixelSize(R.dimen.day_number_select_circle_radius);
-		this.mRowHeight = (resources.getDimensionPixelOffset(R.dimen.date_picker_view_animator_height) - MONTH_HEADER_SIZE) / 6;
-		this.mBackground=resources.getColor(this.mdark?R.color.dialog_gray:R.color.white);
+		MINI_DAY_NUMBER_TEXT_SIZE = resources
+				.getDimensionPixelSize(R.dimen.day_number_size);
+		MONTH_LABEL_TEXT_SIZE = resources
+				.getDimensionPixelSize(R.dimen.month_label_size);
+		MONTH_DAY_LABEL_TEXT_SIZE = resources
+				.getDimensionPixelSize(R.dimen.month_day_label_text_size);
+		MONTH_HEADER_SIZE = resources
+				.getDimensionPixelOffset(R.dimen.month_list_item_header_height);
+		DAY_SELECTED_CIRCLE_SIZE = resources
+				.getDimensionPixelSize(R.dimen.day_number_select_circle_radius);
+		this.mRowHeight = (resources
+				.getDimensionPixelOffset(R.dimen.date_picker_view_animator_height) - MONTH_HEADER_SIZE) / 6;
+		this.mBackground = resources.getColor(this.mdark ? R.color.dialog_gray
+				: R.color.white);
 		initView();
 	}
 
@@ -115,12 +129,16 @@ public class SimpleMonthView extends View {
 			int dayOfWeek = (day + this.mWeekStart) % SimpleMonthView.mNumDays;
 			int x = space * (1 + day * 2) + this.mPadding;
 			this.mDayLabelCalendar.set(Calendar.DAY_OF_WEEK, dayOfWeek);
-			canvas.drawText(this.mDateFormatSymbols.getShortWeekdays()[this.mDayLabelCalendar.get(Calendar.DAY_OF_WEEK)].toUpperCase(Locale.getDefault()), x, y, this.mMonthDayLabelPaint);
+			canvas.drawText(
+					this.mDateFormatSymbols.getShortWeekdays()[this.mDayLabelCalendar
+							.get(Calendar.DAY_OF_WEEK)].toUpperCase(Locale
+							.getDefault()), x, y, this.mMonthDayLabelPaint);
 		}
 	}
 
 	protected void drawMonthNums(Canvas canvas) {
-		int y = (this.mRowHeight + MINI_DAY_NUMBER_TEXT_SIZE) / 2 - DAY_SEPARATOR_WIDTH + MONTH_HEADER_SIZE;
+		int y = (this.mRowHeight + MINI_DAY_NUMBER_TEXT_SIZE) / 2
+				- DAY_SEPARATOR_WIDTH + MONTH_HEADER_SIZE;
 		int paddingDay = (this.mWidth - 2 * this.mPadding)
 				/ (2 * SimpleMonthView.mNumDays);
 		int dayOffset = findDayOffset();
@@ -128,7 +146,8 @@ public class SimpleMonthView extends View {
 		while (day <= this.mNumCells) {
 			int x = paddingDay * (1 + dayOffset * 2) + this.mPadding;
 			if (this.mSelectedDay == day) {
-				canvas.drawCircle(x, y - MINI_DAY_NUMBER_TEXT_SIZE / 3, DAY_SELECTED_CIRCLE_SIZE, this.mSelectedCirclePaint);
+				canvas.drawCircle(x, y - MINI_DAY_NUMBER_TEXT_SIZE / 3,
+						DAY_SELECTED_CIRCLE_SIZE, this.mSelectedCirclePaint);
 			}
 			if (this.mHasToday && this.mToday == day
 					|| this.mSelectedDay == day) {
@@ -148,7 +167,8 @@ public class SimpleMonthView extends View {
 
 	private void drawMonthTitle(Canvas canvas) {
 		int x = (this.mWidth + 2 * this.mPadding) / 2;
-		int y = (MONTH_HEADER_SIZE - MONTH_DAY_LABEL_TEXT_SIZE) / 2 + MONTH_LABEL_TEXT_SIZE / 3;
+		int y = (MONTH_HEADER_SIZE - MONTH_DAY_LABEL_TEXT_SIZE) / 2
+				+ MONTH_LABEL_TEXT_SIZE / 3;
 		canvas.drawText(getMonthAndYearString(), x, y, this.mMonthTitlePaint);
 	}
 
@@ -159,22 +179,23 @@ public class SimpleMonthView extends View {
 		} else {
 			off = this.mDayOfWeekStart;
 		}
-		off=off - this.mWeekStart;
-		while(off>6){
-			off-=7;
+		off = off - this.mWeekStart;
+		while (off > 6) {
+			off -= 7;
 		}
 		return off;
 	}
 
 	public SimpleMonthAdapter.CalendarDay getDayFromLocation(float x, float y) {
 		int padding = this.mPadding;
-		if (x < padding || x > this.mWidth - this.mPadding) return null;
+		if (x < padding || x > this.mWidth - this.mPadding)
+			return null;
 
 		int yDay = (int) (y - MONTH_HEADER_SIZE) / this.mRowHeight;
 		int day = 1
 				+ (int) ((x - padding) * SimpleMonthView.mNumDays / (this.mWidth
 						- padding - this.mPadding)) - findDayOffset() + yDay
-						* SimpleMonthView.mNumDays;
+				* SimpleMonthView.mNumDays;
 
 		return new SimpleMonthAdapter.CalendarDay(this.mYear, this.mMonth, day);
 	}
@@ -182,7 +203,8 @@ public class SimpleMonthView extends View {
 	private String getMonthAndYearString() {
 		this.mStringBuilder.setLength(0);
 		long dateInMillis = this.mCalendar.getTimeInMillis();
-		return DateUtils.formatDateRange(getContext(), dateInMillis, dateInMillis, 52).toString();
+		return DateUtils.formatDateRange(getContext(), dateInMillis,
+				dateInMillis, 52).toString();
 	}
 
 	protected void initView() {
@@ -190,7 +212,8 @@ public class SimpleMonthView extends View {
 		this.mMonthTitlePaint.setFakeBoldText(true);
 		this.mMonthTitlePaint.setAntiAlias(true);
 		this.mMonthTitlePaint.setTextSize(MONTH_LABEL_TEXT_SIZE);
-		this.mMonthTitlePaint.setTypeface(Typeface.create(this.mMonthTitleTypeface, 1));
+		this.mMonthTitlePaint.setTypeface(Typeface.create(
+				this.mMonthTitleTypeface, 1));
 		this.mMonthTitlePaint.setColor(this.mDayTextColor);
 		this.mMonthTitlePaint.setTextAlign(Paint.Align.CENTER);
 		this.mMonthTitlePaint.setStyle(Paint.Style.FILL);
@@ -211,7 +234,8 @@ public class SimpleMonthView extends View {
 		this.mMonthDayLabelPaint.setAntiAlias(true);
 		this.mMonthDayLabelPaint.setTextSize(MONTH_DAY_LABEL_TEXT_SIZE);
 		this.mMonthDayLabelPaint.setColor(this.mDayTextColor);
-		this.mMonthDayLabelPaint.setTypeface(Typeface.create(this.mDayOfWeekTypeface, 0));
+		this.mMonthDayLabelPaint.setTypeface(Typeface.create(
+				this.mDayOfWeekTypeface, 0));
 		this.mMonthDayLabelPaint.setStyle(Paint.Style.FILL);
 		this.mMonthDayLabelPaint.setTextAlign(Paint.Align.CENTER);
 		this.mMonthDayLabelPaint.setFakeBoldText(true);
@@ -239,7 +263,8 @@ public class SimpleMonthView extends View {
 
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		setMeasuredDimension(View.MeasureSpec.getSize(widthMeasureSpec), this.mRowHeight * this.mNumRows + MONTH_HEADER_SIZE);
+		setMeasuredDimension(View.MeasureSpec.getSize(widthMeasureSpec),
+				this.mRowHeight * this.mNumRows + MONTH_HEADER_SIZE);
 	}
 
 	@Override
@@ -250,7 +275,8 @@ public class SimpleMonthView extends View {
 	@Override
 	public boolean onTouchEvent(MotionEvent motionEvent) {
 		if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-			SimpleMonthAdapter.CalendarDay calendarDay = getDayFromLocation(motionEvent.getX(), motionEvent.getY());
+			SimpleMonthAdapter.CalendarDay calendarDay = getDayFromLocation(
+					motionEvent.getX(), motionEvent.getY());
 			if (calendarDay != null) {
 				onDayClick(calendarDay);
 			}
@@ -264,12 +290,15 @@ public class SimpleMonthView extends View {
 	}
 
 	private boolean sameDay(int monthDay, Time time) {
-		return this.mYear == time.year && this.mMonth == time.month && monthDay == time.monthDay;
+		return this.mYear == time.year && this.mMonth == time.month
+				&& monthDay == time.monthDay;
 	}
 
 	public void setMonthParams(HashMap<String, Integer> monthParams) {
-		if (!monthParams.containsKey("month") && !monthParams.containsKey("year"))
-			throw new InvalidParameterException("You must specify the month and year for this view");
+		if (!monthParams.containsKey("month")
+				&& !monthParams.containsKey("year"))
+			throw new InvalidParameterException(
+					"You must specify the month and year for this view");
 		setTag(monthParams);
 		if (monthParams.containsKey("height")) {
 			this.mRowHeight = monthParams.get("height").intValue();

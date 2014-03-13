@@ -32,7 +32,7 @@ import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 
 public class TimePicker extends LinearLayout implements
-RadialPickerLayout.OnValueSelectedListener {
+		RadialPickerLayout.OnValueSelectedListener {
 
 	public class KeyboardListener implements OnKeyListener {
 		public KeyboardListener(Dialog d) {
@@ -41,10 +41,12 @@ RadialPickerLayout.OnValueSelectedListener {
 
 		@Override
 		public boolean onKey(View v, int keyCode, KeyEvent event) {
-			if (event.getAction() == KeyEvent.ACTION_UP) return processKeyUp(keyCode);
+			if (event.getAction() == KeyEvent.ACTION_UP)
+				return processKeyUp(keyCode);
 			return false;
 		}
 	}
+
 	/**
 	 * Simple node class to be used for traversal to check for legal times.
 	 * mLegalKeys represents the keys that can be typed to get to the node.
@@ -64,16 +66,19 @@ RadialPickerLayout.OnValueSelectedListener {
 		}
 
 		public Node canReach(int key) {
-			if (this.mChildren == null) return null;
+			if (this.mChildren == null)
+				return null;
 			for (Node child : this.mChildren) {
-				if (child.containsKey(key)) return child;
+				if (child.containsKey(key))
+					return child;
 			}
 			return null;
 		}
 
 		public boolean containsKey(int key) {
 			for (int mLegalKey : this.mLegalKeys) {
-				if (mLegalKey == key) return true;
+				if (mLegalKey == key)
+					return true;
 			}
 			return false;
 		}
@@ -93,6 +98,7 @@ RadialPickerLayout.OnValueSelectedListener {
 		 */
 		void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute);
 	}
+
 	public static final int AM = 0;
 	// NOT a real index for the purpose of what's showing.
 	public static final int AMPM_INDEX = 2;
@@ -116,30 +122,31 @@ RadialPickerLayout.OnValueSelectedListener {
 
 	private static int getValFromKeyCode(int keyCode) {
 		switch (keyCode) {
-			case KeyEvent.KEYCODE_0:
-				return 0;
-			case KeyEvent.KEYCODE_1:
-				return 1;
-			case KeyEvent.KEYCODE_2:
-				return 2;
-			case KeyEvent.KEYCODE_3:
-				return 3;
-			case KeyEvent.KEYCODE_4:
-				return 4;
-			case KeyEvent.KEYCODE_5:
-				return 5;
-			case KeyEvent.KEYCODE_6:
-				return 6;
-			case KeyEvent.KEYCODE_7:
-				return 7;
-			case KeyEvent.KEYCODE_8:
-				return 8;
-			case KeyEvent.KEYCODE_9:
-				return 9;
-			default:
-				return -1;
+		case KeyEvent.KEYCODE_0:
+			return 0;
+		case KeyEvent.KEYCODE_1:
+			return 1;
+		case KeyEvent.KEYCODE_2:
+			return 2;
+		case KeyEvent.KEYCODE_3:
+			return 3;
+		case KeyEvent.KEYCODE_4:
+			return 4;
+		case KeyEvent.KEYCODE_5:
+			return 5;
+		case KeyEvent.KEYCODE_6:
+			return 6;
+		case KeyEvent.KEYCODE_7:
+			return 7;
+		case KeyEvent.KEYCODE_8:
+			return 8;
+		case KeyEvent.KEYCODE_9:
+			return 9;
+		default:
+			return -1;
 		}
 	}
+
 	private final Context ctx;
 	private final View layout;
 	private boolean mAllowAutoAdvance;
@@ -163,7 +170,7 @@ RadialPickerLayout.OnValueSelectedListener {
 	private int mInitialHourOfDay;
 	private int mInitialMinute;
 	private boolean mInKbMode;
-	private boolean				mIs24HourMode;
+	private boolean mIs24HourMode;
 	private Node mLegalTimesTree;
 	private String mMinutePickerDescription;
 	private TextView mMinuteSpaceView;
@@ -187,7 +194,6 @@ RadialPickerLayout.OnValueSelectedListener {
 
 	private int mUnselectedColor;
 
-
 	public TimePicker(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		this.ctx = context;
@@ -195,15 +201,18 @@ RadialPickerLayout.OnValueSelectedListener {
 				R.styleable.DatePicker, 0, 0);
 
 		try {
-			this.mInitialHourOfDay = a.getInt(R.styleable.TimePicker_initialHour, 0);
-			this.mInitialMinute = a.getInt(R.styleable.TimePicker_initialMinute, 0);
+			this.mInitialHourOfDay = a.getInt(
+					R.styleable.TimePicker_initialHour, 0);
+			this.mInitialMinute = a.getInt(
+					R.styleable.TimePicker_initialMinute, 0);
 		} finally {
 			a.recycle();
 		}
 		this.mIs24HourMode = DateTimeHelper.is24HourLocale(Helpers
 				.getLocal(context));
-		this.layout=inflate(context, R.layout.time_picker_view, this);
-		this.mDark=MirakelCommonPreferences.isDark();//TODO get this from theme or so...
+		this.layout = inflate(context, R.layout.time_picker_view, this);
+		this.mDark = MirakelCommonPreferences.isDark();// TODO get this from
+														// theme or so...
 		initLayout();
 	}
 
@@ -212,7 +221,8 @@ RadialPickerLayout.OnValueSelectedListener {
 		// in AM/PM mode,
 		// we'll need to see if AM/PM have been typed.
 		if (this.mIs24HourMode && this.mTypedTimes.size() == 4
-				|| !this.mIs24HourMode && isTypedTimeFullyLegal()) return false;
+				|| !this.mIs24HourMode && isTypedTimeFullyLegal())
+			return false;
 
 		this.mTypedTimes.add(keyCode);
 		if (!isTypedTimeLegalSoFar()) {
@@ -221,12 +231,15 @@ RadialPickerLayout.OnValueSelectedListener {
 		}
 
 		int val = getValFromKeyCode(keyCode);
-		Utils.tryAccessibilityAnnounce(this.mTimePicker, String.format("%d", val));
+		Utils.tryAccessibilityAnnounce(this.mTimePicker,
+				String.format("%d", val));
 		// Automatically fill in 0's if AM or PM was legally entered.
 		if (isTypedTimeFullyLegal()) {
 			if (!this.mIs24HourMode && this.mTypedTimes.size() <= 3) {
-				this.mTypedTimes.add(this.mTypedTimes.size() - 1, KeyEvent.KEYCODE_0);
-				this.mTypedTimes.add(this.mTypedTimes.size() - 1, KeyEvent.KEYCODE_0);
+				this.mTypedTimes.add(this.mTypedTimes.size() - 1,
+						KeyEvent.KEYCODE_0);
+				this.mTypedTimes.add(this.mTypedTimes.size() - 1,
+						KeyEvent.KEYCODE_0);
 			}
 			this.mDoneButton.setEnabled(true);
 		}
@@ -419,9 +432,12 @@ RadialPickerLayout.OnValueSelectedListener {
 					.load(KeyCharacterMap.VIRTUAL_KEYBOARD);
 			char amChar;
 			char pmChar;
-			for (int i = 0; i < Math.max(this.mAmText.length(), this.mPmText.length()); i++) {
-				amChar = this.mAmText.toLowerCase(Locale.getDefault()).charAt(i);
-				pmChar = this.mPmText.toLowerCase(Locale.getDefault()).charAt(i);
+			for (int i = 0; i < Math.max(this.mAmText.length(),
+					this.mPmText.length()); i++) {
+				amChar = this.mAmText.toLowerCase(Locale.getDefault())
+						.charAt(i);
+				pmChar = this.mPmText.toLowerCase(Locale.getDefault())
+						.charAt(i);
 				if (amChar != pmChar) {
 					KeyEvent[] events = kcm.getEvents(new char[] { amChar,
 							pmChar });
@@ -437,8 +453,10 @@ RadialPickerLayout.OnValueSelectedListener {
 				}
 			}
 		}
-		if (amOrPm == AM) return this.mAmKeyCode;
-		else if (amOrPm == PM) return this.mPmKeyCode;
+		if (amOrPm == AM)
+			return this.mAmKeyCode;
+		else if (amOrPm == PM)
+			return this.mPmKeyCode;
 
 		return -1;
 	}
@@ -472,7 +490,8 @@ RadialPickerLayout.OnValueSelectedListener {
 		int minute = -1;
 		int hour = -1;
 		for (int i = startIndex; i <= this.mTypedTimes.size(); i++) {
-			int val = getValFromKeyCode(this.mTypedTimes.get(this.mTypedTimes.size() - i));
+			int val = getValFromKeyCode(this.mTypedTimes.get(this.mTypedTimes
+					.size() - i));
 			if (i == startIndex) {
 				minute = val;
 			} else if (i == startIndex + 1) {
@@ -496,7 +515,8 @@ RadialPickerLayout.OnValueSelectedListener {
 
 	public int getHour() {
 		if (this.mTimePicker != null)
-			return this.mTimePicker.getHours() + (this.mAmKeyCode == PM ? 12 : 0);
+			return this.mTimePicker.getHours()
+					+ (this.mAmKeyCode == PM ? 12 : 0);
 		return 0;
 	}
 
@@ -534,33 +554,37 @@ RadialPickerLayout.OnValueSelectedListener {
 
 		this.mHourView = (TextView) this.layout.findViewById(R.id.hours);
 		this.mHourView.setOnKeyListener(keyboardListener);
-		this.mHourSpaceView = (TextView) this.layout.findViewById(R.id.hour_space);
-		this.mMinuteSpaceView = (TextView) this.layout.findViewById(R.id.minutes_space);
+		this.mHourSpaceView = (TextView) this.layout
+				.findViewById(R.id.hour_space);
+		this.mMinuteSpaceView = (TextView) this.layout
+				.findViewById(R.id.minutes_space);
 		this.mMinuteView = (TextView) this.layout.findViewById(R.id.minutes);
 		this.mMinuteView.setOnKeyListener(keyboardListener);
-		this.mAmPmTextView = (TextView) this.layout.findViewById(R.id.ampm_label);
+		this.mAmPmTextView = (TextView) this.layout
+				.findViewById(R.id.ampm_label);
 		this.mAmPmTextView.setOnKeyListener(keyboardListener);
 		if (Build.VERSION.SDK_INT <= 14) {
 
-			this.mAmPmTextView.setTransformationMethod(new TransformationMethod() {
+			this.mAmPmTextView
+					.setTransformationMethod(new TransformationMethod() {
 
-						private final Locale	locale	= Helpers
-																.getLocal(getContext());
+						private final Locale locale = Helpers
+								.getLocal(getContext());
 
-				@Override
-				public CharSequence getTransformation(CharSequence source,
-						View view) {
-					return source != null ? source.toString().toUpperCase(
-							this.locale) : null;
-				}
+						@Override
+						public CharSequence getTransformation(
+								CharSequence source, View view) {
+							return source != null ? source.toString()
+									.toUpperCase(this.locale) : null;
+						}
 
-				@Override
-				public void onFocusChanged(View view, CharSequence sourceText,
-						boolean focused, int direction,
-						Rect previouslyFocusedRect) {
+						@Override
+						public void onFocusChanged(View view,
+								CharSequence sourceText, boolean focused,
+								int direction, Rect previouslyFocusedRect) {
 
-				}
-			});
+						}
+					});
 		}
 		String[] amPmTexts = new DateFormatSymbols().getAmPmStrings();
 		this.mAmText = amPmTexts[0];
@@ -570,8 +594,8 @@ RadialPickerLayout.OnValueSelectedListener {
 				.findViewById(R.id.time_picker_radial);
 		this.mTimePicker.setOnValueSelectedListener(this);
 		this.mTimePicker.setOnKeyListener(keyboardListener);
-		this.mTimePicker.initialize(this.ctx, this.mInitialHourOfDay, this.mInitialMinute,
-				this.mIs24HourMode, this.mDark);
+		this.mTimePicker.initialize(this.ctx, this.mInitialHourOfDay,
+				this.mInitialMinute, this.mIs24HourMode, this.mDark);
 		int currentItemShowing = HOUR_INDEX;
 		// if (savedInstanceState != null
 		// && savedInstanceState.containsKey(KEY_CURRENT_ITEM_SHOWING)) {
@@ -607,7 +631,9 @@ RadialPickerLayout.OnValueSelectedListener {
 					TimePicker.this.mTimePicker.tryVibrate();
 				}
 				if (TimePicker.this.mCallback != null) {
-					TimePicker.this.mCallback.onTimeSet(TimePicker.this.mTimePicker, TimePicker.this.mTimePicker.getHours(),
+					TimePicker.this.mCallback.onTimeSet(
+							TimePicker.this.mTimePicker,
+							TimePicker.this.mTimePicker.getHours(),
 							TimePicker.this.mTimePicker.getMinutes());
 				}
 			}
@@ -625,7 +651,8 @@ RadialPickerLayout.OnValueSelectedListener {
 		});
 		if (this.mDark) {
 			View header = this.layout.findViewById(R.id.time_dialog_head);
-			header.setBackgroundColor(res.getColor(R.color.dialog_dark_gray));;
+			header.setBackgroundColor(res.getColor(R.color.dialog_dark_gray));
+			;
 			dialog.setBackgroundColor(res.getColor(R.color.dialog_gray));
 
 			View header_background = this.layout
@@ -640,7 +667,7 @@ RadialPickerLayout.OnValueSelectedListener {
 			this.mDoneButton.setTextColor(this.mUnselectedColor);
 			this.mNoDateButton.setTextColor(this.mUnselectedColor);
 
-		}else{
+		} else {
 			this.mDoneButton.setTextColor(res.getColor(R.color.Black));
 			this.mNoDateButton.setTextColor(res.getColor(R.color.Black));
 		}
@@ -663,7 +690,8 @@ RadialPickerLayout.OnValueSelectedListener {
 				@Override
 				public void onClick(View v) {
 					TimePicker.this.mTimePicker.tryVibrate();
-					int amOrPm = TimePicker.this.mTimePicker.getIsCurrentlyAmOrPm();
+					int amOrPm = TimePicker.this.mTimePicker
+							.getIsCurrentlyAmOrPm();
 					if (amOrPm == AM) {
 						amOrPm = PM;
 					} else if (amOrPm == PM) {
@@ -715,14 +743,16 @@ RadialPickerLayout.OnValueSelectedListener {
 	}
 
 	/**
-	 * Traverse the tree to see if the keys that have been typed so far are legal as is, or may
-	 * become legal as more keys are typed (excluding backspace).
+	 * Traverse the tree to see if the keys that have been typed so far are
+	 * legal as is, or may become legal as more keys are typed (excluding
+	 * backspace).
 	 */
 	private boolean isTypedTimeLegalSoFar() {
 		Node node = this.mLegalTimesTree;
 		for (int keyCode : this.mTypedTimes) {
 			node = node.canReach(keyCode);
-			if (node == null) return false;
+			if (node == null)
+				return false;
 		}
 		return true;
 	}
@@ -744,7 +774,8 @@ RadialPickerLayout.OnValueSelectedListener {
 			outState.putInt(KEY_HOUR_OF_DAY, this.mTimePicker.getHours());
 			outState.putInt(KEY_MINUTE, this.mTimePicker.getMinutes());
 			outState.putBoolean(KEY_IS_24_HOUR_VIEW, this.mIs24HourMode);
-			outState.putInt(KEY_CURRENT_ITEM_SHOWING, this.mTimePicker.getCurrentItemShowing());
+			outState.putInt(KEY_CURRENT_ITEM_SHOWING,
+					this.mTimePicker.getCurrentItemShowing());
 			outState.putBoolean(KEY_IN_KB_MODE, this.mInKbMode);
 			if (this.mInKbMode) {
 				outState.putIntegerArrayList(KEY_TYPED_TIMES, this.mTypedTimes);
@@ -803,11 +834,13 @@ RadialPickerLayout.OnValueSelectedListener {
 			}
 		} else if (keyCode == KeyEvent.KEYCODE_ENTER) {
 			if (this.mInKbMode) {
-				if (!isTypedTimeFullyLegal()) return true;
+				if (!isTypedTimeFullyLegal())
+					return true;
 				finishKbMode(false);
 			}
 			if (this.mCallback != null) {
-				this.mCallback.onTimeSet(this.mTimePicker, this.mTimePicker.getHours(),
+				this.mCallback.onTimeSet(this.mTimePicker,
+						this.mTimePicker.getHours(),
 						this.mTimePicker.getMinutes());
 			}
 			if (this.mDialog != null) {
@@ -828,8 +861,8 @@ RadialPickerLayout.OnValueSelectedListener {
 								Helpers.getLocal(getContext()), "%d",
 								getValFromKeyCode(deleted));
 					}
-					Utils.tryAccessibilityAnnounce(this.mTimePicker,
-							String.format(this.mDeletedKeyFormat, deletedKeyStr));
+					Utils.tryAccessibilityAnnounce(this.mTimePicker, String
+							.format(this.mDeletedKeyFormat, deletedKeyStr));
 					updateDisplay(true);
 				}
 			}
@@ -843,7 +876,8 @@ RadialPickerLayout.OnValueSelectedListener {
 				|| keyCode == KeyEvent.KEYCODE_7
 				|| keyCode == KeyEvent.KEYCODE_8
 				|| keyCode == KeyEvent.KEYCODE_9
-				|| !this.mIs24HourMode && (keyCode == getAmOrPmKeyCode(AM) || keyCode == getAmOrPmKeyCode(PM))) {
+				|| !this.mIs24HourMode
+				&& (keyCode == getAmOrPmKeyCode(AM) || keyCode == getAmOrPmKeyCode(PM))) {
 			if (!this.mInKbMode) {
 				if (this.mTimePicker == null) {
 					// Something's wrong, because time picker should definitely
@@ -868,8 +902,8 @@ RadialPickerLayout.OnValueSelectedListener {
 	public void set24HourMode(boolean mode) {
 		this.mIs24HourMode = mode;
 		if (this.mTimePicker != null) {
-			this.mTimePicker.initialize(this.ctx, this.mInitialHourOfDay, this.mInitialMinute,
-					this.mIs24HourMode, this.mDark);
+			this.mTimePicker.initialize(this.ctx, this.mInitialHourOfDay,
+					this.mInitialMinute, this.mIs24HourMode, this.mDark);
 			this.mTimePicker.invalidate();
 		}
 		updateDisplay(true);
@@ -886,18 +920,21 @@ RadialPickerLayout.OnValueSelectedListener {
 			if (!this.mIs24HourMode) {
 				hours = hours % 12;
 			}
-			this.mTimePicker.setContentDescription(this.mHourPickerDescription + ": "
-					+ hours);
+			this.mTimePicker.setContentDescription(this.mHourPickerDescription
+					+ ": " + hours);
 			if (announce) {
-				Utils.tryAccessibilityAnnounce(this.mTimePicker, this.mSelectHours);
+				Utils.tryAccessibilityAnnounce(this.mTimePicker,
+						this.mSelectHours);
 			}
 			labelToAnimate = this.mHourView;
 		} else {
 			int minutes = this.mTimePicker.getMinutes();
-			this.mTimePicker.setContentDescription(this.mMinutePickerDescription + ": "
-					+ minutes);
+			this.mTimePicker
+					.setContentDescription(this.mMinutePickerDescription + ": "
+							+ minutes);
 			if (announce) {
-				Utils.tryAccessibilityAnnounce(this.mTimePicker, this.mSelectMinutes);
+				Utils.tryAccessibilityAnnounce(this.mTimePicker,
+						this.mSelectMinutes);
 			}
 			labelToAnimate = this.mMinuteView;
 		}
@@ -1041,8 +1078,8 @@ RadialPickerLayout.OnValueSelectedListener {
 			if (!this.mIs24HourMode) {
 				updateAmPmDisplay(hour < 12 ? AM : PM);
 			}
-			setCurrentItemShowing(this.mTimePicker.getCurrentItemShowing(), true,
-					true, true);
+			setCurrentItemShowing(this.mTimePicker.getCurrentItemShowing(),
+					true, true, true);
 			this.mDoneButton.setEnabled(true);
 		} else {
 			Boolean[] enteredZeros = { false, false };

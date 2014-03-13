@@ -30,25 +30,24 @@ import com.sleepbot.datetimepicker.time.TimePicker.OnTimeSetListener;
 
 import de.azapps.mirakel.date_time.R;
 
-
 /**
  * Dialog to set a time.
  */
 @SuppressLint("ValidFragment")
-public class TimePickerDialog extends DialogFragment  {
+public class TimePickerDialog extends DialogFragment {
 
 	private TimePicker mTimePicker;
 
 	private OnTimeSetListener mCallback;
 
-	private int					mInitialHour;
+	private int mInitialHour;
 
-	private int					mInitialMinute;
+	private int mInitialMinute;
+
 	/**
 	 * The callback interface used to indicate the user is done filling in the
 	 * time (they clicked on the 'Set' button).
 	 */
-
 
 	public TimePickerDialog() {
 		// Empty constructor required for dialog fragment.
@@ -71,41 +70,40 @@ public class TimePickerDialog extends DialogFragment  {
 			int minute, boolean is24HourMode, boolean dark) {
 		this.mInitialHour = hourOfDay;
 		this.mInitialMinute = minute;
-		this.mCallback=new OnTimeSetListener() {
-			
+		this.mCallback = new OnTimeSetListener() {
+
 			@Override
-			public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
-				if(callback!=null)
+			public void onTimeSet(RadialPickerLayout view, int hourOfDay,
+					int minute) {
+				if (callback != null)
 					callback.onTimeSet(view, hourOfDay, minute);
 				dismiss();
-				
+
 			}
-			
+
 			@Override
 			public void onNoTimeSet() {
-				if(callback!=null)
+				if (callback != null)
 					callback.onNoTimeSet();
-				dismiss();				
+				dismiss();
 			}
 		};
 	}
 
 	public void setOnTimeSetListener(OnTimeSetListener callback) {
-		this.mCallback=callback;
+		this.mCallback = callback;
 	}
-
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	}
 
-
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
-		final Bundle b=(Bundle) this.mTimePicker.onSaveInstanceState();
-//		setupValues(saved);
+		final Bundle b = (Bundle) this.mTimePicker.onSaveInstanceState();
+		// setupValues(saved);
 		getDialog().setContentView(
 				onCreateView(LayoutInflater.from(getDialog().getContext()),
 						null, b));
@@ -128,30 +126,27 @@ public class TimePickerDialog extends DialogFragment  {
 			e.printStackTrace();
 		}
 		View view = inflater.inflate(R.layout.time_picker_dialog, null);
-		this.mTimePicker=(TimePicker) view.findViewById(R.id.time_picker);
+		this.mTimePicker = (TimePicker) view.findViewById(R.id.time_picker);
 		this.mTimePicker.setOnTimeSetListener(this.mCallback);
-		this.mTimePicker.setOnKeyListener(this.mTimePicker.getNewKeyboardListner(getDialog()));
+		this.mTimePicker.setOnKeyListener(this.mTimePicker
+				.getNewKeyboardListner(getDialog()));
 		this.mTimePicker.setTime(this.mInitialHour, this.mInitialMinute);
 		return view;
 	}
 
-
-
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
-//		if (mTimePicker != null) {
-//			outState.putInt(KEY_HOUR_OF_DAY, mTimePicker.getHours());
-//			outState.putInt(KEY_MINUTE, mTimePicker.getMinutes());
-//			outState.putBoolean(KEY_IS_24_HOUR_VIEW, mIs24HourMode);
-//			outState.putInt(KEY_CURRENT_ITEM_SHOWING,
-//					mTimePicker.getCurrentItemShowing());
-//			outState.putBoolean(KEY_IN_KB_MODE, mInKbMode);
-//			if (mInKbMode) {
-//				outState.putIntegerArrayList(KEY_TYPED_TIMES, mTypedTimes);
-//			}
-//		}
+		// if (mTimePicker != null) {
+		// outState.putInt(KEY_HOUR_OF_DAY, mTimePicker.getHours());
+		// outState.putInt(KEY_MINUTE, mTimePicker.getMinutes());
+		// outState.putBoolean(KEY_IS_24_HOUR_VIEW, mIs24HourMode);
+		// outState.putInt(KEY_CURRENT_ITEM_SHOWING,
+		// mTimePicker.getCurrentItemShowing());
+		// outState.putBoolean(KEY_IN_KB_MODE, mInKbMode);
+		// if (mInKbMode) {
+		// outState.putIntegerArrayList(KEY_TYPED_TIMES, mTypedTimes);
+		// }
+		// }
 	}
 
-
-	
 }
