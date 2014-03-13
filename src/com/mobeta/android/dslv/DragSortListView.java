@@ -398,6 +398,7 @@ public class DragSortListView extends ListView {
 	 * DragSortItemView since the item height changes often during a drag-sort.
 	 */
 	private static final int sCacheSize = 3;
+
 	private final HeightCache mChildHeightCache = new HeightCache(
 			DragSortListView.sCacheSize);
 
@@ -409,6 +410,8 @@ public class DragSortListView extends ListView {
 
 	protected boolean mUseRemoveVelocity;
 	protected float mRemoveVelocityX = 0;
+
+	private int mPartDivider;
 
 	public DragSortListView(final Context context, final AttributeSet attrs) {
 		super(context, attrs);
@@ -1050,8 +1053,7 @@ public class DragSortListView extends ListView {
 				// Log.d("mobeta",
 				// "firstExp="+mFirstExpPos+" secExp="+mSecondExpPos+" slideFrac="+mSlideFrac);
 			} else if (this.mFloatViewMid < slideEdgeBottom) {
-				this.mFirstExpPos = itemPos;
-				this.mSecondExpPos = itemPos;
+				setPositions(itemPos);
 			} else {
 				this.mFirstExpPos = itemPos;
 				this.mSecondExpPos = itemPos + 1;
@@ -1062,19 +1064,24 @@ public class DragSortListView extends ListView {
 			}
 
 		} else {
-			this.mFirstExpPos = itemPos;
-			this.mSecondExpPos = itemPos;
+			setPositions(itemPos);
 		}
 
 		// correct for headers and footers
 		if (this.mFirstExpPos < numHeaders) {
 			itemPos = numHeaders;
-			this.mFirstExpPos = itemPos;
-			this.mSecondExpPos = itemPos;
+			setPositions(itemPos);
 		} else if (this.mSecondExpPos >= getCount() - numFooters) {
 			itemPos = getCount() - numFooters - 1;
-			this.mFirstExpPos = itemPos;
-			this.mSecondExpPos = itemPos;
+			setPositions(itemPos);
+		} else if (this.mFirstExpPos < this.mPartDivider
+				&& oldFirstExpPos >= this.mPartDivider) {
+			itemPos = this.mPartDivider;
+			setPositions(itemPos);
+		} else if (this.mSecondExpPos >= this.mPartDivider
+				&& oldFirstExpPos < this.mPartDivider) {
+			itemPos = this.mPartDivider - 1;
+			setPositions(itemPos);
 		}
 
 		if (this.mFirstExpPos != oldFirstExpPos
@@ -1092,8 +1099,16 @@ public class DragSortListView extends ListView {
 			this.mFloatPos = itemPos;
 			updated = true;
 		}
-
 		return updated;
+	}
+
+	private void setPositions(int itemPos) {
+		this.mFirstExpPos = itemPos;
+		this.mSecondExpPos = itemPos;
+	}
+
+	public void setParts(final int divider) {
+		this.mPartDivider = divider;
 	}
 
 	@Override
@@ -2272,8 +2287,7 @@ public class DragSortListView extends ListView {
 		}
 
 		final int pos = position + getHeaderViewsCount();
-		this.mFirstExpPos = pos;
-		this.mSecondExpPos = pos;
+		setPositions(pos);
 		this.mSrcPos = pos;
 		this.mFloatPos = pos;
 
