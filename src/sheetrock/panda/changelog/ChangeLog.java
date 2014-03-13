@@ -34,6 +34,7 @@ import android.view.View;
 import android.webkit.WebView;
 import de.azapps.mirakel.changelog.R;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.tools.Log;
 
 public class ChangeLog {
@@ -58,7 +59,7 @@ public class ChangeLog {
 	 * @param sp
 	 *            the shared preferences to store the last version name into
 	 */
-	public ChangeLog(Context context) {
+	public ChangeLog(final Context context) {
 		this.context = context;
 
 		// get version numbers
@@ -67,7 +68,7 @@ public class ChangeLog {
 		try {
 			this.thisVersion = context.getPackageManager().getPackageInfo(
 					context.getPackageName(), 0).versionName;
-		} catch (NameNotFoundException e) {
+		} catch (final NameNotFoundException e) {
 			this.thisVersion = NO_VERSION;
 			Log.e(TAG, "could not get version name from manifest!");
 			e.printStackTrace();
@@ -129,8 +130,8 @@ public class ChangeLog {
 		return this.getDialog(true);
 	}
 
-	private AlertDialog getDialog(boolean full) {
-		WebView wv = new WebView(new ContextThemeWrapper(this.context,
+	private AlertDialog getDialog(final boolean full) {
+		final WebView wv = new WebView(new ContextThemeWrapper(this.context,
 				R.style.Dialog));
 		if (API_LEVEL >= Build.VERSION_CODES.HONEYCOMB) {
 			Compatibility.setViewLayerTypeSoftware(wv);
@@ -139,14 +140,16 @@ public class ChangeLog {
 			wv.setBackgroundColor(Color.WHITE);
 		}
 		String log = this.getLog(full);
-		if (MirakelCommonPreferences.isDark())
+		if (MirakelCommonPreferences.isDark()) {
 			log = "<font color='"
 					+ String.format("#%06X", 0xFFFFFF & this.context
 							.getResources().getColor(R.color.holo_blue_light))
 					+ "'>" + log + "</font>";
+		}
 		wv.loadDataWithBaseURL(null, log, "text/html", "UTF-8", null);
 
-		AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
+		final AlertDialog.Builder builder = new AlertDialog.Builder(
+				this.context);
 		builder.setTitle(
 				this.context.getResources().getString(
 						full ? R.string.changelog_full_title
@@ -159,8 +162,8 @@ public class ChangeLog {
 								R.string.changelog_ok_button),
 						new DialogInterface.OnClickListener() {
 							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
+							public void onClick(final DialogInterface dialog,
+									final int which) {
 								updateVersionInPreferences();
 							}
 						});
@@ -170,7 +173,8 @@ public class ChangeLog {
 			builder.setNegativeButton(R.string.changelog_show_full,
 					new DialogInterface.OnClickListener() {
 						@Override
-						public void onClick(DialogInterface dialog, int id) {
+						public void onClick(final DialogInterface dialog,
+								final int id) {
 							getFullLogDialog().show();
 						}
 					});
@@ -181,7 +185,7 @@ public class ChangeLog {
 
 	@SuppressLint("NewApi")
 	private void updateVersionInPreferences() {
-		SharedPreferences.Editor editor = MirakelCommonPreferences.getEditor();
+		final SharedPreferences.Editor editor = MirakelPreferences.getEditor();
 		editor.putString(VERSION_KEY, this.thisVersion);
 		// // on SDK-Versions > 9 you should use this:
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD) {
@@ -215,24 +219,25 @@ public class ChangeLog {
 	private StringBuffer sb = null;
 	private static final String EOCL = "END_OF_CHANGE_LOG";
 
-	private String getLog(boolean full) {
+	private String getLog(final boolean full) {
 		// read changelog.txt file
 		this.sb = new StringBuffer();
 		try {
-			InputStream ins = this.context.getResources().openRawResource(
-					R.raw.changelog);
-			BufferedReader br = new BufferedReader(new InputStreamReader(ins));
+			final InputStream ins = this.context.getResources()
+					.openRawResource(R.raw.changelog);
+			final BufferedReader br = new BufferedReader(new InputStreamReader(
+					ins));
 
 			String line = null;
 			boolean advanceToEOVS = false; // if true: ignore further version
 											// sections
 			while ((line = br.readLine()) != null) {
 				line = line.trim();
-				char marker = line.length() > 0 ? line.charAt(0) : 0;
+				final char marker = line.length() > 0 ? line.charAt(0) : 0;
 				if (marker == '$') {
 					// begin of a version section
 					this.closeList();
-					String version = line.substring(1).trim();
+					final String version = line.substring(1).trim();
 					// stop output?
 					if (!full) {
 						if (this.lastVersion.equals(version)) {
@@ -282,14 +287,14 @@ public class ChangeLog {
 			}
 			this.closeList();
 			br.close();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			e.printStackTrace();
 		}
 
 		return this.sb.toString();
 	}
 
-	private void openList(Listmode listMode) {
+	private void openList(final Listmode listMode) {
 		if (this.listMode != listMode) {
 			closeList();
 			if (listMode == Listmode.ORDERED) {
@@ -317,7 +322,7 @@ public class ChangeLog {
 	 * 
 	 * @param lastVersion
 	 */
-	void setLastVersion(String lastVersion) {
+	void setLastVersion(final String lastVersion) {
 		this.lastVersion = lastVersion;
 	}
 
@@ -334,7 +339,7 @@ public class ChangeLog {
 		 * 
 		 * @see http://code.google.com/p/android-change-log/issues/detail?id=17
 		 */
-		static void setViewLayerTypeSoftware(View v) {
+		static void setViewLayerTypeSoftware(final View v) {
 			v.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 		}
 	}
