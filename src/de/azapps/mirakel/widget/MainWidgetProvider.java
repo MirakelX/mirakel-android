@@ -61,11 +61,11 @@ public class MainWidgetProvider extends AppWidgetProvider {
 
 	@Override
 	@SuppressLint("NewApi")
-	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
-			int[] appWidgetIds) {
-		for (int widgetId : appWidgetIds) {
+	public void onUpdate(final Context context,
+			final AppWidgetManager appWidgetManager, final int[] appWidgetIds) {
+		for (final int widgetId : appWidgetIds) {
 			Log.v(TAG, "update Widget: " + widgetId);
-			boolean isDark = WidgetHelper.isDark(context, widgetId);
+			final boolean isDark = WidgetHelper.isDark(context, widgetId);
 			boolean isMinimalistic = WidgetHelper.isMinimalistic(context,
 					widgetId);
 			int layout_id;
@@ -76,7 +76,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
 				layout_id = oldAPI ? R.layout.widget_main_layout_v10
 						: R.layout.widget_main;
 			}
-			RemoteViews views = new RemoteViews(context.getPackageName(),
+			final RemoteViews views = new RemoteViews(context.getPackageName(),
 					layout_id);
 
 			int widgetBackground;
@@ -98,30 +98,32 @@ public class MainWidgetProvider extends AppWidgetProvider {
 				}
 			}
 			if (!oldAPI) {
-				GradientDrawable drawable = (GradientDrawable) context
+				final GradientDrawable drawable = (GradientDrawable) context
 						.getResources().getDrawable(widgetBackground);
 				drawable.setAlpha(WidgetHelper.getTransparency(context,
 						widgetId));
-				Bitmap bitmap = Bitmap.createBitmap(500, 500, Config.ARGB_8888);
-				Canvas canvas = new Canvas(bitmap);
+				final Bitmap bitmap = Bitmap.createBitmap(500, 500,
+						Config.ARGB_8888);
+				final Canvas canvas = new Canvas(bitmap);
 				drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
 				drawable.draw(canvas);
 				views.setImageViewBitmap(R.id.widget_background, bitmap);
 				views.setTextColor(R.id.widget_list_name,
 						WidgetHelper.getFontColor(context, widgetId));
 			}
-			ListMirakel list = WidgetHelper.getList(context, widgetId);
-			if (list == null)
+			final ListMirakel list = WidgetHelper.getList(context, widgetId);
+			if (list == null) {
 				continue;
+			}
 
 			// Create an Intent to launch SettingsActivity
-			Intent settingsIntent = new Intent(context,
+			final Intent settingsIntent = new Intent(context,
 					MainWidgetSettingsActivity.class);
 			settingsIntent.putExtra(EXTRA_WIDGET_ID, widgetId);
 			settingsIntent.setData(Uri.parse(settingsIntent
 					.toUri(Intent.URI_INTENT_SCHEME)));
-			PendingIntent settingsPendingIntent = PendingIntent.getActivity(
-					context, 0, settingsIntent, 0);
+			final PendingIntent settingsPendingIntent = PendingIntent
+					.getActivity(context, 0, settingsIntent, 0);
 			views.setOnClickPendingIntent(R.id.widget_preferences,
 					settingsPendingIntent);
 			if (!oldAPI) {
@@ -156,13 +158,13 @@ public class MainWidgetProvider extends AppWidgetProvider {
 			try {
 				mainIntent = new Intent(context,
 						Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
-			} catch (ClassNotFoundException e) {
+			} catch (final ClassNotFoundException e) {
 				Log.wtf(TAG, "mainactivity not found");
 				return;
 			}
 			mainIntent.setAction(DefinitionsHelper.SHOW_LIST_FROM_WIDGET
 					+ list.getId());
-			PendingIntent mainPendingIntent = PendingIntent.getActivity(
+			final PendingIntent mainPendingIntent = PendingIntent.getActivity(
 					context, 0, mainIntent, 0);
 			views.setOnClickPendingIntent(R.id.widget_list_name,
 					mainPendingIntent);
@@ -175,19 +177,20 @@ public class MainWidgetProvider extends AppWidgetProvider {
 			try {
 				addIntent = new Intent(context,
 						Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
-			} catch (ClassNotFoundException e) {
+			} catch (final ClassNotFoundException e) {
 				Log.wtf(TAG, "mainactivity not found");
 				return;
 			}
 			addIntent.setAction(DefinitionsHelper.ADD_TASK_FROM_WIDGET
 					+ list.getId());
-			PendingIntent addPendingIntent = PendingIntent.getActivity(context,
-					0, addIntent, 0);
+			final PendingIntent addPendingIntent = PendingIntent.getActivity(
+					context, 0, addIntent, 0);
 			views.setOnClickPendingIntent(R.id.widget_add_task,
 					addPendingIntent);
-			boolean showDone = WidgetHelper.showDone(context, widgetId);
+			final boolean showDone = WidgetHelper.showDone(context, widgetId);
 			if (!oldAPI) {
-				Intent intent = new Intent(context, MainWidgetService.class);
+				final Intent intent = new Intent(context,
+						MainWidgetService.class);
 				intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
 				intent.putExtra(EXTRA_LISTID, list.getId());
 				intent.putExtra(EXTRA_SHOWDONE, showDone);
@@ -197,7 +200,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
 				try {
 					appWidgetManager.updateAppWidget(new int[] { widgetId },
 							views);
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					Log.d(TAG, "cannot create widget");
 					return;
 				}
@@ -205,24 +208,25 @@ public class MainWidgetProvider extends AppWidgetProvider {
 				views.setEmptyView(R.id.widget_tasks_list, R.id.empty_view);
 
 				// Main Intent
-				Intent toastIntent = new Intent(context,
+				final Intent toastIntent = new Intent(context,
 						MainWidgetProvider.class);
 				intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
 				intent.putExtra(EXTRA_WIDGET_LAYOUT, NORMAL_WIDGET);
-				PendingIntent toastPendingIntent = PendingIntent.getBroadcast(
-						context, 0, toastIntent,
-						PendingIntent.FLAG_UPDATE_CURRENT);
+				final PendingIntent toastPendingIntent = PendingIntent
+						.getBroadcast(context, 0, toastIntent,
+								PendingIntent.FLAG_UPDATE_CURRENT);
 				views.setPendingIntentTemplate(R.id.widget_tasks_list,
 						toastPendingIntent);
 
 			} else {
 				views.removeAllViews(R.id.widget_main_view);
-				List<Task> tasks = Task.getTasks(list.getId(),
+				final List<Task> tasks = Task.getTasks(list.getId(),
 						list.getSortBy(), showDone);
 				if (tasks.size() == 0) {
 					views.setViewVisibility(R.id.empty_view, View.VISIBLE);
 				} else {
-					boolean darkTheme = WidgetHelper.isDark(context, widgetId);
+					final boolean darkTheme = WidgetHelper.isDark(context,
+							widgetId);
 					views.setInt(R.id.widget_main, "setBackgroundResource",
 							darkTheme ? R.drawable.widget_background_dark
 									: R.drawable.widget_background);
@@ -231,11 +235,11 @@ public class MainWidgetProvider extends AppWidgetProvider {
 							context.getResources().getColor(
 									darkTheme ? R.color.White : R.color.Black));
 					views.setViewVisibility(R.id.empty_view, View.GONE);
-					int end = tasks.size() >= 7 ? 7 : tasks.size();
+					final int end = tasks.size() >= 7 ? 7 : tasks.size();
 					try {
-						int row_id = isMinimalistic ? R.layout.widget_row_minimal
+						final int row_id = isMinimalistic ? R.layout.widget_row_minimal
 								: R.layout.widget_row;
-						for (Task t : tasks.subList(0, end)) {
+						for (final Task t : tasks.subList(0, end)) {
 							views.addView(R.id.widget_main_view, WidgetHelper
 									.configureItem(
 											new RemoteViews(context
@@ -243,7 +247,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
 											t, context, list.getId(), false,
 											widgetId));
 						}
-					} catch (IndexOutOfBoundsException e) {
+					} catch (final IndexOutOfBoundsException e) {
 						Log.wtf(TAG,
 								"The list has been shortened while processing it…");
 					}
@@ -258,21 +262,23 @@ public class MainWidgetProvider extends AppWidgetProvider {
 
 	}
 
-	private static Bitmap colorizeBitmap(int to, Drawable c, int[] oldColor,
-			int THRESHOLD) {
+	private static Bitmap colorizeBitmap(final int to, final Drawable c,
+			final int[] oldColor, final int THRESHOLD) {
 		Bitmap bitmap;
-		Bitmap src = ((BitmapDrawable) c).getBitmap();
+		final Bitmap src = ((BitmapDrawable) c).getBitmap();
 		bitmap = src.copy(Bitmap.Config.ARGB_8888, true);
 		for (int x = 0; x < bitmap.getWidth(); x++) {
 			for (int y = 0; y < bitmap.getHeight(); y++) {
-				if (match(bitmap.getPixel(x, y), oldColor, THRESHOLD))
+				if (match(bitmap.getPixel(x, y), oldColor, THRESHOLD)) {
 					bitmap.setPixel(x, y, to);
+				}
 			}
 		}
 		return bitmap;
 	}
 
-	private static boolean match(int pixel, int[] FROM_COLOR, int THRESHOLD) {
+	private static boolean match(final int pixel, final int[] FROM_COLOR,
+			final int THRESHOLD) {
 		// There may be a better way to match, but I wanted to do a comparison
 		// ignoring
 		// transparency, so I couldn't just do a direct integer compare.
@@ -283,14 +289,14 @@ public class MainWidgetProvider extends AppWidgetProvider {
 
 	@SuppressLint("NewApi")
 	@Override
-	public void onReceive(Context context, Intent intent) {
+	public void onReceive(final Context context, final Intent intent) {
 		if (intent.getAction().equals(CLICK_TASK)) {
-			int taskId = intent.getIntExtra(EXTRA_TASKID, 0);
+			final int taskId = intent.getIntExtra(EXTRA_TASKID, 0);
 			Intent startMainIntent;
 			try {
 				startMainIntent = new Intent(context,
 						Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
-			} catch (ClassNotFoundException e) {
+			} catch (final ClassNotFoundException e) {
 				Log.wtf(TAG, "mainactivity not found");
 				return;
 			}
@@ -304,8 +310,8 @@ public class MainWidgetProvider extends AppWidgetProvider {
 		Log.d(TAG, "" + intent.getAction());
 		if (intent.getAction().equals(
 				"android.appwidget.action.APPWIDGET_UPDATE")) {
-			AppWidgetManager a = AppWidgetManager.getInstance(context);
-			for (int w : a.getAppWidgetIds(new ComponentName(context,
+			final AppWidgetManager a = AppWidgetManager.getInstance(context);
+			for (final int w : a.getAppWidgetIds(new ComponentName(context,
 					MainWidgetProvider.class))) {
 				// if (!oldAPI)
 				// a.notifyAppWidgetViewDataChanged(w, R.id.tasks_list);

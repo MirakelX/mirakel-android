@@ -22,29 +22,30 @@ import de.azapps.mirakel.settings.ColorPickerPref;
 import de.azapps.mirakel.widget.R;
 
 public class PreferencesWidgetHelper extends PreferencesHelper {
-	public PreferencesWidgetHelper(PreferenceActivity c) {
+	public PreferencesWidgetHelper(final PreferenceActivity c) {
 		super(c);
 	}
 
-	public PreferencesWidgetHelper(PreferenceFragment c) {
+	public PreferencesWidgetHelper(final PreferenceFragment c) {
 		super(c);
 	}
 
 	@SuppressLint("NewApi")
 	public void setFunctionsWidget(final Context context, final int widgetId) {
-		List<ListMirakel> lists = ListMirakel.all();
-		CharSequence entryValues[] = new String[lists.size()];
-		CharSequence entries[] = new String[lists.size()];
+		final List<ListMirakel> lists = ListMirakel.all();
+		final CharSequence entryValues[] = new String[lists.size()];
+		final CharSequence entries[] = new String[lists.size()];
 		int i = 0;
-		for (ListMirakel list : lists) {
+		for (final ListMirakel list : lists) {
 			entryValues[i] = String.valueOf(list.getId());
 			entries[i] = list.getName();
 			i++;
 		}
 
-		ListMirakel list = WidgetHelper.getList(context, widgetId);
-		if (list == null)
+		final ListMirakel list = WidgetHelper.getList(context, widgetId);
+		if (list == null) {
 			return;
+		}
 
 		final CheckBoxPreference isDark = (CheckBoxPreference) findPreference("isDark");
 		final ListPreference widgetListPreference = (ListPreference) findPreference("widgetList");
@@ -56,11 +57,11 @@ public class PreferencesWidgetHelper extends PreferencesHelper {
 		widgetListPreference
 				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 					@Override
-					public boolean onPreferenceChange(Preference preference,
-							Object newValue) {
+					public boolean onPreferenceChange(
+							final Preference preference, final Object newValue) {
 						WidgetHelper.setList(context, widgetId,
 								Integer.parseInt((String) newValue));
-						String list = ListMirakel.getList(
+						final String list = ListMirakel.getList(
 								Integer.parseInt((String) newValue)).getName();
 						widgetListPreference
 								.setSummary(PreferencesWidgetHelper.this.activity
@@ -75,13 +76,13 @@ public class PreferencesWidgetHelper extends PreferencesHelper {
 		isDark.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 			@Override
-			public boolean onPreferenceChange(Preference preference,
-					Object newValue) {
+			public boolean onPreferenceChange(final Preference preference,
+					final Object newValue) {
 				WidgetHelper.setDark(context, widgetId, (Boolean) newValue);
 				return true;
 			}
 		});
-		CheckBoxPreference isMinimalistic = (CheckBoxPreference) findPreference("isMinimalistic");
+		final CheckBoxPreference isMinimalistic = (CheckBoxPreference) findPreference("isMinimalistic");
 		if (isMinimalistic != null) {
 			isMinimalistic.setChecked(WidgetHelper.isMinimalistic(context,
 					widgetId));
@@ -90,7 +91,8 @@ public class PreferencesWidgetHelper extends PreferencesHelper {
 
 						@Override
 						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
+								final Preference preference,
+								final Object newValue) {
 							WidgetHelper.setMinimalistic(context, widgetId,
 									(Boolean) newValue);
 							return true;
@@ -98,7 +100,7 @@ public class PreferencesWidgetHelper extends PreferencesHelper {
 					});
 		}
 
-		CheckBoxPreference noGradient = (CheckBoxPreference) findPreference("widgetUseGradient");
+		final CheckBoxPreference noGradient = (CheckBoxPreference) findPreference("widgetUseGradient");
 		if (noGradient != null) {
 			noGradient.setChecked(WidgetHelper
 					.gethasGradient(context, widgetId));
@@ -107,7 +109,8 @@ public class PreferencesWidgetHelper extends PreferencesHelper {
 
 						@Override
 						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
+								final Preference preference,
+								final Object newValue) {
 							WidgetHelper.setHasGradient(context, widgetId,
 									(Boolean) newValue);
 							return true;
@@ -115,13 +118,13 @@ public class PreferencesWidgetHelper extends PreferencesHelper {
 					});
 		}
 
-		CheckBoxPreference showDone = (CheckBoxPreference) findPreference("showDone");
+		final CheckBoxPreference showDone = (CheckBoxPreference) findPreference("showDone");
 		showDone.setChecked(WidgetHelper.showDone(context, widgetId));
 		showDone.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 			@Override
-			public boolean onPreferenceChange(Preference preference,
-					Object newValue) {
+			public boolean onPreferenceChange(final Preference preference,
+					final Object newValue) {
 				WidgetHelper.setDone(context, widgetId, (Boolean) newValue);
 				return true;
 			}
@@ -133,8 +136,8 @@ public class PreferencesWidgetHelper extends PreferencesHelper {
 				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 					@Override
-					public boolean onPreferenceChange(Preference preference,
-							Object newValue) {
+					public boolean onPreferenceChange(
+							final Preference preference, final Object newValue) {
 						WidgetHelper.setDueColors(context, widgetId,
 								(Boolean) newValue);
 						return true;
@@ -155,7 +158,8 @@ public class PreferencesWidgetHelper extends PreferencesHelper {
 
 						@Override
 						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
+								final Preference preference,
+								final Object newValue) {
 							WidgetHelper.setFontColor(context, widgetId,
 									widgetFontColor.getColor());
 							return false;
@@ -169,7 +173,8 @@ public class PreferencesWidgetHelper extends PreferencesHelper {
 					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
 						@Override
-						public boolean onPreferenceClick(Preference preference) {
+						public boolean onPreferenceClick(
+								final Preference preference) {
 							final SeekBar sb = new SeekBar(context);
 							sb.setMax(255);
 							sb.setInterpolator(new DecelerateInterpolator());
@@ -184,15 +189,15 @@ public class PreferencesWidgetHelper extends PreferencesHelper {
 
 												@Override
 												public void onClick(
-														DialogInterface dialog,
-														int which) {
+														final DialogInterface dialog,
+														final int which) {
 													// Fix Direction
 													WidgetHelper
 															.setTransparency(
 																	context,
 																	widgetId,
 																	255 - sb.getProgress());
-													float t = 100 - Math.round(WidgetHelper
+													final float t = 100 - Math.round(WidgetHelper
 															.getTransparency(
 																	context,
 																	widgetId) / 255f * 1000) / 10;

@@ -40,13 +40,14 @@ import de.azapps.mirakel.widget.R;
 import de.azapps.tools.Log;
 
 public class WidgetHelper {
-	public static RemoteViews configureItem(RemoteViews rv, Task task,
-			Context context, int listId, boolean isMinimal, int widgetId) {
+	public static RemoteViews configureItem(final RemoteViews rv,
+			final Task task, final Context context, final int listId,
+			final boolean isMinimal, final int widgetId) {
 		Intent openIntent;
 		try {
 			openIntent = new Intent(context,
 					Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
-		} catch (ClassNotFoundException e) {
+		} catch (final ClassNotFoundException e) {
 			Log.wtf(TAG, "no mainactivity found");
 			return null;
 		}
@@ -54,7 +55,7 @@ public class WidgetHelper {
 		openIntent.putExtra(DefinitionsHelper.EXTRA_ID, task.getId());
 		openIntent
 				.setData(Uri.parse(openIntent.toUri(Intent.URI_INTENT_SCHEME)));
-		PendingIntent pOpenIntent = PendingIntent.getActivity(context, 0,
+		final PendingIntent pOpenIntent = PendingIntent.getActivity(context, 0,
 				openIntent, 0);
 
 		rv.setOnClickPendingIntent(R.id.tasks_row, pOpenIntent);
@@ -98,11 +99,11 @@ public class WidgetHelper {
 			rv.setTextViewText(R.id.tasks_row_priority, task.getPriority() + "");
 			rv.setTextColor(R.id.tasks_row_priority, context.getResources()
 					.getColor(R.color.Black));
-			GradientDrawable drawable = (GradientDrawable) context
+			final GradientDrawable drawable = (GradientDrawable) context
 					.getResources().getDrawable(R.drawable.priority_rectangle);
 			drawable.setColor(TaskHelper.getPrioColor(task.getPriority()));
-			Bitmap bitmap = Bitmap.createBitmap(40, 40, Config.ARGB_8888);
-			Canvas canvas = new Canvas(bitmap);
+			final Bitmap bitmap = Bitmap.createBitmap(40, 40, Config.ARGB_8888);
+			final Canvas canvas = new Canvas(bitmap);
 			drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
 			drawable.draw(canvas);
 			rv.setImageViewBitmap(R.id.label_bg, bitmap);
@@ -154,57 +155,58 @@ public class WidgetHelper {
 	private static final String TAG = "WidgetHelper";
 	private static SharedPreferences settings = null;
 
-	private static SharedPreferences getSettings(Context ctx) {
+	private static SharedPreferences getSettings(final Context ctx) {
 		if (settings == null) {
 			settings = ctx.getSharedPreferences(PREFS_NAME, 0);
 		}
 		return settings;
 	}
 
-	private static String getKey(int widgetId, String key) {
+	private static String getKey(final int widgetId, final String key) {
 		return PREF_PREFIX + widgetId + "_" + key;
 	}
 
-	private static boolean getBoolean(Context context, int widgetId,
-			String key, boolean def) {
+	private static boolean getBoolean(final Context context,
+			final int widgetId, final String key, final boolean def) {
 		return getSettings(context).getBoolean(getKey(widgetId, key), def);
 
 	}
 
-	private static int getInt(Context context, int widgetId, String key,
-			int white) {
+	private static int getInt(final Context context, final int widgetId,
+			final String key, final int white) {
 		return getSettings(context).getInt(getKey(widgetId, key), white);
 	}
 
-	public static boolean isDark(Context context, int widgetId) {
+	public static boolean isDark(final Context context, final int widgetId) {
 		return getBoolean(context, widgetId, "isDark", true);
 	}
 
-	public static boolean isMinimalistic(Context context, int widgetId) {
+	public static boolean isMinimalistic(final Context context,
+			final int widgetId) {
 		return true;
 	}
 
-	public static boolean showDone(Context context, int widgetId) {
+	public static boolean showDone(final Context context, final int widgetId) {
 		return getBoolean(context, widgetId, "showDone", false);
 	}
 
-	public static boolean dueColors(Context context, int widgetId) {
+	public static boolean dueColors(final Context context, final int widgetId) {
 		return getBoolean(context, widgetId, "widgetDueColors", true);
 	}
 
-	public static int getFontColor(Context context, int widgetId) {
+	public static int getFontColor(final Context context, final int widgetId) {
 		return getInt(context, widgetId, "widgetFontColor", context
 				.getResources().getColor(android.R.color.white));
 	}
 
-	public static int getTransparency(Context context, int widgetId) {
+	public static int getTransparency(final Context context, final int widgetId) {
 		return getInt(context, widgetId, "widgetTransparency", 100);
 	}
 
-	public static ListMirakel getList(Context context, int widgetId) {
+	public static ListMirakel getList(final Context context, final int widgetId) {
 
-		int listId = getSettings(context)
-				.getInt(getKey(widgetId, "list_id"), 0);
+		final int listId = getSettings(context).getInt(
+				getKey(widgetId, "list_id"), 0);
 		ListMirakel list = ListMirakel.getList(listId);
 		if (list == null) {
 			list = SpecialList.firstSpecial();
@@ -220,61 +222,67 @@ public class WidgetHelper {
 		return list;
 	}
 
-	public static void setList(Context context, int widgetId, int listId) {
-		Editor editor = getSettings(context).edit();
+	public static void setList(final Context context, final int widgetId,
+			final int listId) {
+		final Editor editor = getSettings(context).edit();
 		editor.putInt(getKey(widgetId, "list_id"), listId);
 		editor.commit();
 	}
 
-	public static void putBool(Context context, int widgetId, String key,
-			boolean value) {
-		Editor editor = getSettings(context).edit();
+	public static void putBool(final Context context, final int widgetId,
+			final String key, final boolean value) {
+		final Editor editor = getSettings(context).edit();
 		editor.putBoolean(getKey(widgetId, key), value);
 		editor.commit();
 
 	}
 
-	public static void putInt(Context context, int widgetId, String key,
-			int value) {
-		Editor editor = getSettings(context).edit();
+	public static void putInt(final Context context, final int widgetId,
+			final String key, final int value) {
+		final Editor editor = getSettings(context).edit();
 		editor.putInt(getKey(widgetId, key), value);
 		editor.commit();
 
 	}
 
-	public static void setDone(Context context, int widgetId, boolean done) {
+	public static void setDone(final Context context, final int widgetId,
+			final boolean done) {
 		putBool(context, widgetId, "showDone", done);
 	}
 
-	public static void setMinimalistic(Context context, int widgetId,
-			boolean minimalistic) {
+	public static void setMinimalistic(final Context context,
+			final int widgetId, final boolean minimalistic) {
 		putBool(context, widgetId, "isMinimalistic", minimalistic);
 	}
 
-	public static void setDark(Context context, int widgetId, boolean dark) {
+	public static void setDark(final Context context, final int widgetId,
+			final boolean dark) {
 		putBool(context, widgetId, "isDark", dark);
 	}
 
-	public static void setDueColors(Context context, int widgetId, boolean done) {
+	public static void setDueColors(final Context context, final int widgetId,
+			final boolean done) {
 		putBool(context, widgetId, "widgetDueColors", done);
 	}
 
-	public static void setFontColor(Context context, int widgetId, int color) {
+	public static void setFontColor(final Context context, final int widgetId,
+			final int color) {
 		putInt(context, widgetId, "widgetFontColor", color);
 	}
 
-	public static void setTransparency(Context context, int widgetId,
-			int transparency) {
+	public static void setTransparency(final Context context,
+			final int widgetId, final int transparency) {
 		putInt(context, widgetId, "widgetTransparency", transparency);
 	}
 
-	public static void setHasGradient(Context context, int widgetId,
-			Boolean newValue) {
+	public static void setHasGradient(final Context context,
+			final int widgetId, final Boolean newValue) {
 		putBool(context, widgetId, "widgetUseGradient", newValue);
 
 	}
 
-	public static boolean gethasGradient(Context context, int widgetId) {
+	public static boolean gethasGradient(final Context context,
+			final int widgetId) {
 		return getBoolean(context, widgetId, "widgetUseGradient", true);
 	}
 }
