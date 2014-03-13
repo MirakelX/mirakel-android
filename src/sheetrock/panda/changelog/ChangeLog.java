@@ -131,7 +131,7 @@ public class ChangeLog {
 
 	private AlertDialog getDialog(boolean full) {
 		WebView wv = new WebView(new ContextThemeWrapper(this.context,
-				 R.style.Dialog));
+				R.style.Dialog));
 		if (API_LEVEL >= Build.VERSION_CODES.HONEYCOMB) {
 			Compatibility.setViewLayerTypeSoftware(wv);
 			wv.setBackgroundColor(0); // transparent
@@ -141,9 +141,9 @@ public class ChangeLog {
 		String log = this.getLog(full);
 		if (MirakelCommonPreferences.isDark())
 			log = "<font color='"
-					+ String.format("#%06X", 0xFFFFFF & this.context.getResources()
-							.getColor(R.color.holo_blue_light)) + "'>" + log
-					+ "</font>";
+					+ String.format("#%06X", 0xFFFFFF & this.context
+							.getResources().getColor(R.color.holo_blue_light))
+					+ "'>" + log + "</font>";
 		wv.loadDataWithBaseURL(null, log, "text/html", "UTF-8", null);
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
@@ -264,12 +264,14 @@ public class ChangeLog {
 					case '#':
 						// line contains numbered list item
 						this.openList(Listmode.ORDERED);
-						this.sb.append("<li>" + line.substring(1).trim() + "</li>\n");
+						this.sb.append("<li>" + line.substring(1).trim()
+								+ "</li>\n");
 						break;
 					case '*':
 						// line contains bullet list item
 						this.openList(Listmode.UNORDERED);
-						this.sb.append("<li>" + line.substring(1).trim() + "</li>\n");
+						this.sb.append("<li>" + line.substring(1).trim()
+								+ "</li>\n");
 						break;
 					default:
 						// no special character: just use line as is
