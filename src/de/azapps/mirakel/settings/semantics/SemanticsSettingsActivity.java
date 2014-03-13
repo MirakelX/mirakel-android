@@ -35,8 +35,6 @@ import de.azapps.mirakel.settings.ListSettings;
 import de.azapps.mirakel.settings.R;
 
 public class SemanticsSettingsActivity extends ListSettings {
-	@SuppressWarnings("unused")
-	private static final String TAG = "SpecialListsActivity";
 	private Semantic semantic;
 
 	private Semantic newSemantic() {
@@ -50,7 +48,7 @@ public class SemanticsSettingsActivity extends ListSettings {
 		return new OnClickListener() {
 
 			@Override
-			public void onClick(View v) {
+			public void onClick(final View v) {
 				newSemantic();
 				clickOnLast();
 				invalidateHeaders();
@@ -71,9 +69,9 @@ public class SemanticsSettingsActivity extends ListSettings {
 
 	@Override
 	protected List<Pair<Integer, String>> getItems() {
-		List<Semantic> semantics = Semantic.all();
-		List<Pair<Integer, String>> items = new ArrayList<Pair<Integer, String>>();
-		for (Semantic s : semantics) {
+		final List<Semantic> semantics = Semantic.all();
+		final List<Pair<Integer, String>> items = new ArrayList<Pair<Integer, String>>();
+		for (final Semantic s : semantics) {
 			items.add(new Pair<Integer, String>(s.getId(), s.getCondition()));
 		}
 		return items;
@@ -94,7 +92,8 @@ public class SemanticsSettingsActivity extends ListSettings {
 		return R.string.settings_semantics_title;
 	}
 
-	public boolean onCreateOptionsMenu(Menu menu) {
+	@Override
+	public boolean onCreateOptionsMenu(final Menu menu) {
 		if (Build.VERSION_CODES.ICE_CREAM_SANDWICH > Build.VERSION.SDK_INT) {
 			if (getIntent().hasExtra("id")) {
 				menu.add(R.string.delete);
@@ -107,7 +106,7 @@ public class SemanticsSettingsActivity extends ListSettings {
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
+	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			finish();
@@ -120,8 +119,8 @@ public class SemanticsSettingsActivity extends ListSettings {
 				finish();
 				return true;
 			} else if (item.getTitle().equals(getString(R.string.add))) {
-				Semantic s = newSemantic();
-				Intent intent = new Intent(this,
+				final Semantic s = newSemantic();
+				final Intent intent = new Intent(this,
 						SemanticsSettingsActivity.class);
 				intent.putExtra("id", s.getId());
 				startActivity(intent);
@@ -137,7 +136,7 @@ public class SemanticsSettingsActivity extends ListSettings {
 		return new OnClickListener() {
 
 			@Override
-			public void onClick(View v) {
+			public void onClick(final View v) {
 				Helpers.openHelp(getApplicationContext(), "semantic-new-tasks");
 			}
 		};
@@ -150,16 +149,17 @@ public class SemanticsSettingsActivity extends ListSettings {
 
 			@SuppressLint("NewApi")
 			@Override
-			public void onClick(View v) {
+			public void onClick(final View v) {
 				SemanticsSettingsActivity.this.semantic.destroy();
-				if (Build.VERSION.SDK_INT < 11 || !onIsMultiPane())
+				if (Build.VERSION.SDK_INT < 11 || !onIsMultiPane()) {
 					finish();
-				else {
+				} else {
 					try {
-						if (getHeader().size() > 0)
+						if (getHeader().size() > 0) {
 							onHeaderClick(getHeader().get(0), 0);
+						}
 						invalidateHeaders();
-					} catch (Exception e) {
+					} catch (final Exception e) {
 						finish();
 					}
 				}
@@ -168,7 +168,7 @@ public class SemanticsSettingsActivity extends ListSettings {
 		};
 	}
 
-	public void setSemantic(Semantic s) {
+	public void setSemantic(final Semantic s) {
 		this.semantic = s;
 	}
 }

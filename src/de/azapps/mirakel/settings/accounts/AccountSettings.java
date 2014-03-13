@@ -26,22 +26,24 @@ import de.azapps.tools.Log;
 public class AccountSettings implements OnPreferenceChangeListener {
 
 	protected static final String TAG = "AccountSettings";
-	private AccountMirakel account;
-	private boolean v4_0;
-	private Object settings;
-	private Context ctx;
+	private final AccountMirakel account;
+	private final boolean v4_0;
+	private final Object settings;
+	private final Context ctx;
 
 	@SuppressLint("NewApi")
-	public AccountSettings(AccountSettingsFragment accountSettingsFragment,
-			AccountMirakel account) {
+	public AccountSettings(
+			final AccountSettingsFragment accountSettingsFragment,
+			final AccountMirakel account) {
 		this.account = account;
 		this.v4_0 = true;
 		this.settings = accountSettingsFragment;
 		this.ctx = accountSettingsFragment.getActivity();
 	}
 
-	public AccountSettings(AccountSettingsActivity accountSettingsFragment,
-			AccountMirakel account) {
+	public AccountSettings(
+			final AccountSettingsActivity accountSettingsFragment,
+			final AccountMirakel account) {
 		this.account = account;
 		this.v4_0 = false;
 		this.settings = accountSettingsFragment;
@@ -52,7 +54,7 @@ public class AccountSettings implements OnPreferenceChangeListener {
 		if (this.account == null) {
 			throw new NoSuchListException();
 		}
-		AccountManager am = AccountManager.get(this.ctx);
+		final AccountManager am = AccountManager.get(this.ctx);
 		final Account a = this.account.getAndroidAccount();
 		final Preference syncUsername = findPreference("syncUsername");
 		if (syncUsername != null) {
@@ -63,11 +65,12 @@ public class AccountSettings implements OnPreferenceChangeListener {
 		final Preference syncServer = findPreference("syncServer");
 		if (syncServer != null) {
 			syncServer.setEnabled(false);
-			if (a != null && a.type.equals(AccountMirakel.ACCOUNT_TYPE_MIRAKEL))
+			if (a != null && a.type.equals(AccountMirakel.ACCOUNT_TYPE_MIRAKEL)) {
 				syncServer.setSummary(am.getUserData(a,
 						SyncAdapter.BUNDLE_SERVER_URL));
-			else
+			} else {
 				syncServer.setSummary("");
+			}
 		}
 		final CheckBoxPreference syncUse = (CheckBoxPreference) findPreference("syncUse");
 		if (syncUse != null) {
@@ -75,8 +78,8 @@ public class AccountSettings implements OnPreferenceChangeListener {
 			syncUse.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 				@Override
-				public boolean onPreferenceChange(Preference preference,
-						Object newValue) {
+				public boolean onPreferenceChange(final Preference preference,
+						final Object newValue) {
 					AccountSettings.this.account.setEnabeld((Boolean) newValue);
 					AccountSettings.this.account.save();
 					return true;
@@ -88,7 +91,7 @@ public class AccountSettings implements OnPreferenceChangeListener {
 			removePreference("syncServer");
 			removePreference("syncUsername");
 		}
-		Preference syneType = findPreference("sync_type");
+		final Preference syneType = findPreference("sync_type");
 		if (syneType != null) {
 			syneType.setSummary(this.account.getType().typeName(this.ctx));
 		}
@@ -102,7 +105,8 @@ public class AccountSettings implements OnPreferenceChangeListener {
 
 						@Override
 						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
+								final Preference preference,
+								final Object newValue) {
 							if ((Boolean) newValue) {
 								MirakelModelPreferences
 										.setDefaultAccount(AccountSettings.this.account);
@@ -138,21 +142,24 @@ public class AccountSettings implements OnPreferenceChangeListener {
 					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
 						@Override
-						public boolean onPreferenceClick(Preference preference) {
+						public boolean onPreferenceClick(
+								final Preference preference) {
 							int hours = MirakelModelPreferences
 									.getSyncFrequency(AccountSettings.this.account);
-							if (hours == -1)
+							if (hours == -1) {
 								hours = 0;
-							int minutes = hours % 60;
+							}
+							final int minutes = hours % 60;
 							hours = (int) Math.floor(hours / 60.);
 
-							final TimePicker timePicker = new TimePicker(ctx);
+							final TimePicker timePicker = new TimePicker(
+									AccountSettings.this.ctx);
 							timePicker.setIs24HourView(true);
 							timePicker.setCurrentHour(hours);
 							timePicker.setCurrentMinute(minutes);
 
-							AlertDialog.Builder dialog = new AlertDialog.Builder(
-									ctx)
+							final AlertDialog.Builder dialog = new AlertDialog.Builder(
+									AccountSettings.this.ctx)
 									.setTitle(R.string.sync_frequency)
 									.setView(timePicker)
 									.setPositiveButton(android.R.string.ok,
@@ -160,15 +167,16 @@ public class AccountSettings implements OnPreferenceChangeListener {
 
 												@Override
 												public void onClick(
-														DialogInterface dialog,
-														int which) {
+														final DialogInterface dialog,
+														final int which) {
 													int newValue = timePicker
 															.getCurrentHour()
 															* 60
 															+ timePicker
 																	.getCurrentMinute();
-													if (newValue == 0)
+													if (newValue == 0) {
 														newValue = -1;
+													}
 													final Bundle bundle = new Bundle();
 													if (newValue == -1) {
 														syncInterval
@@ -210,7 +218,7 @@ public class AccountSettings implements OnPreferenceChangeListener {
 													}
 													MirakelModelPreferences
 															.setSyncFrequency(
-																	account,
+																	AccountSettings.this.account,
 																	newValue);
 												}
 											});
@@ -229,7 +237,8 @@ public class AccountSettings implements OnPreferenceChangeListener {
 	}
 
 	@Override
-	public boolean onPreferenceChange(Preference preference, Object newValue) {
+	public boolean onPreferenceChange(final Preference preference,
+			final Object newValue) {
 		// TODO: Nothing? Then why does this class implement
 		// OnPreferenceChangeListener?
 		return false;
@@ -239,7 +248,7 @@ public class AccountSettings implements OnPreferenceChangeListener {
 	// superclass?
 	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
-	private Preference findPreference(String key) {
+	private Preference findPreference(final String key) {
 		if (this.v4_0) {
 			return ((AccountSettingsFragment) this.settings)
 					.findPreference(key);
@@ -249,8 +258,8 @@ public class AccountSettings implements OnPreferenceChangeListener {
 
 	@SuppressLint("NewApi")
 	@SuppressWarnings("deprecation")
-	private void removePreference(String which) {
-		Preference pref = findPreference(which);
+	private void removePreference(final String which) {
+		final Preference pref = findPreference(which);
 		if (pref != null) {
 			if (this.v4_0) {
 				((AccountSettingsFragment) this.settings).getPreferenceScreen()

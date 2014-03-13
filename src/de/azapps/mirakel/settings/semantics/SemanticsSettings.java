@@ -22,7 +22,6 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.preference.EditTextPreference;
@@ -51,14 +50,14 @@ public class SemanticsSettings extends PreferencesHelper implements
 	private VALUE dueDialogDayYear;
 
 	@SuppressLint("NewApi")
-	public SemanticsSettings(SemanticsSettingsFragment activity,
-			Semantic semantic) {
+	public SemanticsSettings(final SemanticsSettingsFragment activity,
+			final Semantic semantic) {
 		super(activity);
 		this.semantic = semantic;
 	}
 
-	public SemanticsSettings(SemanticsSettingsActivity activity,
-			Semantic semantic) {
+	public SemanticsSettings(final SemanticsSettingsActivity activity,
+			final Semantic semantic) {
 		super(activity);
 		this.semantic = semantic;
 	}
@@ -94,7 +93,7 @@ public class SemanticsSettings extends PreferencesHelper implements
 				.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
 					@Override
-					public boolean onPreferenceClick(Preference preference) {
+					public boolean onPreferenceClick(final Preference preference) {
 						final DueDialog dueDialog = new DueDialog(
 								SemanticsSettings.this.activity, false);
 						dueDialog.setTitle(SemanticsSettings.this.semanticsDue
@@ -109,8 +108,9 @@ public class SemanticsSettings extends PreferencesHelper implements
 								new DialogInterface.OnClickListener() {
 
 									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
+									public void onClick(
+											final DialogInterface dialog,
+											final int which) {
 										SemanticsSettings.this.semantic
 												.setDue(null);
 										SemanticsSettings.this.semanticsDue
@@ -122,10 +122,12 @@ public class SemanticsSettings extends PreferencesHelper implements
 								new OnClickListener() {
 
 									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-										int val = dueDialog.getValue();
-										VALUE dayYear = dueDialog.getDayYear();
+									public void onClick(
+											final DialogInterface dialog,
+											final int which) {
+										final int val = dueDialog.getValue();
+										final VALUE dayYear = dueDialog
+												.getDayYear();
 										switch (dayYear) {
 										case DAY:
 											SemanticsSettings.this.semantic
@@ -160,24 +162,26 @@ public class SemanticsSettings extends PreferencesHelper implements
 				});
 
 		// Weekday
-		Integer weekday = this.semantic.getWeekday();
+		final Integer weekday = this.semantic.getWeekday();
 		this.semanticsWeekday = (ListPreference) findPreference("semantics_weekday");
 		this.semanticsWeekday.setOnPreferenceChangeListener(this);
 		this.semanticsWeekday.setEntries(R.array.weekdays);
-		CharSequence[] weekdaysNum = { "0", "1", "2", "3", "4", "5", "6", "7" };
+		final CharSequence[] weekdaysNum = { "0", "1", "2", "3", "4", "5", "6",
+				"7" };
 
 		this.semanticsWeekday.setEntryValues(weekdaysNum);
-		if (weekday == null)
+		if (weekday == null) {
 			this.semanticsWeekday.setValueIndex(0);
-		else
+		} else {
 			this.semanticsWeekday.setValueIndex(weekday);
+		}
 		this.semanticsWeekday.setSummary(this.semanticsWeekday.getEntry());
 
 		// List
 		this.semanticsList = (ListPreference) findPreference("semantics_list");
 		this.semanticsList.setOnPreferenceChangeListener(this);
 
-		List<ListMirakel> lists = ListMirakel.all(false);
+		final List<ListMirakel> lists = ListMirakel.all(false);
 		final CharSequence[] listEntries = new CharSequence[lists.size() + 1];
 		final CharSequence[] listValues = new CharSequence[lists.size() + 1];
 		listEntries[0] = this.activity.getString(R.string.semantics_no_list);
@@ -208,7 +212,7 @@ public class SemanticsSettings extends PreferencesHelper implements
 	 * @return
 	 */
 	protected String updateDueStuff() {
-		Integer due = this.semantic.getDue();
+		final Integer due = this.semantic.getDue();
 		String summary;
 		if (due == null) {
 			this.dueDialogDayYear = VALUE.DAY;
@@ -241,9 +245,10 @@ public class SemanticsSettings extends PreferencesHelper implements
 
 	@SuppressLint("NewApi")
 	@Override
-	public boolean onPreferenceChange(Preference preference, Object nv) {
-		String newValue = String.valueOf(nv);
-		String key = preference.getKey();
+	public boolean onPreferenceChange(final Preference preference,
+			final Object nv) {
+		final String newValue = String.valueOf(nv);
+		final String key = preference.getKey();
 		if (key.equals("semantics_priority")) {
 			if (newValue.equals("null")) {
 				this.semantic.setPriority(null);
@@ -260,8 +265,9 @@ public class SemanticsSettings extends PreferencesHelper implements
 
 		} else if (key.equals("semantics_weekday")) {
 			Integer weekday = Integer.parseInt(newValue);
-			if (weekday == 0)
+			if (weekday == 0) {
 				weekday = null;
+			}
 			this.semantic.setWeekday(weekday);
 			this.semanticsWeekday.setValue(newValue);
 			this.semanticsWeekday.setSummary(this.semanticsWeekday.getEntry());
@@ -273,7 +279,7 @@ public class SemanticsSettings extends PreferencesHelper implements
 				this.semanticsList
 						.setSummary(this.semanticsList.getEntries()[0]);
 			} else {
-				ListMirakel newList = ListMirakel.getList(Integer
+				final ListMirakel newList = ListMirakel.getList(Integer
 						.parseInt(newValue));
 				this.semantic.setList(newList);
 				this.semanticsList.setValue(newValue);

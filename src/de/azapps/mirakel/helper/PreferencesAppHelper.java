@@ -46,6 +46,7 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.Switch;
@@ -74,11 +75,11 @@ import de.azapps.tools.FileUtils;
 @SuppressLint("SimpleDateFormat")
 public class PreferencesAppHelper extends PreferencesHelper {
 
-	public PreferencesAppHelper(PreferenceActivity c) {
+	public PreferencesAppHelper(final PreferenceActivity c) {
 		super(c);
 	}
 
-	public PreferencesAppHelper(PreferenceFragment c) {
+	public PreferencesAppHelper(final PreferenceFragment c) {
 		super(c);
 	}
 
@@ -163,10 +164,11 @@ public class PreferencesAppHelper extends PreferencesHelper {
 	// }
 	// }
 	// }
-	public static void updateSyncText(CheckBoxPreference sync,
-			Preference server, Preference syncFrequency, Context ctx) {
-		AccountManager am = AccountManager.get(ctx);
-		Account[] accounts = am
+	public static void updateSyncText(final CheckBoxPreference sync,
+			final Preference server, final Preference syncFrequency,
+			final Context ctx) {
+		final AccountManager am = AccountManager.get(ctx);
+		final Account[] accounts = am
 				.getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
 		if (accounts.length > 0) {
 			if (sync != null) {
@@ -190,7 +192,7 @@ public class PreferencesAppHelper extends PreferencesHelper {
 			}
 			server.setSummary("");
 		}
-		Editor editor = MirakelCommonPreferences.getEditor();
+		final Editor editor = MirakelPreferences.getEditor();
 		editor.putString("syncFrequency", "-1");
 		editor.commit();
 		if (syncFrequency != null) {
@@ -207,14 +209,14 @@ public class PreferencesAppHelper extends PreferencesHelper {
 
 		// Initialize needed Arrays
 		final List<ListMirakel> lists = ListMirakel.all();
-		CharSequence entryValues[] = new String[lists.size()];
-		CharSequence entries[] = new String[lists.size()];
-		CharSequence entryValuesWithDefault[] = new String[lists.size() + 1];
-		CharSequence entriesWithDefault[] = new String[lists.size() + 1];
+		final CharSequence entryValues[] = new String[lists.size()];
+		final CharSequence entries[] = new String[lists.size()];
+		final CharSequence entryValuesWithDefault[] = new String[lists.size() + 1];
+		final CharSequence entriesWithDefault[] = new String[lists.size() + 1];
 		int i = 0;
-		for (ListMirakel list : lists) {
-			String id = String.valueOf(list.getId());
-			String name = list.getName();
+		for (final ListMirakel list : lists) {
+			final String id = String.valueOf(list.getId());
+			final String name = list.getName();
 			entryValues[i] = id;
 			entries[i] = name;
 			entryValuesWithDefault[i + 1] = id;
@@ -232,7 +234,7 @@ public class PreferencesAppHelper extends PreferencesHelper {
 			final ListPreference notificationsListOpenPreference = (ListPreference) findPreference("notificationsListOpen");
 			notificationsListPreference.setEntries(entries);
 			notificationsListPreference.setEntryValues(entryValues);
-			ListMirakel notificationsList = MirakelModelPreferences
+			final ListMirakel notificationsList = MirakelModelPreferences
 					.getNotificationsList();
 
 			notificationsListPreference.setSummary(this.activity.getString(
@@ -242,8 +244,9 @@ public class PreferencesAppHelper extends PreferencesHelper {
 					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 						@Override
 						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
-							String list = ListMirakel.getList(
+								final Preference preference,
+								final Object newValue) {
+							final String list = ListMirakel.getList(
 									Integer.parseInt((String) newValue))
 									.getName();
 							notificationsListPreference
@@ -266,7 +269,7 @@ public class PreferencesAppHelper extends PreferencesHelper {
 			notificationsListOpenPreference.setEntries(entriesWithDefault);
 			notificationsListOpenPreference
 					.setEntryValues(entryValuesWithDefault);
-			ListMirakel notificationsListOpen = MirakelModelPreferences
+			final ListMirakel notificationsListOpen = MirakelModelPreferences
 					.getNotificationsListOpen();
 			notificationsListOpenPreference.setSummary(this.activity.getString(
 					R.string.notifications_list_open_summary,
@@ -275,7 +278,8 @@ public class PreferencesAppHelper extends PreferencesHelper {
 					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 						@Override
 						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
+								final Preference preference,
+								final Object newValue) {
 							String list;
 							if (!"default".equals(newValue.toString())) {
 								list = ListMirakel.getList(
@@ -300,8 +304,8 @@ public class PreferencesAppHelper extends PreferencesHelper {
 		}
 
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-			PreferenceCategory cat = (PreferenceCategory) findPreference("notifications");
-			Preference notificationsBig = findPreference("notificationsBig");
+			final PreferenceCategory cat = (PreferenceCategory) findPreference("notifications");
+			final Preference notificationsBig = findPreference("notificationsBig");
 			if (cat != null && notificationsBig != null) {
 				cat.removePreference(notificationsBig);
 			}
@@ -314,7 +318,8 @@ public class PreferencesAppHelper extends PreferencesHelper {
 
 						@Override
 						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
+								final Preference preference,
+								final Object newValue) {
 							PreferencesAppHelper.this.activity.finish();
 							PreferencesAppHelper.this.activity
 									.startActivity(PreferencesAppHelper.this.activity
@@ -333,7 +338,8 @@ public class PreferencesAppHelper extends PreferencesHelper {
 					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 						@Override
 						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
+								final Preference preference,
+								final Object newValue) {
 							if (!(Boolean) newValue) {
 								startupListPreference
 										.setSummary(PreferencesAppHelper.this.activity
@@ -370,7 +376,8 @@ public class PreferencesAppHelper extends PreferencesHelper {
 
 						@Override
 						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
+								final Preference preference,
+								final Object newValue) {
 							startupListPreference
 									.setSummary(PreferencesAppHelper.this.activity
 											.getString(
@@ -438,7 +445,8 @@ public class PreferencesAppHelper extends PreferencesHelper {
 
 						@Override
 						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
+								final Preference preference,
+								final Object newValue) {
 							if ((Boolean) newValue) {
 								PreferencesAppHelper.this.activity
 										.startService(new Intent(
@@ -455,7 +463,7 @@ public class PreferencesAppHelper extends PreferencesHelper {
 													NotificationService.class));
 								}
 							}
-							Editor e = preference.getEditor();
+							final Editor e = preference.getEditor();
 							e.putBoolean("notificationsUse", (Boolean) newValue);
 							e.commit();
 							NotificationService
@@ -464,7 +472,7 @@ public class PreferencesAppHelper extends PreferencesHelper {
 						}
 					});
 		}
-		String[] settings = { "notificationsPersistent",
+		final String[] settings = { "notificationsPersistent",
 				"notificationsZeroHide", "notificationsBig" };
 		for (final String key : settings) {
 			final CheckBoxPreference notifSetting = (CheckBoxPreference) findPreference(key);
@@ -474,8 +482,9 @@ public class PreferencesAppHelper extends PreferencesHelper {
 
 							@Override
 							public boolean onPreferenceChange(
-									Preference preference, Object newValue) {
-								Editor e = preference.getEditor();
+									final Preference preference,
+									final Object newValue) {
+								final Editor e = preference.getEditor();
 								e.putBoolean(key, (Boolean) newValue);
 								e.commit();
 								NotificationService
@@ -494,8 +503,9 @@ public class PreferencesAppHelper extends PreferencesHelper {
 
 						@Override
 						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
-							Editor e = preference.getEditor();
+								final Preference preference,
+								final Object newValue) {
+							final Editor e = preference.getEditor();
 							e.putBoolean("remindersPersistent",
 									(Boolean) newValue);
 							e.commit();
@@ -509,14 +519,14 @@ public class PreferencesAppHelper extends PreferencesHelper {
 
 		}
 
-		Intent startSpecialListsIntent = new Intent(this.activity,
+		final Intent startSpecialListsIntent = new Intent(this.activity,
 				SpecialListsSettingsActivity.class);
-		Preference specialLists = findPreference("special_lists");
+		final Preference specialLists = findPreference("special_lists");
 		if (specialLists != null) {
 			specialLists.setIntent(startSpecialListsIntent);
 		}
 
-		Preference backup = findPreference("backup");
+		final Preference backup = findPreference("backup");
 		if (backup != null) {
 
 			backup.setSummary(this.activity.getString(
@@ -526,7 +536,7 @@ public class PreferencesAppHelper extends PreferencesHelper {
 			backup.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 				@Override
 				@SuppressLint("NewApi")
-				public boolean onPreferenceClick(Preference preference) {
+				public boolean onPreferenceClick(final Preference preference) {
 					ExportImport.exportDB(PreferencesAppHelper.this.activity);
 					return true;
 				}
@@ -535,7 +545,7 @@ public class PreferencesAppHelper extends PreferencesHelper {
 
 		final ListPreference isTablet = (ListPreference) findPreference("useTabletLayoutNew");
 		if (isTablet != null) {
-			String[] values = { "0", "1", "2", "3" };
+			final String[] values = { "0", "1", "2", "3" };
 			final String[] e = this.activity.getResources().getStringArray(
 					R.array.tablet_options);
 			isTablet.setEntries(e);
@@ -543,20 +553,20 @@ public class PreferencesAppHelper extends PreferencesHelper {
 			isTablet.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 				@Override
-				public boolean onPreferenceChange(Preference preference,
-						Object newValue) {
-					int value = Integer.parseInt(newValue.toString());
+				public boolean onPreferenceChange(final Preference preference,
+						final Object newValue) {
+					final int value = Integer.parseInt(newValue.toString());
 					isTablet.setSummary(e[value]);
 					return true;
 				}
 			});
 		}
 
-		Preference importDB = findPreference("import");
+		final Preference importDB = findPreference("import");
 		if (importDB != null) {
 			importDB.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 				@Override
-				public boolean onPreferenceClick(Preference preference) {
+				public boolean onPreferenceClick(final Preference preference) {
 					Helpers.showFileChooser(SettingsActivity.FILE_IMPORT_DB,
 							PreferencesAppHelper.this.activity
 									.getString(R.string.import_title),
@@ -566,37 +576,39 @@ public class PreferencesAppHelper extends PreferencesHelper {
 			});
 		}
 
-		Preference changelog = findPreference("changelog");
+		final Preference changelog = findPreference("changelog");
 		if (changelog != null) {
 			changelog
 					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 						@Override
 						@SuppressLint("NewApi")
-						public boolean onPreferenceClick(Preference preference) {
-							ChangeLog cl = new ChangeLog(
+						public boolean onPreferenceClick(
+								final Preference preference) {
+							final ChangeLog cl = new ChangeLog(
 									PreferencesAppHelper.this.activity);
 							cl.getFullLogDialog().show();
 							return true;
 						}
 					});
 		}
-		Preference anyDo = findPreference("import_any_do");
+		final Preference anyDo = findPreference("import_any_do");
 		if (anyDo != null) {
 			anyDo.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 				@Override
-				public boolean onPreferenceClick(Preference preference) {
+				public boolean onPreferenceClick(final Preference preference) {
 					AnyDoImport
 							.handleImportAnyDo(PreferencesAppHelper.this.activity);
 					return true;
 				}
 			});
 		}
-		Preference importAstrid = findPreference("import_astrid");
+		final Preference importAstrid = findPreference("import_astrid");
 		if (importAstrid != null) {
 			importAstrid
 					.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 						@Override
-						public boolean onPreferenceClick(Preference preference) {
+						public boolean onPreferenceClick(
+								final Preference preference) {
 							Helpers.showFileChooser(
 									SettingsActivity.FILE_ASTRID,
 									PreferencesAppHelper.this.activity
@@ -606,12 +618,13 @@ public class PreferencesAppHelper extends PreferencesHelper {
 						}
 					});
 		}
-		Preference importWunderlist = findPreference("import_wunderlist");
+		final Preference importWunderlist = findPreference("import_wunderlist");
 		if (importWunderlist != null) {
 			importWunderlist
 					.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 						@Override
-						public boolean onPreferenceClick(Preference preference) {
+						public boolean onPreferenceClick(
+								final Preference preference) {
 							new AlertDialog.Builder(
 									PreferencesAppHelper.this.activity)
 									.setTitle(R.string.import_wunderlist_howto)
@@ -622,8 +635,8 @@ public class PreferencesAppHelper extends PreferencesHelper {
 
 												@Override
 												public void onClick(
-														DialogInterface dialog,
-														int which) {
+														final DialogInterface dialog,
+														final int which) {
 
 													Helpers.showFileChooser(
 															SettingsActivity.FILE_WUNDERLIST,
@@ -644,9 +657,10 @@ public class PreferencesAppHelper extends PreferencesHelper {
 
 						@Override
 						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
+								final Preference preference,
+								final Object newValue) {
 							if ((Boolean) newValue) {
-								AlertDialog.Builder builder = new AlertDialog.Builder(
+								final AlertDialog.Builder builder = new AlertDialog.Builder(
 										PreferencesAppHelper.this.activity);
 								builder.setTitle(R.string.kill_sure);
 								builder.setMessage(R.string.kill_sure_message)
@@ -655,8 +669,8 @@ public class PreferencesAppHelper extends PreferencesHelper {
 												new DialogInterface.OnClickListener() {
 													@Override
 													public void onClick(
-															DialogInterface dialog,
-															int which) {
+															final DialogInterface dialog,
+															final int which) {
 													}
 												})
 										.setNegativeButton(
@@ -664,8 +678,8 @@ public class PreferencesAppHelper extends PreferencesHelper {
 												new OnClickListener() {
 													@Override
 													public void onClick(
-															DialogInterface dialog,
-															int which) {
+															final DialogInterface dialog,
+															final int which) {
 														((CheckBoxPreference) findPreference("KillButton"))
 																.setChecked(false);
 
@@ -683,7 +697,7 @@ public class PreferencesAppHelper extends PreferencesHelper {
 		}
 		final CheckBoxPreference importDefaultList = (CheckBoxPreference) findPreference("importDefaultList");
 		if (importDefaultList != null) {
-			ListMirakel list = MirakelModelPreferences
+			final ListMirakel list = MirakelModelPreferences
 					.getImportDefaultList(false);
 			if (list != null) {
 				importDefaultList.setSummary(this.activity.getString(
@@ -698,15 +712,16 @@ public class PreferencesAppHelper extends PreferencesHelper {
 
 						@Override
 						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
+								final Preference preference,
+								final Object newValue) {
 							if ((Boolean) newValue) {
-								AlertDialog.Builder builder = new AlertDialog.Builder(
+								final AlertDialog.Builder builder = new AlertDialog.Builder(
 										PreferencesAppHelper.this.activity);
 								builder.setTitle(R.string.import_to);
 								final List<CharSequence> items = new ArrayList<CharSequence>();
 								final List<Integer> list_ids = new ArrayList<Integer>();
-								int currentItem = 0;
-								for (ListMirakel list : ListMirakel.all()) {
+								final int currentItem = 0;
+								for (final ListMirakel list : ListMirakel.all()) {
 									if (list.getId() > 0) {
 										items.add(list.getName());
 										list_ids.add(list.getId());
@@ -719,14 +734,14 @@ public class PreferencesAppHelper extends PreferencesHelper {
 										new DialogInterface.OnClickListener() {
 											@Override
 											public void onClick(
-													DialogInterface dialog,
-													int item) {
+													final DialogInterface dialog,
+													final int item) {
 												importDefaultList
 														.setSummary(PreferencesAppHelper.this.activity
 																.getString(
 																		R.string.import_default_list_summary,
 																		items.get(item)));
-												SharedPreferences.Editor editor = MirakelCommonPreferences
+												final SharedPreferences.Editor editor = MirakelPreferences
 														.getEditor();
 												editor.putInt(
 														"defaultImportList",
@@ -737,7 +752,8 @@ public class PreferencesAppHelper extends PreferencesHelper {
 										});
 								builder.setOnCancelListener(new OnCancelListener() {
 									@Override
-									public void onCancel(DialogInterface dialog) {
+									public void onCancel(
+											final DialogInterface dialog) {
 										importDefaultList.setChecked(false);
 										importDefaultList
 												.setSummary(R.string.import_no_default_list_summary);
@@ -754,13 +770,14 @@ public class PreferencesAppHelper extends PreferencesHelper {
 		}
 
 		// Delete done tasks
-		Preference deleteDone = findPreference("deleteDone");
+		final Preference deleteDone = findPreference("deleteDone");
 		if (deleteDone != null) {
 			deleteDone
 					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
 						@Override
-						public boolean onPreferenceClick(Preference preference) {
+						public boolean onPreferenceClick(
+								final Preference preference) {
 							new AlertDialog.Builder(
 									PreferencesAppHelper.this.activity)
 									.setTitle(R.string.delete_done_warning)
@@ -770,8 +787,8 @@ public class PreferencesAppHelper extends PreferencesHelper {
 											new OnClickListener() {
 												@Override
 												public void onClick(
-														DialogInterface dialogInterface,
-														int i) {
+														final DialogInterface dialogInterface,
+														final int i) {
 													Task.deleteDoneTasks();
 													Toast.makeText(
 															PreferencesAppHelper.this.activity,
@@ -787,8 +804,8 @@ public class PreferencesAppHelper extends PreferencesHelper {
 											new OnClickListener() {
 												@Override
 												public void onClick(
-														DialogInterface dialogInterface,
-														int i) {
+														final DialogInterface dialogInterface,
+														final int i) {
 												}
 											}).show();
 							return true;
@@ -804,7 +821,8 @@ public class PreferencesAppHelper extends PreferencesHelper {
 					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
 						@Override
-						public boolean onPreferenceClick(Preference preference) {
+						public boolean onPreferenceClick(
+								final Preference preference) {
 
 							final int old_val = MirakelCommonPreferences
 									.getAutoBackupIntervall();
@@ -819,7 +837,7 @@ public class PreferencesAppHelper extends PreferencesHelper {
 										.setWrapSelectorWheel(false);
 								((NumberPicker) numberPicker).setValue(old_val);
 								((NumberPicker) numberPicker)
-										.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+										.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
 							} else {
 								numberPicker = ((LayoutInflater) PreferencesAppHelper.this.activity
 										.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
@@ -834,7 +852,7 @@ public class PreferencesAppHelper extends PreferencesHelper {
 										.findViewById(R.id.dialog_num_pick_plus))
 										.setOnClickListener(new View.OnClickListener() {
 											@Override
-											public void onClick(View v) {
+											public void onClick(final View v) {
 												int val = Integer
 														.parseInt(((TextView) numberPicker
 																.findViewById(R.id.dialog_num_pick_val))
@@ -851,7 +869,7 @@ public class PreferencesAppHelper extends PreferencesHelper {
 										.findViewById(R.id.dialog_num_pick_minus))
 										.setOnClickListener(new View.OnClickListener() {
 											@Override
-											public void onClick(View v) {
+											public void onClick(final View v) {
 												int val = Integer
 														.parseInt(((TextView) numberPicker
 																.findViewById(R.id.dialog_num_pick_val))
@@ -874,8 +892,8 @@ public class PreferencesAppHelper extends PreferencesHelper {
 											new DialogInterface.OnClickListener() {
 												@Override
 												public void onClick(
-														DialogInterface dialog,
-														int whichButton) {
+														final DialogInterface dialog,
+														final int whichButton) {
 													int val;
 													if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
 														val = ((NumberPicker) numberPicker)
@@ -901,8 +919,8 @@ public class PreferencesAppHelper extends PreferencesHelper {
 											new DialogInterface.OnClickListener() {
 												@Override
 												public void onClick(
-														DialogInterface dialog,
-														int whichButton) {
+														final DialogInterface dialog,
+														final int whichButton) {
 													// Do nothing.
 												}
 											}).show();
@@ -919,7 +937,8 @@ public class PreferencesAppHelper extends PreferencesHelper {
 					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
 						@Override
-						public boolean onPreferenceClick(Preference preference) {
+						public boolean onPreferenceClick(
+								final Preference preference) {
 							final int old_val = MirakelCommonPreferences
 									.getUndoNumber();
 							final int max = 25;
@@ -933,7 +952,7 @@ public class PreferencesAppHelper extends PreferencesHelper {
 										.setWrapSelectorWheel(false);
 								((NumberPicker) numberPicker).setValue(old_val);
 								((NumberPicker) numberPicker)
-										.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+										.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
 							} else {
 								numberPicker = ((LayoutInflater) PreferencesAppHelper.this.activity
 										.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
@@ -948,7 +967,7 @@ public class PreferencesAppHelper extends PreferencesHelper {
 										.findViewById(R.id.dialog_num_pick_plus))
 										.setOnClickListener(new View.OnClickListener() {
 											@Override
-											public void onClick(View v) {
+											public void onClick(final View v) {
 												int val = Integer
 														.parseInt(((TextView) numberPicker
 																.findViewById(R.id.dialog_num_pick_val))
@@ -965,7 +984,7 @@ public class PreferencesAppHelper extends PreferencesHelper {
 										.findViewById(R.id.dialog_num_pick_minus))
 										.setOnClickListener(new View.OnClickListener() {
 											@Override
-											public void onClick(View v) {
+											public void onClick(final View v) {
 												int val = Integer
 														.parseInt(((TextView) numberPicker
 																.findViewById(R.id.dialog_num_pick_val))
@@ -994,9 +1013,9 @@ public class PreferencesAppHelper extends PreferencesHelper {
 											new DialogInterface.OnClickListener() {
 												@Override
 												public void onClick(
-														DialogInterface dialog,
-														int whichButton) {
-													SharedPreferences.Editor editor = MirakelCommonPreferences
+														final DialogInterface dialog,
+														final int whichButton) {
+													final SharedPreferences.Editor editor = MirakelPreferences
 															.getEditor();
 													int val;
 													if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
@@ -1032,8 +1051,8 @@ public class PreferencesAppHelper extends PreferencesHelper {
 											new DialogInterface.OnClickListener() {
 												@Override
 												public void onClick(
-														DialogInterface dialog,
-														int whichButton) {
+														final DialogInterface dialog,
+														final int whichButton) {
 													// Do nothing.
 												}
 											}).show();
@@ -1042,55 +1061,56 @@ public class PreferencesAppHelper extends PreferencesHelper {
 					});
 		}
 
-		Preference dashclock = findPreference("dashclock");
+		final Preference dashclock = findPreference("dashclock");
 		if (dashclock != null) {
-			Intent startdashclockIntent = new Intent(
+			final Intent startdashclockIntent = new Intent(
 					Intent.ACTION_VIEW,
 					Uri.parse("http://play.google.com/store/apps/details?id=de.azapps.mirakel.dashclock"));
 			dashclock.setIntent(startdashclockIntent);
 		}
-		Preference credits = findPreference("credits");
+		final Preference credits = findPreference("credits");
 		if (credits != null) {
-			Intent startCreditsIntent = new Intent(this.activity,
+			final Intent startCreditsIntent = new Intent(this.activity,
 					CreditsActivity.class);
 			credits.setIntent(startCreditsIntent);
 		}
 
-		Preference contact = findPreference("contact");
+		final Preference contact = findPreference("contact");
 		if (contact != null) {
 			contact.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
 				@Override
-				public boolean onPreferenceClick(Preference preference) {
+				public boolean onPreferenceClick(final Preference preference) {
 					Helpers.contact(PreferencesAppHelper.this.activity);
 					return false;
 				}
 			});
 		}
 
-		Intent startSemanticsIntent = new Intent(this.activity,
+		final Intent startSemanticsIntent = new Intent(this.activity,
 				SemanticsSettingsActivity.class);
-		Preference semantics = findPreference("semanticNewTaskSettings");
+		final Preference semantics = findPreference("semanticNewTaskSettings");
 		if (semantics != null) {
 			semantics.setIntent(startSemanticsIntent);
 		}
 
-		Intent startRecurringIntent = new Intent(this.activity,
+		final Intent startRecurringIntent = new Intent(this.activity,
 				RecurringActivity.class);
-		Preference recurring = findPreference("recurring");
+		final Preference recurring = findPreference("recurring");
 		if (recurring != null) {
 			recurring.setIntent(startRecurringIntent);
 		}
 		// Intent startTaskFragmentIntent = new Intent(activity,
 		// TaskFragmentSettings.class);
-		Preference taskFragment = findPreference("task_fragment");
+		final Preference taskFragment = findPreference("task_fragment");
 		if (taskFragment != null) {
 			// taskFragment.setIntent(startTaskFragmentIntent);
 			taskFragment
 					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
 						@Override
-						public boolean onPreferenceClick(Preference preference) {
+						public boolean onPreferenceClick(
+								final Preference preference) {
 							if (PreferencesAppHelper.this.v4_0) {
 								((SettingsFragment) PreferencesAppHelper.this.ctx)
 										.showTaskFragmentSettings();
@@ -1116,15 +1136,16 @@ public class PreferencesAppHelper extends PreferencesHelper {
 
 						@Override
 						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
+								final Preference preference,
+								final Object newValue) {
 							if (!(Boolean) newValue) {
-								AlertDialog.Builder builder = new AlertDialog.Builder(
+								final AlertDialog.Builder builder = new AlertDialog.Builder(
 										PreferencesAppHelper.this.activity);
 								builder.setTitle(R.string.import_to);
 								final List<CharSequence> items = new ArrayList<CharSequence>();
 								final List<Integer> list_ids = new ArrayList<Integer>();
-								int currentItem = 0;
-								for (ListMirakel list : ListMirakel.all()) {
+								final int currentItem = 0;
+								for (final ListMirakel list : ListMirakel.all()) {
 									if (list.getId() > 0) {
 										items.add(list.getName());
 										list_ids.add(list.getId());
@@ -1137,8 +1158,8 @@ public class PreferencesAppHelper extends PreferencesHelper {
 										new DialogInterface.OnClickListener() {
 											@Override
 											public void onClick(
-													DialogInterface dialog,
-													int item) {
+													final DialogInterface dialog,
+													final int item) {
 												subTaskAddToSameList
 														.setSummary(items
 																.get(item));
@@ -1147,7 +1168,7 @@ public class PreferencesAppHelper extends PreferencesHelper {
 																.getString(
 																		R.string.settings_subtask_add_to_list_summary,
 																		items.get(item)));
-												SharedPreferences.Editor editor = MirakelCommonPreferences
+												final SharedPreferences.Editor editor = MirakelPreferences
 														.getEditor();
 												editor.putInt(
 														"subtaskAddToList",
@@ -1158,7 +1179,8 @@ public class PreferencesAppHelper extends PreferencesHelper {
 										});
 								builder.setOnCancelListener(new OnCancelListener() {
 									@Override
-									public void onCancel(DialogInterface dialog) {
+									public void onCancel(
+											final DialogInterface dialog) {
 										subTaskAddToSameList.setChecked(false);
 										subTaskAddToSameList
 												.setSummary(R.string.settings_subtask_add_to_same_list_summary);
@@ -1179,10 +1201,10 @@ public class PreferencesAppHelper extends PreferencesHelper {
 			language.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 				@Override
-				public boolean onPreferenceChange(Preference preference,
-						Object newValue) {
+				public boolean onPreferenceChange(final Preference preference,
+						final Object newValue) {
 					setLanguageSummary(language, newValue.toString());
-					MirakelCommonPreferences.getEditor()
+					MirakelPreferences.getEditor()
 							.putString("language", newValue.toString())
 							.commit();
 					Helpers.restartApp(PreferencesAppHelper.this.activity);
@@ -1199,8 +1221,9 @@ public class PreferencesAppHelper extends PreferencesHelper {
 
 						@Override
 						public boolean onPreferenceChange(
-								Preference preference, Object newValue) {
-							MirakelCommonPreferences
+								final Preference preference,
+								final Object newValue) {
+							MirakelPreferences
 									.getEditor()
 									.putBoolean("useTabletLayout",
 											(Boolean) newValue).commit();
@@ -1213,10 +1236,10 @@ public class PreferencesAppHelper extends PreferencesHelper {
 		if (demoMode != null) {
 			demoMode.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 				@Override
-				public boolean onPreferenceChange(Preference preference,
-						Object newValue) {
+				public boolean onPreferenceChange(final Preference preference,
+						final Object newValue) {
 					MirakelCommonPreferences.setDemoMode((Boolean) newValue);
-					Helpers.restartApp(activity);
+					Helpers.restartApp(PreferencesAppHelper.this.activity);
 					return false;
 				}
 			});
@@ -1229,7 +1252,7 @@ public class PreferencesAppHelper extends PreferencesHelper {
 				private Toast toast;
 
 				@Override
-				public boolean onPreferenceClick(Preference preference) {
+				public boolean onPreferenceClick(final Preference preference) {
 					if (++PreferencesAppHelper.this.debugCounter > 6) {
 						MirakelCommonPreferences.toogleDebugMenu();
 						PreferencesAppHelper.this.debugCounter = 0;
@@ -1277,8 +1300,9 @@ public class PreferencesAppHelper extends PreferencesHelper {
 		}
 	}
 
-	private void setLanguageSummary(ListPreference language, String current) {
-		String[] keys = this.activity.getResources().getStringArray(
+	private void setLanguageSummary(final ListPreference language,
+			final String current) {
+		final String[] keys = this.activity.getResources().getStringArray(
 				R.array.language_keys);
 		language.setSummary(keys[0]);
 		for (int j = 0; j < keys.length; j++) {

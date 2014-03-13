@@ -36,15 +36,15 @@ public class AccountSettingsActivity extends ListSettings {
 		return new OnClickListener() {
 
 			@Override
-			public void onClick(View v) {
-				CharSequence[] items = that.getResources().getTextArray(
+			public void onClick(final View v) {
+				final CharSequence[] items = that.getResources().getTextArray(
 						R.array.sync_types);
 				new AlertDialog.Builder(that).setTitle(R.string.sync_add)
 						.setItems(items, new DialogInterface.OnClickListener() {
 
 							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
+							public void onClick(final DialogInterface dialog,
+									final int which) {
 								switch (which) {
 								case 0:
 									handleCalDAV();
@@ -69,7 +69,7 @@ public class AccountSettingsActivity extends ListSettings {
 		return new OnClickListener() {
 
 			@Override
-			public void onClick(View v) {
+			public void onClick(final View v) {
 				AccountSettingsActivity.this.account.destroy();
 				if (Build.VERSION.SDK_INT < 11 || !onIsMultiPane()) {
 					finish();
@@ -79,7 +79,7 @@ public class AccountSettingsActivity extends ListSettings {
 							onHeaderClick(getHeader().get(0), 0);
 						}
 						invalidateHeaders();
-					} catch (Exception e) {
+					} catch (final Exception e) {
 						finish();
 					}
 				}
@@ -129,8 +129,8 @@ public class AccountSettingsActivity extends ListSettings {
 						new DialogInterface.OnClickListener() {
 
 							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
+							public void onClick(final DialogInterface dialog,
+									final int which) {
 								Helpers.openURL(getBaseContext(),
 										"http://mirakel.azapps.de/releases.html#davdroid");
 
@@ -140,8 +140,8 @@ public class AccountSettingsActivity extends ListSettings {
 						new DialogInterface.OnClickListener() {
 
 							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
+							public void onClick(final DialogInterface dialog,
+									final int which) {
 								startActivity(new Intent(
 										Settings.ACTION_ADD_ACCOUNT));
 
@@ -151,12 +151,12 @@ public class AccountSettingsActivity extends ListSettings {
 
 	@SuppressLint("NewApi")
 	@Override
-	public void onBuildHeaders(List<Header> target) {
-		List<AccountMirakel> accounts = AccountMirakel.getAll();
-		for (AccountMirakel a : accounts) {
-			Bundle b = new Bundle();
+	public void onBuildHeaders(final List<Header> target) {
+		final List<AccountMirakel> accounts = AccountMirakel.getAll();
+		for (final AccountMirakel a : accounts) {
+			final Bundle b = new Bundle();
 			b.putInt("id", a.getId());
-			Header header = new Header();
+			final Header header = new Header();
 			header.fragment = getDestFragmentClass().getCanonicalName();
 			header.title = a.getName();
 			header.summary = a.getType().typeName(this);
@@ -166,7 +166,7 @@ public class AccountSettingsActivity extends ListSettings {
 			Log.d(TAG, "accountname: " + a.getName());
 		}
 		if (accounts.size() == 0) {
-			Header header = new Header();
+			final Header header = new Header();
 			header.title = " ";
 			header.fragment = getDestFragmentClass().getCanonicalName();
 			target.add(header);
@@ -180,7 +180,7 @@ public class AccountSettingsActivity extends ListSettings {
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
+	public boolean onCreateOptionsMenu(final Menu menu) {
 		if (Build.VERSION_CODES.ICE_CREAM_SANDWICH > Build.VERSION.SDK_INT) {
 			if (getIntent().hasExtra("id")) {
 				menu.add(R.string.delete);
@@ -193,7 +193,7 @@ public class AccountSettingsActivity extends ListSettings {
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
+	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			finish();
@@ -213,7 +213,7 @@ public class AccountSettingsActivity extends ListSettings {
 		return super.onOptionsItemSelected(item);
 	}
 
-	public void setAccount(AccountMirakel account) {
+	public void setAccount(final AccountMirakel account) {
 		this.account = account;
 	}
 
@@ -222,7 +222,7 @@ public class AccountSettingsActivity extends ListSettings {
 		this.account = AccountMirakel.get(getIntent().getIntExtra("id", 0));
 		try {
 			new AccountSettings(this, this.account).setup();
-		} catch (NoSuchListException e) {
+		} catch (final NoSuchListException e) {
 			Log.d(TAG, "no account attached");
 		}
 	}

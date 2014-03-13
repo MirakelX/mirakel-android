@@ -37,9 +37,6 @@ import de.azapps.mirakel.settings.R;
 
 @SuppressLint("NewApi")
 public class SpecialListsSettingsActivity extends ListSettings {
-	@SuppressWarnings("unused")
-	private static final String TAG = "SpecialListsActivity";
-
 	private SpecialList newSpecialList() {
 		return SpecialList.newSpecialList(
 				getString(R.string.special_lists_new), "", true, this);
@@ -50,7 +47,7 @@ public class SpecialListsSettingsActivity extends ListSettings {
 	protected OnClickListener getAddOnClickListener() {
 		return new OnClickListener() {
 			@Override
-			public void onClick(View v) {
+			public void onClick(final View v) {
 				newSpecialList();
 				clickOnLast();
 				invalidateHeaders();
@@ -70,7 +67,7 @@ public class SpecialListsSettingsActivity extends ListSettings {
 				* -1);
 		try {
 			new SpecialListSettings(this, this.specialList).setup();
-		} catch (NoSuchListException e) {
+		} catch (final NoSuchListException e) {
 			finish();
 		}
 
@@ -78,9 +75,9 @@ public class SpecialListsSettingsActivity extends ListSettings {
 
 	@Override
 	protected List<Pair<Integer, String>> getItems() {
-		List<SpecialList> specialLists = SpecialList.allSpecial(true);
-		List<Pair<Integer, String>> items = new ArrayList<Pair<Integer, String>>();
-		for (SpecialList list : specialLists) {
+		final List<SpecialList> specialLists = SpecialList.allSpecial(true);
+		final List<Pair<Integer, String>> items = new ArrayList<Pair<Integer, String>>();
+		for (final SpecialList list : specialLists) {
 			items.add(new Pair<Integer, String>(list.getId(), list.getName()));
 		}
 		return items;
@@ -103,7 +100,8 @@ public class SpecialListsSettingsActivity extends ListSettings {
 
 	private SpecialList specialList;
 
-	public boolean onCreateOptionsMenu(Menu menu) {
+	@Override
+	public boolean onCreateOptionsMenu(final Menu menu) {
 		if (Build.VERSION_CODES.ICE_CREAM_SANDWICH > Build.VERSION.SDK_INT) {
 			if (getIntent().hasExtra("id")) {
 				menu.add(R.string.delete);
@@ -116,7 +114,7 @@ public class SpecialListsSettingsActivity extends ListSettings {
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
+	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			finish();
@@ -129,8 +127,8 @@ public class SpecialListsSettingsActivity extends ListSettings {
 				finish();
 				return true;
 			} else if (item.getTitle().equals(getString(R.string.add))) {
-				SpecialList s = newSpecialList();
-				Intent intent = new Intent(this,
+				final SpecialList s = newSpecialList();
+				final Intent intent = new Intent(this,
 						SpecialListsSettingsActivity.class);
 				intent.putExtra("id", s.getId());
 				startActivity(intent);
@@ -146,7 +144,7 @@ public class SpecialListsSettingsActivity extends ListSettings {
 		return new OnClickListener() {
 
 			@Override
-			public void onClick(View v) {
+			public void onClick(final View v) {
 				Helpers.openHelp(getApplicationContext(), "special-lists");
 			}
 		};
@@ -157,16 +155,17 @@ public class SpecialListsSettingsActivity extends ListSettings {
 		return new OnClickListener() {
 
 			@Override
-			public void onClick(View v) {
+			public void onClick(final View v) {
 				SpecialListsSettingsActivity.this.specialList.destroy();
-				if (!onIsMultiPane())
+				if (!onIsMultiPane()) {
 					finish();
-				else {
+				} else {
 					try {
-						if (getHeader().size() > 0)
+						if (getHeader().size() > 0) {
 							onHeaderClick(getHeader().get(0), 0);
+						}
 						invalidateHeaders();
-					} catch (Exception e) {
+					} catch (final Exception e) {
 						finish();
 					}
 				}
@@ -174,7 +173,7 @@ public class SpecialListsSettingsActivity extends ListSettings {
 		};
 	}
 
-	public void setSpecialList(SpecialList specialList) {
+	public void setSpecialList(final SpecialList specialList) {
 		this.specialList = specialList;
 	}
 

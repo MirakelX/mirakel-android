@@ -20,17 +20,17 @@ package de.azapps.mirakel.settings.taskfragment;
 
 import java.util.List;
 
-import com.mobeta.android.dslv.DragSortListView;
-import com.mobeta.android.dslv.DragSortListView.DropListener;
-import com.mobeta.android.dslv.DragSortListView.RemoveListener;
-
 import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
+
+import com.mobeta.android.dslv.DragSortListView;
+import com.mobeta.android.dslv.DragSortListView.DropListener;
+import com.mobeta.android.dslv.DragSortListView.RemoveListener;
+
 import de.azapps.mirakel.helper.MirakelViewPreferences;
 import de.azapps.mirakel.settings.R;
 import de.azapps.tools.Log;
@@ -43,21 +43,21 @@ public class TaskFragmentSettingsFragment extends Fragment {
 	protected DragSortListView listView;
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.activity_task_fragment_settings,
-				null);
+	public View onCreateView(final LayoutInflater inflater,
+			final ViewGroup container, final Bundle savedInstanceState) {
+		final View view = inflater.inflate(
+				R.layout.activity_task_fragment_settings, null);
 		setupView(view);
 		getActivity().getActionBar().setTitle(R.string.settings_task_fragment);
 		return view;
 	}
 
-	void setupView(View v) {
+	void setupView(final View v) {
 		final List<Integer> values = MirakelViewPreferences
 				.getTaskFragmentLayout();
 		values.add(ADD_KEY);
@@ -78,7 +78,7 @@ public class TaskFragmentSettingsFragment extends Fragment {
 		this.listView.setDropListener(new DropListener() {
 
 			@Override
-			public void drop(int from, int to) {
+			public void drop(final int from, final int to) {
 				if (from != to
 						&& to != TaskFragmentSettingsFragment.this.listView
 								.getCount() - 1) {
@@ -92,7 +92,7 @@ public class TaskFragmentSettingsFragment extends Fragment {
 		this.listView.setRemoveListener(new RemoveListener() {
 
 			@Override
-			public void remove(int which) {
+			public void remove(final int which) {
 				if (which != TaskFragmentSettingsFragment.this.adapter
 						.getCount() - 1) {
 					TaskFragmentSettingsFragment.this.adapter.onRemove(which);

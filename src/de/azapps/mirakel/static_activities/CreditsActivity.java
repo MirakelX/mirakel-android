@@ -56,14 +56,14 @@ public class CreditsActivity extends Activity {
 
 	@SuppressLint("NewApi")
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(final Bundle savedInstanceState) {
 		if (MirakelCommonPreferences.isDark()) {
 			setTheme(R.style.AppBaseThemeDARK);
 		}
 		Locale.setDefault(Helpers.getLocal(this));
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_credits);
-		TextView creditTextHead = (TextView) findViewById(R.id.credits_text_head);
+		final TextView creditTextHead = (TextView) findViewById(R.id.credits_text_head);
 		creditTextHead.setText(Html
 				.fromHtml(getString(R.string.credits_text_head)));
 		creditTextHead.setMovementMethod(LinkMovementMethod.getInstance());
@@ -73,39 +73,39 @@ public class CreditsActivity extends Activity {
 
 		// Set Libraries
 		String libs = "";
-		for (String[] library : this.libraries) {
+		for (final String[] library : this.libraries) {
 			libs += "<a href=\"" + library[2] + "\"><b>" + library[0]
 					+ "</b></a> (" + library[1] + ")<br />";
 		}
-		TextView creditTextLibs = (TextView) findViewById(R.id.credits_libraries_text);
+		final TextView creditTextLibs = (TextView) findViewById(R.id.credits_libraries_text);
 		creditTextLibs.setText(Html.fromHtml(libs));
 		creditTextLibs.setMovementMethod(LinkMovementMethod.getInstance());
 		// Set translations
 		String trans = "";
-		for (String[] translation : this.translations) {
+		for (final String[] translation : this.translations) {
 			trans += "<b>" + translation[0] + ": </b>" + translation[1]
 					+ "<br/>";
 		}
-		TextView creditTextTrans = (TextView) findViewById(R.id.credits_translations_text);
+		final TextView creditTextTrans = (TextView) findViewById(R.id.credits_translations_text);
 		creditTextTrans.setText(Html.fromHtml(trans));
 		creditTextTrans.setMovementMethod(LinkMovementMethod.getInstance());
-		TextView creditTextLicense = (TextView) findViewById(R.id.credits_license_text);
+		final TextView creditTextLicense = (TextView) findViewById(R.id.credits_license_text);
 		creditTextLicense.setText(Html
 				.fromHtml(getString(R.string.credits_license)));
 		creditTextLicense.setMovementMethod(LinkMovementMethod.getInstance());
 	}
 
-	public void onOpenGithubClick(View v) {
+	public void onOpenGithubClick(final View v) {
 		Helpers.openURL(this, "https://github.com/azapps/mirakel-android");
 	}
 
-	public void onOpenGooglePlusClick(View v) {
+	public void onOpenGooglePlusClick(final View v) {
 		Helpers.openURL(this,
 				"https://plus.google.com/u/0/communities/110640831388790835840");
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
+	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			finish();
@@ -114,7 +114,7 @@ public class CreditsActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	public void sendFeedback(View v) {
+	public void sendFeedback(final View v) {
 		Helpers.contact(this);
 	}
 

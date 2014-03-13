@@ -67,7 +67,7 @@ public class SettingsActivity extends PreferenceActivity {
 	}
 
 	@Override
-	protected boolean isValidFragment(String fragmentName) {
+	protected boolean isValidFragment(final String fragmentName) {
 		return fragmentName.equals(SettingsFragment.class.getCanonicalName())
 				|| fragmentName.equals(TaskFragmentSettingsFragment.class
 						.getCanonicalName());
@@ -76,14 +76,15 @@ public class SettingsActivity extends PreferenceActivity {
 	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
 	@Override
-	protected void onActivityResult(final int requestCode, int resultCode,
-			final Intent data) {
+	protected void onActivityResult(final int requestCode,
+			final int resultCode, final Intent data) {
 		Log.d(TAG, "activity");
 		final Context that = this;
 		switch (requestCode) {
 		case FILE_IMPORT_DB:
-			if (resultCode != RESULT_OK)
+			if (resultCode != RESULT_OK) {
 				return;
+			}
 			final String path_db = FileUtils.getPathFromUri(data.getData(),
 					this);
 			// Check if this is an database file
@@ -102,8 +103,9 @@ public class SettingsActivity extends PreferenceActivity {
 							new OnClickListener() {
 
 								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
+								public void onClick(
+										final DialogInterface dialog,
+										final int which) {
 									if (path_db != null) {
 										ExportImport.importDB(that, new File(
 												path_db));
@@ -115,7 +117,7 @@ public class SettingsActivity extends PreferenceActivity {
 															(FileInputStream) getContentResolver()
 																	.openInputStream(
 																			data.getData()));
-										} catch (FileNotFoundException e) {
+										} catch (final FileNotFoundException e) {
 											// TODO Auto-generated catch block
 											e.printStackTrace();
 										}
@@ -134,8 +136,9 @@ public class SettingsActivity extends PreferenceActivity {
 		case FILE_ASTRID:
 		case FILE_ANY_DO:
 		case FILE_WUNDERLIST:
-			if (resultCode != RESULT_OK)
+			if (resultCode != RESULT_OK) {
 				return;
+			}
 			final String file_path = FileUtils.getPathFromUri(data.getData(),
 					this);
 
@@ -144,7 +147,7 @@ public class SettingsActivity extends PreferenceActivity {
 				ProgressDialog dialog;
 
 				@Override
-				protected Boolean doInBackground(String... params) {
+				protected Boolean doInBackground(final String... params) {
 					switch (requestCode) {
 					case FILE_ASTRID:
 						return ExportImport.importAstrid(that, file_path);
@@ -159,7 +162,7 @@ public class SettingsActivity extends PreferenceActivity {
 				}
 
 				@Override
-				protected void onPostExecute(Boolean success) {
+				protected void onPostExecute(final Boolean success) {
 					this.dialog.dismiss();
 					if (!success) {
 						Toast.makeText(that, R.string.astrid_unsuccess,
@@ -183,8 +186,9 @@ public class SettingsActivity extends PreferenceActivity {
 			}.execute("");
 			break;
 		case DONATE:
-			if (resultCode != RESULT_OK)
+			if (resultCode != RESULT_OK) {
 				return;
+			}
 			if (!onIsMultiPane()) {
 				finish();
 			}
@@ -197,11 +201,11 @@ public class SettingsActivity extends PreferenceActivity {
 
 	@SuppressLint("NewApi")
 	@Override
-	public void onBuildHeaders(List<Header> target) {
+	public void onBuildHeaders(final List<Header> target) {
 		loadHeadersFromResource(R.xml.settings, target);
 		if (!MirakelCommonPreferences.isEnabledDebugMenu()) {
 			for (int i = 0; i < target.size(); i++) {
-				Header h = target.get(i);
+				final Header h = target.get(i);
 				if (h.id == R.id.header_dev) {
 					target.remove(i);
 					break;
@@ -223,7 +227,7 @@ public class SettingsActivity extends PreferenceActivity {
 	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(final Bundle savedInstanceState) {
 		this.darkTheme = MirakelCommonPreferences.isDark();
 		if (this.darkTheme) {
 			setTheme(R.style.AppBaseThemeDARK);
@@ -232,7 +236,7 @@ public class SettingsActivity extends PreferenceActivity {
 		super.onCreate(savedInstanceState);
 		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
 
-			Intent i = getIntent();
+			final Intent i = getIntent();
 			if (i == null) {
 				Log.e(TAG, "intent==null");
 
@@ -306,7 +310,7 @@ public class SettingsActivity extends PreferenceActivity {
 
 	@SuppressLint("NewApi")
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
+	public boolean onOptionsItemSelected(final MenuItem item) {
 		Log.d(TAG, "Menu");
 		switch (item.getItemId()) {
 		case android.R.id.home:
@@ -352,7 +356,7 @@ public class SettingsActivity extends PreferenceActivity {
 	}
 
 	@Override
-	public void setListAdapter(ListAdapter adapter) {
+	public void setListAdapter(final ListAdapter adapter) {
 		if (this.mHeaders == null) {
 			this.mHeaders = new ArrayList<Header>();
 			// When the saved state provides the list of headers,

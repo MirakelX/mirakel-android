@@ -55,11 +55,12 @@ public class DonationsActivity extends FragmentActivity {
 	 * @param data
 	 */
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	protected void onActivityResult(final int requestCode,
+			final int resultCode, final Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 
-		FragmentManager fragmentManager = getSupportFragmentManager();
-		Fragment fragment = fragmentManager
+		final FragmentManager fragmentManager = getSupportFragmentManager();
+		final Fragment fragment = fragmentManager
 				.findFragmentByTag("donationsFragment");
 		if (fragment != null) {
 			((DonationsFragment) fragment).onActivityResult(requestCode,
@@ -78,7 +79,7 @@ public class DonationsActivity extends FragmentActivity {
 	 */
 	@SuppressLint("NewApi")
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(final Bundle savedInstanceState) {
 		if (MirakelCommonPreferences.isDark()) {
 			setTheme(R.style.AppBaseThemeDARK);
 		}
@@ -86,7 +87,8 @@ public class DonationsActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.donations_activity);
 
-		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		final FragmentTransaction ft = getSupportFragmentManager()
+				.beginTransaction();
 		DonationsFragment donationsFragment;
 		if (BuildHelper.isForPlayStore()) {
 			donationsFragment = DonationsFragment.newInstance(
@@ -114,7 +116,7 @@ public class DonationsActivity extends FragmentActivity {
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
+	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			setResult(RESULT_OK);

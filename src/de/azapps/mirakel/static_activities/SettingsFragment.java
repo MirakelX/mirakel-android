@@ -39,11 +39,12 @@ public class SettingsFragment extends PreferenceFragment {
 	// private MainActivity main;
 
 	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+	public void onActivityResult(final int requestCode, final int resultCode,
+			final Intent data) {
 		Log.d(TAG, "fragment");
 		switch (requestCode) {
 		case SettingsActivity.NEW_ACCOUNT:
-			Preference server = findPreference("syncServer");
+			final Preference server = findPreference("syncServer");
 			PreferencesAppHelper.updateSyncText(null, server,
 					findPreference("syncFrequency"), getActivity());
 			break;
@@ -56,7 +57,7 @@ public class SettingsFragment extends PreferenceFragment {
 
 	@SuppressLint("NewApi")
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Locale.setDefault(Helpers.getLocal(getActivity()));
 		if (getArguments().getString("type").equals("gui")) {
@@ -117,9 +118,9 @@ public class SettingsFragment extends PreferenceFragment {
 	}
 
 	public void showTaskFragmentSettings() {
-		int id = ((ViewGroup) getView().getParent()).getId();
-		FragmentManager fm = getActivity().getFragmentManager();
-		TaskFragmentSettingsFragment settings = new TaskFragmentSettingsFragment();
+		final int id = ((ViewGroup) getView().getParent()).getId();
+		final FragmentManager fm = getActivity().getFragmentManager();
+		final TaskFragmentSettingsFragment settings = new TaskFragmentSettingsFragment();
 		fm.beginTransaction().replace(id, settings).commit();
 		// TODO maybe fix order...
 
