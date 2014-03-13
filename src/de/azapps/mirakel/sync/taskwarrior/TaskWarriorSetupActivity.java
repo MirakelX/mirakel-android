@@ -28,7 +28,6 @@ import android.widget.Button;
 import android.widget.Toast;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
-import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.sync.R;
 import de.azapps.mirakel.sync.SyncAdapter;
@@ -40,15 +39,15 @@ public class TaskWarriorSetupActivity extends Activity {
 		private final static String TAG = "DownloadTask";
 		private final Exec pre, progress, post;
 
-		public DownloadTask(Exec pre, Exec progress, Exec post) {
+		public DownloadTask(final Exec pre, final Exec progress, final Exec post) {
 			this.pre = pre;
 			this.progress = progress;
 			this.post = post;
 		}
 
 		@Override
-		protected Integer doInBackground(URL... sUrl) {
-			URL url = sUrl[0];
+		protected Integer doInBackground(final URL... sUrl) {
+			final URL url = sUrl[0];
 			HttpURLConnection connection = null;
 			try {
 				connection = (HttpURLConnection) url.openConnection();
@@ -58,11 +57,12 @@ public class TaskWarriorSetupActivity extends Activity {
 
 				// expect HTTP 200 OK, so we don't mistakenly save error report
 				// instead of the file
-				if (connection.getResponseCode() != HttpURLConnection.HTTP_OK)
+				if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
 					return RESULT_ERROR;
+				}
 				setupTaskWarrior(connection.getInputStream(), false);
 
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				Log.e(TAG, Log.getStackTraceString(e));
 				return RESULT_ERROR;
 			}
@@ -71,7 +71,7 @@ public class TaskWarriorSetupActivity extends Activity {
 		}
 
 		@Override
-		protected void onPostExecute(Integer result) {
+		protected void onPostExecute(final Integer result) {
 			this.post.execute(result);
 		}
 
@@ -81,7 +81,7 @@ public class TaskWarriorSetupActivity extends Activity {
 		}
 
 		@Override
-		protected void onProgressUpdate(Integer... progresses) {
+		protected void onProgressUpdate(final Integer... progresses) {
 			super.onProgressUpdate(progresses);
 			this.progress.execute(progresses[0]);
 		}
@@ -89,7 +89,7 @@ public class TaskWarriorSetupActivity extends Activity {
 	}
 
 	private interface Exec {
-		void execute(Integer status);
+		void execute(final Integer status);
 	}
 
 	private static final Integer RESULT_ERROR = 0;
@@ -104,24 +104,26 @@ public class TaskWarriorSetupActivity extends Activity {
 	private ProgressDialog progressDialog;
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	protected void onActivityResult(final int requestCode,
+			final int resultCode, final Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if (resultCode != RESULT_OK)
+		if (resultCode != RESULT_OK) {
 			return;
+		}
 		switch (requestCode) {
 		case CONFIG_QR:
-			String inputUrl = data.getStringExtra("SCAN_RESULT");
+			final String inputUrl = data.getStringExtra("SCAN_RESULT");
 			setupTaskwarriorFromURL(inputUrl);
 			break;
 		case CONFIG_TASKWARRIOR:
-			String path = FileUtils.getPathFromUri(data.getData(), this);
+			final String path = FileUtils.getPathFromUri(data.getData(), this);
 			if (path == null
 					&& Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 				try {
 					setupTaskWarrior(
 							getContentResolver()
 									.openInputStream(data.getData()), true);
-				} catch (FileNotFoundException e) {
+				} catch (final FileNotFoundException e) {
 					Toast.makeText(
 							this,
 							getString(R.string.sync_taskwarrior_select_file_not_exists),
@@ -139,24 +141,24 @@ public class TaskWarriorSetupActivity extends Activity {
 	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.mAccountManager = AccountManager.get(this);
 		if (MirakelCommonPreferences.isDark()) {
 			setTheme(R.style.AppBaseThemeDARK);
 		}
 		setContentView(R.layout.activity_sync_taskwarrior);
-		Button scanQR = (Button) findViewById(R.id.sync_taskwarrior_scan_qr);
+		final Button scanQR = (Button) findViewById(R.id.sync_taskwarrior_scan_qr);
 		scanQR.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View v) {
+			public void onClick(final View v) {
 				try {
-					Intent intent = new Intent(
+					final Intent intent = new Intent(
 							"com.google.zxing.client.android.SCAN");
 					intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
 					startActivityForResult(intent,
 							TaskWarriorSetupActivity.this.CONFIG_QR);
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					new AlertDialog.Builder(TaskWarriorSetupActivity.this)
 							.setTitle(R.string.no_barcode_app)
 							.setMessage(R.string.no_barcode_app_message)
@@ -165,11 +167,11 @@ public class TaskWarriorSetupActivity extends Activity {
 
 										@Override
 										public void onClick(
-												DialogInterface dialog,
-												int which) {
-											Uri marketUri = Uri
+												final DialogInterface dialog,
+												final int which) {
+											final Uri marketUri = Uri
 													.parse("market://details?id=com.google.zxing.client.android");
-											Intent marketIntent = new Intent(
+											final Intent marketIntent = new Intent(
 													Intent.ACTION_VIEW,
 													marketUri);
 											startActivity(marketIntent);
@@ -180,42 +182,43 @@ public class TaskWarriorSetupActivity extends Activity {
 			}
 		});
 		final Activity that = this;
-		Button select_config_file = (Button) findViewById(R.id.sync_taskwarrior_select_file);
+		final Button select_config_file = (Button) findViewById(R.id.sync_taskwarrior_select_file);
 		select_config_file.setOnClickListener(new OnClickListener() {
 
 			@Override
-			public void onClick(View v) {
+			public void onClick(final View v) {
 				Helpers.showFileChooser(
 						TaskWarriorSetupActivity.this.CONFIG_TASKWARRIOR,
 						getString(R.string.select_config), that);
 
 			}
 		});
-		Button register = (Button) findViewById(R.id.sync_taskwarrior_register);
+		final Button register = (Button) findViewById(R.id.sync_taskwarrior_register);
 		register.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View v) {
-				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri
+			public void onClick(final View v) {
+				final Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri
 						.parse("http://mirakel.azapps.de/users/sign_up"));
 				startActivity(browserIntent);
 			}
 		});
-		Button howto = (Button) findViewById(R.id.sync_taskwarrior_how_to);
+		final Button howto = (Button) findViewById(R.id.sync_taskwarrior_how_to);
 		howto.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View v) {
-				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri
+			public void onClick(final View v) {
+				final Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri
 						.parse("http://mirakel.azapps.de/taskwarrior.html"));
 				startActivity(browserIntent);
 			}
 		});
 	}
 
-	private void setupTaskwarrior(File configFile, boolean deleteAfter) {
+	private void setupTaskwarrior(final File configFile,
+			final boolean deleteAfter) {
 		if (configFile.exists() && configFile.canRead()) {
 			try {
 				setupTaskWarrior(new FileInputStream(configFile), true);
-			} catch (FileNotFoundException e) {
+			} catch (final FileNotFoundException e) {
 				Log.wtf(TAG, "file vanish");
 			}
 		} else {
@@ -226,7 +229,8 @@ public class TaskWarriorSetupActivity extends Activity {
 		}
 	}
 
-	private void setupTaskWarrior(InputStream stream, boolean showToasts) {
+	private void setupTaskWarrior(final InputStream stream,
+			final boolean showToasts) {
 		boolean success = false;
 		final int nothing = -1;
 		final int wrong_config = 0;
@@ -234,12 +238,13 @@ public class TaskWarriorSetupActivity extends Activity {
 		int error = nothing;
 		try {
 			String content = new String();
-			BufferedReader r = new BufferedReader(new InputStreamReader(stream));
+			final BufferedReader r = new BufferedReader(new InputStreamReader(
+					stream));
 			String line;
 			while ((line = r.readLine()) != null) {
 				content += line + "\n";
 			}
-			Bundle b = new Bundle();
+			final Bundle b = new Bundle();
 			b.putString(SyncAdapter.BUNDLE_SERVER_TYPE, TaskWarriorSync.TYPE);
 			// String content = new String(buffer);
 			String[] t = content.split("(?i)org: ");
@@ -253,7 +258,7 @@ public class TaskWarriorSetupActivity extends Activity {
 
 			t = t[1].split("(?i)server: ");
 			// Log.d(TAG, "user key: " + t[0].replace("\n", ""));
-			String pwd = t[0].replace("\n", "");
+			final String pwd = t[0].replace("\n", "");
 
 			t = t[1].split("(?i)Client.cert:\n");
 			// Log.d(TAG, "server: " + t[0].replace("\n", ""));
@@ -273,11 +278,11 @@ public class TaskWarriorSetupActivity extends Activity {
 			FileUtils.writeToFile(new File(TaskWarriorSync.CA_FILE), t[1]);
 			this.mAccountManager.addAccountExplicitly(account, pwd, b);
 			success = true;
-		} catch (ArrayIndexOutOfBoundsException e) {
+		} catch (final ArrayIndexOutOfBoundsException e) {
 			Log.e(TAG, "wrong Configfile");
 			error = wrong_config;
 			success = false;
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			success = false;
 			error = ioError;
 		}
@@ -295,8 +300,9 @@ public class TaskWarriorSetupActivity extends Activity {
 								: R.string.wrong_config), Toast.LENGTH_LONG)
 						.show();
 			}
-		} else if (!success)
+		} else if (!success) {
 			throw new RuntimeException();
+		}
 	}
 
 	public void setupTaskwarriorFromURL(String inputUrl) {
@@ -311,22 +317,22 @@ public class TaskWarriorSetupActivity extends Activity {
 		}
 
 		try {
-			URL url = new URL(inputUrl);
+			final URL url = new URL(inputUrl);
 			final Activity that = this;
-			DownloadTask dlTask = new DownloadTask(new Exec() {
+			final DownloadTask dlTask = new DownloadTask(new Exec() {
 
 				@Override
-				public void execute(Integer status) {
+				public void execute(final Integer status) {
 				}
 			}, new Exec() {
 
 				@Override
-				public void execute(Integer status) {
+				public void execute(final Integer status) {
 				}
 			}, new Exec() {
 
 				@Override
-				public void execute(Integer result) {
+				public void execute(final Integer result) {
 					Toast.makeText(
 							that,
 							getString(result == RESULT_SUCCESS ? R.string.sync_taskwarrior_setup_success
@@ -338,7 +344,7 @@ public class TaskWarriorSetupActivity extends Activity {
 				}
 			});
 			dlTask.execute(url);
-		} catch (MalformedURLException e) {
+		} catch (final MalformedURLException e) {
 			this.progressDialog.dismiss();
 			Log.v(TAG, "bad url entered");
 

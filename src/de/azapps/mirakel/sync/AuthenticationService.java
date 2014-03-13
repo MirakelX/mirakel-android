@@ -52,7 +52,7 @@ public class AuthenticationService extends Service {
 
 	@Override
 	public void onCreate() {
-		mAuthenticator = new Authenticator(this);
+		this.mAuthenticator = new Authenticator(this);
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class AuthenticationService extends Service {
 	}
 
 	@Override
-	public IBinder onBind(Intent intent) {
-		return mAuthenticator.getIBinder();
+	public IBinder onBind(final Intent intent) {
+		return this.mAuthenticator.getIBinder();
 	}
 }

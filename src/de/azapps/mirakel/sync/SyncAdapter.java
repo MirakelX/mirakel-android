@@ -64,12 +64,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	public static final String TASKWARRIOR_KEY = "key";
 	public static final String SYNC_STATE = "sync_state";
 	private static CharSequence last_message = null;
-	private Context mContext;
+	private final Context mContext;
 	public static final String ACCOUNT_PREFIX = "ACCOUNT_";
-	private NotificationManager mNotificationManager;
-	private int notifyID = 1;
+	private final NotificationManager mNotificationManager;
+	private final int notifyID = 1;
 
-	public SyncAdapter(Context context, boolean autoInitialize) {
+	public SyncAdapter(final Context context, final boolean autoInitialize) {
 		super(context, autoInitialize);
 		this.mContext = context;
 		this.mNotificationManager = (NotificationManager) this.mContext
@@ -77,46 +77,53 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	}
 
 	@Override
-	public void onPerformSync(Account account, Bundle extras, String authority,
-			ContentProviderClient provider, SyncResult syncResult) {
+	public void onPerformSync(final Account account, final Bundle extras,
+			final String authority, final ContentProviderClient provider,
+			final SyncResult syncResult) {
 		// Do not sync if Mirakel is in demo mode
-		if (MirakelCommonPreferences.isDemoMode())
+		if (MirakelCommonPreferences.isDemoMode()) {
 			return;
+		}
 
 		// Mostly it is annoying if there is a notification. So don't show it
 		boolean showNotification = false;
 		// But if the user actively clicks on "sync" – then show it.
-		if (extras.containsKey(ContentResolver.SYNC_EXTRAS_MANUAL))
+		if (extras.containsKey(ContentResolver.SYNC_EXTRAS_MANUAL)) {
 			showNotification = true;
+		}
 
 		Log.v(TAG, "SyncAdapter");
 		Intent intent;
 		try {
 			intent = new Intent(this.mContext,
 					Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
-		} catch (ClassNotFoundException e) {
+		} catch (final ClassNotFoundException e) {
 			Log.wtf(TAG, "no mainactivity found");
 			return;
 		}
 		intent.setAction(DefinitionsHelper.SHOW_LISTS);
-		PendingIntent p = PendingIntent.getService(this.mContext, 0, intent, 0);
+		final PendingIntent p = PendingIntent.getService(this.mContext, 0,
+				intent, 0);
 
-		NotificationCompat.Builder mNB = new NotificationCompat.Builder(
+		final NotificationCompat.Builder mNB = new NotificationCompat.Builder(
 				this.mContext).setContentTitle("Mirakel")
 				.setContentText("Sync")
 				.setSmallIcon(android.R.drawable.stat_notify_sync)
 				.setWhen(System.currentTimeMillis()).setOngoing(true)
 				.setContentIntent(p);
-		if (showNotification)
+		if (showNotification) {
 			this.mNotificationManager.notify(this.notifyID, mNB.build());
+		}
 
-		String type = (AccountManager.get(this.mContext)).getUserData(account,
+		String type = AccountManager.get(this.mContext).getUserData(account,
 				BUNDLE_SERVER_TYPE);
 		boolean success = false;
-		if (type == null)
+		if (type == null) {
 			type = TaskWarriorSync.TYPE;
+		}
 		if (type.equals(TaskWarriorSync.TYPE)) {
-			TW_ERRORS error = new TaskWarriorSync(this.mContext).sync(account);
+			final TW_ERRORS error = new TaskWarriorSync(this.mContext)
+					.sync(account);
 			switch (error) {
 			case NO_ERROR:
 				last_message = this.mContext.getText(R.string.finish_sync);
@@ -160,14 +167,14 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		}
 		this.mNotificationManager.cancel(this.notifyID);
 		if (showNotification && !success) {
-			String title = "Mirakel: "
+			final String title = "Mirakel: "
 					+ this.mContext.getText(R.string.finish_sync);
 
 			Intent openIntent;
 			try {
-				openIntent = new Intent(mContext,
+				openIntent = new Intent(this.mContext,
 						Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
-			} catch (ClassNotFoundException e) {
+			} catch (final ClassNotFoundException e) {
 				Log.wtf(TAG, "mainactivity not found");
 				return;
 			}
@@ -177,10 +184,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					.putExtra(android.content.Intent.EXTRA_TEXT, last_message);
 			openIntent.setData(Uri.parse(openIntent
 					.toUri(Intent.URI_INTENT_SCHEME)));
-			PendingIntent pOpenIntent = PendingIntent.getActivity(mContext, 0,
-					openIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+			final PendingIntent pOpenIntent = PendingIntent.getActivity(
+					this.mContext, 0, openIntent,
+					PendingIntent.FLAG_UPDATE_CURRENT);
 
-			Notification notification = new NotificationCompat.Builder(
+			final Notification notification = new NotificationCompat.Builder(
 					this.mContext).setContentTitle(title)
 					.setContentText(last_message)
 					.setSmallIcon(android.R.drawable.stat_notify_sync)
@@ -189,12 +197,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			notification.flags = Notification.FLAG_AUTO_CANCEL;
 			this.mNotificationManager.notify(this.notifyID, notification);
 		}
-		Intent i = new Intent(DefinitionsHelper.SYNC_FINISHED);
+		final Intent i = new Intent(DefinitionsHelper.SYNC_FINISHED);
 		this.mContext.sendBroadcast(i);
 	}
 
 	public static CharSequence getLastMessage() {
-		CharSequence tmp = last_message;
+		final CharSequence tmp = last_message;
 		last_message = null;
 		return tmp;
 	}
