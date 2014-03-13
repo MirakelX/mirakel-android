@@ -25,43 +25,48 @@ public class DatePickerDialog extends DialogFragment {
 	private boolean mHasNoDate;
 
 	public static DatePickerDialog newInstance(
-			OnDateSetListener onDateSetListener, int year, int month, int day,
-			boolean dark, boolean hasNoDate) {
+			final OnDateSetListener onDateSetListener, final int year,
+			final int month, final int day, final boolean dark,
+			final boolean hasNoDate) {
 		return newInstance(onDateSetListener, year, month, day, true, dark,
 				hasNoDate);
 	}
 
 	public static DatePickerDialog newInstance(
-			OnDateSetListener onDateSetListener, int year, int month, int day,
-			boolean vibrate, boolean dark, boolean hasNoDate) {
-		DatePickerDialog datePickerDialog = new DatePickerDialog();
+			final OnDateSetListener onDateSetListener, final int year,
+			final int month, final int day, final boolean vibrate,
+			final boolean dark, final boolean hasNoDate) {
+		final DatePickerDialog datePickerDialog = new DatePickerDialog();
 		datePickerDialog.initialize(onDateSetListener, year, month, day,
 				vibrate, dark, hasNoDate);
 		return datePickerDialog;
 	}
 
-	public void setVibrate(boolean vibrate) {
+	public void setVibrate(final boolean vibrate) {
 		// nothing
 	}
 
-	public void initialize(final OnDateSetListener onDateSetListener, int year,
-			int month, int day, boolean vibrate, boolean dark, boolean hasNoDate) {
+	public void initialize(final OnDateSetListener onDateSetListener,
+			final int year, final int month, final int day,
+			final boolean vibrate, final boolean dark, final boolean hasNoDate) {
 		this.mCallback = new OnDateSetListener() {
 
 			@Override
 			public void onNoDateSet() {
-				if (onDateSetListener != null)
+				if (onDateSetListener != null) {
 					onDateSetListener.onNoDateSet();
+				}
 				dismiss();
 
 			}
 
 			@Override
-			public void onDateSet(DatePicker datePickerDialog, int year,
-					int month, int day) {
-				if (onDateSetListener != null)
+			public void onDateSet(final DatePicker datePickerDialog,
+					final int year, final int month, final int day) {
+				if (onDateSetListener != null) {
 					onDateSetListener.onDateSet(datePickerDialog, year, month,
 							day);
+				}
 				dismiss();
 
 			}
@@ -73,15 +78,15 @@ public class DatePickerDialog extends DialogFragment {
 	}
 
 	@Override
-	public void onCreate(Bundle bundle) {
+	public void onCreate(final Bundle bundle) {
 		super.onCreate(bundle);
-		Activity activity = getActivity();
+		final Activity activity = getActivity();
 		activity.getWindow().setSoftInputMode(
 				WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 	}
 
 	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
+	public void onConfigurationChanged(final Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
 		final Bundle b = (Bundle) this.mDatePicker.onSaveInstanceState();
 		getDialog().setContentView(
@@ -97,15 +102,16 @@ public class DatePickerDialog extends DialogFragment {
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater layoutInflater, ViewGroup parent,
-			Bundle bundle) {
+	public View onCreateView(final LayoutInflater layoutInflater,
+			final ViewGroup parent, final Bundle bundle) {
 		Log.d("DatePickerDialog", "onCreateView: ");
 		try {
 			getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 		}
-		View view = layoutInflater.inflate(R.layout.date_picker_dialog, null);
+		final View view = layoutInflater.inflate(R.layout.date_picker_dialog,
+				null);
 		this.mDatePicker = (DatePicker) view.findViewById(R.id.date_picker);
 		this.mDatePicker.setOnDateSetListener(this.mCallback);
 		this.mDatePicker.postDelayed(new Runnable() {
@@ -120,13 +126,14 @@ public class DatePickerDialog extends DialogFragment {
 						.setDay(DatePickerDialog.this.mInitDay);
 			}
 		}, 0);
-		if (!this.mHasNoDate)
+		if (!this.mHasNoDate) {
 			this.mDatePicker.hideNoDate();
+		}
 		return view;
 	}
 
 	@Override
-	public void onSaveInstanceState(Bundle bundle) {
+	public void onSaveInstanceState(final Bundle bundle) {
 		super.onSaveInstanceState(bundle);
 		bundle.putAll((Bundle) this.mDatePicker.onSaveInstanceState());
 	}

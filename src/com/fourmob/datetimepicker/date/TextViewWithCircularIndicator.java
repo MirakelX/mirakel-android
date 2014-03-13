@@ -18,10 +18,10 @@ public class TextViewWithCircularIndicator extends TextView {
 	private int mSeclectedTextColor;
 	private int mUnselectedTextColor;
 
-	public TextViewWithCircularIndicator(Context context,
-			AttributeSet attributeSet) {
+	public TextViewWithCircularIndicator(final Context context,
+			final AttributeSet attributeSet) {
 		super(context, attributeSet);
-		Resources localResources = context.getResources();
+		final Resources localResources = context.getResources();
 		this.mDark = MirakelCommonPreferences.isDark();
 		this.mCircleColor = localResources.getColor(this.mDark ? R.color.Red
 				: R.color.blue);
@@ -34,7 +34,7 @@ public class TextViewWithCircularIndicator extends TextView {
 		init();
 	}
 
-	public void drawIndicator(boolean drawIndicator) {
+	public void drawIndicator(final boolean drawIndicator) {
 		this.mDrawCircle = drawIndicator;
 	}
 
@@ -57,12 +57,12 @@ public class TextViewWithCircularIndicator extends TextView {
 	}
 
 	@Override
-	public void onDraw(Canvas canvas) {
+	public void onDraw(final Canvas canvas) {
 		super.onDraw(canvas);
 		if (this.mDrawCircle) {
-			int width = getWidth();
-			int heigth = getHeight();
-			int radius = Math.min(width, heigth) / 2;
+			final int width = getWidth();
+			final int heigth = getHeight();
+			final int radius = Math.min(width, heigth) / 2;
 			canvas.drawCircle(width / 2, heigth / 2, radius, this.mCirclePaint);
 			setTextColor(this.mSeclectedTextColor, true);
 		} else {
@@ -71,11 +71,11 @@ public class TextViewWithCircularIndicator extends TextView {
 	}
 
 	@Override
-	public void setTextColor(int color) {
+	public void setTextColor(final int color) {
 		setTextColor(color, false);
 	}
 
-	private void setTextColor(int color, boolean intern) {
+	private void setTextColor(final int color, final boolean intern) {
 		super.setTextColor(color);
 		if (!intern) {
 			this.mSeclectedTextColor = color;

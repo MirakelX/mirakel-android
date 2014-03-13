@@ -24,13 +24,15 @@ public class YearPickerView extends ListView implements
 		AdapterView.OnItemClickListener, DatePicker.OnDateChangedListener {
 	private class YearAdapter extends ArrayAdapter<String> {
 
-		public YearAdapter(Context context, int resourceId, List<String> years) {
+		public YearAdapter(final Context context, final int resourceId,
+				final List<String> years) {
 			super(context, resourceId, years);
 		}
 
 		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			TextViewWithCircularIndicator textViewWithCircularIndicator = (TextViewWithCircularIndicator) super
+		public View getView(final int position, final View convertView,
+				final ViewGroup parent) {
+			final TextViewWithCircularIndicator textViewWithCircularIndicator = (TextViewWithCircularIndicator) super
 					.getView(position, convertView, parent);
 			textViewWithCircularIndicator.requestLayout();
 			textViewWithCircularIndicator
@@ -39,7 +41,7 @@ public class YearPickerView extends ListView implements
 									YearPickerView.this.mDark ? R.color.date_picker_year_selector_dark
 											: R.color.date_picker_year_selector));
 
-			int year = getYearFromTextView(textViewWithCircularIndicator);
+			final int year = getYearFromTextView(textViewWithCircularIndicator);
 			textViewWithCircularIndicator
 					.drawIndicator(YearPickerView.this.mController
 							.getSelectedDay().year == year);
@@ -55,7 +57,7 @@ public class YearPickerView extends ListView implements
 		}
 	}
 
-	protected static int getYearFromTextView(TextView textView) {
+	protected static int getYearFromTextView(final TextView textView) {
 		return Integer.valueOf(textView.getText().toString()).intValue();
 	}
 
@@ -69,13 +71,13 @@ public class YearPickerView extends ListView implements
 
 	private final int mViewSize;
 
-	public YearPickerView(Context context,
-			DatePickerController datePickerController) {
+	public YearPickerView(final Context context,
+			final DatePickerController datePickerController) {
 		super(context);
 		this.mController = datePickerController;
 		this.mController.registerOnDateChangedListener(this);
 		setLayoutParams(new ViewGroup.LayoutParams(-1, -2));
-		Resources resources = context.getResources();
+		final Resources resources = context.getResources();
 		this.mDark = MirakelCommonPreferences.isDark();
 		this.mViewSize = resources
 				.getDimensionPixelOffset(R.dimen.date_picker_view_animator_height);
@@ -93,14 +95,15 @@ public class YearPickerView extends ListView implements
 	}
 
 	public int getFirstPositionOffset() {
-		View view = getChildAt(0);
-		if (view == null)
+		final View view = getChildAt(0);
+		if (view == null) {
 			return 0;
+		}
 		return view.getTop();
 	}
 
-	private void init(Context context) {
-		ArrayList<String> years = new ArrayList<String>();
+	private void init(final Context context) {
+		final ArrayList<String> years = new ArrayList<String>();
 		for (int year = this.mController.getMinYear(); year <= this.mController
 				.getMaxYear(); year++) {
 			years.add(String.format("%d", year));
@@ -119,10 +122,10 @@ public class YearPickerView extends ListView implements
 	}
 
 	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position,
-			long id) {
+	public void onItemClick(final AdapterView<?> parent, final View view,
+			final int position, final long id) {
 		this.mController.tryVibrate();
-		TextViewWithCircularIndicator textViewWithCircularIndicator = (TextViewWithCircularIndicator) view;
+		final TextViewWithCircularIndicator textViewWithCircularIndicator = (TextViewWithCircularIndicator) view;
 		if (textViewWithCircularIndicator != null) {
 			if (textViewWithCircularIndicator != this.mSelectedView) {
 				if (this.mSelectedView != null) {
@@ -139,7 +142,7 @@ public class YearPickerView extends ListView implements
 		}
 	}
 
-	public void postSetSelectionCentered(int position) {
+	public void postSetSelectionCentered(final int position) {
 		postSetSelectionFromTop(position, this.mViewSize / 2 - this.mChildSize
 				/ 2);
 	}

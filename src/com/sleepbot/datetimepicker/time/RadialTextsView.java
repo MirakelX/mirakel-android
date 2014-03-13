@@ -74,25 +74,27 @@ public class RadialTextsView extends View {
 	ObjectAnimator mReappearAnimator;
 	private InvalidateUpdateListener mInvalidateUpdateListener;
 
-	public RadialTextsView(Context context) {
+	public RadialTextsView(final Context context) {
 		super(context);
 		this.mIsInitialized = false;
 	}
 
-	public void initialize(Resources res, String[] texts, String[] innerTexts,
-			boolean is24HourMode, boolean disappearsOut, boolean dark) {
+	public void initialize(final Resources res, final String[] texts,
+			final String[] innerTexts, final boolean is24HourMode,
+			final boolean disappearsOut, final boolean dark) {
 		if (this.mIsInitialized) {
 			Log.e(TAG, "This RadialTextsView may only be initialized once.");
 			return;
 		}
 
 		// Set up the paint.
-		int numbersTextColor = res.getColor(dark ? R.color.clock_white
+		final int numbersTextColor = res.getColor(dark ? R.color.clock_white
 				: R.color.numbers_text_color);
 		this.mPaint.setColor(numbersTextColor);
-		String typefaceFamily = res.getString(R.string.radial_numbers_typeface);
+		final String typefaceFamily = res
+				.getString(R.string.radial_numbers_typeface);
 		this.mTypefaceLight = Typeface.create(typefaceFamily, Typeface.NORMAL);
-		String typefaceFamilyRegular = res.getString(R.string.sans_serif);
+		final String typefaceFamilyRegular = res.getString(R.string.sans_serif);
 		this.mTypefaceRegular = Typeface.create(typefaceFamilyRegular,
 				Typeface.NORMAL);
 		this.mPaint.setAntiAlias(true);
@@ -101,7 +103,7 @@ public class RadialTextsView extends View {
 		this.mTexts = texts;
 		this.mInnerTexts = innerTexts;
 		this.mIs24HourMode = is24HourMode;
-		this.mHasInnerCircle = (innerTexts != null);
+		this.mHasInnerCircle = innerTexts != null;
 
 		// Calculate the radius for the main circle.
 		if (is24HourMode) {
@@ -138,10 +140,10 @@ public class RadialTextsView extends View {
 		}
 
 		this.mAnimationRadiusMultiplier = 1;
-		this.mTransitionMidRadiusMultiplier = 1f + (0.05f * (disappearsOut ? -1
-				: 1));
-		this.mTransitionEndRadiusMultiplier = 1f + (0.3f * (disappearsOut ? 1
-				: -1));
+		this.mTransitionMidRadiusMultiplier = 1f + 0.05f * (disappearsOut ? -1
+				: 1);
+		this.mTransitionEndRadiusMultiplier = 1f + 0.3f * (disappearsOut ? 1
+				: -1);
 		this.mInvalidateUpdateListener = new InvalidateUpdateListener();
 
 		this.mTextGridValuesDirty = true;
@@ -159,14 +161,15 @@ public class RadialTextsView extends View {
 	/**
 	 * Used by the animation to move the numbers in and out.
 	 */
-	public void setAnimationRadiusMultiplier(float animationRadiusMultiplier) {
+	public void setAnimationRadiusMultiplier(
+			final float animationRadiusMultiplier) {
 		this.mAnimationRadiusMultiplier = animationRadiusMultiplier;
 		this.mTextGridValuesDirty = true;
 	}
 
 	@Override
-	public void onDraw(Canvas canvas) {
-		int viewWidth = getWidth();
+	public void onDraw(final Canvas canvas) {
+		final int viewWidth = getWidth();
 		if (viewWidth == 0 || !this.mIsInitialized) {
 			return;
 		}
@@ -182,7 +185,7 @@ public class RadialTextsView extends View {
 				// a slightly higher center. To keep the entire view centered
 				// vertically, we'll
 				// have to push it up by half the radius of the AM/PM circles.
-				float amPmCircleRadius = this.mCircleRadius
+				final float amPmCircleRadius = this.mCircleRadius
 						* this.mAmPmCircleRadiusMultiplier;
 				this.mYCenter -= amPmCircleRadius / 2;
 			}
@@ -204,7 +207,7 @@ public class RadialTextsView extends View {
 		// Calculate the text positions, but only if they've changed since the
 		// last onDraw.
 		if (this.mTextGridValuesDirty) {
-			float numbersRadius = this.mCircleRadius
+			final float numbersRadius = this.mCircleRadius
 					* this.mNumbersRadiusMultiplier
 					* this.mAnimationRadiusMultiplier;
 
@@ -213,7 +216,7 @@ public class RadialTextsView extends View {
 					this.mTextSize, this.mTextGridHeights, this.mTextGridWidths);
 			if (this.mHasInnerCircle) {
 				// If we have an inner circle, calculate those positions too.
-				float innerNumbersRadius = this.mCircleRadius
+				final float innerNumbersRadius = this.mCircleRadius
 						* this.mInnerNumbersRadiusMultiplier
 						* this.mAnimationRadiusMultiplier;
 				calculateGridSizes(innerNumbersRadius, this.mXCenter,
@@ -238,18 +241,18 @@ public class RadialTextsView extends View {
 	 * text will need to be drawn at based on the specified circle radius. Place
 	 * the values in the textGridHeights and textGridWidths parameters.
 	 */
-	private void calculateGridSizes(float numbersRadius, float xCenter,
-			float yCenter, float textSize, float[] textGridHeights,
-			float[] textGridWidths) {
+	private void calculateGridSizes(final float numbersRadius,
+			final float xCenter, float yCenter, final float textSize,
+			final float[] textGridHeights, final float[] textGridWidths) {
 		/*
 		 * The numbers need to be drawn in a 7x7 grid, representing the points
 		 * on the Unit Circle.
 		 */
-		float offset1 = numbersRadius;
+		final float offset1 = numbersRadius;
 		// cos(30) = a / r => r * cos(30) = a => r * √3/2 = a
-		float offset2 = numbersRadius * ((float) Math.sqrt(3)) / 2f;
+		final float offset2 = numbersRadius * (float) Math.sqrt(3) / 2f;
 		// sin(30) = o / r => r * sin(30) = o => r / 2 = a
-		float offset3 = numbersRadius / 2f;
+		final float offset3 = numbersRadius / 2f;
 		this.mPaint.setTextSize(textSize);
 		// We'll need yTextBase to be slightly lower to account for the text's
 		// baseline.
@@ -275,8 +278,9 @@ public class RadialTextsView extends View {
 	 * Draw the 12 text values at the positions specified by the textGrid
 	 * parameters.
 	 */
-	private void drawTexts(Canvas canvas, float textSize, Typeface typeface,
-			String[] texts, float[] textGridWidths, float[] textGridHeights) {
+	private void drawTexts(final Canvas canvas, final float textSize,
+			final Typeface typeface, final String[] texts,
+			final float[] textGridWidths, final float[] textGridHeights) {
 		this.mPaint.setTextSize(textSize);
 		this.mPaint.setTypeface(typeface);
 		canvas.drawText(texts[0], textGridWidths[3], textGridHeights[0],
@@ -311,20 +315,20 @@ public class RadialTextsView extends View {
 	private void renderAnimations() {
 		Keyframe kf0, kf1, kf2, kf3;
 		float midwayPoint = 0.2f;
-		int duration = 500;
+		final int duration = 500;
 
 		// Set up animator for disappearing.
 		kf0 = Keyframe.ofFloat(0f, 1);
 		kf1 = Keyframe
 				.ofFloat(midwayPoint, this.mTransitionMidRadiusMultiplier);
 		kf2 = Keyframe.ofFloat(1f, this.mTransitionEndRadiusMultiplier);
-		PropertyValuesHolder radiusDisappear = PropertyValuesHolder.ofKeyframe(
-				"animationRadiusMultiplier", kf0, kf1, kf2);
+		final PropertyValuesHolder radiusDisappear = PropertyValuesHolder
+				.ofKeyframe("animationRadiusMultiplier", kf0, kf1, kf2);
 
 		kf0 = Keyframe.ofFloat(0f, 1f);
 		kf1 = Keyframe.ofFloat(1f, 0f);
-		PropertyValuesHolder fadeOut = PropertyValuesHolder.ofKeyframe("alpha",
-				kf0, kf1);
+		final PropertyValuesHolder fadeOut = PropertyValuesHolder.ofKeyframe(
+				"alpha", kf0, kf1);
 
 		this.mDisappearAnimator = ObjectAnimator.ofPropertyValuesHolder(this,
 				radiusDisappear, fadeOut).setDuration(duration);
@@ -332,27 +336,27 @@ public class RadialTextsView extends View {
 				.addUpdateListener(this.mInvalidateUpdateListener);
 
 		// Set up animator for reappearing.
-		float delayMultiplier = 0.25f;
-		float transitionDurationMultiplier = 1f;
-		float totalDurationMultiplier = transitionDurationMultiplier
+		final float delayMultiplier = 0.25f;
+		final float transitionDurationMultiplier = 1f;
+		final float totalDurationMultiplier = transitionDurationMultiplier
 				+ delayMultiplier;
-		int totalDuration = (int) (duration * totalDurationMultiplier);
-		float delayPoint = (delayMultiplier * duration) / totalDuration;
-		midwayPoint = 1 - (midwayPoint * (1 - delayPoint));
+		final int totalDuration = (int) (duration * totalDurationMultiplier);
+		final float delayPoint = delayMultiplier * duration / totalDuration;
+		midwayPoint = 1 - midwayPoint * (1 - delayPoint);
 
 		kf0 = Keyframe.ofFloat(0f, this.mTransitionEndRadiusMultiplier);
 		kf1 = Keyframe.ofFloat(delayPoint, this.mTransitionEndRadiusMultiplier);
 		kf2 = Keyframe
 				.ofFloat(midwayPoint, this.mTransitionMidRadiusMultiplier);
 		kf3 = Keyframe.ofFloat(1f, 1);
-		PropertyValuesHolder radiusReappear = PropertyValuesHolder.ofKeyframe(
-				"animationRadiusMultiplier", kf0, kf1, kf2, kf3);
+		final PropertyValuesHolder radiusReappear = PropertyValuesHolder
+				.ofKeyframe("animationRadiusMultiplier", kf0, kf1, kf2, kf3);
 
 		kf0 = Keyframe.ofFloat(0f, 0f);
 		kf1 = Keyframe.ofFloat(delayPoint, 0f);
 		kf2 = Keyframe.ofFloat(1f, 1f);
-		PropertyValuesHolder fadeIn = PropertyValuesHolder.ofKeyframe("alpha",
-				kf0, kf1, kf2);
+		final PropertyValuesHolder fadeIn = PropertyValuesHolder.ofKeyframe(
+				"alpha", kf0, kf1, kf2);
 
 		this.mReappearAnimator = ObjectAnimator.ofPropertyValuesHolder(this,
 				radiusReappear, fadeIn).setDuration(totalDuration);
@@ -383,7 +387,7 @@ public class RadialTextsView extends View {
 	private class InvalidateUpdateListener implements
 			ValueAnimator.AnimatorUpdateListener {
 		@Override
-		public void onAnimationUpdate(ValueAnimator animation) {
+		public void onAnimationUpdate(final ValueAnimator animation) {
 			RadialTextsView.this.invalidate();
 		}
 	}

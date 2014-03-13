@@ -35,14 +35,16 @@ public class TimePicker extends LinearLayout implements
 		RadialPickerLayout.OnValueSelectedListener {
 
 	public class KeyboardListener implements OnKeyListener {
-		public KeyboardListener(Dialog d) {
+		public KeyboardListener(final Dialog d) {
 			TimePicker.this.mDialog = d;
 		}
 
 		@Override
-		public boolean onKey(View v, int keyCode, KeyEvent event) {
-			if (event.getAction() == KeyEvent.ACTION_UP)
+		public boolean onKey(final View v, final int keyCode,
+				final KeyEvent event) {
+			if (event.getAction() == KeyEvent.ACTION_UP) {
 				return processKeyUp(keyCode);
+			}
 			return false;
 		}
 	}
@@ -56,29 +58,32 @@ public class TimePicker extends LinearLayout implements
 		private final ArrayList<Node> mChildren;
 		private final int[] mLegalKeys;
 
-		public Node(int... legalKeys) {
+		public Node(final int... legalKeys) {
 			this.mLegalKeys = legalKeys;
 			this.mChildren = new ArrayList<Node>();
 		}
 
-		public void addChild(Node child) {
+		public void addChild(final Node child) {
 			this.mChildren.add(child);
 		}
 
-		public Node canReach(int key) {
-			if (this.mChildren == null)
+		public Node canReach(final int key) {
+			if (this.mChildren == null) {
 				return null;
-			for (Node child : this.mChildren) {
-				if (child.containsKey(key))
+			}
+			for (final Node child : this.mChildren) {
+				if (child.containsKey(key)) {
 					return child;
+				}
 			}
 			return null;
 		}
 
-		public boolean containsKey(int key) {
-			for (int mLegalKey : this.mLegalKeys) {
-				if (mLegalKey == key)
+		public boolean containsKey(final int key) {
+			for (final int mLegalKey : this.mLegalKeys) {
+				if (mLegalKey == key) {
 					return true;
+				}
 			}
 			return false;
 		}
@@ -96,7 +101,8 @@ public class TimePicker extends LinearLayout implements
 		 * @param minute
 		 *            The minute that was set.
 		 */
-		void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute);
+		void onTimeSet(final RadialPickerLayout view, final int hourOfDay,
+				final int minute);
 	}
 
 	public static final int AM = 0;
@@ -120,7 +126,7 @@ public class TimePicker extends LinearLayout implements
 
 	private static final String TAG = "TimePicker";
 
-	private static int getValFromKeyCode(int keyCode) {
+	private static int getValFromKeyCode(final int keyCode) {
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_0:
 			return 0;
@@ -194,10 +200,10 @@ public class TimePicker extends LinearLayout implements
 
 	private int mUnselectedColor;
 
-	public TimePicker(Context context, AttributeSet attrs) {
+	public TimePicker(final Context context, final AttributeSet attrs) {
 		super(context, attrs);
 		this.ctx = context;
-		TypedArray a = context.getTheme().obtainStyledAttributes(attrs,
+		final TypedArray a = context.getTheme().obtainStyledAttributes(attrs,
 				R.styleable.DatePicker, 0, 0);
 
 		try {
@@ -216,13 +222,14 @@ public class TimePicker extends LinearLayout implements
 		initLayout();
 	}
 
-	private boolean addKeyIfLegal(int keyCode) {
+	private boolean addKeyIfLegal(final int keyCode) {
 		// If we're in 24hour mode, we'll need to check if the input is full. If
 		// in AM/PM mode,
 		// we'll need to see if AM/PM have been typed.
 		if (this.mIs24HourMode && this.mTypedTimes.size() == 4
-				|| !this.mIs24HourMode && isTypedTimeFullyLegal())
+				|| !this.mIs24HourMode && isTypedTimeFullyLegal()) {
 			return false;
+		}
 
 		this.mTypedTimes.add(keyCode);
 		if (!isTypedTimeLegalSoFar()) {
@@ -230,7 +237,7 @@ public class TimePicker extends LinearLayout implements
 			return false;
 		}
 
-		int val = getValFromKeyCode(keyCode);
+		final int val = getValFromKeyCode(keyCode);
 		Utils.tryAccessibilityAnnounce(this.mTimePicker,
 				String.format("%d", val));
 		// Automatically fill in 0's if AM or PM was legally entered.
@@ -248,7 +255,8 @@ public class TimePicker extends LinearLayout implements
 	}
 
 	private int deleteLastTypedKey() {
-		int deleted = this.mTypedTimes.remove(this.mTypedTimes.size() - 1);
+		final int deleted = this.mTypedTimes
+				.remove(this.mTypedTimes.size() - 1);
 		if (!isTypedTimeFullyLegal()) {
 			this.mDoneButton.setEnabled(false);
 		}
@@ -262,10 +270,10 @@ public class TimePicker extends LinearLayout implements
 	 * @param updateDisplays
 	 *            If true, update the displays with the relevant time.
 	 */
-	protected void finishKbMode(boolean updateDisplays) {
+	protected void finishKbMode(final boolean updateDisplays) {
 		this.mInKbMode = false;
 		if (!this.mTypedTimes.isEmpty()) {
-			int values[] = getEnteredTime(null);
+			final int values[] = getEnteredTime(null);
 			this.mTimePicker.setTime(values[0], values[1]);
 			if (!this.mIs24HourMode) {
 				this.mTimePicker.setAmOrPm(values[2]);
@@ -283,24 +291,24 @@ public class TimePicker extends LinearLayout implements
 	 */
 	private void generateLegalTimesTree() {
 		// Create a quick cache of numbers to their keycodes.
-		int k0 = KeyEvent.KEYCODE_0;
-		int k1 = KeyEvent.KEYCODE_1;
-		int k2 = KeyEvent.KEYCODE_2;
-		int k3 = KeyEvent.KEYCODE_3;
-		int k4 = KeyEvent.KEYCODE_4;
-		int k5 = KeyEvent.KEYCODE_5;
-		int k6 = KeyEvent.KEYCODE_6;
-		int k7 = KeyEvent.KEYCODE_7;
-		int k8 = KeyEvent.KEYCODE_8;
-		int k9 = KeyEvent.KEYCODE_9;
+		final int k0 = KeyEvent.KEYCODE_0;
+		final int k1 = KeyEvent.KEYCODE_1;
+		final int k2 = KeyEvent.KEYCODE_2;
+		final int k3 = KeyEvent.KEYCODE_3;
+		final int k4 = KeyEvent.KEYCODE_4;
+		final int k5 = KeyEvent.KEYCODE_5;
+		final int k6 = KeyEvent.KEYCODE_6;
+		final int k7 = KeyEvent.KEYCODE_7;
+		final int k8 = KeyEvent.KEYCODE_8;
+		final int k9 = KeyEvent.KEYCODE_9;
 
 		// The root of the tree doesn't contain any numbers.
 		this.mLegalTimesTree = new Node();
 		if (this.mIs24HourMode) {
 			// We'll be re-using these nodes, so we'll save them.
-			Node minuteFirstDigit = new Node(k0, k1, k2, k3, k4, k5);
-			Node minuteSecondDigit = new Node(k0, k1, k2, k3, k4, k5, k6, k7,
-					k8, k9);
+			final Node minuteFirstDigit = new Node(k0, k1, k2, k3, k4, k5);
+			final Node minuteSecondDigit = new Node(k0, k1, k2, k3, k4, k5, k6,
+					k7, k8, k9);
 			// The first digit must be followed by the second digit.
 			minuteFirstDigit.addChild(minuteSecondDigit);
 
@@ -317,7 +325,7 @@ public class TimePicker extends LinearLayout implements
 
 			// When the first digit is 0-1, and the second digit is 0-5, the
 			// third digit may be 6-9.
-			Node thirdDigit = new Node(k6, k7, k8, k9);
+			final Node thirdDigit = new Node(k6, k7, k8, k9);
 			// The time must now be finished. E.g. 0:55, 1:08.
 			secondDigit.addChild(thirdDigit);
 
@@ -354,7 +362,8 @@ public class TimePicker extends LinearLayout implements
 		} else {
 			// We'll need to use the AM/PM node a lot.
 			// Set up AM and PM to respond to "a" and "p".
-			Node ampm = new Node(getAmOrPmKeyCode(AM), getAmOrPmKeyCode(PM));
+			final Node ampm = new Node(getAmOrPmKeyCode(AM),
+					getAmOrPmKeyCode(PM));
 
 			// The first hour digit may be 1.
 			Node firstDigit = new Node(k1);
@@ -378,7 +387,8 @@ public class TimePicker extends LinearLayout implements
 			// When the first digit is 1, the second digit is 0-2, and the third
 			// digit is 0-5,
 			// the fourth digit may be 0-9.
-			Node fourthDigit = new Node(k0, k1, k2, k3, k4, k5, k6, k7, k8, k9);
+			final Node fourthDigit = new Node(k0, k1, k2, k3, k4, k5, k6, k7,
+					k8, k9);
 			thirdDigit.addChild(fourthDigit);
 			// The time must be finished now. E.g. 10:49am, 12:40pm.
 			fourthDigit.addChild(ampm);
@@ -424,11 +434,11 @@ public class TimePicker extends LinearLayout implements
 	 * Get the keycode value for AM and PM in the current language.
 	 */
 	@SuppressLint("InlinedApi")
-	private int getAmOrPmKeyCode(int amOrPm) {
+	private int getAmOrPmKeyCode(final int amOrPm) {
 		// Cache the codes.
 		if (this.mAmKeyCode == -1 || this.mPmKeyCode == -1) {
 			// Find the first character in the AM/PM text that is unique.
-			KeyCharacterMap kcm = KeyCharacterMap
+			final KeyCharacterMap kcm = KeyCharacterMap
 					.load(KeyCharacterMap.VIRTUAL_KEYBOARD);
 			char amChar;
 			char pmChar;
@@ -439,8 +449,8 @@ public class TimePicker extends LinearLayout implements
 				pmChar = this.mPmText.toLowerCase(Locale.getDefault())
 						.charAt(i);
 				if (amChar != pmChar) {
-					KeyEvent[] events = kcm.getEvents(new char[] { amChar,
-							pmChar });
+					final KeyEvent[] events = kcm.getEvents(new char[] {
+							amChar, pmChar });
 					// There should be 4 events: a down and up for both AM and
 					// PM.
 					if (events != null && events.length == 4) {
@@ -453,10 +463,11 @@ public class TimePicker extends LinearLayout implements
 				}
 			}
 		}
-		if (amOrPm == AM)
+		if (amOrPm == AM) {
 			return this.mAmKeyCode;
-		else if (amOrPm == PM)
+		} else if (amOrPm == PM) {
 			return this.mPmKeyCode;
+		}
 
 		return -1;
 	}
@@ -475,11 +486,12 @@ public class TimePicker extends LinearLayout implements
 	 *         value will be the minutes, and the third will be either
 	 *         TimePickerDialog.AM or TimePickerDialog.PM.
 	 */
-	private int[] getEnteredTime(Boolean[] enteredZeros) {
+	private int[] getEnteredTime(final Boolean[] enteredZeros) {
 		int amOrPm = -1;
 		int startIndex = 1;
 		if (!this.mIs24HourMode && isTypedTimeFullyLegal()) {
-			int keyCode = this.mTypedTimes.get(this.mTypedTimes.size() - 1);
+			final int keyCode = this.mTypedTimes
+					.get(this.mTypedTimes.size() - 1);
 			if (keyCode == getAmOrPmKeyCode(AM)) {
 				amOrPm = AM;
 			} else if (keyCode == getAmOrPmKeyCode(PM)) {
@@ -490,8 +502,8 @@ public class TimePicker extends LinearLayout implements
 		int minute = -1;
 		int hour = -1;
 		for (int i = startIndex; i <= this.mTypedTimes.size(); i++) {
-			int val = getValFromKeyCode(this.mTypedTimes.get(this.mTypedTimes
-					.size() - i));
+			final int val = getValFromKeyCode(this.mTypedTimes
+					.get(this.mTypedTimes.size() - i));
 			if (i == startIndex) {
 				minute = val;
 			} else if (i == startIndex + 1) {
@@ -509,38 +521,40 @@ public class TimePicker extends LinearLayout implements
 			}
 		}
 
-		int[] ret = { hour, minute, amOrPm };
+		final int[] ret = { hour, minute, amOrPm };
 		return ret;
 	}
 
 	public int getHour() {
-		if (this.mTimePicker != null)
+		if (this.mTimePicker != null) {
 			return this.mTimePicker.getHours()
 					+ (this.mAmKeyCode == PM ? 12 : 0);
+		}
 		return 0;
 	}
 
 	public int getMinute() {
-		if (this.mTimePicker != null)
+		if (this.mTimePicker != null) {
 			return this.mTimePicker.getMinutes();
+		}
 		return 0;
 	}
 
-	public KeyboardListener getNewKeyboardListner(Dialog dialog) {
+	public KeyboardListener getNewKeyboardListner(final Dialog dialog) {
 		return new KeyboardListener(dialog);
 	}
 
 	private void initLayout() {
-		View dialog = this.layout.findViewById(R.id.time_picker_dialog);
+		final View dialog = this.layout.findViewById(R.id.time_picker_dialog);
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
 			dialog.setBackgroundColor(this.ctx.getResources().getColor(
 					this.mDark ? android.R.color.black : android.R.color.white));
 		}
-		KeyboardListener keyboardListener = new KeyboardListener(null);
+		final KeyboardListener keyboardListener = new KeyboardListener(null);
 		this.layout.findViewById(R.id.time_picker_dialog).setOnKeyListener(
 				keyboardListener);
 
-		Resources res = getResources();
+		final Resources res = getResources();
 		this.mHourPickerDescription = res
 				.getString(R.string.hour_picker_description);
 		this.mSelectHours = res.getString(R.string.select_hours);
@@ -573,20 +587,21 @@ public class TimePicker extends LinearLayout implements
 
 						@Override
 						public CharSequence getTransformation(
-								CharSequence source, View view) {
+								final CharSequence source, final View view) {
 							return source != null ? source.toString()
 									.toUpperCase(this.locale) : null;
 						}
 
 						@Override
-						public void onFocusChanged(View view,
-								CharSequence sourceText, boolean focused,
-								int direction, Rect previouslyFocusedRect) {
+						public void onFocusChanged(final View view,
+								final CharSequence sourceText,
+								final boolean focused, final int direction,
+								final Rect previouslyFocusedRect) {
 
 						}
 					});
 		}
-		String[] amPmTexts = new DateFormatSymbols().getAmPmStrings();
+		final String[] amPmTexts = new DateFormatSymbols().getAmPmStrings();
 		this.mAmText = amPmTexts[0];
 		this.mPmText = amPmTexts[1];
 
@@ -596,7 +611,7 @@ public class TimePicker extends LinearLayout implements
 		this.mTimePicker.setOnKeyListener(keyboardListener);
 		this.mTimePicker.initialize(this.ctx, this.mInitialHourOfDay,
 				this.mInitialMinute, this.mIs24HourMode, this.mDark);
-		int currentItemShowing = HOUR_INDEX;
+		final int currentItemShowing = HOUR_INDEX;
 		// if (savedInstanceState != null
 		// && savedInstanceState.containsKey(KEY_CURRENT_ITEM_SHOWING)) {
 		// currentItemShowing = savedInstanceState
@@ -607,7 +622,7 @@ public class TimePicker extends LinearLayout implements
 
 		this.mHourView.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View v) {
+			public void onClick(final View v) {
 				setCurrentItemShowing(HOUR_INDEX, true, false, true);
 				TimePicker.this.mTimePicker.tryVibrate();
 			}
@@ -615,7 +630,7 @@ public class TimePicker extends LinearLayout implements
 		});
 		this.mMinuteView.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View v) {
+			public void onClick(final View v) {
 				setCurrentItemShowing(MINUTE_INDEX, true, false, true);
 				TimePicker.this.mTimePicker.tryVibrate();
 			}
@@ -624,7 +639,7 @@ public class TimePicker extends LinearLayout implements
 		this.mDoneButton = (TextView) this.layout.findViewById(R.id.done);
 		this.mDoneButton.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View v) {
+			public void onClick(final View v) {
 				if (TimePicker.this.mInKbMode && isTypedTimeFullyLegal()) {
 					finishKbMode(false);
 				} else {
@@ -642,7 +657,7 @@ public class TimePicker extends LinearLayout implements
 		this.mNoDateButton = (Button) this.layout.findViewById(R.id.dismiss);
 		this.mNoDateButton.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View view) {
+			public void onClick(final View view) {
 				// DatePickerDialog.this.tryVibrate();/
 				if (TimePicker.this.mCallback != null) {
 					TimePicker.this.mCallback.onNoTimeSet();
@@ -650,17 +665,18 @@ public class TimePicker extends LinearLayout implements
 			}
 		});
 		if (this.mDark) {
-			View header = this.layout.findViewById(R.id.time_dialog_head);
+			final View header = this.layout.findViewById(R.id.time_dialog_head);
 			header.setBackgroundColor(res.getColor(R.color.dialog_dark_gray));
 			;
 			dialog.setBackgroundColor(res.getColor(R.color.dialog_gray));
 
-			View header_background = this.layout
+			final View header_background = this.layout
 					.findViewById(R.id.header_background_timepicker);
 			header_background.setBackgroundColor(res
 					.getColor(R.color.dialog_gray));
 
-			View hairline = this.layout.findViewById(R.id.hairline_timepicker);
+			final View hairline = this.layout
+					.findViewById(R.id.hairline_timepicker);
 			if (hairline != null) {
 				hairline.setBackgroundColor(res.getColor(R.color.clock_gray));
 			}
@@ -677,10 +693,11 @@ public class TimePicker extends LinearLayout implements
 		if (this.mIs24HourMode) {
 			this.mAmPmTextView.setVisibility(View.GONE);
 
-			RelativeLayout.LayoutParams paramsSeparator = new RelativeLayout.LayoutParams(
-					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+			final RelativeLayout.LayoutParams paramsSeparator = new RelativeLayout.LayoutParams(
+					android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+					android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
 			paramsSeparator.addRule(RelativeLayout.CENTER_IN_PARENT);
-			TextView separatorView = (TextView) this.layout
+			final TextView separatorView = (TextView) this.layout
 					.findViewById(R.id.separator);
 			separatorView.setLayoutParams(paramsSeparator);
 		} else {
@@ -688,7 +705,7 @@ public class TimePicker extends LinearLayout implements
 			updateAmPmDisplay(this.mInitialHourOfDay < 12 ? AM : PM);
 			this.mAmPmHitspace.setOnClickListener(new OnClickListener() {
 				@Override
-				public void onClick(View v) {
+				public void onClick(final View v) {
 					TimePicker.this.mTimePicker.tryVibrate();
 					int amOrPm = TimePicker.this.mTimePicker
 							.getIsCurrentlyAmOrPm();
@@ -732,7 +749,7 @@ public class TimePicker extends LinearLayout implements
 			// each legal. Note:
 			// getEnteredTime() will ONLY call isTypedTimeFullyLegal() when NOT
 			// in 24hour mode.
-			int[] values = getEnteredTime(null);
+			final int[] values = getEnteredTime(null);
 			return values[0] >= 0 && values[1] >= 0 && values[1] < 60;
 		}
 		// For AM/PM mode, the time is legal if it contains an AM or PM, as
@@ -749,16 +766,17 @@ public class TimePicker extends LinearLayout implements
 	 */
 	private boolean isTypedTimeLegalSoFar() {
 		Node node = this.mLegalTimesTree;
-		for (int keyCode : this.mTypedTimes) {
+		for (final int keyCode : this.mTypedTimes) {
 			node = node.canReach(keyCode);
-			if (node == null)
+			if (node == null) {
 				return false;
+			}
 		}
 		return true;
 	}
 
 	@Override
-	public void onRestoreInstanceState(Parcelable state) {
+	public void onRestoreInstanceState(final Parcelable state) {
 		if (!(state instanceof Bundle)) {
 			super.onRestoreInstanceState(state);
 			return;
@@ -769,7 +787,7 @@ public class TimePicker extends LinearLayout implements
 	@Override
 	public Parcelable onSaveInstanceState() {
 		super.onSaveInstanceState();
-		Bundle outState = new Bundle();
+		final Bundle outState = new Bundle();
 		if (this.mTimePicker != null) {
 			outState.putInt(KEY_HOUR_OF_DAY, this.mTimePicker.getHours());
 			outState.putInt(KEY_MINUTE, this.mTimePicker.getMinutes());
@@ -788,8 +806,8 @@ public class TimePicker extends LinearLayout implements
 	 * Called by the picker for updating the header display.
 	 */
 	@Override
-	public void onValueSelected(int pickerIndex, int newValue,
-			boolean autoAdvance) {
+	public void onValueSelected(final int pickerIndex, final int newValue,
+			final boolean autoAdvance) {
 		if (pickerIndex == HOUR_INDEX) {
 			setHour(newValue, false);
 			String announcement = String.format(Helpers.getLocal(getContext()),
@@ -818,7 +836,7 @@ public class TimePicker extends LinearLayout implements
 	 *            the pressed key.
 	 * @return true if the key was successfully processed, false otherwise.
 	 */
-	protected boolean processKeyUp(int keyCode) {
+	protected boolean processKeyUp(final int keyCode) {
 		if (keyCode == KeyEvent.KEYCODE_ESCAPE
 				|| keyCode == KeyEvent.KEYCODE_BACK) {
 			if (this.mDialog != null) {
@@ -834,8 +852,9 @@ public class TimePicker extends LinearLayout implements
 			}
 		} else if (keyCode == KeyEvent.KEYCODE_ENTER) {
 			if (this.mInKbMode) {
-				if (!isTypedTimeFullyLegal())
+				if (!isTypedTimeFullyLegal()) {
 					return true;
+				}
 				finishKbMode(false);
 			}
 			if (this.mCallback != null) {
@@ -850,7 +869,7 @@ public class TimePicker extends LinearLayout implements
 		} else if (keyCode == KeyEvent.KEYCODE_DEL) {
 			if (this.mInKbMode) {
 				if (!this.mTypedTimes.isEmpty()) {
-					int deleted = deleteLastTypedKey();
+					final int deleted = deleteLastTypedKey();
 					String deletedKeyStr;
 					if (deleted == getAmOrPmKeyCode(AM)) {
 						deletedKeyStr = this.mAmText;
@@ -899,7 +918,7 @@ public class TimePicker extends LinearLayout implements
 		return false;
 	}
 
-	public void set24HourMode(boolean mode) {
+	public void set24HourMode(final boolean mode) {
 		this.mIs24HourMode = mode;
 		if (this.mTimePicker != null) {
 			this.mTimePicker.initialize(this.ctx, this.mInitialHourOfDay,
@@ -910,8 +929,9 @@ public class TimePicker extends LinearLayout implements
 	}
 
 	// Show either Hours or Minutes.
-	protected void setCurrentItemShowing(int index, boolean animateCircle,
-			boolean delayLabelAnimate, boolean announce) {
+	protected void setCurrentItemShowing(final int index,
+			final boolean animateCircle, final boolean delayLabelAnimate,
+			final boolean announce) {
 		this.mTimePicker.setCurrentItemShowing(index, animateCircle);
 
 		TextView labelToAnimate;
@@ -928,7 +948,7 @@ public class TimePicker extends LinearLayout implements
 			}
 			labelToAnimate = this.mHourView;
 		} else {
-			int minutes = this.mTimePicker.getMinutes();
+			final int minutes = this.mTimePicker.getMinutes();
 			this.mTimePicker
 					.setContentDescription(this.mMinutePickerDescription + ": "
 							+ minutes);
@@ -939,14 +959,14 @@ public class TimePicker extends LinearLayout implements
 			labelToAnimate = this.mMinuteView;
 		}
 
-		int hourColor = index == HOUR_INDEX ? this.mSelectedColor
+		final int hourColor = index == HOUR_INDEX ? this.mSelectedColor
 				: this.mUnselectedColor;
-		int minuteColor = index == MINUTE_INDEX ? this.mSelectedColor
+		final int minuteColor = index == MINUTE_INDEX ? this.mSelectedColor
 				: this.mUnselectedColor;
 		this.mHourView.setTextColor(hourColor);
 		this.mMinuteView.setTextColor(minuteColor);
 
-		com.nineoldandroids.animation.ObjectAnimator pulseAnimator = Utils
+		final com.nineoldandroids.animation.ObjectAnimator pulseAnimator = Utils
 				.getPulseAnimator(labelToAnimate, 0.85f, 1.1f);
 		if (delayLabelAnimate) {
 			pulseAnimator.setStartDelay(PULSE_ANIMATOR_DELAY);
@@ -954,7 +974,7 @@ public class TimePicker extends LinearLayout implements
 		pulseAnimator.start();
 	}
 
-	public void setHour(int value, boolean announce) {
+	public void setHour(int value, final boolean announce) {
 		String format;
 		if (this.mIs24HourMode) {
 			format = "%02d";
@@ -966,7 +986,7 @@ public class TimePicker extends LinearLayout implements
 			}
 		}
 
-		CharSequence text = String.format(format, value);
+		final CharSequence text = String.format(format, value);
 		if (this.mHourView != null) {
 			this.mHourView.setText(text);
 		}
@@ -982,7 +1002,8 @@ public class TimePicker extends LinearLayout implements
 		if (value == 60) {
 			value = 0;
 		}
-		CharSequence text = String.format(Locale.getDefault(), "%02d", value);
+		final CharSequence text = String.format(Locale.getDefault(), "%02d",
+				value);
 		Utils.tryAccessibilityAnnounce(this.mTimePicker, text);
 		if (this.mMinuteView != null) {
 			this.mMinuteView.setText(text);
@@ -992,7 +1013,7 @@ public class TimePicker extends LinearLayout implements
 		}
 	}
 
-	public void setOnKeyListener(KeyboardListener keyboardListener) {
+	public void setOnKeyListener(final KeyboardListener keyboardListener) {
 		if (this.mDoneButton != null) {
 			this.mDoneButton.setOnKeyListener(keyboardListener);
 		}
@@ -1013,17 +1034,17 @@ public class TimePicker extends LinearLayout implements
 		}
 	}
 
-	public void setOnTimeSetListener(OnTimeSetListener callback) {
+	public void setOnTimeSetListener(final OnTimeSetListener callback) {
 		this.mCallback = callback;
 	}
 
-	public void setStartTime(int hourOfDay, int minute) {
+	public void setStartTime(final int hourOfDay, final int minute) {
 		this.mInitialHourOfDay = hourOfDay;
 		this.mInitialMinute = minute;
 		this.mInKbMode = false;
 	}
 
-	public void setTime(int hourOfDay, int minutes) {
+	public void setTime(final int hourOfDay, final int minutes) {
 		this.mTimePicker.setTime(hourOfDay, minutes);
 		setCurrentItemShowing(HOUR_INDEX, true, false, true);
 	}
@@ -1037,7 +1058,7 @@ public class TimePicker extends LinearLayout implements
 	 *            started if the key is not legal to start with. Or, pass in -1
 	 *            to get into keyboard mode without a starting key.
 	 */
-	private void tryStartingKbMode(int keyCode) {
+	private void tryStartingKbMode(final int keyCode) {
 		if (this.mTimePicker.trySettingInputEnabled(false)
 				&& (keyCode == -1 || addKeyIfLegal(keyCode))) {
 			this.mInKbMode = true;
@@ -1046,7 +1067,7 @@ public class TimePicker extends LinearLayout implements
 		}
 	}
 
-	private void updateAmPmDisplay(int amOrPm) {
+	private void updateAmPmDisplay(final int amOrPm) {
 		if (amOrPm == AM) {
 			this.mAmPmTextView.setText(this.mAmText);
 			Utils.tryAccessibilityAnnounce(this.mTimePicker, this.mAmText);
@@ -1069,10 +1090,10 @@ public class TimePicker extends LinearLayout implements
 	 *            if true, then if the typedTimes is empty, use the placeholder
 	 *            text. Otherwise, revert to the timepicker's values.
 	 */
-	private void updateDisplay(boolean allowEmptyDisplay) {
+	private void updateDisplay(final boolean allowEmptyDisplay) {
 		if (!allowEmptyDisplay && this.mTypedTimes.isEmpty()) {
-			int hour = this.mTimePicker.getHours();
-			int minute = this.mTimePicker.getMinutes();
+			final int hour = this.mTimePicker.getHours();
+			final int minute = this.mTimePicker.getMinutes();
 			setHour(hour, true);
 			setMinute(minute);
 			if (!this.mIs24HourMode) {
@@ -1082,14 +1103,14 @@ public class TimePicker extends LinearLayout implements
 					true, true, true);
 			this.mDoneButton.setEnabled(true);
 		} else {
-			Boolean[] enteredZeros = { false, false };
-			int[] values = getEnteredTime(enteredZeros);
-			String hourFormat = enteredZeros[0] ? "%02d" : "%2d";
-			String minuteFormat = enteredZeros[1] ? "%02d" : "%2d";
-			String hourStr = values[0] == -1 ? this.mDoublePlaceholderText
+			final Boolean[] enteredZeros = { false, false };
+			final int[] values = getEnteredTime(enteredZeros);
+			final String hourFormat = enteredZeros[0] ? "%02d" : "%2d";
+			final String minuteFormat = enteredZeros[1] ? "%02d" : "%2d";
+			final String hourStr = values[0] == -1 ? this.mDoublePlaceholderText
 					: String.format(hourFormat, values[0]).replace(' ',
 							this.mPlaceholderText);
-			String minuteStr = values[1] == -1 ? this.mDoublePlaceholderText
+			final String minuteStr = values[1] == -1 ? this.mDoublePlaceholderText
 					: String.format(minuteFormat, values[1]).replace(' ',
 							this.mPlaceholderText);
 			this.mHourView.setText(hourStr);

@@ -16,13 +16,13 @@ package com.sleepbot.datetimepicker.time;
  * limitations under the License.
  */
 
-import de.azapps.mirakel.date_time.R;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.Log;
 import android.view.View;
+import de.azapps.mirakel.date_time.R;
 
 /**
  * Draws a simple white circle on which the numbers will be drawn.
@@ -45,10 +45,10 @@ public class CircleView extends View {
 
 	private boolean mDark;
 
-	public CircleView(Context context) {
+	public CircleView(final Context context) {
 		super(context);
 
-		Resources res = context.getResources();
+		final Resources res = context.getResources();
 		this.mBackgroundColor = res.getColor(R.color.white);
 		this.mTextColor = res.getColor(R.color.numbers_text_color);
 		this.mPaint.setAntiAlias(true);
@@ -57,19 +57,20 @@ public class CircleView extends View {
 
 	}
 
-	public void initialize(Context context, boolean is24HourMode, boolean dark) {
+	public void initialize(final Context context, final boolean is24HourMode,
+			final boolean dark) {
 		if (this.mIsInitialized) {
 			Log.e(TAG, "CircleView may only be initialized once.");
 			return;
 		}
 		this.mDark = dark;
 		if (this.mDark) {
-			Resources res = context.getResources();
+			final Resources res = context.getResources();
 			this.mBackgroundColor = res.getColor(R.color.dialog_gray);
 			this.mTextColor = res.getColor(R.color.clock_white);
 		}
 
-		Resources res = context.getResources();
+		final Resources res = context.getResources();
 		this.mIs24HourMode = is24HourMode;
 		if (is24HourMode) {
 			this.mCircleRadiusMultiplier = Float.parseFloat(res
@@ -85,8 +86,8 @@ public class CircleView extends View {
 	}
 
 	@Override
-	public void onDraw(Canvas canvas) {
-		int viewWidth = getWidth();
+	public void onDraw(final Canvas canvas) {
+		final int viewWidth = getWidth();
 		if (viewWidth == 0 || !this.mIsInitialized) {
 			return;
 		}
@@ -102,7 +103,7 @@ public class CircleView extends View {
 				// a slightly higher center. To keep the entire view centered
 				// vertically, we'll
 				// have to push it up by half the radius of the AM/PM circles.
-				int amPmCircleRadius = (int) (this.mCircleRadius * this.mAmPmCircleRadiusMultiplier);
+				final int amPmCircleRadius = (int) (this.mCircleRadius * this.mAmPmCircleRadiusMultiplier);
 				this.mYCenter -= amPmCircleRadius / 2;
 			}
 

@@ -28,7 +28,7 @@ public class WeekButton extends android.widget.ToggleButton {
 
 	private static boolean mDark;
 
-	public WeekButton(Context context) {
+	public WeekButton(final Context context) {
 		super(context);
 		setTheme();
 	}
@@ -49,24 +49,26 @@ public class WeekButton extends android.widget.ToggleButton {
 		}
 	}
 
-	public WeekButton(Context context, AttributeSet attrs) {
+	public WeekButton(final Context context, final AttributeSet attrs) {
 		super(context, attrs);
 		setTheme();
 
 	}
 
-	public WeekButton(Context context, AttributeSet attrs, int defStyle) {
+	public WeekButton(final Context context, final AttributeSet attrs,
+			final int defStyle) {
 		super(context, attrs, defStyle);
 		setTheme();
 	}
 
-	public static void setSuggestedWidth(int w) {
+	public static void setSuggestedWidth(final int w) {
 		// mWidth = w; not used
 	}
 
 	@SuppressLint("NewAPI")
 	@Override
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+	protected void onMeasure(final int widthMeasureSpec,
+			final int heightMeasureSpec) {
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 		int h = getMeasuredHeight();
 		int w = getMeasuredWidth();

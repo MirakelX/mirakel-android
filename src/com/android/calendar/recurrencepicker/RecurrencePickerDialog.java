@@ -74,9 +74,10 @@ public class RecurrencePickerDialog extends DialogFragment implements
 	private static final int MIN_SCREEN_WIDTH_FOR_SINGLE_ROW_WEEK = 450;
 	protected static final String TAG = null;
 
-	public static RecurrencePickerDialog newInstance(OnRecurenceSetListner r,
-			Recurring recurring, boolean forDue, boolean dark, boolean exact) {
-		RecurrencePickerDialog re = new RecurrencePickerDialog();
+	public static RecurrencePickerDialog newInstance(
+			final OnRecurenceSetListner r, final Recurring recurring,
+			final boolean forDue, final boolean dark, final boolean exact) {
+		final RecurrencePickerDialog re = new RecurrencePickerDialog();
 		re.initialize(r, recurring, forDue, dark, exact);
 		return re;
 	}
@@ -91,12 +92,13 @@ public class RecurrencePickerDialog extends DialogFragment implements
 	private Button mDoneButton;
 	private int mPosition;
 	private boolean mDark;
-	private ToggleButton[] mWeekByDayButtons = new ToggleButton[7];
+	private final ToggleButton[] mWeekByDayButtons = new ToggleButton[7];
 	private int numOfButtonsInRow1;
 	private int numOfButtonsInRow2;
 
-	public void initialize(OnRecurenceSetListner r, Recurring recurring,
-			boolean forDue, boolean dark, boolean exact) {
+	public void initialize(final OnRecurenceSetListner r,
+			final Recurring recurring, final boolean forDue,
+			final boolean dark, final boolean exact) {
 		this.mRecurring = recurring;
 		this.mCallback = r;
 		this.mForDue = forDue;
@@ -127,30 +129,31 @@ public class RecurrencePickerDialog extends DialogFragment implements
 	private TextView mStartDateView;
 	private Context ctx;
 
-	public int pxToDp(int px) {
+	public int pxToDp(final int px) {
 
-		Resources resources = this.ctx.getResources();
+		final Resources resources = this.ctx.getResources();
 
-		DisplayMetrics metrics = resources.getDisplayMetrics();
+		final DisplayMetrics metrics = resources.getDisplayMetrics();
 
-		return (int) (px / (metrics.density));
+		return (int) (px / metrics.density);
 
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(final LayoutInflater inflater,
+			final ViewGroup container, final Bundle savedInstanceState) {
 		this.ctx = getDialog().getContext();
 		try {
 			getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		final List<Pair<Integer, String>> recurring = Recurring
 				.getForDialog(this.mForDue);
 		this.extraItems = 1;
-		CharSequence[] items = new String[recurring.size() + this.extraItems];
+		final CharSequence[] items = new String[recurring.size()
+				+ this.extraItems];
 
 		// items[0] = ctx.getString(R.string.recurrence_no);//Dont need this,
 		// there is a button...
@@ -167,22 +170,22 @@ public class RecurrencePickerDialog extends DialogFragment implements
 		final View view = inflater
 				.inflate(R.layout.recurrencepicker, container);
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-			View v = view.findViewById(R.id.recurrence_picker_dialog);
+			final View v = view.findViewById(R.id.recurrence_picker_dialog);
 			v.setBackgroundColor(this.ctx.getResources().getColor(
 					this.mDark ? android.R.color.black : android.R.color.white));
 		}
 		this.mRecurenceSelection = (Spinner) view
 				.findViewById(R.id.freqSpinner);
-		Resources res = this.ctx.getResources();
+		final Resources res = this.ctx.getResources();
 		boolean isNotTwoRows;
 		try {
 			isNotTwoRows = res.getConfiguration().screenWidthDp > MIN_SCREEN_WIDTH_FOR_SINGLE_ROW_WEEK;
-		} catch (NoSuchFieldError e) {
+		} catch (final NoSuchFieldError e) {
 			isNotTwoRows = pxToDp(((WindowManager) this.ctx
 					.getSystemService(Context.WINDOW_SERVICE))
 					.getDefaultDisplay().getWidth()) > MIN_SCREEN_WIDTH_FOR_SINGLE_ROW_WEEK;
 		}
-		ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(
+		final ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(
 				this.ctx, android.R.layout.simple_spinner_item, items);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		this.mOptions = (LinearLayout) view.findViewById(R.id.options);
@@ -193,8 +196,8 @@ public class RecurrencePickerDialog extends DialogFragment implements
 		this.mRecurenceSelection
 				.setOnItemSelectedListener(new OnItemSelectedListener() {
 					@Override
-					public void onItemSelected(AdapterView<?> arg0, View arg1,
-							int pos, long id) {
+					public void onItemSelected(final AdapterView<?> arg0,
+							final View arg1, final int pos, final long id) {
 						RecurrencePickerDialog.this.mPosition = pos;
 						if (pos < RecurrencePickerDialog.this.extraItems) {
 							switch (pos) {
@@ -220,12 +223,13 @@ public class RecurrencePickerDialog extends DialogFragment implements
 					}
 
 					@Override
-					public void onNothingSelected(AdapterView<?> arg0) {
+					public void onNothingSelected(final AdapterView<?> arg0) {
 						// TODO Auto-generated method stub
 
 					}
 				});
-		String[] dayOfWeekString = new DateFormatSymbols().getShortWeekdays();
+		final String[] dayOfWeekString = new DateFormatSymbols()
+				.getShortWeekdays();
 		int idx = DateTimeHelper.getFirstDayOfWeek();
 		if (isNotTwoRows) {
 			this.numOfButtonsInRow1 = 7;
@@ -245,8 +249,9 @@ public class RecurrencePickerDialog extends DialogFragment implements
 		/* First row */
 
 		List<Integer> weekdays = new ArrayList<Integer>();
-		if (this.mRecurring != null)
+		if (this.mRecurring != null) {
 			weekdays = this.mRecurring.getWeekdays();
+		}
 		for (int i = 0; i < 7; i++) {
 			if (i >= this.numOfButtonsInRow1) {
 				this.mWeekGroup.getChildAt(i).setVisibility(View.GONE);
@@ -262,7 +267,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
 			 * It's so stupid… Sunday is called 'weekend' but it's the first day
 			 * of the week.
 			 */
-			boolean checked = weekdays.contains(idx + 1);
+			final boolean checked = weekdays.contains(idx + 1);
 			this.mWeekByDayButtons[idx].setChecked(checked);
 			this.mWeekByDayButtons[idx].setOnCheckedChangeListener(this);
 			if (++idx >= 7) {
@@ -286,7 +291,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
 			 * It's so stupid… Sunday is called 'weekend' but it's the first day
 			 * of the week.
 			 */
-			boolean checked = weekdays.contains(idx + 1);
+			final boolean checked = weekdays.contains(idx + 1);
 			this.mWeekByDayButtons[idx].setChecked(checked);
 			this.mWeekByDayButtons[idx].setOnCheckedChangeListener(this);
 			if (++idx >= 7) {
@@ -309,8 +314,8 @@ public class RecurrencePickerDialog extends DialogFragment implements
 		this.mToggle.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 			@Override
-			public void onCheckedChanged(CompoundButton buttonView,
-					boolean isChecked) {
+			public void onCheckedChanged(final CompoundButton buttonView,
+					final boolean isChecked) {
 				setEnabledComponents(isChecked);
 
 			}
@@ -321,10 +326,10 @@ public class RecurrencePickerDialog extends DialogFragment implements
 		this.mDoneButton.setOnClickListener(new OnClickListener() {
 
 			@Override
-			public void onClick(View v) {
+			public void onClick(final View v) {
 				if (RecurrencePickerDialog.this.mToggle.isChecked()) {
 					if (RecurrencePickerDialog.this.mIsCustom) {
-						ArrayList<Integer> checked = new ArrayList<Integer>();
+						final ArrayList<Integer> checked = new ArrayList<Integer>();
 						boolean isOneChecked = false;
 						for (int i = 0; i < RecurrencePickerDialog.this.mWeekByDayButtons.length; i++) {
 							if (RecurrencePickerDialog.this.mWeekByDayButtons[i]
@@ -348,7 +353,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
 							int intervalDays = 0;
 							int intervalMinutes = 0;
 							int intervalHours = 0;
-							int type = RecurrencePickerDialog.this.mIntervalType
+							final int type = RecurrencePickerDialog.this.mIntervalType
 									.getSelectedItemPosition();
 							Log.d(TAG, "TYPE: " + type);
 							if (type == 0) {
@@ -388,7 +393,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
 													.isChecked());
 						}
 					} else {
-						Recurring r = Recurring
+						final Recurring r = Recurring
 								.createTemporayCopy(RecurrencePickerDialog.this.mRecurring);
 						r.setExact(RecurrencePickerDialog.this.mUseExact
 								.isChecked());
@@ -411,29 +416,30 @@ public class RecurrencePickerDialog extends DialogFragment implements
 		this.mIntervalCount.addTextChangedListener(new TextWatcher() {
 
 			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
+			public void onTextChanged(final CharSequence s, final int start,
+					final int before, final int count) {
 				int newValue = RecurrencePickerDialog.this.mIntervalValue;
 				try {
 					newValue = Integer.parseInt(s.toString());
-				} catch (NumberFormatException e) {
+				} catch (final NumberFormatException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				if (newValue == 0)
+				if (newValue == 0) {
 					RecurrencePickerDialog.this.mIntervalCount.setText(""
 							+ RecurrencePickerDialog.this.mIntervalValue);
+				}
 				updateIntervallType();
 				RecurrencePickerDialog.this.mIntervalValue = newValue;
 			}
 
 			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
+			public void beforeTextChanged(final CharSequence s,
+					final int start, final int count, final int after) {
 			}
 
 			@Override
-			public void afterTextChanged(Editable s) {
+			public void afterTextChanged(final Editable s) {
 			}
 		});
 		final int dayPosition = this.mForDue ? 0 : 2;
@@ -441,8 +447,8 @@ public class RecurrencePickerDialog extends DialogFragment implements
 				.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 					@Override
-					public void onItemSelected(AdapterView<?> arg0, View arg1,
-							int pos, long arg3) {
+					public void onItemSelected(final AdapterView<?> arg0,
+							final View arg1, final int pos, final long arg3) {
 						if (pos == dayPosition) {
 							view.findViewById(R.id.weekGroup).setVisibility(
 									View.VISIBLE);
@@ -458,7 +464,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
 					}
 
 					@Override
-					public void onNothingSelected(AdapterView<?> arg0) {
+					public void onNothingSelected(final AdapterView<?> arg0) {
 						// TODO Auto-generated method stub
 
 					}
@@ -467,7 +473,8 @@ public class RecurrencePickerDialog extends DialogFragment implements
 		this.mRadioGroup.setVisibility(View.GONE);// Don't support this for
 													// now...
 
-		String[] end = { res.getString(R.string.recurrence_end_continously),
+		final String[] end = {
+				res.getString(R.string.recurrence_end_continously),
 				res.getString(R.string.recurrence_end_date_label) // ,res.getString(R.string.recurrence_end_count_label)
 																	// Dont
 																	// support
@@ -478,7 +485,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
 		final Calendar endDate = new GregorianCalendar();
 		endDate.add(Calendar.MONTH, 1);
 		this.mEndSpinner = (Spinner) view.findViewById(R.id.endSpinner);
-		ArrayAdapter<CharSequence> endSpinnerAdapter = new ArrayAdapter<CharSequence>(
+		final ArrayAdapter<CharSequence> endSpinnerAdapter = new ArrayAdapter<CharSequence>(
 				this.ctx, android.R.layout.simple_spinner_item, end);
 		endSpinnerAdapter
 				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -489,8 +496,8 @@ public class RecurrencePickerDialog extends DialogFragment implements
 		this.mEndDateView.setOnClickListener(new OnClickListener() {
 
 			@Override
-			public void onClick(View v) {
-				DatePickerDialog dp = DatePickerDialog.newInstance(
+			public void onClick(final View v) {
+				final DatePickerDialog dp = DatePickerDialog.newInstance(
 						new OnDateSetListener() {
 
 							@Override
@@ -499,8 +506,10 @@ public class RecurrencePickerDialog extends DialogFragment implements
 							}
 
 							@Override
-							public void onDateSet(DatePicker datePickerDialog,
-									int year, int month, int day) {
+							public void onDateSet(
+									final DatePicker datePickerDialog,
+									final int year, final int month,
+									final int day) {
 								RecurrencePickerDialog.this.mEndDate.set(
 										Calendar.YEAR, year);
 								RecurrencePickerDialog.this.mEndDate.set(
@@ -521,8 +530,8 @@ public class RecurrencePickerDialog extends DialogFragment implements
 				.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 					@Override
-					public void onItemSelected(AdapterView<?> arg0, View arg1,
-							int pos, long arg3) {
+					public void onItemSelected(final AdapterView<?> arg0,
+							final View arg1, final int pos, final long arg3) {
 						switch (pos) {
 						case 1:
 							RecurrencePickerDialog.this.mEndDateView
@@ -531,7 +540,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
 								RecurrencePickerDialog.this.mEndDate = DateTimeHelper
 										.parseDate(RecurrencePickerDialog.this.mEndDateView
 												.getText().toString());
-							} catch (ParseException e) {
+							} catch (final ParseException e) {
 								RecurrencePickerDialog.this.mEndDate = endDate;
 							}
 							break;
@@ -545,14 +554,14 @@ public class RecurrencePickerDialog extends DialogFragment implements
 					}
 
 					@Override
-					public void onNothingSelected(AdapterView<?> arg0) {
+					public void onNothingSelected(final AdapterView<?> arg0) {
 						// TODO Auto-generated method stub
 
 					}
 				});
 		this.mEndSpinner.setAdapter(endSpinnerAdapter);
 
-		String[] start = { res.getString(R.string.recurrence_from_now),
+		final String[] start = { res.getString(R.string.recurrence_from_now),
 				res.getString(R.string.recurrence_from) // ,res.getString(R.string.recurrence_end_count_label)
 														// Dont
 														// support
@@ -566,8 +575,8 @@ public class RecurrencePickerDialog extends DialogFragment implements
 				.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 					@Override
-					public void onItemSelected(AdapterView<?> arg0, View arg1,
-							int pos, long arg3) {
+					public void onItemSelected(final AdapterView<?> arg0,
+							final View arg1, final int pos, final long arg3) {
 						switch (pos) {
 						case 1:
 							RecurrencePickerDialog.this.mStartDateView
@@ -576,7 +585,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
 								RecurrencePickerDialog.this.mStartDate = DateTimeHelper
 										.parseDate(RecurrencePickerDialog.this.mStartDateView
 												.getText().toString());
-							} catch (ParseException e) {
+							} catch (final ParseException e) {
 								RecurrencePickerDialog.this.mStartDate = endDate;
 							}
 							break;
@@ -590,12 +599,12 @@ public class RecurrencePickerDialog extends DialogFragment implements
 					}
 
 					@Override
-					public void onNothingSelected(AdapterView<?> arg0) {
+					public void onNothingSelected(final AdapterView<?> arg0) {
 						// TODO Auto-generated method stub
 
 					}
 				});
-		ArrayAdapter<CharSequence> startSpinnerAdapter = new ArrayAdapter<CharSequence>(
+		final ArrayAdapter<CharSequence> startSpinnerAdapter = new ArrayAdapter<CharSequence>(
 				this.ctx, android.R.layout.simple_spinner_item, start);
 		startSpinnerAdapter
 				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -607,8 +616,8 @@ public class RecurrencePickerDialog extends DialogFragment implements
 		this.mStartDateView.setOnClickListener(new OnClickListener() {
 
 			@Override
-			public void onClick(View v) {
-				DatePickerDialog dp = DatePickerDialog.newInstance(
+			public void onClick(final View v) {
+				final DatePickerDialog dp = DatePickerDialog.newInstance(
 						new OnDateSetListener() {
 
 							@Override
@@ -617,8 +626,10 @@ public class RecurrencePickerDialog extends DialogFragment implements
 							}
 
 							@Override
-							public void onDateSet(DatePicker datePickerDialog,
-									int year, int month, int day) {
+							public void onDateSet(
+									final DatePicker datePickerDialog,
+									final int year, final int month,
+									final int day) {
 								RecurrencePickerDialog.this.mStartDate.set(
 										Calendar.YEAR, year);
 								RecurrencePickerDialog.this.mStartDate.set(
@@ -644,9 +655,10 @@ public class RecurrencePickerDialog extends DialogFragment implements
 			view.findViewById(R.id.recurrence_picker_head).setBackgroundColor(
 					res.getColor(R.color.dialog_dark_gray));
 			this.mDoneButton.setTextColor(res.getColor(R.color.White));
-			if (this.toggleIsSwitch)
+			if (this.toggleIsSwitch) {
 				((Switch) this.mToggle).setThumbDrawable(res
 						.getDrawable(R.drawable.switch_thumb_dark));
+			}
 			this.mEndDateView.setTextColor(res.getColor(R.color.White));
 			this.mStartDateView.setTextColor(res.getColor(R.color.White));
 			this.mUseExact
@@ -659,13 +671,13 @@ public class RecurrencePickerDialog extends DialogFragment implements
 		return view;
 	}
 
-	private void setEnabledComponents(boolean b) {
+	private void setEnabledComponents(final boolean b) {
 		this.mRecurenceSelection.setEnabled(b);
 		this.mEndSpinner.setEnabled(b);
 		this.mEndDateView.setEnabled(b);
 		this.mStartSpinner.setEnabled(b);
 		this.mStartDateView.setEnabled(b);
-		for (ToggleButton t : this.mWeekByDayButtons) {
+		for (final ToggleButton t : this.mWeekByDayButtons) {
 			t.setEnabled(b);
 		}
 		this.mIntervalCount.setEnabled(b);
@@ -687,7 +699,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
 	}
 
 	private void updateIntervallType() {
-		ArrayAdapter<CharSequence> adapterInterval = new ArrayAdapter<CharSequence>(
+		final ArrayAdapter<CharSequence> adapterInterval = new ArrayAdapter<CharSequence>(
 				getDialog().getContext(), android.R.layout.simple_spinner_item,
 				getDayYearValues());
 		adapterInterval
@@ -696,10 +708,10 @@ public class RecurrencePickerDialog extends DialogFragment implements
 	}
 
 	protected String[] getDayYearValues() {
-		Context ctx = getDialog().getContext();
-		int size = this.mForDue ? 3 : 5;
+		final Context ctx = getDialog().getContext();
+		final int size = this.mForDue ? 3 : 5;
 		int i = 0;
-		String[] ret = new String[size];
+		final String[] ret = new String[size];
 		if (!this.mForDue) {
 			ret[i++] = ctx.getResources().getQuantityString(
 					R.plurals.due_minute, this.mIntervalValue);
@@ -717,21 +729,24 @@ public class RecurrencePickerDialog extends DialogFragment implements
 	}
 
 	public interface OnRecurenceSetListner {
-		void OnCustomRecurnceSetIntervall(boolean isDue, int intervalYears,
-				int intervalMonths, int intervalDays, int intervalHours,
-				int intervalMinutes, Calendar startDate, Calendar endDate,
-				boolean isExact);
+		void OnCustomRecurnceSetIntervall(final boolean isDue,
+				final int intervalYears, final int intervalMonths,
+				final int intervalDays, final int intervalHours,
+				final int intervalMinutes, final Calendar startDate,
+				final Calendar endDate, final boolean isExact);
 
-		void OnCustomRecurnceSetWeekdays(boolean isDue, List<Integer> weekdays,
-				Calendar startDate, Calendar endDate, boolean isExact);
+		void OnCustomRecurnceSetWeekdays(final boolean isDue,
+				final List<Integer> weekdays, final Calendar startDate,
+				final Calendar endDate, final boolean isExact);
 
-		void OnRecurrenceSet(Recurring r);
+		void OnRecurrenceSet(final Recurring r);
 
 		void onNoRecurrenceSet();
 	}
 
 	@Override
-	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+	public void onCheckedChanged(final CompoundButton buttonView,
+			final boolean isChecked) {
 		// TODO Auto-generated method stub
 
 	}

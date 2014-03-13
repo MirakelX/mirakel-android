@@ -53,54 +53,58 @@ public class TimePickerDialog extends DialogFragment {
 		// Empty constructor required for dialog fragment.
 	}
 
-	public TimePickerDialog(Context context, int theme,
-			OnTimeSetListener callback, int hourOfDay, int minute,
-			boolean is24HourMode, boolean dark) {
+	public TimePickerDialog(final Context context, final int theme,
+			final OnTimeSetListener callback, final int hourOfDay,
+			final int minute, final boolean is24HourMode, final boolean dark) {
 		// Empty constructor required for dialog fragment.
 	}
 
-	public static TimePickerDialog newInstance(OnTimeSetListener callback,
-			int hourOfDay, int minute, boolean is24HourMode, boolean dark) {
-		TimePickerDialog ret = new TimePickerDialog();
+	public static TimePickerDialog newInstance(
+			final OnTimeSetListener callback, final int hourOfDay,
+			final int minute, final boolean is24HourMode, final boolean dark) {
+		final TimePickerDialog ret = new TimePickerDialog();
 		ret.initialize(callback, hourOfDay, minute, is24HourMode, dark);
 		return ret;
 	}
 
-	public void initialize(final OnTimeSetListener callback, int hourOfDay,
-			int minute, boolean is24HourMode, boolean dark) {
+	public void initialize(final OnTimeSetListener callback,
+			final int hourOfDay, final int minute, final boolean is24HourMode,
+			final boolean dark) {
 		this.mInitialHour = hourOfDay;
 		this.mInitialMinute = minute;
 		this.mCallback = new OnTimeSetListener() {
 
 			@Override
-			public void onTimeSet(RadialPickerLayout view, int hourOfDay,
-					int minute) {
-				if (callback != null)
+			public void onTimeSet(final RadialPickerLayout view,
+					final int hourOfDay, final int minute) {
+				if (callback != null) {
 					callback.onTimeSet(view, hourOfDay, minute);
+				}
 				dismiss();
 
 			}
 
 			@Override
 			public void onNoTimeSet() {
-				if (callback != null)
+				if (callback != null) {
 					callback.onNoTimeSet();
+				}
 				dismiss();
 			}
 		};
 	}
 
-	public void setOnTimeSetListener(OnTimeSetListener callback) {
+	public void setOnTimeSetListener(final OnTimeSetListener callback) {
 		this.mCallback = callback;
 	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	}
 
 	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
+	public void onConfigurationChanged(final Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
 		final Bundle b = (Bundle) this.mTimePicker.onSaveInstanceState();
 		// setupValues(saved);
@@ -117,15 +121,15 @@ public class TimePickerDialog extends DialogFragment {
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(final LayoutInflater inflater,
+			final ViewGroup container, final Bundle savedInstanceState) {
 		try {
 			getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		View view = inflater.inflate(R.layout.time_picker_dialog, null);
+		final View view = inflater.inflate(R.layout.time_picker_dialog, null);
 		this.mTimePicker = (TimePicker) view.findViewById(R.id.time_picker);
 		this.mTimePicker.setOnTimeSetListener(this.mCallback);
 		this.mTimePicker.setOnKeyListener(this.mTimePicker
@@ -135,7 +139,7 @@ public class TimePickerDialog extends DialogFragment {
 	}
 
 	@Override
-	public void onSaveInstanceState(Bundle outState) {
+	public void onSaveInstanceState(final Bundle outState) {
 		// if (mTimePicker != null) {
 		// outState.putInt(KEY_HOUR_OF_DAY, mTimePicker.getHours());
 		// outState.putInt(KEY_MINUTE, mTimePicker.getMinutes());

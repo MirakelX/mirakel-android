@@ -39,25 +39,26 @@ public class DateTimePicker extends RelativeLayout implements
 		View.OnClickListener, OnDateChangedListener, OnTimeChangedListener {
 
 	// DatePicker reference
-	private DatePicker datePicker;
+	private final DatePicker datePicker;
 	// TimePicker reference
-	private TimePicker timePicker;
+	private final TimePicker timePicker;
 	// ViewSwitcher reference
-	private ViewSwitcher viewSwitcher;
+	private final ViewSwitcher viewSwitcher;
 	// Calendar reference
-	private Calendar mCalendar;
-	private boolean darkTheme;
+	private final Calendar mCalendar;
+	private final boolean darkTheme;
 
 	// Constructor start
-	public DateTimePicker(Context context) {
+	public DateTimePicker(final Context context) {
 		this(context, null);
 	}
 
-	public DateTimePicker(Context context, AttributeSet attrs) {
+	public DateTimePicker(final Context context, final AttributeSet attrs) {
 		this(context, attrs, 0);
 	}
 
-	public DateTimePicker(Context context, AttributeSet attrs, int defStyle) {
+	public DateTimePicker(final Context context, final AttributeSet attrs,
+			final int defStyle) {
 		super(context, attrs, defStyle);
 
 		this.darkTheme = MirakelCommonPreferences.isDark();
@@ -100,9 +101,10 @@ public class DateTimePicker extends RelativeLayout implements
 																				// the
 																				// date
 																				// picker
-		if (this.darkTheme)
+		if (this.darkTheme) {
 			((Button) findViewById(R.id.SwitchToDate))
 					.setTextColor(getResources().getColor(R.color.White));
+		}
 		// Populate ViewSwitcher
 		this.viewSwitcher.addView(datePickerView, 0);
 		this.viewSwitcher.addView(timePickerView, 1);
@@ -118,8 +120,8 @@ public class DateTimePicker extends RelativeLayout implements
 
 	// Called every time the user changes DatePicker values
 	@Override
-	public void onDateChanged(DatePicker view, int year, int monthOfYear,
-			int dayOfMonth) {
+	public void onDateChanged(final DatePicker view, final int year,
+			final int monthOfYear, final int dayOfMonth) {
 		// Update the internal Calendar instance
 		this.mCalendar.set(year, monthOfYear, dayOfMonth,
 				this.mCalendar.get(Calendar.HOUR_OF_DAY),
@@ -128,7 +130,8 @@ public class DateTimePicker extends RelativeLayout implements
 
 	// Called every time the user changes TimePicker values
 	@Override
-	public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+	public void onTimeChanged(final TimePicker view, final int hourOfDay,
+			final int minute) {
 		// Update the internal Calendar instance
 		this.mCalendar.set(this.mCalendar.get(Calendar.YEAR),
 				this.mCalendar.get(Calendar.MONTH),
@@ -137,23 +140,26 @@ public class DateTimePicker extends RelativeLayout implements
 
 	// Handle button clicks
 	@Override
-	public void onClick(View v) {
-		if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB)
+	public void onClick(final View v) {
+		if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB) {
 			((Button) v).setTextColor(getResources().getColor(
 					this.darkTheme ? R.color.White : R.color.Black));
+		}
 		if (v.getId() == R.id.SwitchToDate) {
 			v.setEnabled(false);
 			findViewById(R.id.SwitchToTime).setEnabled(true);
-			if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB)
+			if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB) {
 				((Button) findViewById(R.id.SwitchToTime))
 						.setTextColor(getResources().getColor(R.color.Grey));
+			}
 			this.viewSwitcher.showPrevious();
 		} else if (v.getId() == R.id.SwitchToTime) {
 			v.setEnabled(false);
 			findViewById(R.id.SwitchToDate).setEnabled(true);
-			if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB)
+			if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB) {
 				((Button) findViewById(R.id.SwitchToDate))
 						.setTextColor(getResources().getColor(R.color.Grey));
+			}
 			this.viewSwitcher.showNext();
 
 		}
@@ -178,7 +184,7 @@ public class DateTimePicker extends RelativeLayout implements
 	}
 
 	// Convenience wrapper for internal TimePicker instance
-	public void setIs24HourView(boolean is24HourView) {
+	public void setIs24HourView(final boolean is24HourView) {
 		this.timePicker.setIs24HourView(is24HourView);
 	}
 
@@ -188,12 +194,13 @@ public class DateTimePicker extends RelativeLayout implements
 	}
 
 	// Convenience wrapper for internal DatePicker instance
-	public void updateDate(int year, int monthOfYear, int dayOfMonth) {
+	public void updateDate(final int year, final int monthOfYear,
+			final int dayOfMonth) {
 		this.datePicker.updateDate(year, monthOfYear, dayOfMonth);
 	}
 
 	// Convenience wrapper for internal TimePicker instance
-	public void updateTime(int currentHour, int currentMinute) {
+	public void updateTime(final int currentHour, final int currentMinute) {
 		this.timePicker.setCurrentHour(currentHour);
 		this.timePicker.setCurrentMinute(currentMinute);
 	}
