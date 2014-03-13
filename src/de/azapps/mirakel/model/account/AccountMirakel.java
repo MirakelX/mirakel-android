@@ -22,75 +22,81 @@ public class AccountMirakel extends AccountBase {
 	public enum ACCOUNT_TYPES {
 		CALDAV, LOCAL, TASKWARRIOR;
 		public static ACCOUNT_TYPES getSyncType(String type) {
-			if (type.equals("Taskwarrior")) return TASKWARRIOR;
-			else if (type.equals("CalDav")) return CALDAV;
+			if (type.equals("Taskwarrior"))
+				return TASKWARRIOR;
+			else if (type.equals("CalDav"))
+				return CALDAV;
 			else
 				return LOCAL;
 		}
 
 		public static ACCOUNT_TYPES parseAccountType(String type) {
-			if (type.equals(ACCOUNT_TYPE_DAVDROID)) return CALDAV;
-			else if (type.equals(ACCOUNT_TYPE_MIRAKEL)) return TASKWARRIOR;
-			else return LOCAL;
+			if (type.equals(ACCOUNT_TYPE_DAVDROID))
+				return CALDAV;
+			else if (type.equals(ACCOUNT_TYPE_MIRAKEL))
+				return TASKWARRIOR;
+			else
+				return LOCAL;
 		}
 
 		public static ACCOUNT_TYPES parseInt(int i) {
 			switch (i) {
-				case -1:
-					return LOCAL;
-				case 1:
-					return CALDAV;
-				case 2:
-					return TASKWARRIOR;
-				default:
-					throw new IllegalArgumentException();
+			case -1:
+				return LOCAL;
+			case 1:
+				return CALDAV;
+			case 2:
+				return TASKWARRIOR;
+			default:
+				throw new IllegalArgumentException();
 			}
 
 		}
 
 		public static String toName(ACCOUNT_TYPES type) {
 			switch (type) {
-				case CALDAV:
-					return ACCOUNT_TYPE_DAVDROID;
-				case TASKWARRIOR:
-					return ACCOUNT_TYPE_MIRAKEL;
-				case LOCAL:
-				default:
-					return null;
+			case CALDAV:
+				return ACCOUNT_TYPE_DAVDROID;
+			case TASKWARRIOR:
+				return ACCOUNT_TYPE_MIRAKEL;
+			case LOCAL:
+			default:
+				return null;
 			}
 		}
 
 		public int toInt() {
 			switch (this) {
-				case CALDAV:
-					return 1;
-				case LOCAL:
-					return -1;
-				case TASKWARRIOR:
-					return 2;
-				default:
-					throw new RuntimeException();
+			case CALDAV:
+				return 1;
+			case LOCAL:
+				return -1;
+			case TASKWARRIOR:
+				return 2;
+			default:
+				throw new RuntimeException();
 			}
 		}
 
 		public String typeName(Context ctx) {
 			switch (this) {
-				case CALDAV:
-					return ctx.getString(R.string.calDavName);
-				case LOCAL:
-					return ctx.getString(R.string.local_account);
-				case TASKWARRIOR:
-					return ctx.getString(R.string.tw_account);
-				default:
-					return "Unkown account type";
+			case CALDAV:
+				return ctx.getString(R.string.calDavName);
+			case LOCAL:
+				return ctx.getString(R.string.local_account);
+			case TASKWARRIOR:
+				return ctx.getString(R.string.tw_account);
+			default:
+				return "Unkown account type";
 			}
 		}
 	}
+
 	public static final String ACCOUNT_TYPE_DAVDROID = "bitfire.at.davdroid";
 
 	public static final String ACCOUNT_TYPE_MIRAKEL = "de.azapps.mirakel";
 	private static final String[] allColumns = { DatabaseHelper.ID,
-		DatabaseHelper.NAME, TYPE, ENABLED };
+			DatabaseHelper.NAME, TYPE, ENABLED };
 	private static Context context;
 	private static SQLiteDatabase database;
 	private static DatabaseHelper dbHelper;
@@ -253,14 +259,14 @@ public class AccountMirakel extends AccountBase {
 
 	}
 
-
 	public AccountMirakel(int id, String name, ACCOUNT_TYPES type,
 			boolean enabled) {
 		super(id, name, type, enabled);
 	}
 
 	public void destroy() {
-		if (getType() == ACCOUNT_TYPES.LOCAL) return;
+		if (getType() == ACCOUNT_TYPES.LOCAL)
+			return;
 		database.delete(TABLE, DatabaseHelper.ID + "=" + getId(), null);
 		ContentValues cv = new ContentValues();
 		cv.put(ListMirakel.ACCOUNT_ID, getLocal().getId());

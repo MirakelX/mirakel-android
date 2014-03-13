@@ -36,17 +36,20 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
 
 public class Recurring extends RecurringBase {
-	public final static String		TABLE		= "recurring";
-	private final static String		TAG			= "Recurring";
-	private final static String[]	allColumns	= { "_id", "label", "minutes",
+	public final static String TABLE = "recurring";
+	private final static String TAG = "Recurring";
+	private final static String[] allColumns = { "_id", "label", "minutes",
 			"hours", "days", "months", "years", "for_due", "start_date",
 			"end_date", "temporary", "isExact", "monday", "tuesday",
 			"wednesday", "thursday", "friday", "saturday", "sunnday",
-			"derived_from"						};
-	private static SQLiteDatabase	database;
-	private static DatabaseHelper	dbHelper;
+			"derived_from" };
+	private static SQLiteDatabase database;
+	private static DatabaseHelper dbHelper;
 
-	public Recurring(int _id, String label, int minutes, int hours, int days, int months, int years, boolean forDue, Calendar startDate, Calendar endDate, boolean temporary, boolean isExact, SparseBooleanArray weekdays, Integer derivedFrom) {
+	public Recurring(int _id, String label, int minutes, int hours, int days,
+			int months, int years, boolean forDue, Calendar startDate,
+			Calendar endDate, boolean temporary, boolean isExact,
+			SparseBooleanArray weekdays, Integer derivedFrom) {
 		super(_id, label, minutes, hours, days, months, years, forDue,
 				startDate, endDate, temporary, isExact, weekdays, derivedFrom);
 	}
@@ -65,7 +68,7 @@ public class Recurring extends RecurringBase {
 	 * Initialize the Database and the preferences
 	 * 
 	 * @param context
-	 *        The Application-Context
+	 *            The Application-Context
 	 */
 	public static void init(Context context) {
 		dbHelper = new DatabaseHelper(context);
@@ -87,7 +90,10 @@ public class Recurring extends RecurringBase {
 		return newR.create();
 	}
 
-	public static Recurring newRecurring(String label, int minutes, int hours, int days, int months, int years, boolean forDue, Calendar startDate, Calendar endDate, boolean temporary, boolean isExact, SparseBooleanArray weekdays) {
+	public static Recurring newRecurring(String label, int minutes, int hours,
+			int days, int months, int years, boolean forDue,
+			Calendar startDate, Calendar endDate, boolean temporary,
+			boolean isExact, SparseBooleanArray weekdays) {
 		Recurring r = new Recurring(0, label, minutes, hours, days, months,
 				years, forDue, startDate, endDate, temporary, isExact,
 				weekdays, null);
@@ -123,7 +129,8 @@ public class Recurring extends RecurringBase {
 		return null;
 	}
 
-	public static Recurring get(int minutes, int hours, int days, int month, int years, Calendar start, Calendar end) {
+	public static Recurring get(int minutes, int hours, int days, int month,
+			int years, Calendar start, Calendar end) {
 		String cal = "";
 		if (start != null) {
 			cal += " start_date=" + DateTimeHelper.formatDateTime(start);
@@ -252,12 +259,15 @@ public class Recurring extends RecurringBase {
 			}
 		} else {
 			int diff = 8;
-			if (c.compareTo(now) < 0) c = now;
+			if (c.compareTo(now) < 0)
+				c = now;
 			c.add(Calendar.DAY_OF_MONTH, 1);
 			for (Integer day : weekdays) {
 				int local_diff = day - c.get(Calendar.DAY_OF_WEEK);
-				if (local_diff < 0) local_diff += 7;
-				if (diff > local_diff) diff = local_diff;
+				if (local_diff < 0)
+					local_diff += 7;
+				if (diff > local_diff)
+					diff = local_diff;
 			}
 			c.add(Calendar.DAY_OF_MONTH, diff);
 		}

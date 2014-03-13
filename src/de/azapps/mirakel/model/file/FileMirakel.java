@@ -30,7 +30,8 @@ public class FileMirakel extends FileBase {
 	private static DatabaseHelper dbHelper;
 	public static final File fileCacheDir = new File(cacheDirPath);
 	public static final String TABLE = "files";
-	//private static final String TAG = "FileMirakel";
+
+	// private static final String TAG = "FileMirakel";
 
 	/**
 	 * Get all Tasks

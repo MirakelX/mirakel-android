@@ -21,7 +21,7 @@ public class SharingHelper {
 		sharingIntent.setType("text/plain");
 		sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
 		sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-	
+
 		Intent ci = Intent.createChooser(sharingIntent, context.getResources()
 				.getString(R.string.share_using));
 		ci.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

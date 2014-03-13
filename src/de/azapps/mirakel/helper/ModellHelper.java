@@ -11,7 +11,6 @@ import android.view.View;
 
 public class ModellHelper {
 
-
 	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
 	public static void setListColorBackground(ListMirakel list, View row, int w) {

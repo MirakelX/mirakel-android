@@ -49,11 +49,11 @@ import de.azapps.mirakel.services.TaskService;
 import de.azapps.tools.Log;
 
 public class ReminderAlarm extends BroadcastReceiver {
-	private static final String	TAG					= "ReminderAlarm";
-	public static final String	UPDATE_NOTIFICATION	= "de.azapps.mirakel.reminders.ReminderAlarm.UPDATE_NOTIFICATION";
-	public static final String	SHOW_TASK			= "de.azapps.mirakel.reminders.ReminderAlarm.SHOW_TASK";
-	public static final String	EXTRA_ID			= "de.azapps.mirakel.reminders.ReminderAlarm.EXTRA_ID";
-	private static Set<Long>	allReminders		= new HashSet<Long>();
+	private static final String TAG = "ReminderAlarm";
+	public static final String UPDATE_NOTIFICATION = "de.azapps.mirakel.reminders.ReminderAlarm.UPDATE_NOTIFICATION";
+	public static final String SHOW_TASK = "de.azapps.mirakel.reminders.ReminderAlarm.SHOW_TASK";
+	public static final String EXTRA_ID = "de.azapps.mirakel.reminders.ReminderAlarm.EXTRA_ID";
+	private static Set<Long> allReminders = new HashSet<Long>();
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -65,7 +65,8 @@ public class ReminderAlarm extends BroadcastReceiver {
 		}
 
 		long taskId = intent.getLongExtra(EXTRA_ID, 0);
-		if (taskId == 0) return;
+		if (taskId == 0)
+			return;
 
 		Task task = Task.get(taskId);
 		if (task == null) {
@@ -84,7 +85,8 @@ public class ReminderAlarm extends BroadcastReceiver {
 
 		Intent openIntent;
 		try {
-			openIntent = new Intent(context, Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
+			openIntent = new Intent(context,
+					Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
 		} catch (ClassNotFoundException e) {
 			Log.wtf(TAG, "mainactivtity not found");
 			return;
@@ -170,9 +172,9 @@ public class ReminderAlarm extends BroadcastReceiver {
 				builder.build());
 	}
 
-	private static AlarmManager						alarmManager;
+	private static AlarmManager alarmManager;
 
-	private static List<Pair<Task, PendingIntent>>	activeAlarms	= new ArrayList<Pair<Task, PendingIntent>>();
+	private static List<Pair<Task, PendingIntent>> activeAlarms = new ArrayList<Pair<Task, PendingIntent>>();
 
 	public static void updateAlarms(final Context ctx) {
 
@@ -254,12 +256,14 @@ public class ReminderAlarm extends BroadcastReceiver {
 	private static boolean isAlarm(Task t2) {
 		for (int i = 0; i < activeAlarms.size(); i++) {
 			Task t = activeAlarms.get(i).first;
-			if (t.getId() == t2.getId()) return true;
+			if (t.getId() == t2.getId())
+				return true;
 		}
 		return false;
 	}
 
-	private static void cancelAlarm(Context ctx, Task t, Task newTask, Pair<Task, PendingIntent> p, PendingIntent pendingIntent) {
+	private static void cancelAlarm(Context ctx, Task t, Task newTask,
+			Pair<Task, PendingIntent> p, PendingIntent pendingIntent) {
 		activeAlarms.remove(p);
 		closeNotificationFor(ctx, t.getId());
 		if (newTask == null) {
@@ -279,7 +283,8 @@ public class ReminderAlarm extends BroadcastReceiver {
 
 	private static Pair<Task, PendingIntent> findTask(Task task) {
 		for (Pair<Task, PendingIntent> p : activeAlarms) {
-			if (task.getId() == p.first.getId()) return p;
+			if (task.getId() == p.first.getId())
+				return p;
 		}
 		throw new IndexOutOfBoundsException();
 	}
@@ -291,7 +296,8 @@ public class ReminderAlarm extends BroadcastReceiver {
 		intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx, 0,
 				intent, PendingIntent.FLAG_UPDATE_CURRENT);
-		if (pendingIntent == null || task.getReminder() == null) return null;
+		if (pendingIntent == null || task.getReminder() == null)
+			return null;
 		Log.v(TAG, "Set alarm for " + task.getName() + " on "
 				+ task.getReminder().getTimeInMillis());
 		Recurring recurrence = task.getRecurringReminder();
@@ -317,7 +323,8 @@ public class ReminderAlarm extends BroadcastReceiver {
 	public static void stopAll(Context context) {
 		NotificationManager nm = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
-		// This hack is a must because otherwise we get a concurrentModificationException
+		// This hack is a must because otherwise we get a
+		// concurrentModificationException
 		Long[] reminders = allReminders.toArray(new Long[] {});
 		for (Long id : reminders) {
 			nm.cancel(DefinitionsHelper.NOTIF_REMINDER + id.intValue());

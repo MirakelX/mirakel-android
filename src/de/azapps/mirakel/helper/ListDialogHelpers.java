@@ -46,7 +46,7 @@ public class ListDialogHelpers {
 	 */
 	public static ListMirakel handleSortBy(Context ctx, final ListMirakel list,
 			TextView res) {
-		return handleSortBy(ctx, list,null, null);
+		return handleSortBy(ctx, list, null, null);
 	}
 
 	public static ListMirakel handleSortBy(Context ctx, final ListMirakel list,

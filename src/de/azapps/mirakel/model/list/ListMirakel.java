@@ -49,24 +49,24 @@ import de.azapps.tools.Log;
  * @author az
  */
 public class ListMirakel extends ListBase {
-	private static final String[]	allColumns	= { DatabaseHelper.ID,
-		DatabaseHelper.NAME, SORT_BY, DatabaseHelper.CREATED_AT,
-		DatabaseHelper.UPDATED_AT, DatabaseHelper.SYNC_STATE_FIELD, LFT, RGT, COLOR,
-		ACCOUNT_ID							};
-	private static Context			context;
+	private static final String[] allColumns = { DatabaseHelper.ID,
+			DatabaseHelper.NAME, SORT_BY, DatabaseHelper.CREATED_AT,
+			DatabaseHelper.UPDATED_AT, DatabaseHelper.SYNC_STATE_FIELD, LFT,
+			RGT, COLOR, ACCOUNT_ID };
+	private static Context context;
 
-	private static SQLiteDatabase	database;
+	private static SQLiteDatabase database;
 
 	// private static final String TAG = "ListMirakel";
 
-	private static DatabaseHelper	dbHelper;
+	private static DatabaseHelper dbHelper;
 
-	public static final short	SORT_BY_OPT	= 0, SORT_BY_DUE = 1,
+	public static final short SORT_BY_OPT = 0, SORT_BY_DUE = 1,
 			SORT_BY_PRIO = 2, SORT_BY_ID = 3, SORT_BY_REVERT_DEFAULT = 4;
 
-	public static final String	TABLE		= "lists";
+	public static final String TABLE = "lists";
 
-	private static final String		TAG			= "ListMirakel";
+	private static final String TAG = "ListMirakel";
 
 	/**
 	 * Get all Lists in the Database
@@ -125,7 +125,8 @@ public class ListMirakel extends ListBase {
 	public static List<ListMirakel> bySyncState(SYNC_STATE state) {
 
 		Cursor c = database.query(ListMirakel.TABLE, allColumns,
-				DatabaseHelper.SYNC_STATE_FIELD + "=" + state, null, null, null, null);
+				DatabaseHelper.SYNC_STATE_FIELD + "=" + state, null, null,
+				null, null);
 		c.moveToFirst();
 		List<ListMirakel> lists = cursorToListList(c);
 		c.close();
@@ -178,15 +179,14 @@ public class ListMirakel extends ListBase {
 		return findByName(name, null);
 	}
 
-	public static ListMirakel findByName(String name,AccountMirakel account) {
+	public static ListMirakel findByName(String name, AccountMirakel account) {
 		Cursor cursor = database.query(ListMirakel.TABLE, allColumns,
 				DatabaseHelper.NAME
-				+ "='"
-				+ name
-				+ "'"
-				+ (account == null ? "" : " AND " + ACCOUNT_ID + "="
-						+ account.getId()), null, null, null,
-						null);
+						+ "='"
+						+ name
+						+ "'"
+						+ (account == null ? "" : " AND " + ACCOUNT_ID + "="
+								+ account.getId()), null, null, null, null);
 		cursor.moveToFirst();
 		if (cursor.getCount() != 0) {
 			ListMirakel t = cursorToList(cursor);
@@ -206,8 +206,8 @@ public class ListMirakel extends ListBase {
 	 */
 	public static ListMirakel first() {
 		Cursor cursor = database.query(ListMirakel.TABLE, allColumns, "not "
-				+ DatabaseHelper.SYNC_STATE_FIELD + "=" + SYNC_STATE.DELETE, null, null,
-				null, LFT + " ASC");
+				+ DatabaseHelper.SYNC_STATE_FIELD + "=" + SYNC_STATE.DELETE,
+				null, null, null, LFT + " ASC");
 		ListMirakel list = null;
 		cursor.moveToFirst();
 		if (!cursor.isAfterLast()) {
@@ -217,6 +217,7 @@ public class ListMirakel extends ListBase {
 		cursor.close();
 		return list;
 	}
+
 	public static ListMirakel getInboxList(AccountMirakel account) {
 		Cursor c = database.query(TABLE, allColumns, DatabaseHelper.NAME + "='"
 				+ context.getString(R.string.inbox) + "' and " + ACCOUNT_ID
@@ -231,8 +232,10 @@ public class ListMirakel extends ListBase {
 		c.close();
 		return newList(context.getString(R.string.inbox), SORT_BY_OPT, account);
 	}
+
 	public static ListMirakel getList(int listId) {
-		if (listId < 0) return SpecialList.getSpecialList(-listId);
+		if (listId < 0)
+			return SpecialList.getSpecialList(-listId);
 
 		Cursor cursor = database
 				.query(ListMirakel.TABLE, allColumns, DatabaseHelper.ID + "='"
@@ -245,16 +248,20 @@ public class ListMirakel extends ListBase {
 		cursor.close();
 		return null;
 	}
+
 	public static List<ListMirakel> getListsForAccount(AccountMirakel account) {
-		if (account == null || !account.isEnabeld()) return new ArrayList<ListMirakel>();
+		if (account == null || !account.isEnabeld())
+			return new ArrayList<ListMirakel>();
 		Cursor c = database.query(TABLE, allColumns, "NOT "
-				+ DatabaseHelper.SYNC_STATE_FIELD + "=" + SYNC_STATE.DELETE + " and "
-				+ ACCOUNT_ID + "=" + account.getId(), null, null, null, null);
+				+ DatabaseHelper.SYNC_STATE_FIELD + "=" + SYNC_STATE.DELETE
+				+ " and " + ACCOUNT_ID + "=" + account.getId(), null, null,
+				null, null);
 		c.moveToFirst();
 		List<ListMirakel> list = cursorToListList(c);
 		c.close();
 		return list;
 	}
+
 	public static ListMirakel getSafeDefaultList() {
 		ListMirakel list = MirakelModelPreferences.getImportDefaultList(true);
 		return list;
@@ -264,7 +271,7 @@ public class ListMirakel extends ListBase {
 	 * Initialize the Database and the preferences
 	 * 
 	 * @param context
-	 *        The Application-Context
+	 *            The Application-Context
 	 */
 	public static void init(Context ctx) {
 		ListMirakel.context = ctx;
@@ -279,8 +286,8 @@ public class ListMirakel extends ListBase {
 	 */
 	public static ListMirakel last() {
 		Cursor cursor = database.query(ListMirakel.TABLE, allColumns, "not "
-				+ DatabaseHelper.SYNC_STATE_FIELD + "=" + SYNC_STATE.DELETE, null, null,
-				null, DatabaseHelper.ID + " DESC");
+				+ DatabaseHelper.SYNC_STATE_FIELD + "=" + SYNC_STATE.DELETE,
+				null, null, null, DatabaseHelper.ID + " DESC");
 		ListMirakel list = null;
 		cursor.moveToFirst();
 		if (!cursor.isAfterLast()) {
@@ -305,16 +312,18 @@ public class ListMirakel extends ListBase {
 	 * Create and insert a new List
 	 * 
 	 * @param name
-	 *        Name of the List
+	 *            Name of the List
 	 * @param sort_by
-	 *        the default sorting
+	 *            the default sorting
 	 * @return new List
 	 */
 	public static ListMirakel newList(String name, int sort_by) {
-		return newList(name, sort_by, MirakelModelPreferences.getDefaultAccount());
+		return newList(name, sort_by,
+				MirakelModelPreferences.getDefaultAccount());
 	}
 
-	public static ListMirakel newList(String name, int sort_by, AccountMirakel account) {
+	public static ListMirakel newList(String name, int sort_by,
+			AccountMirakel account) {
 		ContentValues values = new ContentValues();
 		values.put(DatabaseHelper.NAME, name);
 		values.put(ACCOUNT_ID, account.getId());
@@ -323,11 +332,11 @@ public class ListMirakel extends ListBase {
 		values.put(DatabaseHelper.CREATED_AT,
 				new SimpleDateFormat(
 						context.getString(R.string.dateTimeFormat), Locale.US)
-		.format(new Date()));
+						.format(new Date()));
 		values.put(DatabaseHelper.UPDATED_AT,
 				new SimpleDateFormat(
 						context.getString(R.string.dateTimeFormat), Locale.US)
-		.format(new Date()));
+						.format(new Date()));
 		values.put(RGT, 0);
 		values.put(LFT, 0);
 		database.beginTransaction();
@@ -424,12 +433,16 @@ public class ListMirakel extends ListBase {
 	 * private ListMirakel() { }
 	 */
 
-	protected ListMirakel(int id, String name, short sort_by, String created_at, String updated_at, SYNC_STATE sync_state, int lft, int rgt, int color, AccountMirakel account) {
+	protected ListMirakel(int id, String name, short sort_by,
+			String created_at, String updated_at, SYNC_STATE sync_state,
+			int lft, int rgt, int color, AccountMirakel account) {
 		super(id, name, sort_by, created_at, updated_at, sync_state, lft, rgt,
 				color, account);
 	}
 
-	protected ListMirakel(int id, String name, short sort_by, String created_at, String updated_at, SYNC_STATE sync_state, int lft, int rgt, int color, int account) {
+	protected ListMirakel(int id, String name, short sort_by,
+			String created_at, String updated_at, SYNC_STATE sync_state,
+			int lft, int rgt, int color, int account) {
 		super(id, name, sort_by, created_at, updated_at, sync_state, lft, rgt,
 				color, account);
 	}
@@ -450,10 +463,11 @@ public class ListMirakel extends ListBase {
 		}
 		c = MirakelContentProvider.getReadableDatabase().rawQuery(
 				"Select count(" + DatabaseHelper.ID + ") from " + Task.TABLE
-				+ " where " + where
-				+ (where.length() != 0 ? " and " : " ") + " "
-				+ Task.DONE + "=0 and not " + DatabaseHelper.SYNC_STATE_FIELD
-				+ "=" + SYNC_STATE.DELETE, null);
+						+ " where " + where
+						+ (where.length() != 0 ? " and " : " ") + " "
+						+ Task.DONE + "=0 and not "
+						+ DatabaseHelper.SYNC_STATE_FIELD + "="
+						+ SYNC_STATE.DELETE, null);
 		c.moveToFirst();
 		if (c.getCount() > 0) {
 			int n = c.getInt(0);
@@ -478,7 +492,8 @@ public class ListMirakel extends ListBase {
 			UndoHistory.updateLog(this, context);
 		}
 		long id = getId();
-		if (id <= 0) return;
+		if (id <= 0)
+			return;
 		database.beginTransaction();
 		try {
 			if (getSyncState() == SYNC_STATE.ADD || force) {
@@ -487,7 +502,8 @@ public class ListMirakel extends ListBase {
 						+ id, null);
 			} else {
 				ContentValues values = new ContentValues();
-				values.put(DatabaseHelper.SYNC_STATE_FIELD, SYNC_STATE.DELETE.toInt());
+				values.put(DatabaseHelper.SYNC_STATE_FIELD,
+						SYNC_STATE.DELETE.toInt());
 				database.update(Task.TABLE, values, Task.LIST_ID + " = " + id,
 						null);
 				database.update(ListMirakel.TABLE, values, DatabaseHelper.ID
@@ -507,7 +523,8 @@ public class ListMirakel extends ListBase {
 
 	public Task getFirstTask() {
 		List<Task> tasks = tasks();
-		if (tasks.size() > 0) return tasks.get(0);
+		if (tasks.size() > 0)
+			return tasks.get(0);
 
 		return null;
 	}
@@ -520,7 +537,7 @@ public class ListMirakel extends ListBase {
 	 * Update the List in the Database
 	 * 
 	 * @param list
-	 *        The List
+	 *            The List
 	 */
 	public void save() {
 		save(true);
@@ -533,7 +550,7 @@ public class ListMirakel extends ListBase {
 			database.beginTransaction();
 			setSyncState(getSyncState() == SYNC_STATE.ADD
 					|| getSyncState() == SYNC_STATE.IS_SYNCED ? getSyncState()
-							: SYNC_STATE.NEED_SYNC);
+					: SYNC_STATE.NEED_SYNC);
 			setUpdatedAt(new SimpleDateFormat(
 					context.getString(R.string.dateTimeFormat),
 					Locale.getDefault()).format(new Date()));

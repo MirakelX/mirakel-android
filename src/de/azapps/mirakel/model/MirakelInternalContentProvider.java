@@ -1,6 +1,5 @@
 package de.azapps.mirakel.model;
 
-
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
@@ -11,22 +10,18 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
 
-
 public class MirakelInternalContentProvider extends ContentProvider {
 
 	private static final String TAG = "MirakelInternalContentProvider";
-	
-	private static final UriMatcher	uriMatcher;
-	private static final int TASKS=0;
-	private static final int LISTS=1;
+
+	private static final UriMatcher uriMatcher;
+	private static final int TASKS = 0;
+	private static final int LISTS = 1;
 	static {
 		uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-		uriMatcher.addURI(DefinitionsHelper.AUTHORITY_INTERNAL,
-				"tasks", TASKS);
+		uriMatcher.addURI(DefinitionsHelper.AUTHORITY_INTERNAL, "tasks", TASKS);
 
-
-		uriMatcher.addURI(DefinitionsHelper.AUTHORITY_INTERNAL,
-				"lists", LISTS);
+		uriMatcher.addURI(DefinitionsHelper.AUTHORITY_INTERNAL, "lists", LISTS);
 	}
 
 	@Override
@@ -59,17 +54,17 @@ public class MirakelInternalContentProvider extends ContentProvider {
 		String table;
 		switch (uriMatcher.match(uri)) {
 		case TASKS:
-			table=Task.TABLE;
+			table = Task.TABLE;
 			break;
 		case LISTS:
-			table=ListMirakel.TABLE;
+			table = ListMirakel.TABLE;
 			break;
 		default:
-			Log.wtf(TAG,"where are the dragons");
+			Log.wtf(TAG, "where are the dragons");
 			return null;
 		}
-		return MirakelContentProvider.getReadableDatabase().query(table, projection, selection,
-				selectionArgs, null, null, sortOrder);
+		return MirakelContentProvider.getReadableDatabase().query(table,
+				projection, selection, selectionArgs, null, null, sortOrder);
 	}
 
 	@Override

@@ -5,20 +5,20 @@ import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 
 public class AccountBase {
-	public final static String TYPE="type";
-	public final static String ENABLED="enabled";
-	
+	public final static String TYPE = "type";
+	public final static String ENABLED = "enabled";
+
 	private int _id;
 	private String name;
 	private int type;
 	private boolean enabled;
-	
-	public AccountBase(int id, String name, ACCOUNT_TYPES type, boolean enabled){
+
+	public AccountBase(int id, String name, ACCOUNT_TYPES type, boolean enabled) {
 		this.setId(id);
 		this.setName(name);
 		this.setType(type.toInt());
 		this.setEnabeld(enabled);
-		
+
 	}
 
 	public int getId() {
@@ -36,6 +36,7 @@ public class AccountBase {
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public ACCOUNT_TYPES getType() {
 		return ACCOUNT_TYPES.parseInt(this.type);
 	}
@@ -43,16 +44,16 @@ public class AccountBase {
 	public void setType(int type) {
 		this.type = type;
 	}
-	
-	public ContentValues getContentValues(){
-		ContentValues cv= new ContentValues();
+
+	public ContentValues getContentValues() {
+		ContentValues cv = new ContentValues();
 		cv.put(DatabaseHelper.ID, this._id);
 		cv.put(DatabaseHelper.NAME, this.name);
 		cv.put(TYPE, this.type);
 		cv.put(ENABLED, this.enabled);
 		return cv;
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.name;

@@ -43,8 +43,8 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
 
 public class WunderlistImport {
-	private static final String			TAG	= "WunderlistImport";
-	private static Map<String, Integer>	taskMapping;
+	private static final String TAG = "WunderlistImport";
+	private static Map<String, Integer> taskMapping;
 
 	public static boolean exec(Context ctx, String file_path) {
 		String json;
@@ -97,7 +97,8 @@ public class WunderlistImport {
 		return true;
 	}
 
-	private static Map<String, Integer> parseList(JsonObject jsonList, Map<String, Integer> listMapping) {
+	private static Map<String, Integer> parseList(JsonObject jsonList,
+			Map<String, Integer> listMapping) {
 		String name = jsonList.get("title").getAsString();
 		String id = jsonList.get("id").getAsString();
 		ListMirakel l = ListMirakel.newList(name);
@@ -112,9 +113,11 @@ public class WunderlistImport {
 	/**
 	 * <Subtask, id of parent>
 	 */
-	private static List<Pair<Task, String>>	subtasks	= new ArrayList<Pair<Task, String>>();
+	private static List<Pair<Task, String>> subtasks = new ArrayList<Pair<Task, String>>();
 
-	private static List<Pair<Integer, String>> parseTask(JsonObject jsonTask, Map<String, Integer> listMapping, List<Pair<Integer, String>> contents, Context ctx) {
+	private static List<Pair<Integer, String>> parseTask(JsonObject jsonTask,
+			Map<String, Integer> listMapping,
+			List<Pair<Integer, String>> contents, Context ctx) {
 		String name = jsonTask.get("title").getAsString();
 		String list_id_string = jsonTask.get("list_id").getAsString();
 		Integer listId = listMapping.get(list_id_string);
@@ -133,7 +136,7 @@ public class WunderlistImport {
 						.get("due_date").getAsString());
 				t.setDue(due);
 			} catch (ParseException e) {
-				Log.e(TAG,"cannot parse date");
+				Log.e(TAG, "cannot parse date");
 			}
 		}
 		if (jsonTask.has("note")) {
@@ -146,7 +149,7 @@ public class WunderlistImport {
 						"completed_at").getAsString());
 				t.setUpdatedAt(completed);
 			} catch (ParseException e) {
-				Log.e(TAG,"cannot parse date");
+				Log.e(TAG, "cannot parse date");
 			}
 		}
 		if (jsonTask.has("starred") && jsonTask.get("starred").getAsBoolean()) {

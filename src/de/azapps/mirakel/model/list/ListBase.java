@@ -25,12 +25,12 @@ import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.account.AccountMirakel;
 
 class ListBase {
-	//db-columns
-	public final static String LFT="lft";
-	public final static String RGT="rgt";
-	public final static String COLOR="color";
-	public final static String SORT_BY="sort_by";
-	public final static String ACCOUNT_ID="account_id";
+	// db-columns
+	public final static String LFT = "lft";
+	public final static String RGT = "rgt";
+	public final static String COLOR = "color";
+	public final static String SORT_BY = "sort_by";
+	public final static String ACCOUNT_ID = "account_id";
 
 	private int id;
 	private String name;
@@ -153,7 +153,7 @@ class ListBase {
 	}
 
 	protected void setAccount(int account) {
-		this.account=account;		
+		this.account = account;
 	}
 
 	@Override

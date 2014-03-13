@@ -52,8 +52,8 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
 
 public class AnyDoImport {
-	private static final String		TAG	= "AnyDoImport";
-	private static SparseIntArray	taskMapping;
+	private static final String TAG = "AnyDoImport";
+	private static SparseIntArray taskMapping;
 
 	public static boolean exec(Context ctx, String path_any_do) {
 		String json;
@@ -122,7 +122,8 @@ public class AnyDoImport {
 				}
 			}
 			final File backupFile = lastBackup;
-			if (backupFile == null) return;
+			if (backupFile == null)
+				return;
 			new AlertDialog.Builder(activity)
 					.setTitle(activity.getString(R.string.import_any_do_click))
 					.setMessage(
@@ -132,7 +133,8 @@ public class AnyDoImport {
 							new OnClickListener() {
 
 								@Override
-								public void onClick(DialogInterface dialog, int which) {
+								public void onClick(DialogInterface dialog,
+										int which) {
 									exec(activity, backupFile.getAbsolutePath());
 									android.os.Process
 											.killProcess(android.os.Process
@@ -144,7 +146,8 @@ public class AnyDoImport {
 							new OnClickListener() {
 
 								@Override
-								public void onClick(DialogInterface dialog, int which) {
+								public void onClick(DialogInterface dialog,
+										int which) {
 									Helpers.showFileChooser(
 											DefinitionsHelper.REQUEST_FILE_ANY_DO,
 											activity.getString(R.string.any_do_import_title),
@@ -159,7 +162,8 @@ public class AnyDoImport {
 							new OnClickListener() {
 
 								@Override
-								public void onClick(DialogInterface dialog, int which) {
+								public void onClick(DialogInterface dialog,
+										int which) {
 									handleImportAnyDo(activity);
 								}
 							})
@@ -168,7 +172,8 @@ public class AnyDoImport {
 							new OnClickListener() {
 
 								@Override
-								public void onClick(DialogInterface dialog, int which) {
+								public void onClick(DialogInterface dialog,
+										int which) {
 									Helpers.showFileChooser(
 											DefinitionsHelper.REQUEST_FILE_ANY_DO,
 											activity.getString(R.string.any_do_import_title),
@@ -179,7 +184,8 @@ public class AnyDoImport {
 		}
 	}
 
-	private static SparseIntArray parseList(JsonObject jsonList, SparseIntArray listMapping) {
+	private static SparseIntArray parseList(JsonObject jsonList,
+			SparseIntArray listMapping) {
 		String name = jsonList.get("name").getAsString();
 		int id = jsonList.get("id").getAsInt();
 		ListMirakel l = ListMirakel.newList(name);
@@ -188,7 +194,9 @@ public class AnyDoImport {
 
 	}
 
-	private static List<Pair<Integer, String>> parseTask(JsonObject jsonTask, SparseIntArray listMapping, List<Pair<Integer, String>> contents, Context ctx) {
+	private static List<Pair<Integer, String>> parseTask(JsonObject jsonTask,
+			SparseIntArray listMapping, List<Pair<Integer, String>> contents,
+			Context ctx) {
 		String name = jsonTask.get("title").getAsString();
 		if (jsonTask.has("parentId")) {
 			contents.add(new Pair<Integer, String>(jsonTask.get("parentId")
@@ -215,12 +223,12 @@ public class AnyDoImport {
 			t.setPriority(prio);
 		}
 		if (jsonTask.has("status")) {
-			boolean done=false;
-			String status=jsonTask.get("status").getAsString();
-			if(status.equals("DONE")||status.equals("CHECKED")){
-				done=true;
-			}else if(status.equals("UNCHECKED")){
-				done=false;
+			boolean done = false;
+			String status = jsonTask.get("status").getAsString();
+			if (status.equals("DONE") || status.equals("CHECKED")) {
+				done = true;
+			} else if (status.equals("UNCHECKED")) {
+				done = false;
 			}
 			t.setDone(done);
 		}

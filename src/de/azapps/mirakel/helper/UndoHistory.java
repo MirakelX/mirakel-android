@@ -31,10 +31,10 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
 
 public class UndoHistory {
-	private static final short	LIST	= 1;
-	private static String		TAG		= "UndoHistory";
-	private static final short	TASK	= 0;
-	public static String		UNDO	= "OLD";
+	private static final short LIST = 1;
+	private static String TAG = "UndoHistory";
+	private static final short TASK = 0;
+	public static String UNDO = "OLD";
 
 	public static void logCreate(ListMirakel newList, Context ctx) {
 		updateLog(LIST, newList.getId() + "", ctx);
@@ -52,15 +52,15 @@ public class UndoHistory {
 				try {
 					long id = Long.parseLong(last.substring(1));
 					switch (type) {
-						case TASK:
-							Task.get(id).destroy(true);
-							break;
-						case LIST:
-							ListMirakel.getList((int)id).destroy(true);
-							break;
-						default:
-							Log.wtf(TAG, "unkown Type");
-							break;
+					case TASK:
+						Task.get(id).destroy(true);
+						break;
+					case LIST:
+						ListMirakel.getList((int) id).destroy(true);
+						break;
+					default:
+						Log.wtf(TAG, "unkown Type");
+						break;
 					}
 				} catch (Exception e) {
 					Log.e(TAG, "cannot parse String");
@@ -70,37 +70,38 @@ public class UndoHistory {
 				JsonObject json = new JsonParser().parse(last.substring(1))
 						.getAsJsonObject();
 				switch (type) {
-					case TASK:
-						Task t = Task.parse_json(json,
-								AccountMirakel.getLocal(),false);
-						if (Task.get(t.getId()) != null) {
-							t.safeSave(false);
-						} else {
-							try {
-								MirakelContentProvider.getWritableDatabase().insert(
-										Task.TABLE, null, t.getContentValues());
-							} catch (Exception e) {
-								Log.e(TAG, "cannot restore Task");
-							}
+				case TASK:
+					Task t = Task.parse_json(json, AccountMirakel.getLocal(),
+							false);
+					if (Task.get(t.getId()) != null) {
+						t.safeSave(false);
+					} else {
+						try {
+							MirakelContentProvider.getWritableDatabase()
+									.insert(Task.TABLE, null,
+											t.getContentValues());
+						} catch (Exception e) {
+							Log.e(TAG, "cannot restore Task");
 						}
-						break;
-					case LIST:
-						ListMirakel l = ListMirakel.parseJson(json);
-						if (ListMirakel.getList(l.getId()) != null) {
-							l.save(false);
-						} else {
-							try {
-								MirakelContentProvider.getWritableDatabase().insert(
-										ListMirakel.TABLE, null,
-										l.getContentValues());
-							} catch (Exception e) {
-								Log.e(TAG, "cannot restore List");
-							}
+					}
+					break;
+				case LIST:
+					ListMirakel l = ListMirakel.parseJson(json);
+					if (ListMirakel.getList(l.getId()) != null) {
+						l.save(false);
+					} else {
+						try {
+							MirakelContentProvider.getWritableDatabase()
+									.insert(ListMirakel.TABLE, null,
+											l.getContentValues());
+						} catch (Exception e) {
+							Log.e(TAG, "cannot restore List");
 						}
-						break;
-					default:
-						Log.wtf(TAG, "unkown Type");
-						break;
+					}
+					break;
+				default:
+					Log.wtf(TAG, "unkown Type");
+					break;
 				}
 			}
 		}

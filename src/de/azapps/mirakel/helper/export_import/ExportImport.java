@@ -53,10 +53,9 @@ import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 
 public class ExportImport {
-	private static final File	dbFile	= new File(FileUtils.getMirakelDir()
-												+ "databases/mirakel.db");
-	private static final String	TAG		= "ExportImport";
-
+	private static final File dbFile = new File(FileUtils.getMirakelDir()
+			+ "databases/mirakel.db");
+	private static final String TAG = "ExportImport";
 
 	@SuppressLint("SimpleDateFormat")
 	public static void exportDB(Context ctx) {
@@ -173,27 +172,28 @@ public class ExportImport {
 							list = ListMirakel.newList(listname);
 						}
 					} else {
-						list = MirakelModelPreferences.getImportDefaultList(true);
+						list = MirakelModelPreferences
+								.getImportDefaultList(true);
 					}
 					Task t = Task.newTask(name, list);
 					// Priority
 					int prio = Integer.parseInt(m.getNamedItem("importance")
 							.getTextContent());
 					switch (prio) {
-						case 0:
-							t.setPriority(2);
-							break;
-						case 1:
-							t.setPriority(1);
-							break;
-						case 2:
-							t.setPriority(0);
-							break;
-						case 3:
-							t.setPriority(-2);
-							break;
-						default:
-							t.setPriority(0);
+					case 0:
+						t.setPriority(2);
+						break;
+					case 1:
+						t.setPriority(1);
+						break;
+					case 2:
+						t.setPriority(0);
+						break;
+					case 3:
+						t.setPriority(-2);
+						break;
+					default:
+						t.setPriority(0);
 					}
 					// Due
 					long due = Long.parseLong(m.getNamedItem("dueDate")
@@ -304,7 +304,8 @@ public class ExportImport {
 		return true;
 	}
 
-	public static String getStringFromFile(String path, Context ctx) throws IOException {
+	public static String getStringFromFile(String path, Context ctx)
+			throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader(path));
 		StringBuilder sb = new StringBuilder();
 		String line = br.readLine();

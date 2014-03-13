@@ -70,7 +70,7 @@ public class SpecialList extends ListMirakel {
 				}
 			}
 			return tmpWhere;
-		} 
+		}
 		return this.whereQuery;
 	}
 
@@ -118,7 +118,8 @@ public class SpecialList extends ListMirakel {
 	 */
 	@Override
 	public List<Task> tasks() {
-		return Task.getTasks(this, getSortBy(), false, getWhereQueryForTasks(true));
+		return Task.getTasks(this, getSortBy(), false,
+				getWhereQueryForTasks(true));
 	}
 
 	/**
@@ -129,7 +130,8 @@ public class SpecialList extends ListMirakel {
 	 */
 	@Override
 	public List<Task> tasks(boolean showDone) {
-		return Task.getTasks(this, getSortBy(), showDone, getWhereQueryForTasks(true));
+		return Task.getTasks(this, getSortBy(), showDone,
+				getWhereQueryForTasks(true));
 	}
 
 	// Static Methods
@@ -143,7 +145,8 @@ public class SpecialList extends ListMirakel {
 	public static final String DEFAULT_DUE = "def_date";
 	private static final String[] allColumns = { DatabaseHelper.ID,
 			DatabaseHelper.NAME, WHERE_QUERY, ACTIVE, DEFAULT_LIST,
-			DEFAULT_DUE, SORT_BY, DatabaseHelper.SYNC_STATE_FIELD, COLOR, LFT, RGT };
+			DEFAULT_DUE, SORT_BY, DatabaseHelper.SYNC_STATE_FIELD, COLOR, LFT,
+			RGT };
 
 	/**
 	 * Initialize the Database and the preferences
@@ -243,7 +246,8 @@ public class SpecialList extends ListMirakel {
 		cv.put(DatabaseHelper.SYNC_STATE_FIELD, getSyncState().toInt());
 		cv.put(ACTIVE, isActive() ? 1 : 0);
 		cv.put(WHERE_QUERY, getWhereQueryForTasks(false));
-		cv.put(DEFAULT_LIST, this.defaultList == null ? null : this.defaultList.getId());
+		cv.put(DEFAULT_LIST,
+				this.defaultList == null ? null : this.defaultList.getId());
 		cv.put(DEFAULT_DUE, this.defaultDate);
 		cv.put(COLOR, getColor());
 		cv.put(LFT, getLft());
@@ -305,8 +309,8 @@ public class SpecialList extends ListMirakel {
 	 */
 	public static SpecialList firstSpecial() {
 		Cursor cursor = database.query(SpecialList.TABLE, allColumns, "not "
-				+ DatabaseHelper.SYNC_STATE_FIELD + "=" + SYNC_STATE.DELETE, null, null,
-				null, LFT + " ASC");
+				+ DatabaseHelper.SYNC_STATE_FIELD + "=" + SYNC_STATE.DELETE,
+				null, null, null, LFT + " ASC");
 		SpecialList list = null;
 		cursor.moveToFirst();
 		if (!cursor.isAfterLast()) {

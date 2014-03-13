@@ -67,7 +67,8 @@ public class Semantic extends SemanticBase {
 				if (slist.getWhereQueryForTasks(false).contains("priority")) {
 					boolean[] mSelectedItems = new boolean[5];
 					boolean not = false;
-					String[] p = slist.getWhereQueryForTasks(false).split("and");
+					String[] p = slist.getWhereQueryForTasks(false)
+							.split("and");
 					for (String s : p) {
 						if (s.contains("priority")) {
 							not = s.contains("not");
@@ -94,11 +95,11 @@ public class Semantic extends SemanticBase {
 									case 2:
 										mSelectedItems[4] = true;
 										break;
-										default:
-											break;
+									default:
+										break;
 									}
 								} catch (NumberFormatException e) {
-									//eat it
+									// eat it
 								}
 								for (int i = 0; i < mSelectedItems.length; i++) {
 									if (mSelectedItems[i] != not) {

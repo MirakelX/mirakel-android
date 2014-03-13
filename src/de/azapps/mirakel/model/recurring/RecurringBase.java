@@ -22,7 +22,7 @@ public class RecurringBase {
 	private boolean temporary;
 	private boolean isExact;
 	private SparseBooleanArray weekdays;
-	private Integer derivedFrom; 
+	private Integer derivedFrom;
 
 	public RecurringBase(int _id, String label, int minutes, int hours,
 			int days, int months, int years, boolean forDue,
@@ -42,7 +42,7 @@ public class RecurringBase {
 		this.temporary = temporary;
 		this.setExact(isExact);
 		this.setWeekdays(weekdays);
-		this.derivedFrom=derivedFrom;
+		this.derivedFrom = derivedFrom;
 	}
 
 	public String getLabel() {
@@ -168,7 +168,7 @@ public class RecurringBase {
 
 		return ret;
 	}
-	
+
 	protected SparseBooleanArray getWeekdaysRaw() {
 		return this.weekdays;
 	}
@@ -200,8 +200,8 @@ public class RecurringBase {
 		int day = 86400;
 		int month = 2592000; // That's not right, but who cares?
 		int year = 31536000; // nobody need this…
-		return (this.minutes * minute + this.hours * hour + this.days * day + this.months * month + this.years
-				* year) * 1000;
+		return (this.minutes * minute + this.hours * hour + this.days * day
+				+ this.months * month + this.years * year) * 1000;
 	}
 
 	public ContentValues getContentValues() {
