@@ -47,10 +47,10 @@ public class ProgressWheel extends View {
 	private int textColor = 0xFF000000;
 
 	// Paints
-	private Paint barPaint = new Paint();
-	private Paint circlePaint = new Paint();
-	private Paint rimPaint = new Paint();
-	private Paint textPaint = new Paint();
+	private final Paint barPaint = new Paint();
+	private final Paint circlePaint = new Paint();
+	private final Paint rimPaint = new Paint();
+	private final Paint textPaint = new Paint();
 
 	// Rectangles
 	@SuppressWarnings("unused")
@@ -68,7 +68,7 @@ public class ProgressWheel extends View {
 		 * spin the wheel
 		 */
 		@Override
-		public void handleMessage(Message msg) {
+		public void handleMessage(final Message msg) {
 			invalidate();
 			if (ProgressWheel.this.isSpinning) {
 				ProgressWheel.this.progress += ProgressWheel.this.spinSpeed;
@@ -94,7 +94,7 @@ public class ProgressWheel extends View {
 	 * @param context
 	 * @param attrs
 	 */
-	public ProgressWheel(Context context, AttributeSet attrs) {
+	public ProgressWheel(final Context context, final AttributeSet attrs) {
 		super(context, attrs);
 
 		parseAttributes(context.obtainStyledAttributes(attrs,
@@ -112,7 +112,8 @@ public class ProgressWheel extends View {
 	 * paints.
 	 */
 	@Override
-	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+	protected void onSizeChanged(final int w, final int h, final int oldw,
+			final int oldh) {
 		super.onSizeChanged(w, h, oldw, oldh);
 
 		// Share the dimensions
@@ -153,17 +154,17 @@ public class ProgressWheel extends View {
 	 */
 	private void setupBounds() {
 		// Width should equal to Height, find the min value to steup the circle
-		int minValue = Math.min(this.layout_width, this.layout_height);
+		final int minValue = Math.min(this.layout_width, this.layout_height);
 
 		// Calc the Offset if needed
-		int xOffset = this.layout_width - minValue;
-		int yOffset = this.layout_height - minValue;
+		final int xOffset = this.layout_width - minValue;
+		final int yOffset = this.layout_height - minValue;
 
 		// Add the offset
-		this.paddingTop = this.getPaddingTop() + (yOffset / 2);
-		this.paddingBottom = this.getPaddingBottom() + (yOffset / 2);
-		this.paddingLeft = this.getPaddingLeft() + (xOffset / 2);
-		this.paddingRight = this.getPaddingRight() + (xOffset / 2);
+		this.paddingTop = this.getPaddingTop() + yOffset / 2;
+		this.paddingBottom = this.getPaddingBottom() + yOffset / 2;
+		this.paddingLeft = this.getPaddingLeft() + xOffset / 2;
+		this.paddingRight = this.getPaddingRight() + xOffset / 2;
 
 		this.rectBounds = new RectF(this.paddingLeft, this.paddingTop,
 				this.getLayoutParams().width - this.paddingRight,
@@ -176,7 +177,7 @@ public class ProgressWheel extends View {
 						- this.barWidth);
 
 		this.fullRadius = (this.getLayoutParams().width - this.paddingRight - this.barWidth) / 2;
-		this.circleRadius = (this.fullRadius - this.barWidth) + 1;
+		this.circleRadius = this.fullRadius - this.barWidth + 1;
 	}
 
 	/**
@@ -185,7 +186,7 @@ public class ProgressWheel extends View {
 	 * @param a
 	 *            the attributes to parse
 	 */
-	private void parseAttributes(TypedArray a) {
+	private void parseAttributes(final TypedArray a) {
 		this.barWidth = (int) a.getDimension(
 				R.styleable.ProgressWheel_barWidth, this.barWidth);
 
@@ -233,7 +234,7 @@ public class ProgressWheel extends View {
 	// ----------------------------------
 
 	@Override
-	protected void onDraw(Canvas canvas) {
+	protected void onDraw(final Canvas canvas) {
 		super.onDraw(canvas);
 		// Draw the rim
 		canvas.drawArc(this.circleBounds, 360, 360, false, this.rimPaint);
@@ -246,17 +247,17 @@ public class ProgressWheel extends View {
 					this.barPaint);
 		}
 		// Draw the inner circle
-		canvas.drawCircle((this.circleBounds.width() / 2) + this.rimWidth
-				+ this.paddingLeft, (this.circleBounds.height() / 2)
+		canvas.drawCircle(this.circleBounds.width() / 2 + this.rimWidth
+				+ this.paddingLeft, this.circleBounds.height() / 2
 				+ this.rimWidth + this.paddingTop, this.circleRadius,
 				this.circlePaint);
 		// Draw the text (attempts to center it horizontally and vertically)
 		int offsetNum = 0;
-		for (String s : this.splitText) {
-			float offset = this.textPaint.measureText(s) / 2;
+		for (final String s : this.splitText) {
+			final float offset = this.textPaint.measureText(s) / 2;
 			canvas.drawText(s, this.getWidth() / 2 - offset, this.getHeight()
-					/ 2 + (this.textSize * (offsetNum))
-					- ((this.splitText.length - 1) * (this.textSize / 2)),
+					/ 2 + this.textSize * offsetNum
+					- (this.splitText.length - 1) * (this.textSize / 2),
 					this.textPaint);
 			offsetNum++;
 		}
@@ -294,14 +295,14 @@ public class ProgressWheel extends View {
 	public void incrementProgress() {
 		this.isSpinning = false;
 		this.progress++;
-		setText(Math.round(((float) this.progress / 360) * 100) + "%");
+		setText(Math.round((float) this.progress / 360 * 100) + "%");
 		this.spinHandler.sendEmptyMessage(0);
 	}
 
 	/**
 	 * Set the progress to a specific value
 	 */
-	public void setProgress(int i) {
+	public void setProgress(final int i) {
 		this.isSpinning = false;
 		this.progress = i;
 		this.spinHandler.sendEmptyMessage(0);
@@ -317,7 +318,7 @@ public class ProgressWheel extends View {
 	 * @param text
 	 *            the text to show ('\n' constitutes a new line)
 	 */
-	public void setText(String text) {
+	public void setText(final String text) {
 		this.text = text;
 		this.splitText = this.text.split("\n");
 	}
@@ -326,7 +327,7 @@ public class ProgressWheel extends View {
 		return this.circleRadius;
 	}
 
-	public void setCircleRadius(int circleRadius) {
+	public void setCircleRadius(final int circleRadius) {
 		this.circleRadius = circleRadius;
 	}
 
@@ -334,7 +335,7 @@ public class ProgressWheel extends View {
 		return this.barLength;
 	}
 
-	public void setBarLength(int barLength) {
+	public void setBarLength(final int barLength) {
 		this.barLength = barLength;
 	}
 
@@ -342,7 +343,7 @@ public class ProgressWheel extends View {
 		return this.barWidth;
 	}
 
-	public void setBarWidth(int barWidth) {
+	public void setBarWidth(final int barWidth) {
 		this.barWidth = barWidth;
 	}
 
@@ -350,7 +351,7 @@ public class ProgressWheel extends View {
 		return this.textSize;
 	}
 
-	public void setTextSize(int textSize) {
+	public void setTextSize(final int textSize) {
 		this.textSize = textSize;
 	}
 
@@ -359,7 +360,7 @@ public class ProgressWheel extends View {
 		return this.paddingTop;
 	}
 
-	public void setPaddingTop(int paddingTop) {
+	public void setPaddingTop(final int paddingTop) {
 		this.paddingTop = paddingTop;
 	}
 
@@ -368,7 +369,7 @@ public class ProgressWheel extends View {
 		return this.paddingBottom;
 	}
 
-	public void setPaddingBottom(int paddingBottom) {
+	public void setPaddingBottom(final int paddingBottom) {
 		this.paddingBottom = paddingBottom;
 	}
 
@@ -377,7 +378,7 @@ public class ProgressWheel extends View {
 		return this.paddingLeft;
 	}
 
-	public void setPaddingLeft(int paddingLeft) {
+	public void setPaddingLeft(final int paddingLeft) {
 		this.paddingLeft = paddingLeft;
 	}
 
@@ -386,7 +387,7 @@ public class ProgressWheel extends View {
 		return this.paddingRight;
 	}
 
-	public void setPaddingRight(int paddingRight) {
+	public void setPaddingRight(final int paddingRight) {
 		this.paddingRight = paddingRight;
 	}
 
@@ -394,7 +395,7 @@ public class ProgressWheel extends View {
 		return this.barColor;
 	}
 
-	public void setBarColor(int barColor) {
+	public void setBarColor(final int barColor) {
 		this.barColor = barColor;
 	}
 
@@ -402,7 +403,7 @@ public class ProgressWheel extends View {
 		return this.circleColor;
 	}
 
-	public void setCircleColor(int circleColor) {
+	public void setCircleColor(final int circleColor) {
 		this.circleColor = circleColor;
 	}
 
@@ -410,7 +411,7 @@ public class ProgressWheel extends View {
 		return this.rimColor;
 	}
 
-	public void setRimColor(int rimColor) {
+	public void setRimColor(final int rimColor) {
 		this.rimColor = rimColor;
 	}
 
@@ -418,7 +419,7 @@ public class ProgressWheel extends View {
 		return this.rimPaint.getShader();
 	}
 
-	public void setRimShader(Shader shader) {
+	public void setRimShader(final Shader shader) {
 		this.rimPaint.setShader(shader);
 	}
 
@@ -426,7 +427,7 @@ public class ProgressWheel extends View {
 		return this.textColor;
 	}
 
-	public void setTextColor(int textColor) {
+	public void setTextColor(final int textColor) {
 		this.textColor = textColor;
 	}
 
@@ -434,7 +435,7 @@ public class ProgressWheel extends View {
 		return this.spinSpeed;
 	}
 
-	public void setSpinSpeed(int spinSpeed) {
+	public void setSpinSpeed(final int spinSpeed) {
 		this.spinSpeed = spinSpeed;
 	}
 
@@ -442,7 +443,7 @@ public class ProgressWheel extends View {
 		return this.rimWidth;
 	}
 
-	public void setRimWidth(int rimWidth) {
+	public void setRimWidth(final int rimWidth) {
 		this.rimWidth = rimWidth;
 	}
 
@@ -450,7 +451,7 @@ public class ProgressWheel extends View {
 		return this.delayMillis;
 	}
 
-	public void setDelayMillis(int delayMillis) {
+	public void setDelayMillis(final int delayMillis) {
 		this.delayMillis = delayMillis;
 	}
 }
