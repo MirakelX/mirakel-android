@@ -19,8 +19,8 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.azapps.mirakelandroid"
-    android:versionCode="43"
-    android:versionName="2.3.2" >
+    android:versionCode="44"
+    android:versionName="2.4.0-beta1" >
 
     <!-- TODO Remove Unused Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
