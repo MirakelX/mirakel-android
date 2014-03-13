@@ -61,6 +61,7 @@ import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.MirakelContentProvider;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakelandroid.R;
@@ -297,9 +298,6 @@ public class ListFragment extends MirakelFragment {
 		final List<ListMirakel> values = ListMirakel.all();
 		this.main.updateLists();
 
-		// main.showMessageFromSync();
-		// this.listView = (DragNDropListView) this.view
-		// .findViewById(R.id.lists_list);
 		this.listView = (DragSortListView) this.view
 				.findViewById(R.id.lists_list);
 		if (this.adapter != null
@@ -319,6 +317,7 @@ public class ListFragment extends MirakelFragment {
 		this.adapter = new ListAdapter(getActivity(), R.layout.lists_row,
 				values, this.enableDrag);
 		this.listView.setDragEnabled(this.enableDrag);
+		this.listView.setParts(SpecialList.getSpecialListCount(true));
 		this.listView.setAdapter(this.adapter);
 		this.listView.requestFocus();
 		this.listView.setDropListener(new DropListener() {
@@ -333,32 +332,6 @@ public class ListFragment extends MirakelFragment {
 
 			}
 		});
-
-		/*
-		 * this.listView.setEnableDrag(this.enableDrag);
-		 * this.listView.setItemsCanFocus(true);
-		 * this.listView.setAdapter(this.adapter); this.listView.requestFocus();
-		 * this.listView.setDragListener(new DragNDropListView.DragListener() {
-		 * 
-		 * @Override public void onDrag(int x, int y, ListView listView) { //
-		 * Nothing }
-		 * 
-		 * @Override public void onStartDrag(View itemView) {
-		 * itemView.setVisibility(View.INVISIBLE);
-		 * ListFragment.this.main.lockDrawer(); }
-		 * 
-		 * @Override public void onStopDrag(View itemView) {
-		 * itemView.setVisibility(View.VISIBLE);
-		 * ListFragment.this.main.unlockDrawer(); } });
-		 * this.listView.setDropListener(new DragNDropListView.DropListener() {
-		 * 
-		 * @Override public void onDrop(int from, int to) { if (from != to) {
-		 * ListFragment.this.adapter.onDrop(from, to);
-		 * ListFragment.this.listView.requestLayout(); } Log.e(TAG, "Drop from:"
-		 * + from + " to:" + to);
-		 * 
-		 * } });
-		 */
 
 		this.listView
 				.setOnItemClickListener(new AdapterView.OnItemClickListener() {
