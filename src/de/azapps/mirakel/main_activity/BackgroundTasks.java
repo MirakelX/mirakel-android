@@ -22,7 +22,7 @@ public class BackgroundTasks {
 			public void run() {
 				ReminderAlarm.updateAlarms(context);
 				NotificationService.updateNotificationAndWidget(context);
-				
+
 				if (!MirakelCommonPreferences.containsHighlightSelected()) {
 					final SharedPreferences.Editor editor = MirakelCommonPreferences
 							.getEditor();
@@ -74,8 +74,7 @@ public class BackgroundTasks {
 						}
 					}
 				}
-				
-				
+
 			}
 		}).run();
 	}

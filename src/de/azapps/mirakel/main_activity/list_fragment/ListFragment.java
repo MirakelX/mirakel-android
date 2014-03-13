@@ -78,9 +78,8 @@ public class ListFragment extends MirakelFragment {
 
 	protected EditText input;
 
-	//private DragNDropListView listView;
+	// private DragNDropListView listView;
 	protected DragSortListView listView;
-	
 
 	protected ActionMode mActionMode = null;
 
@@ -293,9 +292,10 @@ public class ListFragment extends MirakelFragment {
 		this.main.updateLists();
 
 		// main.showMessageFromSync();
-		//this.listView = (DragNDropListView) this.view
-		//		.findViewById(R.id.lists_list);
-		this.listView=(DragSortListView)this.view.findViewById(R.id.lists_list);
+		// this.listView = (DragNDropListView) this.view
+		// .findViewById(R.id.lists_list);
+		this.listView = (DragSortListView) this.view
+				.findViewById(R.id.lists_list);
 		if (this.adapter != null
 				&& this.enableDrag == this.adapter.isDropEnabled()
 				&& this.main != null) {
@@ -316,7 +316,7 @@ public class ListFragment extends MirakelFragment {
 		this.listView.setAdapter(this.adapter);
 		this.listView.requestFocus();
 		this.listView.setDropListener(new DropListener() {
-			
+
 			@Override
 			public void drop(int from, int to) {
 				if (from != to) {
@@ -324,45 +324,35 @@ public class ListFragment extends MirakelFragment {
 					ListFragment.this.listView.requestLayout();
 				}
 				Log.v(TAG, "Drop from:" + from + " to:" + to);
-				
+
 			}
 		});
 
-		/*this.listView.setEnableDrag(this.enableDrag);
-		this.listView.setItemsCanFocus(true);
-		this.listView.setAdapter(this.adapter);
-		this.listView.requestFocus();
-		this.listView.setDragListener(new DragNDropListView.DragListener() {
-
-			@Override
-			public void onDrag(int x, int y, ListView listView) {
-				// Nothing
-			}
-
-			@Override
-			public void onStartDrag(View itemView) {
-				itemView.setVisibility(View.INVISIBLE);
-				ListFragment.this.main.lockDrawer();
-			}
-
-			@Override
-			public void onStopDrag(View itemView) {
-				itemView.setVisibility(View.VISIBLE);
-				ListFragment.this.main.unlockDrawer();
-			}
-		});
-		this.listView.setDropListener(new DragNDropListView.DropListener() {
-
-			@Override
-			public void onDrop(int from, int to) {
-				if (from != to) {
-					ListFragment.this.adapter.onDrop(from, to);
-					ListFragment.this.listView.requestLayout();
-				}
-				Log.e(TAG, "Drop from:" + from + " to:" + to);
-
-			}
-		});*/
+		/*
+		 * this.listView.setEnableDrag(this.enableDrag);
+		 * this.listView.setItemsCanFocus(true);
+		 * this.listView.setAdapter(this.adapter); this.listView.requestFocus();
+		 * this.listView.setDragListener(new DragNDropListView.DragListener() {
+		 * 
+		 * @Override public void onDrag(int x, int y, ListView listView) { //
+		 * Nothing }
+		 * 
+		 * @Override public void onStartDrag(View itemView) {
+		 * itemView.setVisibility(View.INVISIBLE);
+		 * ListFragment.this.main.lockDrawer(); }
+		 * 
+		 * @Override public void onStopDrag(View itemView) {
+		 * itemView.setVisibility(View.VISIBLE);
+		 * ListFragment.this.main.unlockDrawer(); } });
+		 * this.listView.setDropListener(new DragNDropListView.DropListener() {
+		 * 
+		 * @Override public void onDrop(int from, int to) { if (from != to) {
+		 * ListFragment.this.adapter.onDrop(from, to);
+		 * ListFragment.this.listView.requestLayout(); } Log.e(TAG, "Drop from:"
+		 * + from + " to:" + to);
+		 * 
+		 * } });
+		 */
 
 		this.listView
 				.setOnItemClickListener(new AdapterView.OnItemClickListener() {
