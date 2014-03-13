@@ -83,8 +83,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private final Context context;
 
 	public DatabaseHelper(final Context ctx) {
-		super(ctx, getDBName(), null, DATABASE_VERSION);
-		MirakelPreferences.init(ctx);
+		super(ctx, getDBName(ctx), null, DATABASE_VERSION);
 		this.context = ctx;
 	}
 
@@ -96,7 +95,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 * 
 	 * @return
 	 */
-	private static String getDBName() {
+	private static String getDBName(final Context ctx) {
+		MirakelPreferences.init(ctx);
 		String db_name = "mirakel.db";
 		try {
 			if (MirakelCommonPreferences.isDemoMode()) {
