@@ -22,6 +22,7 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.app.Fragment;
+import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,10 +71,21 @@ public class TaskFragmentSettingsFragment extends Fragment {
 
 		this.adapter = new TaskFragmentSettingsAdapter(getActivity(),
 				R.layout.row_taskfragment_settings, values);
+		this.adapter.registerDataSetObserver(new DataSetObserver() {
+			@Override
+			public void onChanged() {
+				if (TaskFragmentSettingsFragment.this.listView != null) {
+					TaskFragmentSettingsFragment.this.listView
+							.setParts(TaskFragmentSettingsFragment.this.adapter
+									.getCount() - 1);
+				}
+			}
+		});
 		this.listView = (DragSortListView) v
 				.findViewById(R.id.taskfragment_list);
 		this.listView.setItemsCanFocus(true);
 		this.listView.setAdapter(this.adapter);
+		this.listView.setParts(this.adapter.getCount() - 1);
 		this.listView.requestFocus();
 		this.listView.setDropListener(new DropListener() {
 
