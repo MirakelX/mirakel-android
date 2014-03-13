@@ -51,7 +51,8 @@ public class RecurringActivity extends ListSettings {
 
 	protected Recurring newRecurring(boolean temporary) {
 		return Recurring.newRecurring(getString(R.string.new_recurring), 0, 0,
-				0, 0, 1, true, null, null, temporary,false,new SparseBooleanArray());//TODO add option for exakt...
+				0, 0, 1, true, null, null, temporary, false,
+				new SparseBooleanArray());// TODO add option for exakt...
 
 	}
 

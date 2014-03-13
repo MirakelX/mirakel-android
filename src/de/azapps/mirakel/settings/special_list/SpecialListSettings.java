@@ -122,8 +122,9 @@ public class SpecialListSettings extends PreferencesHelper implements
 							.getString(R.string.reminder_set) : this.activity
 							.getString(R.string.reminder_unset);
 				if (queryPart.equals("list_id")) {
-					returnString = this.specialList.getWhereQueryForTasks(false)
-							.contains("not list_id") ? this.activity
+					returnString = this.specialList
+							.getWhereQueryForTasks(false).contains(
+									"not list_id") ? this.activity
 							.getString(R.string.not_in) + " " : "";
 					String[] p = s
 							.replace(
@@ -139,8 +140,9 @@ public class SpecialListSettings extends PreferencesHelper implements
 					return returnString;
 				}
 				if (queryPart.equals("priority")) {
-					returnString = this.specialList.getWhereQueryForTasks(false)
-							.contains("not priority") ? this.activity
+					returnString = this.specialList
+							.getWhereQueryForTasks(false).contains(
+									"not priority") ? this.activity
 							.getString(R.string.not_in) + " " : "";
 					return returnString
 							+ s.replace(
@@ -346,11 +348,11 @@ public class SpecialListSettings extends PreferencesHelper implements
 						SpecialListSettings.this.activity
 								.getString(R.string.undone) };
 				int defVal = 0;
-				if (SpecialListSettings.this.specialList.getWhereQueryForTasks(false)
-						.contains("done=0")) {
+				if (SpecialListSettings.this.specialList.getWhereQueryForTasks(
+						false).contains("done=0")) {
 					defVal = 2;
-				} else if (SpecialListSettings.this.specialList.getWhereQueryForTasks(
-						false).contains("done=1")) {
+				} else if (SpecialListSettings.this.specialList
+						.getWhereQueryForTasks(false).contains("done=1")) {
 					defVal = 1;
 				}
 				new AlertDialog.Builder(SpecialListSettings.this.activity)
@@ -401,11 +403,11 @@ public class SpecialListSettings extends PreferencesHelper implements
 								.getString(R.string.reminder_unset) };
 
 				int defVal = 0;
-				if (SpecialListSettings.this.specialList.getWhereQueryForTasks(false)
-						.contains("not")) {
+				if (SpecialListSettings.this.specialList.getWhereQueryForTasks(
+						false).contains("not")) {
 					defVal = 1;
-				} else if (SpecialListSettings.this.specialList.getWhereQueryForTasks(
-						false).contains("reminder")) {
+				} else if (SpecialListSettings.this.specialList
+						.getWhereQueryForTasks(false).contains("reminder")) {
 					defVal = 2;
 				}
 				new AlertDialog.Builder(SpecialListSettings.this.activity)
@@ -1012,7 +1014,8 @@ public class SpecialListSettings extends PreferencesHelper implements
 
 	void updateWhere(String attr, String newWhere) {
 		if (this.specialList.getWhereQueryForTasks(false).contains(attr)) {
-			String[] parts = this.specialList.getWhereQueryForTasks(false).split("and");
+			String[] parts = this.specialList.getWhereQueryForTasks(false)
+					.split("and");
 			String n = "";
 			boolean first = true;
 			for (int i = 0; i < parts.length; i++) {
@@ -1028,7 +1031,8 @@ public class SpecialListSettings extends PreferencesHelper implements
 				first = false;
 			}
 			this.specialList.setWhereQuery(n);
-		} else if (this.specialList.getWhereQueryForTasks(false).trim().length() == 0
+		} else if (this.specialList.getWhereQueryForTasks(false).trim()
+				.length() == 0
 				&& !newWhere.trim().equals("")) {
 			this.specialList
 					.setWhereQuery((attr.equals("due") ? "due is not null and "

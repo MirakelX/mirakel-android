@@ -66,11 +66,13 @@ public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		if (this.data.size() - 1 == position
-				&& this.data.get(position) == TaskFragmentSettingsFragment.ADD_KEY) return setupAddButton();
+				&& this.data.get(position) == TaskFragmentSettingsFragment.ADD_KEY)
+			return setupAddButton();
 		View row = convertView;
 		ListHolder holder = null;
 		if (row == null || row.getId() != R.id.wrapper_taskfragmentsettings_row) {
-			LayoutInflater inflater = ((Activity) this.context).getLayoutInflater();
+			LayoutInflater inflater = ((Activity) this.context)
+					.getLayoutInflater();
 			row = inflater.inflate(this.layoutResourceId, parent, false);
 			holder = new ListHolder();
 			holder.rowName = (TextView) row
@@ -102,7 +104,7 @@ public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
 	@Override
 	public void notifyDataSetChanged() {
 		super.notifyDataSetChanged();
-		this.data.remove(this.data.size()-1);
+		this.data.remove(this.data.size() - 1);
 		MirakelCommonPreferences.setTaskFragmentLayout(this.data);
 		this.data.add(TaskFragmentSettingsFragment.ADD_KEY);
 	}
@@ -130,14 +132,16 @@ public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
 					TYPE.getTranslatedName(this.context, TYPE.HEADER));
 			allItems.put(TYPE.CONTENT,
 					TYPE.getTranslatedName(this.context, TYPE.CONTENT));
-			allItems.put(TYPE.DUE, TYPE.getTranslatedName(this.context, TYPE.DUE));
-			allItems.put(TYPE.FILE, TYPE.getTranslatedName(this.context, TYPE.FILE));
+			allItems.put(TYPE.DUE,
+					TYPE.getTranslatedName(this.context, TYPE.DUE));
+			allItems.put(TYPE.FILE,
+					TYPE.getTranslatedName(this.context, TYPE.FILE));
 			allItems.put(TYPE.PROGRESS,
 					TYPE.getTranslatedName(this.context, TYPE.PROGRESS));
 			allItems.put(TYPE.SUBTASK,
 					TYPE.getTranslatedName(this.context, TYPE.SUBTASK));
-//			allItems.put(TYPE.SUBTITLE,
-//					TYPE.getTranslatedName(context, TYPE.SUBTITLE));
+			// allItems.put(TYPE.SUBTITLE,
+			// TYPE.getTranslatedName(context, TYPE.SUBTITLE));
 			allItems.put(TYPE.REMINDER,
 					TYPE.getTranslatedName(this.context, TYPE.REMINDER));
 		} catch (NoSuchItemException e) {
@@ -164,7 +168,9 @@ public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
 			public void onItemSelected(AdapterView<?> arg0, View arg1, int pos,
 					long arg3) {
 				if (pos != 0) {
-					TaskFragmentSettingsAdapter.this.data.add(TaskFragmentSettingsAdapter.this.data.size()-1, allItems.keyAt(pos - 1));
+					TaskFragmentSettingsAdapter.this.data.add(
+							TaskFragmentSettingsAdapter.this.data.size() - 1,
+							allItems.keyAt(pos - 1));
 					notifyDataSetChanged();
 				}
 
@@ -176,9 +182,8 @@ public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
 
 			}
 		});
-		if(items.length==1)
-		 {
-			b.setEnabled(false);//Nothing to add
+		if (items.length == 1) {
+			b.setEnabled(false);// Nothing to add
 		}
 		return b;
 	}

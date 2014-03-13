@@ -57,11 +57,10 @@ public class RecurringFragment extends PreferenceFragment {
 				actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
 						ActionBar.DISPLAY_SHOW_CUSTOM);
 				actionBar.setCustomView(delSemantic,
-						new ActionBar.LayoutParams(
+						new ActionBar.LayoutParams(LayoutParams.WRAP_CONTENT,
 								LayoutParams.WRAP_CONTENT,
-								LayoutParams.WRAP_CONTENT,
-										Gravity.CENTER_VERTICAL
-												| DefinitionsHelper.GRAVITY_RIGHT));
+								Gravity.CENTER_VERTICAL
+										| DefinitionsHelper.GRAVITY_RIGHT));
 				delSemantic.setOnClickListener(((ListSettings) getActivity())
 						.getDelOnClickListener());
 			}

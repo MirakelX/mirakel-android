@@ -39,9 +39,9 @@ import de.azapps.mirakel.settings.R;
 import de.azapps.widgets.DueDialog;
 import de.azapps.widgets.DueDialog.VALUE;
 
-public class SemanticsSettings extends PreferencesHelper implements OnPreferenceChangeListener {
+public class SemanticsSettings extends PreferencesHelper implements
+		OnPreferenceChangeListener {
 	protected Semantic semantic;
-
 
 	protected AlertDialog alert;
 	private EditTextPreference semanticsCondition;
@@ -54,13 +54,13 @@ public class SemanticsSettings extends PreferencesHelper implements OnPreference
 	public SemanticsSettings(SemanticsSettingsFragment activity,
 			Semantic semantic) {
 		super(activity);
-		this.semantic=semantic;
+		this.semantic = semantic;
 	}
 
 	public SemanticsSettings(SemanticsSettingsActivity activity,
 			Semantic semantic) {
 		super(activity);
-		this.semantic=semantic;
+		this.semantic = semantic;
 	}
 
 	public void setup() {
@@ -76,11 +76,13 @@ public class SemanticsSettings extends PreferencesHelper implements OnPreference
 		this.semanticsPriority.setEntryValues(R.array.priority_entry_values);
 		if (this.semantic.getPriority() == null) {
 			this.semanticsPriority.setValueIndex(0);
-			this.semanticsPriority.setSummary(this.activity.getResources().getStringArray(
-					R.array.priority_entries)[0]);
+			this.semanticsPriority.setSummary(this.activity.getResources()
+					.getStringArray(R.array.priority_entries)[0]);
 		} else {
-			this.semanticsPriority.setValue(this.semantic.getPriority().toString());
-			this.semanticsPriority.setSummary(this.semanticsPriority.getValue());
+			this.semanticsPriority.setValue(this.semantic.getPriority()
+					.toString());
+			this.semanticsPriority
+					.setSummary(this.semanticsPriority.getValue());
 		}
 
 		// Due
@@ -93,18 +95,24 @@ public class SemanticsSettings extends PreferencesHelper implements OnPreference
 
 					@Override
 					public boolean onPreferenceClick(Preference preference) {
-						final DueDialog dueDialog = new DueDialog(SemanticsSettings.this.activity, false);
-						dueDialog.setTitle(SemanticsSettings.this.semanticsDue.getTitle());
-						dueDialog.setValue(SemanticsSettings.this.dueDialogValue, SemanticsSettings.this.dueDialogDayYear);
+						final DueDialog dueDialog = new DueDialog(
+								SemanticsSettings.this.activity, false);
+						dueDialog.setTitle(SemanticsSettings.this.semanticsDue
+								.getTitle());
+						dueDialog.setValue(
+								SemanticsSettings.this.dueDialogValue,
+								SemanticsSettings.this.dueDialogDayYear);
 
-						dueDialog.setNegativeButton(android.R.string.cancel,null);
+						dueDialog.setNegativeButton(android.R.string.cancel,
+								null);
 						dueDialog.setNeutralButton(R.string.no_date,
 								new DialogInterface.OnClickListener() {
 
 									@Override
 									public void onClick(DialogInterface dialog,
 											int which) {
-										SemanticsSettings.this.semantic.setDue(null);
+										SemanticsSettings.this.semantic
+												.setDue(null);
 										SemanticsSettings.this.semanticsDue
 												.setSummary(updateDueStuff());
 										SemanticsSettings.this.semantic.save();
@@ -120,13 +128,16 @@ public class SemanticsSettings extends PreferencesHelper implements OnPreference
 										VALUE dayYear = dueDialog.getDayYear();
 										switch (dayYear) {
 										case DAY:
-											SemanticsSettings.this.semantic.setDue(val);
+											SemanticsSettings.this.semantic
+													.setDue(val);
 											break;
 										case MONTH:
-											SemanticsSettings.this.semantic.setDue(val * 30);
+											SemanticsSettings.this.semantic
+													.setDue(val * 30);
 											break;
 										case YEAR:
-											SemanticsSettings.this.semantic.setDue(val * 365);
+											SemanticsSettings.this.semantic
+													.setDue(val * 365);
 											break;
 										case HOUR:
 										case MINUTE:
@@ -180,9 +191,11 @@ public class SemanticsSettings extends PreferencesHelper implements OnPreference
 
 		if (this.semantic.getList() == null) {
 			this.semanticsList.setValueIndex(0);
-			this.semanticsList.setSummary(this.activity.getString(R.string.semantics_no_list));
+			this.semanticsList.setSummary(this.activity
+					.getString(R.string.semantics_no_list));
 		} else {
-			this.semanticsList.setValue(String.valueOf(this.semantic.getList().getId()));
+			this.semanticsList.setValue(String.valueOf(this.semantic.getList()
+					.getId()));
 			this.semanticsList.setSummary(this.semantic.getList().getName());
 		}
 	}
@@ -206,26 +219,25 @@ public class SemanticsSettings extends PreferencesHelper implements OnPreference
 			this.dueDialogDayYear = VALUE.YEAR;
 			summary = this.dueDialogValue
 					+ " "
-					+ this.activity.getResources().getQuantityString(R.plurals.due_year,
-							this.dueDialogValue);
+					+ this.activity.getResources().getQuantityString(
+							R.plurals.due_year, this.dueDialogValue);
 		} else if (due % 30 == 0 && due != 0) {
 			this.dueDialogValue = due / 30;
 			this.dueDialogDayYear = VALUE.MONTH;
 			summary = this.dueDialogValue
 					+ " "
-					+ this.activity.getResources().getQuantityString(R.plurals.due_month,
-							this.dueDialogValue);
+					+ this.activity.getResources().getQuantityString(
+							R.plurals.due_month, this.dueDialogValue);
 		} else {
 			this.dueDialogValue = due;
 			this.dueDialogDayYear = VALUE.DAY;
 			summary = this.dueDialogValue
 					+ " "
-					+ this.activity.getResources().getQuantityString(R.plurals.due_day,
-							this.dueDialogValue);
+					+ this.activity.getResources().getQuantityString(
+							R.plurals.due_day, this.dueDialogValue);
 		}
 		return summary;
 	}
-
 
 	@SuppressLint("NewApi")
 	@Override
@@ -236,7 +248,8 @@ public class SemanticsSettings extends PreferencesHelper implements OnPreference
 			if (newValue.equals("null")) {
 				this.semantic.setPriority(null);
 				this.semanticsPriority.setValueIndex(0);
-				this.semanticsPriority.setSummary(this.semanticsPriority.getEntries()[0]);
+				this.semanticsPriority.setSummary(this.semanticsPriority
+						.getEntries()[0]);
 			} else {
 				this.semantic.setPriority(Integer.parseInt(newValue));
 				this.semanticsPriority.setValue(newValue);
@@ -257,7 +270,8 @@ public class SemanticsSettings extends PreferencesHelper implements OnPreference
 			if (newValue.equals("null")) {
 				this.semantic.setList(null);
 				this.semanticsList.setValueIndex(0);
-				this.semanticsList.setSummary(this.semanticsList.getEntries()[0]);
+				this.semanticsList
+						.setSummary(this.semanticsList.getEntries()[0]);
 			} else {
 				ListMirakel newList = ListMirakel.getList(Integer
 						.parseInt(newValue));

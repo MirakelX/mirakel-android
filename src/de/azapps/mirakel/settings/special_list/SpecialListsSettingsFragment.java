@@ -61,9 +61,9 @@ public class SpecialListsSettingsFragment extends PreferenceFragment {
 				actionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
 						ActionBar.DISPLAY_SHOW_CUSTOM);
 				actionbar.setCustomView(delList, new ActionBar.LayoutParams(
-						LayoutParams.WRAP_CONTENT,
-						LayoutParams.WRAP_CONTENT,
-						Gravity.CENTER_VERTICAL | DefinitionsHelper.GRAVITY_RIGHT));
+						LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
+						Gravity.CENTER_VERTICAL
+								| DefinitionsHelper.GRAVITY_RIGHT));
 				delList.setOnClickListener(((ListSettings) getActivity())
 						.getDelOnClickListener());
 			}

@@ -27,8 +27,8 @@ import de.azapps.tools.Log;
 
 public class AccountSettingsActivity extends ListSettings {
 
-	private static final String	TAG	= "AccountSettingsActivity";
-	protected AccountMirakel		account;
+	private static final String TAG = "AccountSettingsActivity";
+	protected AccountMirakel account;
 
 	@Override
 	protected OnClickListener getAddOnClickListener() {
@@ -40,24 +40,25 @@ public class AccountSettingsActivity extends ListSettings {
 				CharSequence[] items = that.getResources().getTextArray(
 						R.array.sync_types);
 				new AlertDialog.Builder(that).setTitle(R.string.sync_add)
-				.setItems(items, new DialogInterface.OnClickListener() {
+						.setItems(items, new DialogInterface.OnClickListener() {
 
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						switch (which) {
-							case 0:
-								handleCalDAV();
-								break;
-							case 1:
-								startActivity(new Intent(that,
-										TaskWarriorSetupActivity.class));
-								break;
-							default:
-								break;
-						}
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								switch (which) {
+								case 0:
+									handleCalDAV();
+									break;
+								case 1:
+									startActivity(new Intent(that,
+											TaskWarriorSetupActivity.class));
+									break;
+								default:
+									break;
+								}
 								dialog.dismiss();
-					}
-				}).show();
+							}
+						}).show();
 			}
 		};
 	}
@@ -120,23 +121,27 @@ public class AccountSettingsActivity extends ListSettings {
 
 	protected void handleCalDAV() {
 		new AlertDialog.Builder(this)
-		.setTitle(R.string.sync_caldav)
-		.setMessage(
-				Html.fromHtml(this
-						.getString(R.string.sync_caldav_howto_)))
-						.setNegativeButton(R.string.download, new DialogInterface.OnClickListener() {
+				.setTitle(R.string.sync_caldav)
+				.setMessage(
+						Html.fromHtml(this
+								.getString(R.string.sync_caldav_howto_)))
+				.setNegativeButton(R.string.download,
+						new DialogInterface.OnClickListener() {
 
 							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								Helpers.openURL(getBaseContext(), "http://mirakel.azapps.de/releases.html#davdroid");
+							public void onClick(DialogInterface dialog,
+									int which) {
+								Helpers.openURL(getBaseContext(),
+										"http://mirakel.azapps.de/releases.html#davdroid");
 
 							}
 						})
-						.setPositiveButton(R.string.sync_add_account,
-								new DialogInterface.OnClickListener() {
+				.setPositiveButton(R.string.sync_add_account,
+						new DialogInterface.OnClickListener() {
 
 							@Override
-							public void onClick(DialogInterface dialog, int which) {
+							public void onClick(DialogInterface dialog,
+									int which) {
 								startActivity(new Intent(
 										Settings.ACTION_ADD_ACCOUNT));
 
@@ -167,7 +172,8 @@ public class AccountSettingsActivity extends ListSettings {
 			target.add(header);
 		}
 		if (this.clickOnLast) {
-			onHeaderClick(this.mTarget.get(this.mTarget.size() - 1), this.mTarget.size() - 1);
+			onHeaderClick(this.mTarget.get(this.mTarget.size() - 1),
+					this.mTarget.size() - 1);
 			this.clickOnLast = false;
 		}
 		this.mTarget = target;
@@ -189,20 +195,20 @@ public class AccountSettingsActivity extends ListSettings {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-			case android.R.id.home:
+		case android.R.id.home:
+			finish();
+			return true;
+		default:
+			if (item.getTitle().equals(getString(R.string.delete))) {
+				if (this.account != null) {
+					this.account.destroy();
+				}
 				finish();
 				return true;
-			default:
-				if (item.getTitle().equals(getString(R.string.delete))) {
-					if (this.account != null) {
-						this.account.destroy();
-					}
-					finish();
-					return true;
-				} else if (item.getTitle().equals(getString(R.string.add))) {
-					getAddOnClickListener().onClick(null);
-				}
-				break;
+			} else if (item.getTitle().equals(getString(R.string.add))) {
+				getAddOnClickListener().onClick(null);
+			}
+			break;
 		}
 		return super.onOptionsItemSelected(item);
 	}

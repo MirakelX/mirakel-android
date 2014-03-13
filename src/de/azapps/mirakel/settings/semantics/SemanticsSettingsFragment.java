@@ -48,7 +48,8 @@ public class SemanticsSettingsFragment extends PreferenceFragment {
 		Bundle b = getArguments();
 		if (b != null) {
 			this.semantic = Semantic.get(getArguments().getInt("id"));
-			((SemanticsSettingsActivity) getActivity()).setSemantic(this.semantic);
+			((SemanticsSettingsActivity) getActivity())
+					.setSemantic(this.semantic);
 			actionBar.setTitle(this.semantic.getCondition());
 			if (!MirakelCommonPreferences.isTablet()) {
 				ImageButton delSemantic = new ImageButton(getActivity());
@@ -57,11 +58,10 @@ public class SemanticsSettingsFragment extends PreferenceFragment {
 				actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
 						ActionBar.DISPLAY_SHOW_CUSTOM);
 				actionBar.setCustomView(delSemantic,
-						new ActionBar.LayoutParams(
+						new ActionBar.LayoutParams(LayoutParams.WRAP_CONTENT,
 								LayoutParams.WRAP_CONTENT,
-								LayoutParams.WRAP_CONTENT,
-										Gravity.CENTER_VERTICAL
-												| DefinitionsHelper.GRAVITY_RIGHT));
+								Gravity.CENTER_VERTICAL
+										| DefinitionsHelper.GRAVITY_RIGHT));
 				delSemantic.setOnClickListener(((ListSettings) getActivity())
 						.getDelOnClickListener());
 			}

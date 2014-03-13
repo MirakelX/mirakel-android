@@ -65,8 +65,8 @@ public class SpecialListsSettingsActivity extends ListSettings {
 
 	@Override
 	protected void setupSettings() {
-		this.specialList = SpecialList.getSpecialList(getIntent().getIntExtra("id",
-				SpecialList.firstSpecial().getId())
+		this.specialList = SpecialList.getSpecialList(getIntent().getIntExtra(
+				"id", SpecialList.firstSpecial().getId())
 				* -1);
 		try {
 			new SpecialListSettings(this, this.specialList).setup();
