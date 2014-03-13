@@ -16,29 +16,33 @@
 package org.sufficientlysecure.donations.google.util;
 
 /**
- * Exception thrown when something went wrong with in-app billing.
- * An IabException has an associated IabResult (an error).
- * To get the IAB result that caused this exception to be thrown,
- * call {@link #getResult()}.
+ * Exception thrown when something went wrong with in-app billing. An
+ * IabException has an associated IabResult (an error). To get the IAB result
+ * that caused this exception to be thrown, call {@link #getResult()}.
  */
 public class IabException extends Exception {
-	static final long	serialVersionUID	= 1391887734;
-    IabResult mResult;
+	static final long serialVersionUID = 1391887734;
+	IabResult mResult;
 
-    public IabException(IabResult r) {
-        this(r, null);
-    }
-    public IabException(int response, String message) {
-        this(new IabResult(response, message));
-    }
-    public IabException(IabResult r, Exception cause) {
-        super(r.getMessage(), cause);
-        this.mResult = r;
-    }
-    public IabException(int response, String message, Exception cause) {
-        this(new IabResult(response, message), cause);
-    }
+	public IabException(IabResult r) {
+		this(r, null);
+	}
 
-    /** Returns the IAB result (error) that this exception signals. */
-    public IabResult getResult() { return this.mResult; }
+	public IabException(int response, String message) {
+		this(new IabResult(response, message));
+	}
+
+	public IabException(IabResult r, Exception cause) {
+		super(r.getMessage(), cause);
+		this.mResult = r;
+	}
+
+	public IabException(int response, String message, Exception cause) {
+		this(new IabResult(response, message), cause);
+	}
+
+	/** Returns the IAB result (error) that this exception signals. */
+	public IabResult getResult() {
+		return this.mResult;
+	}
 }
