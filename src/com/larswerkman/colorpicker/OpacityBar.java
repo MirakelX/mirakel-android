@@ -16,7 +16,6 @@
 
 package com.larswerkman.colorpicker;
 
-import de.azapps.mirakel.colorpicker.R;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -31,6 +30,7 @@ import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import de.azapps.mirakel.colorpicker.R;
 
 public class OpacityBar extends View {
 
@@ -149,7 +149,8 @@ public class OpacityBar extends View {
 		this.mBarThickness = a.getDimensionPixelSize(
 				R.styleable.ColorBars_bar_thickness,
 				b.getDimensionPixelSize(R.dimen.bar_thickness));
-		this.mBarLength = a.getDimensionPixelSize(R.styleable.ColorBars_bar_length,
+		this.mBarLength = a.getDimensionPixelSize(
+				R.styleable.ColorBars_bar_length,
 				b.getDimensionPixelSize(R.dimen.bar_length));
 		this.mPreferredBarLength = this.mBarLength;
 		this.mBarPointerRadius = a.getDimensionPixelSize(
@@ -195,7 +196,8 @@ public class OpacityBar extends View {
 		}
 
 		this.mBarLength = width - (this.mBarPointerHaloRadius * 2);
-		setMeasuredDimension((this.mBarLength + (this.mBarPointerHaloRadius * 2)),
+		setMeasuredDimension(
+				(this.mBarLength + (this.mBarPointerHaloRadius * 2)),
 				(this.mBarPointerHaloRadius * 2));
 	}
 
@@ -213,15 +215,16 @@ public class OpacityBar extends View {
 		// Update variables that depend of mBarLength.
 		if (!isInEditMode()) {
 			this.shader = new LinearGradient(this.mBarPointerHaloRadius, 0,
-					(this.mBarLength + this.mBarPointerHaloRadius), this.mBarThickness,
-					new int[] { Color.HSVToColor(0x00, this.mHSVColor),
+					(this.mBarLength + this.mBarPointerHaloRadius),
+					this.mBarThickness, new int[] {
+							Color.HSVToColor(0x00, this.mHSVColor),
 							Color.HSVToColor(0xFF, this.mHSVColor) }, null,
 					Shader.TileMode.CLAMP);
 		} else {
 			this.shader = new LinearGradient(this.mBarPointerHaloRadius, 0,
-					(this.mBarLength + this.mBarPointerHaloRadius), this.mBarThickness,
-					new int[] { 0x0081ff00, 0xff81ff00 }, null,
-					Shader.TileMode.CLAMP);
+					(this.mBarLength + this.mBarPointerHaloRadius),
+					this.mBarThickness, new int[] { 0x0081ff00, 0xff81ff00 },
+					null, Shader.TileMode.CLAMP);
 			Color.colorToHSV(0xff81ff00, this.mHSVColor);
 		}
 
@@ -229,10 +232,12 @@ public class OpacityBar extends View {
 		this.mPosToOpacFactor = 0xFF / ((float) this.mBarLength);
 		this.mOpacToPosFactor = ((float) this.mBarLength) / 0xFF;
 		if (!isInEditMode()) {
-			this.mBarPointerPosition = Math.round((this.mOpacToPosFactor * Color
-					.alpha(this.mColor))) + this.mBarPointerHaloRadius;
+			this.mBarPointerPosition = Math
+					.round((this.mOpacToPosFactor * Color.alpha(this.mColor)))
+					+ this.mBarPointerHaloRadius;
 		} else {
-			this.mBarPointerPosition = this.mBarLength + this.mBarPointerHaloRadius;
+			this.mBarPointerPosition = this.mBarLength
+					+ this.mBarPointerHaloRadius;
 		}
 	}
 
@@ -288,7 +293,8 @@ public class OpacityBar extends View {
 					}
 					invalidate();
 				} else if (x > (this.mBarPointerHaloRadius + this.mBarLength)) {
-					this.mBarPointerPosition = this.mBarPointerHaloRadius + this.mBarLength;
+					this.mBarPointerPosition = this.mBarPointerHaloRadius
+							+ this.mBarLength;
 					this.mColor = Color.HSVToColor(this.mHSVColor);
 					this.mBarPointerPaint.setColor(this.mColor);
 					if (this.mPicker != null) {
@@ -317,7 +323,8 @@ public class OpacityBar extends View {
 	public void setColor(int color) {
 		Color.colorToHSV(color, this.mHSVColor);
 		this.shader = new LinearGradient(this.mBarPointerHaloRadius, 0,
-				(this.mBarLength + this.mBarPointerHaloRadius), this.mBarThickness, new int[] {
+				(this.mBarLength + this.mBarPointerHaloRadius),
+				this.mBarThickness, new int[] {
 						Color.HSVToColor(0x00, this.mHSVColor), color }, null,
 				Shader.TileMode.CLAMP);
 		this.mBarPaint.setShader(this.shader);
@@ -336,7 +343,8 @@ public class OpacityBar extends View {
 	 *            float between 0 > 255
 	 */
 	public void setOpacity(int opacity) {
-		this.mBarPointerPosition = Math.round((this.mOpacToPosFactor * opacity))
+		this.mBarPointerPosition = Math
+				.round((this.mOpacToPosFactor * opacity))
 				+ this.mBarPointerHaloRadius;
 		calculateColor(this.mBarPointerPosition);
 		this.mBarPointerPaint.setColor(this.mColor);
@@ -377,7 +385,8 @@ public class OpacityBar extends View {
 			x = this.mBarLength;
 		}
 
-		this.mColor = Color.HSVToColor(Math.round(this.mPosToOpacFactor * x), this.mHSVColor);
+		this.mColor = Color.HSVToColor(Math.round(this.mPosToOpacFactor * x),
+				this.mHSVColor);
 		if (Color.alpha(this.mColor) > 250) {
 			this.mColor = Color.HSVToColor(this.mHSVColor);
 		} else if (Color.alpha(this.mColor) < 5) {

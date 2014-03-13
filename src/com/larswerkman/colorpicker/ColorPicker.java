@@ -16,7 +16,6 @@
 
 package com.larswerkman.colorpicker;
 
-import de.azapps.mirakel.colorpicker.R;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -31,6 +30,7 @@ import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import de.azapps.mirakel.colorpicker.R;
 
 /**
  * Displays a holo-themed color picker.
@@ -339,13 +339,16 @@ public class ColorPicker extends View {
 				this.mColorPointerRadius, this.mPointerColor);
 
 		// Draw the halo of the center colors.
-		canvas.drawCircle(0, 0, this.mColorCenterHaloRadius, this.mCenterHaloPaint);
+		canvas.drawCircle(0, 0, this.mColorCenterHaloRadius,
+				this.mCenterHaloPaint);
 
 		// Draw the old selected color in the center.
-		canvas.drawArc(this.mCenterRectangle, 90, 180, true, this.mCenterOldPaint);
+		canvas.drawArc(this.mCenterRectangle, 90, 180, true,
+				this.mCenterOldPaint);
 
 		// Draw the new selected color in the center.
-		canvas.drawArc(this.mCenterRectangle, 270, 180, true, this.mCenterNewPaint);
+		canvas.drawArc(this.mCenterRectangle, 270, 180, true,
+				this.mCenterNewPaint);
 	}
 
 	@Override
@@ -383,13 +386,15 @@ public class ColorPicker extends View {
 		// fill the rectangle instances.
 		this.mColorWheelRadius = min / 2 - this.mColorWheelThickness
 				- this.mColorPointerHaloRadius;
-		this.mColorWheelRectangle.set(-this.mColorWheelRadius, -this.mColorWheelRadius,
-				this.mColorWheelRadius, this.mColorWheelRadius);
+		this.mColorWheelRectangle.set(-this.mColorWheelRadius,
+				-this.mColorWheelRadius, this.mColorWheelRadius,
+				this.mColorWheelRadius);
 
 		this.mColorCenterRadius = (int) (this.mPreferredColorCenterRadius * ((float) this.mColorWheelRadius / (float) this.mPreferredColorWheelRadius));
 		this.mColorCenterHaloRadius = (int) (this.mPreferredColorCenterHaloRadius * ((float) this.mColorWheelRadius / (float) this.mPreferredColorWheelRadius));
-		this.mCenterRectangle.set(-this.mColorCenterRadius, -this.mColorCenterRadius,
-				this.mColorCenterRadius, this.mColorCenterRadius);
+		this.mCenterRectangle.set(-this.mColorCenterRadius,
+				-this.mColorCenterRadius, this.mColorCenterRadius,
+				this.mColorCenterRadius);
 	}
 
 	private static int ave(int s, int d, float p) {
@@ -537,8 +542,10 @@ public class ColorPicker extends View {
 				invalidate();
 			}
 			// Check whether the user pressed on the center.
-			else if (x >= -this.mColorCenterRadius && x <= this.mColorCenterRadius
-					&& y >= -this.mColorCenterRadius && y <= this.mColorCenterRadius) {
+			else if (x >= -this.mColorCenterRadius
+					&& x <= this.mColorCenterRadius
+					&& y >= -this.mColorCenterRadius
+					&& y <= this.mColorCenterRadius) {
 				this.mCenterHaloPaint.setAlpha(0x50);
 				setColor(getOldCenterColor());
 				this.mCenterNewPaint.setColor(getOldCenterColor());

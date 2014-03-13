@@ -16,7 +16,6 @@
 
 package com.larswerkman.colorpicker;
 
-import de.azapps.mirakel.colorpicker.R;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -31,6 +30,7 @@ import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import de.azapps.mirakel.colorpicker.R;
 
 public class ValueBar extends View {
 
@@ -149,7 +149,8 @@ public class ValueBar extends View {
 		this.mBarThickness = a.getDimensionPixelSize(
 				R.styleable.ColorBars_bar_thickness,
 				b.getDimensionPixelSize(R.dimen.bar_thickness));
-		this.mBarLength = a.getDimensionPixelSize(R.styleable.ColorBars_bar_length,
+		this.mBarLength = a.getDimensionPixelSize(
+				R.styleable.ColorBars_bar_length,
 				b.getDimensionPixelSize(R.dimen.bar_length));
 		this.mPreferredBarLength = this.mBarLength;
 		this.mBarPointerRadius = a.getDimensionPixelSize(
@@ -195,7 +196,8 @@ public class ValueBar extends View {
 		}
 
 		this.mBarLength = width - (this.mBarPointerHaloRadius * 2);
-		setMeasuredDimension((this.mBarLength + (this.mBarPointerHaloRadius * 2)),
+		setMeasuredDimension(
+				(this.mBarLength + (this.mBarPointerHaloRadius * 2)),
 				(this.mBarPointerHaloRadius * 2));
 	}
 
@@ -212,18 +214,16 @@ public class ValueBar extends View {
 
 		// Update variables that depend of mBarLength.
 		if (!isInEditMode()) {
-			this.shader = new LinearGradient(
-					this.mBarPointerHaloRadius,
-					0,
+			this.shader = new LinearGradient(this.mBarPointerHaloRadius, 0,
 					(this.mBarLength + this.mBarPointerHaloRadius),
 					this.mBarThickness,
-					new int[] { Color.HSVToColor(0xFF, this.mHSVColor), Color.BLACK },
-					null, Shader.TileMode.CLAMP);
+					new int[] { Color.HSVToColor(0xFF, this.mHSVColor),
+							Color.BLACK }, null, Shader.TileMode.CLAMP);
 		} else {
 			this.shader = new LinearGradient(this.mBarPointerHaloRadius, 0,
-					(this.mBarLength + this.mBarPointerHaloRadius), this.mBarThickness,
-					new int[] { 0xff81ff00, Color.BLACK }, null,
-					Shader.TileMode.CLAMP);
+					(this.mBarLength + this.mBarPointerHaloRadius),
+					this.mBarThickness, new int[] { 0xff81ff00, Color.BLACK },
+					null, Shader.TileMode.CLAMP);
 			Color.colorToHSV(0xff81ff00, this.mHSVColor);
 		}
 
@@ -297,7 +297,8 @@ public class ValueBar extends View {
 					}
 					invalidate();
 				} else if (x > (this.mBarPointerHaloRadius + this.mBarLength)) {
-					this.mBarPointerPosition = this.mBarPointerHaloRadius + this.mBarLength;
+					this.mBarPointerPosition = this.mBarPointerHaloRadius
+							+ this.mBarLength;
 					this.mColor = Color.BLACK;
 					this.mBarPointerPaint.setColor(this.mColor);
 					if (this.mPicker != null) {
@@ -327,8 +328,9 @@ public class ValueBar extends View {
 	public void setColor(int color) {
 		Color.colorToHSV(color, this.mHSVColor);
 		this.shader = new LinearGradient(this.mBarPointerHaloRadius, 0,
-				(this.mBarLength + this.mBarPointerHaloRadius), this.mBarThickness, new int[] {
-						color, Color.BLACK }, null, Shader.TileMode.CLAMP);
+				(this.mBarLength + this.mBarPointerHaloRadius),
+				this.mBarThickness, new int[] { color, Color.BLACK }, null,
+				Shader.TileMode.CLAMP);
 		this.mBarPaint.setShader(this.shader);
 		calculateColor(this.mBarPointerPosition);
 		this.mBarPointerPaint.setColor(this.mColor);
@@ -371,8 +373,8 @@ public class ValueBar extends View {
 		} else if (x > this.mBarLength) {
 			x = this.mBarLength;
 		}
-		this.mColor = Color.HSVToColor(new float[] { this.mHSVColor[0], this.mHSVColor[1],
-				1 - (this.mPosToSatFactor * x) });
+		this.mColor = Color.HSVToColor(new float[] { this.mHSVColor[0],
+				this.mHSVColor[1], 1 - (this.mPosToSatFactor * x) });
 	}
 
 	/**
