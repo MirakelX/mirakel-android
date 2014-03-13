@@ -43,6 +43,7 @@ import de.azapps.tools.Log;
 public class TLSClient {
 
 	private static final String TAG = "TLSClient";
+
 	private static byte[] fileToBytes(final File f) {
 		int size = (int) f.length();
 		byte[] bytes = new byte[size];
@@ -66,7 +67,9 @@ public class TLSClient {
 		}
 		return bytes;
 	}
-	private static X509Certificate generateCertificateFromPEM(byte[] certBytes) throws ParseException{
+
+	private static X509Certificate generateCertificateFromPEM(byte[] certBytes)
+			throws ParseException {
 		certBytes = parseDERFromPEM(certBytes, "-----BEGIN CERTIFICATE-----",
 				"-----END CERTIFICATE-----");
 		CertificateFactory factory;
@@ -83,7 +86,9 @@ public class TLSClient {
 			return null;
 		}
 	}
-	private static RSAPrivateKey generatePrivateKeyFromPEM(byte[] keyBytes) throws ParseException {
+
+	private static RSAPrivateKey generatePrivateKeyFromPEM(byte[] keyBytes)
+			throws ParseException {
 		keyBytes = parseDERFromPEM(keyBytes, "-----BEGIN RSA PRIVATE KEY-----",
 				"-----END RSA PRIVATE KEY-----");
 		PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
@@ -107,16 +112,16 @@ public class TLSClient {
 			return null;
 		}
 	}
-	static void gnutls_log_function( String message) {
+
+	static void gnutls_log_function(String message) {
 		Log.d(TAG, "c: " + message);
 	}
 
-
 	private static byte[] parseDERFromPEM(byte[] pem, String beginDelimiter,
-			String endDelimiter) throws ParseException{
+			String endDelimiter) throws ParseException {
 		String data = new String(pem);
 		String[] tokens = data.split(beginDelimiter);
-		if(tokens.length<2)
+		if (tokens.length < 2)
 			throw new ParseException("Wrong PEM format", 0);
 		tokens = tokens[1].split(endDelimiter);
 		return Base64.decode(tokens[0], Base64.NO_PADDING);
@@ -174,7 +179,8 @@ public class TLSClient {
 			Log.d(TAG, "connected to " + host + ":" + port);
 			this._socket = (SSLSocket) this.sslFact.createSocket();
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-				this._socket.setEnabledProtocols(new String[] { "TLSv1.2", "TLSv1.1" });
+				this._socket.setEnabledProtocols(new String[] { "TLSv1.2",
+						"TLSv1.1" });
 			}
 			this._socket.setUseClientMode(true);
 			this._socket.setEnableSessionCreation(true);
@@ -204,53 +210,54 @@ public class TLSClient {
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////
-	public void init(final File root, final File user, final File user_key) throws ParseException, CertificateException {
+	public void init(final File root, final File user, final File user_key)
+			throws ParseException, CertificateException {
 		Log.i(TAG, "init");
-			try {
-				X509Certificate ROOT = generateCertificateFromPEM(fileToBytes(root));
-				X509Certificate USER_CERT = generateCertificateFromPEM(fileToBytes(user));
-				RSAPrivateKey USER_KEY = generatePrivateKeyFromPEM(fileToBytes(user_key));
-				KeyStore trusted = KeyStore.getInstance(KeyStore.getDefaultType());
-				trusted.load(null);
-				trusted.setCertificateEntry("taskwarrior-ROOT", ROOT);
-				trusted.setCertificateEntry("taskwarrior-USER", USER_CERT);
-				Certificate[] chain = { USER_CERT, ROOT };
-				KeyManagerFactory keyManagerFactory = KeyManagerFactory
-						.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-				// Hack to get it working on android 2.2
-				String pwd = "secret";
-				trusted.setEntry("user", new KeyStore.PrivateKeyEntry(USER_KEY,
-						chain), new KeyStore.PasswordProtection(pwd.toCharArray()));
+		try {
+			X509Certificate ROOT = generateCertificateFromPEM(fileToBytes(root));
+			X509Certificate USER_CERT = generateCertificateFromPEM(fileToBytes(user));
+			RSAPrivateKey USER_KEY = generatePrivateKeyFromPEM(fileToBytes(user_key));
+			KeyStore trusted = KeyStore.getInstance(KeyStore.getDefaultType());
+			trusted.load(null);
+			trusted.setCertificateEntry("taskwarrior-ROOT", ROOT);
+			trusted.setCertificateEntry("taskwarrior-USER", USER_CERT);
+			Certificate[] chain = { USER_CERT, ROOT };
+			KeyManagerFactory keyManagerFactory = KeyManagerFactory
+					.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+			// Hack to get it working on android 2.2
+			String pwd = "secret";
+			trusted.setEntry("user", new KeyStore.PrivateKeyEntry(USER_KEY,
+					chain), new KeyStore.PasswordProtection(pwd.toCharArray()));
 
-				keyManagerFactory.init(trusted, pwd.toCharArray());
+			keyManagerFactory.init(trusted, pwd.toCharArray());
 
-				SSLContext context = SSLContext.getInstance("TLS");
-				TrustManagerFactory tmf = TrustManagerFactory
-						.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-				tmf.init(trusted);
-				TrustManager[] trustManagers = tmf.getTrustManagers();
-				context.init(keyManagerFactory.getKeyManagers(), trustManagers,
-						new SecureRandom());
-				this.sslFact = context.getSocketFactory();
-			} catch (UnrecoverableKeyException e) {
-				Log.w(TAG, "cannot restore key");
-				throw new CertificateException(e);
-			} catch (KeyManagementException e) {
-				Log.w(TAG, "cannot access key");
-				throw new CertificateException(e);
-			} catch (KeyStoreException e) {
-				Log.w(TAG, "cannot handle keystore");
-				throw new CertificateException(e);
-			} catch (NoSuchAlgorithmException e) {
-				Log.w(TAG, "no matching algorithm founr");
-				throw new CertificateException(e);
-			} catch (CertificateException e) {
-				Log.w(TAG, "certificat not readable");
-				throw new CertificateException(e);
-			} catch (IOException e) {
-				Log.w(TAG, "general io problem");
-				throw new CertificateException(e);
-			}
+			SSLContext context = SSLContext.getInstance("TLS");
+			TrustManagerFactory tmf = TrustManagerFactory
+					.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+			tmf.init(trusted);
+			TrustManager[] trustManagers = tmf.getTrustManagers();
+			context.init(keyManagerFactory.getKeyManagers(), trustManagers,
+					new SecureRandom());
+			this.sslFact = context.getSocketFactory();
+		} catch (UnrecoverableKeyException e) {
+			Log.w(TAG, "cannot restore key");
+			throw new CertificateException(e);
+		} catch (KeyManagementException e) {
+			Log.w(TAG, "cannot access key");
+			throw new CertificateException(e);
+		} catch (KeyStoreException e) {
+			Log.w(TAG, "cannot handle keystore");
+			throw new CertificateException(e);
+		} catch (NoSuchAlgorithmException e) {
+			Log.w(TAG, "no matching algorithm founr");
+			throw new CertificateException(e);
+		} catch (CertificateException e) {
+			Log.w(TAG, "certificat not readable");
+			throw new CertificateException(e);
+		} catch (IOException e) {
+			Log.w(TAG, "general io problem");
+			throw new CertificateException(e);
+		}
 
 	}
 

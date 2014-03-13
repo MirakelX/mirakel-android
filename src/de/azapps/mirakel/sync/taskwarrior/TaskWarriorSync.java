@@ -40,68 +40,68 @@ public class TaskWarriorSync {
 		ACCESS_DENIED, ACCOUNT_SUSPENDED, CANNOT_CREATE_SOCKET, CANNOT_PARSE_MESSAGE, CONFIG_PARSE_ERROR, MESSAGE_ERRORS, NO_ERROR, NOT_ENABLED, TRY_LATER;
 		public static TW_ERRORS getError(int code) {
 			switch (code) {
-				case 200:
-					Log.d(TAG, "Success");
-					break;
-				case 201:
-					Log.d(TAG, "No change");
-					break;
-				case 300:
-					Log.d(TAG,
-							"Deprecated message type\n"
-									+ "This message will not be supported in future task server releases.");
-					break;
-				case 301:
-					Log.d(TAG,
-							"Redirect\n"
-									+ "Further requests should be made to the specified server/port.");
-					// TODO
-					break;
-				case 302:
-					Log.d(TAG,
-							"Retry\n"
-									+ "The client is requested to wait and retry the same request.  The wait\n"
-									+ "time is not specified, and further retry responses are possible.");
-					return TW_ERRORS.TRY_LATER;
-				case 400:
-					Log.e(TAG, "Malformed data");
-					return TW_ERRORS.MESSAGE_ERRORS;
-				case 401:
-					Log.e(TAG, "Unsupported encoding");
-					return TW_ERRORS.MESSAGE_ERRORS;
-				case 420:
-					Log.e(TAG, "Server temporarily unavailable");
-					return TW_ERRORS.TRY_LATER;
-				case 421:
-					Log.e(TAG, "Server shutting down at operator request");
-					return TW_ERRORS.TRY_LATER;
-				case 430:
-					Log.e(TAG, "Access denied");
-					return TW_ERRORS.ACCESS_DENIED;
-				case 431:
-					Log.e(TAG, "Account suspended");
-					return TW_ERRORS.ACCOUNT_SUSPENDED;
-				case 432:
-					Log.e(TAG, "Account terminated");
-					return TW_ERRORS.ACCOUNT_SUSPENDED;
-				case 500:
-					Log.e(TAG, "Syntax error in request");
-					return TW_ERRORS.MESSAGE_ERRORS;
-				case 501:
-					Log.e(TAG, "Syntax error, illegal parameters");
-					return TW_ERRORS.MESSAGE_ERRORS;
-				case 502:
-					Log.e(TAG, "Not implemented");
-					return TW_ERRORS.MESSAGE_ERRORS;
-				case 503:
-					Log.e(TAG, "Command parameter not implemented");
-					return TW_ERRORS.MESSAGE_ERRORS;
-				case 504:
-					Log.e(TAG, "Request too big");
-					return TW_ERRORS.MESSAGE_ERRORS;
-				default:
-					Log.d(TAG, "Unkown code: " + code);
-					break;
+			case 200:
+				Log.d(TAG, "Success");
+				break;
+			case 201:
+				Log.d(TAG, "No change");
+				break;
+			case 300:
+				Log.d(TAG,
+						"Deprecated message type\n"
+								+ "This message will not be supported in future task server releases.");
+				break;
+			case 301:
+				Log.d(TAG,
+						"Redirect\n"
+								+ "Further requests should be made to the specified server/port.");
+				// TODO
+				break;
+			case 302:
+				Log.d(TAG,
+						"Retry\n"
+								+ "The client is requested to wait and retry the same request.  The wait\n"
+								+ "time is not specified, and further retry responses are possible.");
+				return TW_ERRORS.TRY_LATER;
+			case 400:
+				Log.e(TAG, "Malformed data");
+				return TW_ERRORS.MESSAGE_ERRORS;
+			case 401:
+				Log.e(TAG, "Unsupported encoding");
+				return TW_ERRORS.MESSAGE_ERRORS;
+			case 420:
+				Log.e(TAG, "Server temporarily unavailable");
+				return TW_ERRORS.TRY_LATER;
+			case 421:
+				Log.e(TAG, "Server shutting down at operator request");
+				return TW_ERRORS.TRY_LATER;
+			case 430:
+				Log.e(TAG, "Access denied");
+				return TW_ERRORS.ACCESS_DENIED;
+			case 431:
+				Log.e(TAG, "Account suspended");
+				return TW_ERRORS.ACCOUNT_SUSPENDED;
+			case 432:
+				Log.e(TAG, "Account terminated");
+				return TW_ERRORS.ACCOUNT_SUSPENDED;
+			case 500:
+				Log.e(TAG, "Syntax error in request");
+				return TW_ERRORS.MESSAGE_ERRORS;
+			case 501:
+				Log.e(TAG, "Syntax error, illegal parameters");
+				return TW_ERRORS.MESSAGE_ERRORS;
+			case 502:
+				Log.e(TAG, "Not implemented");
+				return TW_ERRORS.MESSAGE_ERRORS;
+			case 503:
+				Log.e(TAG, "Command parameter not implemented");
+				return TW_ERRORS.MESSAGE_ERRORS;
+			case 504:
+				Log.e(TAG, "Request too big");
+				return TW_ERRORS.MESSAGE_ERRORS;
+			default:
+				Log.d(TAG, "Unkown code: " + code);
+				break;
 
 			}
 			return NO_ERROR;
@@ -111,24 +111,24 @@ public class TaskWarriorSync {
 	// Outgoing.
 	// private static int _debug_level = 0;
 	// private static int _limit = (1024 * 1024);
-	private static String		_host				= "localhost";
-	private static String		_key				= "";
-	private static String		_org				= "";
-	private static int			_port				= 6544;
-	private static String		_user				= "";
+	private static String _host = "localhost";
+	private static String _key = "";
+	private static String _org = "";
+	private static int _port = 6544;
+	private static String _user = "";
 
-	public static final String	CA_FILE				= FileUtils.getMirakelDir()
-															+ "ca.cert.pem";
-	public static final String	CLIENT_CERT_FILE	= FileUtils.getMirakelDir()
-															+ "client.cert.pem";
-	public static final String	CLIENT_KEY_FILE		= FileUtils.getMirakelDir()
-															+ "client.key.pem";
-	public static final String	NO_PROJECT			= "NO_PROJECT";
-	private static File			root;
-	private static final String	TAG					= "TaskWarroirSync";
-	public static final String	TYPE				= "TaskWarrior";
-	private static File			user_ca;
-	private static File			user_key;
+	public static final String CA_FILE = FileUtils.getMirakelDir()
+			+ "ca.cert.pem";
+	public static final String CLIENT_CERT_FILE = FileUtils.getMirakelDir()
+			+ "client.cert.pem";
+	public static final String CLIENT_KEY_FILE = FileUtils.getMirakelDir()
+			+ "client.key.pem";
+	public static final String NO_PROJECT = "NO_PROJECT";
+	private static File root;
+	private static final String TAG = "TaskWarroirSync";
+	public static final String TYPE = "TaskWarrior";
+	private static File user_ca;
+	private static File user_key;
 
 	/**
 	 * Handle an error
@@ -154,13 +154,13 @@ public class TaskWarriorSync {
 		}
 	}
 
-	private Account						account;
+	private Account account;
 
-	private AccountManager				accountManager;
+	private AccountManager accountManager;
 
-	private HashMap<String, String[]>	dependencies;
+	private HashMap<String, String[]> dependencies;
 
-	private final Context				mContext;
+	private final Context mContext;
 
 	public TaskWarriorSync(Context ctx) {
 		this.mContext = ctx;
@@ -174,7 +174,7 @@ public class TaskWarriorSync {
 		try {
 			client.init(root, user_ca, user_key);
 		} catch (ParseException e) {
-			Log.e(TAG,"cannot open certificate");
+			Log.e(TAG, "cannot open certificate");
 			return TW_ERRORS.CONFIG_PARSE_ERROR;
 		} catch (CertificateException e) {
 			Log.e(TAG, "general problem with init");
@@ -213,7 +213,8 @@ public class TaskWarriorSync {
 		}
 		int code = Integer.parseInt(remotes.get("code"));
 		TW_ERRORS error = TW_ERRORS.getError(code);
-		if (error != TW_ERRORS.NO_ERROR) return error;
+		if (error != TW_ERRORS.NO_ERROR)
+			return error;
 
 		if (remotes.get("status").equals("Client sync key not found.")) {
 			Log.d(TAG, "reset sync-key");
@@ -241,7 +242,8 @@ public class TaskWarriorSync {
 					taskObject = new JsonParser().parse(taskString)
 							.getAsJsonObject();
 					Log.i(TAG, taskString);
-					server_task = Task.parse_json(taskObject, accountMirakel,true);
+					server_task = Task.parse_json(taskObject, accountMirakel,
+							true);
 					if (server_task.getList() == null
 							|| server_task.getList().getAccount().getId() != accountMirakel
 									.getId()) {
@@ -362,7 +364,7 @@ public class TaskWarriorSync {
 				try {
 					parent.addSubtask(child);
 				} catch (Exception e) {
-					//eat it
+					// eat it
 				}
 			}
 
@@ -378,7 +380,8 @@ public class TaskWarriorSync {
 		this.accountManager = AccountManager.get(this.mContext);
 		this.account = a;
 		AccountMirakel aMirakel = AccountMirakel.get(a);
-		if (!aMirakel.isEnabeld()) return TW_ERRORS.NOT_ENABLED;
+		if (!aMirakel.isEnabeld())
+			return TW_ERRORS.NOT_ENABLED;
 		init();
 
 		Msg sync = new Msg();
@@ -411,7 +414,7 @@ public class TaskWarriorSync {
 				f.write(payload);
 				f.close();
 			} catch (Exception e) {
-				//eat it
+				// eat it
 			}
 		}
 		TW_ERRORS error = doSync(a, sync);
@@ -434,7 +437,7 @@ public class TaskWarriorSync {
 	 * @return
 	 */
 	public String taskToJson(Task task) {
-		Map<String, String> additionals=task.getAdditionalEntries();
+		Map<String, String> additionals = task.getAdditionalEntries();
 		String end = null;
 		String status = "pending";
 		if (task.getSyncState() == SYNC_STATE.DELETE) {
@@ -442,10 +445,10 @@ public class TaskWarriorSync {
 			end = formatCal(new GregorianCalendar());
 		} else if (task.isDone()) {
 			status = "completed";
-			if(additionals.containsKey("end")){
-				end=additionals.get("end");
-				end=end.substring(1,end.length()-1); // Clear redundant \"
-			}else{
+			if (additionals.containsKey("end")) {
+				end = additionals.get("end");
+				end = end.substring(1, end.length() - 1); // Clear redundant \"
+			} else {
 				end = formatCal(new GregorianCalendar());
 			}
 		}
@@ -454,19 +457,19 @@ public class TaskWarriorSync {
 
 		String priority = null;
 		switch (task.getPriority()) {
-			case -2:
-			case -1:
-				priority = "L";
-				break;
-			case 1:
-				priority = "M";
-				break;
-			case 2:
-				priority = "H";
-				break;
-			default:
-				Log.wtf(TAG, "unkown priority");
-				break;
+		case -2:
+		case -1:
+			priority = "L";
+			break;
+		case 1:
+			priority = "M";
+			break;
+		case 2:
+			priority = "H";
+			break;
+		default:
+			Log.wtf(TAG, "unkown priority");
+			break;
 		}
 
 		String json = "{";
@@ -477,8 +480,7 @@ public class TaskWarriorSync {
 		if (task.getDue() != null) {
 			json += ",\"due\":\"" + formatCal(task.getDue()) + "\"";
 		}
-		if (task.getList() != null
-				&& !additionals.containsKey(NO_PROJECT)) {
+		if (task.getList() != null && !additionals.containsKey(NO_PROJECT)) {
 			json += ",\"project\":\"" + task.getList().getName() + "\"";
 		}
 		if (priority != null) {

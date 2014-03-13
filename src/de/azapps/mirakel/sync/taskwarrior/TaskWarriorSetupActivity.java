@@ -37,8 +37,8 @@ import de.azapps.tools.Log;
 
 public class TaskWarriorSetupActivity extends Activity {
 	private class DownloadTask extends AsyncTask<URL, Integer, Integer> {
-		private final static String	TAG	= "DownloadTask";
-		private final Exec				pre, progress, post;
+		private final static String TAG = "DownloadTask";
+		private final Exec pre, progress, post;
 
 		public DownloadTask(Exec pre, Exec progress, Exec post) {
 			this.pre = pre;
@@ -87,51 +87,54 @@ public class TaskWarriorSetupActivity extends Activity {
 		}
 
 	}
+
 	private interface Exec {
 		void execute(Integer status);
 	}
-	private static final Integer	RESULT_ERROR	= 0;
-	protected static final Integer	RESULT_SUCCESS	= 1;
 
-	private final static String	TAG	= "TaskWarriorSetupActivity";
+	private static final Integer RESULT_ERROR = 0;
+	protected static final Integer RESULT_SUCCESS = 1;
 
-	private final int			CONFIG_QR	= 0, CONFIG_TASKWARRIOR = 1;
+	private final static String TAG = "TaskWarriorSetupActivity";
 
-	private AccountManager		mAccountManager;
+	private final int CONFIG_QR = 0, CONFIG_TASKWARRIOR = 1;
 
-	private ProgressDialog		progressDialog;
+	private AccountManager mAccountManager;
+
+	private ProgressDialog progressDialog;
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if (resultCode != RESULT_OK) return;
+		if (resultCode != RESULT_OK)
+			return;
 		switch (requestCode) {
-			case CONFIG_QR:
-				String inputUrl = data.getStringExtra("SCAN_RESULT");
-				setupTaskwarriorFromURL(inputUrl);
-				break;
-			case CONFIG_TASKWARRIOR:
-				String path = FileUtils.getPathFromUri(data.getData(), this);
-				if (path == null
-						&& Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-					try {
-						setupTaskWarrior(
-								getContentResolver().openInputStream(
-										data.getData()), true);
-					} catch (FileNotFoundException e) {
-						Toast.makeText(
-								this,
-								getString(R.string.sync_taskwarrior_select_file_not_exists),
-								Toast.LENGTH_LONG).show();
-					}
-				} else if (path != null) {
-					Log.w(TAG, "path: " + path);
-					Log.w(TAG, "uri: " + data.getData().toString());
-					setupTaskwarrior(new File(path), false);
+		case CONFIG_QR:
+			String inputUrl = data.getStringExtra("SCAN_RESULT");
+			setupTaskwarriorFromURL(inputUrl);
+			break;
+		case CONFIG_TASKWARRIOR:
+			String path = FileUtils.getPathFromUri(data.getData(), this);
+			if (path == null
+					&& Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+				try {
+					setupTaskWarrior(
+							getContentResolver()
+									.openInputStream(data.getData()), true);
+				} catch (FileNotFoundException e) {
+					Toast.makeText(
+							this,
+							getString(R.string.sync_taskwarrior_select_file_not_exists),
+							Toast.LENGTH_LONG).show();
 				}
-				break;
-			default:
-				break;
+			} else if (path != null) {
+				Log.w(TAG, "path: " + path);
+				Log.w(TAG, "uri: " + data.getData().toString());
+				setupTaskwarrior(new File(path), false);
+			}
+			break;
+		default:
+			break;
 		}
 	}
 
@@ -151,24 +154,27 @@ public class TaskWarriorSetupActivity extends Activity {
 					Intent intent = new Intent(
 							"com.google.zxing.client.android.SCAN");
 					intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
-					startActivityForResult(intent, TaskWarriorSetupActivity.this.CONFIG_QR);
+					startActivityForResult(intent,
+							TaskWarriorSetupActivity.this.CONFIG_QR);
 				} catch (Exception e) {
 					new AlertDialog.Builder(TaskWarriorSetupActivity.this)
-					.setTitle(R.string.no_barcode_app)
-					.setMessage(R.string.no_barcode_app_message)
-					.setPositiveButton(R.string.no_barcode_app_install,
-							new DialogInterface.OnClickListener() {
+							.setTitle(R.string.no_barcode_app)
+							.setMessage(R.string.no_barcode_app_message)
+							.setPositiveButton(R.string.no_barcode_app_install,
+									new DialogInterface.OnClickListener() {
 
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							Uri marketUri = Uri
-									.parse("market://details?id=com.google.zxing.client.android");
-							Intent marketIntent = new Intent(
-									Intent.ACTION_VIEW,
-									marketUri);
-							startActivity(marketIntent);
-						}
-					}).show();
+										@Override
+										public void onClick(
+												DialogInterface dialog,
+												int which) {
+											Uri marketUri = Uri
+													.parse("market://details?id=com.google.zxing.client.android");
+											Intent marketIntent = new Intent(
+													Intent.ACTION_VIEW,
+													marketUri);
+											startActivity(marketIntent);
+										}
+									}).show();
 				}
 
 			}
@@ -179,7 +185,8 @@ public class TaskWarriorSetupActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				Helpers.showFileChooser(TaskWarriorSetupActivity.this.CONFIG_TASKWARRIOR,
+				Helpers.showFileChooser(
+						TaskWarriorSetupActivity.this.CONFIG_TASKWARRIOR,
 						getString(R.string.select_config), that);
 
 			}
@@ -238,9 +245,8 @@ public class TaskWarriorSetupActivity extends Activity {
 			String[] t = content.split("(?i)org: ");
 			// Log.d(TAG, "user: " + t[0].replace("username: ", ""));
 			final Account account = new Account(t[0].replaceAll(
-					"(?i)username: ",
-					"")
-					.replace("\n", ""), AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
+					"(?i)username: ", "").replace("\n", ""),
+					AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
 			t = t[1].split("(?i)user key: ");
 			// Log.d(TAG, "org: " + t[0].replace("\n", ""));
 			b.putString(SyncAdapter.BUNDLE_ORG, t[0].replace("\n", ""));
@@ -287,15 +293,16 @@ public class TaskWarriorSetupActivity extends Activity {
 						this,
 						getString(error == ioError ? R.string.sync_taskwarrior_select_file_not_exists
 								: R.string.wrong_config), Toast.LENGTH_LONG)
-								.show();
+						.show();
 			}
-		} else if (!success) throw new RuntimeException();
+		} else if (!success)
+			throw new RuntimeException();
 	}
 
 	public void setupTaskwarriorFromURL(String inputUrl) {
 		this.progressDialog = new ProgressDialog(this);
 		this.progressDialog
-		.setMessage(getString(R.string.sync_taskwarrior_configuring));
+				.setMessage(getString(R.string.sync_taskwarrior_configuring));
 		this.progressDialog.setIndeterminate(true);
 		this.progressDialog.show();
 
@@ -309,11 +316,13 @@ public class TaskWarriorSetupActivity extends Activity {
 			DownloadTask dlTask = new DownloadTask(new Exec() {
 
 				@Override
-				public void execute(Integer status) {}
+				public void execute(Integer status) {
+				}
 			}, new Exec() {
 
 				@Override
-				public void execute(Integer status) {}
+				public void execute(Integer status) {
+				}
 			}, new Exec() {
 
 				@Override
@@ -322,7 +331,7 @@ public class TaskWarriorSetupActivity extends Activity {
 							that,
 							getString(result == RESULT_SUCCESS ? R.string.sync_taskwarrior_setup_success
 									: R.string.sync_taskwarrior_error_download),
-									Toast.LENGTH_LONG).show();
+							Toast.LENGTH_LONG).show();
 
 					TaskWarriorSetupActivity.this.progressDialog.dismiss();
 					finish();
