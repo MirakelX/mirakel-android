@@ -60,6 +60,7 @@ import de.azapps.mirakel.DefenitionsModel.ExecInterfaceWithTask;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.custom_views.BaseTaskDetailRow.OnTaskChangedListner;
 import de.azapps.mirakel.custom_views.TaskDetailDueReminder;
+import de.azapps.mirakel.customviews.R;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -71,30 +72,29 @@ import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 import de.azapps.widgets.DateTimeDialog;
 import de.azapps.widgets.DateTimeDialog.OnDateTimeSetListner;
-import de.azapps.mirakel.customviews.R;
 
 public class TaskDialogHelpers {
-	protected static AlertDialog							audio_playback_dialog;
-	protected static boolean								audio_playback_playing;
+	protected static AlertDialog audio_playback_dialog;
+	protected static boolean audio_playback_playing;
 
-	private static AlertDialog		audio_record_alert_dialog;
+	private static AlertDialog audio_record_alert_dialog;
 
-	protected static String									audio_record_filePath;
+	protected static String audio_record_filePath;
 
-	protected static MediaRecorder							audio_record_mRecorder;
+	protected static MediaRecorder audio_record_mRecorder;
 
-	protected static boolean								content;
+	protected static boolean content;
 
-	private static final DialogInterface.OnClickListener	dialogDoNothing	= null;
+	private static final DialogInterface.OnClickListener dialogDoNothing = null;
 
-	protected static boolean								done;
-	protected static int									listId;
-	protected static boolean								newTask;
-	protected static boolean								optionEnabled;
-	protected static boolean								reminder;
-	protected static String									searchString;
-	protected static SubtaskAdapter							subtaskAdapter;
-	protected static final String							TAG				= "TaskDialogHelpers";
+	protected static boolean done;
+	protected static int listId;
+	protected static boolean newTask;
+	protected static boolean optionEnabled;
+	protected static boolean reminder;
+	protected static String searchString;
+	protected static SubtaskAdapter subtaskAdapter;
+	protected static final String TAG = "TaskDialogHelpers";
 
 	protected static void cancelRecording() {
 		audio_record_mRecorder.stop();
@@ -117,7 +117,8 @@ public class TaskDialogHelpers {
 		query += " NOT _id IN (SELECT parent_id from " + Task.SUBTASK_TABLE
 				+ " where child_id=" + t.getId() + ") AND ";
 		query += "NOT " + DatabaseHelper.ID + "=" + t.getId();
-		query += " AND NOT " + DatabaseHelper.SYNC_STATE_FIELD + "=" + SYNC_STATE.DELETE;
+		query += " AND NOT " + DatabaseHelper.SYNC_STATE_FIELD + "="
+				+ SYNC_STATE.DELETE;
 		if (optionEnabled) {
 			if (!done) {
 				query += " and " + Task.DONE + "=0";
@@ -145,113 +146,124 @@ public class TaskDialogHelpers {
 		return query;
 	}
 
-	public static void handleAudioRecord(final Context context, final Task task, final ExecInterfaceWithTask onSuccess) {
+	public static void handleAudioRecord(final Context context,
+			final Task task, final ExecInterfaceWithTask onSuccess) {
 		try {
 			audio_record_mRecorder = new MediaRecorder();
-			audio_record_mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 			audio_record_mRecorder
-			.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+					.setAudioSource(MediaRecorder.AudioSource.MIC);
+			audio_record_mRecorder
+					.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
 			audio_record_filePath = FileUtils.getOutputMediaFile(
 					FileUtils.MEDIA_TYPE_AUDIO).getAbsolutePath();
 			audio_record_mRecorder.setOutputFile(audio_record_filePath);
 			audio_record_mRecorder
-			.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-				audio_record_mRecorder.prepare();
-			
+					.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+			audio_record_mRecorder.prepare();
+
 			audio_record_mRecorder.start();
 		} catch (Exception e) {
 			Log.e(TAG, "prepare() failed");
 			return;
 		}
 		audio_record_alert_dialog = new AlertDialog.Builder(context)
-		.setTitle(R.string.audio_record_title)
-		.setMessage(R.string.audio_record_message)
-		.setPositiveButton(android.R.string.ok,
-				new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				Task mTask = task;
-				if (task == null || task.getId() == 0) {
-					mTask = Semantic.createTask(
-							MirakelCommonPreferences
-							.getAudioDefaultTitle(),
-							task==null?MirakelModelPreferences.getImportDefaultList(true):task.getList(), true, context);
-				}
-				audio_record_mRecorder.stop();
-				audio_record_mRecorder.release();
-				audio_record_mRecorder = null;
-				mTask.addFile(context, audio_record_filePath);
-				onSuccess.exec(mTask);
-			}
-		})
-		.setNegativeButton(android.R.string.cancel,
-				new DialogInterface.OnClickListener() {
+				.setTitle(R.string.audio_record_title)
+				.setMessage(R.string.audio_record_message)
+				.setPositiveButton(android.R.string.ok,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								Task mTask = task;
+								if (task == null || task.getId() == 0) {
+									mTask = Semantic.createTask(
+											MirakelCommonPreferences
+													.getAudioDefaultTitle(),
+											task == null ? MirakelModelPreferences
+													.getImportDefaultList(true)
+													: task.getList(), true,
+											context);
+								}
+								audio_record_mRecorder.stop();
+								audio_record_mRecorder.release();
+								audio_record_mRecorder = null;
+								mTask.addFile(context, audio_record_filePath);
+								onSuccess.exec(mTask);
+							}
+						})
+				.setNegativeButton(android.R.string.cancel,
+						new DialogInterface.OnClickListener() {
 
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				cancelRecording();
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								cancelRecording();
 
-			}
-		}).setOnCancelListener(new OnCancelListener() {
-			@Override
-			public void onCancel(DialogInterface dialog) {
-				cancelRecording();
-			}
-		}).show();
+							}
+						}).setOnCancelListener(new OnCancelListener() {
+					@Override
+					public void onCancel(DialogInterface dialog) {
+						cancelRecording();
+					}
+				}).show();
 	}
 
-	public static void handleDeleteFile(final List<FileMirakel> selectedItems, Context ctx, final Task t, final ExecInterfaceWithTask onSuccess) {
-		if (selectedItems.size() < 1) return;
+	public static void handleDeleteFile(final List<FileMirakel> selectedItems,
+			Context ctx, final Task t, final ExecInterfaceWithTask onSuccess) {
+		if (selectedItems.size() < 1)
+			return;
 		String files = selectedItems.get(0).getName();
 		for (int i = 1; i < selectedItems.size(); i++) {
 			files += ", " + selectedItems.get(i).getName();
 		}
 		new AlertDialog.Builder(ctx)
-		.setTitle(ctx.getString(R.string.remove_files))
-		.setMessage(
-				ctx.getString(R.string.remove_files_summary, files,
-						t.getName()))
-						.setPositiveButton(android.R.string.ok,
-								new DialogInterface.OnClickListener() {
+				.setTitle(ctx.getString(R.string.remove_files))
+				.setMessage(
+						ctx.getString(R.string.remove_files_summary, files,
+								t.getName()))
+				.setPositiveButton(android.R.string.ok,
+						new DialogInterface.OnClickListener() {
 							@Override
-							public void onClick(DialogInterface dialog, int which) {
+							public void onClick(DialogInterface dialog,
+									int which) {
 								for (FileMirakel f : selectedItems) {
 									f.destroy();
 								}
-								if(onSuccess!=null){
+								if (onSuccess != null) {
 									onSuccess.exec(t);
 								}
 							}
 						})
-						.setNegativeButton(android.R.string.cancel, dialogDoNothing)
-						.show();
+				.setNegativeButton(android.R.string.cancel, dialogDoNothing)
+				.show();
 
 	}
 
-
-	public static void handlePriority(final Context ctx, final Task task, final Helpers.ExecInterface onSuccess) {
-		if (task == null) return;
+	public static void handlePriority(final Context ctx, final Task task,
+			final Helpers.ExecInterface onSuccess) {
+		if (task == null)
+			return;
 		final String[] t = { "2", "1", "0", "-1", "-2" };
 		AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
 		builder.setTitle(R.string.task_change_prio_title);
 		builder.setSingleChoiceItems(t, 2 - task.getPriority(),
 				new DialogInterface.OnClickListener() {
 
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-				task.setPriority(2 - which);
-				task.safeSave();
-				onSuccess.exec();
-			}
-		});
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+						task.setPriority(2 - which);
+						task.safeSave();
+						onSuccess.exec();
+					}
+				});
 		builder.show();
 	}
 
 	@SuppressWarnings("boxing")
-	public static void handleRecurrence(final ActionBarActivity activity, final Task task, final boolean isDue, final ImageButton image) {
-		FragmentManager fm = activity
-				.getSupportFragmentManager();
+	public static void handleRecurrence(final ActionBarActivity activity,
+			final Task task, final boolean isDue, final ImageButton image) {
+		FragmentManager fm = activity.getSupportFragmentManager();
 		Recurring r = isDue ? task.getRecurring() : task.getRecurringReminder();
 		boolean isExact = false;
 		if (r != null) {
@@ -265,7 +277,11 @@ public class TaskDialogHelpers {
 				new OnRecurenceSetListner() {
 
 					@Override
-					public void OnCustomRecurnceSetIntervall(boolean isDue, int intervalYears, int intervalMonths, int intervalDays, int intervalHours, int intervalMinutes, Calendar startDate, Calendar endDate, boolean isExact) {
+					public void OnCustomRecurnceSetIntervall(boolean isDue,
+							int intervalYears, int intervalMonths,
+							int intervalDays, int intervalHours,
+							int intervalMinutes, Calendar startDate,
+							Calendar endDate, boolean isExact) {
 						Recurring r = Recurring.newRecurring("",
 								intervalMinutes, intervalHours, intervalDays,
 								intervalMonths, intervalYears, isDue,
@@ -275,7 +291,9 @@ public class TaskDialogHelpers {
 					}
 
 					@Override
-					public void OnCustomRecurnceSetWeekdays(boolean isDue, List<Integer> weekdays, Calendar startDate, Calendar endDate, boolean isExact) {
+					public void OnCustomRecurnceSetWeekdays(boolean isDue,
+							List<Integer> weekdays, Calendar startDate,
+							Calendar endDate, boolean isExact) {
 						SparseBooleanArray weekdaysArray = new SparseBooleanArray();
 						for (int day : weekdays) {
 							weekdaysArray.put(day, true);
@@ -302,23 +320,24 @@ public class TaskDialogHelpers {
 
 	}
 
-	public static void handleReminder(final ActionBarActivity ctx, final Task task, final OnTaskChangedListner onSuccess) {
+	public static void handleReminder(final ActionBarActivity ctx,
+			final Task task, final OnTaskChangedListner onSuccess) {
 		final Calendar reminder = task.getReminder() == null ? new GregorianCalendar()
-		: task.getReminder();
+				: task.getReminder();
 
-		final FragmentManager fm =  ctx
-				.getSupportFragmentManager();
+		final FragmentManager fm = ctx.getSupportFragmentManager();
 		final DateTimeDialog dtDialog = DateTimeDialog.newInstance(
 				new OnDateTimeSetListner() {
 
 					@Override
-					public void onDateTimeSet(int year, int month, int dayOfMonth, int hourOfDay, int minute) {
+					public void onDateTimeSet(int year, int month,
+							int dayOfMonth, int hourOfDay, int minute) {
 						reminder.set(Calendar.YEAR, year);
 						reminder.set(Calendar.MONTH, month);
 						reminder.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 						reminder.set(Calendar.HOUR_OF_DAY, hourOfDay);
 						reminder.set(Calendar.MINUTE, minute);
-						task.setReminder(reminder,true);
+						task.setReminder(reminder, true);
 						onSuccess.onTaskChanged(task);
 
 					}
@@ -330,42 +349,47 @@ public class TaskDialogHelpers {
 
 					}
 				}, reminder.get(Calendar.YEAR), reminder.get(Calendar.MONTH),
-				reminder.get(Calendar.DAY_OF_MONTH),
-				reminder.get(Calendar.HOUR_OF_DAY),
-				reminder.get(Calendar.MINUTE), true,
-				MirakelCommonPreferences.isDark());
+				reminder.get(Calendar.DAY_OF_MONTH), reminder
+						.get(Calendar.HOUR_OF_DAY), reminder
+						.get(Calendar.MINUTE), true, MirakelCommonPreferences
+						.isDark());
 		dtDialog.show(fm, "datetimedialog");
 	}
-	public static void handleRemoveSubtask(final List<Task> subtasks, Context ctx, final Task task,final ExecInterfaceWithTask onSuccess) {
-		if (subtasks.size() == 0) return;
+
+	public static void handleRemoveSubtask(final List<Task> subtasks,
+			Context ctx, final Task task, final ExecInterfaceWithTask onSuccess) {
+		if (subtasks.size() == 0)
+			return;
 		String names = subtasks.get(0).getName();
 		for (int i = 1; i < subtasks.size(); i++) {
 			names += ", " + subtasks.get(i).getName();
 		}
 		new AlertDialog.Builder(ctx)
-		.setTitle(ctx.getString(R.string.remove_subtask))
-		.setMessage(
-				ctx.getString(R.string.remove_files_summary, names,
-						task.getName()))
-						.setPositiveButton(android.R.string.ok,
-								new DialogInterface.OnClickListener() {
+				.setTitle(ctx.getString(R.string.remove_subtask))
+				.setMessage(
+						ctx.getString(R.string.remove_files_summary, names,
+								task.getName()))
+				.setPositiveButton(android.R.string.ok,
+						new DialogInterface.OnClickListener() {
 
 							@Override
-							public void onClick(DialogInterface dialog, int which) {
+							public void onClick(DialogInterface dialog,
+									int which) {
 								for (Task s : subtasks) {
 									task.deleteSubtask(s);
 								}
-								if(onSuccess!=null){
+								if (onSuccess != null) {
 									onSuccess.exec(task);
 								}
 							}
 						})
-						.setNegativeButton(android.R.string.cancel, dialogDoNothing)
-						.show();
+				.setNegativeButton(android.R.string.cancel, dialogDoNothing)
+				.show();
 
 	}
 
-	public static void handleSubtask(final Context ctx, final Task task, final OnTaskChangedListner taskChanged, final boolean asSubtask) {
+	public static void handleSubtask(final Context ctx, final Task task,
+			final OnTaskChangedListner taskChanged, final boolean asSubtask) {
 		final List<Pair<Long, String>> names = Task.getTaskNames();
 		CharSequence[] values = new String[names.size()];
 		for (int i = 0; i < names.size(); i++) {
@@ -407,13 +431,15 @@ public class TaskDialogHelpers {
 			}
 
 			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
 				// Nothing
 
 			}
 
 			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count) {
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
 				searchString = s.toString();
 				updateListView(subtaskAdapter, task, lv);
 
@@ -456,7 +482,8 @@ public class TaskDialogHelpers {
 
 				@Override
 				public void onClick(View v) {
-					if (newTask) return;
+					if (newTask)
+						return;
 					switcher.showPrevious();
 					subtaskNewtask.setTextColor(ctx.getResources().getColor(
 							darkTheme ? R.color.White : R.color.Black));
@@ -469,7 +496,8 @@ public class TaskDialogHelpers {
 			subtaskSelectOld.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					if (!newTask) return;
+					if (!newTask)
+						return;
 					switcher.showNext();
 					subtaskNewtask.setTextColor(ctx.getResources().getColor(
 							R.color.Grey));
@@ -483,7 +511,8 @@ public class TaskDialogHelpers {
 		doneBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
 			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
 				done = isChecked;
 				updateListView(subtaskAdapter, task, lv);
 			}
@@ -491,14 +520,15 @@ public class TaskDialogHelpers {
 		final CheckBox reminderBox = (CheckBox) v
 				.findViewById(R.id.subtask_reminder);
 		reminderBox
-		.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+				.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				reminder = isChecked;
-				updateListView(subtaskAdapter, task, lv);
-			}
-		});
+					@Override
+					public void onCheckedChanged(CompoundButton buttonView,
+							boolean isChecked) {
+						reminder = isChecked;
+						updateListView(subtaskAdapter, task, lv);
+					}
+				});
 
 		final Button list = (Button) v.findViewById(R.id.subtask_list);
 		list.setOnClickListener(new OnClickListener() {
@@ -513,96 +543,100 @@ public class TaskDialogHelpers {
 				new AlertDialog.Builder(ctx).setSingleChoiceItems(names, -1,
 						new DialogInterface.OnClickListener() {
 
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						listId = lists.get(which).getId();
-						updateListView(subtaskAdapter, task, lv);
-						list.setText(lists.get(which).getName());
-						dialog.dismiss();
-					}
-				}).show();
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								listId = lists.get(which).getId();
+								updateListView(subtaskAdapter, task, lv);
+								list.setText(lists.get(which).getName());
+								dialog.dismiss();
+							}
+						}).show();
 
 			}
 		});
 		final CheckBox contentBox = (CheckBox) v
 				.findViewById(R.id.subtask_content);
 		contentBox
-		.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+				.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				content = isChecked;
-				updateListView(subtaskAdapter, task, lv);
-			}
-		});
+					@Override
+					public void onCheckedChanged(CompoundButton buttonView,
+							boolean isChecked) {
+						content = isChecked;
+						updateListView(subtaskAdapter, task, lv);
+					}
+				});
 
 		final EditText newTaskEdit = (EditText) v
 				.findViewById(R.id.subtask_add_task_edit);
 
 		final AlertDialog dialog = new AlertDialog.Builder(ctx)
-		.setTitle(ctx.getString(R.string.add_subtask))
-		.setView(v)
-		.setPositiveButton(R.string.add,
-				new DialogInterface.OnClickListener() {
+				.setTitle(ctx.getString(R.string.add_subtask))
+				.setView(v)
+				.setPositiveButton(R.string.add,
+						new DialogInterface.OnClickListener() {
 
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				if (newTask
-						&& newTaskEdit.getText().length() > 0) {
-					newSubtask(
-							newTaskEdit.getText().toString(),
-							task, ctx);
-				} else if (!newTask) {
-					boolean[] checked = subtaskAdapter
-							.getChecked();
-					List<Task> tasks = subtaskAdapter.getData();
-					for (int i = 0; i < checked.length; i++) {
-						if (checked[i]) {
-							if (!asSubtask) {
-								if (!tasks.get(i)
-										.checkIfParent(task)) {
-									task.addSubtask(tasks
-											.get(i));
-								} else {
-									Toast.makeText(
-											ctx,
-											ctx.getString(R.string.no_loop),
-											Toast.LENGTH_LONG)
-											.show();
-									Log.d(TAG,
-											"cannot create loop");
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								if (newTask
+										&& newTaskEdit.getText().length() > 0) {
+									newSubtask(
+											newTaskEdit.getText().toString(),
+											task, ctx);
+								} else if (!newTask) {
+									boolean[] checked = subtaskAdapter
+											.getChecked();
+									List<Task> tasks = subtaskAdapter.getData();
+									for (int i = 0; i < checked.length; i++) {
+										if (checked[i]) {
+											if (!asSubtask) {
+												if (!tasks.get(i)
+														.checkIfParent(task)) {
+													task.addSubtask(tasks
+															.get(i));
+												} else {
+													Toast.makeText(
+															ctx,
+															ctx.getString(R.string.no_loop),
+															Toast.LENGTH_LONG)
+															.show();
+													Log.d(TAG,
+															"cannot create loop");
+												}
+											} else {
+												if (!task.checkIfParent(tasks
+														.get(i))) {
+													tasks.get(i).addSubtask(
+															task);
+												} else {
+													Toast.makeText(
+															ctx,
+															ctx.getString(R.string.no_loop),
+															Toast.LENGTH_LONG)
+															.show();
+													Log.d(TAG,
+															"cannot create loop");
+												}
+											}
+										}
+									}
 								}
-							} else {
-								if (!task.checkIfParent(tasks
-										.get(i))) {
-									tasks.get(i).addSubtask(
-											task);
-								} else {
-									Toast.makeText(
-											ctx,
-											ctx.getString(R.string.no_loop),
-											Toast.LENGTH_LONG)
-											.show();
-									Log.d(TAG,
-											"cannot create loop");
+								if (taskChanged != null) {
+									taskChanged.onTaskChanged(task);
 								}
+								dialog.dismiss();
 							}
-						}
-					}
-				}
-				if (taskChanged != null) {
-					taskChanged.onTaskChanged(task);
-				}
-				dialog.dismiss();
-			}
 
-		})
-		.setNegativeButton(android.R.string.cancel, dialogDoNothing)
-		.show();
+						})
+				.setNegativeButton(android.R.string.cancel, dialogDoNothing)
+				.show();
 
 		newTaskEdit.setOnEditorActionListener(new OnEditorActionListener() {
 			@Override
-			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+			public boolean onEditorAction(TextView v, int actionId,
+					KeyEvent event) {
 				if (actionId == EditorInfo.IME_ACTION_SEND) {
 					newSubtask(v.getText().toString(), task, ctx);
 					v.setText(null);
@@ -642,7 +676,8 @@ public class TaskDialogHelpers {
 		}
 	}
 
-	public static void playbackFile(final Activity context, FileMirakel file, boolean loud) {
+	public static void playbackFile(final Activity context, FileMirakel file,
+			boolean loud) {
 		final MediaPlayer mPlayer = new MediaPlayer();
 
 		AudioManager am = (AudioManager) context
@@ -673,23 +708,24 @@ public class TaskDialogHelpers {
 			Log.e(TAG, "prepare() failed");
 		}
 		audio_playback_dialog = new AlertDialog.Builder(context)
-		.setTitle(R.string.audio_playback_title)
-		.setPositiveButton(R.string.audio_playback_pause, null)
-		.setNegativeButton(R.string.audio_playback_stop,
-				new DialogInterface.OnClickListener() {
+				.setTitle(R.string.audio_playback_title)
+				.setPositiveButton(R.string.audio_playback_pause, null)
+				.setNegativeButton(R.string.audio_playback_stop,
+						new DialogInterface.OnClickListener() {
 
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				mPlayer.release();
-			}
-		}).setOnCancelListener(new OnCancelListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								mPlayer.release();
+							}
+						}).setOnCancelListener(new OnCancelListener() {
 
-			@Override
-			public void onCancel(DialogInterface dialog) {
-				mPlayer.release();
-				dialog.cancel();
-			}
-		}).create();
+					@Override
+					public void onCancel(DialogInterface dialog) {
+						mPlayer.release();
+						dialog.cancel();
+					}
+				}).create();
 		audio_playback_dialog.setOnShowListener(new OnShowListener() {
 
 			@Override
@@ -718,7 +754,8 @@ public class TaskDialogHelpers {
 		audio_playback_dialog.show();
 	}
 
-	protected static void setRecurence(final Task task, final boolean isDue, int id, ImageButton image) {
+	protected static void setRecurence(final Task task, final boolean isDue,
+			int id, ImageButton image) {
 		if (isDue) {
 			Recurring.destroyTemporary(task.getRecurrenceId());
 			task.setRecurrence(id);
@@ -744,13 +781,16 @@ public class TaskDialogHelpers {
 		}
 	}
 
-	protected static void updateListView(final SubtaskAdapter a, final Task t, final ListView lv) {
-		if (t == null || a == null || lv == null) return;
+	protected static void updateListView(final SubtaskAdapter a, final Task t,
+			final ListView lv) {
+		if (t == null || a == null || lv == null)
+			return;
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				List<Task> tasks = Task.rawQuery(generateQuery(t));
-				if (tasks == null) return;
+				if (tasks == null)
+					return;
 
 				a.setData(tasks);
 				lv.post(new Runnable() {

@@ -20,7 +20,6 @@ package de.azapps.mirakel.adapter;
 
 import java.util.List;
 
-import de.azapps.mirakel.customviews.R;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.preference.PreferenceActivity.Header;
@@ -30,6 +29,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import de.azapps.mirakel.customviews.R;
 
 public class SettingsAdapter extends ArrayAdapter<Header> {
 

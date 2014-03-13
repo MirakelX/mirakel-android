@@ -42,16 +42,17 @@ import de.azapps.tools.Log;
 
 public class TaskDetailHeader extends BaseTaskDetailRow {
 
-	public interface OnDoneChangedListner{
+	public interface OnDoneChangedListner {
 		public abstract void onDoneChanged(Task newTask);
 	}
-	protected static final String	TAG	= "TaskDetailHeader";
+
+	protected static final String TAG = "TaskDetailHeader";
 	protected OnDoneChangedListner doneChanged;
-	protected ViewSwitcher	switcher;
-	private CheckBox		taskDone;
-	protected TextView		taskName;
-	protected TextView		taskPrio;
-	protected EditText		txt;
+	protected ViewSwitcher switcher;
+	private CheckBox taskDone;
+	protected TextView taskName;
+	protected TextView taskPrio;
+	protected EditText txt;
 
 	public TaskDetailHeader(Context ctx) {
 		super(ctx);
@@ -67,59 +68,62 @@ public class TaskDetailHeader extends BaseTaskDetailRow {
 			@Override
 			public void onClick(View v) {
 				clearFocus();
-				TaskDetailHeader.this.switcher.showNext(); // or switcher.showPrevious();
+				TaskDetailHeader.this.switcher.showNext(); // or
+															// switcher.showPrevious();
 				CharSequence name = TaskDetailHeader.this.taskName.getText();
 				TaskDetailHeader.this.txt.setText(name);
 				TaskDetailHeader.this.txt
-				.setOnFocusChangeListener(new OnFocusChangeListener() {
+						.setOnFocusChangeListener(new OnFocusChangeListener() {
 
-					@Override
-					public void onFocusChange(View view, boolean hasFocus) {
-						if (hasFocus) {
-							imm.showSoftInput(
-									TaskDetailHeader.this.txt,
-									InputMethodManager.SHOW_IMPLICIT);
-						} else {
-							imm.showSoftInput(
-									TaskDetailHeader.this.txt,
-									InputMethodManager.HIDE_IMPLICIT_ONLY);
-						}
-						imm.restartInput(TaskDetailHeader.this.txt);
-					}
-				});
+							@Override
+							public void onFocusChange(View view,
+									boolean hasFocus) {
+								if (hasFocus) {
+									imm.showSoftInput(
+											TaskDetailHeader.this.txt,
+											InputMethodManager.SHOW_IMPLICIT);
+								} else {
+									imm.showSoftInput(
+											TaskDetailHeader.this.txt,
+											InputMethodManager.HIDE_IMPLICIT_ONLY);
+								}
+								imm.restartInput(TaskDetailHeader.this.txt);
+							}
+						});
 				TaskDetailHeader.this.txt.requestFocus();
 				TaskDetailHeader.this.txt
-				.setOnEditorActionListener(new OnEditorActionListener() {
+						.setOnEditorActionListener(new OnEditorActionListener() {
 
-					@Override
-					public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
-						TaskDetailHeader.this.txt.clearFocus();
-						imm.restartInput(TaskDetailHeader.this.txt);
-						TaskDetailHeader.this.txt
-						.setOnFocusChangeListener(null);
-						if (actionId == EditorInfo.IME_ACTION_DONE
-								&& TaskDetailHeader.this.task != null) {
-							TaskDetailHeader.this.task
-							.setName(TaskDetailHeader.this.txt
-									.getText().toString());
-							save();
-							TaskDetailHeader.this.taskName
-							.setText(TaskDetailHeader.this.task
-									.getName());
-							TaskDetailHeader.this.txt
-							.setOnFocusChangeListener(null);
-							imm.hideSoftInputFromWindow(
+							@Override
+							public boolean onEditorAction(TextView view,
+									int actionId, KeyEvent event) {
+								TaskDetailHeader.this.txt.clearFocus();
+								imm.restartInput(TaskDetailHeader.this.txt);
+								TaskDetailHeader.this.txt
+										.setOnFocusChangeListener(null);
+								if (actionId == EditorInfo.IME_ACTION_DONE
+										&& TaskDetailHeader.this.task != null) {
+									TaskDetailHeader.this.task
+											.setName(TaskDetailHeader.this.txt
+													.getText().toString());
+									save();
+									TaskDetailHeader.this.taskName
+											.setText(TaskDetailHeader.this.task
+													.getName());
 									TaskDetailHeader.this.txt
-									.getWindowToken(), 0);
-							TaskDetailHeader.this.switcher
-							.showPrevious();
+											.setOnFocusChangeListener(null);
+									imm.hideSoftInputFromWindow(
+											TaskDetailHeader.this.txt
+													.getWindowToken(), 0);
+									TaskDetailHeader.this.switcher
+											.showPrevious();
 
-							return true;
-						}
-						return false;
-					}
+									return true;
+								}
+								return false;
+							}
 
-				});
+						});
 				TaskDetailHeader.this.txt.setSelection(name.length());
 			}
 		});
@@ -128,14 +132,14 @@ public class TaskDetailHeader extends BaseTaskDetailRow {
 			public void onClick(View v) {
 				TaskDialogHelpers.handlePriority(TaskDetailHeader.this.context,
 						TaskDetailHeader.this.task, new ExecInterface() {
-					@Override
-					public void exec() {
-						TaskHelper.setPrio(
-								TaskDetailHeader.this.taskPrio,
-								TaskDetailHeader.this.task);
-						save();
-					}
-				});
+							@Override
+							public void exec() {
+								TaskHelper.setPrio(
+										TaskDetailHeader.this.taskPrio,
+										TaskDetailHeader.this.task);
+								save();
+							}
+						});
 			}
 		});
 	}
@@ -162,14 +166,15 @@ public class TaskDetailHeader extends BaseTaskDetailRow {
 		this.taskDone.setChecked(this.task.isDone());
 		this.taskDone.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
 				Log.d(TAG, "check " + isChecked);
 				TaskDetailHeader.this.task.setDone(isChecked);
 				ReminderAlarm.updateAlarms(TaskDetailHeader.this.context);
 				save();
-				if(TaskDetailHeader.this.doneChanged!=null){
+				if (TaskDetailHeader.this.doneChanged != null) {
 					TaskDetailHeader.this.doneChanged
-					.onDoneChanged(TaskDetailHeader.this.task);
+							.onDoneChanged(TaskDetailHeader.this.task);
 				}
 			}
 		});

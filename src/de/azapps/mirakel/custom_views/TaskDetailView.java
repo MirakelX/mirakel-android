@@ -29,88 +29,84 @@ import de.azapps.mirakel.custom_views.TaskDetailDueReminder.Type;
 import de.azapps.mirakel.custom_views.TaskDetailFilePart.OnFileClickListner;
 import de.azapps.mirakel.custom_views.TaskDetailFilePart.OnFileMarkedListner;
 import de.azapps.mirakel.custom_views.TaskDetailHeader.OnDoneChangedListner;
-import de.azapps.mirakel.custom_views.TaskDetailView.TYPE.NoSuchItemException;
 import de.azapps.mirakel.custom_views.TaskSummary.OnTaskClickListner;
 import de.azapps.mirakel.custom_views.TaskSummary.OnTaskMarkedListner;
 import de.azapps.mirakel.customviews.R;
-import de.azapps.mirakel.helper.MirakelCommonPreferences;
-import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.MirakelViewPreferences;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.tools.Log;
 
-public class TaskDetailView extends BaseTaskDetailRow implements OnTaskChangedListner {
+public class TaskDetailView extends BaseTaskDetailRow implements
+		OnTaskChangedListner {
 
 	public static class TYPE {
 		public static class NoSuchItemException extends Exception {
-			private static final long	serialVersionUID	= 4952441280983309615L;
+			private static final long serialVersionUID = 4952441280983309615L;
 
 			public NoSuchItemException() {
 				super();
 			}
 		}
 
-		public final static int	CONTENT		= 4;
-		public final static int	DUE			= 2;
-		public final static int	FILE		= 1;
-		public final static int	HEADER		= 0;
-		public final static int	PROGRESS	= 7;
-		public final static int	REMINDER	= 3;
-		public final static int	SUBTASK		= 6;
+		public final static int CONTENT = 4;
+		public final static int DUE = 2;
+		public final static int FILE = 1;
+		public final static int HEADER = 0;
+		public final static int PROGRESS = 7;
+		public final static int REMINDER = 3;
+		public final static int SUBTASK = 6;
 
-		public final static int	SUBTITLE	= 5;
+		public final static int SUBTITLE = 5;
 
 		public static String getName(int item) throws NoSuchItemException {
 			switch (item) {
-				case HEADER:
-					return "header";
-				case FILE:
-					return "file";
-				case DUE:
-					return "due";
-				case REMINDER:
-					return "reminder";
-				case CONTENT:
-					return "content";
-				case SUBTASK:
-					return "subtask";
-				case PROGRESS:
-					return "progress";
-				default:
-					throw new NoSuchItemException(); // Throw exception;
+			case HEADER:
+				return "header";
+			case FILE:
+				return "file";
+			case DUE:
+				return "due";
+			case REMINDER:
+				return "reminder";
+			case CONTENT:
+				return "content";
+			case SUBTASK:
+				return "subtask";
+			case PROGRESS:
+				return "progress";
+			default:
+				throw new NoSuchItemException(); // Throw exception;
 			}
 		}
 
-		public static String getTranslatedName(Context ctx, int item) throws NoSuchItemException {
+		public static String getTranslatedName(Context ctx, int item)
+				throws NoSuchItemException {
 			switch (item) {
-				case HEADER:
-					return ctx.getString(R.string.task_fragment_header);
-				case FILE:
-					return ctx.getString(R.string.task_fragment_file);
-				case DUE:
-					return ctx.getString(R.string.task_fragment_due);
-				case REMINDER:
-					return ctx.getString(R.string.task_fragment_reminder);
-				case CONTENT:
-					return ctx.getString(R.string.task_fragment_content);
-				case SUBTASK:
-					return ctx.getString(R.string.task_fragment_subtask);
-				case PROGRESS:
-					return ctx.getString(R.string.task_fragment_progress);
-				default:
-					throw new NoSuchItemException(); // Throw exception;
+			case HEADER:
+				return ctx.getString(R.string.task_fragment_header);
+			case FILE:
+				return ctx.getString(R.string.task_fragment_file);
+			case DUE:
+				return ctx.getString(R.string.task_fragment_due);
+			case REMINDER:
+				return ctx.getString(R.string.task_fragment_reminder);
+			case CONTENT:
+				return ctx.getString(R.string.task_fragment_content);
+			case SUBTASK:
+				return ctx.getString(R.string.task_fragment_subtask);
+			case PROGRESS:
+				return ctx.getString(R.string.task_fragment_progress);
+			default:
+				throw new NoSuchItemException(); // Throw exception;
 			}
 
 		}
 	}
 
-
 	private static final String TAG = "TaskDetailView";
 
-
-	private final Context							context;
-	private List<Integer>							items;
-	protected final SparseArray<BaseTaskDetailRow>	views;
+	private final Context context;
+	private List<Integer> items;
+	protected final SparseArray<BaseTaskDetailRow> views;
 
 	public TaskDetailView(Context ctx) {
 		super(ctx);
@@ -138,7 +134,7 @@ public class TaskDetailView extends BaseTaskDetailRow implements OnTaskChangedLi
 
 	public void cancelContent() {
 		BaseTaskDetailRow v = this.views.get(TYPE.CONTENT);
-		if(v!=null){
+		if (v != null) {
 			((TaskDetailContent) v).cancelContent();
 		}
 
@@ -155,7 +151,7 @@ public class TaskDetailView extends BaseTaskDetailRow implements OnTaskChangedLi
 
 	public void saveContent() {
 		BaseTaskDetailRow v = this.views.get(TYPE.CONTENT);
-		if(v!=null){
+		if (v != null) {
 			((TaskDetailContent) v).saveContent();
 		}
 
@@ -213,68 +209,70 @@ public class TaskDetailView extends BaseTaskDetailRow implements OnTaskChangedLi
 	private void setupView() {
 		removeAllViews();
 		setOrientation(VERTICAL);
-		for(int position=0;position<this.items.size();position++){
+		for (int position = 0; position < this.items.size(); position++) {
 			int i = this.items.get(position);
 			BaseTaskDetailRow item;
 			switch (i) {
-				case TYPE.HEADER:
-					TaskDetailHeader h=new TaskDetailHeader(this.context);
-					h.setOnDoneChangedListner(new OnDoneChangedListner() {
+			case TYPE.HEADER:
+				TaskDetailHeader h = new TaskDetailHeader(this.context);
+				h.setOnDoneChangedListner(new OnDoneChangedListner() {
 
-						@Override
-						public void onDoneChanged(Task newTask) {
-							if (TaskDetailView.this.views.get(TYPE.DUE) != null) {
-								TaskDetailView.this.views.get(TYPE.DUE).update(newTask);
-							}
+					@Override
+					public void onDoneChanged(Task newTask) {
+						if (TaskDetailView.this.views.get(TYPE.DUE) != null) {
+							TaskDetailView.this.views.get(TYPE.DUE).update(
+									newTask);
 						}
-					});
-					item=h;
-					break;
-				case TYPE.SUBTASK:
-					item = new TaskDetailSubtask(this.context);
-					break;
-				case TYPE.PROGRESS:
-					item=new TaskDetailProgress(this.context);
-					break;
-				case TYPE.CONTENT:
-					item=new TaskDetailContent(this.context);
-					break;
-				case TYPE.REMINDER:
-					if (position > 0
-							&& this.items.get(position - 1) != TYPE.DUE
-							&& position < this.items.size()-1 && this.items
-							.get(position + 1) != TYPE.DUE
-							||position==0 &&items.size()>1&&items.get(1)!= TYPE.DUE
-							||position==items.size()-1&&position!=0&&items.get(items.size()-2)!=TYPE.DUE) {
-						TaskDetailDueReminder t = new TaskDetailDueReminder(
-								this.context);
-						t.setType(Type.Reminder);
-						item = t;
-						break;
 					}
-					continue;
-				case TYPE.DUE:
+				});
+				item = h;
+				break;
+			case TYPE.SUBTASK:
+				item = new TaskDetailSubtask(this.context);
+				break;
+			case TYPE.PROGRESS:
+				item = new TaskDetailProgress(this.context);
+				break;
+			case TYPE.CONTENT:
+				item = new TaskDetailContent(this.context);
+				break;
+			case TYPE.REMINDER:
+				if (position > 0 && this.items.get(position - 1) != TYPE.DUE
+						&& position < this.items.size() - 1
+						&& this.items.get(position + 1) != TYPE.DUE
+						|| position == 0 && items.size() > 1
+						&& items.get(1) != TYPE.DUE
+						|| position == items.size() - 1 && position != 0
+						&& items.get(items.size() - 2) != TYPE.DUE) {
 					TaskDetailDueReminder t = new TaskDetailDueReminder(
 							this.context);
-					if (position > 1
-							&& this.items.get(position - 1) == TYPE.REMINDER
-							|| position < this.items.size()-1
-							&& this.items.get(position + 1) == TYPE.REMINDER) {
-						t.setType(Type.Combined);
-					}else{
-						t.setType(Type.Due);
-					}
-
+					t.setType(Type.Reminder);
 					item = t;
 					break;
-				case TYPE.FILE:
-					item = new TaskDetailFile(this.context);
-					break;
-					//$FALL-THROUGH$
-				case TYPE.SUBTITLE:
-				default:
-					//noting
-					continue;
+				}
+				continue;
+			case TYPE.DUE:
+				TaskDetailDueReminder t = new TaskDetailDueReminder(
+						this.context);
+				if (position > 1
+						&& this.items.get(position - 1) == TYPE.REMINDER
+						|| position < this.items.size() - 1
+						&& this.items.get(position + 1) == TYPE.REMINDER) {
+					t.setType(Type.Combined);
+				} else {
+					t.setType(Type.Due);
+				}
+
+				item = t;
+				break;
+			case TYPE.FILE:
+				item = new TaskDetailFile(this.context);
+				break;
+			//$FALL-THROUGH$
+			case TYPE.SUBTITLE:
+			default:
+				// noting
+				continue;
 			}
 			item.setOnTaskChangedListner(this);
 			addView(item);
@@ -285,12 +283,12 @@ public class TaskDetailView extends BaseTaskDetailRow implements OnTaskChangedLi
 
 	public void unmark() {
 		BaseTaskDetailRow v = this.views.get(TYPE.SUBTASK);
-		if(v!=null){
+		if (v != null) {
 			v.update(this.task);
 			((TaskDetailSubtask) v).disableMarked();
 		}
 		v = this.views.get(TYPE.FILE);
-		if(v!=null){
+		if (v != null) {
 			v.update(this.task);
 			((TaskDetailFile) v).disableMarked();
 		}

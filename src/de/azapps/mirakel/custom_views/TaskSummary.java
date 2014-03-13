@@ -40,7 +40,8 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.tools.Log;
 
-public class TaskSummary extends TaskDetailSubListBase<Task> implements android.view.View.OnClickListener {
+public class TaskSummary extends TaskDetailSubListBase<Task> implements
+		android.view.View.OnClickListener {
 	public interface OnTaskClickListner {
 		public abstract void onTaskClick(Task t);
 	}
@@ -49,18 +50,18 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements android.
 		abstract public void markTask(View v, Task t, boolean markted);
 	}
 
-	private static final String		TAG	= "TaskSummary";
+	private static final String TAG = "TaskSummary";
 	private boolean marked;
-	private OnTaskMarkedListner	markedListner;
+	private OnTaskMarkedListner markedListner;
 	private final ProgressWheel taskProgress;
-	private final CheckBox			taskRowDone;
-	private final RelativeLayout	taskRowDoneWrapper;
-	private final TextView			taskRowDue;
-	private final ImageView			taskRowHasContent;
+	private final CheckBox taskRowDone;
+	private final RelativeLayout taskRowDoneWrapper;
+	private final TextView taskRowDue;
+	private final ImageView taskRowHasContent;
 
-	private final TextView			taskRowList;
-	private final TextView			taskRowName;
-	private final TextView	taskRowPriority;
+	private final TextView taskRowList;
+	private final TextView taskRowName;
+	private final TextView taskRowPriority;
 
 	public TaskSummary(Context ctx) {
 		super(ctx);
@@ -81,14 +82,13 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements android.
 			public void onClick(final View v) {
 				if (TaskSummary.this.task != null) {
 					TaskDialogHelpers.handlePriority(TaskSummary.this.context,
-							TaskSummary.this.task,
-							new ExecInterface() {
-						@Override
-						public void exec() {
-							updatePriority();
-							save();
-						}
-					});
+							TaskSummary.this.task, new ExecInterface() {
+								@Override
+								public void exec() {
+									updatePriority();
+									save();
+								}
+							});
 				}
 
 			}
@@ -162,11 +162,11 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements android.
 					R.color.Grey));
 		} else {
 			this.taskRowName
-			.setTextColor(this.context
-					.getResources()
-					.getColor(
-							MirakelCommonPreferences.isDark() ? android.R.color.primary_text_dark
-									: android.R.color.primary_text_light));
+					.setTextColor(this.context
+							.getResources()
+							.getColor(
+									MirakelCommonPreferences.isDark() ? android.R.color.primary_text_dark
+											: android.R.color.primary_text_light));
 		}
 	}
 
@@ -176,7 +176,8 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements android.
 				android.R.color.transparent));
 		this.task = newValue;
 		if (this.task == null) {
-			this.task = Task.getDummy(this.context, ListMirakel.safeFirst(this.context));
+			this.task = Task.getDummy(this.context,
+					ListMirakel.safeFirst(this.context));
 		}
 		// Done
 		this.taskRowDone.setChecked(this.task.isDone());
@@ -204,13 +205,13 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements android.
 		// Progress
 		updateProgress();
 
-
 		// Due
 		updateDue();
 		if (MirakelCommonPreferences.colorizeTasks()) {
 			if (MirakelCommonPreferences.colorizeSubTasks()) {
 				int w = getWidth();
-				ModellHelper.setListColorBackground(this.task.getList(), this, w);
+				ModellHelper.setListColorBackground(this.task.getList(), this,
+						w);
 			} else {
 				setBackgroundColor(this.context.getResources().getColor(
 						android.R.color.transparent));
@@ -231,8 +232,7 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements android.
 	private void updateProgress() {
 		this.taskProgress.setProgress((int) (this.task.getProgress() * 3.7));
 		if (this.task.getProgress() > 0
-				&& (this.task.getProgress() < 100 ||
-						!this.task.isDone())) {
+				&& (this.task.getProgress() < 100 || !this.task.isDone())) {
 			this.taskProgress.setVisibility(VISIBLE);
 		} else {
 			this.taskProgress.setVisibility(GONE);

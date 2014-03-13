@@ -28,10 +28,12 @@ import de.azapps.mirakel.customviews.R;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.file.FileMirakel;
 
-public class TaskDetailFile extends TaskDetailSubtitleView<FileMirakel, TaskDetailFilePart> implements OnFileMarkedListner, OnFileClickListner {
-	private int					markCounter;
-	private OnFileClickListner	onFileClicked;
-	private OnFileMarkedListner	onFileMarked;
+public class TaskDetailFile extends
+		TaskDetailSubtitleView<FileMirakel, TaskDetailFilePart> implements
+		OnFileMarkedListner, OnFileClickListner {
+	private int markCounter;
+	private OnFileClickListner onFileClicked;
+	private OnFileMarkedListner onFileMarked;
 
 	public TaskDetailFile(Context ctx) {
 		super(ctx);
@@ -43,7 +45,7 @@ public class TaskDetailFile extends TaskDetailSubtitleView<FileMirakel, TaskDeta
 			public void onClick(View v) {
 				Helpers.showFileChooser(DefinitionsHelper.RESULT_ADD_FILE,
 						TaskDetailFile.this.context
-						.getString(R.string.file_select),
+								.getString(R.string.file_select),
 						(Activity) TaskDetailFile.this.context);
 			}
 		});
@@ -51,10 +53,9 @@ public class TaskDetailFile extends TaskDetailSubtitleView<FileMirakel, TaskDeta
 				android.R.drawable.ic_menu_add));
 	}
 
-
 	@Override
 	public void clickOnFile(FileMirakel f) {
-		if(this.onFileClicked!=null) {
+		if (this.onFileClicked != null) {
 			this.onFileClicked.clickOnFile(f);
 		}
 
@@ -62,7 +63,7 @@ public class TaskDetailFile extends TaskDetailSubtitleView<FileMirakel, TaskDeta
 
 	private void markFile(boolean markted) {
 		this.markCounter += markted ? 1 : -1;
-		for(TaskDetailFilePart v:this.viewList){
+		for (TaskDetailFilePart v : this.viewList) {
 			v.setShortMark(this.markCounter > 0);
 		}
 	}
@@ -83,15 +84,14 @@ public class TaskDetailFile extends TaskDetailSubtitleView<FileMirakel, TaskDeta
 		return t;
 	}
 
-
 	public void setAudioClick(OnClickListener onClick) {
 		if (this.audioButton != null) {
 			this.audioButton.setOnClickListener(onClick);
 		}
 	}
 
-	public void setCameraClick(OnClickListener onClick){
-		if(this.cameraButton!=null){
+	public void setCameraClick(OnClickListener onClick) {
+		if (this.cameraButton != null) {
 			this.cameraButton.setOnClickListener(onClick);
 		}
 	}

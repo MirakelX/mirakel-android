@@ -4,8 +4,8 @@ import java.util.List;
 
 import de.azapps.mirakel.custom_views.TaskDetailView.TYPE;
 
-public class MirakelViewPreferences  extends MirakelCommonPreferences{
-	
+public class MirakelViewPreferences extends MirakelCommonPreferences {
+
 	public static List<Integer> getTaskFragmentLayout() {
 		List<Integer> items = MirakelCommonPreferences
 				.loadIntArray("task_fragment_adapter_settings");

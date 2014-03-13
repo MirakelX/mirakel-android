@@ -36,15 +36,15 @@ public class TaskDetailContent extends BaseTaskDetailRow {
 		abstract public void handleCab(boolean startEdit);
 	}
 
-	protected static final String	TAG	= "TaskDetailContent";
+	protected static final String TAG = "TaskDetailContent";
 	private String content;
-	protected OnEditChanged			editChanged;
-	private final ImageButton		editContent;
-	protected boolean				isContentEdit;
-	private final TextView			taskContent;
+	protected OnEditChanged editChanged;
+	private final ImageButton editContent;
+	protected boolean isContentEdit;
+	private final TextView taskContent;
 
-	protected final EditText		taskContentEdit;
-	protected final ViewSwitcher	taskContentSwitcher;
+	protected final EditText taskContentEdit;
+	protected final ViewSwitcher taskContentSwitcher;
 
 	public TaskDetailContent(Context ctx) {
 		super(ctx);
@@ -64,42 +64,43 @@ public class TaskDetailContent extends BaseTaskDetailRow {
 					saveContentHelper();
 				}
 				TaskDetailContent.this.context
-				.getSystemService(Context.INPUT_METHOD_SERVICE);
+						.getSystemService(Context.INPUT_METHOD_SERVICE);
 				TaskDetailContent.this.taskContentSwitcher.showNext();
 				v.setBackgroundResource(TaskDetailContent.this.isContentEdit ? android.R.drawable.ic_menu_save
 						: android.R.drawable.ic_menu_edit);
 				if (TaskDetailContent.this.isContentEdit
 						&& TaskDetailContent.this.task != null) {
 					TaskDetailContent.this.taskContentEdit
-					.setOnFocusChangeListener(new OnFocusChangeListener() {
+							.setOnFocusChangeListener(new OnFocusChangeListener() {
 
-						@Override
-						public void onFocusChange(View view, boolean hasFocus) {
-							InputMethodManager imm = (InputMethodManager) TaskDetailContent.this.context
-									.getSystemService(Context.INPUT_METHOD_SERVICE);
-							if (hasFocus) {
-								imm.showSoftInput(
-										TaskDetailContent.this.taskContentEdit,
-										InputMethodManager.SHOW_IMPLICIT);
-							} else {
-								imm.showSoftInput(
-										TaskDetailContent.this.taskContentEdit,
-										InputMethodManager.HIDE_IMPLICIT_ONLY);
-								imm.hideSoftInputFromWindow(
-										TaskDetailContent.this.taskContentEdit
-										.getWindowToken(), 0);
-							}
-							if (TaskDetailContent.this.editChanged != null) {
-								TaskDetailContent.this.editChanged
-								.handleCab(hasFocus);
-							}
+								@Override
+								public void onFocusChange(View view,
+										boolean hasFocus) {
+									InputMethodManager imm = (InputMethodManager) TaskDetailContent.this.context
+											.getSystemService(Context.INPUT_METHOD_SERVICE);
+									if (hasFocus) {
+										imm.showSoftInput(
+												TaskDetailContent.this.taskContentEdit,
+												InputMethodManager.SHOW_IMPLICIT);
+									} else {
+										imm.showSoftInput(
+												TaskDetailContent.this.taskContentEdit,
+												InputMethodManager.HIDE_IMPLICIT_ONLY);
+										imm.hideSoftInputFromWindow(
+												TaskDetailContent.this.taskContentEdit
+														.getWindowToken(), 0);
+									}
+									if (TaskDetailContent.this.editChanged != null) {
+										TaskDetailContent.this.editChanged
+												.handleCab(hasFocus);
+									}
 
-						}
-					});
+								}
+							});
 					TaskDetailContent.this.taskContentEdit.requestFocus();
 					TaskDetailContent.this.taskContentEdit
-					.setSelection(TaskDetailContent.this.task
-							.getContent().length());
+							.setSelection(TaskDetailContent.this.task
+									.getContent().length());
 				}
 
 			}
@@ -113,10 +114,10 @@ public class TaskDetailContent extends BaseTaskDetailRow {
 		}
 		this.isContentEdit = false;
 		this.editContent
-		.setBackgroundResource(TaskDetailContent.this.isContentEdit ? android.R.drawable.ic_menu_save
-				: android.R.drawable.ic_menu_edit);
+				.setBackgroundResource(TaskDetailContent.this.isContentEdit ? android.R.drawable.ic_menu_save
+						: android.R.drawable.ic_menu_edit);
 		TaskDetailContent.this.taskContentEdit
-		.setText(TaskDetailContent.this.task.getContent());
+				.setText(TaskDetailContent.this.task.getContent());
 	}
 
 	public void saveContent() {
@@ -126,8 +127,8 @@ public class TaskDetailContent extends BaseTaskDetailRow {
 
 	public void saveContentHelper() {
 		TaskDetailContent.this.task
-		.setContent(TaskDetailContent.this.taskContentEdit.getText()
-				.toString());
+				.setContent(TaskDetailContent.this.taskContentEdit.getText()
+						.toString());
 		save();
 		this.content = this.task.getContent();
 		if (this.task.getContent().length() > 0) {
@@ -154,7 +155,8 @@ public class TaskDetailContent extends BaseTaskDetailRow {
 	protected void updateView() {
 		if (this.task.getContent() == null && this.content == null
 				|| this.task.getContent() != null
-				&& this.task.getContent().equals(this.content)) return;
+				&& this.task.getContent().equals(this.content))
+			return;
 		this.content = this.task.getContent();
 		this.editContent.setBackgroundResource(android.R.drawable.ic_menu_edit);
 		if (this.task.getContent().length() > 0) {

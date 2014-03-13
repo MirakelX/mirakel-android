@@ -26,7 +26,7 @@ import de.azapps.mirakel.model.task.Task;
 
 public class TaskDetailProgressBar extends TaskDetailSubListBase<Integer> {
 
-	private final SeekBar	progress;
+	private final SeekBar progress;
 
 	public TaskDetailProgressBar(Context ctx) {
 		super(ctx);
@@ -35,13 +35,14 @@ public class TaskDetailProgressBar extends TaskDetailSubListBase<Integer> {
 		this.progress.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
 			@Override
-			public void onProgressChanged(SeekBar seekBar, int progressLocal, boolean fromUser) {
-				//nothing
+			public void onProgressChanged(SeekBar seekBar, int progressLocal,
+					boolean fromUser) {
+				// nothing
 			}
 
 			@Override
 			public void onStartTrackingTouch(SeekBar seekBar) {
-				//nothing
+				// nothing
 			}
 
 			@Override
@@ -60,7 +61,6 @@ public class TaskDetailProgressBar extends TaskDetailSubListBase<Integer> {
 	public void setTask(Task t) {
 		this.task = t;
 	}
-
 
 	@Override
 	public void updatePart(Integer newValue) {

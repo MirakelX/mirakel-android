@@ -26,12 +26,14 @@ import de.azapps.mirakel.customviews.R;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.model.task.Task;
 
-public class TaskDetailSubtask extends TaskDetailSubtitleView<Task, TaskSummary> implements OnTaskClickListner, OnTaskMarkedListner {
+public class TaskDetailSubtask extends
+		TaskDetailSubtitleView<Task, TaskSummary> implements
+		OnTaskClickListner, OnTaskMarkedListner {
 
-	protected static final String	TAG	= "TaskDetailSubtask";
-	private int	markCounter;
-	private OnTaskClickListner	onClick;
-	private OnTaskMarkedListner	onMarked;
+	protected static final String TAG = "TaskDetailSubtask";
+	private int markCounter;
+	private OnTaskClickListner onClick;
+	private OnTaskMarkedListner onMarked;
 
 	public TaskDetailSubtask(Context ctx) {
 		super(ctx);
@@ -43,12 +45,12 @@ public class TaskDetailSubtask extends TaskDetailSubtitleView<Task, TaskSummary>
 						TaskDetailSubtask.this.task,
 						new OnTaskChangedListner() {
 
-					@Override
-					public void onTaskChanged(Task newTask) {
-						update(newTask);
+							@Override
+							public void onTaskChanged(Task newTask) {
+								update(newTask);
 
-					}
-				}, false);
+							}
+						}, false);
 			}
 		});
 		this.cameraButton.setVisibility(GONE);
@@ -58,10 +60,10 @@ public class TaskDetailSubtask extends TaskDetailSubtitleView<Task, TaskSummary>
 	}
 
 	@Override
-	public void markTask(View v, Task t,boolean mark) {
-		if(this.onMarked!=null){
+	public void markTask(View v, Task t, boolean mark) {
+		if (this.onMarked != null) {
 			markTaskHelper(mark);
-			this.onMarked.markTask(v, t,mark);
+			this.onMarked.markTask(v, t, mark);
 		}
 
 	}
@@ -97,18 +99,17 @@ public class TaskDetailSubtask extends TaskDetailSubtitleView<Task, TaskSummary>
 
 	@Override
 	public void onTaskClick(Task t) {
-		if(this.onClick!=null){
+		if (this.onClick != null) {
 			this.onClick.onTaskClick(t);
 		}
 	}
-
 
 	public void setOnClick(OnTaskClickListner l) {
 		this.onClick = l;
 	}
 
 	public void setOnTaskMarked(OnTaskMarkedListner l) {
-		this.onMarked=l;
+		this.onMarked = l;
 	}
 
 	@Override

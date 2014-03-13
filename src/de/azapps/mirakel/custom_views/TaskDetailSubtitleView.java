@@ -21,23 +21,24 @@ package de.azapps.mirakel.custom_views;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.azapps.mirakel.customviews.R;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import de.azapps.mirakel.customviews.R;
 
-public abstract class TaskDetailSubtitleView<E, T extends TaskDetailSubListBase<E>> extends BaseTaskDetailRow {
+public abstract class TaskDetailSubtitleView<E, T extends TaskDetailSubListBase<E>>
+		extends BaseTaskDetailRow {
 
-	protected final ImageButton	audioButton;
-	protected final ImageButton	button;
-	protected final ImageButton	cameraButton;
-	protected final View		divider;
-	protected final View		subtitle;
-	protected final TextView	title;
-	protected List<T>			viewList;
+	protected final ImageButton audioButton;
+	protected final ImageButton button;
+	protected final ImageButton cameraButton;
+	protected final View divider;
+	protected final View subtitle;
+	protected final TextView title;
+	protected List<T> viewList;
 
 	public TaskDetailSubtitleView(Context ctx) {
 		super(ctx);
@@ -63,8 +64,8 @@ public abstract class TaskDetailSubtitleView<E, T extends TaskDetailSubListBase<
 		addView(this.subtitle);
 	}
 
-	public void disableMarked(){
-		for(T l:this.viewList){
+	public void disableMarked() {
+		for (T l : this.viewList) {
 			l.disableMark();
 		}
 	}
@@ -91,6 +92,5 @@ public abstract class TaskDetailSubtitleView<E, T extends TaskDetailSubListBase<
 		}
 		invalidate();
 	}
-
 
 }

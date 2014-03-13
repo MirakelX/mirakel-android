@@ -26,13 +26,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import de.azapps.mirakel.customviews.R;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
-import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.tools.Log;
 
 public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
 
-	public interface OnFileClickListner{
+	public interface OnFileClickListner {
 		abstract public void clickOnFile(FileMirakel f);
 	}
 
@@ -40,21 +39,21 @@ public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
 		abstract public void markFile(View v, FileMirakel e, boolean marked);
 	}
 
-	private static final String	TAG	= "TaskDetailFilePart";
+	private static final String TAG = "TaskDetailFilePart";
 
 	protected OnFileClickListner clickListner;
-	private final Context	ctx;
-	private FileMirakel	file;
+	private final Context ctx;
+	private FileMirakel file;
 
-	private final ImageView	fileImage;
-	private final TextView	fileName;
-	private final TextView	filePath;
-	private boolean			marked;
-	private OnFileMarkedListner	markedListner;
+	private final ImageView fileImage;
+	private final TextView fileName;
+	private final TextView filePath;
+	private boolean marked;
+	private OnFileMarkedListner markedListner;
 
 	public TaskDetailFilePart(Context context) {
 		super(context);
-		this.ctx=context;
+		this.ctx = context;
 		inflate(context, R.layout.files_row, this);
 		this.fileImage = (ImageView) findViewById(R.id.file_image);
 		this.fileName = (TextView) findViewById(R.id.file_name);
@@ -67,7 +66,7 @@ public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
 					handleMark();
 				} else if (TaskDetailFilePart.this.clickListner != null) {
 					TaskDetailFilePart.this.clickListner
-					.clickOnFile(TaskDetailFilePart.this.file);
+							.clickOnFile(TaskDetailFilePart.this.file);
 				}
 			}
 		});
@@ -96,9 +95,8 @@ public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
 		this.markedListner = l;
 	}
 
-
 	public void setShortMark(boolean shortMark) {
-		this.markedEnabled=shortMark;
+		this.markedEnabled = shortMark;
 	}
 
 	@Override
@@ -110,7 +108,7 @@ public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
 		Log.d(TAG, "update");
 		this.file = f;
 		new Thread(new Runnable() {
-			private Bitmap	preview;
+			private Bitmap preview;
 
 			@Override
 			public void run() {
@@ -129,12 +127,12 @@ public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
 						@Override
 						public void run() {
 							TaskDetailFilePart.this.fileImage
-							.setImageBitmap(preview);
+									.setImageBitmap(preview);
 							LayoutParams params = (LayoutParams) TaskDetailFilePart.this.fileImage
 									.getLayoutParams();
 							params.height = preview.getHeight();
 							TaskDetailFilePart.this.fileImage
-							.setLayoutParams(params);
+									.setLayoutParams(params);
 						}
 					});
 				} else {
@@ -146,7 +144,7 @@ public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
 									.getLayoutParams();
 							params.height = 0;
 							TaskDetailFilePart.this.fileImage
-							.setLayoutParams(params);
+									.setLayoutParams(params);
 
 						}
 					});

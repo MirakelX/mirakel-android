@@ -25,9 +25,10 @@ import android.content.Context;
 import de.azapps.mirakel.customviews.R;
 import de.azapps.mirakel.model.task.Task;
 
-public class TaskDetailProgress extends TaskDetailSubtitleView<Integer, TaskDetailProgressBar> {
+public class TaskDetailProgress extends
+		TaskDetailSubtitleView<Integer, TaskDetailProgressBar> {
 
-	private TaskDetailProgressBar	progressBar;
+	private TaskDetailProgressBar progressBar;
 
 	public TaskDetailProgress(Context ctx) {
 		super(ctx);
@@ -56,7 +57,7 @@ public class TaskDetailProgress extends TaskDetailSubtitleView<Integer, TaskDeta
 
 	@Override
 	protected void updateView() {
-		List<Integer> l=new ArrayList<Integer>();
+		List<Integer> l = new ArrayList<Integer>();
 		l.add(this.task.getProgress());
 		if (this.progressBar != null) {
 			this.progressBar.setTask(this.task);
