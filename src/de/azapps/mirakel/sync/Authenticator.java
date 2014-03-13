@@ -108,7 +108,7 @@ class Authenticator extends AbstractAccountAuthenticator {
 	@Override
 	public Bundle getAuthToken(AccountAuthenticatorResponse response,
 			Account account, String authTokenType, Bundle loginOptions)
-					throws NetworkErrorException {
+			throws NetworkErrorException {
 		Log.v(TAG, "getAuthToken()");
 
 		// If the caller requested an authToken type we don't support, then

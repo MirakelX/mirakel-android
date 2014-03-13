@@ -56,18 +56,18 @@ import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync.TW_ERRORS;
 import de.azapps.tools.Log;
 
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
-	private final static String	TAG					= "SyncAdapter";
-	public static final String	BUNDLE_SERVER_URL	= "url",
+	private final static String TAG = "SyncAdapter";
+	public static final String BUNDLE_SERVER_URL = "url",
 			BUNDLE_CERT = "de.azapps.mirakel.cert",
 			BUNDLE_ORG = "de.azapps.mirakel.org";
-	public static final String	BUNDLE_SERVER_TYPE	= "type";
-	public static final String	TASKWARRIOR_KEY		= "key";
-	public static final String	SYNC_STATE			= "sync_state";
-	private static CharSequence	last_message		= null;
-	private Context				mContext;
-	public static final String	ACCOUNT_PREFIX		= "ACCOUNT_";
-	private NotificationManager	mNotificationManager;
-	private int					notifyID			= 1;
+	public static final String BUNDLE_SERVER_TYPE = "type";
+	public static final String TASKWARRIOR_KEY = "key";
+	public static final String SYNC_STATE = "sync_state";
+	private static CharSequence last_message = null;
+	private Context mContext;
+	public static final String ACCOUNT_PREFIX = "ACCOUNT_";
+	private NotificationManager mNotificationManager;
+	private int notifyID = 1;
 
 	public SyncAdapter(Context context, boolean autoInitialize) {
 		super(context, autoInitialize);
@@ -77,11 +77,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	}
 
 	@Override
-	public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
-		// Do not sync if Mirakel is in demo mode 
-		if(MirakelCommonPreferences.isDemoMode())
+	public void onPerformSync(Account account, Bundle extras, String authority,
+			ContentProviderClient provider, SyncResult syncResult) {
+		// Do not sync if Mirakel is in demo mode
+		if (MirakelCommonPreferences.isDemoMode())
 			return;
-		
+
 		// Mostly it is annoying if there is a notification. So don't show it
 		boolean showNotification = false;
 		// But if the user actively clicks on "sync" – then show it.
@@ -91,7 +92,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		Log.v(TAG, "SyncAdapter");
 		Intent intent;
 		try {
-			intent = new Intent(this.mContext, Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
+			intent = new Intent(this.mContext,
+					Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
 		} catch (ClassNotFoundException e) {
 			Log.wtf(TAG, "no mainactivity found");
 			return;
@@ -100,7 +102,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		PendingIntent p = PendingIntent.getService(this.mContext, 0, intent, 0);
 
 		NotificationCompat.Builder mNB = new NotificationCompat.Builder(
-				this.mContext).setContentTitle("Mirakel").setContentText("Sync")
+				this.mContext).setContentTitle("Mirakel")
+				.setContentText("Sync")
 				.setSmallIcon(android.R.drawable.stat_notify_sync)
 				.setWhen(System.currentTimeMillis()).setOngoing(true)
 				.setContentIntent(p);
@@ -110,43 +113,45 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		String type = (AccountManager.get(this.mContext)).getUserData(account,
 				BUNDLE_SERVER_TYPE);
 		boolean success = false;
-		if (type == null) type = TaskWarriorSync.TYPE;
+		if (type == null)
+			type = TaskWarriorSync.TYPE;
 		if (type.equals(TaskWarriorSync.TYPE)) {
 			TW_ERRORS error = new TaskWarriorSync(this.mContext).sync(account);
 			switch (error) {
-				case NO_ERROR:
-					last_message = this.mContext.getText(R.string.finish_sync);
-					success = true;
-					break;
-				case TRY_LATER:
-					last_message = this.mContext.getText(R.string.message_try_later);
-					break;
-				case ACCESS_DENIED:
-					last_message = this.mContext
-							.getText(R.string.message_access_denied);
-					break;
-				case CANNOT_CREATE_SOCKET:
-					last_message = this.mContext
-							.getText(R.string.message_create_socket);
-					break;
-				case ACCOUNT_SUSPENDED:
-					last_message = this.mContext
-							.getText(R.string.message_account_suspended);
-					break;
-				case CANNOT_PARSE_MESSAGE:
-					last_message = this.mContext
-							.getText(R.string.message_parse_message);
-					break;
-				case MESSAGE_ERRORS:
-					last_message = this.mContext
-							.getText(R.string.message_message_error);
-					break;
-				case CONFIG_PARSE_ERROR:
-					last_message = this.mContext.getText(R.string.wrong_config);
-					break;
-				case NOT_ENABLED:
-				default:
-					return;
+			case NO_ERROR:
+				last_message = this.mContext.getText(R.string.finish_sync);
+				success = true;
+				break;
+			case TRY_LATER:
+				last_message = this.mContext
+						.getText(R.string.message_try_later);
+				break;
+			case ACCESS_DENIED:
+				last_message = this.mContext
+						.getText(R.string.message_access_denied);
+				break;
+			case CANNOT_CREATE_SOCKET:
+				last_message = this.mContext
+						.getText(R.string.message_create_socket);
+				break;
+			case ACCOUNT_SUSPENDED:
+				last_message = this.mContext
+						.getText(R.string.message_account_suspended);
+				break;
+			case CANNOT_PARSE_MESSAGE:
+				last_message = this.mContext
+						.getText(R.string.message_parse_message);
+				break;
+			case MESSAGE_ERRORS:
+				last_message = this.mContext
+						.getText(R.string.message_message_error);
+				break;
+			case CONFIG_PARSE_ERROR:
+				last_message = this.mContext.getText(R.string.wrong_config);
+				break;
+			case NOT_ENABLED:
+			default:
+				return;
 
 			}
 			Log.d(TAG, "finish Sync");
@@ -160,26 +165,28 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 			Intent openIntent;
 			try {
-				openIntent = new Intent(mContext, Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
+				openIntent = new Intent(mContext,
+						Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
 			} catch (ClassNotFoundException e) {
-				Log.wtf(TAG,"mainactivity not found");
+				Log.wtf(TAG, "mainactivity not found");
 				return;
 			}
 			openIntent.setAction(DefinitionsHelper.SHOW_MESSAGE);
 			openIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, title);
-			openIntent.putExtra(android.content.Intent.EXTRA_TEXT, last_message);
 			openIntent
-					.setData(Uri.parse(openIntent.toUri(Intent.URI_INTENT_SCHEME)));
+					.putExtra(android.content.Intent.EXTRA_TEXT, last_message);
+			openIntent.setData(Uri.parse(openIntent
+					.toUri(Intent.URI_INTENT_SCHEME)));
 			PendingIntent pOpenIntent = PendingIntent.getActivity(mContext, 0,
 					openIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-			Notification notification = new NotificationCompat.Builder(this.mContext)
-					.setContentTitle(title).setContentText(last_message)
+			Notification notification = new NotificationCompat.Builder(
+					this.mContext).setContentTitle(title)
+					.setContentText(last_message)
 					.setSmallIcon(android.R.drawable.stat_notify_sync)
 					.setPriority(NotificationCompat.PRIORITY_LOW)
 					.setContentIntent(pOpenIntent).build();
-			notification.flags=Notification.FLAG_AUTO_CANCEL
-;
+			notification.flags = Notification.FLAG_AUTO_CANCEL;
 			this.mNotificationManager.notify(this.notifyID, notification);
 		}
 		Intent i = new Intent(DefinitionsHelper.SYNC_FINISHED);
