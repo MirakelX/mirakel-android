@@ -88,8 +88,6 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
 
 	private Type type;
 
-	private int width;
-
 	public TaskDetailDueReminder(final Context ctx) {
 		super(ctx);
 		inflate(ctx, R.layout.due_reminder_row, this);
@@ -181,20 +179,27 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
 								.get(Calendar.MONTH), dueLocal
 								.get(Calendar.DAY_OF_MONTH), false,
 								MirakelCommonPreferences.isDark(), true);
-				// datePickerDialog.setYearRange(2005, 2036);// must be <
-				// 2037
-				// TODO fix this(its a int->long problem somewhere;))
 				datePickerDialog.show(fm, "datepicker");
 			}
 		});
 		measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
 	}
 
-	private void handleMultiline() {
+	@Override
+	protected void onSizeChanged(final int w, final int h, final int oldw,
+			final int oldh) {
+		super.onSizeChanged(w, h, oldw, oldh);
+		handleMultiline(w);
+	}
+
+	private void handleMultiline(final int width) {
 		if (this.type == null || this.type != Type.Combined) {
 			return;
 		}
-		if (this.width < TaskDetailDueReminder.MIN_DUE_NEXT_TO_REMINDER_SIZE) {
+		setLayoutParams(new LayoutParams(
+				android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+				android.view.ViewGroup.LayoutParams.WRAP_CONTENT));
+		if (width < TaskDetailDueReminder.MIN_DUE_NEXT_TO_REMINDER_SIZE) {
 			this.mainWrapper.setOrientation(LinearLayout.VERTICAL);
 			final android.view.ViewGroup.LayoutParams dueParams = this.dueWrapper
 					.getLayoutParams();
@@ -214,19 +219,15 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
 					.getLayoutParams();
 			this.reminderWrapper.setLayoutParams(new LayoutParams(
 					reminderParams.width, reminderParams.height, 0.66f));
+
 		}
-		invalidate();
+		this.dueWrapper.invalidate();
+		this.reminderWrapper.invalidate();
 		setLayoutParams(new LayoutParams(
 				android.view.ViewGroup.LayoutParams.MATCH_PARENT,
 				android.view.ViewGroup.LayoutParams.WRAP_CONTENT));
-	}
+		invalidate();
 
-	@Override
-	protected void onMeasure(final int widthMeasureSpec,
-			final int heightMeasureSpec) {
-		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-		this.width = getMeasuredWidth();
-		handleMultiline();
 	}
 
 	protected void setDue() {
@@ -263,7 +264,6 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
 		case Combined:
 			this.dueWrapper.setVisibility(View.VISIBLE);
 			this.reminderWrapper.setVisibility(View.VISIBLE);
-			handleMultiline();
 			break;
 		case Due:
 			this.dueWrapper.setVisibility(View.VISIBLE);
@@ -310,8 +310,6 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
 				this.task.getRecurringReminder());
 		setDue();
 		setReminder();
-		// handleMultiline();
-
 	}
 
 }
