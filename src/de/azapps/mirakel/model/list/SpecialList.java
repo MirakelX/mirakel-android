@@ -360,9 +360,15 @@ public class SpecialList extends ListMirakel {
 		return slist;
 	}
 
-	public static int getSpecialListCount() {
-		final Cursor c = MirakelContentProvider.getReadableDatabase().rawQuery(
-				"Select count(" + DatabaseHelper.ID + ") from " + TABLE, null);
+	public static int getSpecialListCount(final boolean respectEnable) {
+		String where = "";
+		if (respectEnable) {
+			where = " WHERE " + ACTIVE + "=1";
+		}
+		final Cursor c = MirakelContentProvider.getReadableDatabase()
+				.rawQuery(
+						"Select count(" + DatabaseHelper.ID + ") from " + TABLE
+								+ where, null);
 		c.moveToFirst();
 		int r = 0;
 		if (c.getCount() > 0) {
