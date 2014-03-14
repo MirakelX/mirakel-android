@@ -84,21 +84,27 @@ public class DateTimeHelper {
 			return "";
 		}
 		if (MirakelCommonPreferences.isDateFormatRelative()) {
-			final GregorianCalendar now = new GregorianCalendar();
-			now.setTime(new Date());
-			if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR1
-					|| !(now.get(Calendar.YEAR) == date.get(Calendar.YEAR)
-							&& now.get(Calendar.DAY_OF_MONTH) == date
-									.get(Calendar.DAY_OF_MONTH) && now
-							.get(Calendar.MONTH) == date.get(Calendar.MONTH))) {
-				return DateUtils.getRelativeTimeSpanString(
-						date.getTimeInMillis(), new Date().getTime(),
-						DateUtils.DAY_IN_MILLIS);
-			}
-			return ctx.getString(R.string.today);
+			return getRelativeDate(ctx, date, false);
 		}
 		return new SimpleDateFormat(ctx.getString(R.string.dateFormat),
 				Locale.getDefault()).format(date.getTime());
+	}
+
+	private static CharSequence getRelativeDate(final Context ctx,
+			final Calendar date, final boolean reminder) {
+		final GregorianCalendar now = new GregorianCalendar();
+		now.setTime(new Date());
+		if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR1
+				|| !(now.get(Calendar.YEAR) == date.get(Calendar.YEAR)
+						&& now.get(Calendar.DAY_OF_MONTH) == date
+								.get(Calendar.DAY_OF_MONTH) && now
+						.get(Calendar.MONTH) == date.get(Calendar.MONTH))
+				|| reminder) {
+			return DateUtils.getRelativeTimeSpanString(date.getTimeInMillis(),
+					new Date().getTime(), reminder ? DateUtils.MINUTE_IN_MILLIS
+							: DateUtils.DAY_IN_MILLIS);
+		}
+		return ctx.getString(R.string.today);
 	}
 
 	public static String formatDateTime(final Calendar c) {
@@ -119,6 +125,9 @@ public class DateTimeHelper {
 
 	public static CharSequence formatReminder(final Context ctx,
 			final Calendar date) {
+		if (MirakelCommonPreferences.isDateFormatRelative()) {
+			return getRelativeDate(ctx, date, true);
+		}
 		return DateTimeHelper.formatDate(date,
 				ctx.getString(R.string.humanDateTimeFormat));
 	}
