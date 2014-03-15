@@ -474,6 +474,9 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 								final long id, final boolean checked) {
 							final View v = TasksFragment.this.listView
 									.getChildAt(position);
+							if (v == null) {
+								return;
+							}
 							final Task t = Task.get((Long) v.getTag());
 							if (!TasksFragment.this.selectedTasks.contains(t)
 									&& checked) {
