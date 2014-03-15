@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<changelog>
+  <version name="2.4.0-beta1" date="2014-03-12" code="43">
+    <feature>More bugfixes</feature>
+    <feature>Reimplement tasksfragment</feature>
+    <feature>Replace drag'n'drop-listview by better on</feature>
+    <feature>improve overall performance</feature>
+  </version>
+  <version name="2.3.2" date="2014-03-02">
+    <feature>More bugfixes</feature>
+    <feature>Backstage improvements </feature>
+  </version>
+  <version name="2.3.1" date="2014-02-20">
+    <feature>Bugfixes for taskwarriorsync</feature>
+    <feature>common bugfixes</feature>
+  </version>
+  <version name="2.3.0" date=" 2014-02-13">
+    <feature>Bugfixes</feature>
+    <feature>Updated translations</feature>
+    <feature>Added Bulgarian language</feature>
+    <feature>Fixed a lot of bugs (hopefully)</feature>
+    <feature>Updated translations</feature>
+    <feature>New debug settings ;)</feature>
+    <text>Please try out the taskwarrior sync! It should be stable but make a backup before!</text>
+  </version>
+  <version name="2.2.1" date="2013-12-28">
+    <text>This is a bugfix release.</text>
+  </version>
+  <version name="2.2.0" date="2013-12-24">
+    <text>Our huge Christmas release. We've worked hard to give you an awesome new, bugfree release. We hope the waiting has been worth it.</text>
+    <text><![CDATA[<b>We wish you a Merry Christmas!</b>]]></text>
+    <feature>Set the progress of your tasks</feature>
+    <feature>Google Now integration</feature>
+    <feature>New date and timepicker</feature>
+    <feature>Audio records</feature>
+    <feature>More task templates</feature>
+    <feature>Multi-Account handling</feature>
+    <feature>Caldav-Sync via davdroid</feature>
+    <feature>Auto backup</feature>
+    <feature>Added portuguese, dutch and arabic translation</feature>
+    <feature>Dynamic Task Fragment</feature>
+    <feature>And many more awesome stuff</feature>
+    <text>This will be the last version of Mirakel which supports Android smaller 4.0. We'll provide of course bugfixes for your phone ;)</text>
+  </version>
+  <version name="2.1.4" date="2013-11-20">
+    <text>And some more Bugfixes…</text>
+  </version>
+  <version name="2.1.3" date="2013-11-18">
+    <text>Thank you for all the help. Here is the hopefully last small update before 2.2</text>
+    <feature>Bugfixes</feature>
+    <feature>Improved Any.Do import</feature>
+    <feature>Import from Wunderlist</feature>
+    <feature>We prepare Mirakel for the CalDAV sync…</feature>
+    <text><![CDATA[We are working hard implementing the <b>CalDAV</b> sync the right way. We hope we can publish a working version next week. If you want to test it, please join our <a href="https://plus.google.com/communities/110640831388790835840">Google+</a> community or sent us just an email.]]></text>
+    <text><![CDATA[If you use it, you have to update the <b>Mirakel-Dashclock</b> app too.]]></text>
+  </version>
+  <version name="2.1.2" date="2013-11-06">
+    <text>Sorry for the inconvenience but we wanted to fix the last bugs which let the app crash ;)</text>
+    <feature>Bugfixes</feature>
+    <text><![CDATA[Some of you asked, we delivered: <a href="https://flattr.com/thing/2188714/Mirakel-easy-task-management-for-professionals">Flattr</a> us!]]></text>
+    <text><![CDATA[You are welcome to help us fixing some of our <a href="https://github.com/azapps/mirakel-android/issues">issues</a> ;)]]></text>
+  </version>
+  <version name="2.1.1" date="2013-11-03">
+    <text>Bugfixes + Czech translation</text>
+    <feature>Some urgent bug fixes.</feature>
+    <feature>Czech translation (thank you, sarimak)</feature>
+    <text><![CDATA[You want to test our beta releases? Join our <a href="https://plus.google.com/communities/110640831388790835840">Google+-community</a>]]></text>
+  </version>
+  <version name="2.1" date="2013-11-01">
+    <text>Some new features, improved UI, Bugfixes</text>
+    <feature>New transparent widget! </feature>
+    <feature>Improved Task-detail view</feature>
+    <feature>Improved reccurence</feature>
+    <feature>Any.Do import</feature>
+    <feature>Many bugfixes</feature>
+    <feature>Updated Taskwarrior sync</feature>
+    <text><![CDATA[Thank you for your support and your great feedback! Now we need <a href="http://mirakel.azapps.de/he date="us.html">YOUR help</a>!]]></text>
+    <text>Spread Mirakel and rate it!</text>
+    <text><![CDATA[<b>@Taskwarrior-users:</b> Please update your taskwarrior-server! Contact us if you need help.]]></text>
+  </version>
+  <version name="2.0" date="2013-10-13">
+    <text>Awesome new UI and many new and cool features!</text>
+    <feature>New logo</feature>
+    <feature>New UI</feature>
+    <feature>
+      <text><![CDATA[<a href="http://mirakel.azapps.de/he date="en.html#subtasks">Subtasks</a>]]></text>
+    </feature>
+    <feature>Add files to Tasks</feature>
+    <feature>Recurring Tasks</feature>
+    <feature><![CDATA[Configure your <a href="http://mirakel.azapps.de/he date="en.html#semantic-new-tasks">Semantic new Tasks</a>]]></feature>
+    <feature>Redesign settings</feature>
+    <feature>New translations: Norwegian, Slovenian</feature>
+    <feature><![CDATA[Sync with <a href="http://mirakel.azapps.de/he date="en.html#caldav-sync">CalDAV</a>]]></feature>
+    <feature><![CDATA[Improved <a href="http://mirakel.azapps.de/he date="en.html#taskwarrior-sync">Taswkarrior</a>-sync]]></feature>
+    <feature><![CDATA[<a href="http://mirakel.azapps.de/he date="en.html">Help</a>]]></feature>
+    <feature>Bugfixes</feature>
+    <text>Now Mirakel is the best todo list app on the market ;) If you don't think so, tell us, what we can improve!</text>
+  </version>
+  <version name="1.1.1" date="2013-09-22">
+    <text>We are back – and we brought some bugfixes with us ;)</text>
+    <feature>Bugfixes</feature>
+    <feature>Improved Configurations</feature>
+    <feature>Small UI-Improvements</feature>
+    <feature>French translation</feature>
+    <text>New features coming soon ;)</text>
+  </version>
+  <version name="1.1.0" date="2013-08-26">
+    <text>You've waited a long time. Here is the new version</text>
+  </version>
+  <version>Many, many Bugfixes and new awesome features.
+	<feature>Bugfixes</feature>
+	<feature>Sync now with <a href="http://mirakel.azapps.de/taskwarrior.html">Taskwarrior</a> (preferred)</feature>
+	<feature>Check the settings for new features! (Opt in)</feature>
+	<feature>UI-Improvements</feature>
+	<feature>Dark widget</feature>
+	<feature>Spanish translation (thank you macebal)</feature>
+	<text>We are the next few weeks on vacation – forgive us that we could not maintain Mirakel in this time. Afterwards we will give you more new and cool features.</text>
+</version>
+  <version name="1.0.1" date="2013-07-30">
+    <text>Hey you, thank you for using this app! We have already more than 500 downloads. Thank you for your ideas and Bug-reports. Please send more!</text>
+    <feature>Bugfixes</feature>
+    <feature>Improved Tablet-UI</feature>
+    <feature>Dark theme</feature>
+    <feature>Close Button</feature>
+    <feature>Russian translation</feature>
+    <feature>ActionBar for Android 2.2</feature>
+    <text>We are working hard, programming a new, easy to install server for Mirakel! </text>
+    <text>If you want to help us, get in touch with us!</text>
+  </version>
+  <version name="1.0.0" date="2013-07-21">
+    <text>Many Bugfixes</text>
+    <feature>Bugfixes</feature>
+    <feature>Better help</feature>
+    <feature>Improved Backup/Import</feature>
+    <feature>Added Icon</feature>
+    <feature>UI improvements</feature>
+    <feature>Import Data from Astrid</feature>
+    <feature>Tablet-UI</feature>
+    <feature>Play Store-Release </feature>
+  </version>
+  <version name="0.1.2" date="2013-06-06">
+    <text>Feature Stop</text>
+    <feature>Reminders</feature>
+    <feature>Search</feature>
+    <feature>Share Lists and Tasks</feature>
+    <feature>Better Where-Clause Input in Special-Lists-Settings</feature>
+    <feature>Experimental Support Android &gt;=2.2(API 8)</feature>
+    <feature>Bugfixes</feature>
+  </version>
+  <version name="0.1.1" date="2013-05-29">
+    <text>Now with this nice Change Log!</text>
+    <text>We've implemented some cool new functions:</text>
+    <feature>Reminders (on the other Branch)</feature>
+    <feature>Change Log</feature>
+    <feature>Only one big feature and many bugfixes till v1.0</feature>
+  </version>
+  <version name="Pre 0.1.1" date="2013-05-29">
+    <feature>alpha, but working :D</feature>
+  </version>
+</changelog>
