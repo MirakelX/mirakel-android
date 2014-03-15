@@ -251,8 +251,13 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
 			this.taskReminder.setTextColor(this.context.getResources()
 					.getColor(BaseTaskDetailRow.inactive_color));
 		} else {
+			Calendar reminder = this.task.getReminder();
+			final Recurring r = this.task.getRecurringReminder();
+			if (r != null) {
+				reminder = r.addRecurring(reminder);
+			}
 			this.taskReminder.setText(DateTimeHelper.formatReminder(
-					this.context, this.task.getReminder()));
+					this.context, reminder));
 			this.taskReminder.setTextColor(this.context.getResources()
 					.getColor(BaseTaskDetailRow.inactive_color));
 		}
