@@ -20,5 +20,6 @@
 <resources>
     <integer name="tasks_fragment">40</integer>
     <integer name="task_fragment">60</integer>
+    <dimen name="head_line_size">48dp</dimen>
     
 </resources>
