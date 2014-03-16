@@ -531,15 +531,20 @@ public class ListMirakel extends ListBase {
 	}
 
 	public Task getFirstTask() {
-		final List<Task> tasks = tasks();
-		if (tasks.size() > 0) {
-			return tasks.get(0);
-		}
+		final Cursor c = database.query(Task.TABLE, Task.allColumns,
+				getWhereQueryForTasks(true), null, null, null,
+				Task.getSorting(getSortBy()), "1");
+		Task t = null;
+		if (c.getCount() > 0) {
+			c.moveToFirst();
+			t = Task.cursorToTask(c);
 
-		return null;
+		}
+		c.close();
+		return t;
 	}
 
-	public boolean isSpecialList() {
+	public static boolean isSpecialList() {
 		return false;
 	}
 
