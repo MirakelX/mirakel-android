@@ -13,7 +13,10 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Color;
 import android.os.Build;
@@ -26,6 +29,9 @@ import de.azapps.tools.Log;
 
 /**
  * Copyright (C) 2014, Anatolij Zelenin
+ * 
+ * Inspired by the ChangeLog library by Karsten Priegnitz
+ * http://code.google.com/p/android-change-log/
  * 
  * Permission to use, copy, modify, and distribute this piece of software for
  * any purpose with or without fee is hereby granted, provided that the above
@@ -42,15 +48,15 @@ public class Changelog {
 	private final int last_version;
 	private int current_version;
 	private static final String VERSION_CODE = "PREFS_VERSION_CODE";
-	private static final int NO_VERSION = 0;
+	public static final int NO_VERSION = 0;
 	private static final String TAG = "de.azapps.changelog";
 	private final Context context;
+	private final SharedPreferences settings;
 
 	public Changelog(final Context context) {
-		final SharedPreferences settings = PreferenceManager
-				.getDefaultSharedPreferences(context);
+		this.settings = PreferenceManager.getDefaultSharedPreferences(context);
 		this.context = context;
-		this.last_version = settings.getInt(VERSION_CODE, NO_VERSION);
+		this.last_version = this.settings.getInt(VERSION_CODE, NO_VERSION);
 
 		try {
 			this.current_version = context.getPackageManager().getPackageInfo(
@@ -72,6 +78,9 @@ public class Changelog {
 
 	public void showChangelog(final int sinceVersion) {
 		final List<Version> versions;
+		if (sinceVersion == this.current_version) {
+			return;
+		}
 		try {
 			versions = parseXML(sinceVersion);
 		} catch (final XmlPullParserException e) {
@@ -79,13 +88,19 @@ public class Changelog {
 		} catch (final IOException e) {
 			return;
 		}
+		if (versions.size() == 0) {
+			return;
+		}
+		final Editor editor = this.settings.edit();
+		editor.putInt(VERSION_CODE, this.current_version);
+		editor.commit();
 
 		final String changelog = parseVersions(versions);
-		final AlertDialog dialog = getDialog(changelog);
+		final AlertDialog dialog = getDialog(changelog, sinceVersion);
 		dialog.show();
 	}
 
-	private AlertDialog getDialog(String changelog) {
+	private AlertDialog getDialog(String changelog, final int sinceVersion) {
 
 		final WebView wv = new WebView(new ContextThemeWrapper(this.context,
 				R.style.Dialog));
@@ -108,7 +123,27 @@ public class Changelog {
 		wv.loadDataWithBaseURL(null, changelog, "text/html", "UTF-8", null);
 
 		final AlertDialog.Builder builder = new AlertDialog.Builder(
-				this.context).setView(wv).setTitle("Changelog");
+				this.context).setView(wv).setTitle("Changelog")
+				.setPositiveButton(android.R.string.ok, new OnClickListener() {
+
+					@Override
+					public void onClick(final DialogInterface dialog,
+							final int which) {
+						dialog.cancel();
+
+					}
+				});
+		// "more …" button
+		if (sinceVersion != NO_VERSION) {
+			builder.setNegativeButton(R.string.changelog_show_full,
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(final DialogInterface dialog,
+								final int id) {
+							showChangelog(NO_VERSION);
+						}
+					});
+		}
 		return builder.create();
 	}
 
