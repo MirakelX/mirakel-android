@@ -29,14 +29,14 @@
 
     <RelativeLayout
         android:id="@+id/tasks_row_done_wrapper"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/button_quadratic"
+        android:layout_height="@dimen/button_quadratic"
         android:layout_alignParentStart="true" >
 
         <com.todddavies.components.progressbar.ProgressWheel
             android:id="@+id/tasks_row_progress"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="@dimen/button_quadratic"
+            android:layout_height="@dimen/button_quadratic"
             android:layout_centerInParent="true"
             ProgressWheel:barColor="#0097D6"
             ProgressWheel:barLength="20dp"
@@ -54,8 +54,8 @@
 
     <TextView
         android:id="@+id/tasks_row_priority"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/button_quadratic"
+        android:layout_height="@dimen/button_quadratic"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="2.5dp"
         android:background="@drawable/priority_rectangle"
