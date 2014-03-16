@@ -21,7 +21,6 @@ package de.azapps.mirakel.helper;
 import java.util.ArrayList;
 import java.util.List;
 
-import sheetrock.panda.changelog.ChangeLog;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
@@ -52,6 +51,7 @@ import android.widget.NumberPicker;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import de.azapps.changelog.Changelog;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.export_import.AnyDoImport;
 import de.azapps.mirakel.helper.export_import.ExportImport;
@@ -306,7 +306,7 @@ public class PreferencesAppHelper extends PreferencesHelper {
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
 			final PreferenceCategory cat = (PreferenceCategory) findPreference("notifications");
 			final Preference notificationsBig = findPreference("notificationsBig");
-			if (cat != null && notificationsBig != null) {
+			if ((cat != null) && (notificationsBig != null)) {
 				cat.removePreference(notificationsBig);
 			}
 		}
@@ -584,9 +584,10 @@ public class PreferencesAppHelper extends PreferencesHelper {
 						@SuppressLint("NewApi")
 						public boolean onPreferenceClick(
 								final Preference preference) {
-							final ChangeLog cl = new ChangeLog(
+
+							final Changelog cl = new Changelog(
 									PreferencesAppHelper.this.activity);
-							cl.getFullLogDialog().show();
+							cl.showChangelog(Changelog.NO_VERSION);
 							return true;
 						}
 					});
@@ -1273,7 +1274,7 @@ public class PreferencesAppHelper extends PreferencesHelper {
 						this.toast.show();
 						((SettingsActivity) PreferencesAppHelper.this.activity)
 								.invalidateHeaders();
-					} else if (PreferencesAppHelper.this.debugCounter > 3
+					} else if ((PreferencesAppHelper.this.debugCounter > 3)
 							|| MirakelCommonPreferences.isEnabledDebugMenu()) {
 						if (this.toast != null) {
 							this.toast.cancel();
