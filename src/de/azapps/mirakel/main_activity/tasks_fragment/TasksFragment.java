@@ -663,14 +663,18 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 		final Uri u = Uri.parse("content://"
 				+ DefinitionsHelper.AUTHORITY_INTERNAL + "/" + "tasks");
 		String dbQuery = list.getWhereQueryForTasks(true);
+		final String sorting = Task.getSorting(list.getSortBy());
+		String[] args = null;
 		if (this.query != null) {
 			if (dbQuery != null && dbQuery.trim() != "" && dbQuery.length() > 0) {
 				dbQuery = "(" + dbQuery + ") AND ";
 			}
-			dbQuery += DatabaseHelper.NAME + " LIKE '%" + this.query + "%'";
+
+			args = new String[] { "%" + this.query + "%" };
+			dbQuery += DatabaseHelper.NAME + " LIKE ?";
 		}
 		return new CursorLoader(getActivity(), u, Task.allColumns, dbQuery,
-				null, Task.getSorting(list.getSortBy()));
+				args, sorting);
 	}
 
 	@Override
