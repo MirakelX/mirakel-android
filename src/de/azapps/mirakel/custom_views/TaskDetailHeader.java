@@ -102,8 +102,8 @@ public class TaskDetailHeader extends BaseTaskDetailRow {
 								imm.restartInput(TaskDetailHeader.this.txt);
 								TaskDetailHeader.this.txt
 										.setOnFocusChangeListener(null);
-								if (actionId == EditorInfo.IME_ACTION_DONE
-										&& TaskDetailHeader.this.task != null) {
+								if ((actionId == EditorInfo.IME_ACTION_DONE)
+										&& (TaskDetailHeader.this.task != null)) {
 									TaskDetailHeader.this.task
 											.setName(TaskDetailHeader.this.txt
 													.getText().toString());
@@ -157,7 +157,7 @@ public class TaskDetailHeader extends BaseTaskDetailRow {
 			this.taskName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
 		}
 
-		if (this.switcher.getCurrentView().getId() == R.id.edit_name
+		if ((this.switcher.getCurrentView().getId() == R.id.edit_name)
 				&& !this.task.getName().equals(this.txt.getText().toString())) {
 			this.switcher.showPrevious();
 		}
@@ -171,8 +171,8 @@ public class TaskDetailHeader extends BaseTaskDetailRow {
 					final boolean isChecked) {
 				Log.d(TAG, "check " + isChecked);
 				TaskDetailHeader.this.task.setDone(isChecked);
-				ReminderAlarm.updateAlarms(TaskDetailHeader.this.context);
 				save();
+				ReminderAlarm.updateAlarms(TaskDetailHeader.this.context);
 				if (TaskDetailHeader.this.doneChanged != null) {
 					TaskDetailHeader.this.doneChanged
 							.onDoneChanged(TaskDetailHeader.this.task);
