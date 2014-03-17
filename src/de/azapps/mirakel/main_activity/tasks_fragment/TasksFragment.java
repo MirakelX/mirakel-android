@@ -488,25 +488,6 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 							} else if (checked) {
 								TasksFragment.this.selectedTasks.remove(t);
 							}
-							if (!checked) {
-								v.setBackgroundColor(getActivity()
-										.getResources().getColor(
-												android.R.color.transparent));
-							} else {
-								if (TasksFragment.this.selectedTasks.size() == 1) {
-									TasksFragment.this.listView.postDelayed(
-											new Runnable() {
-												@Override
-												public void run() {
-													v.setBackgroundColor(Helpers
-															.getHighlightedColor(getActivity()));
-												}
-											}, 10);
-								} else {
-									v.setBackgroundColor(Helpers
-											.getHighlightedColor(getActivity()));
-								}
-							}
 						}
 
 						@Override
