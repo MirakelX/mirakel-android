@@ -34,6 +34,9 @@ android {
             exclude 'META-INF/LICENSE.txt'
             exclude 'META-INF/NOTICE.txt'
     }
+    lintOptions{
+        disable 'ExtraTranslation'
+    }
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
