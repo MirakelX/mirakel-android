@@ -19,7 +19,9 @@
 package de.azapps.mirakel.main_activity;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Stack;
@@ -56,6 +58,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.fourmob.datetimepicker.date.DatePicker;
+import com.fourmob.datetimepicker.date.DatePickerDialog;
+
 import de.azapps.changelog.Changelog;
 import de.azapps.ilovefs.ILoveFS;
 import de.azapps.mirakel.DefinitionsHelper;
@@ -338,7 +344,8 @@ public class MainActivity extends ActionBarActivity implements
 
 				@Override
 				public void run() {
-					getSupportActionBar().setTitle(currentList.getName());
+					getSupportActionBar().setTitle(
+							MainActivity.this.currentList.getName());
 				}
 
 			});
@@ -663,6 +670,36 @@ public class MainActivity extends ActionBarActivity implements
 		final List<Task> t = new ArrayList<Task>();
 		t.add(task);
 		handleMoveTask(t);
+	}
+
+	public void handleSetDue(final List<Task> tasks) {
+		final Calendar dueLocal = new GregorianCalendar();
+		final DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(
+				new DatePicker.OnDateSetListener() {
+
+					@Override
+					public void onDateSet(final DatePicker dp, final int year,
+							final int month, final int day) {
+						final Calendar due = new GregorianCalendar(year, month,
+								day);
+						for (final Task task : tasks) {
+							task.setDue(due);
+							saveTask(task);
+						}
+					}
+
+					@Override
+					public void onNoDateSet() {
+						for (final Task task : tasks) {
+							task.setDue(null);
+							saveTask(task);
+						}
+
+					}
+				}, dueLocal.get(Calendar.YEAR), dueLocal.get(Calendar.MONTH),
+				dueLocal.get(Calendar.DAY_OF_MONTH), false,
+				MirakelCommonPreferences.isDark(), true);
+		datePickerDialog.show(getSupportFragmentManager(), "datepicker");
 	}
 
 	private int handleTaskFragmentMenu() {

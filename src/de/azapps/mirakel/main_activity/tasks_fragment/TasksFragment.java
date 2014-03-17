@@ -128,8 +128,8 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public void closeActionMode() {
-		if (this.mActionMode != null
-				&& Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+		if ((this.mActionMode != null)
+				&& (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)) {
 			this.mActionMode.finish();
 		}
 	}
@@ -253,9 +253,9 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 			@Override
 			public boolean onEditorAction(final TextView v, final int actionId,
 					final KeyEvent event) {
-				if (actionId == EditorInfo.IME_ACTION_SEND
-						|| actionId == EditorInfo.IME_NULL
-						&& event.getAction() == KeyEvent.ACTION_DOWN) {
+				if ((actionId == EditorInfo.IME_ACTION_SEND)
+						|| ((actionId == EditorInfo.IME_NULL) && (event
+								.getAction() == KeyEvent.ACTION_DOWN))) {
 					newTask(v.getText().toString());
 					v.setText(null);
 				}
@@ -324,7 +324,7 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 	}
 
 	public void setScrollPosition(final int pos) {
-		if (this.listView == null || this.main == null) {
+		if ((this.listView == null) || (this.main == null)) {
 			return;
 		}
 		this.main.runOnUiThread(new Runnable() {
@@ -354,9 +354,9 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 					@Override
 					public void onTaskChanged(final Task newTask) {
 						if (MirakelCommonPreferences.isTablet()
-								&& TasksFragment.this.main != null
-								&& TasksFragment.this.main.getCurrentTask()
-										.getId() == newTask.getId()) {
+								&& (TasksFragment.this.main != null)
+								&& (TasksFragment.this.main.getCurrentTask()
+										.getId() == newTask.getId())) {
 							getLoaderManager().restartLoader(0, null,
 									TasksFragment.this);
 						}
@@ -430,6 +430,10 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 							case R.id.menu_move:
 								TasksFragment.this.main
 										.handleMoveTask(TasksFragment.this.selectedTasks);
+								break;
+							case R.id.menu_set_due:
+								TasksFragment.this.main
+										.handleSetDue(TasksFragment.this.selectedTasks);
 								break;
 							case R.id.edit_task:
 								TasksFragment.this.main.setCurrentTask(
@@ -546,7 +550,7 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 		if (this.view == null) {
 			return;
 		}
-		if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.HONEYCOMB
+		if ((android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.HONEYCOMB)
 				|| !MirakelCommonPreferences.useBtnSpeak()) {
 			this.view.findViewById(R.id.btnSpeak_tasks)
 					.setVisibility(View.GONE);
@@ -666,7 +670,8 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 		final String sorting = Task.getSorting(list.getSortBy());
 		String[] args = null;
 		if (this.query != null) {
-			if (dbQuery != null && dbQuery.trim() != "" && dbQuery.length() > 0) {
+			if ((dbQuery != null) && (dbQuery.trim() != "")
+					&& (dbQuery.length() > 0)) {
 				dbQuery = "(" + dbQuery + ") AND ";
 			}
 
@@ -689,9 +694,9 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 	}
 
 	public Task getLastTouched() {
-		if (this.adapter != null
-				&& this.listView != null
-				&& this.listView.getChildAt(this.adapter.getLastTouched()) != null) {
+		if ((this.adapter != null)
+				&& (this.listView != null)
+				&& (this.listView.getChildAt(this.adapter.getLastTouched()) != null)) {
 			return Task.get((Long) this.listView.getChildAt(
 					this.adapter.getLastTouched()).getTag());
 		}
