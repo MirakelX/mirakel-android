@@ -544,7 +544,8 @@ public class ListMirakel extends ListBase {
 		return t;
 	}
 
-	public static boolean isSpecialList() {
+	@SuppressWarnings("static-method")
+	public boolean isSpecialList() {
 		return false;
 	}
 
