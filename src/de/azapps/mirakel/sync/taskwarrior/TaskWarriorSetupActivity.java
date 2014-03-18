@@ -10,6 +10,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -219,7 +221,10 @@ public class TaskWarriorSetupActivity extends Activity {
 			try {
 				setupTaskWarrior(new FileInputStream(configFile), true);
 			} catch (final FileNotFoundException e) {
-				Log.wtf(TAG, "file vanish");
+				Toast.makeText(
+						this,
+						getString(R.string.sync_taskwarrior_select_file_not_exists),
+						Toast.LENGTH_LONG).show();
 			}
 		} else {
 			Log.d(TAG, "file not found");
@@ -229,80 +234,111 @@ public class TaskWarriorSetupActivity extends Activity {
 		}
 	}
 
+	enum PARSE_STATE {
+		ONE_LINER, MULTI
+	}
+
+	private Map<String, String> parseTWFile(final InputStream stream)
+			throws IOException {
+		final BufferedReader r = new BufferedReader(new InputStreamReader(
+				stream));
+		final Map<String, String> values = new HashMap<String, String>();
+		PARSE_STATE state = PARSE_STATE.ONE_LINER;
+		String line;
+		String tkey = null, tvalue = "";
+		// General parsing
+		while ((line = r.readLine()) != null) {
+			switch (state) {
+			case ONE_LINER:
+				final String[] splitted = line.split(":", 2);
+				if (splitted.length != 2) {
+					continue;
+				}
+				final String key = splitted[0].trim().toLowerCase();
+				final String value = splitted[1].trim();
+				if (value.equals("")) {
+					tkey = key;
+					tvalue = null;
+					state = PARSE_STATE.MULTI;
+				} else {
+					values.put(key, value);
+				}
+				break;
+			case MULTI:
+				// Yeah, there is an \n at the end of the file
+				tvalue += line + "\n";
+				if (line.startsWith("-----END")) {
+					values.put(tkey, tvalue);
+					state = PARSE_STATE.ONE_LINER;
+				}
+				break;
+			}
+		}
+		return values;
+	}
+
+	private class ParseException extends Exception {
+		private static final long serialVersionUID = -5931298406798881507L;
+
+		public ParseException(final String message) {
+			super(message);
+		}
+	}
+
 	private void setupTaskWarrior(final InputStream stream,
-			final boolean showToasts) {
-		boolean success = false;
-		final int nothing = -1;
-		final int wrong_config = 0;
-		final int ioError = 1;
-		int error = nothing;
+			final boolean showToast) {
+
 		try {
-			String content = new String();
-			final BufferedReader r = new BufferedReader(new InputStreamReader(
-					stream));
-			String line;
-			while ((line = r.readLine()) != null) {
-				content += line + "\n";
-			}
-			final Bundle b = new Bundle();
-			b.putString(SyncAdapter.BUNDLE_SERVER_TYPE, TaskWarriorSync.TYPE);
-			// String content = new String(buffer);
-			String[] t = content.split("(?i)org: ");
-			// Log.d(TAG, "user: " + t[0].replace("username: ", ""));
-			final Account account = new Account(t[0].replaceAll(
-					"(?i)username: ", "").replace("\n", ""),
-					AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
-			t = t[1].split("(?i)user key: ");
-			// Log.d(TAG, "org: " + t[0].replace("\n", ""));
-			b.putString(SyncAdapter.BUNDLE_ORG, t[0].replace("\n", ""));
-
-			t = t[1].split("(?i)server: ");
-			// Log.d(TAG, "user key: " + t[0].replace("\n", ""));
-			final String pwd = t[0].replace("\n", "");
-
-			t = t[1].split("(?i)Client.cert:\n");
-			// Log.d(TAG, "server: " + t[0].replace("\n", ""));
-			b.putString(SyncAdapter.BUNDLE_SERVER_URL, t[0].replace("\n", ""));
-			t = t[1].split("(?i)Client.key:\n");
-			// Log.d(TAG, "client cert: " + t[0].replace("\n", ""));
-
-			FileUtils.writeToFile(new File(TaskWarriorSync.CLIENT_CERT_FILE),
-					t[0]);
-
-			t = t[1].split("(?i)ca.cert:\n");
-			// Log.d(TAG, "client key: " + t[0].replace("\n", ""));
-
-			FileUtils.writeToFile(new File(TaskWarriorSync.CLIENT_KEY_FILE),
-					t[0]);
-			// Log.d(TAG, "ca: " + t[1].replace("\n", ""));
-			FileUtils.writeToFile(new File(TaskWarriorSync.CA_FILE), t[1]);
-			this.mAccountManager.addAccountExplicitly(account, pwd, b);
-			success = true;
-		} catch (final ArrayIndexOutOfBoundsException e) {
-			Log.e(TAG, "wrong Configfile");
-			error = wrong_config;
-			success = false;
+			setupTaskWarrior(stream);
+			Toast.makeText(this,
+					getString(R.string.sync_taskwarrior_setup_success),
+					Toast.LENGTH_LONG).show();
+			finish();
 		} catch (final IOException e) {
-			success = false;
-			error = ioError;
-		}
-		if (showToasts) {
-			if (success) {
-				Toast.makeText(this,
-						getString(R.string.sync_taskwarrior_setup_success),
-						Toast.LENGTH_LONG).show();
-				finish();
-			} else {
-				// maybe look here which error was reported
-				Toast.makeText(
-						this,
-						getString(error == ioError ? R.string.sync_taskwarrior_select_file_not_exists
-								: R.string.wrong_config), Toast.LENGTH_LONG)
-						.show();
+			Toast.makeText(
+					this,
+					getString(R.string.sync_taskwarrior_select_file_not_exists),
+					Toast.LENGTH_LONG).show();
+		} catch (final ParseException e) {
+			if (showToast) {
+				Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
 			}
-		} else if (!success) {
-			throw new RuntimeException();
 		}
+	}
+
+	private void setupTaskWarrior(final InputStream stream)
+			throws ParseException, IOException {
+		final Map<String, String> values;
+		try {
+			values = parseTWFile(stream);
+		} catch (final IOException e) {
+			throw new ParseException(getString(R.string.config_404));
+		}
+
+		final String[] neededValues = { "username", "org", "user key",
+				"server", "client.cert", "client.key", "ca.cert" };
+		for (final String key : neededValues) {
+			if (!values.containsKey(key)) {
+				throw new ParseException(getString(R.string.config_error_empty,
+						key));
+			}
+		}
+
+		final Bundle b = new Bundle();
+		b.putString(SyncAdapter.BUNDLE_SERVER_TYPE, TaskWarriorSync.TYPE);
+		final Account account = new Account(values.get("username"),
+				AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
+		b.putString(SyncAdapter.BUNDLE_ORG, values.get("org"));
+		b.putString(SyncAdapter.BUNDLE_SERVER_URL, values.get("server"));
+
+		FileUtils.writeToFile(new File(TaskWarriorSync.CLIENT_CERT_FILE),
+				values.get("client.cert"));
+		FileUtils.writeToFile(new File(TaskWarriorSync.CLIENT_KEY_FILE),
+				values.get("client.key"));
+		FileUtils.writeToFile(new File(TaskWarriorSync.CA_FILE),
+				values.get("ca.cert"));
+		this.mAccountManager.addAccountExplicitly(account,
+				values.get("user key"), b);
 	}
 
 	public void setupTaskwarriorFromURL(String inputUrl) {
