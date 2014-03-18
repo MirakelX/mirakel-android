@@ -1,0 +1,89 @@
+buildscript {
+      dependencies {
+        repositories {
+            mavenCentral()
+            maven {
+                url "file:~/.m2/"
+                artifactUrls "file:~/.m2/"
+            }
+
+        }
+        classpath 'com.android.tools.build:gradle:0.9.+'
+        classpath 'com.jakewharton.hugo:hugo-plugin:1.0.+'
+    }
+}
+dependencies {
+      repositories {
+        mavenCentral()
+
+        // NOTE: This is only needed when developing the plugin!
+        mavenLocal()
+
+    }
+}
+
+
+apply plugin: 'android'
+apply plugin: 'hugo'
+apply plugin: 'eclipse'
+
+
+
+android {
+    buildToolsVersion '19.0.0'
+    compileSdkVersion 19   
+    packagingOptions {
+            exclude 'META-INF/LICENSE.txt'
+            exclude 'META-INF/NOTICE.txt'
+    }
+    lintOptions {
+        disable 'MissingTranslation'
+    }
+    sourceSets {
+            main{
+                manifest.srcFile 'AndroidManifest.xml'
+                java.srcDirs = ['src']
+                res.srcDirs = ['res']
+                assets.srcDirs = ['assets']
+            }
+            /*instrumentTest.setRoot('.')
+            instrumentTest {
+                manifest.srcFile 'AndroidManifest.xml'
+                java.srcDirs = ['src']
+                res.srcDirs = ['res']
+                assets.srcDirs = ['assets']
+                resources.srcDirs = ['src']
+            }*/
+
+    }
+    defaultConfig {
+            testPackageName "de.azapps.mirakelandroid.test"
+            testInstrumentationRunner "android.test.InstrumentationTestRunner"
+    }
+    signingConfigs {
+        release {
+            storeFile file("debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+//            runProguard true
+//            proguardFile 'proguard-android.txt'
+        }
+	    debug {
+            signingConfig signingConfigs.release
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: '*.jar', exclude: 'android-support-v4.jar')
+    //instrumentTestCompile 'com.jayway.android.robotium:robotium-solo:4.3.1'
+    //instrumentTestCompile 'junit:junit:3.8'
+}
+
+
