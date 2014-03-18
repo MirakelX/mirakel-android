@@ -252,6 +252,17 @@ public class ListMirakel extends ListBase {
 		return null;
 	}
 
+	public static void setDefaultAccount(final AccountMirakel account) {
+		final ContentValues v = new ContentValues();
+		v.put(ACCOUNT_ID, account.getId());
+
+		database.beginTransaction();
+		database.update(TABLE, v, null, null);
+		database.setTransactionSuccessful();
+		database.endTransaction();
+
+	}
+
 	public static List<ListMirakel> getListsForAccount(
 			final AccountMirakel account) {
 		if (account == null || !account.isEnabeld()) {

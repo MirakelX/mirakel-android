@@ -13,6 +13,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
+import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -158,6 +159,20 @@ public class AccountMirakel extends AccountBase {
 		return null;
 	}
 
+	public static int countRemoteAccounts() {
+		final Cursor c = database.rawQuery("SELECT COUNT(*) from " + TABLE
+				+ " WHERE not " + TYPE + "=" + ACCOUNT_TYPES.LOCAL.toInt()
+				+ " AND " + ENABLED + "=1", null);
+		c.moveToFirst();
+		if (c.getCount() > 0) {
+			final int ret = c.getInt(0);
+			c.close();
+			return ret;
+		}
+		c.close();
+		return 0;
+	}
+
 	public static List<AccountMirakel> getAll() {
 		final Cursor c = database.query(TABLE, allColumns, null, null, null,
 				null, null);
@@ -202,6 +217,15 @@ public class AccountMirakel extends AccountBase {
 				ACCOUNT_TYPES.LOCAL, true);
 	}
 
+	public static List<AccountMirakel> getRemote() {
+		final Cursor c = database.query(TABLE, allColumns, "not " + TYPE + "="
+				+ ACCOUNT_TYPES.LOCAL.toInt() + " AND " + ENABLED + "=1", null,
+				null, null, null);
+		final List<AccountMirakel> accounts = cursorToAccountList(c);
+		c.close();
+		return accounts;
+	}
+
 	public static void init(final Context ctx) {
 		AccountMirakel.context = ctx;
 		dbHelper = new DatabaseHelper(ctx);
@@ -224,8 +248,8 @@ public class AccountMirakel extends AccountBase {
 	}
 
 	public static void update(final Account[] accounts) {
-		List<AccountMirakel> accountList = AccountMirakel.getAll();
-		final int accountCountStart = accountList.size();
+		final List<AccountMirakel> accountList = AccountMirakel.getAll();
+		final int countRemotes = AccountMirakel.countRemoteAccounts();
 		final Map<String, AccountMirakel> map = new HashMap<String, AccountMirakel>();
 		for (final AccountMirakel a : accountList) {
 			map.put(a.getName(), a);
@@ -252,13 +276,24 @@ public class AccountMirakel extends AccountBase {
 				el.getValue().destroy();
 			}
 		}
-		accountList = AccountMirakel.getAll();
-		final int accountCountEnd = accountList.size();
-		if (Math.abs(accountCountEnd - accountCountStart) == 1
-				&& accountCountStart == 1) {
+		final int countRemotesNow = AccountMirakel.countRemoteAccounts();
+
+		if (countRemotes == 0 && countRemotesNow == 1) {
+			// If we just added our first remote account we want to set it as
+			// the default one.
+			final List<AccountMirakel> remotes = AccountMirakel.getRemote();
+
+			// This could happen, the operations are not atomar
+			if (remotes.size() != 0) {
+				final AccountMirakel account = remotes.get(0);
+				MirakelModelPreferences.setDefaultAccount(account);
+				ListMirakel.setDefaultAccount(account);
+			}
+		} else if (countRemotes == 1 && countRemotesNow > 1) {
+			// If we have now more than one remote account we want to show the
+			// account name in the listfragment
 			MirakelCommonPreferences.setShowAccountName(true);
 		}
-
 	}
 
 	public AccountMirakel(final int id, final String name,
