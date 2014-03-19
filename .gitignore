@@ -36,6 +36,7 @@ lint.xml
 .gradle
 res-google/project.properties
 keystore
+tests/
 # External tool builders
 .externalToolBuilders/
 
