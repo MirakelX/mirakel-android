@@ -1,11 +1,25 @@
 buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:0.7.+'
+      dependencies {
+        repositories {
+            mavenCentral()
+            maven {
+                url "file:~/.m2/"
+                artifactUrls "file:~/.m2/"
+            }
+        }
+        classpath 'com.android.tools.build:gradle:0.9.+'
+//        classpath 'com.jakewharton.hugo:hugo-plugin:1.0.+'
     }
 }
+dependencies {
+      repositories {
+        mavenCentral()
+
+        // NOTE: This is only needed when developing the plugin!
+        mavenLocal()
+    }
+}
+
 gradle.projectsEvaluated {
     def projects=["custom_views","date-time-picker"]
     for(String proj:projects){
@@ -28,6 +42,26 @@ gradle.projectsEvaluated {
         }
     }
 }
+ext {
+    compileSdkVersion = 19
+    buildToolsVersion = "19.0.1"
+    minSDKVersion = 8
+}
+
+configure(allprojects) {
+    ext.androidSDKVersion = "19"
+    ext.androidBuildToolsVersion = "19.0"
+    ext.androidSupportVersion = "19.0.1"
+    ext.androidPluginVersion ="0.9.+"
+    ext.androidMinSDKVersion ="8"
+    ext.jodaLibraryVersion = "2.2"
+    ext.nineoldandroisVersion="2.4.0"
+    ext.robotiumVersion = "5.1"
+    ext.gsonVersion = "2.2.+"
+    ext.commonLangVersion = "3.3"
+
+}
+
 allprojects {
     repositories {                   
         mavenCentral()
