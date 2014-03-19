@@ -35,6 +35,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
+import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.UndoHistory;
@@ -617,6 +618,10 @@ public class ListMirakel extends ListBase {
 	}
 
 	public String getWhereQueryForTasks(final boolean forQuery) {
-		return Task.LIST_ID + "=" + getId();
+		return Task.LIST_ID
+				+ "="
+				+ getId()
+				+ (MirakelCommonPreferences.showDoneMain() ? "" : "AND NOT "
+						+ Task.DONE + "=1");
 	}
 }
