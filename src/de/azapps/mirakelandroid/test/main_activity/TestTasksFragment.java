@@ -3,7 +3,7 @@ package de.azapps.mirakelandroid.test.main_activity;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.EditText;
 
-import com.jayway.android.robotium.solo.Solo;
+import com.robotium.solo.Solo;
 
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakelandroid.R;
@@ -20,12 +20,12 @@ public class TestTasksFragment extends
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		solo = new Solo(getInstrumentation(), getActivity());
+		this.solo = new Solo(getInstrumentation(), getActivity());
 	}
 
 	@Override
 	protected void tearDown() throws Exception {
-		solo.finishOpenedActivities();
+		this.solo.finishOpenedActivities();
 	}
 
 	/**
@@ -35,19 +35,19 @@ public class TestTasksFragment extends
 	 * @param task
 	 * @param expected
 	 */
-	private void insertAndTestNewTask(String message, String task,
-			String expected) {
-		EditText newTask = (EditText) solo.getView(R.id.tasks_new);
-		solo.clearEditText(newTask);
-		solo.enterText(newTask, task);
-		solo.clickOnView(solo.getView(R.id.btnEnter));
-		boolean actual = solo.searchText(expected);
+	private void insertAndTestNewTask(final String message, final String task,
+			final String expected) {
+		final EditText newTask = (EditText) this.solo.getView(R.id.tasks_new);
+		this.solo.clearEditText(newTask);
+		this.solo.enterText(newTask, task);
+		this.solo.clickOnView(this.solo.getView(R.id.btnEnter));
+		final boolean actual = this.solo.searchText(expected);
 		assertTrue(message, actual);
 	}
 
 	public void testAddTask() {
 		// First a simple task
-		String taskName = "tassssk";
+		final String taskName = "tassssk";
 		insertAndTestNewTask("Simple task not inserted", taskName, taskName);
 		// Now a semantic
 		insertAndTestNewTask("Semantic task wrong inserted (Today)", "today "

@@ -2,7 +2,7 @@ package de.azapps.mirakelandroid.test;
 
 import android.content.Context;
 
-import com.jayway.android.robotium.solo.Solo;
+import com.robotium.solo.Solo;
 
 public class TestUtils {
 	/**
@@ -11,8 +11,9 @@ public class TestUtils {
 	 * @param message
 	 * @param menu_items
 	 */
-	void menuTest(Solo solo, String message, String[] menu_items) {
-		for (String item : menu_items) {
+	void menuTest(final Solo solo, final String message,
+			final String[] menu_items) {
+		for (final String item : menu_items) {
 			solo.clickOnMenuItem(item);
 			solo.goBack();
 		}
@@ -24,8 +25,9 @@ public class TestUtils {
 	 * @param message
 	 * @param menu_items
 	 */
-	void menuTest(Context ctx, Solo solo, String message, int[] menu_items) {
-		String string_items[] = new String[menu_items.length];
+	void menuTest(final Context ctx, final Solo solo, final String message,
+			final int[] menu_items) {
+		final String string_items[] = new String[menu_items.length];
 		for (int i = 0; i < menu_items.length; i++) {
 			string_items[i] = ctx.getString(menu_items[i]);
 		}
