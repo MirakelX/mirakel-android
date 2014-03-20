@@ -632,7 +632,7 @@ public class ListMirakel extends ListBase {
 		return Task.LIST_ID
 				+ "="
 				+ getId()
-				+ (MirakelCommonPreferences.showDoneMain() ? "" : "AND NOT "
+				+ (MirakelCommonPreferences.showDoneMain() ? "" : " AND NOT "
 						+ Task.DONE + "=1");
 	}
 }
