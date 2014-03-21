@@ -20,15 +20,14 @@ import com.larswerkman.colorpicker.SVBar;
 import de.azapps.mirakel.colorpicker_pref.R;
 import de.azapps.tools.Log;
 
-
 public class ColorPickerPref extends DialogPreference {
 	private static final String TAG = "NumPickerPref";
-	private Context ctx;
+	private final Context ctx;
 	protected int COLOR;
 	private int OLD_COLOR;
 	protected View colorBox;
 
-	public ColorPickerPref(Context context, AttributeSet attrs) {
+	public ColorPickerPref(final Context context, final AttributeSet attrs) {
 		super(context, attrs);
 		this.ctx = context;
 		this.COLOR = this.ctx.getResources().getColor(R.color.holo_orange_dark);
@@ -37,11 +36,11 @@ public class ColorPickerPref extends DialogPreference {
 
 	@SuppressLint("NewApi")
 	@Override
-	public View getView(View convertView, ViewGroup parent) {
+	public View getView(final View convertView, final ViewGroup parent) {
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
 			return new View(this.ctx);
 		}
-		View v = ((Activity) this.ctx).getLayoutInflater().inflate(
+		final View v = ((Activity) this.ctx).getLayoutInflater().inflate(
 				R.layout.color_pref, null);
 		/*
 		 * if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -57,13 +56,13 @@ public class ColorPickerPref extends DialogPreference {
 
 	@SuppressLint("NewApi")
 	@Override
-	protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
+	protected void onPrepareDialogBuilder(final AlertDialog.Builder builder) {
 		// super.onPrepareDialogBuilder(builder);
 		final View v = ((LayoutInflater) this.ctx
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
-						R.layout.color_picker, null);
-		final ColorPicker cp = ((ColorPicker) v.findViewById(R.id.color_picker));
-		final SVBar op = ((SVBar) v.findViewById(R.id.svbar_color_picker));
+				R.layout.color_picker, null);
+		final ColorPicker cp = (ColorPicker) v.findViewById(R.id.color_picker);
+		final SVBar op = (SVBar) v.findViewById(R.id.svbar_color_picker);
 		cp.addSVBar(op);
 		cp.setColor(this.COLOR);
 		cp.setOldCenterColor(this.OLD_COLOR);
@@ -72,10 +71,11 @@ public class ColorPickerPref extends DialogPreference {
 						new DialogInterface.OnClickListener() {
 
 							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
+							public void onClick(final DialogInterface dialog,
+									final int which) {
 								ColorPickerPref.this.COLOR = cp.getColor();
-								ColorPickerPref.this.colorBox.setBackgroundColor(cp.getColor());
+								ColorPickerPref.this.colorBox
+										.setBackgroundColor(cp.getColor());
 								callChangeListener(ColorPickerPref.this.COLOR);
 							}
 						})
@@ -83,8 +83,8 @@ public class ColorPickerPref extends DialogPreference {
 						new DialogInterface.OnClickListener() {
 
 							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
+							public void onClick(final DialogInterface dialog,
+									final int which) {
 								// Nothing
 							}
 						});
@@ -94,28 +94,28 @@ public class ColorPickerPref extends DialogPreference {
 		return this.COLOR;
 	}
 
-	public void setColor(int newValue) {
+	public void setColor(final int newValue) {
 		this.COLOR = newValue;
 	}
 
-	public void setOldColor(int newValue) {
+	public void setOldColor(final int newValue) {
 		this.OLD_COLOR = newValue;
 	}
 
 	@Override
-	protected Object onGetDefaultValue(TypedArray a, int index) {
+	protected Object onGetDefaultValue(final TypedArray a, final int index) {
 		Log.d(TAG, a.getString(index));
 		return super.onGetDefaultValue(a, index);
 	}
 
 	@Override
-	public void onBindDialogView(View view) {
+	public void onBindDialogView(final View view) {
 		Log.d(TAG, "bar");
 		super.onBindDialogView(view);
 	}
 
 	@Override
-	protected void onDialogClosed(boolean positiveResult) {
+	protected void onDialogClosed(final boolean positiveResult) {
 		super.onDialogClosed(positiveResult);
 		if (positiveResult) {
 			persistBoolean(!getPersistedBoolean(true));
