@@ -32,7 +32,7 @@ import de.azapps.mirakel.customviews.R;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
-import de.azapps.mirakel.helper.ModellHelper;
+import de.azapps.mirakel.helper.ViewHelper;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -173,8 +173,6 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements
 
 	@Override
 	public void updatePart(final Task newValue) {
-		setBackgroundColor(this.context.getResources().getColor(
-				android.R.color.transparent));
 		this.task = newValue;
 		if (this.task == null) {
 			this.task = Task.getDummy(this.context,
@@ -208,10 +206,21 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements
 
 		// Due
 		updateDue();
+		updateBackground();
+	}
+
+	@Override
+	protected void onSizeChanged(final int w, final int h, final int oldw,
+			final int oldh) {
+		super.onSizeChanged(w, h, oldw, oldh);
+		updateBackground();
+	}
+
+	public void updateBackground() {
 		if (MirakelCommonPreferences.colorizeTasks()) {
 			if (MirakelCommonPreferences.colorizeSubTasks()) {
 				final int w = getWidth();
-				ModellHelper.setListColorBackground(this.task.getList(), this,
+				ViewHelper.setListColorBackground(this.task.getList(), this,
 						w);
 			} else {
 				setBackgroundColor(this.context.getResources().getColor(
