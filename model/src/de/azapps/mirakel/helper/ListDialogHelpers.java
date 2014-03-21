@@ -26,9 +26,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.preference.Preference;
 import android.widget.TextView;
+import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
-import de.azapps.mirakel.model.R;
 
 public class ListDialogHelpers {
 	protected static final String TAG = "ListDialogHelpers";
@@ -44,17 +44,18 @@ public class ListDialogHelpers {
 	 * @param list
 	 * @return
 	 */
-	public static ListMirakel handleSortBy(Context ctx, final ListMirakel list,
-			TextView res) {
-		return handleSortBy(ctx, list,null, null);
+	public static ListMirakel handleSortBy(final Context ctx,
+			final ListMirakel list, final TextView res) {
+		return handleSortBy(ctx, list, null, null);
 	}
 
-	public static ListMirakel handleSortBy(Context ctx, final ListMirakel list,
-			Preference res) {
+	public static ListMirakel handleSortBy(final Context ctx,
+			final ListMirakel list, final Preference res) {
 		return handleSortBy(ctx, list, null, res);
 	}
 
-	public static ListMirakel handleSortBy(Context ctx, final ListMirakel list) {
+	public static ListMirakel handleSortBy(final Context ctx,
+			final ListMirakel list) {
 		return handleSortBy(ctx, list, null, null);
 	}
 
@@ -66,21 +67,24 @@ public class ListDialogHelpers {
 	 * @param cls
 	 * @return
 	 */
-	public static ListMirakel handleSortBy(Context ctx, final ListMirakel list,
-			final Helpers.ExecInterface cls, final Preference res) {
+	public static ListMirakel handleSortBy(final Context ctx,
+			final ListMirakel list, final Helpers.ExecInterface cls,
+			final Preference res) {
 		final CharSequence[] SortingItems = ctx.getResources().getStringArray(
 				R.array.task_sorting_items);
 
-		AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+		final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
 		builder.setTitle(ctx.getString(R.string.task_sorting_title));
 		builder.setSingleChoiceItems(SortingItems, list.getSortBy(),
 				new DialogInterface.OnClickListener() {
 					@Override
-					public void onClick(DialogInterface dialog, int item) {
+					public void onClick(final DialogInterface dialog,
+							final int item) {
 						list.setSortBy(item);
 						list.save();
-						if (res != null)
+						if (res != null) {
 							res.setSummary(SortingItems[item]);
+						}
 						cls.exec();
 						alert.dismiss(); // Ugly
 					}
@@ -95,24 +99,25 @@ public class ListDialogHelpers {
 	 * 
 	 * @param task
 	 */
-	public static SpecialList handleDefaultList(Context ctx,
-			final SpecialList specialList, List<ListMirakel> lists,
+	public static SpecialList handleDefaultList(final Context ctx,
+			final SpecialList specialList, final List<ListMirakel> lists,
 			final Preference res) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+		final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
 		builder.setTitle(R.string.special_list_def_list);
-		List<CharSequence> items = new ArrayList<CharSequence>();
+		final List<CharSequence> items = new ArrayList<CharSequence>();
 		final List<Integer> list_ids = new ArrayList<Integer>();
 		int currentItem = 0, i = 1;
 		items.add(ctx.getString(R.string.special_list_first));
 		list_ids.add(null);
-		for (ListMirakel list : lists) {
+		for (final ListMirakel list : lists) {
 			if (list.getId() > 0) {
 				items.add(list.getName());
 				if (specialList.getDefaultList() == null) {
 					currentItem = 0;
 				} else {
-					if (specialList.getDefaultList().getId() == list.getId())
+					if (specialList.getDefaultList().getId() == list.getId()) {
 						currentItem = i;
+					}
 				}
 				list_ids.add(list.getId());
 				++i;
@@ -123,8 +128,9 @@ public class ListDialogHelpers {
 				items.toArray(new CharSequence[items.size()]), currentItem,
 				new DialogInterface.OnClickListener() {
 					@Override
-					public void onClick(DialogInterface dialog, int item) {
-						Integer lid = list_ids.get(item);
+					public void onClick(final DialogInterface dialog,
+							final int item) {
+						final Integer lid = list_ids.get(item);
 						if (lid == null) {
 							specialList.setDefaultList(null);
 						} else {
@@ -132,9 +138,10 @@ public class ListDialogHelpers {
 						}
 						specialList.save();
 						alert.dismiss();
-						if (res != null)
+						if (res != null) {
 							res.setSummary(specialList.getDefaultList()
 									.getName());
+						}
 					}
 				});
 
@@ -150,7 +157,7 @@ public class ListDialogHelpers {
 	 * @param specialList
 	 * @return
 	 */
-	public static SpecialList handleDefaultDate(Context ctx,
+	public static SpecialList handleDefaultDate(final Context ctx,
 			final SpecialList specialList, final Preference res) {
 
 		final String[] items = ctx.getResources().getStringArray(
@@ -159,21 +166,25 @@ public class ListDialogHelpers {
 				R.array.special_list_def_date_picker_val);
 		int currentItem = 0;
 		if (specialList.getDefaultDate() != null) {
-			int ddate = specialList.getDefaultDate();
-			for (int i = 0; i < values.length; i++)
-				if (values[i] == ddate)
+			final int ddate = specialList.getDefaultDate();
+			for (int i = 0; i < values.length; i++) {
+				if (values[i] == ddate) {
 					currentItem = i;
+				}
+			}
 		}
 
-		AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+		final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
 		builder.setTitle(R.string.special_list_def_date);
 		builder.setSingleChoiceItems(items, currentItem,
 				new DialogInterface.OnClickListener() {
 					@Override
-					public void onClick(DialogInterface dialog, int item) {
+					public void onClick(final DialogInterface dialog,
+							final int item) {
 						Integer date = values[item];
-						if (date == -1337)
+						if (date == -1337) {
 							date = null;
+						}
 						specialList.setDefaultDate(date);
 						specialList.save();
 						alert.dismiss();

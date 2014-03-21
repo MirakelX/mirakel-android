@@ -30,7 +30,8 @@ public class FileMirakel extends FileBase {
 	private static DatabaseHelper dbHelper;
 	public static final File fileCacheDir = new File(cacheDirPath);
 	public static final String TABLE = "files";
-	//private static final String TAG = "FileMirakel";
+
+	// private static final String TAG = "FileMirakel";
 
 	/**
 	 * Get all Tasks
@@ -38,9 +39,9 @@ public class FileMirakel extends FileBase {
 	 * @return
 	 */
 	public static List<FileMirakel> all() {
-		List<FileMirakel> files = new ArrayList<FileMirakel>();
-		Cursor c = database.query(TABLE, allColumns, null, null, null, null,
-				null);
+		final List<FileMirakel> files = new ArrayList<FileMirakel>();
+		final Cursor c = database.query(TABLE, allColumns, null, null, null,
+				null, null);
 		c.moveToFirst();
 		while (!c.isAfterLast()) {
 			files.add(cursorToFile(c));
@@ -57,7 +58,7 @@ public class FileMirakel extends FileBase {
 		dbHelper.close();
 	}
 
-	private static FileMirakel cursorToFile(Cursor cursor) {
+	private static FileMirakel cursorToFile(final Cursor cursor) {
 		int i = 0;
 		return new FileMirakel(cursor.getInt(i++),
 				Task.get(cursor.getInt(i++)), cursor.getString(i++),
@@ -66,12 +67,12 @@ public class FileMirakel extends FileBase {
 
 	// Static Methods
 
-	public static void destroyForTask(Task t) {
-		List<FileMirakel> files = getForTask(t);
+	public static void destroyForTask(final Task t) {
+		final List<FileMirakel> files = getForTask(t);
 		database.beginTransaction();
-		for (FileMirakel file : files) {
-			File destFile = new File(FileMirakel.fileCacheDir, file.getId()
-					+ ".png");
+		for (final FileMirakel file : files) {
+			final File destFile = new File(FileMirakel.fileCacheDir,
+					file.getId() + ".png");
 			if (destFile.exists()) {
 				destFile.delete();
 			}
@@ -87,12 +88,12 @@ public class FileMirakel extends FileBase {
 	 * @param id
 	 * @return
 	 */
-	public static FileMirakel get(int id) {
-		Cursor cursor = database.query(TABLE, allColumns, "_id=" + id, null,
-				null, null, null);
+	public static FileMirakel get(final int id) {
+		final Cursor cursor = database.query(TABLE, allColumns, "_id=" + id,
+				null, null, null, null);
 		cursor.moveToFirst();
 		if (cursor.getCount() != 0) {
-			FileMirakel t = cursorToFile(cursor);
+			final FileMirakel t = cursorToFile(cursor);
 			cursor.close();
 			return t;
 		}
@@ -100,21 +101,22 @@ public class FileMirakel extends FileBase {
 		return null;
 	}
 
-	public static int getFileCount(Task t) {
-		if (t == null)
+	public static int getFileCount(final Task t) {
+		if (t == null) {
 			return 0;
-		Cursor c = database.rawQuery("Select count(_id) from " + TABLE
+		}
+		final Cursor c = database.rawQuery("Select count(_id) from " + TABLE
 				+ " where task_id=?", new String[] { "" + t.getId() });
 		c.moveToFirst();
-		int count = c.getInt(0);
+		final int count = c.getInt(0);
 		c.close();
 		return count;
 	}
 
-	public static List<FileMirakel> getForTask(Task task) {
-		List<FileMirakel> files = new ArrayList<FileMirakel>();
-		Cursor cursor = database.query(TABLE, allColumns,
-				"task_id=" + task.getId(), null, null, null, null);
+	public static List<FileMirakel> getForTask(final Task task) {
+		final List<FileMirakel> files = new ArrayList<FileMirakel>();
+		final Cursor cursor = database.query(TABLE, allColumns, "task_id="
+				+ task.getId(), null, null, null, null);
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
 			files.add(cursorToFile(cursor));
@@ -130,19 +132,22 @@ public class FileMirakel extends FileBase {
 	 * @param context
 	 *            The Application-Context
 	 */
-	public static void init(Context context) {
+	public static void init(final Context context) {
 		dbHelper = new DatabaseHelper(context);
 		database = dbHelper.getWritableDatabase();
 	}
 
-	public static FileMirakel newFile(Context ctx, Task task, String file_path) {
-		if (file_path == null)
+	public static FileMirakel newFile(final Context ctx, final Task task,
+			final String file_path) {
+		if (file_path == null) {
 			return null;
-		File osFile = new File(file_path);
+		}
+		final File osFile = new File(file_path);
 
 		if (osFile.exists()) {
-			String name = osFile.getName();
-			FileMirakel newFile = FileMirakel.newFile(task, name, file_path);
+			final String name = osFile.getName();
+			final FileMirakel newFile = FileMirakel.newFile(task, name,
+					file_path);
 
 			// new ExifInterface(osFile.getAbsolutePath());
 			// int orientation = exif.getAttributeInt(
@@ -163,13 +168,13 @@ public class FileMirakel extends FileBase {
 			Bitmap myBitmap = null;
 			try {
 				myBitmap = BitmapFactory.decodeFile(osFile.getAbsolutePath());
-			} catch (OutOfMemoryError e) {
+			} catch (final OutOfMemoryError e) {
 				Toast.makeText(ctx, ctx.getString(R.string.file_to_large),
 						Toast.LENGTH_SHORT).show();
 			}
 			if (myBitmap != null) {
 
-				float size = TypedValue.applyDimension(
+				final float size = TypedValue.applyDimension(
 						TypedValue.COMPLEX_UNIT_DIP, 150, ctx.getResources()
 								.getDisplayMetrics());
 				myBitmap = Helpers.getScaleImage(myBitmap, size);
@@ -181,12 +186,14 @@ public class FileMirakel extends FileBase {
 				}
 				if (success) {
 					try {
-						File destFile = new File(FileMirakel.fileCacheDir,
-								newFile.getId() + ".png");
-						FileOutputStream out = new FileOutputStream(destFile);
+						final File destFile = new File(
+								FileMirakel.fileCacheDir, newFile.getId()
+										+ ".png");
+						final FileOutputStream out = new FileOutputStream(
+								destFile);
 						myBitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
 						out.close();
-					} catch (Exception e) {
+					} catch (final Exception e) {
 						e.printStackTrace();
 					}
 				}
@@ -207,20 +214,22 @@ public class FileMirakel extends FileBase {
 	 * @param priority
 	 * @return
 	 */
-	public static FileMirakel newFile(Task task, String name, String path) {
-		FileMirakel m = new FileMirakel(0, task, name, path);
+	public static FileMirakel newFile(final Task task, final String name,
+			final String path) {
+		final FileMirakel m = new FileMirakel(0, task, name, path);
 		return m.create();
 	}
 
-	protected FileMirakel(int id, Task task, String name, String path) {
+	protected FileMirakel(final int id, final Task task, final String name,
+			final String path) {
 		super(id, task, name, path);
 	}
 
 	public FileMirakel create() {
-		ContentValues values = getContentValues();
+		final ContentValues values = getContentValues();
 		values.remove("_id");
 		database.beginTransaction();
-		int insertId = (int) database.insertOrThrow(TABLE, null, values);
+		final int insertId = (int) database.insertOrThrow(TABLE, null, values);
 		database.setTransactionSuccessful();
 		database.endTransaction();
 		return FileMirakel.get(insertId);
@@ -230,7 +239,7 @@ public class FileMirakel extends FileBase {
 		destroy(true);
 	}
 
-	public void destroy(boolean oneTransaction) {
+	public void destroy(final boolean oneTransaction) {
 		if (oneTransaction) {
 			database.beginTransaction();
 		}
@@ -243,24 +252,25 @@ public class FileMirakel extends FileBase {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (o instanceof FileMirakel) {
-			FileMirakel f = (FileMirakel) o;
+			final FileMirakel f = (FileMirakel) o;
 			return f.getId() == getId() && f.getPath().equals(getPath());
 		}
 		return false;
 	}
 
 	public Bitmap getPreview() {
-		File osFile = new File(fileCacheDir, getId() + ".png");
-		if (osFile.exists())
+		final File osFile = new File(fileCacheDir, getId() + ".png");
+		if (osFile.exists()) {
 			return BitmapFactory.decodeFile(osFile.getAbsolutePath());
+		}
 		return null;
 	}
 
 	public void save() {
 		database.beginTransaction();
-		ContentValues values = getContentValues();
+		final ContentValues values = getContentValues();
 		database.update(TABLE, values, "_id = " + getId(), null);
 		database.setTransactionSuccessful();
 		database.endTransaction();

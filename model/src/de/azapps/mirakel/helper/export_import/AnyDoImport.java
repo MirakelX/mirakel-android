@@ -52,14 +52,14 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
 
 public class AnyDoImport {
-	private static final String		TAG	= "AnyDoImport";
-	private static SparseIntArray	taskMapping;
+	private static final String TAG = "AnyDoImport";
+	private static SparseIntArray taskMapping;
 
-	public static boolean exec(Context ctx, String path_any_do) {
+	public static boolean exec(final Context ctx, final String path_any_do) {
 		String json;
 		try {
 			json = ExportImport.getStringFromFile(path_any_do, ctx);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			Log.e(TAG, "cannot read File");
 			return false;
 		}
@@ -67,25 +67,25 @@ public class AnyDoImport {
 		JsonObject i;
 		try {
 			i = new JsonParser().parse(json).getAsJsonObject();
-		} catch (JsonSyntaxException e2) {
+		} catch (final JsonSyntaxException e2) {
 			Log.e(TAG, "malformed backup");
 			return false;
 		}
-		Set<Entry<String, JsonElement>> f = i.entrySet();
+		final Set<Entry<String, JsonElement>> f = i.entrySet();
 		SparseIntArray listMapping = new SparseIntArray();
 		List<Pair<Integer, String>> contents = new ArrayList<Pair<Integer, String>>();
 		taskMapping = new SparseIntArray();
-		for (Entry<String, JsonElement> e : f) {
+		for (final Entry<String, JsonElement> e : f) {
 			if (e.getKey().equals("categorys")) {
-				Iterator<JsonElement> iter = e.getValue().getAsJsonArray()
-						.iterator();
+				final Iterator<JsonElement> iter = e.getValue()
+						.getAsJsonArray().iterator();
 				while (iter.hasNext()) {
 					listMapping = parseList(iter.next().getAsJsonObject(),
 							listMapping);
 				}
 			} else if (e.getKey().equals("tasks")) {
-				Iterator<JsonElement> iter = e.getValue().getAsJsonArray()
-						.iterator();
+				final Iterator<JsonElement> iter = e.getValue()
+						.getAsJsonArray().iterator();
 				while (iter.hasNext()) {
 					contents = parseTask(iter.next().getAsJsonObject(),
 							listMapping, contents, ctx);
@@ -94,13 +94,13 @@ public class AnyDoImport {
 				Log.d(TAG, e.getKey());
 			}
 		}
-		for (Pair<Integer, String> pair : contents) {
-			Task t = Task.get(taskMapping.get(pair.first));
+		for (final Pair<Integer, String> pair : contents) {
+			final Task t = Task.get(taskMapping.get(pair.first));
 			if (t == null) {
 				Log.d(TAG, "Task not found");
 				continue;
 			}
-			String oldContent = t.getContent();
+			final String oldContent = t.getContent();
 			t.setContent(oldContent == null || oldContent.equals("") ? pair.second
 					: oldContent + "\n" + pair.second);
 			t.safeSave(false);
@@ -109,11 +109,11 @@ public class AnyDoImport {
 	}
 
 	public static void handleImportAnyDo(final Activity activity) {
-		File dir = new File(Environment.getExternalStorageDirectory()
+		final File dir = new File(Environment.getExternalStorageDirectory()
 				+ "/data/anydo/backups");
 		if (dir.isDirectory()) {
 			File lastBackup = null;
-			for (File f : dir.listFiles()) {
+			for (final File f : dir.listFiles()) {
 				if (lastBackup == null) {
 					lastBackup = f;
 				} else if (f.getAbsolutePath().compareTo(
@@ -122,7 +122,9 @@ public class AnyDoImport {
 				}
 			}
 			final File backupFile = lastBackup;
-			if (backupFile == null) return;
+			if (backupFile == null) {
+				return;
+			}
 			new AlertDialog.Builder(activity)
 					.setTitle(activity.getString(R.string.import_any_do_click))
 					.setMessage(
@@ -132,7 +134,9 @@ public class AnyDoImport {
 							new OnClickListener() {
 
 								@Override
-								public void onClick(DialogInterface dialog, int which) {
+								public void onClick(
+										final DialogInterface dialog,
+										final int which) {
 									exec(activity, backupFile.getAbsolutePath());
 									android.os.Process
 											.killProcess(android.os.Process
@@ -144,7 +148,9 @@ public class AnyDoImport {
 							new OnClickListener() {
 
 								@Override
-								public void onClick(DialogInterface dialog, int which) {
+								public void onClick(
+										final DialogInterface dialog,
+										final int which) {
 									Helpers.showFileChooser(
 											DefinitionsHelper.REQUEST_FILE_ANY_DO,
 											activity.getString(R.string.any_do_import_title),
@@ -159,7 +165,9 @@ public class AnyDoImport {
 							new OnClickListener() {
 
 								@Override
-								public void onClick(DialogInterface dialog, int which) {
+								public void onClick(
+										final DialogInterface dialog,
+										final int which) {
 									handleImportAnyDo(activity);
 								}
 							})
@@ -168,7 +176,9 @@ public class AnyDoImport {
 							new OnClickListener() {
 
 								@Override
-								public void onClick(DialogInterface dialog, int which) {
+								public void onClick(
+										final DialogInterface dialog,
+										final int which) {
 									Helpers.showFileChooser(
 											DefinitionsHelper.REQUEST_FILE_ANY_DO,
 											activity.getString(R.string.any_do_import_title),
@@ -179,29 +189,32 @@ public class AnyDoImport {
 		}
 	}
 
-	private static SparseIntArray parseList(JsonObject jsonList, SparseIntArray listMapping) {
-		String name = jsonList.get("name").getAsString();
-		int id = jsonList.get("id").getAsInt();
-		ListMirakel l = ListMirakel.newList(name);
+	private static SparseIntArray parseList(final JsonObject jsonList,
+			final SparseIntArray listMapping) {
+		final String name = jsonList.get("name").getAsString();
+		final int id = jsonList.get("id").getAsInt();
+		final ListMirakel l = ListMirakel.newList(name);
 		listMapping.put(id, l.getId());
 		return listMapping;
 
 	}
 
-	private static List<Pair<Integer, String>> parseTask(JsonObject jsonTask, SparseIntArray listMapping, List<Pair<Integer, String>> contents, Context ctx) {
-		String name = jsonTask.get("title").getAsString();
+	private static List<Pair<Integer, String>> parseTask(
+			final JsonObject jsonTask, final SparseIntArray listMapping,
+			final List<Pair<Integer, String>> contents, final Context ctx) {
+		final String name = jsonTask.get("title").getAsString();
 		if (jsonTask.has("parentId")) {
 			contents.add(new Pair<Integer, String>(jsonTask.get("parentId")
 					.getAsInt(), name));
 			return contents;
 		}
-		int list_id = jsonTask.get("categoryId").getAsInt();
-		Task t = Task.newTask(name,
+		final int list_id = jsonTask.get("categoryId").getAsInt();
+		final Task t = Task.newTask(name,
 				ListMirakel.getList(listMapping.get(list_id)));
 		taskMapping.put(jsonTask.get("id").getAsInt(), (int) t.getId());
 		if (jsonTask.has("dueDate")) {
-			Calendar due = new GregorianCalendar();
-			long dueMs = jsonTask.get("dueDate").getAsLong();
+			final Calendar due = new GregorianCalendar();
+			final long dueMs = jsonTask.get("dueDate").getAsLong();
 			if (dueMs > 0) {
 				due.setTimeInMillis(dueMs);
 				t.setDue(due);
@@ -215,17 +228,17 @@ public class AnyDoImport {
 			t.setPriority(prio);
 		}
 		if (jsonTask.has("status")) {
-			boolean done=false;
-			String status=jsonTask.get("status").getAsString();
-			if(status.equals("DONE")||status.equals("CHECKED")){
-				done=true;
-			}else if(status.equals("UNCHECKED")){
-				done=false;
+			boolean done = false;
+			final String status = jsonTask.get("status").getAsString();
+			if (status.equals("DONE") || status.equals("CHECKED")) {
+				done = true;
+			} else if (status.equals("UNCHECKED")) {
+				done = false;
 			}
 			t.setDone(done);
 		}
 		if (jsonTask.has("repeatMethod")) {
-			String repeat = jsonTask.get("repeatMethod").getAsString();
+			final String repeat = jsonTask.get("repeatMethod").getAsString();
 
 			if (!repeat.equals("TASK_REPEAT_OFF")) {
 				Recurring r = null;

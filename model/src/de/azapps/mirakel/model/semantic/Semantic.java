@@ -15,7 +15,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
-import de.azapps.mirakel.model.list.SearchList;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 
@@ -26,14 +25,12 @@ public class Semantic extends SemanticBase {
 	private static DatabaseHelper dbHelper;
 	private static Map<String, Semantic> semantics = new HashMap<String, Semantic>();
 	public static final String TABLE = "semantic_conditions";
-	@SuppressWarnings("unused")
-	private static final String TAG = "Semantic";
 
 	public static List<Semantic> all() {
-		Cursor c = database.query(TABLE, allColumns, null, null, null, null,
-				null);
+		final Cursor c = database.query(TABLE, allColumns, null, null, null,
+				null, null);
 		c.moveToFirst();
-		List<Semantic> all = new ArrayList<Semantic>();
+		final List<Semantic> all = new ArrayList<Semantic>();
 		while (!c.isAfterLast()) {
 			all.add(cursorToSemantic(c));
 			c.moveToNext();
@@ -52,35 +49,32 @@ public class Semantic extends SemanticBase {
 	// Static
 
 	public static Task createTask(String taskName, ListMirakel currentList,
-			boolean useSemantic, Context context) {
+			final boolean useSemantic, final Context context) {
 		GregorianCalendar due = null;
 		int prio = 0;
-		if (currentList instanceof SearchList) {
-			currentList = SpecialList.firstSpecial();
-		}
 		if (currentList != null && currentList.isSpecialList()) {
 			try {
-				SpecialList slist = (SpecialList) currentList;
+				final SpecialList slist = (SpecialList) currentList;
 				currentList = slist.getDefaultList();
 
 				if (slist.getDefaultDate() != null) {
 					due = new GregorianCalendar();
-					due.add(GregorianCalendar.DAY_OF_MONTH,
-							slist.getDefaultDate());
+					due.add(Calendar.DAY_OF_MONTH, slist.getDefaultDate());
 				}
-				if (slist.getWhereQuery(false).contains("priority")) {
-					boolean[] mSelectedItems = new boolean[5];
+				if (slist.getWhereQueryForTasks(false).contains("priority")) {
+					final boolean[] mSelectedItems = new boolean[5];
 					boolean not = false;
-					String[] p = slist.getWhereQuery(false).split("and");
-					for (String s : p) {
+					final String[] p = slist.getWhereQueryForTasks(false)
+							.split("and");
+					for (final String s : p) {
 						if (s.contains("priority")) {
 							not = s.contains("not");
-							String[] r = s
+							final String[] r = s
 									.replace(
 											(!not ? "" : "not ")
 													+ "priority in (", "")
 									.replace(")", "").trim().split(",");
-							for (String t : r) {
+							for (final String t : r) {
 								try {
 									switch (Integer.parseInt(t)) {
 									case -2:
@@ -98,11 +92,11 @@ public class Semantic extends SemanticBase {
 									case 2:
 										mSelectedItems[4] = true;
 										break;
-										default:
-											break;
+									default:
+										break;
 									}
-								} catch (NumberFormatException e) {
-									//eat it
+								} catch (final NumberFormatException e) {
+									// eat it
 								}
 								for (int i = 0; i < mSelectedItems.length; i++) {
 									if (mSelectedItems[i] != not) {
@@ -115,26 +109,26 @@ public class Semantic extends SemanticBase {
 						}
 					}
 				}
-			} catch (NullPointerException e) {
+			} catch (final NullPointerException e) {
 				currentList = ListMirakel.safeFirst(context);
 			}
 		}
 
 		if (useSemantic) {
 			GregorianCalendar tempdue = new GregorianCalendar();
-			String lowername = taskName.toLowerCase(Locale.getDefault());
-			List<String> words = new ArrayList<String>(Arrays.asList(lowername
-					.split("\\s+")));
+			final String lowername = taskName.toLowerCase(Locale.getDefault());
+			final List<String> words = new ArrayList<String>(
+					Arrays.asList(lowername.split("\\s+")));
 			while (words.size() > 1) {
-				String word = words.get(0);
+				final String word = words.get(0);
 
-				Semantic s = semantics.get(word);
+				final Semantic s = semantics.get(word);
 				if (s == null) {
 					break;
 				}
 				// Set due
 				if (s.getDue() != null) {
-					tempdue.add(GregorianCalendar.DAY_OF_MONTH, s.getDue());
+					tempdue.add(Calendar.DAY_OF_MONTH, s.getDue());
 					due = tempdue;
 				}
 				// Set priority
@@ -169,10 +163,10 @@ public class Semantic extends SemanticBase {
 		return Task.newTask(taskName, currentList, due, prio);
 	}
 
-	private static Semantic cursorToSemantic(Cursor c) {
-		int id = c.getInt(0);
+	private static Semantic cursorToSemantic(final Cursor c) {
+		final int id = c.getInt(0);
 		// BE CAREFUL!!!! – Don't forget to change the numbers
-		String condition = c.getString(1);
+		final String condition = c.getString(1);
 		Integer priority = null;
 		if (!c.isNull(2)) {
 			priority = c.getInt(2);
@@ -194,11 +188,11 @@ public class Semantic extends SemanticBase {
 	}
 
 	public static Semantic first() {
-		Cursor cursor = database.query(TABLE, allColumns, null, null, null,
-				null, null);
+		final Cursor cursor = database.query(TABLE, allColumns, null, null,
+				null, null, null);
 		cursor.moveToFirst();
 		if (cursor.getCount() != 0) {
-			Semantic s = cursorToSemantic(cursor);
+			final Semantic s = cursorToSemantic(cursor);
 			cursor.close();
 			return s;
 		}
@@ -212,12 +206,12 @@ public class Semantic extends SemanticBase {
 	 * @param id
 	 * @return
 	 */
-	public static Semantic get(int id) {
-		Cursor cursor = database.query(TABLE, allColumns, "_id=" + id, null,
-				null, null, null);
+	public static Semantic get(final int id) {
+		final Cursor cursor = database.query(TABLE, allColumns, "_id=" + id,
+				null, null, null, null);
 		cursor.moveToFirst();
 		if (cursor.getCount() != 0) {
-			Semantic s = cursorToSemantic(cursor);
+			final Semantic s = cursorToSemantic(cursor);
 			cursor.close();
 			return s;
 		}
@@ -231,40 +225,43 @@ public class Semantic extends SemanticBase {
 	 * @param context
 	 *            The Application-Context
 	 */
-	public static void init(Context context) {
+	public static void init(final Context context) {
 		dbHelper = new DatabaseHelper(context);
 		database = dbHelper.getWritableDatabase();
 		initAll();
 	}
 
 	private static void initAll() {
-		Cursor c = database.query(TABLE, allColumns, null, null, null, null,
-				null);
+		final Cursor c = database.query(TABLE, allColumns, null, null, null,
+				null, null);
 		c.moveToFirst();
 		while (!c.isAfterLast()) {
-			Semantic s = cursorToSemantic(c);
+			final Semantic s = cursorToSemantic(c);
 			semantics.put(s.getCondition(), s);
 			c.moveToNext();
 		}
 		c.close();
 	}
 
-	public static Semantic newSemantic(String condition, Integer priority,
-			Integer due, ListMirakel list, Integer weekday) {
-		Semantic m = new Semantic(0, condition, priority, due, list, weekday);
+	public static Semantic newSemantic(final String condition,
+			final Integer priority, final Integer due, final ListMirakel list,
+			final Integer weekday) {
+		final Semantic m = new Semantic(0, condition, priority, due, list,
+				weekday);
 		return m.create();
 	}
 
-	protected Semantic(int id, String condition, Integer priority, Integer due,
-			ListMirakel list, Integer weekday) {
+	protected Semantic(final int id, final String condition,
+			final Integer priority, final Integer due, final ListMirakel list,
+			final Integer weekday) {
 		super(id, condition, priority, due, list, weekday);
 	}
 
 	public Semantic create() {
 		database.beginTransaction();
-		ContentValues values = getContentValues();
+		final ContentValues values = getContentValues();
 		values.remove("_id");
-		int insertId = (int) database.insertOrThrow(TABLE, null, values);
+		final int insertId = (int) database.insertOrThrow(TABLE, null, values);
 		database.setTransactionSuccessful();
 		database.endTransaction();
 		initAll();
@@ -281,7 +278,7 @@ public class Semantic extends SemanticBase {
 
 	public void save() {
 		database.beginTransaction();
-		ContentValues values = getContentValues();
+		final ContentValues values = getContentValues();
 		database.update(TABLE, values, "_id = " + getId(), null);
 		database.setTransactionSuccessful();
 		database.endTransaction();

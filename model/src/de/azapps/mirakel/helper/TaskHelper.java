@@ -33,10 +33,11 @@ import de.azapps.mirakel.model.task.Task;
 
 public class TaskHelper {
 
-	public static Task getTaskFromIntent(Intent intent) {
+	public static Task getTaskFromIntent(final Intent intent) {
 		Task task = null;
-		if (intent == null)
+		if (intent == null) {
 			return task;
+		}
 		long taskId = intent.getLongExtra(DefinitionsHelper.EXTRA_ID, 0);
 		if (taskId == 0) {
 			// ugly fix for show Task from Widget
@@ -55,16 +56,17 @@ public class TaskHelper {
 	 * @param t
 	 * @return
 	 */
-	static String getTaskName(Context ctx, Task t) {
+	static String getTaskName(final Context ctx, final Task t) {
 		String subject;
-		if (t.getDue() == null)
+		if (t.getDue() == null) {
 			subject = ctx.getString(R.string.share_task_title, t.getName());
-		else
+		} else {
 			subject = ctx.getString(
 					R.string.share_task_title_with_date,
 					t.getName(),
 					DateTimeHelper.formatDate(t.getDue(),
 							ctx.getString(R.string.dateFormat)));
+		}
 		return subject;
 	}
 
@@ -77,13 +79,15 @@ public class TaskHelper {
 	 *            Is the Task done?
 	 * @return ID of the Color–Resource
 	 */
-	public static int getTaskDueColor(Calendar origDue, boolean isDone) {
-		if (origDue == null)
+	public static int getTaskDueColor(final Calendar origDue,
+			final boolean isDone) {
+		if (origDue == null) {
 			return R.color.Grey;
-		LocalDate today = new LocalDate();
-		LocalDate nextWeek = new LocalDate().plusDays(7);
-		LocalDate due = new LocalDate(origDue);
-		int cmpr = today.compareTo(due);
+		}
+		final LocalDate today = new LocalDate();
+		final LocalDate nextWeek = new LocalDate().plusDays(7);
+		final LocalDate due = new LocalDate(origDue);
+		final int cmpr = today.compareTo(due);
 		int color;
 		if (isDone) {
 			color = R.color.Grey;
@@ -99,7 +103,7 @@ public class TaskHelper {
 		return color;
 	}
 
-	public static int getPrioColor(int priority) {
+	public static int getPrioColor(final int priority) {
 		final int[] PRIO_COLOR = { Color.parseColor("#669900"),
 				Color.parseColor("#99CC00"), Color.parseColor("#33B5E5"),
 				Color.parseColor("#FFBB33"), Color.parseColor("#FF4444") };
@@ -113,9 +117,9 @@ public class TaskHelper {
 
 	}
 
-	public static void setPrio(TextView taskPrio, Task task) {
+	public static void setPrio(final TextView taskPrio, final Task task) {
 		taskPrio.setText("" + task.getPriority());
-		GradientDrawable bg = (GradientDrawable) taskPrio.getBackground();
+		final GradientDrawable bg = (GradientDrawable) taskPrio.getBackground();
 		bg.setColor(TaskHelper.getPrioColor(task.getPriority()));
 
 	}

@@ -33,48 +33,53 @@ import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
-import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.tools.Log;
 
 class TaskBase {
-	public static final String		ADDITIONAL_ENTRIES	= "additional_entries";
-	public static final String		CONTENT				= "content";
-	public static final String		DONE				= "done";
-	public static final String		DUE					= "due";
-	public static final String		LIST_ID				= "list_id";
-	public static final String		PRIORITY			= "priority";
-	public static final String		PROGRESS			= "progress";
-	public static final String		RECURRING			= "recurring";
-	public static final String		RECURRING_REMINDER	= "recurring_reminder";
-	public static final String		REMINDER			= "reminder";
-	private static final String		TAG					= "TaskBase";
+	public static final String ADDITIONAL_ENTRIES = "additional_entries";
+	public static final String CONTENT = "content";
+	public static final String DONE = "done";
+	public static final String DUE = "due";
+	public static final String LIST_ID = "list_id";
+	public static final String PRIORITY = "priority";
+	public static final String PROGRESS = "progress";
+	public static final String RECURRING = "recurring";
+	public static final String RECURRING_REMINDER = "recurring_reminder";
+	public static final String REMINDER = "reminder";
+	private static final String TAG = "TaskBase";
 
-	public static final String		UUID				= "uuid";
-	private Map<String, String>		additionalEntries	= null;
-	private String					additionalEntriesString;
-	private String					content;
-	private Calendar				createdAt;
-	private boolean					done;
-	private Calendar				due;
-	protected Map<String, Boolean>	edited				= new HashMap<String, Boolean>();
-	private long					id					= 0;
-	private ListMirakel				list;
-	private String					name;
-	private int						priority;
-	private int						progress;
-	private int						recurrence;
-	private int						recurring_reminder;
-	private Calendar				reminder;
-	private SYNC_STATE				sync_state;
-	private Calendar				updatedAt;
-	private String					uuid				= "";
+	public static final String UUID = "uuid";
+	private Map<String, String> additionalEntries = null;
+	private String additionalEntriesString;
+	private String content;
+	private Calendar createdAt;
+	private boolean done;
+	private Calendar due;
+	protected Map<String, Boolean> edited = new HashMap<String, Boolean>();
+	private long id = 0;
+	private ListMirakel list;
+	private String name;
+	private int priority;
+	private int progress;
+	private int recurrence;
+	private int recurring_reminder;
+	private Calendar reminder;
+	private SYNC_STATE sync_state;
+	private Calendar updatedAt;
+	private String uuid = "";
 
 	TaskBase() {
 
 	}
 
-	TaskBase(long id, String uuid, ListMirakel list, String name, String content, boolean done, Calendar due, Calendar reminder, int priority, Calendar created_at, Calendar updated_at, SYNC_STATE sync_state, String additionalEntriesString, int recurring, int recurring_reminder, int progress) {
+	TaskBase(final long id, final String uuid, final ListMirakel list,
+			final String name, final String content, final boolean done,
+			final Calendar due, final Calendar reminder, final int priority,
+			final Calendar created_at, final Calendar updated_at,
+			final SYNC_STATE sync_state, final String additionalEntriesString,
+			final int recurring, final int recurring_reminder,
+			final int progress) {
 		this.id = id;
 		this.uuid = uuid;
 		setList(list, false);
@@ -94,16 +99,16 @@ class TaskBase {
 		clearEdited();
 	}
 
-	TaskBase(String name) {
+	TaskBase(final String name) {
 		this.id = 0;
 		this.uuid = java.util.UUID.randomUUID().toString();
-		setList(SpecialList.first(), false);
+		setList(ListMirakel.first(), false);
 		setName(name);
 		setContent("");
 		setDone(false);
 		setDue(null);
 		setReminder(null);
-		priority = 0;
+		this.priority = 0;
 		this.setCreatedAt((Calendar) null);
 		this.setUpdatedAt((Calendar) null);
 		setSyncState(SYNC_STATE.NOTHING);
@@ -113,9 +118,9 @@ class TaskBase {
 		clearEdited();
 	}
 
-	public void addAdditionalEntry(String key, String value) {
+	public void addAdditionalEntry(final String key, final String value) {
 		initAdditionalEntries();
-		Log.d(TAG, "add: " + key + ":" + value);
+		Log.d(TaskBase.TAG, "add: " + key + ":" + value);
 		this.additionalEntries.put(key, value);
 	}
 
@@ -132,7 +137,7 @@ class TaskBase {
 		String additionalEntries = "{";
 		boolean first = true;
 		initAdditionalEntries();
-		for (Entry<String, String> p : this.additionalEntries.entrySet()) {
+		for (final Entry<String, String> p : this.additionalEntries.entrySet()) {
 			additionalEntries += (first ? "" : ",") + "\"" + p.getKey() + "\":"
 					+ p.getValue();
 			first = false;
@@ -142,35 +147,38 @@ class TaskBase {
 	}
 
 	public String getContent() {
-		if (this.content == null) return "";
+		if (this.content == null) {
+			return "";
+		}
 		return this.content;
 	}
 
 	public ContentValues getContentValues() throws NoSuchListException {
-		Log.d(TAG, "get contentvalues");
-		ContentValues cv = new ContentValues();
+		final ContentValues cv = new ContentValues();
 		cv.put(DatabaseHelper.ID, this.id);
-		cv.put(UUID, this.uuid);
+		cv.put(TaskBase.UUID, this.uuid);
 		if (this.list == null) {
 			// If the list of the task vanished, we should move the task in some
 			// list so we can do something with it.
 			this.list = ListMirakel.first();
 			// Bad things happened… Now we can throw our beloved exception
-			if (this.list == null) throw new NoSuchListException();
+			if (this.list == null) {
+				throw new NoSuchListException();
+			}
 		}
-		cv.put(LIST_ID, this.list.getId());
+		cv.put(TaskBase.LIST_ID, this.list.getId());
 		cv.put(DatabaseHelper.NAME, this.name);
-		cv.put(CONTENT, this.content);
-		cv.put(DONE, this.done);
-		String due = this.due == null ? null : DateTimeHelper
+		cv.put(TaskBase.CONTENT, this.content);
+		cv.put(TaskBase.DONE, this.done);
+		final String due = this.due == null ? null : DateTimeHelper
 				.formatDBDateTime(getDue());
-		cv.put(DUE, due);
+		cv.put(TaskBase.DUE, due);
 		String reminder = null;
 		if (this.reminder != null) {
 			reminder = DateTimeHelper.formatDateTime(this.reminder);
 		}
-		cv.put(REMINDER, reminder);
-		cv.put(PRIORITY, this.priority);
+		cv.put(TaskBase.REMINDER, reminder);
+		cv.put(TaskBase.PRIORITY, this.priority);
 		String createdAt = null;
 		if (this.createdAt != null) {
 			createdAt = DateTimeHelper.formatDateTime(this.createdAt);
@@ -182,9 +190,9 @@ class TaskBase {
 		}
 		cv.put(DatabaseHelper.UPDATED_AT, updatedAt);
 		cv.put(DatabaseHelper.SYNC_STATE_FIELD, this.sync_state.toInt());
-		cv.put(RECURRING, this.recurrence);
-		cv.put(RECURRING_REMINDER, this.recurring_reminder);
-		cv.put(PROGRESS, this.progress);
+		cv.put(TaskBase.RECURRING, this.recurrence);
+		cv.put(TaskBase.RECURRING_REMINDER, this.recurring_reminder);
+		cv.put(TaskBase.PROGRESS, this.progress);
 
 		cv.put("additional_entries", getAdditionalEntriesString());
 		return cv;
@@ -227,7 +235,7 @@ class TaskBase {
 	}
 
 	public Recurring getRecurring() {
-		Recurring r = Recurring.get(this.recurrence);
+		final Recurring r = Recurring.get(this.recurrence);
 		return r;
 	}
 
@@ -268,12 +276,13 @@ class TaskBase {
 			if (this.additionalEntriesString != null
 					&& !this.additionalEntriesString.trim().equals("")
 					&& !this.additionalEntriesString.trim().equals("null")) {
-				String t = this.additionalEntriesString.substring(1,
-						this.additionalEntriesString.length() - 1);// remove { and }
-				String[] parts = t.split(",");
+				final String t = this.additionalEntriesString.substring(1,
+						this.additionalEntriesString.length() - 1);// remove {
+																	// and }
+				final String[] parts = t.split(",");
 				String key = null;
-				for (String p : parts) {
-					String[] keyValue = p.split(":");
+				for (final String p : parts) {
+					final String[] keyValue = p.split(":");
 					if (keyValue.length == 2) {
 						key = keyValue[0];
 						key = key.replaceAll("\"", "");
@@ -296,23 +305,28 @@ class TaskBase {
 		return this.edited.size() > 0;
 	}
 
-	boolean isEdited(String key) {
+	boolean isEdited(final String key) {
 		return this.edited.containsKey(key);
 	}
 
-	public void removeAdditionalEntry(String key) {
+	public void removeAdditionalEntry(final String key) {
 		initAdditionalEntries();
 		this.additionalEntries.remove(key);
 	}
 
-	public void setAdditionalEntries(Map<String, String> additionalEntries) {
-		if (this.additionalEntries!=null && this.additionalEntries.equals(additionalEntries)) return;
+	public void setAdditionalEntries(final Map<String, String> additionalEntries) {
+		if (this.additionalEntries != null
+				&& this.additionalEntries.equals(additionalEntries)) {
+			return;
+		}
 		this.additionalEntries = additionalEntries;
 		this.edited.put("additionalEntries", true);
 	}
 
-	public void setContent(String content) {
-		if (this.content != null && this.content.equals(content)) return;
+	public void setContent(final String content) {
+		if (this.content != null && this.content.equals(content)) {
+			return;
+		}
 		if (content != null) {
 			this.content = StringUtils.replaceEach(content.trim(),
 					new String[] { "\\n", "\\\"", "\b" }, new String[] { "\n",
@@ -320,25 +334,27 @@ class TaskBase {
 		} else {
 			this.content = null;
 		}
-		this.edited.put(CONTENT, true);
+		this.edited.put(TaskBase.CONTENT, true);
 	}
 
-	public void setCreatedAt(Calendar created_at) {
+	public void setCreatedAt(final Calendar created_at) {
 		this.createdAt = created_at;
 	}
 
-	public void setCreatedAt(String created_at) {
+	public void setCreatedAt(final String created_at) {
 		try {
 			setCreatedAt(DateTimeHelper.parseDateTime(created_at));
-		} catch (ParseException e) {
+		} catch (final ParseException e) {
 			setCreatedAt((Calendar) null);
 		}
 	}
 
-	public void setDone(boolean done) {
-		if (this.done == done) return;
+	public void setDone(final boolean done) {
+		if (this.done == done) {
+			return;
+		}
 		this.done = done;
-		this.edited.put(DONE, true);
+		this.edited.put(TaskBase.DONE, true);
 		if (done && this.recurrence != -1 && this.due != null) {
 			if (getRecurring() != null) {
 				this.due = getRecurring().addRecurring(this.due);
@@ -349,30 +365,35 @@ class TaskBase {
 				}
 				this.done = false;
 			} else {
-				Log.wtf(TAG, "Reccuring vanish");
+				Log.wtf(TaskBase.TAG, "Reccuring vanish");
 			}
 		} else if (done) {
 			this.progress = 100;
 		}
 	}
 
-	public void setDue(Calendar due) {
-		if (this.due!= null && this.due.equals(due)) return;
+	public void setDue(final Calendar due) {
+		if (this.due != null && this.due.equals(due)) {
+			return;
+		}
 		this.due = due;
-		this.edited.put(DUE, true);
+		this.edited.put(TaskBase.DUE, true);
 		if (due == null) {
 			setRecurrence(-1);
 		}
 	}
 
-	public void setId(long id) {
+	public void setId(final long id) {
 		this.id = id;
 	}
 
-	public void setList(ListMirakel list, boolean removeNoListFalg) {
-		if (this.list!=null && list!=null && this.list.getId() == list.getId()) return;
+	public void setList(final ListMirakel list, final boolean removeNoListFalg) {
+		if (this.list != null && list != null
+				&& this.list.getId() == list.getId()) {
+			return;
+		}
 		this.list = list;
-		this.edited.put(LIST_ID, true);
+		this.edited.put(TaskBase.LIST_ID, true);
 		if (removeNoListFalg) {
 			if (this.additionalEntries == null) {
 				initAdditionalEntries();
@@ -381,63 +402,79 @@ class TaskBase {
 		}
 	}
 
-	public void setName(String name) {
-		if (this.name!=null && this.name.equals(name)) return;
+	public void setName(final String name) {
+		if (this.name != null && this.name.equals(name)) {
+			return;
+		}
 		this.name = name;
 		this.edited.put(DatabaseHelper.NAME, true);
 	}
 
-	public void setPriority(int priority) {
-		if (this.priority == priority) return;
+	public void setPriority(final int priority) {
+		if (this.priority == priority) {
+			return;
+		}
 		this.priority = priority;
-		this.edited.put(PRIORITY, true);
+		this.edited.put(TaskBase.PRIORITY, true);
 	}
 
-	public void setProgress(int progress) {
-		if (this.progress == progress) return;
+	public void setProgress(final int progress) {
+		if (this.progress == progress) {
+			return;
+		}
 		this.edited.put("progress", true);
 		this.progress = progress;
 	}
 
-	public void setRecurrence(int recurrence) {
-		if (this.recurrence == recurrence) return;
-		this.recurrence = recurrence;
-		this.edited.put(RECURRING, true);
-	}
-
-	public void setRecurringReminder(int recurrence) {
-		if (this.recurring_reminder == recurrence) return;
-		this.recurring_reminder = recurrence;
-		this.edited.put(RECURRING_REMINDER, true);
-	}
-
-	public void setReminder(Calendar reminder) {
-		if(this.reminder!=null && this.reminder.equals(reminder))
+	public void setRecurrence(final int recurrence) {
+		if (this.recurrence == recurrence) {
 			return;
+		}
+		this.recurrence = recurrence;
+		this.edited.put(TaskBase.RECURRING, true);
+	}
+
+	public void setRecurringReminder(final int recurrence) {
+		if (this.recurring_reminder == recurrence) {
+			return;
+		}
+		this.recurring_reminder = recurrence;
+		this.edited.put(TaskBase.RECURRING_REMINDER, true);
+	}
+
+	public void setReminder(final Calendar reminder) {
+		setReminder(reminder, false);
+	}
+
+	public void setReminder(final Calendar reminder, final boolean force) {
+		if (this.reminder != null && this.reminder.equals(reminder) && !force) {
+			return;
+		}
+
 		this.reminder = reminder;
-		this.edited.put(REMINDER, true);
+		this.edited.put(TaskBase.REMINDER, true);
 		if (reminder == null) {
 			setRecurringReminder(-1);
 		}
 	}
 
-	public void setSyncState(SYNC_STATE sync_state) {
+	public void setSyncState(final SYNC_STATE sync_state) {
 		this.sync_state = sync_state;
 	}
 
-	public void setUpdatedAt(Calendar updated_at) {
+	public void setUpdatedAt(final Calendar updated_at) {
 		this.updatedAt = updated_at;
 	}
 
-	public void setUpdatedAt(String updated_at) {
+	public void setUpdatedAt(final String updated_at) {
 		try {
 			setUpdatedAt(DateTimeHelper.parseDateTime(updated_at));
-		} catch (ParseException e) {
+		} catch (final ParseException e) {
 			setUpdatedAt((Calendar) null);
 		}
 	}
 
-	public void setUUID(String uuid) {
+	public void setUUID(final String uuid) {
 		this.uuid = uuid;
 	}
 
