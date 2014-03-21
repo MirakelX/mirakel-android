@@ -35,6 +35,7 @@ lint.xml
 *~
 .gradle
 local.properties
+.localconfig
 # External tool builders
 .externalToolBuilders/
 
