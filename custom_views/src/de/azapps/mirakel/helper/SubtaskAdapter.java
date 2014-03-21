@@ -33,63 +33,66 @@ import de.azapps.mirakel.model.task.Task;
 public class SubtaskAdapter extends ArrayAdapter<Task> {
 
 	private List<Task> data;
-	private Context context;
+	private final Context context;
 	private boolean[] checked;
-	private Task task;
-	private boolean asSubtask;
+	private final Task task;
+	private final boolean asSubtask;
 
-	public SubtaskAdapter(Context context, int textViewResourceId,
-			List<Task> objects, Task task, boolean asSubtask) {
+	public SubtaskAdapter(final Context context, final int textViewResourceId,
+			final List<Task> objects, final Task task, final boolean asSubtask) {
 		super(context, textViewResourceId, objects);
 		this.data = objects;
 		this.context = context;
 		this.task = task;
-		checked = new boolean[data.size()];
+		this.checked = new boolean[this.data.size()];
 		this.asSubtask = asSubtask;
 	}
 
 	@Override
 	public int getCount() {
-		return data.size();
+		return this.data.size();
 	}
 
 	@Override
-	public View getView(final int position, View convertView, ViewGroup parent) {
-		if (position >= data.size()) {
-			return new View(context);
+	public View getView(final int position, final View convertView,
+			final ViewGroup parent) {
+		if (position >= this.data.size()) {
+			return new View(this.context);
 		}
-		CheckBox c = new CheckBox(context);
-		if (!asSubtask) {
-			checked[position] = data.get(position).isSubtaskOf(task);
+		final CheckBox c = new CheckBox(this.context);
+		if (!this.asSubtask) {
+			this.checked[position] = this.data.get(position).isSubtaskOf(
+					this.task);
 		} else {
-			checked[position] = task.isSubtaskOf(data.get(position));
+			this.checked[position] = this.task.isSubtaskOf(this.data
+					.get(position));
 		}
-		c.setChecked(checked[position]);
-		c.setText(data.get(position).getName());
+		c.setChecked(this.checked[position]);
+		c.setText(this.data.get(position).getName());
 		c.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
-			public void onCheckedChanged(CompoundButton buttonView,
-					boolean isChecked) {
-				checked[position] = isChecked;
+			public void onCheckedChanged(final CompoundButton buttonView,
+					final boolean isChecked) {
+				SubtaskAdapter.this.checked[position] = isChecked;
 			}
 		});
 		return c;
 	}
 
 	public boolean[] getChecked() {
-		return checked;
+		return this.checked;
 	}
 
 	public List<Task> getData() {
-		return data;
+		return this.data;
 	}
 
 	final Handler mHandler = new Handler();
 
-	public void setData(List<Task> newData) {
-		data = newData;
-		checked = new boolean[data.size()];
-		mHandler.post(new Runnable() {
+	public void setData(final List<Task> newData) {
+		this.data = newData;
+		this.checked = new boolean[this.data.size()];
+		this.mHandler.post(new Runnable() {
 			@Override
 			public void run() {
 				notifyDataSetChanged();

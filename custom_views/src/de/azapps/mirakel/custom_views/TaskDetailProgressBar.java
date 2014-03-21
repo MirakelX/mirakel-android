@@ -26,26 +26,27 @@ import de.azapps.mirakel.model.task.Task;
 
 public class TaskDetailProgressBar extends TaskDetailSubListBase<Integer> {
 
-	private final SeekBar	progress;
+	private final SeekBar progress;
 
-	public TaskDetailProgressBar(Context ctx) {
+	public TaskDetailProgressBar(final Context ctx) {
 		super(ctx);
 		inflate(ctx, R.layout.task_progress, this);
 		this.progress = (SeekBar) findViewById(R.id.task_progress_seekbar);
 		this.progress.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
 			@Override
-			public void onProgressChanged(SeekBar seekBar, int progressLocal, boolean fromUser) {
-				//nothing
+			public void onProgressChanged(final SeekBar seekBar,
+					final int progressLocal, final boolean fromUser) {
+				// nothing
 			}
 
 			@Override
-			public void onStartTrackingTouch(SeekBar seekBar) {
-				//nothing
+			public void onStartTrackingTouch(final SeekBar seekBar) {
+				// nothing
 			}
 
 			@Override
-			public void onStopTrackingTouch(SeekBar seekBar) {
+			public void onStopTrackingTouch(final SeekBar seekBar) {
 				if (TaskDetailProgressBar.this.task != null) {
 					TaskDetailProgressBar.this.task.setProgress(seekBar
 							.getProgress());
@@ -57,13 +58,12 @@ public class TaskDetailProgressBar extends TaskDetailSubListBase<Integer> {
 		this.progress.setMax(100);
 	}
 
-	public void setTask(Task t) {
+	public void setTask(final Task t) {
 		this.task = t;
 	}
 
-
 	@Override
-	public void updatePart(Integer newValue) {
+	public void updatePart(final Integer newValue) {
 		this.progress.setProgress(newValue);
 	}
 

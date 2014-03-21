@@ -39,6 +39,7 @@
         android:id="@+id/reccuring_due"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:padding="@dimen/padding_button"
         android:background="@android:color/transparent"
         android:layout_marginStart="5dp"
         tools:ignore="ContentDescription" />

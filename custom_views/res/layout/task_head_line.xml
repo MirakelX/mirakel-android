@@ -25,6 +25,7 @@
 
     <CheckBox
         android:id="@+id/task_done"
+        android:padding="@dimen/padding_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -60,8 +61,8 @@
 
     <TextView
         android:id="@+id/task_prio"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/button_quadratic"
+        android:layout_height="@dimen/button_quadratic"
         android:layout_weight="0"
         android:background="@drawable/priority_rectangle"
         android:gravity="center"

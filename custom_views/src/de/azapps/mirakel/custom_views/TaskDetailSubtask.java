@@ -26,29 +26,31 @@ import de.azapps.mirakel.customviews.R;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.model.task.Task;
 
-public class TaskDetailSubtask extends TaskDetailSubtitleView<Task, TaskSummary> implements OnTaskClickListner, OnTaskMarkedListner {
+public class TaskDetailSubtask extends
+		TaskDetailSubtitleView<Task, TaskSummary> implements
+		OnTaskClickListner, OnTaskMarkedListner {
 
-	protected static final String	TAG	= "TaskDetailSubtask";
-	private int	markCounter;
-	private OnTaskClickListner	onClick;
-	private OnTaskMarkedListner	onMarked;
+	protected static final String TAG = "TaskDetailSubtask";
+	private int markCounter;
+	private OnTaskClickListner onClick;
+	private OnTaskMarkedListner onMarked;
 
-	public TaskDetailSubtask(Context ctx) {
+	public TaskDetailSubtask(final Context ctx) {
 		super(ctx);
 		this.title.setText(R.string.add_subtasks);
 		this.button.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View v) {
+			public void onClick(final View v) {
 				TaskDialogHelpers.handleSubtask(TaskDetailSubtask.this.context,
 						TaskDetailSubtask.this.task,
 						new OnTaskChangedListner() {
 
-					@Override
-					public void onTaskChanged(Task newTask) {
-						update(newTask);
+							@Override
+							public void onTaskChanged(final Task newTask) {
+								update(newTask);
 
-					}
-				}, false);
+							}
+						}, false);
 			}
 		});
 		this.cameraButton.setVisibility(GONE);
@@ -58,30 +60,30 @@ public class TaskDetailSubtask extends TaskDetailSubtitleView<Task, TaskSummary>
 	}
 
 	@Override
-	public void markTask(View v, Task t,boolean mark) {
-		if(this.onMarked!=null){
+	public void markTask(final View v, final Task t, final boolean mark) {
+		if (this.onMarked != null) {
 			markTaskHelper(mark);
-			this.onMarked.markTask(v, t,mark);
+			this.onMarked.markTask(v, t, mark);
 		}
 
 	}
 
-	private void markTaskHelper(boolean markted) {
+	private void markTaskHelper(final boolean markted) {
 		this.markCounter += markted ? 1 : -1;
-		for (TaskSummary v : this.viewList) {
+		for (final TaskSummary v : this.viewList) {
 			v.setShortMark(this.markCounter > 0);
 		}
 	}
 
 	@Override
 	TaskSummary newElement() {
-		TaskSummary t = new TaskSummary(this.context);
+		final TaskSummary t = new TaskSummary(this.context);
 		t.setOnTaskClick(this);
 		t.setOnTaskMarked(this);
 		t.setOnTaskChangedListner(new OnTaskChangedListner() {
 
 			@Override
-			public void onTaskChanged(Task task) {
+			public void onTaskChanged(final Task task) {
 				if (task != null) {
 					task.safeSave();
 					if (TaskDetailSubtask.this.taskChangedListner != null) {
@@ -96,19 +98,18 @@ public class TaskDetailSubtask extends TaskDetailSubtitleView<Task, TaskSummary>
 	}
 
 	@Override
-	public void onTaskClick(Task t) {
-		if(this.onClick!=null){
+	public void onTaskClick(final Task t) {
+		if (this.onClick != null) {
 			this.onClick.onTaskClick(t);
 		}
 	}
 
-
-	public void setOnClick(OnTaskClickListner l) {
+	public void setOnClick(final OnTaskClickListner l) {
 		this.onClick = l;
 	}
 
-	public void setOnTaskMarked(OnTaskMarkedListner l) {
-		this.onMarked=l;
+	public void setOnTaskMarked(final OnTaskMarkedListner l) {
+		this.onMarked = l;
 	}
 
 	@Override

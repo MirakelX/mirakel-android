@@ -42,18 +42,19 @@ import de.azapps.tools.Log;
 
 public class TaskDetailHeader extends BaseTaskDetailRow {
 
-	public interface OnDoneChangedListner{
-		public abstract void onDoneChanged(Task newTask);
+	public interface OnDoneChangedListner {
+		public abstract void onDoneChanged(final Task newTask);
 	}
-	protected static final String	TAG	= "TaskDetailHeader";
-	protected OnDoneChangedListner doneChanged;
-	protected ViewSwitcher	switcher;
-	private CheckBox		taskDone;
-	protected TextView		taskName;
-	protected TextView		taskPrio;
-	protected EditText		txt;
 
-	public TaskDetailHeader(Context ctx) {
+	protected static final String TAG = "TaskDetailHeader";
+	protected OnDoneChangedListner doneChanged;
+	protected ViewSwitcher switcher;
+	private CheckBox taskDone;
+	protected TextView taskName;
+	protected TextView taskPrio;
+	protected EditText txt;
+
+	public TaskDetailHeader(final Context ctx) {
 		super(ctx);
 		inflate(ctx, R.layout.task_head_line, this);
 		this.taskName = (TextView) findViewById(R.id.task_name);
@@ -65,94 +66,98 @@ public class TaskDetailHeader extends BaseTaskDetailRow {
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
 		this.taskName.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View v) {
+			public void onClick(final View v) {
 				clearFocus();
-				TaskDetailHeader.this.switcher.showNext(); // or switcher.showPrevious();
-				CharSequence name = TaskDetailHeader.this.taskName.getText();
+				TaskDetailHeader.this.switcher.showNext(); // or
+															// switcher.showPrevious();
+				final CharSequence name = TaskDetailHeader.this.taskName
+						.getText();
 				TaskDetailHeader.this.txt.setText(name);
 				TaskDetailHeader.this.txt
-				.setOnFocusChangeListener(new OnFocusChangeListener() {
+						.setOnFocusChangeListener(new OnFocusChangeListener() {
 
-					@Override
-					public void onFocusChange(View view, boolean hasFocus) {
-						if (hasFocus) {
-							imm.showSoftInput(
-									TaskDetailHeader.this.txt,
-									InputMethodManager.SHOW_IMPLICIT);
-						} else {
-							imm.showSoftInput(
-									TaskDetailHeader.this.txt,
-									InputMethodManager.HIDE_IMPLICIT_ONLY);
-						}
-						imm.restartInput(TaskDetailHeader.this.txt);
-					}
-				});
+							@Override
+							public void onFocusChange(final View view,
+									final boolean hasFocus) {
+								if (hasFocus) {
+									imm.showSoftInput(
+											TaskDetailHeader.this.txt,
+											InputMethodManager.SHOW_IMPLICIT);
+								} else {
+									imm.showSoftInput(
+											TaskDetailHeader.this.txt,
+											InputMethodManager.HIDE_IMPLICIT_ONLY);
+								}
+								imm.restartInput(TaskDetailHeader.this.txt);
+							}
+						});
 				TaskDetailHeader.this.txt.requestFocus();
 				TaskDetailHeader.this.txt
-				.setOnEditorActionListener(new OnEditorActionListener() {
+						.setOnEditorActionListener(new OnEditorActionListener() {
 
-					@Override
-					public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
-						TaskDetailHeader.this.txt.clearFocus();
-						imm.restartInput(TaskDetailHeader.this.txt);
-						TaskDetailHeader.this.txt
-						.setOnFocusChangeListener(null);
-						if (actionId == EditorInfo.IME_ACTION_DONE
-								&& TaskDetailHeader.this.task != null) {
-							TaskDetailHeader.this.task
-							.setName(TaskDetailHeader.this.txt
-									.getText().toString());
-							save();
-							TaskDetailHeader.this.taskName
-							.setText(TaskDetailHeader.this.task
-									.getName());
-							TaskDetailHeader.this.txt
-							.setOnFocusChangeListener(null);
-							imm.hideSoftInputFromWindow(
+							@Override
+							public boolean onEditorAction(final TextView view,
+									final int actionId, final KeyEvent event) {
+								TaskDetailHeader.this.txt.clearFocus();
+								imm.restartInput(TaskDetailHeader.this.txt);
+								TaskDetailHeader.this.txt
+										.setOnFocusChangeListener(null);
+								if ((actionId == EditorInfo.IME_ACTION_DONE)
+										&& (TaskDetailHeader.this.task != null)) {
+									TaskDetailHeader.this.task
+											.setName(TaskDetailHeader.this.txt
+													.getText().toString());
+									save();
+									TaskDetailHeader.this.taskName
+											.setText(TaskDetailHeader.this.task
+													.getName());
 									TaskDetailHeader.this.txt
-									.getWindowToken(), 0);
-							TaskDetailHeader.this.switcher
-							.showPrevious();
+											.setOnFocusChangeListener(null);
+									imm.hideSoftInputFromWindow(
+											TaskDetailHeader.this.txt
+													.getWindowToken(), 0);
+									TaskDetailHeader.this.switcher
+											.showPrevious();
 
-							return true;
-						}
-						return false;
-					}
+									return true;
+								}
+								return false;
+							}
 
-				});
+						});
 				TaskDetailHeader.this.txt.setSelection(name.length());
 			}
 		});
 		this.taskPrio.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View v) {
+			public void onClick(final View v) {
 				TaskDialogHelpers.handlePriority(TaskDetailHeader.this.context,
 						TaskDetailHeader.this.task, new ExecInterface() {
-					@Override
-					public void exec() {
-						TaskHelper.setPrio(
-								TaskDetailHeader.this.taskPrio,
-								TaskDetailHeader.this.task);
-						save();
-					}
-				});
+							@Override
+							public void exec() {
+								TaskHelper.setPrio(
+										TaskDetailHeader.this.taskPrio,
+										TaskDetailHeader.this.task);
+								save();
+							}
+						});
 			}
 		});
 	}
 
-	public void setOnDoneChangedListner(OnDoneChangedListner l) {
+	public void setOnDoneChangedListner(final OnDoneChangedListner l) {
 		this.doneChanged = l;
 	}
 
 	@Override
 	protected void updateView() {
-		String tname = this.task.getName();
+		final String tname = this.task.getName();
 		this.taskName.setText(tname == null ? "" : tname);
 		if (MirakelCommonPreferences.isTablet()) {
 			this.taskName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
 		}
 
-		if (this.switcher.getCurrentView().getId() == R.id.edit_name
+		if ((this.switcher.getCurrentView().getId() == R.id.edit_name)
 				&& !this.task.getName().equals(this.txt.getText().toString())) {
 			this.switcher.showPrevious();
 		}
@@ -162,14 +167,15 @@ public class TaskDetailHeader extends BaseTaskDetailRow {
 		this.taskDone.setChecked(this.task.isDone());
 		this.taskDone.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+			public void onCheckedChanged(final CompoundButton buttonView,
+					final boolean isChecked) {
 				Log.d(TAG, "check " + isChecked);
 				TaskDetailHeader.this.task.setDone(isChecked);
-				ReminderAlarm.updateAlarms(TaskDetailHeader.this.context);
 				save();
-				if(TaskDetailHeader.this.doneChanged!=null){
+				ReminderAlarm.updateAlarms(TaskDetailHeader.this.context);
+				if (TaskDetailHeader.this.doneChanged != null) {
 					TaskDetailHeader.this.doneChanged
-					.onDoneChanged(TaskDetailHeader.this.task);
+							.onDoneChanged(TaskDetailHeader.this.task);
 				}
 			}
 		});

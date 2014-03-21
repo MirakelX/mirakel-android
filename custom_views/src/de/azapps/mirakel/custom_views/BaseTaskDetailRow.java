@@ -27,32 +27,33 @@ import de.azapps.mirakel.model.task.Task;
 public abstract class BaseTaskDetailRow extends LinearLayout {
 
 	public interface OnTaskChangedListner {
-		abstract void onTaskChanged(Task newTask);
+		abstract void onTaskChanged(final Task newTask);
 	}
 
-	protected static final Integer	inactive_color				= android.R.color.darker_gray;
+	protected static final Integer inactive_color = android.R.color.darker_gray;
 	protected Context context;
 	protected Task task;
-	protected OnTaskChangedListner	taskChangedListner;
+	protected OnTaskChangedListner taskChangedListner;
 
-	public BaseTaskDetailRow(Context ctx) {
+	public BaseTaskDetailRow(final Context ctx) {
 		super(ctx);
 		this.context = ctx;
 	}
 
-	public BaseTaskDetailRow(Context ctx, AttributeSet a) {
+	public BaseTaskDetailRow(final Context ctx, final AttributeSet a) {
 		super(ctx, a);
 		this.context = ctx;
 	}
 
 	@SuppressLint("NewApi")
-	public BaseTaskDetailRow(Context ctx, AttributeSet attrs, int defStyle) {
+	public BaseTaskDetailRow(final Context ctx, final AttributeSet attrs,
+			final int defStyle) {
 		super(ctx, attrs, defStyle);
 		this.context = ctx;
 	}
 
 	protected void save() {
-		if(this.task!=null){
+		if (this.task != null) {
 			this.task.safeSave();
 			if (this.taskChangedListner != null) {
 				this.taskChangedListner.onTaskChanged(this.task);
@@ -61,11 +62,11 @@ public abstract class BaseTaskDetailRow extends LinearLayout {
 
 	}
 
-	public void setOnTaskChangedListner(OnTaskChangedListner l) {
+	public void setOnTaskChangedListner(final OnTaskChangedListner l) {
 		this.taskChangedListner = l;
 	}
 
-	public void update(Task t) {
+	public void update(final Task t) {
 		this.task = t;
 		if (t != null) {
 			post(new Runnable() {
