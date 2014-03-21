@@ -29,4 +29,5 @@
   <string name="notifications_list_summary">Mostrar \"%s\"</string>
   <string name="empty_list">Nenhuma tarefa</string>
   <string name="preferences">Preferências</string>
+  <string name="widget_use_gradient">Utilizar gradiente</string>
 </resources>

@@ -38,7 +38,7 @@ public class MainWidgetService extends RemoteViewsService {
 	private static final String TAG = "MainWidgetService";
 
 	@Override
-	public RemoteViewsFactory onGetViewFactory(Intent intent) {
+	public RemoteViewsFactory onGetViewFactory(final Intent intent) {
 		Log.wtf(TAG, "create");
 		return new MainWidgetViewsFactory(getApplicationContext(), intent);
 	}
@@ -49,18 +49,19 @@ public class MainWidgetService extends RemoteViewsService {
 class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
 	private static final String TAG = "MainWidgetViewsFactory";
-	private Context mContext;
+	private final Context mContext;
 	private List<Task> tasks;
-	private int widgetId;
+	private final int widgetId;
 	private ListMirakel list;
 
-	public MainWidgetViewsFactory(Context context, Intent intent) {
+	public MainWidgetViewsFactory(final Context context, final Intent intent) {
 		if (intent.getIntExtra(MainWidgetProvider.EXTRA_WIDGET_LAYOUT,
 				MainWidgetProvider.NORMAL_WIDGET) != MainWidgetProvider.NORMAL_WIDGET) {
 			Log.wtf(TAG, "falscher provider");
 		}
 		this.mContext = context;
-		this.widgetId = intent.getIntExtra(MainWidgetProvider.EXTRA_WIDGET_ID, 0);
+		this.widgetId = intent.getIntExtra(MainWidgetProvider.EXTRA_WIDGET_ID,
+				0);
 	}
 
 	/**
@@ -69,45 +70,47 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	@Override
 	public void onCreate() {
 		this.list = WidgetHelper.getList(this.mContext, this.widgetId);
-		this.tasks = this.list.tasks(WidgetHelper.showDone(this.mContext, this.widgetId));
+		this.tasks = this.list.tasks(WidgetHelper.showDone(this.mContext,
+				this.widgetId));
 	}
 
 	@Override
 	public void onDestroy() {
-		//nothing
+		// nothing
 	}
 
 	@Override
 	public int getCount() {
-		if (this.tasks.size() == 0)
+		if (this.tasks.size() == 0) {
 			onDataSetChanged();
+		}
 		return this.tasks.size();
 	}
 
 	@Override
-	public RemoteViews getViewAt(int position) {
+	public RemoteViews getViewAt(final int position) {
 		if (position >= this.tasks.size()) {
 			return null;
 		}
-		Task task = this.tasks.get(position);
+		final Task task = this.tasks.get(position);
 		// Get The Task
-		boolean isMinimalistic = WidgetHelper
-				.isMinimalistic(this.mContext, this.widgetId);
+		final boolean isMinimalistic = WidgetHelper.isMinimalistic(
+				this.mContext, this.widgetId);
 		RemoteViews rv = new RemoteViews(this.mContext.getPackageName(),
 				isMinimalistic ? R.layout.widget_row_minimal
 						: R.layout.widget_row);
 
 		// Set the Contents of the Row
-		rv = WidgetHelper.configureItem(rv, task, this.mContext, this.list.getId(),
-				isMinimalistic, this.widgetId);
+		rv = WidgetHelper.configureItem(rv, task, this.mContext,
+				this.list.getId(), isMinimalistic, this.widgetId);
 
 		// Set the Click–Intent
 		// We need to do so, because we can not start the Activity directly from
 		// the Service
 
-		Bundle extras = new Bundle();
+		final Bundle extras = new Bundle();
 		extras.putInt(MainWidgetProvider.EXTRA_TASKID, (int) task.getId());
-		Intent fillInIntent = new Intent(MainWidgetProvider.CLICK_TASK);
+		final Intent fillInIntent = new Intent(MainWidgetProvider.CLICK_TASK);
 		fillInIntent.putExtras(extras);
 		rv.setOnClickFillInIntent(R.id.tasks_row, fillInIntent);
 		return rv;
@@ -124,12 +127,12 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		return 1;
 	}
 
-	public int getItemViewType(int position) {
+	public int getItemViewType(final int position) {
 		return 0;
 	}
 
 	@Override
-	public long getItemId(int position) {
+	public long getItemId(final int position) {
 		return position;
 	}
 

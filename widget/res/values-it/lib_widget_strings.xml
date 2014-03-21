@@ -26,7 +26,9 @@
   <string name="widget_transparency">Trasparenza</string>
   <string name="widget_transparency_summary">%s%% trasparente</string>
   <string name="widget_due_colors">Colora le scadenze</string>
+  <string name="dark_theme">Tema scuro</string>
   <string name="notifications_list_summary">Mostra \"%s\"</string>
   <string name="empty_list">Nessuna attività</string>
   <string name="preferences">Opzioni</string>
+  <string name="widget_use_gradient">Usa gradiente</string>
 </resources>

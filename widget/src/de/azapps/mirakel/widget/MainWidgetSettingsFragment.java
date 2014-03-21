@@ -30,14 +30,15 @@ public class MainWidgetSettingsFragment extends PreferenceFragment {
 	private int widgetId;
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.settings_widget);
 		Log.e(TAG, "open settings for:" + this.widgetId);
-		new PreferencesWidgetHelper(this).setFunctionsWidget(getActivity(), this.widgetId);
+		new PreferencesWidgetHelper(this).setFunctionsWidget(getActivity(),
+				this.widgetId);
 	}
 
-	public void setup(int widgetId) {
+	public void setup(final int widgetId) {
 		this.widgetId = widgetId;
 	}
 
