@@ -1,26 +1,15 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:0.7.+'
-    }
-}
-
 apply plugin: 'android-library'
 
-
 android {
-    compileSdkVersion 19
-    buildToolsVersion "19.0.0"
-
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
     defaultConfig {
-        minSdkVersion 8
-        targetSdkVersion 19
+        minSdkVersion rootProject.ext.minSDKVersion
+        targetSdkVersion rootProject.ext.compileSdkVersion
     }
     
     lintOptions {
-        abortOnError false
+        disable 'MissingTranslation'
     }
     sourceSets {
         main {
