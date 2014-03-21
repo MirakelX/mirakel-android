@@ -9,11 +9,13 @@ abstract interface DatePickerController {
 
 	public abstract SimpleMonthAdapter.CalendarDay getSelectedDay();
 
-	public abstract void onDayOfMonthSelected(int year, int month, int day);
+	public abstract void onDayOfMonthSelected(final int year, final int month,
+			final int day);
 
-	public abstract void onYearSelected(int year);
+	public abstract void onYearSelected(final int year);
 
-	public abstract void registerOnDateChangedListener(DatePicker.OnDateChangedListener onDateChangedListener);
+	public abstract void registerOnDateChangedListener(
+			final DatePicker.OnDateChangedListener onDateChangedListener);
 
 	public abstract void tryVibrate();
 }

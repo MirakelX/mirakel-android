@@ -1,4 +1,5 @@
 package com.sleepbot.datetimepicker.time;
+
 /*
  * Copyright (C) 2013 The Android Open Source Project
  *
@@ -17,7 +18,6 @@ package com.sleepbot.datetimepicker.time;
 
 import java.text.DateFormatSymbols;
 
-import de.azapps.mirakel.date_time.R;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -26,9 +26,11 @@ import android.graphics.Paint.Align;
 import android.graphics.Typeface;
 import android.util.Log;
 import android.view.View;
+import de.azapps.mirakel.date_time.R;
 
 /**
- * Draw the two smaller AM and PM circles next to where the larger circle will be.
+ * Draw the two smaller AM and PM circles next to where the larger circle will
+ * be.
  */
 public class AmPmCirclesView extends View {
 	private static final int AM = TimePicker.AM;
@@ -44,7 +46,7 @@ public class AmPmCirclesView extends View {
 	private int mAmOrPmPressed;
 	private int mAmPmCircleRadius;
 	private float mAmPmCircleRadiusMultiplier;
-	private int					mAmPmTextColorSelected;
+	private int mAmPmTextColorSelected;
 	private int mAmPmTextColorUnselected;
 	private int mAmPmYCenter;
 	private String mAmText;
@@ -62,7 +64,7 @@ public class AmPmCirclesView extends View {
 
 	private int mUnselected;
 
-	public AmPmCirclesView(Context context) {
+	public AmPmCirclesView(final Context context) {
 		super(context);
 		this.mIsInitialized = false;
 	}
@@ -70,48 +72,57 @@ public class AmPmCirclesView extends View {
 	/**
 	 * Calculate whether the coordinates are touching the AM or PM circle.
 	 */
-	public int getIsTouchingAmOrPm(float xCoord, float yCoord) {
-		if (!this.mDrawValuesReady) return -1;
+	public int getIsTouchingAmOrPm(final float xCoord, final float yCoord) {
+		if (!this.mDrawValuesReady) {
+			return -1;
+		}
 
-		int squaredYDistance = (int) ((yCoord - this.mAmPmYCenter) * (yCoord - this.mAmPmYCenter));
+		final int squaredYDistance = (int) ((yCoord - this.mAmPmYCenter) * (yCoord - this.mAmPmYCenter));
 
-		int distanceToAmCenter =
-				(int) Math.sqrt((xCoord - this.mAmXCenter) * (xCoord - this.mAmXCenter) + squaredYDistance);
-		if (distanceToAmCenter <= this.mAmPmCircleRadius) return AM;
+		final int distanceToAmCenter = (int) Math
+				.sqrt((xCoord - this.mAmXCenter) * (xCoord - this.mAmXCenter)
+						+ squaredYDistance);
+		if (distanceToAmCenter <= this.mAmPmCircleRadius) {
+			return AM;
+		}
 
-		int distanceToPmCenter =
-				(int) Math.sqrt((xCoord - this.mPmXCenter) * (xCoord - this.mPmXCenter) + squaredYDistance);
-		if (distanceToPmCenter <= this.mAmPmCircleRadius) return PM;
+		final int distanceToPmCenter = (int) Math
+				.sqrt((xCoord - this.mPmXCenter) * (xCoord - this.mPmXCenter)
+						+ squaredYDistance);
+		if (distanceToPmCenter <= this.mAmPmCircleRadius) {
+			return PM;
+		}
 
 		// Neither was close enough.
 		return -1;
 	}
 
-	public void initialize(Context context, int amOrPm, boolean dark) {
+	public void initialize(final Context context, final int amOrPm,
+			final boolean dark) {
 		if (this.mIsInitialized) {
 			Log.e(TAG, "AmPmCirclesView may only be initialized once.");
 			return;
 		}
-		this.mDark=dark;
-		Resources res = context.getResources();
+		this.mDark = dark;
+		final Resources res = context.getResources();
 		this.mUnselected = res.getColor(dark ? R.color.grey : R.color.white);
 
 		this.mAmPmTextColorUnselected = res.getColor(dark ? R.color.white
 				: R.color.dialog_dark_gray);
 		this.mAmPmTextColorSelected = res.getColor(dark ? R.color.Red
 				: R.color.clock_blue);
-		this.mSelected = res.getColor(dark?R.color.Red:R.color.blue);
-		String typefaceFamily = res.getString(R.string.sans_serif);
-		Typeface tf = Typeface.create(typefaceFamily, Typeface.NORMAL);
+		this.mSelected = res.getColor(dark ? R.color.Red : R.color.blue);
+		final String typefaceFamily = res.getString(R.string.sans_serif);
+		final Typeface tf = Typeface.create(typefaceFamily, Typeface.NORMAL);
 		this.mPaint.setTypeface(tf);
 		this.mPaint.setAntiAlias(true);
 		this.mPaint.setTextAlign(Align.CENTER);
 
-		this.mCircleRadiusMultiplier =
-				Float.parseFloat(res.getString(R.string.circle_radius_multiplier));
-		this.mAmPmCircleRadiusMultiplier =
-				Float.parseFloat(res.getString(R.string.ampm_circle_radius_multiplier));
-		String[] amPmTexts = new DateFormatSymbols().getAmPmStrings();
+		this.mCircleRadiusMultiplier = Float.parseFloat(res
+				.getString(R.string.circle_radius_multiplier));
+		this.mAmPmCircleRadiusMultiplier = Float.parseFloat(res
+				.getString(R.string.ampm_circle_radius_multiplier));
+		final String[] amPmTexts = new DateFormatSymbols().getAmPmStrings();
 		this.mAmText = amPmTexts[0];
 		this.mPmText = amPmTexts[1];
 
@@ -122,30 +133,38 @@ public class AmPmCirclesView extends View {
 	}
 
 	@Override
-	public void onDraw(Canvas canvas) {
-		int viewWidth = getWidth();
-		if (viewWidth == 0 || !this.mIsInitialized) return;
+	public void onDraw(final Canvas canvas) {
+		final int viewWidth = getWidth();
+		if (viewWidth == 0 || !this.mIsInitialized) {
+			return;
+		}
 
 		if (!this.mDrawValuesReady) {
-			int layoutXCenter = getWidth() / 2;
-			int layoutYCenter = getHeight() / 2;
-			int circleRadius =
-					(int) (Math.min(layoutXCenter, layoutYCenter) * this.mCircleRadiusMultiplier);
+			final int layoutXCenter = getWidth() / 2;
+			final int layoutYCenter = getHeight() / 2;
+			final int circleRadius = (int) (Math.min(layoutXCenter,
+					layoutYCenter) * this.mCircleRadiusMultiplier);
 			this.mAmPmCircleRadius = (int) (circleRadius * this.mAmPmCircleRadiusMultiplier);
-			int textSize = this.mAmPmCircleRadius * 3 / 4;
+			final int textSize = this.mAmPmCircleRadius * 3 / 4;
 			this.mPaint.setTextSize(textSize);
 
-			// Line up the vertical center of the AM/PM circles with the bottom of the main circle.
-			this.mAmPmYCenter = layoutYCenter - this.mAmPmCircleRadius / 2 + circleRadius;
-			// Line up the horizontal edges of the AM/PM circles with the horizontal edges
+			// Line up the vertical center of the AM/PM circles with the bottom
 			// of the main circle.
-			this.mAmXCenter = layoutXCenter - circleRadius + this.mAmPmCircleRadius;
-			this.mPmXCenter = layoutXCenter + circleRadius - this.mAmPmCircleRadius;
+			this.mAmPmYCenter = layoutYCenter - this.mAmPmCircleRadius / 2
+					+ circleRadius;
+			// Line up the horizontal edges of the AM/PM circles with the
+			// horizontal edges
+			// of the main circle.
+			this.mAmXCenter = layoutXCenter - circleRadius
+					+ this.mAmPmCircleRadius;
+			this.mPmXCenter = layoutXCenter + circleRadius
+					- this.mAmPmCircleRadius;
 
 			this.mDrawValuesReady = true;
 		}
 
-		// We'll need to draw either a lighter blue (for selection), a darker blue (for touching)
+		// We'll need to draw either a lighter blue (for selection), a darker
+		// blue (for touching)
 		// or white (for not selected).
 		int amColor = this.mUnselected;
 		int amAlpha = 255;
@@ -175,26 +194,28 @@ public class AmPmCirclesView extends View {
 		// Draw the two circles.
 		this.mPaint.setColor(amColor);
 		this.mPaint.setAlpha(this.mDark ? (int) (amAlpha * 1.5) : amAlpha);
-		canvas.drawCircle(this.mAmXCenter, this.mAmPmYCenter, this.mAmPmCircleRadius, this.mPaint);
+		canvas.drawCircle(this.mAmXCenter, this.mAmPmYCenter,
+				this.mAmPmCircleRadius, this.mPaint);
 		this.mPaint.setColor(pmColor);
 		this.mPaint.setAlpha(this.mDark ? (int) (pmAlpha * 1.5) : pmAlpha);
-		canvas.drawCircle(this.mPmXCenter, this.mAmPmYCenter, this.mAmPmCircleRadius, this.mPaint);
-
+		canvas.drawCircle(this.mPmXCenter, this.mAmPmYCenter,
+				this.mAmPmCircleRadius, this.mPaint);
 
 		// Draw the AM/PM texts on top.
 		this.mPaint.setColor(amTextColor);
-		int textYCenter = this.mAmPmYCenter - (int) (this.mPaint.descent() + this.mPaint.ascent()) / 2;
+		final int textYCenter = this.mAmPmYCenter
+				- (int) (this.mPaint.descent() + this.mPaint.ascent()) / 2;
 		canvas.drawText(this.mAmText, this.mAmXCenter, textYCenter, this.mPaint);
 
 		this.mPaint.setColor(pmTextColor);
 		canvas.drawText(this.mPmText, this.mPmXCenter, textYCenter, this.mPaint);
 	}
 
-	public void setAmOrPm(int amOrPm) {
+	public void setAmOrPm(final int amOrPm) {
 		this.mAmOrPm = amOrPm;
 	}
 
-	public void setAmOrPmPressed(int amOrPmPressed) {
+	public void setAmOrPmPressed(final int amOrPmPressed) {
 		this.mAmOrPmPressed = amOrPmPressed;
 	}
 }

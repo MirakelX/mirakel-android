@@ -18,13 +18,15 @@ import com.sleepbot.datetimepicker.time.TimePicker.OnTimeSetListener;
 
 import de.azapps.mirakel.date_time.R;
 
-
 public class DateTimeDialog extends DialogFragment {
 
-	protected static final String	TAG	= "DateTimeDialog";
+	protected static final String TAG = "DateTimeDialog";
 
-	public static DateTimeDialog newInstance(OnDateTimeSetListner callback, int year, int month, int dayOfMonth, int hourOfDay, int minute, boolean vibrate, boolean dark) {
-		DateTimeDialog dt = new DateTimeDialog();
+	public static DateTimeDialog newInstance(
+			final OnDateTimeSetListner callback, final int year,
+			final int month, final int dayOfMonth, final int hourOfDay,
+			final int minute, final boolean vibrate, final boolean dark) {
+		final DateTimeDialog dt = new DateTimeDialog();
 		dt.init(year, month, dayOfMonth, hourOfDay, minute);
 		dt.setOnDateTimeSetListner(callback);
 		// dt.initialize(callback, year, month, dayOfMonth, hourOfDay, minute,
@@ -32,13 +34,14 @@ public class DateTimeDialog extends DialogFragment {
 		return dt;
 	}
 
-	private int	mInitialYear;
-	private int	mInitialMonth;
-	private int	mInitialDay;
-	private int	mInitialHour;
-	private int	mInitialMinute;
+	private int mInitialYear;
+	private int mInitialMonth;
+	private int mInitialDay;
+	private int mInitialHour;
+	private int mInitialMinute;
 
-	private void init(int year, int month, int dayOfMonth, int hourOfDay, int minute) {
+	private void init(final int year, final int month, final int dayOfMonth,
+			final int hourOfDay, final int minute) {
 		this.mInitialYear = year;
 		this.mInitialMonth = month;
 		this.mInitialDay = dayOfMonth;
@@ -48,36 +51,37 @@ public class DateTimeDialog extends DialogFragment {
 	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 	}
 
-	float							startX;
-	float							startY;
-	protected ViewSwitcher			viewSwitcher;
-	protected TimePicker				tp;
-	protected DatePicker				dp;
-	protected boolean					isCurrentDatepicker	= true;
-	protected OnDateTimeSetListner	mCallback;
+	float startX;
+	float startY;
+	protected ViewSwitcher viewSwitcher;
+	protected TimePicker tp;
+	protected DatePicker dp;
+	protected boolean isCurrentDatepicker = true;
+	protected OnDateTimeSetListner mCallback;
 
-	void setOnDateTimeSetListner(OnDateTimeSetListner listner) {
+	void setOnDateTimeSetListner(final OnDateTimeSetListner listner) {
 		this.mCallback = listner;
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public View onCreateView(final LayoutInflater inflater,
+			final ViewGroup container, final Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 		try {
 			getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		View v = inflater.inflate(R.layout.date_time_picker, container);
-		Button switchToDate = (Button) v
+		final View v = inflater.inflate(R.layout.date_time_picker, container);
+		final Button switchToDate = (Button) v
 				.findViewById(R.id.datetime_picker_date);
-		Button switchToTime = (Button) v
+		final Button switchToTime = (Button) v
 				.findViewById(R.id.datetime_picker_time);
 		this.viewSwitcher = (ViewSwitcher) v
 				.findViewById(R.id.datetime_picker_animator);
@@ -89,9 +93,12 @@ public class DateTimeDialog extends DialogFragment {
 		this.tp.setOnTimeSetListener(new OnTimeSetListener() {
 
 			@Override
-			public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
+			public void onTimeSet(final RadialPickerLayout view,
+					final int hourOfDay, final int minute) {
 				if (DateTimeDialog.this.mCallback != null) {
-					DateTimeDialog.this.mCallback.onDateTimeSet(DateTimeDialog.this.dp.getYear(), DateTimeDialog.this.dp.getMonth(),
+					DateTimeDialog.this.mCallback.onDateTimeSet(
+							DateTimeDialog.this.dp.getYear(),
+							DateTimeDialog.this.dp.getMonth(),
 							DateTimeDialog.this.dp.getDay(), hourOfDay, minute);
 				}
 				dismiss();
@@ -120,9 +127,11 @@ public class DateTimeDialog extends DialogFragment {
 			}
 
 			@Override
-			public void onDateSet(DatePicker datePickerDialog, int year, int month, int day) {
+			public void onDateSet(final DatePicker datePickerDialog,
+					final int year, final int month, final int day) {
 				if (DateTimeDialog.this.mCallback != null) {
-					DateTimeDialog.this.mCallback.onDateTimeSet(year, month, day, DateTimeDialog.this.tp.getHour(),
+					DateTimeDialog.this.mCallback.onDateTimeSet(year, month,
+							day, DateTimeDialog.this.tp.getHour(),
 							DateTimeDialog.this.tp.getMinute());
 				}
 				dismiss();
@@ -132,7 +141,7 @@ public class DateTimeDialog extends DialogFragment {
 
 		switchToDate.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View v) {
+			public void onClick(final View v) {
 				if (!DateTimeDialog.this.isCurrentDatepicker) {
 					DateTimeDialog.this.viewSwitcher.showPrevious();
 					DateTimeDialog.this.isCurrentDatepicker = true;
@@ -142,7 +151,7 @@ public class DateTimeDialog extends DialogFragment {
 
 		switchToTime.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View v) {
+			public void onClick(final View v) {
 				if (DateTimeDialog.this.isCurrentDatepicker) {
 					DateTimeDialog.this.viewSwitcher.showNext();
 					DateTimeDialog.this.isCurrentDatepicker = false;
@@ -163,22 +172,23 @@ public class DateTimeDialog extends DialogFragment {
 
 		/**
 		 * @param view
-		 *        The view associated with this listener.
+		 *            The view associated with this listener.
 		 * @param hourOfDay
-		 *        The hour that was set.
+		 *            The hour that was set.
 		 * @param minute
-		 *        The minute that was set.
+		 *            The minute that was set.
 		 */
-		void onDateTimeSet(int year, int month, int dayOfMonth, int hourOfDay, int minute);
+		void onDateTimeSet(final int year, final int month,
+				final int dayOfMonth, final int hourOfDay, final int minute);
 
 		void onNoTimeSet();
 	}
 
 	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
+	public void onConfigurationChanged(final Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
-		Bundle time = (Bundle) this.tp.onSaveInstanceState();
-		Bundle date = (Bundle) this.dp.onSaveInstanceState();
+		final Bundle time = (Bundle) this.tp.onSaveInstanceState();
+		final Bundle date = (Bundle) this.dp.onSaveInstanceState();
 		getDialog().setContentView(
 				onCreateView(LayoutInflater.from(getDialog().getContext()),
 						null, null));

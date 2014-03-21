@@ -11,7 +11,7 @@ import com.nineoldandroids.animation.PropertyValuesHolder;
 
 public class Utils {
 
-	public static int getDaysInMonth(int month, int year) {
+	public static int getDaysInMonth(final int month, final int year) {
 		switch (month) {
 		default:
 			throw new IllegalArgumentException("Invalid Month");
@@ -29,19 +29,20 @@ public class Utils {
 		case 10:
 			return 30;
 		case 1:
-			if (year % 4 == 0)
+			if (year % 4 == 0) {
 				return 29;
+			}
 			return 28;
 		}
 	}
 
-	public static ObjectAnimator getPulseAnimator(View view, float animVal1,
-			float animVal2) {
-		Keyframe keyframe1 = Keyframe.ofFloat(0.0F, 1.0F);
-		Keyframe keyframe2 = Keyframe.ofFloat(0.275F, animVal1);
-		Keyframe keyframe3 = Keyframe.ofFloat(0.69F, animVal2);
-		Keyframe keyframe4 = Keyframe.ofFloat(1.0F, 1.0F);
-		ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(
+	public static ObjectAnimator getPulseAnimator(final View view,
+			final float animVal1, final float animVal2) {
+		final Keyframe keyframe1 = Keyframe.ofFloat(0.0F, 1.0F);
+		final Keyframe keyframe2 = Keyframe.ofFloat(0.275F, animVal1);
+		final Keyframe keyframe3 = Keyframe.ofFloat(0.69F, animVal2);
+		final Keyframe keyframe4 = Keyframe.ofFloat(1.0F, 1.0F);
+		final ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(
 				view,
 				new PropertyValuesHolder[] {
 						PropertyValuesHolder.ofKeyframe("scaleX",
@@ -58,13 +59,14 @@ public class Utils {
 		return Build.VERSION.SDK_INT >= 16;
 	}
 
-	public static void tryAccessibilityAnnounce(Object obj, Object announcement) {
+	public static void tryAccessibilityAnnounce(final Object obj,
+			final Object announcement) {
 		// TODO
 	}
 
 	@SuppressLint("NewApi")
 	public static boolean isTouchExplorationEnabled(
-			AccessibilityManager accessibilityManager) {
+			final AccessibilityManager accessibilityManager) {
 		if (Build.VERSION.SDK_INT >= 14) {
 			return accessibilityManager.isTouchExplorationEnabled();
 		} else {

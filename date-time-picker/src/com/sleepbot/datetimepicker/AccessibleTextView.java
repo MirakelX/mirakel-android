@@ -10,27 +10,30 @@ import android.widget.Button;
 import android.widget.TextView;
 
 /**
- * Fake Button class, used so TextViews can announce themselves as Buttons, for accessibility.
+ * Fake Button class, used so TextViews can announce themselves as Buttons, for
+ * accessibility.
  */
 @SuppressLint("NewApi")
 public class AccessibleTextView extends TextView {
 
-    public AccessibleTextView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
+	public AccessibleTextView(final Context context, final AttributeSet attrs) {
+		super(context, attrs);
+	}
 
-    public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
-        if (Build.VERSION.SDK_INT >= 14) {
-            super.onInitializeAccessibilityEvent(event);
-            event.setClassName(Button.class.getName());
-        }
-    }
+	@Override
+	public void onInitializeAccessibilityEvent(final AccessibilityEvent event) {
+		if (Build.VERSION.SDK_INT >= 14) {
+			super.onInitializeAccessibilityEvent(event);
+			event.setClassName(Button.class.getName());
+		}
+	}
 
-    public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
-        if (Build.VERSION.SDK_INT >= 14) {
-            super.onInitializeAccessibilityNodeInfo(info);
-            info.setClassName(Button.class.getName());
-        }
-    }
+	@Override
+	public void onInitializeAccessibilityNodeInfo(
+			final AccessibilityNodeInfo info) {
+		if (Build.VERSION.SDK_INT >= 14) {
+			super.onInitializeAccessibilityNodeInfo(info);
+			info.setClassName(Button.class.getName());
+		}
+	}
 }
-
