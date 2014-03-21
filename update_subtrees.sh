@@ -1,10 +1,10 @@
 #!/bin/sh
 source ./.subrepos
 source ./.localconfig # declare user
-EDITOR=/bin/true
-GIT_EDITOR=/bin/true
-VISUAL=/bin/true
-EDITOR=/bin/true
+export EDITOR=/bin/true
+export GIT_EDITOR=/bin/true
+export VISUAL=/bin/true
+export EDITOR=/bin/true
 
 for repo in ${repos[@]} ; do
     echo "Pulling "$repo
