@@ -442,8 +442,8 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 									t.setDone(true);
 									t.safeSave();
 								}
-								TasksFragment.this.adapter
-										.notifyDataSetChanged();
+								getLoaderManager().restartLoader(0, null,
+										TasksFragment.this);
 								break;
 							default:
 								break;
