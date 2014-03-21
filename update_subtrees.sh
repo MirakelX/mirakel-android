@@ -1,6 +1,7 @@
 #!/bin/sh
 source ./.subrepos
 source ./.localconfig # declare user
+EDITOR=/bin/true
 
 for repo in ${repos[@]} ; do
     echo "Pulling "$repo
