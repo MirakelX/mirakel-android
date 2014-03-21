@@ -39,29 +39,28 @@ public class RecurringFragment extends PreferenceFragment {
 	private Recurring recurring;
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(final Bundle savedInstanceState) {
 		Log.d(TAG, "foo");
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.settings_recurring);
-		ActionBar actionBar = getActivity().getActionBar();
+		final ActionBar actionBar = getActivity().getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
-		Bundle b = getArguments();
+		final Bundle b = getArguments();
 		if (b != null) {
 			this.recurring = Recurring.get(getArguments().getInt("id"));
 			((RecurringActivity) getActivity()).setReccuring(this.recurring);
 			actionBar.setTitle(this.recurring.getLabel());
 			if (!MirakelCommonPreferences.isTablet()) {
-				ImageButton delSemantic = new ImageButton(getActivity());
+				final ImageButton delSemantic = new ImageButton(getActivity());
 				delSemantic
 						.setBackgroundResource(android.R.drawable.ic_menu_delete);
 				actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
 						ActionBar.DISPLAY_SHOW_CUSTOM);
 				actionBar.setCustomView(delSemantic,
-						new ActionBar.LayoutParams(
+						new ActionBar.LayoutParams(LayoutParams.WRAP_CONTENT,
 								LayoutParams.WRAP_CONTENT,
-								LayoutParams.WRAP_CONTENT,
-										Gravity.CENTER_VERTICAL
-												| DefinitionsHelper.GRAVITY_RIGHT));
+								Gravity.CENTER_VERTICAL
+										| DefinitionsHelper.GRAVITY_RIGHT));
 				delSemantic.setOnClickListener(((ListSettings) getActivity())
 						.getDelOnClickListener());
 			}

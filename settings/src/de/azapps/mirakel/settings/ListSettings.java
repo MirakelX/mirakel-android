@@ -42,7 +42,6 @@ import android.widget.LinearLayout;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
-import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.tools.Log;
 
 /**
@@ -59,12 +58,12 @@ public abstract class ListSettings extends PreferenceActivity {
 
 	private static final String TAG = "ListSettings";
 
-	protected boolean		clickOnLast	= false;
+	protected boolean clickOnLast = false;
 
 	private boolean loaded = false;
-	private boolean	isTablet;
+	private boolean isTablet;
 
-	protected List<Header>	mTarget;
+	protected List<Header> mTarget;
 
 	public void clickOnLast() {
 		this.clickOnLast = true;
@@ -73,7 +72,9 @@ public abstract class ListSettings extends PreferenceActivity {
 	protected abstract OnClickListener getAddOnClickListener();
 
 	public abstract OnClickListener getDelOnClickListener();
+
 	protected abstract Class<?> getDestClass();
+
 	protected abstract Class<?> getDestFragmentClass();
 
 	public List<Header> getHeader() {
@@ -102,17 +103,17 @@ public abstract class ListSettings extends PreferenceActivity {
 	}
 
 	@Override
-	protected boolean isValidFragment(String fragmentName) {
+	protected boolean isValidFragment(final String fragmentName) {
 		return fragmentName.equals(getDestFragmentClass().getCanonicalName());
 	}
 
 	@SuppressLint("NewApi")
 	@Override
-	public void onBuildHeaders(List<Header> target) {
-		for (Pair<Integer, String> item : getItems()) {
-			Bundle b = new Bundle();
+	public void onBuildHeaders(final List<Header> target) {
+		for (final Pair<Integer, String> item : getItems()) {
+			final Bundle b = new Bundle();
 			b.putInt("id", item.first);
-			Header header = new Header();
+			final Header header = new Header();
 			header.fragment = getDestFragmentClass().getCanonicalName();
 			header.title = item.second;
 			header.fragmentArguments = b;
@@ -120,13 +121,14 @@ public abstract class ListSettings extends PreferenceActivity {
 			target.add(header);
 		}
 		if (getItems().size() == 0) {
-			Header header = new Header();
+			final Header header = new Header();
 			header.title = " ";
 			header.fragment = getDestFragmentClass().getCanonicalName();
 			target.add(header);
 		}
 		if (this.clickOnLast) {
-			onHeaderClick(this.mTarget.get(this.mTarget.size() - 1), this.mTarget.size() - 1);
+			onHeaderClick(this.mTarget.get(this.mTarget.size() - 1),
+					this.mTarget.size() - 1);
 			this.clickOnLast = false;
 		}
 		this.mTarget = target;
@@ -144,7 +146,7 @@ public abstract class ListSettings extends PreferenceActivity {
 	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(final Bundle savedInstanceState) {
 		if (MirakelCommonPreferences.isDark()) {
 			setTheme(R.style.AppBaseThemeDARK);
 		}
@@ -162,18 +164,18 @@ public abstract class ListSettings extends PreferenceActivity {
 			}
 
 		} else {
-			ActionBar actionbar = getActionBar();
+			final ActionBar actionbar = getActionBar();
 			actionbar.setTitle(getTitleRessource());
 			actionbar.setDisplayHomeAsUpEnabled(true);
 			View v;
-			ImageButton addList = new ImageButton(this);
+			final ImageButton addList = new ImageButton(this);
 			addList.setBackgroundResource(android.R.drawable.ic_menu_add);
 			addList.setOnClickListener(getAddOnClickListener());
 			if (MirakelCommonPreferences.isTablet()) {
-				LinearLayout l = new LinearLayout(this);
+				final LinearLayout l = new LinearLayout(this);
 				l.setLayoutDirection(LinearLayout.VERTICAL);
 				l.addView(addList);
-				ImageButton delList = new ImageButton(this);
+				final ImageButton delList = new ImageButton(this);
 				delList.setBackgroundResource(android.R.drawable.ic_menu_delete);
 				delList.setOnClickListener(getDelOnClickListener());
 				l.addView(delList);
@@ -187,8 +189,7 @@ public abstract class ListSettings extends PreferenceActivity {
 			actionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
 					ActionBar.DISPLAY_SHOW_CUSTOM);
 			actionbar.setCustomView(v, new ActionBar.LayoutParams(
-					LayoutParams.WRAP_CONTENT,
-					LayoutParams.WRAP_CONTENT,
+					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
 					Gravity.CENTER_VERTICAL | DefinitionsHelper.GRAVITY_RIGHT));
 			invalidateHeaders();
 
@@ -196,7 +197,7 @@ public abstract class ListSettings extends PreferenceActivity {
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
+	public boolean onCreateOptionsMenu(final Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 			menu.add(R.string.add);
@@ -206,7 +207,7 @@ public abstract class ListSettings extends PreferenceActivity {
 
 	@SuppressLint("NewApi")
 	@Override
-	public void onHeaderClick(Header header, int position) {
+	public void onHeaderClick(final Header header, final int position) {
 		super.onHeaderClick(header, position);
 	}
 
@@ -216,15 +217,15 @@ public abstract class ListSettings extends PreferenceActivity {
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
+	public boolean onOptionsItemSelected(final MenuItem item) {
 
 		switch (item.getItemId()) {
-			case android.R.id.home:
-				finish();
-				return true;
-			default:
-				Log.d(TAG, "unknown menuentry");
-				break;
+		case android.R.id.home:
+			finish();
+			return true;
+		default:
+			Log.d(TAG, "unknown menuentry");
+			break;
 		}
 		if (item.getTitle() == getString(R.string.add)) {
 			getAddOnClickListener().onClick(null);
@@ -241,17 +242,17 @@ public abstract class ListSettings extends PreferenceActivity {
 
 	@SuppressWarnings("deprecation")
 	private void setup() {
-		List<Pair<Integer, String>> items = getItems();
-		for (Pair<Integer, String> item : items) {
-			Preference p = new Preference(this);
+		final List<Pair<Integer, String>> items = getItems();
+		for (final Pair<Integer, String> item : items) {
+			final Preference p = new Preference(this);
 			p.setTitle(item.second);
 			p.setKey(String.valueOf(item.first));
 			final ListSettings that = this;
 			p.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
 				@Override
-				public boolean onPreferenceClick(Preference preference) {
-					Intent intent = new Intent(that, getDestClass());
+				public boolean onPreferenceClick(final Preference preference) {
+					final Intent intent = new Intent(that, getDestClass());
 					intent.putExtra("id", Integer.parseInt(preference.getKey()));
 					that.startActivity(intent);
 					return false;

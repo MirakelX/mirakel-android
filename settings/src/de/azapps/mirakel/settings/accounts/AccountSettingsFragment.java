@@ -21,16 +21,16 @@ public class AccountSettingsFragment extends PreferenceFragment {
 	private static final String TAG = "AccountSettingsFragment";
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.settings_account);
-		Bundle b = getArguments();
+		final Bundle b = getArguments();
 		if (b != null) {
 			Log.d(TAG, "id= " + b.getInt("id"));
 			final AccountMirakel account = AccountMirakel.get(b.getInt("id"));
 			((AccountSettingsActivity) getActivity()).setAccount(account);
 
-			ActionBar actionbar = getActivity().getActionBar();
+			final ActionBar actionbar = getActivity().getActionBar();
 			if (account == null) {
 				actionbar.setTitle("No Account");
 			} else {
@@ -40,14 +40,14 @@ public class AccountSettingsFragment extends PreferenceFragment {
 			}
 			// TODO implement this
 			if (!MirakelCommonPreferences.isTablet()) {
-				ImageButton delList = new ImageButton(getActivity());
+				final ImageButton delList = new ImageButton(getActivity());
 				delList.setBackgroundResource(android.R.drawable.ic_menu_delete);
 				actionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
 						ActionBar.DISPLAY_SHOW_CUSTOM);
 				actionbar.setCustomView(delList, new ActionBar.LayoutParams(
-						LayoutParams.WRAP_CONTENT,
-						LayoutParams.WRAP_CONTENT,
-						Gravity.CENTER_VERTICAL | DefinitionsHelper.GRAVITY_RIGHT));
+						LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
+						Gravity.CENTER_VERTICAL
+								| DefinitionsHelper.GRAVITY_RIGHT));
 				delList.setOnClickListener(((ListSettings) getActivity())
 						.getDelOnClickListener());
 			}
@@ -55,7 +55,7 @@ public class AccountSettingsFragment extends PreferenceFragment {
 			try {
 				new AccountSettings(this, account).setup();
 
-			} catch (NoSuchListException e) {
+			} catch (final NoSuchListException e) {
 				getActivity().finish();
 			}
 		}

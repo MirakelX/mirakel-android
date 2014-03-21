@@ -40,28 +40,28 @@ public class SemanticsSettingsFragment extends PreferenceFragment {
 	private Semantic semantic;
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.settings_semantics);
-		ActionBar actionBar = getActivity().getActionBar();
+		final ActionBar actionBar = getActivity().getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
-		Bundle b = getArguments();
+		final Bundle b = getArguments();
 		if (b != null) {
 			this.semantic = Semantic.get(getArguments().getInt("id"));
-			((SemanticsSettingsActivity) getActivity()).setSemantic(this.semantic);
+			((SemanticsSettingsActivity) getActivity())
+					.setSemantic(this.semantic);
 			actionBar.setTitle(this.semantic.getCondition());
 			if (!MirakelCommonPreferences.isTablet()) {
-				ImageButton delSemantic = new ImageButton(getActivity());
+				final ImageButton delSemantic = new ImageButton(getActivity());
 				delSemantic
 						.setBackgroundResource(android.R.drawable.ic_menu_delete);
 				actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
 						ActionBar.DISPLAY_SHOW_CUSTOM);
 				actionBar.setCustomView(delSemantic,
-						new ActionBar.LayoutParams(
+						new ActionBar.LayoutParams(LayoutParams.WRAP_CONTENT,
 								LayoutParams.WRAP_CONTENT,
-								LayoutParams.WRAP_CONTENT,
-										Gravity.CENTER_VERTICAL
-												| DefinitionsHelper.GRAVITY_RIGHT));
+								Gravity.CENTER_VERTICAL
+										| DefinitionsHelper.GRAVITY_RIGHT));
 				delSemantic.setOnClickListener(((ListSettings) getActivity())
 						.getDelOnClickListener());
 			}
@@ -73,7 +73,7 @@ public class SemanticsSettingsFragment extends PreferenceFragment {
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
+	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			getActivity().finish();

@@ -39,10 +39,10 @@ public class SpecialListsSettingsFragment extends PreferenceFragment {
 	private static final String TAG = "SpecialListsSettingsFragment";
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.settings_special_list);
-		Bundle b = getArguments();
+		final Bundle b = getArguments();
 		if (b != null) {
 			Log.d(TAG, "id= " + getArguments().getInt("id"));
 			final SpecialList specialList = SpecialList
@@ -50,26 +50,27 @@ public class SpecialListsSettingsFragment extends PreferenceFragment {
 			((SpecialListsSettingsActivity) getActivity())
 					.setSpecialList(specialList);
 
-			ActionBar actionbar = getActivity().getActionBar();
-			if (specialList == null)
+			final ActionBar actionbar = getActivity().getActionBar();
+			if (specialList == null) {
 				actionbar.setTitle("No list");
-			else
+			} else {
 				actionbar.setTitle(specialList.getName());
+			}
 			if (!MirakelCommonPreferences.isTablet()) {
-				ImageButton delList = new ImageButton(getActivity());
+				final ImageButton delList = new ImageButton(getActivity());
 				delList.setBackgroundResource(android.R.drawable.ic_menu_delete);
 				actionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
 						ActionBar.DISPLAY_SHOW_CUSTOM);
 				actionbar.setCustomView(delList, new ActionBar.LayoutParams(
-						LayoutParams.WRAP_CONTENT,
-						LayoutParams.WRAP_CONTENT,
-						Gravity.CENTER_VERTICAL | DefinitionsHelper.GRAVITY_RIGHT));
+						LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
+						Gravity.CENTER_VERTICAL
+								| DefinitionsHelper.GRAVITY_RIGHT));
 				delList.setOnClickListener(((ListSettings) getActivity())
 						.getDelOnClickListener());
 			}
 			try {
 				new SpecialListSettings(this, specialList).setup();
-			} catch (NoSuchListException e) {
+			} catch (final NoSuchListException e) {
 				getActivity().finish();
 			}
 		} else {

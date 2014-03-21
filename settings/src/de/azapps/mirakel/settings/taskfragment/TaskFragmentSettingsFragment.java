@@ -22,40 +22,45 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.app.Fragment;
+import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
-import de.azapps.mirakel.adapter.DragNDropListView;
-import de.azapps.mirakel.adapter.DragNDropListView.RemoveListener;
+
+import com.mobeta.android.dslv.DragSortListView;
+import com.mobeta.android.dslv.DragSortListView.DropListener;
+import com.mobeta.android.dslv.DragSortListView.RemoveListener;
+
 import de.azapps.mirakel.helper.MirakelViewPreferences;
 import de.azapps.mirakel.settings.R;
 import de.azapps.tools.Log;
 
 @SuppressLint("NewApi")
 public class TaskFragmentSettingsFragment extends Fragment {
-	public static final int ADD_KEY=-1;
+	public static final int ADD_KEY = -1;
 	private final static String TAG = "de.azapps.mirakel.settings.taskfragment.TaskFragmentSettings";
 	protected TaskFragmentSettingsAdapter adapter;
-	protected  DragNDropListView listView;
+	protected DragSortListView listView;
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.activity_task_fragment_settings,
-				null);
+	public View onCreateView(final LayoutInflater inflater,
+			final ViewGroup container, final Bundle savedInstanceState) {
+		final View view = inflater.inflate(
+				R.layout.activity_task_fragment_settings, null);
 		setupView(view);
 		getActivity().getActionBar().setTitle(R.string.settings_task_fragment);
 		return view;
 	}
 
-	void setupView(View v) {
-		final List<Integer> values = MirakelViewPreferences.getTaskFragmentLayout();
+	void setupView(final View v) {
+		final List<Integer> values = MirakelViewPreferences
+				.getTaskFragmentLayout();
 		values.add(ADD_KEY);
 
 		if (this.adapter != null) {
@@ -66,54 +71,50 @@ public class TaskFragmentSettingsFragment extends Fragment {
 
 		this.adapter = new TaskFragmentSettingsAdapter(getActivity(),
 				R.layout.row_taskfragment_settings, values);
-		this.listView = (DragNDropListView) v.findViewById(R.id.taskfragment_list);
-		this.listView.setEnableDrag(true);
-		this.listView.setItemsCanFocus(true);
-		this.listView.setAdapter(this.adapter);
-		this.listView.requestFocus();
-		this.listView.setDragListener(new DragNDropListView.DragListener() {
-
+		this.adapter.registerDataSetObserver(new DataSetObserver() {
 			@Override
-			public void onDrag(int x, int y, ListView l) {
-				// Nothing
-			}
-
-			@Override
-			public void onStartDrag(View itemView) {
-				itemView.setVisibility(View.INVISIBLE);
-
-			}
-
-			@Override
-			public void onStopDrag(View itemView) {
-				itemView.setVisibility(View.VISIBLE);
-
+			public void onChanged() {
+				if (TaskFragmentSettingsFragment.this.listView != null) {
+					TaskFragmentSettingsFragment.this.listView
+							.setParts(TaskFragmentSettingsFragment.this.adapter
+									.getCount() - 1);
+				}
 			}
 		});
-		this.listView.setDropListener(new DragNDropListView.DropListener() {
+		this.listView = (DragSortListView) v
+				.findViewById(R.id.taskfragment_list);
+		this.listView.setItemsCanFocus(true);
+		this.listView.setAdapter(this.adapter);
+		this.listView.setParts(this.adapter.getCount() - 1);
+		this.listView.requestFocus();
+		this.listView.setDropListener(new DropListener() {
 
 			@Override
-			public void onDrop(int from, int to) {
-				if (from != to&&to!=TaskFragmentSettingsFragment.this.listView.getCount()-1) {
+			public void drop(final int from, final int to) {
+				if (from != to
+						&& to != TaskFragmentSettingsFragment.this.listView
+								.getCount() - 1) {
 					TaskFragmentSettingsFragment.this.adapter.onDrop(from, to);
 					TaskFragmentSettingsFragment.this.listView.requestLayout();
 				}
-				Log.e(TAG, "Drop from:" + from + " to:" + to);
+				Log.v(TAG, "Drop from:" + from + " to:" + to);
+
+			}
+		});
+		this.listView.setRemoveListener(new RemoveListener() {
+
+			@Override
+			public void remove(final int which) {
+				if (which != TaskFragmentSettingsFragment.this.adapter
+						.getCount() - 1) {
+					TaskFragmentSettingsFragment.this.adapter.onRemove(which);
+				}
 
 			}
 		});
 
 		this.listView.setOnItemClickListener(null);
-		this.listView.setRemoveListener(new RemoveListener() {
 
-			@Override
-			public void onRemove(int which) {
-				if(which!=TaskFragmentSettingsFragment.this.adapter.getCount()-1) {
-					TaskFragmentSettingsFragment.this.adapter.onRemove(which);
-				}
-			}
-		});
-		this.listView.allowRemove(true);
 	}
 
 }

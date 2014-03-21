@@ -24,7 +24,6 @@ import java.util.GregorianCalendar;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
@@ -44,19 +43,21 @@ import de.azapps.mirakel.settings.NumPickerPref;
 import de.azapps.mirakel.settings.R;
 import de.azapps.tools.Log;
 
-public class RecurringSettings extends PreferencesHelper{
-	public RecurringSettings(PreferenceActivity c, Recurring recurring) {
+public class RecurringSettings extends PreferencesHelper {
+	public RecurringSettings(final PreferenceActivity c,
+			final Recurring recurring) {
 		super(c);
-		this.recurring=recurring;
+		this.recurring = recurring;
 	}
-	public RecurringSettings(PreferenceFragment c, Recurring recurring) {
+
+	public RecurringSettings(final PreferenceFragment c,
+			final Recurring recurring) {
 		super(c);
-		this.recurring=recurring;
+		this.recurring = recurring;
 	}
 
 	private static final String TAG = "RecurringSettings";
 	protected Recurring recurring;
-
 
 	public void setup() {
 		final NumPickerPref recurring_year = (NumPickerPref) findPreference("recurring_year");
@@ -72,14 +73,16 @@ public class RecurringSettings extends PreferencesHelper{
 		final Preference endDate = findPreference("recurring_end");
 		final String begin = this.activity.getString(R.string.beginning);
 		final String end = this.activity.getString(R.string.end);
-		startDate.setSummary(this.recurring.getStartDate() == null ? this.activity.getString(
-				R.string.no_begin_end, begin) : DateTimeHelper.formatDate(
-				this.recurring.getStartDate(),
-				this.activity.getString(R.string.humanDateTimeFormat)));
-		endDate.setSummary(this.recurring.getEndDate() == null ? this.activity.getString(
-				R.string.no_begin_end, end) : DateTimeHelper.formatDate(
-				this.recurring.getEndDate(),
-				this.activity.getString(R.string.humanDateTimeFormat)));
+		startDate
+				.setSummary(this.recurring.getStartDate() == null ? this.activity
+						.getString(R.string.no_begin_end, begin)
+						: DateTimeHelper.formatDate(this.recurring
+								.getStartDate(), this.activity
+								.getString(R.string.humanDateTimeFormat)));
+		endDate.setSummary(this.recurring.getEndDate() == null ? this.activity
+				.getString(R.string.no_begin_end, end) : DateTimeHelper
+				.formatDate(this.recurring.getEndDate(),
+						this.activity.getString(R.string.humanDateTimeFormat)));
 
 		recurring_day.setValue(this.recurring.getYears());
 		recurring_hour.setValue(this.recurring.getHours());
@@ -87,14 +90,18 @@ public class RecurringSettings extends PreferencesHelper{
 		recurring_month.setValue(this.recurring.getMonths());
 		recurring_year.setValue(this.recurring.getYears());
 
-		setSummary(recurring_day, R.plurals.every_days, this.recurring.getDays());
+		setSummary(recurring_day, R.plurals.every_days,
+				this.recurring.getDays());
 		setSummary(recurring_month, R.plurals.every_months,
 				this.recurring.getMonths());
-		setSummary(recurring_year, R.plurals.every_years, this.recurring.getYears());
-		setSummary(recurring_hour, R.plurals.every_hours, this.recurring.getHours());
+		setSummary(recurring_year, R.plurals.every_years,
+				this.recurring.getYears());
+		setSummary(recurring_hour, R.plurals.every_hours,
+				this.recurring.getHours());
 		setSummary(recurring_minute, R.plurals.every_minutes,
 				this.recurring.getMinutes());
-		hideForReminder(this.recurring.isForDue(), recurring_minute, recurring_hour);
+		hideForReminder(this.recurring.isForDue(), recurring_minute,
+				recurring_hour);
 
 		forDue.setChecked(this.recurring.isForDue());
 		labelRecurring.setText(this.recurring.getLabel());
@@ -104,9 +111,10 @@ public class RecurringSettings extends PreferencesHelper{
 				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 					@Override
-					public boolean onPreferenceChange(Preference preference,
-							Object newValue) {
-						RecurringSettings.this.recurring.setDays(recurring_day.getValue());
+					public boolean onPreferenceChange(
+							final Preference preference, final Object newValue) {
+						RecurringSettings.this.recurring.setDays(recurring_day
+								.getValue());
 						setSummary(recurring_day, R.plurals.every_days,
 								RecurringSettings.this.recurring.getDays());
 						RecurringSettings.this.recurring.save();
@@ -117,10 +125,11 @@ public class RecurringSettings extends PreferencesHelper{
 				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 					@Override
-					public boolean onPreferenceChange(Preference preference,
-							Object newValue) {
+					public boolean onPreferenceChange(
+							final Preference preference, final Object newValue) {
 						Log.d(TAG, "change");
-						RecurringSettings.this.recurring.setMonths(recurring_month.getValue());
+						RecurringSettings.this.recurring
+								.setMonths(recurring_month.getValue());
 						setSummary(recurring_month, R.plurals.every_months,
 								RecurringSettings.this.recurring.getMonths());
 						RecurringSettings.this.recurring.save();
@@ -131,9 +140,10 @@ public class RecurringSettings extends PreferencesHelper{
 				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 					@Override
-					public boolean onPreferenceChange(Preference preference,
-							Object newValue) {
-						RecurringSettings.this.recurring.setYears(recurring_year.getValue());
+					public boolean onPreferenceChange(
+							final Preference preference, final Object newValue) {
+						RecurringSettings.this.recurring
+								.setYears(recurring_year.getValue());
 						setSummary(recurring_year, R.plurals.every_years,
 								RecurringSettings.this.recurring.getYears());
 						RecurringSettings.this.recurring.save();
@@ -144,9 +154,10 @@ public class RecurringSettings extends PreferencesHelper{
 				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 					@Override
-					public boolean onPreferenceChange(Preference preference,
-							Object newValue) {
-						RecurringSettings.this.recurring.setHours(recurring_hour.getValue());
+					public boolean onPreferenceChange(
+							final Preference preference, final Object newValue) {
+						RecurringSettings.this.recurring
+								.setHours(recurring_hour.getValue());
 						setSummary(recurring_hour, R.plurals.every_hours,
 								RecurringSettings.this.recurring.getHours());
 						RecurringSettings.this.recurring.save();
@@ -157,9 +168,10 @@ public class RecurringSettings extends PreferencesHelper{
 				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 					@Override
-					public boolean onPreferenceChange(Preference preference,
-							Object newValue) {
-						RecurringSettings.this.recurring.setMinutes(recurring_minute.getValue());
+					public boolean onPreferenceChange(
+							final Preference preference, final Object newValue) {
+						RecurringSettings.this.recurring
+								.setMinutes(recurring_minute.getValue());
 						setSummary(recurring_minute, R.plurals.every_minutes,
 								RecurringSettings.this.recurring.getMinutes());
 						RecurringSettings.this.recurring.save();
@@ -172,16 +184,21 @@ public class RecurringSettings extends PreferencesHelper{
 
 					@SuppressLint("NewApi")
 					@Override
-					public boolean onPreferenceChange(Preference preference,
-							Object newValue) {
-						RecurringSettings.this.recurring.setLabel(newValue.toString());
-						preference.setSummary(RecurringSettings.this.recurring.getLabel());
-						preference.setPersistent(false);
-						((EditTextPreference) preference).setText(RecurringSettings.this.recurring
+					public boolean onPreferenceChange(
+							final Preference preference, final Object newValue) {
+						RecurringSettings.this.recurring.setLabel(newValue
+								.toString());
+						preference.setSummary(RecurringSettings.this.recurring
 								.getLabel());
+						preference.setPersistent(false);
+						((EditTextPreference) preference)
+								.setText(RecurringSettings.this.recurring
+										.getLabel());
 						RecurringSettings.this.recurring.save();
-						if (MirakelCommonPreferences.isTablet() && RecurringSettings.this.v4_0) {
-							((ListSettings) RecurringSettings.this.activity).invalidateHeaders();
+						if (MirakelCommonPreferences.isTablet()
+								&& RecurringSettings.this.v4_0) {
+							((ListSettings) RecurringSettings.this.activity)
+									.invalidateHeaders();
 						}
 						return false;
 					}
@@ -189,28 +206,28 @@ public class RecurringSettings extends PreferencesHelper{
 		forDue.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 			@Override
-			public boolean onPreferenceChange(Preference preference,
-					Object newValue) {
+			public boolean onPreferenceChange(final Preference preference,
+					final Object newValue) {
 				RecurringSettings.this.recurring.setForDue((Boolean) newValue);
-				hideForReminder(RecurringSettings.this.recurring.isForDue(), recurring_minute,
-						recurring_hour);
+				hideForReminder(RecurringSettings.this.recurring.isForDue(),
+						recurring_minute, recurring_hour);
 				preference.setPersistent(false);
-				((CheckBoxPreference) preference).setChecked(RecurringSettings.this.recurring
-						.isForDue());
+				((CheckBoxPreference) preference)
+						.setChecked(RecurringSettings.this.recurring.isForDue());
 				RecurringSettings.this.recurring.save();
 				return false;
 			}
 		});
 		startDate.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@Override
-			public boolean onPreferenceClick(Preference preference) {
+			public boolean onPreferenceClick(final Preference preference) {
 				DateDialog(true, startDate, begin);
 				return false;
 			}
 		});
 		endDate.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@Override
-			public boolean onPreferenceClick(Preference preference) {
+			public boolean onPreferenceClick(final Preference preference) {
 				DateDialog(false, endDate, end);
 				return false;
 			}
@@ -221,78 +238,90 @@ public class RecurringSettings extends PreferencesHelper{
 	protected void DateDialog(final boolean start, final Preference date,
 			final String s) {
 		Calendar c = new GregorianCalendar();
-		String no = this.activity.getString(R.string.no_begin_end, s);
+		final String no = this.activity.getString(R.string.no_begin_end, s);
 		if (start && this.recurring.getStartDate() != null) {
 			c = this.recurring.getStartDate();
 		} else if (start && this.recurring.getEndDate() != null) {
 			c = this.recurring.getEndDate();
 		}
-		OnDateSetListener listner = (!this.v4_0 ? new OnDateSetListener() {
+		final OnDateSetListener listner = !this.v4_0 ? new OnDateSetListener() {
 
 			@Override
-			public void onDateSet(DatePicker view, int year, int monthOfYear,
-					int dayOfMonth) {
-				Calendar c = new GregorianCalendar(year, monthOfYear,
+			public void onDateSet(final DatePicker view, final int year,
+					final int monthOfYear, final int dayOfMonth) {
+				final Calendar c = new GregorianCalendar(year, monthOfYear,
 						dayOfMonth);
 				if (start) {
 					RecurringSettings.this.recurring.setStartDate(c);
 				} else if (RecurringSettings.this.recurring.getStartDate() == null
-						| (RecurringSettings.this.recurring.getStartDate().before(c))) {
+						| RecurringSettings.this.recurring.getStartDate()
+								.before(c)) {
 					RecurringSettings.this.recurring.setEndDate(c);
 				} else {
 					RecurringSettings.this.recurring.save();
 					return;
 				}
 				date.setSummary(DateTimeHelper.formatDate(c,
-						RecurringSettings.this.activity.getString(R.string.humanDateTimeFormat)));
+						RecurringSettings.this.activity
+								.getString(R.string.humanDateTimeFormat)));
 				RecurringSettings.this.recurring.save();
 			}
-		} : null);
-		final DatePickerDialog picker = new DatePickerDialog(this.activity, listner,
-				c.get(Calendar.YEAR), c.get(Calendar.MONTH),
+		}
+				: null;
+		final DatePickerDialog picker = new DatePickerDialog(this.activity,
+				listner, c.get(Calendar.YEAR), c.get(Calendar.MONTH),
 				c.get(Calendar.DAY_OF_MONTH));
 		if (this.v4_0) {
 			picker.getDatePicker().setCalendarViewShown(false);
-			picker.setButton(Dialog.BUTTON_POSITIVE,
+			picker.setButton(DialogInterface.BUTTON_POSITIVE,
 					this.activity.getString(android.R.string.ok),
 					new DialogInterface.OnClickListener() {
 
 						@Override
-						public void onClick(DialogInterface dialog, int which) {
+						public void onClick(final DialogInterface dialog,
+								final int which) {
 							if (which == DialogInterface.BUTTON_POSITIVE) {
-								DatePicker dp = picker.getDatePicker();
-								Calendar c = new GregorianCalendar(
-										dp.getYear(), dp.getMonth(), dp
-												.getDayOfMonth());
+								final DatePicker dp = picker.getDatePicker();
+								final Calendar c = new GregorianCalendar(dp
+										.getYear(), dp.getMonth(), dp
+										.getDayOfMonth());
 								if (start) {
-									RecurringSettings.this.recurring.setStartDate(c);
-								} else if (RecurringSettings.this.recurring.getStartDate() == null
-										| (RecurringSettings.this.recurring.getStartDate().before(c))) {
-									RecurringSettings.this.recurring.setEndDate(c);
+									RecurringSettings.this.recurring
+											.setStartDate(c);
+								} else if (RecurringSettings.this.recurring
+										.getStartDate() == null
+										| RecurringSettings.this.recurring
+												.getStartDate().before(c)) {
+									RecurringSettings.this.recurring
+											.setEndDate(c);
 								} else {
 									RecurringSettings.this.recurring.save();
 									return;
 								}
-								date.setSummary(DateTimeHelper.formatDate(
-										c,
-										RecurringSettings.this.activity.getString(R.string.humanDateTimeFormat)));
+								date.setSummary(DateTimeHelper
+										.formatDate(
+												c,
+												RecurringSettings.this.activity
+														.getString(R.string.humanDateTimeFormat)));
 								RecurringSettings.this.recurring.save();
 							}
 
 						}
 					});
 		}
-		picker.setButton(Dialog.BUTTON_NEGATIVE, no,
+		picker.setButton(DialogInterface.BUTTON_NEGATIVE, no,
 				new DialogInterface.OnClickListener() {
 
 					@Override
-					public void onClick(DialogInterface dialog, int which) {
+					public void onClick(final DialogInterface dialog,
+							final int which) {
 						if (start) {
 							RecurringSettings.this.recurring.setStartDate(null);
 						} else {
 							RecurringSettings.this.recurring.setEndDate(null);
 						}
-						date.setSummary(RecurringSettings.this.activity.getString(R.string.no_begin_end, s));
+						date.setSummary(RecurringSettings.this.activity
+								.getString(R.string.no_begin_end, s));
 						RecurringSettings.this.recurring.save();
 					}
 				});
@@ -300,9 +329,9 @@ public class RecurringSettings extends PreferencesHelper{
 
 	}
 
-	protected void hideForReminder(boolean forDue, Preference recurring_minute,
-			Preference recurring_hour) {
-		PreferenceCategory cat = (PreferenceCategory) findPreference("recurring_intervall");
+	protected void hideForReminder(final boolean forDue,
+			final Preference recurring_minute, final Preference recurring_hour) {
+		final PreferenceCategory cat = (PreferenceCategory) findPreference("recurring_intervall");
 		if (forDue) {
 			cat.removePreference(recurring_hour);
 			cat.removePreference(recurring_minute);
@@ -313,14 +342,15 @@ public class RecurringSettings extends PreferencesHelper{
 
 	}
 
-	protected void setSummary(NumPickerPref pref, int id, int val) {
-		String summary = this.activity.getResources().getQuantityString(id, val, val);
+	protected void setSummary(final NumPickerPref pref, final int id,
+			final int val) {
+		String summary = this.activity.getResources().getQuantityString(id,
+				val, val);
 		if (val == 0) {
 			summary = this.activity.getString(R.string.nothing);
 		}
 		pref.setSummary(summary);
 
 	}
-
 
 }

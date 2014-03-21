@@ -41,7 +41,7 @@ public class RecurringActivity extends ListSettings {
 		return new OnClickListener() {
 
 			@Override
-			public void onClick(View v) {
+			public void onClick(final View v) {
 				newRecurring();
 				clickOnLast();
 				invalidateHeaders();
@@ -49,9 +49,10 @@ public class RecurringActivity extends ListSettings {
 		};
 	}
 
-	protected Recurring newRecurring(boolean temporary) {
+	protected Recurring newRecurring(final boolean temporary) {
 		return Recurring.newRecurring(getString(R.string.new_recurring), 0, 0,
-				0, 0, 1, true, null, null, temporary,false,new SparseBooleanArray());//TODO add option for exakt...
+				0, 0, 1, true, null, null, temporary, false,
+				new SparseBooleanArray());// TODO add option for exakt...
 
 	}
 
@@ -73,9 +74,9 @@ public class RecurringActivity extends ListSettings {
 
 	@Override
 	protected List<Pair<Integer, String>> getItems() {
-		List<Recurring> recurring = Recurring.all();
-		List<Pair<Integer, String>> items = new ArrayList<Pair<Integer, String>>();
-		for (Recurring r : recurring) {
+		final List<Recurring> recurring = Recurring.all();
+		final List<Pair<Integer, String>> items = new ArrayList<Pair<Integer, String>>();
+		for (final Recurring r : recurring) {
 			items.add(new Pair<Integer, String>(r.getId(), r.getLabel()));
 		}
 		return items;
@@ -107,16 +108,17 @@ public class RecurringActivity extends ListSettings {
 		return new OnClickListener() {
 
 			@Override
-			public void onClick(View v) {
+			public void onClick(final View v) {
 				RecurringActivity.this.recurring.destroy();
-				if (Build.VERSION.SDK_INT < 11 || !onIsMultiPane())
+				if (Build.VERSION.SDK_INT < 11 || !onIsMultiPane()) {
 					finish();
-				else {
+				} else {
 					try {
-						if (getHeader().size() > 0)
+						if (getHeader().size() > 0) {
 							onHeaderClick(getHeader().get(0), 0);
+						}
 						invalidateHeaders();
-					} catch (Exception e) {
+					} catch (final Exception e) {
 						finish();
 					}
 				}
@@ -124,7 +126,7 @@ public class RecurringActivity extends ListSettings {
 		};
 	}
 
-	public void setReccuring(Recurring r) {
+	public void setReccuring(final Recurring r) {
 		this.recurring = r;
 	}
 

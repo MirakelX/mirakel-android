@@ -52,7 +52,7 @@
         android:title="@string/sync_password" />
     -->
 
-    <ListPreference
+    <Preference
         android:entries="@array/sync_frequencies"
         android:entryValues="@array/sync_frequencies_values"
         android:key="syncFrequency"

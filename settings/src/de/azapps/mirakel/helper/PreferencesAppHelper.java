@@ -21,7 +21,6 @@ package de.azapps.mirakel.helper;
 import java.util.ArrayList;
 import java.util.List;
 
-import sheetrock.panda.changelog.ChangeLog;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
@@ -46,11 +45,13 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import de.azapps.changelog.Changelog;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.export_import.AnyDoImport;
 import de.azapps.mirakel.helper.export_import.ExportImport;
@@ -72,96 +73,102 @@ import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
 import de.azapps.tools.FileUtils;
 
 @SuppressLint("SimpleDateFormat")
-public class PreferencesAppHelper extends PreferencesHelper{
+public class PreferencesAppHelper extends PreferencesHelper {
 
-	public PreferencesAppHelper(PreferenceActivity c) {
+	public PreferencesAppHelper(final PreferenceActivity c) {
 		super(c);
 	}
-	public PreferencesAppHelper(PreferenceFragment c) {
+
+	public PreferencesAppHelper(final PreferenceFragment c) {
 		super(c);
 	}
-	static View					numberPicker;
-//	private static final String	TAG	= "PreferencesHelper";
-//	@SuppressLint("NewApi")
-//	public static void createAuthActivity(boolean newValue, final Object activity, final Object box, final boolean fragment) {
-//		final Context ctx;
-//		if (fragment) {
-//			ctx = ((Fragment) activity).getActivity();
-//		} else {
-//			ctx = (Activity) activity;
-//		}
-//		final AccountManager am = AccountManager.get(ctx);
-//		final Account[] accounts = am
-//				.getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
-//		if (newValue) {
-//			new AlertDialog.Builder(ctx)
-//			.setTitle(de.azapps.mirakel.sync.R.string.sync_warning)
-//			.setMessage(de.azapps.mirakel.sync.R.string.sync_warning_message)
-//			.setPositiveButton(android.R.string.ok,
-//					new OnClickListener() {
-//				@SuppressLint("NewApi")
-//				@Override
-//				public void onClick(DialogInterface dialogInterface, int i) {
-//					for (Account a : accounts) {
-//						try {
-//							am.removeAccount(a, null, null);
-//						} catch (Exception e) {
-//							Log.e(TAG, "Cannot remove Account");
-//						}
-//					}
-//					Intent intent = new Intent(ctx,
-//							AuthenticatorActivity.class);
-//					intent.setAction(DefinitionsHelper.MAIN_SHOW_LISTS);
-//					if (fragment) {
-//						((Fragment) activity)
-//						.startActivityForResult(
-//								intent,
-//								SettingsActivity.NEW_ACCOUNT);
-//					} else {
-//						((Activity) activity)
-//						.startActivityForResult(
-//								intent,
-//								SettingsActivity.NEW_ACCOUNT);
-//					}
-//					SharedPreferences.Editor editor = MirakelCommonPreferences
-//							.getEditor();
-//					editor.putBoolean("syncUse", true);
-//					editor.commit();
-//				}
-//			})
-//			.setNegativeButton(android.R.string.cancel,
-//					new OnClickListener() {
-//				@SuppressLint("NewApi")
-//				@Override
-//				public void onClick(DialogInterface dialogInterface, int i) {
-//					SharedPreferences.Editor editor = MirakelCommonPreferences
-//							.getEditor();
-//					editor.putBoolean("syncUse", false);
-//					editor.commit();
-//					if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-//						((CheckBoxPreference) box)
-//						.setChecked(false);
-//						((CheckBoxPreference) box)
-//						.setSummary(de.azapps.mirakel.sync.R.string.sync_use_summary_nothing);
-//					} else {
-//						((Switch) box).setChecked(false);
-//					}
-//				}
-//			}).show();
-//		} else {
-//			SharedPreferences.Editor editor = MirakelCommonPreferences.getEditor();
-//			editor.putBoolean("syncUse", false);
-//			editor.commit();
-//			try {
-//				am.removeAccount(accounts[0], null, null);
-//			} catch (Exception e) {
-//				Log.e(TAG, "Cannot remove Account");
-//			}
-//		}
-//	}
-	public static void updateSyncText(CheckBoxPreference sync, Preference server, Preference syncFrequency, Context ctx) {
-		AccountManager am = AccountManager.get(ctx);
-		Account[] accounts = am
+
+	static View numberPicker;
+
+	// private static final String TAG = "PreferencesHelper";
+	// @SuppressLint("NewApi")
+	// public static void createAuthActivity(boolean newValue, final Object
+	// activity, final Object box, final boolean fragment) {
+	// final Context ctx;
+	// if (fragment) {
+	// ctx = ((Fragment) activity).getActivity();
+	// } else {
+	// ctx = (Activity) activity;
+	// }
+	// final AccountManager am = AccountManager.get(ctx);
+	// final Account[] accounts = am
+	// .getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
+	// if (newValue) {
+	// new AlertDialog.Builder(ctx)
+	// .setTitle(de.azapps.mirakel.sync.R.string.sync_warning)
+	// .setMessage(de.azapps.mirakel.sync.R.string.sync_warning_message)
+	// .setPositiveButton(android.R.string.ok,
+	// new OnClickListener() {
+	// @SuppressLint("NewApi")
+	// @Override
+	// public void onClick(DialogInterface dialogInterface, int i) {
+	// for (Account a : accounts) {
+	// try {
+	// am.removeAccount(a, null, null);
+	// } catch (Exception e) {
+	// Log.e(TAG, "Cannot remove Account");
+	// }
+	// }
+	// Intent intent = new Intent(ctx,
+	// AuthenticatorActivity.class);
+	// intent.setAction(DefinitionsHelper.MAIN_SHOW_LISTS);
+	// if (fragment) {
+	// ((Fragment) activity)
+	// .startActivityForResult(
+	// intent,
+	// SettingsActivity.NEW_ACCOUNT);
+	// } else {
+	// ((Activity) activity)
+	// .startActivityForResult(
+	// intent,
+	// SettingsActivity.NEW_ACCOUNT);
+	// }
+	// SharedPreferences.Editor editor = MirakelCommonPreferences
+	// .getEditor();
+	// editor.putBoolean("syncUse", true);
+	// editor.commit();
+	// }
+	// })
+	// .setNegativeButton(android.R.string.cancel,
+	// new OnClickListener() {
+	// @SuppressLint("NewApi")
+	// @Override
+	// public void onClick(DialogInterface dialogInterface, int i) {
+	// SharedPreferences.Editor editor = MirakelCommonPreferences
+	// .getEditor();
+	// editor.putBoolean("syncUse", false);
+	// editor.commit();
+	// if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+	// ((CheckBoxPreference) box)
+	// .setChecked(false);
+	// ((CheckBoxPreference) box)
+	// .setSummary(de.azapps.mirakel.sync.R.string.sync_use_summary_nothing);
+	// } else {
+	// ((Switch) box).setChecked(false);
+	// }
+	// }
+	// }).show();
+	// } else {
+	// SharedPreferences.Editor editor = MirakelCommonPreferences.getEditor();
+	// editor.putBoolean("syncUse", false);
+	// editor.commit();
+	// try {
+	// am.removeAccount(accounts[0], null, null);
+	// } catch (Exception e) {
+	// Log.e(TAG, "Cannot remove Account");
+	// }
+	// }
+	// }
+	public static void updateSyncText(final CheckBoxPreference sync,
+			final Preference server, final Preference syncFrequency,
+			final Context ctx) {
+		final AccountManager am = AccountManager.get(ctx);
+		final Account[] accounts = am
 				.getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
 		if (accounts.length > 0) {
 			if (sync != null) {
@@ -185,7 +192,7 @@ public class PreferencesAppHelper extends PreferencesHelper{
 			}
 			server.setSummary("");
 		}
-		Editor editor = MirakelCommonPreferences.getEditor();
+		final Editor editor = MirakelPreferences.getEditor();
 		editor.putString("syncFrequency", "-1");
 		editor.commit();
 		if (syncFrequency != null) {
@@ -193,24 +200,23 @@ public class PreferencesAppHelper extends PreferencesHelper{
 					.getString(R.string.sync_frequency_summary_man));
 		}
 	}
-	public Switch				actionBarSwitch;
-	protected int			debugCounter;
 
-
+	public Switch actionBarSwitch;
+	protected int debugCounter;
 
 	@SuppressLint("NewApi")
 	public void setFunctionsApp() {
 
 		// Initialize needed Arrays
 		final List<ListMirakel> lists = ListMirakel.all();
-		CharSequence entryValues[] = new String[lists.size()];
-		CharSequence entries[] = new String[lists.size()];
-		CharSequence entryValuesWithDefault[] = new String[lists.size() + 1];
-		CharSequence entriesWithDefault[] = new String[lists.size() + 1];
+		final CharSequence entryValues[] = new String[lists.size()];
+		final CharSequence entries[] = new String[lists.size()];
+		final CharSequence entryValuesWithDefault[] = new String[lists.size() + 1];
+		final CharSequence entriesWithDefault[] = new String[lists.size() + 1];
 		int i = 0;
-		for (ListMirakel list : lists) {
-			String id = String.valueOf(list.getId());
-			String name = list.getName();
+		for (final ListMirakel list : lists) {
+			final String id = String.valueOf(list.getId());
+			final String name = list.getName();
 			entryValues[i] = id;
 			entries[i] = name;
 			entryValuesWithDefault[i + 1] = id;
@@ -228,62 +234,69 @@ public class PreferencesAppHelper extends PreferencesHelper{
 			final ListPreference notificationsListOpenPreference = (ListPreference) findPreference("notificationsListOpen");
 			notificationsListPreference.setEntries(entries);
 			notificationsListPreference.setEntryValues(entryValues);
-			ListMirakel notificationsList = MirakelModelPreferences
+			final ListMirakel notificationsList = MirakelModelPreferences
 					.getNotificationsList();
 
 			notificationsListPreference.setSummary(this.activity.getString(
 					R.string.notifications_list_summary,
 					notificationsList.getName()));
 			notificationsListPreference
-			.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-				@Override
-				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					String list = ListMirakel.getList(
-							Integer.parseInt((String) newValue))
-							.getName();
-					notificationsListPreference.setSummary(PreferencesAppHelper.this.activity
-							.getString(
-									R.string.notifications_list_summary,
-									list));
-					if (MirakelCommonPreferences
-							.isNotificationListOpenDefault()) {
-						notificationsListOpenPreference.setSummary(PreferencesAppHelper.this.activity
-								.getString(
-										R.string.notifications_list_summary,
-										list));
-					}
-					return true;
-				}
-			});
+					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+						@Override
+						public boolean onPreferenceChange(
+								final Preference preference,
+								final Object newValue) {
+							final String list = ListMirakel.getList(
+									Integer.parseInt((String) newValue))
+									.getName();
+							notificationsListPreference
+									.setSummary(PreferencesAppHelper.this.activity
+											.getString(
+													R.string.notifications_list_summary,
+													list));
+							if (MirakelCommonPreferences
+									.isNotificationListOpenDefault()) {
+								notificationsListOpenPreference
+										.setSummary(PreferencesAppHelper.this.activity
+												.getString(
+														R.string.notifications_list_summary,
+														list));
+							}
+							return true;
+						}
+					});
 
 			notificationsListOpenPreference.setEntries(entriesWithDefault);
 			notificationsListOpenPreference
-			.setEntryValues(entryValuesWithDefault);
-			ListMirakel notificationsListOpen = MirakelModelPreferences
+					.setEntryValues(entryValuesWithDefault);
+			final ListMirakel notificationsListOpen = MirakelModelPreferences
 					.getNotificationsListOpen();
 			notificationsListOpenPreference.setSummary(this.activity.getString(
 					R.string.notifications_list_open_summary,
 					notificationsListOpen.getName()));
 			notificationsListOpenPreference
-			.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-				@Override
-				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					String list;
-					if (!"default".equals(newValue.toString())) {
-						list = ListMirakel.getList(
-								Integer.parseInt((String) newValue))
-								.getName();
-					} else {
-						list = MirakelModelPreferences
-								.getNotificationsList().getName();
-					}
-					notificationsListOpenPreference.setSummary(PreferencesAppHelper.this.activity
-							.getString(
-									R.string.notifications_list_summary,
-									list));
-					return true;
-				}
-			});
+					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+						@Override
+						public boolean onPreferenceChange(
+								final Preference preference,
+								final Object newValue) {
+							String list;
+							if (!"default".equals(newValue.toString())) {
+								list = ListMirakel.getList(
+										Integer.parseInt((String) newValue))
+										.getName();
+							} else {
+								list = MirakelModelPreferences
+										.getNotificationsList().getName();
+							}
+							notificationsListOpenPreference
+									.setSummary(PreferencesAppHelper.this.activity
+											.getString(
+													R.string.notifications_list_summary,
+													list));
+							return true;
+						}
+					});
 		}
 
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -291,9 +304,9 @@ public class PreferencesAppHelper extends PreferencesHelper{
 		}
 
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-			PreferenceCategory cat = (PreferenceCategory) findPreference("notifications");
-			Preference notificationsBig = findPreference("notificationsBig");
-			if (cat != null && notificationsBig != null) {
+			final PreferenceCategory cat = (PreferenceCategory) findPreference("notifications");
+			final Preference notificationsBig = findPreference("notificationsBig");
+			if ((cat != null) && (notificationsBig != null)) {
 				cat.removePreference(notificationsBig);
 			}
 		}
@@ -301,16 +314,20 @@ public class PreferencesAppHelper extends PreferencesHelper{
 		final CheckBoxPreference darkTheme = (CheckBoxPreference) findPreference("DarkTheme");
 		if (darkTheme != null) {
 			darkTheme
-			.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
-				@Override
-				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					PreferencesAppHelper.this.activity.finish();
-					PreferencesAppHelper.this.activity.startActivity(PreferencesAppHelper.this.activity.getIntent());
+						@Override
+						public boolean onPreferenceChange(
+								final Preference preference,
+								final Object newValue) {
+							PreferencesAppHelper.this.activity.finish();
+							PreferencesAppHelper.this.activity
+									.startActivity(PreferencesAppHelper.this.activity
+											.getIntent());
 
-					return true;
-				}
-			});
+							return true;
+						}
+					});
 		}
 
 		// Startup
@@ -318,31 +335,35 @@ public class PreferencesAppHelper extends PreferencesHelper{
 		if (startupAllListPreference != null) {
 			final ListPreference startupListPreference = (ListPreference) findPreference("startupList");
 			startupAllListPreference
-			.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-				@Override
-				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					if (!(Boolean) newValue) {
-						startupListPreference.setSummary(PreferencesAppHelper.this.activity
-								.getString(
-										R.string.startup_list_summary,
-										MirakelModelPreferences
-										.getStartupList()
-										.getName()));
-						startupListPreference.setEnabled(true);
-					} else {
-						startupListPreference.setSummary(" ");
-						startupListPreference.setEnabled(false);
-					}
-					return true;
-				}
-			});
+					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+						@Override
+						public boolean onPreferenceChange(
+								final Preference preference,
+								final Object newValue) {
+							if (!(Boolean) newValue) {
+								startupListPreference
+										.setSummary(PreferencesAppHelper.this.activity
+												.getString(
+														R.string.startup_list_summary,
+														MirakelModelPreferences
+																.getStartupList()
+																.getName()));
+								startupListPreference.setEnabled(true);
+							} else {
+								startupListPreference.setSummary(" ");
+								startupListPreference.setEnabled(false);
+							}
+							return true;
+						}
+					});
 			startupListPreference.setEntries(entries);
 			startupListPreference.setEntryValues(entryValues);
 			if (MirakelCommonPreferences.isStartupAllLists()) {
 				startupListPreference.setSummary(" ");
 				startupListPreference.setEnabled(false);
 			} else {
-				ListMirakel startupList = MirakelModelPreferences.getStartupList();
+				ListMirakel startupList = MirakelModelPreferences
+						.getStartupList();
 				if (startupList == null) {
 					startupList = SpecialList.firstSpecialSafe(this.activity);
 				}
@@ -351,23 +372,27 @@ public class PreferencesAppHelper extends PreferencesHelper{
 				startupListPreference.setEnabled(true);
 			}
 			startupListPreference
-			.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
-				@Override
-				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					startupListPreference.setSummary(PreferencesAppHelper.this.activity
-							.getString(
-									R.string.startup_list_summary,
-									ListMirakel.getList(Integer
-											.parseInt((String) newValue))));
-					return true;
-				}
-			});
+						@Override
+						public boolean onPreferenceChange(
+								final Preference preference,
+								final Object newValue) {
+							startupListPreference
+									.setSummary(PreferencesAppHelper.this.activity
+											.getString(
+													R.string.startup_list_summary,
+													ListMirakel.getList(Integer
+															.parseInt((String) newValue))));
+							return true;
+						}
+					});
 		}
 
 		// Change Sync-Interval
 		// FIXME move to accountsettings
-		// final ListPreference syncInterval = (ListPreference) findPreference("syncFrequency");
+		// final ListPreference syncInterval = (ListPreference)
+		// findPreference("syncFrequency");
 		// if (MirakelPreferences.getSyncFrequency() == -1) {
 		// syncInterval.setSummary(R.string.sync_frequency_summary_man);
 		// } else {
@@ -416,47 +441,57 @@ public class PreferencesAppHelper extends PreferencesHelper{
 		final CheckBoxPreference notificationsUse = (CheckBoxPreference) findPreference("notificationsUse");
 		if (notificationsUse != null) {
 			notificationsUse
-			.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
-				@Override
-				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					if ((Boolean) newValue) {
-						PreferencesAppHelper.this.activity.startService(new Intent(PreferencesAppHelper.this.activity,
-								NotificationService.class));
-					} else {
-						if (PreferencesAppHelper.this.activity.startService(new Intent(PreferencesAppHelper.this.activity,
-								NotificationService.class)) != null) {
-							PreferencesAppHelper.this.activity.stopService(new Intent(PreferencesAppHelper.this.activity,
-									NotificationService.class));
+						@Override
+						public boolean onPreferenceChange(
+								final Preference preference,
+								final Object newValue) {
+							if ((Boolean) newValue) {
+								PreferencesAppHelper.this.activity
+										.startService(new Intent(
+												PreferencesAppHelper.this.activity,
+												NotificationService.class));
+							} else {
+								if (PreferencesAppHelper.this.activity
+										.startService(new Intent(
+												PreferencesAppHelper.this.activity,
+												NotificationService.class)) != null) {
+									PreferencesAppHelper.this.activity
+											.stopService(new Intent(
+													PreferencesAppHelper.this.activity,
+													NotificationService.class));
+								}
+							}
+							final Editor e = preference.getEditor();
+							e.putBoolean("notificationsUse", (Boolean) newValue);
+							e.commit();
+							NotificationService
+									.updateNotificationAndWidget(PreferencesAppHelper.this.activity);
+							return true;
 						}
-					}
-					Editor e = preference.getEditor();
-					e.putBoolean("notificationsUse", (Boolean) newValue);
-					e.commit();
-					NotificationService
-					.updateNotificationAndWidget(PreferencesAppHelper.this.activity);
-					return true;
-				}
-			});
+					});
 		}
-		String[] settings = { "notificationsPersistent",
+		final String[] settings = { "notificationsPersistent",
 				"notificationsZeroHide", "notificationsBig" };
 		for (final String key : settings) {
 			final CheckBoxPreference notifSetting = (CheckBoxPreference) findPreference(key);
 			if (notifSetting != null) {
 				notifSetting
-				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+						.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
-					@Override
-					public boolean onPreferenceChange(Preference preference, Object newValue) {
-						Editor e = preference.getEditor();
-						e.putBoolean(key, (Boolean) newValue);
-						e.commit();
-						NotificationService
-						.updateNotificationAndWidget(PreferencesAppHelper.this.activity);
-						return true;
-					}
-				});
+							@Override
+							public boolean onPreferenceChange(
+									final Preference preference,
+									final Object newValue) {
+								final Editor e = preference.getEditor();
+								e.putBoolean(key, (Boolean) newValue);
+								e.commit();
+								NotificationService
+										.updateNotificationAndWidget(PreferencesAppHelper.this.activity);
+								return true;
+							}
+						});
 
 			}
 		}
@@ -464,39 +499,44 @@ public class PreferencesAppHelper extends PreferencesHelper{
 		final CheckBoxPreference remindersPersistent = (CheckBoxPreference) findPreference("remindersPersistent");
 		if (remindersPersistent != null) {
 			remindersPersistent
-			.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
-				@Override
-				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					Editor e = preference.getEditor();
-					e.putBoolean("remindersPersistent",
-							(Boolean) newValue);
-					e.commit();
-					ReminderAlarm.stopAll(PreferencesAppHelper.this.activity);
-					ReminderAlarm.updateAlarms(PreferencesAppHelper.this.activity);
-					return true;
-				}
-			});
+						@Override
+						public boolean onPreferenceChange(
+								final Preference preference,
+								final Object newValue) {
+							final Editor e = preference.getEditor();
+							e.putBoolean("remindersPersistent",
+									(Boolean) newValue);
+							e.commit();
+							ReminderAlarm
+									.stopAll(PreferencesAppHelper.this.activity);
+							ReminderAlarm
+									.updateAlarms(PreferencesAppHelper.this.activity);
+							return true;
+						}
+					});
 
 		}
 
-		Intent startSpecialListsIntent = new Intent(this.activity,
+		final Intent startSpecialListsIntent = new Intent(this.activity,
 				SpecialListsSettingsActivity.class);
-		Preference specialLists = findPreference("special_lists");
+		final Preference specialLists = findPreference("special_lists");
 		if (specialLists != null) {
 			specialLists.setIntent(startSpecialListsIntent);
 		}
 
-		Preference backup = findPreference("backup");
+		final Preference backup = findPreference("backup");
 		if (backup != null) {
 
-			backup.setSummary(this.activity.getString(R.string.backup_click_summary,
-					FileUtils.getExportDir().getAbsolutePath()));
+			backup.setSummary(this.activity.getString(
+					R.string.backup_click_summary, FileUtils.getExportDir()
+							.getAbsolutePath()));
 
 			backup.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 				@Override
 				@SuppressLint("NewApi")
-				public boolean onPreferenceClick(Preference preference) {
+				public boolean onPreferenceClick(final Preference preference) {
 					ExportImport.exportDB(PreferencesAppHelper.this.activity);
 					return true;
 				}
@@ -505,7 +545,7 @@ public class PreferencesAppHelper extends PreferencesHelper{
 
 		final ListPreference isTablet = (ListPreference) findPreference("useTabletLayoutNew");
 		if (isTablet != null) {
-			String[] values = { "0", "1", "2", "3" };
+			final String[] values = { "0", "1", "2", "3" };
 			final String[] e = this.activity.getResources().getStringArray(
 					R.array.tablet_options);
 			isTablet.setEntries(e);
@@ -513,230 +553,265 @@ public class PreferencesAppHelper extends PreferencesHelper{
 			isTablet.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 				@Override
-				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					int value = Integer.parseInt(newValue.toString());
+				public boolean onPreferenceChange(final Preference preference,
+						final Object newValue) {
+					final int value = Integer.parseInt(newValue.toString());
 					isTablet.setSummary(e[value]);
 					return true;
 				}
 			});
 		}
 
-		Preference importDB = findPreference("import");
+		final Preference importDB = findPreference("import");
 		if (importDB != null) {
 			importDB.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 				@Override
-				public boolean onPreferenceClick(Preference preference) {
+				public boolean onPreferenceClick(final Preference preference) {
 					Helpers.showFileChooser(SettingsActivity.FILE_IMPORT_DB,
-							PreferencesAppHelper.this.activity.getString(R.string.import_title), PreferencesAppHelper.this.activity);
-					return true;
-				}
-			});
-		}
-
-		Preference changelog = findPreference("changelog");
-		if (changelog != null) {
-			changelog
-			.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-				@Override
-				@SuppressLint("NewApi")
-				public boolean onPreferenceClick(Preference preference) {
-					ChangeLog cl = new ChangeLog(PreferencesAppHelper.this.activity);
-					cl.getFullLogDialog().show();
-					return true;
-				}
-			});
-		}
-		Preference anyDo = findPreference("import_any_do");
-		if (anyDo != null) {
-			anyDo.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-				@Override
-				public boolean onPreferenceClick(Preference preference) {
-					AnyDoImport.handleImportAnyDo(PreferencesAppHelper.this.activity);
-					return true;
-				}
-			});
-		}
-		Preference importAstrid = findPreference("import_astrid");
-		if (importAstrid != null) {
-			importAstrid
-			.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-				@Override
-				public boolean onPreferenceClick(Preference preference) {
-					Helpers.showFileChooser(
-							SettingsActivity.FILE_ASTRID,
-							PreferencesAppHelper.this.activity.getString(R.string.astrid_import_title),
+							PreferencesAppHelper.this.activity
+									.getString(R.string.import_title),
 							PreferencesAppHelper.this.activity);
 					return true;
 				}
 			});
 		}
-		Preference importWunderlist = findPreference("import_wunderlist");
-		if (importWunderlist != null) {
-			importWunderlist
-			.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+		final Preference changelog = findPreference("changelog");
+		if (changelog != null) {
+			changelog
+					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+						@Override
+						@SuppressLint("NewApi")
+						public boolean onPreferenceClick(
+								final Preference preference) {
+
+							final Changelog cl = new Changelog(
+									PreferencesAppHelper.this.activity);
+							cl.showChangelog(Changelog.NO_VERSION);
+							return true;
+						}
+					});
+		}
+		final Preference anyDo = findPreference("import_any_do");
+		if (anyDo != null) {
+			anyDo.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 				@Override
-				public boolean onPreferenceClick(Preference preference) {
-					new AlertDialog.Builder(PreferencesAppHelper.this.activity)
-					.setTitle(R.string.import_wunderlist_howto)
-					.setMessage(
-							R.string.import_wunderlist_howto_text)
-							.setPositiveButton(android.R.string.ok,
-									new OnClickListener() {
-
-								@Override
-								public void onClick(DialogInterface dialog, int which) {
-
-									Helpers.showFileChooser(
-											SettingsActivity.FILE_WUNDERLIST,
-											PreferencesAppHelper.this.activity.getString(R.string.import_wunderlist_title),
-											PreferencesAppHelper.this.activity);
-
-								}
-							}).show();
+				public boolean onPreferenceClick(final Preference preference) {
+					AnyDoImport
+							.handleImportAnyDo(PreferencesAppHelper.this.activity);
 					return true;
 				}
 			});
+		}
+		final Preference importAstrid = findPreference("import_astrid");
+		if (importAstrid != null) {
+			importAstrid
+					.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+						@Override
+						public boolean onPreferenceClick(
+								final Preference preference) {
+							Helpers.showFileChooser(
+									SettingsActivity.FILE_ASTRID,
+									PreferencesAppHelper.this.activity
+											.getString(R.string.astrid_import_title),
+									PreferencesAppHelper.this.activity);
+							return true;
+						}
+					});
+		}
+		final Preference importWunderlist = findPreference("import_wunderlist");
+		if (importWunderlist != null) {
+			importWunderlist
+					.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+						@Override
+						public boolean onPreferenceClick(
+								final Preference preference) {
+							new AlertDialog.Builder(
+									PreferencesAppHelper.this.activity)
+									.setTitle(R.string.import_wunderlist_howto)
+									.setMessage(
+											R.string.import_wunderlist_howto_text)
+									.setPositiveButton(android.R.string.ok,
+											new OnClickListener() {
+
+												@Override
+												public void onClick(
+														final DialogInterface dialog,
+														final int which) {
+
+													Helpers.showFileChooser(
+															SettingsActivity.FILE_WUNDERLIST,
+															PreferencesAppHelper.this.activity
+																	.getString(R.string.import_wunderlist_title),
+															PreferencesAppHelper.this.activity);
+
+												}
+											}).show();
+							return true;
+						}
+					});
 		}
 		final CheckBoxPreference killButton = (CheckBoxPreference) findPreference("KillButton");
 		if (killButton != null) {
 			killButton
-			.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
-				@Override
-				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					if ((Boolean) newValue) {
-						AlertDialog.Builder builder = new AlertDialog.Builder(
-								PreferencesAppHelper.this.activity);
-						builder.setTitle(R.string.kill_sure);
-						builder.setMessage(R.string.kill_sure_message)
-						.setPositiveButton(
-								android.R.string.yes,
-								new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface dialog, int which) {}
-								})
-								.setNegativeButton(
-										android.R.string.cancel,
-										new OnClickListener() {
-											@Override
-											public void onClick(DialogInterface dialog, int which) {
-												((CheckBoxPreference) findPreference("KillButton"))
-												.setChecked(false);
+						@Override
+						public boolean onPreferenceChange(
+								final Preference preference,
+								final Object newValue) {
+							if ((Boolean) newValue) {
+								final AlertDialog.Builder builder = new AlertDialog.Builder(
+										PreferencesAppHelper.this.activity);
+								builder.setTitle(R.string.kill_sure);
+								builder.setMessage(R.string.kill_sure_message)
+										.setPositiveButton(
+												android.R.string.yes,
+												new DialogInterface.OnClickListener() {
+													@Override
+													public void onClick(
+															final DialogInterface dialog,
+															final int which) {
+													}
+												})
+										.setNegativeButton(
+												android.R.string.cancel,
+												new OnClickListener() {
+													@Override
+													public void onClick(
+															final DialogInterface dialog,
+															final int which) {
+														((CheckBoxPreference) findPreference("KillButton"))
+																.setChecked(false);
 
-											}
-										}).show();
-					}
-					return true;
-				}
-			});
+													}
+												}).show();
+							}
+							return true;
+						}
+					});
 		}
 		final EditTextPreference importFileType = (EditTextPreference) findPreference("import_file_title");
 		if (importFileType != null) {
-			importFileType.setSummary(MirakelCommonPreferences.getImportFileTitle());
+			importFileType.setSummary(MirakelCommonPreferences
+					.getImportFileTitle());
 		}
 		final CheckBoxPreference importDefaultList = (CheckBoxPreference) findPreference("importDefaultList");
 		if (importDefaultList != null) {
-			ListMirakel list = MirakelModelPreferences.getImportDefaultList(false);
+			final ListMirakel list = MirakelModelPreferences
+					.getImportDefaultList(false);
 			if (list != null) {
 				importDefaultList.setSummary(this.activity.getString(
 						R.string.import_default_list_summary, list.getName()));
 			} else {
 				importDefaultList
-				.setSummary(R.string.import_no_default_list_summary);
+						.setSummary(R.string.import_no_default_list_summary);
 			}
 
 			importDefaultList
-			.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
-				@Override
-				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					if ((Boolean) newValue) {
-						AlertDialog.Builder builder = new AlertDialog.Builder(
-								PreferencesAppHelper.this.activity);
-						builder.setTitle(R.string.import_to);
-						final List<CharSequence> items = new ArrayList<CharSequence>();
-						final List<Integer> list_ids = new ArrayList<Integer>();
-						int currentItem = 0;
-						for (
-								ListMirakel list : ListMirakel.all()) {
-							if (list.getId() > 0) {
-								items.add(list.getName());
-								list_ids.add(list.getId());
-							}
+						@Override
+						public boolean onPreferenceChange(
+								final Preference preference,
+								final Object newValue) {
+							if ((Boolean) newValue) {
+								final AlertDialog.Builder builder = new AlertDialog.Builder(
+										PreferencesAppHelper.this.activity);
+								builder.setTitle(R.string.import_to);
+								final List<CharSequence> items = new ArrayList<CharSequence>();
+								final List<Integer> list_ids = new ArrayList<Integer>();
+								final int currentItem = 0;
+								for (final ListMirakel list : ListMirakel.all()) {
+									if (list.getId() > 0) {
+										items.add(list.getName());
+										list_ids.add(list.getId());
+									}
 
-						}
-						builder.setSingleChoiceItems(
-								items.toArray(new CharSequence[items
-								                               .size()]), currentItem,
-								                               new DialogInterface.OnClickListener() {
+								}
+								builder.setSingleChoiceItems(
+										items.toArray(new CharSequence[items
+												.size()]), currentItem,
+										new DialogInterface.OnClickListener() {
+											@Override
+											public void onClick(
+													final DialogInterface dialog,
+													final int item) {
+												importDefaultList
+														.setSummary(PreferencesAppHelper.this.activity
+																.getString(
+																		R.string.import_default_list_summary,
+																		items.get(item)));
+												final SharedPreferences.Editor editor = MirakelPreferences
+														.getEditor();
+												editor.putInt(
+														"defaultImportList",
+														list_ids.get(item));
+												editor.commit();
+												dialog.dismiss();
+											}
+										});
+								builder.setOnCancelListener(new OnCancelListener() {
 									@Override
-									public void onClick(DialogInterface dialog, int item) {
-										importDefaultList.setSummary(PreferencesAppHelper.this.activity
-												.getString(
-														R.string.import_default_list_summary,
-														items.get(item)));
-										SharedPreferences.Editor editor = MirakelCommonPreferences
-												.getEditor();
-										editor.putInt(
-												"defaultImportList",
-												list_ids.get(item));
-										editor.commit();
-										dialog.dismiss();
+									public void onCancel(
+											final DialogInterface dialog) {
+										importDefaultList.setChecked(false);
+										importDefaultList
+												.setSummary(R.string.import_no_default_list_summary);
 									}
 								});
-						builder.setOnCancelListener(new OnCancelListener() {
-							@Override
-							public void onCancel(DialogInterface dialog) {
-								importDefaultList.setChecked(false);
+								builder.create().show();
+							} else {
 								importDefaultList
-								.setSummary(R.string.import_no_default_list_summary);
+										.setSummary(R.string.import_no_default_list_summary);
 							}
-						});
-						builder.create().show();
-					} else {
-						importDefaultList
-						.setSummary(R.string.import_no_default_list_summary);
-					}
-					return true;
-				}
-			});
+							return true;
+						}
+					});
 		}
 
 		// Delete done tasks
-		Preference deleteDone = findPreference("deleteDone");
+		final Preference deleteDone = findPreference("deleteDone");
 		if (deleteDone != null) {
 			deleteDone
-			.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
-				@Override
-				public boolean onPreferenceClick(Preference preference) {
-					new AlertDialog.Builder(PreferencesAppHelper.this.activity)
-					.setTitle(R.string.delete_done_warning)
-					.setMessage(
-							R.string.delete_done_warning_message)
-							.setPositiveButton(android.R.string.ok,
-									new OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialogInterface, int i) {
-									Task.deleteDoneTasks();
-									Toast.makeText(
-											PreferencesAppHelper.this.activity,
-											R.string.delete_done_success,
-											Toast.LENGTH_SHORT)
-											.show();
-									android.os.Process
-									.killProcess(android.os.Process
-											.myPid());
-								}
-							})
-							.setNegativeButton(android.R.string.cancel,
-									new OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialogInterface, int i) {}
-							}).show();
-					return true;
-				}
-			});
+						@Override
+						public boolean onPreferenceClick(
+								final Preference preference) {
+							new AlertDialog.Builder(
+									PreferencesAppHelper.this.activity)
+									.setTitle(R.string.delete_done_warning)
+									.setMessage(
+											R.string.delete_done_warning_message)
+									.setPositiveButton(android.R.string.ok,
+											new OnClickListener() {
+												@Override
+												public void onClick(
+														final DialogInterface dialogInterface,
+														final int i) {
+													Task.deleteDoneTasks();
+													Toast.makeText(
+															PreferencesAppHelper.this.activity,
+															R.string.delete_done_success,
+															Toast.LENGTH_SHORT)
+															.show();
+													android.os.Process
+															.killProcess(android.os.Process
+																	.myPid());
+												}
+											})
+									.setNegativeButton(android.R.string.cancel,
+											new OnClickListener() {
+												@Override
+												public void onClick(
+														final DialogInterface dialogInterface,
+														final int i) {
+												}
+											}).show();
+							return true;
+						}
+					});
 		}
 		final Preference autoBackupIntervall = findPreference("autoBackupIntervall");
 		if (autoBackupIntervall != null) {
@@ -744,108 +819,115 @@ public class PreferencesAppHelper extends PreferencesHelper{
 					R.string.auto_backup_intervall_summary,
 					MirakelCommonPreferences.getAutoBackupIntervall()));
 			autoBackupIntervall
-			.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
-				@Override
-				public boolean onPreferenceClick(Preference preference) {
+						@Override
+						public boolean onPreferenceClick(
+								final Preference preference) {
 
-					final int old_val = MirakelCommonPreferences
-							.getAutoBackupIntervall();
-					final int max = 31;
-					final int min = 0;
-					if (PreferencesAppHelper.this.v4_0) {
-						numberPicker = new NumberPicker(PreferencesAppHelper.this.activity);
-						((NumberPicker) numberPicker).setMaxValue(max);
-						((NumberPicker) numberPicker).setMinValue(min);
-						((NumberPicker) numberPicker)
-						.setWrapSelectorWheel(false);
-						((NumberPicker) numberPicker).setValue(old_val);
-						((NumberPicker) numberPicker)
-						.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-					} else {
-						numberPicker = ((LayoutInflater) PreferencesAppHelper.this.activity
-								.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
-								.inflate(
-										R.layout.dialog_num_picker_v10,
-										null);
+							final int old_val = MirakelCommonPreferences
+									.getAutoBackupIntervall();
+							final int max = 31;
+							final int min = 0;
+							if (PreferencesAppHelper.this.v4_0) {
+								numberPicker = new NumberPicker(
+										PreferencesAppHelper.this.activity);
+								((NumberPicker) numberPicker).setMaxValue(max);
+								((NumberPicker) numberPicker).setMinValue(min);
+								((NumberPicker) numberPicker)
+										.setWrapSelectorWheel(false);
+								((NumberPicker) numberPicker).setValue(old_val);
+								((NumberPicker) numberPicker)
+										.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+							} else {
+								numberPicker = ((LayoutInflater) PreferencesAppHelper.this.activity
+										.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
+										.inflate(
+												R.layout.dialog_num_picker_v10,
+												null);
 
-						((TextView) numberPicker
-								.findViewById(R.id.dialog_num_pick_val))
-								.setText(old_val + "");
-						((Button) numberPicker
-								.findViewById(R.id.dialog_num_pick_plus))
-								.setOnClickListener(new View.OnClickListener() {
-									@Override
-									public void onClick(View v) {
-										int val = Integer
-												.parseInt(((TextView) numberPicker
-														.findViewById(R.id.dialog_num_pick_val))
-														.getText()
-														.toString());
-										if (val < max) {
-											((TextView) numberPicker
-													.findViewById(R.id.dialog_num_pick_val))
-													.setText(++val + "");
-										}
-									}
-								});
-						((Button) numberPicker
-								.findViewById(R.id.dialog_num_pick_minus))
-								.setOnClickListener(new View.OnClickListener() {
-									@Override
-									public void onClick(View v) {
-										int val = Integer
-												.parseInt(((TextView) numberPicker
-														.findViewById(R.id.dialog_num_pick_val))
-														.getText()
-														.toString());
-										if (val > min) {
-											((TextView) numberPicker
-													.findViewById(R.id.dialog_num_pick_val))
-													.setText(--val + "");
-										}
-									}
-								});
-					}
-					new AlertDialog.Builder(PreferencesAppHelper.this.activity)
-					.setTitle(R.string.auto_backup_intervall)
-					.setView(numberPicker)
-					.setPositiveButton(
-							android.R.string.ok,
-							new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog, int whichButton) {
-									int val;
-									if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-										val = ((NumberPicker) numberPicker)
-												.getValue();
-									} else {
-										val = Integer
-												.parseInt(((TextView) numberPicker
-														.findViewById(R.id.dialog_num_pick_val))
-														.getText()
-														.toString());
-									}
-									MirakelCommonPreferences
-									.setAutoBackupIntervall(val);
-									autoBackupIntervall
-									.setSummary(PreferencesAppHelper.this.activity
-											.getString(
-													R.string.auto_backup_intervall_summary,
-													val));
-								}
-							})
-							.setNegativeButton(
-									android.R.string.cancel,
-									new DialogInterface.OnClickListener() {
-										@Override
-										public void onClick(DialogInterface dialog, int whichButton) {
-											// Do nothing.
-										}
-									}).show();
-					return false;
-				}
-			});
+								((TextView) numberPicker
+										.findViewById(R.id.dialog_num_pick_val))
+										.setText(old_val + "");
+								((Button) numberPicker
+										.findViewById(R.id.dialog_num_pick_plus))
+										.setOnClickListener(new View.OnClickListener() {
+											@Override
+											public void onClick(final View v) {
+												int val = Integer
+														.parseInt(((TextView) numberPicker
+																.findViewById(R.id.dialog_num_pick_val))
+																.getText()
+																.toString());
+												if (val < max) {
+													((TextView) numberPicker
+															.findViewById(R.id.dialog_num_pick_val))
+															.setText(++val + "");
+												}
+											}
+										});
+								((Button) numberPicker
+										.findViewById(R.id.dialog_num_pick_minus))
+										.setOnClickListener(new View.OnClickListener() {
+											@Override
+											public void onClick(final View v) {
+												int val = Integer
+														.parseInt(((TextView) numberPicker
+																.findViewById(R.id.dialog_num_pick_val))
+																.getText()
+																.toString());
+												if (val > min) {
+													((TextView) numberPicker
+															.findViewById(R.id.dialog_num_pick_val))
+															.setText(--val + "");
+												}
+											}
+										});
+							}
+							new AlertDialog.Builder(
+									PreferencesAppHelper.this.activity)
+									.setTitle(R.string.auto_backup_intervall)
+									.setView(numberPicker)
+									.setPositiveButton(
+											android.R.string.ok,
+											new DialogInterface.OnClickListener() {
+												@Override
+												public void onClick(
+														final DialogInterface dialog,
+														final int whichButton) {
+													int val;
+													if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
+														val = ((NumberPicker) numberPicker)
+																.getValue();
+													} else {
+														val = Integer
+																.parseInt(((TextView) numberPicker
+																		.findViewById(R.id.dialog_num_pick_val))
+																		.getText()
+																		.toString());
+													}
+													MirakelCommonPreferences
+															.setAutoBackupIntervall(val);
+													autoBackupIntervall
+															.setSummary(PreferencesAppHelper.this.activity
+																	.getString(
+																			R.string.auto_backup_intervall_summary,
+																			val));
+												}
+											})
+									.setNegativeButton(
+											android.R.string.cancel,
+											new DialogInterface.OnClickListener() {
+												@Override
+												public void onClick(
+														final DialogInterface dialog,
+														final int whichButton) {
+													// Do nothing.
+												}
+											}).show();
+							return false;
+						}
+					});
 		}
 		final Preference undoNumber = findPreference("UndoNumber");
 		if (undoNumber != null) {
@@ -853,82 +935,88 @@ public class PreferencesAppHelper extends PreferencesHelper{
 					R.string.undo_number_summary,
 					MirakelCommonPreferences.getUndoNumber()));
 			undoNumber
-			.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
-				@Override
-				public boolean onPreferenceClick(Preference preference) {
-					final int old_val = MirakelCommonPreferences
-							.getUndoNumber();
-					final int max = 25;
-					final int min = 1;
-					if (PreferencesAppHelper.this.v4_0) {
-						numberPicker = new NumberPicker(PreferencesAppHelper.this.activity);
-						((NumberPicker) numberPicker).setMaxValue(max);
-						((NumberPicker) numberPicker).setMinValue(min);
-						((NumberPicker) numberPicker)
-						.setWrapSelectorWheel(false);
-						((NumberPicker) numberPicker).setValue(old_val);
-						((NumberPicker) numberPicker)
-						.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-					} else {
-						numberPicker = ((LayoutInflater) PreferencesAppHelper.this.activity
-								.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
-								.inflate(
-										R.layout.dialog_num_picker_v10,
-										null);
+						@Override
+						public boolean onPreferenceClick(
+								final Preference preference) {
+							final int old_val = MirakelCommonPreferences
+									.getUndoNumber();
+							final int max = 25;
+							final int min = 1;
+							if (PreferencesAppHelper.this.v4_0) {
+								numberPicker = new NumberPicker(
+										PreferencesAppHelper.this.activity);
+								((NumberPicker) numberPicker).setMaxValue(max);
+								((NumberPicker) numberPicker).setMinValue(min);
+								((NumberPicker) numberPicker)
+										.setWrapSelectorWheel(false);
+								((NumberPicker) numberPicker).setValue(old_val);
+								((NumberPicker) numberPicker)
+										.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+							} else {
+								numberPicker = ((LayoutInflater) PreferencesAppHelper.this.activity
+										.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
+										.inflate(
+												R.layout.dialog_num_picker_v10,
+												null);
 
-						((TextView) numberPicker
-								.findViewById(R.id.dialog_num_pick_val))
-								.setText(old_val + "");
-						((Button) numberPicker
-								.findViewById(R.id.dialog_num_pick_plus))
-								.setOnClickListener(new View.OnClickListener() {
-									@Override
-									public void onClick(View v) {
-										int val = Integer
-												.parseInt(((TextView) numberPicker
-														.findViewById(R.id.dialog_num_pick_val))
-														.getText()
-														.toString());
-										if (val < max) {
-											((TextView) numberPicker
-													.findViewById(R.id.dialog_num_pick_val))
-													.setText(++val + "");
-										}
-									}
-								});
-						((Button) numberPicker
-								.findViewById(R.id.dialog_num_pick_minus))
-								.setOnClickListener(new View.OnClickListener() {
-									@Override
-									public void onClick(View v) {
-										int val = Integer
-												.parseInt(((TextView) numberPicker
-														.findViewById(R.id.dialog_num_pick_val))
-														.getText()
-														.toString());
-										if (val > min) {
-											((TextView) numberPicker
-													.findViewById(R.id.dialog_num_pick_val))
-													.setText(--val + "");
-										}
-									}
-								});
-					}
-					new AlertDialog.Builder(PreferencesAppHelper.this.activity)
-					.setTitle(R.string.undo_number)
-					.setMessage(
-							PreferencesAppHelper.this.activity.getString(
-									R.string.undo_number_summary,
-									MirakelCommonPreferences
-									.getUndoNumber()))
+								((TextView) numberPicker
+										.findViewById(R.id.dialog_num_pick_val))
+										.setText(old_val + "");
+								((Button) numberPicker
+										.findViewById(R.id.dialog_num_pick_plus))
+										.setOnClickListener(new View.OnClickListener() {
+											@Override
+											public void onClick(final View v) {
+												int val = Integer
+														.parseInt(((TextView) numberPicker
+																.findViewById(R.id.dialog_num_pick_val))
+																.getText()
+																.toString());
+												if (val < max) {
+													((TextView) numberPicker
+															.findViewById(R.id.dialog_num_pick_val))
+															.setText(++val + "");
+												}
+											}
+										});
+								((Button) numberPicker
+										.findViewById(R.id.dialog_num_pick_minus))
+										.setOnClickListener(new View.OnClickListener() {
+											@Override
+											public void onClick(final View v) {
+												int val = Integer
+														.parseInt(((TextView) numberPicker
+																.findViewById(R.id.dialog_num_pick_val))
+																.getText()
+																.toString());
+												if (val > min) {
+													((TextView) numberPicker
+															.findViewById(R.id.dialog_num_pick_val))
+															.setText(--val + "");
+												}
+											}
+										});
+							}
+							new AlertDialog.Builder(
+									PreferencesAppHelper.this.activity)
+									.setTitle(R.string.undo_number)
+									.setMessage(
+											PreferencesAppHelper.this.activity
+													.getString(
+															R.string.undo_number_summary,
+															MirakelCommonPreferences
+																	.getUndoNumber()))
 									.setView(numberPicker)
 									.setPositiveButton(
 											android.R.string.ok,
 											new DialogInterface.OnClickListener() {
 												@Override
-												public void onClick(DialogInterface dialog, int whichButton) {
-													SharedPreferences.Editor editor = MirakelCommonPreferences
+												public void onClick(
+														final DialogInterface dialog,
+														final int whichButton) {
+													final SharedPreferences.Editor editor = MirakelPreferences
 															.getEditor();
 													int val;
 													if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
@@ -944,91 +1032,93 @@ public class PreferencesAppHelper extends PreferencesHelper{
 													editor.putInt("UndoNumber",
 															val);
 													undoNumber
-													.setSummary(PreferencesAppHelper.this.activity
-															.getString(
-																	R.string.undo_number_summary,
-																	val));
+															.setSummary(PreferencesAppHelper.this.activity
+																	.getString(
+																			R.string.undo_number_summary,
+																			val));
 													if (old_val > val) {
-														for (
-																int i = val; i < max; i++) {
+														for (int i = val; i < max; i++) {
 															editor.putString(
 																	UndoHistory.UNDO
-																	+ i,
+																			+ i,
 																	"");
 														}
 													}
 													editor.commit();
 												}
 											})
-											.setNegativeButton(
-													android.R.string.cancel,
-													new DialogInterface.OnClickListener() {
-														@Override
-														public void onClick(DialogInterface dialog, int whichButton) {
-															// Do nothing.
-														}
-													}).show();
-					return true;
-				}
-			});
+									.setNegativeButton(
+											android.R.string.cancel,
+											new DialogInterface.OnClickListener() {
+												@Override
+												public void onClick(
+														final DialogInterface dialog,
+														final int whichButton) {
+													// Do nothing.
+												}
+											}).show();
+							return true;
+						}
+					});
 		}
 
-		Preference dashclock = findPreference("dashclock");
+		final Preference dashclock = findPreference("dashclock");
 		if (dashclock != null) {
-			Intent startdashclockIntent = new Intent(
+			final Intent startdashclockIntent = new Intent(
 					Intent.ACTION_VIEW,
 					Uri.parse("http://play.google.com/store/apps/details?id=de.azapps.mirakel.dashclock"));
 			dashclock.setIntent(startdashclockIntent);
 		}
-		Preference credits = findPreference("credits");
+		final Preference credits = findPreference("credits");
 		if (credits != null) {
-			Intent startCreditsIntent = new Intent(this.activity,
+			final Intent startCreditsIntent = new Intent(this.activity,
 					CreditsActivity.class);
 			credits.setIntent(startCreditsIntent);
 		}
 
-		Preference contact = findPreference("contact");
+		final Preference contact = findPreference("contact");
 		if (contact != null) {
 			contact.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
 				@Override
-				public boolean onPreferenceClick(Preference preference) {
+				public boolean onPreferenceClick(final Preference preference) {
 					Helpers.contact(PreferencesAppHelper.this.activity);
 					return false;
 				}
 			});
 		}
 
-		Intent startSemanticsIntent = new Intent(this.activity,
+		final Intent startSemanticsIntent = new Intent(this.activity,
 				SemanticsSettingsActivity.class);
-		Preference semantics = findPreference("semanticNewTaskSettings");
+		final Preference semantics = findPreference("semanticNewTaskSettings");
 		if (semantics != null) {
 			semantics.setIntent(startSemanticsIntent);
 		}
 
-		Intent startRecurringIntent = new Intent(this.activity,
+		final Intent startRecurringIntent = new Intent(this.activity,
 				RecurringActivity.class);
-		Preference recurring = findPreference("recurring");
+		final Preference recurring = findPreference("recurring");
 		if (recurring != null) {
 			recurring.setIntent(startRecurringIntent);
 		}
 		// Intent startTaskFragmentIntent = new Intent(activity,
 		// TaskFragmentSettings.class);
-		Preference taskFragment = findPreference("task_fragment");
+		final Preference taskFragment = findPreference("task_fragment");
 		if (taskFragment != null) {
 			// taskFragment.setIntent(startTaskFragmentIntent);
 			taskFragment
-			.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
-				@Override
-				public boolean onPreferenceClick(Preference preference) {
-					if (PreferencesAppHelper.this.v4_0) {
-						((SettingsFragment) PreferencesAppHelper.this.ctx)
-						.showTaskFragmentSettings();
-					}
-					return false;
-				}
-			});
+						@Override
+						public boolean onPreferenceClick(
+								final Preference preference) {
+							if (PreferencesAppHelper.this.v4_0) {
+								((SettingsFragment) PreferencesAppHelper.this.ctx)
+										.showTaskFragmentSettings();
+							}
+							return false;
+						}
+					});
 		}
 
 		final CheckBoxPreference subTaskAddToSameList = (CheckBoxPreference) findPreference("subtaskAddToSameList");
@@ -1039,66 +1129,72 @@ public class PreferencesAppHelper extends PreferencesHelper{
 						MirakelModelPreferences.subtaskAddToList().getName()));
 			} else {
 				subTaskAddToSameList
-				.setSummary(R.string.settings_subtask_add_to_same_list_summary);
+						.setSummary(R.string.settings_subtask_add_to_same_list_summary);
 			}
 
 			subTaskAddToSameList
-			.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
-				@Override
-				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					if (!(Boolean) newValue) {
-						AlertDialog.Builder builder = new AlertDialog.Builder(
-								PreferencesAppHelper.this.activity);
-						builder.setTitle(R.string.import_to);
-						final List<CharSequence> items = new ArrayList<CharSequence>();
-						final List<Integer> list_ids = new ArrayList<Integer>();
-						int currentItem = 0;
-						for (ListMirakel list : ListMirakel.all()) {
-							if (list.getId() > 0) {
-								items.add(list.getName());
-								list_ids.add(list.getId());
-							}
+						@Override
+						public boolean onPreferenceChange(
+								final Preference preference,
+								final Object newValue) {
+							if (!(Boolean) newValue) {
+								final AlertDialog.Builder builder = new AlertDialog.Builder(
+										PreferencesAppHelper.this.activity);
+								builder.setTitle(R.string.import_to);
+								final List<CharSequence> items = new ArrayList<CharSequence>();
+								final List<Integer> list_ids = new ArrayList<Integer>();
+								final int currentItem = 0;
+								for (final ListMirakel list : ListMirakel.all()) {
+									if (list.getId() > 0) {
+										items.add(list.getName());
+										list_ids.add(list.getId());
+									}
 
-						}
-						builder.setSingleChoiceItems(
-								items.toArray(new CharSequence[items
-								                               .size()]), currentItem,
-								                               new DialogInterface.OnClickListener() {
+								}
+								builder.setSingleChoiceItems(
+										items.toArray(new CharSequence[items
+												.size()]), currentItem,
+										new DialogInterface.OnClickListener() {
+											@Override
+											public void onClick(
+													final DialogInterface dialog,
+													final int item) {
+												subTaskAddToSameList
+														.setSummary(items
+																.get(item));
+												subTaskAddToSameList
+														.setSummary(PreferencesAppHelper.this.activity
+																.getString(
+																		R.string.settings_subtask_add_to_list_summary,
+																		items.get(item)));
+												final SharedPreferences.Editor editor = MirakelPreferences
+														.getEditor();
+												editor.putInt(
+														"subtaskAddToList",
+														list_ids.get(item));
+												editor.commit();
+												dialog.dismiss();
+											}
+										});
+								builder.setOnCancelListener(new OnCancelListener() {
 									@Override
-									public void onClick(DialogInterface dialog, int item) {
+									public void onCancel(
+											final DialogInterface dialog) {
+										subTaskAddToSameList.setChecked(false);
 										subTaskAddToSameList
-										.setSummary(items
-												.get(item));
-										subTaskAddToSameList.setSummary(PreferencesAppHelper.this.activity
-												.getString(
-														R.string.settings_subtask_add_to_list_summary,
-														items.get(item)));
-										SharedPreferences.Editor editor = MirakelCommonPreferences
-												.getEditor();
-										editor.putInt(
-												"subtaskAddToList",
-												list_ids.get(item));
-										editor.commit();
-										dialog.dismiss();
+												.setSummary(R.string.settings_subtask_add_to_same_list_summary);
 									}
 								});
-						builder.setOnCancelListener(new OnCancelListener() {
-							@Override
-							public void onCancel(DialogInterface dialog) {
-								subTaskAddToSameList.setChecked(false);
+								builder.create().show();
+							} else {
 								subTaskAddToSameList
-								.setSummary(R.string.settings_subtask_add_to_same_list_summary);
+										.setSummary(R.string.settings_subtask_add_to_same_list_summary);
 							}
-						});
-						builder.create().show();
-					} else {
-						subTaskAddToSameList
-						.setSummary(R.string.settings_subtask_add_to_same_list_summary);
-					}
-					return true;
-				}
-			});
+							return true;
+						}
+					});
 		}
 		final ListPreference language = (ListPreference) findPreference("language");
 		if (language != null) {
@@ -1106,11 +1202,12 @@ public class PreferencesAppHelper extends PreferencesHelper{
 			language.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 				@Override
-				public boolean onPreferenceChange(Preference preference, Object newValue) {
+				public boolean onPreferenceChange(final Preference preference,
+						final Object newValue) {
 					setLanguageSummary(language, newValue.toString());
-					MirakelCommonPreferences.getEditor()
-					.putString("language", newValue.toString())
-					.commit();
+					MirakelPreferences.getEditor()
+							.putString("language", newValue.toString())
+							.commit();
 					Helpers.restartApp(PreferencesAppHelper.this.activity);
 					return false;
 				}
@@ -1121,26 +1218,29 @@ public class PreferencesAppHelper extends PreferencesHelper{
 		final CheckBoxPreference useTabletLayout = (CheckBoxPreference) findPreference("useTabletLayout");
 		if (useTabletLayout != null) {
 			useTabletLayout
-			.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+					.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
-				@Override
-				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					MirakelCommonPreferences
-					.getEditor()
-					.putBoolean("useTabletLayout",
-							(Boolean) newValue).commit();
-					Helpers.restartApp(PreferencesAppHelper.this.activity);
-					return false;
-				}
-			});
+						@Override
+						public boolean onPreferenceChange(
+								final Preference preference,
+								final Object newValue) {
+							MirakelPreferences
+									.getEditor()
+									.putBoolean("useTabletLayout",
+											(Boolean) newValue).commit();
+							Helpers.restartApp(PreferencesAppHelper.this.activity);
+							return false;
+						}
+					});
 		}
 		final CheckBoxPreference demoMode = (CheckBoxPreference) findPreference("demoMode");
-		if(demoMode!= null) {
+		if (demoMode != null) {
 			demoMode.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 				@Override
-				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					MirakelCommonPreferences.setDemoMode((Boolean) newValue); 
-					Helpers.restartApp(activity);
+				public boolean onPreferenceChange(final Preference preference,
+						final Object newValue) {
+					MirakelCommonPreferences.setDemoMode((Boolean) newValue);
+					Helpers.restartApp(PreferencesAppHelper.this.activity);
 					return false;
 				}
 			});
@@ -1150,10 +1250,10 @@ public class PreferencesAppHelper extends PreferencesHelper{
 		if (version != null) {
 			version.setSummary(DefinitionsHelper.VERSIONS_NAME);
 			version.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-				private Toast	toast;
+				private Toast toast;
 
 				@Override
-				public boolean onPreferenceClick(Preference preference) {
+				public boolean onPreferenceClick(final Preference preference) {
 					if (++PreferencesAppHelper.this.debugCounter > 6) {
 						MirakelCommonPreferences.toogleDebugMenu();
 						PreferencesAppHelper.this.debugCounter = 0;
@@ -1164,17 +1264,17 @@ public class PreferencesAppHelper extends PreferencesHelper{
 								.makeText(
 										PreferencesAppHelper.this.activity,
 										PreferencesAppHelper.this.activity
-										.getString(
-												R.string.change_dev_mode,
-												PreferencesAppHelper.this.activity
-												.getString(MirakelCommonPreferences
-														.isEnabledDebugMenu() ? R.string.enabled
-																: R.string.disabled)),
-																Toast.LENGTH_LONG);
+												.getString(
+														R.string.change_dev_mode,
+														PreferencesAppHelper.this.activity
+																.getString(MirakelCommonPreferences
+																		.isEnabledDebugMenu() ? R.string.enabled
+																		: R.string.disabled)),
+										Toast.LENGTH_LONG);
 						this.toast.show();
 						((SettingsActivity) PreferencesAppHelper.this.activity)
-						.invalidateHeaders();
-					} else if (PreferencesAppHelper.this.debugCounter > 3
+								.invalidateHeaders();
+					} else if ((PreferencesAppHelper.this.debugCounter > 3)
 							|| MirakelCommonPreferences.isEnabledDebugMenu()) {
 						if (this.toast != null) {
 							this.toast.cancel();
@@ -1182,16 +1282,17 @@ public class PreferencesAppHelper extends PreferencesHelper{
 						this.toast = Toast
 								.makeText(
 										PreferencesAppHelper.this.activity,
-										PreferencesAppHelper.this.activity.getResources()
-										.getQuantityString(
-												R.plurals.dev_toast,
-												7 - PreferencesAppHelper.this.debugCounter,
-												7 - PreferencesAppHelper.this.debugCounter,
-												PreferencesAppHelper.this.activity
-												.getString(!MirakelCommonPreferences
-														.isEnabledDebugMenu() ? R.string.enable
-																: R.string.disable)),
-																Toast.LENGTH_SHORT);
+										PreferencesAppHelper.this.activity
+												.getResources()
+												.getQuantityString(
+														R.plurals.dev_toast,
+														7 - PreferencesAppHelper.this.debugCounter,
+														7 - PreferencesAppHelper.this.debugCounter,
+														PreferencesAppHelper.this.activity
+																.getString(!MirakelCommonPreferences
+																		.isEnabledDebugMenu() ? R.string.enable
+																		: R.string.disable)),
+										Toast.LENGTH_SHORT);
 						this.toast.show();
 					}
 					return false;
@@ -1200,15 +1301,15 @@ public class PreferencesAppHelper extends PreferencesHelper{
 		}
 	}
 
-
-	private void setLanguageSummary(ListPreference language, String current) {
-		String[] keys = this.activity.getResources().getStringArray(
+	private void setLanguageSummary(final ListPreference language,
+			final String current) {
+		final String[] keys = this.activity.getResources().getStringArray(
 				R.array.language_keys);
 		language.setSummary(keys[0]);
 		for (int j = 0; j < keys.length; j++) {
 			if (current.equals(keys[j])) {
-				language.setSummary(this.activity.getResources().getStringArray(
-						R.array.language_values)[j]);
+				language.setSummary(this.activity.getResources()
+						.getStringArray(R.array.language_values)[j]);
 				break;
 			}
 		}
