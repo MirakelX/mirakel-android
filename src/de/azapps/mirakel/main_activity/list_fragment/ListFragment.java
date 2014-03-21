@@ -495,4 +495,12 @@ public class ListFragment extends MirakelFragment {
 		}
 	}
 
+	@SuppressLint("NewApi")
+	public void hideActionMode() {
+		if (this.mActionMode != null) {
+			this.mActionMode.finish();
+		}
+
+	}
+
 }

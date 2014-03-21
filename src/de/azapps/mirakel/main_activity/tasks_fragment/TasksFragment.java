@@ -95,7 +95,6 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 	final Handler mHandler = new Handler();
 
 	protected EditText newTask;
-	private boolean showDone = true;
 
 	View view;
 
@@ -128,8 +127,8 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public void closeActionMode() {
-		if ((this.mActionMode != null)
-				&& (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)) {
+		if (this.mActionMode != null
+				&& Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			this.mActionMode.finish();
 		}
 	}
@@ -232,7 +231,6 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 		this.loadMore = false;
 		this.ItemCount = 0;
 		this.main = (MainActivity) getActivity();
-		this.showDone = MirakelCommonPreferences.showDoneMain();
 		this.listId = this.main.getCurrentList().getId();
 
 		this.view = inflater.inflate(R.layout.layout_tasks_fragment, container,
@@ -253,9 +251,9 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 			@Override
 			public boolean onEditorAction(final TextView v, final int actionId,
 					final KeyEvent event) {
-				if ((actionId == EditorInfo.IME_ACTION_SEND)
-						|| ((actionId == EditorInfo.IME_NULL) && (event
-								.getAction() == KeyEvent.ACTION_DOWN))) {
+				if (actionId == EditorInfo.IME_ACTION_SEND
+						|| actionId == EditorInfo.IME_NULL
+						&& event.getAction() == KeyEvent.ACTION_DOWN) {
 					newTask(v.getText().toString());
 					v.setText(null);
 				}
@@ -311,7 +309,6 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 	@Override
 	public void onResume() {
 		super.onResume();
-		this.showDone = MirakelCommonPreferences.showDoneMain();
 	}
 
 	public void setActivity(final MainActivity activity) {
@@ -324,7 +321,7 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 	}
 
 	public void setScrollPosition(final int pos) {
-		if ((this.listView == null) || (this.main == null)) {
+		if (this.listView == null || this.main == null) {
 			return;
 		}
 		this.main.runOnUiThread(new Runnable() {
@@ -354,9 +351,9 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 					@Override
 					public void onTaskChanged(final Task newTask) {
 						if (MirakelCommonPreferences.isTablet()
-								&& (TasksFragment.this.main != null)
-								&& (TasksFragment.this.main.getCurrentTask()
-										.getId() == newTask.getId())) {
+								&& TasksFragment.this.main != null
+								&& TasksFragment.this.main.getCurrentTask()
+										.getId() == newTask.getId()) {
 							getLoaderManager().restartLoader(0, null,
 									TasksFragment.this);
 						}
@@ -531,7 +528,7 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 		if (this.view == null) {
 			return;
 		}
-		if ((android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.HONEYCOMB)
+		if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.HONEYCOMB
 				|| !MirakelCommonPreferences.useBtnSpeak()) {
 			this.view.findViewById(R.id.btnSpeak_tasks)
 					.setVisibility(View.GONE);
@@ -651,8 +648,7 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 		final String sorting = Task.getSorting(list.getSortBy());
 		String[] args = null;
 		if (this.query != null) {
-			if ((dbQuery != null) && (dbQuery.trim() != "")
-					&& (dbQuery.length() > 0)) {
+			if (dbQuery != null && dbQuery.trim() != "" && dbQuery.length() > 0) {
 				dbQuery = "(" + dbQuery + ") AND ";
 			}
 
@@ -675,9 +671,9 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 	}
 
 	public Task getLastTouched() {
-		if ((this.adapter != null)
-				&& (this.listView != null)
-				&& (this.listView.getChildAt(this.adapter.getLastTouched()) != null)) {
+		if (this.adapter != null
+				&& this.listView != null
+				&& this.listView.getChildAt(this.adapter.getLastTouched()) != null) {
 			return Task.get((Long) this.listView.getChildAt(
 					this.adapter.getLastTouched()).getTag());
 		}
@@ -686,6 +682,14 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 
 	public View getViewForTask(final Task task) {
 		return getListView().findViewWithTag(task.getId());
+	}
+
+	@SuppressLint("NewApi")
+	public void hideActionMode() {
+		if (this.mActionMode != null) {
+			this.mActionMode.finish();
+		}
+
 	}
 
 }
