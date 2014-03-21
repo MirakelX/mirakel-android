@@ -33,7 +33,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import de.azapps.mirakel.adapter.MirakelArrayAdapter;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
-import de.azapps.mirakel.helper.ModellHelper;
+import de.azapps.mirakel.helper.ViewHelper;
 import de.azapps.mirakel.model.MirakelContentProvider;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -120,7 +120,7 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 		}
 		this.viewsForLists.put(list.getId(), row);
 		final int w = row.getWidth() == 0 ? parent.getWidth() : row.getWidth();
-		ModellHelper.setListColorBackground(list, row, w);
+		ViewHelper.setListColorBackground(list, row, w);
 		if (this.selected.get(position)) {
 			row.setBackgroundColor(this.context.getResources().getColor(
 					this.darkTheme ? R.color.highlighted_text_holo_dark
