@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- Sync -->
     <string name="sync_add">Add account</string>
     <string name="sync_title">Sync</string>
@@ -55,6 +55,10 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="menu_edit_listaccount">Account</string>
     <string name="change_account">Change Account</string>
     <string name="wrong_config">It looks like you used a wrong config file</string>
+    
+    <string name="config_404">I did not found your config file</string>
+    <string name="config_error_empty">There is no %s entry in the config</string>
+    
     <string name="load_config">Select the config file for Taskwarrior</string>
     <string name="select_config">Select Taskwarrior config file</string>
     <string name="message_try_later">Try to sync later</string>
