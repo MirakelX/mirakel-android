@@ -49,36 +49,35 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 		TextView listRowTaskNumber;
 	}
 
-	@SuppressWarnings("unused")
-	private static final String TAG = "ListAdapter";
 	private boolean enableDrop;
 
 	private final Map<Integer, View> viewsForLists = new HashMap<Integer, View>();
 
-	public ListAdapter(Context c) {
+	public ListAdapter(final Context c) {
 		// do not call this, only for error-fixing there
 		super(c, 0, new ArrayList<ListMirakel>());
 	}
 
-	public ListAdapter(Context context, int layoutResourceId,
-			List<ListMirakel> data, boolean enable) {
+	public ListAdapter(final Context context, final int layoutResourceId,
+			final List<ListMirakel> data, final boolean enable) {
 		super(context, layoutResourceId, data);
 		this.enableDrop = enable;
 	}
 
 	@Override
-	public void changeData(List<ListMirakel> lists) {
+	public void changeData(final List<ListMirakel> lists) {
 		this.viewsForLists.clear();
 		super.changeData(lists);
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(final int position, final View convertView,
+			final ViewGroup parent) {
 		View row = convertView;
 		ListHolder holder = null;
 
 		if (row == null) {
-			LayoutInflater inflater = ((Activity) this.context)
+			final LayoutInflater inflater = ((Activity) this.context)
 					.getLayoutInflater();
 			row = inflater.inflate(this.layoutResourceId, parent, false);
 			holder = new ListHolder();
@@ -94,7 +93,7 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 		} else {
 			holder = (ListHolder) row.getTag();
 		}
-		ListMirakel list = this.data.get(position);
+		final ListMirakel list = this.data.get(position);
 		if (!this.enableDrop) {
 			holder.listRowDrag.setVisibility(View.GONE);
 		} else {
@@ -120,7 +119,7 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 					.getColor(android.R.color.darker_gray));
 		}
 		this.viewsForLists.put(list.getId(), row);
-		int w = row.getWidth() == 0 ? parent.getWidth() : row.getWidth();
+		final int w = row.getWidth() == 0 ? parent.getWidth() : row.getWidth();
 		ModellHelper.setListColorBackground(list, row, w);
 		if (this.selected.get(position)) {
 			row.setBackgroundColor(this.context.getResources().getColor(
@@ -131,7 +130,7 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 		return row;
 	}
 
-	public View getViewForList(ListMirakel list) {
+	public View getViewForList(final ListMirakel list) {
 		return this.viewsForLists.get(list.getId());
 	}
 
@@ -140,7 +139,7 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 	}
 
 	public void onDrop(final int from, final int to) {
-		ListMirakel t = this.data.get(from);
+		final ListMirakel t = this.data.get(from);
 		String TABLE;
 		if (t.getId() < 0) {
 			TABLE = SpecialList.TABLE;
@@ -157,8 +156,9 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 					"UPDATE " + TABLE + " SET lft=lft-2 where lft>"
 							+ this.data.get(from).getLft() + " and lft<="
 							+ this.data.get(to).getLft());
-		} else
+		} else {
 			return;
+		}
 		t.setLft(this.data.get(to).getLft());
 		t.save();
 		MirakelContentProvider.getWritableDatabase().execSQL(
@@ -166,7 +166,7 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 		this.data.remove(from);
 		this.data.add(to, t);
 		notifyDataSetChanged();
-		Thread load = new Thread(new Runnable() {
+		final Thread load = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				ListAdapter.this.data = ListMirakel.all();
@@ -175,14 +175,15 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 		load.start();
 	}
 
-	public void onRemove(int which) {
-		if (which < 0 || which > this.data.size())
+	public void onRemove(final int which) {
+		if (which < 0 || which > this.data.size()) {
 			return;
+		}
 		this.viewsForLists.remove(this.data.get(which).getId());
 		this.data.remove(which);
 	}
 
-	public void setEnableDrop(boolean enableDrop) {
+	public void setEnableDrop(final boolean enableDrop) {
 		this.enableDrop = enableDrop;
 	}
 

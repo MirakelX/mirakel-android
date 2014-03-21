@@ -19,8 +19,8 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.azapps.mirakelandroid"
-    android:versionCode="43"
-    android:versionName="2.3.2" >
+    android:versionCode="44"
+    android:versionName="2.4.0-beta1" >
 
     <!-- TODO Remove Unused Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -221,8 +221,12 @@
             android:exported="true"
             android:permission="de.azapps.mirakel.provider.READ_WRITE_DATA"
             android:readPermission="de.azapps.mirakel.provider.READ_DATA"
-            android:writePermission="de.azapps.mirakel.provider.WRITE_DATA" >
-        </provider>
+            android:writePermission="de.azapps.mirakel.provider.WRITE_DATA"/>
+        
+        <provider
+            android:name="de.azapps.mirakel.model.MirakelInternalContentProvider"
+            android:authorities="de.azapps.mirakel.provider.internal"
+            android:exported="false" />
 
         <service android:name="de.azapps.mirakel.services.NotificationService" />
         <service android:name="de.azapps.mirakel.services.TaskService" />

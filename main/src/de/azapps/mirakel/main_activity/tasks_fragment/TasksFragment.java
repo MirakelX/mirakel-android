@@ -29,13 +29,16 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.TypedValue;
@@ -62,14 +65,13 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import de.azapps.mirakel.DefenitionsModel.ExecInterfaceWithTask;
+import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.custom_views.BaseTaskDetailRow.OnTaskChangedListner;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.main_activity.MainActivity;
-import de.azapps.mirakel.main_activity.task_fragment.TaskFragment;
-import de.azapps.mirakel.main_activity.task_fragment.TaskFragmentV14;
-import de.azapps.mirakel.main_activity.task_fragment.TaskFragmentV8;
+import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
@@ -77,7 +79,8 @@ import de.azapps.mirakelandroid.R;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 
-public class TasksFragment extends android.support.v4.app.Fragment {
+public class TasksFragment extends android.support.v4.app.Fragment implements
+		LoaderManager.LoaderCallbacks<Cursor> {
 	private static final String TAG = "TasksFragment";
 	private static final int TASK_RENAME = 0, TASK_MOVE = 1, TASK_DESTROY = 2;
 	protected TaskAdapter adapter;
@@ -90,28 +93,9 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 	protected ActionMode mActionMode = null;
 	protected MainActivity main;
 	final Handler mHandler = new Handler();
-	final Runnable mUpdateResults = new Runnable() {
-		@Override
-		public void run() {
-			int maxCount = TasksFragment.this.ItemCount > TasksFragment.this.values
-					.size() ? TasksFragment.this.values.size()
-					: TasksFragment.this.ItemCount;
-			boolean didListChanged = TasksFragment.this.adapter.getListID() != TasksFragment.this.listId;
-			if (didListChanged) {
-				TasksFragment.this.adapter.clear();
-				TasksFragment.this.adapter.setListID(TasksFragment.this.listId);
-			}
-			for (int i = didListChanged ? 0 : TasksFragment.this.adapter
-					.getCount(); i < maxCount; i++) {
-				TasksFragment.this.adapter.addToEnd(TasksFragment.this.values
-						.get(i));
-			}
-			TasksFragment.this.adapter.notifyDataSetChanged();
-		}
-	};
+
 	protected EditText newTask;
 	private boolean showDone = true;
-	protected List<Task> values;
 
 	View view;
 
@@ -121,14 +105,16 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 
 				@Override
 				public void run() {
-					if (TasksFragment.this.newTask == null)
+					if (TasksFragment.this.newTask == null) {
 						return;
+					}
 					TasksFragment.this.newTask.setOnFocusChangeListener(null);
 					TasksFragment.this.newTask.clearFocus();
-					if (getActivity() == null)
+					if (getActivity() == null) {
 						return;
+					}
 
-					InputMethodManager imm = (InputMethodManager) getActivity()
+					final InputMethodManager imm = (InputMethodManager) getActivity()
 							.getSystemService(Context.INPUT_METHOD_SERVICE);
 					imm.hideSoftInputFromWindow(
 							TasksFragment.this.newTask.getWindowToken(), 0);
@@ -142,28 +128,30 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public void closeActionMode() {
-		if (this.mActionMode != null
-				&& Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+		if ((this.mActionMode != null)
+				&& (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)) {
 			this.mActionMode.finish();
 		}
 	}
 
 	public void focusNew(final boolean request_focus) {
-		if (this.newTask == null)
+		if (this.newTask == null) {
 			return;
+		}
 		this.newTask.setOnFocusChangeListener(new OnFocusChangeListener() {
 			@Override
 			public void onFocusChange(final View v, final boolean hasFocus) {
 				if (TasksFragment.this.main.getCurrentPosition() != MainActivity
-						.getTasksFragmentPosition())
+						.getTasksFragmentPosition()) {
 					return;
+				}
 				TasksFragment.this.newTask.post(new Runnable() {
 					@Override
 					public void run() {
-						InputMethodManager imm = (InputMethodManager) getActivity()
+						final InputMethodManager imm = (InputMethodManager) getActivity()
 								.getSystemService(Context.INPUT_METHOD_SERVICE);
 						if (imm == null) {
-							Log.w(TAG, "Inputmanager==null");
+							Log.w(TasksFragment.TAG, "Inputmanager==null");
 							return;
 						}
 						imm.restartInput(TasksFragment.this.newTask);
@@ -209,9 +197,9 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 		return this.newTask != null;
 	}
 
-	protected boolean newTask(String name) {
+	protected boolean newTask(final String name) {
 		this.newTask.setText(null);
-		InputMethodManager imm = (InputMethodManager) this.main
+		final InputMethodManager imm = (InputMethodManager) this.main
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(this.newTask.getWindowToken(), 0);
 		this.newTask.clearFocus();
@@ -222,13 +210,11 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 			return true;
 		}
 
-		ListMirakel list = this.main.getCurrentList();
-		Task task = Semantic.createTask(name, list,
+		final ListMirakel list = this.main.getCurrentList();
+		Semantic.createTask(name, list,
 				MirakelCommonPreferences.useSemanticNewTask(), getActivity());
 
-		this.adapter.addToHead(task);
-		this.values.add(0, task);
-		this.adapter.notifyDataSetChanged();
+		getLoaderManager().restartLoader(0, null, this);
 
 		this.main.getListFragment().update();
 		if (!MirakelCommonPreferences.hideKeyboard()) {
@@ -239,8 +225,9 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(final LayoutInflater inflater,
+			final ViewGroup container, final Bundle savedInstanceState) {
+		// Inflate the layout for this fragment
 		this.finishLoad = false;
 		this.loadMore = false;
 		this.ItemCount = 0;
@@ -248,28 +235,9 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 		this.showDone = MirakelCommonPreferences.showDoneMain();
 		this.listId = this.main.getCurrentList().getId();
 
-		if (MirakelCommonPreferences.isTablet()) {
-			this.view = inflater.inflate(R.layout.tasks_fragment_tablet,
-					container, false);
-			TaskFragment t;
-			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-				t = new TaskFragmentV8();
-			} else {
-				t = new TaskFragmentV14();
-			}
-			getChildFragmentManager().beginTransaction()
-					.replace(R.id.task_fragment_in_tasks, t).commit();
-			this.main.setTaskFragment(t);
-		} else {
-			this.view = inflater.inflate(R.layout.tasks_fragment_phone,
-					container, false);
-		}
-		// getResources().getString(R.string.action_settings);
-		try {
-			this.values = this.main.getCurrentList().tasks(this.showDone);
-		} catch (NullPointerException e) {
-			this.values = null;
-		}
+		this.view = inflater.inflate(R.layout.layout_tasks_fragment, container,
+				false);
+
 		this.adapter = null;
 		this.created = true;
 
@@ -283,11 +251,11 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 		}
 		this.newTask.setOnEditorActionListener(new OnEditorActionListener() {
 			@Override
-			public boolean onEditorAction(TextView v, int actionId,
-					KeyEvent event) {
-				if (actionId == EditorInfo.IME_ACTION_SEND
-						|| actionId == EditorInfo.IME_NULL
-						&& event.getAction() == KeyEvent.ACTION_DOWN) {
+			public boolean onEditorAction(final TextView v, final int actionId,
+					final KeyEvent event) {
+				if ((actionId == EditorInfo.IME_ACTION_SEND)
+						|| ((actionId == EditorInfo.IME_NULL) && (event
+								.getAction() == KeyEvent.ACTION_DOWN))) {
 					newTask(v.getText().toString());
 					v.setText(null);
 				}
@@ -297,8 +265,8 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 		this.newTask.addTextChangedListener(new TextWatcher() {
 
 			@Override
-			public void afterTextChanged(Editable s) {
-				ImageButton send = (ImageButton) TasksFragment.this.view
+			public void afterTextChanged(final Editable s) {
+				final ImageButton send = (ImageButton) TasksFragment.this.view
 						.findViewById(R.id.btnEnter);
 				if (s.length() > 0) {
 					send.setVisibility(View.VISIBLE);
@@ -309,50 +277,27 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 			}
 
 			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
+			public void beforeTextChanged(final CharSequence s,
+					final int start, final int count, final int after) {
 				// Nothing
 
 			}
 
 			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
+			public void onTextChanged(final CharSequence s, final int start,
+					final int before, final int count) {
 				// Nothing
 
 			}
 		});
-		this.ItemCount = 10;// TODO get this from somewhere
 		update(true);
-		this.listView.setOnScrollListener(new AbsListView.OnScrollListener() {
 
-			@Override
-			public void onScroll(AbsListView v, int firstVisibleItem,
-					int visibleItemCount, final int totalItemCount) {
-				int lastInScreen = firstVisibleItem + visibleItemCount;
-				if (lastInScreen == totalItemCount
-						&& !TasksFragment.this.loadMore
-						&& TasksFragment.this.finishLoad
-						&& TasksFragment.this.adapter != null
-						&& TasksFragment.this.values.size() > totalItemCount) {
-					TasksFragment.this.ItemCount = totalItemCount + 2;
-					update(false);
-				}
-			}
-
-			@Override
-			public void onScrollStateChanged(AbsListView v, int scrollState) {
-				// Nothing
-
-			}
-		});
-
-		ImageButton btnEnter = (ImageButton) this.view
+		final ImageButton btnEnter = (ImageButton) this.view
 				.findViewById(R.id.btnEnter);
 		btnEnter.setOnClickListener(new View.OnClickListener() {
 
 			@Override
-			public void onClick(View v) {
+			public void onClick(final View v) {
 				newTask(TasksFragment.this.newTask.getText().toString());
 				TasksFragment.this.newTask.setText(null);
 
@@ -360,7 +305,6 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 		});
 
 		updateButtons();
-		// Inflate the layout for this fragment
 		return this.view;
 	}
 
@@ -370,7 +314,7 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 		this.showDone = MirakelCommonPreferences.showDoneMain();
 	}
 
-	public void setActivity(MainActivity activity) {
+	public void setActivity(final MainActivity activity) {
 		this.main = activity;
 	}
 
@@ -380,8 +324,9 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 	}
 
 	public void setScrollPosition(final int pos) {
-		if (this.listView == null || this.main == null)
+		if ((this.listView == null) || (this.main == null)) {
 			return;
+		}
 		this.main.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
@@ -396,88 +341,43 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 		});
 	}
 
-	public void setTasks(List<Task> tasks) {
-		this.values = tasks;
-	}
-
 	@SuppressLint("NewApi")
-	protected void update(boolean reset) {
-		if (!this.created)
-			return;
-		if (this.values == null) {
-			try {
-				this.values = this.main.getCurrentList().tasks(this.showDone);
-			} catch (NullPointerException w) {
-				this.values = null;
-				return;
-			}
-		}
-		if (this.adapter != null && this.finishLoad) {
-			this.mHandler.post(this.mUpdateResults);
-			if (reset) {
-				setScrollPosition(0);
-			}
+	protected void update(final boolean reset) {
+		if (!this.created) {
 			return;
 		}
-		if (this.adapter != null) {
-			this.adapter.resetSelected();
-		}
-		// main.showMessageFromSync();
 
 		this.listView = (ListView) this.view.findViewById(R.id.tasks_list);
-		AsyncTask<Void, Void, TaskAdapter> asyncTask = new AsyncTask<Void, Void, TaskAdapter>() {
-			@Override
-			protected TaskAdapter doInBackground(Void... params) {
-				TasksFragment.this.adapter = new TaskAdapter(
-						TasksFragment.this.main,
-						R.layout.task_summary,
-						new ArrayList<Task>(
-								TasksFragment.this.values
-										.subList(
-												0,
-												TasksFragment.this.ItemCount > TasksFragment.this.values
-														.size() ? TasksFragment.this.values
-														.size()
-														: TasksFragment.this.ItemCount)),
-						TasksFragment.this.main.getCurrentList().getId(),
-						new OnTaskChangedListner() {
+		this.adapter = new TaskAdapter(getActivity(),
+				new OnTaskChangedListner() {
 
-							@Override
-							public void onTaskChanged(Task newTask) {
-								if (MirakelCommonPreferences.isTablet()
-										&& TasksFragment.this.main != null
-										&& TasksFragment.this.main
-												.getCurrentTask().getId() == newTask
-												.getId()) {
-									TasksFragment.this.main.setCurrentTask(
-											newTask, false);
-								}
+					@Override
+					public void onTaskChanged(final Task newTask) {
+						if (MirakelCommonPreferences.isTablet()
+								&& (TasksFragment.this.main != null)
+								&& (TasksFragment.this.main.getCurrentTask()
+										.getId() == newTask.getId())) {
+							getLoaderManager().restartLoader(0, null,
+									TasksFragment.this);
+						}
 
-							}
-						});
-				return TasksFragment.this.adapter;
-			}
+					}
+				});
+		this.listView.setAdapter(this.adapter);
+		getLoaderManager().initLoader(0, null, this);
 
-			@Override
-			protected void onPostExecute(TaskAdapter a) {
-				TasksFragment.this.listView
-						.setAdapter(TasksFragment.this.adapter);
-				TasksFragment.this.finishLoad = true;
-			}
-		};
-
-		asyncTask.execute();
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
 			this.listView
 					.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 						@Override
-						public boolean onItemLongClick(AdapterView<?> parent,
-								View item, int position, final long id) {
-							AlertDialog.Builder builder = new AlertDialog.Builder(
+						public boolean onItemLongClick(
+								final AdapterView<?> parent, final View item,
+								final int position, final long id) {
+							final AlertDialog.Builder builder = new AlertDialog.Builder(
 									getActivity());
-							Task task = TasksFragment.this.values.get((int) id);
+							final Task task = Task.get((Long) item.getTag());
 							builder.setTitle(task.getName());
-							List<CharSequence> items = new ArrayList<CharSequence>(
+							final List<CharSequence> items = new ArrayList<CharSequence>(
 									Arrays.asList(getActivity().getResources()
 											.getStringArray(
 													R.array.task_actions_items)));
@@ -487,21 +387,20 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 									new DialogInterface.OnClickListener() {
 										@Override
 										public void onClick(
-												DialogInterface dialog, int item) {
-											Task t = TasksFragment.this.values
-													.get((int) id);
+												final DialogInterface dialog,
+												final int item) {
 											switch (item) {
 											case TASK_RENAME:
 												TasksFragment.this.main
-														.setCurrentTask(t);
+														.setCurrentTask(task);
 												break;
 											case TASK_MOVE:
 												TasksFragment.this.main
-														.handleMoveTask(t);
+														.handleMoveTask(task);
 												break;
 											case TASK_DESTROY:
 												TasksFragment.this.main
-														.handleDestroyTask(t);
+														.handleDestroyTask(task);
 												break;
 											default:
 												break;
@@ -509,39 +408,40 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 										}
 									});
 
-							AlertDialog dialog = builder.create();
+							final AlertDialog dialog = builder.create();
 							dialog.show();
 							return true;
 						}
 					});
 		} else {
 			this.listView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
-			if (this.adapter != null) {
-				this.adapter.resetSelected();
-			}
 			this.listView.setHapticFeedbackEnabled(true);
 			this.listView
 					.setMultiChoiceModeListener(new MultiChoiceModeListener() {
 
 						@Override
-						public boolean onActionItemClicked(ActionMode mode,
-								MenuItem item) {
-							List<Task> tasks = TasksFragment.this.adapter
-									.getSelected();
+						public boolean onActionItemClicked(
+								final ActionMode mode, final MenuItem item) {
 							switch (item.getItemId()) {
 							case R.id.menu_delete:
 								TasksFragment.this.main
-										.handleDestroyTask(tasks);
+										.handleDestroyTask(TasksFragment.this.selectedTasks);
 								break;
 							case R.id.menu_move:
-								TasksFragment.this.main.handleMoveTask(tasks);
+								TasksFragment.this.main
+										.handleMoveTask(TasksFragment.this.selectedTasks);
+								break;
+							case R.id.menu_set_due:
+								TasksFragment.this.main
+										.handleSetDue(TasksFragment.this.selectedTasks);
 								break;
 							case R.id.edit_task:
 								TasksFragment.this.main.setCurrentTask(
-										tasks.get(0), true);
+										TasksFragment.this.selectedTasks.get(0),
+										true);
 								break;
 							case R.id.done_task:
-								for (Task t : tasks) {
+								for (final Task t : TasksFragment.this.selectedTasks) {
 									t.setDone(true);
 									t.safeSave();
 								}
@@ -556,47 +456,47 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 						}
 
 						@Override
-						public boolean onCreateActionMode(ActionMode mode,
-								Menu menu) {
-							MenuInflater inflater = mode.getMenuInflater();
+						public boolean onCreateActionMode(
+								final ActionMode mode, final Menu menu) {
+							final MenuInflater inflater = mode
+									.getMenuInflater();
 							inflater.inflate(R.menu.context_tasks, menu);
 							TasksFragment.this.mActionMode = mode;
 							clearFocus();
+							TasksFragment.this.selectedTasks = new ArrayList<Task>();
 							return true;
 						}
 
 						@Override
-						public void onDestroyActionMode(ActionMode mode) {
-							TasksFragment.this.adapter.resetSelected();
-
+						public void onDestroyActionMode(final ActionMode mode) {
+							TasksFragment.this.selectedTasks = new ArrayList<Task>();
 						}
 
 						@Override
-						public void onItemCheckedStateChanged(ActionMode mode,
-								int position, long id, boolean checked) {
-							int oldCount = TasksFragment.this.adapter
-									.getSelectedCount();
-							TasksFragment.this.adapter.setSelected(position,
-									checked);
-							int newCount = TasksFragment.this.adapter
-									.getSelectedCount();
-							mode.setTitle(TasksFragment.this.main
-									.getResources().getQuantityString(
-											R.plurals.selected_tasks, newCount,
-											newCount));
-							if (oldCount < 2 && newCount >= 2 || oldCount >= 2
-									&& newCount < 2) {
-								mode.invalidate();
+						public void onItemCheckedStateChanged(
+								final ActionMode mode, final int position,
+								final long id, final boolean checked) {
+							final View v = TasksFragment.this.listView
+									.getChildAt(position);
+							if (v == null) {
+								return;
 							}
-
+							final Task t = Task.get((Long) v.getTag());
+							if (!TasksFragment.this.selectedTasks.contains(t)
+									&& checked) {
+								TasksFragment.this.selectedTasks.add(t);
+							} else if (checked) {
+								TasksFragment.this.selectedTasks.remove(t);
+							}
 						}
 
 						@Override
-						public boolean onPrepareActionMode(ActionMode mode,
-								Menu menu) {
-							menu.findItem(R.id.edit_task).setVisible(
-									TasksFragment.this.adapter
-											.getSelectedCount() <= 1);
+						public boolean onPrepareActionMode(
+								final ActionMode mode, final Menu menu) {
+							menu.findItem(R.id.edit_task)
+									.setVisible(
+											TasksFragment.this.selectedTasks
+													.size() <= 1);
 							return false;
 						}
 					});
@@ -604,45 +504,48 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 		this.listView
 				.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 					@Override
-					public void onItemClick(AdapterView<?> parent, View item,
-							int position, final long id) {
-						new Thread(new Runnable() {
-							@Override
-							public void run() {
-								// TODO Remove Bad Hack
-								Task task = TasksFragment.this.values
-										.get((int) id);
-								Log.v(TAG, "Switch to Task " + task.getId()
-										+ " (" + task.getUUID() + ")");
-								TasksFragment.this.main.setCurrentTask(task,
-										true);
-							}
-						}).start();
-
+					public void onItemClick(final AdapterView<?> parent,
+							final View item, final int position, final long id) {
+						final Task t = Task.get((Long) item.getTag());
+						TasksFragment.this.main.setCurrentTask(t, true);
 					}
 				});
+
+	}
+
+	protected List<Task> selectedTasks;
+	private String query;
+
+	public void search(final String query) {
+		this.query = query;
+		try {
+			getLoaderManager().restartLoader(0, null, this);
+		} catch (final Exception e) {
+			// eat it
+		}
 	}
 
 	public void updateButtons() {
 		// a) Android 2.3 dosen't support speech toText
 		// b) The user can switch off the button
-		if (this.view == null)
+		if (this.view == null) {
 			return;
-		if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.HONEYCOMB
+		}
+		if ((android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.HONEYCOMB)
 				|| !MirakelCommonPreferences.useBtnSpeak()) {
 			this.view.findViewById(R.id.btnSpeak_tasks)
 					.setVisibility(View.GONE);
 		} else {
-			ImageButton btnSpeak = (ImageButton) this.view
+			final ImageButton btnSpeak = (ImageButton) this.view
 					.findViewById(R.id.btnSpeak_tasks);
 			// txtText = newTask;
 			btnSpeak.setVisibility(View.VISIBLE);
 			btnSpeak.setOnClickListener(new View.OnClickListener() {
 
 				@Override
-				public void onClick(View v) {
+				public void onClick(final View v) {
 
-					Intent intent = new Intent(
+					final Intent intent = new Intent(
 							RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 
 					intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
@@ -653,8 +556,8 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 						getActivity().startActivityForResult(intent,
 								MainActivity.RESULT_SPEECH);
 						TasksFragment.this.newTask.setText("");
-					} catch (ActivityNotFoundException a) {
-						Toast t = Toast
+					} catch (final ActivityNotFoundException a) {
+						final Toast t = Toast
 								.makeText(
 										TasksFragment.this.main,
 										"Opps! Your device doesn't support Speech to Text",
@@ -668,13 +571,13 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 			this.view.findViewById(R.id.btnAudio_tasks)
 					.setVisibility(View.GONE);
 		} else {
-			ImageButton btnAudio = (ImageButton) this.view
+			final ImageButton btnAudio = (ImageButton) this.view
 					.findViewById(R.id.btnAudio_tasks);
 			btnAudio.setVisibility(View.VISIBLE);
 			btnAudio.setOnClickListener(new OnClickListener() {
 
 				@Override
-				public void onClick(View v) {
+				public void onClick(final View v) {
 					// TODO BAHHHH this is ugly!
 					final Task task = new Task("");
 					task.setList(TasksFragment.this.main.getCurrentList(), true);
@@ -683,7 +586,7 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 							TasksFragment.this.main, task,
 							new ExecInterfaceWithTask() {
 								@Override
-								public void exec(Task t) {
+								public void exec(final Task t) {
 									TasksFragment.this.main.setCurrentList(t
 											.getList());
 									TasksFragment.this.main.setCurrentTask(t,
@@ -699,25 +602,26 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 						MediaStore.ACTION_IMAGE_CAPTURE)) {
 			this.view.findViewById(R.id.btnCamera).setVisibility(View.GONE);
 		} else {
-			ImageButton btnCamera = (ImageButton) this.view
+			final ImageButton btnCamera = (ImageButton) this.view
 					.findViewById(R.id.btnCamera);
 			btnCamera.setVisibility(View.VISIBLE);
 			btnCamera.setOnClickListener(new OnClickListener() {
 				@Override
-				public void onClick(View v) {
+				public void onClick(final View v) {
 					try {
-						Intent cameraIntent = new Intent(
+						final Intent cameraIntent = new Intent(
 								MediaStore.ACTION_IMAGE_CAPTURE);
-						Uri fileUri = FileUtils
+						final Uri fileUri = FileUtils
 								.getOutputMediaFileUri(FileUtils.MEDIA_TYPE_IMAGE);
-						if (fileUri == null)
+						if (fileUri == null) {
 							return;
+						}
 						TasksFragment.this.main.setFileUri(fileUri);
 						cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
 						getActivity().startActivityForResult(cameraIntent,
 								MainActivity.RESULT_CAMERA);
 
-					} catch (ActivityNotFoundException a) {
+					} catch (final ActivityNotFoundException a) {
 						Toast.makeText(
 								TasksFragment.this.main,
 								"Opps! Your device doesn't support taking photos",
@@ -729,14 +633,59 @@ public class TasksFragment extends android.support.v4.app.Fragment {
 	}
 
 	public void updateList(final boolean reset) {
+		this.listId = this.main.getCurrentList().getId();
+		this.query = null;
 		try {
-			this.listId = this.main.getCurrentList().getId();
-			this.values = this.main.getCurrentList().tasks(this.showDone);
-			this.adapter.changeData(this.values);
-			update(reset);
-		} catch (NullPointerException e) {
-			this.values = null;
+			getLoaderManager().restartLoader(0, null, this);
+		} catch (final Exception e) {
+			// ignore it
 		}
+	}
+
+	@Override
+	public Loader<Cursor> onCreateLoader(final int arg0, final Bundle arg1) {
+		final ListMirakel list = ListMirakel.getList(this.listId);
+		final Uri u = Uri.parse("content://"
+				+ DefinitionsHelper.AUTHORITY_INTERNAL + "/" + "tasks");
+		String dbQuery = list.getWhereQueryForTasks(true);
+		final String sorting = Task.getSorting(list.getSortBy());
+		String[] args = null;
+		if (this.query != null) {
+			if ((dbQuery != null) && (dbQuery.trim() != "")
+					&& (dbQuery.length() > 0)) {
+				dbQuery = "(" + dbQuery + ") AND ";
+			}
+
+			args = new String[] { "%" + this.query + "%" };
+			dbQuery += DatabaseHelper.NAME + " LIKE ?";
+		}
+		return new CursorLoader(getActivity(), u, Task.allColumns, dbQuery,
+				args, sorting);
+	}
+
+	@Override
+	public void onLoadFinished(final Loader<Cursor> loader,
+			final Cursor newCursor) {
+		this.adapter.swapCursor(newCursor);
+	}
+
+	@Override
+	public void onLoaderReset(final Loader<Cursor> loader) {
+		this.adapter.swapCursor(null);
+	}
+
+	public Task getLastTouched() {
+		if ((this.adapter != null)
+				&& (this.listView != null)
+				&& (this.listView.getChildAt(this.adapter.getLastTouched()) != null)) {
+			return Task.get((Long) this.listView.getChildAt(
+					this.adapter.getLastTouched()).getTag());
+		}
+		return null;
+	}
+
+	public View getViewForTask(final Task task) {
+		return getListView().findViewWithTag(task.getId());
 	}
 
 }

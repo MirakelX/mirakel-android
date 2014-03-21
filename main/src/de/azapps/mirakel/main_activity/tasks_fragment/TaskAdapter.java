@@ -18,106 +18,65 @@
  ******************************************************************************/
 package de.azapps.mirakel.main_activity.tasks_fragment;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
-import android.support.v4.util.LongSparseArray;
+import android.database.Cursor;
+import android.support.v4.widget.CursorAdapter;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import de.azapps.mirakel.adapter.MirakelArrayAdapter;
 import de.azapps.mirakel.custom_views.BaseTaskDetailRow.OnTaskChangedListner;
 import de.azapps.mirakel.custom_views.TaskSummary;
-import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.task.Task;
 
-public class TaskAdapter extends MirakelArrayAdapter<Task> {
-	/**
-	 * The class, holding the Views of the Row
-	 * 
-	 * @author az
-	 * 
-	 */
-	static class TaskHolder {
-		TaskSummary summary;
+public class TaskAdapter extends CursorAdapter {
+
+	private final OnTaskChangedListner taskChange;
+	protected int touchedPosition;
+
+	public TaskAdapter(final Context context,
+			final OnTaskChangedListner taskChange) {
+		super(context, null, false);
+		this.taskChange = taskChange;
 	}
 
-	int listId;
-
-	private OnTaskChangedListner onTaskChanged;
-
-	protected int touchPosition;
-
-	private final LongSparseArray<View> viewsForTasks = new LongSparseArray<View>();
-
-	public TaskAdapter(Context c) {
-		// do not call this, only for error-fixing there
-		super(c, 0, new ArrayList<Task>());
-	}
-
-	public TaskAdapter(Context context, int layoutResourceId, List<Task> data,
-			int listId, OnTaskChangedListner onTaskChanged) {
-		super(context, layoutResourceId, data);
-		this.listId = listId;
-		this.onTaskChanged = onTaskChanged;
-
-	}
-
-	public void changeData(List<Task> tasks, int listID) {
-		this.viewsForTasks.clear();
-		this.listId = listID;
-		super.changeData(tasks);
-	}
-
-	public int getListID() {
-		return this.listId;
+	// update view here
+	@Override
+	public void bindView(View v, final Context ctx, final Cursor c) {
+		if (v == null || !(v instanceof TaskSummary)) {
+			v = new TaskSummary(ctx);
+		}
+		final Task t = Task.cursorToTask(c);
+		((TaskSummary) v).updatePart(t);
+		v.setTag(t.getId());
 	}
 
 	@Override
-	public View getView(final int position, View convertView, ViewGroup parent) {
-		final Task task = position >= this.data.size() ? null : this.data
-				.get(position);
-		TaskSummary row;
-		if (convertView == null) {
-			row = new TaskSummary(this.context);
-		} else {
-			row = (TaskSummary) convertView;
-		}
-
-		row.updatePart(task);
-
-		if (this.selected.get(position)) {
-			row.setBackgroundColor(Helpers.getHighlightedColor(this.context));
-		}
-		row.setOnTouchListener(new OnTouchListener() {
+	public View getView(final int position, final View convertView,
+			final ViewGroup parent) {
+		final View v = super.getView(position, convertView, parent);
+		v.setOnTouchListener(new OnTouchListener() {
 
 			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				TaskAdapter.this.touchPosition = position;
+			public boolean onTouch(final View v, final MotionEvent event) {
+				TaskAdapter.this.touchedPosition = position;
 				return false;
 			}
 		});
-		row.setOnTaskChangedListner(this.onTaskChanged);
-		if (task != null) {
-			this.viewsForTasks.put(task.getId(), row);
-		}
-		return row;
+		return v;
 	}
 
-	public View getViewForTask(Task task) {
-		return this.viewsForTasks.get(task.getId());
+	public int getLastTouched() {
+		return this.touchedPosition;
 	}
 
-	public Task lastTouched() {
-		if (this.touchPosition < this.data.size())
-			return this.data.get(this.touchPosition);
-		return null;
-	}
-
-	public void setListID(int listId) {
-		this.listId = listId;
+	// create new views
+	@Override
+	public View newView(final Context ctx, final Cursor c,
+			final ViewGroup parent) {
+		final TaskSummary summary = new TaskSummary(ctx);
+		summary.setOnTaskChangedListner(this.taskChange);
+		return summary;
 	}
 
 }

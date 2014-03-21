@@ -37,7 +37,7 @@ public class SplashScreenActivity extends Activity {
 
 	@SuppressLint("NewApi")
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// Setup splashscreen
 
@@ -52,13 +52,14 @@ public class SplashScreenActivity extends Activity {
 			finish();
 			return;
 		}
-		boolean darkTheme = MirakelCommonPreferences.isDark();
-		if (!darkTheme)
+		final boolean darkTheme = MirakelCommonPreferences.isDark();
+		if (!darkTheme) {
 			setTheme(R.style.Theme_SplashScreen);
+		}
 
 		// Intents
 		if (MirakelCommonPreferences.isStartupAllLists()) {
-			Intent intent = new Intent(SplashScreenActivity.this,
+			final Intent intent = new Intent(SplashScreenActivity.this,
 					MainActivity.class);
 			intent.setAction(DefinitionsHelper.SHOW_LISTS);
 			startActivityForResult(intent, 42);
@@ -68,8 +69,8 @@ public class SplashScreenActivity extends Activity {
 				sl = SpecialList.newSpecialList(getString(R.string.list_all),
 						" done=0 ", true, this);
 			}
-			int listId = MirakelModelPreferences.getStartupList().getId();
-			Intent intent = new Intent(SplashScreenActivity.this,
+			final int listId = MirakelModelPreferences.getStartupList().getId();
+			final Intent intent = new Intent(SplashScreenActivity.this,
 					MainActivity.class);
 			intent.setAction(DefinitionsHelper.SHOW_LIST);
 			intent.putExtra(DefinitionsHelper.EXTRA_ID, listId);
@@ -80,7 +81,8 @@ public class SplashScreenActivity extends Activity {
 	}
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	protected void onActivityResult(final int requestCode,
+			final int resultCode, final Intent data) {
 		finish();
 	}
 }

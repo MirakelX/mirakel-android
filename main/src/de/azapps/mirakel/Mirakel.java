@@ -78,11 +78,12 @@ public class Mirakel extends Application {
 		MirakelPreferences.init(this);
 		MirakelContentProvider.init(getBaseContext());
 
-		Locale locale = Helpers.getLocal(this);
+		final Locale locale = Helpers.getLocal(this);
 		Locale.setDefault(locale);
-		BuildHelper.setPlaystore(getResources().getBoolean(R.bool.is_playstore));
+		BuildHelper
+				.setPlaystore(getResources().getBoolean(R.bool.is_playstore));
 
-		Configuration config = new Configuration();
+		final Configuration config = new Configuration();
 		config.locale = locale;
 		getBaseContext().getResources().updateConfiguration(config,
 				getBaseContext().getResources().getDisplayMetrics());
@@ -114,18 +115,19 @@ public class Mirakel extends Application {
 							NotificationService.class));
 				}
 				// Auto Backup?
-				Calendar nextBackup = MirakelCommonPreferences
+				final Calendar nextBackup = MirakelCommonPreferences
 						.getNextAutoBackup();
 				if (nextBackup != null
 						&& nextBackup.compareTo(new GregorianCalendar()) < 0) {
 					ExportImport.exportDB(that);
-					Calendar nextB = new GregorianCalendar();
+					final Calendar nextB = new GregorianCalendar();
 					nextB.add(Calendar.DATE,
 							MirakelCommonPreferences.getAutoBackupIntervall());
 					MirakelCommonPreferences.setNextBackup(nextB);
 				}
-				if (MirakelCommonPreferences.writeLogsToFile())
+				if (MirakelCommonPreferences.writeLogsToFile()) {
 					Log.enableLoggingToFile();
+				}
 			}
 		}).start();
 

@@ -27,7 +27,7 @@
     tools:context=".ListActivity" >
 
     <de.azapps.mirakel.custom_views.TaskDetailView
-        android:id="@+id/taskFragment"
+        android:id="@+id/task_fragment_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:dividerHeight="0dp" />

@@ -14,6 +14,11 @@
         android:icon="@android:drawable/ic_menu_set_as"
         android:title="@string/menu_move_task"/>
     <item
+        android:id="@+id/menu_set_due"
+        mirakel:showAsAction="ifRoom"
+        android:icon="@android:drawable/ic_menu_today"
+        android:title="@string/menu_set_due"/>
+    <item
         android:id="@+id/edit_task"
         mirakel:showAsAction="ifRoom"
         android:icon="@android:drawable/ic_menu_edit"
