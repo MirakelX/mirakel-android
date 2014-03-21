@@ -14,3 +14,10 @@ done
 #cp buildfiles
 cp build/build.gradle .
 cp build/settings.gradle .
+
+if [ -n "$(git status --porcelain)" ]; then 
+  git add build.gradle settings.gradle;
+  git commit -m "Update buildfiles" 
+fi
+
+git push
