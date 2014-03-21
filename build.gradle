@@ -39,6 +39,9 @@ android {
     defaultConfig {
             testPackageName "de.azapps.mirakelandroid.test"
             testInstrumentationRunner "android.test.InstrumentationTestRunner"
+            if(System.env.BUILD_NUMBER){
+                versionCode="$System.env.BuildNumber".toInteger()
+            }
     }
     signingConfigs {
         release {
@@ -90,7 +93,7 @@ dependencies {
 
     //for tests
     androidTestCompile "com.jayway.android.robotium:robotium-solo:$robotiumVersion"
-    //androidTestCompile 'junit:junit:4.8'
+//    androidTestCompile 'junit:junit:4.8'
 }
 
 
