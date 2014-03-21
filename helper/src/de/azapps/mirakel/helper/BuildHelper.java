@@ -1,6 +1,5 @@
 package de.azapps.mirakel.helper;
 
-
 public class BuildHelper {
 
 	private static boolean IS_PLAYSTORE = false;
@@ -28,8 +27,8 @@ public class BuildHelper {
 	public static boolean useAutoUpdater() {
 		return !(isForPlayStore() || isForFDroid());
 	}
-	
-	public static void setPlaystore(boolean isPlaystore){
-		IS_PLAYSTORE=isPlaystore;
+
+	public static void setPlaystore(final boolean isPlaystore) {
+		IS_PLAYSTORE = isPlaystore;
 	}
 }

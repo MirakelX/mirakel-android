@@ -1,4 +1,5 @@
 package org.dmfs.provider.tasks;
+
 /*
  * Copyright (C) 2012 Marten Gajda <marten@dmfs.org>
  *
@@ -16,13 +17,9 @@ package org.dmfs.provider.tasks;
  * 
  */
 
-
-
-import de.azapps.mirakel.DefinitionsHelper;
 import android.content.ContentResolver;
 import android.net.Uri;
-
-
+import de.azapps.mirakel.DefinitionsHelper;
 
 /**
  * Task contract. This class defines the interface to the task provider.
@@ -41,14 +38,13 @@ import android.net.Uri;
  * 
  * @author Marten Gajda <marten@dmfs.org>
  */
-public final class TaskContract
-{
+public final class TaskContract {
 
 	/**
 	 * Task provider authority.
 	 */
-	//TODO how to do this better?
-	public static final String AUTHORITY = DefinitionsHelper.AUTHORITY_TYP;//"org.dmfs.tasks";
+	// TODO how to do this better?
+	public static final String AUTHORITY = DefinitionsHelper.AUTHORITY_TYP;// "org.dmfs.tasks";
 
 	/**
 	 * Base content URI.
@@ -75,22 +71,20 @@ public final class TaskContract
 	 */
 	public static final String LOCAL_ACCOUNT = "LOCAL";
 
-
 	/**
 	 * Private constructor to prevent instantiation.
 	 */
-	private TaskContract()
-	{
+	private TaskContract() {
 	}
 
 	/**
-	 * A set of columns for synchronization purposes. These columns exist in {@link Tasks} and in {@link TaskLists} but have different meanings. Only sync
-	 * adapters are allowed to change these values.
+	 * A set of columns for synchronization purposes. These columns exist in
+	 * {@link Tasks} and in {@link TaskLists} but have different meanings. Only
+	 * sync adapters are allowed to change these values.
 	 * 
 	 * @author Marten Gajda <marten@dmfs.org>
 	 */
-	public interface CommonSyncColumns
-	{
+	public interface CommonSyncColumns {
 
 		/**
 		 * A unique Sync ID as set by the sync adapter.
@@ -187,11 +181,11 @@ public final class TaskContract
 	 * 
 	 * @author Marten Gajda <marten@dmfs.org>
 	 */
-	public interface TaskListSyncColumns
-	{
+	public interface TaskListSyncColumns {
 
 		/**
-		 * The name of the account this list belongs to. This field is write-once.
+		 * The name of the account this list belongs to. This field is
+		 * write-once.
 		 * <p>
 		 * Value: String
 		 * </p>
@@ -199,7 +193,8 @@ public final class TaskContract
 		public static final String ACCOUNT_NAME = "account_name";
 
 		/**
-		 * The type of the account this list belongs to. This field is write-once.
+		 * The type of the account this list belongs to. This field is
+		 * write-once.
 		 * <p>
 		 * Value: String
 		 * </p>
@@ -212,10 +207,10 @@ public final class TaskContract
 	 * 
 	 * @author Marten Gajda <marten@dmfs.org>
 	 */
-	public interface TaskSyncColumns
-	{
+	public interface TaskSyncColumns {
 		/**
-		 * The UID of a task. This is field can be changed by a sync adapter only.
+		 * The UID of a task. This is field can be changed by a sync adapter
+		 * only.
 		 * <p>
 		 * Value: String
 		 * </p>
@@ -223,8 +218,10 @@ public final class TaskContract
 		public static final String _UID = "_uid";
 
 		/**
-		 * Deleted flag of a task. This is set to <code>1</code> by the content provider when a task app deletes a task. The sync adapter has to remove the task
-		 * again to finish the removal. This value is <strong>read-only</strong>.
+		 * Deleted flag of a task. This is set to <code>1</code> by the content
+		 * provider when a task app deletes a task. The sync adapter has to
+		 * remove the task again to finish the removal. This value is
+		 * <strong>read-only</strong>.
 		 * <p>
 		 * Value: Integer
 		 * </p>
@@ -240,8 +237,7 @@ public final class TaskContract
 	 * 
 	 * @author Marten Gajda <marten@dmfs.org>
 	 */
-	public interface TaskListColumns
-	{
+	public interface TaskListColumns {
 
 		/**
 		 * List ID.
@@ -263,7 +259,8 @@ public final class TaskContract
 		public static final String LIST_NAME = "list_name";
 
 		/**
-		 * The color of this list as integer (0xaarrggbb). Only the sync adapter can change this.
+		 * The color of this list as integer (0xaarrggbb). Only the sync adapter
+		 * can change this.
 		 * <p>
 		 * Value: Integer
 		 * </p>
@@ -271,7 +268,8 @@ public final class TaskContract
 		public static final String LIST_COLOR = "list_color";
 
 		/**
-		 * The access level a user has on this list. <strong>This value is not used yet, sync adapters should set it to <code>0</code></strong>.
+		 * The access level a user has on this list. <strong>This value is not
+		 * used yet, sync adapters should set it to <code>0</code></strong>.
 		 * <p>
 		 * Value: Integer
 		 * </p>
@@ -309,26 +307,31 @@ public final class TaskContract
 	 * 
 	 * @author Marten Gajda <marten@dmfs.org>
 	 */
-	public static final class TaskLists implements TaskListColumns, TaskListSyncColumns, CommonSyncColumns
-	{
+	public static final class TaskLists implements TaskListColumns,
+			TaskListSyncColumns, CommonSyncColumns {
 		public static final String CONTENT_URI_PATH = "tasklists";
 
-		public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + CONTENT_URI_PATH);
+		public static final Uri CONTENT_URI = Uri.parse("content://"
+				+ AUTHORITY + "/" + CONTENT_URI_PATH);
 
-		public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + AUTHORITY + "." + CONTENT_URI_PATH;
+		public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
+				+ "/" + AUTHORITY + "." + CONTENT_URI_PATH;
 
-		public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + AUTHORITY + "." + CONTENT_URI_PATH;
+		public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
+				+ "/" + AUTHORITY + "." + CONTENT_URI_PATH;
 
 		/**
 		 * The default sort order.
 		 */
-		public static final String DEFAULT_SORT_ORDER = ACCOUNT_NAME + ", " + LIST_NAME;
+		public static final String DEFAULT_SORT_ORDER = ACCOUNT_NAME + ", "
+				+ LIST_NAME;
 
 		/**
 		 * An array of columns only a sync adapter is allowed to change.
 		 */
-		public static final String[] SYNC_ADAPTER_COLUMNS = new String[] { ACCESS_LEVEL, _DIRTY, OWNER, SYNC1, SYNC2, SYNC3, SYNC4, SYNC5, SYNC6, SYNC7, SYNC8,
-			_SYNC_ID, SYNC_VERSION, };
+		public static final String[] SYNC_ADAPTER_COLUMNS = new String[] {
+				ACCESS_LEVEL, _DIRTY, OWNER, SYNC1, SYNC2, SYNC3, SYNC4, SYNC5,
+				SYNC6, SYNC7, SYNC8, _SYNC_ID, SYNC_VERSION, };
 
 	}
 
@@ -337,8 +340,7 @@ public final class TaskContract
 	 * 
 	 * @author Marten Gajda <marten@dmfs.org>
 	 */
-	public interface TaskColumns
-	{
+	public interface TaskColumns {
 
 		/**
 		 * The row id of a task. This value is <strong>read-only</strong>
@@ -349,7 +351,8 @@ public final class TaskContract
 		public static final String _ID = "_id";
 
 		/**
-		 * The id of the list this task belongs to. This value is <strong>write-once</strong> and must not be <code>null</code>.
+		 * The id of the list this task belongs to. This value is
+		 * <strong>write-once</strong> and must not be <code>null</code>.
 		 * <p>
 		 * Value: Integer
 		 * </p>
@@ -373,7 +376,8 @@ public final class TaskContract
 		public static final String LOCATION = "location";
 
 		/**
-		 * A geographic location related to the task. The should be a string in the format "longitude,latitude".
+		 * A geographic location related to the task. The should be a string in
+		 * the format "longitude,latitude".
 		 * <p>
 		 * Value: String
 		 * </p>
@@ -405,7 +409,9 @@ public final class TaskContract
 		public static final String ORGANIZER = "organizer";
 
 		/**
-		 * The priority of a task. This is an Integer between zero and 9. Zero means there is no priority set. 1 is the highest priority and 9 the lowest.
+		 * The priority of a task. This is an Integer between zero and 9. Zero
+		 * means there is no priority set. 1 is the highest priority and 9 the
+		 * lowest.
 		 * <p>
 		 * Value: Integer
 		 * </p>
@@ -418,8 +424,10 @@ public final class TaskContract
 		public static final int PRIORITY_DEFAULT = 0;
 
 		/**
-		 * The classification of a task. This value must be either <code>null</code> or one of {@link #CLASSIFICATION_PUBLIC}, {@link #CLASSIFICATION_PRIVATE},
-		 * {@link #CLASSIFICATION_CONFIDENTIAL}.
+		 * The classification of a task. This value must be either
+		 * <code>null</code> or one of {@link #CLASSIFICATION_PUBLIC},
+		 * {@link #CLASSIFICATION_PRIVATE}, {@link #CLASSIFICATION_CONFIDENTIAL}
+		 * .
 		 * <p>
 		 * Value: Integer
 		 * </p>
@@ -447,7 +455,8 @@ public final class TaskContract
 		public static final Integer CLASSIFICATION_DEFAULT = null;
 
 		/**
-		 * Date of completion of this task in milliseconds since the epoch or {@code null} if this task has not been completed yet.
+		 * Date of completion of this task in milliseconds since the epoch or
+		 * {@code null} if this task has not been completed yet.
 		 * <p>
 		 * Value: Long
 		 * </p>
@@ -463,7 +472,8 @@ public final class TaskContract
 		public static final String COMPLETED_IS_ALLDAY = "completed_is_allday";
 
 		/**
-		 * A number between 0 and 100 that indicates the progress of the task or <code>null</code>.
+		 * A number between 0 and 100 that indicates the progress of the task or
+		 * <code>null</code>.
 		 * <p>
 		 * Value: Integer (0-100)
 		 * </p>
@@ -471,7 +481,9 @@ public final class TaskContract
 		public static final String PERCENT_COMPLETE = "percent_complete";
 
 		/**
-		 * The status of this task. One of {@link #STATUS_NEEDS_ACTION},{@link #STATUS_IN_PROCESS}, {@link #STATUS_COMPLETED}, {@link #STATUS_CANCELLED}.
+		 * The status of this task. One of {@link #STATUS_NEEDS_ACTION},
+		 * {@link #STATUS_IN_PROCESS}, {@link #STATUS_COMPLETED},
+		 * {@link #STATUS_CANCELLED}.
 		 * <p>
 		 * Value: Integer
 		 * </p>
@@ -504,8 +516,10 @@ public final class TaskContract
 		public static final int STATUS_DEFAULT = STATUS_NEEDS_ACTION;
 
 		/**
-		 * A flag that indicates a task is new (i.e. not work has been done yet). This flag is <strong>read-only</strong>. Its value is <code>1</code> when
-		 * {@link #STATUS} equals {@link #STATUS_NEEDS_ACTION} and <code>0</code> otherwise.
+		 * A flag that indicates a task is new (i.e. not work has been done
+		 * yet). This flag is <strong>read-only</strong>. Its value is
+		 * <code>1</code> when {@link #STATUS} equals
+		 * {@link #STATUS_NEEDS_ACTION} and <code>0</code> otherwise.
 		 * <p>
 		 * Value: Integer
 		 * </p>
@@ -516,8 +530,10 @@ public final class TaskContract
 		public static final String IS_NEW = "is_new";
 
 		/**
-		 * A flag that indicates a task is closed (no more work has to be done). This flag is <strong>read-only</strong>. Its value is <code>1</code> when
-		 * {@link #STATUS} equals {@link #STATUS_COMPLETED} or {@link #STATUS_CANCELLED} and <code>0</code> otherwise.
+		 * A flag that indicates a task is closed (no more work has to be done).
+		 * This flag is <strong>read-only</strong>. Its value is <code>1</code>
+		 * when {@link #STATUS} equals {@link #STATUS_COMPLETED} or
+		 * {@link #STATUS_CANCELLED} and <code>0</code> otherwise.
 		 * <p>
 		 * Value: Integer
 		 * </p>
@@ -528,7 +544,8 @@ public final class TaskContract
 		public static final String IS_CLOSED = "is_closed";
 
 		/**
-		 * An individual color for this task in the format 0xaarrggbb or {@code null} to use {@link TaskListColumns#LIST_COLOR} instead.
+		 * An individual color for this task in the format 0xaarrggbb or
+		 * {@code null} to use {@link TaskListColumns#LIST_COLOR} instead.
 		 * <p>
 		 * Value: Integer
 		 * </p>
@@ -557,7 +574,8 @@ public final class TaskContract
 		public static final String CREATED = "created";
 
 		/**
-		 * When this task had been modified the last time in milliseconds since the epoch.
+		 * When this task had been modified the last time in milliseconds since
+		 * the epoch.
 		 * <p>
 		 * Value: Long
 		 * </p>
@@ -565,13 +583,16 @@ public final class TaskContract
 		public static final String LAST_MODIFIED = "last_modified";
 
 		/**
-		 * String: An Olson Id of the time zone of this task. If this value is <code>null</code>, it's automatically replaced by the local time zone.
+		 * String: An Olson Id of the time zone of this task. If this value is
+		 * <code>null</code>, it's automatically replaced by the local time
+		 * zone.
 		 */
 		public static final String TZ = "tz";
 
 		/**
-		 * When this task is due in milliseconds since the epoch. Only one of {@link #DUE} or {@link #DURATION} must be supplied (or none of both if the task
-		 * has no due date).
+		 * When this task is due in milliseconds since the epoch. Only one of
+		 * {@link #DUE} or {@link #DURATION} must be supplied (or none of both
+		 * if the task has no due date).
 		 * <p>
 		 * Value: Long
 		 * </p>
@@ -579,9 +600,13 @@ public final class TaskContract
 		public static final String DUE = "due";
 
 		/**
-		 * The duration of this task. Only one of {@link #DUE} or {@link #DURATION} must be supplied (or none of both if the task has no due date). Setting a
-		 * {@link #DURATION} is not allowed when {@link #DTSTART} is <code>null</code>. The Value must be a duration string as in <a
-		 * href="http://tools.ietf.org/html/rfc5545#section-3.3.6">RFC 5545 Section 3.3.6</a>.
+		 * The duration of this task. Only one of {@link #DUE} or
+		 * {@link #DURATION} must be supplied (or none of both if the task has
+		 * no due date). Setting a {@link #DURATION} is not allowed when
+		 * {@link #DTSTART} is <code>null</code>. The Value must be a duration
+		 * string as in <a
+		 * href="http://tools.ietf.org/html/rfc5545#section-3.3.6">RFC 5545
+		 * Section 3.3.6</a>.
 		 * <p>
 		 * Value: String
 		 * </p>
@@ -589,9 +614,13 @@ public final class TaskContract
 		public static final String DURATION = "duration";
 
 		/**
-		 * A comma separated list of time Strings in RFC 5545 format (see <a href="http://tools.ietf.org/html/rfc5545#section-3.3.4">RFC 5545 Section 3.3.4</a>
-		 * and <a href="http://tools.ietf.org/html/rfc5545#section-3.3.5">RFC 5545 Section 3.3.5</a>) that contains dates of instances of e recurring task.
-		 * All-day tasks must use the DATE format specified in section 3.3.4 of RFC 5545.
+		 * A comma separated list of time Strings in RFC 5545 format (see <a
+		 * href="http://tools.ietf.org/html/rfc5545#section-3.3.4">RFC 5545
+		 * Section 3.3.4</a> and <a
+		 * href="http://tools.ietf.org/html/rfc5545#section-3.3.5">RFC 5545
+		 * Section 3.3.5</a>) that contains dates of instances of e recurring
+		 * task. All-day tasks must use the DATE format specified in section
+		 * 3.3.4 of RFC 5545.
 		 * 
 		 * This value must be {@code null} for exception instances.
 		 * <p>
@@ -601,9 +630,13 @@ public final class TaskContract
 		public static final String RDATE = "rdate";
 
 		/**
-		 * A comma separated list of time Strings in RFC 5545 format (see <a href="http://tools.ietf.org/html/rfc5545#section-3.3.4">RFC 5545 Section 3.3.4</a>
-		 * and <a href="http://tools.ietf.org/html/rfc5545#section-3.3.5">RFC 5545 Section 3.3.5</a>) that contains dates of exceptions of a recurring task.
-		 * All-day tasks must use the DATE format specified in section 3.3.4 of RFC 5545.
+		 * A comma separated list of time Strings in RFC 5545 format (see <a
+		 * href="http://tools.ietf.org/html/rfc5545#section-3.3.4">RFC 5545
+		 * Section 3.3.4</a> and <a
+		 * href="http://tools.ietf.org/html/rfc5545#section-3.3.5">RFC 5545
+		 * Section 3.3.5</a>) that contains dates of exceptions of a recurring
+		 * task. All-day tasks must use the DATE format specified in section
+		 * 3.3.4 of RFC 5545.
 		 * 
 		 * This value must be {@code null} for exception instances.
 		 * <p>
@@ -613,7 +646,9 @@ public final class TaskContract
 		public static final String EXDATE = "exdate";
 
 		/**
-		 * A recurrence rule as specified in <a href="http://tools.ietf.org/html/rfc5545#section-3.3.10">RFC 5545 Section 3.3.10</a>.
+		 * A recurrence rule as specified in <a
+		 * href="http://tools.ietf.org/html/rfc5545#section-3.3.10">RFC 5545
+		 * Section 3.3.10</a>.
 		 * 
 		 * This value must be {@code null} for exception instances.
 		 * <p>
@@ -623,8 +658,11 @@ public final class TaskContract
 		public static final String RRULE = "rrule";
 
 		/**
-		 * The _sync_id of the original event if this is an exception, <code>null</code> otherwise. Only one of {@link #ORIGINAL_INSTANCE_SYNC_ID} or
-		 * {@link #ORIGINAL_INSTANCE_ID} must be set if this task is an exception. The other one will be updated by the content provider.
+		 * The _sync_id of the original event if this is an exception,
+		 * <code>null</code> otherwise. Only one of
+		 * {@link #ORIGINAL_INSTANCE_SYNC_ID} or {@link #ORIGINAL_INSTANCE_ID}
+		 * must be set if this task is an exception. The other one will be
+		 * updated by the content provider.
 		 * <p>
 		 * Value: String
 		 * </p>
@@ -632,8 +670,11 @@ public final class TaskContract
 		public static final String ORIGINAL_INSTANCE_SYNC_ID = "original_instance_sync_id";
 
 		/**
-		 * The row id of the original event if this is an exception, <code>null</code> otherwise. Only one of {@link #ORIGINAL_INSTANCE_SYNC_ID} or
-		 * {@link #ORIGINAL_INSTANCE_ID} must be set if this task is an exception. The other one will be updated by the content provider.
+		 * The row id of the original event if this is an exception,
+		 * <code>null</code> otherwise. Only one of
+		 * {@link #ORIGINAL_INSTANCE_SYNC_ID} or {@link #ORIGINAL_INSTANCE_ID}
+		 * must be set if this task is an exception. The other one will be
+		 * updated by the content provider.
 		 * <p>
 		 * Value: Long
 		 * </p>
@@ -641,8 +682,9 @@ public final class TaskContract
 		public static final String ORIGINAL_INSTANCE_ID = "original_instance_id";
 
 		/**
-		 * The time in milliseconds since the Epoch of the original instance that is overridden by this instance or <code>null</code> if this task is not an
-		 * exception.
+		 * The time in milliseconds since the Epoch of the original instance
+		 * that is overridden by this instance or <code>null</code> if this task
+		 * is not an exception.
 		 * <p>
 		 * Value: Long
 		 * </p>
@@ -663,10 +705,11 @@ public final class TaskContract
 	 * 
 	 * @author Marten Gajda <marten@dmfs.org>
 	 */
-	public static final class Tasks implements TaskColumns, CommonSyncColumns, TaskSyncColumns
-	{
+	public static final class Tasks implements TaskColumns, CommonSyncColumns,
+			TaskSyncColumns {
 		/**
-		 * The name of the account the task belongs to. This is auto-derived from the list the task belongs to. Do not write this value here.
+		 * The name of the account the task belongs to. This is auto-derived
+		 * from the list the task belongs to. Do not write this value here.
 		 * <p>
 		 * Value: String
 		 * </p>
@@ -677,7 +720,8 @@ public final class TaskContract
 		public static final String ACCOUNT_NAME = TaskLists.ACCOUNT_NAME;
 
 		/**
-		 * The type of the account the task belongs to. This is auto-derived from the list the task belongs to. Do not write this value here.
+		 * The type of the account the task belongs to. This is auto-derived
+		 * from the list the task belongs to. Do not write this value here.
 		 * <p>
 		 * Value: String
 		 * </p>
@@ -688,8 +732,9 @@ public final class TaskContract
 		public static final String ACCOUNT_TYPE = TaskLists.ACCOUNT_TYPE;
 
 		/**
-		 * The name of the list this task belongs to as integer (0xaarrggbb). This is auto-derived from the list the task belongs to. Do not write this value
-		 * here.
+		 * The name of the list this task belongs to as integer (0xaarrggbb).
+		 * This is auto-derived from the list the task belongs to. Do not write
+		 * this value here.
 		 * <p>
 		 * Value: String
 		 * </p>
@@ -699,8 +744,10 @@ public final class TaskContract
 		 */
 		public static final String LIST_NAME = TaskLists.LIST_NAME;
 		/**
-		 * The color of the list this task belongs to as integer (0xaarrggbb). This is auto-derived from the list the task belongs to. Do not write this value
-		 * here. To change the color of an individual task use {@code TASK_COLOR} instead.
+		 * The color of the list this task belongs to as integer (0xaarrggbb).
+		 * This is auto-derived from the list the task belongs to. Do not write
+		 * this value here. To change the color of an individual task use
+		 * {@code TASK_COLOR} instead.
 		 * <p>
 		 * Value: Integer
 		 * </p>
@@ -711,7 +758,8 @@ public final class TaskContract
 		public static final String LIST_COLOR = TaskLists.LIST_COLOR;
 
 		/**
-		 * The owner of the list this task belongs. This is auto-derived from the list the task belongs to. Do not write this value here.
+		 * The owner of the list this task belongs. This is auto-derived from
+		 * the list the task belongs to. Do not write this value here.
 		 * <p>
 		 * Value: String
 		 * </p>
@@ -722,7 +770,8 @@ public final class TaskContract
 		public static final String LIST_OWNER = TaskLists.OWNER;
 
 		/**
-		 * The access level of the list this task belongs. This is auto-derived from the list the task belongs to. Do not write this value here.
+		 * The access level of the list this task belongs. This is auto-derived
+		 * from the list the task belongs to. Do not write this value here.
 		 * <p>
 		 * Value: Integer
 		 * </p>
@@ -733,7 +782,8 @@ public final class TaskContract
 		public static final String LIST_ACCESS_LEVEL = TaskLists.ACCESS_LEVEL;
 
 		/**
-		 * The visibility of the list this task belongs. This is auto-derived from the list the task belongs to. Do not write this value here.
+		 * The visibility of the list this task belongs. This is auto-derived
+		 * from the list the task belongs to. Do not write this value here.
 		 * <p>
 		 * Value: Integer
 		 * </p>
@@ -745,16 +795,20 @@ public final class TaskContract
 
 		public static final String CONTENT_URI_PATH = "tasks";
 
-		public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + CONTENT_URI_PATH);
+		public static final Uri CONTENT_URI = Uri.parse("content://"
+				+ AUTHORITY + "/" + CONTENT_URI_PATH);
 
-		public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + AUTHORITY + "." + CONTENT_URI_PATH;
+		public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
+				+ "/" + AUTHORITY + "." + CONTENT_URI_PATH;
 
-		public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + AUTHORITY + "." + CONTENT_URI_PATH;
+		public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
+				+ "/" + AUTHORITY + "." + CONTENT_URI_PATH;
 
 		public static final String DEFAULT_SORT_ORDER = DUE;
 
-		public static final String[] SYNC_ADAPTER_COLUMNS = new String[] { _DIRTY, SYNC1, SYNC2, SYNC3, SYNC4, SYNC5, SYNC6, SYNC7, SYNC8, _SYNC_ID,
-			SYNC_VERSION, };
+		public static final String[] SYNC_ADAPTER_COLUMNS = new String[] {
+				_DIRTY, SYNC1, SYNC2, SYNC3, SYNC4, SYNC5, SYNC6, SYNC7, SYNC8,
+				_SYNC_ID, SYNC_VERSION, };
 	}
 
 	/**
@@ -763,8 +817,7 @@ public final class TaskContract
 	 * @author Yannic Ahrens <yannic@dmfs.org>
 	 * @author Marten Gajda <marten@dmfs.org>
 	 */
-	public interface InstanceColumns
-	{
+	public interface InstanceColumns {
 		/**
 		 * _ID of task this instance belongs to.
 		 * <p>
@@ -774,7 +827,9 @@ public final class TaskContract
 		public static final String TASK_ID = "task_id";
 
 		/**
-		 * The start date of an instance in milliseconds since the epoch or <code>null</code> if the instance has no start date. At present this is read only.
+		 * The start date of an instance in milliseconds since the epoch or
+		 * <code>null</code> if the instance has no start date. At present this
+		 * is read only.
 		 * <p>
 		 * Value: Long
 		 * </p>
@@ -782,7 +837,9 @@ public final class TaskContract
 		public static final String INSTANCE_START = "instance_start";
 
 		/**
-		 * The due date of an instance in milliseconds since the epoch or <code>null</code> if the instance has no due date. At present this is read only.
+		 * The due date of an instance in milliseconds since the epoch or
+		 * <code>null</code> if the instance has no due date. At present this is
+		 * read only.
 		 * <p>
 		 * Value: Long
 		 * </p>
@@ -790,8 +847,9 @@ public final class TaskContract
 		public static final String INSTANCE_DUE = "instance_due";
 
 		/**
-		 * This column should be used in an order clause to sort instances by due date. It contains a slightly modified start date that takes allday tasks into
-		 * account.
+		 * This column should be used in an order clause to sort instances by
+		 * due date. It contains a slightly modified start date that takes
+		 * allday tasks into account.
 		 * <p>
 		 * Value: Long
 		 * </p>
@@ -802,8 +860,9 @@ public final class TaskContract
 		public static final String INSTANCE_START_SORTING = "instance_start_sorting";
 
 		/**
-		 * This column should be used in an order clause to sort instances by due date. It contains a slightly modified due date that takes allday tasks into
-		 * account.
+		 * This column should be used in an order clause to sort instances by
+		 * due date. It contains a slightly modified due date that takes allday
+		 * tasks into account.
 		 * <p>
 		 * Value: Long
 		 * </p>
@@ -814,8 +873,9 @@ public final class TaskContract
 		public static final String INSTANCE_DUE_SORTING = "instance_due_sorting";
 
 		/**
-		 * The duration of an instance in milliseconds or <code>null</code> if the instance has only one of start or due date or none of both. At present this
-		 * is read only.
+		 * The duration of an instance in milliseconds or <code>null</code> if
+		 * the instance has only one of start or due date or none of both. At
+		 * present this is read only.
 		 * <p>
 		 * Value: Long
 		 * </p>
@@ -825,22 +885,24 @@ public final class TaskContract
 	}
 
 	/**
-	 * Instances of a task. At present this table is read only. Currently it contains exactly one entry per task (and task exception), so it's merely a copy of
-	 * {@link Tasks}.
+	 * Instances of a task. At present this table is read only. Currently it
+	 * contains exactly one entry per task (and task exception), so it's merely
+	 * a copy of {@link Tasks}.
 	 * <p>
 	 * TODO: Insert all instances of recurring the tasks.
 	 * </p>
 	 * <p>
-	 * TODO: In later releases it's planned to provide a convenient interface to add, change or delete task instances via this URI.
+	 * TODO: In later releases it's planned to provide a convenient interface to
+	 * add, change or delete task instances via this URI.
 	 * </p>
 	 * 
 	 * @author Yannic Ahrens <yannic@dmfs.org>
 	 */
-	public static final class Instances implements TaskColumns, InstanceColumns
-	{
+	public static final class Instances implements TaskColumns, InstanceColumns {
 
 		/**
-		 * The name of the account the task belongs to. This is auto-derived from the list the task belongs to. Do not write this value here.
+		 * The name of the account the task belongs to. This is auto-derived
+		 * from the list the task belongs to. Do not write this value here.
 		 * <p>
 		 * Value: String
 		 * </p>
@@ -851,7 +913,8 @@ public final class TaskContract
 		public static final String ACCOUNT_NAME = TaskLists.ACCOUNT_NAME;
 
 		/**
-		 * The type of the account the task belongs to. This is auto-derived from the list the task belongs to. Do not write this value here.
+		 * The type of the account the task belongs to. This is auto-derived
+		 * from the list the task belongs to. Do not write this value here.
 		 * <p>
 		 * Value: String
 		 * </p>
@@ -862,8 +925,9 @@ public final class TaskContract
 		public static final String ACCOUNT_TYPE = TaskLists.ACCOUNT_TYPE;
 
 		/**
-		 * The name of the list this task belongs to as integer (0xaarrggbb). This is auto-derived from the list the task belongs to. Do not write this value
-		 * here.
+		 * The name of the list this task belongs to as integer (0xaarrggbb).
+		 * This is auto-derived from the list the task belongs to. Do not write
+		 * this value here.
 		 * <p>
 		 * Value: String
 		 * </p>
@@ -873,8 +937,10 @@ public final class TaskContract
 		 */
 		public static final String LIST_NAME = TaskLists.LIST_NAME;
 		/**
-		 * The color of the list this task belongs to as integer (0xaarrggbb). This is auto-derived from the list the task belongs to. Do not write this value
-		 * here. To change the color of an individual task use {@code TASK_COLOR} instead.
+		 * The color of the list this task belongs to as integer (0xaarrggbb).
+		 * This is auto-derived from the list the task belongs to. Do not write
+		 * this value here. To change the color of an individual task use
+		 * {@code TASK_COLOR} instead.
 		 * <p>
 		 * Value: Integer
 		 * </p>
@@ -885,7 +951,8 @@ public final class TaskContract
 		public static final String LIST_COLOR = TaskLists.LIST_COLOR;
 
 		/**
-		 * The owner of the list this task belongs. This is auto-derived from the list the task belongs to. Do not write this value here.
+		 * The owner of the list this task belongs. This is auto-derived from
+		 * the list the task belongs to. Do not write this value here.
 		 * <p>
 		 * Value: String
 		 * </p>
@@ -896,7 +963,8 @@ public final class TaskContract
 		public static final String LIST_OWNER = TaskLists.OWNER;
 
 		/**
-		 * The access level of the list this task belongs. This is auto-derived from the list the task belongs to. Do not write this value here.
+		 * The access level of the list this task belongs. This is auto-derived
+		 * from the list the task belongs to. Do not write this value here.
 		 * <p>
 		 * Value: Integer
 		 * </p>
@@ -907,7 +975,8 @@ public final class TaskContract
 		public static final String LIST_ACCESS_LEVEL = TaskLists.ACCESS_LEVEL;
 
 		/**
-		 * The visibility of the list this task belongs. This is auto-derived from the list the task belongs to. Do not write this value here.
+		 * The visibility of the list this task belongs. This is auto-derived
+		 * from the list the task belongs to. Do not write this value here.
 		 * <p>
 		 * Value: Integer
 		 * </p>
@@ -919,31 +988,36 @@ public final class TaskContract
 
 		public static final String CONTENT_URI_PATH = "instances";
 
-		public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + CONTENT_URI_PATH);
+		public static final Uri CONTENT_URI = Uri.parse("content://"
+				+ AUTHORITY + "/" + CONTENT_URI_PATH);
 
-		public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + AUTHORITY + "." + CONTENT_URI_PATH;
+		public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
+				+ "/" + AUTHORITY + "." + CONTENT_URI_PATH;
 
 		public static final String DEFAULT_SORT_ORDER = INSTANCE_DUE_SORTING;
 
 	}
 
 	/*
-	 * ==================================================================================
+	 * ==========================================================================
+	 * ========
 	 * 
-	 * Everything below this line is not used yet and subject to change. Don't use it.
+	 * Everything below this line is not used yet and subject to change. Don't
+	 * use it.
 	 * 
-	 * ==================================================================================
+	 * ==========================================================================
+	 * ========
 	 */
 
 	/**
 	 * Available values in Categories.
 	 * 
-	 * Categories are per account. It's up to the front-end to ensure consistency of category colors across accounts.
+	 * Categories are per account. It's up to the front-end to ensure
+	 * consistency of category colors across accounts.
 	 * 
 	 * @author Marten Gajda <marten@dmfs.org>
 	 */
-	public interface CategoriesColumns
-	{
+	public interface CategoriesColumns {
 
 		public static final String _ID = "_id";
 
@@ -956,19 +1030,18 @@ public final class TaskContract
 		public static final String COLOR = "color";
 	}
 
-	public static final class Categories implements CategoriesColumns
-	{
+	public static final class Categories implements CategoriesColumns {
 
 		public static final String CONTENT_URI_PATH = "categories";
 
-		public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + CONTENT_URI_PATH);
+		public static final Uri CONTENT_URI = Uri.parse("content://"
+				+ AUTHORITY + "/" + CONTENT_URI_PATH);
 
 		public static final String DEFAULT_SORT_ORDER = NAME;
 
 	}
 
-	public interface PropertySyncColumns
-	{
+	public interface PropertySyncColumns {
 		public static final String SYNC1 = "prop_sync1";
 
 		public static final String SYNC2 = "prop_sync2";
@@ -986,8 +1059,7 @@ public final class TaskContract
 		public static final String SYNC8 = "prop_sync8";
 	}
 
-	public interface PropertyColumns
-	{
+	public interface PropertyColumns {
 
 		public static final String _ID = "_id";
 
@@ -1030,36 +1102,38 @@ public final class TaskContract
 		public static final String DATA15 = "data15";
 	}
 
-	public static final class Properties implements PropertySyncColumns, PropertyColumns
-	{
+	public static final class Properties implements PropertySyncColumns,
+			PropertyColumns {
 
 		public static final String CONTENT_URI_PATH = "properties";
 
-		public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + CONTENT_URI_PATH);
+		public static final Uri CONTENT_URI = Uri.parse("content://"
+				+ AUTHORITY + "/" + CONTENT_URI_PATH);
 
 		public static final String DEFAULT_SORT_ORDER = DATA0;
 
 	}
 
-	public interface Property
-	{
+	public interface Property {
 		/**
 		 * Attached documents.
 		 * <p>
-		 * <strong>Note:<strong> Attachments are write-once. To change an attachment you'll have to remove and re-add it.
+		 * <strong>Note:<strong> Attachments are write-once. To change an
+		 * attachment you'll have to remove and re-add it.
 		 * </p>
 		 * 
 		 * @author Marten Gajda <marten@dmfs.org>
 		 */
-		public static interface Attachment extends PropertyColumns
-		{
+		public static interface Attachment extends PropertyColumns {
 			/**
 			 * The mime-type of this property.
 			 */
-			public final static String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/attachment";
+			public final static String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
+					+ "/attachment";
 
 			/**
-			 * ID of the attachment. Use this id to store and retrieve the attachment in the attachments table.
+			 * ID of the attachment. Use this id to store and retrieve the
+			 * attachment in the attachments table.
 			 * <p>
 			 * Value: Long
 			 * </p>
@@ -1075,12 +1149,12 @@ public final class TaskContract
 			public final static String FORMAT = DATA2;
 		}
 
-		public static interface Attendee extends PropertyColumns
-		{
+		public static interface Attendee extends PropertyColumns {
 			/**
 			 * The mime-type of this property.
 			 */
-			public final static String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/attendee";
+			public final static String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
+					+ "/attendee";
 
 			/**
 			 * Name of the contact, if known.
@@ -1105,12 +1179,12 @@ public final class TaskContract
 			public final static String RSVP = DATA4;
 		}
 
-		public static interface Category extends PropertyColumns
-		{
+		public static interface Category extends PropertyColumns {
 			/**
 			 * The mime-type of this property.
 			 */
-			public final static String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/category";
+			public final static String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
+					+ "/category";
 
 			/**
 			 * Row id of the category.
@@ -1121,12 +1195,12 @@ public final class TaskContract
 			public final static String CATEGORY_ID = DATA0;
 		}
 
-		public static interface Comment extends PropertyColumns
-		{
+		public static interface Comment extends PropertyColumns {
 			/**
 			 * The mime-type of this property.
 			 */
-			public final static String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/comment";
+			public final static String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
+					+ "/comment";
 
 			/**
 			 * Comment text.
@@ -1137,7 +1211,9 @@ public final class TaskContract
 			public final static String COMMENT = DATA0;
 
 			/**
-			 * Language code of the comment as defined in <a href="https://tools.ietf.org/html/rfc5646">RFC5646</a> or <code>null</code>.
+			 * Language code of the comment as defined in <a
+			 * href="https://tools.ietf.org/html/rfc5646">RFC5646</a> or
+			 * <code>null</code>.
 			 * <p>
 			 * Value: String
 			 * </p>
@@ -1145,24 +1221,24 @@ public final class TaskContract
 			public final static String LANGUAGE = DATA1;
 		}
 
-		public static interface Contact extends PropertyColumns
-		{
+		public static interface Contact extends PropertyColumns {
 			/**
 			 * The mime-type of this property.
 			 */
-			public final static String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/contact";
+			public final static String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
+					+ "/contact";
 
 			public final static String NAME = DATA0;
 
 			public final static String LANGUAGE = DATA1;
 		}
 
-		public static interface Relation extends PropertyColumns
-		{
+		public static interface Relation extends PropertyColumns {
 			/**
 			 * The mime-type of this property.
 			 */
-			public final static String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/relation";
+			public final static String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
+					+ "/relation";
 
 			public final static String RELATED_ID = DATA1;
 

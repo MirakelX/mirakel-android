@@ -14,4 +14,7 @@ Mirakel versão: %1$s\n
 Versão SDK: %2$d\n
 Dispositivo: %3$s\n]]>
     </string>
+  <string name="contact_no_client">Nenhum cliente de correio instalado</string>
+  <string name="contact_chooser">Enviar mensagem...</string>
+  <string name="no_filemanager">Instale um gestor de ficheiros</string>
 </resources>

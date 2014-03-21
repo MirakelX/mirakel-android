@@ -36,101 +36,112 @@ public class Log {
 
 	public static void disableLoggingToFile() {
 		writeToFile = false;
-		fileWriter=null;
+		fileWriter = null;
 	}
 
-
-	public static void d(String tag, String msg) {
-		if (tag == null || msg == null)
+	public static void d(final String tag, final String msg) {
+		if (tag == null || msg == null) {
 			return;
+		}
 		if (MirakelCommonPreferences.isDebug()) {
 			android.util.Log.d(tag, msg);
 		}
 	}
 
-	public static void e(String tag, String msg) {
-		if (tag == null || msg == null)
+	public static void e(final String tag, final String msg) {
+		if (tag == null || msg == null) {
 			return;
+		}
 		android.util.Log.e(tag, msg);
-		write("e",tag, msg);
+		write("e", tag, msg);
 	}
 
-	public static void e(String tag, String msg, Throwable tr) {
-		if (tag == null || msg == null)
+	public static void e(final String tag, final String msg, final Throwable tr) {
+		if (tag == null || msg == null) {
 			return;
+		}
 		android.util.Log.e(tag, msg, tr);
-		write("e",tag, msg, tr);
+		write("e", tag, msg, tr);
 	}
 
-	public static String getStackTraceString(Throwable tr) {
+	public static String getStackTraceString(final Throwable tr) {
 		return android.util.Log.getStackTraceString(tr);
 	}
 
-	public static void i(String tag, String msg) {
-		if (tag == null || msg == null)
+	public static void i(final String tag, final String msg) {
+		if (tag == null || msg == null) {
 			return;
+		}
 		if (MirakelCommonPreferences.isDebug()) {
 			android.util.Log.i(tag, msg);
 		}
 	}
 
-	public static void v(String tag, String msg) {
-		if (tag == null || msg == null)
+	public static void v(final String tag, final String msg) {
+		if (tag == null || msg == null) {
 			return;
+		}
 		if (MirakelCommonPreferences.isDebug()) {
 			android.util.Log.v(tag, msg);
 		}
 	}
 
-	public static void w(String tag, String msg) {
-		if (tag == null || msg == null)
+	public static void w(final String tag, final String msg) {
+		if (tag == null || msg == null) {
 			return;
+		}
 		if (MirakelCommonPreferences.isDebug()) {
 			android.util.Log.w(tag, msg);
 		}
-		write("w",tag, msg);
+		write("w", tag, msg);
 	}
 
-	public static void wtf(String tag, String msg) {
-		if (tag == null || msg == null)
+	public static void wtf(final String tag, final String msg) {
+		if (tag == null || msg == null) {
 			return;
+		}
 		android.util.Log.wtf(tag, msg);
-		write("wtf",tag, msg);
+		write("wtf", tag, msg);
 	}
+
 	private static String getTime() {
-		return new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss")
-		.format(new Date());
+		return new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss").format(new Date());
 	}
 
 	private static void init() {
-		if (fileWriter != null)
+		if (fileWriter != null) {
 			return;
+		}
 		try {
 			fileWriter = new FileWriter(new File(FileUtils.getLogDir(),
 					getTime() + ".log"));
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			fileWriter = null;
 			Log.e(TAG, "Could not open file for logging");
 		}
 	}
 
-	public static void write(String critic,String tag, String msg) {
-		write(critic,tag, msg, null);
+	public static void write(final String critic, final String tag,
+			final String msg) {
+		write(critic, tag, msg, null);
 	}
 
-	public static void write(String critic,String tag, String msg, Throwable throwable) {
-		if (!writeToFile)
+	public static void write(final String critic, final String tag,
+			final String msg, final Throwable throwable) {
+		if (!writeToFile) {
 			return;
+		}
 		init();
 		if (fileWriter != null) {
 			String stacktrace = "";
-			if (throwable != null)
+			if (throwable != null) {
 				stacktrace = "\nStackTrace:" + getStackTraceString(throwable);
+			}
 			try {
-				fileWriter
-						.write(getTime() + "::" + critic + "::" + tag + "::" + msg + stacktrace+"\n");
+				fileWriter.write(getTime() + "::" + critic + "::" + tag + "::"
+						+ msg + stacktrace + "\n");
 				fileWriter.flush();
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				fileWriter = null;
 				Log.e(TAG, "Could not write to file for logging");
 			}
