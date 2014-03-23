@@ -20,6 +20,7 @@ package de.azapps.mirakel.model.task;
 
 import java.text.ParseException;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -154,6 +155,7 @@ class TaskBase {
 	}
 
 	public ContentValues getContentValues() throws NoSuchListException {
+		final int offset = DateTimeHelper.getTimeZoneOffset();
 		final ContentValues cv = new ContentValues();
 		cv.put(DatabaseHelper.ID, this.id);
 		cv.put(TaskBase.UUID, this.uuid);
@@ -170,25 +172,34 @@ class TaskBase {
 		cv.put(DatabaseHelper.NAME, this.name);
 		cv.put(TaskBase.CONTENT, this.content);
 		cv.put(TaskBase.DONE, this.done);
-		final String due = this.due == null ? null : DateTimeHelper
-				.formatDBDateTime(getDue());
-		cv.put(TaskBase.DUE, due);
-		String reminder = null;
+		if (this.due != null) {
+			// TODO handle daily due here
+			// there is no need to use the offset there
+			cv.put(TaskBase.DUE, this.due.getTimeInMillis() / 1000 - offset);
+		} else {
+			cv.put(TaskBase.DUE, (Integer) null);
+		}
 		if (this.reminder != null) {
-			reminder = DateTimeHelper.formatDateTime(this.reminder);
+			cv.put(TaskBase.REMINDER, this.reminder.getTimeInMillis() / 1000
+					- offset);
+		} else {
+			cv.put(TaskBase.REMINDER, (Integer) null);
 		}
-		cv.put(TaskBase.REMINDER, reminder);
 		cv.put(TaskBase.PRIORITY, this.priority);
-		String createdAt = null;
 		if (this.createdAt != null) {
-			createdAt = DateTimeHelper.formatDateTime(this.createdAt);
+			cv.put(DatabaseHelper.CREATED_AT, this.createdAt.getTimeInMillis()
+					/ 1000 - offset);
+		} else {
+			final Date d = new Date();
+			cv.put(DatabaseHelper.CREATED_AT, d.getTime() / 1000);
 		}
-		cv.put(DatabaseHelper.CREATED_AT, createdAt);
-		String updatedAt = null;
 		if (this.updatedAt != null) {
-			updatedAt = DateTimeHelper.formatDateTime(this.updatedAt);
+			cv.put(DatabaseHelper.UPDATED_AT, this.updatedAt.getTimeInMillis()
+					/ 1000 - offset);
+		} else {
+			final Date d = new Date();
+			cv.put(DatabaseHelper.CREATED_AT, d.getTime() / 1000);
 		}
-		cv.put(DatabaseHelper.UPDATED_AT, updatedAt);
 		cv.put(DatabaseHelper.SYNC_STATE_FIELD, this.sync_state.toInt());
 		cv.put(TaskBase.RECURRING, this.recurrence);
 		cv.put(TaskBase.RECURRING_REMINDER, this.recurring_reminder);

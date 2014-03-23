@@ -47,7 +47,6 @@ import com.google.gson.JsonPrimitive;
 import de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.helper.DateTimeHelper;
-import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.UndoHistory;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.MirakelContentProvider;
@@ -114,34 +113,33 @@ public class Task extends TaskBase {
 	 */
 	public static Task cursorToTask(final Cursor cursor) {
 		int i = 0;
+		final int offset = DateTimeHelper.getTimeZoneOffset() * -1000;
+
 		GregorianCalendar due = new GregorianCalendar();
-		final SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
-				"yyyy-MM-dd'T'kkmmss'Z'", Helpers.getLocal(Task.context));
-		try {
-			due.setTime(DateTimeHelper.dbDateTimeFormat.parse(cursor
-					.getString(6)));
-		} catch (final ParseException e) {
+		if (cursor.isNull(6)) {
 			due = null;
-		} catch (final NullPointerException e) {
-			due = null;
+		} else {
+			due.setTimeInMillis(cursor.getLong(6) * 1000 - offset);
 		}
+
 		GregorianCalendar reminder = new GregorianCalendar();
-		try {
-			reminder.setTime(dateTimeFormat.parse(cursor.getString(7)));
-		} catch (final Exception e) {
+		if (cursor.isNull(7)) {
 			reminder = null;
+		} else {
+			reminder.setTimeInMillis(cursor.getLong(7) * 1000 - offset);
 		}
+
 		GregorianCalendar created_at = new GregorianCalendar();
-		try {
-			created_at.setTime(dateTimeFormat.parse(cursor.getString(9)));
-		} catch (final Exception e) {
-			created_at = new GregorianCalendar();
+		if (cursor.isNull(9)) {
+			created_at = null;
+		} else {
+			created_at.setTimeInMillis(cursor.getLong(9) * 1000 - offset);
 		}
 		GregorianCalendar updated_at = new GregorianCalendar();
-		try {
-			updated_at.setTime(dateTimeFormat.parse(cursor.getString(10)));
-		} catch (final Exception e) {
-			updated_at = new GregorianCalendar();
+		if (cursor.isNull(10)) {
+			updated_at = null;
+		} else {
+			updated_at.setTimeInMillis(cursor.getLong(10) * 1000 - offset);
 		}
 
 		final Task task = new Task(cursor.getLong(i++), cursor.getString(i++),
