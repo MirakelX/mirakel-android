@@ -697,38 +697,38 @@ public class RecurrencePickerDialog extends DialogFragment implements
 						this.mWeekByDayButtons[j].setChecked(checked);
 					}
 				}
-			}
-		} else if (this.mRecurring.getMinutes() != 0) {
-			this.mIntervalType.setSelection(0);
-			this.mIntervalCount.setText(this.mRecurring.getMinutes() + "");
-			this.mIntervalValue = this.mRecurring.getMinutes();
-		} else if (this.mRecurring.getHours() != 0) {
-			this.mIntervalType.setSelection(1);
-			this.mIntervalCount.setText(this.mRecurring.getHours() + "");
-			this.mIntervalValue = this.mRecurring.getHours();
-		} else if (this.mRecurring.getDays() != 0) {
-			this.mIntervalType.setSelection(this.mForDue ? 0 : 2);
-			this.mIntervalCount.setText(this.mRecurring.getDays() + "");
-			this.mIntervalValue = this.mRecurring.getDays();
-		} else if (this.mRecurring.getMonths() != 0) {
-			this.mIntervalType.setSelection(this.mForDue ? 1 : 3);
-			this.mIntervalCount.setText(this.mRecurring.getMonths() + "");
-			this.mIntervalValue = this.mRecurring.getMonths();
-		} else if (this.mRecurring.getYears() != 0) {
-			this.mIntervalType.setSelection(this.mForDue ? 2 : 4);
-			this.mIntervalCount.setText(this.mRecurring.getYears() + "");
-			this.mIntervalValue = this.mRecurring.getYears();
-			this.mStartDate = this.mRecurring.getStartDate();
-			if (this.mStartDate != null) {
-				this.mStartSpinner.setSelection(1);
-				this.mStartDateView.setText(DateTimeHelper.formatDate(
-						getActivity(), this.mStartDate));
-			}
-			this.mEndDate = this.mRecurring.getEndDate();
-			if (this.mEndDate != null) {
-				this.mEndSpinner.setSelection(1);
-				this.mEndDateView.setText(DateTimeHelper.formatDate(
-						getActivity(), this.mEndDate));
+			} else if (this.mRecurring.getMinutes() != 0) {
+				this.mIntervalType.setSelection(0);
+				this.mIntervalCount.setText(this.mRecurring.getMinutes() + "");
+				this.mIntervalValue = this.mRecurring.getMinutes();
+			} else if (this.mRecurring.getHours() != 0) {
+				this.mIntervalType.setSelection(1);
+				this.mIntervalCount.setText(this.mRecurring.getHours() + "");
+				this.mIntervalValue = this.mRecurring.getHours();
+			} else if (this.mRecurring.getDays() != 0) {
+				this.mIntervalType.setSelection(this.mForDue ? 0 : 2);
+				this.mIntervalCount.setText(this.mRecurring.getDays() + "");
+				this.mIntervalValue = this.mRecurring.getDays();
+			} else if (this.mRecurring.getMonths() != 0) {
+				this.mIntervalType.setSelection(this.mForDue ? 1 : 3);
+				this.mIntervalCount.setText(this.mRecurring.getMonths() + "");
+				this.mIntervalValue = this.mRecurring.getMonths();
+			} else if (this.mRecurring.getYears() != 0) {
+				this.mIntervalType.setSelection(this.mForDue ? 2 : 4);
+				this.mIntervalCount.setText(this.mRecurring.getYears() + "");
+				this.mIntervalValue = this.mRecurring.getYears();
+				this.mStartDate = this.mRecurring.getStartDate();
+				if (this.mStartDate != null) {
+					this.mStartSpinner.setSelection(1);
+					this.mStartDateView.setText(DateTimeHelper.formatDate(
+							getActivity(), this.mStartDate));
+				}
+				this.mEndDate = this.mRecurring.getEndDate();
+				if (this.mEndDate != null) {
+					this.mEndSpinner.setSelection(1);
+					this.mEndDateView.setText(DateTimeHelper.formatDate(
+							getActivity(), this.mEndDate));
+				}
 			}
 		}
 
