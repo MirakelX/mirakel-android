@@ -39,9 +39,6 @@ android {
     defaultConfig {
             testPackageName "de.azapps.mirakelandroid.test"
             testInstrumentationRunner "android.test.InstrumentationTestRunner"
-            if(System.env.BUILD_NUMBER){
-                versionCode="$System.env.BuildNumber".toInteger()
-            }
     }
     signingConfigs {
         release {
