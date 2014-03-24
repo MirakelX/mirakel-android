@@ -210,8 +210,9 @@ public class MainWidgetProvider extends AppWidgetProvider {
 				// Main Intent
 				final Intent toastIntent = new Intent(context,
 						MainWidgetProvider.class);
-				intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-				intent.putExtra(EXTRA_WIDGET_LAYOUT, NORMAL_WIDGET);
+				toastIntent.setData(Uri.parse(intent
+						.toUri(Intent.URI_INTENT_SCHEME)));
+				toastIntent.putExtra(EXTRA_WIDGET_LAYOUT, NORMAL_WIDGET);
 				final PendingIntent toastPendingIntent = PendingIntent
 						.getBroadcast(context, 0, toastIntent,
 								PendingIntent.FLAG_UPDATE_CURRENT);

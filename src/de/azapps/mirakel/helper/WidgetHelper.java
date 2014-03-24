@@ -62,6 +62,7 @@ public class WidgetHelper {
 		rv.setOnClickPendingIntent(R.id.tasks_row_name, pOpenIntent);
 		if (isMinimal) {
 			if (task.getDue() != null) {
+				rv.setViewVisibility(R.id.tasks_row_due, View.VISIBLE);
 				rv.setTextViewText(R.id.tasks_row_due,
 						DateTimeHelper.formatDate(context, task.getDue()));
 			} else {
