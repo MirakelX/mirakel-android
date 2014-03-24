@@ -82,9 +82,7 @@
     <text>Awesome new UI and many new and cool features!</text>
     <feature>New logo</feature>
     <feature>New UI</feature>
-    <feature>
-      <text><![CDATA[<a href="http://mirakel.azapps.de/he date="en.html#subtasks">Subtasks</a>]]></text>
-    </feature>
+    <feature><![CDATA[<a href="http://mirakel.azapps.de/he date="en.html#subtasks">Subtasks</a>]]></feature>
     <feature>Add files to Tasks</feature>
     <feature>Recurring Tasks</feature>
     <feature><![CDATA[Configure your <a href="http://mirakel.azapps.de/he date="en.html#semantic-new-tasks">Semantic new Tasks</a>]]></feature>
@@ -115,7 +113,7 @@
 	<feature>Dark widget</feature>
 	<feature>Spanish translation (thank you macebal)</feature>
 	<text>We are the next few weeks on vacation – forgive us that we could not maintain Mirakel in this time. Afterwards we will give you more new and cool features.</text>
-</version>
+  </version>
   <version name="1.0.1" date="2013-07-30">
     <text>Hey you, thank you for using this app! We have already more than 500 downloads. Thank you for your ideas and Bug-reports. Please send more!</text>
     <feature>Bugfixes</feature>
