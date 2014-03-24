@@ -71,9 +71,18 @@ public class DateTimeHelper {
 				.getTime());
 	}
 
-	public static int getTimeZoneOffset() {
+	/**
+	 * Return the current offset to UTC
+	 * 
+	 * @param inMS
+	 *            indicate if the offset is in milliseconds(true) or in
+	 *            seconds(false)
+	 * 
+	 * @return The offset including dayligthsaving
+	 */
+	public static int getTimeZoneOffset(final boolean inMS) {
 		final Date d = new Date();
-		return TimeZone.getDefault().getOffset(d.getTime());
+		return TimeZone.getDefault().getOffset(d.getTime()) / (inMS ? 1 : 1000);
 	}
 
 	/**
