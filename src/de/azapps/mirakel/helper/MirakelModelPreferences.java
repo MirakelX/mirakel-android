@@ -130,4 +130,11 @@ public class MirakelModelPreferences extends MirakelPreferences {
 		return false;
 	}
 
+	public static String getDBName() {
+		String db_name = "mirakel.db";
+		if (MirakelCommonPreferences.isDemoMode()) {
+			db_name = "demo_" + MirakelCommonPreferences.getLanguage() + ".db";
+		}
+		return db_name;
+	}
 }
