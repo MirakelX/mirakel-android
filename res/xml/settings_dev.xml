@@ -25,6 +25,10 @@
     <CheckBoxPreference
         android:key="demoMode"
         android:title="@string/demo_mode" />
+    <Preference 
+        android:key="demoDropDB"
+        android:title="@string/demo_drop_db"
+        android:dependency="demoMode"/>
     <CheckBoxPreference
         android:key="writeLogsToFile"
         android:title="@string/write_logs_to_file"/>

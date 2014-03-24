@@ -18,6 +18,7 @@
  ******************************************************************************/
 package de.azapps.mirakel.helper;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -306,7 +307,7 @@ public class PreferencesAppHelper extends PreferencesHelper {
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
 			final PreferenceCategory cat = (PreferenceCategory) findPreference("notifications");
 			final Preference notificationsBig = findPreference("notificationsBig");
-			if ((cat != null) && (notificationsBig != null)) {
+			if (cat != null && notificationsBig != null) {
 				cat.removePreference(notificationsBig);
 			}
 		}
@@ -1245,6 +1246,24 @@ public class PreferencesAppHelper extends PreferencesHelper {
 				}
 			});
 		}
+		final Preference demoDropDB = findPreference("demoDropDB");
+		if (demoDropDB != null) {
+			demoDropDB
+					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+						@Override
+						public boolean onPreferenceClick(
+								final Preference preference) {
+							final File db = new File(FileUtils.getMirakelDir(),
+									"databases/"
+											+ MirakelModelPreferences
+													.getDBName());
+							db.delete();
+							Helpers.restartApp(PreferencesAppHelper.this.activity);
+							return false;
+						}
+					});
+		}
 
 		final Preference version = findPreference("version");
 		if (version != null) {
@@ -1274,7 +1293,7 @@ public class PreferencesAppHelper extends PreferencesHelper {
 						this.toast.show();
 						((SettingsActivity) PreferencesAppHelper.this.activity)
 								.invalidateHeaders();
-					} else if ((PreferencesAppHelper.this.debugCounter > 3)
+					} else if (PreferencesAppHelper.this.debugCounter > 3
 							|| MirakelCommonPreferences.isEnabledDebugMenu()) {
 						if (this.toast != null) {
 							this.toast.cancel();
