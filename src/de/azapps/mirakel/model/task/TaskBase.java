@@ -155,7 +155,7 @@ class TaskBase {
 	}
 
 	public ContentValues getContentValues() throws NoSuchListException {
-		final int offset = DateTimeHelper.getTimeZoneOffset();
+		final int offset = DateTimeHelper.getTimeZoneOffset(false);
 		final ContentValues cv = new ContentValues();
 		cv.put(DatabaseHelper.ID, this.id);
 		cv.put(TaskBase.UUID, this.uuid);

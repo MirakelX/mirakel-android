@@ -113,33 +113,33 @@ public class Task extends TaskBase {
 	 */
 	public static Task cursorToTask(final Cursor cursor) {
 		int i = 0;
-		final int offset = DateTimeHelper.getTimeZoneOffset() * -1000;
+		final int offset = DateTimeHelper.getTimeZoneOffset(true);
 
 		GregorianCalendar due = new GregorianCalendar();
 		if (cursor.isNull(6)) {
 			due = null;
 		} else {
-			due.setTimeInMillis(cursor.getLong(6) * 1000 - offset);
+			due.setTimeInMillis(cursor.getLong(6) * 1000 + offset);
 		}
 
 		GregorianCalendar reminder = new GregorianCalendar();
 		if (cursor.isNull(7)) {
 			reminder = null;
 		} else {
-			reminder.setTimeInMillis(cursor.getLong(7) * 1000 - offset);
+			reminder.setTimeInMillis(cursor.getLong(7) * 1000 + offset);
 		}
 
 		GregorianCalendar created_at = new GregorianCalendar();
 		if (cursor.isNull(9)) {
 			created_at = null;
 		} else {
-			created_at.setTimeInMillis(cursor.getLong(9) * 1000 - offset);
+			created_at.setTimeInMillis(cursor.getLong(9) * 1000 + offset);
 		}
 		GregorianCalendar updated_at = new GregorianCalendar();
 		if (cursor.isNull(10)) {
 			updated_at = null;
 		} else {
-			updated_at.setTimeInMillis(cursor.getLong(10) * 1000 - offset);
+			updated_at.setTimeInMillis(cursor.getLong(10) * 1000 + offset);
 		}
 
 		final Task task = new Task(cursor.getLong(i++), cursor.getString(i++),

@@ -68,7 +68,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	}
 
-	protected static void createTasksTableStringOLD(final SQLiteDatabase db) {
+	protected static void createTasksTableOLD(final SQLiteDatabase db) {
 		db.execSQL("CREATE TABLE " + Task.TABLE + " (" + ID
 				+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + Task.LIST_ID
 				+ " INTEGER REFERENCES " + ListMirakel.TABLE + " (" + ID
@@ -83,7 +83,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private final Context context;
 
-	protected static void createTasksTableString(final SQLiteDatabase db) {
+	protected static void createTasksTable(final SQLiteDatabase db) {
 		db.execSQL("CREATE TABLE " + Task.TABLE + " (" + ID
 				+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + Task.LIST_ID
 				+ " INTEGER REFERENCES " + ListMirakel.TABLE + " (" + ID
@@ -166,7 +166,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ SYNC_STATE_FIELD + " INTEGER DEFAULT " + SYNC_STATE.ADD
 				+ ", " + ListMirakel.LFT + " INTEGER, " + ListMirakel.RGT
 				+ " INTEGER " + ")");
-		createTasksTableStringOLD(db);
+		createTasksTableOLD(db);
 		db.execSQL("INSERT INTO " + ListMirakel.TABLE + " (" + NAME + ","
 				+ ListMirakel.LFT + "," + ListMirakel.RGT + ") VALUES ('"
 				+ this.context.getString(R.string.inbox) + "',0,1)");
@@ -240,7 +240,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			 */
 
 			db.execSQL("ALTER TABLE " + Task.TABLE + " RENAME TO tmp_tasks;");
-			createTasksTableStringOLD(db);
+			createTasksTableOLD(db);
 			String cols = ID + ", " + Task.LIST_ID + ", " + NAME + ", "
 					+ Task.DONE + "," + Task.PRIORITY + "," + Task.DUE + ","
 					+ CREATED_AT + "," + UPDATED_AT + "," + SYNC_STATE_FIELD;
@@ -271,7 +271,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			 * Remove NOT NULL
 			 */
 			db.execSQL("ALTER TABLE " + Task.TABLE + " RENAME TO tmp_tasks;");
-			createTasksTableStringOLD(db);
+			createTasksTableOLD(db);
 			cols = ID + ", " + Task.LIST_ID + ", " + NAME + ", " + Task.DONE
 					+ "," + Task.PRIORITY + "," + Task.DUE + "," + CREATED_AT
 					+ "," + UPDATED_AT + "," + SYNC_STATE_FIELD;
@@ -493,49 +493,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		}
 	}
 
-	// public static final String[] allColumns = { DatabaseHelper.ID,
-	// TaskBase.UUID, TaskBase.LIST_ID, DatabaseHelper.NAME,
-	// TaskBase.CONTENT, TaskBase.DONE, TaskBase.DUE, TaskBase.REMINDER,
-	// TaskBase.PRIORITY, DatabaseHelper.CREATED_AT,
-	// DatabaseHelper.UPDATED_AT, DatabaseHelper.SYNC_STATE_FIELD,
-	// TaskBase.ADDITIONAL_ENTRIES, TaskBase.RECURRING,
-	// TaskBase.RECURRING_REMINDER, TaskBase.PROGRESS };
-
-	private void updateTimesToUTC(final SQLiteDatabase db) {
-		// MAYBE better use an async-Task and show something here?
-		// new Thread(new Runnable() {
-
-		// @Override
-		// public void run() {
+	private static void updateTimesToUTC(final SQLiteDatabase db) {
 		db.execSQL("ALTER TABLE " + Task.TABLE + " RENAME TO tmp_tasks;");
-		createTasksTableString(db);
-		final int offset = DateTimeHelper.getTimeZoneOffset() * -1;
-		db.execSQL("Insert INTO " + Task.TABLE + "(" + DatabaseHelper.ID + ","
-				+ Task.UUID + "," + Task.LIST_ID + "," + NAME + ","
-				+ Task.CONTENT + "," + Task.DONE + "," + Task.DUE + ","
-				+ Task.REMINDER + "," + Task.PRIORITY + "," + CREATED_AT + ","
-				+ UPDATED_AT + "," + SYNC_STATE_FIELD + ","
-				+ Task.ADDITIONAL_ENTRIES + "," + Task.RECURRING + ","
-				+ Task.RECURRING_REMINDER + "," + Task.PROGRESS + ") Select "
-				+ DatabaseHelper.ID + "," + Task.UUID + "," + Task.LIST_ID
-				+ "," + NAME + "," + Task.CONTENT + "," + Task.DONE
-				+ ", strftime('%s'," + Task.DUE + ")+" + offset + ","
-				+ getStrFtime(Task.REMINDER) + "+" + offset + ","
-				+ Task.PRIORITY + "," + getStrFtime(CREATED_AT) + "+" + offset
-				+ "," + getStrFtime(UPDATED_AT) + "+" + offset + ","
-				+ SYNC_STATE_FIELD + "," + Task.ADDITIONAL_ENTRIES + ","
-				+ Task.RECURRING + "," + Task.RECURRING_REMINDER + ","
-				+ Task.PROGRESS + " FROM tmp_tasks;");
+		createTasksTable(db);
+		final int offset = DateTimeHelper.getTimeZoneOffset(false);
+		db.execSQL("Insert INTO tasks (_id, uuid, list_id, name, "
+				+ "content, done, due, reminder, priority, created_at, "
+				+ "updated_at, sync_state, additional_entries, recurring, "
+				+ "recurring_reminder, progress) "
+				+ "Select _id, uuid, list_id, name, content, done, "
+				+ "strftime('%s',"
+				+ Task.DUE
+				+ ")-"
+				+ offset
+				+ ", "
+				+ getStrFtime(Task.REMINDER, offset)
+				+ ", priority, "
+				+ getStrFtime(CREATED_AT, offset)
+				+ ", "
+				+ getStrFtime(UPDATED_AT, offset)
+				+ ","
+				+ " sync_state, additional_entries, recurring, recurring_reminder, progress FROM tmp_tasks;");
 		db.execSQL("DROP TABLE tmp_tasks");
-
-		// }
-		// }).start();
-
 	}
 
-	private static String getStrFtime(final String col) {
+	private static String getStrFtime(final String col, final int offset) {
 		return "strftime('%s',substr(" + col + ",0,11)||' '||substr(" + col
 				+ ",12,2)||':'||substr(" + col + ",14,2)||':'||substr(" + col
-				+ ",16,2))";
+				+ ",16,2)) -" + offset;
 	}
 }
