@@ -25,6 +25,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import android.content.Context;
 import android.os.Build;
@@ -68,6 +69,11 @@ public class DateTimeHelper {
 		}
 		return new SimpleDateFormat(format, Locale.getDefault()).format(date
 				.getTime());
+	}
+
+	public static int getTimeZoneOffset() {
+		final Date d = new Date();
+		return TimeZone.getDefault().getOffset(d.getTime());
 	}
 
 	/**
