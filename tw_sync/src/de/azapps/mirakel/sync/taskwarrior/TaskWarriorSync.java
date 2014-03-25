@@ -24,6 +24,7 @@ import com.google.gson.JsonParser;
 
 import de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
+import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.account.AccountMirakel;
@@ -439,6 +440,7 @@ public class TaskWarriorSync {
 	 * @return
 	 */
 	public String taskToJson(final Task task) {
+		final int offset = DateTimeHelper.getTimeZoneOffset(true);
 		final Map<String, String> additionals = task.getAdditionalEntries();
 		String end = null;
 		String status = "pending";
@@ -477,10 +479,14 @@ public class TaskWarriorSync {
 		String json = "{";
 		json += "\"uuid\":\"" + task.getUUID() + "\"";
 		json += ",\"status\":\"" + status + "\"";
-		json += ",\"entry\":\"" + formatCal(task.getCreatedAt()) + "\"";
+		final Calendar created_at = task.getCreatedAt();
+		created_at.setTimeInMillis(created_at.getTimeInMillis() - offset);
+		json += ",\"entry\":\"" + formatCal(created_at) + "\"";
 		json += ",\"description\":\"" + escape(task.getName()) + "\"";
 		if (task.getDue() != null) {
-			json += ",\"due\":\"" + formatCal(task.getDue()) + "\"";
+			final Calendar due = task.getDue();
+			due.setTimeInMillis(due.getTimeInMillis() - offset);
+			json += ",\"due\":\"" + formatCal(due) + "\"";
 		}
 		if (task.getList() != null && !additionals.containsKey(NO_PROJECT)) {
 			json += ",\"project\":\"" + task.getList().getName() + "\"";
@@ -490,7 +496,9 @@ public class TaskWarriorSync {
 		}
 		json += ",\"modified\":\"" + formatCal(task.getUpdatedAt()) + "\"";
 		if (task.getReminder() != null) {
-			json += ",\"reminder\":\"" + formatCal(task.getReminder()) + "\"";
+			final Calendar reminder = task.getReminder();
+			reminder.setTimeInMillis(reminder.getTimeInMillis() - offset);
+			json += ",\"reminder\":\"" + formatCal(reminder) + "\"";
 		}
 		if (end != null) {
 			json += ",\"end\":\"" + end + "\"";
