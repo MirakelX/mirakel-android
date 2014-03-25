@@ -31,7 +31,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.helper.Helpers;
-import de.azapps.mirakel.helper.MirakelCommonPreferences;
+import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.export_import.ExportImport;
 import de.azapps.mirakel.model.account.AccountBase;
@@ -95,19 +95,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 * 
 	 * @return
 	 */
-	private static String getDBName(final Context ctx) {
+	public static String getDBName(final Context ctx) {
 		MirakelPreferences.init(ctx);
-		String db_name = "mirakel.db";
-		try {
-			if (MirakelCommonPreferences.isDemoMode()) {
-				db_name = "demo_" + MirakelCommonPreferences.getLanguage()
-						+ ".db";
-			}
-		} catch (final NullPointerException e) {
-			// Then the settings are not initialized and we should not do
-			// anything
-		}
-		return db_name;
+		return MirakelModelPreferences.getDBName();
 	}
 
 	private void createSpecialListsTable(final SQLiteDatabase db) {
