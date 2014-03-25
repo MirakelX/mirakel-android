@@ -127,36 +127,143 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ " INTEGER NOT NULL DEFAULT 0, " + SpecialList.WHERE_QUERY
 				+ " STRING NOT NULL DEFAULT '', " + ListMirakel.SORT_BY
 				+ " INTEGER NOT NULL DEFAULT " + ListMirakel.SORT_BY_OPT + ", "
-				+ SYNC_STATE_FIELD + " INTEGER DEFAULT " + SYNC_STATE.ADD + ")");
+				+ SYNC_STATE_FIELD + " INTEGER DEFAULT " + SYNC_STATE.ADD
+				+ ", " + SpecialList.DEFAULT_LIST + " INTEGER, "
+				+ SpecialList.DEFAULT_DUE + " INTEGER," + ListMirakel.COLOR
+				+ " INTEGER, " + ListMirakel.LFT + " INTEGER ,"
+				+ ListMirakel.RGT + " INTEGER)");
 		db.execSQL("INSERT INTO " + SpecialList.TABLE + " (" + NAME + ","
-				+ SpecialList.ACTIVE + "," + SpecialList.WHERE_QUERY
-				+ ") VALUES (" + "'"
-				+ this.context.getString(R.string.list_all) + "',1,'')");
+				+ SpecialList.ACTIVE + "," + SpecialList.WHERE_QUERY + ","
+				+ ListMirakel.LFT + ", " + ListMirakel.RGT + ") VALUES (" + "'"
+				+ this.context.getString(R.string.list_all) + "',1,'',1,2)");
 		db.execSQL("INSERT INTO " + SpecialList.TABLE + " (" + NAME + ","
-				+ SpecialList.ACTIVE + "," + SpecialList.WHERE_QUERY
-				+ ") VALUES (" + "'"
+				+ SpecialList.ACTIVE + "," + SpecialList.WHERE_QUERY + ","
+				+ ListMirakel.LFT + ", " + ListMirakel.RGT + ","
+				+ SpecialList.DEFAULT_DUE + ") VALUES (" + "'"
 				+ this.context.getString(R.string.list_today) + "',1,'"
 				+ Task.DUE + " not null and " + Task.DONE + "=0 and date("
-				+ Task.DUE + ")<=date(\"now\",\"localtime\")')");
+				+ Task.DUE + ")<=date(\"now\",\"localtime\")',3,4,0)");
 		db.execSQL("INSERT INTO " + SpecialList.TABLE + " (" + NAME + ","
-				+ SpecialList.ACTIVE + "," + SpecialList.WHERE_QUERY
-				+ ") VALUES (" + "'"
+				+ SpecialList.ACTIVE + "," + SpecialList.WHERE_QUERY + ","
+				+ ListMirakel.LFT + ", " + ListMirakel.RGT + ","
+				+ SpecialList.DEFAULT_DUE + ") VALUES (" + "'"
 				+ this.context.getString(R.string.list_week) + "',1,'"
 				+ Task.DUE + " not null and " + Task.DONE + "=0 and date("
-				+ Task.DUE + ")<=date(\"now\",\"+7 day\",\"localtime\")')");
+				+ Task.DUE
+				+ ")<=date(\"now\",\"+7 day\",\"localtime\")',5,6,7)");
 		db.execSQL("INSERT INTO " + SpecialList.TABLE + " (" + NAME + ","
-				+ SpecialList.ACTIVE + "," + SpecialList.WHERE_QUERY
-				+ ") VALUES (" + "'"
+				+ SpecialList.ACTIVE + "," + SpecialList.WHERE_QUERY + ","
+				+ ListMirakel.LFT + ", " + ListMirakel.RGT + ","
+				+ SpecialList.DEFAULT_DUE + ") VALUES (" + "'"
 				+ this.context.getString(R.string.list_overdue) + "',1,'"
 				+ Task.DUE + " not null and " + Task.DONE + "=0 and date("
-				+ Task.DUE + ")<=date(\"now\",\"-1 day\",\"localtime\")')");
+				+ Task.DUE
+				+ ")<=date(\"now\",\"-1 day\",\"localtime\")',7,8,-1)");
+	}
+
+	private void createRecurringTable(final SQLiteDatabase db) {
+		db.execSQL("CREATE TABLE "
+				+ Recurring.TABLE
+				+ " ("
+				+ ID
+				+ " INTEGER PRIMARY KEY AUTOINCREMENT,"
+				+ "years INTEGER DEFAULT 0,"
+				+ "months INTEGER DEFAULT 0,"
+				+ "days INTEGER DEFAULT 0,"
+				+ "hours INTEGER DEFAULT 0,"
+				+ "minutes INTEGER DEFAULT 0,"
+				+ "for_due INTEGER DEFAULT 0,"
+				+ "label STRING, start_date String, end_date String, "
+				+ "temporary int NOT NULL default 0, isExact INTEGER DEFAULT 0, "
+				+ "monday INTEGER DEFAULT 0, tuesday INTEGER DEFAULT 0, "
+				+ "wednesday INTEGER DEFAULT 0, thursday INTEGER DEFAULT 0, "
+				+ "friday INTEGER DEFAULT 0, saturday INTEGER DEFAULT 0,"
+				+ "sunnday INTEGER DEFAULT 0, derived_from INTEGER DEFAULT NULL);");
+		db.execSQL("INSERT INTO " + Recurring.TABLE
+				+ "(days,label,for_due) VALUES (1,'"
+				+ this.context.getString(R.string.daily) + "',1);");
+		db.execSQL("INSERT INTO " + Recurring.TABLE
+				+ "(days,label,for_due) VALUES (2,'"
+				+ this.context.getString(R.string.second_day) + "',1);");
+		db.execSQL("INSERT INTO " + Recurring.TABLE
+				+ "(days,label,for_due) VALUES (7,'"
+				+ this.context.getString(R.string.weekly) + "',1);");
+		db.execSQL("INSERT INTO " + Recurring.TABLE
+				+ "(days,label,for_due) VALUES (14,'"
+				+ this.context.getString(R.string.two_weekly) + "',1);");
+		db.execSQL("INSERT INTO " + Recurring.TABLE
+				+ "(months,label,for_due) VALUES (1,'"
+				+ this.context.getString(R.string.monthly) + "',1);");
+		db.execSQL("INSERT INTO " + Recurring.TABLE
+				+ "(years,label,for_due) VALUES (1,'"
+				+ this.context.getString(R.string.yearly) + "',1);");
+		db.execSQL("INSERT INTO " + Recurring.TABLE
+				+ "(hours,label,for_due) VALUES (1,'"
+				+ this.context.getString(R.string.hourly) + "',0);");
+		db.execSQL("INSERT INTO " + Recurring.TABLE
+				+ "(minutes,label,for_due) VALUES (1,'"
+				+ this.context.getString(R.string.minutly) + "',0);");
+	}
+
+	private void createSemanticTable(final SQLiteDatabase db) {
+		db.execSQL("CREATE TABLE " + Semantic.TABLE + " (" + ID
+				+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
+				+ "condition TEXT NOT NULL, " + "due INTEGER, "
+				+ "priority INTEGER, " + "list INTEGER," + "default_list" + ID
+				+ " INTEGER, weekday INTEGER);");
+		db.execSQL("INSERT INTO semantic_conditions (condition,due) VALUES "
+				+ "(\""
+				+ this.context.getString(R.string.today).toLowerCase(
+						Helpers.getLocal(this.context))
+				+ "\",0);"
+				+ "INSERT INTO semantic_conditions (condition,due) VALUES (\""
+				+ this.context.getString(R.string.tomorrow).toLowerCase(
+						Helpers.getLocal(this.context)) + "\",1);");
+		final String[] weekdays = this.context.getResources().getStringArray(
+				R.array.weekdays);
+		for (int i = 1; i < weekdays.length; i++) { // Ignore first element
+			db.execSQL("INSERT INTO " + Semantic.TABLE + " ("
+					+ SemanticBase.CONDITION + "," + SemanticBase.WEEKDAY
+					+ ") VALUES (?, " + i + ")", new String[] { weekdays[i] });
+		}
 	}
 
 	@Override
 	public void onCreate(final SQLiteDatabase db) {
 		Log.d(TAG, "onCreate");
 		DefinitionsHelper.freshInstall = true;
+		createRecurringTable(db);
+		createSemanticTable(db);
 
+		createAccountTable(db);
+		final ACCOUNT_TYPES type = ACCOUNT_TYPES.LOCAL;
+		final String accountname = this.context
+				.getString(R.string.local_account);
+		final ContentValues cv = new ContentValues();
+		cv.put(DatabaseHelper.NAME, accountname);
+		cv.put(AccountBase.TYPE, type.toInt());
+		cv.put(AccountBase.ENABLED, true);
+		final long accountId = db.insert(AccountMirakel.TABLE, null, cv);
+		createListsTable(db, accountId);
+		createTasksTable(db);
+		createSubtaskTable(db);
+		createFileTable(db);
+		createCalDavExtraTable(db);
+
+		// Add defaults
+		db.execSQL("INSERT INTO " + ListMirakel.TABLE + " (" + NAME + ","
+				+ ListMirakel.LFT + "," + ListMirakel.RGT + ") VALUES ('"
+				+ this.context.getString(R.string.inbox) + "',0,1)");
+		db.execSQL("INSERT INTO " + Task.TABLE + " (" + Task.LIST_ID + ","
+				+ DatabaseHelper.NAME + ") VALUES (1,'"
+				+ this.context.getString(R.string.first_task) + "')");
+		createSpecialListsTable(db);
+
+		onUpgrade(db, 32, DATABASE_VERSION);
+	}
+
+	private static void createListsTable(final SQLiteDatabase db,
+			final long accountId) {
 		db.execSQL("CREATE TABLE " + ListMirakel.TABLE + " (" + ID
 				+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + NAME
 				+ " TEXT NOT NULL, " + ListMirakel.SORT_BY
@@ -165,16 +272,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ " INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
 				+ SYNC_STATE_FIELD + " INTEGER DEFAULT " + SYNC_STATE.ADD
 				+ ", " + ListMirakel.LFT + " INTEGER, " + ListMirakel.RGT
-				+ " INTEGER " + ")");
-		createTasksTableOLD(db);
-		db.execSQL("INSERT INTO " + ListMirakel.TABLE + " (" + NAME + ","
-				+ ListMirakel.LFT + "," + ListMirakel.RGT + ") VALUES ('"
-				+ this.context.getString(R.string.inbox) + "',0,1)");
-		db.execSQL("INSERT INTO " + Task.TABLE + " (" + Task.LIST_ID + ","
-				+ DatabaseHelper.NAME + ") VALUES (1,'"
-				+ this.context.getString(R.string.first_task) + "')");
-		createSpecialListsTable(db);
-		onUpgrade(db, 7, DATABASE_VERSION);
+				+ " INTEGER " + ", " + ListMirakel.COLOR + " INTEGER,"
+				+ ListMirakel.ACCOUNT_ID + " REFERENCES "
+				+ AccountMirakel.TABLE + " (" + ID
+				+ ") ON DELETE CASCADE ON UPDATE CASCADE DEFAULT " + accountId
+				+ ")");
 	}
 
 	@Override
@@ -338,17 +440,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			db.execSQL("Alter Table " + SpecialList.TABLE + " add column "
 					+ ListMirakel.COLOR + " INTEGER;");
 		case 16:// Add File
-			db.execSQL("CREATE TABLE " + FileMirakel.TABLE + " (" + ID
-					+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + "task" + ID
-					+ " INTEGER NOT NULL DEFAULT 0, " + "name TEXT, "
-					+ "path TEXT" + ")");
+			createFileTable(db);
 		case 17:// Add Subtask
-			db.execSQL("CREATE TABLE " + Task.SUBTASK_TABLE + " (" + ID
-					+ " INTEGER PRIMARY KEY AUTOINCREMENT," + "parent" + ID
-					+ " INTEGER REFERENCES " + Task.TABLE + " (" + ID
-					+ ") ON DELETE CASCADE ON UPDATE CASCADE," + "child" + ID
-					+ " INTEGER REFERENCES " + Task.TABLE + " (" + ID
-					+ ") ON DELETE CASCADE ON UPDATE CASCADE);");
+			createSubtaskTable(db);
 		case 18:// Modify Semantic
 			db.execSQL("ALTER TABLE " + Semantic.TABLE
 					+ " add column default_list" + ID + " INTEGER");
@@ -442,9 +536,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ " add column progress int NOT NULL default 0;");
 			// Add some columns for caldavsync
 		case 26:
-			db.execSQL("CREATE TABLE caldav_extra(" + ID
-					+ " INTEGER PRIMARY KEY," + "ETAG TEXT,"
-					+ "SYNC_ID TEXT DEFAULT NULL, " + "REMOTE_NAME TEXT)");
+			createCalDavExtraTable(db);
 		case 27:
 			db.execSQL("UPDATE " + Task.TABLE + " SET " + Task.PROGRESS
 					+ "=100 WHERE " + Task.DONE + "= 1 AND " + Task.RECURRING
@@ -491,6 +583,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			break;
 
 		}
+	}
+
+	private void createCalDavExtraTable(final SQLiteDatabase db) {
+		db.execSQL("CREATE TABLE caldav_extra(" + ID + " INTEGER PRIMARY KEY,"
+				+ "ETAG TEXT," + "SYNC_ID TEXT DEFAULT NULL, "
+				+ "REMOTE_NAME TEXT)");
+	}
+
+	private void createFileTable(final SQLiteDatabase db) {
+		db.execSQL("CREATE TABLE " + FileMirakel.TABLE + " (" + ID
+				+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + "task" + ID
+				+ " INTEGER NOT NULL DEFAULT 0, " + "name TEXT, " + "path TEXT"
+				+ ")");
+	}
+
+	private void createSubtaskTable(final SQLiteDatabase db) {
+		db.execSQL("CREATE TABLE " + Task.SUBTASK_TABLE + " (" + ID
+				+ " INTEGER PRIMARY KEY AUTOINCREMENT," + "parent" + ID
+				+ " INTEGER REFERENCES " + Task.TABLE + " (" + ID
+				+ ") ON DELETE CASCADE ON UPDATE CASCADE," + "child" + ID
+				+ " INTEGER REFERENCES " + Task.TABLE + " (" + ID
+				+ ") ON DELETE CASCADE ON UPDATE CASCADE);");
 	}
 
 	private static void updateTimesToUTC(final SQLiteDatabase db) {
