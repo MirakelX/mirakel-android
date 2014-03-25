@@ -341,6 +341,7 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="credits_libraries">Used libraries</string>
     <string name="credits_license_title">License</string>
     <string name="demo_mode">Demo mode</string>
+    <string name="demo_drop_db">Reset demo database</string>
     <string name="write_logs_to_file">Write logs to file</string>
 
 </resources>
