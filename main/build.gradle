@@ -90,7 +90,7 @@ dependencies {
 
     //for tests
     androidTestCompile "com.jayway.android.robotium:robotium-solo:$robotiumVersion"
-    //androidTestCompile 'junit:junit:4.8'
+//    androidTestCompile 'junit:junit:4.8'
 }
 
 
