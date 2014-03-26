@@ -1011,8 +1011,16 @@ public class MainActivity extends ActionBarActivity implements
 			}
 			break;
 		case RESULT_SETTINGS:
-			getListFragment().update();
-			getTaskFragment().updateLayout();
+			if (getListFragment() != null) {
+				getListFragment().update();
+			} else {
+				forceRebuildLayout();
+			}
+			if (getTasksFragment() != null) {
+				getTaskFragment().updateLayout();
+			} else {
+				forceRebuildLayout();
+			}
 			if (!MirakelCommonPreferences.highlightSelected()
 					&& (this.oldClickedList != null || this.oldClickedTask == null)) {
 				clearAllHighlights();
