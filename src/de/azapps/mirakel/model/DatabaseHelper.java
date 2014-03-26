@@ -18,14 +18,18 @@
  ******************************************************************************/
 package de.azapps.mirakel.model;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import de.azapps.mirakel.DefinitionsHelper;
@@ -45,12 +49,13 @@ import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.semantic.SemanticBase;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
 	public static final String CREATED_AT = "created_at";
-	public static final int DATABASE_VERSION = 32;
+	public static final int DATABASE_VERSION = 33;
 	public static final String ID = "_id";
 
 	public static final String NAME = "name";
@@ -482,11 +487,59 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 			db.execSQL("ALTER TABLE " + Recurring.TABLE
 					+ " add column derived_from INTEGER DEFAULT NULL");
+			// also save the time of a due-date
 		case 30:
 			db.execSQL("UPDATE " + Task.TABLE + " set " + Task.DUE + "="
 					+ Task.DUE + "||' 00:00:00'");
+			// save all times in tasktable as utc-unix-seconds
 		case 31:
 			updateTimesToUTC(db);
+			// move tw-sync-key to db
+			// move tw-certs into accountmanager
+		case 32:
+			db.execSQL("ALTER TABLE " + AccountMirakel.TABLE + " add column "
+					+ AccountBase.SYNC_KEY + " STRING DEFAULT '';");
+			String ca = null,
+			client = null,
+			clientKey = null;
+			final File caCert = new File(FileUtils.getMirakelDir() + "ca.cert.pem");
+			final File userCert = new File(FileUtils.getMirakelDir()
+					+ "client.cert.pem");
+			final File userKey = new File(FileUtils.getMirakelDir()
+					+ "client.key.pem");
+			try {
+				ca = FileUtils.readFile(caCert);
+				client = FileUtils.readFile(userCert);
+				clientKey = FileUtils.readFile(userKey);
+                caCert.delete();
+                userCert.delete();
+                userKey.delete();
+			} catch (final IOException e) {
+				Log.wtf(TAG, "ca-files not found");
+			}
+			final AccountManager accountManager = AccountManager
+					.get(this.context);
+			final Cursor c = db.query(AccountMirakel.TABLE,
+					AccountMirakel.allColumns, null, null, null, null, null);
+			final List<AccountMirakel> accounts = AccountMirakel
+					.cursorToAccountList(c);
+			c.close();
+			for (final AccountMirakel a : accounts) {
+				if (a.getType() == ACCOUNT_TYPES.TASKWARRIOR) {
+					final Account account = a.getAndroidAccount(this.context);
+					a.setSyncKey(accountManager.getPassword(account));
+					db.update(AccountMirakel.TABLE, a.getContentValues(), ID
+							+ "=?", new String[] { a.getId() + "" });
+					if (ca != null && client != null && clientKey != null) {
+						accountManager.setUserData(account,
+								DefinitionsHelper.BUNDLE_CERT, ca);
+						accountManager.setUserData(account,
+								DefinitionsHelper.BUNDLE_CERT_CLIENT, client);
+						accountManager.setUserData(account,
+								DefinitionsHelper.BUNDLE_KEY_CLIENT, clientKey);
+					}
+				}
+			}
 		default:
 			break;
 

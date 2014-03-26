@@ -98,8 +98,8 @@ public class AccountMirakel extends AccountBase {
 	public static final String ACCOUNT_TYPE_DAVDROID = "bitfire.at.davdroid";
 
 	public static final String ACCOUNT_TYPE_MIRAKEL = "de.azapps.mirakel";
-	private static final String[] allColumns = { DatabaseHelper.ID,
-			DatabaseHelper.NAME, TYPE, ENABLED };
+	public static final String[] allColumns = { DatabaseHelper.ID,
+			DatabaseHelper.NAME, TYPE, ENABLED, SYNC_KEY };
 	private static Context context;
 	private static SQLiteDatabase database;
 	private static DatabaseHelper dbHelper;
@@ -116,10 +116,11 @@ public class AccountMirakel extends AccountBase {
 
 	private static AccountMirakel cursorToAccount(final Cursor c) {
 		return new AccountMirakel(c.getInt(0), c.getString(1),
-				ACCOUNT_TYPES.parseInt(c.getInt(2)), c.getInt(3) == 1);
+				ACCOUNT_TYPES.parseInt(c.getInt(2)), c.getInt(3) == 1,
+				c.getString(4));
 	}
 
-	private static List<AccountMirakel> cursorToAccountList(final Cursor c) {
+	public static List<AccountMirakel> cursorToAccountList(final Cursor c) {
 		if (c.getCount() > 0) {
 			final List<AccountMirakel> accounts = new ArrayList<AccountMirakel>();
 			c.moveToFirst();
@@ -297,8 +298,9 @@ public class AccountMirakel extends AccountBase {
 	}
 
 	public AccountMirakel(final int id, final String name,
-			final ACCOUNT_TYPES type, final boolean enabled) {
-		super(id, name, type, enabled);
+			final ACCOUNT_TYPES type, final boolean enabled,
+			final String syncKey) {
+		super(id, name, type, enabled, syncKey);
 	}
 
 	public void destroy() {
@@ -315,6 +317,11 @@ public class AccountMirakel extends AccountBase {
 			return;
 		}
 		AccountManager.get(context).removeAccount(a, null, null);
+	}
+
+	public Account getAndroidAccount(final Context ctx) {
+		AccountMirakel.context = ctx;
+		return getAndroidAccount();
 	}
 
 	public Account getAndroidAccount() {
