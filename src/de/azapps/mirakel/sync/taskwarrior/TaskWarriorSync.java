@@ -22,6 +22,7 @@ import android.content.Context;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.helper.DateTimeHelper;
@@ -118,18 +119,12 @@ public class TaskWarriorSync {
 	private static int _port = 6544;
 	private static String _user = "";
 
-	public static final String CA_FILE = FileUtils.getMirakelDir()
-			+ "ca.cert.pem";
-	public static final String CLIENT_CERT_FILE = FileUtils.getMirakelDir()
-			+ "client.cert.pem";
-	public static final String CLIENT_KEY_FILE = FileUtils.getMirakelDir()
-			+ "client.key.pem";
 	public static final String NO_PROJECT = "NO_PROJECT";
-	private static File root;
+	private static String root;
 	private static final String TAG = "TaskWarroirSync";
 	public static final String TYPE = "TaskWarrior";
-	private static File user_ca;
-	private static File user_key;
+	private static String user_ca;
+	private static String user_key;
 
 	/**
 	 * Handle an error
@@ -233,8 +228,8 @@ public class TaskWarriorSync {
 			for (final String taskString : tasksString) {
 				if (taskString.charAt(0) != '{') {
 					Log.d(TAG, "Key: " + taskString);
-					this.accountManager.setUserData(a,
-							SyncAdapter.TASKWARRIOR_KEY, taskString);
+					accountMirakel.setSyncKey(taskString);
+					accountMirakel.save();
 					continue;
 				}
 				JsonObject taskObject;
@@ -313,36 +308,31 @@ public class TaskWarriorSync {
 
 	/**
 	 * Initialize the variables
+	 * 
+	 * @param aMirakel
 	 */
-	private void init() {
+	private void init(final AccountMirakel aMirakel) {
 		final String server = this.accountManager.getUserData(this.account,
 				SyncAdapter.BUNDLE_SERVER_URL);
 		final String srv[] = server.trim().split(":");
 		if (srv.length != 2) {
 			error("port", 1376235889);
 		}
-		final String key = this.accountManager.getPassword(this.account);
-		if (key.length() != 0 && key.length() != 36) {
+		_key = aMirakel.getSyncKey();
+		if (_key.length() != 0 && _key.length() != 36) {
 			error("key", 1376235890);
-		}
-
-		final File r = new File(CA_FILE);
-		final File user_cert = new File(CLIENT_CERT_FILE);
-		final File userKey = new File(CLIENT_KEY_FILE);
-		if (!r.exists() || !r.canRead() || !user_cert.exists()
-				|| !user_cert.canRead() || !userKey.exists()
-				|| !userKey.canRead()) {
-			error("cert", 1376235891);
 		}
 		_host = srv[0];
 		_port = Integer.parseInt(srv[1]);
 		_user = this.account.name;
 		_org = this.accountManager.getUserData(this.account,
 				SyncAdapter.BUNDLE_ORG);
-		_key = this.accountManager.getPassword(this.account);
-		TaskWarriorSync.root = r;
-		TaskWarriorSync.user_ca = user_cert;
-		TaskWarriorSync.user_key = userKey;
+		TaskWarriorSync.root = this.accountManager.getUserData(this.account,
+				DefinitionsHelper.BUNDLE_CERT);
+		TaskWarriorSync.user_ca = this.accountManager.getUserData(this.account,
+				DefinitionsHelper.BUNDLE_CERT_CLIENT);
+		TaskWarriorSync.user_key = this.accountManager.getUserData(
+				this.account, DefinitionsHelper.BUNDLE_KEY_CLIENT);
 	}
 
 	private void setDependencies() {
@@ -385,7 +375,7 @@ public class TaskWarriorSync {
 		if (!aMirakel.isEnabeld()) {
 			return TW_ERRORS.NOT_ENABLED;
 		}
-		init();
+		init(aMirakel);
 
 		final Msg sync = new Msg();
 		String payload = "";
