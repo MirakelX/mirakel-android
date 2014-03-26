@@ -473,12 +473,9 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 						public void onItemCheckedStateChanged(
 								final ActionMode mode, final int position,
 								final long id, final boolean checked) {
-							final View v = TasksFragment.this.listView
-									.getChildAt(position);
-							if (v == null) {
-								return;
-							}
-							final Task t = Task.get((Long) v.getTag());
+							final Cursor cursor = (Cursor) TasksFragment.this.listView
+									.getItemAtPosition(position);
+							final Task t = Task.cursorToTask(cursor);
 							if (!TasksFragment.this.selectedTasks.contains(t)
 									&& checked) {
 								TasksFragment.this.selectedTasks.add(t);
