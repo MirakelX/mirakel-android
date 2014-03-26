@@ -240,7 +240,7 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="register_server">If you need an account for the sync on our server, please send us an e-mail. With the next version you\'ll get the possibility to register an account!</string>
     <string name="special_lists_title">Meta lists</string>
     <string name="register">Register</string>
-    <string name="auto_backup_intervall">Auto backup intervall</string>
+    <string name="auto_backup_intervall">Auto backup interval</string>
     <string name="auto_backup_intervall_summary">Backup the database every %s days</string>
 
     <!-- Colors -->
