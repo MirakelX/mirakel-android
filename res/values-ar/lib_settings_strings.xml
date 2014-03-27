@@ -120,7 +120,7 @@
   <string name="delete_done_success">حذف المهام المنجزة الخاصة بنجاح.</string>
   <string name="register_server">إذا كنت بحاجة حساب للمزامنة على الخادم الخاص بنا، الرجاء إرسال بريد إلكتروني إلينا. مع الإصدار التالي ستحصل على إمكانية تسجيل حساب جديد!</string>
   <string name="register">تسجيل</string>
-  <string name="auto_backup_intervall_summary">النسخ الاحتياطي لقاعدة البيانات كل أيام %s</string>
+  <string name="auto_backup_interval_summary">النسخ الاحتياطي لقاعدة البيانات كل أيام %s</string>
   <string name="preferences_colorize">الألوان</string>
   <string name="settings_semantics_title">تكوين قوالب مهمة</string>
   <string name="settings_semantics_condition">الشرط</string>

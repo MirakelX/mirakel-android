@@ -164,8 +164,8 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="register_server">Se si necessita di un account per la sincronizzazione sui nostri server, inviaci una email. Con la prossima versione verrà introdotta la possibilità di registrare un account.</string>
   <string name="special_lists_title">Meta-elenchi</string>
   <string name="register">Registra</string>
-  <string name="auto_backup_intervall">Intervallo backup automatico</string>
-  <string name="auto_backup_intervall_summary">Numero di giorni tra i backup automatici: %s</string>
+  <string name="auto_backup_interval">Intervallo backup automatico</string>
+  <string name="auto_backup_interval_summary">Numero di giorni tra i backup automatici: %s</string>
   <string name="preferences_colorize">Colori</string>
   <string name="preferences_colorize_tasks">Colorare attività</string>
   <string name="preferences_colorize_tasks_everywhere">Colorare attività ovunque</string>

@@ -138,8 +138,8 @@
   <string name="register_server">Ако имате нужда от профил за синхронизацията на нашия сървър, моля пратете ни е-майл. Със следващата версия ще получите възможността да регистрирате профил!</string>
   <string name="special_lists_title">Мета списъци</string>
   <string name="register">Регистрация</string>
-  <string name="auto_backup_intervall">Автоматично архивиране на интервал</string>
-  <string name="auto_backup_intervall_summary">Архивиране на базата данни всеки %s дни</string>
+  <string name="auto_backup_interval">Автоматично архивиране на интервал</string>
+  <string name="auto_backup_interval_summary">Архивиране на базата данни всеки %s дни</string>
   <string name="preferences_colorize">Цветове</string>
   <string name="preferences_colorize_tasks_everywhere_summary">...или само в мета списъците?</string>
   <string name="settings_semantics_title">Конфигуриране на шаблоните за задачи</string>

@@ -49,8 +49,8 @@
         android:key="import_wunderlist"
         android:title="@string/import_wunderlist_click" />
     <Preference
-        android:key="autoBackupIntervall"
-        android:summary="@string/auto_backup_intervall_summary"
-        android:title="@string/auto_backup_intervall" />
+        android:key="autoBackupInterval"
+        android:summary="@string/auto_backup_interval_summary"
+        android:title="@string/auto_backup_interval" />
 
 </PreferenceScreen>

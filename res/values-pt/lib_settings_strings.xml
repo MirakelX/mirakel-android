@@ -143,8 +143,8 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="register_server">Se precisar de uma conta para sincronização com o nosso servidor, escreva-nos uma mensagem electrónica. na próxima versão terá a possibilidade de registar uma conta!</string>
   <string name="special_lists_title">Meta-listas</string>
   <string name="register">Registar</string>
-  <string name="auto_backup_intervall">Intervalo entre backups</string>
-  <string name="auto_backup_intervall_summary">Copiar base de dados a cada %s dias</string>
+  <string name="auto_backup_interval">Intervalo entre backups</string>
+  <string name="auto_backup_interval_summary">Copiar base de dados a cada %s dias</string>
   <string name="preferences_colorize">Cores</string>
   <string name="preferences_colorize_tasks_everywhere_summary">...ou apenas nas meta-listas?</string>
   <string name="settings_semantics_title">Configurar modelos de tarefa</string>

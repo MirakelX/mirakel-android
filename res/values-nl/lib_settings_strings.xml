@@ -142,8 +142,8 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="register_server">Als u een account nodig voor de synchronisatie op onze server, stuur ons dan een e-mail. Met de volgende versie krijgt u de mogelijkheid om een account te registreren!</string>
   <string name="special_lists_title">Meta lijsten</string>
   <string name="register">Registreren</string>
-  <string name="auto_backup_intervall">Reservekopie interval</string>
-  <string name="auto_backup_intervall_summary">Reservekopie maken van de database om %s dagen</string>
+  <string name="auto_backup_interval">Reservekopie interval</string>
+  <string name="auto_backup_interval_summary">Reservekopie maken van de database om %s dagen</string>
   <string name="preferences_colorize">Kleuren</string>
   <string name="preferences_colorize_tasks_everywhere_summary">.. .of alleen in de meta-lijsten?</string>
   <string name="settings_semantics_title">Taak sjablonen instellen</string>
