@@ -30,6 +30,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
+import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.helper.MirakelPreferences;
@@ -49,7 +50,7 @@ import de.azapps.tools.Log;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
 	public static final String CREATED_AT = "created_at";
-	public static final int DATABASE_VERSION = 31;
+	public static final int DATABASE_VERSION = 32;
 	public static final String ID = "_id";
 
 	public static final String NAME = "name";
@@ -67,7 +68,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	}
 
-	private static void createTasksTableString(final SQLiteDatabase db) {
+	protected static void createTasksTableOLD(final SQLiteDatabase db) {
 		db.execSQL("CREATE TABLE " + Task.TABLE + " (" + ID
 				+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + Task.LIST_ID
 				+ " INTEGER REFERENCES " + ListMirakel.TABLE + " (" + ID
@@ -81,6 +82,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	private final Context context;
+
+	protected static void createTasksTable(final SQLiteDatabase db) {
+		db.execSQL("CREATE TABLE " + Task.TABLE + " (" + ID
+				+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + Task.LIST_ID
+				+ " INTEGER REFERENCES " + ListMirakel.TABLE + " (" + ID
+				+ ") ON DELETE CASCADE ON UPDATE CASCADE, " + NAME
+				+ " TEXT NOT NULL, " + "content TEXT, " + Task.DONE
+				+ " INTEGER NOT NULL DEFAULT 0, " + Task.PRIORITY
+				+ " INTEGER NOT NULL DEFAULT 0, " + Task.DUE + " STRING, "
+				+ CREATED_AT + " INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
+				+ UPDATED_AT + " INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
+				+ SYNC_STATE_FIELD + " INTEGER DEFAULT " + SYNC_STATE.ADD + ","
+				+ Task.REMINDER + " INTEGER," + Task.UUID
+				+ " TEXT NOT NULL DEFAULT ''," + Task.ADDITIONAL_ENTRIES
+				+ " TEXT NOT NULL DEFAULT ''," + Task.RECURRING
+				+ " INTEGER DEFAULT '-1'," + Task.RECURRING_REMINDER
+				+ " INTEGER DEFAULT '-1'," + Task.PROGRESS
+				+ " INTEGER NOT NULL default 0)");
+	}
 
 	public DatabaseHelper(final Context ctx) {
 		super(ctx, getDBName(ctx), null, DATABASE_VERSION);
@@ -146,7 +166,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ SYNC_STATE_FIELD + " INTEGER DEFAULT " + SYNC_STATE.ADD
 				+ ", " + ListMirakel.LFT + " INTEGER, " + ListMirakel.RGT
 				+ " INTEGER " + ")");
-		createTasksTableString(db);
+		createTasksTableOLD(db);
 		db.execSQL("INSERT INTO " + ListMirakel.TABLE + " (" + NAME + ","
 				+ ListMirakel.LFT + "," + ListMirakel.RGT + ") VALUES ('"
 				+ this.context.getString(R.string.inbox) + "',0,1)");
@@ -220,7 +240,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			 */
 
 			db.execSQL("ALTER TABLE " + Task.TABLE + " RENAME TO tmp_tasks;");
-			createTasksTableString(db);
+			createTasksTableOLD(db);
 			String cols = ID + ", " + Task.LIST_ID + ", " + NAME + ", "
 					+ Task.DONE + "," + Task.PRIORITY + "," + Task.DUE + ","
 					+ CREATED_AT + "," + UPDATED_AT + "," + SYNC_STATE_FIELD;
@@ -251,7 +271,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			 * Remove NOT NULL
 			 */
 			db.execSQL("ALTER TABLE " + Task.TABLE + " RENAME TO tmp_tasks;");
-			createTasksTableString(db);
+			createTasksTableOLD(db);
 			cols = ID + ", " + Task.LIST_ID + ", " + NAME + ", " + Task.DONE
 					+ "," + Task.PRIORITY + "," + Task.DUE + "," + CREATED_AT
 					+ "," + UPDATED_AT + "," + SYNC_STATE_FIELD;
@@ -465,10 +485,41 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		case 30:
 			db.execSQL("UPDATE " + Task.TABLE + " set " + Task.DUE + "="
 					+ Task.DUE + "||' 00:00:00'");
+		case 31:
+			updateTimesToUTC(db);
 		default:
 			break;
 
 		}
 	}
 
+	private static void updateTimesToUTC(final SQLiteDatabase db) {
+		db.execSQL("ALTER TABLE " + Task.TABLE + " RENAME TO tmp_tasks;");
+		createTasksTable(db);
+		final int offset = DateTimeHelper.getTimeZoneOffset(false);
+		db.execSQL("Insert INTO tasks (_id, uuid, list_id, name, "
+				+ "content, done, due, reminder, priority, created_at, "
+				+ "updated_at, sync_state, additional_entries, recurring, "
+				+ "recurring_reminder, progress) "
+				+ "Select _id, uuid, list_id, name, content, done, "
+				+ "strftime('%s',"
+				+ Task.DUE
+				+ ")-"
+				+ offset
+				+ ", "
+				+ getStrFtime(Task.REMINDER, offset)
+				+ ", priority, "
+				+ getStrFtime(CREATED_AT, offset)
+				+ ", "
+				+ getStrFtime(UPDATED_AT, offset)
+				+ ","
+				+ " sync_state, additional_entries, recurring, recurring_reminder, progress FROM tmp_tasks;");
+		db.execSQL("DROP TABLE tmp_tasks");
+	}
+
+	private static String getStrFtime(final String col, final int offset) {
+		return "strftime('%s',substr(" + col + ",0,11)||' '||substr(" + col
+				+ ",12,2)||':'||substr(" + col + ",14,2)||':'||substr(" + col
+				+ ",16,2)) -" + offset;
+	}
 }
