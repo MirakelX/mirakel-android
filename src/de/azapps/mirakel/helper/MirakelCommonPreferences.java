@@ -60,8 +60,8 @@ public class MirakelCommonPreferences extends MirakelPreferences {
 				context.getString(R.string.audio_default_title));
 	}
 
-	public static int getAutoBackupIntervall() {
-		return settings.getInt("autoBackupIntervall", 7);
+	public static int getAutoBackupInterval() {
+		return settings.getInt("autoBackupInterval", 7);
 	}
 
 	private static Calendar getCalendar(final String name,
@@ -234,9 +234,9 @@ public class MirakelCommonPreferences extends MirakelPreferences {
 		return editor.commit();
 	}
 
-	public static void setAutoBackupIntervall(final int val) {
+	public static void setAutoBackupInterval(final int val) {
 		final Editor ed = settings.edit();
-		ed.putInt("autoBackupIntervall", val);
+		ed.putInt("autoBackupInterval", val);
 		ed.commit();
 	}
 
