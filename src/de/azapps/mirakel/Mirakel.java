@@ -122,7 +122,7 @@ public class Mirakel extends Application {
 					ExportImport.exportDB(that);
 					final Calendar nextB = new GregorianCalendar();
 					nextB.add(Calendar.DATE,
-							MirakelCommonPreferences.getAutoBackupIntervall());
+							MirakelCommonPreferences.getAutoBackupInterval());
 					MirakelCommonPreferences.setNextBackup(nextB);
 				}
 				if (MirakelCommonPreferences.writeLogsToFile()) {
