@@ -19,7 +19,7 @@
   <string name="month">Mesec</string>
   <string name="year">Leto</string>
   <string name="new_recurring">Novo ponavljanje</string>
-  <string name="intervall">Časovni razmik</string>
+  <string name="interval">Časovni razmik</string>
   <string name="beginning">Začetek</string>
   <string name="end">Konec</string>
   <string name="no_begin_end">Ni %s</string>

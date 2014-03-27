@@ -19,7 +19,7 @@
   <string name="month">Mese</string>
   <string name="year">Anno</string>
   <string name="new_recurring">Nuova ricorrenza</string>
-  <string name="intervall">Intervallo</string>
+  <string name="interval">Intervallo</string>
   <string name="beginning">Inizio</string>
   <string name="end">Fine</string>
   <string name="no_begin_end">No %s</string>
