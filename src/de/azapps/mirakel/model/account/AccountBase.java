@@ -7,19 +7,22 @@ import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 public class AccountBase {
 	public final static String TYPE = "type";
 	public final static String ENABLED = "enabled";
+	public static final String SYNC_KEY = "sync_key";
 
 	private int _id;
 	private String name;
 	private int type;
 	private boolean enabled;
+	private String syncKey;
 
 	public AccountBase(final int id, final String name,
-			final ACCOUNT_TYPES type, final boolean enabled) {
+			final ACCOUNT_TYPES type, final boolean enabled,
+			final String syncKey) {
 		this.setId(id);
 		this.setName(name);
 		this.setType(type.toInt());
 		this.setEnabeld(enabled);
-
+		this.setSyncKey(syncKey);
 	}
 
 	public int getId() {
@@ -52,6 +55,7 @@ public class AccountBase {
 		cv.put(DatabaseHelper.NAME, this.name);
 		cv.put(TYPE, this.type);
 		cv.put(ENABLED, this.enabled);
+		cv.put(SYNC_KEY, this.syncKey);
 		return cv;
 	}
 
@@ -66,6 +70,14 @@ public class AccountBase {
 
 	public void setEnabeld(final boolean enabeld) {
 		this.enabled = enabeld;
+	}
+
+	public String getSyncKey() {
+		return this.syncKey;
+	}
+
+	public void setSyncKey(final String syncKey) {
+		this.syncKey = syncKey;
 	}
 
 }
