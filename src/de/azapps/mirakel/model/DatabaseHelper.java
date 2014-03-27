@@ -55,7 +55,7 @@ import de.azapps.tools.Log;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
 	public static final String CREATED_AT = "created_at";
-	public static final int DATABASE_VERSION = 33;
+	public static final int DATABASE_VERSION = 34;
 	public static final String ID = "_id";
 
 	public static final String NAME = "name";
@@ -632,6 +632,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					}
 				}
 			}
+        case 33:
+            db.execSQL("UPDATE "+SpecialList.TABLE+" SET "+SpecialList.WHERE_QUERY+
+                    "=replace("+SpecialList.WHERE_QUERY+",'date(due',\"date(due,'unixepoch'\")");
 		default:
 			break;
 
