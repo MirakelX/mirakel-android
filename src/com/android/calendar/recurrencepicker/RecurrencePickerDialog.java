@@ -379,7 +379,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
 								intervalYears = RecurrencePickerDialog.this.mIntervalValue;
 							}
 							RecurrencePickerDialog.this.mCallback
-									.OnCustomRecurnceSetIntervall(
+									.OnCustomRecurnceSetInterval(
 											RecurrencePickerDialog.this.mForDue,
 											intervalYears,
 											intervalMonths,
@@ -411,7 +411,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
 		this.mIntervalCount = (EditText) view.findViewById(R.id.interval_count);
 		this.mIntervalCount.setText("1");
 		this.mIntervalValue = 1;
-		updateIntervallType();
+		updateIntervalType();
 		this.mIntervalCount.addTextChangedListener(new TextWatcher() {
 
 			@Override
@@ -427,7 +427,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
 					RecurrencePickerDialog.this.mIntervalCount.setText(""
 							+ RecurrencePickerDialog.this.mIntervalValue);
 				}
-				updateIntervallType();
+				updateIntervalType();
 				RecurrencePickerDialog.this.mIntervalValue = newValue;
 			}
 
@@ -762,7 +762,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
 		}
 	}
 
-	protected void updateIntervallType() {
+	protected void updateIntervalType() {
 		final ArrayAdapter<CharSequence> adapterInterval = new ArrayAdapter<CharSequence>(
 				getDialog().getContext(), android.R.layout.simple_spinner_item,
 				getDayYearValues());
@@ -795,7 +795,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
 	}
 
 	public interface OnRecurenceSetListner {
-		void OnCustomRecurnceSetIntervall(final boolean isDue,
+		void OnCustomRecurnceSetInterval(final boolean isDue,
 				final int intervalYears, final int intervalMonths,
 				final int intervalDays, final int intervalHours,
 				final int intervalMinutes, final Calendar startDate,
