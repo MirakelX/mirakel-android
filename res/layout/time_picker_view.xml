@@ -16,7 +16,7 @@
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/time_picker_dialog"
-    android:layout_width="wrap_content"
+    android:layout_width="@dimen/date_picker_component_width"
     android:layout_height="match_parent"
     android:focusable="true"
     android:orientation="vertical" >
@@ -37,7 +37,7 @@
     <com.sleepbot.datetimepicker.time.RadialPickerLayout
         android:id="@+id/time_picker_radial"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/picker_dimen"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:focusable="true"
         android:focusableInTouchMode="true" />
