@@ -9,6 +9,7 @@
   <string name="sync_warning_message">De synchronisatie is momenteel zeer experimenteel. Je kunt het op eigen risico proberen (Maak een back-up!)</string>
   <string name="sync_use_summary_taskwarrior">Synchronisatie met Taskwarrior als %s</string>
   <string name="sync_use_summary_mirakel">Synchronisatie met Mirakel als %s</string>
+  <string name="sync_use_summary_nothing">Syngronisatie niet gebruiken</string>
   <string name="sync_user">Gebruikersnaam</string>
   <string name="sync_user_summary">Server gebruikersnaam</string>
   <string name="sync_server">Server</string>
