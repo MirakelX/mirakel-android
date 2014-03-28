@@ -53,8 +53,6 @@
     -->
 
     <Preference
-        android:entries="@array/sync_frequencies"
-        android:entryValues="@array/sync_frequencies_values"
         android:key="syncFrequency"
         android:summary="@string/sync_frequency_summary"
         android:title="@string/sync_frequency" />
