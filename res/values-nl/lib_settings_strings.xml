@@ -27,6 +27,7 @@
   <string name="sync_warning_message">De synchronisatie is momenteel zeer experimenteel. Je kunt het op eigen risico proberen (Maak een back-up!)</string>
   <string name="sync_use_summary_taskwarrior">Synchronisatie met Taskwarrior als %s</string>
   <string name="sync_use_summary_mirakel">Synchronisatie met Mirakel als %s</string>
+  <string name="sync_use_summary_nothing">Syngronisatie niet gebruiken</string>
   <string name="sync_user">Gebruikersnaam</string>
   <string name="sync_user_summary">Server gebruikersnaam</string>
   <string name="sync_server">Server</string>
@@ -68,27 +69,35 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="no">nee</string>
   <string name="not">niet</string>
   <string name="notification_title">Meldingen</string>
+  <string name="notifications_use">Meldingen gebruiken</string>
+  <string name="notifications_persistent">Herhalende meldingen</string>
   <string name="notifications_list">Lijst weergeven</string>
   <string name="notifications_list_summary">Toon \"%s\"</string>
   <string name="notifications_list_open">Open lijst</string>
   <string name="notifications_list_open_summary">Open \"%s\"</string>
   <string name="default_list">voorkeurslijst</string>
+  <string name="notifications_big">Meldingen groot weergeven</string>
   <string name="notifications_zero_show">Meldingen verbergen bij een leeg veld</string>
   <string name="reminder">Herinnnering</string>
+  <string name="reminders_persistent">Aanhoudende herinnering</string>
   <string name="reminders_persistent_summary">Maak het onmogelijk de herinnering te sluiten</string>
   <string name="startup_title">Start applicatie</string>
   <string name="startup_show_lists">Alle lijsten tonen</string>
+  <string name="startup_show_lists_summary">Alle lijsten tonen bij op opstarten</string>
   <string name="startup_list">Lijst selecteren</string>
+  <string name="startup_list_summary">Taken tonen van \"%s\"</string>
   <string name="special_lists_click">Meta lijsten beheren</string>
   <string name="special_lists_new">Nieuwe meta lijst</string>
   <string name="settings_misc">Diversen</string>
   <string name="settings_backup">Reservekopie en importeren</string>
+  <string name="backup_click_summary">Reservekopie op de SD-kaart kopiëren (%s)</string>
   <string name="backup_click">Reservekopie</string>
   <string name="import_click_summary">Importeer de database</string>
   <string name="import_click">Importeer</string>
   <string name="import_sure">Weet u het zeker?</string>
   <string name="import_sure_summary">Alle gegevens zullen worden overschreven! (Importeren vanaf %s)</string>
   <string name="import_title">Mirakel bestand selecteren</string>
+  <string name="no_filemanager">Installeer een bestandsbeheerder</string>
   <string name="import_default_list_summary">Importeren naar \"%s\"</string>
   <string name="import_no_default_list_summary">Geen voorkeurslijst geselecteerd</string>
   <string name="import_default_list">Importeer voorkeurslijst</string>
@@ -100,6 +109,7 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="get_dashclock">Mirakel-Dashclock verkrijgen</string>
   <string name="get_dashclock_summary">De Mirakel-extensie voor Dashclock</string>
   <string name="import_astrid_click">Astrid importeren</string>
+  <string name="astrid_unsuccess">Er is een fout opgetreden tijdens het importeren van Astrid!</string>
   <string name="astrid_success">Alle gegevens zijn geïmporteerd!</string>
   <string name="importing">Importeren</string>
   <string name="astrid_import_title">Astrid bestand selecteren</string>
@@ -115,13 +125,22 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="import_wunderlist_howto">Howto importeren van Wunderlist</string>
   <string name="import_wunderlist_howto_text">De Android-app van Wunderlist biedt geen ondersteuning voor een reservekopie.\n\n dus je moet inloggen in het web-app. Ga naar Voorkeuren → Account → reservekopie maken → (wachten) → Klik om te downloaden. Kopieer dit bestand naar uw apparaat en kom dan terug.</string>
   <string name="highlightSelected_summary">Lijsten/taken markeren wanneer u op hen klikt</string>
+  <string name="highlightSelected">selectie markeren</string>
   <string name="settings_date_format_relative">Relatieve datums weergeven</string>
+  <string name="settings_date_format_relative_summary">Bijvoorbeeld \'morgen\' in plaats van de echte datum</string>
   <string name="showDone">Afgeronde taken weergeven</string>
+  <string name="dark_theme">Donker thema</string>
   <string name="kill_button">Doden knop</string>
+  <string name="kill_app">App afsluiten</string>
   <string name="kill_sure">Bent u werkelijk zeker???</string>
   <string name="ui_settings_title">Gebruiksinterface</string>
+  <string name="hide_keyboard">Toetsenbord verbergen</string>
+  <string name="hide_keyboard_summary">Toetsenbord verbergen wanneer nieuwe taak wordt gemaakt</string>
+  <string name="undo_number">Aantal opgeslagen wijzigingen</string>
+  <string name="undo_number_summary">%s wijzigingen ongedaan maken</string>
   <string name="settings_semantic">Taak sjabloon</string>
   <string name="semantic_new_task">Nieuwe taak sjabloon</string>
+  <string name="semantic_new_task_config_summary">Condities van nieuwe taken instellen</string>
   <string name="semantic_new_task_config">Taak sjablonen instellen</string>
   <string name="swipeBehavior_title">Bij vegen overschakelen naar de geselecteerde taak</string>
   <string name="swipeBehavior_summary">Schakel over naar de geselecteerde of laatste geselecteerde taak</string>
@@ -139,16 +158,20 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="delete_done_warning">Weet u het zeker?</string>
   <string name="delete_done_warning_message">U kunt dit niet ongedaan maken. Maak een reservekopie!</string>
   <string name="delete_done_success">Alle afgeronde taken zijn verwijderd.</string>
+  <string name="menu_color">Kleur wijzigen</string>
   <string name="register_server">Als u een account nodig voor de synchronisatie op onze server, stuur ons dan een e-mail. Met de volgende versie krijgt u de mogelijkheid om een account te registreren!</string>
   <string name="special_lists_title">Meta lijsten</string>
   <string name="register">Registreren</string>
-  <string name="auto_backup_interval">Reservekopie interval</string>
   <string name="auto_backup_interval_summary">Reservekopie maken van de database om %s dagen</string>
   <string name="preferences_colorize">Kleuren</string>
+  <string name="preferences_colorize_tasks">Taken inkleuren</string>
+  <string name="preferences_colorize_tasks_everywhere">Taken overal inkleuren</string>
   <string name="preferences_colorize_tasks_everywhere_summary">.. .of alleen in de meta-lijsten?</string>
   <string name="settings_semantics_title">Taak sjablonen instellen</string>
   <string name="settings_semantics_condition">Voorwaarde</string>
   <string name="settings_semantics_actions">Acties</string>
+  <string name="settings_semantics_list">Lijst instellen</string>
+  <string name="settings_semantics_priority">Prioriteit instellen</string>
   <string name="settings_semantics_due">Vervaldatum instellen</string>
   <string name="settings_semantics_weekday">Vervaldatum instellen op de volgende weekdag</string>
   <string name="semantics_no_list">Lijst niet instellen</string>
@@ -156,11 +179,17 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="settings_file_default_title">Taaknaam bij geïmporteerd bestand</string>
   <string name="semantic_new">sjabloon</string>
   <string name="settings_subtask">Subtaken</string>
+  <string name="settings_subtask_default_new">Nieuwe taak direct weergeven</string>
+  <string name="settings_subtask_add_to_same_list">Subtaak toevoegen aan de lijst van de taak</string>
   <string name="settings_subtask_add_to_same_list_summary">Of selecteer een standaardlijst, waar de subtaak wordt toegevoegd</string>
+  <string name="settings_subtask_add_to_list_summary">Subtaak toevoegen naar %s</string>
   <string name="settings_use_btn_speak">De microfoon knop weergeven</string>
   <string name="settings_use_btn_audio">Toon de audio opname knop</string>
+  <string name="settings_use_btn_camera">Camera knop tonen</string>
+  <string name="preferences_colorize_subtasks">Subtaken inkleuren?</string>
   <string name="settings_tasks_title">Taken</string>
   <string name="settings_task_fragment">Taakinstellingen overzicht</string>
+  <string name="settings_dev">Ontwikkel instellingen</string>
   <string name="settings_dev_sync">Synchronisatie</string>
   <string name="title_donations">Doneer</string>
   <string name="add">Toevoegen</string>
@@ -189,24 +218,6 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string-array name="sync_types">
     <item>CalDAV synchronisatie</item>
     <item>Taskwarrior syngronisatie</item>
-  </string-array>
-  <string-array name="sync_frequencies">
-    <item>5 min</item>
-    <item>10 min</item>
-    <item>15 min</item>
-    <item>30 min</item>
-    <item>1 h</item>
-    <item>24 h</item>
-    <item>Variabel</item>
-  </string-array>
-  <string-array name="sync_frequencies_values">
-    <item>5</item>
-    <item>10</item>
-    <item>15</item>
-    <item>30</item>
-    <item>60</item>
-    <item>1440</item>
-    <item>-1</item>
   </string-array>
   <string-array name="tablet_options">
     <item>nooit</item>

@@ -138,7 +138,6 @@
   <string name="register_server">Ако имате нужда от профил за синхронизацията на нашия сървър, моля пратете ни е-майл. Със следващата версия ще получите възможността да регистрирате профил!</string>
   <string name="special_lists_title">Мета списъци</string>
   <string name="register">Регистрация</string>
-  <string name="auto_backup_interval">Автоматично архивиране на интервал</string>
   <string name="auto_backup_interval_summary">Архивиране на базата данни всеки %s дни</string>
   <string name="preferences_colorize">Цветове</string>
   <string name="preferences_colorize_tasks_everywhere_summary">...или само в мета списъците?</string>
@@ -186,24 +185,6 @@
   <string-array name="sync_types">
     <item>CalDAV синхронизация</item>
     <item>Taskwarrior синхронизация</item>
-  </string-array>
-  <string-array name="sync_frequencies">
-    <item>5 минути</item>
-    <item>10 минути</item>
-    <item>15 минути</item>
-    <item>30 минути</item>
-    <item>1 час</item>
-    <item>24 часа</item>
-    <item>Ръчно</item>
-  </string-array>
-  <string-array name="sync_frequencies_values">
-    <item>5</item>
-    <item>10</item>
-    <item>15</item>
-    <item>30</item>
-    <item>60</item>
-    <item>1440</item>
-    <item>-1</item>
   </string-array>
   <string-array name="tablet_options">
     <item>никога</item>

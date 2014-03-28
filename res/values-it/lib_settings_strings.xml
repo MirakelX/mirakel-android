@@ -164,7 +164,6 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="register_server">Se si necessita di un account per la sincronizzazione sui nostri server, inviaci una email. Con la prossima versione verrà introdotta la possibilità di registrare un account.</string>
   <string name="special_lists_title">Meta-elenchi</string>
   <string name="register">Registra</string>
-  <string name="auto_backup_interval">Intervallo backup automatico</string>
   <string name="auto_backup_interval_summary">Numero di giorni tra i backup automatici: %s</string>
   <string name="preferences_colorize">Colori</string>
   <string name="preferences_colorize_tasks">Colorare attività</string>
@@ -233,24 +232,6 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string-array name="sync_types">
     <item>Sincronizzazione CalDAV</item>
     <item>Sincronizzazione Taskwarrior</item>
-  </string-array>
-  <string-array name="sync_frequencies">
-    <item>5 min</item>
-    <item>10 min</item>
-    <item>15 min</item>
-    <item>30 min</item>
-    <item>h 1</item>
-    <item>24 h</item>
-    <item>Manuale</item>
-  </string-array>
-  <string-array name="sync_frequencies_values">
-    <item>5</item>
-    <item>10</item>
-    <item>15</item>
-    <item>30</item>
-    <item>60</item>
-    <item>1440</item>
-    <item>-1</item>
   </string-array>
   <string-array name="tablet_options">
     <item>Mai</item>

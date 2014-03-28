@@ -112,24 +112,6 @@
     <item>CalDAV sync</item>
     <item>Taskwarrior sync</item>
   </string-array>
-  <string-array name="sync_frequencies">
-    <item>5 мин.</item>
-    <item>10 мин.</item>
-    <item>15 мин.</item>
-    <item>30 мин.</item>
-    <item>3 ч</item>
-    <item>24 ч</item>
-    <item>Вручную</item>
-  </string-array>
-  <string-array name="sync_frequencies_values">
-    <item>5</item>
-    <item>10</item>
-    <item>15</item>
-    <item>30</item>
-    <item>60</item>
-    <item>1440</item>
-    <item>-1</item>
-  </string-array>
   <string-array name="tablet_options">
     <item>never</item>
     <item>landscape</item>

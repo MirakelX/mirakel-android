@@ -143,7 +143,6 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="register_server">Se precisar de uma conta para sincronização com o nosso servidor, escreva-nos uma mensagem electrónica. na próxima versão terá a possibilidade de registar uma conta!</string>
   <string name="special_lists_title">Meta-listas</string>
   <string name="register">Registar</string>
-  <string name="auto_backup_interval">Intervalo entre backups</string>
   <string name="auto_backup_interval_summary">Copiar base de dados a cada %s dias</string>
   <string name="preferences_colorize">Cores</string>
   <string name="preferences_colorize_tasks_everywhere_summary">...ou apenas nas meta-listas?</string>
@@ -190,24 +189,6 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string-array name="sync_types">
     <item>Sincronização CalDAV</item>
     <item>Sincronização Taskwarrior</item>
-  </string-array>
-  <string-array name="sync_frequencies">
-    <item>5 min</item>
-    <item>10 min</item>
-    <item>15 min</item>
-    <item>30 min</item>
-    <item>1 h</item>
-    <item>24 h</item>
-    <item>Manualmente</item>
-  </string-array>
-  <string-array name="sync_frequencies_values">
-    <item>5</item>
-    <item>10</item>
-    <item>15</item>
-    <item>30</item>
-    <item>60</item>
-    <item>1440</item>
-    <item>-1</item>
   </string-array>
   <string-array name="tablet_options">
     <item>nunca</item>

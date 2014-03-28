@@ -111,24 +111,6 @@
     <item>Sincronización CalDav</item>
     <item>Sincronización de Taskwarrior</item>
   </string-array>
-  <string-array name="sync_frequencies">
-    <item>5 min</item>
-    <item>10 min</item>
-    <item>15 min</item>
-    <item>30 min</item>
-    <item>1 h</item>
-    <item>24 h</item>
-    <item>Manualmente</item>
-  </string-array>
-  <string-array name="sync_frequencies_values">
-    <item>5</item>
-    <item>10</item>
-    <item>15</item>
-    <item>30</item>
-    <item>60</item>
-    <item>1440</item>
-    <item>-1</item>
-  </string-array>
   <string-array name="tablet_options">
     <item>Nunca</item>
     <item>paisaje</item>
