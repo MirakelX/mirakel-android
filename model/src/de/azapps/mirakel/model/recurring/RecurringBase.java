@@ -192,11 +192,11 @@ public class RecurringBase {
 	}
 
 	/**
-	 * Returns the intervall for a recurrence in ms
+	 * Returns the interval for a recurrence in ms
 	 * 
 	 * @return
 	 */
-	public long getIntervall() {
+	public long getInterval() {
 		final int minute = 60;
 		final int hour = 3600;
 		final int day = 86400;

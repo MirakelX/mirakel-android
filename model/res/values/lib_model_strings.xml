@@ -21,7 +21,7 @@
     <string name="month">Month</string>
     <string name="year">Year</string>
     <string name="new_recurring">New recurrence</string>
-    <string name="intervall">Interval</string>
+    <string name="interval">Interval</string>
     <string name="beginning">Beginning</string>
     <string name="end">End</string>
     <string name="no_begin_end">No %s</string>

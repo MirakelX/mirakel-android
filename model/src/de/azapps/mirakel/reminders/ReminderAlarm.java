@@ -314,7 +314,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 		} else {
 			alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, task
 					.getReminder().getTimeInMillis(),
-					recurrence.getIntervall(), pendingIntent);
+					recurrence.getInterval(), pendingIntent);
 
 		}
 		return pendingIntent;
