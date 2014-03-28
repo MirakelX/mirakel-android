@@ -25,7 +25,9 @@
   <string name="fontcolor">Couleur du font</string>
   <string name="widget_transparency">Transparence</string>
   <string name="widget_transparency_summary">%s %% transparent</string>
+  <string name="dark_theme">Thème sombre</string>
   <string name="notifications_list_summary">Afficher \"%s\"</string>
   <string name="empty_list">Aucune tâche</string>
   <string name="preferences">Préférences</string>
+  <string name="widget_use_gradient">Utilisation Gradient</string>
 </resources>

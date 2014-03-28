@@ -29,4 +29,5 @@
   <string name="notifications_list_summary">إظهار \"%s\"</string>
   <string name="empty_list">لا توجد مهام</string>
   <string name="preferences">تفضيلات</string>
+  <string name="widget_use_gradient">استخدام التدرج</string>
 </resources>
