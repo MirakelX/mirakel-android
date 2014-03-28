@@ -627,6 +627,10 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 	}
 
 	public void updateList(final boolean reset) {
+		if (this.main == null || this.main.getCurrentList() == null) {
+			Log.wtf(TAG, "no current list found");
+			return;
+		}
 		this.listId = this.main.getCurrentList().getId();
 		this.query = null;
 		try {

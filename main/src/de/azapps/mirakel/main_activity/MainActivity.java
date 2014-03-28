@@ -1084,7 +1084,7 @@ public class MainActivity extends ActionBarActivity implements
 			super.onBackPressed();
 			return;
 		}
-		if (!MirakelCommonPreferences.isTablet()) {
+		if (!MirakelCommonPreferences.isTablet() && this.mViewPager != null) {
 			switch (this.mViewPager.getCurrentItem()) {
 			case LEFT_FRAGMENT:
 				if (MainActivity.isRTL) {
