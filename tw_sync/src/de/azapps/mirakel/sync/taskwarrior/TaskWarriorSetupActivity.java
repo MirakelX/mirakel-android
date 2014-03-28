@@ -28,6 +28,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
+import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.account.AccountMirakel;
@@ -330,13 +331,11 @@ public class TaskWarriorSetupActivity extends Activity {
 				AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
 		b.putString(SyncAdapter.BUNDLE_ORG, values.get("org"));
 		b.putString(SyncAdapter.BUNDLE_SERVER_URL, values.get("server"));
-
-		FileUtils.writeToFile(new File(TaskWarriorSync.CLIENT_CERT_FILE),
+		b.putString(DefinitionsHelper.BUNDLE_CERT, values.get("ca.cert"));
+		b.putString(DefinitionsHelper.BUNDLE_CERT_CLIENT,
 				values.get("client.cert"));
-		FileUtils.writeToFile(new File(TaskWarriorSync.CLIENT_KEY_FILE),
+		b.putString(DefinitionsHelper.BUNDLE_KEY_CLIENT,
 				values.get("client.key"));
-		FileUtils.writeToFile(new File(TaskWarriorSync.CA_FILE),
-				values.get("ca.cert"));
 		this.mAccountManager.addAccountExplicitly(account,
 				values.get("user key"), b);
 	}

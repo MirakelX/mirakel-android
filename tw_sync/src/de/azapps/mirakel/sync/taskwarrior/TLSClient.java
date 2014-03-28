@@ -1,11 +1,7 @@
 package de.azapps.mirakel.sync.taskwarrior;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -44,34 +40,10 @@ public class TLSClient {
 
 	private static final String TAG = "TLSClient";
 
-	private static byte[] fileToBytes(final File f) {
-		final int size = (int) f.length();
-		final byte[] bytes = new byte[size];
-		BufferedInputStream buf;
-		try {
-			buf = new BufferedInputStream(new FileInputStream(f));
-		} catch (final FileNotFoundException e1) {
-			Log.e(TAG, "cannot get BufferedInputStream");
-			return bytes;
-		}
-		try {
-			buf.read(bytes, 0, bytes.length);
-		} catch (final IOException e) {
-			Log.e(TAG, "cannot read bytes from file");
-		} finally {
-			try {
-				buf.close();
-			} catch (final IOException e) {
-				Log.e(TAG, "cannot close BufferedInputStream");
-			}
-		}
-		return bytes;
-	}
-
-	private static X509Certificate generateCertificateFromPEM(byte[] certBytes)
+	private static X509Certificate generateCertificateFromPEM(final String cert)
 			throws ParseException {
-		certBytes = parseDERFromPEM(certBytes, "-----BEGIN CERTIFICATE-----",
-				"-----END CERTIFICATE-----");
+		final byte[] certBytes = parseDERFromPEM(cert,
+				"-----BEGIN CERTIFICATE-----", "-----END CERTIFICATE-----");
 		CertificateFactory factory;
 		try {
 			factory = CertificateFactory.getInstance("X.509");
@@ -87,9 +59,10 @@ public class TLSClient {
 		}
 	}
 
-	private static RSAPrivateKey generatePrivateKeyFromPEM(byte[] keyBytes)
+	private static RSAPrivateKey generatePrivateKeyFromPEM(final String key)
 			throws ParseException {
-		keyBytes = parseDERFromPEM(keyBytes, "-----BEGIN RSA PRIVATE KEY-----",
+		final byte[] keyBytes = parseDERFromPEM(key,
+				"-----BEGIN RSA PRIVATE KEY-----",
 				"-----END RSA PRIVATE KEY-----");
 		final PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
 
@@ -117,11 +90,10 @@ public class TLSClient {
 		Log.d(TAG, "c: " + message);
 	}
 
-	private static byte[] parseDERFromPEM(final byte[] pem,
+	private static byte[] parseDERFromPEM(final String pem,
 			final String beginDelimiter, final String endDelimiter)
 			throws ParseException {
-		final String data = new String(pem);
-		String[] tokens = data.split(beginDelimiter);
+		String[] tokens = pem.split(beginDelimiter);
 		if (tokens.length < 2) {
 			throw new ParseException("Wrong PEM format", 0);
 		}
@@ -212,13 +184,13 @@ public class TLSClient {
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////
-	public void init(final File root, final File user, final File user_key)
-			throws ParseException, CertificateException {
+	public void init(final String root, final String user_ca,
+			final String user_key) throws ParseException, CertificateException {
 		Log.i(TAG, "init");
 		try {
-			final X509Certificate ROOT = generateCertificateFromPEM(fileToBytes(root));
-			final X509Certificate USER_CERT = generateCertificateFromPEM(fileToBytes(user));
-			final RSAPrivateKey USER_KEY = generatePrivateKeyFromPEM(fileToBytes(user_key));
+			final X509Certificate ROOT = generateCertificateFromPEM(root);
+			final X509Certificate USER_CERT = generateCertificateFromPEM(user_ca);
+			final RSAPrivateKey USER_KEY = generatePrivateKeyFromPEM(user_key);
 			final KeyStore trusted = KeyStore.getInstance(KeyStore
 					.getDefaultType());
 			trusted.load(null);
