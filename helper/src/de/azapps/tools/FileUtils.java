@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -398,6 +399,26 @@ public class FileUtils {
 			dir.mkdirs();
 		}
 		return dir;
+	}
+
+	public static String readFile(final File f) throws IOException {
+		int len;
+		final char[] chr = new char[4096];
+		final StringBuffer buffer = new StringBuffer();
+		final FileReader reader = new FileReader(f);
+		try {
+			while ((len = reader.read(chr)) > 0) {
+				buffer.append(chr, 0, len);
+			}
+		} finally {
+			reader.close();
+		}
+		final String s = buffer.toString();
+		Log.w(TAG, s);
+		if (s == null) {
+			Log.wtf(TAG, "file is empty");
+		}
+		return s;
 	}
 
 }

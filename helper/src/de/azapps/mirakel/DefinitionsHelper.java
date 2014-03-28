@@ -22,6 +22,8 @@ public class DefinitionsHelper {
 	public static final String TW_NO_PROJECT = "NO_PROJECT";
 	public static final String BUNDLE_SERVER_URL = "url";
 	public static final String BUNDLE_CERT = "de.azapps.mirakel.cert";
+	public static final String BUNDLE_CERT_CLIENT = "de.azapps.mirakel.cert.client";
+	public static final String BUNDLE_KEY_CLIENT = "de.azapps.mirakel.key.client";
 	public static final String BUNDLE_ORG = "de.azapps.mirakel.org";
 	public static final String BUNDLE_SERVER_TYPE = "type";
 	public static final String TYPE_TW_SYNC = "TaskWarrior";
