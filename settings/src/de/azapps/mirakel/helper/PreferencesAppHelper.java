@@ -814,12 +814,12 @@ public class PreferencesAppHelper extends PreferencesHelper {
 						}
 					});
 		}
-		final Preference autoBackupIntervall = findPreference("autoBackupIntervall");
-		if (autoBackupIntervall != null) {
-			autoBackupIntervall.setSummary(this.activity.getString(
-					R.string.auto_backup_intervall_summary,
-					MirakelCommonPreferences.getAutoBackupIntervall()));
-			autoBackupIntervall
+		final Preference autoBackupInterval = findPreference("autoBackupInterval");
+		if (autoBackupInterval != null) {
+			autoBackupInterval.setSummary(this.activity.getString(
+					R.string.auto_backup_interval_summary,
+					MirakelCommonPreferences.getAutoBackupInterval()));
+			autoBackupInterval
 					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
 						@Override
@@ -827,7 +827,7 @@ public class PreferencesAppHelper extends PreferencesHelper {
 								final Preference preference) {
 
 							final int old_val = MirakelCommonPreferences
-									.getAutoBackupIntervall();
+									.getAutoBackupInterval();
 							final int max = 31;
 							final int min = 0;
 							if (PreferencesAppHelper.this.v4_0) {
@@ -887,7 +887,7 @@ public class PreferencesAppHelper extends PreferencesHelper {
 							}
 							new AlertDialog.Builder(
 									PreferencesAppHelper.this.activity)
-									.setTitle(R.string.auto_backup_intervall)
+									.setTitle(R.string.auto_backup_interval)
 									.setView(numberPicker)
 									.setPositiveButton(
 											android.R.string.ok,
@@ -908,11 +908,11 @@ public class PreferencesAppHelper extends PreferencesHelper {
 																		.toString());
 													}
 													MirakelCommonPreferences
-															.setAutoBackupIntervall(val);
-													autoBackupIntervall
+															.setAutoBackupInterval(val);
+													autoBackupInterval
 															.setSummary(PreferencesAppHelper.this.activity
 																	.getString(
-																			R.string.auto_backup_intervall_summary,
+																			R.string.auto_backup_interval_summary,
 																			val));
 												}
 											})

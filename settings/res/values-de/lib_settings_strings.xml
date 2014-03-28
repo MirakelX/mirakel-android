@@ -161,8 +161,8 @@
   <string name="register_server">Wenn du einen Account auf unserem Server benötigst, sende uns bitte eine E-Mail. Mit der nächsten Version wirst du auch selbst einen Account anlegen können.</string>
   <string name="special_lists_title">Meta-Listen</string>
   <string name="register">Registrieren</string>
-  <string name="auto_backup_intervall">Auto backup intervall</string>
-  <string name="auto_backup_intervall_summary">Alle %s Tage ein Datenbankbackup erstellen</string>
+  <string name="auto_backup_interval">Auto backup interval</string>
+  <string name="auto_backup_interval_summary">Alle %s Tage ein Datenbankbackup erstellen</string>
   <string name="preferences_colorize">Farben</string>
   <string name="preferences_colorize_tasks">Aufgaben einfärben</string>
   <string name="preferences_colorize_tasks_everywhere">Aufgaben überall Einfärben</string>

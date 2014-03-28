@@ -331,7 +331,7 @@ public class RecurringSettings extends PreferencesHelper {
 
 	protected void hideForReminder(final boolean forDue,
 			final Preference recurring_minute, final Preference recurring_hour) {
-		final PreferenceCategory cat = (PreferenceCategory) findPreference("recurring_intervall");
+		final PreferenceCategory cat = (PreferenceCategory) findPreference("recurring_interval");
 		if (forDue) {
 			cat.removePreference(recurring_hour);
 			cat.removePreference(recurring_minute);

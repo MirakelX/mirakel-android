@@ -166,8 +166,8 @@ Pričakovati je, da bo tudi uradna različica DAVdroid kmalu podpirala delovanje
   <string name="register_server">Če si želite pridobiti tudi račun za usklajevanje nalog na našem strežniku, pošljite elektronsko sporočilo. Z naslednjo različico boste imeli možnost račun tudi vpisati in uporabiti!</string>
   <string name="special_lists_title">Meta seznami</string>
   <string name="register">Vpis</string>
-  <string name="auto_backup_intervall">Časovni razmik samodejnega ustvarjanja varnostnih kopij</string>
-  <string name="auto_backup_intervall_summary">Ustvari varnostno kopijo vsakih %s dni</string>
+  <string name="auto_backup_interval">Časovni razmik samodejnega ustvarjanja varnostnih kopij</string>
+  <string name="auto_backup_interval_summary">Ustvari varnostno kopijo vsakih %s dni</string>
   <string name="preferences_colorize">Barve</string>
   <string name="preferences_colorize_tasks">Obarvaj naloge</string>
   <string name="preferences_colorize_tasks_everywhere">Obarvaj naloge vseh seznamov</string>

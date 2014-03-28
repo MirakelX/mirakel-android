@@ -11,8 +11,8 @@
         android:title="@string/forDue" />
 
     <PreferenceCategory
-        android:key="recurring_intervall"
-        android:title="@string/intervall" >
+        android:key="recurring_interval"
+        android:title="@string/interval" >
         <de.azapps.mirakel.settings.NumPickerPref
             android:key="recurring_min"
             android:title="@string/minute"
