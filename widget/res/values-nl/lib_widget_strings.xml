@@ -26,6 +26,7 @@
   <string name="widget_transparency">Transparantie</string>
   <string name="widget_transparency_summary">%s%% transparant</string>
   <string name="widget_due_colors">vervaldata inkleuren</string>
+  <string name="dark_theme">Donker thema</string>
   <string name="notifications_list_summary">Toon \"%s\"</string>
   <string name="empty_list">Geen taken</string>
   <string name="preferences">Instellingen</string>
