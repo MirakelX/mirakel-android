@@ -19,7 +19,6 @@
   <string name="month">Mês</string>
   <string name="year">Ano</string>
   <string name="new_recurring">Nova recorrência</string>
-  <string name="interval">Intervalo</string>
   <string name="beginning">Início</string>
   <string name="end">Fim</string>
   <string name="no_begin_end">Sem %s</string>

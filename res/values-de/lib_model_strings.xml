@@ -19,7 +19,6 @@
   <string name="month">Monat</string>
   <string name="year">Jahr</string>
   <string name="new_recurring">Neue Wiederholung</string>
-  <string name="interval">Interval</string>
   <string name="beginning">Start</string>
   <string name="end">Ende</string>
   <string name="no_begin_end">Keine %s</string>
