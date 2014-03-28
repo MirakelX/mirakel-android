@@ -33,6 +33,14 @@ Please open for **every** bug report or feature request a new issue so we can ha
 
 ## Development
 
+We are happy about every one who wants to help us! So we are happy about every pull request on github. But the prefered method is the following:
+
+### Preferred method 
+
+We use [gerrit](https://code.google.com/p/gerrit/) to review our code. [Here](https://gerrit.azapps.de/r/#/q/status:open,n,z) you can find our gerrit. Please write us an e-mail if you want to contribute we will tell you what to do.
+
+### Simple method
+
 Clone the git-repo and use your favorite IDE or editor.
 
 Please contact us if you want to implement some features, don't hesitate, we are friendly people ;) Just write an email to mirakel@azapps.de
