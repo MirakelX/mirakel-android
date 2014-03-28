@@ -30,11 +30,14 @@ Audio afspelen&#8230;</string>
   <string name="add_existing">Voeg bestaande taak toe</string>
   <string name="task_name">Taak naam:</string>
   <string name="subtask_add_options">Filter &gt;&gt;</string>
+  <string name="subtask_done">Taak gedaan?</string>
   <string name="subtask_reminder">Taak met herinnering?</string>
+  <string name="subtask_content">Taak met notitie?</string>
   <string name="new_task">Nieuwe taak</string>
   <string name="add_subtasks">Subtaak toevoegen&#8230;</string>
   <string name="add">Toevoegen</string>
   <string name="add_subtask">Subtaak toevoegen</string>
+  <string name="no_loop">Subtaak kan geen cirkelverwijzing vormen</string>
   <string name="file_no_activity">Ik weet niet hoe dit bestand kan worden geopend – sorry</string>
   <string name="remove_files">Verwijder taakbijlage</string>
 </resources>
