@@ -10,12 +10,15 @@
   <string name="monthly">Maandelijks</string>
   <string name="hourly">Per uur</string>
   <string name="minutly">Elke minuut</string>
+  <string name="recurring">Herhaling</string>
   <string name="label">Label</string>
+  <string name="forDue">Gebruik het voor vervaldatum</string>
   <string name="minute">Minuut</string>
   <string name="hour">Uur</string>
   <string name="day">Dag</string>
   <string name="month">Maand</string>
   <string name="year">Jaar</string>
+  <string name="new_recurring">Nieuwe herhalingspatroon</string>
   <string name="beginning">Vanaf</string>
   <string name="end">Einde</string>
   <string name="no_begin_end">Geen %s</string>
@@ -29,6 +32,8 @@
   <string name="recurrence_from_now">Vanaf nu</string>
   <string name="recurrence_from">Van</string>
   <string name="list_all">Alle lijsten</string>
+  <string name="list_today">Taken van vandaag</string>
+  <string name="list_week">Deze week</string>
   <string name="list_overdue">Vervaldatum is verlopen</string>
   <string name="inbox">Inbox</string>
   <string name="first_task">Eerste taak</string>
@@ -44,17 +49,26 @@
   <string name="any_do_how_to">Maak eerst uw reservekopie van de Any.Do gegevens . Om dit te doen, ga naar Any.Do → instellingen → Backup → reservekopie maken. Kom dan terug en druk op OK.\nSelecteer het bestand zelf.</string>
   <string name="select_file">bestand selecteren</string>
   <string name="wait">Even geduld a.u.b.&#8230;</string>
+  <string name="backup_import_error">Er is een fout opgetreden bij het importeren van het reservekopie</string>
+  <string name="backup_import_ok">Herstart Mirakel - het importeren is geslaagd</string>
+  <string name="backup_export_error">Er is een fout opgetreden bij het exporteren van de reservekopie</string>
   <string name="backup_export_ok">Exporteren naar %s</string>
   <string name="add_content">Notitie toevoegen&#8230;</string>
+  <string name="task_has_content">Taak met notitie</string>
+  <string name="notification_title_general">%1$d taken in %2$s</string>
+  <string name="notification_title_general_single">1 taak in %s</string>
   <string name="notification_title_empty">Heb een fijne dag!</string>
+  <string name="reminder_notification_title">Te doen: %s</string>
   <string name="reminder_notification_priority">Proiriteit: %s</string>
   <string name="reminder_notification_list">Lijsten: %s</string>
   <string name="reminder_notification_due">Vervaldatum: %s</string>
   <string name="reminder_notification_done">Afgerond</string>
   <string name="reminder_notification_later">Later</string>
+  <string name="reminder_notification_done_confirm">De taak is \"afgerond\"</string>
   <string name="reminder_notification_later_confirm">Ik tip je in %d minuten</string>
   <string name="list_vanished">De taak is verdwenen. Het spijt me&#8230;</string>
   <string name="task_vanished">De lijst van de taak is verdwenen. Het spijt me&#8230;</string>
+  <string name="no_date">Geen deadline</string>
   <string name="task_sorting_title">Sorteer taken op</string>
   <string name="share_using">Deel met</string>
   <string name="share_task">Deel taak</string>
@@ -134,16 +148,16 @@
     <item>Jaren</item>
   </string-array>
   <string-array name="demo_lists">
-    <item>Work</item>
-    <item>Home</item>
-    <item>Shopping</item>
+    <item>Werk</item>
+    <item>Thuis</item>
+    <item>Winkelen</item>
   </string-array>
   <string-array name="demo_tasks">
-    <item>today Buy birthday present for grandpa</item>
-    <item>Music</item>
-    <item>monday Organize the party</item>
-    <item>today Finish presentation</item>
-    <item>Milk</item>
-    <item>Cheese</item>
+    <item>Vandaag een geschenk voor opa kopen</item>
+    <item>Muziek</item>
+    <item>maandag organiseren de partij</item>
+    <item>Vandaag voltooien presentatie</item>
+    <item>Melk</item>
+    <item>Kaas</item>
   </string-array>
 </resources>
