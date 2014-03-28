@@ -20,4 +20,10 @@ if [ -n "$(git status --porcelain)" ]; then
   git commit -m "Update buildfiles" 
 fi
 
-git push
+cp main/README.md .
+if [ -n "$(git status --porcelain)" ]; then
+  git add README.md;
+  git commit -m "Update Readme"
+fi
+
+git push --force
