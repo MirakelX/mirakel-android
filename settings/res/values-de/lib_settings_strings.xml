@@ -161,7 +161,6 @@
   <string name="register_server">Wenn du einen Account auf unserem Server benötigst, sende uns bitte eine E-Mail. Mit der nächsten Version wirst du auch selbst einen Account anlegen können.</string>
   <string name="special_lists_title">Meta-Listen</string>
   <string name="register">Registrieren</string>
-  <string name="auto_backup_interval">Auto backup interval</string>
   <string name="auto_backup_interval_summary">Alle %s Tage ein Datenbankbackup erstellen</string>
   <string name="preferences_colorize">Farben</string>
   <string name="preferences_colorize_tasks">Aufgaben einfärben</string>
@@ -226,24 +225,6 @@
   <string-array name="sync_types">
     <item>CalDAV synchronisieren</item>
     <item>Taskwarrior-Sync</item>
-  </string-array>
-  <string-array name="sync_frequencies">
-    <item>5 min</item>
-    <item>10 min</item>
-    <item>15 min</item>
-    <item>30 min</item>
-    <item>1 h</item>
-    <item>24 h</item>
-    <item>Manuell</item>
-  </string-array>
-  <string-array name="sync_frequencies_values">
-    <item>5</item>
-    <item>10</item>
-    <item>15</item>
-    <item>30</item>
-    <item>60</item>
-    <item>1440</item>
-    <item>-1</item>
   </string-array>
   <string-array name="tablet_options">
     <item>nie</item>
