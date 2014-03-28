@@ -281,7 +281,7 @@ public class TaskDialogHelpers {
 				new OnRecurenceSetListner() {
 
 					@Override
-					public void OnCustomRecurnceSetIntervall(
+					public void OnCustomRecurnceSetInterval(
 							final boolean isDue, final int intervalYears,
 							final int intervalMonths, final int intervalDays,
 							final int intervalHours, final int intervalMinutes,
