@@ -10,6 +10,7 @@
   <string name="monthly">Mensuel</string>
   <string name="hourly">Horaire</string>
   <string name="minutly">Chaque minute</string>
+  <string name="recurring">Répetition</string>
   <string name="label">Étiquette</string>
   <string name="minute">Minute</string>
   <string name="hour">Heure</string>
@@ -28,6 +29,8 @@
   <string name="recurrence_from_now">A partir de maintenant</string>
   <string name="recurrence_from">De</string>
   <string name="list_all">Toutes les listes</string>
+  <string name="list_today">Tâches du jour</string>
+  <string name="list_week">Cette semaine</string>
   <string name="list_overdue">En retard</string>
   <string name="inbox">Boîte de réception</string>
   <string name="first_task">Première tâche</string>
@@ -41,17 +44,26 @@
   <string name="any_do_this_file">Importation de %s?\nsi non s\'il vous plaît sélectionner un fichier vous-même</string>
   <string name="select_file">Sélectionnez un fichier</string>
   <string name="wait">Veuillez patienter&#8230;</string>
+  <string name="backup_import_error">Il y a eût une erreur lors de l\'importation de la base de données</string>
+  <string name="backup_import_ok">L\'importation s\'est bien passée - Veuillez redémarrer Mirakel</string>
+  <string name="backup_export_error">Il y avait une erreur lors de l\'exportation de la base de données</string>
   <string name="backup_export_ok">Exporté vers %s</string>
   <string name="add_content">Ajouter une note&#8230;</string>
+  <string name="task_has_content">Tâche avec note</string>
+  <string name="notification_title_general">%1$d tâches dans %2$s</string>
+  <string name="notification_title_general_single">1 tâche dans %s</string>
   <string name="notification_title_empty">Bonne journée !</string>
+  <string name="reminder_notification_title">À faire: %s</string>
   <string name="reminder_notification_priority">Prioritaire : %s</string>
   <string name="reminder_notification_list">Liste : %s</string>
   <string name="reminder_notification_due">À échéance : %s</string>
   <string name="reminder_notification_done">Fini</string>
   <string name="reminder_notification_later">Plus tard</string>
+  <string name="reminder_notification_done_confirm">J\'ai mis à la tâche comme \"fait\"</string>
   <string name="reminder_notification_later_confirm">Je vous le rappellerai dans %d minutes</string>
   <string name="list_vanished">Aïe, la tâche a disparu. Désolé&#8230;</string>
   <string name="task_vanished">Oups, la liste de tâches a disparu. Désolé&#8230;</string>
+  <string name="no_date">Pas de délai</string>
   <string name="task_sorting_title">Trier les tâches par</string>
   <string name="share_using">Partager avec</string>
   <string name="share_task">Partager la tâche</string>
@@ -130,16 +142,16 @@
     <item>Années</item>
   </string-array>
   <string-array name="demo_lists">
-    <item>Work</item>
-    <item>Home</item>
+    <item>Travail</item>
+    <item>Accueil</item>
     <item>Shopping</item>
   </string-array>
   <string-array name="demo_tasks">
-    <item>today Buy birthday present for grandpa</item>
-    <item>Music</item>
-    <item>monday Organize the party</item>
-    <item>today Finish presentation</item>
-    <item>Milk</item>
-    <item>Cheese</item>
+    <item>aujourd\'hui acheter le cadeau d\'anniversaire pour Papy</item>
+    <item>Musique</item>
+    <item>lundi Organiser la fête</item>
+    <item>aujourd\'hui Finir la présentation</item>
+    <item>Lait</item>
+    <item>Fromage</item>
   </string-array>
 </resources>

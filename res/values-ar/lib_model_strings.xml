@@ -10,12 +10,15 @@
   <string name="monthly">شهريّا</string>
   <string name="hourly">كل ساعة</string>
   <string name="minutly">كل دقيقة</string>
+  <string name="recurring">تكرار</string>
   <string name="label">ملصق</string>
+  <string name="forDue">استخدامه للاستحقاق</string>
   <string name="minute">دقيقة</string>
   <string name="hour">ساعة</string>
   <string name="day">يوم</string>
   <string name="month">في الشهر</string>
   <string name="year">سنة</string>
+  <string name="new_recurring">تكرار جديد</string>
   <string name="beginning">بداية</string>
   <string name="end">نهاية</string>
   <string name="no_begin_end">لا %s</string>
@@ -27,6 +30,8 @@
   <string name="recurrence_from_now">من الآن</string>
   <string name="recurrence_from">من</string>
   <string name="list_all">جميع القوائم</string>
+  <string name="list_today">مهام اليوم</string>
+  <string name="list_week">هذا الأسبوع</string>
   <string name="list_overdue">الـمتأخر</string>
   <string name="inbox">البريد الوارد</string>
   <string name="first_task">المهمة الأولى</string>
@@ -40,17 +45,26 @@
   <string name="any_do_this_file">استيراد من %s?\nIf في حال تم الرفض, يرجى تحديد الملف بنفسك</string>
   <string name="select_file">حدد الملف</string>
   <string name="wait">الرجاء الانتظار&#8230;</string>
+  <string name="backup_import_error">حدث خطأ أثناء استيراد قاعدة البيانات</string>
+  <string name="backup_import_ok">الاستيراد على ما يرام – يرجى إعادة تشغيل Mirakel</string>
+  <string name="backup_export_error">حدث خطأ أثناء تصدير قاعدة البيانات</string>
   <string name="backup_export_ok">تصدير إلى %s</string>
   <string name="add_content">إضافة ملاحظة...</string>
+  <string name="task_has_content">مهمة مع ملاحظة</string>
+  <string name="notification_title_general">مهام %1$d في %2$s</string>
+  <string name="notification_title_general_single">المهمة 1 في %s</string>
   <string name="notification_title_empty">تمتع بيومك!</string>
+  <string name="reminder_notification_title">القيام به: %s</string>
   <string name="reminder_notification_priority">الأولوية: %s</string>
   <string name="reminder_notification_list">قائمة: %s</string>
   <string name="reminder_notification_due">المقرر: %s</string>
   <string name="reminder_notification_done">منجز</string>
   <string name="reminder_notification_later">لاحقا</string>
+  <string name="reminder_notification_done_confirm">لقد حددت المهمة ك \"منجزة\"</string>
   <string name="reminder_notification_later_confirm">سوف أذكرك في %d دقيقة</string>
   <string name="list_vanished">اوو، لقد اختفت المهمة. آسف&#8230;</string>
   <string name="task_vanished">اوو، لقد اختفت قائمة المهام. اسف&#8230;</string>
+  <string name="no_date">لم تحدد موعدا نهائياً</string>
   <string name="task_sorting_title">فرز المهام حسب</string>
   <string name="share_using">مشاركة مع</string>
   <string name="share_task">مشاركة المهمة</string>
@@ -127,16 +141,16 @@
     <item>سنوات</item>
   </string-array>
   <string-array name="demo_lists">
-    <item>Work</item>
-    <item>Home</item>
-    <item>Shopping</item>
+    <item>العمل</item>
+    <item>الصفحة الرئيسية</item>
+    <item>الشراء</item>
   </string-array>
   <string-array name="demo_tasks">
-    <item>today Buy birthday present for grandpa</item>
-    <item>Music</item>
-    <item>monday Organize the party</item>
-    <item>today Finish presentation</item>
-    <item>Milk</item>
-    <item>Cheese</item>
+    <item>اليوم شراء هدية لعيد ميلاد الجد</item>
+    <item>موسيقى</item>
+    <item>اليوم الاثنين تنظيم الحفل</item>
+    <item>اليوم إنهاء العرض التقديمي</item>
+    <item>الحليب</item>
+    <item>جبن</item>
   </string-array>
 </resources>
