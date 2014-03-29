@@ -18,6 +18,9 @@
  ******************************************************************************/
 package de.azapps.mirakel.static_activities;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
@@ -28,6 +31,9 @@ import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
+import de.azapps.mirakel.model.list.meta.SpecialListsDoneProperty;
+import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakelandroid.R;
@@ -66,8 +72,10 @@ public class SplashScreenActivity extends Activity {
 		} else {
 			ListMirakel sl = SpecialList.firstSpecial();
 			if (sl == null) {
+				final Map<String, SpecialListsBaseProperty> where = new HashMap<String, SpecialListsBaseProperty>();
+				where.put(Task.DONE, new SpecialListsDoneProperty(false));
 				sl = SpecialList.newSpecialList(getString(R.string.list_all),
-						" done=0 ", true, this);
+						where, true, this);
 			}
 			final int listId = MirakelModelPreferences.getStartupList().getId();
 			final Intent intent = new Intent(SplashScreenActivity.this,
