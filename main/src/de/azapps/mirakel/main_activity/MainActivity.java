@@ -1692,6 +1692,16 @@ public class MainActivity extends ActionBarActivity implements
 		if (this.currentList == null) {
 			setCurrentList(SpecialList.firstSpecial());
 		}
+		// clear tabletfragments
+		final ViewGroup all = (ViewGroup) this
+				.findViewById(R.id.multi_pane_box);
+		if (all != null && MirakelCommonPreferences.isTablet()) {
+			for (int i = 0; i < all.getChildCount(); i++) {
+				final ViewGroup group = (ViewGroup) all.getChildAt(i);
+				group.removeAllViews();
+				Log.d(TAG, "Clear view " + i);
+			}
+		}
 		// Initialize ViewPager
 		/*
 		 * TODO We need the try catch because it throws sometimes a
