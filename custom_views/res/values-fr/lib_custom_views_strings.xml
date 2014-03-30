@@ -28,11 +28,14 @@
   <string name="remove_files_summary">Voulez vous supprimer %1$s de %2$s?</string>
   <string name="add_existing">Ajoutez une tâche existante</string>
   <string name="task_name">Nom de la tâche:</string>
+  <string name="subtask_done">Tâche effectuée?</string>
   <string name="subtask_reminder">Tâches avec rappel ?</string>
+  <string name="subtask_content">Tâche avec note?</string>
   <string name="new_task">Nouvelle tâche</string>
   <string name="add_subtasks">Ajouter une sous-tâche &#8230;</string>
   <string name="add">Ajouter</string>
   <string name="add_subtask">Ajouter une sous-tâche</string>
+  <string name="no_loop">Sous-tâches ne peuvent pas former de boucle</string>
   <string name="file_no_activity">Je ne sais pas comment ouvrir ce fichier – Désolé</string>
   <string name="remove_files">Enlever les fichier de la tâche</string>
 </resources>
