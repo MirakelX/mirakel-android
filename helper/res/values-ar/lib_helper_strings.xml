@@ -13,4 +13,7 @@ Mirakel-نسخة: %1$s\n
 SDK-نسخة: %2$d\n
 جهاز: %3$s\n]]>
     </string>
+  <string name="contact_no_client">لا يوجد أي بريد إلكتروني عميل مثبت</string>
+  <string name="contact_chooser">جاري إرسال البريد الإلكتروني&#8230;</string>
+  <string name="no_filemanager">الرجاء تثبيت مدير الملفات</string>
 </resources>
