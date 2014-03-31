@@ -314,6 +314,7 @@ public class MainActivity extends ActionBarActivity implements
 		if (getTasksFragment() != null) {
 			getTasksFragment().updateList(true);
 			if (switchFragment) {
+				getTasksFragment().setScrollPosition(0);
 				setCurrentItem(MainActivity.getTasksFragmentPosition());
 			}
 		}
