@@ -18,6 +18,7 @@
  ******************************************************************************/
 package de.azapps.mirakel.main_activity.tasks_fragment;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -620,6 +621,14 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 								TasksFragment.this.main,
 								"Opps! Your device doesn't support taking photos",
 								Toast.LENGTH_SHORT).show();
+					} catch (final IOException e) {
+						if (e.getMessage().equals(FileUtils.ERROR_NO_MEDIA_DIR)) {
+							Toast.makeText(
+									TasksFragment.this.main,
+									"There is no place where I can save the photo to. Sorry!",
+									Toast.LENGTH_SHORT).show();
+						}
+
 					}
 				}
 			});
