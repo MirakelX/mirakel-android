@@ -53,6 +53,7 @@ public class FileUtils {
 	public static final int MEDIA_TYPE_IMAGE = 1;
 	public static final int MEDIA_TYPE_VIDEO = 2;
 	public static final int MEDIA_TYPE_AUDIO = 3;
+	public static final String ERROR_NO_MEDIA_DIR = "noMediaStorageDir";
 	private static String MIRAKEL_DIR;
 
 	@SuppressLint("NewApi")
@@ -310,7 +311,7 @@ public class FileUtils {
 	}
 
 	/** Create a file Uri for saving an image or video */
-	public static Uri getOutputMediaFileUri(final int type) {
+	public static Uri getOutputMediaFileUri(final int type) throws IOException {
 		final File file = FileUtils.getOutputMediaFile(type);
 		if (file == null) {
 			return null;
@@ -318,12 +319,20 @@ public class FileUtils {
 		return Uri.fromFile(file);
 	}
 
-	/** Create a File for saving an image or video */
-	public static File getOutputMediaFile(final int type) {
+	/**
+	 * Create a File for saving an image or video
+	 * 
+	 * @param type
+	 * @return
+	 */
+	public static File getOutputMediaFile(final int type) throws IOException {
 		// To be safe, you should check that the SDCard is mounted
 		// using Environment.getExternalStorageState() before doing this.
 
 		final File mediaStorageDir = FileUtils.getMediaStorageDir();
+		if (mediaStorageDir == null) {
+			throw new IOException(ERROR_NO_MEDIA_DIR);
+		}
 
 		// Create a media file name
 		final String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",
