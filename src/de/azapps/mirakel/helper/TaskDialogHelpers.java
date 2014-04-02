@@ -164,6 +164,10 @@ public class TaskDialogHelpers {
 			audio_record_mRecorder.start();
 		} catch (final Exception e) {
 			Log.e(TAG, "prepare() failed");
+
+			Toast.makeText(context,
+					"I can not record something on your device. Sorry!",
+					Toast.LENGTH_SHORT).show();
 			return;
 		}
 		audio_record_alert_dialog = new AlertDialog.Builder(context)
