@@ -18,9 +18,36 @@ Mirakel-version: %1$s\n
 SDK-version: %2$d\n
 Device: %3$s\n]]>
     </string>
-    <string name="contact_no_client">No e-mail client installed</string>
     <string name="contact_chooser">Send e-mail&#8230;</string>
     
-    <string name="no_filemanager">Please install a file manager</string>
+    <!-- Errors -->
+    <string name="error_PHOTO_NO_CAMERA">Opps! Your device doesn\'t support taking photos</string>
+    <string name="error_PHOTO_NO_MEDIA_DIRECTORY">There is no place where I can save the photo to. Sorry!</string>
+    <string name="error_NO_SPEACH_RECOGNITION">Opps! Your device doesn\'t support Speech to Text</string>
+    <string name="error_TASKS_CANNOT_FORM_LOOP">Subtasks cannot form a loop</string>
+    <string name="error_FILE_NO_ACTIVITY">I don\'t know, how to open this file – sorry</string>
+    <string name="error_CONTACT_NO_CLIENT">No e-mail client installed</string>
+    <string name="error_NO_FILEMANAGER">Please install a file manager</string>
+    <string name="error_FILE_URI_SYNTAX_ERROR">There was an internal error while parsing the filename</string>
+    <string name="error_MAINACTIVITY_WRONG_POSITION">This must not happen</string>
+    <string name="error_FILE_NOT_FOUND">This file was not found</string>
+    <string name="error_BACKUP_EXPORT_ERROR">There was an error while exporting the database</string>
+    <string name="error_BACKUP_IMPORT_ERROR">There was an error while importing the database</string>
+    <string name="error_FILE_TO_LARGE_FOR_THUMBNAIL">Could not generate a thumbnail. File is to large</string>
+    <string name="error_TASKS_NO_LIST">This task cannot be synced, because you have no lists</string>
+    <string name="error_TASK_VANISHED">Yikes, the list of the task has vanished. I\'m sorry…</string>
+    <string name="error_FILE_NOT_MIRAKEL_DB">This is not a Mirakel database file!</string>
+    <string name="error_ASTRID_ERROR">There was an error while importing from Astrid!</string>
+    <string name="error_TASKWARRIOR_FILE_NOT_FOUND">Taskwarrior file not found</string>
+    <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD">Could not download config file</string>
+    <string name="error_TASKWARRIOR_URL_NOT_FOUND">The URL is not correct. Did you really scanned the right code?</string>
+    <!-- 
+    <string name="error_"></string>
+    <string name="error_"></string>
+    <string name="error_"></string>
+    <string name="error_"></string>
+    <string name="error_"></string>
+    <string name="error_"></string>
+     -->
     
 </resources>
