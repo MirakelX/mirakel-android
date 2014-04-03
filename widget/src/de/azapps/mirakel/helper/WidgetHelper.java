@@ -31,8 +31,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.view.View;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 import de.azapps.mirakel.DefinitionsHelper;
+import de.azapps.mirakel.helper.error.ErrorReporter;
+import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
@@ -214,8 +215,7 @@ public class WidgetHelper {
 			if (list == null) {
 				list = ListMirakel.first();
 				if (list == null) {
-					Toast.makeText(context, "You have no Lists!",
-							Toast.LENGTH_SHORT).show();
+					ErrorReporter.report(ErrorType.TASKS_NO_LIST);
 					return null;
 				}
 			}
