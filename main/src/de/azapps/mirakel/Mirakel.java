@@ -35,6 +35,7 @@ import de.azapps.mirakel.helper.BuildHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelPreferences;
+import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.export_import.ExportImport;
 import de.azapps.mirakel.model.MirakelContentProvider;
 import de.azapps.mirakel.model.account.AccountMirakel;
@@ -76,6 +77,7 @@ public class Mirakel extends Application {
 		// This we have to initialize as early as possible
 		DefinitionsHelper.init(this);
 		MirakelPreferences.init(this);
+		ErrorReporter.init(getApplicationContext());
 		MirakelContentProvider.init(getBaseContext());
 
 		final Locale locale = Helpers.getLocal(this);

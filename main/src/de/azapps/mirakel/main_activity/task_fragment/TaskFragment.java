@@ -18,6 +18,7 @@
  ******************************************************************************/
 package de.azapps.mirakel.main_activity.task_fragment;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +41,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 import de.azapps.mirakel.DefenitionsModel.ExecInterfaceWithTask;
 import de.azapps.mirakel.custom_views.BaseTaskDetailRow.OnTaskChangedListner;
 import de.azapps.mirakel.custom_views.TaskDetailContent.OnEditChanged;
@@ -52,6 +52,8 @@ import de.azapps.mirakel.custom_views.TaskSummary.OnTaskMarkedListner;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
+import de.azapps.mirakel.helper.error.ErrorReporter;
+import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.task.Task;
@@ -255,6 +257,7 @@ public abstract class TaskFragment extends Fragment {
 
 				@Override
 				public void onClick(final View v) {
+
 					try {
 						final Intent cameraIntent = new Intent(
 								MediaStore.ACTION_IMAGE_CAPTURE);
@@ -269,10 +272,12 @@ public abstract class TaskFragment extends Fragment {
 								MainActivity.RESULT_ADD_PICTURE);
 
 					} catch (final ActivityNotFoundException a) {
-						Toast.makeText(
-								TaskFragment.this.main,
-								"Opps! Your device doesn't support taking photos",
-								Toast.LENGTH_SHORT).show();
+						ErrorReporter.report(ErrorType.PHOTO_NO_CAMERA);
+					} catch (final IOException e) {
+						if (e.getMessage().equals(FileUtils.ERROR_NO_MEDIA_DIR)) {
+							ErrorReporter
+									.report(ErrorType.PHOTO_NO_MEDIA_DIRECTORY);
+						}
 					}
 
 				}

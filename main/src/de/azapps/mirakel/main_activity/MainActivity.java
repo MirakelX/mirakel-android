@@ -57,7 +57,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.fourmob.datetimepicker.date.DatePicker;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
@@ -77,6 +76,8 @@ import de.azapps.mirakel.helper.SharingHelper;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.helper.UndoHistory;
+import de.azapps.mirakel.helper.error.ErrorReporter;
+import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.main_activity.list_fragment.ListFragment;
 import de.azapps.mirakel.main_activity.task_fragment.TaskFragment;
 import de.azapps.mirakel.main_activity.task_fragment.TaskFragmentV14;
@@ -919,8 +920,7 @@ public class MainActivity extends ActionBarActivity implements
 						: handleTasksFragmentMenu();
 				break;
 			default:
-				Toast.makeText(getApplicationContext(),
-						"Where are the dragons?", Toast.LENGTH_LONG).show();
+				ErrorReporter.report(ErrorType.MAINACTIVITY_WRONG_POSITION);
 				return;
 			}
 		}
@@ -1004,8 +1004,7 @@ public class MainActivity extends ActionBarActivity implements
 				final String file_path = FileUtils.getPathFromUri(
 						intent.getData(), this);
 				if (FileMirakel.newFile(this, this.currentTask, file_path) == null) {
-					Toast.makeText(this, getString(R.string.file_vanished),
-							Toast.LENGTH_SHORT).show();
+					ErrorReporter.report(ErrorType.FILE_NOT_FOUND);
 				} else {
 					getTaskFragment().update(this.currentTask);
 				}

@@ -18,6 +18,7 @@
  ******************************************************************************/
 package de.azapps.mirakel.main_activity.tasks_fragment;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -63,13 +64,14 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
-import android.widget.Toast;
 import de.azapps.mirakel.DefenitionsModel.ExecInterfaceWithTask;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.custom_views.BaseTaskDetailRow.OnTaskChangedListner;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
+import de.azapps.mirakel.helper.error.ErrorReporter;
+import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -551,12 +553,7 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 								MainActivity.RESULT_SPEECH);
 						TasksFragment.this.newTask.setText("");
 					} catch (final ActivityNotFoundException a) {
-						final Toast t = Toast
-								.makeText(
-										TasksFragment.this.main,
-										"Opps! Your device doesn't support Speech to Text",
-										Toast.LENGTH_SHORT);
-						t.show();
+						ErrorReporter.report(ErrorType.NO_SPEACH_RECOGNITION);
 					}
 				}
 			});
@@ -616,10 +613,14 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 								MainActivity.RESULT_CAMERA);
 
 					} catch (final ActivityNotFoundException a) {
-						Toast.makeText(
-								TasksFragment.this.main,
-								"Opps! Your device doesn't support taking photos",
-								Toast.LENGTH_SHORT).show();
+						ErrorReporter.report(ErrorType.PHOTO_NO_CAMERA);
+					} catch (final IOException e) {
+
+						if (e.getMessage().equals(FileUtils.ERROR_NO_MEDIA_DIR)) {
+							ErrorReporter
+									.report(ErrorType.PHOTO_NO_MEDIA_DIRECTORY);
+						}
+
 					}
 				}
 			});
