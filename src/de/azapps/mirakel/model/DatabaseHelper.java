@@ -41,6 +41,7 @@ import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.helper.CompatibilityHelper;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Helpers;
+import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.export_import.ExportImport;
@@ -273,6 +274,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ DatabaseHelper.NAME + ") VALUES (1,'"
 				+ this.context.getString(R.string.first_task) + "')");
 		createSpecialListsTable(db);
+
+		final String[] lists = this.context.getResources().getStringArray(
+				R.array.demo_lists);
+		for (int i = 0; i < lists.length; i++) {
+			db.execSQL("INSERT INTO " + ListMirakel.TABLE + " (" + NAME + ","
+					+ ListMirakel.LFT + "," + ListMirakel.RGT + ") VALUES ('"
+					+ lists[i] + "'," + (i + 2) + "," + (i + 3) + ")");
+		}
+		if (MirakelCommonPreferences.isDemoMode()) {
+			final String[] tasks = this.context.getResources().getStringArray(
+					R.array.demo_tasks);
+			final String[] task_lists = { lists[1], lists[1], lists[0],
+					lists[2], lists[2], lists[2] };
+			final int[] priorities = { 2, -1, 1, 2, 0, 0 };
+			int i = 0;
+			for (final String task : tasks) {
+				final Task t = Semantic.createTask(task,
+						ListMirakel.findByName(task_lists[i]), true,
+						this.context);
+				t.setPriority(priorities[i]);
+				t.safeSave();
+				i++;
+			}
+		}
 
 		onUpgrade(db, 32, DATABASE_VERSION);
 	}
