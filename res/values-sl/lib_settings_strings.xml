@@ -110,11 +110,9 @@ Pričakovati je, da bo tudi uradna različica DAVdroid kmalu podpirala delovanje
   <string name="get_dashclock">Pridobi razširitev za zaslonsko uro</string>
   <string name="get_dashclock_summary">Razširitev programa Mirakel za zaslonsko uro.</string>
   <string name="import_astrid_click">Uvozi iz Astrid</string>
-  <string name="astrid_unsuccess">Prišlo je do napake med uvažanjem nalog iz programa Astrid!</string>
   <string name="astrid_success">Vsi podatki so uspešno uvoženi!</string>
   <string name="importing">Poteka uvažanje</string>
   <string name="astrid_import_title">Izberite datoteko programa Astrid</string>
-  <string name="import_wrong_type">Datoteka ni ustrezna datoteka programa Mirakel!</string>
   <string name="import_any_do_click">Uvozi iz Any.Do</string>
   <string name="any_do_import_title">Izbor datoteke Any.Do</string>
   <string name="any_do_this_file">Uvozi iz %s?\nČe želite podatke uvoziti ročno, izberite datoteko</string>

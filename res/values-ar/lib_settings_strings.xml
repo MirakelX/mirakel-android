@@ -78,7 +78,7 @@
   <string name="startup_list_summary">إظهار المهام من \"%s\"</string>
   <string name="settings_misc">متفرقات</string>
   <string name="settings_backup">الاحتياطي والاستيراد</string>
-  <string name="backup_click_summary">قم بوضع نسخ إحتياطية لقاعدة البيانات على بطاقة (%s) SD)</string>
+  <string name="backup_click_summary">قم بوضع نسخ إحتياطية لقاعدة البيانات على بطاقة s%) SD)</string>
   <string name="backup_click">النسخ الاحتياطية</string>
   <string name="import_click_summary">استيراد قاعدة البيانات</string>
   <string name="import_click">استيراد</string>
@@ -96,11 +96,9 @@
   <string name="get_dashclock">الحصول على Mirakel-Dashclock</string>
   <string name="get_dashclock_summary">Mirakel-ملحق ل Dashclock</string>
   <string name="import_astrid_click">الاستيراد من Astrid</string>
-  <string name="astrid_unsuccess">حدث خطأ أثناء استيراد من Astrid!</string>
   <string name="astrid_success">استيراد كافة البيانات بنجاح!</string>
   <string name="importing">جاري  الإستيراد</string>
   <string name="astrid_import_title">حدد ملف Astrid</string>
-  <string name="import_wrong_type">هذا ليس ملف Mirakel!</string>
   <string name="import_any_do_click">استيراد من Any.Do</string>
   <string name="any_do_this_file">استيراد من %s?\nIf في حال تم الرفض, يرجى تحديد الملف بنفسك</string>
   <string name="select_file">حدد الملف</string>

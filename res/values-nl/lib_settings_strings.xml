@@ -109,11 +109,9 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="get_dashclock">Mirakel-Dashclock verkrijgen</string>
   <string name="get_dashclock_summary">De Mirakel-extensie voor Dashclock</string>
   <string name="import_astrid_click">Astrid importeren</string>
-  <string name="astrid_unsuccess">Er is een fout opgetreden tijdens het importeren van Astrid!</string>
   <string name="astrid_success">Alle gegevens zijn geïmporteerd!</string>
   <string name="importing">Importeren</string>
   <string name="astrid_import_title">Astrid bestand selecteren</string>
-  <string name="import_wrong_type">Dit is geen Mirakel-bestand!</string>
   <string name="import_any_do_click">Any.Do importeren</string>
   <string name="any_do_import_title">Any.Do reservekopie selecteren</string>
   <string name="any_do_this_file">Importeren uit %s?\nWanneer niet selecteer zelf een bestand</string>

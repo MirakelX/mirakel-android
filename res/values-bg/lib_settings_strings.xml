@@ -99,7 +99,6 @@
   <string name="astrid_success">Всички данни са успешно внесени!</string>
   <string name="importing">Пренос</string>
   <string name="astrid_import_title">Изберете Astrid файл</string>
-  <string name="import_wrong_type">Това не е Mirakel файл!</string>
   <string name="import_any_do_click">Импортиране от Any.Do</string>
   <string name="any_do_import_title">Изберете Any.Do резервно копие</string>
   <string name="any_do_this_file">Импорт от %s\n ако не моля изберете сами файл</string>

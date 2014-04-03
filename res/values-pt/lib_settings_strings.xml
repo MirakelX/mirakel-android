@@ -104,7 +104,6 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="astrid_success">Todos os dados foram importados!</string>
   <string name="importing">Importação</string>
   <string name="astrid_import_title">Selecione o ficheiro Astrid</string>
-  <string name="import_wrong_type">Este não é um ficheiro Mirakel!</string>
   <string name="import_any_do_click">Importar de Any.Do</string>
   <string name="any_do_import_title">Selecione o ficheiro Any.Do</string>
   <string name="any_do_this_file">Importar de %s?\nSe não, escolha manualmente o ficheiro</string>
