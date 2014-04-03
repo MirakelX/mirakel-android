@@ -12,10 +12,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.TypedValue;
-import android.widget.Toast;
 import de.azapps.mirakel.helper.Helpers;
+import de.azapps.mirakel.helper.error.ErrorReporter;
+import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.DatabaseHelper;
-import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.FileUtils;
 
@@ -169,8 +169,7 @@ public class FileMirakel extends FileBase {
 			try {
 				myBitmap = BitmapFactory.decodeFile(osFile.getAbsolutePath());
 			} catch (final OutOfMemoryError e) {
-				Toast.makeText(ctx, ctx.getString(R.string.file_to_large),
-						Toast.LENGTH_SHORT).show();
+				ErrorReporter.report(ErrorType.FILE_TO_LARGE_FOR_THUMBNAIL);
 			}
 			if (myBitmap != null) {
 

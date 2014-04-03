@@ -21,7 +21,6 @@
   <string name="no_begin_end">Няма %s</string>
   <string name="beginning_end">Начало и край</string>
   <string name="save">Запази</string>
-  <string name="file_to_large">Неуспешно създаване на миниатюра</string>
   <string name="every">Всеки</string>
   <string name="recurrence_end_continously">Завинаги</string>
   <string name="recurrence_end_date_label">До дата</string>
@@ -54,7 +53,6 @@
   <string name="reminder_notification_later">По-късно</string>
   <string name="reminder_notification_later_confirm">Ще ти напомня след %d минути</string>
   <string name="list_vanished">Опа, задачата е изчезнала. Съжалявам&#8230;</string>
-  <string name="task_vanished">Опа, списъка със задачата е изчезнал. Съжалявам&#8230;</string>
   <string name="task_sorting_title">Сортиране на задачи по</string>
   <string name="share_using">Споделяне с</string>
   <string name="share_task">Споделяне на задача</string>

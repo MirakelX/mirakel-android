@@ -46,6 +46,8 @@ import android.content.Context;
 import android.widget.Toast;
 import au.com.bytecode.opencsv.CSVReader;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
+import de.azapps.mirakel.helper.error.ErrorReporter;
+import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
@@ -73,9 +75,8 @@ public class ExportImport {
 					ctx.getString(R.string.backup_export_ok,
 							file.getAbsolutePath()), Toast.LENGTH_LONG).show();
 		} catch (final IOException e) {
-			Log.e("mypck", e.getMessage(), e);
-			Toast.makeText(ctx, ctx.getString(R.string.backup_export_error),
-					Toast.LENGTH_LONG).show();
+			Log.e(TAG, e.getMessage(), e);
+			ErrorReporter.report(ErrorType.BACKUP_EXPORT_ERROR);
 		}
 	}
 
@@ -87,9 +88,8 @@ public class ExportImport {
 					Toast.LENGTH_LONG).show();
 			android.os.Process.killProcess(android.os.Process.myPid());
 		} catch (final IOException e) {
-			Log.e("mypck", e.getMessage(), e);
-			Toast.makeText(ctx, ctx.getString(R.string.backup_import_error),
-					Toast.LENGTH_LONG).show();
+			Log.e(TAG, e.getMessage(), e);
+			ErrorReporter.report(ErrorType.BACKUP_IMPORT_ERROR);
 		}
 	}
 
@@ -102,9 +102,8 @@ public class ExportImport {
 					Toast.LENGTH_LONG).show();
 			android.os.Process.killProcess(android.os.Process.myPid());
 		} catch (final IOException e) {
-			Log.e("mypck", e.getMessage(), e);
-			Toast.makeText(ctx, ctx.getString(R.string.backup_import_error),
-					Toast.LENGTH_LONG).show();
+			Log.e(TAG, e.getMessage(), e);
+			ErrorReporter.report(ErrorType.BACKUP_IMPORT_ERROR);
 		}
 	}
 

@@ -19,12 +19,12 @@
   <string name="month">Mese</string>
   <string name="year">Anno</string>
   <string name="new_recurring">Nuova ricorrenza</string>
+  <string name="interval">Intervallo</string>
   <string name="beginning">Inizio</string>
   <string name="end">Fine</string>
   <string name="no_begin_end">No %s</string>
   <string name="beginning_end">Inizio e fine</string>
   <string name="save">Salva</string>
-  <string name="file_to_large">Impossibile creare la miniatura</string>
   <string name="every">Ogni</string>
   <string name="recurrence_end_continously">Sempre</string>
   <string name="recurrence_end_date_label">Fino a una data</string>
@@ -49,9 +49,7 @@
   <string name="any_do_how_to">Fai prima il backup dei dati di Any.Do. Per farlo, vai a Any.Do → Impostazioni → Backup → Crea Backup. Poi ritorna indietro e premi OK.\nOppure seleziona tu stesso un file.</string>
   <string name="select_file">Seleziona file</string>
   <string name="wait">Attendere&#8230;</string>
-  <string name="backup_import_error">Si è verificato un errore durate l\'importazione del database</string>
   <string name="backup_import_ok">Importazione completata. Riavviare Mirakel</string>
-  <string name="backup_export_error">Si è verificato un errore durate l\'esportazione del database</string>
   <string name="backup_export_ok">Esportato in %s</string>
   <string name="add_content">Aggiungi nota&#8230;</string>
   <string name="task_has_content">Attività con note</string>
@@ -67,7 +65,6 @@
   <string name="reminder_notification_done_confirm">Attività impostata come \"completata\"</string>
   <string name="reminder_notification_later_confirm">Promemoria tra %d minuti</string>
   <string name="list_vanished">Spiacente, l\'attività è scomparsa&#8230;</string>
-  <string name="task_vanished">Spiacente, l\'elenco delle attività è scomparso&#8230;</string>
   <string name="no_date">Nessuna scadenza</string>
   <string name="task_sorting_title">Ordina le attività per</string>
   <string name="share_using">Condividi con</string>

@@ -21,7 +21,6 @@
   <string name="reminder_notification_later">Senere</string>
   <string name="reminder_notification_later_confirm">Jeg vil minne deg på det om %d minutter</string>
   <string name="list_vanished">Jøss, oppgaven har forsvunnet. Jeg beklager &#8230;</string>
-  <string name="task_vanished">Jøss, listen for oppgaven har forsvunnet. Jeg beklager &#8230;</string>
   <string name="task_sorting_title">Sorter oppgaver etter</string>
   <string name="share_using">Dele med</string>
   <string name="share_task">Dele oppgave</string>

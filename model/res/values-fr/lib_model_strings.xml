@@ -22,7 +22,6 @@
   <string name="no_begin_end">Aucun %s</string>
   <string name="beginning_end">Début et fin</string>
   <string name="save">Sauvegarder</string>
-  <string name="file_to_large">Impossible de créer la vignette</string>
   <string name="every">Chaque</string>
   <string name="recurrence_end_continously">Toujours</string>
   <string name="recurrence_end_date_label">Jusqu\'à date</string>
@@ -44,9 +43,7 @@
   <string name="any_do_this_file">Importation de %s?\nsi non s\'il vous plaît sélectionner un fichier vous-même</string>
   <string name="select_file">Sélectionnez un fichier</string>
   <string name="wait">Veuillez patienter&#8230;</string>
-  <string name="backup_import_error">Il y a eût une erreur lors de l\'importation de la base de données</string>
   <string name="backup_import_ok">L\'importation s\'est bien passée - Veuillez redémarrer Mirakel</string>
-  <string name="backup_export_error">Il y avait une erreur lors de l\'exportation de la base de données</string>
   <string name="backup_export_ok">Exporté vers %s</string>
   <string name="add_content">Ajouter une note&#8230;</string>
   <string name="task_has_content">Tâche avec note</string>
@@ -62,7 +59,6 @@
   <string name="reminder_notification_done_confirm">J\'ai mis à la tâche comme \"fait\"</string>
   <string name="reminder_notification_later_confirm">Je vous le rappellerai dans %d minutes</string>
   <string name="list_vanished">Aïe, la tâche a disparu. Désolé&#8230;</string>
-  <string name="task_vanished">Oups, la liste de tâches a disparu. Désolé&#8230;</string>
   <string name="no_date">Pas de délai</string>
   <string name="task_sorting_title">Trier les tâches par</string>
   <string name="share_using">Partager avec</string>

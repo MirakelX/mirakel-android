@@ -24,7 +24,6 @@
   <string name="no_begin_end">Keine %s</string>
   <string name="beginning_end">Anfang und Ende</string>
   <string name="save">Speichern</string>
-  <string name="file_to_large">Vorschaubild konnte nicht erstellt werden</string>
   <string name="every">Jede</string>
   <string name="recurrence_end_continously">Wiederhole fortlaufend</string>
   <string name="recurrence_end_date_label">Bis zu einem Zeitpunkt</string>
@@ -48,9 +47,7 @@
   <string name="any_do_how_to">Bitte erstelle zuerst ein Backup deiner Any.Do Daten. Öffne Any.Do → Einstellungen → Backup → Backup erstellen. Dann komm zurück und klicke OK.\nOder wähle die Datei händisch aus.</string>
   <string name="select_file">Datei auswählen</string>
   <string name="wait">Bitte warten&#8230;</string>
-  <string name="backup_import_error">Beim Import der Daten ist ein Fehler aufgetreten!</string>
   <string name="backup_import_ok">Import erfolgreich – Bitte starte Mirakel neu</string>
-  <string name="backup_export_error">Beim Import der Daten ist ein Fehler aufgetreten!</string>
   <string name="backup_export_ok">Nach %s exportiert</string>
   <string name="add_content">Notizen&#8230;</string>
   <string name="task_has_content">Aufgabe mit Notiz</string>
@@ -66,7 +63,6 @@
   <string name="reminder_notification_done_confirm">Ich habe die Aufgabe als erledigt markiert</string>
   <string name="reminder_notification_later_confirm">Ich erinnere dich in %d Minuten</string>
   <string name="list_vanished">Huch, die Aufgabe ist verschwunden. Es tut mir leid&#8230;</string>
-  <string name="task_vanished">Huch, die Liste der Aufgabe ist verschwunden. Es tut mir leid&#8230;</string>
   <string name="no_date">Kein Termin</string>
   <string name="task_sorting_title">Sortiere nach</string>
   <string name="share_using">Teilen</string>

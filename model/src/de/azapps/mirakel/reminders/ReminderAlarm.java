@@ -37,10 +37,11 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Pair;
-import android.widget.Toast;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
+import de.azapps.mirakel.helper.error.ErrorReporter;
+import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.task.Task;
@@ -71,8 +72,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 
 		final Task task = Task.get(taskId);
 		if (task == null) {
-			Toast.makeText(context, R.string.task_vanished, Toast.LENGTH_LONG)
-					.show();
+			ErrorReporter.report(ErrorType.TASK_VANISHED);
 			return;
 		}
 		createNotification(context, task);
@@ -313,8 +313,8 @@ public class ReminderAlarm extends BroadcastReceiver {
 					.getTimeInMillis(), pendingIntent);
 		} else {
 			alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, task
-					.getReminder().getTimeInMillis(),
-					recurrence.getInterval(), pendingIntent);
+					.getReminder().getTimeInMillis(), recurrence.getInterval(),
+					pendingIntent);
 
 		}
 		return pendingIntent;
