@@ -6,7 +6,6 @@
   <string name="add_files">Добавить файл&#8230;</string>
   <string name="file_select">Выберите файл</string>
   <string name="save_label">Выполнено</string>
-  <string name="file_vanished">Нет такого файла</string>
   <string name="task_fragment_due">Срок</string>
   <string name="task_fragment_reminder">Напоминание</string>
   <string name="task_fragment_subtask">Подзадачи</string>

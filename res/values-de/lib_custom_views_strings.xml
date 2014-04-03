@@ -8,7 +8,6 @@
   <string name="save_label">Erledigt</string>
   <string name="audio_record_file">Audio-Aufnahme</string>
   <string name="image_file">Bild</string>
-  <string name="file_vanished">Datei nicht vorhanden</string>
   <string name="task_fragment_header">Header</string>
   <string name="task_fragment_file">Dateien</string>
   <string name="task_fragment_due">Fällig</string>
@@ -36,7 +35,6 @@
   <string name="add_subtasks">Unteraufgabe hinzufügen&#8230;</string>
   <string name="add">Hinzufügen</string>
   <string name="add_subtask">Unteraufgabe hinzufügen</string>
-  <string name="no_loop">Aufgaben können keine Schleifen bilden</string>
   <string name="file_no_activity">Ich weiß nicht, wie ich diese Datei öffnen soll – tut mir leid</string>
   <string name="remove_files">Lösche Dateien</string>
 </resources>

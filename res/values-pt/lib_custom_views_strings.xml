@@ -8,7 +8,6 @@
   <string name="save_label">Terminada</string>
   <string name="audio_record_file">Gravação áudio</string>
   <string name="image_file">Imagem</string>
-  <string name="file_vanished">Ficheiro inexistente</string>
   <string name="task_fragment_header">Cabeçalho</string>
   <string name="task_fragment_file">Ficheiros</string>
   <string name="task_fragment_due">Data limite</string>
@@ -36,7 +35,6 @@
   <string name="add_subtasks">Adicionar subtarefa...</string>
   <string name="add">Adicionar</string>
   <string name="add_subtask">Adicionar subtarefa</string>
-  <string name="no_loop">Subtarefas não podem fazer um ciclo</string>
   <string name="file_no_activity">Não sei como abrir este ficheiro. Desculpe.</string>
   <string name="remove_files">Remover ficheiros da tarefa</string>
 </resources>

@@ -8,7 +8,6 @@
   <string name="save_label">Končano</string>
   <string name="audio_record_file">Zvočni posnetek</string>
   <string name="image_file">Slika</string>
-  <string name="file_vanished">Ni takšne datoteke</string>
   <string name="task_fragment_header">Glava</string>
   <string name="task_fragment_file">Datoteke</string>
   <string name="task_fragment_due">Zapadlost</string>
@@ -36,7 +35,6 @@
   <string name="add_subtasks">Dodaj podrejeno nalogo ...</string>
   <string name="add">Dodaj</string>
   <string name="add_subtask">Dodaj podrejeno nalogo</string>
-  <string name="no_loop">Podnaloga ne sme biti v zanki</string>
   <string name="file_no_activity">Odpiranje te vrste datoteke ni podprto</string>
   <string name="remove_files">Odstrani datoteke iz naloge</string>
 </resources>
