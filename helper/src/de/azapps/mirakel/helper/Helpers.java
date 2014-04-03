@@ -33,7 +33,8 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.net.Uri;
-import android.widget.Toast;
+import de.azapps.mirakel.helper.error.ErrorReporter;
+import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.tools.Log;
 
 public class Helpers {
@@ -80,9 +81,7 @@ public class Helpers {
 			ci.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			context.startActivity(ci);
 		} catch (final android.content.ActivityNotFoundException ex) {
-			Toast.makeText(context,
-					context.getString(R.string.contact_no_client),
-					Toast.LENGTH_SHORT).show();
+			ErrorReporter.report(ErrorType.CONTACT_NO_CLIENT);
 
 		}
 	}
@@ -212,8 +211,7 @@ public class Helpers {
 			activity.startActivityForResult(
 					Intent.createChooser(fileDialogIntent, title), code);
 		} catch (final android.content.ActivityNotFoundException ex) {
-			Toast.makeText(activity, R.string.no_filemanager,
-					Toast.LENGTH_SHORT).show();
+			ErrorReporter.report(ErrorType.NO_FILEMANAGER);
 		}
 	}
 

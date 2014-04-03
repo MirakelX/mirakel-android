@@ -14,7 +14,15 @@ Mirakel-version: %1$s\n
 SDK-version: %2$d\n
 Device: %3$s\n]]>
     </string>
-  <string name="contact_no_client">Kein E-Mail-Client installiert</string>
   <string name="contact_chooser">E-Mail senden&#8230;</string>
-  <string name="no_filemanager">Installiere bitte einen Datei-Manager</string>
+  <string name="error_TASKS_CANNOT_FORM_LOOP">Aufgaben können keine Schleifen bilden</string>
+  <string name="error_FILE_NO_ACTIVITY">Ich weiß nicht, wie ich diese Datei öffnen soll – tut mir leid</string>
+  <string name="error_NO_FILEMANAGER">Installiere bitte einen Datei-Manager</string>
+  <string name="error_BACKUP_EXPORT_ERROR">Beim Import der Daten ist ein Fehler aufgetreten!</string>
+  <string name="error_BACKUP_IMPORT_ERROR">Beim Import der Daten ist ein Fehler aufgetreten!</string>
+  <string name="error_TASKS_NO_LIST">Du hast keine Listen. Erstelle bitte eine neue.</string>
+  <string name="error_TASK_VANISHED">Huch, die Liste der Aufgabe ist verschwunden. Es tut mir leid&#8230;</string>
+  <string name="error_ASTRID_ERROR">Es ist ein Fehler während des Astrid-Import aufgetreten!</string>
+  <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD">Konnte Konfiguration nicht herunterladen</string>
+  <string name="error_TASKWARRIOR_URL_NOT_FOUND">Die URL ist nicht korrekt. Wurde der Code richtig eingescannt?</string>
 </resources>

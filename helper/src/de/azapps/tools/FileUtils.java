@@ -45,8 +45,9 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
-import android.widget.Toast;
 import de.azapps.mirakel.DefinitionsHelper;
+import de.azapps.mirakel.helper.error.ErrorReporter;
+import de.azapps.mirakel.helper.error.ErrorType;
 
 public class FileUtils {
 	private static final String TAG = "FileUtils";
@@ -294,8 +295,7 @@ public class FileUtils {
 			return path;
 		} catch (final URISyntaxException e) {
 			Log.w(TAG, Log.getStackTraceString(e));
-			Toast.makeText(ctx, "Something terrible happened…",
-					Toast.LENGTH_LONG).show();
+			ErrorReporter.report(ErrorType.FILE_URI_SYNTAX_ERROR);
 			return "";
 		}
 	}

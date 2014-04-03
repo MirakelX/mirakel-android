@@ -14,7 +14,15 @@ Različica programa: %1$s\n
 Različica SDK: %2$d\n
 Naprava: %3$s\n]]>
     </string>
-  <string name="contact_no_client">Ni nameščenega odjemalca elektronske pošte</string>
   <string name="contact_chooser">Pošlji elektronsko sporočilo ...</string>
-  <string name="no_filemanager">Namestiti je treba upravljalnika datotek</string>
+  <string name="error_TASKS_CANNOT_FORM_LOOP">Podnaloga ne sme biti v zanki</string>
+  <string name="error_FILE_NO_ACTIVITY">Odpiranje te vrste datoteke ni podprto</string>
+  <string name="error_NO_FILEMANAGER">Namestiti je treba upravljalnika datotek</string>
+  <string name="error_BACKUP_EXPORT_ERROR">Prišlo je do napake med izvažanjem podatkovne zbirke</string>
+  <string name="error_BACKUP_IMPORT_ERROR">Prišlo je do napake med uvažanjem podatkovne zbirke</string>
+  <string name="error_TASKS_NO_LIST">Naloge ni mogoče uskladiti, ker je brez seznamov</string>
+  <string name="error_TASK_VANISHED">Ops! Seznam nalog je izginil! To je lahko napaka programa ...</string>
+  <string name="error_ASTRID_ERROR">Prišlo je do napake med uvažanjem nalog iz programa Astrid!</string>
+  <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD">Nastavitvene datoteke ni mogoče prejeti</string>
+  <string name="error_TASKWARRIOR_URL_NOT_FOUND">Naslov URL ni pravilen. Ali je prebrana prava koda QR?</string>
 </resources>
