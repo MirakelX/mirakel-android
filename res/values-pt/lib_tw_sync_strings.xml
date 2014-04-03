@@ -29,14 +29,11 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="sync_taskwarrior_select_file">Selecione o ficheiro de configuração</string>
   <string name="sync_taskwarrior_how_to">Como configurar o seu servidor</string>
   <string name="sync_taskwarrior_own_server">ou simplesmente utilizar o seu servidor</string>
-  <string name="sync_taskwarrior_url_error">O URL não está correto. Leu o código QR correto?</string>
   <string name="sync_taskwarrior_configuring">Configurar sincronização&#8230;</string>
   <string name="sync_taskwarrior_about">Se já possuir uma conta Taskwarrior:</string>
   <string name="sync_taskwarrior_register">Se não tem, pode registar uma nova conta no nosso servidor:</string>
   <string name="sync_taskwarrior_register_button">Registar</string>
   <string name="sync_taskwarrior_setup_success">Conta configurada com sucesso</string>
-  <string name="sync_taskwarrior_error_download">Não foi possível transferir o ficheiro de configuração</string>
-  <string name="sync_taskwarrior_select_file_not_exists">O ficheiro não existe</string>
   <string name="sync_defaultAccount">Utilizar como pré-definida?</string>
   <string name="tw_account">Taskwarrior</string>
   <string name="calDavName">CalDav</string>

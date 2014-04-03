@@ -30,14 +30,11 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="sync_taskwarrior_select_file">File di configurazione</string>
   <string name="sync_taskwarrior_how_to">Come configurare il proprio server</string>
   <string name="sync_taskwarrior_own_server">o usare il proprio server</string>
-  <string name="sync_taskwarrior_url_error">L\'URL non è corretto. È stato utilizzato il codice QR corretto?</string>
   <string name="sync_taskwarrior_configuring">Configurazione sincronizzazione&#8230;</string>
   <string name="sync_taskwarrior_about">Se si possiede già un account Taskwarrior:</string>
   <string name="sync_taskwarrior_register">Altrimenti è possibile creare un nuovo account sui nostri server:</string>
   <string name="sync_taskwarrior_register_button">Registra</string>
   <string name="sync_taskwarrior_setup_success">Configurazione account completata con successo</string>
-  <string name="sync_taskwarrior_error_download">Impossibile scaricare il file di configurazione</string>
-  <string name="sync_taskwarrior_select_file_not_exists">Il fin non esiste</string>
   <string name="sync_defaultAccount">Usare come account predefinito?</string>
   <string name="tw_account">Taskwarrior</string>
   <string name="calDavName">CalDav</string>
@@ -48,6 +45,8 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="menu_edit_listaccount">Account</string>
   <string name="change_account">Cambia account</string>
   <string name="wrong_config">Sembra che sia stato utilizzato un file di configurazione errato</string>
+  <string name="config_404">Non è stato trovato il file di configurazione</string>
+  <string name="config_error_empty">Non è presente la voce %s nel file di configurazione</string>
   <string name="load_config">Selezionare il file di configurazione per Taskwarrior</string>
   <string name="select_config">Selezionare il file di configurazione di Taskwarrior</string>
   <string name="message_try_later">Provare a sincronizzare più tardi</string>
