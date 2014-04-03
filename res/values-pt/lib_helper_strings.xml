@@ -14,7 +14,14 @@ Mirakel versão: %1$s\n
 Versão SDK: %2$d\n
 Dispositivo: %3$s\n]]>
     </string>
-  <string name="contact_no_client">Nenhum cliente de correio instalado</string>
   <string name="contact_chooser">Enviar mensagem...</string>
-  <string name="no_filemanager">Instale um gestor de ficheiros</string>
+  <string name="error_TASKS_CANNOT_FORM_LOOP">Subtarefas não podem fazer um ciclo</string>
+  <string name="error_FILE_NO_ACTIVITY">Não sei como abrir este ficheiro. Desculpe.</string>
+  <string name="error_NO_FILEMANAGER">Instale um gestor de ficheiros</string>
+  <string name="error_BACKUP_EXPORT_ERROR">Ocorreu um erro ao exportar a base de dados</string>
+  <string name="error_BACKUP_IMPORT_ERROR">Ocorreu um erro ao importar a base de dados</string>
+  <string name="error_TASKS_NO_LIST">Esta tarefa não pode ser sincronizada porque não existem listas</string>
+  <string name="error_TASK_VANISHED">A lista de tarefas desapareceu. Desculpe...</string>
+  <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD">Não foi possível transferir o ficheiro de configuração</string>
+  <string name="error_TASKWARRIOR_URL_NOT_FOUND">O URL não está correto. Leu o código QR correto?</string>
 </resources>
