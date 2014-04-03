@@ -21,7 +21,6 @@
   <string name="no_begin_end">Без %s</string>
   <string name="beginning_end">Начало и конец</string>
   <string name="save">Сохранить</string>
-  <string name="file_to_large">Не удалось создать миниатюру</string>
   <string name="list_all">Все списки</string>
   <string name="list_overdue">Просрочено</string>
   <string name="inbox">Вход</string>
@@ -41,7 +40,6 @@
   <string name="reminder_notification_later">Позже</string>
   <string name="reminder_notification_later_confirm">Я напомню Вам через %d минут</string>
   <string name="list_vanished">Ооооох! Задача исчезла. Я сожалею...</string>
-  <string name="task_vanished">Ооооох! Исчез в список дел. Я сожалею...</string>
   <string name="task_sorting_title">Сортировать дела по</string>
   <string name="share_using">Поделиться с</string>
   <string name="share_task">Поделиться делом</string>

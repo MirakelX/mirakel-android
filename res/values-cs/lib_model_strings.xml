@@ -43,7 +43,6 @@
   <string name="reminder_notification_later">Později</string>
   <string name="reminder_notification_later_confirm">Upozorním vás za %d minut</string>
   <string name="list_vanished">Jejda, úkol zmizel. Omlouvám se&#8230;</string>
-  <string name="task_vanished">Jejda, seznam zmizel. Omlouvám se&#8230;</string>
   <string name="task_sorting_title">Seřadit úkoly podle</string>
   <string name="share_using">Sdílet pomocí</string>
   <string name="share_task">Sdílet úkol</string>

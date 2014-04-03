@@ -24,7 +24,6 @@
   <string name="no_begin_end">Geen %s</string>
   <string name="beginning_end">Begin en einde</string>
   <string name="save">Opslaan</string>
-  <string name="file_to_large">Het maken van een miniatuurweergave is mislukt</string>
   <string name="every">Elke</string>
   <string name="recurrence_end_continously">Altijd</string>
   <string name="recurrence_end_date_label">Tot een datum</string>
@@ -49,9 +48,7 @@
   <string name="any_do_how_to">Maak eerst uw reservekopie van de Any.Do gegevens . Om dit te doen, ga naar Any.Do → instellingen → Backup → reservekopie maken. Kom dan terug en druk op OK.\nSelecteer het bestand zelf.</string>
   <string name="select_file">bestand selecteren</string>
   <string name="wait">Even geduld a.u.b.&#8230;</string>
-  <string name="backup_import_error">Er is een fout opgetreden bij het importeren van het reservekopie</string>
   <string name="backup_import_ok">Herstart Mirakel - het importeren is geslaagd</string>
-  <string name="backup_export_error">Er is een fout opgetreden bij het exporteren van de reservekopie</string>
   <string name="backup_export_ok">Exporteren naar %s</string>
   <string name="add_content">Notitie toevoegen&#8230;</string>
   <string name="task_has_content">Taak met notitie</string>
@@ -67,7 +64,6 @@
   <string name="reminder_notification_done_confirm">De taak is \"afgerond\"</string>
   <string name="reminder_notification_later_confirm">Ik tip je in %d minuten</string>
   <string name="list_vanished">De taak is verdwenen. Het spijt me&#8230;</string>
-  <string name="task_vanished">De lijst van de taak is verdwenen. Het spijt me&#8230;</string>
   <string name="no_date">Geen deadline</string>
   <string name="task_sorting_title">Sorteer taken op</string>
   <string name="share_using">Deel met</string>

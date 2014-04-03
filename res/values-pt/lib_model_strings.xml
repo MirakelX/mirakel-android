@@ -24,7 +24,6 @@
   <string name="no_begin_end">Sem %s</string>
   <string name="beginning_end">Início e fim</string>
   <string name="save">Gravar</string>
-  <string name="file_to_large">falha ao criar miniatura</string>
   <string name="every">A cada</string>
   <string name="recurrence_end_continously">Eternamente</string>
   <string name="recurrence_end_date_label">Até uma data</string>
@@ -49,9 +48,7 @@
   <string name="any_do_how_to">Por favor, faça um backup dos seus dados Any.Do. Para o fazer, aceda a Any.Do -> Definições -> Backup -> Criar backup. Volte à aplicação e clique OK.\nOu então, escolha o ficheiro.</string>
   <string name="select_file">Selecionar ficheiro</string>
   <string name="wait">Por favor aguarde&#8230;</string>
-  <string name="backup_import_error">Ocorreu um erro ao importar a base de dados</string>
   <string name="backup_import_ok">Importação terminada com sucesso. Reinicie o Mirakel</string>
-  <string name="backup_export_error">Ocorreu um erro ao exportar a base de dados</string>
   <string name="backup_export_ok">Exportado para %s</string>
   <string name="add_content">Adicionar nota...</string>
   <string name="task_has_content">Tarefa com nota</string>
@@ -66,7 +63,6 @@
   <string name="reminder_notification_done_confirm">Eu defini a tarefa como terminada</string>
   <string name="reminder_notification_later_confirm">Lembrete dentro de %d minutos</string>
   <string name="list_vanished">A tarefa desapareceu. Desculpe...</string>
-  <string name="task_vanished">A lista de tarefas desapareceu. Desculpe...</string>
   <string name="no_date">Sem prazo</string>
   <string name="task_sorting_title">Ordenar tarefas por</string>
   <string name="share_using">Partilhar com</string>

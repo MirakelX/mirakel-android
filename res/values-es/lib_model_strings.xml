@@ -41,7 +41,6 @@
   <string name="reminder_notification_later">Más tarde</string>
   <string name="reminder_notification_later_confirm">Te lo recordaré en %d minutos</string>
   <string name="list_vanished">Yikes, the task has vanished. I\'m sorry&#8230;</string>
-  <string name="task_vanished">Yikes, the list of the task has vanished. I\'m sorry&#8230;</string>
   <string name="task_sorting_title">Ordenar tareas por</string>
   <string name="share_using">Compartir con</string>
   <string name="share_task">Compartir tarea</string>
