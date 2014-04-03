@@ -265,6 +265,13 @@ public class AccountMirakel extends AccountBase {
 					AccountMirakel.newAccount(a.name,
 							ACCOUNT_TYPES.parseAccountType(a.type), true);
 				} else {
+					final AccountMirakel account = map.get(a.name);
+					if (account.getSyncKey() == null
+							|| account.getSyncKey().trim().length() == 0) {
+						account.setSyncKey(AccountManager.get(context)
+								.getPassword(a));
+						account.save();
+					}
 					// Account exists..
 					map.remove(a.name);
 				}
