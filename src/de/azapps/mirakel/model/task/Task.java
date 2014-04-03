@@ -36,7 +36,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Pair;
-import android.widget.Toast;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -48,6 +47,8 @@ import de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.UndoHistory;
+import de.azapps.mirakel.helper.error.ErrorReporter;
+import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.MirakelContentProvider;
 import de.azapps.mirakel.model.R;
@@ -474,10 +475,8 @@ public class Task extends TaskBase {
 			NotificationService.updateNotificationAndWidget(Task.context);
 			return task;
 		} catch (final NoSuchListException e) {
-			Log.wtf(Task.TAG, "List vanish");
+			ErrorReporter.report(ErrorType.TASKS_NO_LIST);
 			Log.e(Task.TAG, Log.getStackTraceString(e));
-			Toast.makeText(Task.context, R.string.no_lists, Toast.LENGTH_LONG)
-					.show();
 			return null;
 		}
 	}

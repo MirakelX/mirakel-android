@@ -27,7 +27,6 @@
     <string name="no_begin_end">No %s</string>
     <string name="beginning_end">Beginning and End</string>
     <string name="save">Save</string>
-    <string name="file_to_large">Failed to create thumbnail</string>
     <string name="every">Every</string>
     <!-- Specifies that a repeating event to repeat forever (based on the defined frequency) instead of ending at a future date[CHAR LIMIT=20] -->
     <string name="recurrence_end_continously">Forever</string>
@@ -75,9 +74,7 @@
     <string name="wait">Please wait…</string>
     
     <!-- Backup -->
-    <string name="backup_import_error">There was an error while importing the database</string>
     <string name="backup_import_ok">The import was fine - please restart Mirakel</string>
-    <string name="backup_export_error">There was an error while exporting the database</string>
     <string name="backup_export_ok">Exported to %s</string>
     <string name="add_content">Add note…</string>
     <string name="task_has_content">Task with note</string>
@@ -95,7 +92,6 @@
     <string name="reminder_notification_done_confirm">I have set the task as "done"</string>
     <string name="reminder_notification_later_confirm">I\'ll remind you in %d minutes</string>
     <string name="list_vanished">Yikes, the task has vanished. I\'m sorry…</string>
-    <string name="task_vanished">Yikes, the list of the task has vanished. I\'m sorry…</string>
     
     <string name="no_date">No deadline</string>
     
