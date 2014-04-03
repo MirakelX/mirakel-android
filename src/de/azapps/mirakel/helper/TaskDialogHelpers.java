@@ -50,7 +50,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
-import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.android.calendar.recurrencepicker.RecurrencePickerDialog;
@@ -61,6 +60,8 @@ import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.custom_views.BaseTaskDetailRow.OnTaskChangedListner;
 import de.azapps.mirakel.custom_views.TaskDetailDueReminder;
 import de.azapps.mirakel.customviews.R;
+import de.azapps.mirakel.helper.error.ErrorReporter;
+import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -164,10 +165,7 @@ public class TaskDialogHelpers {
 			audio_record_mRecorder.start();
 		} catch (final Exception e) {
 			Log.e(TAG, "prepare() failed");
-
-			Toast.makeText(context,
-					"I can not record something on your device. Sorry!",
-					Toast.LENGTH_SHORT).show();
+			ErrorReporter.report(ErrorType.NO_SPEACH_RECOGNITION);
 			return;
 		}
 		audio_record_alert_dialog = new AlertDialog.Builder(context)
@@ -615,13 +613,8 @@ public class TaskDialogHelpers {
 													task.addSubtask(tasks
 															.get(i));
 												} else {
-													Toast.makeText(
-															ctx,
-															ctx.getString(R.string.no_loop),
-															Toast.LENGTH_LONG)
-															.show();
-													Log.d(TAG,
-															"cannot create loop");
+													ErrorReporter
+															.report(ErrorType.TASKS_CANNOT_FORM_LOOP);
 												}
 											} else {
 												if (!task.checkIfParent(tasks
@@ -629,13 +622,8 @@ public class TaskDialogHelpers {
 													tasks.get(i).addSubtask(
 															task);
 												} else {
-													Toast.makeText(
-															ctx,
-															ctx.getString(R.string.no_loop),
-															Toast.LENGTH_LONG)
-															.show();
-													Log.d(TAG,
-															"cannot create loop");
+													ErrorReporter
+															.report(ErrorType.TASKS_CANNOT_FORM_LOOP);
 												}
 											}
 										}
@@ -690,9 +678,7 @@ public class TaskDialogHelpers {
 		try {
 			context.startActivity(i2);
 		} catch (final ActivityNotFoundException e) {
-			Toast.makeText(context,
-					context.getString(R.string.file_no_activity),
-					Toast.LENGTH_SHORT).show();
+			ErrorReporter.report(ErrorType.FILE_NO_ACTIVITY);
 		}
 	}
 
