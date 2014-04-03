@@ -31,14 +31,11 @@ Pričakovati je, da bo tudi uradna različica DAVdroid kmalu podpirala delovanje
   <string name="sync_taskwarrior_select_file">Izbor nastavitvene datoteke</string>
   <string name="sync_taskwarrior_how_to">Kako nastaviti lasten strežnik</string>
   <string name="sync_taskwarrior_own_server">ali pa enostavno uporabite lasten strežnik</string>
-  <string name="sync_taskwarrior_url_error">Naslov URL ni pravilen. Ali je prebrana prava koda QR?</string>
   <string name="sync_taskwarrior_configuring">Nastavljanje usklajevanja ...</string>
   <string name="sync_taskwarrior_about">Če že imate račun strežnika taskwarrior:</string>
   <string name="sync_taskwarrior_register">Lahko vpišete nov račun na našem strežniku:</string>
   <string name="sync_taskwarrior_register_button">Vpis</string>
   <string name="sync_taskwarrior_setup_success">Nastavitev računa je uspešno končana</string>
-  <string name="sync_taskwarrior_error_download">Nastavitvene datoteke ni mogoče prejeti</string>
-  <string name="sync_taskwarrior_select_file_not_exists">Datoteka ne obstaja</string>
   <string name="sync_defaultAccount">Ali naj se račun uporabi kot privzeti račun?</string>
   <string name="tw_account">Taskwarrior</string>
   <string name="calDavName">CalDav</string>

@@ -26,14 +26,11 @@
   <string name="sync_taskwarrior_select_file">Konfiguration auswählen</string>
   <string name="sync_taskwarrior_how_to">Wie installiert man seinen eigenen Server</string>
   <string name="sync_taskwarrior_own_server">oder nutzen Sie Ihren eigenen Server</string>
-  <string name="sync_taskwarrior_url_error">Die URL ist nicht korrekt. Wurde der Code richtig eingescannt?</string>
   <string name="sync_taskwarrior_configuring">Richte Synchronisierung ein&#8230;</string>
   <string name="sync_taskwarrior_about">Wenn Sie bereits ein Taskwarrior-Konto besitzen:</string>
   <string name="sync_taskwarrior_register">Wenn nicht, können Sie ein Konto auf unserem Server erstellen:</string>
   <string name="sync_taskwarrior_register_button">Registrieren</string>
   <string name="sync_taskwarrior_setup_success">Einrichtung war Erfolgreich</string>
-  <string name="sync_taskwarrior_error_download">Konnte Konfiguration nicht herunterladen</string>
-  <string name="sync_taskwarrior_select_file_not_exists">Datei ist nicht vorhanden</string>
   <string name="sync_defaultAccount">Als Standardkonto verwenden?</string>
   <string name="tw_account">Taskwarrior</string>
   <string name="calDavName">CalDav</string>

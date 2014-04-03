@@ -24,14 +24,11 @@
   <string name="sync_taskwarrior_select_file">حدد ملف التهيئة</string>
   <string name="sync_taskwarrior_how_to">كيفية إعداد الخادم الخاص بك</string>
   <string name="sync_taskwarrior_own_server">أو مجرد استخدام الخادم الخاص بك</string>
-  <string name="sync_taskwarrior_url_error">عنوان URL غير صحيح. هل تفحصت التعليمة البرمجية الصحيحة؟</string>
   <string name="sync_taskwarrior_configuring">تكوين المزامنة&#8230;</string>
   <string name="sync_taskwarrior_about">إذا كان لديك حساب taskwarrior:</string>
   <string name="sync_taskwarrior_register">إذا لم يكن الأمر كذلك، يمكنك تسجيل حساب جديد على الخادم لدينا:</string>
   <string name="sync_taskwarrior_register_button">تسجيل</string>
   <string name="sync_taskwarrior_setup_success">تم إعداد الحساب بنجاح</string>
-  <string name="sync_taskwarrior_error_download">لا يمكن تحميل ملف التكوين</string>
-  <string name="sync_taskwarrior_select_file_not_exists">ملف غير موجود</string>
   <string name="sync_defaultAccount">استخدامه كحساب افتراضي؟</string>
   <string name="tw_account">Taskwarrior</string>
   <string name="calDavName">CalDav</string>

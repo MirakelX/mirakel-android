@@ -37,14 +37,11 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="sync_taskwarrior_select_file">Select config file</string>
     <string name="sync_taskwarrior_how_to">How to setup your own server</string>
     <string name="sync_taskwarrior_own_server">or just use your own server</string>
-    <string name="sync_taskwarrior_url_error">The URL is not correct. Did you really scanned the right code?</string>
     <string name="sync_taskwarrior_configuring">Configuring sync…</string>
     <string name="sync_taskwarrior_about">If you already have a taskwarrior account:</string>
     <string name="sync_taskwarrior_register">If not, you can register a new account on our server:</string>
     <string name="sync_taskwarrior_register_button">Register</string>
     <string name="sync_taskwarrior_setup_success">Account setup was successful</string>
-    <string name="sync_taskwarrior_error_download">Could not download config file</string>
-    <string name="sync_taskwarrior_select_file_not_exists">File does not exist</string>
     <string name="sync_defaultAccount">Use as default account?</string>
     <string name="tw_account">Taskwarrior</string>
     <string name="calDavName">CalDav</string>

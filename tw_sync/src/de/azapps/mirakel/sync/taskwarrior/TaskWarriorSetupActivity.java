@@ -31,6 +31,8 @@ import android.widget.Toast;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
+import de.azapps.mirakel.helper.error.ErrorReporter;
+import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.sync.R;
 import de.azapps.mirakel.sync.SyncAdapter;
@@ -127,10 +129,7 @@ public class TaskWarriorSetupActivity extends Activity {
 							getContentResolver()
 									.openInputStream(data.getData()), true);
 				} catch (final FileNotFoundException e) {
-					Toast.makeText(
-							this,
-							getString(R.string.sync_taskwarrior_select_file_not_exists),
-							Toast.LENGTH_LONG).show();
+					ErrorReporter.report(ErrorType.TASKWARRIOR_FILE_NOT_FOUND);
 				}
 			} else if (path != null) {
 				Log.w(TAG, "path: " + path);
@@ -222,10 +221,7 @@ public class TaskWarriorSetupActivity extends Activity {
 			try {
 				setupTaskWarrior(new FileInputStream(configFile), true);
 			} catch (final FileNotFoundException e) {
-				Toast.makeText(
-						this,
-						getString(R.string.sync_taskwarrior_select_file_not_exists),
-						Toast.LENGTH_LONG).show();
+				ErrorReporter.report(ErrorType.TASKWARRIOR_FILE_NOT_FOUND);
 			}
 		} else {
 			Log.d(TAG, "file not found");
@@ -296,10 +292,7 @@ public class TaskWarriorSetupActivity extends Activity {
 					Toast.LENGTH_LONG).show();
 			finish();
 		} catch (final IOException e) {
-			Toast.makeText(
-					this,
-					getString(R.string.sync_taskwarrior_select_file_not_exists),
-					Toast.LENGTH_LONG).show();
+			ErrorReporter.report(ErrorType.TASKWARRIOR_FILE_NOT_FOUND);
 		} catch (final ParseException e) {
 			if (showToast) {
 				Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
@@ -368,11 +361,15 @@ public class TaskWarriorSetupActivity extends Activity {
 
 				@Override
 				public void execute(final Integer result) {
-					Toast.makeText(
-							that,
-							getString(result == RESULT_SUCCESS ? R.string.sync_taskwarrior_setup_success
-									: R.string.sync_taskwarrior_error_download),
-							Toast.LENGTH_LONG).show();
+					if (result != RESULT_SUCCESS) {
+						ErrorReporter
+								.report(ErrorType.TASKWARRIOR_COULD_NOT_DOWNLOAD);
+					} else {
+						Toast.makeText(
+								that,
+								getString(R.string.sync_taskwarrior_setup_success),
+								Toast.LENGTH_LONG).show();
+					}
 
 					TaskWarriorSetupActivity.this.progressDialog.dismiss();
 					finish();
@@ -381,10 +378,7 @@ public class TaskWarriorSetupActivity extends Activity {
 			dlTask.execute(url);
 		} catch (final MalformedURLException e) {
 			this.progressDialog.dismiss();
-			Log.v(TAG, "bad url entered");
-
-			Toast.makeText(this, R.string.sync_taskwarrior_url_error,
-					Toast.LENGTH_SHORT).show();
+			ErrorReporter.report(ErrorType.TASKWARRIOR_URL_NOT_FOUND);
 			this.progressDialog.dismiss();
 		}
 	}

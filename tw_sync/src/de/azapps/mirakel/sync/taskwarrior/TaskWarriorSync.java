@@ -134,7 +134,6 @@ public class TaskWarriorSync {
 	 */
 	private static void error(final String what, final int code) {
 		Log.e(TAG, what + " (Code: " + code + ")");
-		// Toast.makeText(mContext, what, Toast.LENGTH_SHORT).show();
 	}
 
 	private static String escape(final String string) {
@@ -271,9 +270,6 @@ public class TaskWarriorSync {
 						Log.d(TAG, "create " + server_task.getName());
 					} catch (final NoSuchListException e) {
 						Log.wtf(TAG, "List vanish");
-						// Looper.prepare();
-						// Toast.makeText(mContext, R.string.no_lists,
-						// Toast.LENGTH_LONG).show();
 					}
 				} else {
 					server_task.setId(local_task.getId());
@@ -284,9 +280,6 @@ public class TaskWarriorSync {
 		}
 		final String message = remotes.get("message");
 		if (message != null && message != "") {
-			// Toast.makeText(mContext,
-			// mContext.getString(R.string.message_from_server, message),
-			// Toast.LENGTH_LONG).show();
 			Log.v(TAG, "Message from Server: " + message);
 		}
 		client.close();

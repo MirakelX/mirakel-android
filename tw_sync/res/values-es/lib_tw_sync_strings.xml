@@ -19,7 +19,6 @@
   <string name="sync_add_account">Agregar cuenta</string>
   <string name="sync_taskwarrior_configure">Configurar Taskwarrior</string>
   <string name="sync_taskwarrior_register_button">Registrar</string>
-  <string name="sync_taskwarrior_select_file_not_exists">El archivo no existe</string>
   <string name="sync_defaultAccount">Usar como cuenta predeterminada?</string>
   <string name="tw_account">Taskwarrior</string>
   <string name="type">Escribe</string>
