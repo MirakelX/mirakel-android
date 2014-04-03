@@ -109,11 +109,9 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="get_dashclock">Scarica Mirakel-Dashclock</string>
   <string name="get_dashclock_summary">L\'estensione di Mirakel per Dashclock</string>
   <string name="import_astrid_click">Importa da Astrid</string>
-  <string name="astrid_unsuccess">Si è verificato un errore durante l\'importazione da Astrid!</string>
   <string name="astrid_success">Tutti i dati importati correttamente</string>
   <string name="importing">Importazione</string>
   <string name="astrid_import_title">Seleziona il file Astrid</string>
-  <string name="import_wrong_type">Questo non è un file Mirakel</string>
   <string name="import_any_do_click">Importa da Any.Do</string>
   <string name="any_do_import_title">Seleziona il file di backup di Any.Do</string>
   <string name="any_do_this_file">Importare da %s?\nIn caso contrario selezionare manualmente un file</string>
@@ -164,6 +162,7 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="register_server">Se si necessita di un account per la sincronizzazione sui nostri server, inviaci una email. Con la prossima versione verrà introdotta la possibilità di registrare un account.</string>
   <string name="special_lists_title">Meta-elenchi</string>
   <string name="register">Registra</string>
+  <string name="auto_backup_interval">Intervallo tra i backup automatici</string>
   <string name="auto_backup_interval_summary">Numero di giorni tra i backup automatici: %s</string>
   <string name="preferences_colorize">Colori</string>
   <string name="preferences_colorize_tasks">Colorare attività</string>
@@ -228,6 +227,7 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="credits_libraries">Librerie usate</string>
   <string name="credits_license_title">Licenza</string>
   <string name="demo_mode">Modalità demo</string>
+  <string name="demo_drop_db">Ripristina database demo</string>
   <string name="write_logs_to_file">Scrivi i log in un file</string>
   <string-array name="sync_types">
     <item>Sincronizzazione CalDAV</item>

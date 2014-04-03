@@ -68,7 +68,6 @@
   <string name="astrid_success">Všechna data byla úspěšně importována!</string>
   <string name="importing">Probíhá import</string>
   <string name="astrid_import_title">Vyberte soubor Astrid</string>
-  <string name="import_wrong_type">To není soubor ve formátu Mirakel!</string>
   <string name="import_any_do_click">Importovat z Any.Do</string>
   <string name="any_do_import_title">Vyberte soubor se zálohou ve formátu Any.Do</string>
   <string name="wait">Počkejte prosím&#8230;</string>

@@ -130,11 +130,9 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
 
     <!-- Astrid -->
     <string name="import_astrid_click">Import from Astrid</string>
-    <string name="astrid_unsuccess">There was an error while importing from Astrid!</string>
     <string name="astrid_success">Successfully imported all data!</string>
     <string name="importing">Importing</string>
     <string name="astrid_import_title">Select Astrid File</string>
-    <string name="import_wrong_type">This is not a Mirakel-file!</string>
     <!-- Any.Do -->
     <string name="import_any_do_click">Import from Any.Do</string>
     <string name="any_do_import_title">Select Any.Do backupfile</string>

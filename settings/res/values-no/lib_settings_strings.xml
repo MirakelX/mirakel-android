@@ -64,7 +64,6 @@
   <string name="import_astrid_click">Importer fra Astrid</string>
   <string name="astrid_success">Samtlige data importet suksessfullt!</string>
   <string name="astrid_import_title">Velg Astrid fil</string>
-  <string name="import_wrong_type">Dette er ikke en Mirakel fil!</string>
   <string name="highlightSelected_summary">Marker lister/oppgaver når du klikker dem</string>
   <string name="settings_date_format_relative">Vis relative datoer</string>
   <string name="showDone">Vis utførte oppgaver</string>

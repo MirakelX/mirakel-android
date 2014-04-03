@@ -37,6 +37,8 @@ import de.azapps.mirakel.adapter.SettingsAdapter;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.PreferencesAppHelper;
+import de.azapps.mirakel.helper.error.ErrorReporter;
+import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.helper.export_import.AnyDoImport;
 import de.azapps.mirakel.helper.export_import.ExportImport;
 import de.azapps.mirakel.helper.export_import.WunderlistImport;
@@ -89,8 +91,7 @@ public class SettingsActivity extends PreferenceActivity {
 					this);
 			// Check if this is an database file
 			if (path_db != null && !path_db.endsWith(".db")) {
-				Toast.makeText(that, R.string.import_wrong_type,
-						Toast.LENGTH_LONG).show();
+				ErrorReporter.report(ErrorType.FILE_NOT_MIRAKEL_DB);
 				return;
 			}
 			new AlertDialog.Builder(this)
@@ -165,8 +166,7 @@ public class SettingsActivity extends PreferenceActivity {
 				protected void onPostExecute(final Boolean success) {
 					this.dialog.dismiss();
 					if (!success) {
-						Toast.makeText(that, R.string.astrid_unsuccess,
-								Toast.LENGTH_LONG).show();
+						ErrorReporter.report(ErrorType.ASTRID_ERROR);
 					} else {
 						Toast.makeText(that, R.string.astrid_success,
 								Toast.LENGTH_SHORT).show();

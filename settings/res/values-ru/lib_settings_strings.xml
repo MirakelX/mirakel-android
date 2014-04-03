@@ -70,7 +70,6 @@
   <string name="import_astrid_click">Импорт из Astrid</string>
   <string name="astrid_success">Все данные успешно импортированы!</string>
   <string name="astrid_import_title">Выберите Astrid-файл</string>
-  <string name="import_wrong_type">Это не Mirakel-файл!</string>
   <string name="highlightSelected_summary">Выделите списки/дела нажатием на них</string>
   <string name="settings_date_format_relative">Показывать относительные даты</string>
   <string name="showDone">Показывать выполненные дела</string>
