@@ -8,7 +8,6 @@
   <string name="save_label">Afgerond</string>
   <string name="audio_record_file">Audio opname</string>
   <string name="image_file">Afbeelding</string>
-  <string name="file_vanished">Een dergelijk bestand is niet aanwezig</string>
   <string name="task_fragment_header">Koptekst</string>
   <string name="task_fragment_file">Bestanden</string>
   <string name="task_fragment_due">Vervaldatum</string>
@@ -37,7 +36,6 @@ Audio afspelen&#8230;</string>
   <string name="add_subtasks">Subtaak toevoegen&#8230;</string>
   <string name="add">Toevoegen</string>
   <string name="add_subtask">Subtaak toevoegen</string>
-  <string name="no_loop">Subtaak kan geen cirkelverwijzing vormen</string>
   <string name="file_no_activity">Ik weet niet hoe dit bestand kan worden geopend – sorry</string>
   <string name="remove_files">Verwijder taakbijlage</string>
 </resources>

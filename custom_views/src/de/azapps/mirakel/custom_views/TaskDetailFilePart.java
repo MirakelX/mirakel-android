@@ -162,7 +162,7 @@ public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
 		}
 		this.filePath.setText(this.file.getPath());
 		if (!this.file.getFile().exists()) {
-			this.filePath.setText(R.string.file_vanished);
+			this.filePath.setText(R.string.error_FILE_NOT_FOUND);
 		} else {
 			this.filePath.setText(this.file.getPath());
 		}

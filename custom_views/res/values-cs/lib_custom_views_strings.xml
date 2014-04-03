@@ -6,7 +6,6 @@
   <string name="add_files">Přidat soubor&#8230;</string>
   <string name="file_select">Vyberte soubor</string>
   <string name="save_label">Hotovo</string>
-  <string name="file_vanished">Daný soubor neexistuje</string>
   <string name="task_fragment_due">Termín</string>
   <string name="task_fragment_reminder">Upozornění</string>
   <string name="task_fragment_subtask">Podúkoly</string>

@@ -8,7 +8,6 @@
   <string name="save_label">Fini</string>
   <string name="audio_record_file">Enregistrer de l\'audio</string>
   <string name="image_file">Image</string>
-  <string name="file_vanished">Aucun fichier</string>
   <string name="task_fragment_header">Entête</string>
   <string name="task_fragment_file">Fichiers</string>
   <string name="task_fragment_due">Échéance</string>
@@ -35,7 +34,6 @@
   <string name="add_subtasks">Ajouter une sous-tâche &#8230;</string>
   <string name="add">Ajouter</string>
   <string name="add_subtask">Ajouter une sous-tâche</string>
-  <string name="no_loop">Sous-tâches ne peuvent pas former de boucle</string>
   <string name="file_no_activity">Je ne sais pas comment ouvrir ce fichier – Désolé</string>
   <string name="remove_files">Enlever les fichier de la tâche</string>
 </resources>

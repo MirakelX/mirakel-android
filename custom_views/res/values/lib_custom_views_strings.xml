@@ -8,7 +8,6 @@
     <string name="save_label">Done</string>
     <string name="audio_record_file">Audio record</string>
     <string name="image_file">Image</string>
-    <string name="file_vanished">No such file</string>
     
     <!-- Task Fragment settings -->
     <string name="task_fragment_header">Header</string>
@@ -41,7 +40,6 @@
     <string name="add_subtasks">Add subtask…</string>
     <string name="add">Add</string>
     <string name="add_subtask">Add Subtask</string>
-    <string name="no_loop">Subtasks cannot form a loop</string>
     <string name="file_no_activity">I don\'t know, how to open this file – sorry</string>
     
     <string name="remove_files">Remove Files from Task</string>

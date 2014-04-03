@@ -8,7 +8,6 @@
   <string name="save_label">Fatto</string>
   <string name="audio_record_file">Registrazione audio</string>
   <string name="image_file">Immagine</string>
-  <string name="file_vanished">Nessun file</string>
   <string name="task_fragment_header">Intestazione</string>
   <string name="task_fragment_file">File</string>
   <string name="task_fragment_due">Scadenza</string>
@@ -36,7 +35,6 @@
   <string name="add_subtasks">Aggiungi attività secondaria&#8230;</string>
   <string name="add">Aggiungi</string>
   <string name="add_subtask">Aggiungi attività secondaria</string>
-  <string name="no_loop">Le attività secondarie non possono creare un ciclo</string>
   <string name="file_no_activity">Impossibile aprire il file</string>
   <string name="remove_files">Rimuovi i file dall\'attività</string>
 </resources>

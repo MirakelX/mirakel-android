@@ -8,7 +8,6 @@
   <string name="save_label">Свършено</string>
   <string name="audio_record_file">Аудио запис</string>
   <string name="image_file">Изображение</string>
-  <string name="file_vanished">Няма такъв файл</string>
   <string name="task_fragment_header">Горен</string>
   <string name="task_fragment_file">Файлове</string>
   <string name="task_fragment_due">Краен срок</string>

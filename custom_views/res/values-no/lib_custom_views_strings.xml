@@ -5,7 +5,6 @@
   <string name="no_reminder">Angi en påminnelse</string>
   <string name="file_select">Velg en fil</string>
   <string name="save_label">Ferdig</string>
-  <string name="file_vanished">Ingen slik fil</string>
   <string name="task_fragment_due">Forfall</string>
   <string name="task_fragment_reminder">Påminnelse</string>
   <string name="task_fragment_subtask">Deloppgave</string>
