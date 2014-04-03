@@ -122,6 +122,10 @@ public class Task extends TaskBase {
 			due = null;
 		} else {
 			due.setTimeInMillis(cursor.getLong(6) * 1000 + offset);
+			if (due.get(Calendar.HOUR) != 0 || due.get(Calendar.MINUTE) != 0
+					|| due.get(Calendar.SECOND) != 0) {
+				due.add(Calendar.MILLISECOND, offset);
+			}
 		}
 
 		GregorianCalendar reminder = new GregorianCalendar();

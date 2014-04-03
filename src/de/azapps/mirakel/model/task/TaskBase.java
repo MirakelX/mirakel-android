@@ -173,9 +173,13 @@ class TaskBase {
 		cv.put(TaskBase.CONTENT, this.content);
 		cv.put(TaskBase.DONE, this.done);
 		if (this.due != null) {
-			// TODO handle daily due here
-			// there is no need to use the offset there
-			cv.put(TaskBase.DUE, this.due.getTimeInMillis() / 1000 - offset);
+			if (this.due.get(Calendar.HOUR) == 0
+					&& this.due.get(Calendar.MINUTE) == 0
+					&& this.due.get(Calendar.SECOND) == 0) {
+				cv.put(TaskBase.DUE, this.due.getTimeInMillis() / 1000);
+			} else {
+				cv.put(TaskBase.DUE, this.due.getTimeInMillis() / 1000 - offset);
+			}
 		} else {
 			cv.put(TaskBase.DUE, (Integer) null);
 		}
