@@ -4,7 +4,10 @@ apply plugin: 'eclipse'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion  
+    buildToolsVersion rootProject.ext.buildToolsVersion 
+    lintOptions{
+        enable 'RtlHardcoded','RtlCompat', 'RtlEnabled'
+    }
     packagingOptions {
             exclude 'META-INF/LICENSE.txt'
             exclude 'META-INF/NOTICE.txt'
@@ -16,7 +19,7 @@ android {
             resources.srcDirs = ['src']
             aidl.srcDirs = ['src']
             renderscript.srcDirs = ['src']
-            res.srcDirs = ['res']
+            res.srcDirs = ['merged-res']
             assets.srcDirs = ['assets']
         }
     }
