@@ -164,6 +164,7 @@ Pričakovati je, da bo tudi uradna različica DAVdroid kmalu podpirala delovanje
   <string name="register_server">Če si želite pridobiti tudi račun za usklajevanje nalog na našem strežniku, pošljite elektronsko sporočilo. Z naslednjo različico boste imeli možnost račun tudi vpisati in uporabiti!</string>
   <string name="special_lists_title">Meta seznami</string>
   <string name="register">Vpis</string>
+  <string name="auto_backup_interval">Pogostost samodejnega ustvarjanja varnostne kopije</string>
   <string name="auto_backup_interval_summary">Ustvari varnostno kopijo vsakih %s dni</string>
   <string name="preferences_colorize">Barve</string>
   <string name="preferences_colorize_tasks">Obarvaj naloge</string>
@@ -227,6 +228,7 @@ Pričakovati je, da bo tudi uradna različica DAVdroid kmalu podpirala delovanje
   <string name="credits_libraries">Uporabljene knjižnice</string>
   <string name="credits_license_title">Dovoljenje</string>
   <string name="demo_mode">Preizkusni način</string>
+  <string name="demo_drop_db">Počisti preizkusno podatkovno zbirko</string>
   <string name="write_logs_to_file">Zapiši dnevnik v datoteko</string>
   <string-array name="sync_types">
     <item>Usklajevanje CalDAV</item>
