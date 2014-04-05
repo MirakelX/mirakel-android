@@ -15,14 +15,24 @@ Različica SDK: %2$d\n
 Naprava: %3$s\n]]>
     </string>
   <string name="contact_chooser">Pošlji elektronsko sporočilo ...</string>
+  <string name="error_PHOTO_NO_CAMERA">Opa! Naprava ne omogoča zajemanja fotografij.</string>
+  <string name="error_PHOTO_NO_MEDIA_DIRECTORY">Ni prostora za shranjevanje fotografije.</string>
+  <string name="error_NO_SPEACH_RECOGNITION">Opa! Naprava ne podpira možnosti prevajanja govora v besedilo</string>
   <string name="error_TASKS_CANNOT_FORM_LOOP">Podnaloga ne sme biti v zanki</string>
   <string name="error_FILE_NO_ACTIVITY">Odpiranje te vrste datoteke ni podprto</string>
+  <string name="error_CONTACT_NO_CLIENT">Ni nameščenega odjemalca elektronske pošte</string>
   <string name="error_NO_FILEMANAGER">Namestiti je treba upravljalnika datotek</string>
+  <string name="error_FILE_URI_SYNTAX_ERROR">Prišlo je do notranje napake med razčlenjevanjem imena datoteke</string>
+  <string name="error_MAINACTIVITY_WRONG_POSITION">To se ne bi smelo zgoditi</string>
+  <string name="error_FILE_NOT_FOUND">Datoteke ni mogoče najti</string>
   <string name="error_BACKUP_EXPORT_ERROR">Prišlo je do napake med izvažanjem podatkovne zbirke</string>
   <string name="error_BACKUP_IMPORT_ERROR">Prišlo je do napake med uvažanjem podatkovne zbirke</string>
+  <string name="error_FILE_TO_LARGE_FOR_THUMBNAIL">Sličica ni mogoče ustvariti. Datoteka je za velika</string>
   <string name="error_TASKS_NO_LIST">Naloge ni mogoče uskladiti, ker je brez seznamov</string>
   <string name="error_TASK_VANISHED">Ops! Seznam nalog je izginil! To je lahko napaka programa ...</string>
+  <string name="error_FILE_NOT_MIRAKEL_DB">To ni datoteka zbirke podatkov Mirakel!</string>
   <string name="error_ASTRID_ERROR">Prišlo je do napake med uvažanjem nalog iz programa Astrid!</string>
+  <string name="error_TASKWARRIOR_FILE_NOT_FOUND">Datoteke Taskwarrior ni mogoče najti</string>
   <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD">Nastavitvene datoteke ni mogoče prejeti</string>
   <string name="error_TASKWARRIOR_URL_NOT_FOUND">Naslov URL ni pravilen. Ali je prebrana prava koda QR?</string>
 </resources>
