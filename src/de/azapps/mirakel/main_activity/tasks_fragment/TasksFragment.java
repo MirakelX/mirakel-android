@@ -66,6 +66,7 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import de.azapps.mirakel.DefenitionsModel.ExecInterfaceWithTask;
 import de.azapps.mirakel.DefinitionsHelper;
+import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.custom_views.BaseTaskDetailRow.OnTaskChangedListner;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
@@ -645,13 +646,15 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 		final ListMirakel list = ListMirakel.getList(this.listId);
 		final Uri u = Uri.parse("content://"
 				+ DefinitionsHelper.AUTHORITY_INTERNAL + "/" + "tasks");
-		String dbQuery = list.getWhereQueryForTasks(true);
+		String dbQuery = list.getWhereQueryForTasks();
 		final String sorting = Task.getSorting(list.getSortBy());
 		String[] args = null;
+		if (dbQuery != null && dbQuery.trim() != "" && dbQuery.length() > 0) {
+			dbQuery = "(" + dbQuery + ") AND ";
+		}
+		dbQuery += "NOT " + DatabaseHelper.SYNC_STATE_FIELD + "="
+				+ SYNC_STATE.DELETE + " ";
 		if (this.query != null) {
-			if (dbQuery != null && dbQuery.trim() != "" && dbQuery.length() > 0) {
-				dbQuery = "(" + dbQuery + ") AND ";
-			}
 
 			args = new String[] { "%" + this.query + "%" };
 			dbQuery += DatabaseHelper.NAME + " LIKE ?";
