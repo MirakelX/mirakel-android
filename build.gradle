@@ -21,7 +21,7 @@ dependencies {
 }
 
 gradle.projectsEvaluated {
-    def projects=["custom_views","date-time-picker"]
+    def projects=["custom_views","date-time-picker","widget"]
     for(String proj:projects){
         def res_dir=rootDir.toString()+"/"+proj+"/res"
         def res_v14_dir=rootDir.toString()+"/"+proj+"/res-v14"
