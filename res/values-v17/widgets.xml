@@ -20,7 +20,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="WidgetDueText">
-        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingStart">4dp</item>
         <item name="android:paddingBottom">4dp</item>
         <item name="android:textColor">#ffffffff</item>
         <item name="android:textSize">12sp</item>
