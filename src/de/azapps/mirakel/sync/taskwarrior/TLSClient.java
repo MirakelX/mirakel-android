@@ -55,6 +55,7 @@ public class TLSClient {
 			return (X509Certificate) factory
 					.generateCertificate(new ByteArrayInputStream(certBytes));
 		} catch (final CertificateException e) {
+			Log.wtf(TAG, "parsing failed");
 			return null;
 		}
 	}
@@ -65,7 +66,6 @@ public class TLSClient {
 				"-----BEGIN RSA PRIVATE KEY-----",
 				"-----END RSA PRIVATE KEY-----");
 		final PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
-
 		KeyFactory factory;
 		try {
 			factory = KeyFactory.getInstance("RSA", "BC");
@@ -84,10 +84,6 @@ public class TLSClient {
 			Log.e(TAG, Log.getStackTraceString(e));
 			return null;
 		}
-	}
-
-	static void gnutls_log_function(final String message) {
-		Log.d(TAG, "c: " + message);
 	}
 
 	private static byte[] parseDERFromPEM(final String pem,
@@ -170,7 +166,6 @@ public class TLSClient {
 			Log.e(TAG, "Unkown Host");
 		} catch (final ConnectException e) {
 			Log.e(TAG, "Cannot connect to Host");
-
 		} catch (final IOException e) {
 			Log.e(TAG, "IO Error");
 		}
