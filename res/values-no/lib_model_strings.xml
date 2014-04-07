@@ -56,8 +56,6 @@
   <string name="reminder_unset">Påminnelse er ikke angitt</string>
   <string name="inverte">Inverter merking</string>
   <string name="not_in">Ikke i</string>
-  <string name="where_like_contain_text">Inneholder</string>
-  <string name="where_like_end_text">Slutter med</string>
   <string name="delete">Slett</string>
   <string-array name="weekdays">
     <item>Don\'t set</item>

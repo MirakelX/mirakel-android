@@ -71,10 +71,12 @@
   <string name="share_list_title">%1$s (%2$d)</string>
   <string name="special_list_name">الإسم</string>
   <string name="special_list_active">إظهار</string>
+  <string name="special_list_where">SQL-Where Query</string>
   <string name="special_list_sort_by">فرز حسب</string>
   <string name="special_list_def_list">القائمة الافتراضية</string>
   <string name="special_list_def_date">تاريخ إفتراضي</string>
   <string name="special_list_first">الافتراضي</string>
+  <string name="special_list_contains">وسيطات الإختيار</string>
   <string name="special_list_summary">مُلخّص</string>
   <string name="special_lists_defaults">القيم الافتراضية</string>
   <string name="special_list_where_prio_title_text">أولوية</string>
@@ -95,9 +97,6 @@
   <string name="reminder_unset">لم يتم تعيين تذكير</string>
   <string name="inverte">عكس التحديد</string>
   <string name="not_in">ليس</string>
-  <string name="where_like_contain_text">يحتوي على</string>
-  <string name="where_like_begin_text">يبدأ مع</string>
-  <string name="where_like_end_text">ينتهي ب</string>
   <string name="delete">حذف</string>
   <string name="nothing">لا يوجد تكرار</string>
   <string-array name="weekdays">

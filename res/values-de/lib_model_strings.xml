@@ -100,9 +100,6 @@
   <string name="reminder_unset">Aufgaben ohne Erinnerung</string>
   <string name="inverte">Auswahl umkehren</string>
   <string name="not_in">Nicht in</string>
-  <string name="where_like_contain_text">Enthält</string>
-  <string name="where_like_begin_text">Beginnt mit</string>
-  <string name="where_like_end_text">Endet mit</string>
   <string name="delete">Löschen</string>
   <string name="nothing">Keine Wiederholung</string>
   <string-array name="weekdays">
