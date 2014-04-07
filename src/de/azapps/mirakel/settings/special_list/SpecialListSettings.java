@@ -18,9 +18,9 @@
  ******************************************************************************/
 package de.azapps.mirakel.settings.special_list;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Map;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -45,16 +45,29 @@ import de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
 import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.PreferencesHelper;
+import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
+import de.azapps.mirakel.model.list.meta.SpecialListsContentProperty;
+import de.azapps.mirakel.model.list.meta.SpecialListsDoneProperty;
+import de.azapps.mirakel.model.list.meta.SpecialListsDueProperty;
+import de.azapps.mirakel.model.list.meta.SpecialListsDueProperty.Unit;
+import de.azapps.mirakel.model.list.meta.SpecialListsListProperty;
+import de.azapps.mirakel.model.list.meta.SpecialListsNameProperty;
+import de.azapps.mirakel.model.list.meta.SpecialListsPriorityProperty;
+import de.azapps.mirakel.model.list.meta.SpecialListsReminderProperty;
+import de.azapps.mirakel.model.list.meta.SpecialListsSetProperty;
+import de.azapps.mirakel.model.list.meta.SpecialListsStringProperty;
+import de.azapps.mirakel.model.list.meta.SpecialListsStringProperty.Type;
+import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.settings.ListSettings;
 import de.azapps.mirakel.settings.R;
 import de.azapps.widgets.DueDialog;
 import de.azapps.widgets.DueDialog.VALUE;
 
 @SuppressLint("NewApi")
-public class SpecialListSettings extends PreferencesHelper implements
-		OnPreferenceChangeListener {
+public class SpecialListSettings extends PreferencesHelper {
 	protected SpecialList specialList;
 
 	public SpecialListSettings(final SpecialListsSettingsActivity p,
@@ -71,121 +84,13 @@ public class SpecialListSettings extends PreferencesHelper implements
 	}
 
 	protected String getFieldText(final String queryPart) {
-		final String[] whereParts = this.specialList.getWhereQueryForTasks(
-				false).split("and");
-		String returnString = "";
-		for (String s : whereParts) {
-			if (s.contains(queryPart)) {
-				if (queryPart.equals("done")) {
-					return s.contains("=1") ? this.activity
-							.getString(R.string.done) : this.activity
-							.getString(R.string.undone);
-				}
-				if (queryPart.equals("due")) {
-					if (!s.contains("not null")) {
-						final Pattern pattern = Pattern
-								.compile("[\"'].*?[\"']");
-						final Matcher matcher = pattern.matcher(s);
-						int i = 0;
-						while (matcher.find()) {
-							if (++i > 1) {
-								s = matcher.group().replaceAll("[\"']", "");
-								break;
-							}
-						}
-						if (s.contains("localtime")) {
-							return this.activity.getString(R.string.today);
-						}
-
-						int day = 0;
-						if (s.contains("year")) {
-							s = s.replace(
-									s.contains("years") ? "years" : "year", "")
-									.trim();
-							day = 2;
-						} else if (s.contains("month")) {
-							s = s.replace(
-									s.contains("months") ? "months" : "month",
-									"").trim();
-							day = 1;
-						} else {
-							s = s.replace(s.contains("days") ? "days" : "day",
-									"").trim();
-						}
-						return s.trim()
-								+ " "
-								+ this.activity
-										.getResources()
-										.getStringArray(
-												s.contains("1") ? R.array.due_day_year_values
-														: R.array.due_day_year_values_plural)[day];
-					}
-				}
-				if (queryPart.equals("reminder")) {
-					return s.contains("not") ? this.activity
-							.getString(R.string.reminder_set) : this.activity
-							.getString(R.string.reminder_unset);
-				}
-				if (queryPart.equals("list_id")) {
-					returnString = this.specialList
-							.getWhereQueryForTasks(false).contains(
-									"not list_id") ? this.activity
-							.getString(R.string.not_in) + " " : "";
-					final String[] p = s
-							.replace(
-									(returnString.trim().length() == 0 ? ""
-											: "not ") + "list_id in(", "")
-							.replace(")", "").split(",");
-					for (int i = 0; i < p.length; i++) {
-						returnString += (i == 0 ? "" : ", ")
-								+ ListMirakel.getList(
-										Integer.parseInt(p[i].trim()))
-										.getName();
-					}
-					return returnString;
-				}
-				if (queryPart.equals("priority")) {
-					returnString = this.specialList
-							.getWhereQueryForTasks(false).contains(
-									"not priority") ? this.activity
-							.getString(R.string.not_in) + " " : "";
-					return returnString
-							+ s.replace(
-									(returnString.trim().length() == 0 ? ""
-											: "not ") + "priority in (", "")
-									.replace(")", "").replace(",", ", ");
-				}
-				if (queryPart.equals("content") || queryPart.equals("name")) {
-					if (s.contains("not")) {
-						s = s.replace("not", "").trim();
-						returnString += this.activity.getString(R.string.not)
-								+ " ";
-					}
-					s = s.replace(queryPart + " like", "").trim();
-					if (s.replaceAll("[\"'%]", "").trim().length() == 0) {
-						return this.activity.getString(R.string.empty);
-					}
-					if (s.matches("[\"'].%['\"]")) {
-						returnString += this.activity
-								.getString(R.string.where_like_begin_text)
-								+ " " + s.replaceAll("[\"'%]", "");
-					} else if (s.matches("[\"']%.['\"]")) {
-						returnString += this.activity
-								.getString(R.string.where_like_end_text)
-								+ " "
-								+ s.replaceAll("[\"'%]", "");
-					} else {
-						returnString += this.activity
-								.getString(R.string.where_like_contain_text)
-								+ " " + s.replaceAll("[\"'%]", "");
-					}
-				} else {
-					returnString += s + " ";
-				}
-			}
+		final Map<String, SpecialListsBaseProperty> where = this.specialList
+				.getWhere();
+		if (where.containsKey(queryPart)) {
+			final SpecialListsBaseProperty prop = where.get(queryPart);
+			return prop.getSummary(this.activity);
 		}
-		return returnString.equals("") ? this.activity
-				.getString(R.string.empty) : returnString;
+		return this.activity.getString(R.string.empty);
 	}
 
 	@SuppressLint("NewApi")
@@ -213,13 +118,6 @@ public class SpecialListSettings extends PreferencesHelper implements
 		}
 		return View.inflate(new ContextThemeWrapper(this.activity,
 				R.style.Dialog), id, null);
-	}
-
-	@Override
-	public boolean onPreferenceChange(final Preference preference,
-			final Object newValue) {
-		// Nothing
-		return false;
 	}
 
 	public void setup() throws NoSuchListException {
@@ -269,13 +167,13 @@ public class SpecialListSettings extends PreferencesHelper implements
 					findPreference("special_lists_where"));
 		} else {
 			findPreference("special_lists_where").setSummary(
-					this.specialList.getWhereQueryForTasks(false));
+					this.specialList.getWhereQueryForTasks());
 		}
 
 		final List<ListMirakel> lists = ListMirakel.all(false);
 
 		final Preference sortBy = findPreference("special_default_sort");
-		sortBy.setOnPreferenceChangeListener(this);
+		sortBy.setOnPreferenceChangeListener(null);
 		sortBy.setSummary(this.activity.getResources().getStringArray(
 				R.array.task_sorting_items)[this.specialList.getSortBy()]);
 		sortBy.setOnPreferenceClickListener(new OnPreferenceClickListener() {
@@ -289,7 +187,7 @@ public class SpecialListSettings extends PreferencesHelper implements
 			}
 		});
 		final Preference defList = findPreference("special_default_list");
-		defList.setOnPreferenceChangeListener(this);
+		defList.setOnPreferenceChangeListener(null);
 		String summary = "";
 		if (this.specialList.getDefaultList() != null) {
 			summary = this.specialList.getDefaultList().getName();
@@ -318,7 +216,7 @@ public class SpecialListSettings extends PreferencesHelper implements
 						R.array.special_list_def_date_picker)[j]);
 			}
 		}
-		defDate.setOnPreferenceChangeListener(this);
+		defDate.setOnPreferenceChangeListener(null);
 		defDate.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
 			@Override
@@ -346,7 +244,7 @@ public class SpecialListSettings extends PreferencesHelper implements
 		final Preference reminder = findPreference("special_where_reminder");
 		reminder.setSummary(getFieldText("reminder"));
 
-		done.setOnPreferenceChangeListener(this);
+		done.setOnPreferenceChangeListener(null);
 		done.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
 			@Override
@@ -359,12 +257,14 @@ public class SpecialListSettings extends PreferencesHelper implements
 						SpecialListSettings.this.activity
 								.getString(R.string.undone) };
 				int defVal = 0;
-				if (SpecialListSettings.this.specialList.getWhereQueryForTasks(
-						false).contains("done=0")) {
-					defVal = 2;
-				} else if (SpecialListSettings.this.specialList
-						.getWhereQueryForTasks(false).contains("done=1")) {
-					defVal = 1;
+				final SpecialListsDoneProperty prop = (SpecialListsDoneProperty) SpecialListSettings.this.specialList
+						.getWhere().get(Task.DONE);
+				if (prop != null) {
+					if (!prop.getDone()) {
+						defVal = 2;
+					} else {
+						defVal = 1;
+					}
 				}
 				new AlertDialog.Builder(SpecialListSettings.this.activity)
 						.setTitle(
@@ -376,23 +276,18 @@ public class SpecialListSettings extends PreferencesHelper implements
 									public void onClick(
 											final DialogInterface dialog,
 											final int item) {
-										String newWhere = "";
-										switch (item) {
-										case 1:
-											newWhere = "done=1";
-											done.setSummary(R.string.done);
-											break;
-										case 2:
-											newWhere = "done=0";
-											done.setSummary(SpecialListSettings.this.activity
-													.getString(R.string.undone));
-											break;
-										default:
-											done.setSummary(SpecialListSettings.this.activity
-													.getString(R.string.empty));
-											break;
+										if (prop == null) {
+											setNewWhere(
+													new SpecialListsDoneProperty(
+															item == 1),
+													item == 1 || item == 2,
+													Task.DONE, done);
+										} else {
+											prop.setDone(item == 1);
+											setNewWhere(prop, item == 1
+													|| item == 2, Task.DONE,
+													done);
 										}
-										updateWhere("done", newWhere);
 										dialog.dismiss(); // Ugly
 									}
 
@@ -401,7 +296,7 @@ public class SpecialListSettings extends PreferencesHelper implements
 			}
 		});
 
-		reminder.setOnPreferenceChangeListener(this);
+		reminder.setOnPreferenceChangeListener(null);
 		reminder.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
 			@Override
@@ -415,12 +310,14 @@ public class SpecialListSettings extends PreferencesHelper implements
 								.getString(R.string.reminder_unset) };
 
 				int defVal = 0;
-				if (SpecialListSettings.this.specialList.getWhereQueryForTasks(
-						false).contains("not")) {
-					defVal = 1;
-				} else if (SpecialListSettings.this.specialList
-						.getWhereQueryForTasks(false).contains("reminder")) {
-					defVal = 2;
+				final SpecialListsReminderProperty prop = (SpecialListsReminderProperty) SpecialListSettings.this.specialList
+						.getWhere().get(Task.REMINDER);
+				if (prop != null) {
+					if (!prop.isSet()) {
+						defVal = 2;
+					} else {
+						defVal = 1;
+					}
 				}
 				new AlertDialog.Builder(SpecialListSettings.this.activity)
 						.setTitle(
@@ -432,24 +329,19 @@ public class SpecialListSettings extends PreferencesHelper implements
 									public void onClick(
 											final DialogInterface dialog,
 											final int item) {
-										String newWhere = "";
-										switch (item) {
-										case 1:
-											newWhere = "reminder is not null";
-											reminder.setSummary(R.string.reminder_set);
-											break;
-										case 2:
-											newWhere = "reminder is null";
-											reminder.setSummary(SpecialListSettings.this.activity
-													.getString(R.string.reminder_unset));
-											break;
-										default:
-											reminder.setSummary(SpecialListSettings.this.activity
-													.getString(R.string.empty));
-											break;
+										if (prop == null) {
+											setNewWhere(
+													new SpecialListsReminderProperty(
+															item == 1),
+													item == 1 || item == 2,
+													Task.REMINDER, reminder);
+										} else {
+											prop.setIsSet(item == 1);
+											setNewWhere(prop, item == 1
+													|| item == 2,
+													Task.REMINDER, reminder);
 										}
-										updateWhere("reminder", newWhere);
-										dialog.dismiss();
+										dialog.dismiss(); // Ugly
 									}
 
 								}).show();
@@ -457,7 +349,7 @@ public class SpecialListSettings extends PreferencesHelper implements
 			}
 		});
 
-		list.setOnPreferenceChangeListener(this);
+		list.setOnPreferenceChangeListener(null);
 		list.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
 			private boolean[] mSelectedItems;
@@ -477,25 +369,19 @@ public class SpecialListSettings extends PreferencesHelper implements
 				final CharSequence[] SortingItems = new String[lists.size() + 1];
 				final int[] values = new int[lists.size() + 1];
 				this.mSelectedItems = new boolean[SortingItems.length];
+				final SpecialListsListProperty prop = (SpecialListsListProperty) SpecialListSettings.this.specialList
+						.getWhere().get(Task.LIST_ID);
 				values[0] = 0;
-				this.mSelectedItems[0] = SpecialListSettings.this.specialList
-						.getWhereQueryForTasks(false).contains("not list_id");
+				this.mSelectedItems[0] = prop == null ? false : prop
+						.isNegated();
 				SortingItems[0] = SpecialListSettings.this.activity
 						.getString(R.string.inverte);
 				for (int i = 0; i < lists.size(); i++) {
 					values[i + 1] = lists.get(i).getId();
 					SortingItems[i + 1] = lists.get(i).getName();
-					this.mSelectedItems[i + 1] = false;
-					this.mSelectedItems[i + 1] = (SpecialListSettings.this.specialList
-							.getWhereQueryForTasks(false).contains(
-									"," + lists.get(i).getId()) || SpecialListSettings.this.specialList
-							.getWhereQueryForTasks(false).contains(
-									"(" + lists.get(i).getId()))
-							&& (SpecialListSettings.this.specialList
-									.getWhereQueryForTasks(false).contains(
-											lists.get(i).getId() + ",") || SpecialListSettings.this.specialList
-									.getWhereQueryForTasks(false).contains(
-											lists.get(i).getId() + ")"));
+					this.mSelectedItems[i + 1] = prop == null ? false : prop
+							.getContent().contains(lists.get(i).getId());
+
 				}
 				new AlertDialog.Builder(SpecialListSettings.this.activity)
 						.setTitle(
@@ -507,38 +393,13 @@ public class SpecialListSettings extends PreferencesHelper implements
 									public void onClick(
 											final DialogInterface dialog,
 											final int id) {
-										String newWhere = (mSelectedItems[0] ? "not "
-												: "")
-												+ "list_id in(";
-										String text = mSelectedItems[0] ? SpecialListSettings.this.activity
-												.getString(R.string.not_in)
-												+ " " : "";
-										boolean first = true;
-										for (int i = 1; i < mSelectedItems.length; i++) {
-											if (mSelectedItems[i]) {
-												text += (first ? "" : ", ")
-														+ SortingItems[i];
-												newWhere += (first ? "" : ",")
-														+ values[i];
-												first = false;
-											}
-										}
-										updateWhere("list_id", first ? ""
-												: newWhere + ")");
-										list.setSummary(first ? SpecialListSettings.this.activity
-												.getString(R.string.empty)
-												: text);
+										setSetProperty(list, values, prop,
+												mSelectedItems, Task.LIST_ID,
+												false);
 									}
+
 								})
-						.setNegativeButton(android.R.string.cancel,
-								new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(
-											final DialogInterface dialog,
-											final int id) {
-										// User cancelled the dialog
-									}
-								})
+						.setNegativeButton(android.R.string.cancel, null)
 
 						.setMultiChoiceItems(SortingItems, this.mSelectedItems,
 								new OnMultiChoiceClickListener() {
@@ -557,7 +418,7 @@ public class SpecialListSettings extends PreferencesHelper implements
 			}
 		});
 
-		prio.setOnPreferenceChangeListener(this);
+		prio.setOnPreferenceChangeListener(null);
 		prio.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
 			private boolean[] mSelectedItems;
@@ -567,49 +428,18 @@ public class SpecialListSettings extends PreferencesHelper implements
 				final CharSequence[] SortingItems = new String[6];
 				final int[] values = new int[SortingItems.length];
 				this.mSelectedItems = new boolean[SortingItems.length];
+				final SpecialListsPriorityProperty prop = (SpecialListsPriorityProperty) SpecialListSettings.this.specialList
+						.getWhere().get(Task.PRIORITY);
 				values[0] = -5;
-				this.mSelectedItems[0] = SpecialListSettings.this.specialList
-						.getWhereQueryForTasks(false).contains("not priority");
+				this.mSelectedItems[0] = prop == null ? false : prop
+						.isNegated();
 				SortingItems[0] = SpecialListSettings.this.activity
 						.getString(R.string.inverte);
 				for (int i = 1; i < SortingItems.length; i++) {
 					SortingItems[i] = i - 3 + "";
 					values[i] = i - 3;
-					this.mSelectedItems[i] = false;
-				}
-				final String[] p = SpecialListSettings.this.specialList
-						.getWhereQueryForTasks(false).split("and");
-				for (final String s : p) {
-					if (s.contains("priority")) {
-						final String[] r = s
-								.replace(
-										(!this.mSelectedItems[0] ? "" : "not ")
-												+ "priority in (", "")
-								.replace(")", "").trim().split(",");
-						for (final String t : r) {
-							try {
-								switch (Integer.parseInt(t)) {
-								case -2:
-									this.mSelectedItems[1] = true;
-									break;
-								case -1:
-									this.mSelectedItems[2] = true;
-									break;
-								case 0:
-									this.mSelectedItems[3] = true;
-									break;
-								case 1:
-									this.mSelectedItems[4] = true;
-									break;
-								case 2:
-									this.mSelectedItems[5] = true;
-									break;
-								}
-							} catch (final NumberFormatException e) {
-							}
-						}
-						break;
-					}
+					this.mSelectedItems[i] = prop == null ? false : prop
+							.getContent().contains(i - 3);
 				}
 				new AlertDialog.Builder(SpecialListSettings.this.activity)
 						.setTitle(
@@ -621,38 +451,12 @@ public class SpecialListSettings extends PreferencesHelper implements
 									public void onClick(
 											final DialogInterface dialog,
 											final int id) {
-										String newWhere = (mSelectedItems[0] ? "not "
-												: "")
-												+ "priority in (";
-										String text = mSelectedItems[0] ? SpecialListSettings.this.activity
-												.getString(R.string.not_in)
-												+ " " : "";
-										boolean first = true;
-										for (int i = 1; i < mSelectedItems.length; i++) {
-											if (mSelectedItems[i]) {
-												text += (first ? "" : ", ")
-														+ values[i];
-												newWhere += (first ? "" : ",")
-														+ values[i];
-												first = false;
-											}
-										}
-										updateWhere("priority", first ? ""
-												: newWhere + ")");
-										prio.setSummary(first ? SpecialListSettings.this.activity
-												.getString(R.string.empty)
-												: text);
+										setSetProperty(prio, values, prop,
+												mSelectedItems, Task.PRIORITY,
+												true);
 									}
 								})
-						.setNegativeButton(android.R.string.cancel,
-								new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(
-											final DialogInterface dialog,
-											final int id) {
-										// User cancelled the dialog
-									}
-								})
+						.setNegativeButton(android.R.string.cancel, null)
 
 						.setMultiChoiceItems(SortingItems, this.mSelectedItems,
 								new OnMultiChoiceClickListener() {
@@ -670,68 +474,27 @@ public class SpecialListSettings extends PreferencesHelper implements
 			}
 		});
 
-		content.setOnPreferenceChangeListener(this);
+		content.setOnPreferenceChangeListener(null);
 		content.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
 			@Override
 			public boolean onPreferenceClick(final Preference preference) {
 
+				final SpecialListsStringProperty prop = (SpecialListsStringProperty) SpecialListSettings.this.specialList
+						.getWhere().get(Task.CONTENT);
 				final View dialogView = getView(R.layout.content_name_dialog);
-				final String[] p = SpecialListSettings.this.specialList
-						.getWhereQueryForTasks(false).split("and");
-				((RadioButton) dialogView.findViewById(R.id.where_like_contain))
-						.setChecked(true);
-				for (String s : p) {
-					if (s.contains("content")) {
-						if (s.contains("not")) {
-							s = s.replace("not", "").trim();
-							((CheckBox) dialogView
-									.findViewById(R.id.where_like_inverte))
-									.setChecked(true);
-						}
-						s = s.replace("content like", "").replace("'", "")
-								.trim();
-						if (s.charAt(0) == '%') {
-							if (s.charAt(s.length() - 1) == '%') {
-								((EditText) dialogView
-										.findViewById(R.id.where_like))
-										.setText(s.replace("%", ""));
-								((RadioButton) dialogView
-										.findViewById(R.id.where_like_contain))
-										.setChecked(true);
-							} else {
-								((EditText) dialogView
-										.findViewById(R.id.where_like))
-										.setText(s.replace("%", ""));
-								((RadioButton) dialogView
-										.findViewById(R.id.where_like_begin))
-										.setChecked(true);
-							}
-						} else if (s.charAt(s.length() - 1) == '%') {
-							((EditText) dialogView
-									.findViewById(R.id.where_like)).setText(s
-									.replace("%", ""));
-							((RadioButton) dialogView
-									.findViewById(R.id.where_like_end))
-									.setChecked(true);
-						}
-						break;
-					}
-				}
+
+				final EditText search = (EditText) dialogView
+						.findViewById(R.id.where_like);
+				final CheckBox negated = (CheckBox) dialogView
+						.findViewById(R.id.where_like_inverte);
+
+				setUpStringProperty(prop, dialogView, search, negated);
 				new AlertDialog.Builder(SpecialListSettings.this.activity)
 						.setTitle(
 								SpecialListSettings.this.activity
 										.getString(R.string.select_by))
-						.setNegativeButton(android.R.string.cancel,
-								new DialogInterface.OnClickListener() {
-
-									@Override
-									public void onClick(
-											final DialogInterface dialog,
-											final int which) {
-
-									}
-								})
+						.setNegativeButton(android.R.string.cancel, null)
 						.setView(dialogView)
 						.setPositiveButton(android.R.string.ok,
 								new DialogInterface.OnClickListener() {
@@ -740,111 +503,35 @@ public class SpecialListSettings extends PreferencesHelper implements
 									public void onClick(
 											final DialogInterface dialog,
 											final int which) {
-										final String t = ((EditText) dialogView
-												.findViewById(R.id.where_like))
-												.getText().toString();
-										if (t.trim().length() == 0) {
-											updateWhere("content", "");
-											content.setSummary(SpecialListSettings.this.activity
-													.getString(R.string.empty));
-											return;
-										}
-										String newWhere = (((CheckBox) dialogView
-												.findViewById(R.id.where_like_inverte))
-												.isChecked() ? "not " : "")
-												+ "content like ";
-										String text = ((CheckBox) dialogView
-												.findViewById(R.id.where_like_inverte))
-												.isChecked() ? SpecialListSettings.this.activity
-												.getString(R.string.not) + " "
-												: "";
-										final int id = ((RadioGroup) dialogView
-												.findViewById(R.id.where_like_radio))
-												.getCheckedRadioButtonId();
-										if (id == R.id.where_like_begin) {
-											newWhere += "'" + t + "%'";
-											text += SpecialListSettings.this.activity
-													.getString(R.string.where_like_begin_text)
-													+ " " + t;
-										} else if (id == R.id.where_like_end) {
-											newWhere += "'%" + t + "'";
-											text += SpecialListSettings.this.activity
-													.getString(R.string.where_like_end_text)
-													+ " " + t;
-										} else {
-											newWhere += "'%" + t + "%'";
-											text += SpecialListSettings.this.activity
-													.getString(R.string.where_like_contain_text)
-													+ " " + t;
-										}
-										updateWhere("content", newWhere);
-										content.setSummary(text);
+										setStringProperty(content, prop,
+												dialogView, search, negated,
+												true);
 									}
 								}).show();
 				return false;
 			}
+
 		});
 
-		taskName.setOnPreferenceChangeListener(this);
+		taskName.setOnPreferenceChangeListener(null);
 		taskName.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
 			@Override
 			public boolean onPreferenceClick(final Preference preference) {
+				final SpecialListsStringProperty prop = (SpecialListsStringProperty) SpecialListSettings.this.specialList
+						.getWhere().get(DatabaseHelper.NAME);
 				final View dialogView = getView(R.layout.content_name_dialog);
-				final String[] p = SpecialListSettings.this.specialList
-						.getWhereQueryForTasks(false).split("and");
-				((RadioButton) dialogView.findViewById(R.id.where_like_contain))
-						.setChecked(true);
-				for (String s : p) {
-					if (s.contains("name")) {
-						if (s.contains("not")) {
-							s = s.replace("not", "").trim();
-							((CheckBox) dialogView
-									.findViewById(R.id.where_like_inverte))
-									.setChecked(true);
-						}
-						s = s.replace("name like", "").replace("'", "").trim();
-						if (s.charAt(0) == '%') {
-							if (s.charAt(s.length() - 1) == '%') {
-								((EditText) dialogView
-										.findViewById(R.id.where_like))
-										.setText(s.replace("%", ""));
-								((RadioButton) dialogView
-										.findViewById(R.id.where_like_contain))
-										.setChecked(true);
-							} else {
-								((EditText) dialogView
-										.findViewById(R.id.where_like))
-										.setText(s.replace("%", ""));
-								((RadioButton) dialogView
-										.findViewById(R.id.where_like_begin))
-										.setChecked(true);
-							}
-						} else if (s.charAt(s.length() - 1) == '%') {
-							((EditText) dialogView
-									.findViewById(R.id.where_like)).setText(s
-									.replace("%", ""));
-							((RadioButton) dialogView
-									.findViewById(R.id.where_like_end))
-									.setChecked(true);
-						}
-						break;
-					}
-				}
+
+				final EditText search = (EditText) dialogView
+						.findViewById(R.id.where_like);
+				final CheckBox negated = (CheckBox) dialogView
+						.findViewById(R.id.where_like_inverte);
+				setUpStringProperty(prop, dialogView, search, negated);
 				new AlertDialog.Builder(SpecialListSettings.this.activity)
 						.setTitle(
 								SpecialListSettings.this.activity
 										.getString(R.string.select_by))
-						.setNegativeButton(android.R.string.cancel,
-								new DialogInterface.OnClickListener() {
-
-									@Override
-									public void onClick(
-											final DialogInterface dialog,
-											final int which) {
-
-									}
-								})
+						.setNegativeButton(android.R.string.cancel, null)
 						.setView(dialogView)
 						.setPositiveButton(android.R.string.ok,
 								new DialogInterface.OnClickListener() {
@@ -853,124 +540,51 @@ public class SpecialListSettings extends PreferencesHelper implements
 									public void onClick(
 											final DialogInterface dialog,
 											final int which) {
-										final String t = ((EditText) dialogView
-												.findViewById(R.id.where_like))
-												.getText().toString();
-										if (t.trim().length() == 0) {
-											updateWhere("name", "");
-											taskName.setSummary(SpecialListSettings.this.activity
-													.getString(R.string.empty));
-											return;
-										}
-										String newWhere = (((CheckBox) dialogView
-												.findViewById(R.id.where_like_inverte))
-												.isChecked() ? "not " : "")
-												+ "name like ";
-										String text = ((CheckBox) dialogView
-												.findViewById(R.id.where_like_inverte))
-												.isChecked() ? SpecialListSettings.this.activity
-												.getString(R.string.not) + " "
-												: "";
-										final int id = ((RadioGroup) dialogView
-												.findViewById(R.id.where_like_radio))
-												.getCheckedRadioButtonId();
-										if (id == R.id.where_like_begin) {
-
-											newWhere += "'" + t + "%'";
-											text += SpecialListSettings.this.activity
-													.getString(R.string.where_like_begin_text)
-													+ " " + t;
-										} else if (id == R.id.where_like_end) {
-											newWhere += "'%" + t + "'";
-											text += SpecialListSettings.this.activity
-													.getString(R.string.where_like_end_text)
-													+ " " + t;
-										} else {
-
-											newWhere += "'%" + t + "%'";
-											text += SpecialListSettings.this.activity
-													.getString(R.string.where_like_contain_text)
-													+ " " + t;
-
-										}
-										updateWhere("name", newWhere);
-										taskName.setSummary(text);
+										setStringProperty(taskName, prop,
+												dialogView, search, negated,
+												false);
 									}
 								}).show();
 				return false;
 			}
 		});
 
-		due.setOnPreferenceChangeListener(this);
+		due.setOnPreferenceChangeListener(null);
 		due.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
 			@Override
 			public boolean onPreferenceClick(final Preference preference) {
-
-				final String[] p = SpecialListSettings.this.specialList
-						.getWhereQueryForTasks(false).split("and");
+				final SpecialListsDueProperty prop = (SpecialListsDueProperty) SpecialListSettings.this.specialList
+						.getWhere().get(Task.DUE);
 				VALUE day = VALUE.DAY;
-				int val = 0;
-				for (String r : p) {
-					if (r.contains("date(due)")) {
-						final Pattern pattern = Pattern
-								.compile("[\"'].*?[\"']");
-						final Matcher matcher = pattern.matcher(r);
-						int i = 0;
-						while (matcher.find()) {
-							if (++i > 1) {
-								r = matcher.group().replaceAll("[\"']", "");
-								break;
-							}
-						}
-						if (!r.contains("localtime")) {
-							if (r.contains("year")) {
-								r = r.replace(
-										r.contains("years") ? "years" : "year",
-										"").trim();
-								day = VALUE.YEAR;
-							} else if (r.contains("month")) {
-								r = r.replace(
-										r.contains("months") ? "months"
-												: "month", "").trim();
-								day = VALUE.MONTH;
-							} else {
-								r = r.replace(
-										r.contains("days") ? "days" : "day", "")
-										.trim();
-							}
-							try {
-								val = Integer.parseInt(r.replace("+", ""));
-							} catch (final NumberFormatException e) {
-								e.printStackTrace();
-							}
-
-						}
-
+				if (prop != null) {
+					switch (prop.getUnit()) {
+					case DAY:
+						day = VALUE.DAY;
+						break;
+					case MONTH:
+						day = VALUE.MONTH;
+						break;
+					case YEAR:
+						day = VALUE.YEAR;
+						break;
+					default:
+						break;
 					}
 				}
 				final DueDialog dueDialog = new DueDialog(
 						SpecialListSettings.this.activity, false);
 				dueDialog.setTitle(SpecialListSettings.this.activity
 						.getString(R.string.select_by));
-				dueDialog.setValue(val, day);
-				dueDialog.setNegativeButton(android.R.string.cancel,
-						new DialogInterface.OnClickListener() {
-
-							@Override
-							public void onClick(final DialogInterface dialog,
-									final int which) {
-							}
-						});
+				dueDialog.setValue(prop == null ? 0 : prop.getLenght(), day);
+				dueDialog.setNegativeButton(android.R.string.cancel, null);
 				dueDialog.setNeutralButton(R.string.no_date,
 						new DialogInterface.OnClickListener() {
 
 							@Override
 							public void onClick(final DialogInterface dialog,
 									final int which) {
-								updateWhere("due", "");
-								due.setSummary(SpecialListSettings.this.activity
-										.getString(R.string.empty));
+								setNewWhere(prop, false, Task.DUE, due);
 							}
 						});
 				dueDialog.setPositiveButton(android.R.string.ok,
@@ -979,56 +593,34 @@ public class SpecialListSettings extends PreferencesHelper implements
 							@Override
 							public void onClick(final DialogInterface dialog,
 									final int which) {
-								final int val = dueDialog.getValue();
-								String newWhere = "";
-								if (val == 0) {
-									newWhere = "date(due)<=date(\"now\",\"localtime\")";
-									due.setSummary(SpecialListSettings.this.activity
-											.getString(R.string.today));
-								} else {
-									String mod = "";
-									final VALUE day = dueDialog.getDayYear();
-									String summary = val + " ";
-									switch (day) {
-									case MONTH:
-										mod = val == 1 || val == -1 ? "month"
-												: "months";
-										summary += SpecialListSettings.this.activity
-												.getResources()
-												.getQuantityString(
-														R.plurals.due_month,
-														val);
-										break;
-									case YEAR:
-										mod = val == 1 || val == -1 ? "year"
-												: "years";
-										summary += SpecialListSettings.this.activity
-												.getResources()
-												.getQuantityString(
-														R.plurals.due_year, val);
-										break;
-									case DAY:
-										mod = val == 1 || val == -1 ? "day"
-												: "days";
-										summary += SpecialListSettings.this.activity
-												.getResources()
-												.getQuantityString(
-														R.plurals.due_day, val);
-										break;
-									default:
-										// The other things aren't
-										// shown in
-										// the dialog so we haven't to care
-										// about them
-										break;
-									}
 
-									due.setSummary(summary);
-									newWhere = "date(due)<=date(\"now\",\""
-											+ val + " " + mod
-											+ "\",\"localtime\")";
+								final int val = dueDialog.getValue();
+								Unit t;
+								switch (dueDialog.getDayYear()) {
+								case MONTH:
+									t = Unit.MONTH;
+									break;
+								case YEAR:
+									t = Unit.YEAR;
+									break;
+								case DAY:
+									t = Unit.DAY;
+									break;
+								default:
+									// The other things aren't
+									// shown in
+									// the dialog so we haven't to care
+									// about them
+									return;
 								}
-								updateWhere("due", newWhere);
+								if (prop == null) {
+									setNewWhere(new SpecialListsDueProperty(t,
+											val), true, Task.DUE, due);
+								} else {
+									prop.setUnit(t);
+									prop.setLenght(val);
+									setNewWhere(prop, true, Task.DUE, due);
+								}
 							}
 						});
 				dueDialog.show();
@@ -1038,42 +630,92 @@ public class SpecialListSettings extends PreferencesHelper implements
 
 	}
 
-	void updateWhere(final String attr, final String newWhere) {
-		if (this.specialList.getWhereQueryForTasks(false).contains(attr)) {
-			final String[] parts = this.specialList
-					.getWhereQueryForTasks(false).split("and");
-			String n = "";
-			boolean first = true;
-			for (int i = 0; i < parts.length; i++) {
-				if (parts[i].contains(attr)
-						&& (!parts[i].contains("not null")
-								|| newWhere.trim().length() == 0 || attr != "due")) {
-					parts[i] = newWhere;
-					if (newWhere.trim().length() == 0) {
-						continue;
-					}
-				}
-				n += (first ? "" : " and ") + parts[i].trim();
-				first = false;
-			}
-			this.specialList.setWhereQuery(n);
-		} else if (this.specialList.getWhereQueryForTasks(false).trim()
-				.length() == 0
-				&& !newWhere.trim().equals("")) {
-			this.specialList
-					.setWhereQuery((attr.equals("due") ? "due is not null and "
-							: "") + newWhere);
-		} else if (newWhere != "") {
-			this.specialList
-					.setWhereQuery((attr.equals("due") ? "due is not null and "
-							: "")
-							+ this.specialList.getWhereQueryForTasks(false)
-							+ " and " + newWhere);
+	protected void setStringProperty(final Preference pref,
+			final SpecialListsStringProperty prop, final View dialogView,
+			final EditText search, final CheckBox negated,
+			final boolean isContent) {
+		Type t = Type.CONTAINS;
+		final int id = ((RadioGroup) dialogView
+				.findViewById(R.id.where_like_radio)).getCheckedRadioButtonId();
+		if (id == R.id.where_like_begin) {
+			t = Type.BEGIN;
+		} else if (id == R.id.where_like_end) {
+			t = Type.END;
 		}
-		this.specialList.save();
-		if (MirakelCommonPreferences.isDebug()) {
-			findPreference("special_lists_where").setSummary(
-					this.specialList.getWhereQueryForTasks(false));
+		final String searchString = search.getText().toString().trim();
+		if (prop == null) {
+			setNewWhere(
+					isContent ? new SpecialListsContentProperty(
+							negated.isChecked(), searchString, t.ordinal())
+							: new SpecialListsNameProperty(negated.isChecked(),
+									searchString, t.ordinal()),
+					searchString.length() != 0, Task.CONTENT, pref);
+
+		} else {
+			prop.setType(t);
+			prop.setSearchString(searchString);
+			prop.setNegated(negated.isChecked());
+			setNewWhere(prop, searchString.length() > 0, Task.CONTENT, pref);
 		}
 	}
+
+	protected static void setUpStringProperty(
+			final SpecialListsStringProperty prop, final View dialogView,
+			final EditText search, final CheckBox negated) {
+		((RadioButton) dialogView.findViewById(R.id.where_like_contain))
+				.setChecked(prop == null ? true
+						: prop.getType() == Type.CONTAINS);
+		((RadioButton) dialogView.findViewById(R.id.where_like_begin))
+				.setChecked(prop == null ? false : prop.getType() == Type.BEGIN);
+		((RadioButton) dialogView.findViewById(R.id.where_like_end))
+				.setChecked(prop == null ? false : prop.getType() == Type.END);
+		negated.setChecked(prop == null ? false : prop.isNegated());
+		search.setText(prop == null ? "" : prop.getSearchString());
+	}
+
+	protected void setSetProperty(final Preference list, final int[] values,
+			final SpecialListsSetProperty prop, final boolean[] mSelectedItems,
+			final String key, final boolean isPrio) {
+		final List<Integer> content = prop == null ? new ArrayList<Integer>()
+				: prop.getContent();
+		for (int i = 1; i < mSelectedItems.length; i++) {
+			if (mSelectedItems[i] && !content.contains(values[i])) {
+				content.add(values[i]);
+			} else if (content.indexOf(values[i]) != -1) {
+				// bad hack to remove element due to overloading template
+				// function
+				content.remove(content.indexOf(values[i]));
+			}
+		}
+		if (prop == null) {
+			setNewWhere(isPrio ? new SpecialListsPriorityProperty(
+					mSelectedItems[0], content) : new SpecialListsListProperty(
+					mSelectedItems[0], content),
+					!content.isEmpty() && content.size() > 0, key, list);
+		} else {
+			prop.setNegated(mSelectedItems[0]);
+			prop.setContent(content);
+			setNewWhere(prop, !content.isEmpty() && content.size() > 0, key,
+					list);
+		}
+	}
+
+	protected void setNewWhere(final SpecialListsBaseProperty prop,
+			final boolean b, final String key, final Preference pref) {
+		final Map<String, SpecialListsBaseProperty> where = this.specialList
+				.getWhere();
+		where.remove(key);
+		if (b) {
+			where.put(key, prop);
+		}
+		this.specialList.setWhere(where);
+		this.specialList.save();
+		pref.setSummary(getFieldText(key));
+		if (MirakelCommonPreferences.isDebug()) {
+			findPreference("special_lists_where").setSummary(
+					this.specialList.getWhereQueryForTasks());
+		}
+
+	}
+
 }

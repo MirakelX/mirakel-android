@@ -19,6 +19,7 @@
 package de.azapps.mirakel.settings.special_list;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import android.annotation.SuppressLint;
@@ -32,6 +33,7 @@ import android.view.View.OnClickListener;
 import de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
 import de.azapps.mirakel.settings.ListSettings;
 import de.azapps.mirakel.settings.R;
 
@@ -39,7 +41,8 @@ import de.azapps.mirakel.settings.R;
 public class SpecialListsSettingsActivity extends ListSettings {
 	private SpecialList newSpecialList() {
 		return SpecialList.newSpecialList(
-				getString(R.string.special_lists_new), "", true, this);
+				getString(R.string.special_lists_new),
+				new HashMap<String, SpecialListsBaseProperty>(), true, this);
 	}
 
 	@SuppressLint("NewApi")
