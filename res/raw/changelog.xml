@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
-  <version name="2.4.0-beta1" date="2014-03-12" code="43">
+  <version name="2.4.0-beta3" date="2014-04-07" code="45">
     <feature>More bugfixes</feature>
     <feature>Reimplement tasksfragment</feature>
     <feature>Replace drag'n'drop-listview by better on</feature>
     <feature>improve overall performance</feature>
+    <feature>reimplement Metalists</feature>
+    <feature>due and reminders are aware to timezones changes</feature>
   </version>
   <version name="2.3.2" date="2014-03-02">
     <feature>More bugfixes</feature>
