@@ -22,8 +22,12 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+
+import javax.xml.transform.TransformerException;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -34,8 +38,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
+import de.azapps.mirakel.helper.CompatibilityHelper;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Helpers;
+import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.export_import.ExportImport;
@@ -45,6 +51,11 @@ import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
+import de.azapps.mirakel.model.list.meta.SpecialListsContentProperty;
+import de.azapps.mirakel.model.list.meta.SpecialListsListProperty;
+import de.azapps.mirakel.model.list.meta.SpecialListsNameProperty;
+import de.azapps.mirakel.model.list.meta.SpecialListsPriorityProperty;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.semantic.SemanticBase;
@@ -55,7 +66,7 @@ import de.azapps.tools.Log;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
 	public static final String CREATED_AT = "created_at";
-	public static final int DATABASE_VERSION = 34;
+	public static final int DATABASE_VERSION = 35;
 	public static final String ID = "_id";
 
 	public static final String NAME = "name";
@@ -263,6 +274,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ DatabaseHelper.NAME + ") VALUES (1,'"
 				+ this.context.getString(R.string.first_task) + "')");
 		createSpecialListsTable(db);
+
+		final String[] lists = this.context.getResources().getStringArray(
+				R.array.demo_lists);
+		for (int i = 0; i < lists.length; i++) {
+			db.execSQL("INSERT INTO " + ListMirakel.TABLE + " (" + NAME + ","
+					+ ListMirakel.LFT + "," + ListMirakel.RGT + ") VALUES ('"
+					+ lists[i] + "'," + (i + 2) + "," + (i + 3) + ")");
+		}
+		if (MirakelCommonPreferences.isDemoMode()) {
+			final String[] tasks = this.context.getResources().getStringArray(
+					R.array.demo_tasks);
+			final String[] task_lists = { lists[1], lists[1], lists[0],
+					lists[2], lists[2], lists[2] };
+			final int[] priorities = { 2, -1, 1, 2, 0, 0 };
+			int i = 0;
+			for (final String task : tasks) {
+				final Task t = Semantic.createTask(task,
+						ListMirakel.findByName(task_lists[i]), true,
+						this.context);
+				t.setPriority(priorities[i]);
+				t.safeSave();
+				i++;
+			}
+		}
 
 		onUpgrade(db, 32, DATABASE_VERSION);
 	}
@@ -594,7 +629,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			String ca = null,
 			client = null,
 			clientKey = null;
-			final File caCert = new File(FileUtils.getMirakelDir() + "ca.cert.pem");
+			final File caCert = new File(FileUtils.getMirakelDir()
+					+ "ca.cert.pem");
 			final File userCert = new File(FileUtils.getMirakelDir()
 					+ "client.cert.pem");
 			final File userKey = new File(FileUtils.getMirakelDir()
@@ -603,9 +639,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				ca = FileUtils.readFile(caCert);
 				client = FileUtils.readFile(userCert);
 				clientKey = FileUtils.readFile(userKey);
-                caCert.delete();
-                userCert.delete();
-                userKey.delete();
+				caCert.delete();
+				userCert.delete();
+				userKey.delete();
 			} catch (final IOException e) {
 				Log.wtf(TAG, "ca-files not found");
 			}
@@ -632,9 +668,66 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					}
 				}
 			}
-        case 33:
-            db.execSQL("UPDATE "+SpecialList.TABLE+" SET "+SpecialList.WHERE_QUERY+
-                    "=replace("+SpecialList.WHERE_QUERY+",'date(due',\"date(due,'unixepoch'\")");
+		case 33:
+			db.execSQL("UPDATE " + SpecialList.TABLE + " SET "
+					+ SpecialList.WHERE_QUERY + "=replace("
+					+ SpecialList.WHERE_QUERY
+					+ ",'date(due',\"date(due,'unixepoch'\")");
+		case 34:
+			final Cursor cursor = db
+					.query(SpecialList.TABLE, new String[] { ID,
+							SpecialList.WHERE_QUERY }, null, null, null, null,
+							null);
+			for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor
+					.moveToNext()) {
+				final int id = cursor.getInt(0);
+				final ContentValues contentValues = new ContentValues();
+
+				final String[] where = cursor.getString(1).toLowerCase()
+						.split("and");
+				final Map<String, SpecialListsBaseProperty> whereMap = new HashMap<String, SpecialListsBaseProperty>();
+				for (final String p : where) {
+					try {
+						if (p.contains(Task.LIST_ID)) {
+							whereMap.put(Task.LIST_ID, CompatibilityHelper
+									.getSetProperty(p,
+											SpecialListsListProperty.class,
+											Task.LIST_ID));
+						} else if (p.contains(DatabaseHelper.NAME)) {
+							whereMap.put(DatabaseHelper.NAME,
+									CompatibilityHelper.getStringProperty(p,
+											SpecialListsNameProperty.class,
+											NAME));
+						} else if (p.contains(Task.PRIORITY)) {
+							whereMap.put(Task.PRIORITY, CompatibilityHelper
+									.getSetProperty(p,
+											SpecialListsPriorityProperty.class,
+											Task.PRIORITY));
+						} else if (p.contains(Task.DONE)) {
+							whereMap.put(Task.DONE,
+									CompatibilityHelper.getDoneProperty(p));
+						} else if (p.contains(Task.DUE)) {
+							whereMap.put(Task.DUE,
+									CompatibilityHelper.getDueProperty(p));
+						} else if (p.contains(Task.CONTENT)) {
+							whereMap.put(Task.CONTENT, CompatibilityHelper
+									.getStringProperty(p,
+											SpecialListsContentProperty.class,
+											Task.CONTENT));
+						} else if (p.contains(Task.REMINDER)) {
+							whereMap.put(Task.REMINDER,
+									CompatibilityHelper.getReminderProperty(p));
+						}
+					} catch (final TransformerException e) {
+						Log.w(TAG, "due cannot be transformed");
+					}
+				}
+				contentValues.put(SpecialList.WHERE_QUERY,
+						SpecialList.serializeWhere(whereMap));
+				db.update(SpecialList.TABLE, contentValues, ID + "=?",
+						new String[] { id + "" });
+			}
+			cursor.close();
 		default:
 			break;
 

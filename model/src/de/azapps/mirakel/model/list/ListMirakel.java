@@ -476,7 +476,7 @@ public class ListMirakel extends ListBase {
 		Cursor c;
 		String where;
 		if (getId() < 0) {
-			where = ((SpecialList) this).getWhereQueryForTasks(true);
+			where = ((SpecialList) this).getWhereQueryForTasks();
 		} else {
 
 			where = Task.LIST_ID + " = " + getId();
@@ -544,7 +544,7 @@ public class ListMirakel extends ListBase {
 
 	public Task getFirstTask() {
 		final Cursor c = database.query(Task.TABLE, Task.allColumns,
-				getWhereQueryForTasks(true), null, null, null,
+				getWhereQueryForTasks(), null, null, null,
 				Task.getSorting(getSortBy()), "1");
 		Task t = null;
 		if (c.getCount() > 0) {
@@ -628,7 +628,7 @@ public class ListMirakel extends ListBase {
 		return json;
 	}
 
-	public String getWhereQueryForTasks(final boolean forQuery) {
+	public String getWhereQueryForTasks() {
 		return Task.LIST_ID
 				+ "="
 				+ getId()

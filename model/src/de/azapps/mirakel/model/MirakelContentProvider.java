@@ -20,8 +20,6 @@ package de.azapps.mirakel.model;
 
 import java.sql.SQLWarning;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -47,7 +45,6 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.os.Build;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
-import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -114,11 +111,7 @@ public class MirakelContentProvider extends ContentProvider implements
 					values.getAsString(TaskColumns.DESCRIPTION));
 		}
 		if (values.containsKey(TaskColumns.DUE)) {
-			final Date d = new Date(values.getAsLong(TaskColumns.DUE));
-			final GregorianCalendar due = new GregorianCalendar();
-			d.setTime(values.getAsLong(TaskColumns.DUE));
-			final String db = DateTimeHelper.formatDate(due);
-			newValues.put(Task.DUE, db);
+			newValues.put(Task.DUE, values.getAsLong(TaskColumns.DUE) / 1000);
 		}
 		if (values.containsKey(TaskColumns.PRIORITY)) {
 			int prio = values.getAsInteger(TaskColumns.PRIORITY);
@@ -181,24 +174,13 @@ public class MirakelContentProvider extends ContentProvider implements
 						values.getAsInteger(TaskListColumns.LIST_COLOR));
 			}
 			if (values.containsKey(TaskColumns.CREATED)) {
-				final Date d = new Date(values.getAsLong(TaskColumns.CREATED));
-				final GregorianCalendar due = new GregorianCalendar();
-				d.setTime(values.getAsLong(TaskColumns.CREATED));
-				final String db = DateTimeHelper.formatDate(due);
-				newValues.put(DatabaseHelper.CREATED_AT, db);
+				newValues.put(DatabaseHelper.CREATED_AT,
+						values.getAsLong(TaskColumns.CREATED) / 1000);
 			}
 			if (values.containsKey(TaskColumns.LAST_MODIFIED)) {
-				final Date d = new Date(
-						values.getAsLong(TaskColumns.LAST_MODIFIED));
-				final GregorianCalendar due = new GregorianCalendar();
-				d.setTime(values.getAsLong(TaskColumns.LAST_MODIFIED));
-				final String db = DateTimeHelper.formatDate(due);
-				newValues.put(DatabaseHelper.UPDATED_AT, db);
+				newValues.put(DatabaseHelper.UPDATED_AT,
+						values.getAsLong(TaskColumns.LAST_MODIFIED) / 1000);
 			}
-			// if (values.containsKey(Tasks._SYNC_ID)) {
-			// newValues.put("caldav_extra.SYNC_ID",
-			// values.getAsString(Tasks._SYNC_ID));
-			// }
 			if (values.containsKey(CommonSyncColumns._DIRTY)) {
 				final boolean val = values
 						.getAsBoolean(CommonSyncColumns._DIRTY);
@@ -229,8 +211,6 @@ public class MirakelContentProvider extends ContentProvider implements
 										.toInt() : SYNC_STATE.NOTHING.toInt());
 			}
 		}
-		// newValues.put(DatabaseHelper.SYNC_STATE_FIELD
-		// SYNC_STATE.ADD.toInt());
 		return newValues;
 	}
 
@@ -290,9 +270,8 @@ public class MirakelContentProvider extends ContentProvider implements
 		query += addSegment(Task.TABLE + "." + Task.CONTENT,
 				TaskColumns.DESCRIPTION, true);
 		query += addSegment(" NULL ", TaskColumns.LOCATION, true);
-		query += addSegment("(CASE WHEN (" + Task.TABLE + "." + Task.DUE
-				+ " IS NULL) " + "THEN NULL ELSE strftime('%s'," + Task.TABLE
-				+ "." + Task.DUE + ")*1000 END)", TaskColumns.DUE, true);
+		query += addSegment(Task.TABLE + "." + Task.DUE + "*1000",
+				TaskColumns.DUE, true);
 		query += addSegment("(CASE " + Task.TABLE + "." + Task.DONE
 				+ " WHEN 1 THEN 2 ELSE 0 END)", TaskColumns.STATUS, true);
 		query += addSegment(Task.TABLE + "." + Task.PROGRESS,
@@ -335,12 +314,10 @@ public class MirakelContentProvider extends ContentProvider implements
 						TaskColumns.LIST_ID, true);
 			}
 		}
-		query += addSegment("strftime('%s'," + Task.TABLE + "."
-				+ DatabaseHelper.UPDATED_AT + ")*1000",
-				TaskColumns.LAST_MODIFIED, true);
-		query += addSegment("strftime('%s'," + Task.TABLE + "."
-				+ DatabaseHelper.CREATED_AT + ")*1000", TaskColumns.CREATED,
-				true);
+		query += addSegment(Task.TABLE + "." + DatabaseHelper.UPDATED_AT
+				+ "*1000", TaskColumns.LAST_MODIFIED, true);
+		query += addSegment(Task.TABLE + "." + DatabaseHelper.CREATED_AT
+				+ "*1000", TaskColumns.CREATED, true);
 		// query += " FROM " + Task.TABLE;
 		if (isSyncadapter) {
 			query += " FROM (" + Task.TABLE + " inner join "
@@ -355,7 +332,6 @@ public class MirakelContentProvider extends ContentProvider implements
 		} else {
 			query += " FROM " + Task.TABLE;
 		}
-		Log.d(TAG, query);
 		return query;
 	}
 
@@ -398,10 +374,10 @@ public class MirakelContentProvider extends ContentProvider implements
 			final SpecialList s = SpecialList.getSpecialList(-1 * list_id);
 			if (s != null) {
 				taskQuery = getTaskQuery(true, not ? 0 : list_id, isSyncAdapter);
-				if (s.getWhereQueryForTasks(true) != null
-						&& !s.getWhereQueryForTasks(true).trim().equals("")) {
+				if (s.getWhereQueryForTasks() != null
+						&& !s.getWhereQueryForTasks().trim().equals("")) {
 					taskQuery += " WHERE " + (not ? "NOT ( " : "")
-							+ s.getWhereQueryForTasks(true) + (not ? " )" : "");
+							+ s.getWhereQueryForTasks() + (not ? " )" : "");
 				}
 			} else {
 				Log.e(TAG, "no matching list found");
@@ -454,7 +430,7 @@ public class MirakelContentProvider extends ContentProvider implements
 				if (id < 0) {
 					final SpecialList s = SpecialList.getSpecialList(-1 * id);
 					if (s != null) {
-						wheres.add(s.getWhereQueryForTasks(true));
+						wheres.add(s.getWhereQueryForTasks());
 					} else {
 						Log.e(TAG, "no matching list found");
 						throw new SQLWarning();

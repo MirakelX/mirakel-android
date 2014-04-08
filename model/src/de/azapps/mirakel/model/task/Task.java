@@ -34,6 +34,7 @@ import android.accounts.Account;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Pair;
 
@@ -121,6 +122,10 @@ public class Task extends TaskBase {
 			due = null;
 		} else {
 			due.setTimeInMillis(cursor.getLong(6) * 1000 + offset);
+			if (due.get(Calendar.HOUR) != 0 || due.get(Calendar.MINUTE) != 0
+					|| due.get(Calendar.SECOND) != 0) {
+				due.add(Calendar.MILLISECOND, offset);
+			}
 		}
 
 		GregorianCalendar reminder = new GregorianCalendar();
@@ -329,13 +334,12 @@ public class Task extends TaskBase {
 	 */
 	private static Cursor getTasksCursor(final int listId, final int sorting,
 			final boolean showDone) {
-		String where;
-		if (listId < 0) {
-			where = SpecialList.getSpecialList(-1 * listId)
-					.getWhereQueryForTasks(true);
-		} else {
-			where = "list_id='" + listId + "'";
+		final ListMirakel l = ListMirakel.getList(listId);
+		if (l == null) {
+			Log.wtf(TAG, "list not found");
+			return new MatrixCursor(allColumns);
 		}
+		String where = l.getWhereQueryForTasks();
 		if (!showDone) {
 			where += (where.trim().equals("") ? "" : " AND ") + " "
 					+ TaskBase.DONE + "=0";

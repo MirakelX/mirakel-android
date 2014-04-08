@@ -3,6 +3,7 @@ package de.azapps.mirakel.model.semantic;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +17,7 @@ import android.database.sqlite.SQLiteDatabase;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.model.list.meta.SpecialListsPriorityProperty;
 import de.azapps.mirakel.model.task.Task;
 
 public class Semantic extends SemanticBase {
@@ -61,51 +63,20 @@ public class Semantic extends SemanticBase {
 					due = new GregorianCalendar();
 					due.add(Calendar.DAY_OF_MONTH, slist.getDefaultDate());
 				}
-				if (slist.getWhereQueryForTasks(false).contains("priority")) {
-					final boolean[] mSelectedItems = new boolean[5];
-					boolean not = false;
-					final String[] p = slist.getWhereQueryForTasks(false)
-							.split("and");
-					for (final String s : p) {
-						if (s.contains("priority")) {
-							not = s.contains("not");
-							final String[] r = s
-									.replace(
-											(!not ? "" : "not ")
-													+ "priority in (", "")
-									.replace(")", "").trim().split(",");
-							for (final String t : r) {
-								try {
-									switch (Integer.parseInt(t)) {
-									case -2:
-										mSelectedItems[0] = true;
-										break;
-									case -1:
-										mSelectedItems[1] = true;
-										break;
-									case 0:
-										mSelectedItems[2] = true;
-										break;
-									case 1:
-										mSelectedItems[3] = true;
-										break;
-									case 2:
-										mSelectedItems[4] = true;
-										break;
-									default:
-										break;
-									}
-								} catch (final NumberFormatException e) {
-									// eat it
-								}
-								for (int i = 0; i < mSelectedItems.length; i++) {
-									if (mSelectedItems[i] != not) {
-										prio = i - 2;
-										break;
-									}
-								}
-							}
-							break;
+				if (slist.getWhere().containsKey(Task.PRIORITY)) {
+					final SpecialListsPriorityProperty prop = (SpecialListsPriorityProperty) slist
+							.getWhere().get(Task.PRIORITY);
+					final boolean not = prop.isNegated();
+					prio = not ? -2 : 2;
+					final List<Integer> content = prop.getContent();
+					Collections.sort(content);
+					final int length = prop.getContent().size();
+					for (int i = not ? 0 : length - 1; not ? i < length
+							: i >= 0; i += not ? 1 : -1) {
+						if (not && prio == content.get(i)) {
+							--prio;
+						} else if (!not && prio == content.get(i)) {
+							prio = content.get(i);
 						}
 					}
 				}
