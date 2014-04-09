@@ -88,9 +88,6 @@
   <string name="reminder_unset">Напомнянето не е фиксирано</string>
   <string name="inverte">Обърни селекцията</string>
   <string name="not_in">Не е включено в</string>
-  <string name="where_like_contain_text">Съдържа</string>
-  <string name="where_like_begin_text">Започва с</string>
-  <string name="where_like_end_text">Завършва с</string>
   <string name="delete">Изтрий</string>
   <string name="nothing">Без повторение</string>
   <string-array name="weekdays">

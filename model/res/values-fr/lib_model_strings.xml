@@ -96,9 +96,6 @@
   <string name="reminder_unset">Le rappel n\'est pas défini</string>
   <string name="inverte">Inverser la sélection</string>
   <string name="not_in">Pas dans</string>
-  <string name="where_like_contain_text">Contient</string>
-  <string name="where_like_begin_text">Commence par</string>
-  <string name="where_like_end_text">Fini par</string>
   <string name="delete">Supprimer</string>
   <string-array name="weekdays">
     <item>Don\'t set</item>

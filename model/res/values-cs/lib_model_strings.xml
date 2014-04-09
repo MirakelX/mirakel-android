@@ -79,8 +79,6 @@
   <string name="reminder_unset">Vypnout upozornění</string>
   <string name="inverte">Invertovat výběr</string>
   <string name="not_in">Nepatří do</string>
-  <string name="where_like_contain_text">Obsahuje</string>
-  <string name="where_like_end_text">Končí na</string>
   <string name="delete">Smazat</string>
   <string name="nothing">Bez opakování</string>
   <string-array name="weekdays">
