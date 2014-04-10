@@ -47,11 +47,34 @@ public class AccountSettingsActivity extends ListSettings {
 									final int which) {
 								switch (which) {
 								case 0:
-									handleCalDAV();
+									showAlert(
+											R.string.alert_caldav_title,
+											R.string.alert_caldav,
+											new DialogInterface.OnClickListener() {
+
+												@Override
+												public void onClick(
+														final DialogInterface dialog,
+														final int which) {
+													handleCalDAV();
+												}
+											});
 									break;
 								case 1:
-									startActivity(new Intent(that,
-											TaskWarriorSetupActivity.class));
+									showAlert(
+											R.string.alert_taskwarrior_title,
+											R.string.alert_taskwarrior,
+											new DialogInterface.OnClickListener() {
+
+												@Override
+												public void onClick(
+														final DialogInterface dialog,
+														final int which) {
+													startActivity(new Intent(
+															that,
+															TaskWarriorSetupActivity.class));
+												}
+											});
 									break;
 								default:
 									break;
@@ -225,6 +248,12 @@ public class AccountSettingsActivity extends ListSettings {
 		} catch (final NoSuchListException e) {
 			Log.d(TAG, "no account attached");
 		}
+	}
+
+	private void showAlert(final int titleId, final int messageId,
+			final android.content.DialogInterface.OnClickListener listener) {
+		new AlertDialog.Builder(this).setTitle(titleId).setMessage(messageId)
+				.setPositiveButton(android.R.string.ok, listener).show();
 	}
 
 }

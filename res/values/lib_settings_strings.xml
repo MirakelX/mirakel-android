@@ -341,5 +341,10 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="demo_mode">Demo mode</string>
     <string name="demo_drop_db">Reset demo database</string>
     <string name="write_logs_to_file">Write logs to file</string>
+    
+    <string name="alert_caldav"><![CDATA[The CalDAV sync is not 100%% stable. Please try it carefully and report bugs!]]></string>
+    <string name="alert_caldav_title">Informations for CalDAV</string>
+    <string name="alert_taskwarrior"><![CDATA[The taskwarrior sync seems to work but please make a backup of your data! Please report issues and bugs so we can fix them!]]></string>
+    <string name="alert_taskwarrior_title">Informations for Taskwarrior</string>
 
 </resources>
