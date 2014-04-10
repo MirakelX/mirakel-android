@@ -38,6 +38,8 @@ import de.azapps.tools.Log;
 
 public class TaskWarriorSync {
 
+	private static final String TW_PROTOCOL_VERSION = "v1";
+
 	public enum TW_ERRORS {
 		ACCESS_DENIED, ACCOUNT_SUSPENDED, CANNOT_CREATE_SOCKET, CANNOT_PARSE_MESSAGE, CONFIG_PARSE_ERROR, MESSAGE_ERRORS, NO_ERROR, NOT_ENABLED, TRY_LATER;
 		public static TW_ERRORS getError(final int code) {
@@ -115,6 +117,7 @@ public class TaskWarriorSync {
 	// private static int _limit = (1024 * 1024);
 	private static String _host = "localhost";
 	private static String _key = "";
+	private static String sync_key = "";
 	private static String _org = "";
 	private static int _port = 6544;
 	private static String _user = "";
@@ -125,16 +128,6 @@ public class TaskWarriorSync {
 	public static final String TYPE = "TaskWarrior";
 	private static String user_ca;
 	private static String user_key;
-
-	/**
-	 * Handle an error
-	 * 
-	 * @param what
-	 * @param code
-	 */
-	private static void error(final String what, final int code) {
-		Log.e(TAG, what + " (Code: " + code + ")");
-	}
 
 	private static String escape(final String string) {
 		return string.replace("\"", "\\\"");
@@ -304,17 +297,15 @@ public class TaskWarriorSync {
 	 * 
 	 * @param aMirakel
 	 */
-	private void init(final AccountMirakel aMirakel) {
+	private boolean init(final AccountMirakel aMirakel) {
 		final String server = this.accountManager.getUserData(this.account,
 				SyncAdapter.BUNDLE_SERVER_URL);
 		final String srv[] = server.trim().split(":");
 		if (srv.length != 2) {
-			error("port", 1376235889);
+			Log.wtf(TAG, "cannot determine serveradress");
+			return false;
 		}
-		_key = aMirakel.getSyncKey();
-		if (_key.length() != 0 && _key.length() != 36) {
-			error("key", 1376235890);
-		}
+		sync_key = aMirakel.getSyncKey();
 		_host = srv[0];
 		_port = Integer.parseInt(srv[1]);
 		_user = this.account.name;
@@ -324,8 +315,20 @@ public class TaskWarriorSync {
 				DefinitionsHelper.BUNDLE_CERT);
 		TaskWarriorSync.user_ca = this.accountManager.getUserData(this.account,
 				DefinitionsHelper.BUNDLE_CERT_CLIENT);
-		TaskWarriorSync.user_key = this.accountManager
-				.getPassword(this.account);
+		final String[] pwds = this.accountManager.getPassword(this.account)
+				.split(":");
+		if (pwds.length != 2) {
+			Log.wtf(TAG, "cannot split pwds");
+			return false;
+		}
+
+		TaskWarriorSync.user_key = pwds[0].trim();
+		_key = pwds[1].trim();
+		if (_key.length() != 0 && _key.length() != 36) {
+			Log.wtf(TAG, "no valid key ");
+			return false;
+		}
+		return true;
 	}
 
 	private void setDependencies() {
@@ -368,15 +371,18 @@ public class TaskWarriorSync {
 		if (!aMirakel.isEnabeld()) {
 			return TW_ERRORS.NOT_ENABLED;
 		}
-		init(aMirakel);
+
+		if (!init(aMirakel)) {
+			return TW_ERRORS.CONFIG_PARSE_ERROR;
+		}
 
 		final Msg sync = new Msg();
-		String payload = "";
-		sync.set("protocol", "v1");
+		sync.set("protocol", TW_PROTOCOL_VERSION);
 		sync.set("type", "sync");
 		sync.set("org", _org);
 		sync.set("user", _user);
 		sync.set("key", _key);
+		String payload = sync_key != null ? sync_key + "\n" : "";
 		final List<Task> local_tasks = Task.getTasksToSync(a);
 		for (final Task task : local_tasks) {
 			payload += taskToJson(task) + "\n";
@@ -427,20 +433,20 @@ public class TaskWarriorSync {
 		final Map<String, String> additionals = task.getAdditionalEntries();
 		String end = null;
 		String status = "pending";
+		final Calendar now = new GregorianCalendar();
+		now.setTimeInMillis(now.getTimeInMillis() - offset);
 		if (task.getSyncState() == SYNC_STATE.DELETE) {
 			status = "deleted";
-			end = formatCal(new GregorianCalendar());
+			end = formatCal(now);
 		} else if (task.isDone()) {
 			status = "completed";
 			if (additionals.containsKey("end")) {
 				end = additionals.get("end");
 				end = end.substring(1, end.length() - 1); // Clear redundant \"
 			} else {
-				end = formatCal(new GregorianCalendar());
+				end = formatCal(now);
 			}
 		}
-		Log.i(TAG, "Status waiting / recurring is not implemented now");
-		// TODO
 
 		String priority = null;
 		switch (task.getPriority()) {
@@ -477,7 +483,9 @@ public class TaskWarriorSync {
 		if (priority != null) {
 			json += ",\"priority\":\"" + priority + "\"";
 		}
-		json += ",\"modified\":\"" + formatCal(task.getUpdatedAt()) + "\"";
+		final Calendar updated_at = task.getUpdatedAt();
+		updated_at.setTimeInMillis(updated_at.getTimeInMillis() - offset);
+		json += ",\"modified\":\"" + formatCal(updated_at) + "\"";
 		if (task.getReminder() != null) {
 			final Calendar reminder = task.getReminder();
 			reminder.setTimeInMillis(reminder.getTimeInMillis() - offset);
@@ -496,6 +504,7 @@ public class TaskWarriorSync {
 			final String annotations[] = escape(task.getContent()).split("\n");
 			boolean first = true;
 			final Calendar d = task.getUpdatedAt();
+			d.setTimeInMillis(d.getTimeInMillis() - offset);
 			for (final String a : annotations) {
 				if (first) {
 					first = false;
@@ -529,7 +538,10 @@ public class TaskWarriorSync {
 		// Additional Strings
 		if (additionals != null) {
 			for (final String key : additionals.keySet()) {
-				if (!key.equals(NO_PROJECT)) {
+				if (!key.equals(NO_PROJECT)
+						&& !(key.equals("status") && (status
+								.equals("completed") || status
+								.equals("deleted")))) {
 					json += ",\"" + key + "\":" + additionals.get(key);
 				}
 			}
@@ -538,5 +550,4 @@ public class TaskWarriorSync {
 		json += "}";
 		return json;
 	}
-
 }
