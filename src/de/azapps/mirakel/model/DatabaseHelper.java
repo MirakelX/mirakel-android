@@ -560,7 +560,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					accountname = a.name;
 				}
 			}
-			ContentValues cv = new ContentValues();
+			final ContentValues cv = new ContentValues();
 			cv.put(DatabaseHelper.NAME, accountname);
 			cv.put(AccountBase.TYPE, type.toInt());
 			cv.put(AccountBase.ENABLED, true);
@@ -647,7 +647,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			}
 			final AccountManager accountManager = AccountManager
 					.get(this.context);
-			Cursor c = db.query(AccountMirakel.TABLE,
+			final Cursor c = db.query(AccountMirakel.TABLE,
 					AccountMirakel.allColumns, null, null, null, null, null);
 			final List<AccountMirakel> accounts = AccountMirakel
 					.cursorToAccountList(c);
@@ -732,15 +732,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			am = AccountManager.get(this.context);
 			for (final Account a : am
 					.getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL)) {
-				c = db.query(AccountMirakel.TABLE, new String[] { ID }, NAME
-						+ "=?", new String[] { a.name }, null, null, null);
-				cv = new ContentValues();
-				cv.put(AccountBase.SYNC_KEY, am.getPassword(a));
 				am.setPassword(a,
-						am.getUserData(a, DefinitionsHelper.BUNDLE_KEY_CLIENT));
-				db.update(AccountMirakel.TABLE, cv, ID + "=?",
-						new String[] { ID });
-				c.close();
+						am.getUserData(a, DefinitionsHelper.BUNDLE_KEY_CLIENT)
+								+ "\n:" + am.getPassword(a));
 			}
 		default:
 			break;
