@@ -52,6 +52,7 @@ import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.account.AccountMirakel;
+import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 import de.azapps.mirakel.sync.R;
 import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.tools.FileUtils;
@@ -345,10 +346,16 @@ public class TaskWarriorSetupActivity extends Activity {
 		b.putString(DefinitionsHelper.BUNDLE_CERT, values.get("ca.cert"));
 		b.putString(DefinitionsHelper.BUNDLE_CERT_CLIENT,
 				values.get("client.cert"));
-		b.putString(DefinitionsHelper.BUNDLE_KEY_CLIENT,
-				values.get("client.key"));
 		this.mAccountManager.addAccountExplicitly(account,
-				values.get("user key"), b);
+				values.get("client.key"), b);
+		AccountMirakel a = AccountMirakel.get(account);
+		if (a == null) {
+			a = AccountMirakel.newAccount(values.get("username"),
+					ACCOUNT_TYPES.TASKWARRIOR, true);
+		}
+		a.setSyncKey(values.get("user key"));
+		a.save();
+
 	}
 
 	public void setupTaskwarriorFromURL(String inputUrl) {
