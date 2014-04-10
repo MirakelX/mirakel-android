@@ -324,8 +324,8 @@ public class TaskWarriorSync {
 				DefinitionsHelper.BUNDLE_CERT);
 		TaskWarriorSync.user_ca = this.accountManager.getUserData(this.account,
 				DefinitionsHelper.BUNDLE_CERT_CLIENT);
-		TaskWarriorSync.user_key = this.accountManager.getUserData(
-				this.account, DefinitionsHelper.BUNDLE_KEY_CLIENT);
+		TaskWarriorSync.user_key = this.accountManager
+				.getPassword(this.account);
 	}
 
 	private void setDependencies() {
