@@ -66,7 +66,7 @@ import de.azapps.tools.Log;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
 	public static final String CREATED_AT = "created_at";
-	public static final int DATABASE_VERSION = 35;
+	public static final int DATABASE_VERSION = 36;
 	public static final String ID = "_id";
 
 	public static final String NAME = "name";
@@ -548,7 +548,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		case 24:
 			createAccountTable(db);
 			ACCOUNT_TYPES type = ACCOUNT_TYPES.LOCAL;
-			final AccountManager am = AccountManager.get(this.context);
+			AccountManager am = AccountManager.get(this.context);
 			String accountname = this.context.getString(R.string.local_account);
 			if (am.getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL).length > 0) {
 				final Account a = am
@@ -560,7 +560,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					accountname = a.name;
 				}
 			}
-			final ContentValues cv = new ContentValues();
+			ContentValues cv = new ContentValues();
 			cv.put(DatabaseHelper.NAME, accountname);
 			cv.put(AccountBase.TYPE, type.toInt());
 			cv.put(AccountBase.ENABLED, true);
@@ -647,7 +647,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			}
 			final AccountManager accountManager = AccountManager
 					.get(this.context);
-			final Cursor c = db.query(AccountMirakel.TABLE,
+			Cursor c = db.query(AccountMirakel.TABLE,
 					AccountMirakel.allColumns, null, null, null, null, null);
 			final List<AccountMirakel> accounts = AccountMirakel
 					.cursorToAccountList(c);
@@ -728,26 +728,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 						new String[] { id + "" });
 			}
 			cursor.close();
+		case 35:
+			am = AccountManager.get(this.context);
+			for (final Account a : am
+					.getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL)) {
+				c = db.query(AccountMirakel.TABLE, new String[] { ID }, NAME
+						+ "=?", new String[] { a.name }, null, null, null);
+				cv = new ContentValues();
+				cv.put(AccountBase.SYNC_KEY, am.getPassword(a));
+				am.setPassword(a,
+						am.getUserData(a, DefinitionsHelper.BUNDLE_KEY_CLIENT));
+				db.update(AccountMirakel.TABLE, cv, ID + "=?",
+						new String[] { ID });
+				c.close();
+			}
 		default:
 			break;
 
 		}
 	}
 
-	private void createCalDavExtraTable(final SQLiteDatabase db) {
+	private static void createCalDavExtraTable(final SQLiteDatabase db) {
 		db.execSQL("CREATE TABLE caldav_extra(" + ID + " INTEGER PRIMARY KEY,"
 				+ "ETAG TEXT," + "SYNC_ID TEXT DEFAULT NULL, "
 				+ "REMOTE_NAME TEXT)");
 	}
 
-	private void createFileTable(final SQLiteDatabase db) {
+	private static void createFileTable(final SQLiteDatabase db) {
 		db.execSQL("CREATE TABLE " + FileMirakel.TABLE + " (" + ID
 				+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + "task" + ID
 				+ " INTEGER NOT NULL DEFAULT 0, " + "name TEXT, " + "path TEXT"
 				+ ")");
 	}
 
-	private void createSubtaskTable(final SQLiteDatabase db) {
+	private static void createSubtaskTable(final SQLiteDatabase db) {
 		db.execSQL("CREATE TABLE " + Task.SUBTASK_TABLE + " (" + ID
 				+ " INTEGER PRIMARY KEY AUTOINCREMENT," + "parent" + ID
 				+ " INTEGER REFERENCES " + Task.TABLE + " (" + ID

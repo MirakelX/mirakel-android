@@ -252,13 +252,13 @@ public class Task extends TaskBase {
 			//$FALL-THROUGH$
 		case ListMirakel.SORT_BY_DUE:
 			order = "done ASC, CASE WHEN (" + TaskBase.DUE
-					+ " IS NULL) THEN date('now','+1000 years') ELSE date("
-					+ TaskBase.DUE + ") END ASC" + order;
+					+ " IS NULL) THEN strftime('%s','now','+10 years') ELSE "
+					+ TaskBase.DUE + " END ASC" + order;
 			break;
 		case ListMirakel.SORT_BY_REVERT_DEFAULT:
 			order = TaskBase.PRIORITY + " DESC,  CASE WHEN (" + TaskBase.DUE
-					+ " IS NULL) THEN date('now','+1000 years') ELSE date("
-					+ TaskBase.DUE + ") END ASC" + order;
+					+ " IS NULL) THEN strftime('%s','now','+10 years') ELSE "
+					+ TaskBase.DUE + " END ASC" + order;
 			//$FALL-THROUGH$
 		default:
 			order = DatabaseHelper.ID + " ASC";
