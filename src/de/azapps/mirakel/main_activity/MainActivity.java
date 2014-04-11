@@ -1012,16 +1012,7 @@ public class MainActivity extends ActionBarActivity implements
 			}
 			break;
 		case RESULT_SETTINGS:
-			if (getListFragment() != null) {
-				getListFragment().update();
-			} else {
-				forceRebuildLayout();
-			}
-			if (getTasksFragment() != null) {
-				getTaskFragment().updateLayout();
-			} else {
-				forceRebuildLayout();
-			}
+			forceRebuildLayout();
 			if (!MirakelCommonPreferences.highlightSelected()
 					&& (this.oldClickedList != null || this.oldClickedTask == null)) {
 				clearAllHighlights();
@@ -1204,7 +1195,7 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	private void setCurrentItem(final int pos) {
-		if (!MirakelCommonPreferences.isTablet()
+		if (!MirakelCommonPreferences.isTablet() && this.mViewPager != null
 				&& this.mViewPager.getCurrentItem() != pos) {
 			this.skipSwipe = true;
 			this.mViewPager.postDelayed(new Runnable() {
