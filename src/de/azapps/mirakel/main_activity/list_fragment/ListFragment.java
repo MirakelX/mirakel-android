@@ -177,7 +177,7 @@ public class ListFragment extends MirakelFragment {
 								update();
 								imm.hideSoftInputFromWindow(getActivity()
 										.getCurrentFocus().getWindowToken(),
-										InputMethodManager.HIDE_NOT_ALWAYS);
+										InputMethodManager.HIDE_IMPLICIT_ONLY);
 							}
 						})
 				.setNegativeButton(
@@ -466,8 +466,6 @@ public class ListFragment extends MirakelFragment {
 									checked);
 							final int newCount = ListFragment.this.adapter
 									.getSelectedCount();
-							Log.e(TAG, "old count: " + oldCount
-									+ " | newCount: " + newCount);
 							mode.setTitle(ListFragment.this.main.getResources()
 									.getQuantityString(
 											R.plurals.selected_lists, newCount,
