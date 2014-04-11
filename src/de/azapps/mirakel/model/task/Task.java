@@ -748,26 +748,6 @@ public class Task extends TaskBase {
 		}
 	}
 
-	public static List<Task> search(final String query) {
-		final Cursor cursor = Task.database.query(Task.TABLE, Task.allColumns,
-				query, null, null, null, null);
-		return cursorToTaskList(cursor);
-
-	}
-
-	/**
-	 * Search Tasks
-	 * 
-	 * @param id
-	 * @return
-	 */
-	public static List<Task> searchName(final String query) {
-		final String[] args = { "%" + query + "%" };
-		final Cursor cursor = Task.database.query(Task.TABLE, Task.allColumns,
-				DatabaseHelper.NAME + " LIKE ?", args, null, null, null);
-		return cursorToTaskList(cursor);
-	}
-
 	private String dependencies[];
 
 	Task() {
