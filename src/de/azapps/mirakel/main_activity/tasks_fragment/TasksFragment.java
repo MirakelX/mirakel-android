@@ -658,6 +658,9 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 		if (this.query != null) {
 
 			args = new String[] { "%" + this.query + "%" };
+			if (dbQuery.length() > 0) {
+				dbQuery += " AND ";
+			}
 			dbQuery += DatabaseHelper.NAME + " LIKE ?";
 		}
 		return new CursorLoader(getActivity(), u, Task.allColumns, dbQuery,
