@@ -650,8 +650,8 @@ public class MainActivity extends ActionBarActivity implements
 								// What the hell?
 								Log.wtf(MainActivity.TAG, "Task vanished");
 							} else {
-								setCurrentList(task.getList());
-								setCurrentTask(task, true);
+								setCurrentList(task.getList(), false);
+								setCurrentTask(task, false);
 							}
 						} else {
 							setCurrentList(getCurrentList());
