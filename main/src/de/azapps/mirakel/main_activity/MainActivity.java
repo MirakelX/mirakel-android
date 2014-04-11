@@ -188,7 +188,7 @@ public class MainActivity extends ActionBarActivity implements
 
 	}
 
-	private void addTaskFromSharing(final ListMirakel list) {
+	private void addTaskFromSharing(final ListMirakel list, final Intent intent) {
 		if (this.newTaskSubject == null) {
 			return;
 		}
@@ -198,8 +198,9 @@ public class MainActivity extends ActionBarActivity implements
 		task.setContent(this.newTaskContent == null ? "" : this.newTaskContent);
 		task.safeSave();
 		setCurrentTask(task);
-		if (this.startIntent != null) {
-			addFilesForTask(task, this.startIntent);
+
+		if (intent != null) {
+			addFilesForTask(task, intent);
 		}
 		setCurrentList(task.getList());
 		this.skipSwipe = true;
@@ -649,8 +650,8 @@ public class MainActivity extends ActionBarActivity implements
 								// What the hell?
 								Log.wtf(MainActivity.TAG, "Task vanished");
 							} else {
-								setCurrentList(task.getList());
-								setCurrentTask(task, true);
+								setCurrentList(task.getList(), false);
+								setCurrentTask(task, false);
 							}
 						} else {
 							setCurrentList(getCurrentList());
@@ -1248,7 +1249,7 @@ public class MainActivity extends ActionBarActivity implements
 		super.onNewIntent(intent);
 		setIntent(intent);
 		this.startIntent = intent;
-		handleIntent();
+		handleIntent(intent);
 	}
 
 	@Override
@@ -1518,14 +1519,13 @@ public class MainActivity extends ActionBarActivity implements
 		this.skipSwipe = true;
 	}
 
-	private void handleIntent() {
-		if (this.startIntent == null || this.startIntent.getAction() == null) {
+	private void handleIntent(final Intent intent) {
+		if (intent == null || intent.getAction() == null) {
 			Log.d(MainActivity.TAG, "action null");
-		} else if (this.startIntent.getAction().equals(
-				DefinitionsHelper.SHOW_TASK)
-				|| this.startIntent.getAction().equals(
+		} else if (intent.getAction().equals(DefinitionsHelper.SHOW_TASK)
+				|| intent.getAction().equals(
 						DefinitionsHelper.SHOW_TASK_FROM_WIDGET)) {
-			final Task task = TaskHelper.getTaskFromIntent(this.startIntent);
+			final Task task = TaskHelper.getTaskFromIntent(intent);
 			if (task != null) {
 				this.skipSwipe = true;
 				this.currentList = task.getList();
@@ -1544,22 +1544,19 @@ public class MainActivity extends ActionBarActivity implements
 			} else {
 				Log.d(MainActivity.TAG, "task null");
 			}
-			if (this.startIntent.getAction().equals(
+			if (intent.getAction().equals(
 					DefinitionsHelper.SHOW_TASK_FROM_WIDGET)) {
 				this.closeOnBack = true;
 			}
-		} else if (this.startIntent.getAction().equals(Intent.ACTION_SEND)
-				|| this.startIntent.getAction().equals(
-						Intent.ACTION_SEND_MULTIPLE)) {
+		} else if (intent.getAction().equals(Intent.ACTION_SEND)
+				|| intent.getAction().equals(Intent.ACTION_SEND_MULTIPLE)) {
 			this.closeOnBack = true;
-			this.newTaskContent = this.startIntent
-					.getStringExtra(Intent.EXTRA_TEXT);
-			this.newTaskSubject = this.startIntent
-					.getStringExtra(Intent.EXTRA_SUBJECT);
+			this.newTaskContent = intent.getStringExtra(Intent.EXTRA_TEXT);
+			this.newTaskSubject = intent.getStringExtra(Intent.EXTRA_SUBJECT);
 
 			// If from google now, the content is the subject…
-			if (this.startIntent.getCategories() != null
-					&& this.startIntent.getCategories().contains(
+			if (intent.getCategories() != null
+					&& intent.getCategories().contains(
 							"com.google.android.voicesearch.SELF_NOTE")) {
 				if (!this.newTaskContent.equals("")) {
 					this.newTaskSubject = this.newTaskContent;
@@ -1567,7 +1564,7 @@ public class MainActivity extends ActionBarActivity implements
 				}
 			}
 
-			if (!this.startIntent.getType().equals("text/plain")) {
+			if (!intent.getType().equals("text/plain")) {
 				if (this.newTaskSubject == null) {
 					this.newTaskSubject = MirakelCommonPreferences
 							.getImportFileTitle();
@@ -1576,7 +1573,7 @@ public class MainActivity extends ActionBarActivity implements
 			final ListMirakel listFromSharing = MirakelModelPreferences
 					.getImportDefaultList(false);
 			if (listFromSharing != null) {
-				addTaskFromSharing(listFromSharing);
+				addTaskFromSharing(listFromSharing, intent);
 			} else {
 				final AlertDialog.Builder builder = new AlertDialog.Builder(
 						this);
@@ -1596,25 +1593,23 @@ public class MainActivity extends ActionBarActivity implements
 							@Override
 							public void onClick(final DialogInterface dialog,
 									final int item) {
-								addTaskFromSharing(ListMirakel.getList(list_ids
-										.get(item)));
+								addTaskFromSharing(
+										ListMirakel.getList(list_ids.get(item)),
+										intent);
 								dialog.dismiss();
 							}
 						});
 				builder.create().show();
 			}
-		} else if (this.startIntent.getAction().equals(
-				DefinitionsHelper.SHOW_LIST)
-				|| this.startIntent.getAction().contains(
+		} else if (intent.getAction().equals(DefinitionsHelper.SHOW_LIST)
+				|| intent.getAction().contains(
 						DefinitionsHelper.SHOW_LIST_FROM_WIDGET)) {
 
 			int listId;
-			if (this.startIntent.getAction()
-					.equals(DefinitionsHelper.SHOW_LIST)) {
-				listId = this.startIntent.getIntExtra(
-						DefinitionsHelper.EXTRA_ID, 0);
+			if (intent.getAction().equals(DefinitionsHelper.SHOW_LIST)) {
+				listId = intent.getIntExtra(DefinitionsHelper.EXTRA_ID, 0);
 			} else {
-				listId = Integer.parseInt(this.startIntent.getAction().replace(
+				listId = Integer.parseInt(intent.getAction().replace(
 						DefinitionsHelper.SHOW_LIST_FROM_WIDGET, ""));
 			}
 			Log.v(MainActivity.TAG, "ListId: " + listId);
@@ -1623,7 +1618,7 @@ public class MainActivity extends ActionBarActivity implements
 				list = SpecialList.firstSpecial();
 			}
 			setCurrentList(list);
-			if (this.startIntent.getAction().contains(
+			if (intent.getAction().contains(
 					DefinitionsHelper.SHOW_LIST_FROM_WIDGET)) {
 				this.closeOnBack = true;
 			}
@@ -1631,17 +1626,15 @@ public class MainActivity extends ActionBarActivity implements
 			if (getTaskFragment() != null) {
 				getTaskFragment().update(this.currentTask);
 			}
-		} else if (this.startIntent.getAction().equals(
-				DefinitionsHelper.SHOW_LISTS)) {
+		} else if (intent.getAction().equals(DefinitionsHelper.SHOW_LISTS)) {
 			this.mDrawerLayout.openDrawer(DefinitionsHelper.GRAVITY_LEFT);
-		} else if (this.startIntent.getAction().equals(Intent.ACTION_SEARCH)) {
-			final String query = this.startIntent
-					.getStringExtra(SearchManager.QUERY);
+		} else if (intent.getAction().equals(Intent.ACTION_SEARCH)) {
+			final String query = intent.getStringExtra(SearchManager.QUERY);
 			search(query);
-		} else if (this.startIntent.getAction().contains(
+		} else if (intent.getAction().contains(
 				DefinitionsHelper.ADD_TASK_FROM_WIDGET)) {
-			final int listId = Integer.parseInt(this.startIntent.getAction()
-					.replace(DefinitionsHelper.ADD_TASK_FROM_WIDGET, ""));
+			final int listId = Integer.parseInt(intent.getAction().replace(
+					DefinitionsHelper.ADD_TASK_FROM_WIDGET, ""));
 			setCurrentList(ListMirakel.getList(listId));
 			if (getTasksFragment() != null && getTasksFragment().isReady()) {
 				getTasksFragment().focusNew(true);
@@ -1657,12 +1650,9 @@ public class MainActivity extends ActionBarActivity implements
 					}
 				});
 			}
-		} else if (this.startIntent.getAction().equals(
-				DefinitionsHelper.SHOW_MESSAGE)) {
-			final String message = this.startIntent
-					.getStringExtra(Intent.EXTRA_TEXT);
-			String subject = this.startIntent
-					.getStringExtra(Intent.EXTRA_SUBJECT);
+		} else if (intent.getAction().equals(DefinitionsHelper.SHOW_MESSAGE)) {
+			final String message = intent.getStringExtra(Intent.EXTRA_TEXT);
+			String subject = intent.getStringExtra(Intent.EXTRA_SUBJECT);
 			if (message != null) {
 				if (subject == null) {
 					subject = getString(R.string.message_notification);
@@ -1674,7 +1664,7 @@ public class MainActivity extends ActionBarActivity implements
 		} else {
 			setCurrentItem(getTaskFragmentPosition());
 		}
-		if ((this.startIntent == null || this.startIntent.getAction() == null || !this.startIntent
+		if ((intent == null || intent.getAction() == null || !intent
 				.getAction().contains(DefinitionsHelper.ADD_TASK_FROM_WIDGET))
 				&& getTasksFragment() != null) {
 			getTasksFragment().clearFocus();
@@ -1715,7 +1705,7 @@ public class MainActivity extends ActionBarActivity implements
 		}
 		initNavDrawer();
 		this.startIntent = getIntent();
-		handleIntent();
+		handleIntent(this.startIntent);
 	}
 
 	private void updateCurrentListAndTask() {
