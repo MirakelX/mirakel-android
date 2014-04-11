@@ -748,26 +748,6 @@ public class Task extends TaskBase {
 		}
 	}
 
-	public static List<Task> search(final String query) {
-		final Cursor cursor = Task.database.query(Task.TABLE, Task.allColumns,
-				query, null, null, null, null);
-		return cursorToTaskList(cursor);
-
-	}
-
-	/**
-	 * Search Tasks
-	 * 
-	 * @param id
-	 * @return
-	 */
-	public static List<Task> searchName(final String query) {
-		final String[] args = { "%" + query + "%" };
-		final Cursor cursor = Task.database.query(Task.TABLE, Task.allColumns,
-				DatabaseHelper.NAME + " LIKE ?", args, null, null, null);
-		return cursorToTaskList(cursor);
-	}
-
 	private String dependencies[];
 
 	Task() {
@@ -817,6 +797,7 @@ public class Task extends TaskBase {
 
 	public Task create(final boolean addFlag) throws NoSuchListException {
 		final ContentValues values = new ContentValues();
+		final int offset = DateTimeHelper.getTimeZoneOffset(false);
 		values.put(TaskBase.UUID, getUUID());
 		values.put(DatabaseHelper.NAME, getName());
 		if (getList() == null) {
@@ -825,23 +806,26 @@ public class Task extends TaskBase {
 		values.put(TaskBase.LIST_ID, getList().getId());
 		values.put(TaskBase.CONTENT, getContent());
 		values.put(TaskBase.DONE, isDone());
-		values.put(
-				TaskBase.DUE,
-				getDue() == null ? null : DateTimeHelper
-						.formatDBDateTime(getDue()));
+		values.put(TaskBase.DUE, getDue() == null ? null : getDue()
+				.getTimeInMillis() / 1000 - offset);
+		values.put(TaskBase.REMINDER, getReminder() == null ? null
+				: getReminder().getTimeInMillis() / 1000 - offset);
 		values.put(TaskBase.PRIORITY, getPriority());
 		values.put(DatabaseHelper.SYNC_STATE_FIELD,
 				addFlag ? SYNC_STATE.ADD.toInt() : SYNC_STATE.NOTHING.toInt());
-		values.put(DatabaseHelper.CREATED_AT,
-				DateTimeHelper.formatDateTime(getCreatedAt()));
+		if (getCreatedAt() == null) {
+			setCreatedAt(new GregorianCalendar());
+		}
+		values.put(DatabaseHelper.CREATED_AT, getCreatedAt().getTimeInMillis()
+				/ 1000 - offset);
 		if (getUpdatedAt() == null) {
 			setUpdatedAt(new GregorianCalendar());
 		}
-		values.put(DatabaseHelper.UPDATED_AT,
-				DateTimeHelper.formatDateTime(getUpdatedAt()));
+		values.put(DatabaseHelper.UPDATED_AT, getUpdatedAt().getTimeInMillis()
+				/ 1000 - offset);
 		values.put(TaskBase.PROGRESS, getProgress());
 
-		values.put("additional_entries", getAdditionalEntriesString());
+		values.put(ADDITIONAL_ENTRIES, getAdditionalEntriesString());
 		Task.database.beginTransaction();
 		final long insertId = Task.database.insertOrThrow(Task.TABLE, null,
 				values);
