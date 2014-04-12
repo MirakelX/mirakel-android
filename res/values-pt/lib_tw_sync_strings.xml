@@ -9,6 +9,7 @@
   <string name="sync_warning_message">A sincronização ainda está em modo experimental. Mas pode testar por sua conta e risco (não se esqueça do backup). Tem a certeza?</string>
   <string name="sync_use_summary_taskwarrior">Sincronizar com o Taskwarrior como %s</string>
   <string name="sync_use_summary_mirakel">Sincronizar com o Mirakel como %s</string>
+  <string name="sync_use_summary_nothing">Não utilizar sincronização</string>
   <string name="sync_user">Utilizador</string>
   <string name="sync_user_summary">Nome de utilizador no servidor</string>
   <string name="sync_server">Servidor</string>
@@ -44,6 +45,8 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="menu_edit_listaccount">Conta</string>
   <string name="change_account">Mudar conta</string>
   <string name="wrong_config">Parece que está a utilizar um ficheiro de configuração inválido</string>
+  <string name="config_404">Ficheiro de configuração não encontrado</string>
+  <string name="config_error_empty">%s não existe no ficheiro de configuração</string>
   <string name="load_config">Selecione o ficheiro de configurações do Taskwarrior</string>
   <string name="select_config">Selecione o ficheiro de configuração Taskwarrior</string>
   <string name="message_try_later">Tentar mais tarde</string>

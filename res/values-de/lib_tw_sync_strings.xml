@@ -19,6 +19,11 @@
   <string name="sync_frequency_summary_man">Nur manuell synchronisieren</string>
   <string name="sync_caldav">CalDAV synchronisieren</string>
   <string name="sync_caldav_howto">Welche Prioritäten sollen eingeschlossen sein</string>
+  <string name="sync_caldav_howto_">
+<![CDATA[Eine Mirakel-kompatible CalDAV-syncing App muss installiert werden. Derzeit muss eine von uns modifizierte Version von DAVdroid installiert werden die man auf unserer Webseite findet.<br /><br />
+In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen, wir arbeiten zusammen mit anderen um eine Synchronisation mit Mirakel zu ermöglichen.
+        ]]>
+    </string>
   <string name="download">Herunterladen</string>
   <string name="sync_add_account">Konto hinzufügen</string>
   <string name="sync_taskwarrior_configure">Taskwarrior konfigurieren</string>
@@ -41,6 +46,8 @@
   <string name="menu_edit_listaccount">Konto</string>
   <string name="change_account">Konto ändern</string>
   <string name="wrong_config">Die Konfigurationsdatei ist fehlerhaft</string>
+  <string name="config_404">Keine Konfigurationsdatei gefunden</string>
+  <string name="config_error_empty">Es gibt keinen %s-Eintrag in der Konfigurationsdatei</string>
   <string name="load_config">Wähle die Konfigurationsdatei für Taskwarrior aus</string>
   <string name="select_config">Wähle die Konfigurationsdatei für Taskwarrior aus</string>
   <string name="message_try_later">Versuch es später nochmal</string>
