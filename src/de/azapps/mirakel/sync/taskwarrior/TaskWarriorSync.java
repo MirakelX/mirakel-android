@@ -41,9 +41,6 @@ public class TaskWarriorSync {
 	private static final String TW_PROTOCOL_VERSION = "v1";
 
 	public class TaskWarriorSyncFailedExeption extends Exception {
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 3349776187699690118L;
 		private final TW_ERRORS error;
 		private final String message;
@@ -416,7 +413,7 @@ public class TaskWarriorSync {
 		this.accountManager = AccountManager.get(this.mContext);
 		this.account = a;
 		final AccountMirakel aMirakel = AccountMirakel.get(a);
-		if (!aMirakel.isEnabeld()) {
+		if (!aMirakel.isEnabled()) {
 			throw new TaskWarriorSyncFailedExeption(TW_ERRORS.NOT_ENABLED,
 					"TW sync is not enabled");
 		}
