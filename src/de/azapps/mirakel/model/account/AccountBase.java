@@ -64,7 +64,7 @@ public class AccountBase {
 		return this.name;
 	}
 
-	public boolean isEnabeld() {
+	public boolean isEnabled() {
 		return this.enabled;
 	}
 
