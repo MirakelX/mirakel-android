@@ -15,14 +15,24 @@ SDK-version: %2$d\n
 Device: %3$s\n]]>
     </string>
   <string name="contact_chooser">Invia email&#8230;</string>
+  <string name="error_PHOTO_NO_CAMERA">Ops! Il tuo dispositivo non permette lo scatto di fotografie</string>
+  <string name="error_PHOTO_NO_MEDIA_DIRECTORY">Non c\'è spazio per salvare la fotografia. Mi dispiace!</string>
+  <string name="error_NO_SPEACH_RECOGNITION">Ops! Il tuo dispositivo non supporta la ricognizione vocale</string>
   <string name="error_TASKS_CANNOT_FORM_LOOP">Le attività secondarie non possono creare un ciclo</string>
   <string name="error_FILE_NO_ACTIVITY">Impossibile aprire il file</string>
+  <string name="error_CONTACT_NO_CLIENT">Nessun client di posta elettronica installato</string>
   <string name="error_NO_FILEMANAGER">Installare un gestore di file</string>
-  <string name="error_BACKUP_EXPORT_ERROR">Si è verificato un errore durate l\'esportazione del database</string>
-  <string name="error_BACKUP_IMPORT_ERROR">Si è verificato un errore durate l\'importazione del database</string>
+  <string name="error_FILE_URI_SYNTAX_ERROR">Si è verificato un errore interno durante la lettura del nome del file</string>
+  <string name="error_MAINACTIVITY_WRONG_POSITION">Questo non doveva succedere</string>
+  <string name="error_FILE_NOT_FOUND">Il file non è stato trovato</string>
+  <string name="error_BACKUP_EXPORT_ERROR">Si è verificato un errore durante l\'esportazione del database</string>
+  <string name="error_BACKUP_IMPORT_ERROR">Si è verificato un errore durante l\'importazione del database</string>
+  <string name="error_FILE_TO_LARGE_FOR_THUMBNAIL">Impossibile creare un anteprima dell\' immagine. Il file è troppo grande</string>
   <string name="error_TASKS_NO_LIST">Questa attività non può essere sincronizzata non essendoci elenchi</string>
   <string name="error_TASK_VANISHED">Spiacente, l\'elenco delle attività è scomparso&#8230;</string>
+  <string name="error_FILE_NOT_MIRAKEL_DB">Questo non è un database file di Mirakel!</string>
   <string name="error_ASTRID_ERROR">Si è verificato un errore durante l\'importazione da Astrid!</string>
+  <string name="error_TASKWARRIOR_FILE_NOT_FOUND">Taskwarrior file non trovato</string>
   <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD">Impossibile scaricare il file di configurazione</string>
   <string name="error_TASKWARRIOR_URL_NOT_FOUND">L\'URL non è corretto. È stato utilizzato il codice QR corretto?</string>
 </resources>
