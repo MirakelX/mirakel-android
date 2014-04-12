@@ -74,7 +74,7 @@ public class AccountSettings implements OnPreferenceChangeListener {
 		}
 		final CheckBoxPreference syncUse = (CheckBoxPreference) findPreference("syncUse");
 		if (syncUse != null) {
-			syncUse.setChecked(this.account.isEnabeld());
+			syncUse.setChecked(this.account.isEnabled());
 			syncUse.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
 				@Override
