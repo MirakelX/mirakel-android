@@ -37,6 +37,11 @@
   <string name="sync_frequency_summary_man">Nur manuell synchronisieren</string>
   <string name="sync_caldav">CalDAV synchronisieren</string>
   <string name="sync_caldav_howto">Welche Prioritäten sollen eingeschlossen sein</string>
+  <string name="sync_caldav_howto_">
+<![CDATA[Eine Mirakel-kompatible CalDAV-syncing App muss installiert werden. Derzeit muss eine von uns modifizierte Version von DAVdroid installiert werden die man auf unserer Webseite findet.<br /><br />
+In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen, wir arbeiten zusammen mit anderen um eine Synchronisation mit Mirakel zu ermöglichen.
+        ]]>
+    </string>
   <string name="download">Herunterladen</string>
   <string name="sync_add_account">Konto hinzufügen</string>
   <string name="sync_taskwarrior_configure">Taskwarrior konfigurieren</string>
@@ -129,7 +134,7 @@
   <string name="kill_sure">Bist du wirklich sicher???</string>
   <string name="kill_sure_message">Wenn du die App schließt, bekommst du auch keine Benachrichtigungen! Vielleicht solltest du einfach die Benachrichtigungen deaktivieren (oder sie nicht-persistent machen)</string>
   <string name="ui_settings_title">Benutzeroberfläche</string>
-  <string name="hide_keyboard">Tastatur sogleich ausblenden</string>
+  <string name="hide_keyboard">Tastatur ausblenden</string>
   <string name="hide_keyboard_summary">Tastatur ausblenden nachdem eine Aufgabe erstellt wurde</string>
   <string name="undo_number">Anzahl der Änderungen im Log</string>
   <string name="undo_number_summary">%s Änderungen rückgängig machen</string>
@@ -159,6 +164,7 @@
   <string name="register_server">Wenn du einen Account auf unserem Server benötigst, sende uns bitte eine E-Mail. Mit der nächsten Version wirst du auch selbst einen Account anlegen können.</string>
   <string name="special_lists_title">Meta-Listen</string>
   <string name="register">Registrieren</string>
+  <string name="auto_backup_interval">Sicherungsintervall</string>
   <string name="auto_backup_interval_summary">Alle %s Tage ein Datenbankbackup erstellen</string>
   <string name="preferences_colorize">Farben</string>
   <string name="preferences_colorize_tasks">Aufgaben einfärben</string>
@@ -219,6 +225,7 @@
   <string name="credits_libraries">Verwendete Bibliotheken</string>
   <string name="credits_license_title">Lizenz</string>
   <string name="demo_mode">Demo-Modus</string>
+  <string name="demo_drop_db">Demo-Datenbank wiederherstellen</string>
   <string name="write_logs_to_file">Logs auf SD-Karte speichern</string>
   <string-array name="sync_types">
     <item>CalDAV synchronisieren</item>
