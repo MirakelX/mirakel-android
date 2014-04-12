@@ -635,11 +635,13 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 		}
 		this.listId = this.main.getCurrentList().getId();
 		this.query = null;
-		try {
-			getLoaderManager().restartLoader(0, null, this);
-		} catch (final Exception e) {
-			// ignore it
-		}
+		this.main.runOnUiThread(new Runnable() {
+
+			@Override
+			public void run() {
+				getLoaderManager().restartLoader(0, null, TasksFragment.this);
+			}
+		});
 	}
 
 	@Override
