@@ -4,7 +4,7 @@
       <text>Sorry for this bug! We will take care that this does not happen again.</text>
       <feature>Fixed crash on app start (Concerns all devices)</feature>
   </version>
-  <version name="2.4.0-beta4" date="2014-04-12" code="46">
+  <version name="2.4.0-beta4" date="2014-04-12" code="47">
       <text>Fixed some bad bugs</text>
       <text>We want to release the next version soon. Please report all bugs you find.</text>
       <feature>Fixed problems with sharing files with Mirakel</feature>
