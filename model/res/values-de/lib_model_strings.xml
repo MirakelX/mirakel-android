@@ -19,6 +19,7 @@
   <string name="month">Monat</string>
   <string name="year">Jahr</string>
   <string name="new_recurring">Neue Wiederholung</string>
+  <string name="interval">Intervall</string>
   <string name="beginning">Start</string>
   <string name="end">Ende</string>
   <string name="no_begin_end">Keine %s</string>
@@ -27,6 +28,7 @@
   <string name="every">Jede</string>
   <string name="recurrence_end_continously">Wiederhole fortlaufend</string>
   <string name="recurrence_end_date_label">Bis zu einem Zeitpunkt</string>
+  <string name="use_exact_recurrence">Soll die Wiederholung mit dem \'erledigt\' Datum starten?</string>
   <string name="recurrence_from_now">Ab sofort</string>
   <string name="recurrence_from">Ab</string>
   <string name="list_all">Alle Listen</string>
@@ -100,6 +102,9 @@
   <string name="reminder_unset">Aufgaben ohne Erinnerung</string>
   <string name="inverte">Auswahl umkehren</string>
   <string name="not_in">Nicht in</string>
+  <string name="where_like_contain_text">%s enthält</string>
+  <string name="where_like_begin_text">Beginnt mit %s</string>
+  <string name="where_like_end_text">Endet mit %s</string>
   <string name="delete">Löschen</string>
   <string name="nothing">Keine Wiederholung</string>
   <string-array name="weekdays">

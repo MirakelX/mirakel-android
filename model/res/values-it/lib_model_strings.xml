@@ -103,6 +103,9 @@ con Android e sul web\nhttp://mirakel.azapps.de</string>
   <string name="reminder_unset">Promemoria non impostato</string>
   <string name="inverte">Inverti selezione</string>
   <string name="not_in">Non in</string>
+  <string name="where_like_contain_text">Contiene %s</string>
+  <string name="where_like_begin_text">Inizia con %s</string>
+  <string name="where_like_end_text">Finisce con %s</string>
   <string name="delete">Elimina</string>
   <string name="nothing">Nessuna replica</string>
   <string-array name="weekdays">
@@ -148,7 +151,7 @@ con Android e sul web\nhttp://mirakel.azapps.de</string>
     <item>Shopping</item>
   </string-array>
   <string-array name="demo_tasks">
-    <item>oggi compare regalo di compleanno per il nonno</item>
+    <item>oggi comprare regalo di compleanno per il nonno</item>
     <item>Musica</item>
     <item>lunedì organizzare la festa</item>
     <item>oggi completare la presentazione</item>
