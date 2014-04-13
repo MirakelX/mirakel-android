@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+  <version name="2.4.0-beta4" date="2014-04-12" code="46">
+      <text>Fixed some bad bugs</text>
+      <text>We want to release the next version soon. Please report all bugs you find.</text>
+      <feature>Fixed problems with sharing files with Mirakel</feature>
+      <feature>Fixed crash when searching</feature>
+      <feature>Fixed some minor bugs</feature>
+      <feature>Fixed taskwarrior bugs (Sorry, please recreate your account if the sync not work)</feature>
+      <feature>Fixed CalDAV bugs (update DAVdroid!)</feature>
+      <feature>Fixed sorting problems</feature>
+      <feature>Some minor UI fixes</feature>
+  </version>
   <version name="2.4.0-beta3" date="2014-04-07" code="45">
     <feature>More bugfixes</feature>
     <feature>Reimplement tasksfragment</feature>
