@@ -265,7 +265,7 @@ public class ListMirakel extends ListBase {
 
 	public static List<ListMirakel> getListsForAccount(
 			final AccountMirakel account) {
-		if (account == null || !account.isEnabeld()) {
+		if (account == null || !account.isEnabled()) {
 			return new ArrayList<ListMirakel>();
 		}
 		final Cursor c = database.query(TABLE, allColumns, "NOT "

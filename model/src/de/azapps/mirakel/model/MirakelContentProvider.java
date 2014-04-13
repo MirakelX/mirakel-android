@@ -527,7 +527,7 @@ public class MirakelContentProvider extends ContentProvider implements
 			}
 		}
 		final AccountMirakel a = AccountMirakel.getByName(getAccountName(uri));
-		if (a != null && !a.isEnabeld()) {
+		if (a != null && !a.isEnabled()) {
 			return 0;
 		}
 		boolean isList = true;
@@ -612,7 +612,7 @@ public class MirakelContentProvider extends ContentProvider implements
 	public Uri insert(final Uri uri, final ContentValues values) {
 		// android.os.Debug.waitForDebugger();
 		final AccountMirakel a = AccountMirakel.getByName(getAccountName(uri));
-		if (a != null && !a.isEnabeld()) {
+		if (a != null && !a.isEnabled()) {
 			return null;
 		}
 		final ContentValues newValues = convertValues(values,
@@ -829,7 +829,7 @@ public class MirakelContentProvider extends ContentProvider implements
 	public int update(final Uri uri, final ContentValues values,
 			final String selection, final String[] selectionArgs) {
 		final AccountMirakel a = AccountMirakel.getByName(getAccountName(uri));
-		if (a != null && !a.isEnabeld()) {
+		if (a != null && !a.isEnabled()) {
 			return 0;
 		}
 		final ContentValues newValues = convertValues(values,
