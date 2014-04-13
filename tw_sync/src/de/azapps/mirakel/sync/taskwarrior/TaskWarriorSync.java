@@ -38,6 +38,36 @@ import de.azapps.tools.Log;
 
 public class TaskWarriorSync {
 
+	private static final String TW_PROTOCOL_VERSION = "v1";
+
+	public class TaskWarriorSyncFailedExeption extends Exception {
+		private static final long serialVersionUID = 3349776187699690118L;
+		private final TW_ERRORS error;
+		private final String message;
+
+		TaskWarriorSyncFailedExeption(final TW_ERRORS type, final String message) {
+			super();
+			this.error = type;
+			this.message = message;
+		}
+
+		TaskWarriorSyncFailedExeption(final TW_ERRORS type,
+				final Throwable cause) {
+			super(cause);
+			this.error = type;
+			this.message = cause.getMessage();
+		}
+
+		public TW_ERRORS getError() {
+			return this.error;
+		}
+
+		@Override
+		public String getMessage() {
+			return this.message;
+		}
+	}
+
 	public enum TW_ERRORS {
 		ACCESS_DENIED, ACCOUNT_SUSPENDED, CANNOT_CREATE_SOCKET, CANNOT_PARSE_MESSAGE, CONFIG_PARSE_ERROR, MESSAGE_ERRORS, NO_ERROR, NOT_ENABLED, TRY_LATER;
 		public static TW_ERRORS getError(final int code) {
@@ -115,6 +145,7 @@ public class TaskWarriorSync {
 	// private static int _limit = (1024 * 1024);
 	private static String _host = "localhost";
 	private static String _key = "";
+	private static String sync_key = "";
 	private static String _org = "";
 	private static int _port = 6544;
 	private static String _user = "";
@@ -125,16 +156,6 @@ public class TaskWarriorSync {
 	public static final String TYPE = "TaskWarrior";
 	private static String user_ca;
 	private static String user_key;
-
-	/**
-	 * Handle an error
-	 * 
-	 * @param what
-	 * @param code
-	 */
-	private static void error(final String what, final int code) {
-		Log.e(TAG, what + " (Code: " + code + ")");
-	}
 
 	private static String escape(final String string) {
 		return string.replace("\"", "\\\"");
@@ -161,7 +182,8 @@ public class TaskWarriorSync {
 		this.mContext = ctx;
 	}
 
-	private TW_ERRORS doSync(final Account a, final Msg sync) {
+	private void doSync(final Account a, final Msg sync)
+			throws TaskWarriorSyncFailedExeption {
 		final AccountMirakel accountMirakel = AccountMirakel.get(this.account);
 		longInfo(sync.getPayload());
 
@@ -170,16 +192,19 @@ public class TaskWarriorSync {
 			client.init(root, user_ca, user_key);
 		} catch (final ParseException e) {
 			Log.e(TAG, "cannot open certificate");
-			return TW_ERRORS.CONFIG_PARSE_ERROR;
+			throw new TaskWarriorSyncFailedExeption(
+					TW_ERRORS.CONFIG_PARSE_ERROR, "cannot open certificate");
 		} catch (final CertificateException e) {
 			Log.e(TAG, "general problem with init");
-			return TW_ERRORS.CONFIG_PARSE_ERROR;
+			throw new TaskWarriorSyncFailedExeption(
+					TW_ERRORS.CONFIG_PARSE_ERROR, "general problem with init");
 		}
 		try {
 			client.connect(_host, _port);
 		} catch (final IOException e) {
-			Log.e(TAG, "cannot create Socket");
-			return TW_ERRORS.CANNOT_CREATE_SOCKET;
+			Log.e(TAG, "cannot create socket");
+			throw new TaskWarriorSyncFailedExeption(
+					TW_ERRORS.CANNOT_CREATE_SOCKET, "cannot create socket");
 		}
 		client.send(sync.serialize());
 
@@ -190,7 +215,6 @@ public class TaskWarriorSync {
 				FileUtils.writeToFile(new File(FileUtils.getLogDir(), getTime()
 						+ ".tw_down.log"), response);
 			} catch (final IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}
@@ -200,23 +224,33 @@ public class TaskWarriorSync {
 		try {
 			remotes.parse(response);
 		} catch (final MalformedInputException e) {
-			Log.e(TAG, "cannot parse Message");
-			return TW_ERRORS.CANNOT_PARSE_MESSAGE;
+			Log.e(TAG, "cannot parse message");
+			throw new TaskWarriorSyncFailedExeption(
+					TW_ERRORS.CANNOT_PARSE_MESSAGE, "cannot parse message");
 		} catch (final NullPointerException e) {
-			Log.wtf(TAG, "remotes.pars throwed NullPointer");
-			return TW_ERRORS.CANNOT_PARSE_MESSAGE;
+			Log.wtf(TAG, "remotes.parse throwed NullPointer");
+			throw new TaskWarriorSyncFailedExeption(
+					TW_ERRORS.CANNOT_PARSE_MESSAGE,
+					"remotes.parse throwed NullPointer");
 		}
 		final int code = Integer.parseInt(remotes.get("code"));
 		final TW_ERRORS error = TW_ERRORS.getError(code);
 		if (error != TW_ERRORS.NO_ERROR) {
-			return error;
+			throw new TaskWarriorSyncFailedExeption(error,
+					"sync() throwed error");
 		}
 
 		if (remotes.get("status").equals("Client sync key not found.")) {
 			Log.d(TAG, "reset sync-key");
 			this.accountManager.setUserData(a, SyncAdapter.TASKWARRIOR_KEY,
 					null);
-			sync(a);
+			try {
+				sync(a);
+			} catch (final TaskWarriorSyncFailedExeption e) {
+				if (e.getError() != TW_ERRORS.NOT_ENABLED) {
+					throw new TaskWarriorSyncFailedExeption(e.getError(), e);
+				}
+			}
 		}
 
 		// parse tasks
@@ -283,7 +317,6 @@ public class TaskWarriorSync {
 			Log.v(TAG, "Message from Server: " + message);
 		}
 		client.close();
-		return TW_ERRORS.NO_ERROR;
 	}
 
 	/**
@@ -303,18 +336,20 @@ public class TaskWarriorSync {
 	 * Initialize the variables
 	 * 
 	 * @param aMirakel
+	 * @throws TaskWarriorSyncFailedExeption
 	 */
-	private void init(final AccountMirakel aMirakel) {
+	private void init(final AccountMirakel aMirakel)
+			throws TaskWarriorSyncFailedExeption {
 		final String server = this.accountManager.getUserData(this.account,
 				SyncAdapter.BUNDLE_SERVER_URL);
 		final String srv[] = server.trim().split(":");
 		if (srv.length != 2) {
-			error("port", 1376235889);
+			Log.wtf(TAG, "cannot determine address of server");
+			throw new TaskWarriorSyncFailedExeption(
+					TW_ERRORS.CONFIG_PARSE_ERROR,
+					"cannot determine address of server");
 		}
-		_key = aMirakel.getSyncKey();
-		if (_key.length() != 0 && _key.length() != 36) {
-			error("key", 1376235890);
-		}
+		sync_key = aMirakel.getSyncKey();
 		_host = srv[0];
 		_port = Integer.parseInt(srv[1]);
 		_user = this.account.name;
@@ -324,8 +359,21 @@ public class TaskWarriorSync {
 				DefinitionsHelper.BUNDLE_CERT);
 		TaskWarriorSync.user_ca = this.accountManager.getUserData(this.account,
 				DefinitionsHelper.BUNDLE_CERT_CLIENT);
-		TaskWarriorSync.user_key = this.accountManager
-				.getPassword(this.account);
+		final String[] pwds = this.accountManager.getPassword(this.account)
+				.split(":");
+		if (pwds.length != 2) {
+			Log.wtf(TAG, "cannot split pwds");
+			throw new TaskWarriorSyncFailedExeption(
+					TW_ERRORS.CONFIG_PARSE_ERROR, "cannot split pwds");
+		}
+
+		TaskWarriorSync.user_key = pwds[0].trim();
+		_key = pwds[1].trim();
+		if (_key.length() != 0 && _key.length() != 36) {
+			Log.wtf(TAG, "Key is not valid");
+			throw new TaskWarriorSyncFailedExeption(
+					TW_ERRORS.CONFIG_PARSE_ERROR, "Key is not valid");
+		}
 	}
 
 	private void setDependencies() {
@@ -361,22 +409,24 @@ public class TaskWarriorSync {
 				Helpers.getLocal(this.mContext)).format(new Date());
 	}
 
-	public TW_ERRORS sync(final Account a) {
+	public void sync(final Account a) throws TaskWarriorSyncFailedExeption {
 		this.accountManager = AccountManager.get(this.mContext);
 		this.account = a;
 		final AccountMirakel aMirakel = AccountMirakel.get(a);
-		if (!aMirakel.isEnabeld()) {
-			return TW_ERRORS.NOT_ENABLED;
+		if (!aMirakel.isEnabled()) {
+			throw new TaskWarriorSyncFailedExeption(TW_ERRORS.NOT_ENABLED,
+					"TW sync is not enabled");
 		}
+
 		init(aMirakel);
 
 		final Msg sync = new Msg();
-		String payload = "";
-		sync.set("protocol", "v1");
+		sync.set("protocol", TW_PROTOCOL_VERSION);
 		sync.set("type", "sync");
 		sync.set("org", _org);
 		sync.set("user", _user);
 		sync.set("key", _key);
+		String payload = sync_key != null ? sync_key + "\n" : "";
 		final List<Task> local_tasks = Task.getTasksToSync(a);
 		for (final Task task : local_tasks) {
 			payload += taskToJson(task) + "\n";
@@ -403,17 +453,15 @@ public class TaskWarriorSync {
 				// eat it
 			}
 		}
-		final TW_ERRORS error = doSync(a, sync);
-		if (error == TW_ERRORS.NO_ERROR) {
-			Log.w(TAG, "clear sync state");
-			Task.resetSyncState(local_tasks);
-		} else {
+		try {
+			doSync(a, sync);
+		} catch (final TaskWarriorSyncFailedExeption e) {
 			setDependencies();
-			return error;
+			throw new TaskWarriorSyncFailedExeption(e.getError(), e);
 		}
-		// }
+		Log.w(TAG, "clear sync state");
+		Task.resetSyncState(local_tasks);
 		setDependencies();
-		return TW_ERRORS.NO_ERROR;
 	}
 
 	/**
@@ -427,20 +475,20 @@ public class TaskWarriorSync {
 		final Map<String, String> additionals = task.getAdditionalEntries();
 		String end = null;
 		String status = "pending";
+		final Calendar now = new GregorianCalendar();
+		now.setTimeInMillis(now.getTimeInMillis() - offset);
 		if (task.getSyncState() == SYNC_STATE.DELETE) {
 			status = "deleted";
-			end = formatCal(new GregorianCalendar());
+			end = formatCal(now);
 		} else if (task.isDone()) {
 			status = "completed";
 			if (additionals.containsKey("end")) {
 				end = additionals.get("end");
 				end = end.substring(1, end.length() - 1); // Clear redundant \"
 			} else {
-				end = formatCal(new GregorianCalendar());
+				end = formatCal(now);
 			}
 		}
-		Log.i(TAG, "Status waiting / recurring is not implemented now");
-		// TODO
 
 		String priority = null;
 		switch (task.getPriority()) {
@@ -477,7 +525,9 @@ public class TaskWarriorSync {
 		if (priority != null) {
 			json += ",\"priority\":\"" + priority + "\"";
 		}
-		json += ",\"modified\":\"" + formatCal(task.getUpdatedAt()) + "\"";
+		final Calendar updated_at = task.getUpdatedAt();
+		updated_at.setTimeInMillis(updated_at.getTimeInMillis() - offset);
+		json += ",\"modified\":\"" + formatCal(updated_at) + "\"";
 		if (task.getReminder() != null) {
 			final Calendar reminder = task.getReminder();
 			reminder.setTimeInMillis(reminder.getTimeInMillis() - offset);
@@ -496,6 +546,7 @@ public class TaskWarriorSync {
 			final String annotations[] = escape(task.getContent()).split("\n");
 			boolean first = true;
 			final Calendar d = task.getUpdatedAt();
+			d.setTimeInMillis(d.getTimeInMillis() - offset);
 			for (final String a : annotations) {
 				if (first) {
 					first = false;
@@ -529,7 +580,10 @@ public class TaskWarriorSync {
 		// Additional Strings
 		if (additionals != null) {
 			for (final String key : additionals.keySet()) {
-				if (!key.equals(NO_PROJECT)) {
+				if (!key.equals(NO_PROJECT)
+						&& !(key.equals("status") && (status
+								.equals("completed") || status
+								.equals("deleted")))) {
 					json += ",\"" + key + "\":" + additionals.get(key);
 				}
 			}
@@ -538,5 +592,4 @@ public class TaskWarriorSync {
 		json += "}";
 		return json;
 	}
-
 }
