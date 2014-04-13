@@ -639,7 +639,12 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 
 			@Override
 			public void run() {
-				getLoaderManager().restartLoader(0, null, TasksFragment.this);
+				try {
+					getLoaderManager().restartLoader(0, null,
+							TasksFragment.this);
+				} catch (final Exception e) {
+					// TODO fix try catch
+				}
 			}
 		});
 	}
