@@ -30,4 +30,5 @@
   <string name="notifications_list_summary">Zeige \"%s\"</string>
   <string name="empty_list">Keine Aufgaben</string>
   <string name="preferences">Einstellungen</string>
+  <string name="widget_use_gradient">Verwende Farbverlauf</string>
 </resources>

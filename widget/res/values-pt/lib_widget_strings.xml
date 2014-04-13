@@ -26,6 +26,7 @@
   <string name="widget_transparency">Transparência</string>
   <string name="widget_transparency_summary">%s%% transparente</string>
   <string name="widget_due_colors">Datas de vencimento coloridas</string>
+  <string name="dark_theme">Tema escuro</string>
   <string name="notifications_list_summary">Mostrar \"%s\"</string>
   <string name="empty_list">Nenhuma tarefa</string>
   <string name="preferences">Preferências</string>
