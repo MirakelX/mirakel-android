@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+  <version name="2.4.0-beta4.1" date="2014-04-13" code="48">
+      <text>Sorry for this bug! We will take care that this does not happen again.</text>
+      <feature>Fixed crash on app start (Concerns all devices)</feature>
+  </version>
   <version name="2.4.0-beta4" date="2014-04-12" code="46">
       <text>Fixed some bad bugs</text>
       <text>We want to release the next version soon. Please report all bugs you find.</text>
