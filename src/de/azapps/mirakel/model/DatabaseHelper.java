@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -767,7 +768,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private static void updateTimesToUTC(final SQLiteDatabase db) {
 		db.execSQL("ALTER TABLE " + Task.TABLE + " RENAME TO tmp_tasks;");
 		createTasksTable(db);
-		final int offset = DateTimeHelper.getTimeZoneOffset(false);
+		final int offset = DateTimeHelper.getTimeZoneOffset(false,new GregorianCalendar());
 		db.execSQL("Insert INTO tasks (_id, uuid, list_id, name, "
 				+ "content, done, due, reminder, priority, created_at, "
 				+ "updated_at, sync_state, additional_entries, recurring, "
