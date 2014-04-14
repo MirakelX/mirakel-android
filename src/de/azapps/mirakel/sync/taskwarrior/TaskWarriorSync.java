@@ -329,6 +329,9 @@ public class TaskWarriorSync {
 	private String formatCal(final Calendar c) {
 		final SimpleDateFormat df = new SimpleDateFormat(
 				this.mContext.getString(R.string.TWDateFormat));
+		if (c.getTimeInMillis() < 0) {
+			c.setTimeInMillis(10);
+		}
 		return df.format(c.getTime());
 	}
 
@@ -508,7 +511,13 @@ public class TaskWarriorSync {
 		}
 
 		String json = "{";
-		json += "\"uuid\":\"" + task.getUUID() + "\"";
+		String uuid = task.getUUID();
+		if (uuid == null || uuid.trim().equals("")) {
+			uuid = java.util.UUID.randomUUID().toString();
+			task.setUUID(uuid);
+			task.safeSave(false);
+		}
+		json += "\"uuid\":\"" + uuid + "\"";
 		json += ",\"status\":\"" + status + "\"";
 		json += ",\"entry\":\"" + formatCal(DateTimeHelper.getUTCCalendar(task.getCreatedAt())) + "\"";
 		json += ",\"description\":\"" + escape(task.getName()) + "\"";
