@@ -87,17 +87,12 @@ public class Task extends TaskBase {
 	 * @return
 	 */
 	public static List<Task> all() {
-		final List<Task> tasks = new ArrayList<Task>();
 		final Cursor c = Task.database.query(Task.TABLE, Task.allColumns,
 				"not " + DatabaseHelper.SYNC_STATE_FIELD + "= "
 						+ SYNC_STATE.DELETE, null, null, null, null);
-		c.moveToFirst();
-		while (!c.isAfterLast()) {
-			tasks.add(cursorToTask(c));
-			c.moveToNext();
-		}
+		List<Task> list = cursorToTaskList(c);
 		c.close();
-		return tasks;
+		return list;
 	}
 
 	/**
