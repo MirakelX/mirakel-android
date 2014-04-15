@@ -85,7 +85,9 @@ public class ListDialogHelpers {
 						if (res != null) {
 							res.setSummary(SortingItems[item]);
 						}
-						cls.exec();
+						if (cls != null) {
+							cls.exec();
+						}
 						alert.dismiss(); // Ugly
 					}
 				});
