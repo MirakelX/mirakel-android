@@ -57,6 +57,7 @@ import com.android.calendar.recurrencepicker.RecurrencePickerDialog.OnRecurenceS
 
 import de.azapps.mirakel.DefenitionsModel.ExecInterfaceWithTask;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
+import de.azapps.mirakel.adapter.SubtaskAdapter;
 import de.azapps.mirakel.custom_views.BaseTaskDetailRow.OnTaskChangedListner;
 import de.azapps.mirakel.custom_views.TaskDetailDueReminder;
 import de.azapps.mirakel.customviews.R;
@@ -109,11 +110,7 @@ public class TaskDialogHelpers {
 	}
 
 	protected static String generateQuery(final Task t) {
-		String col = Task.allColumns[0];
-		for (int i = 1; i < Task.allColumns.length; i++) {
-			col += "," + Task.allColumns[i];
-		}
-		String query = "SELECT " + col + " FROM " + Task.TABLE
+		String query = "SELECT " + getAllColumns() + " FROM " + Task.TABLE
 				+ " WHERE name LIKE '%" + searchString + "%' AND";
 		query += " NOT _id IN (SELECT parent_id from " + Task.SUBTASK_TABLE
 				+ " where child_id=" + t.getId() + ") AND ";
@@ -145,6 +142,14 @@ public class TaskDialogHelpers {
 		query += ";";
 		Log.d(TAG, query);
 		return query;
+	}
+
+	private static String getAllColumns() {
+		String col = Task.allColumns[0];
+		for (int i = 1; i < Task.allColumns.length; i++) {
+			col += "," + Task.allColumns[i];
+		}
+		return col;
 	}
 
 	public static void handleAudioRecord(final Context context,
@@ -413,8 +418,11 @@ public class TaskDialogHelpers {
 			@Override
 			public void run() {
 				Looper.prepare();
-				subtaskAdapter = new SubtaskAdapter(ctx, 0, Task.all(), task,
-						asSubtask);
+				subtaskAdapter = new SubtaskAdapter(ctx, 0,
+						Task.rawQuery("Select " + getAllColumns() + " FROM "
+								+ Task.TABLE + " where NOT "
+								+ DatabaseHelper.ID + "=" + task.getId()),
+						task, asSubtask);
 				lv.post(new Runnable() {
 
 					@Override
@@ -516,7 +524,11 @@ public class TaskDialogHelpers {
 							R.color.Grey));
 					subtaskSelectOld.setTextColor(ctx.getResources().getColor(
 							darkTheme ? R.color.White : R.color.Black));
+					if (subtaskAdapter != null) {
+						subtaskAdapter.notifyDataSetChanged();
+					}
 					newTask = false;
+					lv.invalidateViews();
 				}
 			});
 		}
@@ -601,30 +613,22 @@ public class TaskDialogHelpers {
 											newTaskEdit.getText().toString(),
 											task, ctx);
 								} else if (!newTask) {
-									final boolean[] checked = subtaskAdapter
-											.getChecked();
-									final List<Task> tasks = subtaskAdapter
-											.getData();
-									for (int i = 0; i < checked.length; i++) {
-										if (checked[i]) {
-											if (!asSubtask) {
-												if (!tasks.get(i)
-														.checkIfParent(task)) {
-													task.addSubtask(tasks
-															.get(i));
-												} else {
-													ErrorReporter
-															.report(ErrorType.TASKS_CANNOT_FORM_LOOP);
-												}
+									final List<Task> checked = subtaskAdapter
+											.getSelected();
+									for (Task t : checked) {
+										if (!asSubtask) {
+											if (!t.checkIfParent(task)) {
+												task.addSubtask(t);
 											} else {
-												if (!task.checkIfParent(tasks
-														.get(i))) {
-													tasks.get(i).addSubtask(
-															task);
-												} else {
-													ErrorReporter
-															.report(ErrorType.TASKS_CANNOT_FORM_LOOP);
-												}
+												ErrorReporter
+														.report(ErrorType.TASKS_CANNOT_FORM_LOOP);
+											}
+										} else {
+											if (!task.checkIfParent(t)) {
+												t.addSubtask(task);
+											} else {
+												ErrorReporter
+														.report(ErrorType.TASKS_CANNOT_FORM_LOOP);
 											}
 										}
 									}
@@ -799,17 +803,12 @@ public class TaskDialogHelpers {
 				if (tasks == null) {
 					return;
 				}
-
-				a.setData(tasks);
 				lv.post(new Runnable() {
-
 					@Override
 					public void run() {
-						a.notifyDataSetChanged();
-
+						a.changeData(tasks);
 					}
 				});
-
 			}
 		}).start();
 
