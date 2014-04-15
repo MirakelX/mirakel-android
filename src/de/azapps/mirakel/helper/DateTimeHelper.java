@@ -77,12 +77,14 @@ public class DateTimeHelper {
 	 * @param inMS
 	 *            indicate if the offset is in milliseconds(true) or in
 	 *            seconds(false)
+	 * @param date
+	 *            the date for which the offset should be calculated
 	 * 
 	 * @return The offset including dayligthsaving
 	 */
-	public static int getTimeZoneOffset(final boolean inMS) {
-		final Date d = new Date();
-		return TimeZone.getDefault().getOffset(d.getTime()) / (inMS ? 1 : 1000);
+	public static int getTimeZoneOffset(final boolean inMS, final Calendar date) {
+		return TimeZone.getDefault().getOffset(date.getTimeInMillis())
+				/ (inMS ? 1 : 1000);
 	}
 
 	/**
