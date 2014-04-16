@@ -329,6 +329,9 @@ public class TaskWarriorSync {
 	private String formatCal(final Calendar c) {
 		final SimpleDateFormat df = new SimpleDateFormat(
 				this.mContext.getString(R.string.TWDateFormat));
+		if (c.getTimeInMillis() < 0) {
+			c.setTimeInMillis(10);
+		}
 		return df.format(c.getTime());
 	}
 
@@ -471,12 +474,12 @@ public class TaskWarriorSync {
 	 * @return
 	 */
 	public String taskToJson(final Task task) {
-		final int offset = DateTimeHelper.getTimeZoneOffset(true);
 		final Map<String, String> additionals = task.getAdditionalEntries();
 		String end = null;
 		String status = "pending";
 		final Calendar now = new GregorianCalendar();
-		now.setTimeInMillis(now.getTimeInMillis() - offset);
+		now.setTimeInMillis(now.getTimeInMillis()
+				- DateTimeHelper.getTimeZoneOffset(true, now));
 		if (task.getSyncState() == SYNC_STATE.DELETE) {
 			status = "deleted";
 			end = formatCal(now);
@@ -508,16 +511,18 @@ public class TaskWarriorSync {
 		}
 
 		String json = "{";
-		json += "\"uuid\":\"" + task.getUUID() + "\"";
+		String uuid = task.getUUID();
+		if (uuid == null || uuid.trim().equals("")) {
+			uuid = java.util.UUID.randomUUID().toString();
+			task.setUUID(uuid);
+			task.safeSave(false);
+		}
+		json += "\"uuid\":\"" + uuid + "\"";
 		json += ",\"status\":\"" + status + "\"";
-		final Calendar created_at = task.getCreatedAt();
-		created_at.setTimeInMillis(created_at.getTimeInMillis() - offset);
-		json += ",\"entry\":\"" + formatCal(created_at) + "\"";
+		json += ",\"entry\":\"" + formatCal(DateTimeHelper.getUTCCalendar(task.getCreatedAt())) + "\"";
 		json += ",\"description\":\"" + escape(task.getName()) + "\"";
 		if (task.getDue() != null) {
-			final Calendar due = task.getDue();
-			due.setTimeInMillis(due.getTimeInMillis() - offset);
-			json += ",\"due\":\"" + formatCal(due) + "\"";
+			json += ",\"due\":\"" + formatCal(DateTimeHelper.getUTCCalendar(task.getDue())) + "\"";
 		}
 		if (task.getList() != null && !additionals.containsKey(NO_PROJECT)) {
 			json += ",\"project\":\"" + task.getList().getName() + "\"";
@@ -525,13 +530,9 @@ public class TaskWarriorSync {
 		if (priority != null) {
 			json += ",\"priority\":\"" + priority + "\"";
 		}
-		final Calendar updated_at = task.getUpdatedAt();
-		updated_at.setTimeInMillis(updated_at.getTimeInMillis() - offset);
-		json += ",\"modified\":\"" + formatCal(updated_at) + "\"";
+		json += ",\"modified\":\"" + formatCal(DateTimeHelper.getUTCCalendar(task.getUpdatedAt())) + "\"";
 		if (task.getReminder() != null) {
-			final Calendar reminder = task.getReminder();
-			reminder.setTimeInMillis(reminder.getTimeInMillis() - offset);
-			json += ",\"reminder\":\"" + formatCal(reminder) + "\"";
+			json += ",\"reminder\":\"" + formatCal(DateTimeHelper.getUTCCalendar(task.getReminder())) + "\"";
 		}
 		if (end != null) {
 			json += ",\"end\":\"" + end + "\"";
@@ -546,7 +547,8 @@ public class TaskWarriorSync {
 			final String annotations[] = escape(task.getContent()).split("\n");
 			boolean first = true;
 			final Calendar d = task.getUpdatedAt();
-			d.setTimeInMillis(d.getTimeInMillis() - offset);
+			d.setTimeInMillis(d.getTimeInMillis()
+					- DateTimeHelper.getTimeZoneOffset(true, d));
 			for (final String a : annotations) {
 				if (first) {
 					first = false;
