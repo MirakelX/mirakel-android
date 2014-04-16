@@ -21,6 +21,7 @@ package de.azapps.mirakel.model.task;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -155,7 +156,6 @@ class TaskBase {
 	}
 
 	public ContentValues getContentValues() throws NoSuchListException {
-		final int offset = DateTimeHelper.getTimeZoneOffset(false);
 		final ContentValues cv = new ContentValues();
 		cv.put(DatabaseHelper.ID, this.id);
 		cv.put(TaskBase.UUID, this.uuid);
@@ -178,31 +178,26 @@ class TaskBase {
 					&& this.due.get(Calendar.SECOND) == 0) {
 				cv.put(TaskBase.DUE, this.due.getTimeInMillis() / 1000);
 			} else {
-				cv.put(TaskBase.DUE, this.due.getTimeInMillis() / 1000 - offset);
+				cv.put(TaskBase.DUE, DateTimeHelper.getUTCTime(due));
 			}
 		} else {
 			cv.put(TaskBase.DUE, (Integer) null);
 		}
 		if (this.reminder != null) {
-			cv.put(TaskBase.REMINDER, this.reminder.getTimeInMillis() / 1000
-					- offset);
+			cv.put(TaskBase.REMINDER, DateTimeHelper.getUTCTime(reminder));
 		} else {
 			cv.put(TaskBase.REMINDER, (Integer) null);
 		}
 		cv.put(TaskBase.PRIORITY, this.priority);
 		if (this.createdAt != null) {
-			cv.put(DatabaseHelper.CREATED_AT, this.createdAt.getTimeInMillis()
-					/ 1000 - offset);
+			cv.put(DatabaseHelper.CREATED_AT,DateTimeHelper.getUTCTime(createdAt));
 		} else {
-			final Date d = new Date();
-			cv.put(DatabaseHelper.CREATED_AT, d.getTime() / 1000);
+			cv.put(DatabaseHelper.CREATED_AT, DateTimeHelper.getUTCTime(new GregorianCalendar()));
 		}
 		if (this.updatedAt != null) {
-			cv.put(DatabaseHelper.UPDATED_AT, this.updatedAt.getTimeInMillis()
-					/ 1000 - offset);
+			cv.put(DatabaseHelper.UPDATED_AT,DateTimeHelper.getUTCTime(updatedAt));
 		} else {
-			final Date d = new Date();
-			cv.put(DatabaseHelper.CREATED_AT, d.getTime() / 1000);
+			cv.put(DatabaseHelper.CREATED_AT, DateTimeHelper.getUTCTime(new GregorianCalendar()));
 		}
 		cv.put(DatabaseHelper.SYNC_STATE_FIELD, this.sync_state.toInt());
 		cv.put(TaskBase.RECURRING, this.recurrence);

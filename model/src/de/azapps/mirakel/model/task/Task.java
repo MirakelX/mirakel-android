@@ -87,17 +87,12 @@ public class Task extends TaskBase {
 	 * @return
 	 */
 	public static List<Task> all() {
-		final List<Task> tasks = new ArrayList<Task>();
 		final Cursor c = Task.database.query(Task.TABLE, Task.allColumns,
 				"not " + DatabaseHelper.SYNC_STATE_FIELD + "= "
 						+ SYNC_STATE.DELETE, null, null, null, null);
-		c.moveToFirst();
-		while (!c.isAfterLast()) {
-			tasks.add(cursorToTask(c));
-			c.moveToNext();
-		}
+		List<Task> list = cursorToTaskList(c);
 		c.close();
-		return tasks;
+		return list;
 	}
 
 	/**
@@ -115,37 +110,31 @@ public class Task extends TaskBase {
 	 */
 	public static Task cursorToTask(final Cursor cursor) {
 		int i = 0;
-		final int offset = DateTimeHelper.getTimeZoneOffset(true);
-
-		GregorianCalendar due = new GregorianCalendar();
+		Calendar due = new GregorianCalendar();
 		if (cursor.isNull(6)) {
 			due = null;
 		} else {
-			due.setTimeInMillis(cursor.getLong(6) * 1000 + offset);
-			if (due.get(Calendar.HOUR) != 0 || due.get(Calendar.MINUTE) != 0
-					|| due.get(Calendar.SECOND) != 0) {
-				due.add(Calendar.MILLISECOND, offset);
-			}
+			due=DateTimeHelper.createLocalCalendar(cursor.getLong(6));
 		}
 
-		GregorianCalendar reminder = new GregorianCalendar();
+		Calendar reminder = new GregorianCalendar();
 		if (cursor.isNull(7)) {
 			reminder = null;
 		} else {
-			reminder.setTimeInMillis(cursor.getLong(7) * 1000 + offset);
+			reminder=DateTimeHelper.createLocalCalendar(cursor.getLong(7));
 		}
 
-		GregorianCalendar created_at = new GregorianCalendar();
+		Calendar created_at = new GregorianCalendar();
 		if (cursor.isNull(9)) {
 			created_at = null;
 		} else {
-			created_at.setTimeInMillis(cursor.getLong(9) * 1000 + offset);
+			created_at=DateTimeHelper.createLocalCalendar(cursor.getLong(9));
 		}
-		GregorianCalendar updated_at = new GregorianCalendar();
+		Calendar updated_at = new GregorianCalendar();
 		if (cursor.isNull(10)) {
 			updated_at = null;
 		} else {
-			updated_at.setTimeInMillis(cursor.getLong(10) * 1000 + offset);
+			updated_at=DateTimeHelper.createLocalCalendar(cursor.getLong(10));
 		}
 
 		final Task task = new Task(cursor.getLong(i++), cursor.getString(i++),
@@ -797,7 +786,6 @@ public class Task extends TaskBase {
 
 	public Task create(final boolean addFlag) throws NoSuchListException {
 		final ContentValues values = new ContentValues();
-		final int offset = DateTimeHelper.getTimeZoneOffset(false);
 		values.put(TaskBase.UUID, getUUID());
 		values.put(DatabaseHelper.NAME, getName());
 		if (getList() == null) {
@@ -806,23 +794,24 @@ public class Task extends TaskBase {
 		values.put(TaskBase.LIST_ID, getList().getId());
 		values.put(TaskBase.CONTENT, getContent());
 		values.put(TaskBase.DONE, isDone());
-		values.put(TaskBase.DUE, getDue() == null ? null : getDue()
-				.getTimeInMillis() / 1000 - offset);
-		values.put(TaskBase.REMINDER, getReminder() == null ? null
-				: getReminder().getTimeInMillis() / 1000 - offset);
+		values.put(TaskBase.DUE,
+				getDue() == null ? null : DateTimeHelper.getUTCTime(getDue()));
+		values.put(
+				TaskBase.REMINDER,
+				getReminder() == null ? null : DateTimeHelper.getUTCTime(getReminder()));
 		values.put(TaskBase.PRIORITY, getPriority());
 		values.put(DatabaseHelper.SYNC_STATE_FIELD,
 				addFlag ? SYNC_STATE.ADD.toInt() : SYNC_STATE.NOTHING.toInt());
 		if (getCreatedAt() == null) {
 			setCreatedAt(new GregorianCalendar());
 		}
-		values.put(DatabaseHelper.CREATED_AT, getCreatedAt().getTimeInMillis()
-				/ 1000 - offset);
+		values.put(
+				DatabaseHelper.CREATED_AT,DateTimeHelper.getUTCTime(getCreatedAt()));
 		if (getUpdatedAt() == null) {
 			setUpdatedAt(new GregorianCalendar());
 		}
-		values.put(DatabaseHelper.UPDATED_AT, getUpdatedAt().getTimeInMillis()
-				/ 1000 - offset);
+		values.put(
+				DatabaseHelper.UPDATED_AT,DateTimeHelper.getUTCTime(getUpdatedAt()));
 		values.put(TaskBase.PROGRESS, getProgress());
 
 		values.put(ADDITIONAL_ENTRIES, getAdditionalEntriesString());
