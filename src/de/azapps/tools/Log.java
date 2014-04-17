@@ -143,6 +143,8 @@ public class Log {
 				fileWriter.flush();
 			} catch (final Exception e) {
 				fileWriter = null;
+				writeToFile = false;// Prevent stackoverflow from recursive
+									// calling
 				Log.e(TAG, "Could not write to file for logging");
 			}
 		}
