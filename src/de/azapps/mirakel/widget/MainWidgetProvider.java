@@ -221,8 +221,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
 
 			} else {
 				views.removeAllViews(R.id.widget_main_view);
-				final List<Task> tasks = Task.getTasks(list.getId(),
-						list.getSortBy(), showDone);
+				final List<Task> tasks = list.tasks(showDone);
 				if (tasks.size() == 0) {
 					views.setViewVisibility(R.id.empty_view, View.VISIBLE);
 				} else {

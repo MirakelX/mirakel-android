@@ -69,6 +69,10 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	 */
 	@Override
 	public void onCreate() {
+		updateList();
+	}
+
+	private void updateList() {
 		this.list = WidgetHelper.getList(this.mContext, this.widgetId);
 		this.tasks = this.list.tasks(WidgetHelper.showDone(this.mContext,
 				this.widgetId));
@@ -143,7 +147,6 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
 	@Override
 	public void onDataSetChanged() {
-		this.tasks = Task.getTasks(this.list.getId(), this.list.getSortBy(),
-				WidgetHelper.showDone(this.mContext, this.widgetId));
+		updateList();
 	}
 }
