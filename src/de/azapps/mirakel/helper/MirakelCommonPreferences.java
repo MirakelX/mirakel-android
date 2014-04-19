@@ -28,7 +28,7 @@ import android.content.res.Configuration;
 public class MirakelCommonPreferences extends MirakelPreferences {
 
 	public static boolean addSubtaskToSameList() {
-		return settings.getBoolean("subtaskAddToSameList", true);
+		return settings.getBoolean("subtaskAddToSameList", false);
 	}
 
 	public static boolean colorizeSubTasks() {
