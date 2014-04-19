@@ -26,18 +26,20 @@
     tools:ignore="NewApi" >
 
     <NumberPicker
-        android:id="@+id/due_val"
+        android:id="@+id/progress_op"
         style="@android:style/Theme.Holo.Light"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
+        android:descendantFocusability="blocksDescendants"
         android:width="100dip" />
 
     <NumberPicker
-        android:id="@+id/due_day_year"
+        android:id="@+id/progress_value"
         style="@android:style/Theme.Holo.Light"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:descendantFocusability="blocksDescendants"
         android:width="100dip" />
 
 </LinearLayout>

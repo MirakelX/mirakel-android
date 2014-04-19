@@ -57,6 +57,12 @@
         <Preference
             android:key="special_where_reminder"
             android:title="@string/special_list_where_reminder_title_text" />
+        <Preference
+            android:key="special_where_progress"
+            android:title="@string/special_list_where_progress_title_text" />
+        <Preference
+            android:key="special_where_subtask"
+            android:title="@string/special_list_where_subtask_title_text" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/special_lists_defaults" >
         <Preference

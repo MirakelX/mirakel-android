@@ -39,6 +39,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
@@ -56,10 +57,13 @@ import de.azapps.mirakel.model.list.meta.SpecialListsDueProperty.Unit;
 import de.azapps.mirakel.model.list.meta.SpecialListsListProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsNameProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsPriorityProperty;
+import de.azapps.mirakel.model.list.meta.SpecialListsProgressProperty;
+import de.azapps.mirakel.model.list.meta.SpecialListsProgressProperty.OPERATION;
 import de.azapps.mirakel.model.list.meta.SpecialListsReminderProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsSetProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsStringProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsStringProperty.Type;
+import de.azapps.mirakel.model.list.meta.SpecialListsSubtaskProperty;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.settings.ListSettings;
 import de.azapps.mirakel.settings.R;
@@ -243,6 +247,10 @@ public class SpecialListSettings extends PreferencesHelper {
 		due.setSummary(getFieldText("due"));
 		final Preference reminder = findPreference("special_where_reminder");
 		reminder.setSummary(getFieldText("reminder"));
+		final Preference progress = findPreference("special_where_progress");
+		progress.setSummary(getFieldText(Task.PROGRESS));
+		final Preference subtask = findPreference("special_where_subtask");
+		subtask.setSummary(getFieldText(Task.SUBTASK_TABLE));
 
 		done.setOnPreferenceChangeListener(null);
 		done.setOnPreferenceClickListener(new OnPreferenceClickListener() {
@@ -627,6 +635,153 @@ public class SpecialListSettings extends PreferencesHelper {
 				return false;
 			}
 		});
+		if (v4_0) {
+			progress.setOnPreferenceChangeListener(null);
+			progress.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+				@Override
+				public boolean onPreferenceClick(Preference preference) {
+					final SpecialListsProgressProperty prop = (SpecialListsProgressProperty) specialList
+							.getWhere().get(Task.PROGRESS);
+					View v = activity.getLayoutInflater().inflate(
+							R.layout.progress_dialog, null);
+					final NumberPicker operationPicker = (NumberPicker) v
+							.findViewById(R.id.progress_op);
+					final NumberPicker valuePicker = (NumberPicker) v
+							.findViewById(R.id.progress_value);
+
+					String[] operations = { ">=", "=", "<=" };
+					operationPicker.setMaxValue(2);
+					operationPicker.setMinValue(0);
+					operationPicker.setDisplayedValues(operations);
+
+					valuePicker.setMinValue(0);
+					valuePicker.setMaxValue(100);
+					valuePicker.setWrapSelectorWheel(false);
+
+					if (prop != null) {
+						operationPicker.setValue(prop.getOperation().ordinal());
+						valuePicker.setValue(prop.getValue());
+					} else {
+						operationPicker.setValue(0);// >=
+						valuePicker.setValue(50);
+					}
+					new AlertDialog.Builder(activity)
+							.setView(v)
+							.setPositiveButton(android.R.string.ok,
+									new DialogInterface.OnClickListener() {
+
+										@Override
+										public void onClick(
+												DialogInterface dialog,
+												int which) {
+											if (prop == null) {
+												setNewWhere(
+														new SpecialListsProgressProperty(
+																valuePicker
+																		.getValue(),
+																OPERATION
+																		.values()[operationPicker
+																		.getValue()]),
+														true, Task.PROGRESS,
+														progress);
+											} else {
+												prop.setValue(valuePicker
+														.getValue());
+												prop.setOperation(OPERATION
+														.values()[operationPicker
+														.getValue()]);
+												setNewWhere(prop, true,
+														Task.PROGRESS, progress);
+											}
+
+										}
+									})
+							.setNegativeButton(R.string.remove,
+									new DialogInterface.OnClickListener() {
+
+										@Override
+										public void onClick(
+												DialogInterface dialog,
+												int which) {
+											setNewWhere(null, false,
+													Task.PROGRESS, progress);
+
+										}
+									})
+							.setTitle(
+									SpecialListSettings.this.activity
+											.getString(R.string.select_by))
+							.show();
+
+					return false;
+				}
+
+			});
+		} else {
+			// dont provide this on android 2.x
+			removePreference("special_where_progress");
+		}
+		subtask.setOnPreferenceChangeListener(null);
+		subtask.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				final SpecialListsSubtaskProperty prop = (SpecialListsSubtaskProperty) specialList
+						.getWhere().get(Task.SUBTASK_TABLE);
+				final boolean[] checked = new boolean[2];
+				if (prop != null) {
+					checked[0] = prop.isNegated();
+					checked[1] = prop.isParent();
+				}
+				new AlertDialog.Builder(activity)
+						.setTitle(R.string.select_by)
+						.setMultiChoiceItems(
+								R.array.special_lists_subtask_options, checked,
+								new OnMultiChoiceClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which, boolean isChecked) {
+										checked[which] = isChecked;
+
+									}
+								})
+						.setNegativeButton(R.string.remove,
+								new DialogInterface.OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										setNewWhere(null, false,
+												Task.SUBTASK_TABLE, subtask);
+
+									}
+								})
+						.setPositiveButton(android.R.string.ok,
+								new DialogInterface.OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										if (prop == null) {
+											setNewWhere(
+													new SpecialListsSubtaskProperty(
+															checked[0],
+															checked[1]), true,
+													Task.SUBTASK_TABLE, subtask);
+										} else {
+											prop.setParent(checked[1]);
+											prop.setNegated(checked[0]);
+											setNewWhere(prop, true,
+													Task.SUBTASK_TABLE, subtask);
+										}
+
+									}
+								}).show();
+				return false;
+			}
+		});
 
 	}
 
@@ -701,11 +856,11 @@ public class SpecialListSettings extends PreferencesHelper {
 	}
 
 	protected void setNewWhere(final SpecialListsBaseProperty prop,
-			final boolean b, final String key, final Preference pref) {
+			final boolean add, final String key, final Preference pref) {
 		final Map<String, SpecialListsBaseProperty> where = this.specialList
 				.getWhere();
 		where.remove(key);
-		if (b) {
+		if (add) {
 			where.put(key, prop);
 		}
 		this.specialList.setWhere(where);
