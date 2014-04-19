@@ -42,18 +42,17 @@ public class MirakelModelPreferences extends MirakelPreferences {
 
 	public static ListMirakel getListForSubtask(final Task parent) {
 		ListMirakel list = null;
-		if (settings.contains("subtaskAddToSameList")) {
-			if (MirakelCommonPreferences.addSubtaskToSameList()) {
-				list = parent.getList();
-			} else {
-				list = subtaskAddToList();
-			}
+		if (MirakelCommonPreferences.addSubtaskToSameList()) {
+			list = parent.getList();
+		} else {
+			list = subtaskAddToList();
 		}
 		// Create a new list and set this list as the default list for future
 		// subtasks
 		if (list == null) {
 			list = ListMirakel.newList(context
 					.getString(R.string.subtask_list_name));
+			setSubtaskAddToList(list);
 		}
 		return list;
 	}
@@ -118,6 +117,12 @@ public class MirakelModelPreferences extends MirakelPreferences {
 				return null;
 			}
 		}
+	}
+
+	public static void setSubtaskAddToList(final ListMirakel list) {
+		final Editor editor = getEditor();
+		editor.putInt("subtaskAddToList", list.getId());
+		editor.commit();
 	}
 
 	public static boolean useSync() {
