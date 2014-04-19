@@ -1124,10 +1124,13 @@ public class PreferencesAppHelper extends PreferencesHelper {
 
 		final CheckBoxPreference subTaskAddToSameList = (CheckBoxPreference) findPreference("subtaskAddToSameList");
 		if (subTaskAddToSameList != null) {
-			if (!MirakelCommonPreferences.addSubtaskToSameList()) {
+			final ListMirakel subtaskAddToList = MirakelModelPreferences
+					.subtaskAddToList();
+			if (!MirakelCommonPreferences.addSubtaskToSameList()
+					&& subtaskAddToList != null) {
 				subTaskAddToSameList.setSummary(this.activity.getString(
 						R.string.settings_subtask_add_to_list_summary,
-						MirakelModelPreferences.subtaskAddToList().getName()));
+						subtaskAddToList.getName()));
 			} else {
 				subTaskAddToSameList
 						.setSummary(R.string.settings_subtask_add_to_same_list_summary);
