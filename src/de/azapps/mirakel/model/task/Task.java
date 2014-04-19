@@ -114,27 +114,27 @@ public class Task extends TaskBase {
 		if (cursor.isNull(6)) {
 			due = null;
 		} else {
-			due=DateTimeHelper.createLocalCalendar(cursor.getLong(6));
+			due = DateTimeHelper.createLocalCalendar(cursor.getLong(6));
 		}
 
 		Calendar reminder = new GregorianCalendar();
 		if (cursor.isNull(7)) {
 			reminder = null;
 		} else {
-			reminder=DateTimeHelper.createLocalCalendar(cursor.getLong(7));
+			reminder = DateTimeHelper.createLocalCalendar(cursor.getLong(7));
 		}
 
 		Calendar created_at = new GregorianCalendar();
 		if (cursor.isNull(9)) {
 			created_at = null;
 		} else {
-			created_at=DateTimeHelper.createLocalCalendar(cursor.getLong(9));
+			created_at = DateTimeHelper.createLocalCalendar(cursor.getLong(9));
 		}
 		Calendar updated_at = new GregorianCalendar();
 		if (cursor.isNull(10)) {
 			updated_at = null;
 		} else {
-			updated_at=DateTimeHelper.createLocalCalendar(cursor.getLong(10));
+			updated_at = DateTimeHelper.createLocalCalendar(cursor.getLong(10));
 		}
 
 		final Task task = new Task(cursor.getLong(i++), cursor.getString(i++),
@@ -796,22 +796,21 @@ public class Task extends TaskBase {
 		values.put(TaskBase.DONE, isDone());
 		values.put(TaskBase.DUE,
 				getDue() == null ? null : DateTimeHelper.getUTCTime(getDue()));
-		values.put(
-				TaskBase.REMINDER,
-				getReminder() == null ? null : DateTimeHelper.getUTCTime(getReminder()));
+		values.put(TaskBase.REMINDER, getReminder() == null ? null
+				: DateTimeHelper.getUTCTime(getReminder()));
 		values.put(TaskBase.PRIORITY, getPriority());
 		values.put(DatabaseHelper.SYNC_STATE_FIELD,
 				addFlag ? SYNC_STATE.ADD.toInt() : SYNC_STATE.NOTHING.toInt());
 		if (getCreatedAt() == null) {
 			setCreatedAt(new GregorianCalendar());
 		}
-		values.put(
-				DatabaseHelper.CREATED_AT,DateTimeHelper.getUTCTime(getCreatedAt()));
+		values.put(DatabaseHelper.CREATED_AT,
+				DateTimeHelper.getUTCTime(getCreatedAt()));
 		if (getUpdatedAt() == null) {
 			setUpdatedAt(new GregorianCalendar());
 		}
-		values.put(
-				DatabaseHelper.UPDATED_AT,DateTimeHelper.getUTCTime(getUpdatedAt()));
+		values.put(DatabaseHelper.UPDATED_AT,
+				DateTimeHelper.getUTCTime(getUpdatedAt()));
 		values.put(TaskBase.PROGRESS, getProgress());
 
 		values.put(ADDITIONAL_ENTRIES, getAdditionalEntriesString());
