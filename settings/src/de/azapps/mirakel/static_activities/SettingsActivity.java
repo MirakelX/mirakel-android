@@ -362,8 +362,10 @@ public class SettingsActivity extends PreferenceActivity {
 			// When the saved state provides the list of headers,
 			// onBuildHeaders is not called
 			// so we build it from the adapter given, then use our own adapter
-			for (int i = 0; i < adapter.getCount(); ++i) {
-				this.mHeaders.add((Header) adapter.getItem(i));
+			if (adapter != null) {
+				for (int i = 0; i < adapter.getCount(); ++i) {
+					this.mHeaders.add((Header) adapter.getItem(i));
+				}
 			}
 		}
 		this.mAdapter = new SettingsAdapter(this, this.mHeaders);
