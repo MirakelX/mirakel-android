@@ -19,28 +19,31 @@
 package de.azapps.mirakel.model.list.meta;
 
 import android.content.Context;
+import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.R;
-import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.model.file.FileMirakel;
 
-public class SpecialListsDoneProperty extends SpecialListsNegatedProperty {
+public class SpecialListsFileProperty extends SpecialListsNegatedProperty {
 
-	public SpecialListsDoneProperty(final boolean done) {
+	public SpecialListsFileProperty(boolean done) {
 		super(done);
 	}
 
 	@Override
-	public String getWhereQuery() {
-		return "done=" + (this.done ? "1" : "0");
-	}
-
-	@Override
-	public String getSummary(final Context mContext) {
-		return this.done ? mContext.getString(R.string.done) : mContext
-				.getString(R.string.undone);
-	}
-
-	@Override
 	protected String propertyName() {
-		return Task.DONE;
+		return FileMirakel.TABLE;
 	}
+
+	@Override
+	public String getWhereQuery() {
+		return (done ? "" : "NOT ") + DatabaseHelper.ID
+				+ " IN (SELECT DISTINCT task_id FROM " + FileMirakel.TABLE
+				+ ")";
+	}
+
+	@Override
+	public String getSummary(Context ctx) {
+		return ctx.getString(done ? R.string.has_file : R.string.no_file);
+	}
+
 }

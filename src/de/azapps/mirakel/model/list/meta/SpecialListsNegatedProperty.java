@@ -18,29 +18,30 @@
  ******************************************************************************/
 package de.azapps.mirakel.model.list.meta;
 
-import android.content.Context;
-import de.azapps.mirakel.model.R;
-import de.azapps.mirakel.model.task.Task;
 
-public class SpecialListsDoneProperty extends SpecialListsNegatedProperty {
+public abstract class SpecialListsNegatedProperty extends
+		SpecialListsBaseProperty {
+	protected boolean done;
 
-	public SpecialListsDoneProperty(final boolean done) {
-		super(done);
+	abstract protected String propertyName();
+
+	public SpecialListsNegatedProperty(final boolean done) {
+		this.done = done;
+	}
+
+	public boolean getDone() {
+		return this.done;
+	}
+
+	public void setDone(final boolean done) {
+		this.done = done;
 	}
 
 	@Override
-	public String getWhereQuery() {
-		return "done=" + (this.done ? "1" : "0");
+	public String serialize() {
+		String ret = "\"" + propertyName() + "\":{";
+		ret += "\"done\":" + (this.done ? "true" : "false");
+		return ret + "}";
 	}
 
-	@Override
-	public String getSummary(final Context mContext) {
-		return this.done ? mContext.getString(R.string.done) : mContext
-				.getString(R.string.undone);
-	}
-
-	@Override
-	protected String propertyName() {
-		return Task.DONE;
-	}
 }

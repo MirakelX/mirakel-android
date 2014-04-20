@@ -22,12 +22,14 @@ import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.MirakelContentProvider;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.account.AccountMirakel;
+import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.meta.DueDeserializer;
 import de.azapps.mirakel.model.list.meta.ProgressDeserializer;
 import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsContentProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsDoneProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsDueProperty;
+import de.azapps.mirakel.model.list.meta.SpecialListsFileProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsListProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsNameProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsPriorityProperty;
@@ -427,6 +429,9 @@ public class SpecialList extends ListMirakel {
 				break;
 			case Task.SUBTASK_TABLE:
 				className = SpecialListsSubtaskProperty.class;
+				break;
+			case FileMirakel.TABLE:
+				className = SpecialListsFileProperty.class;
 				break;
 			default:
 				Log.wtf(TAG, "unkown key: " + key);

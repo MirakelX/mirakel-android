@@ -175,6 +175,8 @@
     <string name="special_list_subtask_parent_not">Hasn\'t subtask</string>
     <string name="special_list_subtask_child">Is subtask</string>
     <string name="special_list_subtask_child_not">Isn\'t subtask</string>
+    <string name="no_file">Hasn\'t file</string>
+    <string name="has_file">Has file</string>
 
     <string-array name="due_day_year_values">
         <item>Day</item>
