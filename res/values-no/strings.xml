@@ -46,11 +46,6 @@
     <item>Slett</item>
     <item>Share</item>
   </string-array>
-  <string-array name="audio_playback_options">
-    <item>Open file</item>
-    <item>Play loud</item>
-    <item>Play silent</item>
-  </string-array>
   <string-array name="task_actions_items">
     <item>Rediger</item>
     <item>Flytt</item>
