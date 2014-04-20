@@ -349,9 +349,16 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     
     <string name="special_list_where_subtask_title_text">Subtasks</string>
     <string name="special_list_where_progress_title_text">Progress</string>
+    <string name="special_list_where_file_title_text">File</string>
     <string-array name="special_lists_subtask_options">
         <item >Negate selection</item>
         <item >Search for tasks with subtasks or which are subtasks</item>
+    </string-array>
+    
+    <string-array name="file_choice">
+        <item >Not set</item>
+        <item >Has file</item>
+        <item >Hasn\'t file</item>
     </string-array>
 
     <string name="remove">Remove</string>

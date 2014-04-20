@@ -47,6 +47,7 @@ import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.PreferencesHelper;
 import de.azapps.mirakel.model.DatabaseHelper;
+import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
@@ -54,6 +55,7 @@ import de.azapps.mirakel.model.list.meta.SpecialListsContentProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsDoneProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsDueProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsDueProperty.Unit;
+import de.azapps.mirakel.model.list.meta.SpecialListsFileProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsListProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsNameProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsPriorityProperty;
@@ -251,6 +253,8 @@ public class SpecialListSettings extends PreferencesHelper {
 		progress.setSummary(getFieldText(Task.PROGRESS));
 		final Preference subtask = findPreference("special_where_subtask");
 		subtask.setSummary(getFieldText(Task.SUBTASK_TABLE));
+		final Preference file = findPreference("special_where_file");
+		file.setSummary(getFieldText(FileMirakel.TABLE));
 
 		done.setOnPreferenceChangeListener(null);
 		done.setOnPreferenceClickListener(new OnPreferenceClickListener() {
@@ -777,6 +781,53 @@ public class SpecialListSettings extends PreferencesHelper {
 													Task.SUBTASK_TABLE, subtask);
 										}
 
+									}
+								}).show();
+				return false;
+			}
+		});
+
+		file.setOnPreferenceChangeListener(null);
+		file.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				final SpecialListsFileProperty prop = (SpecialListsFileProperty) specialList
+						.getWhere().get(FileMirakel.TABLE);
+				int checked = 0;
+				if (prop != null) {
+					if (prop.getDone()) {
+						checked = 1;
+					} else {
+						checked = 2;
+					}
+				}
+
+				new AlertDialog.Builder(activity)
+						.setTitle(R.string.select_by)
+						.setSingleChoiceItems(R.array.file_choice, checked,
+								new DialogInterface.OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										if (which == 0) {
+											setNewWhere(null, false,
+													FileMirakel.TABLE, file);
+										} else {
+											if (prop == null) {
+												setNewWhere(
+														new SpecialListsFileProperty(
+																which == 1),
+														true,
+														FileMirakel.TABLE, file);
+											} else {
+												prop.setDone(which == 1);
+												setNewWhere(prop, true,
+														FileMirakel.TABLE, file);
+											}
+										}
+										dialog.dismiss();
 									}
 								}).show();
 				return false;
