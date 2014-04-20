@@ -103,26 +103,6 @@
   <string name="action_credits">Poděkování</string>
   <string name="action_credits_summary">O nás ;)</string>
   <string name="title_activity_credits">O autorech</string>
-  <string-array name="sync_types">
-    <item>CalDAV sync</item>
-    <item>Taskwarrior sync</item>
-  </string-array>
-  <string-array name="tablet_options">
-    <item>never</item>
-    <item>landscape</item>
-    <item>portrait</item>
-    <item>portrait &amp; landscape</item>
-  </string-array>
-  <string-array name="weekdays">
-    <item>Don\'t set</item>
-    <item>Monday</item>
-    <item>Tuesday</item>
-    <item>Wednesday</item>
-    <item>Thursday</item>
-    <item>Friday</item>
-    <item>Saturday</item>
-    <item>Sunday</item>
-  </string-array>
   <string-array name="priority_entries">
     <item>Bez určení priority</item>
     <item>-2</item>

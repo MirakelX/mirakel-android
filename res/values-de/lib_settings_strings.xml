@@ -227,6 +227,10 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen, wi
   <string name="demo_mode">Demo-Modus</string>
   <string name="demo_drop_db">Demo-Datenbank wiederherstellen</string>
   <string name="write_logs_to_file">Logs auf SD-Karte speichern</string>
+  <string name="alert_caldav"><![CDATA[Die CalDAV-Synchronisierung ist noch nicht 100%% stabil. Bitte sei vorsichtig beim Probieren und melde Fehler!]]></string>
+  <string name="alert_caldav_title">CalDAV-Informationen</string>
+  <string name="alert_taskwarrior"><![CDATA[Die Synchronisation mit Taskwarrior sollte funktionieren, mach bitte trotzdem eine Sicherung deiner Daten! Bitte melde Auffälligkeiten und Fehler, damit wir diese beheben können!]]></string>
+  <string name="alert_taskwarrior_title">Taskwarrior-Informationen</string>
   <string-array name="sync_types">
     <item>CalDAV synchronisieren</item>
     <item>Taskwarrior-Sync</item>

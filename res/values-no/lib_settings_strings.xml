@@ -89,26 +89,6 @@
   <string name="action_credits">Medvirkende</string>
   <string name="action_credits_summary">Om oss ;)</string>
   <string name="title_activity_credits">Medvirkende og om</string>
-  <string-array name="sync_types">
-    <item>CalDAV sync</item>
-    <item>Taskwarrior sync</item>
-  </string-array>
-  <string-array name="tablet_options">
-    <item>never</item>
-    <item>landscape</item>
-    <item>portrait</item>
-    <item>portrait &amp; landscape</item>
-  </string-array>
-  <string-array name="weekdays">
-    <item>Don\'t set</item>
-    <item>Monday</item>
-    <item>Tuesday</item>
-    <item>Wednesday</item>
-    <item>Thursday</item>
-    <item>Friday</item>
-    <item>Saturday</item>
-    <item>Sunday</item>
-  </string-array>
   <string-array name="priority_entries">
     <item>Ikke angi prioritet</item>
     <item>-2</item>

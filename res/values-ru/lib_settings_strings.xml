@@ -107,26 +107,6 @@
   <string name="feedback">Обратная связь</string>
   <string name="credits_libraries">Задействованные сторонние компоненты</string>
   <string name="credits_license_title">Условия использования</string>
-  <string-array name="sync_types">
-    <item>CalDAV sync</item>
-    <item>Taskwarrior sync</item>
-  </string-array>
-  <string-array name="tablet_options">
-    <item>never</item>
-    <item>landscape</item>
-    <item>portrait</item>
-    <item>portrait &amp; landscape</item>
-  </string-array>
-  <string-array name="weekdays">
-    <item>Don\'t set</item>
-    <item>Monday</item>
-    <item>Tuesday</item>
-    <item>Wednesday</item>
-    <item>Thursday</item>
-    <item>Friday</item>
-    <item>Saturday</item>
-    <item>Sunday</item>
-  </string-array>
   <string-array name="priority_entries">
     <item>Не задавайте приоритет</item>
     <item>-2</item>
