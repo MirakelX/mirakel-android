@@ -15,8 +15,4 @@
   <string name="sync_frequency_summary_man">Bare synkroniser manuelt</string>
   <string name="load_config">Velg konfigurasjonsfilen for Taskwarrior</string>
   <string name="select_config">Velg Taskwarrior konfigurasjons fil</string>
-  <string-array name="sync_types">
-    <item>CalDAV sync</item>
-    <item>Taskwarrior sync</item>
-  </string-array>
 </resources>

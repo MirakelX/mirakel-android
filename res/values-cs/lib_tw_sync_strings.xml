@@ -17,8 +17,4 @@
   <string name="calDavName">CalDav</string>
   <string name="load_config">Vyberte konfigurační soubor pro Taskwarrior</string>
   <string name="select_config">Vyberte konfigurační soubor pro Taskwarrior</string>
-  <string-array name="sync_types">
-    <item>CalDAV sync</item>
-    <item>Taskwarrior sync</item>
-  </string-array>
 </resources>
