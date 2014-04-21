@@ -281,17 +281,20 @@ public class TaskDetailView extends BaseTaskDetailRow implements
 	}
 
 	public void unmark() {
+		// Handle Subtasks
 		BaseTaskDetailRow v = this.views.get(TYPE.SUBTASK);
 		if (v != null) {
 			v.update(this.task);
 			((TaskDetailSubtask) v).disableMarked();
 		}
+		// Handle Files
 		v = this.views.get(TYPE.FILE);
 		if (v != null) {
 			v.update(this.task);
 			((TaskDetailFile) v).disableMarked();
 		}
-		cancelContent();
+		// Handle Content
+		saveContent();
 
 	}
 
