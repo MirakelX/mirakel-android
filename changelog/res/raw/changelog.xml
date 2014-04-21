@@ -1,31 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
-  <version name="2.4.0-beta5" date="" code="49">
-      <text>Release candidate for Mirakel 2.4</text>
-      <text>Please report all the bugs so we can release a bug free version.</text>
-  </version>
-  <version name="2.4.0-beta4.1" date="2014-04-13" code="48">
-      <text>Sorry for this bug! We will take care that this does not happen again.</text>
-      <feature>Fixed crash on app start (Concerns all devices)</feature>
-  </version>
-  <version name="2.4.0-beta4" date="2014-04-12" code="47">
-      <text>Fixed some bad bugs</text>
-      <text>We want to release the next version soon. Please report all bugs you find.</text>
-      <feature>Fixed problems with sharing files with Mirakel</feature>
-      <feature>Fixed crash when searching</feature>
-      <feature>Fixed some minor bugs</feature>
-      <feature>Fixed taskwarrior bugs (Sorry, please recreate your account if the sync not work)</feature>
-      <feature>Fixed CalDAV bugs (update DAVdroid!)</feature>
-      <feature>Fixed sorting problems</feature>
-      <feature>Some minor UI fixes</feature>
-  </version>
-  <version name="2.4.0-beta3" date="2014-04-07" code="45">
-    <feature>More bugfixes</feature>
-    <feature>Reimplement tasksfragment</feature>
-    <feature>Replace drag'n'drop-listview by better on</feature>
-    <feature>improve overall performance</feature>
-    <feature>reimplement Metalists</feature>
-    <feature>due and reminders are aware to timezones changes</feature>
+  <version name="2.4.0" date="2014-04-21" code="50">
+      <text>The new and shiny Mirakel release.</text>
+      <text>Please try out the beta releases if you want to have faster updates.</text>
+      <feature>Mirakel should be much faster now</feature>
+      <feature>Many bugfixes</feature>
+      <feature>Small UI improvements</feature>
+      <feature>Sync improvements</feature>
   </version>
   <version name="2.3.2" date="2014-03-02">
     <feature>More bugfixes</feature>
