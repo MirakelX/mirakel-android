@@ -212,6 +212,8 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="feedback">Enviar comentários</string>
   <string name="credits_libraries">Bibliotecas utilizadas</string>
   <string name="credits_license_title">Licença</string>
+  <string name="special_list_where_subtask_title_text">Subtarefas</string>
+  <string name="special_list_where_progress_title_text">Progresso</string>
   <string-array name="sync_types">
     <item>Sincronização CalDAV</item>
     <item>Sincronização Taskwarrior</item>

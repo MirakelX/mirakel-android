@@ -89,6 +89,7 @@
   <string name="action_credits">Medvirkende</string>
   <string name="action_credits_summary">Om oss ;)</string>
   <string name="title_activity_credits">Medvirkende og om</string>
+  <string name="special_list_where_subtask_title_text">Deloppgave</string>
   <string-array name="priority_entries">
     <item>Ikke angi prioritet</item>
     <item>-2</item>
