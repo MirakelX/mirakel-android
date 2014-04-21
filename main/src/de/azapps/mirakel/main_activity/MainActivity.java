@@ -1457,6 +1457,8 @@ public class MainActivity extends ActionBarActivity implements
 		super.onResume();
 		if (this.isResumed) {
 			setupLayout();
+		} else {
+			forceRebuildLayout();
 		}
 		this.isResumed = true;
 	}
