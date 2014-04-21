@@ -57,16 +57,6 @@
   <string name="inverte">Inverter merking</string>
   <string name="not_in">Ikke i</string>
   <string name="delete">Slett</string>
-  <string-array name="weekdays">
-    <item>Don\'t set</item>
-    <item>Monday</item>
-    <item>Tuesday</item>
-    <item>Wednesday</item>
-    <item>Thursday</item>
-    <item>Friday</item>
-    <item>Saturday</item>
-    <item>Sunday</item>
-  </string-array>
   <string-array name="special_list_def_date_picker">
     <item>Ingen dato</item>
     <item>I går</item>
@@ -93,18 +83,5 @@
     <item>Dager</item>
     <item>Måneder</item>
     <item>År</item>
-  </string-array>
-  <string-array name="demo_lists">
-    <item>Work</item>
-    <item>Home</item>
-    <item>Shopping</item>
-  </string-array>
-  <string-array name="demo_tasks">
-    <item>today Buy birthday present for grandpa</item>
-    <item>Music</item>
-    <item>monday Organize the party</item>
-    <item>today Finish presentation</item>
-    <item>Milk</item>
-    <item>Cheese</item>
   </string-array>
 </resources>

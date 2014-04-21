@@ -22,15 +22,20 @@ import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.MirakelContentProvider;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.account.AccountMirakel;
+import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.meta.DueDeserializer;
+import de.azapps.mirakel.model.list.meta.ProgressDeserializer;
 import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsContentProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsDoneProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsDueProperty;
+import de.azapps.mirakel.model.list.meta.SpecialListsFileProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsListProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsNameProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsPriorityProperty;
+import de.azapps.mirakel.model.list.meta.SpecialListsProgressProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsReminderProperty;
+import de.azapps.mirakel.model.list.meta.SpecialListsSubtaskProperty;
 import de.azapps.mirakel.model.list.meta.StringDeserializer;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
@@ -391,7 +396,9 @@ public class SpecialList extends ListMirakel {
 				.registerTypeAdapter(
 						SpecialListsNameProperty.class,
 						new StringDeserializer<SpecialListsNameProperty>(
-								SpecialListsNameProperty.class)).create();
+								SpecialListsNameProperty.class))
+				.registerTypeAdapter(SpecialListsProgressProperty.class,
+						new ProgressDeserializer()).create();
 		for (final Entry<String, JsonElement> entry : all.entrySet()) {
 			final String key = entry.getKey();
 			Class<? extends SpecialListsBaseProperty> className;
@@ -416,6 +423,15 @@ public class SpecialList extends ListMirakel {
 				break;
 			case Task.REMINDER:
 				className = SpecialListsReminderProperty.class;
+				break;
+			case Task.PROGRESS:
+				className = SpecialListsProgressProperty.class;
+				break;
+			case Task.SUBTASK_TABLE:
+				className = SpecialListsSubtaskProperty.class;
+				break;
+			case FileMirakel.TABLE:
+				className = SpecialListsFileProperty.class;
 				break;
 			default:
 				Log.wtf(TAG, "unkown key: " + key);

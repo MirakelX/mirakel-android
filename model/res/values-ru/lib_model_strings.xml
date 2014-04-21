@@ -78,16 +78,6 @@
   <string name="not_in">Не в</string>
   <string name="delete">Удалить</string>
   <string name="nothing">Без повтора</string>
-  <string-array name="weekdays">
-    <item>Don\'t set</item>
-    <item>Monday</item>
-    <item>Tuesday</item>
-    <item>Wednesday</item>
-    <item>Thursday</item>
-    <item>Friday</item>
-    <item>Saturday</item>
-    <item>Sunday</item>
-  </string-array>
   <string-array name="special_list_def_date_picker">
     <item>Нет даты</item>
     <item>Вчера</item>
@@ -114,18 +104,5 @@
     <item>Дня(-ей)</item>
     <item>Месяца(-ев)</item>
     <item>Года</item>
-  </string-array>
-  <string-array name="demo_lists">
-    <item>Work</item>
-    <item>Home</item>
-    <item>Shopping</item>
-  </string-array>
-  <string-array name="demo_tasks">
-    <item>today Buy birthday present for grandpa</item>
-    <item>Music</item>
-    <item>monday Organize the party</item>
-    <item>today Finish presentation</item>
-    <item>Milk</item>
-    <item>Cheese</item>
   </string-array>
 </resources>

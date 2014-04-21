@@ -106,7 +106,7 @@
     <string name="share_list_title">%1$s (%2$d)</string>
     <string name="share_footer">Shared with Mirakel\nThe free (like in freedom) ToDo–List tool for Android and the Web\nhttp://mirakel.azapps.de</string>
 
- <string name="special_list_name">Name</string>
+   <string name="special_list_name">Name</string>
     <string name="special_list_active">Show</string>
     <string name="special_list_where">SQL-Where Query</string>
     <string name="special_list_sort_by">Sort by</string>
@@ -168,6 +168,15 @@
     <string name="where_like_begin_text">Begins with %s</string>
     <string name="where_like_end_text">Ends with %s</string>
     <string name="delete">Delete</string>
+    <string name="special_list_progress_equal">Equal to %d</string>
+    <string name="special_list_progress_less_than">Less than %d</string>
+    <string name="special_list_progress_greater_than">Greater than %d</string>
+    <string name="special_list_subtask_parent">Has subtask</string>
+    <string name="special_list_subtask_parent_not">Hasn\'t subtask</string>
+    <string name="special_list_subtask_child">Is subtask</string>
+    <string name="special_list_subtask_child_not">Isn\'t subtask</string>
+    <string name="no_file">Hasn\'t file</string>
+    <string name="has_file">Has file</string>
 
     <string-array name="due_day_year_values">
         <item>Day</item>
