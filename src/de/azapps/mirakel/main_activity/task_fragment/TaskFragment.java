@@ -359,7 +359,6 @@ public abstract class TaskFragment extends Fragment {
 				} else {
 					Log.d(TaskFragment.TAG, "end actionmode");
 					closeActionMode();
-					;
 				}
 
 			}
