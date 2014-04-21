@@ -17,6 +17,7 @@ SDK-نسخة: %2$d\n
   <string name="error_TASKS_CANNOT_FORM_LOOP">مهام فرعية لا يمكنها تشكيل حلقة</string>
   <string name="error_FILE_NO_ACTIVITY">لا أعرف كيفية فتح هذا الملف – عذراً</string>
   <string name="error_NO_FILEMANAGER">الرجاء تثبيت مدير الملفات</string>
+  <string name="error_FILE_NOT_FOUND">لم يتم العثور على هذا الملف</string>
   <string name="error_BACKUP_EXPORT_ERROR">حدث خطأ أثناء تصدير قاعدة البيانات</string>
   <string name="error_BACKUP_IMPORT_ERROR">حدث خطأ أثناء استيراد قاعدة البيانات</string>
   <string name="error_TASKS_NO_LIST">يتعذر مزامنة هذه المهمة، نظراً لأنه لا قوائم لديك</string>
