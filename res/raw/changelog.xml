@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+  <version name="2.4.0R2" date="2014-04-22" code="51">
+      <feature>Fix some bugs that can prevent update under certain contitions</feature>
+  </version>
   <version name="2.4.0" date="2014-04-21" code="50">
       <text>The new and shiny Mirakel release.</text>
       <text>Please try out the beta releases if you want to have faster updates.</text>
