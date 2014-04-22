@@ -656,6 +656,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			for (final AccountMirakel a : accounts) {
 				if (a.getType() == ACCOUNT_TYPES.TASKWARRIOR) {
 					final Account account = a.getAndroidAccount(this.context);
+					if (account == null) {
+						db.delete(AccountMirakel.TABLE, ID + "=?",
+								new String[] { a.getId() + "" });
+						continue;
+					}
 					a.setSyncKey(accountManager.getPassword(account));
 					db.update(AccountMirakel.TABLE, a.getContentValues(), ID
 							+ "=?", new String[] { a.getId() + "" });
@@ -768,7 +773,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private static void updateTimesToUTC(final SQLiteDatabase db) {
 		db.execSQL("ALTER TABLE " + Task.TABLE + " RENAME TO tmp_tasks;");
 		createTasksTable(db);
-		final int offset = DateTimeHelper.getTimeZoneOffset(false,new GregorianCalendar());
+		final int offset = DateTimeHelper.getTimeZoneOffset(false,
+				new GregorianCalendar());
 		db.execSQL("Insert INTO tasks (_id, uuid, list_id, name, "
 				+ "content, done, due, reminder, priority, created_at, "
 				+ "updated_at, sync_state, additional_entries, recurring, "
@@ -790,8 +796,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	private static String getStrFtime(final String col, final int offset) {
-		return "strftime('%s',substr(" + col + ",0,11)||' '||substr(" + col
-				+ ",12,2)||':'||substr(" + col + ",14,2)||':'||substr(" + col
-				+ ",16,2)) -" + offset;
+		String ret = "strftime('%s',substr(" + col + ",0,11)||' '||substr("
+				+ col + ",12,2)||':'||substr(" + col + ",14,2)||':'||substr("
+				+ col + ",16,2)) - " + offset;
+		if (col.equals(CREATED_AT) || col.equals(UPDATED_AT)) {
+			ret = "CASE WHEN (" + ret
+					+ ") IS NULL THEN strftime('%s','now') ELSE (" + ret
+					+ ") END";
+		}
+		return ret;
 	}
 }
