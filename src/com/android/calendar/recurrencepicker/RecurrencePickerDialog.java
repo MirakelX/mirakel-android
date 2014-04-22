@@ -158,9 +158,9 @@ public class RecurrencePickerDialog extends DialogFragment implements
 		// there is a button...
 		items[0] = this.ctx.getString(R.string.recurrence_custom);
 		this.mPosition = 0;
-		for (int i = this.extraItems; i < recurring.size() + this.extraItems; i++) {
+		for (int i = this.extraItems; i < (recurring.size() + this.extraItems); i++) {
 			items[i] = recurring.get(i - this.extraItems).second;
-			if (this.mRecurring != null
+			if ((this.mRecurring != null)
 					&& items[i].equals(this.mRecurring.getLabel())) {
 				this.mPosition = i;
 			}
@@ -308,8 +308,8 @@ public class RecurrencePickerDialog extends DialogFragment implements
 			this.mToggle = (CheckBox) view.findViewById(R.id.repeat_checkbox);
 			this.toggleIsSwitch = false;
 		}
-		this.mToggle.setChecked(this.mRecurring != null
-				&& this.mRecurring.getId() != -1);
+		this.mToggle.setChecked((this.mRecurring != null)
+				&& (this.mRecurring.getId() != -1));
 		this.mToggle.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 			@Override
@@ -508,6 +508,9 @@ public class RecurrencePickerDialog extends DialogFragment implements
 									final DatePicker datePickerDialog,
 									final int year, final int month,
 									final int day) {
+								if (RecurrencePickerDialog.this.mEndDate == null) {
+									RecurrencePickerDialog.this.mEndDate = new GregorianCalendar();
+								}
 								RecurrencePickerDialog.this.mEndDate.set(
 										Calendar.YEAR, year);
 								RecurrencePickerDialog.this.mEndDate.set(
@@ -641,6 +644,9 @@ public class RecurrencePickerDialog extends DialogFragment implements
 									final DatePicker datePickerDialog,
 									final int year, final int month,
 									final int day) {
+								if (RecurrencePickerDialog.this.mStartDate == null) {
+									RecurrencePickerDialog.this.mStartDate = new GregorianCalendar();
+								}
 								RecurrencePickerDialog.this.mStartDate.set(
 										Calendar.YEAR, year);
 								RecurrencePickerDialog.this.mStartDate.set(
@@ -663,8 +669,8 @@ public class RecurrencePickerDialog extends DialogFragment implements
 			}
 		});
 		this.mStartSpinner.setAdapter(startSpinnerAdapter);
-		setEnabledComponents(this.mRecurring != null
-				&& this.mRecurring.getId() != -1);
+		setEnabledComponents((this.mRecurring != null)
+				&& (this.mRecurring.getId() != -1));
 		if (this.mDark) {
 			view.findViewById(R.id.recurrence_picker_dialog)
 					.setBackgroundColor(res.getColor(R.color.dialog_gray));
@@ -683,7 +689,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
 		if (!this.mForDue) {
 			this.mUseExact.setVisibility(View.GONE);
 		}
-		if (this.mRecurring != null && this.mRecurring.isTemporary()) {
+		if ((this.mRecurring != null) && this.mRecurring.isTemporary()) {
 			this.mRecurenceSelection.setSelection(0);
 			if (this.mRecurring.getWeekdays().size() != 0) {
 				this.mIntervalType.setSelection(this.mForDue ? 0 : 2);
