@@ -4,7 +4,4 @@
         <item name="android:textSize">18sp</item>
         <item name="android:paddingStart">8dp</item>
     </style>
-    <style name="selectableButton">
-        <item name="android:background">?android:attr/selectableItemBackground</item>
-    </style>
 </resources>
