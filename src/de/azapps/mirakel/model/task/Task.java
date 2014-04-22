@@ -90,7 +90,7 @@ public class Task extends TaskBase {
 		final Cursor c = Task.database.query(Task.TABLE, Task.allColumns,
 				"not " + DatabaseHelper.SYNC_STATE_FIELD + "= "
 						+ SYNC_STATE.DELETE, null, null, null, null);
-		List<Task> list = cursorToTaskList(c);
+		final List<Task> list = cursorToTaskList(c);
 		c.close();
 		return list;
 	}
@@ -232,6 +232,10 @@ public class Task extends TaskBase {
 
 	public static String getSorting(final int sorting) {
 		String order = "";
+		final String dueSort = "CASE WHEN (" + TaskBase.DUE
+				+ " IS NULL) THEN datetime('now','+50 years') ELSE datetime("
+				+ TaskBase.DUE
+				+ ",'unixepoch','localtime','start of day') END ASC";
 		switch (sorting) {
 		case ListMirakel.SORT_BY_PRIO:
 			order = TaskBase.PRIORITY + " desc";
@@ -240,17 +244,16 @@ public class Task extends TaskBase {
 			order = ", " + TaskBase.PRIORITY + " DESC";
 			//$FALL-THROUGH$
 		case ListMirakel.SORT_BY_DUE:
-			order = "done ASC, CASE WHEN (" + TaskBase.DUE
-					+ " IS NULL) THEN strftime('%s','now','+10 years') ELSE "
-					+ TaskBase.DUE + " END ASC" + order;
+			order = "done ASC, " + dueSort + order;
 			break;
 		case ListMirakel.SORT_BY_REVERT_DEFAULT:
-			order = TaskBase.PRIORITY + " DESC,  CASE WHEN (" + TaskBase.DUE
-					+ " IS NULL) THEN strftime('%s','now','+10 years') ELSE "
-					+ TaskBase.DUE + " END ASC" + order;
+			order = TaskBase.PRIORITY + " DESC, " + dueSort + order;
 			//$FALL-THROUGH$
 		default:
-			order = DatabaseHelper.ID + " ASC";
+			if (!order.equals("")) {
+				order += ", ";
+			}
+			order += DatabaseHelper.ID + " ASC";
 		}
 		return order;
 	}
