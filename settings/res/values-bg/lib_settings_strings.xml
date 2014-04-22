@@ -181,6 +181,8 @@
   <string name="feedback">Изпратете ни отзив</string>
   <string name="credits_libraries">Използвани библиотеки</string>
   <string name="credits_license_title">Лиценз</string>
+  <string name="special_list_where_subtask_title_text">Подзадачи</string>
+  <string name="special_list_where_progress_title_text">Прогрес</string>
   <string-array name="sync_types">
     <item>CalDAV синхронизация</item>
     <item>Taskwarrior синхронизация</item>

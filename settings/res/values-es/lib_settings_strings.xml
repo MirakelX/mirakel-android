@@ -106,6 +106,8 @@
   <string name="feedback">Enviar comentario</string>
   <string name="credits_libraries">Bibliotecas usadas</string>
   <string name="credits_license_title">Licencia</string>
+  <string name="special_list_where_subtask_title_text">Subtareas</string>
+  <string name="special_list_where_progress_title_text">Progreso</string>
   <string-array name="sync_types">
     <item>Sincronización CalDav</item>
     <item>Sincronización de Taskwarrior</item>

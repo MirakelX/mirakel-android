@@ -129,7 +129,7 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="showDone">Mostra attività completate</string>
   <string name="dark_theme">Tema scuro</string>
   <string name="kill_button">Termina applicazione</string>
-  <string name="kill_app">Chiude l\'applicazione</string>
+  <string name="kill_app">Chiudi l\'applicazione</string>
   <string name="kill_sure">Proseguire veramente?</string>
   <string name="kill_sure_message">Quando l\'applicazione viene chiusa, non verranno più mostrati i promemoria. Considerare di disabilitare solo le notifiche (o renderle \"non persistenti\", per poterle rimuovere.)</string>
   <string name="ui_settings_title">Interfaccia utente</string>
@@ -229,6 +229,12 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="demo_mode">Modalità demo</string>
   <string name="demo_drop_db">Ripristina database demo</string>
   <string name="write_logs_to_file">Scrivi i log in un file</string>
+  <string name="alert_caldav"><![CDATA[La sincronizzazione con CalDAV non è stabile al 100%%. Provare la funzionalità con cautela e segnalare eventuali bug!]]></string>
+  <string name="alert_caldav_title">Informazioni per CalDAV</string>
+  <string name="alert_taskwarrior"><![CDATA[La sincronizzazione con Taskwarrior sembra funzionare ma è comunque preferibile eseguire un backup dei propri dati. Segnalare eventuali problemi e bug per consentirne la risoluzione!]]></string>
+  <string name="alert_taskwarrior_title">Informazioni per Taskwarrior</string>
+  <string name="special_list_where_subtask_title_text">Attività secondarie</string>
+  <string name="special_list_where_progress_title_text">Progresso</string>
   <string-array name="sync_types">
     <item>Sincronizzazione CalDAV</item>
     <item>Sincronizzazione Taskwarrior</item>

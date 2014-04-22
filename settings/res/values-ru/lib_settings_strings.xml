@@ -107,6 +107,7 @@
   <string name="feedback">Обратная связь</string>
   <string name="credits_libraries">Задействованные сторонние компоненты</string>
   <string name="credits_license_title">Условия использования</string>
+  <string name="special_list_where_subtask_title_text">Подзадачи</string>
   <string-array name="priority_entries">
     <item>Не задавайте приоритет</item>
     <item>-2</item>

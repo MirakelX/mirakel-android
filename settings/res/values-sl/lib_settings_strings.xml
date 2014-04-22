@@ -230,6 +230,8 @@ Pričakovati je, da bo tudi uradna različica DAVdroid kmalu podpirala delovanje
   <string name="demo_mode">Preizkusni način</string>
   <string name="demo_drop_db">Počisti preizkusno podatkovno zbirko</string>
   <string name="write_logs_to_file">Zapiši dnevnik v datoteko</string>
+  <string name="special_list_where_subtask_title_text">Podrejena naloga</string>
+  <string name="special_list_where_progress_title_text">Napredek</string>
   <string-array name="sync_types">
     <item>Usklajevanje CalDAV</item>
     <item>Usklajevanje preko strežnika Taskwarrior</item>

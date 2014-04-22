@@ -189,6 +189,8 @@
   <string name="credits_license_title">الترخيص</string>
   <string name="demo_mode">طريقة العرض</string>
   <string name="write_logs_to_file">كتابة سجلات ملف</string>
+  <string name="special_list_where_subtask_title_text">المهام الفرعية</string>
+  <string name="special_list_where_progress_title_text">التقدم</string>
   <string-array name="sync_types">
     <item>مزامنة CalDAV</item>
     <item>مزامنة Taskwarrior</item>

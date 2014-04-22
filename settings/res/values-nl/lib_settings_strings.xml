@@ -213,6 +213,8 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="feedback">Een terugkoppelingen versturen</string>
   <string name="credits_libraries">Gebruikte bibliotheken</string>
   <string name="credits_license_title">Licentie</string>
+  <string name="special_list_where_subtask_title_text">Subtaken</string>
+  <string name="special_list_where_progress_title_text">Voortgang</string>
   <string-array name="sync_types">
     <item>CalDAV synchronisatie</item>
     <item>Taskwarrior syngronisatie</item>

@@ -231,6 +231,8 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen, wi
   <string name="alert_caldav_title">CalDAV-Informationen</string>
   <string name="alert_taskwarrior"><![CDATA[Die Synchronisation mit Taskwarrior sollte funktionieren, mach bitte trotzdem eine Sicherung deiner Daten! Bitte melde Auffälligkeiten und Fehler, damit wir diese beheben können!]]></string>
   <string name="alert_taskwarrior_title">Taskwarrior-Informationen</string>
+  <string name="special_list_where_subtask_title_text">Unteraufgaben</string>
+  <string name="special_list_where_progress_title_text">Fortschritt</string>
   <string-array name="sync_types">
     <item>CalDAV synchronisieren</item>
     <item>Taskwarrior-Sync</item>
