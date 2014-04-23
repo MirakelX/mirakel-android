@@ -26,19 +26,24 @@ import javax.xml.transform.TransformerException;
 import de.azapps.mirakel.model.list.meta.SpecialListsDoneProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsDueProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsDueProperty.Unit;
+import de.azapps.mirakel.model.list.meta.SpecialListsListProperty;
+import de.azapps.mirakel.model.list.meta.SpecialListsPriorityProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsReminderProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsSetProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsStringProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsStringProperty.Type;
+import de.azapps.tools.Log;
 
 public class CompatibilityHelper {
+
+	private static final String TAG = "CompatibilityHelper";
 
 	private static String cleanUp(String p) {
 		int oldLenght = p.length();
 		do {
 			p = p.trim();
 			oldLenght = p.length();
-			if (p.charAt(0) == '(' && p.charAt(p.length() - 1) == ')') {
+			if ((p.charAt(0) == '(') && (p.charAt(p.length() - 1) == ')')) {
 				p = p.substring(1, p.length() - 1);
 			}
 		} while (oldLenght != p.length());
@@ -53,21 +58,24 @@ public class CompatibilityHelper {
 		if (isNegated) {
 			wherePart = wherePart.replace("not", "").trim();
 		}
-		final String[] parts = wherePart.replace(propName + " in(", "")
-				.replace(")", "").replace("(", "").split(",");
+		wherePart = wherePart.replace(propName, "").trim();
+		wherePart = wherePart.replace("in", "").trim();
+		wherePart = wherePart.replaceAll("[()]", "").trim();
+		final String[] parts = wherePart.split(",");
 		final List<Integer> content = new ArrayList<Integer>();
 		for (final String part : parts) {
 			content.add(Integer.parseInt(part.trim()));
 		}
-		T obj;
-		try {
-			obj = clazz.newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
-			throw new TransformerException("failed to instance setClass", e);
+		if (clazz.getCanonicalName().equals(
+				SpecialListsListProperty.class.getCanonicalName())) {
+			return (T) new SpecialListsListProperty(isNegated, content);
+		} else if (clazz.getCanonicalName().equals(
+				SpecialListsPriorityProperty.class.getCanonicalName())) {
+			return (T) new SpecialListsPriorityProperty(isNegated, content);
+		} else {
+			Log.wtf(TAG, "unknown filtertype");
+			throw new TransformerException("failed to instance setClass");
 		}
-		obj.setContent(content);
-		obj.setNegated(isNegated);
-		return obj;
 	}
 
 	public static <T extends SpecialListsStringProperty> T getStringProperty(
@@ -113,7 +121,7 @@ public class CompatibilityHelper {
 				p = p.split("<=date")[1];
 				p = p.replace("(", "").replace(")", "").trim();
 				final String[] parts = p.split(",");
-				if (parts.length == 2 && parts[1].contains("localtime")) {
+				if ((parts.length == 2) && parts[1].contains("localtime")) {
 					return new SpecialListsDueProperty(Unit.DAY, 0);
 				}
 				p = parts[1];
