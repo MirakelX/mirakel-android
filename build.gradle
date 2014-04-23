@@ -33,6 +33,5 @@ android {
 dependencies {
     compile project(':helper')
     compile "com.google.code.gson:gson:$gsonVersion"
-    compile "org.apache.commons:commons-lang3:$commonLangVersion"
 }
 
