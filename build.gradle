@@ -58,8 +58,6 @@ configure(allprojects) {
     ext.nineoldandroisVersion="2.4.0"
     ext.robotiumVersion = "5.1"
     ext.gsonVersion = "2.2.+"
-    ext.commonLangVersion = "3.3"
-
 }
 
 allprojects {
