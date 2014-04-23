@@ -836,6 +836,10 @@ public class MainActivity extends ActionBarActivity implements
 		} else {
 			fragments.add(new TaskFragmentV14());
 		}
+		if (this.currentTask != null) {
+			((TaskFragment) fragments.get(fragments.size() - 1))
+					.update(this.currentTask);
+		}
 		if (!MirakelCommonPreferences.isTablet() && !this.isResumed
 				&& this.mPagerAdapter == null) {
 			if (MainActivity.isRTL) {
