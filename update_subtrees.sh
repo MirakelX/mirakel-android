@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 source ./.subrepos
 source ./.localconfig # declare user
 export EDITOR=/bin/true
