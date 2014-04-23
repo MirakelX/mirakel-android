@@ -52,15 +52,12 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 	<style name="Dialog" parent="@android:style/Theme.Dialog"/>
-
-    <style tools:ignore="NewApi" name="Button" parent="@android:style/Holo.ButtonBar.AlertDialog"></style>
+    <style name="Button" parent="@android:style/ButtonBar"></style>
   
-    <style name="selectableButton">
-        <item name="android:background">?android:attr/selectableItemBackground</item>
-    </style>
-    
-    <style name="buttonDivider">
-        <item name="android:background">@color/holo_blue_dark</item>
+    <style name="selectableButton" parent="@style/Button"></style>
+     <style name="buttonDivider">
+        <item name="android:background">@color/White</item>
         <item name="android:layout_width">2dp</item>
     </style>
+    
 </resources>
