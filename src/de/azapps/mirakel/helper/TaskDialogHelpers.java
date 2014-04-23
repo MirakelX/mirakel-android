@@ -42,6 +42,7 @@ import android.util.SparseBooleanArray;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -655,6 +656,10 @@ public class TaskDialogHelpers {
 								if (taskChanged != null) {
 									taskChanged.onTaskChanged(task);
 								}
+								((Activity) ctx)
+										.getWindow()
+										.setSoftInputMode(
+												WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 								dialog.dismiss();
 							}
 
