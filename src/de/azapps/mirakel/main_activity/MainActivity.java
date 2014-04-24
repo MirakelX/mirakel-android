@@ -607,6 +607,9 @@ public class MainActivity extends ActionBarActivity implements
 	 * @param lists
 	 */
 	public void handleMoveTask(final List<Task> tasks) {
+		if (tasks == null || tasks.size() == 0) {
+			return;
+		}
 		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(R.string.dialog_move);
 		final List<CharSequence> items = new ArrayList<CharSequence>();
