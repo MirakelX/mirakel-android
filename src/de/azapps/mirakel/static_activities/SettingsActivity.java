@@ -10,7 +10,6 @@
  ******************************************************************************/
 package de.azapps.mirakel.static_activities;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -20,11 +19,11 @@ import java.util.Locale;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -75,30 +74,35 @@ public class SettingsActivity extends PreferenceActivity {
 						.getCanonicalName());
 	}
 
+	private FileInputStream stream;
+
 	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
 	@Override
 	protected void onActivityResult(final int requestCode,
 			final int resultCode, final Intent data) {
-		Log.d(TAG, "activity");
-		final Context that = this;
 		switch (requestCode) {
 		case FILE_IMPORT_DB:
 			if (resultCode != RESULT_OK) {
 				return;
 			}
-			final String path_db = FileUtils.getPathFromUri(data.getData(),
-					this);
-			// Check if this is an database file
-			if (path_db != null && !path_db.endsWith(".db")) {
+			final Uri uri = data.getData();
+			try {
+				if (uri == null
+						|| !"db".equals(FileUtils.getFileExtension(uri))) {
+					ErrorReporter.report(ErrorType.FILE_NOT_MIRAKEL_DB);
+				}
+				this.stream = FileUtils.getStreamFromUri(this, uri);
+			} catch (final FileNotFoundException e) {
 				ErrorReporter.report(ErrorType.FILE_NOT_MIRAKEL_DB);
-				return;
+				break;
 			}
 			new AlertDialog.Builder(this)
 					.setTitle(R.string.import_sure)
 					.setMessage(
 							this.getString(R.string.import_sure_summary,
-									path_db))
+									FileUtils.getNameFromUri(
+											SettingsActivity.this, uri)))
 					.setNegativeButton(android.R.string.cancel, null)
 					.setPositiveButton(android.R.string.yes,
 							new OnClickListener() {
@@ -107,22 +111,9 @@ public class SettingsActivity extends PreferenceActivity {
 								public void onClick(
 										final DialogInterface dialog,
 										final int which) {
-									if (path_db != null) {
-										ExportImport.importDB(that, new File(
-												path_db));
-									} else {
-										try {
-											ExportImport
-													.importDB(
-															that,
-															(FileInputStream) getContentResolver()
-																	.openInputStream(
-																			data.getData()));
-										} catch (final FileNotFoundException e) {
-											// TODO Auto-generated catch block
-											e.printStackTrace();
-										}
-									}
+									ExportImport.importDB(
+											SettingsActivity.this,
+											SettingsActivity.this.stream);
 								}
 							}).create().show();
 			break;
@@ -140,8 +131,12 @@ public class SettingsActivity extends PreferenceActivity {
 			if (resultCode != RESULT_OK) {
 				return;
 			}
-			final String file_path = FileUtils.getPathFromUri(data.getData(),
-					this);
+			try {
+				this.stream = FileUtils.getStreamFromUri(this, data.getData());
+			} catch (final FileNotFoundException e) {
+				ErrorReporter.report(ErrorType.FILE_NOT_FOUND);
+				break;
+			}
 
 			// Do the import in a background-task
 			new AsyncTask<String, Void, Boolean>() {
@@ -151,11 +146,15 @@ public class SettingsActivity extends PreferenceActivity {
 				protected Boolean doInBackground(final String... params) {
 					switch (requestCode) {
 					case FILE_ASTRID:
-						return ExportImport.importAstrid(that, file_path);
+						return ExportImport.importAstrid(SettingsActivity.this,
+								SettingsActivity.this.stream,
+								FileUtils.getMimeType(data.getData()));
 					case FILE_ANY_DO:
-						return AnyDoImport.exec(that, file_path);
+						return AnyDoImport.exec(SettingsActivity.this,
+								SettingsActivity.this.stream);
 					case FILE_WUNDERLIST:
-						return WunderlistImport.exec(that, file_path);
+						return WunderlistImport.exec(SettingsActivity.this,
+								SettingsActivity.this.stream);
 					default:
 						return false;
 					}
@@ -168,8 +167,9 @@ public class SettingsActivity extends PreferenceActivity {
 					if (!success) {
 						ErrorReporter.report(ErrorType.ASTRID_ERROR);
 					} else {
-						Toast.makeText(that, R.string.astrid_success,
-								Toast.LENGTH_SHORT).show();
+						Toast.makeText(SettingsActivity.this,
+								R.string.astrid_success, Toast.LENGTH_SHORT)
+								.show();
 						android.os.Process.killProcess(android.os.Process
 								.myPid()); // ugly
 						// but
@@ -179,9 +179,11 @@ public class SettingsActivity extends PreferenceActivity {
 
 				@Override
 				protected void onPreExecute() {
-					this.dialog = ProgressDialog.show(that,
-							that.getString(R.string.importing),
-							that.getString(R.string.wait), true);
+					this.dialog = ProgressDialog
+							.show(SettingsActivity.this, SettingsActivity.this
+									.getString(R.string.importing),
+									SettingsActivity.this
+											.getString(R.string.wait), true);
 				}
 			}.execute("");
 			break;
