@@ -20,13 +20,10 @@ package de.azapps.mirakel.model.task;
 
 import java.text.ParseException;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import org.apache.commons.lang3.StringUtils;
 
 import android.content.ContentValues;
 import de.azapps.mirakel.DefinitionsHelper;
@@ -178,26 +175,30 @@ class TaskBase {
 					&& this.due.get(Calendar.SECOND) == 0) {
 				cv.put(TaskBase.DUE, this.due.getTimeInMillis() / 1000);
 			} else {
-				cv.put(TaskBase.DUE, DateTimeHelper.getUTCTime(due));
+				cv.put(TaskBase.DUE, DateTimeHelper.getUTCTime(this.due));
 			}
 		} else {
 			cv.put(TaskBase.DUE, (Integer) null);
 		}
 		if (this.reminder != null) {
-			cv.put(TaskBase.REMINDER, DateTimeHelper.getUTCTime(reminder));
+			cv.put(TaskBase.REMINDER, DateTimeHelper.getUTCTime(this.reminder));
 		} else {
 			cv.put(TaskBase.REMINDER, (Integer) null);
 		}
 		cv.put(TaskBase.PRIORITY, this.priority);
 		if (this.createdAt != null) {
-			cv.put(DatabaseHelper.CREATED_AT,DateTimeHelper.getUTCTime(createdAt));
+			cv.put(DatabaseHelper.CREATED_AT,
+					DateTimeHelper.getUTCTime(this.createdAt));
 		} else {
-			cv.put(DatabaseHelper.CREATED_AT, DateTimeHelper.getUTCTime(new GregorianCalendar()));
+			cv.put(DatabaseHelper.CREATED_AT,
+					DateTimeHelper.getUTCTime(new GregorianCalendar()));
 		}
 		if (this.updatedAt != null) {
-			cv.put(DatabaseHelper.UPDATED_AT,DateTimeHelper.getUTCTime(updatedAt));
+			cv.put(DatabaseHelper.UPDATED_AT,
+					DateTimeHelper.getUTCTime(this.updatedAt));
 		} else {
-			cv.put(DatabaseHelper.CREATED_AT, DateTimeHelper.getUTCTime(new GregorianCalendar()));
+			cv.put(DatabaseHelper.CREATED_AT,
+					DateTimeHelper.getUTCTime(new GregorianCalendar()));
 		}
 		cv.put(DatabaseHelper.SYNC_STATE_FIELD, this.sync_state.toInt());
 		cv.put(TaskBase.RECURRING, this.recurrence);
@@ -338,9 +339,9 @@ class TaskBase {
 			return;
 		}
 		if (content != null) {
-			this.content = StringUtils.replaceEach(content.trim(),
-					new String[] { "\\n", "\\\"", "\b" }, new String[] { "\n",
-							"\"", "" });
+			this.content = content.trim().replace("\\n", "\n");
+			this.content = this.content.replace("\\\"", "\"");
+			this.content = this.content.replace("\b", "");
 		} else {
 			this.content = null;
 		}
