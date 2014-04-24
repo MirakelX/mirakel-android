@@ -56,7 +56,7 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.ViewSwitcher;
 
 import com.android.calendar.recurrencepicker.RecurrencePickerDialog;
-import com.android.calendar.recurrencepicker.RecurrencePickerDialog.OnRecurenceSetListner;
+import com.android.calendar.recurrencepicker.RecurrencePickerDialog.OnRecurrenceSetListner;
 
 import de.azapps.mirakel.DefenitionsModel.ExecInterfaceWithTask;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
@@ -288,10 +288,10 @@ public class TaskDialogHelpers {
 			}
 		}
 		final RecurrencePickerDialog rp = RecurrencePickerDialog.newInstance(
-				new OnRecurenceSetListner() {
+				new OnRecurrenceSetListner() {
 
 					@Override
-					public void OnCustomRecurnceSetInterval(
+					public void onCustomRecurrenceSetInterval(
 							final boolean isDue, final int intervalYears,
 							final int intervalMonths, final int intervalDays,
 							final int intervalHours, final int intervalMinutes,
@@ -306,7 +306,7 @@ public class TaskDialogHelpers {
 					}
 
 					@Override
-					public void OnCustomRecurnceSetWeekdays(
+					public void onCustomRecurrenceSetWeekdays(
 							final boolean isDue, final List<Integer> weekdays,
 							final Calendar startDate, final Calendar endDate,
 							final boolean isExact) {
@@ -326,7 +326,7 @@ public class TaskDialogHelpers {
 					}
 
 					@Override
-					public void OnRecurrenceSet(final Recurring r) {
+					public void onRecurrenceSet(final Recurring r) {
 						setRecurence(task, isDue, r.getId(), image);
 
 					}
