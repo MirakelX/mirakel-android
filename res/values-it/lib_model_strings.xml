@@ -107,6 +107,15 @@ con Android e sul web\nhttp://mirakel.azapps.de</string>
   <string name="where_like_begin_text">Inizia con %s</string>
   <string name="where_like_end_text">Finisce con %s</string>
   <string name="delete">Elimina</string>
+  <string name="special_list_progress_equal">Uguale a %d</string>
+  <string name="special_list_progress_less_than">Minore di %d</string>
+  <string name="special_list_progress_greater_than">Maggiore di %d</string>
+  <string name="special_list_subtask_parent">Contiene attività secondarie</string>
+  <string name="special_list_subtask_parent_not">Non contiene attività secondarie</string>
+  <string name="special_list_subtask_child">È un\'attività secondaria</string>
+  <string name="special_list_subtask_child_not">Non è un\'attività secondaria</string>
+  <string name="no_file">Non contiene file</string>
+  <string name="has_file">Contiene file</string>
   <string name="nothing">Nessuna replica</string>
   <string-array name="weekdays">
     <item>Non impostare</item>

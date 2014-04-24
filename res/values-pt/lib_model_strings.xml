@@ -106,6 +106,15 @@
   <string name="where_like_begin_text">Começa com %s</string>
   <string name="where_like_end_text">Termina com %s</string>
   <string name="delete">Eliminar</string>
+  <string name="special_list_progress_equal">Igual a %d</string>
+  <string name="special_list_progress_less_than">Menor que %d</string>
+  <string name="special_list_progress_greater_than">Maior que %d</string>
+  <string name="special_list_subtask_parent">Tem subtarefa</string>
+  <string name="special_list_subtask_parent_not">Não tem subtarefa</string>
+  <string name="special_list_subtask_child">É subtarefa</string>
+  <string name="special_list_subtask_child_not">Não é subtarefa</string>
+  <string name="no_file">Não tem ficheiro</string>
+  <string name="has_file">Tem ficheiro</string>
   <string name="nothing">Sem recorrência</string>
   <string-array name="weekdays">
     <item>Não definir</item>
