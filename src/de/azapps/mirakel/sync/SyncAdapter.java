@@ -161,6 +161,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			case CONFIG_PARSE_ERROR:
 				last_message = this.mContext.getText(R.string.wrong_config);
 				break;
+			case NO_SUCH_CERT:
+				last_message = this.mContext.getText(R.string.cert_not_found);
+				break;
 			case NOT_ENABLED:
 			default:
 				return;
