@@ -30,7 +30,7 @@ gradle.projectsEvaluated {
         script.waitFor()
         def res = fileTree(dir: res_dir)
         def res_v14 =fileTree(dir: res_v14_dir)
-        def res_dest=fileTree(dir: rootDir.toString()+"/build/merged-res")
+        delete proj+"/merged-res";
         copy{
             from (res_dir){
                 include '**/*.xml'
