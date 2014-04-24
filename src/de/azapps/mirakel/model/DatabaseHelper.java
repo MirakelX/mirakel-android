@@ -37,6 +37,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.helper.CompatibilityHelper;
@@ -67,7 +68,7 @@ import de.azapps.tools.Log;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
 	public static final String CREATED_AT = "created_at";
-	public static final int DATABASE_VERSION = 36;
+	public static final int DATABASE_VERSION = 37;
 	public static final String ID = "_id";
 
 	public static final String NAME = "name";
@@ -561,7 +562,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					accountname = a.name;
 				}
 			}
-			final ContentValues cv = new ContentValues();
+			ContentValues cv = new ContentValues();
 			cv.put(DatabaseHelper.NAME, accountname);
 			cv.put(AccountBase.TYPE, type.toInt());
 			cv.put(AccountBase.ENABLED, true);
@@ -680,10 +681,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ SpecialList.WHERE_QUERY
 					+ ",'date(due',\"date(due,'unixepoch'\")");
 		case 34:
-			final Cursor cursor = db
-					.query(SpecialList.TABLE, new String[] { ID,
-							SpecialList.WHERE_QUERY }, null, null, null, null,
-							null);
+			Cursor cursor = db.query(SpecialList.TABLE, new String[] { ID,
+					SpecialList.WHERE_QUERY }, null, null, null, null, null);
 			for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor
 					.moveToNext()) {
 				final int id = cursor.getInt(0);
@@ -741,6 +740,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				am.setPassword(a,
 						am.getUserData(a, DefinitionsHelper.BUNDLE_KEY_CLIENT)
 								+ "\n:" + am.getPassword(a));
+			}
+		case 36:
+			cursor = db.query(FileMirakel.TABLE,
+					new String[] { "_id", "path" }, null, null, null, null,
+					null);
+			if (cursor.getCount() > 0) {
+				cursor.moveToFirst();
+				do {
+					final File f = new File(cursor.getString(1));
+					if (f.exists()) {
+						cv = new ContentValues();
+						cv.put("path", Uri.fromFile(f).toString());
+						db.update(FileMirakel.TABLE, cv, "_id=?",
+								new String[] { cursor.getString(0) });
+					} else {
+						db.delete(FileMirakel.TABLE, "_id=?",
+								new String[] { cursor.getString(0) });
+					}
+				} while (cursor.moveToNext());
+				cursor.close();
 			}
 		default:
 			break;

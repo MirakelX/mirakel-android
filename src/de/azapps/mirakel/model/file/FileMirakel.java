@@ -1,7 +1,9 @@
 package de.azapps.mirakel.model.file;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +13,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.util.TypedValue;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.error.ErrorReporter;
@@ -62,7 +65,7 @@ public class FileMirakel extends FileBase {
 		int i = 0;
 		return new FileMirakel(cursor.getInt(i++),
 				Task.get(cursor.getInt(i++)), cursor.getString(i++),
-				cursor.getString(i++));
+				Uri.parse(cursor.getString(i++)));
 	}
 
 	// Static Methods
@@ -138,90 +141,71 @@ public class FileMirakel extends FileBase {
 	}
 
 	public static FileMirakel newFile(final Context ctx, final Task task,
-			final String file_path) {
-		if (file_path == null) {
+			final Uri uri) {
+		if (uri == null) {
 			return null;
 		}
-		final File osFile = new File(file_path);
-
-		if (osFile.exists()) {
-			final String name = osFile.getName();
-			final FileMirakel newFile = FileMirakel.newFile(task, name,
-					file_path);
-
-			// new ExifInterface(osFile.getAbsolutePath());
-			// int orientation = exif.getAttributeInt(
-			// ExifInterface.TAG_ORIENTATION,
-			// ExifInterface.ORIENTATION_NORMAL);
-			// int rotate = 0;
-			// switch (orientation) {
-			// case ExifInterface.ORIENTATION_ROTATE_270:
-			// rotate -= 90;
-			// case ExifInterface.ORIENTATION_ROTATE_180:
-			// rotate -= 90;
-			// case ExifInterface.ORIENTATION_ROTATE_90:
-			// rotate -= 90;
-			// default:
-			// break;
-			// }
-			// Cache the image
-			Bitmap myBitmap = null;
-			try {
-				myBitmap = BitmapFactory.decodeFile(osFile.getAbsolutePath());
-			} catch (final OutOfMemoryError e) {
-				ErrorReporter.report(ErrorType.FILE_TO_LARGE_FOR_THUMBNAIL);
-			}
-			if (myBitmap != null) {
-
-				final float size = TypedValue.applyDimension(
-						TypedValue.COMPLEX_UNIT_DIP, 150, ctx.getResources()
-								.getDisplayMetrics());
-				myBitmap = Helpers.getScaleImage(myBitmap, size);
-				// create directory if not exists
-
-				boolean success = true;
-				if (!FileMirakel.fileCacheDir.exists()) {
-					success = FileMirakel.fileCacheDir.mkdirs();
-				}
-				if (success) {
-					try {
-						final File destFile = new File(
-								FileMirakel.fileCacheDir, newFile.getId()
-										+ ".png");
-						final FileOutputStream out = new FileOutputStream(
-								destFile);
-						myBitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
-						out.close();
-					} catch (final Exception e) {
-						e.printStackTrace();
-					}
-				}
-			}
-			return newFile;
+		InputStream stream;
+		try {
+			stream = FileUtils.getStreamFromUri(ctx, uri);
+		} catch (final FileNotFoundException e1) {
+			ErrorReporter.report(ErrorType.FILE_NOT_FOUND);
+			return null;
 		}
-		return null;
+
+		final String name = FileUtils.getNameFromUri(ctx, uri);
+
+		final FileMirakel newFile = FileMirakel.newFile(task, name, uri);
+		Bitmap myBitmap = null;
+		try {
+			myBitmap = BitmapFactory.decodeStream(stream);
+		} catch (final OutOfMemoryError e) {
+			ErrorReporter.report(ErrorType.FILE_TO_LARGE_FOR_THUMBNAIL);
+		}
+		if (myBitmap != null) {
+
+			final float size = TypedValue.applyDimension(
+					TypedValue.COMPLEX_UNIT_DIP, 150, ctx.getResources()
+							.getDisplayMetrics());
+			myBitmap = Helpers.getScaleImage(myBitmap, size);
+			// create directory if not exists
+
+			boolean success = true;
+			if (!FileMirakel.fileCacheDir.exists()) {
+				success = FileMirakel.fileCacheDir.mkdirs();
+			}
+			if (success) {
+				try {
+					final File destFile = new File(FileMirakel.fileCacheDir,
+							newFile.getId() + ".png");
+					final FileOutputStream out = new FileOutputStream(destFile);
+					myBitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+					out.close();
+				} catch (final Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return newFile;
 	}
 
 	/**
-	 * Create a new Task
+	 * Create a new File
 	 * 
+	 * @param task
 	 * @param name
-	 * @param list_id
-	 * @param content
-	 * @param done
-	 * @param due
-	 * @param priority
-	 * @return
+	 * @param uri
+	 * @return new File
 	 */
 	public static FileMirakel newFile(final Task task, final String name,
-			final String path) {
-		final FileMirakel m = new FileMirakel(0, task, name, path);
+			final Uri uri) {
+		final FileMirakel m = new FileMirakel(0, task, name, uri);
 		return m.create();
 	}
 
 	protected FileMirakel(final int id, final Task task, final String name,
-			final String path) {
-		super(id, task, name, path);
+			final Uri uri) {
+		super(id, task, name, uri);
 	}
 
 	public FileMirakel create() {
@@ -254,7 +238,7 @@ public class FileMirakel extends FileBase {
 	public boolean equals(final Object o) {
 		if (o instanceof FileMirakel) {
 			final FileMirakel f = (FileMirakel) o;
-			return f.getId() == getId() && f.getPath().equals(getPath());
+			return f.getId() == getId() && f.getUri().equals(getUri());
 		}
 		return false;
 	}
