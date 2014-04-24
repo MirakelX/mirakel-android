@@ -31,6 +31,7 @@
   <string name="menu_do_task">Definir tarefa como terminada</string>
   <string name="action_undo">Anular última alteração</string>
   <string name="action_sync_now">Sincronizar</string>
+  <string name="action_contact">Contactar/reportar erros</string>
   <string name="kill_app">Fechar aplicação</string>
   <string name="action_settings">Definições</string>
   <string name="save">Gravar</string>
