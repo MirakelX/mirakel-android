@@ -782,23 +782,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ "Select _id, uuid, list_id, name, content, done, "
 				+ "strftime('%s',"
 				+ Task.DUE
-				+ ")-"
+				+ ") - ("
 				+ offset
-				+ ", "
+				+ "), "
 				+ getStrFtime(Task.REMINDER, offset)
 				+ ", priority, "
 				+ getStrFtime(CREATED_AT, offset)
 				+ ", "
 				+ getStrFtime(UPDATED_AT, offset)
-				+ ","
-				+ " sync_state, additional_entries, recurring, recurring_reminder, progress FROM tmp_tasks;");
+				+ ", "
+				+ "sync_state, additional_entries, recurring, recurring_reminder, progress FROM tmp_tasks;");
 		db.execSQL("DROP TABLE tmp_tasks");
 	}
 
 	private static String getStrFtime(final String col, final int offset) {
 		String ret = "strftime('%s',substr(" + col + ",0,11)||' '||substr("
 				+ col + ",12,2)||':'||substr(" + col + ",14,2)||':'||substr("
-				+ col + ",16,2)) - " + offset;
+				+ col + ",16,2)) - (" + offset + ")";
 		if (col.equals(CREATED_AT) || col.equals(UPDATED_AT)) {
 			ret = "CASE WHEN (" + ret
 					+ ") IS NULL THEN strftime('%s','now') ELSE (" + ret
