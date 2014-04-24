@@ -37,26 +37,6 @@
 
     <style name="TextAppearance.Recurrence_SpinnerButton" parent="android:style/Widget.Holo.Light.Spinner" />
 
-    <style name="RecurrenceDayOfWeekStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">4dip</item>
-        <item name="android:layout_marginBottom">4dip</item>
-        <item name="android:layout_marginStart">8dip</item>
-        <item name="android:layout_marginEnd">8dip</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:textColor">@color/recurrence_bubble_text_color</item>
-        <item name="android:textAllCaps" tools:ignore="NewApi">true</item>
-        <item name="android:textSize">12sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:background">@drawable/recurrence_bubble_fill</item>
-        <item name="android:paddingStart">4dp</item>
-        <item name="android:paddingEnd">4dp</item>
-        <item name="android:paddingTop">4dp</item>
-        <item name="android:paddingBottom">4dp</item>
-    </style>
-
     <style name="TextAppearance.EditEvent_Spinner" parent="android:style/Widget.Holo.Light.Spinner">
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">#FF333333</item>
