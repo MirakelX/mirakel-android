@@ -98,6 +98,12 @@ public class TaskDetailContent extends BaseTaskDetailRow {
 								}
 							});
 					TaskDetailContent.this.taskContentEdit.requestFocus();
+					if (TaskDetailContent.this.task.getContent().length() != TaskDetailContent.this.taskContentEdit
+							.getText().length()) {
+						TaskDetailContent.this.taskContentEdit
+								.setText(TaskDetailContent.this.task
+										.getContent());
+					}
 					TaskDetailContent.this.taskContentEdit
 							.setSelection(TaskDetailContent.this.task
 									.getContent().length());
