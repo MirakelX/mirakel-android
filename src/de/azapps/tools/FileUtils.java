@@ -26,7 +26,6 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -34,20 +33,15 @@ import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import android.annotation.SuppressLint;
-import android.content.ContentUris;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
-import android.provider.DocumentsContract;
+import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.webkit.MimeTypeMap;
 import de.azapps.mirakel.DefinitionsHelper;
-import de.azapps.mirakel.helper.error.ErrorReporter;
-import de.azapps.mirakel.helper.error.ErrorType;
 
 public class FileUtils {
 	private static final String TAG = "FileUtils";
@@ -57,144 +51,16 @@ public class FileUtils {
 	public static final String ERROR_NO_MEDIA_DIR = "noMediaStorageDir";
 	private static String MIRAKEL_DIR;
 
-	@SuppressLint("NewApi")
-	public static String getPath(final Context context, final Uri uri)
-			throws URISyntaxException {
-		if (uri == null) {
-			return null;
-		}
-		final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
-
-		// DocumentProvider
-		if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
-			// ExternalStorageProvider
-			if (isExternalStorageDocument(uri)) {
-				final String docId = DocumentsContract.getDocumentId(uri);
-				final String[] split = docId.split(":");
-				// final String type = split[0]; not used
-
-				// Environment.
-				// TODO somehow handle that here may be the diskuuid as type
-				// if ("primary".equalsIgnoreCase(type)) {
-				final String path = Environment.getExternalStorageDirectory()
-						.getPath() + "/" + split[1];
-				if (new File(path).exists()) {
-					return path;
-					// } else {
-					// Log.d(TAG, type);
-					// }
-				}
-
-				// TODO handle non-primary volumes
-			}
-			// DownloadsProvider
-			else if (isDownloadsDocument(uri)) {
-
-				final String id = DocumentsContract.getDocumentId(uri);
-				final Uri contentUri = ContentUris.withAppendedId(
-						Uri.parse("content://downloads/public_downloads"),
-						Long.valueOf(id));
-
-				return getDataColumn(context, contentUri, null, null);
-			}
-			// MediaProvider
-			else if (isMediaDocument(uri)) {
-				final String docId = DocumentsContract.getDocumentId(uri);
-				final String[] split = docId.split(":");
-				final String type = split[0];
-
-				Uri contentUri = null;
-				if ("image".equals(type)) {
-					contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-				} else if ("video".equals(type)) {
-					contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-				} else if ("audio".equals(type)) {
-					contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-				}
-
-				final String selection = "_id=?";
-				final String[] selectionArgs = new String[] { split[1] };
-
-				return getDataColumn(context, contentUri, selection,
-						selectionArgs);
-			}
-		}
-		// MediaStore (and general)
-		else if ("content".equalsIgnoreCase(uri.getScheme())) {
-			return getDataColumn(context, uri, null, null);
-		}
-		// File
-		else if ("file".equalsIgnoreCase(uri.getScheme())) {
-			return uri.getPath();
-		}
-		throw new URISyntaxException(uri.toString(),
-				"dont be equal to cont || file");
-	}
-
-	/**
-	 * Get the value of the data column for this Uri. This is useful for
-	 * MediaStore Uris, and other file-based ContentProviders.
-	 * 
-	 * @param context
-	 *            The context.
-	 * @param uri
-	 *            The Uri to query.
-	 * @param selection
-	 *            (Optional) Filter used in the query.
-	 * @param selectionArgs
-	 *            (Optional) Selection arguments used in the query.
-	 * @return The value of the _data column, which is typically a file path.
-	 */
-	public static String getDataColumn(final Context context, final Uri uri,
-			final String selection, final String[] selectionArgs) {
-
-		Cursor cursor = null;
-		final String column = "_data";
-		final String[] projection = { column };
-
+	public static FileInputStream getStreamFromUri(final Context ctx,
+			final Uri uri) throws FileNotFoundException {
 		try {
-			cursor = context.getContentResolver().query(uri, projection,
-					selection, selectionArgs, null);
-			if (cursor != null && cursor.moveToFirst()) {
-				final int column_index = cursor.getColumnIndexOrThrow(column);
-				return cursor.getString(column_index);
-			}
-		} finally {
-			if (cursor != null) {
-				cursor.close();
-			}
+			return new ParcelFileDescriptor.AutoCloseInputStream(ctx
+					.getContentResolver().openFileDescriptor(uri, "r"));
+		} catch (final SecurityException e) {
+			Log.wtf(TAG, "no permission to read uri " + uri);
+			// Log.w(TAG, Log.getStackTraceString(e));
 		}
 		return null;
-	}
-
-	/**
-	 * @param uri
-	 *            The Uri to check.
-	 * @return Whether the Uri authority is ExternalStorageProvider.
-	 */
-	public static boolean isExternalStorageDocument(final Uri uri) {
-		return "com.android.externalstorage.documents".equals(uri
-				.getAuthority());
-	}
-
-	/**
-	 * @param uri
-	 *            The Uri to check.
-	 * @return Whether the Uri authority is DownloadsProvider.
-	 */
-	public static boolean isDownloadsDocument(final Uri uri) {
-		return "com.android.providers.downloads.documents".equals(uri
-				.getAuthority());
-	}
-
-	/**
-	 * @param uri
-	 *            The Uri to check.
-	 * @return Whether the Uri authority is MediaProvider.
-	 */
-	public static boolean isMediaDocument(final Uri uri) {
-		return "com.android.providers.media.documents".equals(uri
-				.getAuthority());
 	}
 
 	/**
@@ -235,10 +101,8 @@ public class FileUtils {
 	 * @param zipFile
 	 * @param location
 	 */
-	public static void unzip(final File zipFile, final File location)
+	public static void unzip(final FileInputStream fin, final File location)
 			throws FileNotFoundException, IOException {
-
-		final FileInputStream fin = new FileInputStream(zipFile);
 		final ZipInputStream zin = new ZipInputStream(fin);
 		ZipEntry ze = null;
 		while ((ze = zin.getNextEntry()) != null) {
@@ -288,26 +152,47 @@ public class FileUtils {
 		out.close();
 	}
 
-	static public String getPathFromUri(final Uri uri, final Context ctx) {
-		try {
-			final String path = getPath(ctx, uri);
-			Log.w(TAG, "PATH: " + path);
-			return path;
-		} catch (final URISyntaxException e) {
-			Log.w(TAG, Log.getStackTraceString(e));
-			ErrorReporter.report(ErrorType.FILE_URI_SYNTAX_ERROR);
-			return "";
-		}
+	public static String getMimeType(final Uri uri) {
+		final String extension = getFileExtension(uri);
+		final MimeTypeMap mime = MimeTypeMap.getSingleton();
+		return mime.getMimeTypeFromExtension(extension);
 	}
 
-	public static String getMimeType(final String url) {
-		String type = null;
-		final String extension = MimeTypeMap.getFileExtensionFromUrl(url);
-		if (extension != null) {
-			final MimeTypeMap mime = MimeTypeMap.getSingleton();
-			type = mime.getMimeTypeFromExtension(extension);
+	public static String getNameFromUri(final Context ctx, final Uri uri) {
+		final ContentResolver cr = ctx.getContentResolver();
+		String ret = "";
+		Cursor metaCursor = null;
+		try {
+			metaCursor = cr.query(uri,
+					new String[] { MediaStore.MediaColumns.DISPLAY_NAME },
+					null, null, null);
+		} catch (final SecurityException e) {
+			Log.wtf(TAG, "no permission to read uri " + uri);
+			// Log.w(TAG, Log.getStackTraceString(e));
+			if (metaCursor != null) {
+				metaCursor.close();
+			}
+			return "";
 		}
-		return type;
+		if (metaCursor != null) {
+			try {
+				if (metaCursor.moveToFirst()) {
+					ret = metaCursor.getString(0);
+				}
+			} finally {
+				metaCursor.close();
+			}
+		}
+		return ret;
+
+	}
+
+	public static String getFileExtension(final Uri uri) {
+		String m = MimeTypeMap.getFileExtensionFromUrl(uri.toString());
+		if (m == null) {
+			m = "";
+		}
+		return m;
 	}
 
 	/** Create a file Uri for saving an image or video */
@@ -328,8 +213,13 @@ public class FileUtils {
 	public static File getOutputMediaFile(final int type) throws IOException {
 		// To be safe, you should check that the SDCard is mounted
 		// using Environment.getExternalStorageState() before doing this.
+		final String state = Environment.getExternalStorageState();
+		if (state == null || !state.equals(Environment.MEDIA_MOUNTED)
+				&& !state.equals(Environment.MEDIA_MOUNTED_READ_ONLY)) {
+			throw new IOException("External Storage Dir not mounted");
+		}
 
-		final File mediaStorageDir = FileUtils.getMediaStorageDir();
+		final File mediaStorageDir = FileUtils.getMediaStorageDir(type);
 		if (mediaStorageDir == null) {
 			throw new IOException(ERROR_NO_MEDIA_DIR);
 		}
@@ -363,11 +253,32 @@ public class FileUtils {
 	 * 
 	 * @return
 	 */
-	public static File getMediaStorageDir() {
-		final File mediaStorageDir = new File(
-				Environment
-						.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-				"Mirakel");
+	public static File getMediaStorageDir(final int type) {
+		final File mediaStorageDir;
+		switch (type) {
+		case MEDIA_TYPE_AUDIO:
+			mediaStorageDir = new File(
+					Environment
+							.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC),
+					"Mirakel");
+			break;
+		case MEDIA_TYPE_VIDEO:
+			mediaStorageDir = new File(
+					Environment
+							.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES),
+					"Mirakel");
+			break;
+		case MEDIA_TYPE_IMAGE:
+			mediaStorageDir = new File(
+					Environment
+							.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+					"Mirakel");
+			break;
+		default:
+			mediaStorageDir = new File(getExportDir(), "files");
+			break;
+		}
+
 		// Create the storage directory if it does not exist
 		if (!mediaStorageDir.exists()) {
 			if (!mediaStorageDir.mkdirs()) {
@@ -428,6 +339,22 @@ public class FileUtils {
 			Log.wtf(TAG, "file is empty");
 		}
 		return s;
+	}
+
+	public static boolean isAudio(final Uri uri) {
+		return checkMimeBaseType(uri, "audio");
+	}
+
+	public static boolean isImage(final Uri uri) {
+		return checkMimeBaseType(uri, "image");
+	}
+
+	private static boolean checkMimeBaseType(final Uri uri, final String type) {
+		final String mimeType = getMimeType(uri);
+		if (mimeType == null) {
+			return false;
+		}
+		return mimeType.startsWith(type);
 	}
 
 }
