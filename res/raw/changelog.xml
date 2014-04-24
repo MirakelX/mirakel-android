@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+  <version name="2.4.1" date="2014-04-24" code="52">
+      <text>Even more bugfixes.</text>
+  </version>
   <version name="2.4.0R2" date="2014-04-22" code="51">
       <feature>Fix some bugs that can prevent update under certain contitions</feature>
   </version>
