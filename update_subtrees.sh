@@ -6,6 +6,8 @@ export GIT_EDITOR=/bin/true
 export VISUAL=/bin/true
 export EDITOR=/bin/true
 
+git pull
+
 for repo in ${repos[@]} ; do
     echo "Pulling "$repo
     git subtree pull --prefix=$repo ssh://$user@gerrit.azapps.de:29418/mirakel-android/$repo master 
