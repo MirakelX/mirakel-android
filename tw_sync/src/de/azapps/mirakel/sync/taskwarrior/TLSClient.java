@@ -37,11 +37,18 @@ import android.util.Base64;
 import de.azapps.tools.Log;
 
 public class TLSClient {
+	public static class NoSuchCertificateException extends Exception {
+		private static final long serialVersionUID = -4606663552584336235L;
+
+	}
 
 	private static final String TAG = "TLSClient";
 
 	private static X509Certificate generateCertificateFromPEM(final String cert)
-			throws ParseException {
+			throws ParseException, NoSuchCertificateException {
+		if (cert == null) {
+			throw new NoSuchCertificateException();
+		}
 		final byte[] certBytes = parseDERFromPEM(cert,
 				"-----BEGIN CERTIFICATE-----", "-----END CERTIFICATE-----");
 		CertificateFactory factory;
@@ -180,7 +187,8 @@ public class TLSClient {
 
 	// //////////////////////////////////////////////////////////////////////////////
 	public void init(final String root, final String user_ca,
-			final String user_key) throws ParseException, CertificateException {
+			final String user_key) throws ParseException, CertificateException,
+			NoSuchCertificateException {
 		Log.i(TAG, "init");
 		try {
 			final X509Certificate ROOT = generateCertificateFromPEM(root);
