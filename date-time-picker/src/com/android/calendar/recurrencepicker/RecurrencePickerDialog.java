@@ -29,6 +29,7 @@ import java.util.List;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -37,10 +38,12 @@ import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -53,6 +56,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
+import android.widget.Space;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -64,6 +68,7 @@ import com.fourmob.datetimepicker.date.DatePickerDialog;
 
 import de.azapps.mirakel.date_time.R;
 import de.azapps.mirakel.helper.DateTimeHelper;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.recurring.Recurring;
 
 @SuppressLint("NewApi")
@@ -75,17 +80,17 @@ public class RecurrencePickerDialog extends DialogFragment implements
 	protected static final String TAG = null;
 
 	public static RecurrencePickerDialog newInstance(
-			final OnRecurenceSetListner r, final Recurring recurring,
+			final OnRecurrenceSetListner r, final Recurring recurring,
 			final boolean forDue, final boolean dark, final boolean exact) {
 		final RecurrencePickerDialog re = new RecurrencePickerDialog();
 		re.initialize(r, recurring, forDue, dark, exact);
 		return re;
 	}
 
-	protected OnRecurenceSetListner mCallback;
+	protected OnRecurrenceSetListner mCallback;
 	protected Recurring mRecurring;
 	protected boolean mForDue;
-	private Spinner mRecurenceSelection;
+	private Spinner mRecurrenceSelection;
 	protected int extraItems;
 	protected CompoundButton mToggle;
 	private boolean toggleIsSwitch = true;
@@ -94,9 +99,8 @@ public class RecurrencePickerDialog extends DialogFragment implements
 	protected boolean mDark;
 	protected final ToggleButton[] mWeekByDayButtons = new ToggleButton[7];
 	private int numOfButtonsInRow1;
-	private int numOfButtonsInRow2;
 
-	public void initialize(final OnRecurenceSetListner r,
+	public void initialize(final OnRecurrenceSetListner r,
 			final Recurring recurring, final boolean forDue,
 			final boolean dark, final boolean exact) {
 		this.mRecurring = recurring;
@@ -128,6 +132,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
 	protected Calendar mStartDate;
 	protected TextView mStartDateView;
 	private Context ctx;
+	protected boolean mIsWeekDay;
 
 	public int pxToDp(final int px) {
 
@@ -139,28 +144,40 @@ public class RecurrencePickerDialog extends DialogFragment implements
 
 	}
 
+	public int dpToPx(final int dp) {
+
+		final Resources resources = this.ctx.getResources();
+
+		final DisplayMetrics metrics = resources.getDisplayMetrics();
+
+		return (int) (dp * metrics.density);
+
+	}
+
 	@Override
 	public View onCreateView(final LayoutInflater inflater,
 			final ViewGroup container, final Bundle savedInstanceState) {
+
+		super.onCreateView(inflater, container, savedInstanceState);
 		this.ctx = getDialog().getContext();
 		try {
-			getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+			getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
+
 		final List<Pair<Integer, String>> recurring = Recurring
 				.getForDialog(this.mForDue);
 		this.extraItems = 1;
 		final CharSequence[] items = new String[recurring.size()
 				+ this.extraItems];
 
-		// items[0] = ctx.getString(R.string.recurrence_no);//Dont need this,
 		// there is a button...
 		items[0] = this.ctx.getString(R.string.recurrence_custom);
 		this.mPosition = 0;
-		for (int i = this.extraItems; i < (recurring.size() + this.extraItems); i++) {
+		for (int i = this.extraItems; i < recurring.size() + this.extraItems; i++) {
 			items[i] = recurring.get(i - this.extraItems).second;
-			if ((this.mRecurring != null)
+			if (this.mRecurring != null
 					&& items[i].equals(this.mRecurring.getLabel())) {
 				this.mPosition = i;
 			}
@@ -173,7 +190,8 @@ public class RecurrencePickerDialog extends DialogFragment implements
 			v.setBackgroundColor(this.ctx.getResources().getColor(
 					this.mDark ? android.R.color.black : android.R.color.white));
 		}
-		this.mRecurenceSelection = (Spinner) view
+
+		this.mRecurrenceSelection = (Spinner) view
 				.findViewById(R.id.freqSpinner);
 		final Resources res = this.ctx.getResources();
 		boolean isNotTwoRows;
@@ -188,11 +206,11 @@ public class RecurrencePickerDialog extends DialogFragment implements
 				this.ctx, android.R.layout.simple_spinner_item, items);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		this.mOptions = (LinearLayout) view.findViewById(R.id.options);
-		this.mRecurenceSelection.setAdapter(adapter);
-		this.mRecurenceSelection.setSelection(this.mPosition);
+		this.mRecurrenceSelection.setAdapter(adapter);
+		this.mRecurrenceSelection.setSelection(this.mPosition);
 		this.mWeekGroup = (LinearLayout) view.findViewById(R.id.weekGroup);
 		this.mWeekGroup2 = (LinearLayout) view.findViewById(R.id.weekGroup2);
-		this.mRecurenceSelection
+		this.mRecurrenceSelection
 				.setOnItemSelectedListener(new OnItemSelectedListener() {
 					@Override
 					public void onItemSelected(final AdapterView<?> arg0,
@@ -229,74 +247,54 @@ public class RecurrencePickerDialog extends DialogFragment implements
 				});
 		final String[] dayOfWeekString = new DateFormatSymbols()
 				.getShortWeekdays();
-		int idx = DateTimeHelper.getFirstDayOfWeek();
 		if (isNotTwoRows) {
 			this.numOfButtonsInRow1 = 7;
-			this.numOfButtonsInRow2 = 0;
 			this.mWeekGroup2.setVisibility(View.GONE);
-			this.mWeekGroup2.getChildAt(3).setVisibility(View.GONE);
 		} else {
 			this.numOfButtonsInRow1 = 4;
-			this.numOfButtonsInRow2 = 3;
-
 			this.mWeekGroup2.setVisibility(View.VISIBLE);
-			// Set rightmost button on the second row invisible so it takes up
-			// space and everything centers properly
-			this.mWeekGroup2.getChildAt(3).setVisibility(View.INVISIBLE);
 		}
 
-		/* First row */
-
 		List<Integer> weekdays = new ArrayList<Integer>();
+		this.mWeekGroup.removeAllViews();
+		this.mWeekGroup2.removeAllViews();
 		if (this.mRecurring != null) {
 			weekdays = this.mRecurring.getWeekdays();
 		}
-		for (int i = 0; i < 7; i++) {
-			if (i >= this.numOfButtonsInRow1) {
-				this.mWeekGroup.getChildAt(i).setVisibility(View.GONE);
-				continue;
+		final int startDay = DateTimeHelper.getFirstDayOfWeek();
+		for (int i = startDay; i < startDay + 7; i++) {
+			final int day = i % 7;
+			// Create Button
+
+			final WeekButton item = new WeekButton(this.ctx);
+			item.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
+					LayoutParams.WRAP_CONTENT));
+			item.setGravity(Gravity.CENTER);
+			item.setTextSize(12);
+			item.setPadding(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4));
+			item.setTypeface(item.getTypeface(), Typeface.BOLD);
+			item.setSingleLine(true);
+			item.setTextOff(dayOfWeekString[this.TIME_DAY_TO_CALENDAR_DAY[day]]
+					.toUpperCase(Helpers.getLocal(this.ctx)));
+			item.setTextOn(dayOfWeekString[this.TIME_DAY_TO_CALENDAR_DAY[day]]
+					.toUpperCase(Helpers.getLocal(this.ctx)));
+			item.setChecked(weekdays.contains(day + 1));
+
+			// Add to view
+			final ViewGroup root;
+			if (i - startDay >= this.numOfButtonsInRow1) {
+				root = this.mWeekGroup2;
+			} else {
+				root = this.mWeekGroup;
 			}
-			this.mWeekByDayButtons[idx] = (ToggleButton) this.mWeekGroup
-					.getChildAt(i);
-			this.mWeekByDayButtons[idx]
-					.setTextOff(dayOfWeekString[this.TIME_DAY_TO_CALENDAR_DAY[idx]]);
-			this.mWeekByDayButtons[idx]
-					.setTextOn(dayOfWeekString[this.TIME_DAY_TO_CALENDAR_DAY[idx]]);
-			/*
-			 * It's so stupid… Sunday is called 'weekend' but it's the first day
-			 * of the week.
-			 */
-			final boolean checked = weekdays.contains(idx + 1);
-			this.mWeekByDayButtons[idx].setChecked(checked);
-			this.mWeekByDayButtons[idx].setOnCheckedChangeListener(this);
-			if (++idx >= 7) {
-				idx = 0;
-			}
+			root.addView(item);
+			final Space s = new Space(this.ctx);
+			s.setLayoutParams(new LayoutParams(dpToPx(16),
+					LayoutParams.MATCH_PARENT));
+			root.addView(s);
+			this.mWeekByDayButtons[day] = item;
 		}
 
-		/* 2nd Row */
-		for (int i = 0; i < 3; i++) {
-			if (i >= this.numOfButtonsInRow2) {
-				this.mWeekGroup2.getChildAt(i).setVisibility(View.GONE);
-				continue;
-			}
-			this.mWeekByDayButtons[idx] = (ToggleButton) this.mWeekGroup2
-					.getChildAt(i);
-			this.mWeekByDayButtons[idx]
-					.setTextOff(dayOfWeekString[this.TIME_DAY_TO_CALENDAR_DAY[idx]]);
-			this.mWeekByDayButtons[idx]
-					.setTextOn(dayOfWeekString[this.TIME_DAY_TO_CALENDAR_DAY[idx]]);
-			/*
-			 * It's so stupid… Sunday is called 'weekend' but it's the first day
-			 * of the week.
-			 */
-			final boolean checked = weekdays.contains(idx + 1);
-			this.mWeekByDayButtons[idx].setChecked(checked);
-			this.mWeekByDayButtons[idx].setOnCheckedChangeListener(this);
-			if (++idx >= 7) {
-				idx = 0;
-			}
-		}
 		if (this.mPosition != 0) {
 			this.mOptions.setVisibility(View.GONE);
 		}
@@ -308,8 +306,8 @@ public class RecurrencePickerDialog extends DialogFragment implements
 			this.mToggle = (CheckBox) view.findViewById(R.id.repeat_checkbox);
 			this.toggleIsSwitch = false;
 		}
-		this.mToggle.setChecked((this.mRecurring != null)
-				&& (this.mRecurring.getId() != -1));
+		this.mToggle.setChecked(this.mRecurring != null
+				&& this.mRecurring.getId() != -1);
 		this.mToggle.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 			@Override
@@ -337,9 +335,10 @@ public class RecurrencePickerDialog extends DialogFragment implements
 								checked.add(RecurrencePickerDialog.this.TIME_DAY_TO_CALENDAR_DAY[i]);
 							}
 						}
-						if (isOneChecked) {
+						if (isOneChecked
+								&& RecurrencePickerDialog.this.mIsWeekDay) {
 							RecurrencePickerDialog.this.mCallback
-									.OnCustomRecurnceSetWeekdays(
+									.onCustomRecurrenceSetWeekdays(
 											RecurrencePickerDialog.this.mForDue,
 											checked,
 											RecurrencePickerDialog.this.mStartDate,
@@ -379,7 +378,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
 								intervalYears = RecurrencePickerDialog.this.mIntervalValue;
 							}
 							RecurrencePickerDialog.this.mCallback
-									.OnCustomRecurnceSetInterval(
+									.onCustomRecurrenceSetInterval(
 											RecurrencePickerDialog.this.mForDue,
 											intervalYears,
 											intervalMonths,
@@ -399,7 +398,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
 						Log.d(TAG, "exact: " + r.isExact());
 						r.save();
 						RecurrencePickerDialog.this.mCallback
-								.OnRecurrenceSet(r);
+								.onRecurrenceSet(r);
 					}
 				} else {
 					RecurrencePickerDialog.this.mCallback.onNoRecurrenceSet();
@@ -448,11 +447,13 @@ public class RecurrencePickerDialog extends DialogFragment implements
 					public void onItemSelected(final AdapterView<?> arg0,
 							final View arg1, final int pos, final long arg3) {
 						if (pos == dayPosition) {
+							RecurrencePickerDialog.this.mIsWeekDay = true;
 							view.findViewById(R.id.weekGroup).setVisibility(
 									View.VISIBLE);
 							view.findViewById(R.id.weekGroup2).setVisibility(
 									View.VISIBLE);
 						} else {
+							RecurrencePickerDialog.this.mIsWeekDay = false;
 							view.findViewById(R.id.weekGroup).setVisibility(
 									View.GONE);
 							view.findViewById(R.id.weekGroup2).setVisibility(
@@ -669,8 +670,8 @@ public class RecurrencePickerDialog extends DialogFragment implements
 			}
 		});
 		this.mStartSpinner.setAdapter(startSpinnerAdapter);
-		setEnabledComponents((this.mRecurring != null)
-				&& (this.mRecurring.getId() != -1));
+		setEnabledComponents(this.mRecurring != null
+				&& this.mRecurring.getId() != -1);
 		if (this.mDark) {
 			view.findViewById(R.id.recurrence_picker_dialog)
 					.setBackgroundColor(res.getColor(R.color.dialog_gray));
@@ -689,20 +690,11 @@ public class RecurrencePickerDialog extends DialogFragment implements
 		if (!this.mForDue) {
 			this.mUseExact.setVisibility(View.GONE);
 		}
-		if ((this.mRecurring != null) && this.mRecurring.isTemporary()) {
-			this.mRecurenceSelection.setSelection(0);
+		if (this.mRecurring != null && this.mRecurring.isTemporary()) {
+			this.mRecurrenceSelection.setSelection(0);
 			if (this.mRecurring.getWeekdays().size() != 0) {
+				this.mIsWeekDay = true;
 				this.mIntervalType.setSelection(this.mForDue ? 0 : 2);
-				for (int i = 0; i < this.mWeekByDayButtons.length; i++) {
-					boolean checked = false;
-					for (int j = 0; j < this.mRecurring.getWeekdays().size(); j++) {
-						if (i == j) {
-							checked = true;
-							break;
-						}
-						this.mWeekByDayButtons[j].setChecked(checked);
-					}
-				}
 			} else if (this.mRecurring.getMinutes() != 0) {
 				this.mIntervalType.setSelection(0);
 				this.mIntervalCount.setText(this.mRecurring.getMinutes() + "");
@@ -723,26 +715,27 @@ public class RecurrencePickerDialog extends DialogFragment implements
 				this.mIntervalType.setSelection(this.mForDue ? 2 : 4);
 				this.mIntervalCount.setText(this.mRecurring.getYears() + "");
 				this.mIntervalValue = this.mRecurring.getYears();
-				this.mStartDate = this.mRecurring.getStartDate();
-				if (this.mStartDate != null) {
-					this.mStartSpinner.setSelection(1);
-					this.mStartDateView.setText(DateTimeHelper.formatDate(
-							getActivity(), this.mStartDate));
-				}
-				this.mEndDate = this.mRecurring.getEndDate();
-				if (this.mEndDate != null) {
-					this.mEndSpinner.setSelection(1);
-					this.mEndDateView.setText(DateTimeHelper.formatDate(
-							getActivity(), this.mEndDate));
-				}
 			}
+			this.mStartDate = this.mRecurring.getStartDate();
+			if (this.mStartDate != null) {
+				this.mStartSpinner.setSelection(1);
+				this.mStartDateView.setText(DateTimeHelper.formatDate(
+						getActivity(), this.mStartDate));
+			}
+			this.mEndDate = this.mRecurring.getEndDate();
+			if (this.mEndDate != null) {
+				this.mEndSpinner.setSelection(1);
+				this.mEndDateView.setText(DateTimeHelper.formatDate(
+						getActivity(), this.mEndDate));
+			}
+
 		}
 
 		return view;
 	}
 
 	protected void setEnabledComponents(final boolean b) {
-		this.mRecurenceSelection.setEnabled(b);
+		this.mRecurrenceSelection.setEnabled(b);
 		this.mEndSpinner.setEnabled(b);
 		this.mEndDateView.setEnabled(b);
 		this.mStartSpinner.setEnabled(b);
@@ -800,18 +793,18 @@ public class RecurrencePickerDialog extends DialogFragment implements
 		return ret;
 	}
 
-	public interface OnRecurenceSetListner {
-		void OnCustomRecurnceSetInterval(final boolean isDue,
+	public interface OnRecurrenceSetListner {
+		void onCustomRecurrenceSetInterval(final boolean isDue,
 				final int intervalYears, final int intervalMonths,
 				final int intervalDays, final int intervalHours,
 				final int intervalMinutes, final Calendar startDate,
 				final Calendar endDate, final boolean isExact);
 
-		void OnCustomRecurnceSetWeekdays(final boolean isDue,
+		void onCustomRecurrenceSetWeekdays(final boolean isDue,
 				final List<Integer> weekdays, final Calendar startDate,
 				final Calendar endDate, final boolean isExact);
 
-		void OnRecurrenceSet(final Recurring r);
+		void onRecurrenceSet(final Recurring r);
 
 		void onNoRecurrenceSet();
 	}
