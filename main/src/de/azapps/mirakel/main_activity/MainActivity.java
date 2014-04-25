@@ -607,6 +607,9 @@ public class MainActivity extends ActionBarActivity implements
 	 * @param lists
 	 */
 	public void handleMoveTask(final List<Task> tasks) {
+		if (tasks == null || tasks.size() == 0) {
+			return;
+		}
 		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(R.string.dialog_move);
 		final List<CharSequence> items = new ArrayList<CharSequence>();
@@ -835,6 +838,10 @@ public class MainActivity extends ActionBarActivity implements
 			fragments.add(new TaskFragmentV8());
 		} else {
 			fragments.add(new TaskFragmentV14());
+		}
+		if (this.currentTask != null) {
+			((TaskFragment) fragments.get(fragments.size() - 1))
+					.update(this.currentTask);
 		}
 		if (!MirakelCommonPreferences.isTablet() && !this.isResumed
 				&& this.mPagerAdapter == null) {
