@@ -18,7 +18,7 @@ Device: %3$s\n]]>
   <string name="error_PHOTO_NO_CAMERA">Ups! Ihr Gerät kann nicht fotografieren</string>
   <string name="error_PHOTO_NO_MEDIA_DIRECTORY">Das Foto kann nirgendwo gespeichert werden. Tut mir leid!</string>
   <string name="error_NO_SPEACH_RECOGNITION">Ups! Ihr Gerät hat keine Spracherkunnungsfunktion</string>
-  <string name="error_TASKS_CANNOT_FORM_LOOP">Teilaufgaben können keine Schleifen bilden</string>
+  <string name="error_TASKS_CANNOT_FORM_LOOP">Unteraufgaben können keine Schleifen bilden</string>
   <string name="error_FILE_NO_ACTIVITY">Ich weiß nicht, wie ich diese Datei öffnen soll – tut mir leid</string>
   <string name="error_CONTACT_NO_CLIENT">Kein E-mail-Client installiert</string>
   <string name="error_NO_FILEMANAGER">Installiere bitte einen Datei-Manager</string>
