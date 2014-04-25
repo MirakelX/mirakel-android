@@ -16,6 +16,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
@@ -24,11 +25,13 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnShowListener;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaRecorder;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Looper;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
@@ -39,6 +42,7 @@ import android.util.SparseBooleanArray;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -53,7 +57,7 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.ViewSwitcher;
 
 import com.android.calendar.recurrencepicker.RecurrencePickerDialog;
-import com.android.calendar.recurrencepicker.RecurrencePickerDialog.OnRecurenceSetListner;
+import com.android.calendar.recurrencepicker.RecurrencePickerDialog.OnRecurrenceSetListner;
 
 import de.azapps.mirakel.DefenitionsModel.ExecInterfaceWithTask;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
@@ -285,10 +289,10 @@ public class TaskDialogHelpers {
 			}
 		}
 		final RecurrencePickerDialog rp = RecurrencePickerDialog.newInstance(
-				new OnRecurenceSetListner() {
+				new OnRecurrenceSetListner() {
 
 					@Override
-					public void OnCustomRecurnceSetInterval(
+					public void onCustomRecurrenceSetInterval(
 							final boolean isDue, final int intervalYears,
 							final int intervalMonths, final int intervalDays,
 							final int intervalHours, final int intervalMinutes,
@@ -303,7 +307,7 @@ public class TaskDialogHelpers {
 					}
 
 					@Override
-					public void OnCustomRecurnceSetWeekdays(
+					public void onCustomRecurrenceSetWeekdays(
 							final boolean isDue, final List<Integer> weekdays,
 							final Calendar startDate, final Calendar endDate,
 							final boolean isExact) {
@@ -323,7 +327,7 @@ public class TaskDialogHelpers {
 					}
 
 					@Override
-					public void OnRecurrenceSet(final Recurring r) {
+					public void onRecurrenceSet(final Recurring r) {
 						setRecurence(task, isDue, r.getId(), image);
 
 					}
@@ -404,6 +408,7 @@ public class TaskDialogHelpers {
 
 	}
 
+	@SuppressLint("NewApi")
 	public static void handleSubtask(final Context ctx, final Task task,
 			final OnTaskChangedListner taskChanged, final boolean asSubtask) {
 		final List<Pair<Long, String>> names = Task.getTaskNames();
@@ -441,6 +446,21 @@ public class TaskDialogHelpers {
 		listId = SpecialList.firstSpecialSafe(ctx).getId();
 		final EditText search = (EditText) v
 				.findViewById(R.id.subtask_searchbox);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+			Drawable left = ctx.getResources().getDrawable(
+					android.R.drawable.ic_menu_search);
+			Drawable right = null;
+			left.setBounds(0, 0, 42, 42);
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
+					&& ctx.getResources().getConfiguration()
+							.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
+				right = ctx.getResources().getDrawable(
+						android.R.drawable.ic_menu_search);
+				right.setBounds(0, 0, 42, 42);
+				left = null;
+			}
+			search.setCompoundDrawables(left, null, right, null);
+		}
 		search.addTextChangedListener(new TextWatcher() {
 
 			@Override
@@ -615,7 +635,7 @@ public class TaskDialogHelpers {
 								} else if (!newTask) {
 									final List<Task> checked = subtaskAdapter
 											.getSelected();
-									for (Task t : checked) {
+									for (final Task t : checked) {
 										if (!asSubtask) {
 											if (!t.checkIfParent(task)) {
 												task.addSubtask(t);
@@ -636,6 +656,10 @@ public class TaskDialogHelpers {
 								if (taskChanged != null) {
 									taskChanged.onTaskChanged(task);
 								}
+								((Activity) ctx)
+										.getWindow()
+										.setSoftInputMode(
+												WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 								dialog.dismiss();
 							}
 

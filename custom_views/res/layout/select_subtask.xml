@@ -87,7 +87,6 @@
                 android:id="@+id/subtask_searchbox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableStart="@android:drawable/ic_menu_search"
                 android:ems="10"
                 android:inputType="text" >
 
@@ -137,7 +136,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" >
             </ListView>
-        </LinearLayout>
+        </LinearLayout>-
     </ViewSwitcher>
 
 </LinearLayout>
