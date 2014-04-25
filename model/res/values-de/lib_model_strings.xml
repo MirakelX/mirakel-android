@@ -106,6 +106,15 @@
   <string name="where_like_begin_text">Beginnt mit %s</string>
   <string name="where_like_end_text">Endet mit %s</string>
   <string name="delete">Löschen</string>
+  <string name="special_list_progress_equal">Gleich %d</string>
+  <string name="special_list_progress_less_than">Weniger als %d</string>
+  <string name="special_list_progress_greater_than">Größer als %d</string>
+  <string name="special_list_subtask_parent">Hat Unteraufgabe</string>
+  <string name="special_list_subtask_parent_not">Hat keine Unteraufgabe</string>
+  <string name="special_list_subtask_child">Ist eine Unteraufgabe</string>
+  <string name="special_list_subtask_child_not">Ist keine Unteraufgabe</string>
+  <string name="no_file">Hat keine Datei</string>
+  <string name="has_file">Hat Datei</string>
   <string name="nothing">Keine Wiederholung</string>
   <string-array name="weekdays">
     <item>Nicht festlegen</item>

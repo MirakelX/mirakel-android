@@ -38,6 +38,7 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Pair;
 import de.azapps.mirakel.DefinitionsHelper;
+import de.azapps.mirakel.DefinitionsHelper.NoSuchTaskException;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.error.ErrorReporter;
@@ -241,10 +242,15 @@ public class ReminderAlarm extends BroadcastReceiver {
 					}
 				}
 				for (final Task t : tasks) {
-					if (!isAlarm(t)) {
-						Log.d(TAG, "add: " + t.getName());
-						final PendingIntent p = updateAlarm(ctx, t);
-						activeAlarms.add(new Pair<Task, PendingIntent>(t, p));
+					try {
+						if (!isAlarm(t)) {
+							Log.d(TAG, "add: " + t.getName());
+							final PendingIntent p = updateAlarm(ctx, t);
+							activeAlarms
+									.add(new Pair<Task, PendingIntent>(t, p));
+						}
+					} catch (final NoSuchTaskException e) {
+						Log.wtf(TAG, "Task not found");
 					}
 				}
 			}
@@ -256,9 +262,12 @@ public class ReminderAlarm extends BroadcastReceiver {
 		createNotification(ctx, t);
 	}
 
-	private static boolean isAlarm(final Task t2) {
-		for (int i = 0; i < activeAlarms.size(); i++) {
-			final Task t = activeAlarms.get(i).first;
+	private static boolean isAlarm(final Task t2) throws NoSuchTaskException {
+		for (final Pair<Task, PendingIntent> pair : activeAlarms) {
+			final Task t = pair.first;
+			if (t == null || t2 == null) {
+				throw new NoSuchTaskException();
+			}
 			if (t.getId() == t2.getId()) {
 				return true;
 			}
