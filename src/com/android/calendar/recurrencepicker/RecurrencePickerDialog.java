@@ -56,7 +56,6 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
-import android.widget.Space;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -287,11 +286,12 @@ public class RecurrencePickerDialog extends DialogFragment implements
 			} else {
 				root = this.mWeekGroup;
 			}
+			final LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+					LinearLayout.LayoutParams.WRAP_CONTENT,
+					LinearLayout.LayoutParams.WRAP_CONTENT);
+			lp.setMargins(dpToPx(8), dpToPx(8), 0, 0);
+			item.setLayoutParams(lp);
 			root.addView(item);
-			final Space s = new Space(this.ctx);
-			s.setLayoutParams(new LayoutParams(dpToPx(16),
-					LayoutParams.MATCH_PARENT));
-			root.addView(s);
 			this.mWeekByDayButtons[day] = item;
 		}
 
