@@ -89,15 +89,16 @@ public abstract class SpecialListsStringProperty extends
 		if (this.type == null) {
 			return query + "%'";
 		}
+		final String keyword = this.searchString.replace("'", "''");
 		switch (this.type) {
 		case BEGIN:
-			query += "%" + this.searchString;
+			query += "%" + keyword;
 			break;
 		case CONTAINS:
-			query += "%" + this.searchString + "%";
+			query += "%" + keyword + "%";
 			break;
 		case END:
-			query += this.searchString + "%";
+			query += keyword + "%";
 			break;
 		default:
 			break;
