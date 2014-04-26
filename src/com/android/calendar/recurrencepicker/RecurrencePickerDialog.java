@@ -20,7 +20,6 @@
 package com.android.calendar.recurrencepicker;
 
 import java.text.DateFormatSymbols;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -76,7 +75,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
 
 	// in dp's
 	private static final int MIN_SCREEN_WIDTH_FOR_SINGLE_ROW_WEEK = 450;
-	protected static final String TAG = null;
+	protected static final String TAG = "RecurrencePickerDialog";
 
 	public static RecurrencePickerDialog newInstance(
 			final OnRecurrenceSetListner r, final Recurring recurring,
@@ -543,12 +542,16 @@ public class RecurrencePickerDialog extends DialogFragment implements
 						case 1:
 							RecurrencePickerDialog.this.mEndDateView
 									.setVisibility(View.VISIBLE);
-							try {
-								RecurrencePickerDialog.this.mEndDate = DateTimeHelper
-										.parseDate(RecurrencePickerDialog.this.mEndDateView
-												.getText().toString());
-							} catch (final ParseException e) {
-								RecurrencePickerDialog.this.mEndDate = endDate;
+							if (RecurrencePickerDialog.this.mEndDate == null) {
+								RecurrencePickerDialog.this.mEndDate = RecurrencePickerDialog.this.mStartDate;
+								if (RecurrencePickerDialog.this.mEndDate == null) {
+									RecurrencePickerDialog.this.mEndDate = new GregorianCalendar();
+									RecurrencePickerDialog.this.mEndDate.add(
+											Calendar.MONTH, 1);
+								} else {
+									RecurrencePickerDialog.this.mEndDate.add(
+											Calendar.MONTH, 1);
+								}
 							}
 							break;
 						default:// FOREVER
@@ -592,12 +595,14 @@ public class RecurrencePickerDialog extends DialogFragment implements
 						case 1:
 							RecurrencePickerDialog.this.mStartDateView
 									.setVisibility(View.VISIBLE);
-							try {
-								RecurrencePickerDialog.this.mStartDate = DateTimeHelper
-										.parseDate(RecurrencePickerDialog.this.mStartDateView
-												.getText().toString());
-							} catch (final ParseException e) {
-								RecurrencePickerDialog.this.mStartDate = endDate;
+							if (RecurrencePickerDialog.this.mStartDate == null) {
+								RecurrencePickerDialog.this.mStartDate = RecurrencePickerDialog.this.mEndDate;
+								if (RecurrencePickerDialog.this.mStartDate == null) {
+									RecurrencePickerDialog.this.mStartDate = new GregorianCalendar();
+								} else {
+									RecurrencePickerDialog.this.mStartDate.add(
+											Calendar.MONTH, -1);
+								}
 							}
 							break;
 						default:// FOREVER
