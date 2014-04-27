@@ -19,8 +19,8 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.azapps.mirakelandroid"
-    android:versionCode="52"
-    android:versionName="2.4.1">
+    android:versionCode="53"
+    android:versionName="2.4.2-beta1">
 
     <!-- TODO Remove Unused Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -38,6 +38,8 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    
+    <uses-permission android:name="android.permission.MANAGE_DOCUMENTS"/>
 
     <permission-group
         android:name="de.azapps.mirakel.PERMISSION"
