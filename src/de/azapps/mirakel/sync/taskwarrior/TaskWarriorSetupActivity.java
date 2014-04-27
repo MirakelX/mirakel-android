@@ -137,15 +137,11 @@ public class TaskWarriorSetupActivity extends Activity {
 			InputStream stream;
 			try {
 				stream = FileUtils.getStreamFromUri(this, data.getData());
-				setupTaskWarrior(stream);
+				setupTaskWarrior(stream, true);
 			} catch (final FileNotFoundException e) {
 				ErrorReporter.report(ErrorType.TASKWARRIOR_FILE_NOT_FOUND);
 			} catch (final IOException e) {
 				ErrorReporter.report(ErrorType.TASKWARRIOR_FILE_NOT_FOUND);
-			} catch (final ParseException e) {
-				// if (showToast) {
-				Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-				// }
 			}
 			break;
 		default:
