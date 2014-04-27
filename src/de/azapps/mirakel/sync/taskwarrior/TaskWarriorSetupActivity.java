@@ -19,8 +19,6 @@
 package de.azapps.mirakel.sync.taskwarrior;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,7 +38,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -118,8 +115,6 @@ public class TaskWarriorSetupActivity extends Activity {
 	private static final Integer RESULT_ERROR = 0;
 	protected static final Integer RESULT_SUCCESS = 1;
 
-	private final static String TAG = "TaskWarriorSetupActivity";
-
 	private final int CONFIG_QR = 0, CONFIG_TASKWARRIOR = 1;
 
 	private AccountManager mAccountManager;
@@ -139,20 +134,18 @@ public class TaskWarriorSetupActivity extends Activity {
 			setupTaskwarriorFromURL(inputUrl);
 			break;
 		case CONFIG_TASKWARRIOR:
-			final String path = FileUtils.getPathFromUri(data.getData(), this);
-			if (path == null
-					&& Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-				try {
-					setupTaskWarrior(
-							getContentResolver()
-									.openInputStream(data.getData()), true);
-				} catch (final FileNotFoundException e) {
-					ErrorReporter.report(ErrorType.TASKWARRIOR_FILE_NOT_FOUND);
-				}
-			} else if (path != null) {
-				Log.w(TAG, "path: " + path);
-				Log.w(TAG, "uri: " + data.getData().toString());
-				setupTaskwarrior(new File(path), false);
+			InputStream stream;
+			try {
+				stream = FileUtils.getStreamFromUri(this, data.getData());
+				setupTaskWarrior(stream);
+			} catch (final FileNotFoundException e) {
+				ErrorReporter.report(ErrorType.TASKWARRIOR_FILE_NOT_FOUND);
+			} catch (final IOException e) {
+				ErrorReporter.report(ErrorType.TASKWARRIOR_FILE_NOT_FOUND);
+			} catch (final ParseException e) {
+				// if (showToast) {
+				Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+				// }
 			}
 			break;
 		default:
@@ -231,22 +224,6 @@ public class TaskWarriorSetupActivity extends Activity {
 				startActivity(browserIntent);
 			}
 		});
-	}
-
-	private void setupTaskwarrior(final File configFile,
-			final boolean deleteAfter) {
-		if (configFile.exists() && configFile.canRead()) {
-			try {
-				setupTaskWarrior(new FileInputStream(configFile), true);
-			} catch (final FileNotFoundException e) {
-				ErrorReporter.report(ErrorType.TASKWARRIOR_FILE_NOT_FOUND);
-			}
-		} else {
-			Log.d(TAG, "file not found");
-		}
-		if (deleteAfter) {
-			configFile.delete();
-		}
 	}
 
 	enum PARSE_STATE {
