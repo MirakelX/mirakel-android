@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+  <version name="2.4.2-beta1" date="2014-04-27" code="53">
+      <feature>Reimplement file handling to work with KitKat file framwork</feature>
+      <feature>some minor bugfixes</feature>
+  </version>
   <version name="2.4.1" date="2014-04-24" code="52">
       <text>Even more bugfixes.</text>
   </version>
