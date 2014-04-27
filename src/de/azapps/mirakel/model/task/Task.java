@@ -58,6 +58,7 @@ import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.tools.Log;
@@ -77,7 +78,7 @@ public class Task extends TaskBase {
 	private static DatabaseHelper dbHelper;
 
 	public static final String SUBTASK_TABLE = "subtasks";
-
+	public static final String TAG_CONNECTION_TABLE = "task_tag";
 	public static final String TABLE = "tasks";
 
 	private static final String TAG = "TasksDataSource";
@@ -623,6 +624,28 @@ public class Task extends TaskBase {
 				t.setSyncState(SYNC_STATE.parseInt(val.getAsInt()));
 			} else if (key.equalsIgnoreCase("depends")) {
 				t.setDependencies(val.getAsString().split(","));
+			} else if (key.equals("tags")) {
+				final JsonArray tags = val.getAsJsonArray();
+				final List<Tag> currentTags = t.getTags();
+				for (final JsonElement tag : tags) {
+					if (tag.isJsonPrimitive()) {
+						String tagName = tag.getAsString();
+						tagName = tagName.replace("_", " ");
+						Tag newTag = Tag.getByName(tagName);
+						if (newTag == null) {
+							// tag does not exist, create new one
+							newTag = Tag.newTag(tagName);
+						}
+						if (!currentTags.remove(newTag)) {
+							// tag is not linked with this task
+							t.addTag(newTag, false);
+						}
+					}
+				}
+				for (final Tag tag : currentTags) {
+					// remove unused tags
+					t.removeTag(tag, false);
+				}
 			} else {
 				if (val.isJsonPrimitive()) {
 					final JsonPrimitive p = (JsonPrimitive) val;
@@ -1091,10 +1114,77 @@ public class Task extends TaskBase {
 		}
 		json += "\"reminder\":\"" + s + "\",";
 		json += "\"sync_state\":" + getSyncState() + ",";
+		json += Tag.serialize(this) + ",";
 		json += "\"created_at\":\""
 				+ DateTimeHelper.formatDateTime(getCreatedAt()) + "\",";
 		json += "\"updated_at\":\""
 				+ DateTimeHelper.formatDateTime(getUpdatedAt()) + "\"}";
 		return json;
+	}
+
+	public List<Tag> getTags() {
+		final Cursor c = database.rawQuery(getTagsQuery(Tag.allColumns),
+				new String[] { getId() + "" });
+
+		return Tag.cursorToTagList(c);
+	}
+
+	public String getTagsQuery(final String[] columns) {
+		String s = "";
+		boolean first = true;
+		for (final String c : columns) {
+			if (!first) {
+				s += ", ";
+			} else {
+				first = false;
+			}
+			s += Tag.TABLE + "." + c;
+		}
+		final String query = "SELECT " + s + " FROM " + TAG_CONNECTION_TABLE
+				+ " INNER JOIN " + Tag.TABLE + " ON " + TAG_CONNECTION_TABLE
+				+ ".tag_id=" + Tag.TABLE + "." + DatabaseHelper.ID + " WHERE "
+				+ TAG_CONNECTION_TABLE + ".task_id=?";
+		return query;
+
+	}
+
+	public void addTag(final Tag t) {
+		addTag(t, true);
+	}
+
+	public void addTag(final Tag t, final boolean log) {
+
+		final Cursor c = database.query(TAG_CONNECTION_TABLE,
+				new String[] { "count(*)" }, "task_id=? and tag_id=?",
+				new String[] { getId() + "", t.getId() + "" }, null, null,
+				null, null);
+		c.moveToFirst();
+		if (c.getCount() > 0 && c.getInt(0) > 0) {
+			c.close();
+			// already exists;
+			return;
+		}
+		c.close();
+		// save task to set log+modifyed
+		this.edited.put("tags", true);
+		safeSave(log);
+		final ContentValues cv = new ContentValues();
+		cv.put("tag_id", t.getId());
+		cv.put("task_id", getId());
+		database.insert(TAG_CONNECTION_TABLE, null, cv);
+
+	}
+
+	public void removeTag(final Tag t) {
+		removeTag(t, true);
+	}
+
+	public void removeTag(final Tag t, final boolean log) {
+		// save task to set log+modifyed
+		this.edited.put("tags", true);
+		safeSave(log);
+		database.delete(TAG_CONNECTION_TABLE, "task_id=? and tag_id=?",
+				new String[] { getId() + "", t.getId() + "" });
+
 	}
 }

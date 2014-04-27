@@ -20,60 +20,49 @@ package de.azapps.mirakel.model.list.meta;
 
 import java.util.List;
 
-public abstract class SpecialListsSetProperty extends SpecialListsBaseProperty {
-	protected boolean isNegated;
-	protected List<Integer> content;
+import android.content.Context;
+import de.azapps.mirakel.model.DatabaseHelper;
+import de.azapps.mirakel.model.R;
+import de.azapps.mirakel.model.tags.Tag;
+import de.azapps.mirakel.model.task.Task;
 
-	public SpecialListsSetProperty(final boolean isNegated,
+public class SpecialListsTagProperty extends SpecialListsSetProperty {
+
+	public SpecialListsTagProperty(final boolean isNegated,
 			final List<Integer> content) {
-		this.isNegated = isNegated;
-		this.content = content;
+		super(isNegated, content);
+	}
+
+	@Override
+	protected String propertyName() {
+		return Tag.TABLE;
 	}
 
 	@Override
 	public String getWhereQuery() {
-		String query = this.isNegated ? " not " : "";
-		query += propertyName() + " IN (";
+		String query = this.isNegated ? " NOT " : "";
+		query += DatabaseHelper.ID + " IN (";
+		query += "SELECT task_id FROM " + Task.TAG_CONNECTION_TABLE;
+		query += " WHERE tag_id IN(";
 		query = addContent(query);
-		return query + ")";
+		return query + "))";
 	}
 
 	@Override
-	public String serialize() {
-		String ret = "\"" + propertyName() + "\":{";
-		ret += "\"isNegated\":" + (this.isNegated ? "true" : "false");
-		ret += ",\"content\":[";
-		ret = addContent(ret);
-		return ret + "]}";
-	}
-
-	protected String addContent(String ret) {
+	public String getSummary(final Context ctx) {
+		String summary = this.isNegated ? ctx.getString(R.string.not_in) : "";
 		boolean first = true;
-		for (final int c : this.content) {
-			ret += (first ? "" : ",") + c;
+		for (final int p : this.content) {
+			final Tag t = Tag.getTag(p);
+			if (t == null) {
+				continue;
+			}
+			summary += (first ? "" : ",") + t;
 			if (first) {
 				first = false;
 			}
 		}
-		return ret;
+		return summary;
 	}
-
-	public boolean isNegated() {
-		return this.isNegated;
-	}
-
-	public List<Integer> getContent() {
-		return this.content;
-	}
-
-	public void setNegated(final boolean negated) {
-		this.isNegated = negated;
-	}
-
-	public void setContent(final List<Integer> content) {
-		this.content = content;
-	}
-
-	abstract protected String propertyName();
 
 }

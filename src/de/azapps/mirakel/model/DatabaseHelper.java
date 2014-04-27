@@ -37,6 +37,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Color;
 import android.net.Uri;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
@@ -61,6 +62,7 @@ import de.azapps.mirakel.model.list.meta.SpecialListsPriorityProperty;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.semantic.SemanticBase;
+import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
@@ -68,7 +70,7 @@ import de.azapps.tools.Log;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
 	public static final String CREATED_AT = "created_at";
-	public static final int DATABASE_VERSION = 37;
+	public static final int DATABASE_VERSION = 38;
 	public static final String ID = "_id";
 
 	public static final String NAME = "name";
@@ -649,7 +651,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			}
 			final AccountManager accountManager = AccountManager
 					.get(this.context);
-			final Cursor c = db.query(AccountMirakel.TABLE,
+			Cursor c = db.query(AccountMirakel.TABLE,
 					AccountMirakel.allColumns, null, null, null, null, null);
 			final List<AccountMirakel> accounts = AccountMirakel
 					.cursorToAccountList(c);
@@ -760,6 +762,79 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					}
 				} while (cursor.moveToNext());
 				cursor.close();
+			}
+		case 37:
+			// Introduce tags
+			db.execSQL("CREATE TABLE " + Tag.TABLE + " (" + ID
+					+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + NAME
+					+ " TEXT NOT NULL, " + Tag.DARK_TEXT
+					+ " INTEGER NOT NULL DEFAULT 0, " + Tag.BACKGROUND_COLOR_A
+					+ " INTEGER NOT NULL DEFAULT 0, " + Tag.BACKGROUND_COLOR_B
+					+ " INTEGER NOT NULL DEFAULT 0, " + Tag.BACKGROUND_COLOR_G
+					+ " INTEGER NOT NULL DEFAULT 0, " + Tag.BACKGROUND_COLOR_R
+					+ " INTEGER NOT NULL DEFAULT 0);");
+			db.execSQL("CREATE TABLE "
+					+ Task.TAG_CONNECTION_TABLE
+					+ " ("
+					+ ID
+					+ " INTEGER PRIMARY KEY AUTOINCREMENT,"
+					+ " task_id INTEGER REFERENCES "
+					+ Task.TABLE
+					+ " ("
+					+ ID
+					+ ") "
+					+ "ON DELETE CASCADE ON UPDATE CASCADE,tag_id INTEGER REFERENCES "
+					+ Tag.TABLE + " (" + ID
+					+ ") ON DELETE CASCADE ON UPDATE CASCADE);");
+			cursor = db.query(Task.TABLE, new String[] { "_id",
+					"additional_entries" },
+					"additional_entries LIKE '%\"tags\":[\"%'", null, null,
+					null, null);
+			if (cursor.getCount() > 0) {
+				int count = 0;
+				cursor.moveToFirst();
+				do {
+					final int taskId = cursor.getInt(0);
+					final Map<String, String> entryMap = Task
+							.parseAdditionalEntries(cursor.getString(1));
+					String entries = entryMap.get("tags").trim();
+					entries = entries.replace("[", "");
+					entries = entries.replace("]", "");
+					entries = entries.replace("\"", "");
+					final String[] tags = entries.split(",");
+					for (final String tag : tags) {
+						c = db.query(Tag.TABLE, new String[] { ID }, NAME
+								+ "=?", new String[] { tag }, null, null, null);
+						int tagId;
+						if (c.getCount() > 0) {
+							c.moveToFirst();
+							tagId = c.getInt(0);
+						} else {
+							// create tag;
+							final int color = Tag.getNextColor(count++,
+									this.context);
+							cv = new ContentValues();
+							cv.put(NAME, tag);
+							cv.put(Tag.BACKGROUND_COLOR_R, Color.red(color));
+							cv.put(Tag.BACKGROUND_COLOR_G, Color.green(color));
+							cv.put(Tag.BACKGROUND_COLOR_B, Color.blue(color));
+							cv.put(Tag.BACKGROUND_COLOR_A, Color.alpha(color));
+							tagId = (int) db.insert(Tag.TABLE, null, cv);
+						}
+						cv = new ContentValues();
+						cv.put("tag_id", tagId);
+						cv.put("task_id", taskId);
+						db.insert(Task.TAG_CONNECTION_TABLE, null, cv);
+						entryMap.remove("tags");
+						cv = new ContentValues();
+						cv.put(Task.ADDITIONAL_ENTRIES,
+								Task.serializeAdditionalEntries(entryMap));
+						db.update(Task.TABLE, cv, ID + "=?",
+								new String[] { taskId + "" });
+
+					}
+
+				} while (cursor.moveToNext());
 			}
 		default:
 			break;
