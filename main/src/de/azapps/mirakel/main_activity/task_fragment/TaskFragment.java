@@ -369,7 +369,7 @@ public abstract class TaskFragment extends Fragment {
 			public void clickOnFile(final FileMirakel file) {
 				final Context context = getActivity();
 				String[] items;
-				if (file.getPath().endsWith(".mp3")) {
+				if (FileUtils.isAudio(file.getUri())) {
 					items = context.getResources().getStringArray(
 							R.array.audio_playback_options);
 				} else {

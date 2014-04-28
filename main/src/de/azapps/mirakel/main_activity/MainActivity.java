@@ -97,7 +97,6 @@ import de.azapps.mirakel.static_activities.SettingsActivity;
 import de.azapps.mirakel.static_activities.SplashScreenActivity;
 import de.azapps.mirakel.widget.MainWidgetProvider;
 import de.azapps.mirakelandroid.R;
-import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 
 /**
@@ -177,12 +176,12 @@ public class MainActivity extends ActionBarActivity implements
 		if (Intent.ACTION_SEND.equals(action) && type != null) {
 			final Uri uri = (Uri) intent
 					.getParcelableExtra(Intent.EXTRA_STREAM);
-			t.addFile(this, FileUtils.getPathFromUri(uri, this));
+			t.addFile(this, uri);
 		} else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
 			final ArrayList<Uri> imageUris = intent
 					.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
 			for (final Uri uri : imageUris) {
-				t.addFile(this, FileUtils.getPathFromUri(uri, this));
+				t.addFile(this, uri);
 			}
 		}
 
@@ -1009,9 +1008,8 @@ public class MainActivity extends ActionBarActivity implements
 			if (intent != null) {
 				Log.d(MainActivity.TAG,
 						"taskname " + this.currentTask.getName());
-				final String file_path = FileUtils.getPathFromUri(
-						intent.getData(), this);
-				if (FileMirakel.newFile(this, this.currentTask, file_path) == null) {
+				if (FileMirakel.newFile(this, this.currentTask,
+						intent.getData()) == null) {
 					ErrorReporter.report(ErrorType.FILE_NOT_FOUND);
 				} else {
 					getTaskFragment().update(this.currentTask);
@@ -1060,7 +1058,7 @@ public class MainActivity extends ActionBarActivity implements
 							this.currentList, false, this);
 					task.safeSave();
 				}
-				task.addFile(this, FileUtils.getPathFromUri(this.fileUri, this));
+				task.addFile(this, this.fileUri);
 				getTaskFragment().update(task);
 			}
 			break;
