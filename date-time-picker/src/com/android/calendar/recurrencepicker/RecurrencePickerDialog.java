@@ -20,7 +20,6 @@
 package com.android.calendar.recurrencepicker;
 
 import java.text.DateFormatSymbols;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -56,7 +55,6 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
-import android.widget.Space;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -77,7 +75,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
 
 	// in dp's
 	private static final int MIN_SCREEN_WIDTH_FOR_SINGLE_ROW_WEEK = 450;
-	protected static final String TAG = null;
+	protected static final String TAG = "RecurrencePickerDialog";
 
 	public static RecurrencePickerDialog newInstance(
 			final OnRecurrenceSetListner r, final Recurring recurring,
@@ -287,11 +285,12 @@ public class RecurrencePickerDialog extends DialogFragment implements
 			} else {
 				root = this.mWeekGroup;
 			}
+			final LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+					LinearLayout.LayoutParams.WRAP_CONTENT,
+					LinearLayout.LayoutParams.WRAP_CONTENT);
+			lp.setMargins(dpToPx(8), dpToPx(8), 0, 0);
+			item.setLayoutParams(lp);
 			root.addView(item);
-			final Space s = new Space(this.ctx);
-			s.setLayoutParams(new LayoutParams(dpToPx(16),
-					LayoutParams.MATCH_PARENT));
-			root.addView(s);
 			this.mWeekByDayButtons[day] = item;
 		}
 
@@ -543,12 +542,16 @@ public class RecurrencePickerDialog extends DialogFragment implements
 						case 1:
 							RecurrencePickerDialog.this.mEndDateView
 									.setVisibility(View.VISIBLE);
-							try {
-								RecurrencePickerDialog.this.mEndDate = DateTimeHelper
-										.parseDate(RecurrencePickerDialog.this.mEndDateView
-												.getText().toString());
-							} catch (final ParseException e) {
-								RecurrencePickerDialog.this.mEndDate = endDate;
+							if (RecurrencePickerDialog.this.mEndDate == null) {
+								RecurrencePickerDialog.this.mEndDate = RecurrencePickerDialog.this.mStartDate;
+								if (RecurrencePickerDialog.this.mEndDate == null) {
+									RecurrencePickerDialog.this.mEndDate = new GregorianCalendar();
+									RecurrencePickerDialog.this.mEndDate.add(
+											Calendar.MONTH, 1);
+								} else {
+									RecurrencePickerDialog.this.mEndDate.add(
+											Calendar.MONTH, 1);
+								}
 							}
 							break;
 						default:// FOREVER
@@ -592,12 +595,14 @@ public class RecurrencePickerDialog extends DialogFragment implements
 						case 1:
 							RecurrencePickerDialog.this.mStartDateView
 									.setVisibility(View.VISIBLE);
-							try {
-								RecurrencePickerDialog.this.mStartDate = DateTimeHelper
-										.parseDate(RecurrencePickerDialog.this.mStartDateView
-												.getText().toString());
-							} catch (final ParseException e) {
-								RecurrencePickerDialog.this.mStartDate = endDate;
+							if (RecurrencePickerDialog.this.mStartDate == null) {
+								RecurrencePickerDialog.this.mStartDate = RecurrencePickerDialog.this.mEndDate;
+								if (RecurrencePickerDialog.this.mStartDate == null) {
+									RecurrencePickerDialog.this.mStartDate = new GregorianCalendar();
+								} else {
+									RecurrencePickerDialog.this.mStartDate.add(
+											Calendar.MONTH, -1);
+								}
 							}
 							break;
 						default:// FOREVER
