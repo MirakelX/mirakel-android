@@ -1,24 +1,27 @@
 package de.azapps.mirakel.model.file;
 
-import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 import android.content.ContentValues;
+import android.content.Context;
+import android.net.Uri;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.tools.FileUtils;
 
 public class FileBase {
 	private int id;
 	private Task task;
 	private String name;
-	private String path;
-	private File file;
+	private Uri uri;
 
 	public FileBase(final int id, final Task task, final String name,
-			final String path) {
+			final Uri uri) {
 		super();
 		this.id = id;
 		this.task = task;
 		this.name = name;
-		this.path = path;
+		this.uri = uri;
 	}
 
 	public int getId() {
@@ -45,19 +48,17 @@ public class FileBase {
 		this.name = name;
 	}
 
-	public String getPath() {
-		return this.path;
+	public Uri getUri() {
+		return this.uri;
 	}
 
-	public void setPath(final String path) {
-		this.path = path;
+	public void setUri(final Uri path) {
+		this.uri = path;
 	}
 
-	public File getFile() {
-		if (this.file == null) {
-			this.file = new File(this.path);
-		}
-		return this.file;
+	public FileInputStream getFileStream(final Context ctx)
+			throws FileNotFoundException {
+		return FileUtils.getStreamFromUri(ctx, this.uri);
 	}
 
 	@Override
@@ -70,7 +71,7 @@ public class FileBase {
 		cv.put("_id", this.id);
 		cv.put("task_id", this.task.getId());
 		cv.put("name", this.name);
-		cv.put("path", this.path);
+		cv.put("path", this.uri != null ? this.uri.toString() : "");
 		return cv;
 	}
 }

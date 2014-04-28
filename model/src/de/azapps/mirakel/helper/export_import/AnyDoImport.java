@@ -19,7 +19,9 @@
 package de.azapps.mirakel.helper.export_import;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -45,6 +47,8 @@ import com.google.gson.JsonSyntaxException;
 
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.Helpers;
+import de.azapps.mirakel.helper.error.ErrorReporter;
+import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.recurring.Recurring;
@@ -55,18 +59,11 @@ public class AnyDoImport {
 	private static final String TAG = "AnyDoImport";
 	private static SparseIntArray taskMapping;
 
-	public static boolean exec(final Context ctx, final String path_any_do) {
-		String json;
-		try {
-			json = ExportImport.getStringFromFile(path_any_do, ctx);
-		} catch (final IOException e) {
-			Log.e(TAG, "cannot read File");
-			return false;
-		}
-		Log.i(TAG, json);
+	public static boolean exec(final Context ctx, final FileInputStream stream) {
 		JsonObject i;
 		try {
-			i = new JsonParser().parse(json).getAsJsonObject();
+			i = new JsonParser().parse(new InputStreamReader(stream))
+					.getAsJsonObject();
 		} catch (final JsonSyntaxException e2) {
 			Log.e(TAG, "malformed backup");
 			return false;
@@ -137,7 +134,15 @@ public class AnyDoImport {
 								public void onClick(
 										final DialogInterface dialog,
 										final int which) {
-									exec(activity, backupFile.getAbsolutePath());
+									try {
+										exec(activity, new FileInputStream(
+												backupFile));
+									} catch (final FileNotFoundException e) {
+										ErrorReporter
+												.report(ErrorType.FILE_NOT_FOUND);
+										Log.wtf(TAG, "file vanished");
+										return;
+									}
 									android.os.Process
 											.killProcess(android.os.Process
 													.myPid());

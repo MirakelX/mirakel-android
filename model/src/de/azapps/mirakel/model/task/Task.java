@@ -36,6 +36,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.util.Pair;
 
 import com.google.gson.JsonArray;
@@ -762,8 +763,8 @@ public class Task extends TaskBase {
 		super(name);
 	}
 
-	public FileMirakel addFile(final Context ctx, final String path) {
-		return FileMirakel.newFile(ctx, this, path);
+	public FileMirakel addFile(final Context ctx, final Uri uri) {
+		return FileMirakel.newFile(ctx, this, uri);
 	}
 
 	public void addSubtask(final Task t) {
