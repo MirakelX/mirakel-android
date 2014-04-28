@@ -12,7 +12,7 @@ Mirakel-version: %1$s\n
 SDK-version: %2$d\n
 Device: %3$s\n]]>
     </string>
-  <string name="error_FILE_NO_ACTIVITY">Я не знаю, как открыть этот файл - извините</string>
-  <string name="error_TASKS_NO_LIST">Это дело невозможно выполнить, потому что у Вас нет списков</string>
-  <string name="error_TASK_VANISHED">Ооооох! Исчез в список дел. Я сожалею...</string>
+  <string name="error_FILE_NO_ACTIVITY" tools:ignore="UnusedResources">Я не знаю, как открыть этот файл - извините</string>
+  <string name="error_TASKS_NO_LIST" tools:ignore="UnusedResources">Это дело невозможно выполнить, потому что у Вас нет списков</string>
+  <string name="error_TASK_VANISHED" tools:ignore="UnusedResources">Ооооох! Исчез в список дел. Я сожалею...</string>
 </resources>

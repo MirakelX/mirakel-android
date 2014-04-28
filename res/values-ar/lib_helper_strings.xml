@@ -14,15 +14,15 @@ SDK-نسخة: %2$d\n
 جهاز: %3$s\n]]>
     </string>
   <string name="contact_chooser">جاري إرسال البريد الإلكتروني&#8230;</string>
-  <string name="error_TASKS_CANNOT_FORM_LOOP">مهام فرعية لا يمكنها تشكيل حلقة</string>
-  <string name="error_FILE_NO_ACTIVITY">لا أعرف كيفية فتح هذا الملف – عذراً</string>
-  <string name="error_NO_FILEMANAGER">الرجاء تثبيت مدير الملفات</string>
-  <string name="error_FILE_NOT_FOUND">لم يتم العثور على هذا الملف</string>
-  <string name="error_BACKUP_EXPORT_ERROR">حدث خطأ أثناء تصدير قاعدة البيانات</string>
-  <string name="error_BACKUP_IMPORT_ERROR">حدث خطأ أثناء استيراد قاعدة البيانات</string>
-  <string name="error_TASKS_NO_LIST">يتعذر مزامنة هذه المهمة، نظراً لأنه لا قوائم لديك</string>
-  <string name="error_TASK_VANISHED">اوو، لقد اختفت قائمة المهام. اسف&#8230;</string>
-  <string name="error_ASTRID_ERROR">حدث خطأ أثناء استيراد من Astrid!</string>
-  <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD">لا يمكن تحميل ملف التكوين</string>
-  <string name="error_TASKWARRIOR_URL_NOT_FOUND">عنوان URL غير صحيح. هل تفحصت التعليمة البرمجية الصحيحة؟</string>
+  <string name="error_TASKS_CANNOT_FORM_LOOP" tools:ignore="UnusedResources">مهام فرعية لا يمكنها تشكيل حلقة</string>
+  <string name="error_FILE_NO_ACTIVITY" tools:ignore="UnusedResources">لا أعرف كيفية فتح هذا الملف – عذراً</string>
+  <string name="error_NO_FILEMANAGER" tools:ignore="UnusedResources">الرجاء تثبيت مدير الملفات</string>
+  <string name="error_FILE_NOT_FOUND" tools:ignore="UnusedResources">لم يتم العثور على هذا الملف</string>
+  <string name="error_BACKUP_EXPORT_ERROR" tools:ignore="UnusedResources">حدث خطأ أثناء تصدير قاعدة البيانات</string>
+  <string name="error_BACKUP_IMPORT_ERROR" tools:ignore="UnusedResources">حدث خطأ أثناء استيراد قاعدة البيانات</string>
+  <string name="error_TASKS_NO_LIST" tools:ignore="UnusedResources">يتعذر مزامنة هذه المهمة، نظراً لأنه لا قوائم لديك</string>
+  <string name="error_TASK_VANISHED" tools:ignore="UnusedResources">اوو، لقد اختفت قائمة المهام. اسف&#8230;</string>
+  <string name="error_ASTRID_ERROR" tools:ignore="UnusedResources">حدث خطأ أثناء استيراد من Astrid!</string>
+  <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD" tools:ignore="UnusedResources">لا يمكن تحميل ملف التكوين</string>
+  <string name="error_TASKWARRIOR_URL_NOT_FOUND" tools:ignore="UnusedResources">عنوان URL غير صحيح. هل تفحصت التعليمة البرمجية الصحيحة؟</string>
 </resources>
