@@ -198,7 +198,8 @@ public class TaskDialogHelpers {
 								audio_record_mRecorder.stop();
 								audio_record_mRecorder.release();
 								audio_record_mRecorder = null;
-								mTask.addFile(context, audio_record_filePath);
+								mTask.addFile(context, Uri.fromFile(new File(
+										audio_record_filePath)));
 								onSuccess.exec(mTask);
 							}
 						})
@@ -699,10 +700,10 @@ public class TaskDialogHelpers {
 	}
 
 	public static void openFile(final Context context, final FileMirakel file) {
-		final String mimetype = FileUtils.getMimeType(file.getPath());
+		final String mimetype = FileUtils.getMimeType(file.getUri());
 		final Intent i2 = new Intent();
 		i2.setAction(android.content.Intent.ACTION_VIEW);
-		i2.setDataAndType(Uri.fromFile(new File(file.getPath())), mimetype);
+		i2.setDataAndType(file.getUri(), mimetype);
 		try {
 			context.startActivity(i2);
 		} catch (final ActivityNotFoundException e) {
@@ -727,7 +728,7 @@ public class TaskDialogHelpers {
 			if (!loud) {
 				mPlayer.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);
 			}
-			mPlayer.setDataSource(file.getPath());
+			mPlayer.setDataSource(file.getFileStream(context).getFD());
 			mPlayer.prepare();
 			mPlayer.start();
 			mPlayer.setOnCompletionListener(new OnCompletionListener() {
