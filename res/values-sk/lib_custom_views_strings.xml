@@ -17,13 +17,19 @@
   <string name="audio_record_title">Nahrávanie zvuku&#8230;</string>
   <string name="audio_record_message">Nahrávam&#8230;</string>
   <string name="audio_playback_title">Prehrávanie zvuku&#8230;</string>
+  <string name="audio_playback_select_title">Čo chcete urobiť?</string>
   <string name="audio_playback_pause">Pauza</string>
   <string name="audio_playback_play">Hrať</string>
   <string name="audio_playback_stop">Zastaviť</string>
   <string name="task_change_prio_title">Zmeniť prioritu</string>
   <string name="remove_subtask">Odstrániť podúlohu</string>
+  <string name="add_existing">Pridať existujúcu úlohu</string>
+  <string name="task_name">Názov úlohy:</string>
+  <string name="subtask_add_options">Filter &gt;&gt;</string>
+  <string name="subtask_reminder">Úloha s pripomenutím?</string>
   <string name="new_task">Nová úloha</string>
   <string name="add_subtasks">Pridať podúlohu&#8230;</string>
   <string name="add">Pridať</string>
   <string name="add_subtask">Pridanie podúlohy</string>
+  <string name="remove_files">Odstrániť súbory z úlohy</string>
 </resources>
