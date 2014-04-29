@@ -11,6 +11,7 @@
   <string name="calDavName">CalDav</string>
   <string name="type">Typ</string>
   <string name="menu_edit_listaccount">Účet</string>
+  <string name="select_config">Vyberte konfiguračný súbor Taskwarrioru</string>
   <string name="message_try_later">Skúsiť synchronizáciu neskôr</string>
   <string name="finish_sync">Dokončiť synchronizáciu</string>
 </resources>
