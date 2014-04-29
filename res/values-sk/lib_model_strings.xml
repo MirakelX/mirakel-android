@@ -3,7 +3,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
   <string name="subtask_list_name">Podúlohy</string>
   <string name="daily">Denne</string>
+  <string name="second_day">Každý druhý deň</string>
   <string name="weekly">Týždenne</string>
+  <string name="two_weekly">Každý druhý týždeň</string>
   <string name="yearly">Ročne</string>
   <string name="monthly">Mesačne</string>
   <string name="hourly">Každú hodinu</string>
@@ -13,6 +15,9 @@
   <string name="day">Deň</string>
   <string name="month">Mesiac</string>
   <string name="year">Rok</string>
+  <string name="beginning">Začiatok</string>
+  <string name="end">Koniec</string>
+  <string name="beginning_end">Začiatok a koniec</string>
   <string name="save">Uložiť</string>
   <string name="recurrence_end_continously">Navždy</string>
   <string name="recurrence_from_now">Odteraz</string>
@@ -21,10 +26,12 @@
   <string name="list_today">Úlohy na dnes</string>
   <string name="list_week">Tento týždeň</string>
   <string name="list_overdue">Po termíne</string>
+  <string name="inbox">Inbox</string>
   <string name="first_task">Prvá úloha</string>
   <string name="local_account">Lokálny účet</string>
   <string name="tw_account">Taskwarrior</string>
   <string name="calDavName">CalDav</string>
+  <string name="search_result_title">Hľadať %s</string>
   <string name="task_empty">Nie je vybratá žiadna úloha&#8230;</string>
   <string name="import_any_do_click">Importovať z Any.Do</string>
   <string name="select_file">Vyberte súbor</string>
@@ -33,6 +40,7 @@
   <string name="add_content">Pridať poznámku&#8230;</string>
   <string name="notification_title_general">%1$d úlohy v %2$s</string>
   <string name="notification_title_general_single">1 úloha v %s</string>
+  <string name="notification_title_empty">Užite si svoj deň!</string>
   <string name="reminder_notification_priority">Priorita: %s</string>
   <string name="reminder_notification_list">Zoznam: %s</string>
   <string name="reminder_notification_due">Termín: %s</string>
@@ -41,14 +49,17 @@
   <string name="task_sorting_title">Zoradiť úlohy podľa</string>
   <string name="share_using">Zdieľať pomocou</string>
   <string name="share_task">Zdieľať úlohu</string>
+  <string name="share_task_title_with_date">%1$s (%2$s)</string>
   <string name="share_task_title">%s</string>
   <string name="share_list">Zdieľať zoznam</string>
+  <string name="share_list_title">%1$s (%2$d)</string>
   <string name="special_list_name">Názov</string>
   <string name="special_list_active">Zobraziť</string>
   <string name="special_list_where">Dopyt SQL-Where</string>
   <string name="special_list_sort_by">Zoradiť podľa</string>
   <string name="special_list_def_list">Predvolený zoznam</string>
   <string name="special_list_def_date">Predvolený dátum</string>
+  <string name="special_list_first">Predvolené</string>
   <string name="special_lists_defaults">Predvolené hodnoty</string>
   <string name="special_list_where_prio_title_text">Priorita</string>
   <string name="special_list_where_name_title_text">Názov</string>
@@ -91,11 +102,11 @@
     <item>+1 rok</item>
   </string-array>
   <string-array name="task_sorting_items">
-    <item>Default</item>
+    <item>Predvolené</item>
     <item>Termín</item>
     <item>Priorita</item>
     <item>Dátum vytvorenia</item>
-    <item>First by priority, then by date</item>
+    <item>Najskôr podľa priority, potom podľa dátumu</item>
   </string-array>
   <string-array name="due_day_year_values">
     <item>Deň</item>
