@@ -44,6 +44,7 @@ import de.azapps.mirakel.helper.export_import.WunderlistImport;
 import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.accounts.AccountSettingsActivity;
 import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
+import de.azapps.mirakel.settings.tags.TagsSettingsActivity;
 import de.azapps.mirakel.settings.taskfragment.TaskFragmentSettingsFragment;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
@@ -287,6 +288,12 @@ public class SettingsActivity extends PreferenceActivity {
 						"de.azapps.mirakel.preferences.SPECIAL_LISTS")) {
 					startActivity(new Intent(this,
 							SpecialListsSettingsActivity.class));
+					if (!MirakelCommonPreferences.isTablet()) {
+						finish();
+					}
+				} else if (i.getAction().equals(
+						"de.azapps.mirakel.preferences.TAG")) {
+					startActivity(new Intent(this, TagsSettingsActivity.class));
 					if (!MirakelCommonPreferences.isTablet()) {
 						finish();
 					}
