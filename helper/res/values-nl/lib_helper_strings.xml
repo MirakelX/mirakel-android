@@ -15,14 +15,14 @@ SDK-version: %2$d\n
 Device: %3$s\n]]>
     </string>
   <string name="contact_chooser">E-mail verzenden&#8230;</string>
-  <string name="error_TASKS_CANNOT_FORM_LOOP">Subtaak kan geen cirkelverwijzing vormen</string>
-  <string name="error_FILE_NO_ACTIVITY">Ik weet niet hoe dit bestand kan worden geopend – sorry</string>
-  <string name="error_NO_FILEMANAGER">Installeer een bestandsbeheerder</string>
-  <string name="error_BACKUP_EXPORT_ERROR">Er is een fout opgetreden bij het exporteren van de reservekopie</string>
-  <string name="error_BACKUP_IMPORT_ERROR">Er is een fout opgetreden bij het importeren van het reservekopie</string>
-  <string name="error_TASKS_NO_LIST">De taak kan niet worden gesynchroniseerd, omdat er geen lijst is</string>
-  <string name="error_TASK_VANISHED">De lijst van de taak is verdwenen. Het spijt me&#8230;</string>
-  <string name="error_ASTRID_ERROR">Er is een fout opgetreden tijdens het importeren van Astrid!</string>
-  <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD">Kon het configuratiebestand niet downloaden</string>
-  <string name="error_TASKWARRIOR_URL_NOT_FOUND">De URL is niet correct. Heeft u de juiste code gescand?</string>
+  <string name="error_TASKS_CANNOT_FORM_LOOP" tools:ignore="UnusedResources">Subtaak kan geen cirkelverwijzing vormen</string>
+  <string name="error_FILE_NO_ACTIVITY" tools:ignore="UnusedResources">Ik weet niet hoe dit bestand kan worden geopend – sorry</string>
+  <string name="error_NO_FILEMANAGER" tools:ignore="UnusedResources">Installeer een bestandsbeheerder</string>
+  <string name="error_BACKUP_EXPORT_ERROR" tools:ignore="UnusedResources">Er is een fout opgetreden bij het exporteren van de reservekopie</string>
+  <string name="error_BACKUP_IMPORT_ERROR" tools:ignore="UnusedResources">Er is een fout opgetreden bij het importeren van het reservekopie</string>
+  <string name="error_TASKS_NO_LIST" tools:ignore="UnusedResources">De taak kan niet worden gesynchroniseerd, omdat er geen lijst is</string>
+  <string name="error_TASK_VANISHED" tools:ignore="UnusedResources">De lijst van de taak is verdwenen. Het spijt me&#8230;</string>
+  <string name="error_ASTRID_ERROR" tools:ignore="UnusedResources">Er is een fout opgetreden tijdens het importeren van Astrid!</string>
+  <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD" tools:ignore="UnusedResources">Kon het configuratiebestand niet downloaden</string>
+  <string name="error_TASKWARRIOR_URL_NOT_FOUND" tools:ignore="UnusedResources">De URL is niet correct. Heeft u de juiste code gescand?</string>
 </resources>

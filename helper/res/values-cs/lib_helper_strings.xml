@@ -13,7 +13,7 @@ Verze Mirakel: %1$s\n
 Verze SDK: %2$d\n
 Zařízení: %3$s\n]]>
     </string>
-  <string name="error_FILE_NO_ACTIVITY">Bohužel, daný soubor nelze otevřít</string>
-  <string name="error_TASKS_NO_LIST">Tento úkol nelze synchronizovat, protože nemáte žádné seznamy</string>
-  <string name="error_TASK_VANISHED">Jejda, seznam zmizel. Omlouvám se&#8230;</string>
+  <string name="error_FILE_NO_ACTIVITY" tools:ignore="UnusedResources">Bohužel, daný soubor nelze otevřít</string>
+  <string name="error_TASKS_NO_LIST" tools:ignore="UnusedResources">Tento úkol nelze synchronizovat, protože nemáte žádné seznamy</string>
+  <string name="error_TASK_VANISHED" tools:ignore="UnusedResources">Jejda, seznam zmizel. Omlouvám se&#8230;</string>
 </resources>

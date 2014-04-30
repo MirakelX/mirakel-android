@@ -13,7 +13,7 @@ Mirakel-version: %1$s\n
 SDK-version: %2$d\n
 Device: %3$s\n]]>
     </string>
-  <string name="error_FILE_NO_ACTIVITY">Jeg vet ikke hvordan jeg åpner denne filen – beklager</string>
-  <string name="error_TASKS_NO_LIST">Oppgaven kan ikke synkroniseres, du har ingen lister</string>
-  <string name="error_TASK_VANISHED">Jøss, listen for oppgaven har forsvunnet. Jeg beklager &#8230;</string>
+  <string name="error_FILE_NO_ACTIVITY" tools:ignore="UnusedResources">Jeg vet ikke hvordan jeg åpner denne filen – beklager</string>
+  <string name="error_TASKS_NO_LIST" tools:ignore="UnusedResources">Oppgaven kan ikke synkroniseres, du har ingen lister</string>
+  <string name="error_TASK_VANISHED" tools:ignore="UnusedResources">Jøss, listen for oppgaven har forsvunnet. Jeg beklager &#8230;</string>
 </resources>
