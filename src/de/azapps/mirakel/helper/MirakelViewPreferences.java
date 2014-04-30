@@ -17,6 +17,7 @@ public class MirakelViewPreferences extends MirakelCommonPreferences {
 			items.add(TYPE.PROGRESS);
 			items.add(TYPE.SUBTASK);
 			items.add(TYPE.FILE);
+			items.add(TYPE.TAGS);
 			setTaskFragmentLayout(items);
 		}
 		return items;
