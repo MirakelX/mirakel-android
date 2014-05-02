@@ -66,6 +66,9 @@
         <Preference
             android:key="special_where_file"
             android:title="@string/special_list_where_file_title_text" />
+        <Preference
+            android:key="special_where_tag"
+            android:title="@string/special_list_where_tag_title_text" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/special_lists_defaults" >
         <Preference

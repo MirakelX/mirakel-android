@@ -36,5 +36,6 @@ dependencies {
     compile project(':custom_views')
     compile project(':donationslib')
     compile project(':drag-sort-listview')
+    compile project(':colorpickerpreference')
 }
 

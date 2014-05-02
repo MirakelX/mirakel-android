@@ -28,6 +28,7 @@ import de.azapps.mirakel.helper.PreferencesAppHelper;
 import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.accounts.AccountSettingsActivity;
 import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
+import de.azapps.mirakel.settings.tags.TagsSettingsActivity;
 import de.azapps.mirakel.settings.taskfragment.TaskFragmentSettingsFragment;
 import de.azapps.tools.Log;
 
@@ -92,6 +93,13 @@ public class SettingsFragment extends PreferenceFragment {
 		} else if (getArguments().getString("type").equals("speciallists")) {
 			startActivity(new Intent(getActivity(),
 					SpecialListsSettingsActivity.class));
+			if (!MirakelCommonPreferences.isTablet()) {
+				getActivity().finish();
+			} else {
+				addPreferencesFromResource(R.xml.settings_notifications);
+			}
+		} else if (getArguments().getString("type").equals("tag")) {
+			startActivity(new Intent(getActivity(), TagsSettingsActivity.class));
 			if (!MirakelCommonPreferences.isTablet()) {
 				getActivity().finish();
 			} else {

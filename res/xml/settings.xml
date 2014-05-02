@@ -48,6 +48,13 @@
             android:name="type"
             android:value="speciallists" />
     </header>
+     <header
+        android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
+        android:title="@string/tag_click" >
+        <extra
+            android:name="type"
+            android:value="tag" />
+    </header>
     <header
         android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
         android:title="@string/notification_title" >
