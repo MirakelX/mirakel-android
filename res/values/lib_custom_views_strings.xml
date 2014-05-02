@@ -50,4 +50,5 @@
         <item>Edit tag</item>
         <item>Remove tag</item>
     </string-array>
+    <string name="tag_has_dark_text">Text is black</string>
 </resources>

@@ -32,6 +32,7 @@ import android.graphics.RectF;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
@@ -126,38 +127,31 @@ public class TagListView extends View {
 		final EditText editName = (EditText) layout
 				.findViewById(R.id.tag_edit_name);
 		editName.setText(tag.getName());
+		final CheckBox darkText = (CheckBox) layout
+				.findViewById(R.id.tag_dark_text);
+		darkText.setChecked(tag.isDarkText());
 		final ColorPicker picker = (ColorPicker) layout
 				.findViewById(R.id.color_picker);
 		final SVBar op = (SVBar) layout.findViewById(R.id.svbar_color_picker);
 		picker.addSVBar(op);
 		picker.setColor(tag.getBackgroundColor());
 		picker.setOldCenterColor(tag.getBackgroundColor());
-		final AlertDialog.Builder builder = new AlertDialog.Builder(
-				getContext());
-		builder.setView(layout);
-		builder.setPositiveButton(android.R.string.ok,
-				new DialogInterface.OnClickListener() {
+		new AlertDialog.Builder(getContext())
+				.setView(layout)
+				.setPositiveButton(android.R.string.ok,
+						new DialogInterface.OnClickListener() {
 
-					@Override
-					public void onClick(final DialogInterface dialog,
-							final int which) {
-						tag.setBackgroundColor(picker.getColor());
-						tag.setName(editName.getText().toString());
-						tag.save();
-						invalidate();
-					}
-				});
-		builder.setNegativeButton(android.R.string.cancel,
-				new DialogInterface.OnClickListener() {
-
-					@Override
-					public void onClick(final DialogInterface dialog,
-							final int which) {
-						// TODO Auto-generated method stub
-
-					}
-				});
-		builder.show();
+							@Override
+							public void onClick(final DialogInterface dialog,
+									final int which) {
+								tag.setBackgroundColor(picker.getColor());
+								tag.setName(editName.getText().toString());
+								tag.setDarkText(darkText.isChecked());
+								tag.save();
+								invalidate();
+							}
+						}).setNegativeButton(android.R.string.cancel, null)
+				.show();
 	}
 
 	public void init(final Task task) {
