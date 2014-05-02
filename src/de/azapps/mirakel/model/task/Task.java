@@ -844,6 +844,7 @@ public class Task extends TaskBase {
 		Task.database.beginTransaction();
 		final long insertId = Task.database.insertOrThrow(Task.TABLE, null,
 				values);
+		this.setId(insertId);
 		Task.database.setTransactionSuccessful();
 		Task.database.endTransaction();
 		final Cursor cursor = Task.database.query(Task.TABLE, Task.allColumns,
@@ -1145,7 +1146,6 @@ public class Task extends TaskBase {
 				+ ".tag_id=" + Tag.TABLE + "." + DatabaseHelper.ID + " WHERE "
 				+ TAG_CONNECTION_TABLE + ".task_id=?";
 		return query;
-
 	}
 
 	public void addTag(final Tag t) {
@@ -1186,5 +1186,19 @@ public class Task extends TaskBase {
 		database.delete(TAG_CONNECTION_TABLE, "task_id=? and tag_id=?",
 				new String[] { getId() + "", t.getId() + "" });
 
+	}
+
+	/**
+	 * Dirty Hack! Use it only if you exactly know what you do
+	 * 
+	 * Adds all tags with task_id=0 to the current task
+	 */
+	public void dirtyTakeAllTags() {
+		Task.database.beginTransaction();
+		final ContentValues cv = new ContentValues();
+		cv.put("task_id", getId());
+		database.update(TAG_CONNECTION_TABLE, cv, "task_id=0", null);
+		Task.database.setTransactionSuccessful();
+		Task.database.endTransaction();
 	}
 }
