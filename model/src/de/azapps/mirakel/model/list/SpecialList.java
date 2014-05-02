@@ -36,7 +36,9 @@ import de.azapps.mirakel.model.list.meta.SpecialListsPriorityProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsProgressProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsReminderProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsSubtaskProperty;
+import de.azapps.mirakel.model.list.meta.SpecialListsTagProperty;
 import de.azapps.mirakel.model.list.meta.StringDeserializer;
+import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
 
@@ -432,6 +434,9 @@ public class SpecialList extends ListMirakel {
 				break;
 			case FileMirakel.TABLE:
 				className = SpecialListsFileProperty.class;
+				break;
+			case Tag.TABLE:
+				className = SpecialListsTagProperty.class;
 				break;
 			default:
 				Log.wtf(TAG, "unkown key: " + key);
