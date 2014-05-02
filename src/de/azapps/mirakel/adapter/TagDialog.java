@@ -167,11 +167,9 @@ public class TagDialog extends DialogFragment implements
 	public Loader<Cursor> onCreateLoader(final int arg0, final Bundle arg1) {
 		final Uri u = Uri.parse("content://"
 				+ DefinitionsHelper.AUTHORITY_INTERNAL + "/" + "tags");
-		final String tagsQuery = "AND "
-				+ DatabaseHelper.ID
-				+ " NOT IN ("
-				+ this.task.getTagsQuery(new String[] { Tag.TABLE + "."
-						+ DatabaseHelper.ID }) + ")";
+		final String tagsQuery = "AND " + DatabaseHelper.ID + " NOT IN ("
+				+ this.task.getTagsQuery(new String[] { DatabaseHelper.ID })
+				+ ")";
 		return new CursorLoader(getActivity(), u, Tag.allColumns,
 				DatabaseHelper.NAME + " LIKE ? " + tagsQuery, new String[] {
 						this.searchString + "%", this.task.getId() + "" }, null);
