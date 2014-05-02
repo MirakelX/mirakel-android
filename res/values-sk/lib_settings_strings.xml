@@ -50,6 +50,7 @@
   <string name="delete_done_warning">Naozaj?</string>
   <string name="preferences_colorize">Farby</string>
   <string name="settings_semantics_actions">Akcie</string>
+  <string name="tag_name">Názov</string>
   <string name="settings_subtask">Podúlohy</string>
   <string name="settings_tasks_title">Úlohy</string>
   <string name="settings_dev_sync">Synchronizácia</string>

@@ -82,6 +82,7 @@
   <string name="semantics_no_list">Ikke angi listen</string>
   <string name="semantics_no_due">Ikke angi forfalls dato</string>
   <string name="settings_file_default_title">Aktivitetsnavn for importerte filer</string>
+  <string name="tag_name">Navn</string>
   <string name="settings_subtask">Deloppgave</string>
   <string name="settings_subtask_add_to_same_list_summary">Eller velg en standardliste, der deloppgaven vil bli lagt til</string>
   <string name="settings_dev_sync">Synkronisering</string>

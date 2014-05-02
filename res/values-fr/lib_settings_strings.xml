@@ -142,6 +142,7 @@
   <string name="settings_semantics_priority">Régler la priorité</string>
   <string name="settings_file_default_title">Nom de la tâche pour les fichiers importés</string>
   <string name="semantic_new">Modèle</string>
+  <string name="tag_name">Nom</string>
   <string name="settings_subtask">Tâches subordonnées</string>
   <string name="settings_subtask_default_new">Voir la nouvelle tâche par défaut</string>
   <string name="settings_subtask_add_to_same_list">Ajouter tâche subordonnée à la liste de la tâche</string>

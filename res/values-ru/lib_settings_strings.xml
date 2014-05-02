@@ -94,6 +94,7 @@
   <string name="semantics_no_list">Не задавайте список</string>
   <string name="semantics_no_due">Не устанавливайте срок</string>
   <string name="settings_file_default_title">Название дела для импортированных файлов</string>
+  <string name="tag_name">Имя</string>
   <string name="settings_subtask">Подзадачи</string>
   <string name="settings_subtask_add_to_same_list_summary">Или укажите, в какой список по умолчанию должны добавляться подзадачи</string>
   <string name="settings_use_btn_speak">Показать кнопку микрофона</string>

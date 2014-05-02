@@ -179,6 +179,7 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="semantics_no_due">Não definir data limite</string>
   <string name="settings_file_default_title">Nome da tarefa para ficheiros importados</string>
   <string name="semantic_new">modelo</string>
+  <string name="tag_name">Nome</string>
   <string name="settings_subtask">Subtarefas</string>
   <string name="settings_subtask_default_new">Por definição, mostrar nova tarefa</string>
   <string name="settings_subtask_add_to_same_list">Adicionar subtarefa à lista da tarefa</string>
