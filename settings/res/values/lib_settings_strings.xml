@@ -287,6 +287,12 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="semantics_no_due">Do not set due date</string>
     <string name="settings_file_default_title">Task name for imported files</string>
     <string name="semantic_new">Template</string>
+    <string name="tag_new">New Tag</string>
+    <string name="tag_settings">Tagsettings</string>
+    <string name="color">Color</string>
+    <string name="tag_name">Name</string>
+    <string name="tag_dark_text">Should the text be black?</string>
+    <string name="tag_click">Tags</string>
     <!-- Subtasks -->
     <string name="settings_subtask">Subtasks</string>
     <string name="settings_subtask_default_new">Show new task per default</string>
@@ -348,6 +354,7 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="alert_taskwarrior_title">Informations for Taskwarrior</string>
     
     <string name="special_list_where_subtask_title_text">Subtasks</string>
+    <string name="special_list_where_tag_title_text">Tags</string>
     <string name="special_list_where_progress_title_text">Progress</string>
     <string name="special_list_where_file_title_text">File</string>
     <string-array name="special_lists_subtask_options">

@@ -43,6 +43,12 @@
             android:targetClass="de.azapps.mirakel.static_activities.SettingsActivity"
             android:targetPackage="de.azapps.mirakelandroid" />
     </Preference>
+    <Preference android:title="@string/tag_click" >
+        <intent
+            android:action="de.azapps.mirakel.preferences.TAG"
+            android:targetClass="de.azapps.mirakel.static_activities.SettingsActivity"
+            android:targetPackage="de.azapps.mirakelandroid" />
+    </Preference>
     <Preference android:title="@string/notification_title" >
         <intent
             android:action="de.azapps.mirakel.preferences.NOTIFICATION"
