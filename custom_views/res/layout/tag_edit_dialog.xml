@@ -17,16 +17,27 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<resources>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
 
-    <style name="taskViewCaption">
-        <item name="android:textSize">18sp</item>
-        <item name="android:paddingStart">8dp</item>
-    </style>
+    <EditText
+        android:id="@+id/tag_edit_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:imeOptions="actionDone"
+        android:singleLine="true" />
 
-    <style name="imgButton">
-        <item name="android:padding">4dp</item>
-        <item name="android:background">@android:color/transparent</item>
-    </style>
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/color_picker" />
 
-</resources>
+    <CheckBox
+        android:id="@+id/tag_dark_text"
+        android:text="@string/tag_has_dark_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>
