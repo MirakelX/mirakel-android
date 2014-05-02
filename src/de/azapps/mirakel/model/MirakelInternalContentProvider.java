@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
 
@@ -17,11 +18,13 @@ public class MirakelInternalContentProvider extends ContentProvider {
 	private static final UriMatcher uriMatcher;
 	private static final int TASKS = 0;
 	private static final int LISTS = 1;
+	private static final int TAGS = 2;
 	static {
 		uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 		uriMatcher.addURI(DefinitionsHelper.AUTHORITY_INTERNAL, "tasks", TASKS);
 
 		uriMatcher.addURI(DefinitionsHelper.AUTHORITY_INTERNAL, "lists", LISTS);
+		uriMatcher.addURI(DefinitionsHelper.AUTHORITY_INTERNAL, "tags", TAGS);
 	}
 
 	@Override
@@ -60,6 +63,10 @@ public class MirakelInternalContentProvider extends ContentProvider {
 			break;
 		case LISTS:
 			table = ListMirakel.TABLE;
+			break;
+		case TAGS:
+			table = Tag.TABLE;
+			Log.w(TAG, selectionArgs[0]);
 			break;
 		default:
 			Log.wtf(TAG, "where are the dragons");
