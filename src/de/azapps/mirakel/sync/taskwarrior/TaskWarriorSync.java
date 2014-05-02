@@ -424,7 +424,7 @@ public class TaskWarriorSync {
 		this.accountManager = AccountManager.get(this.mContext);
 		this.account = a;
 		final AccountMirakel aMirakel = AccountMirakel.get(a);
-		if (!aMirakel.isEnabled()) {
+		if (aMirakel == null || !aMirakel.isEnabled()) {
 			throw new TaskWarriorSyncFailedExeption(TW_ERRORS.NOT_ENABLED,
 					"TW sync is not enabled");
 		}
