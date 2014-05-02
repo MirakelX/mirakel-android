@@ -30,6 +30,7 @@ import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.R;
 import de.azapps.mirakel.sync.SyncAdapter;
@@ -307,6 +308,7 @@ public class TaskWarriorSync {
 				} else if (local_task == null) {
 					try {
 						server_task.create(false);
+						server_task.dirtyTakeAllTags();
 						Log.d(TAG, "create " + server_task.getName());
 					} catch (final NoSuchListException e) {
 						Log.wtf(TAG, "List vanish");
@@ -548,10 +550,14 @@ public class TaskWarriorSync {
 					+ formatCal(DateTimeHelper.getUTCCalendar(task
 							.getReminder())) + "\"";
 		}
+
 		if (end != null) {
 			json += ",\"end\":\"" + end + "\"";
 		}
 		json += ",\"progress\":" + task.getProgress();
+		// Tags
+		json += "," + Tag.serialize(task);
+		// End Tags
 		// Annotations
 		if (task.getContent() != null && !task.getContent().equals("")) {
 			json += ",\"annotations\":[";
