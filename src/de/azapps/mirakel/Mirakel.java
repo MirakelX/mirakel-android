@@ -44,6 +44,7 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.semantic.Semantic;
+import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakelandroid.R;
@@ -99,6 +100,7 @@ public class Mirakel extends Application {
 		Semantic.init(this);
 		Recurring.init(this);
 		AccountMirakel.init(this);
+		Tag.init(this);
 
 		// And now, after the Database initialization!!! We init ACRA
 		ACRA.init(this);
