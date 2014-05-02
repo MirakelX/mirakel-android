@@ -1,5 +1,6 @@
 package de.azapps.mirakel.settings.tags;
 
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
@@ -14,9 +15,11 @@ import de.azapps.mirakel.settings.ListSettings;
 import de.azapps.mirakel.settings.R;
 import de.azapps.tools.Log;
 
+@SuppressLint("NewApi")
 public class TagsSettingsFragment extends PreferenceFragment {
 	private static final String TAG = "TagsSettingsFragment";
 	private Tag tag;
+
 
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
