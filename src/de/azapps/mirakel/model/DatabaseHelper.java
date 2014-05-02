@@ -302,7 +302,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				i++;
 			}
 		}
-
 		onUpgrade(db, 32, DATABASE_VERSION);
 	}
 
@@ -835,6 +834,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					}
 
 				} while (cursor.moveToNext());
+			}
+			if (!DefinitionsHelper.freshInstall) {
+				final List<Integer> parts = MirakelCommonPreferences
+						.loadIntArray("task_fragment_adapter_settings");
+				parts.add(8);// hardcode tags, because of dependencies
+				MirakelCommonPreferences.saveIntArray(
+						"task_fragment_adapter_settings", parts);
 			}
 		default:
 			break;
