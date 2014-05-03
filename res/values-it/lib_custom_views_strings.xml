@@ -15,6 +15,7 @@
   <string name="task_fragment_content">Note</string>
   <string name="task_fragment_subtask">Attività secondarie</string>
   <string name="task_fragment_progress">Progresso</string>
+  <string name="task_fragment_tags">Etichette</string>
   <string name="audio_record_title">Registrazione audio&#8230;</string>
   <string name="audio_record_message">Registrazione&#8230;</string>
   <string name="audio_playback_title">Riproduzione audio&#8230;</string>
@@ -33,8 +34,15 @@
   <string name="subtask_content">Attività con note?</string>
   <string name="new_task">Nuova attività</string>
   <string name="add_subtasks">Aggiungi attività secondaria&#8230;</string>
+  <string name="add_tags">Aggiungi etichetta&#8230;</string>
   <string name="add">Aggiungi</string>
   <string name="add_subtask">Aggiungi attività secondaria</string>
   <string name="file_no_activity">Impossibile aprire il file</string>
   <string name="remove_files">Rimuovi i file dall\'attività</string>
+  <string name="search_tag">Cerca etichetta</string>
+  <string name="tag_has_dark_text">Il testo è nero</string>
+  <string-array name="tag_menu">
+    <item>Modifica etichetta</item>
+    <item>Rimuovi etichetta</item>
+  </string-array>
 </resources>
