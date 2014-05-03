@@ -296,7 +296,7 @@ public class TaskDetailView extends BaseTaskDetailRow implements
 		}
 	}
 
-	public void unmark() {
+	public void unmark(final boolean saveContent) {
 		// Handle Subtasks
 		BaseTaskDetailRow v = this.views.get(TYPE.SUBTASK);
 		if (v != null) {
@@ -310,8 +310,9 @@ public class TaskDetailView extends BaseTaskDetailRow implements
 			((TaskDetailFile) v).disableMarked();
 		}
 		// Handle Content
-		saveContent();
-
+		if (saveContent) {
+			saveContent();
+		}
 	}
 
 	public void updateLayout() {
