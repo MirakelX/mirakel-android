@@ -84,12 +84,15 @@ public abstract class TaskFragment extends Fragment {
 
 	private Runnable updateThread;
 
+	private boolean saveContent = true;
+
 	abstract protected void changeVisiblity(final boolean visible,
 			final MenuItem item);
 
 	abstract public void closeActionMode();
 
 	protected boolean handleActionBarClick(final MenuItem item) {
+		this.saveContent = true;
 		switch (item.getItemId()) {
 		case R.id.save:
 			if (TaskFragment.this.detailView != null) {
@@ -97,8 +100,11 @@ public abstract class TaskFragment extends Fragment {
 			}
 			break;
 		case R.id.cancel:
+			Log.v(TAG, "cancel");
 			if (TaskFragment.this.detailView != null) {
+				this.saveContent = false;
 				TaskFragment.this.detailView.cancelContent();
+
 			}
 			break;
 		case R.id.menu_delete:
@@ -191,7 +197,7 @@ public abstract class TaskFragment extends Fragment {
 	protected void handleCloseCab() {
 		TaskFragment.this.cabState = null;
 		if (TaskFragment.this.detailView != null) {
-			TaskFragment.this.detailView.unmark();
+			TaskFragment.this.detailView.unmark(this.saveContent);
 		}
 		TaskFragment.this.markedFiles = new SparseArray<FileMirakel>();
 		TaskFragment.this.markedSubtasks = new HashMap<Long, Task>();
