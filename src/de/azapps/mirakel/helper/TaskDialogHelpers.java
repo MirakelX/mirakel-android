@@ -226,9 +226,9 @@ public class TaskDialogHelpers {
 		if (selectedItems.size() < 1) {
 			return;
 		}
-		String files = selectedItems.get(0).getName();
+		String files = "\"" + selectedItems.get(0).getName() + "\"";
 		for (int i = 1; i < selectedItems.size(); i++) {
-			files += ", " + selectedItems.get(i).getName();
+			files += ", \"" + selectedItems.get(i).getName() + "\"";
 		}
 		new AlertDialog.Builder(ctx)
 				.setTitle(ctx.getString(R.string.remove_files))
@@ -381,9 +381,9 @@ public class TaskDialogHelpers {
 		if (subtasks.size() == 0) {
 			return;
 		}
-		String names = subtasks.get(0).getName();
+		String names = "\"" + subtasks.get(0).getName() + "\"";
 		for (int i = 1; i < subtasks.size(); i++) {
-			names += ", " + subtasks.get(i).getName();
+			names += ", \"" + subtasks.get(i).getName() + "\"";
 		}
 		new AlertDialog.Builder(ctx)
 				.setTitle(ctx.getString(R.string.remove_subtask))
