@@ -60,7 +60,8 @@ public class TagListView extends View {
 
 	public TagListView(final Context context) {
 		super(context);
-		this.TAG_SIZE = scale(20);
+		this.TAG_SIZE = scale(context.getResources().getInteger(
+				R.integer.tag_font_size));
 		this.paintText = new Paint(Paint.ANTI_ALIAS_FLAG);
 		this.paintBackground = new Paint(Paint.ANTI_ALIAS_FLAG);
 		this.rect = new Rect();
