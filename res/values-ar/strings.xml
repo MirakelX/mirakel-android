@@ -17,8 +17,7 @@
   <string name="tasks_new_str">مهمة جديدة</string>
   <string name="takePhoto">التقاط صورة</string>
   <string name="speak">تكلّم</string>
-  <string name="list_delete_content">هل أنت متأكد أنك تريد حذف %s؟</string>
-  <string name="task_delete_content">هل أنت متأكد أنك تريد حذف %s؟</string>
+  <string name="delete_content">هل أنت متأكد أنك تريد حذف %s؟</string>
   <string name="dialog_move">نقل المهمة</string>
   <string name="list_title">القوائم</string>
   <string name="menu_delete_list">حذف قائمة</string>
