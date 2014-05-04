@@ -181,6 +181,7 @@ Pričakovati je, da bo tudi uradna različica DAVdroid kmalu podpirala delovanje
   <string name="semantics_no_due">Ne nastavi datuma zapadlosti</string>
   <string name="settings_file_default_title">Ime seznama uvoženih datotek</string>
   <string name="semantic_new">predloga</string>
+  <string name="tag_name">Ime</string>
   <string name="settings_subtask">Podrejena naloga</string>
   <string name="settings_subtask_default_new">Privzeto pokaži novo nalogo</string>
   <string name="settings_subtask_add_to_same_list">Dodaj podnalogo na seznam nalog</string>
