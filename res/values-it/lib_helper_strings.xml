@@ -35,4 +35,5 @@ Device: %3$s\n]]>
   <string name="error_TASKWARRIOR_FILE_NOT_FOUND" tools:ignore="UnusedResources">Taskwarrior file non trovato</string>
   <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD" tools:ignore="UnusedResources">Impossibile scaricare il file di configurazione</string>
   <string name="error_TASKWARRIOR_URL_NOT_FOUND" tools:ignore="UnusedResources">L\'URL non è corretto. È stato utilizzato il codice QR corretto?</string>
+  <string name="error_FILE_NO_PERMISSION">Permessi di lettura del file mancanti</string>
 </resources>
