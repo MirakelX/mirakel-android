@@ -92,6 +92,7 @@
   <string name="settings_semantics_weekday">Establecer vencimiento en la semana que viene</string>
   <string name="semantics_no_list">No establecer lista</string>
   <string name="semantic_new">Plantilla</string>
+  <string name="tag_name">Nombre</string>
   <string name="settings_subtask">Subtareas</string>
   <string name="settings_subtask_add_to_same_list_summary">O selecciona la lista por defecto, cuando la subtarea se añada</string>
   <string name="settings_tasks_title">Tareas</string>

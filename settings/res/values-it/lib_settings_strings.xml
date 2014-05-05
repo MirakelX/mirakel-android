@@ -179,6 +179,7 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="semantics_no_due">Non impostare data di scadenza</string>
   <string name="settings_file_default_title">Nome attività per file importati</string>
   <string name="semantic_new">Modello</string>
+  <string name="tag_name">Nome</string>
   <string name="settings_subtask">Attività secondarie</string>
   <string name="settings_subtask_default_new">Mostra nuove attività come predefinite</string>
   <string name="settings_subtask_add_to_same_list">Aggiungi attività secondaria all\'elenco delle attività</string>

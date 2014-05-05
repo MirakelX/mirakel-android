@@ -181,6 +181,7 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen, wi
   <string name="semantics_no_due">Kein Fälligkeitsdatum setzen</string>
   <string name="settings_file_default_title">Aufgabenname für importierte Dateien</string>
   <string name="semantic_new">Vorlage</string>
+  <string name="tag_name">Name</string>
   <string name="settings_subtask">Unteraufgaben</string>
   <string name="settings_subtask_default_new">Standardmäßig neue Aufgabe erstellen</string>
   <string name="settings_subtask_add_to_same_list">Füge die Unteraufgabe zur Liste der Aufgabe hinzu</string>

@@ -176,6 +176,7 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="semantics_no_due">Vervaldatum niet instellen</string>
   <string name="settings_file_default_title">Taaknaam bij geïmporteerd bestand</string>
   <string name="semantic_new">sjabloon</string>
+  <string name="tag_name">Naam</string>
   <string name="settings_subtask">Subtaken</string>
   <string name="settings_subtask_default_new">Nieuwe taak direct weergeven</string>
   <string name="settings_subtask_add_to_same_list">Subtaak toevoegen aan de lijst van de taak</string>
