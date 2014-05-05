@@ -179,7 +179,12 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="semantics_no_due">Non impostare data di scadenza</string>
   <string name="settings_file_default_title">Nome attività per file importati</string>
   <string name="semantic_new">Modello</string>
+  <string name="tag_new">Nuova etichetta</string>
+  <string name="tag_settings">Impostazioni etichette</string>
+  <string name="color">Colore</string>
   <string name="tag_name">Nome</string>
+  <string name="tag_dark_text">Usa colore nero per il testo</string>
+  <string name="tag_click">Etichette</string>
   <string name="settings_subtask">Attività secondarie</string>
   <string name="settings_subtask_default_new">Mostra nuove attività come predefinite</string>
   <string name="settings_subtask_add_to_same_list">Aggiungi attività secondaria all\'elenco delle attività</string>
@@ -235,6 +240,7 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="alert_taskwarrior"><![CDATA[La sincronizzazione con Taskwarrior sembra funzionare ma è comunque preferibile eseguire un backup dei propri dati. Segnalare eventuali problemi e bug per consentirne la risoluzione!]]></string>
   <string name="alert_taskwarrior_title">Informazioni per Taskwarrior</string>
   <string name="special_list_where_subtask_title_text">Attività secondarie</string>
+  <string name="special_list_where_tag_title_text">Etichette</string>
   <string name="special_list_where_progress_title_text">Progresso</string>
   <string name="special_list_where_file_title_text">FIle</string>
   <string name="remove">Rimuovi</string>
