@@ -116,6 +116,7 @@ public class Log {
 			fileWriter = new FileWriter(new File(FileUtils.getLogDir(),
 					getTime() + ".log"));
 		} catch (final Exception e) {
+			writeToFile = false;
 			fileWriter = null;
 			Log.e(TAG, "Could not open file for logging");
 		}

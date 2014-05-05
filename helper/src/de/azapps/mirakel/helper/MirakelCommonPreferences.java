@@ -102,6 +102,14 @@ public class MirakelCommonPreferences extends MirakelPreferences {
 		}
 	}
 
+	public static void setNotificationsListId(final String listId) {
+		getEditor().putString("notificationsList", listId).commit();
+	}
+
+	public static void setNotificationsListOpenId(final String listId) {
+		getEditor().putString("notificationsListOpen", listId).commit();
+	}
+
 	public static int getNotificationsListOpenId() {
 		int listId = getNotificationsListId();
 		final String listOpen = settings.getString("notificationsListOpen",
