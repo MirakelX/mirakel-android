@@ -14,8 +14,7 @@
   <string name="tasks_new_str">Nueva tarea</string>
   <string name="takePhoto">Toma una foto</string>
   <string name="speak">Hable</string>
-  <string name="list_delete_content">¿Está seguro de eliminar %s?</string>
-  <string name="task_delete_content">¿Está seguro de eliminar %s?</string>
+  <string name="delete_content">¿Está seguro de eliminar %s?</string>
   <string name="dialog_move">Mover tarea</string>
   <string name="list_title">Listas</string>
   <string name="menu_settings">Configuración</string>

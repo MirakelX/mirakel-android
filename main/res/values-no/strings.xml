@@ -14,8 +14,7 @@
   <string name="tasks_new_str">Ny oppgave</string>
   <string name="takePhoto">Ta et bilde</string>
   <string name="speak">Snakk</string>
-  <string name="list_delete_content">Er du sikker på at du vil slette %s?</string>
-  <string name="task_delete_content">Er du sikker på at du vil slette %s?</string>
+  <string name="delete_content">Er du sikker på at du vil slette %s?</string>
   <string name="dialog_move">Flytt oppgave</string>
   <string name="list_title">Lister</string>
   <string name="menu_settings">Innstillinger</string>

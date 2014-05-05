@@ -14,8 +14,7 @@
   <string name="tasks_new_str">Нова задача</string>
   <string name="takePhoto">Направи снимка</string>
   <string name="speak">Прочети</string>
-  <string name="list_delete_content">Сигурни ли сте, че искате да изтриете %s?</string>
-  <string name="task_delete_content">Сигурни ли сте, че искате да изтриете %s?</string>
+  <string name="delete_content">Сигурни ли сте, че искате да изтриете %s?</string>
   <string name="dialog_move">Преместване на задачата</string>
   <string name="list_title">Списъци</string>
   <string name="menu_settings">Настройки</string>

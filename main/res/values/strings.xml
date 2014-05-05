@@ -22,8 +22,7 @@
     <string name="takePhoto">Take a photo</string>
     <string name="speak">Speak</string>
     
-    <string name="list_delete_content">Are you sure you want to delete %s?</string>
-    <string name="task_delete_content">Are you sure you want to delete %s?</string>
+    <string name="delete_content">Are you sure you want to delete %s?</string>
     <string name="dialog_move">Move Task</string>
     <string name="list_title">Lists</string>
     

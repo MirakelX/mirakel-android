@@ -17,8 +17,7 @@
   <string name="tasks_new_str">Nova naloga</string>
   <string name="takePhoto">Fotografiraj</string>
   <string name="speak">Govori</string>
-  <string name="list_delete_content">Ali ste prepričani, da želite izbrisati %s?</string>
-  <string name="task_delete_content">Ali ste prepričani, da želite izbrisati %s?</string>
+  <string name="delete_content">Ali ste prepričani, da želite izbrisati %s?</string>
   <string name="dialog_move">Premakni nalogo</string>
   <string name="list_title">Seznami</string>
   <string name="menu_delete_list">Izbriši seznam</string>

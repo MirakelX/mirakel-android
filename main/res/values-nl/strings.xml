@@ -17,8 +17,7 @@
   <string name="tasks_new_str">Nieuwe taak</string>
   <string name="takePhoto">Neem een foto</string>
   <string name="speak">Spreek</string>
-  <string name="list_delete_content">Bent u zeker dat u %s wil verwijderen?</string>
-  <string name="task_delete_content">Bent u zeker dat u %s wil verwijderen?</string>
+  <string name="delete_content">Bent u zeker dat u %s wil verwijderen?</string>
   <string name="dialog_move">Verplaats taak</string>
   <string name="list_title">Lijsten</string>
   <string name="menu_delete_list">Verwijder lijst</string>
