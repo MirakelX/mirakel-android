@@ -24,7 +24,6 @@
   <string name="audio_playback_stop">Zaustavi</string>
   <string name="task_change_prio_title">Spremeni prednost</string>
   <string name="remove_subtask">Odstrani podrejeno nalogo</string>
-  <string name="remove_files_summary">Ali želite odstraniti %1$s iz %2$s?</string>
   <string name="add_existing">Dodaj obstoječo nalogo</string>
   <string name="task_name">Ime naloge:</string>
   <string name="subtask_add_options">Filter &gt;&gt;</string>

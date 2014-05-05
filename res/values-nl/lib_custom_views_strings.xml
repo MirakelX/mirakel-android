@@ -25,7 +25,6 @@ Audio afspelen&#8230;</string>
   <string name="audio_playback_stop">Stop</string>
   <string name="task_change_prio_title">Wijzig prioriteit</string>
   <string name="remove_subtask">Verwijder subtaak</string>
-  <string name="remove_files_summary">Wilt u %1$s van %2$s verwijderen?</string>
   <string name="add_existing">Voeg bestaande taak toe</string>
   <string name="task_name">Taak naam:</string>
   <string name="subtask_add_options">Filter &gt;&gt;</string>

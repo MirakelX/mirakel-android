@@ -24,7 +24,6 @@
   <string name="audio_playback_stop">Parar</string>
   <string name="task_change_prio_title">Mudar prioridade</string>
   <string name="remove_subtask">Remover subtarefa</string>
-  <string name="remove_files_summary">Pretende remover %1$s de %2$s?</string>
   <string name="add_existing">Adicionar tarefa existente</string>
   <string name="task_name">Nome da tarefa:</string>
   <string name="subtask_add_options">Filtro &gt;&gt;</string>
