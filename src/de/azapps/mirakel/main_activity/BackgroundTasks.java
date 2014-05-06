@@ -20,7 +20,7 @@ public class BackgroundTasks {
 			@Override
 			public void run() {
 				ReminderAlarm.updateAlarms(context);
-				NotificationService.updateNotificationAndWidget(context);
+				NotificationService.updateServices(context, true);
 
 				if (!MirakelCommonPreferences.containsHighlightSelected()) {
 					final SharedPreferences.Editor editor = MirakelPreferences
