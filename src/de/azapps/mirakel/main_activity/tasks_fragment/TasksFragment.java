@@ -354,14 +354,8 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 
 					@Override
 					public void onTaskChanged(final Task newTask) {
-						if (MirakelCommonPreferences.isTablet()
-								&& TasksFragment.this.main != null
-								&& TasksFragment.this.main.getCurrentTask()
-										.getId() == newTask.getId()) {
-							getLoaderManager().restartLoader(0, null,
-									TasksFragment.this);
-						}
-
+						getLoaderManager().restartLoader(0, null,
+								TasksFragment.this);
 					}
 				});
 		this.listView.setAdapter(this.adapter);
