@@ -115,10 +115,10 @@ public class Changelog {
 		}
 
 		if (MirakelCommonPreferences.isDark()) {
-			changelog = ("<font color='" + String.format("#%06X",
-					0xFFFFFF & (this.context.getResources()
-							.getColor(R.color.holo_blue_light))))
-					+ "'>" + (changelog + "</font>");
+			changelog = "<font color='"
+					+ String.format("#%06X", 0xFFFFFF & this.context
+							.getResources().getColor(R.color.holo_blue_light))
+					+ "'>" + changelog + "</font>";
 		}
 		wv.loadDataWithBaseURL(null, changelog, "text/html", "UTF-8", null);
 
@@ -202,7 +202,7 @@ public class Changelog {
 							date = xpp.getAttributeValue(i);
 						}
 					}
-					if (code < sinceVersion) {
+					if (code <= sinceVersion) {
 						break;
 					}
 					currentVersion = new Version(code, name, date);
@@ -211,9 +211,9 @@ public class Changelog {
 				} else if (xpp.getName().equals("text")) {
 					state = STATE.TEXT;
 				}
-			} else if ((state != STATE.NONE)
-					&& (xpp.getEventType() == XmlPullParser.TEXT)
-					&& (currentVersion != null) && !xpp.getText().equals("")) {
+			} else if (state != STATE.NONE
+					&& xpp.getEventType() == XmlPullParser.TEXT
+					&& currentVersion != null && !xpp.getText().equals("")) {
 				switch (state) {
 				case FEATURE:
 					currentVersion.addFeature(xpp.getText());
@@ -226,9 +226,9 @@ public class Changelog {
 				}
 				state = STATE.NONE;
 
-			} else if ((xpp.getEventType() == XmlPullParser.END_TAG)
+			} else if (xpp.getEventType() == XmlPullParser.END_TAG
 					&& xpp.getName().equals("version")
-					&& (currentVersion != null)) {
+					&& currentVersion != null) {
 				versions.add(currentVersion);
 				currentVersion = null;
 			}

@@ -14,8 +14,7 @@
   <string name="tasks_new_str">Nový úkol</string>
   <string name="takePhoto">Vyfoťte</string>
   <string name="speak">Mluvte</string>
-  <string name="list_delete_content">Jste si jisti že chcete odstranit %s?</string>
-  <string name="task_delete_content">Jste si jisti že chcete odstranit %s?</string>
+  <string name="delete_content">Jste si jisti že chcete odstranit %s?</string>
   <string name="dialog_move">Přesunout úkol</string>
   <string name="list_title">Seznamy</string>
   <string name="menu_settings">Nastavení</string>

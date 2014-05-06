@@ -33,6 +33,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 //import android.support.v7.view.ActionMode;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -46,6 +47,7 @@ import de.azapps.mirakel.custom_views.BaseTaskDetailRow.OnTaskChangedListner;
 import de.azapps.mirakel.custom_views.TaskDetailContent.OnEditChanged;
 import de.azapps.mirakel.custom_views.TaskDetailFilePart.OnFileClickListner;
 import de.azapps.mirakel.custom_views.TaskDetailFilePart.OnFileMarkedListner;
+import de.azapps.mirakel.custom_views.TaskDetailTagView.NeedFragmentManager;
 import de.azapps.mirakel.custom_views.TaskDetailView;
 import de.azapps.mirakel.custom_views.TaskSummary.OnTaskClickListner;
 import de.azapps.mirakel.custom_views.TaskSummary.OnTaskMarkedListner;
@@ -82,12 +84,15 @@ public abstract class TaskFragment extends Fragment {
 
 	private Runnable updateThread;
 
+	private boolean saveContent = true;
+
 	abstract protected void changeVisiblity(final boolean visible,
 			final MenuItem item);
 
 	abstract public void closeActionMode();
 
 	protected boolean handleActionBarClick(final MenuItem item) {
+		this.saveContent = true;
 		switch (item.getItemId()) {
 		case R.id.save:
 			if (TaskFragment.this.detailView != null) {
@@ -95,8 +100,11 @@ public abstract class TaskFragment extends Fragment {
 			}
 			break;
 		case R.id.cancel:
+			Log.v(TAG, "cancel");
 			if (TaskFragment.this.detailView != null) {
+				this.saveContent = false;
 				TaskFragment.this.detailView.cancelContent();
+
 			}
 			break;
 		case R.id.menu_delete:
@@ -189,7 +197,7 @@ public abstract class TaskFragment extends Fragment {
 	protected void handleCloseCab() {
 		TaskFragment.this.cabState = null;
 		if (TaskFragment.this.detailView != null) {
-			TaskFragment.this.detailView.unmark();
+			TaskFragment.this.detailView.unmark(this.saveContent);
 		}
 		TaskFragment.this.markedFiles = new SparseArray<FileMirakel>();
 		TaskFragment.this.markedSubtasks = new HashMap<Long, Task>();
@@ -236,7 +244,13 @@ public abstract class TaskFragment extends Fragment {
 				TaskFragment.this.main.setCurrentTask(t);
 			}
 		});
+		this.detailView.setFragmentManager(new NeedFragmentManager() {
 
+			@Override
+			public FragmentManager getFragmentManager() {
+				return TaskFragment.this.main.getSupportFragmentManager();
+			}
+		});
 		if (MirakelCommonPreferences.useBtnCamera()
 				&& Helpers.isIntentAvailable(this.main,
 						MediaStore.ACTION_IMAGE_CAPTURE)) {
@@ -369,7 +383,7 @@ public abstract class TaskFragment extends Fragment {
 			public void clickOnFile(final FileMirakel file) {
 				final Context context = getActivity();
 				String[] items;
-				if (file.getPath().endsWith(".mp3")) {
+				if (FileUtils.isAudio(file.getUri())) {
 					items = context.getResources().getStringArray(
 							R.array.audio_playback_options);
 				} else {

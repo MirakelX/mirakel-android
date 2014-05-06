@@ -30,7 +30,7 @@ gradle.projectsEvaluated {
         script.waitFor()
         def res = fileTree(dir: res_dir)
         def res_v14 =fileTree(dir: res_v14_dir)
-        def res_dest=fileTree(dir: rootDir.toString()+"/build/merged-res")
+        delete proj+"/merged-res";
         copy{
             from (res_dir){
                 include '**/*.xml'
@@ -58,8 +58,6 @@ configure(allprojects) {
     ext.nineoldandroisVersion="2.4.0"
     ext.robotiumVersion = "5.1"
     ext.gsonVersion = "2.2.+"
-    ext.commonLangVersion = "3.3"
-
 }
 
 allprojects {

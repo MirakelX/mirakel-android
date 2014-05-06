@@ -29,6 +29,7 @@ import de.azapps.mirakel.custom_views.TaskDetailDueReminder.Type;
 import de.azapps.mirakel.custom_views.TaskDetailFilePart.OnFileClickListner;
 import de.azapps.mirakel.custom_views.TaskDetailFilePart.OnFileMarkedListner;
 import de.azapps.mirakel.custom_views.TaskDetailHeader.OnDoneChangedListner;
+import de.azapps.mirakel.custom_views.TaskDetailTagView.NeedFragmentManager;
 import de.azapps.mirakel.custom_views.TaskSummary.OnTaskClickListner;
 import de.azapps.mirakel.custom_views.TaskSummary.OnTaskMarkedListner;
 import de.azapps.mirakel.customviews.R;
@@ -54,6 +55,7 @@ public class TaskDetailView extends BaseTaskDetailRow implements
 		public final static int PROGRESS = 7;
 		public final static int REMINDER = 3;
 		public final static int SUBTASK = 6;
+		public final static int TAGS = 8;
 
 		public final static int SUBTITLE = 5;
 
@@ -73,6 +75,8 @@ public class TaskDetailView extends BaseTaskDetailRow implements
 				return "subtask";
 			case PROGRESS:
 				return "progress";
+			case TAGS:
+				return "tags";
 			default:
 				throw new NoSuchItemException(); // Throw exception;
 			}
@@ -95,6 +99,8 @@ public class TaskDetailView extends BaseTaskDetailRow implements
 				return ctx.getString(R.string.task_fragment_subtask);
 			case PROGRESS:
 				return ctx.getString(R.string.task_fragment_progress);
+			case TAGS:
+				return ctx.getString(R.string.task_fragment_tags);
 			default:
 				throw new NoSuchItemException(); // Throw exception;
 			}
@@ -267,6 +273,9 @@ public class TaskDetailView extends BaseTaskDetailRow implements
 			case TYPE.FILE:
 				item = new TaskDetailFile(this.context);
 				break;
+			case TYPE.TAGS:
+				item = new TaskDetailTagView(this.context);
+				break;
 			//$FALL-THROUGH$
 			case TYPE.SUBTITLE:
 			default:
@@ -280,7 +289,14 @@ public class TaskDetailView extends BaseTaskDetailRow implements
 
 	}
 
-	public void unmark() {
+	public void setFragmentManager(final NeedFragmentManager fm) {
+		final BaseTaskDetailRow v = this.views.get(TYPE.TAGS);
+		if (v != null) {
+			((TaskDetailTagView) v).setNeedFragmentManager(fm);
+		}
+	}
+
+	public void unmark(final boolean saveContent) {
 		// Handle Subtasks
 		BaseTaskDetailRow v = this.views.get(TYPE.SUBTASK);
 		if (v != null) {
@@ -294,8 +310,9 @@ public class TaskDetailView extends BaseTaskDetailRow implements
 			((TaskDetailFile) v).disableMarked();
 		}
 		// Handle Content
-		saveContent();
-
+		if (saveContent) {
+			saveContent();
+		}
 	}
 
 	public void updateLayout() {

@@ -131,7 +131,11 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="kill_button">Botão para terminar</string>
   <string name="kill_app">Fechar aplicação</string>
   <string name="kill_sure">Tem a certeza?</string>
+  <string name="kill_sure_message">Se fechar a aplicação, não serão exibidos lembretes! Considere a hipótese de apenas desativar a notificação (Ou torna-la não persistente para que a possa remover)</string>
   <string name="ui_settings_title">Interface</string>
+  <string name="hide_keyboard">Ocultar teclado</string>
+  <string name="hide_keyboard_summary">Ocultar teclado durante a criação da tarefa</string>
+  <string name="undo_number">Número de alterações gravadas</string>
   <string name="undo_number_summary">Anular %s alterações</string>
   <string name="settings_semantic">Modelos de tarefa</string>
   <string name="semantic_new_task">Novo modelo de tarefa</string>
@@ -175,6 +179,7 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="semantics_no_due">Não definir data limite</string>
   <string name="settings_file_default_title">Nome da tarefa para ficheiros importados</string>
   <string name="semantic_new">modelo</string>
+  <string name="tag_name">Nome</string>
   <string name="settings_subtask">Subtarefas</string>
   <string name="settings_subtask_default_new">Por definição, mostrar nova tarefa</string>
   <string name="settings_subtask_add_to_same_list">Adicionar subtarefa à lista da tarefa</string>
@@ -188,6 +193,16 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="settings_task_fragment">Definições de resumo de tarefas</string>
   <string name="settings_dev">Definições de desenvolvimento</string>
   <string name="settings_dev_sync">Sincronização</string>
+  <string name="settings_dev_dump_tw_summary">Guardar o texto recebido em /sdcard/mirakel/</string>
+  <string name="settings_dev_dump_tw">Guardar mensagens TW recebidas</string>
+  <string name="enable">ativar</string>
+  <string name="disable">desativar</string>
+  <string name="enabled">ativo</string>
+  <string name="disabled">inativo</string>
+  <string name="change_dev_mode">Você %s as definições de desenvolvimento!</string>
+  <string name="enableDebugLog">Ativar logcat de depuração?</string>
+  <string name="action_contact">Contactar/reportar erros</string>
+  <string name="action_contact_summary">Escreva-nos uma mensagem eletrónica!</string>
   <string name="title_donations">Donativos</string>
   <string name="add">Adicionar</string>
   <string name="action_credits">Créditos</string>
@@ -212,8 +227,17 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="feedback">Enviar comentários</string>
   <string name="credits_libraries">Bibliotecas utilizadas</string>
   <string name="credits_license_title">Licença</string>
+  <string name="demo_mode">Modo de demonstração</string>
+  <string name="demo_drop_db">Restaurar base de dados demo</string>
+  <string name="write_logs_to_file">Gravar registos no ficheiro</string>
+  <string name="alert_caldav"><![CDATA[A sincronização CalDAV ainda não está a 100%%. Utilize com precaução e reporte os erros encontrados!]]></string>
+  <string name="alert_caldav_title">Informações de CalDav</string>
+  <string name="alert_taskwarrior"><![CDATA[A sincronização Taskwarrior parece funcionar mas, por favor, faça um backup dos seus dados! Reporte os erros encontrados!]]></string>
+  <string name="alert_taskwarrior_title">Informações de Taskwarrior</string>
   <string name="special_list_where_subtask_title_text">Subtarefas</string>
   <string name="special_list_where_progress_title_text">Progresso</string>
+  <string name="special_list_where_file_title_text">Ficheiro</string>
+  <string name="remove">Remover</string>
   <string-array name="sync_types">
     <item>Sincronização CalDAV</item>
     <item>Sincronização Taskwarrior</item>
@@ -249,5 +273,14 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
     <item>0</item>
     <item>1</item>
     <item>2</item>
+  </string-array>
+  <string-array name="special_lists_subtask_options">
+    <item>Recusar seleção</item>
+    <item>Procurar por tarefas com subtarefas ou que sejam subtarefas</item>
+  </string-array>
+  <string-array name="file_choice">
+    <item>Não definido</item>
+    <item>Tem ficheiro</item>
+    <item>Não tem ficheiro</item>
   </string-array>
 </resources>

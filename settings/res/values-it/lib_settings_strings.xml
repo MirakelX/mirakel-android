@@ -179,6 +179,7 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="semantics_no_due">Non impostare data di scadenza</string>
   <string name="settings_file_default_title">Nome attività per file importati</string>
   <string name="semantic_new">Modello</string>
+  <string name="tag_name">Nome</string>
   <string name="settings_subtask">Attività secondarie</string>
   <string name="settings_subtask_default_new">Mostra nuove attività come predefinite</string>
   <string name="settings_subtask_add_to_same_list">Aggiungi attività secondaria all\'elenco delle attività</string>
@@ -235,6 +236,8 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="alert_taskwarrior_title">Informazioni per Taskwarrior</string>
   <string name="special_list_where_subtask_title_text">Attività secondarie</string>
   <string name="special_list_where_progress_title_text">Progresso</string>
+  <string name="special_list_where_file_title_text">FIle</string>
+  <string name="remove">Rimuovi</string>
   <string-array name="sync_types">
     <item>Sincronizzazione CalDAV</item>
     <item>Sincronizzazione Taskwarrior</item>
@@ -270,5 +273,14 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
     <item>0</item>
     <item>1</item>
     <item>2</item>
+  </string-array>
+  <string-array name="special_lists_subtask_options">
+    <item>Nega selezione</item>
+    <item>Cerca attività con attività secondarie o che sono attività secondarie</item>
+  </string-array>
+  <string-array name="file_choice">
+    <item>Non impostato</item>
+    <item>Contiene file</item>
+    <item>Non contiene file</item>
   </string-array>
 </resources>

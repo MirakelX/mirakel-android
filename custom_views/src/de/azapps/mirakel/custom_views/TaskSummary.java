@@ -20,6 +20,7 @@ package de.azapps.mirakel.custom_views;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -32,9 +33,9 @@ import de.azapps.mirakel.customviews.R;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
-import de.azapps.mirakel.helper.ViewHelper;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.helper.TaskHelper;
+import de.azapps.mirakel.helper.ViewHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
@@ -162,12 +163,14 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements
 			this.taskRowName.setTextColor(this.context.getResources().getColor(
 					R.color.Grey));
 		} else {
-			this.taskRowName
-					.setTextColor(this.context
-							.getResources()
-							.getColor(
-									MirakelCommonPreferences.isDark() ? android.R.color.primary_text_dark
-											: android.R.color.primary_text_light));
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+				this.taskRowName
+						.setTextColor(this.context
+								.getResources()
+								.getColor(
+										MirakelCommonPreferences.isDark() ? android.R.color.primary_text_dark
+												: android.R.color.primary_text_light));
+			}
 		}
 	}
 
@@ -220,8 +223,7 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements
 		if (MirakelCommonPreferences.colorizeTasks()) {
 			if (MirakelCommonPreferences.colorizeSubTasks()) {
 				final int w = getWidth();
-				ViewHelper.setListColorBackground(this.task.getList(), this,
-						w);
+				ViewHelper.setListColorBackground(this.task.getList(), this, w);
 			} else {
 				setBackgroundColor(this.context.getResources().getColor(
 						android.R.color.transparent));
@@ -241,8 +243,8 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements
 
 	private void updateProgress() {
 		this.taskProgress.setProgress((int) (this.task.getProgress() * 3.7));
-		if (this.task.getProgress() > 0
-				&& (this.task.getProgress() < 100 || !this.task.isDone())) {
+		if ((this.task.getProgress() > 0)
+				&& ((this.task.getProgress() < 100) || !this.task.isDone())) {
 			this.taskProgress.setVisibility(VISIBLE);
 		} else {
 			this.taskProgress.setVisibility(GONE);

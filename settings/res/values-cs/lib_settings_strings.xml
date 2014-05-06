@@ -94,6 +94,7 @@
   <string name="semantics_no_list">Nenastavovat seznam</string>
   <string name="semantics_no_due">Nenastavovat termín</string>
   <string name="settings_file_default_title">Název úkolu pro importované soubory</string>
+  <string name="tag_name">Jméno</string>
   <string name="settings_subtask">Podúkoly</string>
   <string name="settings_subtask_add_to_same_list_summary">Nebo do seznamu vyhrazeného pro podúkoly?</string>
   <string name="settings_use_btn_speak">Zobrazit tlačítko mikrofonu</string>

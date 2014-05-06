@@ -97,7 +97,6 @@ import de.azapps.mirakel.static_activities.SettingsActivity;
 import de.azapps.mirakel.static_activities.SplashScreenActivity;
 import de.azapps.mirakel.widget.MainWidgetProvider;
 import de.azapps.mirakelandroid.R;
-import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 
 /**
@@ -177,12 +176,12 @@ public class MainActivity extends ActionBarActivity implements
 		if (Intent.ACTION_SEND.equals(action) && type != null) {
 			final Uri uri = (Uri) intent
 					.getParcelableExtra(Intent.EXTRA_STREAM);
-			t.addFile(this, FileUtils.getPathFromUri(uri, this));
+			t.addFile(this, uri);
 		} else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
 			final ArrayList<Uri> imageUris = intent
 					.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
 			for (final Uri uri : imageUris) {
-				t.addFile(this, FileUtils.getPathFromUri(uri, this));
+				t.addFile(this, uri);
 			}
 		}
 
@@ -496,15 +495,15 @@ public class MainActivity extends ActionBarActivity implements
 	 * @param lists
 	 */
 	public void handleDestroyList(final List<ListMirakel> lists) {
-		String names = lists.get(0).getName();
+		String names = "\"" + lists.get(0).getName() + "\"";
 		for (int i = 1; i < lists.size(); i++) {
-			names += ", " + lists.get(i).getName();
+			names += ", \"" + lists.get(i).getName() + "\"";
 		}
 		new AlertDialog.Builder(this)
 				.setTitle(
 						getResources().getQuantityString(R.plurals.list_delete,
 								lists.size()))
-				.setMessage(this.getString(R.string.list_delete_content, names))
+				.setMessage(this.getString(R.string.delete_content, names))
 				.setPositiveButton(this.getString(android.R.string.yes),
 						new DialogInterface.OnClickListener() {
 							@Override
@@ -561,15 +560,15 @@ public class MainActivity extends ActionBarActivity implements
 		if (tasks.size() == 0 || tasks.get(0) == null) {
 			return;
 		}
-		String names = tasks.get(0).getName();
+		String names = "\"" + tasks.get(0).getName() + "\"";
 		for (int i = 1; i < tasks.size(); i++) {
-			names += ", " + tasks.get(i).getName();
+			names += ", \"" + tasks.get(i).getName() + "\"";
 		}
 		new AlertDialog.Builder(this)
 				.setTitle(
 						getResources().getQuantityString(R.plurals.task_delete,
 								tasks.size()))
-				.setMessage(this.getString(R.string.task_delete_content, names))
+				.setMessage(this.getString(R.string.delete_content, names))
 				.setPositiveButton(this.getString(android.R.string.yes),
 						new DialogInterface.OnClickListener() {
 							@Override
@@ -607,6 +606,9 @@ public class MainActivity extends ActionBarActivity implements
 	 * @param lists
 	 */
 	public void handleMoveTask(final List<Task> tasks) {
+		if (tasks == null || tasks.size() == 0) {
+			return;
+		}
 		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(R.string.dialog_move);
 		final List<CharSequence> items = new ArrayList<CharSequence>();
@@ -836,6 +838,10 @@ public class MainActivity extends ActionBarActivity implements
 		} else {
 			fragments.add(new TaskFragmentV14());
 		}
+		if (this.currentTask != null) {
+			((TaskFragment) fragments.get(fragments.size() - 1))
+					.update(this.currentTask);
+		}
 		if (!MirakelCommonPreferences.isTablet() && !this.isResumed
 				&& this.mPagerAdapter == null) {
 			if (MainActivity.isRTL) {
@@ -1002,9 +1008,8 @@ public class MainActivity extends ActionBarActivity implements
 			if (intent != null) {
 				Log.d(MainActivity.TAG,
 						"taskname " + this.currentTask.getName());
-				final String file_path = FileUtils.getPathFromUri(
-						intent.getData(), this);
-				if (FileMirakel.newFile(this, this.currentTask, file_path) == null) {
+				if (FileMirakel.newFile(this, this.currentTask,
+						intent.getData()) == null) {
 					ErrorReporter.report(ErrorType.FILE_NOT_FOUND);
 				} else {
 					getTaskFragment().update(this.currentTask);
@@ -1053,7 +1058,7 @@ public class MainActivity extends ActionBarActivity implements
 							this.currentList, false, this);
 					task.safeSave();
 				}
-				task.addFile(this, FileUtils.getPathFromUri(this.fileUri, this));
+				task.addFile(this, this.fileUri);
 				getTaskFragment().update(task);
 			}
 			break;

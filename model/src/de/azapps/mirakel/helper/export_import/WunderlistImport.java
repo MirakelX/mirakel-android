@@ -18,7 +18,8 @@
  ******************************************************************************/
 package de.azapps.mirakel.helper.export_import;
 
-import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -46,18 +47,11 @@ public class WunderlistImport {
 	private static final String TAG = "WunderlistImport";
 	private static Map<String, Integer> taskMapping;
 
-	public static boolean exec(final Context ctx, final String file_path) {
-		String json;
-		try {
-			json = ExportImport.getStringFromFile(file_path, ctx);
-		} catch (final IOException e) {
-			Log.e(TAG, "cannot read File");
-			return false;
-		}
-		Log.i(TAG, json);
+	public static boolean exec(final Context ctx, final FileInputStream stream) {
 		JsonObject i;
 		try {
-			i = new JsonParser().parse(json).getAsJsonObject();
+			i = new JsonParser().parse(new InputStreamReader(stream))
+					.getAsJsonObject();
 		} catch (final JsonSyntaxException e2) {
 			Log.e(TAG, "malformed backup");
 			return false;

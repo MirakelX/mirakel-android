@@ -46,6 +46,7 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen, wi
   <string name="menu_edit_listaccount">Konto</string>
   <string name="change_account">Konto ändern</string>
   <string name="wrong_config">Die Konfigurationsdatei ist fehlerhaft</string>
+  <string name="cert_not_found">Das Zertifikat ist verschwunden, bitte erstellen Sie Ihr Konto neu</string>
   <string name="config_404">Keine Konfigurationsdatei gefunden</string>
   <string name="config_error_empty">Es gibt keinen %s-Eintrag in der Konfigurationsdatei</string>
   <string name="load_config">Wähle die Konfigurationsdatei für Taskwarrior aus</string>

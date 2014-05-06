@@ -121,44 +121,9 @@
                     android:layout_marginTop="8dp"
                     android:gravity="center_horizontal"
                     android:orientation="horizontal" >
-
-                    <com.android.calendar.recurrencepicker.WeekButton
-                        style="@style/RecurrenceDayOfWeekStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <com.android.calendar.recurrencepicker.WeekButton
-                        style="@style/RecurrenceDayOfWeekStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <com.android.calendar.recurrencepicker.WeekButton
-                        style="@style/RecurrenceDayOfWeekStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <com.android.calendar.recurrencepicker.WeekButton
-                        style="@style/RecurrenceDayOfWeekStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <com.android.calendar.recurrencepicker.WeekButton
-                        style="@style/RecurrenceDayOfWeekStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <com.android.calendar.recurrencepicker.WeekButton
-                        style="@style/RecurrenceDayOfWeekStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <com.android.calendar.recurrencepicker.WeekButton
-                        style="@style/RecurrenceDayOfWeekStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
                 </com.android.calendar.recurrencepicker.LinearLayoutWithMaxWidth>
 
-                <com.android.calendar.recurrencepicker.LinearLayoutWithMaxWidth
+               <com.android.calendar.recurrencepicker.LinearLayoutWithMaxWidth
                     android:id="@+id/weekGroup2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -168,15 +133,6 @@
                     android:orientation="horizontal"
                     android:visibility="gone" >
 
-                    <com.android.calendar.recurrencepicker.WeekButton style="@style/RecurrenceDayOfWeekStyle" />
-
-                    <com.android.calendar.recurrencepicker.WeekButton style="@style/RecurrenceDayOfWeekStyle" />
-
-                    <com.android.calendar.recurrencepicker.WeekButton style="@style/RecurrenceDayOfWeekStyle" />
-
-                    <com.android.calendar.recurrencepicker.WeekButton
-                        style="@style/RecurrenceDayOfWeekStyle"
-                        android:visibility="invisible" />
                 </com.android.calendar.recurrencepicker.LinearLayoutWithMaxWidth>
 
                 <RadioGroup

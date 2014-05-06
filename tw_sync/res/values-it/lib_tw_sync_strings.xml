@@ -45,6 +45,7 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="menu_edit_listaccount">Account</string>
   <string name="change_account">Cambia account</string>
   <string name="wrong_config">Sembra che sia stato utilizzato un file di configurazione errato</string>
+  <string name="cert_not_found">Il certificato è scomparso. Creare nuovamente un account</string>
   <string name="config_404">Non è stato trovato il file di configurazione</string>
   <string name="config_error_empty">Non è presente la voce %s nel file di configurazione</string>
   <string name="load_config">Selezionare il file di configurazione per Taskwarrior</string>

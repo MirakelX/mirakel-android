@@ -20,13 +20,10 @@ package de.azapps.mirakel.model.task;
 
 import java.text.ParseException;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import org.apache.commons.lang3.StringUtils;
 
 import android.content.ContentValues;
 import de.azapps.mirakel.DefinitionsHelper;
@@ -136,16 +133,21 @@ class TaskBase {
 	}
 
 	protected String getAdditionalEntriesString() {
-		String additionalEntries = "{";
-		boolean first = true;
 		initAdditionalEntries();
-		for (final Entry<String, String> p : this.additionalEntries.entrySet()) {
-			additionalEntries += (first ? "" : ",") + "\"" + p.getKey() + "\":"
-					+ p.getValue();
+		this.additionalEntriesString = serializeAdditionalEntries(this.additionalEntries);
+		return this.additionalEntriesString;
+	}
+
+	public static String serializeAdditionalEntries(
+			final Map<String, String> additionalEntries) {
+		String additionalEntriesStr = "{";
+		boolean first = true;
+		for (final Entry<String, String> p : additionalEntries.entrySet()) {
+			additionalEntriesStr += (first ? "" : ",") + "\"" + p.getKey()
+					+ "\":" + p.getValue();
 			first = false;
 		}
-		this.additionalEntriesString = additionalEntries + "}";
-		return additionalEntries + "}";
+		return additionalEntriesStr + "}";
 	}
 
 	public String getContent() {
@@ -178,26 +180,30 @@ class TaskBase {
 					&& this.due.get(Calendar.SECOND) == 0) {
 				cv.put(TaskBase.DUE, this.due.getTimeInMillis() / 1000);
 			} else {
-				cv.put(TaskBase.DUE, DateTimeHelper.getUTCTime(due));
+				cv.put(TaskBase.DUE, DateTimeHelper.getUTCTime(this.due));
 			}
 		} else {
 			cv.put(TaskBase.DUE, (Integer) null);
 		}
 		if (this.reminder != null) {
-			cv.put(TaskBase.REMINDER, DateTimeHelper.getUTCTime(reminder));
+			cv.put(TaskBase.REMINDER, DateTimeHelper.getUTCTime(this.reminder));
 		} else {
 			cv.put(TaskBase.REMINDER, (Integer) null);
 		}
 		cv.put(TaskBase.PRIORITY, this.priority);
 		if (this.createdAt != null) {
-			cv.put(DatabaseHelper.CREATED_AT,DateTimeHelper.getUTCTime(createdAt));
+			cv.put(DatabaseHelper.CREATED_AT,
+					DateTimeHelper.getUTCTime(this.createdAt));
 		} else {
-			cv.put(DatabaseHelper.CREATED_AT, DateTimeHelper.getUTCTime(new GregorianCalendar()));
+			cv.put(DatabaseHelper.CREATED_AT,
+					DateTimeHelper.getUTCTime(new GregorianCalendar()));
 		}
 		if (this.updatedAt != null) {
-			cv.put(DatabaseHelper.UPDATED_AT,DateTimeHelper.getUTCTime(updatedAt));
+			cv.put(DatabaseHelper.UPDATED_AT,
+					DateTimeHelper.getUTCTime(this.updatedAt));
 		} else {
-			cv.put(DatabaseHelper.CREATED_AT, DateTimeHelper.getUTCTime(new GregorianCalendar()));
+			cv.put(DatabaseHelper.CREATED_AT,
+					DateTimeHelper.getUTCTime(new GregorianCalendar()));
 		}
 		cv.put(DatabaseHelper.SYNC_STATE_FIELD, this.sync_state.toInt());
 		cv.put(TaskBase.RECURRING, this.recurrence);
@@ -282,29 +288,33 @@ class TaskBase {
 	 */
 	private void initAdditionalEntries() {
 		if (this.additionalEntries == null) {
-			this.additionalEntries = new HashMap<String, String>();
-			if (this.additionalEntriesString != null
-					&& !this.additionalEntriesString.trim().equals("")
-					&& !this.additionalEntriesString.trim().equals("null")) {
-				final String t = this.additionalEntriesString.substring(1,
-						this.additionalEntriesString.length() - 1);// remove {
-																	// and }
-				final String[] parts = t.split(",");
-				String key = null;
-				for (final String p : parts) {
-					final String[] keyValue = p.split(":");
-					if (keyValue.length == 2) {
-						key = keyValue[0];
-						key = key.replaceAll("\"", "");
-						this.additionalEntries.put(key, keyValue[1]);
-					} else if (keyValue.length == 1 && key != null) {
-						this.additionalEntries.put(key,
-								this.additionalEntries.get(key) + ","
-										+ keyValue[0]);
-					}
+			this.additionalEntries = parseAdditionalEntries(this.additionalEntriesString);
+		}
+	}
+
+	public static Map<String, String> parseAdditionalEntries(
+			final String additionalEntriesString) {
+		final Map<String, String> ret = new HashMap<String, String>();
+		if (additionalEntriesString != null
+				&& !additionalEntriesString.trim().equals("")
+				&& !additionalEntriesString.trim().equals("null")) {
+			final String t = additionalEntriesString.substring(1,
+					additionalEntriesString.length() - 1);// remove {
+															// and }
+			final String[] parts = t.split(",");
+			String key = null;
+			for (final String p : parts) {
+				final String[] keyValue = p.split(":");
+				if (keyValue.length == 2) {
+					key = keyValue[0];
+					key = key.replaceAll("\"", "");
+					ret.put(key, keyValue[1]);
+				} else if (keyValue.length == 1 && key != null) {
+					ret.put(key, ret.get(key) + "," + keyValue[0]);
 				}
 			}
 		}
+		return ret;
 	}
 
 	public boolean isDone() {
@@ -338,9 +348,9 @@ class TaskBase {
 			return;
 		}
 		if (content != null) {
-			this.content = StringUtils.replaceEach(content.trim(),
-					new String[] { "\\n", "\\\"", "\b" }, new String[] { "\n",
-							"\"", "" });
+			this.content = content.trim().replace("\\n", "\n");
+			this.content = this.content.replace("\\\"", "\"");
+			this.content = this.content.replace("\b", "");
 		} else {
 			this.content = null;
 		}

@@ -17,8 +17,7 @@
   <string name="tasks_new_str">Nova tarefa</string>
   <string name="takePhoto">Obter foto</string>
   <string name="speak">Falar</string>
-  <string name="list_delete_content">Tem a certeza que quer eliminar %s?</string>
-  <string name="task_delete_content">Tem a certeza que quer eliminar %s?</string>
+  <string name="delete_content">Tem a certeza que quer eliminar %s?</string>
   <string name="dialog_move">Mover tarefa</string>
   <string name="list_title">Listas</string>
   <string name="menu_delete_list">Eliminar lista</string>
@@ -31,6 +30,7 @@
   <string name="menu_do_task">Definir tarefa como terminada</string>
   <string name="action_undo">Anular última alteração</string>
   <string name="action_sync_now">Sincronizar</string>
+  <string name="action_contact">Contactar/reportar erros</string>
   <string name="kill_app">Fechar aplicação</string>
   <string name="action_settings">Definições</string>
   <string name="save">Gravar</string>

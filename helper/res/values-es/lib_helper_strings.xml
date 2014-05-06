@@ -12,6 +12,6 @@ Mirakel-version: %1$s\n
 SDK-version: %2$d\n
 Device: %3$s\n]]>
     </string>
-  <string name="error_TASKS_NO_LIST">Esta tarea no puede ser sincronizada, porque no tienes listas</string>
-  <string name="error_TASK_VANISHED">Yikes, the list of the task has vanished. I\'m sorry&#8230;</string>
+  <string name="error_TASKS_NO_LIST" tools:ignore="UnusedResources">Esta tarea no puede ser sincronizada, porque no tienes listas</string>
+  <string name="error_TASK_VANISHED" tools:ignore="UnusedResources">Yikes, the list of the task has vanished. I\'m sorry&#8230;</string>
 </resources>

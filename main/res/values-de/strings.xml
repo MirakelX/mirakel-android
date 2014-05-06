@@ -17,8 +17,7 @@
   <string name="tasks_new_str">Neue Aufgabe…</string>
   <string name="takePhoto">Mach ein Foto</string>
   <string name="speak">Sprich</string>
-  <string name="list_delete_content">Bist du sicher, dass du %s löschen möchten?</string>
-  <string name="task_delete_content">Bist du sicher, dass du %s löschen möchten?</string>
+  <string name="delete_content">Bist du sicher, dass du %s löschen möchten?</string>
   <string name="dialog_move">Verschiebe Aufgabe</string>
   <string name="list_title">Listen</string>
   <string name="menu_delete_list">Liste löschen</string>

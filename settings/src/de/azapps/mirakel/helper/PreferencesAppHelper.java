@@ -86,85 +86,6 @@ public class PreferencesAppHelper extends PreferencesHelper {
 
 	static View numberPicker;
 
-	// private static final String TAG = "PreferencesHelper";
-	// @SuppressLint("NewApi")
-	// public static void createAuthActivity(boolean newValue, final Object
-	// activity, final Object box, final boolean fragment) {
-	// final Context ctx;
-	// if (fragment) {
-	// ctx = ((Fragment) activity).getActivity();
-	// } else {
-	// ctx = (Activity) activity;
-	// }
-	// final AccountManager am = AccountManager.get(ctx);
-	// final Account[] accounts = am
-	// .getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL);
-	// if (newValue) {
-	// new AlertDialog.Builder(ctx)
-	// .setTitle(de.azapps.mirakel.sync.R.string.sync_warning)
-	// .setMessage(de.azapps.mirakel.sync.R.string.sync_warning_message)
-	// .setPositiveButton(android.R.string.ok,
-	// new OnClickListener() {
-	// @SuppressLint("NewApi")
-	// @Override
-	// public void onClick(DialogInterface dialogInterface, int i) {
-	// for (Account a : accounts) {
-	// try {
-	// am.removeAccount(a, null, null);
-	// } catch (Exception e) {
-	// Log.e(TAG, "Cannot remove Account");
-	// }
-	// }
-	// Intent intent = new Intent(ctx,
-	// AuthenticatorActivity.class);
-	// intent.setAction(DefinitionsHelper.MAIN_SHOW_LISTS);
-	// if (fragment) {
-	// ((Fragment) activity)
-	// .startActivityForResult(
-	// intent,
-	// SettingsActivity.NEW_ACCOUNT);
-	// } else {
-	// ((Activity) activity)
-	// .startActivityForResult(
-	// intent,
-	// SettingsActivity.NEW_ACCOUNT);
-	// }
-	// SharedPreferences.Editor editor = MirakelCommonPreferences
-	// .getEditor();
-	// editor.putBoolean("syncUse", true);
-	// editor.commit();
-	// }
-	// })
-	// .setNegativeButton(android.R.string.cancel,
-	// new OnClickListener() {
-	// @SuppressLint("NewApi")
-	// @Override
-	// public void onClick(DialogInterface dialogInterface, int i) {
-	// SharedPreferences.Editor editor = MirakelCommonPreferences
-	// .getEditor();
-	// editor.putBoolean("syncUse", false);
-	// editor.commit();
-	// if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-	// ((CheckBoxPreference) box)
-	// .setChecked(false);
-	// ((CheckBoxPreference) box)
-	// .setSummary(de.azapps.mirakel.sync.R.string.sync_use_summary_nothing);
-	// } else {
-	// ((Switch) box).setChecked(false);
-	// }
-	// }
-	// }).show();
-	// } else {
-	// SharedPreferences.Editor editor = MirakelCommonPreferences.getEditor();
-	// editor.putBoolean("syncUse", false);
-	// editor.commit();
-	// try {
-	// am.removeAccount(accounts[0], null, null);
-	// } catch (Exception e) {
-	// Log.e(TAG, "Cannot remove Account");
-	// }
-	// }
-	// }
 	public static void updateSyncText(final CheckBoxPreference sync,
 			final Preference server, final Preference syncFrequency,
 			final Context ctx) {
@@ -235,6 +156,8 @@ public class PreferencesAppHelper extends PreferencesHelper {
 			final ListPreference notificationsListOpenPreference = (ListPreference) findPreference("notificationsListOpen");
 			notificationsListPreference.setEntries(entries);
 			notificationsListPreference.setEntryValues(entryValues);
+			notificationsListPreference.setValue(MirakelCommonPreferences
+					.getNotificationsListId() + "");
 			final ListMirakel notificationsList = MirakelModelPreferences
 					.getNotificationsList();
 
@@ -263,13 +186,21 @@ public class PreferencesAppHelper extends PreferencesHelper {
 														R.string.notifications_list_summary,
 														list));
 							}
-							return true;
+							MirakelCommonPreferences
+									.setNotificationsListId((String) newValue);
+							notificationsListPreference
+									.setValue((String) newValue);
+							NotificationService
+									.updateNotificationAndWidget(PreferencesAppHelper.this.activity);
+							return false;
 						}
 					});
 
 			notificationsListOpenPreference.setEntries(entriesWithDefault);
 			notificationsListOpenPreference
 					.setEntryValues(entryValuesWithDefault);
+			notificationsListOpenPreference.setValue(MirakelCommonPreferences
+					.getNotificationsListOpenId() + "");
 			final ListMirakel notificationsListOpen = MirakelModelPreferences
 					.getNotificationsListOpen();
 			notificationsListOpenPreference.setSummary(this.activity.getString(
@@ -295,7 +226,13 @@ public class PreferencesAppHelper extends PreferencesHelper {
 											.getString(
 													R.string.notifications_list_summary,
 													list));
-							return true;
+							MirakelCommonPreferences
+									.setNotificationsListOpenId((String) newValue);
+							notificationsListOpenPreference
+									.setValue((String) newValue);
+							NotificationService
+									.updateNotificationAndWidget(PreferencesAppHelper.this.activity);
+							return false;
 						}
 					});
 		}

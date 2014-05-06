@@ -17,8 +17,7 @@
   <string name="tasks_new_str">Nuova attività</string>
   <string name="takePhoto">Scatta una foto</string>
   <string name="speak">Parla</string>
-  <string name="list_delete_content">Eliminare veramente %s?</string>
-  <string name="task_delete_content">Eliminare veramente %s?</string>
+  <string name="delete_content">Eliminare veramente %s?</string>
   <string name="dialog_move">Sposta attività</string>
   <string name="list_title">Elenchi</string>
   <string name="menu_delete_list">Elimina l\'elenco</string>

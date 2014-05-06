@@ -47,7 +47,7 @@ public abstract class SpecialListsSetProperty extends SpecialListsBaseProperty {
 		return ret + "]}";
 	}
 
-	private String addContent(String ret) {
+	protected String addContent(String ret) {
 		boolean first = true;
 		for (final int c : this.content) {
 			ret += (first ? "" : ",") + c;

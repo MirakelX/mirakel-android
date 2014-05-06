@@ -149,6 +149,7 @@
   <string name="semantics_no_due">Не настройвайте крайна дата</string>
   <string name="settings_file_default_title">Име на задачата за импортираните файлове</string>
   <string name="semantic_new">Шаблон</string>
+  <string name="tag_name">Име</string>
   <string name="settings_subtask">Подзадачи</string>
   <string name="settings_subtask_add_to_same_list_summary">Или избиране на списък по подразбиране, към който подзадачата ще бъде побавена</string>
   <string name="settings_use_btn_speak">Показване на бутона за разпознаване на речта</string>

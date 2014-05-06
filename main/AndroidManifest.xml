@@ -19,8 +19,8 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.azapps.mirakelandroid"
-    android:versionCode="51"
-    android:versionName="2.4.0R2">
+    android:versionCode="54"
+    android:versionName="2.5-beta1">
 
     <!-- TODO Remove Unused Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -38,6 +38,8 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    
+    <uses-permission android:name="android.permission.MANAGE_DOCUMENTS"/>
 
     <permission-group
         android:name="de.azapps.mirakel.PERMISSION"
@@ -260,6 +262,10 @@
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_credits" >
         </activity>
+        <activity 
+            android:name="de.azapps.mirakel.settings.tags.TagsSettingsActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/title_activity_credits"/>
     </application>
 
 </manifest>

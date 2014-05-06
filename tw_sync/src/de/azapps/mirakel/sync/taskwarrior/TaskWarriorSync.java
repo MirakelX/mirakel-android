@@ -30,9 +30,11 @@ import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.R;
 import de.azapps.mirakel.sync.SyncAdapter;
+import de.azapps.mirakel.sync.taskwarrior.TLSClient.NoSuchCertificateException;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 
@@ -69,7 +71,7 @@ public class TaskWarriorSync {
 	}
 
 	public enum TW_ERRORS {
-		ACCESS_DENIED, ACCOUNT_SUSPENDED, CANNOT_CREATE_SOCKET, CANNOT_PARSE_MESSAGE, CONFIG_PARSE_ERROR, MESSAGE_ERRORS, NO_ERROR, NOT_ENABLED, TRY_LATER;
+		ACCESS_DENIED, ACCOUNT_SUSPENDED, CANNOT_CREATE_SOCKET, CANNOT_PARSE_MESSAGE, CONFIG_PARSE_ERROR, MESSAGE_ERRORS, NO_ERROR, NOT_ENABLED, TRY_LATER, NO_SUCH_CERT;
 		public static TW_ERRORS getError(final int code) {
 			switch (code) {
 			case 200:
@@ -198,6 +200,11 @@ public class TaskWarriorSync {
 			Log.e(TAG, "general problem with init");
 			throw new TaskWarriorSyncFailedExeption(
 					TW_ERRORS.CONFIG_PARSE_ERROR, "general problem with init");
+		} catch (final NoSuchCertificateException e) {
+			Log.e(TAG, "NoSuchCertificateException");
+			throw new TaskWarriorSyncFailedExeption(TW_ERRORS.NO_SUCH_CERT,
+					"general problem with init");
+
 		}
 		try {
 			client.connect(_host, _port);
@@ -301,6 +308,7 @@ public class TaskWarriorSync {
 				} else if (local_task == null) {
 					try {
 						server_task.create(false);
+						server_task.dirtyTakeAllTags();
 						Log.d(TAG, "create " + server_task.getName());
 					} catch (final NoSuchListException e) {
 						Log.wtf(TAG, "List vanish");
@@ -416,7 +424,7 @@ public class TaskWarriorSync {
 		this.accountManager = AccountManager.get(this.mContext);
 		this.account = a;
 		final AccountMirakel aMirakel = AccountMirakel.get(a);
-		if (!aMirakel.isEnabled()) {
+		if (aMirakel == null || !aMirakel.isEnabled()) {
 			throw new TaskWarriorSyncFailedExeption(TW_ERRORS.NOT_ENABLED,
 					"TW sync is not enabled");
 		}
@@ -519,10 +527,14 @@ public class TaskWarriorSync {
 		}
 		json += "\"uuid\":\"" + uuid + "\"";
 		json += ",\"status\":\"" + status + "\"";
-		json += ",\"entry\":\"" + formatCal(DateTimeHelper.getUTCCalendar(task.getCreatedAt())) + "\"";
+		json += ",\"entry\":\""
+				+ formatCal(DateTimeHelper.getUTCCalendar(task.getCreatedAt()))
+				+ "\"";
 		json += ",\"description\":\"" + escape(task.getName()) + "\"";
 		if (task.getDue() != null) {
-			json += ",\"due\":\"" + formatCal(DateTimeHelper.getUTCCalendar(task.getDue())) + "\"";
+			json += ",\"due\":\""
+					+ formatCal(DateTimeHelper.getUTCCalendar(task.getDue()))
+					+ "\"";
 		}
 		if (task.getList() != null && !additionals.containsKey(NO_PROJECT)) {
 			json += ",\"project\":\"" + task.getList().getName() + "\"";
@@ -530,14 +542,22 @@ public class TaskWarriorSync {
 		if (priority != null) {
 			json += ",\"priority\":\"" + priority + "\"";
 		}
-		json += ",\"modified\":\"" + formatCal(DateTimeHelper.getUTCCalendar(task.getUpdatedAt())) + "\"";
+		json += ",\"modified\":\""
+				+ formatCal(DateTimeHelper.getUTCCalendar(task.getUpdatedAt()))
+				+ "\"";
 		if (task.getReminder() != null) {
-			json += ",\"reminder\":\"" + formatCal(DateTimeHelper.getUTCCalendar(task.getReminder())) + "\"";
+			json += ",\"reminder\":\""
+					+ formatCal(DateTimeHelper.getUTCCalendar(task
+							.getReminder())) + "\"";
 		}
+
 		if (end != null) {
 			json += ",\"end\":\"" + end + "\"";
 		}
 		json += ",\"progress\":" + task.getProgress();
+		// Tags
+		json += "," + Tag.serialize(task);
+		// End Tags
 		// Annotations
 		if (task.getContent() != null && !task.getContent().equals("")) {
 			json += ",\"annotations\":[";

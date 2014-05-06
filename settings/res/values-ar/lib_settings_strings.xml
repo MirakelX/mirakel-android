@@ -154,6 +154,7 @@
   <string name="semantics_no_due">لا تقم بتعيين تاريخ الواجب</string>
   <string name="settings_file_default_title">اسم المهمة للملفات التي تم استيرادها</string>
   <string name="semantic_new">قالب</string>
+  <string name="tag_name">الإسم</string>
   <string name="settings_subtask">المهام الفرعية</string>
   <string name="settings_subtask_default_new">إظهار المهام الجديدة الافتراضية</string>
   <string name="settings_subtask_add_to_same_list">إضافة مهمة فرعية إلى قائمة المهمة</string>

@@ -15,24 +15,24 @@ Versão SDK: %2$d\n
 Dispositivo: %3$s\n]]>
     </string>
   <string name="contact_chooser">Enviar mensagem...</string>
-  <string name="error_PHOTO_NO_CAMERA">Parece que o seu dispositivo não consegue tirar fotos.</string>
-  <string name="error_PHOTO_NO_MEDIA_DIRECTORY">Não existe um local para a gravação da imagem. Desculpe!</string>
-  <string name="error_NO_SPEACH_RECOGNITION">Parece que o seu dispositivo não tem suporte a conversão de voz em texto.</string>
-  <string name="error_TASKS_CANNOT_FORM_LOOP">Subtarefas não podem fazer um ciclo</string>
-  <string name="error_FILE_NO_ACTIVITY">Não sei como abrir este ficheiro. Desculpe.</string>
-  <string name="error_CONTACT_NO_CLIENT">Não existe uma aplicação de correio eletrónico instalada.</string>
-  <string name="error_NO_FILEMANAGER">Instale um gestor de ficheiros</string>
-  <string name="error_FILE_URI_SYNTAX_ERROR">Ocorreu um erro interno ao processar o nome do ficheiro.</string>
-  <string name="error_MAINACTIVITY_WRONG_POSITION">Isto não deveria acontecer</string>
-  <string name="error_FILE_NOT_FOUND">Ficheiro não encontrado</string>
-  <string name="error_BACKUP_EXPORT_ERROR">Ocorreu um erro ao exportar a base de dados</string>
-  <string name="error_BACKUP_IMPORT_ERROR">Ocorreu um erro ao importar a base de dados</string>
-  <string name="error_FILE_TO_LARGE_FOR_THUMBNAIL">Não é possível criar a miniatura. O ficheiro é muito grande.</string>
-  <string name="error_TASKS_NO_LIST">Esta tarefa não pode ser sincronizada porque não existem listas</string>
-  <string name="error_TASK_VANISHED">A lista de tarefas desapareceu. Desculpe...</string>
-  <string name="error_FILE_NOT_MIRAKEL_DB">Esta não é uma base de dados do Mirakel!</string>
-  <string name="error_ASTRID_ERROR">Ocorreu um erro ao importar os dados do Astrid!</string>
-  <string name="error_TASKWARRIOR_FILE_NOT_FOUND">Ficheiro Taskwarrior não encontrado</string>
-  <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD">Não foi possível transferir o ficheiro de configuração</string>
-  <string name="error_TASKWARRIOR_URL_NOT_FOUND">O URL não está correto. Leu o código QR correto?</string>
+  <string name="error_PHOTO_NO_CAMERA" tools:ignore="UnusedResources">Parece que o seu dispositivo não consegue tirar fotos.</string>
+  <string name="error_PHOTO_NO_MEDIA_DIRECTORY" tools:ignore="UnusedResources">Não existe um local para a gravação da imagem. Desculpe!</string>
+  <string name="error_NO_SPEACH_RECOGNITION" tools:ignore="UnusedResources">Parece que o seu dispositivo não tem suporte a conversão de voz em texto.</string>
+  <string name="error_TASKS_CANNOT_FORM_LOOP" tools:ignore="UnusedResources">Subtarefas não podem fazer um ciclo</string>
+  <string name="error_FILE_NO_ACTIVITY" tools:ignore="UnusedResources">Não sei como abrir este ficheiro. Desculpe.</string>
+  <string name="error_CONTACT_NO_CLIENT" tools:ignore="UnusedResources">Não existe uma aplicação de correio eletrónico instalada.</string>
+  <string name="error_NO_FILEMANAGER" tools:ignore="UnusedResources">Instale um gestor de ficheiros</string>
+  <string name="error_FILE_URI_SYNTAX_ERROR" tools:ignore="UnusedResources">Ocorreu um erro interno ao processar o nome do ficheiro.</string>
+  <string name="error_MAINACTIVITY_WRONG_POSITION" tools:ignore="UnusedResources">Isto não deveria acontecer</string>
+  <string name="error_FILE_NOT_FOUND" tools:ignore="UnusedResources">Ficheiro não encontrado</string>
+  <string name="error_BACKUP_EXPORT_ERROR" tools:ignore="UnusedResources">Ocorreu um erro ao exportar a base de dados</string>
+  <string name="error_BACKUP_IMPORT_ERROR" tools:ignore="UnusedResources">Ocorreu um erro ao importar a base de dados</string>
+  <string name="error_FILE_TO_LARGE_FOR_THUMBNAIL" tools:ignore="UnusedResources">Não é possível criar a miniatura. O ficheiro é muito grande.</string>
+  <string name="error_TASKS_NO_LIST" tools:ignore="UnusedResources">Esta tarefa não pode ser sincronizada porque não existem listas</string>
+  <string name="error_TASK_VANISHED" tools:ignore="UnusedResources">A lista de tarefas desapareceu. Desculpe...</string>
+  <string name="error_FILE_NOT_MIRAKEL_DB" tools:ignore="UnusedResources">Esta não é uma base de dados do Mirakel!</string>
+  <string name="error_ASTRID_ERROR" tools:ignore="UnusedResources">Ocorreu um erro ao importar os dados do Astrid!</string>
+  <string name="error_TASKWARRIOR_FILE_NOT_FOUND" tools:ignore="UnusedResources">Ficheiro Taskwarrior não encontrado</string>
+  <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD" tools:ignore="UnusedResources">Não foi possível transferir o ficheiro de configuração</string>
+  <string name="error_TASKWARRIOR_URL_NOT_FOUND" tools:ignore="UnusedResources">O URL não está correto. Leu o código QR correto?</string>
 </resources>

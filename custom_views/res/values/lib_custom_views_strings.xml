@@ -17,8 +17,9 @@
     <string name="task_fragment_content">Notes</string>
     <string name="task_fragment_subtask">Subtasks</string>
     <string name="task_fragment_progress">Progress</string>
+    <string name="task_fragment_tags">Tags</string>
     
-        <string name="audio_record_title">Audio recording…</string>
+    <string name="audio_record_title">Audio recording…</string>
     <string name="audio_record_message">Recording…</string>
     <string name="audio_playback_title">Audio playback…</string>
     <string name="audio_playback_select_title">What do you want to do?</string>
@@ -28,7 +29,7 @@
     
     <string name="task_change_prio_title">Change Priority</string>
     <string name="remove_subtask">Remove Subtask</string>
-    <string name="remove_files_summary">Do you want to remove %1$s from %2$s?</string>
+    <string name="remove_files_summary">Do you want to remove %1$s from \"%2$s\"?</string>
     
     <string name="add_existing">Add existing Task</string>
     <string name="task_name">Task Name:</string>
@@ -38,9 +39,16 @@
     <string name="subtask_content">Task with note?</string>
     <string name="new_task">New Task</string>
     <string name="add_subtasks">Add subtask…</string>
+    <string name="add_tags">Add tag…</string>
     <string name="add">Add</string>
     <string name="add_subtask">Add Subtask</string>
     <string name="file_no_activity">I don\'t know, how to open this file – sorry</string>
     
     <string name="remove_files">Remove Files from Task</string>
+    <string name="search_tag">Search tag</string>
+    <string-array name="tag_menu">
+        <item>Edit tag</item>
+        <item>Remove tag</item>
+    </string-array>
+    <string name="tag_has_dark_text">Text is black</string>
 </resources>

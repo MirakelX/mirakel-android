@@ -98,6 +98,12 @@ public class TaskDetailContent extends BaseTaskDetailRow {
 								}
 							});
 					TaskDetailContent.this.taskContentEdit.requestFocus();
+					if (TaskDetailContent.this.task.getContent().length() != TaskDetailContent.this.taskContentEdit
+							.getText().length()) {
+						TaskDetailContent.this.taskContentEdit
+								.setText(TaskDetailContent.this.task
+										.getContent());
+					}
 					TaskDetailContent.this.taskContentEdit
 							.setSelection(TaskDetailContent.this.task
 									.getContent().length());
@@ -113,9 +119,7 @@ public class TaskDetailContent extends BaseTaskDetailRow {
 			TaskDetailContent.this.taskContentSwitcher.showNext();
 		}
 		this.isContentEdit = false;
-		this.editContent
-				.setBackgroundResource(TaskDetailContent.this.isContentEdit ? android.R.drawable.ic_menu_save
-						: android.R.drawable.ic_menu_edit);
+		this.editContent.setBackgroundResource(android.R.drawable.ic_menu_edit);
 		TaskDetailContent.this.taskContentEdit
 				.setText(TaskDetailContent.this.task.getContent());
 	}
@@ -159,7 +163,14 @@ public class TaskDetailContent extends BaseTaskDetailRow {
 			return;
 		}
 		this.content = this.task.getContent();
-		this.editContent.setBackgroundResource(android.R.drawable.ic_menu_edit);
+		if (this.taskContentSwitcher.getCurrentView().getId() == this.taskContentEdit
+				.getId()) {
+			this.editContent
+					.setBackgroundResource(android.R.drawable.ic_menu_save);
+		} else {
+			this.editContent
+					.setBackgroundResource(android.R.drawable.ic_menu_edit);
+		}
 		if (this.task.getContent().length() > 0) {
 			this.taskContent.setText(this.task.getContent());
 			Linkify.addLinks(this.taskContent, Linkify.WEB_URLS);

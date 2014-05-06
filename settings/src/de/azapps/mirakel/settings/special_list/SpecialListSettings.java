@@ -66,6 +66,8 @@ import de.azapps.mirakel.model.list.meta.SpecialListsSetProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsStringProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsStringProperty.Type;
 import de.azapps.mirakel.model.list.meta.SpecialListsSubtaskProperty;
+import de.azapps.mirakel.model.list.meta.SpecialListsTagProperty;
+import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.settings.ListSettings;
 import de.azapps.mirakel.settings.R;
@@ -75,6 +77,10 @@ import de.azapps.widgets.DueDialog.VALUE;
 @SuppressLint("NewApi")
 public class SpecialListSettings extends PreferencesHelper {
 	protected SpecialList specialList;
+
+	enum SET_TYPE {
+		LIST, PRIO, TAG
+	}
 
 	public SpecialListSettings(final SpecialListsSettingsActivity p,
 			final SpecialList specialList) {
@@ -255,6 +261,8 @@ public class SpecialListSettings extends PreferencesHelper {
 		subtask.setSummary(getFieldText(Task.SUBTASK_TABLE));
 		final Preference file = findPreference("special_where_file");
 		file.setSummary(getFieldText(FileMirakel.TABLE));
+		final Preference tag = findPreference("special_where_tag");
+		tag.setSummary(getFieldText(Tag.TABLE));
 
 		done.setOnPreferenceChangeListener(null);
 		done.setOnPreferenceClickListener(new OnPreferenceClickListener() {
@@ -407,12 +415,70 @@ public class SpecialListSettings extends PreferencesHelper {
 											final int id) {
 										setSetProperty(list, values, prop,
 												mSelectedItems, Task.LIST_ID,
-												false);
+												SET_TYPE.LIST);
 									}
 
 								})
 						.setNegativeButton(android.R.string.cancel, null)
 
+						.setMultiChoiceItems(SortingItems, this.mSelectedItems,
+								new OnMultiChoiceClickListener() {
+
+									@Override
+									public void onClick(
+											final DialogInterface dialog,
+											final int which,
+											final boolean isChecked) {
+										mSelectedItems[which] = isChecked;
+									}
+
+								}).show();
+
+				return false;
+			}
+		});
+		tag.setOnPreferenceChangeListener(null);
+		tag.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+			private boolean[] mSelectedItems;
+
+			@Override
+			public boolean onPreferenceClick(final Preference preference) {
+				final List<Tag> tags = Tag.all();
+				final CharSequence[] SortingItems = new String[tags.size() + 1];
+				final int[] values = new int[tags.size() + 1];
+				this.mSelectedItems = new boolean[SortingItems.length];
+				final SpecialListsTagProperty prop = (SpecialListsTagProperty) SpecialListSettings.this.specialList
+						.getWhere().get(Tag.TABLE);
+				values[0] = 0;
+				this.mSelectedItems[0] = prop == null ? false : prop
+						.isNegated();
+				SortingItems[0] = SpecialListSettings.this.activity
+						.getString(R.string.inverte);
+				for (int i = 0; i < tags.size(); i++) {
+					values[i + 1] = tags.get(i).getId();
+					SortingItems[i + 1] = tags.get(i).getName();
+					this.mSelectedItems[i + 1] = prop == null ? false : prop
+							.getContent().contains(tags.get(i).getId());
+
+				}
+				new AlertDialog.Builder(SpecialListSettings.this.activity)
+						.setTitle(
+								SpecialListSettings.this.activity
+										.getString(R.string.select_by))
+						.setPositiveButton(android.R.string.ok,
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(
+											final DialogInterface dialog,
+											final int id) {
+										setSetProperty(tag, values, prop,
+												mSelectedItems, Tag.TABLE,
+												SET_TYPE.TAG);
+									}
+
+								})
+						.setNegativeButton(android.R.string.cancel, null)
 						.setMultiChoiceItems(SortingItems, this.mSelectedItems,
 								new OnMultiChoiceClickListener() {
 
@@ -465,7 +531,7 @@ public class SpecialListSettings extends PreferencesHelper {
 											final int id) {
 										setSetProperty(prio, values, prop,
 												mSelectedItems, Task.PRIORITY,
-												true);
+												SET_TYPE.TAG);
 									}
 								})
 						.setNegativeButton(android.R.string.cancel, null)
@@ -639,22 +705,23 @@ public class SpecialListSettings extends PreferencesHelper {
 				return false;
 			}
 		});
-		if (v4_0) {
+		if (this.v4_0) {
 			progress.setOnPreferenceChangeListener(null);
 			progress.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
 				@Override
-				public boolean onPreferenceClick(Preference preference) {
-					final SpecialListsProgressProperty prop = (SpecialListsProgressProperty) specialList
+				public boolean onPreferenceClick(final Preference preference) {
+					final SpecialListsProgressProperty prop = (SpecialListsProgressProperty) SpecialListSettings.this.specialList
 							.getWhere().get(Task.PROGRESS);
-					View v = activity.getLayoutInflater().inflate(
-							R.layout.progress_dialog, null);
+					final View v = SpecialListSettings.this.activity
+							.getLayoutInflater().inflate(
+									R.layout.progress_dialog, null);
 					final NumberPicker operationPicker = (NumberPicker) v
 							.findViewById(R.id.progress_op);
 					final NumberPicker valuePicker = (NumberPicker) v
 							.findViewById(R.id.progress_value);
 
-					String[] operations = { ">=", "=", "<=" };
+					final String[] operations = { ">=", "=", "<=" };
 					operationPicker.setMaxValue(2);
 					operationPicker.setMinValue(0);
 					operationPicker.setDisplayedValues(operations);
@@ -670,15 +737,15 @@ public class SpecialListSettings extends PreferencesHelper {
 						operationPicker.setValue(0);// >=
 						valuePicker.setValue(50);
 					}
-					new AlertDialog.Builder(activity)
+					new AlertDialog.Builder(SpecialListSettings.this.activity)
 							.setView(v)
 							.setPositiveButton(android.R.string.ok,
 									new DialogInterface.OnClickListener() {
 
 										@Override
 										public void onClick(
-												DialogInterface dialog,
-												int which) {
+												final DialogInterface dialog,
+												final int which) {
 											if (prop == null) {
 												setNewWhere(
 														new SpecialListsProgressProperty(
@@ -706,8 +773,8 @@ public class SpecialListSettings extends PreferencesHelper {
 
 										@Override
 										public void onClick(
-												DialogInterface dialog,
-												int which) {
+												final DialogInterface dialog,
+												final int which) {
 											setNewWhere(null, false,
 													Task.PROGRESS, progress);
 
@@ -730,23 +797,25 @@ public class SpecialListSettings extends PreferencesHelper {
 		subtask.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
 			@Override
-			public boolean onPreferenceClick(Preference preference) {
-				final SpecialListsSubtaskProperty prop = (SpecialListsSubtaskProperty) specialList
+			public boolean onPreferenceClick(final Preference preference) {
+				final SpecialListsSubtaskProperty prop = (SpecialListsSubtaskProperty) SpecialListSettings.this.specialList
 						.getWhere().get(Task.SUBTASK_TABLE);
 				final boolean[] checked = new boolean[2];
 				if (prop != null) {
 					checked[0] = prop.isNegated();
 					checked[1] = prop.isParent();
 				}
-				new AlertDialog.Builder(activity)
+				new AlertDialog.Builder(SpecialListSettings.this.activity)
 						.setTitle(R.string.select_by)
 						.setMultiChoiceItems(
 								R.array.special_lists_subtask_options, checked,
 								new OnMultiChoiceClickListener() {
 
 									@Override
-									public void onClick(DialogInterface dialog,
-											int which, boolean isChecked) {
+									public void onClick(
+											final DialogInterface dialog,
+											final int which,
+											final boolean isChecked) {
 										checked[which] = isChecked;
 
 									}
@@ -755,8 +824,9 @@ public class SpecialListSettings extends PreferencesHelper {
 								new DialogInterface.OnClickListener() {
 
 									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
+									public void onClick(
+											final DialogInterface dialog,
+											final int which) {
 										setNewWhere(null, false,
 												Task.SUBTASK_TABLE, subtask);
 
@@ -766,8 +836,9 @@ public class SpecialListSettings extends PreferencesHelper {
 								new DialogInterface.OnClickListener() {
 
 									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
+									public void onClick(
+											final DialogInterface dialog,
+											final int which) {
 										if (prop == null) {
 											setNewWhere(
 													new SpecialListsSubtaskProperty(
@@ -791,8 +862,8 @@ public class SpecialListSettings extends PreferencesHelper {
 		file.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
 			@Override
-			public boolean onPreferenceClick(Preference preference) {
-				final SpecialListsFileProperty prop = (SpecialListsFileProperty) specialList
+			public boolean onPreferenceClick(final Preference preference) {
+				final SpecialListsFileProperty prop = (SpecialListsFileProperty) SpecialListSettings.this.specialList
 						.getWhere().get(FileMirakel.TABLE);
 				int checked = 0;
 				if (prop != null) {
@@ -803,14 +874,15 @@ public class SpecialListSettings extends PreferencesHelper {
 					}
 				}
 
-				new AlertDialog.Builder(activity)
+				new AlertDialog.Builder(SpecialListSettings.this.activity)
 						.setTitle(R.string.select_by)
 						.setSingleChoiceItems(R.array.file_choice, checked,
 								new DialogInterface.OnClickListener() {
 
 									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
+									public void onClick(
+											final DialogInterface dialog,
+											final int which) {
 										if (which == 0) {
 											setNewWhere(null, false,
 													FileMirakel.TABLE, file);
@@ -855,33 +927,42 @@ public class SpecialListSettings extends PreferencesHelper {
 							negated.isChecked(), searchString, t.ordinal())
 							: new SpecialListsNameProperty(negated.isChecked(),
 									searchString, t.ordinal()),
-					searchString.length() != 0, Task.CONTENT, pref);
+					searchString.length() != 0, isContent ? Task.CONTENT
+							: DatabaseHelper.NAME, pref);
 
 		} else {
 			prop.setType(t);
 			prop.setSearchString(searchString);
 			prop.setNegated(negated.isChecked());
-			setNewWhere(prop, searchString.length() > 0, Task.CONTENT, pref);
+			setNewWhere(prop, searchString.length() > 0,
+					isContent ? Task.CONTENT : DatabaseHelper.NAME, pref);
 		}
 	}
 
-	protected static void setUpStringProperty(
-			final SpecialListsStringProperty prop, final View dialogView,
-			final EditText search, final CheckBox negated) {
-		((RadioButton) dialogView.findViewById(R.id.where_like_contain))
-				.setChecked(prop == null ? true
-						: prop.getType() == Type.CONTAINS);
-		((RadioButton) dialogView.findViewById(R.id.where_like_begin))
-				.setChecked(prop == null ? false : prop.getType() == Type.BEGIN);
-		((RadioButton) dialogView.findViewById(R.id.where_like_end))
-				.setChecked(prop == null ? false : prop.getType() == Type.END);
+	protected void setUpStringProperty(final SpecialListsStringProperty prop,
+			final View dialogView, final EditText search, final CheckBox negated) {
+		final RadioButton contain = (RadioButton) dialogView
+				.findViewById(R.id.where_like_contain);
+		contain.setChecked(prop == null ? true
+				: prop.getType() == Type.CONTAINS);
+		contain.setText(this.activity.getString(
+				R.string.where_like_contain_text, ""));
+		final RadioButton begin = (RadioButton) dialogView
+				.findViewById(R.id.where_like_begin);
+		begin.setChecked(prop == null ? false : prop.getType() == Type.BEGIN);
+		begin.setText(this.activity.getString(R.string.where_like_begin_text,
+				""));
+		final RadioButton end = (RadioButton) dialogView
+				.findViewById(R.id.where_like_end);
+		end.setChecked(prop == null ? false : prop.getType() == Type.END);
+		end.setText(this.activity.getString(R.string.where_like_end_text, ""));
 		negated.setChecked(prop == null ? false : prop.isNegated());
 		search.setText(prop == null ? "" : prop.getSearchString());
 	}
 
 	protected void setSetProperty(final Preference list, final int[] values,
-			final SpecialListsSetProperty prop, final boolean[] mSelectedItems,
-			final String key, final boolean isPrio) {
+			SpecialListsSetProperty prop, final boolean[] mSelectedItems,
+			final String key, final SET_TYPE setType) {
 		final List<Integer> content = prop == null ? new ArrayList<Integer>()
 				: prop.getContent();
 		for (int i = 1; i < mSelectedItems.length; i++) {
@@ -894,10 +975,21 @@ public class SpecialListSettings extends PreferencesHelper {
 			}
 		}
 		if (prop == null) {
-			setNewWhere(isPrio ? new SpecialListsPriorityProperty(
-					mSelectedItems[0], content) : new SpecialListsListProperty(
-					mSelectedItems[0], content),
-					!content.isEmpty() && content.size() > 0, key, list);
+			switch (setType) {
+			case LIST:
+				prop = new SpecialListsListProperty(mSelectedItems[0], content);
+				break;
+			case PRIO:
+				prop = new SpecialListsPriorityProperty(mSelectedItems[0],
+						content);
+				break;
+			case TAG:
+				prop = new SpecialListsTagProperty(mSelectedItems[0], content);
+				break;
+
+			}
+			setNewWhere(prop, !content.isEmpty() && content.size() > 0, key,
+					list);
 		} else {
 			prop.setNegated(mSelectedItems[0]);
 			prop.setContent(content);

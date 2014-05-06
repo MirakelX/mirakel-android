@@ -18,6 +18,8 @@
  ******************************************************************************/
 package de.azapps.mirakel.custom_views;
 
+import java.io.FileNotFoundException;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -27,6 +29,7 @@ import android.widget.TextView;
 import de.azapps.mirakel.customviews.R;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.file.FileMirakel;
+import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 
 public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
@@ -43,7 +46,6 @@ public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
 	private static final String TAG = "TaskDetailFilePart";
 
 	protected OnFileClickListner clickListner;
-	private final Context ctx;
 	private FileMirakel file;
 
 	private final ImageView fileImage;
@@ -54,7 +56,6 @@ public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
 
 	public TaskDetailFilePart(final Context context) {
 		super(context);
-		this.ctx = context;
 		inflate(context, R.layout.files_row, this);
 		this.fileImage = (ImageView) findViewById(R.id.file_image);
 		this.fileName = (TextView) findViewById(R.id.file_name);
@@ -104,8 +105,6 @@ public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
 	public void updatePart(final FileMirakel f) {
 		setBackgroundColor(this.context.getResources().getColor(
 				android.R.color.transparent));
-		// this will break the preview images...
-		// if (f==null&&this.file==null||f!=null&&f.equals(this.file)) return;
 		Log.d(TAG, "update");
 		this.file = f;
 		new Thread(new Runnable() {
@@ -113,11 +112,11 @@ public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
 
 			@Override
 			public void run() {
-				if (TaskDetailFilePart.this.file.getPath().endsWith(".mp3")) {
+				if (FileUtils.isAudio(TaskDetailFilePart.this.file.getUri())) {
 					final int resource_id = MirakelCommonPreferences.isDark() ? R.drawable.ic_action_play_dark
 							: R.drawable.ic_action_play;
 					this.preview = BitmapFactory.decodeResource(
-							TaskDetailFilePart.this.ctx.getResources(),
+							TaskDetailFilePart.this.context.getResources(),
 							resource_id);
 				} else {
 					this.preview = TaskDetailFilePart.this.file.getPreview();
@@ -152,20 +151,21 @@ public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
 				}
 			}
 		}).start();
-		if (this.file.getPath().endsWith(".mp3")
-				&& this.file.getName().startsWith("AUD_")) {
+		if (FileUtils.isAudio(this.file.getUri())) {
 			this.fileName.setText(R.string.audio_record_file);
-		} else if (this.file.getName().endsWith(".jpg")) {
+		} else if (FileUtils.isImage(this.file.getUri())) {
 			this.fileName.setText(R.string.image_file);
 		} else {
 			this.fileName.setText(this.file.getName());
 		}
-		this.filePath.setText(this.file.getPath());
-		if (!this.file.getFile().exists()) {
+		try {
+			this.file.getFileStream(this.context);
+			final String name = FileUtils.getNameFromUri(this.context,
+					this.file.getUri());
+			this.filePath.setText(name.length() == 0 ? this.file.getUri()
+					.toString() : name);
+		} catch (final FileNotFoundException e) {
 			this.filePath.setText(R.string.error_FILE_NOT_FOUND);
-		} else {
-			this.filePath.setText(this.file.getPath());
 		}
 	}
-
 }

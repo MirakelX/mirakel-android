@@ -18,13 +18,13 @@
  ******************************************************************************/
 package de.azapps.mirakel.helper.export_import;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -80,19 +80,6 @@ public class ExportImport {
 		}
 	}
 
-	public static void importDB(final Context ctx, final File file) {
-
-		try {
-			FileUtils.copyFile(file, dbFile);
-			Toast.makeText(ctx, ctx.getString(R.string.backup_import_ok),
-					Toast.LENGTH_LONG).show();
-			android.os.Process.killProcess(android.os.Process.myPid());
-		} catch (final IOException e) {
-			Log.e(TAG, e.getMessage(), e);
-			ErrorReporter.report(ErrorType.BACKUP_IMPORT_ERROR);
-		}
-	}
-
 	public static void importDB(final Context ctx,
 			final FileInputStream inputstream) {
 
@@ -108,25 +95,21 @@ public class ExportImport {
 	}
 
 	@SuppressLint("SimpleDateFormat")
-	public static boolean importAstrid(final Context context, final String path) {
-		final File file = new File(path);
-		if (file.exists()) {
-			final String mimetype = FileUtils.getMimeType(path);
-			if (mimetype.equals("application/zip")) {
-				return importAstridZip(context, file);
-			} else if (mimetype.equals("text/xml")) {
-				return importAstridXml(context, file);
-			} else {
-				Log.d(TAG, "unknown filetype");
-			}
-		} else {
-			Log.d(TAG, "file not found");
+	public static boolean importAstrid(final Context context,
+			final FileInputStream stream, final String mimetype) {
+		switch (mimetype) {
+		case "application/zip":
+			return importAstridZip(context, stream);
+		case "text/xml":
+			return importAstridXml(context, stream);
+		default:
+			Log.d(TAG, "unknown filetype");
 		}
 		return false;
 	}
 
 	private static boolean importAstridXml(final Context context,
-			final File file) {
+			final FileInputStream stream) {
 		final DocumentBuilderFactory dbFactory = DocumentBuilderFactory
 				.newInstance();
 		DocumentBuilder dBuilder;
@@ -138,7 +121,7 @@ public class ExportImport {
 		}
 		Document doc;
 		try {
-			doc = dBuilder.parse(file);
+			doc = dBuilder.parse(stream);
 		} catch (final SAXException e) {
 			Log.d(TAG, "cannot parse file");
 			return false;
@@ -236,7 +219,7 @@ public class ExportImport {
 
 	@SuppressLint("SimpleDateFormat")
 	private static boolean importAstridZip(final Context context,
-			final File zipped) {
+			final FileInputStream stream) {
 		final File outputDir = new File(context.getCacheDir(), "astrid");
 		if (!outputDir.isDirectory()) {
 			outputDir.mkdirs();
@@ -247,7 +230,7 @@ public class ExportImport {
 			}
 		}
 		try {
-			FileUtils.unzip(zipped, outputDir);
+			FileUtils.unzip(stream, outputDir);
 		} catch (final Exception e) {
 			return false;
 		}
@@ -310,18 +293,14 @@ public class ExportImport {
 		return true;
 	}
 
-	public static String getStringFromFile(final String path, final Context ctx)
-			throws IOException {
-		final BufferedReader br = new BufferedReader(new FileReader(path));
+	public static String getStringFromStream(final InputStream stream,
+			final Context ctx) throws IOException {
 		final StringBuilder sb = new StringBuilder();
-		String line = br.readLine();
+		int c;
 
-		while (line != null) {
-			sb.append(line);
-			sb.append('\n');
-			line = br.readLine();
+		while ((c = stream.read()) != -1) {
+			sb.append((char) c);
 		}
-		br.close();
 		return sb.toString();
 	}
 }

@@ -141,7 +141,7 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen, wi
   <string name="settings_semantic">Aufgabenvorlagen</string>
   <string name="semantic_new_task">Neue Aufgabenvorlage</string>
   <string name="semantic_new_task_summary">Welche Prioritäten sollen eingeschlossen sein</string>
-  <string name="semantic_new_task_config_summary">Konfiguriere die Bedingungen für das erstellen neuer Aufgaben</string>
+  <string name="semantic_new_task_config_summary">Konfiguriere die Bedingungen für das Erstellen neuer Aufgaben</string>
   <string name="semantic_new_task_config">Aufgabenvorlagen konfigurieren</string>
   <string name="swipeBehavior_title">Mit wischen zur Aufgabe wechseln</string>
   <string name="swipeBehavior_summary">Wechsle beim wischen zur Aufgabe, die du gerade berührst</string>
@@ -181,6 +181,7 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen, wi
   <string name="semantics_no_due">Kein Fälligkeitsdatum setzen</string>
   <string name="settings_file_default_title">Aufgabenname für importierte Dateien</string>
   <string name="semantic_new">Vorlage</string>
+  <string name="tag_name">Name</string>
   <string name="settings_subtask">Unteraufgaben</string>
   <string name="settings_subtask_default_new">Standardmäßig neue Aufgabe erstellen</string>
   <string name="settings_subtask_add_to_same_list">Füge die Unteraufgabe zur Liste der Aufgabe hinzu</string>
@@ -233,6 +234,8 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen, wi
   <string name="alert_taskwarrior_title">Taskwarrior-Informationen</string>
   <string name="special_list_where_subtask_title_text">Unteraufgaben</string>
   <string name="special_list_where_progress_title_text">Fortschritt</string>
+  <string name="special_list_where_file_title_text">Datei</string>
+  <string name="remove">Entfernen</string>
   <string-array name="sync_types">
     <item>CalDAV synchronisieren</item>
     <item>Taskwarrior-Sync</item>
@@ -268,5 +271,14 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen, wi
     <item>0</item>
     <item>1</item>
     <item>2</item>
+  </string-array>
+  <string-array name="special_lists_subtask_options">
+    <item>Auswahl umkehren</item>
+    <item>Suche nach Aufgaben mit Unteraufgaben oder nach Unteraufgaben</item>
+  </string-array>
+  <string-array name="file_choice">
+    <item>Nicht gesetzt</item>
+    <item>Hat Datei</item>
+    <item>Hat keine Datei</item>
   </string-array>
 </resources>
