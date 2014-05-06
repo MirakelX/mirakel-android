@@ -151,9 +151,10 @@ public class SpecialListSettings extends PreferencesHelper {
 					SpecialListSettings.this.specialList.save();
 					name.setSummary(SpecialListSettings.this.specialList
 							.getName());
+					name.setText(SpecialListSettings.this.specialList.getName());
 					if (MirakelCommonPreferences.isTablet()
 							&& SpecialListSettings.this.v4_0) {
-						((ListSettings) SpecialListSettings.this.ctx)
+						((ListSettings) SpecialListSettings.this.activity)
 								.invalidateHeaders();
 					}
 				}
