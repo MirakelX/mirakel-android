@@ -76,6 +76,7 @@ import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
@@ -646,7 +647,11 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 
 	@Override
 	public Loader<Cursor> onCreateLoader(final int arg0, final Bundle arg1) {
-		final ListMirakel list = ListMirakel.getList(this.listId);
+		ListMirakel list = ListMirakel.getList(this.listId);
+		if (list == null) {
+			ErrorReporter.report(ErrorType.LIST_VANISHED);
+			list = SpecialList.firstSpecialSafe(getActivity());
+		}
 		final Uri u = Uri.parse("content://"
 				+ DefinitionsHelper.AUTHORITY_INTERNAL + "/" + "tasks");
 		String dbQuery = list.getWhereQueryForTasks();
