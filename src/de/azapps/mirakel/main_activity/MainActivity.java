@@ -886,6 +886,11 @@ public class MainActivity extends ActionBarActivity implements
 		super.onSaveInstanceState(outState);
 	}
 
+	@Override
+	public void onRestoreInstanceState(final Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+	}
+
 	public void loadMenu(final int position) {
 		loadMenu(position, true, false);
 	}
