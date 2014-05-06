@@ -59,7 +59,6 @@ import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.tags.Tag;
-import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.tools.Log;
 
@@ -170,6 +169,7 @@ public class Task extends TaskBase {
 				+ " AND done=1", null);
 		Task.database.setTransactionSuccessful();
 		Task.database.endTransaction();
+		NotificationService.updateServices(context, false);
 	}
 
 	/**
@@ -470,7 +470,7 @@ public class Task extends TaskBase {
 
 		try {
 			final Task task = t.create();
-			NotificationService.updateNotificationAndWidget(Task.context);
+			NotificationService.updateServices(Task.context, false);
 			return task;
 		} catch (final NoSuchListException e) {
 			ErrorReporter.report(ErrorType.TASKS_NO_LIST);
@@ -853,6 +853,7 @@ public class Task extends TaskBase {
 		final Task newTask = cursorToTask(cursor);
 		cursor.close();
 		UndoHistory.logCreate(newTask, Task.context);
+		NotificationService.updateServices(context, getReminder() != null);
 		return newTask;
 	}
 
@@ -879,6 +880,7 @@ public class Task extends TaskBase {
 			UndoHistory.updateLog(this, Task.context);
 		}
 		final long id = getId();
+
 		if (getSyncState() == SYNC_STATE.ADD || force) {
 			Task.database.delete(Task.TABLE, DatabaseHelper.ID + " = " + id,
 					null);
@@ -892,6 +894,7 @@ public class Task extends TaskBase {
 			Task.database.update(Task.TABLE, values, DatabaseHelper.ID + "="
 					+ id, null);
 		}
+		NotificationService.updateServices(context, getReminder() != null);
 
 	}
 
@@ -1072,12 +1075,13 @@ public class Task extends TaskBase {
 				+ getId(), null);
 		Task.database.setTransactionSuccessful();
 		Task.database.endTransaction();
-		if (isEdited(TaskBase.REMINDER)
+		boolean updateReminders = false;
+		if (isEdited(TaskBase.DONE) || isEdited(TaskBase.REMINDER)
 				|| isEdited(TaskBase.RECURRING_REMINDER)) {
-			ReminderAlarm.updateAlarms(Task.context);
+			updateReminders = true;
 		}
 		clearEdited();
-		NotificationService.updateNotificationAndWidget(Task.context);
+		NotificationService.updateServices(Task.context, updateReminders);
 	}
 
 	private void setDependencies(final String[] dep) {

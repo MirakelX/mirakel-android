@@ -60,7 +60,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 	@Override
 	public void onReceive(final Context context, final Intent intent) {
 		if (intent.getAction().equals(UPDATE_NOTIFICATION)) {
-			NotificationService.updateNotificationAndWidget(context);
+			NotificationService.updateServices(context, false);
 		}
 		if (!intent.getAction().equals(SHOW_TASK)) {
 			return;
