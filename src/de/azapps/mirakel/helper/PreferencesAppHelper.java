@@ -190,8 +190,8 @@ public class PreferencesAppHelper extends PreferencesHelper {
 									.setNotificationsListId((String) newValue);
 							notificationsListPreference
 									.setValue((String) newValue);
-							NotificationService
-									.updateNotificationAndWidget(PreferencesAppHelper.this.activity);
+							NotificationService.updateServices(
+									PreferencesAppHelper.this.activity, false);
 							return false;
 						}
 					});
@@ -230,8 +230,8 @@ public class PreferencesAppHelper extends PreferencesHelper {
 									.setNotificationsListOpenId((String) newValue);
 							notificationsListOpenPreference
 									.setValue((String) newValue);
-							NotificationService
-									.updateNotificationAndWidget(PreferencesAppHelper.this.activity);
+							NotificationService.updateServices(
+									PreferencesAppHelper.this.activity, false);
 							return false;
 						}
 					});
