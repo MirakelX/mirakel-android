@@ -1760,7 +1760,7 @@ public class MainActivity extends ActionBarActivity implements
 		}
 		getTasksFragment().updateList(false);
 		getListFragment().update();
-		NotificationService.updateNotificationAndWidget(this);
+		NotificationService.updateServices(this, true);
 
 	}
 
