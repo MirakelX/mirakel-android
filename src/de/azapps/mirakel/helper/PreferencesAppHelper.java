@@ -404,8 +404,8 @@ public class PreferencesAppHelper extends PreferencesHelper {
 							final Editor e = preference.getEditor();
 							e.putBoolean("notificationsUse", (Boolean) newValue);
 							e.commit();
-							NotificationService
-									.updateNotificationAndWidget(PreferencesAppHelper.this.activity);
+							NotificationService.updateServices(
+									PreferencesAppHelper.this.activity, false);
 							return true;
 						}
 					});
@@ -425,8 +425,9 @@ public class PreferencesAppHelper extends PreferencesHelper {
 								final Editor e = preference.getEditor();
 								e.putBoolean(key, (Boolean) newValue);
 								e.commit();
-								NotificationService
-										.updateNotificationAndWidget(PreferencesAppHelper.this.activity);
+								NotificationService.updateServices(
+										PreferencesAppHelper.this.activity,
+										false);
 								return true;
 							}
 						});
