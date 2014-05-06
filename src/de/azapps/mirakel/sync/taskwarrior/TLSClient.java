@@ -101,7 +101,11 @@ public class TLSClient {
 			throw new ParseException("Wrong PEM format", 0);
 		}
 		tokens = tokens[1].split(endDelimiter);
-		return Base64.decode(tokens[0], Base64.NO_PADDING);
+		try {
+			return Base64.decode(tokens[0], Base64.NO_PADDING);
+		} catch (final IllegalArgumentException e) {
+			throw new ParseException("bad base-64", 0);
+		}
 	}
 
 	// private String _ca;
