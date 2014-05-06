@@ -419,6 +419,7 @@ public abstract class TaskFragment extends Fragment {
 	abstract protected void startCab();
 
 	public void update(final Task t) {
+		closeActionMode();
 		this.task = t;
 		if (this.detailView != null && this.updateThread != null) {
 			new Thread(this.updateThread).start();
