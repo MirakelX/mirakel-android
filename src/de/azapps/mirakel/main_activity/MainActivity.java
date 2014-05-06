@@ -399,7 +399,6 @@ public class MainActivity extends ActionBarActivity implements
 
 		if (getTaskFragment() != null) {
 			getTaskFragment().update(currentTask);
-			Log.d(MainActivity.TAG, "current task");
 			if (!MirakelCommonPreferences.isTablet() && switchFragment) {
 				setCurrentItem(getTaskFragmentPosition());
 			}
@@ -434,11 +433,10 @@ public class MainActivity extends ActionBarActivity implements
 		if (MirakelCommonPreferences.isTablet()) {
 			return (TaskFragment) this.fragmentManager
 					.findFragmentById(R.id.task_fragment);
-		} else {
-			checkPageAdapter();
-			return (TaskFragment) this.mPagerAdapter
-					.getItem(getTaskFragmentPosition());
 		}
+		checkPageAdapter();
+		return (TaskFragment) this.mPagerAdapter
+				.getItem(getTaskFragmentPosition());
 	}
 
 	/**
@@ -1111,6 +1109,9 @@ public class MainActivity extends ActionBarActivity implements
 		super.onConfigurationChanged(newConfig);
 		this.mPagerAdapter = null;
 		this.isResumed = false;
+		final boolean changed = this.mViewPager == null
+				|| this.mViewPager.getCurrentItem() == getTaskFragmentPosition();
+		final Task t = this.currentTask;
 		draw();
 		if (getListFragment() != null && getTasksFragment() != null
 				&& this.mDrawerToggle != null) {
@@ -1121,6 +1122,14 @@ public class MainActivity extends ActionBarActivity implements
 			getTaskFragment().closeActionMode();
 			getListFragment().hideActionMode();
 		}
+		this.mDrawerLayout.postDelayed(new Runnable() {
+
+			@Override
+			public void run() {
+				setCurrentTask(t, changed);
+
+			}
+		}, 1);
 	}
 
 	/**
