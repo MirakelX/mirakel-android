@@ -44,32 +44,32 @@ public class SubtaskAdapter extends MirakelArrayAdapter<Task> {
 	@Override
 	public View getView(final int position, final View convertView,
 			final ViewGroup parent) {
-		if (position >= this.data.size()) {
+		if (position >= getCount()) {
 			return new View(this.context);
 
 		}
 		final CheckBox c = new CheckBox(this.context);
-		c.setChecked(this.selected.get(position));
-		c.setText(this.data.get(position).getName());
+		c.setChecked(this.isSelectedAt(position));
+		c.setText(this.getDataAt(position).getName());
 		c.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(final CompoundButton buttonView,
 					final boolean isChecked) {
-				SubtaskAdapter.this.selected.set(position, isChecked);
+				SubtaskAdapter.this.setSelected(position, isChecked);
 			}
 		});
 		return c;
 	}
 
 	@Override
-	public void changeData(List<Task> newData) {
+	public void changeData(final List<Task> newData) {
 		super.changeData(newData);
 		determineSelected();
 	}
 
 	private void determineSelected() {
-		for (int i = 0; i < data.size(); i++) {
-			Task t = data.get(i);
+		for (int i = 0; i < getCount(); i++) {
+			final Task t = this.getDataAt(i);
 			if (!this.asSubtask) {
 				setSelected(i, t.isSubtaskOf(this.task));
 			} else {

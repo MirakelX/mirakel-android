@@ -30,9 +30,9 @@ public class MirakelArrayAdapter<T> extends ArrayAdapter<T> {
 	private static final String TAG = "MirakelArrayAdapter";
 	protected Context context;
 	protected boolean darkTheme;
-	protected List<T> data;
+	private final List<T> data;
 	protected int layoutResourceId;
-	protected List<Boolean> selected;
+	private List<Boolean> selected;
 	protected int selectedCount;
 
 	public MirakelArrayAdapter(final Context context,
@@ -58,6 +58,33 @@ public class MirakelArrayAdapter<T> extends ArrayAdapter<T> {
 	public void addToHead(final T el) {
 		this.data.add(0, el);
 		this.selected.add(false);
+	}
+
+	public List<T> getData() {
+		return this.data;
+	}
+
+	public void remove(final int location) {
+		this.data.remove(location);
+		this.selected.remove(location);
+	}
+
+	public void addToData(final int location, final T item) {
+		this.data.add(location, item);
+		this.selected.add(location, false);
+	}
+
+	public void addToData(final T item) {
+		this.data.add(item);
+		this.selected.add(false);
+	}
+
+	public T getDataAt(final int location) {
+		return this.data.get(location);
+	}
+
+	public boolean isSelectedAt(final int location) {
+		return this.selected.get(location);
 	}
 
 	public void changeData(final List<T> newData) {
