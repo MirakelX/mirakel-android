@@ -18,12 +18,12 @@
  ******************************************************************************/
 package de.azapps.mirakel.reminders;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -178,7 +178,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 
 	private static AlarmManager alarmManager;
 
-	private static List<Pair<Task, PendingIntent>> activeAlarms = new ArrayList<Pair<Task, PendingIntent>>();
+	private static List<Pair<Task, PendingIntent>> activeAlarms = new CopyOnWriteArrayList<Pair<Task, PendingIntent>>();
 
 	public static void updateAlarms(final Context ctx) {
 
