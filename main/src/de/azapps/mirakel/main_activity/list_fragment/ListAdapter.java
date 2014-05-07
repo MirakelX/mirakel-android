@@ -93,7 +93,7 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 		} else {
 			holder = (ListHolder) row.getTag();
 		}
-		final ListMirakel list = this.data.get(position);
+		final ListMirakel list = this.getDataAt(position);
 		if (!this.enableDrop) {
 			holder.listRowDrag.setVisibility(View.GONE);
 		} else {
@@ -121,7 +121,7 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 		this.viewsForLists.put(list.getId(), row);
 		final int w = row.getWidth() == 0 ? parent.getWidth() : row.getWidth();
 		ViewHelper.setListColorBackground(list, row, w);
-		if (this.selected.get(position)) {
+		if (this.isSelectedAt(position)) {
 			row.setBackgroundColor(this.context.getResources().getColor(
 					this.darkTheme ? R.color.highlighted_text_holo_dark
 							: R.color.highlighted_text_holo_light));
@@ -139,7 +139,7 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 	}
 
 	public void onDrop(final int from, final int to) {
-		final ListMirakel t = this.data.get(from);
+		final ListMirakel t = this.getDataAt(from);
 		String TABLE;
 		if (t.getId() < 0) {
 			TABLE = SpecialList.TABLE;
@@ -149,38 +149,38 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 		if (to < from) {// move list up
 			MirakelContentProvider.getWritableDatabase().execSQL(
 					"UPDATE " + TABLE + " SET lft=lft+2 where lft>="
-							+ this.data.get(to).getLft() + " and lft<"
-							+ this.data.get(from).getLft());
+							+ this.getDataAt(to).getLft() + " and lft<"
+							+ this.getDataAt(from).getLft());
 		} else if (to > from) {// move list down
 			MirakelContentProvider.getWritableDatabase().execSQL(
 					"UPDATE " + TABLE + " SET lft=lft-2 where lft>"
-							+ this.data.get(from).getLft() + " and lft<="
-							+ this.data.get(to).getLft());
+							+ this.getDataAt(from).getLft() + " and lft<="
+							+ this.getDataAt(to).getLft());
 		} else {
 			return;
 		}
-		t.setLft(this.data.get(to).getLft());
+		t.setLft(this.getDataAt(to).getLft());
 		t.save();
 		MirakelContentProvider.getWritableDatabase().execSQL(
 				"UPDATE " + TABLE + " SET rgt=lft+1;");// Fix rgt
-		this.data.remove(from);
-		this.data.add(to, t);
+		this.remove(from);
+		this.addToData(to, t);
 		notifyDataSetChanged();
 		final Thread load = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				ListAdapter.this.data = ListMirakel.all();
+				changeData(ListMirakel.all());
 			}
 		});
 		load.start();
 	}
 
 	public void onRemove(final int which) {
-		if (which < 0 || which > this.data.size()) {
+		if (which < 0 || which > this.getCount()) {
 			return;
 		}
-		this.viewsForLists.remove(this.data.get(which).getId());
-		this.data.remove(which);
+		this.viewsForLists.remove(this.getDataAt(which).getId());
+		this.remove(which);
 	}
 
 	public void setEnableDrop(final boolean enableDrop) {
