@@ -14,6 +14,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -123,9 +124,17 @@ public class Semantic extends SemanticBase {
 						tempdue.add(Calendar.DAY_OF_YEAR, 1);
 					} while (tempdue.get(Calendar.DAY_OF_WEEK) != nextWeekday);
 					due = tempdue;
+
 				}
 				taskName = taskName.substring(word.length()).trim();
 				words.remove(0);
+			}
+			if (due != null) {
+				due.set(Calendar.HOUR_OF_DAY, 0);
+				due.set(Calendar.MINUTE, 0);
+				due.set(Calendar.SECOND, 0);
+				due.add(Calendar.SECOND,
+						DateTimeHelper.getTimeZoneOffset(false, due));
 			}
 		}
 		if (currentList == null) {
