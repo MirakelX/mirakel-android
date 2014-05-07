@@ -18,12 +18,12 @@
  ******************************************************************************/
 package de.azapps.mirakel.reminders;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -60,7 +60,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 	@Override
 	public void onReceive(final Context context, final Intent intent) {
 		if (intent.getAction().equals(UPDATE_NOTIFICATION)) {
-			NotificationService.updateNotificationAndWidget(context);
+			NotificationService.updateServices(context, false);
 		}
 		if (!intent.getAction().equals(SHOW_TASK)) {
 			return;
@@ -178,7 +178,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 
 	private static AlarmManager alarmManager;
 
-	private static List<Pair<Task, PendingIntent>> activeAlarms = new ArrayList<Pair<Task, PendingIntent>>();
+	private static List<Pair<Task, PendingIntent>> activeAlarms = new CopyOnWriteArrayList<Pair<Task, PendingIntent>>();
 
 	public static void updateAlarms(final Context ctx) {
 
@@ -205,13 +205,8 @@ public class ReminderAlarm extends BroadcastReceiver {
 
 				// Alarms
 				final List<Task> tasks = Task.getTasksWithReminders();
-				for (int i = 0; i < activeAlarms.size(); i++) {
-					final Pair<Task, PendingIntent> p = activeAlarms.get(i);
+				for (final Pair<Task, PendingIntent> p : activeAlarms) {
 					final Task t = p.first;
-					if (t == null) {
-						cancelAlarm(ctx, t, null, p, p.second);
-						continue;
-					}
 					final Task newTask = Task.get(t.getId());
 					if (newTask == null
 							|| newTask.getReminder() == null
