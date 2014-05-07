@@ -7,7 +7,7 @@ buildscript {
                 artifactUrls "file:~/.m2/"
             }
         }
-        classpath 'com.android.tools.build:gradle:0.9.+'
+        classpath 'com.android.tools.build:gradle:0.10.+'
 //        classpath 'com.jakewharton.hugo:hugo-plugin:1.0.+'
     }
 }
@@ -52,7 +52,7 @@ configure(allprojects) {
     ext.androidSDKVersion = "19"
     ext.androidBuildToolsVersion = "19.0"
     ext.androidSupportVersion = "19.0.1"
-    ext.androidPluginVersion ="0.9.+"
+    ext.androidPluginVersion ="0.10.+"
     ext.androidMinSDKVersion ="8"
     ext.jodaLibraryVersion = "2.2"
     ext.nineoldandroisVersion="2.4.0"
