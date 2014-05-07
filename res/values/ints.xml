@@ -18,15 +18,5 @@
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <resources>
-
-    <style name="taskViewCaption">
-        <item name="android:textSize">@integer/subtitle_font_size</item>
-        <item name="android:paddingStart">8dp</item>
-    </style>
-
-    <style name="imgButton">
-        <item name="android:padding">4dp</item>
-        <item name="android:background">@android:color/transparent</item>
-    </style>
-
+    <integer name="subtitle_font_size">18</integer>
 </resources>
