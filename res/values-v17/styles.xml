@@ -19,9 +19,9 @@
 -->
 <resources>
 
-    <style name="taskViewCaption">
-        <item name="android:textSize">@integer/subtitle_font_size</item>
-        <item name="android:paddingStart">8dp</item>
+    <style name="taskViewCaption" >
+        <item name="android:textSize">@dimen/subtitle_font_size</item>
+        <item name="android:paddingStart">@dimen/custom_view_start_padding</item>
     </style>
 
     <style name="imgButton">
