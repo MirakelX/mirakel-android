@@ -11,7 +11,6 @@
   <string name="task_fragment_subtask">Подзадачи</string>
   <string name="task_change_prio_title">Изменить приоритет</string>
   <string name="remove_subtask">Удалить подзадачу</string>
-  <string name="remove_files_summary">Вы хотите удалить %1$s из %2$s?</string>
   <string name="add_existing">Ввести существующее дело</string>
   <string name="task_name">Название дела:</string>
   <string name="subtask_reminder">Дело с напоминанием?</string>
