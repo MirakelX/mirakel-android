@@ -68,6 +68,10 @@ public abstract class TaskFragment extends Fragment {
 		CONTENT, FILE, SUBTASK;
 	}
 
+	public TaskFragment() {
+		super();
+	}
+
 	private static final String TAG = "TaskActivity";
 
 	protected ActionbarState cabState;

@@ -72,6 +72,10 @@ public class ListFragment extends MirakelFragment {
 			LIST_SHARE = 3;
 	protected static final String TAG = "ListFragment";
 
+	public ListFragment() {
+		super();
+	}
+
 	// private static final String TAG = "ListsActivity";
 	protected ListAdapter adapter;
 	protected boolean EditName;

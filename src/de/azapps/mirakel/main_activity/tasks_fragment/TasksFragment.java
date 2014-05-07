@@ -102,6 +102,10 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 
 	View view;
 
+	public TasksFragment() {
+		super();
+	}
+
 	public void clearFocus() {
 		if (this.newTask != null) {
 			this.newTask.postDelayed(new Runnable() {

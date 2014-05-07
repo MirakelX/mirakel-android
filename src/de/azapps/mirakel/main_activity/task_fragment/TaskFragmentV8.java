@@ -26,6 +26,10 @@ import android.view.MenuItem;
 
 public class TaskFragmentV8 extends TaskFragment {
 
+	public TaskFragmentV8() {
+		super();
+	}
+
 	private ActionMode mActionMode;
 	@SuppressLint("NewApi")
 	private final ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
