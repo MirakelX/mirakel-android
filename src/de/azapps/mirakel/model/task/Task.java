@@ -75,6 +75,7 @@ public class Task extends TaskBase {
 	private static SQLiteDatabase database;
 
 	private static DatabaseHelper dbHelper;
+	private static boolean calledFromDBHelper;
 
 	public static final String SUBTASK_TABLE = "subtasks";
 	public static final String TAG_CONNECTION_TABLE = "task_tag";
@@ -101,6 +102,16 @@ public class Task extends TaskBase {
 	 */
 	public static void close() {
 		Task.dbHelper.close();
+	}
+
+	/**
+	 * CALL THIS ONLY FROM DBHelper
+	 * 
+	 * @param db
+	 */
+	public static void setDB(final SQLiteDatabase db) {
+		calledFromDBHelper = true;
+		database = db;
 	}
 
 	/**
@@ -437,6 +448,7 @@ public class Task extends TaskBase {
 		Task.context = ctx;
 		Task.dbHelper = new DatabaseHelper(Task.context);
 		Task.database = Task.dbHelper.getWritableDatabase();
+		calledFromDBHelper = false;
 	}
 
 	public static Task newTask(final String name, final ListMirakel list) {
@@ -1051,10 +1063,13 @@ public class Task extends TaskBase {
 		}
 	}
 
-	private void save(final boolean log) throws NoSuchListException {
+	private void save(boolean log) throws NoSuchListException {
 		if (!isEdited()) {
 			Log.d(Task.TAG, "new Task equals old, didnt need to save it");
 			return;
+		}
+		if (calledFromDBHelper) {
+			log = false;
 		}
 		if (isEdited(TaskBase.DONE) && isDone()) {
 			setSubTasksDone();

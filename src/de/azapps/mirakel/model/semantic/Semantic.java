@@ -202,6 +202,16 @@ public class Semantic extends SemanticBase {
 		initAll();
 	}
 
+	/**
+	 * CALL THIS ONLY FROM DBHelper
+	 * 
+	 * @param db
+	 */
+	public static void setDB(final SQLiteDatabase db) {
+		database = db;
+		initAll();
+	}
+
 	private static void initAll() {
 		final Cursor c = database.query(TABLE, allColumns, null, null, null,
 				null, null);
