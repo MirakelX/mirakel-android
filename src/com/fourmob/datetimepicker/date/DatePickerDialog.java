@@ -24,6 +24,10 @@ public class DatePickerDialog extends DialogFragment {
 	protected int mInitDay;
 	private boolean mHasNoDate;
 
+	public DatePickerDialog() {
+		super();
+	}
+
 	public static DatePickerDialog newInstance(
 			final OnDateSetListener onDateSetListener, final int year,
 			final int month, final int day, final boolean dark,
