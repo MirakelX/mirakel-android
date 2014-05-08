@@ -94,6 +94,10 @@ public class DonationsFragment extends Fragment {
 	protected String mFlattrProjectUrl = "";
 	protected String mFlattrUrl = "";
 
+	public DonationsFragment() {
+		super();
+	}
+
 	/**
 	 * Instantiate DonationsFragment.
 	 * 
