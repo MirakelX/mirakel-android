@@ -15,6 +15,7 @@
   <string name="task_fragment_content">Opombe</string>
   <string name="task_fragment_subtask">Podrejena naloga</string>
   <string name="task_fragment_progress">Napredek</string>
+  <string name="task_fragment_tags">Oznake</string>
   <string name="audio_record_title">Zvočno snemanje ...</string>
   <string name="audio_record_message">Snemanje ...</string>
   <string name="audio_playback_title">Predvajanje posnetka ...</string>
@@ -32,8 +33,15 @@
   <string name="subtask_content">Je to naloga z opombo?</string>
   <string name="new_task">Nova naloga</string>
   <string name="add_subtasks">Dodaj podrejeno nalogo ...</string>
+  <string name="add_tags">Dodaj oznako ...</string>
   <string name="add">Dodaj</string>
   <string name="add_subtask">Dodaj podrejeno nalogo</string>
   <string name="file_no_activity">Odpiranje te vrste datoteke ni podprto</string>
   <string name="remove_files">Odstrani datoteke iz naloge</string>
+  <string name="search_tag">Poišči oznako</string>
+  <string name="tag_has_dark_text">Besedilo je črno</string>
+  <string-array name="tag_menu">
+    <item>Uredi oznako</item>
+    <item>Odstrani oznako</item>
+  </string-array>
 </resources>
