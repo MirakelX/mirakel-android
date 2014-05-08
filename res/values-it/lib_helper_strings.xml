@@ -36,4 +36,5 @@ Device: %3$s\n]]>
   <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD" tools:ignore="UnusedResources">Impossibile scaricare il file di configurazione</string>
   <string name="error_TASKWARRIOR_URL_NOT_FOUND" tools:ignore="UnusedResources">L\'URL non è corretto. È stato utilizzato il codice QR corretto?</string>
   <string name="error_FILE_NO_PERMISSION">Permessi di lettura del file mancanti</string>
+  <string name="error_LIST_VANISHED">Accidenti, l\'elenco è scomparso&#8230;</string>
 </resources>
