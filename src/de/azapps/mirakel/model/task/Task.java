@@ -519,6 +519,7 @@ public class Task extends TaskBase {
 			t.setProgress(0);
 			t.setList(null, false);
 		}
+		boolean setPriorityFromNumber = false;
 
 		// Name
 		final Set<Entry<String, JsonElement>> entries = el.entrySet();
@@ -539,7 +540,9 @@ public class Task extends TaskBase {
 					content = "";
 				}
 				t.setContent(content);
-			} else if (key.equalsIgnoreCase("priority")) {
+			} else if ((key.equalsIgnoreCase("priority") || key
+					.equalsIgnoreCase("priorityNumber"))
+					&& !setPriorityFromNumber) {
 				final String prioString = val.getAsString().trim();
 				if (prioString.equalsIgnoreCase("L") && t.getPriority() != -1) {
 					t.setPriority(-2);
@@ -549,6 +552,7 @@ public class Task extends TaskBase {
 					t.setPriority(2);
 				} else if (!prioString.equalsIgnoreCase("L")) {
 					t.setPriority(val.getAsInt());
+					setPriorityFromNumber = true;
 				}
 			} else if (key.equalsIgnoreCase("progress")) {
 				final int progress = (int) val.getAsDouble();
