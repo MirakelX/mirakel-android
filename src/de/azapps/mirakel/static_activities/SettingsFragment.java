@@ -38,6 +38,9 @@ public class SettingsFragment extends PreferenceFragment {
 	private PreferencesAppHelper helper;
 
 	// private MainActivity main;
+	public SettingsFragment() {
+		super();
+	}
 
 	@Override
 	public void onActivityResult(final int requestCode, final int resultCode,

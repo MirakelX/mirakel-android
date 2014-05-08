@@ -38,6 +38,10 @@ public class RecurringFragment extends PreferenceFragment {
 	private static final String TAG = "RecurringFragment";
 	private Recurring recurring;
 
+	public RecurringFragment() {
+		super();
+	}
+
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		Log.d(TAG, "foo");

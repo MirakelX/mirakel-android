@@ -39,6 +39,10 @@ public class SemanticsSettingsFragment extends PreferenceFragment {
 	private static final String TAG = "SemanticsSettingsFragment";
 	private Semantic semantic;
 
+	public SemanticsSettingsFragment() {
+		super();
+	}
+
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

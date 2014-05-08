@@ -38,6 +38,10 @@ import de.azapps.tools.Log;
 public class SpecialListsSettingsFragment extends PreferenceFragment {
 	private static final String TAG = "SpecialListsSettingsFragment";
 
+	public SpecialListsSettingsFragment() {
+		super();
+	}
+
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
