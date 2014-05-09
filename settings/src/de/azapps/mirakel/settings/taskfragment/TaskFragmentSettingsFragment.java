@@ -43,6 +43,10 @@ public class TaskFragmentSettingsFragment extends Fragment {
 	protected TaskFragmentSettingsAdapter adapter;
 	protected DragSortListView listView;
 
+	public TaskFragmentSettingsFragment() {
+		super();
+	}
+
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

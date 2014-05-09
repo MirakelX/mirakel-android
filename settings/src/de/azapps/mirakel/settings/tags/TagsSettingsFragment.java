@@ -20,6 +20,9 @@ public class TagsSettingsFragment extends PreferenceFragment {
 	private static final String TAG = "TagsSettingsFragment";
 	private Tag tag;
 
+	public TagsSettingsFragment() {
+		super();
+	}
 
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {

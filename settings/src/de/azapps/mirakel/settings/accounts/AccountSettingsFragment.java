@@ -20,6 +20,10 @@ import de.azapps.tools.Log;
 public class AccountSettingsFragment extends PreferenceFragment {
 	private static final String TAG = "AccountSettingsFragment";
 
+	public AccountSettingsFragment() {
+		super();
+	}
+
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

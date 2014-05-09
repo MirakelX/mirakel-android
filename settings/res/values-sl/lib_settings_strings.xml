@@ -181,7 +181,12 @@ Pričakovati je, da bo tudi uradna različica DAVdroid kmalu podpirala delovanje
   <string name="semantics_no_due">Ne nastavi datuma zapadlosti</string>
   <string name="settings_file_default_title">Ime seznama uvoženih datotek</string>
   <string name="semantic_new">predloga</string>
+  <string name="tag_new">Nova oznaka</string>
+  <string name="tag_settings">Nastavitve oznak</string>
+  <string name="color">Barva</string>
   <string name="tag_name">Ime</string>
+  <string name="tag_dark_text">Ali naj bo besedilo črno?</string>
+  <string name="tag_click">Oznake</string>
   <string name="settings_subtask">Podrejena naloga</string>
   <string name="settings_subtask_default_new">Privzeto pokaži novo nalogo</string>
   <string name="settings_subtask_add_to_same_list">Dodaj podnalogo na seznam nalog</string>
@@ -231,8 +236,15 @@ Pričakovati je, da bo tudi uradna različica DAVdroid kmalu podpirala delovanje
   <string name="demo_mode">Preizkusni način</string>
   <string name="demo_drop_db">Počisti preizkusno podatkovno zbirko</string>
   <string name="write_logs_to_file">Zapiši dnevnik v datoteko</string>
+  <string name="alert_caldav"><![CDATA[The CalDAV sync is not 100%% stable. Please try it carefully and report bugs!]]></string>
+  <string name="alert_caldav_title">Podrobnosti CalDAV</string>
+  <string name="alert_taskwarrior"><![CDATA[The taskwarrior sync seems to work but please make a backup of your data! Please report issues and bugs so we can fix them!]]></string>
+  <string name="alert_taskwarrior_title">Podrobnosti Taskwarrior</string>
   <string name="special_list_where_subtask_title_text">Podrejena naloga</string>
+  <string name="special_list_where_tag_title_text">Oznake</string>
   <string name="special_list_where_progress_title_text">Napredek</string>
+  <string name="special_list_where_file_title_text">Datoteka</string>
+  <string name="remove">Odstrani</string>
   <string-array name="sync_types">
     <item>Usklajevanje CalDAV</item>
     <item>Usklajevanje preko strežnika Taskwarrior</item>
@@ -268,5 +280,14 @@ Pričakovati je, da bo tudi uradna različica DAVdroid kmalu podpirala delovanje
     <item>0</item>
     <item>1</item>
     <item>2</item>
+  </string-array>
+  <string-array name="special_lists_subtask_options">
+    <item>Obrni izbor</item>
+    <item>Iskanje nalog s podrejenimi nalogami in nalog, ki so podrejene naloge</item>
+  </string-array>
+  <string-array name="file_choice">
+    <item>Ni nastavljeno</item>
+    <item>Ima priložene datoteke</item>
+    <item>Je brez priloženih datotek</item>
   </string-array>
 </resources>
