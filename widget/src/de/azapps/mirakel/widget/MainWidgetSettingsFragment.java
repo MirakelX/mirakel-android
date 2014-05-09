@@ -29,6 +29,10 @@ public class MainWidgetSettingsFragment extends PreferenceFragment {
 	private static final String TAG = "MainWidgetSettingsFragment";
 	private int widgetId;
 
+	public MainWidgetSettingsFragment() {
+		super();
+	}
+
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
