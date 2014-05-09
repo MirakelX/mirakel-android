@@ -38,7 +38,7 @@
   <string name="sync_caldav">CalDAV synchronisatie</string>
   <string name="sync_caldav_howto_">
 <![CDATA[You have to setup a Mirakel-compatible CalDAV-syncing app. Currently you have to install our modified DAVdroid version from our page.<br /><br />
-Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken werken we samen met enkele anderen om ook een sync met Mirakel mogelijk te maken.
+Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we samen met enkele anderen om ook een sync met Mirakel mogelijk te maken.
         ]]>
     </string>
   <string name="download">Download</string>
@@ -131,6 +131,7 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="kill_button">Doden knop</string>
   <string name="kill_app">App afsluiten</string>
   <string name="kill_sure">Bent u werkelijk zeker???</string>
+  <string name="kill_sure_message">Wanneer u de app sluit stoppen de meldingen! De kennisgeving alleen uitschakelen wanneer de app geen meldingen mag geven</string>
   <string name="ui_settings_title">Gebruiksinterface</string>
   <string name="hide_keyboard">Toetsenbord verbergen</string>
   <string name="hide_keyboard_summary">Toetsenbord verbergen wanneer nieuwe taak wordt gemaakt</string>
