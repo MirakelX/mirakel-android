@@ -19,6 +19,7 @@
   <string name="month">Maand</string>
   <string name="year">Jaar</string>
   <string name="new_recurring">Nieuwe herhalingspatroon</string>
+  <string name="interval">Interval</string>
   <string name="beginning">Vanaf</string>
   <string name="end">Einde</string>
   <string name="no_begin_end">Geen %s</string>
@@ -101,7 +102,17 @@
   <string name="reminder_unset">Herinnering niet ingesteld</string>
   <string name="inverte">Selectie omkeren</string>
   <string name="not_in">Niet in</string>
+  <string name="where_like_contain_text">Bevat %S</string>
+  <string name="where_like_begin_text">Begint met %s</string>
+  <string name="where_like_end_text">Eindigt met %s</string>
   <string name="delete">Verwijderen</string>
+  <string name="special_list_progress_equal">Gelijk aan %d</string>
+  <string name="special_list_progress_less_than">Minder dan %d</string>
+  <string name="special_list_progress_greater_than">Groter dan %d</string>
+  <string name="special_list_subtask_parent">Heeft subtaak</string>
+  <string name="special_list_subtask_parent_not">Heeft geen subtaak</string>
+  <string name="special_list_subtask_child">Subtaak is</string>
+  <string name="special_list_subtask_child_not">Dit is geen subtaak</string>
   <string name="nothing">Geen herhaling</string>
   <string-array name="weekdays">
     <item>Niet ingesteld</item>
