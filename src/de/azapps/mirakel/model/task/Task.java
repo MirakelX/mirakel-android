@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TimeZone;
 
 import android.accounts.Account;
 import android.content.ContentValues;
@@ -574,12 +573,26 @@ public class Task extends TaskBase {
 			} else if (key.equalsIgnoreCase("updated_at")) {
 				t.setUpdatedAt(val.getAsString().replace(":", ""));
 			} else if (key.equalsIgnoreCase("entry")) {
-				t.setCreatedAt(parseDate(val.getAsString(),
-						Task.context.getString(R.string.TWDateFormat)));
+				Calendar createdAt = parseDate(val.getAsString(),
+						Task.context.getString(R.string.TWDateFormat));
+				if (createdAt == null) {
+					createdAt = new GregorianCalendar();
+				} else {
+					createdAt.add(Calendar.SECOND,
+							DateTimeHelper.getTimeZoneOffset(false, createdAt));
+				}
+				t.setCreatedAt(createdAt);
 			} else if (key.equalsIgnoreCase("modification")
 					|| key.equalsIgnoreCase("modified")) {
-				t.setUpdatedAt(parseDate(val.getAsString(),
-						Task.context.getString(R.string.TWDateFormat)));
+				Calendar updatedAt = parseDate(val.getAsString(),
+						Task.context.getString(R.string.TWDateFormat));
+				if (updatedAt == null) {
+					updatedAt = new GregorianCalendar();
+				} else {
+					updatedAt.add(Calendar.SECOND,
+							DateTimeHelper.getTimeZoneOffset(false, updatedAt));
+				}
+				t.setUpdatedAt(updatedAt);
 			} else if (key.equals("done")) {
 				t.setDone(val.getAsBoolean());
 			} else if (key.equalsIgnoreCase("status")) {
@@ -601,7 +614,7 @@ public class Task extends TaskBase {
 					// try to workaround timezone-bug
 					if (due != null) {
 						due.setTimeInMillis(due.getTimeInMillis()
-								+ TimeZone.getDefault().getRawOffset());
+								+ DateTimeHelper.getTimeZoneOffset(true, due));
 					}
 				}
 				t.setDue(due);
