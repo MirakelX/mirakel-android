@@ -542,6 +542,7 @@ public class TaskWarriorSync {
 		if (priority != null) {
 			json += ",\"priority\":\"" + priority + "\"";
 		}
+		json += ",\"priorityNumber\":" + task.getPriority();
 		json += ",\"modified\":\""
 				+ formatCal(DateTimeHelper.getUTCCalendar(task.getUpdatedAt()))
 				+ "\"";
