@@ -22,6 +22,10 @@ public class DateTimeDialog extends DialogFragment {
 
 	protected static final String TAG = "DateTimeDialog";
 
+	public DateTimeDialog() {
+		super();
+	}
+
 	public static DateTimeDialog newInstance(
 			final OnDateTimeSetListner callback, final int year,
 			final int month, final int dayOfMonth, final int hourOfDay,

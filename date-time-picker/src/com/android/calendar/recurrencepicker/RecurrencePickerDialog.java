@@ -73,6 +73,10 @@ import de.azapps.mirakel.model.recurring.Recurring;
 public class RecurrencePickerDialog extends DialogFragment implements
 		OnCheckedChangeListener {
 
+	public RecurrencePickerDialog() {
+		super();
+	}
+
 	// in dp's
 	private static final int MIN_SCREEN_WIDTH_FOR_SINGLE_ROW_WEEK = 450;
 	protected static final String TAG = "RecurrencePickerDialog";
