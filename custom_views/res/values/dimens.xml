@@ -80,5 +80,7 @@
     <!-- Stuff -->
     <dimen name="padding_button">7.5dp</dimen>
     <dimen name="button_quadratic">40dp</dimen>
+    <dimen name="subtitle_font_size">18sp</dimen>
+    <dimen name="custom_view_start_padding">8dp</dimen>
 
 </resources>

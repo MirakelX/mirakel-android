@@ -32,7 +32,7 @@
         android:paddingBottom="5dp"
         android:paddingEnd="@dimen/task_padding_for_icons"
         android:paddingStart="@dimen/task_padding_for_icons"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        style="@style/taskViewCaption"
         android:textSize="@dimen/due_reminder_text_size" />
 
     <ImageButton

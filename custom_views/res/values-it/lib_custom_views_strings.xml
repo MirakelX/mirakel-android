@@ -25,6 +25,7 @@
   <string name="audio_playback_stop">Ferma</string>
   <string name="task_change_prio_title">Modifica priorità</string>
   <string name="remove_subtask">Rimuovi attività secondaria</string>
+  <string name="remove_files_summary">Rimuovere %1$s da \"%2$s\"?</string>
   <string name="add_existing">Attività esistente</string>
   <string name="task_name">Nome attività:</string>
   <string name="subtask_add_options">Filtra &gt;&gt;</string>

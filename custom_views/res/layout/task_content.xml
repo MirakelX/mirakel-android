@@ -53,7 +53,7 @@
                 android:minHeight="42dp"
                 android:paddingEnd="@dimen/task_padding"
                 android:paddingStart="@dimen/task_padding"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                style="@style/taskViewCaption" />
 
             <EditText
                 android:id="@+id/task_content_edit"
