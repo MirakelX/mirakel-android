@@ -32,6 +32,8 @@ local.properties
 .loadpath
 *.db
 lint.xml
+exploded-aar/
+dex-cache/
 *~
 .gradle
 res-google/project.properties

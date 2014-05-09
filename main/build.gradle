@@ -11,7 +11,7 @@ android {
             exclude 'META-INF/LICENSE.txt'
             exclude 'META-INF/NOTICE.txt'
     }
-    flavorGroups "stores"
+    flavorDimensions "stores"
     lintOptions {
         disable 'MissingTranslation'
     }
@@ -60,10 +60,10 @@ android {
     }
     productFlavors {
         google {
-            flavorGroup "stores"
+            flavorDimension "stores"
         }
         fdroid {
-            flavorGroup "stores"
+            flavorDimension "stores"
         }
     }
     android.sourceSets.google {

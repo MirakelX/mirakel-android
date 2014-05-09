@@ -72,6 +72,10 @@ public class ListFragment extends MirakelFragment {
 			LIST_SHARE = 3;
 	protected static final String TAG = "ListFragment";
 
+	public ListFragment() {
+		super();
+	}
+
 	// private static final String TAG = "ListsActivity";
 	protected ListAdapter adapter;
 	protected boolean EditName;
@@ -157,7 +161,6 @@ public class ListFragment extends MirakelFragment {
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
 		new AlertDialog.Builder(this.main)
 				.setTitle(this.main.getString(R.string.list_change_name_title))
-				.setMessage(this.main.getString(R.string.list_change_name_cont))
 				.setView(this.input)
 				.setPositiveButton(this.main.getString(android.R.string.ok),
 						new DialogInterface.OnClickListener() {
@@ -175,9 +178,6 @@ public class ListFragment extends MirakelFragment {
 								}
 								l.save(list != null);
 								update();
-								imm.hideSoftInputFromWindow(getActivity()
-										.getCurrentFocus().getWindowToken(),
-										InputMethodManager.HIDE_IMPLICIT_ONLY);
 							}
 						})
 				.setNegativeButton(
