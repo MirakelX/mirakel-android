@@ -293,6 +293,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					lists[2], lists[2], lists[2] };
 			final int[] priorities = { 2, -1, 1, 2, 0, 0 };
 			int i = 0;
+			ListMirakel.setDB(db);
+			Task.setDB(db);
+			Semantic.setDB(db);
 			for (final String task : tasks) {
 				final Task t = Semantic.createTask(task,
 						ListMirakel.findByName(task_lists[i]), true,

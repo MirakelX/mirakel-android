@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TimeZone;
 
 import android.accounts.Account;
 import android.content.ContentValues;
@@ -75,6 +74,7 @@ public class Task extends TaskBase {
 	private static SQLiteDatabase database;
 
 	private static DatabaseHelper dbHelper;
+	private static boolean calledFromDBHelper;
 
 	public static final String SUBTASK_TABLE = "subtasks";
 	public static final String TAG_CONNECTION_TABLE = "task_tag";
@@ -101,6 +101,16 @@ public class Task extends TaskBase {
 	 */
 	public static void close() {
 		Task.dbHelper.close();
+	}
+
+	/**
+	 * CALL THIS ONLY FROM DBHelper
+	 * 
+	 * @param db
+	 */
+	public static void setDB(final SQLiteDatabase db) {
+		calledFromDBHelper = true;
+		database = db;
 	}
 
 	/**
@@ -437,6 +447,7 @@ public class Task extends TaskBase {
 		Task.context = ctx;
 		Task.dbHelper = new DatabaseHelper(Task.context);
 		Task.database = Task.dbHelper.getWritableDatabase();
+		calledFromDBHelper = false;
 	}
 
 	public static Task newTask(final String name, final ListMirakel list) {
@@ -508,6 +519,7 @@ public class Task extends TaskBase {
 			t.setProgress(0);
 			t.setList(null, false);
 		}
+		boolean setPriorityFromNumber = false;
 
 		// Name
 		final Set<Entry<String, JsonElement>> entries = el.entrySet();
@@ -528,7 +540,9 @@ public class Task extends TaskBase {
 					content = "";
 				}
 				t.setContent(content);
-			} else if (key.equalsIgnoreCase("priority")) {
+			} else if ((key.equalsIgnoreCase("priority") || key
+					.equalsIgnoreCase("priorityNumber"))
+					&& !setPriorityFromNumber) {
 				final String prioString = val.getAsString().trim();
 				if (prioString.equalsIgnoreCase("L") && t.getPriority() != -1) {
 					t.setPriority(-2);
@@ -538,6 +552,7 @@ public class Task extends TaskBase {
 					t.setPriority(2);
 				} else if (!prioString.equalsIgnoreCase("L")) {
 					t.setPriority(val.getAsInt());
+					setPriorityFromNumber = true;
 				}
 			} else if (key.equalsIgnoreCase("progress")) {
 				final int progress = (int) val.getAsDouble();
@@ -562,12 +577,26 @@ public class Task extends TaskBase {
 			} else if (key.equalsIgnoreCase("updated_at")) {
 				t.setUpdatedAt(val.getAsString().replace(":", ""));
 			} else if (key.equalsIgnoreCase("entry")) {
-				t.setCreatedAt(parseDate(val.getAsString(),
-						Task.context.getString(R.string.TWDateFormat)));
+				Calendar createdAt = parseDate(val.getAsString(),
+						Task.context.getString(R.string.TWDateFormat));
+				if (createdAt == null) {
+					createdAt = new GregorianCalendar();
+				} else {
+					createdAt.add(Calendar.SECOND,
+							DateTimeHelper.getTimeZoneOffset(false, createdAt));
+				}
+				t.setCreatedAt(createdAt);
 			} else if (key.equalsIgnoreCase("modification")
 					|| key.equalsIgnoreCase("modified")) {
-				t.setUpdatedAt(parseDate(val.getAsString(),
-						Task.context.getString(R.string.TWDateFormat)));
+				Calendar updatedAt = parseDate(val.getAsString(),
+						Task.context.getString(R.string.TWDateFormat));
+				if (updatedAt == null) {
+					updatedAt = new GregorianCalendar();
+				} else {
+					updatedAt.add(Calendar.SECOND,
+							DateTimeHelper.getTimeZoneOffset(false, updatedAt));
+				}
+				t.setUpdatedAt(updatedAt);
 			} else if (key.equals("done")) {
 				t.setDone(val.getAsBoolean());
 			} else if (key.equalsIgnoreCase("status")) {
@@ -589,7 +618,7 @@ public class Task extends TaskBase {
 					// try to workaround timezone-bug
 					if (due != null) {
 						due.setTimeInMillis(due.getTimeInMillis()
-								+ TimeZone.getDefault().getRawOffset());
+								+ DateTimeHelper.getTimeZoneOffset(true, due));
 					}
 				}
 				t.setDue(due);
@@ -1051,10 +1080,13 @@ public class Task extends TaskBase {
 		}
 	}
 
-	private void save(final boolean log) throws NoSuchListException {
+	private void save(boolean log) throws NoSuchListException {
 		if (!isEdited()) {
 			Log.d(Task.TAG, "new Task equals old, didnt need to save it");
 			return;
+		}
+		if (calledFromDBHelper) {
+			log = false;
 		}
 		if (isEdited(TaskBase.DONE) && isDone()) {
 			setSubTasksDone();

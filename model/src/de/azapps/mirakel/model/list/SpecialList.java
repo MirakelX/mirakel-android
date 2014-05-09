@@ -219,6 +219,11 @@ public class SpecialList extends ListMirakel {
 		return ret;
 	}
 
+	@Override
+	public void save(final boolean log) {
+		save();
+	}
+
 	/**
 	 * Update the List in the Database
 	 * 

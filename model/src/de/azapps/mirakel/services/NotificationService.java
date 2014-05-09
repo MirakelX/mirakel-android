@@ -172,6 +172,9 @@ public class NotificationService extends Service {
 	 */
 	public static void updateServices(final Context context,
 			final boolean updateReminder) {
+		if (notificationService == null) {
+			return;
+		}
 		// Reminder update
 		if (updateReminder) {
 			ReminderAlarm.updateAlarms(context);

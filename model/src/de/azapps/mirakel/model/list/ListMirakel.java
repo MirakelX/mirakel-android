@@ -78,6 +78,15 @@ public class ListMirakel extends ListBase {
 		return all(true);
 	}
 
+	/**
+	 * CALL THIS ONLY FROM DBHelper
+	 * 
+	 * @param db
+	 */
+	public static void setDB(final SQLiteDatabase db) {
+		database = db;
+	}
+
 	public static List<ListMirakel> all(final boolean withSpecial) {
 		final List<ListMirakel> lists = new ArrayList<ListMirakel>();
 
