@@ -35,4 +35,6 @@ Naprava: %3$s\n]]>
   <string name="error_TASKWARRIOR_FILE_NOT_FOUND" tools:ignore="UnusedResources">Datoteke Taskwarrior ni mogoče najti</string>
   <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD" tools:ignore="UnusedResources">Nastavitvene datoteke ni mogoče prejeti</string>
   <string name="error_TASKWARRIOR_URL_NOT_FOUND" tools:ignore="UnusedResources">Naslov URL ni pravilen. Ali je prebrana prava koda QR?</string>
+  <string name="error_FILE_NO_PERMISSION">Ni ustreznega dovoljenja za branje datoteke</string>
+  <string name="error_LIST_VANISHED">Ops, seznam je izginil ...</string>
 </resources>
