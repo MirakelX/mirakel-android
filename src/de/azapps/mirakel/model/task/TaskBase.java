@@ -193,17 +193,17 @@ class TaskBase {
 		cv.put(TaskBase.PRIORITY, this.priority);
 		if (this.createdAt != null) {
 			cv.put(DatabaseHelper.CREATED_AT,
-					DateTimeHelper.getUTCTime(this.createdAt));
+					this.createdAt.getTimeInMillis() / 1000);
 		} else {
 			cv.put(DatabaseHelper.CREATED_AT,
-					DateTimeHelper.getUTCTime(new GregorianCalendar()));
+					new GregorianCalendar().getTimeInMillis() / 1000);
 		}
 		if (this.updatedAt != null) {
 			cv.put(DatabaseHelper.UPDATED_AT,
-					DateTimeHelper.getUTCTime(this.updatedAt));
+					this.updatedAt.getTimeInMillis() / 1000);
 		} else {
-			cv.put(DatabaseHelper.CREATED_AT,
-					DateTimeHelper.getUTCTime(new GregorianCalendar()));
+			cv.put(DatabaseHelper.UPDATED_AT,
+					new GregorianCalendar().getTimeInMillis());
 		}
 		cv.put(DatabaseHelper.SYNC_STATE_FIELD, this.sync_state.toInt());
 		cv.put(TaskBase.RECURRING, this.recurrence);
