@@ -25,6 +25,7 @@ Audio afspelen&#8230;</string>
   <string name="audio_playback_stop">Stop</string>
   <string name="task_change_prio_title">Wijzig prioriteit</string>
   <string name="remove_subtask">Verwijder subtaak</string>
+  <string name="remove_files_summary">Wilt u %1$s van %2$s verwijderen?</string>
   <string name="add_existing">Voeg bestaande taak toe</string>
   <string name="task_name">Taak naam:</string>
   <string name="subtask_add_options">Filter &gt;&gt;</string>
@@ -33,8 +34,15 @@ Audio afspelen&#8230;</string>
   <string name="subtask_content">Taak met notitie?</string>
   <string name="new_task">Nieuwe taak</string>
   <string name="add_subtasks">Subtaak toevoegen&#8230;</string>
+  <string name="add_tags">Tag toevoegen...</string>
   <string name="add">Toevoegen</string>
   <string name="add_subtask">Subtaak toevoegen</string>
   <string name="file_no_activity">Ik weet niet hoe dit bestand kan worden geopend – sorry</string>
   <string name="remove_files">Verwijder taakbijlage</string>
+  <string name="search_tag">Label zoeken</string>
+  <string name="tag_has_dark_text">Tekst is zwart</string>
+  <string-array name="tag_menu">
+    <item>Label bewerken</item>
+    <item>Label verwijderen</item>
+  </string-array>
 </resources>
