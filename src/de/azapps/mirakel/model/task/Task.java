@@ -481,7 +481,6 @@ public class Task extends TaskBase {
 
 		try {
 			final Task task = t.create();
-			NotificationService.updateServices(Task.context, false);
 			return task;
 		} catch (final NoSuchListException e) {
 			ErrorReporter.report(ErrorType.TASKS_NO_LIST);
@@ -882,7 +881,9 @@ public class Task extends TaskBase {
 		final Task newTask = cursorToTask(cursor);
 		cursor.close();
 		UndoHistory.logCreate(newTask, Task.context);
-		NotificationService.updateServices(context, getReminder() != null);
+		if (!calledFromDBHelper) {
+			NotificationService.updateServices(context, getReminder() != null);
+		}
 		return newTask;
 	}
 
@@ -1113,7 +1114,9 @@ public class Task extends TaskBase {
 			updateReminders = true;
 		}
 		clearEdited();
-		NotificationService.updateServices(Task.context, updateReminders);
+		if (!calledFromDBHelper) {
+			NotificationService.updateServices(Task.context, updateReminders);
+		}
 	}
 
 	private void setDependencies(final String[] dep) {
