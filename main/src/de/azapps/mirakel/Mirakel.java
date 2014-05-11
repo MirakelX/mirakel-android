@@ -101,6 +101,7 @@ public class Mirakel extends Application {
 		Recurring.init(this);
 		AccountMirakel.init(this);
 		Tag.init(this);
+		NotificationService.updateServices(this, true);
 
 		// And now, after the Database initialization!!! We init ACRA
 		ACRA.init(this);
