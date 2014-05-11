@@ -163,6 +163,7 @@ public class TaskDetailContent extends BaseTaskDetailRow {
 			return;
 		}
 		this.content = this.task.getContent();
+		cancelContent();
 		if (this.taskContentSwitcher.getCurrentView().getId() == this.taskContentEdit
 				.getId()) {
 			this.editContent
