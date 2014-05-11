@@ -125,7 +125,7 @@ public class Task extends TaskBase {
 		if (cursor.isNull(6)) {
 			due = null;
 		} else {
-			due = DateTimeHelper.createLocalCalendar(cursor.getLong(6));
+			due = DateTimeHelper.createLocalCalendar(cursor.getLong(6), true);
 		}
 
 		Calendar reminder = new GregorianCalendar();
@@ -139,13 +139,15 @@ public class Task extends TaskBase {
 		if (cursor.isNull(9)) {
 			created_at = null;
 		} else {
-			created_at = DateTimeHelper.createLocalCalendar(cursor.getLong(9));
+			created_at = new GregorianCalendar();
+			created_at.setTimeInMillis(cursor.getLong(9) * 1000);
 		}
 		Calendar updated_at = new GregorianCalendar();
 		if (cursor.isNull(10)) {
 			updated_at = null;
 		} else {
-			updated_at = DateTimeHelper.createLocalCalendar(cursor.getLong(10));
+			updated_at = new GregorianCalendar();
+			updated_at.setTimeInMillis(cursor.getLong(10) * 1000);
 		}
 
 		final Task task = new Task(cursor.getLong(i++), cursor.getString(i++),
@@ -474,14 +476,12 @@ public class Task extends TaskBase {
 	public static Task newTask(final String name, final ListMirakel list,
 			final String content, final boolean done,
 			final GregorianCalendar due, final int priority) {
-		final Calendar now = new GregorianCalendar();
 		final Task t = new Task(0, java.util.UUID.randomUUID().toString(),
-				list, name, content, done, due, null, priority, now, now,
+				list, name, content, done, due, null, priority, null, null,
 				SYNC_STATE.ADD, "", -1, -1, 0);
 
 		try {
 			final Task task = t.create();
-			NotificationService.updateServices(Task.context, false);
 			return task;
 		} catch (final NoSuchListException e) {
 			ErrorReporter.report(ErrorType.TASKS_NO_LIST);
@@ -861,12 +861,12 @@ public class Task extends TaskBase {
 			setCreatedAt(new GregorianCalendar());
 		}
 		values.put(DatabaseHelper.CREATED_AT,
-				DateTimeHelper.getUTCTime(getCreatedAt()));
+				getCreatedAt().getTimeInMillis() / 1000);
 		if (getUpdatedAt() == null) {
 			setUpdatedAt(new GregorianCalendar());
 		}
 		values.put(DatabaseHelper.UPDATED_AT,
-				DateTimeHelper.getUTCTime(getUpdatedAt()));
+				getUpdatedAt().getTimeInMillis() / 1000);
 		values.put(TaskBase.PROGRESS, getProgress());
 
 		values.put(ADDITIONAL_ENTRIES, getAdditionalEntriesString());
@@ -882,7 +882,9 @@ public class Task extends TaskBase {
 		final Task newTask = cursorToTask(cursor);
 		cursor.close();
 		UndoHistory.logCreate(newTask, Task.context);
-		NotificationService.updateServices(context, getReminder() != null);
+		if (!calledFromDBHelper) {
+			NotificationService.updateServices(context, getReminder() != null);
+		}
 		return newTask;
 	}
 
@@ -1113,7 +1115,9 @@ public class Task extends TaskBase {
 			updateReminders = true;
 		}
 		clearEdited();
-		NotificationService.updateServices(Task.context, updateReminders);
+		if (!calledFromDBHelper) {
+			NotificationService.updateServices(Task.context, updateReminders);
+		}
 	}
 
 	private void setDependencies(final String[] dep) {
