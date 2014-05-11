@@ -138,6 +138,9 @@ public class TaskDetailView extends BaseTaskDetailRow implements
 	}
 
 	public void cancelContent() {
+		if (this.views == null) {
+			return;
+		}
 		final BaseTaskDetailRow v = this.views.get(TYPE.CONTENT);
 		if (v != null) {
 			((TaskDetailContent) v).cancelContent();
@@ -310,9 +313,9 @@ public class TaskDetailView extends BaseTaskDetailRow implements
 			((TaskDetailFile) v).disableMarked();
 		}
 		// Handle Content
-		if (saveContent) {
-			saveContent();
-		}
+		/*
+		 * if (saveContent) { saveContent(); }
+		 */
 	}
 
 	public void updateLayout() {
