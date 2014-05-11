@@ -125,7 +125,7 @@ public class Task extends TaskBase {
 		if (cursor.isNull(6)) {
 			due = null;
 		} else {
-			due = DateTimeHelper.createLocalCalendar(cursor.getLong(6));
+			due = DateTimeHelper.createLocalCalendar(cursor.getLong(6), true);
 		}
 
 		Calendar reminder = new GregorianCalendar();
