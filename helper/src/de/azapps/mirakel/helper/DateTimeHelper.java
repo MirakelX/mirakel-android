@@ -86,42 +86,57 @@ public class DateTimeHelper {
 		return TimeZone.getDefault().getOffset(date.getTimeInMillis())
 				/ (inMS ? 1 : 1000);
 	}
-	
+
 	/**
 	 * 
 	 * @param time
-	 * 				utc-time in s
+	 *            utc-time in s
 	 * @return local time as Calendar
 	 */
-	public static Calendar createLocalCalendar(long time){
-		Calendar c=new GregorianCalendar();
-		c.setTimeInMillis(time*1000);
-		c.setTimeInMillis(c.getTimeInMillis()+DateTimeHelper.getTimeZoneOffset(true, c));
+	public static Calendar createLocalCalendar(final long time) {
+		return createLocalCalendar(time, false);
+	}
+
+	public static Calendar createLocalCalendar(final long time,
+			final boolean isDue) {
+		final Calendar c = new GregorianCalendar();
+		c.setTimeInMillis(time * 1000);
+		if (!isDue || c.get(Calendar.HOUR) != 0 && c.get(Calendar.HOUR) != 24
+				|| c.get(Calendar.MINUTE) != 0 || c.get(Calendar.SECOND) != 0) {
+			c.setTimeInMillis(c.getTimeInMillis()
+					+ DateTimeHelper.getTimeZoneOffset(true, c));
+		}
 		return c;
 	}
-	
+
 	/**
 	 * 
-	 * @param c the local Calendar
+	 * @param c
+	 *            the local Calendar
 	 * @return utc time in s, 0 if calendar is null
 	 */
-	public static long getUTCTime(final Calendar c){
-		if(c==null)
+	public static long getUTCTime(final Calendar c) {
+		if (c == null) {
 			return 0;
+		}
 		return c.getTimeInMillis() / 1000
 				- DateTimeHelper.getTimeZoneOffset(false, c);
 	}
+
 	/**
 	 * 
-	 * @param c the local Calendar
+	 * @param c
+	 *            the local Calendar
 	 * @return the calendar in UTC, null if c is null
 	 */
-	public static Calendar getUTCCalendar(final Calendar c){
-		if(c==null)
+	public static Calendar getUTCCalendar(final Calendar c) {
+		if (c == null) {
 			return null;
-		c.setTimeInMillis(c.getTimeInMillis()
+		}
+		final Calendar ret = (Calendar) c.clone();
+		ret.setTimeInMillis(c.getTimeInMillis()
 				- DateTimeHelper.getTimeZoneOffset(true, c));
-		return c;
+		return ret;
 	}
 
 	/**
