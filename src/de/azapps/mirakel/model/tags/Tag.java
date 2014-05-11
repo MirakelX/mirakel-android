@@ -129,6 +129,7 @@ public class Tag extends TagBase {
 				tags.add(cursorToTag(c));
 			} while (c.moveToNext());
 		}
+		c.close();
 		return tags;
 	}
 
