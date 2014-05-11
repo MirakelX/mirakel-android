@@ -94,10 +94,18 @@ public class DateTimeHelper {
 	 * @return local time as Calendar
 	 */
 	public static Calendar createLocalCalendar(final long time) {
+		return createLocalCalendar(time, false);
+	}
+
+	public static Calendar createLocalCalendar(final long time,
+			final boolean isDue) {
 		final Calendar c = new GregorianCalendar();
 		c.setTimeInMillis(time * 1000);
-		c.setTimeInMillis(c.getTimeInMillis()
-				+ DateTimeHelper.getTimeZoneOffset(true, c));
+		if (!isDue || c.get(Calendar.HOUR) != 0 && c.get(Calendar.HOUR) != 24
+				|| c.get(Calendar.MINUTE) != 0 || c.get(Calendar.SECOND) != 0) {
+			c.setTimeInMillis(c.getTimeInMillis()
+					+ DateTimeHelper.getTimeZoneOffset(true, c));
+		}
 		return c;
 	}
 
