@@ -1060,6 +1060,10 @@ public class MainActivity extends ActionBarActivity implements
 							MirakelCommonPreferences.getPhotoDefaultTitle(),
 							this.currentList, false, this);
 					task.safeSave();
+					if (getTasksFragment() != null) {
+						getTasksFragment().getLoaderManager().restartLoader(0,
+								null, getTasksFragment());
+					}
 				}
 				task.addFile(this, this.fileUri);
 				getTaskFragment().update(task);
@@ -1117,24 +1121,37 @@ public class MainActivity extends ActionBarActivity implements
 		final boolean changed = this.mViewPager == null
 				|| this.mViewPager.getCurrentItem() == getTaskFragmentPosition();
 		final Task t = this.currentTask;
-		draw();
+		try {
+			draw();
+		} catch (final Exception e) {
+			// Currently this is meaningless because the toast is killed when
+			// the app is killed. Later the error message should persist after
+			// the restart
+			ErrorReporter.report(ErrorType.MAINACTVITY_CRAZY_ERROR);
+			Helpers.restartApp(this);
+			return;
+		}
 		if (getListFragment() != null && getTasksFragment() != null
 				&& this.mDrawerToggle != null) {
 			getListFragment().setActivity(this);
 			getTasksFragment().setActivity(this);
-			this.mDrawerToggle.onConfigurationChanged(newConfig);
+			if (this.mDrawerLayout != null) {
+				this.mDrawerToggle.onConfigurationChanged(newConfig);
+			}
 			getTasksFragment().hideActionMode();
 			getTaskFragment().closeActionMode();
 			getListFragment().hideActionMode();
 		}
-		this.mDrawerLayout.postDelayed(new Runnable() {
+		if (this.mDrawerLayout != null) {
+			this.mDrawerLayout.postDelayed(new Runnable() {
 
-			@Override
-			public void run() {
-				setCurrentTask(t, changed);
+				@Override
+				public void run() {
+					setCurrentTask(t, changed);
 
-			}
-		}, 1);
+				}
+			}, 1);
+		}
 	}
 
 	/**
