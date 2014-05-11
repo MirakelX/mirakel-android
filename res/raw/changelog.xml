@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+  <version name="2.5" date="2014-05-11" code="56">
+      <feature>Many Bugfixes</feature>
+      <feature>Added tags</feature>
+  </version>
   <version name="2.5-beta2" date="2014-05-07" code="55">
       <feature>Bugfixes</feature>
   </version>
