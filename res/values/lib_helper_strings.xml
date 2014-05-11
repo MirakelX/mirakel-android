@@ -42,15 +42,16 @@ Device: %3$s\n]]>
     <string name="error_TASKWARRIOR_FILE_NOT_FOUND" tools:ignore="UnusedResources">Taskwarrior file not found</string>
     <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD" tools:ignore="UnusedResources">Could not download config file</string>
     <string name="error_TASKWARRIOR_URL_NOT_FOUND" tools:ignore="UnusedResources">The URL is not correct. Did you really scanned the right code?</string>
-    <string name="error_FILE_NO_PERMISSION">No permission to read the file</string>
-    <string name="error_LIST_VANISHED">Yikes, the list vanished…</string>
+    <string name="error_FILE_NO_PERMISSION" tools:ignore="UnusedResources">No permission to read the file</string>
+    <string name="error_LIST_VANISHED" tools:ignore="UnusedResources">Yikes, the list vanished…</string>
+    <string name="error_MAINACTVITY_CRAZY_ERROR" tools:ignore="UnusedResources">We don\'t know how to fix this bug. Mirakel is restarting.</string>
     <!-- 
-    <string name="error_"></string>
-    <string name="error_"></string>
-    <string name="error_"></string>
-    <string name="error_"></string>
-    <string name="error_"></string>
-    <string name="error_"></string>
+    <string name="error_" tools:ignore="UnusedResources"></string>
+    <string name="error_" tools:ignore="UnusedResources"></string>
+    <string name="error_" tools:ignore="UnusedResources"></string>
+    <string name="error_" tools:ignore="UnusedResources"></string>
+    <string name="error_" tools:ignore="UnusedResources"></string>
+    <string name="error_" tools:ignore="UnusedResources"></string>
      -->
     
 </resources>
