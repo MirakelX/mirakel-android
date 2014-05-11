@@ -315,6 +315,7 @@ public class TaskWarriorSync {
 					}
 				} else {
 					server_task.setId(local_task.getId());
+					server_task.dirtyTakeAllTags();
 					Log.d(TAG, "update " + server_task.getName());
 					server_task.safeSave();
 				}
@@ -568,15 +569,16 @@ public class TaskWarriorSync {
 			final String annotations[] = escape(task.getContent()).split("\n");
 			boolean first = true;
 			final Calendar d = task.getUpdatedAt();
-			d.setTimeInMillis(d.getTimeInMillis()
-					- DateTimeHelper.getTimeZoneOffset(true, d));
+
 			for (final String a : annotations) {
 				if (first) {
 					first = false;
 				} else {
 					json += ",";
 				}
-				json += "{\"entry\":\"" + formatCal(d) + "\",";
+				json += "{\"entry\":\""
+						+ formatCal(DateTimeHelper.getUTCCalendar(task
+								.getUpdatedAt())) + "\",";
 				json += "\"description\":\"" + a.trim().replace("\n", "")
 						+ "\"}";
 				d.add(Calendar.SECOND, 1);
