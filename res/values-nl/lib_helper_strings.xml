@@ -35,6 +35,6 @@ Device: %3$s\n]]>
   <string name="error_TASKWARRIOR_FILE_NOT_FOUND" tools:ignore="UnusedResources">Taskwarrior bestand niet gevonden</string>
   <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD" tools:ignore="UnusedResources">Kon het configuratiebestand niet downloaden</string>
   <string name="error_TASKWARRIOR_URL_NOT_FOUND" tools:ignore="UnusedResources">De URL is niet correct. Heeft u de juiste code gescand?</string>
-  <string name="error_FILE_NO_PERMISSION">Geen toestemming om het bestand te lezen</string>
-  <string name="error_LIST_VANISHED">Oeps, de lijst is verdwenen...</string>
+  <string name="error_FILE_NO_PERMISSION" tools:ignore="UnusedResources">Geen toestemming om het bestand te lezen</string>
+  <string name="error_LIST_VANISHED" tools:ignore="UnusedResources">Oeps, de lijst is verdwenen...</string>
 </resources>
