@@ -34,7 +34,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-//import android.support.v7.view.ActionMode;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -44,7 +43,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import de.azapps.mirakel.DefenitionsModel.ExecInterfaceWithTask;
 import de.azapps.mirakel.custom_views.BaseTaskDetailRow.OnTaskChangedListner;
-import de.azapps.mirakel.custom_views.TaskDetailContent.OnEditChanged;
 import de.azapps.mirakel.custom_views.TaskDetailFilePart.OnFileClickListner;
 import de.azapps.mirakel.custom_views.TaskDetailFilePart.OnFileMarkedListner;
 import de.azapps.mirakel.custom_views.TaskDetailTagView.NeedFragmentManager;
@@ -366,21 +364,6 @@ public abstract class TaskFragment extends Fragment {
 			}
 		});
 
-		this.detailView.setOnContentEdit(new OnEditChanged() {
-
-			@Override
-			public void handleCab(final boolean startEdit) {
-				if (startEdit) {
-					Log.d(TaskFragment.TAG, "start actionmode");
-					TaskFragment.this.cabState = ActionbarState.CONTENT;
-					startCab();
-				} else {
-					Log.d(TaskFragment.TAG, "end actionmode");
-					closeActionMode();
-				}
-
-			}
-		});
 		this.detailView.setOnFileClicked(new OnFileClickListner() {
 
 			@Override
