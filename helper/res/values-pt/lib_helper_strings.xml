@@ -35,4 +35,7 @@ Dispositivo: %3$s\n]]>
   <string name="error_TASKWARRIOR_FILE_NOT_FOUND" tools:ignore="UnusedResources">Ficheiro Taskwarrior não encontrado</string>
   <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD" tools:ignore="UnusedResources">Não foi possível transferir o ficheiro de configuração</string>
   <string name="error_TASKWARRIOR_URL_NOT_FOUND" tools:ignore="UnusedResources">O URL não está correto. Leu o código QR correto?</string>
+  <string name="error_FILE_NO_PERMISSION" tools:ignore="UnusedResources">Não tem permissões para ler o ficheiro</string>
+  <string name="error_LIST_VANISHED" tools:ignore="UnusedResources">Parece que a lista desapareceu???</string>
+  <string name="error_MAINACTVITY_CRAZY_ERROR" tools:ignore="UnusedResources">Não sabemos como corrigir este erro. A reiniciar...</string>
 </resources>
