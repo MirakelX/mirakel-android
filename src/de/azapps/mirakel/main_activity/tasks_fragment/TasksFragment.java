@@ -376,6 +376,9 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 							final AlertDialog.Builder builder = new AlertDialog.Builder(
 									getActivity());
 							final Task task = Task.get((Long) item.getTag());
+							if (task == null) {
+								return false;
+							}
 							builder.setTitle(task.getName());
 							final List<CharSequence> items = new ArrayList<CharSequence>(
 									Arrays.asList(getActivity().getResources()
