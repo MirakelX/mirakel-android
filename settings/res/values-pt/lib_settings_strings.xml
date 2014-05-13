@@ -179,7 +179,12 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="semantics_no_due">Não definir data limite</string>
   <string name="settings_file_default_title">Nome da tarefa para ficheiros importados</string>
   <string name="semantic_new">modelo</string>
+  <string name="tag_new">Nova etiqueta</string>
+  <string name="tag_settings">Definições de etiquetas</string>
+  <string name="color">Cor</string>
   <string name="tag_name">Nome</string>
+  <string name="tag_dark_text">Deve o texto ser preto?</string>
+  <string name="tag_click">Etiquetas</string>
   <string name="settings_subtask">Subtarefas</string>
   <string name="settings_subtask_default_new">Por definição, mostrar nova tarefa</string>
   <string name="settings_subtask_add_to_same_list">Adicionar subtarefa à lista da tarefa</string>
@@ -235,6 +240,7 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="alert_taskwarrior"><![CDATA[A sincronização Taskwarrior parece funcionar mas, por favor, faça um backup dos seus dados! Reporte os erros encontrados!]]></string>
   <string name="alert_taskwarrior_title">Informações de Taskwarrior</string>
   <string name="special_list_where_subtask_title_text">Subtarefas</string>
+  <string name="special_list_where_tag_title_text">Etiquetas</string>
   <string name="special_list_where_progress_title_text">Progresso</string>
   <string name="special_list_where_file_title_text">Ficheiro</string>
   <string name="remove">Remover</string>
