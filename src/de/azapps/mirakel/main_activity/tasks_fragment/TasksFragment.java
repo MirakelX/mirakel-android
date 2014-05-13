@@ -481,12 +481,14 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 								final long id, final boolean checked) {
 							final Cursor cursor = (Cursor) TasksFragment.this.listView
 									.getItemAtPosition(position);
-							final Task t = Task.cursorToTask(cursor);
-							if (!TasksFragment.this.selectedTasks.contains(t)
-									&& checked) {
-								TasksFragment.this.selectedTasks.add(t);
-							} else if (checked) {
-								TasksFragment.this.selectedTasks.remove(t);
+							if (cursor.getCount() > 0) {
+								final Task t = Task.cursorToTask(cursor);
+								if (!TasksFragment.this.selectedTasks
+										.contains(t) && checked) {
+									TasksFragment.this.selectedTasks.add(t);
+								} else if (checked) {
+									TasksFragment.this.selectedTasks.remove(t);
+								}
 							}
 						}
 
