@@ -305,9 +305,6 @@ public class TaskDetailView extends BaseTaskDetailRow implements
 			((TaskDetailFile) v).disableMarked();
 		}
 		// Handle Content
-		/*
-		 * if (saveContent) { saveContent(); }
-		 */
 	}
 
 	public void updateLayout() {
