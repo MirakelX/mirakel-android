@@ -322,7 +322,7 @@ public class TaskWarriorSync {
 			}
 		}
 		final String message = remotes.get("message");
-		if (message != null && message != "") {
+		if (message != null && !"".equals(message)) {
 			Log.v(TAG, "Message from Server: " + message);
 		}
 		client.close();
