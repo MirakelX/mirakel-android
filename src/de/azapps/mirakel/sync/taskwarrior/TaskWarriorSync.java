@@ -445,7 +445,6 @@ public class TaskWarriorSync {
 		}
 		// Format: {UUID:[UUID]}
 		this.dependencies = new HashMap<String, String[]>();
-		// for (int i = 0; i < parts; i++) {
 		final String old_key = this.accountManager.getUserData(a,
 				SyncAdapter.TASKWARRIOR_KEY);
 		if (old_key != null && !old_key.equals("")) {

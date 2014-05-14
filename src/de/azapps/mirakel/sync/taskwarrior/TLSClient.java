@@ -108,9 +108,6 @@ public class TLSClient {
 		}
 	}
 
-	// private String _ca;
-	// private gnutls_certificate_credentials_t _credentials;
-	// private gnutls_session_t _session;
 	private SSLSocket _socket;
 
 	private InputStream in;
