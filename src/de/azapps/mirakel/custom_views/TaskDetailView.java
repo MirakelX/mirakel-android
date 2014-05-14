@@ -24,7 +24,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import de.azapps.mirakel.custom_views.BaseTaskDetailRow.OnTaskChangedListner;
-import de.azapps.mirakel.custom_views.TaskDetailContent.OnEditChanged;
 import de.azapps.mirakel.custom_views.TaskDetailDueReminder.Type;
 import de.azapps.mirakel.custom_views.TaskDetailFilePart.OnFileClickListner;
 import de.azapps.mirakel.custom_views.TaskDetailFilePart.OnFileMarkedListner;
@@ -176,13 +175,6 @@ public class TaskDetailView extends BaseTaskDetailRow implements
 		final BaseTaskDetailRow v = this.views.get(TYPE.FILE);
 		if (v != null) {
 			((TaskDetailFile) v).setCameraClick(l);
-		}
-	}
-
-	public void setOnContentEdit(final OnEditChanged l) {
-		final BaseTaskDetailRow v = this.views.get(TYPE.CONTENT);
-		if (v != null) {
-			((TaskDetailContent) v).setOnEditChanged(l);
 		}
 	}
 
