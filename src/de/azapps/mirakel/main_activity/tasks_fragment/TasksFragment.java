@@ -186,6 +186,17 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 			}
 		});
 		this.newTask.requestFocus();
+		if (!this.newTask.hasFocus()) {
+			this.newTask.postDelayed(new Runnable() {
+
+				@Override
+				public void run() {
+					TasksFragment.this.newTask.requestFocus();
+					Log.wtf(TAG, "second try");
+				}
+			}, 10);
+		}
+
 	}
 
 	public TaskAdapter getAdapter() {

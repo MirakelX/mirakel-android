@@ -1665,20 +1665,27 @@ public class MainActivity extends ActionBarActivity implements
 			final int listId = Integer.parseInt(intent.getAction().replace(
 					DefinitionsHelper.ADD_TASK_FROM_WIDGET, ""));
 			setCurrentList(ListMirakel.getList(listId));
-			if (getTasksFragment() != null && getTasksFragment().isReady()) {
-				getTasksFragment().focusNew(true);
-			} else if (!MirakelCommonPreferences.isTablet()) {
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						if (getTasksFragment() != null) {
-							getTasksFragment().focusNew(true);
-						} else {
-							Log.wtf(MainActivity.TAG, "Tasksfragment null");
-						}
+			this.mDrawerLayout.postDelayed(new Runnable() {
+				public void run() {
+					if (getTasksFragment() != null
+							&& getTasksFragment().isReady()) {
+						getTasksFragment().focusNew(true);
+					} else if (!MirakelCommonPreferences.isTablet()) {
+						runOnUiThread(new Runnable() {
+							@Override
+							public void run() {
+								if (getTasksFragment() != null) {
+									getTasksFragment().focusNew(true);
+								} else {
+									Log.wtf(MainActivity.TAG,
+											"Tasksfragment null");
+								}
+							}
+						});
 					}
-				});
-			}
+				}
+			}, 10);
+
 		} else if (intent.getAction().equals(DefinitionsHelper.SHOW_MESSAGE)) {
 			final String message = intent.getStringExtra(Intent.EXTRA_TEXT);
 			String subject = intent.getStringExtra(Intent.EXTRA_SUBJECT);
