@@ -19,6 +19,37 @@ dependencies {
         mavenLocal()
     }
 }
+apply plugin: "sonar-runner"
+sonarRunner {
+    sonarProperties {
+		property "sonar.host.url", getProjectProperty('sonar.host.url')
+		property "sonar.jdbc.url", getProjectProperty('sonar.db.url')
+		property "sonar.jdbc.username", getProjectProperty('sonar.db.user')
+		property "sonar.jdbc.password", getProjectProperty('sonar.db.password')
+    }
+}
+subprojects {
+    sonarRunner {
+        sonarProperties {
+			property "sonar.projectKey", project.name
+			property "sonar.projectName", project.name
+			property "sonar.projectVersion", "V1.0"
+			property "sonar.language", "java"
+			property "sonar.sources", "src"
+			property "sonar.binaries", "build/apk"
+        }
+    }
+}
+
+def String getProjectProperty(String propertyName)
+{
+	String movieTitle = "null"
+	if (hasProperty(propertyName))
+	{
+		movieTitle = this.properties[propertyName]
+	}
+	return movieTitle
+}
 
 gradle.projectsEvaluated {
     def projects=["custom_views","date-time-picker","widget"]
