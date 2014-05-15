@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python2
 
 import sys
 import os
@@ -29,7 +29,7 @@ def split(line,isGetter):
     return ((t,name),functionName)
     
 def parseConstructorList(s):
-    print(s)
+    # print(s)
     parameterList=s[s.find("(")+1:s.find(")")].split(',')
     first=True
     ret=""
@@ -43,9 +43,13 @@ def parseConstructorList(s):
         typeName=param.replace("final","").strip().split(' ')[0]
         ret+="RandomHelper.getRandom"+typeName.strip()+"()"
 
-    print(ret)
+    # print(ret)
     return ret
 
+
+if len(sys.argv)!=3:
+    print sys.argv[0]+"<pathToClass> <pathToTestDir>" 
+    sys.exit()
 getter={}
 setter={}
 imports=""
@@ -65,7 +69,7 @@ with open(sys.argv[1]) as f:
           #      print s
                 res=split(s,True)
                 getter[res[0]]=res[1]
-            elif "public "+className in s and constructorState==-1:
+            elif "public "+className+"(" in s and constructorState==-1:
                 constructor+=s
                 constructorState=0;
         elif "import" in s:
@@ -78,8 +82,8 @@ path[len(path)-1]=""
 isSrc=False
 fullClass=""
 testPath=""
-#print(str(getter))
-#print(setter)
+## print(str(getter))
+## print(setter)
 for p in path:
     if isSrc and p!="":
         if fullClass!="":
@@ -93,7 +97,7 @@ for p in path:
 
 getTestClass="\t\tfinal "+className+" obj= new "+className+"("+parseConstructorList(constructor)+");\n"
 
-print(getTestClass)
+# print(getTestClass)
 
 output="/*******************************************************************************\n"
 output+=" * Mirakel is an Android App for managing your ToDo-Lists\n"
@@ -120,10 +124,16 @@ output+="import "+fullClass+"."+className+";\n\n"
 output+=imports+"\n\n"
 
 output+="import de.azapps.mirakelandroid.test.RandomHelper;\n"
+output+="import de.azapps.mirakelandroid.test.MirakelTestCase;\n"
 output+="import junit.framework.TestCase;\n\n"
 output+="import android.test.suitebuilder.annotation.SmallTest;\n"
 
-output+="public class "+className+"Test extends TestCase {\n\n"
+output+="public class "+className+"Test extends MirakelTestCase {\n\n"
+
+output+="\t@Override\n"
+output+="\tprotected void setUp() throws Exception {\n"
+output+="\t\tsuper.setUp();\n"
+output+="\t\tRandomHelper.init(getContext());\n\t}\n"
 
 for s in setter:
     if s in getter:
@@ -141,8 +151,8 @@ for s in setter:
 
 output+="}"
 
-directory='main/tests/src/'+testPath+'/';
-print("Finish generating Test for "+className)
+directory=sys.argv[2]+'/src/'+testPath+'/';
+# print("Finish generating Test for "+className)
 if not os.path.exists(directory):
     os.makedirs(directory)
 f = open(directory+className+'Test.java', 'w')
