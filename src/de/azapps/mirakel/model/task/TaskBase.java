@@ -68,10 +68,6 @@ class TaskBase {
 	private Calendar updatedAt;
 	private String uuid = "";
 
-	TaskBase() {
-
-	}
-
 	TaskBase(final long id, final String uuid, final ListMirakel list,
 			final String name, final String content, final boolean done,
 			final Calendar due, final Calendar reminder, final int priority,
@@ -405,6 +401,10 @@ class TaskBase {
 
 	public void setId(final long id) {
 		this.id = id;
+	}
+
+	public void setList(final ListMirakel list) {
+		setList(list, false);
 	}
 
 	public void setList(final ListMirakel list, final boolean removeNoListFalg) {

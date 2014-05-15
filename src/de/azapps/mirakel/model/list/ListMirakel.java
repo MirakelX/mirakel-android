@@ -40,7 +40,6 @@ import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.UndoHistory;
 import de.azapps.mirakel.model.DatabaseHelper;
-import de.azapps.mirakel.model.MirakelContentProvider;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.task.Task;
@@ -453,14 +452,7 @@ public class ListMirakel extends ListBase {
 		super(id, name);
 	}
 
-	/**
-	 * Create an empty list
-	 */
-	/*
-	 * private ListMirakel() { }
-	 */
-
-	protected ListMirakel(final int id, final String name, final short sort_by,
+	public ListMirakel(final int id, final String name, final short sort_by,
 			final String created_at, final String updated_at,
 			final SYNC_STATE sync_state, final int lft, final int rgt,
 			final int color, final AccountMirakel account) {
@@ -482,7 +474,6 @@ public class ListMirakel extends ListBase {
 	 * @return
 	 */
 	public int countTasks() {
-		Cursor c;
 		String where;
 		if (getId() < 0) {
 			where = ((SpecialList) this).getWhereQueryForTasks();
@@ -490,13 +481,11 @@ public class ListMirakel extends ListBase {
 
 			where = Task.LIST_ID + " = " + getId();
 		}
-		c = MirakelContentProvider.getReadableDatabase().rawQuery(
-				"Select count(" + DatabaseHelper.ID + ") from " + Task.TABLE
-						+ " where " + where
-						+ (where.length() != 0 ? " and " : " ") + " "
-						+ Task.DONE + "=0 and not "
-						+ DatabaseHelper.SYNC_STATE_FIELD + "="
-						+ SYNC_STATE.DELETE, null);
+		final Cursor c = database.rawQuery("Select count(" + DatabaseHelper.ID
+				+ ") from " + Task.TABLE + " where " + where
+				+ (where.length() != 0 ? " and " : " ") + " " + Task.DONE
+				+ "=0 and not " + DatabaseHelper.SYNC_STATE_FIELD + "="
+				+ SYNC_STATE.DELETE, null);
 		c.moveToFirst();
 		if (c.getCount() > 0) {
 			final int n = c.getInt(0);

@@ -48,7 +48,6 @@ import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.export_import.ExportImport;
-import de.azapps.mirakel.model.account.AccountBase;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 import de.azapps.mirakel.model.file.FileMirakel;
@@ -61,7 +60,6 @@ import de.azapps.mirakel.model.list.meta.SpecialListsNameProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsPriorityProperty;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.semantic.Semantic;
-import de.azapps.mirakel.model.semantic.SemanticBase;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.FileUtils;
@@ -81,10 +79,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private static void createAccountTable(final SQLiteDatabase db) {
 		db.execSQL("CREATE TABLE " + AccountMirakel.TABLE + " (" + ID
 				+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + NAME
-				+ " TEXT NOT NULL, " + "content TEXT, " + AccountBase.ENABLED
-				+ " INTEGER NOT NULL DEFAULT 0, " + AccountBase.TYPE
-				+ " INTEGER NOT NULL DEFAULT " + ACCOUNT_TYPES.LOCAL.toInt()
-				+ ")");
+				+ " TEXT NOT NULL, " + "content TEXT, "
+				+ AccountMirakel.ENABLED + " INTEGER NOT NULL DEFAULT 0, "
+				+ AccountMirakel.TYPE + " INTEGER NOT NULL DEFAULT "
+				+ ACCOUNT_TYPES.LOCAL.toInt() + ")");
 
 	}
 
@@ -243,7 +241,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				R.array.weekdays);
 		for (int i = 1; i < weekdays.length; i++) { // Ignore first element
 			db.execSQL("INSERT INTO " + Semantic.TABLE + " ("
-					+ SemanticBase.CONDITION + "," + SemanticBase.WEEKDAY
+					+ Semantic.CONDITION + "," + Semantic.WEEKDAY
 					+ ") VALUES (?, " + i + ")", new String[] { weekdays[i] });
 		}
 	}
@@ -261,8 +259,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				.getString(R.string.local_account);
 		final ContentValues cv = new ContentValues();
 		cv.put(DatabaseHelper.NAME, accountname);
-		cv.put(AccountBase.TYPE, type.toInt());
-		cv.put(AccountBase.ENABLED, true);
+		cv.put(AccountMirakel.TYPE, type.toInt());
+		cv.put(AccountMirakel.ENABLED, true);
 		final long accountId = db.insert(AccountMirakel.TABLE, null, cv);
 		createListsTable(db, accountId);
 		createTasksTable(db);
@@ -568,8 +566,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			}
 			ContentValues cv = new ContentValues();
 			cv.put(DatabaseHelper.NAME, accountname);
-			cv.put(AccountBase.TYPE, type.toInt());
-			cv.put(AccountBase.ENABLED, true);
+			cv.put(AccountMirakel.TYPE, type.toInt());
+			cv.put(AccountMirakel.ENABLED, true);
 			final long accountId = db.insert(AccountMirakel.TABLE, null, cv);
 			db.execSQL("ALTER TABLE " + ListMirakel.TABLE + " add column "
 					+ ListMirakel.ACCOUNT_ID + " REFERENCES "
@@ -594,7 +592,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					.getStringArray(R.array.weekdays);
 			for (int i = 1; i < weekdays.length; i++) { // Ignore first element
 				db.execSQL("INSERT INTO " + Semantic.TABLE + " ("
-						+ SemanticBase.CONDITION + "," + SemanticBase.WEEKDAY
+						+ Semantic.CONDITION + "," + Semantic.WEEKDAY
 						+ ") VALUES (?, " + i + ")",
 						new String[] { weekdays[i] });
 			}
@@ -631,7 +629,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			// move tw-certs into accountmanager
 		case 32:
 			db.execSQL("ALTER TABLE " + AccountMirakel.TABLE + " add column "
-					+ AccountBase.SYNC_KEY + " STRING DEFAULT '';");
+					+ AccountMirakel.SYNC_KEY + " STRING DEFAULT '';");
 			String ca = null,
 			client = null,
 			clientKey = null;
