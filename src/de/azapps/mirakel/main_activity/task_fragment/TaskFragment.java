@@ -363,7 +363,6 @@ public abstract class TaskFragment extends Fragment {
 				}
 			}
 		});
-
 		this.detailView.setOnFileClicked(new OnFileClickListner() {
 
 			@Override
