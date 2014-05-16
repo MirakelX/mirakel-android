@@ -631,7 +631,7 @@ public class MainActivity extends ActionBarActivity implements
 					public void onClick(final DialogInterface dialog,
 							final int item) {
 						for (final Task t : tasks) {
-							t.setList(ListMirakel.getList(list_ids.get(item)),
+							t.setList(ListMirakel.get(list_ids.get(item)),
 									true);
 							t.safeSave();
 						}
@@ -1623,7 +1623,7 @@ public class MainActivity extends ActionBarActivity implements
 							public void onClick(final DialogInterface dialog,
 									final int item) {
 								addTaskFromSharing(
-										ListMirakel.getList(list_ids.get(item)),
+										ListMirakel.get(list_ids.get(item)),
 										intent);
 								dialog.dismiss();
 							}
@@ -1642,7 +1642,7 @@ public class MainActivity extends ActionBarActivity implements
 						DefinitionsHelper.SHOW_LIST_FROM_WIDGET, ""));
 			}
 			Log.v(MainActivity.TAG, "ListId: " + listId);
-			ListMirakel list = ListMirakel.getList(listId);
+			ListMirakel list = ListMirakel.get(listId);
 			if (list == null) {
 				list = SpecialList.firstSpecial();
 			}
@@ -1664,7 +1664,7 @@ public class MainActivity extends ActionBarActivity implements
 				DefinitionsHelper.ADD_TASK_FROM_WIDGET)) {
 			final int listId = Integer.parseInt(intent.getAction().replace(
 					DefinitionsHelper.ADD_TASK_FROM_WIDGET, ""));
-			setCurrentList(ListMirakel.getList(listId));
+			setCurrentList(ListMirakel.get(listId));
 			this.mDrawerLayout.postDelayed(new Runnable() {
 				public void run() {
 					if (getTasksFragment() != null
@@ -1762,7 +1762,7 @@ public class MainActivity extends ActionBarActivity implements
 			}
 		}
 		if (this.currentList != null) {
-			this.currentList = ListMirakel.getList(this.currentList.getId());
+			this.currentList = ListMirakel.get(this.currentList.getId());
 		} else {
 			this.currentList = this.currentTask.getList();
 		}

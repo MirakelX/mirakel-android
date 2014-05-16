@@ -667,7 +667,7 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 
 	@Override
 	public Loader<Cursor> onCreateLoader(final int arg0, final Bundle arg1) {
-		ListMirakel list = ListMirakel.getList(this.listId);
+		ListMirakel list = ListMirakel.get(this.listId);
 		if (list == null) {
 			ErrorReporter.report(ErrorType.LIST_VANISHED);
 			list = SpecialList.firstSpecialSafe(getActivity());
