@@ -44,7 +44,7 @@ gradle.projectsEvaluated {
 }
 ext {
     compileSdkVersion = 19
-    buildToolsVersion = "19.0.3"
+    buildToolsVersion = "19.1.0"
     minSDKVersion = 8
 }
 
