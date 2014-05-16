@@ -371,7 +371,7 @@ public class MirakelContentProvider extends ContentProvider implements
 			throw new SQLWarning();
 		}
 		if (list_id < 0) {// is special list...
-			final SpecialList s = SpecialList.getSpecialList(-1 * list_id);
+			final SpecialList s = SpecialList.get(-1 * list_id);
 			if (s != null) {
 				taskQuery = getTaskQuery(true, not ? 0 : list_id, isSyncAdapter);
 				if (s.getWhereQueryForTasks() != null
@@ -428,7 +428,7 @@ public class MirakelContentProvider extends ContentProvider implements
 			final List<Integer> ordonaryIds = new ArrayList<Integer>();
 			for (final int id : idList) {
 				if (id < 0) {
-					final SpecialList s = SpecialList.getSpecialList(-1 * id);
+					final SpecialList s = SpecialList.get(-1 * id);
 					if (s != null) {
 						wheres.add(s.getWhereQueryForTasks());
 					} else {
@@ -628,7 +628,7 @@ public class MirakelContentProvider extends ContentProvider implements
 			table = Task.TABLE;
 			int lID;
 			// if (newValues.containsKey(Task.LIST_ID)) {
-			// ListMirakel l = ListMirakel.getList(newValues
+			// ListMirakel l = ListMirakel.get(newValues
 			// .getAsInteger(Task.LIST_ID));
 			// if (l == null) {
 			// lID = createNewList(uri);

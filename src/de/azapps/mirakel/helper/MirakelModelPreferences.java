@@ -32,7 +32,7 @@ public class MirakelModelPreferences extends MirakelPreferences {
 			if (listId == 0) {
 				return null;
 			}
-			return ListMirakel.getList(listId);
+			return ListMirakel.get(listId);
 		}
 		if (!safe) {
 			return null;
@@ -60,7 +60,7 @@ public class MirakelModelPreferences extends MirakelPreferences {
 	private static ListMirakel getListFromIdString(final int preference) {
 		ListMirakel list;
 		try {
-			list = ListMirakel.getList(preference);
+			list = ListMirakel.get(preference);
 		} catch (final NumberFormatException e) {
 			list = SpecialList.firstSpecial();
 		}
@@ -76,13 +76,13 @@ public class MirakelModelPreferences extends MirakelPreferences {
 	}
 
 	public static ListMirakel getNotificationsListOpen() {
-		return ListMirakel.getList(MirakelCommonPreferences
+		return ListMirakel.get(MirakelCommonPreferences
 				.getNotificationsListOpenId());
 	}
 
 	public static ListMirakel getStartupList() {
 		try {
-			return ListMirakel.safeGetList(Integer.parseInt(settings.getString(
+			return ListMirakel.safeGet(Integer.parseInt(settings.getString(
 					"startupList", "-1")));
 		} catch (final NumberFormatException E) {
 			return ListMirakel.safeFirst(context);
@@ -107,11 +107,11 @@ public class MirakelModelPreferences extends MirakelPreferences {
 
 	public static ListMirakel subtaskAddToList() {
 		try {
-			return ListMirakel.getList(settings.getInt("subtaskAddToList", -1));
+			return ListMirakel.get(settings.getInt("subtaskAddToList", -1));
 		} catch (final Exception E) {
 			// let old as fallback
 			try {
-				return ListMirakel.getList(Integer.parseInt(settings.getString(
+				return ListMirakel.get(Integer.parseInt(settings.getString(
 						"subtaskAddToList", "-1")));
 			} catch (final NumberFormatException e) {
 				return null;

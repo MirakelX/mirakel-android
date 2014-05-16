@@ -321,7 +321,8 @@ public class SpecialList extends ListMirakel {
 	 *            List–ID
 	 * @return List
 	 */
-	public static SpecialList getSpecialList(final int listId) {
+	@Override
+	public static SpecialList get(final int listId) {
 		final Cursor cursor = database.query(SpecialList.TABLE, allColumns,
 				DatabaseHelper.ID + "=" + listId, null, null, null, null);
 		cursor.moveToFirst();
@@ -380,9 +381,8 @@ public class SpecialList extends ListMirakel {
 		}
 		final SpecialList slist = new SpecialList(cursor.getInt(i++),
 				cursor.getString(i++), deserializeWhere(cursor.getString(i++)),
-				cursor.getInt(i++) == 1,
-				ListMirakel.getList(cursor.getInt(i++)), defDate,
-				(short) cursor.getInt(++i), SYNC_STATE.parseInt(cursor
+				cursor.getInt(i++) == 1, ListMirakel.get(cursor.getInt(i++)),
+				defDate, (short) cursor.getInt(++i), SYNC_STATE.parseInt(cursor
 						.getInt(++i)), cursor.getInt(++i), cursor.getInt(++i),
 				cursor.getInt(++i));
 		return slist;

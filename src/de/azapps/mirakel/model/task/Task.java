@@ -151,7 +151,7 @@ public class Task extends TaskBase {
 		}
 
 		final Task task = new Task(cursor.getLong(i++), cursor.getString(i++),
-				ListMirakel.getList((int) cursor.getLong(i++)),
+				ListMirakel.get((int) cursor.getLong(i++)),
 				cursor.getString(i++), cursor.getString(i++),
 				cursor.getInt(i++) == 1, due, reminder, cursor.getInt(8),
 				created_at, updated_at, SYNC_STATE.parseInt(cursor.getInt(11)),
@@ -340,7 +340,7 @@ public class Task extends TaskBase {
 	 */
 	private static Cursor getTasksCursor(final int listId, final int sorting,
 			final boolean showDone) {
-		final ListMirakel l = ListMirakel.getList(listId);
+		final ListMirakel l = ListMirakel.get(listId);
 		if (l == null) {
 			Log.wtf(TAG, "list not found");
 			return new MatrixCursor(allColumns);
@@ -558,7 +558,7 @@ public class Task extends TaskBase {
 				final int progress = (int) val.getAsDouble();
 				t.setProgress(progress);
 			} else if (key.equalsIgnoreCase("list_id")) {
-				ListMirakel list = ListMirakel.getList(val.getAsInt());
+				ListMirakel list = ListMirakel.get(val.getAsInt());
 				if (list == null) {
 					list = SpecialList.firstSpecial().getDefaultList();
 				}

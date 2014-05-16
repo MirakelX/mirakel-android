@@ -244,9 +244,9 @@ public class ListMirakel extends ListBase {
 		return newList(context.getString(R.string.inbox), SORT_BY_OPT, account);
 	}
 
-	public static ListMirakel getList(final int listId) {
+	public static ListMirakel get(final int listId) {
 		if (listId < 0) {
-			return SpecialList.getSpecialList(-listId);
+			return SpecialList.get(-listId);
 		}
 
 		final Cursor cursor = database
@@ -391,7 +391,7 @@ public class ListMirakel extends ListBase {
 		final JsonElement id = el.get("id");
 		if (id != null) {
 			// use old List from db if existing
-			t = ListMirakel.getList(id.getAsInt());
+			t = ListMirakel.get(id.getAsInt());
 		}
 		if (t == null) {
 			t = new ListMirakel();
@@ -437,8 +437,8 @@ public class ListMirakel extends ListBase {
 		return s;
 	}
 
-	public static ListMirakel safeGetList(final int listId) {
-		ListMirakel l = getList(listId);
+	public static ListMirakel safeGet(final int listId) {
+		ListMirakel l = get(listId);
 		if (l == null) {
 			l = safeFirst(context);
 		}
@@ -593,7 +593,7 @@ public class ListMirakel extends ListBase {
 					Locale.getDefault()).format(new Date()));
 			final ContentValues values = getContentValues();
 			if (log) {
-				UndoHistory.updateLog(ListMirakel.getList(getId()), context);
+				UndoHistory.updateLog(ListMirakel.get(getId()), context);
 			}
 			database.update(ListMirakel.TABLE, values, DatabaseHelper.ID
 					+ " = " + getId(), null);

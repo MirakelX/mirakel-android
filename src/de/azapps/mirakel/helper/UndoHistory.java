@@ -56,7 +56,7 @@ public class UndoHistory {
 						Task.get(id).destroy(true);
 						break;
 					case LIST:
-						ListMirakel.getList((int) id).destroy(true);
+						ListMirakel.get((int) id).destroy(true);
 						break;
 					default:
 						Log.wtf(TAG, "unkown Type");
@@ -87,7 +87,7 @@ public class UndoHistory {
 					break;
 				case LIST:
 					final ListMirakel l = ListMirakel.parseJson(json);
-					if (ListMirakel.getList(l.getId()) != null) {
+					if (ListMirakel.get(l.getId()) != null) {
 						l.save(false);
 					} else {
 						try {
