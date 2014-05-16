@@ -848,9 +848,7 @@ public class MainActivity extends ActionBarActivity implements
 			this.mPagerAdapter = new PagerAdapter(this.fragmentManager,
 					fragments);
 
-			// if (this.mViewPager == null) {
 			this.mViewPager = (ViewPager) super.findViewById(R.id.viewpager);
-			// }
 			if (this.mViewPager == null) {
 				Log.wtf(MainActivity.TAG, "viewpager null");
 				return;
@@ -1567,9 +1565,6 @@ public class MainActivity extends ActionBarActivity implements
 						}
 					}, 10);
 				}
-
-				// this.skipSwipe = true;
-				// setCurrentItem(getTaskFragmentPosition());
 			} else {
 				Log.d(MainActivity.TAG, "task null");
 			}

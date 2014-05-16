@@ -677,7 +677,8 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 		String dbQuery = list.getWhereQueryForTasks();
 		final String sorting = Task.getSorting(list.getSortBy());
 		String[] args = null;
-		if (dbQuery != null && dbQuery.trim() != "" && dbQuery.length() > 0) {
+		if (dbQuery != null && !"".equals(dbQuery.trim())
+				&& dbQuery.length() > 0) {
 			dbQuery = "(" + dbQuery + ") AND ";
 		}
 		dbQuery += "NOT " + DatabaseHelper.SYNC_STATE_FIELD + "="
