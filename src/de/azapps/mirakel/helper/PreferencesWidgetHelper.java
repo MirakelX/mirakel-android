@@ -61,7 +61,7 @@ public class PreferencesWidgetHelper extends PreferencesHelper {
 							final Preference preference, final Object newValue) {
 						WidgetHelper.setList(context, widgetId,
 								Integer.parseInt((String) newValue));
-						final String list = ListMirakel.getList(
+						final String list = ListMirakel.get(
 								Integer.parseInt((String) newValue)).getName();
 						widgetListPreference
 								.setSummary(PreferencesWidgetHelper.this.activity
