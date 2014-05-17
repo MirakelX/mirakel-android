@@ -321,7 +321,6 @@ public class SpecialList extends ListMirakel {
 	 *            List–ID
 	 * @return List
 	 */
-	@Override
 	public static SpecialList get(final int listId) {
 		final Cursor cursor = database.query(SpecialList.TABLE, allColumns,
 				DatabaseHelper.ID + "=" + listId, null, null, null, null);
