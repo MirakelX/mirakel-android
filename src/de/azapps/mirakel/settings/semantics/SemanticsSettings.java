@@ -279,7 +279,7 @@ public class SemanticsSettings extends PreferencesHelper implements
 				this.semanticsList
 						.setSummary(this.semanticsList.getEntries()[0]);
 			} else {
-				final ListMirakel newList = ListMirakel.getList(Integer
+				final ListMirakel newList = ListMirakel.get(Integer
 						.parseInt(newValue));
 				this.semantic.setList(newList);
 				this.semanticsList.setValue(newValue);
