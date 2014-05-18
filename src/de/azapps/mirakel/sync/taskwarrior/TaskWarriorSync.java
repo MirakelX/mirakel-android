@@ -19,8 +19,8 @@ import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
 import android.content.Context;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
@@ -32,6 +32,8 @@ import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.model.task.TaskDeserializer;
+import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.sync.R;
 import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.taskwarrior.TLSClient.NoSuchCertificateException;
@@ -265,6 +267,9 @@ public class TaskWarriorSync {
 			Log.i(TAG, "there is no Payload");
 		} else {
 			final String tasksString[] = remotes.getPayload().split("\n");
+			final Gson gson = new GsonBuilder().registerTypeAdapter(Task.class,
+					new TaskDeserializer(true, accountMirakel, this.mContext))
+					.create();
 			for (final String taskString : tasksString) {
 				if (taskString.charAt(0) != '{') {
 					Log.d(TAG, "Key: " + taskString);
@@ -272,15 +277,11 @@ public class TaskWarriorSync {
 					accountMirakel.save();
 					continue;
 				}
-				JsonObject taskObject;
 				Task local_task;
 				Task server_task;
 				try {
-					taskObject = new JsonParser().parse(taskString)
-							.getAsJsonObject();
 					Log.i(TAG, taskString);
-					server_task = Task.parse_json(taskObject, accountMirakel,
-							true);
+					server_task = gson.fromJson(taskString, Task.class);
 					if (server_task.getList() == null
 							|| server_task.getList().getAccount().getId() != accountMirakel
 									.getId()) {
@@ -307,7 +308,7 @@ public class TaskWarriorSync {
 					}
 				} else if (local_task == null) {
 					try {
-						server_task.create(false);
+						server_task.create(false, true);
 						server_task.dirtyTakeAllTags();
 						Log.d(TAG, "create " + server_task.getName());
 					} catch (final NoSuchListException e) {
@@ -317,7 +318,7 @@ public class TaskWarriorSync {
 					server_task.setId(local_task.getId());
 					server_task.dirtyTakeAllTags();
 					Log.d(TAG, "update " + server_task.getName());
-					server_task.safeSave();
+					server_task.safeSave(false, true);
 				}
 			}
 		}
@@ -326,6 +327,7 @@ public class TaskWarriorSync {
 			Log.v(TAG, "Message from Server: " + message);
 		}
 		client.close();
+		NotificationService.updateServices(this.mContext, true);
 	}
 
 	/**
