@@ -631,8 +631,7 @@ public class MainActivity extends ActionBarActivity implements
 					public void onClick(final DialogInterface dialog,
 							final int item) {
 						for (final Task t : tasks) {
-							t.setList(ListMirakel.get(list_ids.get(item)),
-									true);
+							t.setList(ListMirakel.get(list_ids.get(item)), true);
 							t.safeSave();
 						}
 						/*
@@ -1362,7 +1361,7 @@ public class MainActivity extends ActionBarActivity implements
 			finish();
 			return false;
 		case R.id.menu_undo:
-			UndoHistory.undoLast();
+			UndoHistory.undoLast(this);
 			updateCurrentListAndTask();
 			if (this.currentPosition == getTaskFragmentPosition()) {
 				setCurrentTask(this.currentTask);
@@ -1661,6 +1660,7 @@ public class MainActivity extends ActionBarActivity implements
 					DefinitionsHelper.ADD_TASK_FROM_WIDGET, ""));
 			setCurrentList(ListMirakel.get(listId));
 			this.mDrawerLayout.postDelayed(new Runnable() {
+				@Override
 				public void run() {
 					if (getTasksFragment() != null
 							&& getTasksFragment().isReady()) {
