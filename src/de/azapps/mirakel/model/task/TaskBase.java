@@ -68,6 +68,10 @@ class TaskBase {
 	private Calendar updatedAt;
 	private String uuid = "";
 
+	TaskBase() {
+		// nothing
+	}
+
 	TaskBase(final long id, final String uuid, final ListMirakel list,
 			final String name, final String content, final boolean done,
 			final Calendar due, final Calendar reminder, final int priority,

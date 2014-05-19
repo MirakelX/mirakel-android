@@ -43,6 +43,10 @@ class ListBase {
 	private int accountID;
 	private AccountMirakel accountMirakel;
 
+	ListBase() {
+		// nothing
+	}
+
 	ListBase(final int id, final String name, final short sort_by,
 			final String created_at, final String updated_at,
 			final SYNC_STATE sync_state, final int lft, final int rgt,
