@@ -32,7 +32,6 @@ import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakel.model.task.TaskDeserializer;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.sync.R;
 import de.azapps.mirakel.sync.SyncAdapter;
@@ -501,6 +500,8 @@ public class TaskWarriorSync {
 			} else {
 				end = formatCal(now);
 			}
+		} else if (task.getAdditionalEntries().containsKey("status")) {
+			status = task.getAdditionalEntries().get("status");
 		}
 
 		String priority = null;
@@ -606,10 +607,7 @@ public class TaskWarriorSync {
 		// Additional Strings
 		if (additionals != null) {
 			for (final String key : additionals.keySet()) {
-				if (!key.equals(NO_PROJECT)
-						&& !(key.equals("status") && (status
-								.equals("completed") || status
-								.equals("deleted")))) {
+				if (!key.equals(NO_PROJECT) && !key.equals("status")) {
 					json += ",\"" + key + "\":" + additionals.get(key);
 				}
 			}
