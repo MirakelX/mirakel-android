@@ -49,11 +49,11 @@ class TagBase {
 
 		cv.put(DatabaseHelper.ID, this._id);
 		cv.put(DatabaseHelper.NAME, this.name);
-		cv.put(this.DARK_TEXT, this.isDarkText);
-		cv.put(this.BACKGROUND_COLOR_R, Color.red(this.backgroundColor));
-		cv.put(this.BACKGROUND_COLOR_G, Color.green(this.backgroundColor));
-		cv.put(this.BACKGROUND_COLOR_B, Color.blue(this.backgroundColor));
-		cv.put(this.BACKGROUND_COLOR_A, Color.alpha(this.backgroundColor));
+		cv.put(TagBase.DARK_TEXT, this.isDarkText);
+		cv.put(TagBase.BACKGROUND_COLOR_R, Color.red(this.backgroundColor));
+		cv.put(TagBase.BACKGROUND_COLOR_G, Color.green(this.backgroundColor));
+		cv.put(TagBase.BACKGROUND_COLOR_B, Color.blue(this.backgroundColor));
+		cv.put(TagBase.BACKGROUND_COLOR_A, Color.alpha(this.backgroundColor));
 		return cv;
 	}
 

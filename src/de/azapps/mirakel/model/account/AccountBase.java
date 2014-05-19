@@ -4,7 +4,7 @@ import android.content.ContentValues;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 
-public class AccountBase {
+class AccountBase {
 	public final static String TYPE = "type";
 	public final static String ENABLED = "enabled";
 	public static final String SYNC_KEY = "sync_key";
@@ -78,6 +78,11 @@ public class AccountBase {
 
 	public void setSyncKey(final String syncKey) {
 		this.syncKey = syncKey;
+	}
+
+	@Override
+	public int hashCode() {
+		return this._id;
 	}
 
 }

@@ -40,10 +40,8 @@ class ListBase {
 	private SYNC_STATE syncState;
 	private int lft, rgt;
 	private int color;
-	private int account;
-
-	ListBase() {
-	}
+	private int accountID;
+	private AccountMirakel accountMirakel;
 
 	ListBase(final int id, final String name, final short sort_by,
 			final String created_at, final String updated_at,
@@ -147,15 +145,20 @@ class ListBase {
 	}
 
 	public AccountMirakel getAccount() {
-		return AccountMirakel.get(this.account);
+		if (this.accountMirakel != null) {
+			return this.accountMirakel;
+		}
+		return AccountMirakel.get(this.accountID);
 	}
 
 	public void setAccount(final AccountMirakel a) {
 		setAccount(a.getId());
+		this.accountMirakel = a;
 	}
 
 	protected void setAccount(final int account) {
-		this.account = account;
+		this.accountMirakel = null;
+		this.accountID = account;
 	}
 
 	@Override
@@ -174,7 +177,7 @@ class ListBase {
 		cv.put(LFT, this.lft);
 		cv.put(RGT, this.rgt);
 		cv.put(COLOR, this.color);
-		cv.put(ACCOUNT_ID, this.account);
+		cv.put(ACCOUNT_ID, this.accountID);
 		return cv;
 	}
 
@@ -184,6 +187,11 @@ class ListBase {
 
 	public void setSyncState(final SYNC_STATE sync_state) {
 		this.syncState = sync_state;
+	}
+
+	@Override
+	public int hashCode() {
+		return this.id;
 	}
 
 }
