@@ -32,6 +32,7 @@ import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.model.task.TaskDeserializer;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.sync.R;
 import de.azapps.mirakel.sync.SyncAdapter;
