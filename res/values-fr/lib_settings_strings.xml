@@ -18,7 +18,7 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="sync_add">Ajouter un compte</string>
   <string name="sync_title">Synchronisation</string>
   <string name="sync_new">Nouveau compte</string>
@@ -35,6 +35,10 @@
   <string name="sync_frequency">Fréquence</string>
   <string name="sync_frequency_summary">Synchroniser toutes les %s min</string>
   <string name="sync_frequency_summary_man">Ne synchroniser que manuellement</string>
+  <string-array name="sync_types">
+    <item>CalDAV sync</item>
+    <item>Taskwarrior sync</item>
+  </string-array>
   <string name="sync_caldav">CalDAV sync</string>
   <string name="sync_add_account">Ajouter un compte</string>
   <string name="sync_taskwarrior_configure">Configurer Taskwarrior</string>
@@ -125,6 +129,12 @@
   <string name="general">Général</string>
   <string name="do_not_touch">Ne touchez pas</string>
   <string name="show_account_name">Afficher le nom du compte</string>
+  <string-array name="tablet_options">
+    <item>jamais</item>
+    <item>paysage</item>
+    <item>portrait</item>
+    <item>portrait &amp; landscape</item>
+  </string-array>
   <string name="delete_done">Supprimer les tâches finies</string>
   <string name="delete_done_summary">Supprimer toutes les tâches finies</string>
   <string name="delete_done_warning">Êtes-vous sûr ?</string>
@@ -140,6 +150,32 @@
   <string name="settings_semantics_actions">Actions</string>
   <string name="settings_semantics_list">Liste figurante</string>
   <string name="settings_semantics_priority">Régler la priorité</string>
+  <string-array name="weekdays">
+    <item>Don\'t set</item>
+    <item>Lundi</item>
+    <item>Mardi</item>
+    <item>Mercredi</item>
+    <item>Jeudi</item>
+    <item>Vendredi</item>
+    <item>Samedi</item>
+    <item>Dimanche</item>
+  </string-array>
+  <string-array name="priority_entries">
+    <item>Do not set priority</item>
+    <item>-2</item>
+    <item>-1</item>
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+  </string-array>
+  <string-array name="priority_entry_values">
+    <item>null</item>
+    <item>-2</item>
+    <item>-1</item>
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+  </string-array>
   <string name="settings_file_default_title">Nom de la tâche pour les fichiers importés</string>
   <string name="semantic_new">Modèle</string>
   <string name="tag_name">Nom</string>
@@ -180,40 +216,4 @@
   <string name="write_logs_to_file">Écrire des journaux de déposer</string>
   <string name="special_list_where_subtask_title_text">Tâches subordonnées</string>
   <string name="special_list_where_progress_title_text">Progrès</string>
-  <string-array name="sync_types">
-    <item>CalDAV sync</item>
-    <item>Taskwarrior sync</item>
-  </string-array>
-  <string-array name="tablet_options">
-    <item>jamais</item>
-    <item>paysage</item>
-    <item>portrait</item>
-    <item>portrait &amp; landscape</item>
-  </string-array>
-  <string-array name="weekdays">
-    <item>Don\'t set</item>
-    <item>Lundi</item>
-    <item>Mardi</item>
-    <item>Mercredi</item>
-    <item>Jeudi</item>
-    <item>Vendredi</item>
-    <item>Samedi</item>
-    <item>Dimanche</item>
-  </string-array>
-  <string-array name="priority_entries">
-    <item>Do not set priority</item>
-    <item>-2</item>
-    <item>-1</item>
-    <item>0</item>
-    <item>1</item>
-    <item>2</item>
-  </string-array>
-  <string-array name="priority_entry_values">
-    <item>null</item>
-    <item>-2</item>
-    <item>-1</item>
-    <item>0</item>
-    <item>1</item>
-    <item>2</item>
-  </string-array>
 </resources>

@@ -18,7 +18,7 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="sync_add">Adicionar conta</string>
   <string name="sync_title">Sincronização</string>
   <string name="sync_new">Nova conta</string>
@@ -35,6 +35,10 @@
   <string name="sync_frequency">Frequência</string>
   <string name="sync_frequency_summary">Sincronizar a cada %s minutos</string>
   <string name="sync_frequency_summary_man">Sincronização manual</string>
+  <string-array name="sync_types">
+    <item>Sincronização CalDAV</item>
+    <item>Sincronização Taskwarrior</item>
+  </string-array>
   <string name="sync_caldav">Sincronização CalDAV</string>
   <string name="sync_caldav_howto_">
 <![CDATA[Tem que instalar e configurar uma aplicação compatível com o Mirakel para a sincronização CalDAV. Atualmente tem que instalar, através da nossa página web, uma versão modificada da aplicação DAVdroid.<br /><br />
@@ -152,6 +156,12 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="do_not_touch">Não tocar</string>
   <string name="list_fragment">Resumo de listas</string>
   <string name="show_account_name">Mostrar nome da conta</string>
+  <string-array name="tablet_options">
+    <item>nunca</item>
+    <item>horizontal</item>
+    <item>vertical</item>
+    <item>horizontal e vertical</item>
+  </string-array>
   <string name="delete_done">Eliminar tarefas terminadas</string>
   <string name="delete_done_summary">Eliminar todas as tarefas terminadas</string>
   <string name="delete_done_warning">Tem a certeza?</string>
@@ -175,6 +185,32 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="settings_semantics_priority">Definir prioridade</string>
   <string name="settings_semantics_due">Definir data limite</string>
   <string name="settings_semantics_weekday">Definir como data limite o próximo dia</string>
+  <string-array name="weekdays">
+    <item>Não definir</item>
+    <item>segunda</item>
+    <item>terça</item>
+    <item>quarta</item>
+    <item>quinta</item>
+    <item>sexta</item>
+    <item>sábado</item>
+    <item>domingo</item>
+  </string-array>
+  <string-array name="priority_entries">
+    <item>Não definir prioridade</item>
+    <item>-2</item>
+    <item>-1</item>
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+  </string-array>
+  <string-array name="priority_entry_values">
+    <item>nula</item>
+    <item>-2</item>
+    <item>-1</item>
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+  </string-array>
   <string name="semantics_no_list">Não definir lista</string>
   <string name="semantics_no_due">Não definir data limite</string>
   <string name="settings_file_default_title">Nome da tarefa para ficheiros importados</string>
@@ -243,43 +279,6 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="special_list_where_tag_title_text">Etiquetas</string>
   <string name="special_list_where_progress_title_text">Progresso</string>
   <string name="special_list_where_file_title_text">Ficheiro</string>
-  <string name="remove">Remover</string>
-  <string-array name="sync_types">
-    <item>Sincronização CalDAV</item>
-    <item>Sincronização Taskwarrior</item>
-  </string-array>
-  <string-array name="tablet_options">
-    <item>nunca</item>
-    <item>horizontal</item>
-    <item>vertical</item>
-    <item>horizontal e vertical</item>
-  </string-array>
-  <string-array name="weekdays">
-    <item>Não definir</item>
-    <item>segunda</item>
-    <item>terça</item>
-    <item>quarta</item>
-    <item>quinta</item>
-    <item>sexta</item>
-    <item>sábado</item>
-    <item>domingo</item>
-  </string-array>
-  <string-array name="priority_entries">
-    <item>Não definir prioridade</item>
-    <item>-2</item>
-    <item>-1</item>
-    <item>0</item>
-    <item>1</item>
-    <item>2</item>
-  </string-array>
-  <string-array name="priority_entry_values">
-    <item>nula</item>
-    <item>-2</item>
-    <item>-1</item>
-    <item>0</item>
-    <item>1</item>
-    <item>2</item>
-  </string-array>
   <string-array name="special_lists_subtask_options">
     <item>Recusar seleção</item>
     <item>Procurar por tarefas com subtarefas ou que sejam subtarefas</item>
@@ -289,4 +288,5 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
     <item>Tem ficheiro</item>
     <item>Não tem ficheiro</item>
   </string-array>
+  <string name="remove">Remover</string>
 </resources>
