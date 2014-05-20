@@ -70,7 +70,6 @@ public class Task extends TaskBase {
 	private static boolean calledFromDBHelper;
 
 	public static final String SUBTASK_TABLE = "subtasks";
-	public static final String TAG_CONNECTION_TABLE = "task_tag";
 	public static final String TABLE = "tasks";
 
 	private static final String TAG = "TasksDataSource";
@@ -938,28 +937,7 @@ public class Task extends TaskBase {
 	}
 
 	public List<Tag> getTags() {
-		final Cursor c = database.rawQuery(getTagsQuery(Tag.allColumns),
-				new String[] { getId() + "" });
-
-		return Tag.cursorToTagList(c);
-	}
-
-	public String getTagsQuery(final String[] columns) {
-		String s = "";
-		boolean first = true;
-		for (final String c : columns) {
-			if (!first) {
-				s += ", ";
-			} else {
-				first = false;
-			}
-			s += Tag.TABLE + "." + c;
-		}
-		final String query = "SELECT " + s + " FROM " + TAG_CONNECTION_TABLE
-				+ " INNER JOIN " + Tag.TABLE + " ON " + TAG_CONNECTION_TABLE
-				+ ".tag_id=" + Tag.TABLE + "." + DatabaseHelper.ID + " WHERE "
-				+ TAG_CONNECTION_TABLE + ".task_id=?";
-		return query;
+		return Tag.getTagsForTask(this);
 	}
 
 	public void addTag(final Tag t) {
@@ -967,8 +945,7 @@ public class Task extends TaskBase {
 	}
 
 	public void addTag(final Tag t, final boolean log) {
-
-		final Cursor c = database.query(TAG_CONNECTION_TABLE,
+		final Cursor c = database.query(Tag.TAG_CONNECTION_TABLE,
 				new String[] { "count(*)" }, "task_id=? and tag_id=?",
 				new String[] { getId() + "", t.getId() + "" }, null, null,
 				null, null);
@@ -979,13 +956,13 @@ public class Task extends TaskBase {
 			return;
 		}
 		c.close();
-		// save task to set log+modifyed
+		// save task to set log+modified
 		this.edited.put("tags", true);
 		safeSave(log);
 		final ContentValues cv = new ContentValues();
 		cv.put("tag_id", t.getId());
 		cv.put("task_id", getId());
-		database.insert(TAG_CONNECTION_TABLE, null, cv);
+		database.insert(Tag.TAG_CONNECTION_TABLE, null, cv);
 
 	}
 
@@ -994,12 +971,11 @@ public class Task extends TaskBase {
 	}
 
 	public void removeTag(final Tag t, final boolean log) {
-		// save task to set log+modifyed
+		// save task to set log+modified
 		this.edited.put("tags", true);
 		safeSave(log);
-		database.delete(TAG_CONNECTION_TABLE, "task_id=? and tag_id=?",
+		database.delete(Tag.TAG_CONNECTION_TABLE, "task_id=? and tag_id=?",
 				new String[] { getId() + "", t.getId() + "" });
-
 	}
 
 	/**
@@ -1011,7 +987,7 @@ public class Task extends TaskBase {
 		Task.database.beginTransaction();
 		final ContentValues cv = new ContentValues();
 		cv.put("task_id", getId());
-		database.update(TAG_CONNECTION_TABLE, cv, "task_id=0", null);
+		database.update(Tag.TAG_CONNECTION_TABLE, cv, "task_id=0", null);
 		Task.database.setTransactionSuccessful();
 		Task.database.endTransaction();
 	}

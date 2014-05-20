@@ -251,11 +251,8 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
 			if (tag.isJsonPrimitive()) {
 				String tagName = tag.getAsString();
 				tagName = tagName.replace("_", " ");
-				Tag newTag = Tag.getByName(tagName);
-				if (newTag == null) {
-					// tag does not exist, create new one
-					newTag = Tag.newTag(tagName);
-				}
+
+				final Tag newTag = Tag.newTag(tagName);
 				if (!currentTags.remove(newTag)) {
 					// tag is not linked with this task
 					t.addTag(newTag, false);

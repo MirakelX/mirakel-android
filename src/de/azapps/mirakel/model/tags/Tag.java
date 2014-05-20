@@ -34,6 +34,7 @@ import de.azapps.mirakel.model.task.Task;
 public class Tag extends TagBase {
 
 	public static final String TABLE = "tag";
+	public static final String TAG_CONNECTION_TABLE = "task_tag";
 	public static final String[] allColumns = { DatabaseHelper.ID, DARK_TEXT,
 			DatabaseHelper.NAME, BACKGROUND_COLOR_A, BACKGROUND_COLOR_R,
 			BACKGROUND_COLOR_G, BACKGROUND_COLOR_B };
@@ -58,16 +59,68 @@ public class Tag extends TagBase {
 		return count;
 	}
 
+	public static List<Tag> all() {
+		final Cursor c = database.query(TABLE, allColumns, null, null, null,
+				null, null);
+		return cursorToTagList(c);
+	}
+
+	public static List<Tag> getTagsForTask(final Task task) {
+		final Cursor c = database.rawQuery(getTagsQuery(Tag.allColumns),
+				new String[] { task.getId() + "" });
+		return Tag.cursorToTagList(c);
+	}
+
+	private static String getTagsQuery(final String[] columns) {
+		String s = "";
+		boolean first = true;
+		for (final String c : columns) {
+			if (!first) {
+				s += ", ";
+			} else {
+				first = false;
+			}
+			s += Tag.TABLE + "." + c;
+		}
+		final String query = "SELECT " + s + " FROM " + TAG_CONNECTION_TABLE
+				+ " INNER JOIN " + Tag.TABLE + " ON " + TAG_CONNECTION_TABLE
+				+ ".tag_id=" + Tag.TABLE + "." + DatabaseHelper.ID + " WHERE "
+				+ TAG_CONNECTION_TABLE + ".task_id=?";
+		return query;
+	}
+
 	public static Tag newTag(final String name) {
-		return newTag(name, true);
+		return newTag(name, true, getNextColor(count(), context));
 	}
 
-	public static Tag newTag(final String name, final boolean dark) {
-		return newTag(name, dark, getNextColor(count(), context));
-
+	public static Tag newTag(final String name, final boolean dark,
+			final int color) {
+		final Tag t = getByName(name);
+		if (t != null) {
+			return t;
+		} else {
+			final ContentValues cv = new ContentValues();
+			cv.put(DatabaseHelper.NAME, name);
+			cv.put(DARK_TEXT, dark);
+			cv.put(BACKGROUND_COLOR_R, Color.red(color));
+			cv.put(BACKGROUND_COLOR_G, Color.green(color));
+			cv.put(BACKGROUND_COLOR_B, Color.blue(color));
+			cv.put(BACKGROUND_COLOR_A, Color.alpha(color));
+			final int id = (int) database.insert(TABLE, null, cv);
+			return getTag(id);
+		}
 	}
 
-	public static int getNextColor(final int count, final Context ctx) {
+	public static Tag getTag(final int id) {
+		final Cursor c = database.query(TABLE, allColumns, DatabaseHelper.ID
+				+ "=?", new String[] { "" + id }, null, null, null);
+		c.moveToFirst();
+		final Tag t = cursorToTag(c);
+		c.close();
+		return t;
+	}
+
+	private static int getNextColor(final int count, final Context ctx) {
 		final TypedArray ta = ctx.getResources().obtainTypedArray(
 				R.array.default_colors);
 		final int transparency[] = ctx.getResources().getIntArray(
@@ -82,30 +135,7 @@ public class Tag extends TagBase {
 		return color;
 	}
 
-	public static Tag newTag(final String name, final boolean dark,
-			final int color) {
-
-		final ContentValues cv = new ContentValues();
-		cv.put(DatabaseHelper.NAME, name);
-		cv.put(DARK_TEXT, dark);
-		cv.put(BACKGROUND_COLOR_R, Color.red(color));
-		cv.put(BACKGROUND_COLOR_G, Color.green(color));
-		cv.put(BACKGROUND_COLOR_B, Color.blue(color));
-		cv.put(BACKGROUND_COLOR_A, Color.alpha(color));
-		final int id = (int) database.insert(TABLE, null, cv);
-		return getTag(id);
-	}
-
-	public static Tag getTag(final int id) {
-		final Cursor c = database.query(TABLE, allColumns, DatabaseHelper.ID
-				+ "=?", new String[] { "" + id }, null, null, null);
-		c.moveToFirst();
-		final Tag t = cursorToTag(c);
-		c.close();
-		return t;
-	}
-
-	public static Tag cursorToTag(final Cursor c) {
+	private static Tag cursorToTag(final Cursor c) {
 		if (c.getCount() > 0) {
 			return new Tag(c.getInt(0), c.getShort(1) == 1, c.getString(2),
 					Color.argb(c.getShort(3), c.getShort(4), c.getShort(5),
@@ -114,14 +144,7 @@ public class Tag extends TagBase {
 		return null;
 	}
 
-	public static List<Tag> all() {
-		final Cursor c = database.query(TABLE, allColumns, null, null, null,
-				null, null);
-		return cursorToTagList(c);
-
-	}
-
-	public static List<Tag> cursorToTagList(final Cursor c) {
+	private static List<Tag> cursorToTagList(final Cursor c) {
 		final List<Tag> tags = new ArrayList<Tag>();
 		if (c.getCount() > 0) {
 			c.moveToFirst();
@@ -133,20 +156,20 @@ public class Tag extends TagBase {
 		return tags;
 	}
 
-	/**
-	 * Close the Database-Connection
-	 */
-	public static void close() {
-		dbHelper.close();
-	}
-
-	public static Tag getByName(final String name) {
+	private static Tag getByName(final String name) {
 		final Cursor c = database.query(TABLE, allColumns, DatabaseHelper.NAME
 				+ "=?", new String[] { name }, null, null, null);
 		c.moveToFirst();
 		final Tag t = cursorToTag(c);
 		c.close();
 		return t;
+	}
+
+	/**
+	 * Close the Database-Connection
+	 */
+	public static void close() {
+		dbHelper.close();
 	}
 
 	/**
@@ -195,7 +218,7 @@ public class Tag extends TagBase {
 	 */
 	public static String serialize(final Task task) {
 		String json = "";
-		final List<Tag> tags = task.getTags();
+		final List<Tag> tags = getTagsForTask(task);
 		json += "\"tags\":[";
 		if (tags.size() > 0) {
 
