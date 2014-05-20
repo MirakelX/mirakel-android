@@ -71,7 +71,7 @@ public class Tag extends TagBase {
 		return Tag.cursorToTagList(c);
 	}
 
-	private static String getTagsQuery(final String[] columns) {
+	public static String getTagsQuery(final String[] columns) {
 		String s = "";
 		boolean first = true;
 		for (final String c : columns) {
@@ -98,17 +98,16 @@ public class Tag extends TagBase {
 		final Tag t = getByName(name);
 		if (t != null) {
 			return t;
-		} else {
-			final ContentValues cv = new ContentValues();
-			cv.put(DatabaseHelper.NAME, name);
-			cv.put(DARK_TEXT, dark);
-			cv.put(BACKGROUND_COLOR_R, Color.red(color));
-			cv.put(BACKGROUND_COLOR_G, Color.green(color));
-			cv.put(BACKGROUND_COLOR_B, Color.blue(color));
-			cv.put(BACKGROUND_COLOR_A, Color.alpha(color));
-			final int id = (int) database.insert(TABLE, null, cv);
-			return getTag(id);
 		}
+		final ContentValues cv = new ContentValues();
+		cv.put(DatabaseHelper.NAME, name);
+		cv.put(DARK_TEXT, dark);
+		cv.put(BACKGROUND_COLOR_R, Color.red(color));
+		cv.put(BACKGROUND_COLOR_G, Color.green(color));
+		cv.put(BACKGROUND_COLOR_B, Color.blue(color));
+		cv.put(BACKGROUND_COLOR_A, Color.alpha(color));
+		final int id = (int) database.insert(TABLE, null, cv);
+		return getTag(id);
 	}
 
 	public static Tag getTag(final int id) {
@@ -120,7 +119,7 @@ public class Tag extends TagBase {
 		return t;
 	}
 
-	private static int getNextColor(final int count, final Context ctx) {
+	public static int getNextColor(final int count, final Context ctx) {
 		final TypedArray ta = ctx.getResources().obtainTypedArray(
 				R.array.default_colors);
 		final int transparency[] = ctx.getResources().getIntArray(
@@ -135,7 +134,7 @@ public class Tag extends TagBase {
 		return color;
 	}
 
-	private static Tag cursorToTag(final Cursor c) {
+	public static Tag cursorToTag(final Cursor c) {
 		if (c.getCount() > 0) {
 			return new Tag(c.getInt(0), c.getShort(1) == 1, c.getString(2),
 					Color.argb(c.getShort(3), c.getShort(4), c.getShort(5),

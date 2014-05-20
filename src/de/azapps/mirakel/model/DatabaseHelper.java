@@ -774,7 +774,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ " INTEGER NOT NULL DEFAULT 0, " + Tag.BACKGROUND_COLOR_R
 					+ " INTEGER NOT NULL DEFAULT 0);");
 			db.execSQL("CREATE TABLE "
-					+ Task.TAG_CONNECTION_TABLE
+					+ Tag.TAG_CONNECTION_TABLE
 					+ " ("
 					+ ID
 					+ " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -824,7 +824,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 						cv = new ContentValues();
 						cv.put("tag_id", tagId);
 						cv.put("task_id", taskId);
-						db.insert(Task.TAG_CONNECTION_TABLE, null, cv);
+						db.insert(Tag.TAG_CONNECTION_TABLE, null, cv);
 						entryMap.remove("tags");
 						cv = new ContentValues();
 						cv.put(Task.ADDITIONAL_ENTRIES,
