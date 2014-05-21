@@ -25,10 +25,12 @@ import java.util.GregorianCalendar;
 
 import android.annotation.SuppressLint;
 import android.net.Uri;
+import android.util.SparseBooleanArray;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.task.Task;
 
 public class RandomHelper {
 
@@ -84,4 +86,31 @@ public class RandomHelper {
 	public static Uri getRandomUri() {
 		return Uri.parse("http://www." + getRandomString() + ".com");
 	}
+
+	public static ACCOUNT_TYPES getRandomACCOUNT_TYPES() {
+		return ACCOUNT_TYPES.values()[random
+				.nextInt(ACCOUNT_TYPES.values().length)];
+	}
+
+	public static Task getRandomTask() {
+		return new Task(getRandomlong(), getRandomString(),
+				getRandomListMirakel(), getRandomString(), getRandomString(),
+				getRandomboolean(), getRandomCalendar(), getRandomCalendar(),
+				random.nextInt(5) - 2, getRandomCalendar(),
+				getRandomCalendar(), getRandomSYNC_STATE(), null, -1, -1,
+				random.nextInt(100));
+	}
+
+	public static SparseBooleanArray getRandomSparseBooleanArray() {
+		final SparseBooleanArray ret = new SparseBooleanArray(7);
+		ret.append(Calendar.SUNDAY, getRandomboolean());
+		ret.append(Calendar.MONDAY, getRandomboolean());
+		ret.append(Calendar.THURSDAY, getRandomboolean());
+		ret.append(Calendar.WEDNESDAY, getRandomboolean());
+		ret.append(Calendar.TUESDAY, getRandomboolean());
+		ret.append(Calendar.FRIDAY, getRandomboolean());
+		ret.append(Calendar.SATURDAY, getRandomboolean());
+		return ret;
+	}
+
 }
