@@ -175,7 +175,7 @@ public class AccountSettingsActivity extends ListSettings {
 	@SuppressLint("NewApi")
 	@Override
 	public void onBuildHeaders(final List<Header> target) {
-		final List<AccountMirakel> accounts = AccountMirakel.getAll();
+		final List<AccountMirakel> accounts = AccountMirakel.all();
 		for (final AccountMirakel a : accounts) {
 			final Bundle b = new Bundle();
 			b.putInt("id", a.getId());
