@@ -67,7 +67,7 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
 		final JsonObject el = json.getAsJsonObject();
 		Task t = null;
 		JsonElement id = el.get("id");
-		if (id != null) {
+		if (id != null && !this.isTW) {// use uuid for tw-sync
 			t = Task.get(id.getAsLong());
 		} else {
 			id = el.get("uuid");
