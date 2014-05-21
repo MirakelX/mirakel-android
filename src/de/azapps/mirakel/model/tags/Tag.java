@@ -59,6 +59,14 @@ public class Tag extends TagBase {
 		return count;
 	}
 
+	public static Tag get(final int id) {
+		final Cursor c = database.query(TABLE, allColumns, DatabaseHelper.ID
+				+ "=?", new String[] { id + "" }, null, null, null);
+		final Tag t = cursorToTag(c);
+		c.close();
+		return t;
+	}
+
 	public static List<Tag> all() {
 		final Cursor c = database.query(TABLE, allColumns, null, null, null,
 				null, null);

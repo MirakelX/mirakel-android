@@ -36,12 +36,12 @@ class TagBase {
 	private String name;
 	private int _id;
 
-	public TagBase(final int id, final boolean isDarkBackground,
-			final int backColor, final String name) {
+	public TagBase(final int id, final boolean dark, final int backColor,
+			final String name) {
 		setName(name);
 		setId(id);
 		setBackgroundColor(backColor);
-		setDarkText(isDarkBackground);
+		setDarkText(dark);
 	}
 
 	public ContentValues getContentValues() {

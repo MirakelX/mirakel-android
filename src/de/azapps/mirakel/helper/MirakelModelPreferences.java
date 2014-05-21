@@ -126,7 +126,7 @@ public class MirakelModelPreferences extends MirakelPreferences {
 	}
 
 	public static boolean useSync() {
-		final List<AccountMirakel> all = AccountMirakel.getAll();
+		final List<AccountMirakel> all = AccountMirakel.all();
 		for (final AccountMirakel a : all) {
 			if (a.getType() != ACCOUNT_TYPES.LOCAL && a.isEnabled()) {
 				return true;
