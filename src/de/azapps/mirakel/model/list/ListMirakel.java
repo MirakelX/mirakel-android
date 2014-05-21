@@ -633,4 +633,20 @@ public class ListMirakel extends ListBase {
 				+ (MirakelCommonPreferences.showDoneMain() ? "" : " AND NOT "
 						+ Task.DONE + "=1");
 	}
+
+	@Override
+	public boolean equals(final Object o) {
+
+		if (!(o instanceof ListMirakel)) {
+			return false;
+		}
+		final ListMirakel l = (ListMirakel) o;
+		// Id
+		if (getId() != l.getId()) {
+			return false;
+		}
+
+		return true;
+
+	}
 }
