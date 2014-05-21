@@ -18,25 +18,37 @@
  ******************************************************************************/
 package de.azapps.mirakelandroid.test;
 
+import java.io.File;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.net.Uri;
 import android.util.SparseBooleanArray;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.tools.FileUtils;
 
 public class RandomHelper {
 
 	// its ok to use this here, it's only for testing
 	@SuppressLint("TrulyRandom")
 	private static SecureRandom random = new SecureRandom();
+	private static Context ctx;
+
+	public static void init(final Context ctx) {
+		RandomHelper.ctx = ctx;
+	}
 
 	public static int getRandomint() {
 		return random.nextInt();
@@ -67,10 +79,10 @@ public class RandomHelper {
 	}
 
 	public static ListMirakel getRandomListMirakel() {
-		return new ListMirakel(random.nextInt(), getRandomString(),
-				(short) random.nextInt(), getRandomString(), getRandomString(),
-				getRandomSYNC_STATE(), getRandomint(), getRandomint(),
-				getRandomint(), getRandomAccountMirakel());
+		ListMirakel.init(ctx);
+		final List<ListMirakel> t = ListMirakel.all();
+		ListMirakel.close();
+		return t.get(random.nextInt(t.size()));
 	}
 
 	public static Calendar getRandomCalendar() {
@@ -84,7 +96,10 @@ public class RandomHelper {
 	}
 
 	public static Uri getRandomUri() {
-		return Uri.parse("http://www." + getRandomString() + ".com");
+		// return a constant uri because uri must exist
+		final String p = FileUtils.getMirakelDir() + "/databases/mirakel.db";
+		final File f = new File(p);
+		return Uri.fromFile(f);
 	}
 
 	public static ACCOUNT_TYPES getRandomACCOUNT_TYPES() {
@@ -93,12 +108,10 @@ public class RandomHelper {
 	}
 
 	public static Task getRandomTask() {
-		return new Task(getRandomlong(), getRandomString(),
-				getRandomListMirakel(), getRandomString(), getRandomString(),
-				getRandomboolean(), getRandomCalendar(), getRandomCalendar(),
-				random.nextInt(5) - 2, getRandomCalendar(),
-				getRandomCalendar(), getRandomSYNC_STATE(), null, -1, -1,
-				random.nextInt(100));
+		Task.init(ctx);
+		final List<Task> t = Task.all();
+		Task.close();
+		return t.get(random.nextInt(t.size()));
 	}
 
 	public static SparseBooleanArray getRandomSparseBooleanArray() {
@@ -111,6 +124,32 @@ public class RandomHelper {
 		ret.append(Calendar.FRIDAY, getRandomboolean());
 		ret.append(Calendar.SATURDAY, getRandomboolean());
 		return ret;
+	}
+
+	public static Map<String, String> getRandomMap_String_String() {
+		final Map<String, String> ret = new HashMap<String, String>();
+		for (int i = 0; i < random.nextInt(10); i++) {
+			ret.put(getRandomString(), getRandomString());
+		}
+		return ret;
+	}
+
+	public static GregorianCalendar getRandomGregorianCalendar() {
+		final GregorianCalendar cal = new GregorianCalendar();
+		cal.add(Calendar.SECOND, random.nextInt(60));
+		cal.add(Calendar.MINUTE, random.nextInt(60));
+		cal.add(Calendar.HOUR, random.nextInt(24));
+		cal.add(Calendar.DAY_OF_MONTH, random.nextInt(30));
+		cal.add(Calendar.DAY_OF_YEAR, random.nextInt(1));
+		return cal;
+	}
+
+	public static Context getRandomContext() {
+		return ctx;
+	}
+
+	public static Map<String, SpecialListsBaseProperty> getRandomMap_String_SpecialListsBaseProperty() {
+		return new HashMap<>();
 	}
 
 }

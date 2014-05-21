@@ -10,9 +10,8 @@ public class MirakelTestCase extends AndroidTestCase {
 
 	@Override
 	protected void tearDown() throws Exception {
-		// TODO Auto-generated method stub
-		super.tearDown();
 		TestHelper.terminate();
+		super.tearDown();
 	}
 
 }
