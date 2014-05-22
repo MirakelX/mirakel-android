@@ -403,7 +403,7 @@ class TaskBase {
 		}
 	}
 
-	public void setId(final long id) {
+	protected void setId(final long id) {
 		this.id = id;
 	}
 
