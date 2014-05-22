@@ -269,7 +269,7 @@ public class TaskDialogHelpers {
 							final int which) {
 						dialog.dismiss();
 						task.setPriority(2 - which);
-						task.safeSave();
+						task.save();
 						onSuccess.exec();
 					}
 				});
@@ -799,7 +799,7 @@ public class TaskDialogHelpers {
 			task.setRecurringReminder(id);
 		}
 		TaskDetailDueReminder.setRecurringImage(image, id);
-		task.safeSave();
+		task.save();
 		// if (!isDue) {
 		// ReminderAlarm.updateAlarms(ctx);
 		// }
