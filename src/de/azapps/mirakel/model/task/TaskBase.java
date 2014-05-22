@@ -407,6 +407,17 @@ class TaskBase {
 		this.id = id;
 	}
 
+	/**
+	 * Replaces the id of the current task by the foreign task. This is needed
+	 * if we want to override the current task by a remote task.
+	 * 
+	 * @param t
+	 *            other task
+	 */
+	public void takeIdFrom(final Task t) {
+		this.setId(t.getId());
+	}
+
 	public void setList(final ListMirakel list) {
 		setList(list, false);
 	}
