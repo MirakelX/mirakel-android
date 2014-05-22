@@ -315,7 +315,7 @@ public class TaskWarriorSync {
 						Log.wtf(TAG, "List vanish");
 					}
 				} else {
-					server_task.setId(local_task.getId());
+					server_task.takeIdFrom(local_task);
 					server_task.dirtyTakeAllTags();
 					Log.d(TAG, "update " + server_task.getName());
 					server_task.save(false, true);
