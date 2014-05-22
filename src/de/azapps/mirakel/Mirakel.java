@@ -152,6 +152,7 @@ public class Mirakel extends Application {
 		Semantic.close();
 		Recurring.close();
 		AccountMirakel.close();
+		Tag.close();
 	}
 
 	@Override
