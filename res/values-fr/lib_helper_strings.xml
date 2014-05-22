@@ -15,15 +15,26 @@ Mirakel-version: %1$s\n
 SDK-version: %2$d\n
 Device: %3$s\n]]>
     </string>
-  <string name="contact_chooser">Envoyer un e-mail&#8230;</string>
+  <string name="contact_chooser">Envoyer un courriel&#8230;</string>
+  <string name="error_PHOTO_NO_CAMERA" tools:ignore="UnusedResources">Oups! Votre terminale ne permet pas de prendre des photos</string>
+  <string name="error_PHOTO_NO_MEDIA_DIRECTORY" tools:ignore="UnusedResources">Désolé! L\'espace de stockage est insuffisant pour sauvegarder la photo.</string>
+  <string name="error_NO_SPEACH_RECOGNITION" tools:ignore="UnusedResources">Oups! Votre terminale ne support pas la saisie vocale</string>
   <string name="error_TASKS_CANNOT_FORM_LOOP" tools:ignore="UnusedResources">Sous-tâches ne peuvent pas former de boucle</string>
   <string name="error_FILE_NO_ACTIVITY" tools:ignore="UnusedResources">Je ne sais pas comment ouvrir ce fichier – Désolé</string>
+  <string name="error_CONTACT_NO_CLIENT" tools:ignore="UnusedResources">Pas d\'application de messagerie électronique installée</string>
   <string name="error_NO_FILEMANAGER" tools:ignore="UnusedResources">Veuillez installer un gestionnaire de fichiers</string>
-  <string name="error_BACKUP_EXPORT_ERROR" tools:ignore="UnusedResources">Il y avait une erreur lors de l\'exportation de la base de données</string>
+  <string name="error_FILE_URI_SYNTAX_ERROR" tools:ignore="UnusedResources">Il y a eu une erreur interne lors de la lecture du nom du fichier</string>
+  <string name="error_FILE_NOT_FOUND" tools:ignore="UnusedResources">Le fichier n\'a pas pu être trouvé</string>
+  <string name="error_BACKUP_EXPORT_ERROR" tools:ignore="UnusedResources">Une erreur s\'est produite lors de l\'export de la base de donnée</string>
   <string name="error_BACKUP_IMPORT_ERROR" tools:ignore="UnusedResources">Il y a eût une erreur lors de l\'importation de la base de données</string>
+  <string name="error_FILE_TO_LARGE_FOR_THUMBNAIL" tools:ignore="UnusedResources">Le vignette n\'a pas pu être créé car le fichier est trop grand</string>
   <string name="error_TASKS_NO_LIST" tools:ignore="UnusedResources">Cette tâche ne peut pas être synchronisée, car vous n\'avez pas de listes</string>
   <string name="error_TASK_VANISHED" tools:ignore="UnusedResources">Oups, la liste de tâches a disparu. Désolé&#8230;</string>
-  <string name="error_ASTRID_ERROR" tools:ignore="UnusedResources">Il y a eût une erreur pendant l\'importation depuis Astrid!</string>
+  <string name="error_FILE_NOT_MIRAKEL_DB" tools:ignore="UnusedResources">Le fichier n\'est pas une base de donnée Mirakel !</string>
+  <string name="error_ASTRID_ERROR" tools:ignore="UnusedResources">Une erreur s\'est produite lors de l\'importation depuis Astrid!</string>
+  <string name="error_TASKWARRIOR_FILE_NOT_FOUND" tools:ignore="UnusedResources">Le fichier Taskwarrior n\'a pas été trouvé</string>
   <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD" tools:ignore="UnusedResources">Pas pu télécharger le fichier de config</string>
   <string name="error_TASKWARRIOR_URL_NOT_FOUND" tools:ignore="UnusedResources">L\'URL n\'est pas correcte. Avez-vous vraiment scanné le bon code?</string>
+  <string name="error_LIST_VANISHED" tools:ignore="UnusedResources">Houlà! la liste a disparu...</string>
+  <string name="error_MAINACTVITY_CRAZY_ERROR" tools:ignore="UnusedResources">Nous ne savons pas comment corriger ce bogue. Mirakel redémarre.</string>
 </resources>
