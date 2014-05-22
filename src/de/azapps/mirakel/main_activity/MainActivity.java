@@ -195,7 +195,7 @@ public class MainActivity extends ActionBarActivity implements
 		final Task task = Semantic.createTask(this.newTaskSubject, list, true,
 				this);
 		task.setContent(this.newTaskContent == null ? "" : this.newTaskContent);
-		task.safeSave();
+		task.save();
 		setCurrentTask(task);
 
 		if (intent != null) {
@@ -632,7 +632,7 @@ public class MainActivity extends ActionBarActivity implements
 							final int item) {
 						for (final Task t : tasks) {
 							t.setList(ListMirakel.get(list_ids.get(item)), true);
-							t.safeSave();
+							t.save();
 						}
 						/*
 						 * There are 3 possibilities how to handle the post-move
@@ -1056,7 +1056,7 @@ public class MainActivity extends ActionBarActivity implements
 					task = Semantic.createTask(
 							MirakelCommonPreferences.getPhotoDefaultTitle(),
 							this.currentList, false, this);
-					task.safeSave();
+					task.save();
 					if (getTasksFragment() != null) {
 						getTasksFragment().getLoaderManager().restartLoader(0,
 								null, getTasksFragment());
@@ -1503,7 +1503,7 @@ public class MainActivity extends ActionBarActivity implements
 	 */
 	public void saveTask(final Task task) {
 		Log.v(MainActivity.TAG, "Saving task… (task:" + task.getId());
-		task.safeSave();
+		task.save();
 		updatesForTask(task);
 	}
 

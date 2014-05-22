@@ -157,7 +157,7 @@ public abstract class TaskFragment extends Fragment {
 					.entrySet()) {
 				if (e.getValue() != null) {
 					e.getValue().setDone(true);
-					e.getValue().safeSave();
+					e.getValue().save();
 				}
 			}
 			update(TaskFragment.this.task);
