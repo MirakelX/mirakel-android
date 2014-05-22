@@ -457,7 +457,7 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 							case R.id.done_task:
 								for (final Task t : TasksFragment.this.selectedTasks) {
 									t.setDone(true);
-									t.safeSave();
+									t.save();
 								}
 								getLoaderManager().restartLoader(0, null,
 										TasksFragment.this);
