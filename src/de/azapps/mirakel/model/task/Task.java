@@ -833,8 +833,8 @@ public class Task extends TaskBase {
 		return count > 0;
 	}
 
-	public void safeSave() {
-		safeSave(true);
+	public void save() {
+		save(true);
 	}
 
 	/**
@@ -842,23 +842,19 @@ public class Task extends TaskBase {
 	 * 
 	 * @param task
 	 */
-	public void safeSave(final boolean log) {
-		safeSave(log, false);
+	public void save(final boolean log) {
+		save(log, false);
 	}
 
-	public void safeSave(final boolean log, final boolean calledFromSync) {
+	public void save(final boolean log, final boolean calledFromSync) {
 		try {
-			save(log, calledFromSync);
+			unsafeSave(log, calledFromSync);
 		} catch (final NoSuchListException e) {
 			Log.w(Task.TAG, "List did vanish");
 		}
 	}
 
-	private void save(final boolean log) throws NoSuchListException {
-		save(log, false);
-	}
-
-	private void save(boolean log, final boolean calledFromSync)
+	private void unsafeSave(boolean log, final boolean calledFromSync)
 			throws NoSuchListException {
 		if (!isEdited()) {
 			Log.d(Task.TAG, "new Task equals old, didnt need to save it");
@@ -902,7 +898,7 @@ public class Task extends TaskBase {
 		for (final Task t : subTasks) {
 			t.setDone(true);
 			try {
-				t.save(true);
+				t.unsafeSave(true, false);
 			} catch (final NoSuchListException e) {
 				Log.d(Task.TAG, "List did vanish");
 			}
@@ -958,7 +954,7 @@ public class Task extends TaskBase {
 		c.close();
 		// save task to set log+modified
 		this.edited.put("tags", true);
-		safeSave(log);
+		save(log);
 		final ContentValues cv = new ContentValues();
 		cv.put("tag_id", t.getId());
 		cv.put("task_id", getId());
@@ -973,7 +969,7 @@ public class Task extends TaskBase {
 	public void removeTag(final Tag t, final boolean log) {
 		// save task to set log+modified
 		this.edited.put("tags", true);
-		safeSave(log);
+		save(log);
 		database.delete(Tag.TAG_CONNECTION_TABLE, "task_id=? and tag_id=?",
 				new String[] { getId() + "", t.getId() + "" });
 	}

@@ -207,7 +207,7 @@ public class ExportImport {
 							.getTextContent();
 					t.setContent(content.trim());
 					// TODO Reminder
-					t.safeSave(false);
+					t.save(false);
 				} else {
 					Log.w(TAG, "empty node");
 				}
@@ -280,7 +280,7 @@ public class ExportImport {
 				t.setPriority(priority);
 				t.setDue(due);
 				t.setDone(done);
-				t.safeSave(false);
+				t.save(false);
 				Log.v(TAG, "created task:" + name);
 
 			}

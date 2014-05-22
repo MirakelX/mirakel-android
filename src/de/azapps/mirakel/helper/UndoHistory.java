@@ -80,7 +80,7 @@ public class UndoHistory {
 									.getLocal(), ctx)).create();
 					final Task t = gson.fromJson(json, Task.class);
 					if (Task.get(t.getId()) != null) {
-						t.safeSave(false);
+						t.save(false);
 					} else {
 						try {
 							MirakelContentProvider.getWritableDatabase()

@@ -153,7 +153,7 @@ public class WunderlistImport {
 			subtasks.add(new Pair<Task, String>(t, jsonTask.get("parent_id")
 					.getAsString()));
 		}
-		t.safeSave(false);
+		t.save(false);
 		return contents;
 	}
 }

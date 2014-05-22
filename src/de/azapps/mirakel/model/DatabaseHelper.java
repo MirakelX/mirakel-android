@@ -299,7 +299,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 						ListMirakel.findByName(task_lists[i]), true,
 						this.context);
 				t.setPriority(priorities[i]);
-				t.safeSave();
+				t.save();
 				i++;
 			}
 		}
