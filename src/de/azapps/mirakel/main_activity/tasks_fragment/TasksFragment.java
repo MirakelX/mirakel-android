@@ -587,9 +587,8 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 				@Override
 				public void onClick(final View v) {
 					// TODO BAHHHH this is ugly!
-					final Task task = new Task("");
+					final Task task = Task.getEmpty();
 					task.setList(TasksFragment.this.main.getCurrentList(), true);
-					task.setId(0);
 					TaskDialogHelpers.handleAudioRecord(
 							TasksFragment.this.main, task,
 							new ExecInterfaceWithTask() {
