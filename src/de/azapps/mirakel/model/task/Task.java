@@ -236,6 +236,12 @@ public class Task extends TaskBase {
 		return task;
 	}
 
+	public static Task getEmpty() {
+		final Task t = new Task("");
+		t.setId(0);
+		return t;
+	}
+
 	public static String getSorting(final int sorting) {
 		String order = "";
 		final String dueSort = "CASE WHEN (" + TaskBase.DUE
