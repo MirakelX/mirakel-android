@@ -554,11 +554,6 @@ public class ListMirakel extends ListBase {
 		return t;
 	}
 
-	@SuppressWarnings("static-method")
-	public boolean isSpecialList() {
-		return false;
-	}
-
 	/**
 	 * Update the List in the Database
 	 * 
