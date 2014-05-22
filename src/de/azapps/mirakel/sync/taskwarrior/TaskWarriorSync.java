@@ -318,7 +318,7 @@ public class TaskWarriorSync {
 					server_task.setId(local_task.getId());
 					server_task.dirtyTakeAllTags();
 					Log.d(TAG, "update " + server_task.getName());
-					server_task.safeSave(false, true);
+					server_task.save(false, true);
 				}
 			}
 		}
@@ -527,7 +527,7 @@ public class TaskWarriorSync {
 		if (uuid == null || uuid.trim().equals("")) {
 			uuid = java.util.UUID.randomUUID().toString();
 			task.setUUID(uuid);
-			task.safeSave(false);
+			task.save(false);
 		}
 		json += "\"uuid\":\"" + uuid + "\"";
 		json += ",\"status\":\"" + status + "\"";
