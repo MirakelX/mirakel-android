@@ -33,7 +33,7 @@ public class TaskService extends Service {
 		}
 		if (intent.getAction() == TASK_DONE) {
 			task.setDone(true);
-			task.safeSave();
+			task.save();
 			Toast.makeText(this,
 					getString(R.string.reminder_notification_done_confirm),
 					Toast.LENGTH_LONG).show();
@@ -43,7 +43,7 @@ public class TaskService extends Service {
 			final int addMinutes = MirakelCommonPreferences.getAlarmLater();
 			reminder.add(Calendar.MINUTE, addMinutes);
 			task.setReminder(reminder);
-			task.safeSave();
+			task.save();
 			Toast.makeText(
 					this,
 					getString(R.string.reminder_notification_later_confirm,

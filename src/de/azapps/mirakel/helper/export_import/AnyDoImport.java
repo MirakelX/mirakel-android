@@ -100,7 +100,7 @@ public class AnyDoImport {
 			final String oldContent = t.getContent();
 			t.setContent(oldContent == null || oldContent.equals("") ? pair.second
 					: oldContent + "\n" + pair.second);
-			t.safeSave(false);
+			t.save(false);
 		}
 		return true;
 	}
@@ -288,7 +288,7 @@ public class AnyDoImport {
 
 			}
 		}
-		t.safeSave(false);
+		t.save(false);
 		return contents;
 	}
 
