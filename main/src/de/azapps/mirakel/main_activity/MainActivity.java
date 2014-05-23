@@ -195,7 +195,7 @@ public class MainActivity extends ActionBarActivity implements
 		final Task task = Semantic.createTask(this.newTaskSubject, list, true,
 				this);
 		task.setContent(this.newTaskContent == null ? "" : this.newTaskContent);
-		task.safeSave();
+		task.save();
 		setCurrentTask(task);
 
 		if (intent != null) {
@@ -631,9 +631,8 @@ public class MainActivity extends ActionBarActivity implements
 					public void onClick(final DialogInterface dialog,
 							final int item) {
 						for (final Task t : tasks) {
-							t.setList(ListMirakel.getList(list_ids.get(item)),
-									true);
-							t.safeSave();
+							t.setList(ListMirakel.get(list_ids.get(item)), true);
+							t.save();
 						}
 						/*
 						 * There are 3 possibilities how to handle the post-move
@@ -848,9 +847,7 @@ public class MainActivity extends ActionBarActivity implements
 			this.mPagerAdapter = new PagerAdapter(this.fragmentManager,
 					fragments);
 
-			// if (this.mViewPager == null) {
 			this.mViewPager = (ViewPager) super.findViewById(R.id.viewpager);
-			// }
 			if (this.mViewPager == null) {
 				Log.wtf(MainActivity.TAG, "viewpager null");
 				return;
@@ -1059,7 +1056,7 @@ public class MainActivity extends ActionBarActivity implements
 					task = Semantic.createTask(
 							MirakelCommonPreferences.getPhotoDefaultTitle(),
 							this.currentList, false, this);
-					task.safeSave();
+					task.save();
 					if (getTasksFragment() != null) {
 						getTasksFragment().getLoaderManager().restartLoader(0,
 								null, getTasksFragment());
@@ -1364,7 +1361,7 @@ public class MainActivity extends ActionBarActivity implements
 			finish();
 			return false;
 		case R.id.menu_undo:
-			UndoHistory.undoLast();
+			UndoHistory.undoLast(this);
 			updateCurrentListAndTask();
 			if (this.currentPosition == getTaskFragmentPosition()) {
 				setCurrentTask(this.currentTask);
@@ -1506,7 +1503,7 @@ public class MainActivity extends ActionBarActivity implements
 	 */
 	public void saveTask(final Task task) {
 		Log.v(MainActivity.TAG, "Saving task… (task:" + task.getId());
-		task.safeSave();
+		task.save();
 		updatesForTask(task);
 	}
 
@@ -1567,9 +1564,6 @@ public class MainActivity extends ActionBarActivity implements
 						}
 					}, 10);
 				}
-
-				// this.skipSwipe = true;
-				// setCurrentItem(getTaskFragmentPosition());
 			} else {
 				Log.d(MainActivity.TAG, "task null");
 			}
@@ -1623,7 +1617,7 @@ public class MainActivity extends ActionBarActivity implements
 							public void onClick(final DialogInterface dialog,
 									final int item) {
 								addTaskFromSharing(
-										ListMirakel.getList(list_ids.get(item)),
+										ListMirakel.get(list_ids.get(item)),
 										intent);
 								dialog.dismiss();
 							}
@@ -1642,7 +1636,7 @@ public class MainActivity extends ActionBarActivity implements
 						DefinitionsHelper.SHOW_LIST_FROM_WIDGET, ""));
 			}
 			Log.v(MainActivity.TAG, "ListId: " + listId);
-			ListMirakel list = ListMirakel.getList(listId);
+			ListMirakel list = ListMirakel.get(listId);
 			if (list == null) {
 				list = SpecialList.firstSpecial();
 			}
@@ -1664,21 +1658,29 @@ public class MainActivity extends ActionBarActivity implements
 				DefinitionsHelper.ADD_TASK_FROM_WIDGET)) {
 			final int listId = Integer.parseInt(intent.getAction().replace(
 					DefinitionsHelper.ADD_TASK_FROM_WIDGET, ""));
-			setCurrentList(ListMirakel.getList(listId));
-			if (getTasksFragment() != null && getTasksFragment().isReady()) {
-				getTasksFragment().focusNew(true);
-			} else if (!MirakelCommonPreferences.isTablet()) {
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						if (getTasksFragment() != null) {
-							getTasksFragment().focusNew(true);
-						} else {
-							Log.wtf(MainActivity.TAG, "Tasksfragment null");
-						}
+			setCurrentList(ListMirakel.get(listId));
+			this.mDrawerLayout.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					if (getTasksFragment() != null
+							&& getTasksFragment().isReady()) {
+						getTasksFragment().focusNew(true);
+					} else if (!MirakelCommonPreferences.isTablet()) {
+						runOnUiThread(new Runnable() {
+							@Override
+							public void run() {
+								if (getTasksFragment() != null) {
+									getTasksFragment().focusNew(true);
+								} else {
+									Log.wtf(MainActivity.TAG,
+											"Tasksfragment null");
+								}
+							}
+						});
 					}
-				});
-			}
+				}
+			}, 10);
+
 		} else if (intent.getAction().equals(DefinitionsHelper.SHOW_MESSAGE)) {
 			final String message = intent.getStringExtra(Intent.EXTRA_TEXT);
 			String subject = intent.getStringExtra(Intent.EXTRA_SUBJECT);
@@ -1755,7 +1757,7 @@ public class MainActivity extends ActionBarActivity implements
 			}
 		}
 		if (this.currentList != null) {
-			this.currentList = ListMirakel.getList(this.currentList.getId());
+			this.currentList = ListMirakel.get(this.currentList.getId());
 		} else {
 			this.currentList = this.currentTask.getList();
 		}

@@ -44,7 +44,7 @@ public class BackgroundTasks {
 					final List<Task> tasks = Task.all();
 					for (final Task t : tasks) {
 						t.setUUID(java.util.UUID.randomUUID().toString());
-						t.safeSave();
+						t.save();
 					}
 				}
 				mSyncReciver = new MainActivityBroadcastReceiver(context);

@@ -211,7 +211,7 @@ public class ListFragment extends MirakelFragment {
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
 				R.layout.dialog_list_account, null);
 		final Spinner s = (Spinner) v.findViewById(R.id.select_account);
-		final List<AccountMirakel> accounts = AccountMirakel.getAll();
+		final List<AccountMirakel> accounts = AccountMirakel.all();
 		final List<String> names = new ArrayList<String>();
 		for (final AccountMirakel a : accounts) {
 			names.add(a.getName());
