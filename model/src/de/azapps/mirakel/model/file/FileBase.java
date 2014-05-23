@@ -28,7 +28,7 @@ public class FileBase {
 		return this.id;
 	}
 
-	public void setId(final int id) {
+	protected void setId(final int id) {
 		this.id = id;
 	}
 

@@ -59,7 +59,7 @@ public class SpecialListsListProperty extends SpecialListsSetProperty {
 		query += ") ";
 		// TODO handle loops here
 		for (final int p : special) {
-			final SpecialList s = (SpecialList) ListMirakel.getList(p);
+			final SpecialList s = (SpecialList) ListMirakel.get(p);
 			if (s != null && !s.getWhereQueryForTasks().trim().equals("")) {
 				query += " OR " + s.getWhereQueryForTasks();
 			}
@@ -73,7 +73,7 @@ public class SpecialListsListProperty extends SpecialListsSetProperty {
 				: "";
 		boolean first = true;
 		for (final int p : this.content) {
-			final ListMirakel l = ListMirakel.getList(p);
+			final ListMirakel l = ListMirakel.get(p);
 			if (l == null) {
 				continue;
 			}

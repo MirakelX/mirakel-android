@@ -112,7 +112,7 @@ public class RecurringBase {
 		return this._id;
 	}
 
-	public void setId(final int _id) {
+	protected void setId(final int _id) {
 		this._id = _id;
 	}
 

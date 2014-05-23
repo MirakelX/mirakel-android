@@ -157,7 +157,7 @@ public class Semantic extends SemanticBase {
 		}
 		ListMirakel list = null;
 		if (!c.isNull(4)) {
-			list = ListMirakel.getList(c.getInt(4));
+			list = ListMirakel.get(c.getInt(4));
 		}
 		Integer weekday = null;
 		if (!c.isNull(5)) {

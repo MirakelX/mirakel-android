@@ -5,7 +5,7 @@ import java.util.Locale;
 import android.content.ContentValues;
 import de.azapps.mirakel.model.list.ListMirakel;
 
-public class SemanticBase {
+class SemanticBase {
 	private int id;
 	private String condition;
 	private Integer priority;
@@ -31,7 +31,7 @@ public class SemanticBase {
 		return this.id;
 	}
 
-	public void setId(final int id) {
+	protected void setId(final int id) {
 		this.id = id;
 	}
 

@@ -36,12 +36,12 @@ class TagBase {
 	private String name;
 	private int _id;
 
-	public TagBase(final int id, final boolean isDarkBackground,
-			final int backColor, final String name) {
+	public TagBase(final int id, final boolean dark, final int backColor,
+			final String name) {
 		setName(name);
 		setId(id);
 		setBackgroundColor(backColor);
-		setDarkText(isDarkBackground);
+		setDarkText(dark);
 	}
 
 	public ContentValues getContentValues() {
@@ -49,11 +49,11 @@ class TagBase {
 
 		cv.put(DatabaseHelper.ID, this._id);
 		cv.put(DatabaseHelper.NAME, this.name);
-		cv.put(this.DARK_TEXT, this.isDarkText);
-		cv.put(this.BACKGROUND_COLOR_R, Color.red(this.backgroundColor));
-		cv.put(this.BACKGROUND_COLOR_G, Color.green(this.backgroundColor));
-		cv.put(this.BACKGROUND_COLOR_B, Color.blue(this.backgroundColor));
-		cv.put(this.BACKGROUND_COLOR_A, Color.alpha(this.backgroundColor));
+		cv.put(TagBase.DARK_TEXT, this.isDarkText);
+		cv.put(TagBase.BACKGROUND_COLOR_R, Color.red(this.backgroundColor));
+		cv.put(TagBase.BACKGROUND_COLOR_G, Color.green(this.backgroundColor));
+		cv.put(TagBase.BACKGROUND_COLOR_B, Color.blue(this.backgroundColor));
+		cv.put(TagBase.BACKGROUND_COLOR_A, Color.alpha(this.backgroundColor));
 		return cv;
 	}
 
@@ -77,7 +77,7 @@ class TagBase {
 		return this._id;
 	}
 
-	public void setId(final int _id) {
+	protected void setId(final int _id) {
 		this._id = _id;
 	}
 

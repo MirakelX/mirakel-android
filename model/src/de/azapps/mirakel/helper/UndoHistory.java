@@ -21,6 +21,8 @@ package de.azapps.mirakel.helper;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -28,6 +30,7 @@ import de.azapps.mirakel.model.MirakelContentProvider;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.model.task.TaskDeserializer;
 import de.azapps.tools.Log;
 
 public class UndoHistory {
@@ -44,7 +47,7 @@ public class UndoHistory {
 		updateLog(TASK, newTask.getId() + "", ctx);
 	}
 
-	public static void undoLast() {
+	public static void undoLast(final Context ctx) {
 		final String last = MirakelCommonPreferences.getFromLog(0);
 		if (last != null && !last.equals("")) {
 			final short type = Short.parseShort(last.charAt(0) + "");
@@ -56,7 +59,7 @@ public class UndoHistory {
 						Task.get(id).destroy(true);
 						break;
 					case LIST:
-						ListMirakel.getList((int) id).destroy(true);
+						ListMirakel.get((int) id).destroy(true);
 						break;
 					default:
 						Log.wtf(TAG, "unkown Type");
@@ -71,10 +74,13 @@ public class UndoHistory {
 						last.substring(1)).getAsJsonObject();
 				switch (type) {
 				case TASK:
-					final Task t = Task.parse_json(json,
-							AccountMirakel.getLocal(), false);
+					final Gson gson = new GsonBuilder().registerTypeAdapter(
+							Task.class,
+							new TaskDeserializer(false, AccountMirakel
+									.getLocal(), ctx)).create();
+					final Task t = gson.fromJson(json, Task.class);
 					if (Task.get(t.getId()) != null) {
-						t.safeSave(false);
+						t.save(false);
 					} else {
 						try {
 							MirakelContentProvider.getWritableDatabase()
@@ -87,7 +93,7 @@ public class UndoHistory {
 					break;
 				case LIST:
 					final ListMirakel l = ListMirakel.parseJson(json);
-					if (ListMirakel.getList(l.getId()) != null) {
+					if (ListMirakel.get(l.getId()) != null) {
 						l.save(false);
 					} else {
 						try {

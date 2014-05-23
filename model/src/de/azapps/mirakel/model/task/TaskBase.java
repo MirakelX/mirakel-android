@@ -69,7 +69,7 @@ class TaskBase {
 	private String uuid = "";
 
 	TaskBase() {
-
+		// nothing
 	}
 
 	TaskBase(final long id, final String uuid, final ListMirakel list,
@@ -403,8 +403,23 @@ class TaskBase {
 		}
 	}
 
-	public void setId(final long id) {
+	protected void setId(final long id) {
 		this.id = id;
+	}
+
+	/**
+	 * Replaces the id of the current task by the foreign task. This is needed
+	 * if we want to override the current task by a remote task.
+	 * 
+	 * @param t
+	 *            other task
+	 */
+	public void takeIdFrom(final Task t) {
+		this.setId(t.getId());
+	}
+
+	public void setList(final ListMirakel list) {
+		setList(list, false);
 	}
 
 	public void setList(final ListMirakel list, final boolean removeNoListFalg) {

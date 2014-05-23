@@ -117,7 +117,7 @@ public class WunderlistImport {
 		final Integer listId = listMapping.get(list_id_string);
 		ListMirakel list = null;
 		if (listId != null) {
-			list = ListMirakel.getList(listId);
+			list = ListMirakel.get(listId);
 		}
 		if (list == null) {
 			list = ListMirakel.safeFirst(ctx);
@@ -153,7 +153,7 @@ public class WunderlistImport {
 			subtasks.add(new Pair<Task, String>(t, jsonTask.get("parent_id")
 					.getAsString()));
 		}
-		t.safeSave(false);
+		t.save(false);
 		return contents;
 	}
 }

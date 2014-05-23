@@ -96,7 +96,7 @@ public class NotificationService extends Service {
 				openIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		// Get the data
-		final ListMirakel todayList = ListMirakel.getList(listId);
+		final ListMirakel todayList = ListMirakel.get(listId);
 		if (todayList == null) {
 			return;
 		}

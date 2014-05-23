@@ -18,16 +18,11 @@
  ******************************************************************************/
 package de.azapps.mirakel.model.task;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import android.accounts.Account;
 import android.content.ContentValues;
@@ -38,11 +33,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Pair;
 
-import com.google.gson.JsonArray;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
 
 import de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
@@ -56,7 +50,6 @@ import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
-import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.tools.Log;
@@ -77,7 +70,6 @@ public class Task extends TaskBase {
 	private static boolean calledFromDBHelper;
 
 	public static final String SUBTASK_TABLE = "subtasks";
-	public static final String TAG_CONNECTION_TABLE = "task_tag";
 	public static final String TABLE = "tasks";
 
 	private static final String TAG = "TasksDataSource";
@@ -151,7 +143,7 @@ public class Task extends TaskBase {
 		}
 
 		final Task task = new Task(cursor.getLong(i++), cursor.getString(i++),
-				ListMirakel.getList((int) cursor.getLong(i++)),
+				ListMirakel.get((int) cursor.getLong(i++)),
 				cursor.getString(i++), cursor.getString(i++),
 				cursor.getInt(i++) == 1, due, reminder, cursor.getInt(8),
 				created_at, updated_at, SYNC_STATE.parseInt(cursor.getInt(11)),
@@ -242,6 +234,12 @@ public class Task extends TaskBase {
 		final Task task = new Task(ctx.getString(R.string.task_empty));
 		task.setList(list, false);
 		return task;
+	}
+
+	public static Task getEmpty() {
+		final Task t = new Task("");
+		t.setId(0);
+		return t;
 	}
 
 	public static String getSorting(final int sorting) {
@@ -340,7 +338,7 @@ public class Task extends TaskBase {
 	 */
 	private static Cursor getTasksCursor(final int listId, final int sorting,
 			final boolean showDone) {
-		final ListMirakel l = ListMirakel.getList(listId);
+		final ListMirakel l = ListMirakel.get(listId);
 		if (l == null) {
 			Log.wtf(TAG, "list not found");
 			return new MatrixCursor(allColumns);
@@ -496,234 +494,6 @@ public class Task extends TaskBase {
 	 * @param el
 	 * @return
 	 */
-	public static Task parse_json(final JsonObject el,
-			final AccountMirakel account, final boolean isTW) {
-		Task t = null;
-		JsonElement id = el.get("id");
-		if (id != null) {
-			t = Task.get(id.getAsLong());
-		} else {
-			id = el.get("uuid");
-			if (id != null) {
-				t = Task.getByUUID(id.getAsString());
-			}
-		}
-		if (t == null) {
-			t = new Task();
-		}
-		if (isTW) {
-			t.setDue(null);
-			t.setDone(false);
-			t.setContent(null);
-			t.setPriority(0);
-			t.setProgress(0);
-			t.setList(null, false);
-		}
-		boolean setPriorityFromNumber = false;
-
-		// Name
-		final Set<Entry<String, JsonElement>> entries = el.entrySet();
-		for (final Entry<String, JsonElement> entry : entries) {
-			final String key = entry.getKey();
-			final JsonElement val = entry.getValue();
-			if (key == null || key.equalsIgnoreCase("id")) {
-				continue;
-			}
-			if (key.equals("uuid")) {
-				t.setUUID(val.getAsString());
-			} else if (key.equalsIgnoreCase("name")
-					|| key.equalsIgnoreCase("description")) {
-				t.setName(val.getAsString());
-			} else if (key.equalsIgnoreCase("content")) {
-				String content = val.getAsString();
-				if (content == null) {
-					content = "";
-				}
-				t.setContent(content);
-			} else if ((key.equalsIgnoreCase("priority") || key
-					.equalsIgnoreCase("priorityNumber"))
-					&& !setPriorityFromNumber) {
-				final String prioString = val.getAsString().trim();
-				if (prioString.equalsIgnoreCase("L") && t.getPriority() != -1) {
-					t.setPriority(-2);
-				} else if (prioString.equalsIgnoreCase("M")) {
-					t.setPriority(1);
-				} else if (prioString.equalsIgnoreCase("H")) {
-					t.setPriority(2);
-				} else if (!prioString.equalsIgnoreCase("L")) {
-					t.setPriority(val.getAsInt());
-					setPriorityFromNumber = true;
-				}
-			} else if (key.equalsIgnoreCase("progress")) {
-				final int progress = (int) val.getAsDouble();
-				t.setProgress(progress);
-			} else if (key.equalsIgnoreCase("list_id")) {
-				ListMirakel list = ListMirakel.getList(val.getAsInt());
-				if (list == null) {
-					list = SpecialList.firstSpecial().getDefaultList();
-				}
-				t.setList(list, true);
-			} else if (key.equalsIgnoreCase("project")) {
-				ListMirakel list = ListMirakel.findByName(val.getAsString(),
-						account);
-				if (list == null
-						|| list.getAccount().getId() != account.getId()) {
-					list = ListMirakel.newList(val.getAsString(),
-							ListMirakel.SORT_BY_OPT, account);
-				}
-				t.setList(list, true);
-			} else if (key.equalsIgnoreCase("created_at")) {
-				t.setCreatedAt(val.getAsString().replace(":", ""));
-			} else if (key.equalsIgnoreCase("updated_at")) {
-				t.setUpdatedAt(val.getAsString().replace(":", ""));
-			} else if (key.equalsIgnoreCase("entry")) {
-				Calendar createdAt = parseDate(val.getAsString(),
-						Task.context.getString(R.string.TWDateFormat));
-				if (createdAt == null) {
-					createdAt = new GregorianCalendar();
-				} else {
-					createdAt.add(Calendar.SECOND,
-							DateTimeHelper.getTimeZoneOffset(false, createdAt));
-				}
-				t.setCreatedAt(createdAt);
-			} else if (key.equalsIgnoreCase("modification")
-					|| key.equalsIgnoreCase("modified")) {
-				Calendar updatedAt = parseDate(val.getAsString(),
-						Task.context.getString(R.string.TWDateFormat));
-				if (updatedAt == null) {
-					updatedAt = new GregorianCalendar();
-				} else {
-					updatedAt.add(Calendar.SECOND,
-							DateTimeHelper.getTimeZoneOffset(false, updatedAt));
-				}
-				t.setUpdatedAt(updatedAt);
-			} else if (key.equals("done")) {
-				t.setDone(val.getAsBoolean());
-			} else if (key.equalsIgnoreCase("status")) {
-				final String status = val.getAsString();
-				if (status.equalsIgnoreCase("completed")) {
-					t.setDone(true);
-				} else if (status.equalsIgnoreCase("deleted")) {
-					t.setSyncState(SYNC_STATE.DELETE);
-				} else {
-					t.setDone(false);
-				}
-				t.addAdditionalEntry(key, "\"" + val.getAsString() + "\"");
-				// TODO don't ignore waiting and recurring!!!
-			} else if (key.equalsIgnoreCase("due")) {
-				Calendar due = parseDate(val.getAsString(), "yyyy-MM-dd");
-				if (due == null) {
-					due = parseDate(val.getAsString(),
-							Task.context.getString(R.string.TWDateFormat));
-					// try to workaround timezone-bug
-					if (due != null) {
-						due.setTimeInMillis(due.getTimeInMillis()
-								+ DateTimeHelper.getTimeZoneOffset(true, due));
-					}
-				}
-				t.setDue(due);
-			} else if (key.equalsIgnoreCase("reminder")) {
-				Calendar reminder = parseDate(val.getAsString(), "yyyy-MM-dd");
-				if (reminder == null) {
-					reminder = parseDate(val.getAsString(),
-							Task.context.getString(R.string.TWDateFormat));
-				}
-				t.setReminder(reminder);
-			} else if (key.equalsIgnoreCase("annotations")) {
-				String content = "";
-				try {
-					final JsonArray annotations = val.getAsJsonArray();
-					boolean first = true;
-					for (final JsonElement a : annotations) {
-						if (first) {
-							first = false;
-						} else {
-							content += "\n";
-						}
-						content += a.getAsJsonObject().get("description")
-								.getAsString();
-					}
-				} catch (final Exception e) {
-					Log.e(Task.TAG, "cannot parse json");
-				}
-				t.setContent(content);
-			} else if (key.equalsIgnoreCase("content")) {
-				t.setContent(val.getAsString());
-			} else if (key.equalsIgnoreCase("sync_state")) {
-				t.setSyncState(SYNC_STATE.parseInt(val.getAsInt()));
-			} else if (key.equalsIgnoreCase("depends")) {
-				t.setDependencies(val.getAsString().split(","));
-			} else if (key.equals("tags")) {
-				final JsonArray tags = val.getAsJsonArray();
-				final List<Tag> currentTags = t.getTags();
-				for (final JsonElement tag : tags) {
-					if (tag.isJsonPrimitive()) {
-						String tagName = tag.getAsString();
-						tagName = tagName.replace("_", " ");
-						Tag newTag = Tag.getByName(tagName);
-						if (newTag == null) {
-							// tag does not exist, create new one
-							newTag = Tag.newTag(tagName);
-						}
-						if (!currentTags.remove(newTag)) {
-							// tag is not linked with this task
-							t.addTag(newTag, false);
-						}
-					}
-				}
-				for (final Tag tag : currentTags) {
-					// remove unused tags
-					t.removeTag(tag, false);
-				}
-			} else {
-				if (val.isJsonPrimitive()) {
-					final JsonPrimitive p = (JsonPrimitive) val;
-					if (p.isBoolean()) {
-						t.addAdditionalEntry(key, val.getAsBoolean() + "");
-					} else if (p.isNumber()) {
-						t.addAdditionalEntry(key, val.getAsInt() + "");
-					} else if (p.isJsonNull()) {
-						t.addAdditionalEntry(key, "null");
-					} else if (p.isString()) {
-						t.addAdditionalEntry(key, "\"" + val.getAsString()
-								+ "\"");
-					} else {
-						Log.w(Task.TAG, "unkown json-type");
-					}
-				} else if (val.isJsonArray()) {
-					final JsonArray a = (JsonArray) val;
-					String s = "[";
-					boolean first = true;
-					for (final JsonElement e : a) {
-						if (e.isJsonPrimitive()) {
-							final JsonPrimitive p = (JsonPrimitive) e;
-							String add;
-							if (p.isBoolean()) {
-								add = p.getAsBoolean() + "";
-							} else if (p.isNumber()) {
-								add = p.getAsInt() + "";
-							} else if (p.isString()) {
-								add = "\"" + p.getAsString() + "\"";
-							} else if (p.isJsonNull()) {
-								add = "null";
-							} else {
-								Log.w(Task.TAG, "unkown json-type");
-								break;
-							}
-							s += (first ? "" : ",") + add;
-							first = false;
-						} else {
-							Log.w(Task.TAG, "unkown json-type");
-						}
-					}
-					t.addAdditionalEntry(key, s + "]");
-				} else {
-					Log.w(Task.TAG, "unkown json-type");
-				}
-			}
-		}
-		return t;
-	}
 
 	/**
 	 * Parse a JSON–String to a List of Tasks
@@ -737,9 +507,12 @@ public class Task extends TaskBase {
 			final List<Task> tasks = new ArrayList<Task>();
 			final Iterator<JsonElement> i = new JsonParser().parse(result)
 					.getAsJsonArray().iterator();
+			final Gson gson = new GsonBuilder().registerTypeAdapter(
+					Task.class,
+					new TaskDeserializer(false, AccountMirakel.getLocal(),
+							context)).create();
 			while (i.hasNext()) {
-				final JsonObject el = (JsonObject) i.next();
-				final Task t = parse_json(el, account, false);
+				final Task t = gson.fromJson(i.next(), Task.class);
 				tasks.add(t);
 			}
 			return tasks;
@@ -749,17 +522,6 @@ public class Task extends TaskBase {
 			Log.d(Task.TAG, Log.getStackTraceString(e));
 		}
 		return new ArrayList<Task>();
-	}
-
-	private static Calendar parseDate(final String date, final String format) {
-		final GregorianCalendar temp = new GregorianCalendar();
-		try {
-			temp.setTime(new SimpleDateFormat(format, Locale.getDefault())
-					.parse(date));
-			return temp;
-		} catch (final ParseException e) {
-			return null;
-		}
 	}
 
 	public static List<Task> rawQuery(final String generateQuery) {
@@ -794,6 +556,10 @@ public class Task extends TaskBase {
 	}
 
 	private String dependencies[];
+
+	public void setDependencies(final String[] dep) {
+		this.dependencies = dep;
+	}
 
 	Task() {
 		super();
@@ -841,6 +607,11 @@ public class Task extends TaskBase {
 	}
 
 	public Task create(final boolean addFlag) throws NoSuchListException {
+		return create(addFlag, false);
+	}
+
+	public Task create(final boolean addFlag, final boolean calledFromSync)
+			throws NoSuchListException {
 		final ContentValues values = new ContentValues();
 		values.put(TaskBase.UUID, getUUID());
 		values.put(DatabaseHelper.NAME, getName());
@@ -881,9 +652,12 @@ public class Task extends TaskBase {
 		cursor.moveToFirst();
 		final Task newTask = cursorToTask(cursor);
 		cursor.close();
-		UndoHistory.logCreate(newTask, Task.context);
-		if (!calledFromDBHelper) {
-			NotificationService.updateServices(context, getReminder() != null);
+		if (!calledFromSync) {
+			UndoHistory.logCreate(newTask, Task.context);
+			if (!calledFromDBHelper) {
+				NotificationService.updateServices(context,
+						getReminder() != null);
+			}
 		}
 		return newTask;
 	}
@@ -1065,8 +839,8 @@ public class Task extends TaskBase {
 		return count > 0;
 	}
 
-	public void safeSave() {
-		safeSave(true);
+	public void save() {
+		save(true);
 	}
 
 	/**
@@ -1074,15 +848,20 @@ public class Task extends TaskBase {
 	 * 
 	 * @param task
 	 */
-	public void safeSave(final boolean log) {
+	public void save(final boolean log) {
+		save(log, false);
+	}
+
+	public void save(final boolean log, final boolean calledFromSync) {
 		try {
-			save(log);
+			unsafeSave(log, calledFromSync);
 		} catch (final NoSuchListException e) {
 			Log.w(Task.TAG, "List did vanish");
 		}
 	}
 
-	private void save(boolean log) throws NoSuchListException {
+	private void unsafeSave(boolean log, final boolean calledFromSync)
+			throws NoSuchListException {
 		if (!isEdited()) {
 			Log.d(Task.TAG, "new Task equals old, didnt need to save it");
 			return;
@@ -1100,7 +879,7 @@ public class Task extends TaskBase {
 			setUpdatedAt(new GregorianCalendar());
 		}
 		final ContentValues values = getContentValues();
-		if (log) {
+		if (log && !calledFromSync) {
 			final Task old = Task.get(getId());
 			UndoHistory.updateLog(old, Task.context);
 		}
@@ -1115,13 +894,9 @@ public class Task extends TaskBase {
 			updateReminders = true;
 		}
 		clearEdited();
-		if (!calledFromDBHelper) {
+		if (!calledFromDBHelper && !calledFromSync) {
 			NotificationService.updateServices(Task.context, updateReminders);
 		}
-	}
-
-	private void setDependencies(final String[] dep) {
-		this.dependencies = dep;
 	}
 
 	private void setSubTasksDone() {
@@ -1129,7 +904,7 @@ public class Task extends TaskBase {
 		for (final Task t : subTasks) {
 			t.setDone(true);
 			try {
-				t.save(true);
+				t.unsafeSave(true, false);
 			} catch (final NoSuchListException e) {
 				Log.d(Task.TAG, "List did vanish");
 			}
@@ -1164,28 +939,7 @@ public class Task extends TaskBase {
 	}
 
 	public List<Tag> getTags() {
-		final Cursor c = database.rawQuery(getTagsQuery(Tag.allColumns),
-				new String[] { getId() + "" });
-
-		return Tag.cursorToTagList(c);
-	}
-
-	public String getTagsQuery(final String[] columns) {
-		String s = "";
-		boolean first = true;
-		for (final String c : columns) {
-			if (!first) {
-				s += ", ";
-			} else {
-				first = false;
-			}
-			s += Tag.TABLE + "." + c;
-		}
-		final String query = "SELECT " + s + " FROM " + TAG_CONNECTION_TABLE
-				+ " INNER JOIN " + Tag.TABLE + " ON " + TAG_CONNECTION_TABLE
-				+ ".tag_id=" + Tag.TABLE + "." + DatabaseHelper.ID + " WHERE "
-				+ TAG_CONNECTION_TABLE + ".task_id=?";
-		return query;
+		return Tag.getTagsForTask(this);
 	}
 
 	public void addTag(final Tag t) {
@@ -1193,8 +947,7 @@ public class Task extends TaskBase {
 	}
 
 	public void addTag(final Tag t, final boolean log) {
-
-		final Cursor c = database.query(TAG_CONNECTION_TABLE,
+		final Cursor c = database.query(Tag.TAG_CONNECTION_TABLE,
 				new String[] { "count(*)" }, "task_id=? and tag_id=?",
 				new String[] { getId() + "", t.getId() + "" }, null, null,
 				null, null);
@@ -1205,13 +958,13 @@ public class Task extends TaskBase {
 			return;
 		}
 		c.close();
-		// save task to set log+modifyed
+		// save task to set log+modified
 		this.edited.put("tags", true);
-		safeSave(log);
+		save(log);
 		final ContentValues cv = new ContentValues();
 		cv.put("tag_id", t.getId());
 		cv.put("task_id", getId());
-		database.insert(TAG_CONNECTION_TABLE, null, cv);
+		database.insert(Tag.TAG_CONNECTION_TABLE, null, cv);
 
 	}
 
@@ -1220,12 +973,11 @@ public class Task extends TaskBase {
 	}
 
 	public void removeTag(final Tag t, final boolean log) {
-		// save task to set log+modifyed
+		// save task to set log+modified
 		this.edited.put("tags", true);
-		safeSave(log);
-		database.delete(TAG_CONNECTION_TABLE, "task_id=? and tag_id=?",
+		save(log);
+		database.delete(Tag.TAG_CONNECTION_TABLE, "task_id=? and tag_id=?",
 				new String[] { getId() + "", t.getId() + "" });
-
 	}
 
 	/**
@@ -1237,7 +989,7 @@ public class Task extends TaskBase {
 		Task.database.beginTransaction();
 		final ContentValues cv = new ContentValues();
 		cv.put("task_id", getId());
-		database.update(TAG_CONNECTION_TABLE, cv, "task_id=0", null);
+		database.update(Tag.TAG_CONNECTION_TABLE, cv, "task_id=0", null);
 		Task.database.setTransactionSuccessful();
 		Task.database.endTransaction();
 	}
