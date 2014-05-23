@@ -57,7 +57,7 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	public MainWidgetViewsFactory(final Context context, final Intent intent) {
 		if (intent.getIntExtra(MainWidgetProvider.EXTRA_WIDGET_LAYOUT,
 				MainWidgetProvider.NORMAL_WIDGET) != MainWidgetProvider.NORMAL_WIDGET) {
-			Log.wtf(TAG, "falscher provider");
+			Log.wtf(TAG, "wrong provider");
 		}
 		this.mContext = context;
 		this.widgetId = intent.getIntExtra(MainWidgetProvider.EXTRA_WIDGET_ID,
@@ -74,8 +74,8 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
 	private void updateList() {
 		this.list = WidgetHelper.getList(this.mContext, this.widgetId);
-		this.tasks = this.list.tasks(WidgetHelper.showDone(this.mContext,
-				this.widgetId));
+		getCount();
+
 	}
 
 	@Override
@@ -85,15 +85,17 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
 	@Override
 	public int getCount() {
-		if (this.tasks.size() == 0) {
-			onDataSetChanged();
-		}
+		// get the tasks here because sometimes this returns a wrong value, if
+		// the count is not refreshed
+		this.tasks = Task.getTasks(this.list, this.list.getSortBy(),
+				WidgetHelper.showDone(this.mContext, this.widgetId));
 		return this.tasks.size();
 	}
 
 	@Override
 	public RemoteViews getViewAt(final int position) {
 		if (position >= this.tasks.size()) {
+			Log.w(TAG, "wrong position");
 			return null;
 		}
 		final Task task = this.tasks.get(position);
@@ -149,4 +151,5 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	public void onDataSetChanged() {
 		updateList();
 	}
+
 }
