@@ -135,7 +135,7 @@ public class TaskDialogHelpers {
 			if (listId > 0) {
 				query += " and " + Task.LIST_ID + "=" + listId;
 			} else {
-				final String where = ((SpecialList) ListMirakel.getList(listId))
+				final String where = ((SpecialList) ListMirakel.get(listId))
 						.getWhereQueryForTasks();
 				Log.d(TAG, where);
 				if (where != null && !where.trim().equals("")) {
@@ -269,7 +269,7 @@ public class TaskDialogHelpers {
 							final int which) {
 						dialog.dismiss();
 						task.setPriority(2 - which);
-						task.safeSave();
+						task.save();
 						onSuccess.exec();
 					}
 				});
@@ -799,7 +799,7 @@ public class TaskDialogHelpers {
 			task.setRecurringReminder(id);
 		}
 		TaskDetailDueReminder.setRecurringImage(image, id);
-		task.safeSave();
+		task.save();
 		// if (!isDue) {
 		// ReminderAlarm.updateAlarms(ctx);
 		// }

@@ -243,8 +243,8 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements
 
 	private void updateProgress() {
 		this.taskProgress.setProgress((int) (this.task.getProgress() * 3.7));
-		if ((this.task.getProgress() > 0)
-				&& ((this.task.getProgress() < 100) || !this.task.isDone())) {
+		if (this.task.getProgress() > 0
+				&& (this.task.getProgress() < 100 || !this.task.isDone())) {
 			this.taskProgress.setVisibility(VISIBLE);
 		} else {
 			this.taskProgress.setVisibility(GONE);

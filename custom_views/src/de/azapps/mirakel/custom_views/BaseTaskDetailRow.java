@@ -54,7 +54,7 @@ public abstract class BaseTaskDetailRow extends LinearLayout {
 
 	protected void save() {
 		if (this.task != null) {
-			this.task.safeSave();
+			this.task.save();
 			if (this.taskChangedListner != null) {
 				this.taskChangedListner.onTaskChanged(this.task);
 			}

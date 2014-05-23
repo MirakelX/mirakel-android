@@ -76,6 +76,17 @@
             android:contentDescription="@string/edit"
             android:padding="@dimen/padding_button"
             android:paddingEnd="-2dp" />
+        <ImageButton
+            android:id="@+id/cancel_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/edit_content"
+            android:background="@android:drawable/ic_menu_close_clear_cancel"
+            android:visibility="gone"
+            android:contentDescription="@android:string/cancel"
+            android:padding="@dimen/padding_button"
+            android:paddingEnd="-2dp" />
     </RelativeLayout>
 
 </LinearLayout>

@@ -88,7 +88,7 @@ public class TaskDetailSubtask extends
 			@Override
 			public void onTaskChanged(final Task task) {
 				if (task != null) {
-					task.safeSave();
+					task.save();
 					if (TaskDetailSubtask.this.taskChangedListner != null) {
 						TaskDetailSubtask.this.taskChangedListner
 								.onTaskChanged(task);
