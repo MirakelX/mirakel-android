@@ -18,7 +18,7 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="sync_add">Account toevoegen</string>
   <string name="sync_title">Synchronisatie</string>
   <string name="sync_new">Nieuwe account</string>
@@ -35,6 +35,10 @@
   <string name="sync_frequency">Frequentie</string>
   <string name="sync_frequency_summary">Synchroniseer elke %s min</string>
   <string name="sync_frequency_summary_man">Alleen handmatig synchroniseren</string>
+  <string-array name="sync_types">
+    <item>CalDAV synchronisatie</item>
+    <item>Taskwarrior syngronisatie</item>
+  </string-array>
   <string name="sync_caldav">CalDAV synchronisatie</string>
   <string name="sync_caldav_howto_">
 <![CDATA[You have to setup a Mirakel-compatible CalDAV-syncing app. Currently you have to install our modified DAVdroid version from our page.<br /><br />
@@ -152,6 +156,12 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="do_not_touch">Raak niet aan</string>
   <string name="list_fragment">Lijst overzicht</string>
   <string name="show_account_name">Accountnaam weergeven</string>
+  <string-array name="tablet_options">
+    <item>nooit</item>
+    <item>horizontaal</item>
+    <item>portret</item>
+    <item>portret &amp; horizontaal</item>
+  </string-array>
   <string name="delete_done">Verwijder afgeronde taken</string>
   <string name="delete_done_summary">Verwijder alle afgeronde taken</string>
   <string name="delete_done_warning">Weet u het zeker?</string>
@@ -173,6 +183,32 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="settings_semantics_priority">Prioriteit instellen</string>
   <string name="settings_semantics_due">Vervaldatum instellen</string>
   <string name="settings_semantics_weekday">Vervaldatum instellen op de volgende weekdag</string>
+  <string-array name="weekdays">
+    <item>Niet ingesteld</item>
+    <item>Maandag</item>
+    <item>Dinsdag</item>
+    <item>Woensdag</item>
+    <item>Donderdag</item>
+    <item>Vrijdag</item>
+    <item>Zaterdag</item>
+    <item>Zondag</item>
+  </string-array>
+  <string-array name="priority_entries">
+    <item>Geen prioriteit instellen</item>
+    <item>-2</item>
+    <item>-1</item>
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+  </string-array>
+  <string-array name="priority_entry_values">
+    <item>Nul</item>
+    <item>-2</item>
+    <item>-1</item>
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+  </string-array>
   <string name="semantics_no_list">Lijst niet instellen</string>
   <string name="semantics_no_due">Vervaldatum niet instellen</string>
   <string name="settings_file_default_title">Taaknaam bij geïmporteerd bestand</string>
@@ -217,40 +253,4 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="credits_license_title">Licentie</string>
   <string name="special_list_where_subtask_title_text">Subtaken</string>
   <string name="special_list_where_progress_title_text">Voortgang</string>
-  <string-array name="sync_types">
-    <item>CalDAV synchronisatie</item>
-    <item>Taskwarrior syngronisatie</item>
-  </string-array>
-  <string-array name="tablet_options">
-    <item>nooit</item>
-    <item>horizontaal</item>
-    <item>portret</item>
-    <item>portret &amp; horizontaal</item>
-  </string-array>
-  <string-array name="weekdays">
-    <item>Niet ingesteld</item>
-    <item>Maandag</item>
-    <item>Dinsdag</item>
-    <item>Woensdag</item>
-    <item>Donderdag</item>
-    <item>Vrijdag</item>
-    <item>Zaterdag</item>
-    <item>Zondag</item>
-  </string-array>
-  <string-array name="priority_entries">
-    <item>Geen prioriteit instellen</item>
-    <item>-2</item>
-    <item>-1</item>
-    <item>0</item>
-    <item>1</item>
-    <item>2</item>
-  </string-array>
-  <string-array name="priority_entry_values">
-    <item>Nul</item>
-    <item>-2</item>
-    <item>-1</item>
-    <item>0</item>
-    <item>1</item>
-    <item>2</item>
-  </string-array>
 </resources>

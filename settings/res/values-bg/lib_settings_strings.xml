@@ -18,7 +18,7 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="sync_add">Прибавяне на профил</string>
   <string name="sync_title">Синхронизация</string>
   <string name="sync_new">Нов профил</string>
@@ -34,8 +34,11 @@
   <string name="sync_frequency">Честота</string>
   <string name="sync_frequency_summary">Синхронизация на всеки %s минути</string>
   <string name="sync_frequency_summary_man">Само ръчна синхронизация</string>
+  <string-array name="sync_types">
+    <item>CalDAV синхронизация</item>
+    <item>Taskwarrior синхронизация</item>
+  </string-array>
   <string name="sync_caldav">CalDAV синхронизация</string>
-  <string name="sync_caldav_howto">  </string>
   <string name="download">Изтегляне</string>
   <string name="sync_add_account">Прибавяне на профил</string>
   <string name="sync_taskwarrior_configure">Конфигуриране на Taskwarrior</string>
@@ -117,7 +120,6 @@
   <string name="ui_settings_title">Потребителски интерфейс</string>
   <string name="settings_semantic">Шаблон за задачи</string>
   <string name="semantic_new_task">Нов шаблон за задачи</string>
-  <string name="semantic_new_task_summary">  </string>
   <string name="semantic_new_task_config">Конфигуриране на шаблоните за задачи</string>
   <string name="swipeBehavior_summary">Превключи към задача, която е започната или премини към последната избарана задача</string>
   <string name="lock_drawer_in_task_fragment_summary">Така че да не го отворите случайно</string>
@@ -129,6 +131,12 @@
   <string name="do_not_touch">Не пипай</string>
   <string name="list_fragment">Преглед на списъка</string>
   <string name="show_account_name">Показване на профилното име</string>
+  <string-array name="tablet_options">
+    <item>никога</item>
+    <item>Пейзаж</item>
+    <item>Портрет</item>
+    <item>Портрет &amp; пейзаж</item>
+  </string-array>
   <string name="delete_done">Изтриване на завършени задачи</string>
   <string name="delete_done_summary">Изтриване на всички завършени задачи</string>
   <string name="delete_done_warning">Сигурни ли сте?</string>
@@ -145,6 +153,32 @@
   <string name="settings_semantics_actions">Действия</string>
   <string name="settings_semantics_due">Задайте крайната дата</string>
   <string name="settings_semantics_weekday">Задайте крайна дата до следващия работен ден</string>
+  <string-array name="weekdays">
+    <item>Без настройване</item>
+    <item>Понеделник</item>
+    <item>Вторник</item>
+    <item>Сряда</item>
+    <item>Четвъртък</item>
+    <item>Петък</item>
+    <item>Събота</item>
+    <item>Неделя</item>
+  </string-array>
+  <string-array name="priority_entries">
+    <item>Без настройка на приоритет</item>
+    <item>-2</item>
+    <item>-1</item>
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+  </string-array>
+  <string-array name="priority_entry_values">
+    <item>несъществуващ</item>
+    <item>-2</item>
+    <item>-1</item>
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+  </string-array>
   <string name="semantics_no_list">Не нагласяйте списък</string>
   <string name="semantics_no_due">Не настройвайте крайна дата</string>
   <string name="settings_file_default_title">Име на задачата за импортираните файлове</string>
@@ -184,40 +218,4 @@
   <string name="credits_license_title">Лиценз</string>
   <string name="special_list_where_subtask_title_text">Подзадачи</string>
   <string name="special_list_where_progress_title_text">Прогрес</string>
-  <string-array name="sync_types">
-    <item>CalDAV синхронизация</item>
-    <item>Taskwarrior синхронизация</item>
-  </string-array>
-  <string-array name="tablet_options">
-    <item>никога</item>
-    <item>Пейзаж</item>
-    <item>Портрет</item>
-    <item>Портрет &amp; пейзаж</item>
-  </string-array>
-  <string-array name="weekdays">
-    <item>Без настройване</item>
-    <item>Понеделник</item>
-    <item>Вторник</item>
-    <item>Сряда</item>
-    <item>Четвъртък</item>
-    <item>Петък</item>
-    <item>Събота</item>
-    <item>Неделя</item>
-  </string-array>
-  <string-array name="priority_entries">
-    <item>Без настройка на приоритет</item>
-    <item>-2</item>
-    <item>-1</item>
-    <item>0</item>
-    <item>1</item>
-    <item>2</item>
-  </string-array>
-  <string-array name="priority_entry_values">
-    <item>несъществуващ</item>
-    <item>-2</item>
-    <item>-1</item>
-    <item>0</item>
-    <item>1</item>
-    <item>2</item>
-  </string-array>
 </resources>

@@ -170,7 +170,7 @@ public class PreferencesAppHelper extends PreferencesHelper {
 						public boolean onPreferenceChange(
 								final Preference preference,
 								final Object newValue) {
-							final String list = ListMirakel.getList(
+							final String list = ListMirakel.get(
 									Integer.parseInt((String) newValue))
 									.getName();
 							notificationsListPreference
@@ -214,7 +214,7 @@ public class PreferencesAppHelper extends PreferencesHelper {
 								final Object newValue) {
 							String list;
 							if (!"default".equals(newValue.toString())) {
-								list = ListMirakel.getList(
+								list = ListMirakel.get(
 										Integer.parseInt((String) newValue))
 										.getName();
 							} else {
@@ -320,7 +320,7 @@ public class PreferencesAppHelper extends PreferencesHelper {
 									.setSummary(PreferencesAppHelper.this.activity
 											.getString(
 													R.string.startup_list_summary,
-													ListMirakel.getList(Integer
+													ListMirakel.get(Integer
 															.parseInt((String) newValue))));
 							return true;
 						}

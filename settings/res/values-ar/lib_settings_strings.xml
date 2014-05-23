@@ -18,7 +18,7 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="sync_add">إضافة حساب</string>
   <string name="sync_title">مزامنة</string>
   <string name="sync_new">حساب جديد</string>
@@ -35,6 +35,10 @@
   <string name="sync_frequency">تردد</string>
   <string name="sync_frequency_summary">مزامنة كل دقيقة %s</string>
   <string name="sync_frequency_summary_man">مزامنة يدوياً فقط</string>
+  <string-array name="sync_types">
+    <item>مزامنة CalDAV</item>
+    <item>مزامنة Taskwarrior</item>
+  </string-array>
   <string name="sync_caldav">مزامنة CalDAV</string>
   <string name="sync_add_account">إضافة حساب</string>
   <string name="sync_taskwarrior_configure">تكوين Taskwarrior</string>
@@ -130,6 +134,12 @@
   <string name="do_not_touch">لا تلمس</string>
   <string name="list_fragment">نظرة عامة على القائمة</string>
   <string name="show_account_name">إظهار اسم الحساب</string>
+  <string-array name="tablet_options">
+    <item>ابدا</item>
+    <item>المناظر الطبيعية</item>
+    <item>portrait</item>
+    <item>portrait &amp; landscape</item>
+  </string-array>
   <string name="delete_done">حذف المهام المنجزة</string>
   <string name="delete_done_summary">حذف كافة المهام المنجزة</string>
   <string name="delete_done_warning">هل أنت متأكد؟</string>
@@ -150,6 +160,32 @@
   <string name="settings_semantics_priority">تعيين الأولوية</string>
   <string name="settings_semantics_due">تعيين تاريخ الواجب</string>
   <string name="settings_semantics_weekday">تعيين الواجب في أيام الأسبوع القادم</string>
+  <string-array name="weekdays">
+    <item>لا تقم بتعيين</item>
+    <item>الاثنين</item>
+    <item>الثلاثاء</item>
+    <item>الأربعاء</item>
+    <item>الخميس</item>
+    <item>الجمعة</item>
+    <item>السبت</item>
+    <item>الأحد</item>
+  </string-array>
+  <string-array name="priority_entries">
+    <item>لا تقم بتعيين أولوية</item>
+    <item>-2</item>
+    <item>-1</item>
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+  </string-array>
+  <string-array name="priority_entry_values">
+    <item>null</item>
+    <item>-2</item>
+    <item>-1</item>
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+  </string-array>
   <string name="semantics_no_list">لا تقم بتعيين قائمة</string>
   <string name="semantics_no_due">لا تقم بتعيين تاريخ الواجب</string>
   <string name="settings_file_default_title">اسم المهمة للملفات التي تم استيرادها</string>
@@ -192,40 +228,4 @@
   <string name="write_logs_to_file">كتابة سجلات ملف</string>
   <string name="special_list_where_subtask_title_text">المهام الفرعية</string>
   <string name="special_list_where_progress_title_text">التقدم</string>
-  <string-array name="sync_types">
-    <item>مزامنة CalDAV</item>
-    <item>مزامنة Taskwarrior</item>
-  </string-array>
-  <string-array name="tablet_options">
-    <item>ابدا</item>
-    <item>المناظر الطبيعية</item>
-    <item>portrait</item>
-    <item>portrait &amp; landscape</item>
-  </string-array>
-  <string-array name="weekdays">
-    <item>لا تقم بتعيين</item>
-    <item>الاثنين</item>
-    <item>الثلاثاء</item>
-    <item>الأربعاء</item>
-    <item>الخميس</item>
-    <item>الجمعة</item>
-    <item>السبت</item>
-    <item>الأحد</item>
-  </string-array>
-  <string-array name="priority_entries">
-    <item>لا تقم بتعيين أولوية</item>
-    <item>-2</item>
-    <item>-1</item>
-    <item>0</item>
-    <item>1</item>
-    <item>2</item>
-  </string-array>
-  <string-array name="priority_entry_values">
-    <item>null</item>
-    <item>-2</item>
-    <item>-1</item>
-    <item>0</item>
-    <item>1</item>
-    <item>2</item>
-  </string-array>
 </resources>
