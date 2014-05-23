@@ -9,6 +9,7 @@ buildscript {
         }
         classpath 'com.android.tools.build:gradle:0.10.+'
 //        classpath 'com.jakewharton.hugo:hugo-plugin:1.0.+'
+        classpath 'org.robolectric.gradle:gradle-android-test-plugin:0.10.+'
     }
 }
 dependencies {
@@ -17,6 +18,37 @@ dependencies {
 
         // NOTE: This is only needed when developing the plugin!
         mavenLocal()
+    }
+}
+def String getProjectProperty(String propertyName) {
+        String propertyValue = "null"
+        if (hasProperty(propertyName)) {
+            propertyValue = this.properties[propertyName]
+        } else {
+            throw GradleScriptException("PropertyName " + propertyName + " is not defined in properties file")
+        }
+        return propertyValue
+}
+
+apply plugin: "sonar-runner"
+sonarRunner {
+    sonarProperties {
+		property "sonar.host.url", getProjectProperty('sonar.host.url')
+		property "sonar.jdbc.url", getProjectProperty('sonar.db.url')
+		property "sonar.jdbc.username", getProjectProperty('sonar.db.user')
+		property "sonar.jdbc.password", getProjectProperty('sonar.db.password')
+    }
+}
+subprojects {
+    sonarRunner {
+        sonarProperties {
+			property "sonar.projectKey", project.name
+			property "sonar.projectName", project.name
+			property "sonar.projectVersion", "V1.0"
+			property "sonar.language", "java"
+			property "sonar.sources", "src"
+			property "sonar.binaries", "build/apk"
+        }
     }
 }
 
@@ -44,7 +76,7 @@ gradle.projectsEvaluated {
 }
 ext {
     compileSdkVersion = 19
-    buildToolsVersion = "19.0.3"
+    buildToolsVersion = "19.1.0"
     minSDKVersion = 8
 }
 
@@ -58,6 +90,7 @@ configure(allprojects) {
     ext.nineoldandroisVersion="2.4.0"
     ext.robotiumVersion = "5.1"
     ext.gsonVersion = "2.2.+"
+    ext.junitVersion= "4.11"
 }
 
 allprojects {
