@@ -52,5 +52,5 @@
   <string name="message_account_suspended">Votre compte est suspendu!</string>
   <string name="message_parse_message">Impossible d\'analyser les tâches – veuillez-nous nous contacter pour nous décrire comment c\'est arrivé</string>
   <string name="message_message_error">Réponse inconnue du serveur. Merci de nous contacter pour nous expliquer comment l\'erreur est survenue</string>
-  <string name="finish_sync">Fin de synchronisation</string>
+  <string name="finish_sync">La synchronisation est terminée</string>
 </resources>
