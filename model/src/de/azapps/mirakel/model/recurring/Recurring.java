@@ -36,7 +36,7 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
 
 public class Recurring extends RecurringBase {
-	public final static String TABLE = "recurring";
+	public static final String TABLE = "recurring";
 	private final static String TAG = "Recurring";
 	private final static String[] allColumns = { "_id", "label", "minutes",
 			"hours", "days", "months", "years", "for_due", "start_date",
