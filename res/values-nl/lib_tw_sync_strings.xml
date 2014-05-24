@@ -50,7 +50,6 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="change_account">Account wijzigen</string>
   <string name="wrong_config">Het lijkt erop dat het verkeerde configuratie bestand gebruikt is</string>
   <string name="cert_not_found">Het certificaat is verdwenen. Activeer gelieve opnieuw uw account.</string>
-  <string name="config_404">Configuratiebestand is niet gevonden</string>
   <string name="config_error_empty">Er is geen %s vermelding in de config</string>
   <string name="load_config">Selecteer het configuratie bestand voor Taskwarrior</string>
   <string name="select_config">Selecteer het Taskwarrior configuratie bestand</string>
