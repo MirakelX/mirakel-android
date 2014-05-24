@@ -28,7 +28,6 @@
   <string name="every">A cada</string>
   <string name="recurrence_end_continously">Eternamente</string>
   <string name="recurrence_end_date_label">Até uma data</string>
-  <string name="use_exact_recurrence">Definir recorrência baseada na data de conclusão?</string>
   <string name="recurrence_from_now">Desde já</string>
   <string name="recurrence_from">Desde</string>
   <string name="list_all">Todas as listas</string>

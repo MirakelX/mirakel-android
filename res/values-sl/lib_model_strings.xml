@@ -28,7 +28,6 @@
   <string name="every">Vsakih</string>
   <string name="recurrence_end_continously">V nedolged</string>
   <string name="recurrence_end_date_label">Do datuma</string>
-  <string name="use_exact_recurrence">Ali naj se nastavi ponavljanje po datumu končanja?</string>
   <string name="recurrence_from_now">Od zdaj</string>
   <string name="recurrence_from">Od</string>
   <string name="list_all">Združen prikaz seznamov</string>

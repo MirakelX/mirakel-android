@@ -28,7 +28,6 @@
   <string name="every">Jede</string>
   <string name="recurrence_end_continously">Wiederhole fortlaufend</string>
   <string name="recurrence_end_date_label">Bis zu einem Zeitpunkt</string>
-  <string name="use_exact_recurrence">Soll die Wiederholung mit dem \'erledigt\' Datum starten?</string>
   <string name="recurrence_from_now">Ab sofort</string>
   <string name="recurrence_from">Ab</string>
   <string name="list_all">Alle Listen</string>

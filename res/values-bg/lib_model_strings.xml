@@ -24,7 +24,6 @@
   <string name="every">Всеки</string>
   <string name="recurrence_end_continously">Завинаги</string>
   <string name="recurrence_end_date_label">До дата</string>
-  <string name="use_exact_recurrence">Задаване на повторение въз основа на датата за приключване?</string>
   <string name="recurrence_from_now">От сега</string>
   <string name="recurrence_from">От</string>
   <string name="list_all">Всички списъци</string>
