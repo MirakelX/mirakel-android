@@ -15,6 +15,7 @@
   <string name="task_fragment_content">Remarques</string>
   <string name="task_fragment_subtask">Tâches subordonnées</string>
   <string name="task_fragment_progress">Progrès</string>
+  <string name="task_fragment_tags">Étiquettes</string>
   <string name="audio_record_title">Enregistrement audio...</string>
   <string name="audio_record_message">Enregistrement en cours&#8230;</string>
   <string name="audio_playback_title">Lecture audio&#8230;</string>
@@ -24,15 +25,23 @@
   <string name="audio_playback_stop">Arrêt</string>
   <string name="task_change_prio_title">Modifier la priorité</string>
   <string name="remove_subtask">Supprimer la sous-tâche</string>
+  <string name="remove_files_summary">Voulez-vous enlever %1$s de \"%2$s\" ?</string>
   <string name="add_existing">Ajoutez une tâche existante</string>
   <string name="task_name">Nom de la tâche:</string>
-  <string name="subtask_done">Tâche effectuée?</string>
+  <string name="subtask_done">Tâche effectuée ?</string>
   <string name="subtask_reminder">Tâches avec rappel ?</string>
-  <string name="subtask_content">Tâche avec note?</string>
+  <string name="subtask_content">Tâche avec note ?</string>
   <string name="new_task">Nouvelle tâche</string>
   <string name="add_subtasks">Ajouter une sous-tâche &#8230;</string>
+  <string name="add_tags">Ajouter une Étiquette&#8230;</string>
   <string name="add">Ajouter</string>
   <string name="add_subtask">Ajouter une sous-tâche</string>
   <string name="file_no_activity">Je ne sais pas comment ouvrir ce fichier – Désolé</string>
   <string name="remove_files">Enlever les fichier de la tâche</string>
+  <string name="search_tag">Chercher une étiquette</string>
+  <string-array name="tag_menu">
+    <item>Modifier une étiquette</item>
+    <item>Enlever une étiquette</item>
+  </string-array>
+  <string name="tag_has_dark_text">Le texte est noir</string>
 </resources>
