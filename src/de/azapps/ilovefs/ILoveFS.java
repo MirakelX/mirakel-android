@@ -18,11 +18,11 @@ public class ILoveFS {
 	/**
 	 * The address where to send the mail to
 	 */
-	public String email = null;
+	private String email = null;
 	/**
 	 * The package name of the app (to show the app store)
 	 */
-	public String package_name = null;
+	private String package_name = null;
 	/**
 	 * Context where to open the alertdialog
 	 */
