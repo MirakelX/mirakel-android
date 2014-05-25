@@ -3,9 +3,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="subtask_list_name">Tâches subordonnées</string>
   <string name="daily">Quotidien</string>
-  <string name="second_day">Biquotidien</string>
+  <string name="second_day">Un jour sur deux</string>
   <string name="weekly">Hebdomadaire</string>
-  <string name="two_weekly">Semi-hebdomadaire</string>
+  <string name="two_weekly">Bimensuel</string>
   <string name="yearly">Annuel</string>
   <string name="monthly">Mensuel</string>
   <string name="hourly">Horaire</string>
