@@ -375,14 +375,21 @@ public class TaskWarriorSync {
 				DefinitionsHelper.BUNDLE_CERT_CLIENT);
 		final String[] pwds = this.accountManager.getPassword(this.account)
 				.split(":");
-		if (pwds.length != 2) {
+		if (pwds.length < 2) {
 			Log.wtf(TAG, "cannot split pwds");
 			throw new TaskWarriorSyncFailedExeption(
 					TW_ERRORS.CONFIG_PARSE_ERROR, "cannot split pwds");
 		}
-
-		TaskWarriorSync.user_key = pwds[0].trim();
-		_key = pwds[1].trim();
+		if (pwds.length != 2) {
+			// We have to remove the bad stuff and update the current password
+			TaskWarriorSync.user_key = pwds[pwds.length - 2].trim();
+			_key = pwds[pwds.length - 1].trim();
+			this.accountManager.setPassword(this.account,
+					TaskWarriorSync.user_key + "\n:" + _key);
+		} else {
+			TaskWarriorSync.user_key = pwds[0].trim();
+			_key = pwds[1].trim();
+		}
 		if (_key.length() != 0 && _key.length() != 36) {
 			Log.wtf(TAG, "Key is not valid");
 			throw new TaskWarriorSyncFailedExeption(
