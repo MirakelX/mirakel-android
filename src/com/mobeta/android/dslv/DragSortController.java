@@ -69,7 +69,7 @@ public class DragSortController extends SimpleFloatViewManager implements
 
 	private boolean mDragging = false;
 
-	private final float mFlingSpeed = 500f;
+	private static final float mFlingSpeed = 500f;
 
 	private int mDragHandleId;
 
@@ -484,12 +484,12 @@ public class DragSortController extends SimpleFloatViewManager implements
 					&& DragSortController.this.mIsRemoving) {
 				final int w = DragSortController.this.mDslv.getWidth();
 				final int minPos = w / 5;
-				if (velocityX > DragSortController.this.mFlingSpeed) {
+				if (velocityX > DragSortController.mFlingSpeed) {
 					if (DragSortController.this.mPositionX > -minPos) {
 						DragSortController.this.mDslv.stopDragWithVelocity(
 								true, velocityX);
 					}
-				} else if (velocityX < -DragSortController.this.mFlingSpeed) {
+				} else if (velocityX < -DragSortController.mFlingSpeed) {
 					if (DragSortController.this.mPositionX < minPos) {
 						DragSortController.this.mDslv.stopDragWithVelocity(
 								true, velocityX);
