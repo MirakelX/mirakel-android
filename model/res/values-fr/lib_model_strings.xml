@@ -3,9 +3,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="subtask_list_name">Tâches subordonnées</string>
   <string name="daily">Quotidien</string>
-  <string name="second_day">Tous les deux jours</string>
+  <string name="second_day">Biquotidien</string>
   <string name="weekly">Hebdomadaire</string>
-  <string name="two_weekly">Toutes les deux semaines</string>
+  <string name="two_weekly">Semi-hebdomadaire</string>
   <string name="yearly">Annuel</string>
   <string name="monthly">Mensuel</string>
   <string name="hourly">Horaire</string>
@@ -26,7 +26,8 @@
   <string name="save">Sauvegarder</string>
   <string name="every">Chaque</string>
   <string name="recurrence_end_continously">Toujours</string>
-  <string name="recurrence_end_date_label">Jusqu\'à date</string>
+  <string name="recurrence_end_date_label">Jusqu\'à la date</string>
+  <string name="use_exact_recurrence">Configurer la répétition à partir de la date d\'accomplissement ?</string>
   <string name="recurrence_from_now">A partir de maintenant</string>
   <string name="recurrence_from">De</string>
   <string name="list_all">Toutes les listes</string>
@@ -45,7 +46,7 @@
     <item>Samedi</item>
     <item>Dimanche</item>
   </string-array>
-  <string name="local_account">Compte utilisateur</string>
+  <string name="local_account">Compte local</string>
   <string name="tw_account">Taskwarrior</string>
   <string name="calDavName">CalDav</string>
   <string name="search_result_title">Recherche de %s</string>
@@ -56,16 +57,16 @@
   <string name="select_file">Sélectionnez un fichier</string>
   <string name="wait">Veuillez patienter&#8230;</string>
   <string name="backup_import_ok">L\'importation s\'est bien passée - Veuillez redémarrer Mirakel</string>
-  <string name="backup_export_ok">Exporté vers %s</string>
+  <string name="backup_export_ok">Exportée vers %s</string>
   <string name="add_content">Ajouter une note&#8230;</string>
   <string name="task_has_content">Tâche avec note</string>
   <string name="notification_title_general">%1$d tâches dans %2$s</string>
   <string name="notification_title_general_single">1 tâche dans %s</string>
   <string name="notification_title_empty">Bonne journée !</string>
   <string name="reminder_notification_title">À faire: %s</string>
-  <string name="reminder_notification_priority">Prioritaire : %s</string>
+  <string name="reminder_notification_priority">Priorité: %s</string>
   <string name="reminder_notification_list">Liste : %s</string>
-  <string name="reminder_notification_due">À échéance : %s</string>
+  <string name="reminder_notification_due">Échéance : %s</string>
   <string name="reminder_notification_done">Fini</string>
   <string name="reminder_notification_later">Plus tard</string>
   <string name="reminder_notification_done_confirm">J\'ai mis à la tâche comme \"fait\"</string>
@@ -115,7 +116,7 @@
     <item>Échéance</item>
     <item>Priorité</item>
     <item>Date de création</item>
-    <item>En premier les plus urgent, ensuite par date</item>
+    <item>Les plus prioritaire en premier, puis par date</item>
   </string-array>
   <string name="special_list_where_prio_title_text">Priorité</string>
   <string name="special_list_where_name_title_text">Nom</string>
