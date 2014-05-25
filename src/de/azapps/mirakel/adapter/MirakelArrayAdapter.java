@@ -101,13 +101,13 @@ public class MirakelArrayAdapter<T> extends ArrayAdapter<T> {
 	}
 
 	public List<T> getSelected() {
-		final List<T> selected = new ArrayList<T>();
+		final List<T> selectedList = new ArrayList<T>();
 		for (int i = 0; i < this.data.size(); i++) {
 			if (this.selected.get(i)) {
-				selected.add(this.data.get(i));
+				selectedList.add(this.data.get(i));
 			}
 		}
-		return selected;
+		return selectedList;
 	}
 
 	public int getSelectedCount() {
