@@ -375,14 +375,21 @@ public class TaskWarriorSync {
 				DefinitionsHelper.BUNDLE_CERT_CLIENT);
 		final String[] pwds = this.accountManager.getPassword(this.account)
 				.split(":");
-		if (pwds.length != 2) {
+		if (pwds.length < 2) {
 			Log.wtf(TAG, "cannot split pwds");
 			throw new TaskWarriorSyncFailedExeption(
 					TW_ERRORS.CONFIG_PARSE_ERROR, "cannot split pwds");
 		}
-
-		TaskWarriorSync.user_key = pwds[0].trim();
-		_key = pwds[1].trim();
+		if (pwds.length != 2) {
+			// We have to remove the bad stuff and update the current password
+			TaskWarriorSync.user_key = pwds[pwds.length - 2].trim();
+			_key = pwds[pwds.length - 1].trim();
+			this.accountManager.setPassword(this.account,
+					TaskWarriorSync.user_key + "\n:" + _key);
+		} else {
+			TaskWarriorSync.user_key = pwds[0].trim();
+			_key = pwds[1].trim();
+		}
 		if (_key.length() != 0 && _key.length() != 36) {
 			Log.wtf(TAG, "Key is not valid");
 			throw new TaskWarriorSyncFailedExeption(
@@ -477,6 +484,16 @@ public class TaskWarriorSync {
 		setDependencies();
 	}
 
+	private String cleanQuotes(String str) {
+		if (str.startsWith("\"") || str.startsWith("'")) {
+			str = str.substring(1);
+		}
+		if (str.endsWith("\"") || str.endsWith("'")) {
+			str = str.substring(0, str.length() - 1);
+		}
+		return str;
+	}
+
 	/**
 	 * Converts a task to the json-format we need
 	 * 
@@ -496,13 +513,12 @@ public class TaskWarriorSync {
 		} else if (task.isDone()) {
 			status = "completed";
 			if (additionals.containsKey("end")) {
-				end = additionals.get("end");
-				end = end.substring(1, end.length() - 1); // Clear redundant \"
+				end = cleanQuotes(additionals.get("end"));
 			} else {
 				end = formatCal(now);
 			}
 		} else if (task.getAdditionalEntries().containsKey("status")) {
-			status = task.getAdditionalEntries().get("status");
+			status = cleanQuotes(task.getAdditionalEntries().get("status"));
 		}
 
 		String priority = null;
@@ -559,9 +575,13 @@ public class TaskWarriorSync {
 		if (end != null) {
 			json += ",\"end\":\"" + end + "\"";
 		}
-		json += ",\"progress\":" + task.getProgress();
+		if (task.getProgress() != 0) {
+			json += ",\"progress\":" + task.getProgress();
+		}
 		// Tags
-		json += "," + Tag.serialize(task);
+		if (task.getTags().size() > 0) {
+			json += "," + Tag.serialize(task);
+		}
 		// End Tags
 		// Annotations
 		if (task.getContent() != null && !task.getContent().equals("")) {
