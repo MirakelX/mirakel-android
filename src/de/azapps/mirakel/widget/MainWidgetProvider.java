@@ -311,11 +311,6 @@ public class MainWidgetProvider extends AppWidgetProvider {
 		if (intent.getAction().equals(
 				"android.appwidget.action.APPWIDGET_UPDATE")) {
 			final AppWidgetManager a = AppWidgetManager.getInstance(context);
-			for (final int w : a.getAppWidgetIds(new ComponentName(context,
-					MainWidgetProvider.class))) {
-				// if (!oldAPI)
-				// a.notifyAppWidgetViewDataChanged(w, R.id.tasks_list);
-			}
 			onUpdate(context, a, a.getAppWidgetIds(new ComponentName(context,
 					MainWidgetProvider.class)));
 		}
