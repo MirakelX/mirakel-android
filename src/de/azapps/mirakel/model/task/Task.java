@@ -21,7 +21,6 @@ package de.azapps.mirakel.model.task;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Iterator;
 import java.util.List;
 
 import android.accounts.Account;
@@ -32,12 +31,6 @@ import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Pair;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-
 import de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.helper.DateTimeHelper;
@@ -486,42 +479,6 @@ public class Task extends TaskBase {
 			Log.e(Task.TAG, Log.getStackTraceString(e));
 			return null;
 		}
-	}
-
-	/**
-	 * Parses a JSON-Object to a task
-	 * 
-	 * @param el
-	 * @return
-	 */
-
-	/**
-	 * Parse a JSON–String to a List of Tasks
-	 * 
-	 * @param result
-	 * @return
-	 */
-	public static List<Task> parse_json(final String result,
-			final AccountMirakel account) {
-		try {
-			final List<Task> tasks = new ArrayList<Task>();
-			final Iterator<JsonElement> i = new JsonParser().parse(result)
-					.getAsJsonArray().iterator();
-			final Gson gson = new GsonBuilder().registerTypeAdapter(
-					Task.class,
-					new TaskDeserializer(false, AccountMirakel.getLocal(),
-							context)).create();
-			while (i.hasNext()) {
-				final Task t = gson.fromJson(i.next(), Task.class);
-				tasks.add(t);
-			}
-			return tasks;
-		} catch (final Exception e) {
-			Log.e(Task.TAG, "Cannot parse response");
-			Log.e(Task.TAG, result);
-			Log.d(Task.TAG, Log.getStackTraceString(e));
-		}
-		return new ArrayList<Task>();
 	}
 
 	public static List<Task> rawQuery(final String generateQuery) {
