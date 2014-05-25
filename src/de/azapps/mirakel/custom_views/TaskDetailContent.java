@@ -133,12 +133,7 @@ public class TaskDetailContent extends BaseTaskDetailRow {
 		cancelContent();
 	}
 
-	public void saveContentHelper() {
-		TaskDetailContent.this.task
-				.setContent(TaskDetailContent.this.taskContentEdit.getText()
-						.toString());
-		save();
-		this.content = this.task.getContent();
+	private void updateContentText() {
 		if (this.task.getContent().length() > 0) {
 			this.taskContent.setText(this.task.getContent());
 			Linkify.addLinks(this.taskContent, Linkify.WEB_URLS);
@@ -153,6 +148,16 @@ public class TaskDetailContent extends BaseTaskDetailRow {
 					inactive_color));
 			this.taskContentEdit.setText("");
 		}
+
+	}
+
+	public void saveContentHelper() {
+		TaskDetailContent.this.task
+				.setContent(TaskDetailContent.this.taskContentEdit.getText()
+						.toString());
+		save();
+		this.content = this.task.getContent();
+		updateContentText();
 	}
 
 	@Override
@@ -172,20 +177,7 @@ public class TaskDetailContent extends BaseTaskDetailRow {
 			this.editContent
 					.setBackgroundResource(android.R.drawable.ic_menu_edit);
 		}
-		if (this.task.getContent().length() > 0) {
-			this.taskContent.setText(this.task.getContent());
-			Linkify.addLinks(this.taskContent, Linkify.WEB_URLS);
-			this.taskContent.setTextColor(this.context.getResources().getColor(
-					MirakelCommonPreferences.isDark() ? android.R.color.white
-							: android.R.color.black));
-			this.taskContentEdit.setText(this.task.getContent());
-			Linkify.addLinks(this.taskContentEdit, Linkify.WEB_URLS);
-		} else {
-			this.taskContent.setText(R.string.add_content);
-			this.taskContent.setTextColor(this.context.getResources().getColor(
-					inactive_color));
-			this.taskContentEdit.setText("");
-		}
+		updateContentText();
 	}
 
 }
