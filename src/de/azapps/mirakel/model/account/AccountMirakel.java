@@ -121,17 +121,15 @@ public class AccountMirakel extends AccountBase {
 	}
 
 	public static List<AccountMirakel> cursorToAccountList(final Cursor c) {
+		final List<AccountMirakel> accounts = new ArrayList<AccountMirakel>();
 		if (c.getCount() > 0) {
-			final List<AccountMirakel> accounts = new ArrayList<AccountMirakel>();
 			c.moveToFirst();
 			while (!c.isAfterLast()) {
 				accounts.add(cursorToAccount(c));
 				c.moveToNext();
 			}
-			return accounts;
-
 		}
-		return null;
+		return accounts;
 	}
 
 	public static AccountMirakel get(final Account account) {
