@@ -10,7 +10,7 @@ import de.azapps.mirakel.helper.DateTimeHelper;
 
 public class RecurringBase {
 	private String label;
-	private int _id;
+	private int id;
 	private int minutes;
 	private int hours;
 	private int days;
@@ -24,7 +24,7 @@ public class RecurringBase {
 	private SparseBooleanArray weekdays;
 	private Integer derivedFrom;
 
-	public RecurringBase(final int _id, final String label, final int minutes,
+	public RecurringBase(final int id, final String label, final int minutes,
 			final int hours, final int days, final int months, final int years,
 			final boolean forDue, final Calendar startDate,
 			final Calendar endDate, final boolean temporary,
@@ -38,7 +38,7 @@ public class RecurringBase {
 		this.minutes = minutes;
 		this.months = months;
 		this.years = years;
-		this.setId(_id);
+		this.setId(id);
 		this.setStartDate(startDate);
 		this.setEndDate(endDate);
 		this.temporary = temporary;
@@ -67,8 +67,8 @@ public class RecurringBase {
 		return this.forDue;
 	}
 
-	public void setForDue(final boolean for_due) {
-		this.forDue = for_due;
+	public void setForDue(final boolean forDue) {
+		this.forDue = forDue;
 	}
 
 	public int getMonths() {
@@ -109,11 +109,11 @@ public class RecurringBase {
 	}
 
 	public int getId() {
-		return this._id;
+		return this.id;
 	}
 
-	protected void setId(final int _id) {
-		this._id = _id;
+	protected void setId(final int id) {
+		this.id = id;
 	}
 
 	public Calendar getStartDate() {
@@ -208,7 +208,7 @@ public class RecurringBase {
 
 	public ContentValues getContentValues() {
 		final ContentValues cv = new ContentValues();
-		cv.put("_id", this._id);
+		cv.put("_id", this.id);
 		cv.put("minutes", this.minutes);
 		cv.put("hours", this.hours);
 		cv.put("days", this.days);

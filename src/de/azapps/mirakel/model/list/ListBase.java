@@ -35,8 +35,8 @@ class ListBase {
 	private int id;
 	private String name;
 	private int sortBy;
-	private String created_at;
-	private String updated_at;
+	private String createdAt;
+	private String updatedAt;
 	private SYNC_STATE syncState;
 	private int lft, rgt;
 	private int color;
@@ -47,16 +47,16 @@ class ListBase {
 		// nothing
 	}
 
-	ListBase(final int id, final String name, final short sort_by,
-			final String created_at, final String updated_at,
-			final SYNC_STATE sync_state, final int lft, final int rgt,
+	ListBase(final int id, final String name, final short sortBy,
+			final String createdAt, final String updatedAt,
+			final SYNC_STATE syncState, final int lft, final int rgt,
 			final int color, final AccountMirakel a) {
 		this.setId(id);
-		this.setCreatedAt(created_at);
+		this.setCreatedAt(createdAt);
 		this.setName(name);
-		this.setUpdatedAt(updated_at);
-		this.setSortBy(sort_by);
-		this.setSyncState(sync_state);
+		this.setUpdatedAt(updatedAt);
+		this.setSortBy(sortBy);
+		this.setSyncState(syncState);
 		this.setLft(lft);
 		this.setRgt(rgt);
 		this.setColor(color);
@@ -68,16 +68,16 @@ class ListBase {
 		this.setName(name);
 	}
 
-	protected ListBase(final int id, final String name, final short sort_by,
-			final String created_at, final String updated_at,
-			final SYNC_STATE sync_state, final int lft, final int rgt,
+	protected ListBase(final int id, final String name, final short sortBy,
+			final String createdAt, final String updatedAt,
+			final SYNC_STATE syncState, final int lft, final int rgt,
 			final int color, final int account) {
 		this.setId(id);
-		this.setCreatedAt(created_at);
+		this.setCreatedAt(createdAt);
 		this.setName(name);
-		this.setUpdatedAt(updated_at);
-		this.setSortBy(sort_by);
-		this.setSyncState(sync_state);
+		this.setUpdatedAt(updatedAt);
+		this.setSortBy(sortBy);
+		this.setSyncState(syncState);
 		this.setLft(lft);
 		this.setRgt(rgt);
 		this.setColor(color);
@@ -101,27 +101,27 @@ class ListBase {
 	}
 
 	public String getCreatedAt() {
-		return this.created_at;
+		return this.createdAt;
 	}
 
-	public void setCreatedAt(final String created_at) {
-		this.created_at = created_at;
+	public void setCreatedAt(final String createdAt) {
+		this.createdAt = createdAt;
 	}
 
 	public String getUpdatedAt() {
-		return this.updated_at;
+		return this.updatedAt;
 	}
 
-	public void setUpdatedAt(final String updated_at) {
-		this.updated_at = updated_at;
+	public void setUpdatedAt(final String updatedAt) {
+		this.updatedAt = updatedAt;
 	}
 
 	public int getSortBy() {
 		return this.sortBy;
 	}
 
-	public void setSortBy(final int sort_by) {
-		this.sortBy = sort_by;
+	public void setSortBy(final int sortBy) {
+		this.sortBy = sortBy;
 	}
 
 	public int getLft() {
@@ -174,8 +174,8 @@ class ListBase {
 		final ContentValues cv = new ContentValues();
 		cv.put(DatabaseHelper.ID, this.id);
 		cv.put(DatabaseHelper.NAME, this.name);
-		cv.put(DatabaseHelper.CREATED_AT, this.created_at);
-		cv.put(DatabaseHelper.UPDATED_AT, this.updated_at);
+		cv.put(DatabaseHelper.CREATED_AT, this.createdAt);
+		cv.put(DatabaseHelper.UPDATED_AT, this.updatedAt);
 		cv.put(SORT_BY, this.sortBy);
 		cv.put(DatabaseHelper.SYNC_STATE_FIELD, this.syncState.toInt());
 		cv.put(LFT, this.lft);
@@ -189,8 +189,8 @@ class ListBase {
 		return this.syncState;
 	}
 
-	public void setSyncState(final SYNC_STATE sync_state) {
-		this.syncState = sync_state;
+	public void setSyncState(final SYNC_STATE syncState) {
+		this.syncState = syncState;
 	}
 
 	@Override
