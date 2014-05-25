@@ -484,6 +484,16 @@ public class TaskWarriorSync {
 		setDependencies();
 	}
 
+	private String cleanQuotes(String str) {
+		if (str.startsWith("\"") || str.startsWith("'")) {
+			str = str.substring(1);
+		}
+		if (str.endsWith("\"") || str.endsWith("'")) {
+			str = str.substring(0, str.length() - 1);
+		}
+		return str;
+	}
+
 	/**
 	 * Converts a task to the json-format we need
 	 * 
@@ -503,13 +513,12 @@ public class TaskWarriorSync {
 		} else if (task.isDone()) {
 			status = "completed";
 			if (additionals.containsKey("end")) {
-				end = additionals.get("end");
-				end = end.substring(1, end.length() - 1); // Clear redundant \"
+				end = cleanQuotes(additionals.get("end"));
 			} else {
 				end = formatCal(now);
 			}
 		} else if (task.getAdditionalEntries().containsKey("status")) {
-			status = task.getAdditionalEntries().get("status");
+			status = cleanQuotes(task.getAdditionalEntries().get("status"));
 		}
 
 		String priority = null;
@@ -566,9 +575,13 @@ public class TaskWarriorSync {
 		if (end != null) {
 			json += ",\"end\":\"" + end + "\"";
 		}
-		json += ",\"progress\":" + task.getProgress();
+		if (task.getProgress() != 0) {
+			json += ",\"progress\":" + task.getProgress();
+		}
 		// Tags
-		json += "," + Tag.serialize(task);
+		if (task.getTags().size() > 0) {
+			json += "," + Tag.serialize(task);
+		}
 		// End Tags
 		// Annotations
 		if (task.getContent() != null && !task.getContent().equals("")) {
