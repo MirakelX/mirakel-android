@@ -324,7 +324,7 @@ public class FileUtils {
 	public static String readFile(final File f) throws IOException {
 		int len;
 		final char[] chr = new char[4096];
-		final StringBuffer buffer = new StringBuffer();
+		final StringBuilder buffer = new StringBuilder();
 		final FileReader reader = new FileReader(f);
 		try {
 			while ((len = reader.read(chr)) > 0) {
