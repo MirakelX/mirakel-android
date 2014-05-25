@@ -23,7 +23,6 @@ Device: %3$s\n]]>
   <string name="error_CONTACT_NO_CLIENT" tools:ignore="UnusedResources">Geen E-mail cliënt ingestelde</string>
   <string name="error_NO_FILEMANAGER" tools:ignore="UnusedResources">Installeer een bestandsbeheerder</string>
   <string name="error_FILE_URI_SYNTAX_ERROR" tools:ignore="UnusedResources">Er is een interne fout opgetreden bij het parseren van de bestandsnaam</string>
-  <string name="error_MAINACTIVITY_WRONG_POSITION" tools:ignore="UnusedResources">Dit mag niet gebeuren</string>
   <string name="error_FILE_NOT_FOUND" tools:ignore="UnusedResources">Dit bestand is niet gevonden</string>
   <string name="error_BACKUP_EXPORT_ERROR" tools:ignore="UnusedResources">Er is een fout opgetreden bij het exporteren van de reservekopie</string>
   <string name="error_BACKUP_IMPORT_ERROR" tools:ignore="UnusedResources">Er is een fout opgetreden bij het importeren van het reservekopie</string>

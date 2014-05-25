@@ -23,7 +23,6 @@ Device: %3$s\n]]>
   <string name="error_CONTACT_NO_CLIENT" tools:ignore="UnusedResources">Keine E-Mail Anwendung installiert</string>
   <string name="error_NO_FILEMANAGER" tools:ignore="UnusedResources">Installiere bitte einen Datei-Manager</string>
   <string name="error_FILE_URI_SYNTAX_ERROR" tools:ignore="UnusedResources">Beim Lesen des Dateinamens ist ein interner Fehler aufgetreten</string>
-  <string name="error_MAINACTIVITY_WRONG_POSITION" tools:ignore="UnusedResources">Das hätte nicht passieren dürfen</string>
   <string name="error_FILE_NOT_FOUND" tools:ignore="UnusedResources">Diese Datei wurde nicht gefunden</string>
   <string name="error_BACKUP_EXPORT_ERROR" tools:ignore="UnusedResources">Beim Export der Daten ist ein Fehler aufgetreten</string>
   <string name="error_BACKUP_IMPORT_ERROR" tools:ignore="UnusedResources">Beim Import der Daten ist ein Fehler aufgetreten!</string>
