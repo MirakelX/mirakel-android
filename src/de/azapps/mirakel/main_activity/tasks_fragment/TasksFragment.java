@@ -229,11 +229,11 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 		}
 
 		final ListMirakel list = this.main.getCurrentList();
-		final Task newTask = Semantic.createTask(name, list,
+		final Task createdTask = Semantic.createTask(name, list,
 				MirakelCommonPreferences.useSemanticNewTask(), getActivity());
 
 		getLoaderManager().restartLoader(0, null, this);
-		this.main.setCurrentTask(newTask, false);
+		this.main.setCurrentTask(createdTask, false);
 
 		this.main.getListFragment().update();
 		if (!MirakelCommonPreferences.hideKeyboard()) {
