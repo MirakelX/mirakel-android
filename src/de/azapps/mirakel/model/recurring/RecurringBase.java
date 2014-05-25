@@ -145,7 +145,7 @@ public class RecurringBase {
 	}
 
 	public List<Integer> getWeekdays() {
-		final ArrayList<Integer> ret = new ArrayList<Integer>();
+		final List<Integer> ret = new ArrayList<Integer>();
 		if (this.weekdays.get(Calendar.SUNDAY, false)) {
 			ret.add(Calendar.SUNDAY);
 		}
