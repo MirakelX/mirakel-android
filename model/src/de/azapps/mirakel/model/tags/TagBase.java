@@ -34,7 +34,7 @@ class TagBase {
 	// Color as specified in android.graphics.Color
 	private int backgroundColor;
 	private String name;
-	private int _id;
+	private int id;
 
 	public TagBase(final int id, final boolean dark, final int backColor,
 			final String name) {
@@ -47,7 +47,7 @@ class TagBase {
 	public ContentValues getContentValues() {
 		final ContentValues cv = new ContentValues();
 
-		cv.put(DatabaseHelper.ID, this._id);
+		cv.put(DatabaseHelper.ID, this.id);
 		cv.put(DatabaseHelper.NAME, this.name);
 		cv.put(TagBase.DARK_TEXT, this.isDarkText);
 		cv.put(TagBase.BACKGROUND_COLOR_R, Color.red(this.backgroundColor));
@@ -74,11 +74,11 @@ class TagBase {
 	}
 
 	public int getId() {
-		return this._id;
+		return this.id;
 	}
 
-	protected void setId(final int _id) {
-		this._id = _id;
+	protected void setId(final int id) {
+		this.id = id;
 	}
 
 	public String getName() {

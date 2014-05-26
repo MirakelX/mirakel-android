@@ -9,7 +9,7 @@ class AccountBase {
 	public final static String ENABLED = "enabled";
 	public static final String SYNC_KEY = "sync_key";
 
-	private int _id;
+	private int id;
 	private String name;
 	private int type;
 	private boolean enabled;
@@ -26,11 +26,11 @@ class AccountBase {
 	}
 
 	public int getId() {
-		return this._id;
+		return this.id;
 	}
 
-	protected void setId(final int _id) {
-		this._id = _id;
+	protected void setId(final int id) {
+		this.id = id;
 	}
 
 	public String getName() {
@@ -51,7 +51,7 @@ class AccountBase {
 
 	public ContentValues getContentValues() {
 		final ContentValues cv = new ContentValues();
-		cv.put(DatabaseHelper.ID, this._id);
+		cv.put(DatabaseHelper.ID, this.id);
 		cv.put(DatabaseHelper.NAME, this.name);
 		cv.put(TYPE, this.type);
 		cv.put(ENABLED, this.enabled);
@@ -82,7 +82,7 @@ class AccountBase {
 
 	@Override
 	public int hashCode() {
-		return this._id;
+		return this.id;
 	}
 
 }

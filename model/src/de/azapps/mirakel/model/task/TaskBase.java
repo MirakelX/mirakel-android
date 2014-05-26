@@ -62,9 +62,9 @@ class TaskBase {
 	private int priority;
 	private int progress;
 	private int recurrence;
-	private int recurring_reminder;
+	private int recurringReminder;
 	private Calendar reminder;
-	private SYNC_STATE sync_state;
+	private SYNC_STATE syncState;
 	private Calendar updatedAt;
 	private String uuid = "";
 
@@ -75,9 +75,9 @@ class TaskBase {
 	TaskBase(final long id, final String uuid, final ListMirakel list,
 			final String name, final String content, final boolean done,
 			final Calendar due, final Calendar reminder, final int priority,
-			final Calendar created_at, final Calendar updated_at,
-			final SYNC_STATE sync_state, final String additionalEntriesString,
-			final int recurring, final int recurring_reminder,
+			final Calendar createdAt, final Calendar updatedAt,
+			final SYNC_STATE syncState, final String additionalEntriesString,
+			final int recurring, final int recurringReminder,
 			final int progress) {
 		this.id = id;
 		this.uuid = uuid;
@@ -88,12 +88,12 @@ class TaskBase {
 		setDue(due);
 		setReminder(reminder);
 		this.priority = priority;
-		this.setCreatedAt(created_at);
-		this.setUpdatedAt(updated_at);
-		setSyncState(sync_state);
+		this.setCreatedAt(createdAt);
+		this.setUpdatedAt(updatedAt);
+		setSyncState(syncState);
 		this.additionalEntriesString = additionalEntriesString;
 		this.recurrence = recurring;
-		this.recurring_reminder = recurring_reminder;
+		this.recurringReminder = recurringReminder;
 		this.progress = progress;
 		clearEdited();
 	}
@@ -112,7 +112,7 @@ class TaskBase {
 		this.setUpdatedAt((Calendar) null);
 		setSyncState(SYNC_STATE.NOTHING);
 		this.recurrence = -1;
-		this.recurring_reminder = -1;
+		this.recurringReminder = -1;
 		this.progress = 0;
 		clearEdited();
 	}
@@ -205,9 +205,9 @@ class TaskBase {
 			cv.put(DatabaseHelper.UPDATED_AT,
 					new GregorianCalendar().getTimeInMillis());
 		}
-		cv.put(DatabaseHelper.SYNC_STATE_FIELD, this.sync_state.toInt());
+		cv.put(DatabaseHelper.SYNC_STATE_FIELD, this.syncState.toInt());
 		cv.put(TaskBase.RECURRING, this.recurrence);
-		cv.put(TaskBase.RECURRING_REMINDER, this.recurring_reminder);
+		cv.put(TaskBase.RECURRING_REMINDER, this.recurringReminder);
 		cv.put(TaskBase.PROGRESS, this.progress);
 
 		cv.put("additional_entries", getAdditionalEntriesString());
@@ -256,11 +256,11 @@ class TaskBase {
 	}
 
 	public Recurring getRecurringReminder() {
-		return Recurring.get(this.recurring_reminder);
+		return Recurring.get(this.recurringReminder);
 	}
 
 	public int getRecurringReminderId() {
-		return this.recurring_reminder;
+		return this.recurringReminder;
 	}
 
 	public Calendar getReminder() {
@@ -268,7 +268,7 @@ class TaskBase {
 	}
 
 	public SYNC_STATE getSyncState() {
-		return this.sync_state;
+		return this.syncState;
 	}
 
 	public Calendar getUpdatedAt() {
@@ -280,7 +280,7 @@ class TaskBase {
 	}
 
 	public boolean hasRecurringReminder() {
-		return this.recurring_reminder > 0;
+		return this.recurringReminder > 0;
 	}
 
 	/**
@@ -470,10 +470,10 @@ class TaskBase {
 	}
 
 	public void setRecurringReminder(final int recurrence) {
-		if (this.recurring_reminder == recurrence) {
+		if (this.recurringReminder == recurrence) {
 			return;
 		}
-		this.recurring_reminder = recurrence;
+		this.recurringReminder = recurrence;
 		this.edited.put(TaskBase.RECURRING_REMINDER, true);
 	}
 
@@ -494,7 +494,7 @@ class TaskBase {
 	}
 
 	public void setSyncState(final SYNC_STATE sync_state) {
-		this.sync_state = sync_state;
+		this.syncState = sync_state;
 	}
 
 	public void setUpdatedAt(final Calendar updated_at) {

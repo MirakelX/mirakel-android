@@ -801,14 +801,12 @@ public class MirakelContentProvider extends ContentProvider implements
 			taskQuery += (isSyncAdapter ? " AND " : " WHERE ") + Task.TABLE
 					+ "." + DatabaseHelper.ID + "=" + _id;
 		}
-		if (selection != null && selection.contains(TaskColumns.LIST_ID)) {
-			if (!isSyncAdapter) {
-				try {
-					taskQuery = handleListID(selection, isSyncAdapter,
-							taskQuery);
-				} catch (final SQLWarning s) {
-					return new MatrixCursor(projection);
-				}
+		if (selection != null && selection.contains(TaskColumns.LIST_ID)
+				&& !isSyncAdapter) {
+			try {
+				taskQuery = handleListID(selection, isSyncAdapter, taskQuery);
+			} catch (final SQLWarning s) {
+				return new MatrixCursor(projection);
 			}
 		}
 		sqlBuilder.setTables("(" + taskQuery + ")");
