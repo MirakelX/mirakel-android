@@ -74,9 +74,9 @@ public class RecurringActivity extends ListSettings {
 
 	@Override
 	protected List<Pair<Integer, String>> getItems() {
-		final List<Recurring> recurring = Recurring.all();
+		final List<Recurring> allRecurrences = Recurring.all();
 		final List<Pair<Integer, String>> items = new ArrayList<Pair<Integer, String>>();
-		for (final Recurring r : recurring) {
+		for (final Recurring r : allRecurrences) {
 			items.add(new Pair<Integer, String>(r.getId(), r.getLabel()));
 		}
 		return items;

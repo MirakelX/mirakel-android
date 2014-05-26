@@ -18,7 +18,7 @@ import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.settings.R;
 
 public class CreditsActivity extends Activity {
-	private final String[][] libraries = {
+	private static final String[][] libraries = {
 			{ "Gson", "Apache 2.0", "https://code.google.com/p/google-gson/" },
 			{ "Joda-Time", "Apache 2.0", "http://joda-time.sourceforge.net" },
 			{ "Android Change Log", "Apache 2.0",
@@ -34,7 +34,7 @@ public class CreditsActivity extends Activity {
 			{ "Android Donations Lib", "Apache 2.0",
 					"https://github.com/dschuermann/android-donations-lib" },
 			{ "Changelog", "", "https://code.google.com/p/android-change-log/" } };
-	private final String[][] translations = {
+	private static final String[][] translations = {
 			{ "Spanish", "macebal, sml" },
 			{ "French", "Ghost of Kendo, waghanza, npettiaux, benasse" },
 			{ "German", "Anatolij Zelenin, Georg Semmler, Patrik Kernstock" },
@@ -73,7 +73,7 @@ public class CreditsActivity extends Activity {
 
 		// Set Libraries
 		String libs = "";
-		for (final String[] library : this.libraries) {
+		for (final String[] library : CreditsActivity.libraries) {
 			libs += "<a href=\"" + library[2] + "\"><b>" + library[0]
 					+ "</b></a> (" + library[1] + ")<br />";
 		}
@@ -82,7 +82,7 @@ public class CreditsActivity extends Activity {
 		creditTextLibs.setMovementMethod(LinkMovementMethod.getInstance());
 		// Set translations
 		String trans = "";
-		for (final String[] translation : this.translations) {
+		for (final String[] translation : CreditsActivity.translations) {
 			trans += "<b>" + translation[0] + ": </b>" + translation[1]
 					+ "<br/>";
 		}
