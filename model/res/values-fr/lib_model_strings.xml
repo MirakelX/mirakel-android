@@ -27,7 +27,6 @@
   <string name="every">Chaque</string>
   <string name="recurrence_end_continously">Toujours</string>
   <string name="recurrence_end_date_label">Jusqu\'à la date</string>
-  <string name="use_exact_recurrence">Configurer la répétition à partir de la date d\'accomplissement ?</string>
   <string name="recurrence_from_now">A partir de maintenant</string>
   <string name="recurrence_from">De</string>
   <string name="list_all">Toutes les listes</string>

@@ -36,7 +36,7 @@ public class FileBase {
 		return this.task;
 	}
 
-	public void setTask_id(final Task task) {
+	public void setTask(final Task task) {
 		this.task = task;
 	}
 

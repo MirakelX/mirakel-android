@@ -28,7 +28,6 @@
   <string name="every">Elke</string>
   <string name="recurrence_end_continously">Altijd</string>
   <string name="recurrence_end_date_label">Tot een datum</string>
-  <string name="use_exact_recurrence">Wilt u de eerder gebruikte datum instellen?</string>
   <string name="recurrence_from_now">Vanaf nu</string>
   <string name="recurrence_from">Van</string>
   <string name="list_all">Alle lijsten</string>
