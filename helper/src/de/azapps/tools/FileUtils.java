@@ -280,10 +280,8 @@ public class FileUtils {
 		}
 
 		// Create the storage directory if it does not exist
-		if (!mediaStorageDir.exists()) {
-			if (!mediaStorageDir.mkdirs()) {
-				return null;
-			}
+		if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()) {
+			return null;
 		}
 		return mediaStorageDir;
 	}
@@ -324,7 +322,7 @@ public class FileUtils {
 	public static String readFile(final File f) throws IOException {
 		int len;
 		final char[] chr = new char[4096];
-		final StringBuffer buffer = new StringBuffer();
+		final StringBuilder buffer = new StringBuilder();
 		final FileReader reader = new FileReader(f);
 		try {
 			while ((len = reader.read(chr)) > 0) {
