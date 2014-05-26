@@ -42,7 +42,6 @@
   <string name="change_account">Changer le compte</string>
   <string name="wrong_config">On dirait que vous utilisez un mauvais fichier de configuration</string>
   <string name="cert_not_found">Le certificat a disparu. Merci de créer de nouveau votre compte.</string>
-  <string name="config_404">Le fichier de configuration n\'a pas pu être trouvé</string>
   <string name="config_error_empty">Il n\'y a pas d\'entrée %s dans la configuration</string>
   <string name="load_config">Sélectionner le fichier de configuration pour Taskwarrior</string>
   <string name="select_config">Sélectionner le fichier de configuration Taskwarrior</string>
