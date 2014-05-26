@@ -782,21 +782,21 @@ public class RecurrencePickerDialog extends DialogFragment implements
 	}
 
 	protected String[] getDayYearValues() {
-		final Context ctx = getDialog().getContext();
+		final Context dialogContext = getDialog().getContext();
 		final int size = this.mForDue ? 3 : 5;
 		int i = 0;
 		final String[] ret = new String[size];
 		if (!this.mForDue) {
-			ret[i++] = ctx.getResources().getQuantityString(
+			ret[i++] = dialogContext.getResources().getQuantityString(
 					R.plurals.due_minute, this.mIntervalValue);
-			ret[i++] = ctx.getResources().getQuantityString(R.plurals.due_hour,
+			ret[i++] = dialogContext.getResources().getQuantityString(R.plurals.due_hour,
 					this.mIntervalValue);
 		}
-		ret[i++] = ctx.getResources().getQuantityString(R.plurals.due_day,
+		ret[i++] = dialogContext.getResources().getQuantityString(R.plurals.due_day,
 				this.mIntervalValue);
-		ret[i++] = ctx.getResources().getQuantityString(R.plurals.due_month,
+		ret[i++] = dialogContext.getResources().getQuantityString(R.plurals.due_month,
 				this.mIntervalValue);
-		ret[i] = ctx.getResources().getQuantityString(R.plurals.due_year,
+		ret[i] = dialogContext.getResources().getQuantityString(R.plurals.due_year,
 				this.mIntervalValue);
 
 		return ret;

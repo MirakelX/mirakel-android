@@ -667,7 +667,6 @@ public class TimePicker extends LinearLayout implements
 		if (this.mDark) {
 			final View header = this.layout.findViewById(R.id.time_dialog_head);
 			header.setBackgroundColor(res.getColor(R.color.dialog_dark_gray));
-			;
 			dialog.setBackgroundColor(res.getColor(R.color.dialog_gray));
 
 			final View header_background = this.layout
