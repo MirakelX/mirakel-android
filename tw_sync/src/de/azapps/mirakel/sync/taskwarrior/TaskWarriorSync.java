@@ -178,7 +178,7 @@ public class TaskWarriorSync {
 
 	private AccountManager accountManager;
 
-	private HashMap<String, String[]> dependencies;
+	private Map<String, String[]> dependencies;
 
 	private final Context mContext;
 

@@ -115,7 +115,7 @@ public class TaskWarriorSetupActivity extends Activity {
 	private static final Integer RESULT_ERROR = 0;
 	protected static final Integer RESULT_SUCCESS = 1;
 
-	private final int CONFIG_QR = 0, CONFIG_TASKWARRIOR = 1;
+	private static final int CONFIG_QR = 0, CONFIG_TASKWARRIOR = 1;
 
 	private AccountManager mAccountManager;
 
@@ -166,7 +166,7 @@ public class TaskWarriorSetupActivity extends Activity {
 							"com.google.zxing.client.android.SCAN");
 					intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
 					startActivityForResult(intent,
-							TaskWarriorSetupActivity.this.CONFIG_QR);
+							TaskWarriorSetupActivity.CONFIG_QR);
 				} catch (final Exception e) {
 					new AlertDialog.Builder(TaskWarriorSetupActivity.this)
 							.setTitle(R.string.no_barcode_app)
@@ -197,7 +197,7 @@ public class TaskWarriorSetupActivity extends Activity {
 			@Override
 			public void onClick(final View v) {
 				Helpers.showFileChooser(
-						TaskWarriorSetupActivity.this.CONFIG_TASKWARRIOR,
+						TaskWarriorSetupActivity.CONFIG_TASKWARRIOR,
 						getString(R.string.select_config), that);
 
 			}

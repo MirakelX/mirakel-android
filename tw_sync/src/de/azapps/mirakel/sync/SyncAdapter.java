@@ -68,7 +68,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	private final Context mContext;
 	public static final String ACCOUNT_PREFIX = "ACCOUNT_";
 	private final NotificationManager mNotificationManager;
-	private final int notifyID = 1;
+	private static final int notifyID = 1;
 
 	public SyncAdapter(final Context context, final boolean autoInitialize) {
 		super(context, autoInitialize);
@@ -113,7 +113,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				.setWhen(System.currentTimeMillis()).setOngoing(true)
 				.setContentIntent(p);
 		if (showNotification) {
-			this.mNotificationManager.notify(this.notifyID, mNB.build());
+			this.mNotificationManager.notify(SyncAdapter.notifyID, mNB.build());
 		}
 
 		String type = AccountManager.get(this.mContext).getUserData(account,
@@ -173,7 +173,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		} else {
 			Log.wtf(TAG, "Unknown SyncType");
 		}
-		this.mNotificationManager.cancel(this.notifyID);
+		this.mNotificationManager.cancel(SyncAdapter.notifyID);
 		if (showNotification && !success) {
 			final String title = "Mirakel: "
 					+ this.mContext.getText(R.string.finish_sync);
@@ -203,7 +203,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					.setPriority(NotificationCompat.PRIORITY_LOW)
 					.setContentIntent(pOpenIntent).build();
 			notification.flags = Notification.FLAG_AUTO_CANCEL;
-			this.mNotificationManager.notify(this.notifyID, notification);
+			this.mNotificationManager
+					.notify(SyncAdapter.notifyID, notification);
 		}
 		final Intent i = new Intent(DefinitionsHelper.SYNC_FINISHED);
 		this.mContext.sendBroadcast(i);
