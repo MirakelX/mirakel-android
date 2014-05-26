@@ -221,21 +221,21 @@ public class RecurringSettings extends PreferencesHelper {
 		startDate.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@Override
 			public boolean onPreferenceClick(final Preference preference) {
-				DateDialog(true, startDate, begin);
+				handleDateDialog(true, startDate, begin);
 				return false;
 			}
 		});
 		endDate.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@Override
 			public boolean onPreferenceClick(final Preference preference) {
-				DateDialog(false, endDate, end);
+				handleDateDialog(false, endDate, end);
 				return false;
 			}
 		});
 	}
 
 	@SuppressLint("NewApi")
-	protected void DateDialog(final boolean start, final Preference date,
+	protected void handleDateDialog(final boolean start, final Preference date,
 			final String s) {
 		Calendar c = new GregorianCalendar();
 		final String no = this.activity.getString(R.string.no_begin_end, s);
