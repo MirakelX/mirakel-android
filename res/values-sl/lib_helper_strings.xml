@@ -23,7 +23,6 @@ Naprava: %3$s\n]]>
   <string name="error_CONTACT_NO_CLIENT" tools:ignore="UnusedResources">Ni nameščenega odjemalca elektronske pošte</string>
   <string name="error_NO_FILEMANAGER" tools:ignore="UnusedResources">Namestiti je treba upravljalnika datotek</string>
   <string name="error_FILE_URI_SYNTAX_ERROR" tools:ignore="UnusedResources">Prišlo je do notranje napake med razčlenjevanjem imena datoteke</string>
-  <string name="error_MAINACTIVITY_WRONG_POSITION" tools:ignore="UnusedResources">To se ne bi smelo zgoditi</string>
   <string name="error_FILE_NOT_FOUND" tools:ignore="UnusedResources">Datoteke ni mogoče najti</string>
   <string name="error_BACKUP_EXPORT_ERROR" tools:ignore="UnusedResources">Prišlo je do napake med izvažanjem podatkovne zbirke</string>
   <string name="error_BACKUP_IMPORT_ERROR" tools:ignore="UnusedResources">Prišlo je do napake med uvažanjem podatkovne zbirke</string>

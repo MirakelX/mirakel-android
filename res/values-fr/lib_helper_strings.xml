@@ -24,7 +24,6 @@ Device: %3$s\n]]>
   <string name="error_CONTACT_NO_CLIENT" tools:ignore="UnusedResources">Pas d\'application de messagerie électronique installée</string>
   <string name="error_NO_FILEMANAGER" tools:ignore="UnusedResources">Veuillez installer un gestionnaire de fichiers</string>
   <string name="error_FILE_URI_SYNTAX_ERROR" tools:ignore="UnusedResources">Il y a eu une erreur interne lors de la lecture du nom du fichier</string>
-  <string name="error_MAINACTIVITY_WRONG_POSITION" tools:ignore="UnusedResources">Ceci ne doit pas arriver</string>
   <string name="error_FILE_NOT_FOUND" tools:ignore="UnusedResources">Le fichier n\'a pas pu être trouvé</string>
   <string name="error_BACKUP_EXPORT_ERROR" tools:ignore="UnusedResources">Une erreur s\'est produite lors de l\'export de la base de donnée</string>
   <string name="error_BACKUP_IMPORT_ERROR" tools:ignore="UnusedResources">Il y a eût une erreur lors de l\'importation de la base de données</string>
@@ -36,6 +35,7 @@ Device: %3$s\n]]>
   <string name="error_TASKWARRIOR_FILE_NOT_FOUND" tools:ignore="UnusedResources">Le fichier Taskwarrior n\'a pas été trouvé</string>
   <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD" tools:ignore="UnusedResources">Pas pu télécharger le fichier de config</string>
   <string name="error_TASKWARRIOR_URL_NOT_FOUND" tools:ignore="UnusedResources">L\'URL n\'est pas correcte. Avez-vous vraiment scanné le bon code?</string>
+  <string name="error_FILE_NO_PERMISSION" tools:ignore="UnusedResources">Droits d\'accès au fichier insuffisants</string>
   <string name="error_LIST_VANISHED" tools:ignore="UnusedResources">Houlà! la liste a disparu...</string>
   <string name="error_MAINACTVITY_CRAZY_ERROR" tools:ignore="UnusedResources">Nous ne savons pas comment corriger ce bogue. Mirakel redémarre.</string>
 </resources>
