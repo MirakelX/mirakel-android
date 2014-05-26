@@ -57,3 +57,23 @@ out/**
 misc/crowdin.yaml
 \#*
 .\#*
+
+# Ignore automatic generated tests
+src/de/azapps/mirakel/model/account/AccountBaseTest.java
+src/de/azapps/mirakel/model/account/AccountTest.java
+src/de/azapps/mirakel/model/file/FileBaseTest.java
+src/de/azapps/mirakel/model/file/FileMirakelTest.java
+src/de/azapps/mirakel/model/list/ListBaseTest.java
+src/de/azapps/mirakel/model/list/ListMirakelTest.java
+src/de/azapps/mirakel/model/list/SpecialListTest.java
+src/de/azapps/mirakel/model/list/TaskTest.java
+src/de/azapps/mirakel/model/recurring/RecurringBaseTest.java
+src/de/azapps/mirakel/model/recurring/RecurringTest.java
+src/de/azapps/mirakel/model/semantic/SemanticBaseTest.java
+src/de/azapps/mirakel/model/semantic/SemanticTest.java
+src/de/azapps/mirakel/model/tags/TagBaseTest.java
+src/de/azapps/mirakel/model/tags/TagTest.java
+src/de/azapps/mirakel/model/task/TaskBaseTest.java
+src/de/azapps/mirakel/model/task/TaskTest.java
+src/de/azapps/model/task/TaskDeserializerTest.java
+
