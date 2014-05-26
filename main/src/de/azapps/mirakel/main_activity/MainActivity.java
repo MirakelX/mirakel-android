@@ -178,7 +178,7 @@ public class MainActivity extends ActionBarActivity implements
 					.getParcelableExtra(Intent.EXTRA_STREAM);
 			t.addFile(this, uri);
 		} else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
-			final ArrayList<Uri> imageUris = intent
+			final List<Uri> imageUris = intent
 					.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
 			for (final Uri uri : imageUris) {
 				t.addFile(this, uri);
@@ -991,14 +991,14 @@ public class MainActivity extends ActionBarActivity implements
 		switch (requestCode) {
 		case RESULT_SPEECH_NAME:
 			if (intent != null) {
-				final ArrayList<String> text = intent
+				final List<String> text = intent
 						.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 				((EditText) findViewById(R.id.edit_name)).setText(text.get(0));
 			}
 			break;
 		case RESULT_SPEECH:
 			if (intent != null) {
-				final ArrayList<String> text = intent
+				final List<String> text = intent
 						.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 				((EditText) getTasksFragment().getFragmentView().findViewById(
 						R.id.tasks_new)).setText(text.get(0));
@@ -1580,18 +1580,16 @@ public class MainActivity extends ActionBarActivity implements
 			// If from google now, the content is the subject…
 			if (intent.getCategories() != null
 					&& intent.getCategories().contains(
-							"com.google.android.voicesearch.SELF_NOTE")) {
-				if (!this.newTaskContent.equals("")) {
-					this.newTaskSubject = this.newTaskContent;
-					this.newTaskContent = "";
-				}
+							"com.google.android.voicesearch.SELF_NOTE")
+					&& !this.newTaskContent.equals("")) {
+				this.newTaskSubject = this.newTaskContent;
+				this.newTaskContent = "";
 			}
 
-			if (!intent.getType().equals("text/plain")) {
-				if (this.newTaskSubject == null) {
-					this.newTaskSubject = MirakelCommonPreferences
-							.getImportFileTitle();
-				}
+			if (!intent.getType().equals("text/plain")
+					&& this.newTaskSubject == null) {
+				this.newTaskSubject = MirakelCommonPreferences
+						.getImportFileTitle();
 			}
 			final ListMirakel listFromSharing = MirakelModelPreferences
 					.getImportDefaultList(false);
