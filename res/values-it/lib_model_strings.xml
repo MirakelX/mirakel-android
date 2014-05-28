@@ -28,6 +28,7 @@
   <string name="every">Ogni</string>
   <string name="recurrence_end_continously">Sempre</string>
   <string name="recurrence_end_date_label">Fino a una data</string>
+  <string name="use_exact_recurrence">Impostare la ricorrenza in base alla data di completamento?</string>
   <string name="recurrence_from_now">Da ora</string>
   <string name="recurrence_from">Da</string>
   <string name="list_all">Tutti gli elenchi</string>
