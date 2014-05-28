@@ -19,9 +19,11 @@
 package de.azapps.mirakel.model.task;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -33,6 +35,7 @@ import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.recurring.Recurring;
+import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.tools.Log;
 
 class TaskBase {
@@ -67,6 +70,7 @@ class TaskBase {
 	private SYNC_STATE syncState;
 	private Calendar updatedAt;
 	private String uuid = "";
+	private List<Tag> tags;
 
 	TaskBase() {
 		// nothing
@@ -95,6 +99,7 @@ class TaskBase {
 		this.recurringReminder = recurringReminder;
 		this.progress = progress;
 		clearEdited();
+		this.tags = null;
 	}
 
 	TaskBase(final String name) {
@@ -521,6 +526,31 @@ class TaskBase {
 		return this.name;
 	}
 
+	public List<Tag> getTags() {
+		checkTags();
+		return this.tags;
+	}
+
+	private void checkTags() {
+		if (this.tags == null) {
+			if (this.id == 0) {
+				this.tags = new ArrayList<Tag>();
+			} else {
+				this.tags = Tag.getTagsForTask(this.id);
+			}
+		}
+	}
+
+	protected void addTag(final Tag tag) {
+		checkTags();
+		this.tags.add(tag);
+	}
+
+	protected void removeTag(final Tag tag) {
+		checkTags();
+		this.tags.remove(tag);
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -662,5 +692,4 @@ class TaskBase {
 		}
 		return true;
 	}
-
 }

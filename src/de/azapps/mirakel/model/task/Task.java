@@ -811,14 +811,14 @@ public class Task extends TaskBase {
 
 	public void save(final boolean log, final boolean calledFromSync) {
 		try {
-			unsafeSave(log, calledFromSync);
+			unsafeSave(log, calledFromSync, true);
 		} catch (final NoSuchListException e) {
 			Log.w(Task.TAG, "List did vanish");
 		}
 	}
 
-	private void unsafeSave(boolean log, final boolean calledFromSync)
-			throws NoSuchListException {
+	private void unsafeSave(boolean log, final boolean calledFromSync,
+			final boolean updateUpdatedAt) throws NoSuchListException {
 		if (!isEdited()) {
 			Log.d(Task.TAG, "new Task equals old, didnt need to save it");
 			return;
@@ -832,7 +832,7 @@ public class Task extends TaskBase {
 		setSyncState(getSyncState() == SYNC_STATE.ADD
 				|| getSyncState() == SYNC_STATE.IS_SYNCED ? getSyncState()
 				: SYNC_STATE.NEED_SYNC);
-		if (Task.context != null) {
+		if (updateUpdatedAt && Task.context != null) {
 			setUpdatedAt(new GregorianCalendar());
 		}
 		final ContentValues values = getContentValues();
@@ -845,6 +845,9 @@ public class Task extends TaskBase {
 				+ getId(), null);
 		Task.database.setTransactionSuccessful();
 		Task.database.endTransaction();
+		for (final Tag t : getTags()) {
+			saveTag(t);
+		}
 		boolean updateReminders = false;
 		if (isEdited(TaskBase.DONE) || isEdited(TaskBase.REMINDER)
 				|| isEdited(TaskBase.RECURRING_REMINDER)) {
@@ -854,17 +857,14 @@ public class Task extends TaskBase {
 		if (!calledFromDBHelper && !calledFromSync) {
 			NotificationService.updateServices(Task.context, updateReminders);
 		}
+
 	}
 
 	private void setSubTasksDone() {
 		final List<Task> subTasks = getSubtasks();
 		for (final Task t : subTasks) {
 			t.setDone(true);
-			try {
-				t.unsafeSave(true, false);
-			} catch (final NoSuchListException e) {
-				Log.d(Task.TAG, "List did vanish");
-			}
+			save(true);
 		}
 	}
 
@@ -887,7 +887,7 @@ public class Task extends TaskBase {
 		}
 		json += "\"reminder\":\"" + s + "\",";
 		json += "\"sync_state\":" + getSyncState() + ",";
-		json += Tag.serialize(this) + ",";
+		json += Tag.serialize(getId()) + ",";
 		json += "\"created_at\":\""
 				+ DateTimeHelper.formatDateTime(getCreatedAt()) + "\",";
 		json += "\"updated_at\":\""
@@ -895,15 +895,32 @@ public class Task extends TaskBase {
 		return json;
 	}
 
-	public List<Tag> getTags() {
-		return Tag.getTagsForTask(this);
-	}
-
+	@Override
 	public void addTag(final Tag t) {
 		addTag(t, true);
 	}
 
 	public void addTag(final Tag t, final boolean log) {
+		addTag(t, log, false);
+	}
+
+	public void addTag(final Tag t, final boolean log,
+			final boolean calledFromJsonParser) {
+		super.addTag(t);
+		if (!saveTag(t)) {
+			return;
+		}
+		// save task to set log+modified
+		this.edited.put("tags", true);
+		try {
+			unsafeSave(log, calledFromJsonParser, calledFromJsonParser);
+		} catch (final NoSuchListException e) {
+			Log.w(Task.TAG, "List did vanish");
+		}
+
+	}
+
+	private boolean saveTag(final Tag t) {
 		final Cursor c = database.query(Tag.TAG_CONNECTION_TABLE,
 				new String[] { "count(*)" }, "task_id=? and tag_id=?",
 				new String[] { getId() + "", t.getId() + "" }, null, null,
@@ -912,42 +929,39 @@ public class Task extends TaskBase {
 		if (c.getCount() > 0 && c.getInt(0) > 0) {
 			c.close();
 			// already exists;
-			return;
+			return false;
 		}
 		c.close();
-		// save task to set log+modified
-		this.edited.put("tags", true);
-		save(log);
-		final ContentValues cv = new ContentValues();
-		cv.put("tag_id", t.getId());
-		cv.put("task_id", getId());
-		database.insert(Tag.TAG_CONNECTION_TABLE, null, cv);
-
+		if (getId() != 0) {
+			final ContentValues cv = new ContentValues();
+			cv.put("tag_id", t.getId());
+			cv.put("task_id", getId());
+			database.insert(Tag.TAG_CONNECTION_TABLE, null, cv);
+			return true;
+		}
+		return false;
 	}
 
+	@Override
 	public void removeTag(final Tag t) {
 		removeTag(t, true);
 	}
 
 	public void removeTag(final Tag t, final boolean log) {
-		// save task to set log+modified
-		this.edited.put("tags", true);
-		save(log);
-		database.delete(Tag.TAG_CONNECTION_TABLE, "task_id=? and tag_id=?",
-				new String[] { getId() + "", t.getId() + "" });
+		removeTag(t, log, false);
 	}
 
-	/**
-	 * Dirty Hack! Use it only if you exactly know what you do
-	 * 
-	 * Adds all tags with task_id=0 to the current task
-	 */
-	public void dirtyTakeAllTags() {
-		Task.database.beginTransaction();
-		final ContentValues cv = new ContentValues();
-		cv.put("task_id", getId());
-		database.update(Tag.TAG_CONNECTION_TABLE, cv, "task_id=0", null);
-		Task.database.setTransactionSuccessful();
-		Task.database.endTransaction();
+	public void removeTag(final Tag t, final boolean log,
+			final boolean calledFromJsonParser) {
+		// save task to set log+modified
+		super.removeTag(t);
+		this.edited.put("tags", true);
+		try {
+			unsafeSave(log, calledFromJsonParser, calledFromJsonParser);
+		} catch (final NoSuchListException e) {
+			Log.w(Task.TAG, "List did vanish");
+		}
+		database.delete(Tag.TAG_CONNECTION_TABLE, "task_id=? and tag_id=?",
+				new String[] { getId() + "", t.getId() + "" });
 	}
 }

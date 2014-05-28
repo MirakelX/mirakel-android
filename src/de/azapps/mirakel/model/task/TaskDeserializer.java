@@ -21,7 +21,9 @@ package de.azapps.mirakel.model.task;
 import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
@@ -246,7 +248,8 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
 
 	private static void handleTags(final Task t, final JsonElement val) {
 		final JsonArray tags = val.getAsJsonArray();
-		final List<Tag> currentTags = t.getTags();
+		final List<Tag> currentTags = new ArrayList<>();
+		Collections.copy(currentTags, t.getTags());
 		for (final JsonElement tag : tags) {
 			if (tag.isJsonPrimitive()) {
 				String tagName = tag.getAsString();
@@ -255,13 +258,13 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
 				final Tag newTag = Tag.newTag(tagName);
 				if (!currentTags.remove(newTag)) {
 					// tag is not linked with this task
-					t.addTag(newTag, false);
+					t.addTag(newTag, false, true);
 				}
 			}
 		}
 		for (final Tag tag : currentTags) {
 			// remove unused tags
-			t.removeTag(tag, false);
+			t.removeTag(tag, false, true);
 		}
 	}
 
