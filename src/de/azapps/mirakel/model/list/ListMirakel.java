@@ -22,6 +22,7 @@ package de.azapps.mirakel.model.list;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -575,12 +576,19 @@ public class ListMirakel extends ListBase {
 			setUpdatedAt(new SimpleDateFormat(
 					context.getString(R.string.dateTimeFormat),
 					Locale.getDefault()).format(new Date()));
-			final ContentValues values = getContentValues();
+			ContentValues values = getContentValues();
 			if (log) {
 				UndoHistory.updateLog(ListMirakel.get(getId()), context);
 			}
 			database.update(ListMirakel.TABLE, values, DatabaseHelper.ID
 					+ " = " + getId(), null);
+			values = new ContentValues();
+			values.put(DatabaseHelper.UPDATED_AT,
+					new GregorianCalendar().getTimeInMillis() / 1000);
+			values.put(DatabaseHelper.SYNC_STATE_FIELD,
+					SYNC_STATE.NEED_SYNC.toInt());
+			database.update(Task.TABLE, values, Task.LIST_ID + "=?",
+					new String[] { getId() + "" });
 			database.setTransactionSuccessful();
 			database.endTransaction();
 
