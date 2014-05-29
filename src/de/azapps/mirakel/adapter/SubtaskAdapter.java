@@ -46,7 +46,6 @@ public class SubtaskAdapter extends MirakelArrayAdapter<Task> {
 			final ViewGroup parent) {
 		if (position >= getCount()) {
 			return new View(this.context);
-
 		}
 		final CheckBox c = new CheckBox(this.context);
 		c.setChecked(this.isSelectedAt(position));
@@ -65,6 +64,8 @@ public class SubtaskAdapter extends MirakelArrayAdapter<Task> {
 	public void changeData(final List<Task> newData) {
 		super.changeData(newData);
 		determineSelected();
+		notifyDataSetChanged();
+		notifyDataSetInvalidated();
 	}
 
 	private void determineSelected() {
@@ -75,7 +76,6 @@ public class SubtaskAdapter extends MirakelArrayAdapter<Task> {
 			} else {
 				setSelected(i, this.task.isSubtaskOf(t));
 			}
-			notifyDataSetChanged();
 		}
 	}
 
