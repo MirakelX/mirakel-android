@@ -103,8 +103,7 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 		holder.listRowName.setText(list.getName());
 		holder.listRowName.setTag(list);
 		holder.listRowTaskNumber.setText("" + list.countTasks());
-		if (list.isSpecialList()
-				|| !MirakelCommonPreferences.isShowAccountName()) {
+		if (list.isSpecial() || !MirakelCommonPreferences.isShowAccountName()) {
 			holder.listAccount.setVisibility(View.GONE);
 		} else {
 			holder.listAccount.setVisibility(View.VISIBLE);
