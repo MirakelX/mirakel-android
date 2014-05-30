@@ -171,10 +171,9 @@ public class SettingsActivity extends PreferenceActivity {
 						Toast.makeText(SettingsActivity.this,
 								R.string.astrid_success, Toast.LENGTH_SHORT)
 								.show();
+						// ugly but simple
 						android.os.Process.killProcess(android.os.Process
-								.myPid()); // ugly
-						// but
-						// simple
+								.myPid());
 					}
 				}
 
@@ -235,7 +234,6 @@ public class SettingsActivity extends PreferenceActivity {
 		if (this.darkTheme) {
 			setTheme(R.style.AppBaseThemeDARK);
 		}
-		// Locale.setDefault(Helpers.getLocal());
 		super.onCreate(savedInstanceState);
 		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
 
@@ -323,29 +321,6 @@ public class SettingsActivity extends PreferenceActivity {
 		Log.d(TAG, "Menu");
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			// if(getParent()!=null){
-			// final Switch s = (Switch) findViewById(R.id.switchWidget);
-			// final Activity a = this;
-			// if (s != null) {
-			// // need to reset onchangelistner else valuechange will triger
-			// // event
-			// s.setOnCheckedChangeListener(null);
-			// s.setChecked(MirakelPreferences.useSync());
-			// s.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			//
-			// @Override
-			// public void onCheckedChanged(CompoundButton buttonView,
-			// boolean isChecked) {
-			// PreferencesHelper.createAuthActivity(isChecked, a, s,
-			// false);
-			// }
-			// });
-			// } else {
-			// Log.d(TAG, "switch not found");
-			// }
-			// }else{
-			// Log.d(TAG,"Parent=null");
-			// }
 			finish();
 			return true;
 		default:
