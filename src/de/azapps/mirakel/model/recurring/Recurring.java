@@ -106,7 +106,7 @@ public class Recurring extends RecurringBase {
 	public Recurring create() {
 		database.beginTransaction();
 		final ContentValues values = getContentValues();
-		values.remove("_id");
+		values.remove(DatabaseHelper.ID);
 		final int insertId = (int) database.insertOrThrow(TABLE, null, values);
 		database.setTransactionSuccessful();
 		database.endTransaction();
