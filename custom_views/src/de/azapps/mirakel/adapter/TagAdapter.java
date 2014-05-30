@@ -40,9 +40,10 @@ public class TagAdapter extends CursorAdapter {
 	@Override
 	public void bindView(final View v, final Context ctx, final Cursor c) {
 		final Tag tag = Tag.cursorToTag(c);
-		v.setTag(tag);
 		final TextView t = (TextView) v.findViewById(R.id.tag_list_name);
 		t.setText(tag.getName());
+		t.setOnClickListener(this.onClick);
+		t.setTag(tag);
 	}
 
 	@Override
@@ -55,7 +56,6 @@ public class TagAdapter extends CursorAdapter {
 
 			final TextView t = (TextView) v.findViewById(R.id.tag_list_name);
 			t.setText(tag.toString());
-			t.setTag(tag);
 			t.setOnClickListener(this.onClick);
 			return v;
 		}
