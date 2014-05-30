@@ -1,3 +1,21 @@
+/*******************************************************************************
+ * Mirakel is an Android App for managing your ToDo-Lists
+ * 
+ * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ * 
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     any later version.
+ * 
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ * 
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
 package de.azapps.mirakel.sync.taskwarrior;
 
 import java.io.File;
@@ -9,7 +27,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,12 +42,10 @@ import com.google.gson.GsonBuilder;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
-import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
-import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.model.task.TaskDeserializer;
 import de.azapps.mirakel.services.NotificationService;
@@ -160,10 +175,6 @@ public class TaskWarriorSync {
 	public static final String TYPE = "TaskWarrior";
 	private static String user_ca;
 	private static String user_key;
-
-	private static String escape(final String string) {
-		return string.replace("\"", "\\\"");
-	}
 
 	public static void longInfo(final String str) {
 		if (str.length() > 4000) {
@@ -309,14 +320,12 @@ public class TaskWarriorSync {
 				} else if (local_task == null) {
 					try {
 						server_task.create(false, true);
-						server_task.dirtyTakeAllTags();
 						Log.d(TAG, "create " + server_task.getName());
 					} catch (final NoSuchListException e) {
 						Log.wtf(TAG, "List vanish");
 					}
 				} else {
 					server_task.takeIdFrom(local_task);
-					server_task.dirtyTakeAllTags();
 					Log.d(TAG, "update " + server_task.getName());
 					server_task.save(false, true);
 				}
@@ -484,16 +493,6 @@ public class TaskWarriorSync {
 		setDependencies();
 	}
 
-	private String cleanQuotes(String str) {
-		if (str.startsWith("\"") || str.startsWith("'")) {
-			str = str.substring(1);
-		}
-		if (str.endsWith("\"") || str.endsWith("'")) {
-			str = str.substring(0, str.length() - 1);
-		}
-		return str;
-	}
-
 	/**
 	 * Converts a task to the json-format we need
 	 * 
@@ -501,140 +500,9 @@ public class TaskWarriorSync {
 	 * @return
 	 */
 	public String taskToJson(final Task task) {
-		final Map<String, String> additionals = task.getAdditionalEntries();
-		String end = null;
-		String status = "pending";
-		final Calendar now = new GregorianCalendar();
-		now.setTimeInMillis(now.getTimeInMillis()
-				- DateTimeHelper.getTimeZoneOffset(true, now));
-		if (task.getSyncState() == SYNC_STATE.DELETE) {
-			status = "deleted";
-			end = formatCal(now);
-		} else if (task.isDone()) {
-			status = "completed";
-			if (additionals.containsKey("end")) {
-				end = cleanQuotes(additionals.get("end"));
-			} else {
-				end = formatCal(now);
-			}
-		} else if (task.getAdditionalEntries().containsKey("status")) {
-			status = cleanQuotes(task.getAdditionalEntries().get("status"));
-		}
-
-		String priority = null;
-		switch (task.getPriority()) {
-		case -2:
-		case -1:
-			priority = "L";
-			break;
-		case 1:
-			priority = "M";
-			break;
-		case 2:
-			priority = "H";
-			break;
-		default:
-			Log.wtf(TAG, "unkown priority");
-			break;
-		}
-
-		String json = "{";
-		String uuid = task.getUUID();
-		if (uuid == null || uuid.trim().equals("")) {
-			uuid = java.util.UUID.randomUUID().toString();
-			task.setUUID(uuid);
-			task.save(false);
-		}
-		json += "\"uuid\":\"" + uuid + "\"";
-		json += ",\"status\":\"" + status + "\"";
-		json += ",\"entry\":\""
-				+ formatCal(DateTimeHelper.getUTCCalendar(task.getCreatedAt()))
-				+ "\"";
-		json += ",\"description\":\"" + escape(task.getName()) + "\"";
-		if (task.getDue() != null) {
-			json += ",\"due\":\""
-					+ formatCal(DateTimeHelper.getUTCCalendar(task.getDue()))
-					+ "\"";
-		}
-		if (task.getList() != null && !additionals.containsKey(NO_PROJECT)) {
-			json += ",\"project\":\"" + task.getList().getName() + "\"";
-		}
-		if (priority != null) {
-			json += ",\"priority\":\"" + priority + "\"";
-		}
-		json += ",\"priorityNumber\":" + task.getPriority();
-		json += ",\"modified\":\""
-				+ formatCal(DateTimeHelper.getUTCCalendar(task.getUpdatedAt()))
-				+ "\"";
-		if (task.getReminder() != null) {
-			json += ",\"reminder\":\""
-					+ formatCal(DateTimeHelper.getUTCCalendar(task
-							.getReminder())) + "\"";
-		}
-
-		if (end != null) {
-			json += ",\"end\":\"" + end + "\"";
-		}
-		if (task.getProgress() != 0) {
-			json += ",\"progress\":" + task.getProgress();
-		}
-		// Tags
-		if (task.getTags().size() > 0) {
-			json += "," + Tag.serialize(task);
-		}
-		// End Tags
-		// Annotations
-		if (task.getContent() != null && !task.getContent().equals("")) {
-			json += ",\"annotations\":[";
-			/*
-			 * An annotation in taskd is a line of content in Mirakel!
-			 */
-			final String annotations[] = escape(task.getContent()).split("\n");
-			boolean first = true;
-			final Calendar d = task.getUpdatedAt();
-
-			for (final String a : annotations) {
-				if (first) {
-					first = false;
-				} else {
-					json += ",";
-				}
-				json += "{\"entry\":\""
-						+ formatCal(DateTimeHelper.getUTCCalendar(task
-								.getUpdatedAt())) + "\",";
-				json += "\"description\":\"" + a.trim().replace("\n", "")
-						+ "\"}";
-				d.add(Calendar.SECOND, 1);
-			}
-			json += "]";
-		}
-		// Anotations end
-		// TW.depends==Mirakel.subtasks!
-		// Dependencies
-		if (task.getSubtaskCount() > 0) {
-			json += ",\"depends\":\"";
-			boolean first1 = true;
-			for (final Task subtask : task.getSubtasks()) {
-				if (first1) {
-					first1 = false;
-				} else {
-					json += ",";
-				}
-				json += subtask.getUUID();
-			}
-			json += "\"";
-		}
-		// end Dependencies
-		// Additional Strings
-		if (additionals != null) {
-			for (final String key : additionals.keySet()) {
-				if (!key.equals(NO_PROJECT) && !key.equals("status")) {
-					json += ",\"" + key + "\":" + additionals.get(key);
-				}
-			}
-		}
-		// end Additional Strings
-		json += "}";
-		return json;
+		return new GsonBuilder()
+				.registerTypeAdapter(Task.class,
+						new TaskWarriorTaskSerializer(this.mContext)).create()
+				.toJson(task);
 	}
 }
