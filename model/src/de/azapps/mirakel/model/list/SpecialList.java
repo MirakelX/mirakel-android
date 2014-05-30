@@ -48,11 +48,6 @@ public class SpecialList extends ListMirakel {
 	private Integer defaultDate;
 	private Map<String, SpecialListsBaseProperty> where;
 
-	@Override
-	public boolean isSpecialList() {
-		return true;
-	}
-
 	public boolean isActive() {
 		return this.active;
 	}
@@ -106,6 +101,7 @@ public class SpecialList extends ListMirakel {
 		this.where = whereQuery;
 		this.defaultList = listMirakel;
 		this.defaultDate = defaultDate;
+		this.isSpecial = true;
 		setLft(lft);
 		setRgt(rgt);
 	}

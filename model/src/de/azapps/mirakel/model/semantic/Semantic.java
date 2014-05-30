@@ -55,7 +55,7 @@ public class Semantic extends SemanticBase {
 			final boolean useSemantic, final Context context) {
 		GregorianCalendar due = null;
 		int prio = 0;
-		if (currentList != null && currentList.isSpecialList()) {
+		if (currentList != null && currentList.isSpecial()) {
 			try {
 				final SpecialList slist = (SpecialList) currentList;
 				currentList = slist.getDefaultList();

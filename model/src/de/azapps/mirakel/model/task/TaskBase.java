@@ -77,8 +77,7 @@ class TaskBase {
 			final Calendar due, final Calendar reminder, final int priority,
 			final Calendar createdAt, final Calendar updatedAt,
 			final SYNC_STATE syncState, final String additionalEntriesString,
-			final int recurring, final int recurringReminder,
-			final int progress) {
+			final int recurring, final int recurringReminder, final int progress) {
 		this.id = id;
 		this.uuid = uuid;
 		setList(list, false);
@@ -520,6 +519,148 @@ class TaskBase {
 	@Override
 	public String toString() {
 		return this.name;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime
+				* result
+				+ (this.additionalEntries == null ? 0 : this.additionalEntries
+						.hashCode());
+		result = prime * result
+				+ (this.content == null ? 0 : this.content.hashCode());
+		result = prime * result
+				+ (this.createdAt == null ? 0 : this.createdAt.hashCode());
+		result = prime * result + (this.done ? 1231 : 1237);
+		result = prime * result + (this.due == null ? 0 : this.due.hashCode());
+		result = prime * result
+				+ (this.edited == null ? 0 : this.edited.hashCode());
+		result = prime * result + (int) (this.id ^ this.id >>> 32);
+		result = prime * result
+				+ (this.list == null ? 0 : this.list.hashCode());
+		result = prime * result
+				+ (this.name == null ? 0 : this.name.hashCode());
+		result = prime * result + this.priority;
+		result = prime * result + this.progress;
+		result = prime * result + this.recurrence;
+		result = prime * result + this.recurringReminder;
+		result = prime * result
+				+ (this.reminder == null ? 0 : this.reminder.hashCode());
+		result = prime * result
+				+ (this.syncState == null ? 0 : this.syncState.hashCode());
+		result = prime * result
+				+ (this.updatedAt == null ? 0 : this.updatedAt.hashCode());
+		result = prime * result
+				+ (this.uuid == null ? 0 : this.uuid.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof TaskBase)) {
+			return false;
+		}
+		final TaskBase other = (TaskBase) obj;
+		if (this.additionalEntries == null) {
+			if (other.additionalEntries != null) {
+				return false;
+			}
+		} else if (!this.additionalEntries.equals(other.additionalEntries)) {
+			return false;
+		}
+		if (this.content == null) {
+			if (other.content != null) {
+				return false;
+			}
+		} else if (!this.content.equals(other.content)) {
+			return false;
+		}
+		if (this.createdAt == null) {
+			if (other.createdAt != null) {
+				return false;
+			}
+		} else if (!this.createdAt.equals(other.createdAt)) {
+			return false;
+		}
+		if (this.done != other.done) {
+			return false;
+		}
+		if (this.due == null) {
+			if (other.due != null) {
+				return false;
+			}
+		} else if (!this.due.equals(other.due)) {
+			return false;
+		}
+		if (this.edited == null) {
+			if (other.edited != null) {
+				return false;
+			}
+		} else if (!this.edited.equals(other.edited)) {
+			return false;
+		}
+		if (this.id != other.id) {
+			return false;
+		}
+		if (this.list == null) {
+			if (other.list != null) {
+				return false;
+			}
+		} else if (!this.list.equals(other.list)) {
+			return false;
+		}
+		if (this.name == null) {
+			if (other.name != null) {
+				return false;
+			}
+		} else if (!this.name.equals(other.name)) {
+			return false;
+		}
+		if (this.priority != other.priority) {
+			return false;
+		}
+		if (this.progress != other.progress) {
+			return false;
+		}
+		if (this.recurrence != other.recurrence) {
+			return false;
+		}
+		if (this.recurringReminder != other.recurringReminder) {
+			return false;
+		}
+		if (this.reminder == null) {
+			if (other.reminder != null) {
+				return false;
+			}
+		} else if (!this.reminder.equals(other.reminder)) {
+			return false;
+		}
+		if (this.syncState != other.syncState) {
+			return false;
+		}
+		if (this.updatedAt == null) {
+			if (other.updatedAt != null) {
+				return false;
+			}
+		} else if (!this.updatedAt.equals(other.updatedAt)) {
+			return false;
+		}
+		if (this.uuid == null) {
+			if (other.uuid != null) {
+				return false;
+			}
+		} else if (!this.uuid.equals(other.uuid)) {
+			return false;
+		}
+		return true;
 	}
 
 }

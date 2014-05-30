@@ -74,4 +74,57 @@ public class FileBase {
 		cv.put("path", this.uri != null ? this.uri.toString() : "");
 		return cv;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + this.id;
+		result = prime * result
+				+ (this.name == null ? 0 : this.name.hashCode());
+		result = prime * result
+				+ (this.task == null ? 0 : this.task.hashCode());
+		result = prime * result + (this.uri == null ? 0 : this.uri.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof FileBase)) {
+			return false;
+		}
+		final FileBase other = (FileBase) obj;
+		if (this.id != other.id) {
+			return false;
+		}
+		if (this.name == null) {
+			if (other.name != null) {
+				return false;
+			}
+		} else if (!this.name.equals(other.name)) {
+			return false;
+		}
+		if (this.task == null) {
+			if (other.task != null) {
+				return false;
+			}
+		} else if (!this.task.equals(other.task)) {
+			return false;
+		}
+		if (this.uri == null) {
+			if (other.uri != null) {
+				return false;
+			}
+		} else if (!this.uri.equals(other.uri)) {
+			return false;
+		}
+		return true;
+	}
+
 }

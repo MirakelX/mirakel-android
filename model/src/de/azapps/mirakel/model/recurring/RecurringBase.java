@@ -231,4 +231,98 @@ public class RecurringBase {
 		return cv;
 	}
 
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof RecurringBase)) {
+			return false;
+		}
+		final RecurringBase other = (RecurringBase) obj;
+		if (this.id != other.id) {
+			return false;
+		}
+		if (this.days != other.days) {
+			return false;
+		}
+		if (this.derivedFrom == null) {
+			if (other.derivedFrom != null) {
+				return false;
+			}
+		} else if (!this.derivedFrom.equals(other.derivedFrom)) {
+			return false;
+		}
+		if (this.endDate == null) {
+			if (other.endDate != null) {
+				return false;
+			}
+		} else if (!this.endDate.equals(other.endDate)) {
+			return false;
+		}
+		if (this.forDue != other.forDue) {
+			return false;
+		}
+		if (this.hours != other.hours) {
+			return false;
+		}
+		if (this.isExact != other.isExact) {
+			return false;
+		}
+		if (this.label == null) {
+			if (other.label != null) {
+				return false;
+			}
+		} else if (!this.label.equals(other.label)) {
+			return false;
+		}
+		if (this.minutes != other.minutes) {
+			return false;
+		}
+		if (this.months != other.months) {
+			return false;
+		}
+		if (this.startDate == null) {
+			if (other.startDate != null) {
+				return false;
+			}
+		} else if (!this.startDate.equals(other.startDate)) {
+			return false;
+		}
+		if (this.temporary != other.temporary) {
+			return false;
+		}
+		if (this.years != other.years) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + this.id;
+		result = prime * result + this.days;
+		result = prime * result
+				+ (this.derivedFrom == null ? 0 : this.derivedFrom.hashCode());
+		result = prime * result
+				+ (this.endDate == null ? 0 : this.endDate.hashCode());
+		result = prime * result + (this.forDue ? 1231 : 1237);
+		result = prime * result + this.hours;
+		result = prime * result + (this.isExact ? 1231 : 1237);
+		result = prime * result
+				+ (this.label == null ? 0 : this.label.hashCode());
+		result = prime * result + this.minutes;
+		result = prime * result + this.months;
+		result = prime * result
+				+ (this.startDate == null ? 0 : this.startDate.hashCode());
+		result = prime * result + (this.temporary ? 1231 : 1237);
+		result = prime * result + this.years;
+		return result;
+	}
+
 }

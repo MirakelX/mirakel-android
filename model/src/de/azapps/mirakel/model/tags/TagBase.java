@@ -89,4 +89,47 @@ class TagBase {
 		this.name = name;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + this.id;
+		result = prime * result + this.backgroundColor;
+		result = prime * result + (this.isDarkText ? 1231 : 1237);
+		result = prime * result
+				+ (this.name == null ? 0 : this.name.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof TagBase)) {
+			return false;
+		}
+		final TagBase other = (TagBase) obj;
+		if (this.id != other.id) {
+			return false;
+		}
+		if (this.backgroundColor != other.backgroundColor) {
+			return false;
+		}
+		if (this.isDarkText != other.isDarkText) {
+			return false;
+		}
+		if (this.name == null) {
+			if (other.name != null) {
+				return false;
+			}
+		} else if (!this.name.equals(other.name)) {
+			return false;
+		}
+		return true;
+	}
+
 }

@@ -42,6 +42,7 @@ class ListBase {
 	private int color;
 	private int accountID;
 	private AccountMirakel accountMirakel;
+	protected boolean isSpecial = false;
 
 	ListBase() {
 		// nothing
@@ -165,6 +166,10 @@ class ListBase {
 		this.accountID = account;
 	}
 
+	public boolean isSpecial() {
+		return this.isSpecial;
+	}
+
 	@Override
 	public String toString() {
 		return this.name;
@@ -195,7 +200,95 @@ class ListBase {
 
 	@Override
 	public int hashCode() {
-		return this.id;
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + this.accountID;
+		result = prime
+				* result
+				+ (this.accountMirakel == null ? 0 : this.accountMirakel
+						.hashCode());
+		result = prime * result + this.color;
+		result = prime * result
+				+ (this.createdAt == null ? 0 : this.createdAt.hashCode());
+		result = prime * result + this.id;
+		result = prime * result + (this.isSpecial ? 1231 : 1237);
+		result = prime * result + this.lft;
+		result = prime * result
+				+ (this.name == null ? 0 : this.name.hashCode());
+		result = prime * result + this.rgt;
+		result = prime * result + this.sortBy;
+		result = prime * result
+				+ (this.syncState == null ? 0 : this.syncState.hashCode());
+		result = prime * result
+				+ (this.updatedAt == null ? 0 : this.updatedAt.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof ListBase)) {
+			return false;
+		}
+		final ListBase other = (ListBase) obj;
+		if (this.accountID != other.accountID) {
+			return false;
+		}
+		if (this.accountMirakel == null) {
+			if (other.accountMirakel != null) {
+				return false;
+			}
+		} else if (!this.accountMirakel.equals(other.accountMirakel)) {
+			return false;
+		}
+		if (this.color != other.color) {
+			return false;
+		}
+		if (this.createdAt == null) {
+			if (other.createdAt != null) {
+				return false;
+			}
+		} else if (!this.createdAt.equals(other.createdAt)) {
+			return false;
+		}
+		if (this.id != other.id) {
+			return false;
+		}
+		if (this.isSpecial != other.isSpecial) {
+			return false;
+		}
+		if (this.lft != other.lft) {
+			return false;
+		}
+		if (this.name == null) {
+			if (other.name != null) {
+				return false;
+			}
+		} else if (!this.name.equals(other.name)) {
+			return false;
+		}
+		if (this.rgt != other.rgt) {
+			return false;
+		}
+		if (this.sortBy != other.sortBy) {
+			return false;
+		}
+		if (this.syncState != other.syncState) {
+			return false;
+		}
+		if (this.updatedAt == null) {
+			if (other.updatedAt != null) {
+				return false;
+			}
+		} else if (!this.updatedAt.equals(other.updatedAt)) {
+			return false;
+		}
+		return true;
 	}
 
 }

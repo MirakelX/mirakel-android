@@ -739,9 +739,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			am = AccountManager.get(this.context);
 			for (final Account a : am
 					.getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL)) {
-				am.setPassword(a,
-						am.getUserData(a, DefinitionsHelper.BUNDLE_KEY_CLIENT)
-								+ "\n:" + am.getPassword(a));
+				clientKey = am.getUserData(a,
+						DefinitionsHelper.BUNDLE_KEY_CLIENT);
+				if (clientKey != null && clientKey.trim().length() != 0) {
+					am.setPassword(a, clientKey
+
+					+ "\n:" + am.getPassword(a));
+				}
 			}
 		case 36:
 			cursor = db.query(FileMirakel.TABLE,
