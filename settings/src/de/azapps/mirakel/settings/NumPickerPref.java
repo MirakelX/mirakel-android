@@ -46,7 +46,6 @@ public class NumPickerPref extends DialogPreference {
 	@SuppressLint("NewApi")
 	@Override
 	protected void onPrepareDialogBuilder(final AlertDialog.Builder builder) {
-		// super.onPrepareDialogBuilder(builder);
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
 			this.dialog = ((Activity) this.ctx).getLayoutInflater().inflate(
 					R.layout.num_picker_pref_v10, null);

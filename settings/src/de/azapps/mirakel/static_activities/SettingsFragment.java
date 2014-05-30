@@ -37,7 +37,6 @@ public class SettingsFragment extends PreferenceFragment {
 	private static final String TAG = "SettingsFragment";
 	private PreferencesAppHelper helper;
 
-	// private MainActivity main;
 	public SettingsFragment() {
 		super();
 	}

@@ -990,11 +990,8 @@ public class PreferencesAppHelper extends PreferencesHelper {
 		if (recurring != null) {
 			recurring.setIntent(startRecurringIntent);
 		}
-		// Intent startTaskFragmentIntent = new Intent(activity,
-		// TaskFragmentSettings.class);
 		final Preference taskFragment = findPreference("task_fragment");
 		if (taskFragment != null) {
-			// taskFragment.setIntent(startTaskFragmentIntent);
 			taskFragment
 					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
