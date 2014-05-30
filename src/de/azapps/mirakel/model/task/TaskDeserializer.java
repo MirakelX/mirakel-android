@@ -88,30 +88,37 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
 			t.setProgress(0);
 			t.setList(null, false);
 		}
-		boolean setPriorityFromNumber = false;
-
 		// Name
 		final Set<Entry<String, JsonElement>> entries = el.entrySet();
+		boolean setPrioFromNumber = false;
 		for (final Entry<String, JsonElement> entry : entries) {
-			final String key = entry.getKey();
+			String key = entry.getKey();
 			final JsonElement val = entry.getValue();
 			if (key == null || key.equalsIgnoreCase("id")) {
 				continue;
 			}
-			if (key.equals("uuid")) {
+			key = key.toLowerCase();
+			switch (key) {
+			case "uuid":
 				t.setUUID(val.getAsString());
-			} else if (key.equalsIgnoreCase("name")
-					|| key.equalsIgnoreCase("description")) {
+				break;
+			case "name":
+			case "description":
 				t.setName(val.getAsString());
-			} else if (key.equalsIgnoreCase("content")) {
+				break;
+			case "content":
 				String content = val.getAsString();
 				if (content == null) {
 					content = "";
 				}
 				t.setContent(content);
-			} else if ((key.equalsIgnoreCase("priority") || key
-					.equalsIgnoreCase("priorityNumber"))
-					&& !setPriorityFromNumber) {
+				break;
+			case "priority":
+				if (setPrioFromNumber) {
+					break;
+				}
+				//$FALL-THROUGH$
+			case "priorityNumber":
 				final String prioString = val.getAsString().trim();
 				if (prioString.equalsIgnoreCase("L") && t.getPriority() != -1) {
 					t.setPriority(-2);
@@ -121,18 +128,22 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
 					t.setPriority(2);
 				} else if (!prioString.equalsIgnoreCase("L")) {
 					t.setPriority((int) val.getAsFloat());
-					setPriorityFromNumber = true;
+					setPrioFromNumber = true;
 				}
-			} else if (key.equalsIgnoreCase("progress")) {
+				break;
+			case "progress":
 				final int progress = (int) val.getAsDouble();
 				t.setProgress(progress);
-			} else if (key.equalsIgnoreCase("list_id")) {
+				break;
+			case "list_id": {
 				ListMirakel list = ListMirakel.get(val.getAsInt());
 				if (list == null) {
 					list = SpecialList.firstSpecial().getDefaultList();
 				}
 				t.setList(list, true);
-			} else if (key.equalsIgnoreCase("project")) {
+				break;
+			}
+			case "project": {
 				ListMirakel list = ListMirakel.findByName(val.getAsString(),
 						this.account);
 				if (list == null
@@ -141,29 +152,37 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
 							ListMirakel.SORT_BY_OPT, this.account);
 				}
 				t.setList(list, true);
-			} else if (key.equalsIgnoreCase("created_at")) {
+				break;
+			}
+			case "created_at":
 				t.setCreatedAt(val.getAsString().replace(":", ""));
-			} else if (key.equalsIgnoreCase("updated_at")) {
+				break;
+			case "updated_at":
 				t.setUpdatedAt(val.getAsString().replace(":", ""));
-			} else if (key.equalsIgnoreCase("entry")) {
+				break;
+			case "entry":
 				t.setCreatedAt(handleDate(val));
-			} else if (key.equalsIgnoreCase("modification")
-					|| key.equalsIgnoreCase("modified")) {
+				break;
+			case "modification":
+			case "modified":
 				t.setUpdatedAt(handleDate(val));
-			} else if (key.equalsIgnoreCase("done")) {
+				break;
+			case "done":
 				t.setDone(val.getAsBoolean());
-			} else if (key.equalsIgnoreCase("status")) {
+				break;
+			case "status":
 				final String status = val.getAsString();
-				if (status.equalsIgnoreCase("completed")) {
+				if ("completed".equalsIgnoreCase(status)) {
 					t.setDone(true);
-				} else if (status.equalsIgnoreCase("deleted")) {
+				} else if ("deleted".equalsIgnoreCase(status)) {
 					t.setSyncState(SYNC_STATE.DELETE);
 				} else {
 					t.setDone(false);
 					t.addAdditionalEntry(key, "\"" + val.getAsString() + "\"");
 					// TODO don't ignore waiting and recurring!!!
 				}
-			} else if (key.equalsIgnoreCase("due")) {
+				break;
+			case "due":
 				Calendar due = parseDate(val.getAsString(), "yyyy-MM-dd");
 				if (due == null) {
 					due = parseDate(val.getAsString(),
@@ -175,25 +194,30 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
 					}
 				}
 				t.setDue(due);
-			} else if (key.equalsIgnoreCase("reminder")) {
+				break;
+			case "reminder":
 				Calendar reminder = parseDate(val.getAsString(), "yyyy-MM-dd");
 				if (reminder == null) {
 					reminder = parseDate(val.getAsString(),
 							this.context.getString(R.string.TWDateFormat));
 				}
 				t.setReminder(reminder);
-			} else if (key.equalsIgnoreCase("annotations")) {
+				break;
+			case "annotations":
 				t.setContent(handleContent(val));
-			} else if (key.equalsIgnoreCase("content")) {
-				t.setContent(val.getAsString());
-			} else if (key.equalsIgnoreCase("sync_state")) {
+				break;
+			case "sync_state":
 				t.setSyncState(SYNC_STATE.parseInt(val.getAsInt()));
-			} else if (key.equalsIgnoreCase("depends")) {
+				break;
+			case "depends":
 				t.setDependencies(val.getAsString().split(","));
-			} else if (key.equalsIgnoreCase("tags")) {
+				break;
+			case "tags":
 				handleTags(t, val);
-			} else {
+				break;
+			default:
 				handleAdditionalEnties(t, key, val);
+				break;
 			}
 		}
 		return t;
