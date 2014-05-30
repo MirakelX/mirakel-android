@@ -7,7 +7,7 @@ import re
 from airspeed import CachingFileLoader
 
 if len(sys.argv) != 4:
-    print("./model_test.py <Model.java> <ModelBase.java> <pathToTestDir>")
+    print(sys.argv[0]+" <Model.java> <ModelBase.java> <pathToTestDir>")
     sys.exit()
 
 filename=sys.argv[1]

@@ -76,4 +76,4 @@ src/de/azapps/mirakel/model/tags/TagTest.java
 src/de/azapps/mirakel/model/task/TaskBaseTest.java
 src/de/azapps/mirakel/model/task/TaskTest.java
 src/de/azapps/model/task/TaskDeserializerTest.java
-
+src/de/azapps/mirakel/model/task/TaskDeserializerTest.java
