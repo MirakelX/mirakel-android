@@ -87,6 +87,7 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
 			t.setPriority(0);
 			t.setProgress(0);
 			t.setList(null, false);
+			t.clearAdditionalEntries();
 		}
 		// Name
 		final Set<Entry<String, JsonElement>> entries = el.entrySet();
