@@ -21,6 +21,7 @@ import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.FileUtils;
+import de.azapps.tools.Log;
 
 public class FileMirakel extends FileBase {
 
@@ -182,7 +183,7 @@ public class FileMirakel extends FileBase {
 					myBitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
 					out.close();
 				} catch (final Exception e) {
-					e.printStackTrace();
+					Log.logStackTrace(e);
 				}
 			}
 		}
