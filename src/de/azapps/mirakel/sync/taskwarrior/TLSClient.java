@@ -181,13 +181,6 @@ public class TLSClient {
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////
-	@Override
-	protected void finalize() throws Throwable {
-		close();
-		super.finalize();
-	}
-
-	// //////////////////////////////////////////////////////////////////////////////
 	public void init(final String root, final String user_ca,
 			final String user_key) throws ParseException, CertificateException,
 			NoSuchCertificateException {
