@@ -234,15 +234,6 @@ public class FileMirakel extends FileBase {
 		new File(fileCacheDir, getId() + ".png").delete();
 	}
 
-	@Override
-	public boolean equals(final Object o) {
-		if (o instanceof FileMirakel) {
-			final FileMirakel f = (FileMirakel) o;
-			return f.getId() == getId() && f.getUri().equals(getUri());
-		}
-		return false;
-	}
-
 	public Bitmap getPreview() {
 		final File osFile = new File(fileCacheDir, getId() + ".png");
 		if (osFile.exists()) {
