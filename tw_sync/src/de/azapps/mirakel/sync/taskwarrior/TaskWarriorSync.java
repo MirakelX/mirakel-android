@@ -223,6 +223,7 @@ public class TaskWarriorSync {
 			client.connect(_host, _port);
 		} catch (final IOException e) {
 			Log.e(TAG, "cannot create socket");
+			client.close();
 			throw new TaskWarriorSyncFailedExeption(
 					TW_ERRORS.CANNOT_CREATE_SOCKET, "cannot create socket");
 		}
@@ -235,7 +236,7 @@ public class TaskWarriorSync {
 				FileUtils.writeToFile(new File(FileUtils.getLogDir(), getTime()
 						+ ".tw_down.log"), response);
 			} catch (final IOException e1) {
-				e1.printStackTrace();
+				Log.logStackTrace(e1);
 			}
 		}
 
@@ -245,10 +246,12 @@ public class TaskWarriorSync {
 			remotes.parse(response);
 		} catch (final MalformedInputException e) {
 			Log.e(TAG, "cannot parse message");
+			client.close();
 			throw new TaskWarriorSyncFailedExeption(
 					TW_ERRORS.CANNOT_PARSE_MESSAGE, "cannot parse message");
 		} catch (final NullPointerException e) {
 			Log.wtf(TAG, "remotes.parse throwed NullPointer");
+			client.close();
 			throw new TaskWarriorSyncFailedExeption(
 					TW_ERRORS.CANNOT_PARSE_MESSAGE,
 					"remotes.parse throwed NullPointer");
@@ -256,6 +259,7 @@ public class TaskWarriorSync {
 		final int code = Integer.parseInt(remotes.get("code"));
 		final TW_ERRORS error = TW_ERRORS.getError(code);
 		if (error != TW_ERRORS.NO_ERROR) {
+			client.close();
 			throw new TaskWarriorSyncFailedExeption(error,
 					"sync() throwed error");
 		}
@@ -268,6 +272,7 @@ public class TaskWarriorSync {
 				sync(a);
 			} catch (final TaskWarriorSyncFailedExeption e) {
 				if (e.getError() != TW_ERRORS.NOT_ENABLED) {
+					client.close();
 					throw new TaskWarriorSyncFailedExeption(e.getError(), e);
 				}
 			}

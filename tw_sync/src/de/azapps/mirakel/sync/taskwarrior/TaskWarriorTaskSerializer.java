@@ -133,7 +133,7 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
 		}
 		if (priority != null) {
 			json.addProperty("priority", priority);
-			if (priority == "L" && task.getPriority() != -2) {
+			if ("L".equals(priority) && task.getPriority() != -2) {
 				json.addProperty("priorityNumber", task.getPriority());
 			}
 		}
