@@ -1729,8 +1729,7 @@ public class MainActivity extends ActionBarActivity implements
 		try {
 			initViewPager();
 		} catch (final Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.logStackTrace(e);
 		}
 		initNavDrawer();
 		this.startIntent = getIntent();
