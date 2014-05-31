@@ -236,7 +236,7 @@ public class TaskWarriorSync {
 				FileUtils.writeToFile(new File(FileUtils.getLogDir(), getTime()
 						+ ".tw_down.log"), response);
 			} catch (final IOException e1) {
-				e1.printStackTrace();
+				Log.logStackTrace(e1);
 			}
 		}
 
