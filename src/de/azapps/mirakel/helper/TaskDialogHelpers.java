@@ -32,7 +32,6 @@ import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Looper;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
@@ -420,24 +419,16 @@ public class TaskDialogHelpers {
 		final View v = ((Activity) ctx).getLayoutInflater().inflate(
 				R.layout.select_subtask, null, false);
 		final ListView lv = (ListView) v.findViewById(R.id.subtask_listview);
-		new Thread(new Runnable() {
+		subtaskAdapter = new SubtaskAdapter(ctx, 0, Task.rawQuery("Select "
+				+ getAllColumns() + " FROM " + Task.TABLE + " where NOT "
+				+ DatabaseHelper.ID + "=" + task.getId()), task, asSubtask);
+		lv.post(new Runnable() {
 			@Override
 			public void run() {
-				Looper.prepare();
-				subtaskAdapter = new SubtaskAdapter(ctx, 0,
-						Task.rawQuery("Select " + getAllColumns() + " FROM "
-								+ Task.TABLE + " where NOT "
-								+ DatabaseHelper.ID + "=" + task.getId()),
-						task, asSubtask);
-				lv.post(new Runnable() {
-
-					@Override
-					public void run() {
-						lv.setAdapter(subtaskAdapter);
-					}
-				});
+				lv.setAdapter(subtaskAdapter);
 			}
-		}).start();
+		});
+
 		searchString = "";
 		done = false;
 		content = false;
@@ -550,6 +541,7 @@ public class TaskDialogHelpers {
 					}
 					newTask = false;
 					lv.invalidateViews();
+					updateListView(subtaskAdapter, task, lv);
 				}
 			});
 		}
@@ -800,9 +792,6 @@ public class TaskDialogHelpers {
 		}
 		TaskDetailDueReminder.setRecurringImage(image, id);
 		task.save();
-		// if (!isDue) {
-		// ReminderAlarm.updateAlarms(ctx);
-		// }
 	}
 
 	public static void stopRecording() {
