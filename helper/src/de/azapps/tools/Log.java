@@ -68,6 +68,10 @@ public class Log {
 		return android.util.Log.getStackTraceString(tr);
 	}
 
+	public static void logStackTrace(final Throwable tr) {
+		e("Stacktrace", getStackTraceString(tr));
+	}
+
 	public static void i(final String tag, final String msg) {
 		if (tag == null || msg == null) {
 			return;
