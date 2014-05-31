@@ -29,7 +29,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.R;
-import de.azapps.mirakel.model.task.Task;
 
 public class Tag extends TagBase {
 
@@ -79,9 +78,12 @@ public class Tag extends TagBase {
 		return cursorToTagList(c);
 	}
 
-	public static List<Tag> getTagsForTask(final Task task) {
+	public static List<Tag> getTagsForTask(final long id) {
+		if (database == null) {
+			return new ArrayList<>();
+		}
 		final Cursor c = database.rawQuery(getTagsQuery(Tag.allColumns),
-				new String[] { task.getId() + "" });
+				new String[] { id + "" });
 		return Tag.cursorToTagList(c);
 	}
 
@@ -229,9 +231,9 @@ public class Tag extends TagBase {
 	 * 
 	 * @return All tags as json-string in tw-form
 	 */
-	public static String serialize(final Task task) {
+	public static String serialize(final long id) {
 		String json = "";
-		final List<Tag> tags = getTagsForTask(task);
+		final List<Tag> tags = getTagsForTask(id);
 		json += "\"tags\":[";
 		if (tags.size() > 0) {
 
