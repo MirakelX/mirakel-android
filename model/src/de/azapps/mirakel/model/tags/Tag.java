@@ -214,15 +214,6 @@ public class Tag extends TagBase {
 				new String[] { getId() + "" });
 	}
 
-	@Override
-	public boolean equals(final Object o) {
-		if (o instanceof Tag) {
-			final Tag t = (Tag) o;
-			return t.getId() == getId();
-		}
-		return false;
-	}
-
 	/**
 	 * Serialize Tags of a Task to a tw-compatible json-String
 	 * 

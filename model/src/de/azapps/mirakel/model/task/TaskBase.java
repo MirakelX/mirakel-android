@@ -142,6 +142,12 @@ class TaskBase {
 		return this.additionalEntriesString;
 	}
 
+	public void clearAdditionalEntries() {
+		initAdditionalEntries();
+		this.additionalEntries.clear();
+		this.additionalEntriesString = "";
+	}
+
 	public static String serializeAdditionalEntries(
 			final Map<String, String> additionalEntries) {
 		String additionalEntriesStr = "{";
