@@ -4,8 +4,8 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
-import android.util.Log;
 import android.view.Gravity;
+import de.azapps.tools.Log;
 
 public class DefinitionsHelper {
 	public static class NoSuchListException extends Exception {
@@ -64,7 +64,7 @@ public class DefinitionsHelper {
 			VERSIONS_NAME = ctx.getPackageManager().getPackageInfo(
 					ctx.getPackageName(), 0).versionName;
 		} catch (final NameNotFoundException e) {
-			e.printStackTrace();
+			Log.logStackTrace(e);
 			Log.wtf(TAG, "App not found");
 			VERSIONS_NAME = "";
 		}
