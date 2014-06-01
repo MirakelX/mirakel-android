@@ -1639,10 +1639,6 @@ public class MainActivity extends ActionBarActivity implements
 				list = SpecialList.firstSpecial();
 			}
 			setCurrentList(list);
-			if (intent.getAction().contains(
-					DefinitionsHelper.SHOW_LIST_FROM_WIDGET)) {
-				this.closeOnBack = true;
-			}
 			this.currentTask = list.getFirstTask();
 			if (getTaskFragment() != null) {
 				getTaskFragment().update(this.currentTask);
@@ -1678,7 +1674,6 @@ public class MainActivity extends ActionBarActivity implements
 					}
 				}
 			}, 10);
-
 		} else if (intent.getAction().equals(DefinitionsHelper.SHOW_MESSAGE)) {
 			final String message = intent.getStringExtra(Intent.EXTRA_TEXT);
 			String subject = intent.getStringExtra(Intent.EXTRA_SUBJECT);
