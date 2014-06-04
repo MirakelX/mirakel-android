@@ -63,15 +63,20 @@ public class SettingsFragment extends PreferenceFragment {
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Locale.setDefault(Helpers.getLocal(getActivity()));
-		if (getArguments().getString("type").equals("gui")) {
+		switch (getArguments().getString("type")) {
+		case "gui":
 			addPreferencesFromResource(R.xml.settings_gui);
-		} else if (getArguments().getString("type").equals("tasks")) {
+			break;
+		case "tasks":
 			addPreferencesFromResource(R.xml.settings_tasks);
-		} else if (getArguments().getString("type").equals("notification")) {
+			break;
+		case "notification":
 			addPreferencesFromResource(R.xml.settings_notifications);
-		} else if (getArguments().getString("type").equals("backup")) {
+			break;
+		case "backup":
 			addPreferencesFromResource(R.xml.settings_backup);
-		} else if (getArguments().getString("type").equals("accounts")) {
+			break;
+		case "accounts":
 			startActivity(new Intent(getActivity(),
 					AccountSettingsActivity.class));
 			if (!MirakelCommonPreferences.isTablet()) {
@@ -79,20 +84,25 @@ public class SettingsFragment extends PreferenceFragment {
 			} else {
 				addPreferencesFromResource(R.xml.settings_notifications);
 			}
-		} else if (getArguments().getString("type").equals("misc")) {
+			break;
+		case "misc":
 			addPreferencesFromResource(R.xml.settings_misc);
-		} else if (getArguments().getString("type").equals("about")) {
+			break;
+		case "about":
 			addPreferencesFromResource(R.xml.settings_about);
-		} else if (getArguments().getString("type").equals("help")) {
+			break;
+		case "help":
 			Helpers.openHelp(getActivity());
 			getActivity().finish();
-		} else if (getArguments().getString("type").equals("donate")) {
+			break;
+		case "donate":
 			startActivityForResult(new Intent(getActivity(),
 					DonationsActivity.class), SettingsActivity.DONATE);
 			if (!MirakelCommonPreferences.isTablet()) {
 				getActivity().finish();
 			}
-		} else if (getArguments().getString("type").equals("speciallists")) {
+			break;
+		case "speciallists":
 			startActivity(new Intent(getActivity(),
 					SpecialListsSettingsActivity.class));
 			if (!MirakelCommonPreferences.isTablet()) {
@@ -100,17 +110,19 @@ public class SettingsFragment extends PreferenceFragment {
 			} else {
 				addPreferencesFromResource(R.xml.settings_notifications);
 			}
-		} else if (getArguments().getString("type").equals("tag")) {
+			break;
+		case "tag":
 			startActivity(new Intent(getActivity(), TagsSettingsActivity.class));
 			if (!MirakelCommonPreferences.isTablet()) {
 				getActivity().finish();
 			} else {
 				addPreferencesFromResource(R.xml.settings_notifications);
 			}
-		} else if (getArguments().getString("type").equals("dev")) {
+			break;
+		case "dev":
 			addPreferencesFromResource(R.xml.settings_dev);
-		} else {
-
+			break;
+		default:
 			Log.wtf(TAG, "unkown prefernce " + getArguments().getString("type"));
 		}
 

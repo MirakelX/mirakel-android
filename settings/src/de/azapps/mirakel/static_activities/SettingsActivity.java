@@ -244,62 +244,66 @@ public class SettingsActivity extends PreferenceActivity {
 			} else {
 				if (i.getAction() == null) {
 					addPreferencesFromResource(R.xml.settings_v10);
-				} else if (i.getAction().equals(
-						"de.azapps.mirakel.preferences.NOTIFICATION")) {
-					addPreferencesFromResource(R.xml.settings_notifications);
-				} else if (i.getAction().equals(
-						"de.azapps.mirakel.preferences.GUI")) {
-					addPreferencesFromResource(R.xml.settings_gui);
-				} else if (i.getAction().equals(
-						"de.azapps.mirakel.preferences.TASKS")) {
-					addPreferencesFromResource(R.xml.settings_tasks);
-				} else if (i.getAction().equals(
-						"de.azapps.mirakel.preferences.ABOUT")) {
-					addPreferencesFromResource(R.xml.settings_about);
-				} else if (i.getAction().equals(
-						"de.azapps.mirakel.preferences.HELP")) {
-					Helpers.openHelp(this);
-					finish();
-				} else if (i.getAction().equals(
-						"de.azapps.mirakel.preferences.DONATE")) {
-					startActivityForResult(new Intent(this,
-							DonationsActivity.class), DONATE);
-					if (!MirakelCommonPreferences.isTablet()) {
-						finish();
-					}
-				} else if (i.getAction().equals(
-						"de.azapps.mirakel.preferences.MISC")) {
-					addPreferencesFromResource(R.xml.settings_misc);
-				} else if (i.getAction().equals(
-						"de.azapps.mirakel.preferences.BACKUP")) {
-					addPreferencesFromResource(R.xml.settings_backup);
-				} else if (i.getAction().equals(
-						"de.azapps.mirakel.preferences.ACCOUNTS")) {
-					startActivity(new Intent(this,
-							AccountSettingsActivity.class));
-					if (!MirakelCommonPreferences.isTablet()) {
-						finish();
-					} else {
-						addPreferencesFromResource(R.xml.settings_notifications);
-					}
-				} else if (i.getAction().equals(
-						"de.azapps.mirakel.preferences.SPECIAL_LISTS")) {
-					startActivity(new Intent(this,
-							SpecialListsSettingsActivity.class));
-					if (!MirakelCommonPreferences.isTablet()) {
-						finish();
-					}
-				} else if (i.getAction().equals(
-						"de.azapps.mirakel.preferences.TAG")) {
-					startActivity(new Intent(this, TagsSettingsActivity.class));
-					if (!MirakelCommonPreferences.isTablet()) {
-						finish();
-					}
-				} else if (i.getAction().equals(
-						"de.azapps.mirakel.preferences.DEV")) {
-					addPreferencesFromResource(R.xml.settings_dev);
 				} else {
-					Log.wtf(TAG, "unkown Preference");
+					switch (i.getAction()) {
+					case "de.azapps.mirakel.preferences.NOTIFICATION":
+						addPreferencesFromResource(R.xml.settings_notifications);
+						break;
+					case "de.azapps.mirakel.preferences.GUI":
+						addPreferencesFromResource(R.xml.settings_gui);
+						break;
+					case "de.azapps.mirakel.preferences.TASKS":
+						addPreferencesFromResource(R.xml.settings_tasks);
+						break;
+					case "de.azapps.mirakel.preferences.ABOUT":
+						addPreferencesFromResource(R.xml.settings_about);
+						break;
+					case "de.azapps.mirakel.preferences.HELP":
+						Helpers.openHelp(this);
+						finish();
+						break;
+					case "de.azapps.mirakel.preferences.DONATE":
+						startActivityForResult(new Intent(this,
+								DonationsActivity.class), DONATE);
+						if (!MirakelCommonPreferences.isTablet()) {
+							finish();
+						}
+						break;
+					case "de.azapps.mirakel.preferences.MISC":
+						addPreferencesFromResource(R.xml.settings_misc);
+						break;
+					case "de.azapps.mirakel.preferences.BACKUP":
+						addPreferencesFromResource(R.xml.settings_backup);
+						break;
+					case "de.azapps.mirakel.preferences.ACCOUNTS":
+						startActivity(new Intent(this,
+								AccountSettingsActivity.class));
+						if (!MirakelCommonPreferences.isTablet()) {
+							finish();
+						} else {
+							addPreferencesFromResource(R.xml.settings_notifications);
+						}
+						break;
+					case "de.azapps.mirakel.preferences.SPECIAL_LISTS":
+						startActivity(new Intent(this,
+								SpecialListsSettingsActivity.class));
+						if (!MirakelCommonPreferences.isTablet()) {
+							finish();
+						}
+						break;
+					case "de.azapps.mirakel.preferences.TAG":
+						startActivity(new Intent(this,
+								TagsSettingsActivity.class));
+						if (!MirakelCommonPreferences.isTablet()) {
+							finish();
+						}
+						break;
+					case "de.azapps.mirakel.preferences.DEV":
+						addPreferencesFromResource(R.xml.settings_dev);
+						break;
+					default:
+						Log.wtf(TAG, "unkown Preference");
+					}
 				}
 			}
 			new PreferencesAppHelper(this).setFunctionsApp();
