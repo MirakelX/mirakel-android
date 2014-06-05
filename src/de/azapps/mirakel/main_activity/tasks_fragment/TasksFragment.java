@@ -372,6 +372,13 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 					public void onTaskChanged(final Task newTask) {
 						getLoaderManager().restartLoader(0, null,
 								TasksFragment.this);
+						if (MirakelCommonPreferences.isTablet()
+								&& TasksFragment.this.main.getTaskFragment() != null
+								&& TasksFragment.this.main.getTaskFragment()
+										.getTask().getId() == newTask.getId()) {
+							TasksFragment.this.main.getTaskFragment().update(
+									newTask);
+						}
 					}
 				});
 		this.listView.setAdapter(this.adapter);
