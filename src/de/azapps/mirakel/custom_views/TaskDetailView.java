@@ -152,8 +152,10 @@ public class TaskDetailView extends BaseTaskDetailRow implements
 		if (this.taskChangedListner != null) {
 			this.taskChangedListner.onTaskChanged(newTask);
 		}
+		if (this.task.isDone() != newTask.isDone()) {
+			updateView();
+		}
 		this.task = newTask;
-
 	}
 
 	public void saveContent() {
