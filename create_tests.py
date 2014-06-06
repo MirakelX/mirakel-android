@@ -15,6 +15,7 @@ models=[
 models_path="src/de/azapps/mirakel/model/"
 tests_path="main/tests/"
 
+
 def get_file_name(name,inst):
     return "model/" + models_path + name +"/" + inst +".java"
 
@@ -23,6 +24,10 @@ for (name,base,inst) in models:
     if inst==None:
         continue
     os.system("main/tests/scripts/generate_model_tests.py " + get_file_name(name,inst) + " " + get_file_name(name,base) + " "+tests_path)
+    
+os.system("./main/tests/scripts/generate_json_tests.py main/tests/scripts/tasks.json "+test_path);
+os.system("./main/tests/scripts/generate_recurrence_test.py "+test_path)
+os.system("./main/tests/scripts/generate_tw_recurrence_tests.py "+test_path)
 
 
 
