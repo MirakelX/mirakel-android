@@ -781,7 +781,7 @@ public class Task extends TaskBase {
 		final List<Task> subTasks = getSubtasks();
 		for (final Task t : subTasks) {
 			t.setDone(true);
-			save(true);
+			t.save(false);
 		}
 	}
 

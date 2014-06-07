@@ -197,11 +197,11 @@ public class RecurringBase {
 	 * @return
 	 */
 	public long getInterval() {
-		final int minute = 60;
-		final int hour = 3600;
-		final int day = 86400;
-		final int month = 2592000; // That's not right, but who cares?
-		final int year = 31536000; // nobody need this…
+		final long minute = 60;
+		final long hour = 3600;
+		final long day = 86400;
+		final long month = 2592000; // That's not right, but who cares?
+		final long year = 31536000; // nobody need this…
 		return (this.minutes * minute + this.hours * hour + this.days * day
 				+ this.months * month + this.years * year) * 1000;
 	}

@@ -153,7 +153,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.execSQL("INSERT INTO " + SpecialList.TABLE + " (" + NAME + ","
 				+ SpecialList.ACTIVE + "," + SpecialList.WHERE_QUERY + ","
 				+ ListMirakel.LFT + ", " + ListMirakel.RGT + ") VALUES (" + "'"
-				+ this.context.getString(R.string.list_all) + "',1,'',1,2)");
+				+ this.context.getString(R.string.list_all) + "',1,'"
+				+ Task.DONE + "=0',1,2)");
 		db.execSQL("INSERT INTO " + SpecialList.TABLE + " (" + NAME + ","
 				+ SpecialList.ACTIVE + "," + SpecialList.WHERE_QUERY + ","
 				+ ListMirakel.LFT + ", " + ListMirakel.RGT + ","

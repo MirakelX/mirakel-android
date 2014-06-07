@@ -28,9 +28,11 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
+import java.util.Scanner;
 import java.util.Set;
 
 import android.content.Context;
+import android.util.SparseBooleanArray;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
@@ -46,6 +48,7 @@ import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.tools.Log;
 
@@ -216,6 +219,14 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
 			case "tags":
 				handleTags(t, val);
 				break;
+			case "recur":
+				final Recurring r = parseTaskWarriorRecurrence(val
+						.getAsString());
+				if (r != null) {
+					r.create();
+					t.setRecurrence(r.getId());
+				}
+				break;
 			default:
 				handleAdditionalEnties(t, key, val);
 				break;
@@ -334,6 +345,112 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
 			return null;
 		}
 
+	}
+
+	static Recurring parseTaskWarriorRecurrence(final String recur) {
+		final Scanner in = new Scanner(recur);
+		in.useDelimiter("[^0-9]+");
+		int number = 1;
+		if (in.hasNextInt()) {
+			number = in.nextInt();
+		}
+		in.close();
+		// remove number and possible sign(recurrence should be positive but who
+		// knows)
+		switch (recur.replace("" + number, "").replace("-", "")) {
+		case "yearly":
+		case "annual":
+			number = 1;
+			//$FALL-THROUGH$
+		case "years":
+		case "year":
+		case "yrs":
+		case "yr":
+		case "y":
+			return new Recurring(0, recur, 0, 0, 0, 0, number, true, null,
+					null, true, true, null, 0);
+		case "semiannual":
+			return new Recurring(0, recur, 0, 0, 0, 6, 0, true, null, null,
+					true, true, null, 0);
+		case "biannual":
+		case "biyearly":
+			return new Recurring(0, recur, 0, 0, 0, 0, 2, true, null, null,
+					true, true, null, 0);
+		case "bimonthly":
+			return new Recurring(0, recur, 0, 0, 0, 2, 0, true, null, null,
+					true, true, null, 0);
+		case "biweekly":
+		case "fortnight":
+			return new Recurring(0, recur, 0, 0, 14, 0, 0, true, null, null,
+					true, true, null, 0);
+		case "daily":
+			number = 1;
+			//$FALL-THROUGH$
+		case "days":
+		case "day":
+		case "d":
+			return new Recurring(0, recur, 0, 0, number, 0, 0, true, null,
+					null, true, true, null, 0);
+		case "hours":
+		case "hour":
+		case "hrs":
+		case "hr":
+		case "h":
+			return new Recurring(0, recur, 0, number, 0, 0, 0, true, null,
+					null, true, true, null, 0);
+		case "minutes":
+		case "mins":
+		case "min":
+			return new Recurring(0, recur, number, 0, 0, 0, 0, true, null,
+					null, true, true, null, 0);
+		case "monthly":
+			number = 1;
+			//$FALL-THROUGH$
+		case "months":
+		case "month":
+		case "mnths":
+		case "mths":
+		case "mth":
+		case "mos":
+		case "mo":
+			return new Recurring(0, recur, 0, 0, 0, number, 0, true, null,
+					null, true, true, null, 0);
+		case "quarterly":
+			number = 1;
+			//$FALL-THROUGH$
+		case "quarters":
+		case "qrtrs":
+		case "qtrs":
+		case "qtr":
+		case "q":
+			return new Recurring(0, recur, 0, 0, 0, 3 * number, 0, true, null,
+					null, true, true, null, 0);
+		default:
+		case "seconds":
+		case "secs":
+		case "sec":
+		case "s":
+			Log.w(TAG, "mirakel des not support " + recur);
+			return null;
+		case "weekdays":
+			final SparseBooleanArray weekdays = new SparseBooleanArray(7);
+			for (int i = Calendar.SUNDAY; i <= Calendar.SATURDAY; i++) {
+				weekdays.put(i, i != Calendar.SATURDAY && i != Calendar.SUNDAY);
+			}
+			return new Recurring(0, recur, 0, 0, 0, 0, 0, true, null, null,
+					true, true, weekdays, 0);
+		case "sennight":
+		case "weekly":
+			number = 1;
+			//$FALL-THROUGH$
+		case "weeks":
+		case "week":
+		case "wks":
+		case "wk":
+		case "w":
+			return new Recurring(0, recur, 0, 0, 7 * number, 0, 0, true, null,
+					null, true, true, null, 0);
+		}
 	}
 
 }
