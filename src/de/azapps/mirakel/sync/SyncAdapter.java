@@ -164,6 +164,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			case NO_SUCH_CERT:
 				last_message = this.mContext.getText(R.string.cert_not_found);
 				break;
+			case COULD_NOT_FIND_COMMON_ANCESTOR:
+				last_message = this.mContext
+						.getText(R.string.could_not_find_common_ancestor);
+				break;
 			case NOT_ENABLED:
 			default:
 				return;

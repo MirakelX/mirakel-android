@@ -260,8 +260,13 @@ public class TaskWarriorSync {
 		final TW_ERRORS error = TW_ERRORS.getError(code);
 		if (error != TW_ERRORS.NO_ERROR) {
 			client.close();
-			throw new TaskWarriorSyncFailedExeption(error,
-					"sync() throwed error");
+			final String status = remotes.get("status");
+			if (status != null
+					&& status.contains("Could not find common ancestor")) {
+				throw new TaskWarriorSyncFailedExeption(
+						TW_ERRORS.COULD_NOT_FIND_COMMON_ANCESTOR,
+						"sync() throwed error");
+			}
 		}
 
 		if (remotes.get("status").equals("Client sync key not found.")) {
