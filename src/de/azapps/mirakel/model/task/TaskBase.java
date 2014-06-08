@@ -49,6 +49,7 @@ class TaskBase {
 	public static final String RECURRING = "recurring";
 	public static final String RECURRING_REMINDER = "recurring_reminder";
 	public static final String REMINDER = "reminder";
+	public static final String RECURRING_SHOWN = "is_shown_recurring";
 	private static final String TAG = "TaskBase";
 
 	public static final String UUID = "uuid";
@@ -58,7 +59,7 @@ class TaskBase {
 	private Calendar createdAt;
 	private boolean done;
 	private Calendar due;
-	protected Map<String, Boolean> edited = new HashMap<String, Boolean>();
+	protected Map<String, Boolean> edited = new HashMap<>();
 	private long id = 0;
 	private ListMirakel list;
 	private String name;
@@ -66,6 +67,7 @@ class TaskBase {
 	private int progress;
 	private int recurrence;
 	private int recurringReminder;
+	private boolean isRecurringShown;
 	private Calendar reminder;
 	private SYNC_STATE syncState;
 	private Calendar updatedAt;
@@ -76,37 +78,41 @@ class TaskBase {
 		// nothing
 	}
 
-	TaskBase(final long id, final String uuid, final ListMirakel list,
-			final String name, final String content, final boolean done,
-			final Calendar due, final Calendar reminder, final int priority,
-			final Calendar createdAt, final Calendar updatedAt,
-			final SYNC_STATE syncState, final String additionalEntriesString,
-			final int recurring, final int recurringReminder, final int progress) {
-		this.id = id;
-		this.uuid = uuid;
-		setList(list, false);
-		setName(name);
-		setContent(content);
-		setDone(done);
-		setDue(due);
-		setReminder(reminder);
-		this.priority = priority;
-		this.setCreatedAt(createdAt);
-		this.setUpdatedAt(updatedAt);
-		setSyncState(syncState);
-		this.additionalEntriesString = additionalEntriesString;
+	TaskBase(final long newId, final String newUuid, final ListMirakel newList,
+			final String newName, final String newContent,
+			final boolean newDone, final Calendar newDue,
+			final Calendar newReminder, final int newPriority,
+			final Calendar newCreatedAt, final Calendar neUpdatedAt,
+			final SYNC_STATE newSyncState,
+			final String newAdditionalEntriesString, final int recurring,
+			final int rnewRecurringReminder, final int newProgress,
+			final boolean shown) {
+		this.id = newId;
+		this.uuid = newUuid;
+		setList(newList, false);
+		setName(newName);
+		setContent(newContent);
+		setDone(newDone);
+		setDue(newDue);
+		setReminder(newReminder);
+		this.priority = newPriority;
+		this.setCreatedAt(newCreatedAt);
+		this.setUpdatedAt(neUpdatedAt);
+		setSyncState(newSyncState);
+		this.additionalEntriesString = newAdditionalEntriesString;
 		this.recurrence = recurring;
-		this.recurringReminder = recurringReminder;
-		this.progress = progress;
+		this.recurringReminder = rnewRecurringReminder;
+		this.progress = newProgress;
 		clearEdited();
 		this.tags = null;
+		setIsRecurringShown(shown);
 	}
 
-	TaskBase(final String name) {
+	TaskBase(final String newName) {
 		this.id = 0;
 		this.uuid = java.util.UUID.randomUUID().toString();
 		setList(ListMirakel.first(), false);
-		setName(name);
+		setName(newName);
 		setContent("");
 		setDone(false);
 		setDue(null);
@@ -131,9 +137,49 @@ class TaskBase {
 		this.edited.clear();
 	}
 
+	/**
+	 * Use getAdditional[Type] instead
+	 * 
+	 * @return
+	 */
+	@Deprecated
 	public Map<String, String> getAdditionalEntries() {
 		initAdditionalEntries();
 		return this.additionalEntries;
+	}
+
+	public String getAdditionalRaw(final String key) {
+		initAdditionalEntries();
+		return this.additionalEntries.get(key);
+	}
+
+	public String getAdditionalString(final String key) {
+		final String str = getAdditionalRaw(key);
+		if (str == null) {
+			return null;
+		}
+		return str.substring(1, str.length() - 1);
+	}
+
+	public Integer getAdditionalInt(final String key) {
+		final String str = getAdditionalRaw(key);
+		if (str == null) {
+			return null;
+		}
+		return Integer.valueOf(str);
+	}
+
+	public boolean existAdditional(final String key) {
+		initAdditionalEntries();
+		return this.additionalEntries.containsKey(key);
+	}
+
+	void setIsRecurringShown(final boolean shown) {
+		this.isRecurringShown = shown;
+	}
+
+	boolean isRecurringShown() {
+		return this.isRecurringShown;
 	}
 
 	protected String getAdditionalEntriesString() {
@@ -219,6 +265,7 @@ class TaskBase {
 		cv.put(TaskBase.RECURRING, this.recurrence);
 		cv.put(TaskBase.RECURRING_REMINDER, this.recurringReminder);
 		cv.put(TaskBase.PROGRESS, this.progress);
+		cv.put(TaskBase.RECURRING_SHOWN, this.isRecurringShown);
 
 		cv.put("additional_entries", getAdditionalEntriesString());
 		return cv;
@@ -304,7 +351,7 @@ class TaskBase {
 
 	public static Map<String, String> parseAdditionalEntries(
 			final String additionalEntriesString) {
-		final Map<String, String> ret = new HashMap<String, String>();
+		final Map<String, String> ret = new HashMap<>();
 		if (additionalEntriesString != null
 				&& !additionalEntriesString.trim().equals("")
 				&& !additionalEntriesString.trim().equals("null")) {
@@ -344,21 +391,22 @@ class TaskBase {
 		this.additionalEntries.remove(key);
 	}
 
-	public void setAdditionalEntries(final Map<String, String> additionalEntries) {
+	public void setAdditionalEntries(
+			final Map<String, String> newAdditionalEntries) {
 		if (this.additionalEntries != null
-				&& this.additionalEntries.equals(additionalEntries)) {
+				&& this.additionalEntries.equals(newAdditionalEntries)) {
 			return;
 		}
-		this.additionalEntries = additionalEntries;
+		this.additionalEntries = newAdditionalEntries;
 		this.edited.put("additionalEntries", true);
 	}
 
-	public void setContent(final String content) {
-		if (this.content != null && this.content.equals(content)) {
+	public void setContent(final String newContent) {
+		if (this.content != null && this.content.equals(newContent)) {
 			return;
 		}
-		if (content != null) {
-			this.content = content.trim().replace("\\n", "\n");
+		if (newContent != null) {
+			this.content = newContent.trim().replace("\\n", "\n");
 			this.content = this.content.replace("\\\"", "\"");
 			this.content = this.content.replace("\b", "");
 		} else {
@@ -379,42 +427,47 @@ class TaskBase {
 		}
 	}
 
-	public void setDone(final boolean done) {
-		if (this.done == done) {
-			return;
+	/**
+	 * 
+	 * @param newDone
+	 * @return The id of the new task, created by recurring or -1
+	 */
+	public long setDone(final boolean newDone) {
+		if (this.done == newDone) {
+			return -1;
 		}
-		this.done = done;
+		this.done = newDone;
 		this.edited.put(TaskBase.DONE, true);
-		if (done && this.recurrence != -1 && this.due != null) {
+		if (newDone && this.recurrence != -1 && this.due != null) {
 			if (getRecurring() != null) {
-				this.due = getRecurring().addRecurring(this.due);
-				if (this.reminder != null) {
-					// Fix for #84
-					// Update Reminder if set Task done
-					this.reminder = getRecurring().addRecurring(this.reminder);
-				}
-				this.done = false;
-			} else {
-				Log.wtf(TaskBase.TAG, "Reccuring vanish");
+				final Task oldTask = Task.get(this.id);
+				final Task newTask = getRecurring().incrementRecurringDue(
+						oldTask);
+				// set the sync state of the old task to recurring, only show
+				// the new one
+				this.done = true;
+				return newTask.getId();
 			}
-		} else if (done) {
+			Log.wtf(TaskBase.TAG, "Reccuring vanish");
+		} else if (newDone) {
 			this.progress = 100;
 		}
+		return this.id;
 	}
 
-	public void setDue(final Calendar due) {
-		if (this.due != null && this.due.equals(due)) {
+	public void setDue(final Calendar newDue) {
+		if (this.due != null && this.due.equals(newDue)) {
 			return;
 		}
-		this.due = due;
+		this.due = newDue;
 		this.edited.put(TaskBase.DUE, true);
-		if (due == null) {
+		if (newDue == null) {
 			setRecurrence(-1);
 		}
 	}
 
-	protected void setId(final long id) {
-		this.id = id;
+	protected void setId(final long newId) {
+		this.id = newId;
 	}
 
 	/**
@@ -428,16 +481,17 @@ class TaskBase {
 		this.setId(t.getId());
 	}
 
-	public void setList(final ListMirakel list) {
-		setList(list, false);
+	public void setList(final ListMirakel newList) {
+		setList(newList, false);
 	}
 
-	public void setList(final ListMirakel list, final boolean removeNoListFalg) {
-		if (this.list != null && list != null
-				&& this.list.getId() == list.getId()) {
+	public void setList(final ListMirakel newList,
+			final boolean removeNoListFalg) {
+		if (this.list != null && newList != null
+				&& this.list.getId() == newList.getId()) {
 			return;
 		}
-		this.list = list;
+		this.list = newList;
 		this.edited.put(TaskBase.LIST_ID, true);
 		if (removeNoListFalg) {
 			if (this.additionalEntries == null) {
@@ -447,58 +501,59 @@ class TaskBase {
 		}
 	}
 
-	public void setName(final String name) {
-		if (this.name != null && this.name.equals(name)) {
+	public void setName(final String newName) {
+		if (this.name != null && this.name.equals(newName)) {
 			return;
 		}
-		this.name = name;
+		this.name = newName;
 		this.edited.put(DatabaseHelper.NAME, true);
 	}
 
-	public void setPriority(final int priority) {
-		if (this.priority == priority) {
+	public void setPriority(final int newPriority) {
+		if (this.priority == newPriority) {
 			return;
 		}
-		this.priority = priority;
+		this.priority = newPriority;
 		this.edited.put(TaskBase.PRIORITY, true);
 	}
 
-	public void setProgress(final int progress) {
-		if (this.progress == progress) {
+	public void setProgress(final int newProgress) {
+		if (this.progress == newProgress) {
 			return;
 		}
 		this.edited.put("progress", true);
-		this.progress = progress;
+		this.progress = newProgress;
 	}
 
-	public void setRecurrence(final int recurrence) {
-		if (this.recurrence == recurrence) {
+	public void setRecurrence(final int newRecurrence) {
+		if (this.recurrence == newRecurrence) {
 			return;
 		}
-		this.recurrence = recurrence;
+		this.recurrence = newRecurrence;
 		this.edited.put(TaskBase.RECURRING, true);
 	}
 
-	public void setRecurringReminder(final int recurrence) {
-		if (this.recurringReminder == recurrence) {
+	public void setRecurringReminder(final int newRecurrence) {
+		if (this.recurringReminder == newRecurrence) {
 			return;
 		}
-		this.recurringReminder = recurrence;
+		this.recurringReminder = newRecurrence;
 		this.edited.put(TaskBase.RECURRING_REMINDER, true);
 	}
 
-	public void setReminder(final Calendar reminder) {
-		setReminder(reminder, false);
+	public void setReminder(final Calendar newReminder) {
+		setReminder(newReminder, false);
 	}
 
-	public void setReminder(final Calendar reminder, final boolean force) {
-		if (this.reminder != null && this.reminder.equals(reminder) && !force) {
+	public void setReminder(final Calendar newReminder, final boolean force) {
+		if (this.reminder != null && this.reminder.equals(newReminder)
+				&& !force) {
 			return;
 		}
 
-		this.reminder = reminder;
+		this.reminder = newReminder;
 		this.edited.put(TaskBase.REMINDER, true);
-		if (reminder == null) {
+		if (newReminder == null) {
 			setRecurringReminder(-1);
 		}
 	}
@@ -519,12 +574,12 @@ class TaskBase {
 		}
 	}
 
-	public void setUUID(final String uuid) {
-		this.uuid = uuid;
+	public void setUUID(final String newUuid) {
+		this.uuid = newUuid;
 	}
 
-	public void toggleDone() {
-		setDone(!this.done);
+	public long toggleDone() {
+		return setDone(!this.done);
 	}
 
 	@Override
@@ -540,7 +595,7 @@ class TaskBase {
 	private void checkTags() {
 		if (this.tags == null) {
 			if (this.id == 0) {
-				this.tags = new ArrayList<Tag>();
+				this.tags = new ArrayList<>();
 			} else {
 				this.tags = Tag.getTagsForTask(this.id);
 			}
@@ -565,6 +620,10 @@ class TaskBase {
 				* result
 				+ (this.additionalEntries == null ? 0 : this.additionalEntries
 						.hashCode());
+		result = prime
+				* result
+				+ (this.additionalEntriesString == null ? 0
+						: this.additionalEntriesString.hashCode());
 		result = prime * result
 				+ (this.content == null ? 0 : this.content.hashCode());
 		result = prime * result
@@ -574,6 +633,7 @@ class TaskBase {
 		result = prime * result
 				+ (this.edited == null ? 0 : this.edited.hashCode());
 		result = prime * result + (int) (this.id ^ this.id >>> 32);
+		result = prime * result + (this.isRecurringShown ? 1231 : 1237);
 		result = prime * result
 				+ (this.list == null ? 0 : this.list.hashCode());
 		result = prime * result
@@ -586,6 +646,8 @@ class TaskBase {
 				+ (this.reminder == null ? 0 : this.reminder.hashCode());
 		result = prime * result
 				+ (this.syncState == null ? 0 : this.syncState.hashCode());
+		result = prime * result
+				+ (this.tags == null ? 0 : this.tags.hashCode());
 		result = prime * result
 				+ (this.updatedAt == null ? 0 : this.updatedAt.hashCode());
 		result = prime * result
@@ -601,7 +663,7 @@ class TaskBase {
 		if (obj == null) {
 			return false;
 		}
-		if (!(obj instanceof TaskBase)) {
+		if (getClass() != obj.getClass()) {
 			return false;
 		}
 		final TaskBase other = (TaskBase) obj;
@@ -610,6 +672,14 @@ class TaskBase {
 				return false;
 			}
 		} else if (!this.additionalEntries.equals(other.additionalEntries)) {
+			return false;
+		}
+		if (this.additionalEntriesString == null) {
+			if (other.additionalEntriesString != null) {
+				return false;
+			}
+		} else if (!this.additionalEntriesString
+				.equals(other.additionalEntriesString)) {
 			return false;
 		}
 		if (this.content == null) {
@@ -644,6 +714,9 @@ class TaskBase {
 			return false;
 		}
 		if (this.id != other.id) {
+			return false;
+		}
+		if (this.isRecurringShown != other.isRecurringShown) {
 			return false;
 		}
 		if (this.list == null) {
@@ -682,6 +755,13 @@ class TaskBase {
 		if (this.syncState != other.syncState) {
 			return false;
 		}
+		if (this.tags == null) {
+			if (other.tags != null) {
+				return false;
+			}
+		} else if (!this.tags.equals(other.tags)) {
+			return false;
+		}
 		if (this.updatedAt == null) {
 			if (other.updatedAt != null) {
 				return false;
@@ -698,4 +778,5 @@ class TaskBase {
 		}
 		return true;
 	}
+
 }

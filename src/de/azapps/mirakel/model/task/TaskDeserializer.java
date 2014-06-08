@@ -32,6 +32,7 @@ import java.util.Scanner;
 import java.util.Set;
 
 import android.content.Context;
+import android.util.Pair;
 import android.util.SparseBooleanArray;
 
 import com.google.gson.JsonArray;
@@ -91,10 +92,12 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
 			t.setProgress(0);
 			t.setList(null, false);
 			t.clearAdditionalEntries();
+			t.setIsRecurringShown(true);
 		}
 		// Name
 		final Set<Entry<String, JsonElement>> entries = el.entrySet();
 		boolean setPrioFromNumber = false;
+		Calendar end = null;
 		for (final Entry<String, JsonElement> entry : entries) {
 			String key = entry.getKey();
 			final JsonElement val = entry.getValue();
@@ -182,8 +185,11 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
 					t.setSyncState(SYNC_STATE.DELETE);
 				} else {
 					t.setDone(false);
-					t.addAdditionalEntry(key, "\"" + val.getAsString() + "\"");
-					// TODO don't ignore waiting and recurring!!!
+					if (!"recurring".equals(status)) {
+						t.addAdditionalEntry(key, "\"" + val.getAsString()
+								+ "\"");
+					}
+					// TODO don't ignore waiting !!!
 				}
 				break;
 			case "due":
@@ -223,14 +229,30 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
 				final Recurring r = parseTaskWarriorRecurrence(val
 						.getAsString());
 				if (r != null) {
-					r.create();
 					t.setRecurrence(r.getId());
 				}
+				break;
+			case "imask":
+				t.addReccuringChild(new Pair<>(el.get("parent").getAsString(),
+						(int) val.getAsFloat()));
+				break;
+			case "parent":
+			case "mask":
+				// ignore this
+				break;
+			case "until":
+				end = parseDate(val.getAsString(),
+						this.context.getString(R.string.TWDateFormat));
 				break;
 			default:
 				handleAdditionalEnties(t, key, val);
 				break;
 			}
+		}
+		if (t.getRecurring() != null) {
+			final Recurring r = t.getRecurring();
+			r.setEndDate(end);
+			r.save();
 		}
 		return t;
 	}
@@ -347,7 +369,7 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
 
 	}
 
-	static Recurring parseTaskWarriorRecurrence(final String recur) {
+	public static Recurring parseTaskWarriorRecurrence(final String recur) {
 		final Scanner in = new Scanner(recur);
 		in.useDelimiter("[^0-9]+");
 		int number = 1;
@@ -357,6 +379,7 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
 		in.close();
 		// remove number and possible sign(recurrence should be positive but who
 		// knows)
+		final Recurring r;
 		switch (recur.replace("" + number, "").replace("-", "")) {
 		case "yearly":
 		case "annual":
@@ -367,42 +390,50 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
 		case "yrs":
 		case "yr":
 		case "y":
-			return new Recurring(0, recur, 0, 0, 0, 0, number, true, null,
-					null, true, true, new SparseBooleanArray(), 0);
-		case "semiannual":
-			return new Recurring(0, recur, 0, 0, 0, 6, 0, true, null, null,
+			r = new Recurring(0, recur, 0, 0, 0, 0, number, true, null, null,
 					true, true, new SparseBooleanArray(), 0);
+			break;
+		case "semiannual":
+			r = new Recurring(0, recur, 0, 0, 0, 6, 0, true, null, null, true,
+					true, new SparseBooleanArray(), 0);
+			break;
 		case "biannual":
 		case "biyearly":
-			return new Recurring(0, recur, 0, 0, 0, 0, 2, true, null, null,
-					true, true, new SparseBooleanArray(), 0);
+			r = new Recurring(0, recur, 0, 0, 0, 0, 2, true, null, null, true,
+					true, new SparseBooleanArray(), 0);
+			break;
 		case "bimonthly":
-			return new Recurring(0, recur, 0, 0, 0, 2, 0, true, null, null,
-					true, true, new SparseBooleanArray(), 0);
+			r = new Recurring(0, recur, 0, 0, 0, 2, 0, true, null, null, true,
+					true, new SparseBooleanArray(), 0);
+			break;
 		case "biweekly":
 		case "fortnight":
-			return new Recurring(0, recur, 0, 0, 14, 0, 0, true, null, null,
-					true, true, new SparseBooleanArray(), 0);
+			r = new Recurring(0, recur, 0, 0, 14, 0, 0, true, null, null, true,
+					true, new SparseBooleanArray(), 0);
+			break;
 		case "daily":
 			number = 1;
 			//$FALL-THROUGH$
 		case "days":
 		case "day":
 		case "d":
-			return new Recurring(0, recur, 0, 0, number, 0, 0, true, null,
-					null, true, true, new SparseBooleanArray(), 0);
+			r = new Recurring(0, recur, 0, 0, number, 0, 0, true, null, null,
+					true, true, new SparseBooleanArray(), 0);
+			break;
 		case "hours":
 		case "hour":
 		case "hrs":
 		case "hr":
 		case "h":
-			return new Recurring(0, recur, 0, number, 0, 0, 0, true, null,
-					null, true, true, new SparseBooleanArray(), 0);
+			r = new Recurring(0, recur, 0, number, 0, 0, 0, true, null, null,
+					true, true, new SparseBooleanArray(), 0);
+			break;
 		case "minutes":
 		case "mins":
 		case "min":
-			return new Recurring(0, recur, number, 0, 0, 0, 0, true, null,
-					null, true, true, new SparseBooleanArray(), 0);
+			r = new Recurring(0, recur, number, 0, 0, 0, 0, true, null, null,
+					true, true, new SparseBooleanArray(), 0);
+			break;
 		case "monthly":
 			number = 1;
 			//$FALL-THROUGH$
@@ -413,8 +444,9 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
 		case "mth":
 		case "mos":
 		case "mo":
-			return new Recurring(0, recur, 0, 0, 0, number, 0, true, null,
-					null, true, true, new SparseBooleanArray(), 0);
+			r = new Recurring(0, recur, 0, 0, 0, number, 0, true, null, null,
+					true, true, new SparseBooleanArray(), 0);
+			break;
 		case "quarterly":
 			number = 1;
 			//$FALL-THROUGH$
@@ -423,22 +455,25 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
 		case "qtrs":
 		case "qtr":
 		case "q":
-			return new Recurring(0, recur, 0, 0, 0, 3 * number, 0, true, null,
+			r = new Recurring(0, recur, 0, 0, 0, 3 * number, 0, true, null,
 					null, true, true, new SparseBooleanArray(), 0);
+			break;
 		default:
 		case "seconds":
 		case "secs":
 		case "sec":
 		case "s":
 			Log.w(TAG, "mirakel des not support " + recur);
-			return null;
+			r = null;
+			break;
 		case "weekdays":
 			final SparseBooleanArray weekdays = new SparseBooleanArray(7);
 			for (int i = Calendar.SUNDAY; i <= Calendar.SATURDAY; i++) {
 				weekdays.put(i, i != Calendar.SATURDAY && i != Calendar.SUNDAY);
 			}
-			return new Recurring(0, recur, 0, 0, 0, 0, 0, true, null, null,
-					true, true, weekdays, 0);
+			r = new Recurring(0, recur, 0, 0, 0, 0, 0, true, null, null, true,
+					true, weekdays, 0);
+			break;
 		case "sennight":
 		case "weekly":
 			number = 1;
@@ -448,9 +483,11 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
 		case "wks":
 		case "wk":
 		case "w":
-			return new Recurring(0, recur, 0, 0, 7 * number, 0, 0, true, null,
+			r = new Recurring(0, recur, 0, 0, 7 * number, 0, 0, true, null,
 					null, true, true, new SparseBooleanArray(), 0);
+			break;
 		}
+		return r.create();
 	}
 
 }

@@ -212,6 +212,10 @@ public class SpecialList extends ListMirakel {
 				first = false;
 			}
 		}
+		if(!"".equals(ret)) {
+			ret += " AND ";
+		}
+		ret += Task.BASIC_FILTER_DISPLAY_TASKS;
 		return ret;
 	}
 
@@ -222,9 +226,6 @@ public class SpecialList extends ListMirakel {
 
 	/**
 	 * Update the List in the Database
-	 * 
-	 * @param list
-	 *            The List
 	 */
 	@Override
 	public void save() {
@@ -241,8 +242,6 @@ public class SpecialList extends ListMirakel {
 
 	/**
 	 * Delete a List from the Database
-	 * 
-	 * @param list
 	 */
 	@Override
 	public void destroy() {
