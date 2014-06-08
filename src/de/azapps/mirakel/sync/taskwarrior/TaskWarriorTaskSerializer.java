@@ -22,6 +22,7 @@ import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Map;
 
 import android.content.Context;
@@ -35,12 +36,15 @@ import com.google.gson.JsonSerializer;
 
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.helper.DateTimeHelper;
+import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.R;
+import de.azapps.tools.Log;
 
 public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
 
+	private static final String TAG = "TaskWarriorTaskSerializer";
 	private final Context mContext;
 
 	public TaskWarriorTaskSerializer(final Context ctx) {
@@ -92,6 +96,8 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
 			} else {
 				end = formatCal(now);
 			}
+		} else if (task.getRecurring() != null) {
+			status = "recurring";
 		} else if (task.getAdditionalEntries().containsKey("status")) {
 			status = cleanQuotes(task.getAdditionalEntries().get("status"));
 		}
@@ -195,6 +201,9 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
 			}
 			json.addProperty("depends", depends);
 		}
+		if ("recurring".equals(status)) {
+			handleRecurrence(json, task.getRecurring());
+		}
 		// end Dependencies
 		// Additional Strings
 		if (additionals != null) {
@@ -207,6 +216,54 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
 		}
 		// end Additional Strings
 		return json;
+	}
+
+	static void handleRecurrence(final JsonObject json, final Recurring r) {
+		if (r == null) {
+			Log.wtf(TAG, "recurring is null");
+			return;
+		}
+		if (r.getWeekdays().size() > 0) {
+
+			switch (r.getWeekdays().size()) {
+			case 1:
+				json.addProperty("recur", "weekly");
+				return;
+			case 7:
+				json.addProperty("recur", "daily");
+				return;
+			case 5:
+				final List<Integer> weekdays = r.getWeekdays();
+				for (Integer i = Calendar.MONDAY; i <= Calendar.FRIDAY; i++) {
+					if (!weekdays.contains(i)) {
+						Log.w(TAG, "unsupported recurrence");
+						return;
+					}
+				}
+				json.addProperty("recur", "weekdays");
+				return;
+			default:
+				Log.w(TAG, "unsupported recurrence");
+				return;
+			}
+		}
+		long interval = r.getInterval() / (1000 * 60);
+		if (interval >= 60 * 24 * 365) {
+			interval /= 60 * 24 * 365;
+			json.addProperty("recur", interval + "years");
+		} else if (interval >= 60 * 24 * 30) {
+			interval /= 60 * 24 * 30;
+			json.addProperty("recur", interval + "months");
+		} else if (interval >= 60 * 24) {
+			interval /= 60 * 24;
+			json.addProperty("recur", interval + "days");
+		} else if (interval >= 60) {
+			interval /= 60;
+			json.addProperty("recur", interval + "hours");
+		} else {
+			json.addProperty("recur", interval + "mins");
+		}
+
 	}
 
 	private String formatCalUTC(final Calendar c) {
