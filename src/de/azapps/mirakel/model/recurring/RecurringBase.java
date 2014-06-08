@@ -176,7 +176,11 @@ public class RecurringBase {
 	}
 
 	public void setWeekdays(final SparseBooleanArray weekdays) {
-		this.weekdays = weekdays;
+		if (weekdays == null) {
+			this.weekdays = new SparseBooleanArray();
+		} else {
+			this.weekdays = weekdays;
+		}
 	}
 
 	public Integer getDerivedFrom() {
