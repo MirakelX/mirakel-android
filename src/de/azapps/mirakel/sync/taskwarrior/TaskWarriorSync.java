@@ -25,6 +25,7 @@ import java.nio.charset.MalformedInputException;
 import java.security.cert.CertificateException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -291,6 +292,9 @@ public class TaskWarriorSync {
 			final Gson gson = new GsonBuilder().registerTypeAdapter(Task.class,
 					new TaskDeserializer(true, accountMirakel, this.mContext))
 					.create();
+			final List<Task> reccuringTasksCreate = new ArrayList<>();
+			final List<Task> reccuringTasksSave = new ArrayList<>();
+
 			for (final String taskString : tasksString) {
 				if (taskString.charAt(0) != '{') {
 					Log.d(TAG, "Key: " + taskString);
@@ -327,17 +331,41 @@ public class TaskWarriorSync {
 						local_task.destroy(true);
 					}
 				} else if (local_task == null) {
-					try {
-						server_task.create(false, true);
-						Log.d(TAG, "create " + server_task.getName());
-					} catch (final NoSuchListException e) {
-						Log.wtf(TAG, "List vanish");
+					if (server_task.hasRecurringParent()) {
+						reccuringTasksCreate.add(server_task);
+					} else {
+						try {
+							server_task.create(false, true);
+							Log.d(TAG, "create " + server_task.getName());
+						} catch (final NoSuchListException e) {
+							Log.wtf(TAG, "List vanish", e);
+						}
 					}
 				} else {
 					server_task.takeIdFrom(local_task);
 					Log.d(TAG, "update " + server_task.getName());
-					server_task.save(false, true);
+					if (server_task.hasRecurringParent()) {
+						reccuringTasksSave.add(server_task);
+					} else {
+						server_task.save(false, true);
+					}
 				}
+			}
+			for (final Task t : reccuringTasksCreate) {
+				final Task t_local = Task.getByUUID(t.getUUID());
+				if (t_local != null) {
+					t.takeIdFrom(t);
+					t.save(false, true);
+				} else {
+					try {
+						t.create(false, true);
+					} catch (final NoSuchListException e) {
+						Log.wtf(TAG, "list vanished", e);
+					}
+				}
+			}
+			for (final Task t : reccuringTasksSave) {
+				t.save(false, true);
 			}
 		}
 		final String message = remotes.get("message");

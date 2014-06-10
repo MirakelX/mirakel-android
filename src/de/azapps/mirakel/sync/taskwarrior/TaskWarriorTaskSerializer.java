@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.util.Pair;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -36,6 +38,7 @@ import com.google.gson.JsonSerializer;
 
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.helper.DateTimeHelper;
+import de.azapps.mirakel.model.MirakelContentProvider;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
@@ -81,26 +84,20 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
 			final JsonSerializationContext arg2) {
 		final JsonObject json = new JsonObject();
 		final Map<String, String> additionals = task.getAdditionalEntries();
-		String end = null;
-		String status = "pending";
-		final Calendar now = new GregorianCalendar();
-		now.setTimeInMillis(now.getTimeInMillis()
-				- DateTimeHelper.getTimeZoneOffset(true, now));
-		if (task.getSyncState() == SYNC_STATE.DELETE) {
-			status = "deleted";
-			end = formatCal(now);
-		} else if (task.isDone()) {
-			status = "completed";
-			if (additionals.containsKey("end")) {
-				end = cleanQuotes(additionals.get("end"));
-			} else {
-				end = formatCal(now);
+		boolean isMaster = false;
+		if (task.getRecurring() != null) {
+			final Cursor c = MirakelContentProvider.getReadableDatabase()
+					.query(Recurring.TW_TABLE, new String[] { "count(*)" },
+							"child=?", new String[] { task.getId() + "" },
+							null, null, null);
+			c.moveToFirst();
+			if (c.getLong(0) == 0) {
+				isMaster = true;
 			}
-		} else if (task.getRecurring() != null) {
-			status = "recurring";
-		} else if (task.getAdditionalEntries().containsKey("status")) {
-			status = cleanQuotes(task.getAdditionalEntries().get("status"));
 		}
+		final Pair<String, String> s = getStatus(task, additionals, isMaster);
+		final String status = s.second;
+		final String end = s.first;
 
 		String priority = null;
 		switch (task.getPriority()) {
@@ -201,8 +198,58 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
 			}
 			json.addProperty("depends", depends);
 		}
-		if ("recurring".equals(status)) {
+		// recurring tasks must have a due
+		if (task.getRecurring() != null && task.getDue() != null) {
 			handleRecurrence(json, task.getRecurring());
+			if (isMaster) {
+				String mask = "";
+				final Cursor c = MirakelContentProvider.getReadableDatabase()
+						.query(Recurring.TW_TABLE,
+								new String[] { "child", "offsetCount" },
+								"parent=?", new String[] { task.getId() + "" },
+								null, null, "offsetCount ASC");
+				c.moveToFirst();
+				if (c.getCount() > 0) {
+					int oldOffset = -1;
+					do {
+						final int currentOffset = c.getInt(1);
+						while (++oldOffset != currentOffset) {
+							mask += "X";
+						}
+						final Task child = Task.get(c.getLong(0));
+						if (child == null) {
+							Log.wtf(TAG, "childtask is null");
+							mask += "X";
+						} else {
+							mask += getRecurrenceStatus(getStatus(child,
+									child.getAdditionalEntries(), false).second);
+						}
+					} while (c.moveToNext());
+				}
+				c.close();
+				json.addProperty("mask", mask);
+			} else {
+				final Cursor c = MirakelContentProvider.getReadableDatabase()
+						.query(Recurring.TW_TABLE,
+								new String[] { "parent", "offsetCount" },
+								"child=?", new String[] { task.getId() + "" },
+								null, null, null);
+				c.moveToFirst();
+				if (c.getCount() > 0) {
+					final Task master = Task.get(c.getLong(0));
+					if (master == null) {
+						// The parent is gone. This should not happen and we
+						// should delete the child then
+						task.destroy();
+					} else {
+						json.addProperty("parent", master.getUUID());
+						json.addProperty("imask", c.getInt(1));
+					}
+				} else {
+					Log.wtf(TAG, "no master found, but there must be a master");
+				}
+				c.close();
+			}
 		}
 		// end Dependencies
 		// Additional Strings
@@ -216,6 +263,23 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
 		}
 		// end Additional Strings
 		return json;
+	}
+
+	private static String getRecurrenceStatus(final String s) {
+		switch (s) {
+		case "recurring":
+		case "pending":
+			return "-";
+		case "completed":
+			return "+";
+		case "deleted":
+			return "X";
+		case "waiting":
+			return "W";
+		default:
+			break;
+		}
+		return "";
 	}
 
 	static void handleRecurrence(final JsonObject json, final Recurring r) {
@@ -264,6 +328,31 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
 			json.addProperty("recur", interval + "mins");
 		}
 
+	}
+
+	private Pair<String, String> getStatus(final Task task,
+			final Map<String, String> additionals, final boolean isMaster) {
+		String end = null;
+		String status = "pending";
+		final Calendar now = new GregorianCalendar();
+		now.setTimeInMillis(now.getTimeInMillis()
+				- DateTimeHelper.getTimeZoneOffset(true, now));
+		if (task.getSyncState() == SYNC_STATE.DELETE) {
+			status = "deleted";
+			end = formatCal(now);
+		} else if (task.isDone()) {
+			status = "completed";
+			if (additionals.containsKey("end")) {
+				end = cleanQuotes(additionals.get("end"));
+			} else {
+				end = formatCal(now);
+			}
+		} else if (task.getRecurring() != null && isMaster) {
+			status = "recurring";
+		} else if (task.getAdditionalEntries().containsKey("status")) {
+			status = cleanQuotes(task.getAdditionalEntries().get("status"));
+		}
+		return new Pair<String, String>(end, status);
 	}
 
 	private String formatCalUTC(final Calendar c) {
