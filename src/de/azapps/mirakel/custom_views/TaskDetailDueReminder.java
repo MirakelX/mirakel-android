@@ -38,6 +38,7 @@ import com.fourmob.datetimepicker.date.DatePickerDialog;
 
 import de.azapps.mirakel.customviews.R;
 import de.azapps.mirakel.helper.DateTimeHelper;
+import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.helper.TaskHelper;
@@ -120,7 +121,22 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
 				TaskDialogHelpers.handleRecurrence(
 						(ActionBarActivity) TaskDetailDueReminder.this.context,
 						TaskDetailDueReminder.this.task, false,
-						TaskDetailDueReminder.this.recurrenceReminder);
+						new ExecInterface() {
+
+							@Override
+							public void exec() {
+								TaskDetailDueReminder.this.task = Task
+										.get(TaskDetailDueReminder.this.task
+												.getId());
+								TaskDetailDueReminder
+										.setRecurringImage(
+												TaskDetailDueReminder.this.recurrenceReminder,
+												TaskDetailDueReminder.this.task
+														.getRecurringReminderId());
+								setReminder();
+
+							}
+						});
 
 			}
 		});
@@ -137,7 +153,21 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
 				TaskDialogHelpers.handleRecurrence(
 						(ActionBarActivity) TaskDetailDueReminder.this.context,
 						TaskDetailDueReminder.this.task, true,
-						TaskDetailDueReminder.this.recurrenceDue);
+						new ExecInterface() {
+
+							@Override
+							public void exec() {
+								TaskDetailDueReminder.this.task = Task
+										.get(TaskDetailDueReminder.this.task
+												.getId());
+								TaskDetailDueReminder
+										.setRecurringImage(
+												TaskDetailDueReminder.this.recurrenceDue,
+												TaskDetailDueReminder.this.task
+														.getRecurrenceId());
+								setDue();
+							}
+						});
 			}
 		});
 		this.taskDue.setOnClickListener(new View.OnClickListener() {
@@ -251,10 +281,14 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
 			this.taskReminder.setTextColor(this.context.getResources()
 					.getColor(BaseTaskDetailRow.inactive_color));
 		} else {
-			Calendar reminder = this.task.getReminder();
+			Calendar reminder = (Calendar) this.task.getReminder().clone();
 			final Recurring r = this.task.getRecurringReminder();
 			if (r != null) {
 				reminder = r.addRecurring(reminder);
+				if (new GregorianCalendar().compareTo(reminder) > 0) {
+					reminder.setTimeInMillis(reminder.getTimeInMillis()
+							+ r.getInterval());
+				}
 			}
 			this.taskReminder.setText(DateTimeHelper.formatReminder(
 					this.context, reminder));
