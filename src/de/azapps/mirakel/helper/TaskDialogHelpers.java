@@ -58,7 +58,6 @@ import com.android.calendar.recurrencepicker.RecurrencePickerDialog;
 import com.android.calendar.recurrencepicker.RecurrencePickerDialog.OnRecurrenceSetListner;
 
 import de.azapps.mirakel.DefenitionsModel.ExecInterfaceWithTask;
-import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.adapter.SubtaskAdapter;
 import de.azapps.mirakel.custom_views.BaseTaskDetailRow.OnTaskChangedListner;
 import de.azapps.mirakel.customviews.R;
@@ -117,8 +116,7 @@ public class TaskDialogHelpers {
 		query += " NOT _id IN (SELECT parent_id from " + Task.SUBTASK_TABLE
 				+ " where child_id=" + t.getId() + ") AND ";
 		query += "NOT " + DatabaseHelper.ID + "=" + t.getId();
-		query += " AND NOT " + DatabaseHelper.SYNC_STATE_FIELD + "="
-				+ SYNC_STATE.DELETE;
+		query += " AND" + Task.BASIC_FILTER_DISPLAY_TASKS;
 		if (optionEnabled) {
 			if (!done) {
 				query += " and " + Task.DONE + "=0";
@@ -284,7 +282,10 @@ public class TaskDialogHelpers {
 			isExact = r.isExact();
 			Log.d(TAG, "exact: " + isExact);
 			if (r.getDerivedFrom() != null) {
-				r = Recurring.get(r.getDerivedFrom());
+				final Recurring master = Recurring.get(r.getDerivedFrom());
+				if (master != null) {
+					r = master;
+				}
 			}
 		}
 		final RecurrencePickerDialog rp = RecurrencePickerDialog.newInstance(
@@ -420,7 +421,8 @@ public class TaskDialogHelpers {
 		final ListView lv = (ListView) v.findViewById(R.id.subtask_listview);
 		subtaskAdapter = new SubtaskAdapter(ctx, 0, Task.rawQuery("Select "
 				+ getAllColumns() + " FROM " + Task.TABLE + " where NOT "
-				+ DatabaseHelper.ID + "=" + task.getId()), task, asSubtask);
+				+ DatabaseHelper.ID + "=" + task.getId() + " AND "
+				+ Task.BASIC_FILTER_DISPLAY_TASKS), task, asSubtask);
 		lv.post(new Runnable() {
 			@Override
 			public void run() {

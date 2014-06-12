@@ -59,7 +59,6 @@ public abstract class BaseTaskDetailRow extends LinearLayout {
 				this.taskChangedListner.onTaskChanged(this.task);
 			}
 		}
-
 	}
 
 	public void setOnTaskChangedListner(final OnTaskChangedListner l) {

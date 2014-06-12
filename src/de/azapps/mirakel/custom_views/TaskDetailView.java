@@ -221,7 +221,9 @@ public class TaskDetailView extends BaseTaskDetailRow implements
 
 					@Override
 					public void onDoneChanged(final Task newTask) {
-						if (TaskDetailView.this.views.get(TYPE.DUE) != null) {
+						if (newTask.getId() != TaskDetailView.this.task.getId()) {
+							update(newTask);
+						} else if (TaskDetailView.this.views.get(TYPE.DUE) != null) {
 							TaskDetailView.this.views.get(TYPE.DUE).update(
 									newTask);
 						}
