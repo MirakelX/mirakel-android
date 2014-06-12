@@ -18,7 +18,6 @@ merged-res/
 # Local configuration file (sdk path, etc)
 local.properties
 *.pydevproject
-.project
 .metadata
 bin/**
 tmp/**
@@ -28,13 +27,17 @@ tmp/**/*
 *.swp
 *~.nib
 local.properties
-.classpath
 .settings/
 .loadpath
 *.db
 lint.xml
+exploded-aar/
+dex-cache/
 *~
 .gradle
+res-google/project.properties
+keystore
+tests/
 # External tool builders
 .externalToolBuilders/
 
@@ -54,3 +57,6 @@ lint.xml
 *.iml
 out/**
 misc/crowdin.yaml
+# Emacs
+\#*
+.\#*
