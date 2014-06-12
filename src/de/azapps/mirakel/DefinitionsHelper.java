@@ -1,5 +1,10 @@
 package de.azapps.mirakel;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -79,42 +84,46 @@ public class DefinitionsHelper {
 	}
 
 	public enum SYNC_STATE {
-		NOTHING, DELETE, ADD, NEED_SYNC, IS_SYNCED;
+		NOTHING((short) 0), DELETE((short) -1), ADD((short) 1), NEED_SYNC(
+				(short) 2), IS_SYNCED((short) 3);
 		@Override
 		public String toString() {
 			return "" + toInt();
 		}
 
-		public short toInt() {
-			switch (this) {
-			case ADD:
-				return 1;
-			case DELETE:
-				return -1;
-			case IS_SYNCED:
-				return 3;
-			case NEED_SYNC:
-				return 2;
-			case NOTHING:
-			default:
-				return 0;
+		private final short eventType;
+
+		private static Map<Short, SYNC_STATE> map = new HashMap<>();
+
+		static {
+			for (final SYNC_STATE eventType : SYNC_STATE.values()) {
+				map.put(eventType.eventType, eventType);
 			}
 		}
 
-		public static SYNC_STATE parseInt(final int i) {
-			switch (i) {
-			case -1:
-				return DELETE;
-			case 1:
-				return ADD;
-			case 2:
-				return NEED_SYNC;
-			case 3:
-				return IS_SYNCED;
-			case 0:
-			default:
-				return NOTHING;
-			}
+		private SYNC_STATE(final short eventType) {
+			this.eventType = eventType;
 		}
+
+		public static SYNC_STATE valueOf(final int eventType) {
+			return map.get(eventType);
+		}
+
+		/**
+		 * Use valueOf
+		 */
+		@Deprecated
+		public static SYNC_STATE parseInt(final int i) {
+			return valueOf(i);
+		}
+
+		public static Set<SYNC_STATE> all() {
+			return new HashSet<>(map.values());
+		}
+
+		public short toInt() {
+			return this.eventType;
+		}
+
 	}
 }
