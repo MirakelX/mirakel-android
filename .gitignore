@@ -27,7 +27,6 @@ tmp/**/*
 *.swp
 *~.nib
 local.properties
-.settings/
 .loadpath
 *.db
 lint.xml
