@@ -99,7 +99,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			intent = new Intent(this.mContext,
 					Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
 		} catch (final ClassNotFoundException e) {
-			Log.wtf(TAG, "no mainactivity found");
+			Log.wtf(TAG, "no mainactivity found", e);
 			return;
 		}
 		intent.setAction(DefinitionsHelper.SHOW_LISTS);
@@ -127,6 +127,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			try {
 				new TaskWarriorSync(this.mContext).sync(account);
 			} catch (final TaskWarriorSyncFailedExeption e) {
+				Log.e(TAG, "SyncError", e);
 				error = e.getError();
 			}
 			switch (error) {
@@ -183,7 +184,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				openIntent = new Intent(this.mContext,
 						Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
 			} catch (final ClassNotFoundException e) {
-				Log.wtf(TAG, "mainactivity not found");
+				Log.wtf(TAG, "mainactivity not found", e);
 				return;
 			}
 			openIntent.setAction(DefinitionsHelper.SHOW_MESSAGE);

@@ -206,15 +206,15 @@ public class TaskWarriorSync {
 		try {
 			client.init(root, user_ca, user_key);
 		} catch (final ParseException e) {
-			Log.e(TAG, "cannot open certificate");
+			Log.e(TAG, "cannot open certificate", e);
 			throw new TaskWarriorSyncFailedExeption(
 					TW_ERRORS.CONFIG_PARSE_ERROR, "cannot open certificate");
 		} catch (final CertificateException e) {
-			Log.e(TAG, "general problem with init");
+			Log.e(TAG, "general problem with init", e);
 			throw new TaskWarriorSyncFailedExeption(
 					TW_ERRORS.CONFIG_PARSE_ERROR, "general problem with init");
 		} catch (final NoSuchCertificateException e) {
-			Log.e(TAG, "NoSuchCertificateException");
+			Log.e(TAG, "NoSuchCertificateException", e);
 			throw new TaskWarriorSyncFailedExeption(TW_ERRORS.NO_SUCH_CERT,
 					"general problem with init");
 
@@ -222,7 +222,7 @@ public class TaskWarriorSync {
 		try {
 			client.connect(_host, _port);
 		} catch (final IOException e) {
-			Log.e(TAG, "cannot create socket");
+			Log.e(TAG, "cannot create socket", e);
 			client.close();
 			throw new TaskWarriorSyncFailedExeption(
 					TW_ERRORS.CANNOT_CREATE_SOCKET, "cannot create socket");
@@ -235,8 +235,8 @@ public class TaskWarriorSync {
 			try {
 				FileUtils.writeToFile(new File(FileUtils.getLogDir(), getTime()
 						+ ".tw_down.log"), response);
-			} catch (final IOException e1) {
-				Log.logStackTrace(e1);
+			} catch (final IOException e) {
+				Log.e(TAG, "Error writing tw_down.log", e);
 			}
 		}
 
@@ -245,12 +245,12 @@ public class TaskWarriorSync {
 		try {
 			remotes.parse(response);
 		} catch (final MalformedInputException e) {
-			Log.e(TAG, "cannot parse message");
+			Log.e(TAG, "cannot parse message", e);
 			client.close();
 			throw new TaskWarriorSyncFailedExeption(
 					TW_ERRORS.CANNOT_PARSE_MESSAGE, "cannot parse message");
 		} catch (final NullPointerException e) {
-			Log.wtf(TAG, "remotes.parse throwed NullPointer");
+			Log.wtf(TAG, "remotes.parse throwed NullPointer", e);
 			client.close();
 			throw new TaskWarriorSyncFailedExeption(
 					TW_ERRORS.CANNOT_PARSE_MESSAGE,
@@ -311,8 +311,7 @@ public class TaskWarriorSync {
 							server_task.getDependencies());
 					local_task = Task.getByUUID(server_task.getUUID());
 				} catch (final Exception e) {
-					Log.d(TAG, Log.getStackTraceString(e));
-					Log.e(TAG, "malformed JSON");
+					Log.e(TAG, "malformed JSON", e);
 					Log.e(TAG, taskString);
 					continue;
 				}
@@ -432,6 +431,7 @@ public class TaskWarriorSync {
 				try {
 					parent.addSubtask(child);
 				} catch (final Exception e) {
+					Log.e(TAG, "eat it", e);
 					// eat it
 				}
 			}
@@ -484,6 +484,7 @@ public class TaskWarriorSync {
 				f.write(payload);
 				f.close();
 			} catch (final Exception e) {
+				Log.e(TAG, "Eat it", e);
 				// eat it
 			}
 		}
