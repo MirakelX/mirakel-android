@@ -342,7 +342,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		try {
 			ExportImport.exportDB(this.context);
 		} catch (final Exception e) {
-			Log.w(TAG, "Cannot backup database");
+			Log.w(TAG, "Cannot backup database", e);
 		}
 		switch (oldVersion) {
 		case 1:// Nothing, Startversion
@@ -648,7 +648,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				userCert.delete();
 				userKey.delete();
 			} catch (final IOException e) {
-				Log.wtf(TAG, "ca-files not found");
+				Log.wtf(TAG, "ca-files not found", e);
 			}
 			final AccountManager accountManager = AccountManager
 					.get(this.context);
@@ -727,7 +727,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 									CompatibilityHelper.getReminderProperty(p));
 						}
 					} catch (final TransformerException e) {
-						Log.w(TAG, "due cannot be transformed");
+						Log.w(TAG, "due cannot be transformed", e);
 					}
 				}
 				contentValues.put(SpecialList.WHERE_QUERY,

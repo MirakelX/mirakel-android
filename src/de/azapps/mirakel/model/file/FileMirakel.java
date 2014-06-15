@@ -34,6 +34,7 @@ public class FileMirakel extends FileBase {
 	private static DatabaseHelper dbHelper;
 	public static final File fileCacheDir = new File(cacheDirPath);
 	public static final String TABLE = "files";
+	private static final String TAG = "FileMirakel";
 
 	// private static final String TAG = "FileMirakel";
 
@@ -183,7 +184,7 @@ public class FileMirakel extends FileBase {
 					myBitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
 					out.close();
 				} catch (final Exception e) {
-					Log.logStackTrace(e);
+					Log.e(TAG, "Exception", e);
 				}
 			}
 		}

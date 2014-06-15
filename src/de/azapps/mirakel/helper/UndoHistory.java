@@ -66,7 +66,7 @@ public class UndoHistory {
 						break;
 					}
 				} catch (final Exception e) {
-					Log.e(TAG, "cannot parse String");
+					Log.e(TAG, "cannot parse String", e);
 				}
 
 			} else {
@@ -87,7 +87,7 @@ public class UndoHistory {
 									.insert(Task.TABLE, null,
 											t.getContentValues());
 						} catch (final Exception e) {
-							Log.e(TAG, "cannot restore Task");
+							Log.e(TAG, "cannot restore Task", e);
 						}
 					}
 					break;
@@ -101,7 +101,7 @@ public class UndoHistory {
 									.insert(ListMirakel.TABLE, null,
 											l.getContentValues());
 						} catch (final Exception e) {
-							Log.e(TAG, "cannot restore List");
+							Log.e(TAG, "cannot restore List", e);
 						}
 					}
 					break;

@@ -499,11 +499,10 @@ public class Task extends TaskBase {
 					Task.database.update(Task.TABLE, t.getContentValues(),
 							DatabaseHelper.ID + " = " + t.getId(), null);
 				} catch (final NoSuchListException e) {
-					Log.d(Task.TAG, "List did vanish");
+					Log.d(Task.TAG, "List did vanish", e);
 				} catch (final Exception e) {
 					t.destroy(false);
-					Log.d(Task.TAG, "destroy: " + t.getName());
-					Log.w(Task.TAG, Log.getStackTraceString(e));
+					Log.d(Task.TAG, "destroy: " + t.getName(), e);
 				}
 			} else {
 				Log.d(Task.TAG, "destroy: " + t.getName());

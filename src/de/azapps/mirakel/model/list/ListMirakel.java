@@ -535,7 +535,7 @@ public class ListMirakel extends ListBase {
 					+ RGT + "-2 WHERE " + LFT + ">" + getRgt() + ";", null);
 			database.setTransactionSuccessful();
 		} catch (final Exception e) {
-			Log.wtf(TAG, "cannot remove List");
+			Log.wtf(TAG, "cannot remove List", e);
 		} finally {
 			database.endTransaction();
 		}
