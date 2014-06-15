@@ -318,7 +318,7 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
 				content += a.getAsJsonObject().get("description").getAsString();
 			}
 		} catch (final Exception e) {
-			Log.e(TAG, "cannot parse json");
+			Log.e(TAG, "cannot parse json", e);
 		}
 		return content;
 	}

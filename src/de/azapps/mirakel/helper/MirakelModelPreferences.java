@@ -9,8 +9,10 @@ import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.tools.Log;
 
 public class MirakelModelPreferences extends MirakelPreferences {
+	private static final String TAG = "MirakelModelPreferences";
 
 	public static void setDefaultAccount(final AccountMirakel a) {
 		settings.edit().putInt("defaultAccountID", a.getId()).commit();
@@ -108,12 +110,13 @@ public class MirakelModelPreferences extends MirakelPreferences {
 	public static ListMirakel subtaskAddToList() {
 		try {
 			return ListMirakel.get(settings.getInt("subtaskAddToList", -1));
-		} catch (final Exception E) {
+		} catch (final Exception e) {
 			// let old as fallback
 			try {
 				return ListMirakel.get(Integer.parseInt(settings.getString(
 						"subtaskAddToList", "-1")));
-			} catch (final NumberFormatException e) {
+			} catch (final NumberFormatException e1) {
+				Log.e(TAG, "Numberformat exception", e1);
 				return null;
 			}
 		}

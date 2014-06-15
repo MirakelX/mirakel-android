@@ -116,17 +116,17 @@ public class ExportImport {
 		try {
 			dBuilder = dbFactory.newDocumentBuilder();
 		} catch (final ParserConfigurationException e) {
-			Log.d(TAG, "cannot configure parser");
+			Log.d(TAG, "cannot configure parser", e);
 			return false;
 		}
 		Document doc;
 		try {
 			doc = dBuilder.parse(stream);
 		} catch (final SAXException e) {
-			Log.d(TAG, "cannot parse file");
+			Log.d(TAG, "cannot parse file", e);
 			return false;
 		} catch (final IOException e) {
-			Log.d(TAG, "cannot read file");
+			Log.d(TAG, "cannot read file", e);
 			return false;
 		}
 
@@ -232,6 +232,7 @@ public class ExportImport {
 		try {
 			FileUtils.unzip(stream, outputDir);
 		} catch (final Exception e) {
+			Log.e(TAG, "Could not unzip", e);
 			return false;
 		}
 		FileReader tasks, lists;
@@ -286,8 +287,10 @@ public class ExportImport {
 			}
 
 		} catch (final FileNotFoundException e) {
+			Log.e(TAG, "File not found", e);
 			return false;
 		} catch (final IOException e) {
+			Log.e(TAG, "IO error", e);
 			return false;
 		}
 		return true;
