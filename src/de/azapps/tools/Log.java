@@ -48,6 +48,15 @@ public class Log {
 		}
 	}
 
+	public static void d(final String tag, final String msg, final Throwable e) {
+		if (tag == null || msg == null) {
+			return;
+		}
+		if (MirakelCommonPreferences.isDebug()) {
+			android.util.Log.d(tag, msg, e);
+		}
+	}
+
 	public static void e(final String tag, final String msg) {
 		if (tag == null || msg == null) {
 			return;
@@ -64,10 +73,18 @@ public class Log {
 		write("e", tag, msg, tr);
 	}
 
+	/**
+	 * You should use the logging functions
+	 */
+	@Deprecated
 	public static String getStackTraceString(final Throwable tr) {
 		return android.util.Log.getStackTraceString(tr);
 	}
 
+	/**
+	 * You should use the logging functions
+	 */
+	@Deprecated
 	public static void logStackTrace(final Throwable tr) {
 		e("Stacktrace", getStackTraceString(tr));
 	}
@@ -100,12 +117,30 @@ public class Log {
 		write("w", tag, msg);
 	}
 
+	public static void w(final String tag, final String msg, final Throwable e) {
+		if (tag == null || msg == null) {
+			return;
+		}
+		if (MirakelCommonPreferences.isDebug()) {
+			android.util.Log.w(tag, msg, e);
+		}
+		write("w", tag, msg, e);
+	}
+
 	public static void wtf(final String tag, final String msg) {
 		if (tag == null || msg == null) {
 			return;
 		}
 		android.util.Log.wtf(tag, msg);
 		write("wtf", tag, msg);
+	}
+
+	public static void wtf(final String tag, final String msg, final Throwable e) {
+		if (tag == null || msg == null) {
+			return;
+		}
+		android.util.Log.wtf(tag, e);
+		write("wtf", tag, msg, e);
 	}
 
 	private static String getTime() {
