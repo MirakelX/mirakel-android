@@ -9,17 +9,17 @@ export EDITOR=/bin/true
 git pull
 
 for repo in ${repos[@]} ; do
-    echo "Pulling "$repo
-    git subtree pull --prefix=$repo ssh://$user@gerrit.azapps.de:29418/mirakel-android/$repo master 
+    echo "Pulling $repo"
+    git subtree pull --prefix="$repo" "ssh://$user@gerrit.azapps.de:29418/mirakel-android/$repo" master
 done
 
 #cp buildfiles
 cp build/build.gradle .
 cp build/settings.gradle .
 
-if [ -n "$(git status --porcelain)" ]; then 
+if [ -n "$(git status --porcelain)" ]; then
   git add build.gradle settings.gradle;
-  git commit -m "Update buildfiles" 
+  git commit -m "Update buildfiles"
 fi
 
 cp main/README.md .
