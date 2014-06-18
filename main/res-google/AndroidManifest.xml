@@ -23,5 +23,5 @@
     <!-- Only for Google Play builds -->
 
     <uses-permission android:name="com.android.vending.BILLING" />
-
+    <uses-sdk android:minSdkVersion="8" />
 </manifest>
