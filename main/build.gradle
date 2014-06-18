@@ -1,7 +1,7 @@
 apply plugin: 'android'
 //apply plugin: 'hugo'
 apply plugin: 'eclipse'
-apply plugin: 'android-test'
+apply plugin: 'robolectric'
 
 
 
@@ -43,7 +43,7 @@ android {
 
     }
     defaultConfig {
-            testPackageName "de.azapps.mirakelandroid.test"
+            testApplicationId "de.azapps.mirakelandroid.test"
             testInstrumentationRunner "android.test.InstrumentationTestRunner"
     }
     signingConfigs {
@@ -96,8 +96,8 @@ dependencies {
     compile project(':drag-sort-listview')
 
     //for tests
-    //androidTestCompile files("$project.buildDir/classes/debug")
-    //androidTestCompile "com.jayway.android.robotium:robotium-solo:$robotiumVersion"
+    androidTestCompile files("$project.buildDir/classes/debug")
+    androidTestCompile "com.jayway.android.robotium:robotium-solo:$robotiumVersion"
     androidTestCompile "junit:junit:$junitVersion"
 }
 
