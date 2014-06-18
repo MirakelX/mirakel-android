@@ -1,6 +1,11 @@
 #!/bin/sh
 source ./.subrepos
-source ./.localconfig # declare user
+if [ -f .localconfig ]; then
+    source .localconfig
+else
+    echo "Declare \$user variable in .localconfig first" >&2
+    exit 1
+fi
 export EDITOR=/bin/true
 export GIT_EDITOR=/bin/true
 export VISUAL=/bin/true
