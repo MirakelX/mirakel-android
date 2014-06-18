@@ -3,7 +3,7 @@ mirakel-android
 
 *easy task management for professionals*
 
-Mirakel aims to help you to organize your tasks in a simple but powerfull manner.
+Mirakel aims to help you to organize your tasks in a simple but powerful manner.
 
 
 1. [About](#about)
@@ -33,9 +33,9 @@ Please open for **every** bug report or feature request a new issue so we can ha
 
 ## Development
 
-We are happy about every one who wants to help us! So we are happy about every pull request on github. But the prefered method is the following:
+We are happy about every one who wants to help us! So we are happy about every pull request on github. But the preferred method is the following:
 
-### Preferred method 
+### Preferred method
 
 We use [gerrit](https://code.google.com/p/gerrit/) to review our code. [Here](https://gerrit.azapps.de/r/#/q/status:open,n,z) you can find our gerrit. Please write us an e-mail if you want to contribute we will tell you what to do.
 
@@ -49,7 +49,7 @@ If your Feature works, cleanup your Branch and make a [pull-request](https://hel
 
 ## Translations
 
-Please help us to translate the app: http://crowdin.net/project/mirakel. If your language is not listed theire, just write us an e-mail.
+Please help us to translate the app: http://crowdin.net/project/mirakel. If your language is not listed there, just write us an e-mail.
 
 # Contact
 
