@@ -26,6 +26,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.accounts.OnAccountsUpdateListener;
 import android.annotation.TargetApi;
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -48,7 +51,8 @@ import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
 
-public class MirakelInternalContentProvider extends ContentProvider {
+public class MirakelInternalContentProvider extends ContentProvider implements
+    OnAccountsUpdateListener {
 
     public interface DBTransaction {
         abstract void exec();
@@ -85,6 +89,10 @@ public class MirakelInternalContentProvider extends ContentProvider {
     public static final String UPDATE_LIST_MOVE_UP = "list_move_up";
     public static final String UPDATE_LIST_FIX_RGT = "list_fix_rgt";
 
+
+    public static final String CALDAV_INSTANCE_PROPERTIES = "caldav_instance_properties";
+    public static final String CALDAV_INSTANCES = "caldav_instances";
+
     // Uris
     public static final Uri TASK_URI = getUri(Task.TABLE);
     public static final Uri TASK_SUBTASK_URI = getUri(TASK_SUBTASK_JOIN);
@@ -94,6 +102,12 @@ public class MirakelInternalContentProvider extends ContentProvider {
     public static final Uri TAG_CONNECTION_URI = getUri(Tag.TAG_CONNECTION_TABLE);
     public static final Uri CALDAV_LISTS_URI = getUri("caldav_lists");
     public static final Uri CALDAV_TASKS_URI = getUri("caldav_tasks");
+    public static final Uri CALDAV_TASKS_PROPERTY_URI = getUri("caldav_task_properties");
+    public static final Uri CALDAV_INSTANCES_URI = getUri(CALDAV_INSTANCES);
+    public static final Uri CALDAV_INSTANCE_PROPERTIES_URI = getUri(CALDAV_INSTANCE_PROPERTIES);
+    public static final Uri CALDAV_PROPERTIES_URI = getUri("caldav_properties");
+    public static final Uri CALDAV_CATEGORIES_URI = getUri("caldav_categories");
+    public static final Uri CALDAV_ALARMS_URI = getUri("caldav_alarms");
     public static final Uri SUBTASK_URI = getUri(Task.SUBTASK_TABLE);
     public static final Uri FILE_URI = getUri(FileMirakel.TABLE);
     public static final Uri RECURRING_TW_URI = getUri(Recurring.TW_TABLE);
@@ -119,6 +133,8 @@ public class MirakelInternalContentProvider extends ContentProvider {
 
     private static final List<String> BLACKLISTED_FOR_QUERY = Arrays.asList(UPDATE_LIST_MOVE_DOWN,
             UPDATE_LIST_MOVE_UP, UPDATE_LIST_ORDER_JOIN, UPDATE_LIST_FIX_RGT);
+    private static final List<String> IGNORED = Arrays.asList(CALDAV_INSTANCE_PROPERTIES,
+            CALDAV_INSTANCES);
 
     private static DatabaseHelper dbHelper = null;
     private static SQLiteDatabase database;
@@ -145,6 +161,8 @@ public class MirakelInternalContentProvider extends ContentProvider {
         if (BLACKLISTED_FOR_DELETION.contains(table)) {
             throw new IllegalArgumentException(table
                                                + " is blacklisted for delete");
+        } else if (IGNORED.contains(table)) {
+            return 0;
         }
         final SQLiteDatabase db = getWritableDatabase();
         final boolean locked = db.inTransaction();
@@ -178,6 +196,8 @@ public class MirakelInternalContentProvider extends ContentProvider {
         if (BLACKLISTED_FOR_MODIFICATIONS.contains(table)) {
             throw new IllegalArgumentException(table
                                                + " is blacklisted for insert");
+        } else if (IGNORED.contains(table)) {
+            return ContentUris.withAppendedId(uri, 0);
         }
         final SQLiteDatabase db = getWritableDatabase();
         final boolean locked = db.inTransaction();
@@ -198,9 +218,6 @@ public class MirakelInternalContentProvider extends ContentProvider {
             return;
         }
         database = db;
-        if (db == null) {
-            Log.w(TAG, "database is null");
-        }
     }
 
     @Override
@@ -218,6 +235,7 @@ public class MirakelInternalContentProvider extends ContentProvider {
                 Semantic.init(getContext());
             }
         }, 1, TimeUnit.MILLISECONDS);
+        AccountManager.get(getContext()).addOnAccountsUpdatedListener(this, null, true);
         return true;
     }
 
@@ -231,6 +249,8 @@ public class MirakelInternalContentProvider extends ContentProvider {
         if (BLACKLISTED_FOR_QUERY.contains(table)) {
             throw new IllegalArgumentException(table
                                                + " is blacklisted for query");
+        } else if (IGNORED.contains(table)) {
+            return new MatrixCursor(new String [0]);
         }
         switch (table) {
         case TASK_SUBTASK_JOIN:
@@ -272,6 +292,8 @@ public class MirakelInternalContentProvider extends ContentProvider {
         if (BLACKLISTED_FOR_MODIFICATIONS.contains(table)) {
             throw new IllegalArgumentException(table
                                                + " is blacklisted for update");
+        } else if (IGNORED.contains(table)) {
+            return 0;
         }
         final SQLiteDatabase db = getWritableDatabase();
         final boolean locked = db.inTransaction();
@@ -352,6 +374,12 @@ public class MirakelInternalContentProvider extends ContentProvider {
                 }
             }
         }
+    }
+
+
+    @Override
+    public void onAccountsUpdated(final Account[] accounts) {
+        AccountMirakel.update(accounts);
     }
 
 }

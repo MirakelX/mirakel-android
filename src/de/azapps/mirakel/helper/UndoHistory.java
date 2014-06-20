@@ -28,6 +28,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import de.azapps.mirakel.model.MirakelContentProvider;
+import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
@@ -86,9 +87,8 @@ public class UndoHistory {
                         t.save(false);
                     } else {
                         try {
-                            MirakelContentProvider.getWritableDatabase()
-                            .insert(Task.TABLE, null,
-                                    t.getContentValues());
+                            ctx.getContentResolver().insert(MirakelInternalContentProvider.TASK_URI,
+                                                            t.getContentValues());
                         } catch (final Exception e) {
                             Log.e(TAG, "cannot restore Task", e);
                         }
@@ -100,8 +100,8 @@ public class UndoHistory {
                         l.save(false);
                     } else {
                         try {
-                            MirakelContentProvider.getWritableDatabase()
-                            .insert(ListMirakel.TABLE, null,
+                            ctx.getContentResolver()
+                            .insert(MirakelInternalContentProvider.LIST_URI,
                                     l.getContentValues());
                         } catch (final Exception e) {
                             Log.e(TAG, "cannot restore List", e);
