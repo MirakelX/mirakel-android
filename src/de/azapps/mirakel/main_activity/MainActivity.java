@@ -758,7 +758,8 @@ public class MainActivity extends ActionBarActivity implements
 				|| currentTask == null) {
 			return;
 		}
-		Log.v(MainActivity.TAG, currentTask.getName());
+		Log.v(MainActivity.TAG, "switched to task " + currentTask.getId() + "("
+				+ currentTask.getName() + ")");
 		final View tmpView = getTasksFragment().getViewForTask(currentTask);
 		final View currentView = tmpView == null ? getTasksFragment()
 				.getListView().getChildAt(0) : tmpView;

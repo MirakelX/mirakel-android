@@ -59,3 +59,4 @@ misc/crowdin.yaml
 # Emacs
 \#*
 .\#*
+debug.keystore
