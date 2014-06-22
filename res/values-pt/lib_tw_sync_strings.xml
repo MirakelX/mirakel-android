@@ -50,6 +50,7 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="change_account">Mudar conta</string>
   <string name="wrong_config">Parece que está a utilizar um ficheiro de configuração inválido</string>
   <string name="cert_not_found">O certificado desapareceu. Por favor recrie a sua conta.</string>
+  <string name="config_404">Ficheiro de configuração não encontrado</string>
   <string name="config_error_empty">%s não existe no ficheiro de configuração</string>
   <string name="load_config">Selecione o ficheiro de configurações do Taskwarrior</string>
   <string name="select_config">Selecione o ficheiro de configuração Taskwarrior</string>
