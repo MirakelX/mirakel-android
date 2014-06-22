@@ -1,5 +1,6 @@
 mirakel-android
 ===============
+[![Build Status](https://travis-ci.org/MirakelX/mirakel-android.png)](https://travis-ci.org/MirakelX/mirakel-android)
 
 *easy task management for professionals*
 
