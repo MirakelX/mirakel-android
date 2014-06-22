@@ -25,6 +25,7 @@ import java.nio.charset.MalformedInputException;
 import java.security.cert.CertificateException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -58,7 +59,6 @@ import de.azapps.tools.Log;
 public class TaskWarriorSync {
 
 	private static final String TW_PROTOCOL_VERSION = "v1";
-
 	public class TaskWarriorSyncFailedExeption extends Exception {
 		private static final long serialVersionUID = 3349776187699690118L;
 		private final TW_ERRORS error;
@@ -88,7 +88,7 @@ public class TaskWarriorSync {
 	}
 
 	public enum TW_ERRORS {
-		ACCESS_DENIED, ACCOUNT_SUSPENDED, CANNOT_CREATE_SOCKET, CANNOT_PARSE_MESSAGE, CONFIG_PARSE_ERROR, MESSAGE_ERRORS, NO_ERROR, NOT_ENABLED, TRY_LATER, NO_SUCH_CERT;
+		ACCESS_DENIED, ACCOUNT_SUSPENDED, CANNOT_CREATE_SOCKET, CANNOT_PARSE_MESSAGE, CONFIG_PARSE_ERROR, MESSAGE_ERRORS, NO_ERROR, NOT_ENABLED, TRY_LATER, NO_SUCH_CERT, COULD_NOT_FIND_COMMON_ANCESTOR;
 		public static TW_ERRORS getError(final int code) {
 			switch (code) {
 			case 200:
@@ -206,15 +206,15 @@ public class TaskWarriorSync {
 		try {
 			client.init(root, user_ca, user_key);
 		} catch (final ParseException e) {
-			Log.e(TAG, "cannot open certificate");
+			Log.e(TAG, "cannot open certificate", e);
 			throw new TaskWarriorSyncFailedExeption(
 					TW_ERRORS.CONFIG_PARSE_ERROR, "cannot open certificate");
 		} catch (final CertificateException e) {
-			Log.e(TAG, "general problem with init");
+			Log.e(TAG, "general problem with init", e);
 			throw new TaskWarriorSyncFailedExeption(
 					TW_ERRORS.CONFIG_PARSE_ERROR, "general problem with init");
 		} catch (final NoSuchCertificateException e) {
-			Log.e(TAG, "NoSuchCertificateException");
+			Log.e(TAG, "NoSuchCertificateException", e);
 			throw new TaskWarriorSyncFailedExeption(TW_ERRORS.NO_SUCH_CERT,
 					"general problem with init");
 
@@ -222,7 +222,7 @@ public class TaskWarriorSync {
 		try {
 			client.connect(_host, _port);
 		} catch (final IOException e) {
-			Log.e(TAG, "cannot create socket");
+			Log.e(TAG, "cannot create socket", e);
 			client.close();
 			throw new TaskWarriorSyncFailedExeption(
 					TW_ERRORS.CANNOT_CREATE_SOCKET, "cannot create socket");
@@ -235,8 +235,8 @@ public class TaskWarriorSync {
 			try {
 				FileUtils.writeToFile(new File(FileUtils.getLogDir(), getTime()
 						+ ".tw_down.log"), response);
-			} catch (final IOException e1) {
-				Log.logStackTrace(e1);
+			} catch (final IOException e) {
+				Log.e(TAG, "Error writing tw_down.log", e);
 			}
 		}
 
@@ -245,12 +245,12 @@ public class TaskWarriorSync {
 		try {
 			remotes.parse(response);
 		} catch (final MalformedInputException e) {
-			Log.e(TAG, "cannot parse message");
+			Log.e(TAG, "cannot parse message", e);
 			client.close();
 			throw new TaskWarriorSyncFailedExeption(
 					TW_ERRORS.CANNOT_PARSE_MESSAGE, "cannot parse message");
 		} catch (final NullPointerException e) {
-			Log.wtf(TAG, "remotes.parse throwed NullPointer");
+			Log.wtf(TAG, "remotes.parse throwed NullPointer", e);
 			client.close();
 			throw new TaskWarriorSyncFailedExeption(
 					TW_ERRORS.CANNOT_PARSE_MESSAGE,
@@ -260,8 +260,13 @@ public class TaskWarriorSync {
 		final TW_ERRORS error = TW_ERRORS.getError(code);
 		if (error != TW_ERRORS.NO_ERROR) {
 			client.close();
-			throw new TaskWarriorSyncFailedExeption(error,
-					"sync() throwed error");
+			final String status = remotes.get("status");
+			if (status != null
+					&& status.contains("Could not find common ancestor")) {
+				throw new TaskWarriorSyncFailedExeption(
+						TW_ERRORS.COULD_NOT_FIND_COMMON_ANCESTOR,
+						"sync() throwed error");
+			}
 		}
 
 		if (remotes.get("status").equals("Client sync key not found.")) {
@@ -286,6 +291,9 @@ public class TaskWarriorSync {
 			final Gson gson = new GsonBuilder().registerTypeAdapter(Task.class,
 					new TaskDeserializer(true, accountMirakel, this.mContext))
 					.create();
+			final List<Task> reccuringTasksCreate = new ArrayList<>();
+			final List<Task> reccuringTasksSave = new ArrayList<>();
+
 			for (final String taskString : tasksString) {
 				if (taskString.charAt(0) != '{') {
 					Log.d(TAG, "Key: " + taskString);
@@ -311,8 +319,7 @@ public class TaskWarriorSync {
 							server_task.getDependencies());
 					local_task = Task.getByUUID(server_task.getUUID());
 				} catch (final Exception e) {
-					Log.d(TAG, Log.getStackTraceString(e));
-					Log.e(TAG, "malformed JSON");
+					Log.e(TAG, "malformed JSON", e);
 					Log.e(TAG, taskString);
 					continue;
 				}
@@ -323,17 +330,41 @@ public class TaskWarriorSync {
 						local_task.destroy(true);
 					}
 				} else if (local_task == null) {
-					try {
-						server_task.create(false, true);
-						Log.d(TAG, "create " + server_task.getName());
-					} catch (final NoSuchListException e) {
-						Log.wtf(TAG, "List vanish");
+					if (server_task.hasRecurringParent()) {
+						reccuringTasksCreate.add(server_task);
+					} else {
+						try {
+							server_task.create(false, true);
+							Log.d(TAG, "create " + server_task.getName());
+						} catch (final NoSuchListException e) {
+							Log.wtf(TAG, "List vanish", e);
+						}
 					}
 				} else {
 					server_task.takeIdFrom(local_task);
 					Log.d(TAG, "update " + server_task.getName());
-					server_task.save(false, true);
+					if (server_task.hasRecurringParent()) {
+						reccuringTasksSave.add(server_task);
+					} else {
+						server_task.save(false, true);
+					}
 				}
+			}
+			for (final Task t : reccuringTasksCreate) {
+				final Task t_local = Task.getByUUID(t.getUUID());
+				if (t_local != null) {
+					t.takeIdFrom(t);
+					t.save(false, true);
+				} else {
+					try {
+						t.create(false, true);
+					} catch (final NoSuchListException e) {
+						Log.wtf(TAG, "list vanished", e);
+					}
+				}
+			}
+			for (final Task t : reccuringTasksSave) {
+				t.save(false, true);
 			}
 		}
 		final String message = remotes.get("message");
@@ -432,6 +463,7 @@ public class TaskWarriorSync {
 				try {
 					parent.addSubtask(child);
 				} catch (final Exception e) {
+					Log.e(TAG, "eat it", e);
 					// eat it
 				}
 			}
@@ -484,6 +516,7 @@ public class TaskWarriorSync {
 				f.write(payload);
 				f.close();
 			} catch (final Exception e) {
+				Log.e(TAG, "Eat it", e);
 				// eat it
 			}
 		}

@@ -55,6 +55,8 @@ import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 
 public class TaskWarriorSetupActivity extends Activity {
+	private final static String TAG = "TaskWarriorSetupActivity";
+
 	private class DownloadTask extends AsyncTask<URL, Integer, Integer> {
 		private final static String TAG = "DownloadTask";
 		private final Exec pre, progress, post;
@@ -83,7 +85,7 @@ public class TaskWarriorSetupActivity extends Activity {
 				setupTaskWarrior(connection.getInputStream(), false);
 
 			} catch (final Exception e) {
-				Log.e(TAG, Log.getStackTraceString(e));
+				Log.e(TAG, "Could not download config", e);
 				return RESULT_ERROR;
 			}
 
@@ -139,8 +141,7 @@ public class TaskWarriorSetupActivity extends Activity {
 				stream = FileUtils.getStreamFromUri(this, data.getData());
 				setupTaskWarrior(stream, true);
 			} catch (final FileNotFoundException e) {
-				ErrorReporter.report(ErrorType.TASKWARRIOR_FILE_NOT_FOUND);
-			} catch (final IOException e) {
+				Log.e(TAG, "File not found", e);
 				ErrorReporter.report(ErrorType.TASKWARRIOR_FILE_NOT_FOUND);
 			}
 			break;
@@ -283,8 +284,10 @@ public class TaskWarriorSetupActivity extends Activity {
 					Toast.LENGTH_LONG).show();
 			finish();
 		} catch (final IOException e) {
+			Log.e(TAG, "IOException", e);
 			ErrorReporter.report(ErrorType.TASKWARRIOR_FILE_NOT_FOUND);
 		} catch (final ParseException e) {
+			Log.e(TAG, "ParseException", e);
 			if (showToast) {
 				Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
 			}
@@ -297,6 +300,7 @@ public class TaskWarriorSetupActivity extends Activity {
 		try {
 			values = parseTWFile(stream);
 		} catch (final IOException e) {
+			Log.e(TAG, "IOException", e);
 			throw new ParseException(getString(R.string.config_404));
 		}
 
