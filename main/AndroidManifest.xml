@@ -18,9 +18,10 @@
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="de.azapps.mirakelandroid"
-    android:versionCode="57"
-    android:versionName="2.5.1-beta1" >
+    android:versionCode="58"
+    android:versionName="2.6-beta1" >
 
     <!-- TODO Remove Unused Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -88,6 +89,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        tools:replace="icon"
         android:uiOptions="splitActionBarWhenNarrow" >
             <uses-library
             android:name="android.test.runner"

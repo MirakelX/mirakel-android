@@ -66,7 +66,6 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import de.azapps.mirakel.DefenitionsModel.ExecInterfaceWithTask;
 import de.azapps.mirakel.DefinitionsHelper;
-import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.custom_views.BaseTaskDetailRow.OnTaskChangedListner;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
@@ -687,16 +686,12 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 				&& dbQuery.length() > 0) {
 			dbQuery = "(" + dbQuery + ") AND ";
 		}
-		dbQuery += "NOT " + DatabaseHelper.SYNC_STATE_FIELD + "="
-				+ SYNC_STATE.DELETE + " ";
+		dbQuery += Task.BASIC_FILTER_DISPLAY_TASKS;
 		if (this.query != null) {
-
 			args = new String[] { "%" + this.query + "%" };
-			if (dbQuery.length() > 0) {
-				dbQuery += " AND ";
-			}
-			dbQuery += DatabaseHelper.NAME + " LIKE ?";
+			dbQuery += " AND " + DatabaseHelper.NAME + " LIKE ?";
 		}
+		Log.w(TAG, dbQuery);
 		return new CursorLoader(getActivity(), u, Task.allColumns, dbQuery,
 				args, sorting);
 	}
