@@ -64,8 +64,8 @@ public class AnyDoImport {
 		try {
 			i = new JsonParser().parse(new InputStreamReader(stream))
 					.getAsJsonObject();
-		} catch (final JsonSyntaxException e2) {
-			Log.e(TAG, "malformed backup");
+		} catch (final JsonSyntaxException e) {
+			Log.e(TAG, "malformed backup", e);
 			return false;
 		}
 		final Set<Entry<String, JsonElement>> f = i.entrySet();
@@ -140,7 +140,7 @@ public class AnyDoImport {
 									} catch (final FileNotFoundException e) {
 										ErrorReporter
 												.report(ErrorType.FILE_NOT_FOUND);
-										Log.wtf(TAG, "file vanished");
+										Log.wtf(TAG, "file vanished", e);
 										return;
 									}
 									android.os.Process

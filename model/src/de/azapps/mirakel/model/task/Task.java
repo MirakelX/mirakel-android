@@ -43,6 +43,7 @@ import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.tools.Log;
@@ -55,7 +56,11 @@ public class Task extends TaskBase {
 			TaskBase.PRIORITY, DatabaseHelper.CREATED_AT,
 			DatabaseHelper.UPDATED_AT, DatabaseHelper.SYNC_STATE_FIELD,
 			TaskBase.ADDITIONAL_ENTRIES, TaskBase.RECURRING,
-			TaskBase.RECURRING_REMINDER, TaskBase.PROGRESS };
+			TaskBase.RECURRING_REMINDER, TaskBase.PROGRESS,
+			TaskBase.RECURRING_SHOWN };
+	public static final String BASIC_FILTER_DISPLAY_TASKS = " NOT "
+			+ DatabaseHelper.SYNC_STATE_FIELD + " = " + SYNC_STATE.DELETE
+			+ " AND " + RECURRING_SHOWN + "=1";
 	private static Context context;
 	private static SQLiteDatabase database;
 
@@ -66,6 +71,25 @@ public class Task extends TaskBase {
 	public static final String TABLE = "tasks";
 
 	private static final String TAG = "TasksDataSource";
+	private Pair<String, Integer> recurrenceParent;
+
+	public boolean hasRecurringParent() {
+		return this.recurrenceParent != null;
+	}
+
+	public static String concatColumsForQuery() {
+		String cols = "";
+		boolean first = true;
+		for (final String c : Task.allColumns) {
+			if (first) {
+				first = false;
+			} else {
+				cols += ",";
+			}
+			cols += "t." + c;
+		}
+		return cols;
+	}
 
 	/**
 	 * Get all Tasks
@@ -74,8 +98,8 @@ public class Task extends TaskBase {
 	 */
 	public static List<Task> all() {
 		final Cursor c = Task.database.query(Task.TABLE, Task.allColumns,
-				"not " + DatabaseHelper.SYNC_STATE_FIELD + "= "
-						+ SYNC_STATE.DELETE, null, null, null, null);
+				BASIC_FILTER_DISPLAY_TASKS + " AND " + DONE + "=0", null, null,
+				null, null);
 		final List<Task> list = cursorToTaskList(c);
 		c.close();
 		return list;
@@ -141,7 +165,7 @@ public class Task extends TaskBase {
 				cursor.getInt(i++) == 1, due, reminder, cursor.getInt(8),
 				created_at, updated_at, SYNC_STATE.parseInt(cursor.getInt(11)),
 				cursor.getString(12), cursor.getInt(13), cursor.getInt(14),
-				cursor.getInt(15));
+				cursor.getInt(15), cursor.getShort(16) == 1);
 		return task;
 	}
 
@@ -205,7 +229,7 @@ public class Task extends TaskBase {
 
 	public static Task getByUUID(final String uuid) {
 		final Cursor cursor = Task.database.query(Task.TABLE, Task.allColumns,
-				TaskBase.UUID + "='" + uuid + "' and not "
+				TaskBase.UUID + "='" + uuid + "' AND NOT "
 						+ DatabaseHelper.SYNC_STATE_FIELD + "="
 						+ SYNC_STATE.DELETE, null, null, null, null);
 		cursor.moveToFirst();
@@ -265,9 +289,8 @@ public class Task extends TaskBase {
 
 	public static List<Pair<Long, String>> getTaskNames() {
 		final Cursor c = Task.database.query(Task.TABLE, new String[] {
-				DatabaseHelper.ID, DatabaseHelper.NAME }, "not "
-				+ DatabaseHelper.SYNC_STATE_FIELD + "=" + SYNC_STATE.DELETE
-				+ " and done = 0", null, null, null, null);
+				DatabaseHelper.ID, DatabaseHelper.NAME },
+				BASIC_FILTER_DISPLAY_TASKS, null, null, null, null);
 		c.moveToFirst();
 		final List<Pair<Long, String>> names = new ArrayList<Pair<Long, String>>();
 		while (!c.isAfterLast()) {
@@ -296,7 +319,7 @@ public class Task extends TaskBase {
 	/**
 	 * Get Tasks from a List Use it only if really necessary!
 	 * 
-	 * @param listId
+	 * @param list
 	 * @param sorting
 	 *            The Sorting (@see Mirakel.SORT_*)
 	 * @param showDone
@@ -310,7 +333,7 @@ public class Task extends TaskBase {
 	/**
 	 * Get Tasks from a List Use it only if really necessary!
 	 * 
-	 * @param listId
+	 * @param list
 	 * @param sorting
 	 *            The Sorting (@see Mirakel.SORT_*)
 	 * @param showDone
@@ -356,10 +379,9 @@ public class Task extends TaskBase {
 		if (where == null) {
 			where = "";
 		} else if (!where.equals("")) {
-			where += " and ";
+			where += " AND ";
 		}
-		where += " not " + DatabaseHelper.SYNC_STATE_FIELD + "="
-				+ SYNC_STATE.DELETE;
+		where += " " + BASIC_FILTER_DISPLAY_TASKS;
 		String order = getSorting(sorting);
 
 		if (listId < 0) {
@@ -392,8 +414,8 @@ public class Task extends TaskBase {
 			listIDs += (first ? "" : ",") + l.getId();
 			first = false;
 		}
-		final String where = "NOT " + DatabaseHelper.SYNC_STATE_FIELD + "='"
-				+ SYNC_STATE.NOTHING + "' and " + TaskBase.LIST_ID + " IN ("
+		final String where = "NOT " + DatabaseHelper.SYNC_STATE_FIELD + " IN ("
+				+ SYNC_STATE.NOTHING + ") and " + TaskBase.LIST_ID + " IN ("
 				+ listIDs + ")";
 		final Cursor cursor = MirakelContentProvider.getReadableDatabase()
 				.query(Task.TABLE, Task.allColumns, where, null, null, null,
@@ -456,7 +478,7 @@ public class Task extends TaskBase {
 	 * Create a new Task
 	 * 
 	 * @param name
-	 * @param list_id
+	 * @param list
 	 * @param content
 	 * @param done
 	 * @param due
@@ -469,7 +491,7 @@ public class Task extends TaskBase {
 			final GregorianCalendar due, final int priority) {
 		final Task t = new Task(0, java.util.UUID.randomUUID().toString(),
 				list, name, content, done, due, null, priority, null, null,
-				SYNC_STATE.ADD, "", -1, -1, 0);
+				SYNC_STATE.ADD, "", -1, -1, 0, true);
 
 		try {
 			final Task task = t.create();
@@ -499,11 +521,10 @@ public class Task extends TaskBase {
 					Task.database.update(Task.TABLE, t.getContentValues(),
 							DatabaseHelper.ID + " = " + t.getId(), null);
 				} catch (final NoSuchListException e) {
-					Log.d(Task.TAG, "List did vanish");
+					Log.d(Task.TAG, "List did vanish", e);
 				} catch (final Exception e) {
 					t.destroy(false);
-					Log.d(Task.TAG, "destroy: " + t.getName());
-					Log.w(Task.TAG, Log.getStackTraceString(e));
+					Log.d(Task.TAG, "destroy: " + t.getName(), e);
 				}
 			} else {
 				Log.d(Task.TAG, "destroy: " + t.getName());
@@ -520,6 +541,7 @@ public class Task extends TaskBase {
 
 	Task() {
 		super();
+		this.recurrenceParent = null;
 	}
 
 	public Task(final long id, final String uuid, final ListMirakel list,
@@ -528,14 +550,21 @@ public class Task extends TaskBase {
 			final Calendar created_at, final Calendar updated_at,
 			final SYNC_STATE sync_state, final String additionalEntriesString,
 			final int recurring, final int recurring_reminder,
-			final int progress) {
+			final int progress, final boolean shown) {
 		super(id, uuid, list, name, content, done, due, reminder, priority,
 				created_at, updated_at, sync_state, additionalEntriesString,
-				recurring, recurring_reminder, progress);
+				recurring, recurring_reminder, progress, shown);
+		this.recurrenceParent = null;
 	}
 
 	public Task(final String name) {
 		super(name);
+		this.recurrenceParent = null;
+
+	}
+
+	void addReccuringChild(final Pair<String, Integer> newRec) {
+		this.recurrenceParent = newRec;
 	}
 
 	public FileMirakel addFile(final Context ctx, final Uri uri) {
@@ -585,6 +614,8 @@ public class Task extends TaskBase {
 		values.put(TaskBase.PRIORITY, getPriority());
 		values.put(DatabaseHelper.SYNC_STATE_FIELD,
 				addFlag ? SYNC_STATE.ADD.toInt() : SYNC_STATE.NOTHING.toInt());
+		values.put(RECURRING_SHOWN, isRecurringShown());
+		values.put(RECURRING, getRecurrenceId());
 		if (getCreatedAt() == null) {
 			setCreatedAt(new GregorianCalendar());
 		}
@@ -604,6 +635,7 @@ public class Task extends TaskBase {
 		this.setId(insertId);
 		Task.database.setTransactionSuccessful();
 		Task.database.endTransaction();
+		handleInsertTWRecurring();
 		final Cursor cursor = Task.database.query(Task.TABLE, Task.allColumns,
 				DatabaseHelper.ID + " = " + insertId, null, null, null, null);
 		cursor.moveToFirst();
@@ -642,7 +674,7 @@ public class Task extends TaskBase {
 			UndoHistory.updateLog(this, Task.context);
 		}
 		final long id = getId();
-
+		updateRecurringMaster();
 		if (getSyncState() == SYNC_STATE.ADD || force) {
 			Task.database.delete(Task.TABLE, DatabaseHelper.ID + " = " + id,
 					null);
@@ -719,8 +751,6 @@ public class Task extends TaskBase {
 
 	/**
 	 * Save a Task
-	 * 
-	 * @param task
 	 */
 	public void save(final boolean log) {
 		save(log, false);
@@ -743,26 +773,65 @@ public class Task extends TaskBase {
 		if (calledFromDBHelper) {
 			log = false;
 		}
+		if (isEdited(RECURRING)) {
+			final Task old = Task.get(getId());
+			if (old.getRecurrenceId() == -1 && getRecurrenceId() != -1
+					&& !calledFromSync) {
+				insertFirstRecurringChild();
+			} else if (old.getRecurrenceId() != -1 && getRecurrenceId() == -1) {
+				// clear recurrence?
+			}
+		}
+
 		if (isEdited(TaskBase.DONE) && isDone()) {
 			setSubTasksDone();
 		}
+
 		setSyncState(getSyncState() == SYNC_STATE.ADD
 				|| getSyncState() == SYNC_STATE.IS_SYNCED ? getSyncState()
 				: SYNC_STATE.NEED_SYNC);
 		if (updateUpdatedAt && Task.context != null) {
 			setUpdatedAt(new GregorianCalendar());
 		}
+		handleInsertTWRecurring();
 		final ContentValues values = getContentValues();
 		if (log && !calledFromSync) {
 			final Task old = Task.get(getId());
 			UndoHistory.updateLog(old, Task.context);
 		}
+		final List<Tag> tags = getTags();
 		Task.database.beginTransaction();
+		if (isEdited(TaskBase.RECURRING)) {
+			long master = getId();
+			Cursor c = database.query(Recurring.TW_TABLE,
+					new String[] { "parent" }, "child=?", new String[] { master
+							+ "" }, null, null, null);
+			c.moveToFirst();
+			if (c.getCount() > 0) {
+				master = c.getLong(0);
+			}
+			c.close();
+			c = database.query(Recurring.TW_TABLE, new String[] { "child" },
+					"parent=?", new String[] { master + "" }, null, null, null);
+			boolean first = true;
+			String ids = "";
+			for (c.moveToFirst(); c.moveToNext();) {
+				if (first) {
+					first = false;
+				} else {
+					ids += ",";
+				}
+				ids += c.getLong(0);
+			}
+			c.close();
+			final ContentValues cv = new ContentValues();
+			cv.put(RECURRING, getRecurrenceId());
+			database.update(TABLE, cv, DatabaseHelper.ID + " IN (?)",
+					new String[] { ids });
+		}
 		Task.database.update(Task.TABLE, values, DatabaseHelper.ID + " = "
 				+ getId(), null);
-		Task.database.setTransactionSuccessful();
-		Task.database.endTransaction();
-		for (final Tag t : getTags()) {
+		for (final Tag t : tags) {
 			saveTag(t);
 		}
 		boolean updateReminders = false;
@@ -771,10 +840,97 @@ public class Task extends TaskBase {
 			updateReminders = true;
 		}
 		clearEdited();
+		Task.database.setTransactionSuccessful();
+		Task.database.endTransaction();
 		if (!calledFromDBHelper && !calledFromSync) {
 			NotificationService.updateServices(Task.context, updateReminders);
 		}
 
+	}
+
+	public void insertFirstRecurringChild() throws NoSuchListException {
+		Log.i(TAG, "changed recurrence");
+		// add first
+		final long oldId = getId();
+		final int recID = getRecurrenceId();
+		final Task child = create();
+		setIsRecurringShown(false);
+		// switch ids
+		// recurrence can be only modified from dueReminder view
+		// there the task is reloaded
+		setId(child.getId());
+		child.setId(oldId);
+		child.save(false);
+		final ContentValues cv = new ContentValues();
+		cv.put("parent", getId());
+		cv.put("child", child.getId());
+		cv.put("offset", 0);
+		cv.put("offsetCount", 0);
+		database.insert(Recurring.TW_TABLE, null, cv);
+		// if not done manual this will cause a stackoverflow
+		cv.clear();
+		cv.put(RECURRING, recID);
+		cv.put(UUID, java.util.UUID.randomUUID().toString());
+		cv.put(DatabaseHelper.SYNC_STATE_FIELD, SYNC_STATE.ADD.toInt());
+		database.update(TABLE, cv, DatabaseHelper.ID + "=?",
+				new String[] { oldId + "" });
+	}
+
+	private void handleInsertTWRecurring() {
+
+		if (this.recurrenceParent != null) {
+			final Task master = Task.getByUUID(this.recurrenceParent.first);
+			if (master == null || master.getRecurring() == null) {
+				// Something is very strange
+				Log.wtf(TAG, toString() + " is null!?");
+				return;
+			}
+
+			final Cursor c = database.query(Recurring.TW_TABLE,
+					Recurring.allTWColumns, "parent=? AND child=?",
+					new String[] { master.getId() + "", getId() + "" }, null,
+					null, null);
+			c.moveToFirst();
+			if (c.getCount() < 1) {
+				final ContentValues cv = new ContentValues();
+				cv.put("parent", master.getId());
+				cv.put("child", getId());
+				cv.put("offsetCount", this.recurrenceParent.second);
+				cv.put("offset", master.getRecurring().getInterval());
+				database.insert(Recurring.TW_TABLE, null, cv);
+			}
+			c.close();
+			setRecurrence(master.getRecurrenceId());
+		}
+		updateRecurringMaster();
+		// fix showing
+		fixRecurringShowing();
+
+	}
+
+	public static void fixRecurringShowing() {
+		database.execSQL("UPDATE " + TABLE + " SET " + RECURRING_SHOWN
+				+ "=0 WHERE _id IN (SELECT parent FROM " + Recurring.TW_TABLE
+				+ ");");
+		database.execSQL("UPDATE " + TABLE + " SET " + RECURRING_SHOWN
+				+ "=1 WHERE _id IN (SELECT r.child FROM " + Recurring.TW_TABLE
+				+ " AS r INNER JOIN " + TABLE + " AS t ON t._id=r.child);");
+	}
+
+	private void updateRecurringMaster() {
+		// update master if child changed
+		final Cursor c = database.query(Recurring.TW_TABLE,
+				new String[] { "parent" }, "child=?", new String[] { getId()
+						+ "" }, null, null, null);
+		c.moveToFirst();
+		if (c.getCount() > 0) {
+			final ContentValues cv = new ContentValues();
+			cv.put(DatabaseHelper.SYNC_STATE_FIELD,
+					SYNC_STATE.NEED_SYNC.toInt());
+			database.update(TABLE, cv, "_id=?", new String[] { c.getLong(0)
+					+ "" });
+		}
+		c.close();
 	}
 
 	private void setSubTasksDone() {

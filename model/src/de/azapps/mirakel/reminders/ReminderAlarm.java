@@ -91,7 +91,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 			openIntent = new Intent(context,
 					Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
 		} catch (final ClassNotFoundException e) {
-			Log.wtf(TAG, "mainactivtity not found");
+			Log.wtf(TAG, "mainactivtity not found", e);
 			return;
 		}
 		openIntent.setAction(DefinitionsHelper.SHOW_TASK);
@@ -230,7 +230,10 @@ public class ReminderAlarm extends BroadcastReceiver {
 								&& !now.after(newTask.getReminder())) {
 							updateAlarm(ctx, newTask);
 						} else if (t.getRecurringReminderId() != newTask
-								.getRecurringReminderId()) {
+								.getRecurringReminderId()
+								|| t.getRecurringReminder() != null
+								&& !t.getRecurringReminder().equals(
+										newTask.getRecurringReminder())) {
 							updateAlarm(ctx, newTask);
 							cancelAlarm(ctx, t, newTask, p, p.second);
 						}
@@ -240,12 +243,13 @@ public class ReminderAlarm extends BroadcastReceiver {
 					try {
 						if (!isAlarm(t)) {
 							Log.d(TAG, "add: " + t.getName());
+							Log.i(TAG, "id " + t.getId());
 							final PendingIntent p = updateAlarm(ctx, t);
 							activeAlarms
 									.add(new Pair<Task, PendingIntent>(t, p));
 						}
 					} catch (final NoSuchTaskException e) {
-						Log.wtf(TAG, "Task not found");
+						Log.wtf(TAG, "Task not found", e);
 					}
 				}
 			}
@@ -286,7 +290,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 			final Pair<Task, PendingIntent> p = findTask(task);
 			cancelAlarm(ctx, task, Task.get(task.getId()), p, p.second);
 		} catch (final IndexOutOfBoundsException e) {
-			Log.d(TAG, "task not found");
+			Log.d(TAG, "task not found", e);
 		}
 	}
 

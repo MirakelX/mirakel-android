@@ -85,7 +85,7 @@ public class NotificationService extends Service {
 			openIntent = new Intent(this,
 					Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
 		} catch (final ClassNotFoundException e) {
-			Log.wtf(TAG, "mainactivity not found");
+			Log.wtf(TAG, "mainactivity not found", e);
 			return;
 		}
 		openIntent.setAction(DefinitionsHelper.SHOW_LIST);
@@ -182,7 +182,7 @@ public class NotificationService extends Service {
 			widgetIntent = new Intent(context,
 					Class.forName(DefinitionsHelper.MAINWIDGET_CLASS));
 		} catch (final ClassNotFoundException e) {
-			Log.wtf(TAG, "widget not found");
+			Log.wtf(TAG, "widget not found", e);
 			return;
 		}
 		widgetIntent.setAction("android.appwidget.action.APPWIDGET_UPDATE");

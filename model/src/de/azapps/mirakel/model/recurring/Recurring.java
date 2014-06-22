@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.UUID;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -30,7 +31,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Pair;
 import android.util.SparseBooleanArray;
+import de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
+import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.helper.DateTimeHelper;
+import de.azapps.mirakel.helper.error.ErrorReporter;
+import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
@@ -43,6 +48,9 @@ public class Recurring extends RecurringBase {
 			"end_date", "temporary", "isExact", "monday", "tuesday",
 			"wednesday", "thursday", "friday", "saturday", "sunnday",
 			"derived_from" };
+	public final static String[] allTWColumns = { "_id", "parent", "child",
+			"offset", "offsetCount" };
+	public static final String TW_TABLE = "recurring_tw_mask";
 	private static SQLiteDatabase database;
 	private static DatabaseHelper dbHelper;
 
@@ -78,6 +86,15 @@ public class Recurring extends RecurringBase {
 	}
 
 	/**
+	 * CALL THIS ONLY FROM DBHelper
+	 * 
+	 * @param db
+	 */
+	public static void setDB(final SQLiteDatabase db) {
+		database = db;
+	}
+
+	/**
 	 * Close the Database-Connection
 	 */
 	public static void close() {
@@ -108,6 +125,7 @@ public class Recurring extends RecurringBase {
 		final ContentValues values = getContentValues();
 		values.remove(DatabaseHelper.ID);
 		final int insertId = (int) database.insertOrThrow(TABLE, null, values);
+		this.setId(insertId);
 		database.setTransactionSuccessful();
 		database.endTransaction();
 		return Recurring.get(insertId);
@@ -237,6 +255,66 @@ public class Recurring extends RecurringBase {
 				c.getInt(i++), c.getInt(i++), c.getInt(i++), c.getInt(i++),
 				c.getInt(i++) == 1, start, end, c.getInt(10) == 1,
 				c.getInt(11) == 1, weekdays, derivedFrom);
+	}
+
+	public Task incrementRecurringDue(final Task t) {
+		if (t.getDue() == null) {
+			return t;
+		}
+		final long calculatedOffset = addRecurring(
+				(Calendar) t.getDue().clone()).getTimeInMillis()
+				- t.getDue().getTimeInMillis();
+		long masterID = t.getId();
+		long offset = 0;
+		long offsetCount = 0;
+		Cursor c = database.query(TW_TABLE, allTWColumns, "child=?",
+				new String[] { t.getId() + "" }, null, null, null);
+		c.moveToFirst();
+		if (c.getCount() > 0) {// this is already a child-task
+			masterID = c.getLong(1);
+			offset = c.getLong(3);
+			offsetCount = c.getLong(4);
+		}
+		c.close();
+		offset += calculatedOffset;
+		++offsetCount;
+		c = database.query(TW_TABLE, new String[] { "child" },
+				"parent=? AND offsetCount=?", new String[] { masterID + "",
+						offsetCount + "" }, null, null, null);
+		c.moveToFirst();
+		if (c.getCount() > 0) {
+			final Task task = Task.get(c.getLong(0));
+			c.close();
+			if (task != null) {
+				return task;
+			}
+		}
+		c.close();
+
+		final Calendar newDue = new GregorianCalendar();
+		newDue.setTimeInMillis(t.getDue().getTimeInMillis() + calculatedOffset);
+		t.setDue(newDue);
+		Task newTask;
+		try {
+			newTask = t.create();
+		} catch (final NoSuchListException e) {
+			Log.wtf(TAG, "list vanished", e);
+			ErrorReporter.report(ErrorType.LIST_VANISHED);
+			return t;
+		}
+		ContentValues cv = new ContentValues();
+		cv.put(Task.RECURRING, t.getRecurrenceId());
+		cv.put(Task.UUID, UUID.randomUUID().toString());
+		cv.put(DatabaseHelper.SYNC_STATE_FIELD, SYNC_STATE.ADD.toInt());
+		database.update(Task.TABLE, cv, DatabaseHelper.ID + "=?",
+				new String[] { newTask.getId() + "" });
+		cv = new ContentValues();
+		cv.put("parent", masterID);
+		cv.put("child", newTask.getId());
+		cv.put("offset", offset);
+		cv.put("offsetCount", offsetCount);
+		database.insert(TW_TABLE, null, cv);
+		return newTask;
 	}
 
 	public Calendar addRecurring(Calendar c) {

@@ -482,11 +482,12 @@ public class ListMirakel extends ListBase {
 
 			where = Task.LIST_ID + " = " + getId();
 		}
-		final Cursor c = database.rawQuery("Select count(" + DatabaseHelper.ID
-				+ ") from " + Task.TABLE + " where " + where
-				+ (where.length() != 0 ? " and " : " ") + " " + Task.DONE
-				+ "=0 and not " + DatabaseHelper.SYNC_STATE_FIELD + "="
-				+ SYNC_STATE.DELETE, null);
+		if (where.length() != 0) {
+			where += " AND ";
+		}
+		where += Task.DONE + " =0 AND " + Task.BASIC_FILTER_DISPLAY_TASKS;
+		final Cursor c = database.query(Task.TABLE,
+				new String[] { "count(*)" }, where, null, null, null, null);
 		c.moveToFirst();
 		if (c.getCount() > 0) {
 			final int n = c.getInt(0);
@@ -535,7 +536,7 @@ public class ListMirakel extends ListBase {
 					+ RGT + "-2 WHERE " + LFT + ">" + getRgt() + ";", null);
 			database.setTransactionSuccessful();
 		} catch (final Exception e) {
-			Log.wtf(TAG, "cannot remove List");
+			Log.wtf(TAG, "cannot remove List", e);
 		} finally {
 			database.endTransaction();
 		}
@@ -543,7 +544,8 @@ public class ListMirakel extends ListBase {
 
 	public Task getFirstTask() {
 		final Cursor c = database.query(Task.TABLE, Task.allColumns,
-				getWhereQueryForTasks(), null, null, null,
+				getWhereQueryForTasks() + " AND "
+						+ Task.BASIC_FILTER_DISPLAY_TASKS, null, null, null,
 				Task.getSorting(getSortBy()), "1");
 		Task t = null;
 		if (c.getCount() > 0) {
@@ -633,6 +635,7 @@ public class ListMirakel extends ListBase {
 		return Task.LIST_ID
 				+ "="
 				+ getId()
+				+ " AND " + Task.BASIC_FILTER_DISPLAY_TASKS
 				+ (MirakelCommonPreferences.showDoneMain() ? "" : " AND NOT "
 						+ Task.DONE + "=1");
 	}
