@@ -12,6 +12,7 @@
   <string name="minutly">Chaque minute</string>
   <string name="recurring">Répetition</string>
   <string name="label">Étiquette</string>
+  <string name="forDue">Pour échéance</string>
   <string name="minute">Minute</string>
   <string name="hour">Heure</string>
   <string name="day">Jour</string>
@@ -27,6 +28,7 @@
   <string name="every">Chaque</string>
   <string name="recurrence_end_continously">Toujours</string>
   <string name="recurrence_end_date_label">Jusqu\'à la date</string>
+  <string name="use_exact_recurrence">Définir la répétition à partir de l\'échéance ?</string>
   <string name="recurrence_from_now">A partir de maintenant</string>
   <string name="recurrence_from">De</string>
   <string name="list_all">Toutes les listes</string>
@@ -89,7 +91,7 @@
   <string name="special_list_first">Par défaut</string>
   <string name="special_list_contains">Arguments de sélection</string>
   <string name="special_list_summary">Résumé</string>
-  <string name="special_lists_defaults">Valeurs par Défaut</string>
+  <string name="special_lists_defaults">Valeurs par défaut</string>
   <string-array name="special_list_def_date_picker">
     <item>Pas de date</item>
     <item>Hier</item>
@@ -137,7 +139,7 @@
   <string name="not_in">Pas dans</string>
   <string name="where_like_contain_text">Contient %s</string>
   <string name="where_like_begin_text">Commence avec %s</string>
-  <string name="where_like_end_text">Fini avec %s</string>
+  <string name="where_like_end_text">Finit avec %s</string>
   <string name="delete">Supprimer</string>
   <string name="special_list_progress_equal">Égale à %d</string>
   <string name="special_list_progress_less_than">Inférieur à %d</string>
@@ -158,6 +160,7 @@
     <item>Mois</item>
     <item>Années</item>
   </string-array>
+  <string name="nothing">Pas de répétition</string>
   <string-array name="demo_lists">
     <item>Travail</item>
     <item>Accueil</item>
