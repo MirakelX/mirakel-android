@@ -1,7 +1,7 @@
 #!/bin/sh
 source ./.subrepos
-if [ -f .localconfig ]; then
-    source .localconfig
+if [ -f ./.localconfig ]; then
+    source ./.localconfig
 else
     echo "Declare \$user variable in .localconfig first" >&2
     exit 1
