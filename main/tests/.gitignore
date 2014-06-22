@@ -17,7 +17,6 @@ res-v14/
 # Local configuration file (sdk path, etc)
 local.properties
 *.pydevproject
-.project
 .metadata
 bin/**
 tmp/**
@@ -27,8 +26,6 @@ tmp/**/*
 *.swp
 *~.nib
 local.properties
-.classpath
-.settings/
 .loadpath
 *.db
 lint.xml
@@ -77,3 +74,5 @@ src/de/azapps/mirakel/model/task/TaskBaseTest.java
 src/de/azapps/mirakel/model/task/TaskTest.java
 src/de/azapps/model/task/TaskDeserializerTest.java
 src/de/azapps/mirakel/model/task/TaskDeserializerTest.java
+src/de/azapps/mirakel/model/task/RecurrenceTest.java
+src/de/azapps/mirakel/sync/taskwarrior/TaskWarriorRecurrenceTest.java
