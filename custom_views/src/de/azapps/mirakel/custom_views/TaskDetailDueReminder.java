@@ -38,6 +38,7 @@ import com.fourmob.datetimepicker.date.DatePickerDialog;
 
 import de.azapps.mirakel.customviews.R;
 import de.azapps.mirakel.helper.DateTimeHelper;
+import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.helper.TaskHelper;
@@ -117,11 +118,29 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
 
 			@Override
 			public void onClick(final View v) {
-				TaskDialogHelpers.handleRecurrence(
-						(ActionBarActivity) TaskDetailDueReminder.this.context,
-						TaskDetailDueReminder.this.task, false,
-						TaskDetailDueReminder.this.recurrenceReminder);
+				if (TaskDetailDueReminder.this.task.getReminder() != null) {
+					TaskDialogHelpers
+							.handleRecurrence(
+									(ActionBarActivity) TaskDetailDueReminder.this.context,
+									TaskDetailDueReminder.this.task, false,
+									new ExecInterface() {
 
+										@Override
+										public void exec() {
+											TaskDetailDueReminder.this.task = Task
+													.get(TaskDetailDueReminder.this.task
+															.getId());
+											TaskDetailDueReminder
+													.setRecurringImage(
+															TaskDetailDueReminder.this.recurrenceReminder,
+															TaskDetailDueReminder.this.task
+																	.getRecurringReminderId());
+											setReminder();
+
+										}
+									});
+
+				}
 			}
 		});
 		this.reminderWrapper = (LinearLayout) findViewById(R.id.wrapper_reminder);
@@ -134,10 +153,27 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
 
 			@Override
 			public void onClick(final View v) {
-				TaskDialogHelpers.handleRecurrence(
-						(ActionBarActivity) TaskDetailDueReminder.this.context,
-						TaskDetailDueReminder.this.task, true,
-						TaskDetailDueReminder.this.recurrenceDue);
+				if (TaskDetailDueReminder.this.task.getDue() != null) {
+					TaskDialogHelpers
+							.handleRecurrence(
+									(ActionBarActivity) TaskDetailDueReminder.this.context,
+									TaskDetailDueReminder.this.task, true,
+									new ExecInterface() {
+
+										@Override
+										public void exec() {
+											TaskDetailDueReminder.this.task = Task
+													.get(TaskDetailDueReminder.this.task
+															.getId());
+											TaskDetailDueReminder
+													.setRecurringImage(
+															TaskDetailDueReminder.this.recurrenceDue,
+															TaskDetailDueReminder.this.task
+																	.getRecurrenceId());
+											setDue();
+										}
+									});
+				}
 			}
 		});
 		this.taskDue.setOnClickListener(new View.OnClickListener() {
@@ -151,33 +187,39 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
 				final FragmentManager fm = ((ActionBarActivity) TaskDetailDueReminder.this.context)
 						.getSupportFragmentManager();
 				final DatePickerDialog datePickerDialog = DatePickerDialog
-						.newInstance(new DatePicker.OnDateSetListener() {
+						.newInstance(
+								new DatePicker.OnDateSetListener() {
 
-							@Override
-							public void onDateSet(final DatePicker dp,
-									final int year, final int month,
-									final int day) {
-								if (TaskDetailDueReminder.this.mIgnoreTimeSet) {
-									return;
-								}
-								TaskDetailDueReminder.this.task
-										.setDue(new GregorianCalendar(year,
-												month, day));
-								save();
-								setDue();
+									@Override
+									public void onDateSet(final DatePicker dp,
+											final int year, final int month,
+											final int day) {
+										if (TaskDetailDueReminder.this.mIgnoreTimeSet) {
+											return;
+										}
+										TaskDetailDueReminder.this.task
+												.setDue(new GregorianCalendar(
+														year, month, day));
+										save();
+										setDue();
 
-							}
+									}
 
-							@Override
-							public void onNoDateSet() {
-								TaskDetailDueReminder.this.task.setDue(null);
-								save();
-								setDue();
-
-							}
-						}, dueLocal.get(Calendar.YEAR), dueLocal
-								.get(Calendar.MONTH), dueLocal
-								.get(Calendar.DAY_OF_MONTH), false,
+									@Override
+									public void onNoDateSet() {
+										TaskDetailDueReminder.this.task
+												.setDue(null);
+										TaskDetailDueReminder.this.task
+												.setRecurrence(-1);
+										save();
+										setDue();
+										setupRecurrenceDrawable(
+												TaskDetailDueReminder.this.recurrenceDue,
+												null);
+									}
+								}, dueLocal.get(Calendar.YEAR), dueLocal
+										.get(Calendar.MONTH), dueLocal
+										.get(Calendar.DAY_OF_MONTH), false,
 								MirakelCommonPreferences.isDark(), true);
 				datePickerDialog.show(fm, "datepicker");
 			}
@@ -251,10 +293,14 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
 			this.taskReminder.setTextColor(this.context.getResources()
 					.getColor(BaseTaskDetailRow.inactive_color));
 		} else {
-			Calendar reminder = this.task.getReminder();
+			Calendar reminder = (Calendar) this.task.getReminder().clone();
 			final Recurring r = this.task.getRecurringReminder();
 			if (r != null) {
 				reminder = r.addRecurring(reminder);
+				if (new GregorianCalendar().compareTo(reminder) > 0) {
+					reminder.setTimeInMillis(reminder.getTimeInMillis()
+							+ r.getInterval());
+				}
 			}
 			this.taskReminder.setText(DateTimeHelper.formatReminder(
 					this.context, reminder));

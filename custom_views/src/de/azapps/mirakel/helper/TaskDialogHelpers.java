@@ -48,7 +48,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -59,11 +58,10 @@ import com.android.calendar.recurrencepicker.RecurrencePickerDialog;
 import com.android.calendar.recurrencepicker.RecurrencePickerDialog.OnRecurrenceSetListner;
 
 import de.azapps.mirakel.DefenitionsModel.ExecInterfaceWithTask;
-import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.adapter.SubtaskAdapter;
 import de.azapps.mirakel.custom_views.BaseTaskDetailRow.OnTaskChangedListner;
-import de.azapps.mirakel.custom_views.TaskDetailDueReminder;
 import de.azapps.mirakel.customviews.R;
+import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.DatabaseHelper;
@@ -118,8 +116,7 @@ public class TaskDialogHelpers {
 		query += " NOT _id IN (SELECT parent_id from " + Task.SUBTASK_TABLE
 				+ " where child_id=" + t.getId() + ") AND ";
 		query += "NOT " + DatabaseHelper.ID + "=" + t.getId();
-		query += " AND NOT " + DatabaseHelper.SYNC_STATE_FIELD + "="
-				+ SYNC_STATE.DELETE;
+		query += " AND" + Task.BASIC_FILTER_DISPLAY_TASKS;
 		if (optionEnabled) {
 			if (!done) {
 				query += " and " + Task.DONE + "=0";
@@ -277,7 +274,7 @@ public class TaskDialogHelpers {
 
 	@SuppressWarnings("boxing")
 	public static void handleRecurrence(final ActionBarActivity activity,
-			final Task task, final boolean isDue, final ImageButton image) {
+			final Task task, final boolean isDue, final ExecInterface callback) {
 		final FragmentManager fm = activity.getSupportFragmentManager();
 		Recurring r = isDue ? task.getRecurring() : task.getRecurringReminder();
 		boolean isExact = false;
@@ -285,7 +282,10 @@ public class TaskDialogHelpers {
 			isExact = r.isExact();
 			Log.d(TAG, "exact: " + isExact);
 			if (r.getDerivedFrom() != null) {
-				r = Recurring.get(r.getDerivedFrom());
+				final Recurring master = Recurring.get(r.getDerivedFrom());
+				if (master != null) {
+					r = master;
+				}
 			}
 		}
 		final RecurrencePickerDialog rp = RecurrencePickerDialog.newInstance(
@@ -303,7 +303,7 @@ public class TaskDialogHelpers {
 								intervalMonths, intervalYears, isDue,
 								startDate, endDate, true, isExact,
 								new SparseBooleanArray());
-						setRecurence(task, isDue, r.getId(), image);
+						setRecurence(task, isDue, r.getId(), callback);
 					}
 
 					@Override
@@ -318,17 +318,17 @@ public class TaskDialogHelpers {
 						final Recurring r = Recurring.newRecurring("", 0, 0, 0,
 								0, 0, isDue, startDate, endDate, true, isExact,
 								weekdaysArray);
-						setRecurence(task, isDue, r.getId(), image);
+						setRecurence(task, isDue, r.getId(), callback);
 					}
 
 					@Override
 					public void onNoRecurrenceSet() {
-						setRecurence(task, isDue, -1, image);
+						setRecurence(task, isDue, -1, callback);
 					}
 
 					@Override
 					public void onRecurrenceSet(final Recurring r) {
-						setRecurence(task, isDue, r.getId(), image);
+						setRecurence(task, isDue, r.getId(), callback);
 
 					}
 
@@ -421,7 +421,8 @@ public class TaskDialogHelpers {
 		final ListView lv = (ListView) v.findViewById(R.id.subtask_listview);
 		subtaskAdapter = new SubtaskAdapter(ctx, 0, Task.rawQuery("Select "
 				+ getAllColumns() + " FROM " + Task.TABLE + " where NOT "
-				+ DatabaseHelper.ID + "=" + task.getId()), task, asSubtask);
+				+ DatabaseHelper.ID + "=" + task.getId() + " AND "
+				+ Task.BASIC_FILTER_DISPLAY_TASKS), task, asSubtask);
 		lv.post(new Runnable() {
 			@Override
 			public void run() {
@@ -782,7 +783,7 @@ public class TaskDialogHelpers {
 	}
 
 	protected static void setRecurence(final Task task, final boolean isDue,
-			final int id, final ImageButton image) {
+			final int id, final ExecInterface callback) {
 		if (isDue) {
 			Recurring.destroyTemporary(task.getRecurrenceId());
 			task.setRecurrence(id);
@@ -790,8 +791,10 @@ public class TaskDialogHelpers {
 			Recurring.destroyTemporary(task.getRecurringReminderId());
 			task.setRecurringReminder(id);
 		}
-		TaskDetailDueReminder.setRecurringImage(image, id);
 		task.save();
+		if (callback != null) {
+			callback.exec();
+		}
 	}
 
 	public static void stopRecording() {

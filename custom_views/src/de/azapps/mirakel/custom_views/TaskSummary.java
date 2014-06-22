@@ -106,13 +106,17 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements
 
 	@Override
 	public void onClick(final View v) {
-		this.task.toggleDone();
+		final long id = this.task.toggleDone();
 		ReminderAlarm.updateAlarms(TaskSummary.this.context);
-		TaskSummary.this.taskRowDone.setChecked(this.task.isDone());
 		save();
+		if (id != this.task.getId()) {
+			this.task = Task.get(id);
+		}
+		TaskSummary.this.taskRowDone.setChecked(this.task.isDone());
 		updateName();
 		updateProgress();
 		updateDue();
+
 	}
 
 	public void setOnTaskClick(final OnTaskClickListner l) {
