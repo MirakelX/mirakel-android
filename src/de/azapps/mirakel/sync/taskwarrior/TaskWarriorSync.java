@@ -59,7 +59,6 @@ import de.azapps.tools.Log;
 public class TaskWarriorSync {
 
 	private static final String TW_PROTOCOL_VERSION = "v1";
-
 	public class TaskWarriorSyncFailedExeption extends Exception {
 		private static final long serialVersionUID = 3349776187699690118L;
 		private final TW_ERRORS error;
@@ -89,7 +88,7 @@ public class TaskWarriorSync {
 	}
 
 	public enum TW_ERRORS {
-		ACCESS_DENIED, ACCOUNT_SUSPENDED, CANNOT_CREATE_SOCKET, CANNOT_PARSE_MESSAGE, CONFIG_PARSE_ERROR, MESSAGE_ERRORS, NO_ERROR, NOT_ENABLED, TRY_LATER, NO_SUCH_CERT;
+		ACCESS_DENIED, ACCOUNT_SUSPENDED, CANNOT_CREATE_SOCKET, CANNOT_PARSE_MESSAGE, CONFIG_PARSE_ERROR, MESSAGE_ERRORS, NO_ERROR, NOT_ENABLED, TRY_LATER, NO_SUCH_CERT, COULD_NOT_FIND_COMMON_ANCESTOR;
 		public static TW_ERRORS getError(final int code) {
 			switch (code) {
 			case 200:
