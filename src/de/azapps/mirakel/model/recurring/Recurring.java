@@ -261,9 +261,8 @@ public class Recurring extends RecurringBase {
 		if (t.getDue() == null) {
 			return t;
 		}
-		final long calculatedOffset = addRecurring(
-				(Calendar) t.getDue().clone()).getTimeInMillis()
-				- t.getDue().getTimeInMillis();
+		final Calendar newDue = addRecurring((Calendar) t.getDue().clone(),
+				true);
 		long masterID = t.getId();
 		long offset = 0;
 		long offsetCount = 0;
@@ -276,7 +275,7 @@ public class Recurring extends RecurringBase {
 			offsetCount = c.getLong(4);
 		}
 		c.close();
-		offset += calculatedOffset;
+		offset += newDue.getTimeInMillis() - t.getDue().getTimeInMillis();
 		++offsetCount;
 		c = database.query(TW_TABLE, new String[] { "child" },
 				"parent=? AND offsetCount=?", new String[] { masterID + "",
@@ -291,8 +290,6 @@ public class Recurring extends RecurringBase {
 		}
 		c.close();
 
-		final Calendar newDue = new GregorianCalendar();
-		newDue.setTimeInMillis(t.getDue().getTimeInMillis() + calculatedOffset);
 		t.setDue(newDue);
 		Task newTask;
 		try {
@@ -317,7 +314,11 @@ public class Recurring extends RecurringBase {
 		return newTask;
 	}
 
-	public Calendar addRecurring(Calendar c) {
+	public Calendar addRecurring(final Calendar c) {
+		return addRecurring(c, false);
+	}
+
+	private Calendar addRecurring(Calendar c, final boolean onlyOnce) {
 		final Calendar now = new GregorianCalendar();
 		if (isExact()) {
 			c = now;
@@ -338,7 +339,7 @@ public class Recurring extends RecurringBase {
 						c.add(Calendar.MINUTE, getMinutes());
 						c.add(Calendar.HOUR, getHours());
 					}
-				} while (c.before(now));
+				} while (c.before(now) && !onlyOnce);
 			}
 		} else {
 			int diff = 8;
