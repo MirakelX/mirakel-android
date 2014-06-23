@@ -40,6 +40,7 @@
     <item>Taskwarrior sync</item>
   </string-array>
   <string name="sync_caldav">CalDAV sync</string>
+  <string name="download">Télécharger</string>
   <string name="sync_add_account">Ajouter un compte</string>
   <string name="sync_taskwarrior_configure">Configurer Taskwarrior</string>
   <string name="sync_taskwarrior_scan_qr">Scanner le code QR</string>
@@ -212,8 +213,21 @@
   <string name="action_credits">Remerciements</string>
   <string name="action_credits_summary">À propos de nous ;)</string>
   <string name="title_activity_credits">Remerciements et à propos</string>
-  <string name="credits_github_description">Nous fourche sur github</string>
+  <string name="credits_github_description">Contribuer sur github</string>
   <string name="credits_googleplus_description">Rejoignez notre communauté G +</string>
+  <string name="credits_text_head">
+<![CDATA[
+<h3>Mirakel est un open source, merci de contribuer à son dévelopement via GitHub.</h3>
+<p>&copy; 2013 <a href="mailto:az@azapps.de">Anatolij Zelenin</a>, <a href="mailto:georg_semmler_05@web.de">Georg Semmler</a></p>
+<p>Icônes et interface graphique conçues par <a href="http://alexkaessner.de/>Alexander Käßner</a></p>
+<p>Ce logiciel est gratuit (licence <a href="https://www.gnu.org/licenses/gpl.html">GPLv3</a>).</p>
+<p>Accédez à notre site internet</p>
+]]>
+    </string>
+  <string name="credits_license">
+<![CDATA[<p>Ce programme est un logiciel libre: vous pouvez le redistribuer et/ou le modifier sous les termes de la licence <a href="https://www.gnu.org/licenses/gpl.html">GNU General Public License</a>. Cette licence est publiée par "Free Software Foundation" et doit être sous version 3 ou supérieure.</p>
+<p>Ce programme est diffusé en espérant qu\'il réponde à vos besoins au quotidien, mais SANS AUCUNE GARANTIE sur son fonctionnement. Nous nous dégageons de toute responsabilité directe ou indirecte dans l\'utilisation qui est fait de notre programme.  Voir la licence "GNU General Public License" pour plus d\'informations.</p>]]>
+    </string>
   <string name="credits_translations">Traductions</string>
   <string name="feedback">Envoyez vos commentaires</string>
   <string name="credits_libraries">Bibliothèques utilisées</string>
