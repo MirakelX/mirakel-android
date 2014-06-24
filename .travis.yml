@@ -7,10 +7,9 @@ android:
   components:
     - build-tools-19.1.0
 before_script:
-  - python2 build/create_tests.py
   - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
   - emulator -avd test -no-skin -no-audio -no-window &
-  - ./build/wait_for_emulator.sh
+  - source build/wait_for_emulator.sh
   - adb shell input keyevent 82 &
 
 script:
