@@ -18,6 +18,7 @@
  ******************************************************************************/
 package de.azapps.mirakel.model.task;
 
+import java.lang.String;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -26,11 +27,13 @@ import java.util.List;
 import android.accounts.Account;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Pair;
+import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.helper.DateTimeHelper;
@@ -84,7 +87,7 @@ public class Task extends TaskBase {
 			if (first) {
 				first = false;
 			} else {
-				cols += ",";
+				cols += ", ";
 			}
 			cols += "t." + c;
 		}
@@ -778,8 +781,22 @@ public class Task extends TaskBase {
 			if (old.getRecurrenceId() == -1 && getRecurrenceId() != -1
 					&& !calledFromSync) {
 				insertFirstRecurringChild();
-			} else if (old.getRecurrenceId() != -1 && getRecurrenceId() == -1) {
-				// clear recurrence?
+			} else if (old.getRecurrenceId() != getRecurrenceId()
+					&& !calledFromSync) {
+				final Recurring r = getRecurring();
+				if (r == null) {
+                    final Cursor c=database.query(Recurring.TW_TABLE,new String[]{"parent"},"child=?",new String[]{getId()+""},null,null,null);
+                    if(c.moveToFirst()&&c.getCount()>0){
+                        long masterID=c.getLong(0);
+                        database.execSQL("UPDATE "+TABLE+" SET "+RECURRING+"=-1 WHERE "+DatabaseHelper.ID+" IN (SELECT child FROM "+Recurring.TW_TABLE+" WHERE parent="+masterID+")");
+                        database.delete(Recurring.TW_TABLE,"parent=?",new String[]{masterID+""});
+                        database.delete(TABLE,DatabaseHelper.ID+"=?",new String[]{masterID+""});
+                    }
+                    c.close();
+				} else {
+					updateRecurringChilds(r);
+				}
+
 			}
 		}
 
@@ -846,6 +863,44 @@ public class Task extends TaskBase {
 			NotificationService.updateServices(Task.context, updateReminders);
 		}
 
+	}
+
+	private void updateRecurringChilds(final Recurring r) {
+		final Cursor c = database.rawQuery("SELECT " + concatColumsForQuery()
+				+ ", r.offsetCount FROM " + TABLE + " AS t INNER JOIN "
+				+ Recurring.TW_TABLE
+				+ " AS r ON t._id=r.child WHERE parent IN (SELECT parent FROM "
+				+ Recurring.TW_TABLE + " WHERE child=" + getId()
+				+ ") ORDER BY r.offsetCount ASC;", null);
+		c.moveToFirst();
+		if (c.getCount() > 0) {
+			new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					Task old = null;
+
+					do {
+						final Task child = cursorToTask(c);
+						final int offset = c.getInt(allColumns.length);
+						if (offset > 0 && old != null && r != null) {
+							child.setDue(r.addRecurring(old.getDue()));
+							if (child.getId() == getId()) {
+								// this task:
+								setDue(child.getDue());
+							}
+						}
+						child.setRecurrence(getRecurrenceId());
+						child.save(false, true);
+						old = child;
+					} while (c.moveToNext());
+					c.close();
+					final Intent i = new Intent(DefinitionsHelper.SYNC_FINISHED);
+					context.sendBroadcast(i);
+				}
+			}).start();
+			;
+		}
 	}
 
 	public void insertFirstRecurringChild() throws NoSuchListException {
