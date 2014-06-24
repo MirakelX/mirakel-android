@@ -25,9 +25,9 @@ for (name,base,inst) in models:
         continue
     os.system("main/tests/scripts/generate_model_tests.py " + get_file_name(name,inst) + " " + get_file_name(name,base) + " "+tests_path)
     
-os.system("./main/tests/scripts/generate_json_tests.py main/tests/scripts/tasks.json "+test_path);
-os.system("./main/tests/scripts/generate_recurrence_test.py "+test_path)
-os.system("./main/tests/scripts/generate_tw_recurrence_tests.py "+test_path)
+os.system("./main/tests/scripts/generate_json_tests.py main/tests/scripts/tasks.json "+tests_path);
+os.system("./main/tests/scripts/generate_recurrence_test.py "+tests_path)
+#os.system("./main/tests/scripts/generate_tw_recurrence_tests.py "+tests_path)
 
 
 
