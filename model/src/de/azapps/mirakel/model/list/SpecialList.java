@@ -48,11 +48,6 @@ public class SpecialList extends ListMirakel {
 	private Integer defaultDate;
 	private Map<String, SpecialListsBaseProperty> where;
 
-	@Override
-	public boolean isSpecialList() {
-		return true;
-	}
-
 	public boolean isActive() {
 		return this.active;
 	}
@@ -106,6 +101,7 @@ public class SpecialList extends ListMirakel {
 		this.where = whereQuery;
 		this.defaultList = listMirakel;
 		this.defaultDate = defaultDate;
+		this.isSpecial = true;
 		setLft(lft);
 		setRgt(rgt);
 	}
@@ -216,14 +212,20 @@ public class SpecialList extends ListMirakel {
 				first = false;
 			}
 		}
+		if(!"".equals(ret)) {
+			ret += " AND ";
+		}
+		ret += Task.BASIC_FILTER_DISPLAY_TASKS;
 		return ret;
+	}
+
+	@Override
+	public void save(final boolean log) {
+		save();
 	}
 
 	/**
 	 * Update the List in the Database
-	 * 
-	 * @param list
-	 *            The List
 	 */
 	@Override
 	public void save() {
@@ -240,8 +242,6 @@ public class SpecialList extends ListMirakel {
 
 	/**
 	 * Delete a List from the Database
-	 * 
-	 * @param list
 	 */
 	@Override
 	public void destroy() {
@@ -316,7 +316,7 @@ public class SpecialList extends ListMirakel {
 	 *            List–ID
 	 * @return List
 	 */
-	public static SpecialList getSpecialList(final int listId) {
+	public static SpecialList get(final int listId) {
 		final Cursor cursor = database.query(SpecialList.TABLE, allColumns,
 				DatabaseHelper.ID + "=" + listId, null, null, null, null);
 		cursor.moveToFirst();
@@ -375,9 +375,8 @@ public class SpecialList extends ListMirakel {
 		}
 		final SpecialList slist = new SpecialList(cursor.getInt(i++),
 				cursor.getString(i++), deserializeWhere(cursor.getString(i++)),
-				cursor.getInt(i++) == 1,
-				ListMirakel.getList(cursor.getInt(i++)), defDate,
-				(short) cursor.getInt(++i), SYNC_STATE.parseInt(cursor
+				cursor.getInt(i++) == 1, ListMirakel.get(cursor.getInt(i++)),
+				defDate, (short) cursor.getInt(++i), SYNC_STATE.parseInt(cursor
 						.getInt(++i)), cursor.getInt(++i), cursor.getInt(++i),
 				cursor.getInt(++i));
 		return slist;

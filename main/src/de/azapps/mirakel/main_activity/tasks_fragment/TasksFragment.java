@@ -66,7 +66,6 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import de.azapps.mirakel.DefenitionsModel.ExecInterfaceWithTask;
 import de.azapps.mirakel.DefinitionsHelper;
-import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.custom_views.BaseTaskDetailRow.OnTaskChangedListner;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
@@ -76,6 +75,7 @@ import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
@@ -100,6 +100,10 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 	protected EditText newTask;
 
 	View view;
+
+	public TasksFragment() {
+		super();
+	}
 
 	public void clearFocus() {
 		if (this.newTask != null) {
@@ -181,6 +185,17 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 			}
 		});
 		this.newTask.requestFocus();
+		if (!this.newTask.hasFocus()) {
+			this.newTask.postDelayed(new Runnable() {
+
+				@Override
+				public void run() {
+					TasksFragment.this.newTask.requestFocus();
+					Log.wtf(TAG, "second try");
+				}
+			}, 10);
+		}
+
 	}
 
 	public TaskAdapter getAdapter() {
@@ -213,11 +228,11 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 		}
 
 		final ListMirakel list = this.main.getCurrentList();
-		final Task newTask = Semantic.createTask(name, list,
+		final Task createdTask = Semantic.createTask(name, list,
 				MirakelCommonPreferences.useSemanticNewTask(), getActivity());
 
 		getLoaderManager().restartLoader(0, null, this);
-		this.main.setCurrentTask(newTask, false);
+		this.main.setCurrentTask(createdTask, false);
 
 		this.main.getListFragment().update();
 		if (!MirakelCommonPreferences.hideKeyboard()) {
@@ -354,14 +369,15 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 
 					@Override
 					public void onTaskChanged(final Task newTask) {
+						getLoaderManager().restartLoader(0, null,
+								TasksFragment.this);
 						if (MirakelCommonPreferences.isTablet()
-								&& TasksFragment.this.main != null
-								&& TasksFragment.this.main.getCurrentTask()
-										.getId() == newTask.getId()) {
-							getLoaderManager().restartLoader(0, null,
-									TasksFragment.this);
+								&& TasksFragment.this.main.getTaskFragment() != null
+								&& TasksFragment.this.main.getTaskFragment()
+										.getTask().getId() == newTask.getId()) {
+							TasksFragment.this.main.getTaskFragment().update(
+									newTask);
 						}
-
 					}
 				});
 		this.listView.setAdapter(this.adapter);
@@ -377,6 +393,9 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 							final AlertDialog.Builder builder = new AlertDialog.Builder(
 									getActivity());
 							final Task task = Task.get((Long) item.getTag());
+							if (task == null) {
+								return false;
+							}
 							builder.setTitle(task.getName());
 							final List<CharSequence> items = new ArrayList<CharSequence>(
 									Arrays.asList(getActivity().getResources()
@@ -444,7 +463,7 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 							case R.id.done_task:
 								for (final Task t : TasksFragment.this.selectedTasks) {
 									t.setDone(true);
-									t.safeSave();
+									t.save();
 								}
 								getLoaderManager().restartLoader(0, null,
 										TasksFragment.this);
@@ -479,12 +498,14 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 								final long id, final boolean checked) {
 							final Cursor cursor = (Cursor) TasksFragment.this.listView
 									.getItemAtPosition(position);
-							final Task t = Task.cursorToTask(cursor);
-							if (!TasksFragment.this.selectedTasks.contains(t)
-									&& checked) {
-								TasksFragment.this.selectedTasks.add(t);
-							} else if (checked) {
-								TasksFragment.this.selectedTasks.remove(t);
+							if (cursor.getCount() > 0) {
+								final Task t = Task.cursorToTask(cursor);
+								if (!TasksFragment.this.selectedTasks
+										.contains(t) && checked) {
+									TasksFragment.this.selectedTasks.add(t);
+								} else if (checked) {
+									TasksFragment.this.selectedTasks.remove(t);
+								}
 							}
 						}
 
@@ -572,9 +593,8 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 				@Override
 				public void onClick(final View v) {
 					// TODO BAHHHH this is ugly!
-					final Task task = new Task("");
+					final Task task = Task.getEmpty();
 					task.setList(TasksFragment.this.main.getCurrentList(), true);
-					task.setId(0);
 					TaskDialogHelpers.handleAudioRecord(
 							TasksFragment.this.main, task,
 							new ExecInterfaceWithTask() {
@@ -652,25 +672,26 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 
 	@Override
 	public Loader<Cursor> onCreateLoader(final int arg0, final Bundle arg1) {
-		final ListMirakel list = ListMirakel.getList(this.listId);
+		ListMirakel list = ListMirakel.get(this.listId);
+		if (list == null) {
+			ErrorReporter.report(ErrorType.LIST_VANISHED);
+			list = SpecialList.firstSpecialSafe(getActivity());
+		}
 		final Uri u = Uri.parse("content://"
 				+ DefinitionsHelper.AUTHORITY_INTERNAL + "/" + "tasks");
 		String dbQuery = list.getWhereQueryForTasks();
 		final String sorting = Task.getSorting(list.getSortBy());
 		String[] args = null;
-		if (dbQuery != null && dbQuery.trim() != "" && dbQuery.length() > 0) {
+		if (dbQuery != null && !"".equals(dbQuery.trim())
+				&& dbQuery.length() > 0) {
 			dbQuery = "(" + dbQuery + ") AND ";
 		}
-		dbQuery += "NOT " + DatabaseHelper.SYNC_STATE_FIELD + "="
-				+ SYNC_STATE.DELETE + " ";
+		dbQuery += Task.BASIC_FILTER_DISPLAY_TASKS;
 		if (this.query != null) {
-
 			args = new String[] { "%" + this.query + "%" };
-			if (dbQuery.length() > 0) {
-				dbQuery += " AND ";
-			}
-			dbQuery += DatabaseHelper.NAME + " LIKE ?";
+			dbQuery += " AND " + DatabaseHelper.NAME + " LIKE ?";
 		}
+		Log.w(TAG, dbQuery);
 		return new CursorLoader(getActivity(), u, Task.allColumns, dbQuery,
 				args, sorting);
 	}

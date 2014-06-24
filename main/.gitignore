@@ -13,11 +13,11 @@ bin/
 gen/
 build/
 res-v14/
+merged-res/
 
 # Local configuration file (sdk path, etc)
 local.properties
 *.pydevproject
-.project
 .metadata
 bin/**
 tmp/**
@@ -27,11 +27,11 @@ tmp/**/*
 *.swp
 *~.nib
 local.properties
-.classpath
-.settings/
 .loadpath
 *.db
 lint.xml
+exploded-aar/
+dex-cache/
 *~
 .gradle
 res-google/project.properties
@@ -56,3 +56,7 @@ tests/
 *.iml
 out/**
 misc/crowdin.yaml
+# Emacs
+\#*
+.\#*
+debug.keystore

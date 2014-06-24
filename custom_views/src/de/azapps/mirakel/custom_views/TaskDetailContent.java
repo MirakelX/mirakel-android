@@ -32,14 +32,10 @@ import de.azapps.tools.Log;
 
 public class TaskDetailContent extends BaseTaskDetailRow {
 
-	public interface OnEditChanged {
-		abstract public void handleCab(final boolean startEdit);
-	}
-
 	protected static final String TAG = "TaskDetailContent";
 	private String content;
-	protected OnEditChanged editChanged;
 	private final ImageButton editContent;
+	private final ImageButton cancelEdit;
 	protected boolean isContentEdit;
 	private final TextView taskContent;
 
@@ -54,6 +50,7 @@ public class TaskDetailContent extends BaseTaskDetailRow {
 		this.taskContentEdit = (EditText) findViewById(R.id.task_content_edit);
 		this.isContentEdit = false;
 		this.editContent = (ImageButton) findViewById(R.id.edit_content);
+		this.cancelEdit = (ImageButton) findViewById(R.id.cancel_content);
 		this.editContent.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -62,6 +59,10 @@ public class TaskDetailContent extends BaseTaskDetailRow {
 				TaskDetailContent.this.isContentEdit = !TaskDetailContent.this.isContentEdit;
 				if (!TaskDetailContent.this.isContentEdit) {
 					saveContentHelper();
+					TaskDetailContent.this.cancelEdit.setVisibility(View.GONE);
+				} else {
+					TaskDetailContent.this.cancelEdit
+							.setVisibility(View.VISIBLE);
 				}
 				TaskDetailContent.this.context
 						.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -90,11 +91,6 @@ public class TaskDetailContent extends BaseTaskDetailRow {
 												TaskDetailContent.this.taskContentEdit
 														.getWindowToken(), 0);
 									}
-									if (TaskDetailContent.this.editChanged != null) {
-										TaskDetailContent.this.editChanged
-												.handleCab(hasFocus);
-									}
-
 								}
 							});
 					TaskDetailContent.this.taskContentEdit.requestFocus();
@@ -111,6 +107,13 @@ public class TaskDetailContent extends BaseTaskDetailRow {
 
 			}
 		});
+		this.cancelEdit.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(final View v) {
+				cancelContent();
+			}
+		});
 	}
 
 	public void cancelContent() {
@@ -122,6 +125,7 @@ public class TaskDetailContent extends BaseTaskDetailRow {
 		this.editContent.setBackgroundResource(android.R.drawable.ic_menu_edit);
 		TaskDetailContent.this.taskContentEdit
 				.setText(TaskDetailContent.this.task.getContent());
+		this.cancelEdit.setVisibility(View.GONE);
 	}
 
 	public void saveContent() {
@@ -129,12 +133,7 @@ public class TaskDetailContent extends BaseTaskDetailRow {
 		cancelContent();
 	}
 
-	public void saveContentHelper() {
-		TaskDetailContent.this.task
-				.setContent(TaskDetailContent.this.taskContentEdit.getText()
-						.toString());
-		save();
-		this.content = this.task.getContent();
+	private void updateContentText() {
 		if (this.task.getContent().length() > 0) {
 			this.taskContent.setText(this.task.getContent());
 			Linkify.addLinks(this.taskContent, Linkify.WEB_URLS);
@@ -149,10 +148,16 @@ public class TaskDetailContent extends BaseTaskDetailRow {
 					inactive_color));
 			this.taskContentEdit.setText("");
 		}
+
 	}
 
-	public void setOnEditChanged(final OnEditChanged l) {
-		this.editChanged = l;
+	public void saveContentHelper() {
+		TaskDetailContent.this.task
+				.setContent(TaskDetailContent.this.taskContentEdit.getText()
+						.toString());
+		save();
+		this.content = this.task.getContent();
+		updateContentText();
 	}
 
 	@Override
@@ -163,6 +168,7 @@ public class TaskDetailContent extends BaseTaskDetailRow {
 			return;
 		}
 		this.content = this.task.getContent();
+		cancelContent();
 		if (this.taskContentSwitcher.getCurrentView().getId() == this.taskContentEdit
 				.getId()) {
 			this.editContent
@@ -171,20 +177,7 @@ public class TaskDetailContent extends BaseTaskDetailRow {
 			this.editContent
 					.setBackgroundResource(android.R.drawable.ic_menu_edit);
 		}
-		if (this.task.getContent().length() > 0) {
-			this.taskContent.setText(this.task.getContent());
-			Linkify.addLinks(this.taskContent, Linkify.WEB_URLS);
-			this.taskContent.setTextColor(this.context.getResources().getColor(
-					MirakelCommonPreferences.isDark() ? android.R.color.white
-							: android.R.color.black));
-			this.taskContentEdit.setText(this.task.getContent());
-			Linkify.addLinks(this.taskContentEdit, Linkify.WEB_URLS);
-		} else {
-			this.taskContent.setText(R.string.add_content);
-			this.taskContent.setTextColor(this.context.getResources().getColor(
-					inactive_color));
-			this.taskContentEdit.setText("");
-		}
+		updateContentText();
 	}
 
 }

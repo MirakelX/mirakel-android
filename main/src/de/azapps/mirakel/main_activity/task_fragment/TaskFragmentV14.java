@@ -29,6 +29,10 @@ import android.view.MenuItem;
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class TaskFragmentV14 extends TaskFragment {
 
+	public TaskFragmentV14() {
+		super();
+	}
+
 	private ActionMode mActionMode;
 	@SuppressLint("NewApi")
 	private final ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {

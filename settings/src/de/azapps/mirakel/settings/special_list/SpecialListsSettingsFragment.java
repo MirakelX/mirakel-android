@@ -38,6 +38,10 @@ import de.azapps.tools.Log;
 public class SpecialListsSettingsFragment extends PreferenceFragment {
 	private static final String TAG = "SpecialListsSettingsFragment";
 
+	public SpecialListsSettingsFragment() {
+		super();
+	}
+
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -45,8 +49,8 @@ public class SpecialListsSettingsFragment extends PreferenceFragment {
 		final Bundle b = getArguments();
 		if (b != null) {
 			Log.d(TAG, "id= " + getArguments().getInt("id"));
-			final SpecialList specialList = SpecialList
-					.getSpecialList(getArguments().getInt("id") * -1);
+			final SpecialList specialList = SpecialList.get(getArguments()
+					.getInt("id") * -1);
 			((SpecialListsSettingsActivity) getActivity())
 					.setSpecialList(specialList);
 

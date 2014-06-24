@@ -57,10 +57,14 @@ public class TagListView extends View {
 	private final int black;
 	private final int white;
 	private final float TAG_SIZE;
+	private final float START_PADDING;
 
 	public TagListView(final Context context) {
 		super(context);
-		this.TAG_SIZE = scale(20);
+		this.TAG_SIZE = context.getResources().getDimension(
+				R.dimen.subtitle_font_size);
+		this.START_PADDING = context.getResources().getDimension(
+				R.dimen.custom_view_start_padding);
 		this.paintText = new Paint(Paint.ANTI_ALIAS_FLAG);
 		this.paintBackground = new Paint(Paint.ANTI_ALIAS_FLAG);
 		this.rect = new Rect();
@@ -166,7 +170,7 @@ public class TagListView extends View {
 	@Override
 	protected void onDraw(final Canvas canvas) {
 		super.onDraw(canvas);
-		float begin_x = scale(20);
+		float begin_x = this.START_PADDING;
 		float begin_y = 0;
 		float textLength = 0;
 		final List<Tag> tags = this.task.getTags();
@@ -174,8 +178,8 @@ public class TagListView extends View {
 		if (tags.size() == 0) {
 			this.paintText.setColor(getContext().getResources().getColor(
 					android.R.color.darker_gray));
-			canvas.drawText(getContext().getString(R.string.add_tags),
-					scale(10), scale(21), this.paintText);
+			canvas.drawText(getContext().getString(R.string.add_tags), begin_x,
+					scale(21), this.paintText);
 			setMinimumHeight((int) scale(25));
 			return;
 		}

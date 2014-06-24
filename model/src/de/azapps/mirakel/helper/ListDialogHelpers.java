@@ -136,7 +136,7 @@ public class ListDialogHelpers {
 						if (lid == null) {
 							specialList.setDefaultList(null);
 						} else {
-							specialList.setDefaultList(ListMirakel.getList(lid));
+							specialList.setDefaultList(ListMirakel.get(lid));
 						}
 						specialList.save();
 						alert.dismiss();

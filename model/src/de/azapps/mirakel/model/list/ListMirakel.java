@@ -22,6 +22,7 @@ package de.azapps.mirakel.model.list;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -40,7 +41,6 @@ import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.UndoHistory;
 import de.azapps.mirakel.model.DatabaseHelper;
-import de.azapps.mirakel.model.MirakelContentProvider;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.task.Task;
@@ -76,6 +76,15 @@ public class ListMirakel extends ListBase {
 	 */
 	public static List<ListMirakel> all() {
 		return all(true);
+	}
+
+	/**
+	 * CALL THIS ONLY FROM DBHelper
+	 * 
+	 * @param db
+	 */
+	public static void setDB(final SQLiteDatabase db) {
+		database = db;
 	}
 
 	public static List<ListMirakel> all(final boolean withSpecial) {
@@ -235,9 +244,9 @@ public class ListMirakel extends ListBase {
 		return newList(context.getString(R.string.inbox), SORT_BY_OPT, account);
 	}
 
-	public static ListMirakel getList(final int listId) {
+	public static ListMirakel get(final int listId) {
 		if (listId < 0) {
-			return SpecialList.getSpecialList(-listId);
+			return SpecialList.get(-listId);
 		}
 
 		final Cursor cursor = database
@@ -382,7 +391,7 @@ public class ListMirakel extends ListBase {
 		final JsonElement id = el.get("id");
 		if (id != null) {
 			// use old List from db if existing
-			t = ListMirakel.getList(id.getAsInt());
+			t = ListMirakel.get(id.getAsInt());
 		}
 		if (t == null) {
 			t = new ListMirakel();
@@ -428,8 +437,8 @@ public class ListMirakel extends ListBase {
 		return s;
 	}
 
-	public static ListMirakel safeGetList(final int listId) {
-		ListMirakel l = getList(listId);
+	public static ListMirakel safeGet(final int listId) {
+		ListMirakel l = get(listId);
 		if (l == null) {
 			l = safeFirst(context);
 		}
@@ -444,14 +453,7 @@ public class ListMirakel extends ListBase {
 		super(id, name);
 	}
 
-	/**
-	 * Create an empty list
-	 */
-	/*
-	 * private ListMirakel() { }
-	 */
-
-	protected ListMirakel(final int id, final String name, final short sort_by,
+	public ListMirakel(final int id, final String name, final short sort_by,
 			final String created_at, final String updated_at,
 			final SYNC_STATE sync_state, final int lft, final int rgt,
 			final int color, final AccountMirakel account) {
@@ -473,7 +475,6 @@ public class ListMirakel extends ListBase {
 	 * @return
 	 */
 	public int countTasks() {
-		Cursor c;
 		String where;
 		if (getId() < 0) {
 			where = ((SpecialList) this).getWhereQueryForTasks();
@@ -481,13 +482,12 @@ public class ListMirakel extends ListBase {
 
 			where = Task.LIST_ID + " = " + getId();
 		}
-		c = MirakelContentProvider.getReadableDatabase().rawQuery(
-				"Select count(" + DatabaseHelper.ID + ") from " + Task.TABLE
-						+ " where " + where
-						+ (where.length() != 0 ? " and " : " ") + " "
-						+ Task.DONE + "=0 and not "
-						+ DatabaseHelper.SYNC_STATE_FIELD + "="
-						+ SYNC_STATE.DELETE, null);
+		if (where.length() != 0) {
+			where += " AND ";
+		}
+		where += Task.DONE + " =0 AND " + Task.BASIC_FILTER_DISPLAY_TASKS;
+		final Cursor c = database.query(Task.TABLE,
+				new String[] { "count(*)" }, where, null, null, null, null);
 		c.moveToFirst();
 		if (c.getCount() > 0) {
 			final int n = c.getInt(0);
@@ -536,7 +536,7 @@ public class ListMirakel extends ListBase {
 					+ RGT + "-2 WHERE " + LFT + ">" + getRgt() + ";", null);
 			database.setTransactionSuccessful();
 		} catch (final Exception e) {
-			Log.wtf(TAG, "cannot remove List");
+			Log.wtf(TAG, "cannot remove List", e);
 		} finally {
 			database.endTransaction();
 		}
@@ -544,7 +544,8 @@ public class ListMirakel extends ListBase {
 
 	public Task getFirstTask() {
 		final Cursor c = database.query(Task.TABLE, Task.allColumns,
-				getWhereQueryForTasks(), null, null, null,
+				getWhereQueryForTasks() + " AND "
+						+ Task.BASIC_FILTER_DISPLAY_TASKS, null, null, null,
 				Task.getSorting(getSortBy()), "1");
 		Task t = null;
 		if (c.getCount() > 0) {
@@ -554,11 +555,6 @@ public class ListMirakel extends ListBase {
 		}
 		c.close();
 		return t;
-	}
-
-	@SuppressWarnings("static-method")
-	public boolean isSpecialList() {
-		return false;
 	}
 
 	/**
@@ -582,12 +578,19 @@ public class ListMirakel extends ListBase {
 			setUpdatedAt(new SimpleDateFormat(
 					context.getString(R.string.dateTimeFormat),
 					Locale.getDefault()).format(new Date()));
-			final ContentValues values = getContentValues();
+			ContentValues values = getContentValues();
 			if (log) {
-				UndoHistory.updateLog(ListMirakel.getList(getId()), context);
+				UndoHistory.updateLog(ListMirakel.get(getId()), context);
 			}
 			database.update(ListMirakel.TABLE, values, DatabaseHelper.ID
 					+ " = " + getId(), null);
+			values = new ContentValues();
+			values.put(DatabaseHelper.UPDATED_AT,
+					new GregorianCalendar().getTimeInMillis() / 1000);
+			values.put(DatabaseHelper.SYNC_STATE_FIELD,
+					SYNC_STATE.NEED_SYNC.toInt());
+			database.update(Task.TABLE, values, Task.LIST_ID + "=?",
+					new String[] { getId() + "" });
 			database.setTransactionSuccessful();
 			database.endTransaction();
 
@@ -632,6 +635,7 @@ public class ListMirakel extends ListBase {
 		return Task.LIST_ID
 				+ "="
 				+ getId()
+				+ " AND " + Task.BASIC_FILTER_DISPLAY_TASKS
 				+ (MirakelCommonPreferences.showDoneMain() ? "" : " AND NOT "
 						+ Task.DONE + "=1");
 	}

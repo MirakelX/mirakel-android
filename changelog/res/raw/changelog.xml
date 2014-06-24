@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+    <version name="2.6-beta1" date="2014-06-22" code="58">
+        <text>Please test the syncing of the recurrence!</text>
+        <feature>Implemented Recurrence for Taskwarrior</feature>
+        <feature>More Bugfixes</feature>
+    </version>
+   <version name="2.5.1-beta1" date="2014-06-01" code="57">
+      <feature>More Bugfixes</feature>
+      <feature>Begin to write tests</feature>
+  </version>
+  <version name="2.5" date="2014-05-11" code="56">
+      <feature>Many Bugfixes</feature>
+      <feature>Added tags</feature>
+  </version>
+  <version name="2.5-beta2" date="2014-05-07" code="55">
+      <feature>Bugfixes</feature>
+  </version>
   <version name="2.5-beta1" date="2014-05-02" code="54">
       <feature>Added tags!</feature>
   </version>

@@ -209,7 +209,7 @@ public class WidgetHelper {
 
 		final int listId = getSettings(context).getInt(
 				getKey(widgetId, "list_id"), 0);
-		ListMirakel list = ListMirakel.getList(listId);
+		ListMirakel list = ListMirakel.get(listId);
 		if (list == null) {
 			list = SpecialList.firstSpecial();
 			if (list == null) {

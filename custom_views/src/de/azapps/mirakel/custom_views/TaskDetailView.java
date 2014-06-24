@@ -24,7 +24,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import de.azapps.mirakel.custom_views.BaseTaskDetailRow.OnTaskChangedListner;
-import de.azapps.mirakel.custom_views.TaskDetailContent.OnEditChanged;
 import de.azapps.mirakel.custom_views.TaskDetailDueReminder.Type;
 import de.azapps.mirakel.custom_views.TaskDetailFilePart.OnFileClickListner;
 import de.azapps.mirakel.custom_views.TaskDetailFilePart.OnFileMarkedListner;
@@ -138,6 +137,9 @@ public class TaskDetailView extends BaseTaskDetailRow implements
 	}
 
 	public void cancelContent() {
+		if (this.views == null) {
+			return;
+		}
 		final BaseTaskDetailRow v = this.views.get(TYPE.CONTENT);
 		if (v != null) {
 			((TaskDetailContent) v).cancelContent();
@@ -150,8 +152,10 @@ public class TaskDetailView extends BaseTaskDetailRow implements
 		if (this.taskChangedListner != null) {
 			this.taskChangedListner.onTaskChanged(newTask);
 		}
+		if (this.task.isDone() != newTask.isDone()) {
+			updateView();
+		}
 		this.task = newTask;
-
 	}
 
 	public void saveContent() {
@@ -173,13 +177,6 @@ public class TaskDetailView extends BaseTaskDetailRow implements
 		final BaseTaskDetailRow v = this.views.get(TYPE.FILE);
 		if (v != null) {
 			((TaskDetailFile) v).setCameraClick(l);
-		}
-	}
-
-	public void setOnContentEdit(final OnEditChanged l) {
-		final BaseTaskDetailRow v = this.views.get(TYPE.CONTENT);
-		if (v != null) {
-			((TaskDetailContent) v).setOnEditChanged(l);
 		}
 	}
 
@@ -224,7 +221,9 @@ public class TaskDetailView extends BaseTaskDetailRow implements
 
 					@Override
 					public void onDoneChanged(final Task newTask) {
-						if (TaskDetailView.this.views.get(TYPE.DUE) != null) {
+						if (newTask.getId() != TaskDetailView.this.task.getId()) {
+							update(newTask);
+						} else if (TaskDetailView.this.views.get(TYPE.DUE) != null) {
 							TaskDetailView.this.views.get(TYPE.DUE).update(
 									newTask);
 						}
@@ -310,9 +309,6 @@ public class TaskDetailView extends BaseTaskDetailRow implements
 			((TaskDetailFile) v).disableMarked();
 		}
 		// Handle Content
-		if (saveContent) {
-			saveContent();
-		}
 	}
 
 	public void updateLayout() {

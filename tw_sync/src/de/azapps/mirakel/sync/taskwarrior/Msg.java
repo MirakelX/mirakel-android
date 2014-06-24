@@ -25,9 +25,6 @@ public class Msg {
 		this._header = m._header;
 	}
 
-	// public Msg& operator= (const Msg&);
-	// public bool operator== (const Msg&) const;
-
 	public void clear() {
 		this._header.clear();
 		this._payload = "";

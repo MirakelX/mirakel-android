@@ -121,17 +121,15 @@ public class AccountMirakel extends AccountBase {
 	}
 
 	public static List<AccountMirakel> cursorToAccountList(final Cursor c) {
+		final List<AccountMirakel> accounts = new ArrayList<AccountMirakel>();
 		if (c.getCount() > 0) {
-			final List<AccountMirakel> accounts = new ArrayList<AccountMirakel>();
 			c.moveToFirst();
 			while (!c.isAfterLast()) {
 				accounts.add(cursorToAccount(c));
 				c.moveToNext();
 			}
-			return accounts;
-
 		}
-		return null;
+		return accounts;
 	}
 
 	public static AccountMirakel get(final Account account) {
@@ -174,7 +172,7 @@ public class AccountMirakel extends AccountBase {
 		return 0;
 	}
 
-	public static List<AccountMirakel> getAll() {
+	public static List<AccountMirakel> all() {
 		final Cursor c = database.query(TABLE, allColumns, null, null, null,
 				null, null);
 		final List<AccountMirakel> accounts = cursorToAccountList(c);
@@ -249,7 +247,7 @@ public class AccountMirakel extends AccountBase {
 	}
 
 	public static void update(final Account[] accounts) {
-		final List<AccountMirakel> accountList = AccountMirakel.getAll();
+		final List<AccountMirakel> accountList = AccountMirakel.all();
 		final int countRemotes = AccountMirakel.countRemoteAccounts();
 		final Map<String, AccountMirakel> map = new HashMap<String, AccountMirakel>();
 		for (final AccountMirakel a : accountList) {

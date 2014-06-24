@@ -5,7 +5,7 @@ import java.util.Locale;
 import android.content.ContentValues;
 import de.azapps.mirakel.model.list.ListMirakel;
 
-public class SemanticBase {
+class SemanticBase {
 	private int id;
 	private String condition;
 	private Integer priority;
@@ -31,7 +31,7 @@ public class SemanticBase {
 		return this.id;
 	}
 
-	public void setId(final int id) {
+	protected void setId(final int id) {
 		this.id = id;
 	}
 
@@ -89,6 +89,76 @@ public class SemanticBase {
 		cv.put("due", this.due);
 		cv.put("weekday", this.weekday);
 		return cv;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof SemanticBase)) {
+			return false;
+		}
+		final SemanticBase other = (SemanticBase) obj;
+		if (this.condition == null) {
+			if (other.condition != null) {
+				return false;
+			}
+		} else if (!this.condition.equals(other.condition)) {
+			return false;
+		}
+		if (this.due == null) {
+			if (other.due != null) {
+				return false;
+			}
+		} else if (!this.due.equals(other.due)) {
+			return false;
+		}
+		if (this.id != other.id) {
+			return false;
+		}
+		if (this.list == null) {
+			if (other.list != null) {
+				return false;
+			}
+		} else if (!this.list.equals(other.list)) {
+			return false;
+		}
+		if (this.priority == null) {
+			if (other.priority != null) {
+				return false;
+			}
+		} else if (!this.priority.equals(other.priority)) {
+			return false;
+		}
+		if (this.weekday == null) {
+			if (other.weekday != null) {
+				return false;
+			}
+		} else if (!this.weekday.equals(other.weekday)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ (this.condition == null ? 0 : this.condition.hashCode());
+		result = prime * result + (this.due == null ? 0 : this.due.hashCode());
+		result = prime * result + this.id;
+		result = prime * result
+				+ (this.list == null ? 0 : this.list.hashCode());
+		result = prime * result
+				+ (this.priority == null ? 0 : this.priority.hashCode());
+		result = prime * result
+				+ (this.weekday == null ? 0 : this.weekday.hashCode());
+		return result;
 	}
 
 }

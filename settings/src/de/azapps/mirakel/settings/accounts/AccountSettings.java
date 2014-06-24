@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
+import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
@@ -62,13 +63,31 @@ public class AccountSettings implements OnPreferenceChangeListener {
 			syncUsername.setSummary(a == null ? this.ctx
 					.getString(R.string.local_account) : a.name);
 		}
-		final Preference syncServer = findPreference("syncServer");
+		final EditTextPreference syncServer = (EditTextPreference) findPreference("syncServer");
 		if (syncServer != null) {
-			syncServer.setEnabled(false);
 			if (a != null && a.type.equals(AccountMirakel.ACCOUNT_TYPE_MIRAKEL)) {
+				syncServer.setEnabled(true);
 				syncServer.setSummary(am.getUserData(a,
 						SyncAdapter.BUNDLE_SERVER_URL));
+				syncServer.setText(am.getUserData(a,
+						SyncAdapter.BUNDLE_SERVER_URL));
+				syncServer
+						.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+							@Override
+							public boolean onPreferenceChange(
+									final Preference preference,
+									final Object newValue) {
+								am.setUserData(a,
+										SyncAdapter.BUNDLE_SERVER_URL,
+										(String) newValue);
+								syncServer.setSummary((String) newValue);
+								syncServer.setText((String) newValue);
+								return false;
+							}
+						});
 			} else {
+				syncServer.setEnabled(false);
 				syncServer.setSummary("");
 			}
 		}

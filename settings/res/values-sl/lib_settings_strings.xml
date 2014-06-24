@@ -18,7 +18,7 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="sync_add">Dodaj račun</string>
   <string name="sync_title">Usklajevanje</string>
   <string name="sync_new">Now račun</string>
@@ -35,8 +35,11 @@
   <string name="sync_frequency">Pogostost</string>
   <string name="sync_frequency_summary">Uskladi vsakih %s minut</string>
   <string name="sync_frequency_summary_man">Uskladi le ročno</string>
+  <string-array name="sync_types">
+    <item>Usklajevanje CalDAV</item>
+    <item>Usklajevanje preko strežnika Taskwarrior</item>
+  </string-array>
   <string name="sync_caldav">Usklajevanje CalDAV</string>
-  <string name="sync_caldav_howto"> </string>
   <string name="sync_caldav_howto_">
 <![CDATA[Nastaviti je treba program za usklajevanje CalDAV, ki deluje v povezavi s programom Mirakel. Trenutno je na voljo le predelana različica programa DAVdroid z naše spletne strani.<br /><br />
 Pričakovati je, da bo tudi uradna različica DAVdroid kmalu podpirala delovanje programa Mirakel. Trenutno potekajo usklajevanja z razvojnima skupinama za čim boljše delovanje.
@@ -140,7 +143,6 @@ Pričakovati je, da bo tudi uradna različica DAVdroid kmalu podpirala delovanje
   <string name="undo_number_summary">Razveljavi %s sprememb</string>
   <string name="settings_semantic">Predloge nalog</string>
   <string name="semantic_new_task">Predloga nove naloge</string>
-  <string name="semantic_new_task_summary"> </string>
   <string name="semantic_new_task_config_summary">Nastavitev pogojev za ustvarjanje novih nalog</string>
   <string name="semantic_new_task_config">Nastavitev predloge naloge</string>
   <string name="swipeBehavior_title">Ob potegu preklopi na nalogo</string>
@@ -154,6 +156,12 @@ Pričakovati je, da bo tudi uradna različica DAVdroid kmalu podpirala delovanje
   <string name="do_not_touch">Ne dotikajte se</string>
   <string name="list_fragment">Pregled seznama</string>
   <string name="show_account_name">Pokaži ime računa</string>
+  <string-array name="tablet_options">
+    <item>nikoli</item>
+    <item>ležeče</item>
+    <item>pokončno</item>
+    <item>pokončno &amp; ležeče</item>
+  </string-array>
   <string name="delete_done">Izbriši končane naloge</string>
   <string name="delete_done_summary">Izbriši vse končane naloge</string>
   <string name="delete_done_warning">Ali ste prepričani?</string>
@@ -177,11 +185,42 @@ Pričakovati je, da bo tudi uradna različica DAVdroid kmalu podpirala delovanje
   <string name="settings_semantics_priority">Nastavi prednost</string>
   <string name="settings_semantics_due">Nastavite datum zapadlosti</string>
   <string name="settings_semantics_weekday">Nastavi datum preteka na naslednji delovni dan</string>
+  <string-array name="weekdays">
+    <item>Ne nastavi</item>
+    <item>Ponedeljek</item>
+    <item>Torek</item>
+    <item>Sreda</item>
+    <item>Četrtek</item>
+    <item>Petek</item>
+    <item>Sobota</item>
+    <item>Nedelja</item>
+  </string-array>
+  <string-array name="priority_entries">
+    <item>Brez določene prednosti</item>
+    <item>-2</item>
+    <item>-1</item>
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+  </string-array>
+  <string-array name="priority_entry_values">
+    <item>null</item>
+    <item>-2</item>
+    <item>-1</item>
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+  </string-array>
   <string name="semantics_no_list">Ne nastavi seznama</string>
   <string name="semantics_no_due">Ne nastavi datuma zapadlosti</string>
   <string name="settings_file_default_title">Ime seznama uvoženih datotek</string>
   <string name="semantic_new">predloga</string>
+  <string name="tag_new">Nova oznaka</string>
+  <string name="tag_settings">Nastavitve oznak</string>
+  <string name="color">Barva</string>
   <string name="tag_name">Ime</string>
+  <string name="tag_dark_text">Ali naj bo besedilo črno?</string>
+  <string name="tag_click">Oznake</string>
   <string name="settings_subtask">Podrejena naloga</string>
   <string name="settings_subtask_default_new">Privzeto pokaži novo nalogo</string>
   <string name="settings_subtask_add_to_same_list">Dodaj podnalogo na seznam nalog</string>
@@ -231,42 +270,22 @@ Pričakovati je, da bo tudi uradna različica DAVdroid kmalu podpirala delovanje
   <string name="demo_mode">Preizkusni način</string>
   <string name="demo_drop_db">Počisti preizkusno podatkovno zbirko</string>
   <string name="write_logs_to_file">Zapiši dnevnik v datoteko</string>
+  <string name="alert_caldav"><![CDATA[The CalDAV sync is not 100%% stable. Please try it carefully and report bugs!]]></string>
+  <string name="alert_caldav_title">Podrobnosti CalDAV</string>
+  <string name="alert_taskwarrior"><![CDATA[The taskwarrior sync seems to work but please make a backup of your data! Please report issues and bugs so we can fix them!]]></string>
+  <string name="alert_taskwarrior_title">Podrobnosti Taskwarrior</string>
   <string name="special_list_where_subtask_title_text">Podrejena naloga</string>
+  <string name="special_list_where_tag_title_text">Oznake</string>
   <string name="special_list_where_progress_title_text">Napredek</string>
-  <string-array name="sync_types">
-    <item>Usklajevanje CalDAV</item>
-    <item>Usklajevanje preko strežnika Taskwarrior</item>
+  <string name="special_list_where_file_title_text">Datoteka</string>
+  <string-array name="special_lists_subtask_options">
+    <item>Obrni izbor</item>
+    <item>Iskanje nalog s podrejenimi nalogami in nalog, ki so podrejene naloge</item>
   </string-array>
-  <string-array name="tablet_options">
-    <item>nikoli</item>
-    <item>ležeče</item>
-    <item>pokončno</item>
-    <item>pokončno &amp; ležeče</item>
+  <string-array name="file_choice">
+    <item>Ni nastavljeno</item>
+    <item>Ima priložene datoteke</item>
+    <item>Je brez priloženih datotek</item>
   </string-array>
-  <string-array name="weekdays">
-    <item>Ne nastavi</item>
-    <item>Ponedeljek</item>
-    <item>Torek</item>
-    <item>Sreda</item>
-    <item>Četrtek</item>
-    <item>Petek</item>
-    <item>Sobota</item>
-    <item>Nedelja</item>
-  </string-array>
-  <string-array name="priority_entries">
-    <item>Brez določene prednosti</item>
-    <item>-2</item>
-    <item>-1</item>
-    <item>0</item>
-    <item>1</item>
-    <item>2</item>
-  </string-array>
-  <string-array name="priority_entry_values">
-    <item>null</item>
-    <item>-2</item>
-    <item>-1</item>
-    <item>0</item>
-    <item>1</item>
-    <item>2</item>
-  </string-array>
+  <string name="remove">Odstrani</string>
 </resources>

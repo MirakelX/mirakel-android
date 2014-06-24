@@ -32,7 +32,7 @@
  * the License.
  */
 
-package de.azapps.mirakel.sync;//com.example.android.samplesync.authenticator;
+package de.azapps.mirakel.sync;
 
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;
@@ -126,8 +126,7 @@ class Authenticator extends AbstractAccountAuthenticator {
 		final AccountManager am = AccountManager.get(this.mContext);
 		final String password = am.getPassword(account);
 		if (password != null) {
-			final String authToken = "sdfdsaf";// NetworkUtilities.authenticate(account.name,
-			// password);
+			final String authToken = "sdfdsaf";
 			if (!TextUtils.isEmpty(authToken)) {
 				final Bundle result = new Bundle();
 				result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);

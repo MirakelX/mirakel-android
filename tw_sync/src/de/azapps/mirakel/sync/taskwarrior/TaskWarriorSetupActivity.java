@@ -55,6 +55,8 @@ import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 
 public class TaskWarriorSetupActivity extends Activity {
+	private final static String TAG = "TaskWarriorSetupActivity";
+
 	private class DownloadTask extends AsyncTask<URL, Integer, Integer> {
 		private final static String TAG = "DownloadTask";
 		private final Exec pre, progress, post;
@@ -83,7 +85,7 @@ public class TaskWarriorSetupActivity extends Activity {
 				setupTaskWarrior(connection.getInputStream(), false);
 
 			} catch (final Exception e) {
-				Log.e(TAG, Log.getStackTraceString(e));
+				Log.e(TAG, "Could not download config", e);
 				return RESULT_ERROR;
 			}
 
@@ -115,7 +117,7 @@ public class TaskWarriorSetupActivity extends Activity {
 	private static final Integer RESULT_ERROR = 0;
 	protected static final Integer RESULT_SUCCESS = 1;
 
-	private final int CONFIG_QR = 0, CONFIG_TASKWARRIOR = 1;
+	private static final int CONFIG_QR = 0, CONFIG_TASKWARRIOR = 1;
 
 	private AccountManager mAccountManager;
 
@@ -139,8 +141,7 @@ public class TaskWarriorSetupActivity extends Activity {
 				stream = FileUtils.getStreamFromUri(this, data.getData());
 				setupTaskWarrior(stream, true);
 			} catch (final FileNotFoundException e) {
-				ErrorReporter.report(ErrorType.TASKWARRIOR_FILE_NOT_FOUND);
-			} catch (final IOException e) {
+				Log.e(TAG, "File not found", e);
 				ErrorReporter.report(ErrorType.TASKWARRIOR_FILE_NOT_FOUND);
 			}
 			break;
@@ -166,7 +167,7 @@ public class TaskWarriorSetupActivity extends Activity {
 							"com.google.zxing.client.android.SCAN");
 					intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
 					startActivityForResult(intent,
-							TaskWarriorSetupActivity.this.CONFIG_QR);
+							TaskWarriorSetupActivity.CONFIG_QR);
 				} catch (final Exception e) {
 					new AlertDialog.Builder(TaskWarriorSetupActivity.this)
 							.setTitle(R.string.no_barcode_app)
@@ -197,7 +198,7 @@ public class TaskWarriorSetupActivity extends Activity {
 			@Override
 			public void onClick(final View v) {
 				Helpers.showFileChooser(
-						TaskWarriorSetupActivity.this.CONFIG_TASKWARRIOR,
+						TaskWarriorSetupActivity.CONFIG_TASKWARRIOR,
 						getString(R.string.select_config), that);
 
 			}
@@ -283,8 +284,10 @@ public class TaskWarriorSetupActivity extends Activity {
 					Toast.LENGTH_LONG).show();
 			finish();
 		} catch (final IOException e) {
+			Log.e(TAG, "IOException", e);
 			ErrorReporter.report(ErrorType.TASKWARRIOR_FILE_NOT_FOUND);
 		} catch (final ParseException e) {
+			Log.e(TAG, "ParseException", e);
 			if (showToast) {
 				Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
 			}
@@ -297,6 +300,7 @@ public class TaskWarriorSetupActivity extends Activity {
 		try {
 			values = parseTWFile(stream);
 		} catch (final IOException e) {
+			Log.e(TAG, "IOException", e);
 			throw new ParseException(getString(R.string.config_404));
 		}
 

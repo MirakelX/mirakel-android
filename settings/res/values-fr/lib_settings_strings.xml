@@ -18,7 +18,7 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="sync_add">Ajouter un compte</string>
   <string name="sync_title">Synchronisation</string>
   <string name="sync_new">Nouveau compte</string>
@@ -35,7 +35,12 @@
   <string name="sync_frequency">Fréquence</string>
   <string name="sync_frequency_summary">Synchroniser toutes les %s min</string>
   <string name="sync_frequency_summary_man">Ne synchroniser que manuellement</string>
+  <string-array name="sync_types">
+    <item>CalDAV sync</item>
+    <item>Taskwarrior sync</item>
+  </string-array>
   <string name="sync_caldav">CalDAV sync</string>
+  <string name="download">Télécharger</string>
   <string name="sync_add_account">Ajouter un compte</string>
   <string name="sync_taskwarrior_configure">Configurer Taskwarrior</string>
   <string name="sync_taskwarrior_scan_qr">Scanner le code QR</string>
@@ -61,7 +66,7 @@
   <string name="not">Ne pas</string>
   <string name="notification_title">Notifications</string>
   <string name="notifications_use">Utiliser les notifications</string>
-  <string name="notifications_persistent">Notifications persistantes</string>
+  <string name="notifications_persistent">Notifications permanentes</string>
   <string name="notifications_list">Afficher la liste</string>
   <string name="notifications_list_summary">Afficher \"%s\"</string>
   <string name="notifications_list_open">Liste à ouvrir</string>
@@ -70,7 +75,7 @@
   <string name="notifications_big">Afficher les grandes notifications</string>
   <string name="notifications_zero_show">Cacher la notification si elle est vide</string>
   <string name="reminder">Rappel</string>
-  <string name="reminders_persistent">Rappel persistant</string>
+  <string name="reminders_persistent">Rappel permanent</string>
   <string name="startup_title">Démarrage de l\'application</string>
   <string name="startup_show_lists">Afficher toutes les listes</string>
   <string name="startup_show_lists_summary">Afficher toutes les listes au démarrage</string>
@@ -108,23 +113,29 @@
   <string name="import_wunderlist_title">Sélectionnez le fichier Wunderlist</string>
   <string name="import_wunderlist_howto">Importation de Wunderlist</string>
   <string name="highlightSelected_summary">Mettre en surbrillance les listes/tâches quand vous cliquez dessus</string>
-  <string name="highlightSelected">Mise en surbrillance sélectionnée</string>
+  <string name="highlightSelected">Mise en surbrillance la sélection</string>
   <string name="settings_date_format_relative_summary">Par exemple \"demain\" au lieu de la date réelle</string>
   <string name="showDone">Afficher les tâches finies</string>
   <string name="dark_theme">Thème sombre</string>
   <string name="kill_button">Bouton tuer</string>
   <string name="kill_app">Fermer l\'application</string>
   <string name="kill_sure">Êtes-vous vraiment sûr ???</string>
-  <string name="kill_sure_message">Quand vous fermez l\'application, vous ne recevez plus de rappels! Veuillez envisager de seulement désactiver les notifications (ou les rendre non-persistantes, que vous puissiez les effacer.)</string>
+  <string name="kill_sure_message">Quand vous fermez l\'application, vous recevez aucun rappels! Veuillez envisager de seulement désactiver les notifications (ou les rendre non-permanentes, que vous puissiez les effacer).</string>
   <string name="ui_settings_title">Interface utilisateur</string>
   <string name="hide_keyboard">Cacher le clavier</string>
   <string name="hide_keyboard_summary">Cacher le clavier quand la nouvelle tâche est en cours de création</string>
   <string name="undo_number">Nombre de modifications enregistrées</string>
   <string name="undo_number_summary">Annuler les %s modifications</string>
-  <string name="semantic_new_task_config_summary">Configurer les conditions de création de nouvelles tâches</string>
+  <string name="semantic_new_task_config_summary">Configurer les pré-requis pour la création de nouvelles tâches</string>
   <string name="general">Général</string>
   <string name="do_not_touch">Ne touchez pas</string>
   <string name="show_account_name">Afficher le nom du compte</string>
+  <string-array name="tablet_options">
+    <item>jamais</item>
+    <item>paysage</item>
+    <item>portrait</item>
+    <item>portrait &amp; landscape</item>
+  </string-array>
   <string name="delete_done">Supprimer les tâches finies</string>
   <string name="delete_done_summary">Supprimer toutes les tâches finies</string>
   <string name="delete_done_warning">Êtes-vous sûr ?</string>
@@ -133,6 +144,7 @@
   <string name="menu_color">Changer de couleur</string>
   <string name="howto_setup_server">Comment configurer le serveur</string>
   <string name="register">S\'enregistrer</string>
+  <string name="auto_backup_interval">Période de la sauvegarde automatique</string>
   <string name="preferences_colorize">Couleurs</string>
   <string name="preferences_colorize_tasks">Coloriser les tâches</string>
   <string name="preferences_colorize_tasks_everywhere">Coloriser les tâches partout</string>
@@ -140,9 +152,40 @@
   <string name="settings_semantics_actions">Actions</string>
   <string name="settings_semantics_list">Liste figurante</string>
   <string name="settings_semantics_priority">Régler la priorité</string>
+  <string-array name="weekdays">
+    <item>Don\'t set</item>
+    <item>Lundi</item>
+    <item>Mardi</item>
+    <item>Mercredi</item>
+    <item>Jeudi</item>
+    <item>Vendredi</item>
+    <item>Samedi</item>
+    <item>Dimanche</item>
+  </string-array>
+  <string-array name="priority_entries">
+    <item>Do not set priority</item>
+    <item>-2</item>
+    <item>-1</item>
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+  </string-array>
+  <string-array name="priority_entry_values">
+    <item>null</item>
+    <item>-2</item>
+    <item>-1</item>
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+  </string-array>
   <string name="settings_file_default_title">Nom de la tâche pour les fichiers importés</string>
   <string name="semantic_new">Modèle</string>
+  <string name="tag_new">Nouvelle étiquette</string>
+  <string name="tag_settings">Configuration des étiquettes</string>
+  <string name="color">Couleur</string>
   <string name="tag_name">Nom</string>
+  <string name="tag_dark_text">Est-ce-que le texte doit être noir ?</string>
+  <string name="tag_click">Étiquettes</string>
   <string name="settings_subtask">Tâches subordonnées</string>
   <string name="settings_subtask_default_new">Voir la nouvelle tâche par défaut</string>
   <string name="settings_subtask_add_to_same_list">Ajouter tâche subordonnée à la liste de la tâche</string>
@@ -170,50 +213,44 @@
   <string name="action_credits">Remerciements</string>
   <string name="action_credits_summary">À propos de nous ;)</string>
   <string name="title_activity_credits">Remerciements et à propos</string>
-  <string name="credits_github_description">Nous fourche sur github</string>
+  <string name="credits_github_description">Contribuer sur github</string>
   <string name="credits_googleplus_description">Rejoignez notre communauté G +</string>
+  <string name="credits_text_head">
+<![CDATA[
+<h3>Mirakel est un open source, merci de contribuer à son dévelopement via GitHub.</h3>
+<p>&copy; 2013 <a href="mailto:az@azapps.de">Anatolij Zelenin</a>, <a href="mailto:georg_semmler_05@web.de">Georg Semmler</a></p>
+<p>Icônes et interface graphique conçues par <a href="http://alexkaessner.de/>Alexander Käßner</a></p>
+<p>Ce logiciel est gratuit (licence <a href="https://www.gnu.org/licenses/gpl.html">GPLv3</a>).</p>
+<p>Accédez à notre site internet</p>
+]]>
+    </string>
+  <string name="credits_license">
+<![CDATA[<p>Ce programme est un logiciel libre: vous pouvez le redistribuer et/ou le modifier sous les termes de la licence <a href="https://www.gnu.org/licenses/gpl.html">GNU General Public License</a>. Cette licence est publiée par "Free Software Foundation" et doit être sous version 3 ou supérieure.</p>
+<p>Ce programme est diffusé en espérant qu\'il réponde à vos besoins au quotidien, mais SANS AUCUNE GARANTIE sur son fonctionnement. Nous nous dégageons de toute responsabilité directe ou indirecte dans l\'utilisation qui est fait de notre programme.  Voir la licence "GNU General Public License" pour plus d\'informations.</p>]]>
+    </string>
   <string name="credits_translations">Traductions</string>
   <string name="feedback">Envoyez vos commentaires</string>
   <string name="credits_libraries">Bibliothèques utilisées</string>
   <string name="credits_license_title">Licence</string>
   <string name="demo_mode">Mode démo</string>
+  <string name="demo_drop_db">Réinitialiser la base de donnée de démonstration</string>
   <string name="write_logs_to_file">Écrire des journaux de déposer</string>
+  <string name="alert_caldav"><![CDATA[La synchronisation avec CalDAV n\'est pas complètement stable. Merci de l\'utiliser avec précaution et de nous informer des éventuelles bogues.]]></string>
+  <string name="alert_caldav_title">Informations pour CalDAV</string>
+  <string name="alert_taskwarrior"><![CDATA[La resynchronisation avec Taskwarrior semble fonctioner mais il est fortement recommandé de faire une sauvegarde de vos donnée. Merci de nous signaler les éventuelles erreurs et bogues pour que nous puissions les corriger.]]></string>
+  <string name="alert_taskwarrior_title">Information pour Taskwarrior</string>
   <string name="special_list_where_subtask_title_text">Tâches subordonnées</string>
+  <string name="special_list_where_tag_title_text">Étiquettes</string>
   <string name="special_list_where_progress_title_text">Progrès</string>
-  <string-array name="sync_types">
-    <item>CalDAV sync</item>
-    <item>Taskwarrior sync</item>
+  <string name="special_list_where_file_title_text">Fichier</string>
+  <string-array name="special_lists_subtask_options">
+    <item>Inverser la sélection</item>
+    <item>Chercher des tâches contenant des sous-tâches ou qui sont des sous-tâches</item>
   </string-array>
-  <string-array name="tablet_options">
-    <item>jamais</item>
-    <item>paysage</item>
-    <item>portrait</item>
-    <item>portrait &amp; landscape</item>
+  <string-array name="file_choice">
+    <item>Pas configuré</item>
+    <item>A un fichier</item>
+    <item>N\'a pas de fichier</item>
   </string-array>
-  <string-array name="weekdays">
-    <item>Don\'t set</item>
-    <item>Lundi</item>
-    <item>Mardi</item>
-    <item>Mercredi</item>
-    <item>Jeudi</item>
-    <item>Vendredi</item>
-    <item>Samedi</item>
-    <item>Dimanche</item>
-  </string-array>
-  <string-array name="priority_entries">
-    <item>Do not set priority</item>
-    <item>-2</item>
-    <item>-1</item>
-    <item>0</item>
-    <item>1</item>
-    <item>2</item>
-  </string-array>
-  <string-array name="priority_entry_values">
-    <item>null</item>
-    <item>-2</item>
-    <item>-1</item>
-    <item>0</item>
-    <item>1</item>
-    <item>2</item>
-  </string-array>
+  <string name="remove">Enlever</string>
 </resources>

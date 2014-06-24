@@ -28,6 +28,7 @@ import org.acra.annotation.ReportsCrashes;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Looper;
@@ -75,32 +76,8 @@ public class Mirakel extends Application {
 	public void onCreate() {
 		super.onCreate();
 
-		// This we have to initialize as early as possible
-		DefinitionsHelper.init(this);
-		MirakelPreferences.init(this);
-		ErrorReporter.init(getApplicationContext());
-		MirakelContentProvider.init(getBaseContext());
-
-		final Locale locale = Helpers.getLocal(this);
-		Locale.setDefault(locale);
-		BuildHelper
-				.setPlaystore(getResources().getBoolean(R.bool.is_playstore));
-
-		final Configuration config = new Configuration();
-		config.locale = locale;
-		getBaseContext().getResources().updateConfiguration(config,
-				getBaseContext().getResources().getDisplayMetrics());
-
-		// Initialize Models
-
-		ListMirakel.init(this);
-		Task.init(this);
-		SpecialList.init(this);
-		FileMirakel.init(this);
-		Semantic.init(this);
-		Recurring.init(this);
-		AccountMirakel.init(this);
-		Tag.init(this);
+		init(this);
+		NotificationService.updateServices(this, true);
 
 		// And now, after the Database initialization!!! We init ACRA
 		ACRA.init(this);
@@ -137,9 +114,37 @@ public class Mirakel extends Application {
 
 	}
 
-	@Override
-	public void onTerminate() {
-		super.onTerminate();
+	public static void init(final Context ctx) {
+		// This we have to initialize as early as possible
+
+		DefinitionsHelper.init(ctx);
+		MirakelPreferences.init(ctx);
+		ErrorReporter.init(ctx);
+		MirakelContentProvider.init(ctx);
+
+		final Locale locale = Helpers.getLocal(ctx);
+		Locale.setDefault(locale);
+		BuildHelper.setPlaystore(ctx.getResources().getBoolean(
+				R.bool.is_playstore));
+
+		final Configuration config = new Configuration();
+		config.locale = locale;
+		ctx.getResources().updateConfiguration(config,
+				ctx.getResources().getDisplayMetrics());
+
+		// Initialize Models
+		ListMirakel.init(ctx);
+		Task.init(ctx);
+		SpecialList.init(ctx);
+		FileMirakel.init(ctx);
+		Semantic.init(ctx);
+		Recurring.init(ctx);
+		AccountMirakel.init(ctx);
+		Tag.init(ctx);
+
+	}
+
+	public static void terminate() {
 		ListMirakel.close();
 		Task.close();
 		SpecialList.close();
@@ -147,5 +152,12 @@ public class Mirakel extends Application {
 		Semantic.close();
 		Recurring.close();
 		AccountMirakel.close();
+		Tag.close();
+	}
+
+	@Override
+	public void onTerminate() {
+		super.onTerminate();
+		terminate();
 	}
 }

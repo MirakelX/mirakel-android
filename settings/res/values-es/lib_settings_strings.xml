@@ -18,7 +18,7 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="sync_add">Agregar cuenta</string>
   <string name="sync_title">Sincronizar</string>
   <string name="sync_new">Nueva cuenta</string>
@@ -32,8 +32,11 @@
   <string name="sync_server_summary">Sincronizar con %s</string>
   <string name="sync_frequency">Frecuencia</string>
   <string name="sync_frequency_summary_man">Sincronizar solo manualmente</string>
+  <string-array name="sync_types">
+    <item>Sincronización CalDav</item>
+    <item>Sincronización de Taskwarrior</item>
+  </string-array>
   <string name="sync_caldav">Sincronización CalDav</string>
-  <string name="sync_caldav_howto"> </string>
   <string name="sync_add_account">Agregar cuenta</string>
   <string name="sync_taskwarrior_configure">Configurar Taskwarrior</string>
   <string name="sync_taskwarrior_register_button">Registrar</string>
@@ -76,10 +79,15 @@
   <string name="ui_settings_title">Interfaz de usuario</string>
   <string name="settings_semantic">Plantillas de tareas</string>
   <string name="semantic_new_task">Nueva plantilla de tareas</string>
-  <string name="semantic_new_task_summary"> </string>
   <string name="general">General</string>
   <string name="task_fragment">Detalles de la tarea</string>
   <string name="do_not_touch">No tocar</string>
+  <string-array name="tablet_options">
+    <item>Nunca</item>
+    <item>paisaje</item>
+    <item>Retrato</item>
+    <item>Retrato &amp; paisaje</item>
+  </string-array>
   <string name="delete_done">Delete done tasks</string>
   <string name="delete_done_summary">Delete all done tasks</string>
   <string name="delete_done_warning">¿Estás seguro?</string>
@@ -90,35 +98,6 @@
   <string name="settings_semantics_condition">Condición</string>
   <string name="settings_semantics_due">Establecer fecha de vencimiento</string>
   <string name="settings_semantics_weekday">Establecer vencimiento en la semana que viene</string>
-  <string name="semantics_no_list">No establecer lista</string>
-  <string name="semantic_new">Plantilla</string>
-  <string name="tag_name">Nombre</string>
-  <string name="settings_subtask">Subtareas</string>
-  <string name="settings_subtask_add_to_same_list_summary">O selecciona la lista por defecto, cuando la subtarea se añada</string>
-  <string name="settings_tasks_title">Tareas</string>
-  <string name="settings_dev_sync">Sincronizar</string>
-  <string name="title_donations">Dona</string>
-  <string name="add">Agregar</string>
-  <string name="action_credits">Créditos</string>
-  <string name="action_credits_summary">Acerca de nosotros ;)</string>
-  <string name="title_activity_credits">Créditos y acerca de</string>
-  <string name="credits_googleplus_description">Únete a nuestra comunidad G+</string>
-  <string name="credits_translations">Traducciones</string>
-  <string name="feedback">Enviar comentario</string>
-  <string name="credits_libraries">Bibliotecas usadas</string>
-  <string name="credits_license_title">Licencia</string>
-  <string name="special_list_where_subtask_title_text">Subtareas</string>
-  <string name="special_list_where_progress_title_text">Progreso</string>
-  <string-array name="sync_types">
-    <item>Sincronización CalDav</item>
-    <item>Sincronización de Taskwarrior</item>
-  </string-array>
-  <string-array name="tablet_options">
-    <item>Nunca</item>
-    <item>paisaje</item>
-    <item>Retrato</item>
-    <item>Retrato &amp; paisaje</item>
-  </string-array>
   <string-array name="weekdays">
     <item>Sin establecer</item>
     <item>Lunes</item>
@@ -145,4 +124,23 @@
     <item>1</item>
     <item>2</item>
   </string-array>
+  <string name="semantics_no_list">No establecer lista</string>
+  <string name="semantic_new">Plantilla</string>
+  <string name="tag_name">Nombre</string>
+  <string name="settings_subtask">Subtareas</string>
+  <string name="settings_subtask_add_to_same_list_summary">O selecciona la lista por defecto, cuando la subtarea se añada</string>
+  <string name="settings_tasks_title">Tareas</string>
+  <string name="settings_dev_sync">Sincronizar</string>
+  <string name="title_donations">Dona</string>
+  <string name="add">Agregar</string>
+  <string name="action_credits">Créditos</string>
+  <string name="action_credits_summary">Acerca de nosotros ;)</string>
+  <string name="title_activity_credits">Créditos y acerca de</string>
+  <string name="credits_googleplus_description">Únete a nuestra comunidad G+</string>
+  <string name="credits_translations">Traducciones</string>
+  <string name="feedback">Enviar comentario</string>
+  <string name="credits_libraries">Bibliotecas usadas</string>
+  <string name="credits_license_title">Licencia</string>
+  <string name="special_list_where_subtask_title_text">Subtareas</string>
+  <string name="special_list_where_progress_title_text">Progreso</string>
 </resources>

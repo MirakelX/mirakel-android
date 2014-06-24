@@ -171,10 +171,9 @@ public class SettingsActivity extends PreferenceActivity {
 						Toast.makeText(SettingsActivity.this,
 								R.string.astrid_success, Toast.LENGTH_SHORT)
 								.show();
+						// ugly but simple
 						android.os.Process.killProcess(android.os.Process
-								.myPid()); // ugly
-						// but
-						// simple
+								.myPid());
 					}
 				}
 
@@ -235,7 +234,6 @@ public class SettingsActivity extends PreferenceActivity {
 		if (this.darkTheme) {
 			setTheme(R.style.AppBaseThemeDARK);
 		}
-		// Locale.setDefault(Helpers.getLocal());
 		super.onCreate(savedInstanceState);
 		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
 
@@ -246,62 +244,66 @@ public class SettingsActivity extends PreferenceActivity {
 			} else {
 				if (i.getAction() == null) {
 					addPreferencesFromResource(R.xml.settings_v10);
-				} else if (i.getAction().equals(
-						"de.azapps.mirakel.preferences.NOTIFICATION")) {
-					addPreferencesFromResource(R.xml.settings_notifications);
-				} else if (i.getAction().equals(
-						"de.azapps.mirakel.preferences.GUI")) {
-					addPreferencesFromResource(R.xml.settings_gui);
-				} else if (i.getAction().equals(
-						"de.azapps.mirakel.preferences.TASKS")) {
-					addPreferencesFromResource(R.xml.settings_tasks);
-				} else if (i.getAction().equals(
-						"de.azapps.mirakel.preferences.ABOUT")) {
-					addPreferencesFromResource(R.xml.settings_about);
-				} else if (i.getAction().equals(
-						"de.azapps.mirakel.preferences.HELP")) {
-					Helpers.openHelp(this);
-					finish();
-				} else if (i.getAction().equals(
-						"de.azapps.mirakel.preferences.DONATE")) {
-					startActivityForResult(new Intent(this,
-							DonationsActivity.class), DONATE);
-					if (!MirakelCommonPreferences.isTablet()) {
-						finish();
-					}
-				} else if (i.getAction().equals(
-						"de.azapps.mirakel.preferences.MISC")) {
-					addPreferencesFromResource(R.xml.settings_misc);
-				} else if (i.getAction().equals(
-						"de.azapps.mirakel.preferences.BACKUP")) {
-					addPreferencesFromResource(R.xml.settings_backup);
-				} else if (i.getAction().equals(
-						"de.azapps.mirakel.preferences.ACCOUNTS")) {
-					startActivity(new Intent(this,
-							AccountSettingsActivity.class));
-					if (!MirakelCommonPreferences.isTablet()) {
-						finish();
-					} else {
-						addPreferencesFromResource(R.xml.settings_notifications);
-					}
-				} else if (i.getAction().equals(
-						"de.azapps.mirakel.preferences.SPECIAL_LISTS")) {
-					startActivity(new Intent(this,
-							SpecialListsSettingsActivity.class));
-					if (!MirakelCommonPreferences.isTablet()) {
-						finish();
-					}
-				} else if (i.getAction().equals(
-						"de.azapps.mirakel.preferences.TAG")) {
-					startActivity(new Intent(this, TagsSettingsActivity.class));
-					if (!MirakelCommonPreferences.isTablet()) {
-						finish();
-					}
-				} else if (i.getAction().equals(
-						"de.azapps.mirakel.preferences.DEV")) {
-					addPreferencesFromResource(R.xml.settings_dev);
 				} else {
-					Log.wtf(TAG, "unkown Preference");
+					switch (i.getAction()) {
+					case "de.azapps.mirakel.preferences.NOTIFICATION":
+						addPreferencesFromResource(R.xml.settings_notifications);
+						break;
+					case "de.azapps.mirakel.preferences.GUI":
+						addPreferencesFromResource(R.xml.settings_gui);
+						break;
+					case "de.azapps.mirakel.preferences.TASKS":
+						addPreferencesFromResource(R.xml.settings_tasks);
+						break;
+					case "de.azapps.mirakel.preferences.ABOUT":
+						addPreferencesFromResource(R.xml.settings_about);
+						break;
+					case "de.azapps.mirakel.preferences.HELP":
+						Helpers.openHelp(this);
+						finish();
+						break;
+					case "de.azapps.mirakel.preferences.DONATE":
+						startActivityForResult(new Intent(this,
+								DonationsActivity.class), DONATE);
+						if (!MirakelCommonPreferences.isTablet()) {
+							finish();
+						}
+						break;
+					case "de.azapps.mirakel.preferences.MISC":
+						addPreferencesFromResource(R.xml.settings_misc);
+						break;
+					case "de.azapps.mirakel.preferences.BACKUP":
+						addPreferencesFromResource(R.xml.settings_backup);
+						break;
+					case "de.azapps.mirakel.preferences.ACCOUNTS":
+						startActivity(new Intent(this,
+								AccountSettingsActivity.class));
+						if (!MirakelCommonPreferences.isTablet()) {
+							finish();
+						} else {
+							addPreferencesFromResource(R.xml.settings_notifications);
+						}
+						break;
+					case "de.azapps.mirakel.preferences.SPECIAL_LISTS":
+						startActivity(new Intent(this,
+								SpecialListsSettingsActivity.class));
+						if (!MirakelCommonPreferences.isTablet()) {
+							finish();
+						}
+						break;
+					case "de.azapps.mirakel.preferences.TAG":
+						startActivity(new Intent(this,
+								TagsSettingsActivity.class));
+						if (!MirakelCommonPreferences.isTablet()) {
+							finish();
+						}
+						break;
+					case "de.azapps.mirakel.preferences.DEV":
+						addPreferencesFromResource(R.xml.settings_dev);
+						break;
+					default:
+						Log.wtf(TAG, "unkown Preference");
+					}
 				}
 			}
 			new PreferencesAppHelper(this).setFunctionsApp();
@@ -323,29 +325,6 @@ public class SettingsActivity extends PreferenceActivity {
 		Log.d(TAG, "Menu");
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			// if(getParent()!=null){
-			// final Switch s = (Switch) findViewById(R.id.switchWidget);
-			// final Activity a = this;
-			// if (s != null) {
-			// // need to reset onchangelistner else valuechange will triger
-			// // event
-			// s.setOnCheckedChangeListener(null);
-			// s.setChecked(MirakelPreferences.useSync());
-			// s.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			//
-			// @Override
-			// public void onCheckedChanged(CompoundButton buttonView,
-			// boolean isChecked) {
-			// PreferencesHelper.createAuthActivity(isChecked, a, s,
-			// false);
-			// }
-			// });
-			// } else {
-			// Log.d(TAG, "switch not found");
-			// }
-			// }else{
-			// Log.d(TAG,"Parent=null");
-			// }
 			finish();
 			return true;
 		default:

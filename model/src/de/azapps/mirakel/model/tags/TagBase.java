@@ -34,26 +34,26 @@ class TagBase {
 	// Color as specified in android.graphics.Color
 	private int backgroundColor;
 	private String name;
-	private int _id;
+	private int id;
 
-	public TagBase(final int id, final boolean isDarkBackground,
-			final int backColor, final String name) {
+	public TagBase(final int id, final boolean dark, final int backColor,
+			final String name) {
 		setName(name);
 		setId(id);
 		setBackgroundColor(backColor);
-		setDarkText(isDarkBackground);
+		setDarkText(dark);
 	}
 
 	public ContentValues getContentValues() {
 		final ContentValues cv = new ContentValues();
 
-		cv.put(DatabaseHelper.ID, this._id);
+		cv.put(DatabaseHelper.ID, this.id);
 		cv.put(DatabaseHelper.NAME, this.name);
-		cv.put(this.DARK_TEXT, this.isDarkText);
-		cv.put(this.BACKGROUND_COLOR_R, Color.red(this.backgroundColor));
-		cv.put(this.BACKGROUND_COLOR_G, Color.green(this.backgroundColor));
-		cv.put(this.BACKGROUND_COLOR_B, Color.blue(this.backgroundColor));
-		cv.put(this.BACKGROUND_COLOR_A, Color.alpha(this.backgroundColor));
+		cv.put(TagBase.DARK_TEXT, this.isDarkText);
+		cv.put(TagBase.BACKGROUND_COLOR_R, Color.red(this.backgroundColor));
+		cv.put(TagBase.BACKGROUND_COLOR_G, Color.green(this.backgroundColor));
+		cv.put(TagBase.BACKGROUND_COLOR_B, Color.blue(this.backgroundColor));
+		cv.put(TagBase.BACKGROUND_COLOR_A, Color.alpha(this.backgroundColor));
 		return cv;
 	}
 
@@ -74,11 +74,11 @@ class TagBase {
 	}
 
 	public int getId() {
-		return this._id;
+		return this.id;
 	}
 
-	public void setId(final int _id) {
-		this._id = _id;
+	protected void setId(final int id) {
+		this.id = id;
 	}
 
 	public String getName() {
@@ -87,6 +87,49 @@ class TagBase {
 
 	public void setName(final String name) {
 		this.name = name;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + this.id;
+		result = prime * result + this.backgroundColor;
+		result = prime * result + (this.isDarkText ? 1231 : 1237);
+		result = prime * result
+				+ (this.name == null ? 0 : this.name.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof TagBase)) {
+			return false;
+		}
+		final TagBase other = (TagBase) obj;
+		if (this.id != other.id) {
+			return false;
+		}
+		if (this.backgroundColor != other.backgroundColor) {
+			return false;
+		}
+		if (this.isDarkText != other.isDarkText) {
+			return false;
+		}
+		if (this.name == null) {
+			if (other.name != null) {
+				return false;
+			}
+		} else if (!this.name.equals(other.name)) {
+			return false;
+		}
+		return true;
 	}
 
 }

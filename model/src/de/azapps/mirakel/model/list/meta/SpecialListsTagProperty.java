@@ -24,7 +24,6 @@ import android.content.Context;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.tags.Tag;
-import de.azapps.mirakel.model.task.Task;
 
 public class SpecialListsTagProperty extends SpecialListsSetProperty {
 
@@ -42,7 +41,7 @@ public class SpecialListsTagProperty extends SpecialListsSetProperty {
 	public String getWhereQuery() {
 		String query = this.isNegated ? " NOT " : "";
 		query += DatabaseHelper.ID + " IN (";
-		query += "SELECT task_id FROM " + Task.TAG_CONNECTION_TABLE;
+		query += "SELECT task_id FROM " + Tag.TAG_CONNECTION_TABLE;
 		query += " WHERE tag_id IN(";
 		query = addContent(query);
 		return query + "))";

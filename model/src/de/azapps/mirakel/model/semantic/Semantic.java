@@ -14,6 +14,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -54,7 +55,7 @@ public class Semantic extends SemanticBase {
 			final boolean useSemantic, final Context context) {
 		GregorianCalendar due = null;
 		int prio = 0;
-		if (currentList != null && currentList.isSpecialList()) {
+		if (currentList != null && currentList.isSpecial()) {
 			try {
 				final SpecialList slist = (SpecialList) currentList;
 				currentList = slist.getDefaultList();
@@ -123,9 +124,17 @@ public class Semantic extends SemanticBase {
 						tempdue.add(Calendar.DAY_OF_YEAR, 1);
 					} while (tempdue.get(Calendar.DAY_OF_WEEK) != nextWeekday);
 					due = tempdue;
+
 				}
 				taskName = taskName.substring(word.length()).trim();
 				words.remove(0);
+			}
+			if (due != null) {
+				due.set(Calendar.HOUR_OF_DAY, 0);
+				due.set(Calendar.MINUTE, 0);
+				due.set(Calendar.SECOND, 0);
+				due.add(Calendar.SECOND,
+						DateTimeHelper.getTimeZoneOffset(false, due));
 			}
 		}
 		if (currentList == null) {
@@ -148,7 +157,7 @@ public class Semantic extends SemanticBase {
 		}
 		ListMirakel list = null;
 		if (!c.isNull(4)) {
-			list = ListMirakel.getList(c.getInt(4));
+			list = ListMirakel.get(c.getInt(4));
 		}
 		Integer weekday = null;
 		if (!c.isNull(5)) {
@@ -199,6 +208,16 @@ public class Semantic extends SemanticBase {
 	public static void init(final Context context) {
 		dbHelper = new DatabaseHelper(context);
 		database = dbHelper.getWritableDatabase();
+		initAll();
+	}
+
+	/**
+	 * CALL THIS ONLY FROM DBHelper
+	 * 
+	 * @param db
+	 */
+	public static void setDB(final SQLiteDatabase db) {
+		database = db;
 		initAll();
 	}
 

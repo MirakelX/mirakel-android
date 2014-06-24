@@ -18,7 +18,7 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="sync_title">Синхронизация</string>
   <string name="sync_use">Применить синхронизацию</string>
   <string name="sync_warning">Синхронизация ещё нестабильная</string>
@@ -91,6 +91,22 @@
   <string name="settings_semantics_condition">Состояние</string>
   <string name="settings_semantics_actions">Действия</string>
   <string name="settings_semantics_due">Установить срок</string>
+  <string-array name="priority_entries">
+    <item>Не задавайте приоритет</item>
+    <item>-2</item>
+    <item>-1</item>
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+  </string-array>
+  <string-array name="priority_entry_values">
+    <item>null</item>
+    <item>-2</item>
+    <item>-1</item>
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+  </string-array>
   <string name="semantics_no_list">Не задавайте список</string>
   <string name="semantics_no_due">Не устанавливайте срок</string>
   <string name="settings_file_default_title">Название дела для импортированных файлов</string>
@@ -109,20 +125,4 @@
   <string name="credits_libraries">Задействованные сторонние компоненты</string>
   <string name="credits_license_title">Условия использования</string>
   <string name="special_list_where_subtask_title_text">Подзадачи</string>
-  <string-array name="priority_entries">
-    <item>Не задавайте приоритет</item>
-    <item>-2</item>
-    <item>-1</item>
-    <item>0</item>
-    <item>1</item>
-    <item>2</item>
-  </string-array>
-  <string-array name="priority_entry_values">
-    <item>null</item>
-    <item>-2</item>
-    <item>-1</item>
-    <item>0</item>
-    <item>1</item>
-    <item>2</item>
-  </string-array>
 </resources>

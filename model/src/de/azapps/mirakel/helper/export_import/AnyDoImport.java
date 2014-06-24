@@ -64,8 +64,8 @@ public class AnyDoImport {
 		try {
 			i = new JsonParser().parse(new InputStreamReader(stream))
 					.getAsJsonObject();
-		} catch (final JsonSyntaxException e2) {
-			Log.e(TAG, "malformed backup");
+		} catch (final JsonSyntaxException e) {
+			Log.e(TAG, "malformed backup", e);
 			return false;
 		}
 		final Set<Entry<String, JsonElement>> f = i.entrySet();
@@ -100,7 +100,7 @@ public class AnyDoImport {
 			final String oldContent = t.getContent();
 			t.setContent(oldContent == null || oldContent.equals("") ? pair.second
 					: oldContent + "\n" + pair.second);
-			t.safeSave(false);
+			t.save(false);
 		}
 		return true;
 	}
@@ -140,7 +140,7 @@ public class AnyDoImport {
 									} catch (final FileNotFoundException e) {
 										ErrorReporter
 												.report(ErrorType.FILE_NOT_FOUND);
-										Log.wtf(TAG, "file vanished");
+										Log.wtf(TAG, "file vanished", e);
 										return;
 									}
 									android.os.Process
@@ -215,7 +215,7 @@ public class AnyDoImport {
 		}
 		final int list_id = jsonTask.get("categoryId").getAsInt();
 		final Task t = Task.newTask(name,
-				ListMirakel.getList(listMapping.get(list_id)));
+				ListMirakel.get(listMapping.get(list_id)));
 		taskMapping.put(jsonTask.get("id").getAsInt(), (int) t.getId());
 		if (jsonTask.has("dueDate")) {
 			final Calendar due = new GregorianCalendar();
@@ -288,7 +288,7 @@ public class AnyDoImport {
 
 			}
 		}
-		t.safeSave(false);
+		t.save(false);
 		return contents;
 	}
 

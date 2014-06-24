@@ -4,12 +4,12 @@ import android.content.ContentValues;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 
-public class AccountBase {
+class AccountBase {
 	public final static String TYPE = "type";
 	public final static String ENABLED = "enabled";
 	public static final String SYNC_KEY = "sync_key";
 
-	private int _id;
+	private int id;
 	private String name;
 	private int type;
 	private boolean enabled;
@@ -26,11 +26,11 @@ public class AccountBase {
 	}
 
 	public int getId() {
-		return this._id;
+		return this.id;
 	}
 
-	public void setId(final int _id) {
-		this._id = _id;
+	protected void setId(final int id) {
+		this.id = id;
 	}
 
 	public String getName() {
@@ -51,7 +51,7 @@ public class AccountBase {
 
 	public ContentValues getContentValues() {
 		final ContentValues cv = new ContentValues();
-		cv.put(DatabaseHelper.ID, this._id);
+		cv.put(DatabaseHelper.ID, this.id);
 		cv.put(DatabaseHelper.NAME, this.name);
 		cv.put(TYPE, this.type);
 		cv.put(ENABLED, this.enabled);
@@ -78,6 +78,58 @@ public class AccountBase {
 
 	public void setSyncKey(final String syncKey) {
 		this.syncKey = syncKey;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + this.id;
+		result = prime * result + (this.enabled ? 1231 : 1237);
+		result = prime * result
+				+ (this.name == null ? 0 : this.name.hashCode());
+		result = prime * result
+				+ (this.syncKey == null ? 0 : this.syncKey.hashCode());
+		result = prime * result + this.type;
+		return result;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof AccountBase)) {
+			return false;
+		}
+		final AccountBase other = (AccountBase) obj;
+		if (this.id != other.id) {
+			return false;
+		}
+		if (this.enabled != other.enabled) {
+			return false;
+		}
+		if (this.name == null) {
+			if (other.name != null) {
+				return false;
+			}
+		} else if (!this.name.equals(other.name)) {
+			return false;
+		}
+		if (this.syncKey == null) {
+			if (other.syncKey != null) {
+				return false;
+			}
+		} else if (!this.syncKey.equals(other.syncKey)) {
+			return false;
+		}
+		if (this.type != other.type) {
+			return false;
+		}
+		return true;
 	}
 
 }

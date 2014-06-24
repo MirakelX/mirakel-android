@@ -36,6 +36,7 @@ import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.tools.Log;
 
 public class NotificationService extends Service {
@@ -84,7 +85,7 @@ public class NotificationService extends Service {
 			openIntent = new Intent(this,
 					Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
 		} catch (final ClassNotFoundException e) {
-			Log.wtf(TAG, "mainactivity not found");
+			Log.wtf(TAG, "mainactivity not found", e);
 			return;
 		}
 		openIntent.setAction(DefinitionsHelper.SHOW_LIST);
@@ -95,7 +96,7 @@ public class NotificationService extends Service {
 				openIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		// Get the data
-		final ListMirakel todayList = ListMirakel.getList(listId);
+		final ListMirakel todayList = ListMirakel.get(listId);
 		if (todayList == null) {
 			return;
 		}
@@ -165,18 +166,23 @@ public class NotificationService extends Service {
 	}
 
 	/**
-	 * Update the Mirakel–Notifications
+	 * Update the Mirakel–Notifications, Reminders and the widgets
 	 * 
 	 * @param context
 	 */
-	public static void updateNotificationAndWidget(final Context context) {
+	public static void updateServices(final Context context,
+			final boolean updateReminder) {
+		// Reminder update
+		if (updateReminder) {
+			ReminderAlarm.updateAlarms(context);
+		}
 		// Widget update
 		Intent widgetIntent;
 		try {
 			widgetIntent = new Intent(context,
 					Class.forName(DefinitionsHelper.MAINWIDGET_CLASS));
 		} catch (final ClassNotFoundException e) {
-			Log.wtf(TAG, "widget not found");
+			Log.wtf(TAG, "widget not found", e);
 			return;
 		}
 		widgetIntent.setAction("android.appwidget.action.APPWIDGET_UPDATE");

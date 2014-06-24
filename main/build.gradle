@@ -1,17 +1,23 @@
 apply plugin: 'android'
 //apply plugin: 'hugo'
 apply plugin: 'eclipse'
+apply plugin: 'robolectric'
 
 
 
 android {
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
     packagingOptions {
             exclude 'META-INF/LICENSE.txt'
             exclude 'META-INF/NOTICE.txt'
+            exclude 'LICENSE.txt'
     }
-    flavorGroups "stores"
+    flavorDimensions "stores"
     lintOptions {
         disable 'MissingTranslation'
     }
@@ -28,7 +34,7 @@ android {
 
         androidTest.setRoot('tests')
         androidTest {
-            manifest.srcFile 'tests/AndroidManifest.xml'
+            manifest.srcFile 'AndroidManifest.xml'
             java { srcDirs = ['tests/src']}
             res.srcDirs = ['tests/res']
             assets.srcDirs = ['tests/assets']
@@ -37,7 +43,7 @@ android {
 
     }
     defaultConfig {
-            testPackageName "de.azapps.mirakelandroid.test"
+            testApplicationId "de.azapps.mirakelandroid.test"
             testInstrumentationRunner "android.test.InstrumentationTestRunner"
     }
     signingConfigs {
@@ -60,10 +66,10 @@ android {
     }
     productFlavors {
         google {
-            flavorGroup "stores"
+            flavorDimension "stores"
         }
         fdroid {
-            flavorGroup "stores"
+            flavorDimension "stores"
         }
     }
     android.sourceSets.google {
@@ -75,6 +81,7 @@ android {
         }
     }
 }
+
 
 dependencies {
     compile project(':model')
@@ -89,8 +96,9 @@ dependencies {
     compile project(':drag-sort-listview')
 
     //for tests
+    androidTestCompile files("$project.buildDir/classes/debug")
     androidTestCompile "com.jayway.android.robotium:robotium-solo:$robotiumVersion"
-//    androidTestCompile 'junit:junit:4.8'
+    androidTestCompile "junit:junit:$junitVersion"
 }
 
 

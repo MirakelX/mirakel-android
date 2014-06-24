@@ -18,7 +18,7 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="sync_add">Aggiungi account</string>
   <string name="sync_title">Sincronizzazione</string>
   <string name="sync_new">Nuovo account</string>
@@ -35,6 +35,10 @@
   <string name="sync_frequency">Frequenza</string>
   <string name="sync_frequency_summary">Sincronizza ogni %s min</string>
   <string name="sync_frequency_summary_man">Sincronizza solo manualmente</string>
+  <string-array name="sync_types">
+    <item>Sincronizzazione CalDAV</item>
+    <item>Sincronizzazione Taskwarrior</item>
+  </string-array>
   <string name="sync_caldav">Sincronizzazione CalDAV</string>
   <string name="sync_caldav_howto_">
 <![CDATA[È necessario configurare un\'applicazione compatibile con Mirakel e sincronizzabile con CalDAV. Per il momento è necessario installare la versione modificata di DAVdroid dalla nostra pagina web.<br /><br />
@@ -152,6 +156,12 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="do_not_touch">Non toccare</string>
   <string name="list_fragment">Panoramica degli elenchi</string>
   <string name="show_account_name">Mostra nome account</string>
+  <string-array name="tablet_options">
+    <item>Mai</item>
+    <item>Orizzontale</item>
+    <item>Verticale</item>
+    <item>Orizzontale e verticale</item>
+  </string-array>
   <string name="delete_done">Elimina attività completate</string>
   <string name="delete_done_summary">Elimina tutte le attività completate</string>
   <string name="delete_done_warning">Proseguire?</string>
@@ -175,11 +185,42 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="settings_semantics_priority">Imposta priorità</string>
   <string name="settings_semantics_due">Imposta data di scadenza</string>
   <string name="settings_semantics_weekday">Imposta la scadenza alla prossima settimana</string>
+  <string-array name="weekdays">
+    <item>Non impostare</item>
+    <item>Lunedi</item>
+    <item>Martedì</item>
+    <item>Mercoledì</item>
+    <item>Venerdì</item>
+    <item>Venerdì</item>
+    <item>Sabato</item>
+    <item>Domenica</item>
+  </string-array>
+  <string-array name="priority_entries">
+    <item>Non impostare priorità</item>
+    <item>-2</item>
+    <item>-1</item>
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+  </string-array>
+  <string-array name="priority_entry_values">
+    <item>Nullo</item>
+    <item>-2</item>
+    <item>-1</item>
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+  </string-array>
   <string name="semantics_no_list">Non impostare elenco</string>
   <string name="semantics_no_due">Non impostare data di scadenza</string>
   <string name="settings_file_default_title">Nome attività per file importati</string>
   <string name="semantic_new">Modello</string>
+  <string name="tag_new">Nuova etichetta</string>
+  <string name="tag_settings">Impostazioni etichette</string>
+  <string name="color">Colore</string>
   <string name="tag_name">Nome</string>
+  <string name="tag_dark_text">Usa colore nero per il testo</string>
+  <string name="tag_click">Etichette</string>
   <string name="settings_subtask">Attività secondarie</string>
   <string name="settings_subtask_default_new">Mostra nuove attività come predefinite</string>
   <string name="settings_subtask_add_to_same_list">Aggiungi attività secondaria all\'elenco delle attività</string>
@@ -235,45 +276,9 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="alert_taskwarrior"><![CDATA[La sincronizzazione con Taskwarrior sembra funzionare ma è comunque preferibile eseguire un backup dei propri dati. Segnalare eventuali problemi e bug per consentirne la risoluzione!]]></string>
   <string name="alert_taskwarrior_title">Informazioni per Taskwarrior</string>
   <string name="special_list_where_subtask_title_text">Attività secondarie</string>
+  <string name="special_list_where_tag_title_text">Etichette</string>
   <string name="special_list_where_progress_title_text">Progresso</string>
   <string name="special_list_where_file_title_text">FIle</string>
-  <string name="remove">Rimuovi</string>
-  <string-array name="sync_types">
-    <item>Sincronizzazione CalDAV</item>
-    <item>Sincronizzazione Taskwarrior</item>
-  </string-array>
-  <string-array name="tablet_options">
-    <item>Mai</item>
-    <item>Orizzontale</item>
-    <item>Verticale</item>
-    <item>Orizzontale e verticale</item>
-  </string-array>
-  <string-array name="weekdays">
-    <item>Non impostare</item>
-    <item>Lunedi</item>
-    <item>Martedì</item>
-    <item>Mercoledì</item>
-    <item>Venerdì</item>
-    <item>Venerdì</item>
-    <item>Sabato</item>
-    <item>Domenica</item>
-  </string-array>
-  <string-array name="priority_entries">
-    <item>Non impostare priorità</item>
-    <item>-2</item>
-    <item>-1</item>
-    <item>0</item>
-    <item>1</item>
-    <item>2</item>
-  </string-array>
-  <string-array name="priority_entry_values">
-    <item>Nullo</item>
-    <item>-2</item>
-    <item>-1</item>
-    <item>0</item>
-    <item>1</item>
-    <item>2</item>
-  </string-array>
   <string-array name="special_lists_subtask_options">
     <item>Nega selezione</item>
     <item>Cerca attività con attività secondarie o che sono attività secondarie</item>
@@ -283,4 +288,5 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
     <item>Contiene file</item>
     <item>Non contiene file</item>
   </string-array>
+  <string name="remove">Rimuovi</string>
 </resources>

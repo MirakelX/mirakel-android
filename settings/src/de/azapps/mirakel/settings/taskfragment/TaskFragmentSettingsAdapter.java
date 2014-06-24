@@ -66,8 +66,8 @@ public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
 	@Override
 	public View getView(final int position, final View convertView,
 			final ViewGroup parent) {
-		if (this.data.size() - 1 == position
-				&& this.data.get(position) == TaskFragmentSettingsFragment.ADD_KEY) {
+		if (this.getCount() - 1 == position
+				&& this.getDataAt(position) == TaskFragmentSettingsFragment.ADD_KEY) {
 			return setupAddButton();
 		}
 		View row = convertView;
@@ -85,7 +85,7 @@ public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
 		} else {
 			holder = (ListHolder) row.getTag();
 		}
-		final Integer item = this.data.get(position);
+		final Integer item = this.getDataAt(position);
 		holder.rowDrag.setVisibility(View.VISIBLE);
 
 		try {
@@ -94,7 +94,7 @@ public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
 			holder.rowName.setText("");
 		}
 		holder.rowName.setTag(item);
-		if (this.selected.get(position)) {
+		if (this.isSelectedAt(position)) {
 			row.setBackgroundColor(this.context.getResources().getColor(
 					this.darkTheme ? R.color.highlighted_text_holo_dark
 							: R.color.highlighted_text_holo_light));
@@ -106,24 +106,24 @@ public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
 	@Override
 	public void notifyDataSetChanged() {
 		super.notifyDataSetChanged();
-		this.data.remove(this.data.size() - 1);
-		MirakelCommonPreferences.setTaskFragmentLayout(this.data);
-		this.data.add(TaskFragmentSettingsFragment.ADD_KEY);
+		this.remove(this.getCount() - 1);
+		MirakelCommonPreferences.setTaskFragmentLayout(this.getData());
+		this.addToData(TaskFragmentSettingsFragment.ADD_KEY);
 	}
 
 	public void onDrop(final int from, final int to) {
-		final Integer item = this.data.get(from);
-		this.data.remove(from);
-		this.data.add(to, item);
+		final Integer item = this.getDataAt(from);
+		this.remove(from);
+		this.addToData(to, item);
 		notifyDataSetChanged();
 	}
 
 	public void onRemove(final int which) {
 		Log.d(TAG, "which" + which);
-		if (which < 0 || which > this.data.size()) {
+		if (which < 0 || which > this.getCount()) {
 			return;
 		}
-		this.data.remove(which);
+		this.remove(which);
 		notifyDataSetChanged();
 	}
 
@@ -150,7 +150,7 @@ public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
 		} catch (final NoSuchItemException e) {
 			Log.wtf(TAG, "go sleeping, its to late");
 		}
-		for (final int d : this.data) {
+		for (final int d : this.getData()) {
 			if (d != TaskFragmentSettingsFragment.ADD_KEY) {
 				allItems.remove(d);
 			}
@@ -171,8 +171,8 @@ public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
 			public void onItemSelected(final AdapterView<?> arg0,
 					final View arg1, final int pos, final long arg3) {
 				if (pos != 0) {
-					TaskFragmentSettingsAdapter.this.data.add(
-							TaskFragmentSettingsAdapter.this.data.size() - 1,
+					TaskFragmentSettingsAdapter.this.addToData(
+							TaskFragmentSettingsAdapter.this.getCount() - 1,
 							allItems.keyAt(pos - 1));
 					notifyDataSetChanged();
 				}

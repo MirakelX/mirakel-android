@@ -10,7 +10,7 @@ import de.azapps.mirakel.helper.DateTimeHelper;
 
 public class RecurringBase {
 	private String label;
-	private int _id;
+	private int id;
 	private int minutes;
 	private int hours;
 	private int days;
@@ -24,7 +24,7 @@ public class RecurringBase {
 	private SparseBooleanArray weekdays;
 	private Integer derivedFrom;
 
-	public RecurringBase(final int _id, final String label, final int minutes,
+	public RecurringBase(final int id, final String label, final int minutes,
 			final int hours, final int days, final int months, final int years,
 			final boolean forDue, final Calendar startDate,
 			final Calendar endDate, final boolean temporary,
@@ -38,7 +38,7 @@ public class RecurringBase {
 		this.minutes = minutes;
 		this.months = months;
 		this.years = years;
-		this.setId(_id);
+		this.setId(id);
 		this.setStartDate(startDate);
 		this.setEndDate(endDate);
 		this.temporary = temporary;
@@ -67,8 +67,8 @@ public class RecurringBase {
 		return this.forDue;
 	}
 
-	public void setForDue(final boolean for_due) {
-		this.forDue = for_due;
+	public void setForDue(final boolean forDue) {
+		this.forDue = forDue;
 	}
 
 	public int getMonths() {
@@ -109,11 +109,11 @@ public class RecurringBase {
 	}
 
 	public int getId() {
-		return this._id;
+		return this.id;
 	}
 
-	public void setId(final int _id) {
-		this._id = _id;
+	protected void setId(final int id) {
+		this.id = id;
 	}
 
 	public Calendar getStartDate() {
@@ -145,7 +145,7 @@ public class RecurringBase {
 	}
 
 	public List<Integer> getWeekdays() {
-		final ArrayList<Integer> ret = new ArrayList<Integer>();
+		final List<Integer> ret = new ArrayList<Integer>();
 		if (this.weekdays.get(Calendar.SUNDAY, false)) {
 			ret.add(Calendar.SUNDAY);
 		}
@@ -176,7 +176,11 @@ public class RecurringBase {
 	}
 
 	public void setWeekdays(final SparseBooleanArray weekdays) {
-		this.weekdays = weekdays;
+		if (weekdays == null) {
+			this.weekdays = new SparseBooleanArray();
+		} else {
+			this.weekdays = weekdays;
+		}
 	}
 
 	public Integer getDerivedFrom() {
@@ -197,18 +201,18 @@ public class RecurringBase {
 	 * @return
 	 */
 	public long getInterval() {
-		final int minute = 60;
-		final int hour = 3600;
-		final int day = 86400;
-		final int month = 2592000; // That's not right, but who cares?
-		final int year = 31536000; // nobody need this…
+		final long minute = 60;
+		final long hour = 3600;
+		final long day = 86400;
+		final long month = 2592000; // That's not right, but who cares?
+		final long year = 31536000; // nobody need this…
 		return (this.minutes * minute + this.hours * hour + this.days * day
 				+ this.months * month + this.years * year) * 1000;
 	}
 
 	public ContentValues getContentValues() {
 		final ContentValues cv = new ContentValues();
-		cv.put("_id", this._id);
+		cv.put("_id", this.id);
 		cv.put("minutes", this.minutes);
 		cv.put("hours", this.hours);
 		cv.put("days", this.days);
@@ -229,6 +233,100 @@ public class RecurringBase {
 		cv.put("sunnday", this.weekdays.get(Calendar.SUNDAY, false));
 		cv.put("derived_from", this.derivedFrom);
 		return cv;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof RecurringBase)) {
+			return false;
+		}
+		final RecurringBase other = (RecurringBase) obj;
+		if (this.id != other.id) {
+			return false;
+		}
+		if (this.days != other.days) {
+			return false;
+		}
+		if (this.derivedFrom == null) {
+			if (other.derivedFrom != null) {
+				return false;
+			}
+		} else if (!this.derivedFrom.equals(other.derivedFrom)) {
+			return false;
+		}
+		if (this.endDate == null) {
+			if (other.endDate != null) {
+				return false;
+			}
+		} else if (!this.endDate.equals(other.endDate)) {
+			return false;
+		}
+		if (this.forDue != other.forDue) {
+			return false;
+		}
+		if (this.hours != other.hours) {
+			return false;
+		}
+		if (this.isExact != other.isExact) {
+			return false;
+		}
+		if (this.label == null) {
+			if (other.label != null) {
+				return false;
+			}
+		} else if (!this.label.equals(other.label)) {
+			return false;
+		}
+		if (this.minutes != other.minutes) {
+			return false;
+		}
+		if (this.months != other.months) {
+			return false;
+		}
+		if (this.startDate == null) {
+			if (other.startDate != null) {
+				return false;
+			}
+		} else if (!this.startDate.equals(other.startDate)) {
+			return false;
+		}
+		if (this.temporary != other.temporary) {
+			return false;
+		}
+		if (this.years != other.years) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + this.id;
+		result = prime * result + this.days;
+		result = prime * result
+				+ (this.derivedFrom == null ? 0 : this.derivedFrom.hashCode());
+		result = prime * result
+				+ (this.endDate == null ? 0 : this.endDate.hashCode());
+		result = prime * result + (this.forDue ? 1231 : 1237);
+		result = prime * result + this.hours;
+		result = prime * result + (this.isExact ? 1231 : 1237);
+		result = prime * result
+				+ (this.label == null ? 0 : this.label.hashCode());
+		result = prime * result + this.minutes;
+		result = prime * result + this.months;
+		result = prime * result
+				+ (this.startDate == null ? 0 : this.startDate.hashCode());
+		result = prime * result + (this.temporary ? 1231 : 1237);
+		result = prime * result + this.years;
+		return result;
 	}
 
 }

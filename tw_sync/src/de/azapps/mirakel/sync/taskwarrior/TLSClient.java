@@ -55,6 +55,7 @@ public class TLSClient {
 		try {
 			factory = CertificateFactory.getInstance("X.509");
 		} catch (final CertificateException e) {
+			Log.w(TAG, "Parsing failed", e);
 			return null;
 		}
 
@@ -62,7 +63,7 @@ public class TLSClient {
 			return (X509Certificate) factory
 					.generateCertificate(new ByteArrayInputStream(certBytes));
 		} catch (final CertificateException e) {
-			Log.wtf(TAG, "parsing failed");
+			Log.wtf(TAG, "parsing failed", e);
 			return null;
 		}
 	}
@@ -77,18 +78,17 @@ public class TLSClient {
 		try {
 			factory = KeyFactory.getInstance("RSA", "BC");
 		} catch (final NoSuchAlgorithmException e) {
-			Log.e(TAG, "RSA-Algorithm not found");
+			Log.e(TAG, "RSA-Algorithm not found", e);
 			return null;
 		} catch (final NoSuchProviderException e) {
-			Log.e(TAG, "BC not found");
+			Log.e(TAG, "BC not found", e);
 			return null;
 		}
 
 		try {
 			return (RSAPrivateKey) factory.generatePrivate(spec);
 		} catch (final InvalidKeySpecException e) {
-			Log.e(TAG, "cannot parse key");
-			Log.e(TAG, Log.getStackTraceString(e));
+			Log.e(TAG, "cannot parse key", e);
 			return null;
 		}
 	}
@@ -101,12 +101,14 @@ public class TLSClient {
 			throw new ParseException("Wrong PEM format", 0);
 		}
 		tokens = tokens[1].split(endDelimiter);
-		return Base64.decode(tokens[0], Base64.NO_PADDING);
+		try {
+			return Base64.decode(tokens[0], Base64.NO_PADDING);
+		} catch (final IllegalArgumentException e) {
+			Log.e(TAG, "bad base-64", e);
+			throw new ParseException("bad base-64", 0);
+		}
 	}
 
-	// private String _ca;
-	// private gnutls_certificate_credentials_t _credentials;
-	// private gnutls_session_t _session;
 	private SSLSocket _socket;
 
 	private InputStream in;
@@ -135,9 +137,10 @@ public class TLSClient {
 			this._socket.close();
 			this._socket = null;
 		} catch (final IOException e) {
-			Log.e(TAG, "Cannot close Socket");
+			Log.e(TAG, "Cannot close Socket", e);
 		} catch (final NullPointerException e) {
-			Log.e(TAG, "Nullpointer, means there was no established connection");
+			Log.e(TAG,
+					"Nullpointer, means there was no established connection", e);
 		}
 
 	}
@@ -149,7 +152,7 @@ public class TLSClient {
 			try {
 				this._socket.close();
 			} catch (final IOException e) {
-				Log.e(TAG, "cannot close socket");
+				Log.e(TAG, "cannot close socket", e);
 			}
 		}
 		try {
@@ -170,19 +173,13 @@ public class TLSClient {
 			Log.d(TAG, "connected to " + host + ":" + port);
 			return;
 		} catch (final UnknownHostException e) {
-			Log.e(TAG, "Unkown Host");
+			Log.e(TAG, "Unkown Host", e);
 		} catch (final ConnectException e) {
-			Log.e(TAG, "Cannot connect to Host");
+			Log.e(TAG, "Cannot connect to Host", e);
 		} catch (final IOException e) {
-			Log.e(TAG, "IO Error");
+			Log.e(TAG, "IO Error", e);
 		}
 		throw new IOException();
-	}
-
-	// //////////////////////////////////////////////////////////////////////////////
-	@Override
-	protected void finalize() {
-		close();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////
@@ -257,7 +254,7 @@ public class TLSClient {
 			scanner.close();
 			return result;
 		} catch (final IOException e) {
-			Log.e(TAG, "cannot read Inputstream");
+			Log.e(TAG, "cannot read Inputstream", e);
 		}
 		return null;
 	}
@@ -274,14 +271,14 @@ public class TLSClient {
 			dos.writeInt(data.getBytes().length);
 			dos.write(data.getBytes());
 		} catch (final IOException e) {
-			Log.e(TAG, "cannot write data to outputstream");
+			Log.e(TAG, "cannot write data to outputstream", e);
 		}
 		try {
 			dos.flush();
 			dos.close();
 			this.out.flush();
 		} catch (final IOException e) {
-			Log.e(TAG, "cannot flush data to outputstream");
+			Log.e(TAG, "cannot flush data to outputstream", e);
 		}
 	}
 }

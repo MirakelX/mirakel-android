@@ -20,7 +20,7 @@ public class BackgroundTasks {
 			@Override
 			public void run() {
 				ReminderAlarm.updateAlarms(context);
-				NotificationService.updateNotificationAndWidget(context);
+				NotificationService.updateServices(context, true);
 
 				if (!MirakelCommonPreferences.containsHighlightSelected()) {
 					final SharedPreferences.Editor editor = MirakelPreferences
@@ -44,7 +44,7 @@ public class BackgroundTasks {
 					final List<Task> tasks = Task.all();
 					for (final Task t : tasks) {
 						t.setUUID(java.util.UUID.randomUUID().toString());
-						t.safeSave();
+						t.save();
 					}
 				}
 				mSyncReciver = new MainActivityBroadcastReceiver(context);

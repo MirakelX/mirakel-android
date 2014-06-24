@@ -5,6 +5,10 @@ apply plugin: 'eclipse'
 
 
 android {
+     compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion 
     packagingOptions {
@@ -22,7 +26,7 @@ android {
             resources.srcDirs = ['src']
             aidl.srcDirs = ['src']
             renderscript.srcDirs = ['src']
-            res.srcDirs = ['res']
+            res.srcDirs = ['merged-res']
             assets.srcDirs = ['assets']
         }
 

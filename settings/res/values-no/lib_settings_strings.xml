@@ -18,7 +18,7 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="sync_title">Synkronisering</string>
   <string name="sync_use">Bruk synkronisering</string>
   <string name="sync_warning">Synkronisering er eksperimentell</string>
@@ -79,18 +79,6 @@
   <string name="settings_semantics_condition">Tilstand</string>
   <string name="settings_semantics_actions">Handlinger</string>
   <string name="settings_semantics_due">Angi forfalls dato</string>
-  <string name="semantics_no_list">Ikke angi listen</string>
-  <string name="semantics_no_due">Ikke angi forfalls dato</string>
-  <string name="settings_file_default_title">Aktivitetsnavn for importerte filer</string>
-  <string name="tag_name">Navn</string>
-  <string name="settings_subtask">Deloppgave</string>
-  <string name="settings_subtask_add_to_same_list_summary">Eller velg en standardliste, der deloppgaven vil bli lagt til</string>
-  <string name="settings_dev_sync">Synkronisering</string>
-  <string name="add">Legg til</string>
-  <string name="action_credits">Medvirkende</string>
-  <string name="action_credits_summary">Om oss ;)</string>
-  <string name="title_activity_credits">Medvirkende og om</string>
-  <string name="special_list_where_subtask_title_text">Deloppgave</string>
   <string-array name="priority_entries">
     <item>Ikke angi prioritet</item>
     <item>-2</item>
@@ -107,4 +95,16 @@
     <item>1</item>
     <item>2</item>
   </string-array>
+  <string name="semantics_no_list">Ikke angi listen</string>
+  <string name="semantics_no_due">Ikke angi forfalls dato</string>
+  <string name="settings_file_default_title">Aktivitetsnavn for importerte filer</string>
+  <string name="tag_name">Navn</string>
+  <string name="settings_subtask">Deloppgave</string>
+  <string name="settings_subtask_add_to_same_list_summary">Eller velg en standardliste, der deloppgaven vil bli lagt til</string>
+  <string name="settings_dev_sync">Synkronisering</string>
+  <string name="add">Legg til</string>
+  <string name="action_credits">Medvirkende</string>
+  <string name="action_credits_summary">Om oss ;)</string>
+  <string name="title_activity_credits">Medvirkende og om</string>
+  <string name="special_list_where_subtask_title_text">Deloppgave</string>
 </resources>

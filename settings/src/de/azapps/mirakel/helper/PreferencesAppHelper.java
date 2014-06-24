@@ -170,7 +170,7 @@ public class PreferencesAppHelper extends PreferencesHelper {
 						public boolean onPreferenceChange(
 								final Preference preference,
 								final Object newValue) {
-							final String list = ListMirakel.getList(
+							final String list = ListMirakel.get(
 									Integer.parseInt((String) newValue))
 									.getName();
 							notificationsListPreference
@@ -190,8 +190,8 @@ public class PreferencesAppHelper extends PreferencesHelper {
 									.setNotificationsListId((String) newValue);
 							notificationsListPreference
 									.setValue((String) newValue);
-							NotificationService
-									.updateNotificationAndWidget(PreferencesAppHelper.this.activity);
+							NotificationService.updateServices(
+									PreferencesAppHelper.this.activity, false);
 							return false;
 						}
 					});
@@ -214,7 +214,7 @@ public class PreferencesAppHelper extends PreferencesHelper {
 								final Object newValue) {
 							String list;
 							if (!"default".equals(newValue.toString())) {
-								list = ListMirakel.getList(
+								list = ListMirakel.get(
 										Integer.parseInt((String) newValue))
 										.getName();
 							} else {
@@ -230,8 +230,8 @@ public class PreferencesAppHelper extends PreferencesHelper {
 									.setNotificationsListOpenId((String) newValue);
 							notificationsListOpenPreference
 									.setValue((String) newValue);
-							NotificationService
-									.updateNotificationAndWidget(PreferencesAppHelper.this.activity);
+							NotificationService.updateServices(
+									PreferencesAppHelper.this.activity, false);
 							return false;
 						}
 					});
@@ -320,62 +320,12 @@ public class PreferencesAppHelper extends PreferencesHelper {
 									.setSummary(PreferencesAppHelper.this.activity
 											.getString(
 													R.string.startup_list_summary,
-													ListMirakel.getList(Integer
+													ListMirakel.get(Integer
 															.parseInt((String) newValue))));
 							return true;
 						}
 					});
 		}
-
-		// Change Sync-Interval
-		// FIXME move to accountsettings
-		// final ListPreference syncInterval = (ListPreference)
-		// findPreference("syncFrequency");
-		// if (MirakelPreferences.getSyncFrequency() == -1) {
-		// syncInterval.setSummary(R.string.sync_frequency_summary_man);
-		// } else {
-		// syncInterval.setSummary(activity.getString(
-		// R.string.sync_frequency_summary,
-		// MirakelPreferences.getSyncFrequency()));
-		// }
-		// syncInterval
-		// .setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-		//
-		// @Override
-		// public boolean onPreferenceChange(
-		// Preference preference, Object newValue) {
-		// Log.e(TAG, "" + newValue.toString());
-		// final Bundle bundle = new Bundle();
-		// long longVal = Long.parseLong(newValue.toString());
-		// if (longVal == -1) {
-		// syncInterval
-		// .setSummary(R.string.sync_frequency_summary_man);
-		// } else {
-		// syncInterval.setSummary(activity.getString(
-		// R.string.sync_frequency_summary,
-		// longVal));
-		// }
-		// if (account != null) {
-		// ContentResolver.removePeriodicSync(account,
-		// Mirakel.AUTHORITY_TYP, bundle);
-		// if (longVal != -1) {
-		// ContentResolver.setSyncAutomatically(
-		// account, Mirakel.AUTHORITY_TYP,
-		// true);
-		// ContentResolver.setIsSyncable(account,
-		// Mirakel.AUTHORITY_TYP, 1);
-		// // ContentResolver.setMasterSyncAutomatically(true);
-		// ContentResolver.addPeriodicSync(account,
-		// Mirakel.AUTHORITY_TYP, bundle,
-		// longVal * 60);
-		// }
-		// } else {
-		// Log.d(TAG, "account does not exsist");
-		// }
-		// return true;
-		// }
-		// });
-
 		final CheckBoxPreference notificationsUse = (CheckBoxPreference) findPreference("notificationsUse");
 		if (notificationsUse != null) {
 			notificationsUse
@@ -404,8 +354,8 @@ public class PreferencesAppHelper extends PreferencesHelper {
 							final Editor e = preference.getEditor();
 							e.putBoolean("notificationsUse", (Boolean) newValue);
 							e.commit();
-							NotificationService
-									.updateNotificationAndWidget(PreferencesAppHelper.this.activity);
+							NotificationService.updateServices(
+									PreferencesAppHelper.this.activity, false);
 							return true;
 						}
 					});
@@ -425,8 +375,9 @@ public class PreferencesAppHelper extends PreferencesHelper {
 								final Editor e = preference.getEditor();
 								e.putBoolean(key, (Boolean) newValue);
 								e.commit();
-								NotificationService
-										.updateNotificationAndWidget(PreferencesAppHelper.this.activity);
+								NotificationService.updateServices(
+										PreferencesAppHelper.this.activity,
+										false);
 								return true;
 							}
 						});
@@ -1039,11 +990,8 @@ public class PreferencesAppHelper extends PreferencesHelper {
 		if (recurring != null) {
 			recurring.setIntent(startRecurringIntent);
 		}
-		// Intent startTaskFragmentIntent = new Intent(activity,
-		// TaskFragmentSettings.class);
 		final Preference taskFragment = findPreference("task_fragment");
 		if (taskFragment != null) {
-			// taskFragment.setIntent(startTaskFragmentIntent);
 			taskFragment
 					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 

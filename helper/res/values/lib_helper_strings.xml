@@ -30,7 +30,7 @@ Device: %3$s\n]]>
     <string name="error_CONTACT_NO_CLIENT" tools:ignore="UnusedResources">No e-mail client installed</string>
     <string name="error_NO_FILEMANAGER" tools:ignore="UnusedResources">Please install a file manager</string>
     <string name="error_FILE_URI_SYNTAX_ERROR" tools:ignore="UnusedResources">There was an internal error while parsing the filename</string>
-    <string name="error_MAINACTIVITY_WRONG_POSITION" tools:ignore="UnusedResources">This must not happen</string>
+    <string name="error_MAINACTIVITY_WRONG_POSITION" tools:ignore="UnusedResources">An unexpected error occurred</string>
     <string name="error_FILE_NOT_FOUND" tools:ignore="UnusedResources">This file was not found</string>
     <string name="error_BACKUP_EXPORT_ERROR" tools:ignore="UnusedResources">There was an error while exporting the database</string>
     <string name="error_BACKUP_IMPORT_ERROR" tools:ignore="UnusedResources">There was an error while importing the database</string>
@@ -42,14 +42,16 @@ Device: %3$s\n]]>
     <string name="error_TASKWARRIOR_FILE_NOT_FOUND" tools:ignore="UnusedResources">Taskwarrior file not found</string>
     <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD" tools:ignore="UnusedResources">Could not download config file</string>
     <string name="error_TASKWARRIOR_URL_NOT_FOUND" tools:ignore="UnusedResources">The URL is not correct. Did you really scanned the right code?</string>
-    <string name="error_FILE_NO_PERMISSION">No permission to read the file</string>
+    <string name="error_FILE_NO_PERMISSION" tools:ignore="UnusedResources">No permission to read the file</string>
+    <string name="error_LIST_VANISHED" tools:ignore="UnusedResources">Yikes, the list vanished…</string>
+    <string name="error_MAINACTVITY_CRAZY_ERROR" tools:ignore="UnusedResources">We don\'t know how to fix this bug. Mirakel is restarting.</string>
     <!-- 
-    <string name="error_"></string>
-    <string name="error_"></string>
-    <string name="error_"></string>
-    <string name="error_"></string>
-    <string name="error_"></string>
-    <string name="error_"></string>
+    <string name="error_" tools:ignore="UnusedResources"></string>
+    <string name="error_" tools:ignore="UnusedResources"></string>
+    <string name="error_" tools:ignore="UnusedResources"></string>
+    <string name="error_" tools:ignore="UnusedResources"></string>
+    <string name="error_" tools:ignore="UnusedResources"></string>
+    <string name="error_" tools:ignore="UnusedResources"></string>
      -->
     
 </resources>

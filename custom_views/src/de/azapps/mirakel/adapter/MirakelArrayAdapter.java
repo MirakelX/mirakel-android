@@ -30,9 +30,9 @@ public class MirakelArrayAdapter<T> extends ArrayAdapter<T> {
 	private static final String TAG = "MirakelArrayAdapter";
 	protected Context context;
 	protected boolean darkTheme;
-	protected List<T> data;
+	private final List<T> data;
 	protected int layoutResourceId;
-	protected List<Boolean> selected;
+	private List<Boolean> selected;
 	protected int selectedCount;
 
 	public MirakelArrayAdapter(final Context context,
@@ -60,6 +60,33 @@ public class MirakelArrayAdapter<T> extends ArrayAdapter<T> {
 		this.selected.add(false);
 	}
 
+	public List<T> getData() {
+		return this.data;
+	}
+
+	public void remove(final int location) {
+		this.data.remove(location);
+		this.selected.remove(location);
+	}
+
+	public void addToData(final int location, final T item) {
+		this.data.add(location, item);
+		this.selected.add(location, false);
+	}
+
+	public void addToData(final T item) {
+		this.data.add(item);
+		this.selected.add(false);
+	}
+
+	public T getDataAt(final int location) {
+		return this.data.get(location);
+	}
+
+	public boolean isSelectedAt(final int location) {
+		return this.selected.get(location);
+	}
+
 	public void changeData(final List<T> newData) {
 		this.data.clear();
 		this.data.addAll(newData);
@@ -74,13 +101,13 @@ public class MirakelArrayAdapter<T> extends ArrayAdapter<T> {
 	}
 
 	public List<T> getSelected() {
-		final List<T> selected = new ArrayList<T>();
+		final List<T> selectedList = new ArrayList<T>();
 		for (int i = 0; i < this.data.size(); i++) {
 			if (this.selected.get(i)) {
-				selected.add(this.data.get(i));
+				selectedList.add(this.data.get(i));
 			}
 		}
-		return selected;
+		return selectedList;
 	}
 
 	public int getSelectedCount() {

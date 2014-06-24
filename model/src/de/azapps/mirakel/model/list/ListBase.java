@@ -35,26 +35,29 @@ class ListBase {
 	private int id;
 	private String name;
 	private int sortBy;
-	private String created_at;
-	private String updated_at;
+	private String createdAt;
+	private String updatedAt;
 	private SYNC_STATE syncState;
 	private int lft, rgt;
 	private int color;
-	private int account;
+	private int accountID;
+	private AccountMirakel accountMirakel;
+	protected boolean isSpecial = false;
 
 	ListBase() {
+		// nothing
 	}
 
-	ListBase(final int id, final String name, final short sort_by,
-			final String created_at, final String updated_at,
-			final SYNC_STATE sync_state, final int lft, final int rgt,
+	ListBase(final int id, final String name, final short sortBy,
+			final String createdAt, final String updatedAt,
+			final SYNC_STATE syncState, final int lft, final int rgt,
 			final int color, final AccountMirakel a) {
 		this.setId(id);
-		this.setCreatedAt(created_at);
+		this.setCreatedAt(createdAt);
 		this.setName(name);
-		this.setUpdatedAt(updated_at);
-		this.setSortBy(sort_by);
-		this.setSyncState(sync_state);
+		this.setUpdatedAt(updatedAt);
+		this.setSortBy(sortBy);
+		this.setSyncState(syncState);
 		this.setLft(lft);
 		this.setRgt(rgt);
 		this.setColor(color);
@@ -66,16 +69,16 @@ class ListBase {
 		this.setName(name);
 	}
 
-	protected ListBase(final int id, final String name, final short sort_by,
-			final String created_at, final String updated_at,
-			final SYNC_STATE sync_state, final int lft, final int rgt,
+	protected ListBase(final int id, final String name, final short sortBy,
+			final String createdAt, final String updatedAt,
+			final SYNC_STATE syncState, final int lft, final int rgt,
 			final int color, final int account) {
 		this.setId(id);
-		this.setCreatedAt(created_at);
+		this.setCreatedAt(createdAt);
 		this.setName(name);
-		this.setUpdatedAt(updated_at);
-		this.setSortBy(sort_by);
-		this.setSyncState(sync_state);
+		this.setUpdatedAt(updatedAt);
+		this.setSortBy(sortBy);
+		this.setSyncState(syncState);
 		this.setLft(lft);
 		this.setRgt(rgt);
 		this.setColor(color);
@@ -86,7 +89,7 @@ class ListBase {
 		return this.id;
 	}
 
-	public void setId(final int id) {
+	private void setId(final int id) {
 		this.id = id;
 	}
 
@@ -99,27 +102,27 @@ class ListBase {
 	}
 
 	public String getCreatedAt() {
-		return this.created_at;
+		return this.createdAt;
 	}
 
-	public void setCreatedAt(final String created_at) {
-		this.created_at = created_at;
+	public void setCreatedAt(final String createdAt) {
+		this.createdAt = createdAt;
 	}
 
 	public String getUpdatedAt() {
-		return this.updated_at;
+		return this.updatedAt;
 	}
 
-	public void setUpdatedAt(final String updated_at) {
-		this.updated_at = updated_at;
+	public void setUpdatedAt(final String updatedAt) {
+		this.updatedAt = updatedAt;
 	}
 
 	public int getSortBy() {
 		return this.sortBy;
 	}
 
-	public void setSortBy(final int sort_by) {
-		this.sortBy = sort_by;
+	public void setSortBy(final int sortBy) {
+		this.sortBy = sortBy;
 	}
 
 	public int getLft() {
@@ -147,15 +150,24 @@ class ListBase {
 	}
 
 	public AccountMirakel getAccount() {
-		return AccountMirakel.get(this.account);
+		if (this.accountMirakel != null) {
+			return this.accountMirakel;
+		}
+		return AccountMirakel.get(this.accountID);
 	}
 
 	public void setAccount(final AccountMirakel a) {
 		setAccount(a.getId());
+		this.accountMirakel = a;
 	}
 
 	protected void setAccount(final int account) {
-		this.account = account;
+		this.accountMirakel = null;
+		this.accountID = account;
+	}
+
+	public boolean isSpecial() {
+		return this.isSpecial;
 	}
 
 	@Override
@@ -167,14 +179,14 @@ class ListBase {
 		final ContentValues cv = new ContentValues();
 		cv.put(DatabaseHelper.ID, this.id);
 		cv.put(DatabaseHelper.NAME, this.name);
-		cv.put(DatabaseHelper.CREATED_AT, this.created_at);
-		cv.put(DatabaseHelper.UPDATED_AT, this.updated_at);
+		cv.put(DatabaseHelper.CREATED_AT, this.createdAt);
+		cv.put(DatabaseHelper.UPDATED_AT, this.updatedAt);
 		cv.put(SORT_BY, this.sortBy);
 		cv.put(DatabaseHelper.SYNC_STATE_FIELD, this.syncState.toInt());
 		cv.put(LFT, this.lft);
 		cv.put(RGT, this.rgt);
 		cv.put(COLOR, this.color);
-		cv.put(ACCOUNT_ID, this.account);
+		cv.put(ACCOUNT_ID, this.accountID);
 		return cv;
 	}
 
@@ -182,8 +194,101 @@ class ListBase {
 		return this.syncState;
 	}
 
-	public void setSyncState(final SYNC_STATE sync_state) {
-		this.syncState = sync_state;
+	public void setSyncState(final SYNC_STATE syncState) {
+		this.syncState = syncState;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + this.accountID;
+		result = prime
+				* result
+				+ (this.accountMirakel == null ? 0 : this.accountMirakel
+						.hashCode());
+		result = prime * result + this.color;
+		result = prime * result
+				+ (this.createdAt == null ? 0 : this.createdAt.hashCode());
+		result = prime * result + this.id;
+		result = prime * result + (this.isSpecial ? 1231 : 1237);
+		result = prime * result + this.lft;
+		result = prime * result
+				+ (this.name == null ? 0 : this.name.hashCode());
+		result = prime * result + this.rgt;
+		result = prime * result + this.sortBy;
+		result = prime * result
+				+ (this.syncState == null ? 0 : this.syncState.hashCode());
+		result = prime * result
+				+ (this.updatedAt == null ? 0 : this.updatedAt.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof ListBase)) {
+			return false;
+		}
+		final ListBase other = (ListBase) obj;
+		if (this.accountID != other.accountID) {
+			return false;
+		}
+		if (this.accountMirakel == null) {
+			if (other.accountMirakel != null) {
+				return false;
+			}
+		} else if (!this.accountMirakel.equals(other.accountMirakel)) {
+			return false;
+		}
+		if (this.color != other.color) {
+			return false;
+		}
+		if (this.createdAt == null) {
+			if (other.createdAt != null) {
+				return false;
+			}
+		} else if (!this.createdAt.equals(other.createdAt)) {
+			return false;
+		}
+		if (this.id != other.id) {
+			return false;
+		}
+		if (this.isSpecial != other.isSpecial) {
+			return false;
+		}
+		if (this.lft != other.lft) {
+			return false;
+		}
+		if (this.name == null) {
+			if (other.name != null) {
+				return false;
+			}
+		} else if (!this.name.equals(other.name)) {
+			return false;
+		}
+		if (this.rgt != other.rgt) {
+			return false;
+		}
+		if (this.sortBy != other.sortBy) {
+			return false;
+		}
+		if (this.syncState != other.syncState) {
+			return false;
+		}
+		if (this.updatedAt == null) {
+			if (other.updatedAt != null) {
+				return false;
+			}
+		} else if (!this.updatedAt.equals(other.updatedAt)) {
+			return false;
+		}
+		return true;
 	}
 
 }

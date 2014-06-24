@@ -68,7 +68,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	private final Context mContext;
 	public static final String ACCOUNT_PREFIX = "ACCOUNT_";
 	private final NotificationManager mNotificationManager;
-	private final int notifyID = 1;
+	private static final int notifyID = 1;
 
 	public SyncAdapter(final Context context, final boolean autoInitialize) {
 		super(context, autoInitialize);
@@ -99,7 +99,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			intent = new Intent(this.mContext,
 					Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
 		} catch (final ClassNotFoundException e) {
-			Log.wtf(TAG, "no mainactivity found");
+			Log.wtf(TAG, "no mainactivity found", e);
 			return;
 		}
 		intent.setAction(DefinitionsHelper.SHOW_LISTS);
@@ -113,7 +113,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				.setWhen(System.currentTimeMillis()).setOngoing(true)
 				.setContentIntent(p);
 		if (showNotification) {
-			this.mNotificationManager.notify(this.notifyID, mNB.build());
+			this.mNotificationManager.notify(SyncAdapter.notifyID, mNB.build());
 		}
 
 		String type = AccountManager.get(this.mContext).getUserData(account,
@@ -127,6 +127,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			try {
 				new TaskWarriorSync(this.mContext).sync(account);
 			} catch (final TaskWarriorSyncFailedExeption e) {
+				Log.e(TAG, "SyncError", e);
 				error = e.getError();
 			}
 			switch (error) {
@@ -164,6 +165,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			case NO_SUCH_CERT:
 				last_message = this.mContext.getText(R.string.cert_not_found);
 				break;
+			case COULD_NOT_FIND_COMMON_ANCESTOR:
+				last_message = this.mContext
+						.getText(R.string.could_not_find_common_ancestor);
+				break;
 			case NOT_ENABLED:
 			default:
 				return;
@@ -173,7 +178,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		} else {
 			Log.wtf(TAG, "Unknown SyncType");
 		}
-		this.mNotificationManager.cancel(this.notifyID);
+		this.mNotificationManager.cancel(SyncAdapter.notifyID);
 		if (showNotification && !success) {
 			final String title = "Mirakel: "
 					+ this.mContext.getText(R.string.finish_sync);
@@ -183,7 +188,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				openIntent = new Intent(this.mContext,
 						Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
 			} catch (final ClassNotFoundException e) {
-				Log.wtf(TAG, "mainactivity not found");
+				Log.wtf(TAG, "mainactivity not found", e);
 				return;
 			}
 			openIntent.setAction(DefinitionsHelper.SHOW_MESSAGE);
@@ -203,7 +208,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					.setPriority(NotificationCompat.PRIORITY_LOW)
 					.setContentIntent(pOpenIntent).build();
 			notification.flags = Notification.FLAG_AUTO_CANCEL;
-			this.mNotificationManager.notify(this.notifyID, notification);
+			this.mNotificationManager
+					.notify(SyncAdapter.notifyID, notification);
 		}
 		final Intent i = new Intent(DefinitionsHelper.SYNC_FINISHED);
 		this.mContext.sendBroadcast(i);
