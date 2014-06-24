@@ -7,7 +7,7 @@ android:
   components:
     - build-tools-19.1.0
 before_script:
-  - keytool -genkey -v -keystore main/debug.keystore -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -keypaswd android
+  - keytool -genkey -v -keystore main/debug.keystore -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -keypass android -storepass android 
   - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
   - emulator -avd test -no-skin -no-audio -no-window &
   - source build/wait_for_emulator.sh
