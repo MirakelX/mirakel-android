@@ -391,16 +391,16 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
 		case "yr":
 		case "y":
 			r = new Recurring(0, recur, 0, 0, 0, 0, number, true, null, null,
-					true, true, new SparseBooleanArray(), 0);
+					true, false, new SparseBooleanArray(), 0);
 			break;
 		case "semiannual":
 			r = new Recurring(0, recur, 0, 0, 0, 6, 0, true, null, null, true,
-					true, new SparseBooleanArray(), 0);
+					false, new SparseBooleanArray(), 0);
 			break;
 		case "biannual":
 		case "biyearly":
 			r = new Recurring(0, recur, 0, 0, 0, 0, 2, true, null, null, true,
-					true, new SparseBooleanArray(), 0);
+					false, new SparseBooleanArray(), 0);
 			break;
 		case "bimonthly":
 			r = new Recurring(0, recur, 0, 0, 0, 2, 0, true, null, null, true,
@@ -409,7 +409,7 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
 		case "biweekly":
 		case "fortnight":
 			r = new Recurring(0, recur, 0, 0, 14, 0, 0, true, null, null, true,
-					true, new SparseBooleanArray(), 0);
+					false, new SparseBooleanArray(), 0);
 			break;
 		case "daily":
 			number = 1;
@@ -418,7 +418,7 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
 		case "day":
 		case "d":
 			r = new Recurring(0, recur, 0, 0, number, 0, 0, true, null, null,
-					true, true, new SparseBooleanArray(), 0);
+					true, false, new SparseBooleanArray(), 0);
 			break;
 		case "hours":
 		case "hour":
@@ -426,13 +426,13 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
 		case "hr":
 		case "h":
 			r = new Recurring(0, recur, 0, number, 0, 0, 0, true, null, null,
-					true, true, new SparseBooleanArray(), 0);
+					true, false, new SparseBooleanArray(), 0);
 			break;
 		case "minutes":
 		case "mins":
 		case "min":
 			r = new Recurring(0, recur, number, 0, 0, 0, 0, true, null, null,
-					true, true, new SparseBooleanArray(), 0);
+					true, false, new SparseBooleanArray(), 0);
 			break;
 		case "monthly":
 			number = 1;
@@ -445,7 +445,7 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
 		case "mos":
 		case "mo":
 			r = new Recurring(0, recur, 0, 0, 0, number, 0, true, null, null,
-					true, true, new SparseBooleanArray(), 0);
+					true, false, new SparseBooleanArray(), 0);
 			break;
 		case "quarterly":
 			number = 1;
@@ -456,7 +456,7 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
 		case "qtr":
 		case "q":
 			r = new Recurring(0, recur, 0, 0, 0, 3 * number, 0, true, null,
-					null, true, true, new SparseBooleanArray(), 0);
+					null, true, false, new SparseBooleanArray(), 0);
 			break;
 		default:
 		case "seconds":
@@ -472,7 +472,7 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
 				weekdays.put(i, i != Calendar.SATURDAY && i != Calendar.SUNDAY);
 			}
 			r = new Recurring(0, recur, 0, 0, 0, 0, 0, true, null, null, true,
-					true, weekdays, 0);
+					false, weekdays, 0);
 			break;
 		case "sennight":
 		case "weekly":
@@ -484,7 +484,7 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
 		case "wk":
 		case "w":
 			r = new Recurring(0, recur, 0, 0, 7 * number, 0, 0, true, null,
-					null, true, true, new SparseBooleanArray(), 0);
+					null, true, false, new SparseBooleanArray(), 0);
 			break;
 		}
 		return r.create();
