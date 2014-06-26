@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+    <version name="2.6-beta2" date="2014-06-26" code="59">
+        <text>Please test the syncing of the recurrence!</text>
+        <feature>Some Bugfixes</feature>
+    </version>
     <version name="2.6-beta1" date="2014-06-22" code="58">
         <text>Please test the syncing of the recurrence!</text>
         <feature>Implemented Recurrence for Taskwarrior</feature>
