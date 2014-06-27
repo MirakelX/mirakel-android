@@ -306,8 +306,7 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
 
 	private static void handleTags(final Task t, final JsonElement val) {
 		final JsonArray tags = val.getAsJsonArray();
-		final List<Tag> currentTags = new ArrayList<>();
-		Collections.copy(currentTags, t.getTags());
+		final List<Tag> currentTags = new ArrayList<>(t.getTags());
 		for (final JsonElement tag : tags) {
 			if (tag.isJsonPrimitive()) {
 				String tagName = tag.getAsString();

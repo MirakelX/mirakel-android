@@ -458,7 +458,7 @@ public class Task extends TaskBase {
 	/**
 	 * Initialize the Database and the preferences
 	 * 
-	 * @param context
+	 * @param ctx
 	 *            The Application-Context
 	 */
 	public static void init(final Context ctx) {
@@ -665,8 +665,7 @@ public class Task extends TaskBase {
 
 	/**
 	 * Delete a task
-	 * 
-	 * @param task
+	 *
 	 */
 	public void destroy() {
 		destroy(false);
