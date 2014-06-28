@@ -203,10 +203,24 @@ public class Task extends TaskBase {
 	 * @return
 	 */
 	public static Task get(final long id) {
+		return get(id,false);
+	}
+
+	/**
+	 *
+	 * @param id
+	 * @param force Search also for deleted tasks. Do not use it unless you exactly
+	 *                 know what you are doing
+	 * @return
+	 */
+	public static Task get(final long id,boolean force) {
+		String extraSQL = " and not "
+				+ DatabaseHelper.SYNC_STATE_FIELD + "="
+				+ SYNC_STATE.DELETE;
+		if(force)
+			extraSQL="";
 		final Cursor cursor = Task.database.query(Task.TABLE, Task.allColumns,
-				DatabaseHelper.ID + "='" + id + "' and not "
-						+ DatabaseHelper.SYNC_STATE_FIELD + "="
-						+ SYNC_STATE.DELETE, null, null, null, null);
+				DatabaseHelper.ID + "=" + id + extraSQL, null, null, null, null);
 		cursor.moveToFirst();
 		if (cursor.getCount() != 0) {
 			final Task t = cursorToTask(cursor);
@@ -680,9 +694,7 @@ public class Task extends TaskBase {
 		if (getSyncState() == SYNC_STATE.ADD || force) {
 			Task.database.delete(Task.TABLE, DatabaseHelper.ID + " = " + id,
 					null);
-			FileMirakel.destroyForTask(this);
-			Task.database.delete(Task.SUBTASK_TABLE, "parent_id=" + id
-					+ " or child_id=" + id, null);
+			destroyGarbage();
 		} else {
 			final ContentValues values = new ContentValues();
 			values.put(DatabaseHelper.SYNC_STATE_FIELD,
@@ -691,7 +703,19 @@ public class Task extends TaskBase {
 					+ id, null);
 		}
 		NotificationService.updateServices(context, getReminder() != null);
+	}
 
+	public void destroyGarbage() {
+		FileMirakel.destroyForTask(this);
+		destroyRecurrenceGarbageForTask(getId());
+	}
+
+	public static void destroyRecurrenceGarbageForTask(long id) {
+		Task.database.beginTransaction();
+		Task.database.delete(Task.SUBTASK_TABLE, "parent_id=" + id
+				+ " or child_id=" + id, null);
+		Task.database.setTransactionSuccessful();
+		Task.database.endTransaction();
 	}
 
 	public String[] getDependencies() {
