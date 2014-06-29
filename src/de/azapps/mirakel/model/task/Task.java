@@ -133,28 +133,28 @@ public class Task extends TaskBase {
 	 */
 	public static Task cursorToTask(final Cursor cursor) {
 		int i = 0;
-		Calendar due = new GregorianCalendar();
+		Calendar due;
 		if (cursor.isNull(6)) {
 			due = null;
 		} else {
 			due = DateTimeHelper.createLocalCalendar(cursor.getLong(6), true);
 		}
 
-		Calendar reminder = new GregorianCalendar();
+		Calendar reminder;
 		if (cursor.isNull(7)) {
 			reminder = null;
 		} else {
 			reminder = DateTimeHelper.createLocalCalendar(cursor.getLong(7));
 		}
 
-		Calendar created_at = new GregorianCalendar();
+		Calendar created_at;
 		if (cursor.isNull(9)) {
 			created_at = null;
 		} else {
 			created_at = new GregorianCalendar();
 			created_at.setTimeInMillis(cursor.getLong(9) * 1000);
 		}
-		Calendar updated_at = new GregorianCalendar();
+		Calendar updated_at;
 		if (cursor.isNull(10)) {
 			updated_at = null;
 		} else {
@@ -162,19 +162,18 @@ public class Task extends TaskBase {
 			updated_at.setTimeInMillis(cursor.getLong(10) * 1000);
 		}
 
-		final Task task = new Task(cursor.getLong(i++), cursor.getString(i++),
+		return new Task(cursor.getLong(i++), cursor.getString(i++),
 				ListMirakel.get((int) cursor.getLong(i++)),
 				cursor.getString(i++), cursor.getString(i++),
-				cursor.getInt(i++) == 1, due, reminder, cursor.getInt(8),
-				created_at, updated_at, SYNC_STATE.parseInt(cursor.getInt(11)),
+				cursor.getInt(i) == 1, due, reminder, cursor.getInt(8),
+				created_at, updated_at, SYNC_STATE.valueOf(cursor.getInt(11)),
 				cursor.getString(12), cursor.getInt(13), cursor.getInt(14),
 				cursor.getInt(15), cursor.getShort(16) == 1);
-		return task;
 	}
 
 	private static List<Task> cursorToTaskList(final Cursor cursor) {
 		cursor.moveToFirst();
-		final List<Task> tasks = new ArrayList<Task>();
+		final List<Task> tasks = new ArrayList<>();
 		while (!cursor.isAfterLast()) {
 			tasks.add(cursorToTask(cursor));
 			cursor.moveToNext();
@@ -309,9 +308,9 @@ public class Task extends TaskBase {
 				DatabaseHelper.ID, DatabaseHelper.NAME },
 				BASIC_FILTER_DISPLAY_TASKS, null, null, null, null);
 		c.moveToFirst();
-		final List<Pair<Long, String>> names = new ArrayList<Pair<Long, String>>();
+		final List<Pair<Long, String>> names = new ArrayList<>();
 		while (!c.isAfterLast()) {
-			names.add(new Pair<Long, String>(c.getLong(0), c.getString(1)));
+			names.add(new Pair<>(c.getLong(0), c.getString(1)));
 			c.moveToNext();
 		}
 		c.close();
@@ -511,11 +510,10 @@ public class Task extends TaskBase {
 				SYNC_STATE.ADD, "", -1, -1, 0, true);
 
 		try {
-			final Task task = t.create();
-			return task;
+			return t.create();
 		} catch (final NoSuchListException e) {
 			ErrorReporter.report(ErrorType.TASKS_NO_LIST);
-			Log.e(Task.TAG, Log.getStackTraceString(e));
+			Log.e(Task.TAG, "NoSuchListException",e);
 			return null;
 		}
 	}
@@ -580,7 +578,7 @@ public class Task extends TaskBase {
 
 	}
 
-	void addReccuringChild(final Pair<String, Integer> newRec) {
+	void addRecurringChild(final Pair<String, Integer> newRec) {
 		this.recurrenceParent = newRec;
 	}
 
@@ -740,7 +738,7 @@ public class Task extends TaskBase {
 
 	public List<Task> getSubtasks() {
 		final Cursor c = Task.getTasksCursor(this);
-		final List<Task> subTasks = new ArrayList<Task>();
+		final List<Task> subTasks = new ArrayList<>();
 		c.moveToFirst();
 		while (!c.isAfterLast()) {
 			subTasks.add(cursorToTask(c));
@@ -796,7 +794,7 @@ public class Task extends TaskBase {
 	private void unsafeSave(boolean log, final boolean calledFromSync,
 			final boolean updateUpdatedAt) throws NoSuchListException {
 		if (!isEdited()) {
-			Log.d(Task.TAG, "new Task equals old, didnt need to save it");
+			Log.d(Task.TAG, "new Task equals old, did not need to save it");
 			return;
 		}
 		if (calledFromDBHelper) {
@@ -945,7 +943,6 @@ public class Task extends TaskBase {
 					context.sendBroadcast(i);
 				}
 			}).start();
-			;
 		}
 	}
 
