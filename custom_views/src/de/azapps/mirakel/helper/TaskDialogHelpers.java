@@ -830,4 +830,28 @@ public class TaskDialogHelpers {
 		}).start();
 
 	}
+
+	public static interface OnRecurrenceChange {
+		public void handleSingleChange();
+		public void handleMultiChange();
+	}
+
+	public static void handleChangeRecurringTask(Context context,String title, final OnRecurrenceChange onRecurrenceChange) {
+
+		new AlertDialog.Builder(context)
+				.setTitle(title)
+				.setItems(R.array.recurring_task_select, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						switch (which) {
+							case 0: // Only this recurrence
+								onRecurrenceChange.handleSingleChange();
+								break;
+							case 1: // All recurrences
+								onRecurrenceChange.handleMultiChange();
+								break;
+						}
+					}
+				}).show();
+	}
 }

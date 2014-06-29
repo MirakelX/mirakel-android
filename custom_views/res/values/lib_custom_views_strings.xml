@@ -51,4 +51,8 @@
         <item>Remove tag</item>
     </string-array>
     <string name="tag_has_dark_text">Text is black</string>
+    <string-array name="recurring_task_select">
+        <item>Only this recurrence</item>
+        <item>All recurrences</item>
+    </string-array>
 </resources>
