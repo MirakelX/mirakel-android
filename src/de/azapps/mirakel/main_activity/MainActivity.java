@@ -140,7 +140,7 @@ public class MainActivity extends ActionBarActivity implements
 	private Uri fileUri;
 
 	private final FragmentManager fragmentManager = getSupportFragmentManager();
-	private final Stack<Task> goBackTo = new Stack<Task>();
+	private final Stack<Task> goBackTo = new Stack<>();
 	// Foo variables (move them out of the MainActivity)
 	// User interaction variables
 	private boolean isResumed;
@@ -151,7 +151,7 @@ public class MainActivity extends ActionBarActivity implements
 	protected Menu menu;
 	private PagerAdapter mPagerAdapter;
 
-	protected MainActivityBroadcastReceiver mSyncReciver;
+	protected MainActivityBroadcastReceiver mSyncReceiver;
 
 	// Layout variables
 	ViewPager mViewPager;
@@ -174,7 +174,7 @@ public class MainActivity extends ActionBarActivity implements
 		this.currentPosition = getTaskFragmentPosition();
 
 		if (Intent.ACTION_SEND.equals(action) && type != null) {
-			final Uri uri = (Uri) intent
+			final Uri uri = intent
 					.getParcelableExtra(Intent.EXTRA_STREAM);
 			t.addFile(this, uri);
 		} else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
@@ -238,8 +238,7 @@ public class MainActivity extends ActionBarActivity implements
 				Log.wtf(MainActivity.TAG, "View not found");
 			}
 		} catch (final Exception e) {
-			Log.wtf(MainActivity.TAG, "Listview not found");
-			Log.e(MainActivity.TAG, Log.getStackTraceString(e));
+			Log.wtf(MainActivity.TAG, "ListView not found", e);
 		}
 	}
 
@@ -539,7 +538,7 @@ public class MainActivity extends ActionBarActivity implements
 	 * @param list
 	 */
 	public void handleDestroyList(final ListMirakel list) {
-		final List<ListMirakel> l = new ArrayList<ListMirakel>();
+		final List<ListMirakel> l = new ArrayList<>();
 		l.add(list);
 		handleDestroyList(l);
 	}
@@ -612,7 +611,7 @@ public class MainActivity extends ActionBarActivity implements
 	 * @param task
 	 */
 	public void handleDestroyTask(final Task task) {
-		final List<Task> t = new ArrayList<Task>();
+		final List<Task> t = new ArrayList<>();
 		t.add(task);
 		handleDestroyTask(t);
 	}
@@ -628,8 +627,8 @@ public class MainActivity extends ActionBarActivity implements
 		}
 		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(R.string.dialog_move);
-		final List<CharSequence> items = new ArrayList<CharSequence>();
-		final List<Integer> list_ids = new ArrayList<Integer>();
+		final List<CharSequence> items = new ArrayList<>();
+		final List<Integer> list_ids = new ArrayList<>();
 		int currentItem = 0, i = 0;
 		for (final ListMirakel list : this.lists) {
 			if (list.getId() > 0) {
@@ -688,7 +687,7 @@ public class MainActivity extends ActionBarActivity implements
 	 * @param tasks
 	 */
 	public void handleMoveTask(final Task task) {
-		final List<Task> t = new ArrayList<Task>();
+		final List<Task> t = new ArrayList<>();
 		t.add(task);
 		handleMoveTask(t);
 	}
@@ -846,7 +845,7 @@ public class MainActivity extends ActionBarActivity implements
 	 */
 	@SuppressLint("NewApi")
 	private void initViewPager() {
-		final List<Fragment> fragments = new Vector<Fragment>();
+		final List<Fragment> fragments = new Vector<>();
 		final TasksFragment tasksFragment = new TasksFragment();
 		tasksFragment.setActivity(this);
 		fragments.add(tasksFragment);
@@ -1433,11 +1432,8 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	public void onPageScrollStateChanged(final int state) {
-		this.skipSwipe = true;
-		if (this.previousState == ViewPager.SCROLL_STATE_DRAGGING
-				&& state == ViewPager.SCROLL_STATE_SETTLING) {
-			this.skipSwipe = false;
-		}
+		this.skipSwipe = !(this.previousState == ViewPager.SCROLL_STATE_DRAGGING
+				&& state == ViewPager.SCROLL_STATE_SETTLING);
 		this.previousState = state;
 	}
 
@@ -1619,8 +1615,8 @@ public class MainActivity extends ActionBarActivity implements
 				final AlertDialog.Builder builder = new AlertDialog.Builder(
 						this);
 				builder.setTitle(R.string.import_to);
-				final List<CharSequence> items = new ArrayList<CharSequence>();
-				final List<Integer> list_ids = new ArrayList<Integer>();
+				final List<CharSequence> items = new ArrayList<>();
+				final List<Integer> list_ids = new ArrayList<>();
 				final int currentItem = 0;
 				for (final ListMirakel list : ListMirakel.all()) {
 					if (list.getId() > 0) {
@@ -1744,7 +1740,7 @@ public class MainActivity extends ActionBarActivity implements
 		try {
 			initViewPager();
 		} catch (final Exception e) {
-			Log.logStackTrace(e);
+			Log.wtf(TAG, "initViewPager throwed an exception", e);
 		}
 		initNavDrawer();
 		this.startIntent = getIntent();
