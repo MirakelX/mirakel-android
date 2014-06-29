@@ -7,7 +7,7 @@ buildscript {
                 artifactUrls "file:~/.m2/"
             }
         }
-        classpath 'com.android.tools.build:gradle:0.10.+'
+        classpath 'com.android.tools.build:gradle:0.12.+'
 //        classpath 'com.jakewharton.hugo:hugo-plugin:1.0.+'
         classpath 'org.robolectric:robolectric-gradle-plugin:0.11.+'
     }
@@ -76,7 +76,7 @@ gradle.projectsEvaluated {
 }
 ext {
     compileSdkVersion = 19
-    buildToolsVersion = "19.1.0"
+    buildToolsVersion = "20.0.0"
     minSDKVersion = 8
 }
 
@@ -84,7 +84,7 @@ configure(allprojects) {
     ext.androidSDKVersion = "19"
     ext.androidBuildToolsVersion = "19.0"
     ext.androidSupportVersion = "19.0.1"
-    ext.androidPluginVersion ="0.10.+"
+    ext.androidPluginVersion ="0.12.0"
     ext.androidMinSDKVersion ="8"
     ext.jodaLibraryVersion = "2.2"
     ext.nineoldandroisVersion="2.4.0"
