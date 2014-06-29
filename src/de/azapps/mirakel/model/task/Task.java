@@ -891,6 +891,26 @@ public class Task extends TaskBase {
 
 	}
 
+	public List<Task> getRecurrenceChilds() {
+		final Cursor c = database.rawQuery("SELECT " + concatColumsForQuery()
+				+ " FROM " + TABLE + " AS t INNER JOIN "
+				+ Recurring.TW_TABLE
+				+ " AS r ON t._id=r.child WHERE r.parent =" + getId() + "  ORDER BY r.offsetCount ASC;", null);
+		return cursorToTaskList(c);
+	}
+
+	public Task getRecurrenceMaster() {
+		final Cursor c = database.rawQuery("SELECT " + concatColumsForQuery()
+				+ " FROM " + TABLE + " AS t INNER JOIN "
+				+ Recurring.TW_TABLE
+				+ " AS r ON t._id=r.parent WHERE r.child =" + getId() + ";", null);
+		if(c.moveToFirst()) {
+			return cursorToTask(c);
+		} else {
+			return null;
+		}
+	}
+
 	private void updateRecurringChilds(final Recurring r) {
 		final Cursor c = database.rawQuery("SELECT " + concatColumsForQuery()
 				+ ", r.offsetCount FROM " + TABLE + " AS t INNER JOIN "
