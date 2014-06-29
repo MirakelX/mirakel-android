@@ -9,7 +9,7 @@
   <string name="sync_warning_message">De synchronisatie is momenteel zeer experimenteel. Je kunt het op eigen risico proberen (Maak een back-up!)</string>
   <string name="sync_use_summary_taskwarrior">Synchronisatie met Taskwarrior als %s</string>
   <string name="sync_use_summary_mirakel">Synchronisatie met Mirakel als %s</string>
-  <string name="sync_use_summary_nothing">Syngronisatie niet gebruiken</string>
+  <string name="sync_use_summary_nothing">Synchronisatie niet gebruiken</string>
   <string name="sync_user">Gebruikersnaam</string>
   <string name="sync_user_summary">Server gebruikersnaam</string>
   <string name="sync_server">Server</string>
@@ -50,6 +50,8 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="change_account">Account wijzigen</string>
   <string name="wrong_config">Het lijkt erop dat het verkeerde configuratie bestand gebruikt is</string>
   <string name="cert_not_found">Het certificaat is verdwenen. Activeer gelieve opnieuw uw account.</string>
+  <string name="could_not_find_common_ancestor">Kon geen gemeenschappelijk begin vinden. Dit betekent dat er iets niet synchroon loopt met de server and dat u de Mirakel gegeven moet wissen. Sorry</string>
+  <string name="config_404">Kan het configuratiebestand niet vinden</string>
   <string name="config_error_empty">Er is geen %s vermelding in de config</string>
   <string name="load_config">Selecteer het configuratie bestand voor Taskwarrior</string>
   <string name="select_config">Selecteer het Taskwarrior configuratie bestand</string>
