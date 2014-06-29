@@ -694,6 +694,9 @@ public class Task extends TaskBase {
 		if (getSyncState() == SYNC_STATE.ADD || force) {
 			Task.database.delete(Task.TABLE, DatabaseHelper.ID + " = " + id,
 					null);
+            database.execSQL("DELETE FROM "+TABLE+" WHERE "+DatabaseHelper.ID+" IN (SELECT child FROM "+Recurring.TW_TABLE+" WHERE parent="+getId()+")");
+            database.execSQL("DELETE FROM "+FileMirakel.TABLE+" WHERE task"+DatabaseHelper.ID+" IN (SELECT child FROM "+Recurring.TW_TABLE+" WHERE parent="+getId()+")");
+            database.delete(Recurring.TW_TABLE,"parent=?",new String[]{getId()+""});
 			destroyGarbage();
 		} else {
 			final ContentValues values = new ContentValues();
