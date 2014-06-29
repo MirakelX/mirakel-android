@@ -27,7 +27,7 @@
   <string name="sync_warning_message">De synchronisatie is momenteel zeer experimenteel. Je kunt het op eigen risico proberen (Maak een back-up!)</string>
   <string name="sync_use_summary_taskwarrior">Synchronisatie met Taskwarrior als %s</string>
   <string name="sync_use_summary_mirakel">Synchronisatie met Mirakel als %s</string>
-  <string name="sync_use_summary_nothing">Syngronisatie niet gebruiken</string>
+  <string name="sync_use_summary_nothing">Synchronisatie niet gebruiken</string>
   <string name="sync_user">Gebruikersnaam</string>
   <string name="sync_user_summary">Server gebruikersnaam</string>
   <string name="sync_server">Server</string>
@@ -168,9 +168,11 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="delete_done_warning_message">U kunt dit niet ongedaan maken. Maak een reservekopie!</string>
   <string name="delete_done_success">Alle afgeronde taken zijn verwijderd.</string>
   <string name="menu_color">Kleur wijzigen</string>
+  <string name="howto_setup_server">Hoe een server in te stellen</string>
   <string name="register_server">Als u een account nodig voor de synchronisatie op onze server, stuur ons dan een e-mail. Met de volgende versie krijgt u de mogelijkheid om een account te registreren!</string>
   <string name="special_lists_title">Meta lijsten</string>
   <string name="register">Registreren</string>
+  <string name="auto_backup_interval">Reservekopie interval</string>
   <string name="auto_backup_interval_summary">Reservekopie maken van de database om %s dagen</string>
   <string name="preferences_colorize">Kleuren</string>
   <string name="preferences_colorize_tasks">Taken inkleuren</string>
@@ -213,7 +215,12 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="semantics_no_due">Vervaldatum niet instellen</string>
   <string name="settings_file_default_title">Taaknaam bij geïmporteerd bestand</string>
   <string name="semantic_new">sjabloon</string>
+  <string name="tag_new">Nieuwe Tag</string>
+  <string name="tag_settings">Instellingen voor tags</string>
+  <string name="color">Kleur</string>
   <string name="tag_name">Naam</string>
+  <string name="tag_dark_text">Moet de tekst zwart zijn?</string>
+  <string name="tag_click">Tags</string>
   <string name="settings_subtask">Subtaken</string>
   <string name="settings_subtask_default_new">Nieuwe taak direct weergeven</string>
   <string name="settings_subtask_add_to_same_list">Subtaak toevoegen aan de lijst van de taak</string>
@@ -227,6 +234,16 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="settings_task_fragment">Taakinstellingen overzicht</string>
   <string name="settings_dev">Ontwikkel instellingen</string>
   <string name="settings_dev_sync">Synchronisatie</string>
+  <string name="settings_dev_dump_tw_summary">De ontvangen text dumpen in  /sdcard/mirakel/</string>
+  <string name="settings_dev_dump_tw">Dump ontvangen TW-berichten</string>
+  <string name="enable">Aan het inschakelen</string>
+  <string name="disable">Aan het uitschakelen</string>
+  <string name="enabled">Ingeschakeld</string>
+  <string name="disabled">Uitgeschakeld</string>
+  <string name="change_dev_mode">U heeft de ontwikkelingsinstellingen %s!</string>
+  <string name="enableDebugLog">Debug-Logcat inschakelen?</string>
+  <string name="action_contact">Contact opnemen/ fouten melden</string>
+  <string name="action_contact_summary">Schrijf ons een e-mail!</string>
   <string name="title_donations">Doneer</string>
   <string name="add">Toevoegen</string>
   <string name="action_credits">Colofon</string>
@@ -251,6 +268,25 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="feedback">Een terugkoppelingen versturen</string>
   <string name="credits_libraries">Gebruikte bibliotheken</string>
   <string name="credits_license_title">Licentie</string>
+  <string name="demo_mode">Demonstratie modus</string>
+  <string name="demo_drop_db">Start met oorpsronkelijke demo database</string>
+  <string name="write_logs_to_file">Schrijf logs weg in een bestand</string>
+  <string name="alert_caldav"><![CDATA[Synchronisatie met CalDAV is nog niet 100%% stabiel. Vriendelijk verzoek om dit voorzichtig uit te proberen en om fouten te melden!]]></string>
+  <string name="alert_caldav_title">Informatie voor CalDAV</string>
+  <string name="alert_taskwarrior"><![CDATA[Synchroniseren met Taskwarrior lijkt te werken, maar maak aub een backup van uw gegevens! Vriendelijk verzoek om alle problemen en fouten te melden zodat we er iets aan kunnen doen.!]]></string>
+  <string name="alert_taskwarrior_title">Informatie voor Taskwarrior</string>
   <string name="special_list_where_subtask_title_text">Subtaken</string>
+  <string name="special_list_where_tag_title_text">Tags</string>
   <string name="special_list_where_progress_title_text">Voortgang</string>
+  <string name="special_list_where_file_title_text">Bestand</string>
+  <string-array name="special_lists_subtask_options">
+    <item>Selectie omkeren</item>
+    <item>Zoek naar sub-taken of taken met sub-taken</item>
+  </string-array>
+  <string-array name="file_choice">
+    <item>Niet actief</item>
+    <item>Heeft bestand</item>
+    <item>Heeft geen bestand</item>
+  </string-array>
+  <string name="remove">Verwijder</string>
 </resources>
