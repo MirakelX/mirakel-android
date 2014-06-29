@@ -23,7 +23,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
@@ -233,7 +232,7 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
 				}
 				break;
 			case "imask":
-				t.addReccuringChild(new Pair<>(el.get("parent").getAsString(),
+				t.addRecurringChild(new Pair<>(el.get("parent").getAsString(),
 						(int) val.getAsFloat()));
 				break;
 			case "parent":
@@ -306,8 +305,7 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
 
 	private static void handleTags(final Task t, final JsonElement val) {
 		final JsonArray tags = val.getAsJsonArray();
-		final List<Tag> currentTags = new ArrayList<>();
-		Collections.copy(currentTags, t.getTags());
+		final List<Tag> currentTags = new ArrayList<>(t.getTags());
 		for (final JsonElement tag : tags) {
 			if (tag.isJsonPrimitive()) {
 				String tagName = tag.getAsString();
