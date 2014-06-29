@@ -101,8 +101,8 @@ public class Task extends TaskBase {
 	 */
 	public static List<Task> all() {
 		final Cursor c = Task.database.query(Task.TABLE, Task.allColumns,
-				BASIC_FILTER_DISPLAY_TASKS + " AND " + DONE + "=0", null, null,
-				null, null);
+                BASIC_FILTER_DISPLAY_TASKS + " AND " + DONE + "=0", null, null,
+                null, null);
 		final List<Task> list = cursorToTaskList(c);
 		c.close();
 		return list;
@@ -219,7 +219,7 @@ public class Task extends TaskBase {
 		if(force)
 			extraSQL="";
 		final Cursor cursor = Task.database.query(Task.TABLE, Task.allColumns,
-				DatabaseHelper.ID + "=" + id + extraSQL, null, null, null, null);
+                DatabaseHelper.ID + "=" + id + extraSQL, null, null, null, null);
 		cursor.moveToFirst();
 		if (cursor.getCount() != 0) {
 			final Task t = cursorToTask(cursor);
@@ -238,16 +238,18 @@ public class Task extends TaskBase {
 	 */
 	public static List<Task> getBySyncState(final SYNC_STATE state) {
 		final Cursor c = Task.database.query(Task.TABLE, Task.allColumns,
-				DatabaseHelper.SYNC_STATE_FIELD + "=" + state.toInt() + " and "
-						+ TaskBase.LIST_ID + ">0", null, null, null, null);
+                DatabaseHelper.SYNC_STATE_FIELD + "=" + state.toInt() + " and "
+                        + TaskBase.LIST_ID + ">0", null, null, null, null
+        );
 		return cursorToTaskList(c);
 	}
 
 	public static Task getByUUID(final String uuid) {
 		final Cursor cursor = Task.database.query(Task.TABLE, Task.allColumns,
-				TaskBase.UUID + "='" + uuid + "' AND NOT "
-						+ DatabaseHelper.SYNC_STATE_FIELD + "="
-						+ SYNC_STATE.DELETE, null, null, null, null);
+                TaskBase.UUID + "='" + uuid + "' AND NOT "
+                        + DatabaseHelper.SYNC_STATE_FIELD + "="
+                        + SYNC_STATE.DELETE, null, null, null, null
+        );
 		cursor.moveToFirst();
 		if (cursor.getCount() != 0) {
 			final Task t = cursorToTask(cursor);
@@ -304,9 +306,10 @@ public class Task extends TaskBase {
 	}
 
 	public static List<Pair<Long, String>> getTaskNames() {
-		final Cursor c = Task.database.query(Task.TABLE, new String[] {
-				DatabaseHelper.ID, DatabaseHelper.NAME },
-				BASIC_FILTER_DISPLAY_TASKS, null, null, null, null);
+		final Cursor c = Task.database.query(Task.TABLE, new String[]{
+                        DatabaseHelper.ID, DatabaseHelper.NAME},
+                BASIC_FILTER_DISPLAY_TASKS, null, null, null, null
+        );
 		c.moveToFirst();
 		final List<Pair<Long, String>> names = new ArrayList<>();
 		while (!c.isAfterLast()) {
@@ -404,7 +407,7 @@ public class Task extends TaskBase {
 			order += ", " + TaskBase.LIST_ID + " ASC";
 		}
 		return Task.database.query(Task.TABLE, Task.allColumns, where, null,
-				null, null, TaskBase.DONE + ", " + order);
+                null, null, TaskBase.DONE + ", " + order);
 	}
 
 	private static Cursor getTasksCursor(final Task subtask) {
@@ -413,10 +416,10 @@ public class Task extends TaskBase {
 			columns += ", t." + Task.allColumns[i];
 		}
 		return Task.database.rawQuery("SELECT " + columns + " FROM "
-				+ Task.TABLE + " t INNER JOIN " + Task.SUBTASK_TABLE
-				+ " s on t._id=s.child_id WHERE s.parent_id=? ORDER BY "
-				+ getSorting(ListMirakel.SORT_BY_OPT), new String[] { ""
-				+ subtask.getId() });
+                + Task.TABLE + " t INNER JOIN " + Task.SUBTASK_TABLE
+                + " s on t._id=s.child_id WHERE s.parent_id=? ORDER BY "
+                + getSorting(ListMirakel.SORT_BY_OPT), new String[]{""
+                + subtask.getId()});
 	}
 
 	// Static Methods
@@ -435,7 +438,7 @@ public class Task extends TaskBase {
 				+ listIDs + ")";
 		final Cursor cursor = MirakelContentProvider.getReadableDatabase()
 				.query(Task.TABLE, Task.allColumns, where, null, null, null,
-						null);
+                        null);
 		return cursorToTaskList(cursor);
 
 	}
@@ -457,7 +460,7 @@ public class Task extends TaskBase {
 	 */
 	public static Task getToSync(final long id) {
 		final Cursor cursor = Task.database.query(Task.TABLE, Task.allColumns,
-				DatabaseHelper.ID + "='" + id + "'", null, null, null, null);
+                DatabaseHelper.ID + "='" + id + "'", null, null, null, null);
 		cursor.moveToFirst();
 		if (cursor.getCount() != 0) {
 			final Task t = cursorToTask(cursor);
@@ -652,7 +655,7 @@ public class Task extends TaskBase {
 		Task.database.endTransaction();
 		handleInsertTWRecurring();
 		final Cursor cursor = Task.database.query(Task.TABLE, Task.allColumns,
-				DatabaseHelper.ID + " = " + insertId, null, null, null, null);
+                DatabaseHelper.ID + " = " + insertId, null, null, null, null);
 		cursor.moveToFirst();
 		final Task newTask = cursorToTask(cursor);
 		cursor.close();
@@ -800,29 +803,27 @@ public class Task extends TaskBase {
 		if (calledFromDBHelper) {
 			log = false;
 		}
-		if (isEdited(RECURRING)) {
-			final Task old = Task.get(getId());
-			if (old.getRecurrenceId() == -1 && getRecurrenceId() != -1
-					&& !calledFromSync) {
-				insertFirstRecurringChild();
-			} else if (old.getRecurrenceId() != getRecurrenceId()
-					&& !calledFromSync) {
-				final Recurring r = getRecurring();
-				if (r == null) {
-                    final Cursor c=database.query(Recurring.TW_TABLE,new String[]{"parent"},"child=?",new String[]{getId()+""},null,null,null);
-                    if(c.moveToFirst()&&c.getCount()>0){
-                        long masterID=c.getLong(0);
-                        database.execSQL("UPDATE "+TABLE+" SET "+RECURRING+"=-1 WHERE "+DatabaseHelper.ID+" IN (SELECT child FROM "+Recurring.TW_TABLE+" WHERE parent="+masterID+")");
-                        database.delete(Recurring.TW_TABLE,"parent=?",new String[]{masterID+""});
-                        database.delete(TABLE,DatabaseHelper.ID+"=?",new String[]{masterID+""});
+        if (isEdited(RECURRING) && !calledFromSync) {
+            final Task old = Task.get(getId());
+            if (old.getRecurrenceId() == -1 && getRecurrenceId() != -1) {
+                insertFirstRecurringChild();
+            } else if (old.getRecurrenceId() != getRecurrenceId()) {
+                final Recurring r = getRecurring();
+                if (r == null) {
+                    final Cursor c = database.query(Recurring.TW_TABLE, new String[]{"parent"}, "child=?", new String[]{getId() + ""}, null, null, null);
+                    if (c.moveToFirst() && c.getCount() > 0) {
+                        long masterID = c.getLong(0);
+                        database.execSQL("UPDATE " + TABLE + " SET " + RECURRING + "=-1 WHERE " + DatabaseHelper.ID + " IN (SELECT child FROM " + Recurring.TW_TABLE + " WHERE parent=" + masterID + ")");
+                        database.delete(Recurring.TW_TABLE, "parent=?", new String[]{masterID + ""});
+                        database.delete(TABLE, DatabaseHelper.ID + "=?", new String[]{masterID + ""});
                     }
                     c.close();
-				} else {
-					updateRecurringChilds(r);
-				}
+                } else {
+                    updateRecurringChilds(r);
+                }
 
-			}
-		}
+            }
+        }
 
 		if (isEdited(TaskBase.DONE) && isDone()) {
 			setSubTasksDone();
@@ -845,15 +846,16 @@ public class Task extends TaskBase {
 		if (isEdited(TaskBase.RECURRING)) {
 			long master = getId();
 			Cursor c = database.query(Recurring.TW_TABLE,
-					new String[] { "parent" }, "child=?", new String[] { master
-							+ "" }, null, null, null);
+                    new String[]{"parent"}, "child=?", new String[]{master
+                            + ""}, null, null, null
+            );
 			c.moveToFirst();
 			if (c.getCount() > 0) {
 				master = c.getLong(0);
 			}
 			c.close();
-			c = database.query(Recurring.TW_TABLE, new String[] { "child" },
-					"parent=?", new String[] { master + "" }, null, null, null);
+			c = database.query(Recurring.TW_TABLE, new String[]{"child"},
+                    "parent=?", new String[]{master + ""}, null, null, null);
 			boolean first = true;
 			String ids = "";
 			for (c.moveToFirst(); c.moveToNext();) {
@@ -985,9 +987,9 @@ public class Task extends TaskBase {
 			}
 
 			final Cursor c = database.query(Recurring.TW_TABLE,
-					Recurring.allTWColumns, "parent=? AND child=?",
-					new String[] { master.getId() + "", getId() + "" }, null,
-					null, null);
+                    Recurring.allTWColumns, "parent=? AND child=?",
+                    new String[]{master.getId() + "", getId() + ""}, null,
+                    null, null);
 			c.moveToFirst();
 			if (c.getCount() < 1) {
 				final ContentValues cv = new ContentValues();
@@ -1018,8 +1020,9 @@ public class Task extends TaskBase {
 	private void updateRecurringMaster() {
 		// update master if child changed
 		final Cursor c = database.query(Recurring.TW_TABLE,
-				new String[] { "parent" }, "child=?", new String[] { getId()
-						+ "" }, null, null, null);
+                new String[]{"parent"}, "child=?", new String[]{getId()
+                        + ""}, null, null, null
+        );
 		c.moveToFirst();
 		if (c.getCount() > 0) {
 			final ContentValues cv = new ContentValues();
@@ -1093,9 +1096,9 @@ public class Task extends TaskBase {
 
 	private boolean saveTag(final Tag t) {
 		final Cursor c = database.query(Tag.TAG_CONNECTION_TABLE,
-				new String[] { "count(*)" }, "task_id=? and tag_id=?",
-				new String[] { getId() + "", t.getId() + "" }, null, null,
-				null, null);
+                new String[]{"count(*)"}, "task_id=? and tag_id=?",
+                new String[]{getId() + "", t.getId() + ""}, null, null,
+                null, null);
 		c.moveToFirst();
 		if (c.getCount() > 0 && c.getInt(0) > 0) {
 			c.close();
