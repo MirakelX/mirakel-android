@@ -93,5 +93,6 @@
     </string-array>
     <!-- Misc -->
     <string name="message_notification">Notification</string>
+    <string name="destroy_recurring_task">Delete %s</string>
     
 </resources>

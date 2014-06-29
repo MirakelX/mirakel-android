@@ -571,20 +571,39 @@ public class MainActivity extends ActionBarActivity implements
 						new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(final DialogInterface dialog,
-									final int which) {
+												final int which) {
 								for (final Task t : tasks) {
-									t.destroy();
+									if (t.getRecurring() != null) {
+										handleDestroyRecurringTask(t);
+									} else {
+										t.destroy();
+									}
 								}
 								setCurrentList(MainActivity.this.currentList);
 								ReminderAlarm.updateAlarms(main);
 								updateShare();
 							}
-						})
+						}
+				)
 				.setNegativeButton(this.getString(android.R.string.no), null)
 				.show();
 		if (getTasksFragment() != null) {
 			getTasksFragment().updateList(false);
 		}
+	}
+	private void handleDestroyRecurringTask(final Task task) {
+		TaskDialogHelpers.handleChangeRecurringTask(this,getString(R.string.destroy_recurring_task,task.getName()),new TaskDialogHelpers.OnRecurrenceChange() {
+			@Override
+			public void handleSingleChange() {
+				task.destroy();
+			}
+
+			@Override
+			public void handleMultiChange() {
+				Task master = task.getRecurrenceMaster();
+				master.destroy();
+			}
+		});
 	}
 
 	/**
