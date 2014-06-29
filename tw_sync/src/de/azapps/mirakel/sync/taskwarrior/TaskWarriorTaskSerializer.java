@@ -213,7 +213,19 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
 					int oldOffset = -1;
 					do {
 						final int currentOffset = c.getInt(1);
-						while (++oldOffset != currentOffset) {
+						if(currentOffset <= oldOffset) {
+							final long childId = c.getLong(0);
+							// This should not happen – it means that one offset is twice in the DB
+							final Task child = Task.get(childId,true);
+							if(child!=null) {
+								child.destroy(true);
+							} else {
+								// Whoa there is some garbage which we should destroy!
+								Task.destroyRecurrenceGarbageForTask(childId);
+							}
+							continue;
+						}
+						while (++oldOffset < currentOffset) {
 							mask += "X";
 						}
 						final Task child = Task.get(c.getLong(0));

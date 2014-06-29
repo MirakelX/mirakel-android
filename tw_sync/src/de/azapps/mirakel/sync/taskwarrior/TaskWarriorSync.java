@@ -291,8 +291,8 @@ public class TaskWarriorSync {
 			final Gson gson = new GsonBuilder().registerTypeAdapter(Task.class,
 					new TaskDeserializer(true, accountMirakel, this.mContext))
 					.create();
-			final List<Task> reccuringTasksCreate = new ArrayList<>();
-			final List<Task> reccuringTasksSave = new ArrayList<>();
+			final List<Task> recurringTasksCreate = new ArrayList<>();
+			final List<Task> recurringTasksSave = new ArrayList<>();
 
 			for (final String taskString : tasksString) {
 				if (taskString.charAt(0) != '{') {
@@ -331,7 +331,7 @@ public class TaskWarriorSync {
 					}
 				} else if (local_task == null) {
 					if (server_task.hasRecurringParent()) {
-						reccuringTasksCreate.add(server_task);
+						recurringTasksCreate.add(server_task);
 					} else {
 						try {
 							server_task.create(false, true);
@@ -344,13 +344,13 @@ public class TaskWarriorSync {
 					server_task.takeIdFrom(local_task);
 					Log.d(TAG, "update " + server_task.getName());
 					if (server_task.hasRecurringParent()) {
-						reccuringTasksSave.add(server_task);
+						recurringTasksSave.add(server_task);
 					} else {
 						server_task.save(false, true);
 					}
 				}
 			}
-			for (final Task t : reccuringTasksCreate) {
+			for (final Task t : recurringTasksCreate) {
 				final Task t_local = Task.getByUUID(t.getUUID());
 				if (t_local != null) {
 					t.takeIdFrom(t);
@@ -363,7 +363,7 @@ public class TaskWarriorSync {
 					}
 				}
 			}
-			for (final Task t : reccuringTasksSave) {
+			for (final Task t : recurringTasksSave) {
 				t.save(false, true);
 			}
 		}
