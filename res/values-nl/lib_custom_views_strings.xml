@@ -15,6 +15,7 @@
   <string name="task_fragment_content">Notities</string>
   <string name="task_fragment_subtask">Subtaken</string>
   <string name="task_fragment_progress">Voortgang</string>
+  <string name="task_fragment_tags">Tags</string>
   <string name="audio_record_title">Audio opname...</string>
   <string name="audio_record_message">Opname...</string>
   <string name="audio_playback_title">
