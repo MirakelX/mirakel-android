@@ -25,6 +25,7 @@
   <string name="audio_playback_stop">Stopp</string>
   <string name="task_change_prio_title">Priorität ändern</string>
   <string name="remove_subtask">Lösche Unteraufgabe</string>
+  <string name="remove_files_summary">Möchtest du %1$s von \"%2$s\" entfernen?</string>
   <string name="add_existing">Vorhanden</string>
   <string name="task_name">Aufgabenname:</string>
   <string name="subtask_add_options">Filter &gt;&gt;</string>
@@ -33,8 +34,19 @@
   <string name="subtask_content">Aufgabe mit Notiz?</string>
   <string name="new_task">Neue Aufgabe…</string>
   <string name="add_subtasks">Unteraufgabe hinzufügen&#8230;</string>
+  <string name="add_tags">Tag hinzufügen&#8230;</string>
   <string name="add">Hinzufügen</string>
   <string name="add_subtask">Unteraufgabe hinzufügen</string>
   <string name="file_no_activity">Ich weiß nicht, wie ich diese Datei öffnen soll – tut mir leid</string>
   <string name="remove_files">Löse Dateien von der Aufgabe</string>
+  <string name="search_tag">Tag suchen</string>
+  <string-array name="tag_menu">
+    <item>Tag bearbeiten</item>
+    <item>Tag entfernen</item>
+  </string-array>
+  <string name="tag_has_dark_text">Text ist schwarz</string>
+  <string-array name="recurring_task_select">
+    <item>Nur diese Wiederholung</item>
+    <item>Alle Wiederholungen</item>
+  </string-array>
 </resources>
