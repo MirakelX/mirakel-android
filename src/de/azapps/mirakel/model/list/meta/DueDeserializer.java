@@ -16,15 +16,16 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package de.azapps.mirakel.model.list.meta;
 
-import java.lang.reflect.Type;
-import java.util.Map.Entry;
+package de.azapps.mirakel.model.list.meta;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
+
+import java.lang.reflect.Type;
+import java.util.Map.Entry;
 
 import de.azapps.mirakel.model.list.meta.SpecialListsDueProperty.Unit;
 
@@ -46,13 +47,13 @@ public class DueDeserializer implements
                         unit = entry.getValue().getAsInt();
                         break;
                     }
-                //$FALL-THROUGH$
+                    //$FALL-THROUGH$
                 case "length":
                     if (entry.getValue().isJsonPrimitive()) {
                         length = entry.getValue().getAsInt();
                         break;
                     }
-                //$FALL-THROUGH$
+                    //$FALL-THROUGH$
                 default:
                     throw new JsonParseException("unkown format");
                 }

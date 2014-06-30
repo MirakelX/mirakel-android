@@ -16,10 +16,12 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package de.azapps.mirakel.model.list.meta;
 
 import android.content.Context;
-import de.azapps.mirakel.model.DatabaseHelper;
+
+import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.task.Task;
 
@@ -47,7 +49,7 @@ public class SpecialListsSubtaskProperty extends SpecialListsBaseProperty {
 
     @Override
     public String getWhereQuery() {
-        return (isNegated ? "NOT " : "") + DatabaseHelper.ID
+        return (isNegated ? "NOT " : "") + ModelBase.ID
                + " IN ( SELECT DISTINCT "
                + (isParent ? "parent_id" : "child_id") + " FROM "
                + Task.SUBTASK_TABLE + ")";

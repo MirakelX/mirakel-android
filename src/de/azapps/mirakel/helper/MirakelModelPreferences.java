@@ -1,3 +1,22 @@
+/*******************************************************************************
+ * Mirakel is an Android App for managing your ToDo-Lists
+ *
+ * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+
 package de.azapps.mirakel.helper;
 
 import java.util.List;
@@ -15,12 +34,12 @@ public class MirakelModelPreferences extends MirakelPreferences {
     private static final String TAG = "MirakelModelPreferences";
 
     public static void setDefaultAccount(final AccountMirakel a) {
-        settings.edit().putInt("defaultAccountID", a.getId()).commit();
+        settings.edit().putLong("defaultAccountID", a.getId()).commit();
     }
 
     public static AccountMirakel getDefaultAccount() {
-        final int id = settings.getInt("defaultAccountID", AccountMirakel
-                                       .getLocal().getId());
+        final long id = settings.getLong("defaultAccountID", AccountMirakel
+                                         .getLocal().getId());
         final AccountMirakel a = AccountMirakel.get(id);
         if (a != null) {
             return a;
@@ -128,7 +147,7 @@ public class MirakelModelPreferences extends MirakelPreferences {
 
     public static void setSubtaskAddToList(final ListMirakel list) {
         final Editor editor = getEditor();
-        editor.putInt("subtaskAddToList", list.getId());
+        editor.putLong("subtaskAddToList", list.getId());
         editor.commit();
     }
 

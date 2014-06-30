@@ -16,6 +16,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package de.azapps.mirakel.helper.export_import;
 
 import java.io.FileInputStream;
@@ -57,9 +58,9 @@ public class WunderlistImport {
             return false;
         }
         final Set<Entry<String, JsonElement>> f = i.entrySet();
-        Map<String, Integer> listMapping = new HashMap<String, Integer>();
-        List<Pair<Integer, String>> contents = new ArrayList<Pair<Integer, String>>();
-        taskMapping = new HashMap<String, Integer>();
+        Map<String, Long> listMapping = new HashMap<>();
+        List<Pair<Integer, String>> contents = new ArrayList<>();
+        taskMapping = new HashMap<>();
         for (final Entry<String, JsonElement> e : f) {
             if (e.getKey().equals("lists")) {
                 final Iterator<JsonElement> iter = e.getValue()
@@ -92,8 +93,8 @@ public class WunderlistImport {
         return true;
     }
 
-    private static Map<String, Integer> parseList(final JsonObject jsonList,
-            final Map<String, Integer> listMapping) {
+    private static Map<String, Long> parseList(final JsonObject jsonList,
+            final Map<String, Long> listMapping) {
         final String name = jsonList.get("title").getAsString();
         final String id = jsonList.get("id").getAsString();
         final ListMirakel l = ListMirakel.newList(name);
@@ -110,11 +111,11 @@ public class WunderlistImport {
     private static List<Pair<Task, String>> subtasks = new ArrayList<Pair<Task, String>>();
 
     private static List<Pair<Integer, String>> parseTask(
-        final JsonObject jsonTask, final Map<String, Integer> listMapping,
+        final JsonObject jsonTask, final Map<String, Long> listMapping,
         final List<Pair<Integer, String>> contents, final Context ctx) {
         final String name = jsonTask.get("title").getAsString();
         final String list_id_string = jsonTask.get("list_id").getAsString();
-        final Integer listId = listMapping.get(list_id_string);
+        final Long listId = listMapping.get(list_id_string);
         ListMirakel list = null;
         if (listId != null) {
             list = ListMirakel.get(listId);

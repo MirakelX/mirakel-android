@@ -16,9 +16,8 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package de.azapps.mirakel.model.list.meta;
 
-import java.util.Map.Entry;
+package de.azapps.mirakel.model.list.meta;
 
 import android.util.Log;
 
@@ -26,6 +25,8 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
+
+import java.util.Map.Entry;
 
 import de.azapps.mirakel.model.list.meta.SpecialListsStringProperty.Type;
 
@@ -56,19 +57,19 @@ public class StringDeserializer<T extends SpecialListsStringProperty>
                         negated = entry.getValue().getAsBoolean();
                         break;
                     }
-                //$FALL-THROUGH$
+                    //$FALL-THROUGH$
                 case "type":
                     if (entry.getValue().isJsonPrimitive()) {
                         type = entry.getValue().getAsInt();
                         break;
                     }
-                //$FALL-THROUGH$
+                    //$FALL-THROUGH$
                 case "serachString":
                     if (entry.getValue().isJsonPrimitive()) {
                         serachString = entry.getValue().getAsString();
                         break;
                     }
-                //$FALL-THROUGH$
+                    //$FALL-THROUGH$
                 default:
                     throw new JsonParseException("unkown format");
                 }

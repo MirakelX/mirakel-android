@@ -16,75 +16,71 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package de.azapps.mirakel.model.tags;
 
-import java.util.ArrayList;
-import java.util.List;
+package de.azapps.mirakel.model.tags;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
-import de.azapps.mirakel.model.DatabaseHelper;
+import android.net.Uri;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import de.azapps.mirakel.model.MirakelInternalContentProvider;
+import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.R;
 
 public class Tag extends TagBase {
 
     public static final String TABLE = "tag";
     public static final String TAG_CONNECTION_TABLE = "task_tag";
-    public static final String[] allColumns = { DatabaseHelper.ID, DARK_TEXT,
-                                                DatabaseHelper.NAME, BACKGROUND_COLOR_A, BACKGROUND_COLOR_R,
+    public static final String[] allColumns = { ModelBase.ID, ModelBase.NAME, DARK_TEXT,
+                                                BACKGROUND_COLOR_A, BACKGROUND_COLOR_R,
                                                 BACKGROUND_COLOR_G, BACKGROUND_COLOR_B
                                               };
-    private static Context context;
-    private static DatabaseHelper dbHelper;
-    private static SQLiteDatabase database;
-
+    private static final Uri URI = MirakelInternalContentProvider.TAG_URI;
     public Tag(final int id, final boolean isDarkBackground, final String name,
                final int backColor) {
         super(id, isDarkBackground, backColor, name);
     }
 
+    protected Uri getUri() {
+        return URI;
+    }
+
     public static int count() {
         int count = 0;
-        final Cursor c = database.rawQuery("SELECT count(*) FROM " + TABLE,
-                                           null);
+        final Cursor c = query(URI, new String[] {"count(*)"}, null, null, null);
         c.moveToFirst();
-        if (c.getCount() > 0) {
+        if (c.moveToFirst()) {
             count = c.getInt(0);
         }
         c.close();
         return count;
     }
 
-    public static Tag get(final int id) {
-        final Cursor c = database.query(TABLE, allColumns, DatabaseHelper.ID
-                                        + "=?", new String[] { id + "" }, null, null, null);
-        c.moveToFirst();
-        final Tag t;
-        if (c.getCount() > 0) {
+    public static Tag get(final long id) {
+        final Cursor c = query(URI, allColumns, ModelBase.ID
+                               + "=?", new String[] { id + "" }, null);
+        Tag t = null;
+        if (c.moveToFirst()) {
             t = cursorToTag(c);
-        } else {
-            t = null;
         }
         c.close();
         return t;
     }
 
     public static List<Tag> all() {
-        final Cursor c = database.query(TABLE, allColumns, null, null, null,
-                                        null, null);
+        final Cursor c = query(URI, allColumns, null, null, null);
         return cursorToTagList(c);
     }
 
     public static List<Tag> getTagsForTask(final long id) {
-        if (database == null) {
-            return new ArrayList<>();
-        }
-        final Cursor c = database.rawQuery(getTagsQuery(Tag.allColumns),
-                                           new String[] { id + "" });
+        final Cursor c = query(MirakelInternalContentProvider.TASK_TAG_URI, addPrefix(allColumns, TABLE),
+                               TAG_CONNECTION_TABLE + ".task_id=?", new String[] { id + "" }, null);
         return Tag.cursorToTagList(c);
     }
 
@@ -101,7 +97,7 @@ public class Tag extends TagBase {
         }
         final String query = "SELECT " + s + " FROM " + TAG_CONNECTION_TABLE
                              + " INNER JOIN " + Tag.TABLE + " ON " + TAG_CONNECTION_TABLE
-                             + ".tag_id=" + Tag.TABLE + "." + DatabaseHelper.ID + " WHERE "
+                             + ".tag_id=" + Tag.TABLE + "." + ModelBase.ID + " WHERE "
                              + TAG_CONNECTION_TABLE + ".task_id=?";
         return query;
     }
@@ -117,24 +113,16 @@ public class Tag extends TagBase {
             return t;
         }
         final ContentValues cv = new ContentValues();
-        cv.put(DatabaseHelper.NAME, name);
+        cv.put(ModelBase.NAME, name);
         cv.put(DARK_TEXT, dark);
         cv.put(BACKGROUND_COLOR_R, Color.red(color));
         cv.put(BACKGROUND_COLOR_G, Color.green(color));
         cv.put(BACKGROUND_COLOR_B, Color.blue(color));
         cv.put(BACKGROUND_COLOR_A, Color.alpha(color));
-        final int id = (int) database.insert(TABLE, null, cv);
-        return getTag(id);
+        final long id = insert(URI, cv);
+        return get(id);
     }
 
-    public static Tag getTag(final int id) {
-        final Cursor c = database.query(TABLE, allColumns, DatabaseHelper.ID
-                                        + "=?", new String[] { "" + id }, null, null, null);
-        c.moveToFirst();
-        final Tag t = cursorToTag(c);
-        c.close();
-        return t;
-    }
 
     public static int getNextColor(final int count, final Context ctx) {
         final TypedArray ta = ctx.getResources().obtainTypedArray(
@@ -153,17 +141,18 @@ public class Tag extends TagBase {
 
     public static Tag cursorToTag(final Cursor c) {
         if (c.getCount() > 0) {
-            return new Tag(c.getInt(0), c.getShort(1) == 1, c.getString(2),
-                           Color.argb(c.getShort(3), c.getShort(4), c.getShort(5),
-                                      c.getShort(6)));
+            return new Tag(c.getInt(c.getColumnIndex(ID)), c.getShort(c.getColumnIndex(DARK_TEXT)) == 1,
+                           c.getString(c.getColumnIndex(NAME)),
+                           Color.argb(c.getShort(c.getColumnIndex(BACKGROUND_COLOR_A)),
+                                      c.getShort(c.getColumnIndex(BACKGROUND_COLOR_R)), c.getShort(c.getColumnIndex(BACKGROUND_COLOR_G)),
+                                      c.getShort(c.getColumnIndex(BACKGROUND_COLOR_B))));
         }
         return null;
     }
 
     private static List<Tag> cursorToTagList(final Cursor c) {
-        final List<Tag> tags = new ArrayList<Tag>();
-        if (c.getCount() > 0) {
-            c.moveToFirst();
+        final List<Tag> tags = new ArrayList<>();
+        if (c.moveToFirst()) {
             do {
                 tags.add(cursorToTag(c));
             } while (c.moveToNext());
@@ -173,8 +162,8 @@ public class Tag extends TagBase {
     }
 
     private static Tag getByName(final String name) {
-        final Cursor c = database.query(TABLE, allColumns, DatabaseHelper.NAME
-                                        + "=?", new String[] { name }, null, null, null);
+        final Cursor c = query(URI, allColumns, ModelBase.NAME
+                               + "=?", new String[] { name }, null);
         c.moveToFirst();
         final Tag t = cursorToTag(c);
         c.close();
@@ -182,45 +171,9 @@ public class Tag extends TagBase {
     }
 
     /**
-     * Close the Database-Connection
-     */
-    public static void close() {
-        dbHelper.close();
-    }
-
-    /**
-     * Initialize the Database and the preferences
-     *
-     * @param context
-     *            The Application-Context
-     */
-    public static void init(final Context ctx) {
-        context = ctx;
-        dbHelper = new DatabaseHelper(context);
-        database = dbHelper.getWritableDatabase();
-    }
-
-    @Override
-    public String toString() {
-        return getName();
-    }
-
-    public void destroy() {
-        database.delete(TABLE, DatabaseHelper.ID + "=?", new String[] { getId()
-                        + ""
-                                                                      });
-    }
-
-    public void save() {
-        database.update(TABLE, getContentValues(), DatabaseHelper.ID + "=?",
-                        new String[] { getId() + "" });
-    }
-
-    /**
      * Serialize Tags of a Task to a tw-compatible json-String
      *
-     * @param The
-     *            task, to which the tags should be serialized
+     * @param id of the task, to which the tags should be serialized
      *
      * @return All tags as json-string in tw-form
      */
