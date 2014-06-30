@@ -1691,11 +1691,15 @@ public class MainActivity extends ActionBarActivity implements
 				}
 			}, 10);
 		} else if (intent.getAction().equals(DefinitionsHelper.SHOW_MESSAGE)) {
-			final String message = intent.getStringExtra(Intent.EXTRA_TEXT);
+			String message = intent.getStringExtra(Intent.EXTRA_TEXT);
+			final String error_message = intent.getStringExtra(DefinitionsHelper.EXTRA_ERROR_MESSAGE);
 			String subject = intent.getStringExtra(Intent.EXTRA_SUBJECT);
 			if (message != null) {
 				if (subject == null) {
 					subject = getString(R.string.message_notification);
+				}
+				if(error_message!=null) {
+					message=getString(R.string.dialog_error_message,message,error_message);
 				}
 				new AlertDialog.Builder(this).setTitle(subject)
 						.setMessage(message).show();

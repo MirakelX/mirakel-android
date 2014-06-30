@@ -94,5 +94,6 @@
     <!-- Misc -->
     <string name="message_notification">Notification</string>
     <string name="destroy_recurring_task">Delete %s</string>
+    <string name="dialog_error_message" formatted="false">Reason: %s\n\nError message: %s</string>
     
 </resources>
