@@ -28,6 +28,7 @@
   <string name="every">Elke</string>
   <string name="recurrence_end_continously">Altijd</string>
   <string name="recurrence_end_date_label">Tot een datum</string>
+  <string name="use_exact_recurrence">Bepaal het herhalingspatroon op basis van de einddatum?</string>
   <string name="recurrence_from_now">Vanaf nu</string>
   <string name="recurrence_from">Van</string>
   <string name="list_all">Alle lijsten</string>
@@ -149,6 +150,8 @@
   <string name="special_list_subtask_parent_not">Heeft geen subtaak</string>
   <string name="special_list_subtask_child">Subtaak is</string>
   <string name="special_list_subtask_child_not">Dit is geen subtaak</string>
+  <string name="no_file">Heeft geen bestand</string>
+  <string name="has_file">Heeft bestand</string>
   <string-array name="due_day_year_values">
     <item>Dag</item>
     <item>Maand</item>
