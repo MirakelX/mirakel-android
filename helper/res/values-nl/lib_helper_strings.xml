@@ -23,6 +23,7 @@ Device: %3$s\n]]>
   <string name="error_CONTACT_NO_CLIENT" tools:ignore="UnusedResources">Geen E-mail cliënt ingestelde</string>
   <string name="error_NO_FILEMANAGER" tools:ignore="UnusedResources">Installeer een bestandsbeheerder</string>
   <string name="error_FILE_URI_SYNTAX_ERROR" tools:ignore="UnusedResources">Er is een interne fout opgetreden bij het parseren van de bestandsnaam</string>
+  <string name="error_MAINACTIVITY_WRONG_POSITION" tools:ignore="UnusedResources">Er is een onverwachte fout opgetreden</string>
   <string name="error_FILE_NOT_FOUND" tools:ignore="UnusedResources">Dit bestand is niet gevonden</string>
   <string name="error_BACKUP_EXPORT_ERROR" tools:ignore="UnusedResources">Er is een fout opgetreden bij het exporteren van de reservekopie</string>
   <string name="error_BACKUP_IMPORT_ERROR" tools:ignore="UnusedResources">Er is een fout opgetreden bij het importeren van het reservekopie</string>
@@ -36,4 +37,5 @@ Device: %3$s\n]]>
   <string name="error_TASKWARRIOR_URL_NOT_FOUND" tools:ignore="UnusedResources">De URL is niet correct. Heeft u de juiste code gescand?</string>
   <string name="error_FILE_NO_PERMISSION" tools:ignore="UnusedResources">Geen toestemming om het bestand te lezen</string>
   <string name="error_LIST_VANISHED" tools:ignore="UnusedResources">Oeps, de lijst is verdwenen...</string>
+  <string name="error_MAINACTVITY_CRAZY_ERROR" tools:ignore="UnusedResources">We weten niet hoe we deze fout moeten oplossen. Mirakel start opnieuw op.</string>
 </resources>

@@ -45,6 +45,7 @@ public class DefinitionsHelper {
 	public static final String ADD_TASK_FROM_WIDGET = "de.azapps.mirakel.ADD_TASK_FROM_WIDGET";
 	public static final String SHOW_TASK_FROM_WIDGET = "de.azapps.mirakel.SHOW_TASK_FROM_WIDGET";
 	public static final String SHOW_MESSAGE = "de.azapps.mirakel.SHOW_MESSAGE";
+	public static final String EXTRA_ERROR_MESSAGE = "de.azapps.mirakel.EXTRA_ERROR_MESSAGE";
 	public static final String TASK_ID = "de.azapp.mirakel.TASK_ID";
 	public static int GRAVITY_LEFT, GRAVITY_RIGHT;
 	public static boolean freshInstall = false;
