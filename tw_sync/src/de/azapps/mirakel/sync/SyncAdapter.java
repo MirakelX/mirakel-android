@@ -65,6 +65,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	public static final String TASKWARRIOR_KEY = "key";
 	public static final String SYNC_STATE = "sync_state";
 	private static CharSequence last_message = null;
+	private static CharSequence last_error_message = null;
 	private final Context mContext;
 	public static final String ACCOUNT_PREFIX = "ACCOUNT_";
 	private final NotificationManager mNotificationManager;
@@ -124,11 +125,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		}
 		if (type.equals(TaskWarriorSync.TYPE)) {
 			TW_ERRORS error = TW_ERRORS.NO_ERROR;
+			last_error_message = null;
 			try {
 				new TaskWarriorSync(this.mContext).sync(account);
 			} catch (final TaskWarriorSyncFailedExeption e) {
 				Log.e(TAG, "SyncError", e);
 				error = e.getError();
+				last_error_message = e.getMessage();
 			}
 			switch (error) {
 			case NO_ERROR:
@@ -192,6 +195,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				return;
 			}
 			openIntent.setAction(DefinitionsHelper.SHOW_MESSAGE);
+			openIntent.putExtra(DefinitionsHelper.EXTRA_ERROR_MESSAGE,last_error_message);
 			openIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, title);
 			openIntent
 					.putExtra(android.content.Intent.EXTRA_TEXT, last_message);
