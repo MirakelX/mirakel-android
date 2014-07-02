@@ -16,24 +16,24 @@ import android.widget.TextView;
 @SuppressLint("NewApi")
 public class AccessibleTextView extends TextView {
 
-	public AccessibleTextView(final Context context, final AttributeSet attrs) {
-		super(context, attrs);
-	}
+    public AccessibleTextView(final Context context, final AttributeSet attrs) {
+        super(context, attrs);
+    }
 
-	@Override
-	public void onInitializeAccessibilityEvent(final AccessibilityEvent event) {
-		if (Build.VERSION.SDK_INT >= 14) {
-			super.onInitializeAccessibilityEvent(event);
-			event.setClassName(Button.class.getName());
-		}
-	}
+    @Override
+    public void onInitializeAccessibilityEvent(final AccessibilityEvent event) {
+        if (Build.VERSION.SDK_INT >= 14) {
+            super.onInitializeAccessibilityEvent(event);
+            event.setClassName(Button.class.getName());
+        }
+    }
 
-	@Override
-	public void onInitializeAccessibilityNodeInfo(
-			final AccessibilityNodeInfo info) {
-		if (Build.VERSION.SDK_INT >= 14) {
-			super.onInitializeAccessibilityNodeInfo(info);
-			info.setClassName(Button.class.getName());
-		}
-	}
+    @Override
+    public void onInitializeAccessibilityNodeInfo(
+        final AccessibilityNodeInfo info) {
+        if (Build.VERSION.SDK_INT >= 14) {
+            super.onInitializeAccessibilityNodeInfo(info);
+            info.setClassName(Button.class.getName());
+        }
+    }
 }
