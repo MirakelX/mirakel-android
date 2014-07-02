@@ -13,49 +13,46 @@ import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
 
 public class BackgroundTasks {
-	protected static MainActivityBroadcastReceiver mSyncReciver;
+    protected static MainActivityBroadcastReceiver mSyncReciver;
 
-	static void run(final MainActivity context) {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				ReminderAlarm.updateAlarms(context);
-				NotificationService.updateServices(context, true);
+    static void run (final MainActivity context) {
+        new Thread (new Runnable () {
+            @Override
+            public void run () {
+                ReminderAlarm.updateAlarms (context);
+                NotificationService.updateServices (context, true);
+                if (!MirakelCommonPreferences.containsHighlightSelected ()) {
+                    final SharedPreferences.Editor editor = MirakelPreferences
+                                                            .getEditor ();
+                    editor.putBoolean ("highlightSelected",
+                                       MirakelCommonPreferences.isTablet ());
+                    editor.commit ();
+                }
+                if (!MirakelCommonPreferences.containsStartupAllLists ()) {
+                    final SharedPreferences.Editor editor = MirakelPreferences
+                                                            .getEditor ();
+                    editor.putBoolean ("startupAllLists", false);
+                    editor.putString ("startupList", ""
+                                      + ListMirakel.first ().getId ());
+                    editor.commit ();
+                }
+                // We should remove this in the future, nobody uses such old
+                // versions (hopefully)
+                if (MainActivity.updateTasksUUID) {
+                    final List<Task> tasks = Task.all ();
+                    for (final Task t : tasks) {
+                        t.setUUID (java.util.UUID.randomUUID ().toString ());
+                        t.save ();
+                    }
+                }
+                mSyncReciver = new MainActivityBroadcastReceiver (context);
+                context.registerReceiver (mSyncReciver, new IntentFilter (
+                                              DefinitionsHelper.SYNC_FINISHED));
+            }
+        }).run ();
+    }
 
-				if (!MirakelCommonPreferences.containsHighlightSelected()) {
-					final SharedPreferences.Editor editor = MirakelPreferences
-							.getEditor();
-					editor.putBoolean("highlightSelected",
-							MirakelCommonPreferences.isTablet());
-					editor.commit();
-				}
-
-				if (!MirakelCommonPreferences.containsStartupAllLists()) {
-					final SharedPreferences.Editor editor = MirakelPreferences
-							.getEditor();
-					editor.putBoolean("startupAllLists", false);
-					editor.putString("startupList", ""
-							+ ListMirakel.first().getId());
-					editor.commit();
-				}
-				// We should remove this in the future, nobody uses such old
-				// versions (hopefully)
-				if (MainActivity.updateTasksUUID) {
-					final List<Task> tasks = Task.all();
-					for (final Task t : tasks) {
-						t.setUUID(java.util.UUID.randomUUID().toString());
-						t.save();
-					}
-				}
-				mSyncReciver = new MainActivityBroadcastReceiver(context);
-				context.registerReceiver(mSyncReciver, new IntentFilter(
-						DefinitionsHelper.SYNC_FINISHED));
-
-			}
-		}).run();
-	}
-
-	static void onDestroy(final MainActivity context) {
-		context.unregisterReceiver(mSyncReciver);
-	}
+    static void onDestroy (final MainActivity context) {
+        context.unregisterReceiver (mSyncReciver);
+    }
 }
