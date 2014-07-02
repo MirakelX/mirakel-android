@@ -45,4 +45,8 @@
     <item>Rimuovi etichetta</item>
   </string-array>
   <string name="tag_has_dark_text">Il testo è nero</string>
+  <string-array name="recurring_task_select">
+    <item>Solo questa ricorrenza</item>
+    <item>Tutte le ricorrenze</item>
+  </string-array>
 </resources>
