@@ -14,96 +14,92 @@ import de.azapps.mirakel.settings.R;
 
 public class TagsSettingsActivity extends ListSettings {
 
-	private Tag tag;
+    private Tag tag;
 
-	private Tag newTag() {
-		return Tag.newTag(getString(R.string.tag_new));
+    private Tag newTag() {
+        return Tag.newTag(getString(R.string.tag_new));
+    }
 
-	}
+    @Override
+    protected OnClickListener getAddOnClickListener() {
+        return new OnClickListener() {
+            @SuppressLint("NewApi")
+            @Override
+            public void onClick(final View v) {
+                newTag();
+                clickOnLast();
+                invalidateHeaders();
+            }
+        };
+    }
 
-	@Override
-	protected OnClickListener getAddOnClickListener() {
-		return new OnClickListener() {
+    @Override
+    public OnClickListener getDelOnClickListener() {
+        return new OnClickListener() {
+            @SuppressLint("NewApi")
+            @Override
+            public void onClick(final View v) {
+                TagsSettingsActivity.this.tag.destroy();
+                if (Build.VERSION.SDK_INT < 11 || !onIsMultiPane()) {
+                    finish();
+                } else {
+                    try {
+                        if (getHeader().size() > 0) {
+                            onHeaderClick(getHeader().get(0), 0);
+                        }
+                        invalidateHeaders();
+                    } catch (final Exception e) {
+                        finish();
+                    }
+                }
+            }
+        };
+    }
 
-			@SuppressLint("NewApi")
-			@Override
-			public void onClick(final View v) {
-				newTag();
-				clickOnLast();
-				invalidateHeaders();
-			}
-		};
-	}
+    @Override
+    protected Class<?> getDestClass() {
+        return TagsSettingsActivity.class;
+    }
 
-	@Override
-	public OnClickListener getDelOnClickListener() {
-		return new OnClickListener() {
+    @Override
+    protected Class<?> getDestFragmentClass() {
+        return TagsSettingsFragment.class;
+    }
 
-			@SuppressLint("NewApi")
-			@Override
-			public void onClick(final View v) {
-				TagsSettingsActivity.this.tag.destroy();
-				if (Build.VERSION.SDK_INT < 11 || !onIsMultiPane()) {
-					finish();
-				} else {
-					try {
-						if (getHeader().size() > 0) {
-							onHeaderClick(getHeader().get(0), 0);
-						}
-						invalidateHeaders();
-					} catch (final Exception e) {
-						finish();
-					}
-				}
+    @Override
+    protected OnClickListener getHelpOnClickListener() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-			}
-		};
-	}
+    @Override
+    protected List<Pair<Integer, String>> getItems() {
+        final List<Tag> tags = Tag.all();
+        final List<Pair<Integer, String>> items = new ArrayList<Pair<Integer, String>>();
+        for (final Tag t : tags) {
+            items.add(new Pair<Integer, String>(t.getId(), t.getName()));
+        }
+        return items;
+    }
 
-	@Override
-	protected Class<?> getDestClass() {
-		return TagsSettingsActivity.class;
-	}
+    @Override
+    protected int getSettingsRessource() {
+        return R.xml.settings_tag;
+    }
 
-	@Override
-	protected Class<?> getDestFragmentClass() {
-		return TagsSettingsFragment.class;
-	}
+    @Override
+    protected int getTitleRessource() {
+        return R.string.tag_settings;
+    }
 
-	@Override
-	protected OnClickListener getHelpOnClickListener() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    protected void setupSettings() {
+        this.tag = Tag.getTag(getIntent().getIntExtra("id", 0));
+        new TagSettings(this, this.tag).setup();
+    }
 
-	@Override
-	protected List<Pair<Integer, String>> getItems() {
-		final List<Tag> tags = Tag.all();
-		final List<Pair<Integer, String>> items = new ArrayList<Pair<Integer, String>>();
-		for (final Tag t : tags) {
-			items.add(new Pair<Integer, String>(t.getId(), t.getName()));
-		}
-		return items;
-	}
-
-	@Override
-	protected int getSettingsRessource() {
-		return R.xml.settings_tag;
-	}
-
-	@Override
-	protected int getTitleRessource() {
-		return R.string.tag_settings;
-	}
-
-	@Override
-	protected void setupSettings() {
-		this.tag = Tag.getTag(getIntent().getIntExtra("id", 0));
-		new TagSettings(this, this.tag).setup();
-	}
-
-	public void setTag(final Tag tag) {
-		this.tag = tag;
-	}
+    public void setTag(final Tag tag) {
+        this.tag = tag;
+    }
 
 }
