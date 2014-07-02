@@ -29,9 +29,9 @@ import android.content.Context;
 /**
  * Collects the N last lines of a text stream. Use this collector if your
  * application handles its own logging system.
- * 
+ *
  * @author Kevin Gaudin
- * 
+ *
  */
 class LogFileCollector {
 
@@ -45,14 +45,15 @@ class LogFileCollector {
      * Reads the last lines of a custom log file. The file name is assumed as
      * located in the {@link Application#getFilesDir()} directory if it does not
      * contain any path separator.
-     * 
+     *
      * @param context
      * @param fileName
      * @param numberOfLines
      * @return
      * @throws IOException
      */
-    public static String collectLogFile(Context context, String fileName, int numberOfLines) throws IOException {
+    public static String collectLogFile(Context context, String fileName,
+                                        int numberOfLines) throws IOException {
         BoundedLinkedList<String> resultBuffer = new BoundedLinkedList<String>(numberOfLines);
         final BufferedReader reader;
         if (fileName.contains("/")) {

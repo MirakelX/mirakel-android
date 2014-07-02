@@ -36,9 +36,9 @@ import android.util.Log;
 
 /**
  * ACRA's default {@link ReportSender}: sends report data to a GoogleDocs Form.
- * 
+ *
  * @author Kevin Gaudin
- * 
+ *
  */
 public class GoogleFormSender implements ReportSender {
 
@@ -58,7 +58,7 @@ public class GoogleFormSender implements ReportSender {
      * Creates a new fixed GoogleFormSender which will send data to a Form
      * identified by its key provided as a parameter. Once set, the destination
      * form can not be changed dynamically.
-     * 
+     *
      * @param formKey
      *            The formKey of the destination Google Doc Form.
      */
@@ -68,37 +68,33 @@ public class GoogleFormSender implements ReportSender {
 
     @Override
     public void send(CrashReportData report) throws ReportSenderException {
-        Uri formUri = mFormUri == null ? Uri.parse(String.format(ACRA.getConfig().googleFormUrlFormat(), ACRA
-                .getConfig().formKey())) : mFormUri;
+        Uri formUri = mFormUri == null ? Uri.parse(String.format(ACRA.getConfig().googleFormUrlFormat(),
+                      ACRA
+                      .getConfig().formKey())) : mFormUri;
         final Map<String, String> formParams = remap(report);
         // values observed in the GoogleDocs original html form
         formParams.put("pageNumber", "0");
         formParams.put("backupCache", "");
         formParams.put("submit", "Envoyer");
-
         try {
             final URL reportUrl = new URL(formUri.toString());
             Log.d(LOG_TAG, "Sending report " + report.get(ReportField.REPORT_ID));
             Log.d(LOG_TAG, "Connect to " + reportUrl);
-
             final HttpRequest request = new HttpRequest();
             request.setConnectionTimeOut(ACRA.getConfig().connectionTimeout());
             request.setSocketTimeOut(ACRA.getConfig().socketTimeout());
             request.setMaxNrRetries(ACRA.getConfig().maxNumberOfRequestRetries());
             request.send(reportUrl, Method.POST, HttpRequest.getParamsAsFormString(formParams), Type.FORM);
-
         } catch (IOException e) {
             throw new ReportSenderException("Error while sending report to Google Form.", e);
         }
     }
 
     private Map<String, String> remap(Map<ReportField, String> report) {
-
         ReportField[] fields = ACRA.getConfig().customReportContent();
         if (fields.length == 0) {
             fields = ACRAConstants.DEFAULT_REPORT_FIELDS;
         }
-
         int inputId = 0;
         final Map<String, String> result = new HashMap<String, String>();
         for (ReportField originalKey : fields) {

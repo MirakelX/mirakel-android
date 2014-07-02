@@ -43,23 +43,23 @@ import android.util.Log;
  * {@link ReportField} enum values) or based on your own conversion Map from
  * {@link ReportField} values to String.
  * </p>
- * 
+ *
  * <p>
  * To use specific POST parameter names, you can provide your own report fields
  * mapping scheme:
  * </p>
- * 
+ *
  * <pre>
  * &#64;ReportsCrashes(...)
  * public class myApplication extends Application {
- * 
+ *
  *     public void onCreate() {
  *         super.onCreate();
  *         ACRA.init(this);
  *         Map&lt;ReportField, String&gt; mapping = new HashMap&lt;ReportField, String&gt;();
- *         mapping.put(ReportField.APP_VERSION_CODE, &quot;myAppVerCode'); 
+ *         mapping.put(ReportField.APP_VERSION_CODE, &quot;myAppVerCode');
  *         mapping.put(ReportField.APP_VERSION_NAME, &quot;myAppVerName');
- *         //... 
+ *         //...
  *         mapping.put(ReportField.USER_EMAIL, &quot;userEmail');
  *         // remove any default report sender
  *         ErrorReporter.getInstance().removeAllReportSenders();
@@ -68,7 +68,7 @@ import android.util.Log;
  *     }
  * }
  * </pre>
- * 
+ *
  */
 public class HttpSender implements ReportSender {
 
@@ -121,18 +121,18 @@ public class HttpSender implements ReportSender {
      * {@link ACRA#getConfig()} dynamically. Configuration changes to the
      * formUri are applied automatically.
      * </p>
-     * 
+     *
      * @param method
      *            HTTP {@link Method} to be used to send data. Currently only
      *            {@link Method#POST} and {@link Method#PUT} are available. If
      *            {@link Method#PUT} is used, the {@link ReportField#REPORT_ID}
      *            is appended to the formUri to be compliant with RESTful APIs.
-     * 
+     *
      * @param type
      *            {@link Type} of encoding used to send the report body.
      *            {@link Type#FORM} is a simple Key/Value pairs list as defined
      *            by the application/x-www-form-urlencoded mime type.
-     * 
+     *
      * @param mapping
      *            Applies only to {@link Method#POST} method parameter. If null,
      *            POST parameters will be named with {@link ReportField} values
@@ -154,13 +154,13 @@ public class HttpSender implements ReportSender {
      * Create a new HttpPostSender instance with a fixed destination provided as
      * a parameter. Configuration changes to the formUri are not applied.
      * </p>
-     * 
+     *
      * @param method
      *            HTTP {@link Method} to be used to send data. Currently only
      *            {@link Method#POST} and {@link Method#PUT} are available. If
      *            {@link Method#PUT} is used, the {@link ReportField#REPORT_ID}
      *            is appended to the formUri to be compliant with RESTful APIs.
-     * 
+     *
      * @param type
      *            {@link Type} of encoding used to send the report body.
      *            {@link Type#FORM} is a simple Key/Value pairs list as defined
@@ -180,15 +180,15 @@ public class HttpSender implements ReportSender {
         mMapping = mapping;
         mType = type;
         mUsername = null;
-        mPassword = null;        
+        mPassword = null;
     }
-    
+
     /**
      * <p>
      * Set credentials for this HttpSender that override (if present) the ones
      * set globally.
      * </p>
-     * 
+     *
      * @param username
      *            The username to set for HTTP Basic Auth.
      * @param password
@@ -197,20 +197,20 @@ public class HttpSender implements ReportSender {
     public void setBasicAuth(String username, String password) {
         mUsername = username;
         mPassword = password;
-    }    
+    }
 
     @Override
     public void send(CrashReportData report) throws ReportSenderException {
-
         try {
-            URL reportUrl = mFormUri == null ? new URL(ACRA.getConfig().formUri()) : new URL(mFormUri.toString());
+            URL reportUrl = mFormUri == null ? new URL(ACRA.getConfig().formUri()) : new URL(
+                                mFormUri.toString());
             Log.d(LOG_TAG, "Connect to " + reportUrl.toString());
-
-            final String login = mUsername != null ? mUsername : ACRAConfiguration.isNull(ACRA.getConfig().formUriBasicAuthLogin()) ? null : ACRA
-                    .getConfig().formUriBasicAuthLogin();
-            final String password = mPassword != null ? mPassword : ACRAConfiguration.isNull(ACRA.getConfig().formUriBasicAuthPassword()) ? null : ACRA
-                    .getConfig().formUriBasicAuthPassword();
-
+            final String login = mUsername != null ? mUsername : ACRAConfiguration.isNull(
+                                     ACRA.getConfig().formUriBasicAuthLogin()) ? null : ACRA
+                                 .getConfig().formUriBasicAuthLogin();
+            final String password = mPassword != null ? mPassword : ACRAConfiguration.isNull(
+                                        ACRA.getConfig().formUriBasicAuthPassword()) ? null : ACRA
+                                    .getConfig().formUriBasicAuthPassword();
             final HttpRequest request = new HttpRequest();
             request.setConnectionTimeOut(ACRA.getConfig().connectionTimeout());
             request.setSocketTimeOut(ACRA.getConfig().socketTimeout());
@@ -218,9 +218,7 @@ public class HttpSender implements ReportSender {
             request.setLogin(login);
             request.setPassword(password);
             request.setHeaders(ACRA.getConfig().getHttpHeaders());
-
             String reportAsString = "";
-
             // Generate report body depending on requested type
             switch (mType) {
             case JSON:
@@ -231,9 +229,7 @@ public class HttpSender implements ReportSender {
                 final Map<String, String> finalReport = remap(report);
                 reportAsString = HttpRequest.getParamsAsFormString(finalReport);
                 break;
-
             }
-
             // Adjust URL depending on method
             switch (mMethod) {
             case POST:
@@ -245,23 +241,20 @@ public class HttpSender implements ReportSender {
                 throw new UnsupportedOperationException("Unknown method: " + mMethod.name());
             }
             request.send(reportUrl, mMethod, reportAsString, mType);
-
         } catch (IOException e) {
             throw new ReportSenderException("Error while sending " + ACRA.getConfig().reportType()
-                    + " report via Http " + mMethod.name(), e);
+                                            + " report via Http " + mMethod.name(), e);
         } catch (JSONReportException e) {
             throw new ReportSenderException("Error while sending " + ACRA.getConfig().reportType()
-                    + " report via Http " + mMethod.name(), e);
+                                            + " report via Http " + mMethod.name(), e);
         }
     }
 
     private Map<String, String> remap(Map<ReportField, String> report) {
-
         ReportField[] fields = ACRA.getConfig().customReportContent();
         if (fields.length == 0) {
             fields = ACRAConstants.DEFAULT_REPORT_FIELDS;
         }
-
         final Map<String, String> finalReport = new HashMap<String, String>(report.size());
         for (ReportField field : fields) {
             if (mMapping == null || mMapping.get(field) == null) {

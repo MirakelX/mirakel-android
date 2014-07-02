@@ -1,6 +1,6 @@
 /*
  * java.util.Properties.java modified by Kevin Gaudin to allow usage of enums as keys.
- * 
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -59,18 +59,16 @@ final class CrashReportPersister {
      * @throws java.io.IOException if error occurs during reading from the {@code InputStream}.
      */
     public CrashReportData load(String fileName) throws IOException {
-
         final FileInputStream in = context.openFileInput(fileName);
         if (in == null) {
             throw new IllegalArgumentException("Invalid crash report fileName : " + fileName);
         }
-
         try {
-            final BufferedInputStream bis = new BufferedInputStream(in, ACRAConstants.DEFAULT_BUFFER_SIZE_IN_BYTES);
+            final BufferedInputStream bis = new BufferedInputStream(in,
+                    ACRAConstants.DEFAULT_BUFFER_SIZE_IN_BYTES);
             bis.mark(Integer.MAX_VALUE);
             final boolean isEbcdic = isEbcdic(bis);
             bis.reset();
-
             if (!isEbcdic) {
                 return load(new InputStreamReader(bis, "ISO8859-1")); //$NON-NLS-1$
             } else {
@@ -91,12 +89,10 @@ final class CrashReportPersister {
      * @throws java.io.IOException if the CrashReportData could not be written to the OutputStream.
      */
     public void store(CrashReportData crashData, String fileName) throws IOException {
-
         final OutputStream out = context.openFileOutput(fileName, Context.MODE_PRIVATE);
         try {
             final StringBuilder buffer = new StringBuilder(200);
             final OutputStreamWriter writer = new OutputStreamWriter(out, "ISO8859_1"); //$NON-NLS-1$
-
             for (final Map.Entry<ReportField, String> entry : crashData.entrySet()) {
                 final String key = entry.getKey().toString();
                 dumpString(buffer, key, true);
@@ -163,17 +159,14 @@ final class CrashReportPersister {
         char nextChar, buf[] = new char[40];
         int offset = 0, keyLength = -1, intVal;
         boolean firstChar = true;
-
         final CrashReportData crashData = new CrashReportData();
         final BufferedReader br = new BufferedReader(reader, ACRAConstants.DEFAULT_BUFFER_SIZE_IN_BYTES);
-
         while (true) {
             intVal = br.read();
             if (intVal == -1) {
                 break;
             }
             nextChar = (char) intVal;
-
             if (offset == buf.length) {
                 final char[] newBuf = new char[buf.length * 2];
                 System.arraycopy(buf, 0, newBuf, 0, offset);
@@ -237,8 +230,8 @@ final class CrashReportPersister {
                                 break;
                             }
                             nextChar = (char) intVal; // & 0xff
-                                                      // not
-                                                      // required
+                            // not
+                            // required
                             if (nextChar == '\r' || nextChar == '\n' || nextChar == '\u0085') {
                                 break;
                             }
@@ -261,7 +254,8 @@ final class CrashReportPersister {
                             keyLength = offset;
                         }
                         final String temp = new String(buf, 0, offset);
-                        crashData.put(Enum.valueOf(ReportField.class, temp.substring(0, keyLength)), temp.substring(keyLength));
+                        crashData.put(Enum.valueOf(ReportField.class, temp.substring(0, keyLength)),
+                                      temp.substring(keyLength));
                     }
                     keyLength = -1;
                     offset = 0;
@@ -321,7 +315,6 @@ final class CrashReportPersister {
             }
             crashData.put(key, value);
         }
-
         return crashData;
     }
 
@@ -338,7 +331,6 @@ final class CrashReportPersister {
             buffer.append("\\ "); //$NON-NLS-1$
             i++;
         }
-
         for (; i < string.length(); i++) {
             char ch = string.charAt(i);
             switch (ch) {

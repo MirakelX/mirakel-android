@@ -1,6 +1,6 @@
 /*
  * Class copied from the Android Developers Blog:
- * http://android-developers.blogspot.com/2011/03/identifying-app-installations.html 
+ * http://android-developers.blogspot.com/2011/03/identifying-app-installations.html
  */
 package org.acra.util;
 
@@ -20,7 +20,7 @@ import android.util.Log;
  * Creates a file storing a UUID on the first application start. This UUID can then be used as a identifier of this
  * specific application installation.
  * </p>
- * 
+ *
  * <p>
  * This was taken from <a href="http://android-developers.blogspot.com/2011/03/identifying-app-installations.html"> the
  * android developers blog.</a>

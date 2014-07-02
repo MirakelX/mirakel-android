@@ -40,9 +40,9 @@ public final class PackageManagerWrapper {
         if (pm == null) {
             return false;
         }
-
         try {
-            return pm.checkPermission(permission, context.getPackageName()) == PackageManager.PERMISSION_GRANTED;
+            return pm.checkPermission(permission,
+                                      context.getPackageName()) == PackageManager.PERMISSION_GRANTED;
         } catch (RuntimeException e) {
             // To catch RuntimeException("Package manager has died") that can occur on some version of Android,
             // when the remote PackageManager is unavailable. I suspect this sometimes occurs when the App is being reinstalled.
@@ -58,7 +58,6 @@ public final class PackageManagerWrapper {
         if (pm == null) {
             return null;
         }
-
         try {
             return pm.getPackageInfo(context.getPackageName(), 0);
         } catch (PackageManager.NameNotFoundException e) {

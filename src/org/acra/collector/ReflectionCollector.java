@@ -25,9 +25,9 @@ import java.lang.reflect.Method;
  * class. Reflection API usage allows to retrieve data without having to
  * implement a class for each android version of each interesting class.
  * It can also help find hidden properties.
- * 
+ *
  * @author Kevin Gaudin
- * 
+ *
  */
 final class ReflectionCollector {
 
@@ -35,13 +35,11 @@ final class ReflectionCollector {
      * Retrieves key/value pairs from static fields of a class.
      *
      * @param someClass the class to be inspected.
-     * 
+     *
      * @return A human readable string with a key=value pair on each line.
      */
     public static String collectConstants(Class<?> someClass, String prefix) {
-
         final StringBuilder result = new StringBuilder();
-
         final Field[] fields = someClass.getFields();
         for (final Field field : fields) {
             if (prefix != null && prefix.length() > 0) {
@@ -60,7 +58,6 @@ final class ReflectionCollector {
             }
             result.append("\n");
         }
-
         return result.toString();
     }
 
@@ -75,8 +72,8 @@ final class ReflectionCollector {
         final Method[] methods = someClass.getMethods();
         for (final Method method : methods) {
             if (method.getParameterTypes().length == 0
-                    && (method.getName().startsWith("get") || method.getName().startsWith("is"))
-                    && !method.getName().equals("getClass")) {
+                && (method.getName().startsWith("get") || method.getName().startsWith("is"))
+                && !method.getName().equals("getClass")) {
                 try {
                     result.append(method.getName());
                     result.append('=');
@@ -91,7 +88,6 @@ final class ReflectionCollector {
                 }
             }
         }
-
         return result.toString();
     }
 

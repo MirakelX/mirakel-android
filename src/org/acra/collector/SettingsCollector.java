@@ -32,9 +32,9 @@ import android.util.Log;
 /**
  * Helper to collect data from {@link System} and {@link Secure} Settings
  * classes.
- * 
+ *
  * @author Kevin Gaudin
- * 
+ *
  */
 final class SettingsCollector {
 
@@ -42,7 +42,7 @@ final class SettingsCollector {
      * Collect data from {@link android.provider.Settings.System}. This
      * collector uses reflection to be sure to always get the most accurate data
      * whatever Android API level it runs on.
-     * 
+     *
      * @param ctx
      *            Application context.
      * @return A human readable String containing one key=value pair per line.
@@ -67,7 +67,6 @@ final class SettingsCollector {
                 }
             }
         }
-
         return result.toString();
     }
 
@@ -75,7 +74,7 @@ final class SettingsCollector {
      * Collect data from {@link android.provider.Settings.Secure}. This
      * collector uses reflection to be sure to always get the most accurate data
      * whatever Android API level it runs on.
-     * 
+     *
      * @param ctx
      *            Application context.
      * @return A human readable String containing one key=value pair per line.
@@ -84,7 +83,8 @@ final class SettingsCollector {
         final StringBuilder result = new StringBuilder();
         final Field[] keys = Settings.Secure.class.getFields();
         for (final Field key : keys) {
-            if (!key.isAnnotationPresent(Deprecated.class) && key.getType() == String.class && isAuthorized(key)) {
+            if (!key.isAnnotationPresent(Deprecated.class) && key.getType() == String.class &&
+                isAuthorized(key)) {
                 try {
                     final Object value = Settings.Secure.getString(ctx.getContentResolver(), (String) key.get(null));
                     if (value != null) {
@@ -97,7 +97,6 @@ final class SettingsCollector {
                 }
             }
         }
-
         return result.toString();
     }
 
@@ -105,7 +104,7 @@ final class SettingsCollector {
      * Collect data from {@link android.provider.Settings.Global}. This
      * collector uses reflection to be sure to always get the most accurate data
      * whatever Android API level it runs on.
-     * 
+     *
      * @param ctx
      *            Application context.
      * @return A human readable String containing one key=value pair per line.
@@ -114,14 +113,14 @@ final class SettingsCollector {
         if (Compatibility.getAPILevel() < 17) {
             return "";
         }
-
         final StringBuilder result = new StringBuilder();
         try {
             final Class<?> globalClass = Class.forName("android.provider.Settings$Global");
             final Field[] keys = globalClass.getFields();
             final Method getString = globalClass.getMethod("getString", ContentResolver.class, String.class);
             for (final Field key : keys) {
-                if (!key.isAnnotationPresent(Deprecated.class) && key.getType() == String.class && isAuthorized(key)) {
+                if (!key.isAnnotationPresent(Deprecated.class) && key.getType() == String.class &&
+                    isAuthorized(key)) {
                     final Object value = getString.invoke(null, ctx.getContentResolver(), (String) key.get(null));
                     if (value != null) {
                         result.append(key.getName()).append("=").append(value).append("\n");
@@ -141,7 +140,6 @@ final class SettingsCollector {
         } catch (InvocationTargetException e) {
             Log.w(ACRA.LOG_TAG, "Error : ", e);
         }
-
         return result.toString();
     }
 
@@ -150,8 +148,8 @@ final class SettingsCollector {
             return false;
         }
         for (String regex : ACRA.getConfig().excludeMatchingSettingsKeys()) {
-            if(key.getName().matches(regex)) {
-               return false; 
+            if (key.getName().matches(regex)) {
+                return false;
             }
         }
         return true;

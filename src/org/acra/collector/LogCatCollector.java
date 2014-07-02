@@ -34,9 +34,9 @@ import static org.acra.ACRA.LOG_TAG;
 
 /**
  * Executes logcat commands and collects it's output.
- * 
+ *
  * @author Kevin Gaudin
- * 
+ *
  */
 class LogCatCollector {
 
@@ -48,7 +48,7 @@ class LogCatCollector {
     /**
      * Executes the logcat command with arguments taken from
      * {@link ReportsCrashes#logcatArguments()}
-     * 
+     *
      * @param bufferName
      *            The name of the buffer to be read: "main" (default), "radio"
      *            or "events".
@@ -63,22 +63,19 @@ class LogCatCollector {
         final int myPid = android.os.Process.myPid();
         String myPidStr = null;
         if (ACRA.getConfig().logcatFilterByPid() && myPid > 0) {
-            myPidStr = Integer.toString(myPid) +"):";
+            myPidStr = Integer.toString(myPid) + "):";
         }
-
         final List<String> commandLine = new ArrayList<String>();
         commandLine.add("logcat");
         if (bufferName != null) {
             commandLine.add("-b");
             commandLine.add(bufferName);
         }
-
         // "-t n" argument has been introduced in FroYo (API level 8). For
         // devices with lower API level, we will have to emulate its job.
         final int tailCount;
         final List<String> logcatArgumentsList = new ArrayList<String>(
-                Arrays.asList(ACRA.getConfig().logcatArguments()));
-
+            Arrays.asList(ACRA.getConfig().logcatArguments()));
         final int tailIndex = logcatArgumentsList.indexOf("-t");
         if (tailIndex > -1 && tailIndex < logcatArgumentsList.size()) {
             tailCount = Integer.parseInt(logcatArgumentsList.get(tailIndex + 1));
@@ -90,17 +87,15 @@ class LogCatCollector {
         } else {
             tailCount = -1;
         }
-
         final LinkedList<String> logcatBuf = new BoundedLinkedList<String>(tailCount > 0 ? tailCount
                 : DEFAULT_TAIL_COUNT);
         commandLine.addAll(logcatArgumentsList);
-
         try {
-            final Process process = Runtime.getRuntime().exec(commandLine.toArray(new String[commandLine.size()]));
-            final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()), ACRAConstants.DEFAULT_BUFFER_SIZE_IN_BYTES);
-
+            final Process process = Runtime.getRuntime().exec(commandLine.toArray(
+                                        new String[commandLine.size()]));
+            final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
+                        process.getInputStream()), ACRAConstants.DEFAULT_BUFFER_SIZE_IN_BYTES);
             Log.d(LOG_TAG, "Retrieving logcat output...");
-
             // Dump stderr to null
             new Thread(new Runnable() {
                 public void run() {
@@ -113,7 +108,6 @@ class LogCatCollector {
                     }
                 }
             }).start();
-
             while (true) {
                 final String line = bufferedReader.readLine();
                 if (line == null) {
@@ -123,11 +117,9 @@ class LogCatCollector {
                     logcatBuf.add(line + "\n");
                 }
             }
-
         } catch (IOException e) {
             Log.e(ACRA.LOG_TAG, "LogCatCollector.collectLogCat could not retrieve data.", e);
         }
-
         return logcatBuf.toString();
     }
 }

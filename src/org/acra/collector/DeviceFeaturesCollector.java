@@ -25,26 +25,25 @@ import android.util.Log;
 
 /**
  * Features declared as available on the device. Available only with API level > 5.
- * 
+ *
  * @author Kevin Gaudin
- * 
+ *
  */
 final class DeviceFeaturesCollector {
 
     public static String getFeatures(Context ctx) {
-
         if (Compatibility.getAPILevel() < 5) {
             return "Data available only with API Level >= 5";
         }
-
         final StringBuilder result = new StringBuilder();
         try {
             final PackageManager pm = ctx.getPackageManager();
-            final Method getSystemAvailableFeatures = PackageManager.class.getMethod("getSystemAvailableFeatures", (Class[]) null);
+            final Method getSystemAvailableFeatures =
+                PackageManager.class.getMethod("getSystemAvailableFeatures", (Class[]) null);
             final Object[] features = (Object[]) getSystemAvailableFeatures.invoke(pm);
             for (final Object feature : features) {
                 final String featureName = (String) feature.getClass().getField("name").get(feature);
-                if(featureName != null) {
+                if (featureName != null) {
                     result.append(featureName);
                 } else {
                     final Method getGlEsVersion = feature.getClass().getMethod("getGlEsVersion", (Class[]) null);
@@ -59,7 +58,6 @@ final class DeviceFeaturesCollector {
             result.append("Could not retrieve data: ");
             result.append(e.getMessage());
         }
-
         return result.toString();
     }
 }

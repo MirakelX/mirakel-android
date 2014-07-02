@@ -50,7 +50,7 @@ import org.acra.sender.HttpSender.Type;
  * needed for example when using ACRA in an Android Library Project since ADT
  * v14 where resource ids are not final anymore and can't be passed as
  * annotation parameters values.
- * 
+ *
  */
 public class ACRAConfiguration implements ReportsCrashes {
 
@@ -107,7 +107,7 @@ public class ACRAConfiguration implements ReportsCrashes {
     /**
      * Set custom HTTP headers to be sent by the provided {@link HttpSender}.
      * This should be used also by third party senders.
-     * 
+     *
      * @param headers
      *            A map associating HTTP header names to their values.
      */
@@ -119,7 +119,7 @@ public class ACRAConfiguration implements ReportsCrashes {
      * Retrieve HTTP headers defined by the application developer. These should
      * be added to requests sent by any third-party sender (over HTTP of
      * course).
-     * 
+     *
      * @return A map associating http header names to their values.
      */
     public Map<String, String> getHttpHeaders() {
@@ -162,14 +162,16 @@ public class ACRAConfiguration implements ReportsCrashes {
      * @param deleteUnapprovedReportsOnApplicationStart
      *            the deleteUnapprovedReportsOnApplicationStart to set
      */
-    public void setDeleteUnapprovedReportsOnApplicationStart(Boolean deleteUnapprovedReportsOnApplicationStart) {
+    public void setDeleteUnapprovedReportsOnApplicationStart(Boolean
+            deleteUnapprovedReportsOnApplicationStart) {
         this.mDeleteUnapprovedReportsOnApplicationStart = deleteUnapprovedReportsOnApplicationStart;
     }
 
     /**
      * @param deleteOldUnsetReportsOnApplicationStart
      */
-    public void setDeleteOldUnsentReportsOnApplicationStart(Boolean deleteOldUnsetReportsOnApplicationStart) {
+    public void setDeleteOldUnsentReportsOnApplicationStart(Boolean
+            deleteOldUnsetReportsOnApplicationStart) {
         this.mDeleteOldUnsentReportsOnApplicationStart = deleteOldUnsetReportsOnApplicationStart;
     }
 
@@ -194,7 +196,7 @@ public class ACRAConfiguration implements ReportsCrashes {
      * call {@link ErrorReporter#setDefaultReportSenders()} after modifying this
      * value if you were not using a formKey before (a mailTo or formUri
      * instead).
-     * 
+     *
      * @param formKey
      *            the formKey to set
      */
@@ -207,7 +209,7 @@ public class ACRAConfiguration implements ReportsCrashes {
      * call {@link ErrorReporter#setDefaultReportSenders()} after modifying this
      * value if you were not using a formUri before (a mailTo or formKey
      * instead).
-     * 
+     *
      * @param formUri
      *            the formUri to set
      */
@@ -252,7 +254,7 @@ public class ACRAConfiguration implements ReportsCrashes {
      * {@link ErrorReporter#setDefaultReportSenders()} after modifying this
      * value if you were not using a formKey before (a formKey or formUri
      * instead).
-     * 
+     *
      * @param mailTo
      *            the mailTo to set
      */
@@ -271,7 +273,7 @@ public class ACRAConfiguration implements ReportsCrashes {
     /**
      * Change the current {@link ReportingInteractionMode}. You must set
      * required configuration items first.
-     * 
+     *
      * @param mode
      *            the new mode to set.
      * @throws ACRAConfigurationException
@@ -286,7 +288,7 @@ public class ACRAConfiguration implements ReportsCrashes {
      * Use this method if the id you wanted to give to
      * {@link ReportsCrashes#resDialogCommentPrompt()} comes from an Android
      * Library Project.
-     * 
+     *
      * @param resId
      *            The resource id, see
      *            {@link ReportsCrashes#resDialogCommentPrompt()}
@@ -299,7 +301,7 @@ public class ACRAConfiguration implements ReportsCrashes {
      * Use this method if the id you wanted to give to
      * {@link ReportsCrashes#resDialogEmailPrompt()} comes from an Android
      * Library Project.
-     * 
+     *
      * @param resId
      *            The resource id, see
      *            {@link ReportsCrashes#resDialogEmailPrompt()}
@@ -312,7 +314,7 @@ public class ACRAConfiguration implements ReportsCrashes {
      * Use this method if the id you wanted to give to
      * {@link ReportsCrashes#resDialogIcon()} comes from an Android Library
      * Project.
-     * 
+     *
      * @param resId
      *            The resource id, see {@link ReportsCrashes#resDialogIcon()}
      */
@@ -324,7 +326,7 @@ public class ACRAConfiguration implements ReportsCrashes {
      * Use this method BEFORE if the id you wanted to give to
      * {@link ReportsCrashes#resDialogOkToast()} comes from an Android Library
      * Project.
-     * 
+     *
      * @param resId
      *            The resource id, see {@link ReportsCrashes#resDialogOkToast()}
      */
@@ -336,7 +338,7 @@ public class ACRAConfiguration implements ReportsCrashes {
      * Use this method if the id you wanted to give to
      * {@link ReportsCrashes#resDialogText()} comes from an Android Library
      * Project.
-     * 
+     *
      * @param resId
      *            The resource id, see {@link ReportsCrashes#resDialogText()}
      */
@@ -348,7 +350,7 @@ public class ACRAConfiguration implements ReportsCrashes {
      * Use this method if the id you wanted to give to
      * {@link ReportsCrashes#resDialogTitle()} comes from an Android Library
      * Project.
-     * 
+     *
      * @param resId
      *            The resource id, see {@link ReportsCrashes#resDialogTitle()}
      */
@@ -360,7 +362,7 @@ public class ACRAConfiguration implements ReportsCrashes {
      * Use this method if the id you wanted to give to
      * {@link ReportsCrashes#resNotifIcon()} comes from an Android Library
      * Project.
-     * 
+     *
      * @param resId
      *            The resource id, see {@link ReportsCrashes#resNotifIcon()}
      */
@@ -372,7 +374,7 @@ public class ACRAConfiguration implements ReportsCrashes {
      * Use this method if the id you wanted to give to
      * {@link ReportsCrashes#resNotifText()} comes from an Android Library
      * Project.
-     * 
+     *
      * @param resId
      *            The resource id, see {@link ReportsCrashes#resNotifText()}
      */
@@ -384,7 +386,7 @@ public class ACRAConfiguration implements ReportsCrashes {
      * Use this method if the id you wanted to give to
      * {@link ReportsCrashes#resNotifTickerText()} comes from an Android Library
      * Project.
-     * 
+     *
      * @param resId
      *            The resource id, see
      *            {@link ReportsCrashes#resNotifTickerText()}
@@ -397,7 +399,7 @@ public class ACRAConfiguration implements ReportsCrashes {
      * Use this method if the id you wanted to give to
      * {@link ReportsCrashes#resNotifTitle()} comes from an Android Library
      * Project.
-     * 
+     *
      * @param resId
      *            The resource id, see {@link ReportsCrashes#resNotifTitle()}
      */
@@ -409,7 +411,7 @@ public class ACRAConfiguration implements ReportsCrashes {
      * Use this method if the id you wanted to give to
      * {@link ReportsCrashes#resToastText()} comes from an Android Library
      * Project.
-     * 
+     *
      * @param resId
      *            The resource id, see {@link ReportsCrashes#resToastText()}
      */
@@ -442,7 +444,7 @@ public class ACRAConfiguration implements ReportsCrashes {
     }
 
     /**
-     * 
+     *
      * @param filterByPid
      *            true if you want to collect only logcat lines related to your
      *            application process.
@@ -452,7 +454,7 @@ public class ACRAConfiguration implements ReportsCrashes {
     }
 
     /**
-     * 
+     *
      * @param sendReportsInDevMode
      *            false if you want to disable sending reports in development
      *            mode. Reports will be sent only on signed applications.
@@ -462,7 +464,7 @@ public class ACRAConfiguration implements ReportsCrashes {
     }
 
     /**
-     * 
+     *
      * @param excludeMatchingSharedPreferencesKeys
      *            an array of Strings containing regexp defining
      *            SharedPreferences keys that should be excluded from the data
@@ -473,7 +475,7 @@ public class ACRAConfiguration implements ReportsCrashes {
     }
 
     /**
-     * 
+     *
      * @param excludeMatchingSettingsKeys
      *            an array of Strings containing regexp defining
      *            Settings.System, Settings.Secure and Settings.Global keys that
@@ -484,7 +486,7 @@ public class ACRAConfiguration implements ReportsCrashes {
     }
 
     /**
-     * 
+     *
      * @param applicationLogFile
      *            The path and file name of your application log file, to be
      *            used with {@link ReportField#APPLICATION_LOG}.
@@ -494,7 +496,7 @@ public class ACRAConfiguration implements ReportsCrashes {
     }
 
     /**
-     * 
+     *
      * @param applicationLogFileLines
      *            The number of lines of your application log to be collected,
      *            to be used with {@link ReportField#APPLICATION_LOG} and
@@ -505,7 +507,7 @@ public class ACRAConfiguration implements ReportsCrashes {
     }
 
     /**
-     * 
+     *
      * @param disableSSLCertValidation
      *            Set this to true if you need to send reports to a server over
      *            SSL using a self-signed certificate.
@@ -515,7 +517,7 @@ public class ACRAConfiguration implements ReportsCrashes {
     }
 
     /**
-     * 
+     *
      * @param httpMethod
      *            The method to be used to send data to the server.
      */
@@ -524,7 +526,7 @@ public class ACRAConfiguration implements ReportsCrashes {
     }
 
     /**
-     * 
+     *
      * @param type
      *            The type of content encoding to be used to send data to the
      *            server.
@@ -534,7 +536,7 @@ public class ACRAConfiguration implements ReportsCrashes {
     }
 
     /**
-     * 
+     *
      * @param defaults
      */
     public ACRAConfiguration(ReportsCrashes defaults) {
@@ -546,11 +548,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mAdditionalDropboxTags != null) {
             return mAdditionalDropboxTags;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.additionalDropBoxTags();
         }
-
         String[] defaultValue = {};
         return defaultValue;
     }
@@ -560,11 +560,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mAdditionalSharedPreferences != null) {
             return mAdditionalSharedPreferences;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.additionalSharedPreferences();
         }
-
         String[] defaultValue = {};
         return defaultValue;
     }
@@ -579,11 +577,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mConnectionTimeout != null) {
             return mConnectionTimeout;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.connectionTimeout();
         }
-
         return DEFAULT_CONNECTION_TIMEOUT;
     }
 
@@ -592,11 +588,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mCustomReportContent != null) {
             return mCustomReportContent;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.customReportContent();
         }
-
         ReportField[] defaultValue = {};
         return defaultValue;
     }
@@ -606,11 +600,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mDeleteUnapprovedReportsOnApplicationStart != null) {
             return mDeleteUnapprovedReportsOnApplicationStart;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.deleteUnapprovedReportsOnApplicationStart();
         }
-
         return DEFAULT_DELETE_UNAPPROVED_REPORTS_ON_APPLICATION_START;
     }
 
@@ -619,11 +611,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mDeleteOldUnsentReportsOnApplicationStart != null) {
             return mDeleteOldUnsentReportsOnApplicationStart;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.deleteOldUnsentReportsOnApplicationStart();
         }
-
         return DEFAULT_DELETE_OLD_UNSENT_REPORTS_ON_APPLICATION_START;
     }
 
@@ -632,11 +622,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mDropboxCollectionMinutes != null) {
             return mDropboxCollectionMinutes;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.dropboxCollectionMinutes();
         }
-
         return DEFAULT_DROPBOX_COLLECTION_MINUTES;
     }
 
@@ -645,11 +633,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mForceCloseDialogAfterToast != null) {
             return mForceCloseDialogAfterToast;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.forceCloseDialogAfterToast();
         }
-
         return DEFAULT_FORCE_CLOSE_DIALOG_AFTER_TOAST;
     }
 
@@ -658,11 +644,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mFormKey != null) {
             return mFormKey;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.formKey();
         }
-
         return DEFAULT_STRING_VALUE;
     }
 
@@ -671,11 +655,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mFormUri != null) {
             return mFormUri;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.formUri();
         }
-
         return DEFAULT_STRING_VALUE;
     }
 
@@ -684,11 +666,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mFormUriBasicAuthLogin != null) {
             return mFormUriBasicAuthLogin;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.formUriBasicAuthLogin();
         }
-
         return NULL_VALUE;
     }
 
@@ -697,11 +677,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mFormUriBasicAuthPassword != null) {
             return mFormUriBasicAuthPassword;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.formUriBasicAuthPassword();
         }
-
         return NULL_VALUE;
     }
 
@@ -710,11 +688,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mIncludeDropboxSystemTags != null) {
             return mIncludeDropboxSystemTags;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.includeDropBoxSystemTags();
         }
-
         return DEFAULT_INCLUDE_DROPBOX_SYSTEM_TAGS;
     }
 
@@ -723,11 +699,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mLogcatArguments != null) {
             return mLogcatArguments;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.logcatArguments();
         }
-
         String[] defaultValues = { "-t", Integer.toString(DEFAULT_LOGCAT_LINES), "-v", "time" };
         return defaultValues;
     }
@@ -737,11 +711,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mMailTo != null) {
             return mMailTo;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.mailTo();
         }
-
         return DEFAULT_STRING_VALUE;
     }
 
@@ -750,11 +722,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mMaxNumberOfRequestRetries != null) {
             return mMaxNumberOfRequestRetries;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.maxNumberOfRequestRetries();
         }
-
         return DEFAULT_MAX_NUMBER_OF_REQUEST_RETRIES;
     }
 
@@ -763,11 +733,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mMode != null) {
             return mMode;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.mode();
         }
-
         return ReportingInteractionMode.SILENT;
     }
 
@@ -776,11 +744,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mResDialogCommentPrompt != null) {
             return mResDialogCommentPrompt;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.resDialogCommentPrompt();
         }
-
         return DEFAULT_RES_VALUE;
     }
 
@@ -789,11 +755,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mResDialogEmailPrompt != null) {
             return mResDialogEmailPrompt;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.resDialogEmailPrompt();
         }
-
         return DEFAULT_RES_VALUE;
     }
 
@@ -802,11 +766,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mResDialogIcon != null) {
             return mResDialogIcon;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.resDialogIcon();
         }
-
         return DEFAULT_DIALOG_ICON;
     }
 
@@ -815,11 +777,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mResDialogOkToast != null) {
             return mResDialogOkToast;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.resDialogOkToast();
         }
-
         return DEFAULT_RES_VALUE;
     }
 
@@ -828,11 +788,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mResDialogText != null) {
             return mResDialogText;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.resDialogText();
         }
-
         return DEFAULT_RES_VALUE;
     }
 
@@ -841,11 +799,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mResDialogTitle != null) {
             return mResDialogTitle;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.resDialogTitle();
         }
-
         return DEFAULT_RES_VALUE;
     }
 
@@ -854,11 +810,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mResNotifIcon != null) {
             return mResNotifIcon;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.resNotifIcon();
         }
-
         return DEFAULT_NOTIFICATION_ICON;
     }
 
@@ -867,11 +821,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mResNotifText != null) {
             return mResNotifText;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.resNotifText();
         }
-
         return DEFAULT_RES_VALUE;
     }
 
@@ -880,11 +832,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mResNotifTickerText != null) {
             return mResNotifTickerText;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.resNotifTickerText();
         }
-
         return DEFAULT_RES_VALUE;
     }
 
@@ -893,11 +843,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mResNotifTitle != null) {
             return mResNotifTitle;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.resNotifTitle();
         }
-
         return DEFAULT_RES_VALUE;
     }
 
@@ -906,11 +854,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mResToastText != null) {
             return mResToastText;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.resToastText();
         }
-
         return DEFAULT_RES_VALUE;
     }
 
@@ -919,11 +865,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mSharedPreferenceMode != null) {
             return mSharedPreferenceMode;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.sharedPreferencesMode();
         }
-
         return DEFAULT_SHARED_PREFERENCES_MODE;
     }
 
@@ -932,11 +876,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mSharedPreferenceName != null) {
             return mSharedPreferenceName;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.sharedPreferencesName();
         }
-
         return DEFAULT_STRING_VALUE;
     }
 
@@ -945,11 +887,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mSocketTimeout != null) {
             return mSocketTimeout;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.socketTimeout();
         }
-
         return DEFAULT_SOCKET_TIMEOUT;
     }
 
@@ -958,11 +898,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mLogcatFilterByPid != null) {
             return mLogcatFilterByPid;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.logcatFilterByPid();
         }
-
         return DEFAULT_LOGCAT_FILTER_BY_PID;
     }
 
@@ -971,11 +909,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mSendReportsInDevMode != null) {
             return mSendReportsInDevMode;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.sendReportsInDevMode();
         }
-
         return DEFAULT_SEND_REPORTS_IN_DEV_MODE;
     }
 
@@ -984,13 +920,10 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mExcludeMatchingSharedPreferencesKeys != null) {
             return mExcludeMatchingSharedPreferencesKeys;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.excludeMatchingSharedPreferencesKeys();
         }
-
         String[] defaultValue = {};
-
         return defaultValue;
     }
 
@@ -999,13 +932,10 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mExcludeMatchingSettingsKeys != null) {
             return mExcludeMatchingSettingsKeys;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.excludeMatchingSettingsKeys();
         }
-
         String[] defaultValue = {};
-
         return defaultValue;
     }
 
@@ -1014,11 +944,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mApplicationLogFile != null) {
             return mApplicationLogFile;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.applicationLogFile();
         }
-
         return DEFAULT_APPLICATION_LOGFILE;
     }
 
@@ -1027,11 +955,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mApplicationLogFileLines != null) {
             return mApplicationLogFileLines;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.applicationLogFileLines();
         }
-
         return DEFAULT_APPLICATION_LOGFILE_LINES;
     }
 
@@ -1040,11 +966,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mGoogleFormUrlFormat != null) {
             return mGoogleFormUrlFormat;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.googleFormUrlFormat();
         }
-
         return DEFAULT_GOOGLE_FORM_URL_FORMAT;
     }
 
@@ -1053,11 +977,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mDisableSSLCertValidation != null) {
             return mDisableSSLCertValidation;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.disableSSLCertValidation();
         }
-
         return DEFAULT_DISABLE_SSL_CERT_VALIDATION;
     }
 
@@ -1066,11 +988,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mHttpMethod != null) {
             return mHttpMethod;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.httpMethod();
         }
-
         return Method.POST;
     }
 
@@ -1079,11 +999,9 @@ public class ACRAConfiguration implements ReportsCrashes {
         if (mReportType != null) {
             return mReportType;
         }
-
         if (mReportsCrashes != null) {
             return mReportsCrashes.reportType();
         }
-
         return Type.FORM;
     }
 

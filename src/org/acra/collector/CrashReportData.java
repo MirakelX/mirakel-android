@@ -44,7 +44,7 @@ public final class CrashReportData extends EnumMap<ReportField, String> {
 
     /**
      * Returns the property with the specified name.
-     * 
+     *
      * @param key the name of the property to find.
      * @return the named property value, or {@code null} if it can't be found.
      */

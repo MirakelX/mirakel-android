@@ -17,7 +17,7 @@ package org.acra;
 
 /**
  * A simple Exception used when required configuration items are missing.
- * 
+ *
  * @author Kevin Gaudin
  */
 public class ACRAConfigurationException extends Exception {

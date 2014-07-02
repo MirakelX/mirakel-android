@@ -21,9 +21,9 @@ import android.content.res.Configuration;
 
 /**
  * Specifies all the different fields available in a crash report.
- * 
+ *
  * @author Normal
- * 
+ *
  */
 public enum ReportField {
     /**
@@ -33,43 +33,43 @@ public enum ReportField {
     /**
      * Application version code. This is the incremental integer version code
      * used to differentiate versions on the android market.
-     * 
+     *
      * @see android.content.pm.PackageInfo#versionCode
      */
     APP_VERSION_CODE,
     /**
      * Application version name.
-     * 
+     *
      * @see android.content.pm.PackageInfo#versionName
      */
     APP_VERSION_NAME,
     /**
      * Application package name.
-     * 
+     *
      * @see android.content.Context#getPackageName()
      */
     PACKAGE_NAME,
     /**
      * Base path of the application's private file folder.
-     * 
+     *
      * @see android.content.Context#getFilesDir()
      */
     FILE_PATH,
     /**
      * Device model name.
-     * 
+     *
      * @see android.os.Build#MODEL
      */
     PHONE_MODEL,
     /**
      * Device android version name.
-     * 
+     *
      * @see android.os.Build.VERSION#RELEASE
      */
     ANDROID_VERSION,
     /**
      * Android Build details.
-     * 
+     *
      * @see android.os.Build
      */
     BUILD {
@@ -80,13 +80,13 @@ public enum ReportField {
     },
     /**
      * Device brand (manufacturer or carrier).
-     * 
+     *
      * @see android.os.Build#BRAND
      */
     BRAND,
     /**
      * Device overall product code.
-     * 
+     *
      * @see android.os.Build#PRODUCT
      */
     PRODUCT,
@@ -124,7 +124,7 @@ public enum ReportField {
     STACK_TRACE,
     /**
      * {@link Configuration} fields state on the application start.
-     * 
+     *
      * @see Configuration
      */
     INITIAL_CONFIGURATION {
@@ -135,7 +135,7 @@ public enum ReportField {
     },
     /**
      * {@link Configuration} fields state on the application crash.
-     * 
+     *
      * @see Configuration
      */
     CRASH_CONFIGURATION {
@@ -146,7 +146,7 @@ public enum ReportField {
     },
     /**
      * Device display specifications.
-     * 
+     *
      * @see android.view.WindowManager#getDefaultDisplay()
      */
     DISPLAY {
@@ -285,10 +285,10 @@ public enum ReportField {
 
     /**
      * Whether this field is a collection of key/value pairs.
-     * 
+     *
      * @return true if the field contains a string with a key/value pair on each
      *         line, key and value separated by an equal sugn
-     * 
+     *
      */
     public boolean containsKeyValuePairs() {
         return false;

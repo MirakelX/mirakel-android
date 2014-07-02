@@ -36,7 +36,8 @@ import android.os.Build;
  * When running on API level 14 or above, the framework's implementations of these methods will be used.
  */
 public class ApplicationHelper {
-    public static final boolean PRE_ICS = Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH;
+    public static final boolean PRE_ICS = Build.VERSION.SDK_INT <
+                                          Build.VERSION_CODES.ICE_CREAM_SANDWICH;
 
     /*
      * Register.
@@ -44,11 +45,12 @@ public class ApplicationHelper {
 
     /**
      * Registers a callback to be called following the life cycle of the application's {@link Activity activities}.
-     * 
+     *
      * @param application The application with which to register the callback.
      * @param callback The callback to register.
      */
-    public static void registerActivityLifecycleCallbacks(Application application, ActivityLifecycleCallbacksCompat callback) {
+    public static void registerActivityLifecycleCallbacks(Application application,
+            ActivityLifecycleCallbacksCompat callback) {
         if (PRE_ICS) {
             preIcsRegisterActivityLifecycleCallbacks(callback);
         } else {
@@ -56,12 +58,14 @@ public class ApplicationHelper {
         }
     }
 
-    private static void preIcsRegisterActivityLifecycleCallbacks(ActivityLifecycleCallbacksCompat callback) {
+    private static void preIcsRegisterActivityLifecycleCallbacks(ActivityLifecycleCallbacksCompat
+            callback) {
         MainLifecycleDispatcher.get().registerActivityLifecycleCallbacks(callback);
     }
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-    private static void postIcsRegisterActivityLifecycleCallbacks(Application application, ActivityLifecycleCallbacksCompat callback) {
+    private static void postIcsRegisterActivityLifecycleCallbacks(Application application,
+            ActivityLifecycleCallbacksCompat callback) {
         application.registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacksWrapper(callback));
     }
 
@@ -72,11 +76,12 @@ public class ApplicationHelper {
 
     /**
      * Unregisters a previously registered callback.
-     * 
+     *
      * @param application The application with which to unregister the callback.
      * @param callback The callback to unregister.
      */
-    public void unregisterActivityLifecycleCallbacks(Application application, ActivityLifecycleCallbacksCompat callback) {
+    public void unregisterActivityLifecycleCallbacks(Application application,
+            ActivityLifecycleCallbacksCompat callback) {
         if (PRE_ICS) {
             preIcsUnregisterActivityLifecycleCallbacks(callback);
         } else {
@@ -84,12 +89,14 @@ public class ApplicationHelper {
         }
     }
 
-    private static void preIcsUnregisterActivityLifecycleCallbacks(ActivityLifecycleCallbacksCompat callback) {
+    private static void preIcsUnregisterActivityLifecycleCallbacks(ActivityLifecycleCallbacksCompat
+            callback) {
         MainLifecycleDispatcher.get().unregisterActivityLifecycleCallbacks(callback);
     }
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-    private static void postIcsUnregisterActivityLifecycleCallbacks(Application application, ActivityLifecycleCallbacksCompat callback) {
+    private static void postIcsUnregisterActivityLifecycleCallbacks(Application application,
+            ActivityLifecycleCallbacksCompat callback) {
         application.unregisterActivityLifecycleCallbacks(new ActivityLifecycleCallbacksWrapper(callback));
     }
 

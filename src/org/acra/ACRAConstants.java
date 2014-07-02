@@ -22,7 +22,7 @@ import static org.acra.ReportField.*;
 /**
  * Responsible for collating those constants shared among the ACRA components.
  * <p/>
- * 
+ *
  * @author William Ferguson
  * @since 4.3.0
  */
@@ -111,7 +111,8 @@ public final class ACRAConstants {
 
     public static final int DEFAULT_APPLICATION_LOGFILE_LINES = DEFAULT_LOGCAT_LINES;
 
-    public static final String DEFAULT_GOOGLE_FORM_URL_FORMAT = "https://docs.google.com/spreadsheet/formResponse?formkey=%s&ifq";
+    public static final String DEFAULT_GOOGLE_FORM_URL_FORMAT =
+        "https://docs.google.com/spreadsheet/formResponse?formkey=%s&ifq";
 
     public static final boolean DEFAULT_DISABLE_SSL_CERT_VALIDATION = false;
 
@@ -119,11 +120,12 @@ public final class ACRAConstants {
      * Default list of {@link ReportField}s to be sent in email reports. You can
      * set your own list with
      * {@link org.acra.annotation.ReportsCrashes#customReportContent()}.
-     * 
+     *
      * @see org.acra.annotation.ReportsCrashes#mailTo()
      */
     public final static ReportField[] DEFAULT_MAIL_REPORT_FIELDS = { USER_COMMENT, ANDROID_VERSION, APP_VERSION_NAME,
-            BRAND, PHONE_MODEL, CUSTOM_DATA, STACK_TRACE };
+                                                                     BRAND, PHONE_MODEL, CUSTOM_DATA, STACK_TRACE
+                                                                   };
 
     /**
      * Default list of {@link ReportField}s to be sent in reports. You can set
@@ -131,9 +133,10 @@ public final class ACRAConstants {
      * {@link org.acra.annotation.ReportsCrashes#customReportContent()}.
      */
     public static final ReportField[] DEFAULT_REPORT_FIELDS = { REPORT_ID, APP_VERSION_CODE, APP_VERSION_NAME,
-            PACKAGE_NAME, FILE_PATH, PHONE_MODEL, BRAND, PRODUCT, ANDROID_VERSION, BUILD, TOTAL_MEM_SIZE,
-            AVAILABLE_MEM_SIZE, BUILD_CONFIG, CUSTOM_DATA, IS_SILENT, STACK_TRACE, INITIAL_CONFIGURATION, CRASH_CONFIGURATION,
-            DISPLAY, USER_COMMENT, USER_EMAIL, USER_APP_START_DATE, USER_CRASH_DATE, DUMPSYS_MEMINFO, LOGCAT,
-            INSTALLATION_ID, DEVICE_FEATURES, ENVIRONMENT, SHARED_PREFERENCES, SETTINGS_SYSTEM, SETTINGS_SECURE,
-            SETTINGS_GLOBAL };
+                                                                PACKAGE_NAME, FILE_PATH, PHONE_MODEL, BRAND, PRODUCT, ANDROID_VERSION, BUILD, TOTAL_MEM_SIZE,
+                                                                AVAILABLE_MEM_SIZE, BUILD_CONFIG, CUSTOM_DATA, IS_SILENT, STACK_TRACE, INITIAL_CONFIGURATION, CRASH_CONFIGURATION,
+                                                                DISPLAY, USER_COMMENT, USER_EMAIL, USER_APP_START_DATE, USER_CRASH_DATE, DUMPSYS_MEMINFO, LOGCAT,
+                                                                INSTALLATION_ID, DEVICE_FEATURES, ENVIRONMENT, SHARED_PREFERENCES, SETTINGS_SYSTEM, SETTINGS_SECURE,
+                                                                SETTINGS_GLOBAL
+                                                              };
 }

@@ -22,15 +22,15 @@ import java.lang.reflect.Field;
 
 /**
  * Utility class containing methods enabling backward compatibility.
- * 
+ *
  * @author Normal
- * 
+ *
  */
 public final class Compatibility {
 
     /**
      * Retrieves Android SDK API level using the best possible method.
-     * 
+     *
      * @return The Android SDK API int level.
      */
     public static int getAPILevel() {
@@ -48,7 +48,6 @@ public final class Compatibility {
         } catch (IllegalAccessException e) {
             apiLevel = Integer.parseInt(Build.VERSION.SDK);
         }
-
         return apiLevel;
     }
 

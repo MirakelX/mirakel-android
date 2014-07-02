@@ -72,11 +72,10 @@ public final class ReportUtils {
         if (filesDir != null) {
             return filesDir.getAbsolutePath();
         }
-
         Log.w(ACRA.LOG_TAG, "Couldn't retrieve ApplicationFilePath for : " + context.getPackageName());
         return "Couldn't retrieve ApplicationFilePath";
     }
-    
+
     /**
      * Utility method used for debugging purposes, writes the content of a SparseArray to a String.
      * @param sparseArray
@@ -87,7 +86,6 @@ public final class ReportUtils {
         if (sparseArray == null) {
             return "null";
         }
-
         result.append('{');
         for (int i = 0; i < sparseArray.size(); i++) {
             result.append(sparseArray.keyAt(i));
@@ -97,7 +95,7 @@ public final class ReportUtils {
             } else {
                 result.append(sparseArray.valueAt(i).toString());
             }
-            if(i < sparseArray.size() - 1) {
+            if (i < sparseArray.size() - 1) {
                 result.append(", ");
             }
         }
@@ -109,12 +107,13 @@ public final class ReportUtils {
         StringBuilder result = new StringBuilder();
         boolean first = true;
         try {
-            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
+                 en.hasMoreElements();) {
                 NetworkInterface intf = en.nextElement();
                 for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
                     InetAddress inetAddress = enumIpAddr.nextElement();
                     if (!inetAddress.isLoopbackAddress()) {
-                        if(!first) {
+                        if (!first) {
                             result.append('\n');
                         }
                         result.append(inetAddress.getHostAddress().toString());

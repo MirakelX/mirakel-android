@@ -38,9 +38,9 @@ import android.preference.PreferenceManager;
  * {@link ACRA#init(android.app.Application)} method. The only mandatory
  * configuration item is the {@link #formKey()} parameter which is the Id of
  * your Google Documents form which will receive reports.
- * 
+ *
  * @author Kevin Gaudin
- * 
+ *
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
@@ -57,10 +57,10 @@ public @interface ReportsCrashes {
      * The Uri of your own server-side script that will receive reports. This is
      * to use if you don't want to send reports to Google Docs but to your own,
      * self-hosted script.
-     * 
+     *
      * @return URI of a custom server to which to post reports.
      */
-    String formUri() default ACRAConstants.DEFAULT_STRING_VALUE;
+String formUri() default ACRAConstants.DEFAULT_STRING_VALUE;
 
     /**
      * <p>
@@ -82,65 +82,65 @@ public @interface ReportsCrashes {
      * {@link ReportingInteractionMode#SILENT}
      * </ul>
      * </p>
-     * 
+     *
      * @return the interaction mode that you want ACRA to implement.
      */
-    ReportingInteractionMode mode() default ReportingInteractionMode.SILENT;
+ReportingInteractionMode mode() default ReportingInteractionMode.SILENT;
 
     /**
      * @return Resource id for the user comment input label in the crash dialog.
      *         If not provided, disables the input field.
      */
-    int resDialogCommentPrompt() default ACRAConstants.DEFAULT_RES_VALUE;
+int resDialogCommentPrompt() default ACRAConstants.DEFAULT_RES_VALUE;
 
     /**
      * @return Resource id for the user email address input label in the crash
      *         dialog. If not provided, disables the input field.
      */
-    int resDialogEmailPrompt() default ACRAConstants.DEFAULT_RES_VALUE;
+int resDialogEmailPrompt() default ACRAConstants.DEFAULT_RES_VALUE;
 
     /**
      * @return Resource id for the icon in the crash dialog. Default value is
      *         the system alert icon.
      */
-    int resDialogIcon() default ACRAConstants.DEFAULT_DIALOG_ICON;
+int resDialogIcon() default ACRAConstants.DEFAULT_DIALOG_ICON;
 
     /**
      * @return Resource id for the Toast text triggered when the user accepts to
      *         send a report in the crash dialog.
      */
-    int resDialogOkToast() default ACRAConstants.DEFAULT_RES_VALUE;
+int resDialogOkToast() default ACRAConstants.DEFAULT_RES_VALUE;
 
     /**
      * @return Resource id for the text in the crash dialog.
      */
-    int resDialogText() default ACRAConstants.DEFAULT_RES_VALUE;
+int resDialogText() default ACRAConstants.DEFAULT_RES_VALUE;
 
     /**
      * @return Resource id for the title in the crash dialog.
      */
-    int resDialogTitle() default ACRAConstants.DEFAULT_RES_VALUE;
+int resDialogTitle() default ACRAConstants.DEFAULT_RES_VALUE;
 
     /**
      * @return Resource id for the icon in the status bar notification. Default
      *         is the system error notification icon.
      */
-    int resNotifIcon() default ACRAConstants.DEFAULT_NOTIFICATION_ICON;
+int resNotifIcon() default ACRAConstants.DEFAULT_NOTIFICATION_ICON;
 
     /**
      * @return Resource id for the text in the status bar notification.
      */
-    int resNotifText() default ACRAConstants.DEFAULT_RES_VALUE;
+int resNotifText() default ACRAConstants.DEFAULT_RES_VALUE;
 
     /**
      * @return Resource id for the ticker text in the status bar notification.
      */
-    int resNotifTickerText() default ACRAConstants.DEFAULT_RES_VALUE;
+int resNotifTickerText() default ACRAConstants.DEFAULT_RES_VALUE;
 
     /**
      * @return Resource id for the title in the status bar notification.
      */
-    int resNotifTitle() default ACRAConstants.DEFAULT_RES_VALUE;
+int resNotifTitle() default ACRAConstants.DEFAULT_RES_VALUE;
 
     /**
      * Resource id for the Toast text triggered when the application crashes if
@@ -150,11 +150,11 @@ public @interface ReportsCrashes {
      * while the report is being created, before the dialog/notification
      * appears. This allows the user to know what is happening just before the
      * application is terminated.
-     * 
+     *
      * @return Resource id for the Toast text triggered when the application
      *         crashes.
      */
-    int resToastText() default ACRAConstants.DEFAULT_RES_VALUE;
+int resToastText() default ACRAConstants.DEFAULT_RES_VALUE;
 
     /**
      * @return Name of the SharedPreferences that will host ACRA settings you
@@ -173,7 +173,7 @@ public @interface ReportsCrashes {
      *         SharedPreferences, as retrieved with
      *         {@link PreferenceManager#getDefaultSharedPreferences(Context)}.
      */
-    String sharedPreferencesName() default ACRAConstants.DEFAULT_STRING_VALUE;
+String sharedPreferencesName() default ACRAConstants.DEFAULT_STRING_VALUE;
 
     /**
      * If using a custom {@link ReportsCrashes#sharedPreferencesName()}, pass
@@ -181,11 +181,11 @@ public @interface ReportsCrashes {
      * {@link Context#MODE_PRIVATE}, {@link Context#MODE_WORLD_READABLE} or
      * {@link Context#MODE_WORLD_WRITEABLE}. Default is
      * {@link Context#MODE_PRIVATE}.
-     * 
+     *
      * @return Mode to use with the SharedPreference creation.
      * @see Context#getSharedPreferences(String, int)
      */
-    int sharedPreferencesMode() default ACRAConstants.DEFAULT_SHARED_PREFERENCES_MODE;
+int sharedPreferencesMode() default ACRAConstants.DEFAULT_SHARED_PREFERENCES_MODE;
 
     /**
      * If enabled, DropBox events collection will include system tags:
@@ -206,33 +206,33 @@ public @interface ReportsCrashes {
      * <li>SYSTEM_TOMBSTONE</li>
      * <li>data_app_strictmode</li>
      * </ul>
-     * 
+     *
      * @return True if system tags are to be included as part of DropBox events.
      */
-    boolean includeDropBoxSystemTags() default ACRAConstants.DEFAULT_INCLUDE_DROPBOX_SYSTEM_TAGS;
+boolean includeDropBoxSystemTags() default ACRAConstants.DEFAULT_INCLUDE_DROPBOX_SYSTEM_TAGS;
 
     /**
      * @return Array of tags that you want to be fetched when collecting DropBox
      *         entries.
      */
-    String[] additionalDropBoxTags() default {};
+String[] additionalDropBoxTags() default {};
 
     /**
      * @return Number of minutes to look back when collecting events from
      *         DropBoxManager.
      */
-    int dropboxCollectionMinutes() default ACRAConstants.DEFAULT_DROPBOX_COLLECTION_MINUTES;
+int dropboxCollectionMinutes() default ACRAConstants.DEFAULT_DROPBOX_COLLECTION_MINUTES;
 
     /**
      * <p>
      * Arguments to be passed to the logcat command line. Default is { "-t",
      * "100", "-v", "time" } for:
      * </p>
-     * 
+     *
      * <pre>
      * logcat -t 100 -v time
      * </pre>
-     * 
+     *
      * <p>
      * Do not include -b arguments for buffer selection, include
      * {@link ReportField#EVENTSLOG} and {@link ReportField#RADIOLOG} in
@@ -240,37 +240,39 @@ public @interface ReportsCrashes {
      * logcat buffers reporting. They will use the same other arguments as those
      * provided here.
      * </p>
-     * 
+     *
      * <p>
      * See <a href=
      * "http://developer.android.com/intl/fr/guide/developing/tools/adb.html#logcatoptions"
      * >Listing of logcat Command Options</a>.
      * </p>
-     * 
+     *
      * @return Array of arguments to supply if retrieving the log as part of the
      *         report.
      */
-    String[] logcatArguments() default { "-t", "" + ACRAConstants.DEFAULT_LOGCAT_LINES, "-v", "time" };
+String[] logcatArguments() default {
+        "-t", "" + ACRAConstants.DEFAULT_LOGCAT_LINES, "-v", "time"
+    };
 
     /**
      * When using the {@link #formUri()} parameter to send reports to a custom
      * server-side script, you can set here and in
      * {@link #formUriBasicAuthPassword()} the credentials for a BASIC HTTP
      * authentication.
-     * 
+     *
      * @return Login to use when posting reports to a custom server.
      */
-    String formUriBasicAuthLogin() default ACRAConstants.NULL_VALUE;
+String formUriBasicAuthLogin() default ACRAConstants.NULL_VALUE;
 
     /**
      * When using the {@link #formUri()} parameter to send reports to a custom
      * server-side script, you can set here and in
      * {@link #formUriBasicAuthLogin()} the credentials for a BASIC HTTP
      * authentication.
-     * 
+     *
      * @return Password to use when posting reports to a custom server.
      */
-    String formUriBasicAuthPassword() default ACRAConstants.NULL_VALUE;
+String formUriBasicAuthPassword() default ACRAConstants.NULL_VALUE;
 
     /**
      * <p>
@@ -350,11 +352,11 @@ public @interface ReportsCrashes {
      * {@link ReportField#SETTINGS_GLOBAL}</li>
      * </ul>
      * </p>
-     * 
+     *
      * @return ReportField Array listing the fields to be included in the
      *         report.
      */
-    ReportField[] customReportContent() default {};
+ReportField[] customReportContent() default {};
 
     /**
      * <p>
@@ -379,10 +381,10 @@ public @interface ReportsCrashes {
      * {@link ReportField#STACK_TRACE}</li>
      * </ul>
      * </p>
-     * 
+     *
      * @return email address to which to send reports.
      */
-    String mailTo() default ACRAConstants.DEFAULT_STRING_VALUE;
+String mailTo() default ACRAConstants.DEFAULT_STRING_VALUE;
 
     /**
      * Controls whether unapproved reports are deleted on application start or
@@ -393,118 +395,120 @@ public @interface ReportsCrashes {
      * restart, ACRA was issuing a new crash notification for previous reports
      * pending for approval. This could be misunderstood by the user with a new
      * crash, resulting in bad appreciation of the application.
-     * 
+     *
      * @return true if ACRA should delete unapproved reports on application
      *         start.
      */
-    boolean deleteUnapprovedReportsOnApplicationStart() default ACRAConstants.DEFAULT_DELETE_UNAPPROVED_REPORTS_ON_APPLICATION_START;
+    boolean deleteUnapprovedReportsOnApplicationStart()
+default ACRAConstants.DEFAULT_DELETE_UNAPPROVED_REPORTS_ON_APPLICATION_START;
 
     /**
      * This property can be used to determine whether old (out of date) reports
      * should be sent or not. By default they are discarded.
-     * 
+     *
      * @return true if ACRA should delete any unsent reports on startup if the
      *         application has been updated since the last time the application
      *         was started.
      */
-    boolean deleteOldUnsentReportsOnApplicationStart() default ACRAConstants.DEFAULT_DELETE_OLD_UNSENT_REPORTS_ON_APPLICATION_START;
+    boolean deleteOldUnsentReportsOnApplicationStart()
+default ACRAConstants.DEFAULT_DELETE_OLD_UNSENT_REPORTS_ON_APPLICATION_START;
 
     /**
      * @return Value in milliseconds for timeout attempting to connect to a
      *         network (default 3000ms).
      */
-    int connectionTimeout() default ACRAConstants.DEFAULT_CONNECTION_TIMEOUT;
+int connectionTimeout() default ACRAConstants.DEFAULT_CONNECTION_TIMEOUT;
 
     /**
      * If the request is retried due to timeout, the socketTimeout will double
      * before retrying the request.
-     * 
+     *
      * @return Value in milliseconds for timeout receiving a response to a
      *         network request (default 5000ms).
      * @see #maxNumberOfRequestRetries()
      */
-    int socketTimeout() default ACRAConstants.DEFAULT_SOCKET_TIMEOUT;
+int socketTimeout() default ACRAConstants.DEFAULT_SOCKET_TIMEOUT;
 
     /**
      * @return Maximum number of times a network request will be retried when
      *         receiving the response times out (default 3).
      * @see #socketTimeout()
      */
-    int maxNumberOfRequestRetries() default ACRAConstants.DEFAULT_MAX_NUMBER_OF_REQUEST_RETRIES;
+int maxNumberOfRequestRetries() default ACRAConstants.DEFAULT_MAX_NUMBER_OF_REQUEST_RETRIES;
 
     /**
      * In {@link ReportingInteractionMode#TOAST} mode, set this to true if you
      * prefer displaying the native Force Close dialog after the Toast.
-     * 
+     *
      * @return true if the Force Close dialog has to be displayed.
      */
-    boolean forceCloseDialogAfterToast() default ACRAConstants.DEFAULT_FORCE_CLOSE_DIALOG_AFTER_TOAST;
+boolean forceCloseDialogAfterToast() default ACRAConstants.DEFAULT_FORCE_CLOSE_DIALOG_AFTER_TOAST;
 
     /**
      * Add here your {@link SharedPreferences} identifier Strings if you use
      * others than your application's default. They will be added to the
      * {@link ReportField#SHARED_PREFERENCES} field.
-     * 
+     *
      * @return String Array containing the names of the additional preferences.
      */
-    String[] additionalSharedPreferences() default {};
+String[] additionalSharedPreferences() default {};
 
     /**
      * Set this to true if you want to include only logcat lines related to your
      * Application process.
-     * 
+     *
      * @return true if you want to filter logcat with your process id.
      */
-    boolean logcatFilterByPid() default ACRAConstants.DEFAULT_LOGCAT_FILTER_BY_PID;
+boolean logcatFilterByPid() default ACRAConstants.DEFAULT_LOGCAT_FILTER_BY_PID;
 
     /**
      * Set this to false if you want to disable sending reports in development
      * mode. Only signed application packages will send reports. Default value
      * is true.
-     * 
+     *
      * @return false if reports should not be sent.
      */
-    boolean sendReportsInDevMode() default ACRAConstants.DEFAULT_SEND_REPORTS_IN_DEV_MODE;
+boolean sendReportsInDevMode() default ACRAConstants.DEFAULT_SEND_REPORTS_IN_DEV_MODE;
 
     /**
      * Provide here regex patterns to be evaluated on each SharedPreference key
      * to exclude KV pairs from the collected SharedPreferences. This allows you
      * to exclude sensitive user data like passwords to be collected.
-     * 
+     *
      * @return an array of regex patterns, every matching key is not collected.
      */
-    String[] excludeMatchingSharedPreferencesKeys() default {};
+String[] excludeMatchingSharedPreferencesKeys() default {};
 
     /**
      * Provide here regex patterns to be evaluated on each Settings.System,
      * Settings.Secure and Settings.Global key to exclude KV pairs from the
      * collected SharedPreferences. This allows you to exclude sensitive data to
      * be collected.
-     * 
+     *
      * @return an array of regex patterns, every matching key is not collected.
      */
-    String[] excludeMatchingSettingsKeys() default {};
+String[] excludeMatchingSettingsKeys() default {};
 
     /**
      * To use in combination with {@link ReportField#APPLICATION_LOG} to set the
      * path/name of your application log file. If the string does not contain
      * any path separator, the file is assumed as being in
      * {@link Context#getFilesDir()}.
-     * 
+     *
      * @return a String containing the path/name of your application log file.
      *         If the string does not containt any path separator, the file is
      *         assumed as being in {@link Context#getFilesDir()}.
      */
-    String applicationLogFile() default ACRAConstants.DEFAULT_APPLICATION_LOGFILE;
+String applicationLogFile() default ACRAConstants.DEFAULT_APPLICATION_LOGFILE;
 
     /**
      * To use in combination with {@link ReportField#APPLICATION_LOG} to set the
      * number of latest lines of your application log file to be collected.
      * Default value is 100.
-     * 
+     *
      * @return number of lines to collect.
      */
-    int applicationLogFileLines() default ACRAConstants.DEFAULT_APPLICATION_LOGFILE_LINES;
+int applicationLogFileLines() default ACRAConstants.DEFAULT_APPLICATION_LOGFILE_LINES;
 
     /**
      * <p>
@@ -512,37 +516,37 @@ public @interface ReportsCrashes {
      * "https://spreadsheets.google.com/formResponse?formkey=%s&amp;ifq" with %s
      * replaced by the {@link #formKey()} value.
      * </p>
-     * 
+     *
      * <p>
      * If Google ever changed its URI schemes for Forms (changing the host name
      * or parameters names for example), you would be able to override it with
      * the new value with the present method.
      * </p>
-     * 
+     *
      * @return The format of the URL used to post report data in a Google Form,
      *         including a %s token which is replaced by the formKey.
      */
-    String googleFormUrlFormat() default ACRAConstants.DEFAULT_GOOGLE_FORM_URL_FORMAT;
+String googleFormUrlFormat() default ACRAConstants.DEFAULT_GOOGLE_FORM_URL_FORMAT;
 
     /**
      * <p>
      * Set this to true if you need to post reports to your own server using an
      * SSL connection with a self-signed certificate.
      * </p>
-     * 
+     *
      * @return True if SSL certificates validation has to be ignored when
      *         posting reports.
      */
-    boolean disableSSLCertValidation() default ACRAConstants.DEFAULT_DISABLE_SSL_CERT_VALIDATION;
+boolean disableSSLCertValidation() default ACRAConstants.DEFAULT_DISABLE_SSL_CERT_VALIDATION;
 
     /**
      * <p>
      * The {@link Method} to be used when posting with {@link #formKey()}.
      * </p>
-     * 
+     *
      * @return
      */
-    Method httpMethod() default Method.POST;
+Method httpMethod() default Method.POST;
 
-    Type reportType() default Type.FORM;
+Type reportType() default Type.FORM;
 }

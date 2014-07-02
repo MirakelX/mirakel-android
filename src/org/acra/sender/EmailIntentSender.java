@@ -40,10 +40,8 @@ public class EmailIntentSender implements ReportSender {
 
     @Override
     public void send(CrashReportData errorContent) throws ReportSenderException {
-
         final String subject = mContext.getPackageName() + " Crash Report";
         final String body = buildBody(errorContent);
-
         final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
         emailIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         emailIntent.setType("text/plain");
@@ -55,10 +53,9 @@ public class EmailIntentSender implements ReportSender {
 
     private String buildBody(CrashReportData errorContent) {
         ReportField[] fields = ACRA.getConfig().customReportContent();
-        if(fields.length == 0) {
+        if (fields.length == 0) {
             fields = ACRAConstants.DEFAULT_MAIL_REPORT_FIELDS;
         }
-
         final StringBuilder builder = new StringBuilder();
         for (ReportField field : fields) {
             builder.append(field.toString()).append("=");
