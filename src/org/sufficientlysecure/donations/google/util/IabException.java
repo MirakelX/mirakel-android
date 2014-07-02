@@ -21,29 +21,29 @@ package org.sufficientlysecure.donations.google.util;
  * that caused this exception to be thrown, call {@link #getResult()}.
  */
 public class IabException extends Exception {
-	static final long serialVersionUID = 1391887734;
-	IabResult mResult;
+    static final long serialVersionUID = 1391887734;
+    IabResult mResult;
 
-	public IabException(final IabResult r) {
-		this(r, null);
-	}
+    public IabException(final IabResult r) {
+        this(r, null);
+    }
 
-	public IabException(final int response, final String message) {
-		this(new IabResult(response, message));
-	}
+    public IabException(final int response, final String message) {
+        this(new IabResult(response, message));
+    }
 
-	public IabException(final IabResult r, final Exception cause) {
-		super(r.getMessage(), cause);
-		this.mResult = r;
-	}
+    public IabException(final IabResult r, final Exception cause) {
+        super(r.getMessage(), cause);
+        this.mResult = r;
+    }
 
-	public IabException(final int response, final String message,
-			final Exception cause) {
-		this(new IabResult(response, message), cause);
-	}
+    public IabException(final int response, final String message,
+                        final Exception cause) {
+        this(new IabResult(response, message), cause);
+    }
 
-	/** Returns the IAB result (error) that this exception signals. */
-	public IabResult getResult() {
-		return this.mResult;
-	}
+    /** Returns the IAB result (error) that this exception signals. */
+    public IabResult getResult() {
+        return this.mResult;
+    }
 }

@@ -23,37 +23,37 @@ package org.sufficientlysecure.donations.google.util;
  * by calling {@link #isSuccess()} and {@link #isFailure()}.
  */
 public class IabResult {
-	int mResponse;
-	String mMessage;
+    int mResponse;
+    String mMessage;
 
-	public IabResult(final int response, final String message) {
-		this.mResponse = response;
-		if (message == null || message.trim().length() == 0) {
-			this.mMessage = IabHelper.getResponseDesc(response);
-		} else {
-			this.mMessage = message + " (response: "
-					+ IabHelper.getResponseDesc(response) + ")";
-		}
-	}
+    public IabResult(final int response, final String message) {
+        this.mResponse = response;
+        if (message == null || message.trim().length() == 0) {
+            this.mMessage = IabHelper.getResponseDesc(response);
+        } else {
+            this.mMessage = message + " (response: "
+                            + IabHelper.getResponseDesc(response) + ")";
+        }
+    }
 
-	public int getResponse() {
-		return this.mResponse;
-	}
+    public int getResponse() {
+        return this.mResponse;
+    }
 
-	public String getMessage() {
-		return this.mMessage;
-	}
+    public String getMessage() {
+        return this.mMessage;
+    }
 
-	public boolean isSuccess() {
-		return this.mResponse == IabHelper.BILLING_RESPONSE_RESULT_OK;
-	}
+    public boolean isSuccess() {
+        return this.mResponse == IabHelper.BILLING_RESPONSE_RESULT_OK;
+    }
 
-	public boolean isFailure() {
-		return !isSuccess();
-	}
+    public boolean isFailure() {
+        return !isSuccess();
+    }
 
-	@Override
-	public String toString() {
-		return "IabResult: " + getMessage();
-	}
+    @Override
+    public String toString() {
+        return "IabResult: " + getMessage();
+    }
 }
