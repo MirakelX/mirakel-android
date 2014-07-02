@@ -1,18 +1,18 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
- * 
+ *
  * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
- * 
+ *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
  *     the Free Software Foundation, either version 3 of the License, or
  *     any later version.
- * 
+ *
  *     This program is distributed in the hope that it will be useful,
  *     but WITHOUT ANY WARRANTY; without even the implied warranty of
  *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *     GNU General Public License for more details.
- * 
+ *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -27,23 +27,23 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 @SuppressWarnings("unused")
 public class PagerAdapter extends FragmentStatePagerAdapter {
 
-	private final List<Fragment> fragments;
+    private final List<Fragment> fragments;
 
-	public PagerAdapter(final FragmentManager fm, final List<Fragment> fragments) {
-		super(fm);
-		this.fragments = fragments;
-	}
+    public PagerAdapter(final FragmentManager fm, final List<Fragment> fragments) {
+        super(fm);
+        this.fragments = fragments;
+    }
 
-	@Override
-	public Fragment getItem(final int position) {
-		if (position < this.fragments.size()) {
-			return this.fragments.get(position);
-		}
-		return new Fragment();
-	}
+    @Override
+    public Fragment getItem(final int position) {
+        if (position < this.fragments.size()) {
+            return this.fragments.get(position);
+        }
+        return new Fragment();
+    }
 
-	@Override
-	public int getCount() {
-		return this.fragments.size();
-	}
+    @Override
+    public int getCount() {
+        return this.fragments.size();
+    }
 }
