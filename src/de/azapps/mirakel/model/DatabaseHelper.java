@@ -284,6 +284,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                        + ListMirakel.LFT + "," + ListMirakel.RGT + ") VALUES ('"
                        + lists[i] + "'," + (i + 2) + "," + (i + 3) + ")");
         }
+        onUpgrade(db, 32, DATABASE_VERSION);
         if (MirakelCommonPreferences.isDemoMode()) {
             final String[] tasks = this.context.getResources().getStringArray(
                                        R.array.demo_tasks);
@@ -304,7 +305,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 i++;
             }
         }
-        onUpgrade(db, 32, DATABASE_VERSION);
     }
 
     private static void createListsTable(final SQLiteDatabase db,
