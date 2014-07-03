@@ -34,118 +34,116 @@ import de.azapps.tools.Log;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class SettingsFragment extends PreferenceFragment {
-	private static final String TAG = "SettingsFragment";
-	private PreferencesAppHelper helper;
+    private static final String TAG = "SettingsFragment";
+    private PreferencesAppHelper helper;
 
-	public SettingsFragment() {
-		super();
-	}
+    public SettingsFragment() {
+        super();
+    }
 
-	@Override
-	public void onActivityResult(final int requestCode, final int resultCode,
-			final Intent data) {
-		Log.d(TAG, "fragment");
-		switch (requestCode) {
-		case SettingsActivity.NEW_ACCOUNT:
-			final Preference server = findPreference("syncServer");
-			PreferencesAppHelper.updateSyncText(null, server,
-					findPreference("syncFrequency"), getActivity());
-			break;
-		default:
-			Log.d(TAG, "unkown activity result");
-			break;
-		}
-		super.onActivityResult(requestCode, resultCode, data);
-	}
+    @Override
+    public void onActivityResult(final int requestCode, final int resultCode,
+                                 final Intent data) {
+        Log.d(TAG, "fragment");
+        switch (requestCode) {
+        case SettingsActivity.NEW_ACCOUNT:
+            final Preference server = findPreference("syncServer");
+            PreferencesAppHelper.updateSyncText(null, server,
+                                                findPreference("syncFrequency"), getActivity());
+            break;
+        default:
+            Log.d(TAG, "unkown activity result");
+            break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
-	@SuppressLint("NewApi")
-	@Override
-	public void onCreate(final Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		Locale.setDefault(Helpers.getLocal(getActivity()));
-		switch (getArguments().getString("type")) {
-		case "gui":
-			addPreferencesFromResource(R.xml.settings_gui);
-			break;
-		case "tasks":
-			addPreferencesFromResource(R.xml.settings_tasks);
-			break;
-		case "notification":
-			addPreferencesFromResource(R.xml.settings_notifications);
-			break;
-		case "backup":
-			addPreferencesFromResource(R.xml.settings_backup);
-			break;
-		case "accounts":
-			startActivity(new Intent(getActivity(),
-					AccountSettingsActivity.class));
-			if (!MirakelCommonPreferences.isTablet()) {
-				getActivity().finish();
-			} else {
-				addPreferencesFromResource(R.xml.settings_notifications);
-			}
-			break;
-		case "misc":
-			addPreferencesFromResource(R.xml.settings_misc);
-			break;
-		case "about":
-			addPreferencesFromResource(R.xml.settings_about);
-			break;
-		case "help":
-			Helpers.openHelp(getActivity());
-			getActivity().finish();
-			break;
-		case "donate":
-			startActivityForResult(new Intent(getActivity(),
-					DonationsActivity.class), SettingsActivity.DONATE);
-			if (!MirakelCommonPreferences.isTablet()) {
-				getActivity().finish();
-			}
-			break;
-		case "speciallists":
-			startActivity(new Intent(getActivity(),
-					SpecialListsSettingsActivity.class));
-			if (!MirakelCommonPreferences.isTablet()) {
-				getActivity().finish();
-			} else {
-				addPreferencesFromResource(R.xml.settings_notifications);
-			}
-			break;
-		case "tag":
-			startActivity(new Intent(getActivity(), TagsSettingsActivity.class));
-			if (!MirakelCommonPreferences.isTablet()) {
-				getActivity().finish();
-			} else {
-				addPreferencesFromResource(R.xml.settings_notifications);
-			}
-			break;
-		case "dev":
-			addPreferencesFromResource(R.xml.settings_dev);
-			break;
-		default:
-			Log.wtf(TAG, "unkown prefernce " + getArguments().getString("type"));
-		}
+    @SuppressLint("NewApi")
+    @Override
+    public void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Locale.setDefault(Helpers.getLocal(getActivity()));
+        switch (getArguments().getString("type")) {
+        case "gui":
+            addPreferencesFromResource(R.xml.settings_gui);
+            break;
+        case "tasks":
+            addPreferencesFromResource(R.xml.settings_tasks);
+            break;
+        case "notification":
+            addPreferencesFromResource(R.xml.settings_notifications);
+            break;
+        case "backup":
+            addPreferencesFromResource(R.xml.settings_backup);
+            break;
+        case "accounts":
+            startActivity(new Intent(getActivity(),
+                                     AccountSettingsActivity.class));
+            if (!MirakelCommonPreferences.isTablet()) {
+                getActivity().finish();
+            } else {
+                addPreferencesFromResource(R.xml.settings_notifications);
+            }
+            break;
+        case "misc":
+            addPreferencesFromResource(R.xml.settings_misc);
+            break;
+        case "about":
+            addPreferencesFromResource(R.xml.settings_about);
+            break;
+        case "help":
+            Helpers.openHelp(getActivity());
+            getActivity().finish();
+            break;
+        case "donate":
+            startActivityForResult(new Intent(getActivity(),
+                                              DonationsActivity.class), SettingsActivity.DONATE);
+            if (!MirakelCommonPreferences.isTablet()) {
+                getActivity().finish();
+            }
+            break;
+        case "speciallists":
+            startActivity(new Intent(getActivity(),
+                                     SpecialListsSettingsActivity.class));
+            if (!MirakelCommonPreferences.isTablet()) {
+                getActivity().finish();
+            } else {
+                addPreferencesFromResource(R.xml.settings_notifications);
+            }
+            break;
+        case "tag":
+            startActivity(new Intent(getActivity(), TagsSettingsActivity.class));
+            if (!MirakelCommonPreferences.isTablet()) {
+                getActivity().finish();
+            } else {
+                addPreferencesFromResource(R.xml.settings_notifications);
+            }
+            break;
+        case "dev":
+            addPreferencesFromResource(R.xml.settings_dev);
+            break;
+        default:
+            Log.wtf(TAG, "unkown prefernce " + getArguments().getString("type"));
+        }
+        this.helper = new PreferencesAppHelper(this);
+        this.helper.setFunctionsApp();
+    }
 
-		this.helper = new PreferencesAppHelper(this);
-		this.helper.setFunctionsApp();
-	}
+    @SuppressLint("NewApi")
+    @Override
+    public void onDestroy() {
+        if (this.helper.actionBarSwitch != null) {
+            this.helper.actionBarSwitch.setVisibility(View.GONE);
+        }
+        super.onDestroy();
+    }
 
-	@SuppressLint("NewApi")
-	@Override
-	public void onDestroy() {
-		if (this.helper.actionBarSwitch != null) {
-			this.helper.actionBarSwitch.setVisibility(View.GONE);
-		}
-		super.onDestroy();
-	}
-
-	public void showTaskFragmentSettings() {
-		final int id = ((ViewGroup) getView().getParent()).getId();
-		final FragmentManager fm = getActivity().getFragmentManager();
-		final TaskFragmentSettingsFragment settings = new TaskFragmentSettingsFragment();
-		fm.beginTransaction().replace(id, settings).commit();
-		// TODO maybe fix order...
-
-	}
+    public void showTaskFragmentSettings() {
+        final int id = ((ViewGroup) getView().getParent()).getId();
+        final FragmentManager fm = getActivity().getFragmentManager();
+        final TaskFragmentSettingsFragment settings = new TaskFragmentSettingsFragment();
+        fm.beginTransaction().replace(id, settings).commit();
+        // TODO maybe fix order...
+    }
 
 }
