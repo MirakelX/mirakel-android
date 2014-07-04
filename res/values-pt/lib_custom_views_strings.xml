@@ -45,4 +45,8 @@
     <item>Remover etiqueta</item>
   </string-array>
   <string name="tag_has_dark_text">Texto é preto</string>
+  <string-array name="recurring_task_select">
+    <item>Apenas esta recorrência</item>
+    <item>Todas as recorrências</item>
+  </string-array>
 </resources>
