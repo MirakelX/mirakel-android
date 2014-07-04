@@ -37,6 +37,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -101,7 +102,8 @@ public class MainWidgetProvider extends AppWidgetProvider {
                                                   .getResources().getDrawable(widgetBackground);
                 drawable.setAlpha(WidgetHelper.getTransparency(context,
                                   widgetId));
-                final Bitmap bitmap = Bitmap.createBitmap(500, 500,
+                DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+                final Bitmap bitmap = Bitmap.createBitmap(metrics.widthPixels, metrics.heightPixels,
                                       Config.ARGB_8888);
                 final Canvas canvas = new Canvas(bitmap);
                 drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -196,7 +198,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
                     appWidgetManager.updateAppWidget(new int[] { widgetId },
                                                      views);
                 } catch (final Exception e) {
-                    Log.d(TAG, "cannot create widget");
+                    Log.d(TAG, "cannot create widget", e);
                     return;
                 }
                 // Empty view
