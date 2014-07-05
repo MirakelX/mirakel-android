@@ -26,71 +26,70 @@ import de.azapps.mirakel.helper.MirakelCommonPreferences;
 
 public class WeekButton extends android.widget.ToggleButton {
 
-	private static boolean mDark;
+    private static boolean mDark;
 
-	public WeekButton(final Context context) {
-		super(context);
-		setTheme();
-	}
+    public WeekButton(final Context context) {
+        super(context);
+        setTheme();
+    }
 
-	private void setTheme() {
-		mDark = MirakelCommonPreferences.isDark();
-		if (mDark) {
-			// setBackground(getResources().getDrawable(R.drawable.recurrence_bubble_fill_dark));
-			setBackgroundDrawable(getResources().getDrawable(
-					R.drawable.recurrence_bubble_fill_dark));
-			setTextColor(getResources().getColorStateList(
-					R.color.recurrence_bubble_text_color_dark));
-		} else {
-			setBackgroundDrawable(getResources().getDrawable(
-					R.drawable.recurrence_bubble_fill));
-			setTextColor(getResources().getColorStateList(
-					R.color.recurrence_bubble_text_color));
-		}
-	}
+    private void setTheme() {
+        mDark = MirakelCommonPreferences.isDark();
+        if (mDark) {
+            // setBackground(getResources().getDrawable(R.drawable.recurrence_bubble_fill_dark));
+            setBackgroundDrawable(getResources().getDrawable(
+                                      R.drawable.recurrence_bubble_fill_dark));
+            setTextColor(getResources().getColorStateList(
+                             R.color.recurrence_bubble_text_color_dark));
+        } else {
+            setBackgroundDrawable(getResources().getDrawable(
+                                      R.drawable.recurrence_bubble_fill));
+            setTextColor(getResources().getColorStateList(
+                             R.color.recurrence_bubble_text_color));
+        }
+    }
 
-	public WeekButton(final Context context, final AttributeSet attrs) {
-		super(context, attrs);
-		setTheme();
+    public WeekButton(final Context context, final AttributeSet attrs) {
+        super(context, attrs);
+        setTheme();
+    }
 
-	}
+    public WeekButton(final Context context, final AttributeSet attrs,
+                      final int defStyle) {
+        super(context, attrs, defStyle);
+        setTheme();
+    }
 
-	public WeekButton(final Context context, final AttributeSet attrs,
-			final int defStyle) {
-		super(context, attrs, defStyle);
-		setTheme();
-	}
+    public static void setSuggestedWidth(final int w) {
+        // mWidth = w; not used
+    }
 
-	public static void setSuggestedWidth(final int w) {
-		// mWidth = w; not used
-	}
-
-	@SuppressLint("NewAPI")
-	@Override
-	protected void onMeasure(final int widthMeasureSpec,
-			final int heightMeasureSpec) {
-		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-		int h = getMeasuredHeight();
-		int w = getMeasuredWidth();
-		if (h > 0 && w > 0) {
-			if (w < h) {
-				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-					h = w;
-				} else {
-					if (View.MeasureSpec.getMode(getMeasuredHeightAndState()) != MeasureSpec.EXACTLY) {
-						h = w;
-					}
-				}
-			} else if (h < w) {
-				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-					w = h;
-				} else {
-					if (View.MeasureSpec.getMode(getMeasuredWidthAndState()) != MeasureSpec.EXACTLY) {
-						w = h;
-					}
-				}
-			}
-		}
-		setMeasuredDimension(w, h);
-	}
+    @SuppressLint("NewAPI")
+    @Override
+    protected void onMeasure(final int widthMeasureSpec,
+                             final int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int h = getMeasuredHeight();
+        int w = getMeasuredWidth();
+        if (h > 0 && w > 0) {
+            if (w < h) {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+                    h = w;
+                } else {
+                    if (View.MeasureSpec.getMode(getMeasuredHeightAndState()) != MeasureSpec.EXACTLY) {
+                        h = w;
+                    }
+                }
+            } else if (h < w) {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+                    w = h;
+                } else {
+                    if (View.MeasureSpec.getMode(getMeasuredWidthAndState()) != MeasureSpec.EXACTLY) {
+                        w = h;
+                    }
+                }
+            }
+        }
+        setMeasuredDimension(w, h);
+    }
 }
