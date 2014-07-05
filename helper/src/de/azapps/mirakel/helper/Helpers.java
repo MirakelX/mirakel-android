@@ -1,18 +1,18 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
- * 
+ *
  * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
- * 
+ *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
  *     the Free Software Foundation, either version 3 of the License, or
  *     any later version.
- * 
+ *
  *     This program is distributed in the hope that it will be useful,
  *     but WITHOUT ANY WARRANTY; without even the implied warranty of
  *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *     GNU General Public License for more details.
- * 
+ *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -38,181 +38,168 @@ import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.tools.Log;
 
 public class Helpers {
-	/**
-	 * Wrapper-Class
-	 * 
-	 * @author az
-	 */
-	public interface ExecInterface {
-		public void exec();
-	}
+    /**
+     * Wrapper-Class
+     *
+     * @author az
+     */
+    public interface ExecInterface {
+        public void exec();
+    }
 
-	private static String TAG = "Helpers";
+    private static String TAG = "Helpers";
 
-	// Contact
-	public static void contact(final Context context) {
-		String mirakelVersion = "unknown";
-		try {
-			mirakelVersion = context.getPackageManager().getPackageInfo(
-					context.getPackageName(), 0).versionName;
-		} catch (final NameNotFoundException e) {
-			Log.logStackTrace(e);
-			Log.e(TAG, "could not get version name from manifest!");
-		}
-		contact(context, context.getString(R.string.contact_subject),
-				context.getString(R.string.contact_text, mirakelVersion,
-						android.os.Build.VERSION.SDK_INT,
-						android.os.Build.DEVICE));
+    // Contact
+    public static void contact(final Context context) {
+        String mirakelVersion = "unknown";
+        try {
+            mirakelVersion = context.getPackageManager().getPackageInfo(
+                                 context.getPackageName(), 0).versionName;
+        } catch (final NameNotFoundException e) {
+            Log.logStackTrace(e);
+            Log.e(TAG, "could not get version name from manifest!");
+        }
+        contact(context, context.getString(R.string.contact_subject),
+                context.getString(R.string.contact_text, mirakelVersion,
+                                  android.os.Build.VERSION.SDK_INT,
+                                  android.os.Build.DEVICE));
+    }
 
-	}
+    public static void contact(final Context context, final String subject,
+                               final String content) {
+        final Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("message/rfc822");
+        i.putExtra(Intent.EXTRA_EMAIL,
+                   new String[] { context.getString(R.string.contact_email) });
+        i.putExtra(Intent.EXTRA_SUBJECT, subject);
+        i.putExtra(Intent.EXTRA_TEXT, content);
+        try {
+            final Intent ci = Intent.createChooser(i,
+                                                   context.getString(R.string.contact_chooser));
+            ci.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(ci);
+        } catch (final android.content.ActivityNotFoundException ex) {
+            ErrorReporter.report(ErrorType.CONTACT_NO_CLIENT);
+        }
+    }
 
-	public static void contact(final Context context, final String subject,
-			final String content) {
+    public static int getHighlightedColor(final Context ctx) {
+        if (MirakelCommonPreferences.isDark()) {
+            return ctx.getResources().getColor(
+                       R.color.highlighted_text_holo_dark);
+        }
+        return ctx.getResources().getColor(R.color.highlighted_text_holo_light);
+    }
 
-		final Intent i = new Intent(Intent.ACTION_SEND);
-		i.setType("message/rfc822");
-		i.putExtra(Intent.EXTRA_EMAIL,
-				new String[] { context.getString(R.string.contact_email) });
-		i.putExtra(Intent.EXTRA_SUBJECT, subject);
-		i.putExtra(Intent.EXTRA_TEXT, content);
-		try {
-			final Intent ci = Intent.createChooser(i,
-					context.getString(R.string.contact_chooser));
-			ci.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			context.startActivity(ci);
-		} catch (final android.content.ActivityNotFoundException ex) {
-			ErrorReporter.report(ErrorType.CONTACT_NO_CLIENT);
+    public static Locale getLocal(final Context ctx) {
+        final String current = MirakelCommonPreferences.getLanguage();
+        final Locale locale = current.equals("-1") ? Locale.getDefault()
+                              : new Locale(current);
+        Locale.setDefault(locale);
+        final Configuration config = new Configuration();
+        config.locale = locale;
+        ctx.getApplicationContext()
+        .getResources()
+        .updateConfiguration(
+            config,
+            ctx.getApplicationContext().getResources()
+            .getDisplayMetrics());
+        return locale;
+    }
 
-		}
-	}
+    // MISC
 
-	public static int getHighlightedColor(final Context ctx) {
-		if (MirakelCommonPreferences.isDark()) {
-			return ctx.getResources().getColor(
-					R.color.highlighted_text_holo_dark);
-		}
-		return ctx.getResources().getColor(R.color.highlighted_text_holo_light);
-	}
+    /*
+     * Scaling down the image
+     * "Source: http://www.androiddevelopersolution.com/2012/09/bitmap-how-to-scale-down-image-for.html"
+     */
+    public static Bitmap getScaleImage(final Bitmap bitmap,
+                                       final float boundBoxInDp) {
+        // Get current dimensions
+        final int width = bitmap.getWidth();
+        final int height = bitmap.getHeight();
+        // Determine how much to scale: the dimension requiring
+        // less scaling is.
+        // closer to the its side. This way the image always
+        // stays inside your.
+        // bounding box AND either x/y axis touches it.
+        final float xScale = boundBoxInDp / width;
+        final float yScale = boundBoxInDp / height;
+        final float scale = xScale <= yScale ? xScale : yScale;
+        // Create a matrix for the scaling and add the scaling data
+        final Matrix matrix = new Matrix();
+        matrix.postScale(scale, scale);
+        // matrix.postRotate(rotate);
+        // Create a new bitmap and convert it to a format understood
+        // by the
+        // ImageView
+        final Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, width,
+                                    height, matrix, false);
+        // Apply the scaled bitmap
+        return scaledBitmap;
+    }
 
-	public static Locale getLocal(final Context ctx) {
+    public static boolean isIntentAvailable(final Context context,
+                                            final String action) {
+        final PackageManager packageManager = context.getPackageManager();
+        final Intent intent = new Intent(action);
+        final List<ResolveInfo> list = packageManager.queryIntentActivities(
+                                           intent, PackageManager.MATCH_DEFAULT_ONLY);
+        return list.size() > 0;
+    }
 
-		final String current = MirakelCommonPreferences.getLanguage();
-		final Locale locale = current.equals("-1") ? Locale.getDefault()
-				: new Locale(current);
-		Locale.setDefault(locale);
-		final Configuration config = new Configuration();
-		config.locale = locale;
-		ctx.getApplicationContext()
-				.getResources()
-				.updateConfiguration(
-						config,
-						ctx.getApplicationContext().getResources()
-								.getDisplayMetrics());
-		return locale;
+    // Help
+    public static void openHelp(final Context ctx) {
+        openHelp(ctx, null);
+    }
 
-	}
+    public static void openHelp(final Context ctx, final String title) {
+        String url = "http://mirakel.azapps.de/help_en.html";
+        if (title != null) {
+            url += "#" + title;
+        }
+        openURL(ctx, url);
+    }
 
-	// MISC
+    public static void openURL(final Context ctx, final String url) {
+        final Intent i2 = new Intent(Intent.ACTION_VIEW);
+        i2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        i2.setData(Uri.parse(url));
+        ctx.startActivity(i2);
+    }
 
-	/*
-	 * Scaling down the image
-	 * "Source: http://www.androiddevelopersolution.com/2012/09/bitmap-how-to-scale-down-image-for.html"
-	 */
-	public static Bitmap getScaleImage(final Bitmap bitmap,
-			final float boundBoxInDp) {
+    public static void restartApp(final Context context) {
+        PendingIntent intent;
+        try {
+            intent = PendingIntent
+                     .getActivity(
+                         context,
+                         0,
+                         new Intent(
+                             context,
+                             Class.forName("de.azapps.mirakel.static_activities.SplashScreenActivity")),
+                         0);
+        } catch (final ClassNotFoundException e) {
+            Log.wtf(TAG, "splashscreen not found");
+            return;
+        }
+        final AlarmManager manager = (AlarmManager) context
+                                     .getSystemService(Context.ALARM_SERVICE);
+        manager.set(AlarmManager.RTC, System.currentTimeMillis() + 100, intent);
+        System.exit(2);
+    }
 
-		// Get current dimensions
-		final int width = bitmap.getWidth();
-		final int height = bitmap.getHeight();
-
-		// Determine how much to scale: the dimension requiring
-		// less scaling is.
-		// closer to the its side. This way the image always
-		// stays inside your.
-		// bounding box AND either x/y axis touches it.
-		final float xScale = boundBoxInDp / width;
-		final float yScale = boundBoxInDp / height;
-		final float scale = xScale <= yScale ? xScale : yScale;
-
-		// Create a matrix for the scaling and add the scaling data
-		final Matrix matrix = new Matrix();
-		matrix.postScale(scale, scale);
-		// matrix.postRotate(rotate);
-
-		// Create a new bitmap and convert it to a format understood
-
-		// by the
-		// ImageView
-		final Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, width,
-				height, matrix, false);
-
-		// Apply the scaled bitmap
-		return scaledBitmap;
-
-	}
-
-	public static boolean isIntentAvailable(final Context context,
-			final String action) {
-		final PackageManager packageManager = context.getPackageManager();
-		final Intent intent = new Intent(action);
-		final List<ResolveInfo> list = packageManager.queryIntentActivities(
-				intent, PackageManager.MATCH_DEFAULT_ONLY);
-		return list.size() > 0;
-	}
-
-	// Help
-	public static void openHelp(final Context ctx) {
-		openHelp(ctx, null);
-	}
-
-	public static void openHelp(final Context ctx, final String title) {
-		String url = "http://mirakel.azapps.de/help_en.html";
-		if (title != null) {
-			url += "#" + title;
-		}
-		openURL(ctx, url);
-	}
-
-	public static void openURL(final Context ctx, final String url) {
-		final Intent i2 = new Intent(Intent.ACTION_VIEW);
-		i2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		i2.setData(Uri.parse(url));
-		ctx.startActivity(i2);
-	}
-
-	public static void restartApp(final Context context) {
-		PendingIntent intent;
-		try {
-			intent = PendingIntent
-					.getActivity(
-							context,
-							0,
-							new Intent(
-									context,
-									Class.forName("de.azapps.mirakel.static_activities.SplashScreenActivity")),
-							0);
-		} catch (final ClassNotFoundException e) {
-			Log.wtf(TAG, "splashscreen not found");
-			return;
-		}
-		final AlarmManager manager = (AlarmManager) context
-				.getSystemService(Context.ALARM_SERVICE);
-		manager.set(AlarmManager.RTC, System.currentTimeMillis() + 100, intent);
-		System.exit(2);
-	}
-
-	public static void showFileChooser(final int code, final String title,
-			final Activity activity) {
-
-		final Intent fileDialogIntent = new Intent(Intent.ACTION_GET_CONTENT);
-		fileDialogIntent.setType("*/*");
-		fileDialogIntent.addCategory(Intent.CATEGORY_OPENABLE);
-		try {
-			activity.startActivityForResult(
-					Intent.createChooser(fileDialogIntent, title), code);
-		} catch (final android.content.ActivityNotFoundException ex) {
-			ErrorReporter.report(ErrorType.NO_FILEMANAGER);
-		}
-	}
+    public static void showFileChooser(final int code, final String title,
+                                       final Activity activity) {
+        final Intent fileDialogIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        fileDialogIntent.setType("*/*");
+        fileDialogIntent.addCategory(Intent.CATEGORY_OPENABLE);
+        try {
+            activity.startActivityForResult(
+                Intent.createChooser(fileDialogIntent, title), code);
+        } catch (final android.content.ActivityNotFoundException ex) {
+            ErrorReporter.report(ErrorType.NO_FILEMANAGER);
+        }
+    }
 
 }

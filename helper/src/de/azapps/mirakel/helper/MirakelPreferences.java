@@ -7,18 +7,18 @@ import android.preference.PreferenceManager;
 
 public class MirakelPreferences {
 
-	protected static Context context;
-	protected static SharedPreferences settings;
+    protected static Context context;
+    protected static SharedPreferences settings;
 
-	public static void init(final Context ctx) {
-		if (settings == null || MirakelPreferences.context == null) {
-			MirakelPreferences.context = ctx;
-			settings = PreferenceManager.getDefaultSharedPreferences(ctx);
-		}
-	}
+    public static void init(final Context ctx) {
+        if (settings == null || MirakelPreferences.context == null) {
+            MirakelPreferences.context = ctx;
+            settings = PreferenceManager.getDefaultSharedPreferences(ctx);
+        }
+    }
 
-	public static Editor getEditor() {
-		return settings.edit();
-	}
+    public static Editor getEditor() {
+        return settings.edit();
+    }
 
 }
