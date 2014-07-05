@@ -25,75 +25,75 @@ import java.util.Map;
  * returned by such methods as {@link IabHelper#queryInventory}.
  */
 public class Inventory {
-	Map<String, SkuDetails> mSkuMap = new HashMap<String, SkuDetails>();
-	Map<String, Purchase> mPurchaseMap = new HashMap<String, Purchase>();
+    Map<String, SkuDetails> mSkuMap = new HashMap<String, SkuDetails>();
+    Map<String, Purchase> mPurchaseMap = new HashMap<String, Purchase>();
 
-	Inventory() {
-	}
+    Inventory() {
+    }
 
-	/** Returns the listing details for an in-app product. */
-	public SkuDetails getSkuDetails(final String sku) {
-		return this.mSkuMap.get(sku);
-	}
+    /** Returns the listing details for an in-app product. */
+    public SkuDetails getSkuDetails(final String sku) {
+        return this.mSkuMap.get(sku);
+    }
 
-	/**
-	 * Returns purchase information for a given product, or null if there is no
-	 * purchase.
-	 */
-	public Purchase getPurchase(final String sku) {
-		return this.mPurchaseMap.get(sku);
-	}
+    /**
+     * Returns purchase information for a given product, or null if there is no
+     * purchase.
+     */
+    public Purchase getPurchase(final String sku) {
+        return this.mPurchaseMap.get(sku);
+    }
 
-	/** Returns whether or not there exists a purchase of the given product. */
-	public boolean hasPurchase(final String sku) {
-		return this.mPurchaseMap.containsKey(sku);
-	}
+    /** Returns whether or not there exists a purchase of the given product. */
+    public boolean hasPurchase(final String sku) {
+        return this.mPurchaseMap.containsKey(sku);
+    }
 
-	/** Return whether or not details about the given product are available. */
-	public boolean hasDetails(final String sku) {
-		return this.mSkuMap.containsKey(sku);
-	}
+    /** Return whether or not details about the given product are available. */
+    public boolean hasDetails(final String sku) {
+        return this.mSkuMap.containsKey(sku);
+    }
 
-	/**
-	 * Erase a purchase (locally) from the inventory, given its product ID. This
-	 * just modifies the Inventory object locally and has no effect on the
-	 * server! This is useful when you have an existing Inventory object which
-	 * you know to be up to date, and you have just consumed an item
-	 * successfully, which means that erasing its purchase data from the
-	 * Inventory you already have is quicker than querying for a new Inventory.
-	 */
-	public void erasePurchase(final String sku) {
-		if (this.mPurchaseMap.containsKey(sku)) {
-			this.mPurchaseMap.remove(sku);
-		}
-	}
+    /**
+     * Erase a purchase (locally) from the inventory, given its product ID. This
+     * just modifies the Inventory object locally and has no effect on the
+     * server! This is useful when you have an existing Inventory object which
+     * you know to be up to date, and you have just consumed an item
+     * successfully, which means that erasing its purchase data from the
+     * Inventory you already have is quicker than querying for a new Inventory.
+     */
+    public void erasePurchase(final String sku) {
+        if (this.mPurchaseMap.containsKey(sku)) {
+            this.mPurchaseMap.remove(sku);
+        }
+    }
 
-	/** Returns a list of all owned product IDs. */
-	List<String> getAllOwnedSkus() {
-		return new ArrayList<String>(this.mPurchaseMap.keySet());
-	}
+    /** Returns a list of all owned product IDs. */
+    List<String> getAllOwnedSkus() {
+        return new ArrayList<String>(this.mPurchaseMap.keySet());
+    }
 
-	/** Returns a list of all owned product IDs of a given type */
-	List<String> getAllOwnedSkus(final String itemType) {
-		final List<String> result = new ArrayList<String>();
-		for (final Purchase p : this.mPurchaseMap.values()) {
-			if (p.getItemType().equals(itemType)) {
-				result.add(p.getSku());
-			}
-		}
-		return result;
-	}
+    /** Returns a list of all owned product IDs of a given type */
+    List<String> getAllOwnedSkus(final String itemType) {
+        final List<String> result = new ArrayList<String>();
+        for (final Purchase p : this.mPurchaseMap.values()) {
+            if (p.getItemType().equals(itemType)) {
+                result.add(p.getSku());
+            }
+        }
+        return result;
+    }
 
-	/** Returns a list of all purchases. */
-	List<Purchase> getAllPurchases() {
-		return new ArrayList<Purchase>(this.mPurchaseMap.values());
-	}
+    /** Returns a list of all purchases. */
+    List<Purchase> getAllPurchases() {
+        return new ArrayList<Purchase>(this.mPurchaseMap.values());
+    }
 
-	void addSkuDetails(final SkuDetails d) {
-		this.mSkuMap.put(d.getSku(), d);
-	}
+    void addSkuDetails(final SkuDetails d) {
+        this.mSkuMap.put(d.getSku(), d);
+    }
 
-	void addPurchase(final Purchase p) {
-		this.mPurchaseMap.put(p.getSku(), p);
-	}
+    void addPurchase(final Purchase p) {
+        this.mPurchaseMap.put(p.getSku(), p);
+    }
 }
