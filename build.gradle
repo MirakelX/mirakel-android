@@ -7,7 +7,7 @@ buildscript {
                 artifactUrls "file:~/.m2/"
             }
         }
-        classpath 'com.android.tools.build:gradle:0.12.+'
+        classpath 'com.android.tools.build:gradle:0.12.1'
 //        classpath 'com.jakewharton.hugo:hugo-plugin:1.0.+'
         classpath 'org.robolectric:robolectric-gradle-plugin:0.11.+'
     }
@@ -73,6 +73,7 @@ gradle.projectsEvaluated {
             into (rootDir.toString()+"/"+proj+"/merged-res") 
         }
     }
+    format()
 }
 ext {
     compileSdkVersion = 19
@@ -83,8 +84,8 @@ ext {
 configure(allprojects) {
     ext.androidSDKVersion = "19"
     ext.androidBuildToolsVersion = "19.0"
-    ext.androidSupportVersion = "19.0.1"
-    ext.androidPluginVersion ="0.12.0"
+    ext.androidSupportVersion = "20.0.0"
+    ext.androidPluginVersion ="0.12.1"
     ext.androidMinSDKVersion ="8"
     ext.jodaLibraryVersion = "2.2"
     ext.nineoldandroisVersion="2.4.0"
@@ -97,4 +98,14 @@ allprojects {
     repositories {                   
         mavenCentral()
     }
+}
+def void format(){
+	exec { 
+    	executable 'bash'
+    	args rootDir.toString()+'/build/format.sh'
+    }
+}
+
+task format() {
+	format()
 }
