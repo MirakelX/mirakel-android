@@ -25,16 +25,16 @@ import org.acra.ReportField;
  * report field as {@link HttpSender#HttpPostSender(String, java.util.Map)}
  * can take a Map<ReportField, String> as an input to convert each field name to
  * your preferred POST parameter name.
- * 
+ *
  * @author Kevin Gaudin
- * 
+ *
  */
 public interface ReportSender {
     /**
      * Send crash report data. You don't have to take care of managing Threads,
      * just implement what is necessary to handle the data. ACRA will use a
      * specific Thread (not the UI Thread) to run your sender.
-     * 
+     *
      * @param errorContent
      *            Stores key/value pairs for each report field. A report field
      *            is identified by a {@link ReportField} enum value.

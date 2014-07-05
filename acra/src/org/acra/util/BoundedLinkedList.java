@@ -22,9 +22,9 @@ import java.util.LinkedList;
  * A {@link LinkedList} version with a maximum number of elements. When adding
  * elements to the end of the list, first elements in the list are discarded if
  * the maximum size is reached.
- * 
+ *
  * @author Kevin Gaudin
- * 
+ *
  * @param <E>
  */
 @SuppressWarnings("serial")
@@ -38,7 +38,7 @@ public class BoundedLinkedList<E> extends LinkedList<E> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.LinkedList#add(java.lang.Object)
      */
     @Override
@@ -51,7 +51,7 @@ public class BoundedLinkedList<E> extends LinkedList<E> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.LinkedList#add(int, java.lang.Object)
      */
     @Override
@@ -64,7 +64,7 @@ public class BoundedLinkedList<E> extends LinkedList<E> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.LinkedList#addAll(java.util.Collection)
      */
     @Override
@@ -79,7 +79,7 @@ public class BoundedLinkedList<E> extends LinkedList<E> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.LinkedList#addAll(int, java.util.Collection)
      */
     @Override
@@ -95,7 +95,7 @@ public class BoundedLinkedList<E> extends LinkedList<E> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.LinkedList#addFirst(java.lang.Object)
      */
     @Override
@@ -106,7 +106,7 @@ public class BoundedLinkedList<E> extends LinkedList<E> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.LinkedList#addLast(java.lang.Object)
      */
     @Override
@@ -116,7 +116,7 @@ public class BoundedLinkedList<E> extends LinkedList<E> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.AbstractCollection#toString()
      */
     @Override

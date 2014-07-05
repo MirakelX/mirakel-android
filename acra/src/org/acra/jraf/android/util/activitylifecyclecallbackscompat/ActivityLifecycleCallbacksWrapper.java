@@ -35,48 +35,51 @@ import android.os.Bundle;
  */
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 /* package */class ActivityLifecycleCallbacksWrapper implements
-		ActivityLifecycleCallbacks {
-	private final org.acra.jraf.android.util.activitylifecyclecallbackscompat.ActivityLifecycleCallbacksCompat mCallback;
+    ActivityLifecycleCallbacks {
+    private final
+    org.acra.jraf.android.util.activitylifecyclecallbackscompat.ActivityLifecycleCallbacksCompat
+    mCallback;
 
-	public ActivityLifecycleCallbacksWrapper(
-			final org.acra.jraf.android.util.activitylifecyclecallbackscompat.ActivityLifecycleCallbacksCompat callback) {
-		this.mCallback = callback;
-	}
+    public ActivityLifecycleCallbacksWrapper(
+        final org.acra.jraf.android.util.activitylifecyclecallbackscompat.ActivityLifecycleCallbacksCompat
+        callback) {
+        this.mCallback = callback;
+    }
 
-	@Override
-	public void onActivityCreated(final Activity activity,
-			final Bundle savedInstanceState) {
-		this.mCallback.onActivityCreated(activity, savedInstanceState);
-	}
+    @Override
+    public void onActivityCreated(final Activity activity,
+                                  final Bundle savedInstanceState) {
+        this.mCallback.onActivityCreated(activity, savedInstanceState);
+    }
 
-	@Override
-	public void onActivityStarted(final Activity activity) {
-		this.mCallback.onActivityStarted(activity);
-	}
+    @Override
+    public void onActivityStarted(final Activity activity) {
+        this.mCallback.onActivityStarted(activity);
+    }
 
-	@Override
-	public void onActivityResumed(final Activity activity) {
-		this.mCallback.onActivityResumed(activity);
-	}
+    @Override
+    public void onActivityResumed(final Activity activity) {
+        this.mCallback.onActivityResumed(activity);
+    }
 
-	@Override
-	public void onActivityPaused(final Activity activity) {
-		this.mCallback.onActivityPaused(activity);
-	}
+    @Override
+    public void onActivityPaused(final Activity activity) {
+        this.mCallback.onActivityPaused(activity);
+    }
 
-	@Override
-	public void onActivityStopped(final Activity activity) {
-		this.mCallback.onActivityStopped(activity);
-	}
+    @Override
+    public void onActivityStopped(final Activity activity) {
+        this.mCallback.onActivityStopped(activity);
+    }
 
-	@Override
-	public void onActivitySaveInstanceState(final Activity activity,
-			final Bundle outState) {
-		this.mCallback.onActivitySaveInstanceState(activity, outState);
-	}
+    @Override
+    public void onActivitySaveInstanceState(final Activity activity,
+                                            final Bundle outState) {
+        this.mCallback.onActivitySaveInstanceState(activity, outState);
+    }
 
-	@Override
-	public void onActivityDestroyed(final Activity activity) {
-		this.mCallback.onActivityDestroyed(activity);
-	}
+    @Override
+    public void onActivityDestroyed(final Activity activity) {
+        this.mCallback.onActivityDestroyed(activity);
+    }
 }

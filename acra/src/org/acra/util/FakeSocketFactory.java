@@ -1,5 +1,5 @@
 /*
- * Utility class copied from http://transdroid.googlecode.com with the authorization from Eric Kok to redistribute it under Apache Software License. 
+ * Utility class copied from http://transdroid.googlecode.com with the authorization from Eric Kok to redistribute it under Apache Software License.
  */
 package org.acra.util;
 
@@ -38,13 +38,12 @@ public class FakeSocketFactory implements SocketFactory, LayeredSocketFactory {
     }
 
     @Override
-    public Socket connectSocket(Socket sock, String host, int port, InetAddress localAddress, int localPort, HttpParams params) throws IOException {
+    public Socket connectSocket(Socket sock, String host, int port, InetAddress localAddress,
+                                int localPort, HttpParams params) throws IOException {
         final int connTimeout = HttpConnectionParams.getConnectionTimeout(params);
         final int soTimeout = HttpConnectionParams.getSoTimeout(params);
-
         final InetSocketAddress remoteAddress = new InetSocketAddress(host, port);
         final SSLSocket sslsock = (SSLSocket) ((sock != null) ? sock : createSocket());
-
         if ((localAddress != null) || (localPort > 0)) {
             // we need to bind explicitly
             if (localPort < 0) {
@@ -53,10 +52,8 @@ public class FakeSocketFactory implements SocketFactory, LayeredSocketFactory {
             final InetSocketAddress isa = new InetSocketAddress(localAddress, localPort);
             sslsock.bind(isa);
         }
-
         sslsock.connect(remoteAddress, connTimeout);
         sslsock.setSoTimeout(soTimeout);
-
         return sslsock;
     }
 
@@ -71,7 +68,8 @@ public class FakeSocketFactory implements SocketFactory, LayeredSocketFactory {
     }
 
     @Override
-    public Socket createSocket(Socket socket, String host, int port, boolean autoClose) throws IOException {
+    public Socket createSocket(Socket socket, String host, int port,
+                               boolean autoClose) throws IOException {
         return getSSLContext().getSocketFactory().createSocket(socket, host, port, autoClose);
     }
 

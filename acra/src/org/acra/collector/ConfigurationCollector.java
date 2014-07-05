@@ -35,9 +35,9 @@ import android.util.SparseArray;
  * like 0, 1, 2 or 3 don't look readable to me. Using reflection API allows to
  * retrieve hidden fields and can make us hope to be compatible with all Android
  * API levels, even those which are not published yet.
- * 
+ *
  * @author Kevin Gaudin
- * 
+ *
  */
 public final class ConfigurationCollector {
 
@@ -65,7 +65,8 @@ public final class ConfigurationCollector {
     private static SparseArray<String> mTouchScreenValues = new SparseArray<String>();
     private static SparseArray<String> mUiModeValues = new SparseArray<String>();
 
-    private static final HashMap<String, SparseArray<String>> mValueArrays = new HashMap<String, SparseArray<String>>();
+    private static final HashMap<String, SparseArray<String>> mValueArrays = new
+    HashMap<String, SparseArray<String>>();
 
     // Static init
     static {
@@ -78,7 +79,6 @@ public final class ConfigurationCollector {
         mValueArrays.put(PREFIX_SCREENLAYOUT, mScreenLayoutValues);
         mValueArrays.put(PREFIX_TOUCHSCREEN, mTouchScreenValues);
         mValueArrays.put(PREFIX_UI_MODE, mUiModeValues);
-
         for (final Field f : Configuration.class.getFields()) {
             if (Modifier.isStatic(f.getModifiers()) && Modifier.isFinal(f.getModifiers())) {
                 final String fieldName = f.getName();
@@ -114,7 +114,7 @@ public final class ConfigurationCollector {
     /**
      * Use this method to generate a human readable String listing all values
      * from the provided Configuration instance.
-     * 
+     *
      * @param conf
      *            The Configuration to be described.
      * @return A String describing all the fields of the given Configuration,
@@ -129,7 +129,7 @@ public final class ConfigurationCollector {
                     result.append(fieldName).append('=');
                     if (f.getType().equals(int.class)) {
                         result.append(getFieldValueName(conf, f));
-                    } else if(f.get(conf) != null){
+                    } else if (f.get(conf) != null) {
                         result.append(f.get(conf).toString());
                     }
                     result.append('\n');
@@ -147,7 +147,7 @@ public final class ConfigurationCollector {
      * Retrieve the name of the constant defined in the {@link Configuration}
      * class which defines the value of a field in a {@link Configuration}
      * instance.
-     * 
+     *
      * @param conf
      *            The instance of {@link Configuration} where the value is
      *            stored.
@@ -172,7 +172,6 @@ public final class ConfigurationCollector {
                 // Unknown field, return the raw int as String
                 return Integer.toString(f.getInt(conf));
             }
-
             final String value = values.get(f.getInt(conf));
             if (value == null) {
                 // Unknown value, return the raw int as String
@@ -186,7 +185,7 @@ public final class ConfigurationCollector {
      * Some fields contain multiple value types which can be isolated by
      * applying a bitmask. That method returns the concatenation of active
      * values.
-     * 
+     *
      * @param valueNames
      *            The array containing the different values and names for this
      *            field. Must contain mask values too.
@@ -197,7 +196,6 @@ public final class ConfigurationCollector {
      */
     private static String activeFlags(SparseArray<String> valueNames, int bitfield) {
         final StringBuilder result = new StringBuilder();
-
         // Look for masks, apply it an retrieve the masked value
         for (int i = 0; i < valueNames.size(); i++) {
             final int maskValue = valueNames.keyAt(i);
@@ -213,7 +211,7 @@ public final class ConfigurationCollector {
         }
         return result.toString();
     }
-    
+
     /**
      * Returns the current Configuration for this application.
      *

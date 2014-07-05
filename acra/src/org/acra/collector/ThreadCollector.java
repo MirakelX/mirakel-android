@@ -18,23 +18,22 @@ package org.acra.collector;
 
 /**
  * Collects some data identifying a Thread, usually the Thread which crashed.
- * 
+ *
  * @author Kevin Gaudin
- * 
+ *
  */
 public class ThreadCollector {
 
     /**
      * Convenience method that collects some data identifying a Thread, usually the Thread which
      * crashed and returns a string containing the thread's id, name, priority and group name.
-     * 
+     *
      * @param the thread
      * @return a string representation of the string including the id, name and priority of the thread.
      */
     public static String collect(Thread t) {
         StringBuilder result = new StringBuilder();
         if (t != null) {
-
             result.append("id=").append(t.getId()).append("\n");
             result.append("name=").append(t.getName()).append("\n");
             result.append("priority=").append(t.getPriority()).append("\n");

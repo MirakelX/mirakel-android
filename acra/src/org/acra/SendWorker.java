@@ -31,7 +31,7 @@ import android.util.Log;
 
 /**
  * Checks and send reports on a separate Thread.
- * 
+ *
  * @author Kevin Gaudin
  */
 final class SendWorker extends Thread {
@@ -44,7 +44,7 @@ final class SendWorker extends Thread {
 
     /**
      * Creates a new {@link SendWorker} to try sending pending reports.
-     * 
+     *
      * @param context
      *            ApplicationContext in which the reports are being sent.
      * @param reportSenders
@@ -57,7 +57,7 @@ final class SendWorker extends Thread {
      *            sending any reports.
      */
     public SendWorker(Context context, List<ReportSender> reportSenders, boolean sendOnlySilentReports,
-            boolean approvePendingReports) {
+                      boolean approvePendingReports) {
         this.context = context;
         this.reportSenders = reportSenders;
         this.sendOnlySilentReports = sendOnlySilentReports;
@@ -66,7 +66,7 @@ final class SendWorker extends Thread {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Thread#run()
      */
     @Override
@@ -83,19 +83,15 @@ final class SendWorker extends Thread {
      */
     private void approvePendingReports() {
         Log.d(LOG_TAG, "Mark all pending reports as approved.");
-
         final CrashReportFinder reportFinder = new CrashReportFinder(context);
         final String[] reportFileNames = reportFinder.getCrashReportFiles();
-
         for (String reportFileName : reportFileNames) {
             if (!fileNameParser.isApproved(reportFileName)) {
                 final File reportFile = new File(context.getFilesDir(), reportFileName);
-
                 // TODO look into how this could cause a file to go from
                 // -approved.stacktrace to -approved-approved.stacktrace
                 final String newName = reportFileName.replace(ACRAConstants.REPORTFILE_EXTENSION,
-                        ACRAConstants.APPROVED_SUFFIX + ACRAConstants.REPORTFILE_EXTENSION);
-
+                                       ACRAConstants.APPROVED_SUFFIX + ACRAConstants.REPORTFILE_EXTENSION);
                 // TODO Look into whether rename is atomic. Is there a better
                 // option?
                 final File newFile = new File(context.getFilesDir(), newName);
@@ -108,7 +104,7 @@ final class SendWorker extends Thread {
 
     /**
      * Send pending reports.
-     * 
+     *
      * @param context
      *            The application context.
      * @param sendOnlySilentReports
@@ -121,19 +117,15 @@ final class SendWorker extends Thread {
         final CrashReportFinder reportFinder = new CrashReportFinder(context);
         final String[] reportFiles = reportFinder.getCrashReportFiles();
         Arrays.sort(reportFiles);
-
         int reportsSentCount = 0;
-
         for (String curFileName : reportFiles) {
             if (sendOnlySilentReports && !fileNameParser.isSilent(curFileName)) {
                 continue;
             }
-
             if (reportsSentCount >= ACRAConstants.MAX_SEND_REPORTS) {
                 break; // send only a few reports to avoid overloading the
-                       // network
+                // network
             }
-
             Log.i(LOG_TAG, "Sending file " + curFileName);
             try {
                 final CrashReportPersister persister = new CrashReportPersister(context);
@@ -144,12 +136,12 @@ final class SendWorker extends Thread {
                 Log.e(ACRA.LOG_TAG, "Failed to send crash reports for " + curFileName, e);
                 deleteFile(context, curFileName);
                 break; // Something really unexpected happened. Don't try to
-                       // send any more reports now.
+                // send any more reports now.
             } catch (IOException e) {
                 Log.e(ACRA.LOG_TAG, "Failed to load crash report for " + curFileName, e);
                 deleteFile(context, curFileName);
                 break; // Something unexpected happened when reading the crash
-                       // report. Don't try to send any more reports now.
+                // report. Don't try to send any more reports now.
             } catch (ReportSenderException e) {
                 Log.e(ACRA.LOG_TAG, "Failed to send crash report for " + curFileName, e);
                 // An issue occurred while sending this report but we can still try to
@@ -165,7 +157,7 @@ final class SendWorker extends Thread {
      * Sends the report with all configured ReportSenders. If at least one
      * sender completed its job, the report is considered as sent and will not
      * be sent again for failing senders.
-     * 
+     *
      * @param errorContent
      *            Crash data.
      * @throws ReportSenderException
@@ -183,12 +175,12 @@ final class SendWorker extends Thread {
                 } catch (ReportSenderException e) {
                     if (!sentAtLeastOnce) {
                         throw e; // Don't log here because we aren't dealing
-                                 // with the Exception here.
+                        // with the Exception here.
                     } else {
                         Log.w(LOG_TAG,
-                                "ReportSender of class "
-                                        + sender.getClass().getName()
-                                        + " failed but other senders completed their task. ACRA will not send this report again.");
+                              "ReportSender of class "
+                              + sender.getClass().getName()
+                              + " failed but other senders completed their task. ACRA will not send this report again.");
                     }
                 }
             }

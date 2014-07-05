@@ -38,9 +38,9 @@ final class SharedPreferencesCollector {
      * collected, and the developer can provide additional SharedPreferences
      * names in the {@link ReportsCrashes#additionalSharedPreferences()}
      * configuration item.
-     * 
-     * 
-     * 
+     *
+     *
+     *
      * @param context
      *            the application context.
      * @return A readable formatted String containing all key/value pairs.
@@ -55,7 +55,6 @@ final class SharedPreferencesCollector {
                 shrdPrefs.put(shrdPrefId, context.getSharedPreferences(shrdPrefId, Context.MODE_PRIVATE));
             }
         }
-
         for (final String prefsId : shrdPrefs.keySet()) {
             final SharedPreferences prefs = shrdPrefs.get(prefsId);
             if (prefs != null) {
@@ -64,7 +63,8 @@ final class SharedPreferencesCollector {
                     for (final String key : kv.keySet()) {
                         if (!filteredKey(key)) {
                             if (kv.get(key) != null) {
-                                result.append(prefsId).append('.').append(key).append('=').append(kv.get(key).toString()).append("\n");
+                                result.append(prefsId).append('.').append(key).append('=').append(kv.get(
+                                            key).toString()).append("\n");
                             } else {
                                 result.append(prefsId).append('.').append(key).append('=').append("null\n");
                             }
@@ -78,22 +78,21 @@ final class SharedPreferencesCollector {
             }
             result.append('\n');
         }
-
         return result.toString();
     }
 
     /**
      * Checks if the key matches one of the patterns provided by the developer
      * to exclude some preferences from reports.
-     * 
+     *
      * @param key
      *            the name of the preference to be checked
      * @return true if the key has to be excluded from reports.
      */
     private static boolean filteredKey(String key) {
         for (String regex : ACRA.getConfig().excludeMatchingSharedPreferencesKeys()) {
-            if(key.matches(regex)) {
-               return true; 
+            if (key.matches(regex)) {
+                return true;
             }
         }
         return false;

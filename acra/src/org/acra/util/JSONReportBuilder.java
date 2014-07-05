@@ -22,10 +22,10 @@ public class JSONReportBuilder {
      * single key=value pair. If a value can be decomposed into subobjects, it
      * is done.
      * </p>
-     * 
+     *
      * <p>
      * For example, a String containing:
-     * 
+     *
      * <pre>
      * some.key.name1=value1
      * some.key.name2=value2
@@ -33,15 +33,15 @@ public class JSONReportBuilder {
      * any.other.key=value4
      * key.without.value5
      * </pre>
-     * 
+     *
      * is converted to
-     * 
+     *
      * <pre>
      * {
      *   some : {
      *     key : {
      *       name1 : "value1",
-     *       name2 : "value2"     
+     *       name2 : "value2"
      *     },
      *     other : "value3"
      *   },
@@ -53,9 +53,9 @@ public class JSONReportBuilder {
      *   key.without.value : true
      * }
      * </pre>
-     * 
+     *
      * </p>
-     * 
+     *
      * @param errorContent
      *            The ACRA report data structure.
      * @return A JSONObject containing all fields from the report converted to
@@ -100,11 +100,11 @@ public class JSONReportBuilder {
      * if available when keys are composed of a succession of subkeys delimited
      * by dots.
      * </p>
-     * 
+     *
      * <p>
      * For example, adding the string "metrics.xdpi=160.0" to an object
      * containing
-     * 
+     *
      * <pre>
      * {
      *   "metrics" : { "ydpi" : "160.0"},
@@ -112,9 +112,9 @@ public class JSONReportBuilder {
      *   "height" : "533"
      * }
      * </pre>
-     * 
+     *
      * results in
-     * 
+     *
      * <pre>
      * {
      *   "metrics" : { "ydpi" : "160.0", "xdpi" : "160.0"},
@@ -122,24 +122,25 @@ public class JSONReportBuilder {
      *   "height" : "533"
      * }
      * </pre>
-     * 
+     *
      * </p>
-     * 
+     *
      * @param destination
      *            The JSONObject where the data must be inserted.
      * @param propertyString
      *            A string containing "some.key.name=Any value"
      * @throws JSONException
      */
-    private static void addJSONFromProperty(JSONObject destination, String propertyString) throws JSONException {
+    private static void addJSONFromProperty(JSONObject destination,
+                                            String propertyString) throws JSONException {
         int equalsIndex = propertyString.indexOf('=');
         if (equalsIndex > 0) {
             JSONObject finalObject = destination;
             String currentKey = propertyString.substring(0, equalsIndex).trim();
             String currentValue = propertyString.substring(equalsIndex + 1).trim();
             Object value = guessType(currentValue);
-            if(value instanceof String) {
-                value = ((String) value).replaceAll("\\\\n","\n");
+            if (value instanceof String) {
+                value = ((String) value).replaceAll("\\\\n", "\n");
             }
             String[] splitKey = currentKey.split("\\.");
             if (splitKey.length > 1) {
@@ -153,11 +154,12 @@ public class JSONReportBuilder {
     }
 
     private static Object guessType(String value) {
-        if (value.equalsIgnoreCase("true"))
+        if (value.equalsIgnoreCase("true")) {
             return true;
-        if (value.equalsIgnoreCase("false"))
+        }
+        if (value.equalsIgnoreCase("false")) {
             return false;
-        
+        }
         if (value.matches("(?:^|\\s)([1-9](?:\\d*|(?:\\d{0,2})(?:,\\d{3})*)(?:\\.\\d*[1-9])?|0?\\.\\d*[1-9]|0)(?:\\s|$)")) {
             NumberFormat format = NumberFormat.getInstance(Locale.US);
             try {
@@ -173,7 +175,7 @@ public class JSONReportBuilder {
     /**
      * Deep insert a value inside a JSONObject, reusing existing subobjects when
      * available or creating them when necessary.
-     * 
+     *
      * @param destination
      *            The JSONObject which receives the additional subitem.
      * @param keys
@@ -183,7 +185,8 @@ public class JSONReportBuilder {
      *            The value to be inserted.
      * @throws JSONException
      */
-    private static void addJSONSubTree(JSONObject destination, String[] keys, Object value) throws JSONException {
+    private static void addJSONSubTree(JSONObject destination, String[] keys,
+                                       Object value) throws JSONException {
         for (int i = 0; i < keys.length; i++) {
             String subKey = keys[i];
             if (i < keys.length - 1) {

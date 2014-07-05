@@ -27,9 +27,9 @@ import android.util.SparseArray;
 /**
  * Collects data about available codecs on the device through the MediaCodecList
  * API introduced in Android 4.1 JellyBean.
- * 
+ *
  * @author Kevin Gaudin
- * 
+ *
  */
 public class MediaCodecListCollector {
     private enum CodecType {
@@ -74,19 +74,18 @@ public class MediaCodecListCollector {
             getNameMethod = mediaCodecInfoClass.getMethod("getName");
             isEncoderMethod = mediaCodecInfoClass.getMethod("isEncoder");
             getSupportedTypesMethod = mediaCodecInfoClass.getMethod("getSupportedTypes");
-            getCapabilitiesForTypeMethod = mediaCodecInfoClass.getMethod("getCapabilitiesForType", String.class);
+            getCapabilitiesForTypeMethod = mediaCodecInfoClass.getMethod("getCapabilitiesForType",
+                                           String.class);
             codecCapabilitiesClass = Class.forName("android.media.MediaCodecInfo$CodecCapabilities");
             colorFormatsField = codecCapabilitiesClass.getField("colorFormats");
             profileLevelsField = codecCapabilitiesClass.getField("profileLevels");
-
             // Retrieve list of possible Color Format
             for (Field f : codecCapabilitiesClass.getFields()) {
                 if (Modifier.isStatic(f.getModifiers()) && Modifier.isFinal(f.getModifiers())
-                        && f.getName().startsWith(COLOR_FORMAT_PREFIX)) {
+                    && f.getName().startsWith(COLOR_FORMAT_PREFIX)) {
                     mColorFormatValues.put(f.getInt(null), f.getName());
                 }
             }
-
             // Retrieve lists of possible codecs profiles and levels
             Class<?> codecProfileLevelClass = Class.forName("android.media.MediaCodecInfo$CodecProfileLevel");
             for (Field f : codecProfileLevelClass.getFields()) {
@@ -108,10 +107,8 @@ public class MediaCodecListCollector {
                     }
                 }
             }
-
             profileField = codecProfileLevelClass.getField("profile");
             levelField = codecProfileLevelClass.getField("level");
-
         } catch (ClassNotFoundException e) {
             // NOOP
         } catch (NoSuchMethodException e) {
@@ -125,14 +122,13 @@ public class MediaCodecListCollector {
         } catch (NoSuchFieldException e) {
             // NOOP
         }
-
     }
 
     /**
      * Builds a String describing the list of available codecs on the device
      * with their capabilities (supported Color Formats, Codec Profiles et
      * Levels).
-     * 
+     *
      * @return
      */
     public static String collecMediaCodecList() {
@@ -141,7 +137,6 @@ public class MediaCodecListCollector {
             try {
                 // Retrieve list of available media codecs
                 int codecCount = (Integer) (mediaCodecListClass.getMethod("getCodecCount").invoke(null));
-
                 // Go through each available media codec
                 Object codecInfo = null;
                 for (int codecIdx = 0; codecIdx < codecCount; codecIdx++) {
@@ -170,7 +165,7 @@ public class MediaCodecListCollector {
     /**
      * Retrieve capabilities (ColorFormats and CodecProfileLevels) for a
      * specific codec type.
-     * 
+     *
      * @param codecInfo
      * @param type
      * @return A string describing the color formats and codec profile levels
@@ -179,12 +174,11 @@ public class MediaCodecListCollector {
      * @throws IllegalAccessException
      * @throws InvocationTargetException
      */
-    private static String collectCapabilitiesForType(Object codecInfo, String type) throws IllegalArgumentException,
-            IllegalAccessException, InvocationTargetException {
+    private static String collectCapabilitiesForType(Object codecInfo,
+            String type) throws IllegalArgumentException,
+        IllegalAccessException, InvocationTargetException {
         StringBuilder result = new StringBuilder();
-
         Object codecCapabilities = getCapabilitiesForTypeMethod.invoke(codecInfo, type);
-
         // Color Formats
         int[] colorFormats = (int[]) colorFormatsField.get(codecCapabilities);
         if (colorFormats.length > 0) {
@@ -197,34 +191,30 @@ public class MediaCodecListCollector {
             }
             result.append("\n");
         }
-
         // Profile Levels
         Object[] codecProfileLevels = (Object[]) profileLevelsField.get(codecCapabilities);
         if (codecProfileLevels.length > 0) {
             result.append(type).append(" profile levels:");
             for (int i = 0; i < codecProfileLevels.length; i++) {
-
                 CodecType codecType = identifyCodecType(codecInfo);
                 int profileValue = profileField.getInt(codecProfileLevels[i]);
                 int levelValue = levelField.getInt(codecProfileLevels[i]);
-
                 if (codecType == null) {
                     // Unknown codec
                     result.append(profileValue).append('-').append(levelValue);
                 }
-
                 switch (codecType) {
                 case AVC:
                     result.append(profileValue).append(mAVCProfileValues.get(profileValue)).append('-')
-                            .append(mAVCLevelValues.get(levelValue));
+                    .append(mAVCLevelValues.get(levelValue));
                     break;
                 case H263:
                     result.append(mH263ProfileValues.get(profileValue)).append('-')
-                            .append(mH263LevelValues.get(levelValue));
+                    .append(mH263LevelValues.get(levelValue));
                     break;
                 case MPEG4:
                     result.append(mMPEG4ProfileValues.get(profileValue)).append('-')
-                            .append(mMPEG4LevelValues.get(levelValue));
+                    .append(mMPEG4LevelValues.get(levelValue));
                     break;
                 case AAC:
                     result.append(mAACProfileValues.get(profileValue));
@@ -232,11 +222,9 @@ public class MediaCodecListCollector {
                 default:
                     break;
                 }
-
                 if (i < codecProfileLevels.length - 1) {
                     result.append(',');
                 }
-
             }
             result.append("\n");
         }
@@ -252,8 +240,7 @@ public class MediaCodecListCollector {
      * @throws InvocationTargetException
      */
     private static CodecType identifyCodecType(Object codecInfo) throws IllegalArgumentException,
-            IllegalAccessException, InvocationTargetException {
-
+        IllegalAccessException, InvocationTargetException {
         String name = (String) getNameMethod.invoke(codecInfo);
         for (String token : AVC_TYPES) {
             if (name.contains(token)) {
@@ -275,7 +262,6 @@ public class MediaCodecListCollector {
                 return CodecType.AAC;
             }
         }
-
         return null;
     }
 }
