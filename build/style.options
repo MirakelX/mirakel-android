@@ -1,0 +1,20 @@
+#bracket style
+--style=java
+
+--indent=spaces=4
+
+--min-conditional-indent=0
+
+--pad-oper
+--pad-header
+
+--delete-empty-lines
+
+--add-brackets
+
+--max-code-length=100
+--break-after-logical
+
+--suffix=none
+
+
