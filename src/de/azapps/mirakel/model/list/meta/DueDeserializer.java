@@ -46,13 +46,13 @@ public class DueDeserializer implements
                         unit = entry.getValue().getAsInt();
                         break;
                     }
-                    //$FALL-THROUGH$
+                //$FALL-THROUGH$
                 case "length":
                     if (entry.getValue().isJsonPrimitive()) {
                         length = entry.getValue().getAsInt();
                         break;
                     }
-                    //$FALL-THROUGH$
+                //$FALL-THROUGH$
                 default:
                     throw new JsonParseException("unkown format");
                 }

@@ -123,7 +123,7 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
                 if (setPrioFromNumber) {
                     break;
                 }
-                //$FALL-THROUGH$
+            //$FALL-THROUGH$
             case "priorityNumber":
                 final String prioString = val.getAsString().trim();
                 if (prioString.equalsIgnoreCase("L") && t.getPriority() != -1) {
@@ -380,7 +380,7 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
         case "yearly":
         case "annual":
             number = 1;
-            //$FALL-THROUGH$
+        //$FALL-THROUGH$
         case "years":
         case "year":
         case "yrs":
@@ -409,7 +409,7 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
             break;
         case "daily":
             number = 1;
-            //$FALL-THROUGH$
+        //$FALL-THROUGH$
         case "days":
         case "day":
         case "d":
@@ -432,7 +432,7 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
             break;
         case "monthly":
             number = 1;
-            //$FALL-THROUGH$
+        //$FALL-THROUGH$
         case "months":
         case "month":
         case "mnths":
@@ -445,7 +445,7 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
             break;
         case "quarterly":
             number = 1;
-            //$FALL-THROUGH$
+        //$FALL-THROUGH$
         case "quarters":
         case "qrtrs":
         case "qtrs":
@@ -473,7 +473,7 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
         case "sennight":
         case "weekly":
             number = 1;
-            //$FALL-THROUGH$
+        //$FALL-THROUGH$
         case "weeks":
         case "week":
         case "wks":
