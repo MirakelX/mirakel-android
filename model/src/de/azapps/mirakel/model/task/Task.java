@@ -287,13 +287,13 @@ public class Task extends TaskBase {
             break;
         case ListMirakel.SORT_BY_OPT:
             order = ", " + TaskBase.PRIORITY + " DESC";
-            //$FALL-THROUGH$
+        //$FALL-THROUGH$
         case ListMirakel.SORT_BY_DUE:
             order = "done ASC, " + dueSort + order;
             break;
         case ListMirakel.SORT_BY_REVERT_DEFAULT:
             order = TaskBase.PRIORITY + " DESC, " + dueSort + order;
-            //$FALL-THROUGH$
+        //$FALL-THROUGH$
         default:
             if (!order.equals("")) {
                 order += ", ";
@@ -701,6 +701,11 @@ public class Task extends TaskBase {
                        SYNC_STATE.DELETE.toInt());
             Task.database.update(Task.TABLE, values, DatabaseHelper.ID + "="
                                  + id, null);
+            database.execSQL("UPDATE " + TABLE + " SET sync_state = " + SYNC_STATE.DELETE + " WHERE " +
+                             DatabaseHelper.ID + " IN (SELECT child FROM "
+                             + Recurring.TW_TABLE + " WHERE parent=" + getId() + ")");
+            database.execSQL("DELETE FROM " + FileMirakel.TABLE + " WHERE task" + DatabaseHelper.ID +
+                             " IN (SELECT child FROM " + Recurring.TW_TABLE + " WHERE parent=" + getId() + ")");
         }
         NotificationService.updateServices(context, getReminder() != null);
     }

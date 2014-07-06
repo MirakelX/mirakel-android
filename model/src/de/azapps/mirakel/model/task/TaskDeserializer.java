@@ -216,7 +216,9 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
                 t.setContent(handleContent(val));
                 break;
             case "sync_state":
-                t.setSyncState(SYNC_STATE.parseInt(val.getAsInt()));
+                if (isTW) {
+                    handleAdditionalEnties(t, key, val);
+                }
                 break;
             case "depends":
                 t.setDependencies(val.getAsString().split(","));

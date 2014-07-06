@@ -56,19 +56,19 @@ public class StringDeserializer<T extends SpecialListsStringProperty>
                         negated = entry.getValue().getAsBoolean();
                         break;
                     }
-                    //$FALL-THROUGH$
+                //$FALL-THROUGH$
                 case "type":
                     if (entry.getValue().isJsonPrimitive()) {
                         type = entry.getValue().getAsInt();
                         break;
                     }
-                    //$FALL-THROUGH$
+                //$FALL-THROUGH$
                 case "serachString":
                     if (entry.getValue().isJsonPrimitive()) {
                         serachString = entry.getValue().getAsString();
                         break;
                     }
-                    //$FALL-THROUGH$
+                //$FALL-THROUGH$
                 default:
                     throw new JsonParseException("unkown format");
                 }
