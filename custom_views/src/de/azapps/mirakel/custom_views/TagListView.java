@@ -120,7 +120,7 @@ public class TagListView extends View {
     }
 
     private void handleTagEdit(final Tag tag) {
-        final LinearLayout layout = (LinearLayout) inflate(getContext(),
+        final View layout = inflate(getContext(),
                                     R.layout.tag_edit_dialog, null);
         final EditText editName = (EditText) layout
                                   .findViewById(R.id.tag_edit_name);
