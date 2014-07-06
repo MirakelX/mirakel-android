@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+    <version name="2.6.1" date="2014-07-06" code="62">
+        <feature>Bugfixes</feature>
+    </version>
     <version name="2.6" date="2014-07-05" code="61">
         <feature>Recurrence sync for taskwarrior</feature>
         <feature>Bugfixes</feature>
