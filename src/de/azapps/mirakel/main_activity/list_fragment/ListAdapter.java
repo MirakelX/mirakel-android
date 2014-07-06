@@ -51,7 +51,7 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
 
     private boolean enableDrop;
 
-    private final Map<Integer, View> viewsForLists = new HashMap<Integer, View> ();
+    private final Map<Long, View> viewsForLists = new HashMap<> ();
 
     public ListAdapter (final Context c) {
         // do not call this, only for error-fixing there

@@ -18,6 +18,7 @@
  ******************************************************************************/
 package de.azapps.mirakel.main_activity;
 
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -528,7 +529,7 @@ public class MainActivity extends ActionBarActivity implements
     /**
      * Is called if the user want to destroy a Task
      *
-     * @param tasks
+     * @param tasks, List of all Tasks which should be destroyed
      */
     public void handleDestroyTask (final List<Task> tasks) {
         if (tasks == null || tasks.size() == 0) {
@@ -630,7 +631,7 @@ public class MainActivity extends ActionBarActivity implements
      * @param task
      */
     public void handleDestroyTask (final Task task) {
-        final List<Task> t = new ArrayList<>();
+        final List<Task> t = new ArrayList<> ();
         t.add (task);
         handleDestroyTask (t);
         setCurrentList (MainActivity.this.currentList);
@@ -641,7 +642,7 @@ public class MainActivity extends ActionBarActivity implements
     /**
      * Is called if the user want to move a Task
      *
-     * @param tasks
+     * @param tasks, list of all tasks which should be moved
      */
     public void handleMoveTask (final List<Task> tasks) {
         if (tasks == null || tasks.size () == 0) {
@@ -650,7 +651,7 @@ public class MainActivity extends ActionBarActivity implements
         final AlertDialog.Builder builder = new AlertDialog.Builder (this);
         builder.setTitle (R.string.dialog_move);
         final List<CharSequence> items = new ArrayList<> ();
-        final List<Integer> list_ids = new ArrayList<> ();
+        final List<Long> list_ids = new ArrayList<> ();
         int currentItem = 0, i = 0;
         for (final ListMirakel list : this.lists) {
             if (list.getId () > 0) {
@@ -705,7 +706,7 @@ public class MainActivity extends ActionBarActivity implements
     /**
      * Handle the actions after clicking on a move task button
      *
-     * @param task
+     * @param task, which should be moved
      */
     public void handleMoveTask (final Task task) {
         final List<Task> t = new ArrayList<> ();
@@ -1606,7 +1607,7 @@ public class MainActivity extends ActionBarActivity implements
                     this);
                 builder.setTitle (R.string.import_to);
                 final List<CharSequence> items = new ArrayList<> ();
-                final List<Integer> list_ids = new ArrayList<> ();
+                final List<Long> list_ids = new ArrayList<> ();
                 final int currentItem = 0;
                 for (final ListMirakel list : ListMirakel.all ()) {
                     if (list.getId () > 0) {
