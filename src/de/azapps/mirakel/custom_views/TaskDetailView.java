@@ -270,7 +270,7 @@ public class TaskDetailView extends BaseTaskDetailRow implements
             case TYPE.TAGS:
                 item = new TaskDetailTagView(this.context);
                 break;
-                //$FALL-THROUGH$
+            //$FALL-THROUGH$
             case TYPE.SUBTITLE:
             default:
                 // noting
