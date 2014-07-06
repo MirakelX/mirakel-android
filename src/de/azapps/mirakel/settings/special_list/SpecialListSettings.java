@@ -47,6 +47,7 @@ import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.PreferencesHelper;
 import de.azapps.mirakel.model.DatabaseHelper;
+import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -384,7 +385,7 @@ public class SpecialListSettings extends PreferencesHelper {
                 SortingItems[0] = SpecialListSettings.this.activity
                                   .getString(R.string.inverte);
                 for (int i = 0; i < lists.size(); i++) {
-                    values[i + 1] = lists.get(i).getId();
+                    values[i + 1] = (int)lists.get(i).getId();
                     SortingItems[i + 1] = lists.get(i).getName();
                     this.mSelectedItems[i + 1] = prop == null ? false : prop
                                                  .getContent().contains(lists.get(i).getId());
@@ -435,7 +436,7 @@ public class SpecialListSettings extends PreferencesHelper {
                 SortingItems[0] = SpecialListSettings.this.activity
                                   .getString(R.string.inverte);
                 for (int i = 0; i < tags.size(); i++) {
-                    values[i + 1] = tags.get(i).getId();
+                    values[i + 1] = (int)tags.get(i).getId();
                     SortingItems[i + 1] = tags.get(i).getName();
                     this.mSelectedItems[i + 1] = prop == null ? false : prop
                                                  .getContent().contains(tags.get(i).getId());
@@ -559,7 +560,7 @@ public class SpecialListSettings extends PreferencesHelper {
             public boolean onPreferenceClick(final Preference preference) {
                 final SpecialListsStringProperty prop = (SpecialListsStringProperty)
                                                         SpecialListSettings.this.specialList
-                                                        .getWhere().get(DatabaseHelper.NAME);
+                                                        .getWhere().get(ModelBase.NAME);
                 final View dialogView = getView(R.layout.content_name_dialog);
                 final EditText search = (EditText) dialogView
                                         .findViewById(R.id.where_like);
@@ -864,13 +865,13 @@ public class SpecialListSettings extends PreferencesHelper {
                 : new SpecialListsNameProperty(negated.isChecked(),
                                                searchString, t.ordinal()),
                 searchString.length() != 0, isContent ? Task.CONTENT
-                : DatabaseHelper.NAME, pref);
+                : ModelBase.NAME, pref);
         } else {
             prop.setType(t);
             prop.setSearchString(searchString);
             prop.setNegated(negated.isChecked());
             setNewWhere(prop, searchString.length() > 0,
-                        isContent ? Task.CONTENT : DatabaseHelper.NAME, pref);
+                        isContent ? Task.CONTENT : ModelBase.NAME, pref);
         }
     }
 

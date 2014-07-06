@@ -51,7 +51,7 @@ public class RecurringFragment extends PreferenceFragment {
         actionBar.setDisplayHomeAsUpEnabled(true);
         final Bundle b = getArguments();
         if (b != null) {
-            this.recurring = Recurring.get(getArguments().getInt("id"));
+            this.recurring = Recurring.get(getArguments().getLong("id"));
             ((RecurringActivity) getActivity()).setReccuring(this.recurring);
             actionBar.setTitle(this.recurring.getLabel());
             if (!MirakelCommonPreferences.isTablet()) {

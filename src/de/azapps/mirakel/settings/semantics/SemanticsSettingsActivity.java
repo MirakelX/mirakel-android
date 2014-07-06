@@ -62,16 +62,16 @@ public class SemanticsSettingsActivity extends ListSettings {
 
     @Override
     protected void setupSettings() {
-        this.semantic = Semantic.get(getIntent().getIntExtra("id", 0));
+        this.semantic = Semantic.get(getIntent().getLongExtra("id", 0));
         new SemanticsSettings(this, this.semantic).setup();
     }
 
     @Override
-    protected List<Pair<Integer, String>> getItems() {
+    protected List<Pair<Long, String>> getItems() {
         final List<Semantic> semantics = Semantic.all();
-        final List<Pair<Integer, String>> items = new ArrayList<Pair<Integer, String>>();
+        final List<Pair<Long, String>> items = new ArrayList<>();
         for (final Semantic s : semantics) {
-            items.add(new Pair<Integer, String>(s.getId(), s.getCondition()));
+            items.add(new Pair<>(s.getId(), s.getCondition()));
         }
         return items;
     }
