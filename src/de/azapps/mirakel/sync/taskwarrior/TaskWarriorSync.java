@@ -286,6 +286,7 @@ public class TaskWarriorSync {
             .create();
             final List<Task> recurringTasksCreate = new ArrayList<>();
             final List<Task> recurringTasksSave = new ArrayList<>();
+            final List<Task> taskDelete = new ArrayList<>();
             for (final String taskString : tasksString) {
                 if (taskString.charAt(0) != '{') {
                     Log.d(TAG, "Key: " + taskString);
@@ -318,7 +319,7 @@ public class TaskWarriorSync {
                 if (server_task.getSyncState() == SYNC_STATE.DELETE) {
                     Log.d(TAG, "destroy " + server_task.getName());
                     if (local_task != null) {
-                        local_task.destroy(true);
+                        taskDelete.add(local_task);
                     }
                 } else if (local_task == null) {
                     if (server_task.hasRecurringParent()) {
@@ -356,6 +357,10 @@ public class TaskWarriorSync {
             }
             for (final Task t : recurringTasksSave) {
                 t.save(false, true);
+            }
+            for (final Task t : taskDelete) {
+                // Force because we are in the sync – we know what we are doing ;)
+                t.destroy(true);
             }
         }
         final String message = remotes.get("message");
