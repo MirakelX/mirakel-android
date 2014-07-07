@@ -53,7 +53,7 @@ import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync.TW_ERRORS;
-import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync.TaskWarriorSyncFailedExeption;
+import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync.TaskWarriorSyncFailedException;
 import de.azapps.tools.Log;
 
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
@@ -122,7 +122,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             TW_ERRORS error = TW_ERRORS.NO_ERROR;
             try {
                 new TaskWarriorSync(this.mContext).sync(account);
-            } catch (final TaskWarriorSyncFailedExeption e) {
+            } catch (final TaskWarriorSyncFailedException e) {
                 Log.e(TAG, "SyncError", e);
                 error = e.getError();
             }
