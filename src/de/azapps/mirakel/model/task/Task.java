@@ -680,6 +680,13 @@ public class Task extends TaskBase {
         destroy(false);
     }
 
+    public void destroySubtasks() {
+        List<Task> tasks = getSubtasks();
+        for (Task t : tasks) {
+            t.destroy();
+        }
+    }
+
     public void destroy(final boolean force) {
         if (!force) {
             UndoHistory.updateLog(this, Task.context);
