@@ -664,12 +664,16 @@ public class Task extends TaskBase {
         return newTask;
     }
 
-    public void deleteSubtask(final Task s) {
-        Task.database.beginTransaction();
-        Task.database.delete(Task.SUBTASK_TABLE, "parent_id=" + getId()
-                             + " and child_id=" + s.getId(), null);
-        Task.database.setTransactionSuccessful();
-        Task.database.endTransaction();
+    public void deleteSubtask(final Task s, final boolean permanently) {
+        if (permanently) {
+            s.destroy();
+        } else {
+            Task.database.beginTransaction();
+            Task.database.delete(Task.SUBTASK_TABLE, "parent_id=" + getId()
+                                 + " and child_id=" + s.getId(), null);
+            Task.database.setTransactionSuccessful();
+            Task.database.endTransaction();
+        }
     }
 
     /**

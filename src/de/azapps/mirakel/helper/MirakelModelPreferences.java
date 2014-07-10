@@ -109,7 +109,11 @@ public class MirakelModelPreferences extends MirakelPreferences {
 
     public static ListMirakel subtaskAddToList() {
         try {
-            return ListMirakel.get(settings.getInt("subtaskAddToList", -1));
+            if (settings.contains("subtaskAddToList")) {
+                return ListMirakel.get(settings.getInt("subtaskAddToList", -1));
+            } else {
+                return null;
+            }
         } catch (final Exception e) {
             // let old as fallback
             try {
