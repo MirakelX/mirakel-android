@@ -164,7 +164,7 @@ public class Task extends TaskBase {
                         ListMirakel.get((int) cursor.getLong(i++)),
                         cursor.getString(i++), cursor.getString(i++),
                         cursor.getInt(i) == 1, due, reminder, cursor.getInt(8),
-                        created_at, updated_at, SYNC_STATE.valueOf(cursor.getInt(11)),
+                        created_at, updated_at, SYNC_STATE.valueOf(cursor.getShort(11)),
                         cursor.getString(12), cursor.getInt(13), cursor.getInt(14),
                         cursor.getInt(15), cursor.getShort(16) == 1);
     }
@@ -693,26 +693,22 @@ public class Task extends TaskBase {
         }
         final long id = getId();
         updateRecurringMaster();
+        final String subWhereQuery = " IN (SELECT child FROM "
+                                     + Recurring.TW_TABLE + " WHERE parent=" + getId() + ")";
+        final String whereQuery = DatabaseHelper.ID + " = " + id + " OR " + DatabaseHelper.ID +
+                                  subWhereQuery;
         if (getSyncState() == SYNC_STATE.ADD || force) {
-            Task.database.delete(Task.TABLE, DatabaseHelper.ID + " = " + id,
+            Task.database.delete(Task.TABLE, whereQuery,
                                  null);
-            database.execSQL("DELETE FROM " + TABLE + " WHERE " + DatabaseHelper.ID + " IN (SELECT child FROM "
-                             + Recurring.TW_TABLE + " WHERE parent=" + getId() + ")");
-            database.execSQL("DELETE FROM " + FileMirakel.TABLE + " WHERE task" + DatabaseHelper.ID +
-                             " IN (SELECT child FROM " + Recurring.TW_TABLE + " WHERE parent=" + getId() + ")");
+            database.delete(FileMirakel.TABLE, "task_id = " + id + " OR task_id " + subWhereQuery, null);
             database.delete(Recurring.TW_TABLE, "parent=?", new String[] {getId() + ""});
             destroyGarbage();
         } else {
             final ContentValues values = new ContentValues();
             values.put(DatabaseHelper.SYNC_STATE_FIELD,
                        SYNC_STATE.DELETE.toInt());
-            Task.database.update(Task.TABLE, values, DatabaseHelper.ID + "="
-                                 + id, null);
-            database.execSQL("UPDATE " + TABLE + " SET sync_state = " + SYNC_STATE.DELETE + " WHERE " +
-                             DatabaseHelper.ID + " IN (SELECT child FROM "
-                             + Recurring.TW_TABLE + " WHERE parent=" + getId() + ")");
-            database.execSQL("DELETE FROM " + FileMirakel.TABLE + " WHERE task" + DatabaseHelper.ID +
-                             " IN (SELECT child FROM " + Recurring.TW_TABLE + " WHERE parent=" + getId() + ")");
+            Task.database.update(Task.TABLE, values, whereQuery, null);
+            database.delete(FileMirakel.TABLE, "task_id = " + id + " OR task_id " + subWhereQuery, null);
         }
         NotificationService.updateServices(context, getReminder() != null);
     }
