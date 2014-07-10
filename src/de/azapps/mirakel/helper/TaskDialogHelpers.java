@@ -378,13 +378,20 @@ public class TaskDialogHelpers {
             public void onClick(final DialogInterface dialog,
                                 final int which) {
                 for (final Task s : subtasks) {
-                    task.deleteSubtask(s);
+                    final boolean permanent;
+                    if (s.getList().equals(MirakelModelPreferences.subtaskAddToList())) {
+                        permanent = true;
+                    } else {
+                        permanent = false;
+                    }
+                    task.deleteSubtask(s, permanent);
                 }
                 if (onSuccess != null) {
                     onSuccess.exec(task);
                 }
             }
-        })
+        }
+                          )
         .setNegativeButton(android.R.string.cancel, dialogDoNothing)
         .show();
     }

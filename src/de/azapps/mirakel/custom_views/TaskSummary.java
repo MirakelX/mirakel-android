@@ -43,18 +43,18 @@ import de.azapps.tools.Log;
 
 public class TaskSummary extends TaskDetailSubListBase<Task> implements
     android.view.View.OnClickListener {
-    public interface OnTaskClickListner {
+    public interface OnTaskClickListener {
         public abstract void onTaskClick(final Task t);
     }
 
-    public interface OnTaskMarkedListner {
+    public interface OnTaskMarkedListener {
         abstract public void markTask(final View v, final Task t,
-                                      final boolean markted);
+                                      final boolean marked);
     }
 
     private static final String TAG = "TaskSummary";
     private boolean marked;
-    private OnTaskMarkedListner markedListner;
+    private OnTaskMarkedListener markedListener;
     private final ProgressWheel taskProgress;
     private final CheckBox taskRowDone;
     private final RelativeLayout taskRowDoneWrapper;
@@ -95,9 +95,9 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements
     }
 
     protected void handleMark() {
-        if (this.markedListner != null) {
+        if (this.markedListener != null) {
             this.marked = !this.marked;
-            this.markedListner.markTask(this, this.task, this.marked);
+            this.markedListener.markTask(this, this.task, this.marked);
         }
     }
 
@@ -115,7 +115,7 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements
         updateDue();
     }
 
-    public void setOnTaskClick(final OnTaskClickListner l) {
+    public void setOnTaskClick(final OnTaskClickListener l) {
         setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(final View v) {
@@ -128,8 +128,8 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements
         });
     }
 
-    public void setOnTaskMarked(final OnTaskMarkedListner l) {
-        this.markedListner = l;
+    public void setOnTaskMarked(final OnTaskMarkedListener l) {
+        this.markedListener = l;
         setOnLongClickListener(new OnLongClickListener() {
             @Override
             public boolean onLongClick(final View v) {

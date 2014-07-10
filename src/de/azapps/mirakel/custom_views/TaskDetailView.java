@@ -29,8 +29,8 @@ import de.azapps.mirakel.custom_views.TaskDetailFilePart.OnFileClickListner;
 import de.azapps.mirakel.custom_views.TaskDetailFilePart.OnFileMarkedListner;
 import de.azapps.mirakel.custom_views.TaskDetailHeader.OnDoneChangedListner;
 import de.azapps.mirakel.custom_views.TaskDetailTagView.NeedFragmentManager;
-import de.azapps.mirakel.custom_views.TaskSummary.OnTaskClickListner;
-import de.azapps.mirakel.custom_views.TaskSummary.OnTaskMarkedListner;
+import de.azapps.mirakel.custom_views.TaskSummary.OnTaskClickListener;
+import de.azapps.mirakel.custom_views.TaskSummary.OnTaskMarkedListener;
 import de.azapps.mirakel.customviews.R;
 import de.azapps.mirakel.helper.MirakelViewPreferences;
 import de.azapps.mirakel.model.task.Task;
@@ -191,14 +191,14 @@ public class TaskDetailView extends BaseTaskDetailRow implements
         }
     }
 
-    public void setOnSubtaskClick(final OnTaskClickListner l) {
+    public void setOnSubtaskClick(final OnTaskClickListener l) {
         final BaseTaskDetailRow v = this.views.get(TYPE.SUBTASK);
         if (v != null) {
             ((TaskDetailSubtask) v).setOnClick(l);
         }
     }
 
-    public void setOnSubtaskMarked(final OnTaskMarkedListner l) {
+    public void setOnSubtaskMarked(final OnTaskMarkedListener l) {
         final BaseTaskDetailRow v = this.views.get(TYPE.SUBTASK);
         if (v != null) {
             ((TaskDetailSubtask) v).setOnTaskMarked(l);
