@@ -581,11 +581,11 @@ public class MainActivity extends ActionBarActivity implements
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
-                case 0: // Only this recurrence
+                case 0: // Only this task
                     task.destroy();
                     updateAfterDestroy();
                     break;
-                case 1: // All recurrences
+                case 1: // also subtasks
                     task.destroySubtasks();
                     task.destroy();
                     updateAfterDestroy();

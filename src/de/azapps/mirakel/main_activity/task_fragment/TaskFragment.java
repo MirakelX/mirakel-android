@@ -47,8 +47,8 @@ import de.azapps.mirakel.custom_views.TaskDetailFilePart.OnFileClickListner;
 import de.azapps.mirakel.custom_views.TaskDetailFilePart.OnFileMarkedListner;
 import de.azapps.mirakel.custom_views.TaskDetailTagView.NeedFragmentManager;
 import de.azapps.mirakel.custom_views.TaskDetailView;
-import de.azapps.mirakel.custom_views.TaskSummary.OnTaskClickListner;
-import de.azapps.mirakel.custom_views.TaskSummary.OnTaskMarkedListner;
+import de.azapps.mirakel.custom_views.TaskSummary.OnTaskClickListener;
+import de.azapps.mirakel.custom_views.TaskSummary.OnTaskMarkedListener;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
@@ -229,7 +229,7 @@ public abstract class TaskFragment extends Fragment {
                 }
             }
         });
-        this.detailView.setOnSubtaskClick (new OnTaskClickListner () {
+        this.detailView.setOnSubtaskClick (new OnTaskClickListener() {
             @Override
             public void onTaskClick (final Task t) {
                 TaskFragment.this.main.setCurrentTask (t);
@@ -286,7 +286,7 @@ public abstract class TaskFragment extends Fragment {
         if (this.task != null) {
             update (this.task);
         }
-        this.detailView.setOnSubtaskMarked (new OnTaskMarkedListner () {
+        this.detailView.setOnSubtaskMarked (new OnTaskMarkedListener() {
             @Override
             public void markTask (final View v, final Task t,
                                   final boolean marked) {
