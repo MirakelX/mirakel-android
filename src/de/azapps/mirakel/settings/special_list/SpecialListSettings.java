@@ -503,7 +503,7 @@ public class SpecialListSettings extends PreferencesHelper {
                         final int id) {
                         setSetProperty(prio, values, prop,
                                        mSelectedItems, Task.PRIORITY,
-                                       SET_TYPE.TAG);
+                                       SET_TYPE.PRIO);
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, null)
