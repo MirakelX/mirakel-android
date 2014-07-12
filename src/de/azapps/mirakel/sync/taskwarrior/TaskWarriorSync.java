@@ -285,18 +285,18 @@ public class TaskWarriorSync {
         if (remotes.getPayload() == null || remotes.getPayload().equals("")) {
             Log.i(TAG, "there is no Payload");
         } else {
+            String newSyncKey = null;
             final String tasksString[] = remotes.getPayload().split("\n");
             final Gson gson = new GsonBuilder().registerTypeAdapter(Task.class,
                     new TaskDeserializer(true, accountMirakel, this.mContext))
             .create();
             final List<Task> recurringTasksCreate = new ArrayList<>();
             final List<Task> recurringTasksSave = new ArrayList<>();
-            final List<Task> taskDelete = new ArrayList<>();
+            final List<String> taskDeleteUUID = new ArrayList<>();
             for (final String taskString : tasksString) {
                 if (taskString.charAt(0) != '{') {
                     Log.d(TAG, "Key: " + taskString);
-                    accountMirakel.setSyncKey(taskString);
-                    accountMirakel.save();
+                    newSyncKey = taskString;
                     continue;
                 }
                 Task local_task;
@@ -323,9 +323,7 @@ public class TaskWarriorSync {
                 }
                 if (server_task.getSyncState() == SYNC_STATE.DELETE) {
                     Log.d(TAG, "destroy " + server_task.getName());
-                    if (local_task != null) {
-                        taskDelete.add(local_task);
-                    }
+                    taskDeleteUUID.add(server_task.getUUID());
                 } else if (local_task == null) {
                     if (server_task.hasRecurringParent()) {
                         recurringTasksCreate.add(server_task);
@@ -350,7 +348,7 @@ public class TaskWarriorSync {
             for (final Task t : recurringTasksCreate) {
                 final Task t_local = Task.getByUUID(t.getUUID());
                 if (t_local != null) {
-                    t.takeIdFrom(t);
+                    t.takeIdFrom(t_local);
                     t.save(false, true);
                 } else {
                     try {
@@ -363,10 +361,15 @@ public class TaskWarriorSync {
             for (final Task t : recurringTasksSave) {
                 t.save(false, true);
             }
-            for (final Task t : taskDelete) {
+            for (final String uuid : taskDeleteUUID) {
+                final Task t = Task.getByUUID(uuid);
                 // Force because we are in the sync – we know what we are doing ;)
-                t.destroy(true);
+                if (t != null) {
+                    t.destroy(true);
+                }
             }
+            accountMirakel.setSyncKey(newSyncKey);
+            accountMirakel.save();
         }
         final String message = remotes.get("message");
         if (message != null && !"".equals(message)) {
