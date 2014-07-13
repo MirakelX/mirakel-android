@@ -52,7 +52,9 @@
   <string name="task_empty">لم يتم تحديد أي مهمة...</string>
   <string name="no_lists">يتعذر مزامنة هذه المهمة، نظراً لأنه لا قوائم لديك</string>
   <string name="import_any_do_click">استيراد من Any.Do</string>
+  <string name="any_do_import_title">اختر ملف النسخة الاحتياطية لـ Any.Do</string>
   <string name="any_do_this_file">استيراد من %s?\nIf في حال تم الرفض, يرجى تحديد الملف بنفسك</string>
+  <string name="any_do_how_to">يرجى أولاً النسخ الاحتياطي لبيانات Any.Do.  لفعل هذا اذهب إلى  Any.Do → Settings → Backup → Create Backup ثم ارجع هنا واضغط OK.\n أو اختر الملف بنفسك.</string>
   <string name="select_file">حدد الملف</string>
   <string name="wait">الرجاء الانتظار&#8230;</string>
   <string name="backup_import_ok">الاستيراد على ما يرام – يرجى إعادة تشغيل Mirakel</string>
