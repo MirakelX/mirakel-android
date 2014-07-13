@@ -7,6 +7,7 @@
   <string name="sync_warning_message">Синхронизация протекает ещё очень нестабильно. Но на свой страх и риск Вы можете её испробовать (сделайте предварительно резервную копию!) - Вы уверены?</string>
   <string name="sync_use_summary_taskwarrior">Синхронизировать с Taskwarrior как %s</string>
   <string name="sync_use_summary_mirakel">Синхронизировать с Mirakel как %s</string>
+  <string name="sync_use_summary_nothing">Не синхронизовать</string>
   <string name="sync_user">Имя пользователя</string>
   <string name="sync_server">Сервер</string>
   <string name="sync_server_summary">Синхронизировать с %s</string>
@@ -15,6 +16,18 @@
   <string name="sync_frequency_summary_man">Синхронизировать только вручную</string>
   <string name="tw_account">Taskwarrior</string>
   <string name="calDavName">CalDav</string>
+  <string name="wrong_config">Похоже на то, что Вы используете неправильный конфигурационный файл</string>
+  <string name="cert_not_found">Сертефикаты пропали, пожайлуста пересоздайте свой аккаунт</string>
+  <string name="could_not_find_common_ancestor">Не найден общий предок для задачи. Это означает чтото рассинхронизовалось с сервером, и вам придётся очистить данные Mirakel. Нам очень жаль</string>
+  <string name="config_404">Конфигурационный файл не найден</string>
+  <string name="config_error_empty">Запись %s не существует в конфиге</string>
   <string name="load_config">Выберите конфигурационный файл для Taskwarrior</string>
   <string name="select_config">Выберите конфигурационный файл для Taskwarrior</string>
+  <string name="message_try_later">Попробуйте синхронизировать позже</string>
+  <string name="message_access_denied">Доступ запрещён!\nВы точно используете правильный конфигурационный файл?</string>
+  <string name="message_create_socket">Не удается создать сокет! \nПроверьте сетевое подключение.</string>
+  <string name="message_account_suspended">Ваш аккаунт заблокирован!</string>
+  <string name="message_parse_message">Не удается интерпретировать задачи – пожалуйста, напишите нам, как это произошло</string>
+  <string name="message_message_error">Неизвестный ответ от сервера – напишите, как это произошло</string>
+  <string name="finish_sync">Завершить синхронизацию</string>
 </resources>
