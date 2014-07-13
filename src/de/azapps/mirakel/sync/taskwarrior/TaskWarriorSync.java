@@ -193,6 +193,19 @@ public class TaskWarriorSync {
         final AccountMirakel accountMirakel = AccountMirakel.get(this.account);
         Log.longInfo(sync.getPayload());
         final TLSClient client = new TLSClient();
+        // The following should not happen – except the user is tinkering in our files or so…
+        if (user_ca == null) {
+            throw new TaskWarriorSyncFailedException(
+                TW_ERRORS.CONFIG_PARSE_ERROR, "could not find user ca file");
+        }
+        if (user_key == null) {
+            throw new TaskWarriorSyncFailedException(
+                TW_ERRORS.CONFIG_PARSE_ERROR, "could not find user private key file");
+        }
+        if (root == null) {
+            throw new TaskWarriorSyncFailedException(
+                TW_ERRORS.CONFIG_PARSE_ERROR, "could not find root certificate");
+        }
         try {
             client.init(root, user_ca, user_key);
         } catch (final ParseException e) {
