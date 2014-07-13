@@ -3,10 +3,10 @@
 <resources xmlns:xliff="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="day_picker_description">شبكة الشهر من أيام</string>
   <string name="year_picker_description">قائمة السنة</string>
-  <string name="item_is_selected">%1$s محدد</string>
-  <string name="deleted_key"><xliff:g id="key" example="4">  $1%s </xliff:g> حذف</string>
-  <string name="select_hours">حدد ساعات</string>
-  <string name="select_minutes">تحديد دقائق</string>
+  <string name="item_is_selected">%1$s محدَّد</string>
+  <string name="deleted_key"><xliff:g id="key" example="4"> %1$s </xliff:g> تم حذفه</string>
+  <string name="select_hours">حدِّد ساعات</string>
+  <string name="select_minutes">حدِّد دقائق</string>
   <string name="recurrence_month_pattern_by_day">في نفس اليوم من كل شهر</string>
   <string name="acessibility_recurrence_choose_end_date_description">تغيير تاريخ انتهاء</string>
   <string name="save_label">منجز</string>
