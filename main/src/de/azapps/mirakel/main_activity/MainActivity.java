@@ -18,15 +18,6 @@
  ******************************************************************************/
 package de.azapps.mirakel.main_activity;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Locale;
-import java.util.Stack;
-import java.util.Vector;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -49,6 +40,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -60,6 +52,15 @@ import android.widget.ListView;
 
 import com.fourmob.datetimepicker.date.DatePicker;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Locale;
+import java.util.Stack;
+import java.util.Vector;
 
 import de.azapps.changelog.Changelog;
 import de.azapps.ilovefs.ILoveFS;
@@ -527,61 +528,92 @@ public class MainActivity extends ActionBarActivity implements
     /**
      * Is called if the user want to destroy a Task
      *
-     * @param lists
+     * @param tasks
      */
     public void handleDestroyTask (final List<Task> tasks) {
-        if (tasks == null) {
+        if (tasks == null || tasks.size() == 0) {
             return;
         }
-        final MainActivity main = this;
+        final List<Task> normalTasks = new ArrayList<>();
+        // Tasks we should handle in a special way
+        for (Task t : tasks) {
+            if (t.getRecurring () != null) {
+                handleDestroyRecurringTask (t);
+            } else if (t.getSubtaskCount() > 0) {
+                handleDestroySubtasks(t);
+            } else {
+                normalTasks.add(t);
+            }
+        }
         // This must then be a bug in a ROM
-        if (tasks.size () == 0 || tasks.get (0) == null) {
+        if (normalTasks.size () == 0) {
             return;
         }
-        String names = "\"" + tasks.get (0).getName () + "\"";
-        for (int i = 1; i < tasks.size (); i++) {
-            names += ", \"" + tasks.get (i).getName () + "\"";
-        }
+        String names = TextUtils.join(", ", normalTasks);
         new AlertDialog.Builder (this)
         .setTitle (
             getResources ().getQuantityString (R.plurals.task_delete,
-                                               tasks.size ()))
-        .setMessage (this.getString (R.string.delete_content, names))
-        .setPositiveButton (this.getString (android.R.string.yes),
-        new DialogInterface.OnClickListener () {
+                                               normalTasks.size ()))
+        .setMessage(this.getString(R.string.delete_content, names))
+        .setPositiveButton(this.getString(android.R.string.yes),
+        new DialogInterface.OnClickListener() {
             @Override
-            public void onClick (final DialogInterface dialog,
-                                 final int which) {
-                for (final Task t : tasks) {
-                    if (t.getRecurring () != null) {
-                        handleDestroyRecurringTask (t);
-                    } else {
-                        t.destroy ();
-                    }
+            public void onClick(final DialogInterface dialog,
+                                final int which) {
+                for (final Task t : normalTasks) {
+                    t.destroy();
                 }
-                setCurrentList (MainActivity.this.currentList);
-                ReminderAlarm.updateAlarms (main);
-                updateShare ();
+                updateAfterDestroy();
             }
         }
-                           )
-        .setNegativeButton (this.getString (android.R.string.no), null)
-        .show ();
+                          )
+        .setNegativeButton(this.getString(android.R.string.no), null)
+        .show();
         if (getTasksFragment () != null) {
             getTasksFragment ().updateList (false);
         }
     }
+
+    private void handleDestroySubtasks(final Task task) {
+        new AlertDialog.Builder(this)
+        .setTitle(getString(R.string.destroy_recurring_task, task.getName()))
+        .setItems(R.array.subtask_task_select, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                case 0: // Only this task
+                    task.destroy();
+                    updateAfterDestroy();
+                    break;
+                case 1: // also subtasks
+                    task.destroySubtasks();
+                    task.destroy();
+                    updateAfterDestroy();
+                    break;
+                }
+            }
+        }).show();
+    }
+
+    private void updateAfterDestroy() {
+        setCurrentList(MainActivity.this.currentList);
+        ReminderAlarm.updateAlarms(MainActivity.this);
+        updateShare();
+    }
+
     private void handleDestroyRecurringTask (final Task task) {
         TaskDialogHelpers.handleChangeRecurringTask (this, getString (R.string.destroy_recurring_task,
         task.getName ()), new TaskDialogHelpers.OnRecurrenceChange () {
             @Override
             public void handleSingleChange () {
                 task.destroy ();
+                updateAfterDestroy();
             }
             @Override
             public void handleMultiChange () {
                 Task master = task.getRecurrenceMaster ();
                 master.destroy ();
+                updateAfterDestroy();
             }
         });
     }
@@ -592,15 +624,18 @@ public class MainActivity extends ActionBarActivity implements
      * @param task
      */
     public void handleDestroyTask (final Task task) {
-        final List<Task> t = new ArrayList<> ();
+        final List<Task> t = new ArrayList<>();
         t.add (task);
         handleDestroyTask (t);
+        setCurrentList (MainActivity.this.currentList);
+        ReminderAlarm.updateAlarms (this);
+        updateShare();
     }
 
     /**
      * Is called if the user want to move a Task
      *
-     * @param lists
+     * @param tasks
      */
     public void handleMoveTask (final List<Task> tasks) {
         if (tasks == null || tasks.size () == 0) {
@@ -664,7 +699,7 @@ public class MainActivity extends ActionBarActivity implements
     /**
      * Handle the actions after clicking on a move task button
      *
-     * @param tasks
+     * @param task
      */
     public void handleMoveTask (final Task task) {
         final List<Task> t = new ArrayList<> ();

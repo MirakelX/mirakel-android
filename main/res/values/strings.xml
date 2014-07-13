@@ -95,5 +95,10 @@
     <string name="message_notification">Notification</string>
     <string name="destroy_recurring_task">Delete %s</string>
     <string name="dialog_error_message" formatted="false">Reason: %s\n\nError message: %s</string>
+
+    <string-array name="subtask_task_select">
+        <item>Only this task</item>
+        <item>Delete also subtaks</item>
+    </string-array>
     
 </resources>
