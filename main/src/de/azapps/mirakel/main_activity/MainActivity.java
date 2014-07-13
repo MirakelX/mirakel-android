@@ -612,8 +612,14 @@ public class MainActivity extends ActionBarActivity implements
             @Override
             public void handleMultiChange () {
                 Task master = task.getRecurrenceMaster ();
-                master.destroy ();
-                updateAfterDestroy();
+                // This could happen in some absurd situations.
+                // For example it's the device of a developer :P
+                if (master == null) {
+                    task.destroy();
+                } else {
+                    master.destroy ();
+                    updateAfterDestroy();
+                }
             }
         });
     }
