@@ -165,6 +165,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 last_message = this.mContext
                                .getText(R.string.could_not_find_common_ancestor);
                 break;
+            case CLIENT_SYNC_KEY_NOT_FOUND:
+                last_message = this.mContext
+                               .getText(R.string.client_sync_key_not_found);
+                break;
             case NOT_ENABLED:
             default:
                 return;

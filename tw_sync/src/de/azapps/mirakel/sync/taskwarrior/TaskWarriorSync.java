@@ -59,6 +59,8 @@ import de.azapps.tools.Log;
 public class TaskWarriorSync {
 
     private static final String TW_PROTOCOL_VERSION = "v1";
+
+    private int clientSyncKeyFailResyncCount = 0;
     public class TaskWarriorSyncFailedException extends Exception {
         private static final long serialVersionUID = 3349776187699690118L;
         private final TW_ERRORS error;
@@ -88,7 +90,7 @@ public class TaskWarriorSync {
     }
 
     public enum TW_ERRORS {
-        ACCESS_DENIED, ACCOUNT_SUSPENDED, CANNOT_CREATE_SOCKET, CANNOT_PARSE_MESSAGE, CONFIG_PARSE_ERROR, MESSAGE_ERRORS, NO_ERROR, NOT_ENABLED, TRY_LATER, NO_SUCH_CERT, COULD_NOT_FIND_COMMON_ANCESTOR;
+        ACCESS_DENIED, ACCOUNT_SUSPENDED, CANNOT_CREATE_SOCKET, CANNOT_PARSE_MESSAGE, CONFIG_PARSE_ERROR, MESSAGE_ERRORS, NO_ERROR, NOT_ENABLED, TRY_LATER, NO_SUCH_CERT, COULD_NOT_FIND_COMMON_ANCESTOR, CLIENT_SYNC_KEY_NOT_FOUND;
         public static TW_ERRORS getError(final int code) {
             switch (code) {
             case 200:
@@ -193,6 +195,19 @@ public class TaskWarriorSync {
         final AccountMirakel accountMirakel = AccountMirakel.get(this.account);
         Log.longInfo(sync.getPayload());
         final TLSClient client = new TLSClient();
+        // The following should not happen – except the user is tinkering in our files or so…
+        if (user_ca == null) {
+            throw new TaskWarriorSyncFailedException(
+                TW_ERRORS.CONFIG_PARSE_ERROR, "could not find user ca file");
+        }
+        if (user_key == null) {
+            throw new TaskWarriorSyncFailedException(
+                TW_ERRORS.CONFIG_PARSE_ERROR, "could not find user private key file");
+        }
+        if (root == null) {
+            throw new TaskWarriorSyncFailedException(
+                TW_ERRORS.CONFIG_PARSE_ERROR, "could not find root certificate");
+        }
         try {
             client.init(root, user_ca, user_key);
         } catch (final ParseException e) {
@@ -257,6 +272,13 @@ public class TaskWarriorSync {
         }
         if (remotes.get("status").equals("Client sync key not found.")) {
             Log.d(TAG, "reset sync-key");
+            clientSyncKeyFailResyncCount++;
+            // How this could happen? Nobody knows but one user was able to do this…
+            if (clientSyncKeyFailResyncCount > 2) {
+                throw new TaskWarriorSyncFailedException(
+                    TW_ERRORS.CLIENT_SYNC_KEY_NOT_FOUND,
+                    "sync() throwed error");
+            }
             this.accountManager.setUserData(a, SyncAdapter.TASKWARRIOR_KEY,
                                             null);
             try {
@@ -266,24 +288,26 @@ public class TaskWarriorSync {
                     client.close();
                     throw new TaskWarriorSyncFailedException(e.getError(), e);
                 }
+            } finally {
+                clientSyncKeyFailResyncCount = 0;
             }
         }
         // parse tasks
         if (remotes.getPayload() == null || remotes.getPayload().equals("")) {
             Log.i(TAG, "there is no Payload");
         } else {
+            String newSyncKey = null;
             final String tasksString[] = remotes.getPayload().split("\n");
             final Gson gson = new GsonBuilder().registerTypeAdapter(Task.class,
                     new TaskDeserializer(true, accountMirakel, this.mContext))
             .create();
             final List<Task> recurringTasksCreate = new ArrayList<>();
             final List<Task> recurringTasksSave = new ArrayList<>();
-            final List<Task> taskDelete = new ArrayList<>();
+            final List<String> taskDeleteUUID = new ArrayList<>();
             for (final String taskString : tasksString) {
                 if (taskString.charAt(0) != '{') {
                     Log.d(TAG, "Key: " + taskString);
-                    accountMirakel.setSyncKey(taskString);
-                    accountMirakel.save();
+                    newSyncKey = taskString;
                     continue;
                 }
                 Task local_task;
@@ -310,9 +334,7 @@ public class TaskWarriorSync {
                 }
                 if (server_task.getSyncState() == SYNC_STATE.DELETE) {
                     Log.d(TAG, "destroy " + server_task.getName());
-                    if (local_task != null) {
-                        taskDelete.add(local_task);
-                    }
+                    taskDeleteUUID.add(server_task.getUUID());
                 } else if (local_task == null) {
                     if (server_task.hasRecurringParent()) {
                         recurringTasksCreate.add(server_task);
@@ -337,7 +359,7 @@ public class TaskWarriorSync {
             for (final Task t : recurringTasksCreate) {
                 final Task t_local = Task.getByUUID(t.getUUID());
                 if (t_local != null) {
-                    t.takeIdFrom(t);
+                    t.takeIdFrom(t_local);
                     t.save(false, true);
                 } else {
                     try {
@@ -350,10 +372,15 @@ public class TaskWarriorSync {
             for (final Task t : recurringTasksSave) {
                 t.save(false, true);
             }
-            for (final Task t : taskDelete) {
+            for (final String uuid : taskDeleteUUID) {
+                final Task t = Task.getByUUID(uuid);
                 // Force because we are in the sync – we know what we are doing ;)
-                t.destroy(true);
+                if (t != null) {
+                    t.destroy(true);
+                }
             }
+            accountMirakel.setSyncKey(newSyncKey);
+            accountMirakel.save();
         }
         final String message = remotes.get("message");
         if (message != null && !"".equals(message)) {
