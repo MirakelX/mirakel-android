@@ -26,6 +26,7 @@
   <string name="widget_transparency">الشفافية</string>
   <string name="widget_transparency_summary">%s%% شفاف</string>
   <string name="widget_due_colors">تلوين تواريخ الاستحقاق</string>
+  <string name="dark_theme">قالب داكن</string>
   <string name="notifications_list_summary">إظهار \"%s\"</string>
   <string name="empty_list">لا توجد مهام</string>
   <string name="preferences">تفضيلات</string>
