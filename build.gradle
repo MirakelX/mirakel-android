@@ -73,7 +73,6 @@ gradle.projectsEvaluated {
             into (rootDir.toString()+"/"+proj+"/merged-res") 
         }
     }
-    format()
 }
 ext {
     compileSdkVersion = 19
@@ -99,13 +98,17 @@ allprojects {
         mavenCentral()
     }
 }
-def void format(){
-	exec { 
-    	executable 'bash'
-    	args rootDir.toString()+'/build/format.sh'
+
+task checkTODO() {
+	exec {
+        executable 'bash'
+        args rootDir.toString()+'/build/checkTODO.sh'
     }
 }
 
 task format() {
-	format()
+	exec {
+        executable 'bash'
+        args rootDir.toString()+'/build/format.sh'
+    }
 }
