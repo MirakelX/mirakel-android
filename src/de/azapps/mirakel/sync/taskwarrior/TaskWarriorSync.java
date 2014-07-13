@@ -59,6 +59,8 @@ import de.azapps.tools.Log;
 public class TaskWarriorSync {
 
     private static final String TW_PROTOCOL_VERSION = "v1";
+
+    private int clientSyncKeyFailResyncCount = 0;
     public class TaskWarriorSyncFailedException extends Exception {
         private static final long serialVersionUID = 3349776187699690118L;
         private final TW_ERRORS error;
@@ -88,7 +90,7 @@ public class TaskWarriorSync {
     }
 
     public enum TW_ERRORS {
-        ACCESS_DENIED, ACCOUNT_SUSPENDED, CANNOT_CREATE_SOCKET, CANNOT_PARSE_MESSAGE, CONFIG_PARSE_ERROR, MESSAGE_ERRORS, NO_ERROR, NOT_ENABLED, TRY_LATER, NO_SUCH_CERT, COULD_NOT_FIND_COMMON_ANCESTOR;
+        ACCESS_DENIED, ACCOUNT_SUSPENDED, CANNOT_CREATE_SOCKET, CANNOT_PARSE_MESSAGE, CONFIG_PARSE_ERROR, MESSAGE_ERRORS, NO_ERROR, NOT_ENABLED, TRY_LATER, NO_SUCH_CERT, COULD_NOT_FIND_COMMON_ANCESTOR, CLIENT_SYNC_KEY_NOT_FOUND;
         public static TW_ERRORS getError(final int code) {
             switch (code) {
             case 200:
@@ -270,6 +272,13 @@ public class TaskWarriorSync {
         }
         if (remotes.get("status").equals("Client sync key not found.")) {
             Log.d(TAG, "reset sync-key");
+            clientSyncKeyFailResyncCount++;
+            // How this could happen? Nobody knows but one user was able to do this…
+            if (clientSyncKeyFailResyncCount > 2) {
+                throw new TaskWarriorSyncFailedException(
+                    TW_ERRORS.CLIENT_SYNC_KEY_NOT_FOUND,
+                    "sync() throwed error");
+            }
             this.accountManager.setUserData(a, SyncAdapter.TASKWARRIOR_KEY,
                                             null);
             try {
@@ -279,6 +288,8 @@ public class TaskWarriorSync {
                     client.close();
                     throw new TaskWarriorSyncFailedException(e.getError(), e);
                 }
+            } finally {
+                clientSyncKeyFailResyncCount = 0;
             }
         }
         // parse tasks
