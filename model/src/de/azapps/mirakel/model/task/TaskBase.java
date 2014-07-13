@@ -440,6 +440,9 @@ class TaskBase {
         if (newDone && this.recurrence != -1 && this.due != null) {
             if (getRecurring() != null) {
                 final Task oldTask = Task.get(this.id);
+                if (oldTask == null) {
+                    return getId();
+                }
                 final Task newTask = getRecurring().incrementRecurringDue(
                                          oldTask);
                 // set the sync state of the old task to recurring, only show
@@ -485,14 +488,14 @@ class TaskBase {
     }
 
     public void setList(final ListMirakel newList,
-                        final boolean removeNoListFalg) {
+                        final boolean removeNoListFlag) {
         if (this.list != null && newList != null
             && this.list.getId() == newList.getId()) {
             return;
         }
         this.list = newList;
         this.edited.put(TaskBase.LIST_ID, true);
-        if (removeNoListFalg) {
+        if (removeNoListFlag) {
             if (this.additionalEntries == null) {
                 initAdditionalEntries();
             }
