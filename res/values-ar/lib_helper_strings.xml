@@ -24,5 +24,5 @@ SDK-نسخة: %2$d\n
   <string name="error_TASK_VANISHED" tools:ignore="UnusedResources">اوو، لقد اختفت قائمة المهام. اسف&#8230;</string>
   <string name="error_ASTRID_ERROR" tools:ignore="UnusedResources">حدث خطأ أثناء استيراد من Astrid!</string>
   <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD" tools:ignore="UnusedResources">لا يمكن تحميل ملف التكوين</string>
-  <string name="error_TASKWARRIOR_URL_NOT_FOUND" tools:ignore="UnusedResources">عنوان URL غير صحيح. هل تفحصت التعليمة البرمجية الصحيحة؟</string>
+  <string name="error_TASKWARRIOR_URL_NOT_FOUND" tools:ignore="UnusedResources">عنوان URL غير صحيح. هل مسحت الرمز الصحيح حقاً؟</string>
 </resources>
