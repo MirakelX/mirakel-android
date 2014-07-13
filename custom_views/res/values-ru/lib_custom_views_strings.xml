@@ -9,15 +9,30 @@
   <string name="task_fragment_due">Срок</string>
   <string name="task_fragment_reminder">Напоминание</string>
   <string name="task_fragment_subtask">Подзадачи</string>
+  <string name="task_fragment_tags">Теги</string>
   <string name="task_change_prio_title">Изменить приоритет</string>
   <string name="remove_subtask">Удалить подзадачу</string>
+  <string name="remove_files_summary">Вы хотите удалить %1$s из %2$s?</string>
   <string name="add_existing">Ввести существующее дело</string>
   <string name="task_name">Название дела:</string>
+  <string name="subtask_done">Задача завершена?</string>
   <string name="subtask_reminder">Дело с напоминанием?</string>
+  <string name="subtask_content">Задача с заметкой?</string>
   <string name="new_task">Новое дело</string>
   <string name="add_subtasks">Добавить подзадачу&#8230;</string>
+  <string name="add_tags">Добавить тег&#8230;</string>
   <string name="add">Добавить</string>
   <string name="add_subtask">Добавить подзадачу</string>
   <string name="file_no_activity">Я не знаю, как открыть этот файл - извините</string>
   <string name="remove_files">Удалить файлы из дела</string>
+  <string name="search_tag">Метка для поиска</string>
+  <string-array name="tag_menu">
+    <item>Редактировать тег</item>
+    <item>Удалить тег</item>
+  </string-array>
+  <string name="tag_has_dark_text">Чёрный текст</string>
+  <string-array name="recurring_task_select">
+    <item>Только эту задачу</item>
+    <item>Все повторяющиеся задачи</item>
+  </string-array>
 </resources>
