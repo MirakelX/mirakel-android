@@ -151,6 +151,10 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
                 TasksFragment.this.newTask.post (new Runnable () {
                     @Override
                     public void run () {
+                        if (getActivity() == null) {
+                            // What the fuck?? This should not happen but it happens for some users
+                            return;
+                        }
                         final InputMethodManager imm = (InputMethodManager) getActivity ()
                                                        .getSystemService (Context.INPUT_METHOD_SERVICE);
                         if (imm == null) {
