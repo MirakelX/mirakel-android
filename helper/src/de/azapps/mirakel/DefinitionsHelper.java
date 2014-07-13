@@ -104,7 +104,7 @@ public class DefinitionsHelper {
             this.eventType = eventType;
         }
 
-        public static SYNC_STATE valueOf(final int eventType) {
+        public static SYNC_STATE valueOf(final short eventType) {
             return map.get(eventType);
         }
 
@@ -113,7 +113,7 @@ public class DefinitionsHelper {
          */
         @Deprecated
         public static SYNC_STATE parseInt(final int i) {
-            return valueOf(i);
+            return valueOf((short) i);
         }
 
         public static Set<SYNC_STATE> all() {

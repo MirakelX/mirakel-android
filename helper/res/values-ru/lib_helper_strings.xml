@@ -12,7 +12,26 @@ Mirakel-version: %1$s\n
 SDK-version: %2$d\n
 Device: %3$s\n]]>
     </string>
+  <string name="contact_chooser">Отрпавить электронную почту&#8230;</string>
+  <string name="error_PHOTO_NO_CAMERA" tools:ignore="UnusedResources">Ой! Ваше устройство не умеет снимать фотографии</string>
+  <string name="error_PHOTO_NO_MEDIA_DIRECTORY" tools:ignore="UnusedResources">Нет места для сохранения фотографию. Мне жаль!</string>
+  <string name="error_NO_SPEACH_RECOGNITION" tools:ignore="UnusedResources">Ой! Ваше устройство не поддерживает генерацию голоса из текста</string>
+  <string name="error_TASKS_CANNOT_FORM_LOOP" tools:ignore="UnusedResources">Подзадачи не могут создавать кольцо зависимости</string>
   <string name="error_FILE_NO_ACTIVITY" tools:ignore="UnusedResources">Я не знаю, как открыть этот файл - извините</string>
+  <string name="error_CONTACT_NO_CLIENT" tools:ignore="UnusedResources">Не установлен клиент электронной почты</string>
+  <string name="error_NO_FILEMANAGER" tools:ignore="UnusedResources">Пожалуйста, установите файловый менеджер</string>
+  <string name="error_FILE_URI_SYNTAX_ERROR" tools:ignore="UnusedResources">Произошла внутренняя ошибки при раборе имени файла</string>
+  <string name="error_MAINACTIVITY_WRONG_POSITION" tools:ignore="UnusedResources">Произошла непредвиденная ошибка</string>
+  <string name="error_FILE_NOT_FOUND" tools:ignore="UnusedResources">Этот файл не найден</string>
+  <string name="error_BACKUP_EXPORT_ERROR" tools:ignore="UnusedResources">Произошла ошибка при экспорте базы данных</string>
+  <string name="error_BACKUP_IMPORT_ERROR" tools:ignore="UnusedResources">Произошла ошибка при импорте базы данных</string>
+  <string name="error_FILE_TO_LARGE_FOR_THUMBNAIL" tools:ignore="UnusedResources">Не удалось создать эксиз изобращения. Файл слишком большой</string>
   <string name="error_TASKS_NO_LIST" tools:ignore="UnusedResources">Это дело невозможно выполнить, потому что у Вас нет списков</string>
   <string name="error_TASK_VANISHED" tools:ignore="UnusedResources">Ооооох! Исчез в список дел. Я сожалею...</string>
+  <string name="error_FILE_NOT_MIRAKEL_DB" tools:ignore="UnusedResources">Это не файл базы данных Mirakel!</string>
+  <string name="error_ASTRID_ERROR" tools:ignore="UnusedResources">Произошла ошибка при импорте из Астрид!</string>
+  <string name="error_TASKWARRIOR_FILE_NOT_FOUND" tools:ignore="UnusedResources">Файл Taskwarrior не найден</string>
+  <string name="error_FILE_NO_PERMISSION" tools:ignore="UnusedResources">Отсутствует разрешение на чтение файла</string>
+  <string name="error_LIST_VANISHED" tools:ignore="UnusedResources">Ой, список изчез&#8230;</string>
+  <string name="error_MAINACTVITY_CRAZY_ERROR" tools:ignore="UnusedResources">Мы не знаем как исправить ошибку. Mirakel перезапустится.</string>
 </resources>
