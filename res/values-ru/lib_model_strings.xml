@@ -25,13 +25,19 @@
   <string name="no_begin_end">Без %s</string>
   <string name="beginning_end">Начало и конец</string>
   <string name="save">Сохранить</string>
+  <string name="every">Каждые</string>
+  <string name="recurrence_end_continously">Всегда</string>
+  <string name="recurrence_end_date_label">До даты</string>
   <string name="use_exact_recurrence">Установить периодичность на основе даты завершения?</string>
+  <string name="recurrence_from_now">С этого момента</string>
+  <string name="recurrence_from">С</string>
   <string name="list_all">Все списки</string>
   <string name="list_today">Задачи на сегодня</string>
   <string name="list_week">На этой неделе</string>
   <string name="list_overdue">Просрочено</string>
   <string name="inbox">Вход</string>
   <string name="first_task">Первое дело</string>
+  <string name="local_account">Локальная учетная запись</string>
   <string name="tw_account">Taskwarrior</string>
   <string name="calDavName">CalDav</string>
   <string name="search_result_title">Поиск %s</string>
@@ -97,7 +103,7 @@
     <item>Крайний срок</item>
     <item>Приоритет</item>
     <item>Дата создания</item>
-    <item>First by priority, then by date</item>
+    <item>Сначала по приоритету, затем по дате</item>
   </string-array>
   <string name="special_list_where_prio_title_text">Приоритет</string>
   <string name="special_list_where_name_title_text">Имя</string>
