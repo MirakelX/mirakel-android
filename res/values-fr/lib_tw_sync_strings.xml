@@ -38,11 +38,15 @@
   <string name="tw_account">Taskwarrior</string>
   <string name="calDavName">CalDav</string>
   <string name="type">Type</string>
+  <string name="no_barcode_app">Aucune application capable de lire des code-barres n\'est installée</string>
+  <string name="no_barcode_app_message">Nous vous recommandons l\'application permettant de scanner des codes-barres :</string>
   <string name="no_barcode_app_install">Installer</string>
   <string name="menu_edit_listaccount">Compte</string>
   <string name="change_account">Changer le compte</string>
   <string name="wrong_config">On dirait que vous utilisez un mauvais fichier de configuration</string>
   <string name="cert_not_found">Le certificat a disparu. Merci de créer de nouveau votre compte.</string>
+  <string name="could_not_find_common_ancestor">Impossible de trouver l\'ancêtre commun. Ceci signifie que quelque chose n\'est plus synchronisé avec le serveur, la solution est de supprimer les données de l\'application. Désolé</string>
+  <string name="client_sync_key_not_found">La clé de synchronisation n\'a pas été trouvé. Merci de vérifier votre configuration de taskwarrior.</string>
   <string name="config_404">Fichier de configuration non trouvé</string>
   <string name="config_error_empty">Il n\'y a pas d\'entrée %s dans la configuration</string>
   <string name="load_config">Sélectionner le fichier de configuration pour Taskwarrior</string>
