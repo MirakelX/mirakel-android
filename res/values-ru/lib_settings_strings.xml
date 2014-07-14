@@ -168,6 +168,21 @@
   <string name="action_credits">Авторы</string>
   <string name="action_credits_summary">О нас ;)</string>
   <string name="title_activity_credits">Об авторах</string>
+  <string name="credits_github_description">Найдите нас на github</string>
+  <string name="credits_googleplus_description">Вступите в наше сообщество G+</string>
+  <string name="credits_text_head">
+<![CDATA[
+<h3>Mirakel имеет открытый код, не бойтесь вносить свой вклад через GitHub.</h3>
+<p>&copy; 2013 <a href="mailto:az@azapps.de">Anatolij Zelenin</a>, <a href="mailto:georg_semmler_05@web.de">Georg Semmler</a></p>
+<p>Иконки и дизайн от <a href="http://alexkaessner.de/>Alexander Käßner</a></p>
+<p>Это бесплатное ПО (лицензировано под <a href="https://www.gnu.org/licenses/gpl.html">GPLv3</a>).</p>
+<p>Посетите нас на</p>
+]]>
+    </string>
+  <string name="credits_license">
+<![CDATA[<p>Это бесплатное ПО: вы можете передавать/модифицировать его в соответствии со <a href="https://www.gnu.org/licenses/gpl.html">Стандартной общественной лицензией GNU</a>, опубликованной Фондом свободного ПО, (3 версия или выше).</p>
+<p>Эта программа распространяется в надежде на то, что она будет полезна, но без всяких гарантий; даже без подразумеваемых гарантий товарности или пригодности для какой-либо конкретной цели. Прочитайте Стандартную общественную лицензию GNU для дополнительной информации.</p>]]>
+    </string>
   <string name="credits_translations">Локализация</string>
   <string name="feedback">Обратная связь</string>
   <string name="credits_libraries">Задействованные сторонние компоненты</string>
@@ -175,11 +190,21 @@
   <string name="demo_mode">Демонстрационный режим</string>
   <string name="demo_drop_db">Очистить демонстрационную базу данных</string>
   <string name="write_logs_to_file">Записать логи в файл</string>
+  <string name="alert_caldav"><![CDATA[Синхронизация CalDAV не 100%% стабильна. Пожалуйста, используйте её с осторожностью и сообщайте об ошибках!]]></string>
+  <string name="alert_caldav_title">Информация для CalDAV</string>
+  <string name="alert_taskwarrior"><![CDATA[Синхронизация с Taskwarrior работает, но, пожалуйста, сделайте резервную копию Ваших данных! Также докладывайте об ошибках, чтобы мы могли их исправить!]]></string>
+  <string name="alert_taskwarrior_title">Информация для Taskwarrior</string>
   <string name="special_list_where_subtask_title_text">Подзадачи</string>
   <string name="special_list_where_tag_title_text">Теги</string>
+  <string name="special_list_where_file_title_text">Файл</string>
+  <string-array name="special_lists_subtask_options">
+    <item>Инвертировать выделение</item>
+    <item>Поиск задач, имеющих подзадачи или являющихся подзадачами</item>
+  </string-array>
   <string-array name="file_choice">
-    <item>Not set</item>
+    <item>Не задано</item>
     <item>Имеет прикреплённый файл</item>
     <item>Не имеет прикреплённого файла</item>
   </string-array>
+  <string name="remove">Удалить</string>
 </resources>

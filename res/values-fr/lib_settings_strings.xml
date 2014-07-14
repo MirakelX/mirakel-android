@@ -59,9 +59,12 @@
   <string name="tw_account">Taskwarrior</string>
   <string name="calDavName">CalDav</string>
   <string name="type">Type</string>
+  <string name="no_barcode_app">Aucune application capable de lire des code-barres n\'est installée</string>
+  <string name="no_barcode_app_message">Nous vous recommandons l\'application permettant de scanner des codes-barres :</string>
   <string name="no_barcode_app_install">Installer</string>
   <string name="menu_edit_listaccount">Compte</string>
   <string name="change_account">Changer le compte</string>
+  <string name="version">Version de l\'application</string>
   <string name="no">Non</string>
   <string name="not">Ne pas</string>
   <string name="notification_title">Notifications</string>
@@ -76,11 +79,14 @@
   <string name="notifications_zero_show">Cacher la notification si elle est vide</string>
   <string name="reminder">Rappel</string>
   <string name="reminders_persistent">Rappel permanent</string>
+  <string name="reminders_persistent_summary">Rendre impossible la fermeture du rappel</string>
   <string name="startup_title">Démarrage de l\'application</string>
   <string name="startup_show_lists">Afficher toutes les listes</string>
   <string name="startup_show_lists_summary">Afficher toutes les listes au démarrage</string>
   <string name="startup_list">Sélectionner une liste</string>
   <string name="startup_list_summary">Afficher les tâches de \"%s\"</string>
+  <string name="special_lists_click">Gérer les listes automatiques</string>
+  <string name="special_lists_new">Nouvelle liste automatique</string>
   <string name="settings_misc">Divers</string>
   <string name="settings_backup">Sauvegarde et importation</string>
   <string name="backup_click_summary">Sauvegarde la base de données sur carte SD (%s)</string>
@@ -106,7 +112,9 @@
   <string name="importing">Importation en cours</string>
   <string name="astrid_import_title">Sélectionner un fichier Astrid</string>
   <string name="import_any_do_click">Importation de Any.Do</string>
+  <string name="any_do_import_title">Sélectionner le fichier de sauvegarde Any.do</string>
   <string name="any_do_this_file">Importation de %s?\nsi non s\'il vous plaît sélectionner un fichier vous-même</string>
+  <string name="any_do_how_to">Sauvegardez  vos données Any.do en premier. Pour ce faire, aller dans l\'application Any.do → Configuration → Sauvegarde → Créer une sauvegarde. Puis revenez et appuyez sur OK.\n Ou sélectionnez le fichier par vous même.</string>
   <string name="select_file">Sélectionnez un fichier</string>
   <string name="wait">Veuillez patienter&#8230;</string>
   <string name="import_wunderlist_click">Importation de Wunderlist</string>
