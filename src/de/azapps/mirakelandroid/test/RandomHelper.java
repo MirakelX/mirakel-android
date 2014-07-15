@@ -53,6 +53,12 @@ public class RandomHelper {
 	public static int getRandomint() {
 		return random.nextInt();
 	}
+	public static short getRandomshort() {
+		return (short) random.nextInt();
+	}
+	public static Long getRandomLong() {
+		return random.nextLong();
+	}
 
 	public static boolean getRandomboolean() {
 		return random.nextBoolean();
@@ -81,7 +87,6 @@ public class RandomHelper {
 	public static ListMirakel getRandomListMirakel() {
 		ListMirakel.init(ctx);
 		final List<ListMirakel> t = ListMirakel.all();
-		ListMirakel.close();
 		return t.get(random.nextInt(t.size()));
 	}
 
@@ -110,7 +115,6 @@ public class RandomHelper {
 	public static Task getRandomTask() {
 		Task.init(ctx);
 		final List<Task> t = Task.all();
-		Task.close();
 		return t.get(random.nextInt(t.size()));
 	}
 

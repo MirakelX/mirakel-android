@@ -60,7 +60,7 @@ constructorState=-1;
 with open(sys.argv[1]) as f:
     for s in f:
         s=s.strip()
-        if "public" in s:
+        if "public" in s and "(" in s:
             if "set" in s:
            #     print s
                 res=split(s,False)
