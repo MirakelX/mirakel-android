@@ -339,6 +339,11 @@ abstract class TaskBase extends ModelBase {
         }
     }
 
+    protected void setAdditionalEntries(final String additional) {
+        this.additionalEntriesString = additional;
+        initAdditionalEntries();
+    }
+
     public static Map<String, String> parseAdditionalEntries(
         final String additionalEntriesString) {
         final Map<String, String> ret = new HashMap<>();

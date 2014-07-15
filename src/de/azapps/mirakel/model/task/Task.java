@@ -47,6 +47,7 @@ import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.services.NotificationService;
@@ -107,49 +108,7 @@ public class Task extends TaskBase {
      * @return
      */
     public static Task cursorToTask(final Cursor cursor) {
-        if (cursor.isAfterLast()) {
-            Log.v(TAG, "cursor out of bounds");
-            return null;
-        }
-        Calendar due;
-        if (cursor.isNull(cursor.getColumnIndex(DUE))) {
-            due = null;
-        } else {
-            due = DateTimeHelper.createLocalCalendar(cursor.getLong(cursor.getColumnIndex(DUE)), true);
-        }
-        Calendar reminder;
-        if (cursor.isNull(cursor.getColumnIndex(REMINDER))) {
-            reminder = null;
-        } else {
-            reminder = DateTimeHelper.createLocalCalendar(cursor.getLong(cursor.getColumnIndex(REMINDER)));
-        }
-        Calendar created_at;
-        if (cursor.isNull(cursor.getColumnIndex(DatabaseHelper.CREATED_AT))) {
-            created_at = null;
-        } else {
-            created_at = new GregorianCalendar();
-            created_at.setTimeInMillis(cursor.getLong(cursor.getColumnIndex(DatabaseHelper.CREATED_AT)) * 1000);
-        }
-        Calendar updated_at;
-        if (cursor.isNull(cursor.getColumnIndex(DatabaseHelper.UPDATED_AT))) {
-            updated_at = null;
-        } else {
-            updated_at = new GregorianCalendar();
-            updated_at.setTimeInMillis(cursor.getLong(cursor.getColumnIndex(DatabaseHelper.UPDATED_AT)) * 1000);
-        }
-        return new Task(cursor.getLong(cursor.getColumnIndex(ID)),
-                        cursor.getString(cursor.getColumnIndex(UUID)),
-                        ListMirakel.get(cursor.getLong(cursor.getColumnIndex(LIST_ID))),
-                        cursor.getString(cursor.getColumnIndex(NAME)), cursor.getString(cursor.getColumnIndex(CONTENT)),
-                        cursor.getShort(cursor.getColumnIndex(DONE)) == 1, due, reminder,
-                        cursor.getInt(cursor.getColumnIndex(PRIORITY)),
-                        created_at, updated_at, SYNC_STATE.valueOf(cursor.getShort(cursor.getColumnIndex(
-                                    DatabaseHelper.SYNC_STATE_FIELD))),
-                        cursor.getString(cursor.getColumnIndex(ADDITIONAL_ENTRIES)),
-                        cursor.getInt(cursor.getColumnIndex(RECURRING)),
-                        cursor.getInt(cursor.getColumnIndex(RECURRING_REMINDER)),
-                        cursor.getInt(cursor.getColumnIndex(PROGRESS)),
-                        cursor.getShort(cursor.getColumnIndex(RECURRING_SHOWN)) == 1);
+        return new Task(cursor);
     }
 
     public static List<Task> cursorToTaskList(final Cursor cursor) {
@@ -196,22 +155,14 @@ public class Task extends TaskBase {
      * @return
      */
     public static Task get(final long id, boolean force) {
-        String extraSQL = " AND NOT "
-                          + DatabaseHelper.SYNC_STATE_FIELD + "="
-                          + SYNC_STATE.DELETE;
-        if (force) {
-            extraSQL = "";
+        MirakelQueryBuilder qb = new MirakelQueryBuilder(context).and(ID,
+                MirakelQueryBuilder.Operation.EQ,
+                id);
+        if (!force) {
+            qb.and(DatabaseHelper.SYNC_STATE_FIELD, MirakelQueryBuilder.Operation.EQ,
+                   SYNC_STATE.DELETE.toInt());
         }
-        final Cursor cursor = query(URI, Task.allColumns,
-                                    ModelBase.ID + "=" + id + extraSQL, null, null);
-        cursor.moveToFirst();
-        if (cursor.getCount() != 0) {
-            final Task t = cursorToTask(cursor);
-            cursor.close();
-            return t;
-        }
-        cursor.close();
-        return null;
+        return qb.get(Task.class);
     }
 
     /**
@@ -525,6 +476,52 @@ public class Task extends TaskBase {
               created_at, updated_at, sync_state, additionalEntriesString,
               recurring, recurring_reminder, progress, shown);
         this.recurrenceParent = null;
+    }
+
+    public Task(final Cursor cursor) {
+        if (cursor.isAfterLast()) {
+            throw new IllegalArgumentException("cursor out of bounds");
+        }
+        if (cursor.isNull(cursor.getColumnIndex(DUE))) {
+            setDue(null);
+        } else {
+            setDue(DateTimeHelper.createLocalCalendar(cursor.getLong(cursor.getColumnIndex(DUE)), true));
+        }
+        if (cursor.isNull(cursor.getColumnIndex(REMINDER))) {
+            setReminder(null);
+        } else {
+            setReminder(DateTimeHelper.createLocalCalendar(cursor.getLong(cursor.getColumnIndex(REMINDER))));
+        }
+        Calendar created_at = null;
+        if (cursor.isNull(cursor.getColumnIndex(DatabaseHelper.CREATED_AT))) {
+            created_at = null;
+        } else {
+            created_at = new GregorianCalendar();
+            created_at.setTimeInMillis(cursor.getLong(cursor.getColumnIndex(DatabaseHelper.CREATED_AT)) * 1000);
+        }
+        setCreatedAt(created_at);
+        Calendar updated_at;
+        if (cursor.isNull(cursor.getColumnIndex(DatabaseHelper.UPDATED_AT))) {
+            updated_at = null;
+        } else {
+            updated_at = new GregorianCalendar();
+            updated_at.setTimeInMillis(cursor.getLong(cursor.getColumnIndex(DatabaseHelper.UPDATED_AT)) * 1000);
+        }
+        setUpdatedAt(updated_at);
+        setId(cursor.getLong(cursor.getColumnIndex(ID)));
+        setUUID(cursor.getString(cursor.getColumnIndex(UUID)));
+        setList(ListMirakel.get(cursor.getLong(cursor.getColumnIndex(LIST_ID))));
+        setName(cursor.getString(cursor.getColumnIndex(NAME)));
+        setContent(cursor.getString(cursor.getColumnIndex(CONTENT)));
+        setDone(cursor.getShort(cursor.getColumnIndex(DONE)) == 1);
+        setPriority(cursor.getInt(cursor.getColumnIndex(PRIORITY)));
+        setSyncState(SYNC_STATE.valueOf(cursor.getShort(cursor.getColumnIndex(
+                                            DatabaseHelper.SYNC_STATE_FIELD))));
+        setAdditionalEntries(cursor.getString(cursor.getColumnIndex(ADDITIONAL_ENTRIES)));
+        setRecurrence(cursor.getInt(cursor.getColumnIndex(RECURRING)));
+        setRecurringReminder(cursor.getInt(cursor.getColumnIndex(RECURRING_REMINDER)));
+        setProgress(cursor.getInt(cursor.getColumnIndex(PROGRESS)));
+        setIsRecurringShown(cursor.getShort(cursor.getColumnIndex(RECURRING_SHOWN)) == 1);
     }
 
     public Task(final String name) {

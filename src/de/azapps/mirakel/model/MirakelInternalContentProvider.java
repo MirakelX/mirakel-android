@@ -138,6 +138,8 @@ public class MirakelInternalContentProvider extends ContentProvider {
         return database;
     }
 
+
+
     @Override
     public int delete(final Uri uri, final String selection,
                       final String[] selectionArgs) {
@@ -159,7 +161,7 @@ public class MirakelInternalContentProvider extends ContentProvider {
         return u;
     }
 
-    private static String getTableName(final Uri u) {
+    public static String getTableName(final Uri u) {
         final List<String> l = u.getPathSegments();
         if (l.size() > 0 && EXISTING_TABLES.contains(l.get(0))) {
             return l.get(0);
