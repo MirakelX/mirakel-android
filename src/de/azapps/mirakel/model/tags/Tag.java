@@ -136,12 +136,9 @@ public class Tag extends TagBase {
     }
 
     public static Tag cursorToTag(final Cursor c) {
-        if (c.moveToFirst()) {
-            return new Tag(c.getInt(c.getColumnIndex(ID)), c.getString(c.getColumnIndex(NAME)),
-                           c.getInt(c.getColumnIndex(BACKGROUND_COLOR)), c.getShort(c.getColumnIndex(DARK_TEXT)) == 1
-                          );
-        }
-        return null;
+        return new Tag(c.getInt(c.getColumnIndex(ID)), c.getString(c.getColumnIndex(NAME)),
+                       c.getInt(c.getColumnIndex(BACKGROUND_COLOR)), c.getShort(c.getColumnIndex(DARK_TEXT)) == 1
+                      );
     }
 
     private static List<Tag> cursorToTagList(final Cursor c) {
@@ -158,8 +155,10 @@ public class Tag extends TagBase {
     private static Tag getByName(final String name) {
         final Cursor c = query(URI, allColumns, ModelBase.NAME
                                + "=?", new String[] {name}, null);
-        c.moveToFirst();
-        final Tag t = cursorToTag(c);
+        Tag t = null;
+        if (c.moveToFirst()) {
+            t = cursorToTag(c);
+        }
         c.close();
         return t;
     }

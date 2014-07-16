@@ -943,7 +943,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String[] tagColumns = new String[] {"_id", "color_a", "color_r", "color_g", "color_b"};
             Cursor tagCursor = db.query("tmp_tags", tagColumns, null, null, null, null, null);
             tagCursor.moveToFirst();
-            while (!tagCursor.isAfterLast()) {
+            do {
                 int i = 0;
                 int id = tagCursor.getInt(i++);
                 int rgba = tagCursor.getInt(i++);
@@ -953,12 +953,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 int newColor = Color.argb(rgba, rgbr, rgbg, rgbb);
                 Cursor tagC = db.query(Tag.TABLE, Tag.allColumns, ModelBase.ID
                                        + "=?", new String[] {id + ""}, null, null, null);
-                Tag newTag = Tag.cursorToTag(tagC);
-                tagC.close();
-                newTag.setBackgroundColor(newColor);
-                db.update(Tag.TABLE, newTag.getContentValues(), ModelBase.ID + "=?", new String[] {newTag.getId() + ""});
-                tagCursor.moveToNext();
-            }
+                if (tagC.moveToFirst()) {
+                    Tag newTag = Tag.cursorToTag(tagC);
+                    tagC.close();
+                    newTag.setBackgroundColor(newColor);
+                    db.update(Tag.TABLE, newTag.getContentValues(), ModelBase.ID + "=?", new String[] {newTag.getId() + ""});
+                }
+            } while (tagCursor.moveToNext());
             db.execSQL("DROP TABLE tmp_tags;");
             db.execSQL("create unique index tag_unique ON tag (name);");
         default:

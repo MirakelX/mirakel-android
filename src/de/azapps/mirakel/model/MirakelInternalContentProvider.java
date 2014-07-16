@@ -73,9 +73,18 @@ public class MirakelInternalContentProvider extends ContentProvider {
                          + "/" + tableName);
     }
 
+
+    // Join table constants
+    public static final String TASK_TAG_JOIN = "task_tag_join";
+    public static final String TASK_RECURRING_TW_JOIN = "task_recurring_tw";
+    public static final String LISTS_SORT_JOIN = "lists_sort";
+    public static final String TASK_SUBTASK_JOIN = "task_subtask";
+    public static final String UPDATE_LIST_ORDER_JOIN = "update_list_order";
+
+    // Uris
     public static final Uri TASK_URI = getUri(Task.TABLE);
-    public static final Uri TASK_SUBTASK_URI = getUri("task_subtask");
-    public static final Uri TASK_TAG_URI = getUri("task_tag");
+    public static final Uri TASK_SUBTASK_URI = getUri(TASK_SUBTASK_JOIN);
+    public static final Uri TASK_TAG_URI = getUri(TASK_TAG_JOIN);
     public static final Uri TAG_URI = getUri(Tag.TABLE);
     public static final Uri LIST_URI = getUri(ListMirakel.TABLE);
     public static final Uri TAG_CONNECTION_URI = getUri(Tag.TAG_CONNECTION_TABLE);
@@ -84,17 +93,17 @@ public class MirakelInternalContentProvider extends ContentProvider {
     public static final Uri SUBTASK_URI = getUri(Task.SUBTASK_TABLE);
     public static final Uri FILE_URI = getUri(FileMirakel.TABLE);
     public static final Uri RECURRING_TW_URI = getUri(Recurring.TW_TABLE);
-    public static final Uri TASK_RECURRING_TW_URI = getUri("task_recurring_tw");
+    public static final Uri TASK_RECURRING_TW_URI = getUri(TASK_RECURRING_TW_JOIN);
     public static final Uri ACCOUNT_URI = getUri(AccountMirakel.TABLE);
     public static final Uri RECURRING_URI = getUri(Recurring.TABLE);
     public static final Uri SEMANTIC_URI = getUri(Semantic.TABLE);
     public static final Uri SPECIAL_LISTS_URI = getUri(SpecialList.TABLE);
-    public static final Uri LISTS_SORT_URI = getUri("lists_sort");
-    public static final Uri UPDATE_LIST_ORDER_URI = getUri("update_list_order");
+    public static final Uri LISTS_SORT_URI = getUri(LISTS_SORT_JOIN);
+    public static final Uri UPDATE_LIST_ORDER_URI = getUri(UPDATE_LIST_ORDER_JOIN);
 
     private static final List<String> BLACKLISTED_FOR_MODIFICATIONS = Arrays
-            .asList("", "task_recurring_tw", "task_subtask",
-                    "lists_sort", "update_list_order");
+            .asList("", TASK_RECURRING_TW_JOIN, TASK_SUBTASK_JOIN, TASK_TAG_JOIN,
+                    LISTS_SORT_JOIN, UPDATE_LIST_ORDER_JOIN);
 
     private static DatabaseHelper dbHelper = null;
     private static SQLiteDatabase database;
@@ -206,25 +215,25 @@ public class MirakelInternalContentProvider extends ContentProvider {
         String groupBy = null;
         switch (table) {
         case "":
-        case "update_list_order":
+        case UPDATE_LIST_ORDER_JOIN:
             throw new IllegalArgumentException(table
                                                + " is blacklisted for query");
-        case "task_subtask":
+        case TASK_SUBTASK_JOIN:
             builder.setTables(Task.TABLE + " INNER JOIN " + Task.SUBTASK_TABLE
                               + " ON " + Task.TABLE + "." + ModelBase.ID + "="
                               + Task.SUBTASK_TABLE + ".child_id");
             break;
-        case "task_recurring_tw":
+        case TASK_RECURRING_TW_JOIN:
             builder.setTables(Task.TABLE + " INNER JOIN " + Recurring.TW_TABLE
                               + " ON " + Task.TABLE + "." + ModelBase.ID + "="
                               + Recurring.TW_TABLE + "." + Recurring.CHILD);
             break;
-        case "task_tag":
+        case TASK_TAG_JOIN:
             builder.setTables(Tag.TAG_CONNECTION_TABLE + " INNER JOIN "
                               + Tag.TABLE + " ON " + Tag.TAG_CONNECTION_TABLE
                               + ".tag_id=" + Tag.TABLE + "." + ModelBase.ID);
             break;
-        case "lists_sort":
+        case LISTS_SORT_JOIN:
             builder.setTables(ListMirakel.TABLE + " AS n, " + ListMirakel.TABLE
                               + " AS p ");
             groupBy = "n." + ListMirakel.LFT;
@@ -246,10 +255,10 @@ public class MirakelInternalContentProvider extends ContentProvider {
                       final String selection, final String[] selectionArgs) {
         final String table = getTableName(uri);
         if (BLACKLISTED_FOR_MODIFICATIONS.contains(table)
-            && !"update_list_order".equals(table)) {
+            && !UPDATE_LIST_ORDER_JOIN.equals(table)) {
             throw new IllegalArgumentException(table
                                                + " is blacklisted for update");
-        } else if ("update_list_order".equals(table)) {
+        } else if (UPDATE_LIST_ORDER_JOIN.equals(table)) {
             if (values.containsKey("TABLE")) {
                 dbHelper.getWritableDatabase().rawQuery(
                     "UPDATE " + values.getAsString("TABLE") + " SET "
