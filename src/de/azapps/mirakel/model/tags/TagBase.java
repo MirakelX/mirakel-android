@@ -30,17 +30,13 @@ abstract class TagBase extends ModelBase {
     private static final String TAG = "TagBase";
 
     public static final String DARK_TEXT = "dark_text";
-    public static final String BACKGROUND_COLOR_R = "color_r";
-    public static final String BACKGROUND_COLOR_B = "color_b";
-    public static final String BACKGROUND_COLOR_G = "color_g";
-    public static final String BACKGROUND_COLOR_A = "color_a";
+    public static final String BACKGROUND_COLOR = "color";
 
     private boolean isDarkText;
     // Color as specified in android.graphics.Color
     private int backgroundColor;
 
-    public TagBase(final long id, final boolean dark, final int backColor,
-                   final String name) {
+    public TagBase(final long id, final String name, final int backColor, final boolean dark) {
         super(id, name);
         setBackgroundColor(backColor);
         setDarkText(dark);
@@ -56,10 +52,7 @@ abstract class TagBase extends ModelBase {
             return new ContentValues();
         }
         cv.put(TagBase.DARK_TEXT, this.isDarkText);
-        cv.put(TagBase.BACKGROUND_COLOR_R, Color.red(this.backgroundColor));
-        cv.put(TagBase.BACKGROUND_COLOR_G, Color.green(this.backgroundColor));
-        cv.put(TagBase.BACKGROUND_COLOR_B, Color.blue(this.backgroundColor));
-        cv.put(TagBase.BACKGROUND_COLOR_A, Color.alpha(this.backgroundColor));
+        cv.put(TagBase.BACKGROUND_COLOR, this.backgroundColor);
         return cv;
     }
 

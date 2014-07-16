@@ -37,14 +37,13 @@ public class Tag extends TagBase {
 
     public static final String TABLE = "tag";
     public static final String TAG_CONNECTION_TABLE = "task_tag";
-    public static final String[] allColumns = { ModelBase.ID, ModelBase.NAME, DARK_TEXT,
-                                                BACKGROUND_COLOR_A, BACKGROUND_COLOR_R,
-                                                BACKGROUND_COLOR_G, BACKGROUND_COLOR_B
+    public static final String[] allColumns = {ModelBase.ID, ModelBase.NAME, DARK_TEXT,
+                                               BACKGROUND_COLOR
                                               };
     private static final Uri URI = MirakelInternalContentProvider.TAG_URI;
-    public Tag(final int id, final boolean isDarkBackground, final String name,
-               final int backColor) {
-        super(id, isDarkBackground, backColor, name);
+
+    public Tag(final int id, final String name, final int backColor, final boolean isDarkBackground) {
+        super(id, name, backColor, isDarkBackground);
     }
 
     protected Uri getUri() {
@@ -64,7 +63,7 @@ public class Tag extends TagBase {
 
     public static Tag get(final long id) {
         final Cursor c = query(URI, allColumns, ModelBase.ID
-                               + "=?", new String[] { id + "" }, null);
+                               + "=?", new String[] {id + ""}, null);
         Tag t = null;
         if (c.moveToFirst()) {
             t = cursorToTag(c);
@@ -80,7 +79,7 @@ public class Tag extends TagBase {
 
     public static List<Tag> getTagsForTask(final long id) {
         final Cursor c = query(MirakelInternalContentProvider.TASK_TAG_URI, addPrefix(allColumns, TABLE),
-                               TAG_CONNECTION_TABLE + ".task_id=?", new String[] { id + "" }, null);
+                               TAG_CONNECTION_TABLE + ".task_id=?", new String[] {id + ""}, null);
         return Tag.cursorToTagList(c);
     }
 
@@ -115,10 +114,7 @@ public class Tag extends TagBase {
         final ContentValues cv = new ContentValues();
         cv.put(ModelBase.NAME, name);
         cv.put(DARK_TEXT, dark);
-        cv.put(BACKGROUND_COLOR_R, Color.red(color));
-        cv.put(BACKGROUND_COLOR_G, Color.green(color));
-        cv.put(BACKGROUND_COLOR_B, Color.blue(color));
-        cv.put(BACKGROUND_COLOR_A, Color.alpha(color));
+        cv.put(BACKGROUND_COLOR, color);
         final long id = insert(URI, cv);
         return get(id);
     }
@@ -140,12 +136,10 @@ public class Tag extends TagBase {
     }
 
     public static Tag cursorToTag(final Cursor c) {
-        if (c.getCount() > 0) {
-            return new Tag(c.getInt(c.getColumnIndex(ID)), c.getShort(c.getColumnIndex(DARK_TEXT)) == 1,
-                           c.getString(c.getColumnIndex(NAME)),
-                           Color.argb(c.getShort(c.getColumnIndex(BACKGROUND_COLOR_A)),
-                                      c.getShort(c.getColumnIndex(BACKGROUND_COLOR_R)), c.getShort(c.getColumnIndex(BACKGROUND_COLOR_G)),
-                                      c.getShort(c.getColumnIndex(BACKGROUND_COLOR_B))));
+        if (c.moveToFirst()) {
+            return new Tag(c.getInt(c.getColumnIndex(ID)), c.getString(c.getColumnIndex(NAME)),
+                           c.getInt(c.getColumnIndex(BACKGROUND_COLOR)), c.getShort(c.getColumnIndex(DARK_TEXT)) == 1
+                          );
         }
         return null;
     }
@@ -163,7 +157,7 @@ public class Tag extends TagBase {
 
     private static Tag getByName(final String name) {
         final Cursor c = query(URI, allColumns, ModelBase.NAME
-                               + "=?", new String[] { name }, null);
+                               + "=?", new String[] {name}, null);
         c.moveToFirst();
         final Tag t = cursorToTag(c);
         c.close();
@@ -174,7 +168,6 @@ public class Tag extends TagBase {
      * Serialize Tags of a Task to a tw-compatible json-String
      *
      * @param id of the task, to which the tags should be serialized
-     *
      * @return All tags as json-string in tw-form
      */
     public static String serialize(final long id) {

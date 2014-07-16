@@ -74,7 +74,7 @@ import de.azapps.tools.Log;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String CREATED_AT = "created_at";
-    public static final int DATABASE_VERSION = 40;
+    public static final int DATABASE_VERSION = 41;
 
     private static final String TAG = "DatabaseHelper";
     public static final String UPDATED_AT = "updated_at";
@@ -476,9 +476,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
              */
             db.execSQL("Alter Table " + Task.TABLE + " add column " + Task.UUID
                        + " TEXT NOT NULL DEFAULT '';");
-            // MainActivity.updateTasksUUID = true; TODO do we need this
-            // anymore?
-            // Don't remove this version-gap
+        // MainActivity.updateTasksUUID = true; TODO do we need this
+        // anymore?
+        // Don't remove this version-gap
         case 13:
             db.execSQL("Alter Table " + Task.TABLE + " add column "
                        + Task.ADDITIONAL_ENTRIES + " TEXT NOT NULL DEFAULT '';");
@@ -564,7 +564,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         case 23:
             db.execSQL("ALTER TABLE " + Recurring.TABLE
                        + " add column temporary int NOT NULL default 0;");
-            // Add Accountmanagment
+        // Add Accountmanagment
         case 24:
             createAccountTable(db);
             ACCOUNT_TYPES type = ACCOUNT_TYPES.LOCAL;
@@ -590,11 +590,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                        + AccountMirakel.TABLE + " (" + ModelBase.ID
                        + ") ON DELETE CASCADE ON UPDATE CASCADE DEFAULT "
                        + accountId + "; ");
-            // add progress
+        // add progress
         case 25:
             db.execSQL("ALTER TABLE " + Task.TABLE
                        + " add column progress int NOT NULL default 0;");
-            // Add some columns for caldavsync
+        // Add some columns for caldavsync
         case 26:
             createCalDavExtraTable(db);
         case 27:
@@ -612,7 +612,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                            + ") VALUES (?, " + i + ")",
                            new String[] { weekdays[i] });
             }
-            // add some options to recurring
+        // add some options to recurring
         case 29:
             db.execSQL("ALTER TABLE " + Recurring.TABLE
                        + " add column isExact INTEGER DEFAULT 0;");
@@ -632,15 +632,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                        + " add column sunnday INTEGER DEFAULT 0;");
             db.execSQL("ALTER TABLE " + Recurring.TABLE
                        + " add column derived_from INTEGER DEFAULT NULL");
-            // also save the time of a due-date
+        // also save the time of a due-date
         case 30:
             db.execSQL("UPDATE " + Task.TABLE + " set " + Task.DUE + "="
                        + Task.DUE + "||' 00:00:00'");
-            // save all times in tasktable as utc-unix-seconds
+        // save all times in tasktable as utc-unix-seconds
         case 31:
             updateTimesToUTC(db);
-            // move tw-sync-key to db
-            // move tw-certs into accountmanager
+        // move tw-sync-key to db
+        // move tw-certs into accountmanager
         case 32:
             db.execSQL("ALTER TABLE " + AccountMirakel.TABLE + " add column "
                        + AccountMirakel.SYNC_KEY + " STRING DEFAULT '';");
@@ -785,10 +785,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("CREATE TABLE " + Tag.TABLE + " (" + ModelBase.ID
                        + " INTEGER PRIMARY KEY AUTOINCREMENT, " + ModelBase.NAME
                        + " TEXT NOT NULL, " + Tag.DARK_TEXT
-                       + " INTEGER NOT NULL DEFAULT 0, " + Tag.BACKGROUND_COLOR_A
-                       + " INTEGER NOT NULL DEFAULT 0, " + Tag.BACKGROUND_COLOR_B
-                       + " INTEGER NOT NULL DEFAULT 0, " + Tag.BACKGROUND_COLOR_G
-                       + " INTEGER NOT NULL DEFAULT 0, " + Tag.BACKGROUND_COLOR_R
+                       + " INTEGER NOT NULL DEFAULT 0, " + "color_a"
+                       + " INTEGER NOT NULL DEFAULT 0, " + "color_b"
+                       + " INTEGER NOT NULL DEFAULT 0, " + "color_g"
+                       + " INTEGER NOT NULL DEFAULT 0, " + "color_r"
                        + " INTEGER NOT NULL DEFAULT 0);");
             db.execSQL("CREATE TABLE "
                        + Tag.TAG_CONNECTION_TABLE
@@ -833,10 +833,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                                                this.context);
                             cv = new ContentValues();
                             cv.put(ModelBase.NAME, tag);
-                            cv.put(Tag.BACKGROUND_COLOR_R, Color.red(color));
-                            cv.put(Tag.BACKGROUND_COLOR_G, Color.green(color));
-                            cv.put(Tag.BACKGROUND_COLOR_B, Color.blue(color));
-                            cv.put(Tag.BACKGROUND_COLOR_A, Color.alpha(color));
+                            cv.put("color_r", Color.red(color));
+                            cv.put("color_g", Color.green(color));
+                            cv.put("color_b", Color.blue(color));
+                            cv.put("color_a", Color.alpha(color));
                             tagId = (int) db.insert(Tag.TABLE, null, cv);
                         }
                         cv = new ContentValues();
@@ -859,7 +859,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 MirakelCommonPreferences.saveIntArray(
                     "task_fragment_adapter_settings", parts);
             }
-            // refactor recurrence to follow the taskwarrior method
+        // refactor recurrence to follow the taskwarrior method
         case 38:
             createTableRecurrenceTW(db);
         case 39:
@@ -930,6 +930,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                           new String[] { idsToHidde });
             }
             c.close();
+        case 40:
+            // Alter tag table
+            db.execSQL("ALTER TABLE tag RENAME to tmp_tags;");
+            db.execSQL("CREATE TABLE " + Tag.TABLE + " ("
+                       + ModelBase.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                       + ModelBase.NAME + " TEXT NOT NULL, "
+                       + Tag.DARK_TEXT + " INTEGER NOT NULL DEFAULT 0, "
+                       + Tag.BACKGROUND_COLOR + " INTEGER NOT NULL DEFAULT 0);");
+            db.execSQL("INSERT INTO " + Tag.TABLE +
+                       " (_id,name,dark_text) SELECT _id,name,dark_text FROM tmp_tags;");
+            String[] tagColumns = new String[] {"_id", "color_a", "color_r", "color_g", "color_b"};
+            Cursor tagCursor = db.query("tmp_tags", tagColumns, null, null, null, null, null);
+            tagCursor.moveToFirst();
+            while (!tagCursor.isAfterLast()) {
+                int i = 0;
+                int id = tagCursor.getInt(i++);
+                int rgba = tagCursor.getInt(i++);
+                int rgbr = tagCursor.getInt(i++);
+                int rgbg = tagCursor.getInt(i++);
+                int rgbb = tagCursor.getInt(i);
+                int newColor = Color.argb(rgba, rgbr, rgbg, rgbb);
+                Cursor tagC = db.query(Tag.TABLE, Tag.allColumns, ModelBase.ID
+                                       + "=?", new String[] {id + ""}, null, null, null);
+                Tag newTag = Tag.cursorToTag(tagC);
+                tagC.close();
+                newTag.setBackgroundColor(newColor);
+                db.update(Tag.TABLE, newTag.getContentValues(), ModelBase.ID + "=?", new String[] {newTag.getId() + ""});
+                tagCursor.moveToNext();
+            }
+            db.execSQL("DROP TABLE tmp_tags;");
+            db.execSQL("create unique index tag_unique ON tag (name);");
         default:
             break;
         }

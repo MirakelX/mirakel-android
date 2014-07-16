@@ -93,7 +93,7 @@ public class MirakelInternalContentProvider extends ContentProvider {
     public static final Uri UPDATE_LIST_ORDER_URI = getUri("update_list_order");
 
     private static final List<String> BLACKLISTED_FOR_MODIFICATIONS = Arrays
-            .asList("", "task_recurring_tw", "task_subtask", "task_tag",
+            .asList("", "task_recurring_tw", "task_subtask",
                     "lists_sort", "update_list_order");
 
     private static DatabaseHelper dbHelper = null;
