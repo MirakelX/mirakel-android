@@ -20,7 +20,6 @@
 -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="sync_add">Dodaj račun</string>
-  <string name="sync_title">Usklajevanje</string>
   <string name="sync_new">Now račun</string>
   <string name="sync_use">Uskladi</string>
   <string name="sync_warning">Možnost usklajevanja je še preizkusna</string>

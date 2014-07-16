@@ -20,7 +20,6 @@
 -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="sync_add">Прибавяне на профил</string>
-  <string name="sync_title">Синхронизация</string>
   <string name="sync_new">Нов профил</string>
   <string name="sync_use">Използвай синхронизация</string>
   <string name="sync_warning">Синхронизацията е нестабилна</string>

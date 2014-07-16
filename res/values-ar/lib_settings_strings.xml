@@ -20,7 +20,6 @@
 -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="sync_add">إضافة حساب</string>
-  <string name="sync_title">مزامنة</string>
   <string name="sync_new">حساب جديد</string>
   <string name="sync_use">استخدام المزامنة</string>
   <string name="sync_warning">يتم تجريب المزامنة</string>

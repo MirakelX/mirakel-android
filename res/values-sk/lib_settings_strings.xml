@@ -20,7 +20,6 @@
 -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="sync_add">Pridať účet</string>
-  <string name="sync_title">Synchronizácia</string>
   <string name="sync_new">Nový účet</string>
   <string name="sync_use">Použiť synchronizáciu</string>
   <string name="sync_warning">Synchronizácia je experimentálna</string>
