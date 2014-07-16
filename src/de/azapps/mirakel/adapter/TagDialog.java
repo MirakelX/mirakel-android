@@ -149,6 +149,7 @@ public class TagDialog extends DialogFragment implements
             dismiss();
             TagDialog.this.taskChanged.onTaskChanged(TagDialog.this.task);
         }
+        c.close();
     }
 
     @Override
