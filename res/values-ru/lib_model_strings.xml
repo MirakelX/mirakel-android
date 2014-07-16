@@ -153,10 +153,10 @@
     <item>Покупки</item>
   </string-array>
   <string-array name="demo_tasks">
-    <item>Сегодня Купить подарок для дедушки</item>
+    <item>Buy birthday present for grandpa</item>
     <item>Музыка</item>
-    <item>Понедельник Организовать вечеринку</item>
-    <item>Сегодня Закончить презентацию</item>
+    <item>Organize the party</item>
+    <item>Finish presentation</item>
     <item>Молоко</item>
     <item>Сыр</item>
   </string-array>

@@ -169,10 +169,10 @@
     <item>Achats</item>
   </string-array>
   <string-array name="demo_tasks">
-    <item>aujourd\'hui acheter le cadeau d\'anniversaire pour grand-père</item>
+    <item>Buy birthday present for grandpa</item>
     <item>Musique</item>
-    <item>Organiser la fête lundi</item>
-    <item>Finir la présentation aujourd\'hui</item>
+    <item>Organize the party</item>
+    <item>Finish presentation</item>
     <item>Lait</item>
     <item>Fromage</item>
   </string-array>

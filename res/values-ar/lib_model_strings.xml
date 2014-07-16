@@ -154,10 +154,10 @@
     <item>الشراء</item>
   </string-array>
   <string-array name="demo_tasks">
-    <item>اليوم شراء هدية لعيد ميلاد الجد</item>
+    <item>Buy birthday present for grandpa</item>
     <item>موسيقى</item>
-    <item>اليوم الاثنين تنظيم الحفل</item>
-    <item>اليوم إنهاء العرض التقديمي</item>
+    <item>Organize the party</item>
+    <item>Finish presentation</item>
     <item>الحليب</item>
     <item>جبن</item>
   </string-array>
