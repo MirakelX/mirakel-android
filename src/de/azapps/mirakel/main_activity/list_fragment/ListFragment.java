@@ -237,14 +237,9 @@ public class ListFragment extends MirakelFragment {
                 cv.put (SyncAdapter.SYNC_STATE, SYNC_STATE.ADD.toInt ());
                 main.getContentResolver().update(MirakelInternalContentProvider.TASK_URI, cv,
                                                  where + " AND NOT " + SyncAdapter.SYNC_STATE + "=" + SYNC_STATE.DELETE, null);
-                //TODO fix this(@az)
-                final String query = "DELETE FROM caldav_extra where "
-                                     + ModelBase.ID + " in( select "
-                                     + ModelBase.ID + " from " + Task.TABLE
-                                     + " where " + where + ");";
-                Log.w (TAG, query);
-                MirakelContentProvider.getWritableDatabase ().rawQuery (
-                    query, null);
+                getActivity().getContentResolver().delete(MirakelInternalContentProvider.CALDAV_LISTS_URI, "" +
+                        "where " + ModelBase.ID + " in( select " + ModelBase.ID + " from " + Task.TABLE
+                        + " where " + where + ");", null);
                 ListFragment.this.main.getListFragment ().update ();
             }
         }).setNegativeButton (android.R.string.cancel, null).show ();

@@ -25,6 +25,7 @@ import java.util.Map;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +36,7 @@ import de.azapps.mirakel.adapter.MirakelArrayAdapter;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.ViewHelper;
 import de.azapps.mirakel.model.MirakelContentProvider;
+import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -142,23 +144,27 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
         } else {
             TABLE = ListMirakel.TABLE;
         }
+        ContentValues cv = new ContentValues();
+        ListMirakel lTo = this.getDataAt(to);
+        ListMirakel lFrom = this.getDataAt(from);
+        cv.put("TABLE", TABLE);
         if (to < from) {// move list up
-            MirakelContentProvider.getWritableDatabase ().execSQL (
-                "UPDATE " + TABLE + " SET lft=lft+2 where lft>="
-                + this.getDataAt (to).getLft () + " and lft<"
-                + this.getDataAt (from).getLft ());
+            context.getContentResolver().update(MirakelInternalContentProvider.UPDATE_LIST_MOVE_UP_URI, cv,
+                                                "lft>="
+                                                + lTo.getLft() + " and lft<"
+                                                + lFrom.getLft(), null);
         } else if (to > from) {// move list down
-            MirakelContentProvider.getWritableDatabase ().execSQL (
-                "UPDATE " + TABLE + " SET lft=lft-2 where lft>"
-                + this.getDataAt (from).getLft () + " and lft<="
-                + this.getDataAt (to).getLft ());
+            context.getContentResolver().update(MirakelInternalContentProvider.UPDATE_LIST_MOVE_DOWN_URI, cv,
+                                                "lft>"
+                                                + lFrom.getLft() + " and lft<="
+                                                + lTo.getLft(), null);
         } else {
             return;
         }
-        t.setLft (this.getDataAt (to).getLft ());
+        t.setLft(lTo.getLft());
         t.save ();
-        MirakelContentProvider.getWritableDatabase ().execSQL (
-            "UPDATE " + TABLE + " SET rgt=lft+1;");// Fix rgt
+        context.getContentResolver().update(MirakelInternalContentProvider.UPDATE_LIST_FIX_RGT_URI, cv,
+                                            null, null);
         this.remove (from);
         this.addToData (to, t);
         notifyDataSetChanged ();
