@@ -20,6 +20,7 @@
 -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="sync_add">Adicionar conta</string>
+  <string name="account_title">Contas</string>
   <string name="sync_new">Nova conta</string>
   <string name="sync_use">Sincronizar</string>
   <string name="sync_warning">Sincronização é experimental</string>

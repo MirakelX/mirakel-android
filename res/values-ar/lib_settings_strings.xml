@@ -242,4 +242,9 @@
   <string name="write_logs_to_file">كتابة سجلات ملف</string>
   <string name="special_list_where_subtask_title_text">المهام الفرعية</string>
   <string name="special_list_where_progress_title_text">التقدم</string>
+  <string-array name="file_choice">
+    <item>Not set</item>
+    <item>يحوي ملفاً</item>
+    <item>ليس لديه ملف</item>
+  </string-array>
 </resources>
