@@ -81,6 +81,9 @@ public class MirakelInternalContentProvider extends ContentProvider {
     public static final String LISTS_SORT_JOIN = "lists_sort";
     public static final String TASK_SUBTASK_JOIN = "task_subtask";
     public static final String UPDATE_LIST_ORDER_JOIN = "update_list_order";
+    public static final String UPDATE_LIST_MOVE_DOWN = "list_move_down";
+    public static final String UPDATE_LIST_MOVE_UP = "list_move_up";
+    public static final String UPDATE_LIST_FIX_RGT = "list_fix_rgt";
 
     // Uris
     public static final Uri TASK_URI = getUri(Task.TABLE);
@@ -100,11 +103,22 @@ public class MirakelInternalContentProvider extends ContentProvider {
     public static final Uri SEMANTIC_URI = getUri(Semantic.TABLE);
     public static final Uri SPECIAL_LISTS_URI = getUri(SpecialList.TABLE);
     public static final Uri LISTS_SORT_URI = getUri(LISTS_SORT_JOIN);
+
     public static final Uri UPDATE_LIST_ORDER_URI = getUri(UPDATE_LIST_ORDER_JOIN);
+    public static final Uri UPDATE_LIST_MOVE_DOWN_URI = getUri(UPDATE_LIST_MOVE_DOWN);
+    public static final Uri UPDATE_LIST_MOVE_UP_URI = getUri(UPDATE_LIST_MOVE_UP);
+    public static final Uri UPDATE_LIST_FIX_RGT_URI = getUri(UPDATE_LIST_FIX_RGT);
 
     private static final List<String> BLACKLISTED_FOR_MODIFICATIONS = Arrays
             .asList("", TASK_RECURRING_TW_JOIN, TASK_SUBTASK_JOIN, TASK_TAG_JOIN,
-                    LISTS_SORT_JOIN, UPDATE_LIST_ORDER_JOIN);
+                    LISTS_SORT_JOIN);
+    private static final List<String> BLACKLISTED_FOR_DELETION = Arrays
+            .asList("", TASK_RECURRING_TW_JOIN, TASK_SUBTASK_JOIN, TASK_TAG_JOIN,
+                    LISTS_SORT_JOIN, UPDATE_LIST_MOVE_DOWN, UPDATE_LIST_MOVE_UP, UPDATE_LIST_ORDER_JOIN,
+                    UPDATE_LIST_FIX_RGT);
+
+    private static final List<String> BLACKLISTED_FOR_QUERY = Arrays.asList(UPDATE_LIST_MOVE_DOWN,
+            UPDATE_LIST_MOVE_UP, UPDATE_LIST_ORDER_JOIN, UPDATE_LIST_FIX_RGT);
 
     private static DatabaseHelper dbHelper = null;
     private static SQLiteDatabase database;
@@ -128,7 +142,7 @@ public class MirakelInternalContentProvider extends ContentProvider {
     public int delete(final Uri uri, final String selection,
                       final String[] selectionArgs) {
         final String table = getTableName(uri);
-        if (BLACKLISTED_FOR_MODIFICATIONS.contains(table)) {
+        if (BLACKLISTED_FOR_DELETION.contains(table)) {
             throw new IllegalArgumentException(table
                                                + " is blacklisted for delete");
         }
@@ -214,11 +228,11 @@ public class MirakelInternalContentProvider extends ContentProvider {
         final String table = getTableName(uri);
         final SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
         String groupBy = null;
-        switch (table) {
-        case "":
-        case UPDATE_LIST_ORDER_JOIN:
+        if (BLACKLISTED_FOR_QUERY.contains(table)) {
             throw new IllegalArgumentException(table
                                                + " is blacklisted for query");
+        }
+        switch (table) {
         case TASK_SUBTASK_JOIN:
             builder.setTables(Task.TABLE + " INNER JOIN " + Task.SUBTASK_TABLE
                               + " ON " + Task.TABLE + "." + ModelBase.ID + "="
@@ -255,29 +269,51 @@ public class MirakelInternalContentProvider extends ContentProvider {
     public int update(final Uri uri, final ContentValues values,
                       final String selection, final String[] selectionArgs) {
         final String table = getTableName(uri);
-        if (BLACKLISTED_FOR_MODIFICATIONS.contains(table)
-            && !UPDATE_LIST_ORDER_JOIN.equals(table)) {
+        if (BLACKLISTED_FOR_MODIFICATIONS.contains(table)) {
             throw new IllegalArgumentException(table
                                                + " is blacklisted for update");
-        } else if (UPDATE_LIST_ORDER_JOIN.equals(table)) {
-            if (values.containsKey("TABLE")) {
-                dbHelper.getWritableDatabase().rawQuery(
-                    "UPDATE " + values.getAsString("TABLE") + " SET "
-                    + ListMirakel.LFT + "=" + ListMirakel.LFT
-                    + "-2 WHERE " + selection, selectionArgs);
-                dbHelper.getWritableDatabase().rawQuery(
-                    "UPDATE " + values.getAsString("TABLE") + " SET "
-                    + ListMirakel.RGT + "=" + ListMirakel.RGT
-                    + "-2 WHERE " + selection, selectionArgs);
-            }
-            return 0;
         }
         final SQLiteDatabase db = getWritableDatabase();
         final boolean locked = db.inTransaction();
         if (!locked) {
             db.beginTransaction();
         }
-        final int u = db.update(table, values, selection, selectionArgs);
+        String update_table = values.getAsString("TABLE");
+        int u = 0;
+        switch (table) {
+        case UPDATE_LIST_ORDER_JOIN:
+            if (selectionArgs != null && selectionArgs.length > 0) {
+                throw new IllegalArgumentException("Sorry, but we cannot use selectionsArgs here :(");
+            }
+            db.execSQL(
+                "UPDATE " + update_table + " SET "
+                + ListMirakel.LFT + "=" + ListMirakel.LFT
+                + "-2 WHERE " + selection);
+            db.execSQL(
+                "UPDATE " + update_table + " SET "
+                + ListMirakel.RGT + "=" + ListMirakel.RGT
+                + "-2 WHERE " + selection);
+            break;
+        case UPDATE_LIST_MOVE_DOWN:
+            if (selectionArgs != null && selectionArgs.length > 0) {
+                throw new IllegalArgumentException("Sorry, but we cannot use selectionsArgs here :(");
+            }
+            db.execSQL("UPDATE " + update_table + " SET lft=lft-2 WHERE " +
+                       selection + ";");
+            break;
+        case UPDATE_LIST_MOVE_UP:
+            if (selectionArgs != null && selectionArgs.length > 0) {
+                throw new IllegalArgumentException("Sorry, but we cannot use selectionsArgs here :(");
+            }
+            db.execSQL("UPDATE " + update_table + " SET lft=lft+2 WHERE " +
+                       selection + ";");
+            break;
+        case UPDATE_LIST_FIX_RGT:
+            db.execSQL ("UPDATE " + update_table + " SET rgt=lft+1;");
+            break;
+        default:
+            u = db.update(table, values, selection, selectionArgs);
+        }
         if (!locked) {
             db.setTransactionSuccessful();
             db.endTransaction();

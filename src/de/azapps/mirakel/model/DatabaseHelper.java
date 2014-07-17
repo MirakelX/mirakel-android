@@ -23,11 +23,13 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -612,7 +614,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                            + ") VALUES (?, " + i + ")",
                            new String[] { weekdays[i] });
             }
-        // add some options to recurring
+        // add some options to reccuring
         case 29:
             db.execSQL("ALTER TABLE " + Recurring.TABLE
                        + " add column isExact INTEGER DEFAULT 0;");
@@ -931,6 +933,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
             c.close();
         case 40:
+            // Update settings
+            updateSettings();
             // Alter tag table
             db.execSQL("ALTER TABLE tag RENAME to tmp_tags;");
             db.execSQL("CREATE TABLE " + Tag.TABLE + " ("
@@ -966,6 +970,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             break;
         }
     }
+
+
+    private void updateSettings() {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        settingsIntToLong(settings, "defaultAccountID");
+        settingsIntToLong(settings, "subtaskAddToList");
+    }
+    private void settingsIntToLong(SharedPreferences settings, String key) {
+        final int i = settings.getInt(key, -1);
+        if (i != -1) {
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putLong(key, Long.valueOf(i));
+            editor.commit();
+        }
+    }
+
 
     private static void createTableRecurrenceTW(final SQLiteDatabase db) {
         db.execSQL("CREATE TABLE "
