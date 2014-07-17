@@ -23,6 +23,7 @@ import java.util.List;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -73,7 +74,9 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     }
 
     private void updateList() {
+        long identityToken = Binder.clearCallingIdentity();
         this.list = WidgetHelper.getList(this.mContext, this.widgetId);
+        Binder.restoreCallingIdentity(identityToken);
         getCount();
     }
 
@@ -84,10 +87,12 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public int getCount() {
+        long identityToken = Binder.clearCallingIdentity();
         // get the tasks here because sometimes this returns a wrong value, if
         // the count is not refreshed
         this.tasks = Task.getTasks(this.list, this.list.getSortBy(),
                                    WidgetHelper.showDone(this.mContext, this.widgetId));
+        Binder.restoreCallingIdentity(identityToken);
         return this.tasks.size();
     }
 
