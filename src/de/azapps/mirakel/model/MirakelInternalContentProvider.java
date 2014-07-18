@@ -26,6 +26,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import android.annotation.TargetApi;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -283,7 +284,7 @@ public class MirakelInternalContentProvider extends ContentProvider {
         }
         return u;
     }
-
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public static void withTransaction(final DBTransaction what) {
         if (what != null) {
             final SQLiteDatabase db = getWritableDatabase();
