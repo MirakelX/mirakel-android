@@ -39,7 +39,7 @@ public class TagAdapter extends CursorAdapter {
 
     @Override
     public void bindView(final View v, final Context ctx, final Cursor c) {
-        final Tag tag = Tag.cursorToTag(c);
+        final Tag tag = new Tag(c);
         final TextView t = (TextView) v.findViewById(R.id.tag_list_name);
         t.setText(tag.getName());
         t.setOnClickListener(this.onClick);
@@ -50,7 +50,7 @@ public class TagAdapter extends CursorAdapter {
     public View newView(final Context ctx, final Cursor c,
                         final ViewGroup parent) {
         if (c != null && c.getCount() > 0) {
-            final Tag tag = Tag.cursorToTag(c);
+            final Tag tag = new Tag(c);
             final LayoutInflater inflater = LayoutInflater.from(ctx);
             final View v = inflater.inflate(R.layout.tag_list_row, null);
             final TextView t = (TextView) v.findViewById(R.id.tag_list_name);
