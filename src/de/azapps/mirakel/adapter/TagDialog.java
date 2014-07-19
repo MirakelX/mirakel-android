@@ -39,12 +39,10 @@ public class TagDialog extends DialogFragment implements
     private String searchString;
     private TagAdapter adapter;
     private Context ctx;
-    private final SQLiteDatabase db;
     private Task task;
     private OnTaskChangedListner taskChanged;
 
     public TagDialog() {
-        this.db = MirakelContentProvider.getReadableDatabase();
         this.searchString = "";
     }
 
@@ -134,10 +132,9 @@ public class TagDialog extends DialogFragment implements
     protected void createNewTag(final EditText search) {
         TagDialog.this.searchString = search.getText().toString();
         getLoaderManager().restartLoader(0, null, TagDialog.this);
-        final Cursor c = TagDialog.this.db.query(Tag.TABLE,
+        final Cursor c = ctx.getContentResolver().query(MirakelInternalContentProvider.TAG_URI,
                          new String[] { "count(*)" }, ModelBase.NAME + " LIKE ?",
-                         new String[] { TagDialog.this.searchString + '%' }, null, null,
-                         null);
+                         new String[] { TagDialog.this.searchString + '%' }, null);
         c.moveToFirst();
         // check if tag does not exists
         if (c.getCount() > 0 && c.getInt(0) == 0) {
