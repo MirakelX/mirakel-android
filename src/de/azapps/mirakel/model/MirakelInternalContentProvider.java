@@ -138,8 +138,6 @@ public class MirakelInternalContentProvider extends ContentProvider {
         return database;
     }
 
-
-
     @Override
     public int delete(final Uri uri, final String selection,
                       final String[] selectionArgs) {
@@ -211,8 +209,8 @@ public class MirakelInternalContentProvider extends ContentProvider {
             dbHelper = new DatabaseHelper(getContext());
             isPreInit = false;
         }
-        final ScheduledExecutorService worker =
-            Executors.newSingleThreadScheduledExecutor();
+        final ScheduledExecutorService worker = Executors
+                                                .newSingleThreadScheduledExecutor();
         worker.schedule(new Runnable() {
             @Override
             public void run() {
@@ -322,6 +320,7 @@ public class MirakelInternalContentProvider extends ContentProvider {
         }
         return u;
     }
+
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public static void withTransaction(final DBTransaction what) {
         if (what != null) {
@@ -348,7 +347,8 @@ public class MirakelInternalContentProvider extends ContentProvider {
                 }
             } else {
                 if (!isPreInit) {
-                    throw new DataBaseLockedException("Database already in a transaction");
+                    throw new DataBaseLockedException(
+                        "Database already in a transaction");
                 }
             }
         }

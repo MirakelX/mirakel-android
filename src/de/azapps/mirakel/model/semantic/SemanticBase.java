@@ -43,6 +43,9 @@ abstract class SemanticBase  extends ModelBase {
         this.due = due;
         this.weekday = weekday;
     }
+    SemanticBase(final long id, final String condition) {
+        super(id, condition);
+    }
 
 
     public String getCondition() {

@@ -21,8 +21,10 @@ package de.azapps.mirakel.model.list.meta;
 
 import android.content.Context;
 
+import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.R;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.task.Task;
 
 public class SpecialListsSubtaskProperty extends SpecialListsBaseProperty {
@@ -48,11 +50,11 @@ public class SpecialListsSubtaskProperty extends SpecialListsBaseProperty {
     }
 
     @Override
-    public String getWhereQuery() {
-        return (isNegated ? "NOT " : "") + ModelBase.ID
-               + " IN ( SELECT DISTINCT "
-               + (isParent ? "parent_id" : "child_id") + " FROM "
-               + Task.SUBTASK_TABLE + ")";
+    public MirakelQueryBuilder getWhereQuery(final Context ctx) {
+        return new MirakelQueryBuilder(ctx).and(Task.ID,
+                                                isNegated ? MirakelQueryBuilder.Operation.NOT_IN : MirakelQueryBuilder.Operation.IN,
+                                                new MirakelQueryBuilder(ctx).distinct().select((isParent ? "parent_id" : "child_id")),
+                                                MirakelInternalContentProvider.SUBTASK_URI);
     }
 
     @Override

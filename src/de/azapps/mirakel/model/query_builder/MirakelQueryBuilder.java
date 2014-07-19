@@ -23,13 +23,12 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.v4.content.CursorLoader;
 import android.text.TextUtils;
 
-import java.io.InvalidClassException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -44,20 +43,53 @@ import de.azapps.tools.Log;
 public class MirakelQueryBuilder {
     private static final String TAG = "MirakelQueryBuilder";
     private Context context;
-    private Uri uri;
     private List<String> projection = new ArrayList<>();
     private StringBuilder selection = new StringBuilder();
     private List<String> selectionArgs = new ArrayList<>();
     private StringBuilder sortOrder = new StringBuilder();
+    private boolean distinct = false;
+
+
+    public CursorLoader toCursorLoader(final Uri uri) {
+        return new CursorLoader(context, uri, projection.toArray(new String[projection.size()]),
+                                selection.toString(), selectionArgs.toArray(new String[selectionArgs.size()]),
+                                sortOrder.toString());
+    }
 
     public MirakelQueryBuilder(Context context) {
         this.context = context;
+    }
+
+    public MirakelQueryBuilder distinct() {
+        distinct = true;
+        return this;
     }
 
     private void appendConjunction(Conjunction conjunction) {
         if (selection.length() != 0) {
             selection.append(" " + conjunction.toString() + " ");
         }
+    }
+
+    public MirakelQueryBuilder select(final String ... projection) {
+        this.projection = Arrays.asList(projection);
+        return this;
+    }
+
+    public MirakelQueryBuilder select(final List<String> projection) {
+        this.projection = projection;
+        return this;
+    }
+
+    public long count(final Uri uri) {
+        select("count(*)");
+        final Cursor c = query(uri);
+        long count = 0;
+        if (c.moveToFirst()) {
+            count = c.getLong(0);
+        }
+        c.close();
+        return count;
     }
 
     /**
@@ -68,22 +100,18 @@ public class MirakelQueryBuilder {
      * @return
      */
     private MirakelQueryBuilder appendCondition(Conjunction conjunction, String selection) {
+        if (selection.trim().length() == 0) {
+            return this;
+        }
         appendConjunction(conjunction);
-        this.selection.append('(').append(selection).append(')');
+        this.selection.append(selection);
         return this;
     }
 
     private MirakelQueryBuilder appendCondition(Conjunction conjunction, String selection,
-            String selectionArguments) {
+            List<String> selectionArguments) {
         appendCondition(conjunction, selection);
-        selectionArgs.add(selectionArguments);
-        return this;
-    }
-
-    private MirakelQueryBuilder appendCondition(Conjunction conjunction, String selection,
-            List<String> selectionArgument) {
-        appendCondition(conjunction, selection);
-        selectionArgs.addAll(selectionArgument);
+        selectionArgs.addAll(selectionArguments);
         return this;
     }
 
@@ -98,8 +126,8 @@ public class MirakelQueryBuilder {
      * @return
      */
     private MirakelQueryBuilder appendCondition(Conjunction conjunction, String selection,
-            MirakelQueryBuilder subQuery) {
-        appendCondition(conjunction, selection + " (" + subQuery.getQuery() + ")",
+            MirakelQueryBuilder subQuery, final Uri u) {
+        appendCondition(conjunction, selection + " (" + subQuery.getQuery(u) + ")",
                         subQuery.getSelectionArguments());
         return this;
     }
@@ -109,8 +137,10 @@ public class MirakelQueryBuilder {
         if (filterInput.isEmpty()) {
             return null;
         }
-        Class clazz = filterInput.get(0).getClass();
-        boolean isModel = clazz.isAssignableFrom(ModelBase.class);
+        boolean isNull = filterInput.get(0) == null;
+        Class clazz = isNull ? null : filterInput.get(0).getClass();
+        boolean isModel = isNull ? false : clazz.isAssignableFrom(ModelBase.class);
+        boolean isBoolean = isNull ? false : clazz == boolean.class || clazz == Boolean.class;
         Method getId = null;
         if (isModel) {
             try {
@@ -129,15 +159,32 @@ public class MirakelQueryBuilder {
                     Log.wtf(TAG, "go and make getId in " + clazz.getCanonicalName() + " accessible");
                     throw new IllegalArgumentException("go and implement getId in " + clazz.getCanonicalName());
                 }
-            } else {
+            } else if (isBoolean) {
+                filter.add(((Boolean)el) == true ? "1" : "0");
+            } else if (!isNull) {
                 filter.add(el.toString());
+            } else {
+                filter.add(null);
+                break;
             }
         }
-        if (op == Operation.IN) {
-            appendCondition(conjunction, field + " " + op + " " + TextUtils.join(", ", filter), selectionArgs);
+        String not = "";
+        if (NOT.contains(op)) {
+            not = "NOT ";
+        }
+        if (op == Operation.IN || op == Operation.NOT_IN) {
+            appendCondition(conjunction, not + field + " " + op + " (" + TextUtils.join(", ", filter) + ")",
+                            selectionArgs);
         } else {
             for (final String a : filter) {
-                appendCondition(conjunction, field + " " + op + " " + a, selectionArgs);
+                if (a != null) {
+                    appendCondition(conjunction, not + field + " " + op + " " + a);
+                } else {
+                    appendCondition(conjunction, field + " IS " + not + "NULL ");
+                }
+            }
+            if (!selectionArgs.isEmpty()) {
+                this.selectionArgs.addAll(selectionArgs);
             }
         }
         return this;
@@ -150,14 +197,23 @@ public class MirakelQueryBuilder {
      *
      * @return
      */
-    public String getQuery() {
+    public String getQuery(final Uri uri) {
         StringBuilder query = new StringBuilder(selection.length() + projection.size() * 15 +
                                                 selectionArgs.size() * 15 + 100);
         query.append("SELECT ");
+        if (distinct) {
+            query.append("DISTINCT ");
+        }
         query.append(TextUtils.join(", ", projection));
         query.append(" FROM ");
         query.append(MirakelInternalContentProvider.getTableName(uri));
-        query.append(" WHERE ");
+        if (selection.length() > 0) {
+            String where = selection.toString();
+            query.append(" WHERE ").append(where);
+        }
+        if (sortOrder.length() != 0) {
+            query.append(" ORDER BY ").append(sortOrder);
+        }
         return query.toString();
     }
 
@@ -169,43 +225,48 @@ public class MirakelQueryBuilder {
         return selectionArgs;
     }
 
-    public Cursor query() {
+    public Cursor query(final Uri uri) {
         ContentResolver contentResolver = context.getContentResolver();
         return contentResolver.query(uri, projection.toArray(new String[projection.size()]),
                                      selection.toString(),
                                      selectionArgs.toArray(new String[selectionArgs.size()]), sortOrder.toString());
     }
 
-
-
-
     //and
     public <T extends Number> MirakelQueryBuilder and
     (final String field, final Operation op, final T filter) {
-        return and (field, op, filter.toString(), new ArrayList<String>());
+        return and (field, op, filter.toString());
+    }
+    public <T extends ModelBase> MirakelQueryBuilder and
+    (final String field, final Operation op, final T filter) {
+        return and (field, op, filter.getId() + "");
+    }
+
+    public MirakelQueryBuilder and
+    (final String field, final Operation op, final boolean filter) {
+        return and (field, op, Arrays.asList(filter ? 1 : 0), new ArrayList<String>());
     }
 
     public MirakelQueryBuilder and (final String field, final Operation op, final String filter) {
-        return and (field, op, Arrays.asList(new String[] {filter}), new ArrayList<String>());
+        if (filter == null) {
+            return and (field, op, Arrays.asList(new String[] {null}), new ArrayList<String>());
+        }
+        return and (field, op, Arrays.asList(new String[] {"?"}), Arrays.asList(new String[] {filter}));
     }
 
     /*
      * Do not call this with something other then T extends Number or T=String
      * java does not allow to define functions in this way
      */
-    public <T> MirakelQueryBuilder and (final String field, final Operation op, List<T> filter) {
+    public <T> MirakelQueryBuilder and (final String field, final Operation op, final List<T> filter) {
         return and (field, op, filter, new ArrayList<String>());
     }
 
     public <T extends Number> MirakelQueryBuilder and
-    (final String field, final Operation op, final T filter, List<String> selectionArgs) {
-        return and (field, op, filter.toString(), selectionArgs);
+    (final String field, final Operation op, final T filter, final String selectionArgs) {
+        return and (field, op, Arrays.asList(new String[] {filter.toString()}), Arrays.asList(new String[] {selectionArgs}));
     }
 
-    public MirakelQueryBuilder and
-    (final String field, final Operation op, final String filter, List<String> selectionArgs) {
-        return and (field, op, Arrays.asList(new String[] {filter}), selectionArgs);
-    }
 
     /*
      * Do not call this with something other then T extends Number or T=String
@@ -218,27 +279,38 @@ public class MirakelQueryBuilder {
 
 
     public MirakelQueryBuilder and (final MirakelQueryBuilder other) {
-        return appendCondition(Conjunction.AND, other.getSelection(), other.getSelectionArguments());
+        return appendCondition(Conjunction.AND, "(" + other.getSelection() + ")",
+                               other.getSelectionArguments());
     }
 
     public MirakelQueryBuilder and
-    (final String field, final Operation op, final MirakelQueryBuilder subQuery) {
-        return appendCondition(Conjunction.AND, field + " " + op, subQuery);
+    (final String field, final Operation op, final MirakelQueryBuilder subQuery,
+     final Uri subqueryUri) {
+        String not = "";
+        if (NOT.contains(op)) {
+            not = " NOT ";
+        }
+        return appendCondition(Conjunction.AND, not + field + " " + op, subQuery, subqueryUri);
     }
 
 
     //or
     public <T extends Number> MirakelQueryBuilder or
     (final String field, final Operation op, final T filter) {
-        return or (field, op, filter.toString(), new ArrayList<String>());
+        return or (field, op, filter.toString());
+    }
+    public <T extends ModelBase> MirakelQueryBuilder or
+    (final String field, final Operation op, final T filter) {
+        return or (field, op, filter.getId() + "");
     }
 
-    public MirakelQueryBuilder or (final String field, final Operation op, final String filter) {
-        return or (field, op, Arrays.asList(new String[] {filter}), new ArrayList<String>());
+    public <T extends Number> MirakelQueryBuilder or
+    (final String field, final Operation op, final boolean filter) {
+        return or (field, op, Arrays.asList(filter ? 1 : 0), new ArrayList<String>());
     }
 
     /*
-     * Do not call this with something other then T extends Number or T=String
+     * Do not call this with something other then T extends Number, T extends ModelBase or T=String
      * java does not allow to define functions in this way
      */
     public <T> MirakelQueryBuilder or (final String field, final Operation op, List<T> filter) {
@@ -246,17 +318,20 @@ public class MirakelQueryBuilder {
     }
 
     public <T extends Number> MirakelQueryBuilder or
-    (final String field, final Operation op, final T filter, List<String> selectionArgs) {
-        return or (field, op, filter.toString(), selectionArgs);
+    (final String field, final Operation op, final T filter, final String selectionArgs) {
+        return or (field, op, Arrays.asList(new String[] {filter.toString()}),  Arrays.asList(new String[] {selectionArgs}));
     }
 
     public MirakelQueryBuilder or
-    (final String field, final Operation op, final String filter, List<String> selectionArgs) {
-        return or (field, op, Arrays.asList(new String[] {filter}), selectionArgs);
+    (final String field, final Operation op, final String filter) {
+        if (filter == null) {
+            return or (field, op, Arrays.asList(new String[] {null}), new ArrayList<String>());
+        }
+        return or (field, op,  Arrays.asList(new String[] {"?"}), Arrays.asList(new String[] {filter}));
     }
 
     /*
-     * Do not call this with something other then T extends Number or T=String
+     * Do not call this with something other then T extends Number, T extends ModelBase or T=String
      * java does not allow to define functions in this way
      */
     public <T> MirakelQueryBuilder or
@@ -270,14 +345,26 @@ public class MirakelQueryBuilder {
     }
 
     public MirakelQueryBuilder or
-    (final String field, final Operation op, final MirakelQueryBuilder subQuery) {
-        return appendCondition(Conjunction.OR, field + " " + op, subQuery);
+    (final String field, final Operation op, final MirakelQueryBuilder subQuery,
+     final Uri subqueryUri) {
+        String not = "";
+        if (NOT.contains(op)) {
+            not = " NOT ";
+        }
+        return appendCondition(Conjunction.OR, not + field + " " + op, subQuery, subqueryUri);
+    }
+
+    public MirakelQueryBuilder not(final MirakelQueryBuilder other) {
+        selection.append(" NOT (").append(other.getSelection()).append(")");
+        selectionArgs.addAll(other.selectionArgs);
+        return this;
     }
 
 
     private <T> T cursorToObject(final Cursor c, final Class<T> clazz) {
         try {
-            return (T) clazz.getConstructor(Cursor.class).newInstance(c);
+            Constructor<T> constructor = clazz.getConstructor(Cursor.class);
+            return constructor.newInstance(c);
         } catch (NoSuchMethodException e) {
             Log.wtf(TAG, "go and implement a the constructor " + clazz.getCanonicalName() + "(Cursor)");
             throw new IllegalArgumentException("go and implement a the constructor " + clazz.getCanonicalName()
@@ -292,8 +379,7 @@ public class MirakelQueryBuilder {
 
     public <T extends ModelBase> List<T> getList(final Class<T> clazz) {
         List<T> l = new ArrayList<>();
-        setupQueryBuilder(clazz);
-        final Cursor c = query();
+        final Cursor c = query(setupQueryBuilder(clazz));
         if (c.moveToFirst()) {
             do {
                 T obj = cursorToObject(c, clazz);
@@ -304,10 +390,14 @@ public class MirakelQueryBuilder {
         return l;
     }
 
+    public <T extends ModelBase> T get(final Class<T> clazz, final long id) {
+        and (ModelBase.ID, Operation.EQ, id);
+        return get(clazz);
+    }
+
     public <T extends ModelBase> T get(final Class<T> clazz) {
-        setupQueryBuilder(clazz);
         T a = null;
-        final Cursor c = query();
+        final Cursor c = query(setupQueryBuilder(clazz));
         if (c.moveToFirst()) {
             a = cursorToObject(c, clazz);
         }
@@ -315,20 +405,24 @@ public class MirakelQueryBuilder {
         return a;
     }
 
-    private<T> void setupQueryBuilder(final Class<T> clazz) {
+    private<T> Uri setupQueryBuilder(final Class<T> clazz) {
+        Uri uri;
         try {
             uri = (Uri) clazz.getField("URI").get(null);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             Log.wtf(TAG, "go and implement a URI  for" + clazz.getCanonicalName());
-            throw new IllegalArgumentException("go and implement a URI  for" + clazz.getCanonicalName());
+            throw new IllegalArgumentException("go and implement a URI for " + clazz.getCanonicalName());
         }
-        try {
-            //can be null, because field should be static
-            projection = Arrays.asList((String[]) clazz.getField("allColumns").get(null));
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            Log.wtf(TAG, "go and implement allColumns for " + clazz.getCanonicalName());
-            throw new IllegalArgumentException("go and implement allColumns for " + clazz.getCanonicalName());
+        if (projection.isEmpty()) {
+            try {
+                //can be null, because field should be static
+                projection = Arrays.asList((String[]) clazz.getField("allColumns").get(null));
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                Log.wtf(TAG, "go and implement allColumns for " + clazz.getCanonicalName());
+                throw new IllegalArgumentException("go and implement allColumns for " + clazz.getCanonicalName());
+            }
         }
+        return uri;
     }
 
     public MirakelQueryBuilder sort(final String field, final Sorting s) {
@@ -348,25 +442,35 @@ public class MirakelQueryBuilder {
         ASC, DESC;
     }
 
+    static final List<Operation> NOT = Arrays.asList(Operation.NOT_EQ, Operation.NOT_LIKE,
+                                       Operation.NOT_GT, Operation.NOT_GE, Operation.NOT_LT, Operation.NOT_LE, Operation.NOT_IN);
     public enum Operation {
-        EQ, LIKE, GT, GE, LT, LE, IN;
+        EQ, LIKE, GT, GE, LT, LE, IN,
+        NOT_EQ, NOT_LIKE, NOT_GT, NOT_GE, NOT_LT, NOT_LE, NOT_IN;
 
         @Override
         public String toString() {
             switch (this) {
             case EQ:
+            case NOT_EQ:
                 return "=";
             case LIKE:
+            case NOT_LIKE:
                 return "LIKE";
             case GT:
+            case NOT_GT:
                 return ">";
             case GE:
+            case NOT_GE:
                 return ">=";
             case LT:
+            case NOT_LT:
                 return "<";
             case LE:
+            case NOT_LE:
                 return "<=";
             case IN:
+            case NOT_IN:
                 return "IN";
             default:
                 throw new IllegalArgumentException("Unkown Operation " + super.toString());

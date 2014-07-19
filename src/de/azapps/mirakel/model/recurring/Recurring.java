@@ -40,16 +40,18 @@ import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 
 public class Recurring extends RecurringBase {
     public static final String TABLE = "recurring";
     private final static String TAG = "Recurring";
 
-    private final static String[] allColumns = { ID, LABEL, MINUTES, HOURS, DAYS, MONTHS, YEARS, FOR_DUE, START_DATE, END_DATE, TEMPORARY, EXACT, MONDAY,
-                                                 TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY, DERIVED
-                                               };
+    public final static String[] allColumns = { ID, LABEL, MINUTES, HOURS, DAYS, MONTHS, YEARS, FOR_DUE, START_DATE, END_DATE, TEMPORARY, EXACT, MONDAY,
+                                                TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY, DERIVED
+                                              };
     public final static String[] allTWColumns = { ID, PARENT, CHILD, OFFSET, OFFSET_COUNT};
     public static final String TW_TABLE = "recurring_tw_mask";
 
@@ -57,7 +59,7 @@ public class Recurring extends RecurringBase {
         return URI;
     }
 
-    private static final Uri URI = MirakelInternalContentProvider.RECURRING_URI;
+    public static final Uri URI = MirakelInternalContentProvider.RECURRING_URI;
 
     public Recurring(final long _id, final String label, final int minutes,
                      final int hours, final int days, final int months, final int years,
@@ -106,54 +108,33 @@ public class Recurring extends RecurringBase {
      * @return
      */
     public static Recurring get(final long id) {
-        final Cursor cursor = query(URI, allColumns, "_id=" + id,
-                                    null, null);
-        if (cursor.moveToFirst()) {
-            final Recurring r = cursorToRecurring(cursor);
-            cursor.close();
-            return r;
-        }
-        cursor.close();
-        return null;
+        return new MirakelQueryBuilder(context).get(Recurring.class, id);
     }
 
     public static Recurring get(final int minutes, final int hours,
                                 final int days, final int month, final int years,
                                 final Calendar start, final Calendar end) {
-        String cal = "";
+        MirakelQueryBuilder qb = new MirakelQueryBuilder(context).and(MINUTES,
+                Operation.EQ, minutes).and(HOURS, Operation.EQ, hours)
+        .and(DAYS, Operation.EQ, days).and(MONTHS, Operation.EQ,
+                                           month).and(YEARS, Operation.EQ, years);
         if (start != null) {
-            cal += " " + START_DATE + "=" + DateTimeHelper.formatDateTime(start);
+            qb.and(START_DATE, Operation.EQ, DateTimeHelper.formatDateTime(start));
+        } else {
+            qb.and(START_DATE, Operation.EQ, (String)null);
         }
         if (end != null) {
-            cal = cal + ("".equals(cal) ? "" : " AND") + " " + END_DATE + "="
-                  + DateTimeHelper.formatDateTime(end);
+            qb.and(END_DATE, Operation.EQ, DateTimeHelper.formatDateTime(end));
+        } else {
+            qb.and(END_DATE, Operation.EQ, (String)null);
         }
-        final Cursor cursor = query(URI, allColumns, MINUTES + "="
-                                    + minutes + " AND " + HOURS + "=" + hours + " AND " + DAYS + "=" + days
-                                    + " AND " + MONTHS + "=" + month + " AND " + YEARS + "=" + years + cal, null, null);
-        if (cursor.moveToFirst()) {
-            final Recurring r = cursorToRecurring(cursor);
-            cursor.close();
-            return r;
-        }
-        cursor.close();
-        return null;
+        return qb.get(Recurring.class);
     }
 
     public static Recurring get(final int days, final int month, final int years) {
         return get(0, 0, days, month, years, null, null);
     }
 
-    public static Recurring first() {
-        final Cursor cursor = query(URI, allColumns, null, null, null);
-        if (cursor.moveToFirst()) {
-            final Recurring r = cursorToRecurring(cursor);
-            cursor.close();
-            return r;
-        }
-        cursor.close();
-        return null;
-    }
 
     public static void destroyTemporary(final long recurrenceId) {
         delete(URI, TEMPORARY + "=1 AND " + ID + "=" + recurrenceId, null);
@@ -176,19 +157,12 @@ public class Recurring extends RecurringBase {
     }
 
     public static List<Recurring> all() {
-        final Cursor c = query(URI, allColumns, null, null, null);
-        c.moveToFirst();
-        final List<Recurring> all = new ArrayList<Recurring>();
-        while (!c.isAfterLast()) {
-            all.add(cursorToRecurring(c));
-            c.moveToNext();
-        }
-        c.close();
-        return all;
+        return new MirakelQueryBuilder(context).getList(Recurring.class);
     }
 
 
-    private static Recurring cursorToRecurring(final Cursor c) {
+    public Recurring(final Cursor c) {
+        super(c.getLong(c.getColumnIndex(ID)), c.getString(c.getColumnIndex(LABEL)));
         Calendar start;
         try {
             start = DateTimeHelper.parseDateTime(c.getString(c.getColumnIndex(START_DATE)));
@@ -213,13 +187,18 @@ public class Recurring extends RecurringBase {
         weekdays.put(Calendar.SUNDAY, c.getShort(c.getColumnIndex(SUNDAY)) == 1);
         final Long derivedFrom = c.isNull(c.getColumnIndex(DERIVED)) ? null : c.getLong(c.getColumnIndex(
                                      DERIVED));
-        return new Recurring(c.getLong(c.getColumnIndex(ID)), c.getString(c.getColumnIndex(LABEL)),
-                             c.getInt(c.getColumnIndex(MINUTES)),
-                             c.getInt(c.getColumnIndex(HOURS)), c.getInt(c.getColumnIndex(DAYS)),
-                             c.getInt(c.getColumnIndex(MONTHS)), c.getInt(c.getColumnIndex(YEARS)),
-                             c.getShort(c.getColumnIndex(FOR_DUE)) == 1, start, end,
-                             c.getShort(c.getColumnIndex(TEMPORARY)) == 1,
-                             c.getShort(c.getColumnIndex(EXACT)) == 1, weekdays, derivedFrom);
+        setMinutes(c.getInt(c.getColumnIndex(MINUTES)));
+        setHours(c.getInt(c.getColumnIndex(HOURS)));
+        setDays(c.getInt(c.getColumnIndex(DAYS)));
+        setMonths(c.getInt(c.getColumnIndex(MONTHS)));
+        setYears(c.getInt(c.getColumnIndex(YEARS)));
+        setForDue(c.getShort(c.getColumnIndex(FOR_DUE)) == 1);
+        setStartDate(start);
+        setEndDate(end);
+        setTemporary(c.getShort(c.getColumnIndex(TEMPORARY)) == 1);
+        setExact(c.getShort(c.getColumnIndex(EXACT)) == 1);
+        setWeekdays(weekdays);
+        setDerivedFrom(derivedFrom);
     }
 
     public Task incrementRecurringDue(final Task t) {
@@ -231,8 +210,8 @@ public class Recurring extends RecurringBase {
         long masterID = t.getId();
         long offset = 0;
         long offsetCount = 0;
-        Cursor c = query(MirakelInternalContentProvider.RECURRING_TW_URI, allTWColumns, CHILD + "=?",
-                         new String[] {t.getId() + ""}, null);
+        Cursor c = new MirakelQueryBuilder(context).select(allTWColumns).and(CHILD,
+                Operation.EQ, t).query(MirakelInternalContentProvider.RECURRING_TW_URI);
         if (c.moveToFirst()) {// this is already a child-task
             masterID = c.getLong(1);
             offset = c.getLong(3);
@@ -241,8 +220,9 @@ public class Recurring extends RecurringBase {
         c.close();
         offset += newDue.getTimeInMillis() - t.getDue().getTimeInMillis();
         ++offsetCount;
-        c = query(MirakelInternalContentProvider.RECURRING_TW_URI, new String[] {CHILD},
-                  PARENT + "=? AND " + OFFSET_COUNT + "=?", new String[] {masterID + "", offsetCount + ""}, null);
+        c = new MirakelQueryBuilder(context).select(CHILD).and(PARENT, Operation.EQ,
+                masterID).and(OFFSET_COUNT, Operation.EQ,
+                              offsetCount).query(MirakelInternalContentProvider.RECURRING_TW_URI);
         if (c.moveToFirst()) {
             final Task task = Task.get(c.getLong(0));
             c.close();
@@ -323,12 +303,12 @@ public class Recurring extends RecurringBase {
     }
 
     public static List<Pair<Integer, String>> getForDialog(final boolean isDue) {
-        String where = TEMPORARY + "=0";
+        MirakelQueryBuilder qb = new MirakelQueryBuilder(context).and(TEMPORARY,
+                Operation.EQ, false);
         if (isDue) {
-            where += " AND " + FOR_DUE + "=1";
+            qb.and(FOR_DUE, Operation.EQ, true);
         }
-        final Cursor c = query(URI, new String[] {ID, LABEL},
-                               where, null, null);
+        final Cursor c = qb.select(ID, LABEL).query(URI);
         final List<Pair<Integer, String>> ret = new ArrayList<>();
         c.moveToFirst();
         while (!c.isAfterLast()) {

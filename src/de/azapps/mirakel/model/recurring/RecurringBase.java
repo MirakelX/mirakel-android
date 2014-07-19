@@ -89,6 +89,9 @@ abstract class RecurringBase extends ModelBase {
         this.setWeekdays(weekdays);
         this.derivedFrom = derivedFrom;
     }
+    protected RecurringBase(final long id, final String label) {
+        super(id, label);
+    }
 
     public String getLabel() {
         return getName();

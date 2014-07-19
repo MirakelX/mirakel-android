@@ -365,20 +365,6 @@ public class MirakelContentProvider extends ContentProvider implements
             throw new SQLWarning();
         }
         // is special list...
-        if (listId < 0) {
-            final SpecialList s = SpecialList.get(-1 * listId);
-            if (s != null) {
-                taskQuery = getTaskQuery(true, not ? 0 : listId, isSyncAdapter);
-                if (s.getWhereQueryForTasks() != null
-                    && s.getWhereQueryForTasks().trim().length() != 0) {
-                    taskQuery += " WHERE " + (not ? "NOT ( " : "")
-                                 + s.getWhereQueryForTasks() + (not ? " )" : "");
-                }
-            } else {
-                Log.e(TAG, "no matching list found");
-                throw new SQLWarning();
-            }
-        }
         return taskQuery;
     }
 
@@ -421,19 +407,6 @@ public class MirakelContentProvider extends ContentProvider implements
             }
             final List<String> wheres = new ArrayList<String>();
             final List<Integer> ordonaryIds = new ArrayList<Integer>();
-            for (final int id : idList) {
-                if (id < 0) {
-                    final SpecialList s = SpecialList.get(-1 * id);
-                    if (s != null) {
-                        wheres.add(s.getWhereQueryForTasks());
-                    } else {
-                        Log.e(TAG, "no matching list found");
-                        throw new SQLWarning();
-                    }
-                } else {
-                    ordonaryIds.add(id);
-                }
-            }
             taskQuery = getTaskQuery(true, not ? 0 : idList.get(0),
                                      isSyncAdapter) + " WHERE " + (not ? " NOT (" : "");
             for (int i = 0; i < wheres.size(); i++) {

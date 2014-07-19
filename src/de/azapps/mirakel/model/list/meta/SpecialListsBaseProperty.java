@@ -21,6 +21,8 @@ package de.azapps.mirakel.model.list.meta;
 
 import android.content.Context;
 
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
+
 public abstract class SpecialListsBaseProperty {
 
     public SpecialListsBaseProperty() {
@@ -28,7 +30,7 @@ public abstract class SpecialListsBaseProperty {
     }
 
     // for wherequery
-    abstract public String getWhereQuery();
+    abstract public MirakelQueryBuilder getWhereQuery(final Context ctx);
 
     // for db
     abstract public String serialize();

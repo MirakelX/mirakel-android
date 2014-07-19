@@ -31,27 +31,28 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 
 public class FileMirakel extends FileBase {
 
 
-    private static final String[] allColumns = { ID, NAME, TASK, PATH };
+    public static final String[] allColumns = { ID, NAME, TASK, PATH };
     public static final String cacheDirPath = FileUtils.getMirakelDir()
             + "image_cache";
     public static final File fileCacheDir = new File(cacheDirPath);
     public static final String TABLE = "files";
     private static final String TAG = "FileMirakel";
-    private static final Uri URI = MirakelInternalContentProvider.FILE_URI;
+    public static final Uri URI = MirakelInternalContentProvider.FILE_URI;
 
     // private static final String TAG = "FileMirakel";
 
@@ -65,21 +66,13 @@ public class FileMirakel extends FileBase {
      * @return
      */
     public static List<FileMirakel> all() {
-        final List<FileMirakel> files = new ArrayList<FileMirakel>();
-        final Cursor c = query(URI, allColumns, null, null, null);
-        c.moveToFirst();
-        while (!c.isAfterLast()) {
-            files.add(cursorToFile(c));
-            c.moveToNext();
-        }
-        c.close();
-        return files;
+        return new MirakelQueryBuilder(context).getList(FileMirakel.class);
     }
 
-    private static FileMirakel cursorToFile(final Cursor c) {
-        return new FileMirakel(c.getInt(c.getColumnIndex(ID)), c.getString(c.getColumnIndex(NAME)),
-                               Task.get(c.getInt(c.getColumnIndex(TASK))),
-                               Uri.parse(c.getString(c.getColumnIndex(PATH))));
+    public FileMirakel(final Cursor c) {
+        super(c.getInt(c.getColumnIndex(ID)), c.getString(c.getColumnIndex(NAME)),
+              Task.get(c.getInt(c.getColumnIndex(TASK))),
+              Uri.parse(c.getString(c.getColumnIndex(PATH))));
     }
 
     // Static Methods
@@ -108,38 +101,12 @@ public class FileMirakel extends FileBase {
      * @return
      */
     public static FileMirakel get(final long id) {
-        final Cursor cursor = query(URI, allColumns, "_id=" + id, null, null);
-        if (cursor.moveToFirst()) {
-            final FileMirakel t = cursorToFile(cursor);
-            cursor.close();
-            return t;
-        }
-        cursor.close();
-        return null;
-    }
-
-    public static int getFileCount(final Task t) {
-        if (t == null) {
-            return 0;
-        }
-        final Cursor c = query(URI, new String[] {"count(*)"}, "task_id=?", new String[] { "" + t.getId() },
-                               null);
-        c.moveToFirst();
-        final int count = c.getInt(0);
-        c.close();
-        return count;
+        return new MirakelQueryBuilder(context).get(FileMirakel.class, id);
     }
 
     public static List<FileMirakel> getForTask(final Task task) {
-        final List<FileMirakel> files = new ArrayList<>();
-        final Cursor cursor = query(URI, allColumns, "task_id=" + task.getId(), null, null);
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            files.add(cursorToFile(cursor));
-            cursor.moveToNext();
-        }
-        cursor.close();
-        return files;
+        return new MirakelQueryBuilder(context).and(TASK, Operation.EQ,
+                task).getList(FileMirakel.class);
     }
 
 

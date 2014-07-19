@@ -32,6 +32,8 @@ import java.util.List;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.R;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 
 public class Tag extends TagBase {
 
@@ -40,7 +42,7 @@ public class Tag extends TagBase {
     public static final String[] allColumns = {ModelBase.ID, ModelBase.NAME, DARK_TEXT,
                                                BACKGROUND_COLOR
                                               };
-    private static final Uri URI = MirakelInternalContentProvider.TAG_URI;
+    public static final Uri URI = MirakelInternalContentProvider.TAG_URI;
 
     public Tag(final int id, final String name, final int backColor, final boolean isDarkBackground) {
         super(id, name, backColor, isDarkBackground);
@@ -50,37 +52,22 @@ public class Tag extends TagBase {
         return URI;
     }
 
-    public static int count() {
-        int count = 0;
-        final Cursor c = query(URI, new String[] {"count(*)"}, null, null, null);
-        c.moveToFirst();
-        if (c.moveToFirst()) {
-            count = c.getInt(0);
-        }
-        c.close();
-        return count;
+    public static long count() {
+        return new MirakelQueryBuilder(context).count(URI);
     }
 
     public static Tag get(final long id) {
-        final Cursor c = query(URI, allColumns, ModelBase.ID
-                               + "=?", new String[] {id + ""}, null);
-        Tag t = null;
-        if (c.moveToFirst()) {
-            t = cursorToTag(c);
-        }
-        c.close();
-        return t;
+        return new MirakelQueryBuilder(context).get(Tag.class, id);
     }
 
     public static List<Tag> all() {
-        final Cursor c = query(URI, allColumns, null, null, null);
-        return cursorToTagList(c);
+        return new MirakelQueryBuilder(context).getList(Tag.class);
     }
 
     public static List<Tag> getTagsForTask(final long id) {
-        final Cursor c = query(MirakelInternalContentProvider.TASK_TAG_URI, addPrefix(allColumns, TABLE),
-                               TAG_CONNECTION_TABLE + ".task_id=?", new String[] {id + ""}, null);
-        return Tag.cursorToTagList(c);
+        return Tag.cursorToTagList(new MirakelQueryBuilder(context).select(addPrefix(allColumns,
+                                   TABLE)).and(TAG_CONNECTION_TABLE + ".task_id", Operation.EQ, id)
+                                   .query(MirakelInternalContentProvider.TASK_TAG_URI));
     }
 
     public static String getTagsQuery(final String[] columns) {
@@ -120,13 +107,13 @@ public class Tag extends TagBase {
     }
 
 
-    public static int getNextColor(final int count, final Context ctx) {
+    public static int getNextColor(final long count, final Context ctx) {
         final TypedArray ta = ctx.getResources().obtainTypedArray(
                                   R.array.default_colors);
         final int transparency[] = ctx.getResources().getIntArray(
                                        R.array.default_transparency);
-        final int alpha = count / ta.length() % transparency.length;
-        final int colorPos = count % ta.length();
+        final int alpha = (int)count / ta.length() % transparency.length;
+        final int colorPos = (int)count % ta.length();
         final int color = android.graphics.Color.argb(transparency[alpha],
                           Color.red(ta.getColor(colorPos, 0)),
                           Color.green(ta.getColor(colorPos, 0)),
@@ -135,17 +122,17 @@ public class Tag extends TagBase {
         return color;
     }
 
-    public static Tag cursorToTag(final Cursor c) {
-        return new Tag(c.getInt(c.getColumnIndex(ID)), c.getString(c.getColumnIndex(NAME)),
-                       c.getInt(c.getColumnIndex(BACKGROUND_COLOR)), c.getShort(c.getColumnIndex(DARK_TEXT)) == 1
-                      );
+
+    public Tag(final Cursor c) {
+        super(c.getInt(c.getColumnIndex(ID)), c.getString(c.getColumnIndex(NAME)),
+              c.getInt(c.getColumnIndex(BACKGROUND_COLOR)), c.getShort(c.getColumnIndex(DARK_TEXT)) == 1);
     }
 
     private static List<Tag> cursorToTagList(final Cursor c) {
         final List<Tag> tags = new ArrayList<>();
         if (c.moveToFirst()) {
             do {
-                tags.add(cursorToTag(c));
+                tags.add(new Tag(c));
             } while (c.moveToNext());
         }
         c.close();
@@ -153,14 +140,7 @@ public class Tag extends TagBase {
     }
 
     private static Tag getByName(final String name) {
-        final Cursor c = query(URI, allColumns, ModelBase.NAME
-                               + "=?", new String[] {name}, null);
-        Tag t = null;
-        if (c.moveToFirst()) {
-            t = cursorToTag(c);
-        }
-        c.close();
-        return t;
+        return new MirakelQueryBuilder(context).and(NAME, Operation.EQ, name).get(Tag.class);
     }
 
     /**
