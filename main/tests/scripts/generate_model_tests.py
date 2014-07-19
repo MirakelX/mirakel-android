@@ -64,7 +64,7 @@ for line in open(basefname):
         vars["UPDATEFUNCTIONS"].append(f_ob)
         
 vars["GETALL_FUNCTION"]="all()"
-vars["ID_TYPE"]="int"
+vars["ID_TYPE"]="long"
 
 # Exceptions
 if className=="SpecialList":
