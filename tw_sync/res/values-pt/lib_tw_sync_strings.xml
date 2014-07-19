@@ -51,6 +51,7 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="wrong_config">Parece que está a utilizar um ficheiro de configuração inválido</string>
   <string name="cert_not_found">O certificado desapareceu. Por favor recrie a sua conta.</string>
   <string name="could_not_find_common_ancestor">Não foi possível encontrar a tarefa anterior consistente. Isto significa que algo não está sincronizado com o servidor e você terá que eliminar os dados do Mirakel. Desculpe.</string>
+  <string name="client_sync_key_not_found">Chave de sincronização não encontrada. Verifique as suas definições TaskWarrior.</string>
   <string name="config_404">Ficheiro de configuração não encontrado</string>
   <string name="config_error_empty">%s não existe no ficheiro de configuração</string>
   <string name="load_config">Selecione o ficheiro de configurações do Taskwarrior</string>

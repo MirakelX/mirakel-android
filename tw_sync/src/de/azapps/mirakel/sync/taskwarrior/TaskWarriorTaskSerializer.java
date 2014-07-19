@@ -39,6 +39,7 @@ import com.google.gson.JsonSerializer;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.model.MirakelContentProvider;
+import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
@@ -86,10 +87,10 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
         final Map<String, String> additionals = task.getAdditionalEntries();
         boolean isMaster = false;
         if (task.getRecurring() != null) {
-            final Cursor c = MirakelContentProvider.getReadableDatabase()
-                             .query(Recurring.TW_TABLE, new String[] { "count(*)" },
-                                    "child=?", new String[] { task.getId() + "" },
-                                    null, null, null);
+            final Cursor c = mContext.getContentResolver()
+                             .query(MirakelInternalContentProvider.RECURRING_TW_URI, new String[] {"count(*)"},
+                                    "child=?", new String[] {task.getId() + ""},
+                                    null);
             c.moveToFirst();
             if (c.getLong(0) == 0) {
                 isMaster = true;
@@ -197,11 +198,11 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
             handleRecurrence(json, task.getRecurring());
             if (isMaster) {
                 String mask = "";
-                final Cursor c = MirakelContentProvider.getReadableDatabase()
-                                 .query(Recurring.TW_TABLE,
+                final Cursor c = mContext.getContentResolver()
+                                 .query(MirakelInternalContentProvider.RECURRING_TW_URI,
                                         new String[] { "child", "offsetCount" },
                                         "parent=?", new String[] { task.getId() + "" },
-                                        null, null, "offsetCount ASC");
+                                        "offsetCount ASC");
                 c.moveToFirst();
                 if (c.getCount() > 0) {
                     int oldOffset = -1;
@@ -235,11 +236,11 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
                 c.close();
                 json.addProperty("mask", mask);
             } else {
-                final Cursor c = MirakelContentProvider.getReadableDatabase()
-                                 .query(Recurring.TW_TABLE,
+                final Cursor c = mContext.getContentResolver()
+                                 .query(MirakelInternalContentProvider.RECURRING_TW_URI,
                                         new String[] { "parent", "offsetCount" },
                                         "child=?", new String[] { task.getId() + "" },
-                                        null, null, null);
+                                        null);
                 c.moveToFirst();
                 if (c.getCount() > 0) {
                     final Task master = Task.get(c.getLong(0));
