@@ -3,10 +3,14 @@
 <resources xmlns:xliff="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="day_picker_description">Сетка дней на месяц</string>
   <string name="year_picker_description">Список годов</string>
+  <string name="item_is_selected">%1$s выбрано</string>
+  <string name="deleted_key"><xliff:g id="key" example="4"> %1$s </xliff:g> удалено</string>
   <string name="hour_picker_description">Круговой слайдер для часов</string>
   <string name="minute_picker_description">Круговой слайдер для минут</string>
   <string name="select_hours">Выбрать часы</string>
   <string name="select_minutes">Выбрать минуты</string>
+  <string name="recurrence_month_pattern_by_day">в тот же день каждого месяца</string>
+  <string name="acessibility_recurrence_choose_end_date_description">изменить дату окончания</string>
   <string name="save_label">Выполнено</string>
   <string name="set_date">Установить дату</string>
   <string name="set_time">Установить время</string>
