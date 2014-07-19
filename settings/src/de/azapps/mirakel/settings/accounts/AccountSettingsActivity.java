@@ -122,8 +122,8 @@ public class AccountSettingsActivity extends ListSettings {
     }
 
     @Override
-    protected List<Pair<Integer, String>> getItems() {
-        return new ArrayList<Pair<Integer, String>>();
+    protected List<Pair<Long, String>> getItems() {
+        return new ArrayList<>();
     }
 
     @Override
@@ -133,7 +133,7 @@ public class AccountSettingsActivity extends ListSettings {
 
     @Override
     protected int getTitleRessource() {
-        return R.string.sync_title; // TODO: Look if the title is meaningful
+        return R.string.account_title;
     }
 
     protected void handleCalDAV() {
@@ -168,7 +168,7 @@ public class AccountSettingsActivity extends ListSettings {
         final List<AccountMirakel> accounts = AccountMirakel.all();
         for (final AccountMirakel a : accounts) {
             final Bundle b = new Bundle();
-            b.putInt("id", a.getId());
+            b.putLong("id", a.getId());
             final Header header = new Header();
             header.fragment = getDestFragmentClass().getCanonicalName();
             header.title = a.getName();
@@ -232,7 +232,7 @@ public class AccountSettingsActivity extends ListSettings {
 
     @Override
     protected void setupSettings() {
-        this.account = AccountMirakel.get(getIntent().getIntExtra("id", 0));
+        this.account = AccountMirakel.get(getIntent().getLongExtra("id", 0));
         try {
             new AccountSettings(this, this.account).setup();
         } catch (final NoSuchListException e) {

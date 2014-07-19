@@ -19,7 +19,6 @@
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-  <string name="sync_title">Synchronizace</string>
   <string name="sync_use">Použít synchronizaci</string>
   <string name="sync_warning">Synchronizace je experimentální</string>
   <string name="sync_warning_message">Synchronizace je v současné době v experimentálním stavu. Ale můžete ji vyzkoušet na vlastní riziko (zazálohujte si předem data!). Pokračovat?</string>

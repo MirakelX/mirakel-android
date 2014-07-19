@@ -73,11 +73,11 @@ public class TagsSettingsActivity extends ListSettings {
     }
 
     @Override
-    protected List<Pair<Integer, String>> getItems() {
+    protected List<Pair<Long, String>> getItems() {
         final List<Tag> tags = Tag.all();
-        final List<Pair<Integer, String>> items = new ArrayList<Pair<Integer, String>>();
+        final List<Pair<Long, String>> items = new ArrayList<>();
         for (final Tag t : tags) {
-            items.add(new Pair<Integer, String>(t.getId(), t.getName()));
+            items.add(new Pair<>(t.getId(), t.getName()));
         }
         return items;
     }
@@ -94,7 +94,7 @@ public class TagsSettingsActivity extends ListSettings {
 
     @Override
     protected void setupSettings() {
-        this.tag = Tag.getTag(getIntent().getIntExtra("id", 0));
+        this.tag = Tag.get(getIntent().getLongExtra("id", 0));
         new TagSettings(this, this.tag).setup();
     }
 

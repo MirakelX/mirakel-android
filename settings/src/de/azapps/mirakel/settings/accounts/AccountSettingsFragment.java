@@ -30,18 +30,15 @@ public class AccountSettingsFragment extends PreferenceFragment {
         addPreferencesFromResource(R.xml.settings_account);
         final Bundle b = getArguments();
         if (b != null) {
-            Log.d(TAG, "id= " + b.getInt("id"));
-            final AccountMirakel account = AccountMirakel.get(b.getInt("id"));
+            final AccountMirakel account = AccountMirakel.get(b.getLong("id"));
             ((AccountSettingsActivity) getActivity()).setAccount(account);
             final ActionBar actionbar = getActivity().getActionBar();
             if (account == null) {
                 actionbar.setTitle("No Account");
             } else {
-                actionbar.setTitle(account.getName()); // TODO: More meaningful
-                // title? (Including
-                // server)
+                actionbar.setTitle(account.getName());
+                // TODO: More meaningful title? (Including server)
             }
-            // TODO implement this
             if (!MirakelCommonPreferences.isTablet()) {
                 final ImageButton delList = new ImageButton(getActivity());
                 delList.setBackgroundResource(android.R.drawable.ic_menu_delete);

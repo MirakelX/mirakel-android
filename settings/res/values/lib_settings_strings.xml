@@ -21,7 +21,7 @@
 
     <!-- Sync -->
     <string name="sync_add">Add account</string>
-    <string name="sync_title">Sync</string>
+    <string name="account_title">Accounts</string>
     <string name="sync_new">New account</string>
     <string name="sync_use">Use Sync</string>
     <string name="sync_warning">Sync is Experimental</string>
