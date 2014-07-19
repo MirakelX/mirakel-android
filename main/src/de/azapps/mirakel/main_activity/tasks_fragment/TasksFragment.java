@@ -74,6 +74,8 @@ import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.DatabaseHelper;
+import de.azapps.mirakel.model.MirakelInternalContentProvider;
+import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.semantic.Semantic;
@@ -90,7 +92,7 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
     protected boolean created = false;
     protected boolean finishLoad;
     protected int ItemCount;
-    protected int listId;
+    protected long listId;
     protected ListView listView;
     protected boolean loadMore;
     protected ActionMode mActionMode = null;
@@ -636,8 +638,6 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
             ErrorReporter.report (ErrorType.LIST_VANISHED);
             list = SpecialList.firstSpecialSafe (getActivity ());
         }
-        final Uri u = Uri.parse ("content://"
-                                 + DefinitionsHelper.AUTHORITY_INTERNAL + "/" + "tasks");
         String dbQuery = list.getWhereQueryForTasks ();
         final String sorting = Task.getSorting (list.getSortBy ());
         String[] args = null;
@@ -648,10 +648,11 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
         dbQuery += Task.BASIC_FILTER_DISPLAY_TASKS;
         if (this.query != null) {
             args = new String[] { "%" + this.query + "%" };
-            dbQuery += " AND " + DatabaseHelper.NAME + " LIKE ?";
+            dbQuery += " AND " + ModelBase.NAME + " LIKE ?";
         }
         Log.w (TAG, dbQuery);
-        return new CursorLoader (getActivity (), u, Task.allColumns, dbQuery,
+        return new CursorLoader (getActivity (), MirakelInternalContentProvider.TASK_URI, Task.allColumns,
+                                 dbQuery,
                                  args, sorting);
     }
 

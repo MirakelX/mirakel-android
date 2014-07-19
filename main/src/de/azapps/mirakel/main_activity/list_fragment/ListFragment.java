@@ -59,6 +59,8 @@ import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.main_activity.MirakelFragment;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.MirakelContentProvider;
+import de.azapps.mirakel.model.MirakelInternalContentProvider;
+import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -233,18 +235,11 @@ public class ListFragment extends MirakelFragment {
                 where += ")";
                 final ContentValues cv = new ContentValues ();
                 cv.put (SyncAdapter.SYNC_STATE, SYNC_STATE.ADD.toInt ());
-                MirakelContentProvider.getWritableDatabase ().update (
-                    Task.TABLE,
-                    cv,
-                    where + " AND NOT " + SyncAdapter.SYNC_STATE
-                    + "=" + SYNC_STATE.DELETE, null);
-                final String query = "DELETE FROM caldav_extra where "
-                                     + DatabaseHelper.ID + " in( select "
-                                     + DatabaseHelper.ID + " from " + Task.TABLE
-                                     + " where " + where + ");";
-                Log.w (TAG, query);
-                MirakelContentProvider.getWritableDatabase ().rawQuery (
-                    query, null);
+                main.getContentResolver().update(MirakelInternalContentProvider.TASK_URI, cv,
+                                                 where + " AND NOT " + SyncAdapter.SYNC_STATE + "=" + SYNC_STATE.DELETE, null);
+                getActivity().getContentResolver().delete(MirakelInternalContentProvider.CALDAV_LISTS_URI, "" +
+                        "where " + ModelBase.ID + " in( select " + ModelBase.ID + " from " + Task.TABLE
+                        + " where " + where + ");", null);
                 ListFragment.this.main.getListFragment ().update ();
             }
         }).setNegativeButton (android.R.string.cancel, null).show ();

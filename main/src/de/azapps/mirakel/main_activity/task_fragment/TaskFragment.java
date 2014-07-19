@@ -34,7 +34,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.SparseArray;
+import android.support.v4.util.LongSparseArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -76,9 +76,9 @@ public abstract class TaskFragment extends Fragment {
     protected TaskDetailView detailView;
 
     protected MainActivity main;
-    protected SparseArray<FileMirakel> markedFiles;
+    protected LongSparseArray<FileMirakel> markedFiles;
 
-    protected Map<Long, Task> markedSubtasks;
+    protected LongSparseArray<Task> markedSubtasks;
 
     protected Menu mMenu;
 
@@ -110,9 +110,9 @@ public abstract class TaskFragment extends Fragment {
             break;
         case R.id.menu_delete:
             if (TaskFragment.this.cabState == ActionbarState.FILE) {
-                final List<FileMirakel> selectedItems = new ArrayList<FileMirakel> ();
-                for (int i = 0; i < TaskFragment.this.markedFiles.size (); i++) {
-                    selectedItems.add (TaskFragment.this.markedFiles.valueAt (i));
+                final List<FileMirakel> selectedItems = new ArrayList<>();
+                for (int i = 0; i < this.markedFiles.size(); i++) {
+                    selectedItems.add(this.markedFiles.valueAt(i));
                 }
                 TaskDialogHelpers.handleDeleteFile (selectedItems,
                                                     getActivity (), TaskFragment.this.task,
@@ -123,10 +123,9 @@ public abstract class TaskFragment extends Fragment {
                     }
                 });
             } else {// Subtask
-                final List<Task> selectedItems = new ArrayList<Task> ();
-                for (final Map.Entry<Long, Task> e : TaskFragment.this.markedSubtasks
-                     .entrySet ()) {
-                    selectedItems.add (e.getValue ());
+                final List<Task> selectedItems = new ArrayList<>();
+                for (int i = 0; i < this.markedSubtasks.size(); i++) {
+                    selectedItems.add(this.markedSubtasks.valueAt(i));
                 }
                 TaskDialogHelpers.handleRemoveSubtask (selectedItems,
                                                        getActivity (), TaskFragment.this.task,
@@ -141,16 +140,16 @@ public abstract class TaskFragment extends Fragment {
         case R.id.edit_task:
             if (TaskFragment.this.main != null) {
                 TaskFragment.this.main
-                .setCurrentTask (TaskFragment.this.markedSubtasks
-                                 .entrySet ().iterator ().next ().getValue ());
+                .setCurrentTask(TaskFragment.this.markedSubtasks
+                                .valueAt(0));
             }
             break;
         case R.id.done_task:
-            for (final Map.Entry<Long, Task> e : TaskFragment.this.markedSubtasks
-                 .entrySet ()) {
-                if (e.getValue () != null) {
-                    e.getValue ().setDone (true);
-                    e.getValue ().save ();
+            for (int i = 0; i < this.markedSubtasks.size(); i++) {
+                final Task t = this.markedSubtasks.valueAt(i);
+                if (t != null) {
+                    t.setDone(true);
+                    t.save();
                 }
             }
             update (TaskFragment.this.task);
@@ -192,18 +191,18 @@ public abstract class TaskFragment extends Fragment {
         if (TaskFragment.this.detailView != null) {
             TaskFragment.this.detailView.unmark (this.saveContent);
         }
-        TaskFragment.this.markedFiles = new SparseArray<FileMirakel> ();
-        TaskFragment.this.markedSubtasks = new HashMap<Long, Task> ();
-        Log.d (TaskFragment.TAG, "kill mode");
+        TaskFragment.this.markedFiles = new LongSparseArray<>();
+        TaskFragment.this.markedSubtasks = new LongSparseArray<>();
+        Log.d(TaskFragment.TAG, "kill mode");
     }
 
     @Override
     public View onCreateView (final LayoutInflater inflater,
                               final ViewGroup container, final Bundle savedInstanceState) {
         this.cabState = null;
-        this.markedFiles = new SparseArray<FileMirakel> ();
-        this.markedSubtasks = new HashMap<Long, Task> ();
-        this.main = (MainActivity) getActivity ();
+        this.markedFiles = new LongSparseArray<>();
+        this.markedSubtasks = new LongSparseArray<>();
+        this.main = (MainActivity) getActivity();
         View view;
         this.updateThread = new Runnable () {
             @Override
@@ -214,7 +213,7 @@ public abstract class TaskFragment extends Fragment {
         try {
             view = inflater.inflate (R.layout.task_fragment, container, false);
         } catch (final Exception e) {
-            Log.i (TaskFragment.TAG, Log.getStackTraceString (e));
+            Log.w(TaskFragment.TAG, "Failed do infalte layout", e);
             return null;
         }
         this.detailView = (TaskDetailView) view
@@ -229,7 +228,7 @@ public abstract class TaskFragment extends Fragment {
                 }
             }
         });
-        this.detailView.setOnSubtaskClick (new OnTaskClickListener() {
+        this.detailView.setOnSubtaskClick(new OnTaskClickListener() {
             @Override
             public void onTaskClick (final Task t) {
                 TaskFragment.this.main.setCurrentTask (t);
@@ -301,12 +300,12 @@ public abstract class TaskFragment extends Fragment {
                                           .getHighlightedColor (getActivity ()));
                     TaskFragment.this.markedSubtasks.put (t.getId (), t);
                 } else {
-                    Log.d (TaskFragment.TAG, "not marked");
-                    v.setBackgroundColor (getActivity ().getResources ().getColor (
-                                              android.R.color.transparent));
-                    TaskFragment.this.markedSubtasks.remove (t.getId ());
-                    if (TaskFragment.this.markedSubtasks.isEmpty ()) {
-                        closeActionMode ();
+                    Log.d(TaskFragment.TAG, "not marked");
+                    v.setBackgroundColor(getActivity().getResources().getColor(
+                                             android.R.color.transparent));
+                    TaskFragment.this.markedSubtasks.remove(t.getId());
+                    if (TaskFragment.this.markedSubtasks.size() == 0) {
+                        closeActionMode();
                     }
                 }
                 if (TaskFragment.this.mMenu != null) {
@@ -346,8 +345,8 @@ public abstract class TaskFragment extends Fragment {
             public void clickOnFile (final FileMirakel file) {
                 final Context context = getActivity ();
                 String[] items;
-                if (FileUtils.isAudio (file.getUri ())) {
-                    items = context.getResources ().getStringArray (
+                if (FileUtils.isAudio(file.getFileUri())) {
+                    items = context.getResources().getStringArray(
                                 R.array.audio_playback_options);
                 } else {
                     TaskDialogHelpers.openFile (context, file);

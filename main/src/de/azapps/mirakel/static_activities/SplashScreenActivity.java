@@ -70,13 +70,12 @@ public class SplashScreenActivity extends Activity {
         } else {
             ListMirakel sl = SpecialList.firstSpecial ();
             if (sl == null) {
-                final Map<String, SpecialListsBaseProperty> where = new
-                HashMap<String, SpecialListsBaseProperty> ();
+                final Map<String, SpecialListsBaseProperty> where = new   HashMap<> ();
                 where.put (Task.DONE, new SpecialListsDoneProperty (false));
                 sl = SpecialList.newSpecialList (getString (R.string.list_all),
-                                                 where, true, this);
+                                                 where, true);
             }
-            final int listId = MirakelModelPreferences.getStartupList ().getId ();
+            final long listId = MirakelModelPreferences.getStartupList ().getId ();
             final Intent intent = new Intent (SplashScreenActivity.this,
                                               MainActivity.class);
             intent.setAction (DefinitionsHelper.SHOW_LIST);
