@@ -56,7 +56,7 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
 
     private static final String TAG = "TaskDetailDueReminder";
 
-    public static void setRecurringImage(final ImageButton image, final int id) {
+    public static void setRecurringImage(final ImageButton image, final long id) {
         image.setImageResource(id == -1 ? android.R.drawable.ic_menu_mylocation
                                : android.R.drawable.ic_menu_rotate);
     }

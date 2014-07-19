@@ -23,16 +23,28 @@
   <string name="audio_playback_stop">إيقاف</string>
   <string name="task_change_prio_title">تغيير الأولوية</string>
   <string name="remove_subtask">إزالة مهمة فرعية</string>
+  <string name="remove_files_summary">هل تريد إزالة %1$s  من %2$s ؟</string>
   <string name="add_existing">إضافة المهمة الحالية</string>
   <string name="task_name">اسم المهمة:</string>
   <string name="subtask_add_options">تصفية &gt;&gt;</string>
-  <string name="subtask_done">مهمة منجزة؟</string>
+  <string name="subtask_done">مهمة منجَزَة؟</string>
   <string name="subtask_reminder">مهمة مع تذكير؟</string>
   <string name="subtask_content">مهمة مع ملاحظة؟</string>
   <string name="new_task">مهمة جديدة</string>
   <string name="add_subtasks">إضافة مهمة فرعية...</string>
+  <string name="add_tags">أضف علامة&#8230;</string>
   <string name="add">إضافة</string>
   <string name="add_subtask">إضافة مهمة فرعية</string>
   <string name="file_no_activity">لا أعرف كيفية فتح هذا الملف – عذراً</string>
   <string name="remove_files">إزالة الملفات من المهمة</string>
+  <string name="search_tag">إبحث عن علامة</string>
+  <string-array name="tag_menu">
+    <item>تعديل علامة</item>
+    <item>حذف العلامة</item>
+  </string-array>
+  <string name="tag_has_dark_text">النص لونه أسود</string>
+  <string-array name="recurring_task_select">
+    <item>هذا التكرار فقط</item>
+    <item>أينما وُجِدَت</item>
+  </string-array>
 </resources>

@@ -28,6 +28,8 @@ import de.azapps.mirakel.custom_views.BaseTaskDetailRow.OnTaskChangedListner;
 import de.azapps.mirakel.customviews.R;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.MirakelContentProvider;
+import de.azapps.mirakel.model.MirakelInternalContentProvider;
+import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
 
@@ -37,12 +39,10 @@ public class TagDialog extends DialogFragment implements
     private String searchString;
     private TagAdapter adapter;
     private Context ctx;
-    private final SQLiteDatabase db;
     private Task task;
     private OnTaskChangedListner taskChanged;
 
     public TagDialog() {
-        this.db = MirakelContentProvider.getReadableDatabase();
         this.searchString = "";
     }
 
@@ -132,13 +132,12 @@ public class TagDialog extends DialogFragment implements
     protected void createNewTag(final EditText search) {
         TagDialog.this.searchString = search.getText().toString();
         getLoaderManager().restartLoader(0, null, TagDialog.this);
-        final Cursor c = TagDialog.this.db.query(Tag.TABLE,
-                         new String[] { "count(*)" }, DatabaseHelper.NAME + " LIKE ?",
-                         new String[] { TagDialog.this.searchString + '%' }, null, null,
-                         null);
+        final Cursor c = ctx.getContentResolver().query(MirakelInternalContentProvider.TAG_URI,
+                         new String[] { "count(*)" }, ModelBase.NAME + " LIKE ?",
+                         new String[] { TagDialog.this.searchString + '%' }, null);
         c.moveToFirst();
-        if (c.getCount() > 0 && c.getInt(0) == 0) {// tag does not
-            // exists
+        // check if tag does not exists
+        if (c.getCount() > 0 && c.getInt(0) == 0) {
             final InputMethodManager imm = (InputMethodManager) this.ctx
                                            .getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(search.getWindowToken(), 0);
@@ -147,16 +146,15 @@ public class TagDialog extends DialogFragment implements
             dismiss();
             TagDialog.this.taskChanged.onTaskChanged(TagDialog.this.task);
         }
+        c.close();
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(final int arg0, final Bundle arg1) {
-        final Uri u = Uri.parse("content://"
-                                + DefinitionsHelper.AUTHORITY_INTERNAL + "/" + "tags");
-        final String tagsQuery = "AND " + DatabaseHelper.ID + " NOT IN ("
-                                 + Tag.getTagsQuery(new String[] { DatabaseHelper.ID }) + ")";
-        return new CursorLoader(getActivity(), u, Tag.allColumns,
-                                DatabaseHelper.NAME + " LIKE ? " + tagsQuery, new String[] {
+        final String tagsQuery = "AND " + ModelBase.ID + " NOT IN ("
+                                 + Tag.getTagsQuery(new String[] { ModelBase.ID }) + ")";
+        return new CursorLoader(getActivity(), MirakelInternalContentProvider.TAG_URI, Tag.allColumns,
+                                ModelBase.NAME + " LIKE ? " + tagsQuery, new String[] {
                                     this.searchString + "%", this.task.getId() + ""
                                 }, null);
     }
